@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>libxslt</ProjectName>
+    <ProjectGuid>{B622D779-6FD4-4B0C-9F30-8FAB9F1914E3}</ProjectGuid>
+    <RootNamespace>libxslt</RootNamespace>
+    <Keyword>ManagedCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;..\..\libxml2-2.7.7\include;..\..\libiconv-1.13\include;..\..\libiconv-1.13\libcharset\include;..\..\libiconv-1.13\libcharset;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;WIN32;_DEBUG;_WINDOWS;_MBCS;HAVE_WIN32_THREADS;_LIB;_REENTRANT;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;LIBXSLT_STATIC;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..;..\..\libxml2-2.7.7\include;..\..\libiconv-1.13\include;..\..\libiconv-1.13\libcharset\include;..\..\libiconv-1.13\libcharset;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;WIN32;NDEBUG;_WINDOWS;_MBCS;HAVE_WIN32_THREADS;_LIB;_REENTRANT;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;LIBXSLT_STATIC;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Xml">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="attributes.c" />
+    <ClCompile Include="attrvt.c" />
+    <ClCompile Include="documents.c" />
+    <ClCompile Include="extensions.c" />
+    <ClCompile Include="extra.c" />
+    <ClCompile Include="functions.c" />
+    <ClCompile Include="imports.c" />
+    <ClCompile Include="keys.c" />
+    <ClCompile Include="namespaces.c" />
+    <ClCompile Include="numbers.c" />
+    <ClCompile Include="pattern.c" />
+    <ClCompile Include="preproc.c" />
+    <ClCompile Include="security.c" />
+    <ClCompile Include="templates.c" />
+    <ClCompile Include="transform.c" />
+    <ClCompile Include="variables.c" />
+    <ClCompile Include="xslt.c" />
+    <ClCompile Include="xsltlocale.c" />
+    <ClCompile Include="xsltutils.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="attributes.h" />
+    <ClInclude Include="documents.h" />
+    <ClInclude Include="extensions.h" />
+    <ClInclude Include="extra.h" />
+    <ClInclude Include="functions.h" />
+    <ClInclude Include="imports.h" />
+    <ClInclude Include="keys.h" />
+    <ClInclude Include="libxslt.h" />
+    <ClInclude Include="namespaces.h" />
+    <ClInclude Include="numbersInternals.h" />
+    <ClInclude Include="pattern.h" />
+    <ClInclude Include="preproc.h" />
+    <ClInclude Include="security.h" />
+    <ClInclude Include="templates.h" />
+    <ClInclude Include="transform.h" />
+    <ClInclude Include="trio.h" />
+    <ClInclude Include="triodef.h" />
+    <ClInclude Include="variables.h" />
+    <ClInclude Include="win32config.h" />
+    <ClInclude Include="xslt.h" />
+    <ClInclude Include="xsltconfig-orig.h" />
+    <ClInclude Include="xsltconfig.h" />
+    <ClInclude Include="xsltexports.h" />
+    <ClInclude Include="xsltInternals.h" />
+    <ClInclude Include="xsltlocale.h" />
+    <ClInclude Include="xsltutils.h" />
+    <ClInclude Include="xsltwin32config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libxml2-2.7.7\libxml2.vcxproj">
+      <Project>{220de7a6-15ef-4c3c-8793-2ce4929d4d85}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\libexslt\libexslt.vcxproj">
+      <Project>{8ec29920-6211-4e38-9064-4204bd242902}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,266 @@
+0 standard
+100 dirinfo
+200 ladderinfo
+300 genotypeinfo
+400 peaksinfo
+500 sampleinfo
+600 labinfo
+700 fsainfo
+
+Explanation:  standard rules:
+
+
+<start>
+0 => SAMPLE REQUIRES ANALYST REVIEW
+1 => POSITIVE CONTROL REQUIRES ANALYST REVIEW
+2 => NEGATIVE CONTROL REQUIRES ANALYST REVIEW
+3 => ILS REQUIRES ANALYST REVIEW
+4 => LADDER REQUIRES ANALYST REVIEW
+50 => SAMPLE PASSED
+51 => POSITIVE CONTROL PASSED
+52 => NEGATIVE CONTROL PASSED
+53 => ILS PASSED
+54 => LADDER PASSED
+</start>
+
+
+Explanation: dirinfo rules:
+
+
+<start>
+0 => No ladder file
+1 => The ladder type is unknown
+2 => There are more than one ladder type in the directory
+3 => There is not valid ladder file in the directory
+4 => The machine type is unknown
+5 => There are more than one machine type in the directory
+6 => No positive control sample
+7 => No negative control sample
+8 => No sample
+9 => Positive control sample failed
+10 => Negative control sample failed
+12 => Directory failed
+</start>
+
+Explanation: ladderinfo related rules:
+
+
+<start>
+0 => Robust ladder assigning algorithm failed
+1 => Simple ladder assigning algorithm failed
+2 => The ave distance from the standard is too high
+3 => The max distance from the standard is too high
+4 => Ladder minimum RFU
+5 => Ladder maximum RFU
+12 => Ladder failed
+</start>
+
+Explanation:  sampleinfo related rules:
+
+<start>
+0 => Too many peaks in sizing ladder
+1 => Not enough peaks in sizing ladder
+2 => The resized ladder is too short.
+3 => Too close distance between neighbor peaks in sizing ladder
+4 => Competitive vectors during assigning process
+5 => The base unit error is too high
+6 => Extra peak/peaks in the sizing ladder between first and the last sizing ladder peak
+7 => Standard resized ladder peak is too small
+8 => The sizing ladder is not uniform
+9 => A sizing ladder peak is not Gaussian
+10 => There is a bleed through peak
+11 => BLEED_TROUGH (Combination of the features: 0,2,6,10)
+12 => Adaptive peak assigning algorithm failed
+13 => General peak assigning algorithm failed
+15 => Positive control sample failed
+16 => Negative control sample failed
+17 => Positive control sample failed because of genotype difference from the standard
+18 => Negative control sample failed because of genotype contamination
+20 => Sample failed because of directory info
+21 => Sample failed because of peak info
+22 => Sample failed because of genotype info
+23 => Sample failed because of laboratory rules
+24 => sample failed because of Fsa reading info
+31 => Sample failed
+</start>
+
+Explanation: fsainfo related messages:
+
+
+<start>
+0 => The machine type is unknown
+1 => Cannot open ABI fsa file
+2 => Cannot find  ABIF token
+3 => The file size is too large
+4 => Invalid color number
+5 => RAW data reading error
+6 => ANALYSED data reading error
+7 => MACHSPEC_InSc data reading error
+8 => MACHSPEC_InVt data reading error
+9 => MACHSPEC_Tmpr data reading error
+10 => MACHSPEC_MCHN data reading error
+11 => MACHSPEC_DySN data reading error
+12 => MACHSPEC_CMNT data reading error
+13 => MACHSPEC_StdA data reading error
+14 => MACHSPEC_MODL data reading error
+15 => MACHSPEC_TUBE data reading error
+16 => MACHSPEC_LANE data reading error
+17 => MACHSPEC_LNTD data reading error
+18 => MACHSPEC_NAVG data reading error
+19 => MACHSPEC_OFFS data reading error
+20 => MACHSPEC_TRKI data reading error
+21 => MACHSPEC_NLNE data reading error
+22 => PEAK data reading error
+23 => STAT data reading error
+24 => Electrophoresis Tracking RUND data reading error
+25 => Electrophoresis Tracking RUNT data reading error
+26 => Electrophoresis Tracking EVNT data reading error
+27 => DYE AOFF data reading error
+28 => DYE CCDF data reading error
+29 => DYE PK_# data reading error
+30 => DYE SdOk data reading error
+31 => DYE SdNm data reading error
+32 => DYE SdIC data reading error
+33 => DYE SdCs data reading error
+34 => DYE SdSM data reading error
+35 => DYE DyeN data reading error
+36 => DYE DyeS data reading error
+37 => DYE DyeZ data reading error
+38 => DYE SMPL data reading error
+39 => ScanRate data reading error
+40 => OffScale data reading error
+41 => MACHOPCOND Capillary data reading error
+42 => DLDrules: The Electrophoresis Start not equal Electrophoresis Stop datetime is invalid
+43 => DLDrules: The Electrophoresis Start not equal Data Collection Start datetime is invalid
+44 => DLDrules: The Electrophoresis Stop  not equal Data Collection Stop datetime is invalid
+45 => DLDrules: The Data Collection Sart  not equal Data Collection Stop datetime is invalid
+46 => DLDrules: The Electrophoresis Start Date is invalid
+47 => DLDrules: The Electrophoresis Start Time is invalid
+48 => DLDrules: The Electrophoresis Stop Date is invalid
+49 => DLDrules: The Electrophoresis Stop Time is invalid
+50 => DLDrules: The Data Collection Start Date is invalid
+51 => DLDrules: The Data Collection Start Time is invalid
+52 => DLDrules: The Data Collection Stop Date is invalid
+53 => DLDrules: The Data Collection Stop Time is invalid
+54 => DLDrules: The line number should be between 1-16 in the 3100 machine
+55 => DLDrules: The 'Bn Joda' keyword is meaningless. It can be 'LIZ'
+56 => DLDrules: The 'PAT' should be 'PET'
+57 => DLDrules: The 'UND' should be '6FAM'
+58 => DLDrules: The 'ER' should be '6FAM'
+59 => DLDrules: STAT Anal. DATE is invalid
+60 => DLDrules: STAT Anal. TIME is invalid
+63 => Fsa file reading failed
+</start>
+
+Explanation: all sample all peaks related messages (peaksinfo):
+
+
+<start>
+0 => CRATER in the sample
+1 => Unadenylated (A-/A+) shoulder in the sample
+2 => Unadenylated (A-/A+;+1/-1) shoulder in the sample
+3 => BLOB in the sample
+4 => SPIKE in the sample
+5 => NEGATIVE EDGE in the sample
+6 => STRANGE DERIVATIVE in the sample
+7 => LARGE peak in the sample
+8 => NON GAUSSIAN peak in the sample
+9 => Too many small peaks in the sample
+10 => Too many STUTTER in the sample
+11 => Too many peaks in the sample
+12 => NON_SYMMETRICAL peak in the sample
+13 => NOT_SEPARATED peak in the sample
+14 => WIDE peak in the sample
+15 => THIN peak in the sample
+16 => UNUSUAL_SHAPE peak in the sample
+17 => 3_MEMBER_BLEED_THROUGH_LINE in the sample
+18 => 4_MEMBER_BLEED_THROUGH_LINE in the sample
+19 => STRONG_BLEED_THROUGH_LINE in the sample
+20 => BLEED_THROUGH peak in the sample
+21 => BASELINE_SHIFT/WIDTH_PEAK in the sample
+22 => OL_BETWEEN_LOCI peak in the sample
+23 => SMALL_CRATER in the sample
+50 => Unadenylated (A-/A+) left shoulder in the sample
+51 => Unadenylated (A-/A+) right shoulder in the sample
+52 => Unadenylated (A-/A+;+1/-1) left shoulder in the sample
+53 => Unadenylated (A-/A+;+1/-1) right shoulder in the sample
+54 => Number of peaks in the sample
+55 => Number of tall peaks in the sample (above the min. height threshold)
+56 => Right side STUTTER in the sample
+57 => Wrong side STUTTER in the sample
+60 => SWITCHED_OFF peak in the sample
+63 => Peaks failed
+</start>
+
+Explanation: genotypeinfo related messages:
+
+
+<start>
+0 => CRATER in the genotype
+1 => Unadenylated (A-/A+) shoulder in the genotype
+2 => Unadenylated (A-/A+;+1/-1) shoulder in the genotype
+3 => BLOB in the genotype
+4 => SPIKE in the genotype
+5 => NEGATIVE EDGE in the genotype
+6 => STRANGE DERIVATIVE in the genotype
+7 => SMALL peak in the genotype
+8 => LARGE peak in the genotype
+9 => NON GAUSSIAN peak in the genotype
+10 => No genotype in a str loci
+11 => Three peaks in a str loci
+12 => Mixtures in a str loci
+13 => Extra peaks in the genotype
+14 => NON_SYMMETRICAL peak in the genotype
+15 => NOT_SEPARATED peak in the genotype
+16 => WIDE peak in the genotype
+17 => THIN peak in the genotype
+18 => UNUSUAL_SHAPE peak in the genotype
+19 => 3_MEMBER_BLEED_THROUGH_LINE in the genotype
+20 => 4_MEMBER_BLEED_THROUGH_LINE in the genotype
+21 => STRONG_BLEED_THROUGH_LINE in the genotype
+22 => BLEED_THROUGH peak in the genotype
+23 => BASELINE_SHIFT in the genotype
+24 => OL_BETWEEN_LOCI peak in the genotype
+25 => SMALL_CRATER in the genotype
+26 => HETEROZYGOUS_RATE is too small in the genotype
+27 => STUTTER in the genotype
+28 => GEN_SAMPLE_LAD_DIST_TT is in the genotype
+29 => GEN_SAMPLE_LAD_DIST_R is in the genotype
+30 => OL_IN_LOCI (MICROVARIANTS)
+35 => HOMOZYGOUS/HETEROZYGOUS HEIGHT THRES
+50 => Unadenylated (A-/A+) left shoulder in the genotype
+51 => Unadenylated (A-/A+) right shoulder in the genotype
+52 => Unadenylated (A-/A+;+1/-1) left shoulder in the genotype
+53 => Unadenylated (A-/A+;+1/-1) right shoulder in the genotype
+54 => Right side STUTTER in the genotype
+55 => Wrong side STUTTER in the genotype
+56 => Homozygous loci
+57 => Heterozygous loci
+59 => The Computed and the ABI genotypes are different
+60 => SWITCHED_OFF peak in the genotype
+63 => Genotype failed
+</start>
+
+Explanation: laboratory related messages (labinfo):
+
+
+<start>
+0 => Resized peak/peaks is/are out of RFU range
+1 => Required resized peak/peaks is/are missing
+2 => HOMOZYGOUS RFU limit failed
+3 => HETEROZYGOUS RFU limit failed
+4 => DEFAULT RFU MINIMUM limit failed
+5 => DEFAULT RFU1 MAXIMUM limit failed
+6 => DEFAULT RFU2 MAXIMUM limit failed
+7 => AMELOGENIN MAXIMUM RFU limit failed
+8 => SCAN_HALF_WIDTH MINIMUM failed
+9 => SCAN_HALF_WIDTH MAXIMUM failed
+10 => Unadenylated (A-/A+) failed
+11 => STUTTER failed
+12 => HETEROZYGOUS IMBALANCE/IMBALANCES is/are too small
+13 => MIXTURE LIMIT failed
+14 => MINIMUM ACCEPTABLE_PEAK_DENSITY failed
+15 => MAXIMUM ACCEPTABLE_PEAK_DENSITY failed
+20 =>  Laboratory rules failed
+</start>
+

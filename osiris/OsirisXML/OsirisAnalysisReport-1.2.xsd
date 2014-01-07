@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="StandardSettingsType.xsd"/>
+	<xs:include schemaLocation="LabSettingsV2type.xsd"/>
+	<xs:simpleType name="time">
+		<xs:annotation>
+			<xs:documentation>UNIX time, seconds since 1/1/1970 00:00:00 UTC</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Notes">
+		<xs:annotation>
+			<xs:documentation>Notes entered by the user</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Text" type="xs:string"/>
+			<xs:element name="Update" type="time" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TypeMessage">
+		<xs:sequence>
+			<xs:element name="MessageNumber" type="xs:int"/>
+			<xs:element name="Index">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Text" type="xs:string"/>
+			<xs:element name="Hidden" type="xs:boolean" default="false" minOccurs="0"/>
+			<xs:element name="LastUpdate" type="time" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TypePeak">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>A unique integer id.  Every peak in the original file must be unique.  This is used for identifying previous edited versions of the same peak.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Allele name if possible, blank if this is an artifact and equvalent allele cannot be determined.  This is required even if it is blank.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ArtifactCriticalLevel" default="0" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>integer > 0 if this is an artifact, 0 or omitted if this is an allele.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="BPS">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="RFU">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="meanbps" type="xs:double"/>
+			<xs:element name="PeakArea">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="0.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Time">
+				<xs:annotation>
+					<xs:documentation>time in seconds of the peak</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Fit" type="xs:double"/>
+			<xs:element name="OffLadder" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>true or false lower case spelled out</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Count" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Number of alleles, for this peak.  Usually omitted or 1 for 1 allele and 2 for a tall homozygous peak</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="4"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Disabled" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>true or false lower case spelled out</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MessageNumber" type="xs:int" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Ordered list of messages for this allele</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Update" type="time" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Time of creation or modification</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InterLocus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>For an interlocus artifact, this is the name of the adjacent locus.  Also, a called interlocus allele should be placed in one and only one locus and the name of the adjacent locus should appear here.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArtifactType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>A unique integer id.  Every artifact and allele in the original file must have a unique Id.  This is used for identifying previous edited versions of the same artifact or allele.  An artifact and allele cannot share the same Id</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Level">
+				<xs:annotation>
+					<xs:documentation>Critical level</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="RFU" type="xs:double"/>
+			<xs:element name="meanbps" type="xs:double"/>
+			<xs:element name="PeakArea" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="0.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Time" type="xs:double"/>
+			<xs:element name="Fit" type="xs:double" minOccurs="0"/>
+			<xs:element name="Label" type="xs:string" minOccurs="0"/>
+			<xs:element name="Disabled" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>true or false lower case spelled out.  THIS MUST BE true if this has been changed to an allele and the allele is not disabled.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Update" type="time" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Time of creation or modification</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MessageNumber" type="xs:int" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Ordered list of all channel messages for this artifact</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Allele" minOccurs="0" maxOccurs="2">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Name" type="xs:string"/>
+						<xs:element name="OffLadder" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>true or false lower case spelled out</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="BPS" type="xs:double"/>
+						<xs:element name="Locus" type="xs:string"/>
+						<xs:element name="Location" default="0" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>-1 for left of locus, 0 for within locus, 1 for right of locus</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="-1"/>
+									<xs:maxInclusive value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="Count" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Number of alleles, for this peak.  Usually omitted or 1 for 1 allele and 2 for a tall homozygous peak</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="1"/>
+									<xs:maxInclusive value="4"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="OsirisAnalysisReport">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Version" type="xs:string" fixed="1.2">
+					<xs:annotation>
+						<xs:documentation>Version of this file, currently 1.2.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Heading">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="FileName" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>File name including full path of the .OAR file at time of creation</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="NewFileName" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>File name including full path of the edited file at the time it was last saved</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CreationTime" type="time"/>
+							<xs:element name="NewFileCreationTime" type="time" minOccurs="0"/>
+							<xs:element name="SaveHistory" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Time" type="time" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CommandLine">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="argv" type="xs:string" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Status" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Exit code from program, 0 if no errors</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:int">
+										<xs:minInclusive value="0"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="StatusText" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Explanation of status if not 0</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="LabSettings" type="LabSettingsType"/>
+							<xs:element name="StandardSettings" type="StandardSettingsType"/>
+							<xs:element name="RuntimeSettings">
+								<xs:annotation>
+									<xs:documentation>Some tags from .osiris/osiris.xml in user's Application Data folder</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="inputDirectory" type="xs:string"/>
+										<xs:element name="outputDirectory" type="xs:string"/>
+										<xs:element name="kit" type="xs:string" nillable="false"/>
+										<xs:element name="ls" type="xs:string"/>
+										<xs:element name="minRFUsample">
+											<xs:simpleType>
+												<xs:restriction base="xs:int">
+													<xs:minInclusive value="10"/>
+													<xs:maxInclusive value="8000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="minRFUILS">
+											<xs:simpleType>
+												<xs:restriction base="xs:int">
+													<xs:minInclusive value="10"/>
+													<xs:maxInclusive value="8000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="minRFUladder">
+											<xs:simpleType>
+												<xs:restriction base="xs:int">
+													<xs:minInclusive value="10"/>
+													<xs:maxInclusive value="8000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="MarkerSet" type="xs:string"/>
+							<xs:element name="ILSchannelNr">
+								<xs:simpleType>
+									<xs:restriction base="xs:int">
+										<xs:minInclusive value="1"/>
+										<xs:maxInclusive value="8"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Channel" minOccurs="3" maxOccurs="8">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ChannelName" type="xs:string" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Dye Name</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="ChannelNr" type="xs:int">
+											<xs:annotation>
+												<xs:documentation>Channel Number starting with 1</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="LocusName" type="xs:string" minOccurs="0" maxOccurs="20">
+											<xs:annotation>
+												<xs:documentation>Place all locus names here</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Table">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="Sample">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Name" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Name of fsa file omitting .fsa extension and path.  This is used to display .fsa file name and to find the corresponding plot file.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="RunStart" type="xs:dateTime" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Run start date/time from the fsa file</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Ladder"/>
+													<xs:enumeration value="+Control"/>
+													<xs:enumeration value="-Control"/>
+													<xs:enumeration value="Sample"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="SampleAlerts" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="MessageNumber" type="xs:int" maxOccurs="unbounded">
+														<xs:annotation>
+															<xs:documentation>Ordered list of all messages for this sample</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="ILSAlerts" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="MessageNumber" type="xs:int" maxOccurs="unbounded">
+														<xs:annotation>
+															<xs:documentation>Ordered list of all ILS messages for this sample</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="ChannelAlerts" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Channel" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="ChannelNr">
+																	<xs:annotation>
+																		<xs:documentation>Channel Number, displayed in table cell for sample</xs:documentation>
+																	</xs:annotation>
+																	<xs:simpleType>
+																		<xs:restriction base="xs:int">
+																			<xs:minInclusive value="1"/>
+																			<xs:maxInclusive value="8"/>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+																<xs:element name="MessageNumber" type="xs:int" minOccurs="0" maxOccurs="unbounded">
+																	<xs:annotation>
+																		<xs:documentation>Ordered list of all channel messages for this sample.  Artifact messages should be inside the artifact.</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="Artifact" type="ArtifactType" minOccurs="0" maxOccurs="unbounded"/>
+																<xs:element name="OldArtifact" type="ArtifactType" minOccurs="0" maxOccurs="unbounded">
+																	<xs:annotation>
+																		<xs:documentation>Saved state of an artifact after it has been edited</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Locus" minOccurs="0" maxOccurs="20">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="LocusName" type="xs:string"/>
+													<xs:element name="LocusAlerts" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="MessageNumber" type="xs:int" maxOccurs="unbounded"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="Allele" type="TypePeak" minOccurs="0" maxOccurs="unbounded"/>
+													<xs:element name="OldAllele" type="TypePeak" minOccurs="0" maxOccurs="unbounded"/>
+													<xs:element name="Notes" type="Notes" minOccurs="0"/>
+													<xs:element name="OldNotes" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Notes" type="Notes" maxOccurs="unbounded"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="InterlocusAlerts" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Probably redundant 09/16/08</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Alert" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="LocusName" maxOccurs="2">
+																	<xs:annotation>
+																		<xs:documentation>Locus Name</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="MessageNumber" maxOccurs="unbounded"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="PositiveControl" type="xs:string" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>If positive control, this is the name.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="SampleNotes" type="Notes" minOccurs="0"/>
+										<xs:element name="ChannelNotes" type="Notes" minOccurs="0"/>
+										<xs:element name="ILSNotes" type="Notes" minOccurs="0"/>
+										<xs:element name="OldNotes" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SampleNotes" type="Notes" minOccurs="0" maxOccurs="unbounded"/>
+													<xs:element name="ChannelNotes" type="Notes" minOccurs="0" maxOccurs="unbounded"/>
+													<xs:element name="ILSNotes" type="Notes" minOccurs="0" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="DirectoryAlerts" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="MessageNumber" type="xs:int" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Messages">
+					<xs:annotation>
+						<xs:documentation>This is the full message information.  The message or alert numbers throughout this file reference the messages found here.  Note that messages and alerts are synonymous.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Message" type="TypeMessage" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="OldMessage" type="TypeMessage" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Saved state of messages before modification, this allows the file to be restored to the state from a prior date</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

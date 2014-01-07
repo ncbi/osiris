@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="MessageList">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Message"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="MessageKey">
+			<xs:selector xpath=".//Message"/>
+			<xs:field xpath="Index"/>
+		</xs:key>
+	</xs:element>
+	<xs:element name="Message">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Index" type="xs:integer"/>
+				<xs:element name="Name">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Subject" type="xs:integer"/>
+				<xs:element name="TestCriterion" type="BooleanExpression" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The absence of this element makes this message a "primitive", a single test message or the result of one or more triggers.  The presence of this element makes this message a compound message, defined in terms of combinations of other messages</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ReportCriterion" type="BooleanExpression"/>
+				<xs:element name="Text" type="xs:string"/>
+				<xs:element name="ReportLevel" type="xs:int"/>
+				<xs:element name="Scope">
+					<xs:annotation>
+						<xs:documentation>1 = Signal                          2 = Locus                           3 = Channel                       4 = Sample                        5 = Directory</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+							<xs:maxInclusive value="5"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CallCriterion" type="BooleanExpression" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>This element is for signal scope only</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Triggers" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="TriggerName" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ReportBehavior">
+		<xs:sequence>
+			<xs:element name="Report" type="BooleanExpression"/>
+			<xs:element name="Text" type="xs:string" minOccurs="0"/>
+			<xs:element name="Level" type="xs:int" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BooleanExpression">
+		<xs:sequence>
+			<xs:element name="Expression" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>A boolean expression involving combinations of message numbers and the symbols ~, (, ), AND, and OR; or the constants 0 or 1, or false or true</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,6 @@
+// This is for explorer to show the program's icon
+
+#define wxUSE_NO_MANIFEST 0
+
+#include "wx/msw/wx.rc"
+

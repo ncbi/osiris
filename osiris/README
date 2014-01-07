@@ -1,0 +1,134 @@
+#!/bin/sh
+#
+# instructions for building OSIRIS
+#  -- problems, contact us at forensics@ncbi.nlm.nih.gov
+#
+#
+# wxWidgets 2.8.11 is required
+# For more information, see http://www.wxwidgets.org
+#
+# This shell script is for building the macintosh version
+# of osiris.
+#
+###########################################################################
+#
+#  MS-Windows build
+#
+# To build on MS-Windows, with VC++ 2008 (ver 9)
+# wxWidgets, libxml2, libxslt, and libiconv are also required.
+#  wxWidgets can be downloaded at http://www.wxwidgets.org/ and
+#  modified versions of libxml2, libxslt, and libiconv are included.
+#  The VC++ solution file is libxml2-2.7.8\libxml2-08.sln
+#  and will build libiconv, libxml2, libxslt, libexslt, and xsltproc.exe
+#  however make sure that you are building for 'Release' and not 'Debug'
+#
+# These were built with multithreading but not DLL, i.e. /MT
+# as opposed to /MD with a few modifications as follows:
+#
+#  Source code obtained for libxml2 and libxslt from http://xmlsoft.org/
+#  Source code for libiconv obtained at http://www.gnu.org/software/libiconv/
+#  Header files for all three libraries for
+#  MC VC++ obtained at http://www.zlatkovic.com/libxml.en.html
+#  and used to replace the corresponding header files in the distribution.
+#
+# Modification (already done) to these libraries:
+#
+#  In libxslt-1.1.26/libexslt, modified libexslt.h and changed
+#  #include <win32config.h>
+#  to
+#  #include <libxslt/win32config.h>
+#
+#  Removed all occurrences of
+#  #include <win32config.h>
+#  from all other *.c, *.h files and made sure that
+#  #include "libexslt/libexslt.h" is present
+#
+#  Created VC++ projects and build the the code generation option of
+#  "Multithreaded" (/MT)
+#
+#
+#
+# wxWidgets:
+#
+#  Build as "Multithreaded" (/MT) without UNICODE and 
+#  set the environment variable,
+#  WXHOME, to the folder containing wxWidgets 2.8.11 such that
+#  there exists %WXHOME%\include and %WXHOME%\lib
+#
+# Build OSIRIS:
+#
+#  Then using Visual Studio or VC++ 2008 (Version 9)
+#  build all projects found in ./OsirisAnalysis/OsirisAnalysis08.sln
+#  including the Setup project which creates an .msi file that can 
+#  later be installed.
+#  Make sure you are building for 'Release' and not 'Debug'
+#  Note that the paths for libxml2, libxslt, and libiconv may need to
+#  be modified
+#  An alternative to creating an .msi file is
+#  to run a perl script, .\ZipPerl\MakeZip.pl
+#  which will set up the directory structure in .\ZipPerl\Osiris
+#  and then create a zip file.
+#
+#  This perl script requires cygwin, perl, and 7zip which are available
+#  for free at
+#
+# http://www.cygwin.com/
+# http://www.activestate.com/
+# http://www.7-zip.org/
+#
+# After the above are installed, the commands, 7z and cp must be
+# available from PATH environment variable
+#
+# If you want to create the directory structure w/o 
+# a zip file, then comment out the line of code in MakeZip.pl
+# containing '7z' by preceeding it with a pound sign (#) like
+# the first several lines of this file
+#
+# The directory structure will be in .\ZipPerl\Osiris and can be moved
+#
+#
+###########################################################################
+#
+#
+#  macintosh 10.6 build
+#
+#
+# this file is a shell script which with autotools will
+# build OSIRIS on the macintosh, provided that the development
+# tools provided with MacOS are installed.
+# This has been tested with MacOS 10.6.0-Darwin and should work
+# with 10.5
+#
+# to build, set WXHOME in the environment such that
+# $WXHOME/include and $WXHOME/lib exist and contain the necessary
+# include files and libraries for wxWidgets, or modify
+# the shell script, findwx, to echo the appropriate
+# path for wxWidgets
+#
+#  to build OSIRIS, run the following commands
+#    sh README
+#    make
+#
+#  to install, run the script, cpmac, in this folder
+#
+#    sh cpmac
+#
+#      this script will build the Osiris directory structure in
+#      /Applications/Osiris.app if the user has write permission,
+#      otherwise it will build in ~/Apps/Osiris.app
+#      Following that, it will build a tar.gz file at 
+#      either in this directory or in the directory specified by
+#      the environment variable OSIRISTGZ if it is writable
+#
+#
+for x in wxthings/lib wxplotctrl/lib BaseClassLib/lib OsirisLib2.01/lib TestAnalysisDirectoryLCv2.11/bin wxXml2/lib wxXsl/lib nwx/lib OsirisAnalysis/bin ; do
+(cd $x ; pwd ; aclocal; autoconf; automake -a)
+done
+
+(cd OsirisLib2.01 ; sh blex.sh clean all )
+
+aclocal
+autoconf
+automake -a
+./configure
+##make

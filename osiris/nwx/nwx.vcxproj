@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>nwx</ProjectName>
+    <ProjectGuid>{3625DB75-EA9E-4E83-A60B-533194328EB4}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;..\libxml2-2.7.7\include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\include;$(WXHOME)\lib\vc_lib\mswd;..\wxplotctrl\include;..\wxthings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_LIB;WIN32;_DEBUG;_WINDOWS;__WXMSW__;__WXDEBUG__;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)nwx.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..;..\libxml2-2.7.7\include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\include;$(WXHOME)\lib\vc_lib\msw;..\wxplotctrl\include;..\wxthings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_LIB;WIN32;NDEBUG;_WINDOWS;__WXMSW__;NOPCH;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)nwx.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="nwxBookCtrlFocus.cpp" />
+    <ClCompile Include="nwxButtonMenu.cpp" />
+    <ClCompile Include="nwxDialogBitmap.cpp" />
+    <ClCompile Include="nwxDialogLog.cpp" />
+    <ClCompile Include="nwxDoubleValidator.cpp" />
+    <ClCompile Include="nwxFileUtil.cpp" />
+    <ClCompile Include="nwxGrid.cpp" />
+    <ClCompile Include="nwxIntValidator.cpp" />
+    <ClCompile Include="nwxKillDir.cpp" />
+    <ClCompile Include="nwxListMRU.cpp" />
+    <ClCompile Include="nwxLock.cpp" />
+    <ClCompile Include="nwxLockFile.cpp" />
+    <ClCompile Include="nwxPlotCtrl.cpp" />
+    <ClCompile Include="nwxPlotDrawerLabel.cpp" />
+    <ClCompile Include="nwxPlotDrawerShade.cpp" />
+    <ClCompile Include="nwxRectSet.cpp" />
+    <ClCompile Include="nwxShiftSizer.cpp" />
+    <ClCompile Include="nwxStaticBitmap.cpp" />
+    <ClCompile Include="nwxString.cpp" />
+    <ClCompile Include="nwxSysOpt.cpp" />
+    <ClCompile Include="nwxTabOrder.cpp" />
+    <ClCompile Include="nwxTextCtrl.cpp" />
+    <ClCompile Include="nwxTimerReceiver.cpp" />
+    <ClCompile Include="nwxXmlCMF.cpp" />
+    <ClCompile Include="nwxXmlCMFtest.cpp" />
+    <ClCompile Include="nwxXmlMRU.cpp" />
+    <ClCompile Include="nwxXmlPersist.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CArrowImages.h" />
+    <ClInclude Include="CIncrementer.h" />
+    <ClInclude Include="CPointerHold.h" />
+    <ClInclude Include="mapptr.h" />
+    <ClInclude Include="nsstd.h" />
+    <ClInclude Include="nwxArrayInt.h" />
+    <ClInclude Include="nwxBatch.h" />
+    <ClInclude Include="nwxBookCtrlFocus.h" />
+    <ClInclude Include="nwxButtonMenu.h" />
+    <ClInclude Include="nwxColorUtil.h" />
+    <ClInclude Include="nwxDialogBitmap.h" />
+    <ClInclude Include="nwxDialogLog.h" />
+    <ClInclude Include="nwxDoubleLess.h" />
+    <ClInclude Include="nwxDoubleValidator.h" />
+    <ClInclude Include="nwxFileUtil.h" />
+    <ClInclude Include="nwxGrid.h" />
+    <ClInclude Include="nwxHoldScrollPos.h" />
+    <ClInclude Include="nwxIntValidator.h" />
+    <ClInclude Include="nwxKeyState.h" />
+    <ClInclude Include="nwxKillDir.h" />
+    <ClInclude Include="nwxListMRU.h" />
+    <ClInclude Include="nwxLock.h" />
+    <ClInclude Include="nwxLockFile.h" />
+    <ClInclude Include="nwxMenuItem.h" />
+    <ClInclude Include="nwxNumberValidator.h" />
+    <ClInclude Include="nwxPlotCtrl.h" />
+    <ClInclude Include="nwxPlotDrawerLabel.h" />
+    <ClInclude Include="nwxPlotDrawerShade.h" />
+    <ClInclude Include="nwxPlotShade.h" />
+    <ClInclude Include="nwxPointLabel.h" />
+    <ClInclude Include="nwxProgressCallback.h" />
+    <ClInclude Include="nwxRectSet.h" />
+    <ClInclude Include="nwxRound.h" />
+    <ClInclude Include="nwxShiftBitmaps.h" />
+    <ClInclude Include="nwxShiftSizer.h" />
+    <ClInclude Include="nwxStaticBitmap.h" />
+    <ClInclude Include="nwxString.h" />
+    <ClInclude Include="nwxSyncCheckbox.h" />
+    <ClInclude Include="nwxSyncNotebook.h" />
+    <ClInclude Include="nwxSyncScrollwin.h" />
+    <ClInclude Include="nwxSyncSplitter.h" />
+    <ClInclude Include="nwxSysOpt.h" />
+    <ClInclude Include="nwxTabOrder.h" />
+    <ClInclude Include="nwxTextCtrl.h" />
+    <ClInclude Include="nwxTimerReceiver.h" />
+    <ClInclude Include="nwxTypeValidator.h" />
+    <ClInclude Include="nwxXmlCMF.h" />
+    <ClInclude Include="nwxXmlMRU.h" />
+    <ClInclude Include="nwxXmlPersist.h" />
+    <ClInclude Include="nwxXmlPersistCollections.h" />
+    <ClInclude Include="nwxXmlUnitTest.h" />
+    <ClInclude Include="setptr.h" />
+    <ClInclude Include="stdb.h" />
+    <ClInclude Include="stde.h" />
+    <ClInclude Include="TnwxSync.h" />
+    <ClInclude Include="vectorptr.h" />
+    <ClInclude Include="vectorSort.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

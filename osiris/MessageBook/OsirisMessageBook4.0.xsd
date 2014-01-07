@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="MessageBook">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="VersionNumber" type="xs:string" minOccurs="0"/>
+				<xs:element name="BuildTime" type="xs:string" minOccurs="0"/>
+				<xs:element name="NumberOfTestUnits" type="xs:int" default="5"/>
+				<xs:element name="DebugMode" default="0" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="MessageDeclarations" type="MessageList"/>
+				<xs:element name="TestUnitsSampleLevel" type="ConditionalTestUnits"/>
+				<xs:element name="TestUnitsDirectoryLevel" type="ConditionalTestUnits"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="NameKey">
+			<xs:selector xpath=".//MessageList/SmartMessage"/>
+			<xs:field xpath="Name"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="ConditionalTestUnits">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:annotation>
+				<xs:documentation>One for each stage that has dynamics</xs:documentation>
+			</xs:annotation>
+			<xs:element name="ConditionalTestUnit" type="ConditionalTestUnit"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ConditionalTestUnit">
+		<xs:sequence>
+			<xs:element name="Stage">
+				<xs:annotation>
+					<xs:documentation>The number of the TestUnit</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="5"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional description of tests in this Stage Number</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StageDynamics">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>One for each scope that has dynamic elements for this stage</xs:documentation>
+						</xs:annotation>
+						<xs:element name="ScopeDynamics" type="StageAndScopeDynamics"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MessageList">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element ref="SmartMessage"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SmartMessage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="MessageType" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>'boolean' or absent for ordinary true/false; 'count' for "counting" type, 'percent for "percent" type, and 'preset' for (const) preset data value type</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+				<xs:element name="Subject" type="xs:integer"/>
+				<xs:element name="SampleType">
+					<xs:annotation>
+						<xs:documentation>Type = 0 for Directoryr; Type = 1 for Ladder; Type = 2 for Sample; Type = 3 for Ladder and Sample</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="3"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:choice minOccurs="0">
+					<xs:element name="CountingDataInfo" type="CountingDataType"/>
+					<xs:element name="PercentDataInfo" type="PercentDataType"/>
+					<xs:element name="PresetDataInfo" type="PresetDataType"/>
+				</xs:choice>
+				<xs:element name="ReportCriterion" type="BooleanExpression"/>
+				<xs:element name="Text" type="xs:string"/>
+				<xs:element name="TextForData" minOccurs="0"/>
+				<xs:element name="SeparatorText" minOccurs="0"/>
+				<xs:element name="ClosingText" type="xs:string" minOccurs="0"/>
+				<xs:element name="ReportLevel" type="xs:int"/>
+				<xs:element name="AlternateReport" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="AlternateReportLevel"/>
+							<xs:element name="AlternateReportCriterion" type="BooleanExpression"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Scope">
+					<xs:annotation>
+						<xs:documentation>1 = Signal                          2 = Locus                           3 = Channel                       4 = Sample                        5 = SummaryLocus              6 = Directory</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+							<xs:maxInclusive value="6"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CallCriterion" type="BooleanExpression" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>This element is for signal scope only</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Restriction" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="RestrictionLevel" type="xs:int">
+								<xs:annotation>
+									<xs:documentation>Level at which to restrict reporting of element, regardless of other messages</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="RestrictionCriterion" type="BooleanExpression"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="AcceptTriggerDataMode" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>0 = no data; 1 = integer (~bp) data; 2 = string (allele name) data; 3 = int, but not on triggers; 4 = string, but not on triggers</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="4"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="ShareWithCluster" default="0" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Can be either 0 or 1; if 1, signal shares value with associated siganls</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="AllowPeakEdit" default="1" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Debug" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="Watch" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Editable" type="xs:boolean" default="true" minOccurs="0"/>
+				<xs:element name="DisplayExportInfo" type="xs:boolean" default="false" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Default is false; purpose is to allow message to export without being displayed as an artifact; omit if want to mirror calculated ReportCriterion value, which is usual case</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ExportProtocolList" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="Protocol" type="ExportProtocolType"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ReportBehavior">
+		<xs:sequence>
+			<xs:element name="Report" type="BooleanExpression"/>
+			<xs:element name="Text" type="xs:string" minOccurs="0"/>
+			<xs:element name="Level" type="xs:int" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BooleanExpression">
+		<xs:sequence>
+			<xs:element name="Expression" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>A boolean expression involving combinations of message numbers and the symbols ~, (, ), AND, and OR; or the constants 0 or 1, or false or true</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PresetDataType">
+		<xs:sequence>
+			<xs:element name="Threshold">
+				<xs:annotation>
+					<xs:documentation>Integer value to serve as constant for entire analysis</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ThresholdDescriptor" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Descriptor for UI to get value from user; signals software to search for value in aux. file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CountingDataType">
+		<xs:sequence>
+			<xs:element name="Threshold" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Integer value to compare ultimate value; default value with descriptor, below</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Comparison" type="xs:string" default="Greater">
+				<xs:annotation>
+					<xs:documentation>Either "Less", in which case message is true if value is less than threshold at evaluation, or "Greater", in which case message is true if value is more, or empty.  Default is Greater</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ThresholdDescriptor" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Descriptor for UI to get value from user; signals software to search for value in aux. file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PercentDataType">
+		<xs:sequence>
+			<xs:element name="Threshold">
+				<xs:annotation>
+					<xs:documentation>Integer value to compare ultimate value; default value with descriptor, below</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Comparison" type="xs:string" default="Greater">
+				<xs:annotation>
+					<xs:documentation>Either "Less", in which case message is true if value is less than threshold at evaluation, or "Greater", in which case message is true if value is more, or empty.  Default is Greater</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ThresholdDescriptor" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Descriptor for UI to get value from user; signals software to search for value in aux. file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NumeratorName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Message name of numerator</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DenominatorName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Message name of denominator</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StageAndScopeDynamics">
+		<xs:sequence>
+			<xs:element name="Scope">
+				<xs:annotation>
+					<xs:documentation>1 = Signal                          2 = Locus                           3 = Channel                       4 = Sample                        5 = SummaryLocus              6 = Directory</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="6"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MeasuredMessages" type="MeasuredMessages" minOccurs="0"/>
+			<xs:element name="TriggeredMessages" type="TriggeredMessages" minOccurs="0"/>
+			<xs:element name="Evaluations" type="Evaluations" minOccurs="0"/>
+			<xs:element name="Triggers" type="Triggers" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MeasuredMessages">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Name" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TriggeredMessages">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Name" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Evaluations">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Expression" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Form:  name = expression</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Triggers">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="TriggerExpression" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Form:  name1->name2, name3, ...</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExportProtocolTag">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Value" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExportProtocolType">
+		<xs:sequence>
+			<xs:element name="ProtocolName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of export protocol</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Level" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>directory, sample or locus</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Priority" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Higher priority (closer to 0) takes precedence when a choice must be made for a particular location in export file</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="TextLoc">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Text" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>What string(s) to concatenate and add to export file</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Location" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Where to add string, whether column number or heading, or xml element</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:element name="Group" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Name or number:  among messages with the same Group name, at most one may be enabled</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DoNotExport" type="xs:boolean" default="false" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Default is false; if true for any message that is enabled (not hidden) then do not export object of this Level</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Notification" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional notification in case DoNotExport is "true" (not hidden)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

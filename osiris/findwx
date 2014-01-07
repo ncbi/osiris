@@ -1,0 +1,23 @@
+#!/bin/sh
+if test "${WXHOME}" != "" ; then
+  if test -x ${WXHOME}/bin/wx-config ; then
+    echo ${WXHOME}
+  else
+    WXHOME=""
+  fi
+fi
+if test "${WXHOME}" = "" ; then
+  if test -x /usr/local/bin/wx-config ; then
+    echo "/usr/local"
+  else
+    if test -x "${HOME}/local/bin/wx-config" ; then
+      echo "${HOME}/local"
+    else
+      CONFIG="`which wx-config`"
+      if test "${CONFIG}" != "" ; then
+        echo "${CONFIG}" | sed 's|/bin/wx-config$||'
+      fi
+    fi
+  fi
+fi
+

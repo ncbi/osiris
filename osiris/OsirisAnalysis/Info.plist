@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundleIdentifier</key>
+  <string>gov.NCBI.Osiris</string>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>English</string>
+  <key>CFBundleExecutable</key>
+  <string>osirisanalysis</string>
+  <key>CFBundleIconFile</key>
+  <string>wxmac.icns</string>
+  <key>CFBundleName</key>
+  <string>Osiris</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>Osiris</string>
+  <key>CFBundleVersion</key>
+  <string>2.3 Beta 3</string>
+  <key>CFBundleShortVersionString</key>
+  <string>2.3 Beta 3</string>
+  <key>CFBundleGetInfoString</key>
+  <string>OSIRIS version 2.3 Beta 3</string>
+  <key>CFBundleLongVersionString</key>
+  <string>OSIRIS version 2.3 Beta 3</string>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+       <key>CFBundleTypeExtensions</key>
+      <array>
+         <string>obr</string>
+       </array>
+      <key>CFBundleTypeOSTypes</key>
+      <array>
+        <string>****</string>
+      </array>
+       <key>CFBundleTypeName</key>
+      <string>OSIRIS Batch Report</string>
+      <key>CFBundleTypeIconFile</key>
+      <string>wxmac</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+    </dict>
+    <dict>
+       <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>oar</string>
+       </array>
+      <key>CFBundleTypeOSTypes</key>
+      <array>
+        <string>****</string>
+      </array>
+       <key>CFBundleTypeName</key>
+      <string>OSIRIS Analysis Report</string>
+      <key>CFBundleTypeIconFile</key>
+      <string>wxmac</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+    </dict>
+    <dict>
+       <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>oer</string>
+       </array>
+      <key>CFBundleTypeOSTypes</key>
+      <array>
+        <string>****</string>
+      </array>
+       <key>CFBundleTypeName</key>
+      <string>OSIRIS Edited Report</string>
+      <key>CFBundleTypeIconFile</key>
+      <string>wxmac</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+    </dict>
+    <dict>
+       <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>plt</string>
+       </array>
+      <key>CFBundleTypeOSTypes</key>
+      <array>
+        <string>****</string>
+      </array>
+       <key>CFBundleTypeName</key>
+      <string>OSIRIS Plot</string>
+      <key>CFBundleTypeIconFile</key>
+      <string>wxmac</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+    </dict>
+  </array>
+  <key>NSHumanReadableCopyright</key>
+  <string>forecsics@ncbi.nlm.nih.gov</string>
+  <key>LSRequiresCarbon</key>
+    <true/>
+  <key>CSResourcesFileMapped</key>
+  <true/>
+</dict>
+</plist>

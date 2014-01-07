@@ -1,0 +1,15 @@
+#!/bin/sh
+# this file is required when using autotools
+# to build, set WXHOME in the environment or modify
+# findwx to echo the appropriate path for wxWidgets
+#
+
+aclocal
+autoconf
+automake -a
+./configure
+make
+
+
+
+

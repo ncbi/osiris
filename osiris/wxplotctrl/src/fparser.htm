@@ -1,0 +1,1989 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>fparser.htm</title>
+
+
+</head>
+<body bgcolor="#ffffcc" lang="en-US">
+
+&nbsp; Function parser for C++&nbsp; v2.8 by Warp.<br>
+
+&nbsp; =====================================<br>
+
+<br>
+
+&nbsp; Optimization code contributed by Bisqwit
+(http://iki.fi/bisqwit/)<br>
+
+<br>
+
+<br>
+
+&nbsp; The usage license of this library is located at the end of
+this text file.<br>
+
+<br>
+
+<br>
+
+*****************************************<br>
+
+* Plotto usage - see <a href="#funcstring">"Function String"</a><br>
+
+*****************************************<br>
+
+<br>
+
+&nbsp; What's new in v2.8<br>
+
+&nbsp; ------------------<br>
+
+&nbsp; - Put the compile-time options to a separate file
+fpconfig.hh.<br>
+
+&nbsp; - Added comparison operators "!=", "&lt;=" and
+"&gt;=".<br>
+
+&nbsp; - Added an epsilon value to the comparison operators (its
+value can be<br>
+
+&nbsp;&nbsp;&nbsp; changed in fpconfig.hh or it can be
+completely disabled there).<br>
+
+&nbsp; - Added unary not operator "!".<br>
+
+&nbsp; - Now user-defined functions can take 0 parameters.<br>
+
+&nbsp; - Added a maximum recursion level to the "eval()" function
+(definable in<br>
+
+&nbsp;&nbsp;&nbsp; (fpconfig.hh). Now "eval()" should never
+cause an infinite recursion.<br>
+
+&nbsp;&nbsp;&nbsp; (Note however, that it may still be
+relevant to disable it completely<br>
+
+&nbsp;&nbsp;&nbsp; because it is possible to write
+functions which take enormous amounts<br>
+
+&nbsp;&nbsp;&nbsp; of time to evaluate even when the
+maximum recursion level is not reached.)<br>
+
+&nbsp; - Separated the optimizer code to its own file (makes
+developement easier).<br>
+
+<br>
+
+<br>
+
+<br>
+
+=============================================================================<br>
+
+&nbsp; - Preface<br>
+
+=============================================================================<br>
+
+<br>
+
+&nbsp; Often people need to ask some mathematical expression from
+the user and<br>
+
+then evaluate values for that expression. The simplest example is a
+program<br>
+
+which draws the graphic of a user-defined function on screen.<br>
+
+<br>
+
+&nbsp; This library adds C-style function string parsing to the
+program. This<br>
+
+means that you can evaluate the string "sqrt(1-x^2+y^2)" with given
+values<br>
+
+of 'x' and 'y'.<br>
+
+<br>
+
+&nbsp; The library is intended to be very fast. It byte-compiles
+the function<br>
+
+string at parse time and interpretes this byte-code at evaluation time.<br>
+
+The evaluation is straightforward and no recursions are done (uses stack<br>
+
+arithmetic).<br>
+
+&nbsp; Empirical tests show that it indeed is very fast (specially
+compared to<br>
+
+libraries which evaluate functions by just interpreting the raw function<br>
+
+string).<br>
+
+<br>
+
+&nbsp; The library is made in ISO C++ and requires a
+standard-conforming C++<br>
+
+compiler.<br>
+
+<br>
+
+<br>
+
+=============================================================================<br>
+
+&nbsp; - Usage<br>
+
+=============================================================================<br>
+
+<br>
+
+&nbsp; To use the FunctionParser class, you have to include
+"fparser.hh" in<br>
+
+your source code files which use the FunctionParser class.<br>
+
+<br>
+
+&nbsp; When compiling, you have to compile fparser.cc and
+fpoptimizer.cc and<br>
+
+link them to the main program. In some developement environments it's<br>
+
+enough to add those two files to your current project.<br>
+
+<br>
+
+&nbsp; If you are not going to use the optimizer (ie. you have
+commented out<br>
+
+SUPPORT_OPTIMIZER in fpconfig.hh), you can leave the latter file out.<br>
+
+<br>
+
+<br>
+
+&nbsp; * Configuring the compilation:<br>
+
+&nbsp;&nbsp;&nbsp; ---------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; There is a set of precompiler options in
+the fpconfig.hh file<br>
+
+&nbsp; which can be used for setting certain features on or off:<br>
+
+<br>
+
+&nbsp; NO_ASINH : (Default on)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; By default
+the library does not support the asinh(), acosh()<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and
+atanh() functions because they are not part of the ISO C++<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; standard.
+If your compiler supports them and you want the<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; parser to
+support them as well, comment out this line.<br>
+
+<br>
+
+&nbsp; DISABLE_EVAL : (Default off)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Even
+though the maximum recursion level of the eval() function<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is
+limited, it is still possible to write functions which never<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reach this
+maximum recursion level but take enormous amounts of<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time to
+evaluate (this can be undesirable eg. in web server-side<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+applications).<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Uncommenting this line will disable the eval() function completely,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; thus
+removing the danger of exploitation.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Note that
+you can also disable eval() by specifying the<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DISABLE_EVAL precompiler constant in your compiler (eg.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; with
+-DDISABLE_EVAL in gcc).<br>
+
+<br>
+
+&nbsp; EVAL_MAX_REC_LEVEL : (Default 1000)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sets the
+maximum recursion level allowed for eval().<br>
+
+<br>
+
+&nbsp; SUPPORT_OPTIMIZER : (Default on)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you are
+not going to use the Optimize() method, you can comment<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this line
+out to speed-up the compilation of fparser.cc a bit, as<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; well as
+making the binary a bit smaller. (Optimize() can still be<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; called,
+but it will not do anything.)<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You can
+also disable the optimizer by specifying the<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+NO_SUPPORT_OPTIMIZER precompiler constant in your compiler<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (eg. with
+-DNO_SUPPORT_OPTIMIZER in gcc).<br>
+
+<br>
+
+&nbsp; FP_EPSILON : (Default 1e-14)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Epsilon
+value used in comparison operators.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If this
+line is commented out, then no epsilon will be used.<br>
+
+<br>
+
+<br>
+
+&nbsp; * Copying and assignment:<br>
+
+&nbsp;&nbsp;&nbsp; ----------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; The class implements a safe copy
+constructor and assignment operator.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; It uses the copy-on-write technique for
+efficiency. This means that<br>
+
+&nbsp; when copying or assigning a FunctionParser instance, the
+internal data<br>
+
+&nbsp; (which in some cases can be quite lengthy) is not
+immediately copied<br>
+
+&nbsp; but only when the contents of the copy (or the original) are
+changed.<br>
+
+&nbsp;&nbsp;&nbsp; This means that copying/assigning is a
+very fast operation, and if<br>
+
+&nbsp; the copies are never modified then actual data copying never
+happens<br>
+
+&nbsp; either.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; The Eval() and EvalError() methods of
+the copy can be called without<br>
+
+&nbsp; the internal data being copied.<br>
+
+&nbsp;&nbsp;&nbsp; Calling Parse(), Optimize() or the
+user-defined constant/function adding<br>
+
+&nbsp; methods will cause a deep-copy.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; (C++ basics: The copy constructor is
+called when a new FunctionParser<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; instance is initialized with
+another, ie. like:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+FunctionParser fp2 = fp1; // or: FunctionParser fp2(fp1);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; or when a function takes a
+FunctionParser instance as parameter, eg:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void
+foo(FunctionParser p) // takes an instance of FunctionParser<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { ... }<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; The assignment operator is
+called when a FunctionParser instance is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; assigned to another, like "fp2
+= fp1;".)<br>
+
+<br>
+
+<br>
+
+&nbsp; * Short descriptions of FunctionParser methods:<br>
+
+&nbsp;&nbsp;&nbsp;
+--------------------------------------------<br>
+
+<br>
+
+int Parse(const std::string&amp; Function, const
+std::string&amp; Vars,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool useDegrees = false);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Parses the given function and compiles
+it to internal format.<br>
+
+&nbsp;&nbsp;&nbsp; Return value is -1 if successful, else
+the index value to the location<br>
+
+&nbsp;&nbsp;&nbsp; of the error.<br>
+
+<br>
+
+<br>
+
+const char* ErrorMsg(void) const;<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Returns an error message corresponding
+to the error in Parse(), or 0 if<br>
+
+&nbsp;&nbsp;&nbsp; no such error occurred.<br>
+
+<br>
+
+<br>
+
+ParseErrorType GetParseErrorType() const;<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Returns the type of parsing error which
+occurred. Possible return types<br>
+
+&nbsp;&nbsp;&nbsp; are described in the long description.<br>
+
+<br>
+
+<br>
+
+double Eval(const double* Vars);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Evaluates the function given to Parse().<br>
+
+<br>
+
+<br>
+
+int EvalError(void) const;<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Returns 0 if no error happened in the
+previous call to Eval(), else an<br>
+
+&nbsp;&nbsp;&nbsp; error code &gt;0.<br>
+
+<br>
+
+<br>
+
+void Optimize();<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Tries to optimize the bytecode for
+faster evaluation.<br>
+
+<br>
+
+<br>
+
+bool AddConstant(const std::string&amp; name, double value);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Add a constant to the parser. Returns
+false if the name of the constant<br>
+
+&nbsp;&nbsp;&nbsp; is invalid, else true.<br>
+
+<br>
+
+<br>
+
+bool AddFunction(const std::string&amp; name,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double (*functionPtr)(const double*),<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+unsigned paramsAmount);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Add a user-defined function to the
+parser (as a function pointer).<br>
+
+&nbsp;&nbsp;&nbsp; Returns false if the name of the
+function is invalid, else true.<br>
+
+<br>
+
+<br>
+
+bool AddFunction(const std::string&amp; name,
+FunctionParser&amp;);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Add a user-defined function to the
+parser (as a FunctionParser instance).<br>
+
+&nbsp;&nbsp;&nbsp; Returns false if the name of the
+function is invalid, else true.<br>
+
+<br>
+
+<br>
+
+<br>
+
+&nbsp; * Long descriptions of FunctionParser methods:<br>
+
+&nbsp;&nbsp;&nbsp;
+-------------------------------------------<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+int Parse(const std::string&amp; Function, const
+std::string&amp; Vars,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool useDegrees = false);<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parses the given
+function (and compiles it to internal format).<br>
+
+&nbsp;&nbsp;&nbsp; Destroys previous function. Following
+calls to Eval() will evaluate<br>
+
+&nbsp;&nbsp;&nbsp; the given function.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The strings given as
+parameters are not needed anymore after parsing.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Parameters:<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Function&nbsp; :
+String containing the function to parse.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Vars&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : String
+containing the variable names, separated by commas.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Eg. "x,y", "VarX,VarY,VarZ,n" or "x1,x2,x3,x4,__VAR__".<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; useDegrees:
+(Optional.) Whether to use degrees or radians in<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+trigonometric functions. (Default: radians)<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Variables can have any size and they are
+case sensitive (ie. "var",<br>
+
+&nbsp;&nbsp;&nbsp; "VAR" and "Var" are *different* variable
+names). Letters, digits and<br>
+
+&nbsp;&nbsp;&nbsp; underscores can be used in variable
+names, but the name of a variable<br>
+
+&nbsp;&nbsp;&nbsp; can't begin with a digit. Each variable
+name can appear only once in<br>
+
+&nbsp;&nbsp;&nbsp; the 'Vars' string. Function names are
+not legal variable names.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Using longer variable names causes no
+overhead whatsoever to the Eval()<br>
+
+&nbsp;&nbsp;&nbsp; method, so it's completely safe to use
+variable names of any size.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; The third, optional parameter specifies
+whether angles should be<br>
+
+&nbsp;&nbsp;&nbsp; interpreted as radians or degrees in
+trigonometrical functions.<br>
+
+&nbsp;&nbsp;&nbsp; If not specified, the default value is
+radians.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Return values:<br>
+
+&nbsp;&nbsp;&nbsp; -On success the function returns -1.<br>
+
+&nbsp;&nbsp;&nbsp; -On error the function returns an index
+to where the error was found<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; (0 is the first character, 1
+the second, etc). If the error was not<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; a parsing error returns an
+index to the end of the string + 1.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Example: parser.Parse("3*x+y", "x,y");<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+const char* ErrorMsg(void) const;<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Returns a pointer to an error message
+string corresponding to the error<br>
+
+&nbsp;&nbsp;&nbsp; caused by Parse() (you can use this to
+print the proper error message to<br>
+
+&nbsp;&nbsp;&nbsp; the user). If no such error has
+occurred, returns 0.<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+ParseErrorType GetParseErrorType() const;<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Returns the type of parse error which
+occurred.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; This method can be used to get the error
+type if ErrorMsg() is not<br>
+
+&nbsp;&nbsp;&nbsp; enough for printing the error message.
+In other words, this can be<br>
+
+&nbsp;&nbsp;&nbsp; used for printing customized error
+messages (eg. in another language).<br>
+
+&nbsp;&nbsp;&nbsp; If the default error messages suffice,
+then this method doesn't need<br>
+
+&nbsp;&nbsp;&nbsp; to be called.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; FunctionParser::ParseErrorType is an
+enumerated type inside the class<br>
+
+&nbsp;&nbsp;&nbsp; (ie. its values are accessed like
+"FunctionParser::SYNTAX_ERROR").<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; The possible values for
+FunctionParser::ParseErrorType are listed below,<br>
+
+&nbsp;&nbsp;&nbsp; along with their equivalent error
+message returned by the ErrorMsg()<br>
+
+&nbsp;&nbsp;&nbsp; method:<br>
+
+<br>
+
+FP_NO_ERROR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: If no error occurred in the previous call to Parse().<br>
+
+SYNTAX_ERROR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: "Syntax error"<br>
+
+MISM_PARENTH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: "Mismatched parenthesis"<br>
+
+MISSING_PARENTH&nbsp;&nbsp;&nbsp; : "Missing ')'"<br>
+
+EMPTY_PARENTH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+"Empty parentheses"<br>
+
+EXPECT_OPERATOR&nbsp;&nbsp;&nbsp; : "Syntax error: Operator
+expected"<br>
+
+OUT_OF_MEMORY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : "Not
+enough memory"<br>
+
+UNEXPECTED_ERROR&nbsp;&nbsp; : "An unexpected error occurred.
+Please make a full bug "<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"report to the author"<br>
+
+INVALID_VARS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: "Syntax error in parameter 'Vars' given to "<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"FunctionParser::Parse()"<br>
+
+ILL_PARAMS_AMOUNT&nbsp; : "Illegal number of parameters to function"<br>
+
+PREMATURE_EOS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+"Syntax error: Premature end of string"<br>
+
+EXPECT_PARENTH_FUNC: "Syntax error: Expecting ( after function"<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+double Eval(const double* Vars);<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Evaluates the function given to Parse().<br>
+
+&nbsp;&nbsp;&nbsp; The array given as parameter must
+contain the same amount of values as<br>
+
+&nbsp;&nbsp;&nbsp; the amount of variables given to
+Parse(). Each value corresponds to each<br>
+
+&nbsp;&nbsp;&nbsp; variable, in the same order.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Return values:<br>
+
+&nbsp;&nbsp;&nbsp; -On success returns the evaluated value
+of the function given to<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; Parse().<br>
+
+&nbsp;&nbsp;&nbsp; -On error (such as division by 0) the
+return value is unspecified,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; probably 0.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Example:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double Vars[] = {1,
+-2.5};<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double result =
+parser.Eval(Vars);<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+int EvalError(void) const;<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Used to test if the call to Eval()
+succeeded.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Return values:<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If there was no
+error in the previous call to Eval(), returns 0,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else returns a
+positive value as follows:<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1: division by zero<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2: sqrt error (sqrt of a negative value)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3: log error (logarithm of a negative value)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4: trigonometric error (asin or acos of illegal value)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5: maximum recursion level in eval() reached<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+void Optimize();<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; This method can be called after calling
+the Parse() method. It will try<br>
+
+&nbsp;&nbsp;&nbsp; to simplify the internal bytecode so
+that it will evaluate faster (it<br>
+
+&nbsp;&nbsp;&nbsp; tries to reduce the amount of opcodes in
+the bytecode).<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For example, the
+bytecode for the function "5+x*y-25*4/8" will be<br>
+
+&nbsp;&nbsp;&nbsp; reduced to a bytecode equivalent to the
+function "x*y-7.5" (the original<br>
+
+&nbsp;&nbsp;&nbsp; 11 opcodes will be reduced to 5).
+Besides calculating constant expressions<br>
+
+&nbsp;&nbsp;&nbsp; (like in the example), it also performs
+other types of simplifications<br>
+
+&nbsp;&nbsp;&nbsp; with variable and function expressions.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This method is quite
+slow and the decision of whether to use it or<br>
+
+&nbsp;&nbsp;&nbsp; not should depend on the type of
+application. If a function is parsed<br>
+
+&nbsp;&nbsp;&nbsp; once and evaluated millions of times,
+then calling Optimize() may speed-up<br>
+
+&nbsp;&nbsp;&nbsp; noticeably. However, if there are tons
+of functions to parse and each one<br>
+
+&nbsp;&nbsp;&nbsp; is evaluated once or just a few times,
+then calling Optimize() will only<br>
+
+&nbsp;&nbsp;&nbsp; slow down the program.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Also, if the
+original function is expected to be optimal, then calling<br>
+
+&nbsp;&nbsp;&nbsp; Optimize() would be useless.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Note: Currently this
+method does not make any checks (like Eval() does)<br>
+
+&nbsp;&nbsp;&nbsp; and thus things like "1/0" will cause
+undefined behaviour. (On the other<br>
+
+&nbsp;&nbsp;&nbsp; hand, if such expression is given to the
+parser, Eval() will always give<br>
+
+&nbsp;&nbsp;&nbsp; an error code, no matter what the
+parameters.) If caching this type of<br>
+
+&nbsp;&nbsp;&nbsp; errors is important, a work-around is to
+call Eval() once before calling<br>
+
+&nbsp;&nbsp;&nbsp; Optimize() and checking EvalError().<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If the destination
+application is not going to use this method,<br>
+
+&nbsp;&nbsp;&nbsp; the compiler constant SUPPORT_OPTIMIZER
+can be undefined in fpconfig.hh<br>
+
+&nbsp;&nbsp;&nbsp; to make the library smaller (Optimize()
+can still be called, but it will<br>
+
+&nbsp;&nbsp;&nbsp; not do anything).<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; (If you are interested in seeing how
+this method optimizes the opcode,<br>
+
+&nbsp;&nbsp;&nbsp; you can call the PrintByteCode() method
+before and after the call to<br>
+
+&nbsp;&nbsp;&nbsp; Optimize() to see the difference.)<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+bool AddConstant(const std::string&amp; name, double value);<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; This method can be used to add constants
+to the parser. Syntactically<br>
+
+&nbsp;&nbsp;&nbsp; constants are identical to variables
+(ie. they follow the same naming<br>
+
+&nbsp;&nbsp;&nbsp; rules and they can be used in the
+function string in the same way as<br>
+
+&nbsp;&nbsp;&nbsp; variables), but internally constants are
+directly replaced with their<br>
+
+&nbsp;&nbsp;&nbsp; value at parse time.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Constants used by a
+function must be added before calling Parse()<br>
+
+&nbsp;&nbsp;&nbsp; for that function. Constants are
+preserved between Parse() calls in<br>
+
+&nbsp;&nbsp;&nbsp; the current FunctionParser instance, so
+they don't need to be added<br>
+
+&nbsp;&nbsp;&nbsp; but once. (If you use the same constant
+in several instances of<br>
+
+&nbsp;&nbsp;&nbsp; FunctionParser, you will need to add it
+to all the instances separately.)<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Constants can be
+added at any time and the value of old constants can<br>
+
+&nbsp;&nbsp;&nbsp; be changed, but new additions and
+changes will only have effect the next<br>
+
+&nbsp;&nbsp;&nbsp; time Parse() is called. (That is,
+changing the value of a constant<br>
+
+&nbsp;&nbsp;&nbsp; after calling Parse() and before calling
+Eval() will have no effect.)<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The return value
+will be false if the 'name' of the constant was<br>
+
+&nbsp;&nbsp;&nbsp; illegal, else true. If the name was
+illegal, the method does nothing.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Example: parser.AddConstant("pi",
+3.1415926535897932);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Now for example parser.Parse("x*pi",
+"x"); will be identical to the<br>
+
+&nbsp;&nbsp;&nbsp; call
+parser.Parse("x*3.1415926535897932", "x");<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+bool AddFunction(const std::string&amp; name,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double (*functionPtr)(const double*),<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+unsigned paramsAmount);<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; This method can be used to add new
+functions to the parser. For example,<br>
+
+&nbsp;&nbsp;&nbsp; if you would like to add a function
+"sqr(A)" which squares the value<br>
+
+&nbsp;&nbsp;&nbsp; of A, you can do it with this method (so
+that you don't need to touch<br>
+
+&nbsp;&nbsp;&nbsp; the source code of the parser).<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The method takes
+three parameters:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; - The name of the function. The name
+follows the same naming conventions<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as variable names.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; - A C++ function, which will be called
+when evaluating the function<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string (if the
+user-given function is called there). The C++ function<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; must have the form:<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double functionName(const double* params);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; - The number of parameters the function
+takes. 0 is a valid value<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in which case the
+function takes no parameters (such function<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; should simply ignore
+the double* it gets as a parameter).<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; The return value will be false if the
+given name was invalid (either it<br>
+
+&nbsp;&nbsp;&nbsp; did not follow the variable naming
+conventions, or the name was already<br>
+
+&nbsp;&nbsp;&nbsp; reserved), else true. If the return
+value is false, nothing is added.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Example:<br>
+
+&nbsp;&nbsp;&nbsp; Suppose we have a C++ function like this:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; double Square(const double* p)<br>
+
+&nbsp;&nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return p[0]*p[0];<br>
+
+&nbsp;&nbsp;&nbsp; }<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Now we can add this function to the
+parser like this:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; parser.AddFunction("sqr", Square, 1);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; parser.Parse("2*sqr(x)", "x");<br>
+
+<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; An example of a useful function taking
+no parameters is a function<br>
+
+&nbsp;&nbsp;&nbsp; returning a random value. For example:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; double Rand(const double*)<br>
+
+&nbsp;&nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return drand48();<br>
+
+&nbsp;&nbsp;&nbsp; }<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; parser.AddFunction("rand", Rand, 0);<br>
+
+<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; IMPORTANT NOTE: If you use the
+Optimize() method, it will assume that<br>
+
+&nbsp;&nbsp;&nbsp; the user-given function has no
+side-effects, that is, it always<br>
+
+&nbsp;&nbsp;&nbsp; returns the same value for the same
+parameters. The optimizer will<br>
+
+&nbsp;&nbsp;&nbsp; optimize the function call away in some
+cases, making this assumption.<br>
+
+&nbsp;&nbsp;&nbsp; (The Rand() function given as example
+above is one such problematic case.)<br>
+
+<br>
+
+<br>
+
+---------------------------------------------------------------------------<br>
+
+bool AddFunction(const std::string&amp; name,
+FunctionParser&amp;);<br>
+
+---------------------------------------------------------------------------<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; This method is almost identical to the
+previous AddFunction(), but<br>
+
+&nbsp;&nbsp;&nbsp; instead of taking a C++ function, it
+takes another FunctionParser<br>
+
+&nbsp;&nbsp;&nbsp; instance.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; There are some important restrictions on
+making a FunctionParser instance<br>
+
+&nbsp;&nbsp;&nbsp; call another:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; - The FunctionParser instance given as
+parameter must be initialized<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; with a Parse() call
+before giving it as parameter. That is, if you<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; want to use the
+parser A in the parser B, you must call A.Parse()<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; before you can call
+B.AddFunction("name", A).<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; - The amount of variables in the
+FunctionParser instance given as<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; parameter must not
+change after it has been given to the AddFunction()<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of another instance.
+Changing the number of variables will result in<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; malfunction.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; - AddFunction() will fail (ie. return
+false) if a recursive loop is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; formed. The method
+specifically checks that no such loop is built.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; Example:<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; FunctionParser f1, f2;<br>
+
+&nbsp;&nbsp;&nbsp; f1.Parse("x*x", "x");<br>
+
+&nbsp;&nbsp;&nbsp; f2.AddFunction("sqr", f1);<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp; This version of the AddFunction() method
+can be useful to eg. chain<br>
+
+&nbsp;&nbsp;&nbsp; user-given functions. For example, ask
+the user for a function F1,<br>
+
+&nbsp;&nbsp;&nbsp; and then ask the user another function
+F2, but now the user can<br>
+
+&nbsp;&nbsp;&nbsp; call F1 in this second function if he
+wants (and so on with a third<br>
+
+&nbsp;&nbsp;&nbsp; function F3, where he can call F1 and
+F2, etc).<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<a name="funcstring"></a>
+=============================================================================<b><br>
+
+&nbsp; - The function string<br>
+
+=============================================================================<br>
+<br>
+
+&nbsp; The function string understood by the class is very similar
+to the C-syntax.<br>
+
+&nbsp; Arithmetic float expressions can be created from float
+literals, variables<br>
+
+or functions using the following operators in this order of precedence:<br>
+<br>
+
+&nbsp;&nbsp;
+()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+expressions in parentheses first<br>
+
+&nbsp;&nbsp;
+A^B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+exponentiation (A raised to the power B)<br>
+
+&nbsp;&nbsp;
+-A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+unary minus<br>
+
+&nbsp;&nbsp;
+!A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+unary logical not (result is 1 if int(A) is 0, else 0)<br>
+
+&nbsp;&nbsp; A*B&nbsp; A/B&nbsp; A%B&nbsp;
+multiplication, division and modulo<br>
+
+&nbsp;&nbsp; A+B&nbsp;
+A-B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+addition and subtraction<br>
+
+&nbsp;&nbsp; A=B&nbsp; A!=B&nbsp; A&lt;B&nbsp;
+A&lt;=B&nbsp; A&gt;B&nbsp; A&gt;=B<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+comparison between A and B (result is either 0 or 1)<br>
+
+&nbsp;&nbsp;
+A&amp;B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+result is 1 if int(A) and int(B) differ from 0, else 0<br>
+
+&nbsp;&nbsp;
+A|B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+result is 1 if int(A) or int(B) differ from 0, else 0<br>
+<br>
+
+&nbsp;&nbsp;&nbsp; Since the unary minus has higher
+precedence than any other operator, for<br>
+
+&nbsp; example the following expression is valid: x*-y<br>
+<br>
+
+&nbsp;&nbsp;&nbsp; The comparison operators use an epsilon
+value, so expressions which may<br>
+
+&nbsp; differ in very least-significant digits should work
+correctly. For example,<br>
+
+&nbsp; "0.1+0.1+0.1+0.1+0.1+0.1+0.1+0.1+0.1+0.1 = 1" should always
+return 1, and<br>
+
+&nbsp; the same comparison done with "&gt;" or "&lt;"
+should always return 0.<br>
+
+&nbsp; (The epsilon value can be configured in the fpconfig.hh
+file.)<br>
+
+&nbsp; Without epsilon this comparison probably returns the wrong
+value.<br>
+<br>
+
+&nbsp; The class supports these functions:<br>
+<br>
+
+&nbsp; abs(A)&nbsp;&nbsp;&nbsp; : Absolute value of A.
+If A is negative, returns -A otherwise<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+returns A.<br>
+
+&nbsp; acos(A)&nbsp;&nbsp; : Arc-cosine of A. Returns the
+angle, measured in radians,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+whose cosine is A.<br>
+
+&nbsp; acosh(A)&nbsp; : Same as acos() but for hyperbolic
+cosine.<br>
+
+&nbsp; asin(A)&nbsp;&nbsp; : Arc-sine of A. Returns the
+angle, measured in radians, whose<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sine is A.<br>
+
+&nbsp; asinh(A)&nbsp; : Same as asin() but for hyperbolic sine.<br>
+
+&nbsp; atan(A)&nbsp;&nbsp; : Arc-tangent of (A). Returns
+the angle, measured in radians,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+whose tangent is (A).<br>
+
+&nbsp; atan2(A,B): Arc-tangent of A/B. The two main differences to
+atan() is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+that it will return the right angle depending on the signs of<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+A and B (atan() can only return values betwen -pi/2 and pi/2),<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+and that the return value of pi/2 and -pi/2 are possible.<br>
+
+&nbsp; atanh(A)&nbsp; : Same as atan() but for hyperbolic
+tangent.<br>
+
+&nbsp; ceil(A)&nbsp;&nbsp; : Ceiling of A. Returns the
+smallest integer greater than A.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Rounds up to the next higher integer.<br>
+
+&nbsp; cos(A)&nbsp;&nbsp;&nbsp; : Cosine of A. Returns
+the cosine of the angle A, where A is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+measured in radians.<br>
+
+&nbsp; cosh(A)&nbsp;&nbsp; : Same as cos() but for
+hyperbolic cosine.<br>
+
+&nbsp; cot(A)&nbsp;&nbsp;&nbsp; : Cotangent of A
+(equivalent to 1/tan(A)).<br>
+
+&nbsp; csc(A)&nbsp;&nbsp;&nbsp; : Cosecant of A
+(equivalent to 1/sin(A)).<br>
+
+&nbsp; eval(...) : This a recursive call to the function to be
+evaluated. The<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+number of parameters must be the same as the number of parameters<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+taken by the function. Must be called inside if() to avoid<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+infinite recursion.<br>
+
+&nbsp; exp(A)&nbsp;&nbsp;&nbsp; : Exponential of A.
+Returns the value of e raised to the power<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+A where e is the base of the natural logarithm, i.e. the<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+non-repeating value approximately equal to 2.71828182846.<br>
+
+&nbsp; floor(A)&nbsp; : Floor of A. Returns the largest integer
+less than A. Rounds<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+down to the next lower integer.<br>
+
+&nbsp; if(A,B,C) : If int(A) differs from 0, the return value of
+this function is B,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+else C. Only the parameter which needs to be evaluated is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+evaluated, the other parameter is skipped; this makes it safe to<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+use eval() in them.<br>
+
+&nbsp; int(A)&nbsp;&nbsp;&nbsp; : Rounds A to the
+closest integer. 0.5 is rounded to 1.<br>
+
+&nbsp; log(A)&nbsp;&nbsp;&nbsp; : Natural (base e)
+logarithm of A.<br>
+
+&nbsp; log10(A)&nbsp; : Base 10 logarithm of A.<br>
+
+&nbsp; max(A,B)&nbsp; : If A&gt;B, the result is A, else B.<br>
+
+&nbsp; min(A,B)&nbsp; : If A&lt;B, the result is A, else B.<br>
+
+&nbsp; sec(A)&nbsp;&nbsp;&nbsp; : Secant of A
+(equivalent to 1/cos(A)).<br>
+
+&nbsp; sin(A)&nbsp;&nbsp;&nbsp; : Sine of A. Returns
+the sine of the angle A, where A is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+measured in radians.<br>
+
+&nbsp; sinh(A)&nbsp;&nbsp; : Same as sin() but for
+hyperbolic sine.<br>
+
+&nbsp; sqrt(A)&nbsp;&nbsp; : Square root of A. Returns the
+value whose square is A.<br>
+
+&nbsp; tan(A)&nbsp;&nbsp;&nbsp; : Tangent of A. Returns
+the tangent of the angle A, where A<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+is measured in radians.<br>
+
+&nbsp; tanh(A)&nbsp;&nbsp; : Same as tan() but for
+hyperbolic tangent.<br>
+<br>
+<br>
+
+&nbsp; Examples of function string understood by the class:<br>
+<br>
+
+&nbsp; "1+2"<br>
+
+&nbsp; "x-1"<br>
+
+&nbsp; "-sin(sqrt(x^2+y^2))"<br>
+
+&nbsp; "sqrt(XCoord*XCoord + YCoord*YCoord)"<br>
+</b>
+
+
+
+
+
+
+
+
+
+<br>
+
+&nbsp; An example of a recursive function is the factorial function:<br>
+
+<br>
+
+&nbsp; "if(n&gt;1, n*eval(n-1), 1)"<br>
+
+<br>
+
+&nbsp; Note that a recursive call has some overhead, which makes it
+a bit slower<br>
+
+&nbsp; than any other operation. It may be a good idea to avoid
+recursive functions<br>
+
+&nbsp; in very time-critical applications. Recursion also takes
+some memory, so<br>
+
+&nbsp; extremely deep recursions should be avoided (eg. millions of
+nested recursive<br>
+
+&nbsp; calls).<br>
+
+<br>
+
+&nbsp; Also note that even though the maximum recursion level of
+eval() is<br>
+
+&nbsp; limited, it is possible to write functions which never reach
+that level<br>
+
+&nbsp; but still take enormous amounts of time to evaluate.<br>
+
+&nbsp; This can sometimes be undesirable because it is prone to
+exploitation,<br>
+
+&nbsp; but you can disable the eval() function completely in the
+fpconfig.hh file.<br>
+
+<br>
+
+<br>
+
+<br>
+
+=============================================================================<br>
+
+&nbsp; - Contacting the author<br>
+
+=============================================================================<br>
+
+<br>
+
+&nbsp; Any comments, bug reports, etc. should be sent to warp@iki.fi<br>
+
+<br>
+
+<br>
+
+=============================================================================<br>
+
+&nbsp; - The algorithm used in the library<br>
+
+=============================================================================<br>
+
+<br>
+
+&nbsp; The whole idea behind the algorithm is to convert the
+regular infix<br>
+
+format (the regular syntax for mathematical operations in most
+languages,<br>
+
+like C and the input of the library) to postfix format. The postfix
+format<br>
+
+is also called stack arithmetic since an expression in postfix format<br>
+
+can be evaluated using a stack and operating with the top of the stack.<br>
+
+<br>
+
+&nbsp; For example:<br>
+
+<br>
+
+&nbsp; infix&nbsp;&nbsp;&nbsp; postfix<br>
+
+&nbsp; 2+3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2 3 +<br>
+
+&nbsp; 1+2+3&nbsp;&nbsp;&nbsp; 1 2 + 3 +<br>
+
+&nbsp; 5*2+8/2&nbsp; 5 2 * 8 2 / +<br>
+
+&nbsp; (5+9)*3&nbsp; 5 9 + 3 *<br>
+
+<br>
+
+&nbsp; The postfix notation should be read in this way:<br>
+
+<br>
+
+&nbsp; Let's take for example the expression: 5 2 * 8 2 / +<br>
+
+&nbsp; - Put 5 on the stack<br>
+
+&nbsp; - Put 2 on the stack<br>
+
+&nbsp; - Multiply the two values on the top of the stack and put
+the result on<br>
+
+&nbsp;&nbsp;&nbsp; the stack (removing the two old values)<br>
+
+&nbsp; - Put 8 on the stack<br>
+
+&nbsp; - Put 2 on the stack<br>
+
+&nbsp; - Divide the two values on the top of the stack<br>
+
+&nbsp; - Add the two values on the top of the stack (which are in
+this case<br>
+
+&nbsp;&nbsp;&nbsp; the result of 5*2 and 8/2, that is, 10
+and 4).<br>
+
+<br>
+
+&nbsp; At the end there's only one value in the stack, and that
+value is the<br>
+
+result of the expression.<br>
+
+<br>
+
+&nbsp; Why stack arithmetic?<br>
+
+<br>
+
+&nbsp; The last example above can give you a hint.<br>
+
+&nbsp; In infix format operators have precedence and we have to use
+parentheses to<br>
+
+group operations with lower precedence to be calculated before
+operations<br>
+
+with higher precedence.<br>
+
+&nbsp; This causes a problem when evaluating an infix expression,
+specially<br>
+
+when converting it to byte code. For example in this kind of expression:<br>
+
+&nbsp;&nbsp;&nbsp; (x+1)/(y+2)<br>
+
+we have to calculate first the two additions before we can calculate the<br>
+
+division. We have to also keep counting parentheses, since there can be<br>
+
+a countless amount of nested parentheses. This usually means that you<br>
+
+have to do some type of recursion.<br>
+
+<br>
+
+&nbsp; The most simple and efficient way of calculating this is to
+convert it<br>
+
+to postfix notation.<br>
+
+&nbsp; The postfix notation has the advantage that you can make all
+operations<br>
+
+in a straightforward way. You just evaluate the expression from left to<br>
+
+right, applying each operation directly and that's it. There are no<br>
+
+parentheses to worry about. You don't need recursion anywhere.<br>
+
+&nbsp; You have to keep a stack, of course, but that's extremely
+easily done.<br>
+
+Also you just operate with the top of the stack, which makes it very
+easy.<br>
+
+You never have to go deeper than 2 items in the stack.<br>
+
+&nbsp; And even better: Evaluating an expression in postfix format
+is never<br>
+
+slower than in infix format. All the contrary, in many cases it's a lot<br>
+
+faster (eg. because all parentheses are optimized away).<br>
+
+&nbsp; The above example could be expressed in postfix format:<br>
+
+&nbsp;&nbsp;&nbsp; x 1 + y 2 + /<br>
+
+<br>
+
+&nbsp; The good thing about the postfix notation is also the fact
+that it can<br>
+
+be extremely easily expressed in bytecode form.<br>
+
+&nbsp; You only need a byte value for each operation, for each
+variable and<br>
+
+to push a constant to the stack.<br>
+
+&nbsp; Then you can interpret this bytecode straightforwardly. You
+just interpret<br>
+
+it byte by byte, from the beginning to the end. You never have to go
+back,<br>
+
+make loops or anything.<br>
+
+<br>
+
+&nbsp; This is what makes byte-coded stack arithmetic so fast.<br>
+
+<br>
+
+<br>
+
+<br>
+
+=============================================================================<br>
+
+&nbsp; Usage license:<br>
+
+=============================================================================<br>
+
+<br>
+
+Copyright &#608;2003-2005 Juha Nieminen, Joel Yliluoma<br>
+
+<br>
+
+&nbsp; This library is distributed under two distinct usage
+licenses depending<br>
+
+on the software ("Software" below) which uses the Function Parser
+library<br>
+
+("Library" below).<br>
+
+&nbsp; The reason for having two distinct usage licenses is to make
+the library<br>
+
+compatible with the GPL license while still being usable in other
+non-GPL<br>
+
+(even commercial) software.<br>
+
+<br>
+
+A) If the Software using the Library is distributed under the GPL
+license,<br>
+
+&nbsp;&nbsp; then the Library can be used under the GPL license
+as well.<br>
+
+<br>
+
+&nbsp;&nbsp; The Library will be under the GPL license only
+when used with the<br>
+
+&nbsp;&nbsp; Software. If the Library is separated from the
+Software and used in<br>
+
+&nbsp;&nbsp; another different software under a different
+license, then the Library<br>
+
+&nbsp;&nbsp; will have the B) license below.<br>
+
+<br>
+
+&nbsp;&nbsp; Exception to the above: If the Library is modified
+for the GPL Software,<br>
+
+&nbsp;&nbsp; then the Library cannot be used with the B)
+license without the express<br>
+
+&nbsp;&nbsp; permission of the author of the modifications. A
+modified library will<br>
+
+&nbsp;&nbsp; be under the GPL license by default. That is, only
+the original,<br>
+
+&nbsp;&nbsp; unmodified version of the Library can be taken to
+another software<br>
+
+&nbsp;&nbsp; with the B) license below.<br>
+
+<br>
+
+&nbsp;&nbsp; The author of the Software should provide an URL
+to the original<br>
+
+&nbsp;&nbsp; version of the Library if the one used in the
+Software has been<br>
+
+&nbsp;&nbsp; modified. (http://iki.fi/warp/FunctionParser/)<br>
+
+<br>
+
+&nbsp;&nbsp; This text file must be distributed in its original
+intact form along<br>
+
+&nbsp;&nbsp; with the sources of the Library. (Documentation
+about possible<br>
+
+&nbsp;&nbsp; modifications to the library should be put in a
+different text file.)<br>
+
+<br>
+
+B) If the Software using the Library is not distributed under the GPL<br>
+
+&nbsp;&nbsp; license but under any other license, then the
+following usage license<br>
+
+&nbsp;&nbsp; applies to the Library:<br>
+
+<br>
+
+&nbsp; 1. This library is free for non-commercial usage. You can do
+whatever you<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; like with it as long as you
+don't claim you made it yourself.<br>
+
+<br>
+
+&nbsp; 2. It is possible to use this library in a commercial
+program, but in this<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; case you MUST contact me first
+(warp@iki.fi) and ask express permission<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; for this. (Read explanation at
+the end of the file.)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you are
+making a free program or a shareware program with just a<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; nominal price (5 US dollars or
+less), you don't have to ask for<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; permission.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; In any
+case, I DON'T WANT MONEY for the usage of this library. It is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; free, period.<br>
+
+<br>
+
+&nbsp; 3. You can make any modifications you want to it so that it
+conforms your<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; needs. If you make
+modifications to it, you have, of course, credits for<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; the modified parts.<br>
+
+<br>
+
+&nbsp; 4. If you use this library in your own program, you don't
+have to provide<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; the source code if you don't
+want to (ie. the source code of your program<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; or this library).<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you DO
+include the source code for this library, this text file<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; must be included in its
+original intact form.<br>
+
+<br>
+
+&nbsp; 5. If you distribute a program which uses this library, and
+specially if you<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; provide the source code,
+proper credits MUST be included. Trying to<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; obfuscate the fact that this
+library is not made by you or that it is<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; free is expressly prohibited.
+When crediting the usage of this library,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; it's enough to include my name
+and email address, that is:<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; "Juha Nieminen (warp@iki.fi)".
+Also a URL to the library download page<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; would be nice, although not
+required. The official URL is:<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+http://iki.fi/warp/FunctionParser/<br>
+
+<br>
+
+&nbsp; 6. And the necessary "lawyer stuff":<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; The above copyright notice and
+this permission notice shall be<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; included in all copies or
+substantial portions of the Software.<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; The software is provided "as
+is", without warranty of any kind,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; express or implied, including
+but not limited to the warranties of<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; merchantability, fitness for a
+particular purpose and noninfringement.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; In no event shall the authors
+or copyright holders be liable for any<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; claim, damages or other
+liability, whether in an action of contract,<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; tort or otherwise, arising
+from, out of or in connection with the<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; software or the use or other
+dealings in the software.<br>
+
+<br>
+
+<br>
+
+---&nbsp; Explanation of the section 2 of the B) license above:<br>
+
+<br>
+
+&nbsp; The section 2 tries to define "fair use" of the library in
+commercial<br>
+
+programs.<br>
+
+&nbsp; "Fair use" of the library means that the program is not
+heavily dependent<br>
+
+on the library, but the library only provides a minor secondary feature<br>
+
+to the program.<br>
+
+&nbsp; "Heavily dependent" means that the program depends so much
+on the library<br>
+
+that without it the functionality of the program would be seriously<br>
+
+degraded or the program would even become completely non-functional.<br>
+
+<br>
+
+&nbsp; In other words: If the program does not depend heavily on
+the library,<br>
+
+that is, the library only provides a minor secondary feature which could<br>
+
+be removed without the program being degraded in any considerable way,<br>
+
+then it's OK to use the library in the commercial program.<br>
+
+&nbsp; If, however, the program depends so heavily on the library
+that<br>
+
+removing it would make the program non-functional or degrade its<br>
+
+functionality considerably, then it's NOT OK to use the library.<br>
+
+<br>
+
+&nbsp; The ideology behind this is that it's not fair to use a free
+library<br>
+
+as a base for a commercial program, but it's fair if the library is<br>
+
+just a minor, unimportant extra.<br>
+
+<br>
+
+&nbsp; If you are going to ask me for permission to use the library
+in a<br>
+
+commercial program, please describe the feature which the library will<br>
+
+be providing and how important it is to the program.<br>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+Class Name                       Key		Type
+
+SampledData			1001		SampledData
+ParametricCurve			1002		ParametricCurve
+Gaussian			1003		Gaussian
+NormalizedGaussian		1004		NormalizedGaussian
+CompositeCurve			1005		CompositeCurve
+STRTracePrequalification	1006		STRTracePrequal
+DataInterval			1007		DataInterval
+NoiseInterval			1008		NoiseInterval
+DoubleGaussian			1009		DoubleGaussian
+SuperGaussian			1010		SuperGaussian
+NormalizedSuperGaussian		1011		NormalizedSuperGaussian
+DualDoubleGaussian		1012		DualDoubleGaussian
+CraterSignal			1013		CraterSignal
+
+STRTestCharacteristic		1014		STRTestCharacteristic
+STRTestSampleCharacteristic	1015		STRTestSampleCharacteristic	
+STRTestControlCharacteristic	1016		STRTestControlCharacteristic	
+STRTestSampleCharacteristicSet	1017		STRTestSampleCharacteristicSet	
+STRTestControlCharacteristicSet	1018		STRTestControlCharacteristicSet
+
+MarkerID			1030		MarkerID
+LocusID				1031		LocusID
+AlleleData			1032		AlleleData
+LadderData			1033		LadderData
+
+STRBaseAllele			1035		STRBaseAllele
+STRBaseLocus			1036		STRBaseLocus
+STRBasePopulationMarkerSet	1037		STRBasePopulationMarkerSet
+
+Allele				1038		Allele
+Locus				1039		Locus
+PopulationMarkerSet		1040		PopulationMarkerSet
+LaneStandard			1041		LaneStandard
+
+STRChannelData			1050		STRChannelData
+STRBaseLaneStandard		1051		STRBaseLaneStandard
+STRLaneStandardChannelData	1052		STRLaneStandardChannelData
+STRLadderChannelData		1053		STRLadderChannelData
+STRSampleChannelData		1054		STRSampleChannelData
+
+MarkovTransition		1060		MarkovTransition
+MarkovState			1061		MarkovState
+
+STRLadderCoreBioComponent	1070		STRLadderCoreBioComponent
+STRSampleCoreBioComponent	1071		STRSampleCoreBioComponent
+
+STRMinimumRFU			1101		STRMinimumRFU
+STRBleedThrough			1102		STRBleedThrough
+
+IndividualAllele		1501		IndividualAllele
+IndividualLocus			1502		IndividualLocus
+IndividualGenotype		1503		IndividualGenotype
+GenotypesForAMarkerSet		1504		GenotypesForAMarkerSet
+LocusCollection			1505		LocusCollection
+PeakInfoForClusters		1506		PeakInfoForClusters
+
+STRLCAnalysis			1507		STRLCAnalysis
+
+STRSmartMessage			2000		STRSmartMessage
+Expression			2001		Expression
+SmartMessageData		2002		SmartMessageData
+SmartMessageReporter		2003		SmartMessageReporter
+STRBaseSmartMessage		2004		STRBaseSmartMessage
+STRSmartCountingMessage		2005		STRSmartCountingMessage
+STRSmartPercentMessage		2006		STRSmartPercentMessage
+ConditionalTriggerUnit		2007		ConditionalTriggerUnit
+STRSmartPresetMessage		2008		STRSmartPresetMessage
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="MessageList">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Message"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="MessageKey">
+			<xs:selector xpath=".//Message"/>
+			<xs:field xpath="Index"/>
+		</xs:key>
+	</xs:element>
+	<xs:element name="Message">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Index" type="xs:integer"/>
+				<xs:element name="Text" type="xs:string" maxOccurs="unbounded"/>
+				<xs:element name="NDataElements" default="0" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:integer">
+							<xs:minInclusive value="0"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Subject" type="xs:integer"/>
+				<xs:element name="MessageLevel" type="xs:integer"/>
+				<xs:element name="Label" type="xs:string" minOccurs="0"/>
+				<xs:element name="TriggersLowPrioritySignal" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="DoNotCall" type="xs:boolean" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

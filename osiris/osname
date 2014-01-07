@@ -1,0 +1,2 @@
+#!/bin/sh
+uname | sed 's/[^A-Za-z_]//g'

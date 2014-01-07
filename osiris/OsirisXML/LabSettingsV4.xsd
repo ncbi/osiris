@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="Common.xsd"/>
+	<xs:element name="LabSettings" type="LabSettingsType">
+		<xs:annotation>
+			<xs:documentation>Laboratory specific settings and thresholds; this is a schema for marker set specific data - a new file will be required for each marker set; allows for locus-specific thresholds  
+
+8/13/10 - djh LabMarkerSetSpecifications is now required with LabMarkerSetCollection/ MarkerSetName.
+ILS and Analyzed were added, ILS is required.
+
+Added Info tag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="NameStrings">
+		<xs:sequence>
+			<xs:element name="LadderStrings">
+				<xs:annotation>
+					<xs:documentation>Identify ladder files</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Synonym" type="Synonym"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="StdPositveControlStrings">
+				<xs:annotation>
+					<xs:documentation>Identify standard positive control files</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Synonym" type="Synonym"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NegativeControlStrings">
+				<xs:annotation>
+					<xs:documentation>Identify negative control files</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Synonym" type="Synonym"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="StandardControlName" type="xs:string"/>
+			<xs:sequence minOccurs="0" maxOccurs="29">
+				<xs:element name="SpecimenCategory">
+					<xs:annotation>
+						<xs:documentation>This was added after LadderString, StdPositiveControlStrings, and NegativeControlStrings otherwise these three categories would be implemented here.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Type" type="SpecimenCategoryType"/>
+							<xs:element name="Synonym" type="xs:string" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<!--  <xs:element name="OffLadderAlleles" type="TypeLocusCollection"/> -->
+	<xs:complexType name="Thresholds">
+		<xs:sequence>
+			<xs:element name="LadderRFUTests" type="RFULadderLimitsType"/>
+			<xs:element name="LaneStandardRFUTests" type="RFULaneStandardLimitsType"/>
+			<xs:element name="SampleRFUTests" type="RFUSampleLimitsType"/>
+			<xs:element name="HeterozygousImbalanceLimit" type="xs:double" default="0.30">
+				<xs:annotation>
+					<xs:documentation>Lower peak must be at least this fraction of maximum peak; default = 0.30</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinBoundForHomozygote" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Minimum RFU for single peak to be considered homozygote; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinBoundHomozygoteUnit" type="HomozygoteUnit" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Units used for MinBoundForHomozygote above either R for RFU units or % for percentage of min RFU which should be between 100 and 200%</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxNumberOfPullupsPerSample" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>-1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxNumberOfStutterPeaksPerSample" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>-1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxNumberOfSpikesPerSample" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>-1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxNumberOfAdenylationsPerSample" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>-1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxNumberOfOLAllelesPerSample" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>-1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxResidualForAlleleCall" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Always less than 0.5; set to less for quality std; -1 if not applicable; recommend 0.35 - 0.4</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxExcessiveResidual" type="xs:int" default="-1" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Maximum number of peaks where the residual exceeds the value from MaxResidualForAlleleCall above.  If this is exceeded, there will be a sample level alert</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinBPSForArtifacts" type="xs:integer" default="-1">
+				<xs:annotation>
+					<xs:documentation>BP threshold below which artifacts are not reported</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AlleleRFUOverloadThreshold" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>RFU threshold to test for overloaded vs. underloaded sample if some locus is missing</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AllowMinRFUOverride" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>If true, then the user can override the minRFU values foir an analysis.  This is optional and true is the default.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SmartMessageThresholds" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="MessageThreshold" type="SmartMessageThreshold"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RFULaneStandardLimitsType">
+		<xs:sequence>
+			<xs:element name="MinimumRFU" type="xs:double" default="150">
+				<xs:annotation>
+					<xs:documentation>Minimum acceptable RFU</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinimumRFUinterlocus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Minimum RFU for an interlocus artifact.  Thisis used for Sample RFU Tests ONLY.  Ignored if less than MinimumRFU.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaximumRFU" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Maximim acceptable RFU; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FractionOfMaxPeak" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Fraction of maximum peak, below which peak is unacceptable; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PullupFractionalFilter" type="xs:double" default="-1.0" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Fraction of maximum peak, in presence of pull-up, below which peak is unacceptable; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StutterThreshold" type="xs:double" default="0.15">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one repeat to call result a stutter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AdenylationThreshold" type="xs:double" default="0.3333">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one base pair to call result an adenylation (+A/-A)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RFUSampleLimitsType">
+		<xs:sequence>
+			<xs:element name="MinimumRFU" type="xs:double" default="150">
+				<xs:annotation>
+					<xs:documentation>Minimum analysis threshold</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinimumRFUinterlocus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Minimum RFU for an interlocus artifact.  Thisis used for Sample RFU Tests ONLY.  Ignored if less than MinimumRFU.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaximumRFU" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Maximim acceptable RFU; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinDetectionRFU" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Minimum detection threshold</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FractionOfMaxPeak" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Fraction of maximum peak, below which peak is unacceptable; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PullupFractionalFilter" type="xs:double" default="-1.0" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Fraction of maximum peak, in presence of pull-up, below which peak is unacceptable; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StutterThreshold" type="xs:double" default="0.15">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one repeat to the left to call result a stutter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlusStutterThreshold" type="xs:double" default="0" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one repeat to the right to call result a stutter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AdenylationThreshold" type="xs:double" default="0.3333">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one base pair to call result an adenylation (+A/-A)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="LocusThreshold" type="SampleLocusSpecificThreshold"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RFULadderLimitsType">
+		<xs:sequence>
+			<xs:element name="MinimumRFU" type="xs:double" default="150">
+				<xs:annotation>
+					<xs:documentation>Minimum acceptable RFU</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinimumRFUinterlocus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Minimum RFU for an interlocus artifact.  Thisis used for Sample RFU Tests ONLY.  Ignored if less than MinimumRFU.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaximumRFU" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Maximim acceptable RFU; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FractionOfMaxPeak" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Fraction of maximum peak, below which peak is unacceptable; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PullupFractionalFilter" type="xs:double" default="-1.0" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Fraction of maximum peak, in presence of pull-up, below which peak is unacceptable; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StutterThreshold" type="xs:double" default="0.15">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one repeat to call result a stutter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AdenylationThreshold" type="xs:double" default="0.3333">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one base pair to call result an adenylation (+A/-A)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="LocusThreshold" type="ControlLocusSpecificThreshold"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LabSettingsType">
+		<xs:sequence>
+			<xs:element name="Info" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>If not specified, then file version for OSIRIS 1.x</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="VolumeName">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:minLength value="1"/>
+									<xs:maxLength value="40"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="Version">
+							<xs:annotation>
+								<xs:documentation>lab settings file version - 2</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:minLength value="1"/>
+									<xs:maxLength value="12"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="DataFileType" type="xs:string" default="fsa" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>File name extension...default = fsa</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Protocol" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="80"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="Lot" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="80"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="Notes" type="xs:string" minOccurs="0"/>
+						<xs:element name="UserId" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:minLength value="1"/>
+									<xs:maxLength value="32"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="LastUpdate" type="xs:int" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NameStrings" type="NameStrings">
+				<xs:annotation>
+					<xs:documentation>Substrings in file names to identify sample file type</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Thresholds" type="Thresholds"/>
+			<xs:element name="LabMarkerSetSpecifications">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:annotation>
+							<xs:documentation>We only allow one marker set here because each lab settings file is marker set specific.  The LabMarkerSetCollection tag remains here for compatibility with older versions</xs:documentation>
+						</xs:annotation>
+						<xs:element name="LabMarkerSetCollection">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="MarkerSetName" type="xs:string"/>
+									<xs:element name="ILS" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Default ILS Name</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="UserOverrideILS" type="xs:boolean" default="false" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Set to true if user can override ILS at run time</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Analyzed" type="xs:boolean" default="false" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Set to true is  using analyzed data from FSA, omit or false otherwise</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="PositiveControls" type="TypePositiveControls" minOccurs="0"/>
+									<xs:element name="NegativeControls" type="TypeNegativeControls" minOccurs="0"/>
+									<xs:element name="OffLadderAlleles" type="TypeLocusCollection" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Off ladder alleles allowed with triggering artifact notice</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="SampleAcceptedTrialleles" type="TypeLocusCollection" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:element name="PosCtrlAcceptedTrialleles" type="TypeLocusCollection" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ReviewAcceptanceCounts" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Acceptance" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Acceptance1" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Acceptance2" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Acceptance3" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Acceptance4" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Acceptance5" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Reviews" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Reviews1" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Reviews2" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Reviews3" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Reviews4" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Reviews5" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="AllowUserNameOverride" type="xs:boolean" default="false" minOccurs="0"/>
+						<xs:element name="AllowExportWithAttnReqd" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Curently not implemented</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="SpecimenCategoryType">
+		<xs:annotation>
+			<xs:documentation>From the Codis CMF 3.2 Schema</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="21"/>
+			<xs:minLength value="1"/>
+			<xs:enumeration value="Convicted Offender"/>
+			<xs:enumeration value="Forensic, Unknown"/>
+			<xs:enumeration value="Population"/>
+			<xs:enumeration value="Suspect, Known"/>
+			<xs:enumeration value="Unidentified Person"/>
+			<xs:enumeration value="Victim, Known"/>
+			<xs:enumeration value="Elimination, Known"/>
+			<xs:enumeration value="Biological Mother"/>
+			<xs:enumeration value="Biological Father"/>
+			<xs:enumeration value="Biological Sibling"/>
+			<xs:enumeration value="Alleged Mother"/>
+			<xs:enumeration value="Alleged Father"/>
+			<xs:enumeration value="Biological Child"/>
+			<xs:enumeration value="Proficiency"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Missing Person"/>
+			<xs:enumeration value="Forensic Mixture"/>
+			<xs:enumeration value="Maternal Relative"/>
+			<xs:enumeration value="Paternal Relative"/>
+			<xs:enumeration value="Deduced Victim Known"/>
+			<xs:enumeration value="Arrestee"/>
+			<xs:enumeration value="Deceased"/>
+			<xs:enumeration value="Deduced Suspect"/>
+			<xs:enumeration value="Staff"/>
+			<xs:enumeration value="Juvenile"/>
+			<xs:enumeration value="CO Duplicate"/>
+			<xs:enumeration value="Volunteer"/>
+			<xs:enumeration value="Spouse"/>
+			<xs:enumeration value="Legal"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="HomozygoteUnit">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="R"/>
+			<xs:enumeration value="%"/>
+			<xs:enumeration value=""/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="SmartMessageThreshold">
+		<xs:sequence>
+			<xs:element name="MsgName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>This is the name of the SmartMessage as given in the MessageBook</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MsgThreshold" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Integer value to be used as a threshold whenever message is evaluated</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

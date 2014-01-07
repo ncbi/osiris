@@ -1,0 +1,17 @@
+InputDirectory = E:/Users/goorrob/NIST/Run_3130xl_2006-07-21_16-29_0678;
+LadderDirectory = E:/Users/goorrob/My Documents/DEV/internal/osiris/OsirisXML;
+ReportDirectory = E:\Users\goorrob/SmartOsirisReports;
+MarkerSetName = PowerPlex 16;
+LaneStandardName = Promega-ILS-475;
+CriticalOutputLevel = 15;
+MinSampleRFU = 70;
+MinLaneStandardRFU = 100;
+MinLadderRFU = 50;
+MinInterlocusRFU = 200;
+MinLadderInterlocusRFU = 600;
+RawDataString = r;
+LabSettings = E:\Apps\NCBI\Osiris\site\Volumes\V-20101109-171412\V-20101109-171412_LabSettings.xml;
+StandardSettings = E:\Users\goorrob\My Documents\DEV\internal\osiris\OsirisXML\NamedxmlConfigurations\PP16\PP16_StdSettings.xml;
+MessageBook = E:\Users\goorrob\My Documents\DEV\internal\osiris\MessageBook\OsirisMessageBookV4.0.xml;
+# = Test of new format;
+;

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Renee Robinson (private) -->
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="Common.xsd"/>
+	<xs:element name="StandardSettings" type="StandardSettingsType">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="PositiveControls">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="PositiveControl">
+				<xs:annotation>
+					<xs:documentation>Each positive control has a file name containing a specific synonym</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Name" type="Name"/>
+						<xs:element name="Loci" type="SSLocusCollection"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AlgorithmParameters">
+		<xs:sequence>
+			<xs:element name="CurveFitParameters" type="CurveFitParameters"/>
+			<xs:element name="LaneStandardSearch" type="LaneStandardSearch"/>
+			<xs:element name="LadderLocusSearch" type="LadderLocusSearch"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StandardParameters">
+		<xs:sequence>
+			<xs:element name="MsgDoubleResolution" type="xs:integer" default="10">
+				<xs:annotation>
+					<xs:documentation>Number of digits for output of floating point numbers</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinSigmaForDyeBlob" type="xs:double" default="6.0">
+				<xs:annotation>
+					<xs:documentation>Dye blobs must have this sigma, or more</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SecondaryContentLimitFraction" default="0.9">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0"/>
+						<xs:maxExclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MinFractionExpectedPeakWidth" default="0.6">
+				<xs:annotation>
+					<xs:documentation>Tests for poor morphology</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:maxExclusive value="1"/>
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MaxMultipleExpectedPeakWidth" default="1.6">
+				<xs:annotation>
+					<xs:documentation>Tests for poor morphology</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="1" fixed="false"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="WidthMatchFraction" default="0.1">
+				<xs:annotation>
+					<xs:documentation>Fraction of combined sigmas of two curves that should be the 'same' width</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0"/>
+						<xs:maxExclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MaxSpikeWidth" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Max sigma for a peak to be considered a spike</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CraterSigmaMultiple" type="xs:double" default="2.0">
+				<xs:annotation>
+					<xs:documentation>Number of sigmas used for distance between peaks to determine if the two form a crater</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Allele">
+		<xs:sequence>
+			<xs:element name="Name" type="Name"/>
+			<xs:element name="BioID" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Base pair relative to named locus</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CurveFitParameters">
+		<xs:sequence>
+			<xs:element name="NoiseThreshold" type="xs:double" default="400">
+				<xs:annotation>
+					<xs:documentation>Value 400 allows peak detection of ~20 RFU or more</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WindowWidth" type="xs:integer" default="9">
+				<xs:annotation>
+					<xs:documentation>Value 9 allows peak spacing discernment of less than 1 base pair</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinFitForNormalPeak" default="0.95">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TriggerFitForArtifact" default="0.97">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0"/>
+						<xs:maxExclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AbsoluteMinimumFit" type="xs:double" default="0.85"/>
+			<xs:element name="TestForNegSecondaryContent" type="xs:boolean" default="false"/>
+			<xs:element name="ParametricFitTolerance" default="0.999995">
+				<xs:annotation>
+					<xs:documentation>Termination criterion for iterative curve fit prior to maximum iterations</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0"/>
+						<xs:maxExclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="NumberOfIntegrationSteps" type="xs:integer" default="50">
+				<xs:annotation>
+					<xs:documentation>For performing numerical integrations of Gaussian curves</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SigmaTolerance" type="xs:double" default="0.00015">
+				<xs:annotation>
+					<xs:documentation>Termination criterion for sigma fit prior to max iterations; delta sigma threshold</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SigmaWidth" type="xs:double" default="10.0">
+				<xs:annotation>
+					<xs:documentation>Number of sigmas to left and right of mean in standard constructor of Gaussians</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaximumIterations" type="xs:integer" default="5">
+				<xs:annotation>
+					<xs:documentation>Max number of iterations allowed in search for best curve fit</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SigmaRatio" type="xs:double" default="4.5">
+				<xs:annotation>
+					<xs:documentation>Ratio of 2nd Gaussian sigma to 1st in Double Gaussian</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InterSampleSpacing" type="xs:double" default="1">
+				<xs:annotation>
+					<xs:documentation>Number of seconds per measurement</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SignatureSigma" type="xs:double" default="2.0">
+				<xs:annotation>
+					<xs:documentation>Starting base sigma for signature Double Gaussian; deliberately chosen below expected true value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BlobDegree" type="xs:integer" default="6">
+				<xs:annotation>
+					<xs:documentation>Degree of Super Gaussian used to fit blob artifacts</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinDistanceBetweenPeaks" type="xs:double" default="4.0">
+				<xs:annotation>
+					<xs:documentation>Two peaks within this distance are not considered distinct; only the best fit is kept</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PeakFractionForEndPtTest" default="0.25">
+				<xs:annotation>
+					<xs:documentation>Tests for 'flat' fit; tails compared to this fraction of peak</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0"/>
+						<xs:maxExclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="PeakLevelForEndPtTest" type="xs:double" default="60.0">
+				<xs:annotation>
+					<xs:documentation>Tests for 'flat' fits; fractiion above compared to peak less this level</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LowTailHeightThreshold" type="xs:double" default="0.1">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height for (left) tail in scanning for end of data interval</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LowTailSlopeThreshold" type="xs:double" default="0.1">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak slope (via linear regression) for (left) tail in scanning for end of data interval</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinSamplesForSlopeRegression" default="3">
+				<xs:annotation>
+					<xs:documentation>Minimum number of samples to use to estimate slope using linear regression - preferably, algoriithm uses more than this number</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LaneStandardSearch">
+		<xs:annotation>
+			<xs:documentation>Subset selection search parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AcceptanceFactorOfMaxPeak" type="xs:double" default="0.34">
+				<xs:annotation>
+					<xs:documentation>Filter for initial 'junk' at beginning - reject peaks above this fraction of max peak</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndTestFactor" type="xs:double" default="0.335">
+				<xs:annotation>
+					<xs:documentation>Used to test validity of max peak as defining 'junk' - last peak on right must be less than this fraction of max peak</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SkipFractionOfInitialPeaks" type="xs:double" default="0.4">
+				<xs:annotation>
+					<xs:documentation>Skip this proportion of initial peaks on left when calculating max peak to be used with relative height criteria (not the same max peak as above)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinCorrelationForRecursiveSearch" type="xs:double" default="0.98">
+				<xs:annotation>
+					<xs:documentation>During recursive search, use this correlation to weed out unlikely subsets - deliberately set 'low'</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxStartPtsForPartialSearch" type="xs:integer" default="6">
+				<xs:annotation>
+					<xs:documentation>In the absence of relative height info, use this number (maximum) to initiate left and right search, and then add peaks in the middle</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BeginAnalysisProportion" type="xs:double" default="0.75">
+				<xs:annotation>
+					<xs:documentation>The 'begin analysis' time is set to this fraction times the mean of the first peak plus 1 minus this fraction times the 'end of the junk'</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LaneStandardSearchSpacing" type="ControlSearchBounds">
+				<xs:annotation>
+					<xs:documentation>For selection of correct lane standard peaks from set of candidate peaks</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CorrelationThresholds">
+				<xs:annotation>
+					<xs:documentation>Correlation with ideal (after quadratic transformation) required for lane std acceptance</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="ILSSpecificThreshold">
+							<xs:annotation>
+								<xs:documentation>Synonym gives substring in lane standard name, such as "ABI" or "Promega"</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Synonym" type="Synonym"/>
+									<xs:element name="CorrelationWiithIdeal" type="xs:double"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LadderLocusSearch">
+		<xs:annotation>
+			<xs:documentation>Subset selection search parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="LadderLociMinimumCorrelationWithIdeal" type="xs:double" default="0.999">
+				<xs:annotation>
+					<xs:documentation>Correlation with ideal required for locus acceptance</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LadderLocusSearchSpacing" type="ControlSearchBounds">
+				<xs:annotation>
+					<xs:documentation>For selection of correct locus peaks from set of candidate peaks</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaxStartPtsForPartialSearch" type="xs:integer" default="6">
+				<xs:annotation>
+					<xs:documentation>In the absence of relative height info, use this number (maximum) to initiate left and right search, and then add peaks in the middle</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SSLocusCollection">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Locus" type="SSLocusType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StandardSettingsType">
+		<xs:sequence>
+			<xs:element name="AlgorithmParameters" type="AlgorithmParameters"/>
+			<xs:element name="StandardParameters" type="StandardParameters"/>
+			<xs:element name="StdMarkerSetSpecifications">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="StdMarkerSetCollection">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="MarkerSetName" type="xs:string"/>
+									<xs:element name="PositiveControls" type="PositiveControls"/>
+									<xs:element name="StandardOffLadderAlleles" type="SSLocusCollection" minOccurs="0"/>
+									<xs:element name="StandardTrialleles" type="SSLocusCollection" minOccurs="0"/>
+									<xs:element name="StdPosCtrlTrialleles" type="SSLocusCollection" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SSLocusType">
+		<xs:sequence>
+			<xs:element name="Name" type="Name">
+				<xs:annotation>
+					<xs:documentation>Locus name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="Allele" type="Allele"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ControlSearchBounds">
+		<xs:sequence>
+			<xs:element name="MaxSpacingMultiple" type="xs:double"/>
+			<xs:element name="MinSpacingMultiple" type="xs:double"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

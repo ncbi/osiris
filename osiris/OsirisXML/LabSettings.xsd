@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="LabSettings">
+		<xs:annotation>
+			<xs:documentation>Laboratory specific settings and thresholds</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="NameStrings">
+					<xs:annotation>
+						<xs:documentation>Substrings in file names to identify sample file type</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="Thresholds"/>
+				<xs:element name="LabMarkerSetSpecifications" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="LabMarkerSetCollection">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="MarkerSetName" type="xs:string"/>
+										<xs:element ref="PositiveControls" minOccurs="0"/>
+										<xs:element name="OffLadderAlleles" type="LocusCollection" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Off ladder alleles allowed with triggering artifact notice</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="SampleAcceptedTrialleles" type="LocusCollection" minOccurs="0"/>
+										<xs:element name="PosCtrlAcceptedTrialleles" type="LocusCollection" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="NameStrings">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="LadderStrings">
+					<xs:annotation>
+						<xs:documentation>Identify ladder files</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element ref="Synonym"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="StdPositveControlStrings">
+					<xs:annotation>
+						<xs:documentation>Identify standard positive control files</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element ref="Synonym"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="NegativeControlStrings">
+					<xs:annotation>
+						<xs:documentation>Identify negative control files</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element ref="Synonym"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="StandardControlName" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PositiveControls">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="PositiveControl">
+					<xs:annotation>
+						<xs:documentation>Each positive control has a file name containing a specific synonym</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="Name"/>
+							<xs:element name="Loci" type="LocusCollection"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OffLadderAlleles" type="LocusCollection"/>
+	<xs:element name="Thresholds">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="LadderRFUTests"/>
+				<xs:element ref="LaneStandardRFUTests"/>
+				<xs:element ref="SampleRFUTests"/>
+				<xs:element name="HeterozygousImbalanceLimit" type="xs:double" default="0.30">
+					<xs:annotation>
+						<xs:documentation>Lower peak must be at least this fraction of maximum peak; default = 0.30</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MinBoundForHomozygote" type="xs:double" default="-1">
+					<xs:annotation>
+						<xs:documentation>Minimum RFU for single peak to be considered homozygote; -1 if not applicable</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MaxNumberOfPullupsPerSample" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>-1 if not applicable</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MaxNumberOfStutterPeaksPerSample" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>-1 if not applicable</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MaxNumberOfSpikesPerSample" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>-1 if not applicable</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MaxNumberOfAdenylationsPerSample" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>-1 if not applicable</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MaxNumberOfOLAllelesPerSample" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>-1 if not applicable</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MaxResidualForAlleleCall" type="xs:double" default="-1">
+					<xs:annotation>
+						<xs:documentation>Always less than 0.5; set to less for quality std; -1 if not applicable; recommend 0.35 - 0.4</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="MinBPSForArtifacts" type="xs:integer" default="-1">
+					<xs:annotation>
+						<xs:documentation>BP threshold below which artifacts are not reported</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Synonym" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>All substrings are case independent</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="Name" type="xs:string"/>
+	<xs:element name="Allele">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Name">
+					<xs:annotation>
+						<xs:documentation>Allele name</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="BioID" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>Base pair relative to named locus</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Locus">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Name">
+					<xs:annotation>
+						<xs:documentation>Locus name</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:sequence maxOccurs="unbounded">
+					<xs:element ref="Allele"/>
+				</xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RFULimits" type="RFULimitsType"/>
+	<xs:element name="LadderRFUTests" type="RFULimitsType"/>
+	<xs:element name="LaneStandardRFUTests" type="RFULimitsType"/>
+	<xs:element name="SampleRFUTests" type="RFULimitsType"/>
+	<xs:complexType name="RFULimitsType">
+		<xs:sequence>
+			<xs:element name="MinimumRFU" type="xs:double" default="150">
+				<xs:annotation>
+					<xs:documentation>Minimum acceptable RFU</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaximumRFU" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Maximim acceptable RFU; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FractionOfMaxPeak" type="xs:double" default="-1">
+				<xs:annotation>
+					<xs:documentation>Fraction of maximum peak, below which peak is unacceptable; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StutterThreshold" type="xs:double" default="0.15">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one repeat to call result a stutter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AdenylationThreshold" type="xs:double" default="0.3333">
+				<xs:annotation>
+					<xs:documentation>Fraction of peak height within one base pair to call result an adenylation (+A/-A)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LocusCollection">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element ref="Locus"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

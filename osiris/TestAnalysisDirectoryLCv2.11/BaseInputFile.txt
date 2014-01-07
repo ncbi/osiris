@@ -1,0 +1,17 @@
+InputDirectory=C:\Apps\User_Installs\NCBI\Osiris\TestAnalysis\PowerPlex16\STRBasePP16;							
+LadderDirectory=C:\Apps\User_Installs\NCBI\Osiris\Config\;							
+ReportDirectory=C:\Users\goorrob\SmartOsirisReports\;							
+MarkerSetName=PowerPlex 16;							
+LaneStandardName=Promega-ILS-500;							
+CriticalOutputLevel=15;							
+MinSampleRFU=100;							
+MinLaneStandardRFU=100;							
+MinLadderRFU=150;							
+MinInterlocusRFU=100;							
+MinLadderInterlocusRFU=150;							
+SampleDetectionThreshold=100;							
+RawDataString=R;							
+LabSettings=C:\Apps\User_Installs\NCBI\Osiris\Config\Volumes\PP16\PP16_LabSettings.xml;							
+StandardSettings=C:\Apps\User_Installs\NCBI\Osiris\Config\Volumes\PP16\PP16_StdSettings.xml;							
+MessageBook=C:\Apps\User_Installs\NCBI\Osiris\Config\Volumes\PP16\PP16_MessageBookV4.0.xml;
+;							

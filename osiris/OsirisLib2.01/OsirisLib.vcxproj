@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>OsirisLib-v2.01</ProjectName>
+    <ProjectGuid>{3071892C-0773-4CA4-A4A8-E88ADE8B8D9F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">OsirisLib</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">OsirisLib</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Version;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)OsirisLib.lib</OutputFile>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\Version;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)OsirisLib.lib</OutputFile>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BaseGenetics.cpp" />
+    <ClCompile Include="BaseGeneticsSM.cpp" />
+    <ClCompile Include="ChannelData.cpp" />
+    <ClCompile Include="ChannelDataSM.cpp" />
+    <ClCompile Include="ControlFit.cpp" />
+    <ClCompile Include="coordtrans.cpp" />
+    <ClCompile Include="CoreBioComponent.cpp" />
+    <ClCompile Include="CoreBioComponentSM.cpp" />
+    <ClCompile Include="DataInterval.cpp" />
+    <ClCompile Include="DataSignal.cpp" />
+    <ClCompile Include="DataSignalSM.cpp" />
+    <ClCompile Include="DirectoryManager.cpp" />
+    <ClCompile Include="Evaluate.cpp" />
+    <ClCompile Include="ExportFile.cpp" />
+    <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="ExpressionParser.cpp" />
+    <ClCompile Include="fsa2XML.cpp" />
+    <ClCompile Include="fsaDirEntry.cpp" />
+    <ClCompile Include="fsaFile.cpp" />
+    <ClCompile Include="fsaFileData.cpp" />
+    <ClCompile Include="fsaFileInput.cpp" />
+    <ClCompile Include="fsaPeakData.cpp" />
+    <ClCompile Include="GaussianRandomVariable.cpp" />
+    <ClCompile Include="Genetics.cpp" />
+    <ClCompile Include="GeneticsSM.cpp" />
+    <ClCompile Include="GenotypeSpecs.cpp" />
+    <ClCompile Include="IndividualGenotype.cpp" />
+    <ClCompile Include="LadderData.cpp" />
+    <ClCompile Include="Notice.cpp" />
+    <ClCompile Include="OsirisInputFile.cpp" />
+    <ClCompile Include="OsirisMsg.cpp" />
+    <ClCompile Include="OsirisPosix.cpp" />
+    <ClCompile Include="OutputLevelManager.cpp" />
+    <ClCompile Include="PackedDate.cpp" />
+    <ClCompile Include="PackedTime.cpp" />
+    <ClCompile Include="ParameterServer.cpp" />
+    <ClCompile Include="Quadratic.cpp" />
+    <ClCompile Include="RecursiveInnerProduct.cpp" />
+    <ClCompile Include="SampleData.cpp" />
+    <ClCompile Include="SingularValueDecomposition.cpp" />
+    <ClCompile Include="SmartMessage.cpp" />
+    <ClCompile Include="SmartMessagingObject.cpp" />
+    <ClCompile Include="SmartNotice.cpp" />
+    <ClCompile Include="SpecialLinearRegression.cpp" />
+    <ClCompile Include="STRChannelData.cpp" />
+    <ClCompile Include="STRChannelDataSM.cpp" />
+    <ClCompile Include="STRCoreBioComponent.cpp" />
+    <ClCompile Include="STRCoreBioComponentSM.cpp" />
+    <ClCompile Include="STREvaluate.cpp" />
+    <ClCompile Include="STRGenetics.cpp" />
+    <ClCompile Include="STRGeneticsSM.cpp" />
+    <ClCompile Include="STRLCAnalysis.cpp" />
+    <ClCompile Include="STRLCAnalysisSM.cpp" />
+    <ClCompile Include="STRNotices.cpp" />
+    <ClCompile Include="STRSmartMessage.cpp" />
+    <ClCompile Include="STRSmartNotices.cpp" />
+    <ClCompile Include="SynonymList.cpp" />
+    <ClCompile Include="TestCharacteristic.cpp" />
+    <ClCompile Include="TracePrequalification.cpp" />
+    <ClCompile Include="xmlwriter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaseGenetics.h" />
+    <ClInclude Include="ChannelData.h" />
+    <ClInclude Include="ControlFit.h" />
+    <ClInclude Include="coordtrans.h" />
+    <ClInclude Include="CoreBioComponent.h" />
+    <ClInclude Include="DataInterval.h" />
+    <ClInclude Include="DataSignal.h" />
+    <ClInclude Include="DirectoryManager.h" />
+    <ClInclude Include="Evaluate.h" />
+    <ClInclude Include="..\BaseClassLib\Exception.h" />
+    <ClInclude Include="ExportFile.h" />
+    <ClInclude Include="Expression.h" />
+    <ClInclude Include="fsa2XML.h" />
+    <ClInclude Include="fsaDataDefs.h" />
+    <ClInclude Include="fsaDirEntry.h" />
+    <ClInclude Include="fsaFile.h" />
+    <ClInclude Include="fsaFileData.h" />
+    <ClInclude Include="fsaFileInput.h" />
+    <ClInclude Include="fsaPeakData.h" />
+    <ClInclude Include="GaussianRandomVariable.h" />
+    <ClInclude Include="Genetics.h" />
+    <ClInclude Include="GenotypeSpecs.h" />
+    <ClInclude Include="IndividualGenotype.h" />
+    <ClInclude Include="IReader.h" />
+    <ClInclude Include="LadderData.h" />
+    <ClInclude Include="..\BaseClassLib\Malloc.h" />
+    <ClInclude Include="Notice.h" />
+    <ClInclude Include="Notices.h" />
+    <ClInclude Include="OsirisInputFile.h" />
+    <ClInclude Include="OsirisMsg.h" />
+    <ClInclude Include="OsirisPosix.h" />
+    <ClInclude Include="OutputLevelManager.h" />
+    <ClInclude Include="PackedDate.h" />
+    <ClInclude Include="PackedTime.h" />
+    <ClInclude Include="ParameterServer.h" />
+    <ClInclude Include="Quadratic.h" />
+    <ClInclude Include="RecursiveInnerProduct.h" />
+    <ClInclude Include="SampleData.h" />
+    <ClInclude Include="SingularValueDecomposition.h" />
+    <ClInclude Include="SmartMessage.h" />
+    <ClInclude Include="SmartMessagingObject.h" />
+    <ClInclude Include="SmartNotice.h" />
+    <ClInclude Include="SpecialLinearRegression.h" />
+    <ClInclude Include="STRChannelData.h" />
+    <ClInclude Include="STRCoreBioComponent.h" />
+    <ClInclude Include="STREvaluate.h" />
+    <ClInclude Include="STRGenetics.h" />
+    <ClInclude Include="STRLCAnalysis.h" />
+    <ClInclude Include="STRNotices.h" />
+    <ClInclude Include="STRSmartMessage.h" />
+    <ClInclude Include="STRSmartNotices.h" />
+    <ClInclude Include="SynonymList.h" />
+    <ClInclude Include="TestCharacteristic.h" />
+    <ClInclude Include="TracePrequalification.h" />
+    <ClInclude Include="xmlwriter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".#DataSignal.cpp.1.1" />
+    <None Include="ReadMe.txt" />
+    <None Include="SmartExpressionExpr.l" />
+    <None Include="SmartExpressionExpr.y" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

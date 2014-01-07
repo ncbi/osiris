@@ -1,0 +1,30 @@
+@echo off
+set SRC=../../MessageBook/OsirisMessageBookV4.0.xml
+set DEST=MessageBookV4.0.xml
+set COPY=cp -puv
+%COPY% %SRC% ./%DEST%
+%COPY% %SRC% Cofiler/Cofiler_%DEST%
+%COPY% %SRC% GF/GF_%DEST%
+%COPY% %SRC% GFHID/GFHID_%DEST%
+%COPY% %SRC% ID/ID_%DEST%
+%COPY% %SRC% ID_HID/ID_HID_%DEST%
+%COPY% %SRC% IDNO250/IDNO250_%DEST%
+%COPY% %SRC% IDNO250_HID/IDNO250_HID_%DEST%
+%COPY% %SRC% IDplus/IDplus_%DEST%
+%COPY% %SRC% IDplusNO250/IDplusNO250_%DEST%
+%COPY% %SRC% NGMSElect/NGMSElect_%DEST%
+%COPY% %SRC% PP12/PP12_%DEST%
+%COPY% %SRC% PP16/PP16_%DEST%
+%COPY% %SRC% PP16_HID/PP16_HID_%DEST%
+%COPY% %SRC% PP18D/PP18D_%DEST%
+%COPY% %SRC% PP21/PP21_%DEST%
+%COPY% %SRC% PPFusion/PPFusion_%DEST%
+%COPY% %SRC% PPFusion_HID/PPFusion_HID_%DEST%
+%COPY% %SRC% PPY/PPY_%DEST%
+%COPY% %SRC% PPY23/PPY23_%DEST%
+%COPY% %SRC% PPY23_HID/PPY23_HID_%DEST%
+%COPY% %SRC% Profiler/Profiler_%DEST%
+%COPY% %SRC% SEfilerPlus/SEfilerPlus_%DEST%
+%COPY% %SRC% SGMPlus/SGMPlus_%DEST%
+%COPY% %SRC% Yfiler/Yfiler_%DEST%
+

@@ -1,0 +1,18 @@
+InputDirectory = E:/Users/goorrob/EXP-081201-02;
+LadderDirectory = E:/Users/goorrob/My Documents/DEV/internal/osiris/OsirisXML;
+ReportDirectory = E:\Users\goorrob/SmartOsirisReports;
+MarkerSetName = Identifiler;
+LaneStandardName = ABI-LIZ500;
+CriticalOutputLevel = 15;
+MinSampleRFU = 100;
+MinLaneStandardRFU = 205;
+MinLadderRFU = 250;
+MinInterlocusRFU = 1000;
+MinLadderInterlocusRFU = 1000;
+SampleDetectionThreshold = 50;
+RawDataString = r;
+LabSettings = E:\Users\goorrob\My Documents\DEV\internal\osiris\OsirisXML\NamedxmlConfigurations\ID\ID_LabSettings.xml;
+StandardSettings = E:\Users\goorrob\My Documents\DEV\internal\osiris\OsirisXML\NamedxmlConfigurations\ID\ID_StdSettings.xml;
+MessageBook = E:\Users\goorrob\My Documents\DEV\internal\osiris\MessageBook\OsirisMessageBookV4.0.xml;
+# = Test of new format;
+;

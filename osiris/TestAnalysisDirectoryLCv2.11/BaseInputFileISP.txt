@@ -1,0 +1,16 @@
+InputDirectory = C:/Users/goorrob/Documents/IllinoisTestSamples2/Illinois Samples/AMP-110701-02A_with 10sec failed neg/AMP-110701-02A_1_C3PO;
+LadderDirectory = C:/Users/goorrob/Documents/DEV/internal/osiris/OsirisXML;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+MarkerSetName = PowerPlex 16;
+LaneStandardName = Promega-ILS-500;
+CriticalOutputLevel = 15;
+MinSampleRFU = 150;
+MinLaneStandardRFU = 150;
+MinLadderRFU = 150;
+MinInterlocusRFU = 150;
+RawDataString = r;
+LabSettings = C:/Apps/User_Installs/NCBI/Osiris/site/Volumes/V-20110414-162944/V-20110414-162944_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/Osiris/site/Volumes/V-20110414-162944/V-20110414-162944_StdSettings.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/Osiris/site/Volumes/V-20110414-162944/V-20110414-162944_MessageBookV4.0.xml;
+# = Test of new format;
+;

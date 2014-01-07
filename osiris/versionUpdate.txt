@@ -1,0 +1,68 @@
+To change the version of Osiris, the following needs to be done:
+
+1. Edit the image, OsirisAnalysis/Osiris*.png with the correct version.  
+This is done by typing the version into wordart.doc, 
+doing a print screen and paste into a blank graphic using MS-Paint
+then copy/paste the version number into the osiris image.
+
+2. Run f2d.pl in the OsirisAnalysis directory using the image file
+name as the command line argument.  This will generate osiris_png.h
+which is used for the splash screen.
+
+3. In the setup project, in Setup1 directory, set the name of the
+output .msi file to reflect the new version.
+
+4. Edit Version/OsirisVersion.h to update the version.
+
+   Rebuild ALL!
+
+   On a UNIX machine, do a fresh CVS checkout of
+   internal/osiris in a new directory.
+   In the osiris directory run
+   sh fix.sh
+   This will move unwanted files out of the osiris directory
+
+   in the internal directory build a source distribution
+
+   cd ..
+   tar zcvf ../dist/Osiris-[version]-source.tar.gz osiris
+
+   Copy this source distribution to a mac and a PC, extract and build
+   according to the instructions in the file: README
+
+5. When distributing to the public or releasing a beta,
+   update the web site in
+   /net/mwebtest2/export/home/web/public/htdocs/projects/SNP/osiris
+
+  Update the version info in version.cgi
+
+6. For a non-public release, go to 
+   /net/mwebtest2/export/home/web/public/htdocs/projects/SNP
+   and run the following on the command line:
+
+   ls -1 osiris/version.cgi >> .sink_thesefiles
+
+
+
+7.  For a public dist. copy the distribution files into
+    /net/mwebtest2/export/home/web/public/data/projects/SNP/osiris
+
+   in /net/mwebtest2/export/home/web/public/htdocs/projects/SNP/osiris
+   update getFile.cgi in
+   and add/move links in index.html
+
+   Test on http://mwebtest2.ncbi.nlm.nih.gov/projects/SNP/osiris/
+   when it works, update using sinker as follows
+
+
+
+   Go to /net/mwebtest2/export/home/web/public/data/projects/SNP
+   run the following at the command prompt:
+
+   ls -1 osiris/* >> .sink_thesefiles
+
+   When .sink_thesefiles no longer exists, go to
+   /net/mwebtest2/export/home/web/public/htdocs/projects/SNP
+   and run the following
+
+   ls -1 osiris/* >> .sink_thesefiles

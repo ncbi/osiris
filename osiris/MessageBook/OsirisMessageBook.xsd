@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by XMLSPY 2006 Professional Ed., Installed for 4 users (with SMP from 2006-01-13 to 2007-01-14) (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="MessageList">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Message"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="MessageKey">
+			<xs:selector xpath=".//Message"/>
+			<xs:field xpath="Index"/>
+		</xs:key>
+	</xs:element>
+	<xs:element name="Message">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Index" type="xs:integer"/>
+				<xs:element name="Text" type="xs:string"/>
+				<xs:element name="NDataElements" default="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:integer">
+							<xs:minInclusive value="0"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Type" type="xs:integer"/>
+				<xs:element name="Level" type="xs:integer"/>
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="Spec" type="xs:integer"/>
+				</xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

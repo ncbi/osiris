@@ -1,0 +1,5 @@
+remove thingsdemo from all:
+
+remove bmpcombo and dropdown from Makefile
+
+add -mxxe2 to CXXFLAGS

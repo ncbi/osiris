@@ -1,0 +1,47 @@
+Class Name                       Key		Type
+
+RGPersistent                      1		PersistentBase
+RGDList                           2		List
+RGString                          3		xs:string
+RGTree                            4		Tree
+RGDocument                        5		Document
+RGPArray                          6		PArray
+RGNull                            7		Null
+RGPInt                            8		integer
+RGIndexedLabel                    9		IndexedLabel
+RGIntArray                       10		IntegerArray
+RGPScalar			 11		scalar
+RGPDouble			 12		double
+RGPUnsigned			 13		unsignedLong
+RGPBoolean			 14		xs:boolean
+RGXmlDataRestriction		 15		DataConstraint
+RGXmlDataEnumeration		 16		EnumerationConstraint
+RGXmlSizeRestriction		 19		SizeConstraint
+RGXmlDataLength			 20		DataLengthConstraint
+RGXmlDataFractionDigits		 21		FractionDigitsConstraint
+RGXmlDataMaxLength		 22		MaxLengthConstraint
+RGXmlDataMinLength		 23		MinLengthConstraint
+RGXmlDataTotalDigits		 24		TotalDigitsConstraint
+RGXmlDataLimit			 25		DataLimitConstraint
+RGXmlDataMaxInclusive		 26		MaxInclusiveConstraint
+RGXmlDataMinInclusive		 27		MinInclusiveConstraint
+RGXmlDataMaxExclusive		 28		MaxExclusiveConstraint
+RGXmlDataMinExclusive		 29		MinExclusiveConstraint
+RGXMLType			 30		XMLType
+RGXMLSchemaSummary		 31		XMLSchemaSummary
+RGHashTable			 32		HashTable
+RGXMLAttributeList		 33		XMLAttributeList
+RGXMLComplexType		 34		XMLComplexType
+RGXMLElementType		 35		XMLElement
+RGXMLComplexList		 36		XMLComplexList
+RGIDWRAPPER			 37		IDWrapper
+RGXMLSubElementType		 38		XMLSubElementType
+RGPDecimal			 39		xs:decimal
+RGXMLInt			 40		xs:int
+RGXMLDouble			 41		xs:double
+RGXMLUnsigned			 42		xs:unsignedLong
+RGXMLSimpleType			 43		XMLSimpleType
+RGXMLStringScalar		 44		XMLStringScalar
+RGXMLSimpleEnumerationType	 45		XMLSimpleEnumerationType
+RGXMLRestrictedSimpleType	 46		XMLRestrictedSimpleType
+

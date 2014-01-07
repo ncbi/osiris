@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MessageList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook2.xsd">
+	<Message>
+		<Index>0</Index>
+		<Text>SAMPLE COULD NOT BE ANALYZED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>1</Index>
+		<Text>POSITIVE CONTROL LOCUS MISMATCH</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>2</Index>
+		<Text>NEGATIVE CONTROL REQUIRES ANALYST REVIEW</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>3</Index>
+		<Text>ILS COULD NOT BE ANALYZED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>4</Index>
+		<Text>ALLELIC LADDER COULD NOT BE ANALYZED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>90</Index>
+		<Text>ILS SPACING DOES NOT MEET EXPECTED PARAMETERS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>91</Index>
+		<Text>LOCUS SPACING DOES NOT MEET EXPECTED PARAMETERS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>100</Index>
+		<Text>NO ALLELIC LADDER FILE IDENTIFIED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>101</Index>
+		<Text>THE ALLELIC LADDER TYPE IS NOT RECOGNIZED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>104</Index>
+		<Text>THE REAGENT KIT IS NOT RECOGNIZED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>105</Index>
+		<Text>MORE THAN ONE REAGENT KIT  IS IDENTIFIED IN THE DIRECTORY</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>106</Index>
+		<Text>NO POSITIVE CONTROL SAMPLE WAS FOUND IN THE DIRECTORY</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>107</Index>
+		<Text>NO NEGATIVE CONTROL FILE WAS FOUND IN THE DIRECTORY</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>108</Index>
+		<Text>NO SAMPLE WAS FOUND IN THE DIRECTORY</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>301</Index>
+		<Text>CURVE FIT DOES NOT MEET EXPECTED VALUES</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Curve fit unacceptable</Label>
+	</Message>
+	<Message>
+		<Index>302</Index>
+		<Text>CURVE FIT ONLY MARGINALLY MEETS EXPECTED VALUES</Text>
+		<Subject>10</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Curve fit marginal</Label>
+	</Message>
+	<Message>
+		<Index>303</Index>
+		<Text> ARTIFACT  FOUND</Text>
+		<Subject>10</Subject>
+		<MessageLevel>10</MessageLevel>
+	</Message>
+	<Message>
+		<Index>304</Index>
+		<Text>ARTIFACT FOUND:  SPIKE</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Spike</Label>
+	</Message>
+	<Message>
+		<Index>305</Index>
+		<Text>ARTIFACT  FOUND:  STUTTER</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Stutter</Label>
+		<TriggersLowPrioritySignal>true</TriggersLowPrioritySignal>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>306</Index>
+		<Text>ARTIFACT  FOUND:  ADENYLATION</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Adenylation</Label>
+		<TriggersLowPrioritySignal>true</TriggersLowPrioritySignal>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>307</Index>
+		<Text>ARTIFACT  FOUND:  BLOB</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Blob</Label>
+	</Message>
+	<Message>
+		<Index>308</Index>
+		<Text>ARTIFACT  FOUND:  PULL-UP</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Pull-up</Label>
+	</Message>
+	<Message>
+		<Index>310</Index>
+		<Text>NO GENOTYPE WAS IDENTIFIED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>No Genotype</Label>
+	</Message>
+	<Message>
+		<Index>311</Index>
+		<Text>THREE OR MORE ALLELES WERE IDENTIFIED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Tri-allele</Label>
+	</Message>
+	<Message>
+		<Index>312</Index>
+		<Text>UNEXPECTED NUMBER OF PEAKS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>324</Index>
+		<Text>PEAK DETECTED BETWEEN LOCI</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Inter-locus Peak</Label>
+	</Message>
+	<Message>
+		<Index>326</Index>
+		<Text>HETEROZYGOUS IMBALANCE DETECTED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Heterozygous Imbalance</Label>
+	</Message>
+	<Message>
+		<Index>330</Index>
+		<Text>OFF LADDER ALLELE(S) DETECTED:</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Off Ladder Allele</Label>
+	</Message>
+	<Message>
+		<Index>356</Index>
+		<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Height Inappropriate for Homozygote</Label>
+	</Message>
+	<Message>
+		<Index>359</Index>
+		<Text>OSIRIS GENOTYPE DIFFERS FROM ABI GENOTYPE</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>501</Index>
+		<Text>ILS CONTAINS TOO FEW PEAKS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>502</Index>
+		<Text>LOCUS CONTAINS TOO FEW PEAKS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Too Few Peaks</Label>
+	</Message>
+	<Message>
+		<Index>520</Index>
+		<Text>DIRECTORY INFORMATION ON SAMPLE DOES NOT MEET EXPECTATIONS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>701</Index>
+		<Text>UNABLE TO READ FSA FILE</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>702</Index>
+		<Text>UNABLE TO OPEN INPUT DIRECTORY</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>703</Index>
+		<Text>UNABLE TO OPEN OUTPUT FILE</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>704</Index>
+		<Text>LADDER DATA FORMAT UNRECOGNIZED</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>705</Index>
+		<Text>PERVASIVE STUTTER</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>706</Index>
+		<Text>PEAK OUTSIDE ILS RANGE</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Outside ILS Range</Label>
+	</Message>
+	<Message>
+		<Index>707</Index>
+		<Text>FOUND INTER-LOCUS LADDER PEAK</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Interlocus Ladder Peak</Label>
+	</Message>
+	<Message>
+		<Index>708</Index>
+		<Text>COULD NOT FIND POPULATION MARKER SET NAMED: </Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>709</Index>
+		<Text>COULD NOT FIND INTERNAL LANE STANDARD NAMED: </Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>710</Index>
+		<Text>SIGNAL TOO LOW FOR LOCUS</Text>
+		<Subject>3</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Too Low for Locus</Label>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>711</Index>
+		<Text>SIGNAL PEAK BELOW MINIMUM RFU</Text>
+		<Subject>1</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Below Min RFU</Label>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>712</Index>
+		<Text>UNEXPECTED PEAK IN ILS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Unexpected Peak in ILS</Label>
+	</Message>
+	<Message>
+		<Index>713</Index>
+		<Text>UNEXPECTED PEAK IN LADDER LOCUS</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Unexpected Peak in Ladder Locus</Label>
+	</Message>
+	<Message>
+		<Index>714</Index>
+		<Text>ARTIFACT  FOUND:  PRIMARY PULL-UP</Text>
+		<Subject>1</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Primary Pull-up</Label>
+	</Message>
+	<Message>
+		<Index>715</Index>
+		<Text>POSSIBLE PULL-UP COINCIDES WITH ALLELE</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Pull-up at Allele</Label>
+	</Message>
+	<Message>
+		<Index>716</Index>
+		<Text>POSSIBLE PULL-UP MAY MITIGATE APPARENT HETEROZYGOUS IMBALANCE</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Pull-up with Heterozygous Imbalance</Label>
+	</Message>
+	<Message>
+		<Index>717</Index>
+		<Text>LOW TRI-ALLELE POSSIBLE RESULT OF PULL-UP</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Low Tri-allele with Pull-up</Label>
+	</Message>
+	<Message>
+		<Index>718</Index>
+		<Text>LOW OFF LADDER ALLELE POSSIBLE RESULT OF PULL-UP</Text>
+		<Subject>20</Subject>
+		<MessageLevel>10</MessageLevel>
+		<Label>Low OL Allele with Pull-up</Label>
+	</Message>
+	<Message>
+		<Index>719</Index>
+		<Text>POSSIBLE PULL-UP MAY MITIGATE PEAK HEIGHTS OUT OF ORDER</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Peak Heights Unexpected with Pull-up</Label>
+	</Message>
+	<Message>
+		<Index>720</Index>
+		<Text>CALL IGNORES ONE OR MORE LOW OFF-LADDER ALLELES</Text>
+		<Subject>20</Subject>
+		<MessageLevel>10</MessageLevel>
+		<Label>Low Off Ladder Alleles</Label>
+	</Message>
+	<Message>
+		<Index>721</Index>
+		<Text>ALLELE PEAK HEIGHTS OUT OF ORDER</Text>
+		<Subject>6</Subject>
+		<MessageLevel>6</MessageLevel>
+		<Label>Peak Heights Unexpected</Label>
+	</Message>
+	<Message>
+		<Index>722</Index>
+		<Text>POSSIBLE PULL-UP COINCIDES WITH CONTROL (ILS OR LADDER) PEAK</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Pull-up at Control Peak</Label>
+	</Message>
+	<Message>
+		<Index>723</Index>
+		<Text>POSSIBLE PULL-UP COINCIDES WITH OFF-LADDER ALLELE BETWEEN LOCI</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Pull-up Off Ladder Between Loci</Label>
+	</Message>
+	<Message>
+		<Index>724</Index>
+		<Text>CALL IGNORES ONE OR MORE LOW ALLELES THAT ARE ON-LADDER</Text>
+		<Subject>10</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Ignores Low (On Ladder) Alleles</Label>
+	</Message>
+	<Message>
+		<Index>725</Index>
+		<Text>POSSIBLE PULL-UP INDUCED CRATER</Text>
+		<Subject>1</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Pull-up Induced Crater</Label>
+	</Message>
+	<Message>
+		<Index>726</Index>
+		<Text>POSSIBLE PULL-UP INDUCED CRATER OFF-LADDER BETWEEN LOCI</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Pull-up Induced Crater Between Loci</Label>
+	</Message>
+	<Message>
+		<Index>727</Index>
+		<Text>NUMBER OF PULL-UP PEAKS IN SAMPLE:  </Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+	</Message>
+	<Message>
+		<Index>728</Index>
+		<Text>NUMBER OF ADENYLATION PEAKS IN SAMPLE:  </Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+	</Message>
+	<Message>
+		<Index>729</Index>
+		<Text>NUMBER OF STUTTER PEAKS IN SAMPLE:  </Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+	</Message>
+	<Message>
+		<Index>730</Index>
+		<Text>NUMBER OF PRIMARY PULL-UP PEAKS IN SAMPLE:  </Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+	</Message>
+	<Message>
+		<Index>731</Index>
+		<Text>NUMBER OF OFF-LADDER ALLELES WITHIN LOCI IN SAMPLE:  </Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+	</Message>
+	<Message>
+		<Index>732</Index>
+		<Text>NUMBER OF STUTTER PEAKS EXCEEDS THRESHOLD</Text>
+		<Subject>6</Subject>
+		<MessageLevel>6</MessageLevel>
+	</Message>
+	<Message>
+		<Index>733</Index>
+		<Text>NUMBER OF ADENYLATION PEAKS EXCEEDS THRESHOLD</Text>
+		<Subject>6</Subject>
+		<MessageLevel>6</MessageLevel>
+	</Message>
+	<Message>
+		<Index>734</Index>
+		<Text>NUMBER OF PULL-UP PEAKS EXCEEDS THRESHOLD</Text>
+		<Subject>6</Subject>
+		<MessageLevel>6</MessageLevel>
+	</Message>
+	<Message>
+		<Index>735</Index>
+		<Text>NUMBER OF OFF-LADDER ALLELES EXCEEDS THRESHOLD</Text>
+		<Subject>6</Subject>
+		<MessageLevel>6</MessageLevel>
+	</Message>
+	<Message>
+		<Index>736</Index>
+		<Text>NUMBER OF PRIMARY PULL-UP PEAKS EXCEEDS THRESHOLD</Text>
+		<Subject>6</Subject>
+		<MessageLevel>6</MessageLevel>
+	</Message>
+	<Message>
+		<Index>737</Index>
+		<Text>SOURCE OF POSSIBLE PULL-UP</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Source of Possible Pull-up</Label>
+	</Message>
+	<Message>
+		<Index>738</Index>
+		<Text>POSSIBLE CRATER</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Crater</Label>
+	</Message>
+	<Message>
+		<Index>739</Index>
+		<Text>POSSIBLE CRATER BETWEEN LOCI</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Crater Between Loci</Label>
+	</Message>
+	<Message>
+		<Index>740</Index>
+		<Text>POOR PEAK MORPHOLOGY</Text>
+		<Subject>1</Subject>
+		<MessageLevel>5</MessageLevel>
+		<Label>Peak Morphology</Label>
+	</Message>
+	<Message>
+		<Index>741</Index>
+		<Text>POOR LOCUS MORPHOLOGY</Text>
+		<Subject>1</Subject>
+		<MessageLevel>5</MessageLevel>
+		<Label>Locus Morphology</Label>
+	</Message>
+	<Message>
+		<Index>742</Index>
+		<Text>LOCUS MAY HAVE UNREPORTED OFF-LADDER ALLELES</Text>
+		<Subject>15</Subject>
+		<MessageLevel>5</MessageLevel>
+	</Message>
+	<Message>
+		<Index>743</Index>
+		<Text>X ALLELE FOR AMELOGENIN COULD NOT BE FOUND</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>744</Index>
+		<Text>EXTRANEOUS PEAK FOR POSITIVE CONTROL</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Extra Peak for Positive Control</Label>
+	</Message>
+	<Message>
+		<Index>745</Index>
+		<Text>NO POSITIVE CONTROL FOUND IN DIRECTORY</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>746</Index>
+		<Text>NO NEGATIVE CONTROL FOUND IN DIRECTORY</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>747</Index>
+		<Text>NAMED POSITIVE CONTROL NOT FOUND</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>748</Index>
+		<Text>POSITIVE CONTROL LOCUS NOT FOUND IN SET</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>749</Index>
+		<Text>PEAK HEIGHT ABOVE MAXIMUM THRESHOLD</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Height Exceeds Max Threshold</Label>
+		<TriggersLowPrioritySignal>true</TriggersLowPrioritySignal>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>750</Index>
+		<Text>ONE OR MORE PEAKS ABOVE MAXIMUM THRESHOLD</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>751</Index>
+		<Text>BASE PAIR RESIDUAL EXCEEDS THRESHOLD</Text>
+		<Subject>15</Subject>
+		<MessageLevel>5</MessageLevel>
+		<Label>Excessive Residual</Label>
+	</Message>
+	<Message>
+		<Index>752</Index>
+		<Text>PEAKS WITH EXCESS RESIDUALS: </Text>
+		<Subject>15</Subject>
+		<MessageLevel>5</MessageLevel>
+	</Message>
+	<Message>
+		<Index>753</Index>
+		<Text>SETUP ERROR:  NUMBER OF PEAKS UNAVAILABLE FOR LOCUS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>754</Index>
+		<Text>POSSIBLE EXTRA-LADDER ALLELE</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Possible Extra-Locus Allele</Label>
+	</Message>
+	<Message>
+		<Index>755</Index>
+		<Text>CONFLICT:  OSIRIS BELOW MIN RFU; RAW DATA ABOVE</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>OSIRIS Below Min RFU; Raw Data Above</Label>
+	</Message>
+	<Message>
+		<Index>756</Index>
+		<Text>CONFLICT:  RAW DATA BELOW MIN RFU; OSIRIS ABOVE</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Raw Data Below Min RFU; OSIRIS Above</Label>
+	</Message>
+	<Message>
+		<Index>757</Index>
+		<Text>CONFLICT:  OSIRIS ABOVE MAX RFU; RAW DATA BELOW</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>OSIRIS Above Max RFU; Raw Data Above</Label>
+	</Message>
+	<Message>
+		<Index>758</Index>
+		<Text>CONFLICT:  RAW DATA ABOVE MAX RFU; OSIRIS BELOW</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Raw Data Above Max RFU; OSIRIS Above</Label>
+	</Message>
+	<Message>
+		<Index>759</Index>
+		<Text>CRITICAL LEVEL MESSAGES AT ALLELE(S):  </Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>760</Index>
+		<Text>CRITICAL LEVEL MESSAGES AT ILS PEAK(S):  </Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>761</Index>
+		<Text>CANNOT SEPARATE ILS PRIMER PEAKS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>762</Index>
+		<Text>ILS NEIGHBOR FILTERS REMOVE TOO MANY PEAKS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>763</Index>
+		<Text>ILS FRACTIONAL HEIGHT FILTER REMOVES TOO MANY PEAKS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>764</Index>
+		<Text>SIGNAL HEIGHT BELOW MINIMUM FRACTIONAL FILTER HEIGHT</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Signal height below minimum fractional filter height but above min RFU</Label>
+		<TriggersLowPrioritySignal>true</TriggersLowPrioritySignal>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>765</Index>
+		<Text>ILS RELATIVE HEIGHTS INCONSISTENT WITH EXPECTED HEIGHTS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+	</Message>
+	<Message>
+		<Index>766</Index>
+		<Text>AMEL CONTAINS ONE OR MORE EXTRANEOUS PEAKS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>767</Index>
+		<Text>EXTRANEOUS PEAK WITHIN AMEL LOCUS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Extraneous Peak Within AMEL</Label>
+	</Message>
+	<Message>
+		<Index>768</Index>
+		<Text>NEGATIVE CONTROL CHANNEL CONTAINS NO PRIMER PEAKS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>769</Index>
+		<Text>ONE OR MORE NEGATIVE CONTROL CHANNELS CONTAIN NO PRIMER PEAKS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>770</Index>
+		<Text>RELATIVE HEIGHT IMBALANCE</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Relative Height Imbalance</Label>
+	</Message>
+	<Message>
+		<Index>771</Index>
+		<Text>ONE OR MORE INTERLOCUS PEAKS TO RIGHT OF LOCUS AT:  </Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>772</Index>
+		<Text>ONE OR MORE INTERLOCUS PEAKS TO LEFT OF LOCUS AT:  </Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+	</Message>
+	<Message>
+		<Index>773</Index>
+		<Text>SIGNAL HEIGHT BELOW MINIMUM FRACTIONAL FILTER HEIGHT</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Signal Below Minimum Fractional Filter Height Between Loci:  Other Notices May Be Suppressed</Label>
+		<TriggersLowPrioritySignal>true</TriggersLowPrioritySignal>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>774</Index>
+		<Text>LADDER LOCUS RELATIVE HEIGHTS INCONSISTENT WITH EXPECTED HEIGHTS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>5</MessageLevel>
+	</Message>
+	<Message>
+		<Index>775</Index>
+		<Text>SIGNAL IS PART OF AMBIGUOUS INTERLOCUS CRATER ANALYSIS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Signal Part of Inconsistent Interlocus Crater Analysis</Label>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>776</Index>
+		<Text>SIGNAL HEIGHT BELOW MINIMUM PULLUP FRACTIONAL FILTER HEIGHT</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Signal height below minimum pull-up fractional filter height but above min RFU</Label>
+		<TriggersLowPrioritySignal>true</TriggersLowPrioritySignal>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>777</Index>
+		<Text>SIGNAL HEIGHT BELOW MINIMUM PULLUP FRACTIONAL FILTER HEIGHT FOR LOCUS TO LEFT</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Signal height below minimum pull-up fractional filter height but above min RFU (left)</Label>
+	</Message>
+	<Message>
+		<Index>778</Index>
+		<Text>SIGNAL HEIGHT BELOW MINIMUM PULLUP FRACTIONAL FILTER HEIGHT FOR LOCUS TO RIGHT</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Signal height below minimum pull-up fractional filter height but above min RFU (right)</Label>
+	</Message>
+	<Message>
+		<Index>779</Index>
+		<Text>SIGNAL HEIGHT BELOW MINIMUM FRACTIONAL FILTER HEIGHT FOR LOCUS TO LEFT</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Signal height below minimum pull-up fractional filter height but above min RFU (left)</Label>
+	</Message>
+	<Message>
+		<Index>780</Index>
+		<Text>SIGNAL HEIGHT BELOW MINIMUM FRACTIONAL FILTER HEIGHT FOR LOCUS TO RIGHT</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Signal height below minimum pull-up fractional filter height but above min RFU (right)</Label>
+	</Message>
+	<Message>
+		<Index>781</Index>
+		<Text>POSSIBLE AMBIGUOUS INTERLOCUS PEAK ASSIGNED TO LOCUS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Possible ambiguous interlocus peak assigned to locus</Label>
+	</Message>
+	<Message>
+		<Index>782</Index>
+		<Text>AMBIGUOUS INTERLOCUS PEAK</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Ambiguous interlocus peak</Label>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+	<Message>
+		<Index>783</Index>
+		<Text>EXTRANEOUS PEAK IN NEGATIVE CONTROL</Text>
+		<Subject>15</Subject>
+		<MessageLevel>1</MessageLevel>
+		<Label>Extraneous Peak In Negative Control</Label>
+	</Message>
+	<Message>
+		<Index>784</Index>
+		<Text>EXTRANEOUS PEAK IN LADDER LOCUS</Text>
+		<Subject>15</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Extraneous Peak In Ladder Locus</Label>
+	</Message>
+	<Message>
+		<Index>785</Index>
+		<Text>NUMBER OF PEAKS WITH EXCESSIVE RESIDUALS EXCEEDS THRESHOLD</Text>
+		<Subject>6</Subject>
+		<MessageLevel>6</MessageLevel>
+		<Label>Number of Peaks with Excessive Residuals Exceeds Threshold</Label>
+	</Message>
+	<Message>
+		<Index>786</Index>
+		<Text>NUMBER OF PEAKS WITH EXCESSIVE RESIDUALS IN SAMPLE</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Number of Peaks with Excessive Residuals in Sample</Label>
+	</Message>
+	<Message>
+		<Index>787</Index>
+		<Text>PEAK HEIGHT BELOW INTERLOCUS MIN RFU</Text>
+		<Subject>20</Subject>
+		<MessageLevel>20</MessageLevel>
+		<Label>Peak Height Below Interlocus Min RFU</Label>
+		<TriggersLowPrioritySignal>true</TriggersLowPrioritySignal>
+		<DoNotCall>true</DoNotCall>
+	</Message>
+</MessageList>

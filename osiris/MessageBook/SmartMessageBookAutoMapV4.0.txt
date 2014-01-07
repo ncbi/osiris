@@ -1,0 +1,1170 @@
+MessageBook Summary:
+
+Version Number 4.01
+Build Time and Date 03 01 2012 04:05PM
+
+WARNING:  unused message named smTestForPeaksBelowMinRFUForNegCtrl at scope = 4
+
+
+Message Book Map:
+
+
+	Sample Stage 0
+
+		Scope 1
+
+			smMakePullupAtAlleleNonCriticalPreset at line no. 4260 with Msg. type = preset and report criterion F
+
+		Scope 3
+
+			smTestExcessiveNoiseAboveOrBelowAnalysisThreshold at line no. 4228 with Msg. type = preset and report criterion F
+
+			smTestForExcessiveNoisePreset at line no. 4244 with Msg. type = preset and report criterion F
+
+			smTestForPrimerPeaksInNegControl at line no. 4372 with Msg. type = preset and report criterion F
+
+		Scope 4
+
+			smTestForPeaksBelowMinRFUForNegCtrlPreset at line no. 4212 with Msg. type = preset and report criterion F
+
+			smFlagMixedSamplesPreset at line no. 4276 with Msg. type = preset and report criterion F
+
+			smAmpMoreOnLowHomozygotePreset at line no. 4292 with Msg. type = preset and report criterion F
+
+			smSelectReampRegVersusReinjectPreset at line no. 4308 with Msg. type = preset and report criterion F
+
+			smRecommendReworkIfLaserOffScalePreset at line no. 4324 with Msg. type = preset and report criterion F
+
+			smTestForColorCorrectionMatrixPreset at line no. 4340 with Msg. type = preset and report criterion F
+
+			smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing at line no. 4356 with Msg. type = preset and report criterion F
+
+	Sample Stage 1
+
+		Scope 1
+
+			smCurveFitFailed at line no. 407 with Msg. type = boolean and report criterion T/F
+
+			smCurveFitMarginal at line no. 418 with Msg. type = boolean and report criterion F
+
+			smSpike at line no. 429 with Msg. type = boolean and report criterion T
+				Dependencies:
+					Trigger Dependencies:
+						smBelowMinRFU
+				Triggers:
+					smNumberOfSpikesInSample, scope = 4, stage = 5, line number = 3863
+
+			smBlob at line no. 440 with Msg. type = boolean and report criterion T
+
+			smPullUp at line no. 451 with Msg. type = boolean and report criterion T/F
+
+			smPeakOutsideILS at line no. 528 with Msg. type = boolean and report criterion F
+
+			smBelowMinRFU at line no. 561 with Msg. type = boolean and report criterion T
+
+			smUnexpectedILSPeak at line no. 642 with Msg. type = boolean and report criterion T
+
+			smPeakHeightAboveMax at line no. 701 with Msg. type = boolean and report criterion T
+				Triggers:
+					smPeaksAboveMax, scope = 2, stage = 1, line number = 713
+
+			smOsirisBelowMinRFUButRawDataAbove at line no. 786 with Msg. type = boolean and report criterion T
+
+			smRawDataBelowMinRFUButOsirisAbove at line no. 800 with Msg. type = boolean and report criterion T
+
+			smOsirisAboveMaxRFUButRawDataBelow at line no. 811 with Msg. type = boolean and report criterion T
+
+			smRawDataAboveMaxRFUButOsirisBelow at line no. 822 with Msg. type = boolean and report criterion T
+
+			smPeakInCoreLadderLocus at line no. 1273 with Msg. type = boolean and report criterion F
+
+			smPeakToRightOfILS at line no. 999 with Msg. type = boolean and report criterion T
+
+			smILSPeakMayBeIncorrect at line no. 2544 with Msg. type = boolean and report criterion T
+
+			smCountThisSignal at line no. 844 with Msg. type = boolean and report criterion F
+				Dependencies:
+					Trigger Dependencies:
+						smBelowMinRFU
+				Triggers:
+					smTotalNumberOfSignals, scope = 4, stage = 5, line number = 3409
+
+		Scope 2
+
+			smLocusIsAMEL at line no. 43 with Msg. type = boolean and report criterion F
+
+			smLocusIsNegControl at line no. 153 with Msg. type = boolean and report criterion F
+
+			smLocusIsPosControl at line no. 313 with Msg. type = boolean and report criterion F
+
+			smNPeaksForLocusUnavailable at line no. 1135 with Msg. type = boolean and report criterion T
+
+			smAssociatedLadderLocusIsCritical at line no. 2750 with Msg. type = boolean and report criterion T
+
+			smPeaksAboveMax at line no. 713 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smPeakHeightAboveMax, scope = 1, stage = 1, line number = 701
+
+			smThisIsALocus at line no. 855 with Msg. type = boolean and report criterion F
+				Triggers:
+					smTotalNumberOfLoci, scope = 4, stage = 5, line number = 3449
+
+		Scope 3
+
+			smChannelIsNegControl at line no. 87 with Msg. type = boolean and report criterion F
+
+			smChannelIsPosControl at line no. 302 with Msg. type = boolean and report criterion F
+
+			smChannelIsILS at line no. 164 with Msg. type = boolean and report criterion F
+
+			smILSSpacingFailed at line no. 324 with Msg. type = boolean and report criterion T
+
+			smILSTooFewPeaks at line no. 493 with Msg. type = boolean and report criterion T
+
+			smILSSpacingIsMarginal at line no. 175 with Msg. type = boolean and report criterion T
+				Triggers:
+					smSampleHasMarginalILS, scope = 4, stage = 1, line number = 189
+
+			smFSAChannelUnreadable at line no. 506 with Msg. type = boolean and report criterion T
+				Triggers:
+					smFSAUnreadable, scope = 4, stage = 1, line number = 517
+
+			smCannotSeparateILSPrimerPeaks at line no. 740 with Msg. type = boolean and report criterion T
+
+			smILSNeighborFilterTooAggressive at line no. 751 with Msg. type = boolean and report criterion T
+
+			smILSFractionFilterTooAggressive at line no. 764 with Msg. type = boolean and report criterion T
+
+			smILSRelativeHeightsInconsistent at line no. 775 with Msg. type = boolean and report criterion T
+
+			smChannelHasRaisedBaseline at line no. 98 with Msg. type = boolean and report criterion T
+				Triggers:
+					smSampleHasRaisedBaseline, scope = 4, stage = 1, line number = 212
+
+			smChannelHasExcessiveNoiseAboveAnalysisThreshold at line no. 114 with Msg. type = boolean and report criterion F
+
+			smChannelHasExcessiveNoiseAboveDetectionThreshold at line no. 127 with Msg. type = boolean and report criterion F
+
+			smSampleChannelRaisedBaselineThreshold at line no. 4136 with Msg. type = count and report criterion F
+
+			smSampleILSChannelRaisedBaselineThreshold at line no. 4155 with Msg. type = count and report criterion F
+
+			smMinimumHeightForPrimerPeaks at line no. 4174 with Msg. type = count and report criterion F
+
+			smMinimumNumberOfPrimerPeaksForNegativeControlChannel at line no. 4193 with Msg. type = count and report criterion F
+
+			smChannelHasExcessiveNoise at line no. 140 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smTestForExcessiveNoisePreset, scope = 3, stage = 0, line number = 4244
+					smChannelHasExcessiveNoiseAboveAnalysisThreshold, scope = 3, stage = 1, line number = 114
+					smTestExcessiveNoiseAboveOrBelowAnalysisThreshold, scope = 3, stage = 0, line number = 4228
+					smChannelHasExcessiveNoiseAboveDetectionThreshold, scope = 3, stage = 1, line number = 127
+					smTestExcessiveNoiseAboveOrBelowAnalysisThreshold, scope = 3, stage = 0, line number = 4228
+				Triggers:
+					smSampleHasExcessiveNoise, scope = 4, stage = 1, line number = 235
+
+		Scope 4
+
+			smILSFailed at line no. 9 with Msg. type = boolean and report criterion T
+
+			smSampleIsLadder at line no. 54 with Msg. type = boolean and report criterion F
+
+			smSampleIsPosCtrl at line no. 65 with Msg. type = boolean and report criterion F
+
+			smSampleIsNegCtrl at line no. 76 with Msg. type = boolean and report criterion F
+
+			smLadderTypeUnknown at line no. 374 with Msg. type = boolean and report criterion T
+
+			smAssociatedLadderIsCritical at line no. 2739 with Msg. type = boolean and report criterion T
+
+			smDontReworkSample at line no. 3015 with Msg. type = boolean and report criterion T
+
+			smReampSampleRegular at line no. 2841 with Msg. type = boolean and report criterion T
+
+			smReampSampleLess at line no. 2870 with Msg. type = boolean and report criterion T
+
+			smReampSampleMore at line no. 2899 with Msg. type = boolean and report criterion T
+
+			smReinjectSample at line no. 2928 with Msg. type = boolean and report criterion T
+
+			smReextractSampleSwab at line no. 2957 with Msg. type = boolean and report criterion T
+
+			smReextractSampleBlood at line no. 2986 with Msg. type = boolean and report criterion T
+
+			smVerificationSample at line no. 3044 with Msg. type = boolean and report criterion T
+
+			smSamplePlaceHolder at line no. 3077 with Msg. type = boolean and report criterion F
+
+			smColorCorrectionMatrixExpectedButNotFound at line no. 3264 with Msg. type = boolean and report criterion T
+
+			smColorCorrectionMatrixWrongSize at line no. 3275 with Msg. type = boolean and report criterion T
+
+			smStage1Successful at line no. 833 with Msg. type = boolean and report criterion F
+
+			smFSAUnreadable at line no. 517 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smFSAChannelUnreadable, scope = 3, stage = 1, line number = 506
+
+			smSampleHasMarginalILS at line no. 189 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smILSSpacingIsMarginal, scope = 3, stage = 1, line number = 175
+
+			smSampleHasRaisedBaseline at line no. 212 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smChannelHasRaisedBaseline, scope = 3, stage = 1, line number = 98
+
+			smSampleHasExcessiveNoise at line no. 235 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smChannelHasExcessiveNoise, scope = 3, stage = 1, line number = 140
+
+			smIsSample at line no. 946 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smSampleIsLadder, scope = 4, stage = 1, line number = 54
+				Triggers:
+					smTotalNumberOfSamples, scope = 6, stage = 1, line number = 866
+
+			smIsSampleButNotNegativeCtrl at line no. 957 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smIsSample, scope = 4, stage = 1, line number = 946
+					smSampleIsNegCtrl, scope = 4, stage = 1, line number = 76
+				Triggers:
+					smTotalNumberOfSamplesExcludingNegativeControls, scope = 6, stage = 1, line number = 885
+
+	Sample Stage 2
+
+		Scope 1
+
+			smSignalIsCtrlPeak at line no. 1037 with Msg. type = boolean and report criterion F
+
+			smInterlocusLadderPeak at line no. 1062 with Msg. type = boolean and report criterion T
+
+			smUnexpectedLadderLocusPeak at line no. 1073 with Msg. type = boolean and report criterion T
+
+			smPoorPeakMorphology at line no. 1084 with Msg. type = boolean and report criterion T
+
+			smHeightBelowFractionalFilter at line no. 1158 with Msg. type = boolean and report criterion T/F
+
+			smHeightBelowPullupFractionalFilter at line no. 1230 with Msg. type = boolean and report criterion T
+
+			smPartOfExtendedLocusLeft at line no. 1251 with Msg. type = boolean and report criterion F
+
+			smPartOfExtendedLocusRight at line no. 1262 with Msg. type = boolean and report criterion F
+
+			smBelowFractionalFilterLeft at line no. 1284 with Msg. type = boolean and report criterion T/F
+
+			smBelowFractionalFilterRight at line no. 1296 with Msg. type = boolean and report criterion T/F
+
+			smBelowPullupFractionalFilterLeft at line no. 1332 with Msg. type = boolean and report criterion T/F
+
+			smBelowPullupFractionalFilterRight at line no. 1343 with Msg. type = boolean and report criterion T/F
+
+			smInferredFFLeft at line no. 1308 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPartOfExtendedLocusLeft, scope = 1, stage = 2, line number = 1251
+					smHeightBelowFractionalFilter, scope = 1, stage = 2, line number = 1158
+
+			smInferredFFRight at line no. 1320 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPartOfExtendedLocusRight, scope = 1, stage = 2, line number = 1262
+					smHeightBelowFractionalFilter, scope = 1, stage = 2, line number = 1158
+
+			smInferredPullupFFLeft at line no. 1354 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPartOfExtendedLocusLeft, scope = 1, stage = 2, line number = 1251
+					smHeightBelowPullupFractionalFilter, scope = 1, stage = 2, line number = 1230
+
+			smInferredPullupFFRight at line no. 1365 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPartOfExtendedLocusRight, scope = 1, stage = 2, line number = 1262
+					smHeightBelowPullupFractionalFilter, scope = 1, stage = 2, line number = 1230
+
+			smFFLeft at line no. 1200 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smBelowFractionalFilterLeft, scope = 1, stage = 2, line number = 1284
+					smBelowPullupFractionalFilterLeft, scope = 1, stage = 2, line number = 1332
+					smInferredFFLeft, scope = 1, stage = 2, line number = 1308
+					smInferredPullupFFLeft, scope = 1, stage = 2, line number = 1354
+
+			smFFRight at line no. 1215 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smBelowFractionalFilterRight, scope = 1, stage = 2, line number = 1296
+					smBelowPullupFractionalFilterRight, scope = 1, stage = 2, line number = 1343
+					smInferredFFRight, scope = 1, stage = 2, line number = 1320
+					smInferredPullupFFRight, scope = 1, stage = 2, line number = 1365
+
+			smExtendedFractionalFilter at line no. 1179 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smPartOfExtendedLocusRight, scope = 1, stage = 2, line number = 1262
+					smFFLeft, scope = 1, stage = 2, line number = 1200
+					smPartOfExtendedLocusLeft, scope = 1, stage = 2, line number = 1251
+					smFFRight, scope = 1, stage = 2, line number = 1215
+					smFFLeft, scope = 1, stage = 2, line number = 1200
+					smFFRight, scope = 1, stage = 2, line number = 1215
+
+			smUnassignedInterlocusPeak at line no. 1814 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smPeakInCoreLadderLocus, scope = 1, stage = 1, line number = 1273
+					smPartOfExtendedLocusLeft, scope = 1, stage = 2, line number = 1251
+					smPartOfExtendedLocusRight, scope = 1, stage = 2, line number = 1262
+					smSampleIsLadder, scope = 4, stage = 1, line number = 54
+					smSignalIsCtrlPeak, scope = 1, stage = 2, line number = 1037
+					smUnexpectedILSPeak, scope = 1, stage = 1, line number = 642
+
+		Scope 2
+
+			smLocusTooFewPeaks at line no. 1049 with Msg. type = boolean and report criterion T
+
+			smPoorLocusMorphology at line no. 1108 with Msg. type = boolean and report criterion T
+
+			smRelativeHeightImbalance at line no. 1146 with Msg. type = boolean and report criterion T
+
+			smUnexpectedNoOfGridPeaks at line no. 2300 with Msg. type = boolean and report criterion T
+
+		Scope 4
+
+			smStage2Successful at line no. 1376 with Msg. type = boolean and report criterion F
+
+	Sample Stage 3
+
+		Scope 1
+
+			smStutter at line no. 968 with Msg. type = boolean and report criterion T
+				Dependencies:
+					Trigger Dependencies:
+						smBelowMinRFU
+				Triggers:
+					smNumberOfStuttersInSample, scope = 4, stage = 5, line number = 3577
+
+			smAdenylation at line no. 1016 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					Trigger Dependencies:
+						smBelowMinRFU
+				Triggers:
+					smNumberOfAdenylationsInSample, scope = 4, stage = 5, line number = 3597
+
+			smNotInterchannelLink at line no. 1883 with Msg. type = boolean and report criterion F
+
+			smAmbiguousInterlocusCrater at line no. 1911 with Msg. type = boolean and report criterion T
+
+			smPrimaryInterchannelLink at line no. 468 with Msg. type = boolean and report criterion T
+
+			smCrater at line no. 1944 with Msg. type = boolean and report criterion F
+
+			smCraterSidePeak at line no. 1955 with Msg. type = boolean and report criterion F
+
+			smSignalNotACrater at line no. 2142 with Msg. type = boolean and report criterion T
+
+			smSignalNotACraterSidePeak at line no. 2153 with Msg. type = boolean and report criterion T
+
+			smAcceptedOLLeft at line no. 1966 with Msg. type = boolean and report criterion F
+
+			smAcceptedOLRight at line no. 1978 with Msg. type = boolean and report criterion F
+
+			smPoorPeakMorphologyOrResolution at line no. 1096 with Msg. type = boolean and report criterion T
+
+			smPossibleExtraLocusAllele at line no. 479 with Msg. type = boolean and report criterion T
+
+			smWouldCauseHeterozygousImbalanceLeft at line no. 1409 with Msg. type = boolean and report criterion F
+
+			smWouldCauseHeterozygousImbalanceRight at line no. 1420 with Msg. type = boolean and report criterion F
+
+			smSignalOffGridLeft at line no. 1431 with Msg. type = boolean and report criterion F
+
+			smSignalOffGridRight at line no. 1442 with Msg. type = boolean and report criterion F
+
+			sm0UnambiguousPeaksLeft at line no. 1453 with Msg. type = boolean and report criterion F
+
+			sm0UnambiguousPeaksRight at line no. 1464 with Msg. type = boolean and report criterion F
+
+			sm1UnambiguousPeakLeft at line no. 1475 with Msg. type = boolean and report criterion F
+
+			sm1UnambiguousPeakRight at line no. 1486 with Msg. type = boolean and report criterion F
+
+			sm2PlusUnambiguousPeaksLeft at line no. 1497 with Msg. type = boolean and report criterion F
+
+			sm2PlusUnambiguousPeaksRight at line no. 1508 with Msg. type = boolean and report criterion F
+
+			sm0AmbiguousPeaksLeft at line no. 1519 with Msg. type = boolean and report criterion F
+
+			sm0AmbiguousPeaksRight at line no. 1530 with Msg. type = boolean and report criterion F
+
+			sm1AmbiguousPeakLeft at line no. 1541 with Msg. type = boolean and report criterion F
+
+			sm1AmbiguousPeakRight at line no. 1552 with Msg. type = boolean and report criterion F
+
+			sm2PlusAmbiguousPeaksLeft at line no. 1563 with Msg. type = boolean and report criterion F
+
+			sm2PlusAmbiguousPeaksRight at line no. 1574 with Msg. type = boolean and report criterion F
+
+			smLaserOffScalePullupOrCraterNotPrimary at line no. 269 with Msg. type = boolean and report criterion T
+
+			smLaserOffScalePrimary at line no. 280 with Msg. type = boolean and report criterion T
+				Dependencies:
+					Trigger Dependencies:
+						smCraterSidePeak
+						smSignalNotACraterSidePeak
+				Triggers:
+					smLocusHasPeaksWithLaserSaturation, scope = 2, stage = 3, line number = 616
+					smSomePeaksHaveLaserOffScale, scope = 4, stage = 3, line number = 2641
+
+			smLaserOffScaleNoInterchannelLink at line no. 291 with Msg. type = boolean and report criterion T
+				Dependencies:
+					Trigger Dependencies:
+						smCraterSidePeak
+						smSignalNotACraterSidePeak
+				Triggers:
+					smLocusHasPeaksWithLaserSaturation, scope = 2, stage = 3, line number = 616
+					smSomePeaksHaveLaserOffScale, scope = 4, stage = 3, line number = 2641
+
+			smUnexpectedPeakInNegativeControl at line no. 3739 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smSampleIsNegCtrl, scope = 4, stage = 1, line number = 76
+					smChannelIsILS, scope = 3, stage = 1, line number = 164
+					Trigger Dependencies:
+						smBelowMinRFU
+						smBelowMinRFU
+						smTestForPeaksBelowMinRFUForNegCtrlPreset
+				Triggers:
+					smUnexpectedNoOfPeaks, scope = 2, stage = 3, line number = 2273
+					smUnexpectedNoOfPeaksInChannel, scope = 3, stage = 3, line number = 2258
+					smNegCtrlFailed, scope = 4, stage = 4, line number = 3716
+
+			smPurePullup at line no. 1387 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smPullUp, scope = 1, stage = 1, line number = 451
+					smPrimaryInterchannelLink, scope = 1, stage = 3, line number = 468
+					smNotInterchannelLink, scope = 1, stage = 3, line number = 1883
+
+			smTemp1Left at line no. 1585 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksRight, scope = 1, stage = 3, line number = 1464
+					smSignalOffGridRight, scope = 1, stage = 3, line number = 1442
+
+			smTemp2Left at line no. 1596 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm1UnambiguousPeakLeft, scope = 1, stage = 3, line number = 1475
+					sm2PlusUnambiguousPeaksRight, scope = 1, stage = 3, line number = 1508
+
+			smTemp3Left at line no. 1607 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm1UnambiguousPeakLeft, scope = 1, stage = 3, line number = 1475
+					smSignalOffGridLeft, scope = 1, stage = 3, line number = 1431
+					smTemp1Left, scope = 1, stage = 3, line number = 1585
+
+			smTemp5Left at line no. 1618 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1453
+					sm2PlusUnambiguousPeaksRight, scope = 1, stage = 3, line number = 1508
+
+			smTemp6Left at line no. 1629 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1453
+					sm1AmbiguousPeakLeft, scope = 1, stage = 3, line number = 1541
+					sm1UnambiguousPeakRight, scope = 1, stage = 3, line number = 1486
+
+			smTemp7Left at line no. 1640 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1453
+					sm2PlusAmbiguousPeaksRight, scope = 1, stage = 3, line number = 1574
+					smSignalOffGridLeft, scope = 1, stage = 3, line number = 1431
+					smTemp1Left, scope = 1, stage = 3, line number = 1585
+
+			smTemp9Left at line no. 1651 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm2PlusUnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1497
+					sm2PlusUnambiguousPeaksRight, scope = 1, stage = 3, line number = 1508
+					smSignalOffGridRight, scope = 1, stage = 3, line number = 1442
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+					smSignalOffGridLeft, scope = 1, stage = 3, line number = 1431
+
+			smTemp1Right at line no. 1662 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1453
+					smSignalOffGridLeft, scope = 1, stage = 3, line number = 1431
+
+			smTemp2Right at line no. 1673 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm1UnambiguousPeakRight, scope = 1, stage = 3, line number = 1486
+					sm2PlusUnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1497
+
+			smTemp3Right at line no. 1684 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm1UnambiguousPeakRight, scope = 1, stage = 3, line number = 1486
+					smSignalOffGridRight, scope = 1, stage = 3, line number = 1442
+					smTemp1Right, scope = 1, stage = 3, line number = 1662
+
+			smTemp5Right at line no. 1695 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksRight, scope = 1, stage = 3, line number = 1464
+					sm2PlusUnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1497
+
+			smTemp6Right at line no. 1706 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksRight, scope = 1, stage = 3, line number = 1464
+					sm1AmbiguousPeakRight, scope = 1, stage = 3, line number = 1552
+					sm1UnambiguousPeakLeft, scope = 1, stage = 3, line number = 1475
+
+			smTemp7Right at line no. 1717 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm0UnambiguousPeaksRight, scope = 1, stage = 3, line number = 1464
+					sm2PlusAmbiguousPeaksLeft, scope = 1, stage = 3, line number = 1563
+					smSignalOffGridRight, scope = 1, stage = 3, line number = 1442
+					smTemp1Right, scope = 1, stage = 3, line number = 1662
+
+			smTemp9Right at line no. 1728 with Msg. type = boolean and report criterion F
+				Dependencies:
+					sm2PlusUnambiguousPeaksRight, scope = 1, stage = 3, line number = 1508
+					sm2PlusUnambiguousPeaksLeft, scope = 1, stage = 3, line number = 1497
+					smSignalOffGridLeft, scope = 1, stage = 3, line number = 1431
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+					smSignalOffGridRight, scope = 1, stage = 3, line number = 1442
+
+			smCouldBelongToLocusLeft at line no. 1861 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smTemp2Left, scope = 1, stage = 3, line number = 1596
+					smTemp3Left, scope = 1, stage = 3, line number = 1607
+					smTemp5Left, scope = 1, stage = 3, line number = 1618
+					smTemp6Left, scope = 1, stage = 3, line number = 1629
+					smTemp7Left, scope = 1, stage = 3, line number = 1640
+					smTemp9Left, scope = 1, stage = 3, line number = 1651
+					smPeakInCoreLadderLocus, scope = 1, stage = 1, line number = 1273
+
+			smCouldBelongToLocusRight at line no. 1872 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smTemp2Right, scope = 1, stage = 3, line number = 1673
+					smTemp3Right, scope = 1, stage = 3, line number = 1684
+					smTemp5Right, scope = 1, stage = 3, line number = 1695
+					smTemp6Right, scope = 1, stage = 3, line number = 1706
+					smTemp7Right, scope = 1, stage = 3, line number = 1717
+					smTemp9Right, scope = 1, stage = 3, line number = 1728
+					smPeakInCoreLadderLocus, scope = 1, stage = 1, line number = 1273
+
+			smPullUpAtControlPeak at line no. 1739 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smSignalIsCtrlPeak, scope = 1, stage = 2, line number = 1037
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+
+			smInterlocusPullUp at line no. 1750 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smPeakInCoreLadderLocus, scope = 1, stage = 1, line number = 1273
+					smSampleIsLadder, scope = 4, stage = 1, line number = 54
+					smPartOfExtendedLocusLeft, scope = 1, stage = 2, line number = 1251
+					smPartOfExtendedLocusRight, scope = 1, stage = 2, line number = 1262
+					smSignalIsCtrlPeak, scope = 1, stage = 2, line number = 1037
+					smChannelIsILS, scope = 3, stage = 1, line number = 164
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+
+			smInterlocusPullUpWithPoorFit at line no. 1770 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smInterlocusPullUp, scope = 1, stage = 3, line number = 1750
+					smPoorPeakMorphology, scope = 1, stage = 2, line number = 1084
+					smCurveFitMarginal, scope = 1, stage = 1, line number = 418
+					smCurveFitFailed, scope = 1, stage = 1, line number = 407
+
+			smPullupAtExtraneousILSPeak at line no. 258 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smChannelIsILS, scope = 3, stage = 1, line number = 164
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+					smUnexpectedILSPeak, scope = 1, stage = 1, line number = 642
+
+			smPossibleValidInterlocusLeft at line no. 1790 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smPartOfExtendedLocusLeft, scope = 1, stage = 2, line number = 1251
+					smFFLeft, scope = 1, stage = 2, line number = 1200
+					smInterlocusPullUp, scope = 1, stage = 3, line number = 1750
+
+			smPossibleValidInterlocusRight at line no. 1802 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smPartOfExtendedLocusRight, scope = 1, stage = 2, line number = 1262
+					smFFRight, scope = 1, stage = 2, line number = 1215
+					smInterlocusPullUp, scope = 1, stage = 3, line number = 1750
+
+			smAmbiguousInterlocus at line no. 1835 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smPossibleValidInterlocusLeft, scope = 1, stage = 3, line number = 1790
+					smPossibleValidInterlocusRight, scope = 1, stage = 3, line number = 1802
+				Triggers:
+					smAmbiguousExtendedLocusChannelPeaks, scope = 3, stage = 3, line number = 3663
+
+			smValidOLInterlocusLeft at line no. 2001 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPossibleValidInterlocusLeft, scope = 1, stage = 3, line number = 1790
+					smAcceptedOLLeft, scope = 1, stage = 3, line number = 1966
+
+			smValidOLInterlocusRight at line no. 2019 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPossibleValidInterlocusRight, scope = 1, stage = 3, line number = 1802
+					smAcceptedOLRight, scope = 1, stage = 3, line number = 1978
+
+			smAcceptedInterlocusLeft at line no. 2037 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smPossibleValidInterlocusLeft, scope = 1, stage = 3, line number = 1790
+					smAcceptedOLLeft, scope = 1, stage = 3, line number = 1966
+
+			smAcceptedInterlocusRight at line no. 2049 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smPossibleValidInterlocusRight, scope = 1, stage = 3, line number = 1802
+					smAcceptedOLRight, scope = 1, stage = 3, line number = 1978
+
+		Scope 2
+
+			smFirstAlleleEqFirstLadderPeak at line no. 1922 with Msg. type = boolean and report criterion F
+
+			smAMELMisaligned at line no. 1933 with Msg. type = boolean and report criterion T
+
+			smPreliminaryLocusHasNoAlleles at line no. 2471 with Msg. type = boolean and report criterion F
+				Triggers:
+					smPreliminaryLocusDropout, scope = 4, stage = 3, line number = 2482
+
+			smLocusMayHaveUnreportedOLs at line no. 1122 with Msg. type = boolean and report criterion T
+
+			smLocusHasPeaksBetweenDetectionAndAnalysisThresholds at line no. 587 with Msg. type = boolean and report criterion T/F
+
+			smUnexpectedNoOfPeaks at line no. 2273 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smUnexpectedPeakInNegativeControl, scope = 1, stage = 3, line number = 3739
+
+			smLocusHasPeaksWithLaserSaturation at line no. 616 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smLaserOffScalePrimary, scope = 1, stage = 3, line number = 280
+					smLaserOffScaleNoInterchannelLink, scope = 1, stage = 3, line number = 291
+
+		Scope 3
+
+			smUnexpectedNoOfPeaksInChannel at line no. 2258 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smUnexpectedPeakInNegativeControl, scope = 1, stage = 3, line number = 3739
+
+			smAmbiguousExtendedLocusChannelPeaks at line no. 3663 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smAmbiguousInterlocus, scope = 1, stage = 3, line number = 1835
+
+		Scope 4
+
+			smStage3Successful at line no. 1990 with Msg. type = boolean and report criterion F
+
+			smPreliminaryLocusDropout at line no. 2482 with Msg. type = boolean and report criterion F
+				Trigger Sources:
+					smPreliminaryLocusHasNoAlleles, scope = 2, stage = 3, line number = 2471
+
+			smSomePeaksHaveLaserOffScale at line no. 2641 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smLaserOffScalePrimary, scope = 1, stage = 3, line number = 280
+					smLaserOffScaleNoInterchannelLink, scope = 1, stage = 3, line number = 291
+
+	Sample Stage 4
+
+		Scope 1
+
+			smSignalOL at line no. 2189 with Msg. type = boolean and report criterion F
+
+			smSignalIsAllele at line no. 2200 with Msg. type = boolean and report criterion F
+
+			smBPResidualTooLarge at line no. 2447 with Msg. type = boolean and report criterion F
+
+			smExtraLadderAllele at line no. 2532 with Msg. type = boolean and report criterion T
+
+			smExtraneousAMELPeak at line no. 2596 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					Trigger Dependencies:
+						smRestrictedPriorityPeak
+				Triggers:
+					smAMELHasExtraneousPeaks, scope = 2, stage = 4, line number = 2569
+
+			smPeakAboveOverloadLimit at line no. 2796 with Msg. type = boolean and report criterion T/F
+				Triggers:
+					smAlleleAboveOverloadLimit, scope = 4, stage = 4, line number = 3923
+
+			smPossibleAmbiguousInterlocusAssignedToLocus at line no. 1850 with Msg. type = boolean and report criterion T
+
+			smHeightBelowInterlocusMinRFU at line no. 1894 with Msg. type = boolean and report criterion T
+
+			smRestrictedPriorityPeak at line no. 2121 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smHeightBelowInterlocusMinRFU, scope = 1, stage = 4, line number = 1894
+					smBelowMinRFU, scope = 1, stage = 1, line number = 561
+					smStutter, scope = 1, stage = 3, line number = 968
+					smAdenylation, scope = 1, stage = 3, line number = 1016
+					smHeightBelowFractionalFilter, scope = 1, stage = 2, line number = 1158
+					smHeightBelowPullupFractionalFilter, scope = 1, stage = 2, line number = 1230
+					smInterlocusPullUp, scope = 1, stage = 3, line number = 1750
+					smExtendedFractionalFilter, scope = 1, stage = 2, line number = 1179
+					smPullupAtExtraneousILSPeak, scope = 1, stage = 3, line number = 258
+					smSampleIsNegCtrl, scope = 4, stage = 1, line number = 76
+					smSignalIsCtrlPeak, scope = 1, stage = 2, line number = 1037
+
+			smTrueCrater at line no. 2164 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smCrater, scope = 1, stage = 3, line number = 1944
+					smSignalNotACrater, scope = 1, stage = 3, line number = 2142
+					Trigger Dependencies:
+						smRestrictedPriorityPeak
+						smActuallyAnAllele
+				Triggers:
+					smNumberOfCratersInSample, scope = 4, stage = 5, line number = 3843
+					smLocusContainsCrater, scope = 2, stage = 4, line number = 2084
+
+			smTrueCraterSidePeak at line no. 2175 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smCraterSidePeak, scope = 1, stage = 3, line number = 1955
+					smSignalNotACraterSidePeak, scope = 1, stage = 3, line number = 2153
+
+			smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele at line no. 2493 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+					smPreliminaryLocusHas2OrMoreAlleles, scope = 2, stage = 4, line number = 2460
+					smBPResidualTooLarge, scope = 1, stage = 4, line number = 2447
+					smRestrictedPriorityPeak, scope = 1, stage = 4, line number = 2121
+				Triggers:
+					smUnexpectedPeaksInSampleLocus, scope = 2, stage = 5, line number = 3689
+
+			smPeakIsNotAnAllele at line no. 2714 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele, scope = 1, stage = 4, line number = 2493
+
+			smPullUpAtAllele at line no. 2406 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smSignalIsAllele, scope = 1, stage = 4, line number = 2200
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+					smPeakIsNotAnAllele, scope = 1, stage = 4, line number = 2714
+					smRestrictedPriorityPeak, scope = 1, stage = 4, line number = 2121
+				Triggers:
+					smLocusAlleleHasPullup, scope = 2, stage = 4, line number = 2372
+
+			smAlleleHasExcessiveResidual at line no. 2761 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smBPResidualTooLarge, scope = 1, stage = 4, line number = 2447
+					smSignalIsAllele, scope = 1, stage = 4, line number = 2200
+					smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele, scope = 1, stage = 4, line number = 2493
+					Trigger Dependencies:
+						smRestrictedPriorityPeak
+				Triggers:
+					smLocusContainsPeaksWithExcessiveResiduals, scope = 2, stage = 4, line number = 2507
+					smNumberOfExcessiveResidualsInSample, scope = 4, stage = 5, line number = 3513
+
+			smAlleleOL at line no. 2774 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smSignalOL, scope = 1, stage = 4, line number = 2189
+					smSignalIsAllele, scope = 1, stage = 4, line number = 2200
+					smPeakIsNotAnAllele, scope = 1, stage = 4, line number = 2714
+					smRestrictedPriorityPeak, scope = 1, stage = 4, line number = 2121
+				Triggers:
+					smOLAlleles, scope = 2, stage = 5, line number = 3469
+					smNumberOfOffLadderAllelesInSample, scope = 4, stage = 5, line number = 3617
+
+			smActuallyAnAllele at line no. 2785 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smSignalIsAllele, scope = 1, stage = 4, line number = 2200
+					smPeakIsNotAnAllele, scope = 1, stage = 4, line number = 2714
+					smRestrictedPriorityPeak, scope = 1, stage = 4, line number = 2121
+					smSampleIsLadder, scope = 4, stage = 1, line number = 54
+					smChannelIsILS, scope = 3, stage = 1, line number = 164
+					smUnassignedInterlocusPeak, scope = 1, stage = 2, line number = 1814
+				Triggers:
+					smTotalNumberOfAllelePeaks, scope = 4, stage = 5, line number = 3429
+
+			smCoreAlleleIsOL at line no. 4125 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smActuallyAnAllele, scope = 1, stage = 4, line number = 2785
+					smAlleleOL, scope = 1, stage = 4, line number = 2774
+					smPeakInCoreLadderLocus, scope = 1, stage = 1, line number = 1273
+				Triggers:
+					smSampleContainsCoreOLAllele, scope = 4, stage = 4, line number = 3773
+
+			smPurePullupLateStage at line no. 1398 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smPurePullup, scope = 1, stage = 3, line number = 1387
+					Trigger Dependencies:
+						smRestrictedPriorityPeak
+						smSampleIsNegCtrl
+						smSignalIsCtrlPeak
+				Triggers:
+					smNumberOfPullUpsInSample, scope = 4, stage = 5, line number = 3482
+
+			smNotAKnownArtifact at line no. 988 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smStutter, scope = 1, stage = 3, line number = 968
+					smAdenylation, scope = 1, stage = 3, line number = 1016
+					smPullUp, scope = 1, stage = 1, line number = 451
+					smNotInterchannelLink, scope = 1, stage = 3, line number = 1883
+					smSpike, scope = 1, stage = 1, line number = 429
+					smRestrictedPriorityPeak, scope = 1, stage = 4, line number = 2121
+					Trigger Dependencies:
+						smBelowMinRFU
+				Triggers:
+					smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts, scope = 2, stage = 4, line number = 601
+
+		Scope 2
+
+			smTwoOrMoreAlleles at line no. 2314 with Msg. type = boolean and report criterion F
+
+			smPreliminaryLocusHas2OrMoreAlleles at line no. 2460 with Msg. type = boolean and report criterion F
+
+			smLocusContainsCrater at line no. 2084 with Msg. type = boolean and report criterion T
+				Dependencies:
+					Trigger Dependencies:
+						smSampleIsLadder
+						smSampleIsNegCtrl
+				Triggers:
+					smLocusSummaryNumberOfCraters, scope = 5, stage = 1, line number = 3883
+				Trigger Sources:
+					smTrueCrater, scope = 1, stage = 4, line number = 2164
+
+			smLocusContainsPeaksWithExcessiveResiduals at line no. 2507 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smAlleleHasExcessiveResidual, scope = 1, stage = 4, line number = 2761
+
+			smAMELHasExtraneousPeaks at line no. 2569 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smExtraneousAMELPeak, scope = 1, stage = 4, line number = 2596
+
+			smLocusAlleleHasPullup at line no. 2372 with Msg. type = boolean and report criterion F
+				Trigger Sources:
+					smPullUpAtAllele, scope = 1, stage = 4, line number = 2406
+
+			smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts at line no. 601 with Msg. type = boolean and report criterion F
+				Trigger Sources:
+					smNotAKnownArtifact, scope = 1, stage = 4, line number = 988
+
+		Scope 3
+
+			smNegCtrlChannelHasNoPrimerPeaks at line no. 2607 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					Trigger Dependencies:
+						smTestForPrimerPeaksInNegControl
+				Triggers:
+					smNegCtrlChannelsHaveNoPrimerPeaks, scope = 4, stage = 4, line number = 2618
+					smNegCtrlFailed, scope = 4, stage = 4, line number = 3716
+
+		Scope 4
+
+			smStage4Successful at line no. 2110 with Msg. type = boolean and report criterion F
+
+			smNegCtrlChannelsHaveNoPrimerPeaks at line no. 2618 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smNegCtrlChannelHasNoPrimerPeaks, scope = 3, stage = 4, line number = 2607
+
+			smAlleleAboveOverloadLimit at line no. 3923 with Msg. type = boolean and report criterion T/F
+				Trigger Sources:
+					smPeakAboveOverloadLimit, scope = 1, stage = 4, line number = 2796
+
+			smSampleContainsCoreOLAllele at line no. 3773 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smCoreAlleleIsOL, scope = 1, stage = 4, line number = 4125
+
+			smNegCtrlFailed at line no. 3716 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smNegCtrlChannelHasNoPrimerPeaks, scope = 3, stage = 4, line number = 2607
+					smUnexpectedPeakInNegativeControl, scope = 1, stage = 3, line number = 3739
+
+	Sample Stage 5
+
+		Scope 2
+
+			smPosCtrlLocusMismatch at line no. 2211 with Msg. type = boolean and report criterion T
+
+			smLocusIsHomozygous at line no. 2807 with Msg. type = boolean and report criterion F
+				Dependencies:
+					Trigger Dependencies:
+						smSampleIsNegCtrl
+				Triggers:
+					smTotalNumberOfHomozygousLoci, scope = 4, stage = 5, line number = 3348
+
+			smThreeOrMoreAlleles at line no. 2818 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					Trigger Dependencies:
+						smFlagMixedSamplesPreset
+				Triggers:
+					smTotalNumberOfTriallelicLoci, scope = 4, stage = 5, line number = 3369
+					smNoLociWithThreeOrMoreAlleles, scope = 4, stage = 5, line number = 3297
+
+			smMoreThanThreeAlleles at line no. 3241 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					Trigger Dependencies:
+						smFlagMixedSamplesPreset
+				Triggers:
+					smLociWithMoreThanThreeAlleles, scope = 4, stage = 5, line number = 3286
+					smNoLociWithThreeOrMoreAlleles, scope = 4, stage = 5, line number = 3297
+
+			smCriticalMessagesAtAlleles at line no. 3818 with Msg. type = boolean and report criterion T
+
+			smNoGenotypeFound at line no. 2235 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					Trigger Dependencies:
+						smSampleIsLadder
+						smSampleIsNegCtrl
+				Triggers:
+					smLocusDropout, scope = 4, stage = 5, line number = 3934
+
+			smNoXForAMEL at line no. 2061 with Msg. type = boolean and report criterion T/F
+
+			smHeterozygousImbalance at line no. 2325 with Msg. type = boolean and report criterion T/F
+
+			smHomozygoteHeightProblem at line no. 2383 with Msg. type = boolean and report criterion T
+				Dependencies:
+					Trigger Dependencies:
+						smSampleIsNegCtrl
+				Triggers:
+					smSampleHasHomozygoteWithHeightProblem, scope = 4, stage = 5, line number = 2728
+
+			smInterlocusPeaksToRight at line no. 2664 with Msg. type = boolean and report criterion T/F
+
+			smInterlocusPeaksToLeft at line no. 2689 with Msg. type = boolean and report criterion T/F
+
+			smOLAlleles at line no. 3469 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smAlleleOL, scope = 1, stage = 4, line number = 2774
+
+			smUnexpectedPeaksInSampleLocus at line no. 3689 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele, scope = 1, stage = 4, line number = 2493
+
+			smLocusContainsPullUpWithHeteroImbalance at line no. 2349 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smHeterozygousImbalance, scope = 2, stage = 5, line number = 2325
+					smLocusAlleleHasPullup, scope = 2, stage = 4, line number = 2372
+
+			smLocusUnderAmped at line no. 4091 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smLocusHasPeaksBetweenDetectionAndAnalysisThresholds, scope = 2, stage = 3, line number = 587
+					smNoGenotypeFound, scope = 2, stage = 5, line number = 2235
+					smHomozygoteHeightProblem, scope = 2, stage = 5, line number = 2383
+					smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts, scope = 2, stage = 4, line number = 601
+					smLocusIsHomozygous, scope = 2, stage = 5, line number = 2807
+					smAmpMoreOnLowHomozygotePreset, scope = 4, stage = 0, line number = 4292
+					smNoGenotypeFound, scope = 2, stage = 5, line number = 2235
+					smHomozygoteHeightProblem, scope = 2, stage = 5, line number = 2383
+					smSampleIsNegCtrl, scope = 4, stage = 1, line number = 76
+				Triggers:
+					smAtLeastOneLocusUnderAmped, scope = 4, stage = 5, line number = 4114
+
+		Scope 3
+
+			smCriticalMessagesAtILS at line no. 2556 with Msg. type = boolean and report criterion T
+
+			smChannelPeaksHaveCriticalArtifacts at line no. 3637 with Msg. type = boolean and report criterion T
+
+			smPosCtrlLocusNotFound at line no. 2423 with Msg. type = boolean and report criterion T
+				Triggers:
+					smPosCtrlLociNotFound, scope = 4, stage = 5, line number = 2436
+
+		Scope 4
+
+			smStage5Successful at line no. 3337 with Msg. type = boolean and report criterion F
+
+			smLadderFailed at line no. 3750 with Msg. type = boolean and report criterion T
+
+			smSampleUnanalyzable at line no. 3807 with Msg. type = boolean and report criterion T
+
+			smNamedPosCtrlNotFound at line no. 677 with Msg. type = boolean and report criterion T
+				Triggers:
+					smDirectoryLevelNamedPosCtrlNotFound, scope = 6, stage = 1, line number = 690
+
+			smTotalNumberOfHomozygousLoci at line no. 3348 with Msg. type = count and report criterion T/F
+				Trigger Sources:
+					smLocusIsHomozygous, scope = 2, stage = 5, line number = 2807
+
+			smTotalNumberOfTriallelicLoci at line no. 3369 with Msg. type = count and report criterion T
+				Trigger Sources:
+					smThreeOrMoreAlleles, scope = 2, stage = 5, line number = 2818
+
+			smTotalNumberOfMissingGenotypes at line no. 3390 with Msg. type = count and report criterion T
+
+			smTotalNumberOfSignals at line no. 3409 with Msg. type = count and report criterion F
+				Trigger Sources:
+					smCountThisSignal, scope = 1, stage = 1, line number = 844
+
+			smTotalNumberOfAllelePeaks at line no. 3429 with Msg. type = count and report criterion F
+				Trigger Sources:
+					smActuallyAnAllele, scope = 1, stage = 4, line number = 2785
+
+			smTotalNumberOfLoci at line no. 3449 with Msg. type = count and report criterion F
+				Trigger Sources:
+					smThisIsALocus, scope = 2, stage = 1, line number = 855
+
+			smNumberOfPullUpsInSample at line no. 3482 with Msg. type = count and report criterion T/F
+				Trigger Sources:
+					smPurePullupLateStage, scope = 1, stage = 4, line number = 1398
+
+			smNumberOfExcessiveResidualsInSample at line no. 3513 with Msg. type = count and report criterion T
+				Trigger Sources:
+					smAlleleHasExcessiveResidual, scope = 1, stage = 4, line number = 2761
+
+			smNumberOfStuttersInSample at line no. 3577 with Msg. type = count and report criterion T/F
+				Trigger Sources:
+					smStutter, scope = 1, stage = 3, line number = 968
+
+			smNumberOfAdenylationsInSample at line no. 3597 with Msg. type = count and report criterion T/F
+				Trigger Sources:
+					smAdenylation, scope = 1, stage = 3, line number = 1016
+
+			smNumberOfOffLadderAllelesInSample at line no. 3617 with Msg. type = count and report criterion T
+				Trigger Sources:
+					smAlleleOL, scope = 1, stage = 4, line number = 2774
+
+			smNumberOfCratersInSample at line no. 3843 with Msg. type = count and report criterion T
+				Trigger Sources:
+					smTrueCrater, scope = 1, stage = 4, line number = 2164
+
+			smNumberOfSpikesInSample at line no. 3863 with Msg. type = count and report criterion T
+				Trigger Sources:
+					smSpike, scope = 1, stage = 1, line number = 429
+
+			smLocusDropout at line no. 3934 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smNoGenotypeFound, scope = 2, stage = 5, line number = 2235
+
+			smSampleHasHomozygoteWithHeightProblem at line no. 2728 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smHomozygoteHeightProblem, scope = 2, stage = 5, line number = 2383
+
+			smAtLeastOneLocusUnderAmped at line no. 4114 with Msg. type = boolean and report criterion T/F
+				Trigger Sources:
+					smLocusUnderAmped, scope = 2, stage = 5, line number = 4091
+
+			smPosCtrlLociNotFound at line no. 2436 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smPosCtrlLocusNotFound, scope = 3, stage = 5, line number = 2423
+
+			smLociWithMoreThanThreeAlleles at line no. 3286 with Msg. type = boolean and report criterion F
+				Trigger Sources:
+					smMoreThanThreeAlleles, scope = 2, stage = 5, line number = 3241
+
+			smNoLociWithThreeOrMoreAlleles at line no. 3297 with Msg. type = count and report criterion F
+				Trigger Sources:
+					smThreeOrMoreAlleles, scope = 2, stage = 5, line number = 2818
+					smMoreThanThreeAlleles, scope = 2, stage = 5, line number = 3241
+
+			smPossibleReampNegative at line no. 3946 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smLocusDropout, scope = 4, stage = 5, line number = 3934
+					smAlleleAboveOverloadLimit, scope = 4, stage = 4, line number = 3923
+
+			smPossibleReampPositive at line no. 3957 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smLocusDropout, scope = 4, stage = 5, line number = 3934
+					smAlleleAboveOverloadLimit, scope = 4, stage = 4, line number = 3923
+
+			smPercentExcessiveResiduals at line no. 3555 with Msg. type = percent and report criterion T
+				Dependencies:
+					smNumberOfExcessiveResidualsInSample, scope = 4, stage = 5, line number = 3513
+					smTotalNumberOfAllelePeaks, scope = 4, stage = 5, line number = 3429
+
+			smPercentPullups at line no. 3533 with Msg. type = percent and report criterion T/F
+				Dependencies:
+					smNumberOfPullUpsInSample, scope = 4, stage = 5, line number = 3482
+					smTotalNumberOfSignals, scope = 4, stage = 5, line number = 3409
+
+			smIsSampleWithExcessivePullup at line no. 3502 with Msg. type = boolean and report criterion F
+				Dependencies:
+					smNumberOfPullUpsInSample, scope = 4, stage = 5, line number = 3482
+					smSampleIsLadder, scope = 4, stage = 1, line number = 54
+				Triggers:
+					smTotalNumberOfSamplesWithExcessivePullup, scope = 6, stage = 1, line number = 904
+
+			smReampNegative at line no. 3968 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPossibleReampNegative, scope = 4, stage = 5, line number = 3946
+					smIsSampleWithExcessivePullup, scope = 4, stage = 5, line number = 3502
+					smAlleleAboveOverloadLimit, scope = 4, stage = 4, line number = 3923
+					smNumberOfCratersInSample, scope = 4, stage = 5, line number = 3843
+					smSomePeaksHaveLaserOffScale, scope = 4, stage = 3, line number = 2641
+					smRecommendReworkIfLaserOffScalePreset, scope = 4, stage = 0, line number = 4324
+					smSampleIsLadder, scope = 4, stage = 1, line number = 54
+
+			smReampPositive at line no. 3996 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smPossibleReampPositive, scope = 4, stage = 5, line number = 3957
+					smAtLeastOneLocusUnderAmped, scope = 4, stage = 5, line number = 4114
+					smSampleIsLadder, scope = 4, stage = 1, line number = 54
+
+			smPossibleReampAmbiguous at line no. 4080 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smReampNegative, scope = 4, stage = 5, line number = 3968
+					smReampPositive, scope = 4, stage = 5, line number = 3996
+
+			smSampleContainsTooManyExcessiveResiduals at line no. 3796 with Msg. type = boolean and report criterion T
+				Dependencies:
+					smPercentExcessiveResiduals, scope = 4, stage = 5, line number = 3555
+					smNumberOfExcessiveResidualsInSample, scope = 4, stage = 5, line number = 3513
+
+			smPossibleMixture at line no. 3314 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smLociWithMoreThanThreeAlleles, scope = 4, stage = 5, line number = 3286
+					smNoLociWithThreeOrMoreAlleles, scope = 4, stage = 5, line number = 3297
+
+			smRecommendReampRegular at line no. 4024 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smNumberOfExcessiveResidualsInSample, scope = 4, stage = 5, line number = 3513
+					smPercentExcessiveResiduals, scope = 4, stage = 5, line number = 3555
+					smILSFailed, scope = 4, stage = 1, line number = 9
+
+			smRecommendReinject at line no. 4052 with Msg. type = boolean and report criterion T/F
+				Dependencies:
+					smRecommendReampRegular, scope = 4, stage = 5, line number = 4024
+
+	Directory Stage 1
+
+		Scope 5
+
+			smLocusSummaryNumberOfCraters at line no. 3883 with Msg. type = count and report criterion T
+				Trigger Sources:
+					smLocusContainsCrater, scope = 2, stage = 4, line number = 2084
+
+		Scope 6
+
+			smNoLadderFile at line no. 337 with Msg. type = boolean and report criterion T
+
+			smReagentKitUnknown at line no. 385 with Msg. type = boolean and report criterion T
+
+			smMoreThanOneReagentKit at line no. 396 with Msg. type = boolean and report criterion T
+
+			smMarkerSetNameUnknown at line no. 539 with Msg. type = boolean and report criterion T
+
+			smNamedILSUnknown at line no. 550 with Msg. type = boolean and report criterion T
+
+			smNoPosCtrlFound at line no. 655 with Msg. type = boolean and report criterion T
+
+			smNoNegCtrlFound at line no. 666 with Msg. type = boolean and report criterion T
+
+			smDefaultsAreOverridden at line no. 348 with Msg. type = boolean and report criterion T
+
+			smReampAllRegular at line no. 3101 with Msg. type = boolean and report criterion T
+
+			smReampAllLess at line no. 3130 with Msg. type = boolean and report criterion T
+
+			smReampAllMore at line no. 3159 with Msg. type = boolean and report criterion T
+
+			smReinjectAll at line no. 3188 with Msg. type = boolean and report criterion T
+
+			smDirectoryPlaceHolder at line no. 3217 with Msg. type = boolean and report criterion F
+
+			smTotalNumberOfSamples at line no. 866 with Msg. type = count and report criterion F
+				Trigger Sources:
+					smIsSample, scope = 4, stage = 1, line number = 946
+
+			smTotalNumberOfSamplesWithExcessivePullup at line no. 904 with Msg. type = count and report criterion T
+				Trigger Sources:
+					smIsSampleWithExcessivePullup, scope = 4, stage = 5, line number = 3502
+
+			smTotalNumberOfSamplesExcludingNegativeControls at line no. 885 with Msg. type = count and report criterion F
+				Trigger Sources:
+					smIsSampleButNotNegativeCtrl, scope = 4, stage = 1, line number = 957
+
+			smDirectoryLevelNamedPosCtrlNotFound at line no. 690 with Msg. type = boolean and report criterion T
+				Trigger Sources:
+					smNamedPosCtrlNotFound, scope = 4, stage = 5, line number = 677
+
+			smPercentOfSamplesWithExcessivePullup at line no. 924 with Msg. type = percent and report criterion T
+				Dependencies:
+					smTotalNumberOfSamplesWithExcessivePullup, scope = 6, stage = 1, line number = 904
+					smTotalNumberOfSamples, scope = 6, stage = 1, line number = 866
+
+	Directory Stage 2
+
+		Scope 5
+
+			smLocusSummaryPercentCraters at line no. 3903 with Msg. type = percent and report criterion T
+				Dependencies:
+					smLocusSummaryNumberOfCraters, scope = 5, stage = 1, line number = 3883
+					smTotalNumberOfSamplesExcludingNegativeControls, scope = 6, stage = 1, line number = 885

@@ -1,0 +1,38 @@
+This project requires wxWidgets,wxthings, and wxplotctrl.
+
+wxWidgets can be found at 
+http://wxwindows.sourceforge.net/
+
+wxThings can be found at
+http://wxcode.sourceforge.net/complist.php
+
+wxPlotCtrl can be found at 
+http://wxcode.sourceforge.net/complist.php?compperpage=1000&viewmode=full&browseby=category&section=graphics&page=1
+
+wxPlotCtrl and wxThings are assumed to be subdirectories of the wx top level directory and 
+their respective .vcproj must be converted from project files created with older versions of MS-VC++
+
+
+ENVIRONMENT
+
+the following environment variable should be set before opening the .vcproj file
+
+WXWIN -- the top level directory for wxWidgets
+  within NCBI E:\apps\wx is recommended
+
+WXHOME -- the wxMSW-"version" subdirectory under WXWIN where "version" will vary.
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+The following files should be in the Debug Subdirectory when debugging
+
+osiris.png
+TestAnalysisDirectoryLC.exe
+Config\kitcolors.xml
+Config\LadderData.xml
+Config\OsirisMessageBook2.xml
+

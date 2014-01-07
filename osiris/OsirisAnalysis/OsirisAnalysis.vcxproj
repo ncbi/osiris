@@ -1,0 +1,409 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>OsirisAnalysis</ProjectName>
+    <ProjectGuid>{BB4E3CC3-10F8-4DB9-9CC6-CCDD45AB55D3}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Message>Build CParmOsiris.cpp/h</Message>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>%(Inputs)</Inputs>
+      <Outputs>%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;../libxslt-1.1.26/win32include;../libxml2-2.7.7/include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\lib\vc_lib\mswd;$(WXHOME)\include;..\wxthings\include;..\wxplotctrl\include;..\Version;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;WIN32;_DEBUG;_WINDOWS;__WXMSW__;__WXDEBUG__;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(WXHOME)\lib\vc_lib\msw;$(WXHOME)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw28d_adv.lib;wxmsw28d_html.lib;wxmsw28d_core.lib;wxbase28d.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
+      <AdditionalLibraryDirectories>..\wxthings\Debug;..\wxplotctrl\Debug;..\nwx\Debug;..\wxXsl\Debug;..\wxXml2\Debug;$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\Debug;..\libxslt-1.1.26\libxslt\Debug;..\libxslt-1.1.26\libexslt\Debug;..\libiconv-1.13\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)OsirisAnalysis.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>%(Inputs)</Inputs>
+      <Outputs>%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..;../libxslt-1.1.26/win32include;../libxml2-2.7.7/include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\lib\vc_lib\msw;$(WXHOME)\include;..\wxthings\include;..\wxplotctrl\include;..\Version;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;WIN32;NDEBUG;_WINDOWS;__WXMSW__;NOPCH;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(WXHOME)/lib/vc_lib/msw;$(WXHOME)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>wxplotctrl.lib;wxthings.lib;wxXsl.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw28_adv.lib;wxmsw28_html.lib;wxmsw28_core.lib;wxbase28.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregex.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
+      <AdditionalLibraryDirectories>..\wxthings\Release;..\wxplotctrl\Release;..\wxXsl\Release;..\nwx\Release;$(WXHOME)\lib\vc_lib;..\wxXml2\Release;..\libxml2-2.7.7\Release;..\libxslt-1.1.26\libxslt\Release;..\libxslt-1.1.26\libexslt\Release;..\libiconv-1.13\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CComboLabels.cpp" />
+    <ClCompile Include="CDialogAbout.cpp" />
+    <ClCompile Include="CDialogAcceptAlerts.cpp" />
+    <ClCompile Include="CDialogAcceptAllele.cpp" />
+    <ClCompile Include="CDialogAnalysis.cpp" />
+    <ClCompile Include="CDialogApprove.cpp" />
+    <ClCompile Include="CDialogCellHistory.cpp" />
+    <ClCompile Include="CDialogCMF.cpp" />
+    <ClCompile Include="CDialogContactUs.cpp" />
+    <ClCompile Include="CDialogEditAllele.cpp" />
+    <ClCompile Include="CDialogEditChannelAlerts.cpp" />
+    <ClCompile Include="CDialogEditGridColours.cpp" />
+    <ClCompile Include="CDialogEnableMultiple.cpp" />
+    <ClCompile Include="CDialogExportFile.cpp" />
+    <ClCompile Include="CDialogExportPlot.cpp" />
+    <ClCompile Include="CDialogExportSetup.cpp" />
+    <ClCompile Include="CDialogExportXSL.cpp" />
+    <ClCompile Include="CDialogHistoryAll.cpp" />
+    <ClCompile Include="CDialogMaxLadderLabel.cpp" />
+    <ClCompile Include="CDialogMRU.cpp" />
+    <ClCompile Include="CDialogParameters.cpp" />
+    <ClCompile Include="CDialogPlotMessage.cpp" />
+    <ClCompile Include="CDialogPromptNewerFile.cpp" />
+    <ClCompile Include="CDialogReallyQuit.cpp" />
+    <ClCompile Include="CDialogShowLabSettings.cpp" />
+    <ClCompile Include="CDialogToggleEnabled.cpp" />
+    <ClCompile Include="CDialogVolumes.cpp" />
+    <ClCompile Include="CDialogWarnHistory.cpp" />
+    <ClCompile Include="CDirList.cpp" />
+    <ClCompile Include="CFrameAnalysis.cpp" />
+    <ClCompile Include="CFramePlot.cpp" />
+    <ClCompile Include="CFrameRunAnalysis.cpp" />
+    <ClCompile Include="CGridAlerts.cpp" />
+    <ClCompile Include="CGridAllele.cpp" />
+    <ClCompile Include="CGridAnalysis.cpp" />
+    <ClCompile Include="CGridAnalysisDisplay.cpp" />
+    <ClCompile Include="CGridCMF.cpp" />
+    <ClCompile Include="CGridEdit.cpp" />
+    <ClCompile Include="CGridLabThresholds.cpp" />
+    <ClCompile Include="CGridLocus.cpp" />
+    <ClCompile Include="CGridLocusColumns.cpp" />
+    <ClCompile Include="CGridLocusPeaks.cpp" />
+    <ClCompile Include="CHistoryTime.cpp" />
+    <ClCompile Include="CImageAbout.cpp" />
+    <ClCompile Include="CKitColors.cpp" />
+    <ClCompile Include="CKitLadderInfo.cpp" />
+    <ClCompile Include="CKitList.cpp" />
+    <ClCompile Include="CLabels.cpp" />
+    <ClCompile Include="CLabSettings.cpp" />
+    <ClCompile Include="CListProcess.cpp" />
+    <ClCompile Include="CMDIfileManager.cpp" />
+    <ClCompile Include="CMDIFrame.cpp" />
+    <ClCompile Include="CMenuAnalysis.cpp" />
+    <ClCompile Include="CMenuBar.cpp" />
+    <ClCompile Include="CMenuEdit.cpp" />
+    <ClCompile Include="CMenuFile.cpp" />
+    <ClCompile Include="CMenuHistory.cpp" />
+    <ClCompile Include="CMenuPlot.cpp" />
+    <ClCompile Include="COARallele.cpp" />
+    <ClCompile Include="COARchannelAlert.cpp" />
+    <ClCompile Include="COARdirectoryAlerts.cpp" />
+    <ClCompile Include="COARfile.cpp" />
+    <ClCompile Include="COARheading.cpp" />
+    <ClCompile Include="COARlocus.cpp" />
+    <ClCompile Include="COARmessage.cpp" />
+    <ClCompile Include="COARmisc.cpp" />
+    <ClCompile Include="COARnotes.cpp" />
+    <ClCompile Include="COARpeak.cpp" />
+    <ClCompile Include="COARreview.cpp" />
+    <ClCompile Include="COARsample.cpp" />
+    <ClCompile Include="COARsampleSort.cpp" />
+    <ClCompile Include="COmittedAlerts.cpp" />
+    <ClCompile Include="ConfigDir.cpp" />
+    <ClCompile Include="COsirisIcon.cpp" />
+    <ClCompile Include="CPageAuto.cpp" />
+    <ClCompile Include="CPageName.cpp" />
+    <ClCompile Include="CPageNoParameters.cpp" />
+    <ClCompile Include="CPageParameters.cpp" />
+    <ClCompile Include="CPanelAlerts.cpp" />
+    <ClCompile Include="CPanelApplyCancel.cpp" />
+    <ClCompile Include="CPanelHistory.cpp" />
+    <ClCompile Include="CPanelHistoryMenu.cpp" />
+    <ClCompile Include="CPanelLabGeneral.cpp" />
+    <ClCompile Include="CPanelLabLocusThresholds.cpp" />
+    <ClCompile Include="CPanelLabMarkerSet.cpp" />
+    <ClCompile Include="CPanelLabNameStrings.cpp" />
+    <ClCompile Include="CPanelLabReviewAcceptance.cpp" />
+    <ClCompile Include="CPanelLabSampleThresholds.cpp" />
+    <ClCompile Include="CPanelLabSettings.cpp" />
+    <ClCompile Include="CPanelLocusDetails.cpp" />
+    <ClCompile Include="CPanelPlot.cpp" />
+    <ClCompile Include="CPanelPlotPreview.cpp" />
+    <ClCompile Include="CPanelPlotToolbar.cpp" />
+    <ClCompile Include="CPanelSampleAlertDetails.cpp" />
+    <ClCompile Include="CPanelSampleAlertNotebook.cpp" />
+    <ClCompile Include="CPanelStatus.cpp" />
+    <ClCompile Include="CPanelUserID.cpp" />
+    <ClCompile Include="CParmGridAttributes.cpp" />
+    <ClCompile Include="CParmOsiris.cpp" />
+    <ClCompile Include="CPlotController.cpp" />
+    <ClCompile Include="CPlotData.cpp" />
+    <ClCompile Include="CProcess.cpp" />
+    <ClCompile Include="CProcessAnalysis.cpp" />
+    <ClCompile Include="CReAnalyze.cpp" />
+    <ClCompile Include="CSplitterCellHistory.cpp" />
+    <ClCompile Include="CStandardSettings.cpp" />
+    <ClCompile Include="CVolumes.cpp" />
+    <ClCompile Include="CXMLmessageBook.cpp" />
+    <ClCompile Include="CXSLExportFileType.cpp" />
+    <ClCompile Include="mainApp.cpp" />
+    <ClCompile Include="mainFrame.cpp" />
+    <ClCompile Include="UnitTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OsirisAnalysis.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CAlertViewStatus.h" />
+    <ClInclude Include="CAllLoci.h" />
+    <ClInclude Include="CComboLabels.h" />
+    <ClInclude Include="CDialogAbout.h" />
+    <ClInclude Include="CDialogAcceptAlerts.h" />
+    <ClInclude Include="CDialogAcceptAllele.h" />
+    <ClInclude Include="CDialogAnalysis.h" />
+    <ClInclude Include="CDialogApprove.h" />
+    <ClInclude Include="CDialogCellHistory.h" />
+    <ClInclude Include="CDialogCMF.h" />
+    <ClInclude Include="CDialogContactUs.h" />
+    <ClInclude Include="CDialogEditAllele.h" />
+    <ClInclude Include="CDialogEditChannelAlerts.h" />
+    <ClInclude Include="CDialogEditGridColours.h" />
+    <ClInclude Include="CDialogEnableMultiple.h" />
+    <ClInclude Include="CDialogExportFile.h" />
+    <ClInclude Include="CDialogExportPlot.h" />
+    <ClInclude Include="CDialogExportSetup.h" />
+    <ClInclude Include="CDialogExportXSL.h" />
+    <ClInclude Include="CDialogHistoryAll.h" />
+    <ClInclude Include="CDialogMaxLadderLabel.h" />
+    <ClInclude Include="CDialogMRU.h" />
+    <ClInclude Include="CDialogParameters.h" />
+    <ClInclude Include="CDialogPlotMessage.h" />
+    <ClInclude Include="CDialogPromptNewerFile.h" />
+    <ClInclude Include="CDialogReallyQuit.h" />
+    <ClInclude Include="CDialogShowLabSettings.h" />
+    <ClInclude Include="CDialogToggleEnabled.h" />
+    <ClInclude Include="CDialogVolumes.h" />
+    <ClInclude Include="CDialogWarnHistory.h" />
+    <ClInclude Include="CDirList.h" />
+    <ClInclude Include="CEventScroll.h" />
+    <ClInclude Include="CFrameAnalysis.h" />
+    <ClInclude Include="CFramePlot.h" />
+    <ClInclude Include="CFrameRunAnalysis.h" />
+    <ClInclude Include="CGridAlerts.h" />
+    <ClInclude Include="CGridAllele.h" />
+    <ClInclude Include="CGridAnalysis.h" />
+    <ClInclude Include="CGridAnalysisDisplay.h" />
+    <ClInclude Include="CGridCMF.h" />
+    <ClInclude Include="CGridEdit.h" />
+    <ClInclude Include="CGridLabThresholds.h" />
+    <ClInclude Include="CGridLocus.h" />
+    <ClInclude Include="CGridLocusColumns.h" />
+    <ClInclude Include="CGridLocusPeaks.h" />
+    <ClInclude Include="CHistoryTime.h" />
+    <ClInclude Include="CILSLadderInfo.h" />
+    <ClInclude Include="CImageAbout.h" />
+    <ClInclude Include="CKitColors.h" />
+    <ClInclude Include="CKitLadderInfo.h" />
+    <ClInclude Include="CKitList.h" />
+    <ClInclude Include="CLabels.h" />
+    <ClInclude Include="CLabSettings.h" />
+    <ClInclude Include="CListProcess.h" />
+    <ClInclude Include="CMDIfileManager.h" />
+    <ClInclude Include="CMDIFrame.h" />
+    <ClInclude Include="CMenuAnalysis.h" />
+    <ClInclude Include="CMenuBar.h" />
+    <ClInclude Include="CMenuEdit.h" />
+    <ClInclude Include="CMenuFile.h" />
+    <ClInclude Include="CMenuHistory.h" />
+    <ClInclude Include="CMenuLabels.h" />
+    <ClInclude Include="CMenuPlot.h" />
+    <ClInclude Include="CMenuSort.h" />
+    <ClInclude Include="CMessageDialogCheckCancel.h" />
+    <ClInclude Include="CMruListIcons.h" />
+    <ClInclude Include="COARallele.h" />
+    <ClInclude Include="COARchannelAlert.h" />
+    <ClInclude Include="COARdirectoryAlerts.h" />
+    <ClInclude Include="COARfile.h" />
+    <ClInclude Include="COARheading.h" />
+    <ClInclude Include="COARlocus.h" />
+    <ClInclude Include="COARmessage.h" />
+    <ClInclude Include="COARmisc.h" />
+    <ClInclude Include="COARMsgExport.h" />
+    <ClInclude Include="COARnotes.h" />
+    <ClInclude Include="COARpeak.h" />
+    <ClInclude Include="COARreview.h" />
+    <ClInclude Include="COARsample.h" />
+    <ClInclude Include="COARsampleSort.h" />
+    <ClInclude Include="COmittedAlerts.h" />
+    <ClInclude Include="ConfigDir.h" />
+    <ClInclude Include="COsirisIcon.h" />
+    <ClInclude Include="CPageAuto.h" />
+    <ClInclude Include="CPageName.h" />
+    <ClInclude Include="CPageNoParameters.h" />
+    <ClInclude Include="CPageParameters.h" />
+    <ClInclude Include="CPanelAlerts.h" />
+    <ClInclude Include="CPanelApplyCancel.h" />
+    <ClInclude Include="CPanelHistory.h" />
+    <ClInclude Include="CPanelHistoryMenu.h" />
+    <ClInclude Include="CPanelLabGeneral.h" />
+    <ClInclude Include="CPanelLabLocusThresholds.h" />
+    <ClInclude Include="CPanelLabMarkerSet.h" />
+    <ClInclude Include="CPanelLabNameStrings.h" />
+    <ClInclude Include="CPanelLabReviewAcceptance.h" />
+    <ClInclude Include="CPanelLabSampleThresholds.h" />
+    <ClInclude Include="CPanelLabSettings.h" />
+    <ClInclude Include="CPanelLabSettingsUtils.h" />
+    <ClInclude Include="CPanelLocusDetails.h" />
+    <ClInclude Include="CPanelPlot.h" />
+    <ClInclude Include="CPanelPlotPreview.h" />
+    <ClInclude Include="CPanelPlotToolbar.h" />
+    <ClInclude Include="CPanelSampleAlertDetails.h" />
+    <ClInclude Include="CPanelSampleAlertNotebook.h" />
+    <ClInclude Include="CPanelStatus.h" />
+    <ClInclude Include="CPanelUserID.h" />
+    <ClInclude Include="CParmGridAttributes.h" />
+    <ClInclude Include="CParmOsiris.h" />
+    <ClInclude Include="CPlotController.h" />
+    <ClInclude Include="CPlotData.h" />
+    <ClInclude Include="CProcess.h" />
+    <ClInclude Include="CProcessAnalysis.h" />
+    <ClInclude Include="CReAnalyze.h" />
+    <ClInclude Include="CSplitterCellHistory.h" />
+    <ClInclude Include="CStandardSettings.h" />
+    <ClInclude Include="CVolumes.h" />
+    <ClInclude Include="CXMLmessageBook.h" />
+    <ClInclude Include="CXSLExportFileType.h" />
+    <ClInclude Include="extractCXSLExportFile.h" />
+    <ClInclude Include="ISetDateTime.h" />
+    <ClInclude Include="LABEL_TYPES.h" />
+    <ClInclude Include="mainApp.h" />
+    <ClInclude Include="mainFrame.h" />
+    <ClInclude Include="NeedsAttnOAR.h" />
+    <ClInclude Include="osiris_png.h" />
+    <ClInclude Include="OsirisFileTypes.h" />
+    <ClInclude Include="..\Version\OsirisVersion.h" />
+    <ClInclude Include="Platform.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="UnitTest.h" />
+    <ClInclude Include="wxIDS.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="helix32_256.bmp" />
+    <None Include="icon1.ico" />
+    <None Include="OsirisIcon.xpm" />
+    <None Include="icon2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\wxXsl\wxXSL.vcxproj">
+      <Project>{ba81638c-28a7-4dfb-93e6-74d8af6c92b4}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

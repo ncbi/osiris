@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="KitData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Version" type="xs:string" default="2.0" minOccurs="0"/>
+				<xs:element name="LaneStandards">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="LaneStandard">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Name" type="xs:string"/>
+										<xs:element name="Characteristics" type="xs:string"/>
+										<xs:element name="RelativeHeights" type="xs:string" minOccurs="0"/>
+										<xs:element name="Omissions" type="xs:string" minOccurs="0"/>
+										<xs:element name="CorrelationAcceptanceThreshold">
+											<xs:annotation>
+												<xs:documentation>Minimum correlation of spacing (after quadratic transform) to avoid failing lane standard</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:double">
+													<xs:minExclusive value="0.0"/>
+													<xs:maxExclusive value="1.0"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="CorrelationAutoAcceptanceThreshold">
+											<xs:annotation>
+												<xs:documentation>Minimum correlation of spacing (after quadratic transform) to avoid "requires human review" message for lane standard</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:double">
+													<xs:minExclusive value="0.0"/>
+													<xs:maxExclusive value="1.0"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="Kits"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Kits">
+		<xs:annotation>
+			<xs:documentation>List of Marker Sets with channels, alleles, etc</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="Set">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="KitName" type="xs:string"/>
+							<xs:element name="FileName" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

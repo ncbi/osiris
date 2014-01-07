@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="libiconv-1.13-08">
+</Property><Property Name="Solution File" Value="C:\Documents and Settings\hoffman\My Documents\DEV\internal\osiris\libiconv-1.13\libiconv-1.13-08.sln">
+</Property><Property Name="Date" Value="Monday, November 08, 2010">
+</Property><Property Name="Time" Value="15:17:02 PM">
+</Property><Property Name="Log Number" Value="4">
+</Property></Properties><Event ErrorLevel="1" Project="libexslt08" Source="..\libxslt-1.1.26\libexslt\libexslt08.vcproj" Description="This application has been updated to include settings related to the User Account Control (UAC) feature of Windows Vista. By default, when run on Windows Vista with UAC enabled, this application is marked to run with the same privileges as the process that launched it. This marking also disables the application from running with virtualization. You can change UAC related settings from the Property Pages of the project.">
+</Event><Event ErrorLevel="0" Project="libexslt08" Source="..\libxslt-1.1.26\libexslt\libexslt08.vcproj" Description="Project file successfully backed up as 'C:\Documents and Settings\hoffman\My Documents\DEV\internal\osiris\libxslt-1.1.26\libexslt\libexslt08.vcproj.8.00.old'.">
+</Event><Event ErrorLevel="0" Project="libexslt08" Source="..\libxslt-1.1.26\libexslt\libexslt08.vcproj" Description="Project upgraded successfully.">
+</Event><Event ErrorLevel="3" Project="libexslt08" Source="..\libxslt-1.1.26\libexslt\libexslt08.vcproj" Description="Converted">
+</Event></UpgradeLog>

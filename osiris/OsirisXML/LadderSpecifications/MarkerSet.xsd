@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="KitData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Version" type="xs:string" default="2.0" minOccurs="0"/>
+				<xs:element ref="Kits"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Kits">
+		<xs:annotation>
+			<xs:documentation>List of Marker Sets with channels, alleles, etc</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Set">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Name" type="xs:string"/>
+							<xs:element name="NChannels" type="xs:int"/>
+							<xs:element name="LS">
+								<xs:annotation>
+									<xs:documentation>Lane Standard</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="LSName" type="xs:string" maxOccurs="unbounded"/>
+										<xs:element name="ChannelNo" type="xs:int"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="FileNameSuffix" type="xs:string"/>
+							<xs:element name="GenotypeSuffix" type="xs:string"/>
+							<xs:element name="DirectorySearchString" type="xs:string"/>
+							<xs:element name="FsaChannelMap" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence maxOccurs="unbounded">
+										<xs:element name="Channel">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="KitChannelNumber" type="xs:int"/>
+													<xs:element name="fsaChannelNumber" type="xs:int"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="Locus">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="Name" type="xs:string"/>
+											<xs:element name="Channel" type="xs:integer"/>
+											<xs:element name="MinBP" type="xs:int">
+												<xs:annotation>
+													<xs:documentation>Minimum absolute locus BP for definition of extended locus:  defines acceptable extra-ladder alleles</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="MaxBP" type="xs:int">
+												<xs:annotation>
+													<xs:documentation>Maximum absolute locus BP for definition of extended locus:  defines acceptable extra-ladder alleles</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:choice>
+												<xs:annotation>
+													<xs:documentation>Only one of these pairs of values is needed.  Prefer 2nd set.</xs:documentation>
+												</xs:annotation>
+												<xs:sequence>
+													<xs:element name="MinGridLSIndex">
+														<xs:annotation>
+															<xs:documentation>Legacy value.  Prefer MinGridLSBasePair below</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:double">
+																<xs:minInclusive value="1.0"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="MaxGridLSIndex">
+														<xs:annotation>
+															<xs:documentation>Legacy value.  Prefer MaxGridLSBasePair below</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:double">
+																<xs:minInclusive value="1.0"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+												</xs:sequence>
+												<xs:sequence>
+													<xs:element name="MinGridLSBasePair" type="xs:double">
+														<xs:annotation>
+															<xs:documentation>Minimum ILS BP to define ladder locus:  for margin of safety, choose somewhat lower than minimum ladder peak</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="MaxGridLSBasePair" type="xs:double">
+														<xs:annotation>
+															<xs:documentation>Maximum ILS BP to define ladder locus:  for margin of safety, choose somewhat larger than maximum ladder peak</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:choice>
+											<xs:element name="CoreRepeatNumber" type="xs:integer" minOccurs="0"/>
+											<xs:element name="YLinked" type="xs:boolean" default="false" minOccurs="0"/>
+											<xs:element name="MaxExpectedAlleles" type="xs:int" default="2" minOccurs="0"/>
+											<xs:element name="MinExpectedAlleles" type="xs:int" default="1" minOccurs="0"/>
+											<xs:element name="LadderAlleles">
+												<xs:complexType>
+													<xs:sequence maxOccurs="unbounded">
+														<xs:element name="Allele">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="Name" type="xs:string"/>
+																	<xs:element name="CurveNo" type="xs:integer" minOccurs="0"/>
+																	<xs:element name="BP" type="xs:integer"/>
+																	<xs:element name="RelativeHeight" type="xs:string" minOccurs="0"/>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="OffLadderAlleles" minOccurs="0">
+												<xs:complexType>
+													<xs:sequence maxOccurs="unbounded">
+														<xs:element name="OLAllele">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="Name" type="xs:string"/>
+																	<xs:element name="BP" type="xs:integer"/>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

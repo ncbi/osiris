@@ -1,0 +1,15 @@
+InputDirectory=E:\Users\goorrob\NIST\NIST Identifiler samples separated by first letter\B samples;
+LadderDirectory=E:\Users\goorrob\My Documents\DEV\internal\osiris\OsirisXML\LadderSpecifications;
+ReportDirectory=E:\Users\goorrob\SmartOsirisReports;
+MarkerSetName=Identifiler;
+LaneStandardName=ABI-LIZ450;
+CriticalOutputLevel=15;
+MinSampleRFU=50;
+MinLaneStandardRFU=75;
+MinLadderRFU=100;
+MinInterlocusRFU=50;
+RawDataString=R;
+LabSettings=E:\Users\goorrob\My Documents\DEV\internal\osiris\OsirisXML\NamedxmlConfigurations\ID\ID_LabSettings.xml;
+StandardSettings=E:\Users\goorrob\My Documents\DEV\internal\osiris\OsirisXML\NamedxmlConfigurations\ID\ID_StdSettings.xml;
+MessageBook=E:\Users\goorrob\My Documents\DEV\internal\osiris\MessageBook\OsirisMessageBookV4.0.xml;
+;

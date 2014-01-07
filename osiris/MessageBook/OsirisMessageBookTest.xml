@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MessageList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook.xsd">
+	<Message>
+		<Index>0</Index>
+		<Text>This is the symphony that Schubert wrote but never finished</Text>
+		<NDataElements>0</NDataElements>
+	</Message>
+	<Message>
+		<Index>1</Index>
+		<Text>Something here is not quite right</Text>
+		<NDataElements>0</NDataElements>
+	</Message>
+	<Message>
+		<Index>2</Index>
+		<Text>There is something rotten in Denmark</Text>
+		<NDataElements>0</NDataElements>
+	</Message>
+	<Message>
+		<Index>3</Index>
+		<Text>I don't get no respect</Text>
+		<NDataElements>0</NDataElements>
+	</Message>
+	<Message>
+		<Index>4</Index>
+		<Text>Why is everybody always picking on me?</Text>
+		<NDataElements>0</NDataElements>
+	</Message>
+	<Message>
+		<Index>5</Index>
+		<Text>Something's happening here.  What it is ain't exactly clear.</Text>
+		<NDataElements>0</NDataElements>
+	</Message>
+	<Message>
+		<Index>6</Index>
+		<Text>Yesterday, all my troubles seemed so far away</Text>
+		<NDataElements>0</NDataElements>
+	</Message>
+</MessageList>

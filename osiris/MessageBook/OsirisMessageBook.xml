@@ -1,0 +1,1508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MessageList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook.xsd">
+	<Message>
+		<Index>0</Index>
+		<Text>SAMPLE REQUIRES ANALYST REVIEW</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>1</Index>
+		<Text>POSITIVE CONTROL REQUIRES ANALYST REVIEW</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>2</Index>
+		<Text>NEGATIVE CONTROL REQUIRES ANALYST REVIEW</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>3</Index>
+		<Text>ILS REQUIRES ANALYST REVIEW</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>4</Index>
+		<Text>LADDER REQUIRES ANALYST REVIEW</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>50</Index>
+		<Text>SAMPLE QUALITY PARAMETERS MET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>51</Index>
+		<Text>POSITIVE CONTROL MET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>52</Index>
+		<Text>NEGATIVE CONTROL MET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>53</Index>
+		<Text>ILS MET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>54</Index>
+		<Text>LADDER MET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>100</Index>
+		<Text>NO LADDER FILE IDENTIFIED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>101</Index>
+		<Text>THE LADDER TYPE IS NOT RECOGNIZED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>102</Index>
+		<Text>MORE THAN ONE LADDER TYPE IS IDENTIFIED IN THE DIRECTORY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>103</Index>
+		<Text>NO VALID LADDER FILE IS IDENTIFIED IN THE DIRECTORY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>104</Index>
+		<Text>THE ANALYTICAL PLATFORM IS NOT RECOGNIZED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>105</Index>
+		<Text>MORE THAN ONE ANALYTICAL PLATFORM IS IDENTFIED IN THE DIRECTORY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>106</Index>
+		<Text>NO POSITIVE CONTROL SAMPLE WAS IDENTIFIED IN THE DIRECTORY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>107</Index>
+		<Text>NO NEGATIVE CONTROL FILE WAS IDENTIFIED IN THE DIRECTORY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>108</Index>
+		<Text>NO SAMPLE WAS IDENTIFIED IN THE DIRECTORY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>109</Index>
+		<Text>THE POSITIVE CONTROL SAMPLE IS OUTSIDE THE EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>110</Index>
+		<Text>THE NEGATIVE CONTROL SAMPLE IS OUTSIDE THE EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>112</Index>
+		<Text>DIRECTORY CONTAINS 1 OR MORE CONTROLS OUTSIDE  EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>115</Index>
+		<Text>DIRECTORY FAILED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>200</Index>
+		<Text>ALLELIC LADDER DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>201</Index>
+		<Text>ALLELIC LADDER DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>202</Index>
+		<Text>REVIEW ALLELE TO ALLELIC LADDER ALIGNMENT</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>203</Index>
+		<Text>REVIEW SAMPLE/ALLELIC LADDER ALIGNMENT FOR MICROVARIANT STATUS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>204</Index>
+		<Text>ALLELIC LADDER BELOW THE MINIMUM RFU</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>205</Index>
+		<Text>ALLELIC LADDER ABOVE THE MAXIMUM RFU</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>212</Index>
+		<Text>ALLELIC LADDER DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>300</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK (CRATER)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>301</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (A-/A+)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>302</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT  (A-/A+;+1/-1)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>303</Index>
+		<Text>UNEXPECTED ARTIFACT IN PROFILE (DYE BLOB)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>304</Index>
+		<Text>UNEXPECTED ARTIFACT IN PROFILE (SPIKE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>305</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (NEGATIVE PEAK)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>306</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (FLAT-TOPPED PEAK)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>307</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (PEAK BELOW RFU MIN)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>308</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (PEAK ABOVE RFU MAX)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>309</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (UNUSUAL SHAPE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>310</Index>
+		<Text>NO GENOTYPE WAS IDENTIFIED FOR:</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>311</Index>
+		<Text>THREE ALLELES WERE IDENTIFIED FOR:</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>312</Index>
+		<Text>UNEXPECTED NUMBER OF PEAKS IN 1 OR MORE LOCI</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>313</Index>
+		<Text>UNEXPECTED NUMBER OF PEAKS IN 1 OR MORE LOCI</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>314</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (ASYMMETRICAL ALLELE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>315</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (2 ALLELES MERGED INTO 1 PEAK)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>316</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (PEAK WIDER THAN EXPECTED)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>317</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (PEAK NARROWER THAN EXPECTED)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>318</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (UNUSUAL PEAK SHAPE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>319</Index>
+		<Text>UNEXPECTED NUMBER OF PEAKS FOR: (SUGGESTS BLEEDTHROUGH)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>320</Index>
+		<Text>UNEXPECTED NUMBER OF PEAKS  FOR: (SUGGESTS BLEEDTHROUGH)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>321</Index>
+		<Text>UNEXPECTED NUMBER OF PEAKS FOR: (SUGGESTS BLEEDTHROUGH)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>322</Index>
+		<Text>UNEXPECTED NUMBER OF PEAKS FOR: (SUGGESTS BLEEDTHROUGH)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>323</Index>
+		<Text>CHECK FOR SHIFT IN GENOTYPE </Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>324</Index>
+		<Text>PEAK(S) DETECTED BETWEEN ALLELIC LADDER</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>325</Index>
+		<Text>UNEXPECTED PEAK MORPHOLOGY (SMALL CRATER)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>326</Index>
+		<Text>HETEROZYGOUS IMBALANCE DETECTED FOR:</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>327</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (STUTTER)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>328</Index>
+		<Text>REVIEW ALLELE TO ALLELIC LADDER ALIGNMENT</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>329</Index>
+		<Text>REVIEW ALLELE TO ALLELIC LADDER ALIGNMENT</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>330</Index>
+		<Text>OFF LADDER ALLELE DETECTED FOR:</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>335</Index>
+		<Text>REVIEW HOMOZYGOUS/HETEROZYGOUS HEIGHT THRESHOLD</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>337</Index>
+		<Text>TECHNICAL ARTIFACT IDENTIFIED (SPIKE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>338</Index>
+		<Text>PULL UP IDENTIFIED PRIOR TO ALLELIC LADDER FOR THIS LOCUS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>342</Index>
+		<Text>OL ALLELE DETECTED BETWEEN LOCI. PULL UP SUSPECTED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>350</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT  (A-/A+)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>351</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT  (A-/A+)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>352</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (A-/A+;+1/-1)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>353</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (A-/A+;+1/-1)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>354</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (STUTTER Rt. SIDE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>355</Index>
+		<Text>UNEXPECTED MORPHOLOGY IN PEAK ENVIRONMENT (STUTTER Lt SIDE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>356</Index>
+		<Text>SINGLE PEAK DETECTED; HEIGHT APPROPRIATE FOR HOMOZYGOTE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>357</Index>
+		<Text>TWO PEAKS DETECTED; HEIGHTS APPROPRIATE FOR HETEROZYGOTE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>359</Index>
+		<Text>OSIRIS GENOTYPE DIFFERS FROM ABI GENOTYPE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>360</Index>
+		<Text>OSIRIS DELETED SUSPECTED ARTIFACT; REVIEW EDITTED PEAK</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>363</Index>
+		<Text>Genotype failed- MISC MESSAGE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>400</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (CRATERS)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>401</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (A-/A+)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>402</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (A-/A+;+1/-1)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>403</Index>
+		<Text>UNEXPECTED ARTIFACTS IN PROFILE (DYE BLOBS)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>404</Index>
+		<Text>UNEXPECTED ARTIFACTS IN PROFILE (SPIKES)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>405</Index>
+		<Text>UNEXPECTED MORPHOLOGIES IN PROFILES (NEGATIVE PEAKS) </Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>406</Index>
+		<Text>JUNEXPECTED MORPHOLOGIES IN PROFILE (UNUSUAL SHAPES TO PEAKS)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>407</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (ABOVE RFU MAX)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>408</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (NON GAUSSIAN)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>409</Index>
+		<Text>UNEXPECTED PROFILE BACKGROUND LEVEL</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>410</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (STUTTER)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>411</Index>
+		<Text>UNEXPECTED  MORPHOLOGY IN PROFILE (MULTIPLE PEAKS)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>412</Index>
+		<Text>UNEXPECTED MORPHOLOGIES IN PROFILES (NON SYMMETRICAL)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>413</Index>
+		<Text>>UNEXPECTED MORPHOLOGY IN PROFILE (2 ALLELES MERGED INTO 1 PEAK)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>414</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (PEAKS WIDER THAN EXPECTED)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>415</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (PEAK THINNER THAN EXPECTED)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>416</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>417</Index>
+		<Text>REVIEW FOR BLEED THROUGH IN WHOLE PROFILE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>418</Index>
+		<Text>REVIEW FOR BLEED THROUGH IN WHOLE PROFILE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>419</Index>
+		<Text>REVIEW FOR BLEED THROUGH IN WHOLE PROFILE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>420</Index>
+		<Text>REVIEW FOR BLEED THROUGH IN WHOLE PROFILE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>421</Index>
+		<Text>REVIEW PROFILE FOR BASELINE SHIFT/PEAK WIDTH</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>422</Index>
+		<Text>REVIEW WHOLE PROFILE FOR SHIF V. OFF LADDER ALLELES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>423</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (CRATER)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>427</Index>
+		<Text>PULL UP IDENTIFIED PRIOR TO ALLELIC LADDER FOR THIS LOCUS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>450</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (A-/A+)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>451</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (A-/A+)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>452</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (A-/A+;+1/-1)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>453</Index>
+		<Text>UNEXPECTED PROFILE MORPHOLOGIES (A-/A+;+1/-1)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>454</Index>
+		<Text>UNEXPECTED  MORPHOLOGIES IN PROFILE (HIGH BACK GROUND)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>455</Index>
+		<Text>UNEXPECTED MORPHOLOGIES IN PROFILE (MULTIPLE PEAKS)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>456</Index>
+		<Text>UNEXPECTED  MORPHOLOGIES IN PROFILE (STUTTER)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>457</Index>
+		<Text>UNEXPECTED  MORPHOLOGIES IN PROFILES (STUTTER-LIKE)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>460</Index>
+		<Text>REVIEW EDITTED PEAKS IN PROFILE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>463</Index>
+		<Text>Peaks failed-MISC MESSAGE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>500</Index>
+		<Text>ILS CONTAINS UNEXPECTED # PEAKS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>501</Index>
+		<Text>ILS CONTAINS TOO FEW PEAKS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>502</Index>
+		<Text>ILS IS SHORTER THAN EXPECTED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>503</Index>
+		<Text>ILS OVERLAP BETWEEN LOCI</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>504</Index>
+		<Text>JREVIEW ILS PEAK SELECTION</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>505</Index>
+		<Text>REVIEW ILS QUALITY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>506</Index>
+		<Text>ILS CONTAINS EXTRA PEAKS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>507</Index>
+		<Text>ILS IS BELOW THE MINIMUM RFU</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>508</Index>
+		<Text>ILS CONTAINS UNEXPECTED MORPHOLOGY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>509</Index>
+		<Text>ILS 1 OR MORE PEAK NON-GAUSSIAN</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>510</Index>
+		<Text>REVIEW ILS FOR BLEED-THROUGH</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>511</Index>
+		<Text>REVIEW ILS FOR BLEED-THROUGH</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>512</Index>
+		<Text>UNABLE TO ASSIGN ILS PEAKS APPROPRIATELY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>513</Index>
+		<Text>UNABLE TO ASSIGN ILS PEAKS APPROPRIATELY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>514</Index>
+		<Text>ILS DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>515</Index>
+		<Text>POSITIVE CONTROL DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>516</Index>
+		<Text>NEGATIVE CONTROL DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>517</Index>
+		<Text>POSITIVE CONTROL DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>518</Index>
+		<Text>NEGATIVE CONTROL DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>520</Index>
+		<Text>DIRECTORY INFORMATION ON SAMPLE DOES NOT MEET EXPECTATIONS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>521</Index>
+		<Text>1 OR MORE PEAK MORPHOLOGY VALUES DO NOT MEET EXPECTATIONS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>522</Index>
+		<Text>THE GENOTYPE INFORMATION DOES NOT MEET EXPECTATIONS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>523</Index>
+		<Text>SAMPLE DOES NOT MEET 1 OR MORE LABORATORY RULES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>524</Index>
+		<Text>FSA INFORMATION DOES NOT MEET EXPECTATIONS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>531</Index>
+		<Text>Sample failed- MISC MESSAGE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>600</Index>
+		<Text>1 OR MORE PEAKS DO NOT MEET RFU VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>601</Index>
+		<Text>JREVIEW ILS TO ASSURE PROPER PEAK ASSIGNMENT</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>602</Index>
+		<Text>HOMOZYGOUS PEAK DOES NOT MEET RFU VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>603</Index>
+		<Text>HETEROZYGOUS PEAKS DO NOT MEET RFU VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>604</Index>
+		<Text>SAMPLE DOES NOT MEET  RFU MINIMUM VALUE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>605</Index>
+		<Text>SAMPLE EXCEEDS MAXIMUM RFU VALUE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>606</Index>
+		<Text>SAMPLE EXCEEDS MAXIMUM RFU VALUE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>607</Index>
+		<Text>AMELOGENIN EXCEEDS MAXIMUM RFU</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>608</Index>
+		<Text>SAMPLE DOES NOT ATTAIN THE SCAN HALF-WIDTH MINIMUM</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>609</Index>
+		<Text>SAMPLE EXCEEDS THE SCAN HALF-WIDTH MAXIMUM</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>610</Index>
+		<Text>REVIEW (A-/A+)</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>611</Index>
+		<Text>REVIEW STUTTER</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>612</Index>
+		<Text>REVIEW HETEROZYGOUS IMBALANCE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>613</Index>
+		<Text>REVIEW; MORE THAN 3 PEAKS IN GENOTYPE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>614</Index>
+		<Text>SAMPLE DOES NOT ATTAIN MINIMUM EXPECTED PEAK DENSITY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>615</Index>
+		<Text>SAMPLE EXCEEDS MAXIMUM EXPECTED PEAK DENSITY</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>620</Index>
+		<Text> Laboratory rules failed MISC MESSAGE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>700</Index>
+		<Text>THE ANALYTICAL PLATFORM IS NOT RECOGNIZED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>701</Index>
+		<Text>UNABLE TO OPEN ABI FSA FILE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>702</Index>
+		<Text>UNABLE TO IDENTIFY ABI "F" TOKEN</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>703</Index>
+		<Text>FILE SIZE IS LARGER THAN EXPECTED</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>704</Index>
+		<Text>OBSERVED COLOR CHANNELS EXCEEDS EXPECTED # FOR THIS PLATFORM</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>705</Index>
+		<Text>RAW DATA READING ERROR</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>706</Index>
+		<Text>ANALYSED DATA READING ERROR</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>707</Index>
+		<Text>DATA READING ERROR FOR INJECTION TIME</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>708</Index>
+		<Text>DATA READING ERROR FOR INJECTION VOLTAGE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>709</Index>
+		<Text>DATA READING ERROR FOR TEMP. SETTING</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>710</Index>
+		<Text>DATA READING ERROR FOR INSTRUMENT NAME</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>711</Index>
+		<Text>DATA READING ERROR FOR DYE SET NAME</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>712</Index>
+		<Text>DATA READING ERROR FOR SAMPLE COMMENT LINE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>713</Index>
+		<Text>DATA READING ERROR FOR ABI SIZE STANDARD ALIAS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>714</Index>
+		<Text>DATA READING ERROR FOR FOR ABI MODEL NUMBER</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>715</Index>
+		<Text>DATA READING ERROR FOR FOR AUTOSAMPLER POSITION</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>716</Index>
+		<Text>DATA READING ERROR FOR SAMPLE'S IDENTIFIED CAPILLARY NUMBERr</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>717</Index>
+		<Text>DATA READING ERROR FOR LENGTH TO DETECTOR DISTANCE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>718</Index>
+		<Text>DATA READING ERROR FOR # OF CHANNELS AVE. DURING LANE TRACKING</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>719</Index>
+		<Text>DATA READING ERROR FOR RAW DATA STARTING POINT</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>720</Index>
+		<Text>DATA READING ERROR FOR TRACKING INTERVAL</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>721</Index>
+		<Text>DATA READING ERROR FOR NUMBER OF CAPILLARIES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>722</Index>
+		<Text>PEAK DATA READING ERROR</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>723</Index>
+		<Text>JANOS!!!STAT data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>724</Index>
+		<Text>JANOS!!!Electrophoresis Tracking RUND data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>725</Index>
+		<Text>JANOS!!!Electrophoresis Tracking RUNT data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>726</Index>
+		<Text>JANOS!!!Electrophoresis Tracking EVNT data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>727</Index>
+		<Text>JANOS!!!DYE AOFF data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>728</Index>
+		<Text>JANOS!!!DYE CCDF data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>729</Index>
+		<Text>JANOS!!!DYE PK_# data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>730</Index>
+		<Text>JANOS!!!DYE SdOk data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>731</Index>
+		<Text>JANOS!!!DYE SdNm data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>732</Index>
+		<Text>JANOS!!!DYE SdIC data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>733</Index>
+		<Text>JANOS!!!DYE SdCs data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>734</Index>
+		<Text>JANOS!!!DYE SdSM data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>735</Index>
+		<Text>JANOS!!!DYE DyeN data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>736</Index>
+		<Text>JANOS!!!DYE DyeS data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>737</Index>
+		<Text>JANOS!!!DYE DyeZ data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>738</Index>
+		<Text>JANOS!!!DYE SMPL data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>739</Index>
+		<Text>SJANOS!!!canRate data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>740</Index>
+		<Text>JANOS!!!OffScale data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>741</Index>
+		<Text>JANOS!!!MACHOPCOND Capillary data reading error</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>742</Index>
+		<Text> REVIEW START/STOP TIMES LISTED FOR ELECTROPHORESIS</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>743</Index>
+		<Text>REVIEW ELECTROPHORESIS/DATACOLLECTION START/DATE TIMES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>744</Index>
+		<Text>REVIEW ELECTROPHORESIS/DATA COLLECTION START/DATE TIMES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>745</Index>
+		<Text>REVIEW DATA COLLECTION START/STOP TIMES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>746</Index>
+		<Text>REVIEW ELECTROPHORESIS START DATE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>747</Index>
+		<Text>REVIEW ELECTROPHORESIS START TIME</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>748</Index>
+		<Text>REVIEW ELECTROPHORESIS STOP DATE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>749</Index>
+		<Text>REVIEW ELECTROPHORESIS STOP TIME</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>750</Index>
+		<Text>REVIEW DATA COLLECTION START DATE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>751</Index>
+		<Text>REVIEW DATA COLLECTION START TIME</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>752</Index>
+		<Text>REVIEW DATA COLLECTION STOP DATE</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>753</Index>
+		<Text>REVIEW DATA COLLECTION STOP TIME</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>754</Index>
+		<Text>REVIEW # CAPILLARYS FOR 3100</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>755</Index>
+		<Text>REVIEW DYE NAME; EXPECTATION = 'LIZ''</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>756</Index>
+		<Text>REVIEW DYE NAME; EXPECTATION= 'PET'</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>757</Index>
+		<Text>DLDrules: The 'UND' should be '6FAM'</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>758</Index>
+		<Text>DLDrules: The 'ER' should be '6FAM'</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>759</Index>
+		<Text>DLDrules: STAT Anal. DATE is invalid</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>760</Index>
+		<Text>DLDrules: STAT Anal. TIME is invalid</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+	<Message>
+		<Index>763</Index>
+		<Text>THE FSA FILE READING DOES NOT MEET EXPECTED VALUES</Text>
+		<NDataElements>0</NDataElements>
+		<Type>0</Type>
+		<Level>0</Level>
+	</Message>
+</MessageList>

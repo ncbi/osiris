@@ -1,0 +1,14 @@
+#!/bin/sh
+# this file is required when using autotools
+# to build run the following
+
+aclocal
+autoconf
+automake -a
+./configure
+sh ../blex.sh clean all
+make
+
+
+
+

@@ -1,0 +1,2736 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<ConditionalTestUnits xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook3.1.xsd">
+	<NumberOfTestUnits>5</NumberOfTestUnits>
+	<DebugMode>0</DebugMode>
+	<ConditionalTestUnit>
+		<Stage>1</Stage>
+		<Description>Initialization:  fit curves, minRFU, pull-ups, artifacts, ILS, assign signals to loci and extended loci, file type;  Samples:  match ladder</Description>
+		<Condition>
+			<Expression>1</Expression>
+		</Condition>
+		<MessageList>
+			<SmartMessage>
+				<Name>smILSFailed</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ILS COULD NOT BE ANALYZED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusIsAMEL</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>LOCUS IS AMEL</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSampleIsLadder</Name>
+				<Subject>1</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>SAMPLE IS LADDER</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSampleIsPosCtrl</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>SAMPLE IS POSITIVE CONTROL</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSampleIsNegCtrl</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>SAMPLE IS NEGATIVE CONTROL</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smChannelIsNegControl</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>CHANNEL IS NEGATIVE CONTROL</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusIsNegControl</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>LOCUS IS NEGATIVE CONTROL</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smChannelIsPosControl</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>CHANNEL IS POSITIVE CONTROL</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusIsPosControl</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>LOCUS IS POSITIVE CONTROL</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smILSSpacingFailed</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ILS SPACING DOES NOT MEET EXPECTED PARAMETERS</Text>
+				<TextForData>:  Correlation = </TextForData>
+				<ClosingText> (0.993 - 1.0)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNoLadderFile</Name>
+				<Subject>1</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NO ALLELIC LADDER FILE IDENTIFIED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLadderTypeUnknown</Name>
+				<Subject>1</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>THE ALLELIC LADDER TYPE IS NOT RECOGNIZED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smReagentKitUnknown</Name>
+				<Subject>1</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>THE REAGENT KIT IS NOT RECOGNIZED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smMoreThanOneReagentKit</Name>
+				<Subject>1</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>MORE THAN ONE REAGENT KIT  IS IDENTIFIED IN THE DIRECTORY</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCurveFitFailed</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>NOT smInterlocusPullUpWithPoorFit</Expression>
+				</ReportCriterion>
+				<Text>Curve Fit Unacceptable</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCurveFitMarginal</Name>
+				<Subject>10</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Curve Fit Marginal</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSpike</Name>
+				<Subject>10</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Spike</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smNumberOfSpikesInSample</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smBlob</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Blob</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPullUp</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>NOT smPrimaryInterchannelLink</Expression>
+				</ReportCriterion>
+				<Text>Pull-up</Text>
+				<ReportLevel>1</ReportLevel>
+				<AlternateReport>
+					<AlternateReportLevel>20</AlternateReportLevel>
+					<AlternateReportCriterion>
+						<Expression>smPullUpAtAllele OR smPullUpAtControlPeak OR smInterlocusPullUpWithPoorFit OR smSignalIsCtrlPeak OR smSignalIsAllele</Expression>
+					</AlternateReportCriterion>
+				</AlternateReport>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPrimaryInterchannelLink</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Primary Pullup</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPossibleExtraLocusAllele</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Peak is a Possible Unreported OL Allele</Text>
+				<TextForData> (</TextForData>
+				<SeparatorText>, </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smILSTooFewPeaks</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ILS CONTAINS TOO FEW PEAKS</Text>
+				<TextForData> with </TextForData>
+				<SeparatorText> peaks out of </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smFSAChannelUnreadable</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>UNABLE TO READ FSA CHANNEL</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+				<Triggers>
+					<TriggerName>smFSAUnreadable</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smFSAUnreadable</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>UNABLE TO READ FSA FILE</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPeakOutsideILS</Name>
+				<Subject>20</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Peak Outside ILS Range</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smMarkerSetNameUnknown</Name>
+				<Subject>20</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>COULD NOT FIND POPULATION MARKER SET NAMED: </Text>
+				<ReportLevel>5</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNamedILSUnknown</Name>
+				<Subject>20</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>COULD NOT FIND INTERNAL LANE STANDARD NAMED: </Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smBelowMinRFU</Name>
+				<Subject>20</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>BELOW MINIMUM RFU</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smEarlyRestrictedPriorityPeak</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smUnexpectedILSPeak</Name>
+				<Subject>20</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Unexpected Peak in ILS</Text>
+				<TextForData> at location ~</TextForData>
+				<ClosingText> bps</ClosingText>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNoPosCtrlFound</Name>
+				<Subject>15</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NO POSITIVE CONTROL FOUND IN DIRECTORY</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNoNegCtrlFound</Name>
+				<Subject>15</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NO NEGATIVE CONTROL FOUND IN DIRECTORY</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNamedPosCtrlNotFound</Name>
+				<Subject>15</Subject>
+				<SampleType>0</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NAMED POSITIVE CONTROL NOT FOUND</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPeakHeightAboveMax</Name>
+				<Description>Set during lane standard analysis in stage 1</Description>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Peak Height Above Maximum Threshold</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smPeaksAboveMax</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPeaksAboveMax</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ONE OR MORE PEAKS ABOVE MAXIMUM THRESHOLD</Text>
+				<TextForData> at location(s):  </TextForData>
+				<SeparatorText>, </SeparatorText>
+				<ClosingText> bps</ClosingText>
+				<ReportLevel>5</ReportLevel>
+				<Scope>2</Scope>
+				<AcceptTriggerDataMode>2</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCannotSeparateILSPrimerPeaks</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>CANNOT SEPARATE ILS PRIMER PEAKS</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smILSNeighborFilterTooAggressive</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ILS NEIGHBOR FILTERS REMOVE TOO MANY PEAKS</Text>
+				<TextForData>:  Remaining peaks = </TextForData>
+				<SeparatorText> out of </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smILSFractionFilterTooAggressive</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ILS FRACTIONAL HEIGHT FILTER REMOVES TOO MANY PEAKS</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smILSRelativeHeightsInconsistent</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ILS RELATIVE HEIGHTS INCONSISTENT WITH EXPECTED HEIGHTS</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smOsirisBelowMinRFUButRawDataAbove</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Conflict  OSIRIS Below Min RFU; Raw Data Above</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smRawDataBelowMinRFUButOsirisAbove</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Conflict:  Raw Data Below Min RFU; OSIRIS Above</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smOsirisAboveMaxRFUButRawDataBelow</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Conflict:  Osiris Above Max RFU; Raw Data Below</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smRawDataAboveMaxRFUButOsirisBelow</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Conflict:  Raw Data Above Max RFU; OSsiris Below</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smStage1Successful</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>STAGE 1 COMPLETED SUCCESSFULLY</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCountThisSignal</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<TestCriterion>
+					<Expression>1</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>This is a valid signal</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfSignals</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smThisIsALocus</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>1</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>THIS IS A LOCUS</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfLoci</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfSamples</Name>
+				<MessageType>count</MessageType>
+				<Subject>10</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF SAMPLES</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>2</ReportLevel>
+				<Scope>5</Scope>
+				<Debug>
+					<Watch>smTotalNumberOfSamples</Watch>
+				</Debug>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfSamplesWithExcessivePullup</Name>
+				<MessageType>count</MessageType>
+				<Subject>10</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>4</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Total Number of Samples With Excesive Pullup</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF SAMPLES WITH EXCESSIVE PULLUP</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+				<Debug>
+					<Watch>smTotalNumberOfSamples</Watch>
+				</Debug>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPercentOfSamplesWithExcessivePullup</Name>
+				<MessageType>percent</MessageType>
+				<Subject>10</Subject>
+				<SampleType>3</SampleType>
+				<PercentDataInfo>
+					<Threshold>60</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Percent of Samples With Excesive Pullup</ThresholdDescriptor>
+					<NumeratorName>smTotalNumberOfSamplesWithExcessivePullup</NumeratorName>
+					<DenominatorName>smTotalNumberOfSamples</DenominatorName>
+				</PercentDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>PERCENT OF SAMPLES WITH EXCESSIVE PULLUP</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>5</Scope>
+				<Debug>
+					<Watch>smTotalNumberOfSamples</Watch>
+				</Debug>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smIsSample</Name>
+				<Subject>10</Subject>
+				<SampleType>3</SampleType>
+				<TestCriterion>
+					<Expression>NOT smSampleIsLadder</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Is a Sample</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfSamples</TriggerName>
+				</Triggers>
+			</SmartMessage>
+		</MessageList>
+	</ConditionalTestUnit>
+	<ConditionalTestUnit>
+		<Stage>2</Stage>
+		<Description>Samples:  Preliminary locus and interlocus analysis, fractional filter, stutter, etc., peak morphology;  Ladders:  Locus peaks</Description>
+		<Condition>
+			<Expression>smStage1Successful</Expression>
+		</Condition>
+		<MessageList>
+			<SmartMessage>
+				<Name>smStutter</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Stutter</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smEarlyRestrictedPriorityPeak</TriggerName>
+					<TriggerName>smNumberOfStuttersInSample</TriggerName>
+				</Triggers>
+				<Restriction>
+					<RestrictionLevel>20</RestrictionLevel>
+					<RestrictionCriterion>
+						<Expression>1</Expression>
+					</RestrictionCriterion>
+				</Restriction>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAdenylation</Name>
+				<Description>May be evaluated at any time from stage 1 to stage 4</Description>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Adenylation</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smEarlyRestrictedPriorityPeak</TriggerName>
+					<TriggerName>smNumberOfAdenylationsInSample</TriggerName>
+				</Triggers>
+				<Restriction>
+					<RestrictionLevel>20</RestrictionLevel>
+					<RestrictionCriterion>
+						<Expression>1</Expression>
+					</RestrictionCriterion>
+				</Restriction>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalIsCtrlPeak</Name>
+				<Description>Set in lane standard analysis (stage 1) and ladder locus analysis (stage 2)</Description>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>SIGNAL IS A CONTROL PEAK (ILS OR LOCUS)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smInterlocusPeak</Name>
+				<Description>Peak between ladder loci, but probably should not be reported as is</Description>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>NOT smInterlocusPullUpWithPoorFit</Expression>
+				</ReportCriterion>
+				<Text>Inter-Locus Peak</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusTooFewPeaks</Name>
+				<Subject>1</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>LOCUS CONTAINS TOO FEW PEAKS</Text>
+				<TextForData> with </TextForData>
+				<SeparatorText> peaks out of </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smInterlocusLadderPeak</Name>
+				<Subject>20</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Inter-Locus Ladder Peak</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smUnexpectedLadderLocusPeak</Name>
+				<Subject>20</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Unexpected Peak In Ladder Locus</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPoorPeakMorphology</Name>
+				<Description>This does not refer to fit, but rather to width</Description>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Width Unexpectedly High or Low</Text>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPoorLocusMorphology</Name>
+				<Description>This refers to spacing primarily</Description>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>POOR LOCUS MORPHOLOGY</Text>
+				<TextForData> with correlation = </TextForData>
+				<ClosingText> (0.995 - 1.0)</ClosingText>
+				<ReportLevel>5</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusMayHaveUnreportedOLs</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>LOCUS MAY HAVE UNREPORTED OFF-LADDER ALLELES</Text>
+				<TextForData> (</TextForData>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>5</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNPeaksForLocusUnavailable</Name>
+				<Subject>15</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>SETUP ERROR:  NUMBER OF PEAKS UNAVAILABLE FOR LOCUS</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smRelativeHeightImbalance</Name>
+				<Description>For control peaks, where relative heights may be known</Description>
+				<Subject>15</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>RELATIVE HEIGHT IMBALANCE</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smHeightBelowFractionalFilter</Name>
+				<Description>For test within a locus or an ILS</Description>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Signal Height Below Minimum Fractional Filter Height</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smEarlyRestrictedPriorityPeak</TriggerName>
+				</Triggers>
+				<Restriction>
+					<RestrictionLevel>20</RestrictionLevel>
+					<RestrictionCriterion>
+						<Expression>true</Expression>
+					</RestrictionCriterion>
+				</Restriction>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smHeightBelowPullupFractionalFilter</Name>
+				<Description>For test within locus or an ILS</Description>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Signal Height Below Minimum Pullup Fractional Filter Height</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smEarlyRestrictedPriorityPeak</TriggerName>
+				</Triggers>
+				<Restriction>
+					<RestrictionLevel>20</RestrictionLevel>
+					<RestrictionCriterion>
+						<Expression>true</Expression>
+					</RestrictionCriterion>
+				</Restriction>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPartOfExtendedLocusLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Part of Extended Locus (Left)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPartOfExtendedLocusRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Part of Extended Locus (Right)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smBelowFractionalFilterLeft</Name>
+				<Description>For interlocus peak</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Below Fractional Filter (Left)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smBelowFractionalFilterRight</Name>
+				<Description>For interlocus peak</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Below Fractional Filter (Right)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smBelowPullupFractionalFilterLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>false</Expression>
+				</ReportCriterion>
+				<Text>Below Pullup Fractional Filter (Left)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smBelowPullupFractionalFilterRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>false</Expression>
+				</ReportCriterion>
+				<Text>Below Pullup Fractional Filter (Right)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smStage2Successful</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>STAGE 2 COMPLETED SUCCESSFULLY</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPurePullup</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPullUp AND NOT smPrimaryInterchannelLink</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Pullup But Not Primary Pullup</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smNumberOfPullUpsInSample</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smWouldCauseHeterozygousImbalanceLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Would Cause Heterozygous Imbalance in Locus to Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smWouldCauseHeterozygousImbalanceRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Would Cause Heterozygous Imbalance in Locus to Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalOffGridLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Would Be Off-Grid for Locus to Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalOffGridRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Would Be Off-Grid for Locus to Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm0UnambiguousPeaksLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Left Has 0 Unambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm0UnambiguousPeaksRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Right Has 0 Unambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm1UnambiguousPeakLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Left Has 1 Unambiguous Peak</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm1UnambiguousPeakRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Right Has 1 Unambiguous Peak</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm2PlusUnambiguousPeaksLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Left Has 2 Plus Unambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm2PlusUnambiguousPeaksRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Right Has 2 Plus Unambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm0AmbiguousPeaksLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Left Has 0 Ambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm0AmbiguousPeaksRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Right Has 0 Ambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm1AmbiguousPeakLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Left Has 1 Ambiguous Peak</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm1AmbiguousPeakRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Right Has 1 Ambiguous Peak</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm2PlusAmbiguousPeaksLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Left Has 2 Plus Ambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>sm2PlusAmbiguousPeaksRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Locus to Left Has 2 Plus Ambiguous Peaks</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp1Left</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksRight AND smSignalOffGridRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 1 Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp2Left</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm1UnambiguousPeakLeft AND sm2PlusUnambiguousPeaksRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 2 Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusLeft</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp3Left</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm1UnambiguousPeakLeft AND NOT smSignalOffGridLeft AND smTemp1Left</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 3 Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusLeft</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp5Left</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 5 Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusLeft</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp6Left</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksLeft AND sm1AmbiguousPeakLeft AND sm1UnambiguousPeakRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 6 Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusLeft</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp7Left</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksLeft AND sm2PlusAmbiguousPeaksRight AND NOT smSignalOffGridLeft AND smTemp1Left</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 7 Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusLeft</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp9Left</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm2PlusUnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight AND smSignalOffGridRight AND NOT smPurePullup AND NOT smSignalOffGridLeft</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 9 Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusLeft</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp1Right</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksLeft AND smSignalOffGridLeft</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 1 Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp2Right</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm1UnambiguousPeakRight AND sm2PlusUnambiguousPeaksLeft</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 2 Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusRight</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp3Right</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm1UnambiguousPeakRight AND NOT smSignalOffGridRight AND smTemp1Right</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 3 Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusRight</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp5Right</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksRight AND sm2PlusUnambiguousPeaksLeft</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 5 Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusRight</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp6Right</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksRight AND sm1AmbiguousPeakRight AND sm1UnambiguousPeakLeft</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 6 Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusRight</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp7Right</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm0UnambiguousPeaksRight AND sm2PlusAmbiguousPeaksLeft AND NOT smSignalOffGridRight AND smTemp1Right</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 7 Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusRight</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTemp9Right</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>sm2PlusUnambiguousPeaksRight AND sm2PlusUnambiguousPeaksLeft AND smSignalOffGridLeft AND NOT smPurePullup AND NOT smSignalOffGridRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Temp 9 Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smCouldBelongToLocusRight</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPullUpAtControlPeak</Name>
+				<Subject>20</Subject>
+				<SampleType>3</SampleType>
+				<TestCriterion>
+					<Expression>smSignalIsCtrlPeak AND smPurePullup</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>PULL-UP COINCIDES WITH CONTROL (ILS OR LADDER) PEAK</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smInterlocusPullUpWithPoorFit</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>(smPartOfExtendedLocusRight OR smPartOfExtendedLocusLeft) AND (smCurveFitFailed OR smCurveFitMarginal) AND smPurePullup</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Signal Is an Inter-Locus Pull-up with Substandard Fit</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smEarlyRestrictedPriorityPeak</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPossibleValidInterlocusLeft</Name>
+				<Description>Peak in extended locus left and above fractional filter</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPartOfExtendedLocusLeft AND NOT (smBelowFractionalFilterLeft OR smInterlocusPullUpWithPoorFit)</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Possible Valid Inter-Locus Allele (Left)</Text>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPossibleValidInterlocusRight</Name>
+				<Description>Peak in extended locus right and above fractional filter</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPartOfExtendedLocusRight AND NOT (smBelowFractionalFilterRight OR smInterlocusPullUpWithPoorFit)</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Possible Valid Inter-Locus Allele (Right)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smUnassignedInterlocusPeak</Name>
+				<Description>Peak lies between two non-intersecting extended regions</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smInterlocusPeak AND NOT (smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smInterlocusPullUpWithPoorFit)</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Unassigned Inter-Locus Peak</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAmbiguousInterlocus</Name>
+				<Description>Peak lies in two extended locus regions and is above fractional filter height for both</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPossibleValidInterlocusLeft AND smPossibleValidInterlocusRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Ambiguous Inter-Locus Allele (Left and Right)</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPossibleAmbiguousInterlocusAssignedToLocus</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Possible Ambiguous Interlocus Peak Assigned To Locus</Text>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTooLowInterlocusPeak</Name>
+				<Description>Peak can be assigned to one or both loci, but is below fractional filter for each locus possible</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smUnassignedInterlocusPeak AND NOT (smPossibleValidInterlocusLeft OR smPossibleValidInterlocusRight)</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Interlocus peak, below fractional filter(s)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smEarlyRestrictedPriorityPeak</TriggerName>
+				</Triggers>
+				<Restriction>
+					<RestrictionLevel>20</RestrictionLevel>
+					<RestrictionCriterion>
+						<Expression>1</Expression>
+					</RestrictionCriterion>
+				</Restriction>
+			</SmartMessage>
+		</MessageList>
+	</ConditionalTestUnit>
+	<ConditionalTestUnit>
+		<Stage>3</Stage>
+		<Description>Preliminary allele calls, craters, interlocus calls;  Ladders:  skip</Description>
+		<Condition>
+			<Expression>smStage2Successful</Expression>
+		</Condition>
+		<MessageList>
+			<SmartMessage>
+				<Name>smCouldBelongToLocusLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Could Belong to Locus to Left</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCouldBelongToLocusRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Could Belong to Locus to Right</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNotInterchannelLink</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Not Interchannel Link</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smHeightBelowInterlocusMinRFU</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Peak Height Below Min Interlocus RFU</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Restriction>
+					<RestrictionLevel>20</RestrictionLevel>
+					<RestrictionCriterion>
+						<Expression>1</Expression>
+					</RestrictionCriterion>
+				</Restriction>
+				<ShareWithCluster>1</ShareWithCluster>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAmbiguousInterlocusCrater</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Identity As Interlocus Crater Ambiguous</Text>
+				<ReportLevel>3</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smFirstAlleleEqFirstLadderPeak</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>FIRST ALLELE IS FIRST LADDER PEAK</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAMELMisaligned</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>AMEL IS MISALIGNED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCrater</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Initial Diagnosis:  Possible Crater</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCraterSidePeak</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Initial Diagnosis:  Possible Crater Side Peak</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAcceptedOLLeft</Name>
+				<Description>On user list of accepted OL alleles (left of ladder peaks)</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Matches Accepted OL Allele (Left)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAcceptedOLRight</Name>
+				<Description>On user list of accepted OL alleles (right of ladder peaks)</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Matches Accepted OL Allele (Right)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smStage3Successful</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>STAGE 3 COMPLETED SUCCESSFULLY</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smValidOLInterlocusLeft</Name>
+				<Description>Valid interlocus allele but not on user list</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPossibleValidInterlocusLeft AND NOT smAcceptedOLLeft</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Possible Valid Off-Ladder Inter-Locus Allele (Left)</Text>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smValidOLInterlocusRight</Name>
+				<Description>Valid interlocus allele but not on user list</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPossibleValidInterlocusRight AND NOT smAcceptedOLRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Possible Valid Off-Ladder Inter-Locus Allele (Right)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAcceptedInterlocusLeft</Name>
+				<Description>Valid interlocus allele that is on user list</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPossibleValidInterlocusLeft AND smAcceptedOLLeft</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Accepted Inter-Locus Allele (Left)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAcceptedInterlocusRight</Name>
+				<Description>Valid interlocus allele that is on user list</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPossibleValidInterlocusRight AND smAcceptedOLRight</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Accepted Inter-Locus Allele (Right)</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNoXForAMEL</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smLocusIsAMEL AND NOT smFirstAlleleEqFirstLadderPeak</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>X ALLELE FOR AMELOGENIN COULD NOT BE FOUND</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+		</MessageList>
+	</ConditionalTestUnit>
+	<ConditionalTestUnit>
+		<Stage>4</Stage>
+		<Description>Quality testing:  positive ctrl, AMEL, cross channel corrections, final Locus assessment</Description>
+		<Condition>
+			<Expression>smStage3Successful</Expression>
+		</Condition>
+		<MessageList>
+			<SmartMessage>
+				<Name>smLocusContainsCrater</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>LOCUS CONTAINS CRATER(S)</Text>
+				<TextForData> AT ALLELES:  </TextForData>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>3</ReportLevel>
+				<Scope>2</Scope>
+				<AcceptTriggerDataMode>2</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smStage4Successful</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>STAGE 4 COMPLETED SUCCESSFULLY</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smEarlyRestrictedPriorityPeak</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>This Peak Has Restricted Priority</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<ShareWithCluster>1</ShareWithCluster>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smRestrictedPriorityPeak</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smHeightBelowInterlocusMinRFU OR smEarlyRestrictedPriorityPeak</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>This Peak Has Restricted Priority</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Restriction>
+					<RestrictionLevel>20</RestrictionLevel>
+					<RestrictionCriterion>
+						<Expression>1</Expression>
+					</RestrictionCriterion>
+				</Restriction>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalNotACrater</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Initially Considered As A Possible Crater</Text>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalNotACraterSidePeak</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Initially Considered As A Possible Crater Side Peak</Text>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTrueCrater</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<TestCriterion>
+					<Expression>smCrater AND NOT smSignalNotACrater AND NOT smRestrictedPriorityPeak</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Possible Crater</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smNumberOfCratersInSample</TriggerName>
+					<TriggerName>smLocusContainsCrater</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTrueCraterSidePeak</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<TestCriterion>
+					<Expression>smCraterSidePeak AND NOT smSignalNotACraterSidePeak AND NOT smRestrictedPriorityPeak</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Possible Crater Side Peak</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalOL</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Is Off Ladder</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalIsAllele</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal Is Allele</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPosCtrlLocusMismatch</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>POSITIVE CONTROL LOCUS MISMATCH</Text>
+				<TextForData>  </TextForData>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNoGenotypeFound</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>NOT smLocusIsNegControl</Expression>
+				</ReportCriterion>
+				<Text>NO GENOTYPE WAS IDENTIFIED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smUnexpectedNoOfPeaksInChannel</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>UNEXPECTED NUMBER OF PEAKS IN CHANNEL</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smUnexpectedNoOfPeaks</Name>
+				<Subject>1</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>UNEXPECTED NUMBER OF PEAKS</Text>
+				<TextForData> AT LOCATION(S):  ~</TextForData>
+				<SeparatorText>, ~</SeparatorText>
+				<ClosingText> bps</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+				<Triggers>
+					<TriggerName>smUnexpectedNoOfPeaksInChannel</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTwoOrMoreAlleles</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>TWO OR MORE ALLELES WERE IDENTIFIED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smHeterozygousImbalance</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>NOT smLocusContainsPullUpWithHeteroImbalance</Expression>
+				</ReportCriterion>
+				<Text>HETEROZYGOUS IMBALANCE DETECTED</Text>
+				<TextForData>**Peaks = </TextForData>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusContainsPullUpWithHeteroImbalance</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>LOCUS CONTAINS PULLUP WITH HETEROZYGOUS IMBALANCE</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smHomozygoteHeightProblem</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPullUpAtAllele</Name>
+				<Subject>20</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smSignalIsAllele AND smPurePullup</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>NOT smPeakIsNotAnAllele</Expression>
+				</ReportCriterion>
+				<Text>Possible Pull-up Coincides With Allele</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smExtraneousPeakForPosCtrl</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Extraneous Peak for Positive Control</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPosCtrlLocusNotFound</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>POSITIVE CONTROL LOCUS NOT FOUND IN SET</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smBPResidualTooLarge</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Base Pair Residual Exceeds Threshold</Text>
+				<TextForData> (</TextForData>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPreliminaryLocusHas2OrMoreAlleles</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>PRELIMINARY LOCUS ANALYSIS SHOWS 3 OR MORE ALLELES</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Pullup with Excess Residual in Multi-allele</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+				<Triggers>
+					<TriggerName>smUnexpectedPeaksInSampleLocus</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusContainsPeaksWithExcessiveResiduals</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>LOCUS CONTAINS PEAKS WITH EXCESSIVE RESIDUALS:  </Text>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>3</ReportLevel>
+				<Scope>2</Scope>
+				<AcceptTriggerDataMode>2</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smExtraLadderAllele</Name>
+				<Description>Intralocus peak is stutter or adenylation to interlocus peak that may or may not represent an allele???</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Possible Extra-Ladder Allele</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCriticalMessagesAtILS</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>CRITICAL LEVEL MESSAGES AT ILS PEAK(S):  </Text>
+				<SeparatorText>, </SeparatorText>
+				<ClosingText> bps</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAMELHasExtraneousPeaks</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>AMEL CONTAINS ONE OR MORE EXTRANEOUS PEAKS AT LOCATION(S)</Text>
+				<TextForData>:  ~</TextForData>
+				<SeparatorText>, ~</SeparatorText>
+				<ClosingText> bps</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+				<AcceptTriggerDataMode>1</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smExtraneousAMELPeak</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Extraneous Peak Within AMEL Locus</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smAMELHasExtraneousPeaks</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNegCtrlChannelHasNoPrimerPeaks</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NEGATIVE CONTROL CHANNEL CONTAINS NO PRIMER PEAKS</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+				<Triggers>
+					<TriggerName>smNegCtrlChannelsHaveNoPrimerPeaks</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNegCtrlChannelsHaveNoPrimerPeaks</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ONE OR MORE NEGATIVE CONTROL CHANNELS CONTAIN NO PRIMER PEAKS</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smInterlocusPeaksToRight</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ONE OR MORE INTERLOCUS PEAKS TO RIGHT OF LOCUS AT:  </Text>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smInterlocusPeaksToLeft</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ONE OR MORE INTERLOCUS PEAKS TO LEFT OF LOCUS AT:  </Text>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPeakIsNotAnAllele</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Peak Is Not An Allele</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<CallCriterion>
+					<Expression>0</Expression>
+				</CallCriterion>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAlleleHasExcessiveResidual</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smBPResidualTooLarge AND smSignalIsAllele AND NOT smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>Base Pair Residual Exceeds Threshold</Text>
+				<TextForData> (</TextForData>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>5</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smLocusContainsPeaksWithExcessiveResiduals</TriggerName>
+					<TriggerName>smNumberOfExcessiveResidualsInSample</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smAlleleOL</Name>
+				<Subject>5</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smSignalOL AND smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal is Off-Ladder Allele</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smOLAlleles</TriggerName>
+					<TriggerName>smNumberOfOffLadderAllelesInSample</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTrulyAnAllele</Name>
+				<Subject>5</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Signal is truly an Allele</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>1</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfAllelePeaks</TriggerName>
+				</Triggers>
+			</SmartMessage>
+		</MessageList>
+	</ConditionalTestUnit>
+	<ConditionalTestUnit>
+		<Stage>5</Stage>
+		<Description>Final summary tests</Description>
+		<Condition>
+			<Expression>smStage4Successful</Expression>
+		</Condition>
+		<MessageList>
+			<SmartMessage>
+				<Name>smLocusIsHomozygous</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>LOCUS IS HOMOZYGOUS</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfHomozygousLoci</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smThreeOrMoreAlleles</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>THREE OR MORE ALLELES WERE IDENTIFIED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfTriallelicLoci</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smStage5Successful</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>STAGE 5 COMPLETED SUCCESSFULLY</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLocusMissingGenotype</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<TestCriterion>
+					<Expression>smNoGenotypeFound AND NOT smChannelIsNegControl</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>LOCUS HAS NO GENOTYPE</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>2</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfMissingGenotypes</TriggerName>
+				</Triggers>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfHomozygousLoci</Name>
+				<MessageType>count</MessageType>
+				<Description>Total Number of Homozygous Loci</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF HOMOZYGOUS LOCI</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfTriallelicLoci</Name>
+				<MessageType>count</MessageType>
+				<Description>Total Number of Triallelic Loci</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF TRIALLELIC LOCI</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfMissingGenotypes</Name>
+				<MessageType>count</MessageType>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF LOCI MISSING GENOTYPES</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfSignals</Name>
+				<MessageType>count</MessageType>
+				<Description>Total Number of Peaks</Description>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF PEAKS FOR SAMPLE</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfAllelePeaks</Name>
+				<MessageType>count</MessageType>
+				<Description>Total Number of Allele Peaks</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF ALLELE PEAKS FOR SAMPLE</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smTotalNumberOfLoci</Name>
+				<MessageType>count</MessageType>
+				<Description>Total Number of Loci</Description>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>TOTAL NUMBER OF LOCI</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smOLAlleles</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>OFF LADDER ALLELE(S) DETECTED:  </Text>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+				<AcceptTriggerDataMode>2</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNumberOfPullUpsInSample</Name>
+				<MessageType>count</MessageType>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<CountingDataInfo>
+					<Threshold>8</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Number of Pull-ups in Sample Threshold</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NUMBER OF PULLUPS IN SAMPLE EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smIsSampleWithExcessivePullup</Name>
+				<Subject>10</Subject>
+				<SampleType>3</SampleType>
+				<TestCriterion>
+					<Expression>smNumberOfPullUpsInSample AND NOT smSampleIsLadder</Expression>
+				</TestCriterion>
+				<ReportCriterion>
+					<Expression>0</Expression>
+				</ReportCriterion>
+				<Text>Is a Sample With Excessive Pullup</Text>
+				<ReportLevel>20</ReportLevel>
+				<Scope>4</Scope>
+				<Triggers>
+					<TriggerName>smTotalNumberOfSamplesWithExcessivePullup</TriggerName>
+				</Triggers>
+				<Debug>
+					<Watch>smNumberOfPullUpsInSample</Watch>
+				</Debug>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNumberOfExcessiveResidualsInSample</Name>
+				<MessageType>count</MessageType>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<CountingDataInfo>
+					<Threshold>2</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Number of Excessive Residuals</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NUMBER OF EXCESSIVE RESIDUALS IN SAMPLE EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPercentExcessiveResiduals</Name>
+				<MessageType>percent</MessageType>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<PercentDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Percentage of Alleles With Excessive Residuals</ThresholdDescriptor>
+					<NumeratorName>smNumberOfExcessiveResidualsInSample</NumeratorName>
+					<DenominatorName>smTotalNumberOfAllelePeaks</DenominatorName>
+				</PercentDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>PERCENT OF ALLELES WITH EXCESSIVE RESIDUALS EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText>% (MAX = </SeparatorText>
+				<ClosingText>%)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smPercentPullups</Name>
+				<MessageType>percent</MessageType>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<PercentDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Percentage of Peaks with Pullup</ThresholdDescriptor>
+					<NumeratorName>smNumberOfPullUpsInSample</NumeratorName>
+					<DenominatorName>smTotalNumberOfSignals</DenominatorName>
+				</PercentDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>PERCENT OF PULLUPS EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText>% (MAX = </SeparatorText>
+				<ClosingText>%)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNumberOfStuttersInSample</Name>
+				<MessageType>count</MessageType>
+				<Subject>6</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Number of Stutters in Sample</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NUMBER OF STUTTER PEAKS EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>6</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNumberOfAdenylationsInSample</Name>
+				<MessageType>count</MessageType>
+				<Subject>6</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Number of Adenylations in Sample</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NUMBER OF ADENYLATION PEAKS EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>6</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNumberOfOffLadderAllelesInSample</Name>
+				<MessageType>count</MessageType>
+				<Subject>6</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Number of Off-Ladder Alleles in Sample</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NUMBER OF OFF-LADDER ALLELES EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>6</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smChannelPeaksHaveCriticalArtifacts</Name>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<ReportCriterion>
+					<Expression>true</Expression>
+				</ReportCriterion>
+				<Text>CHANNEL PEAKS HAVE CRITICAL ARTIFACTS AT LOCATION(S):  </Text>
+				<TextForData>~</TextForData>
+				<SeparatorText>, ~</SeparatorText>
+				<ClosingText> bps</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>3</Scope>
+				<AcceptTriggerDataMode>1</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smUnexpectedPeaksInSampleLocus</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>UNEXPECTED PEAK(S) IN SAMPLE LOCUS</Text>
+				<TextForData>:  ~</TextForData>
+				<SeparatorText>, ~</SeparatorText>
+				<ClosingText> bps</ClosingText>
+				<ReportLevel>2</ReportLevel>
+				<Scope>2</Scope>
+				<AcceptTriggerDataMode>1</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNegCtrlFailed</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NEGATIVE CONTROL REQUIRES ANALYST REVIEW</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smUnexpectedPeakInNegativeControl</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>UNEXPECTED PEAK FOUND IN NEGATIVE CONTROL</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smLadderFailed</Name>
+				<Subject>1</Subject>
+				<SampleType>1</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>ALLELIC LADDER COULD NOT BE ANALYZED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smSampleUnanalyzable</Name>
+				<Subject>1</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>SAMPLE COULD NOT BE ANALYZED</Text>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smCriticalMessagesAtAlleles</Name>
+				<Subject>15</Subject>
+				<SampleType>2</SampleType>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>CRITICAL LEVEL MESSAGES AT ALLELE(S):  </Text>
+				<SeparatorText>, </SeparatorText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>2</Scope>
+				<AcceptTriggerDataMode>2</AcceptTriggerDataMode>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNumberOfCratersInSample</Name>
+				<MessageType>count</MessageType>
+				<Subject>6</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Number of Craters in Sample</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NUMBER OF CRATER PEAKS EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText> (MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>6</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+			<SmartMessage>
+				<Name>smNumberOfSpikesInSample</Name>
+				<MessageType>count</MessageType>
+				<Subject>15</Subject>
+				<SampleType>3</SampleType>
+				<CountingDataInfo>
+					<Threshold>0</Threshold>
+					<Comparison>Greater</Comparison>
+					<ThresholdDescriptor>Maximum Number of Spikes in a Sample</ThresholdDescriptor>
+				</CountingDataInfo>
+				<ReportCriterion>
+					<Expression>1</Expression>
+				</ReportCriterion>
+				<Text>NUMBER OF SPIKES EXCEEDS THRESHOLD</Text>
+				<TextForData>:  </TextForData>
+				<SeparatorText>(MAX = </SeparatorText>
+				<ClosingText>)</ClosingText>
+				<ReportLevel>1</ReportLevel>
+				<Scope>4</Scope>
+			</SmartMessage>
+		</MessageList>
+	</ConditionalTestUnit>
+</ConditionalTestUnits>
