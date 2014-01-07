@@ -18,9 +18,6 @@
 # wxWidgets, libxml2, libxslt, and libiconv are also required.
 #  wxWidgets can be downloaded at http://www.wxwidgets.org/ and
 #  modified versions of libxml2, libxslt, and libiconv are included.
-#  The VC++ solution file is libxml2-2.7.8\libxml2-08.sln
-#  and will build libiconv, libxml2, libxslt, libexslt, and xsltproc.exe
-#  however make sure that you are building for 'Release' and not 'Debug'
 #
 # These were built with multithreading but not DLL, i.e. /MT
 # as opposed to /MD with a few modifications as follows:
@@ -57,13 +54,11 @@
 #
 # Build OSIRIS:
 #
-#  Then using Visual Studio or VC++ 2008 (Version 9)
-#  build all projects found in ./OsirisAnalysis/OsirisAnalysis08.sln
+#  Then using Visual Studio or VC++ 2010 (Version 10) with SP1
+#  build all projects found in ./osirisAll.sln
 #  including the Setup project which creates an .msi file that can 
 #  later be installed.
 #  Make sure you are building for 'Release' and not 'Debug'
-#  Note that the paths for libxml2, libxslt, and libiconv may need to
-#  be modified
 #  An alternative to creating an .msi file is
 #  to run a perl script, .\ZipPerl\MakeZip.pl
 #  which will set up the directory structure in .\ZipPerl\Osiris
