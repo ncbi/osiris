@@ -23,6 +23,9 @@
 #include "wx/plotctrl/plotmark.h"
 #include "wx/plotctrl/plotfunc.h"
 #include "wx/things/range.h"
+// DJH 1/9/14 added because of error messages
+// error: variable 'wxClientDC dc' has initializer but incomplete type
+#include "wx/dcclient.h"
 
 class WXDLLEXPORT wxDC;
 class WXDLLEXPORT wxNotifyEvent;

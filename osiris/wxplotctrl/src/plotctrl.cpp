@@ -2609,7 +2609,7 @@ void wxPlotCtrl::DrawMouseMarker( wxDC *dc, int type, const wxRect &rect )
 
     dc->SetBrush( wxNullBrush );
     dc->SetPen( wxNullPen );
-    dc->SetLogicalFunction( logical_fn );
+    dc->SetLogicalFunction( (wxRasterOperationMode)logical_fn );
 }
 
 void wxPlotCtrl::DrawCrosshairCursor( wxDC *dc, const wxPoint &pos )
@@ -2623,7 +2623,7 @@ void wxPlotCtrl::DrawCrosshairCursor( wxDC *dc, const wxPoint &pos )
     dc->CrossHair(pos.x, pos.y);
 
     dc->SetPen( wxNullPen );
-    dc->SetLogicalFunction( logical_fn );
+    dc->SetLogicalFunction( (wxRasterOperationMode)logical_fn );
 }
 
 void wxPlotCtrl::DrawDataCurve( wxDC *dc, wxPlotData *curve, int curve_index, const wxRect &rect )

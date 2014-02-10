@@ -97,8 +97,7 @@ private:
 
 CFileDropTarget::CFileDropTarget(mainFrame *pFrame) : m_pFrame(pFrame)
 {
-  wxMDIClientWindow *pWin = pFrame->GetClientWindow();
-  pWin->SetDropTarget(this);
+  pFrame->GetClientWindow()->SetDropTarget(this);
 }
 
 CFileDropTarget::~CFileDropTarget()
@@ -209,8 +208,7 @@ mainFrame::mainFrame() :
 mainFrame::~mainFrame()
 {
 
-  wxMDIClientWindow *pWin = GetClientWindow();
-  pWin->SetDropTarget(NULL);
+  GetClientWindow()->SetDropTarget(NULL);
 
   if(m_pDialogMRU != NULL)
   {

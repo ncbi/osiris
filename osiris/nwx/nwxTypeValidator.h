@@ -31,6 +31,7 @@
 #ifndef __NWX_TYPE_VALIDATOR_H__
 #define __NWX_TYPE_VALIDATOR_H__
 
+#include <wx/textctrl.h>
 #include <wx/valtext.h>
 #include <wx/msgdlg.h>
 #include "nwx/nwxBookCtrlFocus.h"

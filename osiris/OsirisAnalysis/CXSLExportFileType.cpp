@@ -34,6 +34,7 @@
 #include <wx/filename.h>
 #include <wx/filefn.h>
 #include <wx/arrstr.h>
+#include <wx/string.h>
 
 #define COPY(z)  z = x.z
 #define NOTEQ(z) (z != x.z)
@@ -229,7 +230,7 @@ void CXSLParam::SetInFileTypeList(const wxString &_s, wxString *psError)
     CXSLExportFileType::ParseFileExtList(s,&ss,&nProblem);
     if(nProblem && (psError != NULL))
     {
-      *psError->Append(CXSLExportFileType::FILE_TYPE_ERROR);
+      psError->Append(CXSLExportFileType::FILE_TYPE_ERROR);
     }
 
   }
