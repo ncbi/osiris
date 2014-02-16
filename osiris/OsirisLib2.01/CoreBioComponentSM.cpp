@@ -854,10 +854,11 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 	mLaneStandard = mMarkerSet->GetLaneStandard ();
 	mNumberOfChannels = mMarkerSet->GetNumberOfChannels ();
 
-	if (mLaneStandard == NULL) {
+	if ((mLaneStandard == NULL) || !mLaneStandard->IsValid ()) {
 
 		ErrorString = "Could not find named internal lane standard associated with marker set named ";
 		ErrorString << markerSetName << "\n";
+		cout << "Could not find named internal lane standard associated with marker set named " << (char*)markerSetName.GetData () << endl;
 		SetMessageValue (noNamedILS, true);
 		AppendDataForSmartMessage (noNamedILS, markerSetName);
 		return -1;
@@ -1203,6 +1204,12 @@ int CoreBioComponent :: AnalyzeCrossChannelSM () {
 }
 
 
+int CoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
+
+	return 0;
+}
+
+
 bool CoreBioComponent :: ValidateAndCorrectCrossChannelAnalysesSM () {
 
 	int i;
@@ -1395,6 +1402,12 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	if (windowWidthForEstimation <= 0)
 		windowWidthForEstimation = 1;
 
+	if (GetMessageValue (enableFilteringForNormalization))
+		ChannelData::SetUseNormalizationFilter (true);
+
+	else
+		ChannelData::SetUseNormalizationFilter (false);
+
 	if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
 		CreateAndSubstituteFilteredDataSignalForRawDataNonILS (windowWidthForEstimation);
 
@@ -1446,7 +1459,10 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 			return -5;
 		}
 
-		AnalyzeCrossChannelSM ();	//	Moved here 07/31/2013...happy birthday, Mom.  You'd be 99 today.
+		//AnalyzeCrossChannelSM ();	//	Moved here 07/31/2013...happy birthday, Mom.  You'd be 99 today.
+		AnalyzeCrossChannelWithNegativePeaksSM ();
+
+		cout << "Analyzed cross channel links with negative peaks" << endl;
 		Progress = 4;
 		return 0;
 	}
@@ -1483,7 +1499,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 		status = -1;
 	}
 
-//	RestoreRawDataAndDeleteFilteredSignalNonILS ();
+	//RestoreRawDataAndDeleteFilteredSignalNonILS ();	// 02/02/2014:  This is now done at the channel level within normalization function.
 	status = FitNonLaneStandardCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 	FitNonLaneStandardNegativeCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);
 
@@ -1512,7 +1528,8 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 		return -5;
 	}
 
-	AnalyzeCrossChannelSM ();
+	//AnalyzeCrossChannelSM ();
+	AnalyzeCrossChannelWithNegativePeaksSM ();
 
 	Progress = 4;
 	return 0;
@@ -1713,7 +1730,7 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	RemoveAllSignalsOutsideLaneStandardSM ();
 //	ValidateAndCorrectCrossChannelAnalysesSM ();
 	int status = AssignSampleCharacteristicsToLociSM (grid, timeMap);
-
+	
 	return status;
 }
 

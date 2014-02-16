@@ -395,6 +395,8 @@ public:
 	virtual int TestGridInterlocusThresholds (RGDList& originalList);
 
 	int CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, RGDList& artifacts, RGDList& signalList, RGDList& completeList);  // the latest, assuming CraterSignals
+	virtual DataSignal* GetLargestPeak ();
+	virtual int TestResidualDisplacement ();
 
 	virtual int TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplementalList);
 

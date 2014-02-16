@@ -1239,7 +1239,8 @@ int STRLadderCoreBioComponent :: AnalyzeCrossChannel () {
 	int LookCount;
 	mNumberOfPullups = 0;
 	mNumberOfPrimaryPullups = 0;
-  int i;
+	int i;
+
 	for (i=1; i<=mNumberOfChannels; i++)
 		mDataChannels [i]->ResetPreliminaryIterator ();
 

@@ -58,6 +58,7 @@ int CoreBioComponent::minBioIDForArtifacts = 0;
 bool* CoreBioComponent::InitialMatrix = NULL;
 bool* CoreBioComponent::OffScaleData = NULL;
 int CoreBioComponent::OffScaleDataLength = 0;
+double CoreBioComponent::minPrimaryPullupThreshold = 500.0;
 
 
 
@@ -1167,12 +1168,15 @@ CoreBioComponent* CoreBioComponent :: GetBestGridBasedOnMax2DerivForAnalysis (RG
 			delete nextTrans;
 	}
 
-	cout << "Best grid for sample file " << (char*)mName.GetData () << " is ladder " << (char*)minGrid->GetSampleName ().GetData () << " with min 2nd deriv " << min2Deriv << "\n";
+	cout << "Best grid for sample file " << (char*)mName.GetData () << " is ladder " << (char*)minGrid->GetSampleName ().GetData () << " with min 2nd deriv " << (int) ceil (min2Deriv * 1.0e6) << "\n";
 	int scaledMin2Deriv = (int)ceil (min2Deriv * 1.0e6);
 	int threshold = GetThreshold (ladderFitThreshold);
 
-	if (scaledMin2Deriv >= threshold)
+	if (scaledMin2Deriv >= threshold) {
+
 		SetMessageValue (ladderFitPoor, true);
+		AppendDataForSmartMessage (ladderFitPoor, scaledMin2Deriv);
+	}
 
 	return minGrid;
 }

@@ -1100,6 +1100,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			bioComponent->SetMessageValue (sampleFailed, true);
 		}
 
+		//cout << "Preliminary Analysis Complete" << endl;
+
 		bioComponent->SetNegativeControlFalseSM ();
 		bioComponent->SetPositiveControlFalseSM ();
 		idString = bioComponent->GetControlIdName ();
@@ -1129,6 +1131,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->SetMessageValue (stage1Successful, true);
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
 
+		//cout << "Stage 1 complete" << endl;
+
 //		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
 //		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
 
@@ -1140,6 +1144,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
 			NoticeStr = "";
 		}
+
+		//cout << "Sample locus analysis complete" << endl;
 
 		//
 		// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
@@ -1153,11 +1159,15 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->SetMessageValue (stage2Successful, true);
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
 
+		//cout << "Stage 2 complete" << endl;
+
 //		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
 //		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
 
 		if (sampleOK) 
 			bioComponent->MakePreliminaryCallsSM (pGenotypes);
+
+		//cout << "Preliminary Calls complete" << endl;
 
 		//cout << "Preliminary calls done" << endl;
 		
@@ -1172,6 +1182,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		bioComponent->SetMessageValue (stage3Successful, true);
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
+
+		//cout << "Stage 3 complete" << endl;
 
 //		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
 //		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
@@ -1190,10 +1202,14 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->SetMessageValue (stage4Successful, true);
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
 
+		//cout << "Stage 4 complete" << endl;
+
 		// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
 
 		if (sampleOK)
 			bioComponent->RemoveInterlocusSignalsSM ();
+
+		//	Put residual displacement test here...02/11/2014
 
 //		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
 //		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
@@ -1203,6 +1219,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		if (sampleOK)
 			bioComponent->SampleQualityTestSM (pGenotypes);
+
+		//cout << "Sample quality test complete" << endl;
 
 		if (sampleOK)
 			bioComponent->TestPositiveControlSM (pGenotypes);
@@ -1216,6 +1234,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		bioComponent->SetMessageValue (stage5Successful, true);
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+
+		//cout << "Stage 5 complete" << endl;
 
 //		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
 //		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);

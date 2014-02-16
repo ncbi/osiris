@@ -1116,6 +1116,54 @@ int smFilterWindowWidthForBaselineEstimation::sMessageIndex = 0;
 int smFilterWindowWidthForBaselineEstimation::sMessageScope = 0;
 
 
+RGString smAmbiguousInterlocusWithPoorMorphology::sName = "smAmbiguousInterlocusWithPoorMorphology";
+int smAmbiguousInterlocusWithPoorMorphology::sSubject = smAmbiguousInterlocusWithPoorMorphology::LoadType ();
+int smAmbiguousInterlocusWithPoorMorphology::sMessageIndex = 0;
+int smAmbiguousInterlocusWithPoorMorphology::sMessageScope = 0;
+
+
+RGString smSigmoidalPullup::sName = "smSigmoidalPullup";
+int smSigmoidalPullup::sSubject = smSigmoidalPullup::LoadType ();
+int smSigmoidalPullup::sMessageIndex = 0;
+int smSigmoidalPullup::sMessageScope = 0;
+
+
+RGString smMinPrimaryPullupThreshold::sName = "smMinPrimaryPullupThreshold";
+int smMinPrimaryPullupThreshold::sSubject = smMinPrimaryPullupThreshold::LoadType ();
+int smMinPrimaryPullupThreshold::sMessageIndex = 0;
+int smMinPrimaryPullupThreshold::sMessageScope = 0;
+
+
+RGString smExcessiveResidualDisplacement::sName = "smExcessiveResidualDisplacement";
+int smExcessiveResidualDisplacement::sSubject = smExcessiveResidualDisplacement::LoadType ();
+int smExcessiveResidualDisplacement::sMessageIndex = 0;
+int smExcessiveResidualDisplacement::sMessageScope = 0;
+
+
+RGString smResidualDisplacementThreshold::sName = "smResidualDisplacementThreshold";
+int smResidualDisplacementThreshold::sSubject = smResidualDisplacementThreshold::LoadType ();
+int smResidualDisplacementThreshold::sMessageIndex = 0;
+int smResidualDisplacementThreshold::sMessageScope = 0;
+
+
+RGString smResidualDisplacementTestPreset::sName = "smResidualDisplacementTestPreset";
+int smResidualDisplacementTestPreset::sSubject = smResidualDisplacementTestPreset::LoadType ();
+int smResidualDisplacementTestPreset::sMessageIndex = 0;
+int smResidualDisplacementTestPreset::sMessageScope = 0;
+
+
+RGString smExcessiveResidualDisplacementLeft::sName = "smExcessiveResidualDisplacementLeft";
+int smExcessiveResidualDisplacementLeft::sSubject = smExcessiveResidualDisplacementLeft::LoadType ();
+int smExcessiveResidualDisplacementLeft::sMessageIndex = 0;
+int smExcessiveResidualDisplacementLeft::sMessageScope = 0;
+
+
+RGString smExcessiveResidualDisplacementRight::sName = "smExcessiveResidualDisplacementRight";
+int smExcessiveResidualDisplacementRight::sSubject = smExcessiveResidualDisplacementRight::LoadType ();
+int smExcessiveResidualDisplacementRight::sMessageIndex = 0;
+int smExcessiveResidualDisplacementRight::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1301,6 +1349,14 @@ PERSISTENT_DEFINITION (smSampleToLadderFitBelowExpectations, 2581, "smSampleToLa
 PERSISTENT_DEFINITION (smEnableRawDataFilterForNormalizationPreset, 2582, "smEnableRawDataFilterForNormalizationPreset")
 PERSISTENT_DEFINITION (smBaselineEstimationThreshold, 2583, "smBaselineEstimationThreshold")
 PERSISTENT_DEFINITION (smFilterWindowWidthForBaselineEstimation, 2584, "smFilterWindowWidthForBaselineEstimation")
+PERSISTENT_DEFINITION (smAmbiguousInterlocusWithPoorMorphology, 2585, "smAmbiguousInterlocusWithPoorMorphology")
+PERSISTENT_DEFINITION (smSigmoidalPullup, 2586, "smSigmoidalPullup")
+PERSISTENT_DEFINITION (smMinPrimaryPullupThreshold, 2587, "smMinPrimaryPullupThreshold")
+PERSISTENT_DEFINITION (smExcessiveResidualDisplacement, 2588, "smExcessiveResidualDisplacement")
+PERSISTENT_DEFINITION (smResidualDisplacementThreshold, 2589, "smResidualDisplacementThreshold")
+PERSISTENT_DEFINITION (smResidualDisplacementTestPreset, 2590, "smResidualDisplacementTestPreset")
+PERSISTENT_DEFINITION (smExcessiveResidualDisplacementLeft, 2591, "smExcessiveResidualDisplacementLeft")
+PERSISTENT_DEFINITION (smExcessiveResidualDisplacementRight, 2592, "smExcessiveResidualDisplacementRight")
 
 
 
@@ -12397,6 +12453,486 @@ int smFilterWindowWidthForBaselineEstimation :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smFilterWindowWidthForBaselineEstimation* noticeType = new smFilterWindowWidthForBaselineEstimation;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smAmbiguousInterlocusWithPoorMorphology :: smAmbiguousInterlocusWithPoorMorphology () : SmartNotice () {
+
+}
+
+
+smAmbiguousInterlocusWithPoorMorphology :: smAmbiguousInterlocusWithPoorMorphology (const smAmbiguousInterlocusWithPoorMorphology& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smAmbiguousInterlocusWithPoorMorphology :: ~smAmbiguousInterlocusWithPoorMorphology () {
+
+}
+
+
+int smAmbiguousInterlocusWithPoorMorphology :: GetSubject () const {
+
+	return smAmbiguousInterlocusWithPoorMorphology::sSubject;
+}
+
+
+void smAmbiguousInterlocusWithPoorMorphology :: SetIndexAndScope (int index, int scope) const {
+
+	smAmbiguousInterlocusWithPoorMorphology::sMessageIndex = index;
+	smAmbiguousInterlocusWithPoorMorphology::sMessageScope = scope;
+}
+
+
+int smAmbiguousInterlocusWithPoorMorphology :: GetMessageIndex () const {
+
+	return smAmbiguousInterlocusWithPoorMorphology :: sMessageIndex;
+}
+
+
+int smAmbiguousInterlocusWithPoorMorphology :: GetScope () const {
+
+	return smAmbiguousInterlocusWithPoorMorphology :: sMessageScope;
+}
+
+
+RGString smAmbiguousInterlocusWithPoorMorphology :: GetName () const {
+
+	return smAmbiguousInterlocusWithPoorMorphology :: sName;
+}
+
+
+
+int smAmbiguousInterlocusWithPoorMorphology :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smAmbiguousInterlocusWithPoorMorphology* noticeType = new smAmbiguousInterlocusWithPoorMorphology;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSigmoidalPullup :: smSigmoidalPullup () : SmartNotice () {
+
+}
+
+
+smSigmoidalPullup :: smSigmoidalPullup (const smSigmoidalPullup& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSigmoidalPullup :: ~smSigmoidalPullup () {
+
+}
+
+
+int smSigmoidalPullup :: GetSubject () const {
+
+	return smSigmoidalPullup::sSubject;
+}
+
+
+void smSigmoidalPullup :: SetIndexAndScope (int index, int scope) const {
+
+	smSigmoidalPullup::sMessageIndex = index;
+	smSigmoidalPullup::sMessageScope = scope;
+}
+
+
+int smSigmoidalPullup :: GetMessageIndex () const {
+
+	return smSigmoidalPullup :: sMessageIndex;
+}
+
+
+int smSigmoidalPullup :: GetScope () const {
+
+	return smSigmoidalPullup :: sMessageScope;
+}
+
+
+RGString smSigmoidalPullup :: GetName () const {
+
+	return smSigmoidalPullup :: sName;
+}
+
+
+
+int smSigmoidalPullup :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSigmoidalPullup* noticeType = new smSigmoidalPullup;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMinPrimaryPullupThreshold :: smMinPrimaryPullupThreshold () : SmartNotice () {
+
+}
+
+
+smMinPrimaryPullupThreshold :: smMinPrimaryPullupThreshold (const smMinPrimaryPullupThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMinPrimaryPullupThreshold :: ~smMinPrimaryPullupThreshold () {
+
+}
+
+
+int smMinPrimaryPullupThreshold :: GetSubject () const {
+
+	return smMinPrimaryPullupThreshold::sSubject;
+}
+
+
+void smMinPrimaryPullupThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smMinPrimaryPullupThreshold::sMessageIndex = index;
+	smMinPrimaryPullupThreshold::sMessageScope = scope;
+}
+
+
+int smMinPrimaryPullupThreshold :: GetMessageIndex () const {
+
+	return smMinPrimaryPullupThreshold :: sMessageIndex;
+}
+
+
+int smMinPrimaryPullupThreshold :: GetScope () const {
+
+	return smMinPrimaryPullupThreshold :: sMessageScope;
+}
+
+
+RGString smMinPrimaryPullupThreshold :: GetName () const {
+
+	return smMinPrimaryPullupThreshold :: sName;
+}
+
+
+
+int smMinPrimaryPullupThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMinPrimaryPullupThreshold* noticeType = new smMinPrimaryPullupThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smExcessiveResidualDisplacement :: smExcessiveResidualDisplacement () : SmartNotice () {
+
+}
+
+
+smExcessiveResidualDisplacement :: smExcessiveResidualDisplacement (const smExcessiveResidualDisplacement& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smExcessiveResidualDisplacement :: ~smExcessiveResidualDisplacement () {
+
+}
+
+
+int smExcessiveResidualDisplacement :: GetSubject () const {
+
+	return smExcessiveResidualDisplacement::sSubject;
+}
+
+
+void smExcessiveResidualDisplacement :: SetIndexAndScope (int index, int scope) const {
+
+	smExcessiveResidualDisplacement::sMessageIndex = index;
+	smExcessiveResidualDisplacement::sMessageScope = scope;
+}
+
+
+int smExcessiveResidualDisplacement :: GetMessageIndex () const {
+
+	return smExcessiveResidualDisplacement :: sMessageIndex;
+}
+
+
+int smExcessiveResidualDisplacement :: GetScope () const {
+
+	return smExcessiveResidualDisplacement :: sMessageScope;
+}
+
+
+RGString smExcessiveResidualDisplacement :: GetName () const {
+
+	return smExcessiveResidualDisplacement :: sName;
+}
+
+
+
+int smExcessiveResidualDisplacement :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smExcessiveResidualDisplacement* noticeType = new smExcessiveResidualDisplacement;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smResidualDisplacementThreshold :: smResidualDisplacementThreshold () : SmartNotice () {
+
+}
+
+
+smResidualDisplacementThreshold :: smResidualDisplacementThreshold (const smResidualDisplacementThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smResidualDisplacementThreshold :: ~smResidualDisplacementThreshold () {
+
+}
+
+
+int smResidualDisplacementThreshold :: GetSubject () const {
+
+	return smResidualDisplacementThreshold::sSubject;
+}
+
+
+void smResidualDisplacementThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smResidualDisplacementThreshold::sMessageIndex = index;
+	smResidualDisplacementThreshold::sMessageScope = scope;
+}
+
+
+int smResidualDisplacementThreshold :: GetMessageIndex () const {
+
+	return smResidualDisplacementThreshold :: sMessageIndex;
+}
+
+
+int smResidualDisplacementThreshold :: GetScope () const {
+
+	return smResidualDisplacementThreshold :: sMessageScope;
+}
+
+
+RGString smResidualDisplacementThreshold :: GetName () const {
+
+	return smResidualDisplacementThreshold :: sName;
+}
+
+
+
+int smResidualDisplacementThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smResidualDisplacementThreshold* noticeType = new smResidualDisplacementThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smResidualDisplacementTestPreset :: smResidualDisplacementTestPreset () : SmartNotice () {
+
+}
+
+
+smResidualDisplacementTestPreset :: smResidualDisplacementTestPreset (const smResidualDisplacementTestPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smResidualDisplacementTestPreset :: ~smResidualDisplacementTestPreset () {
+
+}
+
+
+int smResidualDisplacementTestPreset :: GetSubject () const {
+
+	return smResidualDisplacementTestPreset::sSubject;
+}
+
+
+void smResidualDisplacementTestPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smResidualDisplacementTestPreset::sMessageIndex = index;
+	smResidualDisplacementTestPreset::sMessageScope = scope;
+}
+
+
+int smResidualDisplacementTestPreset :: GetMessageIndex () const {
+
+	return smResidualDisplacementTestPreset :: sMessageIndex;
+}
+
+
+int smResidualDisplacementTestPreset :: GetScope () const {
+
+	return smResidualDisplacementTestPreset :: sMessageScope;
+}
+
+
+RGString smResidualDisplacementTestPreset :: GetName () const {
+
+	return smResidualDisplacementTestPreset :: sName;
+}
+
+
+
+int smResidualDisplacementTestPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smResidualDisplacementTestPreset* noticeType = new smResidualDisplacementTestPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smExcessiveResidualDisplacementLeft :: smExcessiveResidualDisplacementLeft () : SmartNotice () {
+
+}
+
+
+smExcessiveResidualDisplacementLeft :: smExcessiveResidualDisplacementLeft (const smExcessiveResidualDisplacementLeft& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smExcessiveResidualDisplacementLeft :: ~smExcessiveResidualDisplacementLeft () {
+
+}
+
+
+int smExcessiveResidualDisplacementLeft :: GetSubject () const {
+
+	return smExcessiveResidualDisplacementLeft::sSubject;
+}
+
+
+void smExcessiveResidualDisplacementLeft :: SetIndexAndScope (int index, int scope) const {
+
+	smExcessiveResidualDisplacementLeft::sMessageIndex = index;
+	smExcessiveResidualDisplacementLeft::sMessageScope = scope;
+}
+
+
+int smExcessiveResidualDisplacementLeft :: GetMessageIndex () const {
+
+	return smExcessiveResidualDisplacementLeft :: sMessageIndex;
+}
+
+
+int smExcessiveResidualDisplacementLeft :: GetScope () const {
+
+	return smExcessiveResidualDisplacementLeft :: sMessageScope;
+}
+
+
+RGString smExcessiveResidualDisplacementLeft :: GetName () const {
+
+	return smExcessiveResidualDisplacementLeft :: sName;
+}
+
+
+
+int smExcessiveResidualDisplacementLeft :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smExcessiveResidualDisplacementLeft* noticeType = new smExcessiveResidualDisplacementLeft;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smExcessiveResidualDisplacementRight :: smExcessiveResidualDisplacementRight () : SmartNotice () {
+
+}
+
+
+smExcessiveResidualDisplacementRight :: smExcessiveResidualDisplacementRight (const smExcessiveResidualDisplacementRight& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smExcessiveResidualDisplacementRight :: ~smExcessiveResidualDisplacementRight () {
+
+}
+
+
+int smExcessiveResidualDisplacementRight :: GetSubject () const {
+
+	return smExcessiveResidualDisplacementRight::sSubject;
+}
+
+
+void smExcessiveResidualDisplacementRight :: SetIndexAndScope (int index, int scope) const {
+
+	smExcessiveResidualDisplacementRight::sMessageIndex = index;
+	smExcessiveResidualDisplacementRight::sMessageScope = scope;
+}
+
+
+int smExcessiveResidualDisplacementRight :: GetMessageIndex () const {
+
+	return smExcessiveResidualDisplacementRight :: sMessageIndex;
+}
+
+
+int smExcessiveResidualDisplacementRight :: GetScope () const {
+
+	return smExcessiveResidualDisplacementRight :: sMessageScope;
+}
+
+
+RGString smExcessiveResidualDisplacementRight :: GetName () const {
+
+	return smExcessiveResidualDisplacementRight :: sName;
+}
+
+
+
+int smExcessiveResidualDisplacementRight :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smExcessiveResidualDisplacementRight* noticeType = new smExcessiveResidualDisplacementRight;
 	warehouse->AddType (noticeType);
 	return 1;
 }

@@ -86,7 +86,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 	double mTimeTolerance = 0.95;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
 	double mWidthToleranceForSpike = 1.0;  // Width must be less than this width to qualify as a spike
-	double nSigmaForCraters = 2.0;
+	double nSigmaForCraters = 2.0;		//Test...01/08/2014
 	RGString info;
 	DataSignal* testSignal;
 	DataSignal* testSignal2;
@@ -106,9 +106,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 	int i;
 	RGDList** TempList = new RGDList* [mNumberOfChannels + 1];
 	DataSignal* prevSignal;
-	double saturationArtifactTolerance;
-	double deltaTime;
-	DataSignal* newCraterSignal;
+	//double saturationArtifactTolerance;
+	//double deltaTime;
+	//DataSignal* newCraterSignal;
 	ChannelData* nextChannel;
 	RGDList* nextList;
 
@@ -118,8 +118,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 	smCraterSidePeak craterSidePeak;
 	smSpike spike;
 	smBelowMinRFU belowMinRFU;
-//	PullUpFound pullupNotice;
-//	PullUpPrimaryChannel primaryPullupNotice;
+	PullUpFound pullupNotice;
+	PullUpPrimaryChannel primaryPullupNotice;
 
 	ParameterServer* pServer = new ParameterServer;
 	double measurementResolution = pServer->GetInterSampleSpacing ();
@@ -130,8 +130,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 	RGDList CraterSignalsToRemove;
 	InterchannelLinkage* iChannel;
 
-	double peak1;
-	double peak2;
+	//double peak1;
+	//double peak2;
 	int nInterchannelLinks = 0;
 
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -144,53 +144,60 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 
 	// Now copy from mDataChannels PreliminaryCurveList to TempList (while finding maxSignalPeak??)
 
-	for (i=1; i<= mNumberOfChannels; i++) {
+	for (i=1; i<=mNumberOfChannels; i++) {
 
 		prevSignal = NULL;
 		nextChannel = mDataChannels [i];
 		nextList = TempList [i];
 
-		while (nextSignal = nextChannel->GetNextPreliminaryCurve ()) {
-//		while (nextSignal = nextChannel->GetNextCompleteCurve ()) {
+//		while (nextSignal = nextChannel->GetNextPreliminaryCurve ()) {
+		while (nextSignal = nextChannel->GetNextCompleteCurve ()) {
 
 			if (nextSignal->GetMessageValue (belowMinRFU))
 				continue;
 
-			if (prevSignal != NULL) {
+			nextList->Append (nextSignal);
 
-				// test if prevSignal and nextSignal are "close".  If so, don't move them and create intermediate "crater" peak.  If
-				// not, store prevSignal and overwrite with nextSignal
 
-				saturationArtifactTolerance = 1.1 * (prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ());
-				deltaTime = nextSignal->GetMean () - prevSignal->GetMean ();
-				peak1 = prevSignal->Peak ();
-				peak2 = nextSignal->Peak ();
+// Remove from here...
 
-				if ((deltaTime > saturationArtifactTolerance) || (peak1 < 0.7 * peak2) || (peak2 < 0.7 * peak1)) {
+		//	if (prevSignal != NULL) {
 
-					nextList->Append (prevSignal);
-					prevSignal = nextSignal;
-				}
+		//		// test if prevSignal and nextSignal are "close".  If so, don't move them and create intermediate "crater" peak.  If
+		//		// not, store prevSignal and overwrite with nextSignal
 
-				else {
+		//		saturationArtifactTolerance = 1.1 * (prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ());
+		//		//deltaTime = nextSignal->GetMean () - prevSignal->GetMean ();
+		//		deltaTime = nextSignal->GetApproximateBioID () - prevSignal->GetApproximateBioID ();
+		//		peak1 = prevSignal->Peak ();
+		//		peak2 = nextSignal->Peak ();
 
-					newCraterSignal = new CraterSignal (prevSignal, nextSignal);
-					newCraterSignal->SetSaturationArtifact (true);
-					newCraterSignal->SetMessageValue (crater, true);
-					prevSignal->SetMessageValue (craterSidePeak, true);
-					nextSignal->SetMessageValue (craterSidePeak, true);
+		//		if ((deltaTime > 0.75) || (peak1 < 0.7 * peak2) || (peak2 < 0.7 * peak1)) {
+		//		//if ((deltaTime > saturationArtifactTolerance) || (peak1 < 0.7 * peak2) || (peak2 < 0.7 * peak1)) {
 
-		//			nextChannel->InsertIntoArtifactList (newCraterSignal);	// Need this??????????????????????????????????????????????????
-		//			nextChannel->InsertIntoArtifactList (prevSignal);	// Need this??????????????????????????????????????????????????
-		//			nextChannel->InsertIntoArtifactList (nextSignal);	// Need this??????????????????????????????????????????????????
+		//			//nextList->Append (prevSignal);
+		//			prevSignal = nextSignal;
+		//		}
 
-					NewCraterSignalsToAdd.Append (newCraterSignal);
-					prevSignal = NULL;
-				}
-			}
+		//		else {
 
-			else
-				prevSignal = nextSignal;
+		//			newCraterSignal = new CraterSignal (prevSignal, nextSignal);
+		//			newCraterSignal->SetSaturationArtifact (true);
+		//			newCraterSignal->SetMessageValue (crater, true);
+		//			prevSignal->SetMessageValue (craterSidePeak, true);
+		//			nextSignal->SetMessageValue (craterSidePeak, true);
+
+		////			nextChannel->InsertIntoArtifactList (newCraterSignal);	// Need this??????????????????????????????????????????????????
+		////			nextChannel->InsertIntoArtifactList (prevSignal);	// Need this??????????????????????????????????????????????????
+		////			nextChannel->InsertIntoArtifactList (nextSignal);	// Need this??????????????????????????????????????????????????
+
+		//			NewCraterSignalsToAdd.Append (newCraterSignal);
+		//			prevSignal = NULL;
+		//		}
+		//	}
+
+		//	else
+		//		prevSignal = nextSignal;	//  ...to here...when crater formation below is fixed  01/08/2014
 		}
 
 		if (prevSignal != NULL)
@@ -279,18 +286,43 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 
 	RGDListIterator it (OverallList);
 
+	//int kk = 0;
+	//
+	//while (nextSignal = (DataSignal*) it ()) {
+
+	//	kk++;
+
+	//	if (kk > 100)
+	//		break;
+
+	//	cout << "Signal = " << nextSignal->GetMean () << " , channel " << nextSignal->GetChannel () << endl;
+	//}
+
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		BracketLeft [i] = NULL;
 		BracketRight [i] = NULL;
 	}
 
+	bool debug = false;
+	it.Reset ();
+
 	while (nextSignal = (DataSignal*) it ()) {
+
+		debug = false;
 
 		nextSignal2 = (DataSignal*) it ();
 
 		if (nextSignal2 == NULL)
 			break;
+
+		if ((nextSignal->GetMean () > 1365.0) && (nextSignal->GetMean () < 1390.0)) {
+
+			debug = true;
+		}
+
+		if (debug) cout << "1st, 2nd signals have means " << nextSignal->GetMean () << ", " << nextSignal2->GetMean () << endl;
+		if (debug) cout << "1st, 2nd signals have channels " << nextSignal->GetChannel () << ", " << nextSignal2->GetChannel () << endl;
 
 		if (nextSignal->GetChannel () == nextSignal2->GetChannel ()) {
 
@@ -298,18 +330,29 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 			continue;
 		}
 
-		mean1 = nextSignal2->GetMean ();
-		mean2 = nextSignal->GetMean ();
+		mean1 = nextSignal2->GetApproximateBioID ();
+		mean2 = nextSignal->GetApproximateBioID ();
 
-		mTimeTolerance = nextSignal->GetMeanVariability () * nextSignal->GetStandardDeviation () + 
-				nextSignal2->GetMeanVariability () * nextSignal2->GetStandardDeviation ();
+		//mTimeTolerance = nextSignal->GetMeanVariability () * nextSignal->GetStandardDeviation () + 
+		//		nextSignal2->GetMeanVariability () * nextSignal2->GetStandardDeviation () + 2.0;
 
-		if (mTimeTolerance < minPullupThreshold)
-			mTimeTolerance = minPullupThreshold;
+		//if (mTimeTolerance < minPullupThreshold)
+		//	mTimeTolerance = minPullupThreshold;
+
+		mTimeTolerance = 0.075;
+
+		if (debug) {
+			
+			cout << "time tolerance for pullup " << mTimeTolerance << endl;
+			cout << "1st mean = " << mean2 << " on channel " << nextSignal->GetChannel () << endl;
+			cout << "2nd mean = " << mean1 << " on channel " << nextSignal2->GetChannel () << endl;
+
+		}
 
 		if (mean1 - mean2 >= mTimeTolerance) {
 
 			BracketLeft [nextSignal->GetChannel ()] = nextSignal;
+			if (debug) cout << "left bracket for channel " << nextSignal->GetChannel () << " has mean " << mean2 << endl;
 			--it;
 			continue;
 		}
@@ -325,6 +368,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 
 		channel1 = nextSignal->GetChannel ();
 		channel2 = nextSignal2->GetChannel ();
+		if (debug) cout << "Pullup for channels " << channel1 << " and channel " << channel2 << endl;
 		OnDeck [channel1] = nextSignal;
 		OnDeck [channel2] = nextSignal2;
 		primeSignal = nextSignal2;
@@ -336,10 +380,23 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 			if (nextSignal == NULL)
 				break;
 
-			mTimeTolerance = nextSignal->GetMeanVariability () * nextSignal->GetStandardDeviation () + 
-				nextSignal2->GetMeanVariability () * nextSignal2->GetStandardDeviation ();
+			if ((nextSignal->GetChannel () == channel1) || (nextSignal->GetChannel () == channel2)) {
 
-			if (nextSignal->GetMean () - nextSignal2->GetMean () >= mTimeTolerance) {
+				--it;
+				break;
+			}
+
+			//mTimeTolerance = nextSignal->GetMeanVariability () * nextSignal->GetStandardDeviation () + 
+			//	nextSignal2->GetMeanVariability () * nextSignal2->GetStandardDeviation ();
+
+			//if (mTimeTolerance < minPullupThreshold)
+			//	mTimeTolerance = minPullupThreshold;
+
+			mTimeTolerance = 0.075;
+
+			if (debug) cout << "time tolerance for pullup = " << mTimeTolerance << endl;
+
+			if (nextSignal->GetApproximateBioID () - nextSignal2->GetApproximateBioID () >= mTimeTolerance) {
 
 				--it;
 				break;
@@ -383,6 +440,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 		primeSignal = OnDeck [maxIndex]; // This is the primary bleed through or spike, whichever...
 		mean1 = primeSignal->GetMean ();
 		BracketLeft [maxIndex] = BracketRight [maxIndex] = NULL;
+
+		if (debug) cout << "prime signal on channel " << maxIndex << " with mean " << mean1 << endl;
 
 		for (j=1; j<=mNumberOfChannels; j++) {
 
@@ -484,6 +543,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 			if (LookCount > 0) {
 
 				CraterLeftLimit = primeSignal->GetMean () - nSigmaForCraters * currentWidth;
+				//CraterLeftLimit = primeSignal->GetApproximateBioID () - 0.375;
 
 				for (i=1; i<=mNumberOfChannels; i++) {
 
@@ -506,6 +566,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 				if (NPossibleCraters > 0) {
 
 					CraterRightLimit = primeSignal->GetMean () + nSigmaForCraters * currentWidth;
+					//CraterRightLimit = primeSignal->GetApproximateBioID () + 0.375;
 
 					while (true) {
 
@@ -625,6 +686,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 					iChannel->AddDataSignal (nextSignal);
 					nextSignal->SetInterchannelLink (iChannel);
 
+					if (debug) cout << "new crater on channel " << i << " with side peaks at " << testSignal->GetMean () << " and " << testSignal2->GetMean () << endl;
+
 			//		mDataChannels [i]->InsertIntoArtifactList (nextSignal);	// Need this????????????????????????????????????????????
 					mDataChannels [i]->InsertIntoCompleteCurveList (nextSignal);
 					mDataChannels [i]->InsertIntoPreliminaryCurveList (nextSignal);
@@ -654,6 +717,806 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 }
 
 
+int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
+
+	//
+	//  This is sample stage 1...at least it will be when it is completed
+	//
+
+	// This is to be called after CoreBioComponent::FitAllCharacteristics...and BEFORE AnalyzeLaneStandardChannel
+	int size = mNumberOfChannels + 1;
+	DataSignal** OnDeck = new DataSignal* [size];
+	double* means = new double [size];
+	int currentIndex;
+	bool* isDone = new bool [size];
+	RGDList OverallList;
+	bool NowWeAreDone = false;
+	DataSignal* nextSignal;
+	DataSignal* nextSignal2;
+	double minPeak;
+	double maxPeak;
+	double minWidth;
+	double maxWidth;
+	DataSignal* primeSignal;
+	//int maxIndex;
+	//double currentPeak;
+	double currentWidth;
+	double calculatedNormalWidth;
+	double mTimeTolerance = 0.0375;
+	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
+	double mWidthToleranceForSpike = 1.0;  // Width must be less than this width to qualify as a spike
+	double nSigmaForCraters = 2.0;
+	RGString info;
+	DataSignal* testSignal;
+	DataSignal* testSignal2;
+	NowWeAreDone = true;
+	double mean1;
+	double mean2;
+	int channel1;
+	int channel2;
+	//int NPossibleCraters;
+	//int NCraters;
+	//int NCraterTests;
+	//double CraterLeftLimit;
+	//double CraterRightLimit;
+	int LookCount;
+	mNumberOfPullups = 0;
+	mNumberOfPrimaryPullups = 0;
+	int i;
+	int n;
+	RGDList** TempList = new RGDList* [mNumberOfChannels + 1];
+	RGDList** TempMultiPeakList = new RGDList* [mNumberOfChannels + 1];
+	RGDList** TempCraterPeakList = new RGDList* [mNumberOfChannels + 1];
+	DataSignal* prevSignal;
+//	double saturationArtifactTolerance;
+//	double deltaTime;
+//	DataSignal* newCraterSignal;
+	ChannelData* nextChannel;
+	RGDList* nextList;
+	RGDList multiPeakSignals;
+
+	smPullUp pullup;
+	smPrimaryInterchannelLink primaryLink;
+	smCrater crater;
+	smCraterSidePeak craterSidePeak;
+	smSpike spike;
+	smBelowMinRFU belowMinRFU;
+	smSigmoidalPullup sigmoidalPullup;
+	smMinPrimaryPullupThreshold primaryPullupThreshold;
+//	PullUpFound pullupNotice;
+//	PullUpPrimaryChannel primaryPullupNotice;
+
+	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+
+	ParameterServer* pServer = new ParameterServer;
+	double measurementResolution = pServer->GetInterSampleSpacing ();
+	double minPullupThreshold = 0.5 * measurementResolution;
+	delete pServer;
+
+	//RGDList NewCraterSignalsToAdd;
+	RGDList CraterSignalsToRemove;
+	InterchannelLinkage* iChannel;
+
+	double first = mDataChannels [mLaneStandardChannel]->GetFirstAnalyzedMean ();
+
+	//cout << "Found first time of ILS = " << first << endl;
+
+//	double peak1;
+//	double peak2;
+	int nInterchannelLinks = 0;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		TempList [i] = new RGDList;
+		TempMultiPeakList [i] = new RGDList;
+		TempCraterPeakList [i] = new RGDList;
+	}
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		mDataChannels [i]->ResetCompleteIterator ();
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		mDataChannels [i]->ResetPreliminaryIterator ();
+		mDataChannels [i]->ResetNegativeCurveIterator ();
+	}
+
+	// Now copy from mDataChannels PreliminaryCurveList to TempList (while finding maxSignalPeak??)
+
+	for (i=1; i<= mNumberOfChannels; i++) {
+
+		prevSignal = NULL;
+		nextChannel = mDataChannels [i];
+		nextList = TempList [i];
+
+		//
+		//	Merge PreliminaryCurveList with NegativeCurveList into TempList [i]
+
+//		while (nextSignal = nextChannel->GetNextPreliminaryCurve ()) {
+////		while (nextSignal = nextChannel->GetNextCompleteCurve ()) {
+//
+//			//
+//			//	Do we want to do this?  After all, we might get more reliable pull-up identification if we include peaks below minRFU, especially if
+//			//	we test for valid primary pull-up
+//			//
+//
+//			//if (nextSignal->GetMessageValue (belowMinRFU))	// 1/7/2014...omit for now
+//			//	continue;
+//
+//			nextList->Append (nextSignal);
+//		}
+
+		testSignal = nextChannel->GetNextCompleteCurve ();
+		testSignal2 = nextChannel->GetNextNegativeCurve ();
+
+		while (true) {
+
+			if (testSignal == NULL) {
+
+				if (testSignal2 == NULL)
+					break;
+
+				if (testSignal2->GetMean () < first) {
+
+					testSignal2 = nextChannel->GetNextNegativeCurve ();
+					continue;
+				}
+
+				nextList->Append (testSignal2);
+				testSignal2->SetChannel (i);
+				testSignal2 = nextChannel->GetNextNegativeCurve ();
+			}
+
+			else {
+
+				if (testSignal2 == NULL) {
+
+					if (testSignal->GetMean () < first) {
+
+						testSignal = nextChannel->GetNextCompleteCurve ();
+						continue;
+					}
+
+					nextList->Append (testSignal);
+					testSignal->SetChannel (i);
+					testSignal = nextChannel->GetNextCompleteCurve ();
+				}
+
+				else {
+
+					mean1 = testSignal->GetMean ();
+
+					if (mean1 < first) {
+
+						testSignal = nextChannel->GetNextCompleteCurve ();
+						continue;
+					}
+
+					mean2 = testSignal2->GetMean ();
+
+					if (mean2 < first) {
+
+						testSignal2 = nextChannel->GetNextNegativeCurve ();
+						continue;
+					}
+
+					if (mean1 <= mean2) {
+
+						nextList->Append (testSignal);
+						testSignal->SetChannel (i);
+						testSignal = nextChannel->GetNextCompleteCurve ();
+					}
+
+					else {
+
+						nextList->Append (testSignal2);
+						testSignal2->SetChannel (i);
+						testSignal2 = nextChannel->GetNextNegativeCurve ();
+					}
+				}
+			}
+		}
+	}
+
+	//cout << "Done merging positive and negative curves into TempList's" << endl;
+
+	RGDListIterator* tempIterator;
+	DataSignal* savedSignal;
+	RGDList newTempList;
+	RGDList* nextMultiPeakList;
+	RGDList* nextCraterPeakList;
+	int buffer = 25;
+	DataSignal** sequenceLineUp = new DataSignal* [buffer + 5];
+	int j;
+	int currentTestIndex;
+	int nextSignalIndex;
+
+	//
+	//	Create new channel specific lists of multi-peaks and merge into TempLists****
+	//
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		for (j=0; j<buffer; j++)
+			sequenceLineUp [j] = NULL;
+
+		nextChannel = mDataChannels [i];
+		nextMultiPeakList = TempMultiPeakList [i];
+		nextCraterPeakList = TempCraterPeakList [i];
+		nextList = TempList [i];
+		tempIterator = new RGDListIterator (*nextList);
+
+		for (j=0; j<buffer; j++) {
+
+			nextSignal = (DataSignal*)(*tempIterator)();
+			sequenceLineUp [j] = nextSignal;
+		}
+
+		prevSignal = sequenceLineUp [0];
+		currentTestIndex = 0;
+
+		if (prevSignal == NULL)
+			continue;
+
+		while (true) {
+
+			mean1 = prevSignal->GetApproximateBioID ();
+
+			for (j=1; j<buffer; j++) {
+
+				nextSignalIndex = (currentTestIndex + j)%buffer;
+				nextSignal = sequenceLineUp [nextSignalIndex];
+
+				if (nextSignal == NULL)
+					break;
+
+				mean2 = nextSignal->GetApproximateBioID ();
+
+				if (mean2 - mean1 >= 0.85)
+					break;
+
+				//
+				// Test for and add multipeak to newTempList.
+				//
+
+				if (prevSignal->IsNegativePeak () == nextSignal->IsNegativePeak ()) {
+
+					if (prevSignal->IsNegativePeak ())
+						continue;
+
+					if ((prevSignal->Peak () < 0.7 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.7 * prevSignal->Peak ()))
+						continue;
+
+					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
+					//cout << " at bp = " << 0.5 * (nextSignal->GetApproximateBioID () + prevSignal->GetApproximateBioID ()) << endl;
+
+					testSignal = new CraterSignal (prevSignal, nextSignal);
+					testSignal->SetChannel (i);
+					testSignal2 = (DataSignal*) nextCraterPeakList->Last ();
+
+					if ((testSignal2 == NULL) || (testSignal->GetMean () > testSignal2->GetMean ()))
+						nextCraterPeakList->Append (testSignal);
+
+					else
+						nextCraterPeakList->InsertWithNoReferenceDuplication (testSignal);
+
+				}
+
+				else {
+
+					testSignal = new SimpleSigmoidSignal (prevSignal, nextSignal);
+					testSignal->SetChannel (i);
+					testSignal->RecalculatePullupTolerance ();
+					testSignal2 = (DataSignal*) nextMultiPeakList->Last ();
+					//prevSignal->ResetPullupTolerance (-1.0);
+					//nextSignal->ResetPullupTolerance (-1.0);
+
+					if ((testSignal2 == NULL) || (testSignal->GetMean () > testSignal2->GetMean ()))
+						nextMultiPeakList->Append (testSignal);
+
+					else
+						nextMultiPeakList->InsertWithNoReferenceDuplication (testSignal);
+				}
+			}
+
+			nextSignal = (DataSignal*) (*tempIterator) ();
+			sequenceLineUp [currentTestIndex] = nextSignal;
+			currentTestIndex = (currentTestIndex + 1)%buffer;
+			prevSignal = sequenceLineUp [currentTestIndex];
+
+			if (prevSignal == NULL)
+				break;
+		}
+
+		//cout << "Found all potential craters/sigmoids" << endl;
+
+		delete tempIterator;
+		tempIterator = new RGDListIterator (*nextMultiPeakList);
+
+		while (nextSignal = (DataSignal*) (*tempIterator) ())
+			nextList->InsertWithNoReferenceDuplication (nextSignal);
+
+		delete tempIterator;
+
+		tempIterator = new RGDListIterator (*nextCraterPeakList);
+
+		while (nextSignal = (DataSignal*) (*tempIterator) ())
+			nextList->InsertWithNoReferenceDuplication (nextSignal);
+
+		delete tempIterator;
+
+		//
+		//	Save all of the multi peak lists for later, to iterator thru and find multipeaks with no interchannel links
+		//
+	}
+
+	delete[] sequenceLineUp;
+
+	//
+	//	Each TempList contains all CompleteList peaks and all NegativeCurvePeaks and all potential multipeaks.  Later, look for interchannel links and then remove crater/simplesigmoid code below
+	//
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+	
+		OnDeck [i] = (DataSignal*) TempList [i]->GetFirst ();  //used to be:  mDataChannels [i]->GetNextPreliminaryCurve ();
+
+		if (OnDeck [i] != NULL) {
+
+			means [i] = OnDeck [i]->GetMean ();
+			isDone [i] = false;
+			OnDeck [i]->SetChannel (i);
+		}
+
+		else {
+
+			means [i] = DOUBLEMAX;
+			isDone [i] = true;
+		}
+
+		NowWeAreDone = NowWeAreDone && isDone [i];
+	}
+
+	if (!NowWeAreDone) {
+
+		while (true) {
+
+			NowWeAreDone = true;
+			currentIndex = MinimumIndex (means, mNumberOfChannels);
+
+			OverallList.Append (OnDeck [currentIndex]);
+			OnDeck [currentIndex] = (DataSignal*) TempList [currentIndex]->GetFirst ();   //used to be:  mDataChannels [currentIndex]->GetNextPreliminaryCurve ();
+
+			if (OnDeck [currentIndex] == NULL) {
+
+				means [currentIndex] = DOUBLEMAX;
+				isDone [currentIndex] = true;
+
+				for (i=1; i<=mNumberOfChannels; i++)
+					NowWeAreDone = NowWeAreDone && isDone [i];
+
+				if (NowWeAreDone)
+					break;
+			}
+
+			else {
+
+				means [currentIndex] = OnDeck [currentIndex]->GetMean ();
+				OnDeck [currentIndex]->SetChannel (currentIndex);
+			}
+		}
+	}
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		TempList [i]->Clear ();
+		delete TempList [i];
+	}
+
+	delete[] TempList;
+
+	RGDListIterator it (OverallList);
+	cout << "Number of overall signals:  " << (int)OverallList.Entries() << endl;
+
+	//
+	//	Have looked for craters and other multi-signals above, having been careful to check for positive/negative peaks and multiple peaks within approximately 
+	//	0.9 ILS-bps.  After all new multi-signals were found, added them to the various lists (or while finding them), but didn't remove any side
+	//	peaks and didn't remove them from multi-signal list.  Now, look for pull-up/pull-down as before (and spikes), but not for craters (as before).
+	//	Go back through craters/multi-signals and, if not from pull-up, remove them from all lists, i.e., keep only those multi-signals associated with
+	//	a cross channel peak.  At some point, test each channel for largest peak not associated with a pull-up and remove pull-up designation from any
+	//	primary pull-up peaks on that channel that are lower.  Such cross-channel links are not true pull-up, at least from that channel.  Also, remove 
+	//	any primary pull-ups that are positive to another channel when any pull-up from another peak is to a negative peak.  Reevaluate all linkages with
+	//	respect to validity.  This may have to be repeated once for each channel in the kit.  Add appropriate messages to all multi-signals and side peaks.
+	//
+	//	Broaden pull-up criterion when curve fit is unacceptable.  Also, base pair residual exceeds threshold...Within so many ILS-bps of other pull-up peak?  Has same
+	//	call as other pull-up peak (a multi-peak)?  What other criteria for this?
+	//
+	//	Ideally, in the future, Osiris should be able to assess if a peak is purely pull-up or if it could be a mixture of pull-up and actual allele.  This
+	//	may be extremely complex...
+	//
+	//	Revisit the estimate of crater peak height to take into account not just the peak heights of the side peaks, but also how far apart they are.  The 
+	//	farther apart the side peaks, the taller the (missing) crater peak height.  01/16/2014 - this has been done by "flipping" the crater "minimum" about the side peak "peaks"
+	//	and it gives a much more accurate estimate of true crater height.  Of course, estimating crater heights is really a black art...
+	//
+	//	Don't forget to reset it () when done
+	//
+
+	n = 0;
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		n += TempMultiPeakList [i]->Entries ();
+
+	cout << "Number of sigmoidal signals:  " << n << endl;
+
+	n = 0;
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		n += TempCraterPeakList [i]->Entries ();
+
+	//cout << "Number of crater signals:  " << n << endl;
+
+	it.Reset ();
+	bool debug;
+
+	RGDList peaksInSameChannel;
+	RGDList probablePullupPeaks;
+	RGDList pullupList;
+	//bool primaryOK;
+	RGDListIterator probableIt (probablePullupPeaks);
+	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		//cout << "Next signal ILS-bps = " << nextSignal->GetApproximateBioID () << endl;
+
+		nextSignal2 = (DataSignal*) it ();
+
+		if (nextSignal2 == NULL)
+			break;
+
+		//cout << "Next signal2 ILS-bps = " << nextSignal2->GetApproximateBioID () << endl;
+
+		if (nextSignal->GetChannel () == nextSignal2->GetChannel ()) {
+
+			--it;
+			continue;
+		}
+
+		debug = true;
+		mean1 = nextSignal2->GetApproximateBioID ();
+		mean2 = nextSignal->GetApproximateBioID ();
+
+		//if ((nextSignal->GetMean () > 1360.0) && (nextSignal->GetMean () < 1390.0))
+		//	debug = true;
+
+		//if (debug) cout << "first bp = " << mean2 << ", second bp = " << mean1 << endl;
+
+		//mTimeTolerance = nextSignal->GetMeanVariability () * nextSignal->GetStandardDeviation () + 
+		//		nextSignal2->GetMeanVariability () * nextSignal2->GetStandardDeviation () + 2.0;
+
+		//if (mTimeTolerance < minPullupThreshold)
+		//	mTimeTolerance = minPullupThreshold;
+
+		//mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
+
+
+		//mTimeTolerance = 0.075;
+		mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
+
+		//mean1 = nextSignal2->GetMean ();
+		//mean2 = nextSignal->GetMean ();
+
+		//mTimeTolerance = nextSignal->GetMeanVariability () * nextSignal->GetStandardDeviation () + 
+		//		nextSignal2->GetMeanVariability () * nextSignal2->GetStandardDeviation ();
+
+		//if (mTimeTolerance < minPullupThreshold)
+		//	mTimeTolerance = minPullupThreshold;
+
+		if (mean1 - mean2 >= mTimeTolerance) {
+
+			--it;
+			continue;
+		}
+
+		//if (debug) cout << "Peaks within pull-up tolerance..." << endl;
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			OnDeck [i] = NULL;
+
+		peaksInSameChannel.Clear ();
+		probablePullupPeaks.Clear ();
+		pullupList.Clear ();
+
+		channel1 = nextSignal->GetChannel ();
+		channel2 = nextSignal2->GetChannel ();
+		//if (debug) cout << "first channel = " << channel1 << ", second channel = " << channel2 << endl;
+
+		//if (debug) {
+
+			//if (nextSignal2->IsNegativePeak ())
+			//	//cout << "next signal2 is negative" << endl;
+
+			//else
+				//cout << "next signal2 is positive" << endl;
+		//}
+
+		probablePullupPeaks.Append (nextSignal);
+		probablePullupPeaks.Append (nextSignal2);
+
+		primeSignal = nextSignal2;
+		savedSignal = nextSignal2;
+
+		while (true) {
+
+			nextSignal = (DataSignal*) it ();
+
+			if (nextSignal == NULL)
+				break;
+
+			//mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
+			//mTimeTolerance = 0.075;
+			mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
+
+			if (nextSignal->GetApproximateBioID () - nextSignal2->GetApproximateBioID () >= mTimeTolerance) {
+
+				--it;
+				//if (debug) cout << "New peak outside pull-up tolerance at mean " << nextSignal->GetMean () << endl;
+				break;
+			}
+
+			probablePullupPeaks.Append (nextSignal);
+
+			//if (debug) cout << "Added new signal on channel " << nextSignal->GetChannel () << " at time " << nextSignal->GetMean () << endl;
+
+			nextSignal2 = nextSignal;
+		}
+
+		minPeak = maxPeak = primeSignal->Peak ();
+		minWidth = maxWidth = primeSignal->GetStandardDeviation ();
+		double peak;
+		probableIt.Reset ();
+
+		while (nextSignal = (DataSignal*) probableIt ()) {
+
+			if (nextSignal->IsNegativePeak ())
+				continue;
+
+			peak = nextSignal->Peak ();
+			currentWidth = nextSignal->GetStandardDeviation ();
+
+			if (peak < minPeak)
+				minPeak = peak;
+
+			if (currentWidth > maxWidth)
+				maxWidth = currentWidth;
+
+			else if (currentWidth < minWidth)
+				minWidth = currentWidth;
+		}
+
+		maxPeak = FindPrimaryPeak (probablePullupPeaks, primeSignal);
+
+		//if (debug) cout << "Primary peak height = " << maxPeak << endl;
+
+		if (primeSignal == NULL)
+			continue;
+
+		if (maxPeak < primaryThreshold)
+			continue;
+
+		//if (debug && (primeSignal != NULL)) cout << "Prime channel is " << primeSignal->GetChannel () << endl;
+
+		//primeSignal = OnDeck [maxIndex]; // This is the primary bleed through or spike, whichever...
+
+		//mean1 = primeSignal->GetApproximateBioID ();
+
+//		if (maxWidth - minWidth > mWidthMatchFraction * (maxWidth + minWidth))  // if true, not uniform enough...skip it
+//			continue;  // or add contingency here???
+		//
+		// Now test if width small enough to be a spike...can we just test the width for nextSignal?  Let's assume so for now...
+		//
+
+		calculatedNormalWidth = 3.0 + 2.5E-4 * primeSignal->GetMean ();  // This is VERY approximate...for now
+		currentWidth = primeSignal->GetStandardDeviation ();
+
+		if (maxWidth < mWidthToleranceForSpike) {
+
+			LookCount = probablePullupPeaks.Entries ();
+
+			if (LookCount > 1) {
+
+				probableIt.Reset ();
+
+				while (testSignal = (DataSignal*) probableIt ()) {
+
+					testSignal->SetMessageValue (spike, true);
+					testSignal->AddNoticeToList (1, "", "Suspected spike");
+				}
+			}
+		}
+
+		else {
+
+			// This is bleed-through or pull-up...whatever
+
+			LookCount = probablePullupPeaks.Entries ();
+
+			//if (debug) cout << "Number of coinciding peaks = " << LookCount << endl;
+
+			nInterchannelLinks = 0;
+
+			while (true) {
+
+				if (LookCount > 1) {
+
+					probablePullupPeaks.RemoveReference (primeSignal);
+
+					if (AssessPrimaryPullup (primeSignal, peaksInSameChannel, probablePullupPeaks, pullupList)) {
+
+						iChannel = new STRInterchannelLinkage ();
+						mInterchannelLinkageList.push_back (iChannel);
+						nInterchannelLinks = 1;
+
+						while (testSignal = (DataSignal*) pullupList.GetFirst ()) {		// this is wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
+
+							probablePullupPeaks.RemoveReference (testSignal);
+
+							//if (testSignal->IsNegativePeak ())
+							//	continue;
+
+							iChannel->AddDataSignal (testSignal);
+							testSignal->SetInterchannelLink (iChannel);
+							
+							testSignal->SetMessageValue (pullup, true);
+							testSignal->AddNoticeToList (1, "", "Suspected pull-up");
+							mNumberOfPullups++;
+						}
+
+						iChannel->AddDataSignal (primeSignal);
+						primeSignal->SetInterchannelLink (iChannel);
+						primeSignal->SetMessageValue (primaryLink, true);
+						mNumberOfPrimaryPullups++;
+						iChannel->RecalculatePrimarySignalSM ();
+					}
+
+					else {
+
+						//	Try next largest peak and continue until no chances left
+					}
+
+					maxPeak = FindPrimaryPeak (probablePullupPeaks, primeSignal);
+
+					if (primeSignal == NULL)
+						break;
+
+					if (maxPeak < primaryThreshold)
+						break;
+
+					LookCount = probablePullupPeaks.Entries ();
+				}
+
+				else
+					break;
+			}
+
+			probablePullupPeaks.Clear ();
+			pullupList.Clear ();
+			peaksInSameChannel.Clear ();
+		}
+	}
+
+	peaksInSameChannel.Clear ();
+	probablePullupPeaks.Clear ();
+	pullupList.Clear ();
+
+	//cout << "Done with crater/pullup analysis" << endl;
+
+	//
+	//	Remove multipeaks from multipeak list that are not pull-up and then insert remaining ones into complete and preliminary curve lists
+	//
+
+	//bool bool1;
+	//bool bool2;
+
+	for (i=1; i<= mNumberOfChannels; i++) {
+
+		nextChannel = mDataChannels [i];
+		nextMultiPeakList = TempMultiPeakList [i];
+
+		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
+
+			testSignal = nextSignal->GetPreviousLinkedSignal ();
+			testSignal2 = nextSignal->GetNextLinkedSignal ();
+
+			if (nextSignal->HasCrossChannelSignalLink ()) {
+
+				nextChannel->InsertIntoCompleteCurveList (nextSignal);
+				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
+				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+				nextSignal2->SetMessageValue (sigmoidalPullup, true);
+				nextSignal2 = nextSignal->GetNextLinkedSignal ();
+				nextSignal2->SetMessageValue (sigmoidalPullup, true);
+				nextSignal->SetMessageValue (sigmoidalPullup, true);
+			}
+
+			//else if ((testSignal != NULL) && (testSignal2 != NULL)) {
+
+			//	bool1 = testSignal->HasCrossChannelSignalLink ();
+			//	bool2 = testSignal2->HasCrossChannelSignalLink ();
+
+			//	if ((bool1 || bool2) && (!(bool1 && bool2))) {	// one has a cross channel link but not both
+
+			//		if (bool1)
+			//			iChannel = testSignal->GetInterchannelLink ();
+
+			//		else
+			//			iChannel = testSignal2->GetInterchannelLink ();
+
+			//		nextChannel->InsertIntoCompleteCurveList (nextSignal);
+			//		nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
+			//		iChannel->AddDataSignal (nextSignal);
+			//		nextSignal->SetMessageValue (sigmoidalPullup, true);
+			//		testSignal->SetMessageValue (sigmoidalPullup, true);
+			//		testSignal2->SetMessageValue (sigmoidalPullup, true);
+
+			//		if (bool1)
+			//			iChannel->AddDataSignal (testSignal2);
+
+			//		else
+			//			iChannel->AddDataSignal (testSignal);
+			//	}
+
+			//	else
+			//		delete nextSignal;
+			//}
+
+			else {
+
+				delete nextSignal;
+			}
+		}
+
+		delete nextMultiPeakList;
+	}
+
+	for (i=1; i<= mNumberOfChannels; i++) {
+
+		nextChannel = mDataChannels [i];
+		nextMultiPeakList = TempCraterPeakList [i];
+
+		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
+
+			if (nextSignal->HasCrossChannelSignalLink ()) {
+
+				nextChannel->InsertIntoCompleteCurveList (nextSignal);
+				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
+				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+				nextSignal2->SetMessageValue (craterSidePeak, true);
+				nextSignal2 = nextSignal->GetNextLinkedSignal ();
+				nextSignal2->SetMessageValue (craterSidePeak, true);
+				nextSignal->SetMessageValue (crater, true);
+			}
+
+			else {
+
+				delete nextSignal;
+			}
+		}
+
+		delete nextMultiPeakList;
+	}
+
+	delete[] TempMultiPeakList;
+	delete[] TempCraterPeakList;
+	OverallList.Clear ();
+
+	delete[] OnDeck;
+	delete[] means;
+	delete[] isDone;
+		
+	return 0;
+}
+
+
 int STRCoreBioComponent :: WriteXMLGraphicDataSM (const RGString& graphicDirectory, const RGString& localFileName, SampleData* data, int analysisStage, const RGString& intro) {
 
 	RGString fileName = localFileName;
@@ -669,7 +1532,7 @@ int STRCoreBioComponent :: WriteXMLGraphicDataSM (const RGString& graphicDirecto
 
 	if (!output.FileIsValid ()) {
 
-		cout << "Could not write graphic file:  " << fullPath << endl; 
+		//cout << "Could not write graphic file:  " << fullPath << endl; 
 		return -1;
 	}
 
@@ -774,6 +1637,102 @@ void STRCoreBioComponent :: ReevaluateNoiseThresholdBasedOnMachineType (const RG
 	TracePrequalification::SetDefaultNoiseThreshold (defaultNoise);
 	TracePrequalification::SetNoiseThreshold (defaultNoise);
 	cout << "Machine dependent noise threshold = " << defaultNoise << endl;
+}
+
+
+bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDList& peaksInSameChannel, RGDList& probablePullup, RGDList& pullupList) {
+
+	double threshold = CoreBioComponent::minPrimaryPullupThreshold;
+
+	if (primaryPullup->Peak () < threshold)
+		return false;
+
+	if (primaryPullup->IsNegativePeak ())
+		return false;
+
+	if (probablePullup.Entries () == 0)
+		return false;
+
+	DataSignal** selectedPullup = new DataSignal* [mNumberOfChannels + 1];
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		selectedPullup [i] = NULL;
+
+	DataSignal* nextSignal;
+	//DataSignal* prevSignal;
+	int primaryChannel = primaryPullup->GetChannel ();
+	double primaryAppBioID = primaryPullup->GetApproximateBioID ();
+	RGDListIterator probableIt (probablePullup);
+	RGDList sameChannel;
+	RGDList cannotBePullup;
+	int currentChannel;
+	double del1;
+	double del2;
+
+	while (nextSignal = (DataSignal*) probableIt ()) {
+
+		currentChannel = nextSignal->GetChannel ();
+
+		if (currentChannel == primaryChannel)
+			continue;
+
+		del1 = abs (primaryAppBioID - nextSignal->GetApproximateBioID ());
+
+		//if (del1 < 0.075) {
+		if (del1 < nextSignal->GetPullupToleranceInBP () + primaryPullup->GetPullupToleranceInBP ()) {
+
+			if (selectedPullup [currentChannel] == NULL)
+				selectedPullup [currentChannel] = nextSignal;
+
+			else {
+
+				del2 = abs (primaryAppBioID - selectedPullup [currentChannel]->GetApproximateBioID ());
+
+				if (del1 < del2)
+					selectedPullup [currentChannel] = nextSignal;
+			}
+		}
+	}
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (selectedPullup [i] != NULL)
+			pullupList.Append (selectedPullup [i]);
+	}
+
+	delete[] selectedPullup;
+
+	if (pullupList.Entries () == 0)
+		return false;
+
+	return true;
+}
+
+
+double STRCoreBioComponent :: FindPrimaryPeak (RGDList& peakList, DataSignal*& primarySignal) {
+
+	double maxPeak = 0.0;
+	double currentPeak;
+	RGDListIterator it (peakList);
+	primarySignal = NULL;
+	DataSignal* nextSignal;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->IsNegativePeak ())
+			continue;
+
+		currentPeak = nextSignal->Peak ();
+
+		if (currentPeak > maxPeak) {
+
+			maxPeak = currentPeak;
+			primarySignal = nextSignal;
+		}
+	}
+
+	return maxPeak;
 }
 
 
@@ -1390,7 +2349,7 @@ int STRLadderCoreBioComponent :: GridQualityTestSM () {
 			mDataChannels [i]->CorrectGridLocusSignalsSM ();
 	}
 
-//	mLSData->CorrectLaneStandardCrossChannelAnalysisSM ();
+	mLSData->CorrectLaneStandardCrossChannelAnalysisSM ();	// Need this call so that intentionally omitted ILS peaks are not artifacts
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
@@ -1709,7 +2668,7 @@ int STRSampleCoreBioComponent :: SignalQualityTestSM () {
 			mDataChannels [i]->CorrectCrossChannelAnalysesSM (mIsNegativeControl);
 	}
 
-//	mLSData->CorrectLaneStandardCrossChannelAnalysisSM ();
+	mLSData->CorrectLaneStandardCrossChannelAnalysisSM ();	// Need this call so that intentionally omitted ILS peaks are not artifacts
 
 	// clean up locus lists here
 
@@ -1786,6 +2745,9 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 
 	status = FitNonLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 	//cout << "Fitting all non-lane standard neg. peaks (2)" << endl;
+	//if (FitNonLaneStandardNegativeCharacteristicsSM (text, ExcelText, msg, print) < 0)
+	//	cout << "Negative characteristics did not analyze correctly" << endl;
+
 	FitNonLaneStandardNegativeCharacteristicsSM (text, ExcelText, msg, print);
 	//cout << "Done fitting all non-lane standard neg. peaks" << endl;
 

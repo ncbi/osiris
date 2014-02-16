@@ -183,6 +183,9 @@ int OsirisInputFile :: ReadLine () {
 		mStringLeft = temp.ExtractSubstring (0, equalsPosition - 1);
 		mStringRight = temp.ExtractSubstring (equalsPosition + 1, temp.Length () - 1);
 
+		RemoveLeadingAndTrailingBlanks (mStringLeft);
+		RemoveLeadingAndTrailingBlanks (mStringRight);
+
 		while (mStringRight.Length () > 0) {
 
 			T = mStringRight.RemoveLastCharacter ();

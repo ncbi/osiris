@@ -355,6 +355,7 @@ PERSISTENT_DEFINITION (NormalizedSuperGaussian, _NORMALIZEDSUPERGAUSSIAN_, "Norm
 PERSISTENT_DEFINITION (CompositeCurve, _COMPOSITECURVE_, "CompositeCurve")
 PERSISTENT_DEFINITION (DualDoubleGaussian, _DUALDOUBLEGAUSSIAN_, "DualDoubleGaussian")
 PERSISTENT_DEFINITION (CraterSignal, _CRATERSIGNAL_, "CraterSignal")
+PERSISTENT_DEFINITION (SimpleSigmoidSignal, _SIMPLESIGMOIDSIGNAL_, "SimpleSigmoidSignal")
 
 
 SampleDataInfo :: SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, 
@@ -834,7 +835,7 @@ mResidualLeft (ds.mResidualLeft), mResidualRight (ds.mResidualRight), mPossibleI
 mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
-mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline) {
+mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1064,6 +1065,9 @@ void DataSignal :: SetAlleleInformation (int position) {
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
+	smExcessiveResidualDisplacement excessiveResidualDisplacement;
+	smExcessiveResidualDisplacementLeft excessiveResidualDisplacementLeft;
+	smExcessiveResidualDisplacementRight excessiveResidualDisplacementRight;
 
 	if (position < 0) {
 
@@ -1079,6 +1083,8 @@ void DataSignal :: SetAlleleInformation (int position) {
 
 		if (GetMessageValue (acceptedOLLeft))
 			mAcceptedOffGrid = true;
+
+		SetMessageValue (excessiveResidualDisplacement, GetMessageValue (excessiveResidualDisplacementLeft));
 		
 	}
 
@@ -1096,6 +1102,8 @@ void DataSignal :: SetAlleleInformation (int position) {
 
 		if (GetMessageValue (acceptedOLRight))
 			mAcceptedOffGrid = true;
+
+		SetMessageValue (excessiveResidualDisplacement, GetMessageValue (excessiveResidualDisplacementRight));
 	}
 }
 
@@ -9325,6 +9333,7 @@ DataSignal* DualDoubleGaussian :: GetSecondCurve () {
 CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0), mHeight (0.0), mPrevious (NULL), mNext (NULL) {
 
 	mIsGraphable = false;
+	mPullupTolerance = halfCraterPullupTolerance;
 }
 
 
@@ -9334,7 +9343,12 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
 	double peak1 = prev->Peak ();
 	double peak2 = next->Peak ();
+	double v1 = prev->Value (mMean);
+	double v2 = next->Value (mMean);
+	double est1 = peak1 + (peak1 - v1);
+	double est2 = peak2 + (peak2 - v2);
 	double max;
+	mPullupTolerance = halfCraterPullupTolerance;
 
 	if (peak1 > peak2)
 		max = peak1;
@@ -9342,8 +9356,13 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	else
 		max = peak2;
 
-	mHeight = 1.1 * max;
+	mHeight = 0.5 * (est1 + est2);
+
+	if (mHeight < max)
+		mHeight = max;
+
 	BioID = 0.5 * (next->GetBioID () + prev->GetBioID ());
+	SetChannel (prev->GetChannel ());
 	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
 	int IntBP = (int) floor (BioID + 0.5);
 	Residual = BioID - (double)IntBP;
@@ -9379,7 +9398,12 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
 	double peak1 = prev->Peak ();
 	double peak2 = next->Peak ();
+	double v1 = prev->Value (mMean);
+	double v2 = next->Value (mMean);
+	double est1 = peak1 + (peak1 - v1);
+	double est2 = peak2 + (peak2 - v2);
 	double max;
+	mPullupTolerance = halfCraterPullupTolerance;
 
 	if (peak1 > peak2)
 		max = peak1;
@@ -9387,8 +9411,13 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	else
 		max = peak2;
 
-	mHeight = 1.1 * max;
+	mHeight = 0.5 * (est1 + est2);
+
+	if (mHeight < max)
+		mHeight = max;
+
 	BioID = 0.5* (next->GetBioID () + prev->GetBioID ());
+	SetChannel (prev->GetChannel ());
 	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
 	int IntBP = (int) floor (BioID + 0.5);
 	Residual = BioID - (double)IntBP;
@@ -9426,6 +9455,8 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	SetChannel (c.GetChannel ());
+	mPullupTolerance = c.mPullupTolerance;
 }
 
 
@@ -9434,6 +9465,8 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	SetChannel (c.GetChannel ());
+	mPullupTolerance = c.mPullupTolerance;
 }
 
 
@@ -9446,6 +9479,8 @@ mPrevious (c.mPrevious), mNext (c.mNext)  {
 	mSigma = meanPlusSigma - mMean;
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	SetChannel (c.GetChannel ());
+	mPullupTolerance = c.mPullupTolerance;
 }
 
 
@@ -9573,7 +9608,7 @@ bool CraterSignal :: TestForMultipleSignals (DataSignal*& prev, DataSignal*& nex
 		int IntBPPrev = (int) floor (bpPrev + 0.5);
 		int IntBPNext = (int) floor (bpNext + 0.5);
 
-		if ((IntBPPrev != IntBPNext) && (absDiff > 0.5))
+		if ((IntBPPrev != IntBPNext) && (absDiff > 0.75))
 			return true;
 
 		return false;
@@ -9803,6 +9838,377 @@ void CraterSignal :: SaveAll (RGFile& f) const {
 void CraterSignal :: SaveAll (RGVOutStream& f) const {
 
 	ParametricCurve::SaveAll (f);
+}
+
+
+SimpleSigmoidSignal :: SimpleSigmoidSignal () : CraterSignal () {
+
+	SetDoNotCall (true);
+}
+
+
+
+SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) : CraterSignal () {
+
+	mPrevious = prev;
+	mNext = next;
+	SetDoNotCall (true);
+	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
+	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	mHeight = 1.0;
+
+	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
+	SetChannel (prev->GetChannel ());
+	Fit = prev->GetCurveFit ();
+	double temp = next->GetCurveFit ();
+
+	if (temp < Fit)
+		Fit = temp;
+
+	mIsGraphable = false;
+}
+
+
+
+SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, DataSignal* primaryLink) : CraterSignal () {
+
+	mPrevious = prev;
+	mNext = next;
+	SetDoNotCall (true);
+	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
+	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	mHeight = 1.0;
+
+	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
+	SetChannel (prev->GetChannel ());
+	Fit = prev->GetCurveFit ();
+	double temp = next->GetCurveFit ();
+
+	if (temp < Fit)
+		Fit = temp;
+
+	mIsGraphable = false;
+	SetPrimaryCrossChannelSignalLink (primaryLink);
+	primaryLink->AddCrossChannelSignalLink ((DataSignal*)this);
+}
+
+
+
+SimpleSigmoidSignal :: SimpleSigmoidSignal (const SimpleSigmoidSignal& c) : CraterSignal () {
+
+	mPrevious = c.mPrevious;
+	mNext = c.mNext;
+	mMean = c.mMean;
+	mSigma = c.mSigma;
+	mHeight = c.mHeight;
+	mIsGraphable = false;
+	ApproximateBioID = c.ApproximateBioID;
+	SetChannel (c.GetChannel ());
+	SetDoNotCall (true);
+	Fit = c.Fit;
+}
+
+
+
+SimpleSigmoidSignal :: SimpleSigmoidSignal (double mean, const SimpleSigmoidSignal& c) : CraterSignal () {
+
+	mPrevious = c.mPrevious;
+	mNext = c.mNext;
+	mMean = mean;
+	mSigma = c.mSigma;
+	mHeight = c.mHeight;
+	mIsGraphable = false;
+	ApproximateBioID = c.ApproximateBioID;
+	SetChannel (c.GetChannel ());
+	SetDoNotCall (true);
+	Fit = c.Fit;
+}
+
+
+
+SimpleSigmoidSignal :: SimpleSigmoidSignal (const SimpleSigmoidSignal& c, CoordinateTransform* trans) : CraterSignal ()  {
+
+	mPrevious = c.mPrevious;
+	mNext = c.mNext;
+	mHeight = c.mHeight;
+	mMean = trans->EvaluateWithExtrapolation (c.mMean);
+	double meanPlusSigma = trans->EvaluateWithExtrapolation (c.mMean + c.mSigma);
+	mSigma = meanPlusSigma - mMean;
+	mIsGraphable = false;
+	ApproximateBioID = c.ApproximateBioID;
+	SetChannel (c.GetChannel ());
+	SetDoNotCall (true);
+	Fit = c.Fit;
+}
+
+
+
+SimpleSigmoidSignal :: ~SimpleSigmoidSignal () {
+
+}
+
+
+DataSignal* SimpleSigmoidSignal :: MakeCopy (double mean) const {
+
+	DataSignal* newSignal = new SimpleSigmoidSignal (mean, *this);
+	return newSignal;
+}
+
+
+
+RGString SimpleSigmoidSignal :: GetSignalType () const {
+
+	return RGString ("SimpleSigmoidSignal");
+}
+
+
+
+int SimpleSigmoidSignal :: AddNoticeToList (Notice* newNotice) {
+
+	Notice* localNotice = (Notice*)newNotice->Copy ();
+	Notice* localNotice2 = (Notice*)newNotice->Copy ();
+
+	int result = DataSignal::AddNoticeToList (newNotice);
+
+	if (localNotice->IsTriggerForLowPriority ()) {
+
+		if ((mPrevious != NULL) && !mPrevious->IsNegativePeak ())
+			mPrevious->AddNoticeToList (localNotice);
+
+		else
+			delete localNotice;
+
+		if ((mNext != NULL) && !mNext->IsNegativePeak ())
+			mNext->AddNoticeToList (localNotice2);
+
+		else
+			delete localNotice2;
+	}
+
+	else {
+
+		delete localNotice;
+		delete localNotice2;
+	}
+
+	return result;
+}
+
+
+bool SimpleSigmoidSignal :: TestForMultipleSignals (DataSignal*& prev, DataSignal*& next) {
+
+	prev = mPrevious;
+	next = mNext;
+
+	//DataSignal* tempPrev = mPrevious;
+	//DataSignal* tempNext = mNext;
+	
+	//prev = tempPrev;
+	//next = tempNext;
+	
+	//if ((mNext == NULL) || (mPrevious == NULL))
+	//	return false;
+
+	//double appBpPrev = mPrevious->GetApproximateBioID ();
+	//double appBpNext = mNext->GetApproximateBioID ();
+	//double absDiff = fabs (appBpNext - appBpPrev);
+
+	//if (absDiff > 0.75)
+	//	return true;
+
+	return false;
+}
+
+
+
+bool SimpleSigmoidSignal :: TestForMultipleSignals (DataSignal*& prev, DataSignal*& next, int location) {
+
+	prev = mPrevious;
+	next = mNext;
+
+	//DataSignal* tempPrev = mPrevious;
+	//DataSignal* tempNext = mNext;
+	//
+	//prev = tempPrev;
+	//next = tempNext;
+	
+	//if ((mNext == NULL) || (mPrevious == NULL))
+	//	return false;
+
+	//double appBpPrev = mPrevious->GetApproximateBioID ();
+	//double appBpNext = mNext->GetApproximateBioID ();
+	//double absDiff = fabs (appBpNext - appBpPrev);
+
+	//if (absDiff > 0.75)
+	//	return true;
+
+	return false;
+}
+
+
+
+bool SimpleSigmoidSignal :: TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataSignal*& next, int location, bool isAmel, double adenylationLimit) {
+
+	prev = mPrevious;
+	next = mNext;
+
+	//prev = mPrevious;
+	//next = mNext;
+	
+	//if ((mNext == NULL) || (mPrevious == NULL))
+	//	return false;
+
+	//double appBpPrev = mPrevious->GetApproximateBioID ();
+	//double appBpNext = mNext->GetApproximateBioID ();
+	//double absDiff = fabs (appBpNext - appBpPrev);
+
+	//if (absDiff > 0.75)
+	//	return true;		
+
+	return false;
+}
+
+
+
+double SimpleSigmoidSignal :: Value (double x) const {
+
+	if (mPrevious->IsNegativePeak ())
+		return mNext->Value (x);
+
+	return mPrevious->Value (x);
+}
+
+
+double SimpleSigmoidSignal :: Value (int n) const {
+
+	if (mPrevious->IsNegativePeak ())
+		return mNext->Value (n);
+
+	return mPrevious->Value (n);
+}
+
+
+double SimpleSigmoidSignal :: Norm (double a, double b) {
+
+	if (mPrevious->IsNegativePeak ())
+		return mNext->Norm (a, b);
+
+	return mPrevious->Norm (a, b);
+}
+
+
+double SimpleSigmoidSignal :: Norm () {
+
+	if (mPrevious->IsNegativePeak ())
+		return mNext->Norm ();
+
+	return mPrevious->Norm ();
+}
+
+
+double SimpleSigmoidSignal :: Norm2 (double a, double b) {
+
+	if (mPrevious->IsNegativePeak ())
+		return mNext->Norm2 (a, b);
+
+	return mPrevious->Norm2 (a, b);
+}
+
+
+double SimpleSigmoidSignal :: Norm2 () {
+
+	if (mPrevious->IsNegativePeak ())
+		return mNext->Norm2 ();
+
+	return mPrevious->Norm2 ();
+}
+
+
+void SimpleSigmoidSignal :: SetMessageValue (int scope, int location, bool value) {
+
+	int myScope = GetObjectScope ();
+
+	if (myScope == scope) {
+
+		SmartMessage* msg = SmartMessage::GetSmartMessageForScopeAndElement (scope, location);
+		DataSignal::SetMessageValue (scope, location, value);
+//		msg->SetMessageValue (mMessageArray, mValueArray, location, value);
+
+		if (msg->GetShareWithCluster ()) {
+
+			if ((mPrevious != NULL) && mPrevious->IsNegativePeak ()) {
+
+				if (mNext != NULL)
+					mNext->SetMessageValue (scope, location, value);
+			}
+
+			if ((mNext != NULL) && mNext->IsNegativePeak ()) {
+
+				if (mPrevious != NULL)
+					mPrevious->SetMessageValue (scope, location, value);
+			}
+		}
+	}
+}
+
+
+
+void SimpleSigmoidSignal :: SetMessageValue (const SmartNotice& notice, bool value) {
+
+	if (notice.GetScope () == GetObjectScope ()) {
+
+//		mMessageArray [notice.GetMessageIndex ()] = value;
+		DataSignal::SetMessageValue (notice, value);
+
+		int location = notice.GetMessageIndex ();
+		int scope = GetObjectScope ();
+		SmartMessage* msg = SmartMessage::GetSmartMessageForScopeAndElement (scope, location);
+
+		if (msg->GetShareWithCluster ()) {
+
+			if ((mPrevious != NULL) && mPrevious->IsNegativePeak ()) {
+
+				if (mNext != NULL)
+					mNext->SetMessageValue (scope, location, value);
+			}
+
+			if ((mNext != NULL) && mNext->IsNegativePeak ()) {
+
+				if (mPrevious != NULL)
+					mPrevious->SetMessageValue (scope, location, value);
+			}
+		}
+	}
+}
+
+
+
+void SimpleSigmoidSignal :: SetMessageValue (int scope, int location, bool value, bool useVirtualMethod) {
+
+	if (useVirtualMethod)
+		SetMessageValue (scope, location, value);
+
+	else if (scope == GetObjectScope ()) {
+
+//		mMessageArray [location] = value;
+		DataSignal::SetMessageValue (scope, location, value);
+		SmartMessage* msg = SmartMessage::GetSmartMessageForScopeAndElement (scope, location);
+
+		if (msg->GetShareWithCluster ()) {
+
+			if ((mPrevious != NULL) && mPrevious->IsNegativePeak ()) {
+
+				if (mNext != NULL)
+					mNext->SetMessageValue (scope, location, value);
+			}
+
+			if ((mNext != NULL) && mNext->IsNegativePeak ()) {
+
+				if (mPrevious != NULL)
+					mPrevious->SetMessageValue (scope, location, value);
+			}
+		}
+	}
 }
 
 

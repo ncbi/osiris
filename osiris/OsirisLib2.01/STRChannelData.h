@@ -419,6 +419,7 @@ protected:
 	bool FindNextFitDataIntervalBelowThreshold (double threshold, int start, int end, int& beginInterval, int& endInterval, DataSignal* fitData, DataSignal* fitNegData);
 	void AppendKnotDataToLists (int intervalLeft, int intervalRight, list<double>& times, list<double>& values, DataSignal* fitData);
 	void AppendKnotDataWithEditingToLists (int intervalLeft, int intervalRight, list<double>& times, list<double>& values, list<bool>& firsts, list<bool>& lasts, bool isFirstInterval, DataSignal* rawData);
+	void AppendKnotDataWithEditingToListsAfterFiltering (int intervalLeft, int intervalRight, list<double>& times, list<double>& values, list<bool>& firsts, list<bool>& lasts, bool isFirstInterval, DataSignal* rawData);
 	double BaselineAverage (int left, int right, DataSignal* fitData, double denominator);
 	double BaselineMax (int left, int right, DataSignal* fitData);
 	int EditOutFitBaselineForNormalization (RGDList& fitPeaks, DataSignal* rawData);

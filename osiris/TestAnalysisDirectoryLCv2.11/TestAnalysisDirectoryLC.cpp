@@ -125,7 +125,17 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	//	its input on standard in, whether debugging or not
 	//
 
-	OsirisInputFile inputFile (false);
+	bool debugMode;
+
+#ifdef _DEBUG
+	debugMode = true;
+
+#else
+	debugMode = false;
+
+#endif
+
+	OsirisInputFile inputFile (debugMode);
 
 	int inputStatus = inputFile.ReadAllInputs ("BaseInputFile.txt");
 //	inputFile.OutputAllData ();
@@ -168,22 +178,25 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!inputFile.OverrideStringIsEmpty ())
 		STRLCAnalysis::SetOverrideString (inputFile.GetOverrideString ());
 
-	cout << "Input directory = " << PrototypeInputDirectory.GetData () << endl;
-	cout << "Ladder info directory = " << LadderInformationDirectory.GetData () << endl;
-	cout << "Report directory = " << ParentDirectoryForReports.GetData () << endl;
-	cout << "Output subDirectory = " << OutputSubDirectory.GetData () << endl;
-	cout << "Marker set name = " << MarkerSetName.GetData () << endl;
-	cout << "Lane standard name = " << UserLaneStandardName.GetData () << endl;
-	cout << "Critical output level = " << OutputLevel << endl;
-	cout << "Message book directory = " << MessageBookPath.GetData () << endl;
+	cout << "InputDirectory = " << PrototypeInputDirectory.GetData () << ";" << endl;
+	cout << "LadderDirectory = " << LadderInformationDirectory.GetData () << ";" << endl;
+	cout << "ReportDirectory = " << ParentDirectoryForReports.GetData () << ";" << endl;
+
+	if (OutputSubDirectory.Length () > 0)
+		cout << "OutputSubdirectory = " << OutputSubDirectory.GetData () << ";" << endl;
+
+	cout << "MarkerSetName = " << MarkerSetName.GetData () << ";" << endl;
+	cout << "LaneStandardName = " << UserLaneStandardName.GetData () << ";" << endl;
+	cout << "CriticalOutputLevel = " << OutputLevel << ";" << endl;
+	//cout << "MessageBook = " << MessageBookPath.GetData () << ";" << endl;
 
 	stdSettingsFileName = inputFile.GetFinalStdSettingsName ();
 	labSettingsFileName = inputFile.GetFinalLabSettingsName ();
 	RGString fullPathMessageBookName = inputFile.GetFinalMessageBookName ();
 
-	cout << "Standard settings file name = " << stdSettingsFileName << endl;
-	cout << "Laboratory settings file name = " << labSettingsFileName << endl;
-	cout << "Message book file name = " << fullPathMessageBookName << endl;
+	cout << "StandardSettings = " << stdSettingsFileName << ";" << endl;
+	cout << "LabSettings = " << labSettingsFileName << ";" << endl;
+	cout << "MessageBook = " << fullPathMessageBookName << ";" << endl;
 
 	minSampleRFU = inputFile.GetMinSampleRFU ();
 	minLaneStandardRFU = inputFile.GetMinLaneStandardRFU ();
@@ -192,24 +205,26 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	minLadderInterlocusRFU = inputFile.GetMinLadderInterlocusRFU ();
 	sampleDetectionThreshold = inputFile.GetSampleDetectionThreshold ();
 
-	cout << "Min sample RFU = " << minSampleRFU << endl;
-	cout << "Min lane standard RFU = " << minLaneStandardRFU << endl;
-	cout << "Min ladder RFU = " << minLadderRFU << endl;
-	cout << "Min interlocus RFU = " << minInterlocusRFU << endl;
-	cout << "Min ladder interlocus RFU = " << minLadderInterlocusRFU << endl;
-	cout << "Sample Detection Threshold = " << sampleDetectionThreshold << endl;
+	cout << "MinSampleRFU = " << minSampleRFU << ";" << endl;
+	cout << "MinLaneStandardRFU = " << minLaneStandardRFU << ";" << endl;
+	cout << "MinLadderRFU = " << minLadderRFU << ";" << endl;
+	cout << "MinInterlocusRFU = " << minInterlocusRFU << ";" << endl;
+	cout << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";" << endl;
+	cout << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";" << endl;
 
 	bool useRawData = inputFile.UseRawData ();
 
 	if (useRawData) {
 
 		CoreBioComponent::SetUseRawData ();
+		cout << "RawDataString = R;" << endl << ";" << endl;
 		cout << "Use raw data..." << endl;
 	}
 
 	else {
 
 		CoreBioComponent::DontUseRawData ();
+		cout << "RawDataString = A;" << endl << ";" << endl;
 		cout << "Don't use raw data..." << endl;
 	}
 

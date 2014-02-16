@@ -1318,6 +1318,12 @@ bool CraterSignal :: TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataS
 	double absDiff = fabs (bpNext - bpPrev);
 	//int IntBPPrev = (int) floor (bpPrev + 0.5);
 	//int IntBPNext = (int) floor (bpNext + 0.5);
+
+	RGString prevAlleleName = mPrevious->GetAlleleName ();
+	RGString nextAlleleName = mNext->GetAlleleName ();
+
+	if (prevAlleleName == nextAlleleName)
+		return false;
 	
 	double maxResidual = Locus::GetMaxResidualForAlleleCalls ();
 	int order;
@@ -1344,7 +1350,7 @@ bool CraterSignal :: TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataS
 		return true;	
 	}
 
-	if (absDiff > 0.5) {
+	if (absDiff > 0.7) {
 
 		// Might be separate signals, but, first, check residuals.  If side signals have residuals that are too high and
 		// "center" signal does not, it's probably a crater after all.
@@ -1391,6 +1397,98 @@ bool CraterSignal :: TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataS
 
 
 bool CraterSignal :: TestSignalGroupsWithinILS (double ilsLeft, double ilsRight, double minBioID) {
+
+	//
+	//  This is ladder and sample stage 1
+	//
+
+	smSignalNotACrater notACrater;
+	smSignalNotACraterSidePeak notASidePeak;
+	double mean;
+
+	if ((mMean < ilsLeft) || (mMean > ilsRight) || (GetApproximateBioID () < minBioID)) {
+
+		SetMessageValue (notACrater, true);
+
+		if (mPrevious != NULL)
+			mPrevious->SetMessageValue (notASidePeak, true);
+
+		if (mNext != NULL)
+			mNext->SetMessageValue (notASidePeak, true);
+	}
+
+	else if (mPrevious != NULL) {
+
+		mean = mPrevious->GetMean ();
+
+		if ((mean < ilsLeft) || (mean > ilsRight) || (mPrevious->GetApproximateBioID () < minBioID)) {
+
+			SetMessageValue (notACrater, true);
+			mPrevious->SetMessageValue (notASidePeak, true);
+
+			if (mNext != NULL)
+				mNext->SetMessageValue (notASidePeak, true);
+		}
+	}
+
+	else if (mNext != NULL) {
+
+		mean = mNext->GetMean ();
+
+		if ((mean < ilsLeft) || (mean > ilsRight) || (mNext->GetApproximateBioID () < minBioID)) {
+
+			SetMessageValue (notACrater, true);
+			mNext->SetMessageValue (notASidePeak, true);
+
+			if (mPrevious != NULL)
+				mPrevious->SetMessageValue (notASidePeak, true);
+		}
+	}
+
+	return true;
+}
+
+
+void SimpleSigmoidSignal :: RecalculatePullupTolerance () {
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return;
+
+	double bpLeft = mPrevious->GetApproximateBioID () - mPrevious->GetPullupToleranceInBP ();
+	double bpRight = mNext->GetApproximateBioID () + mNext->GetPullupToleranceInBP ();
+	double bp = GetApproximateBioID ();
+	bpLeft = bp - bpLeft;
+	bpRight = bpRight - bp;
+
+	if (bpLeft > bpRight)
+		mPullupTolerance = bpLeft;
+
+	else
+		mPullupTolerance = bpRight;
+}
+
+
+void SimpleSigmoidSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
+
+	DataSignal::OutputDebugID (comm, numHigherObjects);
+	RGString idData;
+	idData << "\t\t\t\tSignal with Mean:  " << mMean;
+	SmartMessage::OutputDebugString (idData);
+}
+
+
+
+void SimpleSigmoidSignal :: CaptureSmartMessages () {
+
+	if ((mPrevious != NULL) && !mPrevious->IsNegativePeak ())
+		DataSignal::CaptureSmartMessages (mPrevious);
+
+	if ((mNext != NULL) && !mNext->IsNegativePeak ())
+		DataSignal::CaptureSmartMessages (mNext);
+}
+
+
+bool SimpleSigmoidSignal :: TestSignalGroupsWithinILS (double ilsLeft, double ilsRight, double minBioID) {
 
 	//
 	//  This is ladder and sample stage 1

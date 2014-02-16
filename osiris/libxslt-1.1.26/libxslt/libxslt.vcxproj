@@ -139,16 +139,6 @@
     <ClInclude Include="xsltutils.h" />
     <ClInclude Include="xsltwin32config.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\libxml2-2.7.7\libxml2.vcxproj">
-      <Project>{220de7a6-15ef-4c3c-8793-2ce4929d4d85}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\libexslt\libexslt.vcxproj">
-      <Project>{8ec29920-6211-4e38-9064-4204bd242902}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

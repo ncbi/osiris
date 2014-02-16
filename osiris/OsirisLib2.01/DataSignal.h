@@ -69,11 +69,14 @@ const int _NORMALIZEDSUPERGAUSSIAN_ = 1011;
 const int _DUALDOUBLEGAUSSIAN_ = 1012;
 const int _CRATERSIGNAL_ = 1013;
 const int _PEAKINFOFORCLUSTERS_ = 1016;
+const int _SIMPLESIGMOIDSIGNAL_ = 1019;
 
 const double Pi = acosf (-1.0);
 const double sqrtPi = sqrt (Pi);
 const double sqrtTwo = sqrt (2.0);
 const double fourthRootOfPi = sqrt (sqrtPi);
+const double halfPullupTolerance = 0.0375;
+const double halfCraterPullupTolerance = 0.0525;
 
 class RGFile;
 class RGVinStream;
@@ -102,6 +105,7 @@ PERSISTENT_PREDECLARATION (NormalizedSuperGaussian)
 PERSISTENT_PREDECLARATION (CompositeCurve)
 PERSISTENT_PREDECLARATION (DualDoubleGaussian)
 PERSISTENT_PREDECLARATION (CraterSignal)
+PERSISTENT_PREDECLARATION (SimpleSigmoidSignal)
 
 
 Boolean QuadraticRegression (const double* means, const double* sigmas, int N, double* parameters);
@@ -268,7 +272,7 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -284,7 +288,7 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -304,7 +308,7 @@ public:
 		mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
 		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
-		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline) {
+		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -342,6 +346,9 @@ public:
 
 	void SetOffGrid (bool r) { mOffGrid = r; }
 	bool IsOffGrid () const { return mOffGrid; }
+
+	void SetPeakIsNegative () { mIsNegativePeak = true; mIsGraphable = false; }
+	bool IsNegativePeak () const { return mIsNegativePeak; }
 
 	void SetMayBeUnacceptable (bool r) { mMayBeUnacceptable = r; }
 	bool MayBeUnacceptable () const { return mMayBeUnacceptable; }
@@ -525,8 +532,12 @@ public:
 	virtual void RestrictToMaximum (double MaxValue) {}
 	virtual int FindAndRemoveFixedOffset ();
 	virtual DataSignal* CreateMovingAverageFilteredSignal (int window);
+	virtual double GetPullupToleranceInBP () const { return mPullupTolerance; }
+	virtual void RecalculatePullupTolerance () {}
+	virtual void ResetPullupTolerance (double p) { mPullupTolerance = p; }
 
 	virtual bool IsUnimodal () const { return false; }
+	virtual bool IsCraterPeak () const { return false; }
 
 	virtual void SetAlleleName (const RGString& name);
 	virtual RGString GetAlleleName () const;
@@ -801,6 +812,9 @@ protected:
 
 	bool mHasRaisedBaseline;
 	double mBaseline;
+	bool mIsNegativePeak;
+
+	double mPullupTolerance;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;
@@ -1551,11 +1565,13 @@ public:
 
 	virtual DataSignal* GetPreviousLinkedSignal () { return mPrevious; }
 	virtual DataSignal* GetNextLinkedSignal () { return mNext; }
+	virtual double GetPullupToleranceInBP () const { return 0.0425; }
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
 	virtual RGString GetSignalType () const;
 	virtual bool IsUnimodal () const { return false; }
+	virtual bool IsCraterPeak () const { return true; }
 
 	virtual int AddNoticeToList (Notice* newNotice);
 
@@ -1602,6 +1618,67 @@ protected:
 	double mHeight;
 	DataSignal* mPrevious;
 	DataSignal* mNext;
+};
+
+
+class SimpleSigmoidSignal : public CraterSignal {
+
+PERSISTENT_DECLARATION (SimpleSigmoidSignal)
+
+public:
+	SimpleSigmoidSignal ();
+	SimpleSigmoidSignal (DataSignal* prev, DataSignal* next);
+	SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, DataSignal* primaryLink);
+	SimpleSigmoidSignal (const SimpleSigmoidSignal& c);
+	SimpleSigmoidSignal (double mean, const SimpleSigmoidSignal& c);
+	SimpleSigmoidSignal (const SimpleSigmoidSignal& c, CoordinateTransform* trans);
+	virtual ~SimpleSigmoidSignal ();
+
+	virtual DataSignal* MakeCopy (double mean) const;
+	virtual void RecalculatePullupTolerance ();
+
+	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
+
+	virtual RGString GetSignalType () const;
+
+	virtual int AddNoticeToList (Notice* newNotice);
+
+	virtual void CaptureSmartMessages ();
+
+	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next);
+	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next, int location);
+	virtual bool TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataSignal*& next, int location, bool isAmel, double adenylationLimit);
+
+	virtual bool TestSignalGroupsWithinILS (double ilsLeft, double ilsRight, double minBioID);
+
+	virtual double Value (double x) const;
+	virtual double Value (int n) const;
+	virtual double Norm (double a, double b);
+	virtual double Norm ();
+	virtual double Norm2 (double a, double b);
+	virtual double Norm2 ();
+	//virtual double Centroid () const;
+
+	//virtual double Peak () const;
+	//virtual double GetMean () const;
+	//virtual double GetStandardDeviation () const;
+	//virtual double GetVariance () const;
+
+	virtual void SetMessageValue (int scope, int location, bool value);
+	virtual void SetMessageValue (const SmartNotice& notice, bool value);
+	virtual void SetMessageValue (int scope, int location, bool value, bool useVirtualMethod);
+
+	//virtual void Report (RGTextOutput& text, const RGString& indent);
+
+	//virtual size_t StoreSize () const;
+
+	//virtual void RestoreAll (RGFile&);
+	//virtual void RestoreAll (RGVInStream&);
+	//virtual void SaveAll (RGFile&) const;
+	//virtual void SaveAll (RGVOutStream&) const;
+
+protected:
+
 };
 
 

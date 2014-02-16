@@ -884,30 +884,51 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 	Locus* nextLocus;
 	RGDListIterator it (mLocusList);
 	RGDList discardList;
+	smResidualDisplacementTestPreset residualDisplacementTestPreset;
 
 	while (nextLocus = (Locus*) it ())
 		nextLocus->CallAllelesSM (isNegCntl, pGenotypes, ArtifactList, PreliminaryCurveList, CompleteCurveList);
 	// This is what it used to be:  nextLocus->CallAlleles (CompleteCurveList, isNegCntl, pGenotypes, ArtifactList, PreliminaryCurveList);
 
+	if (GetMessageValue (residualDisplacementTestPreset)) {
+
+		it.Reset ();
+
+		while (nextLocus = (Locus*) it ())
+			nextLocus->TestResidualDisplacement ();
+	}
+
 	it.Reset ();
 
 	while (nextLocus = (Locus*) it ())
 		nextLocus->PromoteOwnCoreSignalsToAllelesAndRemoveOthers (PreliminaryCurveList);
+
+	//cout << "Promoted core signals to alleles" << endl;
+
+	//cout << "Testing for multisignals" << endl;
 
 	TestForMultiSignalsSM ();
 	it.Reset ();
 
+	//cout << "Channel multisignals tested" << endl;
+
 	while (nextLocus = (Locus*) it ())
 		nextLocus->TestForMultiSignalsSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes);
+
+	//cout << "Locus multisiganls tested" << endl;
 
 	it.Reset ();
 
 	while (nextLocus = (Locus*) it ())
 		nextLocus->PromoteOwnCoreSignalsToAllelesAndRemoveOthers (PreliminaryCurveList);
 
+	//cout << "Promoted core signals to alleles again!" << endl;
+
 	TestProximityArtifactsSM ();
 	TestForInterlocusProximityArtifactsSM ();
 	TestSignalsForOffScaleSM ();
+
+	//cout << "Tested proximity artifacts" << endl;
 
 	it.Reset ();
 

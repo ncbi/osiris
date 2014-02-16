@@ -80,6 +80,7 @@ public:
 
 	virtual int AnalyzeGridSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeCrossChannelSM ();
+	virtual int AnalyzeCrossChannelWithNegativePeaksSM ();
 	virtual int WriteXMLGraphicDataSM (const RGString& graphicDirectory, const RGString& localFileName, SampleData* data, int analysisStage, const RGString& intro);
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine);
 
@@ -103,6 +104,9 @@ protected:
 	static Boolean SearchByName;*/
 	int mNumberOfPullups;
 	int mNumberOfPrimaryPullups;
+
+	bool AssessPrimaryPullup (DataSignal* primaryPullup, RGDList& peaksInSameChannel, RGDList& probablePullup, RGDList& pullupList);
+	double FindPrimaryPeak (RGDList& peakList, DataSignal*& primarySignal);
 };
 
 

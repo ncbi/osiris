@@ -322,6 +322,7 @@ public:
 	virtual int AnalyzeGridLociSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeSampleLociSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeCrossChannelSM ();
+	virtual int AnalyzeCrossChannelWithNegativePeaksSM ();
 	virtual int OrganizeNoticeObjectsSM ();
 
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
@@ -444,6 +445,7 @@ protected:
 	static bool* InitialMatrix;
 	static bool* OffScaleData;
 	static int OffScaleDataLength;
+	static double minPrimaryPullupThreshold;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();

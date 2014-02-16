@@ -187,12 +187,6 @@
     <ClInclude Include="include\libxml\xpathInternals.h" />
     <ClInclude Include="include\libxml\xpointer.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\libiconv-1.13\libiconv-1.13.vcxproj">
-      <Project>{32ea2a52-08a8-4f8e-ba2c-c1afb11d7851}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

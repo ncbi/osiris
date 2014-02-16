@@ -2242,14 +2242,14 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 
 		prevSignal = nextSignal->GetPreviousLinkedSignal ();
 
-		if (prevSignal != NULL)
+		if ((prevSignal != NULL) && !prevSignal->IsNegativePeak ())
 			tempList.Append (prevSignal);
 
 		tempList.Append (nextSignal);
 
 		followingSignal = nextSignal->GetNextLinkedSignal ();
 
-		if (followingSignal != NULL)
+		if ((followingSignal != NULL) && !prevSignal->IsNegativePeak ())
 			tempList.Append (followingSignal);
 	}
 
@@ -2334,6 +2334,138 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 			location = TestSignalPositionRelativeToLocus (nextSignal);
 			lowPeakName = nextSignal->GetAlleleName (-location);
 			AppendDataForSmartMessage (locusHasPeaksTooLow, lowPeakName);
+		}
+	}
+
+	return 0;
+}
+
+
+DataSignal*  Locus :: GetLargestPeak () {
+
+	smPullUp pullupPeak;
+	smSpike spike;
+	smBlob blob;
+	smCurveFitFailed curveFitFailed;
+	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+	
+	DataSignal* nextSignal;
+	DataSignal* maxSignal = NULL;
+	DataSignal* secondSignal = NULL;
+	bool ambiguous;
+	bool a1;
+	bool am1;
+	bool a0;
+	bool locationNonZero;
+	int location;
+
+	if (mIsAMEL)
+		return NULL;
+
+	double maxHeight = 0.0;
+	double secondHeight = 0.0;
+	double nextHeight;
+	RGDListIterator it (LocusSignalList);
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		location = -TestSignalPositionRelativeToLocus (nextSignal);
+		a0 = nextSignal->GetMessageValue (peakInCoreLadderLocus);
+		a1 = nextSignal->IsPossibleInterlocusAllele (1);
+		am1 = nextSignal->IsPossibleInterlocusAllele (-1);
+		locationNonZero = (location != 0);
+		ambiguous = (locationNonZero && a0) || (a1 && am1);
+
+		if (ambiguous)
+			continue;
+
+		nextHeight = nextSignal->Peak ();
+
+		if (nextHeight >= maxHeight) {
+
+			secondHeight = maxHeight;
+			secondSignal = maxSignal;
+			maxHeight = nextHeight;
+			maxSignal = nextSignal;
+		}
+
+		else if (nextHeight > secondHeight) {
+
+			secondHeight = nextHeight;
+			secondSignal = nextSignal;
+		}
+	}
+
+	if (maxSignal == NULL)
+		return NULL;
+
+	if (maxSignal->GetMessageValue (pullupPeak) || maxSignal->GetMessageValue (curveFitFailed) || maxSignal->GetMessageValue (spike) || maxSignal->GetMessageValue (blob)) {
+
+		if (secondSignal == NULL)
+			return NULL;
+
+		if (secondSignal->GetMessageValue (pullupPeak) || secondSignal->GetMessageValue (curveFitFailed) || secondSignal->GetMessageValue (spike) || secondSignal->GetMessageValue (blob))
+			return NULL;
+
+		if (secondHeight <= 0.5 * maxHeight)
+			return NULL;
+
+		return secondSignal;
+	}
+
+	return maxSignal;
+}
+
+
+int Locus :: TestResidualDisplacement () {
+
+	//
+	// Sample stage 3
+	//
+
+	if (mIsAMEL)
+		return 0;
+
+	if (LocusSignalList.Entries () == 1)
+		return 0;
+
+	DataSignal* maxSignal = GetLargestPeak ();
+	DataSignal* nextSignal;
+	int nextLocation;
+	double nextResidual;
+	double residualDisplacement;
+	smExcessiveResidualDisplacement excessiveResidualDisplacement;
+	smResidualDisplacementThreshold residualDisplacementThreshold;
+	smExcessiveResidualDisplacementLeft excessiveResidualDisplacementLeft;
+	smExcessiveResidualDisplacementRight excessiveResidualDisplacementRight;
+
+	if (maxSignal == NULL)
+		return -1;
+
+	int location = -TestSignalPositionRelativeToLocus (maxSignal);  // return value is signal position relative to locus...reverse it to get locus position relative to signal
+	double maxResidual = maxSignal->GetBioIDResidual (location);
+	RGDListIterator it (LocusSignalList);
+	double threshold = 0.01 * (double)GetThreshold (residualDisplacementThreshold);
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal == maxSignal)
+			continue;
+
+		nextLocation = -TestSignalPositionRelativeToLocus (nextSignal);
+		nextResidual = nextSignal->GetBioIDResidual (nextLocation);
+		residualDisplacement = abs (nextResidual - maxResidual);
+
+		if (residualDisplacement > threshold) {
+
+			if (nextLocation == 0)
+				nextSignal->SetMessageValue (excessiveResidualDisplacement, true);
+
+			else if (nextLocation < 0)
+				nextSignal->SetMessageValue (excessiveResidualDisplacementLeft, true);
+
+			else
+				nextSignal->SetMessageValue (excessiveResidualDisplacementRight, true);
 		}
 	}
 
@@ -4525,23 +4657,23 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 	DataSignal* nextSignal;
 	DataSignal* prevSignal = NULL;
 	DataSignal* followingSignal = NULL;
-	double bp;
-	int IntBP;
+//	double bp;
+//	int IntBP;
 	RGString alleleName;
 	RGString prevAlleleName;
 //	RGString msg;
 	bool prevSignalWasCrater = false;
 	RGString lName = GetLocusName ();
-	double residual;
+//	double residual;
 	bool foundOLAllele = false;
-	DataSignal* craterSignal;
+//	DataSignal* craterSignal;
 	RGDList tempList;
 	RGDList SignalsToDeleteFromAll;
 	RGDList SignalsToDeleteFromLocus;
 	InterchannelLinkage* iChannel;
 	int location;
 	bool isAmbiguous;
-	int isOffGrid;
+//	int isOffGrid;
 
 	smCrater crater;
 	smCraterSidePeak craterSidePeak;
@@ -4725,174 +4857,25 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 				continue;
 			}
 
-	//		previousPullUp = prevSignal->GetMessageValue (pullup);
-	//		nextPullUp = nextSignal->GetMessageValue (pullup);
-	//		onePullUp = (previousPullUp && !nextPullUp) || (nextPullUp && !previousPullUp);
+			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			prevResidual = abs (prevSignal->GetBioIDResidual (-prevLocation));
+			nextResidual = abs (nextSignal->GetBioIDResidual (-location));
 
-	//		if (onePullUp) {
+			if (prevResidual < nextResidual) {
 
-	//			if (previousPullUp) {
-
-	//				isAmbiguous = (prevSignal->IsPossibleInterlocusAllele (-1) && prevSignal->IsPossibleInterlocusAllele (1));
-
-	//				if (!isAmbiguous || (prevLocation == 0)) {
-	//					
-	//					signalList.RemoveReference (prevSignal);  // Don't know if we should do this...
-	////testing					prevSignal->SetVirtualAlleleName (prevSignal->GetAlleleName ());
-	////testing					prevSignal->SetAlleleName ("");
-	//				}
-
-	//				else {
-
-	//					prevSignal->SetPossibleInterlocusAllele (prevLocation, false);
-	//				}
-	//				
-	//				tempList.Append (prevSignal);
-	//	//			prevSignal->SetVirtualAlleleName (prevSignal->GetAlleleName ());
-	//	//			prevSignal->SetAlleleName ("", prevLocation);
-	//				prevSignal = nextSignal;   // changed so that we test nextSignal also
-	//				prevAlleleName = alleleName;
-	//				prevLocation = location;
-
-	//			}
-
-	//			else {
-
-	//				isAmbiguous = (nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1));
-
-	//				if (!isAmbiguous || (location == 0)) {
-	//					
-	//					signalList.RemoveReference (nextSignal);  // Don't know if we should do this...
-	////testing					nextSignal->SetVirtualAlleleName (nextSignal->GetAlleleName ());
-	////testing					nextSignal->SetAlleleName ("");
-	//				}
-
-	//				else {
-
-	//					nextSignal->SetPossibleInterlocusAllele (location, false);
-	//				}
-
-	//				it.RemoveCurrentItem ();
-	//	//			nextSignal->SetVirtualAlleleName (nextSignal->GetAlleleName (location));
-	//	//			nextSignal->SetAlleleName ("");
-	//			}
-	//		}
-
-	//		else {
-
-	//			nextResidual = fabs (nextSignal->GetBioIDResidual (location));
-	//			prevResidual = fabs (prevSignal->GetBioIDResidual (prevLocation));
-	//			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
-	//			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
-
-	//			if (nextResidual < prevResidual) {
-
-	//				isAmbiguous = (prevSignal->IsPossibleInterlocusAllele (-1) && prevSignal->IsPossibleInterlocusAllele (1));
-
-	//				if (!isAmbiguous || (prevLocation == 0)) {
-	//					
-	//					signalList.RemoveReference (prevSignal);  // Don't know if we should do this...
-	////testing					prevSignal->SetVirtualAlleleName (prevSignal->GetAlleleName ());
-	////testing					prevSignal->SetAlleleName ("");
-	//				}
-
-	//				else {
-
-	//					prevSignal->SetPossibleInterlocusAllele (prevLocation, false);
-	//				}
-	//				
-	//				tempList.Append (prevSignal);
-	//				prevSignal = nextSignal;   // changed so that we test nextSignal also
-	//				prevAlleleName = alleleName;
-	//				prevLocation = location;
-	//			}
-
-	//			else {
-
-	//				isAmbiguous = (nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1));
-
-	//				if (!isAmbiguous || (location == 0)) {
-	//					
-	//					signalList.RemoveReference (nextSignal);  // Don't know if we should do this...
-	////testing					nextSignal->SetVirtualAlleleName (nextSignal->GetAlleleName ());
-	////testing					nextSignal->SetAlleleName ("");
-	//				}
-
-	//				else {
-
-	//					nextSignal->SetPossibleInterlocusAllele (location, false);
-	//				}
-
-	//				it.RemoveCurrentItem ();
-	//			}
- 
-			craterSignal = new CraterSignal (prevSignal, nextSignal);
-			craterSignal->SetMessageValue (crater, true);
-			craterSignal->CaptureSmartMessages ();
-
-			if (location == 0)
-				craterSignal->SetMessageValue (peakInCoreLadderLocus, true);
-
-//				craterSignal->SetMessageValue (signalIsAllele, true);
-			completeList.Insert (craterSignal);
-			smartPeaks.Insert (craterSignal);
-			mSmartList.Insert (craterSignal);
-//				artifacts.Insert (craterSignal);	//Need this??????????????????????????????????????????????????????????????????
-//				signalList.Insert (craterSignal);   // what happens if we leave this on signalList and LocusSignalList????  Ans:  nothing good
-			LocusSignalList.Insert (craterSignal);  // see above???
-			bp = craterSignal->GetBioID (-location);	// location is relative to locus; must reverse to make relative to craterSignal (03/26/2012)
-			IntBP = (int) floor (bp + 0.5);
-			residual = bp - (double)IntBP;
-			craterSignal->SetBioIDResidual (residual);
-			alleleName = ReconstructAlleleName (IntBP, isOffGrid);
-			craterSignal->SetAlleleName (alleleName);
-			craterSignal->SetVirtualAlleleName (alleleName);
-
-//				craterSignal->SetMessageValue (locusContainsCrater, true);  // this is not a signal level message and is triggered, so should not be here anyway
-//				msg = alleleName;
-
-			if (isOffGrid) {
-
-				if (pGenotypes->ContainsOffLadderAllele (lName, alleleName)) {
-
-					craterSignal->SetOffGrid (false);
-					craterSignal->SetAcceptedOffGrid (true);
-				}
-
-				else {
-
-//						msg += "OL";
-					craterSignal->SetOffGrid (true);
-				}
+				signalList.RemoveReference (nextSignal);
+				tempList.Append (prevSignal);
 			}
 
-			else
-				craterSignal->SetOffGrid (false);		
+			else {
 
-//				AppendDataForSmartMessage (locusContainsCrater, msg);
-
-			prevSignal->SetMessageValue (craterSidePeak, true);
-			nextSignal->SetMessageValue (craterSidePeak, true);
-
-//testing				prevSignal->SetVirtualAlleleName (prevSignal->GetAlleleName ());
-//testing				prevSignal->SetAlleleName ("");
-
-//testing				nextSignal->SetVirtualAlleleName (prevSignal->GetAlleleName ());
-//testing				nextSignal->SetAlleleName ("");
-
-//				artifacts.InsertWithNoReferenceDuplication (prevSignal);	//Need this?????????????????????????????????????????????????????????
-//				artifacts.InsertWithNoReferenceDuplication (nextSignal);	//Need this?????????????????????????????????????????????????????????
-
-			signalList.RemoveReference (prevSignal);
-			signalList.RemoveReference (nextSignal);
-
-			tempList.Append (prevSignal);
-			it.RemoveCurrentItem ();
-
-			prevSignal = NULL;
-			prevAlleleName = "";
-
-			mNumberOfCraters++;
+				signalList.RemoveReference (prevSignal);
+				tempList.Append (prevSignal);
+				prevSignal = nextSignal;
+				prevLocation = location;
+				prevAlleleName = alleleName;
+			}
 		}
 
 		else {

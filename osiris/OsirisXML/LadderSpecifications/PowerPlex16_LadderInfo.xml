@@ -11,11 +11,9 @@
 				<LSName>Promega-ILS-600</LSName>
 				<LSName>Promega-ILS-550</LSName>
 				<LSName>Promega-ILS-500</LSName>
-				<LSName>Promega-ILS-LESS225-600</LSName>
-				<LSName>Promega-ILS-LESS225-550</LSName>
-				<LSName>Promega-ILS-LESS225-500</LSName>
-				<LSName>Promega-ILS-LESS225-475</LSName>
-				<LSName>Promega-ILS-LESS225-400</LSName>
+				<LSName>Promega-ILS-LESS475-600</LSName>
+				<LSName>Promega-ILS-LESS475-550</LSName>
+				<LSName>Promega-ILS-LESS475-500</LSName>
 				<ChannelNo>4</ChannelNo>
 			</LS>
 			<FileNameSuffix>PP16</FileNameSuffix>

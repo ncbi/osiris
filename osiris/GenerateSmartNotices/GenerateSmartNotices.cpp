@@ -14,7 +14,7 @@ using namespace std;
 
 int _tmain(int argc, _TCHAR* argv[]) {
 
-	RGString FullPath ("C:/Users/goorrob/Documents/DEV/internal/osiris");
+	RGString FullPath ("..");
 	RGString InputFileDirectory ("Documentation/SmartNoticePrototypes");
 	RGString OutputFileDirectory ("OsirisLib2.01");
 

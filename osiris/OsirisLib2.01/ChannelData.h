@@ -178,6 +178,10 @@ public:
 	DataSignal* GetNextPreliminaryCurve () { return (DataSignal*) PreliminaryIterator (); }
 	DataSignal* RemovePreliminaryCurveReference (DataSignal* target) { return (DataSignal*) PreliminaryCurveList.RemoveReference (target); }
 
+	void ResetNegativeCurveIterator () { NegativeCurveIterator.Reset (); }
+	DataSignal* GetNextNegativeCurve () { return (DataSignal*) NegativeCurveIterator (); }
+	DataSignal* RemoveNegativeCurveReference (DataSignal* target) { return (DataSignal*) mNegativeCurveList.RemoveReference (target); }
+
 	void ResetCompleteIterator () { CompleteIterator.Reset (); }
 	DataSignal* GetNextCompleteCurve () { return (DataSignal*) CompleteIterator (); }
 	DataSignal* RemoveCompleteCurveReference (DataSignal* target) { return (DataSignal*) CompleteCurveList.RemoveReference (target); }
@@ -418,6 +422,9 @@ public:
 	static void SetAveSecondsPerBP (double s) { AveSecondsPerBP = s; }
 	static double GetAveSecondsPerBP () { return AveSecondsPerBP; }
 
+	static void SetUseNormalizationFilter (bool onOff) { UseFilterForNormalization = onOff; }
+	static bool GetUseNormalizationFilter () { return UseFilterForNormalization; }
+
 protected:
 	int mChannel;
 	DataSignal* mData;  // This is really SampledData*
@@ -438,6 +445,7 @@ protected:
 	RGDListIterator PreliminaryIterator;
 	RGDListIterator CompleteIterator;
 	RGDList mNegativeCurveList;
+	RGDListIterator NegativeCurveIterator;
 
 	int NumberOfAcceptedCurves;
 
@@ -470,6 +478,7 @@ protected:
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;
 	static double AveSecondsPerBP;
+	static bool UseFilterForNormalization;
 };
 
 

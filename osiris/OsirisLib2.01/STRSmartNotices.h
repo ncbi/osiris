@@ -196,6 +196,14 @@ PERSISTENT_PREDECLARATION (smSampleToLadderFitBelowExpectations)
 PERSISTENT_PREDECLARATION (smEnableRawDataFilterForNormalizationPreset)
 PERSISTENT_PREDECLARATION (smBaselineEstimationThreshold)
 PERSISTENT_PREDECLARATION (smFilterWindowWidthForBaselineEstimation)
+PERSISTENT_PREDECLARATION (smAmbiguousInterlocusWithPoorMorphology)
+PERSISTENT_PREDECLARATION (smSigmoidalPullup)
+PERSISTENT_PREDECLARATION (smMinPrimaryPullupThreshold)
+PERSISTENT_PREDECLARATION (smExcessiveResidualDisplacement)
+PERSISTENT_PREDECLARATION (smResidualDisplacementThreshold)
+PERSISTENT_PREDECLARATION (smResidualDisplacementTestPreset)
+PERSISTENT_PREDECLARATION (smExcessiveResidualDisplacementLeft)
+PERSISTENT_PREDECLARATION (smExcessiveResidualDisplacementRight)
 
 
 
@@ -5359,6 +5367,230 @@ public:
 	smFilterWindowWidthForBaselineEstimation ();
 	smFilterWindowWidthForBaselineEstimation (const smFilterWindowWidthForBaselineEstimation& note);
 	virtual ~smFilterWindowWidthForBaselineEstimation ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smAmbiguousInterlocusWithPoorMorphology : public SmartNotice {
+
+PERSISTENT_DECLARATION (smAmbiguousInterlocusWithPoorMorphology)
+
+public:
+	smAmbiguousInterlocusWithPoorMorphology ();
+	smAmbiguousInterlocusWithPoorMorphology (const smAmbiguousInterlocusWithPoorMorphology& note);
+	virtual ~smAmbiguousInterlocusWithPoorMorphology ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSigmoidalPullup : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSigmoidalPullup)
+
+public:
+	smSigmoidalPullup ();
+	smSigmoidalPullup (const smSigmoidalPullup& note);
+	virtual ~smSigmoidalPullup ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smMinPrimaryPullupThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smMinPrimaryPullupThreshold)
+
+public:
+	smMinPrimaryPullupThreshold ();
+	smMinPrimaryPullupThreshold (const smMinPrimaryPullupThreshold& note);
+	virtual ~smMinPrimaryPullupThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smExcessiveResidualDisplacement : public SmartNotice {
+
+PERSISTENT_DECLARATION (smExcessiveResidualDisplacement)
+
+public:
+	smExcessiveResidualDisplacement ();
+	smExcessiveResidualDisplacement (const smExcessiveResidualDisplacement& note);
+	virtual ~smExcessiveResidualDisplacement ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smResidualDisplacementThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smResidualDisplacementThreshold)
+
+public:
+	smResidualDisplacementThreshold ();
+	smResidualDisplacementThreshold (const smResidualDisplacementThreshold& note);
+	virtual ~smResidualDisplacementThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smResidualDisplacementTestPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smResidualDisplacementTestPreset)
+
+public:
+	smResidualDisplacementTestPreset ();
+	smResidualDisplacementTestPreset (const smResidualDisplacementTestPreset& note);
+	virtual ~smResidualDisplacementTestPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smExcessiveResidualDisplacementLeft : public SmartNotice {
+
+PERSISTENT_DECLARATION (smExcessiveResidualDisplacementLeft)
+
+public:
+	smExcessiveResidualDisplacementLeft ();
+	smExcessiveResidualDisplacementLeft (const smExcessiveResidualDisplacementLeft& note);
+	virtual ~smExcessiveResidualDisplacementLeft ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smExcessiveResidualDisplacementRight : public SmartNotice {
+
+PERSISTENT_DECLARATION (smExcessiveResidualDisplacementRight)
+
+public:
+	smExcessiveResidualDisplacementRight ();
+	smExcessiveResidualDisplacementRight (const smExcessiveResidualDisplacementRight& note);
+	virtual ~smExcessiveResidualDisplacementRight ();
 
 	virtual int GetSubject () const;
 
