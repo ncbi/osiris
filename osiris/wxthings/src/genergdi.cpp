@@ -264,7 +264,7 @@ public:
     wxGenericPenRefData(int width = 1, int style = wxSOLID,
                         int cap = wxCAP_ROUND, int join = wxJOIN_ROUND)
           : wxObjectRefData(), m_width(width), m_style(style),
-            m_cap((wxPenCap)cap), m_join((wxPenJoin)join),
+            m_cap(cap), m_join(join),
             m_dash_count(0), m_dash(NULL) {}
 
     wxGenericPenRefData(const wxGenericPenRefData& data) : wxObjectRefData(),
@@ -416,8 +416,8 @@ wxPen wxGenericPen::GetPen() const
 {
     wxCHECK_MSG(Ok(), wxNullPen, wxT("Invalid generic pen"));
     wxPen pen(M_GPENDATA->m_colour.GetColour(), M_GPENDATA->m_width, M_GPENDATA->m_style);
-    pen.SetCap((wxPenCap)(M_GPENDATA->m_cap));
-    pen.SetJoin((wxPenJoin)(M_GPENDATA->m_join));
+    pen.SetCap((M_GPENDATA->m_cap));
+    pen.SetJoin((M_GPENDATA->m_join));
     if (M_GPENDATA->m_dash_count > 0)
         pen.SetDashes(M_GPENDATA->m_dash_count, M_GPENDATA->m_dash);
 
