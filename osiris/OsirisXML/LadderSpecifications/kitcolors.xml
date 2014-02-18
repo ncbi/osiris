@@ -376,6 +376,44 @@
       <ladder>RGB(255,160,160)</ladder>
     </channel>
   </kit>
+  <kit>
+    <name>NGM</name>
+    <channel>
+      <nr>1</nr>
+      <dye>6-FAM</dye><!-- blue -->
+      <analyzed>RGB(0,0,192)</analyzed>
+      <raw>RGB(151,151,204)</raw>
+      <ladder>RGB(192,192,255)</ladder>
+    </channel>
+    <channel>
+      <nr>2</nr><!-- green -->
+      <dye>VIC</dye>
+      <analyzed>RGB(0,192,0)</analyzed>
+      <raw>RGB(157,200,157)</raw>
+      <ladder>RGB(155,255,155)</ladder>
+    </channel>
+    <channel>
+      <nr>3</nr>	
+      <dye>NED</dye>
+      <analyzed>RGB(167,167,46)</analyzed>
+      <raw>RGB(175,175,133)</raw>
+      <ladder>RGB(220,220,129)</ladder>
+    </channel>
+    <channel>
+      <nr>4</nr>
+      <dye>PET</dye>
+      <analyzed>RGB(192,0,0)</analyzed>
+      <raw>RGB(192,128,128)</raw>
+      <ladder>RGB(255,160,160)</ladder>
+    </channel>
+    <channel> <!-- Orange -->
+      <nr>5</nr>
+      <dye>LIZ</dye>
+      <analyzed>RGB(240,120,0)</analyzed>
+      <raw>RGB(192,128,64)</raw>
+      <ladder>RGB(255,192,130)</ladder>
+    </channel>
+  </kit>
   <!-- PowerPlex 18D -->
   <kit>
     <name>PowerPlex 18D</name>
