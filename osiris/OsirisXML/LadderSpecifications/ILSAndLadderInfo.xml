@@ -92,6 +92,54 @@
 			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
+			<Name>ABI-LIZ-LESS340-500</Name>
+			<Characteristics>75 100 139 150 160 200 250 300 350 400 450 490 500</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<Omissions>340</Omissions>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>ABI-LIZ-LESS340-450</Name>
+			<Characteristics>75 100 139 150 160 200 250 300 350 400 450</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<Omissions>340</Omissions>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>ABI-LIZ-LESS340-400</Name>
+			<Characteristics>75 100 139 150 160 200 250 300 350 400</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<Omissions>340</Omissions>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>ABI-LIZ-LESS250and340-500</Name>
+			<Characteristics>75 100 139 150 160 200 300 350 400 450 490 500</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<Omissions>250 340</Omissions>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>ABI-LIZ-LESS250and340-450</Name>
+			<Characteristics>75 100 139 150 160 200 300 350 400 450</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<Omissions>250 340</Omissions>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>ABI-LIZ-LESS250and340-400</Name>
+			<Characteristics>75 100 139 150 160 200 300 350 400</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<Omissions>250 340</Omissions>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
 			<Name>ABI-LIZ-600-80-TO-400</Name>
 			<Characteristics>80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400</Characteristics>
 			<RelativeHeights>M M MH M M M MH MH MH MH H M MH H MH M M MH M M M</RelativeHeights>
@@ -122,22 +170,43 @@
 		<LaneStandard>
 			<Name>Promega-ILS-600</Name>
 			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M MH H M H</RelativeHeights>
+			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H M H</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>Promega-ILS-550</Name>
+			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550</Characteristics>
+			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H M</RelativeHeights>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>Promega-ILS-500</Name>
+			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>Promega-ILS-475</Name>
+			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+			<RelativeHeights>M M H M M M M H M M M H M M M H M M M</RelativeHeights>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>Promega-ILS-400</Name>
+			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400</Characteristics>
+			<RelativeHeights>M M H M M M M H M M M H M M M H</RelativeHeights>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
 			<Name>Promega-ILS-LESS475-600</Name>
 			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500 550 600</Characteristics>
 			<RelativeHeights>M M H M M M M H M M M H M M M H M M H M H</RelativeHeights>
 			<Omissions>475</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-550</Name>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M MH H M</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
 			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
@@ -150,31 +219,10 @@
 			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
-			<Name>Promega-ILS-500</Name>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M MH H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
 			<Name>Promega-ILS-LESS475-500</Name>
 			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500</Characteristics>
 			<RelativeHeights>M M H M M M M H M M M H M M M H M M H</RelativeHeights>
 			<Omissions>475</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-475</Name>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-400</Name>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
 			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
@@ -280,6 +328,10 @@
 		<Set>
 			<KitName>PowerPlex Y23</KitName>
 			<FileName>PPlexY23_LadderInfo.xml</FileName>
+		</Set>
+		<Set>
+			<KitName>NGM</KitName>
+			<FileName>NGM_LadderInfo.xml</FileName>
 		</Set>
 	</Kits>
 </KitData>
