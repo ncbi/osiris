@@ -39,7 +39,7 @@ ConfigDir::ConfigDir(
   const char *psSubdir, 
   const char *psFileSubdir)
 {
-  wxStandardPaths &sp(wxStandardPaths::Get());
+  wxStandardPathsBase &sp(wxStandardPaths::Get());
   wxFileName fn(sp.GetExecutablePath());
   m_sExePath = fn.GetPath(
     wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR, 
