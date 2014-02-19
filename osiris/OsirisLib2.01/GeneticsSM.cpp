@@ -2454,7 +2454,7 @@ int Locus :: TestResidualDisplacement () {
 
 		nextLocation = -TestSignalPositionRelativeToLocus (nextSignal);
 		nextResidual = nextSignal->GetBioIDResidual (nextLocation);
-		residualDisplacement = abs (nextResidual - maxResidual);
+		residualDisplacement = fabs (nextResidual - maxResidual);
 
 		if (residualDisplacement > threshold) {
 
@@ -4859,8 +4859,8 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 
 			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
-			prevResidual = abs (prevSignal->GetBioIDResidual (-prevLocation));
-			nextResidual = abs (nextSignal->GetBioIDResidual (-location));
+			prevResidual = fabs (prevSignal->GetBioIDResidual (-prevLocation));
+			nextResidual = fabs (nextSignal->GetBioIDResidual (-location));
 
 			if (prevResidual < nextResidual) {
 
