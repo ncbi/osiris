@@ -14,6 +14,7 @@ for x in \
   IDNO250_HID \
   IDplus \
   IDplusNO250 \
+  NGM \
   NGMSElect \
   PP12 \
   PP16 \

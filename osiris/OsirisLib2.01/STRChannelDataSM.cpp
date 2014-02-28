@@ -2125,7 +2125,12 @@ int STRLadderChannelData :: AnalyzeGridLociSM (RGTextOutput& text, RGTextOutput&
 
 	while (nextLocus = (Locus*) it()) {
 
-		if (nextLocus->AnalyzeGridLocusAndAllowForOverlapSM (ArtifactList, PreliminaryCurveList, SupplementalArtifacts, text, ExcelText, msg, print) < 0) {
+		//if (nextLocus->AnalyzeGridLocusAndAllowForOverlapSM (ArtifactList, PreliminaryCurveList, SupplementalArtifacts, text, ExcelText, msg, print) < 0) {
+
+		//	status = -1;
+		//}
+
+		if (nextLocus->AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (ArtifactList, PreliminaryCurveList, SupplementalArtifacts, text, ExcelText, msg, print) < 0) {
 
 			status = -1;
 		}

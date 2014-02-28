@@ -1068,7 +1068,7 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDList& originalList, RGDList& supplementalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	//
-	//  This is ladder stage 2
+	//  This is ladder stage 2...no longer used (2/22/14)
 	//
 
 	PrecomputeAverages (LocusSignalList);
@@ -1577,7 +1577,7 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDList& originalList, RGDList& supplementalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	//
-	//  This is ladder stage 2
+	//  This is ladder stage 2...obsolete as of 02/26/2014
 	//
 
 	PrecomputeAverages (LocusSignalList);
@@ -1793,6 +1793,535 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 				}
 
 				recursiveStatus = PopulationMarkerSet::SearchRecursivelyForBestSubset (tempSignalList, overFlow, ctlInfo, correlation, 0.99, startPts, MaxPeak);
+
+				if ((recursiveStatus < 0) || (correlation < 0.995)) {
+
+					if (disc == maxDiscrepancy) {
+
+						if (print)
+							msg.WriteInsufficientPeaksForControlSet (FinalSignalList.Entries ());
+
+						if (status == 0)
+							ErrorString << "LOCUS DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
+
+						SetMessageValue (locusTooFewPeaks, true);
+						//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
+	//					info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
+						AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+						AppendDataForSmartMessage (locusTooFewPeaks, Size);
+
+						overFlow.Clear ();
+						cout << ErrorString << endl;
+
+						//
+						// Add msg if hts != NULL about relative sizes*************************
+						//
+
+						if (hts != NULL) {
+
+							SetMessageValue (relativeHeightImbalance, true);
+						}
+
+						status = -1;
+					}
+				}
+
+				else {
+
+					overflowIterator.Reset ();
+					double firstTime;
+					double lastTime;
+					double nextMean;
+					tempIterator.Reset ();
+					FinalSignalList.Clear ();
+
+					while (nextSignal = (DataSignal*) tempSignalList.GetFirst ())
+						FinalSignalList.Append (nextSignal);
+
+					nextSignal = (DataSignal*) FinalSignalList.First ();
+					firstTime = nextSignal->GetMean ();
+					nextSignal = (DataSignal*) FinalSignalList.Last ();
+					lastTime = nextSignal->GetMean ();
+
+					//
+					// if hts != NULL and disc > 2, add message about failure of relative height criteria ********************
+					//
+
+					if ((hts != NULL) && (disc > 2)) {
+
+						SetMessageValue (relativeHeightImbalance, true);
+					}
+					
+					while (nextSignal = (DataSignal*) overFlow.GetFirst ()) {
+
+						nextMean = nextSignal->GetMean ();
+
+						if (nextMean < firstTime) {
+
+							// this peak is left of core ladder locus, so, with overlap, might belong to another locus
+
+		//					TestResult = TestComplexNeighborsForGridSM (nextSignal, FinalSignalList);
+
+		//					if (TestResult > 0)
+								toTheLeftList.InsertWithNoReferenceDuplication (nextSignal);
+						}
+
+						else if (nextMean > lastTime) {
+
+							// this peak is right of core ladder locus, so, with overlap, might belong to another locus
+
+		//					TestResult = TestComplexNeighborsForGridSM (nextSignal, FinalSignalList);
+
+		//					if (TestResult > 0)
+								toTheRightList.InsertWithNoReferenceDuplication (nextSignal);
+						}
+
+						else {
+
+							// this peak is within core ladder locus, so test for non-critical artifact
+							bool test1 = (nextSignal->Peak () <= fractionalThreshold);
+							bool test2 = (nextSignal->GetMessageValue (pullup) && !nextSignal->GetMessageValue (primaryPullup) && (nextSignal->Peak () <= pullupFractionalThreshold));
+							bool test3 = false;
+
+							// any are true if signal is non-critical artifact; so, all are false if signal is critical because out of place
+
+							TestResult = TestComplexNeighborsForGridSM (nextSignal, FinalSignalList);
+
+							if (TestResult <= 0)
+								test3 = true;
+
+							if (test1)
+								nextSignal->SetMessageValue (fractionalFilterNotice, true);
+
+							if (test2)
+								nextSignal->SetMessageValue (pullupFractionalFilterNotice, true);
+
+							if (test1 || test2 || test3)
+								numberNoncritical++;
+
+							else
+								stillCriticalList.Append (nextSignal);
+
+							// Add in test for "complex" stutter and adenylation here.
+						}
+					}
+
+					if (stillCriticalList.Entries () > 0) {
+
+						SetMessageValue (unexpectedNumberOfPeaks, true);
+
+						while (nextSignal = (DataSignal*) stillCriticalList.GetFirst ()) {
+
+							nextSignal->SetMessageValue (extraneousLadderLocusPeak, true);
+							nextSignal->AddNoticeToList (OutputLevelManager::PeakOutOfPlace, "", 
+								"Peak out of place in final list:  uncategorized artifact");
+							bp = nextSignal->GetApproximateBioID ();
+							ibp = (int) floor (bp + 0.5);
+							AppendDataForSmartMessage (unexpectedNumberOfPeaks, ibp);
+							originalList.RemoveReference (nextSignal);
+
+							// should we remove from originalList???????????
+						}
+
+						stillCriticalList.Clear ();
+					}
+
+					break;
+				}
+			}
+		}
+
+		Displacement = 0;
+	}
+
+	if (correlation < 0.995) {
+
+		if (status == 0)
+			ErrorString << "LOCUS DOES NOT MEET EXPECTATIONS...Correlation, " << correlation << ", is too low.\n";
+
+		SetMessageValue (poorLocusMorphology, true);
+		AppendDataForSmartMessage (poorLocusMorphology, correlation);
+		overFlow.Clear ();
+		cout << ErrorString << endl;
+
+		status = -1;
+	}
+
+	int CurrentIndex = 0;
+	int TotalCandidates = FinalSignalList.Entries ();
+
+	while (CurrentIndex < Displacement) {
+
+		// these signals are left of core ladder locus, but might be in another locus
+
+		nextSignal = (DataSignal*)FinalSignalList.GetFirst ();
+		//TestResult = TestComplexNeighborsForGridSM (nextSignal, FinalSignalList);
+
+		//if (TestResult > 0) {
+
+		//	nextSignal->AddNoticeToList (OutputLevelManager::PeakBelowLocus, "", "Peak represents measurement at base pair level below locus");
+		//	nextSignal->SetMessageValue (interlocusPeak, true);
+		//}
+
+		toTheLeftList.InsertWithNoReferenceDuplication (nextSignal);
+		CurrentIndex++;
+	}
+
+	while (FinalSignalList.Entries () > Size) {
+
+		// these signals are right of core ladder locus, but might be in another locus
+
+		nextSignal = (DataSignal*)FinalSignalList.GetLast ();
+		//TestResult = TestComplexNeighborsForGridSM (nextSignal, FinalSignalList);
+
+		//if (TestResult > 0) {
+
+		//	nextSignal->AddNoticeToList (OutputLevelManager::PeakAboveLocus, "", "Peak represents measurement at base pair level above locus");
+		//	nextSignal->SetMessageValue (interlocusPeak, true);
+		//}
+
+		toTheRightList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	// Put toTheLeftList and toTheRightList into LocusSignalList for safe-keeping until next round, when can test
+	
+	LocusSignalList.Clear ();
+
+	if (toTheLeftList.Entries () > 0) {
+
+		MergeListAIntoListB (toTheLeftList, LocusSignalList);
+	}
+
+	if (toTheRightList.Entries () > 0) {
+
+		MergeListAIntoListB (toTheRightList, LocusSignalList);
+	}
+
+	CurveIterator.Reset ();
+	FinalIterator.Reset ();
+	int i = 0;
+	int NumberOfAcceptedCurves = FinalSignalList.Entries ();
+
+	if (NumberOfAcceptedCurves == 0) {
+
+		ErrorString << "LOCUS " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS...There are no peaks within expected parameters.\n";
+
+		SetMessageValue (locusTooFewPeaks, true);
+		//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
+		//info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
+		AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+		AppendDataForSmartMessage (locusTooFewPeaks, Size);
+
+		while (nextSignal = (DataSignal*) CurveIterator ())
+			nextSignal->ReportNotices (ExcelText, "\t\t", "\t");
+
+		return -1;
+	}
+
+	double* CurveNumbers = new double [NumberOfAcceptedCurves];
+	double* Fits = new double [NumberOfAcceptedCurves];
+	double* Peaks = new double [NumberOfAcceptedCurves];
+	double* Sigmas = new double [NumberOfAcceptedCurves];
+	double* SecondaryContent = new double [NumberOfAcceptedCurves];
+	double* Means = new double [NumberOfAcceptedCurves];
+	double TwoMass;
+	double OneMass;
+
+	while (nextSignal = (DataSignal*)FinalIterator ()) {
+
+		CurveNumbers [i] = i + 1;
+		Fits [i] = nextSignal->GetCurveFit ();
+		Peaks [i] = nextSignal->Peak ();
+
+		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Means [i] = nextSignal->GetMean ();
+		TwoMass = nextSignal->GetScale (2);
+		OneMass = nextSignal->GetScale (1);
+		SecondaryContent [i] = TwoMass / (TwoMass + OneMass);
+
+		if (print)
+			nextSignal->Report (text, "    ");
+
+		i++;
+
+		if (status == 0) {
+
+			nextSignal->SetMessageValue (signalIsCtrlPeak, true);
+			nextSignal->SetMessageValue (crater, false);
+			nextSignal->SetMessageValue (craterSidePeak, false);
+			nextSignal->SetDontLook (false);
+			nextSignal->RemoveAllCrossChannelSignalLinksSM ();
+			originalList.RemoveReference (nextSignal);
+		}
+	}
+
+	if (print) {
+
+		msg.WriteEmptyLine ();
+		msg.WriteMaximumCorrelationWithControlSet (0, correlation, Size, TotalCandidates);  // !!!!!
+		msg.StartLine (0, "Curve Nos.", TRUE);
+		msg.StartLine (1, "Fits", TRUE);
+		msg.StartLine (2, "2AryContent", TRUE);
+		msg.StartLine (3, "Means", TRUE);
+		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (5, "Peaks", TRUE);
+
+		for (int j=0; j<NumberOfAcceptedCurves; j++) {
+
+			msg.AddToLine (0, CurveNumbers [j]);
+			msg.AddToLine (1, Fits [j]);
+			msg.AddToLine (2, SecondaryContent [j]);
+			msg.AddToLine (3, Means [j]);
+			msg.AddToLine (4, Sigmas [j]);
+			msg.AddToLine (5, Peaks [j]);
+		}
+
+		msg.FlushLines (6);
+	}
+
+	delete[] CurveNumbers;
+	delete[] Fits;
+	delete[] SecondaryContent;
+	delete[] Sigmas;
+	delete[] Peaks;
+	delete[] Means;
+
+	if (InsertAlleleSignals (FinalSignalList) < 0) {
+
+		ExcelText.Write (OutputLevelManager::LocusGridQuality, ErrorString);
+		return -1;
+	}
+
+	if (status == 0)
+		mIsOK = true;
+
+	return status;
+}
+
+
+
+
+
+
+int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList, RGDList& originalList, RGDList& supplementalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+
+	//
+	//  This is ladder stage 2...New as of 02/26/2014
+	//
+
+	PrecomputeAverages (LocusSignalList);
+
+	RGDListIterator CurveIterator (LocusSignalList);
+	FinalSignalList.Clear ();
+	//DataSignal* FollowingSignal;
+	//DataSignal* PreviousSignal = NULL;
+	DataSignal* nextSignal;
+	smBelowMinRFU belowMinRFU;
+	smSignalIsCtrlPeak signalIsCtrlPeak;
+
+	while (nextSignal = (DataSignal*) CurveIterator ()) {
+
+		if (nextSignal->GetMessageValue (belowMinRFU))
+			CurveIterator.RemoveCurrentItem ();
+
+		else if (nextSignal->GetMessageValue (signalIsCtrlPeak))
+			CurveIterator.RemoveCurrentItem ();
+	}
+
+	CurveIterator.Reset ();
+	int TestResult;
+	int Size = mLink->GetLocusVectorSize ();
+	msg.WriteEmptyLine ();
+	msg.WriteLocusName (mLink->GetLocusName (), Size);
+	RGString eString;
+	int status = 0;
+
+	RGString dataForMsg;
+	smHeightBelowFractionalFilter fractionalFilterNotice;
+	smLocusTooFewPeaks locusTooFewPeaks;
+	smRelativeHeightImbalance relativeHeightImbalance;
+	smUnexpectedLadderLocusPeak extraneousLadderLocusPeak;
+	smPoorLocusMorphology poorLocusMorphology;
+	
+	smUnexpectedNoOfGridPeaks unexpectedNumberOfPeaks;
+	smCrater crater;
+	smCraterSidePeak craterSidePeak;
+	smInterlocusLadderPeak interlocusPeak;
+	smPullUp pullup;
+	smPrimaryInterchannelLink primaryPullup;
+	smHeightBelowPullupFractionalFilter pullupFractionalFilterNotice;
+
+	RGDList overFlow;
+	RGDListIterator overflowIterator (overFlow);
+	RGString info;
+	int recursiveStatus;
+
+	RGDList toTheLeftList;
+	RGDList toTheRightList;
+	RGDList tempSignalList;
+	RGDListIterator tempIterator (tempSignalList);
+
+	double MaxPeak = 0.0;
+	double peak;
+	CurveIterator.Reset ();
+
+	bool isAMEL = mIsAMEL;
+
+	while (nextSignal = (DataSignal*) CurveIterator ()) {
+
+		peak = nextSignal->Peak ();
+
+		if (peak > MaxPeak)
+			MaxPeak = peak;
+	}
+
+	mMaxPeak = MaxPeak;
+
+	double fractionalThreshold = 0.0;
+	double pullupFractionalThreshold = 0.0;
+	double fractionalFilter = GetLocusSpecificLadderFractionalFilter ();
+	double pullupFractionalFilter = GetLocusSpecificLadderPullupFractionalFilter ();
+	
+	if (fractionalFilter > 0.0)	
+		fractionalThreshold = fractionalFilter * MaxPeak;
+
+	if (pullupFractionalFilter > 0.0)
+		pullupFractionalThreshold = pullupFractionalFilter * MaxPeak;
+
+	CurveIterator.Reset ();
+
+	// Skip testing fractional filters here and do it later.  For now, keep the old test of stutter and adenylation, even
+	// though both are flawed.  Future:  consider fixing them (this function and prototype [AnalyzeGridLocusSM] are the only functions that 
+	// call TestNeighborsSM).  Add better test for stutter and adenylation, taking into account
+	// multiple peaks, and perform fractional filter tests, after selection of peaks!
+
+	while (nextSignal = (DataSignal*)LocusSignalList.GetFirst ()) {
+
+		TestResult = TestSimpleNeighborsForGridSM (FinalSignalList, nextSignal, LocusSignalList);
+
+		if (TestResult > 0)
+			FinalSignalList.Append (nextSignal);
+	}
+
+	RGDListIterator FinalIterator (FinalSignalList);
+
+	double correlation = 0.0;
+	int Displacement = 0;  // = mLink->SelectBestSubsetOfCharacteristics (FinalSignalList, correlation);
+	FinalIterator.Reset ();
+	DataSignal* prevSignal;
+	double bp;
+	int ibp;
+	int numberNoncritical = 0;
+	RGDList stillCriticalList;
+
+	if ((Size > 0) && (FinalSignalList.Entries () < Size)) {
+
+		int nCurves = FinalSignalList.Entries ();
+		eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+		eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
+		ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
+
+		SetMessageValue (locusTooFewPeaks, true);
+		status = -1;
+	}
+
+	else if ((Size > 0) && (FinalSignalList.Entries () == Size)) {
+
+		// Just compute the correlation and call it a day!
+
+		double* signalArray = new double [Size];
+		int iii = 0;
+		prevSignal = (DataSignal*) FinalIterator ();
+
+		while (nextSignal = (DataSignal*) FinalIterator ()) {
+
+			signalArray [iii] = nextSignal->GetMean () - prevSignal->GetMean ();
+			prevSignal = nextSignal;
+			iii++;
+		}
+
+		const double* idealNormalizedDifferences = mLink->GetDifferenceVector ();
+		correlation = PopulationMarkerSet::VectorDotProductWithDifferences (signalArray, idealNormalizedDifferences, Size-1);
+		delete[] signalArray;
+	}
+
+	else {
+
+		if (FinalSignalList.Entries () >= Size) {
+
+			overFlow.Clear ();
+			const double* differenceArray = mLink->GetUnnormalizedDifferenceVector ();
+			double extremePoints [3];
+			const double* actualArray = mLink->GetLocusVector ();
+			extremePoints [0] = actualArray [0];
+			extremePoints [2] = actualArray [Size - 1];
+			extremePoints [1] = actualArray [Size - 2];
+			const double* leftNorm2s = mLink->GetNormsLeft ();
+			const double* rightNorm2s = mLink->GetNormsRight ();
+			const int* hts = mLink->GetRelativeHeights ();
+			IdealControlSetInfo ctlInfo (actualArray, differenceArray, leftNorm2s, rightNorm2s, hts, Size, true);
+			int startLimit = (Size / 2) - 1;
+			int startPts;
+
+			startPts = Size;
+			int maxDiscrepancy;
+			int disc;
+
+			if (hts != NULL)
+				maxDiscrepancy = 4;
+
+			else
+				maxDiscrepancy = 2;
+
+			for (disc=2; disc<=maxDiscrepancy; disc++) {
+
+				FinalIterator.Reset ();
+				tempSignalList.Clear ();
+				toTheLeftList.Clear ();
+				toTheRightList.Clear ();
+				overFlow.Clear ();
+				ctlInfo.mDiscrepancy = disc;
+
+				while (nextSignal = (DataSignal*) FinalIterator ())
+					tempSignalList.Append (nextSignal);
+
+				if (hts != NULL) {
+
+					tempIterator.Reset ();
+					double testPeak;
+
+					while (tempSignalList.Entries () > Size) {
+
+						nextSignal = (DataSignal*) tempIterator ();
+						testPeak = nextSignal->Peak ();
+
+						if (RecursiveInnerProduct::HeightOutsideLimit (hts, 0, testPeak, MaxPeak, disc)) {
+
+							tempIterator.RemoveCurrentItem ();
+							toTheLeftList.Append (nextSignal);
+						}
+
+						else
+							break;
+					}
+
+					while (tempSignalList.Entries () > Size) {
+
+						nextSignal = (DataSignal*) tempSignalList.GetLast ();
+						testPeak = nextSignal->Peak ();
+
+						if (RecursiveInnerProduct::HeightOutsideLimit (hts, Size - 1, testPeak, MaxPeak, disc))
+							toTheRightList.Prepend (nextSignal);
+
+						else {
+
+							tempSignalList.Append (nextSignal);
+							break;
+						}
+					}
+				}
+
+				recursiveStatus = PopulationMarkerSet::SearchRecursivelyForBestLadderLocusSubset (tempSignalList, overFlow, ctlInfo, correlation, 0.995, startPts, MaxPeak);
 
 				if ((recursiveStatus < 0) || (correlation < 0.995)) {
 

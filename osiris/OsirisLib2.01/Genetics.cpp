@@ -7892,6 +7892,350 @@ ErrorReturn:
 }
 
 
+
+
+
+
+
+int PopulationMarkerSet :: SearchRecursivelyForBestLadderLocusSubset (RGDList& set, RGDList& artifacts, IdealControlSetInfo& ideal, double& correlation, double correlationCriterion, int nStartPts, double maxHeight) {
+
+	// This algorithm first locates what it considers the best fit of the right-most points.  Then, it incrementally adds a point until the set is filled, if possible.
+	// It uses correlationCriterion as the initial criterion for good enough fit (at the first 3 points).  The ultimate criterion is up to the calling program.  In the 
+	// first version of this program, March 4, 2008, the initial tests are not exhaustive.  They assume that the true and correct right-most 3 points can be chosen from
+	// the last 4 points of the incoming set.  The list "set" must contain more peaks than setSize or we would not be in this subroutine.  Unlike SearchIncrementally..., above,
+	// this method tests 3 points at a time, with an anchor in the right-most point, assumed already in the set.  The other two are allowed to float, including in their midst as
+	// many as two omitted points.  Because the overall dot product becomes relatively insensitive as accepted points accumulate, in this method, only 3 points are considered at a
+	// time.  Of the 3, then, only the middle one is added and that one becomes the new anchor for the incremental search.  With the assumption that there may be as many as two
+	// extraneous points, there are, at most, 6 possible combinations to compare.  The largest (3-way) dot product wins.  This algorithm differs
+	// from plain old "SearchTwoSided..." above because here, we allow an arbitrary number (up to the number of extra points) of leading peaks
+	// that are not to be included in the final set.
+
+	// Currently, 04/30/2008, this algorithm does not check for relative peak heights, except for the first and last nStartPts points...
+	// It's in now...
+
+	//  Test set size, just to make sure!
+
+	int NCandidates = set.Entries ();
+	int setSize = ideal.mSetSize;
+  int nPoints;
+	correlation = 0.0;
+	int status = 0;
+
+	if (NCandidates < setSize)
+		return -1;
+
+	RGDList tempSetRight;
+	RGDList tempSetLeft;
+	RGDList tempArtifactsRight;
+	RGDList tempArtifactsLeft;
+	ControlFitTwoSided fit (ideal.mPts, ideal.mDiffs, setSize);
+
+	int leftIdealIndex;
+
+// following 5 lines were moved here from other locations in the code
+// because a goto was jumping over them causing an error in gcc
+//  djh 4/20/09
+
+	bool addRight = true;
+	bool notLastPoint = true;
+	DataSignal* currentMaxSignal = NULL;
+	double currentMaxCorrelation = 0.0;
+	double currentCorrelation = 0.0;
+
+
+	RGDListIterator SetIterator (set);
+	DataSignal* nextSignal;
+	int extraPoints = set.Entries () - setSize;
+//	cout << "Starting extra points, before left analysis = " << extraPoints << endl;
+
+	int i;
+	int j;
+
+	int* selectionArray = new int [NCandidates];
+	double* selectedMeans = new double [nStartPts];
+
+	for (i=0; i<NCandidates; i++)
+		selectionArray [i] = 0;
+
+	//GridAnalysis (RGDList& signalList, const double* idealPts, const double* idealDiffs, const int* htIndices, const double* idealNorm2s, int setSize, double maxHeight, int allowedDiscrepancy, double correlationThreshold)
+	GridAnalysis leftRecursion (set, ideal.mPts, ideal.mDiffs, ideal.mHeightIndices, ideal.mLeftNorm2s, setSize, maxHeight, ideal.mDiscrepancy, correlationCriterion);
+
+	if (leftRecursion.BuildFromLeft () < 0)
+		goto ErrorReturn;
+
+	// Now move the selected signals out of set and into tempSetLeft.  Move skipped signals into tempArtifactsLeft
+
+	i = 0;
+	j = 0;
+	correlation = leftRecursion.GetBestSelection (selectionArray);
+
+	if (correlation < correlationCriterion)
+		goto ErrorReturn;
+
+	while (j < nStartPts) {
+
+		nextSignal = (DataSignal*) set.GetFirst ();
+
+		if (nextSignal == NULL)
+			goto ErrorReturn;
+
+		if (selectionArray [i] == 0) {
+
+			tempArtifactsLeft.Append (nextSignal);
+			nextSignal->AddNoticeToList (OutputLevelManager::PeakOutOfPlace, "", 
+				"Peak out of place in control set: uncategorized artifact");
+		}
+
+		else {
+
+			tempSetLeft.Append (nextSignal);
+			selectedMeans [j] = nextSignal->GetMean ();
+			j++;
+
+			if (j >= nStartPts)
+				break;
+		}
+
+		i++;
+
+		if (i >= NCandidates)
+			goto ErrorReturn;
+	}
+
+	extraPoints -= tempArtifactsLeft.Entries ();
+	fit.SetNpointsOnLeft (selectedMeans, nStartPts);
+	leftIdealIndex = nStartPts;
+	nPoints = nStartPts;
+//	cout << "Extra points after left fit = " << extraPoints << endl;
+
+	//
+	// Test here to see if fit all of the points.  If so, clean up and return
+	//
+
+	if (nStartPts == setSize) {
+
+		// We're done!  Put the rest of set into artifacts and move selected peaks back into set.
+
+		while (nextSignal = (DataSignal*) set.GetFirst ()) {
+
+			tempArtifactsLeft.Append (nextSignal);
+			nextSignal->AddNoticeToList (OutputLevelManager::PeakOutOfPlace, "", 
+				"Peak out of place in control set: uncategorized artifact");
+		}
+
+		while (nextSignal = (DataSignal*) tempSetLeft.GetFirst ())
+			set.Append (nextSignal);
+
+		MergeListAIntoListB (tempArtifactsLeft, artifacts);
+		MergeListAIntoListB (tempArtifactsRight, artifacts);
+		delete[] selectionArray;
+		delete[] selectedMeans;
+		return 0;
+	}
+
+//	//
+//	//  OK...here's where we pick it up!!!  Now we test and add new points from within the middle region...
+//	//  first right then left, etc., always alternating, always testing a point one sided, until the last one.
+//	//  On the last one, we test the point two-sided and then we will get the overall correlation!
+//	//
+//
+//
+//	while (nPoints < setSize) {
+//
+//		// Now we examine at most extraPoints + 1 signals to see which is the best addition
+//		// and then iteratively until tempSet has setSize entries, first right, then left, etc,
+//		// alternating until the last signal.  Before the last point to be added, we use the
+//		// one-sided inner product test to determine which signal to add because it is more
+//		// discriminating.  On the last point, the two-sided test is definitive because the 
+//		// result of the two-sided test is the total inner product that we are trying to maximize.
+//
+//		if (nPoints == setSize - 1)
+//			notLastPoint = false;
+//
+//		if (addRight) {  // test signals from the right
+//
+//			j = 0;
+//			currentMaxCorrelation = 0.0;
+//			currentMaxSignal = NULL;
+//			SetIterator.ResetToEnd ();
+//
+//			while (j <= extraPoints) {
+//
+//				nextSignal = (DataSignal*) SetIterator.CurrentItem ();  // this should never be null!!!  Test, though, for safety
+//
+//				if (nextSignal == NULL)
+//					goto ErrorReturn;
+//
+//				// Test relative peak height here!!!
+//
+//				if (RecursiveInnerProduct::HeightOutsideLimit (ideal.mHeightIndices, rightIdealIndex, nextSignal->Peak (), maxHeight, ideal.mDiscrepancy))
+//					currentCorrelation = 0.0;
+//
+//				else if (notLastPoint)
+//					currentCorrelation = fit.TestNewPointOnRightOnly (nextSignal->GetMean ());
+//
+//				else
+//					currentCorrelation = fit.TestNewPointOnRight (nextSignal->GetMean ()); // two sided test
+//
+//				if (currentCorrelation > currentMaxCorrelation) {
+//
+//					currentMaxCorrelation = currentCorrelation;
+//					currentMaxSignal = nextSignal;
+//				}
+//
+//				j++;
+//				--SetIterator;
+//			}
+//
+//			correlation = currentMaxCorrelation;
+//
+//			if (currentMaxSignal == NULL)
+//				goto ErrorReturn;
+//
+//			while (true) {
+//
+//				nextSignal = (DataSignal*) set.GetLast ();
+//
+//				if (nextSignal == currentMaxSignal) {
+//
+//					tempSetRight.Prepend (nextSignal);
+//					nPoints++;
+//					fit.AddNewPointOnRight (nextSignal->GetMean ());
+//					rightIdealIndex--;
+//					break;
+//				}
+//
+//				tempArtifactsRight.Prepend (nextSignal);
+//				nextSignal->AddNoticeToList (OutputLevelManager::PeakOutOfPlace, "", 
+//					"Peak out of place in control set: uncategorized artifact");
+//				extraPoints--;
+//			}
+//
+//			addRight = false;
+//		} // This is the end of the "add right" section
+//
+//		else {  // test signals from the left
+//
+//			j = 0;
+//			currentMaxCorrelation = 0.0;
+//			currentMaxSignal = NULL;
+//			SetIterator.Reset ();
+//
+//			while (j <= extraPoints) {
+//
+//				nextSignal = (DataSignal*) SetIterator ();  // this should never be null!!!  Test, though, for safety
+//
+//				if (nextSignal == NULL)
+//					goto ErrorReturn;
+//
+//				// Test relative peak height here!!!
+//
+//				if (RecursiveInnerProduct::HeightOutsideLimit (ideal.mHeightIndices, leftIdealIndex, nextSignal->Peak (), maxHeight, ideal.mDiscrepancy))
+//					currentCorrelation = 0.0;
+//
+//				else if (notLastPoint)
+//					currentCorrelation = fit.TestNewPointOnLeftOnly (nextSignal->GetMean ());
+//
+//				else
+//					currentCorrelation = fit.TestNewPointOnLeft (nextSignal->GetMean ()); // two-sided test
+//
+//				if (currentCorrelation > currentMaxCorrelation) {
+//
+//					currentMaxCorrelation = currentCorrelation;
+//					currentMaxSignal = nextSignal;
+//				}
+//
+//				j++;
+//			}
+//
+//			correlation = currentMaxCorrelation;
+//
+//			if (currentMaxSignal == NULL)
+//				goto ErrorReturn;
+//
+//			while (true) {
+//
+//				nextSignal = (DataSignal*) set.GetFirst ();
+//
+//				if (nextSignal == currentMaxSignal) {
+//
+//					tempSetLeft.Append (nextSignal);
+//					nPoints++;
+//					fit.AddNewPointOnLeft (nextSignal->GetMean ());
+//					leftIdealIndex++;
+//					break;
+//				}
+//
+//				tempArtifactsLeft.Append (nextSignal);
+//				nextSignal->AddNoticeToList (OutputLevelManager::PeakOutOfPlace, "", 
+//					"Peak out of place in control set: uncategorized artifact");
+//				extraPoints--;
+//			}
+//
+//			addRight = true;
+//		} // This is the end of the "add left" section
+//
+///*		if (extraPoints <= 0) {
+//
+//			while (nextSignal = (DataSignal*) set.GetLast ()) {
+//
+//				correlation = fit.TestNewPointOnRight (nextSignal->GetMean ());
+//				fit.AddNewPointOnRight (nextSignal->GetMean ());
+//				tempSetRight.Prepend (nextSignal);
+//				nPoints++;
+//			}
+//
+//			if (nPoints < setSize)
+//				nPoints = setSize + 1;
+//		}  */
+//	}
+//
+//	if (extraPoints > 0) {
+//
+//		while (nextSignal = (DataSignal*) set.GetLast ()) {
+//
+//			tempArtifactsRight.Prepend (nextSignal);
+//			nextSignal->AddNoticeToList (OutputLevelManager::PeakOutOfPlace, "", 
+//				"Peak out of place in control set: uncategorized artifact");
+//		}
+//
+//		extraPoints = 0;
+//	}
+//
+//	while (nextSignal = (DataSignal*) tempSetLeft.GetFirst ())
+//		set.Append (nextSignal);
+//
+//	while (nextSignal = (DataSignal*) tempSetRight.GetFirst ())
+//		set.Append (nextSignal);
+//
+//	MergeListAIntoListB (tempArtifactsLeft, artifacts);
+//	MergeListAIntoListB (tempArtifactsRight, artifacts);
+//	delete[] selectionArray;
+//	delete[] selectedMeans;
+//
+//	if (set.Entries () != setSize)
+//		return -1;
+//
+//	return 0;
+
+ErrorReturn:
+	MergeListAIntoListB (set, artifacts);
+
+	while (nextSignal = (DataSignal*) tempSetLeft.GetFirst ())
+		set.Append (nextSignal);
+
+	while (nextSignal = (DataSignal*) tempSetRight.GetFirst ())
+		set.Append (nextSignal);
+
+	MergeListAIntoListB (tempArtifactsLeft, artifacts);
+	MergeListAIntoListB (tempArtifactsRight, artifacts);
+	delete[] selectionArray;
+	delete[] selectedMeans;
+	return -1;
+}
+
+
+
 int PopulationMarkerSet :: PareDownSignalListBasedOnHeight (RGDList& set, RGDList& artifacts, int remainingElements) {
 
 	RGDListIterator it (set);

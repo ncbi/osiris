@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>5.50</VersionNumber>
-	<BuildTime>04 12 2013 01:18PM</BuildTime>
+	<VersionNumber>6.15</VersionNumber>
+	<BuildTime>02 15 2014 01:54PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -153,7 +153,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT smChannelIsILS</Expression>
 			</ReportCriterion>
 			<Text>CHANNEL HAS EXCESSIVE NOISE:  PEAKS MAY BE UNREPORTED</Text>
 			<ReportLevel>1</ReportLevel>
@@ -306,7 +306,7 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>Laser Off Scale:  Peak May Be Result of Pull-up</Text>
+			<Text>Laser Off Scale:  No Pull-up Identified</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -472,6 +472,60 @@
 				<AlternateReportLevel>20</AlternateReportLevel>
 				<AlternateReportCriterion>
 					<Expression>smPullUpAtAllele OR smPullUpAtControlPeak OR smInterlocusPullUp OR smSignalIsCtrlPeak OR smSignalIsAllele</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smExcessiveResidualDisplacement</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Unlikely Allele Peak:  Excessive Residual Displacement</Text>
+			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smExcessiveResidualDisplacementLeft</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Unlikely Allele Peak Left:  Excessive Residual Displacement Left</Text>
+			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smExcessiveResidualDisplacementRight</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Unlikely Allele Peak Right:  Excessive Residual Displacement Right</Text>
+			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
@@ -1162,8 +1216,11 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Crater or Poor Morphology: Possible Critical Adenylation</Text>
-			<ReportLevel>1</ReportLevel>
+			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPoorLocusMorphology</Name>
@@ -1221,20 +1278,11 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smExtendedFractionalFilter</Expression>
+				<Expression>NOT smExtendedFractionalFilter AND NOT smSignalIsCtrlPeak</Expression>
 			</ReportCriterion>
 			<Text>Signal Height Below Minimum Fractional Filter Height</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>1</Expression>
-				</RestrictionCriterion>
-			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smBaselineRelativeFractionalFilter</Name>
@@ -1313,15 +1361,6 @@
 			<Text>Signal Height Below Minimum Pullup Fractional Filter Height</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>true</Expression>
-				</RestrictionCriterion>
-			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smBaselineRelativePullupFractionalFilter</Name>
@@ -1885,7 +1924,7 @@
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Possible Valid Inter-Locus Allele (Left)</Text>
+			<Text>Possible Valid Extended Allele (Left)</Text>
 			<ReportLevel>5</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -1897,7 +1936,7 @@
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Possible Valid Inter-Locus Allele (Right)</Text>
+			<Text>Possible Valid Extended Allele (Right)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -1930,7 +1969,22 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>Ambiguous Inter-Locus Allele (Left and Right)</Text>
+			<Text>Ambiguous Extended Locus Allele (Left and Right)</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAmbiguousInterlocusWithPoorMorphology</Name>
+			<Description>Peak lies in two extended locus regions and has poor morphology (multipeak with same call, both loci)</Description>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Ambiguous Extended Locus Peak (Left and Right) With Poor Morphology</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -1944,7 +1998,7 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>Possible Ambiguous Interlocus Peak Assigned To Locus</Text>
+			<Text>Possible Ambiguous Extended Locus Peak Assigned To Locus</Text>
 			<ReportLevel>5</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -2107,7 +2161,7 @@
 			<ReportCriterion>
 				<Expression>NOT smLocusIsAMEL</Expression>
 			</ReportCriterion>
-			<Text>Possible Valid Off-Ladder Inter-Locus Allele (Left)</Text>
+			<Text>Possible Valid Off-Ladder Extended Locus Allele (Left)</Text>
 			<ReportLevel>5</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
@@ -2125,7 +2179,7 @@
 			<ReportCriterion>
 				<Expression>NOT smLocusIsAMEL</Expression>
 			</ReportCriterion>
-			<Text>Possible Valid Off-Ladder Inter-Locus Allele (Right)</Text>
+			<Text>Possible Valid Off-Ladder Extended Locus Allele (Right)</Text>
 			<ReportLevel>5</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
@@ -2143,7 +2197,7 @@
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Accepted Inter-Locus Allele (Left)</Text>
+			<Text>Accepted Extended Locus Allele (Left)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -2155,7 +2209,7 @@
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Accepted Inter-Locus Allele (Right)</Text>
+			<Text>Accepted Extended Locus Allele (Right)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -2285,6 +2339,20 @@
 			<Scope>1</Scope>
 			<CallCriterion>
 				<Expression>1</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSigmoidalPullup</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Possible Sigmoidal Pull-up</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -2429,10 +2497,10 @@
 			<Text>UNEXPECTED PEAKS IN NEG CTRL LOCUS</Text>
 			<TextForData> AT LOCATION(S):  </TextForData>
 			<SeparatorText>, </SeparatorText>
-			<ClosingText> BPS</ClosingText>
+			<ClosingText> ILS-BPS</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<Scope>2</Scope>
-			<AcceptTriggerDataMode>2</AcceptTriggerDataMode>
+			<AcceptTriggerDataMode>1</AcceptTriggerDataMode>
 			<Editable>false</Editable>
 			<ExportProtocolList>
 				<Protocol>
@@ -3004,7 +3072,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smNoYForAMEL AND smSampleHasAMELLocus</Expression>
+				<Expression>smNoYForAMEL AND smSampleHasAMELLocus AND NOT smSampleIsNegCtrl</Expression>
 			</ReportCriterion>
 			<Text>Y-STR ALLELES WITH NO AMEL Y</Text>
 			<ReportLevel>1</ReportLevel>
@@ -3172,7 +3240,7 @@
 						<Location>UD1</Location>
 					</TextLoc>
 					<TextLoc>
-						<Text>REEXTRACT SWAB</Text>
+						<Text>REEXTSWAB</Text>
 						<Location>UD2</Location>
 					</TextLoc>
 					<Group>SampleReamp</Group>
@@ -3201,7 +3269,7 @@
 						<Location>UD1</Location>
 					</TextLoc>
 					<TextLoc>
-						<Text>REEXTRACT BLOOD</Text>
+						<Text>REEXTBLOOD</Text>
 						<Location>UD2</Location>
 					</TextLoc>
 					<Group>SampleReamp</Group>
@@ -3967,6 +4035,31 @@
 			</ExportProtocolList>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSampleToLadderFitBelowExpectations</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>smEnableLadderFitThresholdTestPreset</Expression>
+			</ReportCriterion>
+			<Text>BEST SAMPLE TO LADDER FIT DOES NOT MEET EXPECTATIONS:  SIZING MAY BE INACCURATE.  METRIC VALUE OF </Text>
+			<ClosingText> EXCEEDS THRESHOLD</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>4</Scope>
+			<AcceptTriggerDataMode>3</AcceptTriggerDataMode>
+			<Editable>false</Editable>
+			<ExportProtocolList>
+				<Protocol>
+					<ProtocolName>LIMS</ProtocolName>
+					<Level>sample</Level>
+					<Priority>6</Priority>
+					<TextLoc>
+						<Text>POOR LADDER FIT</Text>
+						<Location>UD3</Location>
+					</TextLoc>
+				</Protocol>
+			</ExportProtocolList>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSampleContainsCoreOLAllele</Name>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
@@ -4409,7 +4502,7 @@
 			<Name>smPercentOfStandardNoiseThreshold</Name>
 			<MessageType>count</MessageType>
 			<Subject>10</Subject>
-			<SampleType>1</SampleType>
+			<SampleType>3</SampleType>
 			<CountingDataInfo>
 				<Threshold>100</Threshold>
 				<Comparison>Greater</Comparison>
@@ -4421,6 +4514,106 @@
 			<Text>PERCENTAGE OF STANDARD NOISE THRESHOLD FOR PEAK IDENTIFICATION (DEFAULT = 100)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLadderFitThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Max 2nd derivative time 10 to the 6th for time transform</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>175</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Ladder Fit Threshold for Accurate Sizing (Default = 175, 0 is ideal fit)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>LADDER FIT THRESHOLD FOR ACCURATE SIZING (DEFAULT = 175, 0 IS IDEAL FIT)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smBaselineEstimationThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Level below which fit peak values are considered to be 0 for raw baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>10</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>Baseline Estimation Threshold (In RFU; 1+; Default larger than 5 RFU)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>BASELINE ESTIMATION THRESHOLD (IN RFU; 1+; DEFAULT LARGER THAN 5 RFU)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFilterWindowWidthForBaselineEstimation</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of samples in moving window filter for baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>15</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>Filter Window Width for Baseline Estimation (Default = 15)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMinPrimaryPullupThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Min RFU for a peak to be considered as a primary pull-up</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>500</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Min RFU for a peak to be considered as a primary pull-up (Default = 500)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MIN RFU FOR A PEAK TO BE CONSIDERED AS A PRIMARY PULL-UP (DEFAULT = 500)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smResidualDisplacementThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Residual Displacement Threshold (% bp) For Peak To Be Considered valid Allele</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>17</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>Max % BP For Residual Displacement Test (Default = 17% BP)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAX % BP FOR RESIDUAL DISPLACEMENT TEST (DEFAULT = 17% BP)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
 			<Editable>false</Editable>
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
@@ -4716,7 +4909,7 @@
 			<Name>smDoNotReportHeterozygousImbalanceIfMixturePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
-			<SampleType>3</SampleType>
+			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
 				<ThresholdDescriptor>Do Not Report Heterozygous Imbalance If Sample Is Mixture</ThresholdDescriptor>
@@ -4732,7 +4925,7 @@
 			<Name>smTestRelativeBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
-			<SampleType>3</SampleType>
+			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
 				<ThresholdDescriptor>Test Adjusted Signal Heights Relative To Baseline (Overridden by below)</ThresholdDescriptor>
@@ -4748,7 +4941,7 @@
 			<Name>smNormalizeRawDataRelativeToBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
-			<SampleType>3</SampleType>
+			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
 				<ThresholdDescriptor>Normalize Raw Data Relative To Baseline (Overrides above)</ThresholdDescriptor>
@@ -4764,7 +4957,7 @@
 			<Name>smIgnoreNegativeRelativeBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
-			<SampleType>3</SampleType>
+			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
 				<ThresholdDescriptor>Ignore Effects of Negative Relative Baseline</ThresholdDescriptor>
@@ -4775,6 +4968,70 @@
 			<Text>Ignore Effects of Negative Relative Baseline</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smEnableRawDataFilterForNormalizationPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Enable Raw Data Filter For Baseline Normalization Estimation</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Enable Raw Data Filter For Baseline Normalization Estimation</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smEnableLadderFitThresholdTestPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Enable Ladder Fit Threshold Test</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Enable Ladder Fit Threshold Test</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smResidualDisplacementTestPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Enable Residual Displacement Allele Validation Test</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Enable Residual Displacement Allele Validation Test</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Make Excessive Residual Displacement Message Critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Make Excessive Residual Displacement Message Critical</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
 		</SmartMessage>
 	</MessageDeclarations>
 	<TestUnitsSampleLevel>
@@ -4789,6 +5046,12 @@
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
+					<Scope>2</Scope>
+					<MeasuredMessages>
+						<Name>smResidualDisplacementThreshold</Name>
+					</MeasuredMessages>
+				</ScopeDynamics>
+				<ScopeDynamics>
 					<Scope>3</Scope>
 					<MeasuredMessages>
 						<Name>smTestExcessiveNoiseAboveOrBelowAnalysisThreshold</Name>
@@ -4796,6 +5059,8 @@
 						<Name>smTestForPrimerPeaksInNegControl</Name>
 						<Name>smTestRelativeBaselinePreset</Name>
 						<Name>smIgnoreNegativeRelativeBaselinePreset</Name>
+						<Name>smBaselineEstimationThreshold</Name>
+						<Name>smResidualDisplacementTestPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -4817,6 +5082,12 @@
 						<Name>smDoNotReportHeterozygousImbalanceIfMixturePreset</Name>
 						<Name>smNormalizeRawDataRelativeToBaselinePreset</Name>
 						<Name>smPercentOfStandardNoiseThreshold</Name>
+						<Name>smEnableLadderFitThresholdTestPreset</Name>
+						<Name>smLadderFitThreshold</Name>
+						<Name>smEnableRawDataFilterForNormalizationPreset</Name>
+						<Name>smFilterWindowWidthForBaselineEstimation</Name>
+						<Name>smMinPrimaryPullupThreshold</Name>
+						<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
@@ -4926,6 +5197,7 @@
 						<Name>smSamplePlaceHolder</Name>
 						<Name>smColorCorrectionMatrixExpectedButNotFound</Name>
 						<Name>smColorCorrectionMatrixWrongSize</Name>
+						<Name>smSampleToLadderFitBelowExpectations</Name>
 						<Name>smStage1Successful</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
@@ -5007,8 +5279,10 @@
 						<Name>smBaselineRelativeAdenylation</Name>
 						<Name>smNotInterchannelLink</Name>
 						<Name>smAmbiguousInterlocusCrater</Name>
+						<Name>smAmbiguousInterlocusWithPoorMorphology</Name>
 						<Name>smPrimaryInterchannelLink</Name>
 						<Name>smCrater</Name>
+						<Name>smSigmoidalPullup</Name>
 						<Name>smCraterSidePeak</Name>
 						<Name>smSignalNotACrater</Name>
 						<Name>smSignalNotACraterSidePeak</Name>
@@ -5035,6 +5309,9 @@
 						<Name>smLaserOffScalePullupOrCraterNotPrimary</Name>
 						<Name>smLaserOffScalePrimary</Name>
 						<Name>smLaserOffScaleNoInterchannelLink</Name>
+						<Name>smExcessiveResidualDisplacement</Name>
+						<Name>smExcessiveResidualDisplacementLeft</Name>
+						<Name>smExcessiveResidualDisplacementRight</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS</Expression>
@@ -5225,7 +5502,7 @@
 					<Evaluations>
 						<Expression>smNoYLinkedAlleleExpected = (smNoYForAMEL AND smSampleHasAMELLocus) AND smLocusIsYLinked</Expression>
 						<Expression>smLocusContainsPullUpWithHeteroImbalance = smHeterozygousImbalance AND smLocusAlleleHasPullup</Expression>
-						<Expression>smLocusUnderAmped = (smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smHomozygoteHeightProblem)) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected</Expression>
+						<Expression>smLocusUnderAmped = ((smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smHomozygoteHeightProblem))) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smHomozygoteHeightProblem (NOT smSampleIsNegCtrl): smSampleHasHomozygoteWithHeightProblem</TriggerExpression>

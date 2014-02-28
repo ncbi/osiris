@@ -333,5 +333,13 @@
 			<KitName>NGM</KitName>
 			<FileName>NGM_LadderInfo.xml</FileName>
 		</Set>
+		<Set>
+			<KitName>PowerPlex ESX17</KitName>
+			<FileName>PowerPlex_ESX17_LadderInfo.xml</FileName>
+		</Set>
+		<Set>
+			<KitName>PowerPlex ESX16</KitName>
+			<FileName>PowerPlex_ESX16_LadderInfo.xml</FileName>
+		</Set>
 	</Kits>
 </KitData>

@@ -391,6 +391,7 @@ public:
 	virtual int AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, RGDList& supplementalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDList& originalList, RGDList& supplementalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDList& originalList, RGDList& supplementalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
+	virtual int AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList, RGDList& originalList, RGDList& supplementalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeSampleLocusSM (ChannelData* lsData, RGDList& artifactList, RGDList& signalList, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int TestGridInterlocusThresholds (RGDList& originalList);
 
@@ -702,6 +703,8 @@ public:
 	static int SearchTwoSidedWithLeadForBestSubsetOfCharacteristics (RGDList& set, RGDList& artifacts, const double* idealDifferences, int setSize, const double* setPoints, double& correlation,
 		double correlationCriterion);
 	static int SearchRecursivelyForBestSubset (RGDList& set, RGDList& artifacts, IdealControlSetInfo& ideal, double& correlation,
+		double correlationCriterion, int rightAndLeftStartPts, double maxHeight);
+	static int SearchRecursivelyForBestLadderLocusSubset (RGDList& set, RGDList& artifacts, IdealControlSetInfo& ideal, double& correlation,
 		double correlationCriterion, int rightAndLeftStartPts, double maxHeight);
 
 	static int PareDownSignalListBasedOnHeight (RGDList& set, RGDList& artifacts, int remainingElements);
