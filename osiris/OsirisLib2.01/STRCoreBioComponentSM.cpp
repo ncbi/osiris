@@ -1677,7 +1677,7 @@ bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDL
 		if (currentChannel == primaryChannel)
 			continue;
 
-		del1 = abs (primaryAppBioID - nextSignal->GetApproximateBioID ());
+		del1 = fabs (primaryAppBioID - nextSignal->GetApproximateBioID ());
 
 		//if (del1 < 0.075) {
 		if (del1 < nextSignal->GetPullupToleranceInBP () + primaryPullup->GetPullupToleranceInBP ()) {
@@ -1687,7 +1687,7 @@ bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDL
 
 			else {
 
-				del2 = abs (primaryAppBioID - selectedPullup [currentChannel]->GetApproximateBioID ());
+				del2 = fabs (primaryAppBioID - selectedPullup [currentChannel]->GetApproximateBioID ());
 
 				if (del1 < del2)
 					selectedPullup [currentChannel] = nextSignal;
