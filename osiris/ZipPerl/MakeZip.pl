@@ -93,6 +93,7 @@ sub COPYFILES
   IDplus
   IDplusNO250
   NGMSElect
+  NGM
   PP12
   PP16
   PP16_HID
