@@ -1004,6 +1004,27 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 				else {
 
+					double posPeak;
+					double negPeak;
+
+					if (prevSignal->IsNegativePeak ()) {
+
+						negPeak = prevSignal->Peak ();
+						posPeak = nextSignal->Peak ();
+					}
+
+					else {
+
+						negPeak = nextSignal->Peak ();
+						posPeak = prevSignal->Peak ();
+					}
+
+					if (posPeak > 3.0 * negPeak)
+						continue;
+
+					if (posPeak >= CoreBioComponent::minPrimaryPullupThreshold)
+						continue;
+
 					testSignal = new SimpleSigmoidSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
 					testSignal->RecalculatePullupTolerance ();
