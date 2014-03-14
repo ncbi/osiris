@@ -341,5 +341,13 @@
 			<KitName>PowerPlex ESX16</KitName>
 			<FileName>PowerPlex_ESX16_LadderInfo.xml</FileName>
 		</Set>
+		<Set>
+			<KitName>PowerPlex ESI17</KitName>
+			<FileName>PowerPlex_ESI17_LadderInfo.xml</FileName>
+		</Set>
+		<Set>
+			<KitName>PowerPlex ESI16</KitName>
+			<FileName>PowerPlex_ESI16_LadderInfo.xml</FileName>
+		</Set>
 	</Kits>
 </KitData>
