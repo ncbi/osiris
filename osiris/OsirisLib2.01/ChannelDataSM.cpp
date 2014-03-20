@@ -1130,6 +1130,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	int leftEndPoint;
 	int rightEndPoint;
 	RaisedBaseLineData* rbld;
+	mRaisedBaseLines.clearAndDestroy ();
 
 	while (nextSignal = mData->FindNextCharacteristicFromRight (*signature, fit, CompleteCurveList)) {
 
