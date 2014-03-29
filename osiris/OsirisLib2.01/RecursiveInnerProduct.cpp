@@ -780,6 +780,17 @@ double BuildGridLeft :: GetFirstPeakHeight () const {
 }
 
 
+double BuildGridLeft :: GetLastPeakHeight () const {
+
+	DataSignal* last = (DataSignal*) mSelectedSignals.Last ();
+
+	if (last == NULL)
+		return -1.0;
+
+	return last->Peak ();
+}
+
+
 /*
 DataSignal** mSignalArray;
 	list<BuildGridLeft*> mSets;
@@ -951,6 +962,34 @@ int GridAnalysis :: BuildFromLeft () {
 			}
 
 			else if (peak2 < peak1) {
+
+				// use nextGrid
+
+				mBestGrid = nextGrid;
+				mSets.pop_back ();
+				delete otherNextGrid;
+				return 0;
+			}
+		}
+
+		else {
+
+			// test last peak
+
+			nextGrid = mSets.front ();
+			peak1 = nextGrid->GetLastPeakHeight ();
+			otherNextGrid = mSets.back ();
+			peak2 = otherNextGrid->GetLastPeakHeight ();
+
+			if (peak1 < 0.5 * peak2) {
+
+				mBestGrid = otherNextGrid; // use otherNextGrid
+				mSets.pop_front ();
+				delete nextGrid;
+				return 0;
+			}
+
+			else if (peak2 < 0.5 * peak1) {
 
 				// use nextGrid
 

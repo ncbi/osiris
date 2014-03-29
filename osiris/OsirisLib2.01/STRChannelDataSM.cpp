@@ -4547,9 +4547,9 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 	times.push_back (time);
 	values.push_back (value);
 
-	if (length > 150) {
+	if (length > 75) {
 
-		nSeg = length / 150;
+		nSeg = length / 75;
 		segLength = length / (nSeg + 1);
 		center = left;
 

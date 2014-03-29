@@ -121,6 +121,7 @@ public:
 	double DistanceRatio (int currentSignal, int currentIdealSignal, int testSignal);
 	int TestRelativeHeight (int currentIdealSignalIndex, int startTargetIndex);
 	double GetFirstPeakHeight () const;
+	double GetLastPeakHeight () const;
 	double GetCorrelation () const { return mCorrelation; }
 
 protected:
