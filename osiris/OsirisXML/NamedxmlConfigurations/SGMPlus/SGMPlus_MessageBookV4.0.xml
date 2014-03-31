@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.15</VersionNumber>
-	<BuildTime>03 03 2014 03:15PM</BuildTime>
+	<VersionNumber>6.16</VersionNumber>
+	<BuildTime>03 20 2014 10:11AM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -431,7 +431,7 @@
 			<Subject>10</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
+				<Expression>smExcessiveResidualDisplacement</Expression>
 			</ReportCriterion>
 			<Text>Curve Fit Marginal</Text>
 			<ReportLevel>20</ReportLevel>
@@ -481,7 +481,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>smCurveFitFailed OR smLaserOffScaleNoInterchannelLink OR smCurveFitMarginal OR smSpike OR smBlob OR smPullUp OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak:  Excessive Residual Displacement</Text>
 			<ReportLevel>20</ReportLevel>
@@ -493,8 +493,14 @@
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>0</Expression>
+				<Expression>NOT (smCurveFitFailed OR smLaserOffScaleNoInterchannelLink OR smCurveFitMarginal OR smSpike OR smBlob OR smPullUp OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution)</Expression>
 			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>NOT smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
+				</RestrictionCriterion>
+			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smExcessiveResidualDisplacementLeft</Name>
