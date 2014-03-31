@@ -105,6 +105,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0C05EA525A574EE98FC84AD5A7033F74"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_0DA364A96C7546749D0B36808BE96427"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -334,6 +340,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3DFFEBDE98274DAA844F1B0FCF414026"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3F511D256E5348A2A4034647FCD9FC0B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -981,6 +993,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B2EFBCBC5B2F4145B20BDB95103E3BC6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B33CFDCE931243ED962B2F98BF01C5AB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1233,6 +1251,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D35DB74E49B444B3811F5F2FFA7A43BD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D37256B7B4144881B0CA13BA886060DD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1476,7 +1500,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.3-beta-5.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.3-beta-6.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -1804,6 +1828,26 @@
             "TargetName" = "8:PP16_HID_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_E119F0D4D43D46EDA81919E04B337215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0C05EA525A574EE98FC84AD5A7033F74"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\PowerPlex_ESI17_LadderInfo.xml"
+            "TargetName" = "8:PowerPlex_ESI17_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2584,6 +2628,26 @@
             "TargetName" = "8:IDplusNO250_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_CF4865933136417CB5CE30C4AA5C69FC"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3F511D256E5348A2A4034647FCD9FC0B"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\PowerPlex_ESX17_LadderInfo.xml"
+            "TargetName" = "8:PowerPlex_ESX17_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4738,6 +4802,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2EFBCBC5B2F4145B20BDB95103E3BC6"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\PowerPlex_ESX16_LadderInfo.xml"
+            "TargetName" = "8:PowerPlex_ESX16_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B33CFDCE931243ED962B2F98BF01C5AB"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPFusion\\PPFusion_MessageBookV4.0.xml"
@@ -5564,6 +5648,26 @@
             "TargetName" = "8:PPY23_HID_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_5A3765D045DF407B90842DB4D9693C7F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D35DB74E49B444B3811F5F2FFA7A43BD"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\PowerPlex_ESI16_LadderInfo.xml"
+            "TargetName" = "8:PowerPlex_ESI16_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6988,7 +7092,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
         "ProductCode" = "8:{46F1B0F7-0144-41A6-953A-579739F5038B}"
-        "PackageCode" = "8:{88D9FBB5-E983-4FA1-AF38-62F7393FAB67}"
+        "PackageCode" = "8:{41BB7745-3000-4C3F-87BF-888217C80B88}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
