@@ -406,6 +406,8 @@ public:
 	virtual int AnalyzeDynamicBaselineSM (int startTime);
 	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime);
 
+	virtual void GetCharacteristicArray (const double*& array) const { if (mLaneStandard != NULL) mLaneStandard->GetCharacteristicArray (array); }
+
 
 	//*******************************************************************************************************
 	//*******************************************************************************************************

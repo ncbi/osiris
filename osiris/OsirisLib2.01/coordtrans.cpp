@@ -37,6 +37,11 @@
 #include "coordtrans.h"
 #include <stdlib.h>
 #include <math.h>
+#include <iostream>
+
+using namespace std;
+
+const double cForError = 5.0 / 384.0;
 
 CoordinateTransform :: CoordinateTransform (const list<double>& coord1, const list<double>& coord2) : Spacing (0.0),
 CurrentSequenceCount (-1),
@@ -643,6 +648,132 @@ double CSplineTransform :: MaxDeltaThirdDerivative () const {
 	}
 
 	return 6.0 * maxValue;
+}
+
+
+int CSplineTransform :: GetThirdDerivatives (double* thirdDerivs) {
+
+	// returns size of array
+
+	int i;
+
+	for (i=0; i<NumberOfCubics; i++)
+		thirdDerivs [i] = 6.0 * D [i];
+
+	return NumberOfCubics;
+}
+
+
+
+int CSplineTransform :: GetFourthDerivatives (double* fourthDerivs) {
+	
+	// returns size of array
+
+	int i;
+	int size = NumberOfCubics - 1;
+
+	for (i=0; i<size; i++)
+		fourthDerivs [i] = 6.0 * (D [i+1] - D [i]) / (Knots [i+1] - Knots [i]);
+
+	return size;
+}
+
+
+
+double CSplineTransform :: GetMaxErrors (double* fourthDerivs, double* errors) {
+	
+	// returns max error in seconds
+
+	int i;
+
+	double temp;
+	double tempError;
+	double absError;
+	double max = 0.0;
+	
+	for (i=0; i<NumberOfCubics; i++) {
+
+		temp = Knots [i+1] - Knots [i];
+		temp = temp * temp;
+		errors [i] = tempError = cForError * fourthDerivs [i] * temp * temp;
+		absError = fabs (tempError);
+
+		if (absError > max)
+			max = absError;
+	}
+
+	return max;
+}
+
+
+double CSplineTransform :: GetMaxErrorsInBPs (double* timeErrors, double* bpErrors, const double* characteristicArray) {
+	
+	// returns max error in bps
+
+	int i;
+	double tempError;
+	double absError;
+	double max = 0.0;
+
+	for (i=0; i<NumberOfCubics; i++) {
+
+		bpErrors [i] = tempError = timeErrors [i] * ((characteristicArray [i+1] - characteristicArray [i]) / (Ordinates [i+1] - Ordinates [i]));
+		absError = fabs (tempError);
+
+		if (absError > max)
+			max = absError;
+	}
+
+	return max;
+}
+
+
+int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteristicArray) {
+
+	double* derivs3 = new double [NumberOfCubics];
+	double* derivs4 = new double [NumberOfCubics];
+	double maxError;
+	double maxErrorInBP;
+	double* errors = new double [NumberOfCubics];
+	double* bpErrors = new double [NumberOfCubics];
+
+	GetThirdDerivatives (derivs3);
+	GetFourthDerivatives (derivs4);
+	maxError = GetMaxErrors (derivs4, errors);
+	maxErrorInBP = GetMaxErrorsInBPs (errors, bpErrors, characteristicArray);
+
+	int i;
+
+	cout << "Max Error (seconds) = " << maxError << ".  Max Error (bps) = " << maxErrorInBP << endl;
+	cout << "Third derivatives: ";
+
+	for (i=0; i<NumberOfCubics; i++)
+		cout << " " << derivs3 [i];
+
+	cout << endl;
+	cout << "Fourth derivatives: ";
+
+	for (i=0; i<NumberOfCubics; i++)
+		cout << " " << derivs4 [i];
+
+	cout << endl;
+	cout << "Errors (seconds): ";
+
+	for (i=0; i<NumberOfCubics; i++)
+		cout << " " << errors [i];
+
+	cout << endl;
+	cout << "Errors (bbs): ";
+
+	for (i=0; i<NumberOfCubics; i++)
+		cout << " " << bpErrors [i];
+
+	cout << endl;
+	delete[] derivs3;
+	delete[] derivs4;
+	delete[] errors;
+	delete[] bpErrors;
+	return 0;
 }
 
 
