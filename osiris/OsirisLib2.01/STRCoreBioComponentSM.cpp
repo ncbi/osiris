@@ -1437,11 +1437,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 	//bool bool1;
 	//bool bool2;
+	double minRFU;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
 		nextChannel = mDataChannels [i];
 		nextMultiPeakList = TempMultiPeakList [i];
+		minRFU = nextChannel->GetMinimumHeight ();
 
 		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
 
@@ -1457,6 +1459,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 				nextSignal2 = nextSignal->GetNextLinkedSignal ();
 				nextSignal2->SetMessageValue (sigmoidalPullup, true);
 				nextSignal->SetMessageValue (sigmoidalPullup, true);
+
+				if (nextSignal->Peak () < minRFU)
+					nextSignal->SetMessageValue (belowMinRFU, true);
 			}
 
 			//else if ((testSignal != NULL) && (testSignal2 != NULL)) {
@@ -1503,6 +1508,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 		nextChannel = mDataChannels [i];
 		nextMultiPeakList = TempCraterPeakList [i];
+		minRFU = nextChannel->GetMinimumHeight ();
 
 		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
 
@@ -1515,6 +1521,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 				nextSignal2 = nextSignal->GetNextLinkedSignal ();
 				nextSignal2->SetMessageValue (craterSidePeak, true);
 				nextSignal->SetMessageValue (crater, true);
+
+				if (nextSignal->Peak () < minRFU)
+					nextSignal->SetMessageValue (belowMinRFU, true);
 			}
 
 			else {

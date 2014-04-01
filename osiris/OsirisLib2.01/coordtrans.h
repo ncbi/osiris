@@ -121,6 +121,12 @@ public:
 	virtual double MaxSecondDerivative () const;
 	virtual double MaxDeltaThirdDerivative () const;
 
+	int GetThirdDerivatives (double* thirdDerivs);	// returns size of array
+	int GetFourthDerivatives (double* fourthDerivs);	// returns size of array
+	double GetMaxErrors (double* fourthDerivs, double* errors);	// returns max error in seconds
+	double GetMaxErrorsInBPs (double* timeErrors, double* bpErrors, const double* characteristicArray);	// returns max error in bps
+	int OutputHighDerivativesAndErrors (const double* characteristicArray);
+
 private:
 	int NumberOfKnots;
 	int CurrentInterval;

@@ -1704,6 +1704,15 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	if (grid == NULL)
 		return -1;
 
+	//
+	//	Get other fit data from timeMap
+	//
+
+	const double* characterisicArray;
+	mLSData->GetCharacteristicArray (characterisicArray);
+
+//	timeMap->OutputHighDerivativesAndErrors (characterisicArray);
+
 	int gridArtifactLevel = grid->GetHighestMessageLevelWithRestrictionSM ();
 
 	if ((gridArtifactLevel > 0) && (gridArtifactLevel <= Notice::GetSeverityTrigger ()))
