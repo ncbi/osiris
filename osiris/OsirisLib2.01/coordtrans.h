@@ -123,6 +123,7 @@ public:
 
 	int GetThirdDerivatives (double* thirdDerivs);	// returns size of array
 	int GetFourthDerivatives (double* fourthDerivs);	// returns size of array
+	int GetFourthDerivativesFromSplineOfFirstDerivs (double* fourthDerivs);
 	double GetMaxErrors (double* fourthDerivs, double* errors);	// returns max error in seconds
 	double GetMaxErrorsInBPs (double* timeErrors, double* bpErrors, const double* characteristicArray);	// returns max error in bps
 	int OutputHighDerivativesAndErrors (const double* characteristicArray);
@@ -152,6 +153,7 @@ private:
 	int SearchForInterval (double abscissa, double start, int startInterval);
 
 	double CalculateCubic (double abscissa, int interval);
+	double CalculateFirstDerivativeAtKnot (int knot);
 };
 
 
