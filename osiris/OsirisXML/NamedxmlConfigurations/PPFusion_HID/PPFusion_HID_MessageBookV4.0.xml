@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.16</VersionNumber>
-	<BuildTime>03 20 2014 10:11AM</BuildTime>
+	<VersionNumber>6.2</VersionNumber>
+	<BuildTime>03 31 2014 12:32PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1125,7 +1125,7 @@
 			<AlternateReport>
 				<AlternateReportLevel>1</AlternateReportLevel>
 				<AlternateReportCriterion>
-					<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL</Expression>
+					<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
@@ -5253,7 +5253,7 @@
 						<Expression>smFFLeft = smBelowFractionalFilterLeft OR smBelowPullupFractionalFilterLeft OR smInferredFFLeft OR smInferredPullupFFLeft</Expression>
 						<Expression>smFFRight = smBelowFractionalFilterRight OR smBelowPullupFractionalFilterRight OR smInferredFFRight OR smInferredPullupFFRight</Expression>
 						<Expression>smExtendedFractionalFilter = (NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)</Expression>
-						<Expression>smUnassignedInterlocusPeak = NOT (smPeakInCoreLadderLocus OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSampleIsLadder OR smSignalIsCtrlPeak OR smUnexpectedILSPeak)</Expression>
+						<Expression>smUnassignedInterlocusPeak = NOT (smPeakInCoreLadderLocus OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSampleIsLadder OR smSignalIsCtrlPeak OR smUnexpectedILSPeak OR smChannelIsILS)</Expression>
 					</Evaluations>
 				</ScopeDynamics>
 				<ScopeDynamics>
