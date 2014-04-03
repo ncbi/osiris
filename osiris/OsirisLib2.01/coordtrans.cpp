@@ -675,7 +675,25 @@ int CSplineTransform :: GetFourthDerivatives (double* fourthDerivs) {
 	for (i=0; i<size; i++)
 		fourthDerivs [i] = 6.0 * (D [i+1] - D [i]) / (Knots [i+1] - Knots [i]);
 
+	fourthDerivs [size] = 0.0;
 	return size;
+}
+
+
+int CSplineTransform :: GetFourthDerivativesFromSplineOfFirstDerivs (double* fourthDerivs) {
+
+	double* firstDerivs = new double [NumberOfKnots];
+	int i;
+
+	for (i=0; i<NumberOfKnots; i++)
+		firstDerivs [i] = CalculateFirstDerivativeAtKnot (i);
+
+	CSplineTransform* CFirstDerivs = new CSplineTransform (Knots, firstDerivs, NumberOfKnots);
+	CFirstDerivs->GetThirdDerivatives (fourthDerivs);
+
+	delete CFirstDerivs;
+	delete[] firstDerivs;
+	return NumberOfKnots;
 }
 
 
@@ -733,34 +751,36 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 	double* derivs3 = new double [NumberOfCubics];
 	double* derivs4 = new double [NumberOfCubics];
 	double maxError;
+	double maxErrorInBP2;
 	double maxErrorInBP;
 	double* errors = new double [NumberOfCubics];
 	double* bpErrors = new double [NumberOfCubics];
+	double* derivs4From1stDerivs = new double [NumberOfCubics];
+	double* bpErrorsFrom1stDerivs = new double [NumberOfCubics];
+	double* errors2 = new double [NumberOfCubics];
 
 	GetThirdDerivatives (derivs3);
 	GetFourthDerivatives (derivs4);
 	maxError = GetMaxErrors (derivs4, errors);
 	maxErrorInBP = GetMaxErrorsInBPs (errors, bpErrors, characteristicArray);
 
+	GetFourthDerivativesFromSplineOfFirstDerivs (derivs4From1stDerivs);
+	GetMaxErrors (derivs4From1stDerivs, errors2);
+	maxErrorInBP2 = GetMaxErrorsInBPs (errors2, bpErrorsFrom1stDerivs, characteristicArray);
+
 	int i;
 
-	cout << "Max Error (seconds) = " << maxError << ".  Max Error (bps) = " << maxErrorInBP << endl;
+	cout << "Max Error Original (bps) = " << maxErrorInBP << ".  Max Error From 1st Derivs (bps) = " << maxErrorInBP2 << endl;
 	cout << "Third derivatives: ";
 
 	for (i=0; i<NumberOfCubics; i++)
 		cout << " " << derivs3 [i];
 
 	cout << endl;
-	cout << "Fourth derivatives: ";
+	cout << "Fourth derivatives Original: ";
 
 	for (i=0; i<NumberOfCubics; i++)
 		cout << " " << derivs4 [i];
-
-	cout << endl;
-	cout << "Errors (seconds): ";
-
-	for (i=0; i<NumberOfCubics; i++)
-		cout << " " << errors [i];
 
 	cout << endl;
 	cout << "Errors (bbs): ";
@@ -769,10 +789,26 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 		cout << " " << bpErrors [i];
 
 	cout << endl;
+	cout << "Fourth derivatives From 1st Derivs: ";
+
+	for (i=0; i<NumberOfCubics; i++)
+		cout << " " << derivs4From1stDerivs [i];
+
+	cout << endl;
+	cout << "Errors from 1st Derivs (bbs): ";
+
+	for (i=0; i<NumberOfCubics; i++)
+		cout << " " << bpErrorsFrom1stDerivs [i];
+
+	cout << endl;
 	delete[] derivs3;
 	delete[] derivs4;
 	delete[] errors;
 	delete[] bpErrors;
+
+	delete[] derivs4From1stDerivs;
+	delete[] errors2;
+	delete[] bpErrorsFrom1stDerivs;
 	return 0;
 }
 
@@ -837,3 +873,16 @@ double CSplineTransform :: CalculateCubic (double abscissa, int interval) {
 	double x = abscissa - Knots[interval];
 	return (((D[interval] * x + C[interval]) * x) + B[interval]) * x + A[interval];
 }
+
+
+double CSplineTransform :: CalculateFirstDerivativeAtKnot (int knot) {
+
+	if (knot < NumberOfKnots - 1)
+		return B[knot];
+
+	double x = Knots [knot] - Knots [knot - 1];
+	int i = knot - 1;
+	return (3.0 * D[i] * x + 2.0 * C[i]) * x + B[i];
+}
+
+
