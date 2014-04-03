@@ -4300,6 +4300,36 @@ DataSignal* Gaussian :: Normalize (double left, double right, double& norm) {
 }
 
 
+void Gaussian :: CalculateTheoreticalArea () {
+
+	double first = Peak ();
+	double Cumulative = first;
+	double last;
+	double mean = GetMean ();
+	double sigma = GetStandardDeviation ();
+	double abscissa = mean;
+	double temp1;
+	double prevLast = first;
+	double cutOff = 0.01 * first;
+	double step = 0.5 * sigma;
+
+	for (int i=1; i<=20; i++) {
+
+		abscissa += step;
+		last = Value (abscissa);
+
+		if ((last <= cutOff) && (i > 1))
+			break;
+
+		Cumulative += last;
+		prevLast = last;
+	}
+
+	temp1 = step * (2.0 * Cumulative - first - prevLast);
+	mArea = temp1;
+}
+
+
 double Gaussian :: OneNorm () {
 
 	return Scale * sqrtTwo * sqrtPi * StandardDeviation;
@@ -7188,10 +7218,11 @@ void DoubleGaussian :: CalculateTheoreticalArea () {
 	double temp1;
 	double prevLast = first;
 	double cutOff = 0.01 * first;
+	double step = 0.5 * sigma;
 
-	for (int i=1; i<=10; i++) {
+	for (int i=1; i<=20; i++) {
 
-		abscissa += sigma;
+		abscissa += step;
 		last = Value (abscissa);
 
 		if ((last <= cutOff) && (i > 1))
@@ -7201,7 +7232,7 @@ void DoubleGaussian :: CalculateTheoreticalArea () {
 		prevLast = last;
 	}
 
-	temp1 = sigma * (2.0 * Cumulative - first - prevLast);
+	temp1 = step * (2.0 * Cumulative - first - prevLast);
 //	temp2 = 3.0 * peak * sigma;
 
 	//if (temp2 > temp1)
@@ -7570,6 +7601,36 @@ DataSignal* SuperGaussian :: Normalize (double left, double right, double& norm)
 	ds->SetDisplacement (Displacement);
 	ds->SetScale (NewScale);
 	return ds;
+}
+
+
+void SuperGaussian :: CalculateTheoreticalArea () {
+
+	double first = Peak ();
+	double Cumulative = first;
+	double last;
+	double mean = GetMean ();
+	double sigma = GetStandardDeviation ();
+	double abscissa = mean;
+	double temp1;
+	double prevLast = first;
+	double cutOff = 0.01 * first;
+	double step = 0.5 * sigma;
+
+	for (int i=1; i<=20; i++) {
+
+		abscissa += step;
+		last = Value (abscissa);
+
+		if ((last <= cutOff) && (i > 1))
+			break;
+
+		Cumulative += last;
+		prevLast = last;
+	}
+
+	temp1 = step * (2.0 * Cumulative - first - prevLast);
+	mArea = temp1;
 }
 
 

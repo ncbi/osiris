@@ -624,7 +624,7 @@ public:
 	virtual int FirstMomentForOneNorm (double left, double right, double& oneNorm, double& mean) { return -1; }
 	virtual int SecondMomentForOneNorm (double left, double right, double& oneNorm, double& mean, double& secondMoment) { return -1; }
 
-	virtual double TheoreticalArea () { return 0.0; }
+	virtual double TheoreticalArea () { return mArea; }
 	virtual void CalculateTheoreticalArea () {;}
 
 	virtual int FirstMoment (double left, double right, double& twoNorm2, double& mean) { return -1; }
@@ -1104,6 +1104,8 @@ public:
 	virtual DataSignal* Normalize (double& norm);
 	virtual DataSignal* Normalize (double left, double right, double& norm);
 
+	virtual void CalculateTheoreticalArea ();
+
 	virtual double OneNorm ();
 	virtual double OneNorm (double left, double right);
 	virtual int FirstMomentForOneNorm (double left, double right, double& oneNorm, double& mean);
@@ -1351,6 +1353,8 @@ public:
 	virtual double Norm2 (double left, double right);
 	virtual DataSignal* Normalize (double& norm);
 	virtual DataSignal* Normalize (double left, double right, double& norm);
+
+	virtual void CalculateTheoreticalArea ();
 
 	virtual double OneNorm ();
 	virtual double OneNorm (double left, double right);
