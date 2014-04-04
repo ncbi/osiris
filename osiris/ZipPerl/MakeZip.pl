@@ -201,6 +201,7 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Info.plist ${CONTENTS}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/PkgInfo ${CONTENTS}");
 
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osirisanalysis ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
   &SYSTEM("strip ${DEST}/osirisanalysis");
