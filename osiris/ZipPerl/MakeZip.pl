@@ -83,39 +83,39 @@ sub COPYFILES
   &MKDIR("${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} -R ${src}/docs/TestAnalysis ${destTest}");
   for my $sdir (qw/
-  Cofiler
-  GF
-  GFHID
-  ID
-  IDNO250
-  IDNO250_HID
-  ID_HID
-  IDplus
-  IDplusNO250
-  NGMSElect
-  NGM
-  PP12
-  PP16
-  PP16_HID
-  PP18D
-  PP21
-  PPESI16_FSA
-  PPESI16_HID
-  PPESI17_FSA
-  PPESI17_HID
-  PPESX16_FSA
-  PPESX16_HID
-  PPESX17_FSA
-  PPESX17_HID
-  PPFusion
-  PPFusion_HID
-  PPY
-  PPY23
-  PPY23_HID
-  Profiler
-  SEfilerPlus
-  SGMPlus
-  Yfiler
+    Cofiler
+    GF
+    GFHID
+    ID
+    IDNO250
+    IDNO250_HID
+    IDplus
+    IDplusNO250
+    ID_HID
+    NGM
+    NGMSElect
+    PP12
+    PP16
+    PP16_HID
+    PP18D
+    PP21
+    PPESI16_FSA
+    PPESI16_HID
+    PPESI17_FSA
+    PPESI17_HID
+    PPESX16_FSA
+    PPESX16_HID
+    PPESX17_FSA
+    PPESX17_HID
+    PPFusion
+    PPFusion_HID
+    PPY
+    PPY23
+    PPY23_HID
+    Profiler
+    SEfilerPlus
+    SGMPlus
+    Yfiler
   /)
   {
     my $dest1 = "${dest}/Config/Volumes/${sdir}";
@@ -129,6 +129,7 @@ sub COPYFILES
   {
     &SYSTEM("${CP} ${src}/OsirisXML/${config} ${dest}/Config/xsd");
   }
+  &SYSTEM("${CP} ${src}/MessageBook/OsirisMessageBookV4.0.xml ${dest}/Config/LadderSpecifications/MessageBook.xml");
   &SYSTEM("${CP} ${src}/MessageBook/OsirisMessageBook4.0.xsd ${dest}/Config/xsd");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/tab.xsl ${destXSL}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/extractSamples.xsl ${destXSL}");
