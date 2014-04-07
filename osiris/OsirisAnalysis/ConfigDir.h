@@ -120,12 +120,23 @@ public:
   }
   wxString GetMessageBookFileName() const
   {
+    wxString sRtn = GetExeConfigPath();
+    nwxFileUtil::EndWithSeparator(&sRtn);
+    sRtn.Append(_T("LadderSpecifications"));
+    nwxFileUtil::EndWithSeparator(&sRtn);
+    sRtn.Append(_T("MessageBook.xml"));
+    return sRtn;
+  }	
+#if 0
+  wxString GetMessageBookFileName() const
+  {
     //  this needs a kit name
     wxString sRtn = GetExeConfigPath();
     nwxFileUtil::EndWithSeparator(&sRtn);
     sRtn.Append(_T("OsirisMessageBookV4.0.xml"));
     return sRtn;
   }
+#endif
 
 
 private:

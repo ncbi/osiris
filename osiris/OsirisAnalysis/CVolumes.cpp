@@ -112,7 +112,9 @@ wxString CVolume::GetAccessFileName() const
 }
 wxString CVolume::GetMessageBookFileName() const
 {
-  return _GetFilePath(MESSAGE_BOOK_FILE);
+  ConfigDir *pDir = mainApp::GetConfig();
+  return pDir->GetMessageBookFileName();
+////  return _GetFilePath(MESSAGE_BOOK_FILE);
 }
 
 wxString CVolume::GetStdSettingsFileName() const

@@ -110,7 +110,7 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_LINE("RawDataString",s);  // 11 or 12
   APPEND_LINE("LabSettings",pVolume->GetLabSettingsFileName());
   APPEND_LINE("StandardSettings",pVolume->GetStdSettingsFileName());
-  APPEND_LINE("MessageBook",pVolume->GetMessageBookFileName());
+  APPEND_LINE("MessageBook",pDir->GetMessageBookFileName());
   const wxString &sOverride(pParm->GetAnalysisOverride());
   if(!sOverride.IsEmpty())
   {
