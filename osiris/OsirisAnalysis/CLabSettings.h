@@ -1780,7 +1780,10 @@ public:
     LABCP(m_vsSynonymLadder);
     LABCP(m_vsSynonymPosCtrl);
     LABCP(m_vsSynonymNegCtrl);
-    LABCP(m_sStdCtrlName);
+    LABCP(m_vsSynonymPossibleMixture);
+    LABCP(m_vsSynonymSingleSource);
+
+  LABCP(m_sStdCtrlName);
     LABCP(m_setSpecimenCategory);
     return *this;
   }
@@ -1790,6 +1793,8 @@ public:
     LABEQLOG(m_vsSynonymLadder,"CLabNameStrings.m_vsSynonymLadder")
     else LABEQLOG(m_vsSynonymPosCtrl,"CLabNameStrings.m_vsSynonymPosCtrl")
     else LABEQLOG(m_vsSynonymNegCtrl,"CLabNameStrings.m_vsSynonymNegCtrl")
+    else LABEQLOG(m_vsSynonymPossibleMixture,"CLabNameStrings.m_vsSynonymPossibleMixture")
+    else LABEQLOG(m_vsSynonymSingleSource,"CLabNameStrings.m_vsSynonymSingleSource")
     else LABEQLOG(m_sStdCtrlName,"CLabNameStrings.m_sStdCtrlName")
     else LABEQLOG(m_setSpecimenCategory,"CLabNameStrings.m_setSpecimenCategory")
     else LABEQLOG(m_bUseSampleName,"CLabNameStrings.m_bUseSampleName")
@@ -1827,6 +1832,8 @@ public:
   CLabSynonym m_vsSynonymLadder;
   CLabSynonym m_vsSynonymPosCtrl;
   CLabSynonym m_vsSynonymNegCtrl;
+  CLabSynonym m_vsSynonymPossibleMixture;
+  CLabSynonym m_vsSynonymSingleSource;
   wxString m_sStdCtrlName;
   CLabSetSpecimenCategory m_setSpecimenCategory;
   bool m_bUseSampleName;
@@ -1839,6 +1846,8 @@ public:
   static const char * const TYPE_LADDER;
   static const char * const TYPE_POS_CONTROL;
   static const char * const TYPE_NEG_CONTROL;
+  static const char * const TYPE_POSSIBLE_MIXTURE;
+  static const char * const TYPE_SINGLE_SOURCE;
 };
 
 //************************************************************ 

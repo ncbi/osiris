@@ -75,9 +75,14 @@ private:
   nwxChoicebook *m_pChoiceBook;
   wxStaticText *m_pLabelStdCtrlName;
   wxStaticText *m_pLabelNameString;
+
+  //  file or sample name search strings that are NOT used for CODIS CMF
   wxTextCtrl *m_pTextLadder;
   wxTextCtrl *m_pTextPos;
   wxTextCtrl *m_pTextNeg;
+  wxTextCtrl *m_pTextPossibleMixture;
+  wxTextCtrl *m_pTextSingleSource;
+
   wxTextCtrl *m_pTextStdCtrlName;
   vector<wxTextCtrl *> m_pvTextSpecimenTypes;
   CLabNameStrings *m_pData;

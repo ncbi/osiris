@@ -68,7 +68,8 @@ const char * const CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY(__OTHER__);
 const char * const CLabNameStrings::TYPE_LADDER("Ladder");
 const char * const CLabNameStrings::TYPE_POS_CONTROL("Positive Control");
 const char * const CLabNameStrings::TYPE_NEG_CONTROL("Negative Control");
-
+const char * const CLabNameStrings::TYPE_POSSIBLE_MIXTURE("Possible mixture");
+const char * const CLabNameStrings::TYPE_SINGLE_SOURCE("Single source");
 const char * CLabSpecimenCategory::LONGEST_TYPE(NULL);
 
 const char * const CLabSpecimenCategory::TYPES[] =
@@ -1317,13 +1318,17 @@ wxString CLabNameStrings::GetCategory(
   {
     &m_vsSynonymLadder,
     &m_vsSynonymPosCtrl,
-    &m_vsSynonymNegCtrl
+    &m_vsSynonymNegCtrl,
+    &m_vsSynonymPossibleMixture,
+    &m_vsSynonymSingleSource
   };
   const char *cat[] =
   {
     TYPE_LADDER,
     TYPE_POS_CONTROL,
-    TYPE_NEG_CONTROL
+    TYPE_NEG_CONTROL,
+    TYPE_POSSIBLE_MIXTURE,
+    TYPE_SINGLE_SOURCE
   };
   size_t nSize = sizeof(psynList) / sizeof(psynList[0]);
   size_t i;
@@ -1348,6 +1353,8 @@ void CLabNameStrings::RegisterAll(bool)
   Register(_T("LadderStrings"),&m_vsSynonymLadder);
   Register(_T("StdPositveControlStrings"),&m_vsSynonymPosCtrl);
   Register(_T("NegativeControlStrings"),&m_vsSynonymNegCtrl);
+  Register(_T("SingleSourceStrings"),&m_vsSynonymSingleSource);
+  Register(_T("PossibleMixtureStrings"),&m_vsSynonymPossibleMixture);
   RegisterWxString(_T("StandardControlName"),&m_sStdCtrlName);
   Register(
     _T("SpecimenCategory"),

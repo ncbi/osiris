@@ -118,6 +118,14 @@ CPanelLabNameStrings::CPanelLabNameStrings(
   m_pTextNeg = pPanel->GetTextCtrl();
   m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_NEG_CONTROL));
 
+  pPanel = new nwxTextPanel(m_pChoiceBook,wxID_ANY);
+  m_pTextPossibleMixture = pPanel->GetTextCtrl();
+  m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_POSSIBLE_MIXTURE));
+
+  pPanel = new nwxTextPanel(m_pChoiceBook,wxID_ANY);
+  m_pTextSingleSource = pPanel->GetTextCtrl();
+  m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_SINGLE_SOURCE));
+
   //  2/11/09 added specimen types
 
   wxString sType;
@@ -151,22 +159,37 @@ CPanelLabNameStrings::CPanelLabNameStrings(
   OnChangeCombo(*( (wxChoicebookEvent *) NULL ));
 }
 
+
+#define NAME_STRING_ARRAYS                    \
+    wxString s;                               \
+    const size_t COUNT = 5;                   \
+    wxTextCtrl *ptext[COUNT] =                \
+    {                                         \
+      m_pTextLadder,                          \
+      m_pTextPos,                             \
+      m_pTextNeg,                             \
+      m_pTextPossibleMixture,                 \
+      m_pTextSingleSource                     \
+    };                                        \
+    CLabSynonym *pSyn[COUNT] =                \
+    {                                         \
+      &(m_pData->m_vsSynonymLadder),          \
+      &(m_pData->m_vsSynonymPosCtrl),         \
+      &(m_pData->m_vsSynonymNegCtrl),         \
+      &(m_pData->m_vsSynonymPossibleMixture), \
+      &(m_pData->m_vsSynonymSingleSource)     \
+    };
+
+
 bool CPanelLabNameStrings::TransferDataFromWindow()
 {
   bool bRtn = (m_pData != NULL);
   if(bRtn)
   {
-    wxString s;
-    wxTextCtrl *ptext[3] = {m_pTextLadder, m_pTextPos, m_pTextNeg};
-    CLabSynonym *pSyn[3] =
-    {
-      &(m_pData->m_vsSynonymLadder),
-      &(m_pData->m_vsSynonymPosCtrl),
-      &(m_pData->m_vsSynonymNegCtrl)
-    };
+    NAME_STRING_ARRAYS
     size_t i;
     bool bRtn = true;
-    for(i = 0; i < 3; i++)
+    for(i = 0; i < COUNT; i++)
     {
       s = ptext[i]->GetValue();
       vector<wxString> *pvs(pSyn[i]->GetVectorPtr());
@@ -175,7 +198,7 @@ bool CPanelLabNameStrings::TransferDataFromWindow()
         mainApp::ShowError(
           _T("Please enter at least one identifier"),this);
         nwxBookCtrlFocus::Focus(ptext[i]);
-        i = 3; // loop exit
+        i = COUNT; // loop exit
         bRtn = false;
       }
     }
@@ -199,16 +222,9 @@ bool CPanelLabNameStrings::TransferDataToWindow()
   bool bRtn = (m_pData != NULL);
   if(bRtn)
   {
-    wxString s;
-    wxTextCtrl *ptext[3] = {m_pTextLadder, m_pTextPos, m_pTextNeg};
-    CLabSynonym *pSyn[3] =
-    {
-      &(m_pData->m_vsSynonymLadder),
-      &(m_pData->m_vsSynonymPosCtrl),
-      &(m_pData->m_vsSynonymNegCtrl)
-    };
+    NAME_STRING_ARRAYS
     size_t i;
-    for(i = 0; i < 3; i++)
+    for(i = 0; i < COUNT; i++)
     {
       nwxString::Join(pSyn[i]->GetVector(),&s,"\n");
       nwxString::FixEOLU(&s,true);
