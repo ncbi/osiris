@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.25</VersionNumber>
-	<BuildTime>04 15 2014 01:52PM</BuildTime>
+	<VersionNumber>6.26</VersionNumber>
+	<BuildTime>04 16 2014 06:47PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5101,12 +5101,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Disable Low Level Filters For Known Mixtures</ThresholdDescriptor>
+				<ThresholdDescriptor>Disable Low Level Height Filters For Known Mixtures</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Disable Low Level Filters For Known Mixtures</Text>
+			<Text>Disable Low Level Height Filters For Known Mixtures</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
