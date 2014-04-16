@@ -158,6 +158,7 @@ public:
 
 	virtual CoreBioComponent* GetBestGridBasedOnTimeForAnalysis (RGDList& gridList);
 	virtual CoreBioComponent* GetBestGridBasedOnMax2DerivForAnalysis (RGDList& gridList, CSplineTransform*& timeMap);
+	virtual CoreBioComponent* GetBestGridBasedOnLeastTransformError (RGDList& gridList, CSplineTransform*& timeMap, const double* characteristicArray);
 	virtual CoreBioComponent* GetBestGridBasedOnMaxDelta3DerivForAnalysis (RGDList& gridList, CSplineTransform*& timeMap);
 
 	virtual int FindAndRemoveFixedOffsets ();
@@ -297,6 +298,9 @@ public:
 	void SetPositiveControlTrueSM ();
 	void SetPositiveControlFalseSM ();
 
+	void SetPossibleMixtureIDTrueSM () { mSatisfiesPossibleMixtureCriteria = true; }
+	void SetPossibleMixtureIDFalseSM () { mSatisfiesPossibleMixtureCriteria = false; }
+
 	virtual int TestFractionalFiltersSM ();
 	virtual int MakePreliminaryCallsSM (GenotypesForAMarkerSet* pGenotypes);
 
@@ -386,6 +390,8 @@ public:
 	static void SetMinBioIDForArtifacts (int minBioID) { minBioIDForArtifacts = minBioID; }
 
 	friend CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2);
+	friend CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2, bool useHermiteSplines);
+
 	static void CreateInitializationData (int scope);
 	static void InitializeMessageMatrix (bool* matrix, int size);
 	static void ClearInitializationMatrix () { delete[] InitialMatrix; InitialMatrix = NULL; }
@@ -421,6 +427,7 @@ protected:
 
 	bool mIsNegativeControl;
 	bool mIsPositiveControl;
+	bool mSatisfiesPossibleMixtureCriteria;
 
 	CoreBioComponent* mAssociatedGrid;
 	list<CompoundSignalInfo*> mSignalLinkList;
@@ -446,6 +453,7 @@ protected:
 	static bool* OffScaleData;
 	static int OffScaleDataLength;
 	static double minPrimaryPullupThreshold;
+	static bool UseHermiteTimeTransforms;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();

@@ -185,6 +185,8 @@ public:
 	bool ReadLadderLabLimits (const RGString& xmlString, RFULimitsStruct& rfuLimits);
 	bool ReadSampleLabLimits (const RGString& xmlString, RFULimitsStruct& rfuLimits);
 	bool ReadLabNonRFULimits (size_t startOffset, size_t& endOffset, const RGString& xmlString, labNonRFULimitsStruct& nonRFULimits);
+	//int ReadSampleTypeSpecifications (size_t startOffset, size_t& endOffset, const RGString& xmlString);
+	//int ReadSampleTypeSpec (const RGString& xmlString);
 	bool SetAllSmartMessageThresholds ();
 
 	bool LadderDoesTargetStringEqualASynonymCaseIndep (const RGString& target);
@@ -198,6 +200,9 @@ public:
 
 	bool NegControlDoesTargetStringEqualASynonymCaseIndep (const RGString& target);
 	bool NegControlDoesTargetStringContainASynonymCaseIndep (const RGString& target);
+
+	bool DoesTargetStringEqualMixtureCriteriaCaseIndep (const RGString& target);
+	bool DoesTargetStringContainMixtureCriteriaCaseIndep (const RGString& target);
 
 	int GetMaxPullups () const { return mMaxPullups; }
 	int GetMaxStutter () const { return mMaxStutter; }
@@ -229,6 +234,8 @@ protected:
 	SynonymList* ControlIDs;
 	SynonymList* PositiveControlIDs;
 	SynonymList* NegativeControlIDs;
+	SynonymList* mSingleSourceSampleIDs;
+	SynonymList* mMixtureIDs;
 	RGString* mStandardPositiveControlName;
 	RGString* mMarkerSetName;
 

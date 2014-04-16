@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.2</VersionNumber>
-	<BuildTime>03 31 2014 12:32PM</BuildTime>
+	<VersionNumber>6.25</VersionNumber>
+	<BuildTime>04 15 2014 01:52PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -92,6 +92,61 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>SAMPLE IS NEGATIVE CONTROL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSampleSatisfiesPossibleMixtureIDCriteria</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>SAMPLE SATISFIES POSSIBLE MIXTURE ID CRITERIA</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisableFractionalFilter</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>DISABLE FRACTIONAL FILTER</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisablePullupFractionalFilter</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>DISABLE PULLUP FRACTIONAL FILTER</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisableStutterFilter</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>DISABLE STUTTER FILTER</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisableAdenylationFilter</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>DISABLE ADENYLATION FILTER</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -481,7 +536,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>smCurveFitFailed OR smLaserOffScaleNoInterchannelLink OR smCurveFitMarginal OR smSpike OR smBlob OR smPullUp OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution</Expression>
+				<Expression>smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR  smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak:  Excessive Residual Displacement</Text>
 			<ReportLevel>20</ReportLevel>
@@ -493,7 +548,7 @@
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT (smCurveFitFailed OR smLaserOffScaleNoInterchannelLink OR smCurveFitMarginal OR smSpike OR smBlob OR smPullUp OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution)</Expression>
+				<Expression>NOT (smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution)</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
@@ -1055,18 +1110,18 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT smDisableStutterFilter</Expression>
 			</ReportCriterion>
 			<Text>Stutter</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>0</Expression>
+				<Expression>smDisableStutterFilter</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
 				<RestrictionCriterion>
-					<Expression>1</Expression>
+					<Expression>NOT smDisableStutterFilter</Expression>
 				</RestrictionCriterion>
 			</Restriction>
 		</SmartMessage>
@@ -1075,13 +1130,13 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smStutter</Expression>
+				<Expression>NOT smStutter AND NOT smDisableStutterFilter</Expression>
 			</ReportCriterion>
 			<Text>Baseline Relative Stutter</Text>
-			<ReportLevel>1</ReportLevel>
+			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>0</Expression>
+				<Expression>smDisableStutterFilter</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -1118,24 +1173,24 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smBelowMinRFU</Expression>
+				<Expression>NOT smBelowMinRFU AND NOT smDisableAdenylationFilter</Expression>
 			</ReportCriterion>
 			<Text>Adenylation</Text>
 			<ReportLevel>20</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>1</AlternateReportLevel>
 				<AlternateReportCriterion>
-					<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder</Expression>
+					<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder AND NOT smDisableAdenylationFilter</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL</Expression>
+				<Expression>(smCallOnLadderAdenylationPreset AND NOT smSignalOL) OR smDisableAdenylationFilter</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
 				<RestrictionCriterion>
-					<Expression>NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)</Expression>
+					<Expression>NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL) AND NOT smDisableAdenylationFilter</Expression>
 				</RestrictionCriterion>
 			</Restriction>
 		</SmartMessage>
@@ -1145,13 +1200,13 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smBelowMinRFU AND NOT smAdenylation</Expression>
+				<Expression>NOT smBelowMinRFU AND NOT smAdenylation AND NOT smDisableAdenylationFilter</Expression>
 			</ReportCriterion>
 			<Text>Baseline Relative Adenylation</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL</Expression>
+				<Expression>(smCallOnLadderAdenylationPreset AND NOT smSignalOL) OR smDisableAdenylationFilter</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -1284,7 +1339,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smExtendedFractionalFilter AND NOT smSignalIsCtrlPeak</Expression>
+				<Expression>NOT smExtendedFractionalFilter AND NOT smSignalIsCtrlPeak AND NOT smDisableFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Signal Height Below Minimum Fractional Filter Height</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1296,7 +1351,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smExtendedFractionalFilter AND NOT smHeightBelowFractionalFilter</Expression>
+				<Expression>NOT smExtendedFractionalFilter AND NOT smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Baseline Relative Signal Height Below Minimum Fractional Filter Height</Text>
 			<ReportLevel>1</ReportLevel>
@@ -1311,18 +1366,18 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT smDisableFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Signal Height Below Minimum Fractional Filter Height</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>0</Expression>
+				<Expression>smDisableFractionalFilter</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
 				<RestrictionCriterion>
-					<Expression>true</Expression>
+					<Expression>NOT smDisableFractionalFilter</Expression>
 				</RestrictionCriterion>
 			</Restriction>
 		</SmartMessage>
@@ -1362,7 +1417,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT smDisablePullupFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Signal Height Below Minimum Pullup Fractional Filter Height</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1374,13 +1429,13 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smHeightBelowPullupFractionalFilter</Expression>
+				<Expression>NOT smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Baseline Relative Signal Height Below Minimum Pullup Fractional Filter Height</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>0</Expression>
+				<Expression>smDisablePullupFractionalFilter</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -1422,7 +1477,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smDisableFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Fractional Filter (Left)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1434,7 +1489,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smDisableFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Fractional Filter (Right)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1446,7 +1501,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter AND NOT smBelowFractionalFilterLeft</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smBelowFractionalFilterLeft AND NOT smDisableFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Fractional Filter (Left)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1458,7 +1513,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter AND NOT smBelowFractionalFilterRight</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smBelowFractionalFilterRight AND NOT smDisableFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Fractional Filter (Right)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1469,7 +1524,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Pullup Fractional Filter (Left)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1480,7 +1535,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Pullup Fractional Filter (Right)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1491,7 +1546,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter AND NOT smBelowPullupFractionalFilterLeft</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smBelowPullupFractionalFilterLeft AND NOT smDisablePullupFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Pullup Fractional Filter (Left)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1502,7 +1557,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smExtendedFractionalFilter AND NOT smBelowPullupFractionalFilterRight</Expression>
+				<Expression>smExtendedFractionalFilter AND NOT smBelowPullupFractionalFilterRight AND NOT smDisablePullupFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Below Pullup Fractional Filter (Right)</Text>
 			<ReportLevel>20</ReportLevel>
@@ -3855,7 +3910,7 @@
 				<ThresholdDescriptor>Maximum Number of Stutters in Sample</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
-				<Expression>NOT smSampleIsLadder</Expression>
+				<Expression>NOT smSampleIsLadder AND NOT smDisableStutterFilter</Expression>
 			</ReportCriterion>
 			<Text>NUMBER OF STUTTER PEAKS EXCEEDS THRESHOLD</Text>
 			<TextForData>:  </TextForData>
@@ -3875,7 +3930,7 @@
 				<ThresholdDescriptor>Maximum Number of Adenylations in Sample</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
-				<Expression>NOT smSampleIsLadder</Expression>
+				<Expression>NOT smSampleIsLadder AND NOT smDisableAdenylationFilter</Expression>
 			</ReportCriterion>
 			<Text>NUMBER OF ADENYLATION PEAKS EXCEEDS THRESHOLD</Text>
 			<TextForData>:  </TextForData>
@@ -4966,7 +5021,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Ignore Effects of Negative Relative Baseline</ThresholdDescriptor>
+				<ThresholdDescriptor>        Ignore Effects of Negative Relative Baseline</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4982,7 +5037,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Enable Raw Data Filter For Baseline Normalization Estimation</ThresholdDescriptor>
+				<ThresholdDescriptor>        Enable Raw Data Filter For Baseline Normalization Estimation</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5030,12 +5085,92 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Make Excessive Residual Displacement Message Critical</ThresholdDescriptor>
+				<ThresholdDescriptor>        Make Excessive Residual Displacement Message Critical</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Make Excessive Residual Displacement Message Critical</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Disable Low Level Filters For Known Mixtures</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Disable Low Level Filters For Known Mixtures</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisableFractionalFilterPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Disable Fractional Filter</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Disable Fractional Filter</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisablePullupFractionalFilterPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Disable Pull-up Fractional Filter</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Disable Pull-up Fractional Filter</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisableStutterFilterPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Disable Stutter Filter</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Disable Stutter Filter</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDisableAdenylationFilterPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Disable Adenylation Filter</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Disable Adenylation Filter</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -5094,6 +5229,11 @@
 						<Name>smFilterWindowWidthForBaselineEstimation</Name>
 						<Name>smMinPrimaryPullupThreshold</Name>
 						<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
+						<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
+						<Name>smDisableFractionalFilterPreset</Name>
+						<Name>smDisablePullupFractionalFilterPreset</Name>
+						<Name>smDisableStutterFilterPreset</Name>
+						<Name>smDisableAdenylationFilterPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
@@ -5190,6 +5330,7 @@
 						<Name>smSampleIsLadder</Name>
 						<Name>smSampleIsPosCtrl</Name>
 						<Name>smSampleIsNegCtrl</Name>
+						<Name>smSampleSatisfiesPossibleMixtureIDCriteria</Name>
 						<Name>smLadderTypeUnknown</Name>
 						<Name>smAssociatedLadderIsCritical</Name>
 						<Name>smDontReworkSample</Name>
@@ -5216,6 +5357,10 @@
 					<Evaluations>
 						<Expression>smIsSample = NOT smSampleIsLadder</Expression>
 						<Expression>smIsSampleButNotNegativeCtrl = smIsSample AND NOT smSampleIsNegCtrl</Expression>
+						<Expression>smDisableFractionalFilter = smDisableLowLevelFiltersForKnownMixturesPreset AND  smSampleSatisfiesPossibleMixtureIDCriteria AND smDisableFractionalFilterPreset</Expression>
+						<Expression>smDisablePullupFractionalFilter = smDisableLowLevelFiltersForKnownMixturesPreset AND  smSampleSatisfiesPossibleMixtureIDCriteria AND smDisablePullupFractionalFilterPreset</Expression>
+						<Expression>smDisableStutterFilter = smDisableLowLevelFiltersForKnownMixturesPreset AND  smSampleSatisfiesPossibleMixtureIDCriteria AND smDisableStutterFilterPreset</Expression>
+						<Expression>smDisableAdenylationFilter = smDisableLowLevelFiltersForKnownMixturesPreset AND  smSampleSatisfiesPossibleMixtureIDCriteria AND smDisableAdenylationFilterPreset</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smIsSample: smTotalNumberOfSamples</TriggerExpression>
@@ -5246,13 +5391,13 @@
 						<Name>smBelowPullupFractionalFilterRight</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smInferredFFLeft = smPartOfExtendedLocusLeft AND smHeightBelowFractionalFilter</Expression>
-						<Expression>smInferredFFRight = smPartOfExtendedLocusRight AND smHeightBelowFractionalFilter</Expression>
-						<Expression>smInferredPullupFFLeft = smPartOfExtendedLocusLeft AND smHeightBelowPullupFractionalFilter</Expression>
-						<Expression>smInferredPullupFFRight = smPartOfExtendedLocusRight AND smHeightBelowPullupFractionalFilter</Expression>
-						<Expression>smFFLeft = smBelowFractionalFilterLeft OR smBelowPullupFractionalFilterLeft OR smInferredFFLeft OR smInferredPullupFFLeft</Expression>
-						<Expression>smFFRight = smBelowFractionalFilterRight OR smBelowPullupFractionalFilterRight OR smInferredFFRight OR smInferredPullupFFRight</Expression>
-						<Expression>smExtendedFractionalFilter = (NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)</Expression>
+						<Expression>smInferredFFLeft = smPartOfExtendedLocusLeft AND smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter</Expression>
+						<Expression>smInferredFFRight = smPartOfExtendedLocusRight AND smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter</Expression>
+						<Expression>smInferredPullupFFLeft = smPartOfExtendedLocusLeft AND smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
+						<Expression>smInferredPullupFFRight = smPartOfExtendedLocusRight AND smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
+						<Expression>smFFLeft = ((smBelowFractionalFilterLeft AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterLeft AND NOT smDisablePullupFractionalFilter) OR smInferredFFLeft OR smInferredPullupFFLeft)</Expression>
+						<Expression>smFFRight = ((smBelowFractionalFilterRight AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterRight AND NOT smDisablePullupFractionalFilter) OR smInferredFFRight OR smInferredPullupFFRight)</Expression>
+						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter</Expression>
 						<Expression>smUnassignedInterlocusPeak = NOT (smPeakInCoreLadderLocus OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSampleIsLadder OR smSignalIsCtrlPeak OR smUnexpectedILSPeak OR smChannelIsILS)</Expression>
 					</Evaluations>
 				</ScopeDynamics>
@@ -5351,8 +5496,8 @@
 						<Expression>smAcceptedInterlocusRight = smPossibleValidInterlocusRight AND smAcceptedOLRight</Expression>
 					</Evaluations>
 					<Triggers>
-						<TriggerExpression>smStutter (NOT smBelowMinRFU): smNumberOfStuttersInSample</TriggerExpression>
-						<TriggerExpression>smAdenylation (NOT smBelowMinRFU): smNumberOfAdenylationsInSample</TriggerExpression>
+						<TriggerExpression>smStutter (NOT smBelowMinRFU AND NOT smDisableStutterFilter): smNumberOfStuttersInSample</TriggerExpression>
+						<TriggerExpression>smAdenylation (NOT smBelowMinRFU AND NOT smDisableAdenylationFilter): smNumberOfAdenylationsInSample</TriggerExpression>
 						<TriggerExpression>smUnexpectedPeakInNegativeControl ((NOT smPeakToRightOfILS) AND (NOT smBelowMinRFU OR (smBelowMinRFU AND smTestForPeaksBelowMinRFUForNegCtrlPreset))): smUnexpectedNoOfPeaks, smUnexpectedNoOfPeaksInChannel, smNegCtrlFailed</TriggerExpression>
 						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
 						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
@@ -5412,7 +5557,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR smStutter OR (smAdenylation AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR smHeightBelowFractionalFilter OR smHeightBelowPullupFractionalFilter OR smInterlocusPullUp OR smExtendedFractionalFilter OR smPullupAtExtraneousILSPeak) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>
@@ -5423,7 +5568,7 @@
 						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
 						<Expression>smPurePullupLateStage = smPurePullup</Expression>
-						<Expression>smNotAKnownArtifact = NOT (smStutter OR smAdenylation OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR ((smHeightBelowFractionalFilter OR smExtendedFractionalFilter) AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
+						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter) OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smTrueCrater (NOT smRestrictedPriorityPeak): smNumberOfCratersInSample</TriggerExpression>

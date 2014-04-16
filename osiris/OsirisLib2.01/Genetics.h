@@ -487,6 +487,9 @@ public:
 	static void SetNoYForAMEL (bool value) { NoYForAMEL = value; }
 	static bool IsNoYForAMEL () { return NoYForAMEL; }
 
+	static void SetDisableStutterFilter (bool s) { DisableStutterFilter = s; }
+	static void SetDisableAdenylationFilter (bool s) { DisableAdenylationFilter = s; }
+
 protected:
 	BaseLocus* mLink;
 	RGHashTable AlleleListByName;   // items of type Allele*
@@ -572,6 +575,8 @@ protected:
 	static double AlleleOverloadThreshold;
 	static bool* InitialMatrix;
 	static bool NoYForAMEL;
+	static bool DisableStutterFilter;
+	static bool DisableAdenylationFilter;
 
 	Boolean BuildAlleleLists (const RGString& xmlString);
 	Boolean BuildMappings (RGDList& signalList);

@@ -3159,6 +3159,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 
 	// We assume that this method tests samples; either use a different method or augment this one
 	// to test ladder loci
+	// Note:  This function does not seem to be in use...04/16/2014
 
 	DataSignal* firstSignal;
 	DataSignal* lastSignal;
@@ -3263,7 +3264,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 				if (bioIDDifference > repeatNo)
 					break;
 
-				if (bioIDDifference == repeatNo) {
+				if (!DisableStutterFilter && (bioIDDifference == repeatNo)) {
 
 					// stutter, but which way?
 
@@ -3307,7 +3308,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 					}
 				}
 
-				else if (bioIDDifference == 1) {
+				else if (!DisableAdenylationFilter && (bioIDDifference == 1)) {
 
 					// adenylation, but which way?
 
@@ -3359,7 +3360,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 				if (bioIDDifference > repeatNo)
 					continue;
 
-				if (bioIDDifference == repeatNo) {
+				if (!DisableStutterFilter && (bioIDDifference == repeatNo)) {
 
 					// stutter, but which way?
 
@@ -3401,7 +3402,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 					}
 				}
 
-				else if (bioIDDifference == 1) {
+				else if (!DisableAdenylationFilter && (bioIDDifference == 1)) {
 
 					// adenylation, but which way?
 
@@ -3472,6 +3473,9 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, RG
 	//
 	//  This is sample stage 3
 	//
+
+	if (DisableStutterFilter && DisableAdenylationFilter)
+		return 0;
 
 	DataSignal* firstSignal;
 	DataSignal* lastSignal;
@@ -3549,40 +3553,43 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, RG
 
 	// Add test for dual extended loci in each of below...oops, no longer needed:  if a signal is in one of externalSignals lists, it cannot be in this locus' extended locus
 
-	while (nextSignal = (DataSignal*) itL ()) {
+	if (!DisableAdenylationFilter) {
 
-		if (nextSignal->GetMessageValue (adenylation))
-			continue;
+		while (nextSignal = (DataSignal*) itL ()) {
 
-		if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneBPLeft, maxDelForOneBPLeft, minDelForOneBPRight, maxDelForOneBPRight, adenylationLimit)) {
+			if (nextSignal->GetMessageValue (adenylation))
+				continue;
 
-	//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
-			type1List.InsertWithNoReferenceDuplication (nextSignal);
+			if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneBPLeft, maxDelForOneBPLeft, minDelForOneBPRight, maxDelForOneBPRight, adenylationLimit)) {
+
+		//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
+				type1List.InsertWithNoReferenceDuplication (nextSignal);
+			}
 		}
-	}
 
-	while (nextSignal = (DataSignal*) itR ()) {
+		while (nextSignal = (DataSignal*) itR ()) {
 
-		if (nextSignal->GetMessageValue (adenylation))
-			continue;
+			if (nextSignal->GetMessageValue (adenylation))
+				continue;
 
-		if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneBPLeft, maxDelForOneBPLeft, minDelForOneBPRight, maxDelForOneBPRight, adenylationLimit)) {
+			if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneBPLeft, maxDelForOneBPLeft, minDelForOneBPRight, maxDelForOneBPRight, adenylationLimit)) {
 
-	//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
-			type1List.InsertWithNoReferenceDuplication (nextSignal);
+		//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
+				type1List.InsertWithNoReferenceDuplication (nextSignal);
+			}
 		}
-	}
 
-	while (nextSignal = (DataSignal*) it ()) {
+		while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMessageValue (adenylation))
-			continue;
+			if (nextSignal->GetMessageValue (adenylation))
+				continue;
 
-		if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneBPLeft, maxDelForOneBPLeft, minDelForOneBPRight, maxDelForOneBPRight, adenylationLimit)) {
+			if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneBPLeft, maxDelForOneBPLeft, minDelForOneBPRight, maxDelForOneBPRight, adenylationLimit)) {
 
-	//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
-			type1List.InsertWithNoReferenceDuplication (nextSignal);
-//testing			nextSignal->SetAlleleName ("");
+		//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
+				type1List.InsertWithNoReferenceDuplication (nextSignal);
+		//testing			nextSignal->SetAlleleName ("");
+			}
 		}
 	}
 
@@ -3593,45 +3600,48 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, RG
 	itR.Reset ();
 	it.Reset ();
 
-	while (nextSignal = (DataSignal*) itL ()) {
+	if (!DisableStutterFilter) {
 
-		if (nextSignal->GetMessageValue (stutter))
-			continue;
+		while (nextSignal = (DataSignal*) itL ()) {
 
-		if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneRepeatLeft, maxDelForOneRepeatLeft, minDelForOneRepeatRight, maxDelForOneRepeatRight, stutterLimit, plusStutterLimit)) {
+			if (nextSignal->GetMessageValue (stutter))
+				continue;
 
-	//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
-			type2List.InsertWithNoReferenceDuplication (nextSignal);
+			if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneRepeatLeft, maxDelForOneRepeatLeft, minDelForOneRepeatRight, maxDelForOneRepeatRight, stutterLimit, plusStutterLimit)) {
+
+		//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
+				type2List.InsertWithNoReferenceDuplication (nextSignal);
+			}
 		}
-	}
 
-	while (nextSignal = (DataSignal*) itR ()) {
+		while (nextSignal = (DataSignal*) itR ()) {
 
-		if (nextSignal->GetMessageValue (stutter))
-			continue;
+			if (nextSignal->GetMessageValue (stutter))
+				continue;
 
-		if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneRepeatLeft, maxDelForOneRepeatLeft, minDelForOneRepeatRight, maxDelForOneRepeatRight, stutterLimit, plusStutterLimit)) {
+			if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneRepeatLeft, maxDelForOneRepeatLeft, minDelForOneRepeatRight, maxDelForOneRepeatRight, stutterLimit, plusStutterLimit)) {
 
-	//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
-			type2List.InsertWithNoReferenceDuplication (nextSignal);
+		//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
+				type2List.InsertWithNoReferenceDuplication (nextSignal);
+			}
 		}
-	}
 
-	while (nextSignal = (DataSignal*) it ()) {
+		while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMessageValue (stutter))
-			continue;
+			if (nextSignal->GetMessageValue (stutter))
+				continue;
 
-		if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneRepeatLeft, maxDelForOneRepeatLeft, minDelForOneRepeatRight, maxDelForOneRepeatRight, stutterLimit, plusStutterLimit)) {
+			if (TestForProximityArtifact (nextSignal, externalSignalsLeft, externalSignalsRight, minDelForOneRepeatLeft, maxDelForOneRepeatLeft, minDelForOneRepeatRight, maxDelForOneRepeatRight, stutterLimit, plusStutterLimit)) {
 
-	//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
-			type2List.InsertWithNoReferenceDuplication (nextSignal);
-//testing			nextSignal->SetAlleleName ("");
+		//		Locus::RemoveExtraneousNoticesFromSignal (nextSignal);
+				type2List.InsertWithNoReferenceDuplication (nextSignal);
+	//testing			nextSignal->SetAlleleName ("");
 			
-			if (!GetMessageValue (locusUnreportedOLs)) {
+				if (!GetMessageValue (locusUnreportedOLs)) {
 
-				SetMessageValue (locusUnreportedOLs, true);
-				AppendDataForSmartMessage (locusUnreportedOLs, tempLocus.Entries ());
+					SetMessageValue (locusUnreportedOLs, true);
+					AppendDataForSmartMessage (locusUnreportedOLs, tempLocus.Entries ());
+				}
 			}
 		}
 	}
@@ -4089,6 +4099,9 @@ int Locus :: TestComplexNeighborsForGridSM (DataSignal* testSignal, RGDList& com
 
 
 int Locus :: TestSampleNeighborsSM (DataSignal* previous, DataSignal* testSignal, DataSignal* following) {
+
+	//
+	//	Not currently in use...Noted 04/16/2014
 
 	double peak = testSignal->Peak ();
 	Boolean NotAcceptable = FALSE;
@@ -5059,6 +5072,9 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RG
 
 	if (mIsAMEL)
 		return 0;
+
+	if (DisableStutterFilter && DisableAdenylationFilter)
+		return 0;
 	
 	RGDListIterator it (LocusSignalList);
 	RGDListIterator it2 (LocusSignalList);
@@ -5105,14 +5121,14 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RG
 
 			diff = abs (nextBP - testBP);
 
-			if ((diff == 1) && (testBP > nextBP)) {	// 12/15/2013...don't allow fictitious +A
+			if (!DisableAdenylationFilter && (diff == 1) && (testBP > nextBP)) {	// 12/15/2013...don't allow fictitious +A
 
 				hasAdenylation = true;
 				adenylationPeakTotal += testSignal->Peak ();
 				relativeAdenylationPeakTotal += testSignal->GetBaselineRelativePeak ();
 			}
 			
-			else if (diff == repeatNumber) {
+			else if (!DisableStutterFilter && (diff == repeatNumber)) {
 
 				hasStutter = true;
 

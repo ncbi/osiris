@@ -204,6 +204,10 @@ PERSISTENT_PREDECLARATION (smResidualDisplacementThreshold)
 PERSISTENT_PREDECLARATION (smResidualDisplacementTestPreset)
 PERSISTENT_PREDECLARATION (smExcessiveResidualDisplacementLeft)
 PERSISTENT_PREDECLARATION (smExcessiveResidualDisplacementRight)
+PERSISTENT_PREDECLARATION (smSampleSatisfiesPossibleMixtureIDCriteria)
+PERSISTENT_PREDECLARATION (smDisableLowLevelFiltersForKnownMixturesPreset)
+PERSISTENT_PREDECLARATION (smDisableStutterFilter)
+PERSISTENT_PREDECLARATION (smDisableAdenylationFilter)
 
 
 
@@ -5591,6 +5595,118 @@ public:
 	smExcessiveResidualDisplacementRight ();
 	smExcessiveResidualDisplacementRight (const smExcessiveResidualDisplacementRight& note);
 	virtual ~smExcessiveResidualDisplacementRight ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSampleSatisfiesPossibleMixtureIDCriteria : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSampleSatisfiesPossibleMixtureIDCriteria)
+
+public:
+	smSampleSatisfiesPossibleMixtureIDCriteria ();
+	smSampleSatisfiesPossibleMixtureIDCriteria (const smSampleSatisfiesPossibleMixtureIDCriteria& note);
+	virtual ~smSampleSatisfiesPossibleMixtureIDCriteria ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDisableLowLevelFiltersForKnownMixturesPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDisableLowLevelFiltersForKnownMixturesPreset)
+
+public:
+	smDisableLowLevelFiltersForKnownMixturesPreset ();
+	smDisableLowLevelFiltersForKnownMixturesPreset (const smDisableLowLevelFiltersForKnownMixturesPreset& note);
+	virtual ~smDisableLowLevelFiltersForKnownMixturesPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDisableStutterFilter : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDisableStutterFilter)
+
+public:
+	smDisableStutterFilter ();
+	smDisableStutterFilter (const smDisableStutterFilter& note);
+	virtual ~smDisableStutterFilter ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDisableAdenylationFilter : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDisableAdenylationFilter)
+
+public:
+	smDisableAdenylationFilter ();
+	smDisableAdenylationFilter (const smDisableAdenylationFilter& note);
+	virtual ~smDisableAdenylationFilter ();
 
 	virtual int GetSubject () const;
 

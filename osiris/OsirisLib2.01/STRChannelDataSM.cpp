@@ -2430,6 +2430,9 @@ int STRSampleChannelData :: TestForInterlocusProximityArtifactsSM () {
 	//  This is sample stage 3
 	//
 
+	if (DisableStutterFilter && DisableAdenylationFilter)
+		return 0;
+
 	RGDListIterator it (mLocusList);
 	Locus* nextLocus;
 	RGDList adenylationList;
@@ -2497,6 +2500,9 @@ int STRSampleChannelData :: TestForInterlocusProximityArtifactsSM () {
 				nextLocus->RemoveSignalFromLocusList (nextSignal);
 		}
 	}
+
+	if (DisableAdenylationFilter)
+		return 0;
 
 	RGDListIterator signalIterator (PreliminaryCurveList);  // signals outside lane standard limits should already be gone, so no need to test...right?
 	RGDListIterator adenylationTest (PreliminaryCurveList);
@@ -2903,6 +2909,9 @@ int STRSampleChannelData :: TestProximityArtifactsSM () {
 	//
 	//  This is sample stage 3
 	//
+
+	if (DisableStutterFilter && DisableAdenylationFilter)
+		return 0;
 
 	RGDListIterator it (mLocusList);
 	Locus* nextLocus;

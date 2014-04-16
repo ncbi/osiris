@@ -75,6 +75,7 @@ public:
 	virtual int EvaluateFullSequence (const double* abscissas, double* result, int size);
 	virtual double MaxSecondDerivative () const;
 	virtual double MaxDeltaThirdDerivative () const;
+	virtual int GetFirstDerivativeAtKnots (double*& firstDerivs) { firstDerivs = NULL; return 0; }
 
 	double GetLastValue () const;
 	double GetLastInSequenceValue () const;
@@ -102,6 +103,7 @@ public:
 	CSplineTransform (const list<double>& coord1, const list<double>& coord2);
 	CSplineTransform (const double* coord1, const double* coord2, int size);
 	CSplineTransform (const double* coord1, const double* coord2, int size, const SupplementaryData& ExtraData);
+	CSplineTransform (const double* coord1, const double* coord2, const double* derivs, int size, bool isHermite);	// this is primarily for Hermite cubic splines
 //	CSplineTransform (const list<double>& coord1, const list<double>& coord2, const CoefficientFactory& factory);  // not needed yet
 	virtual ~CSplineTransform ();
 
@@ -120,6 +122,7 @@ public:
 
 	virtual double MaxSecondDerivative () const;
 	virtual double MaxDeltaThirdDerivative () const;
+	virtual int GetFirstDerivativeAtKnots (double*& firstDerivs);
 
 	int GetThirdDerivatives (double* thirdDerivs);	// returns size of array
 	int GetFourthDerivatives (double* fourthDerivs);	// returns size of array
@@ -127,6 +130,7 @@ public:
 	double GetMaxErrors (double* fourthDerivs, double* errors);	// returns max error in seconds
 	double GetMaxErrorsInBPs (double* timeErrors, double* bpErrors, const double* characteristicArray);	// returns max error in bps
 	int OutputHighDerivativesAndErrors (const double* characteristicArray);
+	double GetMaximumErrorOfInterpolation (const double* characteristicArray);
 
 private:
 	int NumberOfKnots;
@@ -149,8 +153,11 @@ private:
 	double bRight;
 
 	int Initialize ();
+	int InitializeHermite (const double* derivs);
 	int SearchForInterval (double abscissa);
 	int SearchForInterval (double abscissa, double start, int startInterval);
+
+	bool mIsHermite;
 
 	double CalculateCubic (double abscissa, int interval);
 	double CalculateFirstDerivativeAtKnot (int knot);

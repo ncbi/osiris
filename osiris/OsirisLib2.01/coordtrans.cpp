@@ -162,7 +162,7 @@ double CoordinateTransform :: MaxDeltaThirdDerivative () const {
 
 
 CSplineTransform :: CSplineTransform (const list<double>& coord1, const list<double>& coord2) : CoordinateTransform (coord1, coord2),
-CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL) {
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (false) {
 
 	if (ErrorFlag == 0) {
 	
@@ -208,7 +208,7 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 
 
 CSplineTransform :: CSplineTransform (const double* coord1, const double* coord2, int size) : CoordinateTransform (coord1, coord2, size),
-CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL) {
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (false) {
 
 	if (ErrorFlag == 0) {
 	
@@ -241,7 +241,7 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 
 
 CSplineTransform :: CSplineTransform (const double* coord1, const double* coord2, int size, const SupplementaryData& ExtraData) : CoordinateTransform (coord1, coord2, size),
-CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL) {
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (false) {
 
 	if (ErrorFlag == 0) {
 
@@ -334,6 +334,46 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 		NumberOfKnots = NumberOfCubics = 0;
 	}
 }
+
+
+CSplineTransform :: CSplineTransform (const double* coord1, const double* coord2, const double* derivs, int size, bool isHermite) : CoordinateTransform (coord1, coord2, size),
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (isHermite) {
+
+	if (ErrorFlag == 0) {
+	
+		NumberOfKnots = size; // n+1
+		NumberOfCubics = NumberOfKnots - 1; // n
+		Knots = new double [NumberOfKnots];
+		Ordinates = new double [NumberOfKnots];
+
+		A = new double [NumberOfCubics];
+		B = new double [NumberOfCubics];
+		C = new double [NumberOfCubics];
+		D = new double [NumberOfCubics];
+
+		for (int i=0; i<size; i++) {
+
+			Knots [i] = coord1 [i];
+			Ordinates [i] = coord2 [i];
+		}
+
+		Left = Knots [0];
+		Right = Knots [NumberOfCubics];
+
+		if (isHermite)
+			InitializeHermite (derivs);
+
+		else
+			Initialize ();
+	}
+
+	else {
+
+		NumberOfKnots = NumberOfCubics = 0;
+	}
+}
+
+
 
 
 int CSplineTransform :: Initialize () {
@@ -434,6 +474,63 @@ int CSplineTransform :: Initialize () {
 	delete[] gamma;
 	return 0;
 }
+
+
+int CSplineTransform :: InitializeHermite (const double* derivs) {
+
+	int j;
+
+	double* h = new double [NumberOfKnots];
+
+	//
+	// Now we set up the cubic coefficients for the Hermite cubic spline.  Algorithm taken from:
+	// Wikipedia article entitled "Cubic Hermite Spline", 04/08/2014
+	//
+	// Commented lines are replaced successively by reorganized code to improve operational efficiency.
+	//
+
+	for (j=0; j<NumberOfCubics; j++) {  // from 0 to n-1
+
+		h[j] = Knots[j+1] - Knots[j];
+	}
+	double hInv;
+	double hInv2;
+	double p0;
+	double m0;
+	double p1;
+	double m1;
+	double T;
+	double hh;
+
+	for (j=0; j<NumberOfCubics; j++) {
+
+		// These are coefficient for polynomial between Knots [j] and Knots [j+1]
+		hInv = 1.0 / h[j];
+		hInv2 = hInv * hInv;
+		hh = h [j];
+		p0 = Ordinates [j];
+		p1 = Ordinates [j+1];
+		m0 = derivs [j];
+		m1 = derivs [j+1];
+
+		A [j] = p0;
+		B [j] = m0;
+		T = (m1 - m0) * hh - 2.0 * (p1 - p0 - m0 * hh);
+		D [j] = T * hInv * hInv2;
+		C [j] = (p1 - p0 - m0 * hh - T) * hInv2;
+	}
+
+//	mLeft = (3.0 * D [0] * Left + 2.0 * C [0]) * Left + B [0];  // This is an error...B[0] is the left-most 1st derivative
+	mLeft = B[0];
+	bLeft = Ordinates [0];
+
+	mRight = derivs [NumberOfCubics];
+	bRight = Ordinates [NumberOfCubics];
+
+	delete[] h;
+	return 0;
+}
+
 
 
 //
@@ -621,13 +718,31 @@ double CSplineTransform :: MaxSecondDerivative () const {
 
 	double maxValue = 0.0;
 	double temp;
+	int i;
 
-	for (int i=0; i<NumberOfCubics; i++) {
+	for (i=0; i<NumberOfCubics; i++) {
 
 		temp = fabs (C [i]);
 
 		if (temp > maxValue)
 			maxValue = temp;
+	}
+
+	int n = NumberOfCubics - 1;
+	temp = fabs (C [n] + (Knots [NumberOfCubics] - Knots [n]) * D [n]);
+
+	if (temp > maxValue)
+		maxValue = temp;
+
+	if (mIsHermite) {
+
+		for (i=0; i<n; i++) {
+
+			temp = fabs (C [i] + (Knots [i+1] - Knots [i]) * D [i]);
+
+			if (temp > maxValue)
+				maxValue = temp;
+		}
 	}
 
 	return 2.0 * maxValue;
@@ -648,6 +763,18 @@ double CSplineTransform :: MaxDeltaThirdDerivative () const {
 	}
 
 	return 6.0 * maxValue;
+}
+
+
+int CSplineTransform :: GetFirstDerivativeAtKnots (double*& firstDerivs) {
+
+	int i;
+	firstDerivs = new double [NumberOfKnots];
+
+	for (i=0; i<NumberOfKnots; i++)
+		firstDerivs [i] = CalculateFirstDerivativeAtKnot (i);
+
+	return NumberOfKnots;
 }
 
 
@@ -732,10 +859,33 @@ double CSplineTransform :: GetMaxErrorsInBPs (double* timeErrors, double* bpErro
 	double tempError;
 	double absError;
 	double max = 0.0;
+	double maxTime = 0.0;
+
+	if (mIsHermite) {
+
+		for (i=0; i<NumberOfCubics; i++) {
+
+			bpErrors [i] = tempError = timeErrors [i] * ((characteristicArray [i+1] - characteristicArray [i]) / (Ordinates [i+1] - Ordinates [i]));
+			absError = fabs (tempError);
+
+			if (absError > max)
+				max = absError;
+		}
+
+		return max;
+	}
 
 	for (i=0; i<NumberOfCubics; i++) {
 
-		bpErrors [i] = tempError = timeErrors [i] * ((characteristicArray [i+1] - characteristicArray [i]) / (Ordinates [i+1] - Ordinates [i]));
+		tempError = fabs (timeErrors [i]);
+
+		if (tempError > maxTime)
+			maxTime = tempError;
+	}
+
+	for (i=0; i<NumberOfCubics; i++) {
+
+		bpErrors [i] = tempError = maxTime * ((characteristicArray [i+1] - characteristicArray [i]) / (Ordinates [i+1] - Ordinates [i]));
 		absError = fabs (tempError);
 
 		if (absError > max)
@@ -771,34 +921,34 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 	int i;
 
 	cout << "Max Error Original (bps) = " << maxErrorInBP << ".  Max Error From 1st Derivs (bps) = " << maxErrorInBP2 << endl;
-	cout << "Third derivatives: ";
+	//cout << "Third derivatives: ";
 
-	for (i=0; i<NumberOfCubics; i++)
-		cout << " " << derivs3 [i];
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << derivs3 [i];
 
-	cout << endl;
-	cout << "Fourth derivatives Original: ";
+	//cout << endl;
+	//cout << "Fourth derivatives Original: ";
 
-	for (i=0; i<NumberOfCubics; i++)
-		cout << " " << derivs4 [i];
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << derivs4 [i];
 
-	cout << endl;
-	cout << "Errors (bbs): ";
+	//cout << endl;
+	//cout << "Errors (bbs): ";
 
-	for (i=0; i<NumberOfCubics; i++)
-		cout << " " << bpErrors [i];
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << bpErrors [i];
 
-	cout << endl;
-	cout << "Fourth derivatives From 1st Derivs: ";
+	//cout << endl;
+	//cout << "Fourth derivatives From 1st Derivs: ";
 
-	for (i=0; i<NumberOfCubics; i++)
-		cout << " " << derivs4From1stDerivs [i];
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << derivs4From1stDerivs [i];
 
-	cout << endl;
-	cout << "Errors from 1st Derivs (bbs): ";
+	//cout << endl;
+	//cout << "Errors from 1st Derivs (bbs): ";
 
-	for (i=0; i<NumberOfCubics; i++)
-		cout << " " << bpErrorsFrom1stDerivs [i];
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << bpErrorsFrom1stDerivs [i];
 
 	cout << endl;
 	delete[] derivs3;
@@ -810,6 +960,62 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 	delete[] errors2;
 	delete[] bpErrorsFrom1stDerivs;
 	return 0;
+}
+
+
+double CSplineTransform :: GetMaximumErrorOfInterpolation (const double* characteristicArray) {
+
+	double maxErrorInBP2;
+	double* derivs4From1stDerivs = new double [NumberOfCubics];
+	double* bpErrorsFrom1stDerivs = new double [NumberOfCubics];
+	double* errors2 = new double [NumberOfCubics];
+
+	GetFourthDerivativesFromSplineOfFirstDerivs (derivs4From1stDerivs);
+	GetMaxErrors (derivs4From1stDerivs, errors2);
+	maxErrorInBP2 = GetMaxErrorsInBPs (errors2, bpErrorsFrom1stDerivs, characteristicArray);
+
+	//int i;
+
+	//cout << "Max Error Original (bps) = " << maxErrorInBP << ".  Max Error From 1st Derivs (bps) = " << maxErrorInBP2 << endl;
+	//cout << "Third derivatives: ";
+
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << derivs3 [i];
+
+	//cout << endl;
+	//cout << "Fourth derivatives Original: ";
+
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << derivs4 [i];
+
+	//cout << endl;
+	//cout << "Errors (bbs): ";
+
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << bpErrors [i];
+
+	//cout << endl;
+	//cout << "Fourth derivatives From 1st Derivs: ";
+
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << derivs4From1stDerivs [i];
+
+	//cout << endl;
+	//cout << "Errors from 1st Derivs (bbs): ";
+
+	//for (i=0; i<NumberOfCubics; i++)
+	//	cout << " " << bpErrorsFrom1stDerivs [i];
+
+	//cout << endl;
+	//delete[] derivs3;
+	//delete[] derivs4;
+	//delete[] errors;
+	//delete[] bpErrors;
+
+	delete[] derivs4From1stDerivs;
+	delete[] errors2;
+	delete[] bpErrorsFrom1stDerivs;
+	return maxErrorInBP2;
 }
 
 

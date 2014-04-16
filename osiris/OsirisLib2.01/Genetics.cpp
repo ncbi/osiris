@@ -87,6 +87,8 @@ double Locus::MaxResidualForAlleleCalls = -1.0;
 double Locus::AlleleOverloadThreshold = -1.0;
 bool* Locus::InitialMatrix = NULL;
 bool Locus::NoYForAMEL = false;
+bool Locus::DisableStutterFilter = false;
+bool Locus::DisableAdenylationFilter = false;
 
 
 Boolean Locus::TestRatio = TRUE;

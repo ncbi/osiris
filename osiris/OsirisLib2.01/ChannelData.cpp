@@ -54,6 +54,8 @@ double ChannelData::MinDistanceBetweenPeaks = 1.5;
 bool* ChannelData::InitialMatrix = NULL;
 double ChannelData::AveSecondsPerBP = 6.0;
 bool ChannelData::UseFilterForNormalization = false;
+bool ChannelData::DisableStutterFilter = false;
+bool ChannelData::DisableAdenylationFilter = false;
 
 
 bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& second) {
@@ -2925,6 +2927,13 @@ void ChannelData :: ReportGridLocusRowWithLinks (RGTextOutput& text) {
 CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2) {
 
 	CSplineTransform* spline = new CSplineTransform (cd1.Means, cd2.Means, cd1.NumberOfAcceptedCurves);
+	return spline;
+}
+
+
+CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2, double* firstDerivs, int size) {
+
+	CSplineTransform* spline = new CSplineTransform (cd1.Means, cd2.Means, firstDerivs, cd1.NumberOfAcceptedCurves, true);
 	return spline;
 }
 

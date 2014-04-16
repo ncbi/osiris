@@ -60,6 +60,8 @@ bool* CoreBioComponent::OffScaleData = NULL;
 int CoreBioComponent::OffScaleDataLength = 0;
 double CoreBioComponent::minPrimaryPullupThreshold = 500.0;
 
+bool CoreBioComponent::UseHermiteTimeTransforms = false;
+
 
 
 ABSTRACT_DEFINITION (CoreBioComponent)
@@ -1149,7 +1151,7 @@ CoreBioComponent* CoreBioComponent :: GetBestGridBasedOnMax2DerivForAnalysis (RG
 
 	while (nextGrid = (CoreBioComponent*) it()) {
 
-		nextTrans = TimeTransform (*this, *nextGrid);
+		nextTrans = TimeTransform (*this, *nextGrid);	// Could augment calling sequence to use Hermite Cubic Spline transform 04/10/2014
 
 		if (nextTrans == NULL)
 			continue;
@@ -1182,6 +1184,56 @@ CoreBioComponent* CoreBioComponent :: GetBestGridBasedOnMax2DerivForAnalysis (RG
 }
 
 
+CoreBioComponent* CoreBioComponent :: GetBestGridBasedOnLeastTransformError (RGDList& gridList, CSplineTransform*& timeMap, const double* characteristicArray) {
+
+	RGDListIterator it (gridList);
+	CoreBioComponent* nextGrid;
+	CoreBioComponent* minGrid;
+	CSplineTransform* nextTrans;
+	double maxError;
+	double errorBound;
+	smLadderFitThreshold ladderFitThreshold;
+	smSampleToLadderFitBelowExpectations ladderFitPoor;
+
+	minGrid = NULL;
+	timeMap = NULL;
+	maxError = DOUBLEMAX;
+
+	while (nextGrid = (CoreBioComponent*) it()) {
+
+		nextTrans = TimeTransform (*this, *nextGrid);	// Could augment calling sequence to use Hermite Cubic Spline transform 04/10/2014
+
+		if (nextTrans == NULL)
+			continue;
+
+		errorBound = nextTrans->GetMaximumErrorOfInterpolation (characteristicArray);
+
+		if (errorBound < maxError) {
+
+			maxError = errorBound;
+			delete timeMap;
+			minGrid = nextGrid;
+			timeMap = nextTrans;
+		}
+
+		else
+			delete nextTrans;
+	}
+
+	cout << "Best grid based on transform error for sample file " << (char*)mName.GetData () << " is ladder " << (char*)minGrid->GetSampleName ().GetData () << " with max error " << maxError << " bps\n";
+	//int scaledMin2Deriv = (int)ceil (min2Deriv * 1.0e6);
+	//int threshold = GetThreshold (ladderFitThreshold);
+
+	//if (scaledMin2Deriv >= threshold) {
+
+	//	SetMessageValue (ladderFitPoor, true);
+	//	AppendDataForSmartMessage (ladderFitPoor, scaledMin2Deriv);
+	//}
+
+	return minGrid;
+}
+
+
 CoreBioComponent* CoreBioComponent :: GetBestGridBasedOnMaxDelta3DerivForAnalysis (RGDList& gridList, CSplineTransform*& timeMap) {
 
 	RGDListIterator it (gridList);
@@ -1197,7 +1249,7 @@ CoreBioComponent* CoreBioComponent :: GetBestGridBasedOnMaxDelta3DerivForAnalysi
 
 	while (nextGrid = (CoreBioComponent*) it()) {
 
-		nextTrans = TimeTransform (*this, *nextGrid);
+		nextTrans = TimeTransform (*this, *nextGrid);	// Could augment calling sequence to use Hermite Cubic Spline transform 04/10/2014
 
 		if (nextTrans == NULL)
 			continue;
@@ -1698,7 +1750,7 @@ int CoreBioComponent :: PreliminarySampleAnalysis (RGDList& gridList, SampleData
 		return -1;
 
 //	CSplineTransform* timeMap = TimeTransform (*this, *grid);
-	CSplineTransform* InverseTimeMap = TimeTransform (*grid, *this);
+	CSplineTransform* InverseTimeMap = TimeTransform (*grid, *this);	// Could augment calling sequence to use Hermite Cubic Spline transform 04/10/2014
 
 	if (InverseTimeMap != NULL) {
 
@@ -2140,6 +2192,54 @@ void CoreBioComponent :: ReleaseOffScaleData () {
 CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2) {
 
 	return TimeTransform (*cd1.mLSData, *cd2.mLSData);
+}
+
+
+CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2, bool useHermiteSplines) {
+
+	if (!useHermiteSplines)
+		return TimeTransform (cd1, cd2);
+
+	CoordinateTransform* id1 = cd1.mLSData->GetIDMap ();
+	CoordinateTransform* id2 = cd2.mLSData->GetIDMap ();
+	double* firstDerivs1;
+	double* firstDerivs2;
+
+	int N1 = id1->GetFirstDerivativeAtKnots (firstDerivs1);
+	int N2 = id2->GetFirstDerivativeAtKnots (firstDerivs2);
+
+	if ((N1 == 0) || (N1 != N2)) {
+
+		cout << "Knot mismatch for sample and ladder:  N1 = " << N1 << " N2 = " << N2 << endl;
+		delete[] firstDerivs1;
+		delete[] firstDerivs2;
+		return TimeTransform (cd1, cd2);
+	}
+
+	int i;
+	double* m = new double [N1];
+
+	for (i=0; i<N1; i++) {
+
+		if (firstDerivs2 [i] <= 0) {
+
+			cout << "First derivative of time-to-bp map is non-positive:  i = " << i << endl;
+			delete[] firstDerivs1;
+			delete[] firstDerivs2;
+			delete[] m;
+			return TimeTransform (cd1, cd2);
+		}
+	}
+
+	for (i=0; i<N1; i++)
+		m [i] = firstDerivs1 [i] / firstDerivs2 [i];
+
+	CSplineTransform* spline = TimeTransform (*cd1.mLSData, *cd2.mLSData, m, N1);
+	delete[] firstDerivs1;
+	delete[] firstDerivs2;
+	delete[] m;
+
+	return spline;
 }
 
 

@@ -191,4 +191,7 @@ smResidualDisplacementThreshold	1073	2589
 smResidualDisplacementTestPreset	1074	2590
 smExcessiveResidualDisplacementLeft	1075	2591
 smExcessiveResidualDisplacementRight	1076	2592
-
+smSampleSatisfiesPossibleMixtureIDCriteria	1077	2593
+smDisableLowLevelFiltersForKnownMixturesPreset	1078	2594
+smDisableStutterFilter	1079	2595
+smDisableAdenylationFilter	1080	2596

@@ -1697,9 +1697,13 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 
 //	CoreBioComponent* grid = GetBestGridBasedOnTimeForAnalysis (gridList);
 
+	const double* characteristicArray;
+	mLSData->GetCharacteristicArray (characteristicArray);
+
 	CSplineTransform* timeMap;
 //	CoreBioComponent* grid = GetBestGridBasedOnMaxDelta3DerivForAnalysis (gridList, timeMap);
 	CoreBioComponent* grid = GetBestGridBasedOnMax2DerivForAnalysis (gridList, timeMap);
+//	CoreBioComponent* grid = GetBestGridBasedOnLeastTransformError (gridList, timeMap, characteristicArray);
 
 	if (grid == NULL)
 		return -1;
@@ -1708,10 +1712,7 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	//	Get other fit data from timeMap
 	//
 
-	const double* characterisicArray;
-	mLSData->GetCharacteristicArray (characterisicArray);
-
-//	timeMap->OutputHighDerivativesAndErrors (characterisicArray);
+	timeMap->OutputHighDerivativesAndErrors (characteristicArray);
 
 	int gridArtifactLevel = grid->GetHighestMessageLevelWithRestrictionSM ();
 
@@ -1719,7 +1720,7 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 		SetMessageValue (associatedLadderIsCritical, true);
 
 //	CSplineTransform* timeMap = TimeTransform (*this, *grid);
-	CSplineTransform* InverseTimeMap = TimeTransform (*grid, *this);
+	CSplineTransform* InverseTimeMap = TimeTransform (*grid, *this);	// Could augment calling sequence to use Hermite Cubic Spline transform 04/10/2014
 
 	if (InverseTimeMap != NULL) {
 

@@ -46,6 +46,7 @@ public:
 	~SynonymList ();
 
 	bool IsValid () const { return mValid; }
+	Boolean IsEmpty () const { return mList.IsEmpty (); }
 
 	void AddSynonym (const RGString& str);
 	void AddSynonym (const char* str);

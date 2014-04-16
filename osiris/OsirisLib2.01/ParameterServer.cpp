@@ -141,7 +141,7 @@ ParameterServer :: ParameterServer () {
 		Changed = FALSE;
 		mSet = NULL;
 		mValid = true;
-		LadderIDs = ControlIDs = PositiveControlIDs = NegativeControlIDs = NULL;
+		LadderIDs = ControlIDs = PositiveControlIDs = NegativeControlIDs = mSingleSourceSampleIDs = mMixtureIDs = NULL;
 		mStandardPositiveControlName = new RGString;
 		mMarkerSetName = new RGString;
 		mStandardSettingsString = new RGString;
@@ -184,6 +184,8 @@ ParameterServer :: ParameterServer (const RGString& xmlString) : mValid (true) {
 	ControlIDs = new SynonymList;
 	PositiveControlIDs = new SynonymList;
 	NegativeControlIDs = new SynonymList;
+	mSingleSourceSampleIDs = new SynonymList;
+	mMixtureIDs = new SynonymList;
 
 	//
 	//  Reformat XMLString a little and save into mStandardSettingsString
@@ -217,6 +219,8 @@ ParameterServer :: ~ParameterServer () {
 		delete ControlIDs;
 		delete PositiveControlIDs;
 		delete NegativeControlIDs;
+		delete mSingleSourceSampleIDs;
+		delete mMixtureIDs;
 		delete mStandardPositiveControlName;
 		delete mMarkerSetName;
 		delete mStandardSettingsString;
@@ -1871,6 +1875,96 @@ bool ParameterServer :: ReadLabNonRFULimits (size_t startOffset, size_t& endOffs
 }
 
 
+//int ParameterServer :: ReadSampleTypeSpecifications (size_t startOffset, size_t& endOffset, const RGString& xmlString) {
+//
+//	RGString XMLString (xmlString);
+//	RGString result;
+//	RGXMLTagSearch categorySearch ("SpecimenCategory", XMLString);
+//	size_t localStart = startOffset;
+//	endOffset = startOffset;
+//	int scanResult;
+//
+//	while (true) {
+//
+//		if (!categorySearch.FindNextTag (localStart, endOffset, result)) {
+//
+//			localStart = endOffset;
+//
+//			if (!mSingleSourceSampleIDs->IsEmpty ()) {
+//
+//				if (!mMixtureIDs->IsEmpty ()) {
+//
+//					delete mMixtureIDs;
+//					mMixtureIDs = new SynonymList;
+//				}
+//
+//				return 1;
+//			}
+//
+//			if (!mMixtureIDs->IsEmpty ())
+//				return 1;
+//
+//			return 0;
+//		}
+//
+//		localStart = endOffset;
+//		scanResult = ReadSampleTypeSpec (result);
+//
+//		if (scanResult == -1)
+//			return -1;
+//	}
+//
+//	return 0;
+//}
+//
+//
+//int ParameterServer :: ReadSampleTypeSpec (const RGString& xmlString) {
+//
+//	RGString XMLString (xmlString);
+//	RGString result;
+//	RGXMLTagSearch typeSearch ("Type", XMLString);
+//	RGXMLTagSearch synonymSearch ("Synonym", XMLString);
+//	size_t startOffset = 0;
+//	size_t endOffset = 0;
+//	int i = 0;
+//	int type = 0;
+//
+//	if (!typeSearch.FindNextTag (startOffset, endOffset, result))
+//		return -1;
+//
+//	startOffset = endOffset;
+//
+//	if (result == "Single Source")
+//		type = 1;
+//
+//	else if (result == "Possible Mixture")
+//		type = 2;
+//
+//	else
+//		return 0;
+//
+//	//synonymSearch.ResetSearch ();
+//
+//	while (synonymSearch.FindNextTag (startOffset, endOffset, result)) {
+//
+//		startOffset = endOffset;
+//		i++;
+//		ParameterServer::UnescapeXML (result);
+//
+//		if (type == 1)
+//			mSingleSourceSampleIDs->AddSynonym (result);
+//
+//		else
+//			mMixtureIDs->AddSynonym (result);
+//	}
+//
+//	if (i == 0)
+//		return -1;
+//
+//	return 1;
+//}
+
+
 bool ParameterServer :: SetAllSmartMessageThresholds () {
 
 	STRBaseSmartMessage* nextLink;
@@ -1948,6 +2042,46 @@ bool ParameterServer :: NegControlDoesTargetStringContainASynonymCaseIndep (cons
 }
 
 
+bool ParameterServer :: DoesTargetStringEqualMixtureCriteriaCaseIndep (const RGString& target) {
+
+	if (mSingleSourceSampleIDs->IsEmpty () && mMixtureIDs->IsEmpty ())
+		return false;
+
+	if (!mSingleSourceSampleIDs->IsEmpty ()) {
+
+		if (mSingleSourceSampleIDs->DoesTargetStringEqualASynonymCaseIndep (target))
+			return false;
+
+		return true;	// We can do this because we don't get here if sample is positive or negative control
+	}
+
+	if (mMixtureIDs->DoesTargetStringEqualASynonymCaseIndep (target))
+		return true;
+
+	return false;
+}
+
+
+bool ParameterServer :: DoesTargetStringContainMixtureCriteriaCaseIndep (const RGString& target) {
+
+	if (mSingleSourceSampleIDs->IsEmpty () && mMixtureIDs->IsEmpty ())
+		return false;
+
+	if (!mSingleSourceSampleIDs->IsEmpty ()) {
+
+		if (mSingleSourceSampleIDs->DoesTargetStringContainASynonymCaseIndep (target))
+			return false;
+
+		return true;	// We can do this because we don't get here if sample is positive or negative control
+	}
+
+	if (mMixtureIDs->DoesTargetStringContainASynonymCaseIndep (target))
+		return true;
+
+	return false;
+}
+
+
 void ParameterServer :: UnescapeXML (RGString& target) {
 
 	target.FindAndReplaceAllSubstrings ("&quot;", "\"");
@@ -1966,6 +2100,8 @@ bool ParameterServer :: ReadFileNameStrings (const RGString& xmlString) {
 	RGXMLTagSearch ladderStringSearch ("LadderStrings", nameString);
 	RGXMLTagSearch posCtrlStringSearch ("StdPositveControlStrings", nameString);
 	RGXMLTagSearch negCtrlStringSearch ("NegativeControlStrings", nameString);
+	RGXMLTagSearch singleSourceStringSearch ("SingleSourceStrings", nameString);
+	RGXMLTagSearch possibleMixtureStringSearch ("PossibleMixtureStrings", nameString);
 	RGXMLTagSearch stdControlNameSearch ("StandardControlName", nameString);
 	RGXMLTagSearch SynonymSearch ("Synonym", synonymString);
 	size_t startOffset = 0;
@@ -1980,6 +2116,9 @@ bool ParameterServer :: ReadFileNameStrings (const RGString& xmlString) {
 	posCtrlStringSearch.ResetSearch ();
 	negCtrlStringSearch.ResetSearch ();
 	stdControlNameSearch.ResetSearch ();
+	singleSourceStringSearch.ResetSearch ();
+	possibleMixtureStringSearch.ResetSearch ();
+
 	startOffset = 0;
 	endOffset = 0;
 	int i = 0;
@@ -2057,13 +2196,69 @@ bool ParameterServer :: ReadFileNameStrings (const RGString& xmlString) {
 		return false;
 
 	startOffset = endOffset;
+	cout << "Starting to read single source vs mixture strings...." << endl;
+
+	if (singleSourceStringSearch.FindNextTag (startOffset, endOffset, synonymString)) {
+
+		SynonymSearch.ResetSearch ();
+		synStartOffset = synEndOffset = 0;
+		cout << "Found single source tag name..." << endl;
+
+		while (SynonymSearch.FindNextTag (synStartOffset, synEndOffset, individualSynonymString)) {
+
+			cout << "Found single source string:  " << (char*)individualSynonymString.GetData () << endl;
+			synStartOffset = synEndOffset;
+			ParameterServer::UnescapeXML (individualSynonymString);
+			mSingleSourceSampleIDs->AddSynonym (individualSynonymString);
+		}
+	}
+
+	startOffset = endOffset;
+	cout << "Starting to read mixture strings...." << endl;
+
+	if (possibleMixtureStringSearch.FindNextTag (startOffset, endOffset, synonymString)) {
+
+		SynonymSearch.ResetSearch ();
+		synStartOffset = synEndOffset = 0;
+		cout << "Found mixture tag name..." << endl;
+
+		while (SynonymSearch.FindNextTag (synStartOffset, synEndOffset, individualSynonymString)) {
+
+			cout << "Found mixture string:  " << (char*)individualSynonymString.GetData () << endl;
+			synStartOffset = synEndOffset;
+			ParameterServer::UnescapeXML (individualSynonymString);
+			mMixtureIDs->AddSynonym (individualSynonymString);
+		}
+	}
+
+	if (!mSingleSourceSampleIDs->IsEmpty ())
+		cout << "Found single source synonyms" << endl;
+
+	if (!mMixtureIDs->IsEmpty ())
+		cout << "Found mixture synonyms" << endl;
+
+	if (!mSingleSourceSampleIDs->IsEmpty ()) {
+
+		if (!mMixtureIDs->IsEmpty ()) {
+
+			delete mMixtureIDs;
+			mMixtureIDs = new SynonymList;
+		}
+	}
+
 	RGString tempName;
 
 	if (!stdControlNameSearch.FindNextTag (startOffset, endOffset, tempName))
 		return false;
 
+	startOffset = endOffset;
 	ParameterServer::UnescapeXML (tempName);
 	*mStandardPositiveControlName = tempName;
+
+	//if (ReadSampleTypeSpecifications (startOffset, endOffset, XMLString) < 0)
+	//	return false;
+
+	//startOffset = endOffset;
 	return true;
 }
 

@@ -413,6 +413,7 @@ public:
 	//*******************************************************************************************************
 
 	friend CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2);
+	friend CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2, double* firstDerivs, int size);
 
 	static double GetMinimumDistanceBetweenPeaks () { return MinDistanceBetweenPeaks; }
 	static void SetMinimumDistanceBetweenPeaks (double distance) { MinDistanceBetweenPeaks = distance; }
@@ -426,6 +427,9 @@ public:
 
 	static void SetUseNormalizationFilter (bool onOff) { UseFilterForNormalization = onOff; }
 	static bool GetUseNormalizationFilter () { return UseFilterForNormalization; }
+
+	static void SetDisableStutterFilter (bool s) { DisableStutterFilter = s; }
+	static void SetDisableAdenylationFilter (bool s) { DisableAdenylationFilter = s; }
 
 protected:
 	int mChannel;
@@ -481,6 +485,8 @@ protected:
 	static bool* InitialMatrix;
 	static double AveSecondsPerBP;
 	static bool UseFilterForNormalization;
+	static bool DisableStutterFilter;
+	static bool DisableAdenylationFilter;
 };
 
 

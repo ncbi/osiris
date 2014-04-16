@@ -740,12 +740,17 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smSampleIsNegCtrl sampleIsNegCtrl;
 	smNoPosCtrlFound noPosCtrlFound;
 	smNoNegCtrlFound noNegCtrlFound;
+	smSampleSatisfiesPossibleMixtureIDCriteria sampleSatisfiesMixtureCriteria;
+	smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
 
 	smStage1Successful stage1Successful;
 	smStage2Successful stage2Successful;
 	smStage3Successful stage3Successful;
 	smStage4Successful stage4Successful;
 	smStage5Successful stage5Successful;
+
+	smDisableStutterFilter disableStutterFilter;
+	smDisableAdenylationFilter disableAdenylationFilter;
 
 	bool ignoreNoise;
 
@@ -1017,6 +1022,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	RGString SampleName;
 	bool sampleOK;
 	bool populatedBaseLocusList = false;
+	bool possibleMixture;
 
 	if (LadderList.Entries () == 0) {
 
@@ -1105,6 +1111,11 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->SetNegativeControlFalseSM ();
 		bioComponent->SetPositiveControlFalseSM ();
 		idString = bioComponent->GetControlIdName ();
+		Locus::SetDisableAdenylationFilter (false);
+		Locus::SetDisableStutterFilter (false);
+		ChannelData::SetDisableAdenylationFilter (false);
+		ChannelData::SetDisableStutterFilter (false);
+		possibleMixture = false;
 	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
 
 		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
@@ -1122,6 +1133,27 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				bioComponent->SetPositiveControlTrueSM ();
 				bioComponent->SetMessageValue (sampleIsPosCtrl, true);
 			}
+
+			bioComponent->SetPossibleMixtureIDFalseSM ();
+			bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+		}
+
+		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+
+				bioComponent->SetPossibleMixtureIDTrueSM ();
+				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
+				possibleMixture = true;
+			}
+
+			else {
+
+				bioComponent->SetPossibleMixtureIDFalseSM ();
+				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+				possibleMixture = false;
+			}
+
 		}
 
 		//
@@ -1130,6 +1162,16 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		bioComponent->SetMessageValue (stage1Successful, true);
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
+
+		if (possibleMixture) {
+
+			// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
+
+			Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+			ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+			Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+			ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+		}
 
 		//cout << "Stage 1 complete" << endl;
 

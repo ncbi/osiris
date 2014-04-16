@@ -1164,6 +1164,30 @@ int smExcessiveResidualDisplacementRight::sMessageIndex = 0;
 int smExcessiveResidualDisplacementRight::sMessageScope = 0;
 
 
+RGString smSampleSatisfiesPossibleMixtureIDCriteria::sName = "smSampleSatisfiesPossibleMixtureIDCriteria";
+int smSampleSatisfiesPossibleMixtureIDCriteria::sSubject = smSampleSatisfiesPossibleMixtureIDCriteria::LoadType ();
+int smSampleSatisfiesPossibleMixtureIDCriteria::sMessageIndex = 0;
+int smSampleSatisfiesPossibleMixtureIDCriteria::sMessageScope = 0;
+
+
+RGString smDisableLowLevelFiltersForKnownMixturesPreset::sName = "smDisableLowLevelFiltersForKnownMixturesPreset";
+int smDisableLowLevelFiltersForKnownMixturesPreset::sSubject = smDisableLowLevelFiltersForKnownMixturesPreset::LoadType ();
+int smDisableLowLevelFiltersForKnownMixturesPreset::sMessageIndex = 0;
+int smDisableLowLevelFiltersForKnownMixturesPreset::sMessageScope = 0;
+
+
+RGString smDisableStutterFilter::sName = "smDisableStutterFilter";
+int smDisableStutterFilter::sSubject = smDisableStutterFilter::LoadType ();
+int smDisableStutterFilter::sMessageIndex = 0;
+int smDisableStutterFilter::sMessageScope = 0;
+
+
+RGString smDisableAdenylationFilter::sName = "smDisableAdenylationFilter";
+int smDisableAdenylationFilter::sSubject = smDisableAdenylationFilter::LoadType ();
+int smDisableAdenylationFilter::sMessageIndex = 0;
+int smDisableAdenylationFilter::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1357,6 +1381,10 @@ PERSISTENT_DEFINITION (smResidualDisplacementThreshold, 2589, "smResidualDisplac
 PERSISTENT_DEFINITION (smResidualDisplacementTestPreset, 2590, "smResidualDisplacementTestPreset")
 PERSISTENT_DEFINITION (smExcessiveResidualDisplacementLeft, 2591, "smExcessiveResidualDisplacementLeft")
 PERSISTENT_DEFINITION (smExcessiveResidualDisplacementRight, 2592, "smExcessiveResidualDisplacementRight")
+PERSISTENT_DEFINITION (smSampleSatisfiesPossibleMixtureIDCriteria, 2593, "smSampleSatisfiesPossibleMixtureIDCriteria")
+PERSISTENT_DEFINITION (smDisableLowLevelFiltersForKnownMixturesPreset, 2594, "smDisableLowLevelFiltersForKnownMixturesPreset")
+PERSISTENT_DEFINITION (smDisableStutterFilter, 2595, "smDisableStutterFilter")
+PERSISTENT_DEFINITION (smDisableAdenylationFilter, 2596, "smDisableAdenylationFilter")
 
 
 
@@ -12933,6 +12961,246 @@ int smExcessiveResidualDisplacementRight :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smExcessiveResidualDisplacementRight* noticeType = new smExcessiveResidualDisplacementRight;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSampleSatisfiesPossibleMixtureIDCriteria :: smSampleSatisfiesPossibleMixtureIDCriteria () : SmartNotice () {
+
+}
+
+
+smSampleSatisfiesPossibleMixtureIDCriteria :: smSampleSatisfiesPossibleMixtureIDCriteria (const smSampleSatisfiesPossibleMixtureIDCriteria& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSampleSatisfiesPossibleMixtureIDCriteria :: ~smSampleSatisfiesPossibleMixtureIDCriteria () {
+
+}
+
+
+int smSampleSatisfiesPossibleMixtureIDCriteria :: GetSubject () const {
+
+	return smSampleSatisfiesPossibleMixtureIDCriteria::sSubject;
+}
+
+
+void smSampleSatisfiesPossibleMixtureIDCriteria :: SetIndexAndScope (int index, int scope) const {
+
+	smSampleSatisfiesPossibleMixtureIDCriteria::sMessageIndex = index;
+	smSampleSatisfiesPossibleMixtureIDCriteria::sMessageScope = scope;
+}
+
+
+int smSampleSatisfiesPossibleMixtureIDCriteria :: GetMessageIndex () const {
+
+	return smSampleSatisfiesPossibleMixtureIDCriteria :: sMessageIndex;
+}
+
+
+int smSampleSatisfiesPossibleMixtureIDCriteria :: GetScope () const {
+
+	return smSampleSatisfiesPossibleMixtureIDCriteria :: sMessageScope;
+}
+
+
+RGString smSampleSatisfiesPossibleMixtureIDCriteria :: GetName () const {
+
+	return smSampleSatisfiesPossibleMixtureIDCriteria :: sName;
+}
+
+
+
+int smSampleSatisfiesPossibleMixtureIDCriteria :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSampleSatisfiesPossibleMixtureIDCriteria* noticeType = new smSampleSatisfiesPossibleMixtureIDCriteria;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDisableLowLevelFiltersForKnownMixturesPreset :: smDisableLowLevelFiltersForKnownMixturesPreset () : SmartNotice () {
+
+}
+
+
+smDisableLowLevelFiltersForKnownMixturesPreset :: smDisableLowLevelFiltersForKnownMixturesPreset (const smDisableLowLevelFiltersForKnownMixturesPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDisableLowLevelFiltersForKnownMixturesPreset :: ~smDisableLowLevelFiltersForKnownMixturesPreset () {
+
+}
+
+
+int smDisableLowLevelFiltersForKnownMixturesPreset :: GetSubject () const {
+
+	return smDisableLowLevelFiltersForKnownMixturesPreset::sSubject;
+}
+
+
+void smDisableLowLevelFiltersForKnownMixturesPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smDisableLowLevelFiltersForKnownMixturesPreset::sMessageIndex = index;
+	smDisableLowLevelFiltersForKnownMixturesPreset::sMessageScope = scope;
+}
+
+
+int smDisableLowLevelFiltersForKnownMixturesPreset :: GetMessageIndex () const {
+
+	return smDisableLowLevelFiltersForKnownMixturesPreset :: sMessageIndex;
+}
+
+
+int smDisableLowLevelFiltersForKnownMixturesPreset :: GetScope () const {
+
+	return smDisableLowLevelFiltersForKnownMixturesPreset :: sMessageScope;
+}
+
+
+RGString smDisableLowLevelFiltersForKnownMixturesPreset :: GetName () const {
+
+	return smDisableLowLevelFiltersForKnownMixturesPreset :: sName;
+}
+
+
+
+int smDisableLowLevelFiltersForKnownMixturesPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDisableLowLevelFiltersForKnownMixturesPreset* noticeType = new smDisableLowLevelFiltersForKnownMixturesPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDisableStutterFilter :: smDisableStutterFilter () : SmartNotice () {
+
+}
+
+
+smDisableStutterFilter :: smDisableStutterFilter (const smDisableStutterFilter& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDisableStutterFilter :: ~smDisableStutterFilter () {
+
+}
+
+
+int smDisableStutterFilter :: GetSubject () const {
+
+	return smDisableStutterFilter::sSubject;
+}
+
+
+void smDisableStutterFilter :: SetIndexAndScope (int index, int scope) const {
+
+	smDisableStutterFilter::sMessageIndex = index;
+	smDisableStutterFilter::sMessageScope = scope;
+}
+
+
+int smDisableStutterFilter :: GetMessageIndex () const {
+
+	return smDisableStutterFilter :: sMessageIndex;
+}
+
+
+int smDisableStutterFilter :: GetScope () const {
+
+	return smDisableStutterFilter :: sMessageScope;
+}
+
+
+RGString smDisableStutterFilter :: GetName () const {
+
+	return smDisableStutterFilter :: sName;
+}
+
+
+
+int smDisableStutterFilter :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDisableStutterFilter* noticeType = new smDisableStutterFilter;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDisableAdenylationFilter :: smDisableAdenylationFilter () : SmartNotice () {
+
+}
+
+
+smDisableAdenylationFilter :: smDisableAdenylationFilter (const smDisableAdenylationFilter& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDisableAdenylationFilter :: ~smDisableAdenylationFilter () {
+
+}
+
+
+int smDisableAdenylationFilter :: GetSubject () const {
+
+	return smDisableAdenylationFilter::sSubject;
+}
+
+
+void smDisableAdenylationFilter :: SetIndexAndScope (int index, int scope) const {
+
+	smDisableAdenylationFilter::sMessageIndex = index;
+	smDisableAdenylationFilter::sMessageScope = scope;
+}
+
+
+int smDisableAdenylationFilter :: GetMessageIndex () const {
+
+	return smDisableAdenylationFilter :: sMessageIndex;
+}
+
+
+int smDisableAdenylationFilter :: GetScope () const {
+
+	return smDisableAdenylationFilter :: sMessageScope;
+}
+
+
+RGString smDisableAdenylationFilter :: GetName () const {
+
+	return smDisableAdenylationFilter :: sName;
+}
+
+
+
+int smDisableAdenylationFilter :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDisableAdenylationFilter* noticeType = new smDisableAdenylationFilter;
 	warehouse->AddType (noticeType);
 	return 1;
 }
