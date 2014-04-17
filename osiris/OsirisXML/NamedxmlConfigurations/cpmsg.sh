@@ -1,6 +1,6 @@
 #!/bin/sh
 cd `dirname $0`
-COPY="cp -puv"
+COPY="cp -pv"
 SRC="../../MessageBook/OsirisMessageBookV4.0.xml"
 DEST="MessageBookV4.0.xml"
 ${COPY} ${SRC} ${DEST}
