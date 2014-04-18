@@ -60,6 +60,16 @@ public:
   virtual ~mainApp();
   bool OnInit();
   virtual void ReceiveXml2Error(const wxString &s);
+  static bool SuppressMessages(bool b)
+  {
+    bool bRtn = g_bSuppressMessages;
+    g_bSuppressMessages = b;
+    return bRtn;
+  }
+  static bool MessagesSuppressed()
+  {
+    return g_bSuppressMessages;
+  }
   static void ShowError(const wxString &sMsg,wxWindow *parent);
   static void ShowAlert(const wxString &sMsg,wxWindow *parent);
   static void LogMessage(const wxString &sMsg, int nLevel = 0)
@@ -108,6 +118,7 @@ private:
   static wxFile *m_pFout;
   static int g_count;
   static int g_nMaxLogLevel;
+  static bool g_bSuppressMessages;
 #ifdef __WXMAC__
   mainFrame *m_pFrame;
   wxArrayString m_asFiles;
@@ -116,6 +127,21 @@ public:
 private:
   void _MacOpenFiles();
 #endif
+};
+
+class CMessageSuppressor
+{
+private:
+  bool m_bSave;
+public:
+  CMessageSuppressor()
+  {
+    m_bSave = mainApp::SuppressMessages(true);
+  }
+  virtual ~CMessageSuppressor()
+  {
+    mainApp::SuppressMessages(m_bSave);
+  }
 };
 
 

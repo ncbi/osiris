@@ -61,6 +61,7 @@ const int mainApp::RFU_MIN_ENTER = 5;
 
 int mainApp::g_count = 0;
 int mainApp::g_nMaxLogLevel = 1000;
+bool mainApp::g_bSuppressMessages = false;
 ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
@@ -217,15 +218,21 @@ void mainApp::_OpenMessageStream()
 
 void mainApp::ShowError(const wxString &sMsg, wxWindow *parent)
 {
-  wxMessageDialog dlgmsg(
-    parent,sMsg,_T("ERROR"),wxOK | wxICON_ERROR);
-  dlgmsg.ShowModal();
+  if(!MessagesSuppressed())
+  {
+    wxMessageDialog dlgmsg(
+      parent,sMsg,_T("ERROR"),wxOK | wxICON_ERROR);
+    dlgmsg.ShowModal();
+  }
 }
 void mainApp::ShowAlert(const wxString &sMsg, wxWindow *parent)
 {
-  wxMessageDialog dlgmsg(
-    parent,sMsg,_T("Alert"),wxOK | wxICON_EXCLAMATION);
-  dlgmsg.ShowModal();
+  if(!MessagesSuppressed())
+  {
+    wxMessageDialog dlgmsg(
+      parent,sMsg,_T("Alert"),wxOK | wxICON_EXCLAMATION);
+    dlgmsg.ShowModal();
+  } 
 }
 void mainApp::SetBoldFont(wxWindow *pWindow)
 {

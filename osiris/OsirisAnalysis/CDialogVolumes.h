@@ -46,7 +46,7 @@ public:
     bool bReadOnly = false);
   virtual ~CDialogVolumes();
   virtual bool TransferDataFromWindow();
-  virtual bool TransferDataToWindow();
+//  virtual bool TransferDataToWindow();
   virtual void OnTimer(wxTimerEvent &e);
   const wxString &GetSelection()
   {

@@ -403,25 +403,36 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
 bool CDialogVolumes::_CurrentVolumeModified()
 {
   bool bRtn = false;
+  {
+    CMessageSuppressor xxx;
+    bRtn = !TransferDataFromWindow();
+  }
+  if(!bRtn)
+  {
+      CLabSettings *pLab(m_pVolumeCurrent->GetLabSettings());
+      bRtn = (*pLab) != m_labCopy;
+  } 
+  return bRtn;
+}
+
+bool CDialogVolumes::TransferDataFromWindow()
+{
+  bool bRtn = true;
   if((m_pVolumeCurrent != NULL) &&
     (m_pPanelLab != NULL) &&
     (!m_bReadOnly) &&
     (!m_pPanelLab->IsReadOnly()) )
   {
-    m_pPanelLab->TransferDataFromWindow();
-    CLabSettings *pLab(m_pVolumeCurrent->GetLabSettings());
-    bRtn = (*pLab) != m_labCopy;
+    bRtn = m_pPanelLab->TransferDataFromWindow();
   }
   return bRtn;
 }
-bool CDialogVolumes::TransferDataFromWindow()
-{
-  return true;
-}
+/*
 bool CDialogVolumes::TransferDataToWindow()
 {
   return true;
 }
+*/
 bool CDialogVolumes::_SaveCurrent(bool bWarnUser)
 {
   bool bRtn = false;
@@ -457,15 +468,25 @@ bool CDialogVolumes::_SaveCurrent(bool bWarnUser)
 }
 bool CDialogVolumes::_Apply(bool bWarnUser)
 {
-  bool bRtn = _CurrentVolumeModified()
-  ? _SaveCurrent(bWarnUser) : true;
+  bool bRtn = false;
+  if(TransferDataFromWindow())
+  {
+    bRtn = _CurrentVolumeModified()
+    ? _SaveCurrent(bWarnUser) : true;
+  }
   return bRtn;
 }
 
 
 void CDialogVolumes::OnOK(wxCommandEvent &)
 {
-  if((m_pPanelLab == NULL) || _Apply())
+  if(m_pPanelLab == NULL)
+  {
+    EndModal(wxID_OK);
+  }
+  else if(!TransferDataFromWindow())
+  {}
+  else if((m_pPanelLab == NULL) || _Apply())
   {
     EndModal(wxID_OK);
   }
@@ -520,9 +541,16 @@ bool CDialogVolumes::_ChangeVolumeWarningOK()
     int n = dlg.ShowModal();
     if(n == wxID_OK || n == wxID_YES)
     {
-      if(!_SaveCurrent())
+      if(!TransferDataFromWindow())
       {
         bOK = false;
+      }
+      else if(!_SaveCurrent())
+      {
+        bOK = false;
+      }
+      if(!bOK)
+      {
         m_pChoice->SetStringSelection(m_sSelection);
       }
     }

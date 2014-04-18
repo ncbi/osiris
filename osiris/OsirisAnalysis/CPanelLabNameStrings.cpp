@@ -180,6 +180,7 @@ CPanelLabNameStrings::CPanelLabNameStrings(
       &(m_pData->m_vsSynonymSingleSource)     \
     };
 
+#define ALLOW_EMPTY(i) ((i) > 2)
 
 bool CPanelLabNameStrings::TransferDataFromWindow()
 {
@@ -188,12 +189,13 @@ bool CPanelLabNameStrings::TransferDataFromWindow()
   {
     NAME_STRING_ARRAYS
     size_t i;
-    bool bRtn = true;
     for(i = 0; i < COUNT; i++)
     {
       s = ptext[i]->GetValue();
       vector<wxString> *pvs(pSyn[i]->GetVectorPtr());
-      if(!nwxString::SplitLines(s.c_str(),pvs,true,true))
+      if(ALLOW_EMPTY(i))
+      {}
+      else if(!nwxString::SplitLines(s.c_str(),pvs,true,true))
       {
         mainApp::ShowError(
           _T("Please enter at least one identifier"),this);
