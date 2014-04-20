@@ -193,9 +193,9 @@ bool CPanelLabNameStrings::TransferDataFromWindow()
     {
       s = ptext[i]->GetValue();
       vector<wxString> *pvs(pSyn[i]->GetVectorPtr());
-      if(ALLOW_EMPTY(i))
+      if(nwxString::SplitLines(s.c_str(),pvs,true,true))
       {}
-      else if(!nwxString::SplitLines(s.c_str(),pvs,true,true))
+      else if(!ALLOW_EMPTY(i))
       {
         mainApp::ShowError(
           _T("Please enter at least one identifier"),this);
