@@ -693,6 +693,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_822E444F04EA480EB61D8DD19E90CD78"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_82FCD3AC717244E4A33BE7F721D2A6E1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3794,6 +3800,26 @@
             "TargetName" = "8:PPFusion_HID_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_BDDEF5E128FD4EC1AE75F34E991D90D7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_822E444F04EA480EB61D8DD19E90CD78"
+            {
+            "SourcePath" = "8:..\\docs\\V2.3-Change-Log.pdf"
+            "TargetName" = "8:V2.3-Change-Log.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
