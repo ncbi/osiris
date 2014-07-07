@@ -56,9 +56,10 @@ AM_PATH_XML2([2.6.1], [],
 	[AC_MSG_ERROR([Cannot found the libxml2 library or your libxml2 is too old (libxml2 > 2.6.1 is required); download it from http://xmlsoft.org])])
 
 # add all XML stuff that we've found...
-CXXFLAGS="$CXXFLAGS $XML_CPPFLAGS"
-CFLAGS="$CFLAGS $XML_CPPFLAGS"
-LDFLAGS="$LDFLAGS $WX_LIBS $XML_LIBS"
+ARCH="-arch i386"
+CXXFLAGS="$CXXFLAGS ${ARCH} $XML_CPPFLAGS"
+CFLAGS="$CFLAGS ${ARCH} $XML_CPPFLAGS"
+LDFLAGS="$LDFLAGS ${ARCH} $WX_LIBS $XML_LIBS"
 
 
 

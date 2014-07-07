@@ -54,11 +54,11 @@ AM_WXCODE_CHECKS([2.4.0])       # 2.4.0 is the minimum required version of wx
 # Test for XML, and define XML_CPPFLAGS and XML_LIBS
 AM_PATH_XML2([2.6.1], [],
 	[AC_MSG_ERROR([Cannot found the libxml2 library or your libxml2 is too old (libxml2 > 2.6.1 is required); download it from http://xmlsoft.org])])
-
+ARCH="-arch i386"
 # add all XML stuff that we've found...
-CXXFLAGS="$CXXFLAGS $XML_CPPFLAGS"
-CFLAGS="$CFLAGS $XML_CPPFLAGS"
-LDFLAGS="$LDFLAGS $WX_LIBS $XML_LIBS"
+CXXFLAGS="$CXXFLAGS ${ARCH} $XML_CPPFLAGS"
+CFLAGS="$CFLAGS ${ARCH} $XML_CPPFLAGS"
+LDFLAGS="$LDFLAGS ${ARCH} $WX_LIBS $XML_LIBS"
 
 
 
