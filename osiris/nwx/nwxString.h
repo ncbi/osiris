@@ -51,31 +51,31 @@ public:
   
   static void FixEOLU(wxString *ps, bool bClearEmpty = false);
 
-  static size_t Split(const char *ps, vector<wxString> *pvs, char csep = '\t')
+  static size_t Split(const char *ps, vector<wxString> *pvs, const char csep = '\t')
   {
     char x[2] = {csep,0};
     return Split(ps,pvs,x);
   }
-  static size_t Split(const char *ps, set<wxString> *pss, char csep = '\t')
+  static size_t Split(const char *ps, set<wxString> *pss, const char csep = '\t')
   {
     char x[2] = {csep,0};
     return Split(ps,pss,x);
   }
-  static void Join(const vector<wxString> &vs, wxString *ps, char csep = '\t')
+  static void Join(const vector<wxString> &vs, wxString *ps, const char csep = '\t')
   {
     char x[2] = {csep,0};
     Join(vs,ps,x);
   }
-  static void Join(const set<wxString> &ss, wxString *ps, char csep = '\t')
+  static void Join(const set<wxString> &ss, wxString *ps, const char csep = '\t')
   {
     char x[2] = {csep,0};
     Join(ss,ps,x);
   }
   static size_t SplitLines(const char *ps, vector<wxString> *pvs, bool bClearEmpty = false, bool bTrim = false)
   {
-    wxString s(_T(ps));
+    wxString s(ps);
     FixEOLU(&s,bClearEmpty);
-    size_t nRtn = Split(s.c_str(),pvs,"\n");
+    size_t nRtn = Split(s.utf8_str(),pvs,"\n");
     if(bTrim && (nRtn > 0))
     {
       Trim(pvs);
@@ -85,9 +85,9 @@ public:
   }
   static size_t SplitLines(const char *ps, set<wxString> *pss, bool bClearEmpty = false, bool bTrim = false)
   {
-    wxString s(_T(ps));
+    wxString s(ps);
     FixEOLU(&s,bClearEmpty);
-    size_t nRtn = Split(s.c_str(),pss,"\n");
+    size_t nRtn = Split(s.utf8_str(),pss,"\n");
     if(bTrim && (nRtn > 0))
     {
       Trim(pss);
@@ -111,23 +111,23 @@ public:
   static wxDateTime UnFormatDateTimeXML(const wxString &s);
   static wxString FormatNumber(unsigned int n)
   {
-    return wxString::Format(_T("%u"),n);
+    return wxString::Format("%u",n);
   }
   static wxString FormatNumber(int n)
   {
-    return wxString::Format(_T("%d"),n);
+    return wxString::Format("%d",n);
   }
   static wxString FormatNumber(double d)
   {
-    return wxString::Format(_T("%g"),d);
+    return wxString::Format("%g",d);
   }
-  static wxString FormatDouble(
-    double d,const char *psFmt = "%g", bool bZeroBlank = true)
+  static wxString FormatDouble
+		(double d,const char *psFmt = "%g", bool bZeroBlank = true)
   {
     wxString s;
     if( (!bZeroBlank) || (d != 0.0) )
     {
-      s.Printf(_T(psFmt),d);
+      s.Printf(psFmt,d);
     }
     return s;
   }
@@ -227,9 +227,9 @@ public:
     return bRtn;
   }
 
-  static const char * const TIME_FORMAT_XML;
-  static const char * const TIME_FORMAT;
-  static const char * const EOL;
+  static const wxChar * const TIME_FORMAT_XML;
+  static const wxChar * const TIME_FORMAT;
+  static const wxChar * const EOL;
   static wxString TIME_0;
   static const wxString ALPHA_lower;
   static const wxString ALPHA_UPPER;

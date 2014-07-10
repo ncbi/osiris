@@ -114,7 +114,7 @@ public:
 
   void SetLabel(const char *ps)
   {
-    m_sLabel = _T(ps);
+    m_sLabel = ps;
   }
   void SetLabel(const wxString &x)
   {
@@ -142,7 +142,7 @@ public:
   }
   void SetToolTip(const char *ps)
   {
-    m_sToolTip = _T(ps);
+    m_sToolTip = ps;
   }
 
 private:

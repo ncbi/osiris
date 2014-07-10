@@ -188,15 +188,15 @@ void nwxListMRU::SetFilter(const wxString &sFilter)
 {
   wxString sLower = sFilter;
   sLower.MakeLower();
-  while(sLower.Replace(_T("**"),_T("*"),true)) {};
-  if(sLower.EndsWith(_T("*")))
+  while(sLower.Replace("**","*",true)) {};
+  if(sLower.EndsWith("*"))
   {
     sLower.Truncate(sLower.Len() - 1);
   }
   if(m_sFilter != sLower)
   {
     m_sFilter = sLower;
-    nwxString::Split(m_sFilter.c_str(),&m_vsFilter,"*");
+    nwxString::Split(m_sFilter.utf8_str(),&m_vsFilter,"*");
     if(IsShown())
     {
       Load(false);
@@ -210,7 +210,7 @@ bool nwxListMRU::_FilterCheck(const wxString &_s)
   {
     wxString sLower(_s);
     sLower.MakeLower();
-    const char *ps = sLower.c_str();
+    const char *ps = sLower.utf8_str();
     const char *psFind = ps;
     for(vector<wxString>::iterator itr = m_vsFilter.begin();
       bRtn && (itr != m_vsFilter.end());
@@ -219,7 +219,7 @@ bool nwxListMRU::_FilterCheck(const wxString &_s)
       wxString &s(*itr);
       if(!s.IsEmpty())
       {
-        psFind = strstr(psFind,s.c_str());
+        psFind = strstr(psFind,s.utf8_str());
         if(psFind == NULL)
         {
           bRtn = false;
@@ -357,8 +357,8 @@ void nwxListMRU::_BuildList()
       else
       {
         s.Printf(
-          _T("Error occurred when adding MRU item %ld\n%s"),
-          nItem,fn.GetFullPath().c_str() );
+          "Error occurred when adding MRU item %ld\n%ls",
+          nItem,fn.GetFullPath().wc_str() );
         wxASSERT_MSG(false,s);
         time_t t;
         time(&t);

@@ -128,7 +128,7 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxStringNotEmptyAttribute(_T("name"),m_psName);
+    RegisterWxStringNotEmptyAttribute("name",m_psName);
     RegisterDoubleText(m_pdNumber);
   }
 private:
@@ -150,7 +150,7 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxStringNotEmptyAttribute(_T("name"),m_psName);
+    RegisterWxStringNotEmptyAttribute("name",m_psName);
     RegisterWxStringText(m_psText);
   }
 private:
@@ -173,7 +173,7 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxStringNotEmptyAttribute(_T("zone"),m_psZone);
+    RegisterWxStringNotEmptyAttribute("zone",m_psZone);
     RegisterWxDateTimeXMLText(m_pt);
   }
 private:
@@ -185,14 +185,14 @@ class nwxXmlUnitTest : public nwxXmlPersist
 {
 public:
   static bool RunUnitTest();
-  nwxXmlUnitTest() : m_sRoot(_T("unit"))
+  nwxXmlUnitTest() : m_sRoot("unit")
   {
     pnn = new nwxXmlNameNumber(&m_saNumberName,&m_dNumber);
     pns1 = new nwxXmlNameString(&m_saString1Name, &m_sString1);
     pns2 = new nwxXmlNameString(&m_saString2Name, &m_sString2);
     ptz = new nwxXmlTimeZone(&m_tTime,&m_saTimeZone);
-    m_vec.SetNodeName(_T("class3"));
-    m_set.SetNodeName(_T("class2"));
+    m_vec.SetNodeName("class3");
+    m_set.SetNodeName("class2");
     RegisterAll(true);
   }
   virtual ~nwxXmlUnitTest()
@@ -269,15 +269,15 @@ bool nwxXmlUnitClass2::IsEqual(const nwxXmlUnitClass2 &x) const
 }
 void nwxXmlUnitClass2::RegisterAll(bool)
 {
-  RegisterInt(_T("c2n"),&m_nc2n);
-  RegisterWxString(_T("c2s"),&m_sc2s);
-  RegisterBool(_T("c2b"),&m_bc2b);
-  RegisterDouble(_T("c2d"),&m_dc2d);
-  RegisterIntAttribute(_T("nr"),&m_nr);
-  RegisterWxStringNotEmptyAttribute(_T("a"),&m_sa);
-  RegisterWxStringNotEmptyAttribute(_T("c"),&m_sc);
-  RegisterWxStringNotEmptyAttribute(_T("e"),&m_se);
-  RegisterWxStringNotEmptyAttribute(_T("type"),&m_sType);
+  RegisterInt("c2n",&m_nc2n);
+  RegisterWxString("c2s",&m_sc2s);
+  RegisterBool("c2b",&m_bc2b);
+  RegisterDouble("c2d",&m_dc2d);
+  RegisterIntAttribute("nr",&m_nr);
+  RegisterWxStringNotEmptyAttribute("a",&m_sa);
+  RegisterWxStringNotEmptyAttribute("c",&m_sc);
+  RegisterWxStringNotEmptyAttribute("e",&m_se);
+  RegisterWxStringNotEmptyAttribute("type",&m_sType);
 }
 
 bool nwxXmlUnitClass3::IsEqual(const nwxXmlUnitClass3 x) const
@@ -292,23 +292,23 @@ bool nwxXmlUnitClass3::IsEqual(const nwxXmlUnitClass3 x) const
 }
 void nwxXmlUnitClass3::RegisterAll(bool)
 {
-  RegisterWxString(_T("x"),&m_sx);
-  RegisterInt(_T("a"),&m_na);
-  RegisterWxStringNotEmptyAttribute(_T("type"),&m_sType);
-  RegisterWxStringNotEmptyAttribute(_T("name"),&m_sName);
+  RegisterWxString("x",&m_sx);
+  RegisterInt("a",&m_na);
+  RegisterWxStringNotEmptyAttribute("type",&m_sType);
+  RegisterWxStringNotEmptyAttribute("name",&m_sName);
 }
 
 void nwxXmlUnitTest::RegisterAll(bool)
 {
-  Register(_T("string1"),pns1);
-  Register(_T("string2"),pns2);
-  Register(_T("number"),pnn);
-  RegisterBool(_T("bool"),&m_bBool);
-  Register(_T("time"),ptz);
-  Register(_T("set"),&m_set);
-  Register(_T("vector"),&m_vec);
-  RegisterIntAttribute(_T("attr1"),&m_nAttr1);
-  RegisterIntAttribute(_T("attr2"),&m_nAttr2);
+  Register("string1",pns1);
+  Register("string2",pns2);
+  Register("number",pnn);
+  RegisterBool("bool",&m_bBool);
+  Register("time",ptz);
+  Register("set",&m_set);
+  Register("vector",&m_vec);
+  RegisterIntAttribute("attr1",&m_nAttr1);
+  RegisterIntAttribute("attr2",&m_nAttr2);
 }
 
 bool nwxXmlUnitTest::IsEqual(const nwxXmlUnitTest &x) const
@@ -477,16 +477,16 @@ bool nwxXmlUnitTest::RunUnitTest()
 
     if(!x1.LoadStream(instr))
     {
-      s.Append(_T("Cannot load xml stream"));
+      s.Append("Cannot load xml stream");
     }
     else if(!x1.SaveFile(sFileOut))
     {
-      s.Append( _T("Cannot save file "));
+      s.Append( "Cannot save file ");
       s.Append(sFileOut);
     }
     else if(!x2.LoadFile(sFileOut))
     {
-      s.Append(_T("Cannot reload file "));
+      s.Append("Cannot reload file ");
       s.Append(sFileOut);
     }
     else if(x1 != x2)
@@ -498,7 +498,7 @@ bool nwxXmlUnitTest::RunUnitTest()
       wxXmlDocument xmlDoc(sFileOut);
       if(!xmlDoc.IsOk())
       {
-        s.Append(_T("Cannot reload file "));
+        s.Append("Cannot reload file ");
         s.Append(sFileOut);
       }
       else
@@ -510,9 +510,9 @@ bool nwxXmlUnitTest::RunUnitTest()
         wxXmlNode *pText;
         pNode = pNode->GetNext(); // string2 
         pNode = pNode->GetNext(); // number
-        pNode->AddProperty(_T("name"),_T("exp"));
+        pNode->AddProperty("name","exp");
         pText = pNode->GetChildren();
-        pText->SetContent(_T("2.7182818"));
+        pText->SetContent("2.7182818");
         pNode = pNode->GetNext(); // bool
         pNode = pNode->GetNext(); // time
         pNode = pNode->GetNext(); // set
@@ -522,14 +522,14 @@ bool nwxXmlUnitTest::RunUnitTest()
         pNode2 = pNode2->GetNext(); // class2[2];
         pNode->RemoveChild(pJunk);
         delete pJunk;
-        pNode2->AddProperty(_T("oc"),_T("md"));
-        pNode2->DeleteProperty(_T("e"));
+        pNode2->AddProperty("oc","md");
+        pNode2->DeleteProperty("e");
 #if 1
         // end of mods
         wxFileOutputStream fout(sFileMod);
         if(!fout.IsOk())
         {
-          s.Append(_T("Cannot open write modified file "));
+          s.Append("Cannot open write modified file ");
           s.Append(sFileMod);
         }
         else if(!xmlDoc.Save(fout,2))
@@ -537,7 +537,7 @@ bool nwxXmlUnitTest::RunUnitTest()
         if(!xmlDoc.Save(sFileMod))
 #endif
         {
-          s.Append(_T("Cannot save file "));
+          s.Append("Cannot save file ");
           s.Append(sFileMod);
         }
       }
@@ -545,7 +545,7 @@ bool nwxXmlUnitTest::RunUnitTest()
   }
   catch(...)
   {
-    s.Append(_T(" Exception caught"));
+    s.Append(" Exception caught");
   }
   if(s.Len() != nErrorLen)
   {

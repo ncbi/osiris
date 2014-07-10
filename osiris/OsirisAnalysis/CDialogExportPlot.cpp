@@ -194,14 +194,14 @@ CDialogExportPlot::CDialogExportPlot(
   pSizer->Add(m_pCheckViewLocation,0,(wxALL ^ wxTOP),ID_BORDER);
 
   pSizer->Add(pButtonSizer,0,(wxALL ^ wxTOP) | wxALIGN_CENTRE,ID_BORDER);
+  _TransferWidthHeightToWindow(dWidth,dHeight);
 
   SetSizer(pSizer);
-  pSizer->Layout();
   pSizer->Fit(this);
+  pSizer->Layout();
 
 //  SetupTextCtrlWidth(m_pTextFileName);
   Layout();
-  _TransferWidthHeightToWindow(dWidth,dHeight);
 
 
 }

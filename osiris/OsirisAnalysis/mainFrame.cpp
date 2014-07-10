@@ -32,6 +32,7 @@
 #include "mainApp.h"
 #include <wx/file.h>
 #include <wx/utils.h>
+#include <wx/settings.h>
 #include "CFrameAnalysis.h"
 #include "CFrameRunAnalysis.h"
 #include "CFramePlot.h"
@@ -71,7 +72,7 @@
 
 #include "UnitTest.h"
 
-DEFINE_EVENT_TYPE(CEventKillWindow)
+#if DRAG_DROP_FILES
 DEFINE_EVENT_TYPE(CEventDragDropDelay)
 
 class CFileDropTarget : public wxFileDropTarget
@@ -95,6 +96,7 @@ private:
   mainFrame *m_pFrame;
 };
 
+
 CFileDropTarget::CFileDropTarget(mainFrame *pFrame) : m_pFrame(pFrame)
 {
   pFrame->GetClientWindow()->SetDropTarget(this);
@@ -112,64 +114,121 @@ bool CFileDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenam
   return true;
 }
 
-//*************************************** mainFrame
+#endif
 
+//*************************************** mainFrame
+wxSize mainFrame::GetChildSize(int nPct)
+{
+#ifdef __NO_MDI__
+  wxSize sz = wxGetClientDisplayRect().GetSize();
+#else
+  wxSize sz = GetClientWindow()->GetSize();
+  wxStatusBar *pBar = GetStatusBar();
+  if(pBar)
+  {
+    wxSize szBar = pBar->GetSize();
+    int y = sz.GetHeight() - szBar.GetHeight();
+    sz.SetHeight(y);
+  }
+#endif
+  sz.SetHeight(sz.GetHeight() * nPct / 100);
+  sz.SetWidth(sz.GetWidth() * nPct / 100);
+  return sz;
+}
+
+
+#if mainFrameIsWindow
 wxSize mainFrame::g_size80(0,0);
 wxSize mainFrame::g_size90(0,0);
 wxPoint mainFrame::g_point5(0,0);
-const char * const mainFrame::NOFIND("Cannot find the lab settings file");
-const size_t mainFrame::MAX_FRAMES = 20;
-const int mainFrame::MRU_NO_WARNING = 1111;
+wxPoint mainFrame::g_point50(0,0);
+wxPoint mainFrame::g_point100(0,0);
 
-void mainFrame::SetupSize()
-{
-  wxRect r = wxGetClientDisplayRect();
-  int nw = r.GetWidth();
-  int nh = r.GetHeight();
-//  int nw = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
-//  int nh = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
-  int nx = (nw << 2) / 5;
-  int ny = (nh << 2) / 5;
-  g_size80.SetHeight(ny);
-  g_size80.SetWidth(nx);
-  nx = nw * 9 / 10;
-  ny = nh * 9 / 10;
-  g_size90.SetHeight(ny);
-  g_size90.SetWidth(nx);
-  g_point5.x = ((nw - nx) >> 1) + r.GetX();;
-  g_point5.y = ((nh - ny) >> 1) + r.GetY();
-}
 const wxSize &mainFrame::Size80()
 {
-  if(!g_size80.GetHeight())
-  {
-    SetupSize();
-  }
+  SetupSize();
   return g_size80;
 }
 const wxSize &mainFrame::Size90()
 {
-  if(!g_size90.GetHeight())
-  {
-    SetupSize();
-  }
+  SetupSize();
   return g_size90;
 }
-const wxPoint &mainFrame::Point5()
+const wxPoint &mainFrame::GetStartPosition()
 {
-  if(!g_size90.GetHeight())
-  {
-    SetupSize();
-  }
+  SetupSize();
   return g_point5;
 }
 
+
+void mainFrame::SetupSize()
+{
+   if(!g_size80.GetHeight())
+   {
+      wxRect r = wxGetClientDisplayRect();
+      int nw = r.GetWidth();
+      int nh = r.GetHeight();
+      int nx = (nw << 2) / 5;
+      int ny = (nh << 2) / 5;
+      g_size80.SetHeight(ny);
+      g_size80.SetWidth(nx);
+      g_point50.x = (nw >> 1) + r.GetX();
+      g_point50.y = (nh >> 1) + r.GetY();
+      nx = nw * 9 / 10;
+      ny = nh * 9 / 10;
+      g_size90.SetHeight(ny);
+      g_size90.SetWidth(nx);
+      g_point5.x = ((nw - nx) >> 1) + r.GetX();
+      g_point5.y = ((nh - ny) >> 1) + r.GetY();
+      int nws = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+      int nhs = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+      g_point100.x = nws + 1;
+      g_point100.y = nhs + 1;
+  }
+}
+
+#endif
+
+const size_t mainFrame::MAX_FRAMES = 20;
+const int mainFrame::MRU_NO_WARNING = 1111;
+const char * const mainFrame::NOFIND("Cannot find the lab settings file");
+
 CMDIFrame *mainFrame::INIT_LAST_ACTIVE((CMDIFrame *)1);
 
+#ifdef __WXDEBUG__
+void mainFrame::_LogActiveFrame()
+{
+  if(m_pLastActive != NULL)
+  {
+    wxString s(wxS("active frame: "));
+    s.Append(m_pLastActive->GetLabel());
+    mainApp::LogMessage(s);
+  }
+}
+#endif
+
+void mainFrame::_SetupCommonMenuBar()
+{
+  CMenuBar *p = new CMenuBar(true,false);
+#if defined(__WXMAC__)
+  wxMenuBar::MacSetCommonMenuBar(p);
+#elif mainFrameIsWindow
+  SetMenuBar(p);
+#endif
+}
+
 mainFrame::mainFrame() :
-  wxMDIParentFrame(NULL, wxID_ANY, "OSIRIS",
-        Point5(), Size90(),
-        wxDEFAULT_FRAME_STYLE),
+#if mainFrameIsWindow
+  mainFrameSuper(NULL, wxID_ANY, wxS("OSIRIS"),
+      GetStartPosition(),
+        Size90(),
+        wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxSYSTEM_MENU | wxDEFAULT_FRAME_STYLE
+        ),
+//#else
+//  macintosh hidden dummy window, hopefully not needed
+//  mainFrameSuper(NULL,wxID_ANY, wxEmptyString, wxPoint(0,0),wxSize(0,0),0),
+#endif
+
     XXX(),
     m_kitColors(),
     m_pDialogOpen(NULL),
@@ -178,37 +237,52 @@ mainFrame::mainFrame() :
 //    m_pDlgAnalysis(NULL),
     m_pDialogErrorLog(NULL),
     m_pTimer(NULL),
-    m_pLastMenuShown(NULL),
     m_pColourEditDialog(NULL),
 #if HAS_CUSTOM_COLORS
     m_pDialogColour(NULL),
 #endif
+#if DRAG_DROP_FILES
     m_pDropTarget(NULL),
+#endif
     m_pAllLoci(NULL),
     m_nTimerCount(0),
     m_pLastActive(INIT_LAST_ACTIVE)
+#ifdef MANUALLY_PLACE_FRAMES
+    ,m_nFrameSpace(-1)
+#endif
+
 {
+#ifndef __NO_MDI__
   CreateStatusBar(1);
-  SetMenuBar(m_pMenuBar = new CMenuBar);
-  m_pMenuBar->DisableTableGraph();
+#endif
+
+  _SetupCommonMenuBar();
   SetupTimer();
   COsirisIcon x;
+#if mainFrameIsWindow
   SetIcon(x);
+#endif
   m_pDialogErrorLog = new nwxDialogLog(
-    this,wxID_ANY,"OSIRIS Message Log");
+    DialogParent(),wxID_ANY,"OSIRIS Message Log");
   m_pDialogErrorLog->SetIcon(x);
   wxLog *pLog = m_pDialogErrorLog->SetTarget();
   delete pLog;
+#if DRAG_DROP_FILES
   m_pDropTarget = CFileDropTarget::Make(this);
+#endif
   // m_pLastActive was set to 1 so that it would
   // be updated to NULL in CheckActiveFrame()
+#ifndef __NO_MDI__
   CheckActiveFrame();
+#endif
 }
 
 mainFrame::~mainFrame()
 {
 
+#if DRAG_DROP_FILES
   GetClientWindow()->SetDropTarget(NULL);
+#endif
 
   if(m_pDialogMRU != NULL)
   {
@@ -238,23 +312,14 @@ mainFrame::~mainFrame()
 #endif
   delete m_pDialogErrorLog;
 }
-#ifdef __WXMAC__
-bool mainFrame::Show(bool bShow)
+bool mainFrame::Startup(bool bHasArgs)
 {
-  // NEVER SHOW ON A macintosh
-  bool bRtn = IsShown() != bShow;
-  wxMDIParentFrame::Show(false);
-  return bRtn;
-}
-#endif
-bool mainFrame::ShowWindow(bool bHasArgs)
-{
-#ifdef __WXMAC__
-  Iconize(true);
-  bool bRtn = true;
-#else
+#if mainFrameIsWindow
   bool bRtn = Show(true);
+#else
+  bool bRtn = true;
 #endif
+
   if(bRtn && !bHasArgs)
   {
     CParmOsirisGlobal parm;
@@ -269,20 +334,6 @@ bool mainFrame::ShowWindow(bool bHasArgs)
   return bRtn;
 }
 
-wxSize mainFrame::GetChildSize(int nPct)
-{
-  wxSize sz = GetClientWindow()->GetSize();
-  wxStatusBar *pBar = GetStatusBar();
-  if(pBar)
-  {
-    wxSize szBar = pBar->GetSize();
-    int y = sz.GetHeight() - szBar.GetHeight();
-    sz.SetHeight(y);
-  }
-  sz.SetHeight(sz.GetHeight() * nPct / 100);
-  sz.SetWidth(sz.GetWidth() * nPct / 100);
-  return sz;
-}
 bool mainFrame::ReAnalyzeSamples(
   const CVolume &vol,
   const CParmOsiris &parmNew)
@@ -310,7 +361,7 @@ bool mainFrame::ReAnalyzeSamples(
       wxString sError(
         "Could not reanalyze data because\n"
            "no valid directories were found.");
-      mainApp::ShowError(sError,this);
+      ErrorMessage(sError);
       pFrame->Destroy();
       bRtn = false;
     }
@@ -339,7 +390,7 @@ bool mainFrame::ReAnalyze(
       wxString sError(
         "Could not reanalyze data because\n"
            "no valid directories were selected.");
-      mainApp::ShowError(sError,this);
+      ErrorMessage(sError);
       pFrame->Destroy();
       bRtn = false;
     }
@@ -360,7 +411,7 @@ bool mainFrame::OpenBatchFile(const wxString &sFileName)
   {
     wxString sError("ERROR: Could not open file\n");
     sError.Append(sFileName);
-    mainApp::ShowError(sError,this);
+    ErrorMessage(sError);
     pFrame->Destroy();
     bRtn = false;
   }
@@ -409,10 +460,16 @@ CFramePlot *mainFrame::OpenGraphicFile(
   return pPlot;
 }
 
-void mainFrame::OnQuit(wxCommandEvent &)
+void mainFrame::OnQuit(wxCommandEvent &e)
 {
+  bool bSkip;
+#if mainFrameIsWindow
   wxBusyCursor xxx;
-  Close();
+  bSkip = Close();
+#else
+  bSkip = DoClose();
+#endif
+  e.Skip(bSkip);
 }
 
 void mainFrame::OnOpen(wxCommandEvent &)
@@ -433,7 +490,6 @@ void mainFrame::OpenFileDialog(OSIRIS_FILE_TYPE x)
       const char *psReport = FILE_TYPE_REPORT;
       const char *psPlot =   FILE_TYPE_GRAPHIC;
       const char *psBatch =  FILE_TYPE_BATCH;
-  #undef FILE_TYPE
       wxString sTypes(psReport);
       sTypes.Append("|");
       sTypes.Append(psPlot);
@@ -441,7 +497,7 @@ void mainFrame::OpenFileDialog(OSIRIS_FILE_TYPE x)
       sTypes.Append(psBatch);
       wxString sFilePath = parm->GetOutputDirectory();
       m_pDialogOpen = new wxFileDialog(
-        this,"Open File",sFilePath,wxEmptyString,
+        DialogParent(),"Open File",sFilePath,wxEmptyString,
         sTypes,
         wxFD_OPEN | wxFD_FILE_MUST_EXIST );
     }
@@ -507,12 +563,12 @@ void mainFrame::OnAnalyze(wxCommandEvent &)
   bool bDone = false;
   while( (!bDone) && (!CheckMaxFrames(true)) )
   {
-    CDialogAnalysis dlg(this);
+    CDialogAnalysis dlg(DialogParent());
 //    CPointerHold<CDialogAnalysis> x(m_pDlgAnalysis,&dlg);
     bDone = true;
     if(!dlg.IsOK())
     {
-      mainApp::ShowError(dlg.GetErrorMsg(),this);
+      ErrorMessage(dlg.GetErrorMsg());
     }
     else if(dlg.ShowModal() == wxID_OK)
     {
@@ -534,36 +590,70 @@ void mainFrame::OnAnalyze(wxCommandEvent &)
 
 bool mainFrame::_VerifyClose()
 {
-  bool bRtn = CDialogReallyQuit::ReallyQuit(this);
+  bool bRtn = CDialogReallyQuit::ReallyQuit(DialogParent());
   return bRtn;
 }
-void mainFrame::OnClose(wxCloseEvent &e)
+bool mainFrame::DoClose()
 {
   bool bDone = true;
   if(!_VerifyClose())
   {
     bDone = false;
   }
-//  if( (!m_MDImgr.EditedFiles()) && (!_VerifyClose()) )
-//  {
-//    // no edited files, user does not want to exit
-//    bDone = false;
-//  }
   else
   {
     bDone = m_MDImgr.CloseAll();
   }
   if(bDone)
   {
-    m_pMenuBar->Cleanup();
     if(m_pTimer != NULL)
     {
       m_pTimer->Stop();
     }
-    e.Skip();
-//    Destroy();
   }
+  return bDone;
 }
+
+#ifdef MANUALLY_PLACE_FRAMES
+void mainFrame::PlaceFrame(CMDIFrame *pWin)
+{
+  wxRect r = wxGetClientDisplayRect();
+  wxPoint pt(r.x,r.y);
+  if(m_pLastActive != NULL && m_pLastActive != INIT_LAST_ACTIVE)
+  {
+    pt = m_pLastActive->GetPosition();
+
+    if(pt.x >= 0 || pt.y >= 0)
+    {
+      if(m_nFrameSpace < 0)
+      {
+        m_nFrameSpace = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y,m_pLastActive);
+        if(m_nFrameSpace > 0)
+        {
+          m_nFrameSpace += 2;
+        }
+        else
+        {
+          m_nFrameSpace = 24;  // guess
+        }
+      }
+      pt.x += m_nFrameSpace;
+      pt.y += m_nFrameSpace;
+      if(pt.x < r.x) { pt.x = r.x;}
+      if(pt.y < r.y) { pt.y = r.y;}
+    }
+  }
+  pWin->SetPosition(pt);
+}
+#endif
+
+#if mainFrameIsWindow
+void mainFrame::OnClose(wxCloseEvent &e)
+{
+  if(DoClose()) e.Skip();
+}
+#endif
+
 #if HAS_CUSTOM_COLORS
 bool mainFrame::ShowColourDialog(wxColour *pColour)
 {
@@ -591,7 +681,7 @@ bool mainFrame::ShowColourDialog(wxColour *pColour)
 #else
 bool mainFrame::ShowColourDialog(wxColour *pColour)
 {
-  wxColour c = wxGetColourFromUser(this,*pColour,"Colors");
+  wxColour c = wxGetColourFromUser(DialogParent(),*pColour,"Colors");
   bool bRtn = false;
   if(c != *pColour)
   {
@@ -619,9 +709,7 @@ void mainFrame::OnRecentFiles(wxCommandEvent &e)
         m_pDialogMRU->TransferDataToWindow();
         m_pDialogMRU->ClearSelection();
       }
-      wxSize sz = GetSize();
-      sz.SetWidth(sz.GetWidth() * 8 / 10);
-      sz.SetHeight(sz.GetHeight() >> 1);
+      wxSize sz = GetChildSize(80);
       m_pDialogMRU->SetSize(sz);
       m_pDialogMRU->CentreOnParent();
     } // bracket will remove busy cursor before showing window
@@ -639,7 +727,7 @@ void mainFrame::OnRecentFiles(wxCommandEvent &e)
   }
   else if(e.GetInt() != MRU_NO_WARNING)
   {
-    mainApp::ShowError("There are no recent files....",this);
+    ErrorMessage("There are no recent files....");
   }
 }
 void mainFrame::OnEditGridColours(wxCommandEvent &)
@@ -661,7 +749,7 @@ void mainFrame::OnEditGridColours(wxCommandEvent &)
 void mainFrame::OnLabSettings(wxCommandEvent &)
 {
   {
-    CDialogVolumes dlg(this);
+    CDialogVolumes dlg(DialogParent());
 //    CPointerHold<CDialogVolumes> x(m_pVolumes,&dlg);
     dlg.ShowModal();
   }
@@ -671,16 +759,16 @@ void mainFrame::OnExportSettings(wxCommandEvent &)
 {
   bool bMod = false;
   {
-    CDialogExportXSL x(this);
+    CDialogExportXSL x(DialogParent());
     x.ShowModal();
     bMod = x.IsModified();
   }
   if(bMod)
   {
-    m_pMenuBar->UpdateFileMenu();
+    m_MDImgr.UpdateFileMenu();
   }
 }
-
+#if DRAG_DROP_FILES
 void mainFrame::_CheckDragDropQueue()
 {
   list<wxString>::iterator itr = m_lsDragDropQueue.begin();
@@ -691,6 +779,7 @@ void mainFrame::_CheckDragDropQueue()
     OpenFile(s);
   }
 }
+#endif
 
 void mainFrame::OnTimer(wxTimerEvent &e)
 {
@@ -713,38 +802,25 @@ void mainFrame::OnTimer(wxTimerEvent &e)
       m_pDlgAnalysis->OnTimer(e);
     }
 */
-#if CHECK_FRAME_ON_TIMER
+#if CHECK_FRAME_ON_TIMER && !defined(__NO_MDI__)
     CheckActiveFrame();
 #endif
+#if DRAG_DROP_FILES
     if(!m_lsDragDropQueue.empty())
     {
       _CheckDragDropQueue();
     }
+#endif
   }
 }
-void mainFrame::DisableMenus()
-{
-  m_pMenuBar->DisableTableGraph();
-}
-void mainFrame::SetupMenus()
-{
-  wxMenu *pMenuTable(NULL);
-  wxMenu *pMenuGraph(NULL);
-  if( (m_pLastActive != NULL) && FindWindow(m_pLastActive))
-  {
-    pMenuTable = m_pLastActive->GetTableMenu();
-    pMenuGraph = m_pLastActive->GetGraphMenu();
-  }
-  m_pMenuBar->SetTableGraph(pMenuTable,pMenuGraph);
-}
+
+#ifndef __NO_MDI__
 void mainFrame::CheckActiveFrame()
 {
   CMDIFrame *pActive = (CMDIFrame *)GetActiveChild();
   if( (pActive != m_pLastActive) && FindWindow(pActive) )
   {
     m_pLastActive = pActive;
-    SetupMenus();
-    CheckSaveStatus();
     m_pLastActive->UpdateStatusBar();
   }
   else if(pActive == NULL)
@@ -752,18 +828,9 @@ void mainFrame::CheckActiveFrame()
     ClearStatusText();
   }
 }
-void mainFrame::CheckSaveStatus()
-{
-  bool bSaveAs = false;
-  bool bSave = false;
-  CFrameAnalysis *pFrame = GetAnalysisFrame();
-  if(pFrame != NULL)
-  {
-    bSaveAs = pFrame->CanSaveAs();
-    bSave = bSaveAs && pFrame->CanSave();
-  }
-  m_pMenuBar->EnableSave(bSaveAs,bSave,bSaveAs);
-}
+#endif
+
+
 
 void mainFrame::OnHelp(wxCommandEvent &)
 {
@@ -813,18 +880,18 @@ void mainFrame::OnCheckForUpdates(wxCommandEvent &)
 }
 void mainFrame::OnAbout(wxCommandEvent &)
 {
-  CDialogAbout x(this);
+  CDialogAbout x(DialogParent());
   x.ShowModal();
 }
 void mainFrame::OnContactUs(wxCommandEvent &)
 {
-  CDialogContactUs x(this);
+  CDialogContactUs x(DialogParent());
   x.ShowModal();
 }
 
 void mainFrame::OnMaxLadderLabels(wxCommandEvent &)
 {
-  CDialogMaxLadderLabel x(this);
+  CDialogMaxLadderLabel x(DialogParent());
   bool b = x.EditValue();
   if(b)
   {
@@ -849,8 +916,10 @@ bool mainFrame::CheckMaxFrames(bool bShowError)
       "The number of windows has reached\n"
          "the allowable maximum of ");
     sError.Append(nwxString::FormatNumber((int)MAX_FRAMES));
-    mainApp::ShowError(sError,this);
+    ErrorMessage(sError);
+#if DRAG_DROP_FILES
     m_lsDragDropQueue.clear();
+#endif
   }
   return bRtn;
 }
@@ -875,7 +944,7 @@ void mainFrame::OpenFile(
   {
     wxString sError("Cannot open file:\n");
     sError.Append(sFileName);
-    mainApp::ShowError(sError,this);
+    ErrorMessage(sError);
     if(!wxFileName::FileExists(sFileName))
     {
       RemoveFromMRU(sFileName);
@@ -925,7 +994,6 @@ void mainFrame::_CheckAnalysisFile(CFrameAnalysis *pWin)
   {
     pWin->Destroy();
   }
-  CheckSaveStatus();
 }
 void mainFrame::OpenAnalysisFile(const wxString &sFileName)
 {
@@ -959,31 +1027,23 @@ void mainFrame::FileErrorMessage(const wxString &sFileName)
 {
   const wxChar *psFile = sFileName.IsEmpty() ? wxS("This") : sFileName.wc_str();
   wxString sMessage = wxString::Format("%ls is not a valid file",psFile);
-  mainApp::ShowError(sMessage,this);
+  ErrorMessage(sMessage);
 }
 void mainFrame::FileEmptyMessage(const wxString &sFileName)
 {
   const wxChar *psFile = sFileName.IsEmpty() ? wxS("This") : sFileName.wc_str();
   wxString sMessage = wxString::Format(wxS("%ls does not contain any sample data"),psFile);
-  mainApp::ShowError(sMessage,this);
+  ErrorMessage(sMessage);
 }
 
 void mainFrame::ErrorMessage(const wxString &sMessage)
 {
-  mainApp::ShowError(sMessage,this);
-}
-void mainFrame::OnDoClose(wxCommandEvent &)
-{
-  wxBusyCursor xxx;
-  wxWindow *pw = GetActiveChild();
-  if( (pw != NULL) && (pw->Close()) )
-  {
-    pw->Destroy();
-  }
+  mainApp::ShowError(sMessage,DialogParent());
 }
 void mainFrame::OnShowLog(wxCommandEvent &)
 {
   m_pDialogErrorLog->Show(true);
+  m_pDialogErrorLog->Raise();
 }
 void mainFrame::OnSave(wxCommandEvent &e)
 {
@@ -1014,40 +1074,15 @@ void mainFrame::OnMenu(wxCommandEvent &e)
   }
 }
 
-void mainFrame::OnMenuOpen(wxMenuEvent &e)
-{
-  m_pLastMenuShown = e.GetMenu();
-}
-void mainFrame::OnMenuClose(wxMenuEvent &)
-{
-  CMDIFrame *pFrame = (CMDIFrame *)GetActiveChild();
-  if(pFrame != NULL)
-  {
-    pFrame->UpdateStatusBar();
-  }
-}
 
-void mainFrame::OnKillWindow(wxCommandEvent &e)
-{
-  wxWindow *pFrame = (wxWindow *)e.GetEventObject();
-  if( (pFrame != NULL) && (pFrame->Close()) )
-  {
-    pFrame->Destroy();
-  }
-}
-
+#if DRAG_DROP_FILES
 void mainFrame::DropFiles()
 {
   wxCommandEvent ee(CEventDragDropDelay,GetId());
   ee.SetEventObject(this);
   AddPendingEvent(ee);
 }
-void mainFrame::KillWindow(wxWindow *pFrame)
-{
-  wxCommandEvent ee(CEventKillWindow,pFrame->GetId());
-  ee.SetEventObject(pFrame);
-  AddPendingEvent(ee);
-}
+#endif
 
 bool mainFrame::FileExtensionOK(const wxString &s)
 {
@@ -1188,7 +1223,7 @@ void mainFrame::OpenFiles(const wxArrayString &filenames)
       sMsgOK.Append("\nDo you wish to continue?");
       nStyle = wxYES_NO;
     }
-    wxMessageDialog dlg(this,sMsgOK,"Error",nStyle | wxICON_ERROR);
+    wxMessageDialog dlg(DialogParent(),sMsgOK,"Error",nStyle | wxICON_ERROR);
     long nRtn = dlg.ShowModal();
     bOK = (nRtn == wxID_YES) && (nOK > 0);
   }
@@ -1203,7 +1238,11 @@ void mainFrame::OpenFiles(const wxArrayString &filenames)
     }
     for(i = 0; i < nOK; i++)
     {
+#if DRAG_DROP_FILES
       m_lsDragDropQueue.push_back(pasFiles->Item(i));
+#else
+      OpenFile(pasFiles->Item(i));
+#endif
     }
   }
 }
@@ -1259,26 +1298,12 @@ bool mainFrame::FileInProgress(const wxString &sFileName, bool bMessage)
         sMessage.Append(sDisplayName);
         sMessage.Append(", is currently being\n"
           "created and cannot be opened yet.");
-        mainApp::ShowError(sMessage,this);
+        ErrorMessage(sMessage);
       }
     }
   }
   return bRtn;
 }
-#ifdef __WXMAC__
-wxPoint mainFrame::SelectPosition()
-{
-  wxPoint ptRtn = wxDefaultPosition;
-  wxMDIChildFrame *pFrame = GetActiveChild();
-  if(pFrame != NULL)
-  {
-    ptRtn = pFrame->GetPosition();
-    ptRtn.x += 24;
-    ptRtn.y += 24;
-  }
-  return ptRtn;
-}
-#endif
 
 typedef struct
 {
@@ -1398,43 +1423,23 @@ bool mainFrame::_CheckForNewerFiles(
   }
   return bRtn;
 }
+#if DRAG_DROP_FILES
 void mainFrame::OnDropFiles(wxCommandEvent &)
 {
   OpenFiles(m_pDropTarget->GetFiles());
 }
+#endif
 
+BEGIN_EVENT_TABLE(mainFrame,mainFrameSuper)
 
-BEGIN_EVENT_TABLE(mainFrame,wxMDIParentFrame)
-EVT_MENU_OPEN(mainFrame::OnMenuOpen)
-EVT_MENU_CLOSE(mainFrame::OnMenuClose)
-EVT_MENU(wxID_CLOSE,  mainFrame::OnDoClose)
-EVT_MENU(wxID_OPEN,   mainFrame::OnOpen)
-EVT_MENU(wxID_EXIT,   mainFrame::OnQuit)
-EVT_MENU(IDlistMRU,   mainFrame::OnRecentFiles)
-EVT_MENU(IDlab,       mainFrame::OnLabSettings)
-EVT_MENU(IDexport,    mainFrame::OnExportSettings)
-EVT_MENU(IDeditColours, mainFrame::OnEditGridColours)
-EVT_MENU(IDanalyze,   mainFrame::OnAnalyze)
-EVT_MENU(IDopenPlot,  mainFrame::OnOpenPlot)
-EVT_MENU(IDopenBatch, mainFrame::OnOpenBatch)
-EVT_MENU(IDlog,       mainFrame::OnShowLog)
-EVT_MENU(IDhelp,      mainFrame::OnHelp)
-EVT_MENU(wxID_ABOUT, mainFrame::OnAbout)
-EVT_MENU(IDcheckForUpdates, mainFrame::OnCheckForUpdates)
-EVT_MENU(IDhelpContactUs, mainFrame::OnContactUs)
-EVT_MENU(IDExportGraphic, mainFrame::OnMenu)
-EVT_MENU(IDMaxLadderLabels, mainFrame::OnMaxLadderLabels)
-
-EVT_MENU(wxID_SAVEAS, mainFrame::OnSave)
-EVT_MENU(wxID_SAVE, mainFrame::OnSave)
-
-EVT_MENU_RANGE(IDmenu_START, IDmenu_END, mainFrame::OnMenu)
-EVT_MENU_RANGE(IDExportUser, IDExportUserSubMenu - 1, mainFrame::OnMenu)
-
+#if mainFrameIsWindow
 EVT_CLOSE(mainFrame::OnClose)
+#endif
+
 EVT_TIMER(IDtimer, mainFrame::OnTimer)
 
-EVT_COMMAND(wxID_ANY,CEventKillWindow,mainFrame::OnKillWindow)
+#if DRAG_DROP_FILES
 EVT_COMMAND(wxID_ANY,CEventDragDropDelay, mainFrame::OnDropFiles)
-//EVT_SIZE(mainFrame::OnResize)
+#endif
+
 END_EVENT_TABLE()

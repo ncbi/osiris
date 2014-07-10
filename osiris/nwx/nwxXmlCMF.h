@@ -179,7 +179,7 @@ public:
   {
     wxString s(m_sLOCUSNAME);
     s.MakeLower();
-    bool b = s.StartsWith(_T("amel"));
+    bool b = s.StartsWith("amel");
     return b;
   }
   static const size_t LEN_BATCH_ID;

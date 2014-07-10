@@ -37,7 +37,7 @@
 
 bool nwxIntValidator::ValidateString(const wxString &sIn)
 {
-  const char *ps(sIn.c_str());
+  const char *ps(sIn.utf8_str());
 
   while(isspace(*ps)) { ps++; }  // leading spaces are OK
   if(strchr("+-",*ps)) { ps++; } // signed, optional
@@ -48,7 +48,7 @@ bool nwxIntValidator::ValidateString(const wxString &sIn)
 
 int nwxIntValidator::FromString(const wxString &s)
 {
-  const char *ps(s.c_str());
+  const char *ps(s.utf8_str());
   while(isspace(*ps)) { ps++; }
   int n = atoi(ps);
   return n;
@@ -57,13 +57,13 @@ int nwxIntValidator::FromString(const wxString &s)
 wxString nwxIntValidator::ToString(int x)
 {
   wxString s;
-  s.Printf(_T("%d"),x);
+  s.Printf("%d",x);
   return s;
 }
 
 bool nwxUintValidator::ValidateString(const wxString &sIn)
 {
-  const char *ps(sIn.c_str());
+  const char *ps(sIn.utf8_str());
 
   while(isspace(*ps)) { ps++; }  // leading spaces are OK
   while(isdigit(*ps))  { ps++; } // digits
@@ -73,7 +73,7 @@ bool nwxUintValidator::ValidateString(const wxString &sIn)
 
 unsigned int nwxUintValidator::FromString(const wxString &s)
 {
-  const char *ps(s.c_str());
+  const char *ps(s.utf8_str());
   while(isspace(*ps)) { ps++; }
   unsigned int n = (unsigned int) atoi(ps);
   return n;
@@ -82,7 +82,7 @@ unsigned int nwxUintValidator::FromString(const wxString &s)
 wxString nwxUintValidator::ToString(unsigned int x)
 {
   wxString s;
-  s.Printf(_T("%u"),x);
+  s.Printf("%u",x);
   return s;
 }
 

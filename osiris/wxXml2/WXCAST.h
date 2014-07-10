@@ -30,9 +30,9 @@
 #ifndef __WX_CAST_H__
 #define __WX_CAST_H__
 
-inline const wxChar *WX_CAST(const xmlChar *p)
+inline wxString WX_CAST(const xmlChar *p)
 {
-  return (const wxChar *)p;
+  return wxString::FromUTF8((char *)p);
 }
 
 

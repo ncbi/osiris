@@ -35,11 +35,11 @@
 class CHistoryTime
 {
 public:
-  CHistoryTime(const wxDateTime *pTime = NULL)
+  CHistoryTime(const wxDateTime *pTime = NULL) : m_dtHistory((time_t) 0)
   {
     SetDateTime(pTime);
   }
-  CHistoryTime(const CHistoryTime &x)
+  CHistoryTime(const CHistoryTime &x) : m_dtHistory((time_t) 0)
   {
     (*this) = x;
   }

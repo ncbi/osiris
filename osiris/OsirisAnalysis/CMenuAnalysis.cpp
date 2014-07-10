@@ -29,6 +29,7 @@
 */
 #include "mainApp.h"
 #include "CMenuAnalysis.h"
+#include "CMenuFileAnalysis.h"
 #include "CMenuLabels.h"
 #include "CMenuEdit.h"
 #include "CMenuSort.h"
@@ -296,8 +297,8 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
   AppendSubMenu(m_pMenuCellType,"&Display");
   Append(
     IDExportCMF,
-    CMenuFile::EXPORT_CMF,
-    CMenuFile::EXPORT_CMF_HELP);
+    CMenuFileAnalysis::EXPORT_CMF,
+    CMenuFileAnalysis::EXPORT_CMF_HELP);
   m_pMenuItemToolbar = Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBAR);
 }
 

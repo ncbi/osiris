@@ -42,6 +42,7 @@ class CComboLabels;
 class CComboLabelsName;
 class CMenuSort;
 class COARfile;
+class CFrameAnalysis;
 
 class CMenuAnalysis : public CBaseMenuEdit
 {

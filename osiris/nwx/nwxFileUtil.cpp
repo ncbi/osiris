@@ -61,9 +61,9 @@ wxString nwxFileUtil::SetupFileName(
   wxString sFile(sOriginalFile);
   wxString sExt(_sExt);
   size_t nLen = sExt.Len();
-  if(nLen && !sExt.StartsWith(_T(".")))
+  if(nLen && !sExt.StartsWith("."))
   {
-    wxString s(_T("."));
+    wxString s(".");
     s.Append(sExt);
     sExt = s;
     nLen++;
@@ -77,7 +77,7 @@ wxString nwxFileUtil::SetupFileName(
     {
       sBaseFile.Truncate(sBaseFile.Len() - nLen);
     }
-    sBaseFile.Append(_T("_"));
+    sBaseFile.Append("_");
     for(bool bNotDone = true;
       bNotDone;
       bNotDone = wxFileName::FileExists(sFile))
@@ -103,7 +103,7 @@ void nwxFileUtil::NoStartWithSeparator(wxString *psDir)
   wxString sSeparators = wxFileName::GetPathSeparators();
   size_t nLen1 = psDir->Len();
   size_t nLen = nLen1;
-  const wxChar *ps = psDir->c_str();
+  const wxChar *ps = psDir->wc_str();
   while((nLen > 0) && (sSeparators.Find(*ps) != wxNOT_FOUND))
   {
     ps++;
@@ -142,7 +142,7 @@ wxString nwxFileUtil::BaseName(const wxString &_sDir)
 bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
 {
   bool bRtn = true;
-  wxString sURL(_T("file:///"));
+  wxString sURL("file:///");
   if(wxDir::Exists(sFileName))
   {
     sURL.Append(sFileName);
@@ -159,6 +159,9 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
   if(bRtn)
   {
     wxBusyCursor x;
+    sURL.Replace(wxS("%"),wxS("%25"));
+    sURL.Replace(wxS(" "),wxS("%20"));
+    sURL.Replace(wxS("+"),wxS("%2b"));
     bRtn = wxLaunchDefaultBrowser(sURL);
   }
   return bRtn;
@@ -171,7 +174,7 @@ bool nwxFileUtil::UpDir(wxString *psDir, int n)
   NoEndWithSeparator(&s);
 #ifdef __WXMSW__
   bool bDriveLetter = (s.Len() == 2) && (s.Last() == ':');
-  bool bUNC = bDriveLetter ? false : !psDir->Cmp(_T("\\\\"));
+  bool bUNC = bDriveLetter ? false : !psDir->Cmp("\\\\");
   bool bDone = (n < 1) ||
       (s.Len() < 2) ||
       bDriveLetter || bUNC;
@@ -259,15 +262,15 @@ int nwxFileUtil::CopyFile(
   {
     nRtn = INPUT_OPEN_ERROR;
   }
-  else if(!fin.Open(sFileFrom.c_str(),wxFile::read))
+  else if(!fin.Open(sFileFrom.wc_str(),wxFile::read))
   {
     nRtn = INPUT_OPEN_ERROR;
   }
-  else if((!bOverwrite) && wxFile::Exists(sFileTo.c_str()))
+  else if((!bOverwrite) && wxFile::Exists(sFileTo.wc_str()))
   {
     nRtn = OUTPUT_FILE_EXISTS;
   }
-  else if(!fout.Create(sFileTo.c_str(),bOverwrite))
+  else if(!fout.Create(sFileTo.wc_str(),bOverwrite))
   {
     nRtn = OUTPUT_OPEN_ERROR;
   }
@@ -338,28 +341,28 @@ wxString nwxFileUtil::CopyErrorMessage(
   switch(nRtn)
   {
   case INPUT_FILE_MISSING:
-    sRtn = _T("Cannot find input file, ");
+    sRtn = "Cannot find input file, ";
     sRtn.Append(sFrom);
     break;
   case OUTPUT_FILE_EXISTS:
-    sRtn = _T("Output file, ");
+    sRtn = "Output file, ";
     sRtn.Append(sTo);
-    sRtn.Append(_T(", exists."));
+    sRtn.Append(", exists.");
     break;
   case INPUT_OPEN_ERROR:
-    sRtn = _T("Cannot open input file, ");
+    sRtn = "Cannot open input file, ";
     sRtn.Append(sFrom);
     break;
   case OUTPUT_OPEN_ERROR:
-    sRtn = _T("Cannot open output file, ");
+    sRtn = "Cannot open output file, ";
     sRtn.Append(sTo);
     break;
   case READ_ERROR:
-    sRtn = _T("Cannot read input file, ");
+    sRtn = "Cannot read input file, ";
     sRtn.Append(sFrom);
     break;
   case WRITE_ERROR:
-    sRtn = _T("Cannot write output file, ");
+    sRtn = "Cannot write output file, ";
     sRtn.Append(sTo);
   case COPY_OK:
   default:

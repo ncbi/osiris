@@ -304,9 +304,10 @@ void CGridAttrGrid::SetupGridColoursAttr(CParmOsiris *pParm)
 CDialogEditGridColours::~CDialogEditGridColours() {}
 
 CDialogEditGridColours::CDialogEditGridColours(mainFrame *parent) : 
-  wxDialog(parent, wxID_ANY, wxS("Edit Grid Colors"),
+  wxDialog(parent->DialogParent(), wxID_ANY, wxS("Edit Grid Colors"),
     wxDefaultPosition, wxDefaultSize,
     mainApp::DIALOG_STYLE & ~wxRESIZE_BORDER),
+  m_pParent(parent),
   m_nRowColor(-1),
   m_nRowAttr(-1),
   m_nInSelect(0),
@@ -560,8 +561,7 @@ void CDialogEditGridColours::_UpdateButtons(int nRowColor, int nRowAttr)
 }
 bool CDialogEditGridColours::_ShowColourDialog(wxColour *pColour)
 {
-  mainFrame *p = (mainFrame *) GetParent();
-  bool bRtn = p->ShowColourDialog(pColour);
+  bool bRtn = m_pParent->ShowColourDialog(pColour);
   return bRtn;
 }
 void CDialogEditGridColours::OnButtonReverse(wxCommandEvent &)

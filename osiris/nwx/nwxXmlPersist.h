@@ -70,25 +70,25 @@ public:
   }
   static double Double(const wxString &s)
   {
-    return atof(s.c_str());
+    return atof(s.utf8_str());
   }
   static int Int(const wxString &s)
   {
-    return atoi(s.c_str());
+    return atoi(s.utf8_str());
   }
   static long Long(const wxString &s)
   {
-    return atol(s.c_str());
+    return atol(s.utf8_str());
   }
   static unsigned int Uint(const wxString &s)
   {
-    int n = atoi(s.c_str());
+    int n = atoi(s.utf8_str());
     if(n < 0) { n = 0;}
     return (unsigned int)n;
   }
   static bool Bool(const wxString &s)
   {
-    const char *p = s.c_str();
+    const char *p = s.utf8_str();
     const char *pOK = strchr("tT123456789",*p);
     return (pOK != NULL);
   }
@@ -121,8 +121,8 @@ public:
   }
   static wxString Bool(bool b)
   {
-    const char *p = b ? "true" : "false";
-    return wxString(_T(p));
+    const wxChar *p = b ? wxS("true") : wxS("false");
+    return wxString(p);
   }
 
   static wxString NodeContents(wxXmlNode *pNode, bool bDeep = false);
@@ -386,7 +386,7 @@ private:
 class nwxXmlIOdoubleFmt : public nwxXmlIOdouble
 {
 public:
-  nwxXmlIOdoubleFmt() : m_sFormat(_T(".12g"))
+  nwxXmlIOdoubleFmt() : m_sFormat(".12g")
   {
     ClearRange();
   }
@@ -404,7 +404,7 @@ public:
     double &x(CAST(pObj));
     return wxString::Format(m_sFormat,x);
   }
-  void SetFormat(const wxChar *psFormat = _T(".12g"))
+  void SetFormat(const wxChar *psFormat = wxS(".12g"))
   {
     m_sFormat = psFormat;
   }
@@ -418,9 +418,9 @@ public:
   }
   void SetDigits(int nDigits)
   {
-    m_sFormat = _T("%.");
+    m_sFormat = "%.";
     m_sFormat.Append(ToString::Int(nDigits));
-    m_sFormat.Append(_T("f"));
+    m_sFormat.Append("f");
   }
   void SetRangeLow(double d)
   {
@@ -718,23 +718,23 @@ public:
     //
     //  change all separators into spaces
     //
-    sNode.Replace(_T(","),_T(" "));
-    sNode.Replace(_T("\r"),_T(" "));
-    sNode.Replace(_T("\n"),_T(" "));
-    sNode.Replace(_T("\t"),_T(" "));
+    sNode.Replace(","," ");
+    sNode.Replace("\r"," ");
+    sNode.Replace("\n"," ");
+    sNode.Replace("\t"," ");
     sNode.Trim(true);
     sNode.Trim(false);
 
     //  change all multiple spaces into single spaces
 
-    while(sNode.Replace(_T("  "),_T(" "))) {;}
+    while(sNode.Replace("  "," ")) {;}
 
     //  count spaces and add 1
 
     size_t nCount = sNode.Freq(wxChar(' '));
     nCount++;
     Init(pObj);
-    const char *ps = sNode.c_str();
+    const char *ps = sNode.utf8_str();
     if(*ps)
     {
       vList.reserve(nCount);
@@ -772,7 +772,7 @@ public:
       {
         if(sRtn.Len())
         {
-          sRtn.Append(_T(" "));
+          sRtn.Append(" ");
         }
         T &x(vList.at(i));
         sRtn.Append(ToStringElem((void *)&x));
@@ -953,7 +953,7 @@ public:
   }
   virtual ~nwxXmlContainer()
   {
-    wxASSERT_MSG(!m_nInitRecursion,_T("m_nInitRecursion is not 0"));
+    wxASSERT_MSG(!m_nInitRecursion,"m_nInitRecursion is not 0");
     Clear();
   }
   /*

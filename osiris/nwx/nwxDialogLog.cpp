@@ -47,7 +47,13 @@ nwxDialogLog::nwxDialogLog(
       wxDefaultSize,
       style)
 {
-  const int SIZER_BORDER = 4;
+  const int SIZER_BORDER = 
+#ifdef __WXMAC__
+    8
+#else
+    4
+#endif
+    ;
   wxSizer *pButtonSizer(NULL);
   m_pTextCtrl = new wxTextCtrl(
     this,wxID_ANY,wxEmptyString,
@@ -55,9 +61,9 @@ nwxDialogLog::nwxDialogLog(
     wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP);
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   wxButton *pButtonClear = new wxButton(
-    this,wxID_CLEAR,_T("Clear"));
+    this,wxID_CLEAR,"Clear");
   m_pButtonOK = new wxButton(
-    this,wxID_OK,_T("&Close"));
+    this,wxID_OK,"&Close");
   m_pButtonOK->SetDefault();
   pButtonSizer = new wxBoxSizer(wxHORIZONTAL);
   pButtonSizer->Add(

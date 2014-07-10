@@ -81,7 +81,7 @@ public:
         {
             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
 
-            if (GetRect().Inside(p) || labelBut->GetRect().Inside(p))
+            if (GetRect().Contains(p) || labelBut->GetRect().Contains(p))
             {
                 m_focused = true;
 
@@ -125,7 +125,7 @@ public:
         {
             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
 
-            if (GetRect().Inside(p) || dropBut->GetRect().Inside(p))
+            if (GetRect().Contains(p) || dropBut->GetRect().Contains(p))
             {
                 m_focused = true;
 

@@ -31,16 +31,22 @@
 #ifndef __C_MDI_FRAME_H__
 #define __C_MDI_FRAME_H__
 
-#include <wx/mdi.h>
+#include "Platform.h"
 #include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/menu.h>
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/stdb.h"
+#include <set>
+#include "nwx/stde.h"
+
+#include INCLUDE_FRAME
+
+DECLARE_EVENT_TYPE(CEventKillWindow,-1)
 
 class mainFrame;
 
-
-class CMDIFrame : public wxMDIChildFrame, public nwxTimerReceiver
+class CMDIFrame : public CMDIFrameSuper, public nwxTimerReceiver
 {
 public:
   enum
@@ -65,17 +71,45 @@ public:
   virtual wxString GetFileName();
   virtual void UpdateHistory();
   virtual void UpdateLadderLabels();
+  virtual void UpdateFileMenu();
   virtual void CheckFileModification();
   virtual bool IsEdited();
   virtual bool PromptReload(
     const wxString &sFileName, 
     const wxString &sFileName2 = wxEmptyString);
   virtual void UpdateStatusBar();
-  wxMenu *GetLastMenuShown();
 
   bool PopupMenu_(wxMenu* menu, const wxPoint& pos = wxDefaultPosition);
   bool PopupMenu_(wxMenu* menu, int x, int y);
+
+#ifdef __NO_MDI__
+  void Activate()
+  {
+    Show(true);
+    SetFocus();
+  }
+#endif
   static bool DialogIsShowingOrNoFocus();
+  wxMenu *GetLastMenuShown()
+  {
+    return m_pLastMenuShown;
+  }
+  void SetLastMenuShown(wxMenu *p)
+  {
+    if(IsMenuRegistered(p))
+    {
+      m_pLastMenuShown = p;
+    }
+  }
+  void RegisterMenu(wxMenu *p)
+  {
+    m_setMenus.insert(p);
+  }
+  bool IsMenuRegistered(wxMenu *p)
+  {
+    bool b = (m_setMenus.find(p) != m_setMenus.end());
+    return b;
+  }
 
 protected:
   CMDIFrame(
@@ -96,14 +130,22 @@ protected:
   }
   void _Kill();
 private:
+  set<wxMenu *> m_setMenus;
   bool m_bNoPromptReload;
   bool m_bAutoReload;
   void _NotifyParent();
+  wxMenu *m_pLastMenuShown;
 public:
   void RaiseWindow();
-  void OnFocus(wxFocusEvent &e);
+  void OnActivate(wxActivateEvent &e);
+  void OnFocusSet(wxFocusEvent &e);
+  void OnFocusKill(wxFocusEvent &e);
+  void OnDoClose(wxCommandEvent &);
+  void OnMenuOpen(wxMenuEvent &e);
+  void OnMenuClose(wxMenuEvent &e);
   virtual bool Show(bool show = true);
-  DECLARE_EVENT_TABLE();
+  DECLARE_EVENT_TABLE()
+  DECLARE_ABSTRACT_CLASS(CMDIFrame)
 };
 
 #endif

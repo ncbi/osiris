@@ -272,7 +272,7 @@ int LM_LeastSquare::Fit(const double *x0, int init_count)
     pmat( 1, m_n, m_x );
     printf( "function norm = %.15e\n", m_fnorm );
     // display m_info returned by lmdif
-    printf( "%s\n", GetResultMessage().c_str() );
+    printf( "%s\n", GetResultMessage().utf8_str() );
 #endif
 
     if (wa1) free(wa1);

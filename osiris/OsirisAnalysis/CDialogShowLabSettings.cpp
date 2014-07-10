@@ -47,7 +47,9 @@ CDialogShowLabSettings::CDialogShowLabSettings(
   m_pPanel->TransferDataToWindow();
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(m_pPanel,1,wxEXPAND,0);
+#ifndef __NO_MDI__
   SetMaxSize(mainFrame::Size80());
+#endif
   SetSizer(pSizer);
   Layout();
   Fit();

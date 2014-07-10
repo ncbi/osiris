@@ -49,9 +49,13 @@
 #include "CGridAnalysis.h"
 #include "CMenuEdit.h"
 #include "CMenuAnalysis.h"
+#include "CMenuBarAnalysis.h"
 #include "LABEL_TYPES.h"
 //#include "CMenuAnalysis.h"
 #include "Platform.h"
+
+
+DECLARE_EVENT_TYPE(CEventRepaint,-1)
 
 class mainFrame;
 class CMenuSort;
@@ -63,6 +67,7 @@ class COARfile;
 class COARsample;
 class CDialogAnalysis;
 class CPanelAlerts;
+class CXSLExportFileType;
 
 /*
 typedef enum
@@ -102,10 +107,7 @@ public:
   virtual wxString GetFileName();
   void SetLabelType(int n);
   LABEL_PLOT_TYPE GetPlotLabelType();
-  wxWindow *GetInfoPanel()
-  {
-    return m_pPanelInfo;
-  }
+  wxWindow *GetInfoPanel();
   CPanelPlotPreview *GetGraphPanel()
   {
     return m_pPanelPlotPreview;
@@ -150,12 +152,22 @@ public:
   {
     return m_bFileError;
   }
-  void RepaintData();
+  void RepaintData()
+  {
+    //
+    //  need to defer repaint because it can destroy
+    //  a panel whose event is currently being processed
+    //
+    wxCommandEvent ee(CEventRepaint,GetId());
+    ee.SetEventObject(this);
+    GetEventHandler()->AddPendingEvent(ee);
+  }
   bool FileEmpty();
   bool SaveFile();
   bool SaveFileAs();
   bool PromptSaveFileNow(const wxString &sMessage);
   bool FileNeedsAttention(bool bCMF = true, bool bShowMessage = true); // future
+  virtual void UpdateFileMenu();
   bool ExportCMF();
   void SetupTitle();
   virtual void UpdateHistory();
@@ -173,13 +185,20 @@ public:
   void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus);
   void DoEditLocus(COARsample *pSample, COARlocus *pLocus);
   bool CheckIfHistoryOK();
+  void CheckSaveStatus();
 private:
+  CXSLExportFileType *GetFileTypeByID(int nID);
+
   bool _IsPreviewShowing()
   {
     return m_pSplitterTop->IsSplit();
   }
   bool _CheckIfTampered(COARfile *pOAR = NULL);
     // return true if tampered and rejected by user
+  void _SetPreviewMenu(wxMenu *p)
+  {
+    if(m_pMenuBar != NULL) {m_pMenuBar->SetPlotMenu(p);}
+  }
   void _EnablePreview();
   void _DisablePreview();
   void _HidePreview();
@@ -189,8 +208,11 @@ private:
   bool _SaveOERFile(const wxString &sFileName);
   void _Build();
   bool _IsCellEdited(int nRow,int nCol);
-  void _OnAcceptLocus();
-  void _OnReviewLocus();
+  void _SetupLocusColumn
+    (wxCommandEvent &e, COARsample **ppSample, COARlocus **ppLocus);
+  void _OnAcceptLocus(wxCommandEvent &e);
+  void _OnReviewLocus(wxCommandEvent &e);
+  void _OnRepaint(wxCommandEvent &);
   void _OnReviewSample(int nReviewType);
   void _OnAcceptSample(int nReviewType);
   void _OnEnableMultiple();
@@ -294,6 +316,7 @@ private:
     // else {nCol = -1;} // sample
     return nCol;
   }
+#if 0
   void _CleanupMenus()
   {
     if(m_pMenu != NULL)
@@ -302,6 +325,7 @@ private:
       m_pMenu = NULL;
     }
   }
+#endif
   void _UpdateMenu();
   void _UpdateHistoryMenu(int nRow, int nCol,bool bEnabled = true);
   void _UpdateHistoryMenu(bool bEnabled)
@@ -321,6 +345,7 @@ private:
   COARsampleSort m_SampleSort;
   COARfile *m_pOARfile;
   CMenuAnalysis *m_pMenu;
+  CMenuBarAnalysis *m_pMenuBar;
 
   CGridAnalysis *m_pGrid;
   CGridLocusPeaks *m_pGridLocus;
@@ -436,6 +461,7 @@ public:
   void OnUserExport(wxCommandEvent &);
   
   DECLARE_EVENT_TABLE()
+  DECLARE_ABSTRACT_CLASS(CFrameAnalysis)
 
 };
 

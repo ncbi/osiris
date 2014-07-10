@@ -62,7 +62,6 @@ void CMenuHistory::SetFile(COARfile *pFile,bool bAnalysis)
   {
     m_pFile = pFile;
     m_bAnalysis = bAnalysis;
-    _Cleanup();
     _Setup();
   }
 }
@@ -201,7 +200,6 @@ const wxDateTime *CMenuHistory::UpdateList(bool bForce)
     {
       s = GetLabelText(IDmenuHistoryView);
     }
-    _Cleanup();
     _Setup();
     if(m_bAnalysis)
     {
@@ -210,24 +208,74 @@ const wxDateTime *CMenuHistory::UpdateList(bool bForce)
   }
   return m_HistoryTime.GetDateTime();
 }
-void CMenuHistory::_Cleanup()
+size_t CMenuHistory::_GetInsertPoint()
+{
+  wxMenuItemList &list(GetMenuItems());
+  wxMenuItemList::reverse_iterator itr = list.rbegin();
+  wxMenuItem *pItem;
+  size_t nSize = list.GetCount();
+  size_t nRtn = nSize;
+  int nID;
+  bool bDone = (nSize == 0);
+  while((itr != list.rend()) && (!bDone))
+  {
+    pItem = *itr;
+    nID = pItem->GetId();
+    if ((nID >= IDmenuHistory) && (nID < IDmenuHistoryMAX))
+    {
+      bDone = true;
+    }
+    else
+    {
+      nRtn--;
+      ++itr;
+      bDone = (nID == IDmenuHistoryOriginal);
+    }
+  }
+  if(!bDone)
+  {
+    nRtn = nSize;
+  }
+  return nRtn;
+}
+void CMenuHistory::_CleanupTimes(int nIDmax)
 {
   size_t nCount = GetMenuItemCount();
-  while(nCount > 0)
+  size_t nPos = nCount;
+  int nID;
+  wxMenuItem *pItem;
+
+  for(size_t i = 0; i < nCount; i++)
   {
-    --nCount;
-    wxMenuItem *pItem = FindItemByPosition(nCount);
-    Remove(pItem);
-    delete pItem;
+    nPos--;
+    pItem = FindItemByPosition(nPos);
+    nID = ( (pItem != NULL) && pItem->IsRadio() )
+      ? pItem->GetId() : 0;
+    if((nID > nIDmax) && (nID < IDmenuHistoryMAX))
+    {
+      Destroy(pItem);
+    }
+    else if(nID >= IDmenuHistory)
+    {
+      break;
+    }
   }
-  m_vDate.clear();
-  m_nHistorySize = 0;
 }
+
 bool CMenuHistory::_AppendTime(const wxDateTime &x, int nID, const wxDateTime *pCheck)
 {
   wxString sLabel = nwxString::FormatDateTime(x);
-  wxMenuItem *pItem = AppendRadioItem(nID,sLabel);
   bool bCheck = (pCheck != NULL) && ((*pCheck) == x);
+  wxMenuItem *pItem = FindItem(nID);
+  if(pItem != NULL)
+  {
+    pItem->SetItemLabel(sLabel);
+  }
+  else
+  {
+    size_t nInsertPoint = _GetInsertPoint();
+    pItem = InsertRadioItem(nInsertPoint,nID,sLabel);
+  }
   m_vDate.push_back(x);
   pItem->Check(bCheck);
   if(bCheck)
@@ -238,6 +286,12 @@ bool CMenuHistory::_AppendTime(const wxDateTime &x, int nID, const wxDateTime *p
 }
 void CMenuHistory::_Setup()
 {
+  //
+  // in the past, the entire menu was cleared and rebuild, but due to
+  //  a bug in wxWidgets 3.0 for wxMac, radio button menu 
+  //  items cannot be removed
+  //  
+  //
   wxString sLabel("Current");
   const set<wxDateTime> *pHistory(m_pFile->GetHistory());
   set<wxDateTime>::const_reverse_iterator itr = pHistory->rbegin();
@@ -246,7 +300,7 @@ void CMenuHistory::_Setup()
   int nID = IDmenuHistory;
   wxMenuItem *pItem;
   bool bMore = false;
-  bool bZeroFound = false;
+
   //
   //  preserve the current selection
   //  by saving m_HistoryTime
@@ -263,43 +317,63 @@ void CMenuHistory::_Setup()
   if(m_bAnalysis)
   {
     wxString sLabelAllele("View Allele History...");
-    Append(IDmenuHistoryView,sLabelAllele);
-    AppendSeparator();
+    pItem = FindItem(IDmenuHistoryView);
+    if(pItem != NULL)
+    {
+      pItem->SetItemLabel(sLabelAllele);
+    }
+    else
+    {
+      Insert(0,IDmenuHistoryView,sLabelAllele);
+      InsertSeparator(1);
+    }
   }
-  pItem = AppendRadioItem(IDmenuHistoryCurrent,sLabel);
+  else if((pItem = FindItem(IDmenuHistoryView)) != NULL)
+  {
+    Destroy(pItem);
+    pItem = FindItemByPosition(0);
+    if(pItem->IsSeparator())
+    {
+      Destroy(pItem);
+    }
+  }
+  pItem = FindItem(IDmenuHistoryCurrent);
+  if(pItem == NULL)
+  {
+    pItem = AppendRadioItem(IDmenuHistoryCurrent,sLabel);
+  }
   pItem->Check(dtSave.IsCurrent());
   for(size_t i = 0; i < nSize; i++)
   {
-    _AppendTime(*itr,nID,dtSave);
-    ++nID;
+    if((*itr).GetTicks())
+    {
+      _AppendTime(*itr,nID,dtSave);
+      ++nID;
+    }
     ++itr;
   }
-  if(nSize > 0)
+#if 0
+  if((nSize > 0) && !bMore)
   {
     const wxDateTime &dtBegin(m_pFile->GetCreationTime());
     const wxDateTime &dtLow(m_vDate.at(nSize - 1));
-    bZeroFound = (!dtLow.GetTicks());
-    if( (!bMore) && (dtBegin <  dtLow) )
+    if(dtBegin.GetTicks() && (dtBegin <  dtLow))
     {
       _AppendTime(dtBegin,nID,dtSave);
       ++nID;
-      if(!dtBegin.GetTicks())
-      {
-        bZeroFound = true;
-      }
     }
   }
-  if(!bZeroFound)
-  {
-    wxDateTime dt0((time_t)0);
-    sLabel = nwxString::FormatDateTime(dt0);
-    AppendRadioItem(IDmenuHistoryOriginal,sLabel);
-  }
+#endif
+  wxDateTime dt0((time_t)0);
+  _AppendTime(dt0,IDmenuHistoryOriginal,dtSave);
   if(bMore)
   {
     sLabel = "More...";
     AppendRadioItem(IDmenuHistoryMore,sLabel);
   }
+  //  now clean up unwanted junk
+  _CleanupTimes(nID - 1);
+  
 }
 void CMenuHistory::CopyState(CMenuHistory *pTo)
 {

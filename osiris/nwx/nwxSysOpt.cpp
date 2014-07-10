@@ -34,6 +34,6 @@ bool nwxSysOpt::g_bSetup = false;
 void nwxSysOpt::_Setup()
 {
 #ifdef __WXMAC__
-  wxSystemOptions::SetOption(_T("mac.listctrl.always_use_generic"),1);
+  wxSystemOptions::SetOption("mac.listctrl.always_use_generic",1);
 #endif
 }

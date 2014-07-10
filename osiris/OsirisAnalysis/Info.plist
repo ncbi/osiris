@@ -9,7 +9,7 @@
   <key>CFBundleDevelopmentRegion</key>
   <string>English</string>
   <key>CFBundleExecutable</key>
-  <string>osirisanalysis</string>
+  <string>osiris</string>
   <key>CFBundleIconFile</key>
   <string>wxmac.icns</string>
   <key>CFBundleName</key>
@@ -17,6 +17,8 @@
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleSignature</key>
+  <string>OSRS</string>
+  <key>CFBundleDisplayName</key>
   <string>Osiris</string>
   <key>CFBundleVersion</key>
   <string>2.3</string>

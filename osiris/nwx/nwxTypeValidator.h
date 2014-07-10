@@ -40,7 +40,7 @@ template <class T, class W = wxTextCtrl> class tnwxTypeValidator : public wxText
 public:
   tnwxTypeValidator<T,W> (T *p, T tlo, T thi, T tdefault, bool bAllowEmpty = true, bool bIsNumber = false) :
     wxTextValidator(),
-    m_sPrefix(_T("Value")),
+    m_sPrefix("Value"),
     m_tLo(tlo),
     m_tHi(thi),
     m_tDefault(tdefault),
@@ -95,7 +95,7 @@ public:
     {
       if(sError.Len())
       {
-        wxMessageDialog mb(parent,sError,_T("Error"), wxOK | wxICON_ERROR );
+        wxMessageDialog mb(parent,sError,"Error", wxOK | wxICON_ERROR );
         mb.ShowModal();
       }
       nwxBookCtrlFocus::Focus(GetWindow());
@@ -151,7 +151,7 @@ public:
   virtual wxString GetErrorEmpty()
   {
     wxString sRtn(m_sPrefix);
-    sRtn += _T(" is empty.  A value is required.");
+    sRtn += " is empty.  A value is required.";
     return sRtn;
   }
   virtual wxString GetErrorInvalidNumber()
@@ -171,16 +171,16 @@ public:
     else
     {
       sRtn = m_sPrefix;
-      sRtn += _T(" is not valid.");
+      sRtn += " is not valid.";
     }
     return sRtn;
   }
   virtual wxString GetErrorRange()
   {
     wxString sRtn(m_sPrefix);
-    sRtn += _T(" is out of range.\n");
+    sRtn += " is out of range.\n";
     sRtn += ToString(m_tLo);
-    sRtn += _T(" - ");
+    sRtn += " - ";
     sRtn += ToString(m_tHi);
     return sRtn;
   }

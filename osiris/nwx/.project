@@ -3,6 +3,10 @@
 	<name>nwx</name>
 	<comment></comment>
 	<projects>
+		<project>wxplotctrl</project>
+		<project>wxThings</project>
+		<project>wxXML2</project>
+		<project>wxXsl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

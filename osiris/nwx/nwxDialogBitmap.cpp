@@ -241,21 +241,21 @@ nwxDialogBitmap::nwxDialogBitmap(
     wxTAB_TRAVERSAL | wxBORDER_RAISED);
 
   m_pScrollWin = new nwxScrolledBitmap(pBitmap,this,wxID_ANY);
-  m_pButtonMinus = new wxButton(pPanel,wxID_ANY,_T(" - "));
-  m_pButtonPlus = new wxButton(pPanel,wxID_ANY,_T(" + "));
+  m_pButtonMinus = new wxButton(pPanel,wxID_ANY," - ");
+  m_pButtonPlus = new wxButton(pPanel,wxID_ANY," + ");
   m_pTextPct = new wxTextCtrl(
-    pPanel,wxID_ANY,_T("100%"),
+    pPanel,wxID_ANY,"100%",
     wxDefaultPosition, wxDefaultSize,
     wxTE_READONLY);
-  m_pButtonActual = new wxButton(pPanel,wxID_ANY,_T("Actual"));
-  m_pButtonFit = new wxButton(pPanel,wxID_ANY,_T("Fit"));
-  wxButton *pButtonClose = new wxButton(pPanel,wxID_CANCEL,_T("Close"));
-  m_pButtonPlus->SetToolTip(_T("Increase size by 10% of actual size"));
-  m_pButtonMinus->SetToolTip(_T("Decrease size by 10% of actual size"));
-  m_pButtonActual->SetToolTip(_T("View the image in actual size"));
-  m_pButtonFit->SetToolTip(_T(
+  m_pButtonActual = new wxButton(pPanel,wxID_ANY,"Actual");
+  m_pButtonFit = new wxButton(pPanel,wxID_ANY,"Fit");
+  wxButton *pButtonClose = new wxButton(pPanel,wxID_CANCEL,"Close");
+  m_pButtonPlus->SetToolTip("Increase size by 10% of actual size");
+  m_pButtonMinus->SetToolTip("Decrease size by 10% of actual size");
+  m_pButtonActual->SetToolTip("View the image in actual size");
+  m_pButtonFit->SetToolTip(
     "Resize image to fit window if\n"
-    "it is larger than the window"));
+    "it is larger than the window");
 
   _SetupTextWidth(m_pTextPct);
 
@@ -322,7 +322,7 @@ void nwxDialogBitmap::OnSetPct(wxCommandEvent &)
 {
   int n = nwxRound::Round(m_pScrollWin->GetPct());
   wxString s = nwxString::FormatNumber(n);
-  s.Append(_T("%"));
+  s.Append("%");
   m_pTextPct->ChangeValue(s);
 }
 

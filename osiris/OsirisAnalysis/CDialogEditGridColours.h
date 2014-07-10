@@ -89,6 +89,7 @@ private:
     // this function will update colors for
     // ROW_EDITED or ROW_NEEDS_ATTENTION
 
+  mainFrame *m_pParent;
   int m_nRowColor;
   int m_nRowAttr;
   int m_nInSelect;

@@ -52,7 +52,8 @@
 #include "CKitColors.h"
 #include "CPlotData.h"
 #include "COARfile.h"
-#include "CMenuBar.h"
+#include "CMenuBarGraph.h"
+#include "CMenuFileGraph.h"
 #include "CMenuEdit.h"
 #include "CParmOsiris.h"
 #include "CPanelHistoryMenu.h"
@@ -140,8 +141,8 @@ CFramePlotMenu::CFramePlotMenu()
     "Show parameters used to create this data");
   Append(
     IDExportGraphic,
-    CMenuFile::EXPORT_GRAPH,
-    CMenuFile::EXPORT_GRAPH_HELP);
+    CMenuFileGraph::EXPORT_GRAPH,
+    CMenuFileGraph::EXPORT_GRAPH_HELP);
   Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBARS);
   Append(IDmenuShowHidePlotScrollbars,"Hide Plot Scrollbars");
   AppendCheckItem(IDmenuShowHideWindowScrollbar,"Resizable Plots");
@@ -417,7 +418,7 @@ CFramePlot::~CFramePlot()
   _CleanupMenuHistoryPopup();
   _CleanupMenuPopup();
   delete m_pData;
-  delete m_pMenu;
+////  delete m_pMenu;
   _CleanupExportDialog();
 }
 
@@ -498,6 +499,7 @@ CFramePlot::CFramePlot(
   {
     SetMultiple(p);
   }
+  SetMenuBar(new CMenuBarGraph(m_pMenu));
   wxBoxSizer *pSizerAll = new wxBoxSizer(wxVERTICAL);
   pSizerAll->Add(m_pPanel,1,wxEXPAND);
   SetSizer(pSizerAll);
@@ -648,13 +650,13 @@ void CFramePlot::RebuildAll()
     itrm != mapNrPlot.end();
     ++itrm)
   {
-    CPanelPlot *pPlot = GetPanelPlot(false,itrm->first);
-    CPanelPlot *pOld = itrm->second;
-    pPlot->CopySettings(*pOld);
-    pPlot->EnableAppend(bEnableAppend);
-    pPlot->EnableDelete(bEnableDelete);
-    pOld->Destroy();
-    m_pSizer->Add(pPlot,1,wxEXPAND);
+    CPanelPlot *pplot = GetPanelPlot(false,itrm->first);
+    CPanelPlot *pold = itrm->second;
+    pplot->CopySettings(*pold);
+    pplot->EnableAppend(bEnableAppend);
+    pplot->EnableDelete(bEnableDelete);
+    pold->Destroy();
+    m_pSizer->Add(pplot,1,wxEXPAND);
   }
   _SetupTitle();
   _UpdateViewState(true);

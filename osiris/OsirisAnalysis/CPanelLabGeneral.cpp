@@ -134,7 +134,7 @@ CPanelLabGeneral::CPanelLabGeneral(
   pSizer->Add(pGridSizer,0,wxEXPAND | wxALL, ID_BORDER);
   pSizer->Add(
     new wxStaticText(this,wxID_ANY,"Notes:"),
-    0,wxLEFT | wxTOP | wxALIGN_LEFT, ID_BORDER);
+    0,wxLEFT | wxTOP | wxBOTTOM | wxALIGN_LEFT, ID_BORDER);
   pSizer->Add(m_pTextNotes,1,wxEXPAND | (wxALL ^ wxTOP), ID_BORDER);
   SetSizer(pSizer);
   // do not Layout() because TransferDataToWindow() will modify the sizes

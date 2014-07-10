@@ -111,7 +111,7 @@ public:
     wxBitmap *pBitmap,
     wxWindow *parent,
     wxWindowID id,
-    const wxString &sTitle = _T("View Image"),
+    const wxString &sTitle = "View Image",
     const wxPoint &pos = wxDefaultPosition,
     const wxSize &sz = wxDefaultSize,
     long style = wxDEFAULT_DIALOG_STYLE);

@@ -63,7 +63,7 @@ my $VARLIST =
   ["m_sInputDirectory", "wxString", "sInputDirectory", "inputDirectory"],
   ["m_sOutputDirectory", "wxString", "pConfig->GetFilePath()", "outputDirectory"],
   [" m_sKitName is obsolete, use volume name"],
-  ["m_sKitName", "wxString","_T(\"Cofiler\")","kit"],
+  ["m_sKitName", "wxString","\"Cofiler\"","kit"],
   ["m_sVolumeName", "wxString",undef,"volume"],
   ["m_sLsName", "wxString",undef,"ls"],
   ["m_nMinRFU_Sample", "int", "RFU", "minRFUsample"],
@@ -136,11 +136,11 @@ my $VARLIST =
   ["m_nPlotShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
   ["m_nPlotDisplayPeak", "unsigned int","1",undef,"m_ioUint1"],
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
-  
+
   ["XSLT saved parameter info"],
-  
+
   ["m_sLastXSLInputFileDir","wxString"]
-  
+
 
 ];
 
@@ -151,7 +151,7 @@ my $VARLIST =
 #
 my $VOLUME_STRING = "Operating Procedure";
 
-my $STATIC_STRINGS = 
+my $STATIC_STRINGS =
 [
   ["DEFAULT_BATCH_FORMAT", "%Y%m%d_%H%M%S"],
   ["LABEL_VIEW_LOCATION", "View File Location"],
@@ -196,7 +196,7 @@ sub GenerateStringsCPP
   {
     my ($s0,$s1) = @$aStr;
     $sRtn .= <<EOF
-const wxString CParmOsiris::${s0}(_T("${s1}"));
+const wxString CParmOsiris::${s0}("${s1}");
 EOF
   }
   $sRtn;
@@ -269,13 +269,13 @@ sub GenerateRegister
       if($sIOvariable)
       {
         $sRtn .=
-        "  Register(_T(\"${sTagName}\"),\&${sIOvariable},(void *) \&${sVarName});\n";
+        "  Register(\"${sTagName}\",\&${sIOvariable},(void *) \&${sVarName});\n";
       }
       else
       {
         my $fnc = $VarTypeToFunction->{$sVarType};
         $fnc || die("Cannot find register function for ${sVarType}");
-        $sRtn .= "  ${fnc}(_T(\"${sTagName}\"), \&${sVarName});\n";
+        $sRtn .= "  ${fnc}(\"${sTagName}\", \&${sVarName});\n";
       }
     }
     else
@@ -551,12 +551,13 @@ ${sGets}
     wxString sRtn(m_sVolumeName);
     if(sRtn.IsEmpty() && !m_sKitName.IsEmpty())
     {
-      sRtn = _T("[");
+      sRtn = "[";
       sRtn.Append(m_sKitName);
-      sRtn.Append(_T("]"));
+      sRtn.Append("]");
     }
     return sRtn;
   }
+  static const wxString NO_INIT;
   // end static/global stuff
 
 private:
@@ -836,17 +837,17 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("inputDirectory"), &m_sInputDirectory);
-    RegisterWxString(_T("outputDirectory"), &m_sOutputDirectory);
-    RegisterWxString(_T("kit"), &m_sKitName);
-    RegisterWxString(_T("ls"), &m_sLsName);
-    RegisterInt(_T("minRFUsample"), &m_nMinRFU_Sample);
-    RegisterInt(_T("minRFUILS"), &m_nMinRFU_ILS);
-    RegisterInt(_T("minRFUladder"), &m_nMinRFU_Ladder);
-    RegisterInt(_T("minRFUinterlocus"), &m_nMinRFU_Interlocus);
-    RegisterIntNonZero(_T("minRFUladderInterlocus"), &m_nMinLadderInterlocusRFU);
-    RegisterIntNonZero(_T("minRFUsampleDetection"), &m_nSampleDetectionThreshold);
-    RegisterBoolSkipFalse(_T("DataAnalyzed"), &m_bDataAnalyzed);
+    RegisterWxString("inputDirectory", &m_sInputDirectory);
+    RegisterWxString("outputDirectory", &m_sOutputDirectory);
+    RegisterWxString("kit", &m_sKitName);
+    RegisterWxString("ls", &m_sLsName);
+    RegisterInt("minRFUsample", &m_nMinRFU_Sample);
+    RegisterInt("minRFUILS", &m_nMinRFU_ILS);
+    RegisterInt("minRFUladder", &m_nMinRFU_Ladder);
+    RegisterInt("minRFUinterlocus", &m_nMinRFU_Interlocus);
+    RegisterIntNonZero("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
+    RegisterIntNonZero("minRFUsampleDetection", &m_nSampleDetectionThreshold);
+    RegisterBoolSkipFalse("DataAnalyzed", &m_bDataAnalyzed);
   }
   virtual bool Load()
   {
@@ -904,13 +905,14 @@ EOF
 
 CParmOsiris *CParmOsiris::g_p(NULL); // global pointer
 CParmOsiris::CCleanupGlobal CParmOsiris::g_xxx;
+const wxString CParmOsiris::NO_INIT(wxS(":"));
 
 void CParmOsiris::_Init()
 {
   if(m_sFileName.IsEmpty())
   {
     m_sFileName = mainApp::GetConfig()->GetConfigPath();
-    m_sFileName += _T("osiris.xml");
+    m_sFileName += "osiris.xml";
   }
   m_bModified = false;
   m_bAutoSave = false;
@@ -968,7 +970,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   if(bInConstructor)
   {
     m_ioDefaultSample.SetDefault(
-      _T(CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY));
+      CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY);
     m_ioBatchFormat.SetDefault(DEFAULT_BATCH_FORMAT);
     m_ioUintViewPlotArtifact.SetDefault(15);
     m_ioUint1.SetDefault(1);
@@ -981,7 +983,7 @@ ${sRegister}
 
   // end generated register
 
-  Register(_T("GridColors"),&m_gridAttr);
+  Register("GridColors",&m_gridAttr);
 }
 
 CParmOsiris::~CParmOsiris()
@@ -999,9 +1001,9 @@ void CParmOsiris::SetDefaults()
 
   wxString sExe = pConfig->GetExePath();
   wxString sInputDirectory = sExe;
-  sInputDirectory += _T("TestAnalysis");
+  sInputDirectory += "TestAnalysis";
   nwxFileUtil::EndWithSeparator(&sInputDirectory);
-  sInputDirectory += _T("Cofiler");
+  sInputDirectory += "Cofiler";
 
   m_bModified = true;
 
@@ -1019,7 +1021,7 @@ bool CParmOsiris::Save()
   if(!bRtn)
   {
     wxString sError =
-      _T("An error occurred when writing OSIRS parameters file:\\n");
+      "An error occurred when writing OSIRS parameters file:\\n";
     sError.Append(m_sFileName);
     wxASSERT_MSG(0,sError);
     mainApp::LogMessage(sError);
@@ -1047,7 +1049,7 @@ sub NeedFile
   {
     my @aStatThis = stat($0);
     $bRtn = ($#aStatThis < 9) ||
-      ($aStatThis[9] > $aStat[9]);      
+      ($aStatThis[9] > $aStat[9]);
   }
   $bRtn;
 }
@@ -1085,8 +1087,8 @@ sub UpToDate
     while($sName = shift)
     {
       (print "$sName is up to date\n");
-    }    
-  } 
+    }
+  }
   0;
 }
 

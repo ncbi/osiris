@@ -42,7 +42,7 @@ public:
   nwxDialogLog(
     wxWindow *parent, 
     wxWindowID id = wxID_ANY, 
-    const wxString &sTitle = _T("Error Log"), 
+    const wxString &sTitle = "Error Log", 
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
   virtual ~nwxDialogLog();
   wxLogTextCtrl *GetLog()

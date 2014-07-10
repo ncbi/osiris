@@ -105,7 +105,13 @@ void CMenuReviewAccept::SetLocusName(
 CMenuReviewAccept::CMenuReviewAccept(bool bAccept) :
   m_pnIDS(bAccept ? &g_anIDAccept[0] : &g_anIDReview[0])
 {
-  m_sAccel = bAccept ? "\tAlt+A" : "\tAlt+R";
+  m_sAccel = bAccept ? 
+#ifdef __WXMAC__
+  "\tCtrl+A"
+#else
+  "\tAlt+A" 
+#endif
+  : "\tAlt+R";
   const int *pn = m_pnIDS;
   const wxChar **psLabel = &g_asLabels[0];
   // order of the following must be consistent with static int arrays

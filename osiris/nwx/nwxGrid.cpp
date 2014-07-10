@@ -347,9 +347,9 @@ void nwxGrid::ClearRowValues(wxGrid *p, int nRow)
 
 wxString nwxGrid::GetTabDelimited(wxGrid *pGrid, bool bLabels)
 {
-  wxString sTab(_T("\t"));
-  wxString sSpace(_T(" "));
-  wxString sEOL(_T(nwxString::EOL));
+  wxString sTab("\t");
+  wxString sSpace(" ");
+  wxString sEOL(nwxString::EOL);
   wxString sRtn;
   wxString s;
   int nCOLS = pGrid->GetNumberCols();
@@ -424,8 +424,8 @@ void nwxGrid::OnCellChange(wxGridEvent &e)
         && !sPrompt.IsEmpty() )
     {
       sPrompt.Append(
-        _T("\nWould you like to continue editiing?"));
-      wxMessageDialog dlg(this,sPrompt,_T("Error"),
+        "\nWould you like to continue editiing?");
+      wxMessageDialog dlg(this,sPrompt,"Error",
         wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
       int n = dlg.ShowModal();
       if(n == wxID_YES || n == wxID_OK)

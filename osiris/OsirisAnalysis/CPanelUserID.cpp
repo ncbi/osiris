@@ -374,20 +374,15 @@ bool CPanelUserID::AddReview(IAppendReview *pReview, bool bNoDup)
 }
 void CPanelUserID::OnButton(wxCommandEvent &e)
 {
-  bool bProblem = false;
   bool bSkip = m_bSendBtnEvents;
-  if(e.GetId() == wxID_OK)
+  if( (e.GetId() == wxID_OK) && (m_pReview != NULL) )
   {
-    if(m_pReview != NULL)
+    if(!AddReview())
     {
-      bProblem = !AddReview();
+      bSkip = false;
     }
   }
-  else if(e.GetId() == IDmenuEditCell)
-  {
-    bSkip = true;
-  }
-  e.Skip(bSkip && !bProblem);
+  e.Skip(bSkip);
 }
 
 BEGIN_EVENT_TABLE(CPanelUserID,wxPanel)

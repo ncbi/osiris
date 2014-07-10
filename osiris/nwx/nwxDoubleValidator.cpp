@@ -39,7 +39,7 @@ const double nwxDoubleValidator::BIG_NUMBER = 1.0e+200;
 
 bool nwxDoubleValidator::ValidateString(const wxString &sIn)
 {
-  const char *ps(sIn.c_str());
+  const char *ps(sIn.utf8_str());
 
   while(isspace(*ps)) { ps++; }  // leading spaces are OK
 
@@ -55,7 +55,7 @@ bool nwxDoubleValidator::ValidateString(const wxString &sIn)
 
 double nwxDoubleValidator::FromString(const wxString &s)
 {
-  const char *ps(s.c_str());
+  const char *ps(s.utf8_str());
   while(isspace(*ps)) { ps++; }
   double d = atof(ps);
   return d;
@@ -64,7 +64,7 @@ double nwxDoubleValidator::FromString(const wxString &s)
 wxString nwxDoubleValidator::ToString(double x)
 {
   wxString s;
-  s.Printf(_T("%g"),x);
+  s.Printf("%g",x);
   return s;
 }
 

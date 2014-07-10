@@ -139,8 +139,8 @@ int wxFunctionParser::Parse(const wxString& function, const wxString& vars,
     m_function = function;
     m_variables = vars;
 
-    std::string Function = (const char*)wxConvUTF8.cWX2MB(function.c_str());
-    std::string Vars = (const char*)wxConvUTF8.cWX2MB(vars.c_str());
+    std::string Function = (const char*)(function.utf8_str());
+    std::string Vars = (const char*)(vars.utf8_str());
 
     int ret = m_functionParser->Parse(Function, Vars, useDegrees);
     m_ok = (ret == -1) && ErrorMsg().IsEmpty();
@@ -169,18 +169,18 @@ int wxFunctionParser::EvalError() const
 }
 bool wxFunctionParser::AddConstant(const wxString& name, double value)
 {
-    std::string Name = (const char*)wxConvUTF8.cWX2MB(name.c_str());
+    std::string Name = (const char*)(name.utf8_str());
     return m_functionParser->AddConstant(Name, value);
 }
 bool wxFunctionParser::AddFunction(const wxString& name,
                                    FunctionPtr fP, unsigned paramsAmount)
 {
-    std::string Name = (const char*)wxConvUTF8.cWX2MB(name.c_str());
+    std::string Name = (const char*)(name.utf8_str());
     return m_functionParser->AddFunction(Name, fP, paramsAmount);
 }
 bool wxFunctionParser::AddFunction(const wxString& name, wxFunctionParser& fP)
 {
-    std::string Name = (const char*)wxConvUTF8.cWX2MB(name.c_str());
+    std::string Name = (const char*)(name.utf8_str());
     return m_functionParser->AddFunction(Name, *fP.GetFunctionParser());
 }
 void wxFunctionParser::Optimize()
@@ -445,7 +445,7 @@ bool FunctionParser::AddConstant(const string& name, double value)
 {
     if(isValidName(name))
     {
-        const char* n = name.c_str();
+			const char* n = name.c_str();
         if(FindVariable(n, data->FuncParserNames) !=
            data->FuncParserNames.end() ||
            FindVariable(n, data->FuncPtrNames) !=
@@ -466,7 +466,7 @@ bool FunctionParser::AddFunction(const std::string& name,
 {
     if(isValidName(name))
     {
-        const char* n = name.c_str();
+			const char* n = name.c_str();
         if(FindVariable(n, data->FuncParserNames) !=
            data->FuncParserNames.end() ||
            FindConstant(n) != data->Constants.end())
@@ -494,7 +494,7 @@ bool FunctionParser::AddFunction(const std::string& name,
 {
     if(isValidName(name))
     {
-        const char* n = name.c_str();
+			const char* n = name.c_str();
         if(FindVariable(n, data->FuncPtrNames) != data->FuncPtrNames.end() ||
            FindConstant(n) != data->Constants.end())
             return false;

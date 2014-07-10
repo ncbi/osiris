@@ -32,28 +32,28 @@
 #include <time.h>
 #include "nwxString.h"
 
-const char * const nwxString::TIME_FORMAT_XML("%Y-%m-%dT%H:%M:%S");
+const wxChar * const nwxString::TIME_FORMAT_XML(wxS("%Y-%m-%dT%H:%M:%S"));
 
-const char * const nwxString::TIME_FORMAT("%Y-%m-%d %I:%M:%S %p");
+const wxChar * const nwxString::TIME_FORMAT(wxS("%Y-%m-%d %I:%M:%S %p"));
 #ifdef __WXMSW__
-#define __EOL "\r\n"
+#define __EOL wxS("\r\n")
 #else
-#define __EOL "\n"
+#define __EOL wxS("\n")
 #endif
-const char * const nwxString::EOL(__EOL);
+const wxChar * const nwxString::EOL(__EOL);
 #undef __EOL
 
-wxString nwxString::TIME_0(_T("Original"));
+wxString nwxString::TIME_0("Original");
 
-const wxString nwxString::ALPHA_UPPER(_T("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-const wxString nwxString::ALPHA_lower(_T("abcdefghijklmnopqrstuvwxyz"));
-const wxString nwxString::NUMERIC(_T("0123456789"));
+const wxString nwxString::ALPHA_UPPER("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+const wxString nwxString::ALPHA_lower("abcdefghijklmnopqrstuvwxyz");
+const wxString nwxString::NUMERIC("0123456789");
 const wxString nwxString::EMPTY(wxEmptyString);
 const wxChar nwxString::TO_LOWER(wxChar('a') - wxChar('A'));
 
 bool nwxString::IsNumber(const wxString &s, bool bAllowExp)
 {
-  const wxChar *p = s.c_str();
+  const wxChar *p = s.wc_str();
   bool bFoundDigit = false;
   bool bRtn = true;
   if(IsSign(*p))
@@ -115,7 +115,7 @@ bool nwxString::IsNumber(const wxString &s, bool bAllowExp)
 
 bool nwxString::IsInteger(const wxString &s, bool bAllowSign)
 {
-  const wxChar *p = s.c_str();
+  const wxChar *p = s.wc_str();
   bool bFoundDigit = false;
 
   if(bAllowSign && IsSign(*p))
@@ -151,7 +151,7 @@ bool nwxString::ContainsAlphaNumeric(const wxString &s)
 
 bool nwxString::FileNameStringOK(const wxString &s)
 {
-  const wxString BAD(_T("<>:\"/\\|?*'`"));
+  const wxString BAD("<>:\"/\\|?*'`");
   size_t nLen = s.Len();
   size_t i;
   wxChar x;
@@ -273,10 +273,8 @@ void nwxString::SetFileExtension(wxString *ps, const wxString &sExt)
 
 wxString nwxString::FormatDateTime(time_t t)
 {
-  const size_t SIZE = 64;
-  char stime[SIZE];
-  strftime(stime,SIZE - 1, nwxString::TIME_FORMAT,localtime(&t));
-  wxString sRtn(_T(stime));
+	wxDateTime dt(t);
+	wxString sRtn = nwxString::FormatDateTime(dt);
   return sRtn;
 }
 wxString nwxString::FormatDateTime(const wxDateTime &dt, const wxString &sDefault)
@@ -288,14 +286,14 @@ wxString nwxString::FormatDateTime(const wxDateTime &dt, const wxString &sDefaul
   }
   else
   {
-    sRtn = dt.Format(_T(nwxString::TIME_FORMAT));
+    sRtn = dt.Format(nwxString::TIME_FORMAT);
   }
   return sRtn;
 }
 wxString nwxString::FormatDateTimeXML(const wxDateTime &dt)
 {
   // works in UTC only
-  return dt.Format(_T(TIME_FORMAT_XML),wxDateTime::GMT0);
+  return dt.Format(TIME_FORMAT_XML,wxDateTime::GMT0);
 }
 wxDateTime nwxString::UnFormatDateTimeXML(const wxString &s)
 {
@@ -303,7 +301,7 @@ wxDateTime nwxString::UnFormatDateTimeXML(const wxString &s)
   wxDateTime dtRtn((time_t)0);
   wxDateTime dt((time_t)0);
   const wxChar *ps = dt.ParseFormat(
-    s,_T(TIME_FORMAT_XML));
+    s,TIME_FORMAT_XML);
   if(ps != NULL)
   {
     dtRtn = dt.FromTimezone(wxDateTime::GMT0);
@@ -333,7 +331,7 @@ size_t nwxString::Split(const char *ps, vector<wxString> *pvs, const char *psSea
       }
       if(psSep != psSubString)
       {
-        pvs->push_back(wxString(_T(psSubString),psSep - psSubString));
+        pvs->push_back(wxString(psSubString,psSep - psSubString));
       }
       else
       {
@@ -346,7 +344,7 @@ size_t nwxString::Split(const char *ps, vector<wxString> *pvs, const char *psSea
   }
   if(nRtn || *psSubString)
   {
-    pvs->push_back(wxString(_T(psSubString)));
+    pvs->push_back(wxString(psSubString));
     nRtn++;
   }
   return nRtn;
@@ -393,7 +391,7 @@ void nwxString::Join(const vector<wxString> &vs, wxString *ps, const char *psSep
       bFirst = false;
       if(psSep != NULL)
       {
-        sSep = _T(psSep);
+        sSep = psSep;
         nSepLen = sSep.Len();
       }
     }
@@ -430,7 +428,7 @@ void nwxString::Join(const set<wxString> &ss, wxString *ps, const char *psSep)
       bFirst = false;
       if(psSep != NULL)
       {
-        sSep = _T(psSep);
+        sSep = psSep;
         nSepLen = sSep.Len();
       }
     }
@@ -440,16 +438,16 @@ void nwxString::Join(const set<wxString> &ss, wxString *ps, const char *psSep)
 void nwxString::FixEOLU(wxString *ps, bool bClearEmpty)
 {
   // set all end-of-line strings to unix style, '\n'
-  ps->Replace(_T("\r\n"),_T("\n"),true);
-  ps->Replace(_T("\r"),_T("\n"),true);
+  ps->Replace("\r\n","\n",true);
+  ps->Replace("\r","\n",true);
   if(bClearEmpty)
   {
-    while(ps->Replace(_T("\n\n"),_T("\n"),true)) {;}
-    if(ps->StartsWith(_T("\n")))
+    while(ps->Replace("\n\n","\n",true)) {;}
+    if(ps->StartsWith("\n"))
     {
       ps->Remove(0);
     }
-    if(ps->EndsWith(_T("\n")))
+    if(ps->EndsWith("\n"))
     {
       ps->Remove(ps->Len() - 1);
     }
@@ -465,7 +463,7 @@ void nwxString::UnitTest_FindNoCase()
   int nV = 13;
   int n = FindNoCase(s,sub);
   wxASSERT_MSG(n == nV,
-    _T("nwxString::UnitTest_FindNoCase() failed"));
+    "nwxString::UnitTest_FindNoCase() failed");
 }
 
 void nwxString::UnitTest_Trim()
@@ -486,19 +484,19 @@ void nwxString::UnitTest_Trim()
   vs.reserve(n);
   for(i = 0; i < n; i++)
   {
-    s = _T(ps[i]);
+    s = ps[i];
     vs.push_back(s);
   }
   Trim(&vs);
   Join(vs,&s,'_');
   bool bOK = (vs.size() == 4) &&
-    (s == _T("This_is_a_test"));
+    (s == "This_is_a_test");
   wxASSERT_MSG(bOK,"nwxString::UnitTest_Trim() failed");
   vs.clear();
-  vs.push_back(_T("   x   "));
+  vs.push_back("   x   ");
   Trim(&vs);
   vs.clear();
-  vs.push_back(_T("      "));
+  vs.push_back("      ");
   Trim(&vs);
 }
 
@@ -515,9 +513,9 @@ void nwxString::UnitTest_DateTime()
   s2 = nwxString::FormatDateTimeXML(dt2);
   if((dt != dt2) || (s != s2))
   {
-    sMsg = _T("nwxString::UnitTextDateTime failed\n");
+    sMsg = "nwxString::UnitTextDateTime failed\n";
     sMsg.Append(s);
-    sMsg.Append(_T("\n"));
+    sMsg.Append("\n");
     sMsg.Append(s2);
     wxASSERT_MSG(0,sMsg);
   }
@@ -525,32 +523,32 @@ void nwxString::UnitTest_DateTime()
 
 void nwxString::UnitTest_FileExt()
 {
-  wxString sf1(_T("C:/dir1/dir2/foo.dll"));
-  wxString sf2(_T("C:\\dir3\\dir4\\bar.dll"));
+  wxString sf1("C:/dir1/dir2/foo.dll");
+  wxString sf2("C:\\dir3\\dir4\\bar.dll");
 #ifdef __WXMSW__
-  wxString sf3(_T("C:\\dir5\\dir.6\\xxx"));
+  wxString sf3("C:\\dir5\\dir.6\\xxx");
 #else
-  wxString sf3(_T("/home/whatever/dir5/dir.6/xxx"));
+  wxString sf3("/home/whatever/dir5/dir.6/xxx");
 #endif
-  nwxString::SetFileExtension(&sf1,_T("txt"));
-  nwxString::SetFileExtension(&sf2,_T(".txt"));
-  nwxString::SetFileExtension(&sf3,_T(".zip"));
-  bool b1 = (sf1 == _T("C:/dir1/dir2/foo.txt"));
-  bool b2 = (sf2 == _T("C:\\dir3\\dir4\\bar.txt"));
+  nwxString::SetFileExtension(&sf1,"txt");
+  nwxString::SetFileExtension(&sf2,".txt");
+  nwxString::SetFileExtension(&sf3,".zip");
+  bool b1 = (sf1 == "C:/dir1/dir2/foo.txt");
+  bool b2 = (sf2 == "C:\\dir3\\dir4\\bar.txt");
 #ifdef __WXMSW__
-  bool b3 = (sf3 == _T("C:\\dir5\\dir.6\\xxx.zip"));
+  bool b3 = (sf3 == "C:\\dir5\\dir.6\\xxx.zip");
 #else
-  bool b3 = (sf3 == _T("/home/whatever/dir5/dir.6/xxx.zip"));
+  bool b3 = (sf3 == "/home/whatever/dir5/dir.6/xxx.zip");
 #endif
   if(!(b1 && b2 && b3))
   {
     wxString sfTxt;
     sfTxt.Alloc(256);
-    sfTxt = _T(" Problem with File Ext:\n");
+    sfTxt = " Problem with File Ext:\n";
     sfTxt.Append(sf1);
-    sfTxt.Append(_T("\n"));
+    sfTxt.Append("\n");
     sfTxt.Append(sf2);
-    sfTxt.Append(_T("\n"));
+    sfTxt.Append("\n");
     sfTxt.Append(sf3);
     wxASSERT_MSG(0,sfTxt);
   }

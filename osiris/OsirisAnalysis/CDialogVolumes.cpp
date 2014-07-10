@@ -29,6 +29,7 @@
 */
 #include "mainApp.h"
 #include "mainFrame.h"
+#include "Platform.h"
 #include "CDialogVolumes.h"
 #include "CMessageDialogCheckCancel.h"
 #include "CKitList.h"
@@ -141,7 +142,8 @@ CDialogVolumeAddNew::CDialogVolumeAddNew(
     wxWindow *parent) :
   wxDialog(parent,wxID_ANY,"Create New " VOLUME_STRING,
     wxDefaultPosition, wxDefaultSize,
-    mainApp::DIALOG_STYLE),
+    mainApp::DIALOG_STYLE
+    ),
   m_pVolumes(pVolumes)
 {
   
@@ -223,7 +225,11 @@ CDialogVolumes::CDialogVolumes(
       bool bReadOnly) :
   wxDialog(parent,wxID_ANY,"OSIRIS Lab Settings",
     wxDefaultPosition, wxDefaultSize,
-    mainApp::DIALOG_STYLE),
+    mainApp::DIALOG_STYLE
+#ifdef __WXMAC__
+    & ~wxCLOSE_BOX 
+#endif
+    ),
   m_pVolumeCurrent(NULL),
   m_pChoice(NULL),
   m_pPanelLab(NULL),
@@ -233,7 +239,9 @@ CDialogVolumes::CDialogVolumes(
 {
   const wxArrayString &as = m_volumes.GetVolumeNames();
   size_t nSize = as.GetCount();
+#ifndef __NO_MDI__
   SetMaxSize(mainFrame::Size80());
+#endif
 
   if(nSize)
   {

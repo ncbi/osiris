@@ -23,13 +23,21 @@
 *
 * ===========================================================================
 *
-
+*
 *  FileName: mainFrame.h
 *  Author:   Douglas Hoffman
+*
+*    For Windows this is the MDI Parent window
+*    For Mac OSX, this is an event handler that keeps track
+*      of the other windows
+*    If GTK is implemented, it will be a window with a menu that
+*      appears when there are no other windows.
 *
 */
 #ifndef __MAIN_FRAME_H__
 #define __MAIN_FRAME_H__
+
+#include "Platform.h"
 
 #include <wx/log.h>
 #include "nwx/stdb.h"
@@ -39,7 +47,14 @@
 #include "nwx/stde.h"
 
 #include "nwx/nsstd.h"
+
+#if !defined( __NO_MDI__)
 #include <wx/mdi.h>
+#else
+#include <wx/frame.h>
+#endif
+
+#include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
@@ -51,17 +66,13 @@
 #include "CAllLoci.h"
 #include "nwx/nwxDialogLog.h"
 #include "CMDIfileManager.h"
-#include "Platform.h"
 #include "CVolumes.h"
 #include "CDialogMaxLadderLabel.h"
 #include "CDialogPromptNewerFile.h"
 #include "CMenuBar.h"
 #include "wxXsl/wxXslObject.h"
 
-DECLARE_EVENT_TYPE(CEventKillWindow,-1)
-DECLARE_EVENT_TYPE(CEventDragDropDelay,-1)
 
-class CFileDropTarget;
 class COARfile;
 class CFrameAnalysis;
 class CFrameRunAnalysis;
@@ -71,35 +82,42 @@ class wxColourDialog;
 class wxMenu;
 class CDialogVolumes;
 
+
+
+
+#if DRAG_DROP_FILES
+DECLARE_EVENT_TYPE(CEventDragDropDelay,-1)
+class CFileDropTarget;
+#endif
+
 typedef enum
 {
   TYPE_REPORT = 0, TYPE_PLOT = 1, TYPE_BATCH = 2
 } OSIRIS_FILE_TYPE;
 
-class mainFrame : public wxMDIParentFrame
+class mainFrame : public mainFrameSuper
 {
 public:
   mainFrame();
   virtual ~mainFrame();
-  virtual bool ShowWindow(bool bHasArgs= false);
-#ifdef __WXMAC__
-  virtual bool Show(bool show = false); // need to intercept on macintosh
-#endif
+  virtual bool Startup(bool bHasArgs= false);
   void OpenFileCheckNewer(const wxString &sFileName);
   void OpenFile(
     const wxString &sFileName, 
     const wxString &sLocus = wxEmptyString, 
     COARfile *pFile = NULL);
   bool ShowColourDialog(wxColour *pColour);
+  bool DoClose();
+#if mainFrameIsWindow
+  void OnClose(wxCloseEvent &e);
+#endif
   void OnRecentFiles(wxCommandEvent &);
   void OnQuit(wxCommandEvent &);
-  void OnDoClose(wxCommandEvent &);
   void OnOpen(wxCommandEvent &);
   void OnOpenPlot(wxCommandEvent &);
   void OnOpenBatch(wxCommandEvent &);
   void OnShowLog(wxCommandEvent &);
   void OnAnalyze(wxCommandEvent &);
-  void OnClose(wxCloseEvent &e);
   void OnLabSettings(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);
@@ -111,22 +129,25 @@ public:
   void OnMaxLadderLabels(wxCommandEvent &);
   void OnSave(wxCommandEvent &);
   void OnMenu(wxCommandEvent &e);
-  void OnMenuOpen(wxMenuEvent &);
-  void OnMenuClose(wxMenuEvent &e);
-  void OnKillWindow(wxCommandEvent &e);
+#if DRAG_DROP_FILES
   void OnDropFiles(wxCommandEvent &e);
-  void KillWindow(wxWindow *pFrame);
   void DropFiles();
+#endif
   void OpenFiles(const wxArrayString &filenames);
   static bool ContainsEnd(const wxString &sFileName);
   bool FileInProgress(
     const wxString &sFileName, bool bMessage = false);
-#ifdef __WXMAC__
-  wxPoint SelectPosition();
-#endif
   void ErrorMessage(const wxString &s);
   void FileErrorMessage(const wxString &sFileName);
   void FileEmptyMessage(const wxString &sFileName);
+  wxWindow *DialogParent()
+  {
+#if mainFrameIsWindow
+    return this;
+#else
+    return NULL;
+#endif
+  }
   bool FindWindow(CMDIFrame *p)
   {
     bool b = m_MDImgr.FindWindow(p);
@@ -200,14 +221,6 @@ public:
   {
     return &m_kitColors;
   }
-  wxMenu *GetLastMenuShown()
-  {
-    return m_pLastMenuShown;
-  }
-  void SetLastMenuShown(wxMenu *p)
-  {
-    m_pLastMenuShown = p;
-  }
   bool ReAnalyze(
     CFrameRunAnalysis *pPrev,
     const CVolume &vol,
@@ -216,31 +229,48 @@ public:
     const CVolume &vol,
     const CParmOsiris &parmNew);
   static bool FileExtensionOK(const wxString &s);
-  void CheckSaveStatus();
   void AddToMRU(const wxString &sFileName);
   void RemoveFromMRU(const wxString &sFileName);
-  void CheckActiveFrame();
-
-//  use only if desperate
-//  CMenuBar *GetMenuBar()
-//  {
-//    return m_pMenuBar;
-//  }
-
-  CXSLExportFileType *GetFileTypeByID(int nID)
+  void CheckActiveFrame()
+#ifdef __NO_MDI__
+  {}
+#else
+  ;
+#endif
+  void SetActiveFrame(CMDIFrame *p)
   {
-    return m_pMenuBar->GetFileTypeByID(nID);
+    m_pLastActive = p;
+#ifdef __WXDEBUG__
+    _LogActiveFrame();
+#endif
+  }
+  void KillActiveFrame(CMDIFrame *p)
+  {
+    if(p == m_pLastActive)
+    {
+      m_pLastActive = NULL;
+    }
   }
 
-  void DisableMenus();
-  void SetupMenus();
   bool CheckMaxFrames(bool bShowError = true);
+#ifdef MANUALLY_PLACE_FRAMES
+  void PlaceFrame(CMDIFrame *pWin);
+#endif
+
+#if mainFrameIsWindow
   static const wxSize &Size90();
   static const wxSize &Size80();
+#endif
+
 private:
+#ifdef __WXDEBUG__
+  void _LogActiveFrame();
+#endif
+  void _SetupCommonMenuBar();
+
   int _PromptNewerFile(const wxString &sFile, const wxString &sNewerFile)
   {
-    CDialogPromptNewerFile fn(this,sFile,sNewerFile);
+    CDialogPromptNewerFile fn(DialogParent(),sFile,sNewerFile);
     int n = fn.ShowModal();
     return n;
   }
@@ -249,7 +279,7 @@ private:
 
   int _PromptNewerFiles(const SET_FILE_NAMES &setNames, const wxString &sNewest)
   {
-    CDialogPromptNewerFile fn(this,setNames,sNewest);
+    CDialogPromptNewerFile fn(DialogParent(),setNames,sNewest);
     int n = fn.ShowModal();
     return n;
   }
@@ -267,13 +297,22 @@ private:
     COARfile *pFile = NULL);
   bool OpenBatchFile(const wxString &sFileName);
   void OpenFileDialog(OSIRIS_FILE_TYPE);
+#if DRAG_DROP_FILES
   void _CheckDragDropQueue();
+#endif
+
   wxSize GetChildSize(int nPct = 90);
-  static const wxPoint &Point5();
+#if mainFrameIsWindow
+  static const wxPoint &GetStartPosition();
   static void SetupSize();
   static wxSize g_size80;
   static wxSize g_size90;
   static wxPoint g_point5;
+  static wxPoint g_point50;
+  static wxPoint g_point100;
+#endif
+
+
   static const char * const NOFIND; 
   static const size_t MAX_FRAMES;
   static const int MRU_NO_WARNING;
@@ -294,7 +333,7 @@ private:
   {
     if(m_pTimer == NULL)
     {
-      m_pTimer = new wxTimer(this,IDtimer);
+      m_pTimer = new wxTimer(this,(int)IDtimer);
       m_pTimer->Start(250,false);
     }
   }
@@ -311,18 +350,22 @@ private:
 //  CDialogAnalysis *m_pDlgAnalysis;
   nwxDialogLog *m_pDialogErrorLog;
   wxTimer *m_pTimer;
-  wxMenu *m_pLastMenuShown;
-  CMenuBar *m_pMenuBar;
   CDialogEditGridColours *m_pColourEditDialog;
 #if HAS_CUSTOM_COLORS
   wxColourDialog *m_pDialogColour;
 #endif
+#if DRAG_DROP_FILES
   CFileDropTarget *m_pDropTarget;
+#endif
   CAllLoci *m_pAllLoci;
   int m_nTimerCount;
   CMDIFrame *m_pLastActive;
+#if DRAG_DROP_FILES
   list<wxString> m_lsDragDropQueue;
-
+#endif
+#ifdef MANUALLY_PLACE_FRAMES
+  int m_nFrameSpace;
+#endif
   static CMDIFrame *INIT_LAST_ACTIVE;
   DECLARE_EVENT_TABLE()
 };

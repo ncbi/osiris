@@ -115,7 +115,11 @@ CDialogExportXSL::CDialogExportXSL(wxWindow *parent) :
     this, wxID_ANY,
     wxDefaultPosition, wxDefaultSize,
     0, NULL,
-    wxLB_SINGLE | wxLB_NEEDED_SB  | wxLB_HSCROLL | wxLB_SORT);
+    wxLB_SINGLE | wxLB_NEEDED_SB  | wxLB_HSCROLL
+#ifndef __WXMAC__
+    | wxLB_SORT
+#endif
+    );
 
   m_pSizerList = new wxBoxSizer(wxVERTICAL);
 

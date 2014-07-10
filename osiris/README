@@ -85,13 +85,13 @@
 ###########################################################################
 #
 #
-#  macintosh 10.6 build
+#  macintosh 10.8 build
 #
 #
 # this file is a shell script which with autotools will
 # build OSIRIS on the macintosh, provided that the development
 # tools provided with MacOS are installed.
-# This has been tested with MacOS 10.6.0-Darwin
+# This has been tested with MacOS 10.8.5
 #
 # to build, set WXHOME in the environment such that
 # $WXHOME/include and $WXHOME/lib exist and contain the necessary

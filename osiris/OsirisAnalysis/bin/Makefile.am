@@ -1,14 +1,5 @@
 bin_PROGRAMS = osirisanalysis
 osirisanalysis_SOURCES =  \
-../CDialogExportFile.cpp \
-../CDialogExportSetup.cpp \
-../CDialogExportXSL.cpp \
-../CMenuFile.cpp \
-../CPageAuto.cpp \
-../CPageName.cpp \
-../CPageNoParameters.cpp \
-../CPageParameters.cpp \
-../CXSLExportFileType.cpp \
 ../CComboLabels.cpp \
 ../CDialogAbout.cpp \
 ../CDialogAcceptAlerts.cpp \
@@ -22,7 +13,10 @@ osirisanalysis_SOURCES =  \
 ../CDialogEditChannelAlerts.cpp \
 ../CDialogEditGridColours.cpp \
 ../CDialogEnableMultiple.cpp \
+../CDialogExportFile.cpp \
 ../CDialogExportPlot.cpp \
+../CDialogExportSetup.cpp \
+../CDialogExportXSL.cpp \
 ../CDialogHistoryAll.cpp \
 ../CDialogMRU.cpp \
 ../CDialogMaxLadderLabel.cpp \
@@ -61,7 +55,12 @@ osirisanalysis_SOURCES =  \
 ../CMDIfileManager.cpp \
 ../CMenuAnalysis.cpp \
 ../CMenuBar.cpp \
+../CMenuBarAnalysis.cpp \
+../CMenuBarGraph.cpp \
 ../CMenuEdit.cpp \
+../CMenuFileAnalysis.cpp \
+../CMenuFileBase.cpp \
+../CMenuFileGraph.cpp \
 ../CMenuHistory.cpp \
 ../CMenuPlot.cpp \
 ../COARallele.cpp \
@@ -79,6 +78,10 @@ osirisanalysis_SOURCES =  \
 ../COARsampleSort.cpp \
 ../COmittedAlerts.cpp \
 ../COsirisIcon.cpp \
+../CPageAuto.cpp \
+../CPageName.cpp \
+../CPageNoParameters.cpp \
+../CPageParameters.cpp \
 ../CPanelAlerts.cpp \
 ../CPanelApplyCancel.cpp \
 ../CPanelHistory.cpp \
@@ -109,6 +112,7 @@ osirisanalysis_SOURCES =  \
 ../CStandardSettings.cpp \
 ../CVolumes.cpp \
 ../CXMLmessageBook.cpp \
+../CXSLExportFileType.cpp \
 ../ConfigDir.cpp \
 ../UnitTest.cpp \
 ../mainApp.cpp \

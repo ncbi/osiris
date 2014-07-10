@@ -59,7 +59,39 @@ public:
   }
   virtual ~mainApp();
   bool OnInit();
+
+  // event handlers
+
+#define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);
+
+DECLARE_CMD_HANDLER(OnOpen)
+DECLARE_CMD_HANDLER(OnQuit)
+DECLARE_CMD_HANDLER(OnRecentFiles)
+DECLARE_CMD_HANDLER(OnLabSettings)
+DECLARE_CMD_HANDLER(OnExportSettings)
+DECLARE_CMD_HANDLER(OnEditGridColours)
+DECLARE_CMD_HANDLER(OnShowLog)
+
+DECLARE_CMD_HANDLER(OnAnalyze)
+DECLARE_CMD_HANDLER(OnOpenPlot)
+DECLARE_CMD_HANDLER(OnOpenBatch)
+DECLARE_CMD_HANDLER(OnHelp)
+DECLARE_CMD_HANDLER(OnAbout)
+DECLARE_CMD_HANDLER(OnCheckForUpdates)
+DECLARE_CMD_HANDLER(OnContactUs)
+DECLARE_CMD_HANDLER(OnMenu)
+DECLARE_CMD_HANDLER(OnMaxLadderLabels)
+DECLARE_CMD_HANDLER(OnSave)
+  
+#undef DECLARE_CMD_HANDLER
+
+  // end event handlers
+
   virtual void ReceiveXml2Error(const wxString &s);
+  static mainApp *Get()
+  {
+    return g_pThis;
+  }
   static bool SuppressMessages(bool b)
   {
     bool bRtn = g_bSuppressMessages;
@@ -119,14 +151,17 @@ private:
   static int g_count;
   static int g_nMaxLogLevel;
   static bool g_bSuppressMessages;
-#ifdef __WXMAC__
+  static mainApp *g_pThis;
+
   mainFrame *m_pFrame;
+#ifdef __WXMAC__
   wxArrayString m_asFiles;
 public:
   virtual void MacOpenFile(const wxString &sFileName);
 private:
   void _MacOpenFiles();
 #endif
+  DECLARE_EVENT_TABLE()
 };
 
 class CMessageSuppressor

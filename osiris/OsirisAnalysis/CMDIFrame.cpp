@@ -34,10 +34,12 @@
 #include "nwx/CIncrementer.h"
 #include "Platform.h"
 
+
+DEFINE_EVENT_TYPE(CEventKillWindow)
+
 CMDIFrame::~CMDIFrame()
 {
-  mainFrame *pParent = (mainFrame *)GetParent();
-  pParent->RemoveWindow(this);
+  m_pParent->RemoveWindow(this);
 }
 
 CMDIFrame::CMDIFrame(
@@ -46,20 +48,21 @@ CMDIFrame::CMDIFrame(
     const wxString& title, 
     const wxPoint& pos,
     const wxSize& size,
-    long style) : wxMDIChildFrame(
-      parent,id, title, 
-#ifdef __WXMAC__
-      (pos == wxDefaultPosition) ? parent->SelectPosition() : pos
-#else
+    long style) : CMDIFrameSuper(
+      CMDIFramePARENT,
+			id, title, 
       pos
-#endif
       , size, style),
       m_pParent(parent)
 {
   m_nFocusRecursive = 0;
   m_bNoPromptReload = false;
   m_bAutoReload = false;
+  m_pLastMenuShown = NULL;
   parent->InsertWindow(this);
+#ifdef MANUALLY_PLACE_FRAMES
+  parent->PlaceFrame(this);
+#endif
 }
 
 bool CMDIFrame::MenuEvent(wxCommandEvent &) { return false;}
@@ -70,6 +73,7 @@ wxMenu *CMDIFrame::GetTableMenu() { return NULL; }
 
 void CMDIFrame::UpdateHistory() {;}
 void CMDIFrame::UpdateLadderLabels() {;}
+void CMDIFrame::UpdateFileMenu() {;}
 
 wxString CMDIFrame::GetFileName()
 {
@@ -108,20 +112,12 @@ bool CMDIFrame::Destroy()
 {
   CIncrementer xxx(m_nFocusRecursive);
   wxBusyCursor xx;
-  mainFrame *pParent = (mainFrame *)GetParent();
-  if( (pParent != NULL) &&
-      (GetMenu() != NULL) && 
-      (pParent->GetActiveChild() == this)
-    )
-  {
-    pParent->DisableMenus();
-  }
-  return wxMDIChildFrame::Destroy();
+  return CMDIFrameSuper::Destroy();
 }
 
 bool CMDIFrame::Show(bool show)
 {
-  bool bRtn = wxMDIChildFrame::Show(show);
+  bool bRtn = CMDIFrameSuper::Show(show);
   if(show)
   {
     Raise();
@@ -177,11 +173,6 @@ bool CMDIFrame::PromptReload(const wxString &sFileName, const wxString &sFileNam
   return bRtn;
 }
 
-wxMenu *CMDIFrame::GetLastMenuShown()
-{
-  return m_pParent->GetLastMenuShown();
-}
-
 void CMDIFrame::UpdateStatusBar()
 {
 #if HAS_STATUS_BAR
@@ -189,18 +180,55 @@ void CMDIFrame::UpdateStatusBar()
 #endif
 }
 
-void CMDIFrame::OnFocus(wxFocusEvent &e)
+void CMDIFrame::OnActivate(wxActivateEvent &e)
 {
-  bool bFocus = (e.GetEventType() == wxEVT_SET_FOCUS);
-  _NotifyParent();
-  if(m_nFocusRecursive) {} // do nothing
-  else if(bFocus)
+  if(!e.GetActive())
+  {
+    m_pParent->KillActiveFrame(this);
+  }
+  else if(!m_nFocusRecursive)
   {
     CIncrementer xxx(m_nFocusRecursive);
+    m_pParent->SetActiveFrame(this);
     CheckFileModification();
   }
   e.Skip();
 }
+void CMDIFrame::OnFocusSet(wxFocusEvent &e)
+{
+  if(!m_nFocusRecursive)
+  {
+    CIncrementer xxx(m_nFocusRecursive);
+    m_pParent->SetActiveFrame(this);
+    CheckFileModification();
+  }
+  e.Skip(); // not sure why
+}
+void CMDIFrame::OnFocusKill(wxFocusEvent &e)
+{
+  m_pParent->KillActiveFrame(this);
+  e.Skip(); // not sure why
+}
+void CMDIFrame::OnMenuOpen(wxMenuEvent &e)
+{
+  SetLastMenuShown(e.GetMenu());
+}
+void CMDIFrame::OnMenuClose(wxMenuEvent &)
+{
+#ifndef __NO_MDI__
+  CMDIFrame *pFrame = (CMDIFrame *)GetActiveChild();
+  if(pFrame != NULL)
+  {
+    pFrame->UpdateStatusBar();
+  }
+#endif
+}
+void CMDIFrame::OnDoClose(wxCommandEvent &)
+{
+  wxBusyCursor xxx;
+  if( this->Close() ) this->Destroy();
+}
+
 void CMDIFrame::RaiseWindow()
 {
   if(IsIconized())
@@ -208,30 +236,20 @@ void CMDIFrame::RaiseWindow()
     Iconize(false);
   }
   Activate();
-#ifdef __WXMAC__
-  Show(true);
-  SetFocus();
-#endif
 }
 void CMDIFrame::_NotifyParent()
 {
-  mainFrame *pParent = (mainFrame *)GetParent();
-  if(pParent != NULL) 
-  {
-    pParent->CheckActiveFrame();
-  }
+  m_pParent->CheckActiveFrame();
 }
 
 bool CMDIFrame::PopupMenu_(wxMenu *menu, const wxPoint &pos)
 {
-  m_pParent->SetLastMenuShown(menu);
   bool bRtn = PopupMenu(menu, pos );
   UpdateStatusBar();
   return bRtn;
 }
 bool CMDIFrame::PopupMenu_(wxMenu *menu, int x, int y)
 {
-  m_pParent->SetLastMenuShown(menu);
   bool bRtn = PopupMenu(menu,x,y);
   UpdateStatusBar();
   return bRtn;
@@ -245,7 +263,9 @@ void CMDIFrame::_OnMenuEvent(wxCommandEvent &e)
 }
 void CMDIFrame::_Kill()
 {
-  m_pParent->KillWindow(this);
+  wxCommandEvent ee(CEventKillWindow,GetId());
+  ee.SetEventObject(this);
+  AddPendingEvent(ee);
 }
 
 bool CMDIFrame::DialogIsShowingOrNoFocus()
@@ -270,8 +290,15 @@ const wxString CMDIFrame::SHOW_TOOLBARS("Show Toolbars\tCtrl+T");
 const wxString CMDIFrame::HIDE_TOOLBAR("Hide Toolbar\tCtrl+T");
 const wxString CMDIFrame::SHOW_TOOLBAR("Show Toolbar\tCtrl+T");
 
-BEGIN_EVENT_TABLE(CMDIFrame,wxMDIChildFrame)
-EVT_SET_FOCUS(CMDIFrame::OnFocus)
-EVT_KILL_FOCUS(CMDIFrame::OnFocus)
+BEGIN_EVENT_TABLE(CMDIFrame,CMDIFrameSuper)
+EVT_MENU(wxID_CLOSE,  CMDIFrame::OnDoClose)
+EVT_MENU_OPEN(CMDIFrame::OnMenuOpen)
+EVT_MENU_CLOSE(CMDIFrame::OnMenuClose)
+EVT_SET_FOCUS(CMDIFrame::OnFocusSet)
+EVT_KILL_FOCUS(CMDIFrame::OnFocusKill)
+EVT_ACTIVATE(CMDIFrame::OnActivate)
 EVT_MENU_RANGE(IDmenu_START, IDmenu_END, CMDIFrame::_OnMenuEvent)
+EVT_COMMAND(wxID_ANY,CEventKillWindow,CMDIFrame::OnDoClose)
 END_EVENT_TABLE()
+
+IMPLEMENT_ABSTRACT_CLASS(CMDIFrame,CMDIFrameSuper)

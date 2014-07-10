@@ -1858,6 +1858,7 @@ void CPanelPlot::_BuildMenu(int nMenuNr)
       m_pMenu = new CMenuPlot(m_pData,m_pColors);
       SetPreviewSettings();
     }
+    _GetFrame()->RegisterMenu(m_pMenu);
     bool bPeak = CanShowPeakArea();
     m_pMenu->EnablePeakAreaLabel(bPeak);
   }
@@ -2146,6 +2147,7 @@ void CPanelPlot::OnContextMenu(wxContextMenuEvent &e)
       {
         m_pMenuPopup = new CMenuPlot(m_nMenuOffset,m_pData,m_pColors);
       }
+      _GetFrame()->RegisterMenu(m_pMenuPopup);
       m_pMenuPopup->CopySettings(*m_pMenu);
     }
     _GetFrame()->PopupMenu_(m_pMenuPopup);

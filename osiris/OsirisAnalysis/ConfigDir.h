@@ -138,6 +138,9 @@ public:
   }
 #endif
 
+#ifdef __WXDEBUG__
+  void Log();
+#endif
 
 private:
 

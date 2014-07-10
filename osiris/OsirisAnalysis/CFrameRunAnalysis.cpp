@@ -47,6 +47,7 @@
 #include "COsirisIcon.h"
 #include "CXSLExportFileType.h"
 #include "NeedsAttnOAR.h"
+#include "CMenuBar.h"
 
 CFrameRunAnalysis::CFrameRunAnalysis(
     mainFrame *parent, 
@@ -347,6 +348,7 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
     SetSize(szSz);
 //    pSizerFrame->Layout();
   }
+  SetMenuBar(new CMenuBar(true,true));
   UpdateButtonState();
 }
 
@@ -667,8 +669,10 @@ void CFrameRunAnalysis::OnDetails(wxCommandEvent &)
   }
   else
   {
-    wxSize szParent;
     wxSize szFrame = GetSize();
+    int nHeight = szFrame.y;
+#ifndef __NO_MDI__
+    wxSize szParent;
     wxStatusBar *pBar = m_pParent->GetStatusBar();;
     m_pParent->GetClientSize(&szParent.x,&szParent.y);
     if(pBar != NULL)
@@ -676,6 +680,11 @@ void CFrameRunAnalysis::OnDetails(wxCommandEvent &)
       wxSize szStatusBar = pBar->GetSize();
       szParent.y -= szStatusBar.y;
     }
+#else
+    wxRect r = wxGetClientDisplayRect();
+    wxPoint pt = GetPosition();
+    wxSize szParent(r.GetWidth() - pt.x,r.GetHeight() - pt.y);
+#endif
     m_pTextOutput->Show(bShow);
     if(bShow)
     {
@@ -693,6 +702,7 @@ void CFrameRunAnalysis::OnDetails(wxCommandEvent &)
     }
     if(szFrame.y > szParent.y) { szFrame.y = szParent.y; }
     if(szFrame.x > szParent.x) {szFrame.x = szParent.x; }
+    if(bShow && szFrame.y < nHeight) {szFrame.y = nHeight;}
     SetSize(szFrame);
   }
   m_pSizer->Layout();
@@ -946,7 +956,7 @@ void CFrameRunAnalysis::_Run()
       sNoFile.Append(CDirList::GetDefaultExt());
     }
     sNoFile.Append(" files found.\nPlease select another input directory.");
-    mainApp::ShowError(sNoFile,m_pParent);
+    mainApp::ShowError(sNoFile,m_pParent->DialogParent());
   }
   else
   {
@@ -962,7 +972,7 @@ void CFrameRunAnalysis::_Run()
     {
       wxString sError = "Could not save file with batch information\n";
       sError.Append(m_DirList.GetFileName());
-      mainApp::ShowError(sError,m_pParent);
+      mainApp::ShowError(sError,m_pParent->DialogParent());
       sTitle = "Analysis is complete";
     }
     SetTitle(sTitle);

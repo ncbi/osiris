@@ -65,6 +65,7 @@ bool mainApp::g_bSuppressMessages = false;
 ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
+mainApp *mainApp::g_pThis = NULL;
 
 wxFile *mainApp::m_pFout = NULL;
 
@@ -123,6 +124,9 @@ CPersistKitList *mainApp::GetKitList()
 
 bool mainApp::OnInit()
 {
+  if(g_pThis != NULL) return false;
+	if(!wxApp::OnInit()) return false;
+  g_pThis = this;
   // Set up splash screen
 #ifndef _DEBUG
   wxBitmap bitmap;
@@ -141,26 +145,30 @@ bool mainApp::OnInit()
 
   // set up window
 
-  mainFrame *p = new mainFrame();
-  bool bHasArgs = (argv[1] != (wxChar *)NULL);
+  m_pFrame = new mainFrame();
+  bool bHasArgs = (argc > 1) && (argv[1] != (wxChar *)NULL);
 #ifdef __WXMAC__
-  m_pFrame = p;
   if(m_asFiles.Count() > 0)
   {
     bHasArgs = true;
   }
 #endif
-  p->ShowWindow(bHasArgs);
+  
+  m_pFrame->Startup(bHasArgs);
   const wxChar *psFormat(wxS("argv[%d] = %ls"));
-	for(int i = 0; i < argc; ++i)
+  LogMessageV(psFormat,0,argv[0].wc_str());
+  for(int i = 1; i < argc; ++i)
   {
     LogMessageV(psFormat,i,argv[i].wc_str());
-    p->OpenFile(argv[i]);
+    m_pFrame->OpenFile(argv[i]);
   }
   time_t t;
   time(&t);
   wxString sPID = wxString::Format(wxS("PID: %d"),(int)getpid());
   wxLog::OnLog(wxLOG_Message,(const wxChar *)sPID,t);
+#ifdef __WXDEBUG__
+  m_pConfig->Log();
+#endif
 #ifdef __WXMAC__
   if(bHasArgs)
   {
@@ -374,5 +382,54 @@ wxWindow *mainApp::GetTopLevelParent(wxWindow *p)
   return pRtn;
 }
 
-IMPLEMENT_APP(mainApp)
+#define DEFINE_CMD_HANDLER(x) \
+  void mainApp::x (wxCommandEvent &e) { m_pFrame->x(e); }
 
+
+DEFINE_CMD_HANDLER(OnOpen)
+DEFINE_CMD_HANDLER(OnQuit)
+DEFINE_CMD_HANDLER(OnRecentFiles)
+DEFINE_CMD_HANDLER(OnLabSettings)
+DEFINE_CMD_HANDLER(OnExportSettings)
+DEFINE_CMD_HANDLER(OnEditGridColours)
+DEFINE_CMD_HANDLER(OnShowLog)
+
+DEFINE_CMD_HANDLER(OnAnalyze)
+DEFINE_CMD_HANDLER(OnOpenPlot)
+DEFINE_CMD_HANDLER(OnOpenBatch)
+DEFINE_CMD_HANDLER(OnHelp)
+DEFINE_CMD_HANDLER(OnAbout)
+DEFINE_CMD_HANDLER(OnCheckForUpdates)
+DEFINE_CMD_HANDLER(OnContactUs)
+DEFINE_CMD_HANDLER(OnMenu)
+DEFINE_CMD_HANDLER(OnMaxLadderLabels)
+
+DEFINE_CMD_HANDLER(OnSave)
+
+#undef DEFINE_CMD_HANDLER
+
+IMPLEMENT_APP(mainApp)
+BEGIN_EVENT_TABLE(mainApp,wxApp)
+
+EVT_MENU(wxID_OPEN,   mainApp::OnOpen)
+EVT_MENU(wxID_EXIT,   mainApp::OnQuit)
+EVT_MENU(IDlistMRU,   mainApp::OnRecentFiles)
+EVT_MENU(IDlab,       mainApp::OnLabSettings)
+EVT_MENU(IDexport,    mainApp::OnExportSettings)
+EVT_MENU(IDeditColours, mainApp::OnEditGridColours)
+EVT_MENU(IDlog,       mainApp::OnShowLog)
+
+EVT_MENU(IDanalyze,   mainApp::OnAnalyze)
+EVT_MENU(IDopenPlot,  mainApp::OnOpenPlot)
+EVT_MENU(IDopenBatch, mainApp::OnOpenBatch)
+EVT_MENU(IDhelp,      mainApp::OnHelp)
+EVT_MENU(wxID_ABOUT, mainApp::OnAbout)
+EVT_MENU(IDcheckForUpdates, mainApp::OnCheckForUpdates)
+EVT_MENU(IDhelpContactUs, mainApp::OnContactUs)
+EVT_MENU(IDExportGraphic, mainApp::OnMenu)
+EVT_MENU(IDMaxLadderLabels, mainApp::OnMaxLadderLabels)
+
+EVT_MENU(wxID_SAVEAS, mainApp::OnSave)
+EVT_MENU(wxID_SAVE, mainApp::OnSave)
+
+END_EVENT_TABLE()

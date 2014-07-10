@@ -95,11 +95,11 @@ public:
   {
     return m_timeMod.GetTicks();
   }
-  wxString GetAccessTimeFormat(const wxChar *p = _T(nwxString::TIME_FORMAT)) const
+  wxString GetAccessTimeFormat(const wxChar *p = nwxString::TIME_FORMAT) const
   {
     return m_timeAccess.Format(p);
   }
-  wxString GetModTimeFormat(const wxChar *p = _T(nwxString::TIME_FORMAT)) const
+  wxString GetModTimeFormat(const wxChar *p = nwxString::TIME_FORMAT) const
   {
     return m_timeMod.Format(p);
   }
@@ -115,9 +115,9 @@ public:
       //   -2 if the file cannot be found
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Path"),&m_sPath);
-    RegisterWxDateTime(_T("ModTime"),&m_timeMod);
-    RegisterWxDateTime(_T("AccessTime"),&m_timeAccess);
+    RegisterWxString("Path",&m_sPath);
+    RegisterWxDateTime("ModTime",&m_timeMod);
+    RegisterWxDateTime("AccessTime",&m_timeAccess);
   }
 
   int CompareName(const nwxMRU &x) const;
@@ -353,7 +353,7 @@ private:
     {
       m_nMaxSize = DEFAULT_MAX_MRU_SIZE;
       RegisterAll(true);
-      m_setMRU.SetNodeName(_T("File"));
+      m_setMRU.SetNodeName("File");
     }
     else
     {

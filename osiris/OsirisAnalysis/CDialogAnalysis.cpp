@@ -130,11 +130,15 @@ CDialogAnalysis::CDialogAnalysis(
     m_pCheckSubDir = new wxCheckBox(this,wxID_ANY,"Create time stamped subdirectory");
 
     // Operating Procedure Name
-
+#ifdef __WXOSX_COCOA__
+#define CB_STYLE  wxCB_READONLY
+#else
+#define CB_STYLE  wxCB_SORT | wxCB_READONLY
+#endif
     const wxArrayString &as(m_volumes.GetVolumeNames());
     m_pComboVolumeName = new wxComboBox(this,IDvolumeName,as[0],
       wxDefaultPosition, wxDefaultSize,
-      as, wxCB_SORT | wxCB_READONLY);
+      as, CB_STYLE);
     wxButton *pBrowseVolume = 
       new wxButton(this,IDvolume,"Browse...");
     wxBoxSizer *pSizerVolume = new wxBoxSizer(wxHORIZONTAL);
@@ -145,8 +149,10 @@ CDialogAnalysis::CDialogAnalysis(
 
     m_pComboLsName = new wxComboBox(this,wxID_ANY,wxEmptyString,
       wxDefaultPosition, wxDefaultSize,
-      0, NULL,wxCB_SORT | wxCB_READONLY);
+      0, NULL,CB_STYLE);
     wxSize sizeSpin(75,-1);
+
+#undef CB_STYLE
 
     // RFU
 
@@ -275,7 +281,7 @@ CDialogAnalysis::CDialogAnalysis(
     pSizerButtons->Add(pButtonOK,0,wxRIGHT,ID_BORDER);
     pSizerButtons->Add(pButtonCancel,0,wxLEFT,ID_BORDER);
 
-    wxFlexGridSizer *pGrid(new wxFlexGridSizer(5,2,ID_BORDER,ID_BORDER));
+    wxFlexGridSizer *pGrid(new wxFlexGridSizer(7,2,ID_BORDER,ID_BORDER));
     int FLAG = wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxEXPAND;
     int FLAG_TOP = wxALIGN_TOP | wxALIGN_LEFT | wxTOP;
     pGrid->SetFlexibleDirection(wxBOTH);

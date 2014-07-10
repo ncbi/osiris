@@ -81,7 +81,7 @@ public:
       bRtn = AllowEmpty();
       if((!bRtn) && (psError != NULL))
       {
-        *psError = _T("Data is required for this table cell.");
+        *psError = wxS("Data is required for this table cell.");
       }
     }
     else if(!IsType(s))
@@ -99,11 +99,11 @@ public:
         {
           psError->Empty();
           psError->Alloc(128);
-          *psError = _T("Value is not with range, [");
+          *psError = wxS("Value is not with range, [");
           psError->Append(nwxString::FormatNumber(m_Lo));
-          psError->Append(_T(", "));
+          psError->Append(", ");
           psError->Append(nwxString::FormatNumber(m_Hi));
-          psError->Append(_T("]"));
+          psError->Append("]");
         }
       }
     }
@@ -156,11 +156,11 @@ public:
   }
   virtual double StringToValue(const wxString &s)
   {
-    return atof(s.c_str());
+    return atof(s.utf8_str());
   }
   virtual const wxChar *InvalidTypeMessage() const
   {
-    return _T("A numeric value is required for this table cell.");
+    return wxS("A numeric value is required for this table cell.");
   }
   void SetAllowExp(bool bAllow = true)
   {
@@ -188,11 +188,11 @@ public:
   }
   virtual unsigned int StringToValue(const wxString &s)
   {
-    return (unsigned int) atoi(s.c_str());
+    return (unsigned int) atoi(s.utf8_str());
   }
   virtual const wxChar *InvalidTypeMessage() const
   {
-    return _T("A positive integer is required for this table cell.");
+    return wxS("A positive integer is required for this table cell.");
   }
 
 };

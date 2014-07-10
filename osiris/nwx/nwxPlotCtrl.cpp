@@ -280,10 +280,10 @@ wxWindow *nwxPlotCtrl::_FindFrameParent()
     bool bDone = (pParent == NULL);
     const wxChar * const list[] =
     {
-      _T("wxFrame"),
-      _T("wxMDIChildFrame"),
-      _T("wxDialog"),
-      _T("wxTopLevelWindow")
+      wxS("wxFrame"),
+      wxS("wxMDIChildFrame"),
+      wxS("wxDialog"),
+      wxS("wxTopLevelWindow")
     };
     size_t LSIZE = sizeof(list) / sizeof(list[0]);
     size_t i;

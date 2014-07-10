@@ -83,12 +83,12 @@ public:
       (n == DIRENTRY_CANCELED);
     return bRtn;
   }
-  CDirEntry()
+  CDirEntry() : m_parmOsiris(CParmOsiris::NO_INIT)
   {
     _Init();
     RegisterAll(true);
   }
-  CDirEntry(const CDirEntry &x)
+  CDirEntry(const CDirEntry &x) : m_parmOsiris(CParmOsiris::NO_INIT)
   {
     (*this) = x;
   }
@@ -96,7 +96,11 @@ public:
   {
     return new CDirEntry(*this);
   }
-  CDirEntry(const wxString &sInput, const wxString &sOutput, const wxString &sTimeStamp) //, long ndx = -1)
+  CDirEntry
+    (const wxString &sInput,
+     const wxString &sOutput,
+     const wxString &sTimeStamp) :
+      m_parmOsiris(CParmOsiris::NO_INIT)
   {
     // STOP HERE - setup time stamp
     _Init();
@@ -312,7 +316,8 @@ class CDirList : public wxDirTraverser, public nwxXmlPersist
 {
 public:
 
-  CDirList() : m_vpDir("dirEntry")
+  CDirList() : m_vpDir("dirEntry"),
+    m_parmOsiris(CParmOsiris::NO_INIT)
   {
     _Init();
     RegisterAll(true);

@@ -31,6 +31,7 @@
 #include "mainApp.h"
 #include "CPanelAlerts.h"
 #include "CParmOsiris.h"
+#include "Platform.h"
 #include <wx/tglbtn.h>
 #include <wx/stattext.h>
 #include <wx/sizer.h>
@@ -89,15 +90,21 @@ CPanelAlerts::CPanelAlerts(wxWindow *parent, wxWindowID id) :
   wxBoxSizer *pSizer(new wxBoxSizer(wxHORIZONTAL));
   pSizer->Add(
     pLabel,0,
-    wxALIGN_CENTRE_VERTICAL | wxLEFT | wxRIGHT,
+    wxALIGN_CENTRE_VERTICAL | wxBOTTOM,
     ID_BORDER);
-  pSizer->Add(m_pButtonAll,0,wxALIGN_CENTRE_VERTICAL);
-  pSizer->Add(pButtonDIRECTORY,0,wxALIGN_CENTRE_VERTICAL);
-  pSizer->Add(pButtonDIRECTORY_LOCUS,0,wxALIGN_CENTRE_VERTICAL);
-  pSizer->Add(pButtonSAMPLE,0,wxALIGN_CENTRE_VERTICAL);
-  pSizer->Add(pButtonCHANNEL,0,wxALIGN_CENTRE_VERTICAL);
-  pSizer->Add(pButtonILS,0,wxALIGN_CENTRE_VERTICAL);
-  pSizer->Add(pButtonSAMPLE_LOCUS,0,wxALIGN_CENTRE_VERTICAL);
+#define ADD_BUTTON(x) \
+  pSizer->Add \
+  (x,0, \
+   wxALIGN_CENTRE_VERTICAL | wxBOTTOM | wxLEFT,   \
+   ID_BORDER)
+
+  ADD_BUTTON(m_pButtonAll);
+  ADD_BUTTON(pButtonDIRECTORY);
+  ADD_BUTTON(pButtonDIRECTORY_LOCUS);
+  ADD_BUTTON(pButtonSAMPLE);
+  ADD_BUTTON(pButtonCHANNEL);
+  ADD_BUTTON(pButtonILS);
+  ADD_BUTTON(pButtonSAMPLE_LOCUS);
   pSizer->AddStretchSpacer(1);
   SetSizer(pSizer);
   Layout();

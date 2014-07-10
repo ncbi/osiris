@@ -2005,8 +2005,8 @@ bool wxFileBrowser::PasteCopyCutSelectedListItems()
         else // we cut them, so just move them
         {
             //if (!wxRenameFile(srcFilePath, dstFilePath)) // FIXME - why does wxRename copy?
-            if (0 != rename((const char*)wxConvUTF8.cWX2MB(srcFilePath.c_str()),
-                            (const char*)wxConvUTF8.cWX2MB(dstFilePath.c_str())))
+            if (0 != rename((const char*)srcFilePath.utf8_str(),
+                            (const char*)dstFilePath.utf8_str()))
             {
                 wxFileData dstFd(dstFilePath, srcFileName, wxFileData::is_file, wxFileIconsTable::file);
 

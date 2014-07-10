@@ -58,11 +58,11 @@ MRU_SORT;
 static const wxChar *COLUMNS[] =
 {
   // column headings, corresponds to the enum above
-  _T("Name"),
-  _T("Type"),
-  _T("Viewed"),
-  _T("Modified"),
-  _T("Location"),
+  wxS("Name"),
+  wxS("Type"),
+  wxS("Viewed"),
+  wxS("Modified"),
+  wxS("Location")
 };
 #endif
 

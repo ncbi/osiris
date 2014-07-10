@@ -34,7 +34,40 @@
 #ifdef __WXMAC__
 #include <wx/dir.h>
 #endif
-
+#ifdef __WXDEBUG__
+#include "mainApp.h"
+void ConfigDir::Log()
+{
+  struct
+  {
+    wxString m_sName;
+    wxString m_sValue;
+  } LIST[] =
+  {
+    {wxS("m_sExeVolumePath = "), m_sExeVolumePath},
+    {wxS("m_sConfigPath = "), m_sConfigPath},
+    {wxS("m_sFilePath = "), m_sFilePath},
+    {wxS("m_sTopConfigPath = "), m_sTopConfigPath},
+    {wxS("m_sTopFilePath = "), m_sTopFilePath},
+    {wxS("m_sSubdir = "), m_sSubdir},
+    {wxS("m_sFileSubdir = "), m_sFileSubdir},
+    {wxS("m_sSitePath = "), m_sSitePath}
+  };
+  size_t SLIST = sizeof(LIST) / sizeof(LIST[0]);
+  size_t i;
+  wxString s;
+  time_t t; time(&t);
+  for(i = 0; i < SLIST; ++i)
+  {
+    s = LIST[i].m_sName;
+    s += LIST[i].m_sValue;
+    mainApp::LogMessage(s);
+  }
+  s = wxS("m_bError = ");
+  s += m_bError ? wxS("true") : wxS("false");
+  mainApp::LogMessage(s);
+}
+#endif
 ConfigDir::ConfigDir(
   const char *psSubdir, 
   const char *psFileSubdir)

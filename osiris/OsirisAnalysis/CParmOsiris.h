@@ -403,6 +403,7 @@ public:
     }
     return sRtn;
   }
+  static const wxString NO_INIT;
   // end static/global stuff
 
 private:

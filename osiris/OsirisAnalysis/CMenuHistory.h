@@ -85,9 +85,10 @@ public:
   }
 private:
   bool _CheckById(int nID);
-  void _Cleanup();
+  void _CleanupTimes(int nIDmax);
   void _Setup();
   bool _AppendTime(const wxDateTime &x, int nID, const wxDateTime *pCheck);
+  size_t _GetInsertPoint();
   vector<wxDateTime> m_vDate;
   CHistoryTime m_HistoryTime;
     // NULL if 'current' is selected,

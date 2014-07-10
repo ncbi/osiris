@@ -76,6 +76,8 @@ CDialogExportFile::CDialogExportFile(
       SetTitle(sTitle);
     }
     wxGridBagSizer *pGridSizer = new wxGridBagSizer(ID_BORDER,ID_BORDER);
+    pGridSizer->SetCols(2);
+//    pGridSizer->AddGrowableCol(0,0);
     pGridSizer->AddGrowableCol(1,1);
     m_pPanel = new wxPanel(this,wxID_ANY);
 
@@ -95,8 +97,9 @@ CDialogExportFile::CDialogExportFile(
     pSizer->Add(
       CreateButtonSizer(wxOK | wxCANCEL),0,
       (wxALL ^ wxTOP) | wxALIGN_CENTRE, ID_BORDER);
-
+#ifndef __NO_MDI__
     SetMaxSize(mainFrame::Size90());
+#endif
     SetSizer(pSizer);
     CentreOnParent();
     Layout();

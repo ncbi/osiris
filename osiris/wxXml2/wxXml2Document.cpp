@@ -160,14 +160,14 @@ bool wxXml2Document::Load(
   {
 #ifdef __WXMSW__
     wxString sFileName(filename);
-    sFileName.Replace(_T("\\"),_T("/"),true);
-    if(sFileName.StartsWith(_T("//")))
+    sFileName.Replace("\\","/",true);
+    if(sFileName.StartsWith("//"))
     {
-      sFileName.Prepend(_T("file:///"));
+      sFileName.Prepend("file:///");
     }
-    m_pXmlDoc = xmlReadFile(sFileName.c_str(),encoding.c_str(),nOptions);
+    m_pXmlDoc = xmlReadFile(sFileName.utf8_str(),encoding.utf8_str(),nOptions);
 #else
-    m_pXmlDoc = xmlReadFile(filename.c_str(),encoding.c_str(),nOptions);
+    m_pXmlDoc = xmlReadFile(filename.utf8_str(),encoding.utf8_str(),nOptions);
 #endif
   }
   bool bRtn = m_pXmlDoc != NULL;
@@ -202,7 +202,7 @@ bool wxXml2Document::Load(
     _fXmlInputCloseCallback,
     (void *)&stream,
     ".",
-    (const char *) encoding.c_str(),
+    (const char *) encoding.utf8_str(),
     nOptions);
   bool bRtn = m_pXmlDoc != NULL;
   if(bRtn)
@@ -220,7 +220,7 @@ bool wxXml2Document::Save(
   {
 #if 1
     int nHold = xmlKeepBlanksDefault(0);
-    int nBytes = xmlSaveFormatFileEnc(filename.c_str(),m_pXmlDoc,"UTF-8",!!indentstep);
+    int nBytes = xmlSaveFormatFileEnc(filename.utf8_str(),m_pXmlDoc,"UTF-8",!!indentstep);
     bOK = (nBytes > 0);
     if(nHold)
     {

@@ -3,10 +3,6 @@
 	<name>OsirisAnalysis</name>
 	<comment></comment>
 	<projects>
-		<project>nwx</project>
-		<project>wxplotctrl</project>
-		<project>wxthings</project>
-		<project>wxXml2</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -35,7 +31,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildLocation</key>
-					<value>${workspace_loc:/OsirisAnalysis/Debug}</value>
+					<value>${workspace_loc:/OsirisAnalysis/Debug1}</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
@@ -72,8 +68,13 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>full,incremental,</triggers>
 			<arguments>
+				<dictionary>
+					<key>LaunchConfigHandle</key>
+					<value>&lt;project&gt;/.externalToolBuilders/org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder.launch</value>
+				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>

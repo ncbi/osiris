@@ -29,6 +29,7 @@
 *
 */
 
+#include "Platform.h"
 #include <wx/filename.h>
 #include <wx/sizer.h>
 #include <wx/msgdlg.h>
@@ -36,33 +37,32 @@
 #include <wx/filename.h>
 #include <wx/filefn.h>
 #include <wx/utils.h>
+#include "wxIDS.h"
 #include "CDialogParameters.h"
 #include "CDialogShowLabSettings.h"
-#include "wxIDS.h"
 #include "mainApp.h"
-#include "Platform.h"
 #include "CLabSettings.h"
-#define LINK_PREFIX "file:///"
+#include "nwx/nwxFileUtil.h"
+
+#if 0
+#define LINK_PREFIX wxS("file:///")
 #ifdef __WXMSW__
 #define LINK_PREFIX_LEN 8
 #else
 #define LINK_PREFIX_LEN 7
 #endif
 
-
 wxString CDialogParameters::CreateFileURL(const wxString &sFile,bool bForce)
 {
   wxString sLink;
   wxString s(sFile);
-#ifdef __WXMSW__
-  s.Replace("/","\\",true);
-#endif
+
   if(bForce || wxDirExists(s) || wxFileExists(s))
   {
-    sLink.Alloc(sFile.Len() + LINK_PREFIX_LEN);
+    sLink.Alloc(sFile.Len() + LINK_PREFIX_LEN + 4);
     sLink = LINK_PREFIX;
 #ifndef __WXMSW__
-    while(s.StartsWith("/"))
+    while(s.StartsWith(wxS("/")))
     {
       s = s.Mid(1);
     }
@@ -71,18 +71,24 @@ wxString CDialogParameters::CreateFileURL(const wxString &sFile,bool bForce)
   }
   return sLink;
 }
+#endif
+
 wxWindow *CDialogParameters::CreateLabSettingsLink(const wxString &sLabel)
 {
   wxHyperlinkCtrl *pLink =
-    new wxHyperlinkCtrl(this,IDlab,sLabel,"file:///",
+    new wxHyperlinkCtrl(this,IDlab,sLabel,wxEmptyString,
       wxDefaultPosition, wxDefaultSize,
       wxHL_ALIGN_LEFT | wxNO_BORDER);
   return pLink;
 }
 wxWindow *CDialogParameters::CreateHyperlink(int nID, const wxString &sDir, bool bForce)
 {
-  wxString sDirLink = CreateFileURL(sDir,bForce);
+  wxString sDirLink;
   wxWindow *pRtn = NULL;
+  if(bForce || wxDirExists(sDir))
+  {
+    sDirLink = sDir;
+  }
   if(sDirLink.IsEmpty())
   {
     pRtn = new wxStaticText(this,nID,sDir);
@@ -134,7 +140,7 @@ CDialogParameters::CDialogParameters(
   int nVolume = !sVolume.IsEmpty();
   
   wxWindow *pLink;
-  wxFlexGridSizer *pSizerTop = new wxFlexGridSizer(5 + nVolume + nLadder,2,ID_BORDER,ID_BORDER);
+  wxFlexGridSizer *pSizerTop = new wxFlexGridSizer(7 + nVolume + nLadder,2,ID_BORDER,ID_BORDER);
   pSizerTop->SetFlexibleDirection(wxBOTH);
 
 #define BOLD_LABEL(pWin,sText) \
@@ -268,7 +274,8 @@ if(nn > 0) \
   wxButton *pButton = new wxButton(this,wxID_OK,"OK");
   pButton->SetDefault();
   pSizer->Add(pSizerTop,1,wxALL | wxEXPAND, ID_BORDER << 1);
-  pSizer->Add(pButton,  0,wxBOTTOM | wxALIGN_CENTER, ID_BORDER);
+  pSizer->Add(pButton,  0,wxBOTTOM | wxALIGN_CENTER, 
+              ID_BORDER);
   pSizer->Fit(this);
   SetSizer(pSizer);
   CentreOnParent();
@@ -287,31 +294,30 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
         "\n\nWould you like to view the folder containing\n" \
         "the file currently being viewed?"
 
-  wxString sURL = e.GetURL();
-#ifdef __WXDEBUG__
-  size_t nLenURL = sURL.Len();
-  const wxChar *pURL = sURL.wc_str();
-  mainApp::LogMessageV(wxS("%d %ls"),(int)nLenURL,pURL);
-#endif
   if(e.GetId() == IDlab)
   {
     CDialogShowLabSettings dlg(
       this,wxID_ANY,m_pLabSettings, m_pMsgBook);
     dlg.ShowModal();
   }
-  else if(sURL.StartsWith(LINK_PREFIX))
+  else
   {
-    wxString sFileName(sURL.Mid(LINK_PREFIX_LEN));
-    FIX_FILE_NAME(sFileName);
-    wxFileName fn(sFileName);
+    wxString sErr;
+    wxString sFileName = e.GetURL();
     bool bError = false;
-    if( wxDirExists(sFileName) || wxFileExists(sFileName) ) 
+    FIX_FILE_NAME(sFileName);
+    const wxChar * const CANNOT_OPEN(wxS("Cannot open folder for "));
+#ifdef __WXDEBUG__
+  size_t nLenURL = sFileName.Len();
+  const wchar_t *pURL = sFileName.wc_str();
+  mainApp::LogMessageV(wxS("%d %ls"),(int)nLenURL,pURL);
+#endif
+    if( wxDirExists(sFileName) )
     {
-//      wxLaunchDefaultBrowser(sURL);
     }
     else if(e.GetId() == IDhyperlinkInput)
     {
-      mainApp::ShowError(ERROR_MSG,this);
+      sErr = ERROR_MSG;
       bError = true;
     }
     else
@@ -321,15 +327,12 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
       if(n == wxID_YES)
       {
         wxFileName fnFile(m_sFileName);
-        sURL = CreateFileURL(fnFile.GetPath());
-        if(sURL.IsEmpty())
+        sFileName = fnFile.GetPath();
+        if(!wxDirExists(sFileName))
         {
           bError = true;
-          mainApp::ShowError("This folder no longer exists",this);
-          wxString sErr(
-            "Could not open folder for ");
+          sErr = CANNOT_OPEN;
           sErr.Append(m_sFileName);
-          mainApp::LogMessage(sErr);
         }
       }
       else
@@ -339,13 +342,25 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
     }
     if(!bError)
     {
-      EndModal(wxID_OK);
-      if(!sURL.IsEmpty())
+      if(sFileName.IsEmpty()) {}
+      else if(!nwxFileUtil::ShowFileFolder(sFileName))
       {
-        wxLaunchDefaultBrowser(sURL,0);
+        sErr = CANNOT_OPEN;
+        sErr.Append(sFileName);
+        bError = true;
+      }
+      if(!bError)
+      {
+        EndModal(wxID_OK);
       }
     }
+    if(!sErr.IsEmpty())
+    {
+      mainApp::LogMessage(sErr);
+      mainApp::ShowError(sErr,this);
+    }
   }
+  e.Skip();
 }
 
 BEGIN_EVENT_TABLE(CDialogParameters,wxDialog)

@@ -743,7 +743,10 @@ public:
   static const int TYPE_BASELINE;
   static const int TYPE_ALL;
 
-  CPlotData() : m_IOchannel(true), m_IOlocus(true)
+  CPlotData() :
+    m_parm(CParmOsiris::NO_INIT),
+    m_IOchannel(true),
+    m_IOlocus(true)
   {
     m_pdX = NULL;
     m_nStart = 0;

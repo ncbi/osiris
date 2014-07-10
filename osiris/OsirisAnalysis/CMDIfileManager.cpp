@@ -121,6 +121,18 @@ void CMDIfileManager::UpdateLadderLabels()
     itr->first->UpdateLadderLabels();
   }
 }
+
+void CMDIfileManager::UpdateFileMenu()
+{
+  CMDI_WF::iterator itr;
+  for(itr = m_mapWindowFile.begin();
+    _IteratorOK(itr);
+    ++itr)
+  {
+    itr->first->UpdateFileMenu();
+  }
+}
+
 void CMDIfileManager::KillOARfile(COARfile *pFile)
 {
   CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);

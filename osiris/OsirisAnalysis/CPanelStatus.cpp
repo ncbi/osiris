@@ -226,6 +226,7 @@ void CPanelStatus::_Build()
 //    delete pSizer;
 //  }
 }
+#if 0
 void CPanelStatus::OnClick(wxHyperlinkEvent &e)
 {
   CStatusInfo *pStatus = m_vpStatus.at(e.GetId() - IDhyperlinkStatus);
@@ -257,7 +258,36 @@ void CPanelStatus::OnClick(wxHyperlinkEvent &e)
     }
   }
 }
+#else
+void CPanelStatus::OnClick(wxHyperlinkEvent &e)
+{
+  CStatusInfo *pStatus = m_vpStatus.at(e.GetId() - IDhyperlinkStatus);
+  int nID = pStatus->GetID();
+  if(m_pParent->CheckIfHistoryOK())
+  {
+    wxCommandEvent ee(wxEVT_MENU,nID);
+    switch(nID)
+    {
+      case IDmenuAcceptLocus:
+      case IDmenuReviewLocus:
+        ee.SetClientData((void *)pStatus->GetLocus());
+      case IDmenuAcceptSample:
+      case IDmenuAcceptILS:
+      case IDmenuAcceptChannels:
+      case IDmenuAcceptDirectory:
+      case IDmenuReviewSample:
+      case IDmenuReviewILS:
+      case IDmenuReviewChannels:
+      case IDmenuReviewDirectory:
+        AddPendingEvent(ee);
+        break;
+      default:
+        wxASSERT_MSG(0,"CPanelStatus::OnClick() invalid ID");
+    }
+  }
+}
 
+#endif
 BEGIN_EVENT_TABLE(CPanelStatus,wxScrolledWindow)
 EVT_HYPERLINK(wxID_ANY,CPanelStatus::OnClick)
 END_EVENT_TABLE()

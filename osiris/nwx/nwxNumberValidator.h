@@ -71,7 +71,7 @@ public:
     bool bRtn = nwxDoubleValidator::ValidateString(s);
     if(bRtn && m_bTypeInt)
     {
-      bRtn = !s.Contains(_T("."));
+      bRtn = !s.Contains(".");
     }
     return bRtn;
   }

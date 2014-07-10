@@ -53,7 +53,7 @@ void nwxButtonMenu::ShowMenu()
 #ifdef _DEBUG
   else
   {
-    wxASSERT_MSG(0,_T("nwxButtonMenu::ShowMenu() - no menu specified."));
+    wxASSERT_MSG(0,"nwxButtonMenu::ShowMenu() - no menu specified.");
   }
 #endif
 }

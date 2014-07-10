@@ -40,8 +40,8 @@
 #include "nwx/nsstd.h"
 #include "nwx/CIncrementer.h"
 
-//const wxChar * const nwxMRU::MRU_TIME_FORMAT(_T("%x %X"));
-const wxString nwxXmlMRU::g_sMRU(_T("MRU"));
+//const wxChar * const nwxMRU::MRU_TIME_FORMAT("%x %X");
+const wxString nwxXmlMRU::g_sMRU("MRU");
 
 nwxMRU::nwxMRU(const wxString &sPath) : m_pfn(NULL)
 {
@@ -169,7 +169,7 @@ const size_t nwxXmlMRU::DEFAULT_MAX_MRU_SIZE(1000);
 
 void nwxXmlMRU::RegisterAll(bool)
 {
-  Register(_T("Files"),&m_setMRU);
+  Register("Files",&m_setMRU);
 }
 bool nwxXmlMRU::BeginBatch(int nWait)
 {
@@ -263,7 +263,7 @@ void nwxXmlMRU::UpdateModTimeAll(
     sPath = (*itr)->GetFullPath();
     if(!UpdateModTime(sPath,bRemoveMissing))
     {
-      s.Append(_T("\n"));
+      s.Append("\n");
       s.Append(sPath);
     }
 #else

@@ -188,7 +188,7 @@ bool wxSpinCtrlDbl::Create( wxWindow *parent, wxWindowID id,
                       wxTE_NOHIDESEL|wxTE_PROCESS_ENTER, validator);
 
     DoSetSize( pos.x, pos.y, width, height );
-    SetBestSize(wxSize(width, height));
+    SetInitialSize(wxSize(width, height));
 
     m_min = min;
     m_max = max;
@@ -201,7 +201,7 @@ bool wxSpinCtrlDbl::Create( wxWindow *parent, wxWindowID id,
     if (!value.IsEmpty())
         m_textCtrl->SetValue(value);
     else
-        m_textCtrl->SetValue(wxString::Format(m_textFormat.c_str(), initial));
+        m_textCtrl->SetValue(wxString::Format(m_textFormat, initial));
 
     return true;
 }
@@ -339,14 +339,14 @@ void wxSpinCtrlDbl::OnChar( wxKeyEvent &event )
             DoSendEvent();
             break;
         }
-        case WXK_PRIOR :  // pg-up
+        case WXK_PAGEUP :  // pg-up
         {
             if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
             SetValue( m_value + m_increment * 10.0 * modifier );
             DoSendEvent();
             break;
         }
-        case WXK_NEXT :  // pg-down
+        case WXK_PAGEDOWN :  // pg-down
         {
             if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
             SetValue( m_value - m_increment * 10.0 * modifier );
@@ -398,7 +398,7 @@ void wxSpinCtrlDbl::SetValue( double value )
         }
     }
 
-    wxString str(wxString::Format(m_textFormat.c_str(), value));
+    wxString str(wxString::Format(m_textFormat, value));
 
     if ((value != m_value) || (str != m_textCtrl->GetValue()))
     {
@@ -514,7 +514,7 @@ void wxSpinCtrlDbl::SetDigits( int digits, formatType fmt )
 void wxSpinCtrlDbl::SetFormat( const wxString& format )
 {
     wxString wxstr;
-    if ( wxstr.Printf(format.c_str(), 123456.123456) > 0 )
+    if ( wxstr.Printf(format, 123456.123456) > 0 )
         m_textFormat = format;
 
     SetValue(m_value);

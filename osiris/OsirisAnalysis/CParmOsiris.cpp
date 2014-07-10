@@ -39,6 +39,7 @@
 
 CParmOsiris *CParmOsiris::g_p(NULL); // global pointer
 CParmOsiris::CCleanupGlobal CParmOsiris::g_xxx;
+const wxString CParmOsiris::NO_INIT(wxS(":"));
 
 void CParmOsiris::_Init()
 {

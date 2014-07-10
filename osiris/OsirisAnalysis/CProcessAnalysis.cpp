@@ -125,8 +125,8 @@ CProcessAnalysis::CProcessAnalysis(
 
   //  finished building stdin for analysis program
 
-  wxASSERT_MSG(sizeof(wxChar) == 1,
-      "sizeof(wxChar) != 1, "
+  wxASSERT_MSG(sizeof(char) == 1,
+      "sizeof(char) != 1, "
         "therefore this code needs to be changed");
   
   s = pDir->GetExePath();
@@ -146,7 +146,7 @@ CProcessAnalysis::CProcessAnalysis(
   mainApp::LogMessage(sStdin);
   if(pOut != NULL)
   {
-    const wxChar *pChar = sStdin;
+    const char *pChar = sStdin.ToUTF8();
     size_t nLen = sStdin.Len();
     size_t n;
     while(nLen > 0)

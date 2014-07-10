@@ -78,7 +78,7 @@ wxString ToString::NodeContents(wxXmlNode *pNode, bool bDeep)
     }
     else if(bDeep && (nType == wxXML_ELEMENT_NODE))
     {
-      sRtn.Append(_T("\n"));
+      sRtn.Append("\n");
       sRtn.Append(NodeContents(pChild,bDeep));
     }
   }
@@ -110,7 +110,7 @@ wxString nwxXmlIOwxDateTime::ToString(void *pObj)
 wxDateTime nwxXmlIOwxDateTime::FromString(const wxString &s)
 {
   wxDateTime rtn;
-  if(s.Find(_T("T")) == wxNOT_FOUND)
+  if(s.Find("T") == wxNOT_FOUND)
   {
     //  seconds since 1/1/1970
     time_t n = (time_t)StringTo::Uint(s);
@@ -154,9 +154,9 @@ void nwxXmlIOwxDateTime::UnitTest()
       (sXML != sXML2) ||
       (dt != dtXML) )
   {
-    wxString sMsg(_T("nwxXmlIOwxDateTime::UnitTest failed\n"));
+    wxString sMsg("nwxXmlIOwxDateTime::UnitTest failed\n");
     sMsg.Append(nwxString::FormatDateTime(dt));
-    sMsg.Append(_T("\n"));
+    sMsg.Append("\n");
     sMsg.Append(nwxString::FormatDateTime(dtXML));
     wxASSERT_MSG(0,sMsg);
   }
@@ -221,10 +221,10 @@ nwxXmlNodeList *nwxXmlPersist::CreateNodeList(const wxString &sNodeName)
 void nwxXmlPersist::SetComment(const wxString &s)
 {
   m_sComment = s;
-  m_sComment.Replace(_T("-"),_T("_"),true);
-  m_sComment.Replace(_T("&"),_T(" "),true);
-  m_sComment.Replace(_T("<"),_T(" "),true);
-  m_sComment.Replace(_T(">"),_T(" "),true);
+  m_sComment.Replace("-","_",true);
+  m_sComment.Replace("&"," ",true);
+  m_sComment.Replace("<"," ",true);
+  m_sComment.Replace(">"," ",true);
 }
 
 bool nwxXmlPersist::LoadFromNode(wxXmlNode *pNode,void *_pObj)
@@ -281,18 +281,18 @@ bool nwxXmlPersist::CheckFileModification(bool bReload)
 }
 
 
-const wxString nwxXmlPersist::g_sRootNode(_T("x"));
+const wxString nwxXmlPersist::g_sRootNode("x");
 
-const wxString nwxXmlPersist::g_sXMLNS(_T("xmlns"));
-const wxString nwxXmlPersist::g_sXMLNSxsi(_T("xmlns:xsi"));
-const wxString nwxXmlPersist::g_sXMLNSsql(_T("xmlns:sql"));
+const wxString nwxXmlPersist::g_sXMLNS("xmlns");
+const wxString nwxXmlPersist::g_sXMLNSxsi("xmlns:xsi");
+const wxString nwxXmlPersist::g_sXMLNSsql("xmlns:sql");
 const wxString nwxXmlPersist::g_sXSIschemaLocation(
-  _T("xsi:schemaLocation"));
+  "xsi:schemaLocation");
 
 const wxString nwxXmlPersist::g_sXSIvalue(
-  _T("http://www.w3.org/2001/XMLSchema-instance"));
+  "http://www.w3.org/2001/XMLSchema-instance");
 const wxString nwxXmlPersist::g_sSQLvalue(
-  _T("urn:schemas-microsoft-com:mapping-schema"));
+  "urn:schemas-microsoft-com:mapping-schema");
 
 // ********************************************************
 //

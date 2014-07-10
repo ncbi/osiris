@@ -31,7 +31,11 @@
 #ifndef __WXIDS_H__
 #define __WXIDS_H__
 
+#ifdef __WXMAC__
+#define ID_BORDER 6
+#else
 #define ID_BORDER 4
+#endif
 
 //
 //  IDmenuItems for displaying menu Alleles, BPS, etc.

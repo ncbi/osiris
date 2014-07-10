@@ -78,7 +78,7 @@ bool nwxLockRead::Touch()
       wxULongLong nSize = m_fnFile.GetSize();
       if(nSize > 0)
       {
-        wxFFile ff(m_fnFile.GetFullPath(),_T("r"));
+        wxFFile ff(m_fnFile.GetFullPath(),"r");
         unsigned long lo = nSize.GetLo();
         if( (!nSize.GetHi()) && (nBufferSize > lo) )
         {
@@ -156,11 +156,11 @@ wxString nwxLock::GetLockUser()
       ::wxSleep(1); // wait for file to be 1 second in age
     }
     const wxString sFileName(m_fnFullPath.GetFullPath());
-    wxFFile fn(sFileName.c_str(),"r");
+    wxFFile fn(sFileName.wc_str(),wxS("r"));
     if(fn.IsOpened() && (m_fnFullPath.GetSize() < 1000))
     {
       fn.ReadAll(&sRtn);
-      wxString sSpace(_T("\r\n"));
+      wxString sSpace("\r\n");
       size_t nLen = sRtn.Len();
       while(nLen && (sSpace.Find(sRtn.Last()) != wxNOT_FOUND))
       {
@@ -171,8 +171,8 @@ wxString nwxLock::GetLockUser()
     if(sRtn.IsEmpty())
     {
       wxASSERT_MSG(
-        0,_T("nwxLock::GetLockUser() - could not find user"));
-      sRtn = _T("unknown user");
+        0,"nwxLock::GetLockUser() - could not find user");
+      sRtn = "unknown user";
     }
   }
   return sRtn;
@@ -321,12 +321,12 @@ void nwxLockRead::UnitTest(const wxString &sFileName)
   nwxLockRead x(sFileName);
   if(!x.IsOK())
   {
-    sErr = _T(FN "Cannot find test file: ");
+    sErr = FN "Cannot find test file: ";
     sErr.Append(sFileName);
   }
   else if(!x.Touch())
   {
-    sErr = _T(FN "Could not set access time for file: ");
+    sErr = FN "Could not set access time for file: ";
     sErr.Append(sFileName);
   }
   if(sErr.Len())
@@ -339,7 +339,7 @@ void nwxLockRead::UnitTest(const wxString &sFileName)
 void nwxLock::UnitTest()
 {
 #define FN "nwxLock::UnitTest "
-  wxStandardPaths sp;
+  wxStandardPaths &sp(wxStandardPaths::Get());
   wxString sDocDir(sp.GetDocumentsDir());
   wxString sError;
   nwxLock lock1(sDocDir,nwxLock_FILE,32);
@@ -354,16 +354,16 @@ void nwxLock::UnitTest()
     sUser2 = lock2.GetLockUser();
     if(lock2.HaveLock())
     {
-      sError.Append(_T(FN "Two locks have the same file\n"));
+      sError.Append(FN "Two locks have the same file\n");
     }
     sUser2 = lock2.GetLockUser();
     if(sUser2 != sUser1)
     {
-      sError.Append(_T(FN "Inconsistent user names:\n"));
+      sError.Append(FN "Inconsistent user names:\n");
       sError.Append(sUser1);
-      sError.Append(_T("\n"));
+      sError.Append("\n");
       sError.Append(sUser2);
-      sError.Append(_T("\n"));
+      sError.Append("\n");
     }
     b = lock1.CheckTimeout();
     b = lock1.ReleaseLock();
@@ -373,17 +373,17 @@ void nwxLock::UnitTest()
   }
   else
   {
-    sError.Append(_T(FN "Cannot lock file.\n"));
+    sError.Append(FN "Cannot lock file.\n");
   }
   if(lock1.IsLocked())
   {
-    sError.Append(_T(FN "file is locked and shouldn't be: user = "));
+    sError.Append(FN "file is locked and shouldn't be: user = ");
     sError.Append(lock1.GetLockUser());
-    sError.Append(_T("\n"));
+    sError.Append("\n");
   }
   if(lock1.CannotDeleteLock())
   {
-    sError.Append(_T(FN "Cannot delete lock\n"));
+    sError.Append(FN "Cannot delete lock\n");
   }
 
 // now test a readonly lock
@@ -396,13 +396,13 @@ void nwxLock::UnitTest()
 #endif
 
   nwxLockRead lockRead;
-  if(!lockRead.SetFileName(_T(READ_FILE)))
+  if(!lockRead.SetFileName(READ_FILE))
   {
-    sError.Append(_T("Cannot find file: " READ_FILE "\n"));
+    sError.Append("Cannot find file: " READ_FILE "\n");
   }
   else if(!lockRead.Touch())
   {
-    sError.Append(_T("Cannot update access time of file: " READ_FILE "\n"));
+    sError.Append("Cannot update access time of file: " READ_FILE "\n");
   }
   wxASSERT_MSG(sError.IsEmpty(),sError);
 #undef FN

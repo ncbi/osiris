@@ -55,8 +55,8 @@ const size_t nwxXmlCMF::LEN_BATCH_ID(32);
 
 void nwxXmlCMFAllele::RegisterAll(bool)
 {
-  RegisterWxStringNotEmpty(_T("ALLELEVALUE"),&m_sALLELEVALUE);
-  RegisterBoolSkipFalseAttribute(_T("ALLELEREQUIRED"),&m_bALLELEREQUIRED);
+  RegisterWxStringNotEmpty(wxS("ALLELEVALUE"),&m_sALLELEVALUE);
+  RegisterBoolSkipFalseAttribute(wxS("ALLELEREQUIRED"),&m_bALLELEREQUIRED);
 }
 bool nwxXmlCMFAllele::Skip(void *p)
 {
@@ -128,12 +128,12 @@ bool nwxXmlCMFLocus::Skip(void *p)
 
 void nwxXmlCMFLocus::RegisterAll(bool)
 {
-  RegisterWxStringNotEmptyAttribute(_T("BATCHID"),&m_sBATCHID);
-  RegisterWxStringNotEmptyAttribute(_T("KIT"),&m_sKIT);
-  RegisterWxString(_T("LOCUSNAME"),&m_sLOCUSNAME);
-  RegisterWxString(_T("READINGBY"),&m_sREADINGBY);
-  RegisterWxDateTimeXML(_T("READINGDATETIME"),&m_dtREADINGDATETIME);
-  Register(_T("ALLELE"),&m_ioALLELE,(void *)&m_vpALLELE);
+  RegisterWxStringNotEmptyAttribute(wxS("BATCHID"),&m_sBATCHID);
+  RegisterWxStringNotEmptyAttribute(wxS("KIT"),&m_sKIT);
+  RegisterWxString(wxS("LOCUSNAME"),&m_sLOCUSNAME);
+  RegisterWxString(wxS("READINGBY"),&m_sREADINGBY);
+  RegisterWxDateTimeXML(wxS("READINGDATETIME"),&m_dtREADINGDATETIME);
+  Register(wxS("ALLELE"),&m_ioALLELE,(void *)&m_vpALLELE);
 }
 bool nwxXmlCMFLocus::SetKit(const wxString &s)
 {
@@ -194,14 +194,14 @@ nwxXmlCMFSpecimen &nwxXmlCMFSpecimen::operator = (const nwxXmlCMFSpecimen &x)
 
 void nwxXmlCMFSpecimen::RegisterAll(bool)
 {
-  RegisterWxStringNotEmptyAttribute(_T("SOURCEID"),&m_sSOURCEID);
-  RegisterWxStringNotEmptyAttribute(_T("CASEID"),&m_sCASEID);
-  RegisterBoolSkipFalseAttribute(_T("PARTIAL"),&m_bPARTIAL);
+  RegisterWxStringNotEmptyAttribute(wxS("SOURCEID"),&m_sSOURCEID);
+  RegisterWxStringNotEmptyAttribute(wxS("CASEID"),&m_sCASEID);
+  RegisterBoolSkipFalseAttribute(wxS("PARTIAL"),&m_bPARTIAL);
 
-  RegisterWxString(_T("SPECIMENID"),&m_sSPECIMENID);
-  RegisterWxString(_T("SPECIMENCATEGORY"),&m_sSPECIMENCATEGORY);
-  RegisterWxStringNotEmpty(_T("SPECIMENCOMMENT"),&m_sSPECIMENCOMMENT);
-  Register(_T("LOCUS"),&m_ioLOCUS,(void *)&m_vpLOCUS);
+  RegisterWxString(wxS("SPECIMENID"),&m_sSPECIMENID);
+  RegisterWxString(wxS("SPECIMENCATEGORY"),&m_sSPECIMENCATEGORY);
+  RegisterWxStringNotEmpty(wxS("SPECIMENCOMMENT"),&m_sSPECIMENCOMMENT);
+  Register(wxS("LOCUS"),&m_ioLOCUS,(void *)&m_vpLOCUS);
 }
 
 bool nwxXmlCMFSpecimen::Skip(void *p)
@@ -237,15 +237,15 @@ bool nwxXmlCMFSpecimen::Skip(void *p)
 
 //***********************************************  nwxXmlCMF
 
-const wxString nwxXmlCMF::g_sCODISImportFile(_T("CODISImportFile"));
-const wxString nwxXmlCMF::g_sXMLNSvalue(_T("urn:CODISImportFile-schema"));
-const wxString nwxXmlCMF::g_sSchemaLocationValue(_T(
+const wxString nwxXmlCMF::g_sCODISImportFile(wxS("CODISImportFile"));
+const wxString nwxXmlCMF::g_sXMLNSvalue(wxS("urn:CODISImportFile-schema"));
+const wxString nwxXmlCMF::g_sSchemaLocationValue(wxS(
 "urn:CODISImportFile-schema\n"
 "http://www.ncbi.nlm.nih.gov/projects/SNP/osiris/CODIS-32.Appendix-B.xsd"
 ));
 
 const double nwxXmlCMF::DEFAULT_HEADER_VERSION = 3.2;
-const wxString nwxXmlCMF::MESSAGE_TYPE(_T("Import"));
+const wxString nwxXmlCMF::MESSAGE_TYPE(wxS("Import"));
 nwxXmlIOdoubleFmt nwxXmlCMF::g_ioVersion(1);
 
 nwxXmlCMF::~nwxXmlCMF()
@@ -265,17 +265,17 @@ bool nwxXmlCMF::IsOK(vector<wxString> *pMsgs)
   if(m_sDESTINATIONORI.IsEmpty())
   {
     bRtn = false;
-    pMsgs->push_back(_T("Destination lab is not specified"));
+    pMsgs->push_back(wxS("Destination lab is not specified"));
   }
   if(m_sSOURCELAB.IsEmpty())
   {
     bRtn = false;
-    pMsgs->push_back(_T("Source lab is not specified"));
+    pMsgs->push_back(wxS("Source lab is not specified"));
   }
   if(m_sSUBMITBYUSERID.IsEmpty())
   {
     bRtn = false;
-    pMsgs->push_back(_T("Submitter is not specified"));
+    pMsgs->push_back(wxS("Submitter is not specified"));
   }
   size_t n = m_vpSPECIMEN.size();
   nwxXmlCMFSpecimen *p;
@@ -291,7 +291,7 @@ bool nwxXmlCMF::IsOK(vector<wxString> *pMsgs)
   if(!bSpecimen)
   {
     bRtn = false;
-    pMsgs->push_back(_T("There are no specimens selected or specimen information is incomplete"));
+    pMsgs->push_back(wxS("There are no specimens selected or specimen information is incomplete"));
   }
   return bRtn;
 }
@@ -303,15 +303,15 @@ void nwxXmlCMF::RegisterAll(bool)
   RegisterWxStringNotEmptyAttribute(g_sXMLNSsql,&m_sXMLNSsql);
   RegisterWxStringNotEmptyAttribute(g_sXSIschemaLocation,&m_sXSISchemaLocationValue);
 
-  Register(_T("HEADERVERSION"),&g_ioVersion, (void *)&m_dHEADERVERSION);
-  RegisterWxString(_T("MESSAGETYPE"),&m_sMESSAGETYPE);
-  RegisterWxString(_T("DESTINATIONORI"),&m_sDESTINATIONORI);
-  RegisterWxString(_T("SOURCELAB"),&m_sSOURCELAB);
-  RegisterWxString(_T("SUBMITBYUSERID"),&m_sSUBMITBYUSERID);
-  RegisterWxDateTimeXML(_T("SUBMITDATETIME"),&m_dtSUBMITDATETIME);
-  RegisterWxStringNotEmpty(_T("BATCHID"),&m_sBATCHID);
-  RegisterWxStringNotEmpty(_T("KIT"),&m_sKIT);
-  Register(_T("SPECIMEN"),&m_ioSPECIMEN,(void *) &m_vpSPECIMEN);
+  Register(wxS("HEADERVERSION"),&g_ioVersion, (void *)&m_dHEADERVERSION);
+  RegisterWxString(wxS("MESSAGETYPE"),&m_sMESSAGETYPE);
+  RegisterWxString(wxS("DESTINATIONORI"),&m_sDESTINATIONORI);
+  RegisterWxString(wxS("SOURCELAB"),&m_sSOURCELAB);
+  RegisterWxString(wxS("SUBMITBYUSERID"),&m_sSUBMITBYUSERID);
+  RegisterWxDateTimeXML(wxS("SUBMITDATETIME"),&m_dtSUBMITDATETIME);
+  RegisterWxStringNotEmpty(wxS("BATCHID"),&m_sBATCHID);
+  RegisterWxStringNotEmpty(wxS("KIT"),&m_sKIT);
+  Register(wxS("SPECIMEN"),&m_ioSPECIMEN,(void *) &m_vpSPECIMEN);
 }
 bool nwxXmlCMF::AllExcluded()
 {
@@ -386,10 +386,10 @@ map<wxString,wxString> nwxXmlCMF::g_mapLocus;
 
 void nwxXmlCMF::_SetupSearch(wxString *ps)
 {
-  ps->Replace(_T(" "),_T(""),true);
-  ps->Replace(_T("\t"),_T(""),true);
-  ps->Replace(_T("\r"),_T(""),true);
-  ps->Replace(_T("\n"),_T(""),true);
+  ps->Replace(wxS(" "),wxS(""),true);
+  ps->Replace(wxS("\t"),wxS(""),true);
+  ps->Replace(wxS("\r"),wxS(""),true);
+  ps->Replace(wxS("\n"),wxS(""),true);
   ps->MakeLower();
 }
 
@@ -418,7 +418,7 @@ void nwxXmlCMF::_SetupMap(const char **list, size_t SIZE, map<wxString,wxString>
   pmss->clear();
   for(i = 0; i < SIZE; ++i)
   {
-    sName = _T(list[i]);
+    sName = list[i];
     sValue = sName;
     _SetupSearch(&sName);
     pmss->insert(map<wxString,wxString>::value_type(sName,sValue));

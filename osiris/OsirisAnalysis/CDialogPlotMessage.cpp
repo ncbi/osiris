@@ -35,24 +35,28 @@
 #include <wx/sizer.h>
 #include "CDialogPlotMessage.h"
 
-
+#ifdef __WXMAC__
+#define PLF " "
+#else
+#define PLF "\n"
+#endif
 const wxString CDialogPlotMessageFind::MSG_HISTORY(
-"This plot was not initiated from an analysis window and therefore\n"
-"historic data are not yet available.  Do you wish to search for an\n"
+"This plot was not initiated from an analysis window and therefore" PLF
+"historic data are not yet available.  Do you wish to search for an" PLF
 "associated OSIRIS Analysis File now?"
 );
 
 const wxString CDialogPlotMessageFind::MSG_EDIT(
-"Data edited from a plot window is saved in its corresponding\n"
-"OSIRIS Analysis file and the OSIRIS Plot file is not modified.\n"
-"The analysis file has not yet been identified because this plot\n"
-"was not initiated from an analysis window.  Would you like to\n"
+"Data edited from a plot window is saved in its corresponding" PLF
+"OSIRIS Analysis file and the OSIRIS Plot file is not modified. " PLF
+"The analysis file has not yet been identified because this plot" PLF
+"was not initiated from an analysis window.  Would you like to" PLF
 "search for an associated OSIRIS Analysis File now?"
 );
 
 const wxString CDialogPlotMessageFind::MSG_TABLE(
-"This plot was not initiated from an analysis window and therefore\n"
-"the data are not yet available.  Do you wish to search for an\n"
+"This plot was not initiated from an analysis window and therefore" PLF
+"the data are not yet available.  Do you wish to search for an" PLF
 "associated OSIRIS Analysis File now?"
 );
 

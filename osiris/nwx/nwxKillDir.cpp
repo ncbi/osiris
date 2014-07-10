@@ -107,13 +107,13 @@ bool nwxKillDir::Kill(
 #ifdef _DEBUG
 void nwxKillDir::UnitTest()
 {
-  wxStandardPaths sp;
+  wxStandardPaths &sp(wxStandardPaths::Get());
   wxString sDocs = sp.GetDocumentsDir();
   wxString sDir;
   wxString sFile;
   wxString sBase;
   wxString sError;
-  wxString HELLO(_T("hello world\r\n"));
+  wxString HELLO("hello world\r\n");
   wxFile fh;
   int i = 0;
   int j;
@@ -127,7 +127,7 @@ void nwxKillDir::UnitTest()
   while(bExists)
   {
     i++;
-    sBase = wxString::Format(_T("xx%06d"),i);
+    sBase = wxString::Format("xx%06d",i);
     sDir = sDocs + sBase;
     bExists = (wxFile::Exists(sDir) || wxDir::Exists(sDir));
   }
@@ -139,13 +139,13 @@ void nwxKillDir::UnitTest()
       for(j = 1; bOK && (j < 4); j++)
       {
         sFile = sDir;
-        sFile += wxString::Format(_T("hello%d.txt"),j);
+        sFile += wxString::Format("hello%d.txt",j);
         if(!( fh.Open(sFile,wxFile::write) &&
           fh.Write(HELLO) &&
           fh.Flush() ))
         {
           bOK = false;
-          sError = _T("Could not create file: ");
+          sError = "Could not create file: ";
           sError.Append(sFile);
         }
         if(fh.IsOpened()) { fh.Close(); }
@@ -154,7 +154,7 @@ void nwxKillDir::UnitTest()
     }
     else
     {
-      sError = _T("Could not make dir: ");
+      sError = "Could not make dir: ";
       sError.Append(sDir);
       bOK = false;
     }
@@ -165,22 +165,22 @@ void nwxKillDir::UnitTest()
     sDir = sDocs + sBase;
     if(!wxDir::Exists(sDir))
     {
-      sError = _T("Directory: ");
+      sError = "Directory: ";
       sError.Append(sDir);
-      sError.Append(_T("\ndoes not exist -- not created"));
+      sError.Append("\ndoes not exist -- not created");
       bOK = false;
     }
     else if(!nwxKillDir::KillStatic(sDir))
     {
-      sError = _T("Could not kill dir: ");
+      sError = "Could not kill dir: ";
       sError.Append(sDir);
       bOK = false;
     }
     else if(wxDir::Exists(sDir))
     {
-      sError = _T("Directory: ");
+      sError = "Directory: ";
       sError.Append(sDir);
-      sError.Append(_T("\nstill exists -- nwxKillDir failed!"));
+      sError.Append("\nstill exists -- nwxKillDir failed!");
       bOK = false;
     }
   }

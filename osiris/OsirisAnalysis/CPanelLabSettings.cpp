@@ -29,6 +29,7 @@
 *
 */
 #include "mainApp.h"
+#include "Platform.h"
 #include <wx/arrstr.h>
 #include <wx/settings.h>
 #include "CPanelLabSettings.h"
@@ -613,7 +614,10 @@ CPanelLabSettings::CPanelLabSettings(
     pSizerButtons->Add(m_pbApply,0,0,0);
   }
   pSizerAll->Add(m_pNotebook,1,(wxALL ^ wxBOTTOM) | wxEXPAND, ID_BORDER);
-  pSizerAll->Add(pSizerButtons,0, wxALL | wxEXPAND, ID_BORDER);
+  pSizerAll->Add
+    (pSizerButtons,0, 
+     wxALL | wxEXPAND, 
+     ID_BORDER);
   m_pNotebook->SetFocus();
   SetSizer(pSizerAll);
   SetReadOnly(true);  // read only until data is sent

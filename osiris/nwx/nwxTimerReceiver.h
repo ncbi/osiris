@@ -78,7 +78,7 @@ class nwxTimerInterval
 {
   //
   //  if the "OnTimer()" function in nwxTimerReceiver
-  //  is to use a larger time interval than that of the 
+  //  is to use a larger time interval than 1that of the 
   //  wxTimer instance, this class will keep track if the 
   //  interval.
   //

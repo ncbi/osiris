@@ -65,6 +65,7 @@ public:
   void UpdateSamplePlot(COARfile *pFile, const wxString &sSampleName);
   void UpdateOARfile(COARfile *pFile, bool bUpdateAnalysis = true);
   void UpdateLadderLabels();
+  void UpdateFileMenu();
   void UpdatePlots(COARfile *pFile)
   {
     UpdateOARfile(pFile,false);

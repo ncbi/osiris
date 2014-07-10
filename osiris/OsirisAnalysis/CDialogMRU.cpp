@@ -60,7 +60,7 @@ void CDialogMRU::_SetupImageList()
 
 CDialogMRU::CDialogMRU(
       nwxXmlMRU *pMRU, mainFrame *parent, int nStyle) : 
-  wxDialog(parent,wxID_ANY,"Recently Viewed Files",
+  wxDialog(parent->DialogParent(),wxID_ANY,"Recently Viewed Files",
     wxDefaultPosition, wxDefaultSize,
     mainApp::DIALOG_STYLE),
   m_pCBstartup(NULL),
@@ -258,7 +258,7 @@ bool CDialogMRU::LoadFiles()
           (nNotFound == 1) ? "file is" : "files are"
           );
       sError.Append(sList);
-      mainApp::ShowError(sError,m_pParent);
+      mainApp::ShowError(sError,m_pParent->DialogParent());
     }
     if(!asFiles.IsEmpty())
     {

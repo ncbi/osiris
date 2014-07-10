@@ -29,26 +29,17 @@
 *
 */
 #include "CMenuBar.h"
-
-const wxString CMenuBar::LABEL_GRAPH("&Graph");
-const wxString CMenuBar::LABEL_TABLE("&Table");
-const int CMenuBar::NDX_TABLE(1);
-const int CMenuBar::NDX_GRAPH(2);
-
-
+#include "CMenuFileBase.h"
+#include "wxIDS.h"
 
 CMenuBar::~CMenuBar()
 {
-  Cleanup();
 }
 
-CMenuBar::CMenuBar()
+CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) : m_pMenuFile(NULL)
 {
   wxMenu *pMenuTools(new wxMenu);
   wxMenu *pMenuHelp(new wxMenu);
-  m_pMenuFile = new CMenuFile;
-  m_pMenuTable = new wxMenu;
-  m_pMenuGraph = new wxMenu;
 
   pMenuTools->Append(IDlab,"Lab Settings\tAlt+L");
   pMenuTools->Append(IDexport,"Export File Settings\tAlt+E");
@@ -58,28 +49,21 @@ CMenuBar::CMenuBar()
   pMenuHelp->Append(IDhelpContactUs,"&Contact Us...");
   pMenuHelp->Append(IDcheckForUpdates,"Check f&or Updates...");
   pMenuHelp->Append(wxID_ABOUT,"&About Osiris...");
-  Append(m_pMenuFile,"&File");
-  Append(m_pMenuTable,LABEL_TABLE);
-  Append(m_pMenuGraph,LABEL_GRAPH);
   Append(pMenuTools,"T&ools");
   Append(pMenuHelp,"&Help");
-  EnableSave(false,false,false);
+  if(bCreateFileMenu)
+  {
+    SetFileMenu(new CMenuFileBase(bClose));
+  }
 }
 
-wxMenu *CMenuBar::_Replace(int nPos, wxMenu *pMenu)
+bool CMenuBar::SetFileMenu(wxMenu *p)
 {
-  wxMenu *pRtn = NULL;
-  wxMenu *pCurrent = GetMenu(nPos);
-  if(pCurrent != pMenu)
+  bool bRtn = (m_pMenuFile == NULL && p != NULL);
+  if(bRtn)
   {
-    wxString sLabel = GetMenuLabel(nPos);
-    pRtn = Replace(nPos,pMenu,sLabel);
+    m_pMenuFile = p;
+    Insert(0,p,wxS("&File"));
   }
-  return pRtn;
-}
-wxMenu *CMenuBar::_Replace(int nPos, wxMenu *pMenu, bool bEnable)
-{
-  wxMenu *pRtn = _Replace(nPos,pMenu);
-  EnableTop(nPos,bEnable);
-  return pRtn;
+  return bRtn;
 }

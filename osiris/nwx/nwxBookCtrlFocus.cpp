@@ -139,18 +139,18 @@ void nwxBookCtrlFocus::_SetupClassInfo()
 {
   static const wxChar *psBook[] =
   {
-    _T("wxNotebook"),
-    _T("wxListbook"),
-    _T("wxChoicebook"),
-    _T("wxTreebook"),
-    _T("wxToolbook")
+    wxS("wxNotebook"),
+    wxS("wxListbook"),
+    wxS("wxChoicebook"),
+    wxS("wxTreebook"),
+    wxS("wxToolbook")
   };
   static const wxChar *psTop[] =
   {
-    _T("wxMDIChildFrame"),
-    _T("wxDialog"),
-    _T("wxFrame"),
-    _T("wxTopLevelWindow")
+    wxS("wxMDIChildFrame"),
+    wxS("wxDialog"),
+    wxS("wxFrame"),
+  	wxS("wxTopLevelWindow")
   };
   const size_t SIZE_BOOK = sizeof(psBook) /sizeof(psBook[0]);
   const size_t SIZE_TOP = sizeof(psTop) / sizeof(psTop[0]);

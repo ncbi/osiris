@@ -653,7 +653,7 @@ public:
           if(!( (*pObj) == (*pObjx) ))
           {
             bRtn = false;
-            wxASSERT_MSG(0,_T("unexpected inequality"));
+            wxASSERT_MSG(0,"unexpected inequality");
           }
 #endif
         }
@@ -1046,7 +1046,7 @@ public:
           if(!( (*pObj) == (*pObjx) ))
           {
             bRtn = false;
-            wxASSERT_MSG(0,_T("unexpected inequality"));
+            wxASSERT_MSG(0,"unexpected inequality");
           }
 #endif
         }
@@ -1112,7 +1112,7 @@ public:
       if(itr == end())
       {
         wxASSERT_MSG(0,
-          _T("TnwxXmlPersistMap<K,T,S>::RenameKey could not find object"));
+          "TnwxXmlPersistMap<K,T,S>::RenameKey could not find object");
       }
       else
       {
@@ -1171,7 +1171,7 @@ public:
     {
       // we have a bug
       wxASSERT_MSG(0,
-        _T("TnwxXmlPersistMap<K,T,S>::FixKeys has a size problem"));
+        "TnwxXmlPersistMap<K,T,S>::FixKeys has a size problem");
       bRtn = false;
     }
     else
@@ -1183,14 +1183,14 @@ public:
         if(itrb == m_pv.end())
         {
           wxASSERT_MSG(0,
-            _T("TnwxXmlPersistMap<K,T,S>::FixKeys "
-            "cannot remove previously found item"));
+            "TnwxXmlPersistMap<K,T,S>::FixKeys "
+            "cannot remove previously found item");
         }
         else if(m_pv.find(obj->GetKey()) != m_pv.end())
         {
           wxASSERT_MSG(0,
-            _T("TnwxXmlPersistMap<K,T,S>::FixKeys "
-            "found item that was previously not found"));
+            "TnwxXmlPersistMap<K,T,S>::FixKeys "
+            "found item that was previously not found");
         }
         else
         {

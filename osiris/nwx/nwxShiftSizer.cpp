@@ -91,10 +91,10 @@ nwxArrowBitmap::nwxArrowBitmap(
   int nID = bLeft ? wxCURSOR_POINT_LEFT : wxCURSOR_POINT_RIGHT;
   wxCursor cur(nID);
   SetCursor(cur);
-  SetToolTip(_T(
+  SetToolTip(
     "Click here to view\n"
     "more controls."
-    ));
+    );
 }
 
 bool nwxArrowBitmap::Enable(bool enable)

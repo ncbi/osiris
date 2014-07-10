@@ -86,6 +86,8 @@
 // #define EDIT_SAMPLE_LABEL "Edit " COAR_NOTICE_DISPLAY_CAP " and Notes"
 
 
+DEFINE_EVENT_TYPE(CEventRepaint)
+
 const int CFrameAnalysis::STATUS_COLUMN = 0;
 const int CFrameAnalysis::ILS_COLUMN = 1;
 const int CFrameAnalysis::CHANNEL_ALERT_COLUMN = 2;
@@ -100,7 +102,10 @@ const int CFrameAnalysis::FIRST_LOCUS_COLUMN = 3;
 
 CFrameAnalysis::~CFrameAnalysis()
 {
+#if 0
   _CleanupMenus();
+#endif
+  _SetPreviewMenu(NULL);
   _CleanupCMF();
 }
 
@@ -111,6 +116,7 @@ CFrameAnalysis::CFrameAnalysis(
     wxDefaultPosition,sz),
   m_pOARfile(NULL),
   m_pMenu(NULL),
+  m_pMenuBar(NULL),
   m_pGridLocus(NULL),
   m_pPanelStatus(NULL),
   m_pAlerts(NULL),
@@ -139,6 +145,7 @@ CFrameAnalysis::CFrameAnalysis(
     wxDefaultPosition,sz),
   m_pOARfile(pFile),
   m_pMenu(NULL),
+  m_pMenuBar(NULL),
   m_pGridLocus(NULL),
   m_pPanelStatus(NULL),
   m_pAlerts(NULL),
@@ -426,6 +433,12 @@ void CFrameAnalysis::_Build()
 #undef LOCUS_HEIGHT
 
 
+void CFrameAnalysis::UpdateFileMenu()
+{
+  m_pMenuBar->UpdateFileMenu();
+}
+
+
 wxString CFrameAnalysis::GetFileName()
 {
   wxString sRtn;
@@ -455,6 +468,12 @@ bool CFrameAnalysis::CheckIfHistoryOK()
   return bRtn;
 }
 
+void CFrameAnalysis::CheckSaveStatus()
+{
+  bool bSaveAs = CanSaveAs();
+  bool bSave = m_pOARfile->CanSave();
+  m_pMenuBar->EnableSave(bSaveAs,bSave,bSaveAs);
+}
 bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
 {
   int nID = e.GetId();
@@ -494,10 +513,10 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
       OnShowGraphic(e);
       break;
     case IDmenuAcceptLocus:
-      _OnAcceptLocus();
+      _OnAcceptLocus(e);
       break;
     case IDmenuReviewLocus:
-      _OnReviewLocus();
+      _OnReviewLocus(e);
       break;
 
     case IDmenuAcceptSample:
@@ -1069,22 +1088,40 @@ void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
     m_pGrid->SetFocus();
   }
 }
-void CFrameAnalysis::_OnReviewLocus()
+void CFrameAnalysis::_SetupLocusColumn(wxCommandEvent &e,
+  COARsample **ppSample, COARlocus **ppLocus)
 {
-  int nCol =
-  (m_nEntireRowSelected >= 0)
-  ? -1
-  : m_pGrid->GetGridCursorCol();
-
-  if(_IsLocusColumn(nCol))
+  int nRow = m_pGrid->GetGridCursorRow();
+  COARsample *pSample = m_SampleSort.GetSample((size_t) nRow);
+  COARlocus *pLocus = NULL;
+  if(pSample != NULL)
   {
-    int nRow = m_pGrid->GetGridCursorRow();
-    COARsample *pSample = m_SampleSort.GetSample((size_t)nRow);
+    int nCol =
+      (m_nEntireRowSelected >= 0)
+      ? -1
+      : m_pGrid->GetGridCursorCol();
+    if(_IsLocusColumn(nCol))
+    {
+      const wxString &sLocus
+        (m_pOARfile->GetLocusName(nCol - FIRST_LOCUS_COLUMN));
+      pLocus = pSample->FindLocus(sLocus);
+    }
+    else
+    {
+      pLocus = (COARlocus *)e.GetClientData();
+    }
+  }
+  *ppSample = pSample;
+  *ppLocus = pLocus;
+}
 
-    COARlocus *pLocus =
-          (pSample != NULL)
-          ? pSample->FindLocus(m_pOARfile->GetLocusName(nCol - FIRST_LOCUS_COLUMN))
-          : NULL;
+void CFrameAnalysis::_OnReviewLocus(wxCommandEvent &e)
+{
+  COARsample *pSample = NULL;
+  COARlocus *pLocus = NULL;
+  _SetupLocusColumn(e,&pSample,&pLocus);
+  if(pLocus != NULL)
+  {
     DoReviewLocus(pSample,pLocus);
   }
 }
@@ -1376,6 +1413,10 @@ void CFrameAnalysis::OnHistoryView(wxCommandEvent &)
     }
   }
 }
+CXSLExportFileType *CFrameAnalysis::GetFileTypeByID(int nID)
+{
+  return m_pMenuBar->GetFileTypeByID(nID);
+}
 void CFrameAnalysis::_EnablePreview()
 {
   m_pTogglePreview->Enable(true);
@@ -1395,8 +1436,8 @@ void CFrameAnalysis::_HidePreview()
     m_pSplitterTop->Unsplit(m_pPanelPlotPreview);
     m_pTogglePreview->SetValue(false);
     m_pMenu->SetPreviewTextShow(true);
+    _SetPreviewMenu(NULL);
     _LayoutAll();
-    m_pParent->SetupMenus();
   }
 }
 void CFrameAnalysis::_ShowPreview()
@@ -1415,6 +1456,7 @@ void CFrameAnalysis::_ShowPreview()
         true,
         6);
     }
+
     m_pSplitterTop->SplitHorizontally(
         m_pPanelGrid,m_pPanelPlotPreview);
     m_pSplitterTop->SetMinimumPaneSize(1);
@@ -1454,6 +1496,10 @@ LABEL_PLOT_TYPE CFrameAnalysis::GetPlotLabelType()
   int nLabel = m_pComboCellType->GetCurrentSelection();
   LABEL_PLOT_TYPE nRtn = (LABEL_PLOT_TYPE)CELL_TO_PLOT(nLabel);
   return nRtn;
+}
+wxWindow *CFrameAnalysis::GetInfoPanel()
+{
+  return m_pPanelInfo;
 }
 
 void CFrameAnalysis::_UpdatePreviewLabelType(int n)
@@ -1540,7 +1586,7 @@ void CFrameAnalysis::_UpdatePreview()
           sFileName,false);
       }
     }
-    m_pParent->SetupMenus();
+    _SetPreviewMenu(m_pPanelPlotPreview->GetMenu());
   }
 }
 void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus)
@@ -1572,22 +1618,14 @@ void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus)
     }
   }
 }
-void CFrameAnalysis::_OnAcceptLocus()
+void CFrameAnalysis::_OnAcceptLocus(wxCommandEvent &e)
 {
-  int nRow = m_pGrid->GetGridCursorRow();
-  int nCol =
-    (m_nEntireRowSelected >= 0)
-    ? -1
-    : m_pGrid->GetGridCursorCol();
-  if(_IsLocusColumn(nCol))
+  COARsample *pSample = NULL;
+  COARlocus *pLocus = NULL;
+  _SetupLocusColumn(e,&pSample,&pLocus);
+  if(pLocus != NULL)
   {
-    COARsample *pSample = m_SampleSort.GetSample((size_t) nRow);
-    if(pSample != NULL)
-    {
-      const wxString &sLocus(m_pOARfile->GetLocusName(nCol - FIRST_LOCUS_COLUMN));
-      COARlocus *pLocus = pSample->FindLocus(sLocus);
-      DoAcceptLocus(pSample,pLocus);
-    }
+    DoAcceptLocus(pSample,pLocus);
   }
 }
 
@@ -1634,10 +1672,12 @@ void CFrameAnalysis::OnEditFromGrid(wxGridEvent &e)
   {
     OnEdit(e);
   }
+  e.Skip();
 }
-void CFrameAnalysis::OnEditMenu(wxGridEvent &)
+void CFrameAnalysis::OnEditMenu(wxGridEvent &e)
 {
   PopupMenu_(m_pMenu->GetMenuEdit(),wxDefaultPosition);
+  e.Skip();
 }
 
 
@@ -1654,7 +1694,7 @@ void CFrameAnalysis::_OnEditAlertsByType(COARsample *pSample, int nType)
     this, wxID_ANY,sz,NULL,nType);
   if(dlg.EditData(m_pOARfile,pSample))
   {
-    m_pParent->CheckSaveStatus();
+    CheckSaveStatus();
     RepaintData();
   }
 }
@@ -1683,7 +1723,7 @@ void CFrameAnalysis::DoEditLocus(
         this,wxID_ANY,sSampleName,sz);
       if(dlg.EditData(m_pOARfile))
       {
-        m_pParent->CheckSaveStatus();
+        CheckSaveStatus();
         m_pParent->UpdateSamplePlot(m_pOARfile,pSample->GetName());
         RepaintData();
       }
@@ -1695,7 +1735,7 @@ void CFrameAnalysis::DoEditLocus(
         this,wxID_ANY,sSampleName,sz);
       if(dlg.EditData(m_pOARfile,pSample))
       {
-        m_pParent->CheckSaveStatus();
+        CheckSaveStatus();
         m_pParent->UpdateSamplePlot(m_pOARfile,pSample->GetName());
         RepaintData();
       }
@@ -1762,7 +1802,7 @@ wxString CFrameAnalysis::_GetGraphicFileName(int nRow,bool bMessage)
         if(bMessage)
         {
           wxString smsg("Cannot find graphic file");
-          mainApp::ShowError(smsg,m_pParent);
+          mainApp::ShowError(smsg,m_pParent->DialogParent());
           sFile.Clear();
         }
       }
@@ -2009,7 +2049,7 @@ bool CFrameAnalysis::SaveFile()
         {
           bRtn = true;
           m_pParent->AddToMRU(m_pOARfile->GetFileName());
-          m_pParent->CheckSaveStatus();
+          CheckSaveStatus();
           m_pParent->UpdateHistory(m_pOARfile);
           SetupTitle();
         }
@@ -2078,7 +2118,7 @@ bool CFrameAnalysis::SaveFileAs()
       {
         bRtn = true;
         m_pParent->AddToMRU(sFileName);
-        m_pParent->CheckSaveStatus();
+        CheckSaveStatus();
         m_pParent->UpdateHistory(m_pOARfile);
         m_pMenu->UpdateHistory();
         SetupTitle();
@@ -2145,7 +2185,7 @@ void CFrameAnalysis::OnClose(wxCloseEvent &e)
   {
     Destroy();
   }
-  else
+  else if(e.CanVeto())
   {
     e.Veto(true);
   }
@@ -2171,7 +2211,7 @@ void CFrameAnalysis::RepaintGridXML()
     m_pGrid->RestoreScrollPosition();
   }
 }
-void CFrameAnalysis::RepaintData()
+void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
 {
   // update all data in table and alert window
   if(_XmlFile())
@@ -2555,6 +2595,8 @@ wxMenu *CFrameAnalysis::GetMenu()
       m_pMenu->SetNameTypeFromComboBox(m_pComboName);
     }
     _UpdateMenu();
+    m_pMenuBar = new CMenuBarAnalysis(this,m_pMenu);
+    SetMenuBar(m_pMenuBar);
   }
   return m_pMenu;
 }
@@ -2824,7 +2866,7 @@ bool CFrameAnalysis::ExportCMF()
   {
     if(m_pCMF == NULL)
     {
-      m_pCMF = new CDialogCMF(m_pParent,wxID_ANY,m_pOARfile,&m_SampleSort);
+      m_pCMF = new CDialogCMF(m_pParent->DialogParent(),wxID_ANY,m_pOARfile,&m_SampleSort);
     }
     int n = m_pCMF->ShowModal();
     if(n != IDbuttonFinishLater)
@@ -2840,8 +2882,7 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
 {
   bool bOK = true;
   int nID = e.GetId();
-  mainFrame *pParent = (mainFrame *) GetParent();
-  CXSLExportFileType *pExport = pParent->GetFileTypeByID(nID);
+  CXSLExportFileType *pExport = GetFileTypeByID(nID);
   if(pExport == NULL)
   {
     mainApp::ShowError("Cannot find export file type",this);
@@ -2994,7 +3035,7 @@ void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
   ExportCMF();
 }
 
-
+IMPLEMENT_ABSTRACT_CLASS(CFrameAnalysis,CMDIFrame)
 
 BEGIN_EVENT_TABLE(CFrameAnalysis,CMDIFrame)
 
@@ -3023,6 +3064,10 @@ EVT_GRID_CMD_CELL_LEFT_DCLICK(IDgridLocus,CFrameAnalysis::OnEditFromGrid)
 EVT_GRID_CMD_LABEL_RIGHT_CLICK(IDgridLocus,CFrameAnalysis::OnEditMenu)
 EVT_GRID_CMD_CELL_RIGHT_CLICK(IDgridLocus,CFrameAnalysis::OnEditMenu)
 
+EVT_SET_FOCUS(CFrameAnalysis::OnFocusSet)
+EVT_KILL_FOCUS(CFrameAnalysis::OnFocusKill)
+
+EVT_COMMAND(wxID_ANY, CEventRepaint,CFrameAnalysis::_OnRepaint)
 
 EVT_CLOSE(CFrameAnalysis::OnClose)
 END_EVENT_TABLE()

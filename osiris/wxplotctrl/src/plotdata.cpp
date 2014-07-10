@@ -776,7 +776,7 @@ bool wxPlotData::LoadFile( const wxString &filename, int x_col, int y_col, int o
                     wxString colStr = wxGetTextFromUser(
                         wxString::Format(wxT("Data file: '%s'\n%d columns found.\n"
                                              "Enter x and y cols separated by a space starting from 1.\n"
-                                             "If x = y then x values are 0,1,2... and y is given col."), filename.c_str(), n),
+                                             "If x = y then x values are 0,1,2... and y is given col."), filename.utf8_str(), n),
                                              wxT("Enter two columns of data file to use"));
 
                     if (colStr.IsEmpty())
@@ -841,7 +841,7 @@ bool wxPlotData::LoadFile( const wxString &filename, int x_col, int y_col, int o
                                          "\"%s\"\n\n"
                                          "# for comments, blank lines Ok, comma, tab, space for separators\n"
                                          "7   4\n33  2.5e-2\n...\n"),
-                                         x_col, y_col, points, line_number, wxstr.Left(100).c_str()),
+                                         x_col, y_col, points, line_number, wxstr.Left(100).utf8_str()),
                                          wxT("Error loading ")+filename, wxOK|wxICON_ERROR);
                 stop_load = true;
                 break;
@@ -948,12 +948,12 @@ bool wxPlotData::SaveFile( const wxString &filename, bool save_header, const wxS
         x = M_PLOTDATA->m_Xdata[i];
         y = M_PLOTDATA->m_Ydata[i];
 
-        if (wxFinite(x)) s = wxString::Format(f.c_str(), x);
+        if (wxFinite(x)) s = wxString::Format(f, x);
         else             s = wxT("nan");
 
         s += sep;
 
-        if (wxFinite(y)) s += wxString::Format(f.c_str(), y);
+        if (wxFinite(y)) s += wxString::Format(f, y);
         else             s += wxT("nan");
 
         s += wxT("\n");

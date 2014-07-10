@@ -45,7 +45,7 @@
 
 inline const xmlChar *XML_CAST(const wxString &s)
 {
-  return (const xmlChar *)(s.c_str());
+  return (const xmlChar *)((const char *)s.utf8_str());
 }
 using namespace std;
 
@@ -152,7 +152,7 @@ wxXml2Node::wxXml2Node(
     default:
       {
         wxString s = wxString::Format(
-          _T("wxXml2Node constructor, unsupported type %d"),
+          "wxXml2Node constructor, unsupported type %d",
           (int)_type);
         wxASSERT_MSG(0,s);
         wxLog::OnLog(wxLOG_Message,(const wxChar *)s,time(NULL));
@@ -192,9 +192,9 @@ void wxXml2Node::AddProperty(wxXml2Property *prop)
   if(prop->m_pNode == this) {} // do nothing
   else if( prop->m_pNode != NULL )
   {
-    wxString s = _T("wxXml2Node::AddProperty(wxXml2Property *) - " 
+    wxString s = "wxXml2Node::AddProperty(wxXml2Property *) - " 
       "property used on another node - "
-      "creating new property with name/value");
+      "creating new property with name/value";
     wxLog::OnLog(wxLOG_Message,(const wxChar *)s,time(NULL));
     wxASSERT_MSG(0,s);
     AddProperty(prop->GetName(),prop->GetValue());
@@ -335,7 +335,7 @@ wxString wxXml2Node::GetContent() const
       (nType == wxXML_CDATA_SECTION_NODE) )
   {
     const char *pc = (const char *)(m_pNode->content);
-    sRtn = wxT(pc);
+    sRtn = pc;
   }
   return sRtn;
 }
@@ -345,7 +345,7 @@ wxString wxXml2Node::GetName() const
   if(GetType() == wxXML_ELEMENT_NODE)
   {
     const char *p = (const char *)m_pNode->name;
-    sRtn = wxT(p);
+    sRtn = p;
   }
   return sRtn;
 }
@@ -418,8 +418,8 @@ bool wxXml2Node::InsertChild(wxXml2Node *child, wxXml2Node *before)
         if(ptr == NULL)
         {
           wxASSERT_MSG(0,
-            _T("wxXml2Node::InsertChild() "
-            "failed in xmlAddPrevSibling()"));
+            "wxXml2Node::InsertChild() "
+            "failed in xmlAddPrevSibling()");
           bRtn = false;
         }
         else if(ptr == m_pFirstChild->m_pNode)
@@ -451,8 +451,8 @@ bool wxXml2Node::InsertChild(wxXml2Node *child, wxXml2Node *before)
       if (ptr == NULL)
       {
           wxASSERT_MSG(0,
-            _T("wxXml2Node::InsertChild() "
-            "failed in xmlAddNextSibling()"));
+            "wxXml2Node::InsertChild() "
+            "failed in xmlAddNextSibling()");
           bRtn = false;
       }
       else if(ptr == child->m_pNode)
@@ -564,15 +564,15 @@ void wxXml2Node::SetNext(wxXml2Node *next)
   }
   else
   {
-    wxString s(_T("wxXml2Node::SetNext() failed - " 
-      "xmlAddNextSibling returned "));
+    wxString s("wxXml2Node::SetNext() failed - " 
+      "xmlAddNextSibling returned ");
     if(ptr == NULL)
     {
-      s.Append(_T("NULL pointer"));
+      s.Append("NULL pointer");
     }
     else
     {
-      s.Append(_T("unknown pointer"));
+      s.Append("unknown pointer");
     }
     wxASSERT_MSG(0,s);
     m_pNext = NULL;
@@ -704,9 +704,9 @@ bool wxXml2Node::_CheckPropertyList(wxXml2Property *pSave)
   }
   if(!bFound)
   {
-    wxString s(_T(
+    wxString s(
       "wxXml2Node::_CheckPropertyList(pSave) "
-      "did not find property pSave"));
+      "did not find property pSave");
     
     if(bFoundXML)
     {
@@ -714,7 +714,7 @@ bool wxXml2Node::_CheckPropertyList(wxXml2Property *pSave)
     }
     else
     {
-      s.Append(_T(", xmlAttrPtr not found either"));
+      s.Append(", xmlAttrPtr not found either");
     }
     pSave->m_pNext = NULL;
     delete pSave;
@@ -723,7 +723,7 @@ bool wxXml2Node::_CheckPropertyList(wxXml2Property *pSave)
   }
   if(!bOK)
   {
-    wxString s(_T("wxXml2Node::_CheckPropertyList bOK == false"));
+    wxString s("wxXml2Node::_CheckPropertyList bOK == false");
     wxASSERT_MSG(0,s);
     wxLog::OnLog(wxLOG_Message,(const wxChar *)s,time(NULL));
     _BuildProperties();

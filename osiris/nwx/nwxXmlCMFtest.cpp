@@ -395,14 +395,14 @@ static int nTestCount = 0;
 static void MY_ASSERT(
   bool b, 
   const char *ps, 
-  const wxChar *ps2 = _T(""), 
-  const wxChar *ps3 = _T(""))
+  const wxChar *ps2 = wxS(""),
+  const wxChar *ps3 = wxS(""))
 {
   if(!b)
   {
     wxString s;
-    s.Printf(_T("nwxXmlCMF::UnitTest()[%d] "),nTestCount);
-    s.Append(_T(ps));
+    s.Printf("nwxXmlCMF::UnitTest()[%d] ",nTestCount);
+    s.Append(ps);
     s.Append(ps2);
     s.Append(ps3);
     wxASSERT_MSG(0,s);
@@ -450,7 +450,7 @@ void nwxXmlCMF::UnitTest()
 {
   nwxXmlCMF x;
   nwxXmlCMF xx;
-  wxString sFileName(_T("foo.xml"));
+  wxString sFileName("foo.xml");
   wxMemoryInputStream instr(sXML,XML_SIZE);
   MY_ASSERT(instr.IsOk(),"wxMemoryInputStream::IsOk() failed");
   MY_ASSERT(instr.CanRead(),"wxMemoryInputStream::CanRead() failed");
@@ -482,14 +482,14 @@ void nwxXmlCMF::UnitTest1(const nwxXmlCMF &x)
   nTestCount++;
 
   MY_ASSERT(x.GetHeaderVersion() == 3.2," header version");
-  MY_ASSERT(x.GetMessageType() == _T("Import"), " message type ");
-  MY_ASSERT(x.GetDestination() == _T("IADCI0000"), "destination");
-  MY_ASSERT(x.GetSourceLab() == _T("IADCI0000"), "source lab");
-  MY_ASSERT(x.GetSubmitByUserID() == _T("KEllis"),"submit user id");
+  MY_ASSERT(x.GetMessageType() == "Import", " message type ");
+  MY_ASSERT(x.GetDestination() == "IADCI0000", "destination");
+  MY_ASSERT(x.GetSourceLab() == "IADCI0000", "source lab");
+  MY_ASSERT(x.GetSubmitByUserID() == "KEllis","submit user id");
   s = nwxString::FormatDateTimeXML(x.GetSubmitDateTime());
-  MY_ASSERT(s == _T("2002-02-14T21:51:44"),"submit date time: ", s.c_str());
-  MY_ASSERT(x.GetBatchId() == _T("GEL2004_10_04_101"),"batch id");
-  MY_ASSERT(x.GetKit() == _T("PowerPlex 16"),"kit");
+  MY_ASSERT(s == "2002-02-14T21:51:44","submit date time: ", s.wc_str());
+  MY_ASSERT(x.GetBatchId() == "GEL2004_10_04_101","batch id");
+  MY_ASSERT(x.GetKit() == "PowerPlex 16","kit");
   nCount = x.GetSpecimenCount();
   if(nCount != 2)
   {
@@ -503,12 +503,12 @@ void nwxXmlCMF::UnitTest1(const nwxXmlCMF &x)
   // first specimen
 
 #define UTS "SPECIMEN[1] "
-  MY_ASSERT(spec1.GetSourceID() == _T("Yes"),UTS "source ID ", spec1.GetSourceID());
-  MY_ASSERT(spec1.GetCaseID() == _T("FL2004_10_04_ABC"), UTS "case id ",spec1.GetCaseID());
+  MY_ASSERT(spec1.GetSourceID() == "Yes",UTS "source ID ", spec1.GetSourceID());
+  MY_ASSERT(spec1.GetCaseID() == "FL2004_10_04_ABC", UTS "case id ",spec1.GetCaseID());
   MY_ASSERT(spec1.GetPartial(), UTS "GetPartial() is false");
-  MY_ASSERT(spec1.GetSpecimenID() == _T("IMP_0001A"),UTS "Specimen ID ",spec1.GetSpecimenID());
-  MY_ASSERT(spec1.GetSpecimenCategory() == _T("Forensic, Unknown"),UTS "Specimen category: ",spec1.GetSpecimenCategory());
-  MY_ASSERT(spec1.GetSpecimenComment() == _T("Off-ladder allele value observed for FGA."),UTS "Specimen comment: ",spec1.GetSpecimenComment());
+  MY_ASSERT(spec1.GetSpecimenID() == "IMP_0001A",UTS "Specimen ID ",spec1.GetSpecimenID());
+  MY_ASSERT(spec1.GetSpecimenCategory() == "Forensic, Unknown",UTS "Specimen category: ",spec1.GetSpecimenCategory());
+  MY_ASSERT(spec1.GetSpecimenComment() == "Off-ladder allele value observed for FGA.",UTS "Specimen comment: ",spec1.GetSpecimenComment());
   nCount = spec1.GetLocusCount();
   if(nCount != 13)
   {
@@ -532,21 +532,21 @@ void nwxXmlCMF::UnitTest1(const nwxXmlCMF &x)
         UTS "Locus10 allele count ", nwxString::FormatNumber((int)nAllele10) );
     }
 
-    MY_ASSERT(locus2.GetBatchID() == _T("GEL2004_10_05_67"),
+    MY_ASSERT(locus2.GetBatchID() == "GEL2004_10_05_67",
       UTS "Locus2 batchID ", locus2.GetBatchID());
-    MY_ASSERT(locus2.GetKit() == _T("PowerPlex 1.2"),
+    MY_ASSERT(locus2.GetKit() == "PowerPlex 1.2",
       UTS "Locus2 kit ", locus2.GetKit());
-    MY_ASSERT(locus2.GetLocusName() == _T("D13S317"),
+    MY_ASSERT(locus2.GetLocusName() == "D13S317",
       UTS "Locus2 name ", locus2.GetLocusName());
-    MY_ASSERT(locus2.GetReadingBy() == _T("KELLIS"),
+    MY_ASSERT(locus2.GetReadingBy() == "KELLIS",
       UTS "Locus2 Reading By ",locus2.GetReadingBy());
     s = nwxString::FormatDateTimeXML(locus2.GetReadingDateTime());
-    MY_ASSERT(s == _T("2002-02-13T21:50:42"), 
+    MY_ASSERT(s == "2002-02-13T21:50:42", 
       UTS "Locus2 reading date/time ",s);
-    MY_ASSERT(locus10.GetLocusName() == _T("FGA"),
+    MY_ASSERT(locus10.GetLocusName() == "FGA",
       UTS "Locus10 name", locus10.GetLocusName());
     s = nwxString::FormatDateTimeXML(locus10.GetReadingDateTime());
-    MY_ASSERT(s == _T("2002-02-13T21:50:47"),
+    MY_ASSERT(s == "2002-02-13T21:50:47",
       UTS "Locus10 reading date/time ",s);
     if(nAllele2 >= 2)
     {
@@ -555,18 +555,18 @@ void nwxXmlCMF::UnitTest1(const nwxXmlCMF &x)
       MY_ASSERT(allele2.IsRequired(),
         UTS " Locus2 Allele2 IsRequired() == false");
       s = allele1.GetAlleleValue();
-      MY_ASSERT(s == _T("8"), UTS "Locus2 Allele1 value ",s);
+      MY_ASSERT(s == "8", UTS "Locus2 Allele1 value ",s);
       s = allele2.GetAlleleValue();
-      MY_ASSERT(s == _T("9"), UTS "Locus2 Allele2 value ",s);
+      MY_ASSERT(s == "9", UTS "Locus2 Allele2 value ",s);
     }
     if(nAllele10 >= 2)
     {
       const nwxXmlCMFAllele &allele1(locus10.GetAllele(0));
       const nwxXmlCMFAllele &allele2(locus10.GetAllele(1));
       s = allele1.GetAlleleValue();
-      MY_ASSERT(s == _T("24"), UTS "Locus10 Allele1 value ",s);
+      MY_ASSERT(s == "24", UTS "Locus10 Allele1 value ",s);
       s = allele2.GetAlleleValue();
-      MY_ASSERT(s == _T("25"), UTS "Locus10 Allele2 value ",s);
+      MY_ASSERT(s == "25", UTS "Locus10 Allele2 value ",s);
     }
   }
   // end of first specimen
@@ -574,14 +574,14 @@ void nwxXmlCMF::UnitTest1(const nwxXmlCMF &x)
 #undef UTS
 #define UTS "SPECIMEN[2] "
 
-  MY_ASSERT(spec2.GetSourceID() == _T("No"),UTS "source ID ", spec2.GetSourceID());
-  MY_ASSERT(spec2.GetCaseID() == _T("FL2004_10_04_DEF"), UTS "case id ",spec2.GetCaseID());
+  MY_ASSERT(spec2.GetSourceID() == "No",UTS "source ID ", spec2.GetSourceID());
+  MY_ASSERT(spec2.GetCaseID() == "FL2004_10_04_DEF", UTS "case id ",spec2.GetCaseID());
   MY_ASSERT(spec2.GetPartial(), UTS "GetPartial() is false");
-  MY_ASSERT(spec2.GetSpecimenID() == _T("IMP_0001B"),UTS "Specimen ID ",spec2.GetSpecimenID());
-  MY_ASSERT(spec2.GetSpecimenCategory() == _T("Forensic, Unknown"),UTS "Specimen category: ",spec2.GetSpecimenCategory());
+  MY_ASSERT(spec2.GetSpecimenID() == "IMP_0001B",UTS "Specimen ID ",spec2.GetSpecimenID());
+  MY_ASSERT(spec2.GetSpecimenCategory() == "Forensic, Unknown",UTS "Specimen category: ",spec2.GetSpecimenCategory());
   MY_ASSERT(spec2.GetSpecimenComment() == 
-    _T("A possible peak was observed at CSF1PO that "
-    "was not called due to minumum peak threshold."),
+    "A possible peak was observed at CSF1PO that "
+    "was not called due to minumum peak threshold.",
       UTS "Specimen comment: ",spec2.GetSpecimenComment());
   nCount = spec2.GetLocusCount();
   if(nCount != 16)
@@ -605,25 +605,25 @@ void nwxXmlCMF::UnitTest1(const nwxXmlCMF &x)
       MY_ASSERT(0,
         UTS "Locus10 allele count ", nwxString::FormatNumber((int)nAllele10) );
     }
-    MY_ASSERT(locus10.GetBatchID() == _T("GEL2004_10_05_69"),
+    MY_ASSERT(locus10.GetBatchID() == "GEL2004_10_05_69",
       UTS "Locus10 batchID ", locus10.GetBatchID());
-    MY_ASSERT(locus10.GetKit() == _T("PowerPlex 1.2"),
+    MY_ASSERT(locus10.GetKit() == "PowerPlex 1.2",
       UTS "Locus10 kit ", locus10.GetKit());
 
-    MY_ASSERT(locus3.GetLocusName() == _T("D16S539"),
+    MY_ASSERT(locus3.GetLocusName() == "D16S539",
       UTS "Locus3 name ", locus3.GetLocusName());
-    MY_ASSERT(locus3.GetReadingBy() == _T("CLEE"),
+    MY_ASSERT(locus3.GetReadingBy() == "CLEE",
       UTS "Locus3 Reading By ",locus3.GetReadingBy());
     s = nwxString::FormatDateTimeXML(locus3.GetReadingDateTime());
-    MY_ASSERT(s == _T("2001-01-01T02:50:42"), 
+    MY_ASSERT(s == "2001-01-01T02:50:42", 
       UTS "Locus3 reading date/time ",s);
 
-    MY_ASSERT(locus10.GetLocusName() == _T("FGA"),
+    MY_ASSERT(locus10.GetLocusName() == "FGA",
       UTS "Locus10 name", locus10.GetLocusName());
-    MY_ASSERT(locus10.GetReadingBy() == _T("KELLIS"),
+    MY_ASSERT(locus10.GetReadingBy() == "KELLIS",
       UTS "Locus3 Reading By ",locus3.GetReadingBy());
     s = nwxString::FormatDateTimeXML(locus10.GetReadingDateTime());
-    MY_ASSERT(s == _T("2002-02-13T21:50:47"),
+    MY_ASSERT(s == "2002-02-13T21:50:47",
       UTS "Locus10 reading date/time ",s);
 
     if(nAllele3 >= 4)
@@ -634,22 +634,22 @@ void nwxXmlCMF::UnitTest1(const nwxXmlCMF &x)
       const nwxXmlCMFAllele &allele3(locus3.GetAllele(2));
       const nwxXmlCMFAllele &allele4(locus3.GetAllele(3));
       s = allele1.GetAlleleValue();
-      MY_ASSERT(s == _T("6"),UTS "Locus3 allele1 ",s);
+      MY_ASSERT(s == "6",UTS "Locus3 allele1 ",s);
       s = allele2.GetAlleleValue();
-      MY_ASSERT(s == _T("7"),UTS "Locus3 allele2 ",s);
+      MY_ASSERT(s == "7",UTS "Locus3 allele2 ",s);
       s = allele3.GetAlleleValue();
-      MY_ASSERT(s == _T("13.1"),UTS "Locus3 allele3 ",s);
+      MY_ASSERT(s == "13.1",UTS "Locus3 allele3 ",s);
       s = allele4.GetAlleleValue();
-      MY_ASSERT(s == _T("14.2"),UTS "Locus3 allele4 ",s);
+      MY_ASSERT(s == "14.2",UTS "Locus3 allele4 ",s);
     }
     if(nAllele10 >= 2)
     {
       const nwxXmlCMFAllele &allele1(locus10.GetAllele(0));
       const nwxXmlCMFAllele &allele2(locus10.GetAllele(1));
       s = allele1.GetAlleleValue();
-      MY_ASSERT(s == _T("24"),UTS "Locus10 allele1 ",s);
+      MY_ASSERT(s == "24",UTS "Locus10 allele1 ",s);
       s = allele2.GetAlleleValue();
-      MY_ASSERT(s == _T("25"),UTS "Locus10 allele2 ",s);
+      MY_ASSERT(s == "25",UTS "Locus10 allele2 ",s);
     }
   }  
 }

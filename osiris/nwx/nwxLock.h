@@ -37,7 +37,7 @@
 #include <wx/datetime.h>
 
 #define nwxLock_TIMEOUT 120
-#define nwxLock_FILE _T("lock")
+#define nwxLock_FILE "lock"
 
 class nwxLockRead
 {

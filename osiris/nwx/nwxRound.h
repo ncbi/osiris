@@ -96,7 +96,7 @@ public:
         i = 4; // loop exit
       }
     }
-    wxASSERT_MSG(bRtn,_T("nwxRound::UnitTest Failed"));
+    wxASSERT_MSG(bRtn,"nwxRound::UnitTest Failed");
     return bRtn;
   }
 #endif

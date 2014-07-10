@@ -46,7 +46,7 @@ extern "C"
   static void StructuredErrorFunction(void *, xmlErrorPtr error)
   {
     wxString s =  wxString::Format(
-      _T("xml error: %d; line %d; %s"),
+      "xml error: %d; line %d; %s",
       error->code,
       error->line,
       error->message);

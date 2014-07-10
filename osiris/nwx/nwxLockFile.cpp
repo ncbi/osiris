@@ -47,7 +47,7 @@ wxString nwxLockFile::GetLockFileName(const wxString &sFileName)
     {
       sRtn.MakeLower();
     }
-    sRtn.Append(_T(".lock"));
+    sRtn.Append(".lock");
   }
   return sRtn;
 }
@@ -133,7 +133,7 @@ bool nwxLockFile::LockWait(const wxString &sFileName, time_t nWait, time_t nTime
       {
         //if(AccessAge(sFileName) > 1) //-- too many problems
         {
-          bRtn = fl.Create(sFileLockName.c_str(),false);
+          bRtn = fl.Create(sFileLockName.wc_str(),false);
           bDone = true;
         }
       }
@@ -150,7 +150,7 @@ bool nwxLockFile::LockWait(const wxString &sFileName, time_t nWait, time_t nTime
       }
       else if(GetAge(sFileLockName) >= nTimeout)
       {
-        bRtn = fl.Create(sFileLockName.c_str(),true);
+        bRtn = fl.Create(sFileLockName.wc_str(),true);
         bDone = true;
       }
       if(!bDone)
@@ -182,7 +182,7 @@ bool nwxLockFile::LockWait(const wxString &sFileName, time_t nWait, time_t nTime
   }
   if(!bRtn)
   {
-    wxString s(_T("Cannot lock file: "));
+    wxString s("Cannot lock file: ");
     time_t t;
     s.Append(sFileName);
     time(&t);
@@ -262,7 +262,7 @@ bool nwxLockFile::Unlock(const wxString &sFileName)
       // have a problem removing this file, log the error and still return true
       time_t t;
       time(&t);
-      wxString sMsg(_T("Cannot remove lock file: "));
+      wxString sMsg("Cannot remove lock file: ");
       sMsg.Append(sFileLockName);
       wxLog::OnLog(wxLOG_Message,(const wxChar *)sMsg,t);
       wxASSERT_MSG(false,sMsg);
