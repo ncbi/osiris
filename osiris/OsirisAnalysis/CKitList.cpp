@@ -176,7 +176,7 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
   }
   CIncrementer x(m_nInLoad);
   wxString sNodeName(pNode->GetName());
-  if(!sNodeName.Cmp(_T("Name")))
+  if(!sNodeName.Cmp("Name"))
   {
     if(m_bV1)
     {
@@ -189,7 +189,7 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
       }
     }
   }
-  else if( !sNodeName.Cmp(_T("LSName")) && !m_sLastKit.IsEmpty() )
+  else if( !sNodeName.Cmp("LSName") && !m_sLastKit.IsEmpty() )
   {
     wxString s;
     m_XmlString.LoadFromNode(pNode,(void *)&s);
@@ -206,7 +206,7 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
       m_pLastKitLS->Add(s);
     }
   }
-  else if( !sNodeName.Cmp(_T("ChannelNo")) && !m_sLastKit.IsEmpty() )
+  else if( !sNodeName.Cmp("ChannelNo") && !m_sLastKit.IsEmpty() )
   {
     map<wxString,int>::iterator itrC = m_msChannelCount.find(m_sLastKit);
     int nCurrent = 0;
@@ -226,7 +226,7 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
           map<wxString,int>::value_type(m_sLastKit,n));
     }
   }
-  else if( !sNodeName.Cmp(_T("Locus")) )
+  else if( !sNodeName.Cmp("Locus") )
   {
     if(m_pLastKitLocus == NULL)
     {
@@ -258,7 +258,7 @@ void CPersistKitList::UnitTest()
   wxString sError;
   if(!kitList.Load())
   {
-    sError.Append(_T("CPersistKitList::Load() failed\n"));
+    sError.Append("CPersistKitList::Load() failed\n");
   }
   else
   {
@@ -266,31 +266,31 @@ void CPersistKitList::UnitTest()
     const wxArrayString *psArray;
     psKitArray = &kitList.GetArray();
     size_t nCount = psKitArray->GetCount();
-#define PP12 _T("PowerPlex 1.2")
-#define PP18D _T("PowerPlex 18D")
-#define SGM _T("SGM Plus")
-#define SEFILER _T("SEfilerPlus")
-#define NGM _T("NGMSElect")
-#define PP21 _T("PowerPlex 21")
+#define PP12 wxS("PowerPlex 1.2")
+#define PP18D wxS("PowerPlex 18D")
+#define SGM wxS("SGM Plus")
+#define SEFILER wxS("SEfilerPlus")
+#define NGM wxS("NGMSElect")
+#define PP21 wxS("PowerPlex 21")
     struct
     {
       size_t n; // number of loci
       const wxChar *psName;
     } LIST[] = 
     {
-      {7,  _T("Cofiler")},
-      {16, _T("Identifiler Less ILS250")},
-      {16, _T("IdentifilerPlus Less ILS250")},
-      {16, _T("IdentifilerPlus")},
-      {16, _T("Identifiler")},
+      {7,  wxS("Cofiler")},
+      {16, wxS("Identifiler Less ILS250")},
+      {16, wxS("IdentifilerPlus Less ILS250")},
+      {16, wxS("IdentifilerPlus")},
+      {16, wxS("Identifiler")},
       {9,  PP12},
       {18,  PP18D},
-      {16, _T("PowerPlex 16")},
-      {11, _T("PowerPlex Y")},
-      {16, _T("Yfiler")},
+      {16, wxS("PowerPlex 16")},
+      {11, wxS("PowerPlex Y")},
+      {16, wxS("Yfiler")},
       {12, SEFILER},
       {11, SGM},
-      {10, _T("ProfilerPlus")},
+      {10, wxS("ProfilerPlus")},
       {17, NGM},
       {21,PP21}
     };
@@ -298,7 +298,7 @@ void CPersistKitList::UnitTest()
     if(nCount != N_LIST)
     {
       sError.Append(wxString::Format(
-        _T("\nNumber of kits is %d, expected %d"),
+        wxS("\nNumber of kits is %d, expected %d"),
         (int)nCount, (int)N_LIST ));
     }
     map<wxString,size_t> kitLocusCount;
@@ -319,7 +319,7 @@ void CPersistKitList::UnitTest()
       psArray = kitList.GetLsArray(sItem);
       if(psArray == NULL)
       {
-        sError.Append(_T("\nCannot find ILS for kit: "));
+        sError.Append(wxS("\nCannot find ILS for kit: "));
         sError.Append(sItem);
       }
       else
@@ -332,19 +332,17 @@ void CPersistKitList::UnitTest()
         { nExpected = 5;
         }
         else if(
-          sItem.StartsWith(_T("Identifiler")) &&
-          !sItem.Contains(_T("250"))
+          sItem.StartsWith(wxS("Identifiler")) &&
+          !sItem.Contains("250")
           )
         { nExpected = 5;
         }
 
         if(psArray->GetCount() != nExpected)
         {
-          sError.Append(
-            _T("\nLS count for kit: "));
+          sError.Append(wxS("\nLS count for kit: "));
           sError.Append(sItem);
-          sError.Append(wxString::Format(
-            _T(", is %d, expected %d"),
+          sError.Append(wxString::Format(wxS(", is %d, expected %d"),
             (int)psArray->GetCount(),(int)nExpected));
         }
       }
@@ -353,20 +351,20 @@ void CPersistKitList::UnitTest()
       const CLocusNameList *pList = kitList.GetLocusNameList(sItem);
       if(pList == NULL)
       {
-        sError.Append(_T("\nCannot find loci for kit: "));
+        sError.Append(wxS("\nCannot find loci for kit: "));
         sError.Append(sItem);
       }
       if(itrKL == kitLocusCount.end())
       {
-        sError.Append(_T("\nUnknown kit name: "));
+        sError.Append(wxS("\nUnknown kit name: "));
         sError.Append(sItem);
       }
       else if( (pList != NULL) && (pList->size() != itrKL->second) )
       {
-        sError.Append(_T("\nLocus count for kit: "));
+        sError.Append(wxS("\nLocus count for kit: "));
         sError.Append(sItem);
         sError.Append(wxString::Format(
-          _T(", is %d, expected %d"),
+          wxS(", is %d, expected %d"),
           (int)pList->size(),(int)itrKL->second));
       }
     }

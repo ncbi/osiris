@@ -31,12 +31,12 @@
 #include "COmittedAlerts.h"
 #include "nwx/nwxString.h"
 
-const wxString COmittedAlerts::LABEL_DIRECTORY(_T("Directory"));
-const wxString COmittedAlerts::LABEL_SAMPLE(_T("Sample"));
-const wxString COmittedAlerts::LABEL_CHANNEL(_T("Channel"));
-const wxString COmittedAlerts::LABEL_ILS(_T("ILS"));
-const wxString COmittedAlerts::LABEL_SAMPLE_LOCUS(_T("Sample Locus"));
-const wxString COmittedAlerts::LABEL_DIRECTORY_LOCUS(_T("Directory Locus"));
+const wxString COmittedAlerts::LABEL_DIRECTORY("Directory");
+const wxString COmittedAlerts::LABEL_SAMPLE("Sample");
+const wxString COmittedAlerts::LABEL_CHANNEL("Channel");
+const wxString COmittedAlerts::LABEL_ILS("ILS");
+const wxString COmittedAlerts::LABEL_SAMPLE_LOCUS("Sample Locus");
+const wxString COmittedAlerts::LABEL_DIRECTORY_LOCUS("Directory Locus");
 
 
 
@@ -106,7 +106,7 @@ wxString COmittedAlerts::Format()
     int nCount = 0;
     const wxString *psType;
     sRtn.Alloc(nSize << 4);
-    sRtn = _T("Omitted alerts: ");
+    sRtn = "Omitted alerts: ";
     for(size_t i = 0; i < LEN; i++)
     {
       itr = m_mapOmitted.find(anTypes[i]);
@@ -114,11 +114,11 @@ wxString COmittedAlerts::Format()
       {
         nCount = itr->second;
         psType = TypeToString(itr->first);
-        sRtn.Append(_T("\n  "));
+        sRtn.Append("\n  ");
         sRtn.Append(*psType);
-        sRtn.Append(_T(" ("));
+        sRtn.Append(" (");
         sRtn.Append(nwxString::FormatNumber(itr->second));
-        sRtn.Append(_T(")"));
+        sRtn.Append(")");
       }
     }
   }

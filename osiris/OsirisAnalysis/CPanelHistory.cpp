@@ -38,13 +38,13 @@ CPanelHistory::CPanelHistory(const set<wxDateTime> &setDateTime,
     wxWindow *parent, wxWindowID id)  :
       wxPanel(parent,id)
 {
-  m_pButtonBack = new wxButton(this,wxID_ANY,_T("<<"),
+  m_pButtonBack = new wxButton(this,wxID_ANY,"<<",
     wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-  m_pButtonBack1 = new wxButton(this,wxID_ANY,_T(" < "),
+  m_pButtonBack1 = new wxButton(this,wxID_ANY," < ",
     wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-  m_pButtonFwd1 = new wxButton(this,wxID_ANY,_T(" > "),
+  m_pButtonFwd1 = new wxButton(this,wxID_ANY," > ",
     wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-  m_pButtonFwd = new wxButton(this,wxID_ANY,_T(">>"),
+  m_pButtonFwd = new wxButton(this,wxID_ANY,">>",
     wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
   wxFont fnt = m_pButtonBack->GetFont();
   fnt.SetWeight(wxFONTWEIGHT_BOLD);

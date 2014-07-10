@@ -32,16 +32,16 @@
 void COARmessage::RegisterAll(bool)
 {
   RegisterInt(COARfile::g_sMessageNumber,&m_nMessageNumber);
-  RegisterIntNonZero(_T("Index"),&m_nIndex);// message # in OsirisMessagesBook.xml
-  RegisterWxString(_T("Text"),&m_sText);
-  RegisterBoolSkipFalse(_T("Hidden"),&m_bHidden);
-  RegisterWxDateTimeNonZero(_T("LastUpdate"),&m_tLastUpdate);
-  RegisterBoolTrueSkip(_T("Critical"),&m_bCritical);
-  RegisterBoolTrueSkip(_T("Enabled"),&m_bEnabled);
-  RegisterBoolTrueSkip(_T("Editable"),&m_bEditable);
-  RegisterBoolSkipFalse(_T("DisplayExportInfo"),&m_bDisplayExportInfo);
-  RegisterBoolTrueSkip(_T("DisplayOsirisInfo"),&m_bDisplayOsiris);
-  RegisterWxStringNotEmpty(_T("MsgName"),&m_sMsgName);
+  RegisterIntNonZero("Index",&m_nIndex);// message # in OsirisMessagesBook.xml
+  RegisterWxString("Text",&m_sText);
+  RegisterBoolSkipFalse("Hidden",&m_bHidden);
+  RegisterWxDateTimeNonZero("LastUpdate",&m_tLastUpdate);
+  RegisterBoolTrueSkip("Critical",&m_bCritical);
+  RegisterBoolTrueSkip("Enabled",&m_bEnabled);
+  RegisterBoolTrueSkip("Editable",&m_bEditable);
+  RegisterBoolSkipFalse("DisplayExportInfo",&m_bDisplayExportInfo);
+  RegisterBoolTrueSkip("DisplayOsirisInfo",&m_bDisplayOsiris);
+  RegisterWxStringNotEmpty("MsgName",&m_sMsgName);
 }
 
 //  class COARmessages
@@ -156,8 +156,8 @@ void COARmessages::CopyOnly(
 }
 void COARmessages::RegisterAll(bool)
 {
-  Register(_T("Message"),&m_io,&m_vpMessage);
-  Register(_T("OldMessage"),&m_io,&m_vpMessageEdited);
+  Register("Message",&m_io,&m_vpMessage);
+  Register("OldMessage",&m_io,&m_vpMessageEdited);
 }
 bool COARmessages::IsModified(const COARmessages *pm1, const COARmessages *pm2)
 {

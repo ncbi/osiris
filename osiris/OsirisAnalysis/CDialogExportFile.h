@@ -87,7 +87,7 @@ private:
       {
         pRtn = itr->second;
       }
-      wxASSERT_MSG(pRtn != NULL,_T("Cannot find window for parameter"));
+      wxASSERT_MSG(pRtn != NULL,"Cannot find window for parameter");
     }
     return pRtn;
   }
@@ -112,7 +112,7 @@ private:
       (itr == m_mapFileParam.end())
       ? NULL
       : itr->second;
-    wxASSERT_MSG(pRtn != NULL,_T("Cannot find param for browse button"));
+    wxASSERT_MSG(pRtn != NULL,"Cannot find param for browse button");
     return pRtn;
   }
   wxTextCtrl *_CreateTextCtrl(const wxString &sDefault = wxEmptyString)

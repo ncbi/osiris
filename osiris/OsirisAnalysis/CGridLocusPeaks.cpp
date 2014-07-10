@@ -59,17 +59,17 @@ typedef enum
 
 static const wxChar *labels[] =
 {
-  _T("Allele"),
-  _T("BPS"),
-  _T("Off Ladder"),
-  _T("Homozygote"),
-  _T("RFU"),
-  _T("Time"),
-  _T("Peak Area"),
-  _T("Fit"),
-  _T("Allele Peak"),
-  _T("Artifact Peak"),
-  _T("Critical")
+  wxS("Allele"),
+  wxS("BPS"),
+  wxS("Off Ladder"),
+  wxS("Homozygote"),
+  wxS("RFU"),
+  wxS("Time"),
+  wxS("Peak Area"),
+  wxS("Fit"),
+  wxS("Allele Peak"),
+  wxS("Artifact Peak"),
+  wxS("Critical")
 };
 
 static const int nLABELS = sizeof(labels) / sizeof(labels[0]);
@@ -212,7 +212,7 @@ void CGridLocusPeaks::_ImplementColumn(int nCol)
       else
       {
         wxGridCellTextEditor *pe(new wxGridCellTextEditor);
-        pe->SetParameters(_T("1"));
+        pe->SetParameters("1");
         SetCellEditor(ROW_ALLELE,k,pe);
       }
     }
@@ -310,7 +310,7 @@ bool CGridLocusPeaks::TransferDataToWindow()
   }
   else
   {
-    nwxGrid::SetMessageGrid(this,_T("There are no peaks for this locus"));
+    nwxGrid::SetMessageGrid(this,"There are no peaks for this locus");
   }
   return true;
 }
@@ -383,13 +383,13 @@ bool CGridLocusPeaks::XferName(int nCol)
     if(m_bAmel)
     {
       s.MakeUpper();
-      const char *ps = s.c_str();
+      const char *ps = s.utf8_str();
       if( (!*ps) || (strchr("XY12",*ps) == NULL) )
       {
         // not x/y
         wxString sName = pPeak->FormatAlleleName(true,false);
         bRtn = false;
-        mainApp::ShowError(_T("Invalid allele name"),this);
+        mainApp::ShowError("Invalid allele name",this);
         SetCellValue(ROW_ALLELE,nCol,sName);
         SetGridCursor(ROW_ALLELE,nCol);
         SelectBlock(ROW_ALLELE,nCol,ROW_ALLELE,nCol);
@@ -410,7 +410,7 @@ void CGridLocusPeaks::XferBPS(int nCol)
     COARpeak *pPeak = GetPeak(nCol);
     wxString s = GetCellValue(ROW_BPS,nCol);
     nwxString::Trim(&s);
-    pPeak->SetBPS(atof(s.c_str()));
+    pPeak->SetBPS(atof(s.utf8_str()));
   }
 }
 void CGridLocusPeaks::XferHomozygous(int nCol)
@@ -419,7 +419,7 @@ void CGridLocusPeaks::XferHomozygous(int nCol)
   {
     wxString s = GetCellValue(ROW_HOMOZYGOUS,nCol);
     COARpeak *pPeak = GetPeak(nCol);
-    bool b = IsTrue(s.c_str());
+    bool b = IsTrue(s.utf8_str());
     pPeak->SetCountBool(b);
   }
 }

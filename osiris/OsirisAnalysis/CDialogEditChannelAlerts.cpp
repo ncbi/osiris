@@ -49,7 +49,7 @@ CDialogEditChannelAlerts::CDialogEditChannelAlerts(
       wxDefaultPosition, sz,
       mainApp::DIALOG_STYLE)
 {
-  wxString sTitle(_T("Edit Alerts for "));
+  wxString sTitle("Edit Alerts for ");
   wxBoxSizer *pSizer;
   sTitle.Append(pSample->GetName());
   SetTitle(sTitle);

@@ -85,9 +85,9 @@ CDialogAcceptAlerts::CDialogAcceptAlerts(
   default:
     {
       wxString sMsg;
-      sMsg.Printf(_T(
+      sMsg.Printf(
         "CDialogAcceptAlerts::CDialogAcceptAlerts()\n"
-        "Invalid selection %d"),nSelect);
+        "Invalid selection %d",nSelect);
       wxASSERT_MSG(0,sMsg);
       mainApp::LogMessage(sMsg);
       bOK = false;
@@ -97,7 +97,7 @@ CDialogAcceptAlerts::CDialogAcceptAlerts(
   {
     const wxString &sAlertType(
       CPanelSampleAlertNotebook::GetLabel(nSelect));
-    wxString sTitle(_T("Accept "));
+    wxString sTitle("Accept ");
     wxStaticText *pLabel = NULL;
     CGridAlerts *pGrid;
     CPanelUserID *pPanelUser;
@@ -114,7 +114,7 @@ CDialogAcceptAlerts::CDialogAcceptAlerts(
     SetTitle(sTitle);
     if(nSelect != SA_NDX_DIR)
     {
-      sTitle.Append(_T(" for "));
+      sTitle.Append(" for ");
       sTitle.Append(pSample->GetName());
       pLabel = new wxStaticText(this,wxID_ANY,sTitle);
       mainApp::SetBoldFont(pLabel);

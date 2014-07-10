@@ -160,27 +160,27 @@ void CParmGridAttributes::_Setup()
       g_vpioColours.push_back(&g_ioFG_STATUS_NEEDS_ATTN);
 
 
-      g_vpsNames.push_back(_T("AlertCellBG"));
-      g_vpsNames.push_back(_T("AlertSampleBG"));
-      g_vpsNames.push_back(_T("EditedCellBG"));
-      g_vpsNames.push_back(_T("EditedSampleBG"));
-      g_vpsNames.push_back(_T("EditedAlertCellBG"));
-      g_vpsNames.push_back(_T("EditedAlertSampleBG"));
-      g_vpsNames.push_back(_T("DisabledBG"));
-      g_vpsNames.push_back(_T("ColorBG"));
-      g_vpsNames.push_back(_T("StatusOKBG"));
-      g_vpsNames.push_back(_T("StatusATTNBG"));
+      g_vpsNames.push_back(wxS("AlertCellBG"));
+      g_vpsNames.push_back(wxS("AlertSampleBG"));
+      g_vpsNames.push_back(wxS("EditedCellBG"));
+      g_vpsNames.push_back(wxS("EditedSampleBG"));
+      g_vpsNames.push_back(wxS("EditedAlertCellBG"));
+      g_vpsNames.push_back(wxS("EditedAlertSampleBG"));
+      g_vpsNames.push_back(wxS("DisabledBG"));
+      g_vpsNames.push_back(wxS("ColorBG"));
+      g_vpsNames.push_back(wxS("StatusOKBG"));
+      g_vpsNames.push_back(wxS("StatusATTNBG"));
 
-      g_vpsNames.push_back(_T("AlertCellFG"));
-      g_vpsNames.push_back(_T("AlertSampleFG"));
-      g_vpsNames.push_back(_T("EditedCellFG"));
-      g_vpsNames.push_back(_T("EditedSampleFG"));
-      g_vpsNames.push_back(_T("EditedAlertCellFG"));
-      g_vpsNames.push_back(_T("EditedAlertSampleFG"));
-      g_vpsNames.push_back(_T("DisabledFG"));
-      g_vpsNames.push_back(_T("ColorFG"));
-      g_vpsNames.push_back(_T("StatusOKFG"));
-      g_vpsNames.push_back(_T("StatusATTNFG"));
+      g_vpsNames.push_back(wxS("AlertCellFG"));
+      g_vpsNames.push_back(wxS("AlertSampleFG"));
+      g_vpsNames.push_back(wxS("EditedCellFG"));
+      g_vpsNames.push_back(wxS("EditedSampleFG"));
+      g_vpsNames.push_back(wxS("EditedAlertCellFG"));
+      g_vpsNames.push_back(wxS("EditedAlertSampleFG"));
+      g_vpsNames.push_back(wxS("DisabledFG"));
+      g_vpsNames.push_back(wxS("ColorFG"));
+      g_vpsNames.push_back(wxS("StatusOKFG"));
+      g_vpsNames.push_back(wxS("StatusATTNFG"));
 
     }
     m_vpColours.reserve(COUNT);
@@ -268,8 +268,8 @@ void CParmGridAttributes::RegisterAll(bool)
     ++itrName;
     ++itrio;
   }
-  Register(_T("AttrNeedsAttn"),&g_ioATTR_NEED_ATTN,&m_nATTR_NEED_ATTN);
-  Register(_T("AttrEdited"),&g_ioATTR_EDITED,&m_nATTR_EDITED);
+  Register("AttrNeedsAttn",&g_ioATTR_NEED_ATTN,&m_nATTR_NEED_ATTN);
+  Register("AttrEdited",&g_ioATTR_EDITED,&m_nATTR_EDITED);
 }
 bool CParmGridAttributes::Skip()
 {

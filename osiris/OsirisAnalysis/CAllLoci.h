@@ -37,7 +37,7 @@
 class CAllLoci : public nwxXmlPersist
 {
 public:
-  CAllLoci() : m_setLocus(_T("Name"))
+  CAllLoci() : m_setLocus("Name")
   {
     RegisterAll(true);    
   }
@@ -95,10 +95,10 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    Register(_T("Kits"),this);
-    Register(_T("Set"),this);
-    Register(_T("Name"),m_setLocus.GetIO(), &m_setKits);
-    Register(_T("Locus"),&m_setLocus);
+    Register("Kits",this);
+    Register("Set",this);
+    Register("Name",m_setLocus.GetIO(), &m_setKits);
+    Register("Locus",&m_setLocus);
   }
 
 private:

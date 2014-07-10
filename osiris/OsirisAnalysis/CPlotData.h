@@ -201,7 +201,7 @@ public:
   }
   const char *GetAlleleCstr() const
   {
-    return m_sAllele.c_str();
+    return m_sAllele.utf8_str();
   }
   int GetMean() const
   {
@@ -434,7 +434,7 @@ public:
   }
   const char *GetLabelCstr() const
   {
-    return m_sLabel.c_str();
+    return m_sLabel.utf8_str();
   }
 protected:
   virtual void RegisterAll(bool bInConstructor = false);

@@ -167,20 +167,20 @@ void CXSLParam::RegisterAll(bool)
   m_ioMax.SetNoSkip(&m_bHasMax);
   m_ioCheck.SetType(&m_sType);
   m_ioInFile.SetType(&m_sType);
-  RegisterWxString(_T("name"),&m_sName);
-  RegisterWxString(_T("description"),&m_sDescription);
-  RegisterWxString(_T("type"),&m_sType);
-  Register(_T("choicelist"),&m_vsChoiceList);
-  RegisterBoolSkipFalse(_T("has-min"),&m_bHasMin);
-  Register(_T("min"),&m_ioMin,(void *)&m_dMin);
-  RegisterBoolSkipFalse(_T("has-max"),&m_bHasMax);
-  Register(_T("max"),&m_ioMax,(void *)&m_dMax);
-  Register(_T("checked-value"),&m_ioCheck,(void *) &m_sCheckedValue);
-  Register(_T("unchecked-value"),&m_ioCheck,(void *) &m_sUncheckedValue);
-  Register(_T("inputFileDefaultDir"),&m_ioInFile,&m_sInFileDefaultDirectory);
-  Register(_T("inputFileRequired"),&m_ioInFile,&m_sInFileRequired);
-  Register(_T("inputFileAllowOverride"),&m_ioInFile,&m_sInFileAllowOverride);
-  Register(_T("inputFileExt"),&m_vsInFileTypeList);
+  RegisterWxString("name",&m_sName);
+  RegisterWxString("description",&m_sDescription);
+  RegisterWxString("type",&m_sType);
+  Register("choicelist",&m_vsChoiceList);
+  RegisterBoolSkipFalse("has-min",&m_bHasMin);
+  Register("min",&m_ioMin,(void *)&m_dMin);
+  RegisterBoolSkipFalse("has-max",&m_bHasMax);
+  Register("max",&m_ioMax,(void *)&m_dMax);
+  Register("checked-value",&m_ioCheck,(void *) &m_sCheckedValue);
+  Register("unchecked-value",&m_ioCheck,(void *) &m_sUncheckedValue);
+  Register("inputFileDefaultDir",&m_ioInFile,&m_sInFileDefaultDirectory);
+  Register("inputFileRequired",&m_ioInFile,&m_sInFileRequired);
+  Register("inputFileAllowOverride",&m_ioInFile,&m_sInFileAllowOverride);
+  Register("inputFileExt",&m_vsInFileTypeList);
 }
 
 bool CXSLParam::BuildChoiceList(
@@ -314,16 +314,16 @@ bool CXSLAutoCreate::operator ==(const CXSLAutoCreate &x) const
 
 void CXSLAutoCreate::RegisterAll(bool)
 {
-  RegisterBool(_T("active"),&m_bActive);
-  RegisterWxString(_T("location"),&m_sLocation);
-  RegisterWxString(_T("file-name"),&m_sFileName);
-  RegisterBool(_T("file-name-date"),&m_bAppendDateToFileName);
-  RegisterWxString(_T("file-extension"),&m_sFileExt);
+  RegisterBool("active",&m_bActive);
+  RegisterWxString("location",&m_sLocation);
+  RegisterWxString("file-name",&m_sFileName);
+  RegisterBool("file-name-date",&m_bAppendDateToFileName);
+  RegisterWxString("file-extension",&m_sFileExt);
 }
 
 bool CXSLAutoCreate::IsValidFileName(const wxString &s, bool bExt)
 {
-  const wxChar *pss = s.c_str();
+  const wxChar *pss = s.wc_str();
   const wxChar *ps;
   const wxChar DOT('.');
   bool bRtn = !s.IsEmpty();
@@ -342,12 +342,12 @@ bool CXSLAutoCreate::IsValidFileName(const wxString &s, bool bExt)
 
 //*********************************************** CXSLExportFileType
 
-const wxString CXSLExportFileType::g_sROOTNODE(_T("export"));
-const wxChar * const CXSLExportFileType::FILE_TYPE_ERROR(
-  _T("One or more file types are invalid.\n"
-      "  Use letters, numbers, hyphens, and\n"
-      "  underscores only.\n"));
-const wxChar * const CXSLExportFileType::LIST_SEPARATOR = _T(",");
+const wxString CXSLExportFileType::g_sROOTNODE(wxS("export"));
+const wxChar * const CXSLExportFileType::FILE_TYPE_ERROR
+  (wxS("One or more file types are invalid.\n"
+			 "  Use letters, numbers, hyphens, and\n"
+			 "  underscores only.\n"));
+const wxChar * const CXSLExportFileType::LIST_SEPARATOR = wxS(",");
 
 
 wxString CXSLExportFileType::CheckOutputFile(const wxString &sFileName)
@@ -357,21 +357,21 @@ wxString CXSLExportFileType::CheckOutputFile(const wxString &sFileName)
   const wxChar *ps = NULL;
   if(!fn.FileExists())
   {
-    ps = _T(", was not created.");
+    ps = wxS(", was not created.");
   }
   else if(fn.GetSize() != 0)
   {}
   else if(::wxRemoveFile(sFileName))
   {
-    ps = _T(", had no data and was deleted.");
+    ps = wxS(", had no data and was deleted.");
   }
   else
   {
-    ps = _T(", has no data but could not be deleted.");
+    ps = wxS(", has no data but could not be deleted.");
   }
   if(ps != NULL)
   {
-    sRtn = _T("Exported file, ");
+    sRtn = "Exported file, ";
     sRtn.Append(fn.GetFullName());
     sRtn.Append(ps);
   }
@@ -517,14 +517,14 @@ bool CXSLExportFileType::AutoTransform(const wxString &sInputFileName)
   bool bRtn = false;
   if(!HasAutoTransform())
   {
-    sAutoError = _T("Automatic export is not specified");
+    sAutoError = "Automatic export is not specified";
   }
   else if(!XSLfileOK())
   {
-    sAutoError = _T("Cannot export ");
+    sAutoError = "Cannot export ";
     sAutoError.Append(m_sName);
-    sAutoError.Append(_T(
-      ".  Stylesheet is either invalid or not found"));
+    sAutoError.Append(
+      ".  Stylesheet is either invalid or not found");
   }
   else
   {
@@ -534,14 +534,14 @@ bool CXSLExportFileType::AutoTransform(const wxString &sInputFileName)
     if(!fn.IsFileReadable()) 
     {
        // we are done
-      sAutoError = _T("Cannot read input file, ");
+      sAutoError = "Cannot read input file, ";
       sAutoError.Append(sInputFileName);
     }
     else if(!doc.Load(sInputFileName))
     {
-      sAutoError = _T("Cannot export file.  Input file, ");
+      sAutoError = "Cannot export file.  Input file, ";
       sAutoError.Append(sInputFileName);
-      sAutoError.Append(_T(", is not valid"));
+      sAutoError.Append(", is not valid");
     }
     else if(m_auto.IsAnalysisLocation())
     {
@@ -553,13 +553,13 @@ bool CXSLExportFileType::AutoTransform(const wxString &sInputFileName)
     }
     if(sLocation.IsEmpty()) 
     {
-      sAutoError = _T("Location for automatic export is not specified.");
+      sAutoError = "Location for automatic export is not specified.";
     }
     else if(!wxFileName::IsDirWritable(sLocation))
     {
-      sAutoError = _T("Cannot export file to location, ");
+      sAutoError = "Cannot export file to location, ";
       sAutoError.Append(sLocation);
-      sAutoError.Append(_T(", permission denied"));
+      sAutoError.Append(", permission denied");
     }
     else
     {
@@ -568,7 +568,7 @@ bool CXSLExportFileType::AutoTransform(const wxString &sInputFileName)
       wxString sExt;
       if(!sExtTmp.IsEmpty())
       {
-        sExt = _T(".");
+        sExt = ".";
         sExt.Append(sExtTmp);
       }
 
@@ -585,7 +585,7 @@ bool CXSLExportFileType::AutoTransform(const wxString &sInputFileName)
       {
         wxDateTime dt;
         dt.SetToCurrent();
-        sLocation.Append(dt.Format(_T("-%Y%m%d-%H%M%S")));
+        sLocation.Append(dt.Format("-%Y%m%d-%H%M%S"));
       }
       bool bDone = false;
       wxString sOutFileName;
@@ -595,7 +595,7 @@ bool CXSLExportFileType::AutoTransform(const wxString &sInputFileName)
         sOutFileName = sLocation;
         if(i)
         {
-          sOutFileName.Append(wxString::Format(_T("_%d"),i));
+          sOutFileName.Append(wxString::Format("_%d",i));
         }
         sOutFileName.Append(sExt);
         bDone = !wxFileName::FileExists(sOutFileName);
@@ -605,7 +605,7 @@ bool CXSLExportFileType::AutoTransform(const wxString &sInputFileName)
       if(!bRtn)
       {
         sAutoError = 
-          _T("An error occurred when attempting to export ");
+          "An error occurred when attempting to export ";
         sAutoError.Append(m_sName);
       }
       else
@@ -627,7 +627,7 @@ wxString CXSLExportFileType::ParseFileExt(const wxString &s)
   wxString sRtn = s;
   size_t nLen;
   bool bRtn = false;
-  while(sRtn.StartsWith(_T(".")))
+  while(sRtn.StartsWith("."))
   {
     sRtn = sRtn.Mid(1);
   }
@@ -635,7 +635,7 @@ wxString CXSLExportFileType::ParseFileExt(const wxString &s)
   nLen = sRtn.Len();
   if(nLen > 0 && nLen < 12)
   {
-    const wxChar *pss = sRtn.c_str();
+    const wxChar *pss = sRtn.wc_str();
     const wxChar *ps;
     bRtn = true;
     for(ps = pss; *ps && bRtn; ps++)
@@ -662,7 +662,7 @@ size_t CXSLExportFileType::ParseFileExtList(
   wxString s(_s);
   wxString sTmp;
   set<wxString> ss;
-  const wxChar *psKill(_T(",.:;\\/|"));
+  const wxChar *psKill(wxS(",.:;\\/|"));
   const wxChar *p;
   wxChar schar[2] = {0,0};
   if(pnProblem != NULL)
@@ -672,11 +672,11 @@ size_t CXSLExportFileType::ParseFileExtList(
   for(p = psKill; *p; p++)
   {
     schar[0] = *p;
-    s.Replace(schar,_T(" "),true);
+    s.Replace(schar," ",true);
   }
   nwxString::Trim(&s);
-  while(s.Replace(_T("  "),_T(" "))) {}
-  nwxString::Split(s.c_str(),&ss,_T(" "));
+  while(s.Replace("  "," ")) {}
+  nwxString::Split(s.utf8_str(),&ss," ");
   pss->clear();
   for(set<wxString>::iterator itr = ss.begin();
     itr != ss.end();
@@ -694,28 +694,28 @@ size_t CXSLExportFileType::ParseFileExtList(
   }
   return pss->size();
 }
-const wxChar * const CXSLExportFileType::ERROR_MESSAGE = _T("File export was unsuccessful.");
-const wxString CXSLExportFileType::OK_EXT_CHARS(_T("-_~!@#$%^+="));
-const wxString CXSLExportFileType::USE_DEFAULT(_T("*D"));
-const wxString CXSLExportFileType::USE_ANALYSIS_FILE(_T("*A"));
-const wxString CXSLExportFileType::USE_ANALYSIS_PARENT(_T("*P"));
-const wxString CXSLExportFileType::USE_LAST_LOCATION(_T("*L"));
-const wxString CXSLExportFileType::USE_OUTPUT_LOCATION(_T("*O"));
+const wxChar * const CXSLExportFileType::ERROR_MESSAGE = wxS("File export was unsuccessful.");
+const wxString CXSLExportFileType::OK_EXT_CHARS(wxS("-_~!@#$%^+="));
+const wxString CXSLExportFileType::USE_DEFAULT(wxS("*D"));
+const wxString CXSLExportFileType::USE_ANALYSIS_FILE(wxS("*A"));
+const wxString CXSLExportFileType::USE_ANALYSIS_PARENT(wxS("*P"));
+const wxString CXSLExportFileType::USE_LAST_LOCATION(wxS("*L"));
+const wxString CXSLExportFileType::USE_OUTPUT_LOCATION(wxS("*O"));
 
-const wxChar * const CXSLExportFileType::INFILE = _T("inputFile");
-const wxChar * const CXSLExportFileType::OUTFILE = _T("outputFile");
+const wxChar * const CXSLExportFileType::INFILE = wxS("inputFile");
+const wxChar * const CXSLExportFileType::OUTFILE = wxS("outputFile");
 
 
 void CXSLExportFileType::RegisterAll(bool)
 {
-  RegisterWxString(_T("name"),&m_sName);
-  Register(_T("file-extension"),&m_IOext,&m_ssFileExt);
-  RegisterBool(_T("extension-override"),&m_bOverrideExt);
-  RegisterWxString(_T("default-location"),&m_sDefaultLocation);
-  RegisterWxString(_T("xsl-file"),&m_sXSLFile);
-  RegisterWxStringNotEmpty(_T("exe-path"),&m_sExePath);
-  Register(_T("xsl-params"),&m_mapParam);
-  Register(_T("auto-create"),&m_auto);
+  RegisterWxString("name",&m_sName);
+  Register("file-extension",&m_IOext,&m_ssFileExt);
+  RegisterBool("extension-override",&m_bOverrideExt);
+  RegisterWxString("default-location",&m_sDefaultLocation);
+  RegisterWxString("xsl-file",&m_sXSLFile);
+  RegisterWxStringNotEmpty("exe-path",&m_sExePath);
+  Register("xsl-params",&m_mapParam);
+  Register("auto-create",&m_auto);
 }
 
 void CXSLExportFileType::_SetupSheet()
@@ -778,7 +778,7 @@ void CXSLExportFileType::_SetupSheet()
       }
     }
     wxASSERT_MSG(m_mapParam->size() == (mapParm.size() - nOmit),
-      _T("Parameter conflict in CXSLExportFileType::_SetupSheet()"));
+      "Parameter conflict in CXSLExportFileType::_SetupSheet()");
   }
   else
   {
@@ -846,7 +846,7 @@ bool CXSLExportFileType::TransformToFile(
 //*********************************************** CXSLExportFiles
 
 wxString CExportFiles::g_sFileName;
-const wxString CExportFiles::ROOTNODE(_T("exports"));
+const wxString CExportFiles::ROOTNODE("exports");
 
 CExportFiles *CExportFiles::g_pGlobal(NULL);
 CExportFiles::CExportFilesGlobal CExportFiles::g_xxx;
@@ -860,7 +860,7 @@ void CExportFiles::_SetupFileName()
   ConfigDir *pDir = mainApp::GetConfig();
   g_sFileName = pDir->GetSitePath();
   nwxFileUtil::EndWithSeparator(&g_sFileName);
-  g_sFileName.Append(_T("exports.xml"));
+  g_sFileName.Append("exports.xml");
 }
 
 bool CExportFiles::FileExists()
@@ -993,14 +993,14 @@ size_t CExportFiles::GetItems(wxArrayString *pvs)
       pvs->Add(itr->first);
       if(!itr->second->XSLfileOK())
       {
-        sLogMessage = _T("Invalid XSL file for ");
+        sLogMessage = "Invalid XSL file for ";
         sLogMessage.Append(itr->first);
-        sLogMessage.Append(_T("\n  file: "));
+        sLogMessage.Append("\n  file: ");
         sLogMessage.Append(itr->second->GetXSLfile(false));
         const wxString &sExe = itr->second->GetExePath();
         if(sExe.Len())
         {
-          sLogMessage.Append(_T(";  exepath: "));
+          sLogMessage.Append(";  exepath: ");
           sLogMessage.Append(sExe);
         }
         mainApp::LogMessage(sLogMessage);
@@ -1020,49 +1020,49 @@ bool CExportFiles::UnitTest()
   wxString sFile = pDir->GetSitePath();
   nwxFileUtil::EndWithSeparator(&sFile);
   wxString sFile2 = sFile;
-  sFile.Append(_T("exportText.xml"));
-  sFile2.Append(_T("exportTextB.xml"));
+  sFile.Append("exportText.xml");
+  sFile2.Append("exportTextB.xml");
   CXSLExportFileType *pExport = new CXSLExportFileType;
   pExport->SetName("Allele Spreadsheet");
-  pExport->AddFileExt(_T(".tab"));
+  pExport->AddFileExt(".tab");
   pExport->SetDefaultLocationAnalysisFile();
-  pExport->SetXSLFile(_T("tab.xsl"));
+  pExport->SetXSLFile("tab.xsl");
   x.Insert(pExport);
   if(!pExport->XSLfileOK())
   {
-    pExport->SetXSLFile(_T("..\\tab.xsl"));
+    pExport->SetXSLFile("..\\tab.xsl");
   }
 
   if(!pExport->XSLfileOK())
   {
-    sError.Append(_T("Problem loading XSL file\n"));
+    sError.Append("Problem loading XSL file\n");
   }
   else
   {
     CExportFiles xx;
     vector<wxString> vsYN;
     vsYN.reserve(2);
-    vsYN.push_back(_T("yes"));
-    vsYN.push_back(_T("no"));
-    CXSLParam *pParam = pExport->FindParam(_T("OL"));
+    vsYN.push_back("yes");
+    vsYN.push_back("no");
+    CXSLParam *pParam = pExport->FindParam("OL");
     if(pParam == NULL)
     {
-      sError.Append(_T("Cannot find param: OL\n"));
+      sError.Append("Cannot find param: OL\n");
     }
     else
     {
-      pParam->SetDescription(_T("Label off ladder alleles"));
+      pParam->SetDescription("Label off ladder alleles");
       pParam->SetType(CXSLParam::CHOICE);
       pParam->SetChoiceList(vsYN);
     }
-    pParam = pExport->FindParam(_T("UseChannelNr"));
+    pParam = pExport->FindParam("UseChannelNr");
     if(pParam == NULL)
     {
-      sError.Append(_T("Cannot find param: UseChannelNr"));
+      sError.Append("Cannot find param: UseChannelNr");
     }
     else
     {
-      pParam->SetDescription(_T("Show Channel Numbers"));
+      pParam->SetDescription("Show Channel Numbers");
       pParam->SetType(CXSLParam::INTEGER);
       pParam->SetMin(0);
       pParam->SetMax(1);
@@ -1070,25 +1070,25 @@ bool CExportFiles::UnitTest()
     CXSLAutoCreate *pAuto = pExport->GetAutoCreatePtr();
     pAuto->SetActive(true);
     pAuto->SetDefaultLocation();
-    pAuto->SetFileName(_T("spreadsheet"));
-    pAuto->SetFileExt(_T(".tab"));
+    pAuto->SetFileName("spreadsheet");
+    pAuto->SetFileExt(".tab");
     if(!x.SaveFile(sFile))
     {
-      sError.Append(_T("Problem saving file\n"));
+      sError.Append("Problem saving file\n");
     }
     else if(!xx.LoadFile(sFile))
     {
-      sError.Append(_T("Problem loading file\n"));
+      sError.Append("Problem loading file\n");
     }
     else 
     {
       if(xx != x)
       {
-        sError.Append(_T("Comparison failed\n"));
+        sError.Append("Comparison failed\n");
       }
       if(!xx.SaveFile(sFile2))
       {
-        sError.Append(_T("Problem saving second file\n"));
+        sError.Append("Problem saving second file\n");
       }
     }
   }

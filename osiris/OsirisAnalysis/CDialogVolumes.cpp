@@ -63,16 +63,16 @@ CDialogVolumeRename::CDialogVolumeRename(
     CVolumes *pVolumes,
     CVolume *pThisVolume,
     wxWindow *parent) :
-  wxDialog(parent,wxID_ANY,_T("Rename " VOLUME_STRING),
+  wxDialog(parent,wxID_ANY,"Rename " VOLUME_STRING,
     wxDefaultPosition, wxDefaultSize,
     mainApp::DIALOG_STYLE),
   m_pVolumes(pVolumes),
   m_pThisVolume(pThisVolume)
 
 {
-  wxStaticText *pLabelOld = new wxStaticText(this,wxID_ANY,_T("Current name:"));
+  wxStaticText *pLabelOld = new wxStaticText(this,wxID_ANY,"Current name:");
   wxStaticText *pValueOld = new wxStaticText(this,wxID_ANY,m_pThisVolume->GetVolumeName());
-  wxStaticText *pLabelNew = new wxStaticText(this,wxID_ANY,_T("Enter new name:"));
+  wxStaticText *pLabelNew = new wxStaticText(this,wxID_ANY,"Enter new name:");
   wxFont fn = pValueOld->GetFont();
   fn.SetPointSize(fn.GetPointSize() + 1);
   fn.SetWeight(wxFONTWEIGHT_BOLD);
@@ -139,7 +139,7 @@ CDialogVolumeAddNew::~CDialogVolumeAddNew() {}
 CDialogVolumeAddNew::CDialogVolumeAddNew(
     CVolumes *pVolumes,
     wxWindow *parent) :
-  wxDialog(parent,wxID_ANY,_T("Create New " VOLUME_STRING),
+  wxDialog(parent,wxID_ANY,"Create New " VOLUME_STRING,
     wxDefaultPosition, wxDefaultSize,
     mainApp::DIALOG_STYLE),
   m_pVolumes(pVolumes)
@@ -156,11 +156,11 @@ CDialogVolumeAddNew::CDialogVolumeAddNew(
   m_pText = new wxTextCtrl(this,wxID_ANY,wxEmptyString,
     wxDefaultPosition, wxSize(100,-1),wxTE_LEFT);
   pSizer1->Add(
-    new wxStaticText(this,wxID_ANY,_T("Select " aVolume_string " to copy:")),
+    new wxStaticText(this,wxID_ANY,"Select " aVolume_string " to copy:"),
     0,wxALIGN_LEFT,0);
   pSizer1->Add(m_pChoiceKit,0,wxEXPAND | wxBOTTOM,ID_BORDER);
   pSizer1->Add(
-    new wxStaticText(this,wxID_ANY,_T("Enter " Volume_string " name:")),
+    new wxStaticText(this,wxID_ANY,"Enter " Volume_string " name:"),
     0,wxALIGN_LEFT,0);
   pSizer1->Add(m_pText,0,wxEXPAND,0);
   pSizer1->AddStretchSpacer(1);
@@ -221,7 +221,7 @@ CDialogVolumes::CDialogVolumes(
       wxWindow *parent, 
       const wxString &_sSelect, 
       bool bReadOnly) :
-  wxDialog(parent,wxID_ANY,_T("OSIRIS Lab Settings"),
+  wxDialog(parent,wxID_ANY,"OSIRIS Lab Settings",
     wxDefaultPosition, wxDefaultSize,
     mainApp::DIALOG_STYLE),
   m_pVolumeCurrent(NULL),
@@ -263,14 +263,14 @@ CDialogVolumes::CDialogVolumes(
     m_pPanelLab = new CPanelLabSettings(this,m_bReadOnly);
     wxBoxSizer *pSizerTop = new wxBoxSizer(wxHORIZONTAL);
     pSizerTop->Add(
-      new wxStaticText(this,wxID_ANY,_T("Select " VOLUME_STRING ":")),
+      new wxStaticText(this,wxID_ANY,"Select " VOLUME_STRING ":"),
       0,wxALIGN_CENTER_VERTICAL | wxRIGHT,ID_BORDER);
     pSizerTop->Add(m_pChoice,0,wxALIGN_CENTER_VERTICAL,0);
     if(!m_bReadOnly)
     {
-      m_pButtonAdd = nwxChoiceButtons::CreateAddButton(this,_T(VOLUME_STRING),false,pSizerTop);
-      m_pButtonRemove = nwxChoiceButtons::CreateRemoveButton(this,_T(VOLUME_STRING),false,pSizerTop);
-      m_pButtonRename = nwxChoiceButtons::CreateRenameButton(this,_T(VOLUME_STRING),false,pSizerTop);
+      m_pButtonAdd = nwxChoiceButtons::CreateAddButton(this,VOLUME_STRING,false,pSizerTop);
+      m_pButtonRemove = nwxChoiceButtons::CreateRemoveButton(this,VOLUME_STRING,false,pSizerTop);
+      m_pButtonRename = nwxChoiceButtons::CreateRenameButton(this,VOLUME_STRING,false,pSizerTop);
     }
     else
     {
@@ -291,7 +291,7 @@ CDialogVolumes::CDialogVolumes(
   else
   {
     wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
-    wxStaticText *pText = new wxStaticText(this,wxID_ANY,_T("ERROR: Cannot find standard " Volume_string "s"));
+    wxStaticText *pText = new wxStaticText(this,wxID_ANY,"ERROR: Cannot find standard " Volume_string "s");
     pSizer->Add(pText,0,wxALL | wxALIGN_LEFT,ID_BORDER);
     pSizer->Add(CreateButtonSizer(wxOK),0,wxALL | wxALIGN_CENTER,ID_BORDER);
     SetSizer(pSizer);
@@ -301,7 +301,7 @@ CDialogVolumes::CDialogVolumes(
 bool CDialogVolumes::_ResetVolume(CVolume *pHold)
 {
   bool bRtn = true;
-  wxString sError = _T("A problem occurred when setting " Volume_string " to ");
+  wxString sError = "A problem occurred when setting " Volume_string " to ";
   sError.Append(m_sSelection);
   mainApp::LogMessage(sError);
   mainApp::ShowError(sError,this);
@@ -446,7 +446,7 @@ bool CDialogVolumes::_SaveCurrent(bool bWarnUser)
     if(bWarnUser)
     {
       mainApp::ShowError(
-        _T("Cannot save settings because lock cannot be obtained."),
+        "Cannot save settings because lock cannot be obtained.",
         this);
     }
   }
@@ -455,7 +455,7 @@ bool CDialogVolumes::_SaveCurrent(bool bWarnUser)
     if(bWarnUser)
     {
       mainApp::ShowError(
-        _T("An error occurred when saving settings"),this);
+        "An error occurred when saving settings",this);
     }
   }
   else
@@ -504,10 +504,10 @@ void CDialogVolumes::OnCancel(wxCommandEvent &)
     /*
     wxMessageDialog dlg(
       this,
-      _T("Warning: The current " Volume_string " has been modified\n"
+      "Warning: The current " Volume_string " has been modified\n"
          "and all modifications will be lost.\n\n"
          "Do you wish to continue?"),
-      _T("Warning"),
+      "Warning"),
       wxYES_NO | wxNO_DEFAULT | wxICON_EXCLAMATION );
     int n = dlg.ShowModal();
     bEnd = (n == wxID_YES) || (n == wxID_OK);
@@ -534,9 +534,9 @@ bool CDialogVolumes::_ChangeVolumeWarningOK()
   {
     wxMessageDialog dlg(
       this,
-      _T("Warning: The current " Volume_string " has been modified.\n\n"
-         "Do you wish to save your modifications."),
-      _T("Warning"),
+      "Warning: The current " Volume_string " has been modified.\n\n"
+         "Do you wish to save your modifications.",
+      "Warning",
       wxYES_NO | wxYES_DEFAULT | wxCANCEL | wxICON_EXCLAMATION );
     int n = dlg.ShowModal();
     if(n == wxID_OK || n == wxID_YES)
@@ -587,7 +587,7 @@ void CDialogVolumes::OnLock(wxCommandEvent &)
   if(m_pVolumeCurrent == NULL) 
   {
      // shouldn't happen
-    wxASSERT_MSG(0,_T("Attempted to lock w/ no volume"));
+    wxASSERT_MSG(0,"Attempted to lock w/ no volume");
   }
   else if(m_bReadOnly) {} // don't lock
   else if(m_pVolumeCurrent->Lock())
@@ -604,7 +604,7 @@ void CDialogVolumes::OnLock(wxCommandEvent &)
 void CDialogVolumes::OnAdd(wxCommandEvent &e)
 {
   bool bButton = (e.GetEventObject() == (wxObject *)m_pButtonAdd);
-  wxASSERT_MSG(bButton,_T("CDialogVolumes::OnAdd, wrong button"));
+  wxASSERT_MSG(bButton,"CDialogVolumes::OnAdd, wrong button");
   if(bButton && _ChangeVolumeWarningOK())
   {
     CDialogVolumeAddNew x(&m_volumes,this);
@@ -621,15 +621,15 @@ void CDialogVolumes::OnRemove(wxCommandEvent &e)
   bool bButton = (e.GetEventObject() == (wxObject *)m_pButtonRemove);
   bool bNotReadOnly = 
     (!m_bReadOnly) && m_pVolumeCurrent->HasLock();
-  wxASSERT_MSG(bButton,_T("CDialogVolumes::OnRemove, wrong button"));
+  wxASSERT_MSG(bButton,"CDialogVolumes::OnRemove, wrong button");
   wxASSERT_MSG(
     bNotReadOnly,
-    _T("CDialogVolumes::OnRemove, attempt to remove a readonly or unlocked " Volume_string));
+    "CDialogVolumes::OnRemove, attempt to remove a readonly or unlocked " Volume_string);
   if(bButton && bNotReadOnly)
   {
-    wxString sMsg = _T("Do you wish to remove this " Volume_string ",\n");
+    wxString sMsg = "Do you wish to remove this " Volume_string ",\n";
     sMsg.Append(m_sSelection);
-    wxMessageDialog dlg(this,sMsg,_T("Remove " VOLUME_STRING),
+    wxMessageDialog dlg(this,sMsg,"Remove " VOLUME_STRING,
       wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
     dlg.CentreOnParent();
     if(dlg.ShowModal() == wxID_YES)
@@ -652,10 +652,10 @@ void CDialogVolumes::OnRename(wxCommandEvent &e)
   bool bButton = (e.GetEventObject() == (wxObject *)m_pButtonRename);
   bool bNotReadOnly = 
     (!m_bReadOnly) &&  m_pVolumeCurrent->HasLock();
-  wxASSERT_MSG(bButton,_T("CDialogVolumes::OnRename, wrong button"));
+  wxASSERT_MSG(bButton,"CDialogVolumes::OnRename, wrong button");
   wxASSERT_MSG(
     bNotReadOnly,
-    _T("CDialogVolumes::OnRename, attempt to remove a readonly or unlocked " Volume_string));
+    "CDialogVolumes::OnRename, attempt to remove a readonly or unlocked " Volume_string);
   if(bButton && bNotReadOnly)
   {
     CDialogVolumeRename x(&m_volumes,m_pVolumeCurrent,this);

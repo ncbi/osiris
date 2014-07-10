@@ -49,9 +49,9 @@
 IMPLEMENT_ABSTRACT_CLASS(CPageAuto,wxWizardPageSimple)
 
 const wxChar * const CPageAuto::ANALYSIS_FILE_NAME
-  (_T("[Same as analysis file]"));
+(wxS("[Same as analysis file]"));
 const wxChar * const CPageAuto::DATE_FILE_NAME
-  (_T("[Use file date and time]"));
+(wxS("[Use file date and time]"));
 
 wxTextCtrl *CPageAuto::_CreateTextCtrl()
 {
@@ -175,19 +175,19 @@ CPageAuto::CPageAuto(
 
   prev->SetNext(this);
   m_pCheckActive = new wxCheckBox(
-    this,wxID_ANY,_T("Create export file after each analysis"));
+    this,wxID_ANY,"Create export file after each analysis");
 
   // m_pComboLocation
 
   wxStaticText *pTextLocation = new wxStaticText(
-    this,wxID_ANY,_T("Location"));
+    this,wxID_ANY,"Location");
 
   wxWindow *pWinLocation = _CreateLocationWindow();
   wxBoxSizer *pSizerLocation = new wxBoxSizer(wxHORIZONTAL);
   if(!m_bReadOnly)
   {
     m_pButtonBrowse = new wxButton(
-      this,IDbrowseOutput,_T("Browse..."),
+      this,IDbrowseOutput,"Browse...",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
     pSizerLocation->Add(pWinLocation,1,wxEXPAND | wxRIGHT , ID_BORDER);
@@ -207,15 +207,15 @@ CPageAuto::CPageAuto(
   }
 
   wxStaticText *pTextFileName = new wxStaticText(
-    this,wxID_ANY,_T("File name"));
+    this,wxID_ANY,"File name");
   wxWindow *pWinFileName = _CreateFileNameWindow(as);
   m_pCheckAppendDate = new wxCheckBox(
-    this,wxID_ANY,_T("Append date to file name"));
+    this,wxID_ANY,"Append date to file name");
 
   // m_pComboFileExt
 
   wxStaticText *pTextExt = new wxStaticText(
-    this,wxID_ANY,_T("File extension"));
+    this,wxID_ANY,"File extension");
   wxWindow *pWinFileExt = _CreateFileExtWindow();
 
   // layout
@@ -367,12 +367,12 @@ bool CPageAuto::_TransferDataFromWindow()
     }
     else if(s.IsEmpty())
     {
-      sError.Append(_T("Location is not specified.\n"));
+      sError.Append("Location is not specified.\n");
       SET_IFNULL(pFocus,m_pComboLocation);
     }
     else if(!pAuto->SetLocation(s))
     {
-      sError.Append(_T("Location is invalid.\n"));
+      sError.Append("Location is invalid.\n");
       SET_IFNULL(pFocus,m_pComboLocation);
     }
 
@@ -380,7 +380,7 @@ bool CPageAuto::_TransferDataFromWindow()
     nwxString::Trim(&s);
     if(s.IsEmpty())
     {
-      sError.Append(_T("File name is not specified.\n"));
+      sError.Append("File name is not specified.\n");
       SET_IFNULL(pFocus,m_pComboFileName);
     }
     if(s == ANALYSIS_FILE_NAME)
@@ -389,7 +389,7 @@ bool CPageAuto::_TransferDataFromWindow()
     }
     else if(!pAuto->SetFileName(s))
     {
-      sError.Append(_T("File name is invalid.\n"));
+      sError.Append("File name is invalid.\n");
       SET_IFNULL(pFocus,m_pComboFileName);
      }
 
@@ -397,7 +397,7 @@ bool CPageAuto::_TransferDataFromWindow()
     nwxString::Trim(&s);
     if(!pAuto->SetFileExt(s))
     {
-      sError.Append(_T("File extension is invalid.\n"));
+      sError.Append("File extension is invalid.\n");
       SET_IFNULL(pFocus,m_pComboFileExt);
     }
     if(sError.Len())

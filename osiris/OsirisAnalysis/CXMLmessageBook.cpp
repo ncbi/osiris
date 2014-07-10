@@ -34,9 +34,9 @@
 #include "nwx/vectorptr.h"
 //***********************************************  CXMLmessageBookDataInfo
 
-const wxString CXMLmessageBookSM::g_sMessageTypeCount(_T("count"));
-const wxString CXMLmessageBookSM::g_sMessageTypePct(_T("percent"));
-const wxString CXMLmessageBookSM::g_sMessageTypePreset(_T("preset"));
+const wxString CXMLmessageBookSM::g_sMessageTypeCount("count");
+const wxString CXMLmessageBookSM::g_sMessageTypePct("percent");
+const wxString CXMLmessageBookSM::g_sMessageTypePreset("preset");
 
 class CXMLmessageBookDI : public nwxXmlPersist
 {
@@ -59,8 +59,8 @@ CXMLmessageBookDI::~CXMLmessageBookDI() {}
 
 void CXMLmessageBookDI::RegisterAll(bool)
 {
-  RegisterIntPositive(_T("Threshold"),m_pnThreshold);
-  RegisterWxString(_T("ThresholdDescriptor"),m_psThresholdDescriptor);
+  RegisterIntPositive("Threshold",m_pnThreshold);
+  RegisterWxString("ThresholdDescriptor",m_psThresholdDescriptor);
 }
 
 //***********************************************  CXMLmessageBookSM
@@ -77,17 +77,17 @@ CXMLmessageBookSM::~CXMLmessageBookSM()
 
 void CXMLmessageBookSM::RegisterAll(bool)
 {
-  RegisterWxString(_T("MessageType"),&m_sMessageType);
-  RegisterWxString(_T("Name"),&m_sMessageName);
-  Register(_T("CountingDataInfo"),m_pDI);
-  Register(_T("PercentDataInfo"),m_pDI);
-  Register(_T("PresetDataInfo"),m_pDI);
+  RegisterWxString("MessageType",&m_sMessageType);
+  RegisterWxString("Name",&m_sMessageName);
+  Register("CountingDataInfo",m_pDI);
+  Register("PercentDataInfo",m_pDI);
+  Register("PresetDataInfo",m_pDI);
 
 }
 
 //***********************************************  CXMLmessageBook
 
-CXMLmessageBook::CXMLmessageBook() : m_vpSMall(_T("SmartMessage"))
+CXMLmessageBook::CXMLmessageBook() : m_vpSMall("SmartMessage")
 {
   m_bOK = false;
   RegisterAll(true);
@@ -99,7 +99,7 @@ CXMLmessageBook::~CXMLmessageBook()
 }
 void CXMLmessageBook::RegisterAll(bool)
 {
-  Register(_T("MessageDeclarations"),&m_vpSMall);
+  Register("MessageDeclarations",&m_vpSMall);
 }
 void CXMLmessageBook::Cleanup()
 {

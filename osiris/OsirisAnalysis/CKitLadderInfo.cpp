@@ -40,13 +40,13 @@ CKitLadderInfo::~CKitLadderInfo()
 }
 
 CKitLadderInfo::CKitLadderInfo()
-  : m_setLS(_T("LSName"))
+  : m_setLS("LSName")
 {
   RegisterAll(true);
 }
 
 CKitLadderInfo::CKitLadderInfo(
-  const CKitLadderInfo &x) : m_setLS(_T("LSName"))
+  const CKitLadderInfo &x) : m_setLS("LSName")
 {
   RegisterAll(true);
   (*this) = x;
@@ -81,9 +81,9 @@ void CKitLadderInfo::RegisterAll(bool bInit)
   {
     Init();
   }
-  Register(_T("Kits"),this);
-  Register(_T("Set"),this);
-  RegisterWxString(_T("Name"),&m_sName);
-  Register(_T("LS"),&m_setLS);
-  Register(_T("Locus"),&m_setIO,(void *)&m_setLocus);
+  Register("Kits",this);
+  Register("Set",this);
+  RegisterWxString("Name",&m_sName);
+  Register("LS",&m_setLS);
+  Register("Locus",&m_setIO,(void *)&m_setLocus);
 }

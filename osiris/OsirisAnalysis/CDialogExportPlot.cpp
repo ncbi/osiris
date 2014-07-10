@@ -69,7 +69,7 @@ CDialogExportPlot::CDialogExportPlot(
     wxDialog(
         parent,
         id,
-        _T("Export PNG Graphic File"),
+        "Export PNG Graphic File",
         wxDefaultPosition,
         wxDefaultSize,
         mainApp::DIALOG_STYLE),
@@ -106,12 +106,12 @@ CDialogExportPlot::CDialogExportPlot(
   m_pTextTitle->SetMaxLength(255);
   wxArrayString as;
   as.Alloc(3);
-  as.Add(_T("&Screen"));
-  as.Add(_T("&Print"));
+  as.Add("&Screen");
+  as.Add("&Print");
   m_pUsage = new wxRadioBox(
     this,
     IDpngUsage,
-    _T("Usage"),
+    "Usage",
     wxDefaultPosition,
     wxDefaultSize,
     as,
@@ -120,25 +120,25 @@ CDialogExportPlot::CDialogExportPlot(
 
   m_pUsage->SetSelection(m_nUsage);
   as.Empty();
-  as.Add(_T("Pixels"));
-  as.Add(_T("Inches"));
-  as.Add(_T("Centimeters"));
+  as.Add("Pixels");
+  as.Add("Inches");
+  as.Add("Centimeters");
   wxSize szText(50,-1);
   wxStaticText *pText1 = new wxStaticText(this,wxID_ANY,
-    _T("Width x Height  "));
+    "Width x Height  ");
 
   wxStaticText *pLabelTitle = new wxStaticText(
-    this,wxID_ANY,_T("Title"));
+    this,wxID_ANY,"Title");
   m_pTextWidth = new wxTextCtrl(
-    this,IDExportGraphic,_T(""),
+    this,IDExportGraphic,"",
     wxDefaultPosition,
     szText,0,m_valid);
 
   wxStaticText *pText2 = new wxStaticText(this,wxID_ANY,
-    _T(" X "));
+    " X ");
 
   m_pTextHeight = new wxTextCtrl(
-    this,IDExportGraphic,_T(""),
+    this,IDExportGraphic,"",
     wxDefaultPosition,
     szText,0,m_valid);
   m_pUnits = new wxComboBox(
@@ -151,7 +151,7 @@ CDialogExportPlot::CDialogExportPlot(
     wxCB_READONLY | wxCB_DROPDOWN);
   m_pTextFileName = new wxTextCtrl(this,wxID_ANY);
   wxButton *pButtonBrowse = new wxButton(
-    this,IDbrowseOutput, _T("&Browse..."),
+    this,IDbrowseOutput, "&Browse...",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   m_pCheckViewLocation = new wxCheckBox(this,wxID_ANY,
@@ -159,7 +159,7 @@ CDialogExportPlot::CDialogExportPlot(
   m_pCheckViewLocation->SetValue(parm->GetPNGviewLocation());
 
   wxStaticText *pText3 = new wxStaticText(this,wxID_ANY,
-    _T("File Name"));
+    "File Name");
   wxBoxSizer *pSizerHW = new wxBoxSizer(wxHORIZONTAL);
   pSizerHW->Add(pText1,0,wxALIGN_CENTRE_VERTICAL);
   pSizerHW->Add(m_pTextWidth,0,wxALIGN_CENTRE_VERTICAL);
@@ -180,7 +180,7 @@ CDialogExportPlot::CDialogExportPlot(
   wxSizer *pButtonSizer = CreateButtonSizer(wxOK | wxCANCEL);
   wxSizerItem *pItem = pButtonSizer->GetItem(1);
   pButtonSizer->Add(
-    new wxButton(this,IDpreview,_T("Previe&w")),0,
+    new wxButton(this,IDpreview,"Previe&w"),0,
     pItem->GetFlag(),pItem->GetBorder()
     );
 
@@ -219,7 +219,7 @@ bool CDialogExportPlot::TransferDataToWindow()
     wxFileName fn(m_sPlotFile);
     wxString sTitle = fn.GetName();
     m_pTextTitle->ChangeValue(sTitle);
-    m_sDefaultFile = nwxFileUtil::SetupFileName(m_sPlotFile,_T(EXT_PNG));
+    m_sDefaultFile = nwxFileUtil::SetupFileName(m_sPlotFile,EXT_PNG);
     m_pTextFileName->ChangeValue(m_sDefaultFile);
     m_pTextFileName->SetInsertionPointEnd();
   }
@@ -309,7 +309,7 @@ bool CDialogExportPlot::TransferDataFromWindow()
   _BuildBitmap();
   if(m_pBitmap == NULL)
   {
-    sError = _T("ERROR: Could not create image.");
+    sError = "ERROR: Could not create image.";
     wxASSERT_MSG(0,sError);
     mainApp::LogMessage(sError);
   }
@@ -320,7 +320,7 @@ bool CDialogExportPlot::TransferDataFromWindow()
     nwxStaticBitmap::AddPngHandler();
     if(!img.SaveFile(sFileName,wxBITMAP_TYPE_PNG))
     {
-      sError = _T("ERROR: Could not save file: \n  ");
+      sError = "ERROR: Could not save file: \n  ";
       sError.Append(sFileName);
     }
     else if(bView)
@@ -328,8 +328,8 @@ bool CDialogExportPlot::TransferDataFromWindow()
       if(!nwxFileUtil::ShowFileFolder(sFileName))
       {
         sError =
-          _T("WARNING: Could not view file folder\n"
-             "but the file was successfully saved");
+          "WARNING: Could not view file folder\n"
+             "but the file was successfully saved";
       }
     }
   }
@@ -407,7 +407,7 @@ void CDialogExportPlot::_SetTypeInt(bool bInteger)
 double CDialogExportPlot::_GetDValue(wxTextCtrl *p)
 {
   wxString s = p->GetValue();
-  double dRtn = atof(s.c_str());
+  double dRtn = atof(s.utf8_str());
   return dRtn;
 }
 
@@ -493,7 +493,7 @@ void CDialogExportPlot::OnButtonBrowse(wxCommandEvent &)
   {
     sFileName = m_pTextFileName->GetValue();
     m_pDialogFile = nwxFileUtil::CreateSaveDialog(
-      this,_T("Save File"),_T(FILE_TYPE_PNG),sFileName,m_sDefaultFile);
+      this,"Save File",FILE_TYPE_PNG,sFileName,m_sDefaultFile);
   }
   if(m_pDialogFile->ShowModal() == wxID_OK)
   {
@@ -508,7 +508,7 @@ void CDialogExportPlot::OnButtonPreview(wxCommandEvent &)
 	_BuildBitmap();
     if(m_pBitmap == NULL)
     {
-      wxString sError = _T("ERROR: Could not create image.");
+      wxString sError = "ERROR: Could not create image.";
       wxASSERT_MSG(0,sError);
       mainApp::LogMessage(sError);
     }

@@ -100,7 +100,7 @@ CGridLocus::CGridLocus(
     bool bAmel = m_pLocusEdited->IsAmel();
     for(i = 0; i < nRow; i++)
     {
-      s = _T(labels[i]);
+      s = labels[i];
       SetRowLabelValue(i,s);
       SetRowLabelAlignment(wxALIGN_LEFT, wxALIGN_CENTRE);
     }
@@ -154,7 +154,7 @@ void CGridLocus::_ImplementColumn(int nCol,bool bAmel)
     else
     {
       wxGridCellTextEditor *pe(new wxGridCellTextEditor);
-      pe->SetParameters(_T("1"));
+      pe->SetParameters("1");
       SetCellEditor(ROW_ALLELE,k,pe);
     }
 
@@ -244,12 +244,12 @@ bool CGridLocus::XferName(int nCol, COARallele *pAllele)
     if(bAmel)
     {
       s.MakeUpper();
-      const char *ps = s.c_str();
+      const char *ps = s.utf8_str();
       if( (!*ps) || (strchr("XY12",*ps) == NULL) )
       {
         // not x/y
         bRtn = false;
-        mainApp::ShowError(_T("Invalid allele name"),this);
+        mainApp::ShowError("Invalid allele name",this);
         SetCellValue(ROW_ALLELE,nCol,pAllele->FormatName(true,false));
         SetGridCursor(ROW_ALLELE,nCol);
         SelectBlock(ROW_ALLELE,nCol,ROW_ALLELE,nCol);
@@ -269,7 +269,7 @@ void CGridLocus::XferBPS(int nCol, COARallele *pAllele)
   {
     s = GetCellValue(ROW_BPS,nCol);
     nwxString::Trim(&s);
-    pAllele->SetBPS(atof(s.c_str()));
+    pAllele->SetBPS(atof(s.utf8_str()));
   }
 }
 void CGridLocus::XferHomozygous(int nCol, COARallele *pAllele)
@@ -277,7 +277,7 @@ void CGridLocus::XferHomozygous(int nCol, COARallele *pAllele)
   if(!GetBoolValue(ROW_DISABLE,nCol))
   {
     s = GetCellValue(ROW_HOMOZYGOUS,nCol);
-    bool b = IsTrue(s.c_str());
+    bool b = IsTrue(s.utf8_str());
     pAllele->SetCountBool(b);
   }
 }
@@ -286,7 +286,7 @@ void CGridLocus::XferOL(int nCol, COARallele *pAllele)
   if(!GetBoolValue(ROW_DISABLE,nCol))
   {
     s = GetCellValue(ROW_OFF_LADDER,nCol);
-    bool b = IsTrue(s.c_str());
+    bool b = IsTrue(s.utf8_str());
     pAllele->SetOffLadderString(b ? IOARpeak::OL_TRUE : IOARpeak::OL_FALSE);
   }
 }
@@ -294,7 +294,7 @@ void CGridLocus::XferOL(int nCol, COARallele *pAllele)
 void CGridLocus::XferDisabled(int nCol, COARallele *pAllele)
 {
   s = GetCellValue(ROW_DISABLE,nCol);
-  bool b = IsTrue(s.c_str());
+  bool b = IsTrue(s.utf8_str());
   pAllele->SetDisabled(b);
 }
 

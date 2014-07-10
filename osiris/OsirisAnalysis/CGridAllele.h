@@ -61,7 +61,7 @@ public:
     int nCellType = CGridAlleleBase::ALLELE_SINGLE,
     int nPreAlleleColumns = 0) :
       nwxGrid(parent,id),
-      m_psLastError(_T("")),
+      m_psLastError(wxS("")),
       m_nAmelColumn(-1),
       m_nPreAlleleColumns(nPreAlleleColumns),
       m_nCellType(nCellType),
@@ -177,8 +177,8 @@ public:
     CreateGrid(nRows,1);
     SetRowLabelSize(2);
     m_vsLeftColumns.reserve(2);
-    m_vsLeftColumns.push_back(_T("Control Name"));
-    m_vsLeftColumns.push_back(_T("File Name Search"));
+    m_vsLeftColumns.push_back("Control Name");
+    m_vsLeftColumns.push_back("File Name Search");
   }
   virtual bool TransferDataFromWindow();
   virtual bool TransferDataToWindow();

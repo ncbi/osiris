@@ -158,7 +158,7 @@ private:
   {
     if(!m_sOverride.IsEmpty())
     {
-      m_sOverride.Append(_T(", "));
+      m_sOverride.Append(", ");
     }
     else
     {
@@ -183,10 +183,10 @@ private:
     {
       wxString s = m_pTextInput->GetValue();
       wxString sDefault = mainApp::GetConfig()->GetExePath();
-      sDefault.Append(_T("TestAnalysis"));
+      sDefault.Append("TestAnalysis");
       FindPath(&s,sDefault);
       m_pDirInput = new wxDirDialog(this,
-        _T("Input Directory"),s,
+        "Input Directory",s,
         wxDD_DIR_MUST_EXIST | wxDD_DEFAULT_STYLE | wxRESIZE_BORDER);
     }
     return m_pDirInput;
@@ -198,7 +198,7 @@ private:
       wxString s = m_pTextOutput->GetValue();
       FindPath(&s,mainApp::GetConfig()->GetFilePath());
       m_pDirOutput = new wxDirDialog(this,
-        _T("Output Directory"),s);
+        "Output Directory",s);
     }
     return m_pDirOutput;
   }

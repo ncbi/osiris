@@ -66,17 +66,17 @@ typedef enum
 // and the offset for each must correspond to the enum
 // above
 
-#define CXSL_PARAM_IGNORE _T("ignore")
+#define CXSL_PARAM_IGNORE wxS("ignore")
 
 #define CXSLParamTypeStrings \
 { \
-  _T("text"), \
-  _T("integer"), \
-  _T("decimal"), \
-  _T("choice"), \
-  _T("choice/text"), \
-  _T("checkbox"), \
-  _T("input file name"), \
+  wxS("text"), \
+  wxS("integer"), \
+  wxS("decimal"), \
+  wxS("choice"), \
+  wxS("choice/text"), \
+  wxS("checkbox"), \
+  wxS("input file name"), \
   CXSL_PARAM_IGNORE \
 }
 
@@ -86,7 +86,7 @@ typedef enum
     m_sName(sName),
     m_sDescription(wxEmptyString),
     m_sType(g_TYPES[0]),
-    m_vsChoiceList(_T("value")),
+    m_vsChoiceList("value"),
     m_dMin(0.0),
     m_dMax(0.0),
     m_bHasMin(0.0),
@@ -95,7 +95,7 @@ typedef enum
     RegisterAll(true);
   }
   CXSLParam(const CXSLParam &x) :
-    m_vsChoiceList(_T("value"))
+    m_vsChoiceList("value")
   {
     RegisterAll(true);
     (*this) = x;
@@ -321,11 +321,11 @@ typedef enum
   }
   void SetInFileRequired(bool b)
   {
-    m_sInFileRequired = b ? _T("1") : _T("");
+    m_sInFileRequired = b ? "1" : "";
   }
   void SetInFileAllowOverride(bool b)
   {
-    m_sInFileAllowOverride = b ? _T("1") : _T("");
+    m_sInFileAllowOverride = b ? "1" : "";
   }
   static bool GetBoolValue(const wxString &s)
   {
@@ -334,11 +334,11 @@ typedef enum
     {
       bRtn = false;
     }
-    else if(!s.CmpNoCase(_T("false")))
+    else if(!s.CmpNoCase("false"))
     {
       bRtn = false;
     }
-    else if(s == _T("0"))
+    else if(s == "0")
     {
       bRtn = false;
     }
@@ -602,7 +602,7 @@ public:
     wxString s = _s;
     bool bRtn = false;
     s.MakeLower();
-    while(s.StartsWith(_T(".")))
+    while(s.StartsWith("."))
     {
       s = s.Mid(1);
     }
@@ -634,12 +634,12 @@ public:
   static const wxChar * const LIST_SEPARATOR;
   static const wxChar * const FILE_TYPE_ERROR;
   CXSLExportFileType() 
-    : m_mapParam(_T("param"),false), m_bOverrideExt(false)
+    : m_mapParam("param",false), m_bOverrideExt(false)
   {
     RegisterAll(true);
   }
   CXSLExportFileType(const CXSLExportFileType &x) 
-    : m_mapParam(_T("param"),false), m_bOverrideExt(false)
+    : m_mapParam("param",false), m_bOverrideExt(false)
   {
     RegisterAll(true);
     (*this) = x;
@@ -757,7 +757,7 @@ public:
   {
     return m_ssFileExt;
   }
-  wxString GetFileExtJoined(const wxChar *psSep = _T(", ")) const
+  wxString GetFileExtJoined(const wxChar *psSep = wxS(", ")) const
   {
     wxString s;
     nwxString::Join(m_ssFileExt,&s, (const char *)psSep);
@@ -1007,7 +1007,7 @@ class CExportFiles :
 public:
   CExportFiles() : TnwxXmlPersistMap<
     wxString,CXSLExportFileType,nwxStringLessNoCaseSort>
-      (_T("export"),true), m_nBatch(0)
+      ("export",true), m_nBatch(0)
   {
   }
   CExportFiles(const CExportFiles &x) : TnwxXmlPersistMap<

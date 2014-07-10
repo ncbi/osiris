@@ -65,9 +65,9 @@ bool COARsampleReviewAccept::Skip()
 void COARsampleReviewAccept::RegisterAll(bool)
 {
   const wxString &s(m_SampleList.GetNodeName());
-  wxString sSample(_T("Sample"));
-  wxString sChannel(_T("Channel"));
-  wxString sILS(_T("ILS"));
+  wxString sSample("Sample");
+  wxString sChannel("Channel");
+  wxString sILS("ILS");
 
   sSample.Append(s);
   sChannel.Append(s);
@@ -103,7 +103,7 @@ const wxString COARsample::GetName() const
   size_t nLenExt = sExt.Len();
   size_t nLen = sName.Len();
   if( (nLen > nLenExt) && 
-      !sName.Right(nLenExt).CmpNoCase(_T(sExt))
+      !sName.Right(nLenExt).CmpNoCase(sExt)
     )
   {
     sName.Truncate(nLen - nLenExt);
@@ -124,23 +124,23 @@ void COARsample::LocalInit()
 
 void COARsample::RegisterAll(bool)
 {
-  RegisterWxString(_T("Name"),&m_sName);
-  RegisterWxStringNotEmpty(_T("SampleName"),&m_sSampleName);
-  RegisterWxStringNotEmpty(_T("RunStart"),&m_sRunStart);
-  Register(_T("EnableHistory"),&m_EnableHistory);
-  RegisterWxString(_T("Type"),&m_sType);
-  Register(_T("SampleAlerts"),&m_alertSample);
-  Register(_T("ILSAlerts"),&m_alertILS);
-  Register(_T("ChannelAlerts"),&m_pvChannelAlerts);
-  Register(_T("Locus"),&m_ioLocus,(void *)&m_vpLocus);
-  Register(_T("InterlocusAlerts"),&m_pvAlertInterLocus);
-  RegisterWxStringNotEmpty(_T("PositiveControl"),&m_sPositiveControl);
-  Register(_T("SampleNotes"),&m_NotesSample);
-  Register(_T("ChannelNotes"),&m_NotesChannel);
-  Register(_T("ILSNotes"),&m_NotesILS);
-  Register(_T("OldNotes"),&m_OldNotes);
-  Register(_T("Reviews"),&m_Reviews);
-  Register(_T("Acceptance"),&m_Acceptance);
+  RegisterWxString("Name",&m_sName);
+  RegisterWxStringNotEmpty("SampleName",&m_sSampleName);
+  RegisterWxStringNotEmpty("RunStart",&m_sRunStart);
+  Register("EnableHistory",&m_EnableHistory);
+  RegisterWxString("Type",&m_sType);
+  Register("SampleAlerts",&m_alertSample);
+  Register("ILSAlerts",&m_alertILS);
+  Register("ChannelAlerts",&m_pvChannelAlerts);
+  Register("Locus",&m_ioLocus,(void *)&m_vpLocus);
+  Register("InterlocusAlerts",&m_pvAlertInterLocus);
+  RegisterWxStringNotEmpty("PositiveControl",&m_sPositiveControl);
+  Register("SampleNotes",&m_NotesSample);
+  Register("ChannelNotes",&m_NotesChannel);
+  Register("ILSNotes",&m_NotesILS);
+  Register("OldNotes",&m_OldNotes);
+  Register("Reviews",&m_Reviews);
+  Register("Acceptance",&m_Acceptance);
   m_OldNotes.SetSample(this);
 }
 bool COARsample::COARoldNotes::Skip(void *)
@@ -171,9 +171,9 @@ TnwxXmlIOPersistVector<COARnotes> COARsample::COARoldNotes::g_ioNotes(false);
 
 void COARsample::COARoldNotes::RegisterAll(bool)
 {
-  Register(_T("SampleNotes"), &g_ioNotes,(void *) &m_p->m_vpOldNotesSample);
-  Register(_T("ChannelNotes"), &g_ioNotes,(void *) &m_p->m_vpOldNotesChannel);
-  Register(_T("ILSNotes"), &g_ioNotes,(void *) &m_p->m_vpOldNotesILS);
+  Register("SampleNotes", &g_ioNotes,(void *) &m_p->m_vpOldNotesSample);
+  Register("ChannelNotes", &g_ioNotes,(void *) &m_p->m_vpOldNotesChannel);
+  Register("ILSNotes", &g_ioNotes,(void *) &m_p->m_vpOldNotesILS);
 }
 size_t COARsample::CountAlerts(const COARmessages *pMsgs, const wxDateTime *pTime) const
 {
@@ -547,9 +547,9 @@ void COARsample::_CheckForSingleAllele(
       if(pLocus == NULL)
       {
         // should NEVER happen
-        wxString sErr(_T(
+        wxString sErr(
           "COARsample::_CheckForSingleAllele\n"
-          "  Cannot find locus: "));
+          "  Cannot find locus: ");
         sErr.Append(sAlleleLocus);
         wxASSERT_MSG(0,sErr);
         mainApp::LogMessage(sErr);
@@ -584,7 +584,7 @@ void COARsample::_CheckForSingleAllele(
     // enabled in more than one locus
     // the array size should be 0 or 1
     wxASSERT_MSG(vpAllele.size() < 2,
-      _T("COARsample::_CheckForSingleAllele array size > 1"));
+      "COARsample::_CheckForSingleAllele array size > 1");
 
     for(itr = vpAllele.begin(), itrL = vpLocus.begin();
         itr != vpAllele.end();
@@ -751,8 +751,8 @@ void COARsample::AppendChannelAlerts(vector<int> *_pvn) const
     COARfile::AppendVectorInt(_pvn,*pvn);
   }
 }
-const wxString COARsample::g_sCellChannelEdited(_T("~"));
-const wxString COARsample::g_sCellILSNotice(_T("!"));
+const wxString COARsample::g_sCellChannelEdited("~");
+const wxString COARsample::g_sCellILSNotice("!");
 
 wxString COARsample::GetCellChannel(const COARmessages *pMsgs, const wxDateTime *pTime) const
 {
@@ -785,7 +785,7 @@ wxString COARsample::GetCellChannel(const COARmessages *pMsgs, const wxDateTime 
     nitr != setChannelNr.end();
     ++nitr)
   {
-    s.Printf(_T("%d"),*nitr);
+    s.Printf("%d",*nitr);
     COARfile::AppendCellString(&sRtn,s);
   }
   if(bEdited && sRtn.IsEmpty())
@@ -925,13 +925,13 @@ wxString COARsample::FormatRunStart() const
   wxString s = GetRunStart();
   nwxString::Trim(&s);
   size_t nLen = s.Len();
-  s.Replace(_T("T"),_T(" "),true);
-  if((nLen == 18) && (s.Mid(13,1) == _T(":")))
+  s.Replace("T"," ",true);
+  if((nLen == 18) && (s.Mid(13,1) == ":"))
   {
     //                          11111111
     //                012345678901234567
     // in the form of YYYY-MM-DD HH:MMSS
-    s.insert(16,_T(":"));
+    s.insert(16,":");
   }
   return s;
 }

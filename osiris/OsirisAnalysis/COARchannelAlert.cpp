@@ -33,12 +33,12 @@
 
 void COARartifactAllele::RegisterAll(bool)
 {
-  RegisterWxString(_T("Name"),&m_sName);
-  Register(_T("OffLadder"),&COARpeak::IO_OL,&m_sOffLadder);
-  RegisterDouble(_T("BPS"),&m_dBPS);
-  RegisterWxString(_T("Locus"),&m_sLocus);
-  RegisterIntNonZero(_T("Location"),&m_nLocation);
-  RegisterIntNonZero(_T("Count"),&m_nCount);
+  RegisterWxString("Name",&m_sName);
+  Register("OffLadder",&COARpeak::IO_OL,&m_sOffLadder);
+  RegisterDouble("BPS",&m_dBPS);
+  RegisterWxString("Locus",&m_sLocus);
+  RegisterIntNonZero("Location",&m_nLocation);
+  RegisterIntNonZero("Count",&m_nCount);
 }
 
 
@@ -55,19 +55,19 @@ COARartifact::~COARartifact()
 
 void COARartifact::RegisterAll(bool)
 {
-  RegisterInt(_T("Id"),&m_nID);
-  RegisterInt(_T("Level"), &m_nLevel);
-  RegisterDouble(_T("RFU"),&m_dRFU);
-  RegisterDouble(_T("meanbps"),&m_dMeanBPS);
-  RegisterDouble(_T("PeakArea"),&m_dPeakArea);
-  RegisterDouble(_T("Time"),&m_dTime);
-  RegisterDoubleM1(_T("Fit"),&m_dFit);
-  RegisterBoolTrue(_T("AllowPeakEdit"),&m_bIsEditable);
-  RegisterWxString(_T("Label"),&m_sLabel);
-  RegisterBoolSkipFalse(_T("Disabled"),&m_bDisabled);
-  RegisterWxDateTimeNonZero(_T("Update"),&m_dtUpdate);
+  RegisterInt("Id",&m_nID);
+  RegisterInt("Level", &m_nLevel);
+  RegisterDouble("RFU",&m_dRFU);
+  RegisterDouble("meanbps",&m_dMeanBPS);
+  RegisterDouble("PeakArea",&m_dPeakArea);
+  RegisterDouble("Time",&m_dTime);
+  RegisterDoubleM1("Fit",&m_dFit);
+  RegisterBoolTrue("AllowPeakEdit",&m_bIsEditable);
+  RegisterWxString("Label",&m_sLabel);
+  RegisterBoolSkipFalse("Disabled",&m_bDisabled);
+  RegisterWxDateTimeNonZero("Update",&m_dtUpdate);
   Register(COARfile::g_sMessageNumber, &COARfile::g_iovn,(void *) &m_vnMessageNumber);
-  Register(_T("Allele"),&m_ioAllele,&m_vpAllele);
+  Register("Allele",&m_ioAllele,&m_vpAllele);
   m_ioAllele.Manage(&m_vpAllele);
 }
 COARartifact &COARartifact::operator =(const COARartifact &x)
@@ -110,10 +110,10 @@ bool COARartifact::SetLocus(const wxString &s) const
 
 void COARchannelAlert::RegisterAll(bool)
 {
-  RegisterInt(_T("ChannelNr"),&m_nChannelNr);
+  RegisterInt("ChannelNr",&m_nChannelNr);
   Register(COARfile::g_sMessageNumber, &COARfile::g_iovn,(void *) &m_vnMessageNumber);  
-  Register(_T("Artifact"),&m_ioArtifact,&m_vpArtifact);
-  Register(_T("OldArtifact"),&m_ioArtifact,&m_vpOldArtifact);
+  Register("Artifact",&m_ioArtifact,&m_vpArtifact);
+  Register("OldArtifact",&m_ioArtifact,&m_vpOldArtifact);
   m_ioArtifact.Manage(&m_vpArtifact);
   m_ioArtifact.Manage(&m_vpOldArtifact);
 }

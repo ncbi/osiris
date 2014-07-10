@@ -54,7 +54,7 @@
 #endif
 
 const int mainApp::DIALOG_STYLE =
-  wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxTHICK_FRAME;
+  wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER; // | wxTHICK_FRAME; //gone in wx 3.0
 
 const int mainApp::RFU_MAX_ENTER = 1000000;
 const int mainApp::RFU_MIN_ENTER = 5;
@@ -106,7 +106,7 @@ nwxXmlMRU *mainApp::GetMRU()
   {
     wxString sPath = m_pConfig->GetConfigPath();
     nwxFileUtil::EndWithSeparator(&sPath);
-    sPath.Append(_T("mru.xml"));
+    sPath.Append("mru.xml");
     m_pMRU = new nwxXmlMRU(sPath);
   }
   return m_pMRU;
@@ -141,9 +141,8 @@ bool mainApp::OnInit()
 
   // set up window
 
-  int nArg = 0;
   mainFrame *p = new mainFrame();
-  bool bHasArgs = (argv[1] != NULL);
+  bool bHasArgs = (argv[1] != (wxChar *)NULL);
 #ifdef __WXMAC__
   m_pFrame = p;
   if(m_asFiles.Count() > 0)
@@ -152,16 +151,15 @@ bool mainApp::OnInit()
   }
 #endif
   p->ShowWindow(bHasArgs);
-  const wxChar *psFormat(_T("argv[%d] = %s"));
-  LogMessageV(psFormat,0,argv[0]);
-  for(wxChar **arg = argv + 1; (*arg) != NULL; ++arg)
+  const wxChar *psFormat(wxS("argv[%d] = %ls"));
+	for(int i = 0; i < argc; ++i)
   {
-    LogMessageV(psFormat,++nArg,*arg);
-    p->OpenFile(*arg);
+    LogMessageV(psFormat,i,argv[i].wc_str());
+    p->OpenFile(argv[i]);
   }
   time_t t;
   time(&t);
-  wxString sPID = wxString::Format("PID: %d",getpid());
+  wxString sPID = wxString::Format(wxS("PID: %d"),(int)getpid());
   wxLog::OnLog(wxLOG_Message,(const wxChar *)sPID,t);
 #ifdef __WXMAC__
   if(bHasArgs)
@@ -193,24 +191,24 @@ void mainApp::_OpenMessageStream()
   {
     wxString sOutFile = m_pConfig->GetConfigPath();
     nwxFileUtil::EndWithSeparator(&sOutFile);
-    sOutFile += _T("Debug");
+    sOutFile += "Debug";
     if(wxFileName::DirExists(sOutFile))
     {
       int nPID = getpid();
       nwxFileUtil::EndWithSeparator(&sOutFile);
       sOutFile += wxString::Format("%d.txt",nPID);
       m_pFout = new wxFile();
-      if(!m_pFout->Create(sOutFile.c_str(),true))
+      if(!m_pFout->Create(sOutFile.wc_str(),true))
       {
         delete m_pFout;
         m_pFout = NULL;
         time_t t;
         time(&t);
-        wxLog::OnLog(wxLOG_Message,_T("Cannot open message log"),t);
+        wxLog::OnLog(wxLOG_Message,"Cannot open message log",t);
       }
 //      else
 //      {
-//        LogMessage(_T("File Opened ****************************"));
+//        LogMessage("File Opened ****************************");
 //      }
     }
   }
@@ -221,7 +219,7 @@ void mainApp::ShowError(const wxString &sMsg, wxWindow *parent)
   if(!MessagesSuppressed())
   {
     wxMessageDialog dlgmsg(
-      parent,sMsg,_T("ERROR"),wxOK | wxICON_ERROR);
+      parent,sMsg,"ERROR",wxOK | wxICON_ERROR);
     dlgmsg.ShowModal();
   }
 }
@@ -230,7 +228,7 @@ void mainApp::ShowAlert(const wxString &sMsg, wxWindow *parent)
   if(!MessagesSuppressed())
   {
     wxMessageDialog dlgmsg(
-      parent,sMsg,_T("Alert"),wxOK | wxICON_EXCLAMATION);
+      parent,sMsg,"Alert",wxOK | wxICON_EXCLAMATION);
     dlgmsg.ShowModal();
   } 
 }
@@ -273,9 +271,9 @@ bool mainApp::Confirm(wxWindow *parent, const wxString &sPrompt,const wxString &
 bool mainApp::ConfirmModificationsLost(wxWindow *parent)
 {
   const wxString sPrompt(
-    _T("Warning: Modifications will be lost!\n"
-        "Do you wish to continue?"));
-  const wxString sTitle(_T("Warning"));
+    "Warning: Modifications will be lost!\n"
+        "Do you wish to continue?");
+  const wxString sTitle("Warning");
   return Confirm(parent,sPrompt,sTitle);
 }
 
@@ -285,13 +283,13 @@ void mainApp::_LogMessageFile(const wxString &sMsg, time_t t)
   wxString sFullMessage;
   sFullMessage.Alloc(sMsg.Len() + sTime.Len() + 8);
   sFullMessage = sTime;
-  sFullMessage.Append(_T(" "));
+  sFullMessage.Append(" ");
   sFullMessage.Append(sMsg);
   sFullMessage.Append(nwxString::EOL);
 
   size_t nToWrite = sFullMessage.Len();
   size_t n;
-  const char *sBuffer = sFullMessage.c_str();
+  const char *sBuffer = sFullMessage.utf8_str();
   while(nToWrite > 0)
   {
     n = m_pFout->Write(sBuffer,nToWrite);
@@ -299,7 +297,7 @@ void mainApp::_LogMessageFile(const wxString &sMsg, time_t t)
     {
       nToWrite = 0; // loop exit
       _CloseMessageStream();
-      wxLog::OnLog(wxLOG_Message,_T("Cannot write to message log, file has been closed"),t);
+      wxLog::OnLog(wxLOG_Message,"Cannot write to message log, file has been closed",t);
     }
     else
     {
@@ -320,7 +318,7 @@ void mainApp::_CloseMessageStream()
   {
     delete m_pFout;
     m_pFout = NULL;
-    _LogMessage(_T("File closed on exit"));
+    _LogMessage("File closed on exit");
   }
 }
 
@@ -339,26 +337,26 @@ const wxString mainApp::FormatWindowTitle(
   }
   size_t nLen(s.Len());
   sRtn.Alloc(nLen + 16);
-  sRtn = _T("OSIRIS");
+  sRtn = "OSIRIS";
   if(s.Len())
   {
-    sRtn.Append(_T(" - "));
+    sRtn.Append(" - ");
     sRtn.Append(s);
     if(bModified)
     {
-      sRtn.Append(_T(" *"));
+      sRtn.Append(" *");
     }
   }
   if(pParm != NULL)
   {
-    sRtn.Append(_T("; "));
+    sRtn.Append("; ");
     sRtn.Append(pParm->GetKitName());
-    sRtn.Append(_T(", "));
+    sRtn.Append(", ");
     sRtn.Append(pParm->GetLsName());
   }
   if(pTime != NULL)
   {
-    sRtn.Append(_T(" on "));
+    sRtn.Append(" on ");
     sRtn.Append(nwxString::FormatDateTime(*pTime));
   }
   return sRtn;

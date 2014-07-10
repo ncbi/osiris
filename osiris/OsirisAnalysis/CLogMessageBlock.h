@@ -42,8 +42,8 @@ class CLogMessageBlock
 public:
   CLogMessageBlock(const wxString &s, int nLevel = 0) : m_nLevel(nLevel)
   {
-    wxString sTmp(_T("** BEGIN ** "));
-    m_s =         _T("** END   ** ");
+    wxString sTmp("** BEGIN ** ");
+    m_s =         "** END   ** ";
     sTmp.Append(s);
     m_s.Append(s);
     mainApp::LogMessage(sTmp,nLevel);

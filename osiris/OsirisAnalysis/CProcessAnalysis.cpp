@@ -50,10 +50,10 @@ CProcessAnalysis::CProcessAnalysis(
     m_psExe(NULL),
     m_pDirEntry(pDirEntry)
 {
-#define END_LINE sStdin.Append(_T(";\n"))
+#define END_LINE sStdin.Append(";\n")
 
 #define APPEND_LINE(name,value) \
-  sStdin.Append(_T(name "=")); \
+  sStdin.Append(name "="); \
   sStdin.Append(value); \
   END_LINE
 
@@ -73,7 +73,7 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_LINE("ReportDirectory",pParm->GetOutputDirectory());    //  3
   APPEND_LINE("MarkerSetName",pParm->GetKitName());              //  4
   APPEND_LINE("LaneStandardName",pParm->GetLsName());            //  5
-  APPEND_LINE("CriticalOutputLevel",_T("15"));                   //  6
+  APPEND_LINE("CriticalOutputLevel","15");                   //  6
   APPEND_INT("MinSampleRFU",pParm->GetMinRFU_Sample());          //  7
   APPEND_INT("MinLaneStandardRFU",pParm->GetMinRFU_ILS());       //  8
   APPEND_INT("MinLadderRFU",pParm->GetMinRFU_Ladder());          //  9
@@ -106,7 +106,7 @@ CProcessAnalysis::CProcessAnalysis(
   {
     APPEND_INT("SampleDetectionThreshold",nMinDetection);
   }
-  s = pParm->GetDataAnalyzed() ? _T("A") : _T("R");
+  s = pParm->GetDataAnalyzed() ? "A" : "R";
   APPEND_LINE("RawDataString",s);  // 11 or 12
   APPEND_LINE("LabSettings",pVolume->GetLabSettingsFileName());
   APPEND_LINE("StandardSettings",pVolume->GetStdSettingsFileName());
@@ -126,23 +126,23 @@ CProcessAnalysis::CProcessAnalysis(
   //  finished building stdin for analysis program
 
   wxASSERT_MSG(sizeof(wxChar) == 1,
-      _T("sizeof(wxChar) != 1, "
-        "therefore this code needs to be changed"));
+      "sizeof(wxChar) != 1, "
+        "therefore this code needs to be changed");
   
   s = pDir->GetExePath();
   nwxFileUtil::EndWithSeparator(&s);
 #ifdef __WXMSW__
-  s += _T("TestAnalysisDirectoryLC.exe");
+  s += "TestAnalysisDirectoryLC.exe";
 #else
-  s += _T("TestAnalysisDirectoryLC");
+  s += "TestAnalysisDirectoryLC";
 #endif
-  m_psExe = strdup(s.c_str());
+  m_psExe = strdup(s.utf8_str());
 
   char *argv[] = { m_psExe, NULL  };
   m_dProgress = 0.0;
   Run(argv);
   wxOutputStream *pOut = GetOutputStream();
-  wxASSERT_MSG(pOut != NULL,_T("Cannot get output stream for process"));
+  wxASSERT_MSG(pOut != NULL,"Cannot get output stream for process");
   mainApp::LogMessage(sStdin);
   if(pOut != NULL)
   {
@@ -190,7 +190,7 @@ void CProcessAnalysis::ProcessLine(
   }
   else
   {
-    wxString s(_T(p),nLen);
+    wxString s(p,nLen);
     m_pDirEntry->AppendRunOutput(s);
   }
 }
@@ -202,7 +202,7 @@ bool CProcessAnalysis::IsOutputModified()
 wxString CProcessAnalysis::GetOutput()
 {
   wxString sRtn = m_pDirEntry->GetRunOutput();
-  sRtn.Append(_T("\n"));
+  sRtn.Append("\n");
   return sRtn;
 }
 

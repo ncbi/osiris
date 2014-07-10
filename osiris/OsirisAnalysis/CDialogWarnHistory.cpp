@@ -60,20 +60,20 @@ CDialogWarnHistory::~CDialogWarnHistory() {}
 
 CDialogWarnHistory::CDialogWarnHistory(
   wxWindow *parent, wxWindowID id) :
-    wxDialog(parent,id,wxString(_T("Warning")))
+    wxDialog(parent,id,wxString("Warning"))
 {
   wxStaticText *pWarning = new wxStaticText(
-    this,wxID_ANY,_T("Warning!"));
-  wxStaticText *pHistory = new wxStaticText(this,wxID_ANY,_T(
+    this,wxID_ANY,"Warning!");
+  wxStaticText *pHistory = new wxStaticText(this,wxID_ANY,
     "The history setting is not set to \"current.\"\n"
     "Any changes will be reflected when saving the file\n"
     "but will not appear on the screen until the history\n"
     "setting is changed to \"current.\"\n\n"
     "Do you wish to continue?"
-    ), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+    , wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
   mainApp::SetBoldFont(pWarning);
   wxSizer *pButtons = CreateButtonSizer(wxYES | wxNO); 
-  m_pCheckBox = new wxCheckBox(this,wxID_ANY,_T(" Don't show this window again"));
+  m_pCheckBox = new wxCheckBox(this,wxID_ANY," Don't show this window again");
   m_pButtonNO = NULL;
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
 

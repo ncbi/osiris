@@ -31,13 +31,13 @@
 #include "COARnotes.h"
 #include "COARreview.h"
 #include "nwx/nwxString.h"
-const wxString COARnotes::g_sNode(_T("Notes"));
+const wxString COARnotes::g_sNode("Notes");
 const wxString COARnotes::g_EmptyString;
 
 void COARnotes::RegisterAll(bool)
 {
-  RegisterWxString(_T("Text"),&m_sText);
-  RegisterWxDateTime(_T("Update"),&m_Update);
+  RegisterWxString("Text",&m_sText);
+  RegisterWxDateTime("Update",&m_Update);
 }
 
 bool COARnotes::Update(
@@ -89,23 +89,23 @@ wxString COARnotes::AppendNotes(
   nwxString::Trim(&sUser);
   if(sAppend.IsEmpty())
   {
-    sAppend = _T("<no new notes added>");
+    sAppend = "<no new notes added>";
   }
   sTime.Alloc(sUser.Len() + 64);
-  sTime = _T("Edited ");
+  sTime = "Edited ";
   dt.SetToCurrent();
   sTime.Append(dt.Format(COARreview::TIME_FORMAT));
   if(!sUser.IsEmpty())
   {
-    sTime.Append(_T(" by "));
+    sTime.Append(" by ");
     sTime.Append(sUser);
   }
-  sTime.Append(_T("\n"));
+  sTime.Append("\n");
   sRtn.Alloc(sNotes.Len() + sAppend.Len() + sTime.Len() + 4);
   if(!sNotes.IsEmpty())
   {
     sRtn = sNotes;
-    sRtn.Append(_T("\n\n"));
+    sRtn.Append("\n\n");
   }
   sRtn.Append(sTime);
   sRtn.Append(sAppend);

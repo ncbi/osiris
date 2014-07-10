@@ -43,7 +43,7 @@
 #include "nwx/mapptr.h"
 
 #define RESIDUAL_THRESHOLD 0.0005
-#define FIT _T("\nFit: ")
+#define FIT "\nFit: "
 
 CPlotCtrl::CPlotCtrl(
   wxWindow *parent, CPanelPlot *pPlot, wxWindowID id) 
@@ -200,7 +200,7 @@ void CPanelPlot::_BuildPanel(
   TnwxBatch<CPanelPlot> batch(this); // must be after m_pPlotCtrl is created
 
   m_pPlotCtrl->SetPlotTitleColour(*wxWHITE);
-  m_pPlotCtrl->SetPlotTitle(_T("M|W")); // pick large characters
+  m_pPlotCtrl->SetPlotTitle("M|W"); // pick large characters
   m_pPlotCtrl->SetShowPlotTitle(true);
 
   m_pSizer = new wxBoxSizer(wxVERTICAL);
@@ -211,8 +211,8 @@ void CPanelPlot::_BuildPanel(
   m_pSizer->Add(m_pPlotCtrl,1,wxEXPAND);
 
   m_pPlotCtrl->SetDrawSymbols(false);
-  m_pPlotCtrl->SetXAxisLabel(_T("Time (seconds)"));
-  m_pPlotCtrl->SetYAxisLabel(_T("RFU"));
+  m_pPlotCtrl->SetXAxisLabel("Time (seconds)");
+  m_pPlotCtrl->SetYAxisLabel("RFU");
   m_pPlotCtrl->SetShowXAxisLabel(true);
   m_pPlotCtrl->SetShowYAxisLabel(true);
   m_pPlotCtrl->SetMinExpValue(99999);
@@ -629,7 +629,7 @@ wxString CPanelPlot::_AlleleLabel(
       pPeak->GetPeakArea());
     break;
   default:
-    sLabel = _T("Problem");
+    sLabel = "Problem";
     break;
   }
   return sLabel;
@@ -640,28 +640,28 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
   double dBPS = pPeak->GetMeanBPS();
 
   sToolTip += wxString::Format(
-      "Artifact: %s\n"
+      "Artifact: %ls\n"
       "RFU: %d\n"
       "Time: %g\n",
-      pPeak->GetArtifactLabel().c_str(),
+      pPeak->GetArtifactLabel().wc_str(),
       nwxRound::Round(pPeak->GetRFU()),
       pPeak->GetTime());
   if(dBPS > 1.0)
   {
     sToolTip += wxString::Format("ILS Ref.: %.2f\n",dBPS);
   }
-  sToolTip += wxString::Format("Channel: %s",sChannelName.c_str());
+  sToolTip += wxString::Format("Channel: %ls",sChannelName.wc_str());
   if(!pPeak->IsAllele())
   {
     wxString sLocus = pPeak->GetLocusName();
     wxString sAllele = pPeak->GetAlleleName();
     if(pPeak->IsOffLadder())
     {
-      sAllele.Append(_T(OFF_LADDER));
+      sAllele.Append(OFF_LADDER);
     }
     else if(pPeak->IsOffLadderAccepted())
     {
-      sAllele.Append(_T(OFF_LADDER_ACCEPTED));
+      sAllele.Append(OFF_LADDER_ACCEPTED);
     }
 
     if(!( sLocus.IsEmpty() || sAllele.IsEmpty() ))
@@ -669,22 +669,21 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
       double dBPSresid = pPeak->GetBPS();
       int nBPS = nwxRound::Round(dBPSresid);
       sToolTip += wxString::Format(
-        _T("\nLocus: %s\n"
-           "Allele: %s"),
-           sLocus.c_str(),
-           sAllele.c_str()
+				   "\nLocus: %ls\nAllele: %ls",
+           sLocus.wc_str(),
+           sAllele.wc_str()
            );
       if(nBPS)
       {
         sToolTip += wxString::Format(
-          _T("\nAllele BPS: %d"),
+          "\nAllele BPS: %d",
            nBPS);
 
         dBPSresid -= (double)nBPS;
         if( dBPSresid > RESIDUAL_THRESHOLD || dBPSresid < -RESIDUAL_THRESHOLD )
         {
           sToolTip += wxString::Format(
-            _T("\nResidual: %.3f"),dBPSresid);
+            "\nResidual: %.3f",dBPSresid);
         }
       }
     }
@@ -717,29 +716,29 @@ wxString CPanelPlot::_AlleleToolTip(
     COARpeak::FormatAlleleName(*pPeak,bAmel,false);
   if(pPeak->IsOffLadder())
   {
-    sAllele.Append(_T(OFF_LADDER));
+    sAllele.Append(OFF_LADDER);
   }
   else if(pPeak->IsOffLadderAccepted())
   {
-    sAllele.Append(_T(OFF_LADDER_ACCEPTED));
+    sAllele.Append(OFF_LADDER_ACCEPTED);
   }
 
   sToolTip = wxString::Format(
-      "Channel: %s\n",
-      sChannelName.c_str());
+      "Channel: %ls\n",
+      sChannelName.wc_str());
   if(!sLocus.IsEmpty())
   {
     sToolTip += wxString::Format(
-        "Locus: %s\n",
-        sLocus.c_str());
+        "Locus: %ls\n",
+        sLocus.wc_str());
   }
   double dBPS = pPeak->GetBPS();
   int nBPS = nwxRound::Round(dBPS);
   double dBPSresid = dBPS - (double)nBPS;
   sToolTip += wxString::Format(
-      "Allele: %s\n"
+      "Allele: %ls\n"
       "BPS: %d\n",
-    sAllele.c_str(),
+    sAllele.wc_str(),
     nBPS
     );
 
@@ -933,7 +932,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
           : pKitColors->GetColorChannel(nChannel);
         sChannelName =
           (pChannelColor == NULL)
-          ? wxString::Format(_T("%d"),nChannel)
+          ? wxString::Format("%d",nChannel)
           : pChannelColor->m_sDyeName;
         if(bLadder)
         {
@@ -942,7 +941,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
         _BuildPeakLabels(
           pp, colourData,  sChannelName,nChannel,nLabelType);
         n = (pa == NULL) ? 0 : pa->size();
-        sLabel = _T("A");
+        sLabel = "A";
         for(j = 0; j < n; j++)
         {
           const CArtifact *pArt = pa->at(j);
@@ -995,7 +994,7 @@ void CPanelPlot::_BuildOARlabels()
     wxString sLocus;
     wxString sToolTip;
     wxString sChannelName;
-    const wxString sA(_T("A"));
+    const wxString sA("A");
     size_t n;
     size_t j;
     size_t nChannelCount = (pSample == NULL) ? 0 : m_pData->GetChannelCount();
@@ -1022,7 +1021,7 @@ void CPanelPlot::_BuildOARlabels()
           :pKitColors->GetColorChannel(nChannel) );
         sChannelName =
           (pChannelColor == NULL)
-          ? wxString::Format(_T("%d"),nChannel)
+          ? wxString::Format("%d",nChannel)
           : pChannelColor->m_sDyeName;
         const wxColour &colour(m_pColors->GetColor(
           m_pData->GetKitName(),ANALYZED_DATA,nChannel));
@@ -1127,7 +1126,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
           const wxColour &colour(m_pColors->GetColor(
             m_pData->GetKitName(),ANALYZED_DATA,nChannel));
           nx = (pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1;
-          sToolTip = _T("Click here to zoom to ");
+          sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
           nwxPointLabel label(
             pLocus->GetName(),(double) nx,0.0,colour,sToolTip);
@@ -1827,8 +1826,8 @@ wxMenuItem *CPanelPlot::GetMenuItem(wxMenu *p)
     pMenuItem = new nwxMenuItem(
       p,                    // wxMenu *parent
       m_nMenuOffset,        // id
-      _T("Plot Menu"),      // text
-      _T(""),               // help
+      "Plot Menu",      // text
+      "",               // help
       wxITEM_NORMAL,        // wxItemKind
       m_pMenu);             // wxMenu *subMenu
     auto_ptr<nwxMenuItem> x(pMenuItem);
@@ -1899,8 +1898,8 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
     wxString s;
     int nCurve = ID_GET_PLOT_NUMBER(m_nMenuOffset);
     s.Printf(
-      _T("CPanelPlot::MenuEvent() id, "
-        "%d, is out of range, [%d,%d], curve # %d"),
+      "CPanelPlot::MenuEvent() id, "
+        "%d, is out of range, [%d,%d], curve # %d",
       nID,IDmenuPlotBase + 1, IDmenuPlot_MAX - 1,nCurve);
     wxASSERT_MSG(0,s);
     mainApp::LogMessage(s);

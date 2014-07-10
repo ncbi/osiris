@@ -416,7 +416,7 @@ void CSplitterCellHistory::_BuildWindowSkeleton(
   m_pPanelBottom = new wxPanel(this);
 
   m_pPanelHistory = new CPanelHistory(setDateTime,m_pPanelTop,IDhistoryPanel);
-  m_pLabelCurrent = new wxStaticText(m_pPanelBottom,wxID_ANY,_T("Current"));
+  m_pLabelCurrent = new wxStaticText(m_pPanelBottom,wxID_ANY,"Current");
 
   wxFont fn = m_pLabelCurrent->GetFont();
   int nPointSize = fn.GetPointSize();
@@ -634,9 +634,9 @@ void CSplitterCellHistory::_OnScroll(wxCommandEvent &e)
   }
   else
   {
-    const wxChar *ps = _T(
-      "CSplitterCellHistory::_OnScroll\n"
-      "object is not a scrolled window");
+    const wxChar *ps =
+      wxS("CSplitterCellHistory::_OnScroll\n"
+					"object is not a scrolled window");
     wxASSERT_MSG(0,ps);
     mainApp::LogMessage(ps);
   }

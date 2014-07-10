@@ -37,15 +37,15 @@
 #include <wx/sizer.h>
 
 #define AFTER_FILE_NAMES(s,sNewFile) \
-  s.Append(_T("contains a newer file,\n  ")); \
+  s.Append("contains a newer file,\n  "); \
   s.Append(sNewFile); \
-  s.Append(_T("\n\nWould you like to open the newer file?")) \
+  s.Append("\n\nWould you like to open the newer file?") \
 
 
 CDialogPromptNewerFile::CDialogPromptNewerFile(
   wxWindow *parent, const SET_FILE_NAMES &setFileNames, const wxString &sNewest) :
     wxDialog(
-      parent,wxID_ANY,_T("Newer file available"),
+      parent,wxID_ANY,"Newer file available",
       wxDefaultPosition, wxDefaultSize,
       mainApp::DIALOG_STYLE)
 {
@@ -54,20 +54,20 @@ CDialogPromptNewerFile::CDialogPromptNewerFile(
   sPrompt.Alloc(1024);
   const wxChar *ButtonText[4] = 
   {
-    _T("Open the newer file, also"),
-    _T("Open the selected files"),
-    _T("Do not open any of the above files"),
-    _T("View folder before deciding")
+    wxS("Open the newer file, also"),
+    wxS("Open the selected files"),
+    wxS("Do not open any of the above files"),
+    wxS("View folder before deciding")
   };
   SetupURL(fnNew);
 
-  sPrompt = _T("The folder containing the selected files:\n");
+  sPrompt = "The folder containing the selected files:\n";
   for(SET_FILE_NAMES::const_iterator itr = setFileNames.begin(); itr != setFileNames.end(); ++itr)
   {
     wxFileName fn(*itr);
-    sPrompt.Append(_T("  "));
+    sPrompt.Append("  ");
     sPrompt.Append(fn.GetFullName());
-    sPrompt.Append(_T("\n"));
+    sPrompt.Append("\n");
   }
   AFTER_FILE_NAMES(sPrompt,fnNew.GetFullName());
   Setup(sPrompt,ButtonText);
@@ -76,7 +76,7 @@ CDialogPromptNewerFile::CDialogPromptNewerFile(
 CDialogPromptNewerFile::CDialogPromptNewerFile(
   wxWindow *parent, const wxString &sFileName, const wxString &sNewest) :
     wxDialog(
-      parent,wxID_ANY,_T("Newer file available"),
+      parent,wxID_ANY,"Newer file available",
       wxDefaultPosition, wxDefaultSize,
       mainApp::DIALOG_STYLE)
 {
@@ -86,16 +86,16 @@ CDialogPromptNewerFile::CDialogPromptNewerFile(
   wxString sPrompt;
   const wxChar *ButtonText[4] = 
   {
-    _T("Open the newer file"),   // yes
-    _T("Open the selected file"), // no
-    _T("Do not open either file"), // cancel
-    _T("View folder before deciding") // view
+    wxS("Open the newer file"),        // yes
+		wxS("Open the selected file"),     // no
+		wxS("Do not open either file"),    // cancel
+		wxS("View folder before deciding") // view
   };
   SetupURL(fn2);
   sPrompt.Alloc(1024);
-  sPrompt = _T("The folder containing the selected file,\n  ");
+  sPrompt = "The folder containing the selected file,\n  ";
   sPrompt.Append(fn1.GetFullName());
-  sPrompt.Append(_T("\n"));
+  sPrompt.Append("\n");
   AFTER_FILE_NAMES(sPrompt,fn2.GetFullName());
   Setup(sPrompt,ButtonText);
 }
@@ -107,10 +107,10 @@ void CDialogPromptNewerFile::Setup(const wxString &sPrompt, const wxChar *Button
 
   wxStaticText *pPrompt = new wxStaticText(this,wxID_ANY,sPrompt);
   wxButton *pButtons[4];
-  pButtons[0] = new wxButton(this,wxID_YES,_T("Yes"));
-  pButtons[1] = new wxButton(this,wxID_NO,_T("No"));
-  pButtons[2] = new wxButton(this,wxID_CANCEL,_T("Cancel"));
-  pButtons[3] = new wxButton(this,IDbuttonView,_T("View"));
+  pButtons[0] = new wxButton(this,wxID_YES,"Yes");
+  pButtons[1] = new wxButton(this,wxID_NO,"No");
+  pButtons[2] = new wxButton(this,wxID_CANCEL,"Cancel");
+  pButtons[3] = new wxButton(this,IDbuttonView,"View");
   wxBoxSizer *pSizerAll = new wxBoxSizer(wxVERTICAL);
   wxFlexGridSizer *pSizerButtons = new wxFlexGridSizer(4,2,ID_BORDER, ID_BORDER);
   for(size_t i = 0; i < 4; i++)
@@ -135,7 +135,7 @@ void CDialogPromptNewerFile::SetupURL(const wxFileName &fn)
 {
   const wxString sDir = fn.GetPath();
   m_sDirURL.Alloc(sDir.Len() + 8);
-  m_sDirURL = _T("file:///");
+  m_sDirURL = "file:///";
   m_sDirURL.Append(sDir);
 }
 

@@ -83,11 +83,11 @@ CDialogAcceptAllele::CDialogAcceptAllele(
   CPanelUserID *pPanelUser = new CPanelUserID(
     this,wxID_ANY,wxID_ANY,m_pRev,USER_FLAG,!bAllowUserOverride);
 
-  wxString sTitle(_T("Accept Alleles for "));
+  wxString sTitle("Accept Alleles for ");
   sTitle.Append(pLocus->GetName());
   if(!sSampleName.IsEmpty())
   {
-    sTitle.Append(_T(" on "));
+    sTitle.Append(" on ");
     sTitle.Append(sSampleName);
   }
   SetTitle(sTitle);

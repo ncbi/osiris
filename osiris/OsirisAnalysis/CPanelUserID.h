@@ -46,7 +46,7 @@ public:
     wxWindow *parent, 
     wxWindowID id = wxID_ANY,
     bool bReadOnly = true,
-    const wxString &value = _T(""));
+    const wxString &value = "");
   virtual ~CTextUserID();
   //
   //  window to be enabled when the text field is not empty
@@ -78,7 +78,7 @@ public:
     IAppendReview *pReview = NULL,
     int nFlag = 0,
     bool bUserReadOnly = false,
-    const wxString &value = _T(""));
+    const wxString &value = "");
   virtual ~CPanelUserID();
   CTextUserID *GetTextCtrl()
   {

@@ -142,7 +142,7 @@ void CPageParameters::_LayoutPage()
   m_pSizerType = new wxBoxSizer(wxVERTICAL);
 
   m_pLabelNames = new wxStaticText(this,wxID_ANY,
-    _T("External parameters"));
+    "External parameters");
   m_pListNames = new wxListBox(this,wxID_ANY,
     wxDefaultPosition, wxDefaultSize,
     0,NULL,
@@ -153,7 +153,7 @@ void CPageParameters::_LayoutPage()
   m_pDescription = _CreateTextCtrl(this,wxID_ANY);
 
   m_pLabelType = new wxStaticText(this,wxID_ANY,
-    _T("Parameter type"));
+    "Parameter type");
   wxWindow *pWinType = NULL;
   if(m_bReadOnly)
   {
@@ -229,7 +229,7 @@ bool CPageParameters::_TransferParameterDataToWindow()
   if(!m_pListNames->GetCount())
   {
     // should NEVER HAPPEN
-    wxASSERT_MSG(0,_T("No parameters found."));
+    wxASSERT_MSG(0,"No parameters found.");
     bRtn = false;
     Layout();
   }
@@ -239,7 +239,7 @@ bool CPageParameters::_TransferParameterDataToWindow()
      == NULL)
   {
     // should NEVER happen
-    wxASSERT_MSG(0,_T("Cannot find param"));
+    wxASSERT_MSG(0,"Cannot find param");
     bRtn = false;
     Layout();
   }
@@ -290,7 +290,7 @@ void CPageParameters::_SetupTypeChoice(bool bChanged)
     if(m_pLabelChoices == NULL)
     {
       m_pLabelChoices = new wxStaticText(this,wxID_ANY,
-        _T("Enter values to be displayed in pulldown menu"));
+        "Enter values to be displayed in pulldown menu");
       m_pChoices = _CreateTextCtrl(this,wxID_ANY,
         wxEmptyString,
         wxTE_MULTILINE | wxHSCROLL);
@@ -334,11 +334,11 @@ void CPageParameters::_SetupTypeNumber(bool bChanged, bool bInteger)
     if(m_pLabelMin == NULL)
     {
       m_pLabelMin = new wxStaticText(
-        this,wxID_ANY,_T("Min."));
+        this,wxID_ANY,"Min.");
       m_pMin = _CreateTextCtrl(
         this,wxID_ANY);
       m_pLabelMax = new wxStaticText(
-        this,wxID_ANY,_T("Max."));
+        this,wxID_ANY,"Max.");
       m_pMax = _CreateTextCtrl(
         this,wxID_ANY);
       m_pSizerTypeNumber = new wxFlexGridSizer(
@@ -388,7 +388,7 @@ void CPageParameters::_SetupTypeInputFile(bool bChanged)
         wxDefaultSize,asLoc,
         wxCB_DROPDOWN);
       m_pButtonBrowse = new wxButton(
-        this,IDbrowseInput,_T("Browse..."),
+        this,IDbrowseInput,"Browse...",
         wxDefaultPosition, wxDefaultSize, 
         wxBU_EXACTFIT );
       m_pLabelExt = new wxStaticText(
@@ -398,7 +398,7 @@ void CPageParameters::_SetupTypeInputFile(bool bChanged)
       m_pCheckOverrideExtension = new wxCheckBox(this,wxID_ANY,
         CDialogExportSetup::LABEL_ALLOW_OVERRIDE);
       m_pCheckRequired = new wxCheckBox(this,wxID_ANY,
-        _T("A file name is required"));
+        "A file name is required");
       m_pSizerInputFile = new wxBoxSizer(wxHORIZONTAL);
       m_pSizerInputFile->Add(m_pComboLocation,1,wxEXPAND);
       m_pSizerInputFile->Add(m_pButtonBrowse,
@@ -476,11 +476,11 @@ void CPageParameters::_SetupTypeCheckbox(bool bChanged)
     if(m_pLabelChecked == NULL)
     {
       m_pLabelChecked = new wxStaticText(
-        this,wxID_ANY,_T("Parameter value if checked"));
+        this,wxID_ANY,"Parameter value if checked");
       m_pCheckedValue = _CreateTextCtrl(
         this,wxID_ANY);
       m_pLabelUnchecked = new wxStaticText(
-        this,wxID_ANY,_T("Parameter value if not checked"));
+        this,wxID_ANY,"Parameter value if not checked");
       m_pUncheckedValue = _CreateTextCtrl(
         this,wxID_ANY);
     }
@@ -603,7 +603,7 @@ void CPageParameters::OnBrowseFolder(wxCommandEvent &)
     sLoc.Empty();
   }
   wxDirDialog DirInput(this,
-        _T("Default Input File Folder"),sLoc,
+        "Default Input File Folder",sLoc,
         wxDD_DIR_MUST_EXIST | wxDD_DEFAULT_STYLE | wxRESIZE_BORDER);
   if(DirInput.ShowModal() == wxID_OK)
   {
@@ -669,7 +669,7 @@ bool CPageParameters::_TransferCurrentParam()
     if(s.IsEmpty() && (n != CXSLParam::IGNORE_PARAM))
     {
       sError.Append(
-        _T("A description of the parameter is required.\n"));
+        "A description of the parameter is required.\n");
       SET_IFNULL(pFocus,m_pDescription);
     }
     else
@@ -691,11 +691,11 @@ bool CPageParameters::_TransferCurrentParam()
         m_pParamCurrent->SetNoMin();
         SET_IFNULL(pFocus,m_pMin);
         sError.Append(
-          _T("Minimum value should be an integer or empty.\n"));
+          "Minimum value should be an integer or empty.\n");
       }
       else
       {
-        dMin = atof(s.c_str());
+        dMin = atof(s.utf8_str());
         m_pParamCurrent->SetMin(dMin);
       }
       s = m_pMax->GetValue();
@@ -709,18 +709,18 @@ bool CPageParameters::_TransferCurrentParam()
         m_pParamCurrent->SetNoMax();
         SET_IFNULL(pFocus,m_pMax);
         sError.Append(
-          _T("Maximum value should be an integer or empty.\n"));
+          "Maximum value should be an integer or empty.\n");
       }
       else
       {
-        dMax = atof(s.c_str());
+        dMax = atof(s.utf8_str());
         m_pParamCurrent->SetMax(dMax);
         if(m_pParamCurrent->GetHasMin() &&
           (dMax <= dMin))
         {
           SET_IFNULL(pFocus,m_pMin);
           sError.Append(
-            _T("Maximum value should be greater than the minumum.\n"));
+            "Maximum value should be greater than the minumum.\n");
         }
       }
       break;
@@ -735,11 +735,11 @@ bool CPageParameters::_TransferCurrentParam()
       {
         SET_IFNULL(pFocus,m_pMin);
         sError.Append(
-          _T("Minimum value should be a number or empty.\n"));
+          "Minimum value should be a number or empty.\n");
       }
       else
       {
-        dMin = atof(s.c_str());
+        dMin = atof(s.utf8_str());
         m_pParamCurrent->SetMin(dMin);
       }
       s = m_pMax->GetValue();
@@ -752,18 +752,18 @@ bool CPageParameters::_TransferCurrentParam()
       {
         SET_IFNULL(pFocus,m_pMax);
         sError.Append(
-          _T("Maximum value should be a number or empty.\n"));
+          "Maximum value should be a number or empty.\n");
       }
       else
       {
-        dMax = atof(s.c_str());
+        dMax = atof(s.utf8_str());
         m_pParamCurrent->SetMax(dMax);
         if(m_pParamCurrent->GetHasMax() &&
           (dMax <= dMin))
         {
           SET_IFNULL(pFocus,m_pMin);
           sError.Append(
-            _T("Maximum value should be greater than the minumum.\n"));
+            "Maximum value should be greater than the minumum.\n");
         }
       }
       break;
@@ -772,16 +772,16 @@ bool CPageParameters::_TransferCurrentParam()
       {
         s = m_pChoices->GetValue();
         s.Trim();
-        s.Replace(_T("\r\n"),_T("\n"),true); // shouldn't happen
-        s.Replace(_T("\r"),_T("\n"),true);
+        s.Replace("\r\n","\n",true); // shouldn't happen
+        s.Replace("\r","\n",true);
         vector<wxString> as;
-        nwxString::Split(s.c_str(),&as,_T("\n"));
+        nwxString::Split(s.utf8_str(),&as,"\n");
         nwxString::Trim(&as,false);
         if(as.empty())
         {
           SET_IFNULL(pFocus,m_pChoices);
           sError.Append(
-            _T("One or more choices should be entered.\n"));
+            "One or more choices should be entered.\n");
         }
         else
         {
@@ -799,8 +799,8 @@ bool CPageParameters::_TransferCurrentParam()
         {
           SET_IFNULL(pFocus,m_pCheckedValue);
           sError.Append(
-            _T("The values for checked and "
-              "unchecked should not match.\n"));
+            "The values for checked and "
+              "unchecked should not match.\n");
         }
         else
         {
@@ -839,7 +839,7 @@ bool CPageParameters::_TransferCurrentParam()
         else
         {
           sError.Append(
-            _T("The default input file location does not exist.\n"));
+            "The default input file location does not exist.\n");
         }
         if(sSet.Len())
         {
@@ -887,16 +887,16 @@ bool CPageParameters::TransferDataFromWindow()
       pParam = m_pExportEdit->FindParam(itr->first);
       if(pParam == NULL)
       {
-        sError.Append(_T("Cannot find parameter information for "));
+        sError.Append("Cannot find parameter information for ");
         sError.Append(itr->first);
-        sError.Append(_T("\n"));
+        sError.Append("\n");
       }
       else if(pParam->GetDescription().IsEmpty()
         && (pParam->GetTypeEnum() != CXSLParam::IGNORE_PARAM))
       {
-        sError.Append(_T("There is no description for parameter "));
+        sError.Append("There is no description for parameter ");
         sError.Append(itr->first);
-        sError.Append(_T("\n"));
+        sError.Append("\n");
         if(pSetCurrent == NULL)
         {
           pSetCurrent = pParam;

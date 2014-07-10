@@ -38,12 +38,12 @@ class COARmessages;
 class COARbaseLocus : public nwxXmlPersist
 {
 public:
-  COARbaseLocus() : m_vnMessages(_T("MessageNumber"))
+  COARbaseLocus() : m_vnMessages("MessageNumber")
   {
     RegisterAll(true);
   }
   COARbaseLocus(const COARbaseLocus &x) : 
-    m_vnMessages(_T("MessageNumber"))
+    m_vnMessages("MessageNumber")
   {
     RegisterAll(true);
     (*this) = x;

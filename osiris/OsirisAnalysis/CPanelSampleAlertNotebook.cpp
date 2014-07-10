@@ -47,15 +47,15 @@
 #define S_CHANNEL "Channel "
 #define S_NOTES "Notes"
 
-const wxString CPanelSampleAlertNotebook::g_sLabelDirNotices(_T(S_DIR COAR_NOTICE_DISPLAY_CAP));
-const wxString CPanelSampleAlertNotebook::g_sLabelSampleNotices(_T(S_SAMPLE COAR_NOTICE_DISPLAY_CAP));
-const wxString CPanelSampleAlertNotebook::g_sLabelILSNotices(_T(S_ILS COAR_NOTICE_DISPLAY_CAP));
-const wxString CPanelSampleAlertNotebook::g_sLabelChannelNotices(_T(S_CHANNEL COAR_NOTICE_DISPLAY_CAP));
+const wxString CPanelSampleAlertNotebook::g_sLabelDirNotices(S_DIR COAR_NOTICE_DISPLAY_CAP);
+const wxString CPanelSampleAlertNotebook::g_sLabelSampleNotices(S_SAMPLE COAR_NOTICE_DISPLAY_CAP);
+const wxString CPanelSampleAlertNotebook::g_sLabelILSNotices(S_ILS COAR_NOTICE_DISPLAY_CAP);
+const wxString CPanelSampleAlertNotebook::g_sLabelChannelNotices(S_CHANNEL COAR_NOTICE_DISPLAY_CAP);
 
-const wxString CPanelSampleAlertNotebook::g_sLabelDir(_T(S_DIR));
-const wxString CPanelSampleAlertNotebook::g_sLabelSample(_T(S_SAMPLE));
-const wxString CPanelSampleAlertNotebook::g_sLabelILS(_T(S_ILS));
-const wxString CPanelSampleAlertNotebook::g_sLabelChannel(_T(S_CHANNEL));
+const wxString CPanelSampleAlertNotebook::g_sLabelDir(S_DIR);
+const wxString CPanelSampleAlertNotebook::g_sLabelSample(S_SAMPLE);
+const wxString CPanelSampleAlertNotebook::g_sLabelILS(S_ILS);
+const wxString CPanelSampleAlertNotebook::g_sLabelChannel(S_CHANNEL);
 
 const wxString * const CPanelSampleAlertNotebook::g_psLabels[SA_WINDOW_COUNT] =
 {
@@ -216,14 +216,14 @@ bool CPanelSampleAlertNotebook::Validate()
   if(!m_bReadOnly)
   {
     wxString sMessage;
-    const wxChar *LF(_T("\n"));
+    const wxChar *LF(wxS("\n"));
     int nCount = 0;
     int nPage = -1;
     for(int i = 0; i < SA_WINDOW_COUNT; i++)
     {
       if(IsAlertsModified(i) && !IsNotesModified(i))
       {
-        sMessage += _T("You haven't entered notes for ");
+        sMessage += "You haven't entered notes for ";
         sMessage += *g_psLabels[i];
         sMessage += LF;
         nCount++;
@@ -239,7 +239,7 @@ bool CPanelSampleAlertNotebook::Validate()
       {
         sMessage += LF;
       }
-      sMessage += _T("Do you wish to continue?");
+      sMessage += "Do you wish to continue?";
       bRtn = mainApp::Confirm(this,sMessage);
       if(!bRtn)
       {

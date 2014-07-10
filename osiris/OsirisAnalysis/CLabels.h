@@ -45,12 +45,9 @@ private:
 
 #ifdef __C_LABELS_CPP__
 
-const wxChar * const CLabels::NOTES(
-  _T("Review, Acceptance, and Notes"));
-const wxChar * const CLabels::ADDITIONAL_NOTES(
-  _T("Enter additional notes"));
-const wxChar * const CLabels::NOTES_AFTER_REVIEW(
-  _T("\n\nNotes:\n"));
+const wxChar * const CLabels::NOTES(wxS("Review, Acceptance, and Notes"));
+const wxChar * const CLabels::ADDITIONAL_NOTES(wxS("Enter additional notes"));
+const wxChar * const CLabels::NOTES_AFTER_REVIEW(wxS( "\n\nNotes:\n"));
 
 #endif
 #endif

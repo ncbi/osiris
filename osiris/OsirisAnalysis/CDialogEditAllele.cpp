@@ -81,12 +81,12 @@ CDialogEditAllele::CDialogEditAllele(
 void CDialogEditAllele::_InitCommon(
   const wxString &sLocusName, const wxString &sSampleName)
 {
-  wxString sTitle(_T("Edit Alleles for "));
+  wxString sTitle("Edit Alleles for ");
   wxBoxSizer *pSizer;
   sTitle.Append(sLocusName);
   if(!sSampleName.IsEmpty())
   {
-    sTitle.Append(_T(" on "));
+    sTitle.Append(" on ");
     sTitle.Append(sSampleName);
   }
   SetTitle(sTitle);

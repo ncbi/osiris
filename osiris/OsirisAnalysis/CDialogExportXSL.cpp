@@ -53,13 +53,13 @@ CExportFiles *CDialogExportXSL::GetGlobal()
   }
   else if(CExportFiles::IsGlobalLocked())
   {
-    m_sError = _T(
+    m_sError =
       "The export file setup is locked by another user,\n"
-      "please try again later");
+      "please try again later";
   }
   else
   {
-    m_sError = _T("Cannot retrieve export file information.");
+    m_sError = "Cannot retrieve export file information.";
   }
   return pXSL;
 }
@@ -81,7 +81,7 @@ CDialogExportXSL::CDialogExportXSL(wxWindow *parent) :
   wxDialog(
       parent,
       wxID_ANY,
-      _T("Export File Types"),
+      "Export File Types",
       wxDefaultPosition,
       wxDefaultSize,
       mainApp::DIALOG_STYLE),
@@ -104,13 +104,13 @@ CDialogExportXSL::CDialogExportXSL(wxWindow *parent) :
 
   m_pLabelNone1 = new wxStaticText(
     this,wxID_ANY,
-    _T("There are no export file types available."));
+    "There are no export file types available.");
   m_pLabelNone2 = new wxStaticText(
     this,wxID_ANY,
-    _T("Select \"" LABEL_NEW "\" below to create one."));
+    "Select \"" LABEL_NEW "\" below to create one.");
   m_pLabelList = new wxStaticText(
     this,wxID_ANY,
-    _T("Available export file types"));
+    "Available export file types");
   m_pListBox = new wxListBox(
     this, wxID_ANY,
     wxDefaultPosition, wxDefaultSize,
@@ -119,10 +119,10 @@ CDialogExportXSL::CDialogExportXSL(wxWindow *parent) :
 
   m_pSizerList = new wxBoxSizer(wxVERTICAL);
 
-  pButtonNew = new wxButton(this,IDadd,_T(LABEL_NEW));
-  m_pButtonRemove = new wxButton(this,IDremove,_T("Remove..."));
-  m_pButtonEdit = new wxButton(this,IDedit,_T("Edit..."));
-  pButtonDone = new wxButton(this,wxID_OK,_T("Done"));
+  pButtonNew = new wxButton(this,IDadd,LABEL_NEW);
+  m_pButtonRemove = new wxButton(this,IDremove,"Remove...");
+  m_pButtonEdit = new wxButton(this,IDedit,"Edit...");
+  pButtonDone = new wxButton(this,wxID_OK,"Done");
 
   pSizerButton = new wxGridSizer(1,0,ID_BORDER,0);
   pSizerButton->Add(pButtonNew,0,wxEXPAND,0);
@@ -213,18 +213,18 @@ bool CDialogExportXSL::ShowLockProblem(CExportFiles *pXSL, bool bPrompt)
   bool bRtn = true;
   if(pXSL->IsLocked())
   {
-    sMsg = _T("Export configuration is locked by another user.");
+    sMsg = "Export configuration is locked by another user.";
   }
   else
   {
-    sMsg = _T(
+    sMsg =
       "Cannot lock export configuration,\n"
-      "possibly due to access privileges");
+      "possibly due to access privileges";
   }
   if(bPrompt)
   {
-    sMsg.Append(_T("\n\nWould you like to view this file type?"));
-    wxMessageDialog msg(this,sMsg,_T("Alert"),wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+    sMsg.Append("\n\nWould you like to view this file type?");
+    wxMessageDialog msg(this,sMsg,"Alert",wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
     msg.CenterOnParent();
     int n = msg.ShowModal();
     bRtn = (n == wxID_YES) || (n == wxID_OK);
@@ -248,8 +248,8 @@ void CDialogExportXSL::OnNew(wxCommandEvent &)
   {
     wxString sError =
       wxString::Format(
-      _T("You have reached the maximum number \n"
-         "of export file formats: %d"),MAX_EXPORTS);
+      "You have reached the maximum number \n"
+         "of export file formats: %d",MAX_EXPORTS);
     mainApp::ShowError(sError,this);
   }
   else if(pXSL->LockExportFile())
@@ -284,10 +284,10 @@ void CDialogExportXSL::OnDelete(wxCommandEvent &)
     CIncrementer x(m_nLock);
     wxString sMsg;
     wxString sSelect = m_pListBox->GetStringSelection();
-    sMsg = _T("Do you wish to delete\n");
+    sMsg = "Do you wish to delete\n";
     sMsg.Append(sSelect);
     wxMessageDialog msg(
-      this,sMsg,_T("Delete File Type"),
+      this,sMsg,"Delete File Type",
       wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
     msg.CentreOnParent();
     int n = msg.ShowModal();
@@ -295,7 +295,7 @@ void CDialogExportXSL::OnDelete(wxCommandEvent &)
     {}
     else if(!pXSL->Delete(sSelect))
     {
-      sMsg = _T("An error occurred when attempting to delete\n");
+      sMsg = "An error occurred when attempting to delete\n";
       sMsg.Append(sSelect);
       mainApp::ShowError(sMsg,this);
     }
@@ -323,10 +323,10 @@ void CDialogExportXSL::OnEdit(wxCommandEvent &)
     CXSLExportFileType *pType = pXSL->Find(sSelect);
     if(pType == NULL)
     {
-      mainApp::ShowError(_T(
+      mainApp::ShowError(
         "Cannot find file type.\n"
         "It was possibly deleted by another user."
-        ),this);
+        ,this);
     }
     else if(pXSL->LockExportFile())
     {

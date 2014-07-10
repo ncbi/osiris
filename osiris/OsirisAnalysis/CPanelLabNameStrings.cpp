@@ -97,34 +97,34 @@ CPanelLabNameStrings::CPanelLabNameStrings(
 {
   wxArrayString as;
   as.Alloc(2);
-  as.Add(_T("File name"));
-  as.Add(_T("Sample name"));
+  as.Add("File name");
+  as.Add("Sample name");
 
   this->m_pRadioNameType = new wxRadioBox(
-    this,wxID_ANY,_T("Search by:"),wxDefaultPosition, wxDefaultSize,as);
+    this,wxID_ANY,"Search by:",wxDefaultPosition, wxDefaultSize,as);
   m_pChoiceBook = new nwxChoicebook(this);
   nwxTextPanel *pPanel = new nwxTextPanel(m_pChoiceBook,wxID_ANY);
   m_pTextLadder = pPanel->GetTextCtrl();
-  m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_LADDER),true);
+  m_pChoiceBook->AddPage(pPanel,CLabNameStrings::TYPE_LADDER,true);
 
   // get count immediately before adding positive control
 
   m_nPosCtrlNdx = (int)m_pChoiceBook->GetPageCount();
   pPanel = new nwxTextPanel(m_pChoiceBook,wxID_ANY);
   m_pTextPos = pPanel->GetTextCtrl();
-  m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_POS_CONTROL));
+  m_pChoiceBook->AddPage(pPanel,CLabNameStrings::TYPE_POS_CONTROL);
 
   pPanel = new nwxTextPanel(m_pChoiceBook,wxID_ANY);
   m_pTextNeg = pPanel->GetTextCtrl();
-  m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_NEG_CONTROL));
+  m_pChoiceBook->AddPage(pPanel,CLabNameStrings::TYPE_NEG_CONTROL);
 
   pPanel = new nwxTextPanel(m_pChoiceBook,wxID_ANY);
   m_pTextPossibleMixture = pPanel->GetTextCtrl();
-  m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_POSSIBLE_MIXTURE));
+  m_pChoiceBook->AddPage(pPanel,CLabNameStrings::TYPE_POSSIBLE_MIXTURE);
 
   pPanel = new nwxTextPanel(m_pChoiceBook,wxID_ANY);
   m_pTextSingleSource = pPanel->GetTextCtrl();
-  m_pChoiceBook->AddPage(pPanel,_T(CLabNameStrings::TYPE_SINGLE_SOURCE));
+  m_pChoiceBook->AddPage(pPanel,CLabNameStrings::TYPE_SINGLE_SOURCE);
 
   //  2/11/09 added specimen types
 
@@ -134,7 +134,7 @@ CPanelLabNameStrings::CPanelLabNameStrings(
   m_pvTextSpecimenTypes.reserve(nTYPES);
   for(i = 0; i < nTYPES; ++i)
   {
-    sType = _T(CLabSpecimenCategory::TYPES[i]);
+    sType = CLabSpecimenCategory::TYPES[i];
     pPanel = new nwxTextPanel(m_pChoiceBook, wxID_ANY);
     m_pvTextSpecimenTypes.push_back(pPanel->GetTextCtrl());
     m_pChoiceBook->AddPage(pPanel,sType);
@@ -145,7 +145,7 @@ CPanelLabNameStrings::CPanelLabNameStrings(
   m_pTextStdCtrlName = new wxTextCtrl(this,wxID_ANY);
   m_pLabelNameString = new wxStaticText(this,wxID_ANY,
     CPanelLabSettings::g_sFileNameStrPrompt);
-  m_pLabelStdCtrlName = new wxStaticText(this,wxID_ANY,_T("Standard Control Name"));
+  m_pLabelStdCtrlName = new wxStaticText(this,wxID_ANY,"Standard Control Name");
   m_pSizer = new wxBoxSizer(wxVERTICAL);
 
   m_pSizer->Add(this->m_pRadioNameType,0, wxALL | wxALIGN_LEFT,ID_BORDER);
@@ -193,12 +193,12 @@ bool CPanelLabNameStrings::TransferDataFromWindow()
     {
       s = ptext[i]->GetValue();
       vector<wxString> *pvs(pSyn[i]->GetVectorPtr());
-      if(nwxString::SplitLines(s.c_str(),pvs,true,true))
+      if(nwxString::SplitLines(s.utf8_str(),pvs,true,true))
       {}
       else if(!ALLOW_EMPTY(i))
       {
         mainApp::ShowError(
-          _T("Please enter at least one identifier"),this);
+          "Please enter at least one identifier",this);
         nwxBookCtrlFocus::Focus(ptext[i]);
         i = COUNT; // loop exit
         bRtn = false;

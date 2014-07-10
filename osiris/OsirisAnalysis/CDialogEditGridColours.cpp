@@ -79,12 +79,12 @@ static const ROW_INFO aROWS_ATTR[] =
 {
   {
     ROW_NEEDS_ATTENTION,
-    _T(" Attributes when approval or review is needed"),
+    wxS(" Attributes when approval or review is needed"),
     GRID_ALERT_CELL
   },
   {
     ROW_EDITED,
-    _T(" Attributes when edited"),
+    wxS(" Attributes when edited"),
     GRID_EDITED_CELL | GRID_REVIEWED
   }
 };
@@ -92,42 +92,42 @@ static const ROW_INFO aROWS[] =
 {
   {
     ROW_NORMAL,
-    _T(" No alerts nor editing in sample"),
+    wxS(" No alerts nor editing in sample"),
     GRID_NORMAL         
   },
   {
     ROW_CELL_ALERT,
-    _T(" Table cell has alerts"),
+    wxS(" Table cell has alerts"),
     GRID_ALERT_CELL | GRID_ACCEPTED
   },
   {
     ROW_SAMPLE_ALERT,
-    _T(" Sample has alerts"),
+    wxS(" Sample has alerts"),
     GRID_ALERT_SAMPLE
   },
   {
     ROW_CELL_EDITED,
-    _T(" Table cell has been edited"),
+    wxS(" Table cell has been edited"),
     GRID_EDITED_CELL | GRID_REVIEWED
   },
   {
     ROW_SAMPLE_EDITED,
-    _T(" Sample has been edited"),
+    wxS(" Sample has been edited"),
     GRID_EDITED_SAMPLE
   },
   {
     ROW_CELL_ALERT_EDITED,
-    _T(" Table cell has been edited and has alerts"),
+    wxS(" Table cell has been edited and has alerts"),
     GRID_EDITED_ALERT_CELL | GRID_REVIEWED
   },
   {
     ROW_SAMPLE_ALERT_EDITED,
-    _T(" Sample has been edited and has alerts"),
+    wxS(" Sample has been edited and has alerts"),
     GRID_EDITED_ALERT_SAMPLE
   },
   {
     ROW_DISABLED,
-    _T(" Sample is disabled"),
+    wxS(" Sample is disabled"),
     GRID_DISABLED
   }
 };
@@ -304,7 +304,7 @@ void CGridAttrGrid::SetupGridColoursAttr(CParmOsiris *pParm)
 CDialogEditGridColours::~CDialogEditGridColours() {}
 
 CDialogEditGridColours::CDialogEditGridColours(mainFrame *parent) : 
-  wxDialog(parent, wxID_ANY, _T("Edit Grid Colors"),
+  wxDialog(parent, wxID_ANY, wxS("Edit Grid Colors"),
     wxDefaultPosition, wxDefaultSize,
     mainApp::DIALOG_STYLE & ~wxRESIZE_BORDER),
   m_nRowColor(-1),
@@ -330,17 +330,17 @@ CDialogEditGridColours::CDialogEditGridColours(mainFrame *parent) :
   wxSizer *pSizerButtons;
 
   pTextTop = new wxStaticText(
-    this,wxID_ANY,_T(
+    this,wxID_ANY,
     "Select a line in the lists below and use the\n"
-    "buttons to modify its colors or attributes\n\nColors"));
+    "buttons to modify its colors or attributes\n\nColors");
   m_pGridColor = new CGridColorGrid(this,wxID_ANY);
 
     
-  m_pTextFG = new wxStaticText(this,wxID_ANY,_T("Foreground Color: "));
+  m_pTextFG = new wxStaticText(this,wxID_ANY,"Foreground Color: ");
   m_pButtonFG = _CreateButton(this,IDbuttonEditFGcolor);
-  m_pTextBG = new wxStaticText(this,wxID_ANY,_T("Background Color: "));
+  m_pTextBG = new wxStaticText(this,wxID_ANY,"Background Color: ");
   m_pButtonBG = _CreateButton(this,IDbuttonEditBGcolor);
-  m_pButtonReverse = new wxButton(this,IDbuttonReverse,_T("Reverse"));
+  m_pButtonReverse = new wxButton(this,IDbuttonReverse,"Reverse");
 
   pSizer2x2 = new wxFlexGridSizer(2,2,ID_BORDER,ID_BORDER);
   pSizer2x2->Add(m_pTextFG,0,wxALIGN_CENTER_VERTICAL);
@@ -353,13 +353,13 @@ CDialogEditGridColours::CDialogEditGridColours(mainFrame *parent) :
   pSizerColors->Add(m_pButtonReverse,0,
     wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT, ID_BORDER);
 
-  pTextAttributes = new wxStaticText(this,wxID_ANY,_T("Attributes"));
+  pTextAttributes = new wxStaticText(this,wxID_ANY,"Attributes");
   m_pGridAttr = new CGridAttrGrid(this,wxID_ANY);
 
 
-  m_pToggleBold = new wxToggleButton(this,wxID_ANY,_T("Bold"));
-  m_pToggleItalic = new wxToggleButton(this,wxID_ANY,_T("Italic"));
-  m_pToggleReverse = new wxToggleButton(this,wxID_ANY,_T("Reverse"));
+  m_pToggleBold = new wxToggleButton(this,wxID_ANY,"Bold");
+  m_pToggleItalic = new wxToggleButton(this,wxID_ANY,"Italic");
+  m_pToggleReverse = new wxToggleButton(this,wxID_ANY,"Reverse");
   fnt = m_pToggleItalic->GetFont();
   fnt.SetStyle(wxFONTSTYLE_ITALIC);
   m_pToggleItalic->SetFont(fnt);
@@ -368,7 +368,7 @@ CDialogEditGridColours::CDialogEditGridColours(mainFrame *parent) :
   m_pToggleBold->SetFont(fnt);
 
   pButtonReset = new wxButton(
-    this,IDbuttonResetDefault, _T("Reset Defaults"));
+    this,IDbuttonResetDefault, "Reset Defaults");
 
   {
     CParmOsirisGlobal pParm;
@@ -492,7 +492,7 @@ ColorButton *CDialogEditGridColours::_CreateButton(wxWindow *parent,wxWindowID i
 {
   wxBitmap bm(60,16,-1);
   wxBitmapButton *pRtn = new wxBitmapButton(parent,id,bm);
-  pRtn->SetToolTip(_T("Click here to select a different color."));
+  pRtn->SetToolTip("Click here to select a different color.");
   return pRtn;
 }
 
@@ -673,7 +673,7 @@ void CDialogEditGridColours::OnGrid(wxGridEvent &e)
   {
     nRowColor = -1;
     nRowAttr = -1;
-    wxASSERT_MSG(0,_T("CDialogEditGridColours::OnGrid() unknown grid"));
+    wxASSERT_MSG(0,"CDialogEditGridColours::OnGrid() unknown grid");
   }
   _UpdateButtons(nRowColor,nRowAttr);
   e.Skip(true);

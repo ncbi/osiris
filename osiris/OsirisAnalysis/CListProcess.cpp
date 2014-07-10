@@ -59,10 +59,10 @@ bool CListProcess::TransferDataToWindow()
   long nItem;
   CDirEntry *pDirEntry;
   ClearAll();
-  InsertColumn(ITEM_DIR,_T("Directory"),wxLIST_FORMAT_LEFT);
-  InsertColumn(ITEM_START,_T("Start"),wxLIST_FORMAT_LEFT);
-  InsertColumn(ITEM_STOP,_T("Stop"),wxLIST_FORMAT_LEFT);
-  InsertColumn(ITEM_STATUS,_T("Status"),wxLIST_FORMAT_LEFT);
+  InsertColumn(ITEM_DIR,"Directory",wxLIST_FORMAT_LEFT);
+  InsertColumn(ITEM_START,"Start",wxLIST_FORMAT_LEFT);
+  InsertColumn(ITEM_STOP,"Stop",wxLIST_FORMAT_LEFT);
+  InsertColumn(ITEM_STATUS,"Status",wxLIST_FORMAT_LEFT);
   for(size_t i = 0; (i < n) && bRtn; i++)
   {
     pDirEntry = m_pDirList->At(i);

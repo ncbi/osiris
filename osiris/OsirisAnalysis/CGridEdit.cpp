@@ -113,14 +113,14 @@ bool _CGridEdit::GetBoolValue(int nRow, int nCol)
 {
   bool b = false;
   wxString s(GetCellValue(nRow,nCol));
-  b = IsTrue(s.c_str());
+  b = IsTrue(s.utf8_str());
   return b;
 }
 void _CGridEdit::SetBoolValue(int nRow, int nCol, bool b)
 {
   const char *ps = s1;
   if(!b) { ps++;}
-  SetCellValue(nRow,nCol,_T(ps));
+  SetCellValue(nRow,nCol,ps);
 }
 void _CGridEdit::ToggleBoolValue(int nRow, int nCol)
 {

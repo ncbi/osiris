@@ -40,16 +40,18 @@
 #include <time.h>
 
 
-const wxString CDirEntry::g_sSTATUS_PENDING(_T("pending"));
-const wxString CDirEntry::g_sSTATUS_DONE(_T("completed"));
-const wxString CDirEntry::g_sSTATUS_RUNNING(_T("running"));
-const wxString CDirEntry::g_sSTATUS_ERROR(_T("failed"));
-const wxString CDirEntry::g_sSTATUS_EXPORT_ERROR(_T("no export file"));
-const wxString CDirEntry::g_sSTATUS_CANCELED(_T("canceled"));
+const wxString CDirEntry::g_sSTATUS_PENDING("pending");
+const wxString CDirEntry::g_sSTATUS_DONE("completed");
+const wxString CDirEntry::g_sSTATUS_RUNNING("running");
+const wxString CDirEntry::g_sSTATUS_ERROR("failed");
+const wxString CDirEntry::g_sSTATUS_EXPORT_ERROR("no export file");
+const wxString CDirEntry::g_sSTATUS_CANCELED("canceled");
 
 const wxColour CDirEntry::g_colPENDING(128,128,128);
 const wxColour CDirEntry::g_colDONE(0,0,0);
 const wxColour CDirEntry::g_colERROR(224,0,0);
+
+const wxChar * const CDirList::DEFAULT_EXT(wxS("fsa"));
 
 wxString CDirEntry::FormatStartTime() const
 {
@@ -110,7 +112,7 @@ void CDirEntry::CleanupFiles()
 #ifdef __WXDEBUG__
   else
   {
-    wxASSERT_MSG(0,_T("Problem matching directory names"));
+    wxASSERT_MSG(0,"Problem matching directory names");
   }
 #endif
 }
@@ -136,7 +138,7 @@ const wxString &CDirEntry::GetOutputFile()
       if(m_sTimeStamp.IsEmpty())
       {
         wxASSERT_MSG(false,
-          _T("Empty time stamp in CDirEntry::GetOutputFile()"));
+          "Empty time stamp in CDirEntry::GetOutputFile()");
       }
       else
       {
@@ -145,7 +147,7 @@ const wxString &CDirEntry::GetOutputFile()
       }
     }
     sFullPath.Append(sNameBase);
-    sFullPath.Append(_T(".oar"));
+    sFullPath.Append(".oar");
     m_sOutputFile = sFullPath;
   }
   return m_sOutputFile;
@@ -154,18 +156,17 @@ const wxString &CDirEntry::GetOutputFile()
 void CDirEntry::RegisterAll(bool)
 {
   wxASSERT_MSG(sizeof(int) == sizeof(CDirEntryStatus),
-    _T("Code Error in CDirEntry::RegisterAll()"
-      "sizeof enum differs from sizeof int"));
-  RegisterWxString(_T("InputDir"),&m_sInputDir);
-  RegisterWxString(_T("OutputDir"),&m_sOutputDir);
-  RegisterWxString(_T("OutputFile"),&m_sOutputFile);
-  RegisterWxDateTimeXML(_T("StartTime"),&m_dtStart);
-  RegisterWxDateTimeXML(_T("StopTime"),&m_dtStop);
-//  RegisterWxString(_T("OAR"),&m_sOAR);
-  Register(_T("parms"),&m_parmOsiris,(void *)&m_parmOsiris);
-  RegisterWxString(_T("RunOutput"),&m_sRunOutput);
-  RegisterInt(_T("Status"),(int *)&m_nStatus);
-  RegisterLong(_T("index"),&m_nNdx);
+    "Code Error in CDirEntry::RegisterAll()"
+      "sizeof enum differs from sizeof int");
+  RegisterWxString("InputDir",&m_sInputDir);
+  RegisterWxString("OutputDir",&m_sOutputDir);
+  RegisterWxString("OutputFile",&m_sOutputFile);
+  RegisterWxDateTimeXML("StartTime",&m_dtStart);
+  RegisterWxDateTimeXML("StopTime",&m_dtStop);
+  Register("parms",&m_parmOsiris,(void *)&m_parmOsiris);
+  RegisterWxString("RunOutput",&m_sRunOutput);
+  RegisterInt("Status",(int *)&m_nStatus);
+  RegisterLong("index",&m_nNdx);
 }
 
 bool CDirEntry::LoadFromNode(wxXmlNode *p, void *pObj)
@@ -412,15 +413,15 @@ wxDirTraverseResult CDirList::OnOpenError(const wxString& openerrorname)
 void CDirList::RegisterAll(bool)
 {
   wxASSERT_MSG(sizeof(int) == sizeof(CDirListStatus),
-    _T("Code Error in CDirList::RegisterAll()"
-      "sizeof enum differs from sizeof int"));
+    "Code Error in CDirList::RegisterAll()"
+      "sizeof enum differs from sizeof int");
 
-  RegisterWxString(_T("dirInput"),&m_sDirInput);
-  RegisterWxString(_T("dirOutput"),&m_sDirOutput);
-  RegisterWxString(_T("dirOpenError"),&m_sOpenError);
-  RegisterInt(_T("status"),(int *) &m_nStatus);
-  Register(_T("parms"),&m_parmOsiris,(void *)&m_parmOsiris);
-  Register(_T("dirList"),&m_vpDir);
+  RegisterWxString("dirInput",&m_sDirInput);
+  RegisterWxString("dirOutput",&m_sDirOutput);
+  RegisterWxString("dirOpenError",&m_sOpenError);
+  RegisterInt("status",(int *) &m_nStatus);
+  Register("parms",&m_parmOsiris,(void *)&m_parmOsiris);
+  Register("dirList",&m_vpDir);
 }
 
 bool CDirList::LoadFile(const wxString &sFileName)
@@ -532,12 +533,12 @@ bool CDirList::IsTimeStamp(const wxString &s)
   {
 #define BETWEEN(n,min,max) ((n >= min) && (n <= max))
 
-    int nY = atoi(s.Left(4).c_str());
-    int nM = atoi(s.Mid(4,2).c_str());
-    int nD = atoi(s.Mid(6,2).c_str());
-    int nHH = atoi(s.Mid(9,2).c_str());
-    int nMM = atoi(s.Mid(11,2).c_str());
-    int nSS = atoi(s.Mid(13,2).c_str());
+    int nY = atoi(s.Left(4).utf8_str());
+    int nM = atoi(s.Mid(4,2).utf8_str());
+    int nD = atoi(s.Mid(6,2).utf8_str());
+    int nHH = atoi(s.Mid(9,2).utf8_str());
+    int nMM = atoi(s.Mid(11,2).utf8_str());
+    int nSS = atoi(s.Mid(13,2).utf8_str());
     // check year to see if newer than this software
     if( !BETWEEN(nY,2011,2099) )
     {
@@ -582,7 +583,7 @@ const wxString &CDirList::GetTimeStamp(int nAdd)
         t += nAdd;
       }
       struct tm *plt = localtime(&t);
-      m_sTimeStamp.Printf(_T("%04d%02d%02d_%02d%02d%02d"),
+      m_sTimeStamp.Printf("%04d%02d%02d_%02d%02d%02d",
       plt->tm_year + 1900, plt->tm_mon + 1, plt->tm_mday,
       plt->tm_hour, plt->tm_min, plt->tm_sec);
   }
@@ -609,19 +610,19 @@ bool CDirList::CreateFileName(bool bForce)
       nwxFileUtil::NoEndWithSeparator(&sName);
       wxFileName fn(sName);
       sName = fn.GetFullName();
-      sName.Replace(_T(" "),_T("_"),true);
+      sName.Replace(" ","_",true);
       if(sName.IsEmpty())
       {
         wxASSERT_MSG(
-          false,_T("Problem with CDirList::CreateFileName()"));
-        sName = _T("run_");
+          false,"Problem with CDirList::CreateFileName()");
+        sName = "run_";
       }
       else
       {
-        sName.Append(_T("_"));
+        sName.Append("_");
       }
       wxString sFullName;
-      wxString sExt(_T(EXT_BATCH));
+      wxString sExt(EXT_BATCH);
       int nAdd = 0;
       sPathBase.Append(sName);
       bool bDoneLoop = false;
@@ -643,10 +644,10 @@ bool CDirList::CreateFileName(bool bForce)
         }
         else
         {
-          wxFile xFile(sFullName.c_str(),wxFile::write_excl);
+          wxFile xFile(sFullName.wc_str(),wxFile::write_excl);
           if(!xFile.IsOpened())
           {
-            wxString s(_T("Cannot create file: "));
+            wxString s("Cannot create file: ");
             s.Append(sFullName);
             wxASSERT_MSG(false,s);
           }
@@ -662,7 +663,7 @@ bool CDirList::CreateFileName(bool bForce)
     else
     {
       wxASSERT_MSG(
-          false,_T("empty path in CDirList::CreateFileName()"));
+          false,"empty path in CDirList::CreateFileName()");
     }
   }
   return bDone;
@@ -754,7 +755,7 @@ int CDirList::ExtToType(const wxString &_sExt)
   int nRtn = _sExt.IsEmpty() ? CDirList::FILE_FSA : 0;
   if(!nRtn)
   {
-    wxString sExt(_T("*."));
+    wxString sExt("*.");
     sExt.Append(_sExt);
     sExt.MakeLower();
     INITMAP();

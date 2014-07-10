@@ -124,7 +124,7 @@ CDialogName::CDialogName(
     {
       // should never happen
       m_pCombo->Destroy();
-      wxASSERT_MSG(0,_T("Combo with bSkipAmel and < 2 items"));
+      wxASSERT_MSG(0,"Combo with bSkipAmel and < 2 items");
     }
     if(psCurrent != NULL)
     {
@@ -181,7 +181,7 @@ bool CDialogName::TransferDataFromWindow()
   }
   else if(m_pv->IsNameUsed(sName))
   {
-    sMsg = _T("This name is already used");
+    sMsg = "This name is already used";
     bRtn = false;
   }
   if(!bRtn)
@@ -207,11 +207,11 @@ CPanelLabLocusCollection::CPanelLabLocusCollection(
   const wxChar *ps;
   if(bTriallele)
   {
-    ps = _T("Enter three alleles per table cell");
+    ps = wxS("Enter three alleles per table cell");
   }
   else
   {
-    ps = _T("Enter one allele per table cell");
+    ps = wxS("Enter one allele per table cell");
   }
   wxBoxSizer *pSizer(new wxBoxSizer(wxVERTICAL));
   pSizer->Add(new wxStaticText(this, wxID_ANY,ps),
@@ -242,7 +242,7 @@ CPanelPosCtrlMarkerSet::CPanelPosCtrlMarkerSet(
       nwxPanel(parent,wxID_ANY)
 {
   wxBoxSizer *pSizer(new wxBoxSizer(wxVERTICAL));
-  pSizer->Add(new wxStaticText(this,wxID_ANY,_T("Enter multiple alleles per table cell")),
+  pSizer->Add(new wxStaticText(this,wxID_ANY,"Enter multiple alleles per table cell"),
     0, wxALIGN_LEFT);
   m_pGrid = new CGridAllelePosCtrl(this,wxID_ANY,CPanelLabLocusCollection::GRIDROWS);
   pSizer->Add(m_pGrid,1,wxEXPAND, ID_BORDER);
@@ -273,11 +273,11 @@ CPanelLabMarkerSet::CPanelLabMarkerSet
     m_pChoiceBook, CPanelLabLocusCollection::GRIDROWS,
     true);
   m_pPanelPosCtrl = new CPanelPosCtrlMarkerSet(m_pChoiceBook);
-  m_pChoiceBook->AddPage(m_pPanelOffLadder,_T("Off ladder alleles"),true);
-  m_pChoiceBook->AddPage(m_pPanelSampleTrialleles,_T("Sample trialleles"));
-  m_pChoiceBook->AddPage(m_pPanelCtrlTrialleles,_T("Positive control trialleles"));
-  m_pChoiceBook->AddPage(m_pPanelPosCtrl,_T("Positive controls"));
-  m_pChoiceBook->SetCaption(_T("Select Allele Assignments:"));
+  m_pChoiceBook->AddPage(m_pPanelOffLadder,"Off ladder alleles",true);
+  m_pChoiceBook->AddPage(m_pPanelSampleTrialleles,"Sample trialleles");
+  m_pChoiceBook->AddPage(m_pPanelCtrlTrialleles,"Positive control trialleles");
+  m_pChoiceBook->AddPage(m_pPanelPosCtrl,"Positive controls");
+  m_pChoiceBook->SetCaption("Select Allele Assignments:");
   wxBoxSizer *pSizer(new wxBoxSizer(wxVERTICAL));
   pSizer->Add(m_pChoiceBook,1,wxEXPAND ^ wxALL, ID_BORDER);
 

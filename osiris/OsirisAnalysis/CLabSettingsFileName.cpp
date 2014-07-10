@@ -61,8 +61,8 @@ void CLabSettingsFileName::_Setup()
   ConfigDir *pDir = mainApp::GetConfig();
   wxString sFile = pDir->GetExeConfigPath();
   wxString sOriginal = sFile;
-  sFile += _T("GenericLabSettings.xml");
-  sOriginal += _T("defaultlab.xml");
+  sFile += "GenericLabSettings.xml";
+  sOriginal += "defaultlab.xml";
   wxFileName fn(sFile);
   m_bOriginalFile = false;
 
@@ -74,7 +74,7 @@ void CLabSettingsFileName::_Setup()
     {
       m_fn.Clear();
     }
-    else if(!CopyFile(sOriginal.c_str(),sFile.c_str(),true))
+    else if(!CopyFile(sOriginal.utf8_str(),sFile.utf8_str(),true))
     {
       m_fn = fno;
     }

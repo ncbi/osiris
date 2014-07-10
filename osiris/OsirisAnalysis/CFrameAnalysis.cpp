@@ -107,7 +107,7 @@ CFrameAnalysis::~CFrameAnalysis()
 CFrameAnalysis::CFrameAnalysis(
     mainFrame *parent, wxSize sz, const wxString &sFileName) :
   CMDIFrame(
-    parent, wxID_ANY,_T(""),
+    parent, wxID_ANY,"",
     wxDefaultPosition,sz),
   m_pOARfile(NULL),
   m_pMenu(NULL),
@@ -135,7 +135,7 @@ CFrameAnalysis::CFrameAnalysis(
 CFrameAnalysis::CFrameAnalysis(
     mainFrame *parent, wxSize sz, COARfile *pFile) :
   CMDIFrame(
-    parent, wxID_ANY,_T(""),
+    parent, wxID_ANY,"",
     wxDefaultPosition,sz),
   m_pOARfile(pFile),
   m_pMenu(NULL),
@@ -215,7 +215,7 @@ void CFrameAnalysis::_Build()
   m_pButtonGraphic = new wxButton(
     m_pPanelToolbar,
     IDmenuDisplayGraph,
-    _T("Graph"),
+    "Graph",
     wxDefaultPosition,
     wxDefaultSize,
     wxBU_EXACTFIT
@@ -224,7 +224,7 @@ void CFrameAnalysis::_Build()
   m_pTogglePreview = new wxToggleButton(
     m_pPanelToolbar,
     IDmenuTogglePreview,
-    _T("Preview"));
+    "Preview");
   m_pTogglePreview->SetValue(false);
   m_pTogglePreview->SetToolTip(
     CMenuAnalysis::PREVIEW_HELP_TEXT);
@@ -234,12 +234,12 @@ void CFrameAnalysis::_Build()
     *m_pMenu->GetMenuEdit(),
     m_pPanelToolbar,
     wxID_ANY,
-    _T("Edit"),
+    "Edit",
     wxDefaultPosition,
     wxDefaultSize,
     wxBU_EXACTFIT);
 
-  m_pButtonEdit->SetToolTip(_T("Edit the data selected below."));
+  m_pButtonEdit->SetToolTip("Edit the data selected below.");
   m_pButtonHistory = new CPanelHistoryMenu(
     m_pOARfile,
     m_pMenu->GetMenuHistoryPopup(),
@@ -251,17 +251,17 @@ void CFrameAnalysis::_Build()
     *m_pMenu->GetMenuSortPopup(),
     m_pPanelToolbar,
     wxID_ANY,
-    _T("Sort"),
+    "Sort",
     wxDefaultPosition,
     wxDefaultSize,
     wxBU_EXACTFIT
     );
   pButtonSort->SetToolTip(
-    _T("Sort rows by sample name or severity\n(number of alerts)"));
+    "Sort rows by sample name or severity\n(number of alerts)");
   m_pButtonParms = new wxButton(
     m_pPanelToolbar,
     IDmenuParameters,
-    _T("Parameters..."),
+    "Parameters...",
     wxDefaultPosition,
     wxDefaultSize,
     wxBU_EXACTFIT
@@ -269,8 +269,8 @@ void CFrameAnalysis::_Build()
   m_pButtonParms->SetToolTip(CMenuAnalysis::PARAMETERS_TOOL_TIP);
   m_pButtonGraphic->Enable(false);
   m_pButtonGraphic->SetToolTip(
-    _T("View data plot for each channel of this sample.\n"
-    "Hold the shift key down to show only one plot."));
+    "View data plot for each channel of this sample.\n"
+    "Hold the shift key down to show only one plot.");
   m_pButtonParms->Enable(false);
 
   wxFont fn(m_pLabelFile->GetFont());
@@ -296,7 +296,7 @@ void CFrameAnalysis::_Build()
     (wxALL ^ wxLEFT) | wxALIGN_CENTER_VERTICAL, ID_BORDER);
   wxButton *pButtonCMF;
   pSizerLabel->Add(
-    new wxStaticText(m_pPanelToolbar,wxID_ANY,_T("Display:")),
+    new wxStaticText(m_pPanelToolbar,wxID_ANY,"Display:"),
     0, wxALL | wxALIGN_CENTER_VERTICAL, ID_BORDER);
   m_pComboCellType = new CComboLabels(m_pPanelToolbar,IDgraphLabelsCombo,false);
   m_pComboName = new CComboLabelsName(m_pPanelToolbar,IDgraphNameCombo);
@@ -304,11 +304,11 @@ void CFrameAnalysis::_Build()
       ((wxALL ^ wxLEFT) | wxALIGN_CENTER_VERTICAL)); // #defined in CComboLabels.h
   BOX_COMBO(m_pComboName, pSizerLabel,
       ((wxALL ^ wxLEFT) | wxALIGN_CENTER_VERTICAL)); // #defined in CComboLabels.h
-  pButtonCMF = new wxButton(m_pPanelToolbar,IDExportCMF,_T("CMF"),
+  pButtonCMF = new wxButton(m_pPanelToolbar,IDExportCMF,"CMF",
     wxDefaultPosition,
     wxDefaultSize,
     wxBU_EXACTFIT);
-  pButtonCMF->SetToolTip(_T("Export CODIS CMF 3.2 file"));
+  pButtonCMF->SetToolTip("Export CODIS CMF 3.2 file");
   pSizerLabel->Add(pButtonCMF,0,
     (wxALL ^ wxLEFT) | wxALIGN_CENTER_VERTICAL, ID_BORDER);
   wxBoxSizer *pSizerFileName = new wxBoxSizer(wxVERTICAL);
@@ -334,7 +334,7 @@ void CFrameAnalysis::_Build()
   m_pText = new wxTextCtrl(
     m_pPanelText,
     wxID_ANY,
-    _T(""),
+    "",
     wxDefaultPosition,
     wxDefaultSize,
     wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP );
@@ -598,8 +598,8 @@ void CFrameAnalysis::ToggleToolbar()
 bool CFrameAnalysis::_CheckIfTampered(COARfile *pOAR)
 {
   const wxChar *TAMPER_PROMPT =
-    _T("It is suspected that this file has been modified\n"
-       "outside of OSIRIS.  Do you wish to continue?");
+    wxS("It is suspected that this file has been modified\n"
+				"outside of OSIRIS.  Do you wish to continue?");
   bool bRtn = false;
   if(pOAR == NULL)
   {
@@ -971,7 +971,7 @@ void CFrameAnalysis::OnShowDetails(wxCommandEvent &)
   }
   else
   {
-    mainApp::LogMessage(_T("Cannot get runtime parameters"));
+    mainApp::LogMessage("Cannot get runtime parameters");
   }
 }
 
@@ -1209,17 +1209,17 @@ void CFrameAnalysis::_OnReAnalyze()
       const wxString &sVolume(m_pOARfile->GetLabSettings().GetVolumeName());
       if(sVolume.IsEmpty())
       {
-        wxString sError = _T(
+        wxString sError = 
           "This file is from an older version of OSIRIS and\n"
           "does not contain the name of an " Volume_string
           ",\ntherefore this data cannot be reanalyzed."
-          );
+          ;
         mainApp::ShowError(sError,this);
       }
       else if(!dlg.SetVolumeName(sVolume))
       {
         wxString sError;
-        sError = _T("Cannot set " Volume_string " to ");
+        sError = "Cannot set " Volume_string " to ";
         sError.Append(sVolume);
         mainApp::ShowError(sError,this);
       }
@@ -1255,7 +1255,7 @@ void CFrameAnalysis::_OnEnableMultiple()
     if(!dlg.HasSamples())
     {
       mainApp::ShowAlert(
-        _T("There are no samples in this file."),this);
+        "There are no samples in this file.",this);
     }
     else if(dlg.ShowModal() == wxID_OK)
     {
@@ -1301,7 +1301,7 @@ void CFrameAnalysis::OnHistoryView(wxCommandEvent &)
     {
       wxString s;
       s.Format(
-        _T("No sample, row %d, col %d\n"),
+        "No sample, row %d, col %d\n",
         nRow,nCol);
       mainApp::LogMessage(s);
       wxASSERT_MSG(0,s);
@@ -1311,7 +1311,7 @@ void CFrameAnalysis::OnHistoryView(wxCommandEvent &)
       if(!pSample->IsEdited(pMsg,NULL,false))
       {
         const wxString sMsg = 
-        _T("There is no history for sample, channel, or ILS alerts.");
+        "There is no history for sample, channel, or ILS alerts.";
         mainApp::ShowAlert(sMsg,this);
       }
       else
@@ -1339,7 +1339,7 @@ void CFrameAnalysis::OnHistoryView(wxCommandEvent &)
       if((pLocus == NULL) || (!pLocus->HasBeenEdited(pMsg,NULL)))
       {
         const wxString sMsg = 
-          _T("There is no history for this locus.");
+          "There is no history for this locus.";
         mainApp::ShowAlert(sMsg,this);
       }
       else if(m_pOARfile->CanEditArtifacts())
@@ -1500,7 +1500,7 @@ void CFrameAnalysis::_UpdatePreview()
         size_t nSize;
         nRow = m_pGrid->GetGridCursorRow();
         s = m_pGrid->GetCellValue(nRow,nCol);
-        nwxString::Split(s.c_str(),&vs,",");
+        nwxString::Split(s.utf8_str(),&vs,",");
         nwxString::Trim(&vs);
         nSize = vs.size();
         if(nSize)
@@ -1510,7 +1510,7 @@ void CFrameAnalysis::_UpdatePreview()
         for(size_t i = 0; i < vs.size(); i++)
         {
           s = vs.at(i);
-          nChannel = atoi(s.c_str());
+          nChannel = atoi(s.utf8_str());
           if(nChannel)
           {
             vn.push_back((unsigned int) nChannel);
@@ -1671,10 +1671,10 @@ void CFrameAnalysis::DoEditLocus(
       int nChannel = (pChannel == NULL) ? -1 : pChannel->GetChannelNr();
       if(nChannel < 1)
       {
-        wxASSERT_MSG(0,_T("Channel number < 1"));
+        wxASSERT_MSG(0,"Channel number < 1");
         mainApp::LogMessageV(
-          "Channel number, %d, is invalid "
-          "in CFrameAnalysis::_OnEditLocus()",
+					wxS("Channel number, %d, is invalid "
+							"in CFrameAnalysis::_OnEditLocus()"),
           nChannel);
       }
       CDialogEditAllele dlg(pSample,nChannel,*pLocus,
@@ -1761,7 +1761,7 @@ wxString CFrameAnalysis::_GetGraphicFileName(int nRow,bool bMessage)
       {
         if(bMessage)
         {
-          wxString smsg(_T("Cannot find graphic file"));
+          wxString smsg("Cannot find graphic file");
           mainApp::ShowError(smsg,m_pParent);
           sFile.Clear();
         }
@@ -1791,9 +1791,9 @@ void CFrameAnalysis::CheckFileModification()
   {
     if(m_pSplitterTop->IsSplit())
     {
-      mainApp::ShowAlert(_T(
+      mainApp::ShowAlert(
         "The graph preview cannot be displayed when\n"
-        "the analysis files are being updated"),
+        "the analysis files are being updated",
         this);
     }
     _DisablePreview();
@@ -1802,9 +1802,9 @@ void CFrameAnalysis::CheckFileModification()
   {
     if(m_pSplitterTop->IsSplit())
     {
-      mainApp::ShowAlert(_T(
+      mainApp::ShowAlert(
           "The graph preview cannot be displayed after\n"
-          "the analysis files have been updated"),
+          "the analysis files have been updated",
           this);
     }
     _DisablePreview();
@@ -1842,7 +1842,7 @@ void CFrameAnalysis::CheckFileModification()
   else if(bError)
   {
     wxFileName fn(sFile);
-    wxString s(_T("Cannot open file, "));
+    wxString s("Cannot open file, ");
     s.Append(fn.GetFullName());
     mainApp::ShowError(s,this);
     _Kill();
@@ -1902,7 +1902,7 @@ void CFrameAnalysis::UpdateStatusBar()
       nwxString::Trim(&s);
       if(!s.IsEmpty())
       {
-        sText.Append(_T("; "));
+        sText.Append("; ");
         sText.Append(s);
       }
     }
@@ -1966,7 +1966,7 @@ void CFrameAnalysis::OnLabelClick(wxGridEvent &e)
 }
 void CFrameAnalysis::ShowFileSaveError(const wxString &s)
 {
-  wxString sMessage(_T("ERROR: could not save file "));
+  wxString sMessage("ERROR: could not save file ");
   wxFileName fn(s);
   sMessage.Append(fn.GetFullName());
   mainApp::ShowError(sMessage,this);
@@ -2050,7 +2050,7 @@ bool CFrameAnalysis::SaveFileAs()
     if(m_pOARfile->IsOAR())
     {
       // change .oar file to a .oer file
-      sFileName = nwxFileUtil::SetupFileName(sFileName,_T(EXT_REPORT_EDITED));
+      sFileName = nwxFileUtil::SetupFileName(sFileName,EXT_REPORT_EDITED);
     }
     if(sFileName.Len())
     {
@@ -2059,8 +2059,8 @@ bool CFrameAnalysis::SaveFileAs()
       sFileName = fn.GetFullName();
     }
     wxFileDialog dlg(
-      this,_T("Save File"),sFilePath,sFileName,
-      _T(FILE_TYPE_REPORT_SAVE_AS),
+      this,"Save File",sFilePath,sFileName,
+      FILE_TYPE_REPORT_SAVE_AS,
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT  );
 
     if(dlg.ShowModal() == wxID_OK)
@@ -2070,8 +2070,8 @@ bool CFrameAnalysis::SaveFileAs()
       if( (pFrame != NULL) && (pFrame != (CMDIFrame *)this) )
       {
         wxString sError(
-          _T("A file by this name is already open.\n"
-              "Please close the file before overwriting it."));
+          "A file by this name is already open.\n"
+              "Please close the file before overwriting it.");
         mainApp::ShowError(sError,this);
       }
       else if(_SaveOERFile(sFileName))
@@ -2101,11 +2101,11 @@ bool CFrameAnalysis::CheckSaveOnCloseFile()
     while(!bDone && !bCancel)
     {
       wxFileName fn(m_pOARfile->GetFileName());
-      wxString sMessage(_T("Analysis File: "));
+      wxString sMessage("Analysis File: ");
       sMessage.Append(fn.GetFullName());
-      sMessage.Append(_T(" has been modified.\n"
-        "Would you like to save your changes?"));
-      wxMessageDialog dlg(this,sMessage,_T("Save File"),
+      sMessage.Append(" has been modified.\n"
+        "Would you like to save your changes?");
+      wxMessageDialog dlg(this,sMessage,"Save File",
         wxYES_NO | wxCANCEL | wxYES_DEFAULT | wxICON_QUESTION);
       int n = dlg.ShowModal();
       if(n == wxID_YES || n == wxID_OK)
@@ -2391,7 +2391,7 @@ void CFrameAnalysis::_UpdateHistoryMenu(int nRow,int nCol,bool bEnabled)
   bool bHist = false;
   if(_IsLocusColumn(nCol))
   {
-    s = _T("Allele Edit History");
+    s = "Allele Edit History";
   }
   else 
   {
@@ -2409,9 +2409,9 @@ void CFrameAnalysis::_UpdateHistoryMenu(int nRow,int nCol,bool bEnabled)
     }
     if(!sType.IsEmpty())
     {
-      s = _T("View ");
+      s = "View ";
       s.Append(sType);
-      s.Append(_T(" "));
+      s.Append(" ");
       s.Append(COAR_NOTICE_DISPLAY_CAP);
     }
   }
@@ -2667,7 +2667,7 @@ bool CFrameAnalysis::FileNeedsAttention(bool bCMF, bool bShowMessage)
     if(nAttention > 1)
     {
       sMsgSample.Printf(
-        _T("%d samples"),
+        "%d samples",
         nAttention);
     }
     else
@@ -2676,25 +2676,25 @@ bool CFrameAnalysis::FileNeedsAttention(bool bCMF, bool bShowMessage)
     }
     if(bDirNeedsAttention)
     {
-      sMsg = _T("Directory messages");
+      sMsg = "Directory messages";
       if(nAttention > 0)
       {
-        sMsg.Append(_T(" and "));
+        sMsg.Append(" and ");
       }
     }
     sMsg.Append(sMsgSample);
     sMsg.Append(
         (bDirNeedsAttention || (nAttention > 1))
-        ? _T(" need ")
-        : _T(" needs ")
+        ? " need "
+        : " needs "
         );
-    sMsg.Append(bCMF ? _T(ATTENTION_CMF) : _T(ATTENTION_EXPORT));
+    sMsg.Append(bCMF ? ATTENTION_CMF : ATTENTION_EXPORT);
 #undef ATTENTION
 #undef ATTENTION_EXPORT
   }
   else if(bCMF && !bFound)
   {
-    sMsg = _T("There are no samples to be exported to a CMF file.");
+    sMsg = "There are no samples to be exported to a CMF file.";
   }
   if(bNotNeedAttn)
   {} // all is good
@@ -2707,7 +2707,7 @@ bool CFrameAnalysis::FileNeedsAttention(bool bCMF, bool bShowMessage)
   else
   {
     wxMessageDialog dlgmsg(
-      this,sMsg,_T("Alert"),wxYES_NO | wxNO_DEFAULT | wxICON_EXCLAMATION);
+      this,sMsg,"Alert",wxYES_NO | wxNO_DEFAULT | wxICON_EXCLAMATION);
     int n = dlgmsg.ShowModal();
     bNotNeedAttn = (n == wxID_YES) || (n == wxID_OK);
 
@@ -2720,7 +2720,7 @@ bool CFrameAnalysis::PromptSaveFileNow(const wxString &sMessage)
   bool bRtn = true;
   if(m_pOARfile->IsModified())
   {
-    static const wxString sTITLE(_T("Save Analysis File?"));
+    static const wxString sTITLE("Save Analysis File?");
     bRtn = false;
     if(mainApp::Confirm(this,sMessage,sTITLE,wxYES_DEFAULT))
     {
@@ -2774,7 +2774,7 @@ bool CFrameAnalysis::ExportCMF()
       if(nAttention > 1)
       {
         sMsgSample.Printf(
-          _T("%d samples"),
+          "%d samples",
           nAttention);
       }
       else
@@ -2783,24 +2783,24 @@ bool CFrameAnalysis::ExportCMF()
       }
       if(bDirNeedsAttention)
       {
-        sMsg = _T("Directory messages");
+        sMsg = "Directory messages";
         if(nAttention > 0)
         {
-          sMsg.Append(_T(" and "));
+          sMsg.Append(" and ");
         }
       }
       sMsg.Append(sMsgSample);
       sMsg.Append(
           (bDirNeedsAttention || (nAttention > 1))
-          ? _T(" need " ATTENTION)
-          : _T(" needs " ATTENTION)
+          ? " need " ATTENTION
+          : " needs " ATTENTION
           );
       bOK = false;
 #undef ATTENTION
     }
     else if(!bFound)
     {
-      sMsg = _T("There are no samples to be exported to a CMF file.");
+      sMsg = "There are no samples to be exported to a CMF file.";
       bOK = false;
     }
     if(!bOK)
@@ -2814,10 +2814,10 @@ bool CFrameAnalysis::ExportCMF()
 
   if(bOK)
   {
-    static const wxString sCONFIRM(_T(
+    static const wxString sCONFIRM(
       "The analysis file has been modified and must be saved\n"
       "before the data are exported to a CMF file.\n"
-      "Would you like to save the analysis file now?"));
+      "Would you like to save the analysis file now?");
     bOK = PromptSaveFileNow(sCONFIRM);
   }
   if(bOK)
@@ -2844,7 +2844,7 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
   CXSLExportFileType *pExport = pParent->GetFileTypeByID(nID);
   if(pExport == NULL)
   {
-    mainApp::ShowError(_T("Cannot find export file type"),this);
+    mainApp::ShowError("Cannot find export file type",this);
     bOK = false;
   }
   else if(
@@ -2855,10 +2855,10 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
   }
   if(bOK)
   {
-    static const wxString sCONFIRM(_T(
+    static const wxString sCONFIRM(
       "The analysis file has been modified and must\n"
       "be saved before the data are exported.\n"
-      "Would you like to save the analysis file now?"));
+      "Would you like to save the analysis file now?");
     bOK = PromptSaveFileNow(sCONFIRM);
   }
 #define ALL_FILES "All Files (*.*)|*.*"
@@ -2884,30 +2884,30 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
       {
         if(!bFirst)
         {
-          sExt.Append(_T(";"));
+          sExt.Append(";");
         }
         else
         {
           bFirst = false;
           sDefaultExt = *itr;
         }
-        sExt.Append( _T("*."));
+        sExt.Append( "*.");
         sExt.Append(*itr);
       }
       sType = sExportType;
-      sType.Append(_T(" ("));
+      sType.Append(" (");
       sType.Append(sExt);
-      sType.Append(_T(")"));
-      sType.Append(_T("|"));
+      sType.Append(")");
+      sType.Append("|");
       sType.Append(sExt);
       if(bOverride)
       {
-        sType.Append(_T("|" ALL_FILES));
+        sType.Append("|" ALL_FILES);
       }
     }
     else
     {
-      sType.Append(_T(ALL_FILES));
+      sType.Append(ALL_FILES);
     }
 
     // we now have file types
@@ -2936,7 +2936,7 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
       fn2.GetFullPath(),sDefaultExt);
     wxFileName fnDefaultFile(sDefaultFileName);
     sTitle.Alloc(sExportType.Len() + 12);
-    sTitle = _T("Export ");
+    sTitle = "Export ";
     sTitle.Append(sExportType);
     bool bOK = false;
     bool bCancel = false;
@@ -2965,14 +2965,14 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
         if(nCount > MAX_ERRORS)
         {
           nCount = MAX_ERRORS;
-          sAppend = _T("\n........\n\n"
+          sAppend = "\n........\n\n"
             "There are more messages, select \"Message Log\"\n"
-            "from the \"Tools\" pulldown menu to view them.");
+            "from the \"Tools\" pulldown menu to view them.";
         }
         for(size_t ndx = 0; ndx < nCount; ndx++)
         {
           sError.Append(asErrors.at(ndx));
-          sError.Append(_T("\n"));
+          sError.Append("\n");
         }
         sError.Append(sAppend);
         nwxString::Trim(&sError);

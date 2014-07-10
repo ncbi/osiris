@@ -73,7 +73,7 @@ CPageName::CPageName(
   m_sNameOnCreate = m_pExportEdit->GetName();
 
 
-  pLabelXSL = new wxStaticText(this,wxID_ANY,_T("XSL File"));
+  pLabelXSL = new wxStaticText(this,wxID_ANY,"XSL File");
   m_pTextXSL = new nwxTextCtrl(
     this,wxID_ANY,wxEmptyString,
     wxDefaultPosition, wxDefaultSize, nStyleText);
@@ -82,7 +82,7 @@ CPageName::CPageName(
   if(!m_bReadOnly)
   {
     m_pButtonBrowseXSL = new wxButton(
-      this,IDbrowseInput,_T("Browse..."),
+      this,IDbrowseInput,"Browse...",
       wxDefaultPosition, wxDefaultSize,wxBU_EXACTFIT);
     pSizerXSL->Add(m_pTextXSL,1,wxEXPAND | wxRIGHT,ID_BORDER);
     pSizerXSL->Add(m_pButtonBrowseXSL,0,wxALIGN_CENTER_VERTICAL);
@@ -95,7 +95,7 @@ CPageName::CPageName(
 
 
   pLabelName = new wxStaticText(
-    this,wxID_ANY,_T("Export file description"));
+    this,wxID_ANY,"Export file description");
   m_pTextName = new wxTextCtrl(
     this, wxID_ANY, wxEmptyString,
     wxDefaultPosition, wxDefaultSize,
@@ -138,7 +138,7 @@ CPageName::CPageName(
       as,nStyleCombo);
 
     pButtonBrowse = new wxButton(
-      this,IDbrowseOutput,_T("Browse..."),
+      this,IDbrowseOutput,"Browse...",
       wxDefaultPosition, wxDefaultSize,wxBU_EXACTFIT);
     pSizerLoc->Add(m_pComboLocation,1,wxEXPAND | wxRIGHT,ID_BORDER);
     pSizerLoc->Add(pButtonBrowse,0,wxALIGN_CENTER);
@@ -199,17 +199,17 @@ bool CPageName::ValidateXSL(const wxString &s, wxString *psError)
   if(s.IsEmpty())
   {
     psError->Append(
-      _T("XSL file is not specified.\n"));
+      "XSL file is not specified.\n");
   }
   else if(!wxFileName::IsFileReadable(s))
   {
     psError->Append(
-      _T("XSL file does not exist or cannot be opened.\n"));
+      "XSL file does not exist or cannot be opened.\n");
   }
   else if(!m_pExportEdit->SetXSLFile(s))
   {
     psError->Append(
-      _T("XSL file is invalid due to a parsing error.\n"));
+      "XSL file is invalid due to a parsing error.\n");
   }
   else
   {
@@ -225,9 +225,9 @@ bool CPageName::_ExtractParameters(const wxString &s)
   wxXslSheet sheet(istr);
   bool bRtn = false;
 #ifdef __WXDEBUG__
-  wxString sError(_T("CPageName::_ExtractParameters(\""));
+  wxString sError("CPageName::_ExtractParameters(\"");
   sError.Append(s);
-  sError.Append(_T("\")  "));
+  sError.Append(wxS("\"  "));
 #endif
   if(sheet.IsOK())
   {
@@ -248,28 +248,28 @@ bool CPageName::_ExtractParameters(const wxString &s)
 #ifdef __WXDEBUG__
         else
         {
-          sError.Append(_T("Problem loading export info"));
+          sError.Append("Problem loading export info");
         }
 #endif
       }
 #ifdef __WXDEBUG__
       else
       {
-        sError.Append(_T("Problem extracting export info from xsl file"));
+        sError.Append("Problem extracting export info from xsl file");
       }
 #endif
     }
 #ifdef __WXDEBUG__
     else
     {
-      sError.Append(_T("Problem loading xsl file as document"));
+      sError.Append("Problem loading xsl file as document");
     }
 #endif
   }
 #ifdef __WXDEBUG__
   else
   {
-    sError.Append(_T("Problem with internal xsl"));
+    sError.Append("Problem with internal xsl");
   }
   wxASSERT_MSG(bRtn,sError);
 #endif
@@ -299,7 +299,7 @@ bool CPageName::_TransferDataFromWindow()
   if(s.IsEmpty())
   {
     sError.Append(
-      _T("No description for the export files.\n"));
+      "No description for the export files.\n");
     SET_IFNULL(pFirstError,m_pTextName);
   }
   else if(s == m_sNameOnCreate)
@@ -310,14 +310,14 @@ bool CPageName::_TransferDataFromWindow()
       wxDynamicCast(GetParent(),CDialogExportSetup);
     if(pParent == NULL)
     {
-      sError.Append(_T("Problem finding parent window. BUG.\n"));
+      sError.Append("Problem finding parent window. BUG.\n");
       SET_IFNULL(pFirstError,m_pTextName);
       wxASSERT_MSG(0,
-      _T("wxDynamicCast(GetParent(),CDialogExportSetup) failed"));
+      "wxDynamicCast(GetParent(),CDialogExportSetup) failed");
     }
     else if( pParent->IsNameUsed(s) )
     {
-      sError.Append(_T("Export file description is already used.\n"));
+      sError.Append("Export file description is already used.\n");
       SET_IFNULL(pFirstError,m_pTextName);
     }
     else
@@ -329,27 +329,6 @@ bool CPageName::_TransferDataFromWindow()
   
   s = m_pTextFileExt->GetValue();
   set<wxString> ss;
-#if 0
-  /*
-  const wxChar *KILL[] = 
-  {
-    ".",
-    ",",
-    ";",
-    ":",
-    NULL
-  };
-  const wxChar **pKILL = &KILL[0];
-  for(pKILL = &KILL[0]; (*pKILL) != NULL; pKILL++)
-  {
-    s.Replace(*pKILL,_T(" "));
-  }
-  nwxString::Trim(&s);
-  while(s.Replace(_T("  "),_T(" "))) {;}
-
-  nwxString::Split(s.c_str(),&ss,_T(" "));
-  */
-#endif
 
   nwxString::Trim(&s);
   size_t nLen = s.Len();
@@ -369,7 +348,7 @@ bool CPageName::_TransferDataFromWindow()
   nwxString::Trim(&s);
   if(s.IsEmpty())
   {
-    sError.Append(_T("No location for output files specified.\n"));
+    sError.Append("No location for output files specified.\n");
     SET_IFNULL(pFirstError,m_pTextName);
   }
   else if(s == CDialogExportSetup::OPTION_REMEMBER_LAST_LOCATION)
@@ -387,7 +366,7 @@ bool CPageName::_TransferDataFromWindow()
   else
   {
     sError.Append(
-      _T("Invalid directory name for location of output file.\n"));
+      "Invalid directory name for location of output file.\n");
     SET_IFNULL(pFirstError,m_pTextName);
   }
 
@@ -416,9 +395,9 @@ void CPageName::OnBrowseXSL(wxCommandEvent &)
     false, sCurrent, parm->GetLastExportXSLsearch());
 
   wxFileDialog dlg(
-    this,_T("Choose an XSLT file"),
+    this,"Choose an XSLT file",
     sSearch,wxEmptyString,
-    _T("XSLT files (*.xsl)|*.xsl|All Files (*.*)|*.*"),
+    "XSLT files (*.xsl)|*.xsl|All Files (*.*)|*.*",
     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxRESIZE_BORDER);
   bool bDone = false;
 

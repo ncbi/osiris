@@ -33,18 +33,18 @@
 
 //  COARlocus
 
-const wxString COARlocus::g_sEmptyString(_T(""));
+const wxString COARlocus::g_sEmptyString("");
 
 void COARlocus::RegisterAll(bool)
 {
-  RegisterWxString(_T("LocusName"),&m_sLocusName);
-  Register(_T("LocusAlerts"),&m_vnLocusAlerts);
-  Register(_T("Allele"),&m_ioallele,(void *) &m_pvAllele);
-  Register(_T("OldAllele"),&m_ioallele,(void *) &m_pvAlleleEdited);
+  RegisterWxString("LocusName",&m_sLocusName);
+  Register("LocusAlerts",&m_vnLocusAlerts);
+  Register("Allele",&m_ioallele,(void *) &m_pvAllele);
+  Register("OldAllele",&m_ioallele,(void *) &m_pvAlleleEdited);
   Register(&m_sNotes);
-  Register(_T("OldNotes"),&m_pvOldNotes);
-  Register(_T("ReviewList"),&m_ReviewList);
-  Register(_T("AcceptanceList"),&m_AcceptanceList);
+  Register("OldNotes",&m_pvOldNotes);
+  Register("ReviewList",&m_ReviewList);
+  Register("AcceptanceList",&m_AcceptanceList);
 }
 
 wxString COARlocus::_GetCellAlleles(const wxDateTime *pTime) const

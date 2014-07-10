@@ -55,9 +55,9 @@ class CProgressDialogMRU :
 public:
   CProgressDialogMRU(wxWindow *parent, int nCount) : 
       wxProgressDialog(
-        _T("Cleaning up list"),
-        _T("Updating modification times and\n"
-          "removing missing files from list."),
+        "Cleaning up list",
+        "Updating modification times and\n"
+          "removing missing files from list.",
         nCount,
         parent,
         wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_CAN_ABORT |

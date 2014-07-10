@@ -182,15 +182,15 @@ void CGridLabThresholds::DisableCell(int nRow, int nCol)
 
 
 const wxChar * const CGridLabThresholds::FRACTION_MAX_PEAK =
-  _T("Fractional filter (0 - 1.0) ");
+  wxS("Fractional filter (0 - 1.0) ");
 const wxChar * const CGridLabThresholds::PULLUP_FRACTIONAL_FILTER =
-  _T("Pullup fractional filter (0 - 1.0) ");
+  wxS("Pullup fractional filter (0 - 1.0) ");
 const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD =
-  _T("Max. stutter threshold (0 - 1.0) ");
+  wxS("Max. stutter threshold (0 - 1.0) ");
 const wxChar * const CGridLabThresholds::PLUS_STUTTER_THRESHOLD =
-  _T("Max. plus stutter threshold (0 - 1.0) ");
+  wxS("Max. plus stutter threshold (0 - 1.0) ");
 const wxChar * const CGridLabThresholds::ADENYLATION_THRESHOLD =
-  _T("Adenylation threshold (0 - 1.0) ");
+  wxS("Adenylation threshold (0 - 1.0) ");
 
 double CGridLabThresholds::GetCellValueDouble(int nRow, int nCol)
 {
@@ -202,7 +202,7 @@ double CGridLabThresholds::GetCellValueDouble(int nRow, int nCol)
   }
   else
   {
-    d = nwxRound::Round(atof(s.c_str()) * 10000.0);
+    d = nwxRound::Round(atof(s.utf8_str()) * 10000.0);
     d *= 0.0001;
   }
   return d;
@@ -213,7 +213,7 @@ void CGridLabThresholds::SetCellValueDouble(
   wxString s;
   if(d != -1.0)
   {
-    s = nwxString::FormatDouble(d,_T("%g"),false);
+    s = nwxString::FormatDouble(d,"%g",false);
   }
   SetCellValue(nRow,nCol,s);
 }
@@ -245,8 +245,8 @@ void CGridLabThresholdsSample::SetData(CLabThresholds *pData,
     STUTTER_THRESHOLD,
     PLUS_STUTTER_THRESHOLD,
     ADENYLATION_THRESHOLD,
-    _T("Min. heterozygote balance (0 - 1.0) "),
-    _T("Min. homozygote threshold (RFU) "),
+    wxS("Min. heterozygote balance (0 - 1.0) "),
+    wxS("Min. homozygote threshold (RFU) "),
     NULL
   };
   _SetData(pData,sKitName,psLabels);

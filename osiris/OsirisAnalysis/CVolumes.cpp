@@ -40,10 +40,10 @@
 #include <wx/filefn.h>
 #include <memory>
 
-#define ACCESS_FILE _T("access.txt")
-#define MESSAGE_BOOK_FILE _T("MessageBookV4.0.xml")
-#define STD_SETTINGS_FILE _T("StdSettings.xml")
-#define LAB_SETTINGS_FILE _T("LabSettings.xml")
+#define ACCESS_FILE       wxS("access.txt")
+#define MESSAGE_BOOK_FILE wxS("MessageBookV4.0.xml")
+#define STD_SETTINGS_FILE wxS("StdSettings.xml")
+#define LAB_SETTINGS_FILE wxS("LabSettings.xml")
 
 #define LOCK_READ_MS  5000
 #define LOCK_MS 10000
@@ -141,7 +141,7 @@ bool CVolume::InitNewVolume(const wxString &s)
   if(IsOK() && !IsReadOnly() && Lock())
   {
     CLabSettingsInfo *pInfo = m_lab.GetLabSettingsInfo();
-    pInfo->SetNotes(_T(""));
+    pInfo->SetNotes("");
     pInfo->SetVolumeName(s);
     bRtn = Save();
     m_bNewVolume = bRtn;
@@ -239,9 +239,9 @@ bool CVolume::AccessedSince(int nSeconds)
 }
 void CVolume::_InitError()
 {
-  m_sLastError = _T("This " Volume_string ", ");
+  m_sLastError = "This " Volume_string ", ";
   m_sLastError.Append(GetVolumeName());
-  m_sLastError.Append(_T(",\n"));  
+  m_sLastError.Append(",\n");  
 }
 bool CVolume::Lock()
 {
@@ -251,16 +251,16 @@ bool CVolume::Lock()
   {
     _InitError();
     m_sLastError.Append(
-      _T("cannot be locked because it is read only,\n"
-         "and cannot be modified"));
+      "cannot be locked because it is read only,\n"
+         "and cannot be modified");
   }
   else if((!m_bIgnoreReadLock) && AccessedSince(30))
   {
     _InitError();
     m_sLastError.Append(
-      _T(
+      
         "cannot be locked because it in use.\n"
-        "Please try again later."));
+        "Please try again later.");
   }
   else if(m_lock.Lock(m_sPath))
   {
@@ -272,14 +272,14 @@ bool CVolume::Lock()
     _InitError();
     if(sUser.Len())
     {
-      m_sLastError.Append(_T("is currently locked by "));
+      m_sLastError.Append("is currently locked by ");
       m_sLastError.Append(sUser);
     }
     else
     {
       m_sLastError.Append(
-        _T("cannot be locked, possibly\n"
-           "due to file permissions"));
+        "cannot be locked, possibly\n"
+           "due to file permissions");
     }
   }
   return bRtn;
@@ -417,9 +417,9 @@ size_t CVolumes::FindAll(
 
 void CVolumes::_SetErrorNameExists(const wxString &s)
 {
-  m_sLastError = _T(AVolume_string " with the name, ");
+  m_sLastError = AVolume_string " with the name, ";
   m_sLastError.Append(s);
-  m_sLastError.Append(_T(", exists."));
+  m_sLastError.Append(", exists.");
 }
 CVolume *CVolumes::Create(
   const wxString &sCopyFrom, const wxString &_sName)
@@ -433,7 +433,7 @@ CVolume *CVolumes::Create(
   nwxString::Trim(&sName);
   if(sName.IsEmpty())
   {
-    m_sLastError = _T(VOLUME_STRING " name has not been specified.");
+    m_sLastError = VOLUME_STRING " name has not been specified.";
   }
   else if(Find(sName) != NULL)
   {
@@ -441,14 +441,14 @@ CVolume *CVolumes::Create(
   }
   else if( (pCopyFrom = Find(sCopyFrom)) == NULL )
   {
-    m_sLastError = _T("Cannot create new " Volume_string " from ");
+    m_sLastError = "Cannot create new " Volume_string " from ";
     m_sLastError.Append(sCopyFrom);
-    m_sLastError.Append(_T(".\nThe " Volume_string " was not found."));
+    m_sLastError.Append(".\nThe " Volume_string " was not found.");
     wxASSERT_MSG(0,m_sLastError);
   }
   else if( pCopyFrom->IsLocked() && !pCopyFrom->HasLock() )
   {
-    m_sLastError = _T("Cannot create new " Volume_string " from ");
+    m_sLastError = "Cannot create new " Volume_string " from ";
     m_sLastError.Append(sCopyFrom);
     m_sLastError.Append("\nbecause it is locked by ");
     m_sLastError.Append(pCopyFrom->GetLockUser());
@@ -460,16 +460,15 @@ CVolume *CVolumes::Create(
 
     if(!(apRtn->IsOK() && apRtn->InitNewVolume(sName)))
     {
-        m_sLastError = _T(
+        m_sLastError = 
           "Could not create new " Volume_string ".\n"
-          "Please check space on disk drive"
-          );
+          "Please check space on disk drive";
     }
     else if((itrm = m_mapVol.insert(MapVolume::value_type(sName,apRtn.get()))) == m_mapVol.end())
     {
-      m_sLastError = _T(
+      m_sLastError =
         "Could not add new " Volume_string " to the set.\n"
-        "System may not have sufficient memory.");
+        "System may not have sufficient memory.";
     }
     else
     {
@@ -510,15 +509,15 @@ bool CVolumes::Rename(CVolume *p,const wxString &_sNewName)
   nwxString::Trim(&sNewName);
   if(!p->Lock())
   {
-    m_sLastError = _T("Cannot rename " Volume_string ",\n");
+    m_sLastError = "Cannot rename " Volume_string ",\n";
     m_sLastError.Append(p->GetVolumeName());
-    m_sLastError.Append(_T(".\nThis " Volume_string " cannot be locked."));
+    m_sLastError.Append(".\nThis " Volume_string " cannot be locked.");
   }
   else if(sNewName.IsEmpty())
   {
-    m_sLastError = _T("Cannot rename " Volume_string ",\n");
+    m_sLastError = "Cannot rename " Volume_string ",\n";
     m_sLastError.Append(p->GetVolumeName());
-    m_sLastError.Append(_T(".\nA new name has not been specified."));
+    m_sLastError.Append(".\nA new name has not been specified.");
   }
   else if(sOldName == sNewName)
   {
@@ -543,12 +542,12 @@ bool CVolumes::Rename(CVolume *p,const wxString &_sNewName)
       }
       else
       {
-        m_sLastError = _T("An error occurred when attempting to rename " Volume_string ".");
+        m_sLastError = "An error occurred when attempting to rename " Volume_string ".";
         itr = m_mapVol.insert(MapVolume::value_type(sOldName,p));
         if(itr == m_mapVol.end())
         {
           delete p;
-          m_sLastError.Append(_T("\nThis " Volume_string " has been removed from the list"));
+          m_sLastError.Append("\nThis " Volume_string " has been removed from the list");
         }
         else
         {
@@ -701,9 +700,9 @@ const wxArrayString &CVolumes::GetKits() const
 
       else
       {
-        wxString sError(_T("Cannot find kit: "));
+        wxString sError("Cannot find kit: ");
         sError.Append(sKit);
-        sError.Append(_T(" in ILSandLadderInfo.xml"));
+        sError.Append(" in ILSandLadderInfo.xml");
         wxASSERT_MSG(0,sError);
         mainApp::LogMessage(sError);
       }
@@ -723,9 +722,9 @@ wxDirTraverseResult CVolumes::OnDir(const wxString &dirname)
       MapVolume::iterator itr;
       if(s.IsEmpty())
       {
-        m_sLastError.Append(_T("no " Volume_string " name for "));
+        m_sLastError.Append("no " Volume_string " name for ");
         m_sLastError.Append(dirname);
-        m_sLastError.Append(_T("\n"));
+        m_sLastError.Append("\n");
       }
       else
       {
@@ -764,7 +763,7 @@ MapVolume::iterator CVolumes::_FindVolume(CVolume *pVolume)
     // name has changed but not in map,
     // this is a problem, so we will check entire list
     pitr.first = m_mapVol.begin();
-    wxASSERT_MSG(0,_T("_FindVolume() could not find CVolume from name."));
+    wxASSERT_MSG(0,"_FindVolume() could not find CVolume from name.");
   }
   for(itr = pitr.first;
     (itr != pitr.second) && (itr->second != pVolume);
@@ -772,8 +771,8 @@ MapVolume::iterator CVolumes::_FindVolume(CVolume *pVolume)
   if(itr == pitr.second)
   {
     itr = m_mapVol.end();
-    wxASSERT_MSG(0,_T("_FindVolume() failed"));
-    m_sLastError = _T("Could not find " Volume_string " in list.");
+    wxASSERT_MSG(0,"_FindVolume() failed");
+    m_sLastError = "Could not find " Volume_string " in list.";
   }
   return itr;
 };
@@ -783,7 +782,7 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
   bool bRtn = false;
   if(m_sDirVolume.IsEmpty())
   {
-    m_sLastError = _T("Cannot find parent directory for new " Volume_string "s");
+    m_sLastError = "Cannot find parent directory for new " Volume_string "s";
     wxASSERT_MSG(0,m_sLastError);
   }
   else
@@ -799,7 +798,7 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
 
     dt.SetToCurrent();
     nwxFileUtil::EndWithSeparator(&sPath);
-    sPath.Append(dt.Format(_T("V-%Y%m%d-%H%M%S")));
+    sPath.Append(dt.Format("V-%Y%m%d-%H%M%S"));
     sNewPath = sPath;
     for(suff = A;
       ((bDone = wxDir::Exists(sNewPath)) == true) && (suff <= Z);
@@ -811,15 +810,15 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
     }
     if(suff > Z)
     {
-      m_sLastError = _T("Cannot find name for new " Volume_string " directory in\n");
+      m_sLastError = "Cannot find name for new " Volume_string " directory in\n";
       m_sLastError.Append(pDir->GetExeVolumePath());
       wxASSERT_MSG(0,m_sLastError);
     }
     else if(!nwxFileUtil::MkDir(sNewPath))
     {
-      m_sLastError = _T("Cannot create directory for new volume:\n");
+      m_sLastError = "Cannot create directory for new volume:\n";
       m_sLastError += sNewPath;
-      m_sLastError += _T("\nYou may not have access privileges");
+      m_sLastError += "\nYou may not have access privileges";
     }
     else
     {
@@ -838,9 +837,9 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
         if(!::wxCopyFile(sFrom,sTo))
         {
           bRtn = false;
-          m_sLastError = _T("Cannot copy\n");
+          m_sLastError = "Cannot copy\n";
           m_sLastError.Append(sFrom);
-          m_sLastError.Append(_T("\nto\n"));
+          m_sLastError.Append("\nto\n");
           m_sLastError.Append(sTo);
           wxASSERT_MSG(0,m_sLastError);
         }
@@ -861,7 +860,7 @@ void CVolumes::_SetupPath()
   m_sDirBase = pDir->GetExeVolumePath();
   m_sDirVolume = pDir->GetSitePath();
   nwxFileUtil::EndWithSeparator(&m_sDirVolume);
-  m_sDirVolume.Append(_T("Volumes"));
+  m_sDirVolume.Append("Volumes");
 }
 
 #ifdef __WXDEBUG__
@@ -876,40 +875,40 @@ void CVolumes::UnitTest()
   CVolume *pVolume;
   sText.Alloc(4096);
   sText.Append(wxString::Format(
-    _T("CVolumes::UnitTest()\nVolume count: %d\n\n"),(int)nSize));
+    "CVolumes::UnitTest()\nVolume count: %d\n\n",(int)nSize));
   for(SetVolumeNames::iterator itr = setNames.begin();
     itr != setNames.end();
     ++itr)
   {
     pVolume = vols.Find(*itr);
     sRO = (pVolume == NULL)
-      ? _T("X")
-      : (pVolume->IsReadOnly() ? _T("R") : _T("RW"));
-    sLock = (sRO == _T("RW"))
-      ? wxString((pVolume->Lock() ? _T("Lock") : _T("NO-LOCK!")))
+      ? "X"
+      : (pVolume->IsReadOnly() ? "R" : "RW");
+    sLock = (sRO == "RW")
+      ? wxString((pVolume->Lock() ? "Lock" : "NO-LOCK!"))
       : pVolume->GetLockUser();
     sText.Append(wxString::Format(
-      _T("%s %s %s\n"),
-      (*itr).c_str(),
-      sRO.c_str(),
-      sLock.c_str() ));    
+      "%ls %ls %ls\n",
+      (*itr).wc_str(),
+      sRO.wc_str(),
+      sLock.wc_str() ));    
   }
   // mainApp::ShowAlert(sText,NULL);
-  pVolume = vols.Create(_T("[Profiler Plus]"),_T("UnitTest"));
+  pVolume = vols.Create("[Profiler Plus]","UnitTest");
   sText.Clear();
   if(pVolume == NULL)
   {
-    sText.Append(_T("Cannot create " Volume_string ", \"UnitTest\"\n"));
+    sText.Append("Cannot create " Volume_string ", \"UnitTest\"\n");
   }
   else
   {
     if(!pVolume->Lock())
     {
-      sText.Append(_T("Cannot lock " Volume_string ", \"UnitTest\"\n"));
+      sText.Append("Cannot lock " Volume_string ", \"UnitTest\"\n");
     }
     else if(!vols.Remove(pVolume))
     {
-      sText.Append(_T("Cannot Remove " Volume_string ", \"UnitTest\"\n"));
+      sText.Append("Cannot Remove " Volume_string ", \"UnitTest\"\n");
     }
   }
   wxASSERT_MSG(sText.IsEmpty(),sText);

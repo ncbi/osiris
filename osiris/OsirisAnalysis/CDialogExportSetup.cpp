@@ -42,22 +42,14 @@ IMPLEMENT_ABSTRACT_CLASS(CDialogExportSetup,wxWizard)
 
 #define MIN_WIDTH 520
 
-const wxChar * const CDialogExportSetup::LABEL_FILE_NAME_EXTS(
-  _T("File name extensions"));
-const wxChar * const CDialogExportSetup::LABEL_ALLOW_OVERRIDE(
-  _T("Allow user to override"));
-const wxChar * const CDialogExportSetup::LABEL_DEFAULT_LOC_IN(
-  _T("Default input file location"));
-const wxChar * const CDialogExportSetup::LABEL_DEFAULT_LOC_OUT(
-  _T("Default output file location"));
-const wxChar * const CDialogExportSetup::OPTION_SAME_AS_ANALYSIS(
-   _T("[Same as Analysis File]"));
-const wxChar * const CDialogExportSetup::OPTION_PARENT_OF_ANALYSIS(
-  _T("[Parent Directory of Analysis File]"));
-const wxChar * const CDialogExportSetup::OPTION_REMEMBER_LAST_LOCATION(
-  _T("[Remember Last Location]"));
-const wxChar * const CDialogExportSetup::OPTION_SAME_AS_OUTPUT(
-  _T("[Same as Output File]"));
+const wxChar * const CDialogExportSetup::LABEL_FILE_NAME_EXTS(wxS("File name extensions"));
+const wxChar * const CDialogExportSetup::LABEL_ALLOW_OVERRIDE(wxS("Allow user to override"));
+const wxChar * const CDialogExportSetup::LABEL_DEFAULT_LOC_IN(wxS("Default input file location"));
+const wxChar * const CDialogExportSetup::LABEL_DEFAULT_LOC_OUT(wxS("Default output file location"));
+const wxChar * const CDialogExportSetup::OPTION_SAME_AS_ANALYSIS(wxS("[Same as Analysis File]"));
+const wxChar * const CDialogExportSetup::OPTION_PARENT_OF_ANALYSIS(wxS("[Parent Directory of Analysis File]"));
+const wxChar * const CDialogExportSetup::OPTION_REMEMBER_LAST_LOCATION(wxS("[Remember Last Location]"));
+const wxChar * const CDialogExportSetup::OPTION_SAME_AS_OUTPUT(wxS("[Same as Output File]"));
 
 
 CDialogExportSetup::CDialogExportSetup(
@@ -77,15 +69,15 @@ CDialogExportSetup::CDialogExportSetup(
   const wxChar *psTitle = NULL;
   if(bReadOnly)
   {
-    psTitle = _T("View Export File Type");
+    psTitle = wxS("View Export File Type");
   }
   else if(pExport == NULL)
   {
-    psTitle = _T("Create Export File Type");
+    psTitle = wxS("Create Export File Type");
   }
   else
   {
-    psTitle = _T("Edit Export File Type");
+    psTitle = wxS("Edit Export File Type");
   }
   SetTitle(psTitle);
   if(m_pExport != NULL)
@@ -176,7 +168,7 @@ wxString CDialogExportSetup::PromptSearchDir(
   wxString sRtn;
   wxDirDialog dlg(
     parent,
-    _T("Choose a directory for export"),
+    "Choose a directory for export",
     sSearch,
     wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
   if(dlg.ShowModal() == wxID_OK)
@@ -211,8 +203,8 @@ void CDialogExportSetup::OnCancel(wxWizardEvent &e)
   if( (m_pExport == NULL) || (m_ExportEdit != (*m_pExport)) )
   {
     wxMessageDialog dlg(
-      this,_T("Do you want to cancel and lose your changes?"),
-      _T("Cancel"),
+      this,"Do you want to cancel and lose your changes?",
+      "Cancel",
       wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
     dlg.CentreOnParent();
     int nRtn = dlg.ShowModal();
@@ -236,7 +228,7 @@ void CDialogExportSetup::OnFinished(wxWizardEvent &e)
     {
       e.Veto();
 //      bSkip = false;
-      mainApp::ShowError(_T("Cannot create new file type"),this);
+      mainApp::ShowError("Cannot create new file type",this);
     }
     else
     {
@@ -259,11 +251,9 @@ void CDialogExportSetup::OnFinished(wxWizardEvent &e)
       e.Veto();
 //      bSkip = false;
       mainApp::ShowError(
-        _T(
         "Cannot set export file description because it is already used."
         "\nClick on \"Back\" twice to change the description."
-        ),
-        this);
+        ,this);
 
     }
     if(bSave)
@@ -276,7 +266,7 @@ void CDialogExportSetup::OnFinished(wxWizardEvent &e)
   {
 //    bSkip = false;
     e.Veto();
-    mainApp::ShowError(_T("Cannot save export file settings"),this);
+    mainApp::ShowError("Cannot save export file settings",this);
   }
   else
   {

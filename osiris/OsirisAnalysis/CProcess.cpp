@@ -109,8 +109,8 @@ size_t CProcess::ProcessIO(size_t nLimit)
     {
       if(m_sBuffer.Len())
       {
-        m_sBuffer += _T("\n");
-        ProcessLine(m_sBuffer.c_str(),m_sBuffer.Len(),false);
+        m_sBuffer += "\n";
+        ProcessLine(m_sBuffer.utf8_str(),m_sBuffer.Len(),false);
         m_sBuffer.Empty();
       }
       bInputClosed = true;
@@ -126,8 +126,8 @@ size_t CProcess::ProcessIO(size_t nLimit)
     {
       if(m_sBufferError.Len())
       {
-        m_sBufferError += _T("\n");
-        ProcessLine(m_sBufferError.c_str(),m_sBufferError.Len(),true);
+        m_sBufferError += "\n";
+        ProcessLine(m_sBufferError.utf8_str(),m_sBufferError.Len(),true);
         m_sBufferError.Empty();
       }
       if(bInputClosed && m_bRunning)
@@ -186,11 +186,11 @@ size_t CProcess::ProcessIO(
           pEnd = strchr(pBuffer,EOL))
       {
         *pEnd = 0;
-        sLine.Append(_T(pBuffer));
+        sLine.Append(pBuffer);
         sLine.Append(wxChar(EOL));
         *pEnd = EOL; // restore
         nLen = sLine.Len();
-        ProcessLine(sLine.c_str(), nLen, bErrStream);
+        ProcessLine(sLine.utf8_str(), nLen, bErrStream);
         sLine.Empty();
         pBuffer = pEnd;
         pBuffer++;

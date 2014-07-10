@@ -37,8 +37,8 @@
 
 //  static constants for default choices, must be in sync
 // default selection for combo box
-const wxString CComboLabels::g_sAlleles(_T("Alleles"));
-const wxString CComboLabels::g_sPeakArea(_T("Peak Area"));
+const wxString CComboLabels::g_sAlleles("Alleles");
+const wxString CComboLabels::g_sPeakArea("Peak Area");
 // default selection for menu
 const int CMenuLabels::g_nDefault(IDmenuDisplayAlleles);
 
@@ -66,12 +66,12 @@ void CComboLabels::GetChoices(
     pas->Alloc(nAlloc);
     if(bPlot)
     {
-      pas->Add(_T("None"));
+      pas->Add("None");
     }
     pas->Add(g_sAlleles);
-    pas->Add(_T("BPS"));
-    pas->Add(_T("RFU"));
-    pas->Add(_T("Time"));
+    pas->Add("BPS");
+    pas->Add("RFU");
+    pas->Add("Time");
     if(bAllowPeakArea || !bPlot)
     {
       pas->Add(g_sPeakArea);
@@ -109,11 +109,11 @@ CComboLabels::CComboLabels(wxWindow *parent, wxWindowID id, bool bPlot)
   }
   else if(bPlot)
   {
-    SetToolTip(_T("Select type of label to display." PLOT_TOOLBAR_SHIFT_ALL));
+    SetToolTip("Select type of label to display." PLOT_TOOLBAR_SHIFT_ALL);
   }
   else
   {
-    SetToolTip(_T("Select information to display in table"));
+    SetToolTip("Select information to display in table");
   }
 }
 CComboLabels::~CComboLabels() {;}
@@ -175,8 +175,8 @@ void CComboLabelsName::GetChoices(
   pas->Alloc(2);
   // names must be in numeric order by IDs
   // because the selection offset is used to determine value
-  pas->Add(_T("File name"));
-  pas->Add(_T("Sample name"));
+  pas->Add("File name");
+  pas->Add("Sample name");
   if(panID != NULL)
   {
     panID->Empty();
@@ -200,9 +200,9 @@ CComboLabelsName::CComboLabelsName(wxWindow *parent, wxWindowID id)
   }
   else 
   {
-    SetToolTip(_T(
+    SetToolTip(
       "Select file names or sample names\n"
-      "for the row labels in the table below"));
+      "for the row labels in the table below");
   }
 }
 void CComboLabelsName::SelectByMenu(CMenuLabels *pMenu)
@@ -218,7 +218,7 @@ void CComboLabelsName::SelectByMenu(CMenuLabels *pMenu)
 //
 
 CMenuLabels::CMenuLabels(bool bPlot, int nPlotNrOrOffset) : 
-  wxMenu(_T("")), m_bPlot(bPlot)
+  wxMenu(""), m_bPlot(bPlot)
 {
   wxArrayString asChoices;
   int nBase = IDmenuDisplayBEGIN;
@@ -244,7 +244,7 @@ CMenuLabels::CMenuLabels(bool bPlot, int nPlotNrOrOffset) :
   {
     wxString sErr;
     sErr.Printf(
-      _T("CMenuLabels::CMenuLabels, plot number, %d, is out of range"),
+      "CMenuLabels::CMenuLabels, plot number, %d, is out of range",
       nPlotNrOrOffset);
     wxASSERT_MSG(0,sErr);
   }

@@ -37,10 +37,10 @@ bool CInFileAllele::Setup(wxString &sIn, CInFile *)
 {
   wxString s;
   CInFile::_extractErrorStr(sIn,&s,&nError);
-  dAllele = atof(s.c_str());
+  dAllele = atof(s.utf8_str());
   bOffLadder =
     (s.Find(wxChar('*')) >= 0) ||
-    (s.Find(_T("OL")) >= 0);
+    (s.Find("OL") >= 0);
   return (dAllele > 0.1);
 }
 
@@ -50,7 +50,7 @@ void CInFileAlleleList::Setup(wxString &s, CInFile *pIn)
 {
   CInFileAllele ifa;
   vector<wxString> vs;
-  size_t nCount = CInFile::_split(s.c_str(),&vs,',');
+  size_t nCount = CInFile::_split(s.utf8_str(),&vs,',');
   size_t i;
   Clear();
   m_sDisplay.Alloc(s.Len() + 4);
@@ -60,7 +60,7 @@ void CInFileAlleleList::Setup(wxString &s, CInFile *pIn)
     for(i = 0; i < nCount; i++)
     {
       wxString &sa(vs.at(i));
-      if( (!sa.IsEmpty()) && (sa.CmpNoCase(_T("OK"))) )
+      if( (!sa.IsEmpty()) && (sa.CmpNoCase("OK")) )
       {
         ifa.Setup(sa,pIn);
         if(ifa.nError)
@@ -72,13 +72,13 @@ void CInFileAlleleList::Setup(wxString &s, CInFile *pIn)
         {
           if(m_sDisplay.Len())
           {
-            m_sDisplay.Append(_T(", "));
+            m_sDisplay.Append(", ");
           }
-          m_sDisplay.Append(wxString::Format(_T("%g"),ifa.dAllele));
+          m_sDisplay.Append(wxString::Format("%g",ifa.dAllele));
         }
         else if(m_sDisplay.IsEmpty())
         {
-          m_sDisplay = _T("?");
+          m_sDisplay = "?";
         }
       }
     }
@@ -222,14 +222,14 @@ int CInFile::_extractErrorStr(wxString &s, wxString *psStr, int *pnErr)
   bool bDone = false;
   if(s.GetChar(0) == cAmp)
   {
-    ps = s.c_str();
+    ps = s.utf8_str();
     ps++;
     psDigit = ps;
     while(isdigit(*psDigit)) { psDigit++;}
     if( ((*psDigit) == '&') && (psDigit > ps) )
     {
       psDigit++;
-      (*psStr) = _T(psDigit);
+      (*psStr) = psDigit;
       (*pnErr) = atoi(ps);
       bDone = true;
     }
@@ -245,7 +245,7 @@ bool CInFile::_isFsa(wxString &s)
 {
   size_t n(s.Len());
   bool bRtn = (n > 4) &&
-      !s.Mid(n - 4).CmpNoCase(_T(".fsa"));
+      !s.Mid(n - 4).CmpNoCase(".fsa");
   return bRtn;
 }
 #if 0
@@ -255,7 +255,7 @@ bool CInFile::_isLadder(vector<wxString> &vs)
   wxString s(vs.at(0));
   bool bRtn = false;
   s.MakeLower();
-  if(s.Find(_T("ladder")) >= 0)
+  if(s.Find("ladder") >= 0)
   {
     bRtn = true;
   }
@@ -264,7 +264,7 @@ bool CInFile::_isLadder(vector<wxString> &vs)
     bRtn = (vs.size() > 2);
     for(size_t i = 2; bRtn && (i < vs.size()); i++)
     {
-      if(vs.at(i).CmpNoCase(_T("OK")))
+      if(vs.at(i).CmpNoCase("OK"))
       {
         bRtn = false;
       }
@@ -287,7 +287,7 @@ size_t CInFile::_split(const char *ps, vector<wxString> *pvs, char csep)
   {
     if(psSep != psSubString)
     {
-      pvs->push_back(wxString(_T(psSubString),psSep - psSubString));
+      pvs->push_back(wxString(psSubString,psSep - psSubString));
     }
     else
     {
@@ -297,7 +297,7 @@ size_t CInFile::_split(const char *ps, vector<wxString> *pvs, char csep)
     psSubString = psSep;
     nRtn++;
   }
-  pvs->push_back(wxString(_T(psSubString)));
+  pvs->push_back(wxString(psSubString));
   return nRtn;
 }
 */
@@ -323,7 +323,7 @@ void CInFile::AddToError(int nError, vector<wxString> &vs)
 {
   wxString *ps = GetError(nError,true);
   wxString sError;
-  wxString spaces(_T("    "));
+  wxString spaces("    ");
   wxChar nl('\n');
   size_t iStart = (vs.empty() || vs.at(0).IsEmpty()) ? 1 : 0;
   size_t i;
@@ -352,8 +352,8 @@ bool CInFile::Load(const char *psFileName)
   map<wxString,wxString> mapParms;
   typedef map<wxString,wxString>::value_type VALUEPARM;
   map<wxString,wxString>::iterator itrParm;
-  const wxString sSampleName(_T("Sample Name"));
-  const wxString sControl(_T("+Cntrl"));
+  const wxString sSampleName("Sample Name");
+  const wxString sControl("+Cntrl");
   wxString s1;
   wxString s2;
   FILE *fin = fopen(psFileName,"r");
@@ -425,8 +425,8 @@ bool CInFile::Load(const char *psFileName)
           {
             *psSep = 0;
             psSep++;
-            s1 = _T(sLine);
-            s2 = _T(psSep);
+            s1 = sLine;
+            s2 = psSep;
             s1.Trim(true);
             s2.Trim(true);
             s1.Trim(false);
@@ -442,7 +442,7 @@ bool CInFile::Load(const char *psFileName)
           // set up osiris parameters
 
           vector<wxString> vsRfu;
-          wxString UNKNOWN(_T("unknown"));
+          wxString UNKNOWN("unknown");
 #define SETUPPARM(xx) \
           s1 = xx; \
           s1.Trim(true); \
@@ -465,16 +465,16 @@ bool CInFile::Load(const char *psFileName)
 #undef SETUPPARM
 
           vsRfu.reserve(3);
-          _split(s2.c_str(),&vsRfu,',');
+          _split(s2.utf8_str(),&vsRfu,',');
           while(vsRfu.size() < 3)
           {
-            vsRfu.push_back(_T("0"));
+            vsRfu.push_back("0");
           }
 #define GETRFU(xx) \
           s1 = vsRfu.at(xx); \
           s1.Trim(true); \
           s1.Trim(false); \
-          nRFU = atoi(s1.c_str());
+          nRFU = atoi(s1.utf8_str());
 
           GETRFU(0);
           m_parms.SetMinRFU_Sample(nRFU);
@@ -535,7 +535,7 @@ bool CInFile::Load(const char *psFileName)
   }
   if(bRtn)
   {
-    m_sFileName = _T(psFileName);
+    m_sFileName = psFileName;
   }
   return bRtn;
 }

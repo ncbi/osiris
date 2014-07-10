@@ -53,7 +53,7 @@
 
 DEFINE_EVENT_TYPE(CEventHistory)
 
-const wxString CPanelHistoryMenu::LABEL(_T("History"));
+const wxString CPanelHistoryMenu::LABEL("History");
 
 void CPanelHistoryMenu::_Cleanup()
 {
@@ -132,17 +132,17 @@ CPanelHistoryMenu::CPanelHistoryMenu(
 void CPanelHistoryMenu::_Build(const wxString &sLabel)
 {
   const wxString sPrevTip(
-    _T("Display the previous historical editing\n"
+    "Display the previous historical editing\n"
        "of this file.  Hold down the shift key\n"
-       "to show the original data"));
+       "to show the original data");
   const wxString sNextTip(
-    _T("Display the following historical editing\n"
+    "Display the following historical editing\n"
        "of this file.  Hold down the shift key\n"
-       "to show the current data"));
-  const wxString sTip(_T("View historical editing of this data."));
+       "to show the current data");
+  const wxString sTip("View historical editing of this data.");
 
   m_pButtonPrev = new wxButton(
-    this,IDhistoryPrevNext,_T("<"),
+    this,IDhistoryPrevNext,"<",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   if(m_pMenuHistory != NULL)
@@ -160,7 +160,7 @@ void CPanelHistoryMenu::_Build(const wxString &sLabel)
       this,IDhistoryButton,sLabel);
   }
   m_pButtonNext = new wxButton(
-    this,IDhistoryPrevNext,_T(">"),
+    this,IDhistoryPrevNext,">",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   m_pButtonPrev->SetToolTip(sPrevTip);

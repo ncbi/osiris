@@ -33,8 +33,8 @@
 #include "nwx/nwxRound.h"
 #include <wx/msgdlg.h>
 
-const wxChar * const CGridAlleleBase::TRIALLELE_FIT(_T("00.0, 00.0, 00.0"));
-const wxChar * const CGridAlleleBase::ALLELE_FIT(_T("000.0"));
+const wxChar * const CGridAlleleBase::TRIALLELE_FIT(wxS("00.0, 00.0, 00.0"));
+const wxChar * const CGridAlleleBase::ALLELE_FIT(wxS("000.0"));
 
 //***********************************************  CGridAllele
 
@@ -86,8 +86,8 @@ bool CGridAllele::_TransferDataToWindow1()
       ssInvalid.insert(sName);
 #endif
       mainApp::LogMessageV(
-        _T("CGridAllele::TransferDataToWindow1() invalid locus %s"),
-        sName.c_str());
+        wxS("CGridAllele::TransferDataToWindow1() invalid locus %ls"),
+        sName.wc_str());
     }
     else
     {
@@ -111,12 +111,12 @@ bool CGridAllele::_TransferDataToWindow1()
   {
     wxString sError;
     sError.reserve(ssInvalid.size() << 4);
-    sError = _T("Invalid locus:\n");
+    sError = "Invalid locus:\n";
     for(itrInvalid = ssInvalid.begin();
       itrInvalid != ssInvalid.end();
       ++itrInvalid)
     {
-      sError.Append(_T("\n"));
+      sError.Append("\n");
       sError.Append(*itrInvalid);
     }
     wxASSERT_MSG(0,sError);
@@ -149,8 +149,8 @@ bool CGridAllele::_TransferDataToWindow3()
       ssInvalid.insert(sName);
 #endif
       mainApp::LogMessageV(
-        _T("CGridAllele::TransferDataToWindow1() invalid locus %s"),
-        sName.c_str());
+			  wxS("CGridAllele::TransferDataToWindow1() invalid locus %ls"),
+        sName.wc_str());
     }
     else
     {
@@ -161,7 +161,7 @@ bool CGridAllele::_TransferDataToWindow3()
         nRowCount <<= 1;
         nwxGrid::SetRowCount(this,nRowCount);
       }
-      nwxString::Join(*pLocus->GetAlleles(),&sCell,_T(", "));
+      nwxString::Join(*pLocus->GetAlleles(),&sCell,", ");
       SetCellValue(sCell,nRow,nCol);
     }
   }
@@ -170,12 +170,12 @@ bool CGridAllele::_TransferDataToWindow3()
   {
     wxString sError;
     sError.reserve(ssInvalid.size() << 4);
-    sError = _T("Invalid locus:\n");
+    sError = "Invalid locus:\n";
     for(itrInvalid = ssInvalid.begin();
       itrInvalid != ssInvalid.end();
       ++itrInvalid)
     {
-      sError.Append(_T("\n"));
+      sError.Append("\n");
       sError.Append(*itrInvalid);
     }
     wxASSERT_MSG(0,sError);
@@ -405,7 +405,7 @@ bool CGridAllelePosCtrl::TransferDataToWindow()
 #ifdef __WXDEBUG__
           else
           {
-            sErrors.Append(_T("\nCannot find locus column: "));
+            sErrors.Append("\nCannot find locus column: ");
             sErrors.Append(sName);
           }
 #endif
@@ -529,16 +529,16 @@ void CGridAllelePosCtrl::_DeleteRow(int nRow)
   }
   wxASSERT_MSG(
     !m_bReadOnly,
-    _T("CGridAllelePosCtrl::_DeleteRow called on readonly table"));
+    "CGridAllelePosCtrl::_DeleteRow called on readonly table");
 }
 bool CGridAllelePosCtrl::_PromptDeleteRow(int nRow)
 {
     // about to delete a positive control
-  wxString sMsg(_T("Do you want to delete "));
+  wxString sMsg("Do you want to delete ");
   const wxString &sLast(GetSavedValue());
   sMsg.Append(sLast);
   wxMessageDialog dlg(
-    this, sMsg,_T("Warning"),
+    this, sMsg,"Warning",
     wxYES_NO | wxNO_DEFAULT | wxICON_EXCLAMATION );
   bool bRtn = false;
   int n = dlg.ShowModal();
@@ -607,9 +607,9 @@ bool CGridAllelePosCtrl::ValidateCell(
     }
     else if(_NameIsUsed(nRow, s))
     {
-      *psPrompt  = _T("This name, ");
+      *psPrompt  = "This name, ";
       psPrompt->Append(s);
-      psPrompt->Append(_T(", is already used"));
+      psPrompt->Append(", is already used");
       bRtn = false;
     }
     else if(nRow == m_nRowNextControl)
@@ -781,20 +781,20 @@ bool CGridAlleleBase::ValidateCell(
     {
       vector<wxString> vs;
       size_t n = CLabLocus::BuildList(s,&vs,nCol == m_nAmelColumn);
-      const wxChar *psError(_T(""));
+      const wxChar *psError(wxS(""));
       switch(m_nCellType)
       {
       case ALLELE_SINGLE:
         bOK = (n == 1);
-        psError = _T("This is not a valid allele.");
+        psError = wxS("This is not a valid allele.");
         break;
       case ALLELE_MULTIPLE:
         bOK = (n > 0);
-        psError = _T("The allele(s) are not valid.");
+        psError = wxS("The allele(s) are not valid.");
         break;
       case ALLELE_TRIPLE:
         bOK = (n == 3);
-        psError = _T("Three alleles are required.");
+        psError = wxS("Three alleles are required.");
         break;
       default:
         bOK = false;

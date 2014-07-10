@@ -73,9 +73,9 @@ void UnitTest::_Run()
       ConfigDir *pDir = mainApp::GetConfig();
       wxString sPath = pDir->GetExeVolumePath();
       nwxFileUtil::EndWithSeparator(&sPath);
-      sPath.Append(_T("ID"));
+      sPath.Append("ID");
       nwxFileUtil::EndWithSeparator(&sPath);
-      sPath.Append(_T("ID_access.txt"));
+      sPath.Append("ID_access.txt");
       nwxLockRead::UnitTest(sPath);
     }
     CVolumes::UnitTest();

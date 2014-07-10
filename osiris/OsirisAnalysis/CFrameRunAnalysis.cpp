@@ -77,7 +77,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_bOK(false),
   m_nNext(0)
 {
-  wxString sTitle = _T("Running Analysis");
+  wxString sTitle = "Running Analysis";
   m_DirList.SetParmOsirisAndTraverse(m_parmOsiris,m_volume.GetDataFileType());
   _BuildWindow(sTitle,sz);
 }
@@ -109,7 +109,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_bOK(false),
   m_nNext(0)
 {
-  wxString sTitle = _T("Running Analysis");
+  wxString sTitle = "Running Analysis";
   CDirList &DirListPrev(pPrev->m_DirList);
   wxString sOldOutputDir(DirListPrev.GetDirOutput());
   wxString sNewOutputDir = m_parmOsiris.GetOutputDirectory();
@@ -197,7 +197,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   }
   else
   {
-    sTitle = _T("ERROR");
+    sTitle = "ERROR";
   }
   _BuildWindow(sTitle,sz);
 }
@@ -230,7 +230,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_nNext(0)
 {
   wxString sTitle;
-  sTitle = _T("Running Analysis");
+  sTitle = "Running Analysis";
   m_DirList.SetParmOsirisAndTraverse(m_parmOsiris,CDirList::FILE_ANY);
   //m_DirList.Traverse();
   _BuildWindow(sTitle,sz);
@@ -248,7 +248,7 @@ int CFrameRunAnalysis::GetType()
 
 void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
 {
-  wxString sLabelElapsed(_T("n/a"));
+  wxString sLabelElapsed("n/a");
   wxPanel *pPanel(new wxPanel(this));
   {
     COsirisIcon x;
@@ -256,17 +256,17 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
   }
   SetTitle(sTitle);
   m_pButtonSelectAll = new wxButton(
-    pPanel,IDbuttonSelectAll, _T("Select All"));
+    pPanel,IDbuttonSelectAll, "Select All");
   m_pButtonClearAll = new wxButton(
-    pPanel,IDbuttonClear,_T("Clear Selection"));
+    pPanel,IDbuttonClear,"Clear Selection");
   m_pButtonCancel = new wxButton(
-    pPanel,IDbuttonCancel, _T("Cancel Selection"));
+    pPanel,IDbuttonCancel, "Cancel Selection");
   m_pButtonCancelAll = new wxButton(
-    pPanel,IDbuttonCancelAll, _T("Cancel All"));
+    pPanel,IDbuttonCancelAll, "Cancel All");
   m_pButtonReAnalyze = new wxButton(
-    pPanel, IDbuttonReAnalyze, _T("Reanalyze Selection..."));
+    pPanel, IDbuttonReAnalyze, "Reanalyze Selection...");
   m_pButtonView = new wxButton(
-    pPanel,IDbuttonView, _T("View Selection"));
+    pPanel,IDbuttonView, "View Selection");
   wxGridSizer *pButtonSizer = new wxGridSizer(1,6,0,ID_BORDER);
 
   pButtonSizer->Add(m_pButtonSelectAll,1,wxEXPAND);
@@ -286,17 +286,17 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
     wxDefaultPosition, wxDefaultSize,
     wxALIGN_LEFT);
   wxStaticText *pElapsed = new wxStaticText(
-    pPanel,wxID_ANY,_T("Elapsed time: "),
+    pPanel,wxID_ANY,"Elapsed time: ",
     wxDefaultPosition, wxDefaultSize,
     wxALIGN_RIGHT);
   pSizerLabel->Add(pElapsed,0,wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT);
   pSizerLabel->Add(m_pLabelElapsed,0,wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT);
     // more/less
   m_pButtonDetails = new wxToggleButton(
-    pPanel,IDbuttonDetails,_T("Details"),
+    pPanel,IDbuttonDetails,"Details",
     wxDefaultPosition, wxDefaultSize);
   m_pButtonDetails->SetValue(false);
-  m_pTextOutput = new wxTextCtrl(pPanel,wxID_ANY,_T(""),
+  m_pTextOutput = new wxTextCtrl(pPanel,wxID_ANY,"",
     wxDefaultPosition, wxSize(-1,100),
     wxTE_MULTILINE | wxTE_READONLY | wxTE_LEFT | wxTE_DONTWRAP);
   nwxColorUtil::BackgroundParent(m_pTextOutput,true);
@@ -360,7 +360,7 @@ void CFrameRunAnalysis::UpdateOutputText()
   if( m_pButtonDetails->GetValue())
   {
     wxString sValue;
-    const wxString SPACER(_T("\n--------------------\n\n"));
+    const wxString SPACER("\n--------------------\n\n");
     long nCurrent = -1;
     long nCount = (long)m_DirList.GetCount();
     long nInsertionPoint = m_pTextOutput->GetInsertionPoint();
@@ -426,16 +426,16 @@ bool CFrameRunAnalysis::_FileNeedsAttention(CDirEntry *pEntry)
     wxXml2Document doc(pEntry->GetOutputFile());
     if(!doc.IsOk())
     {
-      wxString s(_T("Error occurred when checking if output file, "));
+      wxString s("Error occurred when checking if output file, ");
       s.Append(pEntry->GetOutputFile());
-      s.Append(_T(", needs attention.  File is invalid."));
+      s.Append(", needs attention.  File is invalid.");
       m_asErrors.push_back(s);
     }
     else if(!sheet.IsOK())
     {
       m_asErrors.push_back(
-        _T("Could not check if output file "
-          "needs attention, assumed yes."));
+        "Could not check if output file "
+          "needs attention, assumed yes.");
     }
     else
     {
@@ -451,13 +451,13 @@ bool CFrameRunAnalysis::_FileNeedsAttention(CDirEntry *pEntry)
       else
       {
         wxString s = pChild->GetContent();
-        bRtn = (s == _T("1"));
+        bRtn = (s == "1");
           // if text == 1 then attention is needed,
           // otherwise not
         if(bRtn)
         {
           m_asErrors.push_back(
-            _T("No export file was created, some notices need review or acceptance."));
+            "No export file was created, some notices need review or acceptance.");
         }
       }
     }
@@ -498,8 +498,8 @@ void CFrameRunAnalysis::_RunAutoExport(CDirEntry *pEntry)
   size_t nSize = m_asErrors.size();
   if(nSize)
   {
-    wxString sLF(_T("\n"));;
-    pEntry->AppendRunOutput(_T("\n\nExport file information:\n\n"));
+    wxString sLF("\n");;
+    pEntry->AppendRunOutput("\n\nExport file information:\n\n");
     for(size_t i = 0; i < nSize; i++)
     {
       pEntry->AppendRunOutput(m_asErrors.at(i));
@@ -538,12 +538,12 @@ void CFrameRunAnalysis::OnTimer(wxTimerEvent &e)
         {
           nHour = nMin / 60;
           nMin %= 60;
-          sValue = wxString::Format(_T("%ld:%02ld:%02ld"),nHour, nMin, nSec);
+          sValue = wxString::Format("%ld:%02ld:%02ld",nHour, nMin, nSec);
         }
       }
       if(!nHour)
       {
-        sValue = wxString::Format(_T("%02ld:%02ld"),nMin,nSec);
+        sValue = wxString::Format("%02ld:%02ld",nMin,nSec);
       }
       m_pLabelElapsed->SetLabel(sValue);
       int nProgress = (int)floor(m_pAnalysis->GetProgress() * 4.0 + 0.5);
@@ -628,8 +628,8 @@ bool CFrameRunAnalysis::CheckIsDone()
   if(!bRtn)
   {
     m_pParent->ErrorMessage(
-      _T("Cannot close window until analysis\n"
-          "is complete or canceled."));
+      "Cannot close window until analysis\n"
+          "is complete or canceled.");
   }
 #endif
   return bRtn;
@@ -824,7 +824,7 @@ void CFrameRunAnalysis::OnActivate(wxListEvent &e)
   }
   else
   {
-    m_pParent->ErrorMessage(_T("This item is not available."));
+    m_pParent->ErrorMessage("This item is not available.");
   }
 }
 void CFrameRunAnalysis::OnSelectionChanged(wxListEvent &)
@@ -852,9 +852,9 @@ void CFrameRunAnalysis::DoCancel(bool bCancelAll)
     bool bCancel = false;
     {
       CProcessPause x(m_pAnalysis);
-      wxString sMessage(_T("Do you want to cancel the analysis?"));
+      wxString sMessage("Do you want to cancel the analysis?");
       wxMessageDialog d(
-        this,sMessage,_T("Cancel"), wxYES | wxNO | wxICON_QUESTION);
+        this,sMessage,"Cancel", wxYES | wxNO | wxICON_QUESTION);
       int n = d.ShowModal();
       bCancel = (n == wxID_YES || n == wxID_OK);
     }
@@ -925,7 +925,7 @@ void CFrameRunAnalysis::_Run()
     else
     {
       pDirEntry->SetStatus(DIRENTRY_ERROR);
-      pDirEntry->AppendRunOutput(_T("Cannot create output directory:\n  "));
+      pDirEntry->AppendRunOutput("Cannot create output directory:\n  ");
       pDirEntry->AppendRunOutput(sOutputDir);
     }
     m_pListDir->UpdateStatus(pDirEntry->GetIndex());
@@ -936,7 +936,7 @@ void CFrameRunAnalysis::_Run()
     const wxString &sFileType = m_volume.GetDataFileType();
     wxString sNoFile;
     sNoFile.Alloc(80);
-    sNoFile.Append(_T("No "));
+    sNoFile.Append("No ");
     if(sFileType.Len())
     {
       sNoFile.Append(sFileType);
@@ -945,7 +945,7 @@ void CFrameRunAnalysis::_Run()
     {
       sNoFile.Append(CDirList::GetDefaultExt());
     }
-    sNoFile.Append(_T(" files found.\nPlease select another input directory."));
+    sNoFile.Append(" files found.\nPlease select another input directory.");
     mainApp::ShowError(sNoFile,m_pParent);
   }
   else
@@ -960,10 +960,10 @@ void CFrameRunAnalysis::_Run()
     }
     else
     {
-      wxString sError = _T("Could not save file with batch information\n");
+      wxString sError = "Could not save file with batch information\n";
       sError.Append(m_DirList.GetFileName());
       mainApp::ShowError(sError,m_pParent);
-      sTitle = _T("Analysis is complete");
+      sTitle = "Analysis is complete";
     }
     SetTitle(sTitle);
   }

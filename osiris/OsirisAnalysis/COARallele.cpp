@@ -33,23 +33,23 @@ COARallele::XmlIOintArtifact COARallele::g_ioArtifact;
 
 void COARallele::RegisterAll(bool)
 {
-  RegisterInt(_T("Id"),&m_nID);
-  RegisterWxString(_T("Name"),&m_sName);
-  Register(_T("ArtifactCriticalLevel"),
+  RegisterInt("Id",&m_nID);
+  RegisterWxString("Name",&m_sName);
+  Register("ArtifactCriticalLevel",
     &g_ioArtifact,(void *) &m_nArtifactLevel);
-  RegisterDouble(_T("BPS"),&m_dBPS);
-  RegisterDouble(_T("RFU"),&m_dRFU);
-  RegisterDouble(_T("meanbps"),&m_dMeanBPS);
-  RegisterDouble(_T("PeakArea"),&m_dPeakArea);
-  RegisterDouble(_T("Time"),&m_dTime);
-  RegisterDouble(_T("Fit"),&m_dFit);
-  Register(_T("OffLadder"),&COARpeak::IO_OL,&m_sOffLadder);
-  RegisterIntNonZero(_T("Count"),&m_nCount);
-  RegisterBoolSkipFalse(_T("Disabled"),&m_bDisabled);
+  RegisterDouble("BPS",&m_dBPS);
+  RegisterDouble("RFU",&m_dRFU);
+  RegisterDouble("meanbps",&m_dMeanBPS);
+  RegisterDouble("PeakArea",&m_dPeakArea);
+  RegisterDouble("Time",&m_dTime);
+  RegisterDouble("Fit",&m_dFit);
+  Register("OffLadder",&COARpeak::IO_OL,&m_sOffLadder);
+  RegisterIntNonZero("Count",&m_nCount);
+  RegisterBoolSkipFalse("Disabled",&m_bDisabled);
   Register(COARfile::g_sMessageNumber,
     &COARfile::g_iovn,(void *) &m_vnMessageNumber);
-  RegisterWxDateTimeNonZero(_T("Update"),&m_tUpdate);
-  RegisterWxStringNotEmpty(_T("InterLocus"),&m_sInterLocus);
+  RegisterWxDateTimeNonZero("Update",&m_tUpdate);
+  RegisterWxStringNotEmpty("InterLocus",&m_sInterLocus);
 }
 
 bool COARallele::HasAlerts(const COARmessages *pmsgs, const wxDateTime *pTime) const

@@ -102,8 +102,8 @@ public:
     wxSizer *pSizer = NULL)
   {
     return _CreateButton(
-      parent,IDadd,
-      sItemName,LABEL_ADD,_T("Add a new "),
+			parent,(wxWindowID)IDadd,
+      sItemName,LABEL_ADD,wxS("Add a new "),
       bReadOnly,pSizer);
   }
   static wxButton *CreateRemoveButton(
@@ -113,8 +113,8 @@ public:
     wxSizer *pSizer = NULL)
   {
     return _CreateButton(
-      parent,IDremove,
-      sItemName,LABEL_REMOVE,_T("Remove selected "),
+      parent,wxWindowID(IDremove),
+      sItemName,LABEL_REMOVE,wxS("Remove selected "),
       bReadOnly,pSizer);
   }
   static wxButton *CreateRenameButton(
@@ -124,8 +124,8 @@ public:
     wxSizer *pSizer = NULL)
   {
     return _CreateButton(
-      parent,IDrename,
-      sItemName,LABEL_RENAME,_T("Rename selected "),
+			parent,wxWindowID(IDrename),
+      sItemName,LABEL_RENAME,wxS("Rename selected "),
       bReadOnly,pSizer);
   }
 };

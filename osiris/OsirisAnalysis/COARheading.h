@@ -83,13 +83,13 @@ public:
   COARheading() :
     m_tCreationTime((time_t)0),
     m_tNewFileCreationTime((time_t)0),
-    m_vsCommandLine(_T("argv")) ,
-    m_setSaveHistory(_T("Time")),
+    m_vsCommandLine("argv") ,
+    m_setSaveHistory("Time"),
     m_bTampered(false)
   {
     RegisterAll(true);
   }
-  COARheading(const COARheading &x) : m_setSaveHistory(_T("Time"))
+  COARheading(const COARheading &x) : m_setSaveHistory("Time")
   {
     RegisterAll(true);
     (*this) = x;

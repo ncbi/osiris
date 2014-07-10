@@ -36,7 +36,7 @@
 #include "CParmOsiris.h"
 
 CDialogMaxLadderLabel::CDialogMaxLadderLabel(wxWindow *parent) :
-  wxDialog(parent,wxID_ANY,wxString(_T("Ladder Labels")))
+  wxDialog(parent,wxID_ANY,wxString("Ladder Labels"))
 {
   CParmOsirisGlobal parm;
   nwxIntValidator valid(&m_n,1,9999,-1,true);
@@ -45,8 +45,8 @@ CDialogMaxLadderLabel::CDialogMaxLadderLabel(wxWindow *parent) :
     wxDefaultPosition, wxSize(100,-1),0,valid);
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   wxStaticText *pLabel = new wxStaticText(this,wxID_ANY,
-    _T("Enter the maximum number of peak labels to\n"
-       "display on the ladder when viewed with a sample."));
+    "Enter the maximum number of peak labels to\n"
+       "display on the ladder when viewed with a sample.");
   pSizer->Add(pLabel,0,wxALL, ID_BORDER);
   pSizer->Add(m_pText,0,(wxALL ^ wxTOP) | wxALIGN_LEFT,ID_BORDER);
   pSizer->Add(CreateButtonSizer(wxOK | wxCANCEL), 0, (

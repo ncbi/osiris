@@ -49,7 +49,7 @@ bool CGridLocusColumns::SetupKit(
   if(bDefault)
   {
     const wxChar *psDefault = 
-      bILS ? _T("Default*") : _T("Default");
+      bILS ? wxS("Default*") : wxS("Default");
     vs.push_back(psDefault);
   }
   bool bRtn = SetupKit(
@@ -71,19 +71,19 @@ bool CGridLocusColumns::SetupKit(
     pKit->GetLocusNameList(sKitName);
   if(sKitName.IsEmpty())
   {
-    sProblem = _T("Marker set name is not specified.");
+    sProblem = "Marker set name is not specified.";
   }
   else if(pLocus == NULL)
   {
-    sProblem = _T("Marker set, ");
+    sProblem = "Marker set, ";
     sProblem.Append(sKitName);
-    sProblem.Append(_T(", is unknown"));
+    sProblem.Append(", is unknown");
   }
   else if(pLocus->size() < 2)
   {
-    sProblem = _T("Marker set, ");
+    sProblem = "Marker set, ";
     sProblem.Append(sKitName);
-    sProblem.Append(_T(", does not have two or more loci"));
+    sProblem.Append(", does not have two or more loci");
   }
   if(!sProblem.IsEmpty())
   {
@@ -193,13 +193,13 @@ bool CGridLocusColumns::SetupKit(
       }
 
       // ILS Column Label
-      pGrid->SetColLabelValue(nCol,_T("ILS*"));
+      pGrid->SetColLabelValue(nCol,"ILS*");
       vnChannels.push_back(nILSchannel);
       vnCounts.push_back(1);
     }
 
     // column labels are set
-    pGrid->SetRowLabelValue(0,_T("Channel"));
+    pGrid->SetRowLabelValue(0,"Channel");
 
     // now set channel cells in top row 
     // and colors throughout the table
@@ -236,7 +236,7 @@ bool CGridLocusColumns::SetupKit(
           pGrid->SetCellBackgroundColour(
               0,nCol,pChannelColors->m_ColorAnalyzed);
           sLabel.Printf(
-            _T("%u - %s"),
+            "%u - %ls",
             pChannelColors->m_nr,
             (const wxChar *)(pChannelColors->m_sDyeName)
             );
@@ -245,7 +245,7 @@ bool CGridLocusColumns::SetupKit(
         else
         {
           sLabel.Printf(
-            _T("Channel %d"), nChannel);
+            "Channel %d", nChannel);
         }
         pGrid->SetCellFont(0,nCol,fnBold);
         pGrid->SetCellValue(sLabel,0,nCol);

@@ -154,7 +154,7 @@ public:
   void ClearStatusText()
   {
 #ifndef __WXMAC__
-    SetStatusText(_T(""));
+    SetStatusText("");
 #endif
   }
   void KillOARfile(COARfile *pFile)

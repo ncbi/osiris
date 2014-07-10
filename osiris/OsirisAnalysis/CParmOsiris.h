@@ -397,9 +397,9 @@ public:
     wxString sRtn(m_sVolumeName);
     if(sRtn.IsEmpty() && !m_sKitName.IsEmpty())
     {
-      sRtn = _T("[");
+      sRtn = "[";
       sRtn.Append(m_sKitName);
-      sRtn.Append(_T("]"));
+      sRtn.Append("]");
     }
     return sRtn;
   }
@@ -1048,17 +1048,17 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("inputDirectory"), &m_sInputDirectory);
-    RegisterWxString(_T("outputDirectory"), &m_sOutputDirectory);
-    RegisterWxString(_T("kit"), &m_sKitName);
-    RegisterWxString(_T("ls"), &m_sLsName);
-    RegisterInt(_T("minRFUsample"), &m_nMinRFU_Sample);
-    RegisterInt(_T("minRFUILS"), &m_nMinRFU_ILS);
-    RegisterInt(_T("minRFUladder"), &m_nMinRFU_Ladder);
-    RegisterInt(_T("minRFUinterlocus"), &m_nMinRFU_Interlocus);
-    RegisterIntNonZero(_T("minRFUladderInterlocus"), &m_nMinLadderInterlocusRFU);
-    RegisterIntNonZero(_T("minRFUsampleDetection"), &m_nSampleDetectionThreshold);
-    RegisterBoolSkipFalse(_T("DataAnalyzed"), &m_bDataAnalyzed);
+    RegisterWxString("inputDirectory", &m_sInputDirectory);
+    RegisterWxString("outputDirectory", &m_sOutputDirectory);
+    RegisterWxString("kit", &m_sKitName);
+    RegisterWxString("ls", &m_sLsName);
+    RegisterInt("minRFUsample", &m_nMinRFU_Sample);
+    RegisterInt("minRFUILS", &m_nMinRFU_ILS);
+    RegisterInt("minRFUladder", &m_nMinRFU_Ladder);
+    RegisterInt("minRFUinterlocus", &m_nMinRFU_Interlocus);
+    RegisterIntNonZero("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
+    RegisterIntNonZero("minRFUsampleDetection", &m_nSampleDetectionThreshold);
+    RegisterBoolSkipFalse("DataAnalyzed", &m_bDataAnalyzed);
   }
   virtual bool Load()
   {

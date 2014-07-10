@@ -424,7 +424,7 @@ wxStaticText *CPanelPlotPreview::_SetupMessage()
   if(m_pTextMessage == NULL)
   {
     m_pTextMessage = new wxStaticText(
-      this,wxID_ANY,_T("Cannot find plot data"));
+      this,wxID_ANY,"Cannot find plot data");
     m_pTextMessage->SetBackgroundColour(*wxWHITE);
     m_pTextMessage->SetForegroundColour(*wxBLACK);
     wxFont fnt = m_pTextMessage->GetFont();

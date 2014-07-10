@@ -95,14 +95,14 @@ public:
     // Osiris v 1.x
     wxString sRtn = GetExeConfigPath();
     nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append(_T("LadderData.xml"));
+    sRtn.Append("LadderData.xml");
     return sRtn;
   }
   wxString GetILSLadderFilePath() const
   {
     // Osiris v 2.1+
     wxString sRtn = GetExeConfigPath();
-    sRtn.Append(_T("LadderSpecifications"));
+    sRtn.Append("LadderSpecifications");
     nwxFileUtil::EndWithSeparator(&sRtn);
     return sRtn;
   }
@@ -116,15 +116,15 @@ public:
   wxString GetILSLadderFileName() const
   {
     // Osiris v 2.x
-    return GetILSLadderFileName(_T("ILSAndLadderInfo.xml"));
+    return GetILSLadderFileName("ILSAndLadderInfo.xml");
   }
   wxString GetMessageBookFileName() const
   {
     wxString sRtn = GetExeConfigPath();
     nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append(_T("LadderSpecifications"));
+    sRtn.Append("LadderSpecifications");
     nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append(_T("MessageBook.xml"));
+    sRtn.Append("MessageBook.xml");
     return sRtn;
   }	
 #if 0
@@ -133,7 +133,7 @@ public:
     //  this needs a kit name
     wxString sRtn = GetExeConfigPath();
     nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append(_T("OsirisMessageBookV4.0.xml"));
+    sRtn.Append("OsirisMessageBookV4.0.xml");
     return sRtn;
   }
 #endif

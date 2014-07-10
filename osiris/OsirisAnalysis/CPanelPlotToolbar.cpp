@@ -48,12 +48,12 @@ CComboArtifact::CComboArtifact(wxWindow *parent, wxWindowID id) :
   as.Alloc(CArtifactDisplayList::ARTIFACT_DISPLAY_COUNT);
   for(int i = 0; i < CArtifactDisplayList::ARTIFACT_DISPLAY_COUNT; i++)
   {
-    as.Add(_T(CArtifactDisplayList::apsDisplay[i]));
+    as.Add(CArtifactDisplayList::apsDisplay[i]);
   }
   Create(parent,id,as.Item(CArtifactDisplayList::DEFAULT_NDX),
     wxDefaultPosition, wxDefaultSize,
     as,wxCB_DROPDOWN | wxCB_READONLY);
-  SetToolTip(_T("Select artifacts to display." PLOT_TOOLBAR_SHIFT_ALL));
+  SetToolTip("Select artifacts to display." PLOT_TOOLBAR_SHIFT_ALL);
 }
 
 void CComboArtifact::SetIntValue(int n)
@@ -118,49 +118,49 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   }
   m_nChannelCount = nChannelCount;
   m_pPanel = new wxPanel(this);
-  pStatText = new wxStaticText(m_pPanel,wxID_ANY,_T("Data:"));
+  pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Data:");
   pSizer->Add(pStatText, 0, nSizerFlags, ID_BORDER);
   m_vShiftWindows.push_back(pStatText);
 
   // analyzed data button
   m_pButtonAnalyzed = new wxToggleButton(
-    m_pPanel,IDgraphAnalyzed,_T("A"),
+    m_pPanel,IDgraphAnalyzed,"A",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
   m_pButtonAnalyzed->SetValue(bFirst);
-  m_pButtonAnalyzed->SetToolTip(_T("View or hide analyzed data." PLOT_TOOLBAR_SHIFT_ALL));
+  m_pButtonAnalyzed->SetToolTip("View or hide analyzed data." PLOT_TOOLBAR_SHIFT_ALL);
   wxFont fnt = m_pButtonAnalyzed->GetFont();
   fnt.SetWeight(wxFONTWEIGHT_BOLD);
   m_pButtonAnalyzed->SetFont(fnt);
   pSizer->Add(m_pButtonAnalyzed,0,nSizerFlags,ID_BORDER);
 
   // raw data button
-  m_pButtonRaw = new wxToggleButton(m_pPanel,IDgraphRaw,_T("R"),
+  m_pButtonRaw = new wxToggleButton(m_pPanel,IDgraphRaw,"R",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  m_pButtonRaw->SetToolTip(_T("View or hide raw data." PLOT_TOOLBAR_SHIFT_ALL));
+  m_pButtonRaw->SetToolTip("View or hide raw data." PLOT_TOOLBAR_SHIFT_ALL);
   m_pButtonRaw->SetFont(fnt);
   m_pButtonRaw->SetValue(false);
   pSizer->Add(m_pButtonRaw,0,nSizerFlags,ID_BORDER);
 
   // ladder data button
-  m_pButtonLadder = new wxToggleButton(m_pPanel,IDgraphLadder,_T("L"),
+  m_pButtonLadder = new wxToggleButton(m_pPanel,IDgraphLadder,"L",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  m_pButtonLadder->SetToolTip(_T("View or hide ladder data." PLOT_TOOLBAR_SHIFT_ALL));
+  m_pButtonLadder->SetToolTip("View or hide ladder data." PLOT_TOOLBAR_SHIFT_ALL);
   m_pButtonLadder->SetFont(fnt);
   m_pButtonLadder->SetValue(false);
   pSizer->Add(m_pButtonLadder,0,nSizerFlags,ID_BORDER);
 
   // baseline data button
-  m_pButtonBaseline = new wxToggleButton(m_pPanel,IDgraphBaseline,_T("B"),
+  m_pButtonBaseline = new wxToggleButton(m_pPanel,IDgraphBaseline,"B",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  m_pButtonBaseline->SetToolTip(_T("View or hide baseline data." PLOT_TOOLBAR_SHIFT_ALL));
+  m_pButtonBaseline->SetToolTip("View or hide baseline data." PLOT_TOOLBAR_SHIFT_ALL);
   m_pButtonBaseline->SetFont(fnt);
   m_pButtonBaseline->SetValue(false);
   _EnableBaseline(pData->HasBaseline());
@@ -170,10 +170,10 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 
   // view table
   wxButton *pButtonTable =
-    new wxButton(m_pPanel,IDgraphTable,_T("Table"),
+    new wxButton(m_pPanel,IDgraphTable,"Table",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
-  pButtonTable->SetToolTip(_T("View a table containing the analysis data."));
+  pButtonTable->SetToolTip("View a table containing the analysis data.");
   pSizer->Add(pButtonTable,0,nSizerFlags,ID_BORDER);
 
 
@@ -183,7 +183,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   char label[2] = {0,0};
   const CChannelColors *pCC;
   wxColour WHITE(255,255,255);
-  pStatText = new wxStaticText(m_pPanel,wxID_ANY,_T("Channel:"));
+  pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Channel:");
   pSizer->Add(pStatText, 0, nSizerFlags, ID_BORDER);
   m_vShiftWindows.push_back(pStatText);
 
@@ -222,8 +222,8 @@ CPanelPlotToolbar::CPanelPlotToolbar(
     m_pButtonChannel[i] = pTgl;
     pTgl->SetValue(bFirst);
     pTgl->SetToolTip(wxString::Format(
-      _T("View or hide data for channel %d\n" 
-         "Hold down the shift key to view only channel %d "),i,i));
+      "View or hide data for channel %d\n" 
+         "Hold down the shift key to view only channel %d ",i,i));
 
     pTgl->SetBackgroundColour(cl);
   }
@@ -235,13 +235,13 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->AddSpacer(SPACER);
 
   // sync button
-  m_pButtonSync = new wxToggleButton(m_pPanel,IDgraphSyncAxes,_T("Sync"),
+  m_pButtonSync = new wxToggleButton(m_pPanel,IDgraphSyncAxes,"Sync",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
   m_pButtonSync->SetToolTip(
-    _T("Syncrhonize axes on all plots when zooming.\n"
-      "Hold down the shift key to set all plots."));
+    "Syncrhonize axes on all plots when zooming.\n"
+      "Hold down the shift key to set all plots.");
   m_pButtonSync->SetValue(bFirst);
   pSizer->Add(m_pButtonSync,0,nSizerFlags,ID_BORDER);
   m_vShiftWindows.push_back(m_pButtonSync);
@@ -249,26 +249,26 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   // ILS button
 
   m_pButtonILS = new wxToggleButton(m_pPanel,
-    IDgraphILS, _T("ILS"),
+    IDgraphILS, "ILS",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  m_pButtonILS->SetToolTip(_T("Show or hide vertical lines for the ILS." PLOT_TOOLBAR_SHIFT_ALL));
+  m_pButtonILS->SetToolTip("Show or hide vertical lines for the ILS." PLOT_TOOLBAR_SHIFT_ALL);
   m_pButtonILS->SetValue(false);
   pSizer->Add(m_pButtonILS,0,nSizerFlags,ID_BORDER);
 
 
   // rfu button
-  m_pButtonRfu = new wxToggleButton(m_pPanel,IDgraphRFU,_T("RFU"),
+  m_pButtonRfu = new wxToggleButton(m_pPanel,IDgraphRFU,"RFU",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  m_pButtonRfu->SetToolTip(_T("View or hide minimum RFU." PLOT_TOOLBAR_SHIFT_ALL));
+  m_pButtonRfu->SetToolTip("View or hide minimum RFU." PLOT_TOOLBAR_SHIFT_ALL);
   m_pButtonRfu->SetValue(false);
   pSizer->Add(m_pButtonRfu,0,nSizerFlags,ID_BORDER);
 
   // labels label
-  pStatText = new wxStaticText(m_pPanel,wxID_ANY,_T("Labels:"));
+  pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Labels:");
   pSizer->AddSpacer(SPACER);
   pSizer->Add(pStatText, 0, nSizerFlags, ID_BORDER);
   m_vShiftWindows.push_back(pStatText);
@@ -282,16 +282,16 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   BOX_COMBO(m_pComboLabels,pSizer,nSizerFlags); // #defined in CComboLabels.h
 
   m_pButtonLadderLabels = new wxToggleButton(
-    m_pPanel, IDgraphLadderLabels,_T("Ladder"),
+    m_pPanel, IDgraphLadderLabels,"Ladder",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   m_pButtonLadderLabels->SetToolTip(
-    _T("View or hide ladder labels\nwhen ladder data are shown."
-    PLOT_TOOLBAR_SHIFT_ALL));
+    "View or hide ladder labels\nwhen ladder data are shown."
+    PLOT_TOOLBAR_SHIFT_ALL);
   m_pButtonLadderLabels->SetValue(false);
   pSizer->Add(m_pButtonLadderLabels,0,nSizerFlags,ID_BORDER);
 
-  pStatText = new wxStaticText(m_pPanel,wxID_ANY,_T("Artifacts:"));
+  pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Artifacts:");
   pSizer->AddSpacer(ID_BORDER);
   pSizer->Add(pStatText, 0, nSizerFlags, ID_BORDER);
   m_vShiftWindows.push_back(pStatText);
@@ -300,7 +300,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   BOX_COMBO(m_pComboArtifact,pSizer,nSizerFlags); // #defined in CComboLabels.h
   m_pPanelHistory = new CPanelHistoryMenu(
     GetParent()->GetParent(),
-    m_pPanel,IDhistoryButton,_T("H"));
+    m_pPanel,IDhistoryButton,"H");
   pSizer->Add(m_pPanelHistory,0,wxALIGN_CENTRE_VERTICAL,0);
   m_vShiftWindows.push_back(m_pPanelHistory);
   if(pMenu != NULL)
@@ -311,34 +311,34 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->AddSpacer(SPACER + ID_BORDER);
 
   // zoom out button
-  pBtn = new wxButton(m_pPanel, IDgraphZoomOut,_T("Reset Axes"),
+  pBtn = new wxButton(m_pPanel, IDgraphZoomOut,"Reset Axes",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
   pBtn->SetToolTip(
-    _T("Reset axes to view all alleleic data\n"
-      "Hold down the shift key to include primer peaks"));
+    "Reset axes to view all alleleic data\n"
+      "Hold down the shift key to include primer peaks");
   pSizer->Add(pBtn,0,nSizerFlags,ID_BORDER);
   m_vShiftWindows.push_back(pBtn);
 
   // multiple button
-  pBtn = new wxButton(m_pPanel, IDgraphMultiple,_T("Multiple"),
+  pBtn = new wxButton(m_pPanel, IDgraphMultiple,"Multiple",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  pBtn->SetToolTip(_T(
+  pBtn->SetToolTip(
     "Create a separate plot for each channel\n"
     "or hold down the shift key to remove\n"
     "all plots except this"
-    ));
+    );
   pSizer->Add(pBtn,0,nSizerFlags,ID_BORDER);
 
   // append button
-  m_pButtonAppend = new wxButton(m_pPanel, IDgraphAppend,_T("Append"),
+  m_pButtonAppend = new wxButton(m_pPanel, IDgraphAppend,"Append",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  m_pButtonAppend->SetToolTip(_T("Add a new plot for a this sample"));
+  m_pButtonAppend->SetToolTip("Add a new plot for a this sample");
   pSizer->Add(m_pButtonAppend,0,nSizerFlags,ID_BORDER);
 
   // big spacer
@@ -346,23 +346,23 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 
   //  param button
 
-  pBtn = new wxButton(m_pPanel,IDbuttonDetails,_T("Parameters..."),
+  pBtn = new wxButton(m_pPanel,IDbuttonDetails,"Parameters...",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  pBtn->SetToolTip(_T("Display analysis parameters"));
+  pBtn->SetToolTip("Display analysis parameters");
   pSizer->Add(pBtn,0,nSizerFlags,ID_BORDER);
   m_vShiftWindows.push_back(pBtn);
   //  delete button
 
-  m_pButtonDelete = new wxButton(m_pPanel,IDgraphRemove,_T("X"),
+  m_pButtonDelete = new wxButton(m_pPanel,IDgraphRemove,"X",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
-  m_pButtonDelete->SetToolTip(_T(
+  m_pButtonDelete->SetToolTip(
     "Remove this plot or hold down the\n"
     "shift key to remove all plots\n"
-    "except this"));
+    "except this");
   m_pButtonDelete->SetFont(fnt);
   m_pButtonDelete->Enable(!bFirst);
   pSizer->Add(m_pButtonDelete,0,nSizerFlags ^ wxRIGHT,ID_BORDER);

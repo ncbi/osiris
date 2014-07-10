@@ -38,7 +38,7 @@ CDialogShowLabSettings::CDialogShowLabSettings(
   wxWindow *parent, wxWindowID id,
   CLabSettings *pLab,
   const CXMLmessageBook *pBook) :
-    wxDialog(parent,id,_T("Lab Settings"),
+    wxDialog(parent,id,"Lab Settings",
          wxDefaultPosition, wxDefaultSize,
          mainApp::DIALOG_STYLE)
 {

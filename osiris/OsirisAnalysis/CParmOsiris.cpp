@@ -45,7 +45,7 @@ void CParmOsiris::_Init()
   if(m_sFileName.IsEmpty())
   {
     m_sFileName = mainApp::GetConfig()->GetConfigPath();
-    m_sFileName += _T("osiris.xml");
+    m_sFileName += "osiris.xml";
   }
   m_bModified = false;
   m_bAutoSave = false;
@@ -267,7 +267,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   if(bInConstructor)
   {
     m_ioDefaultSample.SetDefault(
-      _T(CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY));
+      CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY);
     m_ioBatchFormat.SetDefault(DEFAULT_BATCH_FORMAT);
     m_ioUintViewPlotArtifact.SetDefault(15);
     m_ioUint1.SetDefault(1);
@@ -276,93 +276,93 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
 
   // begin generated register
 
-  RegisterWxString(_T("LastExportXSLsearch"), &m_sLastExportXSLsearch);
-  RegisterWxString(_T("LastExportDirectory"), &m_sLastExportDirectory);
-  RegisterWxString(_T("inputDirectory"), &m_sInputDirectory);
-  RegisterWxString(_T("outputDirectory"), &m_sOutputDirectory);
+  RegisterWxString("LastExportXSLsearch", &m_sLastExportXSLsearch);
+  RegisterWxString("LastExportDirectory", &m_sLastExportDirectory);
+  RegisterWxString("inputDirectory", &m_sInputDirectory);
+  RegisterWxString("outputDirectory", &m_sOutputDirectory);
 
   //   m_sKitName is obsolete, use volume name
 
-  RegisterWxString(_T("kit"), &m_sKitName);
-  RegisterWxString(_T("volume"), &m_sVolumeName);
-  RegisterWxString(_T("ls"), &m_sLsName);
-  RegisterInt(_T("minRFUsample"), &m_nMinRFU_Sample);
-  RegisterInt(_T("minRFUinterlocus"), &m_nMinRFU_Interlocus);
-  RegisterInt(_T("minRFUILS"), &m_nMinRFU_ILS);
-  RegisterInt(_T("minRFUladder"), &m_nMinRFU_Ladder);
-  RegisterInt(_T("minRFUladderInterlocus"), &m_nMinLadderInterlocusRFU);
-  RegisterInt(_T("minRFUsampleDetection"), &m_nSampleDetectionThreshold);
-  RegisterWxString(_T("AnalysisOverride"), &m_sAnalysisOverride);
-  RegisterBool(_T("TimeStampSubDir"), &m_bTimeStampSubDir);
-  RegisterBool(_T("DataAnalyzed"), &m_bDataAnalyzed);
+  RegisterWxString("kit", &m_sKitName);
+  RegisterWxString("volume", &m_sVolumeName);
+  RegisterWxString("ls", &m_sLsName);
+  RegisterInt("minRFUsample", &m_nMinRFU_Sample);
+  RegisterInt("minRFUinterlocus", &m_nMinRFU_Interlocus);
+  RegisterInt("minRFUILS", &m_nMinRFU_ILS);
+  RegisterInt("minRFUladder", &m_nMinRFU_Ladder);
+  RegisterInt("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
+  RegisterInt("minRFUsampleDetection", &m_nSampleDetectionThreshold);
+  RegisterWxString("AnalysisOverride", &m_sAnalysisOverride);
+  RegisterBool("TimeStampSubDir", &m_bTimeStampSubDir);
+  RegisterBool("DataAnalyzed", &m_bDataAnalyzed);
 
   //  CMF settings
 
-  RegisterWxString(_T("CMFsourceLab"), &m_sCMFsourceLab);
-  RegisterWxString(_T("CMFdestLab"), &m_sCMFdestLab);
-  Register(_T("CMFdefaultSample"),&m_ioDefaultSample,(void *) &m_sCMFdefaultSample);
-  Register(_T("CMFbatchFormat"),&m_ioBatchFormat,(void *) &m_sCMFbatchFormat);
-  RegisterWxString(_T("CMFuserID"), &m_sCMFuserID);
-  RegisterBool(_T("CMFviewLocation"), &m_bCMFviewLocation);
+  RegisterWxString("CMFsourceLab", &m_sCMFsourceLab);
+  RegisterWxString("CMFdestLab", &m_sCMFdestLab);
+  Register("CMFdefaultSample",&m_ioDefaultSample,(void *) &m_sCMFdefaultSample);
+  Register("CMFbatchFormat",&m_ioBatchFormat,(void *) &m_sCMFbatchFormat);
+  RegisterWxString("CMFuserID", &m_sCMFuserID);
+  RegisterBool("CMFviewLocation", &m_bCMFviewLocation);
 
   //  PNG Export Settings
 
-  RegisterDouble(_T("PNGwidth"), &m_dPNGwidth);
-  RegisterDouble(_T("PNGheight"), &m_dPNGheight);
-  RegisterInt(_T("PNGunits"), &m_nPNGunits);
-  RegisterInt(_T("PNGusage"), &m_nPNGusage);
-  RegisterBool(_T("PNGviewLocation"), &m_bPNGviewLocation);
-  Register(_T("ShowAlerts"),&m_ioInt_1,(void *) &m_nShowAlerts);
-  RegisterBoolTrue(_T("ShowPreview"), &m_bShowPreview);
-  RegisterBool(_T("HideGraphicToolbar"), &m_bHideGraphicToolbar);
-  RegisterBool(_T("HideGraphicScrollbar"), &m_bHideGraphicScrollbar);
-  RegisterBool(_T("HideTextToolbar"), &m_bHideTextToolbar);
-  RegisterBoolTrue(_T("StartupMRU"), &m_bStartupMRU);
-  RegisterBoolTrue(_T("CheckBeforeExit"), &m_bCheckBeforeExit);
-  RegisterBoolTrue(_T("WarnOnHistory"), &m_bWarnOnHistory);
-  RegisterDouble(_T("ZoomLocusMargin"), &m_dZoomLocusMargin);
+  RegisterDouble("PNGwidth", &m_dPNGwidth);
+  RegisterDouble("PNGheight", &m_dPNGheight);
+  RegisterInt("PNGunits", &m_nPNGunits);
+  RegisterInt("PNGusage", &m_nPNGusage);
+  RegisterBool("PNGviewLocation", &m_bPNGviewLocation);
+  Register("ShowAlerts",&m_ioInt_1,(void *) &m_nShowAlerts);
+  RegisterBoolTrue("ShowPreview", &m_bShowPreview);
+  RegisterBool("HideGraphicToolbar", &m_bHideGraphicToolbar);
+  RegisterBool("HideGraphicScrollbar", &m_bHideGraphicScrollbar);
+  RegisterBool("HideTextToolbar", &m_bHideTextToolbar);
+  RegisterBoolTrue("StartupMRU", &m_bStartupMRU);
+  RegisterBoolTrue("CheckBeforeExit", &m_bCheckBeforeExit);
+  RegisterBoolTrue("WarnOnHistory", &m_bWarnOnHistory);
+  RegisterDouble("ZoomLocusMargin", &m_dZoomLocusMargin);
 
   //  grid
 
-  RegisterInt(_T("TableDisplayPeak"), &m_nTableDisplayPeak);
-  RegisterInt(_T("TableSortBy"), &m_nTableSortBy);
-  RegisterBoolTrue(_T("TableControlsAtTop"), &m_bTableControlsAtTop);
-  RegisterInt(_T("TableShowSampleDisplayNames"), &m_nTableShowSampleDisplayNames);
+  RegisterInt("TableDisplayPeak", &m_nTableDisplayPeak);
+  RegisterInt("TableSortBy", &m_nTableSortBy);
+  RegisterBoolTrue("TableControlsAtTop", &m_bTableControlsAtTop);
+  RegisterInt("TableShowSampleDisplayNames", &m_nTableShowSampleDisplayNames);
 
   //  preview settings
 
-  RegisterBoolTrue(_T("PreviewDataAnalyzed"), &m_bPreviewDataAnalyzed);
-  RegisterBool(_T("PreviewDataRaw"), &m_bPreviewDataRaw);
-  RegisterBool(_T("PreviewDataLadder"), &m_bPreviewDataLadder);
-  RegisterBool(_T("PreviewDataBaseline"), &m_bPreviewDataBaseline);
-  RegisterBool(_T("PreviewShowILS"), &m_bPreviewShowILS);
-  RegisterBool(_T("PreviewShowRFU"), &m_bPreviewShowRFU);
-  RegisterBool(_T("PreviewShowLadderLabels"), &m_bPreviewShowLadderLabels);
-  Register(_T("PreviewArtifact"),&m_ioUintViewPlotArtifact,(void *) &m_nPreviewShowArtifact);
+  RegisterBoolTrue("PreviewDataAnalyzed", &m_bPreviewDataAnalyzed);
+  RegisterBool("PreviewDataRaw", &m_bPreviewDataRaw);
+  RegisterBool("PreviewDataLadder", &m_bPreviewDataLadder);
+  RegisterBool("PreviewDataBaseline", &m_bPreviewDataBaseline);
+  RegisterBool("PreviewShowILS", &m_bPreviewShowILS);
+  RegisterBool("PreviewShowRFU", &m_bPreviewShowRFU);
+  RegisterBool("PreviewShowLadderLabels", &m_bPreviewShowLadderLabels);
+  Register("PreviewArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPreviewShowArtifact);
 
   //  plot settings
 
-  RegisterBoolTrue(_T("PlotDataAnalyzed"), &m_bPlotDataAnalyzed);
-  RegisterBool(_T("PlotDataRaw"), &m_bPlotDataRaw);
-  RegisterBool(_T("PlotDataLadder"), &m_bPlotDataLadder);
-  RegisterBool(_T("PlotDataBaseline"), &m_bPlotDataBaseline);
-  RegisterBool(_T("PlotShowILS"), &m_bPlotShowILS);
-  RegisterBool(_T("PlotShowRFU"), &m_bPlotShowRFU);
-  RegisterBool(_T("PlotShowLadderLabels"), &m_bPlotShowLadderLabels);
-  RegisterBool(_T("PlotResizable"), &m_bPlotResizable);
-  Register(_T("PlotMinHeight"),&m_ioInt_1,(void *) &m_nPlotMinHeight);
-  Register(_T("PlotShowArtifact"),&m_ioUintViewPlotArtifact,(void *) &m_nPlotShowArtifact);
-  Register(_T("PlotDisplayPeak"),&m_ioUint1,(void *) &m_nPlotDisplayPeak);
-  Register(_T("MaxLadderLabels"),&m_ioInt_1,(void *) &m_nPlotMaxLadderLabels);
+  RegisterBoolTrue("PlotDataAnalyzed", &m_bPlotDataAnalyzed);
+  RegisterBool("PlotDataRaw", &m_bPlotDataRaw);
+  RegisterBool("PlotDataLadder", &m_bPlotDataLadder);
+  RegisterBool("PlotDataBaseline", &m_bPlotDataBaseline);
+  RegisterBool("PlotShowILS", &m_bPlotShowILS);
+  RegisterBool("PlotShowRFU", &m_bPlotShowRFU);
+  RegisterBool("PlotShowLadderLabels", &m_bPlotShowLadderLabels);
+  RegisterBool("PlotResizable", &m_bPlotResizable);
+  Register("PlotMinHeight",&m_ioInt_1,(void *) &m_nPlotMinHeight);
+  Register("PlotShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPlotShowArtifact);
+  Register("PlotDisplayPeak",&m_ioUint1,(void *) &m_nPlotDisplayPeak);
+  Register("MaxLadderLabels",&m_ioInt_1,(void *) &m_nPlotMaxLadderLabels);
 
   //  XSLT saved parameter info
 
-  RegisterWxString(_T("LastXSLInputFileDir"), &m_sLastXSLInputFileDir);
+  RegisterWxString("LastXSLInputFileDir", &m_sLastXSLInputFileDir);
 
 
   // end generated register
 
-  Register(_T("GridColors"),&m_gridAttr);
+  Register("GridColors",&m_gridAttr);
 }
 
 CParmOsiris::~CParmOsiris()
@@ -380,9 +380,9 @@ void CParmOsiris::SetDefaults()
 
   wxString sExe = pConfig->GetExePath();
   wxString sInputDirectory = sExe;
-  sInputDirectory += _T("TestAnalysis");
+  sInputDirectory += "TestAnalysis";
   nwxFileUtil::EndWithSeparator(&sInputDirectory);
-  sInputDirectory += _T("Cofiler");
+  sInputDirectory += "Cofiler";
 
   m_bModified = true;
 
@@ -395,7 +395,7 @@ void CParmOsiris::SetDefaults()
 
   //   m_sKitName is obsolete, use volume name
 
-  m_sKitName = _T("Cofiler");
+  m_sKitName = "Cofiler";
   m_sVolumeName.Empty();
   m_sLsName.Empty();
   m_nMinRFU_Sample = RFU;
@@ -482,7 +482,7 @@ bool CParmOsiris::Save()
   if(!bRtn)
   {
     wxString sError =
-      _T("An error occurred when writing OSIRS parameters file:\n");
+      "An error occurred when writing OSIRS parameters file:\n";
     sError.Append(m_sFileName);
     wxASSERT_MSG(0,sError);
     mainApp::LogMessage(sError);
@@ -494,24 +494,24 @@ bool CParmOsiris::Save()
   return bRtn;
 }
 
-const wxString CParmOsiris::DEFAULT_BATCH_FORMAT(_T("%Y%m%d_%H%M%S"));
-const wxString CParmOsiris::LABEL_VIEW_LOCATION(_T("View File Location"));
-const wxString CParmOsiris::LABEL_INPUT(_T("Input Directory "));
-const wxString CParmOsiris::LABEL_OUTPUT(_T("Output Directory "));
-const wxString CParmOsiris::LABEL_KIT(_T("Kit Name "));
-const wxString CParmOsiris::LABEL_VOLUME(_T("Operating Procedure Name "));
-const wxString CParmOsiris::LABEL_LS(_T("Internal Lane Standard "));
-const wxString CParmOsiris::LABEL_RFU(_T("Minimum RFU "));
-const wxString CParmOsiris::LABEL_RFU_SAMPLE(_T("Sample: "));
-const wxString CParmOsiris::LABEL_RFU_ILS(_T("ILS: "));
-const wxString CParmOsiris::LABEL_RFU_LADDER(_T("Ladder: "));
-const wxString CParmOsiris::LABEL_RFU_INTERLOCUS(_T("Interlocus: "));
-const wxString CParmOsiris::LABEL_DATA(_T("Data "));
-const wxString CParmOsiris::LABEL_DATA_RAW(_T("Raw  "));
-const wxString CParmOsiris::LABEL_DATA_ANALYZED(_T("Analyzed"));
-const wxString CParmOsiris::LABEL_ANALYSIS(_T("Analysis: "));
-const wxString CParmOsiris::LABEL_DETECTION(_T("Detection: "));
-const wxString CParmOsiris::LABEL_INTERLOCUS(_T("Interlocus: "));
-const wxString CParmOsiris::ERROR_MSG_INTERLOCUS(_T("Minimum interlocus RFU must be\ngreater than or equal to the minimum RFU"));
+const wxString CParmOsiris::DEFAULT_BATCH_FORMAT("%Y%m%d_%H%M%S");
+const wxString CParmOsiris::LABEL_VIEW_LOCATION("View File Location");
+const wxString CParmOsiris::LABEL_INPUT("Input Directory ");
+const wxString CParmOsiris::LABEL_OUTPUT("Output Directory ");
+const wxString CParmOsiris::LABEL_KIT("Kit Name ");
+const wxString CParmOsiris::LABEL_VOLUME("Operating Procedure Name ");
+const wxString CParmOsiris::LABEL_LS("Internal Lane Standard ");
+const wxString CParmOsiris::LABEL_RFU("Minimum RFU ");
+const wxString CParmOsiris::LABEL_RFU_SAMPLE("Sample: ");
+const wxString CParmOsiris::LABEL_RFU_ILS("ILS: ");
+const wxString CParmOsiris::LABEL_RFU_LADDER("Ladder: ");
+const wxString CParmOsiris::LABEL_RFU_INTERLOCUS("Interlocus: ");
+const wxString CParmOsiris::LABEL_DATA("Data ");
+const wxString CParmOsiris::LABEL_DATA_RAW("Raw  ");
+const wxString CParmOsiris::LABEL_DATA_ANALYZED("Analyzed");
+const wxString CParmOsiris::LABEL_ANALYSIS("Analysis: ");
+const wxString CParmOsiris::LABEL_DETECTION("Detection: ");
+const wxString CParmOsiris::LABEL_INTERLOCUS("Interlocus: ");
+const wxString CParmOsiris::ERROR_MSG_INTERLOCUS("Minimum interlocus RFU must be\ngreater than or equal to the minimum RFU");
 
 

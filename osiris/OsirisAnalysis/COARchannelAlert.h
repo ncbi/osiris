@@ -99,7 +99,7 @@ public:
       ? 0
       : ((n > 4) ? 4 : n);
   }
-  void SetOffLadderString(const wxString s = _T("true"))
+  void SetOffLadderString(const wxString s = "true")
   {
     m_sOffLadder = s;
   }
@@ -464,7 +464,7 @@ public:
     vector<const COARartifact *> *pva,
     const wxDateTime *pTime) const
   {
-    const wxString s(_T(""));
+    const wxString s("");
     GetArtifactsByTime(s,pva,pTime);
   }
 

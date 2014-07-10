@@ -40,20 +40,20 @@
 
 #define EDIT_SAMPLE_LABEL "Edit " COAR_NOTICE_DISPLAY_CAP " and Notes..."
 
-const wxString CMenuEdit::LABEL_EDIT_DIRECTORY(_T("Edit Directory Notices..."));
-const wxString CMenuEdit::LABEL_ACCEPT_ALERTS(_T("Accept Alerts"));
-const wxString CMenuEdit::LABEL_REVIEW_EDIT(_T("Review Editing"));
+const wxString CMenuEdit::LABEL_EDIT_DIRECTORY("Edit Directory Notices...");
+const wxString CMenuEdit::LABEL_ACCEPT_ALERTS("Accept Alerts");
+const wxString CMenuEdit::LABEL_REVIEW_EDIT("Review Editing");
 
 // the order of the following three arrays must match
 // the enum in class CMenuReviewAccept
 
 const wxChar *CMenuReviewAccept::g_asLabels[CMenuReviewAccept::ITEM_COUNT] =
 {
-  _T("Locus"),
-  _T("Sample"),
-  _T("ILS"),
-  _T("Channels"),
-  _T("Directory")
+  wxS("Locus"),
+  wxS("Sample"),
+  wxS("ILS"),
+  wxS("Channels"),
+  wxS("Directory")
 };
 
 const int CMenuReviewAccept::g_anIDAccept[CMenuReviewAccept::ITEM_COUNT] =
@@ -93,7 +93,7 @@ void CMenuReviewAccept::SetLocusName(
   bool bEnable = true;
   if(sLocus.IsEmpty())
   {
-    s = _T("Locus");
+    s = "Locus";
     bEnable = false;
   }
   s.Append(sAccel);
@@ -105,7 +105,7 @@ void CMenuReviewAccept::SetLocusName(
 CMenuReviewAccept::CMenuReviewAccept(bool bAccept) :
   m_pnIDS(bAccept ? &g_anIDAccept[0] : &g_anIDReview[0])
 {
-  m_sAccel = bAccept ? _T("\tAlt+A") : _T("\tAlt+R");
+  m_sAccel = bAccept ? "\tAlt+A" : "\tAlt+R";
   const int *pn = m_pnIDS;
   const wxChar **psLabel = &g_asLabels[0];
   // order of the following must be consistent with static int arrays
@@ -131,14 +131,14 @@ CMenuEdit::CMenuEdit()
     );
   Append(
     IDmenuEditCell,
-    _T("."),
-    _T("Edit selected data")
+    ".",
+    "Edit selected data"
     );
   m_pMenuAccept = new CMenuAccept;
   m_pMenuItemAccept = AppendSubMenu(m_pMenuAccept,LABEL_ACCEPT_ALERTS);
   m_pMenuReview = new CMenuReview;
   m_pMenuItemReview = AppendSubMenu(m_pMenuReview,LABEL_REVIEW_EDIT);
-  Append(IDmenuDisableSample,_T("."));
+  Append(IDmenuDisableSample,".");
 }
 CMenuEdit::~CMenuEdit() {;}
 
@@ -151,14 +151,14 @@ void CBaseMenuEdit::SetLocus(
   m_pMenuAccept->SetLocusName(s);
   if(s.IsEmpty())
   {
-    SetLabel(IDmenuEditCell,_T(EDIT_SAMPLE_LABEL));
+    SetLabel(IDmenuEditCell,EDIT_SAMPLE_LABEL);
   }
   else
   {
     wxString sLabel;
-    sLabel = _T("Edit ");
+    sLabel = "Edit ";
     sLabel.Append(s);
-    sLabel.Append(_T("..."));
+    sLabel.Append("...");
     SetLabel(IDmenuEditCell,sLabel);
   }
   Enable(IDmenuEditCell,bEnabled);

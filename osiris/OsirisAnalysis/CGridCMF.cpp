@@ -68,7 +68,7 @@ const char * const CGridCMF::COL_LABELS[] =
   "Comments"
 };
 
-const wxString CGridCMF::DEFAULT(_T("[Default]"));
+const wxString CGridCMF::DEFAULT("[Default]");
 wxArrayString CGridCMF::m_asChoices;
 
 CGridCMF::~CGridCMF() {}
@@ -121,7 +121,7 @@ CGridCMF::CGridCMF(
   if(!n)
   {
     CreateGrid(1,1);
-    SetCellValue(0,0,_T("There are no samples"));
+    SetCellValue(0,0,"There are no samples");
     SetReadOnly(0,0,true);
     AutoSize();
   }
@@ -144,7 +144,7 @@ CGridCMF::CGridCMF(
     }
     for(i = 0; i < (size_t) COLUMN_COUNT; i++)
     {
-      s = _T(COL_LABELS[i]);
+      s = COL_LABELS[i];
       SetColLabelValue((int)i,s);
     }
     SetColLabelAlignment(wxALIGN_LEFT,wxALIGN_CENTRE);
@@ -210,7 +210,7 @@ bool CGridCMF::TransferDataToGrid()
     const char *ps = CLabSpecimenCategory::LongestType();
     wxClientDC dc(this);
     dc.SetFont(GetDefaultCellFont());
-    wxSize sz = dc.GetTextExtent(_T(ps));
+    wxSize sz = dc.GetTextExtent(ps);
     if(!nWidth)
     {
       nWidth = 20;
@@ -219,7 +219,7 @@ bool CGridCMF::TransferDataToGrid()
     nWidth += 6;
     SetColSize(SPECIMEN_TYPE,nWidth);
     sz = dc.GetTextExtent(
-      _T("This is sample text to determine the width of the comment column."));
+      "This is sample text to determine the width of the comment column.");
     nWidth = sz.GetWidth();
     nWidth += 2;
     SetColSize(COMMENT,nWidth);
@@ -234,7 +234,7 @@ void CGridCMF::UpdateEmptyLoci()
   {
     wxFont fnBold = GetDefaultCellFont();
     wxString sEmptyLoci;
-    wxString COMMA(_T(", "));
+    wxString COMMA(", ");
     size_t i;
     size_t j;
     size_t nLocusCount;
@@ -295,7 +295,7 @@ void CGridCMF::UpdateEmptyLoci()
       if(bEmpty)
       {
         SetBoolValue((int)i,EXCLUDE,bEmpty);
-        sEmptyLoci = _T("ALL LOCI");
+        sEmptyLoci = "ALL LOCI";
         SetCellFont((int)i,EMPTY_LOCI,fnBold);
       }
       else
@@ -348,9 +348,9 @@ bool CGridCMF::TransferDataFromGrid(
         {
           s = pSample->GetName();
         }
-        sMsg = _T("Internal error:\nCannot find specimen, ");
+        sMsg = "Internal error:\nCannot find specimen, ";
         sMsg.Append(s);
-        sMsg.Append(_T(", in CMF file"));
+        sMsg.Append(", in CMF file");
         pMsgs->push_back(sMsg);
       }
     }

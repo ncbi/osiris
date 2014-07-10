@@ -38,11 +38,11 @@
 
 void CChannelColors::RegisterAll(bool)
 {
-  RegisterUint(_T("nr"),&m_nr);
-  RegisterWxString(_T("dye"),&m_sDyeName);
-  RegisterWxColour(_T("analyzed"),&m_ColorAnalyzed);
-  RegisterWxColour(_T("raw"),&m_ColorRaw);
-  RegisterWxColour(_T("ladder"),&m_ColorLadder);
+  RegisterUint("nr",&m_nr);
+  RegisterWxString("dye",&m_sDyeName);
+  RegisterWxColour("analyzed",&m_ColorAnalyzed);
+  RegisterWxColour("raw",&m_ColorRaw);
+  RegisterWxColour("ladder",&m_ColorLadder);
 }
 
 
@@ -104,8 +104,8 @@ const CChannelColors *CSingleKitColors::GetColorChannel(
 
 void CSingleKitColors::RegisterAll(bool)
 {
-  RegisterWxString(_T("name"),&m_sKitName);
-  Register(_T("channel"),&m_IOChannelColors,(void *)&m_vChannelColors);
+  RegisterWxString("name",&m_sKitName);
+  Register("channel",&m_IOChannelColors,(void *)&m_vChannelColors);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ const wxColour CKitColors::g_BLACK(0,0,0);
 
 void CKitColors::RegisterAll(bool)
 {
-  Register(_T("kit"),&m_IOkitColors,(void *)&m_vpKitColors);
+  Register("kit",&m_IOkitColors,(void *)&m_vpKitColors);
 }
 
 const CSingleKitColors *CKitColors::GetKitColors(

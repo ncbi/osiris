@@ -70,8 +70,8 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("KitName"),&m_sKitName);
-    RegisterWxString(_T("FileName"),&m_sFileName);
+    RegisterWxString("KitName",&m_sKitName);
+    RegisterWxString("FileName",&m_sFileName);
   }
   wxString m_sKitName;
   wxString m_sFileName;
@@ -96,7 +96,7 @@ public:
 class CILSLadderInfo : public nwxXmlPersist
 {
 public:
-  CILSLadderInfo(bool bLoad = false) : m_vKits(_T("Set")), m_bIsOK(false)
+  CILSLadderInfo(bool bLoad = false) : m_vKits("Set"), m_bIsOK(false)
   {
     RegisterAll(true);
     if(bLoad)
@@ -146,7 +146,7 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    Register(_T("Kits"),&m_vKits);
+    Register("Kits",&m_vKits);
   }
 
 private:

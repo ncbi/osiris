@@ -39,8 +39,8 @@
 CChoiceHomozygote::CChoiceHomozygote(wxWindow *parent, wxWindowID id) :
   wxChoice(parent,id)
 {
-  Append(_T("RFU"));
-  Append(_T("% of Min. RFU"));
+  Append("RFU");
+  Append("% of Min. RFU");
 }
 CChoiceHomozygote::~CChoiceHomozygote() {}
 void CChoiceHomozygote::SetSelectionByValue(wxChar x)
@@ -72,23 +72,23 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
 {
   wxArrayString aChoices;
   aChoices.Alloc(2);
-  aChoices.Add(_T("RFU"));
-  aChoices.Add(_T("% of Min. RFU"));
+  aChoices.Add("RFU");
+  aChoices.Add("% of Min. RFU");
   wxStaticText *psSampleLabel = 
     new wxStaticText(this,wxID_ANY,
-    _T("Locus Limits for Samples"));
+    "Locus Limits for Samples");
   wxStaticText *psLadderLabel =
     new wxStaticText(this,wxID_ANY,
-    _T("Locus Limits for Ladders/ILS Limits"));
+    "Locus Limits for Ladders/ILS Limits");
   mainApp::SetBoldFont(psSampleLabel);
   mainApp::SetBoldFont(psLadderLabel);
   wxStaticText *psDisclaimer =
     new wxStaticText(this,wxID_ANY,
-    _T("* Note: The default settings for "
-      "ladder do not affect the ILS."));
+    "* Note: The default settings for "
+      "ladder do not affect the ILS.");
   wxStaticText *psChoice = 
     new wxStaticText(this,wxID_ANY,
-    _T("Min. homozygote threshold units:"));
+    "Min. homozygote threshold units:");
   m_pGridSample = new CGridLabThresholdsSample(this,wxID_ANY);
   m_pGridLadder = new CGridLabThresholdsLadder(this,wxID_ANY);
   m_pChoiceHomozygoteUnits = new CChoiceHomozygote(this,wxID_ANY);

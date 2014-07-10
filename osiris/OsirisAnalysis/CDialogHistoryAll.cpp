@@ -39,7 +39,7 @@
       wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | \
         wxTHICK_FRAME | wxRESIZE_BORDER
 */
-#define g_TITLE _T("Select Date and Time")
+#define g_TITLE "Select Date and Time"
 
 CDialogHistoryAll::CDialogHistoryAll(
   const wxDateTime *pCurrentSelection,
@@ -65,7 +65,7 @@ CDialogHistoryAll::CDialogHistoryAll(
   }
 
   asTime.Alloc(psetHistory->size() + 3);
-  asTime.Add(_T("Current"));
+  asTime.Add("Current");
   m_vTime.reserve(psetHistory->size() + 1);
   for(set<wxDateTime>::const_reverse_iterator itr = psetHistory->rbegin();
     itr != psetHistory->rend();
@@ -118,7 +118,7 @@ bool CDialogHistoryAll::TransferDataFromWindow()
   bool bRtn = (n != wxNOT_FOUND);
   if(!bRtn)
   {
-    wxString s(_T("Please select a historic date/time when this data was edited."));
+    wxString s("Please select a historic date/time when this data was edited.");
     mainApp::ShowError(s,this);
     m_pTimeSelected = NULL;
   }

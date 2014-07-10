@@ -38,9 +38,9 @@ CPageNoParameters::CPageNoParameters(
 {
   wxStaticText *pLabel1 = new wxStaticText(
     this,wxID_ANY,
-    _T("The selected XSLT file has no external parameters."));
+    "The selected XSLT file has no external parameters.");
   wxStaticText *pLabel2 = new wxStaticText(
-    this,wxID_ANY,_T("Select \"Next\" to continue."));
+    this,wxID_ANY,"Select \"Next\" to continue.");
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->AddStretchSpacer(1);
   pSizer->Add(pLabel1,0,wxALIGN_CENTER);

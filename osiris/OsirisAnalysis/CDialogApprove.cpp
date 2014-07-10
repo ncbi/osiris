@@ -71,7 +71,7 @@ CDialogApprove::CDialogApprove(
       setDateTime,
       this, 
       IDhistoryPanel);
-  wxString sTitle(_T("Approve Editing for "));
+  wxString sTitle("Approve Editing for ");
   sTitle.Append(pLocus->GetName());
   const wxString &sSampleName(Sample.GetName());
   if(!sSampleName.IsEmpty())
@@ -130,16 +130,16 @@ CDialogApprove::CDialogApprove(
     {
       wxString sErr;
       sErr.sprintf(
-        _T("CDialogCellHistory::CDialogCellHistory()\n"
-        "nSelect (%d) is invalid\n"),nSelect);
+        "CDialogCellHistory::CDialogCellHistory()\n"
+        "nSelect (%d) is invalid\n",nSelect);
       mainApp::LogMessage(sErr);
       wxASSERT_MSG(0,sErr);
     }
     break;
   }
-  wxString s(_T("Approve Editing on "));
+  wxString s("Approve Editing on ");
   s.Append(sType);
-  s.Append(_T(" Alerts for "));
+  s.Append(" Alerts for ");
   s.Append(pSample->GetName());
   SetTitle(s);
   _Setup(pSplitter);

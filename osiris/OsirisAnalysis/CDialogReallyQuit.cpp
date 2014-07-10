@@ -42,16 +42,16 @@
 #endif
 
 CDialogReallyQuit::CDialogReallyQuit(wxWindow *parent) :
-  wxDialog(parent,wxID_ANY,wxString(_T("OSIRIS")))
+  wxDialog(parent,wxID_ANY,wxString("OSIRIS"))
 {
-  wxString sText(_T("Do you want to " QUIT_TEXT " OSIRIS?"));
+  wxString sText("Do you want to " QUIT_TEXT " OSIRIS?");
   wxStaticText *pText = new wxStaticText(this,wxID_ANY,sText);
   wxFont fn(pText->GetFont());
   fn.SetPointSize(fn.GetPointSize() + 2);
   fn.SetWeight(wxFONTWEIGHT_BOLD);
   pText->SetFont(fn);
   wxSizer *pButtons = CreateButtonSizer(wxYES | wxNO | wxNO_DEFAULT); 
-  m_pCheckBox = new wxCheckBox(this,wxID_ANY,_T(" Don't show this window again"));
+  m_pCheckBox = new wxCheckBox(this,wxID_ANY," Don't show this window again");
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(pText,0,wxALL | wxALIGN_CENTRE,ID_BORDER << 1);
   pSizer->Add(pButtons,0,(wxALL ^ wxTOP) | wxALIGN_CENTRE,ID_BORDER);

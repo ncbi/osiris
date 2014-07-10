@@ -72,8 +72,8 @@ public:
   COARfile() : 
     m_DirReviews(true),
     m_DirAcceptance(false),
-    m_vpTable(_T("Sample")),
-    m_pvOldNotes(_T("OldDirectoryNotes"))
+    m_vpTable("Sample"),
+    m_pvOldNotes("OldDirectoryNotes")
   {
     m_messages.SetMsgExport(&m_mapExportSpecifications);
 
@@ -233,7 +233,7 @@ public:
   {
     wxString s(m_sFileName);
     s.MakeLower();
-    bool bRtn = s.EndsWith(_T(EXT_REPORT));
+    bool bRtn = s.EndsWith(EXT_REPORT);
     return bRtn;
   }
   bool SamplesDisabled() const; // return true is at least one sample is disabled
@@ -467,7 +467,7 @@ public:
   }
   double GetVersion() const
   {
-    double d = atof(m_sVersion.c_str());
+    double d = atof(m_sVersion.utf8_str());
     return d;
   }
   bool CanEditArtifacts() const

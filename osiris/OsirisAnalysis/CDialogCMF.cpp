@@ -64,7 +64,7 @@ CDialogCMF::CDialogCMF(
     wxDialog(
         parent,
         id,
-        _T("Export CMF File"),
+        "Export CMF File",
         wxDefaultPosition,
         wxDefaultSize,
         mainApp::DIALOG_STYLE | wxMAXIMIZE_BOX ),
@@ -76,15 +76,15 @@ CDialogCMF::CDialogCMF(
 {
   wxSize szText(200,-1);
   wxStaticText *pLabelSourceLab = 
-    new wxStaticText(this,wxID_ANY,_T("Source Lab: "));
+    new wxStaticText(this,wxID_ANY,"Source Lab: ");
   wxStaticText *pLabelDestLab =
-    new wxStaticText(this,wxID_ANY,_T("Destination Lab: "));
+    new wxStaticText(this,wxID_ANY,"Destination Lab: ");
   wxStaticText *pLabelUserID =
-    new wxStaticText(this,wxID_ANY,_T("Submit User ID: "));
+    new wxStaticText(this,wxID_ANY,"Submit User ID: ");
   wxStaticText *pLabelBatchID =
-    new wxStaticText(this,wxID_ANY,_T("Batch ID: "));
+    new wxStaticText(this,wxID_ANY,"Batch ID: ");
   wxStaticText *pLabelType = 
-    new wxStaticText(this,wxID_ANY,_T("Default Specimen Type: "));
+    new wxStaticText(this,wxID_ANY,"Default Specimen Type: ");
   m_pTextSourceLab = 
     new wxTextCtrl(this,wxID_ANY,
       wxEmptyString,wxDefaultPosition,szText);
@@ -112,14 +112,14 @@ CDialogCMF::CDialogCMF(
       wxDefaultPosition, szText,asChoices,wxCB_READONLY);
 
   wxStaticText *pLabelSpecimens = 
-    new wxStaticText(this,wxID_ANY,_T("Specimens"));
+    new wxStaticText(this,wxID_ANY,"Specimens");
   m_pGrid = new CGridCMF(this,wxID_ANY,m_pFile,pSort);
       
   wxStaticText *pLabelFile =
-    new wxStaticText(this,wxID_ANY,_T("File Name"));
+    new wxStaticText(this,wxID_ANY,"File Name");
   m_pTextFileName = new wxTextCtrl(this,wxID_ANY);
   wxButton *pButtonBrowse = new wxButton(
-    this,IDbrowseOutput, _T("Browse..."),
+    this,IDbrowseOutput, "Browse...",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   m_pCheckViewLocation = new wxCheckBox(this,wxID_ANY,
@@ -159,7 +159,7 @@ CDialogCMF::CDialogCMF(
 
   wxSizer *pButtonSizer = CreateButtonSizer(wxOK | wxCANCEL);
   wxButton *pButtonLater = 
-    new wxButton(this,IDbuttonFinishLater,_T("Finish Later"));
+    new wxButton(this,IDbuttonFinishLater,"Finish Later");
   wxSizerItem *pItem = pButtonSizer->GetItem(1);
   pButtonSizer->Add(
     pButtonLater,0,
@@ -292,26 +292,26 @@ bool CDialogCMF::TransferDataFromWindow()
   bool bRtn = true;
   if(sSourceLab.IsEmpty())
   {
-    vsErrors.push_back(_T("Source lab is not specified"));
+    vsErrors.push_back("Source lab is not specified");
   }
   if(sDestLab.IsEmpty())
   {
-    vsErrors.push_back(_T("Destination lab is not specified"));
+    vsErrors.push_back("Destination lab is not specified");
   }
   if(sUserID.IsEmpty())
   {
-    vsErrors.push_back(_T("Submit User ID is not specified"));
+    vsErrors.push_back("Submit User ID is not specified");
   }
   if(sFileName.IsEmpty())
   {
-    vsErrors.push_back(_T("File name is not specified"));
+    vsErrors.push_back("File name is not specified");
   }
   else
   {
     wxFileName fn(sFileName);
     if(!fn.DirExists())
     {
-      vsErrors.push_back(_T("File name is not valid, directory does not exist"));
+      vsErrors.push_back("File name is not valid, directory does not exist");
     }
   }
   if(vsErrors.empty())
@@ -339,7 +339,7 @@ bool CDialogCMF::TransferDataFromWindow()
   else if(m_pCMF->AllExcluded())
   {
     bRtn = false;
-    sError = _T("Cannot create CMF file, no samples are included");
+    sError = "Cannot create CMF file, no samples are included";
   }
   else if(_SaveFile(sFileName))
   {
@@ -358,16 +358,16 @@ bool CDialogCMF::TransferDataFromWindow()
   else
   {
     bRtn = false;
-    sError = _T("An error occurred when writing the CMF file.");    
+    sError = "An error occurred when writing the CMF file.";
   }
   if(!bRtn)
   {
     if(sError.IsEmpty())
     {
       wxASSERT_MSG(0,
-        _T("CDialogCMF::TransferDataFromWindow "
-          "an error occurred and there is no message"));
-      sError = _T("Unspecified error.");
+        "CDialogCMF::TransferDataFromWindow "
+          "an error occurred and there is no message");
+      sError = "Unspecified error.";
     }
     mainApp::ShowError(sError,this);
   }
@@ -380,7 +380,7 @@ void CDialogCMF::OnButtonLater(wxCommandEvent &)
 }
 wxString CDialogCMF::_GetDefaultFileName()
 {
-  wxString s = m_pFile->GetExportFileName(_T(EXT_CMF));
+  wxString s = m_pFile->GetExportFileName(EXT_CMF);
   return s;
 }
 void CDialogCMF::OnButtonBrowse(wxCommandEvent &)
@@ -391,7 +391,7 @@ void CDialogCMF::OnButtonBrowse(wxCommandEvent &)
     wxString sDefault = _GetDefaultFileName();
     sFileName = m_pTextFileName->GetValue();
     m_pDialogFile = nwxFileUtil::CreateSaveDialog(
-      this,_T("Export CMF File"),_T(FILE_TYPE_CMF),sFileName,sDefault);
+      this,"Export CMF File",FILE_TYPE_CMF,sFileName,sDefault);
   }
   if(m_pDialogFile->ShowModal() == wxID_OK)
   {

@@ -167,7 +167,7 @@ void CPanelStatus::_Build()
   {
     bDisabled = true;
     pSizer->Add(
-      new wxStaticText(this,wxID_ANY,_T("This sample is disabled")),
+      new wxStaticText(this,wxID_ANY,"This sample is disabled"),
       0,wxALIGN_LEFT,0);
   }
   //if(bDisabled || (!m_vpStatus.empty()))
@@ -175,11 +175,11 @@ void CPanelStatus::_Build()
     wxString sRunStart = m_pSample->FormatRunStart();
     int nRunStart = sRunStart.IsEmpty() ? 0 : 1;
     wxStaticText *pLabelSampleName =
-      new wxStaticText(this,wxID_ANY,_T("Sample:"));
+      new wxStaticText(this,wxID_ANY,"Sample:");
     wxStaticText *pSampleName =
       new wxStaticText(this,wxID_ANY,m_pSample->GetSampleName());
     wxStaticText *pLabelFileName =
-      new wxStaticText(this,wxID_ANY,_T("File:"));
+      new wxStaticText(this,wxID_ANY,"File:");
     wxStaticText *pFileName =
       new wxStaticText(this,wxID_ANY,m_pSample->GetName());
     wxStaticText *pLabelRunStart = NULL;
@@ -204,7 +204,7 @@ void CPanelStatus::_Build()
     if(nRunStart)
     {
       pLabelRunStart =
-        new wxStaticText(this,wxID_ANY,_T("Run Start:"));
+        new wxStaticText(this,wxID_ANY,"Run Start:");
       pRunStart =
         new wxStaticText(this,wxID_ANY,sRunStart);
       pLabelRunStart->SetFont(fnLabel);
@@ -253,7 +253,7 @@ void CPanelStatus::OnClick(wxHyperlinkEvent &e)
         m_pParent->DoReviewSample(nID,m_pSample);
         break;
       default:
-        wxASSERT_MSG(0,_T("CPanelStatus::OnClick() invalid ID"));
+        wxASSERT_MSG(0,"CPanelStatus::OnClick() invalid ID");
     }
   }
 }

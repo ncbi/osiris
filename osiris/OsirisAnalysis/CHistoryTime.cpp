@@ -30,7 +30,7 @@
 
 #include "CHistoryTime.h"
 
-const wxString CHistoryTime::CURRENT(_T("Current"));
+const wxString CHistoryTime::CURRENT("Current");
 
 CHistoryTime::~CHistoryTime() {;}
 

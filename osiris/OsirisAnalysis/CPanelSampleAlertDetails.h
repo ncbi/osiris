@@ -52,7 +52,7 @@ public:
   CPanelSampleAlertDetails(
     wxWindow *parent,
     COARmessages *pMsgEdit,
-    const wxString &sNotesLabel = _T("Notes"),
+    const wxString &sNotesLabel = "Notes",
     int nGridType = 0,
     bool bSplitHorizontal = true,
     bool bReadOnly = false);

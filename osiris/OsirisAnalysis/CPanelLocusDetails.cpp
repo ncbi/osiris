@@ -128,9 +128,9 @@ void CPanelLocusDetails::_InitCommon(
     &m_MsgEdit,pWindowLocus,wxID_ANY,0,m_bReadOnly);
 
 #if PANEL_LOCUS_NOTEBOOK
-  m_pNotebook->AddPage(m_pGridLocus,_T("Alleles"),true);
+  m_pNotebook->AddPage(m_pGridLocus,"Alleles",true);
   m_pNotebook->AddPage(
-    m_pGridAlerts,_T(COAR_NOTICE_DISPLAY_CAP),false);
+    m_pGridAlerts,COAR_NOTICE_DISPLAY_CAP,false);
 #endif
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(pWindowLocus,1, wxEXPAND | wxALL,   
@@ -166,7 +166,7 @@ wxPanel *CPanelLocusDetails::_CreateNotesPanel()
 //    pPanelNotes = new wxPanel(m_pSplitter,wxID_ANY);
   wxBoxSizer *pSizer;
   wxStaticText *pTextLabel = new wxStaticText(
-    pPanelNotes,wxID_ANY,_T(CLabels::NOTES));
+    pPanelNotes,wxID_ANY,CLabels::NOTES);
   m_pTextNotes = new wxTextCtrl(
     pPanelNotes,wxID_ANY,wxEmptyString,
     wxDefaultPosition, wxDefaultSize,
@@ -184,7 +184,7 @@ wxPanel *CPanelLocusDetails::_CreateNotesPanel()
   else
   {
     wxStaticText *pTextLabel2 = new wxStaticText(
-      pPanelNotes,wxID_ANY,_T(CLabels::ADDITIONAL_NOTES));
+      pPanelNotes,wxID_ANY,CLabels::ADDITIONAL_NOTES);
     m_pTextNewNotes = new wxTextCtrl(
       pPanelNotes,IDeditNotes,wxEmptyString,
       wxDefaultPosition, wxDefaultSize,
@@ -231,13 +231,13 @@ bool CPanelLocusDetails::Validate()
     wxString sMessage;
     if(IsNotesEmpty())
     {
-      sMessage = _T("You haven't entered notes for this locus.\n"
-        "Do you wish to continue?");
+      sMessage = "You haven't entered notes for this locus.\n"
+        "Do you wish to continue?";
     }
     else if(!IsNotesModified())
     {
-      sMessage = _T("You haven't updated notes for this locus.\n"
-        "Do you wish to continue?");
+      sMessage = "You haven't updated notes for this locus.\n"
+        "Do you wish to continue?";
     }
     else if(m_pPanelUser != NULL)
     {
@@ -328,14 +328,14 @@ void CPanelLocusDetails::UpdateFile(COARfile *pF, COARsample *pSample)
     if(pLocus == NULL)
     {
       wxString sErr(
-        _T("CPanelLocusDetails::UpdateFile cannot find locus"));
+        "CPanelLocusDetails::UpdateFile cannot find locus");
       wxASSERT_MSG(0,sErr);
       mainApp::LogMessage(sErr);
     }
     else if(!m_pGridLocusPeaks->TransferDataToSample(pSample))
     {
       wxString sErr(
-       _T("CPanelLocusDetails::UpdateFile Cannot Transfer Grid Data"));
+       "CPanelLocusDetails::UpdateFile Cannot Transfer Grid Data");
       wxASSERT_MSG(0,sErr);
       mainApp::LogMessage(sErr);
     }
@@ -347,7 +347,7 @@ void CPanelLocusDetails::UpdateFile(COARfile *pF, COARsample *pSample)
         if(!m_pPanelUser->AddReview(&x,false))
         {
           wxString sErr(
-            _T("CPanelLocusDetails::UpdateFile - Cannot add review"));
+            "CPanelLocusDetails::UpdateFile - Cannot add review");
           wxASSERT_MSG(0,sErr);
           mainApp::LogMessage(sErr);
         }
@@ -390,9 +390,9 @@ void CPanelLocusDetails::_UpdateNotes()
   }
   if(s.IsEmpty())
   {
-    s = _T("<no new notes added>");
+    s = "<no new notes added>";
   }
-  sNew = _T("Edited ");
+  sNew = "Edited ";
   sNew += dt.Format(COARreview::TIME_FORMAT);
   if(m_pPanelUser != NULL)
   {
@@ -400,15 +400,15 @@ void CPanelLocusDetails::_UpdateNotes()
     nwxString::Trim(&sUser);
     if(!sUser.IsEmpty())
     {
-      sNew.Append(_T(" by "));
+      sNew.Append(" by ");
       sNew.Append(sUser);
     }
   }
-  sNew.Append(_T("\n"));
+  sNew.Append("\n");
   sNew.Append(s);
   if(!sNotes.IsEmpty())
   {
-    sNotes.Append(_T("\n"));
+    sNotes.Append("\n");
   }
   sNotes.Append(sNew);
   m_LocusEdit.SetNotes(sNotes);

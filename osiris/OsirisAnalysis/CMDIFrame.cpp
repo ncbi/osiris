@@ -144,31 +144,31 @@ bool CMDIFrame::PromptReload(const wxString &sFileName, const wxString &sFileNam
     wxString sPrompt;
     if(sFileName.IsEmpty())
     {
-      sPrompt = _T(
+      sPrompt =
         "This file has been modified,\n"
-        "would you like to reload it?");
+        "would you like to reload it?";
     }
     else if(!sFileName2.IsEmpty())
     {
       wxFileName fn(sFileName);
       wxFileName fn2(sFileName2);
-      sPrompt = _T("These files:\n  ");
+      sPrompt = "These files:\n  ";
       sPrompt.Append(fn.GetFullName());
-      sPrompt.Append(_T("\n  "));
+      sPrompt.Append("\n  ");
       sPrompt.Append(fn2.GetFullName());
-      sPrompt.Append(_T("\nhave been modified,\n"
-        "would you like to reload them?"));
+      sPrompt.Append("\nhave been modified,\n"
+        "would you like to reload them?");
     }
     else
     {
       wxFileName fn(sFileName);
-      sPrompt = _T("This file, ");
+      sPrompt = "This file, ";
       sPrompt.Append(fn.GetFullName());
-      sPrompt.Append(_T(", has been modified,\n"
-        "would you like to reload it?"));
+      sPrompt.Append(", has been modified,\n"
+        "would you like to reload it?");
     }
     wxMessageDialog dlg(
-      this,sPrompt,_T("File Update"),
+      this,sPrompt,"File Update",
       wxYES_NO | wxICON_QUESTION);
     int n = dlg.ShowModal();
     bRtn = (n == wxID_YES);
@@ -185,7 +185,7 @@ wxMenu *CMDIFrame::GetLastMenuShown()
 void CMDIFrame::UpdateStatusBar()
 {
 #if HAS_STATUS_BAR
-  m_pParent->SetStatusText(_T(""));
+  m_pParent->SetStatusText("");
 #endif
 }
 
@@ -265,10 +265,10 @@ bool CMDIFrame::DialogIsShowingOrNoFocus()
   return bRtn;
 }
 
-const wxString CMDIFrame::HIDE_TOOLBARS(_T("Hide Toolbars\tCtrl+T"));
-const wxString CMDIFrame::SHOW_TOOLBARS(_T("Show Toolbars\tCtrl+T"));
-const wxString CMDIFrame::HIDE_TOOLBAR(_T("Hide Toolbar\tCtrl+T"));
-const wxString CMDIFrame::SHOW_TOOLBAR(_T("Show Toolbar\tCtrl+T"));
+const wxString CMDIFrame::HIDE_TOOLBARS("Hide Toolbars\tCtrl+T");
+const wxString CMDIFrame::SHOW_TOOLBARS("Show Toolbars\tCtrl+T");
+const wxString CMDIFrame::HIDE_TOOLBAR("Hide Toolbar\tCtrl+T");
+const wxString CMDIFrame::SHOW_TOOLBAR("Show Toolbar\tCtrl+T");
 
 BEGIN_EVENT_TABLE(CMDIFrame,wxMDIChildFrame)
 EVT_SET_FOCUS(CMDIFrame::OnFocus)

@@ -39,13 +39,13 @@ class CMenuSort : public wxMenu
 public:
   CMenuSort() : wxMenu(0)
   {
-    Append(IDmenuSortDisplayedName,_T("Displayed Name"));
-    Append(IDmenuSortFileName,_T("File Name"));
-    Append(IDmenuSortSampleName,_T("Sample Name"));
-    Append(IDmenuSortSeverity,_T("Severity"));
-    Append(IDmenuSortRunTime,_T("Run Time"));
+    Append(IDmenuSortDisplayedName,"Displayed Name");
+    Append(IDmenuSortFileName,"File Name");
+    Append(IDmenuSortSampleName,"Sample Name");
+    Append(IDmenuSortSeverity,"Severity");
+    Append(IDmenuSortRunTime,"Run Time");
     AppendSeparator();
-    AppendCheckItem(IDmenuSortControlsAtTop,_T("Controls/Ladders on Top"));
+    AppendCheckItem(IDmenuSortControlsAtTop,"Controls/Ladders on Top");
   }
   virtual ~CMenuSort() {;}
   void SetControlsOnTop(bool b)

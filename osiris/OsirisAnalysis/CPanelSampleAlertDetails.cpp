@@ -168,8 +168,8 @@ void CPanelSampleAlertDetails::SetupChannelColumn(
 #if 0
   wxASSERT_MSG(
     m_bChannelGrid,
-    _T("CPanelSampleAlertDetails::SetupChannelColumn()\n"
-    "THIS IS NOT A CHANNEL GRID"));
+    "CPanelSampleAlertDetails::SetupChannelColumn()\n"
+    "THIS IS NOT A CHANNEL GRID");
   CGridChannelCount vpCount;
   vector<COARchannelAlert *>::const_iterator itrch;
   const vector<COARchannelAlert *> *pchAlerts =

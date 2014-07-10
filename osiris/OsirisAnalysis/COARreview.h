@@ -111,7 +111,7 @@ public:
   {
     wxString sRtn;
     const wxChar *psAction =
-      bReview ? _T(" Reviewed by ") : _T(" Accepted by ");
+      bReview ? wxS(" Reviewed by ") : wxS(" Accepted by ");
     _Format(&sRtn,psAction);
     return sRtn;
   }
@@ -124,7 +124,7 @@ protected:
     ps->Append(psAction);
     if(m_sUserID.IsEmpty())
     {
-      ps->Append(_T("[unknown]"));
+      ps->Append("[unknown]");
     }
     else
     {
@@ -204,7 +204,7 @@ public:
   {
     wxString sRtn;
     const wxChar *psAction =
-      m_bEnabled ? _T(" Enabled by ") : _T(" Disabled by ");
+      m_bEnabled ? wxS(" Enabled by ") : wxS(" Disabled by ");
     _Format(&sRtn,psAction);
     return sRtn;
   }
@@ -234,12 +234,12 @@ public:
     {}
   COARreviewList(bool bReview) :
     TnwxXmlPersistVectorSorted<COARreview>
-      (bReview ? _T("Review") : _T("Acceptance"),
+      (bReview ? "Review" : "Acceptance",
       false)
   {};
   COARreviewList() :
     TnwxXmlPersistVectorSorted<COARreview>
-      (_T("Review"),false)
+      ("Review",false)
   {};
 
   bool FindName(const wxString &sName);
@@ -316,7 +316,7 @@ public:
     TnwxXmlPersistVectorSorted<COARenabled>(sNodeName,false)
     {}
   COARenabledList() :
-    TnwxXmlPersistVectorSorted<COARenabled>(_T("Enable"),false)
+    TnwxXmlPersistVectorSorted<COARenabled>("Enable",false)
     {}
 
   virtual void Sort();

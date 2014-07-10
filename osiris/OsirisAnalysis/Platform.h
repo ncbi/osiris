@@ -106,7 +106,7 @@
 // file name delimiter
 
 #ifdef __WXMSW__
-#define FIX_FILE_NAME(s) s.Replace(_T("/"),_T("\\"),true);
+#define FIX_FILE_NAME(s) s.Replace("/","\\",true);
 #else
 #define FIX_FILE_NAME(s)
 #endif

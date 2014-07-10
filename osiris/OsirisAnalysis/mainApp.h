@@ -85,7 +85,7 @@ public:
   static bool Confirm(wxWindow *parent, const wxString &sPrompt,const wxString &sConfirm, int nDEFAULT = wxNO_DEFAULT);
   static bool Confirm(wxWindow *parent, const wxString &sPrompt)
   {
-    return Confirm(parent,sPrompt,_T("Confirm"));
+    return Confirm(parent,sPrompt,"Confirm");
   }
   static bool ConfirmModificationsLost(wxWindow *parent);
   static ConfigDir *GetConfig();

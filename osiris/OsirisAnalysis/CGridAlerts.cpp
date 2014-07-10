@@ -36,10 +36,10 @@
 
 //*************************************  CGridAlerts
 
-const wxString CGridAlerts::LABEL_CHANNEL(_T("Channel"));
-const wxString CGridAlerts::LABEL_LOCUS(_T("Locus"));
-const wxString CGridAlerts::LABEL_ILS(_T("ILS"));
-const wxString CGridAlerts::LABEL_SAMPLE(_T("Sample"));
+const wxString CGridAlerts::LABEL_CHANNEL("Channel");
+const wxString CGridAlerts::LABEL_LOCUS("Locus");
+const wxString CGridAlerts::LABEL_ILS("ILS");
+const wxString CGridAlerts::LABEL_SAMPLE("Sample");
 const int CGridAlerts::TYPE_CHANNEL(1);
 const int CGridAlerts::TYPE_LOCUS(2);
 
@@ -61,12 +61,12 @@ CGridAlerts::CGridAlerts(
   size_t nCount = m_pMsgEdit->GetMessageCount();
   if(nCount)
   {
-    const wxString sDisable(_T("Enabled"));
+    const wxString sDisable("Enabled");
     int nColCount = 2 + bChannel + bLocus;
     int nCol = nColCount;
     CreateGrid((int)nCount,nColCount);
     SetColLabelAlignment(wxALIGN_LEFT, wxALIGN_CENTRE);
-    SetColLabelValue(--nCol,_T("Alert"));
+    SetColLabelValue(--nCol,"Alert");
     SetColLabelValue(--nCol,sDisable);
     if(bChannel)
     {
@@ -103,7 +103,7 @@ CGridAlerts::CGridAlerts(
   else
   {
     CreateGrid(1,1);
-    nwxGrid::SetMessageGrid(this,_T("There are no " COAR_NOTICE_DISPLAY));
+    nwxGrid::SetMessageGrid(this,"There are no " COAR_NOTICE_DISPLAY);
   }
   AutoSizeColumns();
   DisableDragRowSize();
@@ -164,7 +164,7 @@ void CGridAlerts::SetupLocusColumn(const vector<wxString> &vsLocus)
     }
     wxASSERT_MSG(
       (vsLocus.size() == (size_t) nRows),
-      _T("Number of rows does not match number of loci"));
+      "Number of rows does not match number of loci");
   }
   AutoSizeColumns();
 }
@@ -226,7 +226,7 @@ void CGridAlerts::SetupChannelColumn(
           sChannel = itrCh->second;
           if(!sChannel.IsEmpty())
           {
-            sChannel.Append(_T("-"));
+            sChannel.Append("-");
           }
         }
       }

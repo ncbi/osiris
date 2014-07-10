@@ -30,8 +30,8 @@
 */
 #include "CMenuBar.h"
 
-const wxString CMenuBar::LABEL_GRAPH(_T("&Graph"));
-const wxString CMenuBar::LABEL_TABLE(_T("&Table"));
+const wxString CMenuBar::LABEL_GRAPH("&Graph");
+const wxString CMenuBar::LABEL_TABLE("&Table");
 const int CMenuBar::NDX_TABLE(1);
 const int CMenuBar::NDX_GRAPH(2);
 
@@ -50,19 +50,19 @@ CMenuBar::CMenuBar()
   m_pMenuTable = new wxMenu;
   m_pMenuGraph = new wxMenu;
 
-  pMenuTools->Append(IDlab,_T("Lab Settings\tAlt+L"));
-  pMenuTools->Append(IDexport,_T("Export File Settings\tAlt+E"));
-  pMenuTools->Append(IDeditColours,_T("Edit Grid Colors\tAlt+C"));
-  pMenuTools->Append(IDlog,_T("Message Log"));
-  pMenuHelp->Append(IDhelp,_T("&Documentation\tF1"));
-  pMenuHelp->Append(IDhelpContactUs,_T("&Contact Us..."));
-  pMenuHelp->Append(IDcheckForUpdates,_T("Check f&or Updates..."));
-  pMenuHelp->Append(wxID_ABOUT,_T("&About Osiris..."));
-  Append(m_pMenuFile,_T("&File"));
+  pMenuTools->Append(IDlab,"Lab Settings\tAlt+L");
+  pMenuTools->Append(IDexport,"Export File Settings\tAlt+E");
+  pMenuTools->Append(IDeditColours,"Edit Grid Colors\tAlt+C");
+  pMenuTools->Append(IDlog,"Message Log");
+  pMenuHelp->Append(IDhelp,"&Documentation\tF1");
+  pMenuHelp->Append(IDhelpContactUs,"&Contact Us...");
+  pMenuHelp->Append(IDcheckForUpdates,"Check f&or Updates...");
+  pMenuHelp->Append(wxID_ABOUT,"&About Osiris...");
+  Append(m_pMenuFile,"&File");
   Append(m_pMenuTable,LABEL_TABLE);
   Append(m_pMenuGraph,LABEL_GRAPH);
-  Append(pMenuTools,_T("T&ools"));
-  Append(pMenuHelp,_T("&Help"));
+  Append(pMenuTools,"T&ools");
+  Append(pMenuHelp,"&Help");
   EnableSave(false,false,false);
 }
 

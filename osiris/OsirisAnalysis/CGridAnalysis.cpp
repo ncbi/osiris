@@ -39,15 +39,15 @@
 #include "Platform.h"
 
 #if USE_WINGDINGS
-wxFont CGridAnalysis::g_fontStatus(8,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("wingdings"));
+wxFont CGridAnalysis::g_fontStatus(8,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,"wingdings");
 #else
 // X11 if ever implemented
 wxFont CGridAnalysis::g_fontStatus;
 #endif
 
-const wxString CGridAnalysis::g_sSampleLevelNeedsAttention(_T("*"));
-const wxString CGridAnalysis::g_sStatusNeedsAttention(_T(CHAR_ATTN));
-const wxString CGridAnalysis::g_sStatusOK(_T(CHAR_OK));
+const wxString CGridAnalysis::g_sSampleLevelNeedsAttention("*");
+const wxString CGridAnalysis::g_sStatusNeedsAttention(CHAR_ATTN);
+const wxString CGridAnalysis::g_sStatusOK(CHAR_OK);
 
 wxPen CGridAnalysis::g_LIGHT_GREY(wxColour(216,216,216),1,wxSOLID);
 
@@ -161,20 +161,20 @@ wxString CGridAnalysis::FormatRowLabel(int nRow, int nRowCount, const wxString &
 {
 //  NUMBERED LABEL
   wxString sNumberedLabel;
-  const wxChar *FMT = "%d. ";
+  const wxChar *FMT = wxS("%d. ");
 
   // the following if/else is probably faster than a log10
   if(nRowCount >= 1000)
   {
-    FMT = _T("%4d. ");
+    FMT = wxS("%4d. ");
   }
   else if(nRowCount >= 100)
   {
-    FMT = _T("%3d. ");
+    FMT = wxS("%3d. ");
   }
   else if(nRowCount >= 10)
   {
-    FMT = _T("%2d. ");
+    FMT = wxS("%2d. ");
   }
   sNumberedLabel.Alloc(sLabel.Len() + 8);
   sNumberedLabel.Printf(FMT,nRow );
@@ -500,7 +500,7 @@ void CGridAnalysis::UpdateGrid(
         {
           if(bAlert)
           {
-            sCell = _T("?");
+            sCell = "?";
           }
           else if(bEdited)
           {
@@ -526,7 +526,7 @@ void CGridAnalysis::UpdateGrid(
     SetReadOnly(iRow,CFrameAnalysis::STATUS_COLUMN,true);
     if(bSampleDisabled)
     {
-      SetCellValue(iRow,CFrameAnalysis::STATUS_COLUMN,_T(""));
+      SetCellValue(iRow,CFrameAnalysis::STATUS_COLUMN,"");
       SetCellStyle(iRow,CFrameAnalysis::STATUS_COLUMN,flagBase);
     }
     else 
@@ -580,9 +580,9 @@ bool CGridAnalysis::TransferDataToGrid(
     wxString sLabel;
     wxString sLocus;
     wxString sChannel;
-    SetColLabelValue(CFrameAnalysis::STATUS_COLUMN,_T(""));
-    SetColLabelValue(CFrameAnalysis::ILS_COLUMN,_T("ILS"));
-    SetColLabelValue(CFrameAnalysis::CHANNEL_ALERT_COLUMN,_T("Channels"));
+    SetColLabelValue(CFrameAnalysis::STATUS_COLUMN,"");
+    SetColLabelValue(CFrameAnalysis::ILS_COLUMN,"ILS");
+    SetColLabelValue(CFrameAnalysis::CHANNEL_ALERT_COLUMN,"Channels");
     int nPrevChannel = 0;
     int nChannel;
     int nCol;
@@ -595,10 +595,10 @@ bool CGridAnalysis::TransferDataToGrid(
     {
       sLocus = pFile->GetLocusName(i);
       nChannel = pFile->GetChannelNr(i);
-      sLabel = wxString::Format("%s-%d",sLocus.c_str(),nChannel);
+      sLabel = wxString::Format("%ls-%d",sLocus.wc_str(),nChannel);
       if(pDirAlerts->GetBaseLocusAlertsByLocus(sLocus) != NULL)
       {
-        sLabel.Append(_T(" *"));
+        sLabel.Append(" *");
       }
       if(nChannel != nPrevChannel)
       {
@@ -606,7 +606,7 @@ bool CGridAnalysis::TransferDataToGrid(
         nPrevChannel = nChannel;
       }
       SetColLabelValue(nCol,sLabel);
-      if(!strncmp(sLabel.MakeUpper().c_str(),"AMEL",4))
+      if(!strncmp(sLabel.MakeUpper().utf8_str(),"AMEL",4))
       {
         nAMEL = nCol;
       }
@@ -632,7 +632,7 @@ int CGridAnalysis::GetChannelNumber(const wxString &s)
   if(nFind != wxNOT_FOUND)
   {
     nFind++;
-    nRtn = atoi(s.c_str() + nFind);
+    nRtn = atoi(((const char *)s.utf8_str()) + nFind);
   }
   return nRtn;
 }

@@ -33,8 +33,8 @@
 * BEGIN CODE
 *   // the following two lines are for v2.2 beta 2 compatibility
 *   // and should eventually be deprecated
-*   RegisterUint(_T("BaselineStart"),&m_nBaselineStartObsolete);
-*   RegisterIntVector(_T("BaselinePoints"),&m_vnBaselinePointsObsolete);
+*   RegisterUint("BaselineStart",&m_nBaselineStartObsolete);
+*   RegisterIntVector("BaselinePoints",&m_vnBaselinePointsObsolete);
 * END CODE
 *
 *  At the same time class variables w/ names ending with "Obsolete" and 
@@ -55,18 +55,18 @@
 
 const wxString g_TagRawPoints();
 const wxString g_TagAnalyzedPoints();
-const wxString g_TagLadderPoints(_T("ladderPoints"));
-const wxString g_TagNr(_T("nr"));
+const wxString g_TagLadderPoints("ladderPoints");
+const wxString g_TagNr("nr");
 
 void CArtifact::RegisterAll(bool bInConstructor)
 {
-  RegisterInt(_T("level"),&m_nLevel);
-  RegisterDouble(_T("mean"),&m_dMean);
-  RegisterInt(_T("height"),&m_nHeight);
-  RegisterDouble(_T("meanbps"),&m_dMeanBPS);
-  RegisterDouble(_T("fit"),&m_dFit);
-  RegisterWxString(_T("label"),&m_sLabel);
-  RegisterWxString(_T("equivAllele"),&m_sEquivAllele);
+  RegisterInt("level",&m_nLevel);
+  RegisterDouble("mean",&m_dMean);
+  RegisterInt("height",&m_nHeight);
+  RegisterDouble("meanbps",&m_dMeanBPS);
+  RegisterDouble("fit",&m_dFit);
+  RegisterWxString("label",&m_sLabel);
+  RegisterWxString("equivAllele",&m_sEquivAllele);
 
   if(bInConstructor)
   {
@@ -77,12 +77,12 @@ void CArtifact::RegisterAll(bool bInConstructor)
 
 void CSamplePeak::RegisterAll(bool bInConstructor)
 {
-  RegisterDouble(_T("mean"),&m_dMean);
-  RegisterInt(_T("height"),&m_nHeight);
-  RegisterDouble(_T("meanbps"),&m_dMeanBps);
-  RegisterDouble(_T("BPS"),&m_dBPS);
-  RegisterWxString(_T("allele"),&m_sAllele);
-  RegisterDoubleM1(_T("fit"),&m_dFit);
+  RegisterDouble("mean",&m_dMean);
+  RegisterInt("height",&m_nHeight);
+  RegisterDouble("meanbps",&m_dMeanBps);
+  RegisterDouble("BPS",&m_dBPS);
+  RegisterWxString("allele",&m_sAllele);
+  RegisterDoubleM1("fit",&m_dFit);
   if(bInConstructor)
   {
     Init();
@@ -100,8 +100,8 @@ void CSamplePeak::FixAmel(int nStart, int nEnd)
     s.Trim(false);
     if(s.Len() == 1)
     {
-      m_sAllele.Replace(_T("1"),_T("X"));
-      m_sAllele.Replace(_T("2"),_T("Y"));
+      m_sAllele.Replace("1","X");
+      m_sAllele.Replace("2","Y");
     }
   }
 }
@@ -173,20 +173,20 @@ void CPlotChannel::FixAmel(int nStart, int nEnd)
 
 void CPlotChannel::RegisterAll(bool bInConstructor)
 {
-  RegisterInt(_T("nr"),&m_nr);
-  RegisterDouble(_T("minRFU"),&m_dMinRfu);
-  RegisterIntVector(_T("rawPoints"),&m_vnRawPoints);
-  RegisterIntVector(_T("analyzedPoints"),&m_vnAnalyzedPoints);
-  RegisterIntVector(_T("ladderPoints"),&m_vnLadderPoints);
-  RegisterUint(_T("baselineStart"),&m_nBaselineStart);
-  RegisterIntVector(_T("baselinePoints"),&m_vnBaselinePoints);
+  RegisterInt("nr",&m_nr);
+  RegisterDouble("minRFU",&m_dMinRfu);
+  RegisterIntVector("rawPoints",&m_vnRawPoints);
+  RegisterIntVector("analyzedPoints",&m_vnAnalyzedPoints);
+  RegisterIntVector("ladderPoints",&m_vnLadderPoints);
+  RegisterUint("baselineStart",&m_nBaselineStart);
+  RegisterIntVector("baselinePoints",&m_vnBaselinePoints);
   // the following two lines are for v2.2 beta 1 compatibility
   // and should eventually be deprecated
-  RegisterUint(_T("BaselineStart"),&m_nBaselineStartObsolete);
-  RegisterIntVector(_T("BaselinePoints"),&m_vnBaselinePointsObsolete);
-  Register(_T("samplePeak"),&m_IOpeak,(void *)&m_vSamplePeak);
-  Register(_T("artifact"),&m_IOartifact,(void *)&m_vArtifact);
-  Register(_T("ladderPeak"),&m_IOpeak,(void *)&m_vLadderPeak);
+  RegisterUint("BaselineStart",&m_nBaselineStartObsolete);
+  RegisterIntVector("BaselinePoints",&m_vnBaselinePointsObsolete);
+  Register("samplePeak",&m_IOpeak,(void *)&m_vSamplePeak);
+  Register("artifact",&m_IOartifact,(void *)&m_vArtifact);
+  Register("ladderPeak",&m_IOpeak,(void *)&m_vLadderPeak);
   if(bInConstructor)
   {
     Init();
@@ -253,12 +253,12 @@ const int CPlotLocus::MARGIN = 10;
 
 void CPlotLocus::RegisterAll(bool bInConstructor)
 {
-  RegisterUint(_T("channel"),&m_nChannel);
-  RegisterInt(_T("start"),&m_nStart);
-  RegisterInt(_T("end"),&m_nEnd);
-  RegisterInt(_T("startExtended"),&m_nStartExtended);
-  RegisterInt(_T("endExtended"),&m_nEndExtended);
-  RegisterWxString(_T("name"),&m_sName);
+  RegisterUint("channel",&m_nChannel);
+  RegisterInt("start",&m_nStart);
+  RegisterInt("end",&m_nEnd);
+  RegisterInt("startExtended",&m_nStartExtended);
+  RegisterInt("endExtended",&m_nEndExtended);
+  RegisterWxString("name",&m_sName);
   if(bInConstructor)
   {
     Init();
@@ -280,17 +280,17 @@ void CPlotData::_Cleanup()
 }
 void CPlotData::RegisterAll(bool bInConstructor)
 {
-  RegisterWxString(_T("filename"),&m_sFilename);
-  RegisterWxString(_T("associatedLadder"),&m_sLadder);
-  RegisterUint(_T("start"),&m_nStart);
-  RegisterUint(_T("begin"),&m_nBegin);
-  RegisterUint(_T("interval"),&m_nInterval);
-  RegisterUint(_T("end"),&m_nEnd);
-  RegisterWxString(_T("kit"),&m_sKit);
-  RegisterUint(_T("ilsChannel"),&m_nILS);
-  Register(_T("channel"),&m_IOchannel,(void *)&m_vChannels);
-  Register(_T("locus"),&m_IOlocus,(void *)&m_vLocus);
-  Register(_T("parameters"),&m_parm,(void *)&m_parm);
+  RegisterWxString("filename",&m_sFilename);
+  RegisterWxString("associatedLadder",&m_sLadder);
+  RegisterUint("start",&m_nStart);
+  RegisterUint("begin",&m_nBegin);
+  RegisterUint("interval",&m_nInterval);
+  RegisterUint("end",&m_nEnd);
+  RegisterWxString("kit",&m_sKit);
+  RegisterUint("ilsChannel",&m_nILS);
+  Register("channel",&m_IOchannel,(void *)&m_vChannels);
+  Register("locus",&m_IOlocus,(void *)&m_vLocus);
+  Register("parameters",&m_parm,(void *)&m_parm);
   if(bInConstructor)
   {
     Init();
@@ -323,7 +323,7 @@ bool CPlotData::LoadFromNode(wxXmlNode *pNode)
       sName = (*itr)->GetName();
       sName.Trim(false);
       sName.MakeUpper();
-      if(sName.StartsWith(_T("AMEL")))
+      if(sName.StartsWith("AMEL"))
       {
         pLocus = *itr;
         pChan = FindChannel(pLocus->GetChannel());

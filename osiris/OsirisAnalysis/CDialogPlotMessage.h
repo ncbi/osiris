@@ -70,7 +70,7 @@ public:
     int nType = CDialogPlotMessageFind::MSG_TYPE_HISTORY) :
       wxMessageDialog(parent,
         CDialogPlotMessageFind::GetMessage(nType),
-        _T("Find file"),
+        "Find file",
         wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION)
   {;}
 private:

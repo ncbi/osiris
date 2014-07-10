@@ -40,7 +40,7 @@
 #include "wxIDS.h"
 #include "OsirisVersion.h"
 
-const wxString CDialogAbout::g_sReadMe(_T(
+const wxString CDialogAbout::g_sReadMe(
 "This software is a \"United States Government Work\" under terms "
 "of the United States Copyright Act.  It was written as part of the "
 "authors’ official duties as Government employees and thus cannot "
@@ -55,7 +55,7 @@ const wxString CDialogAbout::g_sReadMe(_T(
 "all warranties as to performance, merchantability or fitness for "
 "any particular purpose. In any work or product derived from this "
 "material, proper attribution to the authors as the source of the "
-"software would be appreciated."));
+"software would be appreciated.");
 
 
 
@@ -79,7 +79,7 @@ CPanelAbout::CPanelAbout(wxWindow *parent) :
 }
 
 CDialogAbout::CDialogAbout(wxWindow *parent) : 
-  wxDialog(parent,wxID_ANY, _T("About OSIRIS " OSIRIS_VERSION "..."),
+  wxDialog(parent,wxID_ANY, "About OSIRIS " OSIRIS_VERSION "...",
     wxDefaultPosition, wxDefaultSize,
 //    wxDEFAULT_DIALOG_STYLE)
     mainApp::DIALOG_STYLE)

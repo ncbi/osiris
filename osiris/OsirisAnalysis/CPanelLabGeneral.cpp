@@ -33,7 +33,7 @@
 #include "CVolumes.h"
 #include "CKitList.h"
 #include "CDirList.h"
-#define ALLOW_USER_OVERRIDE _T("Allow User to Override")
+#define ALLOW_USER_OVERRIDE "Allow User to Override"
 
 //********************************************************************
 //
@@ -105,16 +105,16 @@ CPanelLabGeneral::CPanelLabGeneral(
 
   wxGridBagSizer *pGridSizer = new wxGridBagSizer(ID_BORDER,ID_BORDER);
   wxGBPosition gbPos(0,0);
-  _AddLine(_T(VOLUME_STRING " Name: "),m_pLabelVolumeName,pGridSizer, &gbPos);
-  _AddLine(_T("Reagent Kit: "),m_pLabelKitName,pGridSizer, &gbPos);
-  _AddLine(_T("Last Update: "),m_pLabelLastUpdateUser, pGridSizer, &gbPos);
-  _AddLine(_T("File Type: "), pSizerRadioFileType,pGridSizer,&gbPos);
+  _AddLine(wxS(VOLUME_STRING " Name: "),m_pLabelVolumeName,pGridSizer, &gbPos);
+  _AddLine(wxS("Reagent Kit: "),m_pLabelKitName,pGridSizer, &gbPos);
+  _AddLine(wxS("Last Update: "),m_pLabelLastUpdateUser, pGridSizer, &gbPos);
+  _AddLine(wxS("File Type: "), pSizerRadioFileType,pGridSizer,&gbPos);
 
   wxBoxSizer *pSizerRadio = new wxBoxSizer(wxHORIZONTAL);
   pSizerRadio->Add(m_pRadioRaw,0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
   pSizerRadio->Add(m_pRadioAnalyzed,0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT,ID_BORDER << 1);
-  _AddLine(_T("Data:"),pSizerRadio,pGridSizer,&gbPos);
-  _AddLine(_T("Internal Lane Standard: "), m_pChoiceILS,pGridSizer,&gbPos);
+  _AddLine(wxS("Data:"),pSizerRadio,pGridSizer,&gbPos);
+  _AddLine(wxS("Internal Lane Standard: "), m_pChoiceILS,pGridSizer,&gbPos);
 
   {
     wxGBSpan gbSpan(1,2);
@@ -127,13 +127,13 @@ CPanelLabGeneral::CPanelLabGeneral(
   }
 
 
-  _AddLine(_T("Protocol: "), m_pTextProtocol,pGridSizer, &gbPos);
-  _AddLine(_T("Lot Nr.: "), m_pTextLot, pGridSizer, &gbPos);
+  _AddLine(wxS("Protocol: "), m_pTextProtocol,pGridSizer, &gbPos);
+  _AddLine(wxS("Lot Nr.: "), m_pTextLot, pGridSizer, &gbPos);
 
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(pGridSizer,0,wxEXPAND | wxALL, ID_BORDER);
   pSizer->Add(
-    new wxStaticText(this,wxID_ANY,_T("Notes:")),
+    new wxStaticText(this,wxID_ANY,"Notes:"),
     0,wxLEFT | wxTOP | wxALIGN_LEFT, ID_BORDER);
   pSizer->Add(m_pTextNotes,1,wxEXPAND | (wxALL ^ wxTOP), ID_BORDER);
   SetSizer(pSizer);
@@ -149,7 +149,7 @@ void CPanelLabGeneral::_AddLine(
   wxSizer *pSz = 
     (pWin == NULL) ? wxDynamicCast(pobj,wxSizer) : NULL;
   wxStaticText *pLabel =
-    new wxStaticText(this,wxID_ANY,_T(psLabel));
+    new wxStaticText(this,wxID_ANY,psLabel);
   int nRow = pPos->GetRow();
   pPos->SetCol(0);
   pSizer->Add(
@@ -203,7 +203,7 @@ bool CPanelLabGeneral::TransferDataFromWindow()
     if(s.IsEmpty())
     {
       bRtn = false;
-      sError = _T("No ILS has been selected");
+      sError = "No ILS has been selected";
     }
     else
     {
@@ -241,7 +241,7 @@ bool CPanelLabGeneral::TransferDataFromWindow()
   }
   else
   {
-    sError = _T("Cannot save " Volume_string " information");
+    sError = "Cannot save " Volume_string " information";
   }
   if(!bRtn)
   {
@@ -271,7 +271,7 @@ bool CPanelLabGeneral::TransferDataToWindow()
     {
       wxString sError;
       bRtn = false;
-      sError = _T("Cannot file ILS for kit, ");
+      sError = "Cannot file ILS for kit, ";
       sError.Append(sKitName);
       mainApp::LogMessage(sError);
       wxASSERT_MSG(0,sError);
@@ -293,7 +293,7 @@ bool CPanelLabGeneral::TransferDataToWindow()
         sValue = dt.Format();
         if(!sUser.IsEmpty())
         {
-          sValue.Append(_T(" by "));
+          sValue.Append(" by ");
           sValue.Append(sUser);
         }
       }

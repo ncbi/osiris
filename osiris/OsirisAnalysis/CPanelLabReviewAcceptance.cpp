@@ -48,7 +48,7 @@ CPanelLabReviewAcceptance::CPanelLabReviewAcceptance(
 {
   int i;
   wxStaticText *pTextTitle = 
-    new wxStaticText(this,wxID_ANY,_T("Select the minimum number of users"));
+    new wxStaticText(this,wxID_ANY,"Select the minimum number of users");
   m_pGrid = new wxGrid(this,wxID_ANY);
   m_pGrid->CreateGrid(2,CLabReview::__REVIEW_COUNT);
   m_pGrid->SetDefaultEditor(new wxGridCellFloatEditor(3,0));
@@ -60,8 +60,8 @@ CPanelLabReviewAcceptance::CPanelLabReviewAcceptance(
     m_pGrid->SetColLabelValue(i,CLabReview::g_LABELS[i]);
     m_pGrid->SetCellValue(0,i,"000000");
   }
-  m_pGrid->SetRowLabelValue(ROW_ACCEPT,_T("Accept alerts"));
-  m_pGrid->SetRowLabelValue(ROW_REVIEW,_T("Review editing"));
+  m_pGrid->SetRowLabelValue(ROW_ACCEPT,"Accept alerts");
+  m_pGrid->SetRowLabelValue(ROW_REVIEW,"Review editing");
   nwxGrid::UpdateLabelSizes(m_pGrid);
   m_pGrid->AutoSize();
   for(i = 0; i < CLabReview::__REVIEW_COUNT; i++)
@@ -76,9 +76,9 @@ CPanelLabReviewAcceptance::CPanelLabReviewAcceptance(
   pTextTitle->SetFont(fn);
 
   m_pCheckAllowUserOverride = new wxCheckBox(
-    this,wxID_ANY,_T("Allow reviewer to modify user name"));
+    this,wxID_ANY,"Allow reviewer to modify user name");
   m_pCheckExportIfNeedsAttn = new wxCheckBox(
-    this,wxID_ANY,_T("Allow automated export when analysis needs attention"));
+    this,wxID_ANY,"Allow automated export when analysis needs attention");
 
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *pSizerCheckbox = new wxBoxSizer(wxVERTICAL);
@@ -115,7 +115,7 @@ void CPanelLabReviewAcceptance::_SetCellValue(int nRow, int nCol, int nValue)
   }
   else
   {
-    const wxChar *p = CLabReview::IsDefault(nCol) ? _T("0") : _T("");
+    const wxChar *p = CLabReview::IsDefault(nCol) ? wxS("0") : wxS("");
     m_pGrid->SetCellValue(nRow,nCol,p);
   }
 }
@@ -127,7 +127,7 @@ int CPanelLabReviewAcceptance::_GetCellValue(int nRow, int nCol)
   nwxString::Trim(&s);
   if(!s.IsEmpty())
   {
-    nRtn = atoi(s.c_str());
+    nRtn = atoi(s.utf8_str());
     if(nRtn < -1) { nRtn = -1;}
     else if(nRtn > MAX_USER_COUNT) { nRtn = MAX_USER_COUNT;}
   }

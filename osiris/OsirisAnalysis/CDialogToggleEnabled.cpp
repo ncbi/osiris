@@ -37,7 +37,7 @@ CDialogToggleEnabled::CDialogToggleEnabled(
   COARsample *pSample, 
   bool bAllowUserNameOverride,
   wxWindow *parent)
-  : wxDialog(parent,wxID_ANY,_T(""),wxDefaultPosition, wxDefaultSize,
+  : wxDialog(parent,wxID_ANY,"",wxDefaultPosition, wxDefaultSize,
       mainApp::DIALOG_STYLE & (~wxRESIZE_BORDER) ),
     m_toggler(pSample)
 {
@@ -54,7 +54,7 @@ CDialogToggleEnabled::CDialogToggleEnabled(
   sMessage = COARsample::EnableDisableStr(!bEnabled);
   SetTitle(sTitle);
   sMessage.Append(pSample->GetName());
-  sMessage.Append(_T("?"));
+  sMessage.Append("?");
 
   wxStaticText *pMessage = new wxStaticText(this,wxID_ANY,sMessage);
   CPanelUserID *pPanel = new CPanelUserID(

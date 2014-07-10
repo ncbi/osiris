@@ -55,14 +55,14 @@ wxString CDialogParameters::CreateFileURL(const wxString &sFile,bool bForce)
   wxString sLink;
   wxString s(sFile);
 #ifdef __WXMSW__
-  s.Replace(_T("/"),_T("\\"),true);
+  s.Replace("/","\\",true);
 #endif
   if(bForce || wxDirExists(s) || wxFileExists(s))
   {
     sLink.Alloc(sFile.Len() + LINK_PREFIX_LEN);
-    sLink = _T(LINK_PREFIX);
+    sLink = LINK_PREFIX;
 #ifndef __WXMSW__
-    while(s.StartsWith(_T("/")))
+    while(s.StartsWith("/"))
     {
       s = s.Mid(1);
     }
@@ -74,7 +74,7 @@ wxString CDialogParameters::CreateFileURL(const wxString &sFile,bool bForce)
 wxWindow *CDialogParameters::CreateLabSettingsLink(const wxString &sLabel)
 {
   wxHyperlinkCtrl *pLink =
-    new wxHyperlinkCtrl(this,IDlab,sLabel,_T("file:///"),
+    new wxHyperlinkCtrl(this,IDlab,sLabel,"file:///",
       wxDefaultPosition, wxDefaultSize,
       wxHL_ALIGN_LEFT | wxNO_BORDER);
   return pLink;
@@ -104,7 +104,7 @@ CDialogParameters::CDialogParameters(
   const wxString *pLadderInfo,
   CLabSettings *pLabSettings,
   const CXMLmessageBook *pMsgBook) :
-    wxDialog(parent,wxID_ANY,_T("Analysis Parameters"),
+    wxDialog(parent,wxID_ANY,"Analysis Parameters",
          wxDefaultPosition, wxDefaultSize,
          wxDEFAULT_DIALOG_STYLE),
     m_pLabSettings(pLabSettings),
@@ -198,10 +198,10 @@ CDialogParameters::CDialogParameters(
 #define SET_RFU(xx,nn) \
 if(nn > 0) \
 { \
-  if(!sRFU.IsEmpty()) { sRFU.Append(_T(", ")); } \
+  if(!sRFU.IsEmpty()) { sRFU.Append(", "); } \
   sRFU.Append(xx); \
   nRFU = nn; \
-  sRFU.Append(wxString::Format(_T("%d"),nRFU)); \
+  sRFU.Append(wxString::Format("%d",nRFU)); \
 }
 
 #define SET_GRID_LINE(sLabel) \
@@ -227,7 +227,7 @@ if(nn > 0) \
   nRFU = pOsiris->GetMinRFU_ILS();
   if(nRFU > 0)
   {
-    sRFU = wxString::Format(_T("%d"),nRFU);
+    sRFU = wxString::Format("%d",nRFU);
     SET_GRID_LINE(CParmOsiris::LABEL_RFU_ILS);
   }
 
@@ -255,7 +255,7 @@ if(nn > 0) \
   if(nLadder)
   {
     wxFileName fn(*pLadderInfo);
-    BOLD_LABEL(pLabel,_T("Ladder File "));
+    BOLD_LABEL(pLabel,"Ladder File ");
     pSizerTop->Add(pLabel,0,FLAG);
     pSizerTop->Add(
       new wxStaticText(this,wxID_ANY,fn.GetFullName()),
@@ -265,7 +265,7 @@ if(nn > 0) \
 #undef BOLD_LABEL
 
   wxBoxSizer *pSizer(new wxBoxSizer(wxVERTICAL));
-  wxButton *pButton = new wxButton(this,wxID_OK,_T("OK"));
+  wxButton *pButton = new wxButton(this,wxID_OK,"OK");
   pButton->SetDefault();
   pSizer->Add(pSizerTop,1,wxALL | wxEXPAND, ID_BORDER << 1);
   pSizer->Add(pButton,  0,wxBOTTOM | wxALIGN_CENTER, ID_BORDER);
@@ -290,8 +290,8 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
   wxString sURL = e.GetURL();
 #ifdef __WXDEBUG__
   size_t nLenURL = sURL.Len();
-  const wxChar *pURL = sURL.c_str();
-  mainApp::LogMessageV(_T("%d %s"),(int)nLenURL,pURL);
+  const wxChar *pURL = sURL.wc_str();
+  mainApp::LogMessageV(wxS("%d %ls"),(int)nLenURL,pURL);
 #endif
   if(e.GetId() == IDlab)
   {
@@ -299,7 +299,7 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
       this,wxID_ANY,m_pLabSettings, m_pMsgBook);
     dlg.ShowModal();
   }
-  else if(sURL.StartsWith(_T(LINK_PREFIX)))
+  else if(sURL.StartsWith(LINK_PREFIX))
   {
     wxString sFileName(sURL.Mid(LINK_PREFIX_LEN));
     FIX_FILE_NAME(sFileName);
@@ -311,12 +311,12 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
     }
     else if(e.GetId() == IDhyperlinkInput)
     {
-      mainApp::ShowError(_T(ERROR_MSG),this);
+      mainApp::ShowError(ERROR_MSG,this);
       bError = true;
     }
     else
     {
-      wxMessageDialog dlg(this,_T(ERROR_PROMPT),_T("Error"), wxYES_NO | wxYES_DEFAULT | wxICON_ERROR);
+      wxMessageDialog dlg(this,ERROR_PROMPT,"Error", wxYES_NO | wxYES_DEFAULT | wxICON_ERROR);
       int n = dlg.ShowModal();
       if(n == wxID_YES)
       {
@@ -325,9 +325,9 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
         if(sURL.IsEmpty())
         {
           bError = true;
-          mainApp::ShowError(_T("This folder no longer exists"),this);
+          mainApp::ShowError("This folder no longer exists",this);
           wxString sErr(
-            _T("Could not open folder for "));
+            "Could not open folder for ");
           sErr.Append(m_sFileName);
           mainApp::LogMessage(sErr);
         }

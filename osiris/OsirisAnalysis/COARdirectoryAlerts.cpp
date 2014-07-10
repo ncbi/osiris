@@ -34,8 +34,8 @@ COARbaseLocus::~COARbaseLocus() {;}
 
 void COARbaseLocus::RegisterAll(bool)
 {
-  RegisterWxString(_T("BaseLocusName"),&m_sLocusName);
-  Register(_T("BaseLocusAlerts"),&m_vnMessages);
+  RegisterWxString("BaseLocusName",&m_sLocusName);
+  Register("BaseLocusAlerts",&m_vnMessages);
 }
 void COARbaseLocus::AppendMessagesToList(vector<int> *pvn) const
 {
@@ -91,8 +91,8 @@ const COARbaseLocus *COARdirectoryAlerts::_GetBaseLocusAlertsByLocus(
 
 void COARdirectoryAlerts::RegisterAll(bool)
 {
-  Register(_T("MessageNumber"),&COARfile::g_iovn,(void *)&m_vnMessages);
-  Register(_T("BaseLocus"),&m_ioBaseLocus,(void *)&m_vpBaseLocus);
+  Register("MessageNumber",&COARfile::g_iovn,(void *)&m_vnMessages);
+  Register("BaseLocus",&m_ioBaseLocus,(void *)&m_vpBaseLocus);
 }
 void COARdirectoryAlerts::AppendMessagesToList(vector<int> *pvn) const
 {

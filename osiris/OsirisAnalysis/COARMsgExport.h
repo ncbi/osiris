@@ -64,8 +64,8 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Text"),&m_sText);
-    RegisterWxString(_T("Location"),&m_sLocation);
+    RegisterWxString("Text",&m_sText);
+    RegisterWxString("Location",&m_sLocation);
   }
 private:
   wxString m_sText;
@@ -138,13 +138,13 @@ private:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("ProtocolName"),&m_sProtocolName);
-    RegisterWxString(_T("Level"),&m_sLevel);
-    RegisterIntNonZero(_T("Priority"),&m_nPriority);
-    Register(_T("TextLoc"),&m_ioType,(void *)&m_vpExportProtocolType);
-    RegisterWxStringNotEmpty(_T("Group"),&m_sGroup);
-    RegisterBoolSkipFalse(_T("DoNotExport"),&m_bDoNotExport);
-    RegisterWxStringNotEmpty(_T("Notification"),&m_sNotification);
+    RegisterWxString("ProtocolName",&m_sProtocolName);
+    RegisterWxString("Level",&m_sLevel);
+    RegisterIntNonZero("Priority",&m_nPriority);
+    Register("TextLoc",&m_ioType,(void *)&m_vpExportProtocolType);
+    RegisterWxStringNotEmpty("Group",&m_sGroup);
+    RegisterBoolSkipFalse("DoNotExport",&m_bDoNotExport);
+    RegisterWxStringNotEmpty("Notification",&m_sNotification);
   }
 };
 
@@ -208,9 +208,9 @@ private:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("MsgName"),&m_sMsgName);
+    RegisterWxString("MsgName",&m_sMsgName);
     Register(
-      _T("Protocol"),
+      "Protocol",
       &m_ioProtocol,
       (void *)&m_vpExportProtocol);
   }
@@ -221,7 +221,7 @@ class COARmsgExportMap :
 {
 public:
   COARmsgExportMap() : 
-    TnwxXmlPersistMap<wxString,COARmsgExport>(_T("MsgExport"))
+    TnwxXmlPersistMap<wxString,COARmsgExport>("MsgExport")
   {}
   virtual ~COARmsgExportMap()
   {}

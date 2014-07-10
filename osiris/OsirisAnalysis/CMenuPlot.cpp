@@ -41,12 +41,12 @@
 
 
 CMenuArtifact::CMenuArtifact(int nOffset) 
-  : wxMenu(_T(""),0), m_nOffset(nOffset)
+  : wxMenu("",0), m_nOffset(nOffset)
 {
   for(int i = 0; i < CArtifactDisplayList::ARTIFACT_DISPLAY_COUNT; i++)
   {
     AppendRadioItem(
-      _Ndx2MenuID(i),_T(CArtifactDisplayList::apsDisplay[i]));
+      _Ndx2MenuID(i),CArtifactDisplayList::apsDisplay[i]);
   }
   SetDefault();
 }
@@ -92,7 +92,7 @@ IMPLEMENT_ABSTRACT_CLASS(CMenuPlot,wxMenu)
 CMenuPlot::~CMenuPlot() {;}
 CMenuPlot::CMenuPlot(
   CPlotData *pData, CKitColors *pColors)
-    : wxMenu(_T(""),0),
+    : wxMenu("",0),
     m_nOffset(0),
     m_nChannelCount(0),
     m_pKitColors(pColors),
@@ -111,7 +111,7 @@ CMenuPlot::CMenuPlot(
 
 CMenuPlot::CMenuPlot(
   int nOffset, CPlotData *pData, CKitColors *pColors) 
-    : wxMenu(_T(""),0),
+    : wxMenu("",0),
     m_nOffset(nOffset),
     m_nChannelCount(0),
     m_pKitColors(pColors),
@@ -157,22 +157,22 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   m_pMenuData = new wxMenu;
   m_pMenuData->AppendCheckItem(
     _ID(IDmenuPlotDataAnalyzed),
-    _T("Analyzed"));
+    "Analyzed");
   m_pMenuData->AppendCheckItem(
     _ID(IDmenuPlotDataRaw),
-    _T("Raw"));
+    "Raw");
   m_pMenuData->AppendCheckItem(
     _ID(IDmenuPlotDataLadder),
-    _T("Ladder"));
+    "Ladder");
   m_pMenuData->AppendCheckItem(
     _ID(IDmenuPlotDataBaseline),
-    _T("Baseline"));
+    "Baseline");
   EnableBaseline(pData->HasBaseline());
   if(!m_bPreview)
   {
     m_pMenuData->Append(
       IDmenuTable,
-      _T("Show Table"));
+      "Show Table");
   }
 
 
@@ -184,7 +184,7 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
     for(iu = 1; iu <= m_nChannelCount; iu++)
     {
       nID = _ID( ID_GET_CHANNEL_ID_FROM_NR(iu) );
-      s.Printf(_T("Channel %u"),iu);
+      s.Printf("Channel %u",iu);
       m_pMenuChannels->AppendCheckItem(nID,s);
     }
   }
@@ -197,10 +197,10 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
       {
         nID = _ID(ID_GET_CHANNEL_ID_FROM_NR(iu));
         s = nwxString::FormatNumber((int)iu);
-        s.Append(_T(" - "));
+        s.Append(" - ");
         s.Append(pChannelColors->m_sDyeName);
         pItem = new wxMenuItem(
-          m_pMenuChannels,nID,s,_T(""),wxITEM_CHECK);
+          m_pMenuChannels,nID,s,"",wxITEM_CHECK);
 #if COLOR_MENU_ITEMS
         pItem->SetBackgroundColour(pChannelColors->m_ColorAnalyzed);
         pItem->SetTextColour(*wxWHITE);
@@ -215,45 +215,45 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
 
   // now build the menu
 
-  AppendSubMenu(m_pMenuData,_T("Data"));
-  AppendSubMenu(m_pMenuChannels,_T("Channel"));
+  AppendSubMenu(m_pMenuData,"Data");
+  AppendSubMenu(m_pMenuChannels,"Channel");
   if(!m_bPreview)
   {
     AppendCheckItem(
       _ID(IDmenuPlotSync),
-      _T("Synchronize Axes"));
+      "Synchronize Axes");
   }
   AppendCheckItem(
     _ID(IDmenuPlotILS),
-    _T("Show ILS"));
+    "Show ILS");
   AppendCheckItem(
     _ID(IDmenuPlotRFU),
-    _T("Show minimum RFU"));
-  m_pMenuItemLabels = AppendSubMenu(m_pMenuLabels,_T("Labels"));
-  AppendSubMenu(m_pMenuArtifact,_T("Artifacts"));
+    "Show minimum RFU");
+  m_pMenuItemLabels = AppendSubMenu(m_pMenuLabels,"Labels");
+  AppendSubMenu(m_pMenuArtifact,"Artifacts");
   AppendCheckItem(
     _ID(IDmenuPlotLadderLabels),
-    _T("Show ladder labels"));
+    "Show ladder labels");
   if(!m_bPreview)
   {
     Append(_ID(IDmenuPlotResetAxes),
-      _T("Reset Axes"),
-      _T("Reset axes to display all alleles"));
+      "Reset Axes",
+      "Reset axes to display all alleles");
     Append(_ID(IDmenuPlotResetAxesFull),
-      _T("Show Primer Peaks"),
-      _T("Reset axes to include primer peaks"));
+      "Show Primer Peaks",
+      "Reset axes to include primer peaks");
     Append(_ID(IDmenuPlotMultiple),
-      _T("Multiple Plots"),
-      _T("Show a plot for each channel"));
+      "Multiple Plots",
+      "Show a plot for each channel");
     Append(_ID(IDmenuPlotAppend),
-      _T("Append plot"),
-      _T("Append a new plot directly below this plot"));
+      "Append plot",
+      "Append a new plot directly below this plot");
     Append(_ID(IDmenuPlotRemove),
-      _T("Remove plot"),
-      _T("Remove this plot, keep all others"));
+      "Remove plot",
+      "Remove this plot, keep all others");
     Append(_ID(IDmenuPlotRemoveOthers),
-      _T("Remove other plots"),
-      _T("Remove all plots except this"));
+      "Remove other plots",
+      "Remove all plots except this");
   }
   else
   {
@@ -263,9 +263,9 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   }
 }
 const wxChar * const CMenuPlot::LABEL_MAX_PEAK_LABELS =
-  _T("Max. ladder peak labels...");
+  wxS("Max. ladder peak labels...");
 const wxChar * const CMenuPlot::STATUS_MAX_PEAK_LABELS =
-  _T("Set the maximum number of labels for ladder peaks");
+  wxS("Set the maximum number of labels for ladder peaks");
 
 
 

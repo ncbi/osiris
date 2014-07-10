@@ -64,7 +64,7 @@ inline bool IS_FILE_TYPE(const wxString &s, const char *psType)
   if(nsLen > nLen)
   {
     wxString sEnd(s.Mid(nsLen - nLen));
-    bRtn = !sEnd.CmpNoCase(_T(psType));
+    bRtn = !sEnd.CmpNoCase(psType);
   }
   return bRtn;
 }

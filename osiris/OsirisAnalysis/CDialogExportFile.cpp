@@ -48,7 +48,7 @@
 
 IMPLEMENT_ABSTRACT_CLASS(CDialogExportFile,wxDialog)
 
-#define END_LINE(xx) if(!xx.IsEmpty()) { xx.Append(_T("\n"));}
+#define END_LINE(xx) if(!xx.IsEmpty()) { xx.Append("\n");}
 
 CDialogExportFile::CDialogExportFile(
   wxWindow *parent, 
@@ -71,7 +71,7 @@ CDialogExportFile::CDialogExportFile(
   {
     m_pFiles->BeginBatch();
     {
-      wxString sTitle = _T("Export ");
+      wxString sTitle = "Export ";
       sTitle.Append(m_pExportType->GetName());
       SetTitle(sTitle);
     }
@@ -87,7 +87,7 @@ CDialogExportFile::CDialogExportFile(
     }
     m_pPanel->SetSizer(pGridSizer);
     m_pCheckShowLocation = new wxCheckBox(
-      this,wxID_ANY,_T("View file location"));
+      this,wxID_ANY,"View file location");
     wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
     pSizer->Add(m_pPanel,0,wxALL | wxEXPAND,ID_BORDER);
     pSizer->AddStretchSpacer(1);
@@ -105,7 +105,7 @@ CDialogExportFile::CDialogExportFile(
   }
   else // m_pFiles == NULL
   {
-    mainApp::ShowError(_T("Cannot find export configuration."),parent);
+    mainApp::ShowError("Cannot find export configuration.",parent);
   }
 }
 
@@ -130,7 +130,7 @@ void CDialogExportFile::_AddParameter(
   }
   size_t nLen = sDefault.Len();
   wxChar cFirst;
-  const wxChar *QUOT = _T("'\"");
+  const wxChar *QUOT = wxS("'\"");
   if( (nLen >= 2) && 
       ((cFirst = sDefault.GetChar(0)) == sDefault.GetChar(nLen - 1)) &&
       ((cFirst == QUOT[0]) || (cFirst == QUOT[1]))
@@ -175,7 +175,7 @@ void CDialogExportFile::_AddParameter(
     {
       sDefault.Empty();
     }
-    else if(!pParam->CheckRange(atof(sDefault.c_str())))
+    else if(!pParam->CheckRange(atof(sDefault.utf8_str())))
     {
       sDefault.Empty();
     }
@@ -243,7 +243,7 @@ void CDialogExportFile::_AddParameter(
     {
       pWindow = _CreateTextCtrl();
       pButton = new wxButton(
-        m_pPanel,IDbrowseInput,_T("Browse..."),
+        m_pPanel,IDbrowseInput,"Browse...",
         wxDefaultPosition, wxDefaultSize, 
         wxBU_EXACTFIT);
       _AddFileParam(pParam,pButton);
@@ -408,12 +408,12 @@ bool CDialogExportFile::TransferDataFromWindow()
     }
     else
     {
-      wxASSERT_MSG(0,_T("Invalid window type."));
+      wxASSERT_MSG(0,"Invalid window type.");
     }
     if((!bSkip) && pParam->IsNumericType())
     {
       sError1 = pParam->GetDescription();
-      sError1.Append(_T(": "));
+      sError1.Append(": ");
       size_t nLen = sError1.Len();
       nType = pParam->GetTypeEnum();
       nwxString::Trim(&sValue);
@@ -425,31 +425,31 @@ bool CDialogExportFile::TransferDataFromWindow()
         (nType == CXSLParam::INTEGER) &&
         !nwxString::IsInteger(sValue))
       {
-        sError1 = _T("should have an integer value");
+        sError1 = "should have an integer value";
       }
       else if(!nwxString::IsNumber(sValue,false))
       {
-        sError1 = _T("should have a numeric value");
+        sError1 = "should have a numeric value";
       }
-      else if(!pParam->CheckRange(atof(sValue.c_str())))
+      else if(!pParam->CheckRange(atof(sValue.utf8_str())))
       {
         if(!pParam->GetHasMax())
         {
-          sError1.Append(_T("should be greater than "));
+          sError1.Append("should be greater than ");
           sError1.Append(
             nwxString::FormatNumber(pParam->GetMin()));
         }
         else if(!pParam->GetHasMin())
         {
-          sError1.Append(_T("should be less than "));
+          sError1.Append("should be less than ");
           sError1.Append(
             nwxString::FormatNumber(pParam->GetMax()));
         }
         else
         {
-          sError1.Append(_T("should be between "));
+          sError1.Append("should be between ");
           sError1.Append(nwxString::FormatNumber(pParam->GetMin()));
-          sError1.Append(_T(" and "));
+          sError1.Append(" and ");
           sError1.Append(nwxString::FormatNumber(pParam->GetMax()));
         }
       }
@@ -466,7 +466,7 @@ bool CDialogExportFile::TransferDataFromWindow()
         if(pParam->GetInFileRequired())
         {
           END_LINE(sError1);
-          sError1.Append(_T("Please specify an input file"));
+          sError1.Append("Please specify an input file");
         }
       }
       else
@@ -484,14 +484,14 @@ bool CDialogExportFile::TransferDataFromWindow()
           wxString sType = pParam->GetInFileTypeList();
           if(sType.Contains(CXSLExportFileType::LIST_SEPARATOR))
           {
-            sError1.Append(_T(
+            sError1.Append(
               "File extension is not valid,\n"
-              "please select one of the following:\n"));
+              "please select one of the following:\n");
           }
           else
           {
-            sError1.Append(_T(
-              "File extention is not valid, please use: "));
+            sError1.Append(
+              "File extention is not valid, please use: ");
           }
           sError1.Append(sType);
         }
@@ -521,7 +521,7 @@ bool CDialogExportFile::TransferDataFromWindow()
     if(pFocus == NULL)
     {
       pFocus->SetFocus();
-      wxASSERT_MSG(0,_T("Error message with no focus window"));
+      wxASSERT_MSG(0,"Error message with no focus window");
     }
   }
   return sError.IsEmpty();
@@ -676,28 +676,28 @@ void CDialogExportFile::_BuildWildcardString(
     {
       if(!bFirst)
       {
-        sExt.Append(_T(";"));
+        sExt.Append(";");
       }
       else
       {
         bFirst = false;
       }
-      sExt.Append( _T("*."));
+      sExt.Append("*.");
       sExt.Append(*itr);
     }
-    sType.Append(_T("("));
+    sType.Append("(");
     sType.Append(sExt);
-    sType.Append(_T(")"));
-    sType.Append(_T("|"));
+    sType.Append(")");
+    sType.Append("|");
     sType.Append(sExt);
     if(bOverride)
     {
-      sType.Append(_T("|" ALL_FILES));
+      sType.Append("|" ALL_FILES);
     }
   }
   else
   {
-    sType.Append(_T(ALL_FILES));
+    sType.Append(ALL_FILES);
   }
 }
 
@@ -752,8 +752,8 @@ void CDialogExportFile::_OnBrowse(wxCommandEvent &e)
 void CDialogExportFile::ShowError(wxWindow *parent, const wxString &sError)
 {
   wxString s(sError);
-  s.Append(_T("\n\nCheck the message log in the \n" 
-               "\"Tools\" pulldown menu for details."));
+  s.Append("\n\nCheck the message log in the \n" 
+               "\"Tools\" pulldown menu for details.");
   mainApp::ShowError(s,parent);
 }
 */

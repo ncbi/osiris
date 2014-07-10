@@ -45,9 +45,9 @@
 #include "CVolumes.h"
 #include <stdlib.h>
 const wxString CPanelLabSettings::g_sFileNameStrPrompt
-  (_T("File name search criteria"));
+  ("File name search criteria");
 const wxString CPanelLabSettings::g_sSampleNameStrPrompt
-  (_T("Sample name search criteria"));
+  ("Sample name search criteria");
 const wxSize CPanelLabSettings::g_SIZE_NUMBER(wxSize(60,-1));
 const wxSize CPanelLabSettings::g_SIZE_MULTILINE_TEXT(wxSize(300,200));
 
@@ -55,9 +55,9 @@ const wxSize CPanelLabSettings::g_SIZE_MULTILINE_TEXT(wxSize(300,200));
 //
 //    nwxChoiceButtons
 //
-const wxChar * const nwxChoiceButtons::LABEL_ADD(_T("New..."));
-const wxChar * const nwxChoiceButtons::LABEL_REMOVE(_T("Delete..."));
-const wxChar * const nwxChoiceButtons::LABEL_RENAME(_T("Rename..."));
+const wxChar * const nwxChoiceButtons::LABEL_ADD(wxS("New..."));
+const wxChar * const nwxChoiceButtons::LABEL_REMOVE(wxS("Delete..."));
+const wxChar * const nwxChoiceButtons::LABEL_RENAME(wxS("Rename..."));
 
 IMPLEMENT_CLASS(nwxPanel,wxPanel)
 
@@ -77,7 +77,7 @@ wxButton *nwxChoiceButtons::_CreateButton(
   wxString sToolTip(prefix);
   if(sItemName.IsEmpty())
   {
-    sToolTip.Append(_T("item"));
+    sToolTip.Append("item");
   }
   else
   {
@@ -276,7 +276,7 @@ void CPanelAlleleGrid::CreateAlleleGrid(bool bIsAmel)
   m_pGrid = new nwxGrid(this,wxID_ANY);
   m_pGrid->CreateGrid(m_nGridRows,1);
   m_pGrid->SetRowLabelSize(1);
-  m_pGrid->SetColLabelValue(0,_T("Allele"));
+  m_pGrid->SetColLabelValue(0,"Allele");
   for(int i = 0; i < m_nGridRows; i++)
   {
     m_pGrid->SetRowLabelValue(i,wxEmptyString);
@@ -367,9 +367,9 @@ void CPanelTrialleleGrid::CreateAlleleGrid(bool bIsAmel)
   m_pGrid = new nwxGrid(this,wxID_ANY);
   m_pGrid->CreateGrid(m_nGridRows,3);
   m_pGrid->SetRowLabelSize(1);
-  m_pGrid->SetColLabelValue(0,_T("Allele 1"));
-  m_pGrid->SetColLabelValue(1,_T("Allele 2"));
-  m_pGrid->SetColLabelValue(2,_T("Allele 3"));
+  m_pGrid->SetColLabelValue(0,"Allele 1");
+  m_pGrid->SetColLabelValue(1,"Allele 2");
+  m_pGrid->SetColLabelValue(2,"Allele 3");
   for(int i = 0; i < m_nGridRows; i++)
   {
     m_pGrid->SetRowLabelValue(i,wxEmptyString);
@@ -525,37 +525,37 @@ CPanelLabSettings::CPanelLabSettings(
 
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
   m_pbBack = new wxButton(
-    this,IDback,_T("< &Back"),
+    this,IDback,"< &Back",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   m_pbNext = new wxButton(
-    this,IDnext,_T("&Next >"),
+    this,IDnext,"&Next >",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   if(!m_bAlwaysReadOnly)
   {
     m_pbLock = new wxButton(
-      this,IDlock,_T("Lock"),
+      this,IDlock,"Lock",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
   }
 
   wxButton *pbOK = new wxButton(
-    this,wxID_OK,_T("&OK"),
+    this,wxID_OK,"&OK",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   wxButton *pbCancel = NULL;
   if(bShowCancel || !m_bAlwaysReadOnly)
   {
     pbCancel = new wxButton(
-      this,wxID_CANCEL,_T("&Cancel"),
+      this,wxID_CANCEL,"&Cancel",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
   }
   if(!m_bAlwaysReadOnly)
   {
     m_pbApply = new wxButton(
-      this,wxID_APPLY,_T("&Apply"),
+      this,wxID_APPLY,"&Apply",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
   }
@@ -574,17 +574,17 @@ CPanelLabSettings::CPanelLabSettings(
   m_pReview = new CPanelLabReviewAcceptance(
     m_pNotebook);
   m_pNotebook->AddPage(
-      m_pGeneral,_T("General"),true);
+      m_pGeneral,"General",true);
   m_pNotebook->AddPage(
-    m_pFilenames,_T("File/Sample Names"),false);
+    m_pFilenames,"File/Sample Names",false);
   m_pNotebook->AddPage(
-    m_pLocusThresholds,_T("Locus/ILS Thresholds"),false);
+    m_pLocusThresholds,"Locus/ILS Thresholds",false);
   m_pNotebook->AddPage(
-    m_pSampleThresholds,_T("Sample Thresholds"),false);
+    m_pSampleThresholds,"Sample Thresholds",false);
   m_pNotebook->AddPage(
-    m_pMarkerSet,_T("Assignments"),false);
+    m_pMarkerSet,"Assignments",false);
   m_pNotebook->AddPage(
-    m_pReview,_T("Accept/Review"),false);
+    m_pReview,"Accept/Review",false);
   wxBoxSizer *pSizerAll(new wxBoxSizer(wxVERTICAL));
   wxBoxSizer *pSizerButtons(new wxBoxSizer(wxHORIZONTAL));
 
@@ -707,7 +707,7 @@ bool CPanelLabSettings::SetData(
   CLabMarkerSetCollection *pMarker = pData->GetMarkerCollection();
   if(pMarker == NULL)
   {
-    wxString sMsg(_T("No marker sets in lab settings file: "));
+    wxString sMsg("No marker sets in lab settings file: ");
     sMsg.Append(pData->GetLastFileName());
     wxASSERT_MSG(0,sMsg);
     mainApp::LogMessage(sMsg);
@@ -758,13 +758,13 @@ double CPanelLabSettings::Str2Double(const wxString &_s, double dDefault)
 {
   wxString s(_s);
   nwxString::Trim(&s);
-  return s.IsEmpty() ? dDefault : atof(s.c_str());
+  return s.IsEmpty() ? dDefault : atof(s.utf8_str());
 }
 int CPanelLabSettings::Str2Int(const wxString &_s, int nDefault)
 {
   wxString s(_s);
   nwxString::Trim(&s);
-  return s.IsEmpty() ? nDefault : atoi(s.c_str());
+  return s.IsEmpty() ? nDefault : atoi(s.utf8_str());
 }
 wxString CPanelLabSettings::Number2Str(double d, double dDefaultBlank)
 {

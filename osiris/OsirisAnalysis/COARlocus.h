@@ -146,7 +146,7 @@ public:
   {
     wxString s = _s;
     s.MakeUpper();
-    bool bRtn = s.Contains(_T("AMEL"));
+    bool bRtn = s.Contains("AMEL");
     return bRtn;
   }
   bool IsAmel() const

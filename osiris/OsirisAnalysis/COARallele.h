@@ -311,22 +311,23 @@ public:
   {
     return FormatDouble(GetTime());
   }
-  const char *FormatOffLadder(
-    const char *psTrue = "1", const char *psFalse = "") const
+  const char *FormatOffLadder
+		(const char *psTrue = "1", const char *psFalse = "") const
   {
     // used for wxGrid cell using wxGridCellBoolEditor
     const char *ps = IsOffLadder() ? psTrue : psFalse;
     return ps;
   }
-  const char *FormatCount(const char *psTrue = "1", const char *psFalse = "") const
+  const char *FormatCount
+		(const char *psTrue = "1", const char *psFalse = "") const
   {
     // currently m_nCount is 2 for double allele,
     // 0 or 1 otherwise
     const char *ps = GetCountBool() ? psTrue : psFalse;
     return ps;
   }
-  const char *FormatDisabled(
-    const char *psTrue = "1", const char *psFalse = "") const
+  const char *FormatDisabled
+		(const char *psTrue = "1", const char *psFalse = "") const
   {
     // used for wxGrid cell using wxGridCellBoolEditor
     const char *ps = IsDisabled() ? psTrue : psFalse;

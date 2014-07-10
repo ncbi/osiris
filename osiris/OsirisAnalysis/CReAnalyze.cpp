@@ -81,7 +81,7 @@ bool CReAnalyze::CleanupNewFiles()
     if(wxFile::Exists(*itr) && !wxRemoveFile(*itr))
     {
       bRemoveFail = true; // failure, do not remove directory
-      sError = _T("Cannot delete file, ");
+      sError = "Cannot delete file, ";
       sError.Append(*itr);
       mainApp::LogMessage(sError);
       sError.Empty();
@@ -93,7 +93,7 @@ bool CReAnalyze::CleanupNewFiles()
   {}
   else if(!wxRmdir(m_sNewInputDir))
   {
-    sError = _T("Cannot remove directory, ");
+    sError = "Cannot remove directory, ";
     sError.Append(m_sNewInputDir);
     mainApp::LogMessage(sError);
     bRemoveFail = true;
@@ -120,9 +120,9 @@ bool CReAnalyze::_CopySamples()
     sOldName.Append(*itr);
     if(!wxCopyFile(sOldName,sNewName,false))
     {
-      sError = _T("Could not copy file, ");
+      sError = "Could not copy file, ";
       sError.Append(*itr);
-      sError.Append(_T("\n"));
+      sError.Append("\n");
       m_sErrors.Append(sError);
       bRtn = false;
     }
@@ -149,14 +149,14 @@ bool CReAnalyze::_FindSamples(COARfile *pFile)
   nwxFileUtil::NoEndWithSeparator(&sInputDir);
   if(!wxDir::Exists(sInputDir))
   {
-    sError = _T("Input directory, ");
+    sError = "Input directory, ";
     sError += sInputDir;
     sError += (", does not exist.\n");
     m_sErrors.Append(sError);
   }
   else if(!pFile->GetDisabledSamples(&vpSamples,true))
   {
-    m_sErrors.Append(_T("No disabled samples found.\n"));
+    m_sErrors.Append("No disabled samples found.\n");
   }
   else
   {
@@ -178,9 +178,9 @@ bool CReAnalyze::_FindSamples(COARfile *pFile)
       wxFileName fn(sInputDir,sName,sEXT);
       if(!fn.FileExists())
       {
-        sNotFound.Append(_T("   "));
+        sNotFound.Append("   ");
         sNotFound.Append(sName);
-        sNotFound.Append(_T("\n"));
+        sNotFound.Append("\n");
         nMissing++;
       }
       else
@@ -191,8 +191,8 @@ bool CReAnalyze::_FindSamples(COARfile *pFile)
     }
     if(!sNotFound.IsEmpty())
     {
-      sError.Printf(_T("Cannot find the following file%s:\n"),
-        (nMissing > 1) ? _T("s") : _T(""));
+      sError.Printf("Cannot find the following file%s:\n",
+        (nMissing > 1) ? "s" : "");
       m_sErrors.Append(sError);
       m_sErrors.Append(sNotFound);
     }
@@ -215,16 +215,16 @@ bool CReAnalyze::_Mkdir(COARfile *)
   int i = 1;
   const int MAX_TRY = 500;
   bool bRtn = false;
-  const wxChar *FMT = _T("Could not create subdirectory,\n");
+  const wxChar *FMT = wxS("Could not create subdirectory,\n");
   wxDateTime dt;
   dt.SetToCurrent();
-  sDate = dt.Format(_T("retry_%y_%m_%d_%H%M"));
+  sDate = dt.Format("retry_%y_%m_%d_%H%M");
   FIX_FILE_NAME(sInputDir);
   nwxFileUtil::EndWithSeparator(&sInputDir);
   sNewDir = sInputDir + sDate;
   while((i <= MAX_TRY) && (wxFileName::FileExists(sNewDir)))
   {
-    snr.Printf(_T(".%d"),i++);
+    snr.Printf(".%d",i++);
     sNewDir = sInputDir + sDate + snr;
   }
   if(i > MAX_TRY)
@@ -233,13 +233,13 @@ bool CReAnalyze::_Mkdir(COARfile *)
     m_sErrors.Append(sInputDir);
     m_sErrors.Append(sDate);
     m_sErrors.Append(wxString::Format(
-      _T(",\nafter %d attempts.\n"),MAX_TRY));
+      ",\nafter %d attempts.\n",MAX_TRY));
   }
   else if(!wxMkdir(sNewDir))
   {
     m_sErrors.Append(FMT);
     m_sErrors.Append(sNewDir);
-    m_sErrors.Append(_T("\n"));
+    m_sErrors.Append("\n");
   }
   else
   {

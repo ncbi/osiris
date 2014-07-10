@@ -312,12 +312,12 @@ class CDirList : public wxDirTraverser, public nwxXmlPersist
 {
 public:
 
-  CDirList() : m_vpDir(_T("dirEntry"))
+  CDirList() : m_vpDir("dirEntry")
   {
     _Init();
     RegisterAll(true);
   }
-  CDirList(const CDirList &x) : m_vpDir(_T("dirEntry"))
+  CDirList(const CDirList &x) : m_vpDir("dirEntry")
   {
     _Init();
     RegisterAll(true);
@@ -428,9 +428,9 @@ public:
   virtual bool LoadFile(const wxString &sFileName);
   virtual bool SaveFile(const wxString &sFileName);
   virtual void RegisterAll(bool = false);
-  static wxChar *GetDefaultExt()
+  static const wxChar *GetDefaultExt()
   {
-    return _T("fsa");
+    return DEFAULT_EXT;
   }
   static int MaxDayOfMonth(int nYear, int nMonth);
   static bool IsTimeStamp(const wxString &s);
@@ -478,8 +478,8 @@ private:
   {
     if(g_mapFileSpec.empty())
     {
-      g_mapFileSpec.insert(FILE_MAP::value_type(FILE_FSA,_T("*.fsa"))); 
-      g_mapFileSpec.insert(FILE_MAP::value_type(FILE_HID,_T("*.hid")));
+      g_mapFileSpec.insert(FILE_MAP::value_type(FILE_FSA,"*.fsa")); 
+      g_mapFileSpec.insert(FILE_MAP::value_type(FILE_HID,"*.hid"));
     }
   }
   static int ExtToType(const wxString &_sExt);
@@ -531,6 +531,7 @@ private:
   set<wxString> m_setDirs;
   CDirListStatus m_nStatus;
   int m_nFileType;
+	static const wxChar * const DEFAULT_EXT;
 };
 
 

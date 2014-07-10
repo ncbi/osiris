@@ -32,7 +32,7 @@
 #include "nwx/vectorptr.h"
 
 // this should probably be in lab settings
-const wxChar * const COARreview::TIME_FORMAT(_T("%c")); 
+const wxChar * const COARreview::TIME_FORMAT(wxS("%c"));
 
 COARenabled::~COARenabled() {;}
 COARreview::~COARreview() {;}
@@ -40,13 +40,13 @@ COARreview::~COARreview() {;}
 void COARenabled::RegisterAll(bool b)
 {
   COARreview::RegisterAll(b);
-  RegisterBoolTrue(_T("Enabled"),&m_bEnabled);
+  RegisterBoolTrue("Enabled",&m_bEnabled);
 }
 
 void COARreview::RegisterAll(bool)
 {
-  RegisterWxString(_T("UserID"),&m_sUserID);
-  RegisterWxDateTime(_T("Time"),&m_time);
+  RegisterWxString("UserID",&m_sUserID);
+  RegisterWxDateTime("Time",&m_time);
 }
 const wxDateTime &COARreview::GetTime() const
 {
@@ -54,7 +54,7 @@ const wxDateTime &COARreview::GetTime() const
   //  but removing it causes it to crash on the macintosh, with:
   //     OS X 19.5.8; Darwin Kernel Version 9.8.0:
   //     gcc version 4.0.1 (Apple Inc. build 5465) 
-  mainApp::LogMessage(_T("COARreviewGetTime()"),20000);
+  mainApp::LogMessage("COARreviewGetTime()",20000);
   return m_time;
 }
 
@@ -63,7 +63,7 @@ wxString COARreviewList::FormatList(
 {
   wxString sRtn;
   wxString s;
-  const wxChar *psSpacer(_T(""));
+  const wxChar *psSpacer(wxS(""));
   vector<const COARreview *> vl;
   vector<const COARreview *>::iterator itr;
   GetReviews(&vl,NULL,pHistory);
@@ -74,7 +74,7 @@ wxString COARreviewList::FormatList(
     s = (*itr)->Format(bReview);
     sRtn.Append(psSpacer);
     sRtn.Append(s);
-    psSpacer = _T("\n");
+    psSpacer = wxS("\n");
   }
   return sRtn;
 }
@@ -87,7 +87,7 @@ wxString COARreviewList::FormatReviewAcceptance(
   wxString sRtn2 = review.FormatList(true,pTime);
   if(!(sRtn.IsEmpty() || sRtn2.IsEmpty()))
   {
-    sRtn.Append(_T("\n"));
+    sRtn.Append("\n");
   }
   sRtn.Append(sRtn2);
   return sRtn;
@@ -246,7 +246,7 @@ wxString COARenabledList::FormatList(
 {
   wxString sRtn;
   wxString s;
-  const wxChar *psSpacer(_T(""));
+  const wxChar *psSpacer(wxS(""));
   vector<const COARenabled *> vl;
   vector<const COARenabled *>::iterator itr;
   GetList(&vl,pHistory);
@@ -257,7 +257,7 @@ wxString COARenabledList::FormatList(
     s = (*itr)->Format();
     sRtn.Append(psSpacer);
     sRtn.Append(s);
-    psSpacer = _T("\n");
+    psSpacer = wxS("\n");
   }
   return sRtn;
 }

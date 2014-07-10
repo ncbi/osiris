@@ -31,8 +31,8 @@
 
 void COARchannel::RegisterAll(bool)
 {
-  RegisterWxString(_T("ChannelName"),&m_sChannelName);
-  RegisterInt(_T("ChannelNr"),&m_nChannelNr);
+  RegisterWxString("ChannelName",&m_sChannelName);
+  RegisterInt("ChannelNr",&m_nChannelNr);
   Register(
     COARfile::g_sLocusName,
     &COARfile::g_ioLocusName,
@@ -41,21 +41,21 @@ void COARchannel::RegisterAll(bool)
 
 void COARheading::RegisterAll(bool)
 {
-  RegisterWxString(_T("FileName"),&m_sFileName);
-  RegisterWxString(_T("NewFileName"),&m_sNewFileName);
-  RegisterWxDateTime(_T("CreationTime"),&m_tCreationTime);
-  RegisterWxDateTime(_T("NewFileCreationTime"),&m_tNewFileCreationTime);
-  Register(_T("SaveHistory"),&m_setSaveHistory);
-  Register(_T("CommandLine"),&m_vsCommandLine);
+  RegisterWxString("FileName",&m_sFileName);
+  RegisterWxString("NewFileName",&m_sNewFileName);
+  RegisterWxDateTime("CreationTime",&m_tCreationTime);
+  RegisterWxDateTime("NewFileCreationTime",&m_tNewFileCreationTime);
+  Register("SaveHistory",&m_setSaveHistory);
+  Register("CommandLine",&m_vsCommandLine);
   RegisterBoolSkipFalse("StatusOK",&m_bTampered);
-  RegisterInt(_T("Status"),&m_nStatus);
-  RegisterWxString(_T("StatusText"),&m_sStatusText);
-  Register(_T("LabSettings"),&m_LabSettings);
-  Register(_T("StandardSettings"),&m_StandardSettings);
-  Register(_T("RuntimeSettings"),&m_RuntimeSettings);
-  RegisterWxString(_T("MarkerSet"),&m_sMarkerSet);
-  RegisterInt(_T("ILSchannelNr"),&m_nILSchannelNr);
-  Register(_T("Channel"),&m_ioChannel,(void *) &m_vpChannel);
+  RegisterInt("Status",&m_nStatus);
+  RegisterWxString("StatusText",&m_sStatusText);
+  Register("LabSettings",&m_LabSettings);
+  Register("StandardSettings",&m_StandardSettings);
+  Register("RuntimeSettings",&m_RuntimeSettings);
+  RegisterWxString("MarkerSet",&m_sMarkerSet);
+  RegisterInt("ILSchannelNr",&m_nILSchannelNr);
+  Register("Channel",&m_ioChannel,(void *) &m_vpChannel);
   m_ioChannel.Manage(&m_vpChannel);
 }
 

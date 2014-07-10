@@ -47,27 +47,27 @@ public:
 
   virtual void RegisterAll(bool = false)
   {
-    RegisterDouble(_T("NoiseThreshold"),            &m_dNoiseThreshold);
-    RegisterInt(   _T("WindowWidth"),               &m_nWindowWidth);
-    RegisterDouble(_T("MinFitForNormalPeak"),       &m_dMinFitForNormalPeak);
-    RegisterDouble(_T("TriggerFitForArtifact"),     &m_dTriggerFitForArtifact);
-    RegisterDouble(_T("AbsoluteMinimumFit"),        &m_dAbsoluteMinimumFit);
-    RegisterBool(  _T("TestForNegSecondaryContent"),&m_bTestForNegSecondaryContent);
-    RegisterDouble(_T("ParametricFitTolerance"),    &m_dParametricFitTolerance);
-    RegisterInt(   _T("NumberOfIntegrationSteps"),  &m_nNrIntegrationSteps);
-    RegisterDouble(_T("SigmaTolerance"),            &m_dSigmaTolerance);
-    RegisterDouble(_T("SigmaWidth"),                &m_dSigmaWidth);
-    RegisterInt(   _T("MaximumIterations"),         &m_nMaxIterations);
-    RegisterDouble(_T("SigmaRatio"),                &m_dSigmaRatio);
-    RegisterDouble(_T("InterSampleSpacing"),        &m_dInterSampleSpacing);
-    RegisterDouble(_T("SignatureSigma"),            &m_dSignatureSigma);
-    RegisterInt(   _T("BlobDegree"),                &m_nBlobDegree);
-    RegisterDouble(_T("MinDistanceBetweenPeaks"),   &m_dMinDistBtwnPeaks);
-    RegisterDouble(_T("PeakFractionForEndPtTest"),  &m_dPeakFractionForEndPtTest);
-    RegisterDouble(_T("PeakLevelForEndPtTest"),     &m_dPeakLevelForEndPtTest);
-    RegisterDouble(_T("LowTailHeightThreshold"),    &m_dLowTailHeightThreshold);
-    RegisterDouble(_T("LowTailSlopeThreshold"),     &m_dLowTailSlopeThreshold);
-    RegisterInt(_T("MinSamplesForSlopeRegression"), &m_nMinSamplesForSlopeRegression);
+    RegisterDouble("NoiseThreshold",            &m_dNoiseThreshold);
+    RegisterInt(   "WindowWidth",               &m_nWindowWidth);
+    RegisterDouble("MinFitForNormalPeak",       &m_dMinFitForNormalPeak);
+    RegisterDouble("TriggerFitForArtifact",     &m_dTriggerFitForArtifact);
+    RegisterDouble("AbsoluteMinimumFit",        &m_dAbsoluteMinimumFit);
+    RegisterBool(  "TestForNegSecondaryContent",&m_bTestForNegSecondaryContent);
+    RegisterDouble("ParametricFitTolerance",    &m_dParametricFitTolerance);
+    RegisterInt(   "NumberOfIntegrationSteps",  &m_nNrIntegrationSteps);
+    RegisterDouble("SigmaTolerance",            &m_dSigmaTolerance);
+    RegisterDouble("SigmaWidth",                &m_dSigmaWidth);
+    RegisterInt(   "MaximumIterations",         &m_nMaxIterations);
+    RegisterDouble("SigmaRatio",                &m_dSigmaRatio);
+    RegisterDouble("InterSampleSpacing",        &m_dInterSampleSpacing);
+    RegisterDouble("SignatureSigma",            &m_dSignatureSigma);
+    RegisterInt(   "BlobDegree",                &m_nBlobDegree);
+    RegisterDouble("MinDistanceBetweenPeaks",   &m_dMinDistBtwnPeaks);
+    RegisterDouble("PeakFractionForEndPtTest",  &m_dPeakFractionForEndPtTest);
+    RegisterDouble("PeakLevelForEndPtTest",     &m_dPeakLevelForEndPtTest);
+    RegisterDouble("LowTailHeightThreshold",    &m_dLowTailHeightThreshold);
+    RegisterDouble("LowTailSlopeThreshold",     &m_dLowTailSlopeThreshold);
+    RegisterInt("MinSamplesForSlopeRegression", &m_nMinSamplesForSlopeRegression);
   }
 
 
@@ -105,8 +105,8 @@ public:
   virtual ~CControlSearchBounds() {;}
   virtual void RegisterAll(bool = false)
   {
-    RegisterDouble(_T("MaxSpacingMultiple"),&m_dMax);
-    RegisterDouble(_T("MinSpacingMultiple"),&m_dMin);
+    RegisterDouble("MaxSpacingMultiple",&m_dMax);
+    RegisterDouble("MinSpacingMultiple",&m_dMin);
   }
   double m_dMax;
   double m_dMin;
@@ -125,8 +125,8 @@ public:
     virtual ~CILSSpecificThreshold() {;}
     virtual void RegisterAll(bool = false)
     {
-      RegisterWxString(_T("Synonym"),&m_sSynonym);
-      RegisterDouble(_T("CorrelationWiithIdeal"),&m_dCorr);
+      RegisterWxString("Synonym",&m_sSynonym);
+      RegisterDouble("CorrelationWiithIdeal",&m_dCorr);
     }
     wxString m_sSynonym;
     double m_dCorr;
@@ -136,7 +136,7 @@ public:
   public:
     CCorrelationThresholds() : 
         TnwxXmlPersistVector<CILSSpecificThreshold>(
-          _T("ILSSpecificThreshold") ) {;}
+          "ILSSpecificThreshold" ) {;}
     virtual ~CCorrelationThresholds() {;}
   };
 
@@ -149,14 +149,14 @@ public:
   virtual ~CLaneStandardSearch() {;}
   virtual void RegisterAll(bool = false)
   {
-    RegisterDouble(_T("AcceptanceFactorOfMaxPeak"), &m_dAcceptanceFactorOfMaxPeak);
-    RegisterDouble(_T("EndTestFactor"), &m_dEndTestFactor);
-    RegisterDouble(_T("SkipFractionOfInitialPeaks"), &m_dSkipFractionOfInitialPeaks);
-    RegisterDouble(_T("MinCorrelationForRecursiveSearch"), &m_dMinCorrelationForRecursiveSearch);
-    RegisterInt(_T("MaxStartPtsForPartialSearch"), &m_nMaxStartPtsForPartialSearch);
-    RegisterDouble(_T("BeginAnalysisProportion"), &m_dBeginAnalysisProportion);
-    Register(_T("LaneStandardSearchSpacing"), &m_LaneStandardSearchSpacing);
-    Register(_T("CorrelationThresholds"), &m_CorrelationThresholds);
+    RegisterDouble("AcceptanceFactorOfMaxPeak", &m_dAcceptanceFactorOfMaxPeak);
+    RegisterDouble("EndTestFactor", &m_dEndTestFactor);
+    RegisterDouble("SkipFractionOfInitialPeaks", &m_dSkipFractionOfInitialPeaks);
+    RegisterDouble("MinCorrelationForRecursiveSearch", &m_dMinCorrelationForRecursiveSearch);
+    RegisterInt("MaxStartPtsForPartialSearch", &m_nMaxStartPtsForPartialSearch);
+    RegisterDouble("BeginAnalysisProportion", &m_dBeginAnalysisProportion);
+    Register("LaneStandardSearchSpacing", &m_LaneStandardSearchSpacing);
+    Register("CorrelationThresholds", &m_CorrelationThresholds);
   }
 
   CControlSearchBounds m_LaneStandardSearchSpacing;
@@ -180,9 +180,9 @@ public:
   virtual ~CLadderLocusSearch() {;}
   virtual void RegisterAll(bool = false)
   {
-    RegisterDouble(_T("LadderLociMinimumCorrelationWithIdeal"),&m_dLadderLociMinimumCorrelation);
-    Register(_T("LadderLocusSearchSpacing"),&m_LadderLocusSearchSpacing);
-    RegisterInt(_T("MaxStartPtsForPartialSearch"),&m_nMaxStartPtsForPartialSearch);
+    RegisterDouble("LadderLociMinimumCorrelationWithIdeal",&m_dLadderLociMinimumCorrelation);
+    Register("LadderLocusSearchSpacing",&m_LadderLocusSearchSpacing);
+    RegisterInt("MaxStartPtsForPartialSearch",&m_nMaxStartPtsForPartialSearch);
   }
   CControlSearchBounds m_LadderLocusSearchSpacing;
   double m_dLadderLociMinimumCorrelation;
@@ -200,9 +200,9 @@ public:
   virtual ~CAlgorithmParameters() {;}
   virtual void RegisterAll(bool = false)
   {
-    Register(_T("CurveFitParameters"),&m_curveFit);
-    Register(_T("LaneStandardSearch"),&m_laneStd);
-    Register(_T("LadderLocusSearch"),&m_ladderLocus);
+    Register("CurveFitParameters",&m_curveFit);
+    Register("LaneStandardSearch",&m_laneStd);
+    Register("LadderLocusSearch",&m_ladderLocus);
   }
   CCurveFitParameters m_curveFit;
   CLaneStandardSearch m_laneStd;
@@ -219,14 +219,14 @@ public:
   virtual ~CStandardParameters() {;}
   virtual void RegisterAll(bool = false)
   {
-    RegisterInt(_T("MsgDoubleResolution"), &m_nMsgDoubleResolution);
-    RegisterDouble(_T("MinSigmaForDyeBlob"), &m_dMinSigmaForDyeBlob);
-    RegisterDouble(_T("SecondaryContentLimitFraction"), &m_dSecondaryContentLimitFraction);
-    RegisterDouble(_T("MinFractionExpectedPeakWidth"), &m_dMinFractionExpectedPeakWidth);
-    RegisterDouble(_T("MaxMultipleExpectedPeakWidth"), &m_dMaxMultipleExpectedPeakWidth);
-    RegisterDouble(_T("WidthMatchFraction"), &m_dWidthMatchFraction);
-    RegisterDouble(_T("MaxSpikeWidth"), &m_dMaxSpikeWidth);
-    RegisterDouble(_T("CraterSigmaMultiple"), &m_dCraterSigmaMultiple);
+    RegisterInt("MsgDoubleResolution", &m_nMsgDoubleResolution);
+    RegisterDouble("MinSigmaForDyeBlob", &m_dMinSigmaForDyeBlob);
+    RegisterDouble("SecondaryContentLimitFraction", &m_dSecondaryContentLimitFraction);
+    RegisterDouble("MinFractionExpectedPeakWidth", &m_dMinFractionExpectedPeakWidth);
+    RegisterDouble("MaxMultipleExpectedPeakWidth", &m_dMaxMultipleExpectedPeakWidth);
+    RegisterDouble("WidthMatchFraction", &m_dWidthMatchFraction);
+    RegisterDouble("MaxSpikeWidth", &m_dMaxSpikeWidth);
+    RegisterDouble("CraterSigmaMultiple", &m_dCraterSigmaMultiple);
   }
   double m_dMinSigmaForDyeBlob;
   double m_dSecondaryContentLimitFraction;
@@ -249,8 +249,8 @@ public:
   virtual ~CAllele() {;}
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Name"),&m_sName);
-    RegisterInt(_T("BioID"),&m_nBioID);
+    RegisterWxString("Name",&m_sName);
+    RegisterInt("BioID",&m_nBioID);
   }
   wxString m_sName;
   int m_nBioID;
@@ -268,8 +268,8 @@ public:
 
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Name"),&m_sName);
-    Register(_T("Allele"),&m_io,&m_vpAlleles);
+    RegisterWxString("Name",&m_sName);
+    Register("Allele",&m_io,&m_vpAlleles);
   }
   wxString m_sName;
   vector<CAllele *> m_vpAlleles;
@@ -278,7 +278,7 @@ public:
 class CSSLocusCollection : public TnwxXmlPersistVector<CSSLocusType>
 {
 public:
-  CSSLocusCollection() : TnwxXmlPersistVector<CSSLocusType>(_T("Locus")) {;}
+  CSSLocusCollection() : TnwxXmlPersistVector<CSSLocusType>("Locus") {;}
   virtual ~CSSLocusCollection() {;}
 };
 
@@ -292,8 +292,8 @@ public:
   virtual ~CPositiveControl() {;}
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Name"),&m_sName);
-    Register(_T("Loci"),&m_loci);
+    RegisterWxString("Name",&m_sName);
+    Register("Loci",&m_loci);
   }
   wxString m_sName;
   CSSLocusCollection m_loci;
@@ -303,18 +303,18 @@ public:
 class CStdMarkerSetCollection : public nwxXmlPersist
 {
 public:
-  CStdMarkerSetCollection() : m_PositiveControls(_T("PositiveControl"))
+  CStdMarkerSetCollection() : m_PositiveControls("PositiveControl")
   {
     RegisterAll(true);
   }
   virtual ~CStdMarkerSetCollection() {;}
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("MarkerSetName"),&m_sMarkerSetName);
-    Register(_T("PositiveControls"),&m_PositiveControls);
-    Register(_T("StandardOffLadderAlleles"),&m_StandardOffLadderAlleles);
-    Register(_T("StandardTrialleles"),&m_StandardTrialleles);
-    Register(_T("StdPosCtrlTrialleles"),&m_StdPosCtrlTrialleles);
+    RegisterWxString("MarkerSetName",&m_sMarkerSetName);
+    Register("PositiveControls",&m_PositiveControls);
+    Register("StandardOffLadderAlleles",&m_StandardOffLadderAlleles);
+    Register("StandardTrialleles",&m_StandardTrialleles);
+    Register("StdPosCtrlTrialleles",&m_StdPosCtrlTrialleles);
   }
 
   wxString m_sMarkerSetName;
@@ -330,16 +330,16 @@ public:
 class CStandardSettings : public nwxXmlPersist
 {
 public:
-  CStandardSettings() : m_markerSet(_T("StdMarkerSetCollection"))
+  CStandardSettings() : m_markerSet("StdMarkerSetCollection")
   {
     RegisterAll(true);
   }
   virtual ~CStandardSettings() {;}
   virtual void RegisterAll(bool = false)
   {
-    Register(_T("AlgorithmParameters"),&m_algorithm);
-    Register(_T("StandardParameters"),&m_standard);
-    Register(_T("StdMarkerSetSpecifications"),&m_markerSet);
+    Register("AlgorithmParameters",&m_algorithm);
+    Register("StandardParameters",&m_standard);
+    Register("StdMarkerSetSpecifications",&m_markerSet);
   }
   virtual const wxString &RootNode(void) const
   {

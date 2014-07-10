@@ -136,16 +136,16 @@ CFramePlotMenu::CFramePlotMenu()
     m_pMenuItemHistory(NULL)
 {
   AppendSeparator();
-  Append(IDmenuParameters,_T("Parameters..."),
-    _T("Show parameters used to create this data"));
+  Append(IDmenuParameters,"Parameters...",
+    "Show parameters used to create this data");
   Append(
     IDExportGraphic,
     CMenuFile::EXPORT_GRAPH,
     CMenuFile::EXPORT_GRAPH_HELP);
   Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBARS);
-  Append(IDmenuShowHidePlotScrollbars,_T("Hide Plot Scrollbars"));
-  AppendCheckItem(IDmenuShowHideWindowScrollbar,_T("Resizable Plots"));
-  Append(IDmenuTable,_T("Show T&able"));
+  Append(IDmenuShowHidePlotScrollbars,"Hide Plot Scrollbars");
+  AppendCheckItem(IDmenuShowHideWindowScrollbar,"Resizable Plots");
+  Append(IDmenuTable,"Show T&able");
   SetHistorySubMenu(NULL);
   Append(IDMaxLadderLabels,
     CMenuPlot::LABEL_MAX_PEAK_LABELS,
@@ -192,14 +192,14 @@ void CFramePlotMenu::CopyPlotSettings(CFramePlotMenu &menuFrom)
       if(pMenuPlot == NULL)
       {
         wxASSERT_MSG(0,
-          _T("CFramePlotMenu::CopySettings - CMenuPlot expected"));
+          "CFramePlotMenu::CopySettings - CMenuPlot expected");
       }
       else
       {
         pNewItem = new wxMenuItem(
           this,
           pItem->GetId(),
-          pItem->GetText(),
+          pItem->GetItemLabel(),
           pItem->GetHelp(),
           wxITEM_NORMAL,
           pMenuPlot->Clone()
@@ -222,8 +222,8 @@ void CFramePlotMenu::CopyPlotSettings(CFramePlotMenu &menuFrom)
       if(pMenuPlotFrom == NULL || pMenuPlotTo == NULL)
       {
         wxString s;
-        wxASSERT_MSG(0,_T("CFramePlotMenu::CopySettings() "
-            "problem with CMenuPlot submenu"));
+        wxASSERT_MSG(0,"CFramePlotMenu::CopySettings() "
+            "problem with CMenuPlot submenu");
       }
       else
       {
@@ -235,8 +235,8 @@ void CFramePlotMenu::CopyPlotSettings(CFramePlotMenu &menuFrom)
   }
   else
   {
-    wxASSERT_MSG(0,_T("CFramePlotMenu::CopyPlotSettings() "
-          "plot count does not match"));
+    wxASSERT_MSG(0,"CFramePlotMenu::CopyPlotSettings() "
+          "plot count does not match");
   }
 }
 
@@ -271,8 +271,8 @@ void CFramePlotMenu::CopySettings(CFramePlotMenu &menuFrom, bool bDeep)
       }
       else
       {
-        wxASSERT_MSG(0,_T("CFramePlotMenu::CopySettings() "
-          "inconsistent history menus"));
+        wxASSERT_MSG(0,"CFramePlotMenu::CopySettings() "
+          "inconsistent history menus");
       }
     }
   }
@@ -301,7 +301,7 @@ CMenuPlot *CFramePlotMenu::FindMenuPlot(int nID)
 }
 void CFramePlotMenu::SetHistorySubMenu(wxMenu *p)
 {
-  wxString sLabel(_T("&History"));
+  wxString sLabel("&History");
   if(m_pMenuItemHistory != NULL)
   {
     sLabel = m_pMenuItemHistory->GetItemLabel();
@@ -363,20 +363,20 @@ void CFramePlotMenu::UpdateLabels()
     if(!nCount) {;}
     else if(nCount == 1)
     {
-      (*itr)->SetText(_T("Plot"));
+      (*itr)->SetText("Plot");
     }
     else
     {
       wxString s;
-      (*itr)->SetText(_T("Top Plot"));
+      (*itr)->SetText("Top Plot");
       ++itr;
       for(i = 2; i < nCount; i++)
       {
-        s.Printf(_T("Plot %d"),i);
+        s.Printf("Plot %d",i);
         (*itr)->SetText(s);
         ++itr;
       }
-      (*itr)->SetText(_T("Bottom Plot"));
+      (*itr)->SetText("Bottom Plot");
     }
   }
 }
@@ -399,14 +399,14 @@ void CFramePlot::_SetupTitle()
       sOAR = fno.GetFullName();
       if(!sOAR.IsEmpty())
       {
-        sFileName.Append(_T("; "));
+        sFileName.Append("; ");
         sFileName.Append(sOAR);
       }
     }
   }
   else
   {
-    sFileName = _T("error...");
+    sFileName = "error...";
   }
   SetTitle(mainApp::FormatWindowTitle(
     sFileName,false,&m_pData->GetParameters(), GetSelectedTime()));
@@ -431,7 +431,7 @@ CFramePlot::CFramePlot(
   unsigned int nChannel,
   bool bUseExternalTimer
   ) :
-    CMDIFrame(pOwner, IDframePlot, _T(""),
+    CMDIFrame(pOwner, IDframePlot, "",
       wxDefaultPosition,
       size
       ),
@@ -743,7 +743,7 @@ bool CFramePlot::SetScrollbarMenuLabel(bool bShow)
     if(pItem != NULL)
     {
       const char *psLabel = bShow ? "Show Plot Scrollbars" : "Hide Plot Scrollbars";
-      pItem->SetText(_T(psLabel));
+      pItem->SetText(psLabel);
       bRtn = true;
     }
   }
@@ -815,7 +815,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     if(m_pOARfile != NULL)
     {
       wxASSERT_MSG(
-        0,_T("Received IDhistoryTop menu when OAR file is available"));
+        0,"Received IDhistoryTop menu when OAR file is available");
     }
     else
     {
@@ -890,8 +890,8 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
         if(pMenuPlot == NULL || pMenuPlotFrom == NULL)
         {
           wxASSERT_MSG(0,
-            _T("CFramePlot::MenuEvent() "
-            "cannot find plot menu from popup"));
+            "CFramePlot::MenuEvent() "
+            "cannot find plot menu from popup");
         }
         else
         {
@@ -916,7 +916,7 @@ void CFramePlot::_FindOARfile(int nType)
   if(n == wxID_YES)
   {
     wxString sError;
-    wxString sTypes = _T(FILE_TYPE_REPORT);
+    wxString sTypes = FILE_TYPE_REPORT;
     wxString sFile = m_pData->FindAnalysisFile();
     wxString sDir(sFile);
     bool bNotFound = sFile.IsEmpty();
@@ -934,9 +934,9 @@ void CFramePlot::_FindOARfile(int nType)
       sFile = fn.GetFullName();
     }
     wxFileDialog fileDlg(
-        this,_T("Find Analysis File"),
+        this,"Find Analysis File",
         sDir,sFile,sTypes,
-        wxFD_OPEN | wxFILE_MUST_EXIST);
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     while(!bDone)
     {
       bNew = false;
@@ -991,7 +991,7 @@ void CFramePlot::_FindOARfile(int nType)
           }
           if(bShowError)
           {
-            mainApp::ShowError(_T(psBadFile),this);
+            mainApp::ShowError(psBadFile,this);
           }
         }
       }
@@ -1007,14 +1007,14 @@ bool CFramePlot::_CheckAnalysisFile(COARfile *pFile)
   wxString sError;
   if(pFile->GetKitName() != m_pData->GetKitName())
   {
-    sError = _T("This analysis file does not use\n"
-                "the same kit as the plot data.");
+    sError = "This analysis file does not use\n"
+                "the same kit as the plot data.";
   }
   else if(pFile->GetSampleByName(m_pData->GetFilename()) == NULL)
   {
-    sError = _T("This sample, ");
+    sError = "This sample, ";
     sError.Append(m_pData->GetFilename());
-    sError.Append(_T(", is not found in this analysis file"));
+    sError.Append(", is not found in this analysis file");
   }
   bool bRtn = sError.IsEmpty();
   if(!bRtn)
@@ -1140,7 +1140,7 @@ void CFramePlot::CheckFileModification()
         if(bError)
         {
           mainApp::ShowError(
-            _T("A problem occurred when reading an OAR file\n"),this);
+            "A problem occurred when reading an OAR file\n",this);
           m_pParent->KillOARfile(m_pOARfile);
         }
         else if(!bCancel)

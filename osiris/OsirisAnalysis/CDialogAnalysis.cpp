@@ -46,7 +46,7 @@ CDialogAnalysis::CDialogAnalysis(
     bool bSave,
     bool bEnableInputDir,
     bool bUseLabSettings) :
-  wxDialog(parent,wxID_ANY,wxString(_T("Analyze Data"))),
+  wxDialog(parent,wxID_ANY,wxString("Analyze Data")),
     m_pVolume(NULL),
     m_pParm(pParm),
     m_pDirInput(NULL),
@@ -82,7 +82,7 @@ CDialogAnalysis::CDialogAnalysis(
       m_sErrorStr = m_pKitList->GetErrorMsg();
       if(m_sErrorStr.IsEmpty())
       {
-        m_sErrorStr = _T("Cannot load kit information");
+        m_sErrorStr = "Cannot load kit information";
       }
     }
     else
@@ -101,11 +101,11 @@ CDialogAnalysis::CDialogAnalysis(
     const int SPIN_MIN = mainApp::RFU_MIN_ENTER;
     const int SPIN_MAX = mainApp::RFU_MAX_ENTER;
     const int SPIN_DEF = 150;
-    wxString sSPIN_DEF(_T("150"));
+    wxString sSPIN_DEF("150");
 
     // input directory
 
-    m_pTextInput = new wxTextCtrl(this,wxID_ANY,_T(".\\TestAnalysis\\Cofiler"),
+    m_pTextInput = new wxTextCtrl(this,wxID_ANY,".\\TestAnalysis\\Cofiler",
       wxDefaultPosition, size);
     wxButton *pBrowseInput = 
       new wxButton(this,IDbrowseInput,"Browse...");
@@ -117,7 +117,7 @@ CDialogAnalysis::CDialogAnalysis(
 
     // output directory
 
-    m_pTextOutput = new wxTextCtrl(this,wxID_ANY,_T(".\\Reports"),
+    m_pTextOutput = new wxTextCtrl(this,wxID_ANY,".\\Reports",
       wxDefaultPosition, size);
     wxButton *pBrowseOutput = 
       new wxButton(this,IDbrowseOutput,"Browse...");
@@ -127,7 +127,7 @@ CDialogAnalysis::CDialogAnalysis(
 
     // checkbox for time stamps subdirectory
 
-    m_pCheckSubDir = new wxCheckBox(this,wxID_ANY,_T("Create time stamped subdirectory"));
+    m_pCheckSubDir = new wxCheckBox(this,wxID_ANY,"Create time stamped subdirectory");
 
     // Operating Procedure Name
 
@@ -163,7 +163,7 @@ CDialogAnalysis::CDialogAnalysis(
 
     wxBoxSizer *pSizerSpin1 = new wxBoxSizer(wxHORIZONTAL);
     pSizerSpin1->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,_T("Analysis: ")),
+      pwTemp = new wxStaticText(this,wxID_ANY,"Analysis: "),
       0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
 
@@ -176,7 +176,7 @@ CDialogAnalysis::CDialogAnalysis(
       wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
     pSizerSpin1->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,_T("Detection: ")),
+      pwTemp = new wxStaticText(this,wxID_ANY,"Detection: "),
       0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT, ID_BORDER);
     m_pSpinRFU_SampleDetection = new wxSpinCtrl(this,wxID_ANY,
       sSPIN_DEF, wxDefaultPosition,
@@ -187,7 +187,7 @@ CDialogAnalysis::CDialogAnalysis(
       wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
     pSizerSpin1->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,_T("Interlocus: ")),
+      pwTemp = new wxStaticText(this,wxID_ANY,"Interlocus: "),
       0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT, ID_BORDER);
     m_pSpinRFU_Interlocus = new wxSpinCtrl(this,wxID_ANY,
       sSPIN_DEF, wxDefaultPosition,
@@ -208,7 +208,7 @@ CDialogAnalysis::CDialogAnalysis(
     mainApp::SetBoldFont(pwTemp);
 
     pSizerSpin2->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,_T("Analysis: ")),
+      pwTemp = new wxStaticText(this,wxID_ANY,"Analysis: "),
       0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
     m_pSpinRFU_Ladder = new wxSpinCtrl(this,wxID_ANY,
       sSPIN_DEF, wxDefaultPosition,
@@ -219,7 +219,7 @@ CDialogAnalysis::CDialogAnalysis(
       wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
     pSizerSpin2->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,_T("Interlocus: ")),
+      pwTemp = new wxStaticText(this,wxID_ANY,"Interlocus: "),
       0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT, ID_BORDER);
     m_pSpinRFU_LadderInterlocus = new wxSpinCtrl(this,wxID_ANY,
       sSPIN_DEF, wxDefaultPosition,
@@ -422,10 +422,10 @@ bool CDialogAnalysis::SelectVolumeByName(const wxString &s)
       {
         // if there is still a problem, then we are soooo f***ed
         mainApp::ShowError(
-          _T("There is a problem with all " Volume_string "s.\n"
+          "There is a problem with all " Volume_string "s.\n"
           "Contact the OSIRIS developers at\n"
           "forensics@ncbi.nlm.nih.gov for further\n"
-          "assistance"),this);
+          "assistance",this);
         EndModal(wxID_CANCEL);
       }
     }
@@ -455,7 +455,7 @@ void CDialogAnalysis::OnVolumeChange(wxCommandEvent &)
   if(m_bProblem)
   {
     mainApp::ShowError(
-      _T("There is a problem with the selected " Volume_string "."),this);
+      "There is a problem with the selected " Volume_string ".",this);
     
     if( (!sCurrent.IsEmpty()) && (
         (m_pVolume == NULL) ||
@@ -615,12 +615,12 @@ void CDialogAnalysis::SetupOverride()
 
   RFU_STRUCT COMPARE_RFU[] =
   {
-    {nMinRFU,m_nMinRFU,_T("Sample RFU")},
-    {nMinRFU_ILS,m_nMinRFU_ILS,_T("ILS RFU")},
-    {nMinRFU_Ladder,m_nMinRFU_Ladder,_T("Ladder RFU")},
-    {nMinRFU_Interlocus,m_nMinRFU_Interlocus,_T("Interlocus RFU")},
-    {nMinRFU_LadderInterlocus,m_nMinRFU_LadderInterlocus,_T("Interlocus Ladder RFU")},
-    {nMinRFU_SampleDetection,m_nMinRFU_SampleDetection,_T("Sample Detection RFU")}
+    {nMinRFU,m_nMinRFU,wxS("Sample RFU")},
+    {nMinRFU_ILS,m_nMinRFU_ILS,wxS("ILS RFU")},
+    {nMinRFU_Ladder,m_nMinRFU_Ladder,wxS("Ladder RFU")},
+    {nMinRFU_Interlocus,m_nMinRFU_Interlocus,wxS("Interlocus RFU")},
+    {nMinRFU_LadderInterlocus,m_nMinRFU_LadderInterlocus,wxS("Interlocus Ladder RFU")},
+    {nMinRFU_SampleDetection,m_nMinRFU_SampleDetection,wxS("Sample Detection RFU")}
   };
   const size_t SIZE(sizeof(COMPARE_RFU)/sizeof(COMPARE_RFU[0]));
   RFU_STRUCT *pRFU = &COMPARE_RFU[0];
@@ -638,17 +638,17 @@ void CDialogAnalysis::SetupOverride()
   const CLabMarkerSetCollection *pMarker = pLab->GetMarkerCollection();
   if(pMarker->GetILSName() != m_sLsName)
   {
-    AppendOverride(_T("Internal Lane Standard"));
+    AppendOverride(wxS("Internal Lane Standard"));
   }
   if(m_bDataAnalyzed == pLab->GetAnalyzedData())
   {}
   else if(m_bDataAnalyzed)
   {
-    AppendOverride(_T("Analyzed data"));
+    AppendOverride(wxS("Analyzed data"));
   }
   else
   {
-    AppendOverride(_T("Raw data"));
+    AppendOverride(wxS("Raw data"));
   }
 }
 bool CDialogAnalysis::TransferDataFromWindow()
@@ -680,13 +680,13 @@ bool CDialogAnalysis::TransferDataFromWindow()
       if(m_nMinRFU_Interlocus < m_nMinRFU)
       {
         sError += CParmOsiris::ERROR_MSG_INTERLOCUS;
-        sError += _T("\n");
+        sError += "\n";
         m_pSpinRFU_Interlocus->SetFocus();
       }
       else if(m_nMinRFU_LadderInterlocus < m_nMinRFU_Ladder)
       {
         sError += CParmOsiris::ERROR_MSG_INTERLOCUS;
-        sError += _T("\n");
+        sError += "\n";
         m_pSpinRFU_LadderInterlocus->SetFocus();
       }
     }
@@ -696,28 +696,28 @@ bool CDialogAnalysis::TransferDataFromWindow()
       wxString sLockUser = m_pVolume->GetLockUser();
       if(sLockUser.IsEmpty())
       {
-        sLockUser = _T("another user");
+        sLockUser = "another user";
       }
-      sError += _T("This " Volume_string ", ");
+      sError += "This " Volume_string ", ";
       sError += m_pVolume->GetVolumeName();
-      sError += _T(", is locked by ");
+      sError += ", is locked by ";
       sError += sLockUser;
-      sError += _T(".\nPlease try again later.\n");
+      sError += ".\nPlease try again later.\n";
     }
     else if(!m_pVolume->SetInUse())
     {
-      sError += _T("This " Volume_string ", ");
+      sError += "This " Volume_string ", ";
       sError += m_pVolume->GetVolumeName();
-      sError += _T(", cannot be accessed at this time.\n");
+      sError += ", cannot be accessed at this time.\n";
     }
     if(!wxDirExists(m_sInputDirectory))
     {
-      sError += _T("Input directory does not exist\n");
+      sError += "Input directory does not exist\n";
     }
     if( (!wxDirExists(m_sOutputDirectory)) && 
         (!wxMkdir(m_sOutputDirectory,0755)) )
     {
-      sError += _T("Cannot create output directory");
+      sError += "Cannot create output directory";
     }
     bRtn = sError.IsEmpty();
     if(!bRtn)
@@ -749,9 +749,9 @@ bool CDialogAnalysis::TransferDataFromWindow()
       if(!( m_bSave && m_pParm->IsModified() )) {}
       else if(!m_pParm->Save())
       {
-        sError = _T(
+        sError =
           "Cannot save parameters to confiuration file\n"
-          "Analysis will continue anyway.");
+          "Analysis will continue anyway.";
         mainApp::ShowError(sError,this);
       }
     }

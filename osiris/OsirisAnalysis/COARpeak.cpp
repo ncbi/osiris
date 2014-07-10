@@ -30,11 +30,11 @@
 #include "COARpeak.h"
 #include "wxIDS.h"
 
-const wxString IOARpeak::OL_TRUE(_T("true"));
-const wxString IOARpeak::OL_FALSE(_T("false"));
-const wxString IOARpeak::OL_ACCEPTED(_T("accepted"));
-const wxString IOARpeak::OL_YES(_T("yes"));
-const wxString IOARpeak::OL_NO(_T(" "));
+const wxString IOARpeak::OL_TRUE("true");
+const wxString IOARpeak::OL_FALSE("false");
+const wxString IOARpeak::OL_ACCEPTED("accepted");
+const wxString IOARpeak::OL_YES("yes");
+const wxString IOARpeak::OL_NO(" ");
 
 const unsigned int COARpeak::FIT_DIGIT_MATCH(8);
 const wxString COARpeak::EMPTY_STRING;
@@ -119,16 +119,16 @@ wxString COARpeak::SetupAlleleName(const wxString &_s,bool bAmel)
   sRtn.Trim(false);
   if(bAmel)
   {
-    if(sRtn.Contains(_T("X")))
+    if(sRtn.Contains("X"))
     {
-      sRtn = _T("1");
+      sRtn = "1";
     }
-    else if(sRtn.Contains(_T("Y")))
+    else if(sRtn.Contains("Y"))
     {
-      sRtn = _T("2");
+      sRtn = "2";
     }
   }
-  else if ( (nDot = sRtn.Find(_T("."))) != wxNOT_FOUND )
+  else if ( (nDot = sRtn.Find(".")) != wxNOT_FOUND )
   {
     int nLen = (int)sRtn.Len();
     int nDot2 = nDot + 2;
@@ -137,7 +137,7 @@ wxString COARpeak::SetupAlleleName(const wxString &_s,bool bAmel)
       nLen = nDot2;  // make nLen accurate for next if()
       sRtn.Truncate(nLen);
     }
-    if( sRtn.EndsWith(_T(".0")) || (nLen == (nDot + 1)) )
+    if( sRtn.EndsWith(".0") || (nLen == (nDot + 1)) )
     {
       // ends with "." or ends with ".0"
       sRtn.Truncate(nDot);
@@ -239,8 +239,8 @@ wxString COARpeak::FormatAlleleName(const IOARpeak &x, bool bAmel, bool bCheckOf
   wxString s(x.GetAlleleName());
   if(bAmel)
   {
-    s.Replace(_T("1"),_T("X"));
-    s.Replace(_T("2"),_T("Y"));
+    s.Replace("1","X");
+    s.Replace("2","Y");
   }
   if(bOL && !s.IsEmpty())
   {

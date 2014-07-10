@@ -40,13 +40,13 @@
 #include "wxIDS.h"
 
 
-#define SHOW_PREVIEW _T("Show Preview")
-#define HIDE_PREVIEW _T("Hide Preview")
+#define SHOW_PREVIEW wxS("Show Preview")
+#define HIDE_PREVIEW wxS("Hide Preview")
 const wxChar *CMenuAnalysis::PARAMETERS_TOOL_TIP =
-_T("View parameters used to create this analysis.");
+	wxS("View parameters used to create this analysis.");
 
 const wxChar *CMenuAnalysis::PREVIEW_HELP_TEXT =
-  _T("Show or hide preview plot of selected table cell");
+  wxS("Show or hide preview plot of selected table cell");
 
 #if REUSE_MENUS
 #define POPUP_ECHO(f,a)
@@ -259,21 +259,21 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
   m_pMenuHistory = new CMenuHistory(pFile,true);
   Append(
     IDmenuDisplayGraph,
-    _T("Display Graph"),
-    _T("Display channel plots.  Hold the shift key down for a single plot")
+    "Display Graph",
+    "Display channel plots.  Hold the shift key down for a single plot"
     );
   m_pMenuItemPreview = Append(
     IDmenuTogglePreview,
-    _T(SHOW_PREVIEW),
-    _T(PREVIEW_HELP_TEXT));
+    SHOW_PREVIEW,
+    PREVIEW_HELP_TEXT);
   Append(
     IDmenuEditDirectory,
     CMenuEdit::LABEL_EDIT_DIRECTORY
     );
   Append(
     IDmenuEditCell,
-    _T("."),
-    _T("Edit data selected below")
+    ".",
+    "Edit data selected below"
     );
   m_pMenuAccept = new CMenuAccept;
   m_pMenuItemAccept = AppendSubMenu(
@@ -281,24 +281,24 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
   m_pMenuReview = new CMenuReview;
   m_pMenuItemReview = AppendSubMenu(
     m_pMenuReview,CMenuEdit::LABEL_REVIEW_EDIT);
-  m_pMenuItemDisable = Append(IDmenuDisableSample,_T("."));
-  m_pMenuItemDisableMulti = Append(IDmenuDisableMultiple,_T("Disable/Enable Multiple...\tAlt+D"));
+  m_pMenuItemDisable = Append(IDmenuDisableSample,".");
+  m_pMenuItemDisableMulti = Append(IDmenuDisableMultiple,"Disable/Enable Multiple...\tAlt+D");
   m_pMenuItemReAnalyze = Append(
     IDmenuReAnalyze,
-    _T("Reanalyze Disabled..."),
-    _T("Reanalyze disabled samples"));
+    "Reanalyze Disabled...",
+    "Reanalyze disabled samples");
   AppendSubMenu(
-    m_pMenuHistory,_T("&History"));
-  AppendSubMenu(m_pMenuSort,_T("&Sort"));
-  Append(IDmenuParameters,_T("Parameters..."),
+    m_pMenuHistory,"&History");
+  AppendSubMenu(m_pMenuSort,"&Sort");
+  Append(IDmenuParameters,"Parameters...",
     PARAMETERS_TOOL_TIP);
   m_pMenuCellType = new CMenuLabels(false);
-  AppendSubMenu(m_pMenuCellType,_T("&Display"));
+  AppendSubMenu(m_pMenuCellType,"&Display");
   Append(
     IDExportCMF,
     CMenuFile::EXPORT_CMF,
     CMenuFile::EXPORT_CMF_HELP);
-  m_pMenuItemToolbar = Append(IDmenuShowHideToolbar,_T(CMDIFrame::HIDE_TOOLBAR));
+  m_pMenuItemToolbar = Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBAR);
 }
 
 CMenuAnalysis *CMenuAnalysis::Clone()

@@ -48,9 +48,9 @@
 #include "COmittedAlerts.h"
 #include "OsirisFileTypes.h"
 
-const wxString COARfile::g_sRootOAR(_T("OsirisAnalysisReport"));
-const wxString COARfile::g_sLocusName(_T("LocusName"));
-const wxString COARfile::g_sMessageNumber(_T("MessageNumber"));
+const wxString COARfile::g_sRootOAR("OsirisAnalysisReport");
+const wxString COARfile::g_sLocusName("LocusName");
+const wxString COARfile::g_sMessageNumber("MessageNumber");
 TnwxXmlIOPersistVectorSimple<int,nwxXmlIOint> COARfile::g_iovn;
 nwxXmlIOPersistVectorWxString COARfile::g_ioLocusName;
     // handles XML IO for vector<wxString>, mainly LocusName
@@ -84,7 +84,7 @@ wxString COARfile::FindAnalysisFile(
   {
     wxString sFileName;
     wxString sFileLower;
-    const wxString sFileSpec(_T("*.o?r"));
+    const wxString sFileSpec("*.o?r");
     bool b;
     const int flags = wxDIR_FILES | wxDIR_HIDDEN;
     multimap<wxDateTime,wxString> mapDateName;
@@ -104,9 +104,9 @@ wxString COARfile::FindAnalysisFile(
 #ifdef _DEBUG
       else
       {
-        wxString sErr(_T("File: "));
+        wxString sErr("File: ");
         sErr.Append(sFileName);
-        sErr.Append(_T(" is not found."));
+        sErr.Append(" is not found.");
         wxASSERT_MSG(0,sErr);
       }
 #endif
@@ -140,18 +140,18 @@ const wxString &COARfile::RootNode(void) const
 }
 void COARfile::RegisterAll(bool)
 {
-  RegisterWxString(_T("Version"),&m_sVersion);
-  RegisterWxStringNotEmpty(_T("FullVersion"),&m_sFullVersion);
-  RegisterWxStringNotEmpty(_T("MsgBookBuildTime"),&m_sMsgBookBuildTime);
-  Register(_T("Heading"),&m_heading);
-  Register(_T("Table"),&m_vpTable);
-  Register(_T("DirectoryAlerts"),&m_DirAlerts);
-  Register(_T("DirectoryNotes"),&m_notes);
-  Register(_T("OldDirectoryNotes"),&m_pvOldNotes);
-  Register(_T("DirectoryReviews"),&m_DirReviews);
-  Register(_T("DirectoryAcceptance"),&m_DirAcceptance);
-  Register(_T("Messages"),&m_messages);
-  Register(_T("ExportSpecifications"),&m_mapExportSpecifications);
+  RegisterWxString("Version",&m_sVersion);
+  RegisterWxStringNotEmpty("FullVersion",&m_sFullVersion);
+  RegisterWxStringNotEmpty("MsgBookBuildTime",&m_sMsgBookBuildTime);
+  Register("Heading",&m_heading);
+  Register("Table",&m_vpTable);
+  Register("DirectoryAlerts",&m_DirAlerts);
+  Register("DirectoryNotes",&m_notes);
+  Register("OldDirectoryNotes",&m_pvOldNotes);
+  Register("DirectoryReviews",&m_DirReviews);
+  Register("DirectoryAcceptance",&m_DirAcceptance);
+  Register("Messages",&m_messages);
+  Register("ExportSpecifications",&m_mapExportSpecifications);
 }
 
 void COARfile::__BuildLocusMap() const
@@ -181,8 +181,8 @@ void COARfile::__BuildLocusMap() const
       else
       {
         wxString sMsg;
-        sMsg.Printf(_T("Locus, %s, appears in OAR file, %s, more than once"),
-          sLocus.c_str(), m_sFileName.c_str());
+        sMsg.Printf("Locus, %ls, appears in OAR file, %ls, more than once",
+          sLocus.wc_str(), m_sFileName.wc_str());
         mainApp::LogMessage(sMsg);
       }
     }
@@ -221,7 +221,7 @@ void COARfile::FormatText(wxString *ps, int nIndent)
   wxString s(*ps);
   wxChar *pSpaces;
   wxChar *pBlank;
-  wxChar spaces[] = "                     ";
+  wxChar spaces[] = wxS("                     ");
   int MAX = sizeof(spaces) / sizeof(spaces[0]) - 1;
 
   if(nIndent >= MAX) {nIndent = MAX - 1;}
@@ -235,11 +235,11 @@ void COARfile::FormatText(wxString *ps, int nIndent)
   // by spaces for indentation (pSpaces)
 
   nwxString::Trim(&s);
-  while(s.Replace(_T("\r\n"),_T("\n"),true)) {;}
-  s.Replace(_T("\r"),_T("\n"),true);
-  while(s.Replace(_T("\n "),_T("\n"),true)) {;}
-  while(s.Replace(_T("\n\t"),_T("\n"),true)) {;}
-  s.Replace(_T("\n"),pSpaces,true);
+  while(s.Replace("\r\n","\n",true)) {;}
+  s.Replace("\r","\n",true);
+  while(s.Replace("\n ","\n",true)) {;}
+  while(s.Replace("\n\t","\n",true)) {;}
+  s.Replace("\n",pSpaces,true);
   nwxString::Trim(&s);
   if(s.IsEmpty())
   {
@@ -277,7 +277,7 @@ wxString COARfile::FormatMessages(const vector<int> &vn, int nIndent, const wxDa
       {
         if(!bFirst)
         {
-          sRtn.Append(_T("\n"));
+          sRtn.Append("\n");
         }
         sRtn.Append(s);
         bFirst = false;
@@ -309,7 +309,7 @@ int COARfile::CountMessages(const vector<int> &vn,const wxDateTime *pTime) const
   return nRtn;
 }
 
-const wxString COARfile::g_sComma(_T(", "));
+const wxString COARfile::g_sComma(", ");
 
 void COARfile::AppendCellString(wxString *pCell, const wxString &_s, int n)
 {
@@ -401,7 +401,7 @@ wxString COARfile::FindMessageBookFile()
     s = fn.GetName();
     if(!s.IsEmpty())
     {
-      s.Append(_T(".msgBook.xml"));
+      s.Append(".msgBook.xml");
       sRtn = FindFileByName(s);
     }
   }
@@ -420,7 +420,7 @@ wxString COARfile::FindPlotFile(COARsample *pSample)
       size_t n = sName.Len();
       sName = sName.Truncate(n - nLen - 1);
     }
-    sName.Append(_T(".plt"));
+    sName.Append(".plt");
     sRtn = FindFileByName(sName);
   }
   return sRtn;
@@ -429,11 +429,11 @@ wxString COARfile::FindPlotFile(COARsample *pSample)
 #define ADD_STRING(s) vs.push_back(s); nLen += s.Len();
 #define ADD_STRINGE(s) \
   if(!s.IsEmpty()) { ADD_STRING(s); vs.push_back(wxEmptyString); }
-#define FORMAT_CH_NOTICE _T("Channel %d " COAR_NOTICE_DISPLAY ":")
+#define FORMAT_CH_NOTICE "Channel %d " COAR_NOTICE_DISPLAY ":"
 #define _ADD_NOTES(s,n,TITLE) \
 if(!s.IsEmpty()) \
 {\
-  wxString st(_T(TITLE)); \
+  wxString st(TITLE); \
   FormatText(&st,n); \
   ADD_STRING(st); \
   FormatText(&s,n + 2); \
@@ -443,7 +443,7 @@ if(!s.IsEmpty()) \
 #define APPEND_STRING(s1,s2)             \
 if(s2.Len())                             \
 {                                        \
-  if(s1.Len()) { s1.Append(_T("\n")); }  \
+  if(s1.Len()) { s1.Append("\n"); }  \
   s1.Append(s2);                         \
 }
 
@@ -512,7 +512,7 @@ void COARfile::_FormatCommonAlerts(
         (!sReview.IsEmpty())
         )
       {
-        wxString sDirTitle(_T("Directory " COAR_NOTICE_DISPLAY ":"));
+        wxString sDirTitle("Directory " COAR_NOTICE_DISPLAY ":");
         const vector<COARbaseLocus *> *pbl = GetBaseLociAlerts();
         vector<COARbaseLocus *>::const_iterator itr;
         bool bTitleAdded = false;
@@ -559,7 +559,7 @@ void COARfile::_FormatCommonAlerts(
                 bTitleAdded = true;
               }
               sTitle = (*itr)->GetLocusName();
-              sTitle.Append(_T(" directory " COAR_NOTICE_DISPLAY ":"));
+              sTitle.Append(" directory " COAR_NOTICE_DISPLAY ":");
               FormatText(&sTitle,2);
               ADD_STRING(sTitle);
               ADD_STRINGE(s);
@@ -607,7 +607,7 @@ void COARfile::_FormatCommonAlerts(
         if(!s.IsEmpty() || !sNotes.IsEmpty() || !sReview.IsEmpty() )
         {
           sTitle = pSample->GetName();
-          sTitle.Append(_T(" " COAR_NOTICE_DISPLAY ":"));
+          sTitle.Append(" " COAR_NOTICE_DISPLAY ":");
           ADD_STRING(sTitle);
           ADD_STRINGE(s);
           ADD_REVIEW_NOTES(sReview,sNotes,2);
@@ -639,7 +639,7 @@ void COARfile::_FormatCommonAlerts(
         }
         if(!s.IsEmpty() || !sNotes.IsEmpty() || !sReview.IsEmpty())
         {
-          sTitle = _T("ILS channel " COAR_NOTICE_DISPLAY ":");
+          sTitle = "ILS channel " COAR_NOTICE_DISPLAY ":";
           ADD_STRING(sTitle);
           ADD_STRINGE(s);
           ADD_REVIEW_NOTES(sReview,sNotes,2);
@@ -777,7 +777,7 @@ wxString COARfile::FormatLocusAlerts(
       if( !(s.IsEmpty() && sNotes.IsEmpty() && sReview.IsEmpty()) )
       {
         sTitle = pLocus->GetName();
-        sTitle.Append(_T(" " COAR_NOTICE_DISPLAY ":"));
+        sTitle.Append(" " COAR_NOTICE_DISPLAY ":");
         ADD_STRING(sTitle);
         ADD_STRINGE(s);
         ADD_REVIEW_NOTES(sReview,sNotes,2);
@@ -840,7 +840,7 @@ wxString COARfile::CheckStatus(
     int nDiff = nRequired - nHave;
     wxString sn;
     sRtn.Alloc(sMessage.Len() + 12);
-    sn.Printf(_T(" (%d)"),nDiff);
+    sn.Printf(" (%d)",nDiff);
     sRtn.Append(sMessage);
     sRtn.Append(sn);
   }
@@ -891,13 +891,13 @@ wxString COARfile::CheckDirStatus(
   if(IsDirMessageEdited(pTime))
   {
     nCount = m_DirReviews.GetCount(pTime);
-    sRtn = CheckStatus(nReview,nCount,_T("Directory " NEED_REV));
+    sRtn = CheckStatus(nReview,nCount,"Directory " NEED_REV);
     SET_REVIEW(pbReview,true);
   }
   else if(HasDisplayedDirectoryMessages())
   {
     nCount = m_DirAcceptance.GetCount(pTime);
-    sRtn = CheckStatus(nAccept,nCount,_T("Directory " NEED_ACC));
+    sRtn = CheckStatus(nAccept,nCount,"Directory " NEED_ACC);
     SET_REVIEW(pbReview,false);
   }
   return sRtn;
@@ -914,14 +914,14 @@ wxString COARfile::CheckChannelStatus(
   if(pSample->IsCellChannelEdited(pTime))
   {
     unsigned int nCount = pSample->GetChannelReviewCount(pTime);
-    sRtn = CheckStatus(nReview,nCount,_T("Channel" NEED_REV));
+    sRtn = CheckStatus(nReview,nCount,"Channel" NEED_REV);
     SET_REVIEW(pbReview,true)
   }
   else if(pSample->HasChannelAlert(pMsg,pTime))
   {
     unsigned int nCount = pSample->GetChannelAcceptanceCount(pTime);
     sRtn = CheckStatus(
-      nAccept,nCount,_T("Channel" NEED_ACC));
+      nAccept,nCount,"Channel" NEED_ACC);
     SET_REVIEW(pbReview,false)
   }
   return sRtn;
@@ -938,14 +938,14 @@ wxString COARfile::CheckILSStatus(
   if(pSample->IsCellILSEdited(pTime))
   {
     unsigned int nCount = pSample->GetILSReviewCount(pTime);
-    sRtn = CheckStatus(nReview,nCount,_T("ILS" NEED_REV));
+    sRtn = CheckStatus(nReview,nCount,"ILS" NEED_REV);
     SET_REVIEW(pbReview,true)
   }
   else if(pSample->HasILSAlert(pMsg,pTime))
   {
     unsigned int nCount = pSample->GetILSAcceptanceCount(pTime);
     sRtn = CheckStatus(
-      nAccept,nCount,_T("ILS" NEED_ACC));
+      nAccept,nCount,"ILS" NEED_ACC);
     SET_REVIEW(pbReview,false)
   }
   return sRtn;
@@ -963,14 +963,14 @@ wxString COARfile::CheckSampleStatus(
   {
     unsigned int nCount = pSample->GetSampleReviewCount(pTime);
     sRtn = CheckStatus(
-      nReview,nCount,_T("Sample" NEED_REV));
+      nReview,nCount,"Sample" NEED_REV);
     SET_REVIEW(pbReview,true)
   }
   else if(pSample->HasSampleAlert(pMsg,pTime))
   {
     unsigned int nCount = pSample->GetSampleAcceptanceCount(pTime);
     sRtn = CheckStatus(
-      nAccept,nCount,_T("Sample" NEED_ACC));
+      nAccept,nCount,"Sample" NEED_ACC);
     SET_REVIEW(pbReview,false)
   }
   return sRtn;
@@ -990,7 +990,7 @@ wxString COARfile::CheckLocusStatus(
     {
       wxString s(pLocus->GetName());
       unsigned int nCount = pLocus->GetReviewCount(pTime);
-      s.Append(_T(NEED_REV));
+      s.Append(NEED_REV);
       sRtn = CheckStatus(nReview,nCount,s);
       SET_REVIEW(pbReview,true)
     }
@@ -998,7 +998,7 @@ wxString COARfile::CheckLocusStatus(
     {
       wxString s(pLocus->GetName());
       unsigned int nCount = pLocus->GetAcceptanceCount(pTime);
-      s.Append(_T(NEED_ACC));
+      s.Append(NEED_ACC);
       sRtn = CheckStatus(nAccept,nCount,s);
       SET_REVIEW(pbReview,false)
     }
@@ -1109,7 +1109,7 @@ wxString COARfile::FormatAlertsBySample(
             CHANNEL_MESSAGES;
             vs.push_back(wxEmptyString);
           }
-          sTitle.Printf(_T("  %s " COAR_NOTICE_DISPLAY ":"),sLocusName.c_str());
+          sTitle.Printf("  %ls " COAR_NOTICE_DISPLAY ":",sLocusName.wc_str());
           ADD_STRING(sTitle);
           ADD_STRINGE(s);
           ADD_REVIEW_NOTES(sReview,sNotes,4);
@@ -1142,7 +1142,7 @@ void COARfile::_JoinStrings(
   size_t nLen)
 {
   wxString sOmitted = pOmitted->Format();
-  wxString sn(_T("\n"));
+  wxString sn("\n");
   size_t nSize = vs.size();
   s.Empty();
   s.Alloc(nLen + nSize  + sOmitted.Len() + 32);
@@ -1237,24 +1237,24 @@ nwxXmlCMF *COARfile::CreateCMF(COARsample2CMFSpecimen *pMap)
   bool bIsAmel(false);
   if(sUser.IsEmpty())
   {
-    sUser = _T("unknown");
+    sUser = "unknown";
   }
 //  size_t nLen = sUser.Len();
 
 
   time_t t;
-  wxString sComment(_T("\n\nCMF 3.2 file created by OSIRIS version "));
-  sComment.Append(_T(OSIRIS_VERSION));
-  sComment.Append(_T("\n"));
+  wxString sComment("\n\nCMF 3.2 file created by OSIRIS version ");
+  sComment.Append(OSIRIS_VERSION);
+  sComment.Append("\n");
   time(&t);
   sComment.Append(nwxString::FormatDateTime(t));
-  sComment.Append(_T("\n\n"));
-  sComment.Replace(_T("-"),_T("/"),true);
+  sComment.Append("\n\n");
+  sComment.Replace("-","/",true);
   pCMF->SetComment(sComment);
 
 
-  pCMF->SetDestination(_T("Lab"));
-  pCMF->SetSourceLab(_T("Lab"));
+  pCMF->SetDestination("Lab");
+  pCMF->SetSourceLab("Lab");
   pCMF->SetSubmitByUserID(sUser);
   pCMF->SetSubmitDateTimeCurrent();
   pCMF->SetKit(GetKitName());
@@ -1310,7 +1310,7 @@ nwxXmlCMF *COARfile::CreateCMF(COARsample2CMFSpecimen *pMap)
 
               // Specimen category will need user input
               // use "Other" for now
-              pCMFSpecimen->SetSpecimenCategory(_T("Other"));
+              pCMFSpecimen->SetSpecimenCategory("Other");
             }
             if(pCMFLocus == NULL)
             {
@@ -1324,7 +1324,7 @@ nwxXmlCMF *COARfile::CreateCMF(COARsample2CMFSpecimen *pMap)
               {
                 wxString sError = "Unknown locus name, ";
                 sError.Append(*itrs);
-                sError.Append(_T(", found when creating CMF file"));
+                sError.Append(", found when creating CMF file");
                 wxASSERT_MSG(false,sError);
                 mainApp::LogMessage(sError);
                 j = nAlleleCount; // end this loop
@@ -1443,7 +1443,7 @@ wxString COARfile::GetFileExt(bool bDot) const
   wxString sRtn;
   if(bDot)
   {
-    sRtn = _T(".");
+    sRtn = ".";
   }
   size_t nLen = sRtn.Len();
   sRtn.Append(

@@ -217,17 +217,17 @@ public:
   static const wxString g_sCellILSNotice;
   static const wxChar *EnableDisableSampleStr(bool bEnabled)
   {
-    const wxChar *pRtn = (bEnabled) ? "Enable Sample" : "Disable Sample";
+    const wxChar *pRtn = (bEnabled) ? wxS("Enable Sample") : wxS("Disable Sample");
     return pRtn;
   }
   static const wxChar *EnableDisableStr(bool bEnabled)
   {
-    const wxChar *pRtn = (bEnabled) ? "Enable " : "Disable ";
+    const wxChar *pRtn = (bEnabled) ? wxS("Enable ") : wxS("Disable ");
     return pRtn;
   }
   COARsample(COARfile *pFile = NULL) :
-      m_pvChannelAlerts(_T("Channel")),
-      m_pvAlertInterLocus(_T("Alert")),
+      m_pvChannelAlerts("Channel"),
+      m_pvAlertInterLocus("Alert"),
       m_Reviews(true),
       m_Acceptance(false),
       m_pFile(pFile)
@@ -235,8 +235,8 @@ public:
     RegisterAll(true);
   }
   COARsample(const COARsample &x) :
-      m_pvChannelAlerts(_T("Channel")),
-      m_pvAlertInterLocus(_T("Alert")),
+      m_pvChannelAlerts("Channel"),
+      m_pvAlertInterLocus("Alert"),
       m_pFile(NULL)
   {
     RegisterAll(true);
@@ -519,12 +519,12 @@ public:
   }
   bool IsLadderType() const
   {
-    int n = m_sType.CmpNoCase(_T("Ladder"));
+    int n = m_sType.CmpNoCase("Ladder");
     return !n;
   }
   bool IsSampleType() const
   {
-    int n = m_sType.CmpNoCase(_T("Sample"));
+    int n = m_sType.CmpNoCase("Sample");
     return !n;
   }
   const COARalerts *GetSampleAlerts() const
@@ -734,7 +734,7 @@ public:
     wxString s2 = m_EnableHistory.FormatList(pt);
     if(!(s.IsEmpty() || s2.IsEmpty()))
     {
-      s.Append(_T("\n"));
+      s.Append("\n");
     }
     s.Append(s2);
     return s;

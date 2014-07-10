@@ -72,10 +72,10 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Name"),&m_sName);
-    RegisterInt(_T("Channel"),&m_nChannel);
-    RegisterInt(_T("MinBP"),&m_nMinBP);
-    RegisterInt(_T("MaxBP"),&m_nMaxBP);
+    RegisterWxString("Name",&m_sName);
+    RegisterInt("Channel",&m_nChannel);
+    RegisterInt("MinBP",&m_nMinBP);
+    RegisterInt("MaxBP",&m_nMaxBP);
   }
 private:
   wxString m_sName;
@@ -136,13 +136,13 @@ public:
     m_pLastKitLocus = NULL;
     m_pLastKitLS = NULL;
 
-    Register(_T("Kits"),this);
-    Register(_T("Set"),this);
-    Register(_T("Name"),this);
-    Register(_T("LS"),this);
-    Register(_T("LSName"),this);
-    Register(_T("ChannelNo"),this);
-    Register(_T("Locus"),this);
+    Register("Kits",this);
+    Register("Set",this);
+    Register("Name",this);
+    Register("LS",this);
+    Register("LSName",this);
+    Register("ChannelNo",this);
+    Register("Locus",this);
   }
   ~CPersistKitList()
   {
@@ -237,13 +237,13 @@ private:
 
   void _AddError()
   {
-    m_sErrorMsg.Append(_T("Cannot load kit: "));
+    m_sErrorMsg.Append("Cannot load kit: ");
     m_sErrorMsg.Append(m_sLastKit);
-    m_sErrorMsg.Append(_T("\n"));
+    m_sErrorMsg.Append("\n");
   }
   void _SetLoadError()
   {
-    m_sErrorMsg = _T("Cannot load ladder information.");
+    m_sErrorMsg = "Cannot load ladder information.";
   }
   bool m_bV1;
   int m_nInLoad;

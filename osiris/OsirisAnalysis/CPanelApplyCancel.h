@@ -59,12 +59,12 @@ CPanelApplyCancel::CPanelApplyCancel(
 {
   wxGridSizer *pButtonSizer = new wxGridSizer(1,2,0,ID_BORDER);
   m_pButtonApply = new wxButton(
-    this,idApplyButton,_T("Apply"),
+    this,idApplyButton,"Apply",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
   wxButton *pButtonCancel = new wxButton(
-    this,wxID_CANCEL,_T("Cancel"),
+    this,wxID_CANCEL,"Cancel",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );

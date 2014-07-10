@@ -83,9 +83,9 @@ bool CMenuHistory::_CheckById(int nID)
   bool bRtn = false;
   if(pItem == NULL)
   {
-    wxString s(_T("Could not find item in CMenuHistory::_CheckById()\n  time: "));
+    wxString s("Could not find item in CMenuHistory::_CheckById()\n  time: ");
     s.Append(nwxString::FormatDateTime(*m_HistoryTime.GetDateTime()));
-    s.Append(_T("\n  id: "));
+    s.Append("\n  id: ");
     s.Append(nwxString::FormatNumber(nID));
     wxASSERT_MSG(0,s);
     mainApp::LogMessage(s);
@@ -94,7 +94,7 @@ bool CMenuHistory::_CheckById(int nID)
   {
     wxString s;
     s.Printf(
-      _T("History menu item, %d, offset %d, is not checkable."),
+      "History menu item, %d, offset %d, is not checkable.",
       nID, nID - (int) IDmenuHistory);
     wxASSERT_MSG(0,s);
   }
@@ -238,7 +238,7 @@ bool CMenuHistory::_AppendTime(const wxDateTime &x, int nID, const wxDateTime *p
 }
 void CMenuHistory::_Setup()
 {
-  wxString sLabel(_T("Current"));
+  wxString sLabel("Current");
   const set<wxDateTime> *pHistory(m_pFile->GetHistory());
   set<wxDateTime>::const_reverse_iterator itr = pHistory->rbegin();
   const size_t MAXHIST = 7;
@@ -262,7 +262,7 @@ void CMenuHistory::_Setup()
   m_vDate.reserve(nSize);
   if(m_bAnalysis)
   {
-    wxString sLabelAllele(_T("View Allele History..."));
+    wxString sLabelAllele("View Allele History...");
     Append(IDmenuHistoryView,sLabelAllele);
     AppendSeparator();
   }
@@ -297,7 +297,7 @@ void CMenuHistory::_Setup()
   }
   if(bMore)
   {
-    sLabel = _T("More...");
+    sLabel = "More...";
     AppendRadioItem(IDmenuHistoryMore,sLabel);
   }
 }

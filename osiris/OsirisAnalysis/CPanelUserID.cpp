@@ -89,7 +89,7 @@ void CTextUserID::UpdateSize()
 {
   wxClientDC dc(this);
   dc.SetFont(GetFont());
-  wxSize sz = dc.GetTextExtent(_T("WWWWWWWWWWWWWWWWWWWWWW"));
+  wxSize sz = dc.GetTextExtent("WWWWWWWWWWWWWWWWWWWWWW");
   wxSize szCurrent = GetMinSize();
   if(sz.GetWidth() != szCurrent.GetWidth())
   {
@@ -143,26 +143,26 @@ CPanelUserID::CPanelUserID(
     m_bDisableOnReview(!!(nFlag & UID_DISABLE_ON_REVIEW))
 {
   wxButton *pButtonEdit(NULL);
-  const wxChar *psUserLabel = _T("User ID: ");
+  const wxChar *psUserLabel = wxS("User ID: ");
   bool btn = false;
   if(nFlag & UID_BTN_OK_ALL)
   {
-    const wxChar *psLabel = _T("&OK");
+    const wxChar *psLabel = wxS("&OK");
     if(nFlag & UID_BTN_ACCEPT)
     {
-      psLabel = _T("&Accept");
-      psUserLabel = _T("Accepted by: ");
-      m_sUserError = _T("accepted");
+      psLabel = wxS("&Accept");
+      psUserLabel = wxS("Accepted by: ");
+      m_sUserError = wxS("accepted");
     }
     else if(nFlag & UID_BTN_APPROVE)
     {
-      psLabel = _T("&Approve");
-      psUserLabel = _T("Reviewed by: ");
-      m_sUserError = _T("approved");
+      psLabel = wxS("&Approve");
+      psUserLabel = wxS("Reviewed by: ");
+      m_sUserError = wxS("approved");
     }
     else
     {
-      m_sUserError = _T("accepted or approved");
+      m_sUserError = "accepted or approved";
     }
     m_pButtonOK = new wxButton(this,wxID_OK,psLabel,
       wxDefaultPosition, wxDefaultSize,
@@ -178,14 +178,14 @@ CPanelUserID::CPanelUserID(
   }
   if(nFlag & UID_BTN_EDIT)
   {
-    pButtonEdit = new wxButton(this,IDmenuEditCell,_T("Edit"),
+    pButtonEdit = new wxButton(this,IDmenuEditCell,"Edit",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
     btn = true;
   }
   if(nFlag & UID_BTN_CANCEL)
   {
-    m_pButtonCancel = new wxButton(this,wxID_CANCEL,_T("Cancel"),
+    m_pButtonCancel = new wxButton(this,wxID_CANCEL,"Cancel",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
     btn = true;
@@ -315,15 +315,15 @@ bool CPanelUserID::IsUserIDValid(wxString *psError)
 {
   bool bRtn = true;
   wxString s = GetValue();
-  const wxChar *psErr = _T("");
+  const wxChar *psErr = wxS("");
   if(s.IsEmpty())
   {
-    psErr = _T("Please specify a User ID");
+    psErr = wxS("Please specify a User ID");
     bRtn = false;
   }
   else if(!nwxString::ContainsAlphaNumeric(s))
   {
-    psErr = _T(
+    psErr = wxS(
       "User ID must contain at least\n"
       "one alphanumeric character.");
     bRtn = false;
@@ -351,9 +351,9 @@ bool CPanelUserID::AddReview(IAppendReview *pReview, bool bNoDup)
     else if( (!pReview->AppendReview(s)) && bNoDup )
     {
       sError = s;
-      sError.Append(_T(" has already "));
+      sError.Append(" has already ");
       sError.Append(m_sUserError);
-      sError.Append(_T(" this data."));
+      sError.Append(" this data.");
     }
     else
     {

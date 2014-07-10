@@ -53,7 +53,7 @@
 #endif
 
 #ifdef LAB_LOG_INEQ
-#define LAB_LOG(xx) (mainApp::LogMessage(_T(xx)))
+#define LAB_LOG(xx) (mainApp::LogMessage(xx))
 #else
 #define LAB_LOG(x)
 #endif
@@ -152,7 +152,7 @@ public:
       sUser = ::wxGetUserId(); 
       if(sUser.IsEmpty())
       {
-        sUser = _T("Unknown user");
+        sUser = "Unknown user";
       }
     }
     return _SET(&m_sUserId,sUser);
@@ -225,8 +225,8 @@ public:
       )
     {
       // numeric
-      double d1 = atof(a1.c_str());
-      double d2 = atof(a2.c_str());
+      double d1 = atof(a1.utf8_str());
+      double d2 = atof(a2.utf8_str());
       bRtn = (d1 < d2);
     }
     else
@@ -324,7 +324,7 @@ public:
   static wxString FormatAlleleList(const vector<wxString> &vs)
   {
     wxString sRtn;
-    nwxString::Join(vs,&sRtn,_T(", "));
+    nwxString::Join(vs,&sRtn,", ");
     return sRtn;
   }
   void SortAlleles();
@@ -339,7 +339,7 @@ public:
     sName.MakeUpper();
     sName.Trim(true);
     sName.Trim(false);
-    return sName.StartsWith(_T("AMEL"));
+    return sName.StartsWith("AMEL");
   }
   bool IsAmel()
   {
@@ -358,7 +358,7 @@ private:
 class CLabLocusCollection : public TnwxXmlPersistVector<CLabLocus>
 {
 public:
-  CLabLocusCollection() : TnwxXmlPersistVector<CLabLocus>(_T("Locus")) {;}
+  CLabLocusCollection() : TnwxXmlPersistVector<CLabLocus>("Locus") {;}
   virtual ~CLabLocusCollection()
   {
     ClearIncompleteData();
@@ -474,7 +474,7 @@ private:
 class CLabPositiveControls : public TnwxXmlPersistVector<CLabPositiveControl>
 {
 public:
-  CLabPositiveControls() : TnwxXmlPersistVector<CLabPositiveControl>(_T("PositiveControl")) {;}
+  CLabPositiveControls() : TnwxXmlPersistVector<CLabPositiveControl>("PositiveControl") {;}
   virtual ~CLabPositiveControls()
   {
     ClearIncompleteData();
@@ -579,8 +579,8 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Name"),&m_sName);
-    RegisterWxString(_T("FileNameString"),&m_sFileNameString);
+    RegisterWxString("Name",&m_sName);
+    RegisterWxString("FileNameString",&m_sFileNameString);
   }
 private:
   wxString m_sName;
@@ -759,7 +759,7 @@ private:
 class CLabMarkerSetSpecifications : public TnwxXmlPersistVector<CLabMarkerSetCollection>
 {
 public:
-  CLabMarkerSetSpecifications() : TnwxXmlPersistVector<CLabMarkerSetCollection>(_T("LabMarkerSetCollection")) {;}
+  CLabMarkerSetSpecifications() : TnwxXmlPersistVector<CLabMarkerSetCollection>("LabMarkerSetCollection") {;}
   virtual ~CLabMarkerSetSpecifications()
   {
     ClearIncompleteData();
@@ -863,8 +863,8 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString(_T("Type"),&m_sCategoryName);
-    Register(_T("Synonym"),&m_ioSynonym,(void *)&m_vsSynonym);
+    RegisterWxString("Type",&m_sCategoryName);
+    Register("Synonym",&m_ioSynonym,(void *)&m_vsSynonym);
   }
 private:
   wxString m_sCategoryName;
@@ -913,7 +913,7 @@ public:
     if(CLabSpecimenCategory::IndexInRange(ndx))
     {
       SetSynonyms(
-        _T(CLabSpecimenCategory::TYPES[ndx]),
+        CLabSpecimenCategory::TYPES[ndx],
         sList);
     }
   }
@@ -923,7 +923,7 @@ public:
     if(CLabSpecimenCategory::IndexInRange(ndx))
     {
       SetSynonyms(
-        _T(CLabSpecimenCategory::TYPES[ndx]),
+        CLabSpecimenCategory::TYPES[ndx],
         vsList);
     }
   }
@@ -1490,7 +1490,7 @@ typedef TnwxXmlPersistSet<CLabThresholdMessage,CLabThresholdMessageLess> LAB_MES
 class CLabMessageSet : public LAB_MESSAGE_SET
 {
 public:
-  CLabMessageSet() : LAB_MESSAGE_SET(_T("MessageThreshold"),false)
+  CLabMessageSet() : LAB_MESSAGE_SET("MessageThreshold",false)
   {}
   CLabMessageSet(const CLabMessageSet &x) : LAB_MESSAGE_SET(x)
   {}
@@ -2022,7 +2022,7 @@ public:
     // the analysis program looks for it in 
     // CLabThresholds m_thresholds;
     int n = m_str.UseSampleName() ? 1 : 0;
-    m_thresholds.SetValue(_T("smUseSampleNamesForControlSampleTestsPreset"),n,true);
+    m_thresholds.SetValue("smUseSampleNamesForControlSampleTestsPreset",n,true);
   }
   void ClearIncompleteData()
   {

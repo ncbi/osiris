@@ -46,41 +46,41 @@ CGridSampleLimits::CGridSampleLimits(wxWindow *parent, wxWindowID id) :
   m_pMessageBook(NULL)
   //,m_bReadOnly(false)
 {
-  wxString PEAKS(_T("peaks"));
+  wxString PEAKS("peaks");
   CreateGrid(ROW_MESSAGE_BOOK_OFFSET,2);
   EnableDragColSize(false);
   EnableDragRowSize(false);
 
   EnableScrolling(false,true);
 
-  SetRowLabelValue(ROW_PULLUP,_T("Max. No. of pullups peaks per sample"));
+  SetRowLabelValue(ROW_PULLUP,"Max. No. of pullups peaks per sample");
   SetCellValue(ROW_PULLUP,1,PEAKS);
 
-  SetRowLabelValue(ROW_STUTTER,_T("Max. No. of stutter peaks per sample"));
+  SetRowLabelValue(ROW_STUTTER,"Max. No. of stutter peaks per sample");
   SetCellValue(ROW_STUTTER,1,PEAKS);
 
-  SetRowLabelValue(ROW_ADENYLATION,_T("Max. No. of adenylation peaks per sample"));
+  SetRowLabelValue(ROW_ADENYLATION,"Max. No. of adenylation peaks per sample");
   SetCellValue(ROW_ADENYLATION,1,PEAKS);
 
-  SetRowLabelValue(ROW_OFF_LADDER,_T("Max. off-ladder alleles per sample:"));
+  SetRowLabelValue(ROW_OFF_LADDER,"Max. off-ladder alleles per sample:");
   SetCellValue(ROW_OFF_LADDER,1,PEAKS);
   
-  SetRowLabelValue(ROW_RESIDUAL,_T("Max. residual for allele (<0.5 bp):"));
-  SetCellValue(ROW_RESIDUAL,1,_T("Sample/Ladder BP alignment"));
+  SetRowLabelValue(ROW_RESIDUAL,"Max. residual for allele (<0.5 bp):");
+  SetCellValue(ROW_RESIDUAL,1,"Sample/Ladder BP alignment");
   SetCellEditor(ROW_RESIDUAL,0,new wxGridCellFloatEditor(-1,4));
   SetDefaultCellValidator(new nwxGridCellUIntRangeValidator(0,1000000,true));
   SetCellValidator(
     new nwxGridCellDoubleRangeValidator(0.0,0.5,true),
     ROW_RESIDUAL,0);
   
-  SetRowLabelValue(ROW_EXCESSIVE_RESIDUAL,_T("Max. No. of peaks with excessive residual:"));
+  SetRowLabelValue(ROW_EXCESSIVE_RESIDUAL,"Max. No. of peaks with excessive residual:");
   SetCellValue(ROW_EXCESSIVE_RESIDUAL,1,PEAKS);
 
-  SetRowLabelValue(ROW_RFU_INCOMPLETE_SAMPLE,_T("Incomplete profile threshold for Reamp More/Reamp Less:"));
-  SetCellValue(ROW_RFU_INCOMPLETE_SAMPLE,1,_T("RFU"));
+  SetRowLabelValue(ROW_RFU_INCOMPLETE_SAMPLE,"Incomplete profile threshold for Reamp More/Reamp Less:");
+  SetCellValue(ROW_RFU_INCOMPLETE_SAMPLE,1,"RFU");
 
-  SetRowLabelValue(ROW_MIN_BPS_ARTIFACTS,_T("Ignore artifacts smaller than:"));
-  SetCellValue(ROW_MIN_BPS_ARTIFACTS,1,_T("bps"));
+  SetRowLabelValue(ROW_MIN_BPS_ARTIFACTS,"Ignore artifacts smaller than:");
+  SetCellValue(ROW_MIN_BPS_ARTIFACTS,1,"bps");
   m_clrBackground = GetLabelBackgroundColour();
   wxFont fnLabel = GetLabelFont();
   for(int nRow = 0; nRow < ROW_MESSAGE_BOOK_OFFSET; nRow++)
@@ -91,8 +91,8 @@ CGridSampleLimits::CGridSampleLimits(wxWindow *parent, wxWindowID id) :
     SetCellAlignment(nRow,0,wxALIGN_RIGHT, wxALIGN_CENTRE);
   }
   SetDefaultEditor(new wxGridCellFloatEditor(1,0));
-  SetColLabelValue(0,_T("Value"));
-  SetColLabelValue(1,_T("Units"));
+  SetColLabelValue(0,"Value");
+  SetColLabelValue(1,"Units");
   SetRowLabelAlignment(wxALIGN_LEFT, wxALIGN_CENTRE);
   SetColLabelAlignment(wxALIGN_CENTRE, wxALIGN_CENTRE);
 }
@@ -111,7 +111,7 @@ void CGridSampleLimits::SetData(
   if(nCount)
   {
     const wxString sEmpty;
-    const wxString sUnitPCT(_T("%"));
+    const wxString sUnitPCT("%");
     const CXMLmessageBookSM *pmsgSM;
     size_t nCountKeep = 0;
     bool bPct;
@@ -342,7 +342,7 @@ CGridRFULimits::CGridRFULimits(wxWindow *parent, wxWindowID id) :
   {
     for(j = 0; j < COL_COUNT; j++)
     {
-      SetCellValue(i,j,_T("00000000")); // used for size
+      SetCellValue(i,j,"00000000"); // used for size
       if(_DisabledCell(i,j))
       {
         SetCellBackgroundColour(i,j,GetGridLineColour());
@@ -350,13 +350,13 @@ CGridRFULimits::CGridRFULimits(wxWindow *parent, wxWindowID id) :
     }
   }
   SetDefaultEditor(new wxGridCellFloatEditor(1,0));
-  SetColLabelValue(COL_SAMPLE,_T("Sample"));
-  SetColLabelValue(COL_LADDER,_T("Ladder"));
-  SetColLabelValue(COL_ILS,_T("   ILS   "));
-  SetRowLabelValue(ROW_RFU_MIN,_T("Analysis Threshold (RFU)"));
-  SetRowLabelValue(ROW_RFU_INTERLOCUS,_T("Min. Interlocus RFU"));
-  SetRowLabelValue(ROW_RFU_MAX,_T("Max. RFU"));
-  SetRowLabelValue(ROW_DETECTION,_T("Detection Threshold (RFU)"));
+  SetColLabelValue(COL_SAMPLE,"Sample");
+  SetColLabelValue(COL_LADDER,"Ladder");
+  SetColLabelValue(COL_ILS,"   ILS   ");
+  SetRowLabelValue(ROW_RFU_MIN,"Analysis Threshold (RFU)");
+  SetRowLabelValue(ROW_RFU_INTERLOCUS,"Min. Interlocus RFU");
+  SetRowLabelValue(ROW_RFU_MAX,"Max. RFU");
+  SetRowLabelValue(ROW_DETECTION,"Detection Threshold (RFU)");
   SetRowLabelAlignment(wxALIGN_LEFT, wxALIGN_CENTRE);
   SetMargins(0,0);
   nwxGrid::UpdateLabelSizes(this);
@@ -383,7 +383,7 @@ void CGridRFULimits::_SetCellIntValue(int nRow, int nCol, int nValue)
 {
   if(_DisabledCell(nRow,nCol) || (nValue == -1))
   {
-    SetCellValue(nRow,nCol,_T(""));
+    SetCellValue(nRow,nCol,"");
   }
   else
   {
@@ -413,7 +413,7 @@ int CGridRFULimits::_GetCellIntValue(int nRow, int nCol)
   int nRtn = 
     s.IsEmpty()
     ? -1
-    : atoi(s.c_str());
+    : atoi(s.utf8_str());
   return nRtn;
 }
 bool CGridRFULimits::TransferDataFromWindow()
@@ -446,14 +446,14 @@ CPanelLabSampleThresholds::CPanelLabSampleThresholds(
     m_pData(NULL)
 {
   wxStaticText *pTextRFU = new wxStaticText(
-    this,wxID_ANY,_T("RFU Limits"));
+    this,wxID_ANY,"RFU Limits");
   m_pGrid = new CGridRFULimits(this,wxID_ANY);
   wxStaticText *pTextSample = new wxStaticText(
-    this,wxID_ANY,_T("Sample Limits"));
+    this,wxID_ANY,"Sample Limits");
   mainApp::SetBoldFont(pTextRFU);
   mainApp::SetBoldFont(pTextSample);
 
-  m_pAllowOverride = new wxCheckBox(this,wxID_ANY,_T("Allow User to Override Min. RFU"));
+  m_pAllowOverride = new wxCheckBox(this,wxID_ANY,"Allow User to Override Min. RFU");
   m_pGridSample = new CGridSampleLimits(this,wxID_ANY);
 //  wxBoxSizer *pSizerTable = new wxBoxSizer(wxHORIZONTAL);
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);

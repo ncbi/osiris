@@ -36,37 +36,37 @@
 #include "CDialogPlotMessage.h"
 
 
-const wxString CDialogPlotMessageFind::MSG_HISTORY(_T(
+const wxString CDialogPlotMessageFind::MSG_HISTORY(
 "This plot was not initiated from an analysis window and therefore\n"
 "historic data are not yet available.  Do you wish to search for an\n"
 "associated OSIRIS Analysis File now?"
-));
+);
 
-const wxString CDialogPlotMessageFind::MSG_EDIT(_T(
+const wxString CDialogPlotMessageFind::MSG_EDIT(
 "Data edited from a plot window is saved in its corresponding\n"
 "OSIRIS Analysis file and the OSIRIS Plot file is not modified.\n"
 "The analysis file has not yet been identified because this plot\n"
 "was not initiated from an analysis window.  Would you like to\n"
 "search for an associated OSIRIS Analysis File now?"
-));
+);
 
-const wxString CDialogPlotMessageFind::MSG_TABLE(_T(
+const wxString CDialogPlotMessageFind::MSG_TABLE(
 "This plot was not initiated from an analysis window and therefore\n"
 "the data are not yet available.  Do you wish to search for an\n"
 "associated OSIRIS Analysis File now?"
-));
+);
 
 
 CDialogPlotMessage::CDialogPlotMessage(wxWindow *parent, const wxString &sFileName) 
-  : wxDialog(parent,wxID_ANY,wxString(_T("Please Note...")))
+  : wxDialog(parent,wxID_ANY,wxString("Please Note..."))
 {
-  wxString sMessage(_T(
+  wxString sMessage(
     "Data edited from a plot window is saved to\n"
     "its associated OSIRIS Analysis Report File"
-    ));
+    );
   if(!sFileName.IsEmpty())
   {
-    sMessage.Append(_T("\n"));
+    sMessage.Append("\n");
     sMessage.Append(sFileName);
   }
   wxBitmap bitMap = wxArtProvider::GetBitmap(wxART_INFORMATION);
@@ -75,7 +75,7 @@ CDialogPlotMessage::CDialogPlotMessage(wxWindow *parent, const wxString &sFileNa
   wxStaticText *pText = new wxStaticText(
     this,wxID_ANY,sMessage);
   m_pCheckBox = new wxCheckBox(this, wxID_ANY,
-    _T("Do not show this message again."));
+    "Do not show this message again.");
 
   wxBoxSizer *pAcross = new wxBoxSizer(wxHORIZONTAL);
   pAcross->Add(pIcon,0,wxALIGN_CENTRE | wxALL, 11);

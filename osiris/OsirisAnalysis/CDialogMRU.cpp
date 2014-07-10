@@ -45,14 +45,14 @@ void CDialogMRU::_SetupImageList()
 #define __ARGS(x) (void *)x, sizeof(x) / sizeof(x[0])
 
   nImage = m_pListMRU->AddToImageList( __ARGS(iconBatch) );
-  m_pListMRU->SetType(_T(EXT_BATCH),_T(DESCRIPTION_BATCH),nImage);
+  m_pListMRU->SetType(EXT_BATCH,DESCRIPTION_BATCH,nImage);
 
   nImage = m_pListMRU->AddToImageList( __ARGS(iconTable) );
-  m_pListMRU->SetType(_T(EXT_REPORT),_T(DESCRIPTION_REPORT),nImage);
-  m_pListMRU->SetType(_T(EXT_REPORT_EDITED),_T(DESCRIPTION_REPORT_EDITED),nImage);
+  m_pListMRU->SetType(EXT_REPORT,DESCRIPTION_REPORT,nImage);
+  m_pListMRU->SetType(EXT_REPORT_EDITED,DESCRIPTION_REPORT_EDITED,nImage);
 
   nImage = m_pListMRU->AddToImageList( __ARGS(iconPlot) );
-  m_pListMRU->SetType(_T(EXT_GRAPHIC), _T(DESCRIPTION_GRAPHIC), nImage);
+  m_pListMRU->SetType(EXT_GRAPHIC, DESCRIPTION_GRAPHIC, nImage);
 
 #undef __ARGS
 
@@ -60,7 +60,7 @@ void CDialogMRU::_SetupImageList()
 
 CDialogMRU::CDialogMRU(
       nwxXmlMRU *pMRU, mainFrame *parent, int nStyle) : 
-  wxDialog(parent,wxID_ANY,_T("Recently Viewed Files"),
+  wxDialog(parent,wxID_ANY,"Recently Viewed Files",
     wxDefaultPosition, wxDefaultSize,
     mainApp::DIALOG_STYLE),
   m_pCBstartup(NULL),
@@ -76,11 +76,11 @@ CDialogMRU::CDialogMRU(
   wxBoxSizer *pSizerTop = new wxBoxSizer(wxHORIZONTAL);
 
   wxStaticText *pLabelSearch(new wxStaticText(
-    this,wxID_ANY,_T("Search: ")));
+    this,wxID_ANY,"Search: "));
   m_pTextSearch = new wxTextCtrl(
-    this,IDtextSearchMRU,_T(""),wxDefaultPosition, wxDefaultSize,0);
+    this,IDtextSearchMRU,"",wxDefaultPosition, wxDefaultSize,0);
   wxButton *pButtonClear = new wxButton(
-    this,IDbuttonClearSearchMRU,_T("Clear"),
+    this,IDbuttonClearSearchMRU,"Clear",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   pSizerTop->Add(pLabelSearch,0,wxALIGN_CENTRE_VERTICAL | wxALIGN_LEFT,0);
@@ -95,7 +95,7 @@ CDialogMRU::CDialogMRU(
   {
     CParmOsirisGlobal x;
     m_pCBstartup = new wxCheckBox(
-      this,wxID_ANY,_T(" Show at startup"));
+      this,wxID_ANY," Show at startup");
     m_pCBstartup->SetValue(x->GetStartupMRU());
     pSizerBottom->Add(m_pCBstartup,1,
       wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL);
@@ -108,13 +108,13 @@ CDialogMRU::CDialogMRU(
   if(nStyle & MRU_STYLE_CLEANUP)
   {
     m_pButtonCleanup = new wxButton(
-      this,IDbuttonCleanMRU,_T("Cleanup List"),
+      this,IDbuttonCleanMRU,"Cleanup List",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
-    m_pButtonCleanup->SetToolTip(_T(
+    m_pButtonCleanup->SetToolTip(
       "Remove deleted files from the list and\n"
       "update the modification time of the\n"
-      "remaining files if needed"));
+      "remaining files if needed");
     if(!m_pXmlMRU->GetCount())
     {
       m_pButtonCleanup->Enable(false);
@@ -185,9 +185,9 @@ bool CDialogMRU::Validate()
     if(bShow)
     {
       wxString s;
-      s.Printf(_T(
+      s.Printf(
         "The number of files selected, %d,\n"
-        "exceeds the maximum of %d"),
+        "exceeds the maximum of %d",
         (int)n, (int)m_nMAX );
       mainApp::ShowError(s,this);
       time(&m_tMessage);
@@ -244,7 +244,7 @@ bool CDialogMRU::LoadFiles()
       }
       else
       {
-        sList.Append(_T("\n"));
+        sList.Append("\n");
         sList.Append(*itr);
         nNotFound++;
       }
@@ -254,7 +254,7 @@ bool CDialogMRU::LoadFiles()
     {
       wxString sError;
       sError.Printf(
-          _T("The following %s missing or not accessible:"),
+          "The following %s missing or not accessible:",
           (nNotFound == 1) ? "file is" : "files are"
           );
       sError.Append(sList);

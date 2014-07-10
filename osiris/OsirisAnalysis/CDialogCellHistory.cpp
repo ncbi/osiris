@@ -65,11 +65,11 @@ CDialogCellHistory::CDialogCellHistory(
       setDateTime,
       this, 
       IDhistoryPanel);
-  wxString sTitle(_T("Allele Edit History for "));
+  wxString sTitle("Allele Edit History for ");
   sTitle.Append(Locus.GetName());
   if(!sSampleName.IsEmpty())
   {
-    sTitle.Append(_T(" on "));
+    sTitle.Append(" on ");
     sTitle.Append(sSampleName);
   }
   SetTitle(sTitle);
@@ -99,7 +99,7 @@ CDialogCellHistory::CDialogCellHistory(
       setDateTime,
       this, 
       IDhistoryPanel);
-  wxString sTitle(_T("Peak Edit History for "));
+  wxString sTitle("Peak Edit History for ");
   sTitle.Append(Locus.GetName());
   const wxString &sSampleName(Sample.GetName());
   if(!sSampleName.IsEmpty())
@@ -131,7 +131,7 @@ CDialogCellHistory::CDialogCellHistory(
       mapChannelNames,
       this,
       IDhistoryPanel);
-  wxString s(_T("Alert History for "));
+  wxString s("Alert History for ");
   s.Append(Sample.GetName());
   SetTitle(s);
   _Setup(pSplitter);

@@ -31,4 +31,4 @@
 
 #include "CStandardSettings.h"
 
-const wxString CStandardSettings::g_sRootNodeStd(_T("StandardSettings"));
+const wxString CStandardSettings::g_sRootNodeStd("StandardSettings");

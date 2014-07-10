@@ -35,13 +35,13 @@
 const int CMenuFile::UPDATE_INTERVAL(5000);
 const int CMenuFile::MAX_FILE_MENU_COUNT(1);
 
-const wxString CMenuFile::EXPORT_GRAPH(_T("Export &Graphic File..."));
+const wxString CMenuFile::EXPORT_GRAPH("Export &Graphic File...");
 const wxString CMenuFile::EXPORT_GRAPH_HELP(
-  _T("Export plot(s) to a portable network graphics (PNG) file."));
+  "Export plot(s) to a portable network graphics (PNG) file.");
 
-const wxString CMenuFile::EXPORT_CMF(_T("Export CMF File..."));
+const wxString CMenuFile::EXPORT_CMF("Export CMF File...");
 const wxString CMenuFile::EXPORT_CMF_HELP(
-  _T("Export analysis data to a CODIS CMF 3.2 file."));
+  "Export analysis data to a CODIS CMF 3.2 file.");
 
 
 CMenuFile::CMenuFile() :
@@ -50,8 +50,8 @@ CMenuFile::CMenuFile() :
   m_pSubMenu(NULL),
   m_bNeedsUpdate(true)
 {
-  Append(IDanalyze,_T("&New Analysis...\tCtrl+N"));
-  Append(wxID_OPEN /*,_T("&Open...\tCtrl+O") */);
+  Append(IDanalyze,"&New Analysis...\tCtrl+N");
+  Append(wxID_OPEN /*,"&Open...\tCtrl+O" */);
   Append(wxID_SAVE);
   Append(wxID_SAVEAS);
   Append(
@@ -61,13 +61,13 @@ CMenuFile::CMenuFile() :
 
   m_nInsertPoint = (int) GetMenuItemCount(); // place to add export
 
-  Append(IDopenPlot,_T("O&pen Plot File...\tCtrl+P"));
-  Append(IDopenBatch,_T("Open &Batch File...\tCtrl+B"));
-  Append(IDlistMRU,_T("Recent Files...\tCtrl+R"));
-  Append(wxID_CLOSE ,_T("&Close\tCtrl+W"));
+  Append(IDopenPlot,"O&pen Plot File...\tCtrl+P");
+  Append(IDopenBatch,"Open &Batch File...\tCtrl+B");
+  Append(IDlistMRU,"Recent Files...\tCtrl+R");
+  Append(wxID_CLOSE ,"&Close\tCtrl+W");
   AppendSeparator();
 #ifdef __WXMSW__
-  Append(wxID_EXIT, _T("E&xit\tAlt+F4"));
+  Append(wxID_EXIT, "E&xit\tAlt+F4");
 #else    
   Append(wxID_EXIT);
 #endif
@@ -152,8 +152,8 @@ bool CMenuFile::CheckUpdate()
       if(as != m_vsFileTypes || vb != m_vbValid)
       {
         wxString sLabel;
-        const wxChar *psPrefix(_T(""));
-        const wxChar *psSuffix = _T("...");
+        const wxChar *psPrefix(wxS(""));
+        const wxChar *psSuffix(wxS("..."));
         int nID = IDExportUser;
         int nPOS;
         _Clear();
@@ -168,7 +168,7 @@ bool CMenuFile::CheckUpdate()
           pMenu = new wxMenu(0);
           m_pSubMenu = new wxMenuItem(
             this,IDExportUserSubMenu,
-            _T("Export"),
+            "Export",
             wxEmptyString,
             wxITEM_NORMAL,
             pMenu);
@@ -176,7 +176,7 @@ bool CMenuFile::CheckUpdate()
         }
         else
         {
-          psPrefix = _T("Export ");
+          psPrefix = wxS("Export ");
           nPOS = m_nInsertPoint;
           pMenu = this;
         }

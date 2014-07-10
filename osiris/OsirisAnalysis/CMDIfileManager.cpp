@@ -45,7 +45,7 @@ CMDIfileManager::~CMDIfileManager()
 {
   wxASSERT_MSG(
     m_mapFileWindows.empty(),
-    _T("in CMDIfileManager destructor and NOT EMPTY!!!"));
+    "in CMDIfileManager destructor and NOT EMPTY!!!");
 }
 
 

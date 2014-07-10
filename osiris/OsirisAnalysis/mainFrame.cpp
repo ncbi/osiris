@@ -167,7 +167,7 @@ const wxPoint &mainFrame::Point5()
 CMDIFrame *mainFrame::INIT_LAST_ACTIVE((CMDIFrame *)1);
 
 mainFrame::mainFrame() :
-  wxMDIParentFrame(NULL, wxID_ANY, _T("OSIRIS"),
+  wxMDIParentFrame(NULL, wxID_ANY, "OSIRIS",
         Point5(), Size90(),
         wxDEFAULT_FRAME_STYLE),
     XXX(),
@@ -195,7 +195,7 @@ mainFrame::mainFrame() :
   COsirisIcon x;
   SetIcon(x);
   m_pDialogErrorLog = new nwxDialogLog(
-    this,wxID_ANY,_T("OSIRIS Message Log"));
+    this,wxID_ANY,"OSIRIS Message Log");
   m_pDialogErrorLog->SetIcon(x);
   wxLog *pLog = m_pDialogErrorLog->SetTarget();
   delete pLog;
@@ -308,8 +308,8 @@ bool mainFrame::ReAnalyzeSamples(
     if(!nCount)
     {
       wxString sError(
-        _T("Could not reanalyze data because\n"
-           "no valid directories were found."));
+        "Could not reanalyze data because\n"
+           "no valid directories were found.");
       mainApp::ShowError(sError,this);
       pFrame->Destroy();
       bRtn = false;
@@ -337,8 +337,8 @@ bool mainFrame::ReAnalyze(
     else
     {
       wxString sError(
-        _T("Could not reanalyze data because\n"
-           "no valid directories were selected."));
+        "Could not reanalyze data because\n"
+           "no valid directories were selected.");
       mainApp::ShowError(sError,this);
       pFrame->Destroy();
       bRtn = false;
@@ -358,7 +358,7 @@ bool mainFrame::OpenBatchFile(const wxString &sFileName)
   }
   else
   {
-    wxString sError(_T("ERROR: Could not open file\n"));
+    wxString sError("ERROR: Could not open file\n");
     sError.Append(sFileName);
     mainApp::ShowError(sError,this);
     pFrame->Destroy();
@@ -403,7 +403,7 @@ CFramePlot *mainFrame::OpenGraphicFile(
   else
   {
     wxString sMsg(sFileName);
-    sMsg.Append(_T(" is not a valid graphic file."));
+    sMsg.Append(" is not a valid graphic file.");
     ErrorMessage(sMsg);
   }
   return pPlot;
@@ -434,16 +434,16 @@ void mainFrame::OpenFileDialog(OSIRIS_FILE_TYPE x)
       const char *psPlot =   FILE_TYPE_GRAPHIC;
       const char *psBatch =  FILE_TYPE_BATCH;
   #undef FILE_TYPE
-      wxString sTypes(_T(psReport));
-      sTypes.Append(_T("|"));
-      sTypes.Append(_T(psPlot));
-      sTypes.Append(_T("|"));
-      sTypes.Append(_T(psBatch));
+      wxString sTypes(psReport);
+      sTypes.Append("|");
+      sTypes.Append(psPlot);
+      sTypes.Append("|");
+      sTypes.Append(psBatch);
       wxString sFilePath = parm->GetOutputDirectory();
       m_pDialogOpen = new wxFileDialog(
-        this,_T("Open File"),sFilePath,wxEmptyString,
+        this,"Open File",sFilePath,wxEmptyString,
         sTypes,
-        wxFD_OPEN | wxFILE_MUST_EXIST );
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST );
     }
     else
     {
@@ -591,7 +591,7 @@ bool mainFrame::ShowColourDialog(wxColour *pColour)
 #else
 bool mainFrame::ShowColourDialog(wxColour *pColour)
 {
-  wxColour c = wxGetColourFromUser(this,*pColour,_T("Colors"));
+  wxColour c = wxGetColourFromUser(this,*pColour,"Colors");
   bool bRtn = false;
   if(c != *pColour)
   {
@@ -639,7 +639,7 @@ void mainFrame::OnRecentFiles(wxCommandEvent &e)
   }
   else if(e.GetInt() != MRU_NO_WARNING)
   {
-    mainApp::ShowError(_T("There are no recent files...."),this);
+    mainApp::ShowError("There are no recent files....",this);
   }
 }
 void mainFrame::OnEditGridColours(wxCommandEvent &)
@@ -769,13 +769,13 @@ void mainFrame::OnHelp(wxCommandEvent &)
 {
   wxString sPath = mainApp::GetConfig()->GetExePath();
   bool bError = true;
-  sPath.Append(_T("OsirisHelp.pdf"));
+  sPath.Append("OsirisHelp.pdf");
   wxFileName fn(sPath);
   if(fn.IsFileReadable())
   {
     wxMimeTypesManager mime;
     auto_ptr<wxFileType> apft(
-      mime.GetFileTypeFromExtension(_T("pdf")));
+      mime.GetFileTypeFromExtension("pdf"));
     wxFileType *pft = apft.get();
     wxString sCmd;
     if(pft != NULL)
@@ -789,26 +789,26 @@ void mainFrame::OnHelp(wxCommandEvent &)
   }
   if(bError)
   {
-    ErrorMessage(_T("Cannot find help file"));
+    ErrorMessage("Cannot find help file");
   }
 }
 void mainFrame::OnCheckForUpdates(wxCommandEvent &)
 {
   wxString sVersion = OSIRIS_VERS;
-  wxString sURL(_T(
+  wxString sURL(
     "http://www.ncbi.nlm.nih.gov/projects/SNP/osiris/version.cgi?OS="
-    OSIRIS_OS "&V="));
+    OSIRIS_OS "&V=");
   wxString sTime;
   wxDateTime t;
   t.SetToCurrent();
-  sTime.Printf(_T("%lu"),(unsigned long)t.GetTicks());
-  sVersion.Replace(_T(" "),_T("+"),true);
+  sTime.Printf("%lu",(unsigned long)t.GetTicks());
+  sVersion.Replace(" ","+",true);
   sURL += sVersion;
-  sURL += _T("&T=");
+  sURL += "&T=";
   sURL += sTime;
   if(!wxLaunchDefaultBrowser(sURL,0))
   {
-    ErrorMessage(_T("Cannot run a browser to check this version of OSIRIS"));
+    ErrorMessage("Cannot run a browser to check this version of OSIRIS");
   }
 }
 void mainFrame::OnAbout(wxCommandEvent &)
@@ -846,8 +846,8 @@ bool mainFrame::CheckMaxFrames(bool bShowError)
   if(bRtn && bShowError)
   {
     wxString sError(
-      _T("The number of windows has reached\n"
-         "the allowable maximum of "));
+      "The number of windows has reached\n"
+         "the allowable maximum of ");
     sError.Append(nwxString::FormatNumber((int)MAX_FRAMES));
     mainApp::ShowError(sError,this);
     m_lsDragDropQueue.clear();
@@ -873,7 +873,7 @@ void mainFrame::OpenFile(
   }
   else if(!wxFileName::IsFileReadable(sFileName))
   {
-    wxString sError(_T("Cannot open file:\n"));
+    wxString sError("Cannot open file:\n");
     sError.Append(sFileName);
     mainApp::ShowError(sError,this);
     if(!wxFileName::FileExists(sFileName))
@@ -888,11 +888,11 @@ void mainFrame::OpenFile(
     wxBusyCursor bzc;
     wxString sFileLower(sFileName);
     sFileLower.MakeLower();
-    if(sFileLower.EndsWith(_T(EXT_GRAPHIC)))
+    if(sFileLower.EndsWith(EXT_GRAPHIC))
     {
       OpenGraphicFile(sFileName, sLocus, pOARfile);
     }
-    else if(sFileLower.EndsWith(_T(EXT_BATCH)))
+    else if(sFileLower.EndsWith(EXT_BATCH))
     {
       OpenBatchFile(sFileName);
     }
@@ -957,14 +957,14 @@ void mainFrame::AddToMRU(const wxString &sFileName)
 }
 void mainFrame::FileErrorMessage(const wxString &sFileName)
 {
-  const char *psFile = sFileName.IsEmpty() ? "This" : sFileName.c_str();
-  wxString sMessage = wxString::Format(_T("%s is not a valid file"),psFile);
+  const wxChar *psFile = sFileName.IsEmpty() ? wxS("This") : sFileName.wc_str();
+  wxString sMessage = wxString::Format("%ls is not a valid file",psFile);
   mainApp::ShowError(sMessage,this);
 }
 void mainFrame::FileEmptyMessage(const wxString &sFileName)
 {
-  const char *psFile = sFileName.IsEmpty() ? "This" : sFileName.c_str();
-  wxString sMessage = wxString::Format(_T("%s does not contain any sample data"),psFile);
+  const wxChar *psFile = sFileName.IsEmpty() ? wxS("This") : sFileName.wc_str();
+  wxString sMessage = wxString::Format(wxS("%ls does not contain any sample data"),psFile);
   mainApp::ShowError(sMessage,this);
 }
 
@@ -1063,7 +1063,7 @@ bool mainFrame::FileExtensionOK(const wxString &s)
   sl.MakeLower();
   for(size_t i = 0; i < EXT_COUNT; i++)
   {
-    if(sl.EndsWith(_T(EXT[i])))
+    if(sl.EndsWith(EXT[i]))
     {
       bRtn = true;
       i = EXT_COUNT;
@@ -1091,7 +1091,7 @@ void mainFrame::OpenFiles(const wxArrayString &filenames)
   wxString sMsgInUse;
   wxString sMsgOK;
   wxString sFileName;
-  wxString LF(_T("\n"));
+  wxString LF("\n");
   bool bOK = true;
 
   sMsgRead.Alloc(na);
@@ -1133,11 +1133,11 @@ void mainFrame::OpenFiles(const wxArrayString &filenames)
     {
       if(nType > 1)
       {
-        sMsgOK = _T("The following files are not recognized by OSIRIS:\n");
+        sMsgOK = "The following files are not recognized by OSIRIS:\n";
       }
       else
       {
-        sMsgOK = _T("The following file is not recognized by OSIRIS:\n");
+        sMsgOK = "The following file is not recognized by OSIRIS:\n";
       }
       sMsgOK.Append(sMsgType);
       sMsgOK.Append(LF);
@@ -1146,11 +1146,11 @@ void mainFrame::OpenFiles(const wxArrayString &filenames)
     {
       if(nRead > 1)
       {
-        sMsgOK.Append(_T("The following files are not readable:\n"));
+        sMsgOK.Append("The following files are not readable:\n");
       }
       else
       {
-        sMsgOK.Append(_T("The following file is not readable:\n"));
+        sMsgOK.Append("The following file is not readable:\n");
       }
       sMsgOK.Append(sMsgRead);
       sMsgOK.Append(LF);
@@ -1159,13 +1159,13 @@ void mainFrame::OpenFiles(const wxArrayString &filenames)
     {
       if(nInUse > 1)
       {
-        sMsgOK.Append(_T("The following files are being created\n"
-            "and cannot be opened yet:\n"));
+        sMsgOK.Append("The following files are being created\n"
+            "and cannot be opened yet:\n");
       }
       else
       {
-        sMsgOK.Append(_T("The following file is being created\n"
-            "and cannot be opened yet:\n"));
+        sMsgOK.Append("The following file is being created\n"
+            "and cannot be opened yet:\n");
       }
       sMsgOK.Append(sMsgInUse);
       sMsgOK.Append(LF);
@@ -1174,21 +1174,21 @@ void mainFrame::OpenFiles(const wxArrayString &filenames)
     {
       if(nOK > 1)
       {
-        sMsgOK.Append(_T("The following files can be opened:\n"));
+        sMsgOK.Append("The following files can be opened:\n");
       }
       else
       {
-        sMsgOK.Append(_T("The following file can be opened:\n"));
+        sMsgOK.Append("The following file can be opened:\n");
       }
       for(i = 0; i < nOK; i++)
       {
         sMsgOK.Append(asFiles[i]);
         sMsgOK.Append(LF);
       }
-      sMsgOK.Append(_T("\nDo you wish to continue?"));
+      sMsgOK.Append("\nDo you wish to continue?");
       nStyle = wxYES_NO;
     }
-    wxMessageDialog dlg(this,sMsgOK,_T("Error"),nStyle | wxICON_ERROR);
+    wxMessageDialog dlg(this,sMsgOK,"Error",nStyle | wxICON_ERROR);
     long nRtn = dlg.ShowModal();
     bOK = (nRtn == wxID_YES) && (nOK > 0);
   }
@@ -1238,7 +1238,7 @@ bool mainFrame::FileInProgress(const wxString &sFileName, bool bMessage)
       IS_FILE_TYPE(sFileName,EXT_BATCH) )
   {
     wxString sDisplayName = fn.GetFullName();
-    fn.SetFullName(_T("Working.txt"));
+    fn.SetFullName("Working.txt");
     if(!fn.FileExists()) {;} // OK
     else
     {
@@ -1255,10 +1255,10 @@ bool mainFrame::FileInProgress(const wxString &sFileName, bool bMessage)
       }
       if( bRtn && bMessage && !ContainsEnd(fn.GetFullPath()) )
       {
-        wxString sMessage(_T("The file, "));
+        wxString sMessage("The file, ");
         sMessage.Append(sDisplayName);
-        sMessage.Append(_T(", is currently being\n"
-          "created and cannot be opened yet."));
+        sMessage.Append(", is currently being\n"
+          "created and cannot be opened yet.");
         mainApp::ShowError(sMessage,this);
       }
     }
@@ -1341,7 +1341,7 @@ bool mainFrame::_CheckForNewerFiles(
         SET_FILE_NAMES::iterator itr = setFileNames.find(*DirEntry.setList.begin());
         if(itr == setFileNames.end())
         {
-          wxString ss = _T("File not found in list ");
+          wxString ss = "File not found in list ";
           ss.Append(*DirEntry.setList.begin());
           wxASSERT_MSG(0,ss);
         }
@@ -1373,7 +1373,7 @@ bool mainFrame::_CheckForNewerFiles(
           itrFind = setFileNames.find(*itr);
           if(itrFind == setFileNames.end())
           {
-            wxString ss = _T("File not found in list ");
+            wxString ss = "File not found in list ";
             ss.Append(*itr);
             wxASSERT_MSG(0,ss);
           }

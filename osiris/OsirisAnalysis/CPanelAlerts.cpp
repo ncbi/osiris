@@ -50,41 +50,41 @@ CPanelAlerts::CPanelAlerts(wxWindow *parent, wxWindowID id) :
     int n = px->GetShowAlerts();
     m_ViewStatus.Set(n);
   }
-  wxStaticText *pLabel = new wxStaticText(this,wxID_ANY,_T("Notices"));
+  wxStaticText *pLabel = new wxStaticText(this,wxID_ANY,"Notices");
   mainApp::SetBoldFont(pLabel);
   m_pButtonAll = 
-    CreateToggleButton(_T("All"),0,
-    _T("Show all notices or hold down the shift key to hide all notices"));
+    CreateToggleButton("All",0,
+    "Show all notices or hold down the shift key to hide all notices");
   wxToggleButton *pButtonDIRECTORY =
     CreateToggleButton(
-      _T("Dir"),
+      "Dir",
       CAlertViewStatus::DIRECTORY,
-      _T("Show or hide directory notices"));
+      "Show or hide directory notices");
   wxToggleButton *pButtonDIRECTORY_LOCUS =
     CreateToggleButton(
-      _T("Dir Locus"),
+      "Dir Locus",
       CAlertViewStatus::DIRECTORY_LOCUS,
-      _T("Show or hide directory level locus notices"));
+      "Show or hide directory level locus notices");
   wxToggleButton *pButtonSAMPLE = 
     CreateToggleButton(
-      _T("Sample"),
+      "Sample",
       CAlertViewStatus::SAMPLE,
-      _T("Show or hide sample level notices"));
+      "Show or hide sample level notices");
   wxToggleButton *pButtonCHANNEL =
     CreateToggleButton(
-      _T("Channel"),
+      "Channel",
       CAlertViewStatus::CHANNEL,
-      _T("Show or hide channel notices for current sample"));
+      "Show or hide channel notices for current sample");
   wxToggleButton *pButtonILS =
     CreateToggleButton(
-      _T("ILS"),
+      "ILS",
       CAlertViewStatus::ILS,
-      _T("Show or hide ILS notices for current sample"));
+      "Show or hide ILS notices for current sample");
   wxToggleButton *pButtonSAMPLE_LOCUS =
     CreateToggleButton(
-      _T("Locus"),
+      "Locus",
       CAlertViewStatus::SAMPLE_LOCUS,
-      _T("Show or hide locus notices for current sample"));
+      "Show or hide locus notices for current sample");
   _InitFromStatus();
   wxBoxSizer *pSizer(new wxBoxSizer(wxHORIZONTAL));
   pSizer->Add(

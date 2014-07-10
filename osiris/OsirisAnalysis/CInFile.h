@@ -108,8 +108,8 @@ public:
   static wxString AmelString(const wxString &sDisplay)
   {
     wxString sRtn(sDisplay);
-    sRtn.Replace(_T("1"),_T("X"));
-    sRtn.Replace(_T("2"),_T("Y"));
+    sRtn.Replace("1","X");
+    sRtn.Replace("2","Y");
     return sRtn;
   }
 private:

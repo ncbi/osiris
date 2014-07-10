@@ -89,10 +89,10 @@ public:
 protected:
   virtual void RegisterAll(bool bInConstructor = false)
   {
-    RegisterWxString(_T("Name"),&m_sName);
-    RegisterInt(_T("Channel"),&m_nChannel);
-    RegisterInt(_T("MinBP"),&m_nMinBP);
-    RegisterInt(_T("MaxBP"),&m_nMaxBP);
+    RegisterWxString("Name",&m_sName);
+    RegisterInt("Channel",&m_nChannel);
+    RegisterInt("MinBP",&m_nMinBP);
+    RegisterInt("MaxBP",&m_nMaxBP);
     if(bInConstructor)
     {
       Init();

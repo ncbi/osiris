@@ -76,7 +76,7 @@ public:
   virtual const wxString &GetOffLadderString() const = 0;
   static bool IsOffLadderString(const wxString &sOL)
   {
-    bool bRtn = (sOL == _T("1")) || (!sOL.CmpNoCase(IOARpeak::OL_TRUE));
+    bool bRtn = (sOL == "1") || (!sOL.CmpNoCase(IOARpeak::OL_TRUE));
     return bRtn;
   }
   virtual bool IsOffLadder() const
@@ -200,11 +200,11 @@ public:
   static void SetIsCritical(IOARpeak *p, bool bCritical);
   static bool  IsCritical(const IOARpeak &x);
 
-  static wxString FormatBool(
-    bool b, const char *psTrue = "1", const char *psFalse = "")
+  static wxString FormatBool
+		(bool b, const char *psTrue = "1", const char *psFalse = "")
   {
     const char *ps = b ? psTrue : psFalse;
-    wxString sRtn(_T(ps));
+    wxString sRtn(ps);
     return sRtn;
   }
 
@@ -226,7 +226,7 @@ public:
     wxString s = nwxString::FormatDouble(x.GetBPS(), fmt);
     if(bOL && !s.IsEmpty())
     {
-      s.Append(_T(" (OL)"));
+      s.Append(" (OL)");
     }
     return s;
   }
@@ -286,21 +286,21 @@ public:
 
   static bool IsOffLadderAlleleName(const wxString &s)
   {
-    return s.Contains(_T("OL"));
+    return s.Contains("OL");
   }
   static void SetupOffLadderAlleleName(wxString *ps, bool b)
   {
     if(b == IsOffLadderAlleleName(*ps)) {;}
     else if(!b)
     {
-      ps->Replace(_T("(OL)"),_T(""),true);
-      ps->Replace(_T("OL"),_T(""),true);
+      ps->Replace("(OL)","",true);
+      ps->Replace("OL","",true);
       nwxString::Trim(ps);
     }
     else
     {
       // prepend OL
-      wxString s(_T("OL"));
+      wxString s("OL");
       nwxString::Trim(ps);
       s.Append(*ps);
       *ps = s;

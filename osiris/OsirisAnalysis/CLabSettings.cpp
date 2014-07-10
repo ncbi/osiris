@@ -38,9 +38,9 @@
 #include "nwx/nwxString.h"
 #include "nwx/vectorSort.h"
 
-const wxString CLabSynonym::g_SYNONYM(_T("Synonym"));
+const wxString CLabSynonym::g_SYNONYM("Synonym");
 
-const wxString CLabSettings::g_LABROOT(_T("LabSettings"));
+const wxString CLabSettings::g_LABROOT("LabSettings");
 
 #define __OTHER__ "Other"
 
@@ -48,12 +48,12 @@ nwxXmlIOint CLabReview::g_ioAccept(1);
 nwxXmlIOint CLabReview::g_ioReview(2);
 const wxChar * const CLabReview::g_LABELS[CLabReview::__REVIEW_COUNT] = 
 {
-  _T("Default"),
-  _T("Locus"),
-  _T("Channel"),
-  _T("ILS"),
-  _T("Sample"),
-  _T("Directory")
+  wxS("Default"),
+  wxS("Locus"),
+  wxS("Channel"),
+  wxS("ILS"),
+  wxS("Sample"),
+  wxS("Directory")
 };
 nwxXmlIOintPositive CLabReview::g_io(false);
 
@@ -109,14 +109,14 @@ CLabSettingsInfo::~CLabSettingsInfo() {}
 
 void CLabSettingsInfo::RegisterAll(bool)
 {
-  RegisterWxString(_T("VolumeName"),&m_sVolumeName);
-  RegisterWxStringNotEmpty(_T("Version"),&m_sVersion);
-  RegisterWxStringNotEmpty(_T("DataFileType"),&m_sDataFileType);
-  RegisterWxStringNotEmpty(_T("Protocol"),&m_sProtocol);
-  RegisterWxStringNotEmpty(_T("Lot"),&m_sLot);
-  RegisterWxStringNotEmpty(_T("Notes"),&m_sNotes);
-  RegisterWxStringNotEmpty(_T("UserId"),&m_sUserId);
-  RegisterWxDateTime(_T("LastUpdate"),&m_dtLastUpdate);
+  RegisterWxString("VolumeName",&m_sVolumeName);
+  RegisterWxStringNotEmpty("Version",&m_sVersion);
+  RegisterWxStringNotEmpty("DataFileType",&m_sDataFileType);
+  RegisterWxStringNotEmpty("Protocol",&m_sProtocol);
+  RegisterWxStringNotEmpty("Lot",&m_sLot);
+  RegisterWxStringNotEmpty("Notes",&m_sNotes);
+  RegisterWxStringNotEmpty("UserId",&m_sUserId);
+  RegisterWxDateTime("LastUpdate",&m_dtLastUpdate);
 }
 
 bool CLabSettingsInfo::operator ==(const CLabSettingsInfo &x) const
@@ -147,7 +147,7 @@ double CLabLocus::AlleleNumber(const wxString &s)
   double d = 0.0;
   if(!sAllele.IsEmpty())
   {
-    d = atof(sAllele.c_str());
+    d = atof(sAllele.utf8_str());
     if(d > 0.99)
     {
       d = nwxRound::Round(d * 10);
@@ -250,7 +250,7 @@ size_t CLabLocus::BuildList(
       }
     }
     nwxString::Trim(&sAlleles);
-    while( sAlleles.Replace(_T("  "),_T(" "),true) > 0 )
+    while( sAlleles.Replace("  "," ",true) > 0 )
     {}
     if(!sAlleles.IsEmpty())
     {
@@ -259,7 +259,7 @@ size_t CLabLocus::BuildList(
       multiset<double>::iterator itrd;
       vector<wxString>::iterator itr;
       double d;
-      nwxString::Split(sAlleles.c_str(),&vs," ");
+      nwxString::Split(sAlleles.utf8_str(),&vs," ");
       for(itr = vs.begin(); itr != vs.end(); ++itr)
       {
         d = AlleleNumber(*itr);
@@ -283,8 +283,8 @@ size_t CLabLocus::BuildList(
 void CLabLocus::RegisterAll(bool)
 {
   ClearRegistration();
-  RegisterWxString(_T("Name"),&m_sName);
-  Register(_T("Allele"), &m_ioAllele, (void *) &m_vsAlleles);
+  RegisterWxString("Name",&m_sName);
+  Register("Allele", &m_ioAllele, (void *) &m_vsAlleles);
 }
 
 void CLabLocus::SortAlleles()
@@ -329,13 +329,13 @@ void CLabLocus::ChangeDataToDisplay()
       wxString &sAllele(m_vsAlleles.at(i));
       sAllele.Trim(true);
       sAllele.Trim(false);
-      if(sAllele == _T("1"))
+      if(sAllele == "1")
       {
-        sAllele = _T("X");
+        sAllele = "X";
       }
-      else if(sAllele == _T("2"))
+      else if(sAllele == "2")
       {
-        sAllele = _T("Y");
+        sAllele = "Y";
       }
     }
   }
@@ -351,13 +351,13 @@ void CLabLocus::ChangeDisplayToData()
       sAllele.Trim(true);
       sAllele.Trim(false);
       sAllele.MakeUpper();
-      if(sAllele == _T("X"))
+      if(sAllele == "X")
       {
-        sAllele = _T("1");
+        sAllele = "1";
       }
-      else if(sAllele == _T("Y"))
+      else if(sAllele == "Y")
       {
-        sAllele = _T("2");
+        sAllele = "2";
       }
     }
   }
@@ -394,9 +394,9 @@ void CLabLocusCollection::ClearIncompleteData()
 void CLabPositiveControl::RegisterAll(bool)
 {
   ClearRegistration();
-  RegisterWxString(_T("Name"),&m_sSynonym);
-  RegisterWxString(_T("FileNameString"),&m_sFileNameString);
-  Register(_T("Loci"),&m_Loci);
+  RegisterWxString("Name",&m_sSynonym);
+  RegisterWxString("FileNameString",&m_sFileNameString);
+  Register("Loci",&m_Loci);
 }
 
 void CLabPositiveControls::ClearIncompleteData()
@@ -468,7 +468,7 @@ bool CLabPositiveControls::Rename(const wxString &_sOld, const wxString &_sNew)
   return bRtn;
 }
 
-const wxChar *CLabNegativeCtrlNameSet::g_psNodeName(_T("NegativeControl"));
+const wxChar *CLabNegativeCtrlNameSet::g_psNodeName(wxS("NegativeControl"));
 
 void CLabMarkerSetSpecifications::ClearIncompleteData()
 {
@@ -528,15 +528,15 @@ bool CLabMarkerSetCollection::HasData()
 void CLabMarkerSetCollection::RegisterAll(bool)
 {
   ClearRegistration();
-  RegisterWxString(_T("MarkerSetName"),&m_sMarkerSetName);
-  RegisterWxString(_T("ILS"),&m_sILSName);
-  RegisterBoolTrue(_T("UserOverrideILS"),&m_bAllowUserOverrideILS);
-  RegisterBoolSkipFalse(_T("Analyzed"),&m_bAnalyzed);
-  Register(_T("PositiveControls"),&m_PositiveControls);
-  Register(_T("NegativeControls"),&m_NegativeControls);
-  Register(_T("OffLadderAlleles"),&m_lociOffLadder);
-  Register(_T("SampleAcceptedTrialleles"),&m_lociSampleTrialleles);
-  Register(_T("PosCtrlAcceptedAlleles"),&m_lociPosCtrlTrialleles);
+  RegisterWxString("MarkerSetName",&m_sMarkerSetName);
+  RegisterWxString("ILS",&m_sILSName);
+  RegisterBoolTrue("UserOverrideILS",&m_bAllowUserOverrideILS);
+  RegisterBoolSkipFalse("Analyzed",&m_bAnalyzed);
+  Register("PositiveControls",&m_PositiveControls);
+  Register("NegativeControls",&m_NegativeControls);
+  Register("OffLadderAlleles",&m_lociOffLadder);
+  Register("SampleAcceptedTrialleles",&m_lociSampleTrialleles);
+  Register("PosCtrlAcceptedAlleles",&m_lociPosCtrlTrialleles);
 }
 
 //CLabSetSpecimenCategory::~CLabSetSpecimenCategory()
@@ -611,7 +611,7 @@ void CLabSpecimenCategory::AppendTypeArray(wxArrayString *pas, bool bClear)
   pas->Alloc(pas->GetCount() + n);
   for(i = 0; i < n; i++)
   {
-    s = _T(TYPES[i]);
+    s = TYPES[i];
     pas->Add(s);
   }
 }
@@ -654,8 +654,8 @@ bool CLabSpecimenCategory::IndexInRange(size_t ndx)
   {
     wxString s;
     s.Printf(
-      _T("CLabSpecimenCategory::IndexInRange(size_t ndx), "
-          "ndx (%d) is out of range"),
+      "CLabSpecimenCategory::IndexInRange(size_t ndx), "
+          "ndx (%d) is out of range",
       (int) ndx);
     wxASSERT_MSG(0,s);
   }
@@ -668,7 +668,7 @@ void CLabSpecimenCategory::SetName(size_t ndx)
   bool bInRange = IndexInRange(ndx);
   if(bInRange)
   {
-    m_sCategoryName = _T(TYPES[ndx]);
+    m_sCategoryName = TYPES[ndx];
   }
 }
 
@@ -678,7 +678,7 @@ void CLabSpecimenCategory::SetSynonyms(const vector<wxString> *ps)
   m_vsSynonym = *ps;
 #ifdef _DEBUG
   wxASSERT_MSG(m_vsSynonym.size() == ps->size(),
-    _T("CLabSpecimenCategory::SetSynonyms() did not copy vector"));
+    "CLabSpecimenCategory::SetSynonyms() did not copy vector");
 #endif
   nwxString::Trim(&m_vsSynonym);
 
@@ -699,7 +699,7 @@ void CLabSpecimenCategory::SetSynonyms(const wxString &sList)
   wxString s(sList);
   nwxString::Trim(&s);
   nwxString::FixEOLU(&s,true);
-  nwxString::SplitLines(s.c_str(),&vs,true,true);
+  nwxString::SplitLines(s.utf8_str(),&vs,true,true);
   SetSynonyms(&vs);
 }
 
@@ -820,14 +820,14 @@ void CLabLocusThreshold::RegisterAll(bool b)
   {
     Init();
   }
-  RegisterWxString(_T("LocusName"),&m_sName);
-  Register(_T("FractionOfMaxPeak"),&g_io, (void *)&m_dFractionMaxPeak);
-  Register(_T("PullupFractionalFilter"),&g_io, (void *)&m_dPullupFractionFilter);
-  Register(_T("StutterThreshold"),&g_io, (void *)&m_dStutter);
-  Register(_T("PlusStutterThreshold"),CLabSettings::GetIOdoubleGt0(), (void *)&m_dPlusStutter);
-  Register(_T("AdenylationThreshold"),&g_io, (void *)&m_dAdenylation);
-  Register(_T("HeterzygousImbalanceLimit"),&g_io, (void *)&m_dHeterozygousImbalanceLimit);
-  Register(_T("MinBoundForHomozygote"),&g_io, (void *)&m_dMinBoundForHomozygote);
+  RegisterWxString("LocusName",&m_sName);
+  Register("FractionOfMaxPeak",&g_io, (void *)&m_dFractionMaxPeak);
+  Register("PullupFractionalFilter",&g_io, (void *)&m_dPullupFractionFilter);
+  Register("StutterThreshold",&g_io, (void *)&m_dStutter);
+  Register("PlusStutterThreshold",CLabSettings::GetIOdoubleGt0(), (void *)&m_dPlusStutter);
+  Register("AdenylationThreshold",&g_io, (void *)&m_dAdenylation);
+  Register("HeterzygousImbalanceLimit",&g_io, (void *)&m_dHeterozygousImbalanceLimit);
+  Register("MinBoundForHomozygote",&g_io, (void *)&m_dMinBoundForHomozygote);
 }
 
 //************************************************* CLabRFU
@@ -869,45 +869,45 @@ void CLabRFU::RegisterAll(bool b)
   }
   ClearRegistration();
   Register(
-    _T("MinimumRFU"),
+    "MinimumRFU",
     CLabSettings::GetIOint(), 
     (void *)&m_nMin);
   if(m_nType == TYPE_SAMPLE || m_nType == TYPE_LADDER)
   {
     Register(
-      _T("MinimumRFUinterlocus"),
+      "MinimumRFUinterlocus",
       CLabSettings::GetIOint(), 
       (void *)&m_nMinInterlocus);
   }
-  RegisterInt(_T("MaximumRFU"),&m_nMax);
+  RegisterInt("MaximumRFU",&m_nMax);
   if(m_nType == TYPE_SAMPLE)
   {
-    Register(_T("MinDetectionRFU"),
+    Register("MinDetectionRFU",
       CLabSettings::GetIOint(), 
       (void *)&m_nDetection);
   }
   Register(
-    _T("FractionOfMaxPeak"),
+    "FractionOfMaxPeak",
       CLabSettings::GetIOdouble(),
     (void *)&m_dFractionMaxPeak);
   Register(
-    _T("PullupFractionalFilter"),
+    "PullupFractionalFilter",
     CLabSettings::GetIOdouble(),
     (void *)&m_dPullupFractionFilter);
   Register(
-    _T("StutterThreshold"),
+    "StutterThreshold",
     CLabSettings::GetIOdouble(),
     (void *)&m_dStutter);
   Register(
-    _T("PlusStutterThreshold"),
+    "PlusStutterThreshold",
     CLabSettings::GetIOdouble(),
     (void *)&m_dPlusStutter);
   Register(
-    _T("AdenylationThreshold"),
+    "AdenylationThreshold",
     CLabSettings::GetIOdouble(),
     (void *)&m_dAdenylation);
   Register(
-    _T("LocusThreshold"),
+    "LocusThreshold",
     &m_ioLocusThreshold,
     (void *)&m_apLocusThreshold);
 }
@@ -952,7 +952,7 @@ bool CLabMessageSet::IsEqualNoLab(const CLabMessageSet &x) const
     CLabThresholds::g_psmNumberOfAdenylationsInSample,
     CLabThresholds::g_psmNumberOfOffLadderAllelesInSample,
     CLabThresholds::g_psmNumberOfExcessiveResidualsInSample,
-    _T("smUseSampleNamesForControlSampleTestsPreset"), // this is a hack - this one is ignored
+    wxS("smUseSampleNamesForControlSampleTestsPreset"), // this is a hack - this one is ignored
     NULL
   };
   for (const wxChar **pp = LIST; *pp != NULL; pp++)
@@ -1019,19 +1019,19 @@ bool CLabThresholdMessage::Skip(void *)
 }
 void CLabThresholdMessage::RegisterAll(bool)
 {
-  RegisterWxString(_T("MsgName"),&m_sName);
-  RegisterInt(_T("MsgThreshold"),&m_nValue);
+  RegisterWxString("MsgName",&m_sName);
+  RegisterInt("MsgThreshold",&m_nValue);
 }
 const wxChar * const CLabThresholds::g_psmNumberOfPullUpsInSample
-  (_T("smNumberOfPullUpsInSample"));
+  (wxS("smNumberOfPullUpsInSample"));
 const wxChar * const CLabThresholds::g_psmNumberOfStuttersInSample
-  (_T("smNumberOfStuttersInSample"));
+  (wxS("smNumberOfStuttersInSample"));
 const wxChar * const CLabThresholds::g_psmNumberOfAdenylationsInSample
-  (_T("smNumberOfAdenylationsInSample"));
+  (wxS("smNumberOfAdenylationsInSample"));
 const wxChar * const CLabThresholds::g_psmNumberOfOffLadderAllelesInSample
-  (_T("smNumberOfOffLadderAllelesInSample"));
+  (wxS("smNumberOfOffLadderAllelesInSample"));
 const wxChar * const CLabThresholds::g_psmNumberOfExcessiveResidualsInSample
-  (_T("smNumberOfExcessiveResidualsInSample"));
+  (wxS("smNumberOfExcessiveResidualsInSample"));
 
 void CLabThresholds::__SetupNameInt()
 {
@@ -1214,47 +1214,47 @@ void CLabThresholds::RegisterAll(bool bFirst)
     SetupNameInt();
   }
   ClearRegistration();
-  Register(_T("LadderRFUTests"),&m_rfuLadder);
-  Register(_T("LaneStandardRFUTests"),&m_rfuLS);
-  Register(_T("SampleRFUTests"),&m_rfuSample);
+  Register("LadderRFUTests",&m_rfuLadder);
+  Register("LaneStandardRFUTests",&m_rfuLS);
+  Register("SampleRFUTests",&m_rfuSample);
 
   Register(
-    _T("HeterozygousImbalanceLimit"),
+    "HeterozygousImbalanceLimit",
     CLabSettings::GetIOdouble(),
     (void *)&m_dHeterozygousImbalanceLimit);
   Register(
-    _T("MinBoundForHomozygote"),
+    "MinBoundForHomozygote",
     CLabSettings::GetIOdouble(),
     (void *)&m_dMinBoundForHomozygote);
   RegisterWxString(
-    _T("MinBoundHomozygoteUnit"),&m_sMinBoundHomozygoteUnit);
+    "MinBoundHomozygoteUnit",&m_sMinBoundHomozygoteUnit);
   RegisterIntPositive(
-    _T("MaxNumberOfPullupsPerSample"),&m_nMaxNumberOfPullupsPerSample);
+    "MaxNumberOfPullupsPerSample",&m_nMaxNumberOfPullupsPerSample);
   RegisterIntPositive(
-    _T("MaxNumberOfStutterPeaksPerSample"),&m_nMaxNumberOfStutterPeaksPerSample);
+    "MaxNumberOfStutterPeaksPerSample",&m_nMaxNumberOfStutterPeaksPerSample);
   RegisterIntPositive(
-    _T("MaxNumberOfSpikesPerSample"),&m_nMaxNumberOfSpikesPerSample);
+    "MaxNumberOfSpikesPerSample",&m_nMaxNumberOfSpikesPerSample);
   RegisterIntPositive(
-    _T("MaxNumberOfAdenylationsPerSample"),&m_nMaxNumberOfAdenylationsPerSample);
+    "MaxNumberOfAdenylationsPerSample",&m_nMaxNumberOfAdenylationsPerSample);
   RegisterIntPositive(
-    _T("MaxNumberOfOLAllelesPerSample"),&m_nMaxNumberOfOLAllelesPerSample);
+    "MaxNumberOfOLAllelesPerSample",&m_nMaxNumberOfOLAllelesPerSample);
   Register(
-    _T("MaxResidualForAlleleCall"),
+    "MaxResidualForAlleleCall",
     CLabSettings::GetIOdouble(),
     (void *)&m_dMaxResidualForAlleleCall);
   RegisterIntPositive(
-    _T("MaxExcessiveResidual"),
+    "MaxExcessiveResidual",
     &m_nMaxExcessiveResidual);    
 
   RegisterIntPositive(
-    _T("MinBPSForArtifacts"),&m_nMinBPSForArtifacts);
+    "MinBPSForArtifacts",&m_nMinBPSForArtifacts);
   RegisterIntPositive(
-      _T("AlleleRFUOverloadThreshold"),
+      "AlleleRFUOverloadThreshold",
       &m_nMaxRFUForIncompleteSample);
 
   RegisterBoolTrue("AllowMinRFUOverride",&m_bAllowMinRFUoverride);
 
-  Register(_T("SmartMessageThresholds"),&m_spMsgs);
+  Register("SmartMessageThresholds",&m_spMsgs);
 
 }
 bool CLabThresholds::operator ==(const CLabThresholds &x) const
@@ -1336,7 +1336,7 @@ wxString CLabNameStrings::GetCategory(
   {
     if(FindSubstring(sSampleLower,psynList[i]->GetVector()) != wxNOT_FOUND)
     {
-      sRtn = _T(cat[i]);
+      sRtn = cat[i];
       i = nSize; // loop exit
     }
   }
@@ -1350,25 +1350,25 @@ wxString CLabNameStrings::GetCategory(
 void CLabNameStrings::RegisterAll(bool)
 {
   ClearRegistration();
-  Register(_T("LadderStrings"),&m_vsSynonymLadder);
-  Register(_T("StdPositveControlStrings"),&m_vsSynonymPosCtrl);
-  Register(_T("NegativeControlStrings"),&m_vsSynonymNegCtrl);
-  Register(_T("SingleSourceStrings"),&m_vsSynonymSingleSource);
-  Register(_T("PossibleMixtureStrings"),&m_vsSynonymPossibleMixture);
-  RegisterWxString(_T("StandardControlName"),&m_sStdCtrlName);
+  Register("LadderStrings",&m_vsSynonymLadder);
+  Register("StdPositveControlStrings",&m_vsSynonymPosCtrl);
+  Register("NegativeControlStrings",&m_vsSynonymNegCtrl);
+  Register("SingleSourceStrings",&m_vsSynonymSingleSource);
+  Register("PossibleMixtureStrings",&m_vsSynonymPossibleMixture);
+  RegisterWxString("StandardControlName",&m_sStdCtrlName);
   Register(
-    _T("SpecimenCategory"),
+    "SpecimenCategory",
     &m_ioSpecimenCategory,
     (void *)&m_setSpecimenCategory);
-  RegisterBool(_T("UseSampleName"),&m_bUseSampleName);
+  RegisterBool("UseSampleName",&m_bUseSampleName);
 }
 //********************************************************  CLabReview
 
 void CLabReview::RegisterAll(bool)
 {
   wxString s;
-  const wxChar *ACCEPTANCE(_T("Acceptance"));
-  const wxChar *REVIEWERS(_T("Reviews"));
+  const wxChar *ACCEPTANCE(wxS("Acceptance"));
+  const wxChar *REVIEWERS(wxS("Reviews"));
   const wxChar *BASE[] = { ACCEPTANCE, REVIEWERS };
   const wxChar *pBASE;
   InwxXmlIO *pIO[] = { &g_ioAccept, &g_ioReview };
@@ -1391,9 +1391,9 @@ void CLabReview::RegisterAll(bool)
     }
   }
   RegisterBoolSkipFalse(
-    _T("AllowUserNameOverride"),&m_bAllowUserNameOverride);
+    "AllowUserNameOverride",&m_bAllowUserNameOverride);
   RegisterBoolSkipFalse(
-    _T("AllowExportWithAttnReqd"),&m_bAllowExportWithAttnReqd);
+    "AllowExportWithAttnReqd",&m_bAllowExportWithAttnReqd);
 }
 
 //********************************************************  CLabSettings
@@ -1428,11 +1428,11 @@ bool CLabSettings::Load()
 void CLabSettings::RegisterAll(bool)
 {
   ClearRegistration();
-  Register(_T("Info"),&m_info);
-  Register(_T("NameStrings"),&m_str);
-  Register(_T("Thresholds"),&m_thresholds);
-  Register(_T("LabMarkerSetSpecifications"),&m_marker);
-  Register(_T("ReviewAcceptanceCounts"),&m_review);
+  Register("Info",&m_info);
+  Register("NameStrings",&m_str);
+  Register("Thresholds",&m_thresholds);
+  Register("LabMarkerSetSpecifications",&m_marker);
+  Register("ReviewAcceptanceCounts",&m_review);
 }
 bool CLabSettings::operator ==(const CLabSettings &x) const
 
@@ -1471,17 +1471,17 @@ void CLabSettings::UnitTest()
 
   nwxFileUtil::EndWithSeparator(&sNew);
   sNew2 = sNew;
-  sNew.Append(_T("testlab.xml"));
-  sNew2.Append(_T("testlab2.xml"));
+  sNew.Append("testlab.xml");
+  sNew2.Append("testlab2.xml");
   nwxFileUtil::EndWithSeparator(&sPath);
-  sPath.Append(_T("ID"));
+  sPath.Append("ID");
   nwxFileUtil::EndWithSeparator(&sPath);
-  sPath.Append(_T("ID_LabSettings.xml"));
+  sPath.Append("ID_LabSettings.xml");
   CLabSettings x;
   
   if(!x.LoadFile(sPath))
   {
-    sError.Append(_T("\nCLabSettings::UnitTest() cannot load file: "));
+    sError.Append("\nCLabSettings::UnitTest() cannot load file: ");
     sError.Append(sPath);
   }
   else
@@ -1492,26 +1492,26 @@ void CLabSettings::UnitTest()
     ::wxRemoveFile(sNew2);
     if(y != x)
     {
-      sError.Append(_T("\nCopy of lab settings failed"));
+      sError.Append("\nCopy of lab settings failed");
     }
     if(!y.SaveFile(sNew))
     {
-      sError.Append(_T("\nCannot save test lab settings file: "));
+      sError.Append("\nCannot save test lab settings file: ");
       sError.Append(sNew);
     }
     else if(!z.LoadFile(sNew))
     {
-      sError.Append(_T("\nCannot load test lab settings file: "));
+      sError.Append("\nCannot load test lab settings file: ");
       sError.Append(sNew);
     }
     else if(!z.SaveFile(sNew2))
     {
-      sError.Append(_T("\nCannot save test lab settings file: "));
+      sError.Append("\nCannot save test lab settings file: ");
       sError.Append(sNew2);
     }
     else if(x != z)
     {
-      sError.Append(_T("\nSave and restore of lab settings yielded different results"));
+      sError.Append("\nSave and restore of lab settings yielded different results");
     }
   }
   wxASSERT_MSG(sError.IsEmpty(),sError);

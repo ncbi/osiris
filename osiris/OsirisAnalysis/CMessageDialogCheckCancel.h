@@ -39,9 +39,9 @@ public:
   CMessageDialogCheckCancel(wxWindow *parent) :
     wxMessageDialog(
       parent,
-      _T("Warning: Modifications will be lost!\n"
-          "Do you wish to continue?"),
-      _T("Warning"),
+      "Warning: Modifications will be lost!\n"
+          "Do you wish to continue?",
+      "Warning",
       wxYES_NO | wxNO_DEFAULT | wxICON_EXCLAMATION)
   {;}
   virtual ~CMessageDialogCheckCancel() {;}

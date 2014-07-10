@@ -71,8 +71,8 @@ bool CEnableDisableMultiple::AppendReview(const wxString &sName)
   return true;
 }
 
-const wxChar *CDialogEnableMultiple::g_psEnable(_T("Enable Samples"));
-const wxChar *CDialogEnableMultiple::g_psDisable(_T("Disable Samples"));
+const wxChar *CDialogEnableMultiple::g_psEnable(wxS("Enable Samples"));
+const wxChar *CDialogEnableMultiple::g_psDisable(wxS("Disable Samples"));
 
 CDialogEnableMultiple::CDialogEnableMultiple(
     const vector<COARsample *> *pvpSamples,
@@ -133,7 +133,7 @@ CDialogEnableMultiple::CDialogEnableMultiple(
     {
       const wxChar *pChoices[2] = {g_psDisable,g_psEnable};
       wxArrayString choices(2,pChoices);
-      m_pCombo = new wxComboBox(this,wxID_ANY,_T(""),
+      m_pCombo = new wxComboBox(this,wxID_ANY,"",
         wxDefaultPosition, wxDefaultSize, choices,wxCB_READONLY);
       pWindowTop = m_pCombo;
       m_pCombo->SetSelection(0);
@@ -224,7 +224,7 @@ bool CDialogEnableMultiple::Validate()
   if(!nCount)
   {
     mainApp::ShowError(
-      _T("Select at least one sample to continue."),this);
+      "Select at least one sample to continue.",this);
   }
   return !!nCount;
 }
@@ -262,7 +262,7 @@ void CDialogEnableMultiple::_SetupList(bool bEnabled)
   m_pListBox->Clear();
   nListSize = (int)pnNdxList->size();
   wxASSERT_MSG(nListSize == (int)pvpSampleList->size(),
-    _T("Sample list and row list do not match"));
+    "Sample list and row list do not match");
   itrN = pnNdxList->begin();
   for(itrSample = pvpSampleList->begin();
     itrSample != pvpSampleList->end();
