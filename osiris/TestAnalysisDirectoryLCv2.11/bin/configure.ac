@@ -1,5 +1,5 @@
 AC_INIT(../TestAnalysisDirectoryLC.cpp)
-AM_INIT_AUTOMAKE([TestAnalysisDirectoryLC],1.0)
+AM_INIT_AUTOMAKE([TestAnalysisDirectoryLC],2.4)
 AC_PROG_CXX
 AC_PROG_INSTALL
 m4_include(../../osiriscl.m4)

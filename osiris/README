@@ -4,7 +4,7 @@
 #  -- problems, contact us at forensics@ncbi.nlm.nih.gov
 #
 #
-# wxWidgets 2.8.11 is required
+# wxWidgets 3.0.1 is required
 # For more information, see http://www.wxwidgets.org
 #
 # This shell script is for building the macintosh version
@@ -49,7 +49,7 @@
 #
 #  Build as "Multithreaded" (/MT) without UNICODE and 
 #  set the environment variable,
-#  WXHOME, to the folder containing wxWidgets 2.8.11 such that
+#  WXHOME, to the folder containing wxWidgets 3.0.1 such that
 #  there exists %WXHOME%\include and %WXHOME%\lib
 #
 # Build OSIRIS:
@@ -114,7 +114,15 @@
 #      either in this directory or in the directory specified by
 #      the environment variable OSIRISTGZ if it is writable
 #
-#
+
+if test "$WXHOME" = ""; then
+  WXHOME=`sh findwx`
+  if test "$WXHOME" = ""; then
+    echo "Cannot find WXHOME in environment" 1>2
+    exit 1
+  fi
+  export WXHOME
+fi
 for x in wxthings/lib wxplotctrl/lib BaseClassLib/lib OsirisLib2.01/lib TestAnalysisDirectoryLCv2.11/bin wxXml2/lib wxXsl/lib nwx/lib OsirisAnalysis/bin ; do
 (cd $x ; pwd ; aclocal; autoconf; automake -a)
 done
