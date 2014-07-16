@@ -88,14 +88,24 @@ CPanelAlerts::CPanelAlerts(wxWindow *parent, wxWindowID id) :
       "Show or hide locus notices for current sample");
   _InitFromStatus();
   wxBoxSizer *pSizer(new wxBoxSizer(wxHORIZONTAL));
+
+#ifdef __WXMAC__
+#define LABEL_FLAG wxALIGN_CENTRE_VERTICAL | wxBOTTOM
+#define BUTTON_FLAG LABEL_FLAG | wxLEFT
+#else
+#define LABEL_FLAG wxALIGN_CENTRE_VERTICAL | wxBOTTOM | wxLEFT | wxTOP
+#define BUTTON_FLAG LABEL_FLAG 
+#endif
+
   pSizer->Add(
     pLabel,0,
-    wxALIGN_CENTRE_VERTICAL | wxBOTTOM,
+    LABEL_FLAG,
     ID_BORDER);
+
 #define ADD_BUTTON(x) \
-  pSizer->Add \
-  (x,0, \
-   wxALIGN_CENTRE_VERTICAL | wxBOTTOM | wxLEFT,   \
+  pSizer->Add         \
+  (x,0,               \
+   BUTTON_FLAG,       \
    ID_BORDER)
 
   ADD_BUTTON(m_pButtonAll);

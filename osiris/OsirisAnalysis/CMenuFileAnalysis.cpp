@@ -31,13 +31,11 @@
 #include <wx/menuitem.h>
 #include "CXSLExportFileType.h"
 #include "nwx/CIncrementer.h"
+#include "CMenuBar.h"
 
 const int CMenuFileAnalysis::UPDATE_INTERVAL(5000);
 const int CMenuFileAnalysis::MAX_FILE_MENU_COUNT(1);
 
-const wxString CMenuFileAnalysis::EXPORT_GRAPH("Export &Graphic File...");
-const wxString CMenuFileAnalysis::EXPORT_GRAPH_HELP(
-  "Export plot(s) to a portable network graphics (PNG) file.");
 
 const wxString CMenuFileAnalysis::EXPORT_CMF("Export CMF File...");
 const wxString CMenuFileAnalysis::EXPORT_CMF_HELP(
@@ -50,15 +48,11 @@ CMenuFileAnalysis::CMenuFileAnalysis() :
   m_nUpdating(0),
   m_bNeedsUpdate(true)
 {
-  size_t nInsert = m_nInsertPoint;
+  size_t nInsert = CMenuBar::GetPosition(this,IDlistMRU);
   Insert(nInsert++,wxID_SAVE);
   Insert(nInsert++,wxID_SAVEAS);
   Insert(nInsert++,
     IDExportCMF,EXPORT_CMF,EXPORT_CMF_HELP);
-  m_nExportPosition = nInsert;
-  Insert(nInsert++,
-    IDExportGraphic,EXPORT_GRAPH,EXPORT_GRAPH_HELP);
-  Enable(IDExportGraphic,false);
 }
 
 CMenuFileAnalysis::~CMenuFileAnalysis()
@@ -149,6 +143,8 @@ bool CMenuFileAnalysis::CheckUpdate()
           nCount = ID_MAX_USER_EXPORT;
         }
         wxMenu *pMenu;
+        size_t nExportPosition = CMenuBar::GetPosition(this,IDlistMRU);
+
         if((int) nCount > MAX_FILE_MENU_COUNT)
         {
           nPOS = 0;
@@ -159,12 +155,12 @@ bool CMenuFileAnalysis::CheckUpdate()
             wxEmptyString,
             wxITEM_NORMAL,
             pMenu);
-          Insert((size_t) m_nInsertPoint,m_pSubMenu);
+          Insert(nExportPosition,m_pSubMenu);
         }
         else
         {
           psPrefix = wxS("Export ");
-          nPOS = m_nInsertPoint;
+          nPOS = nExportPosition;
           pMenu = this;
         }
 

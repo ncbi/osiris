@@ -67,3 +67,27 @@ bool CMenuBar::SetFileMenu(wxMenu *p)
   }
   return bRtn;
 }
+//
+//  CMenuBar::GetPosition(wxMenu *p, int nID)
+//    retrieve the position of the first menu item in *p whose ID = nID
+//
+//  general purpose menu utility, currently no good place to put it
+//
+size_t CMenuBar::GetPosition(wxMenu *p, int nID)
+{
+  wxMenuItemList &list(p->GetMenuItems());
+  size_t nRtn = list.GetCount();
+  wxMenuItemList::compatibility_iterator itr = list.GetFirst();
+  for(size_t i = 0; i < nRtn; ++i)
+  {
+    if ((*itr).GetData()->GetId() == nID) 
+    {
+      nRtn = i;  // return position and force loop exit
+    }
+    else
+    {
+      itr = itr->GetNext();
+    }
+  }
+  return nRtn;
+}

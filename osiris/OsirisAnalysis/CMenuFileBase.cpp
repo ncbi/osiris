@@ -37,9 +37,10 @@ CMenuFileBase::CMenuFileBase(bool bClose)
   Append(wxID_OPEN);
 
   m_nInsertPoint =  GetMenuItemCount();
-
+#ifndef __WXMAC__
   Append(IDopenPlot,"O&pen Plot File...\tCtrl+P");
   Append(IDopenBatch,"Open &Batch File...\tCtrl+B");
+#endif
   Append(IDlistMRU,"Recent Files...\tCtrl+R");
   if(bClose) Append(wxID_CLOSE ,"&Close\tCtrl+W");
   AppendSeparator();

@@ -53,30 +53,15 @@ public:
 public:
   static void cleanup(std::vector<T *> *p)
   {
-#if 1
-    size_t nSize = p->size();
-    for(size_t i = 0; i < nSize; i++)
+    typename std::vector<T *>::reverse_iterator itr;
+    T *px;
+    while(p->size() > 0)
     {
-      T* px =(p->at(i));
-      delete(px);
+      itr = p->rbegin();
+      px = *itr;
+      delete (px);
+      p->pop_back();
     }
-#else
-    typename std::vector<T *>::iterator itr,itrEnd = p->end();
-    for(itr = p->begin();
-      itr != itrEnd;
-      ++itr)
-    {
-      delete (*itr);
-    }
-#endif
-#ifdef _DEBUG
-    int x = 3;
-    while(x > 0)
-    {
-      x--;
-    }
-#endif
-    p->clear();
   }
   static std::vector<T *> copy(std::vector<T *> *pTo, const std::vector<T *> &xFrom)
   {

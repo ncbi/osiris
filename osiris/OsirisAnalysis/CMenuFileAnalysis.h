@@ -47,8 +47,6 @@ class CXSLExportFileType;
 class CMenuFileAnalysis : public CMenuFileBase
 {
 public:
-  static const wxString EXPORT_GRAPH;
-  static const wxString EXPORT_GRAPH_HELP;
   static const wxString EXPORT_CMF;
   static const wxString EXPORT_CMF_HELP;
 
@@ -99,7 +97,6 @@ private:
   wxMenuItem *m_pSubMenu; // used if too many types
   int m_nUpdating; // prevent reentry in CheckUpdate and 
                   //  prevent updating from BeginBatch() and EndBatch()
-  size_t m_nExportPosition;
   bool m_bNeedsUpdate;
 
 

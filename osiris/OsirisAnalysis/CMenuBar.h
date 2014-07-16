@@ -43,6 +43,7 @@ public:
   {
     return m_pMenuFile;
   }
+  static size_t GetPosition(wxMenu *p, int ID);
 private:
   wxMenu *m_pMenuFile;
 };
