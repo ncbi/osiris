@@ -162,12 +162,31 @@ bool mainApp::OnInit()
     LogMessageV(psFormat,i,argv[i].wc_str());
     m_pFrame->OpenFile(argv[i]);
   }
-  time_t t;
-  time(&t);
+//  time_t t;
+//  time(&t);
   wxString sPID = wxString::Format(wxS("PID: %d"),(int)getpid());
-  wxLog::OnLog(wxLOG_Message,(const wxChar *)sPID,t);
+//  wxLog::OnLog(wxLOG_Message,(const wxChar *)sPID,t);
+  LogMessage(sPID);
+#if 1 || defined(__WXDEBUG__)
+  const wxPlatformInfo &plat(wxPlatformInfo::Get());
+  wxString sOS = wxString::Format(
+    wxT("Platform:\n  OS: %s; %s\n  Version: %d.%d\n  Arch: %s\n  Toolkit: %d.%d\n  Port: %s"),
+    (const char *) plat.GetOperatingSystemFamilyName().ToAscii(),
+    (const char *) plat.GetOperatingSystemDescription().ToAscii(),
+    plat.GetOSMajorVersion(),
+    plat.GetOSMinorVersion(),
+    (const char *)plat.GetArchName().ToAscii(),
+    plat.GetToolkitMajorVersion(),
+    plat.GetToolkitMinorVersion(),
+    (const char *) plat.GetPortIdName().ToAscii());
+  LogMessage(sOS);
+#endif
+
 #ifdef __WXDEBUG__
+
+    
   m_pConfig->Log();
+
 #endif
 #ifdef __WXMAC__
   if(bHasArgs)
