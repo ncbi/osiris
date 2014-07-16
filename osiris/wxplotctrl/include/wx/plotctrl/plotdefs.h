@@ -57,7 +57,7 @@ inline void PRINT_WXRECT2DDOUBLE(const wxString& str, const wxRect2DDouble& r) {
 // Skip the wxWidgets drawing routines since they calc an unnecessary bounding rect
 // You may turn this off by defining wxPLOTCTRL_FAST_GRAPHICS=0 to the compilier
 #ifndef wxPLOTCTRL_FAST_GRAPHICS
-    #define wxPLOTCTRL_FAST_GRAPHICS 1
+    #define wxPLOTCTRL_FAST_GRAPHICS 0 // DJH 7/11/14 - would not compile so it is turned off
 #endif // wxPLOTCTRL_FAST_GRAPHICS
 
 // ----------------------------------------------------------------------------

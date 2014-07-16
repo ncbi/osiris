@@ -75,12 +75,15 @@ public:
   }
   void Cleanup()
   {
+    std::vector<T *> *px;
     for(typename std::set< std::vector<T*> * >::iterator itr = m_setMem.begin();
       itr != m_setMem.end();
       ++itr)
     {
-      Cleanup(*itr);
+      px = *itr;
+      Cleanup(px);
     }
+    m_setMem.clear();
   }
   void FinalCleanup()
   {
@@ -433,6 +436,7 @@ public:
     {
       setptr<T,S>::cleanup(*itr);
     }
+    m_setMem.clear();
   }
   void FinalCleanup()
   {
@@ -794,6 +798,7 @@ public:
     {
       mapptr<K,T,S>::cleanup(*itr);
     }
+    m_setMem.clear();
   }
   void FinalCleanup()
   {

@@ -37,7 +37,7 @@
 class CMenuSort : public wxMenu
 {
 public:
-  CMenuSort() : wxMenu(0)
+  CMenuSort() : wxMenu(0L)
   {
     Append(IDmenuSortDisplayedName,"Displayed Name");
     Append(IDmenuSortFileName,"File Name");

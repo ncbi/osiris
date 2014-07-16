@@ -81,13 +81,15 @@ public:
   static void cleanup(std::map<K, T *,S> *p)
   {
     typename std::map<K, T *,S>::iterator itr;
+    T *px;
     for(itr = p->begin();
       itr != p->end();
-      ++itr)
+      itr = p->begin())
     {
-      delete (itr->second);
+      px = itr->second;
+      delete (px);
+      p->erase(itr);
     }
-    p->clear();
   }
   static void copy(std::map<K, T *,S> *pTo, const std::map<K, T *,S> &xFrom)
   {

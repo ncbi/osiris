@@ -360,7 +360,7 @@ void CDialogParameters::OnHyperlink(wxHyperlinkEvent &e)
       mainApp::ShowError(sErr,this);
     }
   }
-  e.Skip();
+  //e.Skip();
 }
 
 BEGIN_EVENT_TABLE(CDialogParameters,wxDialog)

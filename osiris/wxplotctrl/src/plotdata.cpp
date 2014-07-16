@@ -774,10 +774,10 @@ bool wxPlotData::LoadFile( const wxString &filename, int x_col, int y_col, int o
                 while (select_cols && !stop_load )
                 {
                     wxString colStr = wxGetTextFromUser(
-                        wxString::Format(wxT("Data file: '%s'\n%d columns found.\n"
-                                             "Enter x and y cols separated by a space starting from 1.\n"
-                                             "If x = y then x values are 0,1,2... and y is given col."), filename.utf8_str(), n),
-                                             wxT("Enter two columns of data file to use"));
+                        wxString::Format(wxS("Data file: '%s'\n%d columns found.\n")
+                                         wxS("Enter x and y cols separated by a space starting from 1.\n")
+                                         wxS("If x = y then x values are 0,1,2... and y is given col."), filename.utf8_str(), n),
+                                             wxS("Enter two columns of data file to use"));
 
                     if (colStr.IsEmpty())
                     {
@@ -836,13 +836,13 @@ bool wxPlotData::LoadFile( const wxString &filename, int x_col, int y_col, int o
                 }
 
                 wxMessageBox(
-                    wxString::Format(wxT("Loading cols (%d,%d) aborted after %d points\n\n"
-                                         "First 100 characters of offending line number: %d\n"
-                                         "\"%s\"\n\n"
-                                         "# for comments, blank lines Ok, comma, tab, space for separators\n"
-                                         "7   4\n33  2.5e-2\n...\n"),
+                    wxString::Format(wxS("Loading cols (%d,%d) aborted after %d points\n\n")
+                                     wxS("First 100 characters of offending line number: %d\n")
+                                     wxS("\"%s\"\n\n")
+                                     wxS("# for comments, blank lines Ok, comma, tab, space for separators\n")
+                                     wxS("7   4\n33  2.5e-2\n...\n"),
                                          x_col, y_col, points, line_number, wxstr.Left(100).utf8_str()),
-                                         wxT("Error loading ")+filename, wxOK|wxICON_ERROR);
+                                         wxS("Error loading ")+filename, wxOK|wxICON_ERROR);
                 stop_load = true;
                 break;
             }

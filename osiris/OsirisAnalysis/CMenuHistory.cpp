@@ -39,7 +39,7 @@
 IMPLEMENT_ABSTRACT_CLASS(CMenuHistory,wxMenu)
 
 CMenuHistory::CMenuHistory(COARfile *pFile, bool bAnalysis) :
-  wxMenu(0),
+  wxMenu(0L),
   m_pFile(pFile),
   m_nHistorySize(0),
   m_bAnalysis(bAnalysis)
@@ -48,7 +48,7 @@ CMenuHistory::CMenuHistory(COARfile *pFile, bool bAnalysis) :
 }
 
 CMenuHistory::CMenuHistory() :
-  wxMenu(0),
+  wxMenu(0L),
   m_pFile(NULL),
   m_nHistorySize(0),
   m_bAnalysis(false)

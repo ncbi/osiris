@@ -105,7 +105,7 @@ CPanelLabGeneral::CPanelLabGeneral(
 
   wxGridBagSizer *pGridSizer = new wxGridBagSizer(ID_BORDER,ID_BORDER);
   wxGBPosition gbPos(0,0);
-  _AddLine(wxS(VOLUME_STRING " Name: "),m_pLabelVolumeName,pGridSizer, &gbPos);
+  _AddLine(wxS(VOLUME_STRING) wxS(" Name: "),m_pLabelVolumeName,pGridSizer, &gbPos);
   _AddLine(wxS("Reagent Kit: "),m_pLabelKitName,pGridSizer, &gbPos);
   _AddLine(wxS("Last Update: "),m_pLabelLastUpdateUser, pGridSizer, &gbPos);
   _AddLine(wxS("File Type: "), pSizerRadioFileType,pGridSizer,&gbPos);

@@ -579,8 +579,8 @@ bool wxPlotCtrl::Create( wxWindow *parent, wxWindowID win_id,
     {
         m_axisFontSize.x = 6;
         m_axisFontSize.y = 12;
-        wxFAIL_MSG(wxT("Can't determine the font size for the axis! I'll guess.\n"
-                       "The display might be corrupted, however you may continue."));
+        wxFAIL_MSG(wxS("Can't determine the font size for the axis! I'll guess.\n")
+                       wxS("The display might be corrupted, however you may continue."));
     }
 
     m_xAxisDrawer->SetTickFont(axisFont);

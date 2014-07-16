@@ -35,16 +35,16 @@
 #include "CMenuFileBase.h"
 #include <wx/datetime.h>
 #include <wx/arrstr.h>
-#include "nwx/nwxTimerReceiver.h"
 #include "wxIDS.h"
 #include "nwx/stdb.h"
 #include <vector>
 #include "nwx/stde.h"
+#include "nwx/nwxTimerReceiver.h"
 
 
 class CXSLExportFileType;
 
-class CMenuFileAnalysis : public CMenuFileBase, public nwxTimerReceiver
+class CMenuFileAnalysis : public CMenuFileBase
 {
 public:
   static const wxString EXPORT_GRAPH;

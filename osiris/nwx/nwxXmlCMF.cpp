@@ -240,8 +240,7 @@ bool nwxXmlCMFSpecimen::Skip(void *p)
 const wxString nwxXmlCMF::g_sCODISImportFile(wxS("CODISImportFile"));
 const wxString nwxXmlCMF::g_sXMLNSvalue(wxS("urn:CODISImportFile-schema"));
 const wxString nwxXmlCMF::g_sSchemaLocationValue(wxS(
-"urn:CODISImportFile-schema\n"
-"http://www.ncbi.nlm.nih.gov/projects/SNP/osiris/CODIS-32.Appendix-B.xsd"
+"urn:CODISImportFile-schema\nhttp://www.ncbi.nlm.nih.gov/projects/SNP/osiris/CODIS-32.Appendix-B.xsd"
 ));
 
 const double nwxXmlCMF::DEFAULT_HEADER_VERSION = 3.2;

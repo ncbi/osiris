@@ -59,6 +59,10 @@ public:
     m_pMenuFile->EnableSave(bSaveAs,bSave,bExport);
   }
   void SetPlotMenu(wxMenu *p);
+  void OnTimer(wxTimerEvent &e) // called from CFrameAnalysis::OnTimer
+  {
+    m_pMenuFile->OnTimer(e);
+  }
   //void OnMenu(wxCommandEvent &e);
 private:
   void _EnablePlotMenu();

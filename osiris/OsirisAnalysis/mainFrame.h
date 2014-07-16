@@ -158,20 +158,7 @@ public:
     // called from CMDIFrame constructor
     m_MDImgr.InsertWindow(p,pFile);
   }
-  void RemoveWindow(CMDIFrame *p)
-  {
-    // called from CMDIFrame::Destroy()
-
-    m_MDImgr.RemoveWindow(p);
-    if(p == m_pLastActive)
-    {
-      m_pLastActive = NULL;
-    }
-    if(!m_MDImgr.Size())
-    {
-      ClearStatusText();
-    }
-  }
+  void RemoveWindow(CMDIFrame *p);
   void ClearStatusText()
   {
 #ifndef __WXMAC__

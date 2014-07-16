@@ -81,7 +81,7 @@ void CMenuAnalysis::SetControlsOnTop(bool b)
 void CMenuAnalysis::SetPreviewTextShow(bool bShow)
 {
   const wxChar *p = bShow ? SHOW_PREVIEW : HIDE_PREVIEW;
-  m_pMenuItemPreview->SetText(p);
+  m_pMenuItemPreview->SetItemLabel(p);
   POPUP_ECHO(SetPreviewTextShow,bShow)
 }
 void CMenuAnalysis::SetCellTypeFromComboBox(CComboLabels *p)

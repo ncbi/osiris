@@ -15,6 +15,7 @@
     #pragma interface "genergdi.h"
 #endif
 
+#include <wx/bitmap.h>
 #include "wx/colour.h"
 #include "wx/pen.h"
 #include "wx/brush.h"

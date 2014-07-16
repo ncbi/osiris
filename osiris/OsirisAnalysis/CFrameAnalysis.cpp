@@ -617,8 +617,8 @@ void CFrameAnalysis::ToggleToolbar()
 bool CFrameAnalysis::_CheckIfTampered(COARfile *pOAR)
 {
   const wxChar *TAMPER_PROMPT =
-    wxS("It is suspected that this file has been modified\n"
-				"outside of OSIRIS.  Do you wish to continue?");
+    wxS("It is suspected that this file has been modified\n")
+	  wxS("outside of OSIRIS.  Do you wish to continue?");
   bool bRtn = false;
   if(pOAR == NULL)
   {
@@ -695,15 +695,19 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
 {
   if(!m_nNoTimer)
   {
-  CheckSelection();
-  if(m_pDlgAnalysis != NULL)
-  {
-    m_pDlgAnalysis->OnTimer(e);
-  }
-  if(m_pPanelPlotPreview != NULL)
-  {
-    m_pPanelPlotPreview->OnTimer(e);
-  }
+    CheckSelection();
+    if(m_pDlgAnalysis != NULL)
+    {
+      m_pDlgAnalysis->OnTimer(e);
+    }
+    if(m_pPanelPlotPreview != NULL)
+    {
+      m_pPanelPlotPreview->OnTimer(e);
+    }
+    if(m_pMenuBar != NULL)
+    {
+      m_pMenuBar->OnTimer(e);
+    }
   }
 }
 void CFrameAnalysis::CheckSelectionXML(bool bForceUpdate)
@@ -1713,8 +1717,8 @@ void CFrameAnalysis::DoEditLocus(
       {
         wxASSERT_MSG(0,"Channel number < 1");
         mainApp::LogMessageV(
-					wxS("Channel number, %d, is invalid "
-							"in CFrameAnalysis::_OnEditLocus()"),
+					wxS("Channel number, %d, is invalid ")
+				  wxS("in CFrameAnalysis::_OnEditLocus()"),
           nChannel);
       }
       CDialogEditAllele dlg(pSample,nChannel,*pLocus,

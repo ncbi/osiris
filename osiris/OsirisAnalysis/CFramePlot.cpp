@@ -130,7 +130,7 @@ typedef TnwxBatch<CFramePlotMenu> CBatchPlotMenu;
 
 
 CFramePlotMenu::CFramePlotMenu()
-  : wxMenu(0),
+  : wxMenu(0L),
     m_nBatchCount(0),
     m_bUpdate(false),
     m_bClone(false),
@@ -364,20 +364,20 @@ void CFramePlotMenu::UpdateLabels()
     if(!nCount) {;}
     else if(nCount == 1)
     {
-      (*itr)->SetText("Plot");
+      (*itr)->SetItemLabel("Plot");
     }
     else
     {
       wxString s;
-      (*itr)->SetText("Top Plot");
+      (*itr)->SetItemLabel("Top Plot");
       ++itr;
       for(i = 2; i < nCount; i++)
       {
         s.Printf("Plot %d",i);
-        (*itr)->SetText(s);
+        (*itr)->SetItemLabel(s);
         ++itr;
       }
-      (*itr)->SetText("Bottom Plot");
+      (*itr)->SetItemLabel("Bottom Plot");
     }
   }
 }
@@ -745,7 +745,7 @@ bool CFramePlot::SetScrollbarMenuLabel(bool bShow)
     if(pItem != NULL)
     {
       const char *psLabel = bShow ? "Show Plot Scrollbars" : "Hide Plot Scrollbars";
-      pItem->SetText(psLabel);
+      pItem->SetItemLabel(psLabel);
       bRtn = true;
     }
   }

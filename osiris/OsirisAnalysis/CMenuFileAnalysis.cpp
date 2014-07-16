@@ -152,7 +152,7 @@ bool CMenuFileAnalysis::CheckUpdate()
         if((int) nCount > MAX_FILE_MENU_COUNT)
         {
           nPOS = 0;
-          pMenu = new wxMenu(0);
+          pMenu = new wxMenu(0L);
           m_pSubMenu = new wxMenuItem(
             this,IDExportUserSubMenu,
             "Export",

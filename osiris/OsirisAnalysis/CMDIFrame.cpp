@@ -39,7 +39,6 @@ DEFINE_EVENT_TYPE(CEventKillWindow)
 
 CMDIFrame::~CMDIFrame()
 {
-  m_pParent->RemoveWindow(this);
 }
 
 CMDIFrame::CMDIFrame(
@@ -102,7 +101,7 @@ bool CMDIFrame::SetToolbarMenuLabel(bool bShow, bool bPlural)
       case 3: // plural && show
         psLabel = &SHOW_TOOLBARS; break;
       }
-      pItem->SetText(*psLabel);
+      pItem->SetItemLabel(*psLabel);
       bRtn = true;
     }
   }
@@ -112,6 +111,7 @@ bool CMDIFrame::Destroy()
 {
   CIncrementer xxx(m_nFocusRecursive);
   wxBusyCursor xx;
+  m_pParent->RemoveWindow(this);
   return CMDIFrameSuper::Destroy();
 }
 
@@ -216,7 +216,7 @@ void CMDIFrame::OnMenuOpen(wxMenuEvent &e)
 void CMDIFrame::OnMenuClose(wxMenuEvent &)
 {
 #ifndef __NO_MDI__
-  CMDIFrame *pFrame = (CMDIFrame *)GetActiveChild();
+  CMDIFrame *pFrame = (CMDIFrame *)m_pParent->GetActiveChild();
   if(pFrame != NULL)
   {
     pFrame->UpdateStatusBar();

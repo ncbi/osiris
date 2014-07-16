@@ -89,7 +89,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   CKitColors *pColors,
   CMenuHistory *pMenu,
   bool bFirst)
-    : wxScrolledWindow(parent,wxID_ANY,wxDefaultPosition, wxDefaultSize,0)
+    : wxScrolledWindow(parent,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxHSCROLL)
 {
   wxSize MARGIN(2,0);
   wxButton *pBtn;
@@ -110,7 +110,9 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   int SPACER = ID_BORDER << 2;
 
   m_vShiftWindows.reserve(8);
-  EnableScrolling(false,false);
+  EnableScrolling(true,false);
+  SetScrollRate(1,0);
+  ShowScrollbars(wxSHOW_SB_NEVER,  wxSHOW_SB_NEVER);
 
   if(nChannelCount > CHANNEL_MAX)
   {
@@ -388,11 +390,11 @@ void CPanelPlotToolbar::SyncTo(CPanelPlotToolbar *p)
     int x1;
     int x2;
     int y;
-    m_pPanel->GetPosition(&x1,&y);
-    p->m_pPanel->GetPosition(&x2,&y);
+    GetViewStart(&x1,&y);
+    p->GetViewStart(&x2,&y);
     if(x1 != x2)
     {
-      m_pPanel->Move(x2,y);
+      Scroll(x2,y);
     }
   }
 }
@@ -583,14 +585,13 @@ void CPanelPlotToolbar::ShiftLeft(bool bShiftKey)
 {
   if(bShiftKey)
   {
-    m_pPanel->Move(0,0);
+    Scroll(0,0);
   }
   else
   {
     int xView;
     int y;
-    m_pPanel->GetPosition(&xView,&y);
-    xView = -xView;
+    GetViewStart(&xView,&y);
     if(xView > 0)
     {
       // find last window whose right side is not shown
@@ -624,7 +625,7 @@ void CPanelPlotToolbar::ShiftLeft(bool bShiftKey)
           break;
         }
       }
-      m_pPanel->Move(-xLast,0);
+      Scroll(xLast,0);
     }
   }
 }
@@ -638,12 +639,12 @@ void CPanelPlotToolbar::ShiftRight(bool bShiftKey)
   GetVirtualSize(&xVirt,&y);
   if(bShiftKey)
   {
-    m_pPanel->Move(xSize - xVirt,0);
+    Scroll(xVirt - xSize,0);
   }
   else
   {
-    m_pPanel->GetPosition(&xPos,&y);
-    int xRight = xSize - xPos;
+    GetViewStart(&xPos,&y);
+    int xRight = xSize + xPos;
     if(xRight < xVirt)
     {
       // find leftmost window whose left side is not shown
@@ -669,7 +670,7 @@ void CPanelPlotToolbar::ShiftRight(bool bShiftKey)
       {
         xLast = 0;
       }
-      m_pPanel->Move(-xLast,0);
+      Scroll(xLast,0);
     }
   }
 }
@@ -678,8 +679,8 @@ bool CPanelPlotToolbar::CanShiftLeft()
 {
   int x;
   int y;
-  m_pPanel->GetPosition(&x,&y);
-  return (x < 0);
+  GetViewStart(&x,&y);
+  return (x > 0);
 }
 bool CPanelPlotToolbar::CanShiftRight()
 {
@@ -692,8 +693,8 @@ bool CPanelPlotToolbar::CanShiftRight()
   GetVirtualSize(&xVirt,&y);
   if(xVirt > xSize)
   {
-    m_pPanel->GetPosition(&xPos,&y);
-    bRtn = (xSize - xPos) < xVirt;
+    GetViewStart(&xPos,&y);
+    bRtn = (xSize + xPos) < xVirt;
   }
   return bRtn;
 }

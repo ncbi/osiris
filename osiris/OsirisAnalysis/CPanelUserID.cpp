@@ -323,9 +323,8 @@ bool CPanelUserID::IsUserIDValid(wxString *psError)
   }
   else if(!nwxString::ContainsAlphaNumeric(s))
   {
-    psErr = wxS(
-      "User ID must contain at least\n"
-      "one alphanumeric character.");
+    psErr = wxS("User ID must contain at least\n")
+      wxS("one alphanumeric character.");
     bRtn = false;
   }
   if((!bRtn) && (psError != NULL))

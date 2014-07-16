@@ -635,8 +635,8 @@ void CSplitterCellHistory::_OnScroll(wxCommandEvent &e)
   else
   {
     const wxChar *ps =
-      wxS("CSplitterCellHistory::_OnScroll\n"
-					"object is not a scrolled window");
+      wxS("CSplitterCellHistory::_OnScroll\n")
+			wxS("object is not a scrolled window");
     wxASSERT_MSG(0,ps);
     mainApp::LogMessage(ps);
   }

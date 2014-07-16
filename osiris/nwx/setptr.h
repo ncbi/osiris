@@ -81,13 +81,15 @@ public:
   static void cleanup(std::set<T *,S> *p)
   {
     typename std::set<T *,S>::iterator itr;
+    T *px;
     for(itr = p->begin();
       itr != p->end();
-      ++itr)
+      itr = p->begin())
     {
-      delete (*itr);
+      px = *itr;
+      delete (px);
+      p->erase(itr);
     }
-    p->clear();
   }
   static void copy(std::set<T *,S> *pTo, const std::set<T *,S> &xFrom)
   {

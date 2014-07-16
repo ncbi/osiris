@@ -344,9 +344,9 @@ bool CXSLAutoCreate::IsValidFileName(const wxString &s, bool bExt)
 
 const wxString CXSLExportFileType::g_sROOTNODE(wxS("export"));
 const wxChar * const CXSLExportFileType::FILE_TYPE_ERROR
-  (wxS("One or more file types are invalid.\n"
-			 "  Use letters, numbers, hyphens, and\n"
-			 "  underscores only.\n"));
+  (wxS("One or more file types are invalid.\n")
+	 wxS("  Use letters, numbers, hyphens, and\n")
+	 wxS("  underscores only.\n"));
 const wxChar * const CXSLExportFileType::LIST_SEPARATOR = wxS(",");
 
 

@@ -42,7 +42,10 @@ public:
   nwxTimerReceiver();
   virtual ~nwxTimerReceiver();
   virtual void OnTimer(wxTimerEvent &) = 0;
-
+  void StopReceiver()
+  {
+    UnRegisterTimerReceiver(this);
+  }
   static void DispatchTimer(wxTimerEvent &e)
   {
     set<nwxTimerReceiver *>::iterator itr;

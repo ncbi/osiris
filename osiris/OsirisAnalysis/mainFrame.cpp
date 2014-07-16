@@ -1035,6 +1035,20 @@ void mainFrame::FileEmptyMessage(const wxString &sFileName)
   wxString sMessage = wxString::Format(wxS("%ls does not contain any sample data"),psFile);
   ErrorMessage(sMessage);
 }
+void mainFrame::RemoveWindow(CMDIFrame *p)
+{
+  // called from CMDIFrame::Destroy()
+  p->StopReceiver();
+  m_MDImgr.RemoveWindow(p);
+  if(p == m_pLastActive)
+  {
+    m_pLastActive = NULL;
+  }
+  if(!m_MDImgr.Size())
+  {
+    ClearStatusText();
+  }
+}
 
 void mainFrame::ErrorMessage(const wxString &sMessage)
 {
