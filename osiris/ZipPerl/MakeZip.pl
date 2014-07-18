@@ -210,9 +210,9 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/PkgInfo ${CONTENTS}");
 
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
-  &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osirisanalysis ${DEST}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
-  &SYSTEM("strip ${DEST}/osirisanalysis");
+  &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   my $testDest = "${TOP}/TestAnalysis";
   &COPYFILES($src,$DEST,$TOP);
