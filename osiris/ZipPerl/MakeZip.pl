@@ -2,7 +2,7 @@
 use strict 'vars';
 use GetVersion;
 my $VERSION = &GetVersion::Get();
-my $CP = "cp -vp ";
+my $CP = "cp -vup ";
 my $VCDIR = "/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
 
 
