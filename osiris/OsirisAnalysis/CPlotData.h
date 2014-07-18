@@ -126,6 +126,10 @@ public:
   {
     return !m_sAllele.IsEmpty();
   }
+  virtual bool IsEditable() const
+  {
+    return true;
+  }
   virtual bool IsDisabled() const
   {
     return false;
@@ -170,6 +174,7 @@ public:
   virtual void SetFit(double) {;}
   virtual void SetIsArtifact(bool) {;}
   virtual void SetIsAllele(bool) {;}
+  virtual void SetIsEditable(bool) {;}
 //  virtual void SetIsDisabled(bool b) = 0;
   virtual void SetCountBool(bool) {;}
   virtual void SetOffLadderString(const wxString &s)
@@ -322,6 +327,10 @@ public:
     return m_dFit;
   }
 
+  virtual bool IsEditable() const
+  {
+    return true;
+  }
   virtual bool IsArtifact() const
   {
     return true;
@@ -347,6 +356,7 @@ public:
 
   // Set functions
 
+  virtual void SetIsEditable(bool) {;}
   virtual void SetID(int) {;}
   virtual void SetAlleleCount(int) {;}
   virtual void SetCriticalLevel(int n)

@@ -179,6 +179,19 @@ bool mainApp::OnInit()
     plat.GetToolkitMajorVersion(),
     plat.GetToolkitMinorVersion(),
     (const char *) plat.GetPortIdName().ToAscii());
+
+  sOS += wxString::Format(wxS("\n  sizeof(char):        %d"),(int)(sizeof(char)));
+  sOS += wxString::Format(wxS("\n  sizeof(wxChar):      %d"),(int)(sizeof(wxChar)));
+  sOS += wxString::Format(wxS("\n  sizeof(wchar_t):     %d"),(int)(sizeof(wchar_t)));
+  sOS += wxString::Format(wxS("\n  sizeof(short):       %d"),(int)(sizeof(short)));
+  sOS += wxString::Format(wxS("\n  sizeof(int):         %d"),(int)(sizeof(int)));
+  sOS += wxString::Format(wxS("\n  sizeof(long):        %d"),(int)(sizeof(long)));
+  sOS += wxString::Format(wxS("\n  sizeof(longlong):    %d"),(int)(sizeof(long long)));
+  sOS += wxString::Format(wxS("\n  sizeof(size_t):      %d"),(int)(sizeof(size_t)));
+  sOS += wxString::Format(wxS("\n  sizeof(time_t):      %d"),(int)(sizeof(time_t)));
+  sOS += wxString::Format(wxS("\n  sizeof(double):      %d"),(int)(sizeof(double)));
+  sOS += wxString::Format(wxS("\n  sizeof(long double): %d"),(int)(sizeof(long double )));
+
   LogMessage(sOS);
 #endif
 

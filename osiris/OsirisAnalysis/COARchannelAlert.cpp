@@ -85,6 +85,7 @@ COARartifact &COARartifact::operator =(const COARartifact &x)
   COARcopy(m_nID);
   COARcopy(m_nLevel);
   COARcopy(m_bDisabled);
+  COARcopy(m_bIsEditable);
   return *this;
 }
 
@@ -237,3 +238,15 @@ void COARchannelAlert::GetArtifactsByTime(
   }
 }
 
+bool COARchannelAlert::LoadFromNode(wxXmlNode *p, void *pObj)
+{
+  bool b = nwxXmlPersist::LoadFromNode(p,pObj);
+  _CleanupOldArtifact(); // bug fix
+  return b;
+}
+bool COARchannelAlert::LoadFromNode(wxXmlNode *p)
+{
+  bool b = nwxXmlPersist::LoadFromNode(p);
+  _CleanupOldArtifact(); // bug fix
+  return b;
+}

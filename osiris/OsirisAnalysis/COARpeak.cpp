@@ -96,6 +96,7 @@ void COARpeak::Copy(IOARpeak *pTo, const IOARpeak &x)
   pTo->SetIsArtifact(x.IsArtifact());
   pTo->SetIsAllele(x.IsAllele());
 //  pTo->SetIsDisabled(x.IsDisabled());
+  pTo->SetIsEditable(x.IsEditable());
   pTo->SetOffLadderString(x.GetOffLadderString());
   pTo->SetAlleleName(x.GetAlleleName());
   pTo->SetLocusName(x.GetLocusName());
@@ -381,6 +382,10 @@ bool COARpeakAny::IsDisabled() const
 {
   return !(m_bAllele || m_bArtifact);
 }
+bool COARpeakAny::IsEditable() const
+{
+  return true;
+}
 const wxString &COARpeakAny::GetOffLadderString() const
 {
   return m_sOffLadder;
@@ -450,6 +455,8 @@ void COARpeakAny::SetIsAllele(bool b)
 {
   m_bAllele = b;
 }
+void COARpeakAny::SetIsEditable(bool)
+{}
 /*
 //void COARpeakAny::SetIsDisabled(bool b)
 {

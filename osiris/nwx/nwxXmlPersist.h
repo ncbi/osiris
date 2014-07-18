@@ -1129,6 +1129,7 @@ public:
   {
     if(p == (void *)this)
     {
+//      this->Init();  // could be a problem
       m_xml.Init();
     }
   }

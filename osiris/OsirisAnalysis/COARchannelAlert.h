@@ -138,6 +138,7 @@ protected:
 public:
   COARartifact()
   {
+    m_bDisabled = false;
     m_pAlleleCurrent = NULL;
     RegisterAll(true);
   }
@@ -166,12 +167,13 @@ public:
     bool b = (m_dtUpdate.GetTicks() > 0);
     return b;
   }
-  bool IsEditable() const
+
+  //************ virtual IOARpeak functions
+
+  virtual bool IsEditable() const
   {
     return m_bIsEditable;
   }
-
-  //************ virtual IOARpeak functions
 
   virtual const wxString &GetLocusName() const
   {
@@ -265,6 +267,10 @@ public:
     return s;
   }
 
+  virtual void SetIsEditable(bool b)
+  {
+    m_bIsEditable = b;
+  }
   virtual void SetID(int n)
   {
     m_nID = n;
@@ -493,7 +499,24 @@ size_t GetArtifactCount() const
   {
     return m_vpOldArtifact.at(ndx);
   }
+
+  // bug workaround, some <OldArtifact> elements contain <AllowPeakEdit>false</AllowPeakEdit>
+  //  call parent function and then _CleanupOldArtifact
+  virtual bool LoadFromNode(wxXmlNode *, void *pObj);
+  virtual bool LoadFromNode(wxXmlNode *);
+
 private:
+  // bug workaround, some <OldArtifact> elements contain <AllowPeakEdit>false</AllowPeakEdit>
+  void _CleanupOldArtifact()
+  {
+    vector<COARartifact *>::iterator itr;
+    for(itr = m_vpOldArtifact.begin();
+      itr != m_vpOldArtifact.end();
+      ++itr)
+    {
+      (*itr)->SetIsEditable(true);
+    }
+  }
   TnwxXmlIOPersistVector<COARartifact> m_ioArtifact;
   vector<COARartifact *> m_vpArtifact;
   vector<COARartifact *> m_vpOldArtifact;

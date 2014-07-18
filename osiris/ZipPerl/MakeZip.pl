@@ -2,7 +2,9 @@
 use strict 'vars';
 use GetVersion;
 my $VERSION = &GetVersion::Get();
-my $CP = "cp -vup ";
+my $CP = "cp -vp ";
+my $VCDIR = "/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
+
 
 sub MKDIR
 {
@@ -148,6 +150,7 @@ sub CopyWin
   (length($testCP) < 10) &&
     die("Cannot find cp command, need to install " .
         "cygwin or include it in the path");
+  my $PLAT = "x86";
   my $dir = `dirname $0`;
   $dir =~ s/\\/\//g;
   chomp $dir;
@@ -157,6 +160,9 @@ sub CopyWin
   my $dest = "./Osiris";
   &COPYFILES($src,$dest);
   &MKDIR("${dest}/site");
+  my $DLLPATH= "${VCDIR}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
+  &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}");
+  &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
@@ -234,12 +240,13 @@ sub CopyMac
 }
 
 my $home = $ENV{"HOME"};
+my $uname = `uname`;
 
 if( $home =~ m|^/Users| )
 {
   &CopyMac;
 }
-elsif( (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
+elsif( ($uname =~ m/cygwin/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
 {
   &CopyWin;
 }

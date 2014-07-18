@@ -130,7 +130,10 @@ public:
   {
     return m_dFit;
   }
-
+  virtual bool IsEditable() const
+  {
+    return true;
+  }
   virtual bool IsDisabled() const
   {
     return m_bDisabled;
@@ -193,6 +196,8 @@ public:
     m_dFit = d;
   }
   virtual void SetIsArtifact(bool)
+  {;}
+  virtual void SetIsEditable(bool)
   {;}
   virtual void SetIsAllele(bool b)
   {

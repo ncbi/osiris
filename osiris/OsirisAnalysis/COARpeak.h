@@ -72,6 +72,7 @@ public:
   virtual bool IsArtifact() const = 0;
   virtual bool IsAllele() const = 0;
   virtual bool IsDisabled() const = 0;
+  virtual bool IsEditable() const = 0;
   virtual bool GetCountBool() const = 0;
   virtual const wxString &GetOffLadderString() const = 0;
   static bool IsOffLadderString(const wxString &sOL)
@@ -107,6 +108,7 @@ public:
   virtual void SetIsArtifact(bool b) = 0;
   virtual void SetIsAllele(bool b) = 0;
 //  virtual void SetIsDisabled(bool b) = 0;
+  virtual void SetIsEditable(bool) = 0;
   virtual void SetCountBool(bool b) = 0;
   virtual void SetOffLadderString(const wxString &s) = 0;
 
@@ -400,6 +402,7 @@ public:
   virtual bool IsArtifact() const;
   virtual bool IsAllele() const;
   virtual bool IsDisabled() const;
+  virtual bool IsEditable() const;
   virtual const wxString &GetOffLadderString() const;
 
   virtual const wxString &GetLocusName() const;
@@ -420,6 +423,7 @@ public:
   virtual void SetFit(double d);
   virtual void SetIsArtifact(bool b);
   virtual void SetIsAllele(bool b);
+  virtual void SetIsEditable(bool);
 //  virtual void SetIsDisabled(bool b);
   virtual void SetOffLadderString(const wxString &s);
 
