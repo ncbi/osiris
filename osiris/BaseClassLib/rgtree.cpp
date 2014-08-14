@@ -242,8 +242,7 @@ RGTree :: RGTree (const RGString& name) : RGPersistent (), Parent (NULL), Name (
 }
 
 
-RGTree :: RGTree (const RGTree& tree) : RGPersistent (tree), Parent (tree.Parent), Name (tree.Name),
-DataList (tree.DataList), Subtrees (tree.Subtrees) {
+RGTree :: RGTree (const RGTree& tree) : RGPersistent (tree), Subtrees (tree.Subtrees), Parent (tree.Parent),DataList (tree.DataList),  Name (tree.Name) {
 
 	DataIterator = new RGDListIterator (DataList);
 	SubtreeIterator = new RGDListIterator (Subtrees);
