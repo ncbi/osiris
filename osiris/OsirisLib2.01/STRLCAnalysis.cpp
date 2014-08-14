@@ -85,7 +85,7 @@ bool DoesStringContainOneOfSubset (const RGString& target, RGDList& subset) {
 }
 
 
-STRLCAnalysis :: STRLCAnalysis () : SmartMessagingObject (), WorkingFile (NULL), mCollection (NULL) {
+STRLCAnalysis :: STRLCAnalysis () : SmartMessagingObject (), mCollection (NULL), WorkingFile (NULL) {
 
 	InitializeSmartMessages ();
 	mValid = false;
