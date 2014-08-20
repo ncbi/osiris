@@ -38,11 +38,6 @@
 #include "STRLCAnalysis.h"
 
 
-
-PERSISTENT_DEFINITION (SmartMessageData, _SMARTMESSAGEDATA_, "SmartMessageData")
-PERSISTENT_DEFINITION (SmartMessageReporter, _SMARTMESSAGEREPORTER_, "SmartMessageReporter")
-
-
 RGHashTable* SmartMessage :: OverAllMessageTable = new RGHashTable (113);
 RGDList SmartMessage :: OverAllMessageList;
 int SmartMessage :: NumberOfMessageTables = 7;
@@ -62,7 +57,13 @@ int SmartMessage :: SeverityTrigger = 15;
 SmartMessageKill SmartMessage :: kill;
 
 
+
+PERSISTENT_DEFINITION (SmartMessageData, _SMARTMESSAGEDATA_, "SmartMessageData")
+PERSISTENT_DEFINITION (SmartMessageReporter, _SMARTMESSAGEREPORTER_, "SmartMessageReporter")
+
 ABSTRACT_DEFINITION (SmartMessage)
+
+
 
 SmartMessageKill :: SmartMessageKill () {
 
@@ -142,7 +143,8 @@ size_t SmartMessage :: StoreSize () const {
 int SmartMessage :: CompareTo (const RGPersistent* p) const {
 
 	SmartMessage* sm = (SmartMessage*) p;
-	return mName.CompareTo (&sm->GetName ());
+	RGString temp = sm->GetName ();
+	return mName.CompareTo (&temp);
 }
 
 
@@ -155,7 +157,8 @@ unsigned SmartMessage :: HashNumber (unsigned long Base) const {
 Boolean SmartMessage :: IsEqualTo (const RGPersistent* p) const {
 
 	SmartMessage* sm = (SmartMessage*) p;
-	return mName.IsEqualTo (&sm->GetName ());
+	RGString temp = sm->GetName ();
+	return mName.IsEqualTo (&temp);
 }
 
 

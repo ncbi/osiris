@@ -48,6 +48,8 @@
 #include "OsirisPosix.h"
 
 
+bool TestCharacteristic::globalTestForNegative = false;
+
 
 ABSTRACT_DEFINITION (TestCharacteristic)
 ABSTRACT_DEFINITION (TestControlCharacteristic)
@@ -62,8 +64,6 @@ PERSISTENT_DEFINITION (STRTestControlCharacteristic, _STRTESTCONTROLCHARACTERIST
 PERSISTENT_DEFINITION (STRTestSampleCharacteristicSet, _STRTESTSAMPLECHARACTERISTICSET_, "STRTestSampleCharacteristicSet")
 PERSISTENT_DEFINITION (STRTestControlCharacteristicSet, _STRTESTCONTROLCHARACTERISTICSET_, "STRTestControlCharacteristicSet")
 
-
-bool TestCharacteristic::globalTestForNegative = false;
 
 
 TestCharacteristic :: TestCharacteristic () : RGPersistent () {
@@ -459,7 +459,7 @@ void STRTestCharacteristicSet :: PrecomputeAverages (RGDList& set) {
 	int NumberOfSignals = set.Entries ();
 	double left, right;
 
-	while (nextSignal = (DataSignal*)it ()) {
+	while ((nextSignal = (DataSignal*)it ())) {
 
 		left = nextSignal->LeftEndPoint ();
 		right = nextSignal->RightEndPoint ();
@@ -555,7 +555,7 @@ int STRTestSampleCharacteristic :: Test (DataSignal* testSignal, double minimumH
 
 	Boolean Marginal = FALSE;
 	Boolean NotAcceptable = FALSE;
-	double fit = testSignal->GetCurveFit ();
+	//double fit = testSignal->GetCurveFit ();
 	double peak = testSignal->Peak ();
 	double rawPeak = testSignal->GetDataMode ();
 	Notice* newNotice;
@@ -702,7 +702,7 @@ int STRTestSampleCharacteristic :: TestSM (DataSignal* testSignal, double minimu
 
 	Boolean Marginal = FALSE;
 	Boolean NotAcceptable = FALSE;
-	double fit = testSignal->GetCurveFit ();
+	//double fit = testSignal->GetCurveFit ();
 	double peak = testSignal->Peak ();
 	double rawPeak = testSignal->GetDataMode ();
 	RGString info;
@@ -828,7 +828,7 @@ int STRTestSampleCharacteristic :: TestSM (DataSignal* testSignal, double detect
 	//  This is ladder and sample stage 1
 	//
 
-	double fit = testSignal->GetCurveFit ();
+	//double fit = testSignal->GetCurveFit ();
 	double peak = testSignal->Peak ();
 	double rawPeak = testSignal->GetDataMode ();
 	RGString info;
@@ -1702,7 +1702,7 @@ int STRTestControlCharacteristicSet :: Test (RGDList& set, double& correlation) 
 	int i = 0;
 	double* differences = new double [n1];
 
-	while (nextSignal = (DataSignal*) it ()) {
+	while ((nextSignal = (DataSignal*) it ())) {
 
 		means [i] = nextSignal->GetMean ();
 		i++;

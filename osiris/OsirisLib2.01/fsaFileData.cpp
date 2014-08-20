@@ -208,7 +208,7 @@ DataSignal* fsaFileData :: GetDataSignalForDataChannel (int channelNumber) {
 		data[i] = (double)intData [i];
 
 	double spacing = 1.0;
-	DataSignal* ds = new SampledData (N, 0.0, N * spacing, data);
+	DataSignal* ds = new SampledData (N, 0.0, (N - 1) * spacing, data);
 	return ds;
 }
 
@@ -273,7 +273,7 @@ DataSignal* fsaFileData :: GetRawDataSignalForDataChannel (int channelNumber) {
 		data[i] = (double)intData [i];
 
 	double spacing = 1.0;
-	DataSignal* ds = new SampledData (N, 0.0, N * spacing, data);
+	DataSignal* ds = new SampledData (N, 0.0, (N - 1) * spacing, data);
 	return ds;
 }
 
@@ -496,7 +496,7 @@ const char* fsaFileData :: GetCapillaryNumber () {
 }
 
 
-long fsaFileData :: GetDataOffset () {
+int fsaFileData :: GetDataOffset () {
 
 	RGString data;
 	fsaDirEntry* entry = fsaInput->FindDirEntry (DataOffsetTag, DataOffsetID);
@@ -504,7 +504,7 @@ long fsaFileData :: GetDataOffset () {
 	if (entry == NULL)
 		return 0;
 
-	long* AnsPtr = (long*)entry->GetDataINT32 ();
+	int* AnsPtr = (int*)entry->GetDataINT32 ();
 
 	if (AnsPtr == NULL)
 		return 0;
@@ -532,15 +532,15 @@ const short* fsaFileData :: GetRawDataForChannel (int channel) {
 }
 
 
-const long* fsaFileData :: GetOffScaleData (int& numElements) {
+const int* fsaFileData :: GetOffScaleData (int& numElements) {
 
-	const long* data;
+	const int* data;
 	fsaDirEntry* entry = fsaInput->FindDirEntry (OffScaleDataTag, OffScaleDataID);
 
 	if (entry == NULL)
 		return NULL;
 
-	data = (const long*) entry->GetDataINT32();
+	data = (const int*) entry->GetDataINT32();
 	numElements = (int)entry->NumElements ();
 	return data;
 }

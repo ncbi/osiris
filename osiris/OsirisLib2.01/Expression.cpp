@@ -46,6 +46,10 @@
 
 using namespace std;
 
+ExpressionCleanUp Expression::CleanUp;
+Expression* Expression :: finalExpression = NULL;
+RGString Expression :: ExpressionCriterion;
+int Expression :: RemainingCharacters = 0;
 
 
 PERSISTENT_DEFINITION (Expression, _EXPRESSION_, "Expression")
@@ -68,7 +72,7 @@ PERSISTENT_DEFINITION (AllExpr, _ALL_, "AllExpr")
 PERSISTENT_DEFINITION (ConstantExpr, _CONSTANTEXPR_, "ConstantExpr")
 
 
-ExpressionCleanUp Expression::CleanUp;
+
 
 
 ExpressionCleanUp :: ~ExpressionCleanUp () {
@@ -76,10 +80,6 @@ ExpressionCleanUp :: ~ExpressionCleanUp () {
 	Expression::CleanUpBuffers ();
 }
 
-
-Expression* Expression :: finalExpression = NULL;
-RGString Expression :: ExpressionCriterion;
-int Expression :: RemainingCharacters = 0;
 
 
 Expression :: Expression (const Expression& ex) : RGPersistent () {

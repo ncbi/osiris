@@ -61,6 +61,7 @@ int CoreBioComponent::OffScaleDataLength = 0;
 double CoreBioComponent::minPrimaryPullupThreshold = 500.0;
 
 bool CoreBioComponent::UseHermiteTimeTransforms = false;
+RGTraceString CoreBioComponent::TraceString;
 
 
 
@@ -2146,13 +2147,13 @@ bool CoreBioComponent :: TestForOffScale (double time) {
 int CoreBioComponent :: InitializeOffScaleData (SampleData& sd) {
 
 	int nPoints;
-	const long* temp = sd.GetOffScaleData (nPoints);
+	const int* temp = sd.GetOffScaleData (nPoints);
 	int i;
 	int j;
 
 	if (temp == NULL) {
 
-		cout << "Could not retrieve offscale data for sample" << endl;
+		cout << "Could not retrieve off scale data for sample" << endl;
 		OffScaleData = NULL;
 		OffScaleDataLength = 0;
 		return -1;
@@ -2170,7 +2171,7 @@ int CoreBioComponent :: InitializeOffScaleData (SampleData& sd) {
 
 		for (i=0; i<nPoints; i++) {
 
-			j = (int)temp [i];
+			j = temp [i];
 
 			if ((j >= 0) && (j < OffScaleDataLength))
 				OffScaleData [j] = true;
@@ -2186,6 +2187,24 @@ void CoreBioComponent :: ReleaseOffScaleData () {
 	delete [] OffScaleData;
 	OffScaleData = NULL;
 	OffScaleDataLength = 0;
+}
+
+
+void CoreBioComponent :: ResetTrace () {
+
+	TraceString.Reset ();
+}
+
+
+RGTraceString& CoreBioComponent :: Trace () {
+
+	return TraceString;
+}
+
+
+void CoreBioComponent :: SaveTrace (const RGString& fullPath, const RGString& fileName) {
+
+	TraceString.Save (fullPath, fileName);
 }
 
 

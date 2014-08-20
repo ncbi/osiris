@@ -1,5 +1,5 @@
-bin_PROGRAMS = osirisanalysis
-osirisanalysis_SOURCES =  \
+bin_PROGRAMS = osiris
+osiris_SOURCES =  \
 ../CComboLabels.cpp \
 ../CDialogAbout.cpp \
 ../CDialogAcceptAlerts.cpp \

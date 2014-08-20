@@ -46,6 +46,11 @@
 #include "DirectoryManager.h"
 
 
+ABSTRACT_DEFINITION (STRCoreBioComponent)
+PERSISTENT_DEFINITION (STRLadderCoreBioComponent, _STRLADDERCOREBIOCOMPONENT_, "STRLadderCoreBioComponent")
+PERSISTENT_DEFINITION (STRSampleCoreBioComponent, _STRSAMPLECOREBIOCOMPONENT_, "STRSampleCoreBioComponent")
+
+
 int MinimumIndex (double* array, int size) {
 
 	double minValue = array [1];
@@ -63,11 +68,6 @@ int MinimumIndex (double* array, int size) {
 	return minIndex;
 }
 
-
-
-ABSTRACT_DEFINITION (STRCoreBioComponent)
-PERSISTENT_DEFINITION (STRLadderCoreBioComponent, _STRLADDERCOREBIOCOMPONENT_, "STRLadderCoreBioComponent")
-PERSISTENT_DEFINITION (STRSampleCoreBioComponent, _STRSAMPLECOREBIOCOMPONENT_, "STRSampleCoreBioComponent")
 
 
 

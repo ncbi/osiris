@@ -85,7 +85,7 @@ bool DoesStringContainOneOfSubset (const RGString& target, RGDList& subset) {
 }
 
 
-STRLCAnalysis :: STRLCAnalysis () : SmartMessagingObject (), mCollection (NULL), WorkingFile (NULL) {
+STRLCAnalysis :: STRLCAnalysis () : SmartMessagingObject (), WorkingFile (NULL), mCollection (NULL) {
 
 	InitializeSmartMessages ();
 	mValid = false;
@@ -487,6 +487,8 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 			WorkingFile->Flush ();
 		}
 
+		CoreBioComponent::ResetTrace ();
+
 		data = new fsaFileData (FullPathName);
 		NumFiles++;
 		//cout << "Beginning file:  " << NumFiles << endl;
@@ -599,8 +601,12 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 		SamplesProcessed++;
 		Progress = 100.0 * (double)SamplesProcessed / (double)NSampleFiles;
 		cout << "Progress = " << Progress << "%." << endl;
+		cout << "Test of output" << endl;
 
 		LadderList.Append (ladderBioComponent);
+		RGString tempString = FullPathForReports + "/" + LadderFileName;
+		cout << "Setting output for " << (char*)tempString.GetData () << endl;
+		CoreBioComponent::SaveTrace (FullPathForReports, LadderFileName);
 		delete data;
 	}
 
@@ -630,6 +636,7 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 			WorkingFile->Flush ();
 		}
 
+		CoreBioComponent::ResetTrace ();
 		data = new fsaFileData (FullPathName);  // this is the fsa file that we must modify!!!
 		bioComponent = new STRSampleCoreBioComponent (data->GetName ());
 
@@ -719,6 +726,9 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 		Progress = 100.0 * (double)SamplesProcessed / (double)NSampleFiles;
 		cout << "Progress = " << Progress << "%." << endl;
 		delete data;
+		RGString tempString = FullPathForReports + "/" + LadderFileName;
+		cout << "Setting output for " << (char*)tempString.GetData () << endl;
+		CoreBioComponent::SaveTrace (FullPathForReports, FileName);
 	}
 
 	// Add output functions here!  First, put in the table, then, list the notices

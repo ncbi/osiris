@@ -38,9 +38,10 @@
 #include "rgfile.h"
 #include "rgvstream.h"
 #include "rgsimplestring.h"
+#include "RGTextOutput.h"
 
 
-int RGString::DoubleResolution = 10;
+int RGString::DoubleResolution = 15;
 
 
 
@@ -1647,5 +1648,182 @@ bool operator >(const RGString &s1, const char *s2)
 Boolean operator!=(const RGString& s1, const char* s2) {
 
 	return s1.CompareTo (s2) != 0;
+}
+
+
+RGTraceString :: RGTraceString () {
+
+#ifdef _TRACEDEBUG
+	mTrace.ResizeLength (500000);
+#endif
+
+}
+
+
+RGTraceString :: RGTraceString (size_t size) {
+
+#ifdef _TRACEDEBUG
+	mTrace.ResizeLength (size);
+#endif
+
+}
+
+
+RGTraceString :: ~RGTraceString () {
+
+#ifdef _TRACEDEBUG
+	mTrace = "\0";
+#endif
+
+}
+
+void RGTraceString :: Reset () {
+
+#ifdef _TRACEDEBUG
+	mTrace = "\0";
+#endif
+
+}
+
+
+void RGTraceString :: Save (const RGString& fullPath, const RGString& fileName) {
+
+#ifdef _TRACEDEBUG
+	RGString fullOutPath = fullPath + "/" + fileName;
+	size_t start;
+	size_t end;
+	int lengthOfExtension;
+
+	if (fullOutPath.FindLastSubstring (".", start, end)) {
+
+		lengthOfExtension = fullOutPath.Length () - start - 1;
+		fullOutPath.ExtractAndRemoveLastCharacters (lengthOfExtension);
+	}
+
+	fullOutPath += "trace.txt";
+	cout << "Writing trace data to " << (char*)fullOutPath.GetData () << endl;
+	RGTextOutput outFile (fullOutPath, FALSE);
+	outFile << mTrace;
+	//delete outFile;
+	Reset ();
+#endif
+}
+
+RGTraceString& RGTraceString :: operator<<(const RGString& str) {
+
+#ifdef _TRACEDEBUG
+	mTrace << str;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(const char* str) {
+
+#ifdef _TRACEDEBUG
+	mTrace << str;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(double d) {
+
+#ifdef _TRACEDEBUG
+	mTrace << d;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(int i) {
+
+#ifdef _TRACEDEBUG
+	mTrace << i;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(unsigned long i) {
+
+#ifdef _TRACEDEBUG
+	mTrace << i;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(char c) {
+
+#ifdef _TRACEDEBUG
+	mTrace << c;
+#endif
+
+	return *this;
+}
+
+
+RGTraceString& RGTraceString :: operator<<(long l) {
+
+#ifdef _TRACEDEBUG
+	mTrace << l;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(short s) {
+
+#ifdef _TRACEDEBUG
+	mTrace << s;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(unsigned char c) {
+
+#ifdef _TRACEDEBUG
+	mTrace << c;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(unsigned int i) {
+
+#ifdef _TRACEDEBUG
+	mTrace << i;
+#endif
+
+	return *this;
+}
+
+
+
+RGTraceString& RGTraceString :: operator<<(unsigned short s) {
+
+#ifdef _TRACEDEBUG
+	mTrace << s;
+#endif
+
+	return *this;
 }
 

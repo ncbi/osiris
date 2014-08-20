@@ -410,14 +410,15 @@ int CSplineTransform :: Initialize () {
 
 	for (j=1; j<NumberOfCubics; j++) {  // from 1 to n-1
 
-		alpha = 1.0 / (h[j] + h[j+1]);
-//		lambda[j] = h[j+1] / (h[j] + h[j+1]);
-		lambda[j] = h[j+1] * alpha;
+//		alpha = 1.0 / (h[j] + h[j+1]);
+		lambda[j] = h[j+1] / (h[j] + h[j+1]);
+//		lambda[j] = h[j+1] * alpha;
 		mu[j] = 1.0 - lambda[j];
 //		d[j] = (6.0 / (h[j] + h[j+1])) * (((Ordinates[j+1] - Ordinates[j]) / h[j+1]) - ((Ordinates[j] - Ordinates[j-1]) / h[j]));
 //		d[j] = (6.0 / (h[j] + h[j+1])) * ((del[j+1] / h[j+1]) - (del[j] / h[j]));
 //		d[j] = 6.0 * alpha * ((del[j+1] / h[j+1]) - (del[j] / h[j]));
-		d[j] = 6.0 * alpha * (gamma[j+1] - gamma[j]);
+//		d[j] = 6.0 * alpha * (gamma[j+1] - gamma[j]);
+		d[j] = 6.0 * (gamma[j+1] - gamma[j]) / (h[j] + h[j+1]);
 	}
 
 	lambda[0] = d[0] = mu[NumberOfCubics] = d[NumberOfCubics] = 0.0;
@@ -493,8 +494,8 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 
 		h[j] = Knots[j+1] - Knots[j];
 	}
-	double hInv;
-	double hInv2;
+//	double hInv;
+	double h2;
 	double p0;
 	double m0;
 	double p1;
@@ -505,8 +506,8 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 	for (j=0; j<NumberOfCubics; j++) {
 
 		// These are coefficient for polynomial between Knots [j] and Knots [j+1]
-		hInv = 1.0 / h[j];
-		hInv2 = hInv * hInv;
+//		hInv = 1.0 / h[j];
+		h2 = h [j] * h [j];
 		hh = h [j];
 		p0 = Ordinates [j];
 		p1 = Ordinates [j+1];
@@ -516,8 +517,11 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 		A [j] = p0;
 		B [j] = m0;
 		T = (m1 - m0) * hh - 2.0 * (p1 - p0 - m0 * hh);
-		D [j] = T * hInv * hInv2;
-		C [j] = (p1 - p0 - m0 * hh - T) * hInv2;
+	//	D [j] = T * hInv * hInv2;
+	//	C [j] = (p1 - p0 - m0 * hh - T) * hInv2;
+
+		D [j] = T / (hh * h2);
+		C [j] = (p1 - p0 - m0 * hh - T) / h2;
 	}
 
 //	mLeft = (3.0 * D [0] * Left + 2.0 * C [0]) * Left + B [0];  // This is an error...B[0] is the left-most 1st derivative

@@ -3654,7 +3654,8 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 	delete FitNegCurve;
 
 	int left = startTime;
-	int end = (int)floor (mData->RightEndPoint ());
+	//int end = (int)floor (mData->RightEndPoint ());
+	int end = mData->GetNumberOfSamples() - 1;
 	int localLeft;
 	int localRight;
 	smBaselineEstimationThreshold baselineThreshold;
@@ -3932,7 +3933,8 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	tempList.Clear ();
 
 	int left = startTime;
-	int end = (int)floor (mData->RightEndPoint ());
+	//int end = (int)floor (mData->RightEndPoint ());
+	int end = mData->GetNumberOfSamples() - 1;
 	int localLeft;
 	int localRight;
 	smBaselineEstimationThreshold baselineThreshold;
@@ -3991,7 +3993,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 
 	//else {
 
-	while (!lefts.empty ()) {
+	while (!lefts.empty () && !rights.empty ()) {
 
 		localLeft = lefts.front ();
 		localRight = rights.front ();
@@ -4001,6 +4003,9 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		AppendKnotDataToLists (localLeft, localRight, knotTimes, knotValues, mData);
 		firstInterval = false;
 	}
+
+	if (!lefts.empty () || !rights.empty())
+		cout << "Left and right imbalance after appending knot data." << endl;
 	//}
 
 	temp = mData->RightEndPoint ();
@@ -4077,7 +4082,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		EditPeaksForOutOfRange (knotTimes, knotValues, FitNegData, rfuThreshold);	// 02/03/2014:  This function causes a crash under some conditions...Fixed 02/04/2014
 	}
 
-	while (!knotTimes.empty ()) {
+	while (!knotTimes.empty () && !knotValues.empty()) {
 
 		temp = knotTimes.front ();
 		tempValue = knotValues.front ();
@@ -4091,6 +4096,9 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 			lastTime = temp;
 		}
 	}
+
+	if (!knotTimes.empty () || !knotValues.empty())
+		cout << "Knot times and values imbalance prior to forming spline" << endl;
 
 	//for (itTimes=knotTimes2.begin (); itTimes!=knotTimes2.end (); itTimes++) {
 
@@ -4149,6 +4157,9 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	firstList.clear ();
 	lastList.clear ();
 
+	if (HasFilteredData ())
+			RestoreRawDataAndDeleteFilteredSignal ();
+
 	if (!mBaseLine->IsValid ()) {
 
 		delete mBaseLine;
@@ -4170,9 +4181,6 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	//
 
 	//cout << "Restoring raw data for channel " << mChannel << endl;
-
-	if (HasFilteredData ())
-		RestoreRawDataAndDeleteFilteredSignal ();
 
 	//cout << "Raw data restored for channel " << mChannel << endl;
 	double* sampleData = (double*)mData->GetData ();
@@ -4219,7 +4227,7 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 	double timeThreshold = 300.0;
 	double increment = 20.0;
 
-	while (!knotTimes.empty ()) {
+	while (!knotTimes.empty () && !knotValues.empty ()) {
 
 		time = knotTimes.front ();
 		value = knotValues.front ();
@@ -4229,6 +4237,9 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 		originalValues [i] = value;
 		i++;
 	}
+
+	if (!knotTimes.empty () || !knotValues.empty ())
+		cout << "Shape baseline knot times and values imbalanced" << endl;
 
 	for (i=0; i<6; i++) {
 
@@ -4293,7 +4304,7 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 		lowTimeThreshold = 40.0;
 	}
 
-	while (!knotTimes.empty ()) {
+	while (!knotTimes.empty () && !knotValues.empty ()) {
 
 		time = knotTimes.front ();
 		value = knotValues.front ();
@@ -4303,6 +4314,9 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 		originalValues [i] = value;
 		i++;
 	}
+
+	if (!knotTimes.empty () || !knotValues.empty ())
+		cout << "Shape baseliine data knot times and values imbalance" << endl;
 
 	for (i=0; i<6; i++) {
 
@@ -5262,9 +5276,9 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 	double upperTest;
 	double lowerTest;
 	double testFactor = 2.5;
-	double endTime = mData->RightEndPoint ();
+	int endTime = mData->GetNumberOfSamples();
 
-	while (!times.empty ()) {
+	while (!times.empty () && !values.empty()) {
 
 		time = times.front ();
 		value = values.front ();
@@ -5274,6 +5288,9 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 		originalValues [i] = value;
 		i++;
 	}
+
+	if (!times.empty () || !values.empty())
+		cout << "Edit peaks for out of range, times and values list imbalance" << endl;
 
 	for (i=0; i<6; i++) {
 

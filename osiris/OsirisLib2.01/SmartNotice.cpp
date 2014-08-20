@@ -81,7 +81,8 @@ SmartNotice :: ~SmartNotice () {
 Boolean SmartNotice :: IsEqualTo (const RGPersistent* note) const {
 
 	const SmartNotice* oNote = (SmartNotice*) note;
-	return (GetName ().IsEqualTo (&(oNote->GetName ())));
+	RGString temp = oNote->GetName ();
+	return (GetName ().IsEqualTo (&temp));
 }
 
 

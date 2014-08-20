@@ -682,7 +682,7 @@ public:
     bool bThrow = true  // if true and an error occurs, then throw an exception
     )
   {
-    this->nNumElements = nNumElements;
+    this->nNumElements = _nNumElements;
     this->nDataSize = nNumElements * nElementSize;
     FreeData();  // if data is already loaded, then free it, otherwise an error will occur.
     LoadData( bThrow, (void *) _pRawData, true, bCopy);

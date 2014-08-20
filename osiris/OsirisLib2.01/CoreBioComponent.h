@@ -65,6 +65,8 @@ class SmartNotice;
 
 //  The following two structs can be initialized once at the beginning of a run and reused for different input files...
 
+#define CTRACE CoreBioComponent::Trace()
+
 struct GridDataStruct {
 
 	PopulationCollection* mCollection;
@@ -400,6 +402,10 @@ public:
 
 	static void SetOffScaleDataLength (int length) { OffScaleDataLength = length; }
 
+	static void ResetTrace ();
+	static RGTraceString& Trace ();
+	static void SaveTrace (const RGString& fullPath, const RGString& fileName);
+
 	//************************************************************************************************************************************
 
 protected:
@@ -454,6 +460,7 @@ protected:
 	static int OffScaleDataLength;
 	static double minPrimaryPullupThreshold;
 	static bool UseHermiteTimeTransforms;
+	static RGTraceString TraceString;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();

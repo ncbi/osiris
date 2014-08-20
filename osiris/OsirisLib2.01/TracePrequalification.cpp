@@ -49,6 +49,8 @@ int TracePrequalification::minSamplesForSlopeRegression = 4;
 double TracePrequalification::defaultNoiseThreshold = 400.0;
 int TracePrequalification::defaultWindowWidth = 9;
 
+enum SEARCHMODE {LookingForMax, LookingForMin, LookingForFinalMin, UnravelingFinalCurve};
+
 
 ABSTRACT_DEFINITION (TracePrequalification)
 PERSISTENT_DEFINITION (STRTracePrequalification, _STRTRACEPREQUALIFICATION_, "STRTracePrequal")
@@ -86,8 +88,6 @@ double LinearSlopeRegression (const double* y, double delt, int N1) {
 	return r / (delt * var);
 }
 
-
-enum SEARCHMODE {LookingForMax, LookingForMin, LookingForFinalMin, UnravelingFinalCurve};
 
 
 TracePrequalification :: ~TracePrequalification () {}
@@ -782,6 +782,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 	int currentMode;
 	double currentMaxAtMode = -DOUBLEMAX;
 	double peakValueLeft;
+	double peakValueRight;
 
 	int nMinima;
 	int localMin;
@@ -803,6 +804,8 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 		return NULL;
 	}
 	
+	PeakRight = CurrentIndex;
+	peakValueRight = Data->Value (PeakRight);
 	int SearchMode = LookingForMax;
 
 //	if ((CurrentIndex >= 1) && (Data->Value (CurrentIndex - 1) < Data->Value (CurrentIndex)))
@@ -816,7 +819,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 	int LocationOfLastMin;
 	int LocationOfLastMax = -1;
 	int LocationOfBeginConstant = -1;
-	int CurrentEndNoise = CurrentIndex;
+//	int CurrentEndNoise = CurrentIndex;
 
 	CurrentNoiseInterval = new NoiseInterval (Data->Value (CurrentIndex), CurrentIndex);
 	CurrentNoiseInterval->SetModeAscending ();
@@ -868,7 +871,8 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 
 //		newL = Data->Value (WindowLeft);
 //		newR = Data->Value (WindowRight);
-		newCenter = Data->Value (CurrentIndex);
+		PeakLeft = CurrentIndex;
+		newCenter = peakValueLeft = Data->Value (CurrentIndex);
 //		NewConvolution = CurrentConvolution + 0.5 * (OldLeft + newL - OldRight - newR);
 		NewConvolution = mConvolution [CurrentIndex];
 		CurrentConvolution = mConvolution [CurrentIndex + 1];
@@ -924,6 +928,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 
 						// It's a real maximum.  This is it, boys!  We've found another peak!
 						PeakRight = LocationOfLastMin;
+						peakValueRight = Data->Value (PeakRight);
 
 						// Since we have found a real max, no point in collecting more noise data
 						CurrentNoiseInterval->EndNoiseInterval ();
@@ -1057,6 +1062,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 
 //					else
 						PeakLeft = CurrentIndex;
+						peakValueLeft = Data->Value (PeakLeft);
 
 					/*nMinima = FindInteriorLocalMinimum (PeakLeft, PeakRight, localMin, localMinValue);
 
@@ -1110,6 +1116,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 					}
 
 					PeakLeft = lastIndex;
+					peakValueLeft = Data->Value (PeakLeft);
 					lastIndex = PeakRight;
 
 					/*if ((nMinima > 0) && (currentMode < localMin)) {
@@ -1137,6 +1144,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 						}
 
 						PeakRight = lastIndex;
+						peakValueRight = Data->Value (PeakRight);
 					}
 
 					for (int i=PeakRight; i>currentMode; i--) {
@@ -1156,6 +1164,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 					}
 
 					PeakRight = lastIndex;
+					peakValueRight = Data->Value (PeakRight);
 
 					/*slopeExceededThresholdOnDescent = false;
 
@@ -1362,12 +1371,15 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 		LocationOfLastMin = CurrentIndex;
 					
 		PeakLeft = CurrentIndex;
+		peakValueLeft = Data->Value (PeakLeft);
 		dataInterval = new DataInterval (PeakLeft, PeakCenter, PeakRight);
 		dataInterval->SetHeight (PeakHeight);
 		dataInterval->SetMass (PeakMass);
 		dataInterval->SetNumberOfMinima (0);
 		dataInterval->SetMode (currentMode);
 		dataInterval->SetMaxAtMode (currentMaxAtMode);
+		dataInterval->SetLeftMinimum (peakValueLeft);
+		dataInterval->SetRightMinimum (Data->Value (PeakRight));
 
 		/*PreviousConvolution = CurrentConvolution;
 		CurrentConvolution = NewConvolution;*/

@@ -509,6 +509,9 @@ public:
 	static double GetMinimumHeight () { return minHeight; }
 	static void SetMaximumHeight (double height) { maxHeight = height; }
 	static double GetMaximumHeight () { return maxHeight; }
+	static unsigned long GetTestID () { return testID; }
+	static void ReinitializeSignalID () { signalID = 25; }
+	static unsigned long GetRunningSignalID () { return signalID; }
 
 	virtual RGString GetSignalType () const;
 
@@ -590,7 +593,7 @@ public:
 
 	virtual double Centroid () const { return -DOUBLEMAX; }
 	virtual double Centroid (double left, double right) const { return -DOUBLEMAX; }
-	virtual double SecondMoment (double left, double right) const { return -DOUBLEMAX; }
+	virtual double SimpleSecondMoment (double left, double right) const { return -DOUBLEMAX; }
 	virtual double ThirdMoment (double left, double right) const { return 0.0; }
 
 	virtual void ExtendDomain (double left, double right) = 0;
@@ -820,6 +823,7 @@ protected:
 	static Boolean DebugFlag;
 	static double minHeight;
 	static double maxHeight;
+	static unsigned long testID;
 	static unsigned long signalID;
 	static bool* InitialMatrix;
 
@@ -883,7 +887,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SecondMoment (double left, double right) const;
+	virtual double SimpleSecondMoment (double left, double right) const;
 	virtual double ThirdMoment (double left, double right) const;
 
 	virtual void ExtendDomain (double left, double right);
@@ -1095,7 +1099,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SecondMoment (double left, double right) const;
+	virtual double SimpleSecondMoment (double left, double right) const;
 
 	virtual double Norm ();
 	virtual double Norm (double left, double right);
@@ -1260,7 +1264,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SecondMoment (double left, double right) const;
+	virtual double SimpleSecondMoment (double left, double right) const;
 
 	virtual double OneNorm ();
 	virtual double OneNorm (double left, double right);
@@ -1345,7 +1349,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SecondMoment (double left, double right) const;
+	virtual double SimpleSecondMoment (double left, double right) const;
 
 	virtual double Norm ();
 	virtual double Norm (double left, double right);

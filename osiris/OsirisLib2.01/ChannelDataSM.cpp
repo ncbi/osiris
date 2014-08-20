@@ -915,7 +915,7 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 	while (nextLocus = (Locus*) it ())
 		nextLocus->TestForMultiSignalsSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes);
 
-	//cout << "Locus multisiganls tested" << endl;
+	//cout << "Locus multisignals tested" << endl;
 
 	it.Reset ();
 
@@ -1025,7 +1025,7 @@ int ChannelData :: SetRawDataFromColorCorrectedArraySM (double* dataArray, int a
 	}
 
 	double spacing = 1.0;
-	mData = new SampledData (arraySize, 0.0, arraySize * spacing, dataArray);
+	mData = new SampledData (arraySize, 0.0, (arraySize - 1) * spacing, dataArray);
 //	mData = fileData.GetRawDataSignalForDataChannel (mFsaChannel);
 
 	if (mChannel == 1)

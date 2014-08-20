@@ -242,18 +242,25 @@ void QuadraticFit :: Reset (const double* abscissas, int size) {
 		return;
 	}
 
-	double ReciprocalDetA = 1.0 / detA;
+//	double ReciprocalDetA = 1.0 / detA;
 
 //	parameters [0] = (NU2minusU12 * V2 - NU3minusU1U2 * V1 + U1U3minusU22 * V0) / detA;
 //	parameters [1] = (- NU3minusU1U2 * V2 + NU4minusU22 * V1 - U1U4minusU2U3 * V0) / detA;
 //	parameters [2] = (U1U3minusU22 * V2 - U1U4minusU2U3 * V1 + U2U4minusU32 * V0) / detA;
 
-	a11 = NU2minusU12 * ReciprocalDetA;
-	a22 = NU4minusU22 * ReciprocalDetA;
-	a33 = U2U4minusU32 * ReciprocalDetA;
-	a12 = - NU3minusU1U2 * ReciprocalDetA;
-	a13 = U1U3minusU22 * ReciprocalDetA;
-	a23 = - U1U4minusU2U3 * ReciprocalDetA;
+//	a11 = NU2minusU12 * ReciprocalDetA;
+//	a22 = NU4minusU22 * ReciprocalDetA;
+//	a33 = U2U4minusU32 * ReciprocalDetA;
+//	a12 = - NU3minusU1U2 * ReciprocalDetA;
+//	a13 = U1U3minusU22 * ReciprocalDetA;
+//	a23 = - U1U4minusU2U3 * ReciprocalDetA;
+
+	a11 = NU2minusU12 / detA;
+	a22 = NU4minusU22 / detA;
+	a33 = U2U4minusU32 / detA;
+	a12 = - NU3minusU1U2 / detA;
+	a13 = U1U3minusU22 / detA;
+	a23 = - U1U4minusU2U3 / detA;
 }
 
 

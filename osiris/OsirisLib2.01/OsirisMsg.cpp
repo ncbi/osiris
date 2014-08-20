@@ -338,7 +338,7 @@ void OsirisMsg :: AddDataToMessage (const DataSignal* ds) {
 	double left = ds->LeftEndPoint ();
 	double right = ds->RightEndPoint ();
 	double Where = ds->Centroid ();
-	double Width = sqrt (ds->SecondMoment (left, right));
+	double Width = sqrt (ds->SimpleSecondMoment (left, right));
 	double Peak = ds->Peak ();
 	double fit = ds->GetCurveFit ();
 	Message += OsirisGcvt (Where, OsirisMsg::DoubleResolution, buff) + Delim;

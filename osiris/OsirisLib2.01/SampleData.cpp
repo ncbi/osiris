@@ -151,7 +151,7 @@ const char* SampleData :: GetCapillaryNumber () {
 }
 
 
-long SampleData :: GetDataOffset () {
+int SampleData :: GetDataOffset () {
 
 	return -1;
 }
@@ -163,7 +163,7 @@ const short* SampleData :: GetRawDataForChannel (int channel) {
 }
 
 
-const long* SampleData :: GetOffScaleData (int& numElements) {
+const int* SampleData :: GetOffScaleData (int& numElements) {
 
 	return NULL;
 }

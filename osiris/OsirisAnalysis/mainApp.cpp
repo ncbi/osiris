@@ -189,6 +189,7 @@ bool mainApp::OnInit()
   sOS += wxString::Format(wxS("\n  sizeof(longlong):    %d"),(int)(sizeof(long long)));
   sOS += wxString::Format(wxS("\n  sizeof(size_t):      %d"),(int)(sizeof(size_t)));
   sOS += wxString::Format(wxS("\n  sizeof(time_t):      %d"),(int)(sizeof(time_t)));
+  sOS += wxString::Format(wxS("\n  sizeof(float):       %d"),(int)(sizeof(float)));
   sOS += wxString::Format(wxS("\n  sizeof(double):      %d"),(int)(sizeof(double)));
   sOS += wxString::Format(wxS("\n  sizeof(long double): %d"),(int)(sizeof(long double )));
 

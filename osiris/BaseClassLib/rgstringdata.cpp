@@ -35,6 +35,7 @@
 #include <cstring>
 #include <cctype>
 #include <string>
+#include <stdlib.h>
 
 #include "rgstringdata.h"
 

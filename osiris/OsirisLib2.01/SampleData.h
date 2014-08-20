@@ -77,10 +77,10 @@ public:
 
 	virtual const char* GetCapillaryNumber ();
 
-	virtual long GetDataOffset ();
+	virtual int GetDataOffset ();
 	virtual const short* GetRawDataForChannel (int channel);
 
-	virtual const long* GetOffScaleData (int& numElements);
+	virtual const int* GetOffScaleData (int& numElements);
 	virtual double* GetMatrix (int& numElements);
 
 private:
