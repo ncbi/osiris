@@ -693,41 +693,46 @@ bool mainFrame::ShowColourDialog(wxColour *pColour)
 #endif
 void mainFrame::OnRecentFiles(wxCommandEvent &e)
 {
-  nwxXmlMRU *pMRU(mainApp::GetMRU());
-  pMRU->ReloadFile();
-  if(pMRU->Size() > 0)
+  if( (e.GetInt() != MRU_NO_WARNING) || !m_MDImgr.Size() )
+     // check for startup from opening data file from 
+     // finder on ia macintosh
   {
+    nwxXmlMRU *pMRU(mainApp::GetMRU());
+    pMRU->ReloadFile();
+    if(pMRU->Size() > 0)
     {
-      wxBusyCursor bzc;
-      if(m_pDialogMRU == NULL)
       {
-        int nStyle = MRU_STYLE_CLEANUP | MRU_STYLE_OPEN_STARTUP;
-        m_pDialogMRU = new CDialogMRU(mainApp::GetMRU(),this,nStyle);
-      }
-      else
+        wxBusyCursor bzc;
+        if(m_pDialogMRU == NULL)
+        {
+          int nStyle = MRU_STYLE_CLEANUP | MRU_STYLE_OPEN_STARTUP;
+          m_pDialogMRU = new CDialogMRU(mainApp::GetMRU(),this,nStyle);
+        }
+        else
+        {
+          m_pDialogMRU->TransferDataToWindow();
+          m_pDialogMRU->ClearSelection();
+        }
+        wxSize sz = GetChildSize(80);
+        m_pDialogMRU->SetSize(sz);
+        m_pDialogMRU->CentreOnParent();
+      } // bracket will remove busy cursor before showing window
+      bool bBefore = m_pDialogMRU->StartupChecked();
+      if(m_pDialogMRU->ShowModal() == wxID_OK)
       {
-        m_pDialogMRU->TransferDataToWindow();
-        m_pDialogMRU->ClearSelection();
+        wxBusyCursor xxx;
+        m_pDialogMRU->LoadFiles();
       }
-      wxSize sz = GetChildSize(80);
-      m_pDialogMRU->SetSize(sz);
-      m_pDialogMRU->CentreOnParent();
-    } // bracket will remove busy cursor before showing window
-    bool bBefore = m_pDialogMRU->StartupChecked();
-    if(m_pDialogMRU->ShowModal() == wxID_OK)
-    {
-      wxBusyCursor xxx;
-      m_pDialogMRU->LoadFiles();
+      bool bAfter = m_pDialogMRU->StartupChecked();
+      if(bBefore != bAfter)
+      {
+        m_pDialogMRU->UpdateStartup();
+      }
     }
-    bool bAfter = m_pDialogMRU->StartupChecked();
-    if(bBefore != bAfter)
+    else if(e.GetInt() != MRU_NO_WARNING)
     {
-      m_pDialogMRU->UpdateStartup();
+      ErrorMessage("There are no recent files....");
     }
-  }
-  else if(e.GetInt() != MRU_NO_WARNING)
-  {
-    ErrorMessage("There are no recent files....");
   }
 }
 void mainFrame::OnEditGridColours(wxCommandEvent &)
