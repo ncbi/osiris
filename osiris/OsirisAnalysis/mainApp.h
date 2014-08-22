@@ -61,8 +61,9 @@ public:
   virtual bool OnInit();
 
   // cmd line override
+#ifndef __WXMAC__
   virtual void  OnInitCmdLine (wxCmdLineParser &parser);
-
+#endif
   // event handlers
 
 #define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);
