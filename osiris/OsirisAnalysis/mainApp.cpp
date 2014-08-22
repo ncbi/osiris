@@ -415,6 +415,10 @@ wxWindow *mainApp::GetTopLevelParent(wxWindow *p)
   return pRtn;
 }
 
+void  mainApp::OnInitCmdLine (wxCmdLineParser &) {}
+bool  mainApp::OnCmdLineParsed (wxCmdLineParser &) {return true;}
+
+
 #define DEFINE_CMD_HANDLER(x) \
   void mainApp::x (wxCommandEvent &e) { m_pFrame->x(e); }
 

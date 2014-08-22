@@ -60,6 +60,10 @@ public:
   virtual ~mainApp();
   bool OnInit();
 
+  // cmd line override
+  virtual void  OnInitCmdLine (wxCmdLineParser &parser);
+  virtual bool  OnCmdLineParsed (wxCmdLineParser &parser);
+
   // event handlers
 
 #define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);
