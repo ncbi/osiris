@@ -62,7 +62,6 @@ public:
 
   // cmd line override
   virtual void  OnInitCmdLine (wxCmdLineParser &parser);
-  virtual bool  OnCmdLineParsed (wxCmdLineParser &parser);
 
   // cmd line override
   virtual void  OnInitCmdLine (wxCmdLineParser &parser);
