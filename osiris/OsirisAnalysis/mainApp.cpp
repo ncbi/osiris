@@ -37,6 +37,7 @@
 #include <wx/msgdlg.h>
 #include <wx/file.h>
 #include <wx/datetime.h>
+#include <wx/cmdline.h>
 #include "CDialogAbout.h"
 #include "CParmOsiris.h"
 #include "CImageAbout.h"
@@ -414,6 +415,23 @@ wxWindow *mainApp::GetTopLevelParent(wxWindow *p)
   }
   return pRtn;
 }
+
+void mainApp::OnInitCmdLine (wxCmdLineParser &parser) 
+{
+  static const wxCmdLineEntryDesc cmdLineDesc[] =
+  {    
+    { wxCMD_LINE_PARAM,  NULL, NULL, "input-file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE },
+    { wxCMD_LINE_NONE }
+  };
+  parser.SetDesc(cmdLineDesc);
+  return;
+}
+bool mainApp::OnCmdLineParsed (wxCmdLineParser &parser) 
+{
+  bool b = wxApp::OnCmdLineParsed(parser);
+  return b;
+}
+
 
 #define DEFINE_CMD_HANDLER(x) \
   void mainApp::x (wxCommandEvent &e) { m_pFrame->x(e); }

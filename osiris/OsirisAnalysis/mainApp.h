@@ -58,7 +58,11 @@ public:
     wxXml2Object::AddReceiver(this);
   }
   virtual ~mainApp();
-  bool OnInit();
+  virtual bool OnInit();
+
+  // cmd line override
+  virtual void  OnInitCmdLine (wxCmdLineParser &parser);
+  virtual bool  OnCmdLineParsed (wxCmdLineParser &parser);
 
   // event handlers
 
