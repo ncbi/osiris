@@ -426,11 +426,6 @@ void mainApp::OnInitCmdLine (wxCmdLineParser &parser)
   parser.SetDesc(cmdLineDesc);
   return;
 }
-bool mainApp::OnCmdLineParsed (wxCmdLineParser &parser) 
-{
-  bool b = wxApp::OnCmdLineParsed(parser);
-  return b;
-}
 
 
 #define DEFINE_CMD_HANDLER(x) \

@@ -302,7 +302,7 @@ private:
 
   static const char * const NOFIND; 
   static const size_t MAX_FRAMES;
-  static const int MRU_NO_WARNING;
+  static const int MRU_AT_STARTUP;
 
   // message if lab settings file not found
   

@@ -190,7 +190,7 @@ void mainFrame::SetupSize()
 #endif
 
 const size_t mainFrame::MAX_FRAMES = 20;
-const int mainFrame::MRU_NO_WARNING = 1111;
+const int mainFrame::MRU_AT_STARTUP = 1111;
 const char * const mainFrame::NOFIND("Cannot find the lab settings file");
 
 CMDIFrame *mainFrame::INIT_LAST_ACTIVE((CMDIFrame *)1);
@@ -327,7 +327,7 @@ bool mainFrame::Startup(bool bHasArgs)
     {
       // send event to start up with the MRU window
       wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,IDlistMRU);
-      e.SetInt(MRU_NO_WARNING);
+      e.SetInt(MRU_AT_STARTUP);
       AddPendingEvent(e);
     }
   }
@@ -693,7 +693,7 @@ bool mainFrame::ShowColourDialog(wxColour *pColour)
 #endif
 void mainFrame::OnRecentFiles(wxCommandEvent &e)
 {
-  if( (e.GetInt() != MRU_NO_WARNING) || !m_MDImgr.Size() )
+  if( (e.GetInt() != MRU_AT_STARTUP) || !m_MDImgr.Size() )
      // check for startup from opening data file from 
      // finder on ia macintosh
   {
@@ -729,7 +729,7 @@ void mainFrame::OnRecentFiles(wxCommandEvent &e)
         m_pDialogMRU->UpdateStartup();
       }
     }
-    else if(e.GetInt() != MRU_NO_WARNING)
+    else if(e.GetInt() != MRU_AT_STARTUP)
     {
       ErrorMessage("There are no recent files....");
     }
