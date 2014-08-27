@@ -77,7 +77,7 @@ public:
 
 	virtual const char* GetCapillaryNumber ();
 
-	virtual int GetDataOffset ();
+	virtual long GetDataOffset ();
 	virtual const short* GetRawDataForChannel (int channel);
 
 	virtual const int* GetOffScaleData (int& numElements);

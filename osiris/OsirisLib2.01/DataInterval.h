@@ -43,6 +43,7 @@ const int _NOISEINTERVAL_ = 1008;
 class RGFile;
 class RGVInStream;
 class RGVOutStream;
+class DataSignal;
 
 PERSISTENT_PREDECLARATION (DataInterval)
 PERSISTENT_PREDECLARATION (NoiseInterval)
@@ -93,6 +94,8 @@ public:
 	int GetNumberOfMinima () const { return mNumberOfMinima; }
 	int GetLocalMinimum () const { return mLocalMinimum; }
 	double GetLocalMinValue () const { return mLocalMinValue; }
+
+	void ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSignal* data);
 
 	virtual size_t StoreSize () const;
 

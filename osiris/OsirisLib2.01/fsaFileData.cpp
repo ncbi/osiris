@@ -496,7 +496,7 @@ const char* fsaFileData :: GetCapillaryNumber () {
 }
 
 
-int fsaFileData :: GetDataOffset () {
+long fsaFileData :: GetDataOffset () {
 
 	RGString data;
 	fsaDirEntry* entry = fsaInput->FindDirEntry (DataOffsetTag, DataOffsetID);
@@ -504,7 +504,7 @@ int fsaFileData :: GetDataOffset () {
 	if (entry == NULL)
 		return 0;
 
-	int* AnsPtr = (int*)entry->GetDataINT32 ();
+	long* AnsPtr = (long*)entry->GetDataINT32 ();
 
 	if (AnsPtr == NULL)
 		return 0;

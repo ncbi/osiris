@@ -915,7 +915,7 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 	while (nextLocus = (Locus*) it ())
 		nextLocus->TestForMultiSignalsSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes);
 
-	//cout << "Locus multisignals tested" << endl;
+	//cout << "Locus multisiganls tested" << endl;
 
 	it.Reset ();
 
@@ -926,7 +926,7 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 
 	TestProximityArtifactsSM ();
 	TestForInterlocusProximityArtifactsSM ();
-	TestSignalsForOffScaleSM ();
+	//TestSignalsForOffScaleSM ();	//  Commented out 07/25/2014 to test moving it right after cross channel analysis for smarter pull-up analysis
 
 	//cout << "Tested proximity artifacts" << endl;
 
@@ -1518,6 +1518,7 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
 	double minFit = minFitForArtifactTest;
 	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
+	smPartOfDualSignal partOfDualSignal;
 
 	if (minAcceptableFit > minFit)
 		minFit = minAcceptableFit;
@@ -1534,6 +1535,9 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 			delete TestDual;
 			return -1;
 		}
+
+		leftSignal->SetMessageValue (partOfDualSignal, true);
+		rightSignal->SetMessageValue (partOfDualSignal, true);
 
 		if ((!originalUnacceptable) && (rightSignal->GetCurveFit () < currentFit) && (leftSignal->GetCurveFit () < currentFit)) {
 

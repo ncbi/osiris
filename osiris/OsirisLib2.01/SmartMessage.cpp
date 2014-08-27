@@ -38,6 +38,11 @@
 #include "STRLCAnalysis.h"
 
 
+
+PERSISTENT_DEFINITION (SmartMessageData, _SMARTMESSAGEDATA_, "SmartMessageData")
+PERSISTENT_DEFINITION (SmartMessageReporter, _SMARTMESSAGEREPORTER_, "SmartMessageReporter")
+
+
 RGHashTable* SmartMessage :: OverAllMessageTable = new RGHashTable (113);
 RGDList SmartMessage :: OverAllMessageList;
 int SmartMessage :: NumberOfMessageTables = 7;
@@ -57,13 +62,7 @@ int SmartMessage :: SeverityTrigger = 15;
 SmartMessageKill SmartMessage :: kill;
 
 
-
-PERSISTENT_DEFINITION (SmartMessageData, _SMARTMESSAGEDATA_, "SmartMessageData")
-PERSISTENT_DEFINITION (SmartMessageReporter, _SMARTMESSAGEREPORTER_, "SmartMessageReporter")
-
 ABSTRACT_DEFINITION (SmartMessage)
-
-
 
 SmartMessageKill :: SmartMessageKill () {
 

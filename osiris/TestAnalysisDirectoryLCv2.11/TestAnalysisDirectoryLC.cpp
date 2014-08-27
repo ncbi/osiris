@@ -73,7 +73,6 @@
 #include <math.h>
 #include <list>
 
-
 using namespace std;
 
 
@@ -81,7 +80,8 @@ using namespace std;
 int _tmain(int argc, _TCHAR* argv[]) {
 
 	// These are all input
-
+	int* testMemory = new int [4];
+	testMemory [0] = 1;
 	RGString PrototypeInputDirectory;
 	RGString LadderInformationDirectory;
 	RGString ParentDirectoryForReports;

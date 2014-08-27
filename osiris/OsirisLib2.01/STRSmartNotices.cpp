@@ -1110,10 +1110,10 @@ int smBaselineEstimationThreshold::sMessageIndex = 0;
 int smBaselineEstimationThreshold::sMessageScope = 0;
 
 
-RGString smFilterWindowWidthForBaselineEstimation::sName = "smFilterWindowWidthForBaselineEstimation";
-int smFilterWindowWidthForBaselineEstimation::sSubject = smFilterWindowWidthForBaselineEstimation::LoadType ();
-int smFilterWindowWidthForBaselineEstimation::sMessageIndex = 0;
-int smFilterWindowWidthForBaselineEstimation::sMessageScope = 0;
+RGString smSinglePassFilterWindowWidth::sName = "smSinglePassFilterWindowWidth";
+int smSinglePassFilterWindowWidth::sSubject = smSinglePassFilterWindowWidth::LoadType ();
+int smSinglePassFilterWindowWidth::sMessageIndex = 0;
+int smSinglePassFilterWindowWidth::sMessageScope = 0;
 
 
 RGString smAmbiguousInterlocusWithPoorMorphology::sName = "smAmbiguousInterlocusWithPoorMorphology";
@@ -1186,6 +1186,42 @@ RGString smDisableAdenylationFilter::sName = "smDisableAdenylationFilter";
 int smDisableAdenylationFilter::sSubject = smDisableAdenylationFilter::LoadType ();
 int smDisableAdenylationFilter::sMessageIndex = 0;
 int smDisableAdenylationFilter::sMessageScope = 0;
+
+
+RGString smSelectTriplePassVsSinglePassFilterPreset::sName = "smSelectTriplePassVsSinglePassFilterPreset";
+int smSelectTriplePassVsSinglePassFilterPreset::sSubject = smSelectTriplePassVsSinglePassFilterPreset::LoadType ();
+int smSelectTriplePassVsSinglePassFilterPreset::sMessageIndex = 0;
+int smSelectTriplePassVsSinglePassFilterPreset::sMessageScope = 0;
+
+
+RGString smTriplePassFilterWindowWidth::sName = "smTriplePassFilterWindowWidth";
+int smTriplePassFilterWindowWidth::sSubject = smTriplePassFilterWindowWidth::LoadType ();
+int smTriplePassFilterWindowWidth::sMessageIndex = 0;
+int smTriplePassFilterWindowWidth::sMessageScope = 0;
+
+
+RGString smLadderFitThresholdUsingMinError::sName = "smLadderFitThresholdUsingMinError";
+int smLadderFitThresholdUsingMinError::sSubject = smLadderFitThresholdUsingMinError::LoadType ();
+int smLadderFitThresholdUsingMinError::sMessageIndex = 0;
+int smLadderFitThresholdUsingMinError::sMessageScope = 0;
+
+
+RGString smUseMaxSecondDerivativesForSampleToLadderFit::sName = "smUseMaxSecondDerivativesForSampleToLadderFit";
+int smUseMaxSecondDerivativesForSampleToLadderFit::sSubject = smUseMaxSecondDerivativesForSampleToLadderFit::LoadType ();
+int smUseMaxSecondDerivativesForSampleToLadderFit::sMessageIndex = 0;
+int smUseMaxSecondDerivativesForSampleToLadderFit::sMessageScope = 0;
+
+
+RGString smPartOfDualSignal::sName = "smPartOfDualSignal";
+int smPartOfDualSignal::sSubject = smPartOfDualSignal::LoadType ();
+int smPartOfDualSignal::sMessageIndex = 0;
+int smPartOfDualSignal::sMessageScope = 0;
+
+
+RGString smNegativePeak::sName = "smNegativePeak";
+int smNegativePeak::sSubject = smNegativePeak::LoadType ();
+int smNegativePeak::sMessageIndex = 0;
+int smNegativePeak::sMessageScope = 0;
 
 
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
@@ -1372,7 +1408,7 @@ PERSISTENT_DEFINITION (smLadderFitThreshold, 2580, "smLadderFitThreshold")
 PERSISTENT_DEFINITION (smSampleToLadderFitBelowExpectations, 2581, "smSampleToLadderFitBelowExpectations")
 PERSISTENT_DEFINITION (smEnableRawDataFilterForNormalizationPreset, 2582, "smEnableRawDataFilterForNormalizationPreset")
 PERSISTENT_DEFINITION (smBaselineEstimationThreshold, 2583, "smBaselineEstimationThreshold")
-PERSISTENT_DEFINITION (smFilterWindowWidthForBaselineEstimation, 2584, "smFilterWindowWidthForBaselineEstimation")
+PERSISTENT_DEFINITION (smSinglePassFilterWindowWidth, 2584, "smSinglePassFilterWindowWidth")
 PERSISTENT_DEFINITION (smAmbiguousInterlocusWithPoorMorphology, 2585, "smAmbiguousInterlocusWithPoorMorphology")
 PERSISTENT_DEFINITION (smSigmoidalPullup, 2586, "smSigmoidalPullup")
 PERSISTENT_DEFINITION (smMinPrimaryPullupThreshold, 2587, "smMinPrimaryPullupThreshold")
@@ -1385,6 +1421,12 @@ PERSISTENT_DEFINITION (smSampleSatisfiesPossibleMixtureIDCriteria, 2593, "smSamp
 PERSISTENT_DEFINITION (smDisableLowLevelFiltersForKnownMixturesPreset, 2594, "smDisableLowLevelFiltersForKnownMixturesPreset")
 PERSISTENT_DEFINITION (smDisableStutterFilter, 2595, "smDisableStutterFilter")
 PERSISTENT_DEFINITION (smDisableAdenylationFilter, 2596, "smDisableAdenylationFilter")
+PERSISTENT_DEFINITION (smSelectTriplePassVsSinglePassFilterPreset, 2597, "smSelectTriplePassVsSinglePassFilterPreset")
+PERSISTENT_DEFINITION (smTriplePassFilterWindowWidth, 2598, "smTriplePassFilterWindowWidth")
+PERSISTENT_DEFINITION (smLadderFitThresholdUsingMinError, 2599, "smLadderFitThresholdUsingMinError")
+PERSISTENT_DEFINITION (smUseMaxSecondDerivativesForSampleToLadderFit, 2600, "smUseMaxSecondDerivativesForSampleToLadderFit")
+PERSISTENT_DEFINITION (smPartOfDualSignal, 2601, "smPartOfDualSignal")
+PERSISTENT_DEFINITION (smNegativePeak, 2602, "smNegativePeak")
 
 
 
@@ -12429,58 +12471,58 @@ int smBaselineEstimationThreshold :: LoadType () {
 
 
 
-smFilterWindowWidthForBaselineEstimation :: smFilterWindowWidthForBaselineEstimation () : SmartNotice () {
+smSinglePassFilterWindowWidth :: smSinglePassFilterWindowWidth () : SmartNotice () {
 
 }
 
 
-smFilterWindowWidthForBaselineEstimation :: smFilterWindowWidthForBaselineEstimation (const smFilterWindowWidthForBaselineEstimation& note) : SmartNotice ((const SmartNotice&) note) {
+smSinglePassFilterWindowWidth :: smSinglePassFilterWindowWidth (const smSinglePassFilterWindowWidth& note) : SmartNotice ((const SmartNotice&) note) {
 
 }
 
 
 
-smFilterWindowWidthForBaselineEstimation :: ~smFilterWindowWidthForBaselineEstimation () {
+smSinglePassFilterWindowWidth :: ~smSinglePassFilterWindowWidth () {
 
 }
 
 
-int smFilterWindowWidthForBaselineEstimation :: GetSubject () const {
+int smSinglePassFilterWindowWidth :: GetSubject () const {
 
-	return smFilterWindowWidthForBaselineEstimation::sSubject;
+	return smSinglePassFilterWindowWidth::sSubject;
 }
 
 
-void smFilterWindowWidthForBaselineEstimation :: SetIndexAndScope (int index, int scope) const {
+void smSinglePassFilterWindowWidth :: SetIndexAndScope (int index, int scope) const {
 
-	smFilterWindowWidthForBaselineEstimation::sMessageIndex = index;
-	smFilterWindowWidthForBaselineEstimation::sMessageScope = scope;
+	smSinglePassFilterWindowWidth::sMessageIndex = index;
+	smSinglePassFilterWindowWidth::sMessageScope = scope;
 }
 
 
-int smFilterWindowWidthForBaselineEstimation :: GetMessageIndex () const {
+int smSinglePassFilterWindowWidth :: GetMessageIndex () const {
 
-	return smFilterWindowWidthForBaselineEstimation :: sMessageIndex;
+	return smSinglePassFilterWindowWidth :: sMessageIndex;
 }
 
 
-int smFilterWindowWidthForBaselineEstimation :: GetScope () const {
+int smSinglePassFilterWindowWidth :: GetScope () const {
 
-	return smFilterWindowWidthForBaselineEstimation :: sMessageScope;
+	return smSinglePassFilterWindowWidth :: sMessageScope;
 }
 
 
-RGString smFilterWindowWidthForBaselineEstimation :: GetName () const {
+RGString smSinglePassFilterWindowWidth :: GetName () const {
 
-	return smFilterWindowWidthForBaselineEstimation :: sName;
+	return smSinglePassFilterWindowWidth :: sName;
 }
 
 
 
-int smFilterWindowWidthForBaselineEstimation :: LoadType () {
+int smSinglePassFilterWindowWidth :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smFilterWindowWidthForBaselineEstimation* noticeType = new smFilterWindowWidthForBaselineEstimation;
+	smSinglePassFilterWindowWidth* noticeType = new smSinglePassFilterWindowWidth;
 	warehouse->AddType (noticeType);
 	return 1;
 }
@@ -13201,6 +13243,366 @@ int smDisableAdenylationFilter :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smDisableAdenylationFilter* noticeType = new smDisableAdenylationFilter;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSelectTriplePassVsSinglePassFilterPreset :: smSelectTriplePassVsSinglePassFilterPreset () : SmartNotice () {
+
+}
+
+
+smSelectTriplePassVsSinglePassFilterPreset :: smSelectTriplePassVsSinglePassFilterPreset (const smSelectTriplePassVsSinglePassFilterPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSelectTriplePassVsSinglePassFilterPreset :: ~smSelectTriplePassVsSinglePassFilterPreset () {
+
+}
+
+
+int smSelectTriplePassVsSinglePassFilterPreset :: GetSubject () const {
+
+	return smSelectTriplePassVsSinglePassFilterPreset::sSubject;
+}
+
+
+void smSelectTriplePassVsSinglePassFilterPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smSelectTriplePassVsSinglePassFilterPreset::sMessageIndex = index;
+	smSelectTriplePassVsSinglePassFilterPreset::sMessageScope = scope;
+}
+
+
+int smSelectTriplePassVsSinglePassFilterPreset :: GetMessageIndex () const {
+
+	return smSelectTriplePassVsSinglePassFilterPreset :: sMessageIndex;
+}
+
+
+int smSelectTriplePassVsSinglePassFilterPreset :: GetScope () const {
+
+	return smSelectTriplePassVsSinglePassFilterPreset :: sMessageScope;
+}
+
+
+RGString smSelectTriplePassVsSinglePassFilterPreset :: GetName () const {
+
+	return smSelectTriplePassVsSinglePassFilterPreset :: sName;
+}
+
+
+
+int smSelectTriplePassVsSinglePassFilterPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSelectTriplePassVsSinglePassFilterPreset* noticeType = new smSelectTriplePassVsSinglePassFilterPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smTriplePassFilterWindowWidth :: smTriplePassFilterWindowWidth () : SmartNotice () {
+
+}
+
+
+smTriplePassFilterWindowWidth :: smTriplePassFilterWindowWidth (const smTriplePassFilterWindowWidth& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smTriplePassFilterWindowWidth :: ~smTriplePassFilterWindowWidth () {
+
+}
+
+
+int smTriplePassFilterWindowWidth :: GetSubject () const {
+
+	return smTriplePassFilterWindowWidth::sSubject;
+}
+
+
+void smTriplePassFilterWindowWidth :: SetIndexAndScope (int index, int scope) const {
+
+	smTriplePassFilterWindowWidth::sMessageIndex = index;
+	smTriplePassFilterWindowWidth::sMessageScope = scope;
+}
+
+
+int smTriplePassFilterWindowWidth :: GetMessageIndex () const {
+
+	return smTriplePassFilterWindowWidth :: sMessageIndex;
+}
+
+
+int smTriplePassFilterWindowWidth :: GetScope () const {
+
+	return smTriplePassFilterWindowWidth :: sMessageScope;
+}
+
+
+RGString smTriplePassFilterWindowWidth :: GetName () const {
+
+	return smTriplePassFilterWindowWidth :: sName;
+}
+
+
+
+int smTriplePassFilterWindowWidth :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smTriplePassFilterWindowWidth* noticeType = new smTriplePassFilterWindowWidth;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smLadderFitThresholdUsingMinError :: smLadderFitThresholdUsingMinError () : SmartNotice () {
+
+}
+
+
+smLadderFitThresholdUsingMinError :: smLadderFitThresholdUsingMinError (const smLadderFitThresholdUsingMinError& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smLadderFitThresholdUsingMinError :: ~smLadderFitThresholdUsingMinError () {
+
+}
+
+
+int smLadderFitThresholdUsingMinError :: GetSubject () const {
+
+	return smLadderFitThresholdUsingMinError::sSubject;
+}
+
+
+void smLadderFitThresholdUsingMinError :: SetIndexAndScope (int index, int scope) const {
+
+	smLadderFitThresholdUsingMinError::sMessageIndex = index;
+	smLadderFitThresholdUsingMinError::sMessageScope = scope;
+}
+
+
+int smLadderFitThresholdUsingMinError :: GetMessageIndex () const {
+
+	return smLadderFitThresholdUsingMinError :: sMessageIndex;
+}
+
+
+int smLadderFitThresholdUsingMinError :: GetScope () const {
+
+	return smLadderFitThresholdUsingMinError :: sMessageScope;
+}
+
+
+RGString smLadderFitThresholdUsingMinError :: GetName () const {
+
+	return smLadderFitThresholdUsingMinError :: sName;
+}
+
+
+
+int smLadderFitThresholdUsingMinError :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smLadderFitThresholdUsingMinError* noticeType = new smLadderFitThresholdUsingMinError;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smUseMaxSecondDerivativesForSampleToLadderFit :: smUseMaxSecondDerivativesForSampleToLadderFit () : SmartNotice () {
+
+}
+
+
+smUseMaxSecondDerivativesForSampleToLadderFit :: smUseMaxSecondDerivativesForSampleToLadderFit (const smUseMaxSecondDerivativesForSampleToLadderFit& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smUseMaxSecondDerivativesForSampleToLadderFit :: ~smUseMaxSecondDerivativesForSampleToLadderFit () {
+
+}
+
+
+int smUseMaxSecondDerivativesForSampleToLadderFit :: GetSubject () const {
+
+	return smUseMaxSecondDerivativesForSampleToLadderFit::sSubject;
+}
+
+
+void smUseMaxSecondDerivativesForSampleToLadderFit :: SetIndexAndScope (int index, int scope) const {
+
+	smUseMaxSecondDerivativesForSampleToLadderFit::sMessageIndex = index;
+	smUseMaxSecondDerivativesForSampleToLadderFit::sMessageScope = scope;
+}
+
+
+int smUseMaxSecondDerivativesForSampleToLadderFit :: GetMessageIndex () const {
+
+	return smUseMaxSecondDerivativesForSampleToLadderFit :: sMessageIndex;
+}
+
+
+int smUseMaxSecondDerivativesForSampleToLadderFit :: GetScope () const {
+
+	return smUseMaxSecondDerivativesForSampleToLadderFit :: sMessageScope;
+}
+
+
+RGString smUseMaxSecondDerivativesForSampleToLadderFit :: GetName () const {
+
+	return smUseMaxSecondDerivativesForSampleToLadderFit :: sName;
+}
+
+
+
+int smUseMaxSecondDerivativesForSampleToLadderFit :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smUseMaxSecondDerivativesForSampleToLadderFit* noticeType = new smUseMaxSecondDerivativesForSampleToLadderFit;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPartOfDualSignal :: smPartOfDualSignal () : SmartNotice () {
+
+}
+
+
+smPartOfDualSignal :: smPartOfDualSignal (const smPartOfDualSignal& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPartOfDualSignal :: ~smPartOfDualSignal () {
+
+}
+
+
+int smPartOfDualSignal :: GetSubject () const {
+
+	return smPartOfDualSignal::sSubject;
+}
+
+
+void smPartOfDualSignal :: SetIndexAndScope (int index, int scope) const {
+
+	smPartOfDualSignal::sMessageIndex = index;
+	smPartOfDualSignal::sMessageScope = scope;
+}
+
+
+int smPartOfDualSignal :: GetMessageIndex () const {
+
+	return smPartOfDualSignal :: sMessageIndex;
+}
+
+
+int smPartOfDualSignal :: GetScope () const {
+
+	return smPartOfDualSignal :: sMessageScope;
+}
+
+
+RGString smPartOfDualSignal :: GetName () const {
+
+	return smPartOfDualSignal :: sName;
+}
+
+
+
+int smPartOfDualSignal :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPartOfDualSignal* noticeType = new smPartOfDualSignal;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smNegativePeak :: smNegativePeak () : SmartNotice () {
+
+}
+
+
+smNegativePeak :: smNegativePeak (const smNegativePeak& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smNegativePeak :: ~smNegativePeak () {
+
+}
+
+
+int smNegativePeak :: GetSubject () const {
+
+	return smNegativePeak::sSubject;
+}
+
+
+void smNegativePeak :: SetIndexAndScope (int index, int scope) const {
+
+	smNegativePeak::sMessageIndex = index;
+	smNegativePeak::sMessageScope = scope;
+}
+
+
+int smNegativePeak :: GetMessageIndex () const {
+
+	return smNegativePeak :: sMessageIndex;
+}
+
+
+int smNegativePeak :: GetScope () const {
+
+	return smNegativePeak :: sMessageScope;
+}
+
+
+RGString smNegativePeak :: GetName () const {
+
+	return smNegativePeak :: sName;
+}
+
+
+
+int smNegativePeak :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smNegativePeak* noticeType = new smNegativePeak;
 	warehouse->AddType (noticeType);
 	return 1;
 }

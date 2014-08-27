@@ -142,7 +142,8 @@ public:
 
 	double GetBeginAnalysisTime () const { return mBeginAnalysis; }
 
-	int CreateAndSubstituteFilteredSignalForRawData (int window);
+	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
+	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);
 	int RestoreRawDataAndDeleteFilteredSignal ();
 	bool HasFilteredData () const;
 	
@@ -414,6 +415,7 @@ public:
 
 	friend CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2);
 	friend CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2, double* firstDerivs, int size);
+	friend CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2, bool isHermite);
 
 	static double GetMinimumDistanceBetweenPeaks () { return MinDistanceBetweenPeaks; }
 	static void SetMinimumDistanceBetweenPeaks (double distance) { MinDistanceBetweenPeaks = distance; }

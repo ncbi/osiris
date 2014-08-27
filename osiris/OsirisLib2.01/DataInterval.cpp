@@ -33,9 +33,11 @@
 //
 
 #include "DataInterval.h"
+#include "DataSignal.h"
 #include "rgfile.h"
 #include "rgvstream.h"
 #include "rgdefs.h"
+#include <list>
 
 PERSISTENT_DEFINITION(DataInterval, _DATAINTERVAL_, "DataInterval")
 PERSISTENT_DEFINITION(NoiseInterval, _NOISEINTERVAL_, "NoiseInterval")
@@ -95,6 +97,129 @@ DataInterval* DataInterval :: Split (DataInterval*& secondInterval) const {
 	}
 
 	return rtnValue;
+}
+
+
+void DataInterval :: ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSignal* data) {
+
+	if (mNumberOfMinima == 0)
+		return;
+
+	int i;
+	SampledData* localData = (SampledData*) data;
+	double current;
+	double prev;
+	double next;
+	//prev = localData->Value (Left);
+	//bool foundMinimum = false;
+	//bool foundMax = false;
+	//bool lookingForMin = false;
+	//double currentMinValue;
+	//double currentMaxValue = prev;
+	//double leftMax;
+	//double rightMax;
+	bool foundRightMax = false;
+
+	prev = mLocalMinValue;
+
+	for (i=mLocalMinimum+1; i<Right; i++) {
+
+		current = localData->Value (i);
+		next = localData->Value (i + 1);
+
+		if ((current > prev) && (current > next)) {
+
+			if (current - mLocalMinValue > noiseLevel) {
+
+				foundRightMax = true;
+				break;
+			}
+
+			mNumberOfMinima = 0;
+			return;
+		}
+
+		prev = current;
+	}
+
+	if (!foundRightMax) {
+
+		if (!(localData->Value (Right) - mLocalMinValue > noiseLevel)) {
+
+			mNumberOfMinima = 0;
+			return;
+		}
+	}
+
+	next = mLocalMinValue;
+
+	for (i=mLocalMinimum-1; i>Left; i--) {
+
+		current = localData->Value (i);
+		prev = localData->Value (i - 1);
+
+		if ((current > prev) && (current > next)) {
+
+			if (current - mLocalMinValue > noiseLevel)
+				return;
+
+			mNumberOfMinima = 0;
+			return;
+		}
+
+		next = current;
+	}
+
+	if (localData->Value (Left) - mLocalMinValue > noiseLevel)
+		return;
+
+	//for (i=Left+1; i<Right; i++) {
+
+	//	current = localData->Value (i);
+	//	next = localData->Value (i + 1);
+
+	//	if (lookingForMin) {
+
+	//		if ((current < prev) && (current < next)) {
+
+	//			//  Found relative minimum
+	//			foundMinimum = true;
+	//			currentMinValue = current;
+
+	//			if (foundMax) {
+
+	//				if (currentMaxValue - current > noiseLevel)
+	//					return;
+	//			}
+
+	//			foundMax = false;
+	//			lookingForMin = false;
+	//		}
+	//	}
+
+	//	else {	// looking for max
+
+	//		if ((current > prev) && (current > next)) {
+
+	//			//  Found relative max
+	//			foundMax = true;
+	//			currentMaxValue = current;
+
+	//			if (foundMinimum) {
+
+	//				if (current - currentMinValue > noiseLevel)
+	//					return;
+	//			}
+
+	//			foundMinimum = false;
+	//			lookingForMin = true;
+	//		}
+	//	}
+
+	//	prev = current;
+	//}
+
+	mNumberOfMinima = 0;
 }
 
 

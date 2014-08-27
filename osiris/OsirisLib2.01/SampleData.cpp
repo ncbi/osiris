@@ -151,7 +151,7 @@ const char* SampleData :: GetCapillaryNumber () {
 }
 
 
-int SampleData :: GetDataOffset () {
+long SampleData :: GetDataOffset () {
 
 	return -1;
 }

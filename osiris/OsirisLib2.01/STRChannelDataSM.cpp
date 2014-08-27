@@ -308,7 +308,7 @@ int STRChannelData :: TestNeighborsSM (DataSignal* previous, DataSignal* testSig
 
 int STRChannelData :: TestSignalsForOffScaleSM () {
 
-	RGDListIterator it (SmartPeaks);
+	RGDListIterator it (PreliminaryCurveList);
 	DataSignal* nextSignal;
 
 	smCrater crater;
@@ -1313,6 +1313,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
 		cout << "There are too few peaks available in the ILS:  " << PreliminaryCurveList.Entries () << " peaks out of " << Size << endl;
+		nextSignal = (DataSignal*)PreliminaryCurveList.First ();
+		cout << "First peak at time " << nextSignal->GetMean () << endl;
+		nextSignal = (DataSignal*)PreliminaryCurveList.Last ();
+		cout << "Last peak at time " << nextSignal->GetMean () << endl;
 		return -50;
 	}
 
@@ -1326,6 +1330,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	ClearAndRepopulateFromList (PreliminaryCurveList, tempCurveList, overFlow);
 	RGDListIterator itt (tempCurveList);
 	SmartPeaks.Clear ();
+	cout << "Found primer peaks starting at time " << primerTime << endl;
 
 	// Now remove primer peaks and isolated "large" peaks; FoundPrimerPeaks tests for removing too many peaks, so we don't have to do it here.
 
@@ -2047,6 +2052,51 @@ int STRLaneStandardChannelData :: TestForRaisedBaselineAndExcessiveNoiseSM (doub
 	}
 
 	mPoorFits.clearAndDestroy ();
+	return 0;
+}
+
+
+int STRLaneStandardChannelData :: TestSignalsForOffScaleSM () {
+
+	RGDListIterator it (SmartPeaks);
+	DataSignal* nextSignal;
+
+	smCrater crater;
+	smSignalNotACrater notCrater;
+	smPrimaryInterchannelLink primaryPullup;
+	smPullUp pullup;
+	smNotInterchannelLink notInterchannel;
+
+	smLaserOffScalePullupOrCraterNotPrimary laserOffScaleNotPrimary;
+	smLaserOffScalePrimary laserOffScalePrimary;
+	smLaserOffScaleNoInterchannelLink laserOffScaleNoInterchannelLink;
+
+	bool isPullup;
+	bool isCrater;
+	bool isPrimary;
+	bool isNotInterchannel;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (CoreBioComponent::TestForOffScale (nextSignal->GetMean ())) {
+
+			isPullup = nextSignal->GetMessageValue (pullup);
+			isCrater = (nextSignal->GetMessageValue (crater) && !nextSignal->GetMessageValue (notCrater));
+			isPrimary = nextSignal->GetMessageValue (primaryPullup);
+			isNotInterchannel = (!isPullup || nextSignal->GetMessageValue (notInterchannel));
+
+			if ((isPullup || isCrater) && !isPrimary && !isNotInterchannel)
+				nextSignal->SetMessageValue (laserOffScaleNotPrimary, true);
+
+			//else if (isPrimary  && !isNotInterchannel)
+			else if (isPrimary)
+				nextSignal->SetMessageValue (laserOffScalePrimary, true);
+
+			else
+				nextSignal->SetMessageValue (laserOffScaleNoInterchannelLink, true);
+		}
+	}
+
 	return 0;
 }
 
@@ -3441,6 +3491,7 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 	mNegativeCurveList.ClearAndDelete ();
 	double lineFit;
 	SampledData* negativePeaks = new SampledData (*(SampledData*)mData);
+	negativePeaks->SetNoiseRange (mData->GetNoiseRange ());
 	double* negArray = (double*)negativePeaks->GetData ();
 	int n = negativePeaks->GetNumberOfSamples ();
 
@@ -3457,7 +3508,7 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 
 	Endl endLine;
 	ExcelText.SetOutputLevel (1);
-	ExcelText << "Using minimum RFU = " << minRFU << endLine;
+	ExcelText << "Using minimum RFU = " << detectionRFU << " for negative peaks" << endLine;
 	ExcelText.ResetOutputLevel ();
 	double absoluteMinFitLessEpsilon = absoluteMinFit - 0.01;
 
@@ -3655,7 +3706,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 
 	int left = startTime;
 	//int end = (int)floor (mData->RightEndPoint ());
-	int end = mData->GetNumberOfSamples() - 1;
+	int end = mData->GetNumberOfSamples () - 1;
 	int localLeft;
 	int localRight;
 	smBaselineEstimationThreshold baselineThreshold;
@@ -3934,7 +3985,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 
 	int left = startTime;
 	//int end = (int)floor (mData->RightEndPoint ());
-	int end = mData->GetNumberOfSamples() - 1;
+	int end = mData->GetNumberOfSamples () - 1;
 	int localLeft;
 	int localRight;
 	smBaselineEstimationThreshold baselineThreshold;
@@ -3993,7 +4044,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 
 	//else {
 
-	while (!lefts.empty () && !rights.empty ()) {
+	while (!lefts.empty ()) {
 
 		localLeft = lefts.front ();
 		localRight = rights.front ();
@@ -4003,9 +4054,6 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		AppendKnotDataToLists (localLeft, localRight, knotTimes, knotValues, mData);
 		firstInterval = false;
 	}
-
-	if (!lefts.empty () || !rights.empty())
-		cout << "Left and right imbalance after appending knot data." << endl;
 	//}
 
 	temp = mData->RightEndPoint ();
@@ -4082,7 +4130,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		EditPeaksForOutOfRange (knotTimes, knotValues, FitNegData, rfuThreshold);	// 02/03/2014:  This function causes a crash under some conditions...Fixed 02/04/2014
 	}
 
-	while (!knotTimes.empty () && !knotValues.empty()) {
+	while (!knotTimes.empty ()) {
 
 		temp = knotTimes.front ();
 		tempValue = knotValues.front ();
@@ -4096,9 +4144,6 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 			lastTime = temp;
 		}
 	}
-
-	if (!knotTimes.empty () || !knotValues.empty())
-		cout << "Knot times and values imbalance prior to forming spline" << endl;
 
 	//for (itTimes=knotTimes2.begin (); itTimes!=knotTimes2.end (); itTimes++) {
 
@@ -4151,14 +4196,30 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 
 	delete FitData;
 	delete FitNegData;
-	mBaseLine = new CSplineTransform (knotTimes2, knotValues2);
+	//smTempUseNaturalCubicSplineForNormalization useNaturalCubicSpline;
+
+	if (UseHermiteCubicSplineForNormalization) {
+
+		//cout << "Using Hermite cubic spline for normalization..." << endl;
+		mBaseLine = new CSplineTransform (knotTimes2, knotValues2, true);  //*****test 04/28/2014
+	}
+
+	else {
+
+		//cout << "Using natural cubic spline for normalization..." << endl;
+		mBaseLine = new CSplineTransform (knotTimes2, knotValues2);
+	}
+
 	knotTimes2.clear ();
 	knotValues2.clear ();
 	firstList.clear ();
 	lastList.clear ();
 
-	if (HasFilteredData ())
-			RestoreRawDataAndDeleteFilteredSignal ();
+	if (HasFilteredData ())	//  Moved these two lines above test for baseline validity in case it's not valid.  At least we then restore the original baseline 08/01/2014
+		RestoreRawDataAndDeleteFilteredSignal ();
+
+	//cout << "Raw data restored for channel " << mChannel << endl;
+
 
 	if (!mBaseLine->IsValid ()) {
 
@@ -4182,7 +4243,6 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 
 	//cout << "Restoring raw data for channel " << mChannel << endl;
 
-	//cout << "Raw data restored for channel " << mChannel << endl;
 	double* sampleData = (double*)mData->GetData ();
 	int i;
 
@@ -4227,7 +4287,7 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 	double timeThreshold = 300.0;
 	double increment = 20.0;
 
-	while (!knotTimes.empty () && !knotValues.empty ()) {
+	while (!knotTimes.empty ()) {
 
 		time = knotTimes.front ();
 		value = knotValues.front ();
@@ -4237,9 +4297,6 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 		originalValues [i] = value;
 		i++;
 	}
-
-	if (!knotTimes.empty () || !knotValues.empty ())
-		cout << "Shape baseline knot times and values imbalanced" << endl;
 
 	for (i=0; i<6; i++) {
 
@@ -4294,17 +4351,17 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 	double delv;
 	double slope;
 	double factor = 1.0;	//0.75;
-	double timeThreshold = 300.0;
+	double timeThreshold = 50.0;	//100.0; //300.0;
 	double increment = 20.0;
-	double lowTimeThreshold = 60.0;
+	double lowTimeThreshold = 40.0; //60.0;
 
-	if (ChannelData::GetUseNormalizationFilter ()) {
+	//if (ChannelData::GetUseNormalizationFilter ()) {
 
-		timeThreshold = 100.0;
-		lowTimeThreshold = 40.0;
-	}
+	//	timeThreshold = 100.0;	//100.0
+	//	lowTimeThreshold = 40.0;	//40.0
+	//}
 
-	while (!knotTimes.empty () && !knotValues.empty ()) {
+	while (!knotTimes.empty ()) {
 
 		time = knotTimes.front ();
 		value = knotValues.front ();
@@ -4314,9 +4371,6 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 		originalValues [i] = value;
 		i++;
 	}
-
-	if (!knotTimes.empty () || !knotValues.empty ())
-		cout << "Shape baseliine data knot times and values imbalance" << endl;
 
 	for (i=0; i<6; i++) {
 
@@ -4602,6 +4656,80 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 	value = BaselineAverage (left, right, fitData, 15.0);
 	times.push_back (time);
 	values.push_back (value);
+}
+
+
+void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int intervalRight, list<double>& times, list<double>& values, list<bool>& firsts, list<bool>& lasts, DataSignal* fitData) {
+
+	int length = intervalRight - intervalLeft + 1;
+	int center;
+	int left;
+	int right;
+	double time;
+	double value;
+	int i;
+	int nSeg;
+	int segLength;
+
+	if (length < 30) {
+
+		center = (intervalRight + intervalLeft) / 2;
+		left = center - 7;
+		right = center + 7;
+		value = BaselineAverage (left, right, fitData, 15.0);
+		time = (double) center;
+		times.push_back (time);
+		values.push_back (value);
+		firsts.push_back (true);
+		lasts.push_back (true);
+		return;
+	}
+
+	left = intervalLeft;
+	right = intervalLeft + 14;
+	time = (double) (intervalLeft + 7);
+	value = BaselineAverage (left, right, fitData, 15.0);
+	times.push_back (time);
+	values.push_back (value);
+	firsts.push_back (true);
+	lasts.push_back (false);
+
+	if (length > 75) {
+
+		nSeg = length / 75;
+		segLength = length / (nSeg + 1);
+		center = left;
+
+		for (i=0; i<nSeg; i++) {
+
+			center += segLength;
+			left = center - 7;
+			right = center + 7;
+			value = BaselineAverage (left, right, fitData, 15.0);
+			time = (double) center;
+			times.push_back (time);
+			values.push_back (value);
+			firsts.push_back (false);
+			lasts.push_back (false);
+		}
+
+		//center = (intervalRight + intervalLeft) / 2;
+		//left = center - 25;
+		//right = center + 25;
+		//value = BaselineAverage (left, right, fitData, 51.0);
+		//time = (double) center;
+		//times.push_back (time);
+		//values.push_back (value);
+	}
+
+	right = intervalRight;
+	left = intervalRight - 14;
+	time = (double) (left + 7);
+	value = BaselineAverage (left, right, fitData, 15.0);
+	times.push_back (time);
+	values.push_back (value);
+	firsts.push_back (false);
+	lasts.push_back (true);
 }
 
 
@@ -5276,9 +5404,9 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 	double upperTest;
 	double lowerTest;
 	double testFactor = 2.5;
-	int endTime = mData->GetNumberOfSamples();
+	int endTime = mData->GetNumberOfSamples ();
 
-	while (!times.empty () && !values.empty()) {
+	while (!times.empty ()) {
 
 		time = times.front ();
 		value = values.front ();
@@ -5288,9 +5416,6 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 		originalValues [i] = value;
 		i++;
 	}
-
-	if (!times.empty () || !values.empty())
-		cout << "Edit peaks for out of range, times and values list imbalance" << endl;
 
 	for (i=0; i<6; i++) {
 
@@ -5409,7 +5534,7 @@ bool STRSampleChannelData :: FindRawDataMinimumOnInterval (double& minimum, int 
 
 	for (i=left; i<=right; i++) {
 
-		if (i > maxTime)
+		if (i >= maxTime)
 			break;
 
 		if (i < 0)

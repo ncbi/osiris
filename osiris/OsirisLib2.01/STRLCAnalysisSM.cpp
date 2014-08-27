@@ -293,7 +293,6 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	Boolean print = TRUE;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
-	//DataSignal::ReinitializeSignalID ();
 
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
@@ -576,10 +575,6 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	text << "Directory:" << endLine;
 	text << "    " << DirectoryName.GetData() << endLine;
 
-	//
-	//  Test SmartDouble and SmartBoolean arrays
-	//
-
 	ExcelText.SetOutputLevel (1);
 	ExcelText << "Directory:" << endLine;
 	ExcelText << "    " << DirectoryName.GetData() << endLine;
@@ -780,10 +775,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	int numHigherObjects = 2;
 	bool isFirstLadder = true;
 	RGString ABIModelNumber;
+	int nLadders = 0;
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
 		FullPathName = DirectoryName + "/" + LadderFileName;
+		nLadders++;
 
 		if (WorkingFile != NULL) {
 
@@ -791,14 +788,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			WorkingFile->Flush ();
 		}
 
-		CoreBioComponent::ResetTrace ();
-
 		data = new fsaFileData (FullPathName);
 		NumFiles++;
 		ladderOK = true;
 		//cout << "Beginning file:  " << NumFiles << endl;
-
-		//cout << "At beginning of ladder, signal ID = " << DataSignal::GetRunningSignalID () << endl;
 
 		if (!data->IsValid ()) {
 
@@ -1002,10 +995,6 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		ladderBioComponent->ReportAllSmartNoticeObjects (tempExcelSummary, "", " ", FALSE);
 		ladderBioComponent->ReportAllSmartNoticeObjects (tempExcelLinks, "", " ", TRUE);
 
-		RGString tempString = FullPathForReports + "/" + LadderFileName;
-		cout << "Setting output for " << (char*)tempString.GetData () << endl;
-		CoreBioComponent::SaveTrace (FullPathForReports, LadderFileName);
-
 		if (!ladderOK) {
 
 			NoticeStr = "BIOCOMPONENT COULD NOT ANALYZE LADDER.  Skipping...";
@@ -1037,12 +1026,14 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	bool populatedBaseLocusList = false;
 	bool possibleMixture;
 
-	if (DataSignal::GetTestID () != 14)
-		cout << "TestID = " << DataSignal::GetTestID () << " after ladder analysis." << endl;
-
 	if (LadderList.Entries () == 0) {
 
-		NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO SATISFACTORY LADDER FOUND...ENDING";
+		if (nLadders == 0)
+			NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO LADDER FOUND IN DIRECTORY...ENDING";
+		
+		else
+			NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO SATISFACTORY LADDER FOUND...ENDING";
+
 		cout << NoticeStr << endl;
 		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
 		text << NoticeStr << "\n";
@@ -1065,18 +1056,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			WorkingFile->Flush ();
 		}
 
-		CoreBioComponent::ResetTrace ();
-
 		data = new fsaFileData (FullPathName);
 		bioComponent = new STRSampleCoreBioComponent (data->GetName ());
 		bioComponent->SetSampleName (data->GetSampleName ());
 		bioComponent->SetFileName (FileName);
-
-#ifdef _PRINT
-		text << endLine << endLine;
-		text << "File Name:" << endLine;
-		text << "    " << FileName.GetData () << endLine;
-#endif
 
 		if (GetMessageValue (useSampleNamesForControlSampleTests))
 			bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
@@ -1326,9 +1309,6 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->ReportAllSmartNoticeObjects (tempExcelLinks, "", " ", TRUE);
 		//cout << "All data reported" << endl;
 
-		if (DataSignal::GetTestID () != 14)
-				cout << "TestID = " << DataSignal::GetTestID () << " after sample analysis with filename " << (char*)FileName.GetData () << endl;
-
 		SamplesProcessed++;
 		Progress = 100.0 * (double)SamplesProcessed / (double)NSampleFiles;
 		cout << "Progress = " << Progress << "%." << endl;
@@ -1336,10 +1316,6 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		delete bioComponent;
 		data = NULL;
 		bioComponent = NULL;
-
-		RGString tempString = FullPathForReports + "/" + FileName;
-		cout << "Setting output for " << (char*)tempString.GetData () << endl;
-		CoreBioComponent::SaveTrace (FullPathForReports, FileName);
 		//cout << "Clean up time and on to the next" << endl;
 	}
 

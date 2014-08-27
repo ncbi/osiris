@@ -182,7 +182,7 @@ smLadderFitThreshold	1064	2580
 smSampleToLadderFitBelowExpectations	1065	2581
 smEnableRawDataFilterForNormalizationPreset	1066	2582
 smBaselineEstimationThreshold	1067	2583
-smFilterWindowWidthForBaselineEstimation	1068	2584
+smSinglePassFilterWindowWidth	1068	2584
 smAmbiguousInterlocusWithPoorMorphology	1069	2585
 smSigmoidalPullup	1070	2586
 smMinPrimaryPullupThreshold	1071	2587
@@ -195,3 +195,10 @@ smSampleSatisfiesPossibleMixtureIDCriteria	1077	2593
 smDisableLowLevelFiltersForKnownMixturesPreset	1078	2594
 smDisableStutterFilter	1079	2595
 smDisableAdenylationFilter	1080	2596
+smSelectTriplePassVsSinglePassFilterPreset	1081	2597
+smTriplePassFilterWindowWidth	1082	2598
+smLadderFitThresholdUsingMinError	1083	2599
+smUseMaxSecondDerivativesForSampleToLadderFit	1084	2600
+smPartOfDualSignal	1085	2601
+smNegativePeak	1086	2602
+

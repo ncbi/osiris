@@ -70,8 +70,9 @@ const int _DUALDOUBLEGAUSSIAN_ = 1012;
 const int _CRATERSIGNAL_ = 1013;
 const int _PEAKINFOFORCLUSTERS_ = 1016;
 const int _SIMPLESIGMOIDSIGNAL_ = 1019;
+const int _NEGATIVESIGNAL_ = 1020;
 
-const double Pi = acosf (-1.0);
+const double Pi = acos (-1.0);
 const double sqrtPi = sqrt (Pi);
 const double sqrtTwo = sqrt (2.0);
 const double fourthRootOfPi = sqrt (sqrtPi);
@@ -106,6 +107,7 @@ PERSISTENT_PREDECLARATION (CompositeCurve)
 PERSISTENT_PREDECLARATION (DualDoubleGaussian)
 PERSISTENT_PREDECLARATION (CraterSignal)
 PERSISTENT_PREDECLARATION (SimpleSigmoidSignal)
+PERSISTENT_PREDECLARATION (NegativeSignal)
 
 
 Boolean QuadraticRegression (const double* means, const double* sigmas, int N, double* parameters);
@@ -509,9 +511,6 @@ public:
 	static double GetMinimumHeight () { return minHeight; }
 	static void SetMaximumHeight (double height) { maxHeight = height; }
 	static double GetMaximumHeight () { return maxHeight; }
-	static unsigned long GetTestID () { return testID; }
-	static void ReinitializeSignalID () { signalID = 25; }
-	static unsigned long GetRunningSignalID () { return signalID; }
 
 	virtual RGString GetSignalType () const;
 
@@ -535,12 +534,17 @@ public:
 	virtual void RestrictToMaximum (double MaxValue) {}
 	virtual int FindAndRemoveFixedOffset ();
 	virtual DataSignal* CreateMovingAverageFilteredSignal (int window);
-	virtual double GetPullupToleranceInBP () const { return mPullupTolerance; }
+	virtual DataSignal* CreateThreeMovingAverageFilteredSignal (int window);
+	virtual double GetPullupToleranceInBP () const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // The trig expression corrects for poor fit - this is proportional to Hilbert Space distance 07/22/2014;
+	                                                                                                                       // with a proportionality coefficient of 1 / 4.47, so that a fit of 0.999 has a correction of 0.01 (changed from 1/10 07/23/2014)
 	virtual void RecalculatePullupTolerance () {}
 	virtual void ResetPullupTolerance (double p) { mPullupTolerance = p; }
 
 	virtual bool IsUnimodal () const { return false; }
 	virtual bool IsCraterPeak () const { return false; }
+
+	virtual double GetNoiseRange () const { return 0.0; }
+	virtual void SetNoiseRange (double noise) {}
 
 	virtual void SetAlleleName (const RGString& name);
 	virtual RGString GetAlleleName () const;
@@ -593,7 +597,7 @@ public:
 
 	virtual double Centroid () const { return -DOUBLEMAX; }
 	virtual double Centroid (double left, double right) const { return -DOUBLEMAX; }
-	virtual double SimpleSecondMoment (double left, double right) const { return -DOUBLEMAX; }
+	virtual double SecondMoment (double left, double right) const { return -DOUBLEMAX; }
 	virtual double ThirdMoment (double left, double right) const { return 0.0; }
 
 	virtual void ExtendDomain (double left, double right) = 0;
@@ -823,7 +827,6 @@ protected:
 	static Boolean DebugFlag;
 	static double minHeight;
 	static double maxHeight;
-	static unsigned long testID;
 	static unsigned long signalID;
 	static bool* InitialMatrix;
 
@@ -851,6 +854,8 @@ public:
 	virtual double Value (double x) const;
 	virtual double Value (int n) const;
     virtual int AddToSample (double* sample, double sampleLeft, double sampleRight) const;
+	virtual double GetNoiseRange () const { return mNoiseRange; }
+	virtual void SetNoiseRange (double noise) { mNoiseRange = noise; }
 
 
 	virtual double ValueFreeBound (int n) const;
@@ -860,7 +865,9 @@ public:
 	virtual void RestrictToMaximum (double MaxValue);
 
 	virtual int FindAndRemoveFixedOffset ();
+	double* CreateMovingAverageFilteredArray (int window, double* inputArray);
 	virtual DataSignal* CreateMovingAverageFilteredSignal (int window);
+	virtual DataSignal* CreateThreeMovingAverageFilteredSignal (int minWindow);
 
 	virtual DataSignal* Project (double left, double right) const;
 	virtual DataSignal* Project (const DataSignal* target) const;
@@ -887,7 +894,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SimpleSecondMoment (double left, double right) const;
+	virtual double SecondMoment (double left, double right) const;
 	virtual double ThirdMoment (double left, double right) const;
 
 	virtual void ExtendDomain (double left, double right);
@@ -1099,7 +1106,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SimpleSecondMoment (double left, double right) const;
+	virtual double SecondMoment (double left, double right) const;
 
 	virtual double Norm ();
 	virtual double Norm (double left, double right);
@@ -1264,7 +1271,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SimpleSecondMoment (double left, double right) const;
+	virtual double SecondMoment (double left, double right) const;
 
 	virtual double OneNorm ();
 	virtual double OneNorm (double left, double right);
@@ -1349,7 +1356,7 @@ public:
 
 	virtual double Centroid () const;
 	virtual double Centroid (double left, double right) const;
-	virtual double SimpleSecondMoment (double left, double right) const;
+	virtual double SecondMoment (double left, double right) const;
 
 	virtual double Norm ();
 	virtual double Norm (double left, double right);
@@ -1687,6 +1694,56 @@ public:
 
 protected:
 
+};
+
+
+class NegativeSignal : public ParametricCurve {
+
+PERSISTENT_DECLARATION (NegativeSignal)
+
+public:
+	NegativeSignal ();
+	NegativeSignal (const NegativeSignal& neg);
+	NegativeSignal (double mean, double peak, const ParametricCurve& sig);
+	virtual ~NegativeSignal ();
+
+	virtual double Peak () const { return -mOriginal->Peak (); }
+	virtual double GetMean () const { return mOriginal->GetMean (); }
+
+	virtual double Value (double t) { return -mOriginal->Value (t); }
+	virtual double Norm (double left, double right) { return mOriginal->Norm (left, right); }
+	virtual double Norm2 (double left, double right) { return mOriginal->Norm2 (left, right); }
+	virtual double Norm2 () { return mOriginal->Norm2 (); }
+	virtual double Value (double t) const { return mOriginal->Value (t); }
+
+	virtual void SetDisplacement (double disp) { mOriginal->SetDisplacement (disp); }
+	virtual void SetScale (double scale) { mOriginal->SetScale (scale); }
+	virtual double GetStandardDeviation () const { return mOriginal->GetStandardDeviation (); }
+	virtual double GetVariance () const { return mOriginal->GetVariance (); }
+	virtual void SetPeak (double peak) { mOriginal->SetPeak (peak); }
+	virtual void ComputeTails (double& tailLeft, double& tailRight) const { mOriginal->ComputeTails (tailLeft, tailRight); }
+
+	virtual DataSignal* Project (double left, double right) const { return mOriginal->Project (left, right); }
+	virtual DataSignal* Project (const DataSignal* target) const  { return mOriginal->Project (target); }
+
+	virtual double Centroid () const { return mOriginal->Centroid (); }
+	virtual double Centroid (double left, double right) const { return mOriginal->Centroid (left, right); }
+	virtual double SecondMoment (double left, double right) const { return mOriginal->SecondMoment (left, right); }
+
+	virtual double Norm () { return mOriginal->Norm (); }
+	virtual DataSignal* Normalize (double& norm) { return mOriginal->Normalize (norm); }
+	virtual DataSignal* Normalize (double left, double right, double& norm) { return mOriginal->Normalize (left, right, norm); }
+
+	virtual void CalculateTheoreticalArea () { mOriginal->CalculateTheoreticalArea (); }
+
+	virtual double OneNorm () { return mOriginal->OneNorm (); }
+	virtual double OneNorm (double left, double right) { return mOriginal->OneNorm (left, right); }
+	virtual int FirstMomentForOneNorm (double left, double right, double& oneNorm, double& mean) { return mOriginal->FirstMomentForOneNorm (left, right, oneNorm, mean); }
+	virtual int SecondMomentForOneNorm (double left, double right, double& oneNorm, double& mean, double& secondMoment) { return mOriginal->SecondMomentForOneNorm (left, right, oneNorm, mean, secondMoment); }
+
+protected:
+
+	DataSignal* mOriginal;
 };
 
 

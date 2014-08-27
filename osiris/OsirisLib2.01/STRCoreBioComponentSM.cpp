@@ -58,10 +58,6 @@ int STRCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput& Exce
 
 int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 
-	//
-	//  This is sample stage 1
-	//
-
 	// This is to be called after CoreBioComponent::FitAllCharacteristics...and BEFORE AnalyzeLaneStandardChannel
 	int size = mNumberOfChannels + 1;
 	DataSignal** OnDeck = new DataSignal* [size];

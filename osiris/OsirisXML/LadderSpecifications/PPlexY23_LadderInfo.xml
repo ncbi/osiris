@@ -904,7 +904,7 @@
 				<MinBP>86</MinBP>
 				<MaxBP>154</MaxBP>
 				<MinGridLSBasePair>84.4</MinGridLSBasePair>
-				<MaxGridLSBasePair>149.3</MaxGridLSBasePair>
+				<MaxGridLSBasePair>148.0</MaxGridLSBasePair>
 				<YLinked>true</YLinked>
 				<MaxExpectedAlleles>1</MaxExpectedAlleles>
 				<LadderAlleles>

@@ -1357,9 +1357,7 @@ bool InterlocusPeakBelowInterlocusMinRFU::sTriggerLowPriority = false;
 bool InterlocusPeakBelowInterlocusMinRFU::sDoNotCall = false;
 
 int InterlocusPeakBelowInterlocusMinRFU::sMessageIndex = 0;
-int InterlocusPeakBelowInterlocusMinRFU::sMessageScope = 0;
-
-PERSISTENT_DEFINITION (SampleReqReview, 1201, "SampleReqReview")
+int InterlocusPeakBelowInterlocusMinRFU::sMessageScope = 0;PERSISTENT_DEFINITION (SampleReqReview, 1201, "SampleReqReview")
 PERSISTENT_DEFINITION (PosCtrlReqReview, 1202, "PosCtrlReqReview")
 PERSISTENT_DEFINITION (NegCtrlReqReview, 1203, "NegCtrlReqReview")
 PERSISTENT_DEFINITION (ILSReqReview, 1204, "ILSReqReview")

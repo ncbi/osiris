@@ -214,32 +214,4 @@ protected:
 };
 
 
-class RGTraceString {
-
-public:
-	RGTraceString ();
-	RGTraceString (size_t size);
-	~RGTraceString ();
-
-	void Reset ();
-	void Save (const RGString& fullPath, const RGString& fileName);
-
-	RGTraceString& operator<<(const RGString& str);
-	RGTraceString& operator<<(const char* str);
-	RGTraceString& operator<<(double d);
-	RGTraceString& operator<<(int i);
-	RGTraceString& operator<<(unsigned long i);
-	RGTraceString& operator<<(char c);
-	RGTraceString& operator<<(long l);
-	RGTraceString& operator<<(short s);
-	RGTraceString& operator<<(unsigned char c);
-	RGTraceString& operator<<(unsigned int i);
-	RGTraceString& operator<<(unsigned short s);
-
-protected:
-	RGString mTrace;
-};
-
-
-
 #endif  /*  _RGSTRING_H_  */

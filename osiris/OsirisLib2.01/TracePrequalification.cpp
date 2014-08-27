@@ -49,8 +49,6 @@ int TracePrequalification::minSamplesForSlopeRegression = 4;
 double TracePrequalification::defaultNoiseThreshold = 400.0;
 int TracePrequalification::defaultWindowWidth = 9;
 
-enum SEARCHMODE {LookingForMax, LookingForMin, LookingForFinalMin, UnravelingFinalCurve};
-
 
 ABSTRACT_DEFINITION (TracePrequalification)
 PERSISTENT_DEFINITION (STRTracePrequalification, _STRTRACEPREQUALIFICATION_, "STRTracePrequal")
@@ -88,6 +86,8 @@ double LinearSlopeRegression (const double* y, double delt, int N1) {
 	return r / (delt * var);
 }
 
+
+enum SEARCHMODE {LookingForMax, LookingForMin, LookingForFinalMin, UnravelingFinalCurve};
 
 
 TracePrequalification :: ~TracePrequalification () {}

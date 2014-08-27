@@ -4553,18 +4553,13 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 	if (N == 1) {
 
-		if (mLink->isYLinked ()) {
-
-			if (mLink->GetMaxExpectedAlleles () == 1)
-				return 0;
-
-			if (mLink->GetMinExpectedAlleles () > 1) {
-
-				SetMessageValue (numberOfAllelesBelowExpectation, true);
-				return -1;
-			}
-
+		if (mLink->GetMaxExpectedAlleles () == 1)
 			return 0;
+
+		if (mLink->GetMinExpectedAlleles () > 1) {
+
+			SetMessageValue (numberOfAllelesBelowExpectation, true);
+			return -1;
 		}
 
 		// Test for proper homozygote
@@ -4603,41 +4598,38 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 			retValue = -1;
 		}
 
-		if (mLink->isYLinked ()) {
+		if (mLink->GetMaxExpectedAlleles () < 2) {
 
-			if (mLink->GetMaxExpectedAlleles () < 2) {
+			it.Reset ();
 
-				it.Reset ();
+			while (nextSignal = (DataSignal*) it ()) {
 
-				while (nextSignal = (DataSignal*) it ()) {
-
-					alleleName = nextSignal->GetAlleleName ();
-					newAllele = new IndividualAllele ();
-					newAllele->SetName (alleleName);
-					alleleList.Append (newAllele);
-				}
-
-				if (isPosCntl)
-					testForAcceptedTriallele = pGenotypes->ContainsControlTriallele (GetLocusName (), alleleList);
-
-				else
-					testForAcceptedTriallele = pGenotypes->ContainsSampleTriallele (GetLocusName (), alleleList);
-				
-				alleleList.ClearAndDelete ();
-
-				if (!testForAcceptedTriallele) {
-
-					SetMessageValue (triAllele, true);
-					retValue = -1;
-				}
-
-				else {
-
-					SetMessageValue (triAllele, false);
-				}
-
-				return retValue;
+				alleleName = nextSignal->GetAlleleName ();
+				newAllele = new IndividualAllele ();
+				newAllele->SetName (alleleName);
+				alleleList.Append (newAllele);
 			}
+
+//			if (isPosCntl)		// eliminated 08/22/2014 because positive controls cannot report this message anymore (via MessageBook)
+//				testForAcceptedTriallele = pGenotypes->ContainsControlTriallele (GetLocusName (), alleleList);
+
+			if (!isPosCntl)
+				testForAcceptedTriallele = pGenotypes->ContainsSampleTriallele (GetLocusName (), alleleList);
+				
+			alleleList.ClearAndDelete ();
+
+			if (!testForAcceptedTriallele) {
+
+				SetMessageValue (triAllele, true);
+				retValue = -1;
+			}
+
+			else {
+
+				SetMessageValue (triAllele, false);
+			}
+
+			return retValue;
 		}
 
 		return retValue;
@@ -4655,10 +4647,10 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 			alleleList.Append (newAllele);
 		}
 
-		if (isPosCntl)
-			testForAcceptedTriallele = pGenotypes->ContainsControlTriallele (GetLocusName (), alleleList);
+//		if (isPosCntl)		// eliminated 08/22/2014 because positive controls cannot report this message anymore (via MessageBook)
+//			testForAcceptedTriallele = pGenotypes->ContainsControlTriallele (GetLocusName (), alleleList);
 
-		else
+		if (!isPosCntl)
 			testForAcceptedTriallele = pGenotypes->ContainsSampleTriallele (GetLocusName (), alleleList);
 		
 		alleleList.ClearAndDelete ();
@@ -4729,16 +4721,18 @@ int Locus :: CorrectCrossChannelAnalysesSM (RGDList& artifacts, bool isNegCntl) 
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (isNegCntl) {
+	//	if (isNegCntl) {	//  Commented out 07/29/2014 in order to allow negative control peaks to be called as alleles, in addition to the extraneous peak in negative control artifact
 
-	//		SetMessageValue (unexpectedNumberOfPeaks, true);
-			nextSignal->SetAlleleName ("");
-			it.RemoveCurrentItem ();
-	//		nextSignal->SetMessageValue (extraPeakInNegCtrl, true);
-	//		artifacts.InsertWithNoReferenceDuplication (nextSignal);	//Need this????????????????????????????????????????????????????????????
-		}
+	////		SetMessageValue (unexpectedNumberOfPeaks, true);
+	//		nextSignal->SetAlleleName ("");
+	//		it.RemoveCurrentItem ();
+	////		nextSignal->SetMessageValue (extraPeakInNegCtrl, true);
+	////		artifacts.InsertWithNoReferenceDuplication (nextSignal);	//Need this????????????????????????????????????????????????????????????
+	//	}
 
-		else if (nextSignal->GetMessageValue (pullUp)) {  // check instead for HasCrossChannelSignalLink or HasEverHadCrossChannelSignalLink?
+	//	else
+
+		if (nextSignal->GetMessageValue (pullUp)) {  // check instead for HasCrossChannelSignalLink or HasEverHadCrossChannelSignalLink?
 
 			p = nextSignal->Peak ();
 
@@ -4764,7 +4758,7 @@ int Locus :: CleanUpSignalListSM (RGDList& artifacts) {
 	RGString data;
 	bool addedResidualToLocus = false;
 	double absResidual;
-	bool foundOLAllele = false;
+	//bool foundOLAllele = false;
 
 	smBPResidualTooLarge residualTooLarge;
 	smSignalOL offLadder;
@@ -4877,10 +4871,10 @@ int Locus :: CleanUpSignalListSM (RGDList& artifacts) {
 			it.RemoveCurrentItem ();		
 			nextSignal->SetMessageValue (extraneousPeakInAMEL, true);
 
-			if (!foundOLAllele)
-				SetMessageValue (extraPeaksInAMEL, true);
+			//if (!foundOLAllele)
+			//	SetMessageValue (extraPeaksInAMEL, true);
 
-			foundOLAllele = true;
+			//foundOLAllele = true;
 		}
 	}
 

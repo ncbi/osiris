@@ -95,7 +95,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 
 ChannelData :: ChannelData (const ChannelData& cd) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
-mTestPeak (cd.mTestPeak), Valid (cd.Valid), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
+Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), 
 mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1) {
 
@@ -631,13 +631,25 @@ bool ChannelData :: HasPrimerPeaks (ChannelData* laneStd) {
 }
 
 
-int ChannelData :: CreateAndSubstituteFilteredSignalForRawData (int window) {
+int ChannelData :: CreateAndSubstituteSinglePassFilteredSignalForRawData (int window) {
 
 	if (mBackupData != NULL)
 		delete mBackupData;
 
 	mBackupData = mData;
 	mData = mBackupData->CreateMovingAverageFilteredSignal (window);
+	return 0;
+}
+
+
+
+int ChannelData :: CreateAndSubstituteTriplePassFilteredSignalForRawData (int window) {
+
+	if (mBackupData != NULL)
+		delete mBackupData;
+
+	mBackupData = mData;
+	mData = mBackupData->CreateThreeMovingAverageFilteredSignal (window);
 	return 0;
 }
 
@@ -2001,7 +2013,10 @@ CoordinateTransform* ChannelData :: GetIDMap () {
 
 int ChannelData :: FindAndRemoveFixedOffset () {
 
-	return mData->FindAndRemoveFixedOffset ();
+	int status = mData->FindAndRemoveFixedOffset ();
+	cout << "      Channel " << mChannel << " noise = " << mData->GetNoiseRange () << endl;
+
+	return status;
 }
 
 
@@ -2934,6 +2949,13 @@ CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2)
 CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2, double* firstDerivs, int size) {
 
 	CSplineTransform* spline = new CSplineTransform (cd1.Means, cd2.Means, firstDerivs, cd1.NumberOfAcceptedCurves, true);
+	return spline;
+}
+
+
+CSplineTransform* TimeTransform (const ChannelData& cd1, const ChannelData& cd2, bool isHermite) {
+
+	CSplineTransform* spline = new CSplineTransform (cd1.Means, cd2.Means, cd1.NumberOfAcceptedCurves, isHermite);
 	return spline;
 }
 

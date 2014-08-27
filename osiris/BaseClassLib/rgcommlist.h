@@ -38,7 +38,6 @@
 #ifndef _RGCOMMLIST_H_
 #define _RGCOMMLIST_H_
 
-#include <stddef.h>
 
 
 template <class T> class CommDataElement {

@@ -37,7 +37,7 @@
 
 using namespace std;
 
-int RGTextOutput::Resolution = 15;
+int RGTextOutput::Resolution = 10;
 
 
 Endl :: Endl () : NumEndlines (1) {

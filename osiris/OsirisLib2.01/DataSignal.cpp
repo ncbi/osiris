@@ -50,7 +50,6 @@
 #include "SmartMessage.h"
 #include "STRSmartNotices.h"
 #include "OsirisPosix.h"
-#include "CoreBioComponent.h"
 
 
 
@@ -59,7 +58,6 @@ Boolean DataSignal :: DebugFlag = FALSE;
 double DataSignal :: SignalSpacing = 1.0;
 double DataSignal :: minHeight = 150.0;
 double DataSignal :: maxHeight = -1.0;
-unsigned long DataSignal :: testID = 14;
 unsigned long DataSignal :: signalID = 0;
 bool* DataSignal::InitialMatrix = NULL;
 
@@ -117,26 +115,6 @@ double SuperGaussian :: RootTwos [8] = {1.259921049894870E+00,
 };
 
 int SuperGaussian::BlobDegree = 6;
-
-
-PERSISTENT_DEFINITION (PeakInfoForClusters, _PEAKINFOFORCLUSTERS_, "PeakInfoForClusters")
-ABSTRACT_DEFINITION (DataSignal)
-ABSTRACT_DEFINITION (ParametricCurve)
-PERSISTENT_DEFINITION (SampledData, _SAMPLEDDATA_, "SampledData")
-
-//PERSISTENT_DEFINITION (ParametricCurve, _PARAMETRICCURVE_, "ParametricCurve")
-
-PERSISTENT_DEFINITION (Gaussian, _GAUSSIAN_, "Gaussian")
-PERSISTENT_DEFINITION (NormalizedGaussian, _NORMALIZEDGAUSSIAN_, "NormalizedGaussian")
-PERSISTENT_DEFINITION (DoubleGaussian, _DOUBLEGAUSSIAN_, "DoubleGaussian")
-PERSISTENT_DEFINITION (SuperGaussian, _SUPERGAUSSIAN_, "SuperGaussian")
-PERSISTENT_DEFINITION (NormalizedSuperGaussian, _NORMALIZEDSUPERGAUSSIAN_, "NormalizedSuperGaussian")
-PERSISTENT_DEFINITION (CompositeCurve, _COMPOSITECURVE_, "CompositeCurve")
-PERSISTENT_DEFINITION (DualDoubleGaussian, _DUALDOUBLEGAUSSIAN_, "DualDoubleGaussian")
-PERSISTENT_DEFINITION (CraterSignal, _CRATERSIGNAL_, "CraterSignal")
-PERSISTENT_DEFINITION (SimpleSigmoidSignal, _SIMPLESIGMOIDSIGNAL_, "SimpleSigmoidSignal")
-
-
 
 int MaxIndex (double* array, int N);
 int MinIndex (double* array, int N);
@@ -361,6 +339,24 @@ Boolean IsOutsideInterval (double testValue, double val1, double val2, double va
 	return FALSE;
 }
 
+
+PERSISTENT_DEFINITION (PeakInfoForClusters, _PEAKINFOFORCLUSTERS_, "PeakInfoForClusters")
+ABSTRACT_DEFINITION (DataSignal)
+ABSTRACT_DEFINITION (ParametricCurve)
+PERSISTENT_DEFINITION (SampledData, _SAMPLEDDATA_, "SampledData")
+
+//PERSISTENT_DEFINITION (ParametricCurve, _PARAMETRICCURVE_, "ParametricCurve")
+
+PERSISTENT_DEFINITION (Gaussian, _GAUSSIAN_, "Gaussian")
+PERSISTENT_DEFINITION (NormalizedGaussian, _NORMALIZEDGAUSSIAN_, "NormalizedGaussian")
+PERSISTENT_DEFINITION (DoubleGaussian, _DOUBLEGAUSSIAN_, "DoubleGaussian")
+PERSISTENT_DEFINITION (SuperGaussian, _SUPERGAUSSIAN_, "SuperGaussian")
+PERSISTENT_DEFINITION (NormalizedSuperGaussian, _NORMALIZEDSUPERGAUSSIAN_, "NormalizedSuperGaussian")
+PERSISTENT_DEFINITION (CompositeCurve, _COMPOSITECURVE_, "CompositeCurve")
+PERSISTENT_DEFINITION (DualDoubleGaussian, _DUALDOUBLEGAUSSIAN_, "DualDoubleGaussian")
+PERSISTENT_DEFINITION (CraterSignal, _CRATERSIGNAL_, "CraterSignal")
+PERSISTENT_DEFINITION (SimpleSigmoidSignal, _SIMPLESIGMOIDSIGNAL_, "SimpleSigmoidSignal")
+PERSISTENT_DEFINITION (NegativeSignal, _NEGATIVESIGNAL_, "NegativeSignal")
 
 
 SampleDataInfo :: SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, 
@@ -1371,6 +1367,12 @@ DataSignal* DataSignal :: CreateMovingAverageFilteredSignal (int window) {
 }
 
 
+DataSignal* DataSignal :: CreateThreeMovingAverageFilteredSignal (int window) {
+
+	return NULL;
+}
+
+
 void DataSignal :: SetAlleleName (const RGString& name) {
 
 	mAlleleName = name;
@@ -2153,7 +2155,6 @@ SampledData :: SampledData () : DataSignal (), NumberOfSamples (0), Measurements
 	PeakIterator = new RGDListIterator (PeakList);
 	NoiseIterator = new RGDListIterator (NoiseList);
 	slr = new SpecialLinearRegression (50);
-	CTRACE << "Create SampledData with id = " << mSignalID << "\n";
 }
 
 
@@ -2165,7 +2166,6 @@ NumberOfSamples (numSamples), Measurements (samples), norm2 (0.0), mDeleteArray 
 	PeakIterator = new RGDListIterator (PeakList);
 	NoiseIterator = new RGDListIterator (NoiseList);
 	slr = new SpecialLinearRegression (50);
-	CTRACE << "Create SampledData with id = " << mSignalID << ", left = " << left << ", right = " << right << "\n";
 }
 
 
@@ -2188,7 +2188,6 @@ norm2 (0.0), mDeleteArray (true), mNoiseRange (0.0) {
 	}
 
 	slr = new SpecialLinearRegression (50);
-	CTRACE << "Create SampledData with id = " << mSignalID << ", left = " << left << ", right = " << right << ", from base signal with id = " << base.GetSignalID () << "\n";
 }
 
 
@@ -2206,7 +2205,6 @@ mDeleteArray (true), mNoiseRange (sd.mNoiseRange) {
 		Measurements [i] = sd.Measurements [i];
 
 	slr = new SpecialLinearRegression (50);
-	CTRACE << "Create SampledData with id = " << mSignalID << ", from SampledData with id = " << sd.mSignalID << "\n";
 }
 
 
@@ -2220,7 +2218,6 @@ SampledData :: ~SampledData () {
 	delete PeakIterator;
 	delete NoiseIterator;
 	delete slr;
-	CTRACE << "Deleting SampledData with id = " << mSignalID << "\n";
 }
 
 
@@ -2366,7 +2363,9 @@ int SampledData :: FindAndRemoveFixedOffset () {
 
 			minB = temp;
 			currentAve = ave;
-			mNoiseRange = noiseRange;
+
+//			if (noiseRange > mNoiseRange)
+				mNoiseRange = noiseRange;
 		}
 
 		CurrentPtr -= 25;
@@ -2382,29 +2381,110 @@ int SampledData :: FindAndRemoveFixedOffset () {
 }
 
 
-DataSignal* SampledData :: CreateMovingAverageFilteredSignal (int window) {
+double* SampledData :: CreateMovingAverageFilteredArray (int window, double* inputArray) {
 
 	double* newMeasurements = new double [NumberOfSamples];
 	int i;
 	double temp;
-//	double factor;
+	double factor;
 	int win = window;
 	int halfWindow;
-	double dwin = (double)win;
 
 	if (window > 0) {
 
 		if (win%2 == 0)
 			win++;
 
-//		factor = 1.0 / (double)win;
+		factor = 1.0 / (double)win;
 	}
 
 	else {
 
 		win = 1;
-//		factor = 1.0;
-		dwin = 1.0;
+		factor = 1.0;
+	}
+
+	halfWindow = win / 2;
+	temp = 0.0;
+	double currentAve;
+
+	for (i=0; i<=halfWindow; i++) {
+
+		temp += inputArray [i];
+	}
+
+	currentAve = newMeasurements [0] = temp * factor;
+	double oldValue;
+	double nextValue;
+	int indexNext = halfWindow;
+	int indexOld = -halfWindow - 1;
+
+	for (i=1; i<NumberOfSamples; i++) {
+
+		indexNext++;
+		indexOld++;
+
+		if (indexNext < NumberOfSamples)
+			nextValue = inputArray [indexNext];
+
+		else
+			nextValue = 0.0;
+
+		if (indexOld >= 0)
+			oldValue = inputArray [indexOld];
+
+		else
+			oldValue = 0.0;
+
+		currentAve += factor * (nextValue - oldValue);
+		newMeasurements [i] = currentAve;
+	}
+
+	//for (i=0; i<NumberOfSamples; i++) {
+
+	//	temp = 0.0;
+
+	//	for (j=-halfWindow; j<=halfWindow; j++) {
+
+	//		index = i + j;
+
+	//		if (index < 0)
+	//			continue;
+
+	//		if (index >= NumberOfSamples)
+	//			break;
+
+	//		temp += Measurements [index];
+	//	}
+
+	//	newMeasurements [i] = temp * factor;
+	//}
+
+	return newMeasurements;
+}
+
+
+DataSignal* SampledData :: CreateMovingAverageFilteredSignal (int window) {
+
+	double* newMeasurements = new double [NumberOfSamples];
+	int i;
+	double temp;
+	double factor;
+	int win = window;
+	int halfWindow;
+
+	if (window > 0) {
+
+		if (win%2 == 0)
+			win++;
+
+		factor = 1.0 / (double)win;
+	}
+
+	else {
+
+		win = 1;
+		factor = 1.0;
 	}
 
 	halfWindow = win / 2;
@@ -2416,8 +2496,7 @@ DataSignal* SampledData :: CreateMovingAverageFilteredSignal (int window) {
 		temp += Measurements [i];
 	}
 
-//	currentAve = newMeasurements [0] = temp * factor;
-	currentAve = newMeasurements [0] = temp / dwin;
+	currentAve = newMeasurements [0] = temp * factor;
 	double oldValue;
 	double nextValue;
 	int indexNext = halfWindow;
@@ -2440,8 +2519,7 @@ DataSignal* SampledData :: CreateMovingAverageFilteredSignal (int window) {
 		else
 			oldValue = 0.0;
 
-	//	currentAve += factor * (nextValue - oldValue);
-		currentAve += (nextValue - oldValue) / dwin;
+		currentAve += factor * (nextValue - oldValue);
 		newMeasurements [i] = currentAve;
 	}
 
@@ -2466,6 +2544,67 @@ DataSignal* SampledData :: CreateMovingAverageFilteredSignal (int window) {
 	//}
 
 	DataSignal* filteredSignal = new SampledData (NumberOfSamples, Left, Right, newMeasurements, true);
+	return filteredSignal;
+}
+
+
+DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow) {
+
+	//
+	//  First find the three windows assuming input window is minimum.  Then create temporary filter arrays and perform three filterings.  Clean up all but last array and 
+	//  create filtered signal, as above, and return
+	//
+
+	if (minWindow == 1)
+		return CreateMovingAverageFilteredSignal (minWindow);
+
+	int win3 = minWindow;
+
+	if (win3%2 == 0)
+		win3++;
+
+	double temp = 1.4303 * (double)win3;
+	int high = (int)ceil (temp);
+	int low = (int)floor (temp);
+	int win2, win1;
+
+	if (high%2 == 0) {
+
+		if (low%2 == 0)
+			win2 = low + 1;
+
+		else
+			win2 = low;
+	}
+
+	else
+		win2 = high;
+
+	temp = 1.4303 * (double)win2;
+	high = (int)ceil (temp);
+	low = (int)floor (temp);
+
+	if (high%2 == 0) {
+
+		if (low%2 == 0)
+			win1 = low + 1;
+
+		else
+			win1 = low;
+	}
+
+	else
+		win1 = high;
+
+	cout << "Filter windows = " << win1 << ", " << win2 << ", and " << win3 << endl;
+
+	double* filterOut1 = CreateMovingAverageFilteredArray (win1, Measurements);
+	double* filterOut2 = CreateMovingAverageFilteredArray (win2, filterOut1);
+	double* filterOut3 = CreateMovingAverageFilteredArray (win3, filterOut2);
+	delete[] filterOut1;
+	delete[] filterOut2;
+
+	DataSignal* filteredSignal = new SampledData (NumberOfSamples, Left, Right, filterOut3, true);
 	return filteredSignal;
 }
 
@@ -2542,6 +2681,12 @@ void SampledData :: ResetCharacteristicsFromRight (TracePrequalification& trace,
 				continue;
 			}
 		}
+
+		NextDataInterval->ReassessRelativeMinimaGivenNoise (mNoiseRange, (SampledData*)this);
+
+		//
+		//	Add test for noise correction to relative minima here...********07/01/2014********
+		//
 
 		PeakList.Append (NextDataInterval);
 
@@ -2944,7 +3089,7 @@ double SampledData :: Centroid (double left, double right) const {
 }
 
 
-double SampledData :: SimpleSecondMoment (double left, double right) const {
+double SampledData :: SecondMoment (double left, double right) const {
 
 	int nleft = GetSampleNumber (left);
 	int nright = GetSampleNumber (right);
@@ -3060,10 +3205,10 @@ int SampledData :: Add (list<DataSignal*>& WaveList) { return 0; }  // list of p
 
 int SampledData :: TruncateToResolution (double resolution) {
 
-//	double r = 1.0 / resolution;
+	double r = 1.0 / resolution;
 	
 	for (int i=0; i<NumberOfSamples; i++)
-		Measurements [i] = resolution * floor (Measurements [i] / resolution);
+		Measurements [i] = resolution * floor (r * Measurements [i]);
 
 	return 0;
 }
@@ -4079,17 +4224,13 @@ double ParametricCurve :: TruncateWithResolution (double value, double resolutio
 }
 
 
-Gaussian :: Gaussian () : ParametricCurve (-Gaussian::SigmaWidth, Gaussian::SigmaWidth), Mean (0.0), StandardDeviation (1.0) {
-
-	CTRACE << "Created Gaussian with id = " << mSignalID << ", mu = 0.0, sigma = 1.0\n";
-}
+Gaussian :: Gaussian () : ParametricCurve (-Gaussian::SigmaWidth, Gaussian::SigmaWidth), Mean (0.0), StandardDeviation (1.0) {}
 
 
 Gaussian :: Gaussian (double mean, double standardDeviation) : 
 ParametricCurve (mean - Gaussian::SigmaWidth * standardDeviation, mean + Gaussian::SigmaWidth * standardDeviation), Mean (mean), 
 StandardDeviation (standardDeviation) {
-
-	CTRACE << "Created Gaussian with id = " << mSignalID << ", mu = " << mean << ", sigma = " << standardDeviation << "\n";
+																				
 }
 
 
@@ -4097,7 +4238,6 @@ StandardDeviation (standardDeviation) {
 Gaussian :: Gaussian (double left, double right, double mean, double standardDeviation) :
 ParametricCurve (left, right), Mean (mean), StandardDeviation (standardDeviation) {
 
-	CTRACE << "Created Gaussian with id = " << mSignalID << ", mu = " << mean << ", sigma = " << standardDeviation << ", left = " << left << ", right = " << right << "\n";
 }
 
 
@@ -4115,7 +4255,6 @@ Mean (mean), StandardDeviation (gau.StandardDeviation) {
 
 Gaussian :: ~Gaussian () {
 
-	CTRACE << "Deleted Gaussian with id = " << mSignalID << "\n";
 }
 
 
@@ -4241,7 +4380,7 @@ double Gaussian :: Centroid (double left, double right) const {
 }
 
 
-double Gaussian :: SimpleSecondMoment (double left, double right) const {
+double Gaussian :: SecondMoment (double left, double right) const {
 
 	return StandardDeviation * StandardDeviation;
 }
@@ -4555,7 +4694,6 @@ NormalizedGaussian :: NormalizedGaussian () : Gaussian () {
 
 	Scale = 1.0 / (sqrt (sqrtPi * StandardDeviation));
 	SampleSpacing = SampledData::GetSampleSpacing ();
-	CTRACE << " Is normalized\n";
 }
 
 
@@ -4563,7 +4701,6 @@ NormalizedGaussian :: NormalizedGaussian (double mean, double standardDeviation)
 
 	Scale = 1.0 / (sqrt (sqrtPi * StandardDeviation));
 	SampleSpacing = SampledData::GetSampleSpacing ();
-	CTRACE << " Is normalized\n";
 }
 
 
@@ -4579,7 +4716,6 @@ NormalizedGaussian :: NormalizedGaussian (double mean, const NormalizedGaussian&
 
 NormalizedGaussian :: ~NormalizedGaussian () {
 
-	CTRACE << " Normalized:  ";
 }
 
 
@@ -5392,7 +5528,6 @@ StandardDeviation (1.0) {
 	OrthogonalPrimaryScale = 1.0;
 	OrthogonalSecondaryScale = 1.0;
 	NormOfSimpleResidual = 1.0;
-	CTRACE << "Created double Gaussian with id = " << mSignalID << ", mean = 0.0, sigma = 1.0\n";
 }
 
 
@@ -5412,7 +5547,6 @@ PrimaryScale (1.0), SecondaryScale (1.0), Mean (mean), StandardDeviation (standa
 	NormOfSimpleResidual = SecondaryNorm2 - (Correlation * Correlation / PrimaryNorm2);
 	OrthogonalPrimaryScale = PrimaryScale + (SecondaryScale * Correlation / PrimaryNorm2);
 	OrthogonalSecondaryScale = SecondaryScale * NormOfSimpleResidual;
-	CTRACE << "Created double Gaussian with id = " << mSignalID << ", mean = " << mean << ", sigam = " << standardDeviation << "\n";
 }
 
 
@@ -5432,7 +5566,6 @@ PrimaryScale (1.0), SecondaryScale (1.0), Mean (mean), StandardDeviation (standa
 	NormOfSimpleResidual = SecondaryNorm2 - (Correlation * Correlation / PrimaryNorm2);
 	OrthogonalPrimaryScale = PrimaryScale + (SecondaryScale * Correlation / PrimaryNorm2);
 	OrthogonalSecondaryScale = SecondaryScale * NormOfSimpleResidual;
-	CTRACE << "Created double Gaussian with id = " << mSignalID << ", mean = " << mean << ", sigam = " << standardDeviation << "\n";
 }
 
 
@@ -5482,7 +5615,6 @@ DoubleGaussian :: ~DoubleGaussian () {
 
 	delete PrimaryCurve;
 	delete SecondaryCurve;
-	CTRACE << "Deleted double Gaussian with id = " << mSignalID << "\n";
 }
 
 
@@ -6742,8 +6874,7 @@ double DoubleGaussian :: InnerProductWithStandardSpacing (double* ogCoeffs, cons
 double DoubleGaussian :: InnerProductWithOffsetAndStandardDeviation (double offset, double sigma, double* ogCoeffs, const SampleDataInfo& info) const {
 
 	double sigma2 = SigmaRatio * sigma;
-//	double SigmaCorrection = 1.0 / (SigmaRatio * SigmaRatio);
-	double SigmaRatio2 = SigmaRatio * SigmaRatio;
+	double SigmaCorrection = 1.0 / (SigmaRatio * SigmaRatio);
 
 	const double* ptargetPlus = info.DataCenter;
 	const double* ptargetPlusEnd = info.DataRight;
@@ -6753,8 +6884,7 @@ double DoubleGaussian :: InnerProductWithOffsetAndStandardDeviation (double offs
 	double x = (center - offset) / sigma;
 	double z;
 	x *= 0.5 * x;
-//	z = x * SigmaCorrection;
-	z = x / SigmaRatio2;
+	z = x * SigmaCorrection;
 	double tempx, tempy;
 	tempx = exp (-x);
 	double sum = tempx * (*ptargetPlus);
@@ -6785,11 +6915,8 @@ double DoubleGaussian :: InnerProductWithOffsetAndStandardDeviation (double offs
 		y = (refLeft - offset) / sigma;
 		x *= 0.5 * x;
 		y *= 0.5 * y;
-	//	w = x * SigmaCorrection;
-	//	z = y * SigmaCorrection;
-
-		w = x / SigmaRatio2;
-		z = y / SigmaRatio2;
+		w = x * SigmaCorrection;
+		z = y * SigmaCorrection;
 		tempw = exp (-w);
 		tempz = exp (-z);
 		tempx = exp (-x);
@@ -6810,11 +6937,8 @@ double DoubleGaussian :: InnerProductWithOffsetAndStandardDeviation (double offs
 	y = (refLeft - offset) / sigma;
 	x *= 0.5 * x;
 	y *= 0.5 * y;
-//	w = x * SigmaCorrection;
-//	z = y * SigmaCorrection;
-
-	w = x / SigmaRatio2;
-	z = y / SigmaRatio2;
+	w = x * SigmaCorrection;
+	z = y * SigmaCorrection;
 	tempw = exp (-w);
 	tempz = exp (-z);
 	tempx = exp (-x);
@@ -6897,8 +7021,7 @@ double DoubleGaussian :: InnerProductWithOffsetAndStandardDeviation (double offs
 double DoubleGaussian :: AsymmetricInnerProductWithOffsetAndStandardDeviation (double offset, double sigma, double* ogCoeffs, const SampleDataInfo& info) const {
 
 	double sigma2 = SigmaRatio * sigma;
-//	double SigmaCorrection = 1.0 / (SigmaRatio * SigmaRatio);
-	double SigmaRatio2 = SigmaRatio * SigmaRatio;
+	double SigmaCorrection = 1.0 / (SigmaRatio * SigmaRatio);
 
 	const double* ptargetPlus = info.DataLeft;
 	const double* ptargetPlusEnd = info.DataRight;
@@ -6907,8 +7030,7 @@ double DoubleGaussian :: AsymmetricInnerProductWithOffsetAndStandardDeviation (d
 	double x = (left - offset) / sigma;
 	x *= 0.5 * x;
 	double w;
-//	w = x * SigmaCorrection;
-	w = x / SigmaRatio2;
+	w = x * SigmaCorrection;
 	double tempx;
 	tempx = exp (-x);
 	double sum = 0.5 * tempx * (*ptargetPlus);
@@ -6931,8 +7053,7 @@ double DoubleGaussian :: AsymmetricInnerProductWithOffsetAndStandardDeviation (d
 		ref = left + temp;
 		x = (ref - offset) / sigma;
 		x *= 0.5 * x;
-	//	w = x * SigmaCorrection;
-		w = x / SigmaRatio2;
+		w = x * SigmaCorrection;
 		tempw = exp (-w);
 		tempx = exp (-x);
 		sum += (*ptargetPlus) * tempx;
@@ -6947,8 +7068,7 @@ double DoubleGaussian :: AsymmetricInnerProductWithOffsetAndStandardDeviation (d
 	ref = left + temp;
 	x = (ref - offset) / sigma;
 	x *= 0.5 * x;
-//	w = x * SigmaCorrection;
-	w = x / SigmaRatio2;
+	w = x * SigmaCorrection;
 	tempw = exp (-w);
 	tempx = exp (-x);
 	sum += 0.5 * (*ptargetPlus) * tempx;
@@ -7108,7 +7228,7 @@ double DoubleGaussian :: Centroid (double left, double right) const {
 }
 
 
-double DoubleGaussian :: SimpleSecondMoment (double left, double right) const {
+double DoubleGaussian :: SecondMoment (double left, double right) const {
 
 	return StandardDeviation * StandardDeviation;
 }
@@ -7350,7 +7470,6 @@ SuperGaussian :: SuperGaussian () : ParametricCurve (-SuperGaussian::SigmaWidth,
 	Sigma2 *= SuperSigma2 / SuperNorm;
 	Sigma1 = sqrt (Sigma2);
 	DataSignal::AddNoticeToList (OutputLevelManager::CurveIsABlob, "", "Curve is a level 3 blob");
-	CTRACE << "Created super Gaussian with id = " << mSignalID << ", with mean = 0.0, sigma = 1.0\n";
 }
 
 
@@ -7377,7 +7496,6 @@ StandardDeviation (standardDeviation), Degree (degree) {
 	RGString notice ("Curve is a level ");
 	notice += temp + " blob";
 	DataSignal::AddNoticeToList (OutputLevelManager::CurveIsABlob, "", notice);
-	CTRACE << "Created super Gaussian with id = " << mSignalID << ", with mean = " << mean << ", sigma = " << standardDeviation << "\n";
 }
 
 
@@ -7404,7 +7522,6 @@ ParametricCurve (left, right), Mean (mean), StandardDeviation (standardDeviation
 	RGString notice ("Curve is a level ");
 	notice += temp + " blob";
 	DataSignal::AddNoticeToList (OutputLevelManager::CurveIsABlob, "", notice);
-	CTRACE << "Created super Gaussian with id = " << mSignalID << ", with mean = " << mean << ", sigma = " << standardDeviation << ", left = " << left << ", right = " << right << "\n";
 }
 
 
@@ -7428,7 +7545,6 @@ SuperSigma2 (sg.SuperSigma2) {
 
 SuperGaussian :: ~SuperGaussian () {
 
-	CTRACE << "Deleted super Gaussian with id = " << mSignalID << "\n";
 }
 
 
@@ -7570,7 +7686,7 @@ double SuperGaussian :: Centroid (double left, double right) const {
 }
 
 
-double SuperGaussian :: SimpleSecondMoment (double left, double right) const {
+double SuperGaussian :: SecondMoment (double left, double right) const {
 
 	//  This should be OK now
 
@@ -7902,7 +8018,6 @@ NormalizedSuperGaussian :: NormalizedSuperGaussian () : SuperGaussian () {
 
 	SampleSpacing = SampledData::GetSampleSpacing ();
 	Scale = 1.0 / (SampleSpacing * sqrt (TwoNorm2WithoutScale));
-	CTRACE << "is normalized\n";
 }
 
 
@@ -7910,26 +8025,22 @@ NormalizedSuperGaussian :: NormalizedSuperGaussian (double mean, double standard
 
 	SampleSpacing = SampledData::GetSampleSpacing ();
 	Scale = 1.0 / (SampleSpacing * sqrt (TwoNorm2WithoutScale));
-	CTRACE << "is normalized\n";
 }
 
 
 NormalizedSuperGaussian :: NormalizedSuperGaussian (const NormalizedSuperGaussian& nsg) : SuperGaussian (nsg), SampleSpacing (nsg.SampleSpacing) {
 
-	CTRACE << "is normalized\n";
 }
 
 
 NormalizedSuperGaussian :: NormalizedSuperGaussian (double mean, const NormalizedSuperGaussian& nsg) : SuperGaussian (mean, nsg), 
 SampleSpacing (nsg.SampleSpacing) {
 
-	CTRACE << "is normalized\n";
 }
 
 
 NormalizedSuperGaussian :: ~NormalizedSuperGaussian () {
 
-	CTRACE << "Normalized:  ";
 }
 
 
@@ -8721,7 +8832,6 @@ double NormalizedSuperGaussian :: UnscaledValueWithOffsetAndSigma (double x, dou
 CompositeCurve :: CompositeCurve () : ParametricCurve (), SampledVersion (NULL) {
 
 	CurveIterator = new RGDListIterator (CurveList);
-	CTRACE << "Created composite curve with id = " << mSignalID << "\n";
 }
 
 
@@ -8729,7 +8839,6 @@ CompositeCurve :: CompositeCurve (double left, double right, const RGDList& Curv
 CurveList (Curves), SampledVersion (NULL) {
 
 	CurveIterator = new RGDListIterator (CurveList);
-	CTRACE << "Created composite curve with id = " << mSignalID << "left = " << left << ", right = " << right << "from list\n";
 }
 
 
@@ -8741,8 +8850,6 @@ CompositeCurve :: CompositeCurve (const CompositeCurve& cc) : ParametricCurve (c
 
 		SampledVersion = new SampledData (*cc.SampledVersion);
 	}
-
-	CTRACE << "Created composite curve with id = " << mSignalID << "from list\n";
 }
 
 
@@ -8753,7 +8860,6 @@ CompositeCurve :: ~CompositeCurve () {
 	delete SampledVersion;
 	delete CurveIterator;
 	mTempCurveList.Clear ();
-	CTRACE << "Deleted composite curve with id = " << mSignalID << "\n";
 }
 
 
@@ -9266,7 +9372,6 @@ void CompositeCurve :: SaveAll (RGVOutStream& f) const {
 
 DualDoubleGaussian :: DualDoubleGaussian () : ParametricCurve (), PrimaryCurve (NULL), SecondaryCurve (NULL) {
 
-	CTRACE << "Created dual double Gaussian with id = " << mSignalID << "\n";
 }
 
 
@@ -9294,7 +9399,6 @@ DualDoubleGaussian :: ~DualDoubleGaussian () {
 
 	delete PrimaryCurve;
 	delete SecondaryCurve;
-	CTRACE << "Deleted dual double Gaussian with id = " << mSignalID << "\n";
 }
 
 
@@ -9450,7 +9554,6 @@ CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0),
 
 	mIsGraphable = false;
 	mPullupTolerance = halfCraterPullupTolerance;
-	CTRACE << "Created crater with id = " << mSignalID << ", mean = 0.0, sigma = 1.0\n";
 }
 
 
@@ -9506,7 +9609,6 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	mPossibleInterAlleleRight = next->IsPossibleInterlocusAllele (1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleRight = next->IsAcceptedTriAllele (1);
 	mIsOffGridRight = next->IsOffGrid (1);
-	CTRACE << "Created crater with id = " << mSignalID << ", mean = " << mMean << ", sigma = " << mSigma << "\n";
 }
 
 
@@ -9564,7 +9666,6 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	mPossibleInterAlleleRight = next->IsPossibleInterlocusAllele (1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleRight = next->IsAcceptedTriAllele (1);
 	mIsOffGridRight = next->IsOffGrid (1);
-	CTRACE << "Created crater with primary link with id = " << mSignalID << ", mean = " << mMean << ", sigma = " << mSigma << "\n";
 }
 
 
@@ -9606,7 +9707,6 @@ mPrevious (c.mPrevious), mNext (c.mNext)  {
 
 CraterSignal :: ~CraterSignal () {
 
-	CTRACE << "Deleted crater with id = " << mSignalID << "\n";
 }
 
 
@@ -9964,7 +10064,6 @@ void CraterSignal :: SaveAll (RGVOutStream& f) const {
 SimpleSigmoidSignal :: SimpleSigmoidSignal () : CraterSignal () {
 
 	SetDoNotCall (true);
-	CTRACE << "Created sigmoid with id = " << mSignalID << "\n";
 }
 
 
@@ -9987,7 +10086,6 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 		Fit = temp;
 
 	mIsGraphable = false;
-	CTRACE << "Created sigmoid from 2 signals, with id = " << mSignalID << "\n";
 }
 
 
@@ -10012,7 +10110,6 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 	mIsGraphable = false;
 	SetPrimaryCrossChannelSignalLink (primaryLink);
 	primaryLink->AddCrossChannelSignalLink ((DataSignal*)this);
-	CTRACE << "Created sigmoid from 2 signals from link, with id = " << mSignalID << "\n";
 }
 
 
@@ -10068,7 +10165,6 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (const SimpleSigmoidSignal& c, Coordi
 
 SimpleSigmoidSignal :: ~SimpleSigmoidSignal () {
 
-	CTRACE << "Deleted sigmaid with id = " << mSignalID << "\n";
 }
 
 

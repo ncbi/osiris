@@ -38,12 +38,12 @@
 #include "rgvstream.h"
 
 RGPARRAYDELETEOPTION RGPArray :: DeleteOption = RGDELETEALL;
-size_t RGPArray::DefaultSize = 50;
-size_t RGPArray::DefaultIncrement = 50;
-
 
 PERSISTENT_DEFINITION (RGPArray, _RGPARRAY_, "PArray")
 
+
+size_t RGPArray::DefaultSize = 50;
+size_t RGPArray::DefaultIncrement = 50;
 
 
 RGPArray :: RGPArray () : RGPersistent (), ArraySize (RGPArray::DefaultSize), 

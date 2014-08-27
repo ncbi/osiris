@@ -195,7 +195,7 @@ PERSISTENT_PREDECLARATION (smLadderFitThreshold)
 PERSISTENT_PREDECLARATION (smSampleToLadderFitBelowExpectations)
 PERSISTENT_PREDECLARATION (smEnableRawDataFilterForNormalizationPreset)
 PERSISTENT_PREDECLARATION (smBaselineEstimationThreshold)
-PERSISTENT_PREDECLARATION (smFilterWindowWidthForBaselineEstimation)
+PERSISTENT_PREDECLARATION (smSinglePassFilterWindowWidth)
 PERSISTENT_PREDECLARATION (smAmbiguousInterlocusWithPoorMorphology)
 PERSISTENT_PREDECLARATION (smSigmoidalPullup)
 PERSISTENT_PREDECLARATION (smMinPrimaryPullupThreshold)
@@ -208,6 +208,12 @@ PERSISTENT_PREDECLARATION (smSampleSatisfiesPossibleMixtureIDCriteria)
 PERSISTENT_PREDECLARATION (smDisableLowLevelFiltersForKnownMixturesPreset)
 PERSISTENT_PREDECLARATION (smDisableStutterFilter)
 PERSISTENT_PREDECLARATION (smDisableAdenylationFilter)
+PERSISTENT_PREDECLARATION (smSelectTriplePassVsSinglePassFilterPreset)
+PERSISTENT_PREDECLARATION (smTriplePassFilterWindowWidth)
+PERSISTENT_PREDECLARATION (smLadderFitThresholdUsingMinError)
+PERSISTENT_PREDECLARATION (smUseMaxSecondDerivativesForSampleToLadderFit)
+PERSISTENT_PREDECLARATION (smPartOfDualSignal)
+PERSISTENT_PREDECLARATION (smNegativePeak)
 
 
 
@@ -5363,14 +5369,14 @@ protected:
 
 
 
-class smFilterWindowWidthForBaselineEstimation : public SmartNotice {
+class smSinglePassFilterWindowWidth : public SmartNotice {
 
-PERSISTENT_DECLARATION (smFilterWindowWidthForBaselineEstimation)
+PERSISTENT_DECLARATION (smSinglePassFilterWindowWidth)
 
 public:
-	smFilterWindowWidthForBaselineEstimation ();
-	smFilterWindowWidthForBaselineEstimation (const smFilterWindowWidthForBaselineEstimation& note);
-	virtual ~smFilterWindowWidthForBaselineEstimation ();
+	smSinglePassFilterWindowWidth ();
+	smSinglePassFilterWindowWidth (const smSinglePassFilterWindowWidth& note);
+	virtual ~smSinglePassFilterWindowWidth ();
 
 	virtual int GetSubject () const;
 
@@ -5707,6 +5713,174 @@ public:
 	smDisableAdenylationFilter ();
 	smDisableAdenylationFilter (const smDisableAdenylationFilter& note);
 	virtual ~smDisableAdenylationFilter ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSelectTriplePassVsSinglePassFilterPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSelectTriplePassVsSinglePassFilterPreset)
+
+public:
+	smSelectTriplePassVsSinglePassFilterPreset ();
+	smSelectTriplePassVsSinglePassFilterPreset (const smSelectTriplePassVsSinglePassFilterPreset& note);
+	virtual ~smSelectTriplePassVsSinglePassFilterPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smTriplePassFilterWindowWidth : public SmartNotice {
+
+PERSISTENT_DECLARATION (smTriplePassFilterWindowWidth)
+
+public:
+	smTriplePassFilterWindowWidth ();
+	smTriplePassFilterWindowWidth (const smTriplePassFilterWindowWidth& note);
+	virtual ~smTriplePassFilterWindowWidth ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smLadderFitThresholdUsingMinError : public SmartNotice {
+
+PERSISTENT_DECLARATION (smLadderFitThresholdUsingMinError)
+
+public:
+	smLadderFitThresholdUsingMinError ();
+	smLadderFitThresholdUsingMinError (const smLadderFitThresholdUsingMinError& note);
+	virtual ~smLadderFitThresholdUsingMinError ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUseMaxSecondDerivativesForSampleToLadderFit : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUseMaxSecondDerivativesForSampleToLadderFit)
+
+public:
+	smUseMaxSecondDerivativesForSampleToLadderFit ();
+	smUseMaxSecondDerivativesForSampleToLadderFit (const smUseMaxSecondDerivativesForSampleToLadderFit& note);
+	virtual ~smUseMaxSecondDerivativesForSampleToLadderFit ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPartOfDualSignal : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPartOfDualSignal)
+
+public:
+	smPartOfDualSignal ();
+	smPartOfDualSignal (const smPartOfDualSignal& note);
+	virtual ~smPartOfDualSignal ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smNegativePeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smNegativePeak)
+
+public:
+	smNegativePeak ();
+	smNegativePeak (const smNegativePeak& note);
+	virtual ~smNegativePeak ();
 
 	virtual int GetSubject () const;
 

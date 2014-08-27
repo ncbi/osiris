@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.26</VersionNumber>
-	<BuildTime>04 16 2014 06:47PM</BuildTime>
+	<VersionNumber>6.32</VersionNumber>
+	<BuildTime>07 09 2014 07:11 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -532,6 +532,26 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smNegativePeak</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Negative Peak</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smExcessiveResidualDisplacement</Name>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
@@ -566,12 +586,6 @@
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Left:  Excessive Residual Displacement Left</Text>
 			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -583,12 +597,6 @@
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Right:  Excessive Residual Displacement Right</Text>
 			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -1104,6 +1112,17 @@
 			<Text>Is a Sample But Not a Negative Control</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPartOfDualSignal</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Part of Dual Signal</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smStutter</Name>
@@ -4100,7 +4119,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smEnableLadderFitThresholdTestPreset</Expression>
+				<Expression>smEnableLadderFitThresholdTestPreset AND NOT smSampleIsPosCtrl AND NOT smSampleIsNegCtrl</Expression>
 			</ReportCriterion>
 			<Text>BEST SAMPLE TO LADDER FIT DOES NOT MEET EXPECTATIONS:  CONFIRM SIZING.  METRIC VALUE OF </Text>
 			<ClosingText> EXCEEDS THRESHOLD</ClosingText>
@@ -4484,6 +4503,40 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSpacerRaisedBaselineBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerRaisedBaselineTitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Raised Baseline Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSampleChannelRaisedBaselineThreshold</Name>
 			<MessageType>count</MessageType>
 			<Subject>10</Subject>
@@ -4491,7 +4544,7 @@
 			<CountingDataInfo>
 				<Threshold>250</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Raised Baseline Threshold for Samples (RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Raised Baseline Threshold for Samples (RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4510,7 +4563,7 @@
 			<CountingDataInfo>
 				<Threshold>250</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Raised Baseline Threshold for Sample ILS Channels (RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Raised Baseline Threshold for Sample ILS Channels (RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4522,121 +4575,54 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smMinimumHeightForPrimerPeaks</Name>
+			<Name>smSpacerCrossChannelBegin</Name>
 			<MessageType>count</MessageType>
-			<Subject>10</Subject>
+			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<CountingDataInfo>
-				<Threshold>2000</Threshold>
+				<Threshold>-1</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Minimum Height for Primer Dimer Peaks (RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>    </ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>MINIMUM HEIGHT FOR PRIMER DIMER PEAKS (RFU)</Text>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
+			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smMinimumNumberOfPrimerPeaksForNegativeControlChannel</Name>
+			<Name>smSpacerCrossChannelTitle</Name>
 			<MessageType>count</MessageType>
-			<Subject>10</Subject>
+			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<CountingDataInfo>
-				<Threshold>2</Threshold>
+				<Threshold>-1</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Minimum Number of Peaks per Channel in Primer Dimer for Negative Control</ThresholdDescriptor>
+				<ThresholdDescriptor>Cross Channel Options:</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>MINIMUM NUMBER OF PEAKS PER CHANNEL IN PRIMER DIMER FOR NEGATIVE CONTROL</Text>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
+			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smPercentOfStandardNoiseThreshold</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
+			<Name>smTestForColorCorrectionMatrixPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
 			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Percentage Of Standard Noise Threshold For Peak Identification (Default = 100)</ThresholdDescriptor>
-			</CountingDataInfo>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Attempt to Apply Embedded Color Correction Matrix</ThresholdDescriptor>
+			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>PERCENTAGE OF STANDARD NOISE THRESHOLD FOR PEAK IDENTIFICATION (DEFAULT = 100)</Text>
+			<Text>ATTEMPT TO APPLY EMBEDDED COLOR CORRECTION MATRIX</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smLadderFitThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Max 2nd derivative time 10 to the 6th for time transform</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>175</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Ladder Fit Threshold for Accurate Sizing (Default = 175, 0 is ideal fit)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>LADDER FIT THRESHOLD FOR ACCURATE SIZING (DEFAULT = 175, 0 IS IDEAL FIT)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smBaselineEstimationThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Level below which fit peak values are considered to be 0 for raw baseline estimation</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>10</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>Baseline Estimation Threshold (In RFU; 1+; Default larger than 5 RFU)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>BASELINE ESTIMATION THRESHOLD (IN RFU; 1+; DEFAULT LARGER THAN 5 RFU)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smFilterWindowWidthForBaselineEstimation</Name>
-			<MessageType>count</MessageType>
-			<Description>Number of samples in moving window filter for baseline estimation</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>15</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>Filter Window Width for Baseline Estimation (Default = 15)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smMinPrimaryPullupThreshold</Name>
@@ -4647,7 +4633,7 @@
 			<CountingDataInfo>
 				<Threshold>500</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Min RFU for a peak to be considered as a primary pull-up (Default = 500)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Min RFU for a peak to be considered as a primary pull-up (Default = 500)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4659,56 +4645,37 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smResidualDisplacementThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Residual Displacement Threshold (% bp) For Peak To Be Considered valid Allele</Description>
-			<Subject>10</Subject>
+			<Name>smMakePullupAtAlleleNonCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
 			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Make Pull-up At Allele Artifact Non-Critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAKE PULL-UP AT ALLELE ARTIFACT NON-CRITICAL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerExcessiveNoiseBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
 			<CountingDataInfo>
-				<Threshold>17</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>Max % BP For Residual Displacement Test (Default = 17% BP)</ThresholdDescriptor>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>    </ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>MAX % BP FOR RESIDUAL DISPLACEMENT TEST (DEFAULT = 17% BP)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTestForPeaksBelowMinRFUForNegCtrlPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Test for Presence of Sub-Analytic Peaks in Negative Controls</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>TEST FOR PRESENCE OF PEAKS ABOVE DETECTION THRESHOLD FOR NEGATIVE CONTROL</Text>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTestExcessiveNoiseAboveOrBelowAnalysisThreshold</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Test for Excessive Noise Above Analysis Threshold (checked) or below (unchecked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>TEST FOR EXCESSIVE NOISE ABOVE OR BELOW ANALYSIS THRESHOLD</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smTestForExcessiveNoisePreset</Name>
@@ -4727,20 +4694,37 @@
 			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smMakePullupAtAlleleNonCriticalPreset</Name>
+			<Name>smTestExcessiveNoiseAboveOrBelowAnalysisThreshold</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Make Pull-up At Allele Artifact Non-Critical</ThresholdDescriptor>
+				<ThresholdDescriptor>       Test for Excessive Noise Above Analysis Threshold (checked) or below (unchecked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>MAKE PULL-UP AT ALLELE ARTIFACT NON-CRITICAL</Text>
+			<Text>TEST FOR EXCESSIVE NOISE ABOVE OR BELOW ANALYSIS THRESHOLD</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerExcessiveNoiseEnd</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>    </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smFlagMixedSamplesPreset</Name>
@@ -4759,13 +4743,47 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSpacerRewordOptionsBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerReworkOptionsTitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Rework Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smAmpMoreOnLowHomozygotePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Recommend Amp More On Low Homozygote</ThresholdDescriptor>
+				<ThresholdDescriptor>        Recommend Amp More On Low Homozygote</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4781,7 +4799,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Select Reamp Regular (checked) Versus Reinject (unchecked)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Select Reamp Regular (checked) Versus Reinject (unchecked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4797,7 +4815,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Recommend Rework if Laser Off Scale Found</ThresholdDescriptor>
+				<ThresholdDescriptor>        Recommend Rework if Laser Off Scale Found</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4807,18 +4825,36 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smTestForColorCorrectionMatrixPreset</Name>
-			<MessageType>preset</MessageType>
+			<Name>smSpacerCurveFitOptionsBegin</Name>
+			<MessageType>count</MessageType>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Attempt to Apply Embedded Color Correction Matrix</ThresholdDescriptor>
-			</PresetDataInfo>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>ATTEMPT TO APPLY EMBEDDED COLOR CORRECTION MATRIX</Text>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerCurveFitOptionsTitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Curve Fit Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -4829,12 +4865,65 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Ignore noise analysis in smoothing when above detection threshold</ThresholdDescriptor>
+				<ThresholdDescriptor>        Ignore noise analysis in peak detection when above detection threshold</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>IGNORE NOISE ANALYZE IN SMOOTHING WHEN ABOVE DETECTION THRESHOLD</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPercentOfStandardNoiseThreshold</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        Percentage Of Standard Noise Threshold For Peak Identification (Default = 100)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENTAGE OF STANDARD NOISE THRESHOLD FOR PEAK IDENTIFICATION (DEFAULT = 100)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacer1</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerNegControlOptions</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Negative Control Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -4845,7 +4934,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Test for Primer Dimer Peaks in Negative Controls</ThresholdDescriptor>
+				<ThresholdDescriptor>        Test for Primer Dimer Peaks in Negative Controls</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4853,6 +4942,77 @@
 			<Text>TEST FOR PRIMER DIMER PEAKS IN NEGATIVE CONTROL</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMinimumHeightForPrimerPeaks</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>2000</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                Minimum Height for Primer Dimer Peaks (RFU)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MINIMUM HEIGHT FOR PRIMER DIMER PEAKS (RFU)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMinimumNumberOfPrimerPeaksForNegativeControlChannel</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>2</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                Minimum Number of Peaks per Channel in Primer Dimer for Negative Control</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MINIMUM NUMBER OF PEAKS PER CHANNEL IN PRIMER DIMER FOR NEGATIVE CONTROL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTestForPeaksBelowMinRFUForNegCtrlPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Test for Presence of Sub-Analytic Peaks in Negative Controls</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>TEST FOR PRESENCE OF PEAKS ABOVE DETECTION THRESHOLD FOR NEGATIVE CONTROL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacer4</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset</Name>
@@ -4887,13 +5047,47 @@
 			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSpacerCallCriteriaBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerCallCriteriaTitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Call Criteria:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smCraterPlusRaisedBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Do Not Call OL Crater If Laser In Scale and Raised Baseline</ThresholdDescriptor>
+				<ThresholdDescriptor>        Do Not Call OL Crater If Laser In Scale and Raised Baseline</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4909,7 +5103,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Do Not Call OL Allele If Pull-up</ThresholdDescriptor>
+				<ThresholdDescriptor>        Do Not Call OL Allele If Pull-up</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4925,7 +5119,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Do Not Call OL Alleles If Excessive Number of OL's</ThresholdDescriptor>
+				<ThresholdDescriptor>        Do Not Call OL Alleles If Excessive Number of OL's</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4941,7 +5135,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Call Peaks That Are Identified as Adenylation If On-Ladder</ThresholdDescriptor>
+				<ThresholdDescriptor>        Call Peaks That Are Identified as Adenylation If On-Ladder</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4957,12 +5151,29 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Do Not Call Alleles With Excess Residual</ThresholdDescriptor>
+				<ThresholdDescriptor>        Do Not Call Alleles With Excess Residual</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Do Not Call Alleles With Excess Residual</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerCallCriteriaEnd</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -4983,13 +5194,47 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSpacer2</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smBaselineHeading</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Baseline Analysis Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smTestRelativeBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Test Adjusted Signal Heights Relative To Baseline (Overridden by below)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Test Adjusted Signal Heights Relative To Baseline (Overridden by below)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5005,7 +5250,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Normalize Raw Data Relative To Baseline (Overrides above)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Normalize Raw Data Relative To Baseline (Overrides above)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5015,13 +5260,33 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smBaselineEstimationThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Level below which fit peak values are considered to be 0 for raw baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>10</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                Baseline Estimation Threshold (In RFU; Must Be Positive; Default = 10 RFU)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>BASELINE ESTIMATION THRESHOLD (IN RFU; 1+; DEFAULT LARGER THAN 5 RFU)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smIgnoreNegativeRelativeBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Ignore Effects of Negative Relative Baseline</ThresholdDescriptor>
+				<ThresholdDescriptor>                Ignore Effects of Negative Relative Baseline</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5037,12 +5302,118 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Enable Raw Data Filter For Baseline Normalization Estimation</ThresholdDescriptor>
+				<ThresholdDescriptor>                Enable Raw Data Filter For Baseline Normalization Estimation</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Enable Raw Data Filter For Baseline Normalization Estimation</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSelectTriplePassVsSinglePassFilterPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>                        Select Triple Pass Filter (Checked)(Preferred) Or Single Pass Filter (Unchecked)     </ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Select Triple Pass (Checked)(Preferred) Or Single Pass (Unchecked)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTriplePassFilterWindowWidth</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of samples in triple pass moving window filter for baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>7</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Triple Pass Filter Window Width for Baseline Estimation (Default = 7)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>TRIPLE PASS FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSinglePassFilterWindowWidth</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of samples in single pass moving window filter for baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>15</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Single Pass Filter Window Width for Baseline Estimation (Default = 15)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>SINGLE PASS FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacer3</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLadderSelectionCriterionHeader</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Ladder Selection Criteria (Based on Sample-to-Ladder Time Transform):</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Ladder Selection Criterion</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Select Most Linear Time Transform (Checked) Or Lowest Error Time Transform (Unchecked)        </ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Select Most Linear Time Transform (Checked) Or Least Time Transform Error (Unchecked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -5053,12 +5424,69 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Enable Ladder Fit Threshold Test</ThresholdDescriptor>
+				<ThresholdDescriptor>        Enable Ladder Fit Threshold Test For Accurate Sizing</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Enable Ladder Fit Threshold Test</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLadderFitThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Max 2nd derivative time 10 to the 6th for time transform</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>175</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                Most Linear Time Transform Threshold (Default = 175, 0 is ideal fit)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MOST LINEAR THRESHOLD FOR ACCURATE SIZING (DEFAULT = 175, 0 IS IDEAL FIT)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLadderFitThresholdUsingMinError</Name>
+			<MessageType>count</MessageType>
+			<Description>Min Error in % BP</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>35</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                Least Time Transform Error Threshold (Default = 35%, 0 is ideal fit)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>LEAST TRANSFORM THRESHOLD FOR ACCURATE SIZING (DEFAULT = 35%, 0 IS IDEAL FIT)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerERDBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -5079,6 +5507,26 @@
 			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smResidualDisplacementThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Residual Displacement Threshold (% bp) For Peak To Be Considered valid Allele</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>17</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>        Max % BP For Residual Displacement Test (Default = 17% BP)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAX % BP FOR RESIDUAL DISPLACEMENT TEST (DEFAULT = 17% BP)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -5091,6 +5539,23 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Make Excessive Residual Displacement Message Critical</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerERDEnd</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -5225,8 +5690,11 @@
 						<Name>smPercentOfStandardNoiseThreshold</Name>
 						<Name>smEnableLadderFitThresholdTestPreset</Name>
 						<Name>smLadderFitThreshold</Name>
+						<Name>smLadderFitThresholdUsingMinError</Name>
 						<Name>smEnableRawDataFilterForNormalizationPreset</Name>
-						<Name>smFilterWindowWidthForBaselineEstimation</Name>
+						<Name>smSelectTriplePassVsSinglePassFilterPreset</Name>
+						<Name>smTriplePassFilterWindowWidth</Name>
+						<Name>smSinglePassFilterWindowWidth</Name>
 						<Name>smMinPrimaryPullupThreshold</Name>
 						<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 						<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
@@ -5234,6 +5702,7 @@
 						<Name>smDisablePullupFractionalFilterPreset</Name>
 						<Name>smDisableStutterFilterPreset</Name>
 						<Name>smDisableAdenylationFilterPreset</Name>
+						<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
@@ -5261,6 +5730,8 @@
 						<Name>smPeakInCoreLadderLocus</Name>
 						<Name>smPeakToRightOfILS</Name>
 						<Name>smILSPeakMayBeIncorrect</Name>
+						<Name>smPartOfDualSignal</Name>
+						<Name>smNegativePeak</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smCountThisSignal = true</Expression>
@@ -5557,7 +6028,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>

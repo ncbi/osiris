@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
-<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (x64) (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="Common.xsd"/>
 	<xs:element name="LabSettings" type="LabSettingsType">
@@ -45,7 +45,22 @@ Added Info tag</xs:documentation>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="SingleSourceStrings" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Synonym" type="Synonym"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PossibleMixtureStrings" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Synonym" type="Synonym"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="StandardControlName" type="xs:string"/>
+			<xs:element name="UseSampleName" type="xs:boolean" minOccurs="0"/>
 			<xs:sequence minOccurs="0" maxOccurs="29">
 				<xs:element name="SpecimenCategory">
 					<xs:annotation>

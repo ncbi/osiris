@@ -85,7 +85,7 @@ double SpecialLinearRegression :: RegressForwardFrom (double* array, double& ave
 	}
 
 	range = maxValue - minValue;
-	return (mS * Sxy - mSx * Sy) / mDel;  // This is equation 14.2.6 on p. 505
+	return (mS * Sxy - mSx * Sy) / mDel;  // This is equation 14.2.6 on p. 505 of Numerical Recipes
 }
 
 
@@ -122,7 +122,7 @@ double SpecialLinearRegression :: RegressBackwardFrom (double* array, double& av
 	}
 
 	range = maxValue - minValue;
-	return (mS * Sxy - mSx * Sy) / mDel;  // This is equation 14.2.6 on p. 505
+	return (mS * Sxy - mSx * Sy) / mDel;  // This is equation 14.2.6 on p. 505 of Numerical Recipes
 }
 
 

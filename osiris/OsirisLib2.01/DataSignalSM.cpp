@@ -1541,4 +1541,41 @@ bool SimpleSigmoidSignal :: TestSignalGroupsWithinILS (double ilsLeft, double il
 }
 
 
+NegativeSignal :: NegativeSignal () : ParametricCurve () {
+
+	smNegativePeak negPeak;
+	SetMessageValue (negPeak, true);
+	mOriginal = new Gaussian ();
+}
+
+
+
+NegativeSignal :: NegativeSignal (const NegativeSignal& neg) : ParametricCurve (neg) {
+
+	smNegativePeak negPeak;
+	SetMessageValue (negPeak, true);
+	mOriginal = neg.mOriginal->MakeCopy (neg.GetMean ());
+}
+
+
+
+NegativeSignal :: NegativeSignal (double mean, double peak, const ParametricCurve& sig) : ParametricCurve (sig) {
+
+	smNegativePeak negPeak;
+	SetMessageValue (negPeak, true);
+	mOriginal = sig.MakeCopy (mean);
+	mOriginal->SetPeak (-sig.Peak ());
+}
+
+
+
+NegativeSignal :: ~NegativeSignal () {
+
+	delete mOriginal;
+}
+
+
+
+
+
 

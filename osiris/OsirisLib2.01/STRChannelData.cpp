@@ -48,6 +48,7 @@
 #include "SmartNotice.h"
 #include "STRSmartNotices.h"
 
+bool STRChannelData::UseHermiteCubicSplineForNormalization = true;
 
 double STRLaneStandardChannelData::minLaneStandardRFU = 150.0;
 double STRLadderChannelData::minLadderRFU = 150.0;

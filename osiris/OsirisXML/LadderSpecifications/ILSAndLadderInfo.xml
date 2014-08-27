@@ -169,14 +169,14 @@
 		<LaneStandard>
 			<Name>BV-70-500</Name>
 			<Characteristics>70 80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
-			<RelativeHeights>H H H MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH M M M</RelativeHeights>
+			<RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
 			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
 			<Name>BV-80-500</Name>
 			<Characteristics>80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
-			<RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH M M M</RelativeHeights>
+			<RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
 			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
@@ -267,6 +267,21 @@
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
 			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
+		<LaneStandard>
+			<Name>DY_70-450</Name>
+			<Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+    </LaneStandard>
+    <LaneStandard>
+			<Name>DY_70-450_LESS260</Name>
+			<Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 280 300 320 340 360 380 400 420 440 450</Characteristics>
+			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+			<Omissions>260</Omissions>
+			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+    </LaneStandard>
 	</LaneStandards>
 	<Kits>
 		<Set>
@@ -363,6 +378,14 @@
 		<Set>
 			<KitName>PowerPlex ESI16</KitName>
 			<FileName>PowerPlex_ESI16_LadderInfo.xml</FileName>
+		</Set>
+		<Set>
+			<KitName>iPlex</KitName>
+			<FileName>iPlex_LadderInfo.xml</FileName>
+		</Set>
+		<Set>
+			<KitName>iPlexLIZ500less250</KitName>
+			<FileName>iPlexLIZ500less250_LadderInfo.xml</FileName>
 		</Set>
 	</Kits>
 </KitData>

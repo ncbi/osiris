@@ -65,8 +65,6 @@ class SmartNotice;
 
 //  The following two structs can be initialized once at the beginning of a run and reused for different input files...
 
-#define CTRACE CoreBioComponent::Trace()
-
 struct GridDataStruct {
 
 	PopulationCollection* mCollection;
@@ -139,7 +137,7 @@ public:
 	Locus* FindLocus (const RGString& locusName);
 	double GetTimeForSpecifiedID (int channel, double id);
 
-	int CreateAndSubstituteFilteredDataSignalForRawDataNonILS (int window);
+	int CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
 	int RestoreRawDataAndDeleteFilteredSignalNonILS ();
 
 	int GetLocusAndChannelHighestMessageLevel ();
@@ -330,6 +328,7 @@ public:
 	virtual int AnalyzeCrossChannelSM ();
 	virtual int AnalyzeCrossChannelWithNegativePeaksSM ();
 	virtual int OrganizeNoticeObjectsSM ();
+	virtual int TestSignalsForLaserOffScaleSM ();
 
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
 
@@ -393,6 +392,7 @@ public:
 
 	friend CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2);
 	friend CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2, bool useHermiteSplines);
+	friend CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2, bool useHermiteSplines, bool useChords);
 
 	static void CreateInitializationData (int scope);
 	static void InitializeMessageMatrix (bool* matrix, int size);
@@ -401,10 +401,6 @@ public:
 	static bool TestForOffScale (double time);
 
 	static void SetOffScaleDataLength (int length) { OffScaleDataLength = length; }
-
-	static void ResetTrace ();
-	static RGTraceString& Trace ();
-	static void SaveTrace (const RGString& fullPath, const RGString& fileName);
 
 	//************************************************************************************************************************************
 
@@ -460,7 +456,7 @@ protected:
 	static int OffScaleDataLength;
 	static double minPrimaryPullupThreshold;
 	static bool UseHermiteTimeTransforms;
-	static RGTraceString TraceString;
+	static bool UseNaturalCubicSplineTimeTransform;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();

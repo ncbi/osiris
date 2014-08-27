@@ -339,6 +339,8 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 CSplineTransform :: CSplineTransform (const double* coord1, const double* coord2, const double* derivs, int size, bool isHermite) : CoordinateTransform (coord1, coord2, size),
 CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (isHermite) {
 
+	int i;
+
 	if (ErrorFlag == 0) {
 	
 		NumberOfKnots = size; // n+1
@@ -351,7 +353,7 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 		C = new double [NumberOfCubics];
 		D = new double [NumberOfCubics];
 
-		for (int i=0; i<size; i++) {
+		for (i=0; i<size; i++) {
 
 			Knots [i] = coord1 [i];
 			Ordinates [i] = coord2 [i];
@@ -362,6 +364,131 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 
 		if (isHermite)
 			InitializeHermite (derivs);
+
+		else
+			Initialize ();
+	}
+
+	else {
+
+		NumberOfKnots = NumberOfCubics = 0;
+	}
+}
+
+
+
+CSplineTransform :: CSplineTransform (const double* coord1, const double* coord2, int size, bool isHermite) : CoordinateTransform (coord1, coord2, size),
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (isHermite) {
+
+	int i;
+
+	if (ErrorFlag == 0) {
+	
+		NumberOfKnots = size; // n+1
+		NumberOfCubics = NumberOfKnots - 1; // n
+		Knots = new double [NumberOfKnots];
+		Ordinates = new double [NumberOfKnots];
+
+		A = new double [NumberOfCubics];
+		B = new double [NumberOfCubics];
+		C = new double [NumberOfCubics];
+		D = new double [NumberOfCubics];
+
+		for (i=0; i<size; i++) {
+
+			Knots [i] = coord1 [i];
+			Ordinates [i] = coord2 [i];
+		}
+
+		Left = Knots [0];
+		Right = Knots [NumberOfCubics];
+
+		if (isHermite) {
+
+			double* derivs = new double [NumberOfKnots];
+			double* differences = new double [NumberOfCubics];
+
+			for (i=0; i<NumberOfCubics; i++)
+				differences [i] = (Ordinates [i+1] - Ordinates [i]) / (Knots [i+1] - Knots [i]);
+
+			derivs [0] = differences [0];
+			derivs [NumberOfCubics] = differences [NumberOfCubics-1];
+
+			for (i=1; i<NumberOfCubics; i++)
+				derivs [i] = 0.5 * (differences [i] + differences [i-1]);
+
+			InitializeHermite (derivs);
+			delete[] derivs;
+			delete[] differences;
+		}
+
+		else
+			Initialize ();
+	}
+
+	else {
+
+		NumberOfKnots = NumberOfCubics = 0;
+	}
+}
+
+
+CSplineTransform :: CSplineTransform (const list<double>& coord1, const list<double>& coord2, bool isHermite) : CoordinateTransform (coord1, coord2),
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (isHermite) {
+
+	int i;
+
+	if (ErrorFlag == 0) {
+	
+		NumberOfKnots = (int)coord1.size (); // n+1
+		NumberOfCubics = NumberOfKnots - 1; // n
+		Knots = new double [NumberOfKnots];
+		Ordinates = new double [NumberOfKnots];
+		double* temp;
+		list <double>::const_iterator c1Iterator;
+		list <double>::const_iterator c2Iterator;
+
+		A = new double [NumberOfCubics];
+		B = new double [NumberOfCubics];
+		C = new double [NumberOfCubics];
+		D = new double [NumberOfCubics];
+
+		temp = Knots;
+
+		for (c1Iterator = coord1.begin (); c1Iterator != coord1.end (); c1Iterator++) {
+
+			*temp = *c1Iterator;
+			temp++;
+		}
+
+		Left = Knots [0];
+		Right = Knots [NumberOfCubics];
+		temp = Ordinates;
+
+		for (c2Iterator = coord2.begin (); c2Iterator != coord2.end (); c2Iterator++) {
+
+			*temp = *c2Iterator;
+			temp++;
+		}
+
+		if (isHermite) {
+
+			double* derivs = new double [NumberOfKnots];
+			double* differences = new double [NumberOfCubics];
+
+			for (i=0; i<NumberOfCubics; i++)
+				differences [i] = (Ordinates [i+1] - Ordinates [i]) / (Knots [i+1] - Knots [i]);
+
+			derivs [0] = differences [0];
+			derivs [NumberOfCubics] = differences [NumberOfCubics-1];
+
+			for (i=1; i<NumberOfCubics; i++)
+				derivs [i] = 0.5 * (differences [i] + differences [i-1]);
+
+			InitializeHermite (derivs);
+			delete[] derivs;
+			delete[] differences;
+		}
 
 		else
 			Initialize ();
@@ -410,15 +537,14 @@ int CSplineTransform :: Initialize () {
 
 	for (j=1; j<NumberOfCubics; j++) {  // from 1 to n-1
 
-//		alpha = 1.0 / (h[j] + h[j+1]);
-		lambda[j] = h[j+1] / (h[j] + h[j+1]);
-//		lambda[j] = h[j+1] * alpha;
+		alpha = 1.0 / (h[j] + h[j+1]);
+//		lambda[j] = h[j+1] / (h[j] + h[j+1]);
+		lambda[j] = h[j+1] * alpha;
 		mu[j] = 1.0 - lambda[j];
 //		d[j] = (6.0 / (h[j] + h[j+1])) * (((Ordinates[j+1] - Ordinates[j]) / h[j+1]) - ((Ordinates[j] - Ordinates[j-1]) / h[j]));
 //		d[j] = (6.0 / (h[j] + h[j+1])) * ((del[j+1] / h[j+1]) - (del[j] / h[j]));
 //		d[j] = 6.0 * alpha * ((del[j+1] / h[j+1]) - (del[j] / h[j]));
-//		d[j] = 6.0 * alpha * (gamma[j+1] - gamma[j]);
-		d[j] = 6.0 * (gamma[j+1] - gamma[j]) / (h[j] + h[j+1]);
+		d[j] = 6.0 * alpha * (gamma[j+1] - gamma[j]);
 	}
 
 	lambda[0] = d[0] = mu[NumberOfCubics] = d[NumberOfCubics] = 0.0;
@@ -494,8 +620,8 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 
 		h[j] = Knots[j+1] - Knots[j];
 	}
-//	double hInv;
-	double h2;
+	double hInv;
+	double hInv2;
 	double p0;
 	double m0;
 	double p1;
@@ -506,8 +632,8 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 	for (j=0; j<NumberOfCubics; j++) {
 
 		// These are coefficient for polynomial between Knots [j] and Knots [j+1]
-//		hInv = 1.0 / h[j];
-		h2 = h [j] * h [j];
+		hInv = 1.0 / h[j];
+		hInv2 = hInv * hInv;
 		hh = h [j];
 		p0 = Ordinates [j];
 		p1 = Ordinates [j+1];
@@ -517,11 +643,8 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 		A [j] = p0;
 		B [j] = m0;
 		T = (m1 - m0) * hh - 2.0 * (p1 - p0 - m0 * hh);
-	//	D [j] = T * hInv * hInv2;
-	//	C [j] = (p1 - p0 - m0 * hh - T) * hInv2;
-
-		D [j] = T / (hh * h2);
-		C [j] = (p1 - p0 - m0 * hh - T) / h2;
+		D [j] = T * hInv * hInv2;
+		C [j] = (p1 - p0 - m0 * hh - T) * hInv2;
 	}
 
 //	mLeft = (3.0 * D [0] * Left + 2.0 * C [0]) * Left + B [0];  // This is an error...B[0] is the left-most 1st derivative
@@ -534,7 +657,6 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 	delete[] h;
 	return 0;
 }
-
 
 
 //

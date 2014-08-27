@@ -104,6 +104,8 @@ public:
 	CSplineTransform (const double* coord1, const double* coord2, int size);
 	CSplineTransform (const double* coord1, const double* coord2, int size, const SupplementaryData& ExtraData);
 	CSplineTransform (const double* coord1, const double* coord2, const double* derivs, int size, bool isHermite);	// this is primarily for Hermite cubic splines
+	CSplineTransform (const double* coord1, const double* coord2, int size, bool isHermite);	// this is primarily for Hermite cubic splines, but using finite differences for derivatives
+	CSplineTransform (const list<double>& coord1, const list<double>& coord2, bool isHermite);	// this is primarily for Hermite cubic splines, but using finite differences for derivatives
 //	CSplineTransform (const list<double>& coord1, const list<double>& coord2, const CoefficientFactory& factory);  // not needed yet
 	virtual ~CSplineTransform ();
 
