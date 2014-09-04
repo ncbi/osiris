@@ -2570,10 +2570,15 @@ void wxPlotCtrl::DrawMouseMarker( wxDC *dc, int type, const wxRect &rect )
         return;
 
     wxRasterOperationMode logical_fn = dc->GetLogicalFunction();
+#ifdef __WXMAC__
+    dc->SetLogicalFunction( wxXOR );
+    dc->SetBrush( *wxTRANSPARENT_BRUSH );
+    dc->SetPen(*wxThePenList->FindOrCreatePen(*wxWHITE, 1, wxPENSTYLE_SHORT_DASH));
+#else
     dc->SetLogicalFunction( wxINVERT );
     dc->SetBrush( *wxTRANSPARENT_BRUSH );
     dc->SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxDOT));
-
+#endif
     switch (type)
     {
         case wxPLOTCTRL_MARKER_NONE : break;
