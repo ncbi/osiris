@@ -716,10 +716,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 	//
-	//  This is sample stage 1...at least it will be when it is completed
+	//  This is sample stage 1 - called after ILS is analyzed
 	//
 
-	// This is to be called after CoreBioComponent::FitAllCharacteristics...and BEFORE AnalyzeLaneStandardChannel
 	int size = mNumberOfChannels + 1;
 	DataSignal** OnDeck = new DataSignal* [size];
 	double* means = new double [size];
@@ -1373,7 +1372,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 						mInterchannelLinkageList.push_back (iChannel);
 						nInterchannelLinks = 1;
 
-						while (testSignal = (DataSignal*) pullupList.GetFirst ()) {		// this is wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
+						while (testSignal = (DataSignal*) pullupList.GetFirst ()) {		// this was wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
 
 							probablePullupPeaks.RemoveReference (testSignal);
 
@@ -1538,6 +1537,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	delete[] OnDeck;
 	delete[] means;
 	delete[] isDone;
+
+	TestSignalsForLaserOffScaleSM ();	// Added 09/09/2014 because AnalyzeCrossChannel... called in two places and want to make sure laser off scale tested no matter what
 		
 	return 0;
 }

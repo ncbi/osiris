@@ -2235,8 +2235,11 @@ int CoreBioComponent :: InitializeOffScaleData (SampleData& sd) {
 		return -1;
 	}
 
-	if (nPoints <= 0)
+	if (nPoints <= 0) {
+
 		OffScaleData = NULL;
+		OffScaleDataLength = 0;
+	}
 
 	else {
 
@@ -2245,13 +2248,20 @@ int CoreBioComponent :: InitializeOffScaleData (SampleData& sd) {
 		for (i=0; i<OffScaleDataLength; i++)
 			OffScaleData [i] = false;
 
+	//	cout << "Off scale data with length " << OffScaleDataLength << ":  ";
+
 		for (i=0; i<nPoints; i++) {
 
 			j = temp [i];
 
-			if ((j >= 0) && (j < OffScaleDataLength))
+			if ((j >= 0) && (j < OffScaleDataLength)) {
+
 				OffScaleData [j] = true;
+	//			cout << j << " ";
+			}
 		}
+
+	//	cout << endl;
 	}
 
 	return 0;

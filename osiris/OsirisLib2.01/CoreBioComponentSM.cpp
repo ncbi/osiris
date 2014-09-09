@@ -1472,7 +1472,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 
 		//AnalyzeCrossChannelSM ();	//	Moved here 07/31/2013...happy birthday, Mom.  You'd be 99 today.
 		AnalyzeCrossChannelWithNegativePeaksSM ();
-		TestSignalsForLaserOffScaleSM ();	//  Added 07/25/2014 to test moving it right after cross channel analysis for smarter pull-up analysis
+	//	TestSignalsForLaserOffScaleSM ();	//  Moved inside AnalyzeCrossChannelWithNegativePeaksSM 09/09/2014
 
 		cout << "Analyzed cross channel links with negative peaks" << endl;
 		Progress = 4;
@@ -1542,6 +1542,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 
 	//AnalyzeCrossChannelSM ();
 	AnalyzeCrossChannelWithNegativePeaksSM ();
+//	TestSignalsForLaserOffScaleSM ();	//  Moved inside AnalyzeCrossChannelWithNegativePeaksSM 09/09/2014
 
 	Progress = 4;
 	return 0;
