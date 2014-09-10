@@ -1313,6 +1313,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
 		cout << "There are too few peaks available in the ILS:  " << PreliminaryCurveList.Entries () << " peaks out of " << Size << endl;
+
+		if (PreliminaryCurveList.Entries () == 0)
+			return -50;
+
 		nextSignal = (DataSignal*)PreliminaryCurveList.First ();
 		cout << "First peak at time " << nextSignal->GetMean () << endl;
 		nextSignal = (DataSignal*)PreliminaryCurveList.Last ();
