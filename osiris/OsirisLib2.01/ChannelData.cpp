@@ -1013,6 +1013,7 @@ int ChannelData :: SetAllApproximateIDs (ChannelData* laneStd) {
 	double first = laneStd->GetFirstAnalyzedMean ();
 	double last = laneStd->GetLastAnalyzedMean ();
 	double mean;
+	double yPrime;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -1024,10 +1025,11 @@ int ChannelData :: SetAllApproximateIDs (ChannelData* laneStd) {
 		//if (mean > last)	// no longer "eliminate" peaks to right of ILS
 		//	break;
 
-		bp = globalSouthern->EvaluateWithExtrapolation (mean);
+		bp = globalSouthern->EvaluateWithExtrapolation (mean, yPrime);
 //		ibp = (int) floor (bp + 0.5);
 //		nextSignal->SetApproximateBioID ((double) ibp);
 		nextSignal->SetApproximateBioID (bp);
+		nextSignal->SetApproxBioIDPrime (yPrime);
 		nextSignal->CalculateTheoreticalArea ();
 	}
 
@@ -1049,10 +1051,11 @@ int ChannelData :: SetAllApproximateIDs (ChannelData* laneStd) {
 		//if (mean > last)	// no longer "eliminate" peaks to right of ILS
 		//	break;
 
-		bp = globalSouthern->EvaluateWithExtrapolation (mean);
+		bp = globalSouthern->EvaluateWithExtrapolation (mean, yPrime);
 		//ibp = (int) floor (bp + 0.5);
 		//nextSignal->SetApproximateBioID ((double) ibp);
 		nextSignal->SetApproximateBioID (bp);
+		nextSignal->SetApproxBioIDPrime (yPrime);
 	}
 
 	//cout << "Done setting neg ILS-bps" << endl;

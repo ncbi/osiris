@@ -2766,6 +2766,7 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
+	smSignalOL offLadder;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2778,7 +2779,7 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 
 		followingSignal = nextSignal->GetNextLinkedSignal ();
 
-		if ((followingSignal != NULL) && !prevSignal->IsNegativePeak ())
+		if ((followingSignal != NULL) && !followingSignal->IsNegativePeak ())
 			tempList.Append (followingSignal);
 	}
 
@@ -2814,12 +2815,20 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 				else if (location < 0)
 					nextSignal->SetMessageValue (acceptedOLRight, true);
 
-				else
+				else {
+
 					nextSignal->SetAcceptedOffGrid (true);
+					nextSignal->SetMessageValue (offLadder, false);
+				}
 			}
 
-			else
+			else {
+
 				nextSignal->SetOffGrid (-location, true);
+
+				if (location == 0)
+					nextSignal->SetMessageValue (offLadder, true);
+			}
 
 			if (mIsAMEL) {
 
@@ -2828,8 +2837,13 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 			}
 		}
 
-		else
+		else {
+
 			nextSignal->SetOffGrid (-location, false);
+
+			if (location == 0)
+				nextSignal->SetMessageValue (offLadder, false);
+		}
 	}
 
 	smPreliminaryLocusHasNoAlleles noAlleles;
@@ -4772,7 +4786,7 @@ int Locus :: CleanUpSignalListSM (RGDList& artifacts) {
 
 //testing			nextSignal->SetVirtualAlleleName (nextSignal->GetAlleleName ());
 //testing			nextSignal->SetAlleleName ("");
-			nextSignal->SetMessageValue (offLadder, false);
+	//		nextSignal->SetMessageValue (offLadder, false);
 			nextSignal->SetMessageValue (isAllele, false);
 			it.RemoveCurrentItem ();
 		}
@@ -4787,7 +4801,7 @@ int Locus :: CleanUpSignalListSM (RGDList& artifacts) {
 
 //testing			nextSignal->SetVirtualAlleleName (nextSignal->GetAlleleName ());
 //testing			nextSignal->SetAlleleName ("");
-			nextSignal->SetMessageValue (offLadder, false);
+	//		nextSignal->SetMessageValue (offLadder, false);
 			nextSignal->SetMessageValue (isAllele, false);
 			leftIt.RemoveCurrentItem ();
 		}
@@ -4799,7 +4813,7 @@ int Locus :: CleanUpSignalListSM (RGDList& artifacts) {
 
 //testing			nextSignal->SetVirtualAlleleName (nextSignal->GetAlleleName ());
 //testing			nextSignal->SetAlleleName ("");
-			nextSignal->SetMessageValue (offLadder, false);
+	//		nextSignal->SetMessageValue (offLadder, false);
 			nextSignal->SetMessageValue (isAllele, false);
 			rightIt.RemoveCurrentItem ();
 		}
@@ -5096,6 +5110,13 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RG
 	smAdenylation adenylationFound;
 	smBaselineRelativeAdenylation baselineRelativeAdenylation;
 
+	smAcceptedOLLeft acceptedOLLeft;
+	smAcceptedOLRight acceptedOLRight;
+	smSignalOL offLadder;
+
+	bool ignoreAdenylation;
+	bool onLadderInLocus;
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		it2.Reset ();
@@ -5104,6 +5125,17 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RG
 		location1 = TestSignalPositionRelativeToLocus (nextSignal);
 		nextBP = (int) floor (nextSignal->GetBioID (-location1) + 0.5);	// location1 is relative to locus; must reverse to make relative to nextSignal (03/23/2012)
 		hasStutter = hasAdenylation = false;
+
+		if (location1 == 0)
+			onLadderInLocus = !nextSignal->GetMessageValue (offLadder);
+
+		else if (location1 < 0)
+			onLadderInLocus = nextSignal->GetMessageValue (acceptedOLRight);  // location1 < 0 means locus is to right of peak
+
+		else
+			onLadderInLocus = nextSignal->GetMessageValue (acceptedOLLeft);  //  location1 > 0 means locus is to left of peak
+
+		ignoreAdenylation = (DisableAdenylationFilter || (CallOnLadderAdenylation && onLadderInLocus));
 
 		while (testSignal = (DataSignal*) it2 ()) {
 
@@ -5115,7 +5147,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RG
 
 			diff = abs (nextBP - testBP);
 
-			if (!DisableAdenylationFilter && (diff == 1) && (testBP > nextBP)) {	// 12/15/2013...don't allow fictitious +A
+			if (!ignoreAdenylation && (diff == 1) && (testBP > nextBP)) {	// 12/15/2013...don't allow fictitious +A
 
 				hasAdenylation = true;
 				adenylationPeakTotal += testSignal->Peak ();

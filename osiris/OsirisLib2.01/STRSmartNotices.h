@@ -214,6 +214,7 @@ PERSISTENT_PREDECLARATION (smLadderFitThresholdUsingMinError)
 PERSISTENT_PREDECLARATION (smUseMaxSecondDerivativesForSampleToLadderFit)
 PERSISTENT_PREDECLARATION (smPartOfDualSignal)
 PERSISTENT_PREDECLARATION (smNegativePeak)
+PERSISTENT_PREDECLARATION (smCallOnLadderAdenylationPreset)
 
 
 
@@ -5881,6 +5882,34 @@ public:
 	smNegativePeak ();
 	smNegativePeak (const smNegativePeak& note);
 	virtual ~smNegativePeak ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCallOnLadderAdenylationPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCallOnLadderAdenylationPreset)
+
+public:
+	smCallOnLadderAdenylationPreset ();
+	smCallOnLadderAdenylationPreset (const smCallOnLadderAdenylationPreset& note);
+	virtual ~smCallOnLadderAdenylationPreset ();
 
 	virtual int GetSubject () const;
 

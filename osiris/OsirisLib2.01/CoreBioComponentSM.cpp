@@ -1774,7 +1774,7 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	RemoveAllSignalsOutsideLaneStandardSM ();
 //	ValidateAndCorrectCrossChannelAnalysesSM ();
 	int status = AssignSampleCharacteristicsToLociSM (grid, timeMap);
-	
+	delete timeMap;	// Added 09/26/2014 to prevent memory leak
 	return status;
 }
 

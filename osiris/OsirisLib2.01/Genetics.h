@@ -490,6 +490,9 @@ public:
 	static void SetDisableStutterFilter (bool s) { DisableStutterFilter = s; }
 	static void SetDisableAdenylationFilter (bool s) { DisableAdenylationFilter = s; }
 
+	static void SetCallOnLadderAdenylation (bool s) { CallOnLadderAdenylation = s; }
+	static bool GetCallOnLadderAdenylation () { return CallOnLadderAdenylation; }
+
 protected:
 	BaseLocus* mLink;
 	RGHashTable AlleleListByName;   // items of type Allele*
@@ -577,6 +580,7 @@ protected:
 	static bool NoYForAMEL;
 	static bool DisableStutterFilter;
 	static bool DisableAdenylationFilter;
+	static bool CallOnLadderAdenylation;
 
 	Boolean BuildAlleleLists (const RGString& xmlString);
 	Boolean BuildMappings (RGDList& signalList);

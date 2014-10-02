@@ -1224,6 +1224,12 @@ int smNegativePeak::sMessageIndex = 0;
 int smNegativePeak::sMessageScope = 0;
 
 
+RGString smCallOnLadderAdenylationPreset::sName = "smCallOnLadderAdenylationPreset";
+int smCallOnLadderAdenylationPreset::sSubject = smCallOnLadderAdenylationPreset::LoadType ();
+int smCallOnLadderAdenylationPreset::sMessageIndex = 0;
+int smCallOnLadderAdenylationPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1427,6 +1433,7 @@ PERSISTENT_DEFINITION (smLadderFitThresholdUsingMinError, 2599, "smLadderFitThre
 PERSISTENT_DEFINITION (smUseMaxSecondDerivativesForSampleToLadderFit, 2600, "smUseMaxSecondDerivativesForSampleToLadderFit")
 PERSISTENT_DEFINITION (smPartOfDualSignal, 2601, "smPartOfDualSignal")
 PERSISTENT_DEFINITION (smNegativePeak, 2602, "smNegativePeak")
+PERSISTENT_DEFINITION (smCallOnLadderAdenylationPreset, 2603, "smCallOnLadderAdenylationPreset")
 
 
 
@@ -13603,6 +13610,66 @@ int smNegativePeak :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smNegativePeak* noticeType = new smNegativePeak;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smCallOnLadderAdenylationPreset :: smCallOnLadderAdenylationPreset () : SmartNotice () {
+
+}
+
+
+smCallOnLadderAdenylationPreset :: smCallOnLadderAdenylationPreset (const smCallOnLadderAdenylationPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smCallOnLadderAdenylationPreset :: ~smCallOnLadderAdenylationPreset () {
+
+}
+
+
+int smCallOnLadderAdenylationPreset :: GetSubject () const {
+
+	return smCallOnLadderAdenylationPreset::sSubject;
+}
+
+
+void smCallOnLadderAdenylationPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smCallOnLadderAdenylationPreset::sMessageIndex = index;
+	smCallOnLadderAdenylationPreset::sMessageScope = scope;
+}
+
+
+int smCallOnLadderAdenylationPreset :: GetMessageIndex () const {
+
+	return smCallOnLadderAdenylationPreset :: sMessageIndex;
+}
+
+
+int smCallOnLadderAdenylationPreset :: GetScope () const {
+
+	return smCallOnLadderAdenylationPreset :: sMessageScope;
+}
+
+
+RGString smCallOnLadderAdenylationPreset :: GetName () const {
+
+	return smCallOnLadderAdenylationPreset :: sName;
+}
+
+
+
+int smCallOnLadderAdenylationPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smCallOnLadderAdenylationPreset* noticeType = new smCallOnLadderAdenylationPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

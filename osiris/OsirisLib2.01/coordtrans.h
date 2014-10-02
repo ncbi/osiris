@@ -63,6 +63,8 @@ public:
 
 	virtual double Evaluate (double abscissa);  // single evaluation, not part of a sequence
 	virtual double EvaluateWithExtrapolation (double abscissa);
+	virtual double EvaluateWithExtrapolation (double abscissa, double& yPrime);
+	virtual double EvaluateFirstDerivative (double abscissa);  // single evaluation, not part of a sequence
 
 	virtual double EvaluateSequenceStart (double startAbscissa, double spacing);
 	virtual double EvaluateSequenceNext ();  //  evaluates an equally spaced sequence, one at a time
@@ -111,6 +113,8 @@ public:
 
 	virtual double Evaluate (double abscissa);  // single evaluation, not part of a sequence
 	virtual double EvaluateWithExtrapolation (double abscissa);
+	virtual double EvaluateWithExtrapolation (double abscissa, double& yPrime);
+	virtual double EvaluateFirstDerivative (double abscissa);  // single evaluation, not part of a sequence; automatically extrapolates as constant outside knot boundary
 
 	virtual double EvaluateSequenceStart (double startAbscissa, double spacing);
 	virtual double EvaluateSequenceNext ();  //  evaluates an equally spaced sequence, one at a time
@@ -163,6 +167,7 @@ private:
 
 	double CalculateCubic (double abscissa, int interval);
 	double CalculateFirstDerivativeAtKnot (int knot);
+	double CalulateFirstDerivative (double abscissa, int interval);
 };
 
 

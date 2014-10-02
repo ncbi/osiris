@@ -89,6 +89,7 @@ bool* Locus::InitialMatrix = NULL;
 bool Locus::NoYForAMEL = false;
 bool Locus::DisableStutterFilter = false;
 bool Locus::DisableAdenylationFilter = false;
+bool Locus::CallOnLadderAdenylation = false;
 
 
 Boolean Locus::TestRatio = TRUE;
@@ -175,6 +176,7 @@ Allele :: Allele (const Allele& allele, CoordinateTransform* trans) : RGPersiste
 			CorrespondingSignal->SetAlleleName (allele.GetAlleleName ());
 			CorrespondingSignal->SetBioID (allele.CorrespondingSignal->GetBioID ());
 			CorrespondingSignal->SetApproximateBioID (allele.CorrespondingSignal->GetApproximateBioID ());
+			CorrespondingSignal->SetApproxBioIDPrime (allele.CorrespondingSignal->GetApproxBioIDPrime ());
 			CorrespondingSignal->SetCurveFit (allele.CorrespondingSignal->GetCurveFit ());
 		}
 	}

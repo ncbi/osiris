@@ -201,4 +201,5 @@ smLadderFitThresholdUsingMinError	1083	2599
 smUseMaxSecondDerivativesForSampleToLadderFit	1084	2600
 smPartOfDualSignal	1085	2601
 smNegativePeak	1086	2602
+smCallOnLadderAdenylationPreset	1087	2603
 

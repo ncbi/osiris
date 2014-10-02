@@ -826,8 +826,8 @@ bool LessDistance (const PeakInfoForClusters* p1, const PeakInfoForClusters* p2)
 
 DataSignal :: DataSignal (const DataSignal& ds, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)ds), LeftSearch (ds.LeftSearch),
 RightSearch (ds.RightSearch), Fit (ds.Fit), ResidualPower (ds.ResidualPower), MeanVariability (ds.MeanVariability), BioID (ds.BioID), 
-ApproximateBioID (ds.ApproximateBioID), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), signalLink (NULL), 
-mPrimaryCrossChannelLink (NULL), mDontLook (ds.mDontLook), mTestLeftEndPoint (ds.mTestLeftEndPoint), mTestRightEndPoint (ds.mTestRightEndPoint), 
+ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), 
+signalLink (NULL), mPrimaryCrossChannelLink (NULL), mDontLook (ds.mDontLook), mTestLeftEndPoint (ds.mTestLeftEndPoint), mTestRightEndPoint (ds.mTestRightEndPoint), 
 mDataMode (ds.mDataMode), mRawDataBelowMinHeight (ds.mRawDataBelowMinHeight), mOsirisFitBelowMinHeight (ds.mOsirisFitBelowMinHeight),
 mRawDataAboveMaxHeight (ds.mRawDataAboveMaxHeight), mOsirisFitAboveMaxHeight (ds.mOsirisFitAboveMaxHeight), mIsGraphable (ds.mIsGraphable), 
 mHasCrossChannelLink (ds.mHasCrossChannelLink), mIsSaturationArtifact (ds.mIsSaturationArtifact), mInterchannelLink (ds.mInterchannelLink),
@@ -5803,6 +5803,14 @@ bool DoubleGaussian :: IsUnimodal () const {
 }
 
 
+double DoubleGaussian :: GetPullupToleranceInBP () const {
+
+	//pullUpToleranceFactor
+//	double 
+	return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47));
+}
+
+
 
 DataSignal* DoubleGaussian :: FindNextCharacteristicFromRight (const DataSignal& Signature, double& fit, RGDList& previous) {
 
@@ -9584,6 +9592,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	BioID = 0.5 * (next->GetBioID () + prev->GetBioID ());
 	SetChannel (prev->GetChannel ());
 	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
+	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
 	int IntBP = (int) floor (BioID + 0.5);
 	Residual = BioID - (double)IntBP;
 
@@ -9639,6 +9648,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	BioID = 0.5* (next->GetBioID () + prev->GetBioID ());
 	SetChannel (prev->GetChannel ());
 	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
+	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
 	int IntBP = (int) floor (BioID + 0.5);
 	Residual = BioID - (double)IntBP;
 
@@ -9675,6 +9685,7 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	mPullupTolerance = c.mPullupTolerance;
 }
@@ -9685,6 +9696,7 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	mPullupTolerance = c.mPullupTolerance;
 }
@@ -9699,6 +9711,7 @@ mPrevious (c.mPrevious), mNext (c.mNext)  {
 	mSigma = meanPlusSigma - mMean;
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	mPullupTolerance = c.mPullupTolerance;
 }
@@ -10078,6 +10091,7 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 	mHeight = 1.0;
 
 	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
+	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
 	SetChannel (prev->GetChannel ());
 	Fit = prev->GetCurveFit ();
 	double temp = next->GetCurveFit ();
@@ -10100,6 +10114,7 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 	mHeight = 1.0;
 
 	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
+	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
 	SetChannel (prev->GetChannel ());
 	Fit = prev->GetCurveFit ();
 	double temp = next->GetCurveFit ();
@@ -10123,6 +10138,7 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (const SimpleSigmoidSignal& c) : Crat
 	mHeight = c.mHeight;
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	SetDoNotCall (true);
 	Fit = c.Fit;
@@ -10139,6 +10155,7 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (double mean, const SimpleSigmoidSign
 	mHeight = c.mHeight;
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	SetDoNotCall (true);
 	Fit = c.Fit;
@@ -10156,6 +10173,7 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (const SimpleSigmoidSignal& c, Coordi
 	mSigma = meanPlusSigma - mMean;
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
+	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	SetDoNotCall (true);
 	Fit = c.Fit;

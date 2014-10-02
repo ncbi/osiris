@@ -107,6 +107,19 @@ double CoordinateTransform :: EvaluateWithExtrapolation (double abscissa) {
 }
 
 
+double CoordinateTransform :: EvaluateWithExtrapolation (double abscissa, double& yPrime) {
+
+	yPrime = 0.0;
+	return DOUBLEMAX;
+}
+
+
+double CoordinateTransform :: EvaluateFirstDerivative (double abscissa) {
+
+	return 0.0;
+}
+
+
 double CoordinateTransform :: EvaluateSequenceStart (double startAbscissa, double spacing) {
 
 	LastInSequenceAbscissa = startAbscissa;
@@ -707,6 +720,60 @@ double CSplineTransform :: EvaluateWithExtrapolation (double abscissa) {
 }
 
 
+double CSplineTransform :: EvaluateWithExtrapolation (double abscissa, double& yPrime) {
+
+	// returns value and sets yPrime to first derivative at abscissa
+
+	if (abscissa < Left) {
+
+		yPrime = mLeft;
+		return (abscissa - Left) * mLeft + bLeft;
+	}
+
+	if (abscissa > Right) {
+
+		yPrime = mRight;
+		return (abscissa - Right) * mRight + bRight;
+	}
+
+	int Interval = SearchForInterval (abscissa);
+
+	if (Interval < 0) {
+
+		yPrime = 0.0;
+		return DOUBLEMAX;
+	}
+
+	LastAbscissa = abscissa;
+	
+	if (CurrentInterval != Interval)
+		CurrentInterval = Interval;
+
+	double y = CalculateCubic (abscissa, Interval);
+	yPrime = CalulateFirstDerivative (abscissa, Interval);
+	LastValue = y;
+	return y;
+}
+
+
+double CSplineTransform :: EvaluateFirstDerivative (double abscissa) {
+
+	if (abscissa <= Left)
+		return mLeft;
+
+	if (abscissa > Right)
+		return mRight;
+
+	int Interval = SearchForInterval (abscissa);
+
+	if (Interval < 0)
+		return 0.0;
+
+	double yPrime = CalulateFirstDerivative (abscissa, Interval);
+	return yPrime;
+}
+
+
 double CSplineTransform :: EvaluateSequenceStart (double startAbscissa, double spacing) {
 
 	int Interval = SearchForInterval (startAbscissa);
@@ -1044,7 +1111,7 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 	GetMaxErrors (derivs4From1stDerivs, errors2);
 	maxErrorInBP2 = GetMaxErrorsInBPs (errors2, bpErrorsFrom1stDerivs, characteristicArray);
 
-	int i;
+//	int i;
 
 	cout << "Max Error Original (bps) = " << maxErrorInBP << ".  Max Error From 1st Derivs (bps) = " << maxErrorInBP2 << endl;
 	//cout << "Third derivatives: ";
@@ -1215,6 +1282,13 @@ double CSplineTransform :: CalculateFirstDerivativeAtKnot (int knot) {
 	double x = Knots [knot] - Knots [knot - 1];
 	int i = knot - 1;
 	return (3.0 * D[i] * x + 2.0 * C[i]) * x + B[i];
+}
+
+
+double CSplineTransform :: CalulateFirstDerivative (double abscissa, int interval) {
+
+	double x = abscissa - Knots[interval];
+	return (3.0 * D[interval] * x + 2.0 * C[interval]) * x + B[interval];
 }
 
 
