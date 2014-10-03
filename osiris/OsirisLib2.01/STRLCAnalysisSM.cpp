@@ -751,6 +751,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	smDisableStutterFilter disableStutterFilter;
 	smDisableAdenylationFilter disableAdenylationFilter;
+	smCallOnLadderAdenylationPreset callOnLadderAdenylation;
 
 	bool ignoreNoise;
 
@@ -1060,6 +1061,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent = new STRSampleCoreBioComponent (data->GetName ());
 		bioComponent->SetSampleName (data->GetSampleName ());
 		bioComponent->SetFileName (FileName);
+		Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
 
 		if (GetMessageValue (useSampleNamesForControlSampleTests))
 			bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());

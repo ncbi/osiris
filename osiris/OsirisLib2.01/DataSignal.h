@@ -78,6 +78,7 @@ const double sqrtTwo = sqrt (2.0);
 const double fourthRootOfPi = sqrt (sqrtPi);
 const double halfPullupTolerance = 0.0375;
 const double halfCraterPullupTolerance = 0.0525;
+const double pullUpToleranceFactor = 7.0;  // makes fit factor approx. 1.0 at fit between 0.99 and 0.991
 
 class RGFile;
 class RGVinStream;
@@ -266,7 +267,7 @@ ABSTRACT_DECLARATION (DataSignal)
 
 public:
 	DataSignal () : SmartMessagingObject (), Left (0.0), Right (1.0), LeftSearch (0.0), RightSearch (0.0), Fit (0.0), ResidualPower (1.0),
-	MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0),  
+	MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0), mApproxBioIDPrime (0.0), 
 	mNoticeObjectIterator (NewNoticeList), markForDeletion (false), mOffGrid (false), mAcceptedOffGrid (false), signalLink (NULL), mPrimaryCrossChannelLink (NULL), 
 	mDontLook (false), mTestLeftEndPoint (0.0), mTestRightEndPoint (0.0), mDataMode (0.0), mRawDataBelowMinHeight (false), mOsirisFitBelowMinHeight (false),
 	mRawDataAboveMaxHeight (false), mOsirisFitAboveMaxHeight (false), mPossibleInterlocusAllele (false), 
@@ -282,7 +283,7 @@ public:
 	}
 
 	DataSignal (double left, double right) : SmartMessagingObject (), Left (left), Right (right), LeftSearch (left), 
-	RightSearch (right), Fit (0.0), ResidualPower (1.0), MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0), 
+	RightSearch (right), Fit (0.0), ResidualPower (1.0), MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0), mApproxBioIDPrime (0.0), 
 	mNoticeObjectIterator (NewNoticeList), markForDeletion (false), mOffGrid (false), mAcceptedOffGrid (false), signalLink (NULL), 
 	mPrimaryCrossChannelLink (NULL), mDontLook (false), mTestLeftEndPoint (0.0), mTestRightEndPoint (0.0), mDataMode (0.0), mRawDataBelowMinHeight (false), 
 	mOsirisFitBelowMinHeight (false), mRawDataAboveMaxHeight (false), mOsirisFitAboveMaxHeight (false), mPossibleInterlocusAllele (false), 
@@ -299,7 +300,7 @@ public:
 
 	DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMessagingObject&)ds), Left (ds.Left), Right (ds.Right), LeftSearch (ds.LeftSearch),
 		RightSearch (ds.RightSearch), Fit (ds.Fit), ResidualPower (ds.ResidualPower), MeanVariability (ds.MeanVariability), BioID (ds.BioID), 
-		ApproximateBioID (ds.ApproximateBioID), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), signalLink (NULL), 
+		ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), signalLink (NULL), 
 		mPrimaryCrossChannelLink (NULL), mDontLook (ds.mDontLook), mTestLeftEndPoint (ds.mTestLeftEndPoint), mTestRightEndPoint (ds.mTestRightEndPoint), 
 		mDataMode (ds.mDataMode), mRawDataBelowMinHeight (ds.mRawDataBelowMinHeight), mOsirisFitBelowMinHeight (ds.mOsirisFitBelowMinHeight),
 		mRawDataAboveMaxHeight (ds.mRawDataAboveMaxHeight), mOsirisFitAboveMaxHeight (ds.mOsirisFitAboveMaxHeight), mPossibleInterlocusAllele (ds.mPossibleInterlocusAllele), 
@@ -378,6 +379,9 @@ public:
 
 	double GetApproximateBioID () const { return ApproximateBioID; }
 	void SetApproximateBioID (double id) { ApproximateBioID = id; }
+
+	double GetApproxBioIDPrime () const { return mApproxBioIDPrime; }
+	void SetApproxBioIDPrime (double idPrime) { mApproxBioIDPrime = idPrime; }
 
 	void SetLeftEndPoint (double left) { Left = left; }
 	void SetRightEndPoint (double right) { Right = right; }
@@ -756,6 +760,7 @@ protected:
 	RGDList NoticeList;
 	double BioID;
 	double ApproximateBioID;
+	double mApproxBioIDPrime;
 	double Residual;
 
 	double nextPeak;
@@ -1241,6 +1246,7 @@ public:
 	virtual double GetOrthogonalScale (int curve) const;
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const;
 	virtual bool IsUnimodal () const;
+	virtual double GetPullupToleranceInBP () const;
 
 	virtual DataSignal* FindNextCharacteristicFromRight (const DataSignal& Signature, 
 		double& fit, RGDList& previous);

@@ -967,7 +967,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 				mean2 = nextSignal->GetApproximateBioID ();
 
-				if (mean2 - mean1 >= 0.85)
+				if (mean2 - mean1 >= 0.85)		//check for value?
 					break;
 
 				//
@@ -1216,7 +1216,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 
 		//mTimeTolerance = 0.075;
-		mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
+		mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();	//check for value?
 
 		//mean1 = nextSignal2->GetMean ();
 		//mean2 = nextSignal->GetMean ();
@@ -1270,7 +1270,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 			//mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
 			//mTimeTolerance = 0.075;
-			mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
+			mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();	//check for value?
 
 			if (nextSignal->GetApproximateBioID () - nextSignal2->GetApproximateBioID () >= mTimeTolerance) {
 

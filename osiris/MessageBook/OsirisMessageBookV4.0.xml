@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.32</VersionNumber>
-	<BuildTime>07 09 2014 07:11 PM</BuildTime>
+	<VersionNumber>6.35</VersionNumber>
+	<BuildTime>10 01 2014 07:10 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1192,16 +1192,10 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smBelowMinRFU AND NOT smDisableAdenylationFilter</Expression>
+				<Expression>NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))</Expression>
 			</ReportCriterion>
 			<Text>Adenylation</Text>
 			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder AND NOT smDisableAdenylationFilter</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
 				<Expression>(smCallOnLadderAdenylationPreset AND NOT smSignalOL) OR smDisableAdenylationFilter</Expression>
@@ -1209,7 +1203,7 @@
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
 				<RestrictionCriterion>
-					<Expression>NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL) AND NOT smDisableAdenylationFilter</Expression>
+					<Expression>NOT ((smCallOnLadderAdenylationPreset AND NOT smSignalOL) OR smDisableAdenylationFilter)</Expression>
 				</RestrictionCriterion>
 			</Restriction>
 		</SmartMessage>
@@ -1219,7 +1213,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smBelowMinRFU AND NOT smAdenylation AND NOT smDisableAdenylationFilter</Expression>
+				<Expression>NOT (smBelowMinRFU OR smAdenylation OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))</Expression>
 			</ReportCriterion>
 			<Text>Baseline Relative Adenylation</Text>
 			<ReportLevel>1</ReportLevel>
@@ -5683,7 +5677,6 @@
 						<Name>smCraterPlusRaisedBaselinePreset</Name>
 						<Name>smDontCallPullupPlusOLPreset</Name>
 						<Name>smDontCallAnyOLsIfTooManyPreset</Name>
-						<Name>smCallOnLadderAdenylationPreset</Name>
 						<Name>smDoNotCallExcessResidualPreset</Name>
 						<Name>smDoNotReportHeterozygousImbalanceIfMixturePreset</Name>
 						<Name>smNormalizeRawDataRelativeToBaselinePreset</Name>
@@ -5703,6 +5696,7 @@
 						<Name>smDisableStutterFilterPreset</Name>
 						<Name>smDisableAdenylationFilterPreset</Name>
 						<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
+						<Name>smCallOnLadderAdenylationPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
@@ -5898,6 +5892,7 @@
 						<Name>smStutter</Name>
 						<Name>smBaselineRelativeStutter</Name>
 						<Name>smAdenylation</Name>
+						<Name>smSignalOL</Name>
 						<Name>smBaselineRelativeAdenylation</Name>
 						<Name>smNotInterchannelLink</Name>
 						<Name>smAmbiguousInterlocusCrater</Name>
@@ -5940,14 +5935,14 @@
 						<Expression>smPurePullup = smPullUp AND NOT smPrimaryInterchannelLink AND NOT smNotInterchannelLink</Expression>
 						<Expression>smTemp1Left = sm0UnambiguousPeaksRight AND smSignalOffGridRight</Expression>
 						<Expression>smTemp2Left = sm1UnambiguousPeakLeft AND sm2PlusUnambiguousPeaksRight</Expression>
-						<Expression>smTemp3Left = sm1UnambiguousPeakLeft AND NOT smSignalOffGridLeft AND smTemp1Left</Expression>
+						<Expression>smTemp3Left = sm1UnambiguousPeakLeft AND NOT smSignalOffGridLeft AND NOT smTemp1Left</Expression>
 						<Expression>smTemp5Left = sm0UnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight</Expression>
 						<Expression>smTemp6Left = sm0UnambiguousPeaksLeft AND sm1AmbiguousPeakLeft AND sm1UnambiguousPeakRight</Expression>
 						<Expression>smTemp7Left = sm0UnambiguousPeaksLeft AND sm2PlusAmbiguousPeaksRight AND NOT smSignalOffGridLeft AND smTemp1Left</Expression>
 						<Expression>smTemp9Left = sm2PlusUnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight AND smSignalOffGridRight AND NOT smPurePullup AND NOT smSignalOffGridLeft</Expression>
 						<Expression>smTemp1Right = sm0UnambiguousPeaksLeft AND smSignalOffGridLeft</Expression>
 						<Expression>smTemp2Right = sm1UnambiguousPeakRight AND sm2PlusUnambiguousPeaksLeft</Expression>
-						<Expression>smTemp3Right = sm1UnambiguousPeakRight AND NOT smSignalOffGridRight AND smTemp1Right</Expression>
+						<Expression>smTemp3Right = sm1UnambiguousPeakRight AND NOT smSignalOffGridRight AND NOT smTemp1Right</Expression>
 						<Expression>smTemp5Right = sm0UnambiguousPeaksRight AND sm2PlusUnambiguousPeaksLeft</Expression>
 						<Expression>smTemp6Right = sm0UnambiguousPeaksRight AND sm1AmbiguousPeakRight AND sm1UnambiguousPeakLeft</Expression>
 						<Expression>smTemp7Right = sm0UnambiguousPeaksRight AND sm2PlusAmbiguousPeaksLeft AND NOT smSignalOffGridRight AND smTemp1Right</Expression>
@@ -5968,7 +5963,7 @@
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smStutter (NOT smBelowMinRFU AND NOT smDisableStutterFilter): smNumberOfStuttersInSample</TriggerExpression>
-						<TriggerExpression>smAdenylation (NOT smBelowMinRFU AND NOT smDisableAdenylationFilter): smNumberOfAdenylationsInSample</TriggerExpression>
+						<TriggerExpression>smAdenylation (NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))): smNumberOfAdenylationsInSample</TriggerExpression>
 						<TriggerExpression>smUnexpectedPeakInNegativeControl ((NOT smPeakToRightOfILS) AND (NOT smBelowMinRFU OR (smBelowMinRFU AND smTestForPeaksBelowMinRFUForNegCtrlPreset))): smUnexpectedNoOfPeaks, smUnexpectedNoOfPeaksInChannel, smNegCtrlFailed</TriggerExpression>
 						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
 						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
@@ -6017,7 +6012,6 @@
 				<ScopeDynamics>
 					<Scope>1</Scope>
 					<MeasuredMessages>
-						<Name>smSignalOL</Name>
 						<Name>smSignalIsAllele</Name>
 						<Name>smBPResidualTooLarge</Name>
 						<Name>smExtraLadderAllele</Name>
@@ -6039,7 +6033,7 @@
 						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
 						<Expression>smPurePullupLateStage = smPurePullup</Expression>
-						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter) OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
+						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smTrueCrater (NOT smRestrictedPriorityPeak): smNumberOfCratersInSample</TriggerExpression>
