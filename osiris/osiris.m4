@@ -6,7 +6,7 @@ WXCXX=`${WXHOME}/bin/wx-config --cxxflags`
 MACMIN="-mmacosx-version-min=10.8"
 MACCXX=${MACMIN}
 MACLD=${MACMIN}
-OSIRISCXX="-Wall -D${PLATFORM} -I${CPPTOP}/include/libxml2  -I../../wxthings/include -I../../wxplotctrl/include -I.. -I../..  -I../../Version ${WXCXX} ${ARCH} ${MACCXX}"
+OSIRISCXX="-Wall -Wno-unknown-pragmas -D${PLATFORM} -I${CPPTOP}/include/libxml2  -I../../wxthings/include -I../../wxplotctrl/include -I.. -I../..  -I../../Version ${WXCXX} ${ARCH} ${MACCXX}"
 CXXFLAGS="${OSIRISCXX}"
 CFLAGS="${CXXFLAGS}"
 

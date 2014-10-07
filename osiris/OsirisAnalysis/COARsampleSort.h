@@ -48,7 +48,7 @@ public:
   COARsampleSort(COARfile *pFile)
   {
     m_dtLastLoad = pFile->GetLastLoad();
-    Sort(pFile,false);
+    Sort(pFile,NULL);
   }
   COARsampleSort() : 
     m_dtLastLoad((time_t)0),

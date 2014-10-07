@@ -33,6 +33,7 @@
 
 #ifdef __WXMAC__
 #define ID_BORDER 6
+#define __WINDOW_LIST__
 #else
 #define ID_BORDER 4
 #endif
@@ -310,6 +311,19 @@ enum
 
   //  END menus in CFrameAnalysis
   //*****************************************************
+  //  BEGIN window list menu
+#ifdef __WINDOW_LIST__
+#ifdef __WXMAC__
+  IDmenuWindow_Minimize,
+  IDmenuWindow_Zoom,
+  IDmenuWindow_AllToFront,
+#endif
+  IDmenuWindow_Frame,
+  IDmenuWindow_Frame_END = IDmenuWindow_Frame + 100, 
+                  // hopefully overkill, but only showing 100 in menu
+#endif
+  // END window list menu
+
 
   // file history buttons, panels, etc.
 

@@ -36,6 +36,7 @@
 #include <wx/string.h>
 #include <wx/arrstr.h>
 #include "wxXml2/wxXml2Object.h"
+#include "wxIDs.h"
 
 class ConfigDir;
 class CPersistKitList;
@@ -86,6 +87,10 @@ DECLARE_CMD_HANDLER(OnContactUs)
 DECLARE_CMD_HANDLER(OnMenu)
 DECLARE_CMD_HANDLER(OnMaxLadderLabels)
 DECLARE_CMD_HANDLER(OnSave)
+
+#ifdef __WINDOW_LIST__
+DECLARE_CMD_HANDLER(OnWindowMenu)
+#endif
   
 #undef DECLARE_CMD_HANDLER
 

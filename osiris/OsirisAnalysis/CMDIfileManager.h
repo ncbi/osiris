@@ -30,6 +30,9 @@
 *    its association with a COARfile object is removed and 
 *    when the COARfile object is no longer used it is deleted.  
 */
+#ifndef __C_MDI_FILE_MANAGER_H__
+#define __C_MDI_FILE_MANAGER_H__
+#include "wxIDS.h"
 #include <wx/timer.h>
 #include <wx/event.h>
 #include "nwx/stdb.h"
@@ -37,18 +40,28 @@
 #include <set>
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
-
+#include "CMDIFrame.h"
 class COARfile;
-class CMDIFrame;
 class CFrameAnalysis;
 
 typedef map<CMDIFrame *, COARfile *> CMDI_WF; // window to file
 typedef map<COARfile *, set<CMDIFrame *> > CMDI_FW; // file to windows
 
+#ifdef __WINDOW_LIST__
+
+class CMenuWindow;
+class CMenuBar;
+
+#endif
+
 class CMDIfileManager
 {
 public:
-  CMDIfileManager() {;}
+  CMDIfileManager()
+#ifdef __WINDOW_LIST__
+    : m_nModCount(0)
+#endif
+    {;}
   virtual ~CMDIfileManager();
   CMDIFrame *FindWindowByName(const wxString &sPath, bool bRaise);
   int RunningFrameCount();
@@ -76,6 +89,20 @@ public:
     return m_mapWindowFile.size();
   }
   void RefreshAllOAR();
+#ifdef __WINDOW_LIST__
+  void MoveToTop(CMDIFrame *);
+  void BringAllToFront();
+  void ActivateFromWindowMenu(int nID);
+  void InvalidateWindowMenu()
+  {
+    // whenever the window list changes or a window title changes
+    m_nModCount++;
+  }
+  void CheckUpdateWindowMenu(CMDIFrame *p)
+  {
+    p->CheckUpdateWindowMenu(m_nModCount,&m_listCreateOrder);
+  }
+#endif
 
 private:
   bool _IteratorOK(CMDI_WF::iterator &itr)
@@ -99,5 +126,30 @@ private:
 
   CMDI_WF m_mapWindowFile;
   CMDI_FW m_mapFileWindows;
+#ifdef __WINDOW_LIST__
+  CMDI_LIST m_listCreateOrder;
+  CMDI_LIST m_listZOrder;
+  long m_nModCount;
+  static int _RemoveWindowFromAList(CMDI_LIST *pList,CMDIFrame *p);
+  int _RemoveWindowFromLists(CMDIFrame *p)
+  {
+    int nRtn = _RemoveWindowFromAList(&m_listCreateOrder,p);
+    nRtn += _RemoveWindowFromAList(&m_listZOrder,p);
+    if(nRtn)
+    {
+      InvalidateWindowMenu();
+    }
+    return nRtn;
+  }
+  void _AddWindowToLists(CMDIFrame *p)
+  {
+    m_listCreateOrder.push_back(p);
+    m_listZOrder.push_back(p);
+    InvalidateWindowMenu();
+  }
+#endif
 
 };
+
+
+#endif

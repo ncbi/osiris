@@ -35,9 +35,15 @@
 #include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/menu.h>
+#include "wxIDs.h"
 #include "nwx/nwxTimerReceiver.h"
 #include "nwx/stdb.h"
 #include <set>
+#ifdef __WINDOW_LIST__
+#include <list>
+#endif
+
+
 #include "nwx/stde.h"
 
 #include INCLUDE_FRAME
@@ -45,6 +51,12 @@
 DECLARE_EVENT_TYPE(CEventKillWindow,-1)
 
 class mainFrame;
+
+#ifdef __WINDOW_LIST__
+class CMDIFrame;
+typedef list<CMDIFrame *> CMDI_LIST;
+#endif
+
 
 class CMDIFrame : public CMDIFrameSuper, public nwxTimerReceiver
 {
@@ -60,7 +72,6 @@ public:
   static const wxString SHOW_TOOLBARS;
   static const wxString HIDE_TOOLBAR;
   static const wxString SHOW_TOOLBAR;
-
   virtual int GetType() = 0;
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual wxMenu *GetMenu();
@@ -81,7 +92,10 @@ public:
 
   bool PopupMenu_(wxMenu* menu, const wxPoint& pos = wxDefaultPosition);
   bool PopupMenu_(wxMenu* menu, int x, int y);
-
+#ifdef __WINDOW_LIST__ 
+  virtual void SetTitle(const wxString &title);
+  void CheckUpdateWindowMenu(long nModCount,const CMDI_LIST *p);
+#endif
 #ifdef __NO_MDI__
   void Activate()
   {
@@ -147,5 +161,7 @@ public:
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CMDIFrame)
 };
+
+
 
 #endif
