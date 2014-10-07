@@ -38,6 +38,7 @@
 class CMenuWindow;
 #endif
 
+
 class CMenuBar : public wxMenuBar
 {
 public:
@@ -62,8 +63,10 @@ private:
   int m_nRecursive;
   CMenuWindow *m_pMenuWindow;
   static wxString g_sWindowLabel;
-  DECLARE_ABSTRACT_CLASS(CMenuBar)
 #endif
+
+public:
+  DECLARE_ABSTRACT_CLASS(CMenuBar)
 };
 
 
