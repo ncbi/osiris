@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.35</VersionNumber>
-	<BuildTime>10 01 2014 07:10 PM</BuildTime>
+	<VersionNumber>6.36</VersionNumber>
+	<BuildTime>11 05 2014 03:00 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5933,31 +5933,29 @@
 					<Evaluations>
 						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS</Expression>
 						<Expression>smPurePullup = smPullUp AND NOT smPrimaryInterchannelLink AND NOT smNotInterchannelLink</Expression>
-						<Expression>smTemp1Left = sm0UnambiguousPeaksRight AND smSignalOffGridRight</Expression>
-						<Expression>smTemp2Left = sm1UnambiguousPeakLeft AND sm2PlusUnambiguousPeaksRight</Expression>
-						<Expression>smTemp3Left = sm1UnambiguousPeakLeft AND NOT smSignalOffGridLeft AND NOT smTemp1Left</Expression>
-						<Expression>smTemp5Left = sm0UnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight</Expression>
-						<Expression>smTemp6Left = sm0UnambiguousPeaksLeft AND sm1AmbiguousPeakLeft AND sm1UnambiguousPeakRight</Expression>
-						<Expression>smTemp7Left = sm0UnambiguousPeaksLeft AND sm2PlusAmbiguousPeaksRight AND NOT smSignalOffGridLeft AND smTemp1Left</Expression>
-						<Expression>smTemp9Left = sm2PlusUnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight AND smSignalOffGridRight AND NOT smPurePullup AND NOT smSignalOffGridLeft</Expression>
-						<Expression>smTemp1Right = sm0UnambiguousPeaksLeft AND smSignalOffGridLeft</Expression>
-						<Expression>smTemp2Right = sm1UnambiguousPeakRight AND sm2PlusUnambiguousPeaksLeft</Expression>
-						<Expression>smTemp3Right = sm1UnambiguousPeakRight AND NOT smSignalOffGridRight AND NOT smTemp1Right</Expression>
-						<Expression>smTemp5Right = sm0UnambiguousPeaksRight AND sm2PlusUnambiguousPeaksLeft</Expression>
-						<Expression>smTemp6Right = sm0UnambiguousPeaksRight AND sm1AmbiguousPeakRight AND sm1UnambiguousPeakLeft</Expression>
-						<Expression>smTemp7Right = sm0UnambiguousPeaksRight AND sm2PlusAmbiguousPeaksLeft AND NOT smSignalOffGridRight AND smTemp1Right</Expression>
-						<Expression>smTemp9Right = sm2PlusUnambiguousPeaksRight AND sm2PlusUnambiguousPeaksLeft AND smSignalOffGridLeft AND NOT smPurePullup AND NOT smSignalOffGridRight</Expression>
-						<Expression>smCouldBelongToLocusLeft = (smTemp2Left OR smTemp3Left OR smTemp5Left OR smTemp6Left OR smTemp7Left OR smTemp9Left) AND NOT smPeakInCoreLadderLocus</Expression>
-						<Expression>smCouldBelongToLocusRight = (smTemp2Right OR smTemp3Right OR smTemp5Right OR smTemp6Right OR smTemp7Right OR smTemp9Right) AND NOT smPeakInCoreLadderLocus</Expression>
+						<Expression>smTemp1Left = sm0UnambiguousPeaksLeft AND NOT sm0UnambiguousPeaksRight</Expression>
+						<Expression>smTemp1Right = sm0UnambiguousPeaksRight AND NOT sm0UnambiguousPeaksLeft</Expression>
+						<Expression>smTemp2Left = (smAcceptedOLLeft AND NOT smAcceptedOLRight) AND NOT smTemp1Right</Expression>
+						<Expression>smTemp2Right = (smAcceptedOLRight AND NOT smAcceptedOLLeft) AND NOT smTemp1Left</Expression>
+						<Expression>smTemp3Left = (smFFRight AND NOT smFFLeft) AND NOT (smTemp1Right OR smTemp2Right)</Expression>
+						<Expression>smTemp3Right = (smFFLeft AND NOT smFFRight) AND NOT (smTemp1Left OR smTemp2Left)</Expression>
+						<Expression>smTemp5Left = (smExcessiveResidualDisplacementRight AND NOT smExcessiveResidualDisplacementLeft) AND NOT (smTemp1Right OR smTemp2Right OR smTemp3Right)</Expression>
+						<Expression>smTemp5Right = (smExcessiveResidualDisplacementLeft AND NOT smExcessiveResidualDisplacementRight) AND NOT (smTemp1Left OR smTemp2Left OR smTemp3Left)</Expression>
+						<Expression>smTemp6Left = (sm1UnambiguousPeakLeft AND NOT sm2PlusAmbiguousPeaksRight) AND NOT (smTemp1Right OR smTemp2Right OR smTemp3Right OR smTemp5Right)</Expression>
+						<Expression>smTemp6Right = (sm1UnambiguousPeakRight AND NOT sm2PlusAmbiguousPeaksLeft) AND NOT (smTemp1Left OR smTemp2Left OR smTemp3Left OR smTemp5Left)</Expression>
+						<Expression>smTemp7Left = smTemp1Left OR ((smTemp2Left OR smTemp3Left OR smTemp5Left OR smTemp6Left) AND NOT smFFLeft)</Expression>
+						<Expression>smTemp7Right = smTemp1Right OR ((smTemp2Right OR smTemp3Right OR smTemp5Right OR smTemp6Right) AND NOT smFFRight)</Expression>
+						<Expression>smCouldBelongToLocusLeft = (smTemp7Left AND smPartOfExtendedLocusLeft) AND NOT smTemp7Right AND NOT smPeakInCoreLadderLocus</Expression>
+						<Expression>smCouldBelongToLocusRight = (smTemp7Right AND smPartOfExtendedLocusRight) AND NOT smTemp7Left AND NOT smPeakInCoreLadderLocus</Expression>
 						<Expression>smPullUpAtControlPeak = smSignalIsCtrlPeak AND smPurePullup</Expression>
 						<Expression>smInterlocusPullUp = (NOT (smPeakInCoreLadderLocus OR smSampleIsLadder OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSignalIsCtrlPeak OR smChannelIsILS)) AND smPurePullup</Expression>
 						<Expression>smInterlocusPullUpWithPoorFit = smInterlocusPullUp AND (smPoorPeakMorphology OR smCurveFitMarginal OR smCurveFitFailed)</Expression>
 						<Expression>smPullupAtExtraneousILSPeak = smChannelIsILS AND smPurePullup AND smUnexpectedILSPeak</Expression>
-						<Expression>smPossibleValidInterlocusLeft = smPartOfExtendedLocusLeft AND NOT (smFFLeft OR smInterlocusPullUp)</Expression>
+						<Expression>smPossibleValidInterlocusLeft = smCouldBelongToLocusLeft</Expression>
 						<Expression>smPossibleValidInterlocusRight = smPartOfExtendedLocusRight AND NOT (smFFRight OR smInterlocusPullUp)</Expression>
-						<Expression>smAmbiguousInterlocus = smPossibleValidInterlocusLeft AND smPossibleValidInterlocusRight</Expression>
-						<Expression>smValidOLInterlocusLeft = smPossibleValidInterlocusLeft AND NOT smAcceptedOLLeft</Expression>
-						<Expression>smValidOLInterlocusRight = smPossibleValidInterlocusRight AND NOT smAcceptedOLRight</Expression>
+						<Expression>smAmbiguousInterlocus = NOT smCouldBelongToLocusLeft AND NOT smCouldBelongToLocusRight AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT smPeakInCoreLadderLocus AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight)</Expression>
+						<Expression>smValidOLInterlocusLeft = smCouldBelongToLocusLeft</Expression>
+						<Expression>smValidOLInterlocusRight = smCouldBelongToLocusRight</Expression>
 						<Expression>smAcceptedInterlocusLeft = smPossibleValidInterlocusLeft AND smAcceptedOLLeft</Expression>
 						<Expression>smAcceptedInterlocusRight = smPossibleValidInterlocusRight AND smAcceptedOLRight</Expression>
 					</Evaluations>

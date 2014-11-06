@@ -63,6 +63,8 @@ class GenotypesForAMarkerSet;
 class SmartMessage;
 class SmartNotice;
 
+#define _USENOISEINPULLUPANALYSIS_
+
 //  The following two structs can be initialized once at the beginning of a run and reused for different input files...
 
 struct GridDataStruct {

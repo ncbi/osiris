@@ -141,6 +141,7 @@ public:
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
 
 	double GetBeginAnalysisTime () const { return mBeginAnalysis; }
+	double GetNoiseRange () const { return mData->GetNoiseRange (); }
 
 	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
 	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);

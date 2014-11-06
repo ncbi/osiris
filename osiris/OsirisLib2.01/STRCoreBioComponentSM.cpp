@@ -721,6 +721,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 	int size = mNumberOfChannels + 1;
 	DataSignal** OnDeck = new DataSignal* [size];
+	double* noiseLevels = new double [size];
 	double* means = new double [size];
 	int currentIndex;
 	bool* isDone = new bool [size];
@@ -805,6 +806,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 		TempList [i] = new RGDList;
 		TempMultiPeakList [i] = new RGDList;
 		TempCraterPeakList [i] = new RGDList;
+		noiseLevels [i] = mDataChannels [i]->GetNoiseRange ();
 	}
 
 	for (i=1; i<=mNumberOfChannels; i++)
@@ -1216,7 +1218,12 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 
 		//mTimeTolerance = 0.075;
+
+#ifdef _USENOISEINPULLUPANALYSIS_
+		mTimeTolerance = nextSignal->GetPullupToleranceInBP (noiseLevels [nextSignal->GetChannel ()]) + nextSignal2->GetPullupToleranceInBP (noiseLevels [nextSignal2->GetChannel ()]);
+#else
 		mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();	//check for value?
+#endif
 
 		//mean1 = nextSignal2->GetMean ();
 		//mean2 = nextSignal->GetMean ();
@@ -1270,7 +1277,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 			//mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();
 			//mTimeTolerance = 0.075;
-			mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();	//check for value?
+
+#ifdef _USENOISEINPULLUPANALYSIS_
+		mTimeTolerance = nextSignal->GetPullupToleranceInBP (noiseLevels [nextSignal->GetChannel ()]) + nextSignal2->GetPullupToleranceInBP (noiseLevels [nextSignal2->GetChannel ()]);
+#else
+		mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();	//check for value?
+#endif
+
+			//mTimeTolerance = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();	//check for value?
 
 			if (nextSignal->GetApproximateBioID () - nextSignal2->GetApproximateBioID () >= mTimeTolerance) {
 
@@ -1535,6 +1549,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	OverallList.Clear ();
 
 	delete[] OnDeck;
+	delete[] noiseLevels;
 	delete[] means;
 	delete[] isDone;
 
@@ -1670,6 +1685,7 @@ void STRCoreBioComponent :: ReevaluateNoiseThresholdBasedOnMachineType (const RG
 bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDList& peaksInSameChannel, RGDList& probablePullup, RGDList& pullupList) {
 
 	double threshold = CoreBioComponent::minPrimaryPullupThreshold;
+	double* noiseLevels = new double [mNumberOfChannels + 1];
 
 	if (primaryPullup->Peak () < threshold)
 		return false;
@@ -1683,8 +1699,11 @@ bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDL
 	DataSignal** selectedPullup = new DataSignal* [mNumberOfChannels + 1];
 	int i;
 
-	for (i=1; i<=mNumberOfChannels; i++)
+	for (i=1; i<=mNumberOfChannels; i++) {
+
 		selectedPullup [i] = NULL;
+		noiseLevels [i] = mDataChannels [i]->GetNoiseRange ();
+	}
 
 	DataSignal* nextSignal;
 	//DataSignal* prevSignal;
@@ -1696,6 +1715,7 @@ bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDL
 	int currentChannel;
 	double del1;
 	double del2;
+	double tempTol;
 
 	while (nextSignal = (DataSignal*) probableIt ()) {
 
@@ -1705,6 +1725,12 @@ bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDL
 			continue;
 
 		del1 = fabs (primaryAppBioID - nextSignal->GetApproximateBioID ());
+
+#ifdef _USENOISEINPULLUPANALYSIS_
+		tempTol = nextSignal->GetPullupToleranceInBP (noiseLevels [nextSignal->GetChannel ()]) + primaryPullup->GetPullupToleranceInBP (noiseLevels [primaryPullup->GetChannel ()]);
+#else
+		tempTol = nextSignal->GetPullupToleranceInBP () + nextSignal2->GetPullupToleranceInBP ();	//check for value?
+#endif
 
 		//if (del1 < 0.075) {
 		if (del1 < nextSignal->GetPullupToleranceInBP () + primaryPullup->GetPullupToleranceInBP ()) {
@@ -1729,6 +1755,7 @@ bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDL
 	}
 
 	delete[] selectedPullup;
+	delete[] noiseLevels;
 
 	if (pullupList.Entries () == 0)
 		return false;
