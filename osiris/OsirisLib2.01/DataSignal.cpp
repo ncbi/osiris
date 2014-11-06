@@ -5803,11 +5803,29 @@ bool DoubleGaussian :: IsUnimodal () const {
 }
 
 
-double DoubleGaussian :: GetPullupToleranceInBP () const {
+double DoubleGaussian :: GetPullupToleranceInBP (double noise) const {
 
 	//pullUpToleranceFactor
-//	double 
-	return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47));
+	double P = Peak ();
+
+	if (P <= 0.0)
+		return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47));
+
+	double localFit = Fit;
+
+	if (localFit < 0.1)
+		localFit = 0.1;
+
+	double localNoise = noise;
+	
+	double LN = 0.95 * P;
+
+	if (localNoise > LN)
+		localNoise = LN;
+
+	double temp1 = 1.0 / localFit;
+	double temp = 2.0 * (temp1 * temp1 - 1.0) * StandardDeviation * log (P / (P - localNoise));
+	return (mPullupTolerance + pullUpToleranceFactor * mApproxBioIDPrime * sqrt (temp));
 }
 
 

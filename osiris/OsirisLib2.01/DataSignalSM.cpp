@@ -201,6 +201,7 @@ bool InterchannelLinkage :: RecalculatePrimarySignalSM () {
 	//
 
 	smPrimaryInterchannelLink primaryLink;
+	smPullUp pullup;
 
 	if (mSecondarySignals.Entries () <= 1)
 		return false;
@@ -230,6 +231,7 @@ bool InterchannelLinkage :: RecalculatePrimarySignalSM () {
 
 	mPrimarySignal = maxSignal;
 	mPrimarySignal->SetMessageValue (primaryLink, true);
+	mPrimarySignal->SetMessageValue (pullup, false);
 
 	it.Reset ();
 	mPrimarySignal->RemoveAllCrossChannelSignalLinksSM ();	//???????????????????????????????????????
@@ -241,6 +243,7 @@ bool InterchannelLinkage :: RecalculatePrimarySignalSM () {
 			nextSignal->SetPrimaryCrossChannelSignalLink (mPrimarySignal);
 			mPrimarySignal->AddCrossChannelSignalLink (nextSignal);
 			nextSignal->SetMessageValue (primaryLink, false);
+			nextSignal->SetMessageValue (pullup, true);
 		}
 	}
 
@@ -1267,6 +1270,32 @@ void Gaussian :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) 
 }
 
 
+double Gaussian :: GetPullupToleranceInBP (double noise) const {
+
+	//pullUpToleranceFactor
+	double P = Peak ();
+
+	if (P <= 0.0)
+		return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47));
+
+	double localFit = Fit;
+
+	if (localFit < 0.1)
+		localFit = 0.1;
+
+	double localNoise = noise;
+	
+	double LN = 0.95 * P;
+
+	if (localNoise > LN)
+		localNoise = LN;
+
+	double temp1 = 1.0 / localFit;
+	double temp = 2.0 * (temp1 * temp1 - 1.0) * StandardDeviation * log (P / (P - localNoise));
+	return (mPullupTolerance + pullUpToleranceFactor * mApproxBioIDPrime * sqrt (temp));
+}
+
+
 void DoubleGaussian :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	DataSignal::OutputDebugID (comm, numHigherObjects);
@@ -1282,6 +1311,54 @@ void SuperGaussian :: OutputDebugID (SmartMessagingComm& comm, int numHigherObje
 	RGString idData;
 	idData << "\t\t\t\tSignal with Mean:  " << Mean;
 	SmartMessage::OutputDebugString (idData);
+}
+
+
+double SuperGaussian :: GetPullupToleranceInBP (double noise) const {
+
+	//pullUpToleranceFactor
+	double P = Peak ();
+
+	if (P <= 0.0)
+		return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47));
+
+	double localFit = Fit;
+
+	if (localFit < 0.1)
+		localFit = 0.1;
+
+	double localNoise = noise;
+	
+	double LN = 0.95 * P;
+
+	if (localNoise > LN)
+		localNoise = LN;
+
+	double temp1 = 1.0 / localFit;
+	double temp = 2.0 * (temp1 * temp1 - 1.0) * StandardDeviation * log (P / (P - localNoise));
+	return (mPullupTolerance + pullUpToleranceFactor * mApproxBioIDPrime * sqrt (temp));
+}
+
+
+double CraterSignal :: GetPullupToleranceInBP (double noise) const {
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return GetPullupToleranceInBP ();
+
+	double bpLeft = mPrevious->GetApproximateBioID () - mPrevious->GetPullupToleranceInBP (noise);
+	double bpRight = mNext->GetApproximateBioID () + mNext->GetPullupToleranceInBP (noise);
+	double bp = GetApproximateBioID ();
+	bpLeft = bp - bpLeft;
+	bpRight = bpRight - bp;
+	double rtnValue;
+
+	if (bpLeft > bpRight)
+		rtnValue = bpLeft;
+
+	else
+		rtnValue = bpRight;
+
+	return rtnValue;
 }
 
 
@@ -1355,7 +1432,7 @@ bool CraterSignal :: TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataS
 		// Might be separate signals, but, first, check residuals.  If side signals have residuals that are too high and
 		// "center" signal does not, it's probably a crater after all.
 
-		if (adenylationLimit > 0.0) {
+		if ((adenylationLimit > 0.0) && !Locus::GetDisableAdenylationFilter ()) {
 
 			prevPeak = mPrevious->Peak ();
 			nextPeak = mNext->Peak ();
@@ -1465,6 +1542,30 @@ void SimpleSigmoidSignal :: RecalculatePullupTolerance () {
 
 	else
 		mPullupTolerance = bpRight;
+}
+
+
+double SimpleSigmoidSignal :: GetPullupToleranceInBP (double noise) const {
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return CraterSignal::GetPullupToleranceInBP ();
+
+	double bpLeft = mPrevious->GetApproximateBioID () - mPrevious->GetPullupToleranceInBP (noise);
+	double bpRight = mNext->GetApproximateBioID () + mNext->GetPullupToleranceInBP (noise);
+	double bp = GetApproximateBioID ();
+	bpLeft = bp - bpLeft;
+	bpRight = bpRight - bp;
+	double rtnValue;
+
+	cout << "Sigmoid at " << bp << " bps with left tolerance = " << bpLeft << " and right tolerance = " << bpRight << "\n";
+
+	if (bpLeft > bpRight)
+		rtnValue = bpLeft;
+
+	else
+		rtnValue = bpRight;
+
+	return rtnValue;
 }
 
 

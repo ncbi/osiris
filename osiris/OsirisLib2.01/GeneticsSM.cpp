@@ -5543,5 +5543,68 @@ void Locus :: TestAllelesAgainstOverloadThresholdSM () {
 }
 
 
+
+void Locus :: ResolveAmbiguousExtendedLocusPeaksSM () {
+
+	//
+	//  This is sample stage 4
+	//
+
+	RGDListIterator it (LocusSignalList);
+	DataSignal* nextSignal;
+	smCouldBelongToLocusLeft couldBelongToLocusLeft;
+	smCouldBelongToLocusRight couldBelongToLocusRight;
+	smPossibleAmbiguousInterlocusAssignedToLocus ambiguousExtendedLocusAssignedToLocus;
+	int location;
+	bool belongsToLocusToLeft;
+	bool belongsToLocusToRight;
+	RGDList tempRemove;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if ((nextSignal->IsPossibleInterlocusAllele (-1)) && (nextSignal->IsPossibleInterlocusAllele (1))) {
+
+			belongsToLocusToLeft = nextSignal->GetMessageValue (couldBelongToLocusLeft);
+			belongsToLocusToRight = nextSignal->GetMessageValue (couldBelongToLocusRight);
+
+			if (belongsToLocusToLeft && belongsToLocusToRight) {
+
+				tempRemove.Append (nextSignal);
+				continue;
+			}
+
+			location = LocationOfSignal (nextSignal);	// -1 means signal to left of locus; +1 means signal to right of locus; 0 means signal in core
+
+			if (belongsToLocusToRight) {
+
+				if (location < 0) {
+
+					PromoteSignalToAllele (nextSignal);
+					nextSignal->SetMessageValue (ambiguousExtendedLocusAssignedToLocus, true);
+				}
+
+				else if (location > 0)
+					tempRemove.Append (nextSignal);
+			}
+
+			else if (belongsToLocusToLeft) {
+
+				if (location > 0) {
+
+					PromoteSignalToAllele (nextSignal);
+					nextSignal->SetMessageValue (ambiguousExtendedLocusAssignedToLocus, true);
+				}
+
+				else if (location < 0)
+					tempRemove.Append (nextSignal);
+			}
+		}
+	}
+
+	while (nextSignal = (DataSignal*)tempRemove.GetFirst ())
+		RemoveSignalFromLocusList (nextSignal);
+}
+
+
 //*************************************************************************************************
 //*************************************************************************************************

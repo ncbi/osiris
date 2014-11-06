@@ -541,6 +541,7 @@ public:
 	virtual DataSignal* CreateThreeMovingAverageFilteredSignal (int window);
 	virtual double GetPullupToleranceInBP () const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // The trig expression corrects for poor fit - this is proportional to Hilbert Space distance 07/22/2014;
 	                                                                                                                       // with a proportionality coefficient of 1 / 4.47, so that a fit of 0.999 has a correction of 0.01 (changed from 1/10 07/23/2014)
+	virtual double GetPullupToleranceInBP (double noise) const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // see above
 	virtual void RecalculatePullupTolerance () {}
 	virtual void ResetPullupTolerance (double p) { mPullupTolerance = p; }
 
@@ -1086,6 +1087,7 @@ public:
 	virtual RGString GetSignalType () const;
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
+	virtual double GetPullupToleranceInBP (double noise) const;
 
 	static double GetSigmaWidth () { return SigmaWidth; }
 	static void SetSigmaWidth (double width) { SigmaWidth = width; }
@@ -1246,7 +1248,7 @@ public:
 	virtual double GetOrthogonalScale (int curve) const;
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const;
 	virtual bool IsUnimodal () const;
-	virtual double GetPullupToleranceInBP () const;
+	virtual double GetPullupToleranceInBP (double noise) const;
 
 	virtual DataSignal* FindNextCharacteristicFromRight (const DataSignal& Signature, 
 		double& fit, RGDList& previous);
@@ -1337,6 +1339,7 @@ public:
 	virtual RGString GetSignalType () const;
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
+	virtual double GetPullupToleranceInBP (double noise) const;
 
 	static double GetSigmaWidth () { return SigmaWidth; }
 	static void SetSigmaWidth (double width) { SigmaWidth = width; }
@@ -1587,6 +1590,7 @@ public:
 	virtual DataSignal* GetPreviousLinkedSignal () { return mPrevious; }
 	virtual DataSignal* GetNextLinkedSignal () { return mNext; }
 	virtual double GetPullupToleranceInBP () const { return 0.0425; }
+	virtual double GetPullupToleranceInBP (double noise) const;
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
@@ -1657,6 +1661,7 @@ public:
 
 	virtual DataSignal* MakeCopy (double mean) const;
 	virtual void RecalculatePullupTolerance ();
+	virtual double GetPullupToleranceInBP (double noise) const;
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 

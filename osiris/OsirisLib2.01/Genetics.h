@@ -428,7 +428,7 @@ public:
 	void RetrieveSmartNoticesFromGridArtifactList (ChannelData* laneStandard);
 
 	void TestAllelesAgainstOverloadThresholdSM ();
-
+	void ResolveAmbiguousExtendedLocusPeaksSM ();
 
 	//*******************************************************************************************************
 	//*******************************************************************************************************
@@ -489,6 +489,8 @@ public:
 
 	static void SetDisableStutterFilter (bool s) { DisableStutterFilter = s; }
 	static void SetDisableAdenylationFilter (bool s) { DisableAdenylationFilter = s; }
+	static bool GetDisableStutterFilter () { return DisableStutterFilter; }
+	static bool GetDisableAdenylationFilter () { return DisableAdenylationFilter; }
 
 	static void SetCallOnLadderAdenylation (bool s) { CallOnLadderAdenylation = s; }
 	static bool GetCallOnLadderAdenylation () { return CallOnLadderAdenylation; }

@@ -3334,62 +3334,75 @@ int STRSampleChannelData :: ResolveAmbiguousInterlocusSignalsUsingSmartMessageDa
 	//  This is sample stage 4
 	//
 
-	RGDListIterator it (PreliminaryCurveList);
-	DataSignal* nextSignal;
-	smCouldBelongToLocusLeft couldBelongToLocusLeft;
-	smCouldBelongToLocusRight couldBelongToLocusRight;
-	smAmbiguousInterlocus ambiguousInterlocus;
-	Locus* locus1;
-	Locus* locus2;
-	bool locus1IsIt;
-	bool locus2IsIt;
+	Locus* nextLocus;
+	RGDListIterator locusIt (mLocusList);
 
-	while (nextSignal = (DataSignal*) it ()) {
-
-		if ((nextSignal->IsPossibleInterlocusAllele (-1)) && (nextSignal->IsPossibleInterlocusAllele (1))) {
-
-			locus1 = (Locus*) nextSignal->GetLocus (-1);
-			locus2 = (Locus*) nextSignal->GetLocus (1);
-
-			if ((locus1 == NULL) && (locus2 == NULL))
-				continue;
-
-			if ((locus1 != NULL) && (locus2 == NULL)) {
-
-				locus1->PromoteSignalToAllele (nextSignal);
-				it.RemoveCurrentItem ();
-				continue;
-			}
-
-			if ((locus2 != NULL) && (locus1 == NULL)) {
-
-				locus2->PromoteSignalToAllele (nextSignal);
-				it.RemoveCurrentItem ();
-				continue;
-			}
-
-			locus1IsIt = nextSignal->GetMessageValue (couldBelongToLocusLeft);	//These should have been set by end of stage 3 evaluation and triggers
-			locus2IsIt = nextSignal->GetMessageValue (couldBelongToLocusRight);
-
-			if (locus1IsIt && !locus2IsIt) {
-
-				AssignSignalToFirstLocusAndDeleteFromSecondSM (nextSignal, locus1, locus2);
-				it.RemoveCurrentItem ();
-			}
-
-			else if (locus2IsIt && !locus1IsIt) {
-
-				AssignSignalToFirstLocusAndDeleteFromSecondSM (nextSignal, locus2, locus1);
-				it.RemoveCurrentItem ();
-				continue;
-			}
-
-			else
-				RemoveSignalFromBothLociSM (nextSignal, locus1, locus2);	// it's either in neither or both, so it has to go
-		}
-	}
+	while (nextLocus = (Locus*) locusIt ())
+		nextLocus->ResolveAmbiguousExtendedLocusPeaksSM ();
 
 	return 0;
+
+	//The code below has to be replaced because extended locus peaks are not and never have been contained in 
+	// PreliminaryCurveList, that is, once they are identified as extended.
+
+	//RGDListIterator it (PreliminaryCurveList);
+	//DataSignal* nextSignal;
+	//smCouldBelongToLocusLeft couldBelongToLocusLeft;
+	//smCouldBelongToLocusRight couldBelongToLocusRight;
+	//smAmbiguousInterlocus ambiguousInterlocus;
+	//Locus* locus1;
+	//Locus* locus2;
+	//bool locus1IsIt;
+	//bool locus2IsIt;
+
+	//while (nextSignal = (DataSignal*) it ()) {
+
+	//	if ((nextSignal->IsPossibleInterlocusAllele (-1)) && (nextSignal->IsPossibleInterlocusAllele (1))) {
+
+	//		locus1 = (Locus*) nextSignal->GetLocus (-1);
+	//		locus2 = (Locus*) nextSignal->GetLocus (1);
+
+	//		if ((locus1 == NULL) && (locus2 == NULL))
+	//			continue;
+
+	//		if ((locus1 != NULL) && (locus2 == NULL)) {
+
+	//			locus1->PromoteSignalToAllele (nextSignal);
+	//			it.RemoveCurrentItem ();
+	//			continue;
+	//		}
+
+	//		if ((locus2 != NULL) && (locus1 == NULL)) {
+
+	//			locus2->PromoteSignalToAllele (nextSignal);
+	//			it.RemoveCurrentItem ();
+	//			continue;
+	//		}
+
+	//		locus1IsIt = nextSignal->GetMessageValue (couldBelongToLocusLeft);	//These should have been set by end of stage 3 evaluation and triggers
+	//		locus2IsIt = nextSignal->GetMessageValue (couldBelongToLocusRight);
+
+	//		if (locus1IsIt && !locus2IsIt) {
+
+	//			AssignSignalToFirstLocusAndDeleteFromSecondSM (nextSignal, locus1, locus2);
+	//			it.RemoveCurrentItem ();
+	//		}
+
+	//		else if (locus2IsIt && !locus1IsIt) {
+
+	//			AssignSignalToFirstLocusAndDeleteFromSecondSM (nextSignal, locus2, locus1);
+	//			it.RemoveCurrentItem ();
+	//			continue;
+	//		}
+
+	//		else {
+
+	//			RemoveSignalFromBothLociSM (nextSignal, locus1, locus2);	// it's either in neither or both, so it has to go
+	//		}
+	//	}
+	//}
+
+	//return 0;
 }
 
 

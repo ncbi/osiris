@@ -688,8 +688,8 @@ Boolean Locus :: IsTimeWithinExtendedLocusSample (double t, int& location) {
 
 DataSignal* Locus :: RemoveSignalFromLocusList (DataSignal* target) {
 
-	if (mExtendedLeft.RemoveReference (target) == NULL)
-		mExtendedRight.RemoveReference (target);
+	mExtendedLeft.RemoveReference (target);
+	mExtendedRight.RemoveReference (target);
 
 	return (DataSignal*) LocusSignalList.RemoveReference (target);
 }
@@ -722,7 +722,7 @@ int Locus :: PromoteSignalToAllele (DataSignal* target) {
 int Locus :: PromoteNonAmbiguousSignalsToAlleles (RGDList& signalList) {
 
 	//
-	//  This is sample stage 2
+	//  This is sample stage 3
 	//
 
 	RGDListIterator itLeft (mExtendedLeft);
