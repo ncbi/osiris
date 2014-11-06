@@ -409,7 +409,7 @@ public:
   }
   void SaveCellValue(int nRow, int nCol)
   {
-    if(m_bDO_NOT_SAVE || (nRow < 0) && (nCol < 0) )
+    if(m_bDO_NOT_SAVE || ((nRow < 0) && (nCol < 0)) )
     {
       ;// do not save
     }

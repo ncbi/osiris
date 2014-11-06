@@ -883,6 +883,42 @@ void mainFrame::OnCheckForUpdates(wxCommandEvent &)
     ErrorMessage("Cannot run a browser to check this version of OSIRIS");
   }
 }
+
+#ifdef __WINDOW_LIST__
+void mainFrame::OnWindowMenu(wxCommandEvent &e)
+{
+  int nID = e.GetId();
+  if(nID >= IDmenuWindow_Frame)
+  {
+    m_MDImgr.ActivateFromWindowMenu(nID);
+  }
+#ifdef __WXMAC__
+  else
+  {
+    switch(e.GetId())
+    {
+    case IDmenuWindow_Minimize:
+      if(m_pLastActive != NULL)
+      {
+        m_pLastActive->Iconize(true);
+      }
+      break;
+    case IDmenuWindow_Zoom:
+      if(m_pLastActive != NULL)
+      {
+        m_pLastActive->Maximize(!m_pLastActive->IsMaximized());
+      }
+      break;
+    case IDmenuWindow_AllToFront:
+      m_MDImgr.BringAllToFront();
+      break;
+    default:
+      wxASSERT_MSG(0,wxS("mainFrame::OnWindowMenu invalid ID"));
+    }
+  }
+#endif
+}
+#endif
 void mainFrame::OnAbout(wxCommandEvent &)
 {
   CDialogAbout x(DialogParent());

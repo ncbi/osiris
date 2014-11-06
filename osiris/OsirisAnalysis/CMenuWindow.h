@@ -23,82 +23,53 @@
 *
 * ===========================================================================
 *
-*  FileName: CSampleSort.h
+*  FileName: CMenuWindow.h
 *  Author:   Douglas Hoffman
+*  Purpose:  Create a Window menu for the menu bar for implementations
+*    that do not do it automatically because wxMDI is not used --
+*    currently wxMac
 *
 */
-#ifndef __COAR_SAMPLE_SORT_H__
-#define __COAR_SAMPLE_SORT_H__
+#ifndef __C_MENU_WINDOW_H__
+#define __C_MENU_WINDOW_H__
 
-#include "COARfile.h"
-#include "CHistoryTime.h"
+#include <wx/menu.h>
+#include "wxIDS.h"
+#ifdef __WINDOW_LIST__
+#include "CMDIFrame.h"
 
+class CMenuBar;
 
-
-class COARsampleSort
+class CMenuWindow : public wxMenu
 {
 public:
-  static const int DISPLAYED_NAME;
-  static const int FILE_NAME;
-  static const int SAMPLE_NAME;
-  static const int SEVERITY;
-  static const int RUN_TIME;
-
-
-  COARsampleSort(COARfile *pFile)
+  friend class CMenuBar;
+  CMenuWindow(const CMDI_LIST *pList, CMDIFrame *pCheck, long nModCount) : 
+    m_nModCount(-1)
   {
-    m_dtLastLoad = pFile->GetLastLoad();
-    Sort(pFile,NULL);
+    Build(pList,pCheck,nModCount);
   }
-  COARsampleSort() : 
-    m_dtLastLoad((time_t)0),
-    m_pFile(NULL),
-    m_nLastSort(-1),
-    m_bLastControlOnTop(false)
-  {; }
-  virtual ~COARsampleSort() {;}
-
-  void Sort(COARfile *pFile, const wxDateTime *pTime = NULL);
-  const vector<COARsample *> *GetSamples()
+  virtual ~CMenuWindow();
+  void Build(const CMDI_LIST *pList, CMDIFrame *pCheck, long nModCount);
+  long GetModCount()
   {
-    _CheckUpdate();
-    return &m_vpSamples;
+    return m_nModCount;
   }
-  COARsample *GetSample(size_t i)
+  bool IsEmpty()
   {
-    _CheckUpdate();
-    return m_vpSamples.at(i);
+    bool b = !GetMenuItemCount();
+    return b;
   }
-  size_t GetCount()
-  {
-    _CheckUpdate();
-    return m_vpSamples.size();
-  }
-  vector<COARsample *> *operator ->()
-  {
-    _CheckUpdate();
-    return &m_vpSamples;
-  }
-  size_t GetSampleIndex(COARsample *pSample);
-  static const size_t NPOS;
 private:
-  void _CheckUpdate();
-  void _Sort();
-//  void _SortBySeverity();
-//  void _SortBySampleName();
-//  void _SortByFileName();
-
-  void _SortByDisplay(int nDisplay);
-  vector<COARsample *> m_vpSamples;
-
-  CHistoryTime m_histTime;
-  wxDateTime m_dtLastLoad;
-  COARfile *m_pFile;
-  int m_nLastSort;
-  bool m_bLastControlOnTop;
+  CMenuWindow() : m_nModCount(-1) {};  // empty menu 
+  long m_nModCount;
+  DECLARE_ABSTRACT_CLASS(CDialogExportFile)
 };
+
+
 
 
 
 #endif
 
+#endif

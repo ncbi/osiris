@@ -83,7 +83,7 @@ public:
   {
     return m_sUserID;
   }
-  virtual void Set(const COARreview &x)
+  void Set(const COARreview &x)
   {
     m_sUserID = x.m_sUserID;
     m_time = x.m_time;
@@ -160,7 +160,7 @@ public:
     RegisterAll(true);
   }
   virtual ~COARenabled();
-  virtual void Set(const COARenabled &x)
+  void Set(const COARenabled &x)
   {
     COARreview::Set(x);
     m_bEnabled = x.m_bEnabled;

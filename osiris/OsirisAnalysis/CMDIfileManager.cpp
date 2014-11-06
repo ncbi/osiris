@@ -369,6 +369,9 @@ void CMDIfileManager::InsertWindow(CMDIFrame *pWin, COARfile *pFile)
 {
   CMDI_WF::iterator itr = m_mapWindowFile.find(pWin);
   bool bDone = false;
+#ifdef __WINDOW_LIST__
+  bool bAddToList = true;
+#endif
   if(!_IteratorOK(itr))
   {}
   else if(itr->second == pFile)
@@ -378,11 +381,20 @@ void CMDIfileManager::InsertWindow(CMDIFrame *pWin, COARfile *pFile)
   else
   {
     _RemoveIterator(itr);
+#ifdef __WINDOW_LIST__
+    bAddToList = false;
+#endif
   }
   if(!bDone)
   {
     m_mapWindowFile.insert(CMDI_WF::value_type(pWin,pFile));
     _InsertCOARfile(pFile,pWin);
+#ifdef __WINDOW_LIST__
+    if(bAddToList)
+    {
+      _AddWindowToLists(pWin);
+    }
+#endif
   }
 }
 
@@ -392,6 +404,9 @@ void CMDIfileManager::RemoveWindow(CMDIFrame *pWin)
   if(_IteratorOK(itr))
   {
     _RemoveIterator(itr);
+#ifdef __WINDOW_LIST__
+    _RemoveWindowFromLists(pWin);
+#endif
   }
 }
 
@@ -457,3 +472,113 @@ void CMDIfileManager::_InsertCOARfile(COARfile *pFile, CMDIFrame *pWin)
   }
 }
 
+#ifdef __WINDOW_LIST__
+
+int CMDIfileManager::_RemoveWindowFromAList(CMDI_LIST *pList,CMDIFrame *p)
+{
+  CMDI_LIST::iterator itr;
+  CMDI_LIST::iterator itrEnd = pList->end();
+  int nRtn = 0;
+  for(itr = pList->begin();
+      (itr != itrEnd) && (p != *itr);
+       ++itr)  {;}
+  if(itr != itrEnd)
+  {
+    pList->erase(itr);
+    nRtn = 1;
+  }
+  else
+  {
+    wxASSERT_MSG(0,"CMDIfileManager::_RemoveWindowFromAList - did not find window");
+  }
+  return nRtn;
+}
+
+void CMDIfileManager::MoveToTop(CMDIFrame *p)
+{
+  CMDI_LIST::iterator itr = m_listZOrder.begin();
+  bool bOK = true;
+#ifdef __WXDEBUG__
+  mainApp::LogMessage("CMDIfileManager::MoveToTop");
+#endif
+  if(itr == m_listZOrder.end()) 
+  {
+    //list is empty
+    bOK = false;
+#ifdef __WXDEBUG__
+    mainApp::LogMessage(wxS("CMDIfileManager::MoveToTop - list is empty"));
+#endif
+  }
+  else if(*itr == p)
+  {
+    // already there
+#ifdef __WXDEBUG__
+    mainApp::LogMessage(wxS("CMDIfileManager::MoveToTop - window is a the top"));
+#endif
+  }
+  else if(_RemoveWindowFromAList(&m_listZOrder,p))
+  {
+    m_listZOrder.push_front(p);
+#ifdef __WXDEBUG__
+    wxString ss(wxS("top window: "));
+    ss.Append(p->GetTitle());
+    mainApp::LogMessage(ss);
+#endif
+  }
+  else
+  {
+    // not in list
+    bOK = false;
+  }
+  wxASSERT_MSG(bOK,"CMDIfileManager::MoveToTop failed to find window");
+}
+
+void CMDIfileManager::BringAllToFront()
+{
+  vector<CMDIFrame *> vw;
+  CMDI_LIST::reverse_iterator itr;
+  vector<CMDIFrame *>::iterator itrv;
+  vw.reserve(m_mapWindowFile.size());
+
+  // make a local list of windows because m_listXOrder
+  // could change when calling "wxWindow::Raise()"
+  // build the list/raise the windows in reverse Z order
+  // to retain Z order
+
+  for(itr = m_listZOrder.rbegin();
+      itr != m_listZOrder.rend();
+      ++itr)
+  {
+    if(!(*itr)->IsIconized())
+    {
+      vw.push_back(*itr);
+    }
+  }
+  // raise each window in the local list
+  for(itrv = vw.begin();
+      itrv != vw.end();
+      ++itrv)
+  {
+    (*itrv)->Raise();
+  }
+
+}
+
+void CMDIfileManager::ActivateFromWindowMenu(int nID)
+{
+  if(nID >= IDmenuWindow_Frame && nID <= IDmenuWindow_Frame_END)
+  {
+    int n;
+    CMDI_LIST::iterator itr;
+    for(itr = m_listCreateOrder.begin(), n = IDmenuWindow_Frame;
+        (itr != m_listCreateOrder.end()) && (n < nID);
+        ++itr,++n)
+    {}
+    if(itr != m_listCreateOrder.end())
+    {
+      (*itr)->RaiseWindow();
+    }
+  }
+}
+
+#endif

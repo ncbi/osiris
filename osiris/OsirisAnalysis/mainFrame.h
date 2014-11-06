@@ -70,6 +70,7 @@
 #include "CDialogMaxLadderLabel.h"
 #include "CDialogPromptNewerFile.h"
 #include "CMenuBar.h"
+#include "wxIDs.h"
 #include "wxXsl/wxXslObject.h"
 
 
@@ -129,6 +130,9 @@ public:
   void OnMaxLadderLabels(wxCommandEvent &);
   void OnSave(wxCommandEvent &);
   void OnMenu(wxCommandEvent &e);
+#ifdef __WINDOW_LIST__
+  void OnWindowMenu(wxCommandEvent &e);
+#endif
 #if DRAG_DROP_FILES
   void OnDropFiles(wxCommandEvent &e);
   void DropFiles();
@@ -224,9 +228,31 @@ public:
 #else
   ;
 #endif
+#ifdef __WINDOW_LIST__
+  void ActivateFromWindowMenu(int nID)
+  {
+    m_MDImgr.ActivateFromWindowMenu(nID);
+  }
+  void CheckUpdateWindowMenu()
+  {
+    if(m_pLastActive != NULL)
+    {
+      m_MDImgr.CheckUpdateWindowMenu(m_pLastActive);
+    }
+  }
+  void InvalidateWindowMenu()
+  {
+    m_MDImgr.InvalidateWindowMenu();
+  }
+#endif
   void SetActiveFrame(CMDIFrame *p)
   {
     m_pLastActive = p;
+#ifdef __WINDOW_LIST__
+    mainApp::LogMessage(wxS("MoveToTop"));
+    CheckUpdateWindowMenu();
+    m_MDImgr.MoveToTop(m_pLastActive);
+#endif
 #ifdef __WXDEBUG__
     _LogActiveFrame();
 #endif

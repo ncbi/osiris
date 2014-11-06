@@ -43,7 +43,7 @@
 const wxString CDialogAbout::g_sReadMe(
 "This software is a \"United States Government Work\" under terms "
 "of the United States Copyright Act.  It was written as part of the "
-"authors’ official duties as Government employees and thus cannot "
+"authors' official duties as Government employees and thus cannot "
 "be copyrighted. This software is freely available to the public "
 "for use without a copyright notice.  Restrictions cannot be "
 "placed on its present or future use.\n\n"

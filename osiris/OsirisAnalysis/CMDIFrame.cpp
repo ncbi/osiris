@@ -33,7 +33,7 @@
 #include "wxIDS.h"
 #include "nwx/CIncrementer.h"
 #include "Platform.h"
-
+#include "CMenuWindow.h"
 
 DEFINE_EVENT_TYPE(CEventKillWindow)
 
@@ -73,6 +73,8 @@ wxMenu *CMDIFrame::GetTableMenu() { return NULL; }
 void CMDIFrame::UpdateHistory() {;}
 void CMDIFrame::UpdateLadderLabels() {;}
 void CMDIFrame::UpdateFileMenu() {;}
+
+
 
 wxString CMDIFrame::GetFileName()
 {
@@ -284,6 +286,44 @@ bool CMDIFrame::DialogIsShowingOrNoFocus()
   }
   return bRtn;
 }
+
+#ifdef __WINDOW_LIST__
+void CMDIFrame::SetTitle(const wxString &title)
+{
+  wxString sCurrent = GetTitle();
+  if(sCurrent != title)
+  {
+    CMDIFrameSuper::SetTitle(title);
+    if(!sCurrent.IsEmpty())
+    {
+      m_pParent->InvalidateWindowMenu();
+      m_pParent->CheckUpdateWindowMenu();
+    }
+  }
+}
+void CMDIFrame::CheckUpdateWindowMenu(long nModCount, const CMDI_LIST *pList)
+{
+  CMenuBar *pMenuBar = wxDynamicCast(GetMenuBar(),CMenuBar);
+  CMenuWindow *pMenu = (pMenuBar == NULL) ? NULL : pMenuBar->GetWindowMenu();
+  if( (pMenu != NULL) && (pMenu->GetModCount() != nModCount) )
+  {
+    if(pMenu->IsEmpty())
+    {
+      pMenu->Build(pList,this,nModCount);
+    }
+    else
+    {
+#ifdef __WXDEBUG__
+      mainApp::LogMessageV(wxS("new CMenuWindow for frame: %ls; modCount = %d, replacing %d"),
+                           GetTitle().wc_str(),
+                           nModCount,pMenu->GetModCount());
+#endif
+      pMenu = new CMenuWindow(pList,this,nModCount);
+      pMenuBar->SetWindowMenu(pMenu);
+    }
+  }
+}
+#endif
 
 const wxString CMDIFrame::HIDE_TOOLBARS("Hide Toolbars\tCtrl+T");
 const wxString CMDIFrame::SHOW_TOOLBARS("Show Toolbars\tCtrl+T");

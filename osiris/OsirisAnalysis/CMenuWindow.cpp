@@ -23,82 +23,73 @@
 *
 * ===========================================================================
 *
-*  FileName: CSampleSort.h
+*  FileName: CMenuWindow.cpp
 *  Author:   Douglas Hoffman
-*
+*  Purpose:  Create a Window menu for the menu bar for implementations
+*    that do not do it automatically because wxMDI is not used --
+*    currently wxMac
 */
-#ifndef __COAR_SAMPLE_SORT_H__
-#define __COAR_SAMPLE_SORT_H__
+#include "CMenuWindow.h"
+#ifdef __WINDOW_LIST__
+#include "CMDIfileManager.h"
 
-#include "COARfile.h"
-#include "CHistoryTime.h"
+IMPLEMENT_ABSTRACT_CLASS(CMenuWindow,wxMenu)
+  ;
 
 
+CMenuWindow::~CMenuWindow() {}
 
-class COARsampleSort
+void CMenuWindow::Build(const CMDI_LIST *pList,CMDIFrame *pCheck, long nModCount)
 {
-public:
-  static const int DISPLAYED_NAME;
-  static const int FILE_NAME;
-  static const int SAMPLE_NAME;
-  static const int SEVERITY;
-  static const int RUN_TIME;
-
-
-  COARsampleSort(COARfile *pFile)
+  if(GetMenuItemCount())
   {
-    m_dtLastLoad = pFile->GetLastLoad();
-    Sort(pFile,NULL);
+    wxASSERT_MSG(0,"CMenuWindow::Build - not empty");
   }
-  COARsampleSort() : 
-    m_dtLastLoad((time_t)0),
-    m_pFile(NULL),
-    m_nLastSort(-1),
-    m_bLastControlOnTop(false)
-  {; }
-  virtual ~COARsampleSort() {;}
-
-  void Sort(COARfile *pFile, const wxDateTime *pTime = NULL);
-  const vector<COARsample *> *GetSamples()
+  else
   {
-    _CheckUpdate();
-    return &m_vpSamples;
+    wxString sLabel;
+    CMDI_LIST::const_iterator itr;
+    int nID;
+    wxChar sAccel[] = wxS("\tCtrl+0");
+    size_t nAccelLast = (sizeof(sAccel) / sizeof(sAccel[0])) - 2;
+    wxChar zero('0');
+    int nMaxAccel = IDmenuWindow_Frame + 9;
+    m_nModCount = nModCount;
+#ifdef __WXMAC__
+    Append(IDmenuWindow_Minimize,wxS("Minimize\tCtrl+M"));
+    Append(IDmenuWindow_Zoom,wxS("Zoom"));
+    AppendSeparator();
+    Append(IDmenuWindow_AllToFront,wxS("Bring All to Front"));
+    AppendSeparator();
+#endif
+    for(itr = pList->begin(), nID = IDmenuWindow_Frame;
+        (itr != pList->end()) && (nID < IDmenuWindow_Frame_END);
+        ++itr, ++nID)
+    {
+      sLabel = (*itr)->GetTitle();
+      if(nID <= nMaxAccel)
+      {
+        if(nID < nMaxAccel)
+        {
+          sAccel[nAccelLast]++;
+        }
+        else
+        {
+          sAccel[nAccelLast] = zero;
+        }
+        sLabel.Append(sAccel);
+      }
+      if(*itr == pCheck)
+      {
+        AppendCheckItem(nID,sLabel)->Check();
+      }
+      else
+      {
+        Append(nID,sLabel);
+      }
+    }
   }
-  COARsample *GetSample(size_t i)
-  {
-    _CheckUpdate();
-    return m_vpSamples.at(i);
-  }
-  size_t GetCount()
-  {
-    _CheckUpdate();
-    return m_vpSamples.size();
-  }
-  vector<COARsample *> *operator ->()
-  {
-    _CheckUpdate();
-    return &m_vpSamples;
-  }
-  size_t GetSampleIndex(COARsample *pSample);
-  static const size_t NPOS;
-private:
-  void _CheckUpdate();
-  void _Sort();
-//  void _SortBySeverity();
-//  void _SortBySampleName();
-//  void _SortByFileName();
-
-  void _SortByDisplay(int nDisplay);
-  vector<COARsample *> m_vpSamples;
-
-  CHistoryTime m_histTime;
-  wxDateTime m_dtLastLoad;
-  COARfile *m_pFile;
-  int m_nLastSort;
-  bool m_bLastControlOnTop;
-};
-
+}
 
 
 #endif
-

@@ -327,6 +327,7 @@
     <ClCompile Include="CMenuFileGraph.cpp" />
     <ClCompile Include="CMenuHistory.cpp" />
     <ClCompile Include="CMenuPlot.cpp" />
+    <ClCompile Include="CMenuWindow.cpp" />
     <ClCompile Include="COARallele.cpp" />
     <ClCompile Include="COARchannelAlert.cpp" />
     <ClCompile Include="COARdirectoryAlerts.cpp" />
@@ -454,6 +455,7 @@
     <ClInclude Include="CMenuLabels.h" />
     <ClInclude Include="CMenuPlot.h" />
     <ClInclude Include="CMenuSort.h" />
+    <ClInclude Include="CMenuWindow.h" />
     <ClInclude Include="CMessageDialogCheckCancel.h" />
     <ClInclude Include="CMruListIcons.h" />
     <ClInclude Include="COARallele.h" />

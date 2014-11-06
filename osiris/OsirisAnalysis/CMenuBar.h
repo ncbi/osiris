@@ -32,6 +32,12 @@
 #define __C_MENU_BAR_H__
 
 #include <wx/menu.h>
+#include "wxIDs.h"
+
+#ifdef __WINDOW_LIST__
+class CMenuWindow;
+#endif
+
 
 class CMenuBar : public wxMenuBar
 {
@@ -44,8 +50,23 @@ public:
     return m_pMenuFile;
   }
   static size_t GetPosition(wxMenu *p, int ID);
+#ifdef __WINDOW_LIST__
+  void SetWindowMenu(CMenuWindow *p = NULL);
+  CMenuWindow *GetWindowMenu()
+    {
+      return m_pMenuWindow;
+    }
+#endif
 private:
   wxMenu *m_pMenuFile;
+#ifdef __WINDOW_LIST__
+  int m_nRecursive;
+  CMenuWindow *m_pMenuWindow;
+  static wxString g_sWindowLabel;
+#endif
+
+public:
+  DECLARE_ABSTRACT_CLASS(CMenuBar)
 };
 
 

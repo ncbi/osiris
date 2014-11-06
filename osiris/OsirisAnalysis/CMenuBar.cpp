@@ -23,20 +23,31 @@
 *
 * ===========================================================================
 *
-
-*  FileName: CMenuBar.h
+*  FileName: CMenuBar.cpp
 *  Author:   Douglas Hoffman
 *
 */
 #include "CMenuBar.h"
 #include "CMenuFileBase.h"
 #include "wxIDS.h"
+#include "mainApp.h"
+#ifdef __WINDOW_LIST__
+#include "nwx/CIncrementer.h"
+#include "CMenuWindow.h"
+#define INIT_CONSTRUCTOR , m_nRecursive(0), m_pMenuWindow(new CMenuWindow)
+wxString CMenuBar::g_sWindowLabel;
+#else
+#define INIT_CONSTRUCTOR
+#endif
+
+IMPLEMENT_ABSTRACT_CLASS(CMenuBar,wxMenuBar)
+;
 
 CMenuBar::~CMenuBar()
-{
-}
+{}
 
-CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) : m_pMenuFile(NULL)
+CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
+  m_pMenuFile(NULL) INIT_CONSTRUCTOR
 {
   wxMenu *pMenuTools(new wxMenu);
   wxMenu *pMenuHelp(new wxMenu);
@@ -50,6 +61,14 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) : m_pMenuFile(NULL)
   pMenuHelp->Append(IDcheckForUpdates,"Check f&or Updates...");
   pMenuHelp->Append(wxID_ABOUT,"&About Osiris...");
   Append(pMenuTools,"T&ools");
+#ifdef __WINDOW_LIST__
+  if(g_sWindowLabel.IsEmpty())
+  {
+    // prepare for strings to be external to code
+    g_sWindowLabel = wxS("&Window");
+  }
+  Append(m_pMenuWindow,g_sWindowLabel);
+#endif
   Append(pMenuHelp,"&Help");
   if(bCreateFileMenu)
   {
@@ -91,3 +110,44 @@ size_t CMenuBar::GetPosition(wxMenu *p, int nID)
   }
   return nRtn;
 }
+
+#ifdef __WINDOW_LIST__
+void CMenuBar::SetWindowMenu(CMenuWindow *p)
+{
+  if(m_nRecursive)
+  {
+    mainApp::LogMessageV(wxS("CMenuBar::SetWindowMenu recursive call %d"),m_nRecursive);
+  }
+  else if(p != m_pMenuWindow)
+  {
+    CIncrementer xxx(m_nRecursive);
+    int n = FindMenu(g_sWindowLabel);
+    if(n == wxNOT_FOUND)
+    {
+      size_t nItems = GetMenuCount();
+      size_t nLoc;
+      for(nLoc = 0; nLoc < nItems; nLoc++)
+      {
+        if(GetMenu(nLoc) == m_pMenuWindow)
+        {
+          n = (int) nLoc;
+          break;
+        }
+      }
+    }
+    if(n != wxNOT_FOUND)
+    {
+      wxMenu *pOld = Replace((size_t)n,p,g_sWindowLabel);
+      wxASSERT_MSG(pOld == (wxMenu *)m_pMenuWindow,"Unexpected window menu");
+      delete pOld;
+      m_pMenuWindow = p;
+    }
+    else
+    {
+      wxString s(wxS("CMenuBar::SetWindowMenu - Cannot find window menu for "));
+      s += g_sWindowLabel;
+      wxASSERT_MSG(0,s);
+    }
+  }
+}
+#endif
