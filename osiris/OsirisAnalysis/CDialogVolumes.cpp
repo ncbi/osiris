@@ -121,7 +121,7 @@ public:
     CVolumes *pVolumes,
     wxWindow *parent);
   virtual ~CDialogVolumeAddNew();
-  const wxString &GetName()
+  const wxString &GetVolName()
   {
     return m_sName;
   }
@@ -619,7 +619,7 @@ void CDialogVolumes::OnAdd(wxCommandEvent &e)
     if(x.ShowModal() == wxID_OK)
     {
       wxString sSave;
-      m_sSelection = x.GetName();
+      m_sSelection = x.GetVolName();
       _UpdateVolumeNames();
     }
   }
