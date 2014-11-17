@@ -70,7 +70,7 @@ protected:
   void _CreateGrid(int nRows, int nCols);
   void _ClearColumn(int nCol);
   //void _SetColCount(int nCols);
-  void _SetData(CLabThresholds *pData,
+  bool _SetData(CLabThresholds *pData,
     const wxString &sKitName,
     const wxChar * const *psLabels);
   CLabThresholds *m_pData;
@@ -90,7 +90,7 @@ public:
   virtual ~CGridLabThresholdsSample() {}
   virtual bool TransferDataToWindow();
   virtual bool TransferDataFromWindow();
-  void SetData(CLabThresholds *pData, const wxString &sKitName);
+  bool SetData(CLabThresholds *pData, const wxString &sKitName);
 
 private:
   bool _GetColumn(int nCol, CLabLocusThreshold *pLocus);
@@ -116,7 +116,7 @@ public:
   virtual ~CGridLabThresholdsLadder() {}
   virtual bool TransferDataToWindow();
   virtual bool TransferDataFromWindow();
-  void SetData(CLabThresholds *pData, const wxString &sKitName);
+  bool SetData(CLabThresholds *pData, const wxString &sKitName);
 private:
   bool _GetColumn(int nCol, CLabLocusThreshold *pLocus);
   void _SetColumn(int nCol, const CLabLocusThreshold &locus);

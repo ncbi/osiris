@@ -727,8 +727,11 @@ bool CPanelLabSettings::SetData(
     m_pData = pData;
     m_pGeneral->SetData(pData->GetLabSettingsInfo(),pMarker);
     m_pSampleThresholds->SetData(pData->GetThresholds(),pBook);
-    m_pLocusThresholds->SetData(pData->GetThresholds(),
-      pData->GetKitName());
+    if(!m_pLocusThresholds->SetData(pData->GetThresholds(),
+      pData->GetKitName()))
+    {
+      bRtn = false;
+    }
     m_pFilenames->SetData(pData->GetLabStrings());
     m_pReview->SetData(pData->GetReviewAcceptance());
     m_pMarkerSet->SetData(pMarker);

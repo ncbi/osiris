@@ -135,7 +135,7 @@ void CGridLabThresholds::_SetColCount(int nCols)
 }
 #endif
 
-void CGridLabThresholds::_SetData(
+bool CGridLabThresholds::_SetData(
   CLabThresholds *pData, 
   const wxString &sKitName,
   const wxChar * const *psLabels)
@@ -163,6 +163,7 @@ void CGridLabThresholds::_SetData(
     nwxGrid::UpdateLabelSizes(this);
     AutoSize();
   }
+  return bOK;
 }
 
 
@@ -235,7 +236,7 @@ CGridLabThresholdsSample::CGridLabThresholdsSample(
     ROW_MIN_BOUND_HOMOZYGOTE);
 }
 
-void CGridLabThresholdsSample::SetData(CLabThresholds *pData,
+bool CGridLabThresholdsSample::SetData(CLabThresholds *pData,
     const wxString &sKitName)
 {
   const wxChar * const psLabels[] = 
@@ -249,14 +250,18 @@ void CGridLabThresholdsSample::SetData(CLabThresholds *pData,
     wxS("Min. homozygote threshold (RFU) "),
     NULL
   };
-  _SetData(pData,sKitName,psLabels);
-  int nCols = GetNumberCols();
-  int i;
-  for(i = 0; i < nCols; i++)
+  bool bOK = _SetData(pData,sKitName,psLabels);
+  if(bOK)
   {
-    SetCellEditor(
-      ROW_MIN_BOUND_HOMOZYGOTE,i,new wxGridCellFloatEditor(-1,0));
+    int nCols = GetNumberCols();
+    int i;
+    for(i = 0; i < nCols; i++)
+    {
+      SetCellEditor(
+        ROW_MIN_BOUND_HOMOZYGOTE,i,new wxGridCellFloatEditor(-1,0));
+    }
   }
+  return bOK;
 }
 
 bool CGridLabThresholdsSample::_GetColumn(int nCol, CLabLocusThreshold *pLocus)
@@ -397,7 +402,7 @@ CGridLabThresholdsLadder::CGridLabThresholdsLadder(
   : CGridLabThresholds(ROWS,true,parent,nID)
 {}
 
-void CGridLabThresholdsLadder::SetData(
+bool CGridLabThresholdsLadder::SetData(
   CLabThresholds *pData, const wxString &sKitName)
 {
   const wxChar * const psLabels[] = 
@@ -408,7 +413,8 @@ void CGridLabThresholdsLadder::SetData(
     ADENYLATION_THRESHOLD,
     NULL
   };
-  _SetData(pData,sKitName,psLabels);
+  bool bOK = _SetData(pData,sKitName,psLabels);
+  return bOK;
 }
 bool CGridLabThresholdsLadder::_GetColumn(
   int nCol, CLabLocusThreshold *pLocus)

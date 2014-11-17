@@ -79,11 +79,11 @@ bool CGridLocusColumns::SetupKit(
     sProblem.Append(sKitName);
     sProblem.Append(", is unknown");
   }
-  else if(pLocus->size() < 2)
+  else if(pLocus->size() < 1)
   {
     sProblem = "Marker set, ";
     sProblem.Append(sKitName);
-    sProblem.Append(", does not have two or more loci");
+    sProblem.Append(", does not have any loci");
   }
   if(!sProblem.IsEmpty())
   {

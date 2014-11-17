@@ -57,11 +57,12 @@ public:
   virtual bool TransferDataFromWindow();
   virtual bool TransferDataToWindow();
   virtual void SetReadOnly(bool b = true);
-  void SetData(CLabThresholds *pData,const wxString &sKitName)
+  bool SetData(CLabThresholds *pData,const wxString &sKitName)
   {
     m_pData = pData;
-    m_pGridSample->SetData(pData,sKitName);
-    m_pGridLadder->SetData(pData,sKitName);
+    bool b1 = m_pGridSample->SetData(pData,sKitName);
+    bool b2 = m_pGridLadder->SetData(pData,sKitName);
+    return b1 && b2;
   }
   
 private:
