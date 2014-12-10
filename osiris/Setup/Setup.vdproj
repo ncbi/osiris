@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0086F4B661D640AB833CD131BBC8454E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_04421631342B4E2FA5884827712AF91C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -52,6 +58,12 @@
         "Entry"
         {
         "MsmKey" = "8:_05547F23AD384ACEA824955C30B1ECD2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_06158F2AB2824763A1DBCCDDCB87BDBE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -178,6 +190,12 @@
         "Entry"
         {
         "MsmKey" = "8:_1796034C94954D3FA0A2BEE86A77E056"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1870A5FCDB854375B1C186A22F89E0B9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -969,6 +987,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A5340A53957D4470AAE2F5D192BDD188"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A6AA9B0A13E54C338FA2AEDE87FC8BD8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1180,6 +1204,12 @@
         "Entry"
         {
         "MsmKey" = "8:_BF105CE7AB61485F80B8EB9CC66931D1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C064BA80120641038EB062E2CB3D1A38"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1730,6 +1760,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0086F4B661D640AB833CD131BBC8454E"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NFX1\\NFX1_access.txt"
+            "TargetName" = "8:NFX1_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_B36182C303454EAA99306364E322EBCA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04421631342B4E2FA5884827712AF91C"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\Yfiler_LadderInfo.xml"
@@ -1776,6 +1826,26 @@
             "TargetName" = "8:PowerPlex18D_LadderInfo.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_06158F2AB2824763A1DBCCDDCB87BDBE"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NFX1\\NFX1_MessageBookV4.0.xml"
+            "TargetName" = "8:NFX1_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_B36182C303454EAA99306364E322EBCA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2196,6 +2266,26 @@
             "TargetName" = "8:positive control.fsa"
             "Tag" = "8:"
             "Folder" = "8:_CCF060ACCDC64197A17F31C880B775B8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1870A5FCDB854375B1C186A22F89E0B9"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NFX1\\NFX1_StdSettings.xml"
+            "TargetName" = "8:NFX1_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_B36182C303454EAA99306364E322EBCA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4830,6 +4920,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A5340A53957D4470AAE2F5D192BDD188"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NFX1\\NFX1_LabSettings.xml"
+            "TargetName" = "8:NFX1_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_B36182C303454EAA99306364E322EBCA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A6AA9B0A13E54C338FA2AEDE87FC8BD8"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\SEfilerPlus\\SEfilerPlus_StdSettings.xml"
@@ -5536,6 +5646,26 @@
             "TargetName" = "8:OsirisAnalysis.exe"
             "Tag" = "8:"
             "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C064BA80120641038EB062E2CB3D1A38"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\NIDDKFragileX1_LadderInfo.xml"
+            "TargetName" = "8:NIDDKFragileX1_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7401,6 +7531,17 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_DA4562F231CF41DA94A672F08AA342AE"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_B36182C303454EAA99306364E322EBCA"
+                                    {
+                                    "Name" = "8:NFX1"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_4AF7F912B1CA4A17ACA0B41DB4DC0C08"
                                         "Folders"
                                         {
                                         }
