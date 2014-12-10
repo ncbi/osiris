@@ -60,6 +60,7 @@ double DataSignal :: minHeight = 150.0;
 double DataSignal :: maxHeight = -1.0;
 unsigned long DataSignal :: signalID = 0;
 bool* DataSignal::InitialMatrix = NULL;
+bool DataSignal::ConsiderAllOLAllelesAccepted = false;
 
 double SampledData::PeakFractionForFlatCurveTest = 0.25;
 double SampledData::PeakLevelForFlatCurveTest = 60.0;
@@ -1234,14 +1235,19 @@ void DataSignal :: SetAcceptedTriAllele (int position, bool value) {
 
 void DataSignal :: SetOffGrid (int position, bool value) {
 
+	bool actualValue = value;
+
+	if (ConsiderAllOLAllelesAccepted)
+		actualValue = false;
+
 	if (position < 0)
-		mIsOffGridLeft = value;
+		mIsOffGridLeft = actualValue;
 
 	else if (position > 0)
-		mIsOffGridRight = value;
+		mIsOffGridRight = actualValue;
 
 	else
-		mOffGrid = value;
+		mOffGrid = actualValue;
 }
 
 
@@ -1314,6 +1320,16 @@ CompoundSignalInfo* DataSignal :: RemoveSignalLink () {
 	CompoundSignalInfo* csi = signalLink;
 	signalLink = NULL;
 	return csi;	
+}
+
+
+void DataSignal :: SetOffGrid (bool r) {
+
+	if (ConsiderAllOLAllelesAccepted)
+		mOffGrid = false;
+
+	else
+		mOffGrid = r;
 }
 
 

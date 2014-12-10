@@ -166,6 +166,24 @@
 			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
+			<Name>ABI-LIZ-60-1200</Name>
+			<Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>ABI-LIZ-100-1200</Name>
+			<Characteristics>100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>ABI-LIZ-120-1200</Name>
+			<Characteristics>120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
 			<Name>ABI-GS400HD</Name>
 			<Characteristics>50 60 90 100 120 150 160 180 190 200 220 240 260 280 290 300 320 340 360 380 400</Characteristics>
 			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
@@ -214,8 +232,7 @@
 			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
 			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		
+		</LaneStandard>	
 		<LaneStandard>
 			<Name>BV-70-500</Name>
 			<Characteristics>70 80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
@@ -444,6 +461,10 @@
 		<Set>
 			<KitName>Minifiler</KitName>
 			<FileName>Minifiler_LadderInfo.xml</FileName>
+		</Set>
+		<Set>
+			<KitName>NIDDKFragileX1</KitName>
+			<FileName>NIDDKFragileX1_LadderInfo.xml</FileName>
 		</Set>
 	</Kits>
 </KitData>

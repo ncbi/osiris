@@ -670,8 +670,8 @@
 				<Channel>2</Channel>
 				<MinBP>131</MinBP>
 				<MaxBP>219</MaxBP>
-				<MinGridLSBasePair>130.0</MinGridLSBasePair>
-				<MaxGridLSBasePair>220.0</MaxGridLSBasePair>
+				<MinGridLSBasePair>129.0</MinGridLSBasePair>
+				<MaxGridLSBasePair>218.0</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>
 						<Name>7</Name>
@@ -730,13 +730,13 @@
 					<Allele>
 						<Name>14</Name>
 						<CurveNo>44</CurveNo>
-						<BP>160</BP>
+						<BP>159</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>15</Name>
 						<CurveNo>46</CurveNo>
-						<BP>164</BP>
+						<BP>163</BP>
 						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
@@ -748,67 +748,67 @@
 					<Allele>
 						<Name>17</Name>
 						<CurveNo>48</CurveNo>
-						<BP>172</BP>
+						<BP>171</BP>
 						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>18</Name>
 						<CurveNo>49</CurveNo>
-						<BP>176</BP>
+						<BP>175</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>19</Name>
 						<CurveNo>50</CurveNo>
-						<BP>180</BP>
+						<BP>179</BP>
 						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>20</Name>
 						<CurveNo>51</CurveNo>
-						<BP>184</BP>
+						<BP>183</BP>
 						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>21</Name>
 						<CurveNo>52</CurveNo>
-						<BP>188</BP>
+						<BP>187</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>22</Name>
 						<CurveNo>53</CurveNo>
-						<BP>192</BP>
+						<BP>191</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>23</Name>
 						<CurveNo>54</CurveNo>
-						<BP>196</BP>
+						<BP>195</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>24</Name>
 						<CurveNo>55</CurveNo>
-						<BP>200</BP>
+						<BP>199</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>25</Name>
 						<CurveNo>56</CurveNo>
-						<BP>204</BP>
+						<BP>203</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>26</Name>
 						<CurveNo>57</CurveNo>
-						<BP>208</BP>
+						<BP>207</BP>
 						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>27</Name>
 						<CurveNo>58</CurveNo>
-						<BP>212</BP>
+						<BP>211</BP>
 						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 				</LadderAlleles>

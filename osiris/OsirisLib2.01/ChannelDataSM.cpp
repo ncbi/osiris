@@ -1354,87 +1354,197 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 	NormalizedSuperGaussian BlobSignature3 (0.0, ParametricCurve::GetSigmaForSignature (), 6);
 	NormalizedGaussian GaussianSignature (0.0, ParametricCurve::GetSigmaForSignature ());
 	NormalizedSuperGaussian JustSuperGaussianSignature (0.0, ParametricCurve::GetSigmaForSignature (), 3);
-	DataSignal* TestSignal3;
-	double fit3;
+	DataSignal* TestSignal;
+//	double fit3;
 	bool rtn;
 	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
 	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
+
+	DataSignal* blobSignal;
+	DataSignal* gaussianSignal;
+	DataSignal* justSuperSignal;
+
+	double blobFit;
+	double gaussianFit;
+	double justSuperFit;
+
+	DataSignal* signalArray [3];
+	double fitArray [3];
+	char* idArray [3];
+	int index = 0;
 
 	smBlob blob;
 
 	// Later...add test for spikes
 
-	TestSignal3 = mData->FindNextCharacteristicRetry (BlobSignature3, fit3, CompleteCurveList);
+	blobSignal = mData->FindNextCharacteristicRetry (BlobSignature3, blobFit, CompleteCurveList);
+	gaussianSignal = mData->FindNextCharacteristicRetry (GaussianSignature, gaussianFit, CompleteCurveList);
+	justSuperSignal = mData->FindNextCharacteristicRetry (JustSuperGaussianSignature, justSuperFit, CompleteCurveList);
 
-	if ((TestSignal3 != NULL) && (fit3 > fit) && (TestSignal3->GetStandardDeviation () >= 6.0) && (fit3 >= absoluteMinFit) && (!TestSignal3->MayBeUnacceptable ())) {
+	if ((blobSignal != NULL) && (blobFit > fit) && (blobSignal->GetStandardDeviation () >= 6.0) && (blobFit >= absoluteMinFit) && (!blobSignal->MayBeUnacceptable ())) {
+	
+		signalArray [0] = blobSignal;
+		fitArray [0] = blobFit;
+		idArray [0] = "Dye blob";
+		blobSignal->SetMessageValue (blob, true);
+	//	cout << "Possible dye blob found at " << blobSignal->GetMean () << " with fit = " << blobFit << " compared with original fit = " << fit << endl;
+		index++;
+	}
 
-		// it's a dye blob!  NOTE!!!  WE MAY HAVE TO CHANGE THIS WHEN WE USE RAW DATA!!!
+	else
+		delete blobSignal;
 
-	//	ArtifactList.Prepend (TestSignal3);	// Need this????????????????????????????????????????????????????
-		TestSignal3->SetMessageValue (blob, true);
-		TestSignal3->AddNoticeToList (1, "", "Suspected dye blob");
-		CompleteCurveList.Prepend (TestSignal3);
+	if ((gaussianSignal != NULL) && (gaussianFit > fit) && (gaussianFit >= absoluteMinFit) && (!gaussianSignal->MayBeUnacceptable ())) {
+
+		signalArray [index] = gaussianSignal;
+		fitArray [index] = gaussianFit;
+		idArray [index] = "Simple Gaussian";
+		index++;
+	}
+
+	else
+		delete gaussianSignal;
+
+	if ((justSuperSignal != NULL) && (justSuperFit > fit) && (justSuperFit >= absoluteMinFit) && (!justSuperSignal->MayBeUnacceptable ())) {
+
+		signalArray [index] = justSuperSignal;
+		fitArray [index] = justSuperFit;
+		idArray [index] = "Degree 3 Super Gaussian";
+		index++;
+	}
+
+	else
+		delete justSuperSignal;
+
+	double maxFit = 0.0;
+	int i;
+	int maxIndex = -1;
+
+	for (i=0; i<index; i++) {
+
+		if (fitArray [i] > maxFit) {
+
+			maxFit = fitArray [i];
+			maxIndex = i;
+		}
+	}
+
+	if (maxIndex >= 0) {
+
 		delete currentSignal;
-		TestFitCriteriaSM (TestSignal3);
+		TestSignal = signalArray [maxIndex];
 		rtn = true;
+
+		CompleteCurveList.InsertWithNoReferenceDuplication (TestSignal);
+		PreliminaryCurveList.InsertWithNoReferenceDuplication (TestSignal);
+		TestFitCriteriaSM (TestSignal);
+		cout << idArray [maxIndex] << " found at " << TestSignal->GetMean () << " with fit = " << fitArray [maxIndex] << " compared with original fit = " << fit << endl;
+
+		for (i=0; i<index; i++) {
+
+			if (i != maxIndex)
+				delete signalArray [i];
+		}
 	}
 
 	else {
 
-		delete TestSignal3;
-		TestSignal3 = mData->FindNextCharacteristicRetry (GaussianSignature, fit3, CompleteCurveList);
+		if (fit >= absoluteMinFit) {
 
-		if ((TestSignal3 != NULL) && (fit3 > fit) && (fit3 >= absoluteMinFit) && (!TestSignal3->MayBeUnacceptable ())) {
-
-			// It's Gaussian and not an artifact
-			CompleteCurveList.InsertWithNoReferenceDuplication (TestSignal3);
-			PreliminaryCurveList.InsertWithNoReferenceDuplication (TestSignal3);
-			delete currentSignal;
-			TestFitCriteriaSM (TestSignal3);
-			rtn = true;
+			CompleteCurveList.InsertWithNoReferenceDuplication (currentSignal);
+			PreliminaryCurveList.InsertWithNoReferenceDuplication (currentSignal);  // This is a test!  We keep poor fits in case they are needed later, at which point we point them out.
+			rtn = false;
 		}
 
 		else {
 
-			delete TestSignal3;
-			TestSignal3 = mData->FindNextCharacteristicRetry (JustSuperGaussianSignature, fit3, CompleteCurveList);
-
-			if ((TestSignal3 != NULL) && (fit3 > fit) && (fit3 >= absoluteMinFit) && (!TestSignal3->MayBeUnacceptable ())) {
-
-				// It's barely super Gaussian and not an artifact
-				CompleteCurveList.InsertWithNoReferenceDuplication (TestSignal3);
-				PreliminaryCurveList.InsertWithNoReferenceDuplication (TestSignal3);
-				TestFitCriteriaSM (TestSignal3);
-				delete currentSignal;
-				rtn = true;
-			}
-
-			else {
-
-				delete TestSignal3;
-
-				if (fit >= absoluteMinFit) {
-
-					CompleteCurveList.InsertWithNoReferenceDuplication (currentSignal);
-					PreliminaryCurveList.InsertWithNoReferenceDuplication (currentSignal);  // This is a test!  We keep poor fits in case they are needed later, at which point we point them out.
-		//			ArtifactList.InsertWithNoReferenceDuplication (currentSignal);	// Need this????????????????????????????????????????????????????
-					rtn = false;
-				}
-
-				else {
-
-					int location;
-					double height = mData->GetModeHeightAndLocationFromDataInterval (location);
-					PoorFitPeakData* pfpd = new PoorFitPeakData (height, location);
-					mPoorFits.prepend (pfpd);
-					delete currentSignal;
-					rtn = true;
-				}				
-			}
-		}
+			int location;
+			double height = mData->GetModeHeightAndLocationFromDataInterval (location);
+			PoorFitPeakData* pfpd = new PoorFitPeakData (height, location);
+			mPoorFits.prepend (pfpd);
+			delete currentSignal;
+			rtn = true;
+		}				
 	}
 
 	return rtn;
+
+
+
+	//
+	//
+	//TestSignal3 = mData->FindNextCharacteristicRetry (BlobSignature3, fit3, CompleteCurveList);
+
+	//if ((TestSignal3 != NULL) && (fit3 > fit) && (TestSignal3->GetStandardDeviation () >= 6.0) && (fit3 >= absoluteMinFit) && (!TestSignal3->MayBeUnacceptable ())) {
+
+	//	// it's a dye blob!  NOTE!!!  WE MAY HAVE TO CHANGE THIS WHEN WE USE RAW DATA!!!
+
+	////	ArtifactList.Prepend (TestSignal3);	// Need this????????????????????????????????????????????????????
+	//	TestSignal3->SetMessageValue (blob, true);
+	//	TestSignal3->AddNoticeToList (1, "", "Suspected dye blob");
+	//	CompleteCurveList.Prepend (TestSignal3);
+	//	cout << "Dye blob found at " << TestSignal3->GetMean () << " with fit = " << fit3 << " compared with original fit = " << fit << endl;
+	//	delete currentSignal;
+	//	TestFitCriteriaSM (TestSignal3);
+	//	rtn = true;
+	//}
+
+	//else {
+
+	//	delete TestSignal3;
+	//	TestSignal3 = mData->FindNextCharacteristicRetry (GaussianSignature, fit3, CompleteCurveList);
+
+	//	if ((TestSignal3 != NULL) && (fit3 > fit) && (fit3 >= absoluteMinFit) && (!TestSignal3->MayBeUnacceptable ())) {
+
+	//		// It's Gaussian and not an artifact
+	//		CompleteCurveList.InsertWithNoReferenceDuplication (TestSignal3);
+	//		PreliminaryCurveList.InsertWithNoReferenceDuplication (TestSignal3);
+	//		delete currentSignal;
+	//		TestFitCriteriaSM (TestSignal3);
+	//		rtn = true;
+	//	}
+
+	//	else {
+
+	//		delete TestSignal3;
+	//		TestSignal3 = mData->FindNextCharacteristicRetry (JustSuperGaussianSignature, fit3, CompleteCurveList);
+
+	//		if ((TestSignal3 != NULL) && (fit3 > fit) && (fit3 >= absoluteMinFit) && (!TestSignal3->MayBeUnacceptable ())) {
+
+	//			// It's barely super Gaussian and not an artifact
+	//			CompleteCurveList.InsertWithNoReferenceDuplication (TestSignal3);
+	//			PreliminaryCurveList.InsertWithNoReferenceDuplication (TestSignal3);
+	//			TestFitCriteriaSM (TestSignal3);
+	//			delete currentSignal;
+	//			rtn = true;
+	//		}
+
+	//		else {
+
+	//			delete TestSignal3;
+
+	//			if (fit >= absoluteMinFit) {
+
+	//				CompleteCurveList.InsertWithNoReferenceDuplication (currentSignal);
+	//				PreliminaryCurveList.InsertWithNoReferenceDuplication (currentSignal);  // This is a test!  We keep poor fits in case they are needed later, at which point we point them out.
+	//	//			ArtifactList.InsertWithNoReferenceDuplication (currentSignal);	// Need this????????????????????????????????????????????????????
+	//				rtn = false;
+	//			}
+
+	//			else {
+
+	//				int location;
+	//				double height = mData->GetModeHeightAndLocationFromDataInterval (location);
+	//				PoorFitPeakData* pfpd = new PoorFitPeakData (height, location);
+	//				mPoorFits.prepend (pfpd);
+	//				delete currentSignal;
+	//				rtn = true;
+	//			}				
+	//		}
+	//	}
+	//}
+
+	//return rtn;
 }
 
 

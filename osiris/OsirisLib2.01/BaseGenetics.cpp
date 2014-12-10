@@ -524,9 +524,11 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 	RGBracketStringSearch DirectorySearchStringSearch ("<DirectorySearchString>", "</DirectorySearchString>", Input);
 
 	RGString channelMapString;
+	RGString allOLAccepted;
 	RGBracketStringSearch FsaChannelMapSearch ("<FsaChannelMap>", "</FsaChannelMap>", Input);
 	RGBracketStringSearch KitChannelSearch ("<KitChannelNumber>", "</KitChannelNumber>", channelMapString);
 	RGBracketStringSearch FsaChannelSearch ("<fsaChannelNumber>", "</fsaChannelNumber>", channelMapString);
+	RGBracketStringSearch allOLAllelesAcceptedSearch ("<AllOLAllelesAccepted>", "</AllOLAllelesAccepted>", Input);
 	size_t startMapSearch = 0;
 	size_t endMapSearch;
 
@@ -623,6 +625,14 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 			fsaIndex = ChannelString.ConvertToInteger ();
 			mChannelMap [index] = fsaIndex;
 		}
+	}
+
+	DataSignal::SetAllOLAllelesAccepted (false);
+
+	if (allOLAllelesAcceptedSearch.FindNextBracketedString (0, FoundEnd, allOLAccepted)) {
+
+		if (allOLAccepted == "true")
+			DataSignal::SetAllOLAllelesAccepted (true);
 	}
 
 /*	if (!Valid) {

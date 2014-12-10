@@ -13,6 +13,8 @@
 				<LSName>ABI-GS75-500ROX</LSName>
 				<LSName>ABI-GS75-450ROX</LSName>
 				<LSName>ABI-GS75-400ROX</LSName>
+				<LSName>ABI-LIZ-600-60-TO-460</LSName>
+				<LSName>ABI-LIZ-600-60-TO-400</LSName>
 				<ChannelNo>5</ChannelNo>
 			</LS>
 			<FileNameSuffix>MIN</FileNameSuffix>
@@ -267,7 +269,7 @@
 				<Channel>2</Channel>
 				<MinBP>184</MinBP>
 				<MaxBP>246</MaxBP>
-				<MinGridLSBasePair>185.0</MinGridLSBasePair>
+				<MinGridLSBasePair>180.0</MinGridLSBasePair>
 				<MaxGridLSBasePair>249.0</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>

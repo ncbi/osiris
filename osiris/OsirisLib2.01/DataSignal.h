@@ -347,7 +347,7 @@ public:
 	bool IsPartOfCompoundSignal () const { return signalLink != NULL; }
 	CompoundSignalInfo* RemoveSignalLink ();
 
-	void SetOffGrid (bool r) { mOffGrid = r; }
+	void SetOffGrid (bool r);
 	bool IsOffGrid () const { return mOffGrid; }
 
 	void SetPeakIsNegative () { mIsNegativePeak = true; mIsGraphable = false; }
@@ -515,6 +515,9 @@ public:
 	static double GetMinimumHeight () { return minHeight; }
 	static void SetMaximumHeight (double height) { maxHeight = height; }
 	static double GetMaximumHeight () { return maxHeight; }
+
+	static void SetAllOLAllelesAccepted (bool b) { ConsiderAllOLAllelesAccepted = b; }
+	static bool GetAllOLAllelesAccepted () { return ConsiderAllOLAllelesAccepted; } 
 
 	virtual RGString GetSignalType () const;
 
@@ -835,6 +838,7 @@ protected:
 	static double maxHeight;
 	static unsigned long signalID;
 	static bool* InitialMatrix;
+	static bool ConsiderAllOLAllelesAccepted;
 
 	// Smart Message functions*******************************************************************************
 	//*******************************************************************************************************

@@ -991,4 +991,21 @@
       <ladder>RGB(191,144,98)</ladder>
     </channel>
   </kit>
+  <kit>
+    <name>NIDDKFragileX1</name>
+    <channel>
+      <nr>1</nr>
+      <dye>6-FAM</dye>
+      <analyzed>RGB(0,0,144)</analyzed>
+      <raw>RGB(113,113,153)</raw>
+      <ladder>RGB(144,144,191)</ladder>
+    </channel>
+    <channel>
+      <nr>2</nr>
+      <dye>LIZ</dye>
+      <analyzed>RGB(180,90,0)</analyzed>
+      <raw>RGB(144,96,48)</raw>
+      <ladder>RGB(191,144,98)</ladder>
+    </channel>
+  </kit>
 </x>
