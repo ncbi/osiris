@@ -249,7 +249,9 @@ public:
   {
     m_pLastActive = p;
 #ifdef __WINDOW_LIST__
+#ifdef __WXDEBUG__
     mainApp::LogMessage(wxS("MoveToTop"));
+#endif
     CheckUpdateWindowMenu();
     m_MDImgr.MoveToTop(m_pLastActive);
 #endif
