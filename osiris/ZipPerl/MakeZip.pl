@@ -94,7 +94,8 @@ sub COPYFILES
     IDplus
     IDplusNO250
     ID_HID
-	MINIFILER
+    MINIFILER
+    NFX1
     NGM
     NGMSElect
     PP12
@@ -112,8 +113,8 @@ sub COPYFILES
     PPESX17_HID
     PPFusion
     PPFusion_HID
-	PPFusion6C
-	PPFusion6C_HID
+    PPFusion6C
+    PPFusion6C_HID
     PPY
     PPY23
     PPY23_HID

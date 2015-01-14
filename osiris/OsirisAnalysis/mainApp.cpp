@@ -168,7 +168,7 @@ bool mainApp::OnInit()
   wxString sPID = wxString::Format(wxS("PID: %d"),(int)getpid());
 //  wxLog::OnLog(wxLOG_Message,(const wxChar *)sPID,t);
   LogMessage(sPID);
-#if 1 || defined(__WXDEBUG__)
+#if defined(__WXDEBUG__)
   const wxPlatformInfo &plat(wxPlatformInfo::Get());
   wxString sOS = wxString::Format(
     wxT("Platform:\n  OS: %s; %s\n  Version: %d.%d\n  Arch: %s\n  Toolkit: %d.%d\n  Port: %s"),
