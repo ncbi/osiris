@@ -2097,7 +2097,7 @@
 				<MinBP>203</MinBP>
 				<MaxBP>353</MaxBP>
 				<MinGridLSBasePair>272.0</MinGridLSBasePair>
-				<MaxGridLSBasePair>429.6</MaxGridLSBasePair>
+				<MaxGridLSBasePair>425.0</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>
 						<Name>4.2</Name>
@@ -2313,12 +2313,6 @@
 						<Name>39</Name>
 						<CurveNo>50</CurveNo>
 						<BP>341</BP>
-						<RelativeHeight>H</RelativeHeight>
-					</Allele>
-					<Allele>
-						<Name>42</Name>
-						<CurveNo>51</CurveNo>
-						<BP>353</BP>
 						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 				</LadderAlleles>
