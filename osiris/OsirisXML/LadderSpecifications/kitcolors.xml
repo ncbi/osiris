@@ -125,7 +125,7 @@
     </channel>
     <channel>
       <nr>4</nr>
-      <dye>TAZ</dye>
+      <dye>PET</dye>
       <analyzed>RGB(144,0,0)</analyzed>
       <raw>RGB(144,96,96)</raw>
       <ladder>RGB(191,120,120)</ladder>
