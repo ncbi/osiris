@@ -864,7 +864,51 @@
     </x>
   </xsl:variable>
   <xsl:variable name="MarkerChannelDye" select="exsl:node-set($tmpMarkerChannelDye)"/>
+  
+  <xsl:template name="runName">
+    <xsl:param name="s" select="/OsirisAnalysisReport/Heading/CommandLine/argv[substring(.,1,15) = 'InputDirectory=']"/>
+    <xsl:variable name="nLen" select="string-length($s)"/>
+    <xsl:choose>
+      <xsl:when test="$nLen = 0"/>
+      <xsl:when test="contains(';/\',substring($s,$nLen,1))">
+        <xsl:call-template name="runName">
+          <xsl:with-param name="s" select="substring($s,1,$nLen - 1)"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($s,'=')">
+        <xsl:call-template name="runName">
+          <xsl:with-param name="s" select="substring-after($s,'=')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($s,'/')">
+        <xsl:call-template name="runName">
+          <xsl:with-param name="s" select="substring-after($s,'/')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($s,'\')">
+        <xsl:call-template name="runName">
+          <xsl:with-param name="s" select="substring-after($s,'\')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$s"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
+  <xsl:variable name="RunName">
+    <xsl:call-template name="runName"/>
+  </xsl:variable>
+
+  <xsl:variable name="fileExt">
+    <xsl:variable name="ts" 
+      select="string(/OsirisAnalysisReport/LabSettings/Info/DataFileType)"/>
+    <xsl:text>.</xsl:text>
+    <xsl:value-of select="$ts"/>
+    <xsl:if test="string-length($ts) = 0">
+      <xsl:text>fsa</xsl:text>
+    </xsl:if>
+  </xsl:variable>
 
   <xsl:template name="MarkerDye">
     <xsl:param name="marker"/>
@@ -961,7 +1005,43 @@
   <xsl:template name="writeSample">
     <xsl:param name="sample"/>
     <xsl:variable name="SampleFile" select="$sample/Name"/>
-    <xsl:variable name="RunName" select="$sample/SampleName"/>
+
+    <!-- loop through sample loci -->
+
+    <xsl:for-each select="$MarkerChannelDye/x/marker">
+      <xsl:variable name="dye" select="@dye"/>
+      <xsl:variable name="LocusName" select="string(@name)"/>
+      <xsl:value-of select="concat($SampleFile,$fileExt,$TAB,$RunName,$TAB,$LocusName,$TAB,$dye)"/>
+      <xsl:for-each select="$sample/Locus[string(./LocusName) = $LocusName]/Allele">
+        <xsl:variable name="AlleleName">
+          <xsl:choose>
+            <xsl:when test="OffLadder = 'true'">
+              <xsl:text>OL</xsl:text>
+            </xsl:when>
+            <xsl:when test="$LocusName != 'AMEL'">
+              <xsl:value-of select="Name"/>
+            </xsl:when>
+            <xsl:when test="Name = '1'">
+              <xsl:text>X</xsl:text>
+            </xsl:when>
+            <xsl:when test="Name = '2'">
+              <xsl:text>Y</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="Name"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:value-of select="concat($TAB,$AlleleName,$TAB,meanbps,$TAB,RFU)"/>
+      </xsl:for-each>
+      <xsl:value-of select="$EOL"/>
+    </xsl:for-each>
+  </xsl:template>
+
+
+  <xsl:template name="writeSample00000">
+    <xsl:param name="sample"/>
+    <xsl:variable name="SampleFile" select="$sample/Name"/>
 
     <xsl:for-each select="$sample/Locus">
       <xsl:variable name="Alleles" select="Allele[os:isAlleleEnabled(.)]"/>
