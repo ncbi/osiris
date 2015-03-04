@@ -1438,7 +1438,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 		CompleteCurveList.InsertWithNoReferenceDuplication (TestSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (TestSignal);
 		TestFitCriteriaSM (TestSignal);
-		cout << idArray [maxIndex] << " found at " << TestSignal->GetMean () << " with fit = " << fitArray [maxIndex] << " compared with original fit = " << fit << endl;
+//		cout << idArray [maxIndex] << " found at " << TestSignal->GetMean () << " with fit = " << fitArray [maxIndex] << " compared with original fit = " << fit << endl;
 
 		for (i=0; i<index; i++) {
 
