@@ -1557,7 +1557,7 @@ double SimpleSigmoidSignal :: GetPullupToleranceInBP (double noise) const {
 	bpRight = bpRight - bp;
 	double rtnValue;
 
-	cout << "Sigmoid at " << bp << " bps with left tolerance = " << bpLeft << " and right tolerance = " << bpRight << "\n";
+//	cout << "Sigmoid at " << bp << " bps with left tolerance = " << bpLeft << " and right tolerance = " << bpRight << "\n";
 
 	if (bpLeft > bpRight)
 		rtnValue = bpLeft;
