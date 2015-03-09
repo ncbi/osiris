@@ -146,6 +146,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.4.pdf ${dest}");
 }
 
 sub CopyWin
