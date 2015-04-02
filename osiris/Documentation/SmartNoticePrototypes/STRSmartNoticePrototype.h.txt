@@ -1,0 +1,28 @@
+
+
+
+class %ClassName% : public SmartNotice {
+
+PERSISTENT_DECLARATION (%ClassName%)
+
+public:
+	%ClassName% ();
+	%ClassName% (const %ClassName%& note);
+	virtual ~%ClassName% ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+

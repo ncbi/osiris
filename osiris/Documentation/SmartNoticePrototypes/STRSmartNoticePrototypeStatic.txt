@@ -1,0 +1,6 @@
+RGString %ClassName%::sName = "%ClassName%";
+int %ClassName%::sSubject = %ClassName%::LoadType ();
+int %ClassName%::sMessageIndex = 0;
+int %ClassName%::sMessageScope = 0;
+
+

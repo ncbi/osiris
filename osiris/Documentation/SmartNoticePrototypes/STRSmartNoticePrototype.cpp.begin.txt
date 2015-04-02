@@ -1,0 +1,8 @@
+//
+// These are all subclasses of class SmartNotice, used for STR Osiris.  Each one corresponds
+// to a particular issue or situation
+//
+
+#include "STRSmartNotices.h"
+
+
