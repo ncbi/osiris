@@ -52,7 +52,6 @@ class RGTextOutput;
 //       TracePrequalification::noiseThreshold gives threshold on post-convolution peaks to consider them noise; default = 400.0;
 //
 
-
 const int _STRTRACEPREQUALIFICATION_ = 1006;
 
 PERSISTENT_PREDECLARATION (STRTracePrequalification)
@@ -68,7 +67,7 @@ public:
 	TracePrequalification () : RGPersistent () {}
 	virtual ~TracePrequalification () = 0;
 
-	virtual void ResetSearch (const DataSignal* data, int size) = 0;
+	virtual void ResetSearch (const DataSignal* data, int size, double channelNoise) = 0;
 	virtual DataInterval* GetNextDataInterval (NoiseInterval*& noiseInterval, RGTextOutput& text, double minRFU, DataInterval* prevInterval, Boolean print = TRUE) = 0;
 	virtual DataInterval* GetNextDataIntervalWithPrecomputedConvolution (NoiseInterval*& noiseInterval, RGTextOutput& text, double minRFU, DataInterval* prevInterval, Boolean print = TRUE) = 0;
 	virtual double GetNorm () const = 0;
@@ -114,7 +113,7 @@ public:
 	STRTracePrequalification ();
 	virtual ~STRTracePrequalification ();
 
-	virtual void ResetSearch (const DataSignal* data, int size);
+	virtual void ResetSearch (const DataSignal* data, int size, double channelNoise);
 	virtual DataInterval* GetNextDataInterval (NoiseInterval*& noiseInterval, RGTextOutput& text, double minRFU, DataInterval* prevInterval, Boolean print = TRUE);
 	virtual DataInterval* GetNextDataIntervalWithPrecomputedConvolution (NoiseInterval*& noiseInterval, RGTextOutput& text, double minRFU, DataInterval* prevInterval, Boolean print = TRUE);
 	virtual double GetNorm () const;
@@ -146,6 +145,7 @@ protected:
 	double LastMinimum;
 	double* mConvolution;
 	double* mSlopeFits;
+	double mChannelNoise;
 };
 
 #endif  /*  _TRACEPREQUALIFICATION_H_  */

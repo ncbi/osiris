@@ -36,6 +36,8 @@
 #include "DataSignal.h"
 #include "rgtokenizer.h"
 
+RGString GenotypesForAMarkerSet::PathToStandardControlFile;
+
 
 PERSISTENT_DEFINITION (IndividualAllele, _INDIVIDUALALLELE_, "IndividualAllele")
 PERSISTENT_DEFINITION (IndividualLocus, _INDIVIDUALLOCUS_, "IndividualLocus")
@@ -657,7 +659,7 @@ bool GenotypesForAMarkerSet :: AddGenotype (IndividualGenotype* ig) {
 
 bool GenotypesForAMarkerSet :: AddCollection (const RGString& xmlString, const RGString& offLadderTag, const RGString& triallelesTag, const RGString& posTriTag) {
 
-	return AddCollectionToTables (xmlString, offLadderTag, triallelesTag, posTriTag);
+	return AddCollectionToTablesFromLabSettings (xmlString, offLadderTag, triallelesTag, posTriTag);
 }
 
 
@@ -871,6 +873,158 @@ bool GenotypesForAMarkerSet :: AddCollectionToTables (const RGString& xmlString,
 	RGString XMLString (xmlString);
 	RGString positiveControlString;
 	RGString pControlsString;
+	RGString fullPathControlFileName = GenotypesForAMarkerSet::PathToStandardControlFile + "/LadderSpecifications/StandardPositiveControls.xml";
+
+	RGFile* allPositiveControls = new RGFile (fullPathControlFileName, "rt");
+
+	if (!allPositiveControls->isValid ()) {
+
+		cout << "Could not find positive controls file:  " << (char*)fullPathControlFileName.GetData () << endl;
+		return false;
+	}
+
+	RGString posXMLString;
+	posXMLString.ReadTextFile (*allPositiveControls);
+	delete allPositiveControls;
+
+	RGXMLTagSearch nameSearch ("MarkerSetName", XMLString);
+	RGXMLTagSearch positiveControlsSearch ("PositiveControls", posXMLString);
+	RGXMLTagSearch oldPositiveControlsSearch ("PositiveControls", XMLString);
+	RGXMLTagSearch posCtrlSearch ("PositiveControl", pControlsString);
+	RGXMLTagSearch offLadderSearch (offLadderTag, XMLString);
+	RGXMLTagSearch trialleleSearch (triallelesTag, XMLString);
+	RGXMLTagSearch posTriSearch (posTriTag, XMLString);
+
+	size_t startOffset = 0;
+	size_t endOffset = 0;
+	RGString collectionString;
+	
+	RGString offLadderString;
+	RGString triString;
+	RGString posTriString;
+	size_t startPControls = 0;
+	size_t endPControls = 0;
+	bool returnValue = true;
+	RGString markerSetName;
+	IndividualGenotype* nextGenotype;
+
+	if (!nameSearch.FindNextTag (startOffset, endOffset, markerSetName))
+		return false;
+
+	if (mMarkerSetName.Length () == 0)
+		mMarkerSetName = markerSetName;
+
+	else if (mMarkerSetName != markerSetName)
+		return false;
+
+	startOffset = endOffset;
+	size_t startOffsetPos = 0;
+	size_t endOffsetPos = 0;
+	RGString temp;
+
+	if (oldPositiveControlsSearch.FindNextTag (startOffset, endOffset, temp))
+		startOffset = endOffset;
+
+	if (positiveControlsSearch.FindNextTag (startOffsetPos, endOffsetPos, pControlsString)) {
+
+		posCtrlSearch.ResetSearch ();
+//		cout << "Found positive controls in file" << endl;
+
+		while (posCtrlSearch.FindNextTag (startPControls, endPControls, positiveControlString)) {
+
+//			cout << "Found positive control..." << endl;
+			startPControls = endPControls;
+			nextGenotype = new IndividualGenotype (positiveControlString);
+
+			if (!nextGenotype->isValid ()) {
+
+				returnValue = false;
+				delete nextGenotype;
+			}
+
+			else {
+
+				if (!mGenotypes.Contains (nextGenotype)) {
+					mGenotypes.Insert (nextGenotype);
+//					cout << "Inserted genotype in list..." << endl;
+				}
+
+				else {
+
+					returnValue = false;
+					delete nextGenotype;
+				}
+			}
+		}
+	}
+
+	startOffset = endOffset;
+
+	if (offLadderSearch.FindNextTag (startOffset, endOffset, offLadderString)) {
+
+		if (mOffLadderAlleles == NULL) {
+
+			mOffLadderAlleles = new LocusCollection (offLadderString);
+
+			if (!mOffLadderAlleles->isValid ())
+				returnValue = false;
+		}
+
+		else {
+
+			if (!mOffLadderAlleles->AddLoci (offLadderString))
+				returnValue = false;
+		}
+	}
+
+	startOffset = endOffset;
+
+	if (trialleleSearch.FindNextTag (startOffset, endOffset, triString)) {
+
+		if (mSampleTriAlleles == NULL) {
+
+			mSampleTriAlleles = new LocusCollection (triString);
+
+			if (!mSampleTriAlleles->isValid ())
+				returnValue = false;
+		}
+
+		else {
+
+			if (!mSampleTriAlleles->AddLoci (triString))
+				returnValue = false;
+		}
+	}
+
+	startOffset = endOffset;
+
+	if (posTriSearch.FindNextTag (startOffset, endOffset, posTriString)) {
+
+		if (mControlTriAlleles == NULL) {
+
+			mControlTriAlleles = new LocusCollection (posTriString);
+
+			if (!mControlTriAlleles->isValid ())
+				returnValue = false;
+		}
+
+		else {
+
+			if (!mControlTriAlleles->AddLoci (posTriString))
+				returnValue = false;
+		}
+	}
+
+	return returnValue;
+}
+
+
+
+bool GenotypesForAMarkerSet :: AddCollectionToTablesFromLabSettings (const RGString& xmlString, const RGString& offLadderTag, const RGString& triallelesTag, const RGString& posTriTag) {
+
+	RGString XMLString (xmlString);
+	RGString positiveControlString;
+	RGString pControlsString;
 
 	RGXMLTagSearch nameSearch ("MarkerSetName", XMLString);
 	RGXMLTagSearch positiveControlsSearch ("PositiveControls", XMLString);
@@ -906,9 +1060,12 @@ bool GenotypesForAMarkerSet :: AddCollectionToTables (const RGString& xmlString,
 	if (positiveControlsSearch.FindNextTag (startOffset, endOffset, pControlsString)) {
 
 		posCtrlSearch.ResetSearch ();
+		startOffset = endOffset;
+		cout << "Found positive controls in lab settings file" << endl;
 
 		while (posCtrlSearch.FindNextTag (startPControls, endPControls, positiveControlString)) {
 
+			cout << "Found positive control..." << endl;
 			startPControls = endPControls;
 			nextGenotype = new IndividualGenotype (positiveControlString);
 
@@ -920,8 +1077,10 @@ bool GenotypesForAMarkerSet :: AddCollectionToTables (const RGString& xmlString,
 
 			else {
 
-				if (!mGenotypes.Contains (nextGenotype))
+				if (!mGenotypes.Contains (nextGenotype)) {
 					mGenotypes.Insert (nextGenotype);
+					cout << "Inserted genotype in list..." << endl;
+				}
 
 				else {
 

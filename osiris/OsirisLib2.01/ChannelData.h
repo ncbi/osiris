@@ -405,8 +405,8 @@ public:
 
 	virtual void InitializeMessageData ();
 
-	virtual int AnalyzeDynamicBaselineSM (int startTime);
-	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime);
+	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
+	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime);
 
 	virtual void GetCharacteristicArray (const double*& array) const { if (mLaneStandard != NULL) mLaneStandard->GetCharacteristicArray (array); }
 

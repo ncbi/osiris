@@ -215,6 +215,12 @@ PERSISTENT_PREDECLARATION (smUseMaxSecondDerivativesForSampleToLadderFit)
 PERSISTENT_PREDECLARATION (smPartOfDualSignal)
 PERSISTENT_PREDECLARATION (smNegativePeak)
 PERSISTENT_PREDECLARATION (smCallOnLadderAdenylationPreset)
+PERSISTENT_PREDECLARATION (smSignalIsIntegralMultipleOfRepeatLeft)
+PERSISTENT_PREDECLARATION (smSignalIsIntegralMultipleOfRepeatRight)
+PERSISTENT_PREDECLARATION (smILSFilterLeftShoulderPeaksPreset)
+PERSISTENT_PREDECLARATION (smILSShoulderPeakProximityThreshold)
+PERSISTENT_PREDECLARATION (smILSShoulderFilterPercentThreshold)
+PERSISTENT_PREDECLARATION (smILSShoulderPeak)
 
 
 
@@ -5910,6 +5916,174 @@ public:
 	smCallOnLadderAdenylationPreset ();
 	smCallOnLadderAdenylationPreset (const smCallOnLadderAdenylationPreset& note);
 	virtual ~smCallOnLadderAdenylationPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSignalIsIntegralMultipleOfRepeatLeft : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSignalIsIntegralMultipleOfRepeatLeft)
+
+public:
+	smSignalIsIntegralMultipleOfRepeatLeft ();
+	smSignalIsIntegralMultipleOfRepeatLeft (const smSignalIsIntegralMultipleOfRepeatLeft& note);
+	virtual ~smSignalIsIntegralMultipleOfRepeatLeft ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSignalIsIntegralMultipleOfRepeatRight : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSignalIsIntegralMultipleOfRepeatRight)
+
+public:
+	smSignalIsIntegralMultipleOfRepeatRight ();
+	smSignalIsIntegralMultipleOfRepeatRight (const smSignalIsIntegralMultipleOfRepeatRight& note);
+	virtual ~smSignalIsIntegralMultipleOfRepeatRight ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smILSFilterLeftShoulderPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smILSFilterLeftShoulderPeaksPreset)
+
+public:
+	smILSFilterLeftShoulderPeaksPreset ();
+	smILSFilterLeftShoulderPeaksPreset (const smILSFilterLeftShoulderPeaksPreset& note);
+	virtual ~smILSFilterLeftShoulderPeaksPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smILSShoulderPeakProximityThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smILSShoulderPeakProximityThreshold)
+
+public:
+	smILSShoulderPeakProximityThreshold ();
+	smILSShoulderPeakProximityThreshold (const smILSShoulderPeakProximityThreshold& note);
+	virtual ~smILSShoulderPeakProximityThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smILSShoulderFilterPercentThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smILSShoulderFilterPercentThreshold)
+
+public:
+	smILSShoulderFilterPercentThreshold ();
+	smILSShoulderFilterPercentThreshold (const smILSShoulderFilterPercentThreshold& note);
+	virtual ~smILSShoulderFilterPercentThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smILSShoulderPeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smILSShoulderPeak)
+
+public:
+	smILSShoulderPeak ();
+	smILSShoulderPeak (const smILSShoulderPeak& note);
+	virtual ~smILSShoulderPeak ();
 
 	virtual int GetSubject () const;
 

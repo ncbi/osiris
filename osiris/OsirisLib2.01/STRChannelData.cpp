@@ -550,7 +550,7 @@ int STRChannelData :: WriteArtifactInfoToXML (RGTextOutput& text, const RGString
 
 		mean = nextSignal->GetMean ();
 
-		if (mean < left)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, left))	// modified 03/13/2015
 			continue;
 
 		if (mean > right)

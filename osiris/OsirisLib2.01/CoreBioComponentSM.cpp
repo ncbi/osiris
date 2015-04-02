@@ -74,6 +74,10 @@ int CoreBioComponent :: OrganizeNoticeObjectsSM () {
 
 int CoreBioComponent :: TestSignalsForLaserOffScaleSM () {
 
+	//
+	//	Sample stage 1  (Ladder?)
+	//
+
 	int ans = 0;
 	int temp;
 
@@ -1227,6 +1231,12 @@ int CoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 }
 
 
+int CoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM () {
+
+	return 0;
+}
+
+
 bool CoreBioComponent :: ValidateAndCorrectCrossChannelAnalysesSM () {
 
 	int i;
@@ -1560,11 +1570,22 @@ int CoreBioComponent :: NormalizeBaselineForNonILSChannelsSM () {
 	double dLastChar = mLaneStandard->GetMaximumCharacteristic ();
 	ChannelData::SetAveSecondsPerBP ((dRight - dLeft)/(dLastChar - dFirstChar));
 
+	double reportMin = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
+	double reportMinTime;
+
+	// below if...else clause added 03/13/2015
+
+	if (reportMin > 0.0)
+		reportMinTime = mDataChannels [mLaneStandardChannel]->GetTimeForSpecifiedID (reportMin);
+
+	else
+		reportMinTime = -1.0;
+
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		if (i != mLaneStandardChannel) {
 
-			if (mDataChannels [i]->AnalyzeDynamicBaselineAndNormalizeRawDataSM (left) <= 0) {
+			if (mDataChannels [i]->AnalyzeDynamicBaselineAndNormalizeRawDataSM (left, reportMinTime) <= 0) {
 
 				status = -i;
 			}
@@ -1845,6 +1866,23 @@ void CoreBioComponent :: InitializeMessageData () {
 
 	int size = SmartMessage::GetSizeOfArrayForScope (GetObjectScope ());
 	CoreBioComponent::InitializeMessageMatrix (mMessageArray, size);
+}
+
+
+bool CoreBioComponent :: SignalIsWithinAnalysisRegion (DataSignal* testSignal, double firstILSTime) {
+
+	if (minBioIDForArtifacts > 0) {
+
+		if (testSignal->GetApproximateBioID () >= (double) minBioIDForArtifacts)
+			return true;
+
+		return false;
+	}
+
+	if (testSignal->GetMean () >= firstILSTime)
+		return true;
+
+	return false;
 }
 
 

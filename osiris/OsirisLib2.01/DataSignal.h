@@ -158,7 +158,7 @@ struct CompoundSignalInfo {
 class InterchannelLinkage {
 
 public:
-	InterchannelLinkage ();
+	InterchannelLinkage (int nChannels);
 	virtual ~InterchannelLinkage ();
 
 	virtual bool AddDataSignal (DataSignal* newSignal);
@@ -180,9 +180,30 @@ public:
 	bool IsEmpty ();
 	DataSignal* GetPrimarySignal ();
 
+	bool PrimarySignalHasChannel (int n) const;
+	bool PrimaryHasLaserOffScaleSM () const;
+	bool SecondaryHasLaserOffScaleSM ();
+	bool AnySignalHasLaserOffScaleSM ();
+	bool SecondaryIsSigmoidalSignalSM (int secondaryChannel);
+	bool PossibleSecondaryPullupWithNoOffScaleSM (int primaryChannel, int secondaryChannel, double& secondaryRatio, bool& isSigmoidal);
+	bool PossibleSecondaryPullupSM (int primaryChannel, int secondaryChannel, double& secondaryRatio, bool& isSigmoidal, DataSignal*& secondarySignal);
+	int NumberOfSecondarySignals () const;
+	int NumberOfSecondarySignalsAbovePrimaryThreshold (double threshold);
+	int MapOutSignalProperties (double noiseMultiple, double primaryThreshold, double* channelNoiseLevels);
+
 protected:
 	DataSignal* mPrimarySignal;
 	RGDList mSecondarySignals;
+	int mNChannels;
+
+	int** mDirectedGraph;
+	bool** mIsNegativePullup;
+	double** mRatios;
+
+	bool* mCanBePrimary;
+	bool* mIsAboveNoiseThreshold;
+	bool* mIsNegativePeak;
+	double* mPeakHeights;
 };
 
 
@@ -252,7 +273,7 @@ bool LessDistance (const PeakInfoForClusters* p1, const PeakInfoForClusters* p2)
 class STRInterchannelLinkage : public InterchannelLinkage {
 
 public:
-	STRInterchannelLinkage ();
+	STRInterchannelLinkage (int nChannels);
 	virtual ~STRInterchannelLinkage ();
 
 	virtual bool RecalculatePrimarySignal (Notice* primaryTarget, Notice* primaryReplace);

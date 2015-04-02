@@ -666,7 +666,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannel () {
 			if ((LookCount > 1) || (NCraters > 0)) {
 
 				primeSignal = OnDeck [maxIndex];
-				iChannel = new STRInterchannelLinkage ();
+				iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 				mInterchannelLinkageList.push_back (iChannel);
 				nInterchannelLinks = 1;
 
@@ -1065,12 +1065,23 @@ int STRLadderCoreBioComponent :: GridQualityTest () {
 	double ilsLeft = mLSData->GetFirstAnalyzedMean ();
 	double ilsRight = mLSData->GetLastAnalyzedMean ();
 	int minBP = CoreBioComponent::GetMinBioIDForArtifacts ();
-	double startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+	double startTime;
+	
+	//  Following if...else clause added 03/13/2015
+
+	if (minBP > 0.0)
+		startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+
+	else
+		startTime = -1.0;
+
 	double effectiveLeft = ilsLeft;
 
-	if (startTime > ilsLeft)
+	if (startTime > 0.0)	// modified 03/13/2015
 		effectiveLeft = startTime;
-  int i;
+
+	int i;
+
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		if (i != mLaneStandardChannel)

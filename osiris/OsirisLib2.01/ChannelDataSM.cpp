@@ -422,7 +422,7 @@ int ChannelData :: AddAllSmartMessageReportersForSignals () {
 
 	while (nextSignal = (DataSignal*) signals ()) {
 
-		if (!nextSignal->GetMessageValue (peakOutsideILS))
+		//if (!nextSignal->GetMessageValue (peakOutsideILS))
 			nMsgs += nextSignal->AddAllSmartMessageReporters ();
 	}
 
@@ -544,7 +544,7 @@ int ChannelData :: AddAllSmartMessageReportersForSignals (SmartMessagingComm& co
 
 	while (nextSignal = (DataSignal*) signals ()) {
 
-		if (!nextSignal->GetMessageValue (peakOutsideILS)) {
+		//if (!nextSignal->GetMessageValue (peakOutsideILS)) {
 
 			isAmbiguous = nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1);
 			isInterlocus = (!nextSignal->IsPossibleInterlocusAllele (-1)) && (!nextSignal->IsPossibleInterlocusAllele (1));
@@ -552,7 +552,7 @@ int ChannelData :: AddAllSmartMessageReportersForSignals (SmartMessagingComm& co
 
 			if (isAmbiguous || (isInterlocus && !isInCoreLadderLocus))
 				nMsgs += nextSignal->AddAllSmartMessageReporters (comm, numHigherObjects);
-		}
+		//}
 	}
 
 	return nMsgs;
@@ -808,7 +808,7 @@ int ChannelData :: CountSignalsWithNoticeSM (const SmartNotice& target, ChannelD
 
 		mean = nextSignal->GetMean ();
 
-		if (mean < minMean)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, minMean))	// modified 03/13/2015
 			continue;
 
 		if (mean > maxMean)
@@ -886,9 +886,16 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 	RGDList discardList;
 	smResidualDisplacementTestPreset residualDisplacementTestPreset;
 
-	while (nextLocus = (Locus*) it ())
+	while (nextLocus = (Locus*) it ()) {
+
 		nextLocus->CallAllelesSM (isNegCntl, pGenotypes, ArtifactList, PreliminaryCurveList, CompleteCurveList);
-	// This is what it used to be:  nextLocus->CallAlleles (CompleteCurveList, isNegCntl, pGenotypes, ArtifactList, PreliminaryCurveList);
+		// This is what it used to be:  nextLocus->CallAlleles (CompleteCurveList, isNegCntl, pGenotypes, ArtifactList, PreliminaryCurveList);
+	}
+
+	it.Reset ();
+
+	while (nextLocus = (Locus*) it ())
+		nextLocus->GetLargestPeak ();
 
 	if (GetMessageValue (residualDisplacementTestPreset)) {
 
@@ -1438,7 +1445,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 		CompleteCurveList.InsertWithNoReferenceDuplication (TestSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (TestSignal);
 		TestFitCriteriaSM (TestSignal);
-//		cout << idArray [maxIndex] << " found at " << TestSignal->GetMean () << " with fit = " << fitArray [maxIndex] << " compared with original fit = " << fit << endl;
+	//	cout << idArray [maxIndex] << " found at " << TestSignal->GetMean () << " with fit = " << fitArray [maxIndex] << " xcompared with original fit = " << fit << endl;
 
 		for (i=0; i<index; i++) {
 
@@ -1832,11 +1839,19 @@ int ChannelData :: RemoveSignalsOutsideLaneStandardSM (ChannelData* laneStandard
 	smPeakToRightOfILS peakToRightOfILS;
 	smTestRelativeBaselinePreset testRelativeBaselinePreset;
 	double reportMin = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
-	double reportMinTime = laneStandard->GetTimeForSpecifiedID (reportMin);
+	double reportMinTime;
+	
+	// if..else clause below modified 03/13/2015
+	if (reportMin > 0.0)
+		reportMinTime = laneStandard->GetTimeForSpecifiedID (reportMin);
+
+	else
+		reportMinTime = -1.0;
+
 	TestForRaisedBaselineAndExcessiveNoiseSM (left, reportMinTime);
 
 	while (nextSignal = (DataSignal*) it())
-		nextSignal->TestSignalGroupsWithinILS (left, right, reportMin);
+		nextSignal->TestSignalGroupsWithinILS (left, right, reportMin);	// This doesn't do anything as of 03/13/2015
 
 	it.Reset ();
 
@@ -1844,12 +1859,19 @@ int ChannelData :: RemoveSignalsOutsideLaneStandardSM (ChannelData* laneStandard
 
 		mean = nextSignal->GetMean ();
 
-		if ((nextSignal->GetApproximateBioID () < reportMin) || (mean < left)) {
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, left)) {	// modified 03/13/2015
 
 			it.RemoveCurrentItem ();
 			nextSignal->AddNoticeToList (OutputLevelManager::PeakOutsideLaneStandard, "", "Signal lies outside internal lane standard interval");
 			nextSignal->SetMessageValue (peakOutsideILS, true);
 			continue;
+		}
+
+		else if (mean < left) {	// added 03/13/2015
+
+			nextSignal->AddNoticeToList (OutputLevelManager::PeakOutsideLaneStandard, "", "Signal lies outside internal lane standard interval");
+			nextSignal->SetMessageValue (peakOutsideILS, true);
+			//continue;
 		}
 
 		if (mean > right) {
@@ -1862,7 +1884,7 @@ int ChannelData :: RemoveSignalsOutsideLaneStandardSM (ChannelData* laneStandard
 			SmartPeaks.Append (nextSignal);
 	}
 
-	AnalyzeDynamicBaselineSM ((int) left);
+	AnalyzeDynamicBaselineSM ((int) left, reportMinTime);
 
 	return 0;
 }
@@ -2180,7 +2202,7 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 
 		mean = nextSignal->GetMean ();
 
-		if (mean < left) {
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, ilsLeft)) {
 
 	//		ArtifactList.InsertWithNoReferenceDuplication (nextSignal);	// Need this???????????????????????????????????
 			continue;
@@ -2363,8 +2385,9 @@ int ChannelData :: TestPositiveControlSM (IndividualGenotype* genotype) {
 
 		if (locus == NULL) {
 
-			SetMessageValue (locusNotFound, true);
-			AppendDataForSmartMessage (locusNotFound, locusName);
+			nextLocus->SetMessageValue (locusNotFound, true);
+		//	AppendDataForSmartMessage (locusNotFound, locusName);
+			cout << "Positive Control Locus Not Found:  " << (char*)locusName.GetData () << endl;
 			returnValue = -1;
 		}
 
@@ -2443,13 +2466,13 @@ void ChannelData :: InitializeMessageData () {
 }
 
 
-int ChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
+int ChannelData :: AnalyzeDynamicBaselineSM (int startTime, double reportMinTime) {
 
 	return 0;
 }
 
 
-int ChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime) {
+int ChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime) {
 
 	return 1;
 }

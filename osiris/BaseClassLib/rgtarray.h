@@ -61,7 +61,7 @@ public:
 	T* Find (const T* data) const;
 
 	T* GetElementAt (size_t index);
-	void ReplaceElementAt (size_t index, T* NewItem);  // performs limit checking and expands array if needed
+	T* ReplaceElementAt (size_t index, T* NewItem);  // performs limit checking and expands array if needed
 	T* RemoveElementAt (size_t index);
 
 	size_t Length () const { return CurrentLength; }
@@ -111,20 +111,24 @@ template <class T> RGTarray<T> :: ~RGTarray () {
 
 template <class T> void RGTarray<T> :: ClearAndDestroy () {
 
-	for (size_t i=0; i<ArraySize; i++) {
+	for (size_t i=0; i<CurrentLength; i++) {
 		
 		delete tArray [i];
 		tArray [i] = NULL;
 	}
+
+	CurrentLength = 0;
 }
 
 
 template <class T> void RGTarray<T> :: Clear () {
 
-	for (size_t i=0; i<ArraySize; i++) {
+	for (size_t i=0; i<CurrentLength; i++) {
 		
 		tArray [i] = NULL;
 	}
+
+	CurrentLength = 0;
 }
 
 
@@ -140,7 +144,7 @@ template <class T> void RGTarray<T> :: Resize (size_t NewSize) {
 
 			for (i=NewSize; i<CurrentLength; i++) {
 
-				delete tArray[i];
+			//	delete tArray[i];
 				tArray[i] = NULL;
 			}
 
@@ -165,7 +169,7 @@ template <class T> void RGTarray<T> :: Resize (size_t NewSize) {
 template <class T> void RGTarray<T> :: Append (T* NewItem) {
 
 	BuildNewArray (CurrentLength + 1);
-	delete tArray [CurrentLength];
+//	delete tArray [CurrentLength];
 	tArray [CurrentLength] = NewItem;
 
 	CurrentLength++;
@@ -176,7 +180,7 @@ template <class T> void RGTarray<T> :: ResetArray () {
 
 	for (size_t i=0; i<CurrentLength; i++) {
 
-		delete tArray [i];
+	//	delete tArray [i];
 		tArray [i] = NULL;
 	}
 
@@ -240,7 +244,7 @@ template <class T> T* RGTarray<T> :: GetElementAt (size_t index) {
 }
 
 
-template <class T> void RGTarray<T> :: ReplaceElementAt (size_t i, T* NewItem) {
+template <class T> T* RGTarray<T> :: ReplaceElementAt (size_t i, T* NewItem) {
 	
 	// performs limit checking and expands array if needed
 
@@ -252,8 +256,9 @@ template <class T> void RGTarray<T> :: ReplaceElementAt (size_t i, T* NewItem) {
 		CurrentLength = i + 1;
 	}
 
-	delete tArray [i];
+	T* temp = tArray [i];
 	tArray [i] = NewItem;
+	return temp;
 }
 
 

@@ -45,6 +45,7 @@
 #include "SmartNotice.h"
 #include "STRSmartNotices.h"
 #include "DirectoryManager.h"
+#include "rgtarray.h"
 
 
 // Smart Message related*********************************************************************************************************************************
@@ -624,7 +625,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 			if ((LookCount > 1) || (NCraters > 0)) {
 
 				primeSignal = OnDeck [maxIndex];
-				iChannel = new STRInterchannelLinkage ();
+				iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 				mInterchannelLinkageList.push_back (iChannel);
 				nInterchannelLinks = 1;
 
@@ -853,7 +854,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 				if (testSignal2 == NULL)
 					break;
 
-				if (testSignal2->GetMean () < first) {
+				if (!CoreBioComponent::SignalIsWithinAnalysisRegion (testSignal2, first)) {	// modified 03/13/2015
 
 					testSignal2 = nextChannel->GetNextNegativeCurve ();
 					continue;
@@ -868,7 +869,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 				if (testSignal2 == NULL) {
 
-					if (testSignal->GetMean () < first) {
+					if (!CoreBioComponent::SignalIsWithinAnalysisRegion (testSignal, first)) {	// modified 03/13/2015
 
 						testSignal = nextChannel->GetNextCompleteCurve ();
 						continue;
@@ -883,7 +884,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 					mean1 = testSignal->GetMean ();
 
-					if (mean1 < first) {
+					if (!CoreBioComponent::SignalIsWithinAnalysisRegion (testSignal, first)) {	// modified 03/13/2015
 
 						testSignal = nextChannel->GetNextCompleteCurve ();
 						continue;
@@ -891,7 +892,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 					mean2 = testSignal2->GetMean ();
 
-					if (mean2 < first) {
+					if (!CoreBioComponent::SignalIsWithinAnalysisRegion (testSignal2, first)) {	// modified 03/13/2015
 
 						testSignal2 = nextChannel->GetNextNegativeCurve ();
 						continue;
@@ -1382,7 +1383,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 					if (AssessPrimaryPullup (primeSignal, peaksInSameChannel, probablePullupPeaks, pullupList)) {
 
-						iChannel = new STRInterchannelLinkage ();
+						iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 						mInterchannelLinkageList.push_back (iChannel);
 						nInterchannelLinks = 1;
 
@@ -1544,7 +1545,37 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 		delete nextMultiPeakList;
 	}
 
-	delete[] TempMultiPeakList;
+	// Extract unlinked signals above primary peak threshold
+
+	RGDList** notPrimaryLists = new RGDList* [mNumberOfChannels + 1];
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		notPrimaryLists [i] = new RGDList;
+
+	notPrimaryLists [0] = NULL;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		nextChannel = mDataChannels [i];
+		nextChannel->ResetPreliminaryIterator ();
+
+		while (nextSignal = nextChannel->GetNextPreliminaryCurve ()) {
+
+			if ((nextSignal->Peak () >= primaryThreshold) && !nextSignal->HasCrossChannelSignalLink ())
+				notPrimaryLists [i]->Append (nextSignal);
+		}
+	}
+
+	//while (nextSignal = (DataSignal*) it ()) {
+
+	//	double tempPeak = nextSignal->Peak ();
+	//	//if ((nextSignal->Peak () >= primaryThreshold) && !nextSignal->HasCrossChannelSignalLink () && !nextSignal->IsNegativePeak ())
+	//	if (tempPeak >= primaryThreshold)
+	//		//notPrimaryLists [nextSignal->GetChannel ()]->Append (nextSignal);
+	//		continue;
+	//}
+
+	delete[] TempMultiPeakList;  // each individual list was already deleted
 	delete[] TempCraterPeakList;
 	OverallList.Clear ();
 
@@ -1554,7 +1585,118 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	delete[] isDone;
 
 	TestSignalsForLaserOffScaleSM ();	// Added 09/09/2014 because AnalyzeCrossChannel... called in two places and want to make sure laser off scale tested no matter what
+//	UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM ();
 		
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		notPrimaryLists [i]->Clear ();
+		delete notPrimaryLists [i];
+	}
+
+	delete[] notPrimaryLists;
+	cout << "Finished cross channel analysis" << endl;
+	return 0;
+}
+
+
+int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM () {
+
+	int i;
+	int j;
+	int k;
+	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	RGTarray<DataSignal> primaries;
+	RGTarray<DataSignal> secondaries;
+	RGTarray<InterchannelLinkage> localLinks;
+	list<double> ratios;
+	int arraySize;
+	list<InterchannelLinkage*>::iterator linkIt;
+	InterchannelLinkage* nextLinkage;
+	double ratio;
+	bool isSigmoidal;
+	bool channelHasSigmoid;
+	bool channelHasPulldown;
+	DataSignal* primarySignal;
+	DataSignal* secondarySignal;
+
+	smSigmoidalPullup sigmoidalPullup;
+	smPullUp pullup;
+	smPrimaryInterchannelLink primaryPullup;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			if (i == j)
+				continue;
+
+			channelHasSigmoid = false;
+			channelHasPulldown = false;
+			primaries.Clear ();
+			secondaries.Clear ();
+			ratios.clear ();
+			localLinks.Clear ();
+
+			for (linkIt = mInterchannelLinkageList.begin(); linkIt != mInterchannelLinkageList.end(); linkIt++) {
+
+				nextLinkage = *linkIt;
+
+				if (nextLinkage->AnySignalHasLaserOffScaleSM ())
+					continue;
+
+				if (!nextLinkage->PrimarySignalHasChannel (i))
+					continue;
+
+				if (!nextLinkage->PossibleSecondaryPullupSM (i, j, ratio, isSigmoidal, secondarySignal))
+					continue;
+
+				localLinks.Append (nextLinkage);
+
+				if (isSigmoidal)
+					channelHasSigmoid = true;
+
+				if (secondarySignal->IsNegativePeak ())
+					channelHasPulldown = true;
+
+				primarySignal = nextLinkage->GetPrimarySignal ();
+				primaries.Append (primarySignal);
+				secondaries.Append (secondarySignal);
+				ratios.push_back (ratio);
+				cout << "Added link for primary channel " << i << " and secondary channel " << j << endl;
+			}
+
+			arraySize = ratios.size ();
+			cout << "Found " << arraySize << " primaries" << endl;
+
+			if (channelHasPulldown) {
+
+				// eliminate all pull-ups except for sigmoidal pull-up
+				//nextLinkage->IsEmpty (
+
+				cout << "Pulldown found for primary channel " << i << " and secondary channel " << j << endl;
+
+				for (k=0; k<arraySize; k++) {
+
+					secondarySignal = secondaries.GetElementAt (k);
+
+					if (!secondarySignal->IsNegativePeak () && !secondarySignal->GetMessageValue (sigmoidalPullup)) {
+
+						cout << "Found false positive for primary channel " << i << " and secondary channel " << j << endl;
+						//primarySignal->SetMessageValue (primaryPullup, false);   // this is done in RemoveDataSignalSM below
+						nextLinkage = localLinks.GetElementAt (k);
+						nextLinkage->RemoveDataSignalSM (primarySignal);
+
+						if (nextLinkage->IsEmpty ())
+							nextLinkage->RemoveAllBasedOnValiditySM ();
+
+						else
+							nextLinkage->RecalculatePrimarySignalBasedOnValiditySM ();
+					}
+				}
+			}
+		}
+	}
+	
 	return 0;
 }
 
@@ -1733,7 +1875,7 @@ bool STRCoreBioComponent :: AssessPrimaryPullup (DataSignal* primaryPullup, RGDL
 #endif
 
 		//if (del1 < 0.075) {
-		if (del1 < nextSignal->GetPullupToleranceInBP () + primaryPullup->GetPullupToleranceInBP ()) {
+		if (del1 < tempTol) {
 
 			if (selectedPullup [currentChannel] == NULL)
 				selectedPullup [currentChannel] = nextSignal;
@@ -2453,10 +2595,19 @@ int STRLadderCoreBioComponent :: RemoveInterlocusSignalsSM () {
 	double ilsLeft = mLSData->GetFirstAnalyzedMean ();
 	double ilsRight = mLSData->GetLastAnalyzedMean ();
 	int minBP = CoreBioComponent::GetMinBioIDForArtifacts ();
-	double startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+	double startTime;
+
+	// following if...else clause added 03/13/2015
+
+	if (minBP > 0.0)
+		startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+
+	else
+		startTime = -1.0;
+
 	double effectiveLeft = ilsLeft;
 
-	if (startTime > ilsLeft)
+	if (startTime > 0.0)	// modified 03/13/2015
 		effectiveLeft = startTime;
 
 	int i;
@@ -2600,10 +2751,19 @@ int STRSampleCoreBioComponent :: SampleQualityTestSM (GenotypesForAMarkerSet* ge
 	double ilsLeft = mLSData->GetFirstAnalyzedMean ();
 	double ilsRight = mLSData->GetLastAnalyzedMean ();
 	int minBP = CoreBioComponent::GetMinBioIDForArtifacts ();
-	double startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+	double startTime;
+	
+	// following if...else clause added 03/13/2015
+
+	if (minBP > 0.0)
+		startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+
+	else
+		startTime = -1.0;
+
 	double effectiveLeft = ilsLeft;
 
-	if (startTime > ilsLeft)
+	if (startTime > 0.0)	// modified 03/13/2015
 		effectiveLeft = startTime;
 
 	double totalHeight = 0.0;
@@ -2677,10 +2837,19 @@ int STRSampleCoreBioComponent :: SignalQualityTestSM () {
 	double ilsLeft = mLSData->GetFirstAnalyzedMean ();
 	double ilsRight = mLSData->GetLastAnalyzedMean ();
 	int minBP = CoreBioComponent::GetMinBioIDForArtifacts ();
-	double startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+	double startTime;
+
+	// following if...else clause added 03/13/2015
+
+	if (minBP > 0.0)		
+		startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+
+	else
+		startTime = -1.0;
+
 	double effectiveLeft = ilsLeft;
 
-	if (startTime > ilsLeft)
+	if (startTime > 0.0)	// modified 03/13/2015
 		effectiveLeft = startTime;
 
 	//Locus* amelLocus;
@@ -2827,10 +2996,19 @@ int STRSampleCoreBioComponent :: RemoveInterlocusSignalsSM () {
 	double ilsLeft = mLSData->GetFirstAnalyzedMean ();
 	double ilsRight = mLSData->GetLastAnalyzedMean ();
 	int minBP = CoreBioComponent::GetMinBioIDForArtifacts ();
-	double startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+	double startTime;
+
+	// following if...else clause added 03/13/2015
+
+	if (minBP > 0.0)
+		startTime = mLSData->GetTimeForSpecifiedID ((double) minBP);
+
+	else
+		startTime = -1.0;
+
 	double effectiveLeft = ilsLeft;
 
-	if (startTime > ilsLeft)
+	if (startTime > 0.0)	// modified 03/13/2015
 		effectiveLeft = startTime;
 
 	int i;

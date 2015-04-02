@@ -414,7 +414,7 @@ int Locus :: AddAllSmartMessageReportersForSignals (SmartMessagingComm& comm, in
 
 	while (nextSignal = (DataSignal*) signals ()) {
 
-		if (!nextSignal->GetMessageValue (peakOutsideILS)) {
+	//	if (!nextSignal->GetMessageValue (peakOutsideILS)) {
 
 			isAmbiguous = nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1);
 			coreLocus = nextSignal->GetLocus (0);
@@ -429,7 +429,7 @@ int Locus :: AddAllSmartMessageReportersForSignals (SmartMessagingComm& comm, in
 
 			else if (!isAmbiguous)
 				nMsgs += nextSignal->AddAllSmartMessageReporters (comm, topNum);
-		}
+		//}
 	}
 
 	return nMsgs;
@@ -2655,13 +2655,15 @@ int Locus :: AnalyzeSampleLocusSM (ChannelData* lsData, RGDList& artifactList, R
 int Locus :: TestGridInterlocusThresholds (RGDList& originalList) {
 
 	//
-	//  This is ladder stage 3
+	//  This is ladder stage 2
 	//
 
 	DataSignal* nextSignal;
 	int TestResult;
+	//double ladderInterlocusMinRFU = STRLadderChannelData::GetMinInterlocusRFU ();
 
 	smInterlocusLadderPeak interlocusPeak;
+	//smHeightBelowInterlocusMinRFU belowInterlocusMinRFU;
 
 	RGDListIterator it (originalList);
 	double testTime;
@@ -2729,6 +2731,9 @@ int Locus :: TestGridInterlocusThresholds (RGDList& originalList) {
 				continue;
 
 			nextSignal->SetMessageValue (interlocusPeak, true);
+
+			//if (nextSignal->Peak () <= ladderInterlocusMinRFU)
+			//	nextSignal->SetMessageValue (belowInterlocusMinRFU, true);
 		}
 	}
 
@@ -2901,6 +2906,7 @@ DataSignal*  Locus :: GetLargestPeak () {
 	bool a0;
 	bool locationNonZero;
 	int location;
+	mLargestPeak = NULL;
 
 	if (mIsAMEL)
 		return NULL;
@@ -2929,7 +2935,7 @@ DataSignal*  Locus :: GetLargestPeak () {
 			secondHeight = maxHeight;
 			secondSignal = maxSignal;
 			maxHeight = nextHeight;
-			maxSignal = nextSignal;
+			mLargestPeak = maxSignal = nextSignal;
 		}
 
 		else if (nextHeight > secondHeight) {
@@ -2944,15 +2950,25 @@ DataSignal*  Locus :: GetLargestPeak () {
 
 	if (maxSignal->GetMessageValue (pullupPeak) || maxSignal->GetMessageValue (curveFitFailed) || maxSignal->GetMessageValue (spike) || maxSignal->GetMessageValue (blob)) {
 
-		if (secondSignal == NULL)
-			return NULL;
+		if (secondSignal == NULL) {
 
-		if (secondSignal->GetMessageValue (pullupPeak) || secondSignal->GetMessageValue (curveFitFailed) || secondSignal->GetMessageValue (spike) || secondSignal->GetMessageValue (blob))
+			mLargestPeak = NULL;
 			return NULL;
+		}
 
-		if (secondHeight <= 0.5 * maxHeight)
+		if (secondSignal->GetMessageValue (pullupPeak) || secondSignal->GetMessageValue (curveFitFailed) || secondSignal->GetMessageValue (spike) || secondSignal->GetMessageValue (blob)) {
+
+			mLargestPeak = NULL;
 			return NULL;
+		}
 
+		if (secondHeight <= 0.5 * maxHeight) {
+
+			mLargestPeak = NULL;
+			return NULL;
+		}
+
+		mLargestPeak = secondSignal;
 		return secondSignal;
 	}
 
@@ -2972,7 +2988,7 @@ int Locus :: TestResidualDisplacement () {
 	if (LocusSignalList.Entries () == 1)
 		return 0;
 
-	DataSignal* maxSignal = GetLargestPeak ();
+	DataSignal* maxSignal = mLargestPeak;
 	DataSignal* nextSignal;
 	int nextLocation;
 	double nextResidual;
@@ -4304,7 +4320,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	while (nextSignal = (DataSignal*) it()) {
 
 		mean = nextSignal->GetMean ();
-		gridTime = timeMap->Evaluate (mean);
+		gridTime = timeMap->EvaluateWithExtrapolation (mean);
 
 		if (gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location)) {
 
@@ -4339,7 +4355,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 			if (prevSignal != NULL) {
 
 				mean = prevSignal->GetMean ();
-				gridTime = timeMap->Evaluate (mean);
+				gridTime = timeMap->EvaluateWithExtrapolation (mean);
 				prevSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
 				prevSignal->SetLocus ((Locus*)this, -location);
 
@@ -4364,7 +4380,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 			if (followingSignal != NULL) {
 
 				mean = followingSignal->GetMean ();
-				gridTime = timeMap->Evaluate (mean);
+				gridTime = timeMap->EvaluateWithExtrapolation (mean);
 				followingSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
 				followingSignal->SetLocus ((Locus*)this, -location);
 
@@ -4436,6 +4452,151 @@ void Locus :: InitializeMessageMatrix (bool* matrix, int size) {
 }
 
 
+int Locus :: MeasureInterlocusSignalAttributesSM () {
+
+	//
+	//  This is sample stage 3
+	//
+
+	RGDListIterator it (LocusSignalList);
+	DataSignal* nextSignal;
+	bool wouldCauseHeterozygousImbalance1;
+	bool wouldCauseHeterozygousImbalance2;
+	Locus* locus1;
+	Locus* locus2;
+
+	smWouldCauseHeterozygousImbalanceLeft wouldCauseHeterozygousImbalanceLeft;
+	smWouldCauseHeterozygousImbalanceRight wouldCauseHeterozygousImbalanceRight;
+	smSignalOffGridLeft signalOffGridLeft;
+	smSignalOffGridRight signalOffGridRight;
+	sm0UnambiguousPeaksLeft are0UnambiguousPeaksLeft;
+	sm0UnambiguousPeaksRight are0UnambiguousPeaksRight;
+	sm1UnambiguousPeakLeft is1UnambiguousPeakLeft;
+	sm1UnambiguousPeakRight is1UnambiguousPeakRight;
+	sm2PlusUnambiguousPeaksLeft are2PlusUnambiguousPeaksLeft;
+	sm2PlusUnambiguousPeaksRight are2PlusUnambiguousPeaksRight;
+	sm0AmbiguousPeaksLeft are0AmbiguousPeaksLeft;
+	sm0AmbiguousPeaksRight are0AmbiguousPeaksRight;
+	sm1AmbiguousPeakLeft is1AmbiguousPeakLeft;
+	sm1AmbiguousPeakRight is1AmbiguousPeakRight;
+	sm2PlusAmbiguousPeaksLeft are2PlusAmbiguousPeaksLeft;
+	sm2PlusAmbiguousPeaksRight are2PlusAmbiguousPeaksRight;
+	smSignalIsIntegralMultipleOfRepeatLeft signalIsIntegralMultipleOfRepeatLeft;
+	smSignalIsIntegralMultipleOfRepeatRight signalIsIntegralMultipleOfRepeatRight;
+	int nAmb = 0;
+	int nUnamb;
+	int nTotal = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->IsDoNotCall ())
+			continue;
+
+		nTotal++;
+
+		if ((nextSignal->IsPossibleInterlocusAllele (-1)) && (nextSignal->IsPossibleInterlocusAllele (1)))
+			nAmb++;
+	}
+
+	nUnamb = nTotal - nAmb;
+	it.Reset ();
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if ((nextSignal->IsPossibleInterlocusAllele (-1)) && (nextSignal->IsPossibleInterlocusAllele (1))) {
+
+			locus1 = (Locus*) nextSignal->GetLocus (-1);
+			locus2 = (Locus*) nextSignal->GetLocus (1);
+
+			if ((locus1 == NULL) && (locus2 == NULL))
+				continue;
+
+			if (locus1 == (Locus*)this) {
+
+				// This is locus to left of peak
+
+				if (locus2 == NULL) {
+
+					locus1->PromoteSignalToAllele (nextSignal);
+					continue;
+				}
+
+				locus1->HasHeightRatioWithExclusiveMaxPeak (nextSignal, wouldCauseHeterozygousImbalance1);
+
+				if (wouldCauseHeterozygousImbalance1)
+					nextSignal->SetMessageValue (wouldCauseHeterozygousImbalanceLeft, true);
+
+				if (nextSignal->IsOffGrid (-1))
+					nextSignal->SetMessageValue (signalOffGridLeft, true);
+
+				if (nUnamb == 0)
+					nextSignal->SetMessageValue (are0UnambiguousPeaksLeft, true);
+
+				else if (nUnamb == 1)
+					nextSignal->SetMessageValue (is1UnambiguousPeakLeft, true);
+
+				else
+					nextSignal->SetMessageValue (are2PlusUnambiguousPeaksLeft, true);
+
+				if (nAmb == 0)
+					nextSignal->SetMessageValue (are0AmbiguousPeaksLeft, true);
+
+				else if (nAmb == 1)
+					nextSignal->SetMessageValue (is1AmbiguousPeakLeft, true);
+
+				else
+					nextSignal->SetMessageValue (are2PlusAmbiguousPeaksLeft, true);
+
+				if (SignalIsIntegralMultipleOfRepeatAboveLadder (nextSignal))
+					nextSignal->SetMessageValue (signalIsIntegralMultipleOfRepeatLeft, true);
+			}
+
+			if (locus2 == (Locus*)this) {
+
+				// This is locus to right of peak
+
+				if (locus1 == NULL) {
+				
+					locus2->PromoteSignalToAllele (nextSignal);
+					continue;
+				}
+
+				locus2->HasHeightRatioWithExclusiveMaxPeak (nextSignal, wouldCauseHeterozygousImbalance2);
+
+				if (wouldCauseHeterozygousImbalance2)
+					nextSignal->SetMessageValue (wouldCauseHeterozygousImbalanceRight, true);
+
+				if (nextSignal->IsOffGrid (1))
+					nextSignal->SetMessageValue (signalOffGridRight, true);
+
+				if (nUnamb == 0)
+					nextSignal->SetMessageValue (are0UnambiguousPeaksRight, true);
+
+				else if (nUnamb == 1)
+					nextSignal->SetMessageValue (is1UnambiguousPeakRight, true);
+
+				else
+					nextSignal->SetMessageValue (are2PlusUnambiguousPeaksRight, true);
+
+				if (nAmb == 0)
+					nextSignal->SetMessageValue (are0AmbiguousPeaksRight, true);
+
+				else if (nAmb == 1)
+					nextSignal->SetMessageValue (is1AmbiguousPeakRight, true);
+
+				else
+					nextSignal->SetMessageValue (are2PlusAmbiguousPeaksRight, true);
+
+				if (SignalIsIntegralMultipleOfRepeatBelowLadder (nextSignal))
+					nextSignal->SetMessageValue (signalIsIntegralMultipleOfRepeatRight, true);
+			}
+		}
+	}
+
+	return 0;
+}
+
+
 int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes, RGDList& artifacts) {
 
 	//
@@ -4481,7 +4642,7 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () <= minBioID)) {
+		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID)) {
 
 			it.RemoveCurrentItem ();
 			LocusSignalList.RemoveReference (nextSignal);	//!!!!!!!!!
@@ -5255,6 +5416,8 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 	smExtraneousAMELPeak extraneousPeakInAMEL;
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+	bool savePrev;
+	bool saveNext;
 
 	double adenylationLimit = GetLocusSpecificSampleAdenylationThreshold ();
 
@@ -5382,6 +5545,12 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 	double prevResidual;
 	double nextResidual;
 	int prevLocation = 0;
+	double prevResidualDisplacement;
+	double nextResidualDisplacement;
+	double maxPeakResidual;
+
+	if (mLargestPeak != NULL)
+		maxPeakResidual = mLargestPeak->GetBioIDResidual ();
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -5432,11 +5601,63 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			prevResidual = fabs (prevSignal->GetBioIDResidual (-prevLocation));
 			nextResidual = fabs (nextSignal->GetBioIDResidual (-location));
+			savePrev = saveNext = false;
 
-			if (prevResidual < nextResidual) {
+			if (prevSignal->Peak () <= 0.95 * nextSignal->Peak ())
+				saveNext = true;
+
+			else if (nextSignal->Peak () <= 0.95 * prevSignal->Peak ())
+				savePrev = true;
+
+			else if (mLargestPeak != NULL) {
+
+				prevResidualDisplacement = fabs (prevResidual - maxPeakResidual);
+				nextResidualDisplacement = fabs (nextResidual - maxPeakResidual);
+
+				if (prevResidualDisplacement < nextResidualDisplacement)
+					savePrev = true;
+
+				else if (nextResidualDisplacement < prevResidualDisplacement)
+					saveNext = true;
+
+				else {
+
+					if (prevSignal->Peak () < nextSignal->Peak ())
+						saveNext = true;
+
+					else if (nextSignal->Peak () < prevSignal->Peak ())
+						savePrev = true;
+				}
+			}
+
+			if (!(saveNext || savePrev)) {
+
+				if (prevResidual < nextResidual)
+					savePrev = true;
+
+				else if (nextResidual < prevResidual)
+					saveNext = true;
+
+				else {
+
+					if (prevSignal->Peak () < nextSignal->Peak ())
+						saveNext = true;
+
+					else if (nextSignal->Peak () < prevSignal->Peak ())
+						savePrev = true;
+
+					else
+						saveNext = true;
+				}
+			}
+
+			if (savePrev) {
 
 				signalList.RemoveReference (nextSignal);
-				tempList.Append (prevSignal);
+				tempList.Append (nextSignal);
+			//	nextSignal->SetMessageValue (callPoorPeakMorphology, false);
+			//	prevSignal->SetMessageValue (callPoorPeakMorphology, true);
+			//	nextSignal->SetDoNotCall (true);
 			}
 
 			else {
@@ -5446,7 +5667,25 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 				prevSignal = nextSignal;
 				prevLocation = location;
 				prevAlleleName = alleleName;
+			//	nextSignal->SetMessageValue (callPoorPeakMorphology, true);
+			//	prevSignal->SetMessageValue (callPoorPeakMorphology, false);
+			//	prevSignal->SetDoNotCall (true);
 			}
+
+			//if (prevResidual < nextResidual) {
+
+			//	signalList.RemoveReference (nextSignal);
+			//	tempList.Append (prevSignal);
+			//}
+
+			//else {
+
+			//	signalList.RemoveReference (prevSignal);
+			//	tempList.Append (prevSignal);
+			//	prevSignal = nextSignal;
+			//	prevLocation = location;
+			//	prevAlleleName = alleleName;
+			//}
 		}
 
 		else {

@@ -30,7 +30,7 @@
       <Synonym>blank</Synonym>
       <Synonym>ext-</Synonym>
     </NegativeControlStrings>
-    <StandardControlName>007</StandardControlName>
+    <StandardControlName>DNA007</StandardControlName>
   </NameStrings>
   <Thresholds>
     <LadderRFUTests>

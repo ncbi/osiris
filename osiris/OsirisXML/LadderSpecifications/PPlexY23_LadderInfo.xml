@@ -8,6 +8,7 @@
 			<NChannels>5</NChannels>
 			<LS>
 				<LSName>Promega-ILS-CC5-500-Y23</LSName>
+				<LSName>Promega-ILS-CC5-80-500-Y23</LSName>
 				<ChannelNo>5</ChannelNo>
 			</LS>
 			<FileNameSuffix>PPlexY23</FileNameSuffix>
