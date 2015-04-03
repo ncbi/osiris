@@ -1501,6 +1501,15 @@ double CraterSignal :: GetPullupToleranceInBP (double noise) const {
 }
 
 
+double CraterSignal :: GetPrimaryPullupDisplacementThreshold () {
+
+	if ((mNext == NULL) || (mPrevious == NULL))
+		return 2.0;
+
+	return 0.5 * abs (mNext->GetMean () - mPrevious->GetMean ());
+}
+
+
 void CraterSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	DataSignal::OutputDebugID (comm, numHigherObjects);

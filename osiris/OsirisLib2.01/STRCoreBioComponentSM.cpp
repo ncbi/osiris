@@ -1334,6 +1334,19 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 		if (maxPeak < primaryThreshold)
 			continue;
 
+		probableIt.Reset ();
+		currentWidth = primeSignal->GetPrimaryPullupDisplacementThreshold ();
+		peak = primeSignal->GetMean ();
+
+		while (nextSignal = (DataSignal*) probableIt ()) {
+
+			if (abs (nextSignal->GetMean () - peak) > currentWidth)
+				probableIt.RemoveCurrentItem ();
+		}
+
+		if (probablePullupPeaks.Entries () < 2)
+			continue;
+
 		//if (debug && (primeSignal != NULL)) cout << "Prime channel is " << primeSignal->GetChannel () << endl;
 
 		//primeSignal = OnDeck [maxIndex]; // This is the primary bleed through or spike, whichever...
