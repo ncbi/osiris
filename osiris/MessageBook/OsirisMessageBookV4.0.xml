@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.47</VersionNumber>
-	<BuildTime>03 27 2015 04:08 PM</BuildTime>
+	<VersionNumber>6.48</VersionNumber>
+	<BuildTime>04 07 2015 12:38 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1289,7 +1289,7 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>Noise in Signal</Text>
+			<Text>Low Signal to Noise in Peak</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
