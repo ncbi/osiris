@@ -780,6 +780,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	smBelowMinRFU belowMinRFU;
 	smSigmoidalPullup sigmoidalPullup;
 	smMinPrimaryPullupThreshold primaryPullupThreshold;
+	smSignalIsCtrlPeak isControlPeak;
 //	PullUpFound pullupNotice;
 //	PullUpPrimaryChannel primaryPullupNotice;
 
@@ -983,6 +984,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 						continue;
 
 					if ((prevSignal->Peak () < 0.7 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.7 * prevSignal->Peak ()))
+						continue;
+
+					if (prevSignal->GetMessageValue (isControlPeak) || nextSignal->GetMessageValue (isControlPeak))
 						continue;
 
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
