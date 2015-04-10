@@ -135,8 +135,8 @@ public:
 	virtual int WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& indent, const RGString& tagName);
 	virtual int WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGString& indent, ChannelData* laneStd);
 
-	virtual int AnalyzeDynamicBaselineSM (int startTime);
-	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime);
+	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
+	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime);
 
 
 	//******************************************************************************************************************************************
@@ -404,8 +404,8 @@ public:
 
 	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
-	virtual int AnalyzeDynamicBaselineSM (int startTime);
-	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime);
+	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
+	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime);
 	int ShapeBaselineData (list<double>& knotTimes, list<double>& knotValues);
 	int ShapeBaselineData (list<double>& knotTimes, list<double>& knotValues, DataSignal* fitDataPositive, DataSignal* fitDataNegative, double threshold);
 

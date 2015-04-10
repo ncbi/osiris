@@ -260,7 +260,7 @@ void Allele :: Write (RGFile& textOutput, const RGString& indent) {
 Locus :: Locus () : SmartMessagingObject (), mLink (NULL), Linked (FALSE), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (0.0), MinimumSampleTime (0.0), mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0),
 mTimeForOneIDUnitRight (0.0), mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0),
-mMaxPeak (0.0) {
+mMaxPeak (0.0), mLargestPeak (NULL) {
 
 	mLink = new BaseLocus ();
 	AlleleIterator = new RGDListIterator (AlleleList);
@@ -271,7 +271,7 @@ mMaxPeak (0.0) {
 Locus :: Locus (BaseLocus* link, const RGString& xmlString) : SmartMessagingObject (), mLink (link), Linked (TRUE),
 mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), MaximumSampleTime (0.0), MinimumSampleTime (0.0), 
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
-mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0), mMaxPeak (0.0) {
+mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0), mMaxPeak (0.0), mLargestPeak (NULL) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 	Valid = BuildAlleleLists (xmlString);
@@ -287,7 +287,7 @@ Locus :: Locus (const Locus& locus) : SmartMessagingObject ((SmartMessagingObjec
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
 mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), mIsAMEL (locus.mIsAMEL), mMinExtendedLocusTime (locus.mMinExtendedLocusTime), 
-mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak) {
+mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 
@@ -323,7 +323,7 @@ mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak) {
 Locus :: Locus (const Locus& locus, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)locus), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), 
-mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak) {
+mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 
@@ -560,6 +560,38 @@ Allele* Locus :: FindNearestAllele (int id) {
 	}
 
 	return nearestAllele;
+}
+
+
+bool Locus :: SignalIsIntegralMultipleOfRepeatAboveLadder (DataSignal* nextSignal) {
+
+	// signal is above locus so locus is to left of signal
+	
+	int repeat = mLink->GetCoreNumber ();
+	double id = nextSignal->GetBioID (-1);
+	double gridId = mLink->GetMaxGridID ();
+	int displacement = (int) floor (id - gridId + 0.5);
+
+	if (displacement%repeat == 0)
+		return true;
+
+	return false;
+}
+
+
+bool Locus :: SignalIsIntegralMultipleOfRepeatBelowLadder (DataSignal* nextSignal) {
+
+	// signal is below locus so locus is to right of signal
+	
+	int repeat = mLink->GetCoreNumber ();
+	double id = nextSignal->GetBioID (1);
+	double gridId = mLink->GetMinGridID ();
+	int displacement = (int) floor (gridId -id + 0.5);
+
+	if (displacement%repeat == 0)
+		return true;
+
+	return false;
 }
 
 
@@ -1783,7 +1815,7 @@ Boolean Locus :: ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLo
 	while (nextSignal = (DataSignal*) it()) {
 
 		mean = nextSignal->GetMean ();
-		gridTime = timeMap->Evaluate (mean);
+		gridTime = timeMap->EvaluateWithExtrapolation (mean);
 
 		if (gridLocus->IsTimeWithinLocusSample (gridTime)) {
 
@@ -1818,7 +1850,7 @@ Boolean Locus :: ExtractExtendedSampleSignals (RGDList& channelSignalList, Locus
 	while (nextSignal = (DataSignal*) it()) {
 
 		mean = nextSignal->GetMean ();
-		gridTime = timeMap->Evaluate (mean);
+		gridTime = timeMap->EvaluateWithExtrapolation (mean);
 
 		if (gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location)) {
 
@@ -1878,7 +1910,7 @@ Boolean Locus :: ExtractExtendedLadderSampleSignals (RGDList& channelSignalList,
 	while (nextSignal = (DataSignal*) it()) {
 
 		mean = nextSignal->GetMean ();
-		gridTime = timeMap->Evaluate (mean);
+		gridTime = timeMap->EvaluateWithExtrapolation (mean);
 
 		if (gridLocus->IsTimeWithinExtendedLocusSample (gridTime)) {
 
@@ -3091,7 +3123,7 @@ int Locus :: FinalTestForPeakSizeAndNumber (double averageHeight, Boolean isNegC
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () <= minBioID)) {
+		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID)) {
 
 			it.RemoveCurrentItem ();
 			continue;

@@ -181,13 +181,13 @@ int STRChannelData :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGS
 }
 
 
-int STRChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
+int STRChannelData :: AnalyzeDynamicBaselineSM (int startTime, double reportMinTime) {
 
 	return 0;
 }
 
 
-int STRChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime) {
+int STRChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime) {
 
 	return 1;
 }
@@ -1287,6 +1287,16 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	smCrater crater;
 	smCraterSidePeak craterSidePeak;
 	smILSPeakMayBeIncorrect iLSPeakMayBeIncorrect;
+	smPeakOutsideILS peakOutsideILS;
+
+	smILSFilterLeftShoulderPeaksPreset ilsFilterLeftShoulders;
+	smILSShoulderPeakProximityThreshold ilsShoulderProximityThreshold;
+	smILSShoulderFilterPercentThreshold ilsShoulderFilterPercent;
+	smILSShoulderPeak ilsIsShoulderPeak;
+
+	double adenylationLimit = STRLaneStandardChannelData::GetILSAdenylationThreshold ();
+	double shoulderThresholdFraction;
+	double shoulderProximity;
 
 	if (Size <= 0) {
 
@@ -1324,6 +1334,37 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		return -50;
 	}
 
+	RGDList shoulderPeaks;
+
+	CurveIterator.Reset ();
+	DataSignal* nextNextSignal;
+
+	if (GetMessageValue (ilsFilterLeftShoulders)) {
+
+		shoulderProximity = (double) GetThreshold (ilsShoulderProximityThreshold);
+		shoulderThresholdFraction = 0.01 * (double) GetThreshold (ilsShoulderFilterPercent);
+		nextSignal = (DataSignal*) CurveIterator ();
+
+		while (nextNextSignal = (DataSignal*) CurveIterator ()) {
+
+			if (nextNextSignal->GetMean () <= nextSignal->GetMean () + shoulderProximity * (nextNextSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ())) {
+
+				if (nextSignal->Peak () <= shoulderThresholdFraction * nextNextSignal->Peak ()) {
+
+					shoulderPeaks.Append (nextSignal);
+					nextSignal->SetMessageValue (ilsIsShoulderPeak, true);
+				}
+			}
+
+			nextSignal = nextNextSignal;
+		}
+
+		//while (nextSignal = (DataSignal*) shoulderPeaks.GetFirst ()) {
+
+		//	PreliminaryCurveList.RemoveReference (nextSignal);
+		//}
+	}
+
 	RGDList totallyTempCurveList;
 
 	double primerTime;
@@ -1353,6 +1394,9 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 				itt.RemoveCurrentItem ();
 				overFlow.Append (nextSignal);
 			}
+
+			else if (nextSignal->GetMessageValue (ilsIsShoulderPeak))
+				itt.RemoveCurrentItem ();
 		}
 	}
 
@@ -1678,15 +1722,6 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		}
 	}
 
-	while (nextSignal = (DataSignal*) SmartPeaks.GetFirst ()) {
-
-		if (nextSignal->GetMean () >= lowMean) {
-
-			SmartPeaks.Prepend (nextSignal);
-			break;
-		}
-	}
-
 	QuadraticFit fit (Means, NumberOfAcceptedCurves);
 	fit.Regress (Sigmas, QFit);
 
@@ -1694,11 +1729,21 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	fit2.Regress (SecondaryContent, QFit2);
 	mInverseSouthern = new CSplineTransform (actualArray, Means, NumberOfAcceptedCurves);
 	mGlobalSouthern = new CSplineTransform (Means, actualArray, NumberOfAcceptedCurves);
+	double minBioID = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
+
+	while (nextSignal = (DataSignal*) SmartPeaks.GetFirst ()) {
+
+		if (mGlobalSouthern->EvaluateWithExtrapolation (nextSignal->GetMean ()) >= minBioID) {
+
+			SmartPeaks.Prepend (nextSignal);
+			break;
+		}
+	}
 
 	CurveIterator.Reset ();
 	DataSignal* prevSignal = NULL;
 	double stutterLimit = STRLaneStandardChannelData::GetILSStutterThreshold ();
-	double adenylationLimit = STRLaneStandardChannelData::GetILSAdenylationThreshold ();
+	
 	double prevPeak = 0.0;
 	double maxAllowable = STRLaneStandardChannelData::GetMaxRFU ();
 	double thisbp;
@@ -1723,6 +1768,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 
 			nextSignal->AddNoticeToList (OutputLevelManager::PeakOutsideLaneStandard, "", 
 			"Peak represents measurement at base pair level outside internal lane standard");
+			nextSignal->SetMessageValue (peakOutsideILS, true);
 		}
 
 		else {
@@ -2016,7 +2062,7 @@ int STRLaneStandardChannelData :: TestForRaisedBaselineAndExcessiveNoiseSM (doub
 	double minTest = left;
 	double height;
 
-	if (report > left)
+	if (report > 0.0)	// modified 03/13/2015
 		minTest = report;
 
 	if (raisedBaselineThreshold > 0.0) {
@@ -2344,12 +2390,16 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 	DataSignal* nextSignal;
 	RGDListIterator pIt (PreliminaryCurveList);
 	bool isCore;
+	bool belongsLeft;
+	bool belongsRight;
 
 	while (nextSignal = (DataSignal*) pIt ()) {
 
 		isCore = (nextSignal->GetLocus (0) != NULL);
+		belongsLeft = (nextSignal->IsPossibleInterlocusAllele (-1));
+		belongsRight = (nextSignal->IsPossibleInterlocusAllele (1));
 
-		if (nextSignal->IsPossibleInterlocusAllele (1) || nextSignal->IsPossibleInterlocusAllele (-1) || isCore)
+		if (belongsRight || belongsLeft || isCore)		// 02/06/2015  This may be a bug.  We shouldn't be removing ambiguous extended locus peaks?  No, not a bug...put it back on 02/09/2015
 			pIt.RemoveCurrentItem ();
 
 		else if (nextSignal->GetMessageValue (belowMinRFU))
@@ -3209,119 +3259,12 @@ int STRSampleChannelData :: MeasureInterlocusSignalAttributesSM () {
 	//  This is sample stage 3
 	//
 
-	RGDListIterator it (PreliminaryCurveList);
-	DataSignal* nextSignal;
-	bool wouldCauseHeterozygousImbalance1;
-	bool wouldCauseHeterozygousImbalance2;
-	Locus* locus1;
-	Locus* locus2;
-	bool isOffGrid1;
-	bool isOffGrid2;
+	RGDListIterator it (mLocusList);
+	Locus* nextLocus;
 
-	smWouldCauseHeterozygousImbalanceLeft wouldCauseHeterozygousImbalanceLeft;
-	smWouldCauseHeterozygousImbalanceRight wouldCauseHeterozygousImbalanceRight;
-	smSignalOffGridLeft signalOffGridLeft;
-	smSignalOffGridRight signalOffGridRight;
-	sm0UnambiguousPeaksLeft are0UnambiguousPeaksLeft;
-	sm0UnambiguousPeaksRight are0UnambiguousPeaksRight;
-	sm1UnambiguousPeakLeft is1UnambiguousPeakLeft;
-	sm1UnambiguousPeakRight is1UnambiguousPeakRight;
-	sm2PlusUnambiguousPeaksLeft are2PlusUnambiguousPeaksLeft;
-	sm2PlusUnambiguousPeaksRight are2PlusUnambiguousPeaksRight;
-	sm0AmbiguousPeaksLeft are0AmbiguousPeaksLeft;
-	sm0AmbiguousPeaksRight are0AmbiguousPeaksRight;
-	sm1AmbiguousPeakLeft is1AmbiguousPeakLeft;
-	sm1AmbiguousPeakRight is1AmbiguousPeakRight;
-	sm2PlusAmbiguousPeaksLeft are2PlusAmbiguousPeaksLeft;
-	sm2PlusAmbiguousPeaksRight are2PlusAmbiguousPeaksRight;
-	int nAmb1;
-	int nAmb2;
-	int nUnamb1;
-	int nUnamb2;
+	while (nextLocus = (Locus*) it ()) {
 
-	while (nextSignal = (DataSignal*) it ()) {
-
-		if ((nextSignal->IsPossibleInterlocusAllele (-1)) && (nextSignal->IsPossibleInterlocusAllele (1))) {
-
-			locus1 = (Locus*) nextSignal->GetLocus (-1);
-			locus2 = (Locus*) nextSignal->GetLocus (1);
-
-			if ((locus1 == NULL) && (locus2 == NULL))
-				continue;
-
-			if ((locus1 != NULL) && (locus2 == NULL)) {
-
-				locus1->PromoteSignalToAllele (nextSignal);
-				it.RemoveCurrentItem ();
-				continue;
-			}
-
-			if ((locus2 != NULL) && (locus1 == NULL)) {
-
-				locus2->PromoteSignalToAllele (nextSignal);
-				it.RemoveCurrentItem ();
-				continue;
-			}
-
-			locus1->HasHeightRatioWithExclusiveMaxPeak (nextSignal, wouldCauseHeterozygousImbalance1);
-			locus2->HasHeightRatioWithExclusiveMaxPeak (nextSignal, wouldCauseHeterozygousImbalance2);
-
-			if (wouldCauseHeterozygousImbalance1)
-				nextSignal->SetMessageValue (wouldCauseHeterozygousImbalanceLeft, true);
-
-			if (wouldCauseHeterozygousImbalance2)
-				nextSignal->SetMessageValue (wouldCauseHeterozygousImbalanceRight, true);
-
-			nAmb1 = locus1->NumberOfAmbiguousAlleles ();
-			nAmb2 = locus2->NumberOfAmbiguousAlleles ();
-			nUnamb1 = locus1->NumberOfAlleles () - nAmb1;
-			nUnamb2 = locus2->NumberOfAlleles () - nAmb2;
-
-			isOffGrid1 = nextSignal->IsOffGrid (-1);
-			isOffGrid2 = nextSignal->IsOffGrid (1);
-
-			if (nUnamb1 == 0)
-				nextSignal->SetMessageValue (are0UnambiguousPeaksLeft, true);
-
-			else if (nUnamb1 == 1)
-				nextSignal->SetMessageValue (is1UnambiguousPeakLeft, true);
-
-			else
-				nextSignal->SetMessageValue (are2PlusUnambiguousPeaksLeft, true);
-
-			if (nAmb1 == 0)
-				nextSignal->SetMessageValue (are0AmbiguousPeaksLeft, true);
-
-			else if (nAmb1 == 1)
-				nextSignal->SetMessageValue (is1AmbiguousPeakLeft, true);
-
-			else
-				nextSignal->SetMessageValue (are2PlusAmbiguousPeaksLeft, true);
-
-			if (nUnamb2 == 0)
-				nextSignal->SetMessageValue (are0UnambiguousPeaksRight, true);
-
-			else if (nUnamb2 == 1)
-				nextSignal->SetMessageValue (is1UnambiguousPeakRight, true);
-
-			else
-				nextSignal->SetMessageValue (are2PlusUnambiguousPeaksRight, true);
-
-			if (nAmb2 == 0)
-				nextSignal->SetMessageValue (are0AmbiguousPeaksRight, true);
-
-			else if (nAmb2 == 1)
-				nextSignal->SetMessageValue (is1AmbiguousPeakRight, true);
-
-			else
-				nextSignal->SetMessageValue (are2PlusAmbiguousPeaksRight, true);
-
-			if (isOffGrid1)
-				nextSignal->SetMessageValue (signalOffGridLeft, true);
-
-			if (isOffGrid2)
-				nextSignal->SetMessageValue (signalOffGridRight, true);
-		}
+		nextLocus->MeasureInterlocusSignalAttributesSM ();
 	}
 
 	return 0;
@@ -3429,7 +3372,7 @@ int STRSampleChannelData :: TestForRaisedBaselineAndExcessiveNoiseSM (double lef
 	double minTest = left;
 	double height;
 
-	if (report > left)
+	if (report > 0.0)	// modified 03/13/2015
 		minTest = report;
 
 	if (raisedBaselineThreshold > 0.0) {
@@ -3619,7 +3562,7 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 
 
 
-int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
+int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime, double reportMinTime) {
 
 	//
 	//	Sample Stage 1
@@ -3629,6 +3572,21 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 	smTestRelativeBaselinePreset testRelativeBaseline;
 	smIgnoreNegativeRelativeBaselinePreset ignoreNegativeBaselineMsg;
 	bool ignoreNegativeBaseline = false;
+	int startBaselineFit;
+
+	// below if...else clause added 03/13/2015
+
+	if (reportMinTime > 0.0) {
+
+		if (reportMinTime < startTime)
+			startBaselineFit = (int) floor (reportMinTime);
+
+		else
+			startBaselineFit = startTime;
+	}
+
+	else
+		startBaselineFit = startTime;
 
 	if (mBaseLine != NULL)
 		return 1;
@@ -3648,7 +3606,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 
 	while (nextSignal = (DataSignal*) itC ()) {
 
-		if (nextSignal->GetMean () < startTime)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, startTime))	// modified 03/13/2015
 			continue;
 
 		tempList.Append (nextSignal);
@@ -3686,7 +3644,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 
 	while (nextSignal = (DataSignal*) itneg ()) {
 
-		if (nextSignal->GetMean () < startTime)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, startTime))	// modified 03/13/2015
 			continue;
 
 		tempList.Append (nextSignal);
@@ -3721,7 +3679,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 	DataSignal* FitNegData = FitNegCurve->Digitize (numSamples, mData->LeftEndPoint (), 1.0);
 	delete FitNegCurve;
 
-	int left = startTime;
+	int left = startBaselineFit;
 	//int end = (int)floor (mData->RightEndPoint ());
 	int end = mData->GetNumberOfSamples () - 1;
 	int localLeft;
@@ -3788,7 +3746,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 	//}
 
 	temp = knotValues.front ();
-	knotTimes.push_front ((double)(startTime / 2));
+	knotTimes.push_front ((double)(startBaselineFit / 2));
 	knotValues.push_front (temp);
 	knotTimes.push_front (0.0);
 	knotValues.push_front (0.0);
@@ -3870,7 +3828,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 
 		mean = nextSignal->GetMean ();
 
-		if (mean < startTime)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, startTime))	// modified 03/13/2015
 			continue;
 
 		dynamicBaseline = mBaseLine->EvaluateWithExtrapolation (mean);
@@ -3890,8 +3848,6 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 		nextSignal->SetBaseline (dynamicBaseline);
 		nextSignal->SetHasRaisedBaseline (true);
 
-		
-
 		if (nextSignal->GetBaselineRelativePeak () <= minRFU) {
 
 			nextSignal->SetMessageValue (belowRelativeMinRFU, true);
@@ -3902,7 +3858,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineSM (int startTime) {
 }
 
 
-int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime) {
+int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime) {
 
 	//
 	//	Sample Stage 1
@@ -3920,10 +3876,25 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	DataSignal* nextSignal;
 	double previousBP;
 	double currentBP;
+	int startBaselineFit;
+
+	// Following if...else clause added 03/13/2015
+
+	if (reportMinTime > 0.0) {
+
+		if (reportMinTime < startTime)
+			startBaselineFit = (int) floor (reportMinTime);
+
+		else
+			startBaselineFit = startTime;
+	}
+
+	else
+		startBaselineFit = startTime;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMean () < startTime)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, (double)startTime))	// modified 03/13/2015
 			continue;
 
 		tempList.Append (nextSignal);
@@ -3964,7 +3935,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 
 	while (nextSignal = (DataSignal*) itneg ()) {
 
-		if (nextSignal->GetMean () < startTime)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, (double)startTime))	// modified 03/13/2015
 			continue;
 
 		tempList.Append (nextSignal);
@@ -4000,7 +3971,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	delete FitCurve;
 	tempList.Clear ();
 
-	int left = startTime;
+	int left = startBaselineFit;	// modified 03/13/2015
 	//int end = (int)floor (mData->RightEndPoint ());
 	int end = mData->GetNumberOfSamples () - 1;
 	int localLeft;
@@ -4107,7 +4078,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 
 //	cout << "First calculated knot height = " << temp << ".  Start Time = " << startTime << endl;
 
-	knotTimes.push_front ((double)(startTime / 2));
+	knotTimes.push_front ((double)(startBaselineFit / 2));
 	knotValues.push_front (temp);
 	knotTimes.push_front (0.0);
 	knotValues.push_front (0.0);
@@ -4218,7 +4189,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	if (UseHermiteCubicSplineForNormalization) {
 
 		//cout << "Using Hermite cubic spline for normalization..." << endl;
-		mBaseLine = new CSplineTransform (knotTimes2, knotValues2, true);  //*****test 04/28/2014
+		mBaseLine = new CSplineTransform (knotTimes2, knotValues2, true, true);  //*****test 04/28/2014
 	}
 
 	else {

@@ -1,0 +1,60 @@
+
+%ClassName% :: %ClassName% () : SmartNotice () {
+
+}
+
+
+%ClassName% :: %ClassName% (const %ClassName%& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+%ClassName% :: ~%ClassName% () {
+
+}
+
+
+int %ClassName% :: GetSubject () const {
+
+	return %ClassName%::sSubject;
+}
+
+
+void %ClassName% :: SetIndexAndScope (int index, int scope) const {
+
+	%ClassName%::sMessageIndex = index;
+	%ClassName%::sMessageScope = scope;
+}
+
+
+int %ClassName% :: GetMessageIndex () const {
+
+	return %ClassName% :: sMessageIndex;
+}
+
+
+int %ClassName% :: GetScope () const {
+
+	return %ClassName% :: sMessageScope;
+}
+
+
+RGString %ClassName% :: GetName () const {
+
+	return %ClassName% :: sName;
+}
+
+
+
+int %ClassName% :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	%ClassName%* noticeType = new %ClassName%;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+

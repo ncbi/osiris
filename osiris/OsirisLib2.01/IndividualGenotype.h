@@ -250,6 +250,9 @@ public:
 	virtual unsigned HashNumber (unsigned long Base) const;
 	virtual Boolean IsEqualTo (const RGPersistent* p) const;
 
+	static void SetPathToStandardControlFile (const RGString& path) { PathToStandardControlFile = path; }
+	static RGString GetPathToStandardControlFile () { return PathToStandardControlFile; }
+
 protected:
 	RGString mMarkerSetName;
 	bool mValid;
@@ -258,7 +261,10 @@ protected:
 	LocusCollection* mSampleTriAlleles;  // set of loci and tri (or more) alleles allowable for samples
 	LocusCollection* mControlTriAlleles;  // set of loci and tri (or more) alleles allowable on positive controls
 
+	static RGString PathToStandardControlFile;
+
 	bool AddCollectionToTables (const RGString& xmlString, const RGString& offLadderTag, const RGString& triallelesTag, const RGString& posTriTag);
+	bool AddCollectionToTablesFromLabSettings (const RGString& xmlString, const RGString& offLadderTag, const RGString& triallelesTag, const RGString& posTriTag);
 };
 
 

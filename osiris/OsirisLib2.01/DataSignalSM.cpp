@@ -401,6 +401,145 @@ bool InterchannelLinkage :: RemoveAllBasedOnValiditySM () {
 }
 
 
+bool InterchannelLinkage :: PrimaryHasLaserOffScaleSM () const {
+
+	smLaserOffScalePrimary primaryOffScale;
+
+	if (mPrimarySignal == NULL)
+		return false;
+
+	return mPrimarySignal->GetMessageValue (primaryOffScale);
+}
+
+
+bool InterchannelLinkage :: SecondaryHasLaserOffScaleSM () {
+
+	smLaserOffScalePullupOrCraterNotPrimary secondaryOffScale;
+	RGDListIterator it (mSecondarySignals);
+	DataSignal* nextSignal;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetMessageValue (secondaryOffScale))
+			return true;
+	}
+
+	return false;
+}
+
+
+bool InterchannelLinkage :: AnySignalHasLaserOffScaleSM () {
+
+	if (PrimaryHasLaserOffScaleSM ())
+		return true;
+
+	return SecondaryHasLaserOffScaleSM ();
+}
+
+
+bool InterchannelLinkage :: SecondaryIsSigmoidalSignalSM (int secondaryChannel) {
+
+	smSigmoidalPullup sigmoidalPullup;
+	RGDListIterator it (mSecondarySignals);
+	DataSignal* nextSignal;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetChannel () == secondaryChannel)
+			return nextSignal->GetMessageValue (sigmoidalPullup);
+	}
+
+	return false;
+}
+
+
+bool InterchannelLinkage :: PossibleSecondaryPullupWithNoOffScaleSM (int primaryChannel, int secondaryChannel, double& secondaryRatio, bool& isSigmoidal) {
+
+	smSigmoidalPullup sigmoidalPullup;
+	isSigmoidal = false;
+
+	if (AnySignalHasLaserOffScaleSM ()) {
+
+		secondaryRatio = 0.0;
+		return false;
+	}
+
+	if ((mPrimarySignal == NULL) || (mPrimarySignal->GetChannel () != primaryChannel)) {
+
+		secondaryRatio = 0.0;
+		return false;
+	}
+
+	if (mPrimarySignal->Peak () < 0.1) {
+
+		secondaryRatio = 0.0;
+		return false;
+	}
+
+	RGDListIterator it (mSecondarySignals);
+	DataSignal* nextSignal;
+	bool foundSecondaryChannel = false;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetChannel () == secondaryChannel) {
+
+			foundSecondaryChannel = true;
+			secondaryRatio = nextSignal->Peak () / mPrimarySignal->Peak ();
+			isSigmoidal = nextSignal->GetMessageValue (sigmoidalPullup);
+
+			if (nextSignal->IsNegativePeak ())
+				secondaryRatio = -secondaryRatio;
+
+			break;
+		}
+	}
+
+	return foundSecondaryChannel;
+}
+
+
+bool InterchannelLinkage :: PossibleSecondaryPullupSM (int primaryChannel, int secondaryChannel, double& secondaryRatio, bool& isSigmoidal, DataSignal*& secondarySignal) {
+
+	smSigmoidalPullup sigmoidalPullup;
+	isSigmoidal = false;
+
+	if ((mPrimarySignal == NULL) || (mPrimarySignal->GetChannel () != primaryChannel)) {
+
+		secondaryRatio = 0.0;
+		return false;
+	}
+
+	if (mPrimarySignal->Peak () < 0.1) {
+
+		secondaryRatio = 0.0;
+		return false;
+	}
+
+	RGDListIterator it (mSecondarySignals);
+	DataSignal* nextSignal;
+	bool foundSecondaryChannel = false;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetChannel () == secondaryChannel) {
+
+			foundSecondaryChannel = true;
+			secondarySignal = nextSignal;
+			secondaryRatio = nextSignal->Peak () / mPrimarySignal->Peak ();
+			isSigmoidal = nextSignal->GetMessageValue (sigmoidalPullup);
+
+			if (nextSignal->IsNegativePeak ())
+				secondaryRatio = -secondaryRatio;
+
+			break;
+		}
+	}
+
+	return foundSecondaryChannel;
+}
+
+
 // Smart Message Functions***************************************************************************
 //***************************************************************************************************
 
@@ -1359,6 +1498,15 @@ double CraterSignal :: GetPullupToleranceInBP (double noise) const {
 		rtnValue = bpRight;
 
 	return rtnValue;
+}
+
+
+double CraterSignal :: GetPrimaryPullupDisplacementThreshold () {
+
+	if ((mNext == NULL) || (mPrevious == NULL))
+		return 2.0;
+
+	return 0.5 * abs (mNext->GetMean () - mPrevious->GetMean ());
 }
 
 

@@ -476,14 +476,74 @@ last (ds2), xmlPeakInfoWritten (false), xmlArtifactInfoWritten (false),	nameStri
 
 
 
-InterchannelLinkage :: InterchannelLinkage () : mPrimarySignal (NULL) {
+InterchannelLinkage :: InterchannelLinkage (int nChannels) : mPrimarySignal (NULL), mNChannels (nChannels) {
 
+	int channels1 = nChannels + 1;
+	mDirectedGraph = new int* [channels1];
+	
+	mRatios = new double* [channels1];
+	mIsNegativePullup = new bool* [channels1];
+
+	mCanBePrimary = new bool [channels1];
+	mIsAboveNoiseThreshold = new bool [channels1];
+	mIsNegativePeak = new bool [channels1];
+	mPeakHeights = new double [channels1];
+
+	int i;
+	int j;
+	mDirectedGraph [0] = NULL;
+	mRatios [0] = NULL;
+	mIsNegativePullup [0] = NULL;
+	mPeakHeights [0] = 0.0;
+
+	mCanBePrimary [0] = false;
+	mIsAboveNoiseThreshold [0] = false;
+
+	for (i=1; i<=nChannels; i++) {
+
+		mDirectedGraph [i] = new int [channels1];
+		mRatios [i] = new double [channels1];
+		mIsNegativePullup [i] = new bool [channels1];
+
+		mCanBePrimary [i] = false;
+		mIsAboveNoiseThreshold [i] = false;
+		mIsNegativePeak [i] = false;
+		mPeakHeights [i] = 0.0;
+	}
+
+	for (i=1; i<=nChannels; i++) {
+
+		for (j=0; j<=nChannels; j++) {
+
+			mDirectedGraph [i][j] = 0;
+			mRatios [i][j] = 0.0;
+			mIsNegativePullup [i][j] = false;
+		}
+	}
 }
 
 
 InterchannelLinkage :: ~InterchannelLinkage () {
 
 	mSecondarySignals.Clear ();
+
+	int i;
+
+	for (i=1; i<=mNChannels; i++) {
+
+		delete[] mDirectedGraph [i];
+		delete[] mRatios [i];
+		delete[] mIsNegativePullup [i];
+	}
+
+	delete[] mDirectedGraph;
+	delete[] mRatios;
+	delete[] mIsNegativePullup;
+
+	delete[] mCanBePrimary;
+	delete[] mIsAboveNoiseThreshold;
+	delete[] mPeakHeights;
+	delete[] mIsNegativePeak;
 }
 
 
@@ -612,7 +672,132 @@ DataSignal* InterchannelLinkage :: GetPrimarySignal () {
 }
 
 
-STRInterchannelLinkage :: STRInterchannelLinkage () : InterchannelLinkage () {
+bool InterchannelLinkage :: PrimarySignalHasChannel (int n) const {
+
+	if (mPrimarySignal == NULL)
+		return false;
+
+	return (mPrimarySignal->GetChannel () == n);
+}
+
+
+int InterchannelLinkage :: NumberOfSecondarySignals () const {
+
+	return mSecondarySignals.Entries ();
+}
+
+
+
+int InterchannelLinkage :: NumberOfSecondarySignalsAbovePrimaryThreshold (double threshold) {
+
+	RGDListIterator it (mSecondarySignals);
+	DataSignal* nextSignal;
+	int count = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if ((!nextSignal->IsNegativePeak ()) && (nextSignal->Peak () >= threshold))
+			count++;
+	}
+
+	return count;
+}
+
+
+
+int InterchannelLinkage :: MapOutSignalProperties (double noiseMultiple, double primaryThreshold, double* channelNoiseLevels) {
+
+	//  Assumes that mPrimarySignal has highest peak height of all peaks, if there is a primary
+
+	int i;
+	int j;
+	RGDListIterator it (mSecondarySignals);
+	DataSignal* nextSignal;
+	double nextPeakHeight;
+	int nextChannel;
+
+	if (mPrimarySignal == NULL)
+		return -1;
+
+	if (mSecondarySignals.Entries () <= 1)
+		return -1;
+
+	int primaryChannel = mPrimarySignal->GetChannel ();
+
+	double primaryHeight = mPeakHeights [primaryChannel] = mPrimarySignal->Peak ();
+
+	if (primaryHeight < primaryThreshold)
+		return -1;
+
+	mCanBePrimary [primaryChannel] = true;
+
+	while (nextSignal = (DataSignal*) it()) {
+
+		if (nextSignal == mPrimarySignal)
+			continue;
+
+		nextChannel = nextSignal->GetChannel ();
+		nextPeakHeight = mPeakHeights [nextChannel] = nextSignal->Peak ();
+		mDirectedGraph [primaryChannel][nextChannel] = 1;
+		mRatios [primaryChannel][nextChannel] = nextPeakHeight / primaryHeight;
+
+		if (nextSignal->IsNegativePeak ()) {
+
+			mIsNegativePullup [primaryChannel][nextChannel] = true;
+			mIsNegativePeak [nextChannel] = true;
+			nextSignal->SetCannotBePrimary (true);
+		}
+
+		else if (nextPeakHeight >= primaryThreshold) {
+
+			mCanBePrimary [nextChannel] = true;
+			nextSignal->SetCannotBePrimary (false);
+		}
+
+		else
+			nextSignal->SetCannotBePrimary (true);
+
+		if (nextPeakHeight >= channelNoiseLevels [nextChannel])
+			mIsAboveNoiseThreshold [nextChannel] = true;
+	}
+
+	//  This takes care of current primay relationships.  Now fill in potential secondary ones.
+
+	for (i=1; i<=mNChannels; i++) {
+
+		if (i == primaryChannel)
+			continue;
+
+		if (mCanBePrimary [i]) {
+
+			//  This is a non-primary channel that could be primary, so add info to arrays and matrices
+
+			for (j=1; j<=mNChannels; j++) {
+
+				if (j == primaryChannel)
+					continue;
+
+				if (i == j)
+					continue;
+
+				if (mPeakHeights [j] >= mPeakHeights [i])
+					continue;
+
+				if (mIsNegativePeak [j])
+					mIsNegativePullup [i][j] = true;
+
+				mDirectedGraph [i][j] = 1;
+				mRatios [i][j] = mPeakHeights [j] / mPeakHeights [i];
+			}
+		}
+	}
+
+	return 0;
+}
+
+
+
+STRInterchannelLinkage :: STRInterchannelLinkage (int nChannels) : InterchannelLinkage (nChannels) {
 
 }
 
@@ -2612,7 +2797,7 @@ DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow
 	else
 		win1 = high;
 
-	cout << "Filter windows = " << win1 << ", " << win2 << ", and " << win3 << endl;
+//	cout << "Filter windows = " << win1 << ", " << win2 << ", and " << win3 << endl;
 
 	double* filterOut1 = CreateMovingAverageFilteredArray (win1, Measurements);
 	double* filterOut2 = CreateMovingAverageFilteredArray (win2, filterOut1);
@@ -2663,7 +2848,7 @@ void SampledData :: ResetCharacteristicsFromRight (TracePrequalification& trace,
 	DataSignal::ResetCharacteristicsFromRight (trace, text, minRFU, print);
 	PeakList.ClearAndDelete ();
 	NoiseList.ClearAndDelete ();
-	trace.ResetSearch (this, NumberOfSamples);
+	trace.ResetSearch (this, NumberOfSamples, mNoiseRange);
 	DataInterval* NextDataInterval;
 	NoiseInterval* NextNoiseInterval;
 	DataInterval* PreviousDataInterval = NULL;
@@ -2731,6 +2916,12 @@ void SampledData :: ResetCharacteristicsFromRight (TracePrequalification& trace,
 		PreviousDataInterval = NextDataInterval;
 	}
 
+	//
+	//	Add algorithm to "stitch together" adjacent data intervals as appropriate here...12/18/2014
+	// create DataInterval constructor that takes two DataInterval objects and merges them, thus replacing
+	// both of the merged DataIntervals in the PeakList.
+	//
+
 	if (NextNoiseInterval != NULL)
 		NoiseList.Append (NextNoiseInterval);
 
@@ -2746,7 +2937,7 @@ void SampledData :: ResetCharacteristicsFromLeft (TracePrequalification& trace, 
 	DataSignal::ResetCharacteristicsFromLeft (trace, text, minRFU, print);
 	PeakList.ClearAndDelete ();
 	NoiseList.ClearAndDelete ();
-	trace.ResetSearch (this, NumberOfSamples);
+	trace.ResetSearch (this, NumberOfSamples, mNoiseRange);
 	DataInterval* NextDataInterval;
 	NoiseInterval* NextNoiseInterval;
 	DataInterval* PreviousDataInterval = NULL;

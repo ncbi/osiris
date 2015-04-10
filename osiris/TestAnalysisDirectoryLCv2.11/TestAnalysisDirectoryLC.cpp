@@ -67,6 +67,7 @@
 #include "TracePrequalification.h"
 #include "xmlwriter.h"
 #include "OsirisInputFile.h"
+#include "IndividualGenotype.h"
 
 
 #include <string>
@@ -174,6 +175,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	MessageBookPath = inputFile.GetFinalMessageBookName ();
 
 	STRLCAnalysis::SetOutputSubDirectory (OutputSubDirectory);
+	GenotypesForAMarkerSet::SetPathToStandardControlFile (ConfigDirectory);
 
 	if (!inputFile.OverrideStringIsEmpty ())
 		STRLCAnalysis::SetOverrideString (inputFile.GetOverrideString ());
@@ -274,7 +276,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (!pServer->isValid ()) {
 
-		cout << "Could not interpret standard input settings file " << stdSettingsFileName << ".  Exiting..." << endl;
+		cout << "Could not interpret standard input settings file " << (char*)stdSettingsFileName.GetData () << ".  Exiting..." << endl;
 		return -100;
 	}
 
@@ -283,7 +285,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (!pServer->AddGenotypeCollection (labXML, true)) {
 
-		cout << "Could not interpret laboratory input settings file " << labSettingsFileName << ".  Exiting..." << endl;
+		cout << "Could not interpret laboratory input settings file " << (char*)labSettingsFileName.GetData () << ".  Exiting..." << endl;
 		return -100;
 	}
 

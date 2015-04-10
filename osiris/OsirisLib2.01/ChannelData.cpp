@@ -555,7 +555,7 @@ int ChannelData :: CountSignalsWithNotice (const Notice* target, ChannelData* la
 
 		mean = nextSignal->GetMean ();
 
-		if (mean < minMean)
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, minMean))	// Modified 03/13/2015
 			continue;
 
 		if (mean > maxMean)
@@ -615,7 +615,7 @@ bool ChannelData :: HasPrimerPeaks (ChannelData* laneStd) {
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMean () >= minimumTimeForILS)
+		if (CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, minimumTimeForILS))	// Modified 03/13/2015
 			break;
 
 		if (nextSignal->Peak () >= minHeightToBePrimer) {
@@ -1019,8 +1019,8 @@ int ChannelData :: SetAllApproximateIDs (ChannelData* laneStd) {
 
 		mean = nextSignal->GetMean ();
 
-		if (mean < first)
-			continue;
+		//if (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, first))	// Modified 03/13/2015
+		//	continue;
 
 		//if (mean > last)	// no longer "eliminate" peaks to right of ILS
 		//	break;
@@ -1313,15 +1313,15 @@ int ChannelData :: RemoveSignalsOutsideLaneStandard (ChannelData* laneStandard) 
 	double right = laneStandard->GetLastAnalyzedMean ();
 	double mean;
 
-	double minBioID = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
-	double approxBioID;
+	//double minBioID = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
+	//double approxBioID;
 
 	while (nextSignal = (DataSignal*) it()) {
 
 		mean = nextSignal->GetMean ();
-		approxBioID = nextSignal->GetApproximateBioID ();
+		//approxBioID = nextSignal->GetApproximateBioID ();
 
-		if ((mean < left) || (mean > right) || (approxBioID <= minBioID)) {
+		if ((mean > right) || (!CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, left))) {	// modified 03/13/2015
 
 			it.RemoveCurrentItem ();
 			ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
@@ -2600,7 +2600,7 @@ int ChannelData :: FilterNoticesBelowMinimumBioID (ChannelData* laneStd, int min
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMean () <= cutOffTime)
+		if (nextSignal->GetMean () < cutOffTime)
 			nextSignal->ClearNoticeObjects ();
 
 		else

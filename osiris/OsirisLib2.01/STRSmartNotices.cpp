@@ -1230,6 +1230,42 @@ int smCallOnLadderAdenylationPreset::sMessageIndex = 0;
 int smCallOnLadderAdenylationPreset::sMessageScope = 0;
 
 
+RGString smSignalIsIntegralMultipleOfRepeatLeft::sName = "smSignalIsIntegralMultipleOfRepeatLeft";
+int smSignalIsIntegralMultipleOfRepeatLeft::sSubject = smSignalIsIntegralMultipleOfRepeatLeft::LoadType ();
+int smSignalIsIntegralMultipleOfRepeatLeft::sMessageIndex = 0;
+int smSignalIsIntegralMultipleOfRepeatLeft::sMessageScope = 0;
+
+
+RGString smSignalIsIntegralMultipleOfRepeatRight::sName = "smSignalIsIntegralMultipleOfRepeatRight";
+int smSignalIsIntegralMultipleOfRepeatRight::sSubject = smSignalIsIntegralMultipleOfRepeatRight::LoadType ();
+int smSignalIsIntegralMultipleOfRepeatRight::sMessageIndex = 0;
+int smSignalIsIntegralMultipleOfRepeatRight::sMessageScope = 0;
+
+
+RGString smILSFilterLeftShoulderPeaksPreset::sName = "smILSFilterLeftShoulderPeaksPreset";
+int smILSFilterLeftShoulderPeaksPreset::sSubject = smILSFilterLeftShoulderPeaksPreset::LoadType ();
+int smILSFilterLeftShoulderPeaksPreset::sMessageIndex = 0;
+int smILSFilterLeftShoulderPeaksPreset::sMessageScope = 0;
+
+
+RGString smILSShoulderPeakProximityThreshold::sName = "smILSShoulderPeakProximityThreshold";
+int smILSShoulderPeakProximityThreshold::sSubject = smILSShoulderPeakProximityThreshold::LoadType ();
+int smILSShoulderPeakProximityThreshold::sMessageIndex = 0;
+int smILSShoulderPeakProximityThreshold::sMessageScope = 0;
+
+
+RGString smILSShoulderFilterPercentThreshold::sName = "smILSShoulderFilterPercentThreshold";
+int smILSShoulderFilterPercentThreshold::sSubject = smILSShoulderFilterPercentThreshold::LoadType ();
+int smILSShoulderFilterPercentThreshold::sMessageIndex = 0;
+int smILSShoulderFilterPercentThreshold::sMessageScope = 0;
+
+
+RGString smILSShoulderPeak::sName = "smILSShoulderPeak";
+int smILSShoulderPeak::sSubject = smILSShoulderPeak::LoadType ();
+int smILSShoulderPeak::sMessageIndex = 0;
+int smILSShoulderPeak::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1434,6 +1470,12 @@ PERSISTENT_DEFINITION (smUseMaxSecondDerivativesForSampleToLadderFit, 2600, "smU
 PERSISTENT_DEFINITION (smPartOfDualSignal, 2601, "smPartOfDualSignal")
 PERSISTENT_DEFINITION (smNegativePeak, 2602, "smNegativePeak")
 PERSISTENT_DEFINITION (smCallOnLadderAdenylationPreset, 2603, "smCallOnLadderAdenylationPreset")
+PERSISTENT_DEFINITION (smSignalIsIntegralMultipleOfRepeatLeft, 2604, "smSignalIsIntegralMultipleOfRepeatLeft")
+PERSISTENT_DEFINITION (smSignalIsIntegralMultipleOfRepeatRight, 2605, "smSignalIsIntegralMultipleOfRepeatRight")
+PERSISTENT_DEFINITION (smILSFilterLeftShoulderPeaksPreset, 2606, "smILSFilterLeftShoulderPeaksPreset")
+PERSISTENT_DEFINITION (smILSShoulderPeakProximityThreshold, 2607, "smILSShoulderPeakProximityThreshold")
+PERSISTENT_DEFINITION (smILSShoulderFilterPercentThreshold, 2608, "smILSShoulderFilterPercentThreshold")
+PERSISTENT_DEFINITION (smILSShoulderPeak, 2609, "smILSShoulderPeak")
 
 
 
@@ -13670,6 +13712,366 @@ int smCallOnLadderAdenylationPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smCallOnLadderAdenylationPreset* noticeType = new smCallOnLadderAdenylationPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSignalIsIntegralMultipleOfRepeatLeft :: smSignalIsIntegralMultipleOfRepeatLeft () : SmartNotice () {
+
+}
+
+
+smSignalIsIntegralMultipleOfRepeatLeft :: smSignalIsIntegralMultipleOfRepeatLeft (const smSignalIsIntegralMultipleOfRepeatLeft& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSignalIsIntegralMultipleOfRepeatLeft :: ~smSignalIsIntegralMultipleOfRepeatLeft () {
+
+}
+
+
+int smSignalIsIntegralMultipleOfRepeatLeft :: GetSubject () const {
+
+	return smSignalIsIntegralMultipleOfRepeatLeft::sSubject;
+}
+
+
+void smSignalIsIntegralMultipleOfRepeatLeft :: SetIndexAndScope (int index, int scope) const {
+
+	smSignalIsIntegralMultipleOfRepeatLeft::sMessageIndex = index;
+	smSignalIsIntegralMultipleOfRepeatLeft::sMessageScope = scope;
+}
+
+
+int smSignalIsIntegralMultipleOfRepeatLeft :: GetMessageIndex () const {
+
+	return smSignalIsIntegralMultipleOfRepeatLeft :: sMessageIndex;
+}
+
+
+int smSignalIsIntegralMultipleOfRepeatLeft :: GetScope () const {
+
+	return smSignalIsIntegralMultipleOfRepeatLeft :: sMessageScope;
+}
+
+
+RGString smSignalIsIntegralMultipleOfRepeatLeft :: GetName () const {
+
+	return smSignalIsIntegralMultipleOfRepeatLeft :: sName;
+}
+
+
+
+int smSignalIsIntegralMultipleOfRepeatLeft :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSignalIsIntegralMultipleOfRepeatLeft* noticeType = new smSignalIsIntegralMultipleOfRepeatLeft;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSignalIsIntegralMultipleOfRepeatRight :: smSignalIsIntegralMultipleOfRepeatRight () : SmartNotice () {
+
+}
+
+
+smSignalIsIntegralMultipleOfRepeatRight :: smSignalIsIntegralMultipleOfRepeatRight (const smSignalIsIntegralMultipleOfRepeatRight& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSignalIsIntegralMultipleOfRepeatRight :: ~smSignalIsIntegralMultipleOfRepeatRight () {
+
+}
+
+
+int smSignalIsIntegralMultipleOfRepeatRight :: GetSubject () const {
+
+	return smSignalIsIntegralMultipleOfRepeatRight::sSubject;
+}
+
+
+void smSignalIsIntegralMultipleOfRepeatRight :: SetIndexAndScope (int index, int scope) const {
+
+	smSignalIsIntegralMultipleOfRepeatRight::sMessageIndex = index;
+	smSignalIsIntegralMultipleOfRepeatRight::sMessageScope = scope;
+}
+
+
+int smSignalIsIntegralMultipleOfRepeatRight :: GetMessageIndex () const {
+
+	return smSignalIsIntegralMultipleOfRepeatRight :: sMessageIndex;
+}
+
+
+int smSignalIsIntegralMultipleOfRepeatRight :: GetScope () const {
+
+	return smSignalIsIntegralMultipleOfRepeatRight :: sMessageScope;
+}
+
+
+RGString smSignalIsIntegralMultipleOfRepeatRight :: GetName () const {
+
+	return smSignalIsIntegralMultipleOfRepeatRight :: sName;
+}
+
+
+
+int smSignalIsIntegralMultipleOfRepeatRight :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSignalIsIntegralMultipleOfRepeatRight* noticeType = new smSignalIsIntegralMultipleOfRepeatRight;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smILSFilterLeftShoulderPeaksPreset :: smILSFilterLeftShoulderPeaksPreset () : SmartNotice () {
+
+}
+
+
+smILSFilterLeftShoulderPeaksPreset :: smILSFilterLeftShoulderPeaksPreset (const smILSFilterLeftShoulderPeaksPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smILSFilterLeftShoulderPeaksPreset :: ~smILSFilterLeftShoulderPeaksPreset () {
+
+}
+
+
+int smILSFilterLeftShoulderPeaksPreset :: GetSubject () const {
+
+	return smILSFilterLeftShoulderPeaksPreset::sSubject;
+}
+
+
+void smILSFilterLeftShoulderPeaksPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smILSFilterLeftShoulderPeaksPreset::sMessageIndex = index;
+	smILSFilterLeftShoulderPeaksPreset::sMessageScope = scope;
+}
+
+
+int smILSFilterLeftShoulderPeaksPreset :: GetMessageIndex () const {
+
+	return smILSFilterLeftShoulderPeaksPreset :: sMessageIndex;
+}
+
+
+int smILSFilterLeftShoulderPeaksPreset :: GetScope () const {
+
+	return smILSFilterLeftShoulderPeaksPreset :: sMessageScope;
+}
+
+
+RGString smILSFilterLeftShoulderPeaksPreset :: GetName () const {
+
+	return smILSFilterLeftShoulderPeaksPreset :: sName;
+}
+
+
+
+int smILSFilterLeftShoulderPeaksPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smILSFilterLeftShoulderPeaksPreset* noticeType = new smILSFilterLeftShoulderPeaksPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smILSShoulderPeakProximityThreshold :: smILSShoulderPeakProximityThreshold () : SmartNotice () {
+
+}
+
+
+smILSShoulderPeakProximityThreshold :: smILSShoulderPeakProximityThreshold (const smILSShoulderPeakProximityThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smILSShoulderPeakProximityThreshold :: ~smILSShoulderPeakProximityThreshold () {
+
+}
+
+
+int smILSShoulderPeakProximityThreshold :: GetSubject () const {
+
+	return smILSShoulderPeakProximityThreshold::sSubject;
+}
+
+
+void smILSShoulderPeakProximityThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smILSShoulderPeakProximityThreshold::sMessageIndex = index;
+	smILSShoulderPeakProximityThreshold::sMessageScope = scope;
+}
+
+
+int smILSShoulderPeakProximityThreshold :: GetMessageIndex () const {
+
+	return smILSShoulderPeakProximityThreshold :: sMessageIndex;
+}
+
+
+int smILSShoulderPeakProximityThreshold :: GetScope () const {
+
+	return smILSShoulderPeakProximityThreshold :: sMessageScope;
+}
+
+
+RGString smILSShoulderPeakProximityThreshold :: GetName () const {
+
+	return smILSShoulderPeakProximityThreshold :: sName;
+}
+
+
+
+int smILSShoulderPeakProximityThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smILSShoulderPeakProximityThreshold* noticeType = new smILSShoulderPeakProximityThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smILSShoulderFilterPercentThreshold :: smILSShoulderFilterPercentThreshold () : SmartNotice () {
+
+}
+
+
+smILSShoulderFilterPercentThreshold :: smILSShoulderFilterPercentThreshold (const smILSShoulderFilterPercentThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smILSShoulderFilterPercentThreshold :: ~smILSShoulderFilterPercentThreshold () {
+
+}
+
+
+int smILSShoulderFilterPercentThreshold :: GetSubject () const {
+
+	return smILSShoulderFilterPercentThreshold::sSubject;
+}
+
+
+void smILSShoulderFilterPercentThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smILSShoulderFilterPercentThreshold::sMessageIndex = index;
+	smILSShoulderFilterPercentThreshold::sMessageScope = scope;
+}
+
+
+int smILSShoulderFilterPercentThreshold :: GetMessageIndex () const {
+
+	return smILSShoulderFilterPercentThreshold :: sMessageIndex;
+}
+
+
+int smILSShoulderFilterPercentThreshold :: GetScope () const {
+
+	return smILSShoulderFilterPercentThreshold :: sMessageScope;
+}
+
+
+RGString smILSShoulderFilterPercentThreshold :: GetName () const {
+
+	return smILSShoulderFilterPercentThreshold :: sName;
+}
+
+
+
+int smILSShoulderFilterPercentThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smILSShoulderFilterPercentThreshold* noticeType = new smILSShoulderFilterPercentThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smILSShoulderPeak :: smILSShoulderPeak () : SmartNotice () {
+
+}
+
+
+smILSShoulderPeak :: smILSShoulderPeak (const smILSShoulderPeak& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smILSShoulderPeak :: ~smILSShoulderPeak () {
+
+}
+
+
+int smILSShoulderPeak :: GetSubject () const {
+
+	return smILSShoulderPeak::sSubject;
+}
+
+
+void smILSShoulderPeak :: SetIndexAndScope (int index, int scope) const {
+
+	smILSShoulderPeak::sMessageIndex = index;
+	smILSShoulderPeak::sMessageScope = scope;
+}
+
+
+int smILSShoulderPeak :: GetMessageIndex () const {
+
+	return smILSShoulderPeak :: sMessageIndex;
+}
+
+
+int smILSShoulderPeak :: GetScope () const {
+
+	return smILSShoulderPeak :: sMessageScope;
+}
+
+
+RGString smILSShoulderPeak :: GetName () const {
+
+	return smILSShoulderPeak :: sName;
+}
+
+
+
+int smILSShoulderPeak :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smILSShoulderPeak* noticeType = new smILSShoulderPeak;
 	warehouse->AddType (noticeType);
 	return 1;
 }

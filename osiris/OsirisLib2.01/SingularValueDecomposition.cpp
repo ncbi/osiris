@@ -29,7 +29,14 @@
 */
 //
 //  class SingularValueDecomposition computes the SVD of a large rectangular matrix and returns the parts.
-// It also uses the computed SVD to solve the multiple linear least squares regression problem.
+// It also uses the computed SVD to solve the multiple linear least squares regression problem.  To use for
+// general data not connected with SampleData, create an SVD using SingularValueDecomposition (rows, columns), then populate
+// the data matrix with AddColumn (int columnNumber, double* column)AddColumn (int columnNumber, double* column), called repeatedly until all
+// data is added.  Each column corresponds to the data from one independent variable across all measurements.  Finally, call ComputeSVD () and then CalculateWInverse ().
+// This sets up the solution matrix.  To obtain the regression coefficients, call PerformRegression (double* const coefficients, const double* const inputData),
+// which requires sending the dependent variables in inputData.
+//
+// Based on "Numerical Recipes", by William Press, Brian Flannery, Saul Teukolsky, and William Vetterling, Cambridge University Press, 1986.
 //
 
 #include "SingularValueDecomposition.h"
@@ -506,7 +513,7 @@ int SingularValueDecomposition :: CalculateWInverse () {
 
 	for (i=0; i<mColumns; i++) {
 
-		if (mW [i] < threshold) {
+		if (fabs (mW [i]) < threshold) {
 
 			ReturnValue++;
 			mWInverse [i] = 0.0;

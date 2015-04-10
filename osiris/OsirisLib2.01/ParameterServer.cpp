@@ -1988,7 +1988,7 @@ bool ParameterServer :: SetAllSmartMessageThresholds () {
 		}
 
 		else
-			cout << "Could not find threshold message named " << name.GetData () << endl;
+			cout << "Threshold message named " << name.GetData () << " not found...assumed no longer in MessageBook" << endl;
 	}
 
 	return true;

@@ -875,6 +875,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		ladderBioComponent = new STRLadderCoreBioComponent (data->GetName ());
 		ladderBioComponent->SetSampleName (data->GetSampleName ());
+		ladderBioComponent->SetFileName (LadderFileName);
 		commSM.SMOStack [1] = (SmartMessagingObject*) ladderBioComponent;
 		ladderBioComponent->SetMessageValue (sampleIsLadder, true);
 

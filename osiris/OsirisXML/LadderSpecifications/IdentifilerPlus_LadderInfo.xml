@@ -256,7 +256,7 @@
 			<Locus>
 				<Name>D7S820</Name>
 				<Channel>1</Channel>
-				<MinBP>253</MinBP>
+				<MinBP>245</MinBP>
 				<MaxBP>293</MaxBP>
 				<MinGridLSBasePair>250.0</MinGridLSBasePair>
 				<MaxGridLSBasePair>300.0</MaxGridLSBasePair>

@@ -140,11 +140,12 @@ STRTracePrequalification :: ~STRTracePrequalification () {
 }
 
 
-void STRTracePrequalification :: ResetSearch (const DataSignal* data, int size) {
+void STRTracePrequalification :: ResetSearch (const DataSignal* data, int size, double channelNoise) {
 
 	Data = data;
 	const double* dataArray = Data->GetData ();
 	double delt = Data->GetSampleSpacing ();
+	mChannelNoise = channelNoise;
 
 	MaxIndex = size - 1;
 	WindowWidth = TracePrequalification::GetWindowWidth ();
@@ -876,6 +877,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 //		NewConvolution = CurrentConvolution + 0.5 * (OldLeft + newL - OldRight - newR);
 		NewConvolution = mConvolution [CurrentIndex];
 		CurrentConvolution = mConvolution [CurrentIndex + 1];
+
 //		CumulativeNorm += newCenter * newCenter;
 
 		if (newCenter > currentMaxAtMode) {

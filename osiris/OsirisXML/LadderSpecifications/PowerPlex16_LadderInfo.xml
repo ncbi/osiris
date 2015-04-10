@@ -14,6 +14,9 @@
 				<LSName>Promega-ILS-LESS475-600</LSName>
 				<LSName>Promega-ILS-LESS475-550</LSName>
 				<LSName>Promega-ILS-LESS475-500</LSName>
+				<LSName>RapidCXR600</LSName>
+				<LSName>RapidCXR600less60</LSName>
+				<LSName>RapidCXR500</LSName>
 				<ChannelNo>4</ChannelNo>
 			</LS>
 			<FileNameSuffix>PP16</FileNameSuffix>

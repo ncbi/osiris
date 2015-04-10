@@ -430,6 +430,21 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 			for (i=1; i<NumberOfCubics; i++)
 				derivs [i] = 0.5 * (differences [i] + differences [i-1]);
 
+			for (i=1; i<NumberOfKnots; i++) {
+
+				if (Ordinates [i] == Ordinates [i-1])
+					derivs [i] = derivs [i-1] = 0.0;
+			}
+
+			for (i=1; i<NumberOfCubics; i++) {
+
+				if ((Ordinates [i] < Ordinates [i-1]) && (Ordinates [i] < Ordinates [i+1]))
+					derivs [i] = 0.0;
+
+				else if ((Ordinates [i] > Ordinates [i-1]) && (Ordinates [i] > Ordinates [i+1]))
+					derivs [i] = 0.0;
+			}
+
 			InitializeHermite (derivs);
 			delete[] derivs;
 			delete[] differences;
@@ -498,6 +513,22 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 			for (i=1; i<NumberOfCubics; i++)
 				derivs [i] = 0.5 * (differences [i] + differences [i-1]);
 
+			for (i=1; i<NumberOfKnots; i++) {
+
+				if (Ordinates [i] == Ordinates [i-1])
+					derivs [i] = derivs [i-1] = 0.0;
+			}
+
+			for (i=1; i<NumberOfCubics; i++) {
+
+				if ((Ordinates [i] < Ordinates [i-1]) && (Ordinates [i] < Ordinates [i+1]))
+					derivs [i] = 0.0;
+
+				else if ((Ordinates [i] > Ordinates [i-1]) && (Ordinates [i] > Ordinates [i+1]))
+					derivs [i] = 0.0;
+			}
+
+		//	cout << "Ready to initialize Hermite spline" << endl;
 			InitializeHermite (derivs);
 			delete[] derivs;
 			delete[] differences;
@@ -513,6 +544,220 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 	}
 }
 
+
+
+//
+//  The next two constructors use a method described by M. Steffen in "A Simple Method for Monotonic Interpolation in One Dimension", Astronomy and Astrophysics
+//  239, 443-450 (1990).  This method guarantees that each interpolating Hermite cubic is monotone, that the resulting spline is a continuous function of the input
+//  points and that all spline effects are local
+//
+
+
+
+CSplineTransform :: CSplineTransform (const double* coord1, const double* coord2, int size, bool isHermite, bool useQuad) : CoordinateTransform (coord1, coord2, size),
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (isHermite) {
+
+	int i;
+
+	if (ErrorFlag == 0) {
+	
+		NumberOfKnots = size; // n+1
+		NumberOfCubics = NumberOfKnots - 1; // n
+		Knots = new double [NumberOfKnots];
+		Ordinates = new double [NumberOfKnots];
+
+		A = new double [NumberOfCubics];
+		B = new double [NumberOfCubics];
+		C = new double [NumberOfCubics];
+		D = new double [NumberOfCubics];
+
+		for (i=0; i<size; i++) {
+
+			Knots [i] = coord1 [i];
+			Ordinates [i] = coord2 [i];
+		}
+
+		Left = Knots [0];
+		Right = Knots [NumberOfCubics];
+
+		if (isHermite) {
+
+			double* derivs = new double [NumberOfKnots];
+			double* s = new double [NumberOfCubics];
+			double* p = new double [NumberOfKnots];
+			double* h = new double [NumberOfCubics];
+			double m;
+			double M;
+			double temp;
+			double sgn;
+
+			for (i=0; i<NumberOfCubics; i++) {
+
+				h [i] = Knots [i+1] - Knots [i];
+				s [i] = (Ordinates [i+1] - Ordinates [i]) / h[i];
+			}
+
+			for (i=1; i<NumberOfCubics; i++)
+				p [i] = (s [i-1] * h [i] + s [i] * h [i-1]) / (h [i-1] + h [i]);
+
+			for (i=1; i<NumberOfCubics; i++) {
+
+				if (s [i] * s [i-1] <= 0.0)
+					derivs [i] = 0.0;
+
+				else {
+
+					m = M = abs (s [i-1]);
+					temp = abs (s [i]);
+
+					if (s [i] < 0.0)
+						sgn = -1.0;
+
+					else
+						sgn = 1.0;
+					
+					if (temp < m)
+						m = temp;
+
+					else
+						M = temp;
+
+					if (abs (p [i]) > 2.0 * M)
+						derivs [i] = 2.0 * sgn * m;
+
+					else
+						derivs [i] = p [i];
+				}
+			}
+
+			derivs [0] = 1.5 * s [0] - 0.5 * derivs [1];
+			derivs [NumberOfCubics] = 1.5 * s [NumberOfCubics - 1] - 0.5 * derivs [NumberOfCubics - 2];
+
+			InitializeHermite (derivs);
+			delete[] derivs;
+			delete[] s;
+			delete[] p;
+			delete[] h;
+		}
+
+		else
+			Initialize ();
+	}
+
+	else {
+
+		NumberOfKnots = NumberOfCubics = 0;
+	}
+}
+	
+
+
+CSplineTransform :: CSplineTransform (const list<double>& coord1, const list<double>& coord2, bool isHermite, bool useQuad) : CoordinateTransform (coord1, coord2),
+CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NULL), A (NULL), B (NULL), C (NULL), D (NULL), mIsHermite (isHermite) {
+
+	int i;
+
+	if (ErrorFlag == 0) {
+	
+		NumberOfKnots = (int)coord1.size (); // n+1
+		NumberOfCubics = NumberOfKnots - 1; // n
+		Knots = new double [NumberOfKnots];
+		Ordinates = new double [NumberOfKnots];
+		double* temp;
+		list <double>::const_iterator c1Iterator;
+		list <double>::const_iterator c2Iterator;
+
+		A = new double [NumberOfCubics];
+		B = new double [NumberOfCubics];
+		C = new double [NumberOfCubics];
+		D = new double [NumberOfCubics];
+
+		temp = Knots;
+
+		for (c1Iterator = coord1.begin (); c1Iterator != coord1.end (); c1Iterator++) {
+
+			*temp = *c1Iterator;
+			temp++;
+		}
+
+		Left = Knots [0];
+		Right = Knots [NumberOfCubics];
+		temp = Ordinates;
+
+		for (c2Iterator = coord2.begin (); c2Iterator != coord2.end (); c2Iterator++) {
+
+			*temp = *c2Iterator;
+			temp++;
+		}
+
+		if (isHermite) {
+
+			double* derivs = new double [NumberOfKnots];
+			double* s = new double [NumberOfCubics];
+			double* p = new double [NumberOfKnots];
+			double* h = new double [NumberOfCubics];
+			double m;
+			double M;
+			double temp1;
+			double sgn;
+
+			for (i=0; i<NumberOfCubics; i++) {
+
+				h [i] = Knots [i+1] - Knots [i];
+				s [i] = (Ordinates [i+1] - Ordinates [i]) / h[i];
+			}
+
+			for (i=1; i<NumberOfCubics; i++)
+				p [i] = (s [i-1] * h [i] + s [i] * h [i-1]) / (h [i-1] + h [i]);
+
+			for (i=1; i<NumberOfCubics; i++) {
+
+				if (s [i] * s [i-1] <= 0.0)
+					derivs [i] = 0.0;
+
+				else {
+
+					m = M = abs (s [i-1]);
+					temp1 = abs (s [i]);
+
+					if (s [i] < 0.0)
+						sgn = -1.0;
+
+					else
+						sgn = 1.0;
+					
+					if (temp1 < m)
+						m = temp1;
+
+					else
+						M = temp1;
+
+					if (abs (p [i]) > 2.0 * M)
+						derivs [i] = 2.0 * sgn * m;
+
+					else
+						derivs [i] = p [i];
+				}
+			}
+
+			derivs [0] = 1.5 * s [0] - 0.5 * derivs [1];
+			derivs [NumberOfCubics] = 1.5 * s [NumberOfCubics - 1] - 0.5 * derivs [NumberOfCubics - 2];
+			InitializeHermite (derivs);
+			delete[] derivs;
+			delete[] s;
+			delete[] p;
+			delete[] h;
+		}
+
+		else
+			Initialize ();
+	}
+
+	else {
+
+		NumberOfKnots = NumberOfCubics = 0;
+	}
+}
 
 
 
@@ -670,6 +915,7 @@ int CSplineTransform :: InitializeHermite (const double* derivs) {
 	delete[] h;
 	return 0;
 }
+
 
 
 //

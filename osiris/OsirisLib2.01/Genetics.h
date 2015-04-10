@@ -218,6 +218,9 @@ public:
 	Allele* FindAlleleByID (int id);
 	Allele* FindNearestAllele (int id);
 
+	bool SignalIsIntegralMultipleOfRepeatAboveLadder (DataSignal* nextSignal);
+	bool SignalIsIntegralMultipleOfRepeatBelowLadder (DataSignal* nextSignal);
+
 	RGString ReconstructAlleleName (int id, Boolean& isOffGrid);
 	virtual int InsertAlleleSignals (RGDList& curveList);  // virtual ???
 	virtual const DataSignal* GetCurve (const RGString& alleleName);  // virtual ???
@@ -415,6 +418,7 @@ public:
 	int TestSampleNeighborsSM (DataSignal* previous, DataSignal* testSignal, DataSignal* following);
 	int TestSampleAveragesSM (ChannelData* lsData, DataSignal* testSignal, Boolean testRatio = TRUE);
 	virtual Boolean ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
+	int MeasureInterlocusSignalAttributesSM ();
 
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes, RGDList& artifacts);
 	int CorrectCrossChannelAnalysesSM (RGDList& artifacts, bool isNegCntl);
@@ -542,6 +546,7 @@ protected:
 	RGDList mExtendedRight;
 
 	double mMaxPeak;
+	DataSignal* mLargestPeak;
 
 	// Smart Message data************************************************************************************
 	//*******************************************************************************************************
