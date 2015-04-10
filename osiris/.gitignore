@@ -19,7 +19,6 @@
 *.opensdf
 UpgradeLog.XML
 GitCommitInstructions.txt
-docs
 Debug
 BaseClassLib/Tools/Debug
 BaseClassLib/Tools/Release
