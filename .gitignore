@@ -1,0 +1,14 @@
+*.pdb
+*.tlog
+*.obj
+*.log
+*.pch
+*.sdf
+*.user
+*.exe
+*.manifest
+*.lastbuildstate
+*.idb
+*.lnk
+*.suo
+*.vbs
