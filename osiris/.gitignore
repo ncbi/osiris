@@ -14,7 +14,10 @@
 *.vbs
 *.css
 *.gif
-
+*.filters
+*.cop
+*.opensdf
+UpgradeLog.XML
 GitCommitInstructions.txt
 docs
 Debug
@@ -33,3 +36,4 @@ OsirisXML/LadderSpecifications/*Bins*Panels
 OsirisXML/LadderSpecifications/OldIlsAndLadderAndKitColors
 ResdiualDataFromISP
 *ipch
+_UpgradeReport_Files
