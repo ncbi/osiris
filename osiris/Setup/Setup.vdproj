@@ -1425,6 +1425,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E0C28CD854654454817185F6C3EE56AB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E151D2A0B3874818859AF6A0AE6A603C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1644,7 +1650,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.4.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.5-beta-1.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -6372,6 +6378,26 @@
             "TargetName" = "8:PPFusion6C_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_C680915ACBF74267A38E4B766F8A3DDB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E0C28CD854654454817185F6C3EE56AB"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\StandardPositiveControls.xml"
+            "TargetName" = "8:StandardPositiveControls.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
