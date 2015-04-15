@@ -1344,7 +1344,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 		while (nextSignal = (DataSignal*) probableIt ()) {
 
-			if (abs (nextSignal->GetMean () - peak) > currentWidth)
+			if (fabs (nextSignal->GetMean () - peak) > currentWidth)
 				probableIt.RemoveCurrentItem ();
 		}
 

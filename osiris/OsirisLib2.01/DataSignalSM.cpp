@@ -1506,7 +1506,7 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold () {
 	if ((mNext == NULL) || (mPrevious == NULL))
 		return 2.0;
 
-	return 0.5 * abs (mNext->GetMean () - mPrevious->GetMean ());
+	return 0.5 * fabs (mNext->GetMean () - mPrevious->GetMean ());
 }
 
 

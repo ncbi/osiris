@@ -607,8 +607,8 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 
 				else {
 
-					m = M = abs (s [i-1]);
-					temp = abs (s [i]);
+					m = M = fabs (s [i-1]);
+					temp = fabs (s [i]);
 
 					if (s [i] < 0.0)
 						sgn = -1.0;
@@ -622,7 +622,7 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 					else
 						M = temp;
 
-					if (abs (p [i]) > 2.0 * M)
+					if (fabs (p [i]) > 2.0 * M)
 						derivs [i] = 2.0 * sgn * m;
 
 					else
@@ -717,8 +717,8 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 
 				else {
 
-					m = M = abs (s [i-1]);
-					temp1 = abs (s [i]);
+					m = M = fabs (s [i-1]);
+					temp1 = fabs (s [i]);
 
 					if (s [i] < 0.0)
 						sgn = -1.0;
@@ -732,7 +732,7 @@ CurrentInterval (-1), CurrentSequenceInterval (-1), Knots (NULL), Ordinates (NUL
 					else
 						M = temp1;
 
-					if (abs (p [i]) > 2.0 * M)
+					if (fabs (p [i]) > 2.0 * M)
 						derivs [i] = 2.0 * sgn * m;
 
 					else
