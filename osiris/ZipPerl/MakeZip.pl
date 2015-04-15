@@ -122,6 +122,8 @@ sub COPYFILES
     SEfilerPlus
     SGMPlus
     Yfiler
+    iPLEXSTR
+    iPLEXSTRLIZ500less250
   /)
   {
     my $dest1 = "${dest}/Config/Volumes/${sdir}";
