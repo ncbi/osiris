@@ -122,6 +122,8 @@ sub COPYFILES
     SEfilerPlus
     SGMPlus
     Yfiler
+    iPLEXSTR
+    iPLEXSTRLIZ500less250
   /)
   {
     my $dest1 = "${dest}/Config/Volumes/${sdir}";
@@ -142,6 +144,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisAnalysis/extractArtifacts.xsl ${destXSL}");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
+  &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/StandardPositiveControls.xml ${dest}/Config/LadderSpecifications");
 
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");

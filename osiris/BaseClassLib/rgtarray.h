@@ -95,7 +95,7 @@ template <class T> RGTarray<T> :: RGTarray () : ArraySize (RGTarray<T>::DefaultS
 }
 
 
-template <class T> RGTarray<T> :: RGTarray (size_t size) : ArraySize (RGPArray::DefaultSize), CurrentLength (0) {
+template <class T> RGTarray<T> :: RGTarray (size_t size) : ArraySize (RGTarray::DefaultSize), CurrentLength (0) {
 
 	ArraySize = ComputeNewSize (size);
 	tArray = new T* [ArraySize];
