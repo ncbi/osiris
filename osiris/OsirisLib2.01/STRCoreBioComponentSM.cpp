@@ -2086,6 +2086,24 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 }
 
 
+void STRLadderCoreBioComponent :: MakeNonCoreLadderArtifactsNoncritical () {
+
+	//
+	//	This is ladder stage 2
+	//
+
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i == mLaneStandardChannel)
+			continue;
+
+		mDataChannels [i]->MakeNonCoreLadderArtifactsNoncritical ();
+	}
+}
+
+
 int STRLadderCoreBioComponent :: AnalyzeCrossChannelSM () {
 
 	//

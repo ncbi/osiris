@@ -313,6 +313,8 @@ public:
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
+	virtual void MakeNonCoreLadderArtifactsNoncritical () {}
+
 	virtual int InitializeSM (SampleData& fileData, PopulationCollection* collection, const RGString& markerSetName, Boolean isGrid);
 	virtual int SetAllDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetAllRawDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);

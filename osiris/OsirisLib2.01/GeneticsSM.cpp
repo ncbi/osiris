@@ -2358,8 +2358,6 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 				else {
 
 					overflowIterator.Reset ();
-					double firstTime;
-					double lastTime;
 					double nextMean;
 					tempIterator.Reset ();
 					FinalSignalList.Clear ();
@@ -2368,9 +2366,9 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 						FinalSignalList.Append (nextSignal);
 
 					nextSignal = (DataSignal*) FinalSignalList.First ();
-					firstTime = nextSignal->GetMean ();
+					mFirstTime = nextSignal->GetMean ();
 					nextSignal = (DataSignal*) FinalSignalList.Last ();
-					lastTime = nextSignal->GetMean ();
+					mLastTime = nextSignal->GetMean ();
 
 					//
 					// if hts != NULL and disc > 2, add message about failure of relative height criteria ********************
@@ -2385,7 +2383,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 
 						nextMean = nextSignal->GetMean ();
 
-						if (nextMean < firstTime) {
+						if (nextMean < mFirstTime) {
 
 							// this peak is left of core ladder locus, so, with overlap, might belong to another locus
 
@@ -2395,7 +2393,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 								toTheLeftList.InsertWithNoReferenceDuplication (nextSignal);
 						}
 
-						else if (nextMean > lastTime) {
+						else if (nextMean > mLastTime) {
 
 							// this peak is right of core ladder locus, so, with overlap, might belong to another locus
 
@@ -2555,6 +2553,11 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 	double* Means = new double [NumberOfAcceptedCurves];
 	double TwoMass;
 	double OneMass;
+
+	nextSignal = (DataSignal*) FinalSignalList.First ();
+	mFirstTime = nextSignal->GetMean ();
+	nextSignal = (DataSignal*) FinalSignalList.Last ();
+	mLastTime = nextSignal->GetMean ();
 
 	while (nextSignal = (DataSignal*)FinalIterator ()) {
 

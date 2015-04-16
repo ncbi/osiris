@@ -197,6 +197,9 @@ public:
 	Boolean IsValid () const { return Valid; }
 	RGString GetErrorString () const { return ErrorString; }
 
+	double GetFirstTimeForLadderLocus () const { return mFirstTime; }
+	double GetLastTimeForLadderLocus () const { return mLastTime; }
+
 	RGString GetLocusName () const;
 	void SetLocusName (const RGString& name);
 	int GetLocusChannel () const;
@@ -547,6 +550,9 @@ protected:
 
 	double mMaxPeak;
 	DataSignal* mLargestPeak;
+
+	double mFirstTime;
+	double mLastTime;
 
 	// Smart Message data************************************************************************************
 	//*******************************************************************************************************

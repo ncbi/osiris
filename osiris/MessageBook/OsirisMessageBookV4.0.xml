@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.48</VersionNumber>
-	<BuildTime>04 07 2015 12:38 PM</BuildTime>
+	<VersionNumber>6.50</VersionNumber>
+	<BuildTime>04 14 2015 11:40 AM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -598,6 +598,23 @@
 			<Text>Unlikely Allele Peak Right:  Excessive Residual Displacement Right</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+		</SmartMessage>	
+		<SmartMessage>
+			<Name>smLadderPeakOutsideCoreLadder</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Peak Outside Core Ladder</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>true</Expression>
+				</RestrictionCriterion>
+			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPrimaryInterchannelLink</Name>
@@ -5763,6 +5780,72 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerInternalLaneStandardShouldersEnd</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLadderArtifactLevelHeader</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Reduce Ladder Artifacts:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Internal Lane Standard Analsis Criteria</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Make Ladder Artifacts Left of Core Ladder Non-critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Make Ladder Artifacts Left of Core Ladder Non-critical</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Make Ladder Artifacts Right of Core Ladder Non-critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Make Ladder Artifacts Right of Core Ladder Non-critical</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
 	</MessageDeclarations>
 	<TestUnitsSampleLevel>
 		<ConditionalTestUnit>
@@ -5795,6 +5878,8 @@
 						<Name>smILSFilterLeftShoulderPeaksPreset</Name>
 						<Name>smILSShoulderPeakProximityThreshold</Name>
 						<Name>smILSShoulderFilterPercentThreshold</Name>
+						<Name>smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset</Name>
+						<Name>smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -5989,6 +6074,7 @@
 						<Name>smBelowFractionalFilterRight</Name>
 						<Name>smBelowPullupFractionalFilterLeft</Name>
 						<Name>smBelowPullupFractionalFilterRight</Name>
+						<Name>smLadderPeakOutsideCoreLadder</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smInferredFFLeft = smPartOfExtendedLocusLeft AND smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter</Expression>
@@ -6157,7 +6243,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>

@@ -2291,6 +2291,81 @@ int STRLadderChannelData :: AnalyzeGridLociSM (RGTextOutput& text, RGTextOutput&
 }
 
 
+void STRLadderChannelData :: MakeNonCoreLadderArtifactsNoncritical () {
+
+	//
+	//	This is ladder stage 2
+	//
+
+	Locus* targetLocus;
+	double firstTime;
+	double lastTime;
+
+	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset makeArtifactsRightOfCoreNonCritical;
+	smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset makeArtifactsLeftOfCoreNonCritical;
+	smLadderPeakOutsideCoreLadder peakOutsideCore;
+
+	bool right = GetMessageValue (makeArtifactsRightOfCoreNonCritical);
+	bool left = GetMessageValue (makeArtifactsLeftOfCoreNonCritical);
+	bool dontTest = !(right || left);
+
+	if (dontTest) {
+
+		cout << "Don't test for start and end of core ladder for channel " << mChannel << endl;
+		return;
+	}
+
+	cout << "Channel number " << mChannel << endl;
+
+	targetLocus = (Locus*)mLocusList.First ();
+
+	if (targetLocus == NULL)
+		return;
+
+	firstTime = targetLocus->GetFirstTimeForLadderLocus ();
+	targetLocus = (Locus*)mLocusList.Last ();
+
+	if (targetLocus == NULL)
+		return;
+
+	lastTime = targetLocus->GetLastTimeForLadderLocus ();
+	cout << "First time = " << firstTime << " and lastTime = " << lastTime << endl;
+
+	if ((firstTime == 0.0) || (lastTime == 0.0))
+		return;
+
+	firstTime -= 0.0001;
+	lastTime += 0.0001;
+	RGDListIterator it (CompleteCurveList);
+	DataSignal* nextSignal;
+	int nl = 0;
+
+	if (left) {
+
+		while (nextSignal = (DataSignal*) it()) {
+
+			if (nextSignal->GetMean () < firstTime)
+				nextSignal->SetMessageValue (peakOutsideCore, true);
+
+			else {
+				
+				--it;
+				break;
+			}
+		}
+	}
+
+	if (right) {
+
+		while (nextSignal = (DataSignal*) it()) {
+
+			if (nextSignal->GetMean () > lastTime)
+				nextSignal->SetMessageValue (peakOutsideCore, true);
+		}
+	}
+}
+
+
 //***********************************************************************************************************************************
 
 

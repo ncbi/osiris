@@ -260,7 +260,7 @@ void Allele :: Write (RGFile& textOutput, const RGString& indent) {
 Locus :: Locus () : SmartMessagingObject (), mLink (NULL), Linked (FALSE), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (0.0), MinimumSampleTime (0.0), mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0),
 mTimeForOneIDUnitRight (0.0), mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0),
-mMaxPeak (0.0), mLargestPeak (NULL) {
+mMaxPeak (0.0), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0) {
 
 	mLink = new BaseLocus ();
 	AlleleIterator = new RGDListIterator (AlleleList);
@@ -271,7 +271,8 @@ mMaxPeak (0.0), mLargestPeak (NULL) {
 Locus :: Locus (BaseLocus* link, const RGString& xmlString) : SmartMessagingObject (), mLink (link), Linked (TRUE),
 mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), MaximumSampleTime (0.0), MinimumSampleTime (0.0), 
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
-mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0), mMaxPeak (0.0), mLargestPeak (NULL) {
+mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0), mMaxPeak (0.0), mLargestPeak (NULL), 
+mFirstTime (0.0), mLastTime (0.0) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 	Valid = BuildAlleleLists (xmlString);
@@ -287,7 +288,7 @@ Locus :: Locus (const Locus& locus) : SmartMessagingObject ((SmartMessagingObjec
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
 mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), mIsAMEL (locus.mIsAMEL), mMinExtendedLocusTime (locus.mMinExtendedLocusTime), 
-mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL) {
+mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 
@@ -323,7 +324,7 @@ mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), 
 Locus :: Locus (const Locus& locus, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)locus), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), 
-mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL) {
+mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 

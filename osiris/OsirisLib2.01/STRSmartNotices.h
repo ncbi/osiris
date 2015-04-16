@@ -221,6 +221,9 @@ PERSISTENT_PREDECLARATION (smILSFilterLeftShoulderPeaksPreset)
 PERSISTENT_PREDECLARATION (smILSShoulderPeakProximityThreshold)
 PERSISTENT_PREDECLARATION (smILSShoulderFilterPercentThreshold)
 PERSISTENT_PREDECLARATION (smILSShoulderPeak)
+PERSISTENT_PREDECLARATION (smLadderPeakOutsideCoreLadder)
+PERSISTENT_PREDECLARATION (smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset)
+PERSISTENT_PREDECLARATION (smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset)
 
 
 
@@ -6084,6 +6087,90 @@ public:
 	smILSShoulderPeak ();
 	smILSShoulderPeak (const smILSShoulderPeak& note);
 	virtual ~smILSShoulderPeak ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smLadderPeakOutsideCoreLadder : public SmartNotice {
+
+PERSISTENT_DECLARATION (smLadderPeakOutsideCoreLadder)
+
+public:
+	smLadderPeakOutsideCoreLadder ();
+	smLadderPeakOutsideCoreLadder (const smLadderPeakOutsideCoreLadder& note);
+	virtual ~smLadderPeakOutsideCoreLadder ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset)
+
+public:
+	smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset ();
+	smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset (const smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset& note);
+	virtual ~smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset)
+
+public:
+	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset ();
+	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset (const smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset& note);
+	virtual ~smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset ();
 
 	virtual int GetSubject () const;
 

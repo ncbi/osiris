@@ -146,6 +146,8 @@ public:
 	virtual int AnalyzeGridLociSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeGridSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
+	virtual void MakeNonCoreLadderArtifactsNoncritical ();
+
 	virtual int AnalyzeCrossChannelSM ();
 	virtual int GridQualityTestSM ();
 	virtual int GridQualityTestSMPart2 (SmartMessagingComm& comm, int numHigherObjects);
