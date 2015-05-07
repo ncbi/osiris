@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (x64) (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="StandardSettings">
 		<xs:annotation>
@@ -10,7 +10,7 @@
 				<xs:element name="Version" type="xs:string" default="4.0" minOccurs="0"/>
 				<xs:element ref="AlgorithmParameters"/>
 				<xs:element ref="StandardParameters"/>
-				<xs:element name="StdMarkerSetSpecifications">
+				<xs:element name="StdMarkerSetSpecifications" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:annotation>
@@ -19,7 +19,7 @@
 							<xs:element name="StdMarkerSetCollection">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="MarkerSetName" type="xs:string"/>
+										<xs:element name="MarkerSetName" type="xs:string" minOccurs="0"/>
 										<xs:element ref="PositiveControls" minOccurs="0"/>
 										<xs:element name="StandardOffLadderAlleles" type="LocusCollection" minOccurs="0"/>
 										<xs:element name="StandardTrialleles" type="LocusCollection" minOccurs="0"/>
