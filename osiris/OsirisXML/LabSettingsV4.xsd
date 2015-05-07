@@ -364,6 +364,7 @@ Added Info tag</xs:documentation>
 							<xs:complexType>
 								<xs:sequence>
 									<xs:element name="MarkerSetName" type="xs:string"/>
+									<xs:element name="LadderFIleName" type="xs:string" minOccurs="0"/>
 									<xs:element name="ILS" type="xs:string">
 										<xs:annotation>
 											<xs:documentation>Default ILS Name</xs:documentation>
