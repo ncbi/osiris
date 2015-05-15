@@ -45,6 +45,7 @@
 #include <wx/button.h>
 #include <wx/scrolwin.h>
 #include "nwx/nwxShiftSizer.h"
+#include "nwx/nwxButtonMenu.h"
 
 #if !__USING_NATIVE_TOGGLE
 #include "wx/things/toggle.h"
@@ -57,12 +58,14 @@ typedef wxToggleButton CHANNEL_BUTTON;
 #include "CPlotController.h"
 #include "wxIDS.h"
 
+
 #define PLOT_TOOLBAR_SHIFT_ALL "\nHold down the shift key to set all plots."
 
 class CKitColors;
 class CPlotData;
 class CPanelHistoryMenu;
 class CMenuHistory;
+class CMenuLabels;
 
 class CComboArtifact : public wxComboBox, IArtifactDisplayController
 {
@@ -72,6 +75,10 @@ public:
   virtual int GetIntValue();
   virtual void SetDefault();
 };
+
+
+/////////////////////////////////////////////////////////////////////
+
 
 class CPanelPlotToolbar : 
   public wxScrolledWindow, 
@@ -84,6 +91,7 @@ public:
     CPlotData *pData, 
     CKitColors *pColors, 
     CMenuHistory *pMenu,
+    int nMenuNumber,
     bool bDraw = true);
   virtual ~CPanelPlotToolbar();
   void SyncTo(CPanelPlotToolbar *p);
@@ -121,7 +129,8 @@ public:
 
   // labels, artifacts
 
-  virtual LABEL_PLOT_TYPE LabelType();
+  virtual size_t GetLabelTypes(vector<unsigned int> *pan);
+  virtual void SetLabelTypes(const vector<unsigned int> &an);
   virtual void SetLabelType(LABEL_PLOT_TYPE n, LABEL_PLOT_TYPE nDefault = LABEL_NONE);
   virtual int ArtifactValue();
   virtual void SetArtifactValue(int nLevel);
@@ -208,6 +217,10 @@ public:
     }
     return nRtn;
   }
+  CMenuLabels *GetMenuLabels()
+  {
+    return m_pMenuLabels;
+  }
 
 private:
   void _EnableBaseline(bool b)
@@ -223,7 +236,6 @@ private:
   }
   CHANNEL_BUTTON *m_pButtonChannel[CHANNEL_MAX + 1]; 
        // add one to size to make it a 1 based array
-  CComboLabels *m_pComboLabels;
   CComboArtifact *m_pComboArtifact;
   wxToggleButton *m_pButtonSync;
   wxToggleButton *m_pButtonAnalyzed;
@@ -235,7 +247,9 @@ private:
   wxToggleButton *m_pButtonILS;
   wxButton *m_pButtonDelete;
   wxButton *m_pButtonAppend;
+  nwxButtonMenu *m_pButtonLabels;
   CPanelHistoryMenu *m_pPanelHistory;
+  CMenuLabels *m_pMenuLabels;
   wxPanel *m_pPanel;
   vector<wxWindow *> m_vShiftWindows;
   int m_nChannelCount;

@@ -134,7 +134,7 @@ my $VARLIST =
   ["m_bPlotResizable", "bool"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
   ["m_nPlotShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
-  ["m_nPlotDisplayPeak", "unsigned int","1",undef,"m_ioUint1"],
+  ["m_anPlotDisplayPeak", "vector<unsigned int>","1"],
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
 
   ["XSLT saved parameter info"],
@@ -205,7 +205,9 @@ EOF
 my $hArgs =
 {
  "wxString" => "const wxString &",
- "bool true" => "bool "
+ "bool true" => "bool ",
+ "vector<int>" => "const vector<int> &",
+ "vector<unsigned int>" => "const vector<unsigned int> &"
 };
 
 sub GetVarType
@@ -244,6 +246,13 @@ sub GenerateCopyOrCompare
   $sRtn;
 }
 
+sub chopPrefix
+{
+  my $s = shift;
+  $s =~ s/^m_[a-z]{1,2}//;
+  $s;
+}
+
 sub GenerateRegister
 {
   my $sRtn = "";
@@ -254,7 +263,9 @@ sub GenerateRegister
   "bool" => "RegisterBool",
   "int" => "RegisterInt",
   "double" => "RegisterDouble",
-  "wxString" => "RegisterWxString"
+  "wxString" => "RegisterWxString",
+  "vector<int>" => "RegisterIntVector",
+  "vector<unsigned int>" => "RegisterUintVector"
   };
   for $a (@$VARLIST)
   {
@@ -263,8 +274,7 @@ sub GenerateRegister
       my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable) = @$a;
       if(!$sTagName)
       {
-        $sTagName = $sVarName;
-        $sTagName =~ s/^m_.//;
+        $sTagName = &chopPrefix($sVarName);
       }
       if($sIOvariable)
       {
@@ -310,6 +320,20 @@ sub GenerateDefaults
     {
       $sRtn .= "  ${sVarName}.Empty();\n";
     }
+    elsif($sVarType =~ m/vector<[\w ]+>$/)
+    {
+      $sRtn .= "  ${sVarName}.clear();\n";
+      if(defined($sDefaultValue))
+      {
+        $sDefaultValue =~ s/[\s,]+/ /g;
+        $sDefaultValue =~ s/^ | $//g;
+        my @as = split / /,$sDefaultValue;
+        for my $ss (@as)
+        {
+          $sRtn .= "  ${sVarName}.push_back($ss);\n";
+        }
+      }
+    }
     else
     {
       defined($sDefaultValue) || ($sDefaultValue = $DEFAULTS->{$sVarType});
@@ -331,7 +355,9 @@ sub GenerateSet
     "unsigned int" => "n",
     "wxString" => "s",
     "bool" => "b",
-    "bool true" => "b"
+    "bool true" => "b",
+    "vector<int>" => "an",
+    "vector<unsigned int>" => "an"
   };
   for my $a (@$VARLIST)
   {
@@ -343,8 +369,7 @@ sub GenerateSet
     {
       my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable) = @$a;
       my $arg = &GetVarType($sVarType);
-      my $fnc = $sVarName;
-      $fnc =~ s/^m_./Set/;
+      my $fnc = "Set" . &chopPrefix($sVarName);
       my $argName = $argNames->{$sVarType};
       $argName || die("Cannot find arg name for ${sVarType}");
 
@@ -371,8 +396,7 @@ sub GenerateGet
     {
       my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable) = @$a;
       my $sReturn = &GetVarType($sVarType);
-      my $fnc = $sVarName;
-      $fnc =~ s/^m_./Get/;
+      my $fnc = "Get" . &chopPrefix($sVarName);
       $sRtn .= <<EOF;
   ${sReturn}${fnc}() const
   {
@@ -415,7 +439,16 @@ sub GenFiles
   my $sCompare = &GenerateCopyOrCompare("");
   my $sStringHeader = &GenerateStringsHeader;
   my $sStringCPP = &GenerateStringsCPP;
+  my $sCOPY = <<EOF1;
 
+  {
+    if(!(s1 == s2))
+    {
+      s1 = s2;
+      m_bModified = true;
+    }
+  }
+EOF1
   my $fileH = <<EOF;
 /*
 * ===========================================================================
@@ -564,46 +597,13 @@ private:
 
   // SET VALUES
 
-  void __SET_VALUE(wxString &s1, const wxString &s2)
-  {
-    if(s1 != s2)
-    {
-      s1 = s2;
-      m_bModified = true;
-    }
-  }
-  void __SET_VALUE(double &s1, double s2)
-  {
-    if(s1 != s2)
-    {
-      s1 = s2;
-      m_bModified = true;
-    }
-  }
-  void __SET_VALUE(bool &s1, bool s2)
-  {
-    if(s1 != s2)
-    {
-      s1 = s2;
-      m_bModified = true;
-    }
-  }
-  void __SET_VALUE(int &s1, int s2)
-  {
-    if(s1 != s2)
-    {
-      s1 = s2;
-      m_bModified = true;
-    }
-  }
-  void __SET_VALUE(unsigned int &s1, unsigned int s2)
-  {
-    if(s1 != s2)
-    {
-      s1 = s2;
-      m_bModified = true;
-    }
-  }
+  void __SET_VALUE(wxString &s1, const wxString &s2)${sCOPY}
+  void __SET_VALUE(double &s1, double s2)${sCOPY}
+  void __SET_VALUE(bool &s1, bool s2)${sCOPY}
+  void __SET_VALUE(int &s1, int s2)${sCOPY}
+  void __SET_VALUE(unsigned int &s1, unsigned int s2)${sCOPY}
+  void __SET_VALUE(vector<int> &s1, const vector<int> &s2)${sCOPY}
+  void __SET_VALUE(vector<unsigned int> &s1, const vector<unsigned int> &s2)${sCOPY}
 
 public:
 
@@ -946,7 +946,7 @@ ${sCopy}
 
 bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 {
-#define CP(elem) else if(elem != x.elem) { bRtn = false; }
+#define CP(elem) else if(!(elem == x.elem)) { bRtn = false; }
   bool bRtn = true;
   if(0) {}
   // begin generated compare

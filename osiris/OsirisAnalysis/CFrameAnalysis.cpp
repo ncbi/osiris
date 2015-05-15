@@ -305,7 +305,7 @@ void CFrameAnalysis::_Build()
   pSizerLabel->Add(
     new wxStaticText(m_pPanelToolbar,wxID_ANY,"Display:"),
     0, wxALL | wxALIGN_CENTER_VERTICAL, ID_BORDER);
-  m_pComboCellType = new CComboLabels(m_pPanelToolbar,IDgraphLabelsCombo,false);
+  m_pComboCellType = new CComboLabels(m_pPanelToolbar,IDgraphLabelsCombo);
   m_pComboName = new CComboLabelsName(m_pPanelToolbar,IDgraphNameCombo);
   BOX_COMBO(m_pComboCellType, pSizerLabel,
       ((wxALL ^ wxLEFT) | wxALIGN_CENTER_VERTICAL)); // #defined in CComboLabels.h
@@ -1511,8 +1511,10 @@ void CFrameAnalysis::_UpdatePreviewLabelType(int n)
   if(m_pSplitterTop->IsSplit())
   {
     int nPlotLabel = CELL_TO_PLOT(n);
+#if 0
     int nCurrent = m_pPanelPlotPreview->GetPeakLabelType();
     if(nCurrent != nPlotLabel)
+#endif
     {
       int nCol = _GetPreviewColumn();
       if(_IsLocusColumn(nCol) || (nCol == ILS_COLUMN))

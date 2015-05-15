@@ -195,12 +195,6 @@ private:
       {
         m_nDelay = nDelay;
       }
-#if 0 // def _DEBUG
-      else if(!nDelay)
-      {
-        m_pPlot->SetViewRect(m_rect, false);
-      }
-#endif
       if(!m_nDelay)
       {
         _DoIt();
@@ -278,9 +272,15 @@ public:
   {
     _SetArtifactLabel(CArtifactDisplayList::nArtifactLabelAll);
   }
+#if 0
   int GetLabelType()
   {
     return (int)m_pMenu->LabelType();
+  }
+#endif
+  size_t GetLabelTypes(vector<unsigned int> *pan)
+  {
+    return m_pMenu->GetLabelTypes(pan);
   }
   bool MenuEvent(wxCommandEvent &e);
 
@@ -351,8 +351,11 @@ public:
   }
   void EnableLabelMenu(bool b = true)
   {
-    m_pMenu->EnableLabelMenu(b);
-    _SyncControllers(m_pMenu);
+    if(b != m_pMenu->IsLabelMenuEnabled())
+    {
+      m_pMenu->EnableLabelMenu(b);
+      _SyncControllers(m_pMenu);
+    }
   }
   void EnableDelete(bool b = true)
   {
@@ -360,8 +363,11 @@ public:
 //    {
 //      m_pButtonPanel->EnableDelete(b);
 //    }
-    m_pMenu->EnableDelete(b);
-    _SyncControllers(m_pMenu);
+    if(m_pMenu->IsDeleteEnabled() != b)
+    {
+      m_pMenu->EnableDelete(b);
+      _SyncControllers(m_pMenu);
+    }
   }
   void EnableAppend(bool b = true)
   {
@@ -369,24 +375,22 @@ public:
 //    {
 //      m_pButtonPanel->EnableAppend(b);
 //    }
-    m_pMenu->EnableAppend(b);
-    _SyncControllers(m_pMenu);
+    if(m_pMenu->IsAppendEnabled() != b)
+    {
+      m_pMenu->EnableAppend(b);
+      _SyncControllers(m_pMenu);
+    }
   }
   void ShowChannel(unsigned int n, bool b = true)
   {
-//    if(HasToolbar())
-//    {
-//      m_pButtonPanel->ShowChannel(n,b);
-//    }
-    m_pMenu->ShowChannel(n,b);
-    _SyncControllers(m_pMenu);
+    if(m_pMenu->ChannelValue(n) != b)
+    {
+      m_pMenu->ShowChannel(n,b);
+      _SyncControllers(m_pMenu);
+    }
   }
   void ShowOneChannel(unsigned int n)
   {
-//    if(HasToolbar())
-//    {
-//      m_pButtonPanel->ShowOneChannel(n);
-//    }
     m_pMenu->ShowOneChannel(n);
     _SyncControllers(m_pMenu);
   }
@@ -509,6 +513,10 @@ private:
   // expand height and width by  (1 + dBy + dBy)  
   // for 5% in each direction or 10% total,  dBy = 0.05
   void ExtendLabelHeight(wxRect2DDouble *p);  // expand height to accommodate 8px labels
+  int GetLabelHeightPixels()
+  {
+    return 16;
+  }
   void _OnTimer(wxTimerEvent &);
   void _SendSizeAction()
   {
@@ -548,12 +556,12 @@ private:
     const wxColour &colour,
     const wxString &sChannelName,
     unsigned int nChannel,
-    LABEL_PLOT_TYPE nLabelType);
+    vector<unsigned int> &anLabel);
   void _BuildLadderPeakLabels(
-    LABEL_PLOT_TYPE nLabelType);
+    vector<unsigned int> &anLabel);
 
   void _BuildPLTlabels(bool bArtifactOnly = false, unsigned int nChannel = 0);
-  wxString _AlleleLabel(const IOARpeak *pPeak, LABEL_PLOT_TYPE nType);
+  wxString _AlleleLabel(const IOARpeak *pPeak, vector<unsigned int> &anLabel);
   wxString _ArtifactToolTip(
     const IOARpeak *pPeak, const wxString &sChannelName);
   wxString _AlleleToolTip(
@@ -596,9 +604,7 @@ private:
   // m_pButtonPanel and m_pMenu need to be kept in sync
   CPanelPlotToolbar *m_pButtonPanel;
   CMenuPlot  *m_pMenu;
-#if !REUSE_MENUS
   CMenuPlot *m_pMenuPopup;
-#endif
   nwxShiftSizer *m_pShiftSizer;
 
   CFramePlot *m_pFramePlot;

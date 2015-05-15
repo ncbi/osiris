@@ -390,12 +390,6 @@ void CPanelPlotPreview::SetFileMissing()
 {
   _SetupMessage();
 }
-int CPanelPlotPreview::GetPeakLabelType()
-{
-  CPanelPlot *pPlot = _FindCurrent();
-  int nRtn = (pPlot == NULL) ? 0 : pPlot->GetLabelType();
-  return nRtn;
-}
 void CPanelPlotPreview::SetPeakLabelType(int n)
 {
   CPanelPlot *pPlot = _FindCurrent();

@@ -1478,6 +1478,24 @@ bool mainFrame::_CheckForNewerFiles(
   }
   return bRtn;
 }
+void mainFrame::OnMenuOpen(wxMenuEvent &e)
+{
+  CMDIFrame *pFrame = GetActiveFrame();
+  if(pFrame != NULL)
+  {
+    pFrame->OnMenuOpen(e);
+  }
+}
+void mainFrame::OnMenuClose(wxMenuEvent &e)
+{
+  CMDIFrame *pFrame = GetActiveFrame();
+  if(pFrame != NULL)
+  {
+    pFrame->OnMenuClose(e);
+  }
+}
+
+
 #if DRAG_DROP_FILES
 void mainFrame::OnDropFiles(wxCommandEvent &)
 {
@@ -1496,5 +1514,9 @@ EVT_TIMER(IDtimer, mainFrame::OnTimer)
 #if DRAG_DROP_FILES
 EVT_COMMAND(wxID_ANY,CEventDragDropDelay, mainFrame::OnDropFiles)
 #endif
+
+EVT_MENU_OPEN(mainFrame::OnMenuOpen)
+EVT_MENU_CLOSE(mainFrame::OnMenuClose)
+
 
 END_EVENT_TABLE()

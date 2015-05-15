@@ -33,6 +33,7 @@
 
 #include <wx/menu.h>
 #include "CPlotController.h"
+#include "CMenuLabels.h"
 #include "LABEL_TYPES.h"
 #include "wxIDS.h"
 
@@ -72,6 +73,7 @@ public:
       // lite menu used for plot preview in CFrameAnalysis
   virtual ~CMenuPlot();
   CMenuPlot *Clone();
+#if 0
   bool UsingDefault()
   {
     if(m_bUsedDefault)
@@ -81,13 +83,13 @@ public:
     }
     return m_bUsedDefault;
   }
+#endif
   bool HasID(int nID)
   {
     bool bRtn = (nID >= m_nOffset) && 
       (nID < (m_nOffset + IDmenuPlot_MAX));
     return bRtn;
   }
-
   // enable/disable Label menu
 
   virtual void EnableLabelMenu(bool bEnable = true);
@@ -125,12 +127,15 @@ public:
   virtual void ShowLadderLabels(bool b = true);
 
   // labels, artifacts
-
+#if 0
   virtual LABEL_PLOT_TYPE LabelType();
-  virtual int ArtifactValue();
-
+#endif
+  virtual size_t GetLabelTypes(vector<unsigned int> *pan);
+  virtual void SetLabelTypes(const vector<unsigned int> &an);
   virtual void SetLabelType(LABEL_PLOT_TYPE n, LABEL_PLOT_TYPE nDefault = LABEL_NONE);
+  virtual int ArtifactValue();
   virtual void SetArtifactValue(int nLevel);
+
 
   //  enable, disable append, delete items
 
@@ -143,13 +148,22 @@ public:
   virtual void EnablePeakAreaLabel(bool b);
   virtual bool PeakAreaLabelEnabled();
 
+  int GetLabelType()
+  {
+    vector<unsigned int> an;
+    size_t nCount = GetLabelTypes(&an);
+    int nRtn = 0;
+    nRtn = (nCount >= 1) ? (int)an[0] : 0;
+    return nRtn;
+  }
+  void ClearLabelTypes();
+  bool SetStateFromEvent(wxCommandEvent &e);
 private:
   void _Build(CPlotData *pData, CKitColors *pColors);
   int _ID(int n)
   {
     return n + m_nOffset;
   }
-
   int m_nOffset;
   unsigned int m_nChannelCount;
   CKitColors *m_pKitColors;
@@ -159,9 +173,13 @@ private:
   wxMenu *m_pMenuChannels;
   CMenuArtifact *m_pMenuArtifact;
   CMenuLabels *m_pMenuLabels;
+#if 0
   LABEL_PLOT_TYPE m_nLastType;
+#endif
   bool m_bPreview;
+#if 0
   bool m_bUsedDefault;
+#endif
 
   DECLARE_ABSTRACT_CLASS(CMenuPlot)
 };

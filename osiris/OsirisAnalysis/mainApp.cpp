@@ -482,6 +482,7 @@ EVT_MENU(IDMaxLadderLabels, mainApp::OnMaxLadderLabels)
 EVT_MENU(wxID_SAVEAS, mainApp::OnSave)
 EVT_MENU(wxID_SAVE, mainApp::OnSave)
 
+
 #ifdef __WINDOW_LIST__
 #ifdef __WXMAC__
 EVT_MENU_RANGE(IDmenuWindow_Minimize,IDmenuWindow_Frame_END,mainApp::OnWindowMenu)

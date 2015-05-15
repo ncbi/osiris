@@ -101,9 +101,13 @@ CMenuPlot::CMenuPlot(
     m_pMenuChannels(NULL),
     m_pMenuArtifact(NULL),
     m_pMenuLabels(NULL),
+#if 0
     m_nLastType(LABEL_NONE),
-    m_bPreview(true),
-    m_bUsedDefault(false)
+#endif
+    m_bPreview(true)
+#if 0
+    ,m_bUsedDefault(false)
+#endif
 {
   m_nOffset = ID_GET_PLOT_BASE(0);
   _Build(pData,pColors);
@@ -120,9 +124,13 @@ CMenuPlot::CMenuPlot(
     m_pMenuChannels(NULL),
     m_pMenuArtifact(NULL),
     m_pMenuLabels(NULL),
+#if 0
     m_nLastType(LABEL_NONE),
-    m_bPreview(false),
-    m_bUsedDefault(false)
+#endif
+    m_bPreview(false)
+#if 0
+    ,m_bUsedDefault(false)
+#endif
 {
   _Build(pData,pColors);
 }
@@ -209,8 +217,11 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
       }
     }
   }
-
-  m_pMenuLabels = new CMenuLabels(true,m_nOffset);
+  CMenuLabels::MENU_LABEL_TYPE nType = 
+    m_bPreview
+      ? CMenuLabels::MENU_TYPE_PREVIEW
+      : CMenuLabels::MENU_TYPE_PLOT;
+  m_pMenuLabels = new CMenuLabels(nType,m_nOffset);
   m_pMenuArtifact = new CMenuArtifact(m_nOffset);
 
   // now build the menu
@@ -399,22 +410,39 @@ void CMenuPlot::ShowLadderLabels(bool b)
 }
 //  labels, artifacts
 
+int CMenuPlot::ArtifactValue()
+{
+  return m_pMenuArtifact->GetIntValue();
+}
+#if 0
 LABEL_PLOT_TYPE CMenuPlot::LabelType()
 {
   LABEL_PLOT_TYPE n = 
     (LABEL_PLOT_TYPE)m_pMenuLabels->GetCheckedOffset();
   return n;
 }
-int CMenuPlot::ArtifactValue()
+#endif
+size_t CMenuPlot::GetLabelTypes(vector<unsigned int> *pan)
 {
-  return m_pMenuArtifact->GetIntValue();
+  size_t n = m_pMenuLabels->GetSelectionTypes(pan);
+  return n;
+}
+void CMenuPlot::SetLabelTypes(const vector<unsigned int> &an)
+{
+  m_pMenuLabels->SetSelectionTypes(an);
+}
+void CMenuPlot::ClearLabelTypes()
+{
+  m_pMenuLabels->Clear();
 }
 void CMenuPlot::SetLabelType(LABEL_PLOT_TYPE n,LABEL_PLOT_TYPE nDefault)
 {
   LABEL_PLOT_TYPE nType = CheckLabelType(n,nDefault);
+  m_pMenuLabels->SelectByType(nType,true);
+#if 0
   m_bUsedDefault = (nType != n);
   m_nLastType = nType;
-  m_pMenuLabels->SelectByOffset((int)nType);
+#endif
 }
 void CMenuPlot::SetArtifactValue(int nLevel)
 {
@@ -464,4 +492,18 @@ void CMenuPlot::EnablePeakAreaLabel(bool b)
 bool CMenuPlot::PeakAreaLabelEnabled()
 {
   return m_pMenuLabels->PeakAreaLabelEnabled();
+}
+bool CMenuPlot::SetStateFromEvent(wxCommandEvent &e)
+{
+  wxMenuItem *pItem = FindItem(e.GetId());
+  bool bRtn = (pItem != NULL);
+  if(bRtn && pItem->IsCheckable())
+  {
+    bool bCheck = e.IsChecked();
+    if(pItem->IsChecked() != bCheck)
+    {
+      pItem->Check(bCheck);
+    }
+  }
+  return bRtn;
 }

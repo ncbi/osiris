@@ -31,8 +31,11 @@
 #ifndef __C_PLOT_CONTROLLER_H__
 #define __C_PLOT_CONTROLLER_H__
 
-#include "CComboLabels.h"
 #include "LABEL_TYPES.h"
+#include "nwx/stdb.h"
+#include <vector>
+#include "nwx/stde.h"
+#include "nwx/nsstd.h"
 
 
 //****************************************** CArtifactDisplayList
@@ -113,7 +116,24 @@ public:
 
   // labels, artifacts
 
+#if 0
   virtual LABEL_PLOT_TYPE LabelType() = 0;
+#endif
+  virtual void SetLabelType(LABEL_PLOT_TYPE n, LABEL_PLOT_TYPE nDefault = LABEL_NONE) = 0;
+  virtual size_t GetLabelTypes(vector<unsigned int> *pan) = 0;
+  virtual void SetLabelTypes(const vector<unsigned int> &an) = 0;
+  virtual size_t LabelTypeCount()
+  {
+    vector<unsigned int> an;
+    size_t nRtn = GetLabelTypes(&an);
+    return nRtn;
+  }
+  virtual void CopyLabelTypes(CPlotController *pc)
+  {
+    vector<unsigned int> an;
+    pc->GetLabelTypes(&an);
+    SetLabelTypes(an);
+  }
   virtual int ArtifactValue() = 0;
 
   LABEL_PLOT_TYPE CheckLabelType(LABEL_PLOT_TYPE n, LABEL_PLOT_TYPE nDefault)
@@ -121,7 +141,6 @@ public:
     LABEL_PLOT_TYPE nRtn = ((n == LABEL_PEAK_AREA) && !PeakAreaLabelEnabled()) ? nDefault : n;
     return nRtn;
   }
-  virtual void SetLabelType(LABEL_PLOT_TYPE n, LABEL_PLOT_TYPE nDefault = LABEL_NONE) = 0;
   virtual void SetArtifactValue(int nLevel) = 0;
 
   // enable/disable Label menu

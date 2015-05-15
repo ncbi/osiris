@@ -109,6 +109,10 @@ public:
     COARfile *pFile = NULL);
   bool ShowColourDialog(wxColour *pColour);
   bool DoClose();
+
+  void OnMenuOpen(wxMenuEvent &e);
+  void OnMenuClose(wxMenuEvent &);
+
 #if mainFrameIsWindow
   void OnClose(wxCloseEvent &e);
 #endif
@@ -245,6 +249,10 @@ public:
     m_MDImgr.InvalidateWindowMenu();
   }
 #endif
+  CMDIFrame *GetActiveFrame()
+  {
+    return m_pLastActive;
+  }
   void SetActiveFrame(CMDIFrame *p)
   {
     m_pLastActive = p;
