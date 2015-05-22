@@ -131,7 +131,7 @@ CPanelPlot *CPanelPlotPreview::SetFileAllChannels(
     pRtn->ShowAllChannels(true);
     pRtn->ResetDefaults();
     pRtn->SetLabelType(LABEL_NONE);
-    pRtn->EnableLabelMenu(false);
+//    pRtn->EnableLabelMenu(false);
     pRtn->SetArtifactLabelNone();
     pRtn->RebuildCurves();
     pRtn->ZoomOut(false);
