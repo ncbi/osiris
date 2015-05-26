@@ -1481,7 +1481,7 @@ bool mainFrame::_CheckForNewerFiles(
 void mainFrame::OnMenuOpen(wxMenuEvent &e)
 {
   CMDIFrame *pFrame = GetActiveFrame();
-  if(pFrame != NULL)
+  if(pFrame != NULL && pFrame != INIT_LAST_ACTIVE)
   {
     pFrame->OnMenuOpen(e);
   }
@@ -1489,7 +1489,7 @@ void mainFrame::OnMenuOpen(wxMenuEvent &e)
 void mainFrame::OnMenuClose(wxMenuEvent &e)
 {
   CMDIFrame *pFrame = GetActiveFrame();
-  if(pFrame != NULL)
+  if(pFrame != NULL && pFrame != INIT_LAST_ACTIVE)
   {
     pFrame->OnMenuClose(e);
   }
