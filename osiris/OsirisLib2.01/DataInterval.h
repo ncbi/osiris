@@ -96,6 +96,7 @@ public:
 	double GetLocalMinValue () const { return mLocalMinValue; }
 
 	void ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSignal* data);
+	void RecomputeRelativeMinimum (const DataSignal* currentSignal, double mean, int localMax, double maxValue, const DataSignal* rawData);
 
 	virtual size_t StoreSize () const;
 
