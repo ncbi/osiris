@@ -208,4 +208,8 @@ smILSFilterLeftShoulderPeaksPreset	1090	2606
 smILSShoulderPeakProximityThreshold	1091	2607
 smILSShoulderFilterPercentThreshold	1092	2608
 smILSShoulderPeak	1093	2609
+smLadderPeakOutsideCoreLadder	1094	2610
+smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset	1095	2611
+smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset	1096	2612
+
 

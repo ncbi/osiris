@@ -127,7 +127,7 @@ void DataInterval :: ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSi
 		current = localData->Value (i);
 		next = localData->Value (i + 1);
 
-		if ((current > prev) && (current > next)) {
+		if ((current >= prev) && (current > next)) {
 
 			if (current - mLocalMinValue > noiseLevel) {
 
@@ -158,7 +158,7 @@ void DataInterval :: ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSi
 		current = localData->Value (i);
 		prev = localData->Value (i - 1);
 
-		if ((current > prev) && (current > next)) {
+		if ((current > prev) && (current >= next)) {
 
 			if (current - mLocalMinValue > noiseLevel)
 				return;
@@ -220,6 +220,30 @@ void DataInterval :: ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSi
 	//}
 
 	mNumberOfMinima = 0;
+}
+
+
+void DataInterval :: RecomputeRelativeMinimum (const DataSignal* currentSignal, double mean, int localMax, double maxValue, const DataSignal* rawData) {
+
+	if (mNumberOfMinima > 0)  // ???
+		return;
+
+	int localMin = GetLocalMinimum ();
+
+	if (mean < localMax) {
+
+		if (!(mean < localMin) || !(localMin < localMax))
+			localMin = localMax;
+	}
+
+	else {
+
+		if (!(localMax < localMin) || !(localMin < mean))
+			localMin = localMax;
+	}
+
+	mLocalMinValue = rawData->Value (localMin);
+	mNumberOfMinima = 1;
 }
 
 

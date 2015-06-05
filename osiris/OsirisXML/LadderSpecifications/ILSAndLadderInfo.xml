@@ -510,5 +510,9 @@
 			<KitName>NIDDKFragileX1</KitName>
 			<FileName>NIDDKFragileX1_LadderInfo.xml</FileName>
 		</Set>
+		<Set>
+			<KitName>GenePrint 10</KitName>
+			<FileName>GenePrint10_LadderInfo.xml</FileName>
+		</Set>
 	</Kits>
 </KitData>

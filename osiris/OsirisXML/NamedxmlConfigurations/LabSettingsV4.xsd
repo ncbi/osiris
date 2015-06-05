@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
-<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (x64) (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="Common.xsd"/>
 	<xs:element name="LabSettings" type="LabSettingsType">
@@ -45,7 +45,22 @@ Added Info tag</xs:documentation>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="SingleSourceStrings" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Synonym" type="Synonym"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PossibleMixtureStrings" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Synonym" type="Synonym"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="StandardControlName" type="xs:string"/>
+			<xs:element name="UseSampleName" type="xs:boolean" minOccurs="0"/>
 			<xs:sequence minOccurs="0" maxOccurs="29">
 				<xs:element name="SpecimenCategory">
 					<xs:annotation>
@@ -184,7 +199,7 @@ Added Info tag</xs:documentation>
 		<xs:sequence>
 			<xs:element name="MinimumRFU" type="xs:double" default="150">
 				<xs:annotation>
-					<xs:documentation>Minimum acceptable RFU</xs:documentation>
+					<xs:documentation>Minimum analysis threshold</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="MinimumRFUinterlocus" minOccurs="0">
@@ -195,6 +210,11 @@ Added Info tag</xs:documentation>
 			<xs:element name="MaximumRFU" type="xs:double" default="-1">
 				<xs:annotation>
 					<xs:documentation>Maximim acceptable RFU; -1 if not applicable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MinDetectionRFU" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Minimum detection threshold</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="FractionOfMaxPeak" type="xs:double" default="-1">
@@ -296,6 +316,11 @@ Added Info tag</xs:documentation>
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:element>
+						<xs:element name="DataFileType" type="xs:string" default="fsa" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>File name extension...default = fsa</xs:documentation>
+							</xs:annotation>
+						</xs:element>
 						<xs:element name="Protocol" minOccurs="0">
 							<xs:simpleType>
 								<xs:restriction base="xs:string">
@@ -339,6 +364,7 @@ Added Info tag</xs:documentation>
 							<xs:complexType>
 								<xs:sequence>
 									<xs:element name="MarkerSetName" type="xs:string"/>
+									<xs:element name="LadderFIleName" type="xs:string" minOccurs="0"/>
 									<xs:element name="ILS" type="xs:string">
 										<xs:annotation>
 											<xs:documentation>Default ILS Name</xs:documentation>
@@ -377,12 +403,19 @@ Added Info tag</xs:documentation>
 						<xs:element name="Acceptance2" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="Acceptance3" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="Acceptance4" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Acceptance5" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="Reviews" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="Reviews1" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="Reviews2" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="Reviews3" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="Reviews4" type="xs:unsignedInt" minOccurs="0"/>
+						<xs:element name="Reviews5" type="xs:unsignedInt" minOccurs="0"/>
 						<xs:element name="AllowUserNameOverride" type="xs:boolean" default="false" minOccurs="0"/>
+						<xs:element name="AllowExportWithAttnReqd" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Curently not implemented</xs:documentation>
+							</xs:annotation>
+						</xs:element>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>

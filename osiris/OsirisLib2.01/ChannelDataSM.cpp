@@ -1164,7 +1164,8 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 		TestFitCriteriaSM (nextSignal);
 
-		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable ()) {
+		//if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum ()) {
+		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum () || mData->TestForBiasedFit (nextSignal, minRFU)) {
 
 			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList, true);
 
@@ -1362,6 +1363,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 	NormalizedGaussian GaussianSignature (0.0, ParametricCurve::GetSigmaForSignature ());
 	NormalizedSuperGaussian JustSuperGaussianSignature (0.0, ParametricCurve::GetSigmaForSignature (), 3);
 	DataSignal* TestSignal;
+	smCurveFitFailed fitFailed;
 //	double fit3;
 	bool rtn;
 	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
@@ -1470,6 +1472,13 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 			PoorFitPeakData* pfpd = new PoorFitPeakData (height, location);
 			mPoorFits.prepend (pfpd);
 			delete currentSignal;
+			currentSignal = new Gaussian ((double)location, 2.0);
+			currentSignal->SetPeak (height);
+			currentSignal->SetMessageValue (fitFailed, true);
+			currentSignal->SetDataMode (height);
+			currentSignal->SetCurveFit (0.795);
+			CompleteCurveList.InsertWithNoReferenceDuplication (currentSignal);
+			PreliminaryCurveList.InsertWithNoReferenceDuplication (currentSignal);  // This is a test!  We keep poor fits in case they are needed later, at which point we point them out.
 			rtn = true;
 		}				
 	}
@@ -1655,8 +1664,20 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 
 		leftSignal->SetMessageValue (partOfDualSignal, true);
 		rightSignal->SetMessageValue (partOfDualSignal, true);
+		double leftMean = leftSignal->GetMean ();
+		double rightMean = rightSignal->GetMean ();
+	//	double delta = rightMean - leftMean;
+		double currentMean = currentSignal->GetMean ();
+		bool biased = false;
+	//	double ratio = (currentMean - leftMean) / delta;
 
-		if ((!originalUnacceptable) && (rightSignal->GetCurveFit () < currentFit) && (leftSignal->GetCurveFit () < currentFit)) {
+		if ((currentMean <= leftMean + 0.5) || (currentMean >= rightMean - 0.5))
+			biased = true;
+
+		//else if ((ratio <= 0.2) || (ratio >= 0.8))
+		//	biased = true;
+
+		if ((!originalUnacceptable) && (rightSignal->GetCurveFit () < currentFit) && (leftSignal->GetCurveFit () < currentFit)  && (!biased)) {
 
 			delete leftSignal;
 			delete rightSignal;
@@ -1666,7 +1687,7 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 
 		secondaryContent = fabs(rightSignal->GetScale (2));
 
-		if ((!rightSignal->IsUnimodal ()) || (secondaryContent > 0.9 * rightSignal->Peak ()) || (rightSignal->GetCurveFit () < absoluteMinFit)) {
+		if ((!biased) && ((!rightSignal->IsUnimodal ()) || (secondaryContent > 0.9 * rightSignal->Peak ()) || (rightSignal->GetCurveFit () < absoluteMinFit))) {
 
 			delete rightSignal;
 			rtnValue--;
@@ -1693,7 +1714,7 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 
 		secondaryContent = fabs(leftSignal->GetScale (2));
 
-		if ((!leftSignal->IsUnimodal ()) || (secondaryContent > 0.9 * leftSignal->Peak ()) || (leftSignal->GetCurveFit () < absoluteMinFit)) {
+		if ((!biased) && ((!leftSignal->IsUnimodal ()) || (secondaryContent > 0.9 * leftSignal->Peak ()) || (leftSignal->GetCurveFit () < absoluteMinFit))) {
 
 			delete leftSignal;
 			rtnValue--;

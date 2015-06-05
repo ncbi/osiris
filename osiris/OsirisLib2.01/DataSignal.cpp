@@ -3151,6 +3151,182 @@ double SampledData :: TestConstantCharacteristicRetry (double& height, int& left
 }
 
 
+bool SampledData :: HasAtLeastOneLocalMinimum () {
+
+	DataInterval* nextInterval = (DataInterval*)PeakIterator->CurrentItem ();
+
+	if (nextInterval == NULL)
+		return false;
+
+	if (nextInterval->GetNumberOfMinima () > 0)
+		return true;
+
+	return false;
+}
+
+
+bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double limit) {
+
+	DataInterval* nextInterval = (DataInterval*)PeakIterator->CurrentItem ();
+	int intLeft = nextInterval->GetLeft ();
+	int intRight = nextInterval->GetRight ();
+	double value = currentSignal->Value ((double)intRight);
+	//double minDisp = Measurements [intRight] - value;
+	double maxDisp = 0.0;
+	double currentDisp;
+	//int locMin;
+	int locMax;
+	locMax = intRight;
+	bool print = false;
+
+	int i;
+	double mu = currentSignal->GetMean ();
+	double ratio = (mu - (double)intLeft) / (double)(intRight - intLeft);
+
+	//if ((ratio > 0.45) && (ratio < 0.55))
+	//	return false;
+
+	double sigma = currentSignal->GetStandardDeviation ();
+	double leftUpper = mu - sigma;
+	double rightLower = mu + sigma;
+
+	//if ((mu > 3054.0) && (mu < 3054.8))
+	//	print = true;
+
+	//else if ((mu > 3744.7) && (mu < 3745.3))
+	//	print = true;
+
+	if (print) {
+		cout << "mu = " << mu << " and sigma = " << sigma << endl;
+		cout << "left = " << intLeft << " and right = " << intRight << endl;
+		cout << "Fit left = " << currentSignal->LeftEndPoint () << " and fit right = " << currentSignal->RightEndPoint () << endl;
+	}
+
+	if (ratio >= 0.62) {
+
+		for (i=intLeft; i<leftUpper; i++) {
+
+			currentDisp = Measurements [i] - currentSignal->Value ((double)i);
+
+			if (currentDisp > maxDisp) {
+
+				locMax = i;
+				maxDisp = currentDisp;
+			}
+		}
+
+		if (print) {
+
+			cout << "Left max disp = " << maxDisp << " at location = " << locMax << " relative to limit = " << limit << endl;
+			cout << "Raw data at max = " << Measurements [locMax] << " and fit data at max = " << currentSignal->Value ((double)i) << endl;
+		}
+	}
+
+	else if (ratio <= 0.38) {
+
+		for (i=intRight; i>rightLower; i--) {
+
+			currentDisp = Measurements [i] - currentSignal->Value ((double)i);
+
+			if (currentDisp > maxDisp) {
+
+				locMax = i;
+				maxDisp = currentDisp;
+			}
+		}
+
+		if (print) {
+			cout << "Right max disp = " << maxDisp << " at location = " << locMax << " relative to limit = " << limit << endl;
+			cout << "Raw data at max = " << Measurements [locMax] << " and fit data at max = " << currentSignal->Value ((double)i) << endl;
+		}
+	}
+
+	if (maxDisp < limit)
+		return false;
+
+	double midDistance = 0.5 * fabs ((double)locMax - mu);
+	double endSearch;
+	double testMin = 0.5 * maxDisp;
+	bool secondaryPeak = false;
+	double aveHeight;
+	double lineFit;
+
+	if (locMax < mu) {
+
+		// Search left of locMax for low "enough" heights (or displacements); alternatively,
+		// test left of locMax for high enough inner product with constant
+
+		endSearch = locMax - midDistance;
+
+		if (endSearch < 0.0)
+			endSearch = 0.0;
+
+		for (i=locMax; i>=endSearch; i--) {
+
+			currentDisp = Measurements [i] - currentSignal->Value ((double)i);
+
+			if (currentDisp < testMin) {
+
+				secondaryPeak = true;
+				break;
+			}
+		}
+
+		if (!secondaryPeak) {
+
+			lineFit = InnerProductWithConstantFunction ((int)floor (endSearch), locMax, aveHeight);
+
+			if (lineFit < 0.95)
+				secondaryPeak = true;
+
+			else if (aveHeight < 0.7 * Measurements [locMax])
+				secondaryPeak = true;
+		}
+	}
+
+	else {
+
+		// Search right of locMax for low "enough" heights (or displacements); alternatively,
+		// test right of locMax for high enough inner product with constant
+
+		endSearch = locMax + midDistance;
+
+		if (endSearch >= NumberOfSamples - 1)
+			endSearch = (double) (NumberOfSamples - 1);
+
+		for (i=locMax; i<=endSearch; i++) {
+
+			currentDisp = Measurements [i] - currentSignal->Value ((double)i);
+
+			if (currentDisp < testMin) {
+
+				secondaryPeak = true;
+				break;
+			}
+		}
+
+		if (!secondaryPeak) {
+
+			lineFit = InnerProductWithConstantFunction (locMax, (int)ceil (endSearch), aveHeight);
+
+			if (lineFit < 0.95)
+				secondaryPeak = true;
+
+			else if (aveHeight < 0.7 * Measurements [locMax])
+				secondaryPeak = true;
+		}
+	}
+
+	if (!secondaryPeak)
+		return false;
+
+	// OK, so it seems we can't ignore the unmodeled part of this segment.  Let's try to find a division point
+
+	nextInterval->RecomputeRelativeMinimum (currentSignal, mu, locMax, maxDisp, this);
+	return true;
+}
+
+
 
 double SampledData :: InnerProductWithConstantFunction (int left, int right, double& height) const {
 

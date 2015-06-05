@@ -620,6 +620,8 @@ public:
 
 	virtual double TestConstantCharacteristicRetry () { return 0.0; }
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right) { return 0.0; }
+	virtual bool HasAtLeastOneLocalMinimum () { return false; }
+	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit) { return false; }
 	virtual DataSignal* FindCharacteristic (const DataSignal* Target, const DataInterval* Segment, 
 		int windowSize, double& fit, RGDList& previous) const;
 
@@ -920,6 +922,8 @@ public:
 	double InnerProductWithConstantFunction (int left, int right) const;
 
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right);
+	virtual bool HasAtLeastOneLocalMinimum ();
+	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit);
 	double InnerProductWithConstantFunction (int left, int right, double& height) const;
 
 	virtual NoiseInterval* GetNextNoiseInterval ();

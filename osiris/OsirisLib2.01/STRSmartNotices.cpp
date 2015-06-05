@@ -1266,6 +1266,24 @@ int smILSShoulderPeak::sMessageIndex = 0;
 int smILSShoulderPeak::sMessageScope = 0;
 
 
+RGString smLadderPeakOutsideCoreLadder::sName = "smLadderPeakOutsideCoreLadder";
+int smLadderPeakOutsideCoreLadder::sSubject = smLadderPeakOutsideCoreLadder::LoadType ();
+int smLadderPeakOutsideCoreLadder::sMessageIndex = 0;
+int smLadderPeakOutsideCoreLadder::sMessageScope = 0;
+
+
+RGString smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::sName = "smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset";
+int smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::sSubject = smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::LoadType ();
+int smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::sMessageIndex = 0;
+int smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::sMessageScope = 0;
+
+
+RGString smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sName = "smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset";
+int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sSubject = smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::LoadType ();
+int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sMessageIndex = 0;
+int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1476,6 +1494,9 @@ PERSISTENT_DEFINITION (smILSFilterLeftShoulderPeaksPreset, 2606, "smILSFilterLef
 PERSISTENT_DEFINITION (smILSShoulderPeakProximityThreshold, 2607, "smILSShoulderPeakProximityThreshold")
 PERSISTENT_DEFINITION (smILSShoulderFilterPercentThreshold, 2608, "smILSShoulderFilterPercentThreshold")
 PERSISTENT_DEFINITION (smILSShoulderPeak, 2609, "smILSShoulderPeak")
+PERSISTENT_DEFINITION (smLadderPeakOutsideCoreLadder, 2610, "smLadderPeakOutsideCoreLadder")
+PERSISTENT_DEFINITION (smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset, 2611, "smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset")
+PERSISTENT_DEFINITION (smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset, 2612, "smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset")
 
 
 
@@ -14072,6 +14093,186 @@ int smILSShoulderPeak :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smILSShoulderPeak* noticeType = new smILSShoulderPeak;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smLadderPeakOutsideCoreLadder :: smLadderPeakOutsideCoreLadder () : SmartNotice () {
+
+}
+
+
+smLadderPeakOutsideCoreLadder :: smLadderPeakOutsideCoreLadder (const smLadderPeakOutsideCoreLadder& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smLadderPeakOutsideCoreLadder :: ~smLadderPeakOutsideCoreLadder () {
+
+}
+
+
+int smLadderPeakOutsideCoreLadder :: GetSubject () const {
+
+	return smLadderPeakOutsideCoreLadder::sSubject;
+}
+
+
+void smLadderPeakOutsideCoreLadder :: SetIndexAndScope (int index, int scope) const {
+
+	smLadderPeakOutsideCoreLadder::sMessageIndex = index;
+	smLadderPeakOutsideCoreLadder::sMessageScope = scope;
+}
+
+
+int smLadderPeakOutsideCoreLadder :: GetMessageIndex () const {
+
+	return smLadderPeakOutsideCoreLadder :: sMessageIndex;
+}
+
+
+int smLadderPeakOutsideCoreLadder :: GetScope () const {
+
+	return smLadderPeakOutsideCoreLadder :: sMessageScope;
+}
+
+
+RGString smLadderPeakOutsideCoreLadder :: GetName () const {
+
+	return smLadderPeakOutsideCoreLadder :: sName;
+}
+
+
+
+int smLadderPeakOutsideCoreLadder :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smLadderPeakOutsideCoreLadder* noticeType = new smLadderPeakOutsideCoreLadder;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset () : SmartNotice () {
+
+}
+
+
+smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset (const smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: ~smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset () {
+
+}
+
+
+int smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: GetSubject () const {
+
+	return smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::sSubject;
+}
+
+
+void smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::sMessageIndex = index;
+	smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset::sMessageScope = scope;
+}
+
+
+int smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: GetMessageIndex () const {
+
+	return smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: sMessageIndex;
+}
+
+
+int smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: GetScope () const {
+
+	return smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: sMessageScope;
+}
+
+
+RGString smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: GetName () const {
+
+	return smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: sName;
+}
+
+
+
+int smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset* noticeType = new smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset () : SmartNotice () {
+
+}
+
+
+smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset (const smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: ~smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset () {
+
+}
+
+
+int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: GetSubject () const {
+
+	return smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sSubject;
+}
+
+
+void smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sMessageIndex = index;
+	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sMessageScope = scope;
+}
+
+
+int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: GetMessageIndex () const {
+
+	return smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: sMessageIndex;
+}
+
+
+int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: GetScope () const {
+
+	return smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: sMessageScope;
+}
+
+
+RGString smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: GetName () const {
+
+	return smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: sName;
+}
+
+
+
+int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset* noticeType = new smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

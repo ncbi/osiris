@@ -906,8 +906,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			status = -4;
 		}
 
-		if (status == 0)
+		if (status == 0) {
+
 			ladderBioComponent->SetProgress (6);
+		}
+
+		ladderBioComponent->MakeNonCoreLadderArtifactsNoncritical ();
 
 		//
 		// End Stage 2 here!!!
