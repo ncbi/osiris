@@ -153,6 +153,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0FDC55705AFB4E0FBF6FA3BE5702A7CC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_10C560480B0C4B71A6EB4D9A6517186A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -346,6 +352,12 @@
         "Entry"
         {
         "MsmKey" = "8:_36C278ADE9074162B4640867E1B6BDFA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_37291C14F47A45329194B55B1E54C475"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -634,6 +646,12 @@
         "Entry"
         {
         "MsmKey" = "8:_5E9E5A55242647C4B956A59DB8AD27D0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_61CAF885D48C4970B2EBBA7DC70A4F36"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1072,6 +1090,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A72AAE4B0D414ADD86EA359314AA1762"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A91FF455D2DD41A7A1E8A043C2542C0A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2212,6 +2236,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0FDC55705AFB4E0FBF6FA3BE5702A7CC"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_access.txt"
+            "TargetName" = "8:GP10_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_10C560480B0C4B71A6EB4D9A6517186A"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\IDplus\\IDplus_StdSettings.xml"
@@ -2858,6 +2902,26 @@
             "TargetName" = "8:PPESI16_FSA_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_E3F3D11F0E0640F78DEC618F5E33D94F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_37291C14F47A45329194B55B1E54C475"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_LabSettings.xml"
+            "TargetName" = "8:GP10_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3818,6 +3882,26 @@
             "TargetName" = "8:iPLEXSTRLIZ500less250_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_33CCA340F59949B4A67936272BB68704"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_61CAF885D48C4970B2EBBA7DC70A4F36"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_MessageBookV4.0.xml"
+            "TargetName" = "8:GP10_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5278,6 +5362,26 @@
             "TargetName" = "8:IDplus_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_1F1A8C4E29FA4C0B96DC16A1DCAECC33"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A91FF455D2DD41A7A1E8A043C2542C0A"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_StdSettings.xml"
+            "TargetName" = "8:GP10_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7733,6 +7837,17 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_9C0F6FFCCD8742D9BC9B444ABAE5A391"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_44CD19D57DB249249AF79D48C8CF4E21"
+                                    {
+                                    "Name" = "8:GP10"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_F6E3DE4CEE5F47588DC10CC343775DA7"
                                         "Folders"
                                         {
                                         }
