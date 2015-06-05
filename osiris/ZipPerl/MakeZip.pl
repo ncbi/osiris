@@ -88,6 +88,7 @@ sub COPYFILES
     Cofiler
     GF
     GFHID
+    GP10
     ID
     IDNO250
     IDNO250_HID

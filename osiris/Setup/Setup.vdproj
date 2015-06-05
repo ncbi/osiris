@@ -549,6 +549,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4E41F39D553545359E7632F5A5E6B006"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4F4BD68ECD854B6A81818F79C3E0BFF8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3542,6 +3548,26 @@
             "TargetName" = "8:IDNO250_HID_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_5A5D98D08AD34DCC8A0FFE107C4D6892"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4E41F39D553545359E7632F5A5E6B006"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\GenePrint10_LadderInfo.xml"
+            "TargetName" = "8:GenePrint10_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
