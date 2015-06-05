@@ -218,7 +218,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	//  Open output file and write ladder
-	RGString ladderOutputFileName = inputFile.GetLadderDirectory () + "/" + inputFile.GetLadderFileName ();
+	RGString ladderOutputFileName = inputFile.GetOutputConfigDirectoryPath () + "/" + inputFile.GetLadderFileName ();
 	RGTextOutput ladderOutput (ladderOutputFileName, FALSE);
 
 	if (!ladderOutput.FileIsValid ()) {
