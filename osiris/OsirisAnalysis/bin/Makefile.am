@@ -62,6 +62,7 @@ osiris_SOURCES =  \
 ../CMenuFileBase.cpp \
 ../CMenuFileGraph.cpp \
 ../CMenuHistory.cpp \
+../CMenuLabels.cpp \
 ../CMenuPlot.cpp \
 ../CMenuWindow.cpp \
 ../COARallele.cpp \
