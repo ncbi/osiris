@@ -1099,6 +1099,13 @@
 							</Allele>
 						</Locus>
 						<Locus>
+							<Name>DYS576</Name>
+							<Allele>
+								<Name>19</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
 							<Name>DYS570</Name>
 							<Allele>
 								<Name>17</Name>
@@ -1187,6 +1194,20 @@
 							</Allele>
 						</Locus>
 						<Locus>
+							<Name>DYS481</Name>
+							<Allele>
+								<Name>22</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>DYS533</Name>
+							<Allele>
+								<Name>13</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
 							<Name>DYS635</Name>
 							<Allele>
 								<Name>24</Name>
@@ -1218,6 +1239,45 @@
 							<Name>Yindel</Name>
 							<Allele>
 								<Name>2</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>DYS627</Name>
+							<Allele>
+								<Name>21</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>DYS460</Name>
+							<Allele>
+								<Name>11</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>DYS518</Name>
+							<Allele>
+								<Name>37</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>DYS449</Name>
+							<Allele>
+								<Name>30</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>DYF387S1</Name>
+							<Allele>
+								<Name>35</Name>
+								<BioID>0</BioID>
+							</Allele>
+							<Allele>
+								<Name>37</Name>
 								<BioID>0</BioID>
 							</Allele>
 						</Locus>
