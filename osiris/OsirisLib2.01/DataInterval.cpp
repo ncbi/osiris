@@ -228,21 +228,57 @@ void DataInterval :: RecomputeRelativeMinimum (const DataSignal* currentSignal, 
 	if (mNumberOfMinima > 0)  // ???
 		return;
 
-	int localMin = GetLocalMinimum ();
+	int localMin;
+	int i;
+	double localMinValue = localMax;
+	double currentValue;
+	bool foundMin = false;
 
 	if (mean < localMax) {
 
-		if (!(mean < localMin) || !(localMin < localMax))
-			localMin = localMax;
+		for (i=localMax; i>mean; i--) {
+
+			currentValue = rawData->Value (i);
+
+			if (currentValue < localMinValue) {
+
+				foundMin = true;
+				localMinValue = currentValue;
+				localMin = i;
+			}
+		}
 	}
 
 	else {
 
-		if (!(localMax < localMin) || !(localMin < mean))
-			localMin = localMax;
+		for (i=localMax; i<mean; i++) {
+
+			currentValue = rawData->Value (i);
+
+			if (currentValue < localMinValue) {
+
+				foundMin = true;
+				localMinValue = currentValue;
+				localMin = i;
+			}
+		}
 	}
 
-	mLocalMinValue = rawData->Value (localMin);
+	if (foundMin) {
+
+		mLocalMinimum = localMin;
+		mLocalMinValue = localMinValue;
+	}
+
+	else {
+
+		mLocalMinimum = localMax;
+		mLocalMinValue = maxValue;
+	}
+
+	//mLocalMinimum = (int) floor (0.5 * (mean + localMax) + 0.5);
+
+	//mLocalMinValue = rawData->Value (mLocalMinimum);
 	mNumberOfMinima = 1;
 }
 
