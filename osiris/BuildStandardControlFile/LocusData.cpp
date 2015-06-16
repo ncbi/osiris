@@ -71,6 +71,7 @@ RGString LocusData :: FormXMLString () {
 	while (mAlleleList.entries () > 0) {
 
 		nextAllele = mAlleleList.RemoveFirst ();
+		nextAllele->FindAndReplaceAllSubstrings ("\"", "");
 		temp.append (nextAllele);
 		Result << sevenTabs << "<Allele>\n";
 		Result << eightTabs << "<Name>" << (char*)nextAllele->GetData () << "</Name>\n";
