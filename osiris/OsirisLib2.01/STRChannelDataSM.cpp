@@ -446,6 +446,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 	smSignalNotACraterSidePeak notACraterSidePeak;
 	smCrater crater;
 	smCraterSidePeak craterSidePeak;
+	smILSShoulderPeak ilsIsShoulderPeak;
 
 	double maxAllowable = STRLaneStandardChannelData::GetMaxRFU ();
 
@@ -461,6 +462,12 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 	RGDListIterator itt (PreliminaryCurveList);
 
 	while (nextSignal = (DataSignal*) itt ()) {
+
+		if (nextSignal->GetMessageValue (ilsIsShoulderPeak)) {
+
+			itt.RemoveCurrentItem ();
+			continue;
+		}
 
 		if ((nextSignal->GetMessageValue (pullup)) && (!nextSignal->GetMessageValue (primaryPullup)))
 			continue;
@@ -487,6 +494,12 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 
 		if (nextSignal == NULL)
 			break;
+
+		if (nextSignal->GetMessageValue (ilsIsShoulderPeak)) {
+
+			CurveIterator.RemoveCurrentItem ();
+			continue;
+		}
 
 		if ((nextSignal->GetMessageValue (pullup)) && (!nextSignal->GetMessageValue (primaryPullup))) {
 
@@ -515,6 +528,12 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 	while (peaksProcessed < Size) {
 
 		nextSignal = (DataSignal*) itt.CurrentItem ();
+
+		if (nextSignal->GetMessageValue (ilsIsShoulderPeak)) {
+
+			itt.RemoveCurrentItem ();
+			continue;
+		}
 
 		if (nextSignal == NULL)
 			break;
@@ -1052,6 +1071,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
 		SecondaryContent [i] = TwoMass / (TwoMass + OneMass);
+		nextSignal->CalculateTheoreticalArea ();
 
 		if (actualArray != NULL) {
 
