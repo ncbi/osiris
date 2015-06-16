@@ -745,7 +745,9 @@ void DataSignal :: WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& 
 			text << indent << "\t<BPS>" << GetBioID () << "</BPS>" << endLine;
 //			text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
+			text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
 			text << indent << "\t<allele>" << GetAlleleName () << suffix << "</allele>" << endLine;
+			text << indent << "\t<width>" << 4.0 * GetStandardDeviation () << "</width>" << endLine;
 			text << indent << "\t<fit>" << GetCurveFit () << "</fit>" << endLine;
 			text << indent << "</" + bracketTag << ">" << endLine;
 		}
@@ -792,10 +794,12 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 				text << indent << "\t<height>" << peak << "</height>" << endLine;
 //				text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
+				text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
 
 				if (virtualAllele.Length () > 0)
 					text << indent << "\t<equivAllele>" << virtualAllele << suffix << "</equivAllele>" << endLine;
 
+				text << indent << "\t<width>" << 4.0 * GetStandardDeviation () << "</width>" << endLine;
 				text << indent << "\t<fit>" << GetCurveFit () << "</fit>" << endLine;
 				label = indent + "\t<label>";
 				thisIsFirstNotice = false;
