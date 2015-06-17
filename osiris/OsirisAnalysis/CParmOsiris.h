@@ -360,9 +360,9 @@ public:
   {
     return m_nPlotShowArtifact;
   }
-  unsigned int GetPlotDisplayPeak() const
+  const vector<unsigned int> &GetPlotDisplayPeak() const
   {
-    return m_nPlotDisplayPeak;
+    return m_anPlotDisplayPeak;
   }
   int GetPlotMaxLadderLabels() const
   {
@@ -412,44 +412,67 @@ private:
 
   void __SET_VALUE(wxString &s1, const wxString &s2)
   {
-    if(s1 != s2)
+    if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
     }
   }
+
   void __SET_VALUE(double &s1, double s2)
   {
-    if(s1 != s2)
+    if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
     }
   }
+
   void __SET_VALUE(bool &s1, bool s2)
   {
-    if(s1 != s2)
+    if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
     }
   }
+
   void __SET_VALUE(int &s1, int s2)
   {
-    if(s1 != s2)
+    if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
     }
   }
+
   void __SET_VALUE(unsigned int &s1, unsigned int s2)
   {
-    if(s1 != s2)
+    if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
     }
   }
+
+  void __SET_VALUE(vector<int> &s1, const vector<int> &s2)
+  {
+    if(!(s1 == s2))
+    {
+      s1 = s2;
+      m_bModified = true;
+    }
+  }
+
+  void __SET_VALUE(vector<unsigned int> &s1, const vector<unsigned int> &s2)
+  {
+    if(!(s1 == s2))
+    {
+      s1 = s2;
+      m_bModified = true;
+    }
+  }
+
 
 public:
 
@@ -705,9 +728,9 @@ public:
   {
     __SET_VALUE(m_nPlotShowArtifact,n);
   }
-  void SetPlotDisplayPeak(unsigned int n)
+  void SetPlotDisplayPeak(const vector<unsigned int> &an)
   {
-    __SET_VALUE(m_nPlotDisplayPeak,n);
+    __SET_VALUE(m_anPlotDisplayPeak,an);
   }
   void SetPlotMaxLadderLabels(int n)
   {
@@ -935,7 +958,7 @@ protected:
   bool m_bPlotResizable;
   int m_nPlotMinHeight;
   unsigned int m_nPlotShowArtifact;
-  unsigned int m_nPlotDisplayPeak;
+  vector<unsigned int> m_anPlotDisplayPeak;
   int m_nPlotMaxLadderLabels;
 
   //  XSLT saved parameter info

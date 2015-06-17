@@ -79,9 +79,7 @@ CPanelPlot::CPanelPlot(
     m_pPlotCtrl(NULL),
     m_pButtonPanel(NULL),
     m_pMenu(NULL),
-#if !REUSE_MENUS
     m_pMenuPopup(NULL),
-#endif
     m_pShiftSizer(NULL),
     m_pFramePlot(NULL),
     m_pFrameAnalysis(pFrame),
@@ -116,9 +114,7 @@ CPanelPlot::CPanelPlot(
     m_pPlotCtrl(NULL),
     m_pButtonPanel(NULL),
     m_pMenu(NULL),
-#if !REUSE_MENUS
     m_pMenuPopup(NULL),
-#endif
     m_pShiftSizer(NULL),
     m_pFramePlot(pFrame),
     m_pFrameAnalysis(NULL),
@@ -183,7 +179,7 @@ void CPanelPlot::_BuildPanel(
 
   if(m_pFramePlot != NULL)
   {
-    m_pButtonPanel = new CPanelPlotToolbar(m_pPanel,m_pData,m_pColors,pMenuHistory,bFirst);
+    m_pButtonPanel = new CPanelPlotToolbar(m_pPanel,m_pData,m_pColors,pMenuHistory,nMenuNumber, bFirst);
     m_pButtonPanel->CopySettings(*m_pMenu);
     m_pShiftSizer = new nwxShiftSizer(
       m_pButtonPanel,this,ID_BORDER,250,true);
@@ -259,9 +255,7 @@ CPanelPlot::~CPanelPlot()
     delete m_pMenu;
     m_pMenu = NULL;
   }
-#if !REUSE_MENUS
   if(m_pMenuPopup != NULL) { delete m_pMenuPopup;}
-#endif
 }
 
 void CPanelPlot::CleanupMinRfuLines()
@@ -602,37 +596,56 @@ void CPanelPlot::SetOARfile(COARfile *pFile)
 }
 
 wxString CPanelPlot::_AlleleLabel(
-  const IOARpeak *pPeak, LABEL_PLOT_TYPE nType)
+  const IOARpeak *pPeak, vector<unsigned int> &anLabelTypes)
 {
   wxString sLabel;
-  switch(nType)
+  wxString sRtn;
+  unsigned int nType;
+  vector<unsigned int>::iterator itr;
+  for(itr = anLabelTypes.begin(); itr != anLabelTypes.end(); ++itr)
   {
-  case LABEL_ALLELE:
-    sLabel = COARpeak::FormatAlleleName(
-      *pPeak,
-      COARlocus::IsAmel(pPeak->GetLocusName()),
-      true);
-    break;
-  case LABEL_BPS:
-    sLabel = nwxString::FormatNumber(
-      nwxRound::Round(pPeak->GetBPS()) );
-    break;
-  case LABEL_RFU:
-    sLabel = nwxString::FormatNumber(
-      nwxRound::Round(pPeak->GetRFU()) );
-    break;
-  case LABEL_TIME:
-    sLabel = nwxString::FormatNumber(pPeak->GetTime());
-    break;
-  case LABEL_PEAK_AREA:
-    sLabel = nwxString::FormatNumber(
-      pPeak->GetPeakArea());
-    break;
-  default:
-    sLabel = "Problem";
-    break;
+    nType = *itr;
+    switch(nType)
+    {
+    case LABEL_ALLELE:
+      sLabel = COARpeak::FormatAlleleName(
+        *pPeak,
+        COARlocus::IsAmel(pPeak->GetLocusName()),
+        true);
+      break;
+    case LABEL_BPS:
+      sLabel = nwxString::FormatNumber(
+        nwxRound::Round(pPeak->GetBPS()) );
+      break;
+    case LABEL_RFU:
+      sLabel = nwxString::FormatNumber(
+        nwxRound::Round(pPeak->GetRFU()) );
+      break;
+    case LABEL_TIME:
+      sLabel = nwxString::FormatNumber(pPeak->GetTime());
+      break;
+    case LABEL_PEAK_AREA:
+      sLabel = nwxString::FormatNumber(
+        pPeak->GetPeakArea());
+      break;
+    default:
+      {
+        sLabel.Printf(wxS("Problem with CPanelPlot::_AlleleLabel, type = %d"),(int) nType);
+        wxASSERT_MSG(0,sLabel);
+        sLabel.Empty();
+      }
+      break;
+    }
+    if(!sLabel.IsEmpty())
+    {
+      if(!sRtn.IsEmpty())
+      {
+        sRtn.Append(wchar_t('\n'));
+      }
+      sRtn.Append(sLabel);
+    }
   }
-  return sLabel;
+  return sRtn;;
 }
 wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sChannelName)
 {
@@ -778,19 +791,19 @@ void CPanelPlot::_BuildPeakLabels(
   const wxColour &colour,
   const wxString &sChannelName,
   unsigned int nChannel,
-  LABEL_PLOT_TYPE nLabelType)
+  vector<unsigned int> &anLabelTypes)
 {
   wxString sLabel;
   wxString sToolTip;
   size_t n = 
-    ((nLabelType == LABEL_NONE) || (pp == NULL))
+    (anLabelTypes.empty() || (pp == NULL))
     ? 0
     : pp->size();
   size_t j;
   for(j = 0; j < n; j++)
   {
     const CSamplePeak *pPeak = pp->at(j);
-    sLabel = _AlleleLabel(pPeak,nLabelType);
+    sLabel = _AlleleLabel(pPeak,anLabelTypes);
     sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
     nwxPointLabel label(
             sLabel,
@@ -817,7 +830,7 @@ int CPanelPlot::_GetLadderPeakCount()
 }
 
 void CPanelPlot::_BuildLadderPeakLabels(
-  LABEL_PLOT_TYPE nLabelType)
+  vector<unsigned int> &anLabelTypes)
 {
   CParmOsirisGlobal parm;
   int nMax = parm->GetMaxLadderLabels();
@@ -836,7 +849,7 @@ void CPanelPlot::_BuildLadderPeakLabels(
           (*itr)->GetColour(),
           (*itr)->GetChannelName(),
           (*itr)->GetChannel(),
-          nLabelType);
+          anLabelTypes);
       }
     }
   }
@@ -877,12 +890,9 @@ void CPanelPlot::_AppendLadderPeaks(
 
 void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
 {
-  LABEL_PLOT_TYPE nLabelType = m_pMenu->LabelType();
-  if(nLabelType == LABEL_PEAK_AREA)
-  {
-    nLabelType = LABEL_NONE;
-  }
-  bool bLabels = (!bArtifactOnly) && (nLabelType != LABEL_NONE);
+  vector<unsigned int> anLabelTypes;
+  m_pMenu->GetLabelTypes(&anLabelTypes);
+  bool bLabels = (!bArtifactOnly) && !anLabelTypes.empty();
   bool bLadder = bLabels && m_pMenu->LadderLabels();
   int nArtifact = m_pMenu->ArtifactValue();
   bool bArtifact = (nArtifact > CArtifactDisplayList::nArtifactLabelNone);
@@ -939,7 +949,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
           _AppendLadderPeaks(nChannel,sChannelName);
         }
         _BuildPeakLabels(
-          pp, colourData,  sChannelName,nChannel,nLabelType);
+          pp, colourData,  sChannelName,nChannel,anLabelTypes);
         n = (pa == NULL) ? 0 : pa->size();
         sLabel = "A";
         for(j = 0; j < n; j++)
@@ -962,7 +972,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
     }
     if(bLadder)
     {
-      _BuildLadderPeakLabels(nLabelType);
+      _BuildLadderPeakLabels(anLabelTypes);
       _CleanupLadderPeakSet();
     }
   }
@@ -970,8 +980,8 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
 
 void CPanelPlot::_BuildOARlabels()
 {
-  LABEL_PLOT_TYPE nLabelType = m_pMenu->LabelType();
-  bool bLabels = (nLabelType != LABEL_NONE);
+  vector<unsigned int> anLabelTypes;
+  bool bLabels = !!m_pMenu->GetLabelTypes(&anLabelTypes);
   bool bLadderLabels = bLabels && m_pMenu->LadderLabels()
     && m_pMenu->LadderValue();
   int nArtifact = m_pMenu->ArtifactValue();
@@ -1032,7 +1042,7 @@ void CPanelPlot::_BuildOARlabels()
           COARpeakAny *pPeak = pPeaks.get()->at(j);
           if(bLabels && pPeak->IsAllele())
           {
-            sLabel = _AlleleLabel(pPeak,nLabelType);
+            sLabel = _AlleleLabel(pPeak,anLabelTypes);
             sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
             nwxPointLabel label(
                     sLabel,
@@ -1067,7 +1077,7 @@ void CPanelPlot::_BuildOARlabels()
     }
     if(bLadderLabels)
     {
-      _BuildLadderPeakLabels(nLabelType);
+      _BuildLadderPeakLabels(anLabelTypes);
       _CleanupLadderPeakSet();
     }
     if(bArtifact && !bOARHasArtifacts)
@@ -1081,7 +1091,7 @@ void CPanelPlot::_BuildOARlabels()
 void CPanelPlot::UpdateLadderLabels()
 {
   if( m_pMenu->LadderLabels() &&
-      (m_pMenu->LabelType() != LABEL_NONE)
+      (m_pMenu->GetLabelType() > LABEL_NONE)
     )
   {
     LabelTypeChanged();
@@ -1092,8 +1102,8 @@ void CPanelPlot::UpdateLadderLabels()
 void CPanelPlot::RebuildLabels(bool bRedraw)
 {
   m_pPlotCtrl->RemoveAllLabels();
-  LABEL_PLOT_TYPE nLabelType = m_pMenu->LabelType();
-  bool bLabels = (nLabelType != LABEL_NONE);
+  vector<unsigned int> an;
+  bool bLabels = !!m_pMenu->GetLabelTypes(&an);
   int nArtifact = m_pMenu->ArtifactValue();
   bool bArtifact = (nArtifact > CArtifactDisplayList::nArtifactLabelNone);
   if(bLabels || bArtifact)
@@ -1315,11 +1325,6 @@ void CPanelPlot::LabelTypeChanged()
   if(m_pPlotCtrl != NULL)
   {
     TnwxBatch<CPanelPlot> batch(this);
-    m_pMenu->UsingDefault();
-
-    // if 'using default flag' was set and the user changed the label,
-    //  then clear the 'using default flag'
-
     RebuildLabels();
     Refresh();
   }
@@ -1359,7 +1364,7 @@ void CPanelPlot::UpdateGridLabels(int nLabel)
     // unless "none" is selected, update grid
     if(nLabel < 0)
     {
-      nLabel = m_pMenu->LabelType();
+      nLabel = m_pMenu->GetLabelType();
     }
     if(nLabel)
     {
@@ -1509,9 +1514,13 @@ void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p)
 {
   double dExtend = 1.0;
   wxRect rect = m_pPlotCtrl->GetPlotAreaRect();
-  if(rect.height > 16)
+  vector<unsigned int> an;
+  size_t nLabelRow = this->GetLabelTypes(&an);
+  int LABEL_HEIGHT = this->GetLabelHeightPixels();
+  int nLabelPixels = nLabelRow * LABEL_HEIGHT;
+  if(rect.height > nLabelPixels)
   {
-    dExtend = double(rect.height) / double(rect.height - 8);
+    dExtend = double(rect.height) / double(rect.height - nLabelPixels);
     p->m_height *= dExtend;
   }
 }
@@ -1640,7 +1649,8 @@ void CPanelPlot::SetPlotSettings()
   bool bRFU = parm->GetPlotShowRFU();
   bool bLadderLabels = parm->GetPlotShowLadderLabels();
   int nArt = (int)parm->GetPlotShowArtifact();
-  int nLabel = (int)parm->GetPlotDisplayPeak();
+  const vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
+  vector<unsigned int>::const_iterator itr;
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1653,7 +1663,7 @@ void CPanelPlot::SetPlotSettings()
   m_pMenu->ShowILS(bILS);
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
-  m_pMenu->SetLabelType((LABEL_PLOT_TYPE)nLabel,LABEL_ALLELE);
+  m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
 }
@@ -1696,9 +1706,10 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
-  int nLabel = m_pMenu->LabelType();
   int nArt = m_pMenu->ArtifactValue();
+  vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
+  m_pMenu->GetLabelTypes(&anLabels);
   parm->SetPlotDataAnalyzed(bAnalyzed);
   parm->SetPlotDataLadder(bLadder);
   parm->SetPlotDataRaw(bRaw);
@@ -1706,10 +1717,7 @@ void CPanelPlot::UpdateSettingsPlot()
   parm->SetPlotShowILS(bILS);
   parm->SetPlotShowRFU(bRFU);
   parm->SetPlotShowLadderLabels(bLadderLabels);
-  if(!m_pMenu->UsingDefault())
-  {
-    parm->SetPlotDisplayPeak((unsigned int)nLabel);
-  }
+  parm->SetPlotDisplayPeak(anLabels);
   parm->SetPlotShowArtifact((unsigned int)nArt);
 }
 void CPanelPlot::UpdateSettingsPreview()
@@ -1721,7 +1729,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
-  int nLabel = m_pMenu->LabelType();
+  int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
   CParmOsirisGlobal parm;
   parm->SetPreviewDataAnalyzed(bAnalyzed);
@@ -1731,9 +1739,9 @@ void CPanelPlot::UpdateSettingsPreview()
   parm->SetPreviewShowILS(bILS);
   parm->SetPreviewShowRFU(bRFU);
   parm->SetPreviewShowLadderLabels(bLadderLabels);
-  if(nLabel != LABEL_NONE)
+  if(nLabel != LABEL_NONE) // should always be true
   {
-    int nPeak = PLOT_TO_CELL(m_pMenu->LabelType());
+    int nPeak = PLOT_TO_CELL(nLabel);
     parm->SetTableDisplayPeak(nPeak);
   }
   parm->SetPreviewShowArtifact((unsigned int)nArt);
@@ -1888,12 +1896,23 @@ void CPanelPlot::CopySettings(CPanelPlot &w)
 }
 bool CPanelPlot::MenuEvent(wxCommandEvent &e)
 {
+  //
+  //  if a checkbox or radio button is selected
+  //  update the setting on m_pMenu then sync
+  //  other controllers to that.
+  //
+  //  There were problems detecting which
+  //  menu sent the event, so just make
+  //  sure m_pMenu is up to date and sync
+  //  controller state from there
+  //
   int nID = e.GetId() - m_nMenuOffset;
   bool bRebuild = false;
   bool bLabels = false;
   bool bRtn = true;
   bool bShift = (m_pFramePlot != NULL) && nwxKeyState::Shift();
   bool bSendToAll = false;
+  bool bSync = true;
   if( !ID_PLOT_IS_PLOT(nID) )
   {
     wxString s;
@@ -1914,9 +1933,18 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
     // set display type
     bSendToAll = bShift;
     bLabels = true;
+    int nLabelType = nID - IDmenuPlotLabels_BEGIN;
     if(IsPreview())
     {
-      UpdateGridLabels(nID - IDmenuPlotLabels_BEGIN);
+      UpdateGridLabels(nLabelType);
+    }
+    if(nLabelType)
+    {
+      m_pMenu->SetStateFromEvent(e);
+    }
+    else
+    {
+      m_pMenu->ClearLabelTypes();
     }
   }
   else
@@ -1932,6 +1960,7 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
     case IDmenuPlotLadderLabels:
       bSendToAll = bShift;
       bRebuild = true;
+      m_pMenu->SetStateFromEvent(e);
       break;
     case IDmenuPlotChannel1:
     case IDmenuPlotChannel2:
@@ -1945,6 +1974,11 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
       {
         ShowOneChannel(nID - IDmenuPlotChannel1 + 1);
       }
+      else
+      {
+        ShowChannel(nID - IDmenuPlotChannel1 + 1, e.IsChecked());
+      }
+      bSync = false;
       bRebuild = true;
       break;
 
@@ -1991,16 +2025,11 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
   }
   if(bRebuild || bLabels)
   {
-    CMenuPlot *pMenu = _GetLastMenu(); 
-    _SyncControllers(pMenu);
-    if(bRebuild)
+    if(bSync)
     {
-      RebuildCurves();
+      _SyncControllers(m_pMenu);
     }
-    if(bLabels)
-    {
-      LabelTypeChanged();
-    }
+    RebuildCurves();
   }
   if(bSendToAll)
   {
@@ -2020,24 +2049,18 @@ CMDIFrame *CPanelPlot::_GetFrame()
 }
 CMenuPlot *CPanelPlot::_GetLastMenu()
 {
-#if !REUSE_MENUS
   wxMenu *pLast = _GetFrame()->GetLastMenuShown();
   CMenuPlot *pMenu = 
     ( (pLast == (wxMenu *)m_pMenuPopup) && (pLast != NULL) )
     ? m_pMenuPopup
     : m_pMenu;
   return pMenu;
-#else
-  return m_pMenu;
-#endif
 }
 void CPanelPlot::_SyncControllers(CPlotController *pSyncTo)
 {
   CPlotController *pControl[] =
   {
-#if !REUSE_MENUS
     m_pMenuPopup,
-#endif
     m_pMenu,
     m_pButtonPanel
   };
@@ -2069,7 +2092,7 @@ void CPanelPlot::SyncState(CPanelPlot *p, int nID)
   else if(ID_PLOT_IS_LABELS(nID))
   {
     bLabels = true;
-    SetLabelType(p->m_pMenu->LabelType());
+    m_pMenu->CopyLabelTypes(p->m_pMenu);
   }
   else
   {
@@ -2136,7 +2159,6 @@ void CPanelPlot::OnContextMenu(wxContextMenuEvent &e)
   wxPoint pt = e.GetPosition();
   if((pt.x >= 0) && (pt.y >= 0) && (m_pMenu != NULL))
   {
-#if !REUSE_MENUS
     if(m_pMenuPopup == NULL)
     {
       if(IsPreview())
@@ -2151,9 +2173,6 @@ void CPanelPlot::OnContextMenu(wxContextMenuEvent &e)
       m_pMenuPopup->CopySettings(*m_pMenu);
     }
     _GetFrame()->PopupMenu_(m_pMenuPopup);
-#else
-    _GetFrame()->PopupMenu_(m_pMenu);
-#endif
   }
   else
   {

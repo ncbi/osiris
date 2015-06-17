@@ -153,6 +153,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0FDC55705AFB4E0FBF6FA3BE5702A7CC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_10C560480B0C4B71A6EB4D9A6517186A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -351,6 +357,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_37291C14F47A45329194B55B1E54C475"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_373510053ED54AE382C968EA528173BF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -537,6 +549,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4E41F39D553545359E7632F5A5E6B006"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4F4BD68ECD854B6A81818F79C3E0BFF8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -634,6 +652,12 @@
         "Entry"
         {
         "MsmKey" = "8:_5E9E5A55242647C4B956A59DB8AD27D0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_61CAF885D48C4970B2EBBA7DC70A4F36"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1072,6 +1096,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A72AAE4B0D414ADD86EA359314AA1762"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A91FF455D2DD41A7A1E8A043C2542C0A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1710,7 +1740,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.5-beta-1.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.5-beta-4.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -2198,6 +2228,26 @@
             "TargetName" = "8:GF_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_105824460557476A984B31D87D0171DB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0FDC55705AFB4E0FBF6FA3BE5702A7CC"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_access.txt"
+            "TargetName" = "8:GP10_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2872,6 +2922,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_37291C14F47A45329194B55B1E54C475"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_LabSettings.xml"
+            "TargetName" = "8:GP10_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_373510053ED54AE382C968EA528173BF"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPY\\PPY_LabSettings.xml"
@@ -3492,6 +3562,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4E41F39D553545359E7632F5A5E6B006"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\GenePrint10_LadderInfo.xml"
+            "TargetName" = "8:GenePrint10_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4F4BD68ECD854B6A81818F79C3E0BFF8"
             {
             "SourcePath" = "8:..\\OsirisXML\\names.bat"
@@ -3818,6 +3908,26 @@
             "TargetName" = "8:iPLEXSTRLIZ500less250_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_33CCA340F59949B4A67936272BB68704"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_61CAF885D48C4970B2EBBA7DC70A4F36"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_MessageBookV4.0.xml"
+            "TargetName" = "8:GP10_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5278,6 +5388,26 @@
             "TargetName" = "8:IDplus_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_1F1A8C4E29FA4C0B96DC16A1DCAECC33"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A91FF455D2DD41A7A1E8A043C2542C0A"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\GP10\\GP10_StdSettings.xml"
+            "TargetName" = "8:GP10_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_44CD19D57DB249249AF79D48C8CF4E21"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7737,6 +7867,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_44CD19D57DB249249AF79D48C8CF4E21"
+                                    {
+                                    "Name" = "8:GP10"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_F6E3DE4CEE5F47588DC10CC343775DA7"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_480B8C61F7684BB684C9763ABB9D6425"
                                     {
                                     "Name" = "8:PP21"
@@ -8068,7 +8209,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
         "ProductCode" = "8:{46F1B0F7-0144-41A6-953A-579739F5038B}"
-        "PackageCode" = "8:{6CF01DE5-BC3F-4E84-9471-8C0B54F6F875}"
+        "PackageCode" = "8:{F1A6DC54-4A5C-4083-BE59-BB500AC4C035}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

@@ -35,6 +35,10 @@
 #include <wx/combobox.h>
 #include <wx/menu.h>
 #include "nwx/nwxArrayInt.h"
+#include "nwx/stdb.h"
+#include <vector>
+#include "nwx/stde.h"
+#include "nwx/nsstd.h"
 
 class CMenuLabels;
 
@@ -43,7 +47,7 @@ class CMenuLabels;
 class CComboLabels : public wxComboBox
 {
 public:
-  CComboLabels(wxWindow *parent, wxWindowID id, bool bPlot = false);
+  CComboLabels(wxWindow *parent, wxWindowID id);
   virtual ~CComboLabels();
   static void GetChoices(
     wxArrayString *pas,
@@ -62,8 +66,10 @@ public:
   CComboLabels *Clone();
 private:
   static const wxString g_sAlleles;
+  static const wxString g_sBPS;
+  static const wxString g_sRFU;
+  static const wxString g_sTime;
   static const wxString g_sPeakArea;
-  bool m_bPlot;
 };
 
 class CComboLabelsName : public wxComboBox
@@ -82,46 +88,6 @@ public:
   }
 };
 
-//     class for creating a sub-menu for labels,
-//     must be the same labels as CComboLabels
-
-class CMenuLabels : public wxMenu
-{
-public:
-  CMenuLabels(bool bPlot = false, int nPlotNrOrOffset = 0);
-  virtual ~CMenuLabels();
-  bool SelectByOffset(int nType, bool bName = false);
-  int GetCheckedOffset(bool bName = false);
-  int GetOffsetById(int nID,bool bName = false);
-  void EnablePeakAreaLabel(bool b)
-  {
-    m_pMenuArea->Enable(b);
-  }
-  bool PeakAreaLabelEnabled()
-  {
-    return m_pMenuArea->IsEnabled();
-  }
-  void SelectByComboBox(wxComboBox *pCombo,bool bName = false)
-  {
-    SelectByOffset(pCombo->GetCurrentSelection(),bName);
-  }
-  int GetCount()
-  {
-    return (int)m_anChoices.GetCount();
-  }
-
-private:
-  const nwxArrayInt &GetArray(bool bName = false)
-  {
-    return bName ? m_anChoicesName : m_anChoices;
-  }
-  static const int g_nDefault;
-  wxMenuItem *m_pMenuArea;
-  int m_nBase;
-  bool m_bPlot;
-  nwxArrayInt m_anChoices;
-  nwxArrayInt m_anChoicesName;
-};
 
 
 #endif

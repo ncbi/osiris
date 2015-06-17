@@ -32,4 +32,79 @@
 *
 */
 
-#include "CComboLabels.h"
+#include <wx/menu.h>
+#include "nwx/stdb.h"
+#include <vector>
+#include "nwx/stde.h"
+#include "nwx/nsstd.h"
+#include "nwx/nwxArrayInt.h"
+
+class CMenuLabels;
+class wxComboBox;
+
+//     class for creating a sub-menu for labels,
+//     must be the same labels as CComboLabels
+
+class CMenuLabels : public wxMenu
+{
+public:
+  typedef enum
+  {
+    MENU_TYPE_TABLE,
+    MENU_TYPE_PREVIEW,
+    MENU_TYPE_PLOT
+  }
+  MENU_LABEL_TYPE;
+
+  CMenuLabels(MENU_LABEL_TYPE nType = MENU_TYPE_TABLE, int nPlotNrOrOffset = 0);
+  virtual ~CMenuLabels();
+  bool SelectByOffset(int nType, bool bName = false);
+  bool SelectByType(int nType, bool bCheck = true);
+  size_t GetSelectionTypes(vector<unsigned int> *pan);
+  void SetSelectionTypes(const vector<unsigned int> &an)
+  {
+    vector<unsigned int>::const_iterator itr;
+    Clear();
+    for(itr = an.begin(); itr != an.end(); ++itr)
+    {
+      SelectByType(*itr,true);
+    }
+  }
+  void Clear();
+  int GetCheckedOffset(bool bName = false);
+  int GetOffsetById(int nID,bool bName = false);
+  void EnablePeakAreaLabel(bool b)
+  {
+    m_pMenuArea->Enable(b);
+  }
+  bool PeakAreaLabelEnabled()
+  {
+    return m_pMenuArea->IsEnabled();
+  }
+  void SelectByMenu(CMenuLabels *pMenuFrom);
+  void SelectByComboBox(wxComboBox *pCombo,bool bName = false);
+  int GetCount()
+  {
+    return (int)m_anChoices.GetCount();
+  }
+
+private:
+  const nwxArrayInt &GetArray(bool bName = false)
+  {
+    return bName ? m_anChoicesName : m_anChoices;
+  }
+  void SetBase(size_t n)
+  {
+    m_nBase = n;
+  }
+  size_t GetBase() const
+  {
+    return m_nBase;
+  }
+  static const int g_nDefault;
+  wxMenuItem *m_pMenuArea;
+  size_t m_nBase;
+  MENU_LABEL_TYPE m_nType;
+  nwxArrayInt m_anChoices;
+  nwxArrayInt m_anChoicesName;
+};

@@ -256,20 +256,6 @@ private:
   {
     _SetPlotScroll(-1,0);
   }
-#if REUSE_MENUS
-  CFramePlotMenu *_GetMenuPopup()
-  {
-    return m_pMenu;
-  }
-  CMenuHistory *_GetMenuHistoryPopup()
-  {
-    return m_pMenuHistory;
-  }
-  void _CleanupMenuPopup()
-  {}
-  void _CleanupMenuHistoryPopup()
-  {}
-#else
   CFramePlotMenu *_GetMenuPopup();
   CMenuHistory *_GetMenuHistoryPopup();
   void _CleanupMenuPopup();
@@ -281,7 +267,6 @@ private:
       m_pMenuHistoryPopup = NULL;
     }
   }
-#endif
 
   CDialogExportPlot *_GetExportDialog();
   bool _CheckAnalysisFile(COARfile *pFile);
@@ -300,10 +285,8 @@ private:
   CKitColors *m_pColors;
   CFramePlotMenu *m_pMenu;
   CMenuHistory *m_pMenuHistory;
-#if !REUSE_MENUS
   CFramePlotMenu *m_pMenuPopup;
   CMenuHistory *m_pMenuHistoryPopup;
-#endif
   CHistoryTime m_TimeLastRebuild;
   CFramePlotState m_nState;
   CPanelPlot *m_pPlotSyncTo;

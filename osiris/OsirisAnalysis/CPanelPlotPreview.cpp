@@ -131,7 +131,7 @@ CPanelPlot *CPanelPlotPreview::SetFileAllChannels(
     pRtn->ShowAllChannels(true);
     pRtn->ResetDefaults();
     pRtn->SetLabelType(LABEL_NONE);
-    pRtn->EnableLabelMenu(false);
+//    pRtn->EnableLabelMenu(false);
     pRtn->SetArtifactLabelNone();
     pRtn->RebuildCurves();
     pRtn->ZoomOut(false);
@@ -389,12 +389,6 @@ CPanelPlot *CPanelPlotPreview::_Setup(const wxString &sFileName,bool bReload)
 void CPanelPlotPreview::SetFileMissing()
 {
   _SetupMessage();
-}
-int CPanelPlotPreview::GetPeakLabelType()
-{
-  CPanelPlot *pPlot = _FindCurrent();
-  int nRtn = (pPlot == NULL) ? 0 : pPlot->GetLabelType();
-  return nRtn;
 }
 void CPanelPlotPreview::SetPeakLabelType(int n)
 {

@@ -120,7 +120,11 @@ void CPlotController::CopySettings(CPlotController &w)
 
   // labels, artifacts
 
-  SetLabelType(w.LabelType());
+//  SetLabelType(w.LabelType());
+  vector<unsigned int> anTypes;
+  w.GetLabelTypes(&anTypes);
+  SetLabelTypes(anTypes);
+
   SetArtifactValue(w.ArtifactValue());
 
   // sync, ILS, RFU

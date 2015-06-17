@@ -88,6 +88,7 @@ sub COPYFILES
     Cofiler
     GF
     GFHID
+    GP10
     ID
     IDNO250
     IDNO250_HID
@@ -241,7 +242,7 @@ sub CopyMac
     if( ($#ARGV >= 0) || &TESTFILES($zipFile,$DEST) ||
         &TESTFILES($zipFile,$testDest) )
     {
-      &SYSTEM("cd \"${TOP}\" ; tar zcvf ${zipFile} TestAnalysis OsirisXSL Osiris.app");
+      &SYSTEM("cd \"${TOP}\" ; /usr/bin/tar zcvf ${zipFile} TestAnalysis OsirisXSL Osiris.app");
     }
   }  ## end if(1)
   ### END make tar.gz

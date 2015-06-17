@@ -38,6 +38,7 @@
 #include "CKitColors.h"
 #include "COARmisc.h"
 #include "CPanelHistoryMenu.h"
+#include "CMenuLabels.h"
 #include "Platform.h"
 //**********************************************  CComboArtifact
 
@@ -88,6 +89,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   CPlotData *pData,
   CKitColors *pColors,
   CMenuHistory *pMenu,
+  int nMenuNumber,
   bool bFirst)
     : wxScrolledWindow(parent,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxHSCROLL)
 {
@@ -269,20 +271,6 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   m_pButtonRfu->SetValue(false);
   pSizer->Add(m_pButtonRfu,0,nSizerFlags,ID_BORDER);
 
-  // labels label
-  pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Labels:");
-  pSizer->AddSpacer(SPACER);
-  pSizer->Add(pStatText, 0, nSizerFlags, ID_BORDER);
-  m_vShiftWindows.push_back(pStatText);
-
-
-  // labels pulldown
-  //
-  //
-  m_pComboLabels = new CComboLabels(m_pPanel,
-    IDgraphLabelsCombo, true);
-  BOX_COMBO(m_pComboLabels,pSizer,nSizerFlags); // #defined in CComboLabels.h
-
   m_pButtonLadderLabels = new wxToggleButton(
     m_pPanel, IDgraphLadderLabels,"Ladder",
     wxDefaultPosition, wxDefaultSize,
@@ -292,6 +280,14 @@ CPanelPlotToolbar::CPanelPlotToolbar(
     PLOT_TOOLBAR_SHIFT_ALL);
   m_pButtonLadderLabels->SetValue(false);
   pSizer->Add(m_pButtonLadderLabels,0,nSizerFlags,ID_BORDER);
+
+  // labels pulldown
+  //
+  //
+  m_pMenuLabels = new CMenuLabels(CMenuLabels::MENU_TYPE_PLOT,nMenuNumber);
+  m_pButtonLabels = new nwxButtonMenu(m_pMenuLabels,m_pPanel,wxID_ANY,wxS("Peak Labels"));
+  pSizer->Add(m_pButtonLabels,0,nSizerFlags,ID_BORDER);
+  m_vShiftWindows.push_back(m_pButtonLabels);
 
   pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Artifacts:");
   pSizer->AddSpacer(ID_BORDER);
@@ -510,17 +506,20 @@ void CPanelPlotToolbar::ShowLadderLabels(bool b)
 
 // labels, artifacts
 
-LABEL_PLOT_TYPE CPanelPlotToolbar::LabelType()
-{
-  return (LABEL_PLOT_TYPE) m_pComboLabels->GetSelection();
-}
+
 void CPanelPlotToolbar::SetLabelType(LABEL_PLOT_TYPE n, LABEL_PLOT_TYPE nDefault)
 {
-  n = CheckLabelType(n,nDefault);
-  if(n != LabelType())
-  {
-    m_pComboLabels->Select((int)n);
-  }
+  LABEL_PLOT_TYPE nType = CheckLabelType(n,nDefault);
+  m_pMenuLabels->SelectByType(nType,true);
+}
+size_t CPanelPlotToolbar::GetLabelTypes(vector<unsigned int> *pan)
+{
+  size_t n = m_pMenuLabels->GetSelectionTypes(pan);
+  return n;
+}
+void CPanelPlotToolbar::SetLabelTypes(const vector<unsigned int> &an)
+{
+  m_pMenuLabels->SetSelectionTypes(an);
 }
 int CPanelPlotToolbar::ArtifactValue()
 {
@@ -537,11 +536,11 @@ void CPanelPlotToolbar::SetArtifactValue(int nLevel)
 // enable/disable Label menu
 void CPanelPlotToolbar::EnableLabelMenu(bool b)
 {
-  m_pComboLabels->Enable(b);
+  m_pButtonLabels->Enable(b);
 }
 bool CPanelPlotToolbar::IsLabelMenuEnabled()
 {
-  return m_pComboLabels->IsEnabled();
+  return m_pButtonLabels->IsEnabled();
 }
 
 
@@ -566,16 +565,11 @@ bool CPanelPlotToolbar::IsDeleteEnabled()
 
 void CPanelPlotToolbar::EnablePeakAreaLabel(bool b)
 {
-  if(b != PeakAreaLabelEnabled())
-  {
-    m_pComboLabels->EnablePeakAreaLabel(b);
-    m_pPanel->Layout(); // combo box is a different size
-    Layout();
-  }
+  m_pMenuLabels->EnablePeakAreaLabel(b);
 }
 bool CPanelPlotToolbar::PeakAreaLabelEnabled()
 {
-  return m_pComboLabels->PeakAreaLabelEnabled();
+  return m_pMenuLabels->PeakAreaLabelEnabled();
 }
 
 

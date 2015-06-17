@@ -89,7 +89,6 @@ public:
 private:
   void CopyState(CMenuAnalysis *pTo);
 
-#if !REUSE_MENUS
   wxMenu *_GetPopup();
   CMenuHistory *_GetHistoryPanelPopup();
   wxMenu *_GetMenuSortPopup();
@@ -99,7 +98,6 @@ private:
   CMenuAnalysis *m_pMenuPopup;
   CMenuHistory *m_pMenuHistoryButton;
   CMenuSort *m_pMenuSortPopup;
-#endif
   CMenuEdit *m_pMenuEdit;
   CMenuHistory *m_pMenuHistory;
   CMenuSort *m_pMenuSort;

@@ -28,6 +28,7 @@
 *
 */
 #include "mainFrame.h"
+#include "mainApp.h"
 #include <wx/msgdlg.h>
 #include "CMDIFrame.h"
 #include "wxIDS.h"
@@ -58,6 +59,8 @@ CMDIFrame::CMDIFrame(
   m_bNoPromptReload = false;
   m_bAutoReload = false;
   m_pLastMenuShown = NULL;
+  m_nMenuCount = 0;
+  m_bLastMenuPopup = false;
   parent->InsertWindow(this);
 #ifdef MANUALLY_PLACE_FRAMES
   parent->PlaceFrame(this);
@@ -211,12 +214,55 @@ void CMDIFrame::OnFocusKill(wxFocusEvent &e)
   m_pParent->KillActiveFrame(this);
   e.Skip(); // not sure why
 }
+
+void CMDIFrame::SetLastMenuShown(wxMenu *p)
+{
+  bool bUsed = false;
+  if(m_nMenuCount < 2)
+  {
+#if 1
+    bUsed = true;
+    m_pLastMenuShown = p;
+#else
+    bUsed = IsMenuRegistered(p);
+    if(bUsed || (p == NULL))
+    {
+      m_pLastMenuShown = p;
+    }
+#endif
+  }
+#ifdef __WXDEBUG__
+  mainApp::LogMessageV(wxS("CMDIFrame::SetLastMenuShown(%p) used %s, count %d"),
+    p,bUsed ? wxS("yes") : wxS("no"), m_nMenuCount);
+#endif
+}
+
+
 void CMDIFrame::OnMenuOpen(wxMenuEvent &e)
 {
-  SetLastMenuShown(e.GetMenu());
+  m_nMenuCount++;
+#ifdef __WXDEBUG__
+  mainApp::LogMessageV(wxS("OnMenuOpen menu = %p; popup = %s; count = %d"),e.GetMenu(),e.IsPopup() ? wxS("yes") : wxS("no"),m_nMenuCount);
+#endif
+  if(m_nMenuCount < 2)
+  {
+    m_pLastMenuShown = e.GetMenu();
+    m_bLastMenuPopup = e.IsPopup();
+  }
 }
-void CMDIFrame::OnMenuClose(wxMenuEvent &)
+#ifdef __WXDEBUG__
+void CMDIFrame::OnMenuClose(wxMenuEvent &e) 
 {
+  mainApp::LogMessageV(wxS("On menu close %p - count before close = %d"),e.GetMenu(),m_nMenuCount);
+#else
+void CMDIFrame::OnMenuClose(wxMenuEvent &) 
+{
+#endif
+  m_nMenuCount--;
+  if(m_nMenuCount == -1)
+  {
+    mainApp::LogMessageV(wxS("CMDIFrame::OnMenuClose - count = %d"),m_nMenuCount);
+  }
 #ifndef __NO_MDI__
   CMDIFrame *pFrame = (CMDIFrame *)m_pParent->GetActiveChild();
   if(pFrame != NULL)
@@ -258,6 +304,9 @@ bool CMDIFrame::PopupMenu_(wxMenu *menu, int x, int y)
 }
 void CMDIFrame::_OnMenuEvent(wxCommandEvent &e)
 {
+#ifdef __WXDEBUG__
+  mainApp::LogMessage(wxS("_OnMenuEvent"));
+#endif
   if(!MenuEvent(e))
   {
     e.Skip();

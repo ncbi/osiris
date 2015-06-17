@@ -443,10 +443,8 @@ CFramePlot::CFramePlot(
     m_pColors(pColors),
     m_pMenu(new CFramePlotMenu),
     m_pMenuHistory(NULL),
-#if !REUSE_MENUS
     m_pMenuPopup(NULL),
     m_pMenuHistoryPopup(NULL),
-#endif
     m_TimeLastRebuild(NULL),
     m_nState(FP_NO_STATE),
     m_pPlotSyncTo(NULL),
@@ -804,12 +802,10 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
   if(ID_IS_HISTORY(nID))
   {
     m_pMenuHistory->Select(nID);
-#if !REUSE_MENUS
     if(m_pMenuHistoryPopup != NULL)
     {
       m_pMenuHistoryPopup->Select(nID);
     }
-#endif
     _RebuildLabels(true);
   }
   else if(nID == IDmenuHistoryTop)
@@ -883,7 +879,6 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     if(nPlot >= 0 && nPlot < (int)m_vpPlotsByMenuNumber.size())
     {
       CPanelPlot *pPanel = m_vpPlotsByMenuNumber.at(nPlot);
-#if !REUSE_MENUS
       if( (m_pMenuPopup != NULL) &&
           ((wxMenu *)m_pMenuPopup == GetLastMenuShown()) )
       {
@@ -900,7 +895,6 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
           pMenuPlot->CopySettings(*pMenuPlotFrom);
         }
       }
-#endif
       bRtn = pPanel->MenuEvent(e);
     }
     else
@@ -1045,7 +1039,6 @@ void CFramePlot::OnClose(wxCloseEvent &)
 {
   Destroy();
 }
-#if !REUSE_MENUS
 void CFramePlot::OnHistoryUpdate(wxCommandEvent &e)
 {
   CPanelHistoryMenu *pPanel = (CPanelHistoryMenu *)e.GetEventObject();
@@ -1055,12 +1048,6 @@ void CFramePlot::OnHistoryUpdate(wxCommandEvent &e)
   }
   _RebuildLabels(false);
 }
-#else
-void CFramePlot::OnHistoryUpdate(wxCommandEvent &)
-{
-  _RebuildLabels(false);
-}
-#endif
 void CFramePlot::UpdateHistory()
 {
   //  call this when a file is saved and therefore
@@ -1379,7 +1366,6 @@ wxRect2DDouble CFramePlot::GetZoomOutRect(bool bAll)
   }
   return rtn;
 }
-#if !REUSE_MENUS
 CMenuHistory *CFramePlot::_GetMenuHistoryPopup()
 {
   if(m_pMenuHistory != NULL && m_pMenuHistoryPopup == NULL)
@@ -1394,7 +1380,6 @@ CFramePlotMenu *CFramePlot::_GetMenuPopup()
   m_pMenuPopup = (m_pMenu == NULL) ? NULL : m_pMenu->Clone();
   return m_pMenuPopup;
 }
-#endif
 CPanelPlot *CFramePlot::GetPanelPlot(bool bFirst, unsigned int nr)
 {
   CPanelPlot *pRtn(NULL);

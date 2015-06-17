@@ -31,6 +31,7 @@
 
 #include "CComboLabels.h"
 #include "CPanelPlotToolbar.h"
+#include "CMenuLabels.h"
 #include <wx/arrstr.h>
 #include "wxIDS.h"
 #include "Platform.h"
@@ -38,6 +39,9 @@
 //  static constants for default choices, must be in sync
 // default selection for combo box
 const wxString CComboLabels::g_sAlleles("Alleles");
+const wxString CComboLabels::g_sBPS("BPS");
+const wxString CComboLabels::g_sRFU("RFU");
+const wxString CComboLabels::g_sTime("Time");
 const wxString CComboLabels::g_sPeakArea("Peak Area");
 // default selection for menu
 const int CMenuLabels::g_nDefault(IDmenuDisplayAlleles);
@@ -55,7 +59,9 @@ void CComboLabels::GetChoices(
   bool bAllowPeakArea,
   int nBase)
 {
-
+  //
+  // this should move to CMenuLabels or its own class
+  //
   // the order of pas must be consistent with
   // enum LABEL_PLOT_TYPE and LABEL_CELL_TYPE 
   // in LABEL_TYPES.h
@@ -69,9 +75,9 @@ void CComboLabels::GetChoices(
       pas->Add("None");
     }
     pas->Add(g_sAlleles);
-    pas->Add("BPS");
-    pas->Add("RFU");
-    pas->Add("Time");
+    pas->Add(g_sBPS);
+    pas->Add(g_sRFU);
+    pas->Add(g_sTime);
     if(bAllowPeakArea || !bPlot)
     {
       pas->Add(g_sPeakArea);
@@ -96,20 +102,16 @@ void CComboLabels::GetChoices(
 }
 
 
-CComboLabels::CComboLabels(wxWindow *parent, wxWindowID id, bool bPlot) 
-    : wxComboBox(), m_bPlot(bPlot)
+CComboLabels::CComboLabels(wxWindow *parent, wxWindowID id) 
+    : wxComboBox()
 {
   wxArrayString asChoices;
-  GetChoices(&asChoices,NULL,bPlot, true, 0);
+  GetChoices(&asChoices,NULL,false, true, 0);
 
   if(!Create(parent,id,g_sAlleles,wxDefaultPosition,wxDefaultSize,
     asChoices,wxCB_DROPDOWN | wxCB_READONLY))
   {
     ; // error
-  }
-  else if(bPlot)
-  {
-    SetToolTip("Select type of label to display." PLOT_TOOLBAR_SHIFT_ALL);
   }
   else
   {
@@ -160,7 +162,7 @@ void CComboLabels::EnablePeakAreaLabel(bool b)
 }
 CComboLabels *CComboLabels::Clone()
 {
-  CComboLabels *pNew = new CComboLabels(GetParent(),GetId(),m_bPlot);
+  CComboLabels *pNew = new CComboLabels(GetParent(),GetId());
   pNew->Select(GetCurrentSelection());
   return pNew;
 }
@@ -212,121 +214,3 @@ void CComboLabelsName::SelectByMenu(CMenuLabels *pMenu)
 }
 
 
-//*******************************************************************
-//
-//                                           CMenuLabels
-//
-
-CMenuLabels::CMenuLabels(bool bPlot, int nPlotNrOrOffset) : 
-  wxMenu(""), m_bPlot(bPlot)
-{
-  wxArrayString asChoices;
-  int nBase = IDmenuDisplayBEGIN;
-
-  if(!bPlot)  
-  {
-    nBase = IDmenuDisplayBEGIN;
-  }
-  else if(nPlotNrOrOffset < IDmenuPlotBase_0)
-  {
-    nBase = ID_GET_PLOT_BASE(nPlotNrOrOffset) + IDmenuPlotLabels_BEGIN;
-  }
-  else
-  {
-    // plot number is actually the menu offset
-    nBase = nPlotNrOrOffset + IDmenuPlotLabels_BEGIN;
-  }
-
-  if( (bPlot) && 
-      ( (nBase < IDmenuPlotBase_0) || 
-        (nBase > IDmenuPlotBase_MAX) )
-    )
-  {
-    wxString sErr;
-    sErr.Printf(
-      "CMenuLabels::CMenuLabels, plot number, %d, is out of range",
-      nPlotNrOrOffset);
-    wxASSERT_MSG(0,sErr);
-  }
-  else
-  {
-    wxMenuItem *pMenuItem(NULL);
-    CComboLabels::GetChoices(&asChoices,&m_anChoices,bPlot, true, nBase);
-    size_t nSize = asChoices.GetCount();
-    size_t i;
-    for(i = 0; i < nSize; ++i)
-    {
-      pMenuItem = AppendRadioItem(m_anChoices.Item(i), asChoices.Item(i));
-    }
-    m_pMenuArea = pMenuItem; // last item
-    m_pMenuArea->Enable(!bPlot);
-    Check(g_nDefault + nBase,true); 
-      // must be equivalent to
-      // the default selection of CComboBox 
-      // in its constructor
-    if(!m_bPlot)
-    {
-      AppendSeparator();
-      CComboLabelsName::GetChoices(&asChoices,&m_anChoicesName,IDmenuDisplayNameBASE);
-      size_t nSize = asChoices.GetCount();
-      for(i = 0; i < nSize; i++)
-      {
-        AppendRadioItem(m_anChoicesName.Item(i),asChoices.Item(i));
-      }
-    }
-  }
-}
-
-CMenuLabels::~CMenuLabels() {;}
-
-bool CMenuLabels::SelectByOffset(int nType, bool bName)
-{
-  bool bRtn = false;
-  const nwxArrayInt &anChoices = GetArray(bName);
-  if( (nType >= 0) && (nType < (int)anChoices.GetCount()) )
-  {
-    int nSelect = anChoices.Item(nType);
-    if(!IsChecked(nSelect))
-    {
-      // only check if not already checked to prevent
-      // unnecessary events
-      Check(nSelect,true);
-      bRtn = true;
-    }
-  }
-  return bRtn;
-}
-int CMenuLabels::GetOffsetById(int nID,bool bName)
-{
-  int nRtn = -1;
-  int n;
-  const nwxArrayInt &anChoices = GetArray(bName);
-  size_t nSize = anChoices.GetCount();
-  for(size_t i = 0; i < nSize; ++i)
-  {
-    n = anChoices.Item(i);
-    if(n == nID)
-    {
-      nRtn = (int)i;
-      i = nSize; // loop exit
-    }
-  }
-  return nRtn;
-}
-int CMenuLabels::GetCheckedOffset(bool bName)
-{
-  int nRtn = -1;
-  int n;
-  const nwxArrayInt &anChoices = GetArray(bName);
-  size_t nSize = anChoices.GetCount();
-  for(size_t i = 0; i < nSize; ++i)
-  {
-    n = anChoices.Item(i);
-    if(IsChecked(n))
-    {
-      nRtn = (int)i;
-      i = nSize; // loop exit
-    }
-  }
-  return nRtn;
-}

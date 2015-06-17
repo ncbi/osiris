@@ -142,7 +142,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPlotResizable);
   CP(m_nPlotMinHeight);
   CP(m_nPlotShowArtifact);
-  CP(m_nPlotDisplayPeak);
+  CP(m_anPlotDisplayPeak);
   CP(m_nPlotMaxLadderLabels);
 
   //  XSLT saved parameter info
@@ -162,7 +162,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
 
 bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 {
-#define CP(elem) else if(elem != x.elem) { bRtn = false; }
+#define CP(elem) else if(!(elem == x.elem)) { bRtn = false; }
   bool bRtn = true;
   if(0) {}
   // begin generated compare
@@ -243,7 +243,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPlotResizable)
   CP(m_nPlotMinHeight)
   CP(m_nPlotShowArtifact)
-  CP(m_nPlotDisplayPeak)
+  CP(m_anPlotDisplayPeak)
   CP(m_nPlotMaxLadderLabels)
 
   //  XSLT saved parameter info
@@ -353,7 +353,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PlotResizable", &m_bPlotResizable);
   Register("PlotMinHeight",&m_ioInt_1,(void *) &m_nPlotMinHeight);
   Register("PlotShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPlotShowArtifact);
-  Register("PlotDisplayPeak",&m_ioUint1,(void *) &m_nPlotDisplayPeak);
+  RegisterUintVector("PlotDisplayPeak", &m_anPlotDisplayPeak);
   Register("MaxLadderLabels",&m_ioInt_1,(void *) &m_nPlotMaxLadderLabels);
 
   //  XSLT saved parameter info
@@ -465,7 +465,8 @@ void CParmOsiris::SetDefaults()
   m_bPlotResizable = false;
   m_nPlotMinHeight = -1;
   m_nPlotShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
-  m_nPlotDisplayPeak = 1;
+  m_anPlotDisplayPeak.clear();
+  m_anPlotDisplayPeak.push_back(1);
   m_nPlotMaxLadderLabels = -1;
 
   //  XSLT saved parameter info

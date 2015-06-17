@@ -49,23 +49,17 @@ const wxChar *CMenuAnalysis::PARAMETERS_TOOL_TIP =
 const wxChar *CMenuAnalysis::PREVIEW_HELP_TEXT =
   wxS("Show or hide preview plot of selected table cell");
 
-#if REUSE_MENUS
-#define POPUP_ECHO(f,a)
-#else
 #define POPUP_ECHO(f,a) if(m_pMenuPopup != NULL) { m_pMenuPopup->f(a); }
 #define HIST_ECHO(f,a) if(m_pMenuHistoryButton != NULL) { m_pMenuHistoryButton->f(a); }
-#endif
 
 CMenuAnalysis::~CMenuAnalysis()
 {
-#if !REUSE_MENUS
 #define _DELETE(x) if(x != NULL) { delete x; }
   _DELETE(m_pMenuPopup);
   _DELETE(m_pMenuHistoryButton);
   _DELETE(m_pMenuSortPopup);
   _DELETE(m_pMenuEdit);
 #undef _DELETE
-#endif
 }
 
 void CMenuAnalysis::SetControlsOnTop(bool b)
@@ -248,11 +242,9 @@ int CMenuAnalysis::GetNameTypeOffsetById(int nID)
 }
 
 CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
-#if !REUSE_MENUS
   m_pMenuPopup(NULL),
   m_pMenuHistoryButton(NULL),
   m_pMenuSortPopup(NULL),
-#endif
   m_pMenuEdit(NULL)
 {
   m_pFile = pFile;
@@ -293,7 +285,7 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
   AppendSubMenu(m_pMenuSort,"&Sort");
   Append(IDmenuParameters,"Parameters...",
     PARAMETERS_TOOL_TIP);
-  m_pMenuCellType = new CMenuLabels(false);
+  m_pMenuCellType = new CMenuLabels(CMenuLabels::MENU_TYPE_TABLE);
   AppendSubMenu(m_pMenuCellType,"&Display");
   Append(
     IDExportCMF,
@@ -322,28 +314,16 @@ void CMenuAnalysis::CopyState(CMenuAnalysis *pTo)
   CBaseMenuEdit::CopyState(pTo->m_pMenuItemDisable,m_pMenuItemDisable);
   CBaseMenuEdit::CopyState(pTo->m_pMenuItemDisableMulti,m_pMenuItemDisableMulti);
   CBaseMenuEdit::CopyState(pTo->m_pMenuItemReAnalyze,m_pMenuItemReAnalyze);
-#if !REUSE_MENUS
   pTo->UpdateChildren();
-#endif
 }
 
 wxMenu *CMenuAnalysis::GetMenuSortPopup()
 {
-#if REUSE_MENUS
-  // get sort menu for popup under button
-  return m_pMenuSort;
-#else
   return _GetMenuSortPopup();
-#endif
 }
 CMenuHistory *CMenuAnalysis::GetMenuHistoryPopup()
 {
-#if REUSE_MENUS
-  // get history menu for popup under button
-  return m_pMenuHistory;
-#else
   return _GetHistoryPanelPopup();
-#endif
 }
 
 wxMenu *CMenuAnalysis::GetMenuEdit()
@@ -357,16 +337,11 @@ wxMenu *CMenuAnalysis::GetMenuEdit()
 }
 wxMenu *CMenuAnalysis::GetPopup()
 {
-#if REUSE_MENUS
-  return this;
-#else
   return _GetPopup();
-#endif
 }
 
 
 
-#if !REUSE_MENUS
 void CMenuAnalysis::_UpdatePopup()
 {
   if(m_pMenuPopup != NULL)
@@ -408,13 +383,10 @@ wxMenu *CMenuAnalysis::_GetMenuSortPopup()
   }
   return m_pMenuSortPopup;
 }
-#endif
 
 void CMenuAnalysis::UpdateChildren()
 {
-#if !REUSE_MENUS
   _UpdatePopup();
   _UpdateHistoryButton();
-#endif
 }
 

@@ -326,6 +326,7 @@
     <ClCompile Include="CMenuFileBase.cpp" />
     <ClCompile Include="CMenuFileGraph.cpp" />
     <ClCompile Include="CMenuHistory.cpp" />
+    <ClCompile Include="CMenuLabels.cpp" />
     <ClCompile Include="CMenuPlot.cpp" />
     <ClCompile Include="CMenuWindow.cpp" />
     <ClCompile Include="COARallele.cpp" />

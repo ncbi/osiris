@@ -108,13 +108,7 @@ public:
   {
     return m_pLastMenuShown;
   }
-  void SetLastMenuShown(wxMenu *p)
-  {
-    if(IsMenuRegistered(p))
-    {
-      m_pLastMenuShown = p;
-    }
-  }
+  void SetLastMenuShown(wxMenu *p);
   void RegisterMenu(wxMenu *p)
   {
     m_setMenus.insert(p);
@@ -149,6 +143,8 @@ private:
   bool m_bAutoReload;
   void _NotifyParent();
   wxMenu *m_pLastMenuShown;
+  int m_nMenuCount;
+  bool m_bLastMenuPopup;
 public:
   void RaiseWindow();
   void OnActivate(wxActivateEvent &e);

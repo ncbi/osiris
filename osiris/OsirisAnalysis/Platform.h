@@ -34,22 +34,15 @@
 #define MANUALLY_PLACE_FRAMES
 #define COLOR_MENU_ITEMS 0
 #define ID_SPLITTER_STYLE (wxSP_3DSASH | wxSP_LIVE_UPDATE)
-#define REUSE_MENUS 0
 // pixels to subtract from screen height for 'full screen'
 #define MENU_BAR_ALLOWANCE 32
 #define HAS_STATUS_BAR 0
 #define CHECK_FRAME_ON_TIMER 0
 
-//  if REUSE_MENUS == 0 then there is a problem if a single 
-//  menu is used as a popup
-//  and in a menu bar, either as a pulldown or submenu.
-//  the problem has occurred on the mac but not windows.
-//  this will be deprecated because it isn't worth the extra
-//  code to support both, so it is set to 0
 #else
+
 #define COLOR_MENU_ITEMS 1
 #define ID_SPLITTER_STYLE (wxSP_3DSASH | wxSP_NO_XP_THEME)
-#define REUSE_MENUS 0
 #define MENU_BAR_ALLOWANCE 0
 #define HAS_STATUS_BAR 1
 #define CHECK_FRAME_ON_TIMER 0
