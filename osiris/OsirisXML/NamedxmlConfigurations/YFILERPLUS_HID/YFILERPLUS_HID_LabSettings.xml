@@ -150,7 +150,7 @@
   <LabMarkerSetSpecifications>
     <LabMarkerSetCollection>
       <MarkerSetName>Yfiler Plus</MarkerSetName>
-      <LadderFileName>YfilerPlus_LadderInfo.xml</LadderFileName>
+      <LadderFIleName>YfilerPlus</LadderFIleName>
       <ILS>ABI-LIZ-600-80-TO-400</ILS>
       <UserOverrideILS>true</UserOverrideILS>
     </LabMarkerSetCollection>
