@@ -1,4 +1,4 @@
-LadderFileName = YfilerPlus;
+LadderFileName = YfilerPlus_LadderInfo.xml;
 KitName = Yfiler Plus;
 LadderDirectory = F:\New Kits Profiles\Yfiler Plus\Yfiler Plus Analysis files_v3X;
 NumberOfDyes = 6;
