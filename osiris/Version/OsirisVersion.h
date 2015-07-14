@@ -37,7 +37,7 @@
 #define OSIRIS_OS "Macintosh"
 #endif
 #endif
-#define OSIRIS_VERS_BASE "2.5 beta 4"
+#define OSIRIS_VERS_BASE "2.5 beta 5"
 #define OSIRIS_VERS OSIRIS_VERS_BASE
 //" beta 17"
 #define OSIRIS_VERSION OSIRIS_VERS " for " OSIRIS_OS
