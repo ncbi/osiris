@@ -655,6 +655,7 @@ public:
   CLabMarkerSetCollection &operator = (const CLabMarkerSetCollection &x)
   {
     LABCP(m_sMarkerSetName);
+    LABCP(m_sLadderFileName);
     LABCP(m_sILSName);
     LABCP(m_bAllowUserOverrideILS);
     LABCP(m_bAnalyzed);
@@ -669,6 +670,7 @@ public:
   {
     bool bRtn = false;
     LABEQLOG(m_sMarkerSetName,"CLabMarkerSetCollection.m_sMarkerSetName")
+    else LABEQLOG(m_sLadderFileName,"CLabMarkerSetCollection.m_sLadderFileName")
     else LABEQLOG(m_sILSName,"CLabMarkerSetCollection.m_sILSName")
     else LABEQLOG(m_bAllowUserOverrideILS,"CLabMarkerSetCollection.m_bAllowUserOverrideILS")
     else LABEQLOG(m_bAnalyzed,"CLabMarkerSetCollection.m_bAnalyzed")
@@ -688,6 +690,10 @@ public:
   {
     return m_sMarkerSetName;
   }
+  const wxString &GetLadderFileName() const
+  {
+    return m_sLadderFileName;
+  }
   const wxString &GetILSName() const
   {
     return m_sILSName;
@@ -703,6 +709,10 @@ public:
   void SetMarkerSetName(const wxString &s)
   {
     m_sMarkerSetName = s;
+  }
+  void SetLadderFileName(const wxString &s)
+  {
+    m_sLadderFileName = s;
   }
   void SetILSName(const wxString &s)
   {
@@ -746,6 +756,7 @@ protected:
 
 private:
   wxString m_sMarkerSetName;
+  wxString m_sLadderFileName;
   wxString m_sILSName;
   CLabLocusCollection m_lociOffLadder;
   CLabLocusCollection m_lociSampleTrialleles;

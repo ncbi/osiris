@@ -506,6 +506,10 @@ bool CLabMarkerSetCollection::HasData()
   {
     bRtn = true;
   }
+  elsif(!m_sLadderFileName.IsEmpty())
+  {
+    bRtn = true;
+  }
   else if(m_lociOffLadder.Get()->size())
   {
     bRtn = true;
@@ -529,6 +533,7 @@ void CLabMarkerSetCollection::RegisterAll(bool)
 {
   ClearRegistration();
   RegisterWxString("MarkerSetName",&m_sMarkerSetName);
+  RegisterWxStringNotEmpty("LadderFileName",&m_sLadderFileName);
   RegisterWxString("ILS",&m_sILSName);
   RegisterBoolTrue("UserOverrideILS",&m_bAllowUserOverrideILS);
   RegisterBoolSkipFalse("Analyzed",&m_bAnalyzed);
