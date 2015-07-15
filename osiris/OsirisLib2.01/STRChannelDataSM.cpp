@@ -4901,12 +4901,6 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 		firsts.push_back (true);
 		lasts.push_back (false);
 		hasFirstKnot = true;
-
-		if ((mChannel == 1) && (intervalLeft > 1600) && (intervalRight < 2700)) {
-
-			cout << "Left interval = " << intervalLeft << "; Right interval = " << intervalRight;
-			cout << "; Sample time = " << time << "; Sample Value = " << value << endl;
-		}
 	}
 
 	if (length > 150) {
@@ -4986,8 +4980,8 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToListsAfterFiltering (int
 	int segLength;
 	bool hasFirstKnot = false;
 
-	if (mChannel == 1)
-		cout << "Left interval = " << intervalLeft << ", Right interval = " << intervalRight << endl;
+	//if (mChannel == 1)
+	//	cout << "Left interval = " << intervalLeft << ", Right interval = " << intervalRight << endl;
 
 	if (length < 20) {
 
