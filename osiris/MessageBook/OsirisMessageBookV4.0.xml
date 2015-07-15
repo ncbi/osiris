@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.50</VersionNumber>
-	<BuildTime>04 14 2015 11:40 AM</BuildTime>
+	<VersionNumber>6.51</VersionNumber>
+	<BuildTime>07 15 2015 02:14 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5718,7 +5718,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
-				<Threshold>0</Threshold>
+				<Threshold>1</Threshold>
 				<ThresholdDescriptor>        Filter Left Shoulder Peaks</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
@@ -5820,7 +5820,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
-				<Threshold>0</Threshold>
+				<Threshold>1</Threshold>
 				<ThresholdDescriptor>        Make Ladder Artifacts Left of Core Ladder Non-critical</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
@@ -5836,7 +5836,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
-				<Threshold>0</Threshold>
+				<Threshold>1</Threshold>
 				<ThresholdDescriptor>        Make Ladder Artifacts Right of Core Ladder Non-critical</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>

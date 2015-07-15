@@ -514,5 +514,9 @@
 			<KitName>GenePrint 10</KitName>
 			<FileName>GenePrint10_LadderInfo.xml</FileName>
 		</Set>
+		<Set>
+			<KitName>Yfiler Plus</KitName>
+			<FileName>YfilerPlus_LadderInfo.xml</FileName>
+		</Set>
 	</Kits>
 </KitData>
