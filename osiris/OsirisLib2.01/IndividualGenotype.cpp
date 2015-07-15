@@ -1084,7 +1084,8 @@ bool GenotypesForAMarkerSet :: AddCollectionToTablesFromLabSettings (const RGStr
 
 				else {
 
-					returnValue = false;
+					//returnValue = false;
+					cout << "\nWARNING***Found duplicate positive control named " << nextGenotype->GetName ().GetData () << ".  Ignoring...\n" << endl;
 					delete nextGenotype;
 				}
 			}
