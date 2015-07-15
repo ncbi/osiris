@@ -1039,4 +1039,49 @@
       <ladder>RGB(191,120,120)</ladder>
     </channel>
   </kit>
+  <kit>
+	<name>Yfiler Plus</name>
+    <channel>
+      <nr>1</nr>
+      <dye>6-FAM</dye>
+      <analyzed>RGB(0,0,144)</analyzed>
+      <raw>RGB(113,113,153)</raw>
+      <ladder>RGB(144,144,191)</ladder>
+    </channel>
+    <channel>
+      <nr>2</nr>
+      <dye>VIC</dye>
+      <analyzed>RGB(0,144,0)</analyzed>
+      <raw>RGB(118,150,118)</raw>
+      <ladder>RGB(116,191,116)</ladder>
+    </channel>
+    <channel>
+      <nr>3</nr>
+      <dye>NED</dye>
+      <analyzed>RGB(125,125,35)</analyzed>
+      <raw>RGB(131,131,100)</raw>
+      <ladder>RGB(165,165,97)</ladder>
+    </channel>
+    <channel>
+      <nr>4</nr>
+      <dye>TAZ</dye>
+      <analyzed>RGB(144,0,0)</analyzed>
+      <raw>RGB(144,96,96)</raw>
+      <ladder>RGB(191,120,120)</ladder>
+    </channel>
+    <channel>
+      <nr>5</nr>
+      <dye>SID</dye>
+      <analyzed>RGB(144,0,144)</analyzed>
+      <raw>RGB(144,96,144)</raw>
+      <ladder>RGB(144,120,144)</ladder>
+    </channel>
+    <channel>
+      <nr>6</nr>
+      <dye>LIZ</dye>
+      <analyzed>RGB(180,90,0)</analyzed>
+      <raw>RGB(144,96,48)</raw>
+      <ladder>RGB(191,144,98)</ladder>
+    </channel>
+  </kit>
 </x>
