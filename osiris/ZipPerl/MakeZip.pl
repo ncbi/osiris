@@ -36,7 +36,6 @@ sub TESTFILES
 {
   my ($file,$dir) = @_;
   my $rtn = 0;
-
   ## return 1 if a file in ${dir} is newer than $file
 
   if(!(-r $file))
@@ -95,6 +94,8 @@ sub COPYFILES
     IDplus
     IDplusNO250
     ID_HID
+    iPLEXSTR
+    iPLEXSTRLIZ500less250
     MINIFILER
     NFX1
     NGM
@@ -123,8 +124,8 @@ sub COPYFILES
     SEfilerPlus
     SGMPlus
     Yfiler
-    iPLEXSTR
-    iPLEXSTRLIZ500less250
+    YFILERPLUS
+    YFILERPLUS_HID
   /)
   {
     my $dest1 = "${dest}/Config/Volumes/${sdir}";
