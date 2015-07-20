@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_002BBEA299484C209ED56B38A5EAE488"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_00347960CA864A08AEDC49546AAB6A30"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -573,6 +579,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5227CDEB6FE2431FB873F2EE02683098"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_52A597E8C56B42468DC582724C86E9DE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -819,6 +831,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7EAD098F2F4A40FFB15E2D3C5019A4DD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_80D19B3CE44549688DA91CA13B990BE3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -874,6 +892,12 @@
         "Entry"
         {
         "MsmKey" = "8:_8748F0038AC743EB816C10E9E6058817"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_88B00E425D724769A632EF108C832EA6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -946,6 +970,12 @@
         "Entry"
         {
         "MsmKey" = "8:_94B23C0D5AAB4319B3D0AB243F851628"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_951CF16B25074AB38B2180C3148708A3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1383,6 +1413,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CAE0FBC5B0EA414C84D3C3E8303634C4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CD445B083B174470912AC0C2BC71CA61"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1449,6 +1485,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D2B1AC88D9F34814AE809FA04A11D842"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D31A705B2B024A6291D455DE79B477E8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1486,6 +1528,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D7378F8D5D954B528239BE50DD26BEF7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D8EF9734DB214909A8A9FC52BB0D3D68"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1647,6 +1695,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F6292C7A2E874F4BA089D98F8B7D95BA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F787BB8D5E5E4166A1B9CC9308C8C786"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1740,7 +1794,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.5-beta-5.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.5-beta-6.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -1808,6 +1862,26 @@
             "TargetName" = "8:_homozygote_too_short_D7_D18_FGA_B05_C6(00-3422).fsa"
             "Tag" = "8:"
             "Folder" = "8:_29A20AC60A714F1FB99FA56689F3CDD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_002BBEA299484C209ED56B38A5EAE488"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS_HID\\YFILERPLUS_HID_access.txt"
+            "TargetName" = "8:YFILERPLUS_HID_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_EA0243B141EB40B7A557404739EDA80F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3642,6 +3716,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5227CDEB6FE2431FB873F2EE02683098"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS\\YFILERPLUS_LabSettings.xml"
+            "TargetName" = "8:YFILERPLUS_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_0B2281AD4CC64752A62526F17601386D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_52A597E8C56B42468DC582724C86E9DE"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\IDNO250\\IDNO250_access.txt"
@@ -4462,6 +4556,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7EAD098F2F4A40FFB15E2D3C5019A4DD"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS\\YFILERPLUS_access.txt"
+            "TargetName" = "8:YFILERPLUS_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_0B2281AD4CC64752A62526F17601386D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80D19B3CE44549688DA91CA13B990BE3"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\PPFusion_LadderInfo.xml"
@@ -4648,6 +4762,26 @@
             "TargetName" = "8:NGM_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_191475824F444B31AB23B1604293690B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_88B00E425D724769A632EF108C832EA6"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS\\YFILERPLUS_StdSettings.xml"
+            "TargetName" = "8:YFILERPLUS_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_0B2281AD4CC64752A62526F17601386D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4888,6 +5022,26 @@
             "TargetName" = "8:IDNO250_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_028E9FE5AA4D48A1990BB21A9A468704"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_951CF16B25074AB38B2180C3148708A3"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS\\YFILERPLUS_MessageBookV4.0.xml"
+            "TargetName" = "8:YFILERPLUS_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_0B2281AD4CC64752A62526F17601386D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6342,6 +6496,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CAE0FBC5B0EA414C84D3C3E8303634C4"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS_HID\\YFILERPLUS_HID_StdSettings.xml"
+            "TargetName" = "8:YFILERPLUS_HID_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_EA0243B141EB40B7A557404739EDA80F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CD445B083B174470912AC0C2BC71CA61"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NGM\\NGM_MessageBookV4.0.xml"
@@ -6562,6 +6736,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D2B1AC88D9F34814AE809FA04A11D842"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS_HID\\YFILERPLUS_HID_LabSettings.xml"
+            "TargetName" = "8:YFILERPLUS_HID_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_EA0243B141EB40B7A557404739EDA80F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D31A705B2B024A6291D455DE79B477E8"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPY23_HID\\PPY23_HID_MessageBookV4.0.xml"
@@ -6688,6 +6882,26 @@
             "TargetName" = "8:Profiler_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_BD798A0FC99C48F4AE20E07E927B36C0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8EF9734DB214909A8A9FC52BB0D3D68"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\YFILERPLUS_HID\\YFILERPLUS_HID_MessageBookV4.0.xml"
+            "TargetName" = "8:YFILERPLUS_HID_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_EA0243B141EB40B7A557404739EDA80F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7222,6 +7436,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F6292C7A2E874F4BA089D98F8B7D95BA"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\YfilerPlus_LadderInfo.xml"
+            "TargetName" = "8:YfilerPlus_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F787BB8D5E5E4166A1B9CC9308C8C786"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PP16_HID\\PP16_HID_LabSettings.xml"
@@ -7735,6 +7969,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_0B2281AD4CC64752A62526F17601386D"
+                                    {
+                                    "Name" = "8:YFILERPLUS"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_B718AE52EC9043469BAE918E009FFE34"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_0B3DBDF1941C4FE09B63AE93C618225B"
                                     {
                                     "Name" = "8:iPLEXSTR"
@@ -8149,6 +8394,17 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_3A3038313F7743758E5B3413F7047EFD"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_EA0243B141EB40B7A557404739EDA80F"
+                                    {
+                                    "Name" = "8:YFILERPLUS_HID"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_7E9B1D9EE323408D953B59168645868F"
                                         "Folders"
                                         {
                                         }
