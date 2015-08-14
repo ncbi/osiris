@@ -506,7 +506,7 @@ bool CLabMarkerSetCollection::HasData()
   {
     bRtn = true;
   }
-  elsif(!m_sLadderFileName.IsEmpty())
+  else if(!m_sLadderFileName.IsEmpty())
   {
     bRtn = true;
   }
