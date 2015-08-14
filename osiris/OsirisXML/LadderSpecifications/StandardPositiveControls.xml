@@ -245,6 +245,20 @@
 								<BioID>0</BioID>
 							</Allele>
 						</Locus>
+						<Locus>
+							<Name>QS1</Name>
+							<Allele>
+								<Name>1</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>QS2</Name>
+							<Allele>
+								<Name>2</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
 					</Loci>
 				</PositiveControl>
 				<PositiveControl>
@@ -659,6 +673,20 @@
 								<BioID>0</BioID>
 							</Allele>
 						</Locus>
+						<Locus>
+							<Name>QS1</Name>
+							<Allele>
+								<Name>1</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>QS2</Name>
+							<Allele>
+								<Name>2</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
 					</Loci>
 				</PositiveControl>
 				<PositiveControl>
@@ -842,6 +870,20 @@
 							</Allele>
 							<Allele>
 								<Name>13</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>QS1</Name>
+							<Allele>
+								<Name>1</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>QS2</Name>
+							<Allele>
+								<Name>2</Name>
 								<BioID>0</BioID>
 							</Allele>
 						</Locus>
@@ -1281,6 +1323,20 @@
 								<BioID>0</BioID>
 							</Allele>
 						</Locus>
+						<Locus>
+							<Name>QS1</Name>
+							<Allele>
+								<Name>1</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>QS2</Name>
+							<Allele>
+								<Name>2</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
 					</Loci>
 				</PositiveControl>
 				<PositiveControl>
@@ -1700,6 +1756,20 @@
 							<Name>Y-GATA-H4</Name>
 							<Allele>
 								<Name>11</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>QS1</Name>
+							<Allele>
+								<Name>1</Name>
+								<BioID>0</BioID>
+							</Allele>
+						</Locus>
+						<Locus>
+							<Name>QS2</Name>
+							<Allele>
+								<Name>2</Name>
 								<BioID>0</BioID>
 							</Allele>
 						</Locus>
