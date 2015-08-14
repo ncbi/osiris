@@ -121,6 +121,8 @@ sub COPYFILES
     PPY23
     PPY23_HID
     Profiler
+    QIAGEN_INVESTIGATOR24PLEX
+    QIAGEN_INVESTIGATOR24PLEX_HID
     SEfilerPlus
     SGMPlus
     Yfiler
