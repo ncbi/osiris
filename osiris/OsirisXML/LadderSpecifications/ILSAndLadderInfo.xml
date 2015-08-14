@@ -393,6 +393,27 @@
 					<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
 					<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
 				</LaneStandard>
+				<LaneStandard>
+					<Name>BTO_60_550</Name>
+					<Characteristics>60 80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500 525 550</Characteristics>
+					<RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+					<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+					<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+				</LaneStandard>
+				<LaneStandard>
+					<Name>BTO_80_550</Name>
+					<Characteristics>80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500 525 550</Characteristics>
+					<RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+					<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+					<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+				</LaneStandard>
+				<LaneStandard>
+					<Name>BTO_80_500</Name>
+					<Characteristics>80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500</Characteristics>
+					<RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+					<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+					<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+				</LaneStandard>
 	</LaneStandards>
 	<Kits>
 		<Set>
@@ -517,6 +538,10 @@
 		<Set>
 			<KitName>Yfiler Plus</KitName>
 			<FileName>YfilerPlus_LadderInfo.xml</FileName>
+		</Set>
+		<Set>
+			<KitName>QiagenInvestigator24plex</KitName>
+			<FileName>Q_Investigator24plex_LadderInfo.xml</FileName>
 		</Set>
 	</Kits>
 </KitData>
