@@ -1165,7 +1165,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		TestFitCriteriaSM (nextSignal);
 
 		//if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum ()) {
-		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum () || mData->TestForBiasedFit (nextSignal, minRFU)) {
+		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && mData->TestForBiasedFit (nextSignal, minRFU))) {
 
 			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList, true);
 
@@ -1632,6 +1632,9 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 	//
 	//  This is ladder and sample stage 1
 	//
+
+	//if (!TestForDualSignal)
+	//	return -1;
 
 	DualDoubleGaussian signature;
 	double fit;
