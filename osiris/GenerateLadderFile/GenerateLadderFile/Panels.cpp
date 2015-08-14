@@ -62,12 +62,13 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 	char line [512];
 	int status;
 	Locus* newLocus;
-	RGStringArray lineArrayTokens;
-	RGStringArray lineArrayDelimiters;
-	RGStringArray alleleArrayTokens;
-	RGStringArray alleleArrayDelimiters;
+	RGStringArray lineArrayTokens (250);
+	RGStringArray lineArrayDelimiters (250);
+	RGStringArray alleleArrayTokens (250);
+	RGStringArray alleleArrayDelimiters (250);
 	RGString* testString;
 	RGString* foundString;
+	size_t position;
 
 	if (!mFoundFirstLine) {
 
@@ -82,17 +83,30 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 			}
 
 			mLineString = line;
+
+			if (mLineString.FindSubstring ("Version", position))
+				continue;
+
+			else if (mLineString.FindSubstring ("Kit type", position))
+				continue;
+
+			else if (mLineString.FindSubstring ("Chemistry Kit", position))
+				continue; 
+
+			else if (mLineString.FindSubstring ("Panel", position))
+				continue; 
+
 			mLineTokenizer->ResetTokenizer ();
 			lineArrayTokens.ResetArray ();
 			lineArrayDelimiters.ResetArray ();
 			mLineTokenizer->Split (lineArrayTokens, lineArrayDelimiters);
 
-			if (lineArrayTokens.Length () < 7) {
+			//if (lineArrayTokens.Length () < 7) {
 
-				lineArrayTokens.ResetArray ();
-				lineArrayDelimiters.ResetArray ();
-				continue;
-			}
+			//	lineArrayTokens.ResetArray ();
+			//	lineArrayDelimiters.ResetArray ();
+			//	continue;
+			//}
 
 			mFoundFirstLine = true;
 			break;
@@ -140,18 +154,20 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 	int channel = inputFile.GetChannelForColorName (color);
 	Allele* newAllele;
 
-	if (locusName == "AMEL") {
+	//if (locusName == "AMEL") {
 
-		newLocus = new Locus (locusName, channel, 6);
-		newAllele = new Allele ("1", 5, 0);
-		newLocus->AddAllele (newAllele);
-		newAllele = new Allele ("2", 10, 0);
-		newLocus->AddAllele (newAllele);
-		newLocus->SetYLinked (false);
-		return newLocus;
-	}
+	//	newLocus = new Locus (locusName, channel, 6);
+	//	newAllele = new Allele ("1", 5, 0);
+	//	newLocus->AddAllele (newAllele);
+	//	newAllele = new Allele ("2", 10, 0);
+	//	newLocus->AddAllele (newAllele);
+	//	newLocus->SetYLinked (false);
+	//	cout << "Locus = AMEL with Core Repeat = 6 on Channel = " << channel << endl;
+	//	return newLocus;
+	//}
 
 	newLocus = new Locus (locusName, channel, coreRepeat);
+	cout << "Locus = " << locusName.GetData () << " with Core Repeat = " << coreRepeat << " on Channel = " << channel << endl;
 	//cout << "New panels locus with name, channel, core repeat = " << locusName.GetData () << ", " << channel << ", " << coreRepeat << endl;
 	//cout << "Allele string:  " << mAlleleString.GetData () << endl;
 	mAlleleTokenizer->ResetTokenizer ();
