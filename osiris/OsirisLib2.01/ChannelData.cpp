@@ -56,6 +56,7 @@ double ChannelData::AveSecondsPerBP = 6.0;
 bool ChannelData::UseFilterForNormalization = false;
 bool ChannelData::DisableStutterFilter = false;
 bool ChannelData::DisableAdenylationFilter = false;
+bool ChannelData::TestForDualSignal = true;
 
 
 bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& second) {
