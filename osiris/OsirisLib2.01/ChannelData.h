@@ -435,6 +435,8 @@ public:
 	static void SetDisableStutterFilter (bool s) { DisableStutterFilter = s; }
 	static void SetDisableAdenylationFilter (bool s) { DisableAdenylationFilter = s; }
 
+	static void SetTestForDualSignal (bool s) { TestForDualSignal = s; }
+
 protected:
 	int mChannel;
 	DataSignal* mData;  // This is really SampledData*
@@ -491,6 +493,7 @@ protected:
 	static bool UseFilterForNormalization;
 	static bool DisableStutterFilter;
 	static bool DisableAdenylationFilter;
+	static bool TestForDualSignal;
 };
 
 
