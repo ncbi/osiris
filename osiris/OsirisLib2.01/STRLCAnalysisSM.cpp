@@ -777,6 +777,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	bool isFirstLadder = true;
 	RGString ABIModelNumber;
 	int nLadders = 0;
+	ChannelData::SetTestForDualSignal (false);
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
@@ -1027,6 +1028,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	}
 
 	cout << "Processed all ladders.  Number of ladders = " << LadderList.Entries () << endl;
+	ChannelData::SetTestForDualSignal (true);
 	RGString SampleName;
 	bool sampleOK;
 	bool populatedBaseLocusList = false;
