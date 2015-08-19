@@ -38,6 +38,7 @@
 #define MENU_BAR_ALLOWANCE 32
 #define HAS_STATUS_BAR 0
 #define CHECK_FRAME_ON_TIMER 0
+#define DELAY_PLOT_AREA_SYNC 1
 
 #else
 
@@ -46,6 +47,8 @@
 #define MENU_BAR_ALLOWANCE 0
 #define HAS_STATUS_BAR 1
 #define CHECK_FRAME_ON_TIMER 0
+#define DELAY_PLOT_AREA_SYNC 0
+
 #endif
 
 #ifdef __WXMSW__

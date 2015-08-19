@@ -448,12 +448,18 @@ CFramePlot::CFramePlot(
     m_TimeLastRebuild(NULL),
     m_nState(FP_NO_STATE),
     m_pPlotSyncTo(NULL),
+#if DELAY_PLOT_AREA_SYNC
+    m_pPlotSyncThisTo(NULL),
+#endif
     m_nInSync(0),
     m_nMinHeight(-1),
     m_nMenuUp(0),
     m_nMenuBatchCount(0),
     m_nScrollOnTimer(-1),
     m_nScrollOnTimerOffset(0),
+#if DELAY_PLOT_AREA_SYNC
+    m_nSyncThisTimer(0),
+#endif
     m_bUpdateMenu(false),
     m_bUseExternalTimer(bUseExternalTimer),
     m_bFixed(true)
@@ -576,6 +582,16 @@ void CFramePlot::OnTimer(wxTimerEvent &e)
   {
     _ScrollPlot();
   }
+#if DELAY_PLOT_AREA_SYNC
+  if(m_nSyncThisTimer > 0)
+  {
+    m_nSyncThisTimer--;
+    if((!m_nSyncThisTimer) && (m_pPlotSyncThisTo != NULL))
+    {
+      this->_SyncThis(m_pPlotSyncThisTo);
+      m_pPlotSyncThisTo = NULL;
+    }
+#endif
 }
 void CFramePlot::UpdateOARfile(const wxString &sSampleName)
 {
@@ -1424,7 +1440,7 @@ void CFramePlot::SyncState(CPanelPlot *p, int nID)
     }
   }
 }
-void CFramePlot::SyncThis(CPanelPlot *p)
+void CFramePlot::_SyncThis(CPanelPlot *p)
 {
   if( p->SyncValue() && (m_setPlots.size() > 1) )
   {
