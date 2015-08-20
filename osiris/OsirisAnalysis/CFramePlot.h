@@ -104,7 +104,18 @@ public:
   void RemoveAllPlotsExcept(CPanelPlot *pKeep);
   void SetMultiple(CPanelPlot *p, bool bCurrentView = false);
   bool SyncTo(CPanelPlot *p);
-  void SyncThis(CPanelPlot *p);
+#if DELAY_PLOT_AREA_SYNC
+  void SyncThis(CPanelPlot *p)
+  {
+    m_nSyncThisTimer = 1;
+    m_pPlotSyncThisTo = p;
+  }
+#else
+  void SyncThis(CPanelPlot *p)
+  {
+    _SyncThis(p);
+  }
+#endif
   void SyncState(CPanelPlot *p, int nID);
   void SetUseExternalTimer(bool b = true);
   bool SetScrollbarMenuLabel(bool bShow);
@@ -232,6 +243,7 @@ private:
     GetEventHandler()->AddPendingEvent(ee);
   }
 
+  void _SyncThis(CPanelPlot *p);
   void _SyncSize();
   void _SetFixed(bool bFixed);
   void _UpdateVirtualWidth();
@@ -290,12 +302,19 @@ private:
   CHistoryTime m_TimeLastRebuild;
   CFramePlotState m_nState;
   CPanelPlot *m_pPlotSyncTo;
+#if DELAY_PLOT_AREA_SYNC
+  CPanelPlot *m_pPlotSyncThisTo;
+#endif
+
   int m_nInSync;
   int m_nMinHeight;
   int m_nMenuUp;
   int m_nMenuBatchCount;
   int m_nScrollOnTimer; // plot number to scroll to top
   int m_nScrollOnTimerOffset; // offset of scrolling in pixels
+#if DELAY_PLOT_AREA_SYNC
+  int m_nSyncThisTimer;
+#endif
   bool m_bUpdateMenu;
   bool m_bUseExternalTimer;
   bool m_bShowToolbar;
