@@ -989,6 +989,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 					if (prevSignal->GetMessageValue (isControlPeak) || nextSignal->GetMessageValue (isControlPeak))
 						continue;
 
+					// Now test to make sure this isn't two separate peaks, which would result in an exceptionally wide crater
+
+					double width = mLSData->GetWidthAtTime (0.5 * (prevSignal->GetMean () + nextSignal->GetMean ()));
+
+					if (prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation () > 1.9 * width)
+						continue;
+
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
 					//cout << " at bp = " << 0.5 * (nextSignal->GetApproximateBioID () + prevSignal->GetApproximateBioID ()) << endl;
 
