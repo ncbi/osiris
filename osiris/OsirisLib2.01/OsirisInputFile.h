@@ -38,6 +38,7 @@
 #include "rgstring.h"
 #include "rgfile.h"
 #include "rgdlist.h"
+#include "ParameterServer.h"
 
 class OsirisInputFile {
 
@@ -69,6 +70,9 @@ public:
 	RGString GetFinalMessageBookName () const { return mFinalMessageBookName; }
 	RGString GetFinalLabSettingsName () const { return mFinalLabSettingsName; }
 	RGString GetFinalStdSettingsName () const { return mFinalStdSettingsName; }
+
+	list<channelThreshold*>* GetAnalysisThresholdOverrideList () { return mAnalysisThresholds; }
+	list<channelThreshold*>* GetDetectionThresholdOverrideList () { return mDetectionThresholds; }
 
 	RGString GetOverrideString () const { return mOverrideString; }
 	bool OverrideStringIsEmpty () const { return (mOverrideString.Length () == 0); }
@@ -134,8 +138,12 @@ protected:
 	bool mUseRawData;
 	bool mUserNamedSettingsFiles;
 
+	list<channelThreshold*>* mAnalysisThresholds;
+	list<channelThreshold*>* mDetectionThresholds;
+
 	void RemoveLeadingAndTrailingBlanks (RGString& string);
 	void SetEmbeddedSlashesToForward (RGString& string);
+	RGString SplitUsingColon (const RGString& target, RGString& right);  // returns what's on left of colon, and empty if no colon
 };
 
 
