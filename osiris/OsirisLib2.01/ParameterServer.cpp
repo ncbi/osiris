@@ -149,6 +149,8 @@ ParameterServer :: ParameterServer () {
 		mSmartMessageThresholds = new RGDList;
 		mLadderLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
 		mSampleLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
+		mAnalysisThresholds = new list<channelThreshold*>;
+		mDetectionThresholds = new list<channelThreshold*>;
 	}
 
 	ParameterServer::ReferenceCount++;
@@ -234,6 +236,7 @@ ParameterServer :: ~ParameterServer () {
 
 		list<locusSpecificLimitsStruct*>::iterator c1Iterator;
 		list<locusSpecificLimitsStruct*>::iterator c2Iterator;
+
 		locusSpecificLimitsStruct* nextLink;
 
 		for (c1Iterator = mLadderLocusSpecificThresholds->begin (); c1Iterator != mLadderLocusSpecificThresholds->end (); c1Iterator++) {
@@ -774,6 +777,10 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 		return -1;
 	}
 
+	int nChannels = mSet->GetNumberOfChannels ();
+	mNumberOfChannels = nChannels;
+	STRSampleChannelData::InitializeChannelSpecificThresholds (nChannels, mAnalysisThresholds, mDetectionThresholds);
+
 	list<locusSpecificLimitsStruct*>::iterator c1Iterator;
 	list<locusSpecificLimitsStruct*>::iterator c2Iterator;
 	locusSpecificLimitsStruct* nextLink;
@@ -968,6 +975,151 @@ void ParameterServer :: WriteSettingsToDotOAR (RGLogBook& outputFile) {
 	outputFile << "\n" << mLabSettingsString->GetData () << endLine;
 	outputFile << mStandardSettingsString->GetData () << endLine;
 	outputFile.ResetOutputLevel ();
+}
+
+
+RGString ParameterServer :: BuildChannelThresholdOverridesForOAR () {
+
+	//   Requires 3 tabs
+
+	RGString params;
+	RGString tabs3 = "\t\t\t";
+	RGString tabs4 = tabs3 + "\t";
+	RGString tabs5 = tabs4 + "\t";
+
+	if ((mAnalysisThresholds->size () == 0) && (mDetectionThresholds->size () == 0))
+		return params;
+
+	double* analysis = new double [mNumberOfChannels + 1];
+	double* detection = new double [mNumberOfChannels + 1];
+	int i;
+	list<channelThreshold*>::iterator c1Iterator;
+	list<channelThreshold*>::iterator c2Iterator;
+	channelThreshold* nextThreshold;
+	int channel;
+	double channelAnalysis;
+	double channelDetection;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		analysis [i] = detection [i] = -1.0;
+	}
+
+	for (c1Iterator = mAnalysisThresholds->begin (); c1Iterator != mAnalysisThresholds->end (); c1Iterator++) {
+
+		nextThreshold = *c1Iterator;
+		channel = nextThreshold->mChannel;
+
+		if ((channel >= 1) && (channel <= mNumberOfChannels))
+			analysis [channel] = nextThreshold->mThreshold;
+	}
+
+	for (c2Iterator = mDetectionThresholds->begin (); c2Iterator != mDetectionThresholds->end (); c2Iterator++) {
+
+		nextThreshold = *c2Iterator;
+		channel = nextThreshold->mChannel;
+
+		if ((channel >= 1) && (channel <= mNumberOfChannels))
+			detection [channel] = nextThreshold->mThreshold;
+	}
+
+	params << tabs3 << "<ChannelThresholdOverrides>\n";
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		channelAnalysis = analysis [i];
+		channelDetection = detection [i];
+
+		if ((channelAnalysis <= 0.0) && (channelDetection <= 0.0))
+			continue;
+
+		params << tabs4 << "<Channel>\n";
+		params << tabs5 << "<Number>" << i << "</Number>\n";
+		
+		if (channelAnalysis > 0.0)
+			params << tabs5 << "<AnalysisThreshold>" << channelAnalysis << "</AnalysisThreshold>\n";
+
+		if (channelDetection > 0.0)
+			params << tabs5 << "<DetectionThreshold>" << channelDetection << "</DetectionThreshold>\n";
+
+		params << tabs4 << "</Channel>\n";
+	}
+
+	params << tabs3 << "</ChannelThresholdOverrides>\n";
+	return params;
+}
+
+
+
+RGString ParameterServer :: BuildChannelThresholdOverridesForPLT () {
+
+	//   Requires 2 tabs
+
+	RGString params;
+	RGString tabs3 = "\t\t";
+	RGString tabs4 = tabs3 + "\t";
+	RGString tabs5 = tabs4 + "\t";
+
+	if ((mAnalysisThresholds->size () == 0) && (mDetectionThresholds->size () == 0))
+		return params;
+
+	double* analysis = new double [mNumberOfChannels + 1];
+	double* detection = new double [mNumberOfChannels + 1];
+	int i;
+	list<channelThreshold*>::iterator c1Iterator;
+	list<channelThreshold*>::iterator c2Iterator;
+	channelThreshold* nextThreshold;
+	int channel;
+	double channelAnalysis;
+	double channelDetection;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		analysis [i] = detection [i] = -1.0;
+	}
+
+	for (c1Iterator = mAnalysisThresholds->begin (); c1Iterator != mAnalysisThresholds->end (); c1Iterator++) {
+
+		nextThreshold = *c1Iterator;
+		channel = nextThreshold->mChannel;
+
+		if ((channel >= 1) && (channel <= mNumberOfChannels))
+			analysis [channel] = nextThreshold->mThreshold;
+	}
+
+	for (c2Iterator = mDetectionThresholds->begin (); c2Iterator != mDetectionThresholds->end (); c2Iterator++) {
+
+		nextThreshold = *c2Iterator;
+		channel = nextThreshold->mChannel;
+
+		if ((channel >= 1) && (channel <= mNumberOfChannels))
+			detection [channel] = nextThreshold->mThreshold;
+	}
+
+	params << tabs3 << "<ChannelThresholdOverrides>\n";
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		channelAnalysis = analysis [i];
+		channelDetection = detection [i];
+
+		if ((channelAnalysis <= 0.0) && (channelDetection <= 0.0))
+			continue;
+
+		params << tabs4 << "<Channel>\n";
+		params << tabs5 << "<Number>" << i << "</Number>\n";
+		
+		if (channelAnalysis > 0.0)
+			params << tabs5 << "<AnalysisThreshold>" << channelAnalysis << "</AnalysisThreshold>\n";
+
+		if (channelDetection > 0.0)
+			params << tabs5 << "<DetectionThreshold>" << channelDetection << "</DetectionThreshold>\n";
+
+		params << tabs4 << "</Channel>\n";
+	}
+
+	params << tabs3 << "</ChannelThresholdOverrides>\n";
+	return params;
 }
 
 
