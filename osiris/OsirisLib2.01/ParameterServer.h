@@ -96,6 +96,16 @@ struct labNonRFULimitsStruct {
 	int maxNumberExcessiveResidualsPerSample;
 };
 
+
+struct channelThreshold {
+
+	channelThreshold () : mChannel (0), mThreshold (0.0) {}
+	channelThreshold (int c, double t) : mChannel (c), mThreshold (t) {}
+
+	int mChannel;
+	double mThreshold;
+};
+
 struct locusSpecificLimitsStruct {
 
 	locusSpecificLimitsStruct ();
@@ -168,6 +178,8 @@ public:
 	void SetConvolutionNoiseThreshold (double threshold);
 	double GetConvolutionNoiseThreshold () const;
 
+	void SetChannelSpecificThresholds (list<channelThreshold*>* analysis, list<channelThreshold*>* detection) { mAnalysisThresholds = analysis; mDetectionThresholds = detection; }
+
 	void Report (RGTextOutput& text, const RGString& indent);
 	void ReportIfChanged (RGTextOutput& text, const RGString& indent);
 
@@ -175,6 +187,9 @@ public:
 
 	GenotypeSet* GetGenotypeCollection () { return mSet; }
 	RGString GetStandardPositiveControlName () const { return *mStandardPositiveControlName; }
+
+	RGString BuildChannelThresholdOverridesForOAR ();
+	RGString BuildChannelThresholdOverridesForPLT ();
 
 	bool ReadAlgorithmParameters (const RGString& xmlString);
 	bool ReadCurveFitParameters (const RGString& xmlString);
@@ -254,6 +269,10 @@ protected:
 	RGDList* mSmartMessageThresholds;
 	list<locusSpecificLimitsStruct*>* mSampleLocusSpecificThresholds;
 	list<locusSpecificLimitsStruct*>* mLadderLocusSpecificThresholds;
+	list<channelThreshold*>* mAnalysisThresholds;
+	list<channelThreshold*>* mDetectionThresholds;
+
+	int mNumberOfChannels;
 
 	bool ReadFileNameStrings (const RGString& xmlString);
 };
