@@ -283,6 +283,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	else
 		cout << "Read standard settings correctly..." << endl;
 
+	pServer->SetChannelSpecificThresholds (inputFile.GetAnalysisThresholdOverrideList (), inputFile.GetDetectionThresholdOverrideList ());
+
 	if (!pServer->AddGenotypeCollection (labXML, true)) {
 
 		cout << "Could not interpret laboratory input settings file " << (char*)labSettingsFileName.GetData () << ".  Exiting..." << endl;
