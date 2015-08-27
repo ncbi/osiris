@@ -641,6 +641,11 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	XMLExcelLinks << "\t\t\t<minRFUinterlocus>" << minInterlocusRFU << "</minRFUinterlocus>\n";
 	XMLExcelLinks << "\t\t\t<minRFUladderInterlocus>" << minLadderInterlocusRFU << "</minRFUladderInterlocus>\n";
 	XMLExcelLinks << "\t\t\t<minRFUsampleDetection>" << minRFUSampleDetectionRFU << "</minRFUsampleDetection>\n";
+	pResult = pServer->BuildChannelThresholdOverridesForOAR ();
+
+	if (pResult.Length () > 0)
+		XMLExcelLinks << pResult;
+
 	XMLExcelLinks << "\t\t\t<DataAnalyzed>";
 
 	if (CoreBioComponent::GetUseRawData ())
@@ -687,8 +692,14 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	PlotString << "\t<parameters>\n\t\t<inputDirectory>" << xmlwriter::EscAscii (DirectoryName, &pResult) << "</inputDirectory>\n\t\t<outputDirectory>";
 	PlotString << xmlwriter::EscAscii (FullPathForReports, &pResult) << "</outputDirectory>\n\t\t<kit>";
 	PlotString << xmlwriter::EscAscii (markerSet, &pResult) << "</kit>\n\t\t<ls>";
-	PlotString << lsName << "</ls>\n\t\t<minRFUsample>" << minSampleRFU << "</minRFUsample>\n\t\t<minRFUILS>";
-	PlotString << minLaneStdRFU << "</minRFUILS>\n\t\t<minRFUladder>" << minLadderRFU;
+	PlotString << lsName << "</ls>\n\t\t<minRFUsample>" << minSampleRFU << "</minRFUsample>\n";
+
+	pResult = pServer->BuildChannelThresholdOverridesForPLT ();
+
+	if (pResult.Length () > 0)
+		PlotString << pResult;
+
+	PlotString << "\t\t<minRFUILS>" << minLaneStdRFU << "</minRFUILS>\n\t\t<minRFUladder>" << minLadderRFU;
 	PlotString << "</minRFUladder>\n\t\t<minRFUinterlocus>" << minInterlocusRFU << "</minRFUinterlocus>\n\t\t<DataAnalyzed>";
 
 	if (CoreBioComponent::GetUseRawData ())
