@@ -33,6 +33,7 @@
 //
 
 #include "OsirisInputFile.h"
+#include "rgtokenizer.h"
 #include <iostream>
 
 using namespace std;
@@ -43,6 +44,8 @@ mMinLadderRFU (0.0), mMinLaneStandardRFU (0.0), mMinInterlocusRFU (0.0), mMinLad
 mUseRawData (true), mUserNamedSettingsFiles (true) {
 
 	mInputLinesIterator = new RGDListIterator (mInputLines);
+	mAnalysisThresholds = new list<channelThreshold*>;
+	mDetectionThresholds = new list<channelThreshold*>;
 }
 
 
@@ -58,6 +61,28 @@ OsirisInputFile :: ~OsirisInputFile () {
 
 	delete mInputLinesIterator;
 	mInputLines.ClearAndDelete ();
+
+	list<channelThreshold*>::iterator c3Iterator;
+	list<channelThreshold*>::iterator c4Iterator;
+	channelThreshold* nextThreshold;
+
+	for (c3Iterator = mAnalysisThresholds->begin (); c3Iterator != mAnalysisThresholds->end (); c3Iterator++) {
+
+			nextThreshold = *c3Iterator;
+			delete nextThreshold;
+		}
+
+		mAnalysisThresholds->clear ();
+		delete mAnalysisThresholds;
+
+		for (c4Iterator = mDetectionThresholds->begin (); c4Iterator != mDetectionThresholds->end (); c4Iterator++) {
+
+			nextThreshold = *c4Iterator;
+			delete nextThreshold;
+		}
+
+		mDetectionThresholds->clear ();
+		delete mDetectionThresholds;
 }
 
 
@@ -278,6 +303,12 @@ int OsirisInputFile :: AssignString () {
 
 	char T;
 	int status = -1;
+	size_t posn;
+	RGString temp;
+	RGString channelStr;
+	double threshold;
+	int channel;
+	channelThreshold* nextThreshold;
 
 	if (mStringLeft == "InputDirectory") {
 
@@ -443,6 +474,40 @@ int OsirisInputFile :: AssignString () {
 
 		mOverrideString = mStringRight;
 		status = 0;
+	}
+
+	else if (mStringLeft.FindSubstring ("AnalysisThresholdOverride", posn)) {
+
+		temp = SplitUsingColon (mStringLeft, channelStr);
+
+		if (temp.Length () == 0)
+			status = -1;
+
+		else {
+
+			channel = channelStr.ConvertToInteger ();
+			threshold = mStringRight.ConvertToDouble ();
+			nextThreshold = new channelThreshold (channel, threshold);
+			mAnalysisThresholds->push_back (nextThreshold);
+			status = 0;
+		}
+	}
+
+	else if (mStringLeft.FindSubstring ("DetectionThresholdOverride", posn)) {
+
+		temp = SplitUsingColon (mStringLeft, channelStr);
+
+		if (temp.Length () == 0)
+			status = -1;
+
+		else {
+
+			channel = channelStr.ConvertToInteger ();
+			threshold = mStringRight.ConvertToDouble ();
+			nextThreshold = new channelThreshold (channel, threshold);
+			mDetectionThresholds->push_back (nextThreshold);
+			status = 0;
+		}
 	}
 
 	else if (mStringLeft == "#")
@@ -659,5 +724,27 @@ void OsirisInputFile :: SetEmbeddedSlashesToForward (RGString& string) {
 
 	if (string.GetLastCharacter () == '/')
 		string.RemoveLastCharacter ();
+}
+
+
+RGString OsirisInputFile :: SplitUsingColon (const RGString& target, RGString& right) { 
+
+	// returns what's on left of colon, and empty if no colon
+
+	RGString temp = target;
+	RGStringTokenizer parse (temp);
+	parse.AddDelimiter (":");
+	RGStringArray tokens;
+	RGStringArray delimiters;
+	RGString Ans;
+	right = "";
+
+	parse.Split (tokens, delimiters);
+
+	if (tokens.Length () != 2)
+		return Ans;
+
+	right = tokens [1];
+	return tokens [0];
 }
 
