@@ -48,6 +48,7 @@
 #include "SmartNotice.h"
 #include "STRSmartNotices.h"
 
+
 bool STRChannelData::UseHermiteCubicSplineForNormalization = true;
 
 double STRLaneStandardChannelData::minLaneStandardRFU = 150.0;
@@ -57,6 +58,8 @@ double STRSampleChannelData::minSampleRFU = 150.0;
 double STRSampleChannelData::minInterlocusRFU = 150;
 double STRSampleChannelData::sampleDetectionThreshold = 150.0;
 bool STRSampleChannelData::UseOldBaselineEstimation = false;
+double* STRSampleChannelData::ChannelSpecificMinRFU = NULL;
+double* STRSampleChannelData::ChannelSpecificDetectionThresholds = NULL;
 
 double STRLaneStandardChannelData::maxLaneStandardRFU = -1.0;
 double STRLadderChannelData::maxLadderRFU = -1.0;
@@ -4695,7 +4698,8 @@ ChannelData* STRSampleChannelData :: CreateNewTransformedChannel (const ChannelD
 
 double STRSampleChannelData :: GetMinimumHeight () const {
 
-	return STRSampleChannelData::minSampleRFU;
+//	return STRSampleChannelData::minSampleRFU;
+	return STRSampleChannelData::ChannelSpecificMinRFU [mChannel];
 }
 
 
@@ -4713,7 +4717,44 @@ double STRSampleChannelData :: GetFractionalFilter () const {
 
 double STRSampleChannelData :: GetDetectionThreshold () const {
 
-	return STRSampleChannelData::sampleDetectionThreshold;
+//	return STRSampleChannelData::sampleDetectionThreshold;
+	return STRSampleChannelData::ChannelSpecificDetectionThresholds [mChannel];
+}
+
+
+void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels, list<channelThreshold*>* analysisLimits, list<channelThreshold*>* detectionLimits) {
+
+	ChannelSpecificMinRFU = new double [nChannels + 1];
+	ChannelSpecificDetectionThresholds = new double [nChannels + 1];
+	channelThreshold* nextThreshold;
+	int channel;
+	int i;
+	list<channelThreshold*>::iterator c1Iterator;
+	list<channelThreshold*>::iterator c2Iterator;
+
+	for (i=0; i<=nChannels; i++) {
+
+		ChannelSpecificMinRFU [i] = minSampleRFU;
+		ChannelSpecificDetectionThresholds [i] = sampleDetectionThreshold;
+	}
+
+	for (c1Iterator = analysisLimits->begin (); c1Iterator != analysisLimits->end (); c1Iterator++) {
+
+		nextThreshold = *c1Iterator;
+		channel = nextThreshold->mChannel;
+
+		if ((channel >= 1) && (channel <= nChannels))
+			ChannelSpecificMinRFU [channel] = nextThreshold->mThreshold;
+	}
+
+	for (c2Iterator = detectionLimits->begin (); c2Iterator != detectionLimits->end (); c2Iterator++) {
+
+		nextThreshold = *c2Iterator;
+		channel = nextThreshold->mChannel;
+
+		if ((channel >= 1) && (channel <= nChannels))
+			ChannelSpecificDetectionThresholds [channel] = nextThreshold->mThreshold;
+	}
 }
 
 

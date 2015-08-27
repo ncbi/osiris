@@ -40,6 +40,7 @@
 #include "Genetics.h"
 #include "Quadratic.h"
 #include "coordtrans.h"
+#include "ParameterServer.h"
 
 #include <vector>
 #include <functional>
@@ -357,6 +358,7 @@ public:
 	static double GetMinInterlocusRFU () { return minInterlocusRFU; }
 	static void SetDetectionThreshold (double rfu) { sampleDetectionThreshold = rfu; }
 	static double GetSampleDetectionThreshold () { return sampleDetectionThreshold; }
+	static void InitializeChannelSpecificThresholds (int nChannels, list<channelThreshold*>* analysisLimits, list<channelThreshold*>* detectionLimits);
 
 
 	// Legacy Message functions*****************************************************************************************************************
@@ -419,6 +421,8 @@ protected:
 	static double minInterlocusRFU;
 	static double sampleDetectionThreshold;
 	static bool UseOldBaselineEstimation;
+	static double* ChannelSpecificMinRFU;
+	static double* ChannelSpecificDetectionThresholds;
 
 	bool FindNextFitDataIntervalBelowThreshold (double threshold, int start, int end, int& beginInterval, int& endInterval, DataSignal* fitData);
 	bool FindNextFitDataIntervalBelowThreshold (double threshold, int start, int end, int& beginInterval, int& endInterval, DataSignal* fitData, DataSignal* fitNegData);
