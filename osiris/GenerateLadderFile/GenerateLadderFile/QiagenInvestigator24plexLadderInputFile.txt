@@ -21,6 +21,7 @@ OutputConfigPath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\LadderSpec
 MaxExpectedAllelesPerLocusDefault = 2;
 YLinkedDefault = false;
 MaxExpectedAlleles = DYS391:1;
+YLinkedOverride = DYS391;
 ILSName = BTO_60_550;
 ILSName = BTO_80_550;
 ILSName = BTO_80_500;

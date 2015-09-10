@@ -409,26 +409,26 @@ int LadderInputFile :: AssignString () {
 		status = 0;
 	}
 
-	else if (mStringLeft == "YLinked") {
+	//else if (mStringLeft == "YLinked") {
 
-		locus = SplitUsingColon (mStringRight, value);
+	//	locus = SplitUsingColon (mStringRight, value);
 
-		if ((locus.Length () != 0) && (value.Length () != 0)) {
+	//	if ((locus.Length () != 0) && (value.Length () != 0)) {
 
-			if (value == "false")
-				tempUL = 0;
+	//		if (value == "false")
+	//			tempUL = 0;
 
-			else if (value == "true")
-				tempUL = 1;
+	//		else if (value == "true")
+	//			tempUL = 1;
 
-			else
-				tempUL = value.ConvertToUnsignedLong ();
+	//		else
+	//			tempUL = value.ConvertToUnsignedLong ();
 
-			nextIndexedLabel = new RGIndexedLabel (tempUL, locus, "YLinked");
-			mYLinkedDefaultOverrides.Append (nextIndexedLabel);
-			status = 0;
-		}			
-	}
+	//		nextIndexedLabel = new RGIndexedLabel (tempUL, locus, "YLinked");
+	//		mYLinkedDefaultOverrides.Append (nextIndexedLabel);
+	//		status = 0;
+	//	}			
+	//}
 
 	else if (mStringLeft == "YLinkedOverride") {
 
