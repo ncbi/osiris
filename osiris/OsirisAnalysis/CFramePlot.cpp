@@ -588,9 +588,10 @@ void CFramePlot::OnTimer(wxTimerEvent &e)
     m_nSyncThisTimer--;
     if((!m_nSyncThisTimer) && (m_pPlotSyncThisTo != NULL))
     {
-      this->_SyncThis(m_pPlotSyncThisTo);
+      this->_SyncTo(m_pPlotSyncThisTo);
       m_pPlotSyncThisTo = NULL;
     }
+  }
 #endif
 }
 void CFramePlot::UpdateOARfile(const wxString &sSampleName)
@@ -1440,7 +1441,7 @@ void CFramePlot::SyncState(CPanelPlot *p, int nID)
     }
   }
 }
-void CFramePlot::_SyncThis(CPanelPlot *p)
+void CFramePlot::SyncThis(CPanelPlot *p)
 {
   if( p->SyncValue() && (m_setPlots.size() > 1) )
   {
@@ -1459,7 +1460,7 @@ void CFramePlot::_SyncThis(CPanelPlot *p)
     Refresh();
   }
 }
-bool CFramePlot::SyncTo(CPanelPlot *p)
+bool CFramePlot::_SyncTo(CPanelPlot *p)
 {
   bool bRtn = false;
   if( p->SyncValue() && (m_setPlots.size() > 1) && !m_nInSync)

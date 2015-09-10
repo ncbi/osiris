@@ -28,10 +28,11 @@
 *
 */
 
+#include <wx/filename.h>
+#include <wx/wfstream.h>
 #include "wxXml2Document.h"
 #include "wxXml2Node.h"
-#include <wx/wfstream.h>
-#include <wx/filename.h>
+#include <libxml/parser.h>
 #ifdef _WINDOWS
 #include <memory.h>
 #else
@@ -40,7 +41,6 @@
 #ifdef ATTRIBUTE_PRINTF
 #undef ATTRIBUTE_PRINTF
 #endif
-#include <libxml/parser.h>
 ////// libxml2 callback functions
 
 extern "C"

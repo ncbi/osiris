@@ -102,7 +102,7 @@ bool CGridAllele::_TransferDataToWindow1()
       for(i = 0; i < nAlleles; i++)
       {
         nRow++;
-        SetCellValue(pLocus->GetAllele(i),nRow,nCol);
+        SetCellValue(nRow,nCol,pLocus->GetAllele(i));
       }
     }
   }
@@ -162,7 +162,7 @@ bool CGridAllele::_TransferDataToWindow3()
         nwxGrid::SetRowCount(this,nRowCount);
       }
       nwxString::Join(*pLocus->GetAlleles(),&sCell,", ");
-      SetCellValue(sCell,nRow,nCol);
+      SetCellValue(nRow,nCol,sCell);
     }
   }
 #ifdef __WXDEBUG__
@@ -755,7 +755,7 @@ void CGridAlleleBase::Clear()
   {
     for(nRow = 1; nRow < nRows; nRow++)
     {
-      SetCellValue(wxEmptyString,nRow,nCol);
+      SetCellValue(nRow,nCol,wxEmptyString);
     }
     m_vnLastRowUsed.push_back(0);
   }
@@ -870,5 +870,5 @@ void CGridAlleleBase::OnCellChange(wxGridEvent &e)
 
 
 BEGIN_EVENT_TABLE(CGridAlleleBase,nwxGrid)
-EVT_GRID_CELL_CHANGE(CGridAlleleBase::OnCellChange)
+EVT_GRID_CELL_CHANGED(CGridAlleleBase::OnCellChange)
 END_EVENT_TABLE()
