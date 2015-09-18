@@ -2213,6 +2213,7 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 	DataSignal* nextSignal;
 	double mean;
 	Locus* gridLocus;
+	Locus* lastLocus;
 	double bp;
 	int ibp;
 	Locus* previousGridLocus;
@@ -2335,15 +2336,18 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 
 		else if (!TestIfTimeIsLeftOfLocus (mean, previousLocus, previousGridLocus)) {
 
-			bp = nextSignal->GetApproximateBioID ();
-			ibp = (int) floor (bp + 0.5);
+			if (!nextSignal->GetMessageValue (restrictedPriorityPeak)) {
 
-			info = "";
-			info << ibp;
-			thisPeakLeft = true;
+				bp = nextSignal->GetApproximateBioID ();
+				ibp = (int) floor (bp + 0.5);
 
-			previousLocus->SetMessageValue (interlocusToRight, true);
-			previousLocus->AppendDataForSmartMessage (interlocusToRight, info);
+				info = "";
+				info << ibp;
+				thisPeakLeft = true;
+
+				previousLocus->SetMessageValue (interlocusToRight, true);
+				previousLocus->AppendDataForSmartMessage (interlocusToRight, info);
+			}
 		}
 
 		else {
