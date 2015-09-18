@@ -1468,12 +1468,38 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	if (reduction > reductionMax)
 		reduction = reductionMax;
 
+	if (FinalCurveList.Entries () < Size) {  // This block resolves bug in JIRA OS-533, 09/18/2015
+
+		if (print)
+			msg.WriteInsufficientPeaksForILS ();
+
+		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
+		status = -1;
+		SetMessageValue (tooFewPeaks, true);
+		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+		AppendDataForSmartMessage (tooFewPeaks, Size);
+		cout << ErrorString << endl;
+		cout << "There are too few peaks available in the ILS:  " << FinalCurveList.Entries () << " peaks out of " << Size << endl;
+
+		if (FinalCurveList.Entries () == 0)
+			return -50;
+
+		nextSignal = (DataSignal*)FinalCurveList.First ();
+		cout << "First peak at time " << nextSignal->GetMean () << endl;
+		nextSignal = (DataSignal*)FinalCurveList.Last ();
+		cout << "Last peak at time " << nextSignal->GetMean () << endl;
+		return -50;
+	}
+
 	if (hts != NULL) {
 
 		testedRelativeHeights = true;
+		//cout << "Recalculating max peak based on relative height info for " << FinalCurveList.Entries () << " candidate peaks" << endl;
 
 		// Recalculate maxPeak based on FinalCurveList; calculate minPeak if needed to pare down number of curves; nothing is changed if number of peaks would be too small
 		maxPeak = PopulationMarkerSet::RecalculateMaxPeakBasedOnRelativeHeightInfo (FinalCurveList, maxPeak, hts, Size, maxRelativeHeight, sizeFactor, minPeak) + 0.1;
+
+		//cout << "New max peak = " << maxPeak << endl;
 
 		finalIterator.Reset ();
 
@@ -1537,6 +1563,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		}
 
 		ClearAndRepopulateFromList (FinalCurveList, totallyTempCurveList, overFlow);
+		//cout << "Starting final recursion for ILS peaks with " << FinalCurveList.Entries () << " candidates" << endl;
 		recursiveStatus = PopulationMarkerSet::SearchRecursivelyForBestSubset (FinalCurveList, overFlow, ctlInfo, correlation, 0.98, startPts, heightFactor * maxPeak);
 
 		if (recursiveStatus < 0) {
