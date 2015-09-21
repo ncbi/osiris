@@ -581,7 +581,7 @@
 				<MinBP>184</MinBP>
 				<MaxBP>246</MaxBP>
 				<MinGridLSBasePair>180.5</MinGridLSBasePair>
-				<MaxGridLSBasePair>247.0</MaxGridLSBasePair>
+				<MaxGridLSBasePair>245.5</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>
 						<Name>24</Name>
@@ -635,61 +635,61 @@
 						<Name>29.2</Name>
 						<CurveNo>22</CurveNo>
 						<BP>208</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>30</Name>
 						<CurveNo>23</CurveNo>
 						<BP>210</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>30.2</Name>
 						<CurveNo>24</CurveNo>
 						<BP>212</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>31</Name>
 						<CurveNo>25</CurveNo>
 						<BP>214</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>31.2</Name>
 						<CurveNo>26</CurveNo>
 						<BP>216</BP>
-						<RelativeHeight>ML</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>32</Name>
 						<CurveNo>27</CurveNo>
 						<BP>218</BP>
-						<RelativeHeight>MH</RelativeHeight>
+						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>32.2</Name>
 						<CurveNo>28</CurveNo>
 						<BP>220</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>33</Name>
 						<CurveNo>29</CurveNo>
 						<BP>222</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>33.2</Name>
 						<CurveNo>30</CurveNo>
 						<BP>224</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>34</Name>
 						<CurveNo>31</CurveNo>
 						<BP>226</BP>
-						<RelativeHeight>M</RelativeHeight>
+						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>34.2</Name>
@@ -719,13 +719,13 @@
 						<Name>37</Name>
 						<CurveNo>36</CurveNo>
 						<BP>238</BP>
-						<RelativeHeight>H</RelativeHeight>
+						<RelativeHeight>MH</RelativeHeight>
 					</Allele>
 					<Allele>
 						<Name>38</Name>
 						<CurveNo>37</CurveNo>
 						<BP>242</BP>
-						<RelativeHeight>ML</RelativeHeight>
+						<RelativeHeight>H</RelativeHeight>
 					</Allele>
 				</LadderAlleles>
 			</Locus>
@@ -1143,7 +1143,7 @@
 				<MinBP>160</MinBP>
 				<MaxBP>203</MaxBP>
 				<MinGridLSBasePair>176.0</MinGridLSBasePair>
-				<MaxGridLSBasePair>221.0</MaxGridLSBasePair>
+				<MaxGridLSBasePair>225.0</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>
 						<Name>4</Name>
@@ -1498,7 +1498,7 @@
 				<MinBP>130</MinBP>
 				<MaxBP>182</MaxBP>
 				<MinGridLSBasePair>136.5</MinGridLSBasePair>
-				<MaxGridLSBasePair>186.5</MaxGridLSBasePair>
+				<MaxGridLSBasePair>190.0</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>
 						<Name>7</Name>
@@ -1662,7 +1662,7 @@
 				<MinBP>253</MinBP>
 				<MaxBP>297</MaxBP>
 				<MinGridLSBasePair>259.5</MinGridLSBasePair>
-				<MaxGridLSBasePair>301.5</MaxGridLSBasePair>
+				<MaxGridLSBasePair>305.0</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>
 						<Name>6</Name>
@@ -2028,7 +2028,7 @@
 				<MinBP>156</MinBP>
 				<MaxBP>208</MaxBP>
 				<MinGridLSBasePair>157.0</MinGridLSBasePair>
-				<MaxGridLSBasePair>210.0</MaxGridLSBasePair>
+				<MaxGridLSBasePair>212.0</MaxGridLSBasePair>
 				<LadderAlleles>
 					<Allele>
 						<Name>9</Name>

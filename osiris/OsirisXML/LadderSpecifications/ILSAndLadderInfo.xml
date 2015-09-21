@@ -259,28 +259,28 @@
 			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
 			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H M H</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
 			<Name>Promega-ILS-550</Name>
 			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550</Characteristics>
 			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H M</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
 			<Name>Promega-ILS-500</Name>
 			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
 			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
 			<Name>Promega-ILS-475</Name>
 			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
 			<RelativeHeights>M M H M M M M H M M M H M M M H M M M</RelativeHeights>
 			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 		<LaneStandard>
 			<Name>Promega-ILS-400</Name>
