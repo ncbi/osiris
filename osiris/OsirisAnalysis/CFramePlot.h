@@ -103,17 +103,18 @@ public:
   void RemovePlot(CPanelPlot *pRemove, bool bRefresh = true);
   void RemoveAllPlotsExcept(CPanelPlot *pKeep);
   void SetMultiple(CPanelPlot *p, bool bCurrentView = false);
-  bool SyncTo(CPanelPlot *p);
+  void SyncThis(CPanelPlot *p);
 #if DELAY_PLOT_AREA_SYNC
-  void SyncThis(CPanelPlot *p)
+  bool SyncTo(CPanelPlot *p)
   {
     m_nSyncThisTimer = 1;
     m_pPlotSyncThisTo = p;
+    return _SyncTo(p);
   }
 #else
-  void SyncThis(CPanelPlot *p)
+  bool SyncTo(CPanelPlot *p)
   {
-    _SyncThis(p);
+    return _SyncTo(p);
   }
 #endif
   void SyncState(CPanelPlot *p, int nID);
@@ -243,7 +244,7 @@ private:
     GetEventHandler()->AddPendingEvent(ee);
   }
 
-  void _SyncThis(CPanelPlot *p);
+  bool _SyncTo(CPanelPlot *p);
   void _SyncSize();
   void _SetFixed(bool bFixed);
   void _UpdateVirtualWidth();

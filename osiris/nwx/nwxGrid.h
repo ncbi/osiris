@@ -48,6 +48,7 @@
 class nwxGridCellValidator
 {
 public:
+  virtual ~nwxGridCellValidator() {}
   virtual bool Validate(
     const wxString &sCellValue, wxString *pErrorMessage = NULL) = 0;
 };

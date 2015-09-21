@@ -28,10 +28,10 @@
 *
 */
 #include "wxXslSheet.h"
-#include <libxslt/transform.h>
-#include <libxslt/xsltutils.h>
 #include "wxXml2/wxXml2Document.h"
 #include "nwx/nwxString.h"
+#include <libxslt/transform.h>
+#include <libxslt/xsltutils.h>
 #include <stdlib.h>
 
 

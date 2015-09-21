@@ -1234,7 +1234,7 @@ void CPanelPlot::_OnTimer(wxTimerEvent &e)
   //  keep it as zoom.
 
   const wxPlotCtrlMouse_Type fn(wxPLOTCTRL_MOUSE_ZOOM);
-  const int cur(wxCURSOR_CROSS);
+  const wxStockCursor cur(wxCURSOR_CROSS);
   if(m_pPlotCtrl->GetAreaMouseFunction() != fn)
   {
     m_pPlotCtrl->SetAreaMouseFunction(fn,true);
@@ -1962,6 +1962,15 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
       bRebuild = true;
       m_pMenu->SetStateFromEvent(e);
       break;
+    case IDmenuPlotArtifactsNone:
+    case IDmenuPlotArtifactsAll:
+    case IDmenuPlotArtifactsCritical:
+      bSendToAll = bShift;
+      bLabels = true;
+      m_pMenu->SetStateFromEvent(e);
+      break;
+
+
     case IDmenuPlotChannel1:
     case IDmenuPlotChannel2:
     case IDmenuPlotChannel3:
@@ -1986,12 +1995,6 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
       OnSync(e);
       break;
 
-    case IDmenuPlotArtifactsNone:
-    case IDmenuPlotArtifactsAll:
-    case IDmenuPlotArtifactsCritical:
-      bSendToAll = bShift;
-      bLabels = true;
-      break;
 
     case IDmenuPlotResetAxes:
     case IDmenuPlotResetAxesFull:

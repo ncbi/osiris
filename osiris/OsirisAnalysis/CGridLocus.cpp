@@ -158,11 +158,11 @@ void CGridLocus::_ImplementColumn(int nCol,bool bAmel)
       SetCellEditor(ROW_ALLELE,k,pe);
     }
 
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_ALLELE,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_BPS,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_RFU,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_TIME,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_PEAK_AREA,k);
+    SetCellAlignment(ROW_ALLELE,    k,wxALIGN_RIGHT,wxALIGN_CENTRE);
+    SetCellAlignment(ROW_BPS,       k,wxALIGN_RIGHT,wxALIGN_CENTRE);
+    SetCellAlignment(ROW_RFU,       k,wxALIGN_RIGHT,wxALIGN_CENTRE);
+    SetCellAlignment(ROW_TIME,      k,wxALIGN_RIGHT,wxALIGN_CENTRE);
+    SetCellAlignment(ROW_PEAK_AREA, k,wxALIGN_RIGHT,wxALIGN_CENTRE);
   }
 }
 
@@ -365,5 +365,5 @@ void CGridLocus::OnCellChange(wxGridEvent &e)
 }
 
 BEGIN_EVENT_TABLE(CGridLocus,_CGridEdit)
-EVT_GRID_CELL_CHANGE(CGridLocus::OnCellChange)
+EVT_GRID_CELL_CHANGED(CGridLocus::OnCellChange)
 END_EVENT_TABLE()

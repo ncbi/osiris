@@ -437,5 +437,5 @@ bool CPanelLocusDetails::_ProcessEvent()
 }
 BEGIN_EVENT_TABLE(CPanelLocusDetails,wxPanel)
 EVT_TEXT(wxID_ANY,CPanelLocusDetails::OnNotesChange)
-EVT_GRID_CMD_CELL_CHANGE(wxID_ANY,CPanelLocusDetails::OnCellChange)
+EVT_GRID_CMD_CELL_CHANGED(wxID_ANY,CPanelLocusDetails::OnCellChange)
 END_EVENT_TABLE()

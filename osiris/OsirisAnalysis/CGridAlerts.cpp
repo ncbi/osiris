@@ -332,6 +332,6 @@ void CGridAlerts::OnCellChange(wxGridEvent &e)
   e.Skip(true);
 }
 BEGIN_EVENT_TABLE(CGridAlerts,_CGridEdit)
-EVT_GRID_CELL_CHANGE(CGridAlerts::OnCellChange)
+EVT_GRID_CELL_CHANGED(CGridAlerts::OnCellChange)
 END_EVENT_TABLE()
 

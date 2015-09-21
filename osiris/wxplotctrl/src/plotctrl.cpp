@@ -690,7 +690,8 @@ void wxPlotCtrl::DrawPlotCtrl( wxDC *dc )
 #endif // DRAW_BORDERS
 }
 
-void wxPlotCtrl::SetPlotWinMouseCursor(int cursorid)
+void wxPlotCtrl::SetPlotWinMouseCursor(wxStockCursor cursorid)
+    // DJH 9/3/15 changed parameter from int to wxStockCursor
 {
     if (cursorid == m_mouse_cursorid) return;
     m_mouse_cursorid = cursorid;
@@ -2265,7 +2266,8 @@ void wxPlotCtrl::SetAreaMouseMarker( wxPlotCtrlMarker_Type type )
     DrawMouseMarker( &dc, m_area_mouse_marker, m_area->m_mouseRect );
 }
 
-void wxPlotCtrl::SetAreaMouseCursor(int cursorid)
+void wxPlotCtrl::SetAreaMouseCursor(wxStockCursor cursorid)
+    // DJH 9/3/15 changed parameter from int to wxStockCursor
 {
     if (cursorid == m_area_mouse_cursorid)
         return;
@@ -2909,7 +2911,11 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     m_zoom = wxPoint2DDouble(old_zoom.m_x * double(m_areaClientRect.width)/old_areaClientRect.width,
                              old_zoom.m_y * double(m_areaClientRect.height)/old_areaClientRect.height);
 
-    wxPrintf(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale);
+//    wxPrintf(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale);
+//    DJH 09/03/2015 - wxPrintf is deprecated
+    puts(
+      wxString::Format(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale).ToUTF8()
+      );
     PRINT_WXRECT(wxT("Whole plot"), boundingRect);
     PRINT_WXRECT(wxT("Area plot"), m_areaRect);
     PRINT_WXRECT(wxT("Xaxis plot"), m_xAxisRect);
