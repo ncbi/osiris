@@ -176,12 +176,12 @@ CGridColorGrid::CGridColorGrid(
   SetRowLabelValue((int)ROW_ATTN,wxEmptyString);
   SetCellFont((int) ROW_ATTN,0,fnStatus);
   SetCellValue((int) ROW_ATTN,0,CGridAnalysis::g_sStatusNeedsAttention);
-  SetCellAlignment(wxALIGN_CENTRE,(int)ROW_ATTN,0);
+  SetCellAlignment((int)ROW_ATTN,0,wxALIGN_CENTRE,wxALIGN_CENTRE);
 
   SetRowLabelValue((int)ROW_OK,wxEmptyString);
   SetCellFont((int) ROW_OK,0,fnStatus);
   SetCellValue((int) ROW_OK,0,CGridAnalysis::g_sStatusOK);
-  SetCellAlignment(wxALIGN_CENTRE,(int)ROW_OK,0);
+  SetCellAlignment((int)ROW_OK,0,wxALIGN_CENTRE,wxALIGN_CENTRE);
 
 }
 

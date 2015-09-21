@@ -271,7 +271,7 @@ void _CGridEdit::ToggleBoolEvent(wxEvent &, int nRow, int nCol)
     wxObject *pObj = this;
     int nID = GetId();
     ToggleBoolValue(nRow, nCol);
-    wxGridEvent ee(nID,wxEVT_GRID_CELL_CHANGE,pObj,nRow,nCol);
+    wxGridEvent ee(nID,wxEVT_GRID_CELL_CHANGED,pObj,nRow,nCol);
     GetEventHandler()->ProcessEvent(ee);
   }
 }

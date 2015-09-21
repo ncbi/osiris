@@ -78,7 +78,7 @@ extern const wxDouble wxPlot_MIN_DBL;   // = wxDouble_limits.min()*10
 extern const wxDouble wxPlot_MAX_DBL;   // = wxDouble_limits.max()/10
 extern const wxDouble wxPlot_MAX_RANGE; // = wxPlot_MAX_DBL*2
 
-#define CURSOR_GRAB (wxCURSOR_MAX+100)  // A hand cursor with fingers closed
+#define CURSOR_GRAB (wxStockCursor)(wxCURSOR_MAX+100)  // A hand cursor with fingers closed
 
 WX_DECLARE_OBJARRAY_WITH_DECL(wxPoint2DDouble, wxArrayPoint2DDouble, class WXDLLIMPEXP_PLOTCTRL);
 WX_DECLARE_OBJARRAY_WITH_DECL(wxRect2DDouble,  wxArrayRect2DDouble, class WXDLLIMPEXP_PLOTCTRL);
@@ -530,7 +530,8 @@ public:
     wxPlotCtrlMarker_Type GetAreaMouseMarker() const { return m_area_mouse_marker; }
 
     // Set the mouse cursor wxCURSOR_XXX + CURSOR_GRAB for the plot area
-    void SetAreaMouseCursor(int cursorid);
+    void SetAreaMouseCursor(wxStockCursor cursorid);
+    // DJH 9/3/15 changed parameter from int to wxStockCursor
 
     // ------------------------------------------------------------------------
     // Options
@@ -966,7 +967,8 @@ protected:
     wxPlotCtrlMarker_Type m_area_mouse_marker;
     int m_area_mouse_cursorid;
 
-    void SetPlotWinMouseCursor(int cursorid);
+    void SetPlotWinMouseCursor(wxStockCursor cursorid);
+    // DJH 9/3/15 changed parameter from int to wxStockCursor
     int m_mouse_cursorid;
 
 private:

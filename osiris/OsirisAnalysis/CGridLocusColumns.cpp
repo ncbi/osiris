@@ -124,7 +124,7 @@ bool CGridLocusColumns::SetupKit(
     {
       pGrid->SetCellBackgroundColour(0,nCol,
         pGrid->GetGridLineColour());
-      pGrid->SetCellValue(wxEmptyString,0,nCol);
+      pGrid->SetCellValue(0,nCol,wxEmptyString);
       pGrid->SetColLabelValue(nCol, *itrs);
       //pGrid->SetReadOnly(0,nCol,true);
       ++itrs;
@@ -248,12 +248,12 @@ bool CGridLocusColumns::SetupKit(
             "Channel %d", nChannel);
         }
         pGrid->SetCellFont(0,nCol,fnBold);
-        pGrid->SetCellValue(sLabel,0,nCol);
+        pGrid->SetCellValue(0,nCol,sLabel);
         pGrid->SetCellAlignment(0,nCol,wxALIGN_CENTRE, wxALIGN_CENTRE);
       }
       else
       {
-        pGrid->SetCellValue(wxEmptyString,0,nCol);
+        pGrid->SetCellValue(0,nCol,wxEmptyString);
       }
       if(!bColorSet)
       {

@@ -88,7 +88,7 @@ nwxArrowBitmap::nwxArrowBitmap(
   nwxStaticBitmap::LoadImage(
     pBufferDisabled,nSizeDisabled,&m_bitmapDisabled,wxBITMAP_TYPE_PNG);
   Create(parent,wxID_ANY,m_bitmapEnabled);
-  int nID = bLeft ? wxCURSOR_POINT_LEFT : wxCURSOR_POINT_RIGHT;
+  wxStockCursor nID = bLeft ? wxCURSOR_POINT_LEFT : wxCURSOR_POINT_RIGHT;
   wxCursor cur(nID);
   SetCursor(cur);
   SetToolTip(

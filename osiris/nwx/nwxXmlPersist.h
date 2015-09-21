@@ -34,7 +34,10 @@
 #define USING_WX_EXPAT 0
 #define USING_XML2_MODS 1
 
+#include <wx/filename.h>
 #include <wx/string.h>
+#include <wx/colour.h>
+#include <wx/datetime.h>
 #include <wx/debug.h>
 #if USING_WX_EXPAT
 #include <wx/xml/xml.h>
@@ -42,10 +45,6 @@
 #include "wxXml2/wxXml2.h"
 #endif
 
-#include <wx/string.h>
-#include <wx/colour.h>
-#include <wx/datetime.h>
-#include <wx/filename.h>
 #include <string.h>
 #include "nwx/stdb.h"
 #include <map>

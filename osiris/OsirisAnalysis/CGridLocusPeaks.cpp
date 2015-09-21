@@ -217,13 +217,13 @@ void CGridLocusPeaks::_ImplementColumn(int nCol)
       }
     }
 
-    SetCellAlignment(wxALIGN_CENTRE, ROW_OFF_LADDER,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_ALLELE,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_BPS,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_RFU,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_TIME,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_PEAK_AREA,k);
-    SetCellAlignment(wxALIGN_RIGHT,  ROW_FIT,k);
+    SetCellAlignment(ROW_OFF_LADDER, k,wxALIGN_CENTRE, wxALIGN_CENTRE);
+    SetCellAlignment(ROW_ALLELE,     k,wxALIGN_RIGHT, wxALIGN_CENTRE);
+    SetCellAlignment(ROW_BPS,        k,wxALIGN_RIGHT, wxALIGN_CENTRE);
+    SetCellAlignment(ROW_RFU,        k,wxALIGN_RIGHT, wxALIGN_CENTRE);
+    SetCellAlignment(ROW_TIME,       k,wxALIGN_RIGHT, wxALIGN_CENTRE);
+    SetCellAlignment(ROW_PEAK_AREA,  k,wxALIGN_RIGHT, wxALIGN_CENTRE);
+    SetCellAlignment(ROW_FIT,        k,wxALIGN_RIGHT, wxALIGN_CENTRE);
   }
 }
 
@@ -543,5 +543,5 @@ void CGridLocusPeaks::OnCellChange(wxGridEvent &e)
 
 
 BEGIN_EVENT_TABLE(CGridLocusPeaks,_CGridEdit)
-EVT_GRID_CELL_CHANGE(CGridLocusPeaks::OnCellChange)
+EVT_GRID_CELL_CHANGED(CGridLocusPeaks::OnCellChange)
 END_EVENT_TABLE()

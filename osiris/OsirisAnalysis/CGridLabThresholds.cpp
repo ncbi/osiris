@@ -178,7 +178,7 @@ void CGridLabThresholds::DisableCell(int nRow, int nCol)
   SetReadOnly(nRow,nCol,true);
   SetCellBackgroundColour(nRow,nCol,
     GetGridLineColour());
-  SetCellValue(wxEmptyString,nRow,nCol);
+  SetCellValue(nRow,nCol,wxEmptyString);
 }
 
 

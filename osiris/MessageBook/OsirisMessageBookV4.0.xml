@@ -522,6 +522,9 @@
 				<Expression>NOT (smPrimaryInterchannelLink OR smNotInterchannelLink)</Expression>
 			</ReportCriterion>
 			<Text>Pull-up</Text>
+			<TextForData> from Primary Channel </TextForData>
+			<SeparatorText> with Primary Ratio: </SeparatorText>
+			<ClosingText>%</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
@@ -624,6 +627,8 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Primary Pullup</Text>
+			<TextForData> into channel(s): </TextForData>
+			<SeparatorText>, </SeparatorText>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -1149,6 +1154,7 @@
 				<Expression>NOT smDisableStutterFilter</Expression>
 			</ReportCriterion>
 			<Text>Stutter</Text>
+			<TextForData> with ratio </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>

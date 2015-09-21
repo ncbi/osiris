@@ -1,5 +1,5 @@
 AC_INIT(../mainApp.cpp)
-AM_INIT_AUTOMAKE([osirisanalysis],2.4)
+AM_INIT_AUTOMAKE([osirisanalysis],2.5)
 AC_PROG_CXX
 AC_PROG_INSTALL
 m4_include(../../osiris.m4)
