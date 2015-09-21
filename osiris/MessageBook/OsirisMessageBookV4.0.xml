@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.51</VersionNumber>
-	<BuildTime>07 15 2015 02:14 PM</BuildTime>
+	<VersionNumber>6.52</VersionNumber>
+	<BuildTime>08 21 2015 05:15 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -522,6 +522,9 @@
 				<Expression>NOT (smPrimaryInterchannelLink OR smNotInterchannelLink)</Expression>
 			</ReportCriterion>
 			<Text>Pull-up</Text>
+			<TextForData> from Primary Channel </TextForData>
+			<SeparatorText> with Primary Ratio: </SeparatorText>
+			<ClosingText>%</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
@@ -624,6 +627,8 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Primary Pullup</Text>
+			<TextForData> into channel(s): </TextForData>
+			<SeparatorText>, </SeparatorText>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -1149,6 +1154,7 @@
 				<Expression>NOT smDisableStutterFilter</Expression>
 			</ReportCriterion>
 			<Text>Stutter</Text>
+			<TextForData> with ratio </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -6176,7 +6182,6 @@
 						<Expression>smPullupAtExtraneousILSPeak = smChannelIsILS AND smPurePullup AND smUnexpectedILSPeak</Expression>
 						<Expression>smPossibleValidInterlocusLeft = smCouldBelongToLocusLeft</Expression>
 						<Expression>smPossibleValidInterlocusRight = smPartOfExtendedLocusRight AND NOT (smFFRight OR smInterlocusPullUp)</Expression>
-						<Expression>smAmbiguousInterlocus = NOT smCouldBelongToLocusLeft AND NOT smCouldBelongToLocusRight AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT smPeakInCoreLadderLocus AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight)</Expression>
 						<Expression>smValidOLInterlocusLeft = smCouldBelongToLocusLeft</Expression>
 						<Expression>smValidOLInterlocusRight = smCouldBelongToLocusRight</Expression>
 						<Expression>smAcceptedInterlocusLeft = smPossibleValidInterlocusLeft AND smAcceptedOLLeft</Expression>
@@ -6188,7 +6193,6 @@
 						<TriggerExpression>smUnexpectedPeakInNegativeControl ((NOT smPeakToRightOfILS) AND (NOT smBelowMinRFU OR (smBelowMinRFU AND smTestForPeaksBelowMinRFUForNegCtrlPreset))): smUnexpectedNoOfPeaks, smUnexpectedNoOfPeaksInChannel, smNegCtrlFailed</TriggerExpression>
 						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
 						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
-						<TriggerExpression>smAmbiguousInterlocus: smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6255,8 +6259,10 @@
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
 						<Expression>smPurePullupLateStage = smPurePullup</Expression>
 						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
+						<Expression>smAmbiguousInterlocus = NOT smCouldBelongToLocusLeft AND NOT smCouldBelongToLocusRight AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT smPeakInCoreLadderLocus AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight)</Expression>
 					</Evaluations>
 					<Triggers>
+						<TriggerExpression>smAmbiguousInterlocus (NOT smRestrictedPriorityPeak): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
 						<TriggerExpression>smTrueCrater (NOT smRestrictedPriorityPeak): smNumberOfCratersInSample</TriggerExpression>
 						<TriggerExpression>smTrueCrater (smActuallyAnAllele): smLocusContainsCrater</TriggerExpression>
 						<TriggerExpression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele: smUnexpectedPeaksInSampleLocus</TriggerExpression>
