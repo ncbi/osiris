@@ -303,7 +303,7 @@ void nwxGrid::SetError(wxGrid *p, const wxString &sError)
   p->SetCellTextColour(0,0,p->GetDefaultCellTextColour());
   p->SetRowLabelValue(0,wxEmptyString);
   p->SetColLabelValue(0,wxEmptyString);
-  p->SetCellValue(sError,0,0);
+  p->SetCellValue(0,0,sError);
   p->SetReadOnly(0,0,true);
   p->SetRowLabelSize(1);
   p->SetColLabelSize(1);
@@ -483,9 +483,9 @@ void nwxGrid::OnEditorEnd(wxGridEvent &e)
       if(s == m_sEditorStartValue || s != m_sValue)
       {
         // value hasn't changed but we still want to force a 
-        // CELL_CHANGE event
+        // CELL_CHANGED event
         wxGridEvent ee(e);
-        ee.SetEventType(wxEVT_GRID_CELL_CHANGE);
+        ee.SetEventType(wxEVT_GRID_CELL_CHANGED);
         AddPendingEvent(ee);
       }
       if(pEdit != NULL)
@@ -538,7 +538,7 @@ BEGIN_EVENT_TABLE(nwxGrid,wxGrid)
 wx__DECLARE_GRIDEVT(START_EDIT,wxID_ANY,nwxGrid::OnEditCell)
 EVT_GRID_EDITOR_SHOWN(nwxGrid::OnEditorStart)
 EVT_GRID_EDITOR_HIDDEN(nwxGrid::OnEditorEnd)
-EVT_GRID_CELL_CHANGE(nwxGrid::OnCellChange)
+EVT_GRID_CELL_CHANGED(nwxGrid::OnCellChange)
 EVT_GRID_SELECT_CELL(nwxGrid::OnSelectCell)
 END_EVENT_TABLE()
 

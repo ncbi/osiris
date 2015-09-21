@@ -442,5 +442,5 @@ bool CPanelSampleAlertNotebook::_ProcessEvent()
 }
 BEGIN_EVENT_TABLE(CPanelSampleAlertNotebook,wxPanel)
 EVT_TEXT(wxID_ANY,CPanelSampleAlertNotebook::OnNotesChange)
-EVT_GRID_CMD_CELL_CHANGE(wxID_ANY,CPanelSampleAlertNotebook::OnCellChange)
+EVT_GRID_CMD_CELL_CHANGED(wxID_ANY,CPanelSampleAlertNotebook::OnCellChange)
 END_EVENT_TABLE()

@@ -30,14 +30,15 @@
 #ifndef __WX_XSL_SHEET_H__
 #define __WX_XSL_SHEET_H__
 
+#include "nwx/nwxXmlPersist.h"
+#include "wxXsl/wxXslObject.h"
+#include "nwx/nsstd.h"
 #include <wx/stream.h>
 #include <wx/string.h>
 #include <wx/datetime.h>
+
 #include <map>
 #include <vector>
-#include "nwx/nsstd.h"
-#include "wxXsl/wxXslObject.h"
-#include "nwx/nwxXmlPersist.h"
 #include <libxslt/xslt.h>
 #include <libxslt/xsltInternals.h>
 
