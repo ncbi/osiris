@@ -50,6 +50,8 @@
 #include "SmartMessage.h"
 #include "STRSmartNotices.h"
 
+#include <math.h>
+
 
 bool InterchannelLinkage :: RemoveDataSignalSM (DataSignal* oldSignal, SmartNotice& primaryTarget, SmartNotice& primaryReplace, SmartNotice& secondaryTarget, SmartNotice& secondaryReplace) {
 
@@ -235,6 +237,9 @@ bool InterchannelLinkage :: RecalculatePrimarySignalSM () {
 
 	it.Reset ();
 	mPrimarySignal->RemoveAllCrossChannelSignalLinksSM ();	//???????????????????????????????????????
+	list<int> pChannels;
+	double ratio;
+	int nextChannel = mPrimarySignal->GetChannel ();
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -244,7 +249,21 @@ bool InterchannelLinkage :: RecalculatePrimarySignalSM () {
 			mPrimarySignal->AddCrossChannelSignalLink (nextSignal);
 			nextSignal->SetMessageValue (primaryLink, false);
 			nextSignal->SetMessageValue (pullup, true);
+			ratio = 0.01 * floor (10000.0 * (nextSignal->Peak () / mPrimarySignal->Peak ()) + 0.5);
+			nextSignal->AppendDataForSmartMessage (pullup, nextChannel);
+			nextSignal->AppendDataForSmartMessage (pullup, ratio);
+			pChannels.push_back (nextSignal->GetChannel ());
+			//mPrimarySignal->AppendDataForSmartMessage (primaryLink, nextSignal->GetChannel ());
 		}
+	}
+
+	pChannels.sort ();
+
+	while (!pChannels.empty ()) {
+
+		nextChannel = pChannels.front ();
+		mPrimarySignal->AppendDataForSmartMessage (primaryLink, nextChannel);
+		pChannels.pop_front ();
 	}
 
 	return true;
@@ -809,6 +828,7 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 				label << "&#10;";
 
 			label += notice->GetMessage ();
+			label += notice->GetMessageData ();
 			i++;
 		}
 
@@ -924,6 +944,7 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 				label << "&#10;";
 
 			label += notice->GetMessage ();
+			label += notice->GetMessageData ();
 			i++;
 		}
 
@@ -1488,8 +1509,10 @@ double CraterSignal :: GetPullupToleranceInBP (double noise) const {
 	if ((mPrevious == NULL) || (mNext == NULL))
 		return GetPullupToleranceInBP ();
 
-	double bpLeft = mPrevious->GetApproximateBioID () - mPrevious->GetPullupToleranceInBP (noise);
-	double bpRight = mNext->GetApproximateBioID () + mNext->GetPullupToleranceInBP (noise);
+	//double bpLeft = mPrevious->GetApproximateBioID () - mPrevious->GetPullupToleranceInBP (noise);  // altered 09/15/2015
+	//double bpRight = mNext->GetApproximateBioID () + mNext->GetPullupToleranceInBP (noise);
+	double bpLeft = mPrevious->GetApproximateBioID ();
+	double bpRight = mNext->GetApproximateBioID ();
 	double bp = GetApproximateBioID ();
 	bpLeft = bp - bpLeft;
 	bpRight = bpRight - bp;
@@ -1702,8 +1725,10 @@ double SimpleSigmoidSignal :: GetPullupToleranceInBP (double noise) const {
 	if ((mPrevious == NULL) || (mNext == NULL))
 		return CraterSignal::GetPullupToleranceInBP ();
 
-	double bpLeft = mPrevious->GetApproximateBioID () - mPrevious->GetPullupToleranceInBP (noise);
-	double bpRight = mNext->GetApproximateBioID () + mNext->GetPullupToleranceInBP (noise);
+	//double bpLeft = mPrevious->GetApproximateBioID () - mPrevious->GetPullupToleranceInBP (noise);  // altered 09/15/2015
+	//double bpRight = mNext->GetApproximateBioID () + mNext->GetPullupToleranceInBP (noise);
+	double bpLeft = mPrevious->GetApproximateBioID ();
+	double bpRight = mNext->GetApproximateBioID ();
 	double bp = GetApproximateBioID ();
 	bpLeft = bp - bpLeft;
 	bpRight = bpRight - bp;

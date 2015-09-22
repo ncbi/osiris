@@ -2213,6 +2213,7 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 	DataSignal* nextSignal;
 	double mean;
 	Locus* gridLocus;
+//	Locus* lastLocus;
 	double bp;
 	int ibp;
 	Locus* previousGridLocus;
