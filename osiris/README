@@ -118,7 +118,7 @@
 if test "$WXHOME" = ""; then
   WXHOME=`sh findwx`
   if test "$WXHOME" = ""; then
-    echo "Cannot find WXHOME in environment" 1>2
+    echo "Cannot find WXHOME in environment" 1>&2
     exit 1
   fi
   export WXHOME
