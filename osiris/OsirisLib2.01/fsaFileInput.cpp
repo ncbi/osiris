@@ -299,6 +299,7 @@ bool fsaFileInput::TESTMEMSTR()
 bool fsaFileInput::_EntryOK(const UINT8 *pBufferMid, bool bCheckType) const
 {
   bool bRtn = true;
+  INT32 HIBYTE = 0xFF000000;
   if( (pBufferMid < _pBuffer) || // includes NULL
       (pBufferMid > (_pBuffer + _nBufferSize))
     )
@@ -309,6 +310,16 @@ bool fsaFileInput::_EntryOK(const UINT8 *pBufferMid, bool bCheckType) const
   {
     fsaDirEntry x(pBufferMid,_bFileBigEndian);
     if(!x.ValidateName())
+    {
+      bRtn = false;
+    }
+    else if(
+      ( (x.ElementSize() * x.NumElements()) != x.DataSize() ) ||
+      (x.Number() & HIBYTE) ||
+      (x.NumElements() & HIBYTE) ||
+      (x.DataSize() & HIBYTE) ||
+      ( (x.DataSize() > 4) && (x.Offset() & HIBYTE) )
+      )
     {
       bRtn = false;
     }

@@ -62,9 +62,9 @@
     <Link>
       <AdditionalOptions>
  %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OsirisLib.lib;Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)fsa2xml.exe</OutputFile>
-      <AdditionalLibraryDirectories>../BaseClassLib/Tools/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../BaseClassLib/Tools/Debug;..\OsirisLib2.01\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)fsa2xml.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -85,9 +85,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OsirisLib.lib;Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)fsa2xml.exe</OutputFile>
-      <AdditionalLibraryDirectories>../BaseClassLib/Tools/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../BaseClassLib/Tools/Release;..\OsirisLib2.01\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -100,21 +100,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="appfsa2xml.cpp" />
-    <ClCompile Include="..\OsirisLib2.01\fsa2XML.cpp" />
-    <ClCompile Include="..\OsirisLib2.01\fsaDirEntry.cpp" />
-    <ClCompile Include="..\OsirisLib2.01\fsaFile.cpp" />
-    <ClCompile Include="..\OsirisLib2.01\fsaFileInput.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\OsirisLib2.01\xmlwriter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\OsirisLib2.01\fsa2XML.h" />
-    <ClInclude Include="..\OsirisLib2.01\fsaDirEntry.h" />
-    <ClInclude Include="..\OsirisLib2.01\fsaFile.h" />
-    <ClInclude Include="..\OsirisLib2.01\fsaFileInput.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
