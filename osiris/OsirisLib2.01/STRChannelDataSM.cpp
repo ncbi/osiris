@@ -893,6 +893,8 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 
 				recursiveStatus = PopulationMarkerSet::SearchRecursivelyForBestSubset (FinalCurveList, overFlow, ctlInfo, correlation, 0.98, startPts, MaxPeak);
 
+				cout << "ILS method 2 linear correlation = " << correlation << endl;
+
 				if (recursiveStatus < 0) {
 
 					SetMessageValue (relativeHeightsInconsistent, true);
@@ -906,6 +908,9 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 
 					if (correlation < correlationAcceptanceThreshold)
 						relativeHeightsFailed = true;
+
+					else
+						cout << "ILS method 2 quadratic correlation = " << correlation << endl;
 				}
 			}
 		}
@@ -954,6 +959,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 
 			ctlInfo.mHeightIndices = NULL;
 			recursiveStatus = PopulationMarkerSet::SearchRecursivelyForBestSubset (FinalCurveList, overFlow, ctlInfo, correlation, 0.98, startPts, MaxPeak);
+			cout << "ILS method 2 linear correlation = " << correlation << endl;
 		}
 		
 		overflowIterator.Reset ();
@@ -987,8 +993,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 			correlation = 0.0;
 		}
 
-		else
+		else {
+
 			correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
+			cout << "ILS method 2 quadratic correlation = " << correlation << endl;
+		}
 	}
 	
 	mLaneStandard->AssignLaneStandardSignals (FinalCurveList);
@@ -1576,10 +1585,14 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 
 		else {
 
+			cout << "ILS linear correlation = " << correlation << endl;
 			correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
 
 			if (correlation < correlationAcceptanceThreshold)
 				relativeHeightsFailed = true;
+
+			else
+				cout << "ILS quadratic correlation = " << correlation << endl;
 		}
 
 		bool searchForSubset = (testedRelativeHeights && relativeHeightsFailed) || (!testedRelativeHeights);
@@ -1622,6 +1635,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 
 			ctlInfo.mHeightIndices = NULL;
 			recursiveStatus = PopulationMarkerSet::SearchRecursivelyForBestSubset (FinalCurveList, overFlow, ctlInfo, correlation, 0.98, startPts, heightFactor * maxPeak);
+			cout << "ILS linear correlation = " << correlation << endl;
 		}
 
 		if (recursiveStatus < 0) {
@@ -1631,9 +1645,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 			overFlow.Clear ();
 		}
 
-		else
-			correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
+		else {
 
+			correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
+			cout << "ILS quadratic correlation = " << correlation << endl;
+		}
 	}
 
 	if (correlation < correlationAcceptanceThreshold) {
