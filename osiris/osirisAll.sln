@@ -49,6 +49,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OsirisAnalysis", "OsirisAna
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{556A528A-2DD5-4BDC-ACC6-A89E88AB2FCD}"
 	ProjectSection(ProjectDependencies) = postProject
+		{DFEB3596-18FF-4B2F-99FB-6AF5DE843372} = {DFEB3596-18FF-4B2F-99FB-6AF5DE843372}
 		{BB4E3CC3-10F8-4DB9-9CC6-CCDD45AB55D3} = {BB4E3CC3-10F8-4DB9-9CC6-CCDD45AB55D3}
 		{FFDB5DC5-5261-4C62-9AA3-0FEE6546F102} = {FFDB5DC5-5261-4C62-9AA3-0FEE6546F102}
 	EndProjectSection
@@ -61,6 +62,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxXml2", "wxXml2\wxXml2.vcx
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxthings_wxthings", "wxthings\build\wxthings_wxthings.vcxproj", "{57F62151-A66D-44D6-A226-3837DA04E7D1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fsa2xml", "fsa2xml\fsa2xml.vcxproj", "{DFEB3596-18FF-4B2F-99FB-6AF5DE843372}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3071892C-0773-4CA4-A4A8-E88ADE8B8D9F} = {3071892C-0773-4CA4-A4A8-E88ADE8B8D9F}
+		{74299048-4F7F-4235-92E9-78F978B70F4C} = {74299048-4F7F-4235-92E9-78F978B70F4C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +170,12 @@ Global
 		{57F62151-A66D-44D6-A226-3837DA04E7D1}.Release|Win32.ActiveCfg = Release|Win32
 		{57F62151-A66D-44D6-A226-3837DA04E7D1}.Release|Win32.Build.0 = Release|Win32
 		{57F62151-A66D-44D6-A226-3837DA04E7D1}.Release|x64.ActiveCfg = Release|x64
+		{DFEB3596-18FF-4B2F-99FB-6AF5DE843372}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DFEB3596-18FF-4B2F-99FB-6AF5DE843372}.Debug|Win32.Build.0 = Debug|Win32
+		{DFEB3596-18FF-4B2F-99FB-6AF5DE843372}.Debug|x64.ActiveCfg = Debug|Win32
+		{DFEB3596-18FF-4B2F-99FB-6AF5DE843372}.Release|Win32.ActiveCfg = Release|Win32
+		{DFEB3596-18FF-4B2F-99FB-6AF5DE843372}.Release|Win32.Build.0 = Release|Win32
+		{DFEB3596-18FF-4B2F-99FB-6AF5DE843372}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

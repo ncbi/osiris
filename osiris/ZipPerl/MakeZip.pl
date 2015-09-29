@@ -154,6 +154,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.4.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.5.pdf ${dest}");
 }
 
 sub CopyWin
@@ -176,6 +177,7 @@ sub CopyWin
   &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}");
   &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
+  &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
@@ -224,6 +226,7 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
+  &SYSTEM("${CP} ${src}/fsa2xml/bin/fsa2xml ${DEST}");
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   my $testDest = "${TOP}/TestAnalysis";
