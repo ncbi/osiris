@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.52</VersionNumber>
-	<BuildTime>08 21 2015 05:15 PM</BuildTime>
+	<VersionNumber>6.55</VersionNumber>
+	<BuildTime>10 06 2015 01:58 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -166,7 +166,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smChannelIsILS OR smSampleIsLadder)</Expression>
 			</ReportCriterion>
 			<Text>CHANNEL HAS RAISED BASELINE</Text>
 			<TextForData>:  With Height </TextForData>
@@ -208,7 +208,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smChannelIsILS</Expression>
+				<Expression>NOT (smChannelIsILS OR smSampleIsLadder)</Expression>
 			</ReportCriterion>
 			<Text>CHANNEL HAS EXCESSIVE NOISE:  PEAKS MAY BE UNREPORTED</Text>
 			<ReportLevel>1</ReportLevel>
@@ -585,7 +585,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Left:  Excessive Residual Displacement Left</Text>
 			<ReportLevel>20</ReportLevel>
@@ -596,7 +596,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Right:  Excessive Residual Displacement Right</Text>
 			<ReportLevel>20</ReportLevel>
@@ -6010,8 +6010,8 @@
 					<Triggers>
 						<TriggerExpression>smFSAChannelUnreadable: smFSAUnreadable</TriggerExpression>
 						<TriggerExpression>smILSSpacingIsMarginal: smSampleHasMarginalILS</TriggerExpression>
-						<TriggerExpression>smChannelHasRaisedBaseline: smSampleHasRaisedBaseline</TriggerExpression>
-						<TriggerExpression>smChannelHasExcessiveNoise: smSampleHasExcessiveNoise</TriggerExpression>
+						<TriggerExpression>smChannelHasRaisedBaseline (NOT (smChannelIsILS OR smSampleIsLadder)): smSampleHasRaisedBaseline</TriggerExpression>
+						<TriggerExpression>smChannelHasExcessiveNoise (NOT (smChannelIsILS OR smSampleIsLadder)): smSampleHasExcessiveNoise</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6247,7 +6247,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>
