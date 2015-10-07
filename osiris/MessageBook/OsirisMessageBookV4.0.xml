@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.56</VersionNumber>
-	<BuildTime>10 07 2015 12:56 PM</BuildTime>
+	<VersionNumber>6.57</VersionNumber>
+	<BuildTime>10 07 2015 04:25 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1443,9 +1443,6 @@
 			<Text>Signal Height Below Minimum Fractional Filter Height for Locus on Left</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smFFRight</Name>
@@ -1458,9 +1455,6 @@
 			<Text>Signal Height Below Minimum Fractional Filter Height for Locus on Right</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smHeightBelowPullupFractionalFilter</Name>
@@ -6124,7 +6118,7 @@
 						<Expression>smInferredPullupFFRight = smPartOfExtendedLocusRight AND smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
 						<Expression>smFFLeft = ((smBelowFractionalFilterLeft AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterLeft AND NOT smDisablePullupFractionalFilter) OR smInferredFFLeft OR smInferredPullupFFLeft)</Expression>
 						<Expression>smFFRight = ((smBelowFractionalFilterRight AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterRight AND NOT smDisablePullupFractionalFilter) OR smInferredFFRight OR smInferredPullupFFRight)</Expression>
-						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter</Expression>
+						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 						<Expression>smUnassignedInterlocusPeak = NOT (smPeakInCoreLadderLocus OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSampleIsLadder OR smSignalIsCtrlPeak OR smUnexpectedILSPeak OR smChannelIsILS)</Expression>
 					</Evaluations>
 				</ScopeDynamics>
@@ -6282,7 +6276,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>
