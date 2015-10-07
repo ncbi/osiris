@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.55</VersionNumber>
-	<BuildTime>10 06 2015 01:58 PM</BuildTime>
+	<VersionNumber>6.56</VersionNumber>
+	<BuildTime>10 07 2015 12:56 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -341,6 +341,12 @@
 			</ReportCriterion>
 			<Text>Laser Off Scale</Text>
 			<ReportLevel>1</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -352,6 +358,12 @@
 			</ReportCriterion>
 			<Text>Laser Off Scale:  Probably Primary Pull-up</Text>
 			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -363,6 +375,12 @@
 			</ReportCriterion>
 			<Text>Laser Off Scale:  No Pull-up Identified</Text>
 			<ReportLevel>1</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -4706,6 +4724,22 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Make Laser Off-Scale Artifacts Non-Critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAKE LASER OFF-SCALE ARTIFACTS NON-CRITICAL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerExcessiveNoiseBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -5863,6 +5897,7 @@
 					<MeasuredMessages>
 						<Name>smMakePullupAtAlleleNonCriticalPreset</Name>
 						<Name>smILSReportShoulderArtifactPreset</Name>
+						<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6191,8 +6226,8 @@
 						<TriggerExpression>smStutter (NOT smBelowMinRFU AND NOT smDisableStutterFilter): smNumberOfStuttersInSample</TriggerExpression>
 						<TriggerExpression>smAdenylation (NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))): smNumberOfAdenylationsInSample</TriggerExpression>
 						<TriggerExpression>smUnexpectedPeakInNegativeControl ((NOT smPeakToRightOfILS) AND (NOT smBelowMinRFU OR (smBelowMinRFU AND smTestForPeaksBelowMinRFUForNegCtrlPreset))): smUnexpectedNoOfPeaks, smUnexpectedNoOfPeaksInChannel, smNegCtrlFailed</TriggerExpression>
-						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
-						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
+						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak AND NOT smMakeLaserOffScaleNonCriticalPreset): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
+						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak AND NOT smMakeLaserOffScaleNonCriticalPreset): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
