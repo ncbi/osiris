@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.52</VersionNumber>
-	<BuildTime>08 21 2015 05:15 PM</BuildTime>
+	<VersionNumber>6.57</VersionNumber>
+	<BuildTime>10 07 2015 04:25 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -166,7 +166,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smChannelIsILS OR smSampleIsLadder)</Expression>
 			</ReportCriterion>
 			<Text>CHANNEL HAS RAISED BASELINE</Text>
 			<TextForData>:  With Height </TextForData>
@@ -208,7 +208,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smChannelIsILS</Expression>
+				<Expression>NOT (smChannelIsILS OR smSampleIsLadder)</Expression>
 			</ReportCriterion>
 			<Text>CHANNEL HAS EXCESSIVE NOISE:  PEAKS MAY BE UNREPORTED</Text>
 			<ReportLevel>1</ReportLevel>
@@ -341,6 +341,12 @@
 			</ReportCriterion>
 			<Text>Laser Off Scale</Text>
 			<ReportLevel>1</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -352,6 +358,12 @@
 			</ReportCriterion>
 			<Text>Laser Off Scale:  Probably Primary Pull-up</Text>
 			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -363,6 +375,12 @@
 			</ReportCriterion>
 			<Text>Laser Off Scale:  No Pull-up Identified</Text>
 			<ReportLevel>1</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -585,7 +603,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Left:  Excessive Residual Displacement Left</Text>
 			<ReportLevel>20</ReportLevel>
@@ -596,7 +614,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Right:  Excessive Residual Displacement Right</Text>
 			<ReportLevel>20</ReportLevel>
@@ -1425,9 +1443,6 @@
 			<Text>Signal Height Below Minimum Fractional Filter Height for Locus on Left</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smFFRight</Name>
@@ -1440,9 +1455,6 @@
 			<Text>Signal Height Below Minimum Fractional Filter Height for Locus on Right</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smHeightBelowPullupFractionalFilter</Name>
@@ -4706,6 +4718,22 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Make Laser Off-Scale Artifacts Non-Critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAKE LASER OFF-SCALE ARTIFACTS NON-CRITICAL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerExcessiveNoiseBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -5863,6 +5891,7 @@
 					<MeasuredMessages>
 						<Name>smMakePullupAtAlleleNonCriticalPreset</Name>
 						<Name>smILSReportShoulderArtifactPreset</Name>
+						<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6010,8 +6039,8 @@
 					<Triggers>
 						<TriggerExpression>smFSAChannelUnreadable: smFSAUnreadable</TriggerExpression>
 						<TriggerExpression>smILSSpacingIsMarginal: smSampleHasMarginalILS</TriggerExpression>
-						<TriggerExpression>smChannelHasRaisedBaseline: smSampleHasRaisedBaseline</TriggerExpression>
-						<TriggerExpression>smChannelHasExcessiveNoise: smSampleHasExcessiveNoise</TriggerExpression>
+						<TriggerExpression>smChannelHasRaisedBaseline (NOT (smChannelIsILS OR smSampleIsLadder)): smSampleHasRaisedBaseline</TriggerExpression>
+						<TriggerExpression>smChannelHasExcessiveNoise (NOT (smChannelIsILS OR smSampleIsLadder)): smSampleHasExcessiveNoise</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6089,7 +6118,7 @@
 						<Expression>smInferredPullupFFRight = smPartOfExtendedLocusRight AND smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
 						<Expression>smFFLeft = ((smBelowFractionalFilterLeft AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterLeft AND NOT smDisablePullupFractionalFilter) OR smInferredFFLeft OR smInferredPullupFFLeft)</Expression>
 						<Expression>smFFRight = ((smBelowFractionalFilterRight AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterRight AND NOT smDisablePullupFractionalFilter) OR smInferredFFRight OR smInferredPullupFFRight)</Expression>
-						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter</Expression>
+						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 						<Expression>smUnassignedInterlocusPeak = NOT (smPeakInCoreLadderLocus OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSampleIsLadder OR smSignalIsCtrlPeak OR smUnexpectedILSPeak OR smChannelIsILS)</Expression>
 					</Evaluations>
 				</ScopeDynamics>
@@ -6191,8 +6220,8 @@
 						<TriggerExpression>smStutter (NOT smBelowMinRFU AND NOT smDisableStutterFilter): smNumberOfStuttersInSample</TriggerExpression>
 						<TriggerExpression>smAdenylation (NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))): smNumberOfAdenylationsInSample</TriggerExpression>
 						<TriggerExpression>smUnexpectedPeakInNegativeControl ((NOT smPeakToRightOfILS) AND (NOT smBelowMinRFU OR (smBelowMinRFU AND smTestForPeaksBelowMinRFUForNegCtrlPreset))): smUnexpectedNoOfPeaks, smUnexpectedNoOfPeaksInChannel, smNegCtrlFailed</TriggerExpression>
-						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
-						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
+						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak AND NOT smMakeLaserOffScaleNonCriticalPreset): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
+						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak AND NOT smMakeLaserOffScaleNonCriticalPreset): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6247,7 +6276,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>
