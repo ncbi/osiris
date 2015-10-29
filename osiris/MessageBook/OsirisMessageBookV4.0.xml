@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.57</VersionNumber>
-	<BuildTime>10 07 2015 04:25 PM</BuildTime>
+	<VersionNumber>6.58</VersionNumber>
+	<BuildTime>10 28 2015 03:36 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -2753,7 +2753,7 @@
 			<Subject>20</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smPeakIsNotAnAllele OR smNotInterchannelLink)</Expression>
+				<Expression>NOT (smNotInterchannelLink)</Expression>
 			</ReportCriterion>
 			<Text>Possible Pull-up Coincides With Allele</Text>
 			<ReportLevel>20</ReportLevel>
@@ -2832,20 +2832,6 @@
 			<Text>PRELIMINARY LOCUS DROPOUT</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Pullup with Excess Residual in Multi-allele</Text>
-			<ReportLevel>1</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smLocusContainsPeaksWithExcessiveResiduals</Name>
@@ -3053,20 +3039,6 @@
 					</TextLoc>
 				</Protocol>
 			</ExportProtocolList>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPeakIsNotAnAllele</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Peak Is Not An Allele</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSampleHasHomozygoteWithHeightProblem</Name>
@@ -6279,12 +6251,10 @@
 						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
-						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>
-						<Expression>smPeakIsNotAnAllele = smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Expression>
-						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPurePullup AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak</Expression>
-						<Expression>smAlleleHasExcessiveResidual = smBPResidualTooLarge AND smSignalIsAllele AND NOT smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Expression>
-						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak</Expression>
-						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
+						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPurePullup AND NOT smRestrictedPriorityPeak</Expression>
+						<Expression>smAlleleHasExcessiveResidual = smBPResidualTooLarge AND smSignalIsAllele</Expression>
+						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT smRestrictedPriorityPeak</Expression>
+						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
 						<Expression>smPurePullupLateStage = smPurePullup</Expression>
 						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
@@ -6294,7 +6264,6 @@
 						<TriggerExpression>smAmbiguousInterlocus (NOT smRestrictedPriorityPeak): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
 						<TriggerExpression>smTrueCrater (NOT smRestrictedPriorityPeak): smNumberOfCratersInSample</TriggerExpression>
 						<TriggerExpression>smTrueCrater (smActuallyAnAllele): smLocusContainsCrater</TriggerExpression>
-						<TriggerExpression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele: smUnexpectedPeaksInSampleLocus</TriggerExpression>
 						<TriggerExpression>smExtraneousAMELPeak (NOT smRestrictedPriorityPeak): smAMELHasExtraneousPeaks</TriggerExpression>
 						<TriggerExpression>smAlleleHasExcessiveResidual (NOT smRestrictedPriorityPeak): smLocusContainsPeaksWithExcessiveResiduals, smNumberOfExcessiveResidualsInSample</TriggerExpression>
 						<TriggerExpression>smAlleleOL: smOLAlleles, smNumberOfOffLadderAllelesInSample</TriggerExpression>
@@ -6367,10 +6336,10 @@
 						<Name>smInterlocusPeaksToLeft</Name>
 						<Name>smLocusIsYLinked</Name>
 						<Name>smPosCtrlLocusNotFound</Name>
+						<Name>smUnexpectedPeaksInSampleLocus</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smOLAlleles</Name>
-						<Name>smUnexpectedPeaksInSampleLocus</Name>
 					</TriggeredMessages>
 					<Evaluations>
 						<Expression>smNoYLinkedAlleleExpected = (smNoYForAMEL AND smSampleHasAMELLocus) AND smLocusIsYLinked</Expression>
