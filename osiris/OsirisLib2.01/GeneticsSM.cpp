@@ -4861,63 +4861,64 @@ int Locus :: CorrectCrossChannelAnalysesSM (RGDList& artifacts, bool isNegCntl) 
 	// this one.
 
 	//
-	//  This is sample stage 4
+	//  This is sample stage 4:  all commented out 10/28/2015 because smPullupAtAllele is the result of an expression in 
+	//                           the MessageBook and should not be set in software.  Also, this particular logic is not universally valid
 	//
 	
-	RGDListIterator it (LocusSignalList);
-	DataSignal* nextSignal;
-	double maxPeak = 0.0;
-	double peak;
-	double peakThreshold;
-	double alleleThreshold;
-	RGDListIterator it2 (LocusSignalList);
-
-	smPurePullup pullUp;
-	smPullUpAtAllele allelePullup;
-
-//	double stutterLimit = Locus::GetSampleStutterThreshold ();
-	double stutterLimit = GetLocusSpecificSampleStutterThreshold ();
-//	double adenylationLimit = Locus::GetSampleAdenylationThreshold ();
-	double adenylationLimit = GetLocusSpecificSampleAdenylationThreshold ();
-//	double pullupFractionalLimit = Locus::GetSamplePullupFractionalFilter ();
-	double pullupFractionalLimit = GetLocusSpecificSamplePullupFractionalFilter ();
-
-	while (nextSignal = (DataSignal*) it ()) {
-
-		peak = nextSignal->Peak ();
-
-		if (peak > maxPeak)
-			maxPeak = peak;
-	}
-
-	it.Reset ();
-	peakThreshold = pullupFractionalLimit * maxPeak;  // allows ignoring OL allele with "low" peak
-//	alleleThreshold = Locus::GetHeterozygousImbalanceLimit () * maxPeak;  // allows ignoring pull-up
-	alleleThreshold = GetLocusSpecificSampleHeterozygousImbalanceThreshold () * maxPeak;  // allows ignoring pull-up
-	int N = LocusSignalList.Entries ();
-	double p;
-
-	while (nextSignal = (DataSignal*) it ()) {
-
-	//	if (isNegCntl) {	//  Commented out 07/29/2014 in order to allow negative control peaks to be called as alleles, in addition to the extraneous peak in negative control artifact
-
-	////		SetMessageValue (unexpectedNumberOfPeaks, true);
-	//		nextSignal->SetAlleleName ("");
-	//		it.RemoveCurrentItem ();
-	////		nextSignal->SetMessageValue (extraPeakInNegCtrl, true);
-	////		artifacts.InsertWithNoReferenceDuplication (nextSignal);	//Need this????????????????????????????????????????????????????????????
-	//	}
-
-	//	else
-
-		if (nextSignal->GetMessageValue (pullUp)) {  // check instead for HasCrossChannelSignalLink or HasEverHadCrossChannelSignalLink?
-
-			p = nextSignal->Peak ();
-
-			if (p >= alleleThreshold)
-				nextSignal->SetMessageValue (allelePullup, true);
-		}
-	}
+//	RGDListIterator it (LocusSignalList);
+//	DataSignal* nextSignal;
+//	double maxPeak = 0.0;
+//	double peak;
+//	double peakThreshold;
+//	double alleleThreshold;
+//	RGDListIterator it2 (LocusSignalList);
+//
+//	smPurePullup pullUp;
+//	smPullUpAtAllele allelePullup;
+//
+////	double stutterLimit = Locus::GetSampleStutterThreshold ();
+//	double stutterLimit = GetLocusSpecificSampleStutterThreshold ();
+////	double adenylationLimit = Locus::GetSampleAdenylationThreshold ();
+//	double adenylationLimit = GetLocusSpecificSampleAdenylationThreshold ();
+////	double pullupFractionalLimit = Locus::GetSamplePullupFractionalFilter ();
+//	double pullupFractionalLimit = GetLocusSpecificSamplePullupFractionalFilter ();
+//
+//	while (nextSignal = (DataSignal*) it ()) {
+//
+//		peak = nextSignal->Peak ();
+//
+//		if (peak > maxPeak)
+//			maxPeak = peak;
+//	}
+//
+//	it.Reset ();
+//	peakThreshold = pullupFractionalLimit * maxPeak;  // allows ignoring OL allele with "low" peak
+////	alleleThreshold = Locus::GetHeterozygousImbalanceLimit () * maxPeak;  // allows ignoring pull-up
+//	alleleThreshold = GetLocusSpecificSampleHeterozygousImbalanceThreshold () * maxPeak;  // allows ignoring pull-up
+//	int N = LocusSignalList.Entries ();
+//	double p;
+//
+//	while (nextSignal = (DataSignal*) it ()) {
+//
+//	//	if (isNegCntl) {	//  Commented out 07/29/2014 in order to allow negative control peaks to be called as alleles, in addition to the extraneous peak in negative control artifact
+//
+//	////		SetMessageValue (unexpectedNumberOfPeaks, true);
+//	//		nextSignal->SetAlleleName ("");
+//	//		it.RemoveCurrentItem ();
+//	////		nextSignal->SetMessageValue (extraPeakInNegCtrl, true);
+//	////		artifacts.InsertWithNoReferenceDuplication (nextSignal);	//Need this????????????????????????????????????????????????????????????
+//	//	}
+//
+//	//	else
+//
+//		if (nextSignal->GetMessageValue (pullUp)) {  // check instead for HasCrossChannelSignalLink or HasEverHadCrossChannelSignalLink?
+//
+//			p = nextSignal->Peak ();
+//
+//			if (p >= alleleThreshold)
+//				nextSignal->SetMessageValue (allelePullup, true);
+//		}
+//	}
 
 	return 0;
 }
