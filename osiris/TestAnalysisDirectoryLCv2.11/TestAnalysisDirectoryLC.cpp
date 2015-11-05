@@ -214,6 +214,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	cout << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";" << endl;
 	cout << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";" << endl;
 
+	inputFile.OutputAnalysisThresholdOverrides ();
+	inputFile.OutputDetectionThresholdOverrides ();
+
 	bool useRawData = inputFile.UseRawData ();
 
 	if (useRawData) {
