@@ -51,7 +51,7 @@
 #include "CLabSettings.h"
 #include "CVolumes.h"
 #include "nwx/nwxTimerReceiver.h"
-
+#include "CGridRFURun.h"
 
 class CDialogAnalysis : public wxDialog, public nwxTimerReceiver
 {
@@ -94,7 +94,7 @@ public:
   {
     return m_sVolumeName;
   }
-#if 0
+//  BEGIN CGridRFURun Get/Set
   int GetMinRFU()
   {
     return m_nMinRFU;
@@ -121,7 +121,56 @@ public:
   {
     return m_nMinRFU_SampleDetection;
   }
-#endif
+  const vector<int> &GetChannelRFU() const
+  {
+      return m_anChannelRFU;
+  }
+  const vector<int> &GetChannelDetection() const
+  {
+    return m_anChannelDetection;
+  }
+
+  // set
+
+  void SetMinRFU(int n)
+  {
+    m_nMinRFU = n;
+  }
+  void SetMinRFU_Interlocus(int n)
+  {
+    m_nMinRFU_Interlocus = n;
+  }
+
+  void SetMinRFU_ILS(int n)
+  {
+    m_nMinRFU_ILS = n;
+  }
+  void SetMinRFU_Ladder(int n)
+  {
+    m_nMinRFU_Ladder = n;
+  }
+
+  void SetMinRFU_LadderInterlocus(int n)
+  {
+    m_nMinRFU_LadderInterlocus = n;
+  }
+  void SetMinRFU_SampleDetection(int n)
+  {
+    m_nMinRFU_SampleDetection = n;
+  }
+  void SetChannelRFU(const vector<int> &an)
+  {
+      m_anChannelRFU = an;
+  }
+  void SetChannelDetection(const vector<int> &an)
+  {
+    
+    m_anChannelDetection = an;
+  }
+  
+//  STOP HERE - need setters and 
+//  END CGridRFURun Get/Set
+
   bool LabSettingsOK()
   {
     return m_bLabSettingsOK;
@@ -217,15 +266,12 @@ private:
   wxComboBox *m_pComboVolumeName;
   wxComboBox *m_pComboLsName;
 
-  wxSpinCtrl *m_pSpinRFU;
-  wxSpinCtrl *m_pSpinRFU_ILS;
-  wxSpinCtrl *m_pSpinRFU_Ladder;
-  wxSpinCtrl *m_pSpinRFU_Interlocus;
-  wxSpinCtrl *m_pSpinRFU_LadderInterlocus;
-  wxSpinCtrl *m_pSpinRFU_SampleDetection;
+  CGridRFURun *m_pGridRFU;
   wxRadioButton *m_pRadioRaw;
   wxRadioButton *m_pRadioAnalyzed;
 
+  vector<int> m_anChannelRFU;
+  vector<int> m_anChannelDetection;
   wxString m_sInputDirectory;
   wxString m_sOutputDirectory;
   wxString m_sVolumeName;

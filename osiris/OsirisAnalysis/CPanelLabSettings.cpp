@@ -579,9 +579,9 @@ CPanelLabSettings::CPanelLabSettings(
   m_pNotebook->AddPage(
     m_pFilenames,"File/Sample Names",false);
   m_pNotebook->AddPage(
-    m_pLocusThresholds,"Locus/ILS Thresholds",false);
+    m_pLocusThresholds,"Thresholds",false);
   m_pNotebook->AddPage(
-    m_pSampleThresholds,"Sample Thresholds",false);
+    m_pSampleThresholds,"Sample Limits",false);
   m_pNotebook->AddPage(
     m_pMarkerSet,"Assignments",false);
   m_pNotebook->AddPage(

@@ -229,24 +229,17 @@ bool CGridLocusColumns::SetupKit(
           (pKitColors == NULL)
           ? NULL
           : pKitColors->GetColorChannel((unsigned int)nChannel);
+        const wxChar *psDyeLabel = NULL;
         if(pChannelColors != NULL)
         {
           // int k;
           pGrid->SetCellTextColour(0,nCol,*wxWHITE);
           pGrid->SetCellBackgroundColour(
               0,nCol,pChannelColors->m_ColorAnalyzed);
-          sLabel.Printf(
-            "%u - %ls",
-            pChannelColors->m_nr,
-            (const wxChar *)(pChannelColors->m_sDyeName)
-            );
+          psDyeLabel = (const wxChar *)(pChannelColors->m_sDyeName);
           bColorSet = true;
         }
-        else
-        {
-          sLabel.Printf(
-            "Channel %d", nChannel);
-        }
+        FORMAT_CHANNEL_DYE(&sLabel,(unsigned int) nChannel, psDyeLabel);
         pGrid->SetCellFont(0,nCol,fnBold);
         pGrid->SetCellValue(0,nCol,sLabel);
         pGrid->SetCellAlignment(0,nCol,wxALIGN_CENTRE, wxALIGN_CENTRE);
@@ -273,6 +266,11 @@ void CGridLocusColumns::SetReadOnly(wxGrid *pGrid, bool b)
   nwxGrid::SetAllReadOnly(pGrid,b);
   if(!b)
   {
+    nwxGrid::SetRowReadOnly(pGrid,0,true);
+  }
+/*
+  //  10/20/2015 OS-271 - no functional change, replaces code below
+  // with SetRowReadOnly() above
     // keep top row readonly
 
     int nCols = pGrid->GetNumberCols();
@@ -281,4 +279,5 @@ void CGridLocusColumns::SetReadOnly(wxGrid *pGrid, bool b)
       pGrid->SetReadOnly(0,i,true);
     }
   }
+*/
 }
