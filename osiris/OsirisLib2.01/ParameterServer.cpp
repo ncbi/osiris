@@ -990,19 +990,17 @@ RGString ParameterServer :: BuildChannelThresholdOverridesForOAR () {
 	if ((mAnalysisThresholds->size () == 0) && (mDetectionThresholds->size () == 0))
 		return params;
 
-	double* analysis = new double [mNumberOfChannels + 1];
-	double* detection = new double [mNumberOfChannels + 1];
+	int* analysis = new int [mNumberOfChannels + 1];
+	int* detection = new int [mNumberOfChannels + 1];
 	int i;
 	list<channelThreshold*>::iterator c1Iterator;
 	list<channelThreshold*>::iterator c2Iterator;
 	channelThreshold* nextThreshold;
 	int channel;
-	double channelAnalysis;
-	double channelDetection;
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
-		analysis [i] = detection [i] = -1.0;
+		analysis [i] = detection [i] = -1;
 	}
 
 	for (c1Iterator = mAnalysisThresholds->begin (); c1Iterator != mAnalysisThresholds->end (); c1Iterator++) {
@@ -1011,7 +1009,7 @@ RGString ParameterServer :: BuildChannelThresholdOverridesForOAR () {
 		channel = nextThreshold->mChannel;
 
 		if ((channel >= 1) && (channel <= mNumberOfChannels))
-			analysis [channel] = nextThreshold->mThreshold;
+			analysis [channel] = (int) nextThreshold->mThreshold;
 	}
 
 	for (c2Iterator = mDetectionThresholds->begin (); c2Iterator != mDetectionThresholds->end (); c2Iterator++) {
@@ -1020,32 +1018,58 @@ RGString ParameterServer :: BuildChannelThresholdOverridesForOAR () {
 		channel = nextThreshold->mChannel;
 
 		if ((channel >= 1) && (channel <= mNumberOfChannels))
-			detection [channel] = nextThreshold->mThreshold;
+			detection [channel] = (int) nextThreshold->mThreshold;
 	}
 
-	params << tabs3 << "<ChannelThresholdOverrides>\n";
+	//params << tabs3 << "<ChannelThresholdOverrides>\n";
+
+	//for (i=1; i<=mNumberOfChannels; i++) {
+
+	//	channelAnalysis = analysis [i];
+	//	channelDetection = detection [i];
+
+	//	if ((channelAnalysis <= 0.0) && (channelDetection <= 0.0))
+	//		continue;
+
+	//	params << tabs4 << "<Channel>\n";
+	//	params << tabs5 << "<Number>" << i << "</Number>\n";
+	//	
+	//	if (channelAnalysis > 0.0)
+	//		params << tabs5 << "<AnalysisThreshold>" << channelAnalysis << "</AnalysisThreshold>\n";
+
+	//	if (channelDetection > 0.0)
+	//		params << tabs5 << "<DetectionThreshold>" << channelDetection << "</DetectionThreshold>\n";
+
+	//	params << tabs4 << "</Channel>\n";
+	//
+
+	//params << tabs3 << "</ChannelThresholdOverrides>\n";
+
+	params << tabs3 << "<ChannelRFU>";
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
-		channelAnalysis = analysis [i];
-		channelDetection = detection [i];
+		if (i > 1)
+			params << " ";
 
-		if ((channelAnalysis <= 0.0) && (channelDetection <= 0.0))
-			continue;
-
-		params << tabs4 << "<Channel>\n";
-		params << tabs5 << "<Number>" << i << "</Number>\n";
-		
-		if (channelAnalysis > 0.0)
-			params << tabs5 << "<AnalysisThreshold>" << channelAnalysis << "</AnalysisThreshold>\n";
-
-		if (channelDetection > 0.0)
-			params << tabs5 << "<DetectionThreshold>" << channelDetection << "</DetectionThreshold>\n";
-
-		params << tabs4 << "</Channel>\n";
+		params << analysis [i];
 	}
 
-	params << tabs3 << "</ChannelThresholdOverrides>\n";
+	params << "</ChannelRFU>\n";
+	params << tabs3 << "<ChannelDetection>";
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i > 1)
+			params << " ";
+
+		params << detection [i];
+	}
+
+	params << "</ChannelDetection>\n";
+	delete[] analysis;
+	delete[] detection;
+
 	return params;
 }
 
@@ -1063,19 +1087,17 @@ RGString ParameterServer :: BuildChannelThresholdOverridesForPLT () {
 	if ((mAnalysisThresholds->size () == 0) && (mDetectionThresholds->size () == 0))
 		return params;
 
-	double* analysis = new double [mNumberOfChannels + 1];
-	double* detection = new double [mNumberOfChannels + 1];
+	int* analysis = new int [mNumberOfChannels + 1];
+	int* detection = new int [mNumberOfChannels + 1];
 	int i;
 	list<channelThreshold*>::iterator c1Iterator;
 	list<channelThreshold*>::iterator c2Iterator;
 	channelThreshold* nextThreshold;
 	int channel;
-	double channelAnalysis;
-	double channelDetection;
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
-		analysis [i] = detection [i] = -1.0;
+		analysis [i] = detection [i] = -1;
 	}
 
 	for (c1Iterator = mAnalysisThresholds->begin (); c1Iterator != mAnalysisThresholds->end (); c1Iterator++) {
@@ -1084,7 +1106,7 @@ RGString ParameterServer :: BuildChannelThresholdOverridesForPLT () {
 		channel = nextThreshold->mChannel;
 
 		if ((channel >= 1) && (channel <= mNumberOfChannels))
-			analysis [channel] = nextThreshold->mThreshold;
+			analysis [channel] = (int) nextThreshold->mThreshold;
 	}
 
 	for (c2Iterator = mDetectionThresholds->begin (); c2Iterator != mDetectionThresholds->end (); c2Iterator++) {
@@ -1093,32 +1115,57 @@ RGString ParameterServer :: BuildChannelThresholdOverridesForPLT () {
 		channel = nextThreshold->mChannel;
 
 		if ((channel >= 1) && (channel <= mNumberOfChannels))
-			detection [channel] = nextThreshold->mThreshold;
+			detection [channel] = (int) nextThreshold->mThreshold;
 	}
 
-	params << tabs3 << "<ChannelThresholdOverrides>\n";
+	//params << tabs3 << "<ChannelThresholdOverrides>\n";
+
+	//for (i=1; i<=mNumberOfChannels; i++) {
+
+	//	channelAnalysis = analysis [i];
+	//	channelDetection = detection [i];
+
+	//	if ((channelAnalysis <= 0.0) && (channelDetection <= 0.0))
+	//		continue;
+
+	//	params << tabs4 << "<Channel>\n";
+	//	params << tabs5 << "<Number>" << i << "</Number>\n";
+	//	
+	//	if (channelAnalysis > 0.0)
+	//		params << tabs5 << "<AnalysisThreshold>" << channelAnalysis << "</AnalysisThreshold>\n";
+
+	//	if (channelDetection > 0.0)
+	//		params << tabs5 << "<DetectionThreshold>" << channelDetection << "</DetectionThreshold>\n";
+
+	//	params << tabs4 << "</Channel>\n";
+	//}
+
+	//params << tabs3 << "</ChannelThresholdOverrides>\n";
+
+	params << tabs3 << "<ChannelRFU>";
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
-		channelAnalysis = analysis [i];
-		channelDetection = detection [i];
+		if (i > 1)
+			params << " ";
 
-		if ((channelAnalysis <= 0.0) && (channelDetection <= 0.0))
-			continue;
-
-		params << tabs4 << "<Channel>\n";
-		params << tabs5 << "<Number>" << i << "</Number>\n";
-		
-		if (channelAnalysis > 0.0)
-			params << tabs5 << "<AnalysisThreshold>" << channelAnalysis << "</AnalysisThreshold>\n";
-
-		if (channelDetection > 0.0)
-			params << tabs5 << "<DetectionThreshold>" << channelDetection << "</DetectionThreshold>\n";
-
-		params << tabs4 << "</Channel>\n";
+		params << analysis [i];
 	}
 
-	params << tabs3 << "</ChannelThresholdOverrides>\n";
+	params << "</ChannelRFU>\n";
+	params << tabs3 << "<ChannelDetection>";
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i > 1)
+			params << " ";
+
+		params << detection [i];
+	}
+
+	params << "</ChannelDetection>\n";
+	delete[] analysis;
+	delete[] detection;
 	return params;
 }
 

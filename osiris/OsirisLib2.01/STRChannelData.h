@@ -359,6 +359,8 @@ public:
 	static void SetDetectionThreshold (double rfu) { sampleDetectionThreshold = rfu; }
 	static double GetSampleDetectionThreshold () { return sampleDetectionThreshold; }
 	static void InitializeChannelSpecificThresholds (int nChannels, list<channelThreshold*>* analysisLimits, list<channelThreshold*>* detectionLimits);
+	static int GetAnalysisThresholdOverride (int channel) { return ChannelSpecificMinRFUOverrides [channel]; }
+	static int GetDetectionThresholdOverride (int channel) { return ChannelSpecificDetectionOverrides [channel]; }
 
 
 	// Legacy Message functions*****************************************************************************************************************
@@ -423,6 +425,8 @@ protected:
 	static bool UseOldBaselineEstimation;
 	static double* ChannelSpecificMinRFU;
 	static double* ChannelSpecificDetectionThresholds;
+	static int* ChannelSpecificMinRFUOverrides;
+	static int* ChannelSpecificDetectionOverrides;
 
 	bool FindNextFitDataIntervalBelowThreshold (double threshold, int start, int end, int& beginInterval, int& endInterval, DataSignal* fitData);
 	bool FindNextFitDataIntervalBelowThreshold (double threshold, int start, int end, int& beginInterval, int& endInterval, DataSignal* fitData, DataSignal* fitNegData);

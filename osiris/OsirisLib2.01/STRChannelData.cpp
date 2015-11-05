@@ -60,6 +60,8 @@ double STRSampleChannelData::sampleDetectionThreshold = 150.0;
 bool STRSampleChannelData::UseOldBaselineEstimation = false;
 double* STRSampleChannelData::ChannelSpecificMinRFU = NULL;
 double* STRSampleChannelData::ChannelSpecificDetectionThresholds = NULL;
+int* STRSampleChannelData::ChannelSpecificMinRFUOverrides = NULL;
+int* STRSampleChannelData::ChannelSpecificDetectionOverrides = NULL;
 
 double STRLaneStandardChannelData::maxLaneStandardRFU = -1.0;
 double STRLadderChannelData::maxLadderRFU = -1.0;
@@ -4726,6 +4728,9 @@ void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels,
 
 	ChannelSpecificMinRFU = new double [nChannels + 1];
 	ChannelSpecificDetectionThresholds = new double [nChannels + 1];
+	ChannelSpecificMinRFUOverrides = new int [nChannels + 1];
+	ChannelSpecificDetectionOverrides = new int [nChannels + 1];
+
 	channelThreshold* nextThreshold;
 	int channel;
 	int i;
@@ -4736,6 +4741,8 @@ void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels,
 
 		ChannelSpecificMinRFU [i] = minSampleRFU;
 		ChannelSpecificDetectionThresholds [i] = sampleDetectionThreshold;
+		ChannelSpecificMinRFUOverrides [i] = -1;
+		ChannelSpecificDetectionOverrides [i] = -1;
 	}
 
 	for (c1Iterator = analysisLimits->begin (); c1Iterator != analysisLimits->end (); c1Iterator++) {
@@ -4743,8 +4750,11 @@ void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels,
 		nextThreshold = *c1Iterator;
 		channel = nextThreshold->mChannel;
 
-		if ((channel >= 1) && (channel <= nChannels))
+		if ((channel >= 1) && (channel <= nChannels)) {
+
 			ChannelSpecificMinRFU [channel] = nextThreshold->mThreshold;
+			ChannelSpecificMinRFUOverrides [channel] = (int) nextThreshold->mThreshold;
+		}
 	}
 
 	for (c2Iterator = detectionLimits->begin (); c2Iterator != detectionLimits->end (); c2Iterator++) {
@@ -4752,8 +4762,11 @@ void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels,
 		nextThreshold = *c2Iterator;
 		channel = nextThreshold->mChannel;
 
-		if ((channel >= 1) && (channel <= nChannels))
+		if ((channel >= 1) && (channel <= nChannels)) {
+
 			ChannelSpecificDetectionThresholds [channel] = nextThreshold->mThreshold;
+			ChannelSpecificDetectionOverrides [channel] = (int) nextThreshold->mThreshold;
+		}
 	}
 }
 
