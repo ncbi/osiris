@@ -1,4 +1,5 @@
 noinst_LIBRARIES = libwxplotctrl.a
+AUTOMAKE_OPTIONS = subdir-objects
 libwxplotctrl_a_SOURCES = \
 ../src/fourier.c \
 ../src/fparser.cpp \

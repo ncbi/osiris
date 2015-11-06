@@ -1883,11 +1883,11 @@ public:
 protected:
   virtual void RegisterAll(bool = false);
 
-  CLabSampleChannelThresholdSet m_setChannelThresholds;
   CLabRFU m_rfuLadder;
   CLabRFU m_rfuLS;
   CLabRFU m_rfuSample;
   CLabMessageSet m_spMsgs;
+  CLabSampleChannelThresholdSet m_setChannelThresholds;
 
   wxString m_sMinBoundHomozygoteUnit;
   double m_dHeterozygousImbalanceLimit;

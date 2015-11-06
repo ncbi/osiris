@@ -1,5 +1,6 @@
-AC_INIT(../src/block.cpp)
-AM_INIT_AUTOMAKE([libwxthings.a],1.0)
+AC_INIT([libwxthings.a],1.0)
+AC_CONFIG_SRCDIR(../src/block.cpp)
+AM_INIT_AUTOMAKE
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB

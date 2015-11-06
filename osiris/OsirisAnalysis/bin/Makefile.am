@@ -1,4 +1,5 @@
 bin_PROGRAMS = osiris
+AUTOMAKE_OPTIONS = subdir-objects
 osiris_SOURCES =  \
 ../CComboLabels.cpp \
 ../CDialogAbout.cpp \
@@ -42,6 +43,11 @@ osiris_SOURCES =  \
 ../CGridLocus.cpp \
 ../CGridLocusColumns.cpp \
 ../CGridLocusPeaks.cpp \
+../CGridRFULimits.cpp \
+../CGridRFUParam.cpp \
+../CGridRFURun.cpp \
+../CGridRFURunBase.cpp \
+../CGridRFUbase.cpp \
 ../CHistoryTime.cpp \
 ../CImageAbout.cpp \
 ../CKitColors.cpp \

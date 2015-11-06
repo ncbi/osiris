@@ -1,4 +1,5 @@
 noinst_LIBRARIES = libwxthings.a
+AUTOMAKE_OPTIONS = subdir-objects
 libwxthings_a_SOURCES = \
 ../src/genergdi.cpp \
 ../src/geometry.cpp \

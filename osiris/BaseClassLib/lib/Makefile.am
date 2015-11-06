@@ -1,4 +1,5 @@
 noinst_LIBRARIES = librgtools.a
+AUTOMAKE_OPTIONS = subdir-objects
 librgtools_a_SOURCES =  \
 ../Exception.cpp \
 ../ltoa.cpp \
