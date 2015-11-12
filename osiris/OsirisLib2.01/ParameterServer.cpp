@@ -310,16 +310,25 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 
 		returnValue = ReadFileNameStrings (xmlString);
 
-		if (!returnValue)
-			return false;
+		if (!returnValue) {
 
-		if (!ladderRFUSearch.FindNextTag (startOffset, endOffset, rfuString))
+			cout << "Could not read lab settings file name strings" << endl;
 			return false;
+		}
+
+		if (!ladderRFUSearch.FindNextTag (startOffset, endOffset, rfuString)) {
+
+			cout << "Could not read lab settings ladder RFU search strings" << endl;
+			return false;
+		}
 
 		startOffset = endOffset;
 
-		if (!ReadLadderLabLimits (rfuString, rfuLimits))
+		if (!ReadLadderLabLimits (rfuString, rfuLimits)) {
+
+			cout << "Could not read lab settings ladder lab limits strings" << endl;
 			return false;
+		}
 
 		STRLadderChannelData::SetLadderMaximumRFU (rfuLimits.maxRFU);
 		Locus::SetGridStutterThreshold (rfuLimits.stutterThreshold);
@@ -337,13 +346,19 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 
 		Locus::SetGridFractionalFilter (limit);
 
-		if (!laneStdRFUSearch.FindNextTag (startOffset, endOffset, rfuString))
+		if (!laneStdRFUSearch.FindNextTag (startOffset, endOffset, rfuString)) {
+
+			cout << "Could not read lab settings ILS strings" << endl;
 			return false;
+		}
 
 		startOffset = endOffset;
 
-		if (!ReadRFULimits (rfuString, rfuLimits))
+		if (!ReadRFULimits (rfuString, rfuLimits)) {
+
+			cout << "Could not read lab settings RFU limit strings" << endl;
 			return false;
+		}
 
 		STRLaneStandardChannelData::SetLSMaximumRFU (rfuLimits.maxRFU);
 		STRLaneStandardChannelData::SetILSStutterThreshold (rfuLimits.stutterThreshold);
@@ -1558,11 +1573,14 @@ bool ParameterServer :: ReadRFULimits (const RGString& xmlString, RFULimitsStruc
 	size_t startOffset = 0;
 	size_t endOffset = 0;
 
-	if (!minRFUSearch.FindNextTag (startOffset, endOffset, result))
-		return false;
+	if (minRFUSearch.FindNextTag (startOffset, endOffset, result)) {
 
-	startOffset = endOffset;
-	rfuLimits.minRFU = result.ConvertToDouble ();
+		startOffset = endOffset;
+		rfuLimits.minRFU = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.minRFU = 1.0;
 
 	if (!maxRFUSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
@@ -1741,11 +1759,14 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	size_t startOffset = 0;
 	size_t endOffset = 0;
 
-	if (!minRFUSearch.FindNextTag (startOffset, endOffset, result))
-		return false;
+	if (minRFUSearch.FindNextTag (startOffset, endOffset, result)) {
 
-	startOffset = endOffset;
-	rfuLimits.minRFU = result.ConvertToDouble ();
+		startOffset = endOffset;
+		rfuLimits.minRFU = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.minRFU = 1.0;
 
 	if (!maxRFUSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
