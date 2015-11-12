@@ -4736,6 +4736,7 @@ void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels,
 	int i;
 	list<channelThreshold*>::iterator c1Iterator;
 	list<channelThreshold*>::iterator c2Iterator;
+	double thisThreshold;
 
 	for (i=0; i<=nChannels; i++) {
 
@@ -4761,12 +4762,25 @@ void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels,
 
 		nextThreshold = *c2Iterator;
 		channel = nextThreshold->mChannel;
+		thisThreshold = nextThreshold->mThreshold;
 
 		if ((channel >= 1) && (channel <= nChannels)) {
 
-			ChannelSpecificDetectionThresholds [channel] = nextThreshold->mThreshold;
-			ChannelSpecificDetectionOverrides [channel] = (int) nextThreshold->mThreshold;
+			if (thisThreshold > ChannelSpecificMinRFU [channel]) {
+
+				thisThreshold = ChannelSpecificMinRFU [channel];
+				nextThreshold->mThreshold = thisThreshold;
+			}
+
+			ChannelSpecificDetectionThresholds [channel] = thisThreshold;
+			ChannelSpecificDetectionOverrides [channel] = (int) thisThreshold;
 		}
+	}
+
+	for (i=1; i<=nChannels; i++) {
+
+		if (ChannelSpecificDetectionThresholds [i] > ChannelSpecificMinRFU [i])
+			ChannelSpecificDetectionThresholds [i] = ChannelSpecificMinRFU [i];
 	}
 }
 
