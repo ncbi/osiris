@@ -42,6 +42,7 @@
 #include "CDialogShowLabSettings.h"
 #include "mainApp.h"
 #include "CLabSettings.h"
+#include "CGridRFUParam.h"
 #include "nwx/nwxFileUtil.h"
 
 #if 0
@@ -197,7 +198,17 @@ CDialogParameters::CDialogParameters(
     0, FLAG);
 
   // Minimum RFU, first build sizer for all values
-
+#if 1
+  CGridRFUParam *pGridRFU = new CGridRFUParam(this);
+  wxBoxSizer *pSizerRFU = new wxBoxSizer(wxHORIZONTAL);
+  pSizerRFU->Add(pGridRFU,1,wxALIGN_LEFT | wxTOP | wxBOTTOM | wxRIGHT, ID_BORDER);
+  pSizerRFU->AddSpacer(100);
+  pGridRFU->SetupParms(pOsiris,sKit);
+  pGridRFU->TransferDataToWindow();
+  BOLD_LABEL(pLabel,CParmOsiris::LABEL_RFU);
+  pSizerTop->Add(pLabel,0,FLAG_TOP);
+  pSizerTop->Add(pSizerRFU,0,FLAG);
+#else
   wxString sRFU;
   int nRFU;
 
@@ -245,6 +256,8 @@ if(nn > 0) \
   BOLD_LABEL(pLabel,CParmOsiris::LABEL_RFU);
   pSizerTop->Add(pLabel,0,FLAG_TOP);
   pSizerTop->Add(pGridRFU,0,FLAG);
+
+#endif
 
   BOLD_LABEL(pLabel,CParmOsiris::LABEL_DATA);
   const wxString &sValue = 

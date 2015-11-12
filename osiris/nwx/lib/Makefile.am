@@ -1,4 +1,5 @@
 noinst_LIBRARIES = libnwx.a
+AUTOMAKE_OPTIONS = subdir-objects
 libnwx_a_SOURCES = \
 ../nwxTimerReceiver.cpp \
 ../nwxBookCtrlFocus.cpp \

@@ -23,51 +23,27 @@
 *
 * ===========================================================================
 *
-*  FileName: CGridLocusColumns.h
+*  FileName: CGridRFURun.h
 *  Author:   Douglas Hoffman
 *
+*  wxGrid for entering and/or viewing RFU limits for sample, ILS, channel,
+*    for an osiris analysis
+*
 */
-#ifndef __C_GRID_LOCUS_COLUMNS_H__
-#define __C_GRID_LOCUS_COLUMNS_H__
+#ifndef __C_GRID_RFU_RUN__
+#define __C_GRID_RFU_RUN__
 
-class wxGrid;
-#include "nwx/stdb.h"
-#include <vector>
-#include "nwx/stde.h"
-#include "nwx/nsstd.h"
-#include <wx/string.h>
+#include "CGridRFURunBase.h"
+class CDialogAnalysis;
 
-class CGridLocusColumns
+class CGridRFURun : public CGridRFURunBase
 {
-private:
-  CGridLocusColumns() {} // prevent instantiation
 public:
-  static bool SetupKit(
-    wxGrid *pGrid,
-    const wxString &sKitName,
-    bool bDefault, 
-    bool bILS,
-    bool bAllowAmel,
-    bool bSetError = false);
-  static bool SetupKit(
-    wxGrid *pGrid,
-    const wxString &sKitName,
-    const vector<wxString> &vsColumnsBefore,
-    bool bILS,
-    bool bAllowAmel,
-    bool bSetError = false);
-  static void SetReadOnly(wxGrid *pGrid,bool b);
-  static void FORMAT_CHANNEL_DYE(wxString *ps, unsigned int nChannel, const wxChar * psDye)
-  {
-    if((psDye != NULL) && *psDye)
-    {
-      ps->Printf("%u - %ls",nChannel,psDye);
-    }
-    else
-    {
-      ps->Printf("Channel %u",nChannel);
-    }
-  }
+  CGridRFURun(CDialogAnalysis *parent,wxWindowID id = wxID_ANY);
+  virtual bool TransferDataFromWindow();
+  virtual bool TransferDataToWindow();
+private:
+  CDialogAnalysis *m_pParent;
 };
 
 #endif

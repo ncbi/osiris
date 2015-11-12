@@ -29,7 +29,6 @@ static void Pause()
 int _tmain(int argc, _TCHAR* argv[])
 {
   MEMDIFF(x);
-	int nRtn = 1;
 // 	char *ps = strdup("ABCDEFG - ignore this");
 #ifdef _DEBUG
   if(!fsaFileInput::TESTMEMSTR())

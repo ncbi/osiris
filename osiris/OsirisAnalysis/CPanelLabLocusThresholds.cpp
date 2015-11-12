@@ -74,12 +74,19 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   aChoices.Alloc(2);
   aChoices.Add("RFU");
   aChoices.Add("% of Min. RFU");
+
+  m_pGridRFU = new CGridRFULimits(this,wxID_ANY);
+  m_pAllowOverride = new wxCheckBox(this,wxID_ANY,"Allow User to Override Min. RFU");
+
+  wxStaticText *pTextRFU = new wxStaticText(
+    this,wxID_ANY,"RFU Limits");
   wxStaticText *psSampleLabel = 
     new wxStaticText(this,wxID_ANY,
     "Locus Limits for Samples");
   wxStaticText *psLadderLabel =
     new wxStaticText(this,wxID_ANY,
     "Locus Limits for Ladders/ILS Limits");
+  mainApp::SetBoldFont(pTextRFU);
   mainApp::SetBoldFont(psSampleLabel);
   mainApp::SetBoldFont(psLadderLabel);
   wxStaticText *psDisclaimer =
@@ -98,12 +105,18 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   pSizerChoice->Add(psChoice,0,wxALIGN_CENTRE_VERTICAL);
   pSizerChoice->Add(m_pChoiceHomozygoteUnits,
     0,wxLEFT | wxALIGN_CENTRE_VERTICAL, ID_BORDER);
+  pSizer->Add(pTextRFU,0,
+    wxALIGN_LEFT | (wxALL ^ wxBOTTOM),ID_BORDER);
+  pSizer->Add(m_pGridRFU,0,
+    wxALIGN_LEFT | wxLEFT | wxRIGHT,ID_BORDER);
+  pSizer->Add(m_pAllowOverride,0,
+    wxALIGN_LEFT | wxALL, ID_BORDER);
   pSizer->Add(psSampleLabel,0, wxALIGN_LEFT | (wxALL ^ wxBOTTOM), ID_BORDER);
-  pSizer->Add(m_pGridSample,0,wxEXPAND | (wxALL ^ wxTOP), ID_BORDER);
+  pSizer->Add(m_pGridSample,0,  /* wxEXPAND | */ (wxALL ^ wxTOP), ID_BORDER);
   pSizer->Add(pSizerChoice,0,wxALIGN_LEFT | (wxALL ^ wxTOP), ID_BORDER);
   pSizer->AddSpacer(ID_BORDER << 2);
   pSizer->Add(psLadderLabel,0,wxALIGN_LEFT | wxLEFT | wxRIGHT,ID_BORDER);
-  pSizer->Add(m_pGridLadder,0,wxEXPAND | wxLEFT | wxRIGHT, ID_BORDER);
+  pSizer->Add(m_pGridLadder,0, /* wxEXPAND  | */ wxLEFT | wxRIGHT, ID_BORDER);
   pSizer->Add(psDisclaimer,0,wxALIGN_LEFT | (wxALL ^ wxTOP),ID_BORDER);
   pSizer->AddStretchSpacer(1);
   SetSizer(pSizer);
@@ -114,6 +127,8 @@ CPanelLabLocusThresholds::~CPanelLabLocusThresholds() {}
 void CPanelLabLocusThresholds::SetReadOnly(bool bReadOnly)
 {
   m_pChoiceHomozygoteUnits->Enable(!bReadOnly);
+  m_pAllowOverride->Enable(!bReadOnly);
+  m_pGridRFU->SetAllReadOnly(bReadOnly);
   m_pGridSample->SetAllReadOnly(bReadOnly);
   m_pGridLadder->SetAllReadOnly(bReadOnly);
 }
@@ -124,6 +139,12 @@ bool CPanelLabLocusThresholds::TransferDataToWindow()
   {
     m_pChoiceHomozygoteUnits->SetSelectionByValue(
       m_pData->GetMinBoundHomozygoteUnit());
+    if(!m_pGridRFU->TransferDataToWindow())
+    {
+      bRtn = false;
+    }
+    m_pAllowOverride->SetValue(m_pData->GetAllowMinRFUoverride());
+
     if(!m_pGridSample->TransferDataToWindow())
     {
       bRtn = false;
@@ -142,6 +163,11 @@ bool CPanelLabLocusThresholds::TransferDataFromWindow()
   {
     m_pData->SetMinBoundHomozygoteUnit(
       m_pChoiceHomozygoteUnits->GetSelectionByValue());
+    m_pData->SetAllowMinRFUoverride(m_pAllowOverride->GetValue());
+    if(!m_pGridRFU->TransferDataFromWindow())
+    {
+      bRtn = false;
+    }
     if(!m_pGridSample->TransferDataFromWindow())
     {
       bRtn = false;

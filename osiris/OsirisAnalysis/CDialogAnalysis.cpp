@@ -38,8 +38,6 @@
 #include "nwx/nwxFileUtil.h"
 #include <wx/filename.h>
 
-// temporary, need to update wxIDS.h
-
 CDialogAnalysis::CDialogAnalysis(
     wxWindow *parent,
     CParmOsiris *pParm,
@@ -56,13 +54,9 @@ CDialogAnalysis::CDialogAnalysis(
     m_pCheckSubDir(NULL),
     m_pComboVolumeName(NULL),
     m_pComboLsName(NULL),
-    m_pSpinRFU(NULL),
-    m_pSpinRFU_ILS(NULL),
-    m_pSpinRFU_Ladder(NULL),
-    m_pSpinRFU_Interlocus(NULL),
-    m_pSpinRFU_LadderInterlocus(NULL),
-    m_pSpinRFU_SampleDetection(NULL),
-
+    m_pGridRFU(NULL),
+    m_pRadioRaw(NULL),
+    m_pRadioAnalyzed(NULL),
     m_bSave(bSave),
     m_bUseLabSettings(bUseLabSettings),
     m_bLabSettingsOK(true),
@@ -96,12 +90,7 @@ CDialogAnalysis::CDialogAnalysis(
   }
   if(!m_bProblem)
   {
-    wxWindow *pwTemp;
     wxSize size(300,-1);
-    const int SPIN_MIN = mainApp::RFU_MIN_ENTER;
-    const int SPIN_MAX = mainApp::RFU_MAX_ENTER;
-    const int SPIN_DEF = 150;
-    wxString sSPIN_DEF("150");
 
     // input directory
 
@@ -150,109 +139,16 @@ CDialogAnalysis::CDialogAnalysis(
     m_pComboLsName = new wxComboBox(this,wxID_ANY,wxEmptyString,
       wxDefaultPosition, wxDefaultSize,
       0, NULL,CB_STYLE);
-    wxSize sizeSpin(75,-1);
 
 #undef CB_STYLE
 
     // RFU
-
-    wxFlexGridSizer *pGridRFU(new wxFlexGridSizer(3,2,ID_BORDER,ID_BORDER));
-    pGridRFU->SetFlexibleDirection(wxBOTH);
-
-
-    // wxSpinCtrl - RFU row 1 sample
-
-    pGridRFU->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,CParmOsiris::LABEL_RFU_SAMPLE),
-      0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-    mainApp::SetBoldFont(pwTemp);
-
-    wxBoxSizer *pSizerSpin1 = new wxBoxSizer(wxHORIZONTAL);
-    pSizerSpin1->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,"Analysis: "),
-      0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-
-
-    m_pSpinRFU = new wxSpinCtrl(this,wxID_ANY,
-      sSPIN_DEF, wxDefaultPosition,
-      sizeSpin,
-      wxSP_ARROW_KEYS,
-      SPIN_MIN, SPIN_MAX, SPIN_DEF);
-    pSizerSpin1->Add(m_pSpinRFU, 0,
-      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-
-    pSizerSpin1->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,"Detection: "),
-      0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT, ID_BORDER);
-    m_pSpinRFU_SampleDetection = new wxSpinCtrl(this,wxID_ANY,
-      sSPIN_DEF, wxDefaultPosition,
-      sizeSpin,
-      wxSP_ARROW_KEYS,
-      SPIN_MIN, SPIN_MAX, SPIN_DEF);
-    pSizerSpin1->Add(m_pSpinRFU_SampleDetection, 0,
-      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-
-    pSizerSpin1->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,"Interlocus: "),
-      0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT, ID_BORDER);
-    m_pSpinRFU_Interlocus = new wxSpinCtrl(this,wxID_ANY,
-      sSPIN_DEF, wxDefaultPosition,
-      sizeSpin,
-      wxSP_ARROW_KEYS,
-      SPIN_MIN, SPIN_MAX, SPIN_DEF);
-    pSizerSpin1->Add(m_pSpinRFU_Interlocus, 0,
-      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-    pSizerSpin1->AddStretchSpacer(1);
-    pGridRFU->Add(pSizerSpin1,0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-
-
-    // wxSpinCtrl - RFU row 2 Ladder
-    wxBoxSizer *pSizerSpin2 = new wxBoxSizer(wxHORIZONTAL);
-    pGridRFU->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,CParmOsiris::LABEL_RFU_LADDER),
-      0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-    mainApp::SetBoldFont(pwTemp);
-
-    pSizerSpin2->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,"Analysis: "),
-      0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-    m_pSpinRFU_Ladder = new wxSpinCtrl(this,wxID_ANY,
-      sSPIN_DEF, wxDefaultPosition,
-      sizeSpin,
-      wxSP_ARROW_KEYS,
-      SPIN_MIN, SPIN_MAX, SPIN_DEF);
-    pSizerSpin2->Add(m_pSpinRFU_Ladder, 0,
-      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-
-    pSizerSpin2->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,"Interlocus: "),
-      0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT, ID_BORDER);
-    m_pSpinRFU_LadderInterlocus = new wxSpinCtrl(this,wxID_ANY,
-      sSPIN_DEF, wxDefaultPosition,
-      sizeSpin,
-      wxSP_ARROW_KEYS,
-      SPIN_MIN, SPIN_MAX, SPIN_DEF);
-    pSizerSpin2->Add(m_pSpinRFU_LadderInterlocus, 0,
-      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-
-    pGridRFU->Add(pSizerSpin2,0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-    pSizerSpin2->AddStretchSpacer(1);
-    // wxSpinCtrl - RFU row 3 ILS
-
-    pGridRFU->Add(
-      pwTemp = new wxStaticText(this,wxID_ANY,CParmOsiris::LABEL_RFU_ILS),
-      0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-    mainApp::SetBoldFont(pwTemp);
-    m_pSpinRFU_ILS = new wxSpinCtrl(this,wxID_ANY,
-      sSPIN_DEF, wxDefaultPosition,
-      sizeSpin,
-      wxSP_ARROW_KEYS,
-      SPIN_MIN, SPIN_MAX, SPIN_DEF);
-    pGridRFU->Add(
-      m_pSpinRFU_ILS,0,wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
+    m_pGridRFU = new CGridRFURun(this);
+    wxBoxSizer *pSizerRFU = new wxBoxSizer(wxHORIZONTAL);
+    pSizerRFU->Add(m_pGridRFU,1,wxALIGN_LEFT | wxTOP | wxBOTTOM | wxRIGHT, ID_BORDER);
+    pSizerRFU->AddSpacer(100);
 
     wxBoxSizer *pSizerRadio = new wxBoxSizer(wxHORIZONTAL);
-
 
     m_pRadioRaw = new wxRadioButton(
       this,
@@ -297,7 +193,7 @@ CDialogAnalysis::CDialogAnalysis(
     pGrid->Add(MakeBoxSizerText(CParmOsiris::LABEL_LS),0, FLAG);
     pGrid->Add(m_pComboLsName, 0, FLAG);
     pGrid->Add(MakeBoxSizerText(CParmOsiris::LABEL_RFU), 0, FLAG_TOP,2);
-    pGrid->Add(pGridRFU, 0, FLAG);
+    pGrid->Add(pSizerRFU, 0, FLAG ^ wxEXPAND);
     pGrid->Add(MakeBoxSizerText(CParmOsiris::LABEL_DATA), 0, FLAG);
     pGrid->Add(pSizerRadio,0,FLAG);
 
@@ -311,12 +207,7 @@ CDialogAnalysis::CDialogAnalysis(
       tabOrder.push_back(m_pComboVolumeName);
       tabOrder.push_back(pBrowseVolume);
       tabOrder.push_back(m_pComboLsName);
-      tabOrder.push_back(m_pSpinRFU);
-      tabOrder.push_back(m_pSpinRFU_SampleDetection);
-      tabOrder.push_back(m_pSpinRFU_Interlocus);
-      tabOrder.push_back(m_pSpinRFU_Ladder);
-      tabOrder.push_back(m_pSpinRFU_LadderInterlocus);
-      tabOrder.push_back(m_pSpinRFU_ILS);
+      tabOrder.push_back(m_pGridRFU);
       tabOrder.push_back(m_pRadioRaw);
       tabOrder.push_back(m_pRadioAnalyzed);
       tabOrder.push_back(pButtonOK);
@@ -515,7 +406,9 @@ void CDialogAnalysis::DoVolumeChange()
         pLab->GetMinRFU(
           &m_nMinRFU, &m_nMinRFU_ILS, &m_nMinRFU_Ladder,
           &m_nMinRFU_Interlocus, &m_nMinRFU_LadderInterlocus, 
-          &m_nMinRFU_SampleDetection);
+          &m_nMinRFU_SampleDetection,
+          &m_anChannelRFU,
+          &m_anChannelDetection);
       }
       else
       {
@@ -523,7 +416,8 @@ void CDialogAnalysis::DoVolumeChange()
         m_nMinRFU_ILS = m_pParm->GetMinRFU_ILS();
         m_nMinRFU_Ladder = m_pParm->GetMinRFU_Ladder();
         m_nMinRFU_Interlocus = m_pParm->GetMinRFU_Interlocus();
-
+        m_anChannelRFU = m_pParm->GetChannelRFU();
+        m_anChannelDetection = m_pParm->GetChannelDetection();
         m_nMinRFU_LadderInterlocus = m_pParm->GetMinLadderInterlocusRFU();
         m_nMinRFU_SampleDetection = m_pParm->GetSampleDetectionThreshold();
       }
@@ -542,27 +436,18 @@ if( (SampleDetection > Sample) || (SampleDetection <= 0) ) \
           m_nMinRFU_Ladder,m_nMinRFU_LadderInterlocus,
           m_nMinRFU_SampleDetection);
       }
-      m_pSpinRFU->SetValue(m_nMinRFU);
-      m_pSpinRFU_ILS->SetValue(m_nMinRFU_ILS);
-      m_pSpinRFU_Ladder->SetValue(m_nMinRFU_Ladder);
-      m_pSpinRFU_Interlocus->SetValue(m_nMinRFU_Interlocus);
-
-      m_pSpinRFU_LadderInterlocus->SetValue(m_nMinRFU_LadderInterlocus);
-      m_pSpinRFU_SampleDetection->SetValue(m_nMinRFU_SampleDetection);
+      m_pGridRFU->SetupKit(sKitName);
+      m_pGridRFU->TransferDataToWindow();
+      m_pGridRFU->SetAllReadOnly(!bEnableRFU);
 
       m_pRadioRaw->SetValue(!bAnalyzed);
       m_pRadioAnalyzed->SetValue(bAnalyzed);
 
-      m_pSpinRFU->Enable(bEnableRFU);
-      m_pSpinRFU_ILS->Enable(bEnableRFU);
-      m_pSpinRFU_Ladder->Enable(bEnableRFU);
-      m_pSpinRFU_Interlocus->Enable(bEnableRFU);
-      m_pSpinRFU_LadderInterlocus->Enable(bEnableRFU);
-      m_pSpinRFU_SampleDetection->Enable(bEnableRFU);
-
       m_pRadioRaw->Enable(bEnableILS);
       m_pRadioAnalyzed->Enable(bEnableILS);
       m_pComboLsName->Enable(bEnableILS);
+      Layout();
+      Fit();
     }
   }
 }
@@ -600,13 +485,17 @@ void CDialogAnalysis::SetupOverride()
   int nMinRFU_Interlocus;
   int nMinRFU_LadderInterlocus;
   int nMinRFU_SampleDetection;
+  vector<int> anChannelRFU;
+  vector<int> anChannelDetection;
 
   const CLabSettings *pLab = m_pVolume->GetLabSettings();
 
   pLab->GetMinRFU(
       &nMinRFU, &nMinRFU_ILS, &nMinRFU_Ladder,
       &nMinRFU_Interlocus, &nMinRFU_LadderInterlocus, 
-      &nMinRFU_SampleDetection);
+      &nMinRFU_SampleDetection,
+      &anChannelRFU,
+      &anChannelDetection);
   FIX_RFU(
     nMinRFU,nMinRFU_Interlocus,
     nMinRFU_Ladder,nMinRFU_LadderInterlocus,
@@ -673,13 +562,7 @@ bool CDialogAnalysis::TransferDataFromWindow()
     m_sLsName = m_pComboLsName->GetValue();
     if(bOverrideRFU)
     {
-      m_nMinRFU = m_pSpinRFU->GetValue();
-      m_nMinRFU_ILS = m_pSpinRFU_ILS->GetValue();
-      m_nMinRFU_Ladder = m_pSpinRFU_Ladder->GetValue();
-      m_nMinRFU_Interlocus = m_pSpinRFU_Interlocus->GetValue();
-
-      m_nMinRFU_LadderInterlocus = m_pSpinRFU_LadderInterlocus->GetValue();
-      m_nMinRFU_SampleDetection = m_pSpinRFU_SampleDetection->GetValue();
+      m_pGridRFU->TransferDataFromWindow();
 
       SetupOverride();
 
@@ -687,13 +570,13 @@ bool CDialogAnalysis::TransferDataFromWindow()
       {
         sError += CParmOsiris::ERROR_MSG_INTERLOCUS;
         sError += "\n";
-        m_pSpinRFU_Interlocus->SetFocus();
+        // m_pSpinRFU_Interlocus->SetFocus();
       }
       else if(m_nMinRFU_LadderInterlocus < m_nMinRFU_Ladder)
       {
         sError += CParmOsiris::ERROR_MSG_INTERLOCUS;
         sError += "\n";
-        m_pSpinRFU_LadderInterlocus->SetFocus();
+        // m_pSpinRFU_LadderInterlocus->SetFocus();
       }
     }
 
@@ -750,7 +633,8 @@ bool CDialogAnalysis::TransferDataFromWindow()
       m_pParm->SetSampleDetectionThreshold(m_nMinRFU_SampleDetection);
       m_pParm->SetAnalysisOverride(m_sOverride);
       m_pParm->SetTimeStampSubDir(m_pCheckSubDir->GetValue());
-
+      m_pParm->SetChannelDetection(m_anChannelDetection);
+      m_pParm->SetChannelRFU(m_anChannelRFU);
 
       if(!( m_bSave && m_pParm->IsModified() )) {}
       else if(!m_pParm->Save())

@@ -23,51 +23,40 @@
 *
 * ===========================================================================
 *
-*  FileName: CGridLocusColumns.h
+*  FileName: CGridRFUParam.h
 *  Author:   Douglas Hoffman
 *
+*  wxGrid for viewing RFU limits for sample, ILS, channel,
+*    in the Parameters window (CDialogParameters.cpp/h)
+*
+*  This is inherited by CGridRFURun, used for running a new analysis
+*  and CGridRFUParam, used for showing runtime parameters
+*  The main difference is the former loads data from 
+*
 */
-#ifndef __C_GRID_LOCUS_COLUMNS_H__
-#define __C_GRID_LOCUS_COLUMNS_H__
 
-class wxGrid;
-#include "nwx/stdb.h"
-#include <vector>
-#include "nwx/stde.h"
-#include "nwx/nsstd.h"
-#include <wx/string.h>
+#ifndef __C_GRID_RFU_PARAM_H__
+#define __C_GRID_RFU_PARAM_H__
 
-class CGridLocusColumns
+#include "CGridRFURunBase.h"
+
+class CParmOsiris;
+
+class CGridRFUParam : public CGridRFURunBase
 {
-private:
-  CGridLocusColumns() {} // prevent instantiation
 public:
-  static bool SetupKit(
-    wxGrid *pGrid,
-    const wxString &sKitName,
-    bool bDefault, 
-    bool bILS,
-    bool bAllowAmel,
-    bool bSetError = false);
-  static bool SetupKit(
-    wxGrid *pGrid,
-    const wxString &sKitName,
-    const vector<wxString> &vsColumnsBefore,
-    bool bILS,
-    bool bAllowAmel,
-    bool bSetError = false);
-  static void SetReadOnly(wxGrid *pGrid,bool b);
-  static void FORMAT_CHANNEL_DYE(wxString *ps, unsigned int nChannel, const wxChar * psDye)
+  CGridRFUParam(wxWindow *window, wxWindowID id = wxID_ANY) :
+      CGridRFURunBase(window,id),
+      m_pParms(NULL)
+  {}
+  void SetupParms(const CParmOsiris *pParm, const wxString &sKitName = wxEmptyString)
   {
-    if((psDye != NULL) && *psDye)
-    {
-      ps->Printf("%u - %ls",nChannel,psDye);
-    }
-    else
-    {
-      ps->Printf("Channel %u",nChannel);
-    }
+    m_pParms = pParm;
+    if(!sKitName.IsEmpty()) SetupKit(sKitName);
+    SetAllReadOnly(true);
   }
+  virtual bool TransferDataToWindow();
+private:
+  const CParmOsiris *m_pParms;
 };
-
 #endif

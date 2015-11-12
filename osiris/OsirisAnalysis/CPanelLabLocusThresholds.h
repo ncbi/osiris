@@ -32,6 +32,8 @@
 
 #include "CPanelLabSettingsUtils.h"
 #include "CGridLabThresholds.h"
+#include "CGridRFULimits.h"
+#include <wx/checkbox.h>
 
 
 //********************************************************************
@@ -62,11 +64,14 @@ public:
     m_pData = pData;
     bool b1 = m_pGridSample->SetData(pData,sKitName);
     bool b2 = m_pGridLadder->SetData(pData,sKitName);
+    m_pGridRFU->SetData(pData,sKitName);
     return b1 && b2;
   }
   
 private:
   CLabThresholds *m_pData;
+  CGridRFULimits *m_pGridRFU;
+  wxCheckBox *m_pAllowOverride;
   CGridLabThresholdsSample *m_pGridSample;
   CGridLabThresholdsLadder *m_pGridLadder;
   CChoiceHomozygote *m_pChoiceHomozygoteUnits;

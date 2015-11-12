@@ -1,5 +1,6 @@
-AC_INIT(../wxXml2Document.cpp)
-AM_INIT_AUTOMAKE([libwxXml2.a],1.0)
+AC_INIT([libwxXml2.a],1.0)
+AC_CONFIG_SRCDIR(../wxXml2Document.cpp)
+AM_INIT_AUTOMAKE
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB

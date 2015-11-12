@@ -834,7 +834,56 @@ void CLabLocusThreshold::RegisterAll(bool b)
   Register("HeterzygousImbalanceLimit",&g_io, (void *)&m_dHeterozygousImbalanceLimit);
   Register("MinBoundForHomozygote",&g_io, (void *)&m_dMinBoundForHomozygote);
 }
+//************************************************* CLabSampleChannelThreshold
 
+
+const int CLabSampleChannelThreshold::g_DEFAULT(-1);
+
+void CLabSampleChannelThreshold::Init(void *p)
+{
+  if(p == (void *)this)
+  {
+    Init();
+  }
+  else
+  {
+    CLabSampleChannelThreshold *pp = (CLabSampleChannelThreshold *)p;
+    pp->Init();
+  }
+}
+void CLabSampleChannelThreshold::Init()
+{
+  m_nMin = g_DEFAULT;
+  m_nDetection = g_DEFAULT;
+}
+void CLabSampleChannelThreshold::RegisterAll(bool b)
+{
+  if(b)
+  {
+    Init();
+  }
+  ClearRegistration();
+  RegisterInt("Channel",&m_nChannel);
+  Register(
+    "MinimumRFU",
+    CLabSettings::GetIOint(), 
+    (void *)&m_nMin);
+  Register(
+    "MinDetectionRFU",
+    CLabSettings::GetIOint(), 
+    (void *)&m_nDetection);
+}
+
+bool CLabSampleChannelThreshold::Skip(void *p)
+{
+  CLabSampleChannelThreshold *pp = 
+    (p == NULL) ? this : (CLabSampleChannelThreshold *)p;
+  return pp->IsEmpty();
+}
+bool CLabSampleChannelThreshold::Skip()
+{
+  return IsEmpty();
+}
 //************************************************* CLabRFU
 
 void CLabRFU::Init()
@@ -864,7 +913,6 @@ void CLabRFU::Init(void *p)
     pp->Init();
   }
 }
-
 
 void CLabRFU::RegisterAll(bool b)
 {
@@ -1222,6 +1270,7 @@ void CLabThresholds::RegisterAll(bool bFirst)
   Register("LadderRFUTests",&m_rfuLadder);
   Register("LaneStandardRFUTests",&m_rfuLS);
   Register("SampleRFUTests",&m_rfuSample);
+  Register("ChannelThresholds",&m_setChannelThresholds);
 
   Register(
     "HeterozygousImbalanceLimit",
@@ -1266,6 +1315,7 @@ bool CLabThresholds::operator ==(const CLabThresholds &x) const
 {
   bool bRtn = false;
   LABEQLOG(m_sMinBoundHomozygoteUnit,"CLabThresholds.m_sMinBoundHomozygoteUnit")
+  else LABEQLOG(m_setChannelThresholds,"CLabThresholds.m_setChannelThresholds")
   else LABEQLOG(m_rfuLadder,"CLabThresholds.m_rfuLadder")
   else LABEQLOG(m_rfuLS,"CLabThresholds.m_rfuLS")
   else LABEQLOG(m_rfuSample,"CLabThresholds.m_rfuSample")
@@ -1459,7 +1509,50 @@ nwxXmlIOdouble CLabSettings::g_xmlIOdouble(-1.0);
 nwxXmlIOintPositive CLabSettings::g_xmlIOint;
 nwxXmlIOdoublePositive CLabSettings::g_xmlIOdoubleGt0(true);
                                         // true == non zero
+void CLabSettings::GetMinRFU(
+    int *pnSample, int *pnILS, int *pnLadder, 
+    int *pnInterlocus, int *pnLadderInterlocus,
+    int *pnSampleDetection,
+    vector<int> *m_panChannelRFU,
+    vector<int> *m_panChannelDetection) const
+{
+  *pnSample = m_thresholds.GetRFUsample()->GetMinRFU();
+  *pnInterlocus = m_thresholds.GetRFUsample()->GetMinRFUinterlocus();
+  *pnSampleDetection = m_thresholds.GetRFUsample()->GetMinDetection();
 
+  *pnLadder = m_thresholds.GetRFUladder()->GetMinRFU();
+  *pnLadderInterlocus = m_thresholds.GetRFUladder()->GetMinRFUinterlocus();
+
+  *pnILS    = m_thresholds.GetRFUls()->GetMinRFU();
+  const set<CLabSampleChannelThreshold *,CLabSampleChannelThresholdLess> 
+    *psetChan = m_thresholds.GetChannelThresholds()->Get();
+    
+  const CLabSampleChannelThreshold *plab;
+  m_panChannelRFU->clear();
+  m_panChannelDetection->clear();
+  set<CLabSampleChannelThreshold *,CLabSampleChannelThresholdLess>::const_reverse_iterator
+      itr = psetChan->rbegin();
+  if(itr != psetChan->rend())
+  {
+    plab = *itr;
+    size_t n = (size_t) plab->GetChannel();
+    m_panChannelRFU->reserve(n);
+    m_panChannelDetection->reserve(n);
+    for(; itr != psetChan->rend(); ++itr)
+    {
+      plab = *itr;
+      n = (size_t) plab->GetChannel();
+      while(m_panChannelDetection->size() < n)
+      {
+        m_panChannelDetection->push_back(-1);
+        m_panChannelRFU->push_back(-1);
+      }
+      --n;
+      m_panChannelDetection->at(n) = plab->GetDetection();
+      m_panChannelRFU->at(n) = plab->GetMin();
+    }
+  }
+}
 
 
 #ifdef __WXDEBUG__

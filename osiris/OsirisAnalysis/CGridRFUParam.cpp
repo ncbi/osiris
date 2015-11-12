@@ -23,51 +23,36 @@
 *
 * ===========================================================================
 *
-*  FileName: CGridLocusColumns.h
+*  FileName: CGridRFUParam.cpp
 *  Author:   Douglas Hoffman
 *
+*  wxGrid for viewing RFU limits for sample, ILS, channel,
+*    in the Parameters window (CDialogParameters.cpp/h)
+*
+*  This is inherited by CGridRFURun, used for running a new analysis
+*  and CGridRFUParam, used for showing runtime parameters
+*  The main difference is the former loads data from 
+*
 */
-#ifndef __C_GRID_LOCUS_COLUMNS_H__
-#define __C_GRID_LOCUS_COLUMNS_H__
+#include "CGridRFUParam.h"
+#include "CParmOsiris.h"
 
-class wxGrid;
-#include "nwx/stdb.h"
-#include <vector>
-#include "nwx/stde.h"
-#include "nwx/nsstd.h"
-#include <wx/string.h>
-
-class CGridLocusColumns
+bool CGridRFUParam::TransferDataToWindow()
 {
-private:
-  CGridLocusColumns() {} // prevent instantiation
-public:
-  static bool SetupKit(
-    wxGrid *pGrid,
-    const wxString &sKitName,
-    bool bDefault, 
-    bool bILS,
-    bool bAllowAmel,
-    bool bSetError = false);
-  static bool SetupKit(
-    wxGrid *pGrid,
-    const wxString &sKitName,
-    const vector<wxString> &vsColumnsBefore,
-    bool bILS,
-    bool bAllowAmel,
-    bool bSetError = false);
-  static void SetReadOnly(wxGrid *pGrid,bool b);
-  static void FORMAT_CHANNEL_DYE(wxString *ps, unsigned int nChannel, const wxChar * psDye)
+  bool bRtn = (m_pParms != NULL) && !m_sKitName.IsEmpty();
+  if(bRtn)
   {
-    if((psDye != NULL) && *psDye)
-    {
-      ps->Printf("%u - %ls",nChannel,psDye);
-    }
-    else
-    {
-      ps->Printf("Channel %u",nChannel);
-    }
-  }
-};
+    const vector<int> &anChannelDetection = m_pParms->GetChannelDetection();
+    const vector<int> &anChannelRFU = m_pParms->GetChannelRFU();
+    ClearGrid();
+    _TransferToChannelRows(anChannelRFU,anChannelDetection);
 
-#endif
+    _SetCellIntValue(m_nROW_SAMPLE,COL_ANALYSIS,m_pParms->GetMinRFU_Sample());
+    _SetCellIntValue(m_nROW_SAMPLE,COL_INTERLOCUS,m_pParms->GetMinRFU_Interlocus());
+    _SetCellIntValue(m_nROW_SAMPLE,COL_DETECTION,m_pParms->GetSampleDetectionThreshold());
+    _SetCellIntValue(m_nROW_LADDER,COL_ANALYSIS,m_pParms->GetMinRFU_Ladder());
+    _SetCellIntValue(m_nROW_LADDER,COL_INTERLOCUS,m_pParms->GetMinLadderInterlocusRFU());
+    _SetCellIntValue(m_nROW_ILS,COL_ANALYSIS,m_pParms->GetMinRFU_ILS());
+  }
+  return bRtn;
+}

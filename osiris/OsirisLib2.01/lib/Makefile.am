@@ -1,4 +1,5 @@
 noinst_LIBRARIES = libosiris.a
+AUTOMAKE_OPTIONS = subdir-objects
 libosiris_a_SOURCES = \
 ../BaseGenetics.cpp \
 ../BaseGeneticsSM.cpp \

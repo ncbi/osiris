@@ -25,9 +25,9 @@
 #
 # ===========================================================================
 #
-#  FileName: tab.xsl
+#  FileName: tabRFU.xsl
 #  Author:   Douglas Hoffman
-#  Description:  Export allele info from OSIRIS analysis file to a
+#  Description:  Export RFU info from OSIRIS analysis file to a
 #   tab-delimited text file.
 #
 -->
@@ -36,26 +36,18 @@
 
   <xsl:output method="text"/>
 
-  <xsl:param name="OL" select="yes"/>
   <xsl:param name="UseChannelNr" select="0"/>
   <xsl:variable name="TAB" select="'&#9;'"/>
   <xsl:variable name="LF" select="'&#10;'"/>
 
   <xsl:template name="OsirisExport">
   <export>
-    <name>Spreadsheet</name>
+    <name>RFU Spreadsheet</name>
     <file-extension>tab</file-extension>
     <file-extension>txt</file-extension>
     <extension-override>true</extension-override>
     <default-location>*A</default-location>
     <xsl-params>
-      <param>
-        <name>OL</name>
-        <description>Indicate off-ladder alleles</description>
-        <type>checkbox</type>
-        <checked-value>1</checked-value>
-        <unchecked-value>0</unchecked-value>
-      </param>
       <param>
         <name>UseChannelNr</name>
         <description>Show channel numbers in column headings</description>
@@ -89,12 +81,6 @@
       </xsl:otherwise>
    </xsl:choose>
   </xsl:template>
-
-  <xsl:variable name="bOL">
-    <xsl:call-template name="GetBool">
-      <xsl:with-param name="s" select="$OL"/>
-    </xsl:call-template>
-  </xsl:variable>
 
   <xsl:variable name="bChannel">
     <xsl:call-template name="GetBool">
@@ -130,37 +116,11 @@
         <xsl:variable name="locus" 
           select="$sample/Locus[LocusName = $locusName]"/>
         <xsl:if test="$locus">
-          <xsl:variable name="isAmel">
-            <xsl:choose>
-              <xsl:when test="contains(translate($locusName,'amel','AMEL'),'AMEL')">
-                <xsl:value-of select="1"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="0"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:variable>
           <xsl:for-each select="$locus/Allele[not(Disabled = 'true')]">
             <xsl:if test="position() &gt; 1">
               <xsl:text>, </xsl:text>
             </xsl:if>
-            <xsl:if test="($bOL &gt; 0) and (OffLadder = 'true')">
-              <xsl:text>OL</xsl:text>
-            </xsl:if>
-            <xsl:choose>
-              <xsl:when test="$isAmel = 0">
-                <xsl:value-of select="Name"/>
-              </xsl:when>
-              <xsl:when test="Name = 1">
-                <xsl:text>X</xsl:text>
-              </xsl:when>
-              <xsl:when test="Name = 2">
-                <xsl:text>Y</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="Name"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="RFU"/>
           </xsl:for-each>
         </xsl:if>
       </xsl:for-each>

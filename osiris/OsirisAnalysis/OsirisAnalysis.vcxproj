@@ -307,6 +307,11 @@
     <ClCompile Include="CGridLocus.cpp" />
     <ClCompile Include="CGridLocusColumns.cpp" />
     <ClCompile Include="CGridLocusPeaks.cpp" />
+    <ClCompile Include="CGridRFUbase.cpp" />
+    <ClCompile Include="CGridRFULimits.cpp" />
+    <ClCompile Include="CGridRFUParam.cpp" />
+    <ClCompile Include="CGridRFURun.cpp" />
+    <ClCompile Include="CGridRFURunBase.cpp" />
     <ClCompile Include="CHistoryTime.cpp" />
     <ClCompile Include="CImageAbout.cpp" />
     <ClCompile Include="CKitColors.cpp" />
@@ -433,6 +438,11 @@
     <ClInclude Include="CGridLocus.h" />
     <ClInclude Include="CGridLocusColumns.h" />
     <ClInclude Include="CGridLocusPeaks.h" />
+    <ClInclude Include="CGridRFUbase.h" />
+    <ClInclude Include="CGridRFULimits.h" />
+    <ClInclude Include="CGridRFUParam.h" />
+    <ClInclude Include="CGridRFURun.h" />
+    <ClInclude Include="CGridRFURunBase.h" />
     <ClInclude Include="CHistoryTime.h" />
     <ClInclude Include="CILSLadderInfo.h" />
     <ClInclude Include="CImageAbout.h" />
