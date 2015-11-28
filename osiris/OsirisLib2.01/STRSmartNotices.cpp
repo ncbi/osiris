@@ -1284,6 +1284,30 @@ int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sMessageIndex = 0;
 int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset::sMessageScope = 0;
 
 
+RGString smExtendLociEdgeToEdgePreset::sName = "smExtendLociEdgeToEdgePreset";
+int smExtendLociEdgeToEdgePreset::sSubject = smExtendLociEdgeToEdgePreset::LoadType ();
+int smExtendLociEdgeToEdgePreset::sMessageIndex = 0;
+int smExtendLociEdgeToEdgePreset::sMessageScope = 0;
+
+
+RGString smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::sName = "smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset";
+int smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::sSubject = smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::LoadType ();
+int smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::sMessageIndex = 0;
+int smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::sMessageScope = 0;
+
+
+RGString smMaxILSBPForExtendedLocus::sName = "smMaxILSBPForExtendedLocus";
+int smMaxILSBPForExtendedLocus::sSubject = smMaxILSBPForExtendedLocus::LoadType ();
+int smMaxILSBPForExtendedLocus::sMessageIndex = 0;
+int smMaxILSBPForExtendedLocus::sMessageScope = 0;
+
+
+RGString smSuppressAlleleAndArtifactCallsRightOfMaxPreset::sName = "smSuppressAlleleAndArtifactCallsRightOfMaxPreset";
+int smSuppressAlleleAndArtifactCallsRightOfMaxPreset::sSubject = smSuppressAlleleAndArtifactCallsRightOfMaxPreset::LoadType ();
+int smSuppressAlleleAndArtifactCallsRightOfMaxPreset::sMessageIndex = 0;
+int smSuppressAlleleAndArtifactCallsRightOfMaxPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1497,6 +1521,10 @@ PERSISTENT_DEFINITION (smILSShoulderPeak, 2609, "smILSShoulderPeak")
 PERSISTENT_DEFINITION (smLadderPeakOutsideCoreLadder, 2610, "smLadderPeakOutsideCoreLadder")
 PERSISTENT_DEFINITION (smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset, 2611, "smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset")
 PERSISTENT_DEFINITION (smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset, 2612, "smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset")
+PERSISTENT_DEFINITION (smExtendLociEdgeToEdgePreset, 2613, "smExtendLociEdgeToEdgePreset")
+PERSISTENT_DEFINITION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset, 2614, "smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset")
+PERSISTENT_DEFINITION (smMaxILSBPForExtendedLocus, 2615, "smMaxILSBPForExtendedLocus")
+PERSISTENT_DEFINITION (smSuppressAlleleAndArtifactCallsRightOfMaxPreset, 2616, "smSuppressAlleleAndArtifactCallsRightOfMaxPreset")
 
 
 
@@ -14273,6 +14301,246 @@ int smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset* noticeType = new smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smExtendLociEdgeToEdgePreset :: smExtendLociEdgeToEdgePreset () : SmartNotice () {
+
+}
+
+
+smExtendLociEdgeToEdgePreset :: smExtendLociEdgeToEdgePreset (const smExtendLociEdgeToEdgePreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smExtendLociEdgeToEdgePreset :: ~smExtendLociEdgeToEdgePreset () {
+
+}
+
+
+int smExtendLociEdgeToEdgePreset :: GetSubject () const {
+
+	return smExtendLociEdgeToEdgePreset::sSubject;
+}
+
+
+void smExtendLociEdgeToEdgePreset :: SetIndexAndScope (int index, int scope) const {
+
+	smExtendLociEdgeToEdgePreset::sMessageIndex = index;
+	smExtendLociEdgeToEdgePreset::sMessageScope = scope;
+}
+
+
+int smExtendLociEdgeToEdgePreset :: GetMessageIndex () const {
+
+	return smExtendLociEdgeToEdgePreset :: sMessageIndex;
+}
+
+
+int smExtendLociEdgeToEdgePreset :: GetScope () const {
+
+	return smExtendLociEdgeToEdgePreset :: sMessageScope;
+}
+
+
+RGString smExtendLociEdgeToEdgePreset :: GetName () const {
+
+	return smExtendLociEdgeToEdgePreset :: sName;
+}
+
+
+
+int smExtendLociEdgeToEdgePreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smExtendLociEdgeToEdgePreset* noticeType = new smExtendLociEdgeToEdgePreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset () : SmartNotice () {
+
+}
+
+
+smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset (const smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: ~smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset () {
+
+}
+
+
+int smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: GetSubject () const {
+
+	return smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::sSubject;
+}
+
+
+void smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: SetIndexAndScope (int index, int scope) const {
+
+	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::sMessageIndex = index;
+	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset::sMessageScope = scope;
+}
+
+
+int smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: GetMessageIndex () const {
+
+	return smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: sMessageIndex;
+}
+
+
+int smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: GetScope () const {
+
+	return smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: sMessageScope;
+}
+
+
+RGString smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: GetName () const {
+
+	return smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: sName;
+}
+
+
+
+int smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset* noticeType = new smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMaxILSBPForExtendedLocus :: smMaxILSBPForExtendedLocus () : SmartNotice () {
+
+}
+
+
+smMaxILSBPForExtendedLocus :: smMaxILSBPForExtendedLocus (const smMaxILSBPForExtendedLocus& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMaxILSBPForExtendedLocus :: ~smMaxILSBPForExtendedLocus () {
+
+}
+
+
+int smMaxILSBPForExtendedLocus :: GetSubject () const {
+
+	return smMaxILSBPForExtendedLocus::sSubject;
+}
+
+
+void smMaxILSBPForExtendedLocus :: SetIndexAndScope (int index, int scope) const {
+
+	smMaxILSBPForExtendedLocus::sMessageIndex = index;
+	smMaxILSBPForExtendedLocus::sMessageScope = scope;
+}
+
+
+int smMaxILSBPForExtendedLocus :: GetMessageIndex () const {
+
+	return smMaxILSBPForExtendedLocus :: sMessageIndex;
+}
+
+
+int smMaxILSBPForExtendedLocus :: GetScope () const {
+
+	return smMaxILSBPForExtendedLocus :: sMessageScope;
+}
+
+
+RGString smMaxILSBPForExtendedLocus :: GetName () const {
+
+	return smMaxILSBPForExtendedLocus :: sName;
+}
+
+
+
+int smMaxILSBPForExtendedLocus :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMaxILSBPForExtendedLocus* noticeType = new smMaxILSBPForExtendedLocus;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: smSuppressAlleleAndArtifactCallsRightOfMaxPreset () : SmartNotice () {
+
+}
+
+
+smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: smSuppressAlleleAndArtifactCallsRightOfMaxPreset (const smSuppressAlleleAndArtifactCallsRightOfMaxPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: ~smSuppressAlleleAndArtifactCallsRightOfMaxPreset () {
+
+}
+
+
+int smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: GetSubject () const {
+
+	return smSuppressAlleleAndArtifactCallsRightOfMaxPreset::sSubject;
+}
+
+
+void smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smSuppressAlleleAndArtifactCallsRightOfMaxPreset::sMessageIndex = index;
+	smSuppressAlleleAndArtifactCallsRightOfMaxPreset::sMessageScope = scope;
+}
+
+
+int smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: GetMessageIndex () const {
+
+	return smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: sMessageIndex;
+}
+
+
+int smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: GetScope () const {
+
+	return smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: sMessageScope;
+}
+
+
+RGString smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: GetName () const {
+
+	return smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: sName;
+}
+
+
+
+int smSuppressAlleleAndArtifactCallsRightOfMaxPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSuppressAlleleAndArtifactCallsRightOfMaxPreset* noticeType = new smSuppressAlleleAndArtifactCallsRightOfMaxPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

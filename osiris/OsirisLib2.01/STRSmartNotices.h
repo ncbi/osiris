@@ -224,6 +224,10 @@ PERSISTENT_PREDECLARATION (smILSShoulderPeak)
 PERSISTENT_PREDECLARATION (smLadderPeakOutsideCoreLadder)
 PERSISTENT_PREDECLARATION (smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset)
 PERSISTENT_PREDECLARATION (smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset)
+PERSISTENT_PREDECLARATION (smExtendLociEdgeToEdgePreset)
+PERSISTENT_PREDECLARATION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset)
+PERSISTENT_PREDECLARATION (smMaxILSBPForExtendedLocus)
+PERSISTENT_PREDECLARATION (smSuppressAlleleAndArtifactCallsRightOfMaxPreset)
 
 
 
@@ -6171,6 +6175,118 @@ public:
 	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset ();
 	smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset (const smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset& note);
 	virtual ~smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smExtendLociEdgeToEdgePreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smExtendLociEdgeToEdgePreset)
+
+public:
+	smExtendLociEdgeToEdgePreset ();
+	smExtendLociEdgeToEdgePreset (const smExtendLociEdgeToEdgePreset& note);
+	virtual ~smExtendLociEdgeToEdgePreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset)
+
+public:
+	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset ();
+	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset (const smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset& note);
+	virtual ~smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smMaxILSBPForExtendedLocus : public SmartNotice {
+
+PERSISTENT_DECLARATION (smMaxILSBPForExtendedLocus)
+
+public:
+	smMaxILSBPForExtendedLocus ();
+	smMaxILSBPForExtendedLocus (const smMaxILSBPForExtendedLocus& note);
+	virtual ~smMaxILSBPForExtendedLocus ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSuppressAlleleAndArtifactCallsRightOfMaxPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSuppressAlleleAndArtifactCallsRightOfMaxPreset)
+
+public:
+	smSuppressAlleleAndArtifactCallsRightOfMaxPreset ();
+	smSuppressAlleleAndArtifactCallsRightOfMaxPreset (const smSuppressAlleleAndArtifactCallsRightOfMaxPreset& note);
+	virtual ~smSuppressAlleleAndArtifactCallsRightOfMaxPreset ();
 
 	virtual int GetSubject () const;
 

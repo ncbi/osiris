@@ -2496,6 +2496,11 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 
 	//it.Reset ();
 
+	Locus* prevLocus = NULL;
+	Locus* followingLocus;
+	Locus* prevGridLocus;
+	Locus* followingGridLocus;
+
 	while (nextLocus = (Locus*) it ()) {
 
 		gridLocus = grid->FindLocus (mChannel, nextLocus->GetLocusName ());
@@ -2503,7 +2508,23 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 		if (gridLocus == NULL)
 			return -1;  // this should never happen...it means that the channel has a locus that the grid has never heard of, but have to test...
 
-		nextLocus->ExtractExtendedSampleSignalsSM (PreliminaryCurveList, gridLocus, timeMap);
+		if (prevLocus == NULL)
+			prevGridLocus = NULL;
+
+		else
+			prevGridLocus = grid->FindLocus (mChannel, prevLocus->GetLocusName ());
+
+		followingLocus = (Locus*) it ();
+
+		if (followingLocus == NULL)
+			followingGridLocus = NULL;
+
+		else
+			followingGridLocus = grid->FindLocus (mChannel, followingLocus->GetLocusName ());
+
+		nextLocus->ExtractExtendedSampleSignalsSM (PreliminaryCurveList, gridLocus, timeMap, prevGridLocus, followingGridLocus);
+		--it;
+		prevLocus = nextLocus;
 	}
 
 	// Done extracting all signals from list that lie within a locus.  What remains is inside the internal lane standard but outside all loci.  Now remove

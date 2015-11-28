@@ -3722,6 +3722,18 @@ Boolean Locus :: ExtendedLocusContainsID (double id, int& location) {
 }
 
 
+int Locus :: DirectionOfIDFromLocus (double id) {
+
+	if (id < mLink->GetMinGridID ())
+		return -1;
+
+	if (id > mLink->GetMaxGridID ())
+		return 1;
+
+	return 0;
+}
+
+
 double Locus :: GridDistance (double id) {
 
 	if (GridLocusContainsID (id))
