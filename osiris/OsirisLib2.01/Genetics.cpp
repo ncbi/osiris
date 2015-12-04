@@ -706,7 +706,7 @@ Boolean Locus :: IsTimeWithinExtendedLocusSample (double t, int& location) {
 
 	if (mSampleAnalysisMap == NULL) {
 
-		ErrorString << "Attempting to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
+		cout << "Attempting to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
 		return FALSE;
 	}
 
@@ -3669,7 +3669,7 @@ double Locus :: GetBPFromTimeForAnalysis (double time) {
 	if (mSampleAnalysisMap != NULL)
 		return mSampleAnalysisMap->EvaluateWithExtrapolation (time);
 
-	ErrorString << "Attempted to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
+	cout << "Attempted to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
 	return -1.0;
 }
 
@@ -3719,6 +3719,18 @@ Boolean Locus :: ExtendedLocusContainsID (double id, int& location) {
 	}
 
 	return FALSE;
+}
+
+
+int Locus :: DirectionOfTimeFromLocus (double time) {
+
+	if (time < mMinTimeForRoundedCore)
+		return -1;
+
+	if (time > mMaxTimeForRoundedCore)
+		return 1;
+
+	return 0;
 }
 
 
@@ -5653,6 +5665,8 @@ Boolean Locus :: BuildMappings (RGDList& signalList) {
 
 	mMinExtendedLocusTime = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetMinimumBound ());
 	mMaxExtendedLocusTime = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetMaximumBound ());
+	mMinTimeForRoundedCore = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetLocusVector ()[0] - 0.5);
+	mMaxTimeForRoundedCore = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetLocusVector ()[N-1] + 0.5);
 
 	delete[] TimeVector;
 	return TRUE;

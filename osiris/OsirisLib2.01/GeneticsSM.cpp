@@ -4276,7 +4276,7 @@ int Locus :: TestSampleAveragesSM (ChannelData* lsData, DataSignal* testSignal, 
 }
 
 
-Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap) {
+Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap, Locus* prevGridLocus, Locus* followingGridLocus) {
 
 	//
 	//  This is sample stage 1
@@ -4299,6 +4299,34 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	smLocusIsAMEL locusIsAMEL;
 	smLocusIsYLinked locusIsYLinked;
 
+	double bpNext;
+	//double bpPrev;
+	//double bpFollowing;
+	int IntBP;
+	RGString alleleName;
+	Boolean isOffGrid;
+
+	smExtendLociEdgeToEdgePreset extendLociEdgeToEdgePreset;
+	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset allowCoreLocusOverlapsPreset;
+	smMaxILSBPForExtendedLocus maxILSBPForExtendedLocusThreshold;
+
+	bool extendLociEdgeToEdge = false; 
+	
+	if (GetMessageValue (extendLociEdgeToEdgePreset))
+		extendLociEdgeToEdge = true;
+
+	bool allowCoreLocusOverlaps = false;
+	
+	if (GetMessageValue (allowCoreLocusOverlapsPreset))
+		allowCoreLocusOverlaps = true;
+
+	double maxILSBPForLocus = (double)GetThreshold (maxILSBPForExtendedLocusThreshold);
+	bool edgeToEdge = (extendLociEdgeToEdge || allowCoreLocusOverlaps);
+	Boolean inExtendedLocus;
+	bool addSignalToLocus;
+	int neighborLocation;
+	bool noMaxILSBP = (maxILSBPForLocus < 0.0);
+
 	int gridArtifactLevel = gridLocus->GetHighestMessageLevelWithRestrictionSM ();
 
 	if ((gridArtifactLevel > 0) && (gridArtifactLevel <= Notice::GetSeverityTrigger ()))
@@ -4320,92 +4348,285 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	//while (nextSignal = (DataSignal*) locusIterator ())
 	//	nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
 
-	while (nextSignal = (DataSignal*) it()) {
+	// if edgeToEdge is false, execute the following.  Otherwise, execute new code below.
 
-		mean = nextSignal->GetMean ();
-		gridTime = timeMap->EvaluateWithExtrapolation (mean);
+	if (!edgeToEdge) {
 
-		if (gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location)) {
+		while (nextSignal = (DataSignal*) it()) {
 
-			LocusSignalList.Append (nextSignal);
-			mSmartList.Append (nextSignal);
-			nextSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
-			nextSignal->SetLocus ((Locus*)this, -location);
-			haveFoundSignals = true;
+			mean = nextSignal->GetMean ();
+			gridTime = timeMap->EvaluateWithExtrapolation (mean);
+
+			if (gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location)) {
+
+				LocusSignalList.Append (nextSignal);
+				mSmartList.Append (nextSignal);
+				nextSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
+				nextSignal->SetLocus ((Locus*)this, -location);
+				haveFoundSignals = true;
+
+				if (location == 0) {
+
+					nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
+				}
+
+				else if (location < 0) {
+
+					mExtendedLeft.Append (nextSignal);
+					nextSignal->SetPossibleInterlocusAllele (1, true);
+					nextSignal->SetMessageValue (partOfExtendedLocusRight, true);
+				}
+
+				else {
+
+					mExtendedRight.Append (nextSignal);
+					nextSignal->SetPossibleInterlocusAllele (-1, true);
+					nextSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+				}
+
+				prevSignal = nextSignal->GetPreviousLinkedSignal ();
+
+				if (prevSignal != NULL) {
+
+					mean = prevSignal->GetMean ();
+					gridTime = timeMap->EvaluateWithExtrapolation (mean);
+					prevSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
+					prevSignal->SetLocus ((Locus*)this, -location);
+
+					if (location == 0)
+						prevSignal->SetMessageValue (peakInCoreLadderLocus, true);
+
+					else if (location < 0) {
+
+						prevSignal->SetPossibleInterlocusAllele (1, true);
+						prevSignal->SetMessageValue (partOfExtendedLocusRight, true);
+					}
+
+					else {
+
+						prevSignal->SetPossibleInterlocusAllele (-1, true);
+						prevSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+					}
+				}
+
+				followingSignal = nextSignal->GetNextLinkedSignal ();
+
+				if (followingSignal != NULL) {
+
+					mean = followingSignal->GetMean ();
+					gridTime = timeMap->EvaluateWithExtrapolation (mean);
+					followingSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
+					followingSignal->SetLocus ((Locus*)this, -location);
+
+					if (location == 0)
+						followingSignal->SetMessageValue (peakInCoreLadderLocus, true);
+
+					else if (location < 0) {
+
+						followingSignal->SetPossibleInterlocusAllele (1, true);
+						followingSignal->SetMessageValue (partOfExtendedLocusRight, true);
+					}
+
+					else {
+
+						followingSignal->SetPossibleInterlocusAllele (-1, true);
+						followingSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+					}
+				}
+			}
+
+			else if (haveFoundSignals)
+				break;
+		}
+	}
+
+	else {   // In some way, we're doing edge to edge here
+
+		while (nextSignal = (DataSignal*) it()) {
+
+			mean = nextSignal->GetMean ();
+			gridTime = timeMap->EvaluateWithExtrapolation (mean);
+		//	bpNext = (int)gridLocus->GetBPFromTimeForAnalysis (gridTime);
+			addSignalToLocus = false;
+			inExtendedLocus = gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location) && allowCoreLocusOverlaps;
+			location = gridLocus->DirectionOfTimeFromLocus (gridTime);
+
+			//if (allowCoreLocusOverlaps)
+			//	inExtendedLocus = gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location);
+
+			//else
+			//	inExtendedLocus = FALSE;
+
+			//location = gridLocus->DirectionOfIDFromLocus (bpNext);
 
 			if (location == 0) {
 
-	//			it.RemoveCurrentItem ();
-				nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
+				addSignalToLocus = true;
 			}
 
 			else if (location < 0) {
 
-				mExtendedLeft.Append (nextSignal);
-				nextSignal->SetPossibleInterlocusAllele (1, true);
-				nextSignal->SetMessageValue (partOfExtendedLocusRight, true);
-			}
+				if (mLink->AllowsNoExtension ()) {
 
-			else {
+					addSignalToLocus = false;
+					continue;
+				}
 
-				mExtendedRight.Append (nextSignal);
-				nextSignal->SetPossibleInterlocusAllele (-1, true);
-				nextSignal->SetMessageValue (partOfExtendedLocusLeft, true);
-			}
+				bpNext = gridLocus->GetBPFromTimeForAnalysis (gridTime);
+				IntBP = (int) floor (bpNext + 0.5);
+				alleleName = ReconstructAlleleName (IntBP, isOffGrid);
 
-			prevSignal = nextSignal->GetPreviousLinkedSignal ();
+				if (alleleName == "$")
+					addSignalToLocus = false;
 
-			if (prevSignal != NULL) {
+				else if (prevGridLocus == NULL) {
 
-				mean = prevSignal->GetMean ();
-				gridTime = timeMap->EvaluateWithExtrapolation (mean);
-				prevSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
-				prevSignal->SetLocus ((Locus*)this, -location);
-
-				if (location == 0)
-					prevSignal->SetMessageValue (peakInCoreLadderLocus, true);
-
-				else if (location < 0) {
-
-					prevSignal->SetPossibleInterlocusAllele (1, true);
-					prevSignal->SetMessageValue (partOfExtendedLocusRight, true);
+					// Test against minBP for artifacts should be unnecessary.  We shouldn't be
+					// seeing any peaks below minBP
+						
+					addSignalToLocus = true;
 				}
 
 				else {
 
-					prevSignal->SetPossibleInterlocusAllele (-1, true);
-					prevSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+				//	bpPrev = prevGridLocus->GetBPFromTimeForAnalysis (gridTime);
+					neighborLocation = prevGridLocus->DirectionOfTimeFromLocus (gridTime);
+				//	prevGridLocus->IsTimeWithinExtendedLocusSample (gridTime, neighborLocation);
+
+					if (neighborLocation > 0)
+						addSignalToLocus = true;
+
+					else if ((neighborLocation == 0) && inExtendedLocus)
+						addSignalToLocus = true;
+
+					else
+						addSignalToLocus = false;
 				}
 			}
 
-			followingSignal = nextSignal->GetNextLinkedSignal ();
+			else { // it's to the right of the locus, i.e., location > 0
 
-			if (followingSignal != NULL) {
+				if (mLink->AllowsNoExtension ()) {
 
-				mean = followingSignal->GetMean ();
-				gridTime = timeMap->EvaluateWithExtrapolation (mean);
-				followingSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
-				followingSignal->SetLocus ((Locus*)this, -location);
+					addSignalToLocus = false;
+					break;
+				}
 
-				if (location == 0)
-					followingSignal->SetMessageValue (peakInCoreLadderLocus, true);
+				if (followingGridLocus == NULL) {
 
-				else if (location < 0) {
+					// Test against maxBP for analysis
 
-					followingSignal->SetPossibleInterlocusAllele (1, true);
-					followingSignal->SetMessageValue (partOfExtendedLocusRight, true);
+					if (noMaxILSBP || (nextSignal->GetApproximateBioID () <= maxILSBPForLocus) || inExtendedLocus)
+						addSignalToLocus = true;
+
+					else {
+
+						addSignalToLocus = false;
+						break;
+					}
 				}
 
 				else {
 
-					followingSignal->SetPossibleInterlocusAllele (-1, true);
-					followingSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+			//		bpFollowing = followingGridLocus->GetBPFromTimeForAnalysis (gridTime);
+					neighborLocation = followingGridLocus->DirectionOfTimeFromLocus (gridTime);
+			//		followingGridLocus->IsTimeWithinExtendedLocusSample (gridTime, neighborLocation);
+
+					if (neighborLocation < 0)
+						addSignalToLocus = true;
+
+					else if ((neighborLocation == 0) && inExtendedLocus)
+						addSignalToLocus = true;
+
+					else {
+
+						addSignalToLocus = false;
+						break;
+					}
 				}
 			}
+
+			if (addSignalToLocus) {
+
+				LocusSignalList.Append (nextSignal);
+				mSmartList.Append (nextSignal);
+				nextSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
+				nextSignal->SetLocus ((Locus*)this, -location);
+				haveFoundSignals = true;
+
+				if (location == 0) {
+
+					nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
+				}
+
+				else if (location < 0) {
+
+					mExtendedLeft.Append (nextSignal);
+					nextSignal->SetPossibleInterlocusAllele (1, true);
+					nextSignal->SetMessageValue (partOfExtendedLocusRight, true);
+				}
+
+				else {
+
+					mExtendedRight.Append (nextSignal);
+					nextSignal->SetPossibleInterlocusAllele (-1, true);
+					nextSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+				}
+
+				prevSignal = nextSignal->GetPreviousLinkedSignal ();
+
+				if (prevSignal != NULL) {
+
+					mean = prevSignal->GetMean ();
+					gridTime = timeMap->EvaluateWithExtrapolation (mean);
+					prevSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
+					prevSignal->SetLocus ((Locus*)this, -location);
+
+					if (location == 0)
+						prevSignal->SetMessageValue (peakInCoreLadderLocus, true);
+
+					else if (location < 0) {
+
+						prevSignal->SetPossibleInterlocusAllele (1, true);
+						prevSignal->SetMessageValue (partOfExtendedLocusRight, true);
+					}
+
+					else {
+
+						prevSignal->SetPossibleInterlocusAllele (-1, true);
+						prevSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+					}
+				}
+
+				followingSignal = nextSignal->GetNextLinkedSignal ();
+
+				if (followingSignal != NULL) {
+
+					mean = followingSignal->GetMean ();
+					gridTime = timeMap->EvaluateWithExtrapolation (mean);
+					followingSignal->SetBioID (gridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
+					followingSignal->SetLocus ((Locus*)this, -location);
+
+					if (location == 0)
+						followingSignal->SetMessageValue (peakInCoreLadderLocus, true);
+
+					else if (location < 0) {
+
+						followingSignal->SetPossibleInterlocusAllele (1, true);
+						followingSignal->SetMessageValue (partOfExtendedLocusRight, true);
+					}
+
+					else {
+
+						followingSignal->SetPossibleInterlocusAllele (-1, true);
+						followingSignal->SetMessageValue (partOfExtendedLocusLeft, true);
+					}
+				}
+			}
+
+			else if (haveFoundSignals)
+				break;
 		}
-
-		else if (haveFoundSignals)
-			break;
 	}
 
 	nextSignal = (DataSignal*) LocusSignalList.First ();
@@ -4440,8 +4661,10 @@ void Locus :: CreateInitializationData (int scope) {
 
 		msg = SmartMessage::GetSmartMessageForScopeAndElement (scope, i);
 
-		if (msg != NULL)
+		if (msg != NULL) {
+
 			InitialMatrix [i] = msg->GetInitialValue ();
+		}
 	}
 }
 

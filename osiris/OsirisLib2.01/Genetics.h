@@ -266,6 +266,7 @@ public:
 	Boolean GridLocusContainsID (double id);
 	Boolean ExtendedLocusContainsID (double id);
 	Boolean ExtendedLocusContainsID (double id, int& location);
+	int DirectionOfTimeFromLocus (double time);
 	double GridDistance (double id);
 	double ExtendedDistance (double id);
 
@@ -420,7 +421,7 @@ public:
 	int TestComplexNeighborsForGridSM (DataSignal* testSignal, RGDList& comparisonSignals);
 	int TestSampleNeighborsSM (DataSignal* previous, DataSignal* testSignal, DataSignal* following);
 	int TestSampleAveragesSM (ChannelData* lsData, DataSignal* testSignal, Boolean testRatio = TRUE);
-	virtual Boolean ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
+	virtual Boolean ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap, Locus* prevGridLocus, Locus* followingGridLocus);
 	int MeasureInterlocusSignalAttributesSM ();
 
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes, RGDList& artifacts);
@@ -524,6 +525,9 @@ protected:
 
 	double MaximumSampleTime;
 	double MinimumSampleTime;
+
+	double mMinTimeForRoundedCore;
+	double mMaxTimeForRoundedCore;
 
 	RGDList NewNoticeList;
 	RGString mTableLink;

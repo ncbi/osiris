@@ -142,7 +142,7 @@ void STRBaseAllele :: SaveAll (RGVOutStream& f) const {
 
 STRBaseLocus :: STRBaseLocus () : BaseLocus (), MinimumBP (-1), MaximumBP (-1), LowerBoundGridLSIndex (-1.0),
 UpperBoundGridLSIndex (-1.0), MinimumGridTime (-1.0), MaximumGridTime (-1.0), CoreRepeatNumber (4),
-LowerBoundGridLSBasePair (-1.0), UpperBoundGridLSBasePair (-1.0) {
+LowerBoundGridLSBasePair (-1.0), UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 
 	//mSampleLocusSpecificStutterThreshold = Locus::GetSampleStutterThreshold ();
 	//mSampleLocusSpecificAdenylationThreshold = Locus::GetSampleAdenylationThreshold ();
@@ -161,7 +161,7 @@ LowerBoundGridLSBasePair (-1.0), UpperBoundGridLSBasePair (-1.0) {
 
 STRBaseLocus :: STRBaseLocus (const RGString& xmlInput) : BaseLocus (xmlInput), LowerBoundGridLSIndex (-1.0),
 UpperBoundGridLSIndex (-1.0), MinimumGridTime (-1.0), MaximumGridTime (-1.0), LowerBoundGridLSBasePair (-1.0), 
-UpperBoundGridLSBasePair (-1.0) {
+UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 
 	mSampleLocusSpecificStutterThreshold = Locus::GetSampleStutterThreshold ();
 	mSampleLocusSpecificPlusStutterThreshold = Locus::GetSamplePlusStutterThreshold ();
@@ -185,13 +185,26 @@ UpperBoundGridLSBasePair (-1.0) {
 	RGBracketStringSearch LowerGridBasePair ("<MinGridLSBasePair>", "</MinGridLSBasePair>", Input);
 	RGBracketStringSearch UpperGridBasePair ("<MaxGridLSBasePair>", "</MaxGridLSBasePair>", Input);
 
+	RGBracketStringSearch NoExtensionSearch ("<NoExtension>", "</NoExtension>", Input);
+
 	RGXMLTagSearch yLinkedSearch ("YLinked", Input);
 	RGXMLTagSearch maxExpectedAllelesSearch ("MaxExpectedAlleles", Input);
 	RGXMLTagSearch minExpectedAllelesSearch ("MinExpectedAlleles", Input);
 	size_t EndPosition;
 	RGString BPString;
+	RGString extString;
 	bool lowerBoundFound = false;
 	bool upperBoundFound = false;
+	RGString trueString ("true");
+
+	if (NoExtensionSearch.FindNextBracketedString (0, EndPosition, extString)) {
+
+		if (extString.FindNextSubstringCaseIndependent (0, trueString, EndPosition))
+			mNoExtension = true;
+
+		else
+			mNoExtension = false;
+	}
 
 	if (!MinToken.FindNextBracketedString (0, EndPosition, BPString)) {
 
@@ -439,6 +452,12 @@ RGString STRBaseLocus :: ReconstructAlleleName (int id, Allele* nearAllele) {
 		}
 	}
 
+	if (nearInt < 1) {
+
+		returnValue = "$";
+		return returnValue;
+	}
+
 	intString.Convert (nearInt, 10);
 
 	if (temp == 0)
@@ -459,6 +478,12 @@ RGString STRBaseLocus :: GetOffGridMessage () const {
 int STRBaseLocus :: GetCoreNumber () const {
 
 	return CoreRepeatNumber;
+}
+
+
+bool STRBaseLocus :: AllowsNoExtension () const {
+
+	return mNoExtension;
 }
 
 

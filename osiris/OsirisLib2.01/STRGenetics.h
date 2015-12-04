@@ -121,6 +121,7 @@ public:
 	virtual double GetLadderPullupFractionalFilter () const { return mLadderLocusSpecificPullupFractionalFilter; }
 
 	virtual int GetCoreNumber () const;
+	virtual bool AllowsNoExtension () const;
 
 	virtual void RestoreAll (RGFile&);
 	virtual void RestoreAll (RGVInStream&);
@@ -160,6 +161,8 @@ protected:
 	double mLadderLocusSpecificAdenylationThreshold;
 	double mLadderLocusSpecificFractionalFilter;
 	double mLadderLocusSpecificPullupFractionalFilter;
+
+	bool mNoExtension;
 };
 
 

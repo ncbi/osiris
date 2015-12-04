@@ -445,6 +445,12 @@ int BaseLocus :: GetCoreNumber () const {
 }
 
 
+bool BaseLocus :: AllowsNoExtension () const {
+
+	return false;
+}
+
+
 BaseAllele* BaseLocus :: GetNewAllele (const RGString& input) {
 
 	return new BaseAllele (input);

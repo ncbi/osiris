@@ -130,14 +130,14 @@ bool Allele :: isEqual (Allele* target) {
 
 
 Locus :: Locus () : mChannel (0), mCoreRepeat (0), mMinLocusBP (0), mMaxLocusBP (0), mMinSearchILSBP (0.0), mMaxSearchILSBP (0.0), mYLinked (false),
-mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0) {
+mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false) {
 
 }
 
 
 Locus :: Locus (const RGString& name, int channel, int coreRepeat) : mName (name), mChannel (channel), mCoreRepeat (coreRepeat), mMinLocusBP (0), mMaxLocusBP (0), 
 	mMinSearchILSBP (0.0), mMaxSearchILSBP (0.0), mYLinked (false), mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), 
-	mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0) {
+	mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false) {
 
 }
 
@@ -219,6 +219,10 @@ void Locus :: OutputTo (RGTextOutput& xmlFile) {
 	xmlFile << "\t\t\t<Locus>\n";
 	xmlFile << "\t\t\t\t<Name>" << mName.GetData () << "</Name>\n";
 	xmlFile << "\t\t\t\t<Channel>" << mChannel << "</Channel>\n";
+
+	if (mDoNotExtend)
+		xmlFile << "\t\t\t\t<NoExtension>true</NoExtension>\n";
+
 	xmlFile << "\t\t\t\t<MinBP>" << mMinLocusBP << "</MinBP>\n";
 	xmlFile << "\t\t\t\t<MaxBP>" << mMaxLocusBP << "</MaxBP>\n";
 	xmlFile << "\t\t\t\t<MinGridLSBasePair>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGridLSBasePair>\n";

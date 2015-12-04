@@ -55,6 +55,7 @@
 			<Locus>
 				<Name>AMEL</Name>
 				<Channel>1</Channel>
+				<NoExtension>true</NoExtension>
 				<MinBP>77</MinBP>
 				<MaxBP>80</MaxBP>
 				<MinGridLSBasePair>75.</MinGridLSBasePair>
@@ -1814,6 +1815,7 @@
 			<Locus>
 				<Name>QS1</Name>
 				<Channel>5</Channel>
+				<NoExtension>true</NoExtension>
 				<MinBP>74</MinBP>
 				<MaxBP>77</MaxBP>
 				<MinGridLSBasePair>71.5</MinGridLSBasePair>
@@ -2180,6 +2182,7 @@
 			<Locus>
 				<Name>QS2</Name>
 				<Channel>5</Channel>
+				<NoExtension>true</NoExtension>
 				<MinBP>431</MinBP>
 				<MaxBP>436</MaxBP>
 				<MinGridLSBasePair>426.5</MinGridLSBasePair>

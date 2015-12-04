@@ -211,5 +211,9 @@ smILSShoulderPeak	1093	2609
 smLadderPeakOutsideCoreLadder	1094	2610
 smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset	1095	2611
 smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset	1096	2612
+smExtendLociEdgeToEdgePreset	1097	2613
+smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset	1098	2614
+smMaxILSBPForExtendedLocus	1099	2615
+
 
 
