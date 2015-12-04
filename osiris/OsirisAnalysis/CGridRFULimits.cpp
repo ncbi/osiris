@@ -68,9 +68,17 @@ void CGridRFULimits::_Build()
   {
     DeleteCols(m_nCOL_CHANNEL_START,nCurrentColCount - m_nCOL_COUNT);
   }
+  InitValidators();
   SetDefaultCellValidator(
     new nwxGridCellUIntRangeValidator(
       mainApp::RFU_MIN_ENTER,mainApp::RFU_MAX_ENTER,true));
+  nwxGridCellUIntRangeValidator *pVreqd =
+    new nwxGridCellUIntRangeValidator(
+      mainApp::RFU_MIN_ENTER,mainApp::RFU_MAX_ENTER,false); // does not allow empty
+  SetCellValidator(pVreqd,ROW_RFU_MIN,m_nCOL_SAMPLE);
+  SetCellValidator(pVreqd,ROW_RFU_MIN,m_nCOL_ILS);
+  SetCellValidator(pVreqd,ROW_RFU_MIN,m_nCOL_LADDER);
+
   EnableDragColSize(false);
   EnableDragRowSize(false);
   SetDefaultCellAlignment(wxALIGN_RIGHT,wxALIGN_CENTRE);

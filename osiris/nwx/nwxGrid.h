@@ -100,7 +100,7 @@ public:
         {
           psError->Empty();
           psError->Alloc(128);
-          *psError = wxS("Value is not with range, [");
+          *psError = wxS("Value is not within range, [");
           psError->Append(nwxString::FormatNumber(m_Lo));
           psError->Append(", ");
           psError->Append(nwxString::FormatNumber(m_Hi));
@@ -205,7 +205,7 @@ public:
   nwxGridCellValidatorCollection() : m_pDefaultValidator(NULL)
   {}
   virtual ~nwxGridCellValidatorCollection();
-
+  void Init();
   nwxGridCellValidator *Find(int nRow, int nCol);
   void SetCellValidator(nwxGridCellValidator *p, int nRow, int nCol);
   void SetDefaultCellValidator(nwxGridCellValidator *p)
@@ -470,6 +470,10 @@ public:
   void SetRowCellValidator(nwxGridCellValidator *p, int nRow)
   {
     m_validators.SetRowCellValidator(p,nRow);
+  }
+  void InitValidators()
+  {
+    m_validators.Init();
   }
   wxColour GetDisabledColour();
   void OnEditorStart(wxGridEvent &e);

@@ -36,7 +36,20 @@
 CGridRFURun::CGridRFURun(CDialogAnalysis *parent,wxWindowID id) :
   CGridRFURunBase(parent,id),
   m_pParent(parent)
-{}
+{
+  SetDefaultCellValidator(
+    new nwxGridCellUIntRangeValidator(
+      mainApp::RFU_MIN_ENTER,mainApp::RFU_MAX_ENTER,true));
+  nwxGridCellUIntRangeValidator *pVreqd =
+    new nwxGridCellUIntRangeValidator(
+      mainApp::RFU_MIN_ENTER,mainApp::RFU_MAX_ENTER,false); // does not allow empty
+
+  SetCellValidator(pVreqd,m_nROW_SAMPLE,COL_ANALYSIS);
+  SetCellValidator(pVreqd,m_nROW_LADDER,COL_ANALYSIS);
+  SetCellValidator(pVreqd,m_nROW_ILS,COL_ANALYSIS);
+  SetCellValidator(pVreqd,m_nROW_SAMPLE,COL_INTERLOCUS);
+  SetCellValidator(pVreqd,m_nROW_LADDER,COL_INTERLOCUS);
+}
 
 
 bool CGridRFURun::TransferDataFromWindow()
