@@ -164,6 +164,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	
 	Locus* newLocus;
 	int status = 0;
+	RGDList doNotExtend = inputFile.DoNotExtends ();
+	RGString locusName;
 
 	while (true) {
 
@@ -179,6 +181,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			cout << "Duplicate locus with name:  " << newLocus->GetName () << endl;
 			break;
 		}
+
+		locusName = newLocus->GetName ();
+
+		if (doNotExtend.Contains (&locusName))
+			newLocus->SetDoNotExtend ();
 	}
 
 	RGDList ilsList = inputFile.GetILSNameList ();
@@ -200,8 +207,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (!binData.IsValid ())
 		return -100;
-
-	RGDList doNotExtend = inputFile.DoNotExtends ();
 
 	Ladder* binsLadder = binData.AssembleAllLoci (doNotExtend);
 

@@ -529,6 +529,7 @@ int LadderInputFile :: AssignString () {
 
 		newString = new RGString (mStringRight);
 		mDoNotExtends.Append (newString);
+		cout << "Do not extend " << mStringRight.GetData () << endl;
 		status = 0;
 	}
 
