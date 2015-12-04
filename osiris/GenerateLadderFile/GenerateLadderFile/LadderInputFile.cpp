@@ -525,6 +525,13 @@ int LadderInputFile :: AssignString () {
 		}
 	}
 
+	else if (mStringLeft == "DoNotExtend") {
+
+		newString = new RGString (mStringRight);
+		mDoNotExtends.Append (newString);
+		status = 0;
+	}
+
 	else {
 
 		// parse mStringLeft looking for Dye #

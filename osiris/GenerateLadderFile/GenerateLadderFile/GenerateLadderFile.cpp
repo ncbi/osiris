@@ -201,7 +201,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!binData.IsValid ())
 		return -100;
 
-	Ladder* binsLadder = binData.AssembleAllLoci ();
+	RGDList doNotExtend = inputFile.DoNotExtends ();
+
+	Ladder* binsLadder = binData.AssembleAllLoci (doNotExtend);
 
 	if (binsLadder == NULL) {
 

@@ -212,7 +212,7 @@ Locus* Bins :: AssembleLocusFromLineStrings () {
 }
 
 
-Ladder* Bins :: AssembleAllLoci () {
+Ladder* Bins :: AssembleAllLoci (RGDList& doNotExtend) {
 
 	int nLoci;
 	Ladder* newLadder = new Ladder ();
@@ -220,6 +220,7 @@ Ladder* Bins :: AssembleAllLoci () {
 	nLoci = SplitFileIntoLocusStrings ();
 	int i;
 	int status;
+	RGString name;
 
 	if (nLoci <= 0) {
 
@@ -240,6 +241,11 @@ Ladder* Bins :: AssembleAllLoci () {
 			delete newLadder;
 			return NULL;
 		}
+
+		name = nextLocus->GetName ();
+
+		if (doNotExtend.Contains (&name))
+			nextLocus->SetDoNotExtend ();
 	}
 
 	return newLadder;
