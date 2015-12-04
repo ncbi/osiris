@@ -2204,7 +2204,13 @@ bool ParameterServer :: SetAllSmartMessageThresholds () {
 		if (sm != NULL) {
 
 			sm->SetThreshold (threshold);
-//			cout << "Setting threshold for " << name.GetData () << ":  " << threshold << endl;
+
+			if (name == "smSuppressAlleleAndArtifactCallsRightOfMaxPreset") {
+
+				cout << "Setting threshold for " << name.GetData () << ":  " << threshold << endl;
+				cout << "Initial value = " << sm->GetInitialValue () << endl;
+				cout << "Scope = " << sm->GetScope () << endl;
+			}
 		}
 
 		else

@@ -214,7 +214,6 @@ smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset	1096	2612
 smExtendLociEdgeToEdgePreset	1097	2613
 smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset	1098	2614
 smMaxILSBPForExtendedLocus	1099	2615
-smSuppressAlleleAndArtifactCallsRightOfMaxPreset	1100	2616
 
 
 

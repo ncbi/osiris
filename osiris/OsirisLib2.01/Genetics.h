@@ -266,7 +266,7 @@ public:
 	Boolean GridLocusContainsID (double id);
 	Boolean ExtendedLocusContainsID (double id);
 	Boolean ExtendedLocusContainsID (double id, int& location);
-	int DirectionOfIDFromLocus (double id);
+	int DirectionOfTimeFromLocus (double time);
 	double GridDistance (double id);
 	double ExtendedDistance (double id);
 
@@ -525,6 +525,9 @@ protected:
 
 	double MaximumSampleTime;
 	double MinimumSampleTime;
+
+	double mMinTimeForRoundedCore;
+	double mMaxTimeForRoundedCore;
 
 	RGDList NewNoticeList;
 	RGString mTableLink;

@@ -916,8 +916,11 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 	mMarkerSet->ResetLocusList ();
 	Locus* nextLocus;
 
-	while (nextLocus = mMarkerSet->GetNextLocus ())
+	while (nextLocus = mMarkerSet->GetNextLocus ()) {
+
 		mDataChannels [nextLocus->GetLocusChannel ()]->AddLocus (nextLocus);
+		nextLocus->InitializeMessageData ();
+	}
 
 	Progress = 1;
 	return 0;

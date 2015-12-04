@@ -1046,6 +1046,7 @@
 			<Locus>
 				<Name>AMEL</Name>
 				<Channel>3</Channel>
+				<NoExtension>true</NoExtension>
 				<MinBP>106</MinBP>
 				<MaxBP>112</MaxBP>
 				<MinGridLSBasePair>100.0</MinGridLSBasePair>

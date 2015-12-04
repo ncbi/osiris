@@ -2362,7 +2362,7 @@ void STRLadderChannelData :: MakeNonCoreLadderArtifactsNoncritical () {
 		return;
 	}
 
-	cout << "Channel number " << mChannel << endl;
+//	cout << "Channel number " << mChannel << endl;
 
 	targetLocus = (Locus*)mLocusList.First ();
 
@@ -2376,7 +2376,7 @@ void STRLadderChannelData :: MakeNonCoreLadderArtifactsNoncritical () {
 		return;
 
 	lastTime = targetLocus->GetLastTimeForLadderLocus ();
-	cout << "First time = " << firstTime << " and lastTime = " << lastTime << endl;
+//	cout << "First time = " << firstTime << " and lastTime = " << lastTime << endl;
 
 	if ((firstTime == 0.0) || (lastTime == 0.0))
 		return;
@@ -2501,7 +2501,9 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 	Locus* prevGridLocus;
 	Locus* followingGridLocus;
 
-	while (nextLocus = (Locus*) it ()) {
+	nextLocus = (Locus*) it ();
+
+	while (nextLocus != NULL) {
 
 		gridLocus = grid->FindLocus (mChannel, nextLocus->GetLocusName ());
 
@@ -2523,8 +2525,9 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 			followingGridLocus = grid->FindLocus (mChannel, followingLocus->GetLocusName ());
 
 		nextLocus->ExtractExtendedSampleSignalsSM (PreliminaryCurveList, gridLocus, timeMap, prevGridLocus, followingGridLocus);
-		--it;
+
 		prevLocus = nextLocus;
+		nextLocus = followingLocus;
 	}
 
 	// Done extracting all signals from list that lie within a locus.  What remains is inside the internal lane standard but outside all loci.  Now remove

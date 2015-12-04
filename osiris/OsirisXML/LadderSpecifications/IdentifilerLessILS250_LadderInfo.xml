@@ -10,6 +10,7 @@
 				<LSName>ABI-LIZ-LESS250-450</LSName>
 				<LSName>ABI-LIZ-LESS250-400</LSName>
 				<LSName>ABI-LIZ-LESS250-350</LSName>
+				<LSName>ABI-LIZ-LESS250and340-500</LSName>
 				<ChannelNo>5</ChannelNo>
 			</LS>
 			<FileNameSuffix>ID</FileNameSuffix>
@@ -1138,6 +1139,7 @@
 			<Locus>
 				<Name>AMEL</Name>
 				<Channel>4</Channel>
+				<NoExtension>true</NoExtension>
 				<MinBP>103</MinBP>
 				<MaxBP>109</MaxBP>
 				<MinGridLSBasePair>100.0</MinGridLSBasePair>
