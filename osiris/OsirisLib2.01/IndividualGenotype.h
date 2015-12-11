@@ -40,6 +40,7 @@
 #include "rgdlist.h"
 #include "rghashtable.h"
 #include "rgdefs.h"
+#include "SynonymList.h"
 
 #include "CoreBioComponent.h"
 #include "Genetics.h"
@@ -235,6 +236,7 @@ public:
 
 	RGString GetMarkerSetName () const { return mMarkerSetName; }
 
+	bool AddLabPositiveControlStringsToControlLists (SynonymList* controlIDs, SynonymList* posControlIDs);
 	IndividualGenotype* FindGenotypeForFileName (const RGString& fileName);
 	IndividualGenotype* FindGenotypeThatMatchesFileName (const RGString& fileName);
 

@@ -2244,6 +2244,13 @@ bool ParameterServer :: ControlDoesTargetStringContainASynonymCaseIndep (const R
 }
 
 
+bool ParameterServer :: AddLabPositiveControlsToControlStrings (GenotypesForAMarkerSet* genotypes) {
+
+	genotypes->AddLabPositiveControlStringsToControlLists (ControlIDs, PositiveControlIDs);
+	return true;
+}
+
+
 bool ParameterServer :: PosControlDoesTargetStringEqualASynonymCaseIndep (const RGString& target) {
 
 	return PositiveControlIDs->DoesTargetStringEqualASynonymCaseIndep (target);

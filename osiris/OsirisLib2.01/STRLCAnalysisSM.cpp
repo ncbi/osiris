@@ -1061,6 +1061,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	}
 
 	SampleDirectory->RewindDirectory ();
+	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
 
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
@@ -1164,6 +1165,15 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			bioComponent->SetPossibleMixtureIDFalseSM ();
 			bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
 		}
+
+		//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+
+		//	hasPosControl = true;
+		//	bioComponent->SetPositiveControlTrueSM ();
+		//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+		//	bioComponent->SetPossibleMixtureIDFalseSM ();
+		//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+		//}
 
 		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 

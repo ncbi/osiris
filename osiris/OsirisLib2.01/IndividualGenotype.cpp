@@ -663,6 +663,23 @@ bool GenotypesForAMarkerSet :: AddCollection (const RGString& xmlString, const R
 }
 
 
+bool GenotypesForAMarkerSet :: AddLabPositiveControlStringsToControlLists (SynonymList* controlIDs, SynonymList* posControlIDs) {
+
+	RGDListIterator it (mGenotypes);
+	IndividualGenotype* genotype;
+	RGString name;
+
+	while (genotype = (IndividualGenotype*) it ()) {
+
+		name = genotype->GetFileNameSearchCriterion ();
+		controlIDs->AddSynonym (name);
+		posControlIDs->AddSynonym (name);
+	}
+
+	return true;
+}
+
+
 
 IndividualGenotype* GenotypesForAMarkerSet :: FindGenotypeForFileName (const RGString& fileName) {
 
@@ -675,6 +692,8 @@ IndividualGenotype* GenotypesForAMarkerSet :: FindGenotypeForFileName (const RGS
 
 //		name = genotype->GetName ();
 		name = genotype->GetFileNameSearchCriterion ();
+
+//		cout << "Control name = " << name.GetData () << endl;
 
 		if (fileName.FindSubstringCaseIndependent (name, position))
 			return genotype;

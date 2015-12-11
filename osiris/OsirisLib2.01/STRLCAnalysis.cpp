@@ -675,8 +675,15 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 		bioComponent->SetNegativeControlFalse ();
 		bioComponent->SetPositiveControlFalse ();
 
-		if (pServer->ControlDoesTargetStringContainASynonymCaseIndep (FileName)) {
+		if (bioComponent->IsLabPositiveControl (FileName, pGenotypes)) {
 
+			PositiveControlList.Append (bioComponent);
+			bioComponent->SetPositiveControlTrue ();
+		}
+
+		else if (pServer->ControlDoesTargetStringContainASynonymCaseIndep (FileName)) {
+
+		//	if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (FileName)) {
 			if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (FileName)) {
 
 				PositiveControlList.Append (bioComponent);

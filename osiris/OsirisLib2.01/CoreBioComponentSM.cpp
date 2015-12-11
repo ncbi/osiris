@@ -1617,6 +1617,19 @@ int CoreBioComponent :: SignalQualityTestSM () {
 }
 
 
+bool CoreBioComponent :: IsLabPositiveControl (const RGString& name, GenotypesForAMarkerSet* genotypes) {
+
+	IndividualGenotype* genotype;
+
+	genotype = genotypes->FindGenotypeForFileName (name);
+
+	if (genotype == NULL)
+		return false;
+
+	return true;
+}
+
+
 int CoreBioComponent :: TestPositiveControlSM (GenotypesForAMarkerSet* genotypes) {
 
 	//
