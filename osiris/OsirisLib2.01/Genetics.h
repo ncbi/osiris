@@ -111,6 +111,16 @@ struct IdealControlSetInfo {
 };
 
 
+struct ILSNameIndexes {
+
+	ILSNameIndexes (const RGString& name, size_t s, size_t e) { mName = name; mStartIndex = s; mEndIndex = e; }
+
+	RGString mName;
+	size_t mStartIndex;
+	size_t mEndIndex;
+};
+
+
 void SetDifference (RGDList& listA, RGDList& listB, RGDList& AButNotB, RGDList& BButNotA);
 
 
@@ -266,6 +276,7 @@ public:
 	Boolean GridLocusContainsID (double id);
 	Boolean ExtendedLocusContainsID (double id);
 	Boolean ExtendedLocusContainsID (double id, int& location);
+	int DirectionOfTimeFromLocus (double time);
 	double GridDistance (double id);
 	double ExtendedDistance (double id);
 
@@ -420,7 +431,7 @@ public:
 	int TestComplexNeighborsForGridSM (DataSignal* testSignal, RGDList& comparisonSignals);
 	int TestSampleNeighborsSM (DataSignal* previous, DataSignal* testSignal, DataSignal* following);
 	int TestSampleAveragesSM (ChannelData* lsData, DataSignal* testSignal, Boolean testRatio = TRUE);
-	virtual Boolean ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
+	virtual Boolean ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap, Locus* prevGridLocus, Locus* followingGridLocus);
 	int MeasureInterlocusSignalAttributesSM ();
 
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes, RGDList& artifacts);
@@ -525,6 +536,9 @@ protected:
 	double MaximumSampleTime;
 	double MinimumSampleTime;
 
+	double mMinTimeForRoundedCore;
+	double mMaxTimeForRoundedCore;
+
 	RGDList NewNoticeList;
 	RGString mTableLink;
 	RGString SampleString;
@@ -622,6 +636,7 @@ public:
 	Boolean IsValid () const { return Valid; }
 	RGString GetError () const { return Msg; }
 	RGString GetLaneStandardName () const;
+	RGString GetFamilyName () const { return mFamilyName; }
 	int GetNumberOfCharacteristics () const;
 	double GetMinimumCharacteristic () const;
 	double GetMaximumCharacteristic () const;
@@ -629,6 +644,7 @@ public:
 	const double* GetLaneStandardVector () const { return mLaneStandardTimes; }
 
 	void SetLaneStandardName (const RGString& name);
+	void SetFamilyName (const RGString& name) { mFamilyName = name; }
 	int SelectBestSubsetOfCharacteristics (RGDList& curveList, double& correlation);  // returns index of first (from 0) in contiguous list of characteristics
 	int AssignLaneStandardSignals (RGDList& curveList);   // takes first mNumberOfCharacteristics elements
 
@@ -663,6 +679,7 @@ protected:
 	double* mLaneStandardTimes;
 	int mNumberOfCharacteristics;
 	RGString Msg;
+	RGString mFamilyName;
 };
 
 

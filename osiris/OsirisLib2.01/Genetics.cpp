@@ -706,7 +706,7 @@ Boolean Locus :: IsTimeWithinExtendedLocusSample (double t, int& location) {
 
 	if (mSampleAnalysisMap == NULL) {
 
-		ErrorString << "Attempting to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
+		cout << "Attempting to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
 		return FALSE;
 	}
 
@@ -3669,7 +3669,7 @@ double Locus :: GetBPFromTimeForAnalysis (double time) {
 	if (mSampleAnalysisMap != NULL)
 		return mSampleAnalysisMap->EvaluateWithExtrapolation (time);
 
-	ErrorString << "Attempted to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
+	cout << "Attempted to use Sample Analysis Map without initialization for locus named " << mLink->GetLocusName () << "\n";
 	return -1.0;
 }
 
@@ -3719,6 +3719,18 @@ Boolean Locus :: ExtendedLocusContainsID (double id, int& location) {
 	}
 
 	return FALSE;
+}
+
+
+int Locus :: DirectionOfTimeFromLocus (double time) {
+
+	if (time < mMinTimeForRoundedCore)
+		return -1;
+
+	if (time > mMaxTimeForRoundedCore)
+		return 1;
+
+	return 0;
 }
 
 
@@ -5653,6 +5665,8 @@ Boolean Locus :: BuildMappings (RGDList& signalList) {
 
 	mMinExtendedLocusTime = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetMinimumBound ());
 	mMaxExtendedLocusTime = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetMaximumBound ());
+	mMinTimeForRoundedCore = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetLocusVector ()[0] - 0.5);
+	mMaxTimeForRoundedCore = mSampleTimeFromBPMap->EvaluateWithExtrapolation ((double)mLink->GetLocusVector ()[N-1] + 0.5);
 
 	delete[] TimeVector;
 	return TRUE;
@@ -8621,6 +8635,12 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 	RGString TextInput (xmlString);
 	RGBracketStringSearch LaneStandardToken ("<LaneStandard>", "</LaneStandard>", TextInput);
+	RGBracketStringSearch ILSFamilySearch ("<ILS>", "</ILS>", TextInput);
+	RGString ILSString;
+	RGString subString;
+	RGBracketStringSearch SubFamilySearch ("<SubFamily>", "</SubFamily>", ILSString);
+	RGBracketStringSearch ILSNameSearch ("<ILSName>", "</ILSName>", ILSString);
+	RGBracketStringSearch ILSSubFamilyNameSearch ("<SubFamilyName>", "</SubFamilyName>", subString);
 	RGString LaneString;
 	BaseLaneStandard* baseStd;
 	LaneStandard* std;
@@ -8628,6 +8648,57 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 	size_t StartPosition = 0;
 	ErrorString = "";
 	Boolean validity = TRUE;
+	list<ILSNameIndexes*> indices;
+	ILSNameIndexes* nameIndexes;
+	size_t subStart;
+	size_t subEnd;
+	size_t nameEnd;
+	bool foundSubFamily;
+	RGString familyName;
+
+	while (ILSFamilySearch.FindNextBracketedString (StartPosition, EndPosition, ILSString)) {
+
+		SubFamilySearch.ResetSearch ();
+		subStart = 0;
+		foundSubFamily = false;
+		
+		while (SubFamilySearch.FindNextBracketedString (subStart, subEnd, subString)) {
+
+			foundSubFamily = true;
+			ILSSubFamilyNameSearch.ResetSearch ();
+
+			if (!ILSSubFamilyNameSearch.FindNextBracketedString (0, nameEnd, familyName)) {
+
+				validity = FALSE;
+				cout << "Could not find subfamily name" << endl;
+				continue;
+			}
+
+			nameIndexes = new ILSNameIndexes (familyName, subStart + StartPosition, subEnd + StartPosition);
+			indices.push_back (nameIndexes);
+			subStart = subEnd;
+		}
+
+		if (!foundSubFamily) {
+
+			ILSNameSearch.ResetSearch ();
+
+			if (!ILSNameSearch.FindNextBracketedString (StartPosition, nameEnd, familyName)) {
+
+				validity = FALSE;
+				cout << "Could not find ILS name" << endl;
+				continue;
+			}
+
+			nameIndexes = new ILSNameIndexes (familyName, StartPosition, EndPosition);
+			indices.push_back (nameIndexes);
+		}
+
+		StartPosition = EndPosition;
+	}
+
+	StartPosition = 0;
+	nameIndexes = indices.front ();
 
 	while (LaneStandardToken.FindNextBracketedString (StartPosition, EndPosition, LaneString)) {
 
