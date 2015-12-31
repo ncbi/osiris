@@ -815,6 +815,8 @@ public:
 
 	virtual void Write (RGFile& textOutput, const RGString& indent);
 
+	static bool UseILSFamiliesInLadderFile () { return UseILSFamilies; }
+
 protected:
 	RGHashTable MarkerSets;  // contains objects of type PopulationMarkerSet*
 	Boolean Valid;
@@ -824,6 +826,7 @@ protected:
 	RGString TheWholeSheBang;
 	RGString mILSData;
 	RGString mGridData;
+	static bool UseILSFamilies;
 
 	Boolean BuildMarkerSets (const RGString& textInput);
 };

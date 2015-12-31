@@ -91,6 +91,8 @@ bool Locus::DisableStutterFilter = false;
 bool Locus::DisableAdenylationFilter = false;
 bool Locus::CallOnLadderAdenylation = false;
 
+bool PopulationCollection::UseILSFamilies = false;
+
 
 Boolean Locus::TestRatio = TRUE;
 
@@ -8643,6 +8645,8 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 	RGBracketStringSearch ILSNameSearch ("<ILSName>", "</ILSName>", ILSString);
 	RGBracketStringSearch ILSSubFamilyNameSearch ("<SubFamilyName>", "</SubFamilyName>", subString);
 
+	RGString userILSName = BasePopulationMarkerSet::GetUserLaneStandardName ();
+
 	RGString LaneString;
 	BaseLaneStandard* baseStd;
 	LaneStandard* std;
@@ -8732,6 +8736,10 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 				std->SetFamilyName (nameIndexes->mName);
 				cout << "ILS Family Name = " << std->GetFamilyName () << "\n\n\n";
+
+				if (std->GetLaneStandardName () == userILSName)
+					BaseLocus::SetILSFamilyName (std->GetFamilyName ());
+
 				break;
 			}
 
@@ -8956,6 +8964,7 @@ Boolean PopulationCollection :: BuildMarkerSets (const RGString& textInput) {
 
 	RGString TextInput (textInput);
 	RGBracketStringSearch MarkerSetToken ("<Set>", "</Set>", TextInput);
+	RGBracketStringSearch VersionToken ("<Version>", "</Version>", TextInput);
 	RGString SetString;
 	BasePopulationMarkerSet* baseSet;
 	PopulationMarkerSet* markerSet;
@@ -8965,6 +8974,15 @@ Boolean PopulationCollection :: BuildMarkerSets (const RGString& textInput) {
 	Boolean validity = TRUE;
 	RGString LSName;
 	LaneStandard* ls;
+	double v;
+
+	if (VersionToken.FindNextBracketedString (0, EndPosition, SetString)) {
+
+		v = SetString.ConvertToDouble ();
+
+		if ((v > 2.69) && (v < 2.71))
+			UseILSFamilies = true;
+	}
 
 	while (MarkerSetToken.FindNextBracketedString (StartPosition, EndPosition, SetString)) {
 

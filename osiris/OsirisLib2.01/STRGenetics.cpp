@@ -196,6 +196,9 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 	bool lowerBoundFound = false;
 	bool upperBoundFound = false;
 	RGString trueString ("true");
+	RGString familyName = BaseLocus::GetILSFamilyName ();
+//	cout << "Current Family Name = " << familyName.GetData () << endl;  // This was a test to make sure the family name is known at this point.  Test succeeded 12/31/2015.
+	bool useILSFamilies = PopulationCollection::UseILSFamiliesInLadderFile ();  // if true, use families; otherwise, use the old way.
 
 	if (NoExtensionSearch.FindNextBracketedString (0, EndPosition, extString)) {
 
@@ -237,6 +240,8 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 		UpperBoundGridLSIndex = BPString.ConvertToDouble ();
 		upperBoundFound = true;
 	}
+
+	// test for ladder with ILS Family names here and, if found, use family name instead of the following four if's *******
 
 	if (LowerGridBasePair.FindNextBracketedString (0, EndPosition, BPString)) {
 
@@ -301,6 +306,58 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 
 STRBaseLocus :: ~STRBaseLocus () {
 
+}
+
+
+bool STRBaseLocus :: GetLadderSearchRegion (size_t& startIndex, RGString& input, const RGString& familyName) {
+
+	RGBracketStringSearch searchRegionsSearch ("<SearchRegions>", "</SearchRegions>", input);
+	RGString searchRegion;
+	RGString searchDetails;
+	RGBracketStringSearch individualRegionsSearch ("<Regions>", "</Regions>", searchRegion);
+	RGBracketStringSearch familyNameSearch ("<ILSName>", "</ILSName>", searchDetails);
+	RGBracketStringSearch minILSGridSearch ("<MinGrid>", "</MinGrid>", searchDetails);
+	RGBracketStringSearch maxILSGridSearch ("<MaxGrid>", "</MaxGrid>", searchDetails);
+	size_t start = startIndex;
+	size_t end;
+	size_t individualEnd;
+	bool foundData = false;
+	RGString searchName;
+	RGString number;
+
+	if (!searchRegionsSearch.FindNextBracketedString (start, end, searchRegion))
+		return false;
+
+	startIndex = end;
+	individualRegionsSearch.ResetSearch ();
+	start = 0;
+
+	while (individualRegionsSearch.FindNextBracketedString (start, end, searchDetails)) {
+
+		familyNameSearch.ResetSearch ();
+
+		if (!familyNameSearch.FindNextBracketedString (0, individualEnd, searchName))
+			return false;
+
+		if (searchName == familyName) {
+
+			minILSGridSearch.ResetSearch ();
+			maxILSGridSearch.ResetSearch ();
+
+			if (!minILSGridSearch.FindNextBracketedString (0, individualEnd, number))
+				return false;
+
+			LowerBoundGridLSBasePair = number.ConvertToDouble ();
+
+			if (!maxILSGridSearch.FindNextBracketedString (0, individualEnd, number))
+				return false;
+
+			UpperBoundGridLSBasePair = number.ConvertToDouble ();
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
