@@ -111,6 +111,11 @@ struct IdealControlSetInfo {
 };
 
 
+struct ILSNameIndexes {
+
+};
+
+
 void SetDifference (RGDList& listA, RGDList& listB, RGDList& AButNotB, RGDList& BButNotA);
 
 

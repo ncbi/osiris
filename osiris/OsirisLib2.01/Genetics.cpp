@@ -8635,6 +8635,10 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 	RGString TextInput (xmlString);
 	RGBracketStringSearch LaneStandardToken ("<LaneStandard>", "</LaneStandard>", TextInput);
+	RGBracketStringSearch ILSFamilySearch ("<ILS>", "</ILS>", TextInput);
+	RGString ILSString;
+	RGBracketStringSearch SubFamilySearch ("<SubFamily>", "</SubFamily>", ILSString);
+	RGBracketStringSearch ILSNameSearch ("<ILSName>", "</ILSName>", ILSString);
 	RGString LaneString;
 	BaseLaneStandard* baseStd;
 	LaneStandard* std;
