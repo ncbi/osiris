@@ -98,6 +98,8 @@ public:
 	void SetMinSearhILSBP (double min) { mMinSearchILSBP = min; }
 	void SetMaxSearhILSBP (double max) { mMaxSearchILSBP = max; }
 
+	void SetDoNotExtend () { mDoNotExtend = true; }
+
 	RGString GetName () const { return mName; }
 
 	bool isEqual (Locus* locus);
@@ -125,6 +127,7 @@ protected:
 	bool mIsMerged;
 	double mOriginalMinSearchILSBP;
 	double mOriginalMaxSearchILSBP;
+	bool mDoNotExtend;
 };
 
 

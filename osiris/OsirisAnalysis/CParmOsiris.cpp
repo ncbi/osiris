@@ -83,6 +83,8 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_nMinLadderInterlocusRFU);
   CP(m_nSampleDetectionThreshold);
   CP(m_sAnalysisOverride);
+  CP(m_anChannelRFU);
+  CP(m_anChannelDetection);
   CP(m_bTimeStampSubDir);
   CP(m_bDataAnalyzed);
 
@@ -184,6 +186,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nMinLadderInterlocusRFU)
   CP(m_nSampleDetectionThreshold)
   CP(m_sAnalysisOverride)
+  CP(m_anChannelRFU)
+  CP(m_anChannelDetection)
   CP(m_bTimeStampSubDir)
   CP(m_bDataAnalyzed)
 
@@ -294,6 +298,8 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterInt("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
   RegisterInt("minRFUsampleDetection", &m_nSampleDetectionThreshold);
   RegisterWxString("AnalysisOverride", &m_sAnalysisOverride);
+  RegisterIntVector("ChannelRFU", &m_anChannelRFU);
+  RegisterIntVector("ChannelDetection", &m_anChannelDetection);
   RegisterBool("TimeStampSubDir", &m_bTimeStampSubDir);
   RegisterBool("DataAnalyzed", &m_bDataAnalyzed);
 
@@ -406,6 +412,10 @@ void CParmOsiris::SetDefaults()
   m_nMinLadderInterlocusRFU = -1;
   m_nSampleDetectionThreshold = -1;
   m_sAnalysisOverride.Empty();
+  m_anChannelRFU.clear();
+  m_anChannelRFU.push_back(-1);
+  m_anChannelDetection.clear();
+  m_anChannelDetection.push_back(-1);
   m_bTimeStampSubDir = false;
   m_bDataAnalyzed = false;
 

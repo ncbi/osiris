@@ -57,7 +57,17 @@ public:
     bool bAllowAmel,
     bool bSetError = false);
   static void SetReadOnly(wxGrid *pGrid,bool b);
-
+  static void FORMAT_CHANNEL_DYE(wxString *ps, unsigned int nChannel, const wxChar * psDye)
+  {
+    if((psDye != NULL) && *psDye)
+    {
+      ps->Printf("%u - %ls",nChannel,psDye);
+    }
+    else
+    {
+      ps->Printf("Channel %u",nChannel);
+    }
+  }
 };
 
 #endif

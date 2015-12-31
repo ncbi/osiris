@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.58</VersionNumber>
-	<BuildTime>10 28 2015 03:36 PM</BuildTime>
+	<VersionNumber>6.61</VersionNumber>
+	<BuildTime>12 04 2015 12:09 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5852,6 +5852,90 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerExtendedLocusOptionsBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smExtendedLocusOptionsHeader</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Extended Locus Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Extended Locus Options</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smExtendLociEdgeToEdgePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Extend Loci To Neighboring Locus</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Extend Loci To Neighboring Locus</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Allow Specified Core Locus Overlaps To Override Above</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Allow Specified Core Locus Overlaps To Override Above</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMaxILSBPForExtendedLocus</Name>
+			<MessageType>count</MessageType>
+			<Description>Max ILS BP for Extended Locus</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>600</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>        Max ILS-BP For Extended Locus</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Max ILS-BP For Extended Locus</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
 	</MessageDeclarations>
 	<TestUnitsSampleLevel>
 		<ConditionalTestUnit>
@@ -5870,6 +5954,9 @@
 					<Scope>2</Scope>
 					<MeasuredMessages>
 						<Name>smResidualDisplacementThreshold</Name>
+						<Name>smExtendLociEdgeToEdgePreset</Name>
+						<Name>smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset</Name>
+						<Name>smMaxILSBPForExtendedLocus</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

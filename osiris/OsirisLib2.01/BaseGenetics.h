@@ -153,6 +153,7 @@ public:
 	virtual double GetMinGridID () const;
 	virtual double GetMaxGridID () const;
 	virtual int GetCoreNumber () const;
+	virtual bool AllowsNoExtension () const;
 
 	virtual void SetSampleStutterThreshold (double limit) { }
 	virtual void SetSamplePlusStutterThreshold (double limit) { }
@@ -212,7 +213,7 @@ public:
 	static void CreateInitializationData (int scope);
 	static void InitializeMessageMatrix (bool* matrix, int size);
 	static void ClearInitializationMatrix () { delete[] InitialMatrix; InitialMatrix = NULL; }
-	static int GetScope () { return 5; }
+	static int GetScope () { return 2; }
 
 	//***********************************************************************************************************************************************************
 

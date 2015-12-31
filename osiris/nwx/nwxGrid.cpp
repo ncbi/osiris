@@ -54,7 +54,16 @@ DEFINE_EVENT_TYPE(wxEVT_GRID_START_EDIT)
 
 nwxGridCellValidatorCollection::~nwxGridCellValidatorCollection()
 {
+  Init();
+}
+void nwxGridCellValidatorCollection::Init()
+{
   setptr<nwxGridCellValidator>::cleanup(&m_setValidator);
+  m_mapCellValidator.clear();
+  m_mapRowValidator.clear();
+  m_mapColValidator.clear();
+  m_pDefaultValidator = NULL;
+
 }
 nwxGridCellValidator *nwxGridCellValidatorCollection::_FindCell(
   int nRow, int nCol)

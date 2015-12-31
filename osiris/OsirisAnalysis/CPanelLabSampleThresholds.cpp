@@ -324,117 +324,7 @@ void CGridSampleLimits::SetAllReadOnly(bool bReadOnly)
   }
 }
 */
-//***************************                     CGridRFULimits
 
-CGridRFULimits::CGridRFULimits(wxWindow *parent, wxWindowID id) :
-  nwxGrid(parent,id), m_pData(NULL)
-{
-  int i;
-  int j;
-  CreateGrid(ROW_COUNT,COL_COUNT);
-  SetDefaultCellValidator(
-    new nwxGridCellUIntRangeValidator(
-      mainApp::RFU_MIN_ENTER,mainApp::RFU_MAX_ENTER,true));
-  EnableDragColSize(false);
-  EnableDragRowSize(false);
-  SetDefaultCellAlignment(wxALIGN_RIGHT,wxALIGN_CENTRE);
-  for(i = 0; i < ROW_COUNT; i++)
-  {
-    for(j = 0; j < COL_COUNT; j++)
-    {
-      SetCellValue(i,j,"00000000"); // used for size
-      if(_DisabledCell(i,j))
-      {
-        SetCellBackgroundColour(i,j,GetGridLineColour());
-      }
-    }
-  }
-  SetDefaultEditor(new wxGridCellFloatEditor(1,0));
-  SetColLabelValue(COL_SAMPLE,"Sample");
-  SetColLabelValue(COL_LADDER,"Ladder");
-  SetColLabelValue(COL_ILS,"   ILS   ");
-  SetRowLabelValue(ROW_RFU_MIN,"Analysis Threshold (RFU)");
-  SetRowLabelValue(ROW_RFU_INTERLOCUS,"Min. Interlocus RFU");
-  SetRowLabelValue(ROW_RFU_MAX,"Max. RFU");
-  SetRowLabelValue(ROW_DETECTION,"Detection Threshold (RFU)");
-  SetRowLabelAlignment(wxALIGN_LEFT, wxALIGN_CENTRE);
-  SetMargins(0,0);
-  nwxGrid::UpdateLabelSizes(this);
-  AutoSize();
-  _DisableUnused();
-}
-void CGridRFULimits::SetData(CLabThresholds *pData)
-{
-  m_pData = pData;
-  m_apRFU[COL_SAMPLE] = pData->GetRFUsample();
-  m_apRFU[COL_LADDER] = pData->GetRFUladder();
-  m_apRFU[COL_ILS] = pData->GetRFUls();
-}
-
-void CGridRFULimits::SetAllReadOnly(bool bReadOnly) 
-{
-  nwxGrid::SetAllReadOnly(this,bReadOnly);
-  if(!bReadOnly)
-  {
-    _DisableUnused();
-  }
-}
-void CGridRFULimits::_SetCellIntValue(int nRow, int nCol, int nValue)
-{
-  if(_DisabledCell(nRow,nCol) || (nValue == -1))
-  {
-    SetCellValue(nRow,nCol,"");
-  }
-  else
-  {
-    SetCellValue(nRow,nCol,nwxString::FormatNumber(nValue));
-  }
-}
-bool CGridRFULimits::TransferDataToWindow()
-{
-  bool bRtn = (m_pData != NULL);
-  if(bRtn)
-  {
-    CLabRFU *pRFU;
-    for(int nCol = 0; nCol < COL_COUNT; ++nCol)
-    {
-      pRFU = m_apRFU[nCol];
-      _SetCellIntValue(ROW_RFU_MIN,       nCol,pRFU->GetMinRFU());
-      _SetCellIntValue(ROW_RFU_INTERLOCUS,nCol,pRFU->GetMinRFUinterlocus());
-      _SetCellIntValue(ROW_RFU_MAX,       nCol,pRFU->GetMaxRFU());
-      _SetCellIntValue(ROW_DETECTION,     nCol,pRFU->GetMinDetection());
-    }
-  }
-  return bRtn;
-}
-int CGridRFULimits::_GetCellIntValue(int nRow, int nCol)
-{
-  wxString s = GetCellValue(nRow,nCol);
-  int nRtn = 
-    s.IsEmpty()
-    ? -1
-    : atoi(s.utf8_str());
-  return nRtn;
-}
-bool CGridRFULimits::TransferDataFromWindow()
-{
-  bool bRtn = (m_pData != NULL);
-  if(bRtn)
-  {
-    CLabRFU *pRFU;
-    for(int nCol = 0; nCol < COL_COUNT; ++nCol)
-    {
-      pRFU = m_apRFU[nCol];
-      pRFU->SetMinRFU(
-        _GetCellIntValue(ROW_RFU_MIN, nCol));
-      pRFU->SetMinRFUinterlocus(
-        _GetCellIntValue(ROW_RFU_INTERLOCUS,nCol));
-      pRFU->SetMaxRFU(_GetCellIntValue(ROW_RFU_MAX,nCol));
-      pRFU->SetMinDetection(_GetCellIntValue(ROW_DETECTION,nCol));
-    }
-  }
-  return bRtn;
-}
 
 //********************************************************************
 //
@@ -445,44 +335,22 @@ CPanelLabSampleThresholds::CPanelLabSampleThresholds(
     nwxPanel(parent,id),
     m_pData(NULL)
 {
-  wxStaticText *pTextRFU = new wxStaticText(
-    this,wxID_ANY,"RFU Limits");
-  m_pGrid = new CGridRFULimits(this,wxID_ANY);
+  wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);  
+#if 0  
   wxStaticText *pTextSample = new wxStaticText(
     this,wxID_ANY,"Sample Limits");
-  mainApp::SetBoldFont(pTextRFU);
   mainApp::SetBoldFont(pTextSample);
-
-  m_pAllowOverride = new wxCheckBox(this,wxID_ANY,"Allow User to Override Min. RFU");
-  m_pGridSample = new CGridSampleLimits(this,wxID_ANY);
-//  wxBoxSizer *pSizerTable = new wxBoxSizer(wxHORIZONTAL);
-  wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
-  pSizer->Add(pTextRFU,0,
-    wxALIGN_LEFT | (wxALL ^ wxBOTTOM),ID_BORDER);
-  pSizer->Add(m_pGrid,0,
-    wxALIGN_LEFT | wxLEFT | wxRIGHT,ID_BORDER);
-  pSizer->Add(m_pAllowOverride,0,
-    wxALIGN_LEFT | wxALL, ID_BORDER);
   pSizer->Add(pTextSample,0,
     wxALIGN_LEFT | (wxALL ^ wxBOTTOM), ID_BORDER);
-  pSizer->Add(m_pGridSample,1,wxEXPAND,0);
-  //pSizerTable->AddStretchSpacer(1);
-//  pSizer->Add(pSizerTable,1,
-//    wxALIGN_LEFT | wxEXPAND | (wxALL ^ wxTOP),ID_BORDER);
+#endif
+  m_pGridSample = new CGridSampleLimits(this,wxID_ANY);
+  pSizer->Add(m_pGridSample,1,wxEXPAND | wxALL,ID_BORDER);
   SetSizer(pSizer);
 }
 
 bool CPanelLabSampleThresholds::TransferDataFromWindow()
 {
   bool bRtn = (m_pData != NULL);
-  if(bRtn)
-  {
-    m_pData->SetAllowMinRFUoverride(m_pAllowOverride->GetValue());
-  }
-  if(!m_pGrid->TransferDataFromWindow())
-  {
-    bRtn = false;
-  }
   if(!m_pGridSample->TransferDataFromWindow())
   {
     bRtn = false;
@@ -492,14 +360,6 @@ bool CPanelLabSampleThresholds::TransferDataFromWindow()
 bool CPanelLabSampleThresholds::TransferDataToWindow()
 {
   bool bRtn = (m_pData != NULL);
-  if(bRtn)
-  {
-    m_pAllowOverride->SetValue(m_pData->GetAllowMinRFUoverride());
-  }
-  if(!m_pGrid->TransferDataToWindow())
-  {
-    bRtn = false;
-  }
   if(!m_pGridSample->TransferDataToWindow())
   {
     bRtn = false;

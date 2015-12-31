@@ -2378,7 +2378,7 @@ void STRLadderChannelData :: MakeNonCoreLadderArtifactsNoncritical () {
 		return;
 	}
 
-	cout << "Channel number " << mChannel << endl;
+//	cout << "Channel number " << mChannel << endl;
 
 	targetLocus = (Locus*)mLocusList.First ();
 
@@ -2392,7 +2392,7 @@ void STRLadderChannelData :: MakeNonCoreLadderArtifactsNoncritical () {
 		return;
 
 	lastTime = targetLocus->GetLastTimeForLadderLocus ();
-	cout << "First time = " << firstTime << " and lastTime = " << lastTime << endl;
+//	cout << "First time = " << firstTime << " and lastTime = " << lastTime << endl;
 
 	if ((firstTime == 0.0) || (lastTime == 0.0))
 		return;
@@ -2512,14 +2512,38 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 
 	//it.Reset ();
 
-	while (nextLocus = (Locus*) it ()) {
+	Locus* prevLocus = NULL;
+	Locus* followingLocus;
+	Locus* prevGridLocus;
+	Locus* followingGridLocus;
+
+	nextLocus = (Locus*) it ();
+
+	while (nextLocus != NULL) {
 
 		gridLocus = grid->FindLocus (mChannel, nextLocus->GetLocusName ());
 
 		if (gridLocus == NULL)
 			return -1;  // this should never happen...it means that the channel has a locus that the grid has never heard of, but have to test...
 
-		nextLocus->ExtractExtendedSampleSignalsSM (PreliminaryCurveList, gridLocus, timeMap);
+		if (prevLocus == NULL)
+			prevGridLocus = NULL;
+
+		else
+			prevGridLocus = grid->FindLocus (mChannel, prevLocus->GetLocusName ());
+
+		followingLocus = (Locus*) it ();
+
+		if (followingLocus == NULL)
+			followingGridLocus = NULL;
+
+		else
+			followingGridLocus = grid->FindLocus (mChannel, followingLocus->GetLocusName ());
+
+		nextLocus->ExtractExtendedSampleSignalsSM (PreliminaryCurveList, gridLocus, timeMap, prevGridLocus, followingGridLocus);
+
+		prevLocus = nextLocus;
+		nextLocus = followingLocus;
 	}
 
 	// Done extracting all signals from list that lie within a locus.  What remains is inside the internal lane standard but outside all loci.  Now remove

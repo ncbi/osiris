@@ -73,6 +73,11 @@ my $VARLIST =
   ["m_nMinLadderInterlocusRFU", "int", "-1", "minRFUladderInterlocus"],
   ["m_nSampleDetectionThreshold", "int", "-1", "minRFUsampleDetection"],
   ["m_sAnalysisOverride","wxString"],
+  
+  ##  this is awful - putting channel RFU and Detection in arrays
+  
+  ["m_anChannelRFU","vector<int>","-1"],
+  ["m_anChannelDetection","vector<int>","-1"],
 
   ["m_bTimeStampSubDir", "bool"],
   ["m_bDataAnalyzed", "bool"],
@@ -823,8 +828,6 @@ public:
 private:
   bool m_bGotten;
 
-
-
 };
 
 class CParmOsirisLite : public CParmOsiris
@@ -847,6 +850,8 @@ protected:
     RegisterInt("minRFUinterlocus", &m_nMinRFU_Interlocus);
     RegisterIntNonZero("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
     RegisterIntNonZero("minRFUsampleDetection", &m_nSampleDetectionThreshold);
+    RegisterIntVector("ChannelRFU", &m_anChannelRFU);
+    RegisterIntVector("ChannelDetection", &m_anChannelDetection);
     RegisterBoolSkipFalse("DataAnalyzed", &m_bDataAnalyzed);
   }
   virtual bool Load()

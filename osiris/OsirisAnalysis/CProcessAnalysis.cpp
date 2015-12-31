@@ -53,13 +53,17 @@ CProcessAnalysis::CProcessAnalysis(
 #define END_LINE sStdin.Append(";\n")
 
 #define APPEND_LINE(name,value) \
-  sStdin.Append(name "="); \
-  sStdin.Append(value); \
+  sStdin.Append(name);          \
+  sStdin.Append(wxS("="));      \
+  sStdin.Append(value);         \
   END_LINE
 
+#define FORMAT_INT(n) \
+  s.Printf("%d",n)
+
 #define APPEND_INT(name,n) \
-  s.Printf("%d",n); \
-  APPEND_LINE(name,s);
+  FORMAT_INT(n);           \
+  APPEND_LINE(name,s)
 
 
   wxString sStdin;
@@ -78,6 +82,44 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_INT("MinLaneStandardRFU",pParm->GetMinRFU_ILS());       //  8
   APPEND_INT("MinLadderRFU",pParm->GetMinRFU_Ladder());          //  9
   APPEND_INT("MinInterlocusRFU",pParm->GetMinRFU_Interlocus());  // 10
+
+  // channel data
+
+  typedef struct 
+  {
+    const vector<int> *pan;
+    const wxChar *ps;
+  } CHANNEL_OVERRIDE;
+  CHANNEL_OVERRIDE chanInfo[] =
+  {
+    { &pParm->GetChannelRFU(), wxS("AnalysisThresholdOverride") },
+    { &pParm->GetChannelDetection(), wxS("DetectionThresholdOverride") }
+  };
+  const size_t nOVR = sizeof(chanInfo) / sizeof(chanInfo[0]);
+  wxString sName;
+  for (size_t ndx = 0; ndx < nOVR; ndx++)
+  {
+    const vector<int> *pan = chanInfo[ndx].pan;
+    const wxChar *ps = chanInfo[ndx].ps;
+    vector<int>::const_iterator itr;
+    int nChannel;
+    for(itr = pan->begin(), nChannel = 1;
+        itr != pan->end();
+        ++itr, ++nChannel)
+    {
+      if((*itr) > 0)
+      {
+        FORMAT_INT(nChannel);
+        sName = ps;
+        sName.Append(wxS(":"));
+        sName.Append(s);
+        APPEND_INT(sName,*itr);
+      }
+    }
+  }
+
+  // end channel data
+
   if(pParm->GetTimeStampSubDir())
   {
     const wxString &s = pDirEntry->GetTimeStamp();

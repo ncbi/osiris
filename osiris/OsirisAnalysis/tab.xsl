@@ -131,11 +131,8 @@
           select="$sample/Locus[LocusName = $locusName]"/>
         <xsl:if test="$locus">
           <xsl:variable name="isAmel">
-            <xsl:variable name="LocusU">
-              <xsl:value-of select="translate($locus,'amel','AMEL')"/>
-            </xsl:variable>
             <xsl:choose>
-              <xsl:when test="contains($LocusU,'AMEL')">
+              <xsl:when test="contains(translate($locusName,'amel','AMEL'),'AMEL')">
                 <xsl:value-of select="1"/>
               </xsl:when>
               <xsl:otherwise>

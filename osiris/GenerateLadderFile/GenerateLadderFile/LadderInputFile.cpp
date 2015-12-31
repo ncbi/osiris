@@ -525,6 +525,14 @@ int LadderInputFile :: AssignString () {
 		}
 	}
 
+	else if (mStringLeft == "DoNotExtend") {
+
+		newString = new RGString (mStringRight);
+		mDoNotExtends.Append (newString);
+		cout << "Do not extend " << mStringRight.GetData () << endl;
+		status = 0;
+	}
+
 	else {
 
 		// parse mStringLeft looking for Dye #

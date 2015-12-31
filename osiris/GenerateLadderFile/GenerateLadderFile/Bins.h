@@ -24,7 +24,7 @@ public:
 	void SplitLocusStringIntoLines (int ithLocus);
 	void SplitLocusLine (RGString& lineString);
 	Locus* AssembleLocusFromLineStrings ();  // uses current values in mLocusLineStrings
-	Ladder* AssembleAllLoci ();
+	Ladder* AssembleAllLoci (RGDList& doNotExtend);
 
 protected:
 	RGString mBinsText;

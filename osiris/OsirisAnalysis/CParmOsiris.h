@@ -169,6 +169,14 @@ public:
   {
     return m_sAnalysisOverride;
   }
+  const vector<int> &GetChannelRFU() const
+  {
+    return m_anChannelRFU;
+  }
+  const vector<int> &GetChannelDetection() const
+  {
+    return m_anChannelDetection;
+  }
   bool GetTimeStampSubDir() const
   {
     return m_bTimeStampSubDir;
@@ -537,6 +545,14 @@ public:
   {
     __SET_VALUE(m_sAnalysisOverride,s);
   }
+  void SetChannelRFU(const vector<int> &an)
+  {
+    __SET_VALUE(m_anChannelRFU,an);
+  }
+  void SetChannelDetection(const vector<int> &an)
+  {
+    __SET_VALUE(m_anChannelDetection,an);
+  }
   void SetTimeStampSubDir(bool b)
   {
     __SET_VALUE(m_bTimeStampSubDir,b);
@@ -899,6 +915,8 @@ protected:
   int m_nMinLadderInterlocusRFU;
   int m_nSampleDetectionThreshold;
   wxString m_sAnalysisOverride;
+  vector<int> m_anChannelRFU;
+  vector<int> m_anChannelDetection;
   bool m_bTimeStampSubDir;
   bool m_bDataAnalyzed;
 
@@ -1058,8 +1076,6 @@ public:
 private:
   bool m_bGotten;
 
-
-
 };
 
 class CParmOsirisLite : public CParmOsiris
@@ -1082,6 +1098,8 @@ protected:
     RegisterInt("minRFUinterlocus", &m_nMinRFU_Interlocus);
     RegisterIntNonZero("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
     RegisterIntNonZero("minRFUsampleDetection", &m_nSampleDetectionThreshold);
+    RegisterIntVector("ChannelRFU", &m_anChannelRFU);
+    RegisterIntVector("ChannelDetection", &m_anChannelDetection);
     RegisterBoolSkipFalse("DataAnalyzed", &m_bDataAnalyzed);
   }
   virtual bool Load()

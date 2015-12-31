@@ -1,5 +1,6 @@
-AC_INIT(../rgstring.cpp)
-AM_INIT_AUTOMAKE([librgtools.a],1.0)
+AC_INIT([librgtools.a],1.0)
+AC_CONFIG_SRCDIR(../rgstring.cpp)
+AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL

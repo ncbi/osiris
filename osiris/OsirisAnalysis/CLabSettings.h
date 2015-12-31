@@ -1237,6 +1237,155 @@ public:
     setptr<CLabLocusThreshold,CLabLocusThresholdLess>::cleanup(this);
   }
 };
+//************************************************* CLabSampleChannelThreshold
+
+class CLabSampleChannelThreshold : public nwxXmlPersist
+{
+private:
+    static const int g_DEFAULT;
+public:
+  CLabSampleChannelThreshold(int nChannel)
+  {
+    RegisterAll(true);
+    m_nChannel = nChannel;
+  }
+  CLabSampleChannelThreshold()
+  {
+    RegisterAll(true);
+  }
+  CLabSampleChannelThreshold(const CLabSampleChannelThreshold &x)
+  {
+    RegisterAll(true);
+    Set(x);
+  }
+  virtual ~CLabSampleChannelThreshold()
+  {}
+  const CLabSampleChannelThreshold &operator = (const CLabSampleChannelThreshold &x)
+  {
+    return Set(x);
+  }
+  const CLabSampleChannelThreshold &Set(const CLabSampleChannelThreshold &x)
+  {
+    LABCP(m_nMin);
+    LABCP(m_nDetection);
+    LABCP(m_nChannel);
+    return *this;
+  }
+  int GetMin() const
+  {
+    return m_nMin;
+  }
+  int GetDetection() const
+  {
+    return m_nDetection;
+  }
+  int GetChannel() const
+  {
+    return m_nChannel;
+  }
+#define SETXX(m_n) { m_n = n > 0 ? n : g_DEFAULT; }
+  void SetMin(int n) SETXX(m_nMin)
+  void SetDetection(int n) SETXX(m_nDetection)
+  void SetChannel(int n) SETXX(m_nChannel)
+#undef SETXX
+#define ISDEFXX(m_n) (m_n == g_DEFAULT)
+  bool IsEmpty() const
+  {
+    return ISDEFXX(m_nChannel) ||
+        ( ISDEFXX(m_nMin) &&
+          ISDEFXX(m_nDetection)
+        );
+  }
+#undef ISDEFXX
+  virtual void Init(void *p);
+  virtual void Init();
+  bool operator == (const CLabSampleChannelThreshold &x) const
+  {
+    bool bRtn =
+      LABEQ(m_nChannel) &&
+      LABEQ(m_nMin) &&
+      LABEQ(m_nDetection);
+    return bRtn;
+  }
+  bool operator < (const CLabSampleChannelThreshold &x) const
+  {
+    return m_nChannel < x.m_nChannel;
+  }
+  virtual bool Skip(void *p);
+  virtual bool Skip();
+protected:
+  virtual void RegisterAll(bool b = false);
+private:
+  int m_nChannel;
+  int m_nMin;
+  int m_nDetection;
+};
+
+class CLabSampleChannelThresholdLess
+{
+public:
+  CLabSampleChannelThresholdLess() {;}
+  bool operator()(
+    const CLabSampleChannelThreshold &x1,
+    const CLabSampleChannelThreshold &x2) const
+  {
+    return x1 < x2;
+  }
+  bool operator()(
+    const CLabSampleChannelThreshold *p1,
+    const CLabSampleChannelThreshold *p2) const
+  {
+    return *p1 < *p2;
+  }
+};
+
+class CLabSampleChannelThresholdSet: public TnwxXmlPersistSet<CLabSampleChannelThreshold,CLabSampleChannelThresholdLess>
+{
+public:
+  CLabSampleChannelThresholdSet(const wxString &s) :
+      TnwxXmlPersistSet<CLabSampleChannelThreshold,CLabSampleChannelThresholdLess>(s)
+  {}
+  CLabSampleChannelThresholdSet() :
+      TnwxXmlPersistSet<CLabSampleChannelThreshold,CLabSampleChannelThresholdLess>()
+  {}
+  virtual ~CLabSampleChannelThresholdSet() 
+  {
+#ifdef __WXDEBUG__
+    int n = 1;
+    n++;
+#endif
+  }
+  const CLabSampleChannelThreshold *Find(int nChannel) const
+  {
+    CLabSampleChannelThreshold x(nChannel);
+    CLabSampleChannelThreshold *pRtn = NULL;
+    CLabSampleChannelThresholdSet::const_iterator itr = Get()->find(&x);
+    if(itr != Get()->end())
+    {
+      pRtn = *itr;
+    }
+    return pRtn;
+  }
+  bool Insert(CLabSampleChannelThreshold *p)
+  {
+    bool bRtn = Find(p->GetChannel()) == NULL;
+    if(bRtn)
+    {
+      Get()->insert(p);
+    }
+    return bRtn;
+  }
+  bool Insert(const CLabSampleChannelThreshold &x)
+  {
+    CLabSampleChannelThreshold *p(new CLabSampleChannelThreshold(x));
+    bool b = Insert(p);
+    if(!b)
+    {
+      delete p;
+    }
+    return b;
+  }
+};
 
 //************************************************************ level 3
 //
@@ -1534,7 +1683,8 @@ public:
   CLabThresholds() : 
     m_rfuLadder(CLabRFU::TYPE_LADDER),
     m_rfuLS(CLabRFU::TYPE_ILS),
-    m_rfuSample(CLabRFU::TYPE_SAMPLE)
+    m_rfuSample(CLabRFU::TYPE_SAMPLE),
+    m_setChannelThresholds(wxS("ChannelThreshold"))
   {
     RegisterAll(true);
   }
@@ -1553,6 +1703,7 @@ public:
   CLabThresholds &operator = (const CLabThresholds &x)
   {
     LABCP(m_sMinBoundHomozygoteUnit);
+    LABCP(m_setChannelThresholds);
     LABCP(m_rfuLadder);
     LABCP(m_rfuLS);
     LABCP(m_rfuSample);
@@ -1687,6 +1838,14 @@ public:
   {
     return &m_rfuLS;
   }
+  CLabSampleChannelThresholdSet *GetChannelThresholds()
+  {
+    return &m_setChannelThresholds;
+  }
+  const CLabSampleChannelThresholdSet *GetChannelThresholds() const
+  {
+    return &m_setChannelThresholds;
+  }
   const CLabRFU *GetRFUsample() const
   {
     return &m_rfuSample;
@@ -1724,11 +1883,11 @@ public:
 protected:
   virtual void RegisterAll(bool = false);
 
-
   CLabRFU m_rfuLadder;
   CLabRFU m_rfuLS;
   CLabRFU m_rfuSample;
   CLabMessageSet m_spMsgs;
+  CLabSampleChannelThresholdSet m_setChannelThresholds;
 
   wxString m_sMinBoundHomozygoteUnit;
   double m_dHeterozygousImbalanceLimit;
@@ -2116,17 +2275,9 @@ public:
   void GetMinRFU(
     int *pnSample, int *pnILS, int *pnLadder, 
     int *pnInterlocus, int *pnLadderInterlocus,
-    int *pnSampleDetection) const
-  {
-    *pnSample = m_thresholds.GetRFUsample()->GetMinRFU();
-    *pnInterlocus = m_thresholds.GetRFUsample()->GetMinRFUinterlocus();
-    *pnSampleDetection = m_thresholds.GetRFUsample()->GetMinDetection();
-
-    *pnLadder = m_thresholds.GetRFUladder()->GetMinRFU();
-    *pnLadderInterlocus = m_thresholds.GetRFUladder()->GetMinRFUinterlocus();
-
-    *pnILS    = m_thresholds.GetRFUls()->GetMinRFU();
-  }
+    int *pnSampleDetection,
+    vector<int> *m_panChannelRFU,
+    vector<int> *m_panChannelDetection) const;
   bool CanOverrideMinRfu() const
   {
     return m_thresholds.GetAllowMinRFUoverride();

@@ -8637,10 +8637,12 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 	RGBracketStringSearch LaneStandardToken ("<LaneStandard>", "</LaneStandard>", TextInput);
 	RGBracketStringSearch ILSFamilySearch ("<ILS>", "</ILS>", TextInput);
 	RGString ILSString;
+
 	RGString subString;
 	RGBracketStringSearch SubFamilySearch ("<SubFamily>", "</SubFamily>", ILSString);
 	RGBracketStringSearch ILSNameSearch ("<ILSName>", "</ILSName>", ILSString);
 	RGBracketStringSearch ILSSubFamilyNameSearch ("<SubFamilyName>", "</SubFamilyName>", subString);
+
 	RGString LaneString;
 	BaseLaneStandard* baseStd;
 	LaneStandard* std;
@@ -8671,11 +8673,14 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 				validity = FALSE;
 				cout << "Could not find subfamily name" << endl;
-				continue;
 			}
 
-			nameIndexes = new ILSNameIndexes (familyName, subStart + StartPosition, subEnd + StartPosition);
-			indices.push_back (nameIndexes);
+			else {
+
+				nameIndexes = new ILSNameIndexes (familyName, subStart + StartPosition, subEnd + StartPosition);
+				indices.push_back (nameIndexes);
+			}
+
 			subStart = subEnd;
 		}
 
@@ -8683,15 +8688,17 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 			ILSNameSearch.ResetSearch ();
 
-			if (!ILSNameSearch.FindNextBracketedString (StartPosition, nameEnd, familyName)) {
+			if (!ILSNameSearch.FindNextBracketedString (0, nameEnd, familyName)) {
 
 				validity = FALSE;
 				cout << "Could not find ILS name" << endl;
-				continue;
 			}
 
-			nameIndexes = new ILSNameIndexes (familyName, StartPosition, EndPosition);
-			indices.push_back (nameIndexes);
+			else {
+
+				nameIndexes = new ILSNameIndexes (familyName, StartPosition, EndPosition);
+				indices.push_back (nameIndexes);
+			}
 		}
 
 		StartPosition = EndPosition;
@@ -8719,9 +8726,34 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 			ErrorString += "Could not parse internal lane standard input";
 		}
 
+		while (true) {
+
+			if (EndPosition < nameIndexes->mEndIndex) {
+
+				std->SetFamilyName (nameIndexes->mName);
+				cout << "ILS Family Name = " << std->GetFamilyName () << "\n\n\n";
+				break;
+			}
+
+			else if (indices.empty ()) {
+
+				validity = FALSE;
+				cout << "Ran out of family names for lane standards" << endl;
+				break;
+			}
+
+			else {
+
+				indices.pop_front ();
+				delete nameIndexes;
+				nameIndexes = indices.front ();
+			}
+		}
+
 		LaneStandards.Insert (std);
 	}
 
+	delete nameIndexes;
 	return validity;
 }
 

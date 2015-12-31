@@ -916,8 +916,11 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 	mMarkerSet->ResetLocusList ();
 	Locus* nextLocus;
 
-	while (nextLocus = mMarkerSet->GetNextLocus ())
+	while (nextLocus = mMarkerSet->GetNextLocus ()) {
+
 		mDataChannels [nextLocus->GetLocusChannel ()]->AddLocus (nextLocus);
+		nextLocus->InitializeMessageData ();
+	}
 
 	Progress = 1;
 	return 0;
@@ -1611,6 +1614,19 @@ int CoreBioComponent :: SampleQualityTestSM (GenotypesForAMarkerSet* genotypes) 
 int CoreBioComponent :: SignalQualityTestSM () {
 
 	return -1;
+}
+
+
+bool CoreBioComponent :: IsLabPositiveControl (const RGString& name, GenotypesForAMarkerSet* genotypes) {
+
+	IndividualGenotype* genotype;
+
+	genotype = genotypes->FindGenotypeForFileName (name);
+
+	if (genotype == NULL)
+		return false;
+
+	return true;
 }
 
 

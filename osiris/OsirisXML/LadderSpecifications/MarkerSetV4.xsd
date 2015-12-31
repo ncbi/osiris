@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<!-- edited with XMLSpy v2015 rel. 3 sp1 (x64) (http://www.altova.com) by XMLSpy 2015 Professional Ed. Release 3, Installed for 13 users (with SMP from 2015-04-16 to 2016-04-16) (NIH) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="KitData">
 		<xs:annotation>
@@ -202,6 +202,7 @@
 										<xs:sequence>
 											<xs:element name="Name" type="xs:string"/>
 											<xs:element name="Channel" type="xs:integer"/>
+											<xs:element name="NoExtension" type="xs:boolean" default="false" minOccurs="0"/>
 											<xs:element name="MinBP" type="xs:int">
 												<xs:annotation>
 													<xs:documentation>Minimum absolute locus BP for definition of extended locus:  defines acceptable extra-ladder alleles</xs:documentation>

@@ -8,6 +8,7 @@
 			<NChannels>6</NChannels>
 			<LS>
 				<LSName>ABI-LIZ-600-60-TO-460</LSName>
+				<LSName>ABI-LIZ-600-80-TO-460</LSName>
 				<LSName>BV-70-500</LSName>
 				<LSName>BV-80-500</LSName>
 				<LSName>SGSizeDY632</LSName>
@@ -432,6 +433,7 @@
 			<Locus>
 				<Name>Yindel</Name>
 				<Channel>2</Channel>
+				<NoExtension>true</NoExtension>
 				<MinBP>81</MinBP>
 				<MaxBP>85</MaxBP>
 				<MinGridLSBasePair>78.5</MinGridLSBasePair>
@@ -456,6 +458,7 @@
 			<Locus>
 				<Name>AMEL</Name>
 				<Channel>2</Channel>
+				<NoExtension>true</NoExtension>
 				<MinBP>103</MinBP>
 				<MaxBP>109</MaxBP>
 				<MinGridLSBasePair>96.0</MinGridLSBasePair>

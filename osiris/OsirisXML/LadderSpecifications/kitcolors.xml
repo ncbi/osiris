@@ -1128,5 +1128,43 @@
       <raw>RGB(144,96,48)</raw>
       <ladder>RGB(191,144,98)</ladder>
     </channel>
+   </kit>
+   <kit>
+	<name>QiagenArgusX12</name>
+    <channel>
+      <nr>1</nr>
+      <dye>6-FAM</dye>
+      <analyzed>RGB(0,0,144)</analyzed>
+      <raw>RGB(113,113,153)</raw>
+      <ladder>RGB(144,144,191)</ladder>
+    </channel>
+    <channel>
+      <nr>2</nr>
+      <dye>BTG</dye>
+      <analyzed>RGB(0,144,0)</analyzed>
+      <raw>RGB(118,150,118)</raw>
+      <ladder>RGB(116,191,116)</ladder>
+    </channel>
+    <channel>
+      <nr>3</nr>
+      <dye>BTY</dye>
+      <analyzed>RGB(125,125,35)</analyzed>
+      <raw>RGB(131,131,100)</raw>
+      <ladder>RGB(165,165,97)</ladder>
+    </channel>
+    <channel>
+      <nr>4</nr>
+      <dye>BTR</dye>
+      <analyzed>RGB(144,0,0)</analyzed>
+      <raw>RGB(144,96,96)</raw>
+      <ladder>RGB(191,120,120)</ladder>
+    </channel>
+    <channel>
+      <nr>5</nr>
+      <dye>BTO</dye>
+      <analyzed>RGB(180,90,0)</analyzed>
+      <raw>RGB(144,96,48)</raw>
+      <ladder>RGB(191,144,98)</ladder>
+    </channel>
   </kit>
 </x>

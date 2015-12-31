@@ -33,57 +33,8 @@
 #include "CPanelLabSettingsUtils.h"
 #include "CXMLmessageBook.h"
 #include "CGridEdit.h"
-#include <wx/checkbox.h>
+#include "CGridRFULimits.h"
 
-//********************************************************************
-//
-//    CGridRFULimits
-//
-
-class CGridRFULimits : public nwxGrid
-{
-public:
-  CGridRFULimits(wxWindow *parent, wxWindowID id);
-  void SetData(CLabThresholds *pData);
-  void SetAllReadOnly(bool bReadOnly = true);
-  virtual bool TransferDataFromWindow();
-  virtual bool TransferDataToWindow();
-private:
-  enum
-  {
-    COL_SAMPLE = 0,
-    COL_LADDER,
-    COL_ILS,
-    COL_COUNT
-  };
-  enum
-  {
-    ROW_RFU_MIN = 0,
-    ROW_RFU_INTERLOCUS,
-    ROW_RFU_MAX,
-    ROW_DETECTION,
-    ROW_COUNT
-  };
-
-  CLabRFU *m_apRFU[COL_COUNT];
-
-  void _SetCellIntValue(int nRow, int nCol, int nValue);
-  int _GetCellIntValue(int nRow, int nCol);
-  bool _DisabledCell(int nRow, int nCol)
-  {
-    bool bRtn = 
-      ((nCol == COL_ILS) && (nRow == ROW_RFU_INTERLOCUS)) ||
-      ((nRow == ROW_DETECTION) && (nCol != COL_SAMPLE));
-    return bRtn;
-  }
-  void _DisableUnused()
-  {
-    SetReadOnly(ROW_RFU_INTERLOCUS,COL_ILS,true);
-    SetReadOnly(ROW_DETECTION,COL_ILS,true);
-    SetReadOnly(ROW_DETECTION,COL_LADDER,true);
-  }
-  CLabThresholds *m_pData;
-};
 
 //********************************************************************
 //
@@ -143,9 +94,7 @@ public:
   CPanelLabSampleThresholds(wxWindow *parent, wxWindowID id);
   virtual void SetReadOnly(bool b = true)
   {
-    m_pGrid->SetAllReadOnly(b);
     m_pGridSample->SetAllReadOnly(b);
-    m_pAllowOverride->Enable(!b);
   }
   virtual bool TransferDataFromWindow();
   virtual bool TransferDataToWindow();
@@ -153,14 +102,11 @@ public:
     const CXMLmessageBook *pBook)
   {
     m_pData = pData;
-    m_pGrid->SetData(pData);
     m_pGridSample->SetData(pData,pBook);
     Layout();
     Refresh();
   }
 private:
-  wxCheckBox *m_pAllowOverride;
-  CGridRFULimits *m_pGrid;
   CGridSampleLimits *m_pGridSample;
   CLabThresholds *m_pData;
 };
