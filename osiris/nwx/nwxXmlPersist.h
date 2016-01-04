@@ -713,7 +713,8 @@ public:
     vector<T> &vList(VCAST(pObj));
     wxString sNode(s);
     wxString str;
-    bool bRtn = false;
+    //bool bRtn = false; //OS-566, always return true
+
     //
     //  change all separators into spaces
     //
@@ -747,16 +748,17 @@ public:
         vList.push_back(FromStringElem(str));
         ps0 = ps1;
         ps0++;
-        bRtn = true;
+        // bRtn = true; //OS-566, always return true
       }
       if(*ps0)
       {
         str = sNode.Mid(ps0 - ps);
         vList.push_back(FromStringElem(str));
-        bRtn = true;
+        //bRtn = true; //OS-566, always return true
       }
     }
-    return bRtn;
+    //return bRtn;
+    return true; //OS-566, always return true
   }
   virtual bool CreateString(wxString *psRtn, void *pObj)
   {
