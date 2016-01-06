@@ -1,0 +1,7 @@
+LadderFileName = PPlexY23_LadderInfo.xml;
+LadderDirectory = F:\New Kits Profiles\PP23WENBins;
+BinsFileName = PowerPlexY23_POP7_Bins_IDX_v.2.0.txt;
+OutputConfigPath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\LadderSpecifications;
+ILSName = PROMEGA-ILS-WEN-500;
+;
+
