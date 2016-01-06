@@ -8980,7 +8980,7 @@ Boolean PopulationCollection :: BuildMarkerSets (const RGString& textInput) {
 
 		v = SetString.ConvertToDouble ();
 
-		if ((v > 2.69) && (v < 2.71))
+		if (v > 2.69)
 			UseILSFamilies = true;
 	}
 
