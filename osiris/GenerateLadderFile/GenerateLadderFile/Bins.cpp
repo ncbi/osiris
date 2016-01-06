@@ -3,6 +3,8 @@
 //
 
 #include "Bins.h"
+#include "rgfile.h"
+#include "rgdlist.h"
 #include <iostream>
 #include <math.h>
 #include <stdio.h>
@@ -250,6 +252,7 @@ Ladder* Bins :: AssembleAllLoci (RGDList& doNotExtend) {
 
 	return newLadder;
 }
+
 
 
 /*

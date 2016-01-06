@@ -33,6 +33,7 @@
 //
 
 #include "LadderInputFile.h"
+#include "LadderStructures.h"
 #include "rgpscalar.h"
 #include "rgindexedlabel.h"
 #include <iostream>
@@ -43,7 +44,8 @@ using namespace std;
 
 
 LadderInputFile :: LadderInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mNumberOfDyes (0), mYLinkedDefault (false),
-mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap (NULL) {
+mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap (NULL), mVersion ("2.0"), 
+mGenerateILSFamilies (false) {
 
 	mInputLinesIterator = new RGDListIterator (mInputLines);
 }
@@ -87,6 +89,25 @@ int LadderInputFile :: ReadAllInputs (const RGString& inputFileName) {
 }
 
 
+int LadderInputFile :: ReadAllInputsAppend (const RGString& inputFileName) {
+
+	if (mDebug) {
+
+		mInputFile = new RGFile (inputFileName, "rt");
+
+		if (!mInputFile->isValid ()) {
+
+			cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
+			delete mInputFile;
+			mInputFile = NULL;
+			return -1;
+		}
+	}
+
+	return ReadAllInputsAppend ();
+}
+
+
 int LadderInputFile :: ReadAllInputs () {
 	
 	// reads either named file or stdin, depending on debug flag
@@ -101,6 +122,56 @@ int LadderInputFile :: ReadAllInputs () {
 		if (status == 0) {
 
 			status = AssignString ();
+
+			if (status != 0) {
+
+				cout << "Assignment of data in input file failed.  Terminating..." << endl;
+				returnStatus = -1;
+				break;
+			}
+		}
+
+		else if (status == 1) {
+
+			// we're done and all was successful!
+
+			returnStatus = 0;
+			break;
+		}
+
+		else {
+
+			cout << "Parsing input file terminated prematurely..." << endl;
+			returnStatus = -1;
+			break;
+		}
+	}
+
+	if (mInputFile != NULL) {
+
+		mInputFile->Close ();
+		delete mInputFile;
+		mInputFile = NULL;
+	}
+
+	return returnStatus;
+}
+
+
+int LadderInputFile :: ReadAllInputsAppend () {
+
+	// reads either named file or stdin, depending on debug flag
+
+	int status;
+	int returnStatus;
+
+	while (true) {
+
+		status = ReadLine ();
+
+		if (status == 0) {
+
+			status = AssignStringAppend ();
 
 			if (status != 0) {
 
@@ -295,6 +366,7 @@ int LadderInputFile :: AssignString () {
 	size_t position;
 	RGString channelString;
 	int i;
+	double dVersion;
 
 	if (mStringLeft == "LadderFileName") {
 
@@ -406,29 +478,29 @@ int LadderInputFile :: AssignString () {
 		newString = new RGString (mStringRight);
 		
 		mILSNames.Append (newString);
+		Locus::SetILSName (mStringRight);
 		status = 0;
 	}
 
-	//else if (mStringLeft == "YLinked") {
+	else if (mStringLeft == "Version") {
 
-	//	locus = SplitUsingColon (mStringRight, value);
+		mVersion = mStringRight;
+		dVersion = mVersion.ConvertToDouble ();
 
-	//	if ((locus.Length () != 0) && (value.Length () != 0)) {
+		if (dVersion > 2.69) {
 
-	//		if (value == "false")
-	//			tempUL = 0;
+			mGenerateILSFamilies = true;
+			Locus::SetGenerateILSFamilies (true);
+		}
 
-	//		else if (value == "true")
-	//			tempUL = 1;
+		else {
 
-	//		else
-	//			tempUL = value.ConvertToUnsignedLong ();
+			mGenerateILSFamilies = false;
+			Locus::SetGenerateILSFamilies (false);
+		}
 
-	//		nextIndexedLabel = new RGIndexedLabel (tempUL, locus, "YLinked");
-	//		mYLinkedDefaultOverrides.Append (nextIndexedLabel);
-	//		status = 0;
-	//	}			
-	//}
+		status = 0;
+	}
 
 	else if (mStringLeft == "YLinkedOverride") {
 
@@ -585,6 +657,57 @@ int LadderInputFile :: AssignString () {
 }
 
 
+int LadderInputFile :: AssignStringAppend () {
+
+	int status = -1;
+	RGString* newString;
+
+	if (mStringLeft == "LadderFileName") {
+
+		SetEmbeddedSlashesToForward (mStringRight);
+		mLadderFileName = mStringRight;
+		status = 0;
+	}
+
+	else if (mStringLeft == "LadderDirectory") {
+
+		SetEmbeddedSlashesToForward (mStringRight);
+		mLadderDirectory = mStringRight;
+		status = 0;
+	}
+
+	else if (mStringLeft == "BinsFileName") {
+
+		SetEmbeddedSlashesToForward (mStringRight);
+		mBinsFileName = mStringRight;
+		status = 0;
+	}
+
+	else if (mStringLeft == "OutputConfigPath") {
+
+		SetEmbeddedSlashesToForward (mStringRight);
+		mOutputConfigDirectoryPath = mStringRight;
+		status = 0;
+	}
+
+	else if (mStringLeft == "ILSName") {
+
+		newString = new RGString (mStringRight);
+		
+		mILSNames.Append (newString);
+		status = 0;
+	}
+
+	if (status == 0)
+		mOutputString += mStringLeft + " = " + mStringRight + "\n";
+
+	else
+		cout << "Problem with assign string:  " << mStringLeft.GetData () << " = " << mStringRight.GetData () << endl;
+
+	return status;
+}
+
+
 void LadderInputFile :: OutputAllData () {
 
 	cout << "Raw input string:" << endl;
@@ -685,8 +808,59 @@ int LadderInputFile :: AssembleInputs () {
 		status = -1;
 	}
 
+	if ((mILSNames.Entries () > 1) && mGenerateILSFamilies) {
+
+		cout << "More than one ILS family name specified" << endl;
+		status = -1;
+	}
+
 	return status;
 }
+
+
+int LadderInputFile :: AssembleInputsAppend () {
+
+	int status = 0;
+	
+	if (mLadderFileName.Length () == 0) {
+
+		cout << "Ladder File Name is unspecified." << endl;
+		status = -1;
+	}
+
+	if (mLadderDirectory.Length () == 0) {
+
+		cout << "Ladder information directory is unspecified." << endl;
+		status = -1;
+	}
+
+	if (mOutputConfigDirectoryPath.Length () == 0) {
+
+		cout << "Output Config Directory Path is unspecified." << endl;
+		status = -1;
+	}
+
+	if (mBinsFileName.Length () == 0) {
+
+		cout << "Bins file name is unspecified." << endl;
+		status = -1;
+	}
+
+	if (mILSNames.Entries () == 0) {
+
+		cout << "No ILS names specified" << endl;
+		status = -1;
+	}
+
+	if ((mILSNames.Entries () > 1) && mGenerateILSFamilies) {
+
+		cout << "More than one ILS family name specified" << endl;
+		status = -1;
+	}
+
+	return status;
+}
+
 
 
 int LadderInputFile :: GetChannelForColorName (const RGString& color) const {
