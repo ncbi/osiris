@@ -330,7 +330,7 @@ bool STRBaseLocus :: GetLadderSearchRegion (size_t& startIndex, RGString& input,
 	RGBracketStringSearch searchRegionsSearch ("<SearchRegions>", "</SearchRegions>", input);
 	RGString searchRegion;
 	RGString searchDetails;
-	RGBracketStringSearch individualRegionsSearch ("<Regions>", "</Regions>", searchRegion);
+	RGBracketStringSearch individualRegionsSearch ("<Region>", "</Region>", searchRegion);
 	RGBracketStringSearch familyNameSearch ("<ILSName>", "</ILSName>", searchDetails);
 	RGBracketStringSearch minILSGridSearch ("<MinGrid>", "</MinGrid>", searchDetails);
 	RGBracketStringSearch maxILSGridSearch ("<MaxGrid>", "</MaxGrid>", searchDetails);
@@ -371,6 +371,8 @@ bool STRBaseLocus :: GetLadderSearchRegion (size_t& startIndex, RGString& input,
 			UpperBoundGridLSBasePair = number.ConvertToDouble ();
 			return true;
 		}
+
+		start = end;
 	}
 
 	return false;
