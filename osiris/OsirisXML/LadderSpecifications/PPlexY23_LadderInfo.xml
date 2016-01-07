@@ -8,7 +8,7 @@
 			<ILS>
 				<LSBases>
 					<ILSName>PROMEGA-ILS-CC5-500-IDX</ILSName>
-					<LSName>PROMEGA-ILS-WEN-500</LSName>
+					<ILSName>PROMEGA-ILS-WEN-500</ILSName>
 				</LSBases>
 				<ChannelNo>5</ChannelNo>
 			</ILS>
@@ -60,8 +60,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>83.23</MinGrid>
-						<MaxGrid>139.53</MaxGrid>
+						<MinGrid>81.16</MinGrid>
+						<MaxGrid>137.48</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -147,8 +147,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>142.22</MinGrid>
-						<MaxGrid>181.33</MaxGrid>
+						<MinGrid>138.14</MinGrid>
+						<MaxGrid>177.27</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -214,8 +214,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>187.67</MinGrid>
-						<MaxGrid>258.</MaxGrid>
+						<MinGrid>185.88</MinGrid>
+						<MaxGrid>256.84</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<CoreRepeatNumber>6</CoreRepeatNumber>
@@ -292,8 +292,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>257.62</MinGrid>
-						<MaxGrid>308.34</MaxGrid>
+						<MinGrid>253.75</MinGrid>
+						<MaxGrid>304.41</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -374,8 +374,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>308.36</MinGrid>
-						<MaxGrid>355.27</MaxGrid>
+						<MinGrid>304.69</MinGrid>
+						<MaxGrid>351.63</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -451,8 +451,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>75.4</MinGrid>
-						<MaxGrid>130.42</MaxGrid>
+						<MinGrid>72.1</MinGrid>
+						<MaxGrid>126.08</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -533,8 +533,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>131.52</MinGrid>
-						<MaxGrid>180.2</MaxGrid>
+						<MinGrid>129.12</MinGrid>
+						<MaxGrid>178.52</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<CoreRepeatNumber>3</CoreRepeatNumber>
@@ -636,8 +636,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>191.55</MinGrid>
-						<MaxGrid>238.16</MaxGrid>
+						<MinGrid>188.66</MinGrid>
+						<MaxGrid>235.48</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -713,8 +713,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>240.48</MinGrid>
-						<MaxGrid>287.02</MaxGrid>
+						<MinGrid>237.94</MinGrid>
+						<MaxGrid>284.81</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -790,8 +790,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>292.42</MinGrid>
-						<MaxGrid>351.99</MaxGrid>
+						<MinGrid>289.56</MinGrid>
+						<MaxGrid>348.55</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<CoreRepeatNumber>5</CoreRepeatNumber>
@@ -868,8 +868,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>350.65</MinGrid>
-						<MaxGrid>384.74</MaxGrid>
+						<MinGrid>348.62</MinGrid>
+						<MaxGrid>382.69</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -930,8 +930,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>81.48</MinGrid>
-						<MaxGrid>149.3</MaxGrid>
+						<MinGrid>80.02</MinGrid>
+						<MaxGrid>148.07</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1032,8 +1032,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>150.68</MinGrid>
-						<MaxGrid>209.67</MaxGrid>
+						<MinGrid>147.26</MinGrid>
+						<MaxGrid>206.21</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1124,8 +1124,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>209.14</MinGrid>
-						<MaxGrid>264.21</MaxGrid>
+						<MinGrid>205.47</MinGrid>
+						<MaxGrid>260.63</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1211,8 +1211,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>263.59</MinGrid>
-						<MaxGrid>314.26</MaxGrid>
+						<MinGrid>260.85</MinGrid>
+						<MaxGrid>311.29</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1293,8 +1293,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>315.21</MinGrid>
-						<MaxGrid>367.29</MaxGrid>
+						<MinGrid>312.79</MinGrid>
+						<MaxGrid>364.97</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<CoreRepeatNumber>3</CoreRepeatNumber>
@@ -1401,8 +1401,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>370.97</MinGrid>
-						<MaxGrid>435.88</MaxGrid>
+						<MinGrid>367.48</MinGrid>
+						<MaxGrid>431.12</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<CoreRepeatNumber>5</CoreRepeatNumber>
@@ -1484,8 +1484,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>99.75</MinGrid>
-						<MaxGrid>152.3</MaxGrid>
+						<MinGrid>97.</MinGrid>
+						<MaxGrid>149.79</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1566,8 +1566,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>158.05</MinGrid>
-						<MaxGrid>217.77</MaxGrid>
+						<MinGrid>156.66</MinGrid>
+						<MaxGrid>217.4</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1663,8 +1663,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>227.93</MinGrid>
-						<MaxGrid>320.37</MaxGrid>
+						<MinGrid>223.39</MinGrid>
+						<MaxGrid>315.18</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1794,8 +1794,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>318.65</MinGrid>
-						<MaxGrid>373.48</MaxGrid>
+						<MinGrid>315.93</MinGrid>
+						<MaxGrid>370.64</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>
@@ -1881,8 +1881,8 @@
 					</Region>
 					<Region>
 						<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-						<MinGrid>377.14</MinGrid>
-						<MaxGrid>423.8</MaxGrid>
+						<MinGrid>374.38</MinGrid>
+						<MaxGrid>420.8</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<YLinked>true</YLinked>

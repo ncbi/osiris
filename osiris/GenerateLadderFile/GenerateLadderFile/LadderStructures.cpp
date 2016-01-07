@@ -591,7 +591,7 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 	endPos = 0;
 	oldLadderString.FindNextSubstring (0, "\t\t\t<Locus>", endPos);
 	RGString insertBase;
-	insertBase << "\t\t\t\t\t<LSName>" << ilsName->GetData () << "</LSName>\n";
+	insertBase << "\t\t\t\t\t<ILSName>" << ilsName->GetData () << "</ILSName>\n";
 	insertBase << "\t\t\t\t</LSBases>";
 	RGString leadString = oldLadderString.ExtractSubstring (0, endPos - 1);
 	//cout << "Lead string = \n" << leadString.GetData () << endl;
