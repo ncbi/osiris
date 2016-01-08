@@ -209,6 +209,7 @@ public:
 
 	bool ControlDoesTargetStringEqualASynonymCaseIndep (const RGString& target);
 	bool ControlDoesTargetStringContainASynonymCaseIndep (const RGString& target);
+	bool AddLabPositiveControlsToControlStrings (GenotypesForAMarkerSet* genotypes);
 
 	bool PosControlDoesTargetStringEqualASynonymCaseIndep (const RGString& target);
 	bool PosControlDoesTargetStringContainASynonymCaseIndep (const RGString& target);

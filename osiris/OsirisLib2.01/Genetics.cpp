@@ -91,6 +91,8 @@ bool Locus::DisableStutterFilter = false;
 bool Locus::DisableAdenylationFilter = false;
 bool Locus::CallOnLadderAdenylation = false;
 
+bool PopulationCollection::UseILSFamilies = false;
+
 
 Boolean Locus::TestRatio = TRUE;
 
@@ -8635,6 +8637,16 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 	RGString TextInput (xmlString);
 	RGBracketStringSearch LaneStandardToken ("<LaneStandard>", "</LaneStandard>", TextInput);
+	RGBracketStringSearch ILSFamilySearch ("<ILS>", "</ILS>", TextInput);
+	RGString ILSString;
+
+	RGString subString;
+	RGBracketStringSearch SubFamilySearch ("<SubFamily>", "</SubFamily>", ILSString);
+	RGBracketStringSearch ILSNameSearch ("<ILSName>", "</ILSName>", ILSString);
+	RGBracketStringSearch ILSSubFamilyNameSearch ("<SubFamilyName>", "</SubFamilyName>", subString);
+
+	RGString userILSName = BasePopulationMarkerSet::GetUserLaneStandardName ();
+
 	RGString LaneString;
 	BaseLaneStandard* baseStd;
 	LaneStandard* std;
@@ -8642,6 +8654,62 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 	size_t StartPosition = 0;
 	ErrorString = "";
 	Boolean validity = TRUE;
+	list<ILSNameIndexes*> indices;
+	ILSNameIndexes* nameIndexes;
+	size_t subStart;
+	size_t subEnd;
+	size_t nameEnd;
+	bool foundSubFamily;
+	RGString familyName;
+
+	while (ILSFamilySearch.FindNextBracketedString (StartPosition, EndPosition, ILSString)) {
+
+		SubFamilySearch.ResetSearch ();
+		subStart = 0;
+		foundSubFamily = false;
+		
+		while (SubFamilySearch.FindNextBracketedString (subStart, subEnd, subString)) {
+
+			foundSubFamily = true;
+			ILSSubFamilyNameSearch.ResetSearch ();
+
+			if (!ILSSubFamilyNameSearch.FindNextBracketedString (0, nameEnd, familyName)) {
+
+				validity = FALSE;
+				cout << "Could not find subfamily name" << endl;
+			}
+
+			else {
+
+				nameIndexes = new ILSNameIndexes (familyName, subStart + StartPosition, subEnd + StartPosition);
+				indices.push_back (nameIndexes);
+			}
+
+			subStart = subEnd;
+		}
+
+		if (!foundSubFamily) {
+
+			ILSNameSearch.ResetSearch ();
+
+			if (!ILSNameSearch.FindNextBracketedString (0, nameEnd, familyName)) {
+
+				validity = FALSE;
+				cout << "Could not find ILS name" << endl;
+			}
+
+			else {
+
+				nameIndexes = new ILSNameIndexes (familyName, StartPosition, EndPosition);
+				indices.push_back (nameIndexes);
+			}
+		}
+
+		StartPosition = EndPosition;
+	}
+
+	StartPosition = 0;
+	nameIndexes = indices.front ();
 
 	while (LaneStandardToken.FindNextBracketedString (StartPosition, EndPosition, LaneString)) {
 
@@ -8662,9 +8730,38 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 			ErrorString += "Could not parse internal lane standard input";
 		}
 
+		while (true) {
+
+			if (EndPosition < nameIndexes->mEndIndex) {
+
+				std->SetFamilyName (nameIndexes->mName);
+				cout << "ILS Family Name = " << std->GetFamilyName () << "\n\n\n";
+
+				if (std->GetLaneStandardName () == userILSName)
+					BaseLocus::SetILSFamilyName (std->GetFamilyName ());
+
+				break;
+			}
+
+			else if (indices.empty ()) {
+
+				validity = FALSE;
+				cout << "Ran out of family names for lane standards" << endl;
+				break;
+			}
+
+			else {
+
+				indices.pop_front ();
+				delete nameIndexes;
+				nameIndexes = indices.front ();
+			}
+		}
+
 		LaneStandards.Insert (std);
 	}
 
+	delete nameIndexes;
 	return validity;
 }
 
@@ -8867,6 +8964,7 @@ Boolean PopulationCollection :: BuildMarkerSets (const RGString& textInput) {
 
 	RGString TextInput (textInput);
 	RGBracketStringSearch MarkerSetToken ("<Set>", "</Set>", TextInput);
+	RGBracketStringSearch VersionToken ("<Version>", "</Version>", TextInput);
 	RGString SetString;
 	BasePopulationMarkerSet* baseSet;
 	PopulationMarkerSet* markerSet;
@@ -8876,6 +8974,15 @@ Boolean PopulationCollection :: BuildMarkerSets (const RGString& textInput) {
 	Boolean validity = TRUE;
 	RGString LSName;
 	LaneStandard* ls;
+	double v;
+
+	if (VersionToken.FindNextBracketedString (0, EndPosition, SetString)) {
+
+		v = SetString.ConvertToDouble ();
+
+		if (v > 2.69)
+			UseILSFamilies = true;
+	}
 
 	while (MarkerSetToken.FindNextBracketedString (StartPosition, EndPosition, SetString)) {
 

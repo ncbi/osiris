@@ -1,7 +1,7 @@
 LadderFileName = PPlexY23_LadderInfo.xml;
 Version = 2.7;
 KitName = PowerPlex Y23;
-LadderDirectory = F:\New Kits Profiles\PromegaBinsAndPanelsForCC5Dye\PPY23\GeneMapper IDX\PowerPlexY23_Panels_Bins_Stutter_GMIDX_v1.2;
+LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\PPY23ConfigFiles\CC5BinsAndPanels;
 NumberOfDyes = 5;
 Dye1 = FL;
 Dye2 = JOE;

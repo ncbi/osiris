@@ -1,6 +1,6 @@
 LadderFileName = Q_Investigator24plex_LadderInfo.xml;
 KitName = QiagenInvestigator24plex;
-LadderDirectory = F:/New Kits Profiles/QiagenInvestigator24plex;
+LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\Qiagen24PlexConfigFiles\StandardBinsAndPanels;
 NumberOfDyes = 6;
 Dye1 = 6-FAM;
 Dye2 = BTG;

@@ -196,6 +196,11 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 	bool lowerBoundFound = false;
 	bool upperBoundFound = false;
 	RGString trueString ("true");
+	RGString familyName = BaseLocus::GetILSFamilyName ();
+//	cout << "Current Family Name = " << familyName.GetData () << endl;  // This was a test to make sure the family name is known at this point.  Test succeeded 12/31/2015.
+	bool useILSFamilies = PopulationCollection::UseILSFamiliesInLadderFile ();  // if true, use families; otherwise, use the old way.
+	bool isValid = true;
+	size_t StartPosition = 0;
 
 	if (NoExtensionSearch.FindNextBracketedString (0, EndPosition, extString)) {
 
@@ -238,28 +243,44 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 		upperBoundFound = true;
 	}
 
-	if (LowerGridBasePair.FindNextBracketedString (0, EndPosition, BPString)) {
+	// test for ladder with ILS Family names here and, if found, use family name instead of the following four if's *******
 
-		LowerBoundGridLSBasePair = BPString.ConvertToDouble ();
-		lowerBoundFound = true;
+	if (useILSFamilies) {
+
+		isValid = GetLadderSearchRegion (StartPosition, Input, familyName);
+
+		if (!isValid) {
+
+			Valid = FALSE;
+			Msg << "Locus named " << LocusName << " could not find family-based search region\n";
+		}
 	}
 
-	if (UpperGridBasePair.FindNextBracketedString (0, EndPosition, BPString)) {
+	else {
 
-		UpperBoundGridLSBasePair = BPString.ConvertToDouble ();
-		upperBoundFound = true;
-	}
+		if (LowerGridBasePair.FindNextBracketedString (0, EndPosition, BPString)) {
 
-	if (!lowerBoundFound) {
+			LowerBoundGridLSBasePair = BPString.ConvertToDouble ();
+			lowerBoundFound = true;
+		}
 
-		Valid = FALSE;
-		Msg << "Locus named " << LocusName << " could not find Minimum Grid Internal Lane Standard token, either index or base pair\n";
-	}
+		if (UpperGridBasePair.FindNextBracketedString (0, EndPosition, BPString)) {
 
-	if (!upperBoundFound) {
+			UpperBoundGridLSBasePair = BPString.ConvertToDouble ();
+			upperBoundFound = true;
+		}
 
-		Valid = FALSE;
-		Msg << "Locus named " << LocusName << " could not find Maximum Grid Internal Lane Standard token, either index or base pair\n";
+		if (!lowerBoundFound) {
+
+			Valid = FALSE;
+			Msg << "Locus named " << LocusName << " could not find Minimum Grid Internal Lane Standard token, either index or base pair\n";
+		}
+
+		if (!upperBoundFound) {
+
+			Valid = FALSE;
+			Msg << "Locus named " << LocusName << " could not find Maximum Grid Internal Lane Standard token, either index or base pair\n";
+		}
 	}
 
 	if (!CoreRepeatSearch.FindNextBracketedString (0, EndPosition, BPString))
@@ -301,6 +322,60 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 
 STRBaseLocus :: ~STRBaseLocus () {
 
+}
+
+
+bool STRBaseLocus :: GetLadderSearchRegion (size_t& startIndex, RGString& input, const RGString& familyName) {
+
+	RGBracketStringSearch searchRegionsSearch ("<SearchRegions>", "</SearchRegions>", input);
+	RGString searchRegion;
+	RGString searchDetails;
+	RGBracketStringSearch individualRegionsSearch ("<Region>", "</Region>", searchRegion);
+	RGBracketStringSearch familyNameSearch ("<ILSName>", "</ILSName>", searchDetails);
+	RGBracketStringSearch minILSGridSearch ("<MinGrid>", "</MinGrid>", searchDetails);
+	RGBracketStringSearch maxILSGridSearch ("<MaxGrid>", "</MaxGrid>", searchDetails);
+	size_t start = startIndex;
+	size_t end;
+	size_t individualEnd;
+	bool foundData = false;
+	RGString searchName;
+	RGString number;
+
+	if (!searchRegionsSearch.FindNextBracketedString (start, end, searchRegion))
+		return false;
+
+	startIndex = end;
+	individualRegionsSearch.ResetSearch ();
+	start = 0;
+
+	while (individualRegionsSearch.FindNextBracketedString (start, end, searchDetails)) {
+
+		familyNameSearch.ResetSearch ();
+
+		if (!familyNameSearch.FindNextBracketedString (0, individualEnd, searchName))
+			return false;
+
+		if (searchName == familyName) {
+
+			minILSGridSearch.ResetSearch ();
+			maxILSGridSearch.ResetSearch ();
+
+			if (!minILSGridSearch.FindNextBracketedString (0, individualEnd, number))
+				return false;
+
+			LowerBoundGridLSBasePair = number.ConvertToDouble ();
+
+			if (!maxILSGridSearch.FindNextBracketedString (0, individualEnd, number))
+				return false;
+
+			UpperBoundGridLSBasePair = number.ConvertToDouble ();
+			return true;
+		}
+
+		start = end;
+	}
+
+	return false;
 }
 
 

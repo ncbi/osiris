@@ -1,6 +1,6 @@
 LadderFileName = YfilerPlus_LadderInfo.xml;
 KitName = Yfiler Plus;
-LadderDirectory = F:\New Kits Profiles\Yfiler Plus\Yfiler Plus Analysis files_v3X;
+LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\YFilerPlusConfigFiles\StandardBinsAndPanels;
 NumberOfDyes = 6;
 Dye1 = 6-FAM;
 Dye2 = VIC;

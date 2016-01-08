@@ -108,6 +108,12 @@ public:
 	void OutputTo (RGTextOutput& xmlFile);
 	int ComputeAllBPs ();
 
+	static void SetGenerateILSFamilies (bool s) { GenerateILSFamilies = s; }
+	static bool GetGenerateILSFamilies () { return GenerateILSFamilies; }
+
+	static void SetILSName (const RGString& name) { ILSName = name; }
+	static RGString GetILSName () { return ILSName; }
+
 protected:
 	RGString mName;
 	int mChannel;
@@ -128,6 +134,9 @@ protected:
 	double mOriginalMinSearchILSBP;
 	double mOriginalMaxSearchILSBP;
 	bool mDoNotExtend;
+
+	static bool GenerateILSFamilies;
+	static RGString ILSName;
 };
 
 
@@ -154,7 +163,10 @@ public:
 
 	void OutputTo (RGTextOutput& xmlFile, LadderInputFile& inputFile);
 	void OutputILSListTo (RGTextOutput& xmlFile);
+	void OutputILSFamilyListTo (RGTextOutput& xmlFile);
 	void OutputChannelMapTo (RGTextOutput& xmlFile, LadderInputFile& inputFile);
+
+	int AmendLadderData (LadderInputFile* inFile, RGString& oldLadderString);
 
 	int GetNumberOfLoci () const;
 
