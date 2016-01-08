@@ -1,0 +1,7 @@
+LadderFileName = PPFusion_LadderInfo.xml;
+LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\PPFusionConfigFiles\WENBins;
+BinsFileName = PowerPlex_Fusion_Bins_IDX_v2.0.txt;
+OutputConfigPath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\LadderSpecifications;
+ILSName = PROMEGA-ILS-WEN-500;
+;
+
