@@ -1,670 +1,670 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<KitData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ILSAndLadderInfo2015.xsd">
-	<Version>2.7</Version>
-	<LaneStandards>
-		<ILS>
-			<ILSName>ABI-ROX-500</ILSName>
-			<DyeName>ROX</DyeName>
-			<LaneStandard>
-			<Name>ABI-ROX500</Name>
-			<DisplayName>75-500</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-ROX450</Name>
-			<DisplayName>75-450</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-ROX400</Name>
-			<DisplayName>75-400</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-ROX350</Name>
-			<DisplayName>75-350</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>ABI-LIZ-500</ILSName>
-		<DyeName>LIZ</DyeName>
-		<SubFamily>
-			<SubFamilyName>ABI-LIZ-500-MID-INTACT</SubFamilyName>
-			<LaneStandard>
-			<Name>ABI-LIZ500</Name>
-			<DisplayName>75-500</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ450</Name>
-			<DisplayName>75-450</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ400</Name>
-			<DisplayName>75-400</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ350</Name>
-			<DisplayName>75-350</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		</SubFamily>
-		<SubFamily>
-			<SubFamilyName>ABI-LIZ-500-MID-OMIT</SubFamilyName>
-			<LaneStandard>
-			<Name>ABI-LIZ-LESS250-500</Name>
-			<DisplayName>75-500 OMIT 250</DisplayName>
-			<Characteristics>75 100 139 150 160 200 300 340 350 400 450 490 500</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>250</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS250-450</Name>
-			<DisplayName>75-450 OMIT 250</DisplayName>
-			<Characteristics>75 100 139 150 160 200 300 340 350 400 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>250</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS250-400</Name>
-			<DisplayName>75-400 OMIT 250</DisplayName>
-			<Characteristics>75 100 139 150 160 200 300 340 350 400</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>250</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS250-350</Name>
-			<DisplayName>75-350 OMIT 250</DisplayName>
-			<Characteristics>75 100 139 150 160 200 300 340 350</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>250</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS340-500</Name>
-			<DisplayName>75-500 OMIT 340</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 350 400 450 490 500</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>340</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS340-450</Name>
-			<DisplayName>75-450 OMIT 340</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 350 400 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>340</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS340-400</Name>
-			<DisplayName>75-400 OMIT 340</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 350 400</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>340</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS250and340-500</Name>
-			<DisplayName>75-500 OMIT 250, 340</DisplayName>
-			<Characteristics>75 100 139 150 160 200 300 350 400 450 490 500</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>250 340</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS250and340-450</Name>
-			<DisplayName>75-450 OMIT 250, 340</DisplayName>
-			<Characteristics>75 100 139 150 160 200 300 350 400 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>250 340</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-LESS250and340-400</Name>
-			<DisplayName>75-400 OMIT 250, 340</DisplayName>
-			<Characteristics>75 100 139 150 160 200 300 350 400</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>250 340</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		</SubFamily>
-	</ILS>
-	<ILS>
-		<ILSName>ABI-LIZ-600</ILSName>
-		<DyeName>LIZ</DyeName>
-		<LaneStandard>
-			<Name>ABI-LIZ-600-60-TO-460</Name>
-			<DisplayName>60-460</DisplayName>
-			<Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460</Characteristics>
-			<RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-600-60-TO-400</Name>
-			<DisplayName>60-400</DisplayName>
-			<Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400</Characteristics>
-			<RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-600-80-TO-460</Name>
-			<DisplayName>80-460</DisplayName>
-			<Characteristics>80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460</Characteristics>
-			<RelativeHeights>M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-600-80-TO-400</Name>
-			<DisplayName>80-400</DisplayName>
-			<Characteristics>80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400</Characteristics>
-			<RelativeHeights>M M MH M M M MH MH MH MH H M MH H MH M M MH M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>ABI-LIZ-1200</ILSName>
-		<DyeName>LIZ</DyeName>
-		<LaneStandard>
-			<Name>ABI-LIZ1200</Name>
-			<DisplayName>40-1200</DisplayName>
-			<Characteristics>40 60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
-			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-60-1200</Name>
-			<DisplayName>60-1200</DisplayName>
-			<Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
-			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-100-1200</Name>
-			<DisplayName>100-1200</DisplayName>
-			<Characteristics>100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
-			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-LIZ-120-1200</Name>
-			<DisplayName>120-1200</DisplayName>
-			<Characteristics>120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
-			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>ABI-GS400HD</ILSName>
-		<DyeName>ROX</DyeName>
-		<LaneStandard>
-			<Name>ABI-GS400HD</Name>
-			<DisplayName>50-400</DisplayName>
-			<Characteristics>50 60 90 100 120 150 160 180 190 200 220 240 260 280 290 300 320 340 360 380 400</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>ABI-GS-500-ROX</ILSName>
-		<DyeName>ROX</DyeName>
-		<LaneStandard>
-			<Name>ABI-GS500ROX</Name>
-			<DisplayName>50-500</DisplayName>
-			<Characteristics>50 75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
-			<RelativeHeights>M MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-GS450ROX</Name>
-			<DisplayName>50-450</DisplayName>
-			<Characteristics>50 75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
-			<RelativeHeights>M MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-GS400ROX</Name>
-			<DisplayName>50-400</DisplayName>
-			<Characteristics>50 75 100 139 150 160 200 250 300 340 350 400</Characteristics>
-			<RelativeHeights>M MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>	
-		<LaneStandard>
-			<Name>ABI-GS75-500ROX</Name>
-			<DisplayName>75-500</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-GS75-450ROX</Name>
-			<DisplayName>75-450</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>ABI-GS75-400ROX</Name>
-			<DisplayName>75-400</DisplayName>
-			<Characteristics>75 100 139 150 160 200 250 300 340 350 400</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>	
-	</ILS>
-	<ILS>
-		<ILSName>BV-500</ILSName>
-		<DyeName>LIZ</DyeName>
-		<LaneStandard>
-			<Name>BV-70-500</Name>
-			<DisplayName>70-500</DisplayName>
-			<Characteristics>70 80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
-			<RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>BV-80-500</Name>
-			<DisplayName>80-500</DisplayName>
-			<Characteristics>80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
-			<RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>PROMEGA-ILS-600</ILSName>
-		<DyeName>CXR</DyeName>
-		<LaneStandard>
-			<Name>Promega-ILS-600</Name>
-			<DisplayName>60-600</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H M H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-550</Name>
-			<DisplayName>60-550</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-500</Name>
-			<DisplayName>60-500</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-475</Name>
-			<DisplayName>60-475</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M M</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-400</Name>
-			<DisplayName>60-400</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-LESS475-600</Name>
-			<DisplayName>60-600 OMIT 475</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500 550 600</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M H M H</RelativeHeights>
-			<Omissions>475</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-LESS475-550</Name>
-			<DisplayName>60-550 OMIT 475</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500 550</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M H M</RelativeHeights>
-			<Omissions>475</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-LESS475-500</Name>
-			<DisplayName>60-500 OMIT 475</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500</Characteristics>
-			<RelativeHeights>M M H M M M M H M M M H M M M H M M H</RelativeHeights>
-			<Omissions>475</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>PROMEGA-ILS-CC5-500-IDX</ILSName>
-		<DyeName>CC5</DyeName>
-		<LaneStandard>
-			<Name>Promega-ILS-CC5-500-IDX</Name>
-			<DisplayName>60-500</DisplayName>
-			<Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-			<RelativeHeights>M M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-CC5-80-500-IDX</Name>
-			<DisplayName>80-500</DisplayName>
-			<Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-			<RelativeHeights>M H H H M M H M M M H M M M H M M M H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>PROMEGA-ILS-WEN-500</ILSName>
-		<DyeName>WEN</DyeName>
-		<LaneStandard>
-			<Name>Promega-ILS-WEN-500</Name>
-			<DisplayName>60-500</DisplayName>
-			<Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-			<RelativeHeights>M M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>Promega-ILS-WEN-80-500</Name>
-			<DisplayName>80-500</DisplayName>
-			<Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-			<RelativeHeights>M H H H M M H M M M H M M M H M M M H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>DY-450</ILSName>
-		<DyeName>GRODY</DyeName>
-		<LaneStandard>
-			<Name>DY_70-450</Name>
-			<DisplayName>70-450</DisplayName>
-			<Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>DY_70-450_LESS260</Name>
-			<DisplayName>70-450 OMIT 260</DisplayName>
-			<Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 280 300 320 340 360 380 400 420 440 450</Characteristics>
-			<RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-			<Omissions>260</Omissions>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>RAPID-CXR-600</ILSName>
-		<DyeName>CXR</DyeName>
-		<LaneStandard>
-			<Name>RapidCXR600</Name>
-			<DisplayName>60-600</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>RapidCXR500</Name>
-			<DisplayName>60-500</DisplayName>
-			<Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>RapidCXR600less60</Name>
-			<DisplayName>80-600</DisplayName>
-			<Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>SG-SIZE-DY632</ILSName>
-		<DyeName>DY632</DyeName>
-		<LaneStandard>
-			<Name>SGSizeDY632</Name>
-			<DisplayName>70-500</DisplayName>
-			<Characteristics>70 80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>SGSizeDY632less70</Name>
-			<DisplayName>80-500</DisplayName>
-			<Characteristics>80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	<ILS>
-		<ILSName>BTO-500</ILSName>
-		<DyeName>BTO</DyeName>
-		<LaneStandard>
-			<Name>BTO_60_550</Name>
-			<DisplayName>60-550</DisplayName>
-			<Characteristics>60 80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500 525 550</Characteristics>
-			<RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>BTO_80_550</Name>
-			<DisplayName>80-550</DisplayName>
-			<Characteristics>80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500 525 550</Characteristics>
-			<RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>BTO_80_500</Name>
-			<DisplayName>80-500</DisplayName>
-			<Characteristics>80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500</Characteristics>
-			<RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-		<LaneStandard>
-			<Name>BTO_60_500</Name>
-			<DisplayName>60-500</DisplayName>
-			<Characteristics>60 80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500</Characteristics>
-			<RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
-			<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-			<CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
-		</LaneStandard>
-	</ILS>
-	</LaneStandards>
-	<Kits>
-		<Set>
-			<KitName>Cofiler</KitName>
-			<FileName>Cofiler_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>ProfilerPlus</KitName>
-			<FileName>ProfilerPlus_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>Identifiler</KitName>
-			<FileName>Identifiler_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>IdentifilerPlus</KitName>
-			<FileName>IdentifilerPlus_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex 16</KitName>
-			<!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
-			<FileName>PowerPlex16_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex 1.2</KitName>
-			<!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
-			<FileName>PowerPlex1.2_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>Identifiler Less ILS250</KitName>
-			<FileName>IdentifilerLessILS250_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>IdentifilerPlus Less ILS250</KitName>
-			<FileName>IdentifilerPlusLessILS250_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>Yfiler</KitName>
-			<FileName>Yfiler_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex Y</KitName>
-			<FileName>PowerPlexY_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>SGM Plus</KitName>
-			<FileName>SGMPlus_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>SEfilerPlus</KitName>
-			<FileName>SEfilerPlus_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>NGMSElect</KitName>
-			<FileName>NGMSElect_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex 18D</KitName>
-			<!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
-			<FileName>PowerPlex18D_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex 21</KitName>
-			<FileName>PowerPlex21_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>GlobalFiler</KitName>
-			<FileName>GlobalFiler_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex Fusion</KitName>
-			<FileName>PPFusion_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex Y23</KitName>
-			<FileName>PPlexY23_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>NGM</KitName>
-			<FileName>NGM_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex ESX17</KitName>
-			<FileName>PowerPlex_ESX17_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex ESX16</KitName>
-			<FileName>PowerPlex_ESX16_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex ESI17</KitName>
-			<FileName>PowerPlex_ESI17_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex ESI16</KitName>
-			<FileName>PowerPlex_ESI16_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>iPLEXSTR</KitName>
-			<FileName>iPLEXSTR_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>iPLEXSTRLIZ500less250</KitName>
-			<FileName>iPLEXSTRLIZ500less250_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>PowerPlex Fusion 6C</KitName>
-			<FileName>PPFusion6C_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>Minifiler</KitName>
-			<FileName>Minifiler_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>NIDDKFragileX1</KitName>
-			<FileName>NIDDKFragileX1_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>GenePrint 10</KitName>
-			<FileName>GenePrint10_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>Yfiler Plus</KitName>
-			<FileName>YfilerPlus_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>QiagenInvestigator24plex</KitName>
-			<FileName>Q_Investigator24plex_LadderInfo.xml</FileName>
-		</Set>
-		<Set>
-			<KitName>QiagenArgusX12</KitName>
-			<FileName>Q_InvestigatorArgusX12_LadderInfo.xml</FileName>
-		</Set>
-	</Kits>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<KitData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ILSAndLadderInfo.xsd">
+  <Version>2.7</Version>
+  <LaneStandards>
+    <ILS>
+      <ILSName>ABI-ROX-500</ILSName>
+      <DyeName>ROX</DyeName>
+      <LaneStandard>
+        <Name>ABI-ROX500</Name>
+        <DisplayName>75-500</DisplayName>
+        <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-ROX450</Name>
+        <DisplayName>75-450</DisplayName>
+        <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-ROX400</Name>
+        <DisplayName>75-400</DisplayName>
+        <Characteristics>75 100 139 150 160 200 250 300 340 350 400</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-ROX350</Name>
+        <DisplayName>75-350</DisplayName>
+        <Characteristics>75 100 139 150 160 200 250 300 340 350</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>ABI-LIZ-500</ILSName>
+      <DyeName>LIZ</DyeName>
+      <SubFamily>
+        <SubFamilyName>ABI-LIZ-500-MID-INTACT</SubFamilyName>
+        <LaneStandard>
+          <Name>ABI-LIZ500</Name>
+          <DisplayName>75-500</DisplayName>
+          <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ450</Name>
+          <DisplayName>75-450</DisplayName>
+          <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ400</Name>
+          <DisplayName>75-400</DisplayName>
+          <Characteristics>75 100 139 150 160 200 250 300 340 350 400</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ350</Name>
+          <DisplayName>75-350</DisplayName>
+          <Characteristics>75 100 139 150 160 200 250 300 340 350</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+      </SubFamily>
+      <SubFamily>
+        <SubFamilyName>ABI-LIZ-500-MID-OMIT</SubFamilyName>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS250-500</Name>
+          <DisplayName>75-500 OMIT 250</DisplayName>
+          <Characteristics>75 100 139 150 160 200 300 340 350 400 450 490 500</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>250</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS250-450</Name>
+          <DisplayName>75-450 OMIT 250</DisplayName>
+          <Characteristics>75 100 139 150 160 200 300 340 350 400 450</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>250</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS250-400</Name>
+          <DisplayName>75-400 OMIT 250</DisplayName>
+          <Characteristics>75 100 139 150 160 200 300 340 350 400</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>250</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS250-350</Name>
+          <DisplayName>75-350 OMIT 250</DisplayName>
+          <Characteristics>75 100 139 150 160 200 300 340 350</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>250</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS340-500</Name>
+          <DisplayName>75-500 OMIT 340</DisplayName>
+          <Characteristics>75 100 139 150 160 200 250 300 350 400 450 490 500</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>340</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS340-450</Name>
+          <DisplayName>75-450 OMIT 340</DisplayName>
+          <Characteristics>75 100 139 150 160 200 250 300 350 400 450</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>340</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS340-400</Name>
+          <DisplayName>75-400 OMIT 340</DisplayName>
+          <Characteristics>75 100 139 150 160 200 250 300 350 400</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>340</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS250and340-500</Name>
+          <DisplayName>75-500 OMIT 250, 340</DisplayName>
+          <Characteristics>75 100 139 150 160 200 300 350 400 450 490 500</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>250 340</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS250and340-450</Name>
+          <DisplayName>75-450 OMIT 250, 340</DisplayName>
+          <Characteristics>75 100 139 150 160 200 300 350 400 450</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>250 340</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+        <LaneStandard>
+          <Name>ABI-LIZ-LESS250and340-400</Name>
+          <DisplayName>75-400 OMIT 250, 340</DisplayName>
+          <Characteristics>75 100 139 150 160 200 300 350 400</Characteristics>
+          <RelativeHeights>MH MH MH MH MH MH MH MH MH</RelativeHeights>
+          <Omissions>250 340</Omissions>
+          <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+          <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        </LaneStandard>
+      </SubFamily>
+    </ILS>
+    <ILS>
+      <ILSName>ABI-LIZ-600</ILSName>
+      <DyeName>LIZ</DyeName>
+      <LaneStandard>
+        <Name>ABI-LIZ-600-60-TO-460</Name>
+        <DisplayName>60-460</DisplayName>
+        <Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460</Characteristics>
+        <RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-600-60-TO-400</Name>
+        <DisplayName>60-400</DisplayName>
+        <Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400</Characteristics>
+        <RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-600-80-TO-460</Name>
+        <DisplayName>80-460</DisplayName>
+        <Characteristics>80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460</Characteristics>
+        <RelativeHeights>M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-600-80-TO-400</Name>
+        <DisplayName>80-400</DisplayName>
+        <Characteristics>80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400</Characteristics>
+        <RelativeHeights>M M MH M M M MH MH MH MH H M MH H MH M M MH M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>ABI-LIZ-1200</ILSName>
+      <DyeName>LIZ</DyeName>
+      <LaneStandard>
+        <Name>ABI-LIZ1200</Name>
+        <DisplayName>40-1200</DisplayName>
+        <Characteristics>40 60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
+        <CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-60-1200</Name>
+        <DisplayName>60-1200</DisplayName>
+        <Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
+        <CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-100-1200</Name>
+        <DisplayName>100-1200</DisplayName>
+        <Characteristics>100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
+        <CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-120-1200</Name>
+        <DisplayName>120-1200</DisplayName>
+        <Characteristics>120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1160 1200</Characteristics>
+        <CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>ABI-GS400HD</ILSName>
+      <DyeName>ROX</DyeName>
+      <LaneStandard>
+        <Name>ABI-GS400HD</Name>
+        <DisplayName>50-400</DisplayName>
+        <Characteristics>50 60 90 100 120 150 160 180 190 200 220 240 260 280 290 300 320 340 360 380 400</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>ABI-GS-500-ROX</ILSName>
+      <DyeName>ROX</DyeName>
+      <LaneStandard>
+        <Name>ABI-GS500ROX</Name>
+        <DisplayName>50-500</DisplayName>
+        <Characteristics>50 75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
+        <RelativeHeights>M MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-GS450ROX</Name>
+        <DisplayName>50-450</DisplayName>
+        <Characteristics>50 75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
+        <RelativeHeights>M MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-GS400ROX</Name>
+        <DisplayName>50-400</DisplayName>
+        <Characteristics>50 75 100 139 150 160 200 250 300 340 350 400</Characteristics>
+        <RelativeHeights>M MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-GS75-500ROX</Name>
+        <DisplayName>75-500</DisplayName>
+        <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-GS75-450ROX</Name>
+        <DisplayName>75-450</DisplayName>
+        <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-GS75-400ROX</Name>
+        <DisplayName>75-400</DisplayName>
+        <Characteristics>75 100 139 150 160 200 250 300 340 350 400</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>BV-500</ILSName>
+      <DyeName>LIZ</DyeName>
+      <LaneStandard>
+        <Name>BV-70-500</Name>
+        <DisplayName>70-500</DisplayName>
+        <Characteristics>70 80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
+        <RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>BV-80-500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
+        <RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>PROMEGA-ILS-600</ILSName>
+      <DyeName>CXR</DyeName>
+      <LaneStandard>
+        <Name>Promega-ILS-600</Name>
+        <DisplayName>60-600</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H M M M H M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-550</Name>
+        <DisplayName>60-550</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-475</Name>
+        <DisplayName>60-475</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-400</Name>
+        <DisplayName>60-400</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-LESS475-600</Name>
+        <DisplayName>60-600 OMIT 475</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500 550 600</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H M M H M H</RelativeHeights>
+        <Omissions>475</Omissions>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-LESS475-550</Name>
+        <DisplayName>60-550 OMIT 475</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500 550</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H M M H M</RelativeHeights>
+        <Omissions>475</Omissions>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-LESS475-500</Name>
+        <DisplayName>60-500 OMIT 475</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M H M M H</RelativeHeights>
+        <Omissions>475</Omissions>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>PROMEGA-ILS-CC5-500-IDX</ILSName>
+      <DyeName>CC5</DyeName>
+      <LaneStandard>
+        <Name>Promega-ILS-CC5-500-IDX</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-CC5-80-500-IDX</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+      <DyeName>WEN</DyeName>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-80-500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>DY-450</ILSName>
+      <DyeName>GRODY</DyeName>
+      <LaneStandard>
+        <Name>DY_70-450</Name>
+        <DisplayName>70-450</DisplayName>
+        <Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>DY_70-450_LESS260</Name>
+        <DisplayName>70-450 OMIT 260</DisplayName>
+        <Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 280 300 320 340 360 380 400 420 440 450</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <Omissions>260</Omissions>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>RAPID-CXR-600</ILSName>
+      <DyeName>CXR</DyeName>
+      <LaneStandard>
+        <Name>RapidCXR600</Name>
+        <DisplayName>60-600</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>RapidCXR500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>RapidCXR600less60</Name>
+        <DisplayName>80-600</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>SG-SIZE-DY632</ILSName>
+      <DyeName>DY632</DyeName>
+      <LaneStandard>
+        <Name>SGSizeDY632</Name>
+        <DisplayName>70-500</DisplayName>
+        <Characteristics>70 80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>SGSizeDY632less70</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 90 100 120 140 160 180 190 200 220 240 260 280 300 320 340 360 380 400 425 450 475 490 500</Characteristics>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>BTO-500</ILSName>
+      <DyeName>BTO</DyeName>
+      <LaneStandard>
+        <Name>BTO_60_550</Name>
+        <DisplayName>60-550</DisplayName>
+        <Characteristics>60 80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>BTO_80_550</Name>
+        <DisplayName>80-550</DisplayName>
+        <Characteristics>80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>BTO_80_500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>BTO_60_500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450 475 500</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+  </LaneStandards>
+  <Kits>
+    <Set>
+      <KitName>Cofiler</KitName>
+      <FileName>Cofiler_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>ProfilerPlus</KitName>
+      <FileName>ProfilerPlus_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>Identifiler</KitName>
+      <FileName>Identifiler_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>IdentifilerPlus</KitName>
+      <FileName>IdentifilerPlus_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex 16</KitName>
+      <!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
+      <FileName>PowerPlex16_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex 1.2</KitName>
+      <!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
+      <FileName>PowerPlex1.2_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>Identifiler Less ILS250</KitName>
+      <FileName>IdentifilerLessILS250_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>IdentifilerPlus Less ILS250</KitName>
+      <FileName>IdentifilerPlusLessILS250_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>Yfiler</KitName>
+      <FileName>Yfiler_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex Y</KitName>
+      <FileName>PowerPlexY_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>SGM Plus</KitName>
+      <FileName>SGMPlus_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>SEfilerPlus</KitName>
+      <FileName>SEfilerPlus_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>NGMSElect</KitName>
+      <FileName>NGMSElect_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex 18D</KitName>
+      <!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
+      <FileName>PowerPlex18D_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex 21</KitName>
+      <FileName>PowerPlex21_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>GlobalFiler</KitName>
+      <FileName>GlobalFiler_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex Fusion</KitName>
+      <FileName>PPFusion_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex Y23</KitName>
+      <FileName>PPlexY23_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>NGM</KitName>
+      <FileName>NGM_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex ESX17</KitName>
+      <FileName>PowerPlex_ESX17_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex ESX16</KitName>
+      <FileName>PowerPlex_ESX16_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex ESI17</KitName>
+      <FileName>PowerPlex_ESI17_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex ESI16</KitName>
+      <FileName>PowerPlex_ESI16_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>iPLEXSTR</KitName>
+      <FileName>iPLEXSTR_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>iPLEXSTRLIZ500less250</KitName>
+      <FileName>iPLEXSTRLIZ500less250_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>PowerPlex Fusion 6C</KitName>
+      <FileName>PPFusion6C_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>Minifiler</KitName>
+      <FileName>Minifiler_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>NIDDKFragileX1</KitName>
+      <FileName>NIDDKFragileX1_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>GenePrint 10</KitName>
+      <FileName>GenePrint10_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>Yfiler Plus</KitName>
+      <FileName>YfilerPlus_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>QiagenInvestigator24plex</KitName>
+      <FileName>Q_Investigator24plex_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+      <KitName>QiagenArgusX12</KitName>
+      <FileName>Q_InvestigatorArgusX12_LadderInfo.xml</FileName>
+    </Set>
+  </Kits>
 </KitData>

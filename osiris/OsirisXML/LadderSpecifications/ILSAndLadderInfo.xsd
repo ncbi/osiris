@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2015 rel. 3 sp1 (x64) (http://www.altova.com) by XMLSpy 2015 Professional Ed. Release 3, Installed for 13 users (with SMP from 2015-04-16 to 2016-04-16) (NIH) -->
+<!-- edited with XMLSpy v2014 sp1 (x64) (http://www.altova.com) by NCBI User (National Library of Medicine) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:complexType name="LaneStandardData">
 		<xs:sequence>
@@ -38,15 +38,22 @@
 				<xs:element name="Version" type="xs:string" default="2.0"/>
 				<xs:element name="LaneStandards">
 					<xs:complexType>
-						<xs:sequence maxOccurs="unbounded">
-							<xs:element name="ILS">
+						<xs:sequence>
+							<xs:element name="ILS" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="ILSName" type="xs:string"/>
 										<xs:element name="DyeName" type="xs:string"/>
 										<xs:choice>
-											<xs:element name="LaneStandard" type="LaneStandardData" maxOccurs="unbounded"/>
+											<xs:element name="LaneStandard" type="LaneStandardData" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>For kit with single list of ILS</xs:documentation>
+												</xs:annotation>
+											</xs:element>
 											<xs:element name="SubFamily" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>ILS Family, new in v2.7</xs:documentation>
+												</xs:annotation>
 												<xs:complexType>
 													<xs:sequence>
 														<xs:element name="SubFamilyName" type="xs:string"/>

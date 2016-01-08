@@ -1071,6 +1071,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9C5660B04B044906BAF7E712515D801F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9C7C46B4F6BF46979032F3A1B8231922"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -5422,6 +5428,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C5660B04B044906BAF7E712515D801F"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\Q_InvestigatorArgusX12_LadderInfo.xml"
+            "TargetName" = "8:Q_InvestigatorArgusX12_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C7C46B4F6BF46979032F3A1B8231922"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PP16_HID\\PP16_HID_StdSettings.xml"
@@ -8773,7 +8799,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
         "ProductCode" = "8:{46F1B0F7-0144-41A6-953A-579739F5038B}"
-        "PackageCode" = "8:{BBED8379-57D0-492F-8D6F-3D6027E0A05F}"
+        "PackageCode" = "8:{133F612D-7BF3-4E9D-837E-9B0F7067F7EA}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

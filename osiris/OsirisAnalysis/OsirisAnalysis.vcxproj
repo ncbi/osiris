@@ -315,7 +315,6 @@
     <ClCompile Include="CHistoryTime.cpp" />
     <ClCompile Include="CImageAbout.cpp" />
     <ClCompile Include="CKitColors.cpp" />
-    <ClCompile Include="CKitLadderInfo.cpp" />
     <ClCompile Include="CKitList.cpp" />
     <ClCompile Include="CLabels.cpp" />
     <ClCompile Include="CLabSettings.cpp" />
@@ -447,7 +446,6 @@
     <ClInclude Include="CILSLadderInfo.h" />
     <ClInclude Include="CImageAbout.h" />
     <ClInclude Include="CKitColors.h" />
-    <ClInclude Include="CKitLadderInfo.h" />
     <ClInclude Include="CKitList.h" />
     <ClInclude Include="CLabels.h" />
     <ClInclude Include="CLabSettings.h" />
