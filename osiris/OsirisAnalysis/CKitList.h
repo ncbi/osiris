@@ -135,6 +135,7 @@ public:
     m_bV1 = false;
     m_pLastKitLocus = NULL;
     m_pLastKitLS = NULL;
+    m_pLastKit_ILS = NULL;
 
     Register("Kits",this);
     Register("Set",this);
@@ -143,6 +144,10 @@ public:
     Register("LSName",this);
     Register("ChannelNo",this);
     Register("Locus",this);
+    // new for v 2.7
+    Register("ILS",this);
+    Register("LSBases",this);
+    Register("ILSName",this);
   }
   ~CPersistKitList()
   {
@@ -227,6 +232,7 @@ public:
       m_sLastKit = sKitName;
       m_pLastKitLocus = NULL;
       m_pLastKitLS = NULL;
+      m_pLastKit_ILS = NULL;
     }
     return bRtn;
   }
@@ -250,6 +256,7 @@ private:
   wxArrayString m_as;
   wxString m_sLastKit;
   map<wxString, wxArrayString *> m_mLS;
+  map<wxString, wxArrayString *> m_mILS; // 2.7 ils family
   map<wxString, int> m_msChannelCount;
   nwxXmlIOwxString m_XmlString;
   wxString m_sErrorMsg;
@@ -257,6 +264,7 @@ private:
 
   CLocusNameList *m_pLastKitLocus;
   wxArrayString *m_pLastKitLS;
+  wxArrayString *m_pLastKit_ILS; // v2.7 ils family
 };
 
 #endif

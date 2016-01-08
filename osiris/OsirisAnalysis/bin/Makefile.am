@@ -51,7 +51,6 @@ osiris_SOURCES =  \
 ../CHistoryTime.cpp \
 ../CImageAbout.cpp \
 ../CKitColors.cpp \
-../CKitLadderInfo.cpp \
 ../CKitList.cpp \
 ../CLabSettings.cpp \
 ../CLabSettingsFileName.cpp \

@@ -69,8 +69,15 @@ bool CLocusNameChannel::operator <(const CLocusNameChannel &x) const
 
 void CPersistKitList::Clear()
 {
-  for(LSitr itr = m_mLS.begin();
+  LSitr itr;
+  for(itr = m_mLS.begin();
     itr != m_mLS.end();
+    ++itr)
+  {
+    delete itr->second;
+  }
+  for(itr = m_mILS.begin();  // v2.7 ILS family
+    itr != m_mILS.end();
     ++itr)
   {
     delete itr->second;
@@ -84,11 +91,13 @@ void CPersistKitList::Clear()
     delete p;
   }
   m_mLS.clear();
+  m_mILS.clear();
   m_as.Clear();
   m_sLastKit.Empty();
   m_sErrorMsg.Empty();
   m_pLastKitLocus = NULL;
   m_pLastKitLS = NULL;
+  m_pLastKit_ILS = NULL;
 }
 
 
@@ -135,6 +144,12 @@ bool CPersistKitList::Load()
       (itrLS == m_mLS.end())
       ? NULL
       : itrLS->second;
+    itrLS = m_mILS.find(m_sLastKit);
+    m_pLastKit_ILS = 
+      (itrLS == m_mILS.end())
+      ? NULL
+      : itrLS->second;
+
     KLNCitr itrLocus = m_mapKitLocus.find(m_sLastKit);
     m_pLastKitLocus =
       (itrLocus == m_mapKitLocus.end())
@@ -162,6 +177,11 @@ void CPersistKitList::SortILS()
   map<wxString, wxArrayString *>::iterator itr;
   wxArrayString *pILS;
   for(itr = m_mLS.begin(); itr != m_mLS.end(); ++itr)
+  {
+    pILS = itr->second;
+    pILS->Sort();
+  }
+  for(itr = m_mILS.begin(); itr != m_mILS.end(); ++itr)
   {
     pILS = itr->second;
     pILS->Sort();
@@ -204,6 +224,23 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
                 m_sLastKit,m_pLastKitLS));
       }
       m_pLastKitLS->Add(s);
+    }
+  }
+  else if( !sNodeName.Cmp("ILSName") && !m_sLastKit.IsEmpty() )
+  {
+    wxString s;
+    m_XmlString.LoadFromNode(pNode,(void *)&s);
+    if(s.Len())
+    {
+      if(m_pLastKit_ILS == NULL)
+      {
+        m_pLastKit_ILS = new wxArrayString;
+        m_pLastKit_ILS->Alloc(6);
+        m_mILS.insert(
+          map<wxString, wxArrayString *>::value_type(
+                m_sLastKit,m_pLastKit_ILS));
+      }
+      m_pLastKit_ILS->Add(s);
     }
   }
   else if( !sNodeName.Cmp("ChannelNo") && !m_sLastKit.IsEmpty() )
