@@ -553,12 +553,10 @@
     </Set>
     <Set>
       <KitName>PowerPlex 16</KitName>
-      <!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
       <FileName>PowerPlex16_LadderInfo.xml</FileName>
     </Set>
     <Set>
       <KitName>PowerPlex 1.2</KitName>
-      <!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
       <FileName>PowerPlex1.2_LadderInfo.xml</FileName>
     </Set>
     <Set>
@@ -591,7 +589,6 @@
     </Set>
     <Set>
       <KitName>PowerPlex 18D</KitName>
-      <!--http://www.cstl.nist.gov/biotech/strbase/str_D3S1358.htm  -->
       <FileName>PowerPlex18D_LadderInfo.xml</FileName>
     </Set>
     <Set>

@@ -20,6 +20,7 @@ OutputConfigPath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\LadderSpec
 MaxExpectedAllelesPerLocusDefault = 2;
 YLinkedDefault = false;
 DoNotExtend = AMEL;
+RelativeHeightOverride = D21S11;
 ILSName = PROMEGA-ILS-CC5-500-IDX;
 ILSChannel = 5;
 StdControl = K562;
