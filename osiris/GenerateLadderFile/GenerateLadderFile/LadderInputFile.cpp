@@ -66,6 +66,7 @@ LadderInputFile :: ~LadderInputFile () {
 	mDyeNumbers.ClearAndDelete ();
 	mColorNumbers.ClearAndDelete ();
 	mILSNames.ClearAndDelete ();
+	mRelativeHeightOverrides.ClearAndDelete ();
 }
 
 
@@ -400,6 +401,13 @@ int LadderInputFile :: AssignString () {
 				mChannelMap [i] = i;
 		}
 
+		status = 0;
+	}
+
+	else if (mStringLeft == "RelativeHeightOverride") {
+
+		newString = new RGString (mStringRight);
+		mRelativeHeightOverrides.Append (newString);
 		status = 0;
 	}
 
@@ -934,6 +942,15 @@ void LadderInputFile :: ResetInputLines () {
 RGString* LadderInputFile :: GetNextInputLine () {
 
 	return (RGString*) (*mInputLinesIterator) ();
+}
+
+
+bool LadderInputFile :: LocusNeedsRelativeHeightInfo (const RGString& locus) {
+
+	if (mRelativeHeightOverrides.Contains (&locus))
+		return true;
+
+	return false;
 }
 
 

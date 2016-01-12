@@ -164,6 +164,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		return -1;
 	}
 
+	cout << "Ladder Input File:  Kit Name = " << inputFile.GetKitName ().GetData () << endl;
+	cout << "Panels file Name = " << inputFile.GetPanelsFileName ().GetData () << endl;
+
 	inputStatus = inputFile.AssembleInputs ();
 
 	if (inputStatus != 0) {
@@ -253,6 +256,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		if (newLocus == NULL)
 			break;
 
+		newLocus->SetRelativeHeightInfo (inputFile.LocusNeedsRelativeHeightInfo (newLocus->GetName ()));
 		status = panelsLadder->AddLocus (newLocus);
 
 		if (status < 0) {

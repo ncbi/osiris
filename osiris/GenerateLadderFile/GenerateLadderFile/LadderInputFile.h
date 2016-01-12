@@ -97,6 +97,7 @@ public:
 
 	void ResetInputLines ();
 	RGString* GetNextInputLine ();
+	bool LocusNeedsRelativeHeightInfo (const RGString& locus);
 
 protected:
 	bool mDebug;
@@ -127,6 +128,7 @@ protected:
 
 	RGDList mDyeNumbers;
 	RGDList mColorNumbers;
+	RGDList mRelativeHeightOverrides;
 
 	bool mYLinkedDefault;
 	int mMaxExpectedAllelesPerLocusDefault;

@@ -133,14 +133,15 @@ bool Allele :: isEqual (Allele* target) {
 
 
 Locus :: Locus () : mChannel (0), mCoreRepeat (0), mMinLocusBP (0), mMaxLocusBP (0), mMinSearchILSBP (0.0), mMaxSearchILSBP (0.0), mYLinked (false),
-mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false) {
+mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false), 
+mNeedsRelativeHeightInfo (false) {
 
 }
 
 
 Locus :: Locus (const RGString& name, int channel, int coreRepeat) : mName (name), mChannel (channel), mCoreRepeat (coreRepeat), mMinLocusBP (0), mMaxLocusBP (0), 
 	mMinSearchILSBP (0.0), mMaxSearchILSBP (0.0), mYLinked (false), mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), 
-	mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false) {
+	mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false), mNeedsRelativeHeightInfo (false) {
 
 }
 
@@ -266,6 +267,10 @@ void Locus :: OutputTo (RGTextOutput& xmlFile) {
 	for (AIterator = mAlleleList.begin(); AIterator != mAlleleList.end(); AIterator++) {
 
 		nextAllele = *AIterator;
+
+		if (mNeedsRelativeHeightInfo)
+			nextAllele->SetRelativeHeight ("H");
+
 		nextAllele->OutputTo (xmlFile);
 	}
 

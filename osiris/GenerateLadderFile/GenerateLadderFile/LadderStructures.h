@@ -97,6 +97,7 @@ public:
 	void SetMinMaxSearchILSBP (double min, double max);
 	void SetMinSearhILSBP (double min) { mMinSearchILSBP = min; }
 	void SetMaxSearhILSBP (double max) { mMaxSearchILSBP = max; }
+	void SetRelativeHeightInfo (bool rh) { mNeedsRelativeHeightInfo = rh; }
 
 	void SetDoNotExtend () { mDoNotExtend = true; }
 
@@ -134,6 +135,7 @@ protected:
 	double mOriginalMinSearchILSBP;
 	double mOriginalMaxSearchILSBP;
 	bool mDoNotExtend;
+	bool mNeedsRelativeHeightInfo;
 
 	static bool GenerateILSFamilies;
 	static RGString ILSName;
