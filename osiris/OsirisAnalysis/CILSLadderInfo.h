@@ -33,6 +33,94 @@
 #include "nwx/nwxXmlPersistCollections.h"
 #include "ConfigDir.h"
 
+// v2.7 CILSfamily and CILSname.  Load ILS 'family' names with LS names
+class CILSname : public nwxXmlPersist
+{
+public:
+  CILSname(const CILSname &x) : nwxXmlPersist(true)
+  {
+    RegisterAll(true);
+    (*this) = x;
+  }
+  CILSname() : nwxXmlPersist(true)
+  {
+    RegisterAll(true);
+  }
+  const CILSname &operator = (const CILSname &x)
+  {
+    m_sName = x.m_sName;
+    m_sDisplayName = x.m_sDisplayName;
+  }
+protected:
+  virtual void RegisterAll(bool = false)
+  {
+    RegisterWxString(wxT("Name"),&m_sName);
+    RegisterWxString(wxT("DisplayName"),&m_sDisplayName);
+  }
+private:
+  wxString m_sName;
+  wxString m_sDisplayName;
+};
+class CILSfamily : public nwxXmlPersist
+{
+private:
+  class SUBFamily : public nwxXmlPersist
+  {
+  public:
+    SUBFamily(TnwxXmlPersistVector<CILSname> *p) :
+          m_pvNames(p)
+    {}
+    virtual ~SUBFamily()
+    {}
+    virtual void Init()
+    {}
+  protected:
+    virtual void RegisterAll(bool = false)
+    {
+      Register(m_pvNames);
+    }
+  private:
+    TnwxXmlPersistVector<CILSname> *m_pvNames;
+  };
+public:
+  CILSfamily(const CILSfamily &x) : 
+      nwxXmlPersist(true), 
+      m_vNames(wxT("LaneStandard")),
+      m_SUBFamily(&m_vNames)
+  {
+    RegisterAll(true);
+    (*this) = x;
+  }
+  CILSfamily() : 
+      nwxXmlPersist(true), m_vNames(wxT("LaneStandard"))
+  {
+    RegisterAll(true);
+  }
+  virtual ~CILSfamily() {}
+  const CILSfamily &operator = (const CILSfamily &x)
+  {
+    m_sILSname = x.m_ILSname;
+    m_sDyeName = x.m_sDyeName;
+    m_vNames = x.m_vNames;
+  }
+  const wxString &GetKey() const
+  {
+    return m_sILSname;
+  }
+protected:
+  virtual void RegisterAll(bool = false)
+  {
+    RegisterWxString(wxT("ILSName"),&m_sILSname);
+    RegisterWxString(wxT("DyeName",&m_sDyeName);
+    Register(wxT("SubFamily"),&m_SUBFamily);
+    Register(&m_vNames);
+  }
+private:
+  wxString m_sILSname;
+  wxString m_sDyeName;
+  TnwxXmlPersistVector<CILSname> m_vNames;
+  SUBFamily m_SUBFamily;
+};
 
 class CILSkit : public nwxXmlPersist
 {
@@ -70,13 +158,14 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterWxString("KitName",&m_sKitName);
-    RegisterWxString("FileName",&m_sFileName);
+    RegisterWxString(wxT("KitName"),&m_sKitName);
+    RegisterWxString(wxT("FileName"),&m_sFileName);
   }
   wxString m_sKitName;
   wxString m_sFileName;
 };
-
+/*
+  // doesn't seem to be used
 class CILSkitLess
 {
 public:
@@ -92,11 +181,16 @@ public:
     return (*this)(*pa,*pb);
   }
 };
+*/
 
 class CILSLadderInfo : public nwxXmlPersist
 {
 public:
-  CILSLadderInfo(bool bLoad = false) : m_vKits("Set"), m_bIsOK(false)
+  CILSLadderInfo(bool bLoad = false) : 
+    nwxXmlPersist(true),
+    m_vKits(wxT("Set")), 
+    m_mapCILSfamily(wxT("ILS"),false),
+    m_bIsOK(false)
   {
     RegisterAll(true);
     if(bLoad)
@@ -146,11 +240,13 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    Register("Kits",&m_vKits);
+    Register(wxT("LaneStandards"),&m_mapCILSfamily);
+    Register(wxT("Kits"),&m_vKits);
   }
 
 private:
   TnwxXmlPersistVector<CILSkit> m_vKits;
+  TnwxXmlPersistMap<CILSfamily,wxString> m_mapCILSfamily;
   bool m_bIsOK;
 
 };
