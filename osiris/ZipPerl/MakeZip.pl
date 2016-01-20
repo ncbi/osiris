@@ -155,6 +155,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.4.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.5.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
 }
 
 sub CopyWin
