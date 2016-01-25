@@ -130,6 +130,7 @@ public:
 	RGPersistent* operator++();  // Goes forward one and returns it; at tail, stays and returns NULL
 	void Reset ();   // Resets iterator to beginning - needed also whenever underlying list changes; Current set to NULL
 	void ResetToEnd ();
+	void ResetTo (const RGDListIterator& it) { Current = it.Current; }
 
 	RGPersistent* FindNextReference (const RGPersistent*);  // finds next matching pointer
 	RGPersistent* InsertAfterCurrentItem (RGPersistent*);
