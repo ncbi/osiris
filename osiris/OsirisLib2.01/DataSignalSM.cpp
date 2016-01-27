@@ -707,6 +707,36 @@ RGString DataSignal :: GetDebugIDIndent () const {
 }
 
 
+
+void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
+
+	int i;
+	RGString data;
+	int n = 0;
+	smPullUp pullup;
+
+	for (i=1; i<=nChannels; i++) {
+
+		if (mPrimaryRatios [i] >= 0.0) {
+
+			if (n == 0)
+				n = 1;
+
+			else
+				data << "; ";
+
+			data << i << " with Ratio " << mPrimaryRatios [i];
+		}
+	}
+
+	if (n > 0) {
+
+		SetMessageValue (pullup, true);
+		AppendDataForSmartMessage (pullup, data);
+	}
+}
+
+
 void DataSignal :: CaptureSmartMessages (const DataSignal* signal) {
 
 	int scope = GetObjectScope ();

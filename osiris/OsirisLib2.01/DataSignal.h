@@ -162,6 +162,7 @@ public:
 	virtual ~InterchannelLinkage ();
 
 	virtual bool AddDataSignal (DataSignal* newSignal);
+	virtual void SetPrimaryDataSignal (DataSignal* primary) { mPrimarySignal = primary; }
 	virtual bool RemoveDataSignal (DataSignal* oldSignal, Notice* primaryTarget, Notice* primaryReplace, Notice* secondaryTarget, Notice* secondaryReplace);
 	virtual bool RecalculatePrimarySignal (Notice* primaryTarget, Notice* primaryReplace);
 	virtual bool RemoveAll (Notice* primaryTarget, Notice* primaryReplace, Notice* secondaryTarget, Notice* secondaryReplace);
@@ -296,7 +297,7 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -312,7 +313,7 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -332,7 +333,8 @@ public:
 		mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
 		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
-		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance) {
+		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
+		mPrimaryRatios (NULL) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -542,6 +544,7 @@ public:
 
 	virtual RGString GetSignalType () const;
 
+	virtual void SetPullupRatio (int channel, double ratio, int nChannels);
 	virtual void SetDisplacement (double disp) = 0;
 	virtual void SetScale (double scale) = 0;
 	virtual void SetPeak (double peak) {}
@@ -747,6 +750,8 @@ public:
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual RGString GetDebugIDIndent () const;
 
+	virtual void AssociateDataWithPullMessageSM (int nChannels);
+
 	virtual void CaptureSmartMessages (const DataSignal* signal);
 	virtual void CaptureSmartMessages ();
 
@@ -855,6 +860,7 @@ protected:
 	bool mIsNegativePeak;
 
 	double mPullupTolerance;
+	double* mPrimaryRatios;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;

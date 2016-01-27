@@ -1022,7 +1022,7 @@ mResidualLeft (ds.mResidualLeft), mResidualRight (ds.mResidualRight), mPossibleI
 mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
-mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance) {
+mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1038,6 +1038,7 @@ DataSignal :: ~DataSignal () {
 	NoticeList.ClearAndDelete ();
 	NewNoticeList.ClearAndDelete ();
 	mCrossChannelSignalLinks.Clear ();
+	delete[] mPrimaryRatios;
 }
 
 
@@ -1553,6 +1554,22 @@ void DataSignal :: SetCurveFit (double fit) {
 RGString DataSignal :: GetSignalType () const {
 
 	return RGString ("DataSignal");
+}
+
+
+void DataSignal :: SetPullupRatio (int channel, double ratio, int nChannels) {
+
+	int i;
+
+	if (mPrimaryRatios == NULL) {
+
+		mPrimaryRatios = new double [nChannels + 1];
+
+		for (i=1; i<=nChannels; i++)
+			mPrimaryRatios [i] = -1.0;
+	}
+
+	mPrimaryRatios [channel] = ratio;
 }
 
 
