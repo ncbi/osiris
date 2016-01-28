@@ -230,7 +230,6 @@ mainFrame::mainFrame() :
 #endif
 
     XXX(),
-    m_kitColors(),
     m_pDialogOpen(NULL),
     m_pDialogMRU(NULL),
 //    m_pVolumes(NULL),
@@ -431,7 +430,7 @@ CFramePlot *mainFrame::OpenGraphicFile(
     wxSize sz = GetChildSize();
     bool bShiftKeyDown = nwxKeyState::Shift();
     unsigned int nChannel = pData->GetChannelFromLocus(sLocus);
-    pPlot = new CFramePlot(this,sz,pData.release(),pFile,&m_kitColors,bShiftKeyDown,nChannel);
+    pPlot = new CFramePlot(this,sz,pData.release(),pFile,mainFrame::GetKitColors(),bShiftKeyDown,nChannel);
     // call ZoomOut or ZoomToLocus AFTER Show as a workaround for a bug in wxPlotCtrl
     // otherwise we would put it in the CFramePlot constructor
     if((nChannel > 0) && !sLocus.IsEmpty())

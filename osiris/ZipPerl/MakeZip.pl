@@ -104,23 +104,27 @@ sub COPYFILES
     PP16
     PP16_HID
     PP18D
+    PP18D_HID
     PP21
-    PPESI16_FSA
+    PP21_HID
+    PPESI16
     PPESI16_HID
-    PPESI17_FSA
+    PPESI17
     PPESI17_HID
-    PPESX16_FSA
+    PPESX16
     PPESX16_HID
-    PPESX17_FSA
+    PPESX17
     PPESX17_HID
     PPFusion
-    PPFusion_HID
     PPFusion6C
     PPFusion6C_HID
+    PPFusion_HID
     PPY
     PPY23
     PPY23_HID
     Profiler
+    QIAGEN_ARGUS_x12
+    QIAGEN_ARGUS_x12_HID
     QIAGEN_INVESTIGATOR24PLEX
     QIAGEN_INVESTIGATOR24PLEX_HID
     SEfilerPlus
@@ -155,6 +159,8 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.4.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.5.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.7.pdf ${dest}");
 }
 
 sub CopyWin

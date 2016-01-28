@@ -44,7 +44,7 @@ bool CGridRFUbase::_SetupKitBase(const wxString &sKitName)
   m_sKitName = sKitName;
   const CLocusNameList *pLocus = 
     pKit->GetLocusNameList(m_sKitName);
-  m_pKitColors = m_kitColors.GetKitColors(m_sKitName);
+  m_pKitColors = mainApp::GetKitColors()->GetKitColors(m_sKitName);
   bool bRtn = true;
 
   if(m_sKitName.IsEmpty())

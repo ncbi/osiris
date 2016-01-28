@@ -48,12 +48,14 @@
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
+#include "CKitColors.h"
 
 #ifdef __WXMSW__
 #include <process.h>
 #define getpid _getpid
 #endif
 
+const wxString mainApp::EMPTY_STRING(wxEmptyString);
 const int mainApp::DIALOG_STYLE =
   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER; // | wxTHICK_FRAME; //gone in wx 3.0
 
@@ -66,6 +68,7 @@ bool mainApp::g_bSuppressMessages = false;
 ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
+CKitColors *mainApp::m_pKitColors = NULL;
 mainApp *mainApp::g_pThis = NULL;
 
 wxFile *mainApp::m_pFout = NULL;
@@ -85,6 +88,11 @@ mainApp::~mainApp()
     {
       delete m_pMRU;
       m_pMRU = NULL;
+    }
+    if(m_pKitColors != NULL)
+    {
+      delete m_pKitColors;
+      m_pKitColors = NULL;
     }
     if(m_pKitList != NULL)
     {
@@ -112,6 +120,14 @@ nwxXmlMRU *mainApp::GetMRU()
     m_pMRU = new nwxXmlMRU(sPath);
   }
   return m_pMRU;
+}
+CKitColors *mainApp::GetKitColors()
+{
+  if(m_pKitColors == NULL)
+  {
+    m_pKitColors = new CKitColors();
+  }
+  return m_pKitColors;
 }
 CPersistKitList *mainApp::GetKitList()
 {

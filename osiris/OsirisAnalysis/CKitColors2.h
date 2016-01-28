@@ -103,9 +103,21 @@ public:
   }
   const CKitColorDye &GetColorByName(const wxString &s) const
   {
-    map<wxString,CKitColorDye *>::const_iterator itr =
+    std::map<wxString,CKitColorDye *>::const_iterator itr =
       m_mapKitColors.find(s);
     return *(itr->second);
+  }
+  const CKitColorDye *GetColorByDyeName(const wxString &s) const
+  {
+    if(!m_mapDyeColors.size())
+    {
+      _SetupDyeColors();
+    }
+    std::map<wxString,const CKitColorDye *>::iterator itr =
+      m_mapDyeColors.find(s);
+    
+    const CKitColorDye *pRtn = (itr != m_mapDyeColors.end()) ? itr->second : NULL;
+    return pRtn;
   }
 protected:
   virtual void RegisterAll(bool = false)
@@ -113,8 +125,10 @@ protected:
     Register(wxT("Dye"),&m_io,&m_mapKitColors);
   }
 private:
+  void _SetupDyeColors() const;
   bool Load();
-  map<wxString,CKitColorDye *> m_mapKitColors;
+  std::map<wxString,CKitColorDye *> m_mapKitColors;
+  mutable std::map<wxString,const CKitColorDye *> m_mapDyeColors;
   TnwxXmlIOPersistMap<wxString,CKitColorDye> m_io;
 };
 

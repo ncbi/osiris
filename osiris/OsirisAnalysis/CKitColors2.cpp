@@ -33,6 +33,7 @@
 *    used kitcolors.xml
 */
 #include "CKitColors2.h"
+#include "ConfigDir.h"
 #include "mainApp.h"
 
 bool CKitColors2::Load()
@@ -43,3 +44,39 @@ bool CKitColors2::Load()
   return LoadFile(sFileName);
 }
 
+void CKitColors2::_SetupDyeColors() const
+{
+  std::map<wxString,CKitColorDye *>::const_iterator itr;
+  std::set<wxString> setDups;
+  const std::set<wxString> *pSetDyes;
+  std::set<wxString>::const_iterator itrDye;
+  const CKitColorDye *pColorDye;
+  for(itr = m_mapKitColors.begin(); itr != m_mapKitColors.end(); ++itr)
+  {
+    pColorDye = itr->second;
+    pSetDyes = pColorDye->GetDyes();
+    for (itrDye = pSetDyes->begin(); itrDye != pSetDyes->end(); ++itrDye)
+    {
+      if(m_mapDyeColors.find(*itrDye) != m_mapDyeColors.end())
+      {
+        setDups.insert(*itrDye);
+      }
+      else
+      {
+        m_mapDyeColors.insert(std::map<wxString,const CKitColorDye *>::value_type(*itrDye,pColorDye));
+      }
+    }
+  }
+  if(setDups.size())
+  {
+    std::set<wxString>::iterator itrDup;
+    wxString sMessage = wxT("The following dye name(s) appeared more than once in kitcolor2.0.xml:");
+    wxString sSep(wxT("\n    "));
+    for (itrDup = setDups.begin(); itrDup != setDups.end(); ++itrDup)
+    {
+      sMessage.Append(sSep);
+      sMessage.Append(*itrDup);
+    }
+    mainApp::LogMessage(sMessage);
+  }
+}

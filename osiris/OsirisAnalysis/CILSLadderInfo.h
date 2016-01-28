@@ -51,6 +51,14 @@ public:
     m_sName = x.m_sName;
     m_sDisplayName = x.m_sDisplayName;
   }
+  const wxString &GetName() const
+  {
+    return m_sName;
+  }
+  const wxString &GetDisplayName() const
+  {
+    return m_sDisplayName;
+  }
 protected:
   virtual void RegisterAll(bool = false)
   {
@@ -63,6 +71,7 @@ private:
 };
 class CILSfamily : public nwxXmlPersist
 {
+/*
 private:
   class SUBFamily : public nwxXmlPersist
   {
@@ -77,49 +86,72 @@ private:
   protected:
     virtual void RegisterAll(bool = false)
     {
-      Register(m_pvNames);
+      Register(wxT("LaneStandard"),m_pvNames->GetIO(),m_pvNames->Get());
     }
   private:
     TnwxXmlPersistVector<CILSname> *m_pvNames;
   };
+*/
 public:
   CILSfamily(const CILSfamily &x) : 
       nwxXmlPersist(true), 
-      m_vNames(wxT("LaneStandard")),
-      m_SUBFamily(&m_vNames)
+      m_io(false)
   {
     RegisterAll(true);
     (*this) = x;
   }
   CILSfamily() : 
-      nwxXmlPersist(true), m_vNames(wxT("LaneStandard"))
+      nwxXmlPersist(true),
+      m_io(false)
   {
     RegisterAll(true);
   }
-  virtual ~CILSfamily() {}
+  virtual ~CILSfamily() 
+  {
+    vectorptr<CILSname>::cleanup(&m_vNames);
+  }
   const CILSfamily &operator = (const CILSfamily &x)
   {
-    m_sILSname = x.m_ILSname;
+    m_sILSname = x.m_sILSname;
     m_sDyeName = x.m_sDyeName;
-    m_vNames = x.m_vNames;
+    vectorptr<CILSname>::copy(&m_vNames,x.m_vNames);
   }
   const wxString &GetKey() const
   {
     return m_sILSname;
   }
+  const wxString  &GetDyeName() const
+  {
+    return m_sDyeName;
+  }
+  const vector<CILSname *> &GetNames() const
+  {
+    return m_vNames;
+  }
+#ifdef __WXDEBUG__
+  virtual bool LoadFromNode(wxXmlNode *p, void *pObj)
+  {
+    return nwxXmlPersist::LoadFromNode(p,pObj);
+  }
+  virtual bool LoadFromNode(wxXmlNode *p)
+  {
+    return nwxXmlPersist::LoadFromNode(p);
+  }
+#endif
 protected:
   virtual void RegisterAll(bool = false)
   {
     RegisterWxString(wxT("ILSName"),&m_sILSname);
-    RegisterWxString(wxT("DyeName",&m_sDyeName);
-    Register(wxT("SubFamily"),&m_SUBFamily);
-    Register(&m_vNames);
+    RegisterWxString(wxT("DyeName"),&m_sDyeName);
+    Register(wxT("SubFamily"),this);
+    Register(wxT("LaneStandard"),&m_io,&m_vNames);
   }
 private:
   wxString m_sILSname;
   wxString m_sDyeName;
-  TnwxXmlPersistVector<CILSname> m_vNames;
-  SUBFamily m_SUBFamily;
+  TnwxXmlIOPersistVector<CILSname> m_io;
+  vector<CILSname *> m_vNames; // must be after m_io
+  //SUBFamily m_SUBFamily;
 };
 
 class CILSkit : public nwxXmlPersist
@@ -155,6 +187,16 @@ public:
     wxString sFile = pDir->GetILSLadderFileName(m_sFileName);
     return sFile;
   }
+#ifdef __WXDEBUG__
+  virtual bool LoadFromNode(wxXmlNode *p, void *pObj)
+  {
+    return nwxXmlPersist::LoadFromNode(p,pObj);
+  }
+  virtual bool LoadFromNode(wxXmlNode *p)
+  {
+    return nwxXmlPersist::LoadFromNode(p);
+  }
+#endif
 protected:
   virtual void RegisterAll(bool = false)
   {
@@ -182,6 +224,7 @@ public:
   }
 };
 */
+
 
 class CILSLadderInfo : public nwxXmlPersist
 {
@@ -236,17 +279,34 @@ public:
   {
     return m_bIsOK;
   }
+  const CILSfamily *GetFamily(const wxString &sName) const
+  {
+    const CILSfamily *pRtn = m_mapCILSfamily.Find(sName);
+    return pRtn;
+  }
+#ifdef __WXDEBUG__
+  virtual bool LoadFromNode(wxXmlNode *p, void *pObj)
+  {
+    return nwxXmlPersist::LoadFromNode(p,pObj);
+  }
+  virtual bool LoadFromNode(wxXmlNode *p)
+  {
+    return nwxXmlPersist::LoadFromNode(p);
+  }
+#endif
 
 protected:
   virtual void RegisterAll(bool = false)
   {
+    RegisterWxString(wxT("Version"),&m_sVersion);
     Register(wxT("LaneStandards"),&m_mapCILSfamily);
     Register(wxT("Kits"),&m_vKits);
   }
 
 private:
+  wxString m_sVersion;
   TnwxXmlPersistVector<CILSkit> m_vKits;
-  TnwxXmlPersistMap<CILSfamily,wxString> m_mapCILSfamily;
+  TnwxXmlPersistMap<wxString,CILSfamily> m_mapCILSfamily;
   bool m_bIsOK;
 
 };

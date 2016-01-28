@@ -1456,7 +1456,7 @@ void CFrameAnalysis::_ShowPreview()
         this,
         m_pSplitterTop,
         m_pOARfile,
-        m_pParent->GetKitColors(),
+        mainApp::GetKitColors(),
         true,
         6);
     }

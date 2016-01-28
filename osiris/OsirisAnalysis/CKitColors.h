@@ -23,18 +23,28 @@
 *
 * ===========================================================================
 *
-
+*
 *  FileName: CKitColors.h
 *  Author:   Douglas Hoffman
 *
+*  1/26/15 - Using the file kitcolors2.0.xml
+*    load the data structure and maintaining compatibility to the older version
+*    that used kitcolors.xml.  The classes CKitColors and CSingleKitColors
+*    are no longer subclasses of nwxXmlPersist, but use the classes 
+*    CKitColors2 (this source file) and CPersistKitList (CKitList.cpp/h)
+*    to load the XML data.
 */
 #ifndef __C_KIT_COLORS_H__
 #define __C_KIT_COLORS_H__
 
+#include <wx/string.h>
+#include "nwx/vectorptr.h"
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
-#include "wxIDS.h"
-#include "ConfigDir.h"
+
+class CKitColorDye;
+class CKitChannel;
+class CKitColors2;
 
 class CChannelColors : public nwxXmlPersist
 {
@@ -43,20 +53,53 @@ public:
   {
     RegisterAll(true); 
   }
-  virtual ~CChannelColors() 
+  virtual ~CChannelColors() {}
+  const wxString &GetDyeName() const
   {
+    return m_sDyeName;
   }
+  unsigned int GetChannelNumber() const
+  {
+    return m_nr;
+  }
+  const wxColour GetColorAnalyzed() const
+  {
+    return m_ColorAnalyzed;
+  }
+  const wxColour GetColorLadder() const
+  {
+    return m_ColorLadder;
+  }
+  const wxColour GetColorRaw() const
+  {
+    return m_ColorRaw;
+  }
+  const wxColour *GetColorAnalyzedPtr() const
+  {
+    return &m_ColorAnalyzed;
+  }
+  const wxColour *GetColorLadderPtr() const
+  {
+    return &m_ColorLadder;
+  }
+  const wxColour *GetColorRawPtr() const
+  {
+    return &m_ColorRaw;
+  }
+protected:
+  virtual void RegisterAll(bool bInConstructor = false);
+private:
   unsigned int m_nr;
   wxString m_sDyeName;
   wxColour m_ColorRaw;
   wxColour m_ColorAnalyzed;
   wxColour m_ColorLadder;
-protected:
-  virtual void RegisterAll(bool bInConstructor = false);
 };
 
 class CSingleKitColors : public nwxXmlPersist
 {
+  //  need to accommodate multiple ILS dye names/colors
+
 public:
   CSingleKitColors() : m_IOChannelColors(true)
   {
@@ -64,7 +107,7 @@ public:
   }
   virtual ~CSingleKitColors() 
   {
-    m_IOChannelColors.Cleanup();
+    vectorptr<CChannelColors>::cleanup(&m_vChannelColors);
   }
   const CChannelColors *GetColorChannel(unsigned int nChannel) const;
   size_t ChannelCount() const
@@ -108,7 +151,7 @@ public:
   bool Load();
 
   const wxColour &GetColor(
-    const wxString &sKitName, DATA_TYPE n, unsigned int nChannel);
+    const wxString &sKitName, DATA_TYPE n, unsigned int nChannel) const;
 
   const CSingleKitColors *GetKitColors(
     const wxString &sKitName) const;

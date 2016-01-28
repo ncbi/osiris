@@ -34,6 +34,7 @@
 #include "CKitColors.h"
 #include "CPlotData.h"
 #include "Platform.h"
+#include "CGridLocusColumns.h"
 #include "nwx/nwxString.h"
 #include "nwx/nwxMenuItem.h"
 
@@ -204,13 +205,16 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
       if(pChannelColors != NULL)
       {
         nID = _ID(ID_GET_CHANNEL_ID_FROM_NR(iu));
+        CGridLocusColumns::FORMAT_CHANNEL_DYE(&s,iu,(const wxChar *) pChannelColors->GetDyeName());
+        /*
         s = nwxString::FormatNumber((int)iu);
         s.Append(" - ");
-        s.Append(pChannelColors->m_sDyeName);
+        s.Append(pChannelColors->GetDyeName());
+        */
         pItem = new wxMenuItem(
           m_pMenuChannels,nID,s,"",wxITEM_CHECK);
 #if COLOR_MENU_ITEMS
-        pItem->SetBackgroundColour(pChannelColors->m_ColorAnalyzed);
+        pItem->SetBackgroundColour(pChannelColors->GetColorAnalyzed());
         pItem->SetTextColour(*wxWHITE);
 #endif
         m_pMenuChannels->Append(pItem);

@@ -65,7 +65,6 @@ bool CGridLocusColumns::SetupKit(
   bool bSetError)
 {
   wxString sProblem;
-  CKitColors kitColors;
   CPersistKitList *pKit = mainApp::GetKitList();
   const CLocusNameList *pLocus = 
     pKit->GetLocusNameList(sKitName);
@@ -109,7 +108,7 @@ bool CGridLocusColumns::SetupKit(
     int nILSchannel = -1;
     const CSingleKitColors *pKitColors;
     const CLocusNameChannel *plc;
-    pKitColors = kitColors.GetKitColors(sKitName);
+    pKitColors = mainApp::GetKitColors()->GetKitColors(sKitName);
 
     pGrid->SetMargins(0, wxSystemSettings::GetMetric(wxSYS_HSCROLL_Y) + 4);
     fnBold.SetWeight(wxFONTWEIGHT_BOLD);
@@ -235,8 +234,8 @@ bool CGridLocusColumns::SetupKit(
           // int k;
           pGrid->SetCellTextColour(0,nCol,*wxWHITE);
           pGrid->SetCellBackgroundColour(
-              0,nCol,pChannelColors->m_ColorAnalyzed);
-          psDyeLabel = (const wxChar *)(pChannelColors->m_sDyeName);
+              0,nCol,pChannelColors->GetColorAnalyzed());
+          psDyeLabel = (const wxChar *)(pChannelColors->GetDyeName());
           bColorSet = true;
         }
         FORMAT_CHANNEL_DYE(&sLabel,(unsigned int) nChannel, psDyeLabel);

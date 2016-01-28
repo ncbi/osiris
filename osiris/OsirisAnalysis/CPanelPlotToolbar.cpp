@@ -196,7 +196,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
     pCC = pColors->GetColorChannel(pData->GetKitName(),i);
     if(pCC != NULL)
     {
-      sLabel = pCC->m_sDyeName;
+      sLabel = pCC->GetDyeName();
     }
     else
     {

@@ -31,7 +31,8 @@
 
 #include "mainApp.h"
 #include "CKitColors.h"
-
+#include "CKitColors2.h"
+#include "ConfigDir.h"
 /////////////////////////////////////////////////////////////////////
 
 //         CSingleKitColors
@@ -61,7 +62,7 @@ const CChannelColors *CSingleKitColors::GetColorChannel(
     if(nChannel < m_vChannelColors.size())
     {
       pRtn = m_vChannelColors.at(nChannel);
-      if(pRtn->m_nr != nChannel)
+      if(pRtn->GetChannelNumber() != nChannel)
       {
         // we need the map
         pRtn = NULL;
@@ -76,15 +77,15 @@ const CChannelColors *CSingleKitColors::GetColorChannel(
         itr != m_vChannelColors.end();
         ++itr)
       {
-        itrm = m_mapChannelColors.find((*itr)->m_nr);
+        itrm = m_mapChannelColors.find((*itr)->GetChannelNumber());
         if(itrm != m_mapChannelColors.end())
         {
           m_mapChannelColors.erase(itrm);
         }
         m_mapChannelColors.insert(
           map<unsigned int, CChannelColors *>::value_type(
-              (*itr)->m_nr,*itr));
-        if((*itr)->m_nr == nChannel)
+              (*itr)->GetChannelNumber(),*itr));
+        if((*itr)->GetChannelNumber() == nChannel)
         {
           pRtn = *itr;
         }
@@ -150,7 +151,7 @@ const CSingleKitColors *CKitColors::GetKitColors(
 }
 
 const wxColour &CKitColors::GetColor(
-  const wxString &sKitName, DATA_TYPE n, unsigned int nChannel)
+  const wxString &sKitName, DATA_TYPE n, unsigned int nChannel) const
 {
   const wxColour *pRtn(&g_BLACK);
   const CSingleKitColors *pkc = GetKitColors(sKitName);
@@ -162,14 +163,14 @@ const wxColour &CKitColors::GetColor(
       switch(n)
       {
       case ANALYZED_DATA:
-        pRtn = &(pcc->m_ColorAnalyzed);
+        pRtn = pcc->GetColorAnalyzedPtr();
         break;
       case RAW_DATA:
-        pRtn = &(pcc->m_ColorRaw);
+        pRtn = pcc->GetColorRawPtr();
         break;
       case BASELINE_DATA:
       case LADDER_DATA:
-        pRtn = &(pcc->m_ColorLadder);
+        pRtn = pcc->GetColorLadderPtr();
         break;
       default:
         break;

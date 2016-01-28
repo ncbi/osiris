@@ -40,6 +40,7 @@
 
 class ConfigDir;
 class CPersistKitList;
+class CKitColors;
 class nwxXmlMRU;
 class CParmOsiris;
 class wxFile;
@@ -131,6 +132,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static bool ConfirmModificationsLost(wxWindow *parent);
   static ConfigDir *GetConfig();
   static nwxXmlMRU *GetMRU();
+  static CKitColors *GetKitColors();
   static CPersistKitList *GetKitList();
   static const wxString FormatWindowTitle(
     const wxString &fileName,
@@ -139,6 +141,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
     const wxDateTime *pTime = NULL);
   static wxWindow *GetTopLevelParent(wxWindow *p);
   
+  static const wxString EMPTY_STRING;
   static const int DIALOG_STYLE;
   // rfu min/max - min/max values for RFU in 'Run Analysis' dialog 
   // and 'Sample Thresholds/RFU' lab settings 
@@ -156,6 +159,7 @@ private:
   static ConfigDir *m_pConfig;
   static nwxXmlMRU *m_pMRU;
   static CPersistKitList *m_pKitList;
+  static CKitColors *m_pKitColors;
   static wxFile *m_pFout;
   static int g_count;
   static int g_nMaxLogLevel;

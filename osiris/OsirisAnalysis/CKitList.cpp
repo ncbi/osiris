@@ -32,6 +32,7 @@
 #include "CKitList.h"
 #include "nwx/nwxString.h"
 #include "nwx/vectorptr.h"
+#include "nwx/mapptr.h"
 #include "ConfigDir.h"
 #include "CILSLadderInfo.h"
 #include <memory>
@@ -90,6 +91,7 @@ void CPersistKitList::Clear()
     setptr<const CLocusNameChannel,CLocusNameChannelLess>::cleanup(p);
     delete p;
   }
+  mapptr<wxString,CKitChannelMap>::cleanup(&m_mapKitChannels);
   m_mLS.clear();
   m_mILS.clear();
   m_as.Clear();
@@ -98,6 +100,7 @@ void CPersistKitList::Clear()
   m_pLastKitLocus = NULL;
   m_pLastKitLS = NULL;
   m_pLastKit_ILS = NULL;
+  m_pLastKitChannelMap = NULL;
 }
 
 
@@ -139,6 +142,7 @@ bool CPersistKitList::Load()
     m_sLastKit = pKit->GetKitName();
     m_pLastKitLocus = NULL;
     m_pLastKitLS = NULL;
+    m_pLastKitChannelMap = NULL;
     LSitr itrLS = m_mLS.find(m_sLastKit);
     m_pLastKitLS = 
       (itrLS == m_mLS.end())
@@ -168,8 +172,48 @@ bool CPersistKitList::Load()
     }
   }
   nwxString::Trim(&m_sErrorMsg);
+  _HACK_27(&ldr);
   SortILS();
   return (nCount > 0);
+}
+void CPersistKitList::_HACK_27(CILSLadderInfo *pILS)
+{
+  map<wxString, wxArrayString *>::iterator itr,itrLS;
+  wxArrayString *pa,*paLS;
+  const wxString sFamily;
+  size_t nCount,n;
+  vector<CILSname *>::const_iterator itrn;
+  for(itr = m_mILS.begin(); itr != m_mILS.end(); ++itr)
+  {
+    pa = itr->second;
+    nCount = pa->GetCount();
+    if(nCount)
+    {
+      itrLS = m_mLS.find(itr->first);
+      if(itrLS == m_mLS.end())
+      {
+        paLS = new wxArrayString;
+        paLS->Alloc(12);
+        m_mLS.insert(map<wxString, wxArrayString *>::value_type(itr->first,paLS));
+      }
+      else
+      {
+        paLS = itrLS->second;
+      }
+      for(n = 0; n < nCount; n++)
+      {
+        const CILSfamily *pFam = pILS->GetFamily(pa->Item(n));
+        if(pFam != NULL)
+        {
+          const vector<CILSname *> &vn = pFam->GetNames();
+          for (itrn = vn.begin(); itrn != vn.end(); ++itrn)
+          {
+            paLS->Add((*itrn)->GetName());
+          }
+        }
+      }
+    }
+  }
 }
 
 void CPersistKitList::SortILS()
@@ -281,6 +325,17 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
     {
       bRtn = false;
     }
+  }
+  else if(!sNodeName.Cmp("FsaChannelMap"))
+  {
+    if(m_pLastKitChannelMap == NULL)
+    {
+      m_pLastKitChannelMap = new CKitChannelMap(wxT("Channel"));
+      m_mapKitChannels.insert(
+        map<wxString, CKitChannelMap *>::value_type(
+          m_sLastKit,m_pLastKitChannelMap));
+    }
+    bRtn = m_pLastKitChannelMap->LoadFromNode(pNode);
   }
   else
   {

@@ -37,8 +37,72 @@
 #include <wx/arrstr.h>
 #include "nwx/stde.h"
 #include "nwx/nwxXmlPersist.h"
+#include "nwx/nwxXmlPersistCollections.h"
 #include "nwx/CIncrementer.h"
 #include "nwx/nsstd.h"
+
+class CILSLadderInfo;
+
+//  new for 2.7 CKitChannelMap, CKitChannel
+//  CKitChannelMap stores <FsaChannelMap>
+//  CKitChannel stores <FsaChannelMap><Channel>
+
+class CKitChannel : public nwxXmlPersist
+{
+public:
+  CKitChannel() : nwxXmlPersist(true)
+  {
+    RegisterAll(true);
+  }
+  CKitChannel(const CKitChannel &x) : nwxXmlPersist(true)
+  {
+    RegisterAll(true);
+    (*this) = x;
+  }
+  const CKitChannel &operator = (const CKitChannel &x)
+  {
+    m_nKitNr = x.m_nKitNr;
+    m_nFsaNr = x.m_nFsaNr;
+    m_sColor = x.m_sColor;
+    m_sDyeName = x.m_sDyeName;
+    return *this;
+  }
+  const wxString &GetColor() const
+  {
+    return m_sColor;
+  }
+  const wxString &GetDyeName() const
+  {
+    return m_sDyeName;
+  }
+  int GetKitNr() const
+  {
+    return m_nKitNr;
+  }
+  int GetFsaNr() const
+  {
+    return m_nFsaNr;
+  }
+  int GetKey() const  
+  {
+    return m_nKitNr;
+  }
+protected:
+  virtual void RegisterAll(bool = false)
+  {
+    RegisterInt(wxT("KitChannelNumber"),&m_nKitNr);
+    RegisterInt(wxT("fsaChannelNumber"),&m_nFsaNr);
+    RegisterWxString(wxT("Color"),&m_sColor);
+    RegisterWxString(wxT("DyeName"),&m_sDyeName);
+  }
+private:
+  wxString m_sColor;
+  wxString m_sDyeName;
+  int m_nKitNr;
+  int m_nFsaNr;
+};
+
+typedef TnwxXmlPersistMap<int,CKitChannel> CKitChannelMap;
 
 class CLocusNameChannel : public nwxXmlPersist
 {
@@ -128,6 +192,8 @@ private:
   typedef map<wxString, wxArrayString *>::const_iterator LScitr;
   typedef map< wxString, CLocusNameList * >::iterator KLNCitr;
   typedef map< wxString, CLocusNameList * >::const_iterator KLNCcitr;
+  typedef map< wxString, CKitChannelMap *>::iterator KCMitr;
+  typedef map< wxString, CKitChannelMap *>::iterator KCMcitr;
 public:
   CPersistKitList() : nwxXmlPersist(true)
   {
@@ -148,6 +214,7 @@ public:
     Register("ILS",this);
     Register("LSBases",this);
     Register("ILSName",this);
+    Register("FsaChannelMap",this);
   }
   ~CPersistKitList()
   {
@@ -251,6 +318,7 @@ private:
   {
     m_sErrorMsg = "Cannot load ladder information.";
   }
+  void _HACK_27(CILSLadderInfo *pILS);
   bool m_bV1;
   int m_nInLoad;
   wxArrayString m_as;
@@ -261,10 +329,12 @@ private:
   nwxXmlIOwxString m_XmlString;
   wxString m_sErrorMsg;
   map< wxString, CLocusNameList * > m_mapKitLocus;
+  map< wxString, CKitChannelMap *> m_mapKitChannels;
 
   CLocusNameList *m_pLastKitLocus;
   wxArrayString *m_pLastKitLS;
   wxArrayString *m_pLastKit_ILS; // v2.7 ils family
+  CKitChannelMap *m_pLastKitChannelMap;
 };
 
 #endif

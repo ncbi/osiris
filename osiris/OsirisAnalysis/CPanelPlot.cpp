@@ -943,7 +943,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
         sChannelName =
           (pChannelColor == NULL)
           ? wxString::Format("%d",nChannel)
-          : pChannelColor->m_sDyeName;
+          : pChannelColor->GetDyeName();
         if(bLadder)
         {
           _AppendLadderPeaks(nChannel,sChannelName);
@@ -1032,7 +1032,7 @@ void CPanelPlot::_BuildOARlabels()
         sChannelName =
           (pChannelColor == NULL)
           ? wxString::Format("%d",nChannel)
-          : pChannelColor->m_sDyeName;
+          : pChannelColor->GetDyeName();
         const wxColour &colour(m_pColors->GetColor(
           m_pData->GetKitName(),ANALYZED_DATA,nChannel));
 
