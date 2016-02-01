@@ -1567,6 +1567,15 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold () {
 }
 
 
+double CraterSignal :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
+
+	if ((mNext == NULL) || (mPrevious == NULL))
+		return 2.0;
+
+	return (0.5 * fabs (mNext->GetMean () - mPrevious->GetMean ())) + (0.5 * nSigmas * (mPrevious->GetStandardDeviation () + mNext->GetStandardDeviation ()));
+}
+
+
 void CraterSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	DataSignal::OutputDebugID (comm, numHigherObjects);

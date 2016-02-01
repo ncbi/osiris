@@ -1650,8 +1650,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 //	double calculatedNormalWidth;
 	double mTimeTolerance = 0.0375;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
-	double mWidthToleranceForSpike = 2.0;  // Width must be less than this width to qualify as a spike
-	double nSigmaForCraters = 2.0;
+	double mWidthToleranceForSpike = 1.1;  // Width must be less than this width to qualify as a spike
+	double nSigmaForCraters = 2.0;  //2.0;
 	RGString info;
 	DataSignal* testSignal;
 	DataSignal* testSignal2;
@@ -1886,14 +1886,24 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 						continue;
 
 					// Now test to make sure this isn't two separate peaks, which would result in an exceptionally wide crater
+					// Use CoreBioComponent::TestForOffScale (double time) to test for laser off-scale as part of decision
+
+					if (nextSignal->GetApproximateBioID () - prevSignal->GetApproximateBioID () > 1.0) // The two peaks are more than 1 bp apart, so, too wide
+						continue;
 
 					double width = mLSData->GetWidthAtTime (0.5 * (prevSignal->GetMean () + nextSignal->GetMean ()));
+					double estimatedSigma = 0.5 * ((nextSignal->GetMean () - prevSignal->GetMean ()) + prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ()); // We might want to scale by height to be more accurate
 
-					if (prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation () > 1.9 * width)
+					//if (prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation () > 1.9 * width)
+					//	continue;
+
+					if (estimatedSigma > 2.1 * width) // It's too wide to be a crater...test to make sure coefficient is ok
 						continue;
 
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
 					//cout << " at bp = " << 0.5 * (nextSignal->GetApproximateBioID () + prevSignal->GetApproximateBioID ()) << endl;
+
+					// It's not too wide
 
 					testSignal = new CraterSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
@@ -2042,6 +2052,23 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDListIterator Pos (OverallList);
 	RGDListIterator Neg (OverallList);
 	cout << "Number of overall signals:  " << (int)OverallList.Entries() << endl;
+	RGDList peaksWithNonPositiveHeights;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (!(nextSignal->Peak () > 0.0))
+			peaksWithNonPositiveHeights.Append (nextSignal);
+	}
+
+	if (peaksWithNonPositiveHeights.Entries () > 0) {
+
+		cout << "Somehow we have identified " << peaksWithNonPositiveHeights.Entries () << " peaks with non-positive heights" << endl;
+	}
+
+	while (nextSignal = (DataSignal*) peaksWithNonPositiveHeights.GetFirst ())
+		OverallList.RemoveReference (nextSignal);
+
+	it.Reset ();
 
 	//
 	//	Have looked for craters and other multi-signals above, having been careful to check for positive/negative peaks and multiple peaks within approximately 
@@ -2091,6 +2118,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDListIterator probableIt (probablePullupPeaks);
 	RGDListIterator sameChannelIterator (peaksInSameChannel);
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	cout << "Primary Threshold = " << primaryThreshold << " RFU" << endl;
 	double nSigmasForPullup = 2.0;
 	int primaryChannel;
 	double primaryTolerance;
@@ -2101,10 +2129,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double primaryWidth;
 	double ratio;
 	list<int> pChannels;
+	bool report;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
 		// First test if above primaryThreshold and is not negative.  If so, search in vicinity using Pos and Neg to find peaks within region that could be pull-up
+
+		report = false;
 
 		primaryHeight = nextSignal->Peak ();
 
@@ -2118,7 +2149,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		primeSignal = nextSignal;
 		primaryChannel = nextSignal->GetChannel ();
 		primaryWidth = nextSignal->GetStandardDeviation ();
-		primaryTolerance = nSigmasForPullup * primaryWidth;
+		primaryTolerance = nextSignal->GetPrimaryPullupDisplacementThreshold (nSigmasForPullup);
 		primaryMean = nextSignal->GetMean ();
 		rightLimit = primaryMean + primaryTolerance;
 		leftLimit = primaryMean - primaryTolerance;
@@ -2126,6 +2157,15 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		double leastDistance;
 		double testDistance;
 		DataSignal* closestSignal;
+
+		if ((5571.0 < primaryMean) && (primaryMean < 5572.0))
+			report = true;
+
+		if (report) {
+
+			cout << "\n\nPossible primary at mean = " << primaryMean << " with height = " << primaryHeight << " and with width = " << primaryWidth << " and channel = " << primaryChannel << endl;
+			cout << "Left limit = " << leftLimit << " and Right limit = " << rightLimit << endl;
+		}
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
@@ -2138,12 +2178,24 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (nextSignal2->IsNegativePeak ()) {
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
+
+				if (report) {
+
+					cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
+				}
+
 				continue;
 			}
 
 			if (nextSignal2->Peak () < primaryHeight) {
 
 				probablePullupPeaks.Append (nextSignal2);
+
+				if (report) {
+
+					cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
+				}
+
 				continue;
 			}
 		}
@@ -2159,14 +2211,33 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (nextSignal2->IsNegativePeak ()) {
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
+
+				if (report) {
+
+					cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
+				}
+
 				continue;
 			}
 
 			if (nextSignal2->Peak () < primaryHeight) {
 
 				probablePullupPeaks.Append (nextSignal2);
+
+				if (report) {
+
+					cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
+				}
+
 				continue;
 			}
+		}
+
+		//cout << "Done with pull-up tests for peak at " << primaryMean << endl;
+
+		if (report) {
+
+			cout << "Number of probable pull-up peaks (including potential channel duplicates) + " << probablePullupPeaks.Entries () << endl;
 		}
 
 		if (probablePullupPeaks.IsEmpty ())
@@ -2278,7 +2349,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		// If we're here, we know nextSignal = primeSignal is primary and there are some pull-up peaks within specified distance
 		// First, test for spike
 
-		if ((primaryWidth < mWidthToleranceForSpike) || (probablePullupPeaks.Entries () == mNumberOfChannels - 1)) {  // primary is too narrow or all channels involved in bleed through
+		if ((primaryWidth < mWidthToleranceForSpike) && (probablePullupPeaks.Entries () == mNumberOfChannels - 1)) {  // primary is too narrow and all channels involved in bleed through
 
 			probableIt.Reset ();
 			primeSignal->SetMessageValue (spike, true);
@@ -2293,6 +2364,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 			mInterchannelLinkageList.push_back (iChannel);
+			pChannels.clear ();
 
 			while (testSignal = (DataSignal*) probablePullupPeaks.GetFirst ()) {		// this was wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
 
@@ -2302,7 +2374,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				ratio = 0.01 * floor (10000.0 * (testSignal->Peak () / primaryHeight) + 0.5);
 				testSignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
 				testSignal->SetMessageValue (pullup, true);
-				testSignal->AddCrossChannelSignalLink (primeSignal);
+			//	testSignal->AddCrossChannelSignalLink (primeSignal);
+
 				pChannels.push_back (testSignal->GetChannel ());
 				mNumberOfPullups++;  // fix this...we need to count pull-up peaks, not pull-up pairs...already have counting message which will be accurate and don't do anything with this anyway
 			}
@@ -2311,6 +2384,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			primeSignal->SetInterchannelLink (iChannel);  // this is sort of ok.  There can only be one primary signal interchannel link per signal, but pull-up links not needed, so it's ok.
 			primeSignal->SetMessageValue (primaryLink, true);
 			pChannels.sort ();
+			pChannels.unique ();
 
 			while (!pChannels.empty ()) {
 
@@ -2329,9 +2403,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	// Done finding all probable pull-ups and primary pull-ups.  Now edit previously created multi-peak list to remove those that are not really multi-peaks because they have no cross channel affect
 
+	cout << "Done finding all probable/possible pull-ups and primary pull-ups.  Number of primaries = " << mNumberOfPrimaryPullups << endl;
+
 	it.Reset ();
-
-
 
 	peaksInSameChannel.Clear ();
 	probablePullupPeaks.Clear ();
@@ -2374,6 +2448,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			else {
 
+				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+				nextSignal2->SetMessageValue (craterSidePeak, false);
+				nextSignal2 = nextSignal->GetNextLinkedSignal ();
+				nextSignal2->SetMessageValue (craterSidePeak, false);
+				OverallList.RemoveReference (nextSignal);
 				delete nextSignal;
 			}
 		}
@@ -2405,6 +2484,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			else {
 
+				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+				nextSignal2->SetMessageValue (craterSidePeak, false);
+				nextSignal2 = nextSignal->GetNextLinkedSignal ();
+				nextSignal2->SetMessageValue (craterSidePeak, false);
+				OverallList.RemoveReference (nextSignal);
 				delete nextSignal;
 			}
 		}
@@ -2412,7 +2496,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		delete nextMultiPeakList;
 	}
 
-	// Extract unlinked signals above primary peak threshold
+	cout << "Removed multi-signals with no cross channel effect" << endl;
+
+	// Now extract unlinked signals above primary peak threshold
 
 	RGDList** notPrimaryLists = new RGDList* [mNumberOfChannels + 1];
 

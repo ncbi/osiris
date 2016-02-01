@@ -331,6 +331,7 @@ public:
 	virtual int AnalyzeSampleLociSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AnalyzeCrossChannelSM ();
 	virtual int AnalyzeCrossChannelWithNegativePeaksSM ();
+	virtual int AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
 	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM ();
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();

@@ -570,6 +570,7 @@ public:
 	                                                                                                                       // with a proportionality coefficient of 1 / 4.47, so that a fit of 0.999 has a correction of 0.01 (changed from 1/10 07/23/2014)
 	virtual double GetPullupToleranceInBP (double noise) const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // see above
 	virtual double GetPrimaryPullupDisplacementThreshold () { return 2.0; }  // this is 2 seconds, but should never be called
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 2.0; }  // this is 2 seconds, but should never be called
 	virtual void RecalculatePullupTolerance () {}
 	virtual void ResetPullupTolerance (double p) { mPullupTolerance = p; }
 
@@ -1125,6 +1126,7 @@ public:
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold () { return 3.0 * StandardDeviation; }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return nSigmas * StandardDeviation; }
 
 	static double GetSigmaWidth () { return SigmaWidth; }
 	static void SetSigmaWidth (double width) { SigmaWidth = width; }
@@ -1287,6 +1289,7 @@ public:
 	virtual bool IsUnimodal () const;
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold () { return 3.0 * StandardDeviation; }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return nSigmas * StandardDeviation; }
 
 	virtual DataSignal* FindNextCharacteristicFromRight (const DataSignal& Signature, 
 		double& fit, RGDList& previous);
@@ -1379,6 +1382,7 @@ public:
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold () { return 3.0 * StandardDeviation; }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return nSigmas * StandardDeviation; }
 
 	static double GetSigmaWidth () { return SigmaWidth; }
 	static void SetSigmaWidth (double width) { SigmaWidth = width; }
@@ -1631,6 +1635,7 @@ public:
 	virtual double GetPullupToleranceInBP () const { return 0.0425; }
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold ();
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas);
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
@@ -1703,6 +1708,7 @@ public:
 	virtual void RecalculatePullupTolerance ();
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold () { return 0.0; }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.0; }  // should never be called
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 

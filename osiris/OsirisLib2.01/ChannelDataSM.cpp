@@ -913,14 +913,14 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 	//cout << "Promoted core signals to alleles" << endl;
 
 	//cout << "Testing for multisignals" << endl;
+	// The code below commented out on 01/29/2016 because, with new pull-up algorithms, we should not be reviewing prior decisions about craters/sigmoidal pull-ups
+	//TestForMultiSignalsSM ();
+	//it.Reset ();
 
-	TestForMultiSignalsSM ();
-	it.Reset ();
+	////cout << "Channel multisignals tested" << endl;
 
-	//cout << "Channel multisignals tested" << endl;
-
-	while (nextLocus = (Locus*) it ())
-		nextLocus->TestForMultiSignalsSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes);
+	//while (nextLocus = (Locus*) it ())
+	//	nextLocus->TestForMultiSignalsSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes);
 
 	//cout << "Locus multisiganls tested" << endl;
 

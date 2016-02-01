@@ -1234,6 +1234,12 @@ int CoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 }
 
 
+int CoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM () {
+
+	return 0;
+}
+
+
 int CoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM () {
 
 	return 0;
@@ -1484,7 +1490,13 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 		}
 
 		//AnalyzeCrossChannelSM ();	//	Moved here 07/31/2013...happy birthday, Mom.  You'd be 99 today.
-		AnalyzeCrossChannelWithNegativePeaksSM ();
+		//AnalyzeCrossChannelWithNegativePeaksSM ();  // Commented out 01/30/2016
+
+
+		// This is new algorithm that is primary peak centric...01/30/2016
+		AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
+
+
 	//	TestSignalsForLaserOffScaleSM ();	//  Moved inside AnalyzeCrossChannelWithNegativePeaksSM 09/09/2014
 
 		cout << "Analyzed cross channel links with negative peaks" << endl;
@@ -1554,7 +1566,9 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	}
 
 	//AnalyzeCrossChannelSM ();
-	AnalyzeCrossChannelWithNegativePeaksSM ();
+	//AnalyzeCrossChannelWithNegativePeaksSM ();  // Commented out 01/31/2016
+
+	AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
 //	TestSignalsForLaserOffScaleSM ();	//  Moved inside AnalyzeCrossChannelWithNegativePeaksSM 09/09/2014
 
 	Progress = 4;
