@@ -182,7 +182,7 @@ bool CGridLabThresholds::SetILSDyeName(const wxString &sDyeName)
     {
       CKitColors *pColors = mainApp::GetKitColors();
       const wxColour &color = pColors->GetColorByDye(sDyeName);
-      SetCellValue(sILSdye,0,m_nILScolumn);
+      SetCellValue(0,m_nILScolumn,sILSdye);
       SetCellBackgroundColour(0,m_nILScolumn,color);
       bRtn = true;
     }
