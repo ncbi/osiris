@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.61</VersionNumber>
-	<BuildTime>12 04 2015 12:09 PM</BuildTime>
+	<VersionNumber>6.62</VersionNumber>
+	<BuildTime>01 30 2016 11:08 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -537,7 +537,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smPrimaryInterchannelLink OR smNotInterchannelLink)</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Pull-up</Text>
 			<TextForData> from Primary Channel </TextForData>
