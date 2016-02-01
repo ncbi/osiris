@@ -36,6 +36,7 @@
 #define __C_KIT_COLORS_2_H__
 
 #include "nwx/nwxXmlPersistCollections.h"
+#include "wxIDS.h"
 
 class CKitColorDye : public nwxXmlPersist
 {
@@ -69,6 +70,27 @@ public:
   {
     return m_ColorLadder;
   }
+  const wxColour &GetColor(DATA_TYPE n) const
+  {
+    const wxColour *pRtn =NULL;
+    switch (n)
+    {
+    case ANALYZED_DATA:
+      pRtn = &GetColorAnalyzed();
+      break;
+    case RAW_DATA:
+      pRtn = &GetColorRaw();
+      break;
+    case BASELINE_DATA:
+    case LADDER_DATA:
+      pRtn = &GetColorLadder();
+      break;
+    default:
+      pRtn = &GetColorAnalyzed();
+      break;
+    }
+    return *pRtn;
+  }
 protected:
   virtual void RegisterAll(bool = false)
   {
@@ -99,13 +121,18 @@ public:
   }
   virtual ~CKitColors2()
   {
+    m_mapDyeColors.clear();
     m_io.Cleanup();
   }
-  const CKitColorDye &GetColorByName(const wxString &s) const
+  const CKitColorDye *GetColorByName(const wxString &s) const
   {
     std::map<wxString,CKitColorDye *>::const_iterator itr =
       m_mapKitColors.find(s);
-    return *(itr->second);
+    const CKitColorDye *pRtn =
+      (itr != m_mapKitColors.end())
+      ? itr->second
+      : NULL;
+    return pRtn;
   }
   const CKitColorDye *GetColorByDyeName(const wxString &s) const
   {

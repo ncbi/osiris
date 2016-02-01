@@ -31,28 +31,30 @@
 *    load the data structure and maintaining compatibility to the older version
 *    that used kitcolors.xml.  The classes CKitColors and CSingleKitColors
 *    are no longer subclasses of nwxXmlPersist, but use the classes 
-*    CKitColors2 (this source file) and CPersistKitList (CKitList.cpp/h)
+*    CKitColors2 and CPersistKitList (CKitList.cpp/h)
 *    to load the XML data.
 */
 #ifndef __C_KIT_COLORS_H__
 #define __C_KIT_COLORS_H__
 
 #include <wx/string.h>
-#include "nwx/vectorptr.h"
-#include "nwx/nwxXmlPersist.h"
-#include "nwx/nwxXmlPersistCollections.h"
+#include <wx/colour.h>
+#include "nwx/stdb.h"
+#include <map>
+#include "nwx/stde.h"
 
-class CKitColorDye;
-class CKitChannel;
-class CKitColors2;
+class CPersistKitList; // CKitList.h
+class CKitChannel;     // CKitList.h
+class CKitColors2;     // CKitColors2.h
+class CKitColorDye;    // CKitColors2.h
 
-class CChannelColors : public nwxXmlPersist
+class CChannelColors
 {
 public:
-  CChannelColors() 
-  {
-    RegisterAll(true); 
-  }
+  CChannelColors(
+      const CKitChannel *pChannel, 
+      const CKitColors2 *p);
+  CChannelColors(unsigned int nChannel, const wxString &sDyeName, const CKitColors2 *p);
   virtual ~CChannelColors() {}
   const wxString &GetDyeName() const
   {
@@ -86,9 +88,9 @@ public:
   {
     return &m_ColorRaw;
   }
-protected:
-  virtual void RegisterAll(bool bInConstructor = false);
+  const wxColour *GetColorPtr(DATA_TYPE n) const;
 private:
+  void _SetColors(const CKitColorDye *pDye);
   unsigned int m_nr;
   wxString m_sDyeName;
   wxColour m_ColorRaw;
@@ -96,62 +98,45 @@ private:
   wxColour m_ColorLadder;
 };
 
-class CSingleKitColors : public nwxXmlPersist
+class CSingleKitColors
 {
   //  need to accommodate multiple ILS dye names/colors
 
 public:
-  CSingleKitColors() : m_IOChannelColors(true)
-  {
-    RegisterAll(true);
-  }
-  virtual ~CSingleKitColors() 
-  {
-    vectorptr<CChannelColors>::cleanup(&m_vChannelColors);
-  }
+  CSingleKitColors(
+    const wxString &sKitName,
+    CPersistKitList *pKitList,
+    const CKitColors2 *pColors2);
+  virtual ~CSingleKitColors();
   const CChannelColors *GetColorChannel(unsigned int nChannel) const;
+  const CChannelColors *GetILSChannel(const wxString &sILSFamily);
   size_t ChannelCount() const
   {
-    return m_vChannelColors.size();
+    return m_mapChannelColors.size();
   }
   const wxString &GetKitName() const
   {
     return m_sKitName;
   }
-protected:
-  virtual void RegisterAll(bool bInConstructor = false);
 private:
+  std::map<unsigned int, CChannelColors *> m_mapChannelColors;
+  std::map<const wxString,CChannelColors *> m_mapILSColors;
   wxString m_sKitName;
-  vector<CChannelColors *> m_vChannelColors;
-  mutable map<unsigned int, CChannelColors *> m_mapChannelColors;
-  TnwxXmlIOPersistVector<CChannelColors> m_IOChannelColors;
+  unsigned int m_nILSchannel;
 };
 
-class CKitColors : public nwxXmlPersist
+class CKitColors
 {
 public:
-  CKitColors() : m_IOkitColors(true)
+  CKitColors() : m_pKitColors2(NULL)
   {
-    RegisterAll(true);
-    Load();
+    _Load();
   }
-  virtual ~CKitColors()
-  {
-    m_IOkitColors.Cleanup();
-  }
-  virtual void Init()
-  {
-    m_mapKitColors.clear();
-    nwxXmlPersist::Init();
-  }
-  virtual void Init(void *)
-  {
-    Init();
-  }
-  bool Load();
+  virtual ~CKitColors();
 
   const wxColour &GetColor(
     const wxString &sKitName, DATA_TYPE n, unsigned int nChannel) const;
+  const wxColour &GetColorByDye(const wxString &sDyeName, DATA_TYPE n = ANALYZED_DATA) const;
 
   const CSingleKitColors *GetKitColors(
     const wxString &sKitName) const;
@@ -164,14 +149,12 @@ public:
       (pKit == NULL) ? NULL : pKit->GetColorChannel(nChannel);
     return pRtn;
   }
-
-protected:
-  virtual void RegisterAll(bool bInConstructor = false);
-private:
   static const wxColour g_BLACK;
-  vector<CSingleKitColors *> m_vpKitColors;
-  mutable map<wxString,CSingleKitColors *> m_mapKitColors;
-  TnwxXmlIOPersistVector<CSingleKitColors> m_IOkitColors;
+
+private:
+  bool _Load();
+  std::map<const wxString,CSingleKitColors *> m_mapKitColors;
+  CKitColors2 *m_pKitColors2;
 };
 
 

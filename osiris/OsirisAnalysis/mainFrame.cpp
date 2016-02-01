@@ -430,7 +430,7 @@ CFramePlot *mainFrame::OpenGraphicFile(
     wxSize sz = GetChildSize();
     bool bShiftKeyDown = nwxKeyState::Shift();
     unsigned int nChannel = pData->GetChannelFromLocus(sLocus);
-    pPlot = new CFramePlot(this,sz,pData.release(),pFile,mainFrame::GetKitColors(),bShiftKeyDown,nChannel);
+    pPlot = new CFramePlot(this,sz,pData.release(),pFile,mainApp::GetKitColors(),bShiftKeyDown,nChannel);
     // call ZoomOut or ZoomToLocus AFTER Show as a workaround for a bug in wxPlotCtrl
     // otherwise we would put it in the CFramePlot constructor
     if((nChannel > 0) && !sLocus.IsEmpty())
@@ -753,7 +753,9 @@ void mainFrame::OnEditGridColours(wxCommandEvent &)
 void mainFrame::OnLabSettings(wxCommandEvent &)
 {
   {
+    wxBeginBusyCursor();
     CDialogVolumes dlg(DialogParent());
+    wxEndBusyCursor();
 //    CPointerHold<CDialogVolumes> x(m_pVolumes,&dlg);
     dlg.ShowModal();
   }

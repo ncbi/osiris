@@ -40,6 +40,7 @@
 
 class ConfigDir;
 class CPersistKitList;
+class CILSLadderInfo;
 class CKitColors;
 class nwxXmlMRU;
 class CParmOsiris;
@@ -134,6 +135,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static nwxXmlMRU *GetMRU();
   static CKitColors *GetKitColors();
   static CPersistKitList *GetKitList();
+  static CILSLadderInfo *GetILSLadderInfo();
   static const wxString FormatWindowTitle(
     const wxString &fileName,
     bool bModified = false,

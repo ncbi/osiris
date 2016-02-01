@@ -138,6 +138,10 @@ CPersistKitList *mainApp::GetKitList()
   }
   return m_pKitList;
 }
+CILSLadderInfo *mainApp::GetILSLadderInfo()
+{
+  return GetKitList()->GetILSLadderInfo();
+}
 
 bool mainApp::OnInit()
 {

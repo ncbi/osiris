@@ -124,9 +124,22 @@ public:
   {
     return m_sDyeName;
   }
-  const vector<CILSname *> &GetNames() const
+  const std::vector<CILSname *> &GetNames() const
   {
     return m_vNames;
+  }
+  bool HasLS(const wxString &sLSname)
+  {
+    std::vector<CILSname *>::const_iterator itr;
+    bool bRtn = false;
+    for(itr  = m_vNames.begin(); !bRtn && (itr != m_vNames.end()); ++itr)
+    {
+      if((*itr)->GetName() == sLSname)
+      {
+        bRtn = true;
+      }
+    }
+    return bRtn;
   }
 #ifdef __WXDEBUG__
   virtual bool LoadFromNode(wxXmlNode *p, void *pObj)
@@ -150,7 +163,7 @@ private:
   wxString m_sILSname;
   wxString m_sDyeName;
   TnwxXmlIOPersistVector<CILSname> m_io;
-  vector<CILSname *> m_vNames; // must be after m_io
+  std::vector<CILSname *> m_vNames; // must be after m_io
   //SUBFamily m_SUBFamily;
 };
 
@@ -181,7 +194,7 @@ public:
   {
     return m_sFileName;
   }
-  wxString GetFilePath()
+  wxString GetFilePath() const
   {
     ConfigDir *pDir = mainApp::GetConfig();
     wxString sFile = pDir->GetILSLadderFileName(m_sFileName);
@@ -229,23 +242,14 @@ public:
 class CILSLadderInfo : public nwxXmlPersist
 {
 public:
-  CILSLadderInfo(bool bLoad = false) : 
-    nwxXmlPersist(true),
-    m_vKits(wxT("Set")), 
-    m_mapCILSfamily(wxT("ILS"),false),
-    m_bIsOK(false)
+  CILSLadderInfo(bool bLoad = false);
+  virtual ~CILSLadderInfo()
   {
-    RegisterAll(true);
-    if(bLoad)
-    {
-      Load();
-    }
+    _Cleanup();
   }
-  virtual ~CILSLadderInfo() 
-  {
-    m_vKits.Clear();
-  }
-  vector<CILSkit *> *GetKits()
+  bool Load();
+
+  const std::vector<CILSkit *> *GetKits() const
   {
     return m_vKits.Get();
   }
@@ -263,27 +267,38 @@ public:
     }
     return bRtn;
   }
-  bool Load()
-  {
-    ConfigDir *pDir = mainApp::GetConfig();
-    wxString sFile = pDir->GetILSLadderFileName();
-    m_vKits.Clear();
-    m_bIsOK = LoadFile(sFile);
-    if(!m_bIsOK)
-    {
-      m_vKits.Clear();
-    }
-    return m_bIsOK;
-  }
   bool IsOK() const
   {
     return m_bIsOK;
   }
-  const CILSfamily *GetFamily(const wxString &sName) const
+  const CILSfamily *GetFamily(const wxString &sILSName) const
   {
-    const CILSfamily *pRtn = m_mapCILSfamily.Find(sName);
+    const CILSfamily *pRtn = m_mapCILSfamily.Find(sILSName);
     return pRtn;
   }
+  const wxString &GetDyeName(const wxString &sILSName) const
+  {
+    const CILSfamily *pFam = GetFamily(sILSName);
+    const wxString &s = (pFam != NULL) ? pFam->GetDyeName() : mainApp::EMPTY_STRING;
+    return s;
+  }
+  const wxString GetDyeNameFromLS(const wxString &sLSname) const
+  {
+    const std::map<wxString,CILSfamily *> *pMap = m_mapCILSfamily.Get();
+    std::map<wxString,CILSfamily *>::const_iterator itr;
+    wxString sRtn;
+    for(itr = pMap->begin(); sRtn.IsEmpty() && (itr != pMap->end()); ++itr)
+    {
+      if(itr->second->HasLS(sLSname))
+      {
+        sRtn = itr->second->GetDyeName();
+      }
+    }
+    return sRtn;
+  }
+  const wxString &FindDisplayName(const wxString &sLSname) const;
+  const wxString &FindLSname(const wxString &sDisplayName) const;
+
 #ifdef __WXDEBUG__
   virtual bool LoadFromNode(wxXmlNode *p, void *pObj)
   {
@@ -304,9 +319,12 @@ protected:
   }
 
 private:
+  void _Cleanup();
+  void _BuildNameToDisplay() const;
   wxString m_sVersion;
   TnwxXmlPersistVector<CILSkit> m_vKits;
   TnwxXmlPersistMap<wxString,CILSfamily> m_mapCILSfamily;
+  mutable std::map<const wxString ,const wxString &> m_mapNameToDisplay;
+  mutable std::map<const wxString ,const wxString &> m_mapDisplayToName;
   bool m_bIsOK;
-
 };

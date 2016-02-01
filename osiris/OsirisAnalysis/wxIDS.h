@@ -330,7 +330,11 @@ enum
   IDhistoryPanel,
   IDhistoryButton,
   IDhistoryPrevNext,
-  IDsplitterWindow
+  IDsplitterWindow,
+
+  // ILS Family in Lab Settings and Analysis dialog
+
+  ID_ILS_FAMILY
 
 };
 

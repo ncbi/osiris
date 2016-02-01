@@ -105,12 +105,13 @@ private:
   wxButton *m_pbApply;
   wxNotebook *m_pNotebook;
 
-  CPanelLabGeneral *m_pGeneral;
-  CPanelLabSampleThresholds *m_pSampleThresholds;
-  CPanelLabLocusThresholds *m_pLocusThresholds;
-  CPanelLabNameStrings *m_pFilenames;
-  CPanelLabMarkerSet *m_pMarkerSet;
+  CPanelLabGeneral *m_pGeneral;                    //  label - General
+  CPanelLabSampleThresholds *m_pSampleThresholds;  //    File/Sample Names
+  CPanelLabLocusThresholds *m_pLocusThresholds;    //    Thresholds
+  CPanelLabNameStrings *m_pFilenames;              //    Assignments
+  CPanelLabMarkerSet *m_pMarkerSet;                //    Sample Limits
   CPanelLabReviewAcceptance *m_pReview;
+  size_t m_nLocusThresholds; // panel index for CPanelLabLocusThresholds
   bool m_bReadOnly;
   bool m_bAlwaysReadOnly;
 //  const set<wxString> *m_pSetKits;
