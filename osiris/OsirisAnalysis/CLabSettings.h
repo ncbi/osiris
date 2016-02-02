@@ -791,8 +791,8 @@ public:
 class CLabSynonym : public nwxXmlPersistVectorWxString
 {
 public:
-  CLabSynonym() : nwxXmlPersistVectorWxString(g_SYNONYM)
-  {;}
+  CLabSynonym() : nwxXmlPersistVectorWxString(g_SYNONYM,true)
+  {}
   virtual ~CLabSynonym() {;}
 private:
   static const wxString g_SYNONYM;

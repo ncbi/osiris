@@ -160,7 +160,8 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   unsigned int iu;
 
   m_nChannelCount = pData->GetChannelCount();
-  
+  unsigned int nChannelILS = pData->GetILSChannel();
+
   // build data menu
 
   m_pMenuData = new wxMenu;
@@ -201,16 +202,13 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   {
     for(iu = 1; iu <= m_nChannelCount; iu++)
     {
-      pChannelColors = pKitColors->GetColorChannel(iu);
+      pChannelColors = (nChannelILS == iu)
+        ?  pKitColors->GetColorChannelFromLS(pData->GetParameters().GetLsName())
+        :  pKitColors->GetColorChannel(iu);
       if(pChannelColors != NULL)
       {
         nID = _ID(ID_GET_CHANNEL_ID_FROM_NR(iu));
         CGridLocusColumns::FORMAT_CHANNEL_DYE(&s,iu,(const wxChar *) pChannelColors->GetDyeName());
-        /*
-        s = nwxString::FormatNumber((int)iu);
-        s.Append(" - ");
-        s.Append(pChannelColors->GetDyeName());
-        */
         pItem = new wxMenuItem(
           m_pMenuChannels,nID,s,"",wxITEM_CHECK);
 #if COLOR_MENU_ITEMS

@@ -953,7 +953,7 @@ void CLabRFU::RegisterAll(bool b)
     (void *)&m_dStutter);
   Register(
     "PlusStutterThreshold",
-    CLabSettings::GetIOdouble(),
+    CLabSettings::GetIOdoubleGt0(),
     (void *)&m_dPlusStutter);
   Register(
     "AdenylationThreshold",

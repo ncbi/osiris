@@ -115,6 +115,29 @@ const CChannelColors *CSingleKitColors::GetColorChannel(
     (itr != m_mapChannelColors.end()) ? itr->second : NULL;
   return pRtn;
 }
+const CChannelColors *CSingleKitColors::GetColorChannelFromLS(
+  const wxString &sLSname) const
+{
+  CILSLadderInfo *pILS = mainApp::GetILSLadderInfo();
+  const CILSfamily *pFamily = pILS->GetFamilyFromLS(sLSname);
+  const wxString &sILS = (pFamily != NULL) ? pFamily->GetILSname() : wxEmptyString;
+  const CChannelColors *pCC = GetILSChannel(sILS);
+  return pCC;
+}
+const CChannelColors *CSingleKitColors::GetILSChannel(const wxString &sILSFamily) const
+{
+  std::map<const wxString, CChannelColors *>::const_iterator itr =
+    m_mapILSColors.find(sILSFamily);
+  const CChannelColors *pRtn = NULL;
+  if(itr != m_mapILSColors.end())
+  { pRtn = itr->second;
+  }
+  else
+  { pRtn = GetColorChannel(m_nILSchannel);
+  }
+  return pRtn;
+}
+
 CSingleKitColors::~CSingleKitColors() 
 {
   mapptr<unsigned int, CChannelColors>::cleanup(&m_mapChannelColors);
@@ -188,6 +211,14 @@ const wxColour &CKitColors::GetColor(
   const CSingleKitColors *pkc = GetKitColors(sKitName);
   const CChannelColors *pcc = (pkc != NULL) ? pkc->GetColorChannel(nChannel) : NULL;
   const wxColour *pRtn = (pcc != NULL) ? pcc->GetColorPtr(n) : &g_BLACK;
+  return *pRtn;
+}
+const wxColour &CKitColors::GetColorFromLS(
+  const wxString &sKitName, DATA_TYPE n, const wxString &sLSname) const
+{
+  const CSingleKitColors *pkc = GetKitColors(sKitName);
+  const CChannelColors *pcc = (pkc != NULL) ? pkc->GetColorChannelFromLS(sLSname) : NULL;
+  const wxColour *pRtn = (pcc != NULL) ? pcc->GetColorPtr(n) : wxBLACK;
   return *pRtn;
 }
 const wxColour &CKitColors::GetColorByDye(const wxString &sDyeName, DATA_TYPE n) const

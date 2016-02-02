@@ -116,6 +116,10 @@ public:
     m_sDyeName = x.m_sDyeName;
     vectorptr<CILSname>::copy(&m_vNames,x.m_vNames);
   }
+  const wxString &GetILSname() const
+  {
+    return m_sILSname;
+  }
   const wxString &GetKey() const
   {
     return m_sILSname;
@@ -282,18 +286,25 @@ public:
     const wxString &s = (pFam != NULL) ? pFam->GetDyeName() : mainApp::EMPTY_STRING;
     return s;
   }
-  const wxString GetDyeNameFromLS(const wxString &sLSname) const
+  const CILSfamily *GetFamilyFromLS(const wxString &sLSname) const
   {
     const std::map<wxString,CILSfamily *> *pMap = m_mapCILSfamily.Get();
     std::map<wxString,CILSfamily *>::const_iterator itr;
-    wxString sRtn;
-    for(itr = pMap->begin(); sRtn.IsEmpty() && (itr != pMap->end()); ++itr)
+    const CILSfamily *pRtn = NULL;
+    for(itr = pMap->begin(); (pRtn == NULL) && (itr != pMap->end()); ++itr)
     {
       if(itr->second->HasLS(sLSname))
       {
-        sRtn = itr->second->GetDyeName();
+        pRtn = itr->second;
       }
     }
+    return pRtn;
+  }
+  const wxString GetDyeNameFromLS(const wxString &sLSname) const
+  {
+    wxString sRtn;
+    const CILSfamily *pFam = GetFamilyFromLS(sLSname);
+    if(pFam != NULL) { sRtn = pFam->GetDyeName(); }
     return sRtn;
   }
   const wxString &FindDisplayName(const wxString &sLSname) const;

@@ -109,7 +109,8 @@ public:
     const CKitColors2 *pColors2);
   virtual ~CSingleKitColors();
   const CChannelColors *GetColorChannel(unsigned int nChannel) const;
-  const CChannelColors *GetILSChannel(const wxString &sILSFamily);
+  const CChannelColors *GetColorChannelFromLS(const wxString &sLSname) const;
+  const CChannelColors *GetILSChannel(const wxString &sILSFamily) const;
   size_t ChannelCount() const
   {
     return m_mapChannelColors.size();
@@ -136,6 +137,8 @@ public:
 
   const wxColour &GetColor(
     const wxString &sKitName, DATA_TYPE n, unsigned int nChannel) const;
+  const wxColor &GetColorFromLS(
+    const wxString &sKitName, DATA_TYPE n, const wxString &sLSname) const;
   const wxColour &GetColorByDye(const wxString &sDyeName, DATA_TYPE n = ANALYZED_DATA) const;
 
   const CSingleKitColors *GetKitColors(
