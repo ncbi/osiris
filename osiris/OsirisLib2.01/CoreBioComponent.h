@@ -408,6 +408,13 @@ public:
 	static int GetScope () { return 4; }
 	static bool TestForOffScale (double time);
 
+	static void SetILSDyeName (const RGString& name) { ILSDyeName = name; }
+	static RGString GetILSDyeName () { return ILSDyeName; }
+	static void BuildDyeNameArray (int nChannels) { DyeNames = new RGString [nChannels + 1]; }
+	static void SetDyeName (int i, const RGString& name) { DyeNames [i] = name; }
+	static RGString GetDyeName (int i) { return DyeNames [i]; }
+	static bool DyeNamesUnset () { return (DyeNames == NULL); }
+
 	static void SetOffScaleDataLength (int length) { OffScaleDataLength = length; }
 
 	//************************************************************************************************************************************
@@ -465,6 +472,8 @@ protected:
 	static double minPrimaryPullupThreshold;
 	static bool UseHermiteTimeTransforms;
 	static bool UseNaturalCubicSplineTimeTransform;
+	static RGString ILSDyeName;
+	static RGString* DyeNames;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();

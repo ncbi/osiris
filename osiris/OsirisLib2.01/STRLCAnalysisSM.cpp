@@ -779,6 +779,18 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	RGString GraphicsDirectory = FullPathForReports;
 	RGString idString;
 
+	cout << "Expected dye names:  ";
+
+	for (i=1; i<=expectedNumberOfChannels; i++) {
+
+		if (i > 1)
+			cout << ", ";
+
+		cout << CoreBioComponent::GetDyeName (i).GetData ();
+	}
+
+	cout << "\n\n";
+
 	//if (printGraphics)
 	//	RGDirectory::MakeDirectory (GraphicsDirectory);
 

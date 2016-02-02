@@ -197,7 +197,7 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 	bool upperBoundFound = false;
 	RGString trueString ("true");
 	RGString familyName = BaseLocus::GetILSFamilyName ();
-//	cout << "Current Family Name = " << familyName.GetData () << endl;  // This was a test to make sure the family name is known at this point.  Test succeeded 12/31/2015.
+	//cout << "Current Family Name = " << familyName.GetData () << endl;  // This was a test to make sure the family name is known at this point.  Test succeeded 12/31/2015.
 	bool useILSFamilies = PopulationCollection::UseILSFamiliesInLadderFile ();  // if true, use families; otherwise, use the old way.
 	bool isValid = true;
 	size_t StartPosition = 0;

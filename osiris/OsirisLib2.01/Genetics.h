@@ -113,9 +113,10 @@ struct IdealControlSetInfo {
 
 struct ILSNameIndexes {
 
-	ILSNameIndexes (const RGString& name, size_t s, size_t e) { mName = name; mStartIndex = s; mEndIndex = e; }
+	ILSNameIndexes (const RGString& name, size_t s, size_t e, const RGString& dyeName) { mName = name; mStartIndex = s; mEndIndex = e; mDyeName = dyeName; }
 
 	RGString mName;
+	RGString mDyeName;
 	size_t mStartIndex;
 	size_t mEndIndex;
 };
@@ -637,6 +638,7 @@ public:
 	RGString GetError () const { return Msg; }
 	RGString GetLaneStandardName () const;
 	RGString GetFamilyName () const { return mFamilyName; }
+	RGString GetDyeName () const { return mDyeName; }
 	int GetNumberOfCharacteristics () const;
 	double GetMinimumCharacteristic () const;
 	double GetMaximumCharacteristic () const;
@@ -645,6 +647,7 @@ public:
 
 	void SetLaneStandardName (const RGString& name);
 	void SetFamilyName (const RGString& name) { mFamilyName = name; }
+	void SetDyeName (const RGString& name) { mDyeName = name; }
 	int SelectBestSubsetOfCharacteristics (RGDList& curveList, double& correlation);  // returns index of first (from 0) in contiguous list of characteristics
 	int AssignLaneStandardSignals (RGDList& curveList);   // takes first mNumberOfCharacteristics elements
 
@@ -680,6 +683,7 @@ protected:
 	int mNumberOfCharacteristics;
 	RGString Msg;
 	RGString mFamilyName;
+	RGString mDyeName;
 };
 
 
