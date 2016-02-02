@@ -2053,16 +2053,23 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDListIterator Neg (OverallList);
 	cout << "Number of overall signals:  " << (int)OverallList.Entries() << endl;
 	RGDList peaksWithNonPositiveHeights;
+	i = 0;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (!(nextSignal->Peak () > 0.0))
+		if (!(nextSignal->Peak () > 0.0)) {
+
 			peaksWithNonPositiveHeights.Append (nextSignal);
+
+			if (nextSignal->IsNegativePeak ())
+				i++;
+		}
 	}
 
 	if (peaksWithNonPositiveHeights.Entries () > 0) {
 
 		cout << "Somehow we have identified " << peaksWithNonPositiveHeights.Entries () << " peaks with non-positive heights" << endl;
+		cout << "Of these, " << i << " are from negative peak fits" << endl;
 	}
 
 	while (nextSignal = (DataSignal*) peaksWithNonPositiveHeights.GetFirst ())
@@ -2119,7 +2126,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDListIterator sameChannelIterator (peaksInSameChannel);
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
 	cout << "Primary Threshold = " << primaryThreshold << " RFU" << endl;
-	double nSigmasForPullup = 2.0;
+	double nSigmasForPullup = 1.0;
 	int primaryChannel;
 	double primaryTolerance;
 	double primaryMean;
@@ -2129,13 +2136,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double primaryWidth;
 	double ratio;
 	list<int> pChannels;
-	bool report;
+	//bool report;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
 		// First test if above primaryThreshold and is not negative.  If so, search in vicinity using Pos and Neg to find peaks within region that could be pull-up
 
-		report = false;
+	//	report = false;
 
 		primaryHeight = nextSignal->Peak ();
 
@@ -2158,14 +2165,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		double testDistance;
 		DataSignal* closestSignal;
 
-		if ((5571.0 < primaryMean) && (primaryMean < 5572.0))
-			report = true;
+		//if ((5571.0 < primaryMean) && (primaryMean < 5572.0))
+		//	report = true;
 
-		if (report) {
+		//if (report) {
 
-			cout << "\n\nPossible primary at mean = " << primaryMean << " with height = " << primaryHeight << " and with width = " << primaryWidth << " and channel = " << primaryChannel << endl;
-			cout << "Left limit = " << leftLimit << " and Right limit = " << rightLimit << endl;
-		}
+		//	cout << "\n\nPossible primary at mean = " << primaryMean << " with height = " << primaryHeight << " and with width = " << primaryWidth << " and channel = " << primaryChannel << endl;
+		//	cout << "Left limit = " << leftLimit << " and Right limit = " << rightLimit << endl;
+		//}
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
@@ -2179,10 +2186,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
 
-				if (report) {
+				//if (report) {
 
-					cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
-				}
+				//	cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
+				//}
 
 				continue;
 			}
@@ -2191,10 +2198,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				probablePullupPeaks.Append (nextSignal2);
 
-				if (report) {
+				//if (report) {
 
-					cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
-				}
+				//	cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
+				//}
 
 				continue;
 			}
@@ -2212,10 +2219,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
 
-				if (report) {
+				//if (report) {
 
-					cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
-				}
+				//	cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
+				//}
 
 				continue;
 			}
@@ -2224,10 +2231,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				probablePullupPeaks.Append (nextSignal2);
 
-				if (report) {
+				//if (report) {
 
-					cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
-				}
+				//	cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
+				//}
 
 				continue;
 			}
@@ -2235,10 +2242,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		//cout << "Done with pull-up tests for peak at " << primaryMean << endl;
 
-		if (report) {
+		//if (report) {
 
-			cout << "Number of probable pull-up peaks (including potential channel duplicates) + " << probablePullupPeaks.Entries () << endl;
-		}
+		//	cout << "Number of probable pull-up peaks (including potential channel duplicates) + " << probablePullupPeaks.Entries () << endl;
+		//}
 
 		if (probablePullupPeaks.IsEmpty ())
 			continue;   // There are no probable pull-up peaks, so go on to next peak.
