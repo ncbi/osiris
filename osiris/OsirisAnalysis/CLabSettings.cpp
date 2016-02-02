@@ -652,8 +652,7 @@ const char *CLabSpecimenCategory::LongestType()
 
 bool CLabSpecimenCategory::IndexInRange(size_t ndx)
 {
-  bool bInRange =
-    (ndx >= 0) && (ndx < TypeCount());
+  bool bInRange = (ndx < TypeCount());
 #ifdef _DEBUG
   if(!bInRange)
   {

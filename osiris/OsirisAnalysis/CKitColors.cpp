@@ -120,7 +120,7 @@ const CChannelColors *CSingleKitColors::GetColorChannelFromLS(
 {
   CILSLadderInfo *pILS = mainApp::GetILSLadderInfo();
   const CILSfamily *pFamily = pILS->GetFamilyFromLS(sLSname);
-  const wxString &sILS = (pFamily != NULL) ? pFamily->GetILSname() : wxEmptyString;
+  const wxString &sILS = (pFamily != NULL) ? pFamily->GetILSname() : mainApp::EMPTY_STRING;
   const CChannelColors *pCC = GetILSChannel(sILS);
   return pCC;
 }

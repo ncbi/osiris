@@ -50,6 +50,7 @@ public:
   {
     m_sName = x.m_sName;
     m_sDisplayName = x.m_sDisplayName;
+    return *this;
   }
   const wxString &GetName() const
   {
@@ -115,6 +116,7 @@ public:
     m_sILSname = x.m_sILSname;
     m_sDyeName = x.m_sDyeName;
     vectorptr<CILSname>::copy(&m_vNames,x.m_vNames);
+    return *this;
   }
   const wxString &GetILSname() const
   {
