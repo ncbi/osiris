@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict 'vars';
 use GetVersion;
+my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
 my $VCDIR = "/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
@@ -206,11 +207,10 @@ sub CopyMac
   chomp $dir;
   length($dir) && (chdir($dir) || die("Cannot chdir ${dir}"));
 
-  my $TOP = $ENV{HOME} . "/Apps";
-  if (!(-d $TOP))
+  my $TOP = $MAC_TOP_DIR;
+  if (! -d $TOP)
   {
-    $TOP = "/Applications";
-    (-d $TOP) || die("Cannot find destination folder ${TOP}");
+    &MKDIR($TOP);
   }
   my $APPDIR = "${TOP}/Osiris.app";
   my $CONTENTS = "${APPDIR}/Contents";

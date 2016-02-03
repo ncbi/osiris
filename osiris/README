@@ -44,18 +44,41 @@
 #
 # wxWidgets:
 #
-#  Build as "Multithreaded" (/MD) with UNICODE and 
-#  set the environment variable,
-#  WXHOME, to the folder containing wxWidgets 3.0.1 such that
-#  there exists %WXHOME%\include and %WXHOME%\lib
+#  OSIRIS uses wxWidgets v 3.0.1, however their web site recommends 3.0.2.
+#  Download wxWidgets at http://wxwidgets.org/downloads/ and select either 
+#  the ZIP or 7z download.
+#  Create a new folder, (for example wxWidgets-3.0.2) and unpack the 
+#  contents of the zip file there.
+#  Set the environment variable WXHOME to the full path of this folder.  
+#  This is done in Control Panel, search for "environment"
+#  Go to the wxWidgets "build" folder, then "msw"
+#  Select the appropriate solution (.sln) file for your version of Visual 
+#  C++. (In visual C++, see Help -> About Microsoft Visual Studio)  It 
+#  should be 10 or later to build OSIRIS.
+#  Build in Visual C++ for "Release" and "Win32" and optionally for "Debug" 
+#  and "Win32"  Both can coexist in the same directory structure.
 #
 # Build OSIRIS:
 #
-#  Then using Visual Studio or VC++ 2010 (Version 10) with SP1
-#  build all projects found in ./osirisAll.sln
-#  including the Setup project which creates an .msi file that can 
-#  later be installed.
-#  Make sure you are building for 'Release' and not 'Debug'
+#  OSIRIS is built with Microsoft Visual C++ from Microsoft Visual Studio 
+#  2010 Professional.  Use of a newer version of Visual C++ may result in 
+#  compiler errors.
+#  It is important that the Visual C++ environment is started AFTER setting 
+#  WXHOME in the environment.
+#  Download the source code for version 2.6 (or 2.4 or later) from 
+#  https://github.com/ncbi/osiris Version 2.3 requires an older version of 
+#  wxWidgets.  Select the version from the "Branch" pulldown on the left 
+#  side of the web page and select "Download ZIP" from the right side.  
+#  Unpack the zip file and go to the "osiris" folder.
+#  Open the solution file, osirisAll.sln with Visual C++ 2010 (or later)
+#  Select "Release" and "Win32" in the toolbar or from the menu
+#  bar: Build -> Configuration Manager.
+#  Build the solution.  From the menu bar: Build -> Rebuild Solution
+#  Optional - If you built wxWidgets for "Debug" you can also build OSIRIS 
+#  for "Debug"  however it recommended that you copy the directory 
+#  structure of an OSIRIS installation to OsirisAnalysis/Debug except for 
+#  OsirisAnalysis.exe
+#  
 #  An alternative to creating an .msi file is
 #  to run a perl script, .\ZipPerl\MakeZip.pl
 #  which will set up the directory structure in .\ZipPerl\Osiris
@@ -82,36 +105,87 @@
 ###########################################################################
 #
 #
-#  macintosh 10.9 build
+#  macintosh 10.9 - 10.10 build - UNIX command line
 #
 #
-# this file is a shell script which with autotools will
-# build OSIRIS on the macintosh, provided that the development
-# tools provided with MacOS are installed.
-# This has been tested with MacOS 10.10.5
+# Make sure you have the developer tools for Macintosh installed.
+# From the command line run the following:
 #
-# to build, set WXHOME in the environment such that
-# $WXHOME/include and $WXHOME/lib exist and contain the necessary
-# include files and libraries for wxWidgets, or modify
-# the shell script, findwx, to echo the appropriate
-# path for wxWidgets
+#  gcc --version
 #
-#  to build OSIRIS, run the following commands
-#    sh README
-#    make
+# If gcc is not installed, you will receive a message indicating that, 
+# otherwise it will display version information.
 #
-#  to install, run the script, cpmac, in this folder
+# Build wxWidgets 3.0.1 - Go to http://wxwidgets.org/downloads/
+# and download the source code from the link showing: 
+#    "Source for Linux, OS X,etc."
+# Unpack the download to a new directory, for example
+# from the directory containing the download, run the following:
+#   tar tvf wxWidgets-3.0.2.tar.bz2
+# This will unpack the source code into a directory named 
+#   wxWidgets-3.0.2
+# change to that directory and create a new directory, build-cocoa
 #
-#    sh cpmac
+#  cd wxWidgets-3.0.2
+#  mkdir build-cocoa
 #
-#      this script will build the Osiris directory structure in
-#      /Applications/Osiris.app if the user has write permission,
-#      otherwise it will build in ~/Apps/Osiris.app
-#      Following that, it will build a tar.gz file at 
-#      either in this directory or in the directory specified by
-#      the environment variable OSIRISTGZ if it is writable
+# there is a shell script file in this osiris distribution, in 
+# the folder build-osx, named config.sh
+# copy that file to wxWidgets-3.0.2/build-cocoa
 #
-
+# if the osiris directory and wxWidgets have the same parent directory, the
+# following commands should work from the wxWidgets directory
+#
+#  cp ../../osiris/build-osx/config.sh ./build-cocoa/config.sh
+# 
+# change directory to wxWidgets-3.0.2/build-cocoa and run the script
+#   cd wxWidgets-3.0.2/build-cocoa
+#   sh config.sh
+#
+# when finished, the output will be in a file, build_log.txt
+# make sure there are no error messages at the end of the file
+#
+# install wxWidgets.  The default installation location from the
+# build script is  ~/local/wxRelease where ~ represents the
+# user's home directory
+#
+# run the following command:
+#   make install
+#
+# then make sure that ~/local/wxRelease has four subdirectories
+#   bin, include, lib, and share
+#
+# If wxWidgets will be used from a location other than ~/local/wxRelease
+# set the environment variable $WXHOME to that location before building
+# OSIRIS.
+#
+#
+# Build OSIRIS
+#
+# this file, README, also searves as a shell script to build OSIRIS
+# on the Macintosh
+# From the command line run:
+#
+#  change directory to the osiris source directory and run:
+#
+#  sh README
+#
+# if there are no errors, then run:
+#
+#  make
+#
+# there will be a lot of warnings, but if there are no errors
+# run the following script to install Osiris in ~/Applications
+# and create a distribution file, Osiris-Mac-2.x.tar.gz in
+# the this folder
+#
+#   sh cpmac
+#
+# If there are no errors, you are done. Using the
+# Macintosh user interface, open your "Home" folder
+# in Finder, then Applications, and run Osiris.app
+#
+#
 if test "$WXHOME" = ""; then
   WXHOME=`sh findwx`
   if test "$WXHOME" = ""; then
