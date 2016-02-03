@@ -14,13 +14,10 @@
 #
 #  MS-Windows build
 #
-# To build on MS-Windows, with VC++ 2008 (ver 9)
+# To build on MS-Windows, with VC++ 2010 (ver 10)
 # wxWidgets, libxml2, libxslt, and libiconv are also required.
 #  wxWidgets can be downloaded at http://www.wxwidgets.org/ and
 #  modified versions of libxml2, libxslt, and libiconv are included.
-#
-# These were built with multithreading but not DLL, i.e. /MT
-# as opposed to /MD with a few modifications as follows:
 #
 #  Source code obtained for libxml2 and libxslt from http://xmlsoft.org/
 #  Source code for libiconv obtained at http://www.gnu.org/software/libiconv/
@@ -40,14 +37,14 @@
 #  from all other *.c, *.h files and made sure that
 #  #include "libexslt/libexslt.h" is present
 #
-#  Created VC++ projects and build the the code generation option of
-#  "Multithreaded" (/MT)
+#  Created VC++ projects and build the code generation option of
+#  "Multithreaded" (/MD)
 #
 #
 #
 # wxWidgets:
 #
-#  Build as "Multithreaded" (/MT) without UNICODE and 
+#  Build as "Multithreaded" (/MD) with UNICODE and 
 #  set the environment variable,
 #  WXHOME, to the folder containing wxWidgets 3.0.1 such that
 #  there exists %WXHOME%\include and %WXHOME%\lib
