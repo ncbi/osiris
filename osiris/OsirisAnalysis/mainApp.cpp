@@ -442,6 +442,8 @@ void mainApp::OnInitCmdLine (wxCmdLineParser &parser)
   {    
     { wxCMD_LINE_PARAM,  NULL, NULL, "input-file", 
       wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE | wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION,  "verbose" ,"verbose",NULL,
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_NONE }
   };
   parser.SetDesc(cmdLineDesc);
