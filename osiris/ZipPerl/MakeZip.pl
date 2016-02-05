@@ -1,10 +1,23 @@
 #!/usr/bin/perl
 use strict 'vars';
 use GetVersion;
+#
+#  this script builds the Osiris for Windows zip distribution
+#  or the macintosh tar.gz distribution
+#  for Windows it requires cygwin, perl, and 7zip
+#  and the cygwin bin must be in the PATH
+#
+#  the following may need to be changed
+#
+#
+#
 my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
-my $VCDIR = "/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
+my $DRIVE = "/cygdrive/c";
+my $VCDIR = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
+my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
+my $PATH7Z = "7z";  ## if 7z.exe is not in the path, set the full DOS path here
 
 
 sub MKDIR
@@ -181,9 +194,12 @@ sub CopyWin
   my $dest = "./Osiris";
   &COPYFILES($src,$dest);
   &MKDIR("${dest}/site");
-  my $DLLPATH= "${VCDIR}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
-  &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}");
-  &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}");
+  if ($COPYDLL)
+  {
+    my $DLLPATH= "${VCDIR}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}");
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}");
+  }
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
@@ -195,7 +211,7 @@ sub CopyWin
 
   if(&TESTFILES($zipFile,"${dest}"))
   {
-    &SYSTEM("7z a -r ${zipFile} ${dest}");
+    &SYSTEM("${PATH7Z} a -r ${zipFile} ${dest}");
   }
 }
 
@@ -268,7 +284,7 @@ if( $home =~ m|^/Users| )
 {
   &CopyMac;
 }
-elsif( ($uname =~ m/cygwin/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
+elsif( ($uname =~ m/cygwin/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
 {
   &CopyWin;
 }
