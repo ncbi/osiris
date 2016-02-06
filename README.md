@@ -12,9 +12,9 @@ A public domain quality assurance software package that facilitates the assessme
 * [`libiconv`](http://www.gnu.org/software/libiconv/)
 * [Header files for all three libraries for MC VC++](http://www.zlatkovic.com/libxml.en.html), used to replace the corresponding header files in the distribution.
 * Modification (already done) to these libraries
-** In `libxslt-1.1.26/libexslt`, modified `libexslt.h` and changed `#include <win32config.h>` to `#include <libxslt/win32config.h>`
-** Removed all occurrences of `#include <win32config.h>` from all other `\*.c`, `\*.h` files and made sure that `#include "libexslt/libexslt.h"` is present.
-** Created VC++ projects and build the the code generation option of "Multithreaded" (`/MT`).
+  * In `libxslt-1.1.26/libexslt`, modified `libexslt.h` and changed `#include <win32config.h>` to `#include <libxslt/win32config.h>`
+  * Removed all occurrences of `#include <win32config.h>` from all other `\*.c`, `\*.h` files and made sure that `#include "libexslt/libexslt.h"` is present.
+  * Created VC++ projects and build the the code generation option of "Multithreaded" (`/MT`).
 
 ### Build steps
 * Download wxWidgets at http://wxwidgets.org/downloads/, either  the ZIP or 7z download.
@@ -39,8 +39,8 @@ A public domain quality assurance software package that facilitates the assessme
 
 #### Build OSIRIS - Alternative
 * Run the perl script `.\ZipPerl\MakeZip.pl` 
-** Requires [cygwin](http://www.cygwin.com/), [Perl](http://www.activestate.com/), and [7zip](http://www.7-zip.org/).
-** After the above are installed, the commands, 7z and cp must be available from `PATH` environment variable.
+  * Requires [cygwin](http://www.cygwin.com/), [Perl](http://www.activestate.com/), and [7zip](http://www.7-zip.org/).
+  * After the above are installed, the commands, 7z and cp must be available from `PATH` environment variable.
 * It will set up the directory structure in `.\ZipPerl\Osiris`
 * Then create a zip file.
 * If you want to create the directory structure without a zip file, then comment out the line of code in `MakeZip.pl` containing '7z' by preceeding it with a pound sign (#) like the first several lines of this file.
@@ -64,18 +64,18 @@ A public domain quality assurance software package that facilitates the assessme
 * Change into the directory: `cd build-cocoa`
 * In `osiris` directory, copy `osiris/osiris/build-osx/config.sh` to `wxWidgets-3.0.2/build-cocoa`: `cp /path/to/osiris/osiris/build-osx/config.sh .`
 * Run the newly copied `config.sh`: `sh config.sh`
-** When finished, the output will be in the file `build_log.txt`
-** Make sure there are no error messages at the end of the file.
+  * When finished, the output will be in the file `build_log.txt`
+  * Make sure there are no error messages at the end of the file.
 * Install `wxWidgets`: `make install`
 **  The default installation location from the build script is  `~/local/wxRelease` (where `~` represents the user's home directory).
-** Make sure that `~/local/wxRelease` has four subdirectories: `bin`, `include`, `lib`, `share`
-** Set the environment variation for wxWidgets: `export WXHOME=~/local/wxRelease`
+  * Make sure that `~/local/wxRelease` has four subdirectories: `bin`, `include`, `lib`, `share`
+  * Set the environment variation for wxWidgets: `export WXHOME=~/local/wxRelease`
 
 #### Build and install OSIRIS
 * Run the `osiris/build-osiris-mac-osx.sh`: `sh build-osiris-mac-osx.sh`
 * If there are no errors, then run `make`.
-** There will be a lot of warnings.
+  * There will be a lot of warnings.
 * If there are no errors run `install-mac-osx.sh`: `sh install-mac-osx.sh`.
-** this installs Osiris in `~/Applications` and create a distribution file, `Osiris-Mac-2.x.tar.gz` in the this folder.
+  * this installs Osiris in `~/Applications` and create a distribution file, `Osiris-Mac-2.x.tar.gz` in the this folder.
 * Open `Osiris.app` to run OSIRIS.
 
