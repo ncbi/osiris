@@ -11,8 +11,8 @@ A public domain quality assurance software package that facilitates the assessme
 * [`libxml2` and `libxslt`](http://xmlsoft.org/)
 * [`libiconv`](http://www.gnu.org/software/libiconv/)
 * [Header files for all three libraries for MC VC++](http://www.zlatkovic.com/libxml.en.html), used to replace the corresponding header files in the distribution.
-* Modification (already done) to these libraries:
-** In libxslt-1.1.26/libexslt, modified libexslt.h and changed `#include <win32config.h>` to `#include <libxslt/win32config.h>`
+* Modification (already done) to these libraries
+** In `libxslt-1.1.26/libexslt`, modified `libexslt.h` and changed `#include <win32config.h>` to `#include <libxslt/win32config.h>`
 ** Removed all occurrences of `#include <win32config.h>` from all other `\*.c`, `\*.h` files and made sure that `#include "libexslt/libexslt.h"` is present.
 ** Created VC++ projects and build the the code generation option of "Multithreaded" (`/MT`).
 
