@@ -8,12 +8,12 @@ A public domain quality assurance software package that facilitates the assessme
 * Most of the requirements are included with OSIRIS, except for [wxwidgets](http://www.wxwidgets.org/). These were built with multithreading but not DLL, i.e. `/MT` as opposed to `/MD` with a few modifications. 
 * VC++ 2010 Version 10 - In visual C++, see `Help` -> `About Microsoft Visual Studio`), it should be 10 or later to build OSIRIS.
 * wxWidgets (http://www.wxwidgets.org/)
-* (`libxml2` and `libxslt`)[libxml2 and libxslt](http://xmlsoft.org/)
+* [`libxml2` and `libxslt`](http://xmlsoft.org/)
 * [`libiconv`](http://www.gnu.org/software/libiconv/)
-* [Header files for all three libraries for MC VC++](http://www.zlatkovic.com/libxml.en.html) and used to replace the corresponding header files in the distribution.
+* [Header files for all three libraries for MC VC++](http://www.zlatkovic.com/libxml.en.html), used to replace the corresponding header files in the distribution.
 * Modification (already done) to these libraries:
 ** In libxslt-1.1.26/libexslt, modified libexslt.h and changed `#include <win32config.h>` to `#include <libxslt/win32config.h>`
-** Removed all occurrences of `#include <win32config.h>` from all other `*.c`, `*.h` files and made sure that `#include "libexslt/libexslt.h"` is present.
+** Removed all occurrences of `#include <win32config.h>` from all other `\*.c`, `\*.h` files and made sure that `#include "libexslt/libexslt.h"` is present.
 ** Created VC++ projects and build the the code generation option of "Multithreaded" (`/MT`).
 
 ### Build steps
