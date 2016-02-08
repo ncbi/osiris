@@ -62,7 +62,6 @@
 #include "CDialogAnalysis.h"
 #include "CParmOsiris.h"
 #include "CDialogMRU.h"
-#include "CKitColors.h"
 #include "CAllLoci.h"
 #include "nwx/nwxDialogLog.h"
 #include "CMDIfileManager.h"
@@ -211,10 +210,6 @@ public:
   CFrameAnalysis *FindAnalysisFrame(COARfile *pFile)
   {
     return m_MDImgr.FindAnalysisFrame(pFile);
-  }
-  CKitColors *GetKitColors()
-  {
-    return &m_kitColors;
   }
   bool ReAnalyze(
     CFrameRunAnalysis *pPrev,
@@ -366,7 +361,6 @@ private:
     // causes initialization and cleanup of libxml2
     // and libxslt to happen only once
   CMDIfileManager m_MDImgr;
-  CKitColors m_kitColors;
   wxFileDialog *m_pDialogOpen;
   CDialogMRU *m_pDialogMRU;
 //  CDialogVolumes *m_pVolumes;

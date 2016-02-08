@@ -271,7 +271,7 @@ bool CPanelLabGeneral::TransferDataToWindow()
     {
       wxString sError;
       bRtn = false;
-      sError = "Cannot file ILS for kit, ";
+      sError = "Cannot find ILS for kit, ";
       sError.Append(sKitName);
       mainApp::LogMessage(sError);
       wxASSERT_MSG(0,sError);

@@ -357,7 +357,7 @@ public:
 	virtual int ResolveAmbiguousInterlocusSignalsSM ();
 	virtual int SampleQualityTestSM (GenotypesForAMarkerSet* genotypes);
 	virtual int SignalQualityTestSM ();
-	virtual bool CoreBioComponent :: IsLabPositiveControl (const RGString& name, GenotypesForAMarkerSet* genotypes);
+	virtual bool IsLabPositiveControl (const RGString& name, GenotypesForAMarkerSet* genotypes);
 	virtual int TestPositiveControlSM (GenotypesForAMarkerSet* genotypes);
 	virtual int GridQualityTestSM ();
 	virtual int GridQualityTestSMPart2 (SmartMessagingComm& comm, int numHigherObjects);

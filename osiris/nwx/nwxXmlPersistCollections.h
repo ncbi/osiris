@@ -337,6 +337,10 @@ public:
   {
     vectorptr<T>::cleanup(&m_pv);
   }
+  InwxXmlIO *GetIO()
+  {
+    return &m_io;
+  }
 private:
   std::vector<T *> m_pv;
   TnwxXmlIOPersistVector<T> m_io;
@@ -345,7 +349,11 @@ protected:
   virtual void RegisterAll(bool = false)
   {
     ClearRegistration();
-    Register(GetNodeName(),&m_io,(void *) &m_pv);
+    const wxString &sNode(GetNodeName());
+    if(!sNode.IsEmpty())
+    {
+      Register(sNode,&m_io,(void *) &m_pv);
+    }
   }
   wxString m_sNode;
 
@@ -730,6 +738,10 @@ public:
   {
     setptr<T,S>::cleanup(&m_pv);
   }
+  InwxXmlIO *GetIO()
+  {
+    return &m_io;
+  }
 private:
   std::set<T *,S> m_pv;
   TnwxXmlIOPersistSet<T,S> m_io;
@@ -738,7 +750,11 @@ protected:
   virtual void RegisterAll(bool = false)
   {
     ClearRegistration();
-    Register(GetNodeName(),&m_io,(void *) &m_pv);
+    const wxString &sNode(GetNodeName());
+    if(!sNode.IsEmpty())
+    {
+      Register(sNode,&m_io,(void *) &m_pv);
+    }
   }
   wxString m_sNode;
 
@@ -877,7 +893,7 @@ private:
 
 template<class K, class T, class S = less<K> > class TnwxXmlPersistMap : public nwxXmlPersist
 {
-  // container for a vector of nwxXmlPersist where the array elements
+  // container for a map of nwxXmlPersist where the array elements
   // have no other XML siblings
   //
   //  the node name, which defaults to "x", is the xml element for each vector item
@@ -885,6 +901,7 @@ template<class K, class T, class S = less<K> > class TnwxXmlPersistMap : public 
   // this class is similar to TnwxXmlPersistVector and uses the same XML structure,
   // except the searching (using the comparison class, S) requires each element
   // to be unique by some criteria with the default being a C++ pointer value
+  // The key, classK, is obtained by calling GetKey() from the object of class T
 public:
   typedef typename std::map<K, T *,S>::value_type VALUE_TYPE;
   typedef typename std::map<K, T *,S>::iterator iterator;
@@ -920,8 +937,8 @@ public:
 
   TnwxXmlPersistMap<K,T,S>(const TnwxXmlPersistMap<K,T,S> &x)
   {
-    RegisterAll(true);
     *this = x;
+    RegisterAll(true);
   }
   virtual ~TnwxXmlPersistMap<K,T,S>()
   {
@@ -1274,6 +1291,10 @@ public:
   {
     mapptr<K,T,S>::cleanup(&m_pv);
   }
+  InwxXmlIO *GetIO()
+  {
+    return &m_io;
+  }
 private:
   std::map<K, T *,S> m_pv;
   TnwxXmlIOPersistMap<K,T,S> m_io;
@@ -1282,7 +1303,11 @@ protected:
   virtual void RegisterAll(bool = false)
   {
     ClearRegistration();
-    Register(GetNodeName(),&m_io,(void *) &m_pv);
+    const wxString &sNode(GetNodeName());
+    if(!sNode.IsEmpty())
+    {
+      Register(sNode,&m_io,(void *) &m_pv);
+    }
   }
   wxString m_sNode;
 
@@ -1716,7 +1741,7 @@ public:
   {
     return &m_set;
   }
-  std::set<T> &GetSet()
+  std::set<T> &GetSet() 
   {
     return m_set;
   }

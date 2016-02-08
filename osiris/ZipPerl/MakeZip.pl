@@ -1,9 +1,23 @@
 #!/usr/bin/perl
 use strict 'vars';
 use GetVersion;
+#
+#  this script builds the Osiris for Windows zip distribution
+#  or the macintosh tar.gz distribution
+#  for Windows it requires cygwin, perl, and 7zip
+#  and the cygwin bin must be in the PATH
+#
+#  the following may need to be changed
+#
+#
+#
+my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
-my $VCDIR = "/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
+my $DRIVE = "/cygdrive/c";
+my $VCDIR = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
+my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
+my $PATH7Z = "7z";  ## if 7z.exe is not in the path, set the full DOS path here
 
 
 sub MKDIR
@@ -104,23 +118,27 @@ sub COPYFILES
     PP16
     PP16_HID
     PP18D
+    PP18D_HID
     PP21
-    PPESI16_FSA
+    PP21_HID
+    PPESI16
     PPESI16_HID
-    PPESI17_FSA
+    PPESI17
     PPESI17_HID
-    PPESX16_FSA
+    PPESX16
     PPESX16_HID
-    PPESX17_FSA
+    PPESX17
     PPESX17_HID
     PPFusion
-    PPFusion_HID
     PPFusion6C
     PPFusion6C_HID
+    PPFusion_HID
     PPY
     PPY23
     PPY23_HID
     Profiler
+    QIAGEN_ARGUS_x12
+    QIAGEN_ARGUS_x12_HID
     QIAGEN_INVESTIGATOR24PLEX
     QIAGEN_INVESTIGATOR24PLEX_HID
     SEfilerPlus
@@ -148,6 +166,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisAnalysis/extractArtifacts.xsl ${destXSL}");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
+  &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/StandardPositiveControls.xml ${dest}/Config/LadderSpecifications");
 
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
@@ -155,6 +174,8 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.4.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.5.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.7.pdf ${dest}");
 }
 
 sub CopyWin
@@ -173,9 +194,12 @@ sub CopyWin
   my $dest = "./Osiris";
   &COPYFILES($src,$dest);
   &MKDIR("${dest}/site");
-  my $DLLPATH= "${VCDIR}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
-  &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}");
-  &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}");
+  if ($COPYDLL)
+  {
+    my $DLLPATH= "${VCDIR}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}");
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}");
+  }
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
@@ -187,7 +211,7 @@ sub CopyWin
 
   if(&TESTFILES($zipFile,"${dest}"))
   {
-    &SYSTEM("7z a -r ${zipFile} ${dest}");
+    &SYSTEM("${PATH7Z} a -r ${zipFile} ${dest}");
   }
 }
 
@@ -199,11 +223,10 @@ sub CopyMac
   chomp $dir;
   length($dir) && (chdir($dir) || die("Cannot chdir ${dir}"));
 
-  my $TOP = $ENV{HOME} . "/Apps";
-  if (!(-d $TOP))
+  my $TOP = $MAC_TOP_DIR;
+  if (! -d $TOP)
   {
-    $TOP = "/Applications";
-    (-d $TOP) || die("Cannot find destination folder ${TOP}");
+    &MKDIR($TOP);
   }
   my $APPDIR = "${TOP}/Osiris.app";
   my $CONTENTS = "${APPDIR}/Contents";
@@ -261,7 +284,7 @@ if( $home =~ m|^/Users| )
 {
   &CopyMac;
 }
-elsif( ($uname =~ m/cygwin/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
+elsif( ($uname =~ m/cygwin/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
 {
   &CopyWin;
 }

@@ -652,8 +652,7 @@ const char *CLabSpecimenCategory::LongestType()
 
 bool CLabSpecimenCategory::IndexInRange(size_t ndx)
 {
-  bool bInRange =
-    (ndx >= 0) && (ndx < TypeCount());
+  bool bInRange = (ndx < TypeCount());
 #ifdef _DEBUG
   if(!bInRange)
   {
@@ -953,7 +952,7 @@ void CLabRFU::RegisterAll(bool b)
     (void *)&m_dStutter);
   Register(
     "PlusStutterThreshold",
-    CLabSettings::GetIOdouble(),
+    CLabSettings::GetIOdoubleGt0(),
     (void *)&m_dPlusStutter);
   Register(
     "AdenylationThreshold",
