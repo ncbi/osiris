@@ -639,9 +639,7 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 
 			if (!DyeNameSearch.FindNextBracketedString (startMapSearch, endMapSearch, dyeName)) {
 
-				Msg << "Population Marker Set had mismatch between channel index and dye name " << Input << "\n";
-				Valid = FALSE;
-				break;
+				continue;
 			}
 
 			startMapSearch = endMapSearch;
