@@ -157,7 +157,7 @@
   <LabMarkerSetSpecifications>
     <LabMarkerSetCollection>
       <MarkerSetName>PowerPlex Fusion 6C</MarkerSetName>
-      <ILS>Promega-ILS-CC5-500-IDX</ILS>
+      <ILS>Promega-ILS-WEN-500</ILS>
       <UserOverrideILS>true</UserOverrideILS>
     </LabMarkerSetCollection>
   </LabMarkerSetSpecifications>
