@@ -59,6 +59,10 @@ public:
   virtual bool TransferDataFromWindow();
   virtual bool TransferDataToWindow();
   virtual void SetReadOnly(bool b = true);
+  bool SetILSDyeName(const wxString &sDyeName)
+  {
+    return m_pGridLadder->SetILSDyeName(sDyeName);
+  }
   bool SetData(CLabThresholds *pData,const wxString &sKitName)
   {
     m_pData = pData;

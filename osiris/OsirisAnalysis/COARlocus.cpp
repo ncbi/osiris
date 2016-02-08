@@ -33,7 +33,7 @@
 
 //  COARlocus
 
-const wxString COARlocus::g_sEmptyString("");
+
 
 void COARlocus::RegisterAll(bool)
 {

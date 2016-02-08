@@ -55,6 +55,7 @@ public:
   {
     return m_bReadOnly;
   }
+  bool SetILSDyeName(const wxString &sDyeName);
   virtual wxPen GetColGridLinePen(int nCol);
   virtual wxPen GetRowGridLinePen(int nRow);
   void SetAllReadOnly(bool bReadOnly = true);
@@ -73,8 +74,11 @@ protected:
   bool _SetData(CLabThresholds *pData,
     const wxString &sKitName,
     const wxChar * const *psLabels);
+  wxString m_sKitName;
   CLabThresholds *m_pData;
   int m_nRows;
+  int m_nILScolumn;
+  unsigned int m_nILSchannel;
   bool m_bILS;
   bool m_bReadOnly;
   bool m_bCreated;

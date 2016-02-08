@@ -23,24 +23,61 @@
 *
 * ===========================================================================
 *
-*  FileName: OsirisVersion.h
+*
+*  FileName: CILSselection.h
 *  Author:   Douglas Hoffman
 *
+*  container for two Combo Boxes, one for ILS family
+*  and one for ILS.  The one for ILS family is shown
+*  only when a kit is selected that utilized this
+*  feature.  This class provides a wxSizer object
+*  for the parent window to show the combo boxes 
+*  and labels.
+*
 */
-#ifndef __OSIRIS_VERSION_H__
-#define __OSIRIS_VERSION_H__
+#ifndef __C_ILS_SELECTION_H__
+#define __C_ILS_SELECTION_H__
 
-#ifdef WIN32
-#define OSIRIS_OS "Windows"
-#else
-#ifdef Darwin
-#define OSIRIS_OS "Macintosh"
-#endif
-#endif
-#define OSIRIS_VERS_BASE "2.7 Beta 1"
-#define OSIRIS_VERS OSIRIS_VERS_BASE
-//" beta 17"
-#define OSIRIS_VERSION OSIRIS_VERS " for " OSIRIS_OS
-#define OSIRIS_FULLNAME "OSIRIS " OSIRIS_VERSION
+#include <wx/string.h>
+#include <wx/event.h>
+
+class wxChoice;
+class wxWindow;
+class wxSizer;
+class wxBoxSizer;
+class wxStaticText;
+class CILSfamily;
+
+class CILSselection
+{
+public:
+  CILSselection(wxWindow *pParent);
+  virtual ~CILSselection();
+  wxSizer *GetSizer()
+  {
+    return m_pSizer;
+  }
+  void FamilyChange();
+  void SetKit(const wxString &sKitName);
+  void SetLS(const wxString &sLS); // this sets family name
+  wxString GetFamily();
+  wxString GetLS();
+private:
+  wxString m_sFamily;  // last family set
+  wxString m_sKit;
+  wxBoxSizer *m_pSizer;
+  wxChoice *m_pComboFamily;
+  wxChoice *m_pComboLS;
+  wxStaticText *m_pLabelFamily;
+  wxStaticText *m_pLabelLS;
+  wxWindow *m_pParent;
+
+  bool _ShowingFamily();
+  bool _ShowingSingleILS();
+  static const wxString &_FindDisplayName
+    (const CILSfamily *pFamily, const wxString &sLSname);
+  static const wxString &_FindLSname
+    (const CILSfamily *pFamily, const wxString &sDisplayName);
+};
 
 #endif

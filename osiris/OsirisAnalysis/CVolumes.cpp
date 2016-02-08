@@ -32,7 +32,6 @@
 #include "ConfigDir.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxKillDir.h"
-#include "CILSLadderInfo.h"
 #include "CKitList.h"
 #include <ctype.h>
 #include <wx/debug.h>

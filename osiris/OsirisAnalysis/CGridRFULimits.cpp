@@ -115,13 +115,13 @@ void CGridRFULimits::_Build()
     if(m_pKitColors != NULL)
     {
       pChannelColors = m_pKitColors->GetColorChannel(*itrChannelCol);
-      psDye = (pChannelColors == NULL) ? NULL : (const wxChar *) pChannelColors->m_sDyeName;
+      psDye = (pChannelColors == NULL) ? NULL : (const wxChar *) pChannelColors->GetDyeName();
     }
     CGridLocusColumns::FORMAT_CHANNEL_DYE(&sLabel,*itrChannelCol,psDye);
     SetColLabelValue(nCol,sLabel);
     if(pChannelColors != NULL)
     {
-      _SetupChannelColumn(nCol,pChannelColors->m_ColorAnalyzed,fontChannel);
+      _SetupChannelColumn(nCol,pChannelColors->GetColorAnalyzed(),fontChannel);
     }
     else
     {

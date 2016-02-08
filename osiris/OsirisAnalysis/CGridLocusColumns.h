@@ -48,14 +48,20 @@ public:
     bool bDefault, 
     bool bILS,
     bool bAllowAmel,
-    bool bSetError = false);
+    bool bSetError = false,
+    int *pnILScolumn = NULL,  // set by this function
+    unsigned int *pnILSchannel = NULL // set by this function
+    );
   static bool SetupKit(
     wxGrid *pGrid,
     const wxString &sKitName,
     const vector<wxString> &vsColumnsBefore,
     bool bILS,
     bool bAllowAmel,
-    bool bSetError = false);
+    bool bSetError = false,
+    int *pnILScolumn = NULL,
+    unsigned int *pnILSchannel = NULL // set by this function
+    );
   static void SetReadOnly(wxGrid *pGrid,bool b);
   static void FORMAT_CHANNEL_DYE(wxString *ps, unsigned int nChannel, const wxChar * psDye)
   {

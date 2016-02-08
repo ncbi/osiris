@@ -57,6 +57,10 @@ public:
     m_pInfo = pInfo;
     m_pMarker = pMarker;
   }
+  wxString GetILS()
+  {
+    return m_pChoiceILS->GetStringSelection();
+  }
 private:
   void _AddLine(
     const wxChar *psLabel,wxObject *pobj,

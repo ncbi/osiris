@@ -153,7 +153,7 @@ void CPanelPlot::_BuildPanel(
   for(i = 1; i <= nChannelCount; i++)
   {
     pdy = m_pData->GetAnalyzedPoints(i);
-    AddData(ANALYZED_DATA,i,(unsigned int)nPoints,pdx,pdy);
+    AddData(ANALYZED_DATA,i, (unsigned int)nPoints,pdx,pdy);
     pdy = m_pData->GetRawPoints(i);
     AddData(RAW_DATA,i,(unsigned int)nPoints,pdx,pdy);
     pdy = m_pData->GetLadderPoints(i);
@@ -325,13 +325,22 @@ void CPanelPlot::AddData(
       }
     }
 
-
     wxPlotData *pPlotData = new wxPlotData(&pdx[nBegin],&pdy[nBegin],(int)(nPointCount - nBegin),true);
     pcp->insert(mapChannelPlot::value_type(nChannel,pPlotData));
-
-    wxGenericPen pen(
-      m_pColors->GetColor(
-            m_pData->GetKitName(),nType,nChannel));
+    const CChannelColors *pCC = NULL;
+    const CSingleKitColors *pKitColors = m_pColors->GetKitColors(m_pData->GetKitName());
+    if(pKitColors == NULL)
+    {}
+    else if(nChannel == m_pData->GetILSChannel())
+    {
+      pCC = pKitColors->GetColorChannelFromLS(m_pData->GetParameters().GetLsName());
+    }
+    else
+    {
+      pCC = pKitColors->GetColorChannel(nChannel);
+    }
+    const wxColour *pColor = (pCC != NULL) ? pCC->GetColorPtr(nType) : wxBLACK;
+    wxGenericPen pen(*pColor);
     pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
     pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
     pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
@@ -943,7 +952,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
         sChannelName =
           (pChannelColor == NULL)
           ? wxString::Format("%d",nChannel)
-          : pChannelColor->m_sDyeName;
+          : pChannelColor->GetDyeName();
         if(bLadder)
         {
           _AppendLadderPeaks(nChannel,sChannelName);
@@ -1032,7 +1041,7 @@ void CPanelPlot::_BuildOARlabels()
         sChannelName =
           (pChannelColor == NULL)
           ? wxString::Format("%d",nChannel)
-          : pChannelColor->m_sDyeName;
+          : pChannelColor->GetDyeName();
         const wxColour &colour(m_pColors->GetColor(
           m_pData->GetKitName(),ANALYZED_DATA,nChannel));
 
