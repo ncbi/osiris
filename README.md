@@ -37,13 +37,12 @@ A public domain quality assurance software package that facilitates the assessme
 * Select `Release` and `Win32` in the toolbar or from the menubar: `Build` -> `Configuration Manager`
 * Build the solution:  From the menubar: `Build` -> `Rebuild Solution` (Optional - If you built wxWidgets for "Debug" you can also build OSIRIS for "Debug"  however it recommended that you copy the directory structure of an OSIRIS installation to OsirisAnalysis/Debug except for `OsirisAnalysis.exe`).
 
-#### Build OSIRIS - Alternative
-* Run the perl script `.\ZipPerl\MakeZip.pl` 
+#### Build OSIRIS .zip file for Windows - Alternative to the .msi
+* After building OSIRIS, Run the perl script `.\ZipPerl\MakeZip.pl` 
   * Requires [cygwin](http://www.cygwin.com/), [Perl](http://www.activestate.com/), and [7zip](http://www.7-zip.org/).
   * After the above are installed, the commands, 7z and cp must be available from `PATH` environment variable.
-* It will set up the directory structure in `.\ZipPerl\Osiris`
-* Then create a zip file.
-* If you want to create the directory structure without a zip file, then comment out the line of code in `MakeZip.pl` containing '7z' by preceeding it with a pound sign (#) like the first several lines of this file.
+* It will set up the directory structure in `.\ZipPerl\Osiris` and create a `.zip` file.
+* If you want to create the directory structure without a zip file, then modify one lines of code near the beginning of `MakeZip.pl` and change `my $NO_ZIP_FILE = 0;` to `my $NO_ZIP_FILE = 1;`
 * The directory structure will be in `.\ZipPerl\Osiris` and can be moved.
 
 ## Mac OS X build
@@ -54,13 +53,13 @@ A public domain quality assurance software package that facilitates the assessme
 * [Mac OS X Developer tools](https://developer.apple.com/xcode/) - try `gcc --version` to see if you have `gcc` available from the tools.
 
 ### Build steps
-* [Download the source code for OSIRIS version 2.5](https://github.com/amanjeev/osiris/archive/Version-2.5.zip) and unzip it to `osiris` directory.
-* Download wxWidgets at http://wxwidgets.org/downloads/, `Source for Linux, OS X, etc.` ([Current](https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.2/wxWidgets-3.0.2.tar.bz2)).
+* [Download the source code for OSIRIS version 2.6](https://github.com/amanjeev/osiris/archive/Version-2.5.zip) and unzip it to `osiris` directory.
+* Download wxWidgets 3.0.2 at http://wxwidgets.org/downloads/, `Source for Linux, OS X, etc.` ([Current](https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.2/wxWidgets-3.0.2.tar.bz2)).
 
 #### Build and install wxWidgets
 * Unpack the download to a new directory: `tar tvf wxWidgets-3.0.2.tar.bz2`. This will create a directory with the wxWidget source code like `wxWidgets-3.0.2`
 * Change into the directory: `cd wxWidgets-3.0.2`
-* Create `build-cocoa`: `mkdir build-cocoa`
+* Create a new directory, `build-cocoa`: `mkdir build-cocoa`
 * Change into the directory: `cd build-cocoa`
 * In `osiris` directory, copy `osiris/osiris/build-osx/config.sh` to `wxWidgets-3.0.2/build-cocoa`: `cp /path/to/osiris/osiris/build-osx/config.sh .`
 * Run the newly copied `config.sh`: `sh config.sh`
@@ -72,10 +71,10 @@ A public domain quality assurance software package that facilitates the assessme
   * Set the environment variation for wxWidgets: `export WXHOME=~/local/wxRelease`
 
 #### Build and install OSIRIS
-* Run the `osiris/build-osiris-mac-osx.sh`: `sh build-osiris-mac-osx.sh`
+* From the `osiris` directory, run `osiris/build-osiris-mac-osx.sh`: `sh build-osiris-mac-osx.sh`
 * If there are no errors, then run `make`.
   * There will be a lot of warnings.
 * If there are no errors run `install-mac-osx.sh`: `sh install-mac-osx.sh`.
-  * this installs Osiris in `~/Applications` and create a distribution file, `Osiris-Mac-2.x.tar.gz` in the this folder.
-* Open `Osiris.app` to run OSIRIS.
+  * this installs Osiris in the user's `Applications` folder (in the user's "Home" folder)  creates a distribution file, `Osiris-Mac-2.x.tar.gz` in the osiris  folder.
+* From the `Applications` directory, run `Osiris.app`.
 
