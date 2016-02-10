@@ -5648,6 +5648,8 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 
 	double adenylationLimit = GetLocusSpecificSampleAdenylationThreshold ();
 
+	//****02/09/2016 Probably need to eliminate the following section because craters have already been validated.  Instead, just test for two peaks with identical call and create NoisyPeak to replace.
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		location = TestSignalPositionRelativeToLocus (nextSignal);

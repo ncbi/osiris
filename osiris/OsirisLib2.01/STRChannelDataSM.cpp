@@ -2922,6 +2922,9 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 
 	it.Reset ();
 
+	//****02/09/2016 Probably this next section should be removed.  Craters have already been validated and should not be undone.
+	// Amiguous crater probably can't happen because craters are found before assignment to loci.
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		// First check for false craters
@@ -3032,6 +3035,8 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 	//	delete nextSignal;
 	}
 
+	//****02/09/2016 see below
+
 	it.Reset ();
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smAmbiguousInterlocusWithPoorMorphology ambiguousInterlocusWithPoorMorphology;
@@ -3069,6 +3074,9 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 				continue;
 			}
 
+			// ****02/09/2016 Revise below without crater peaks, but with new peak called NoisyPeak?  Then, add NoisyPeak as new signal. Already know it is not pull-up
+			// Do not remove any craters because they have already been validated as craters by cross channel analysis algorithm
+
 			if (prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1)) {
 
 				if (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1)) {
@@ -3104,6 +3112,7 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 				else {
 
 					// These are ambiguous signals...close enough to be called the same in locus to left but not to right
+					// ****What to do here?  Probably this can happen, but what does it mean?
 
 					nextLocus = (Locus*) nextSignal->GetLocus (-1);
 
@@ -3123,6 +3132,7 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 			else if (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1)) {
 
 				// These are ambiguous signals...close enough to be called the same in locus to right but not to left
+				// ****What to do here?  Probably this can happen, but what does it mean?
 
 				nextLocus = (Locus*) nextSignal->GetLocus (1);
 

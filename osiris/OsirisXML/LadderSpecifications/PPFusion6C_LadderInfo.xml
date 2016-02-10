@@ -57,7 +57,7 @@
         <NoExtension>true</NoExtension>
         <MinBP>89</MinBP>
         <MaxBP>95</MaxBP>
-        <MinGridLSBasePair>80.0</MinGridLSBasePair>
+        <MinGridLSBasePair>76.0</MinGridLSBasePair>
         <MaxGridLSBasePair>92.0</MaxGridLSBasePair>
         <LadderAlleles>
           <Allele>

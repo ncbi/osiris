@@ -9983,12 +9983,34 @@ CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0),
 }
 
 
-CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCurve (), mPrevious (prev), mNext (next) {
+CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByProportion) : ParametricCurve (), mPrevious (prev), mNext (next) {
 
-	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
-	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
 	double peak1 = prev->Peak ();
 	double peak2 = next->Peak ();
+	double d = peak1 + peak2;
+	double l1;
+	double l2;
+	bool useRightPeak;
+
+	if (peak2 >= peak1)
+		useRightPeak = true;
+
+	else
+		useRightPeak = false;
+
+	if (assignByProportion && (d > 0.0)) {
+
+		l1 = peak1 / d;
+		l2 = peak2 / d;
+	}
+
+	else {
+
+		l1 = l2 = 0.5;
+	}
+	
+	mMean = l1 * prev->GetMean () + l2 * next->GetMean ();
+
 	double v1 = prev->Value (mMean);
 	double v2 = next->Value (mMean);
 	double est1 = peak1 + (peak1 - v1);
@@ -9996,7 +10018,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	double max;
 	mPullupTolerance = halfCraterPullupTolerance;
 
-	if (peak1 > peak2)
+	if (peak1 >= peak2)
 		max = peak1;
 
 	else
@@ -10007,10 +10029,16 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	if (mHeight < max)
 		mHeight = max;
 
-	BioID = 0.5 * (next->GetBioID () + prev->GetBioID ());
+	if (useRightPeak)
+		mSigma = (next->GetMean () - mMean) + next->GetStandardDeviation () * (peak2 / mHeight);
+
+	else
+		mSigma = (mMean - prev->GetMean ()) + prev->GetStandardDeviation () * (peak1 / mHeight);
+
+	BioID = l2 * next->GetBioID () + l1 * prev->GetBioID ();
 	SetChannel (prev->GetChannel ());
-	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
-	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
+	ApproximateBioID = l2 * next->GetApproximateBioID () + l1 * prev->GetApproximateBioID ();
+	mApproxBioIDPrime = l2 * next->GetApproxBioIDPrime () + l1 * prev->GetApproxBioIDPrime ();
 	int IntBP = (int) floor (BioID + 0.5);
 	Residual = BioID - (double)IntBP;
 
@@ -10022,17 +10050,17 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 
 	mIsGraphable = false;
 
-	mBioIDLeft = 0.5 * (next->GetBioID (-1) + prev->GetBioID (-1));
+	mBioIDLeft = l2 * next->GetBioID (-1) + l1 * prev->GetBioID (-1);
 	mAlleleNameLeft = next->GetAlleleName (-1);
-	mResidualLeft = 0.5 * (next->GetBioIDResidual (-1) + prev->GetBioIDResidual (-1));
+	mResidualLeft = l2 * next->GetBioIDResidual (-1) + l1 * prev->GetBioIDResidual (-1);
 	mPossibleInterAlleleLeft = next->IsPossibleInterlocusAllele (-1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleLeft = next->IsAcceptedTriAllele (-1);
 	mAlleleName = next->GetAlleleName ();
 	mIsOffGridLeft = next->IsOffGrid (-1);
 
-	mBioIDRight = 0.5 * (next->GetBioID (1) + prev->GetBioID (1));
+	mBioIDRight = l2 * next->GetBioID (1) + l1 * prev->GetBioID (1);
 	mAlleleNameRight = next->GetAlleleName (1);
-	mResidualRight = 0.5 * (next->GetBioIDResidual (1) + prev->GetBioIDResidual (1));
+	mResidualRight = l2 * next->GetBioIDResidual (1) + l1 * prev->GetBioIDResidual (1);
 	mPossibleInterAlleleRight = next->IsPossibleInterlocusAllele (1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleRight = next->IsAcceptedTriAllele (1);
 	mIsOffGridRight = next->IsOffGrid (1);

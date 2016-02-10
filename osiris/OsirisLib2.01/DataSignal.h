@@ -1621,7 +1621,7 @@ PERSISTENT_DECLARATION (CraterSignal)
 
 public:
 	CraterSignal ();
-	CraterSignal (DataSignal* prev, DataSignal* next);
+	CraterSignal (DataSignal* prev, DataSignal* next, bool assignByProportion = false);
 	CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* primaryLink);
 	CraterSignal (const CraterSignal& c);
 	CraterSignal (double mean, const CraterSignal& c);
