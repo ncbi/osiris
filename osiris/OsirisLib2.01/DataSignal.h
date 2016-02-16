@@ -68,9 +68,10 @@ const int _SUPERGAUSSIAN_ = 1010;
 const int _NORMALIZEDSUPERGAUSSIAN_ = 1011;
 const int _DUALDOUBLEGAUSSIAN_ = 1012;
 const int _CRATERSIGNAL_ = 1013;
-const int _PEAKINFOFORCLUSTERS_ = 1016;
+const int _PEAKINFOFORCLUSTERS_ = 1021;
 const int _SIMPLESIGMOIDSIGNAL_ = 1019;
 const int _NEGATIVESIGNAL_ = 1020;
+const int _NOISYPEAK_ = 1022;
 
 const double Pi = acos (-1.0);
 const double sqrtPi = sqrt (Pi);
@@ -109,6 +110,7 @@ PERSISTENT_PREDECLARATION (DualDoubleGaussian)
 PERSISTENT_PREDECLARATION (CraterSignal)
 PERSISTENT_PREDECLARATION (SimpleSigmoidSignal)
 PERSISTENT_PREDECLARATION (NegativeSignal)
+PERSISTENT_PREDECLARATION (NoisyPeak)
 
 
 Boolean QuadraticRegression (const double* means, const double* sigmas, int N, double* parameters);
@@ -545,6 +547,7 @@ public:
 	virtual RGString GetSignalType () const;
 
 	virtual void SetPullupRatio (int channel, double ratio, int nChannels);
+	virtual double GetPullupRatio (int channel);
 	virtual void SetDisplacement (double disp) = 0;
 	virtual void SetScale (double scale) = 0;
 	virtual void SetPeak (double peak) {}
@@ -1622,7 +1625,7 @@ PERSISTENT_DECLARATION (CraterSignal)
 public:
 	CraterSignal ();
 	CraterSignal (DataSignal* prev, DataSignal* next, bool assignByProportion = false);
-	CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* primaryLink);
+	CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* primaryLink, bool assignByProportion = false);
 	CraterSignal (const CraterSignal& c);
 	CraterSignal (double mean, const CraterSignal& c);
 	CraterSignal (const CraterSignal& c, CoordinateTransform* trans);
@@ -1752,6 +1755,77 @@ public:
 
 protected:
 
+};
+
+
+class NoisyPeak : public CraterSignal {
+
+PERSISTENT_DECLARATION (NoisyPeak)
+
+public:
+	NoisyPeak ();
+	NoisyPeak (DataSignal* prev, DataSignal* next, bool assignByProportion = false);
+	NoisyPeak (DataSignal* prev, DataSignal* next, DataSignal* primaryLink, bool assignByProportion = false);
+	NoisyPeak (const NoisyPeak& c);
+	NoisyPeak (double mean, const NoisyPeak& c);
+	NoisyPeak (const NoisyPeak& c, CoordinateTransform* trans);
+	virtual ~NoisyPeak ();
+
+	virtual DataSignal* MakeCopy (double mean) const;
+
+	virtual double GetPullupToleranceInBP () const { return 0.0425; }
+	virtual double GetPullupToleranceInBP (double noise) const;
+	virtual double GetPrimaryPullupDisplacementThreshold ();
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas);
+
+	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
+
+	virtual RGString GetSignalType () const;
+	virtual bool IsUnimodal () const { return false; }
+	virtual bool IsCraterPeak () const { return false; }
+
+	//virtual int AddNoticeToList (Notice* newNotice);
+
+	virtual void CaptureSmartMessages ();
+
+	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next);
+	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next, int location);
+	virtual bool TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataSignal*& next, int location, bool isAmel, double adenylationLimit);
+
+	virtual bool TestSignalGroupsWithinILS (double ilsLeft, double ilsRight, double minBioID);
+
+	virtual void SetAlleleInformation (int position);
+
+	//virtual double Value (double x) const;
+	//virtual double Value (int n) const;
+	//virtual double Norm (double a, double b);
+	//virtual double Norm ();
+	//virtual double Norm2 (double a, double b);
+	//virtual double Norm2 ();
+	//virtual double Centroid () const;
+
+	//virtual double Peak () const;
+	//virtual double GetMean () const;
+	//virtual double GetStandardDeviation () const;
+	//virtual double GetVariance () const;
+
+	//virtual void SetMessageValue (int scope, int location, bool value);
+	//virtual void SetMessageValue (const SmartNotice& notice, bool value);
+
+	//virtual void SetMessageValue (int scope, int location, bool value, bool useVirtualMethod);
+
+	//virtual void Report (RGTextOutput& text, const RGString& indent);
+
+	//virtual size_t StoreSize () const;
+
+	//virtual void RestoreAll (RGFile&);
+	//virtual void RestoreAll (RGVInStream&);
+	//virtual void SaveAll (RGFile&) const;
+	//virtual void SaveAll (RGVOutStream&) const;
+
+protected:
+	double mL1;
+	double mL2;
 };
 
 

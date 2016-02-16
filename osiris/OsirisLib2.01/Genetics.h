@@ -444,6 +444,7 @@ public:
 	int TestProximityArtifactsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
 	int TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
 	int TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
+	int TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
 	void RetrieveSmartNoticesFromGridArtifactList (ChannelData* laneStandard);
 
 	void TestAllelesAgainstOverloadThresholdSM ();

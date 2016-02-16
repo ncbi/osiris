@@ -2886,7 +2886,7 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 	// What's left are ambiguous signals and also those that are truly interlocus.  Test the ambiguous ones for possible craters...
 
 	//
-	//  This is sample stage 3
+	//  This is no longer sample stage 3 - obsolete 02/14/2016
 	//
 
 	RGDListIterator it (PreliminaryCurveList);
@@ -3174,6 +3174,125 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 
 		if (nextLocus != NULL)
 			nextLocus->RemoveSignalFromLocusList (nextSignal);
+	}
+
+	return 0;
+}
+
+
+int STRSampleChannelData :: TestForAlleleDuplicationSM () {
+
+	// All signals outside lane standard have already been removed.  Also, all signals definitely assigned to a locus are gone.
+	// What's left are ambiguous signals and also those that are truly interlocus.  Test the ambiguous ones for possible duplicate allele calls...
+
+	//
+	//  This is sample stage 3
+	//
+
+	RGDListIterator it (PreliminaryCurveList);
+	DataSignal* nextSignal;
+	DataSignal* prevSignal = NULL;
+	DataSignal* currentSignal;
+
+	Locus* nextLocus;
+	const Locus* flankingLocusLeft;
+	const Locus* flankingLocusRight;
+	RGDListIterator locusIt (mLocusList);
+
+	RGDList SignalsToDeleteFromSignalList;
+	RGDList SignalsToDeleteFromAll;
+	RGDList signalsToAddToList;
+
+	while (nextLocus = (Locus*) locusIt ())
+		nextLocus->PromoteNonAmbiguousSignalsToAlleles (PreliminaryCurveList);
+
+	//****02/09/2016 see below
+
+	it.Reset ();
+	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+	smAmbiguousInterlocusWithPoorMorphology ambiguousInterlocusWithPoorMorphology;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		// Now check for undiagnosed craters
+
+		if (prevSignal != NULL) {
+
+			if (!prevSignal->IsPossibleInterlocusAllele (-1)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (!nextSignal->IsPossibleInterlocusAllele (-1)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			flankingLocusLeft = prevSignal->GetLocus (-1);
+			flankingLocusRight = prevSignal->GetLocus (1);
+
+			if ((flankingLocusLeft == NULL) || (flankingLocusRight == NULL)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if ((flankingLocusLeft != nextSignal->GetLocus (-1)) || (flankingLocusRight != nextSignal->GetLocus (1))) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			// ****02/09/2016 Revise below without crater peaks, but with new peak called NoisyPeak?  Then, add NoisyPeak as new signal. Already know it is not pull-up
+			// Do not remove any craters because they have already been validated as craters by cross channel analysis algorithm
+
+			if ((prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1)) || (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1))) {
+
+				// This is not a crater though...01/01/2014
+
+				nextSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
+				SignalsToDeleteFromSignalList.Append (nextSignal);
+				prevSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
+				SignalsToDeleteFromSignalList.Append (prevSignal);
+
+				prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+				nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+
+				currentSignal = new NoisyPeak (prevSignal, nextSignal);
+				currentSignal->CaptureSmartMessages ();
+				currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+				currentSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
+				signalsToAddToList.Append (currentSignal);
+					
+				prevSignal = nextSignal;
+			}
+		}
+
+		else
+			prevSignal = nextSignal;
+	}
+
+	while (nextSignal = (DataSignal*) SignalsToDeleteFromSignalList.GetFirst ()) {
+
+		PreliminaryCurveList.RemoveReference (nextSignal);
+		nextLocus = (Locus*) nextSignal->GetLocus (-1);
+
+		if (nextLocus != NULL)
+			nextLocus->RemoveSignalFromLocusList (nextSignal);
+
+		nextLocus = (Locus*) nextSignal->GetLocus (1);
+
+		if (nextLocus != NULL)
+			nextLocus->RemoveSignalFromLocusList (nextSignal);
+	}
+
+	while (nextSignal = (DataSignal*) signalsToAddToList.GetFirst ()) {
+
+		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
 	return 0;

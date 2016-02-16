@@ -1572,7 +1572,7 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
 	if ((mNext == NULL) || (mPrevious == NULL))
 		return 2.0;
 
-	return (0.5 * fabs (mNext->GetMean () - mPrevious->GetMean ())) + (0.5 * nSigmas * (mPrevious->GetStandardDeviation () + mNext->GetStandardDeviation ()));
+	return nSigmas * mSigma;
 }
 
 
@@ -1891,6 +1891,47 @@ NegativeSignal :: ~NegativeSignal () {
 	delete mOriginal;
 }
 
+
+double NoisyPeak :: GetPullupToleranceInBP (double noise) const {
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return GetPullupToleranceInBP ();
+
+	double bpLeft = mPrevious->GetApproximateBioID ();
+	double bpRight = mNext->GetApproximateBioID ();
+	double bp = GetApproximateBioID ();
+	bpLeft = bp - bpLeft;
+	bpRight = bpRight - bp;
+	double rtnValue;
+
+	if (bpLeft > bpRight)
+		rtnValue = bpLeft;
+
+	else
+		rtnValue = bpRight;
+
+	return rtnValue;
+}
+
+
+void NoisyPeak :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
+
+	DataSignal::OutputDebugID (comm, numHigherObjects);
+	RGString idData;
+	idData << "\t\t\t\tSignal with Mean:  " << mMean;
+	SmartMessage::OutputDebugString (idData);
+}
+
+
+
+void NoisyPeak :: CaptureSmartMessages () {
+
+	if (mPrevious != NULL)
+		DataSignal::CaptureSmartMessages (mPrevious);
+
+	if (mNext != NULL)
+		DataSignal::CaptureSmartMessages (mNext);
+}
 
 
 

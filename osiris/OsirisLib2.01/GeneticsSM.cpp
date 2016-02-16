@@ -5609,7 +5609,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RG
 int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes) {
 
 	//
-	//  This is sample stage 3
+	//  This is no longer sample stage 3:  obsolete 02/14/2016
 	//
 
 	RGDListIterator it (LocusSignalList);
@@ -5928,6 +5928,116 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 	while (nextSignal = (DataSignal*) tempList.GetFirst ())
 		LocusSignalList.RemoveReference (nextSignal);
 
+	return 0;
+}
+
+
+int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes) {
+
+	//
+	//  This is sample stage 3
+	//
+
+	RGDListIterator it (LocusSignalList);
+	DataSignal* nextSignal;
+	DataSignal* prevSignal = NULL;
+	DataSignal* followingSignal = NULL;
+	DataSignal* currentSignal;
+	RGString alleleName;
+	RGString prevAlleleName;
+	bool prevSignalWasCrater = false;
+	RGString lName = GetLocusName ();
+	bool foundOLAllele = false;
+	RGDList tempList;
+	RGDList SignalsToDeleteFromAll;
+	RGDList SignalsToDeleteFromLocus;
+	int location;
+
+	smExtraneousAMELPeak extraneousPeakInAMEL;
+	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+
+	it.Reset ();
+
+	prevSignal = NULL;
+	prevAlleleName = "";
+	double prevResidual;
+	double nextResidual;
+	int prevLocation = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		// test for consecutive signals with same call:  make it a NoisyPeak (This should be done only for peaks that
+		// are unique to this locus
+
+		location = TestSignalPositionRelativeToLocus (nextSignal);
+		alleleName = nextSignal->GetAlleleName (-location);	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
+
+		if ((prevSignal != NULL) && (!alleleName.IsEmpty ()) && (prevAlleleName == alleleName)) {
+
+			if (mIsAMEL) {
+
+				nextResidual = fabs (nextSignal->GetBioIDResidual (-location));	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
+				prevResidual = fabs (prevSignal->GetBioIDResidual (-prevLocation));	// location is relative to locus; must reverse to make relative to prevSignal (03/26/2012)
+
+				if (prevResidual < nextResidual) {
+
+					it.RemoveCurrentItem ();
+					nextSignal->SetMessageValue (extraneousPeakInAMEL, true);
+				}
+
+				else {
+
+					tempList.Append (prevSignal);
+					prevSignal->SetMessageValue (extraneousPeakInAMEL, true);
+					prevSignal = nextSignal;   // changed so that we test nextSignal also
+					prevAlleleName = alleleName;
+					prevLocation = location;
+				}
+
+				continue;
+			}
+
+			if (prevSignal->IsDoNotCall () || nextSignal->IsDoNotCall ()) {
+
+				prevSignal = nextSignal;   // changed so that we test nextSignal also
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
+			currentSignal->CaptureSmartMessages ();
+			currentSignal->SetDontLook (false);
+			currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			tempList.Append (currentSignal);
+			signalList.RemoveReference (prevSignal);
+			signalList.RemoveReference (nextSignal);
+			prevLocation = location;
+			prevAlleleName = alleleName;
+		}
+
+		else {
+
+			prevSignal = nextSignal;
+			prevLocation = location;
+			prevAlleleName = alleleName;
+		}
+	}
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+
+		// Add new signals to all lists
+		signalList.InsertWithNoReferenceDuplication (nextSignal);
+		completeList.InsertWithNoReferenceDuplication (nextSignal);
+		smartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+		LocusSignalList.InsertWithNoReferenceDuplication (nextSignal);
+		mSmartList.InsertWithNoReferenceDuplication (nextSignal);
+		//artifacts.InsertWithNoReferenceDuplication (nextSignal);
+	}
+	
 	return 0;
 }
 

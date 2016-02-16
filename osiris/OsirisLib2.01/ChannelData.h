@@ -155,6 +155,7 @@ public:
 	virtual int SetAllApproximateIDs (ChannelData* laneStd);
 
 	virtual bool ChannelIsValid () const { if (mData == NULL) return false; return true; }
+	virtual bool IsControlChannel () const { return false; }
 
 	virtual bool TestInterlocusSignalHeightBelowThreshold (DataSignal* signal);
 
@@ -369,6 +370,7 @@ public:
 	virtual int TestArtifactListForNoticesWithinLaneStandardSM (ChannelData* laneStandard, CoreBioComponent* associatedGrid);
 
 	virtual int TestForMultiSignalsSM ();
+	virtual int TestForAlleleDuplicationSM ();
 	virtual int TestProximityArtifactsSM ();
 
 	virtual int AssignSignalToFirstLocusAndDeleteFromSecondSM (DataSignal* target, Locus* locus1, Locus* locus2);
