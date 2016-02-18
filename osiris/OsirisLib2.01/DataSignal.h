@@ -299,7 +299,7 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPartOfCluster (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -315,7 +315,7 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPartOfCluster (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -336,7 +336,7 @@ public:
 		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
-		mPrimaryRatios (NULL) {
+		mPrimaryRatios (NULL), mPartOfCluster (ds.mPartOfCluster) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -383,6 +383,8 @@ public:
 
 	void SetAcceptedOffGrid (bool r) { mAcceptedOffGrid = r; }
 	bool IsAcceptedOffGrid () const { return mAcceptedOffGrid; }
+	bool IsPartOfCluster () const { return mPartOfCluster; }
+	void SetPartOfCluster (bool b) { mPartOfCluster = b; }
 
 	int GetChannel () const { return mChannel; }
 	void SetChannel (int channel) { mChannel = channel; }
@@ -865,6 +867,7 @@ protected:
 
 	double mPullupTolerance;
 	double* mPrimaryRatios;
+	bool mPartOfCluster;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;

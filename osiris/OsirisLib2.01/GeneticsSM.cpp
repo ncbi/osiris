@@ -6006,6 +6006,14 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
+			if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
 			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);

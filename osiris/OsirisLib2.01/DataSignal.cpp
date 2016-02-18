@@ -1023,7 +1023,8 @@ mResidualLeft (ds.mResidualLeft), mResidualRight (ds.mResidualRight), mPossibleI
 mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
-mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL) {
+mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
+mPartOfCluster (ds.mPartOfCluster) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -9990,6 +9991,7 @@ CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0),
 
 	mIsGraphable = false;
 	mPullupTolerance = halfCraterPullupTolerance;
+	mPartOfCluster = true;
 }
 
 
@@ -10004,6 +10006,10 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 	double l1;
 	double l2;
 	bool useRightPeak;
+	mPartOfCluster = true;
+	prev->SetPartOfCluster (true);
+	next->SetPartOfCluster (true);
+
 
 	if (peak2 >= peak1)
 		useRightPeak = true;
@@ -10091,6 +10097,9 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	double l1;
 	double l2;
 	bool useRightPeak;
+	mPartOfCluster = true;
+	prev->SetPartOfCluster (true);
+	next->SetPartOfCluster (true);
 
 	if (peak2 >= peak1)
 		useRightPeak = true;
