@@ -1707,8 +1707,11 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 			if (fit < minFit) {
 
 				// In this case, the fit is totally unacceptable or marginal, so try for alternate signatures
-				if (TestForArtifactsSM (rightSignal, fit, 2))
+				if (TestForArtifactsSM (rightSignal, fit, 2)) {
+
+					rightSignal = NULL;
 					rtnValue--;
+				}
 			}
 
 			else {  // rightSignal is acceptable for now, so add it to the CurveList
@@ -1735,8 +1738,11 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 			if (fit < minFit) {
 
 				// In this case, the fit is totally unacceptable or marginal, so try for alternate signatures
-				if (TestForArtifactsSM (leftSignal, fit, 1))
+				if (TestForArtifactsSM (leftSignal, fit, 1)) {
+
+					leftSignal = NULL;
 					rtnValue--;
+				}
 			}
 
 			else {  // leftSignal is acceptable for now, so add it to the CurveList
