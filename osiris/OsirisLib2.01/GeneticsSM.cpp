@@ -5956,6 +5956,8 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smExtraneousAMELPeak extraneousPeakInAMEL;
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+	smPullUp pullup;
+	smPrimaryInterchannelLink primaryPullup;
 
 	it.Reset ();
 
@@ -5964,6 +5966,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	double prevResidual;
 	double nextResidual;
 	int prevLocation = 0;
+	bool report = false;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -5998,13 +6001,13 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
-			if (prevSignal->IsDoNotCall () || nextSignal->IsDoNotCall ()) {
+			//if (prevSignal->IsDoNotCall () || nextSignal->IsDoNotCall ()) {	// Let's try not using this to see what happens 02/25/2016*******
 
-				prevSignal = nextSignal;   // changed so that we test nextSignal also
-				prevAlleleName = alleleName;
-				prevLocation = location;
-				continue;
-			}
+			//	prevSignal = nextSignal;   // changed so that we test nextSignal also
+			//	prevAlleleName = alleleName;
+			//	prevLocation = location;
+			//	continue;
+			//}
 
 			if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
 
@@ -6014,10 +6017,71 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
+			if (prevSignal->GetMessageValue (primaryPullup) && !nextSignal->GetMessageValue (primaryPullup)) {
+
+				nextSignal->SetDontLook (true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			else if (nextSignal->GetMessageValue (primaryPullup) && !prevSignal->GetMessageValue (primaryPullup)) {
+
+				prevSignal->SetDontLook (true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (pullup) && !nextSignal->GetMessageValue (pullup)) {
+
+				nextSignal->SetDontLook (true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			else if (nextSignal->GetMessageValue (pullup) && !prevSignal->GetMessageValue (pullup)) {
+
+				prevSignal->SetDontLook (true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if ((prevSignal->GetMean () > 4219.0) && (prevSignal->GetMean () < 4223.0))
+				report = true;
+
 			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
 			currentSignal->CaptureSmartMessages ();
+
+			if (report) {
+
+				cout << "Prev signal mean = " << prevSignal->GetMean () << endl;
+				cout << "Next signal mean = " << nextSignal->GetMean () << endl;
+				cout << "Current signal mean = " << currentSignal->GetMean () << endl;
+
+				if (prevSignal->GetMessageValue (pullup))
+					cout << "Previous is pull up" << endl;
+
+				if (prevSignal->GetMessageValue (primaryPullup))
+					cout << "Previous is primary pull up" << endl;
+
+				if (nextSignal->GetMessageValue (pullup))
+					cout << "Next is pull up" << endl;
+
+				if (nextSignal->GetMessageValue (primaryPullup))
+					cout << "Next is primary pull up" << endl;
+			}
+
 			currentSignal->SetDontLook (false);
 			currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			tempList.Append (currentSignal);
