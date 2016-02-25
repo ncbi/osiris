@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="Name">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="Synonym">
+		<xs:annotation>
+			<xs:documentation>All substrings are case independent, used in standard settings and lab settings</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="Locus">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Locus name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="Allele" type="xs:string"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TypeLocusCollection">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Locus" type="Locus"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TypePositiveControls">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="PositiveControl">
+				<xs:annotation>
+					<xs:documentation>Each positive control has a file name containing a specific synonym</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Name" type="xs:string"/>
+						<xs:element name="FileNameString" type="xs:string" minOccurs="0"/>
+						<xs:element name="Loci" type="TypeLocusCollection"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TypeNegativeControls">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="NegativeControl">
+				<xs:annotation>
+					<xs:documentation>Each negative control has a file name containing a specific synonym</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Name" type="xs:string"/>
+						<xs:element name="FileNameString" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ControlLocusSpecificThreshold">
+		<xs:sequence>
+			<xs:element name="LocusName" type="xs:string"/>
+			<xs:element name="FractionOfMaxPeak" type="xs:double" minOccurs="0"/>
+			<xs:element name="PullupFractionalFilter" type="xs:double" minOccurs="0"/>
+			<xs:element name="StutterThreshold" type="xs:double" minOccurs="0"/>
+			<xs:element name="PlusStutterThreshold" type="xs:double" minOccurs="0"/>
+			<xs:element name="AdenylationThreshold" type="xs:double" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SampleLocusSpecificThreshold">
+		<xs:sequence>
+			<xs:element name="LocusName" type="xs:string"/>
+			<xs:element name="FractionOfMaxPeak" type="xs:double" minOccurs="0"/>
+			<xs:element name="PullupFractionalFilter" type="xs:double" minOccurs="0"/>
+			<xs:element name="StutterThreshold" type="xs:double" minOccurs="0"/>
+			<xs:element name="PlusStutterThreshold" type="xs:double" minOccurs="0"/>
+			<xs:element name="AdenylationThreshold" type="xs:double" minOccurs="0"/>
+			<xs:element name="HeterozygousImbalanceLimit" type="xs:double" minOccurs="0"/>
+			<xs:element name="MinBoundForHomozygote" type="xs:double" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
