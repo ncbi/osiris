@@ -715,6 +715,9 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	int n = 0;
 	smPullUp pullup;
 
+	if (mPrimaryRatios == NULL)
+		return;
+
 	for (i=1; i<=nChannels; i++) {
 
 		if (mPrimaryRatios [i] >= 0.0) {
@@ -748,6 +751,21 @@ void DataSignal :: CaptureSmartMessages (const DataSignal* signal) {
 		if (signal->mMessageArray [i])
 			SetMessageValue (scope, i, true);
 	}
+
+	//smPullUp pullup;
+
+	//if (signal->GetMessageValue (pullup)) {
+
+	//	int index = pullup.GetMessageIndex ();
+	//	SmartMessageData target (index);
+	//	SmartMessageData* smd = (SmartMessageData*)mMessageDataTable->Find (&target);
+
+	//	if (smd == NULL)
+	//		return;
+
+	//	RGString text = smd->GetText ();
+	//	AppendDataForSmartMessage (pullup, text);
+	//}
 }
 
 
