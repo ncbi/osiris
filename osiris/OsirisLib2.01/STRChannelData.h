@@ -226,6 +226,8 @@ public:
 	virtual int FinalTestForCriticalLaneStandardNoticesSM ();
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);
 
+	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
+
 	virtual int TestSignalsForOffScaleSM ();
 
 

@@ -1630,6 +1630,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	//
 
 	int size = mNumberOfChannels + 1;
+	DataSignal::SetNumberOfChannels (mNumberOfChannels);
 	DataSignal** OnDeck = new DataSignal* [size];
 	double* noiseLevels = new double [size];
 	double* means = new double [size];
@@ -1867,14 +1868,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				mean2 = nextSignal->GetApproximateBioID ();
 
-				if (mean2 - mean1 >= 0.85)		//check for value?
-					break;
-
 				//
 				// Test for and add multipeak to newTempList.
 				//
 
 				if (prevSignal->IsNegativePeak () == nextSignal->IsNegativePeak ()) {
+
+					if (mean2 - mean1 >= 0.85)		//check for value?
+						break;
 
 					if (prevSignal->IsNegativePeak ())
 						continue;
@@ -1917,10 +1918,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				}
 
-				else {
+				else {  // This may be a sigmoidal peak
 
 					double posPeak;
 					double negPeak;
+
+					if (mean2 - mean1 >= 1.0)		//check for value?
+						break;
 
 					if (prevSignal->IsNegativePeak ()) {
 
@@ -2284,8 +2288,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 						prevSignal = testSignal->GetPreviousLinkedSignal ();
 						nextSignal2 = testSignal->GetNextLinkedSignal ();
+						bool containsWholeCrater = probablePullupPeaks.ContainsReference (prevSignal) && probablePullupPeaks.ContainsReference (nextSignal2);
+						bool isSigmoid = prevSignal->IsNegativePeak () || nextSignal2->IsNegativePeak ();
 
-						if (probablePullupPeaks.ContainsReference (prevSignal) && probablePullupPeaks.ContainsReference (nextSignal2)) {
+						if (containsWholeCrater || isSigmoid) {
 
 							// This may be valid pull-up crater.  Remove side peaks and verify that there are no more
 
@@ -2523,8 +2529,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		while (nextSignal = nextChannel->GetNextPreliminaryCurve ()) {
 
-			if ((nextSignal->Peak () >= primaryThreshold) && !nextSignal->HasCrossChannelSignalLink ())
+			if ((nextSignal->Peak () >= primaryThreshold) && !nextSignal->HasCrossChannelSignalLink ()) {
+
 				notPrimaryLists [i]->Append (nextSignal);
+				nextSignal->SetMessageValue (primaryLink, false);
+			}
 		}
 	}
 
@@ -3963,6 +3972,7 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 
 	FitNonLaneStandardNegativeCharacteristicsSM (text, ExcelText, msg, print);
 	//cout << "Done fitting all non-lane standard neg. peaks" << endl;
+	mDataChannels [mLaneStandardChannel]->FitAllNegativeCharacteristicsSM (text, ExcelText, msg, print);
 
 	if (status < 0) {
 

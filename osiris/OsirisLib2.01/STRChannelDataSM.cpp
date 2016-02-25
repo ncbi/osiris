@@ -2169,6 +2169,148 @@ int STRLaneStandardChannelData :: TestForRaisedBaselineAndExcessiveNoiseSM (doub
 }
 
 
+int STRLaneStandardChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+
+	
+	//
+	//  This is sample stage 1
+	//
+	
+	STRTracePrequalification trace;
+	DataSignal* nextSignal;
+	double fit;
+	DataSignal* signature;
+	double minRFU = GetMinimumHeight ();
+	double maxRFU = GetMaximumHeight ();
+	double detectionRFU = GetDetectionThreshold ();
+	double minAcceptableFit = ParametricCurve::GetMinimumFitThreshold ();
+	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
+	double minFit = minFitForArtifactTest;
+	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
+	int i;
+
+	if (minAcceptableFit > minFit)
+		minFit = minAcceptableFit;
+
+	if (CoreBioComponent::GetGaussianSignature ())
+		signature = new NormalizedGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	else
+		signature = new DoubleGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	mNegativeCurveList.ClearAndDelete ();
+	double lineFit;
+	SampledData* negativePeaks = new SampledData (*(SampledData*)mData);
+	negativePeaks->SetNoiseRange (mData->GetNoiseRange ());
+	double* negArray = (double*)negativePeaks->GetData ();
+	int n = negativePeaks->GetNumberOfSamples ();
+
+	for (i=0; i<n; i++) {
+
+		if (negArray [i] > 0.0)
+			negArray [i] = 0.0;
+
+		else
+			negArray [i] = -negArray [i];
+	}
+
+	negativePeaks->ResetCharacteristicsFromRight (trace, text, detectionRFU, print);
+
+	Endl endLine;
+	ExcelText.SetOutputLevel (1);
+	ExcelText << "Using minimum RFU = " << detectionRFU << " for negative peaks" << endLine;
+	ExcelText.ResetOutputLevel ();
+	double absoluteMinFitLessEpsilon = absoluteMinFit - 0.01;
+
+	double constantHeight;
+	int leftEndPoint;
+	int rightEndPoint;
+	//cout << "Finding next char. from right (2)" << endl;
+
+	while (nextSignal = negativePeaks->FindNextCharacteristicFromRight (*signature, fit, mNegativeCurveList)) {
+
+		//secondaryContent = fabs(nextSignal->GetScale (2));
+		//double mean = nextSignal->GetMean ();
+		lineFit = negativePeaks->TestConstantCharacteristicRetry (constantHeight, leftEndPoint, rightEndPoint);
+
+		if (lineFit > minFitForArtifactTest) {
+
+			delete nextSignal;
+			continue;
+		}
+
+		nextSignal->SetPeakIsNegative ();
+		nextSignal->SetCannotBePrimary (true);
+		mNegativeCurveList.Prepend (nextSignal);
+
+	}   //  We are done finding negative characteristics
+
+	//cout << "Done finding characteristics" << endl;
+	DataSignal* prevSignal = NULL;
+	RGDList tempList;
+	prevSignal = (DataSignal*)mNegativeCurveList.GetFirst ();
+
+	if (prevSignal == NULL) {
+
+		delete signature;
+		return 0;
+	}
+
+	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
+	//cout << "Eliminating neg peaks that are too close (2)" << endl;
+
+	//
+	//	Do we really want to do this???
+	//
+
+	while (nextSignal = (DataSignal*) mNegativeCurveList.GetFirst ()) {
+
+		if (prevSignal != NULL) {
+
+			if (fabs(prevSignal->GetMean () - nextSignal->GetMean ()) < minDistance) {
+
+				// "get rid" of the one that fits least well and use the other for the next test.
+				// later, if we want, we can add redundant signal to artifact list with a notice...
+
+				if (prevSignal->GetCurveFit () > nextSignal->GetCurveFit ()) {
+
+					// keep prevSignal and "lose" nextSignal
+		//			ArtifactList.RemoveReference (nextSignal);
+					delete nextSignal;
+					continue;
+				}
+
+				else {
+
+		//			ArtifactList.RemoveReference (prevSignal);
+					delete prevSignal;
+					prevSignal = nextSignal;
+					continue;
+				}
+			}
+
+			else {
+
+				tempList.Append (prevSignal);
+				prevSignal = nextSignal;
+			}
+		}
+	}
+
+	if (prevSignal != NULL)
+		tempList.Append (prevSignal);
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ())
+		mNegativeCurveList.Append (nextSignal);
+
+	//cout << "Done testing 'too close'" << endl;
+
+	delete signature;
+//	ProjectNeighboringSignalsAndTest (1.0, 1.0);
+	return 0;
+}
+
+
 int STRLaneStandardChannelData :: TestSignalsForOffScaleSM () {
 
 	RGDListIterator it (SmartPeaks);
