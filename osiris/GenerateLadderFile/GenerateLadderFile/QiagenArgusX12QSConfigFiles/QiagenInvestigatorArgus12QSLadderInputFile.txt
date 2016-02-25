@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-LadderFileName = Q_InvestigatorArgusX12_LadderInfo.xml;
-KitName = QiagenArgusX12;
-LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\QiagenArgus12ConfigFiles\StandardBinsAndPanels;
-=======
 LadderFileName = Q_InvestigatorArgusX12_QS_LadderInfo.xml;
 KitName = QiagenArgusX12_QS;
 LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\QiagenArgusX12QSConfigFiles\StandardBinsAndPanels;
->>>>>>> masterV2.7b1
 NumberOfDyes = 5;
 Dye1 = 6-FAM;
 Dye2 = BTG;
@@ -18,24 +12,6 @@ Color2 = GREEN;
 Color3 = YELLOW;
 Color4 = RED;
 Color5 = ORANGE;
-<<<<<<< HEAD
-BinsFileName = ArgusX12_Bins_Adjusted.txt;
-PanelsFileName = ArgusX12_Panels_v9x.txt;
-SearchString = AX12;
-OutputConfigPath = F:\New Kits Profiles\QiagenArgusX12;
-MaxExpectedAllelesPerLocusDefault = 2;
-YLinkedDefault = false;
-ILSName = BTO_60_500;
-ILSName = BTO_80_500;
-ILSName = BTO_60_550;
-ILSName = BTO_80_550;
-ILSChannel = 5;
-StdControl = 9947A;
-VolumeDirectoryName = QIAGEN_ARGUS_x12;
-HID = true;
-DefaultVolumePath = F:\New Kits Profiles\QiagenArgusX12;
-DoNotExtend = AMEL;
-=======
 BinsFileName = ArgusX12QS_Bins_v8x.txt;
 PanelsFileName = ArgusX12QS_Panels_v8x.txt;
 SearchString = AX12QS;
@@ -51,5 +27,4 @@ DefaultVolumePath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\NamedxmlC
 DoNotExtend = AMEL;
 DoNotExtend = QS1;
 Version = 2.7;
->>>>>>> masterV2.7b1
 ;
