@@ -61,6 +61,7 @@ double DataSignal :: maxHeight = -1.0;
 unsigned long DataSignal :: signalID = 0;
 bool* DataSignal::InitialMatrix = NULL;
 bool DataSignal::ConsiderAllOLAllelesAccepted = false;
+int DataSignal::NumberOfChannels = 0;
 
 double SampledData::PeakFractionForFlatCurveTest = 0.25;
 double SampledData::PeakLevelForFlatCurveTest = 60.0;
@@ -10585,12 +10586,43 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 	mPrevious = prev;
 	mNext = next;
 	SetDoNotCall (true);
-	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
-	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	double P1 = fabs (prev->Peak ());
+	double P2 = fabs (next->Peak ());
+
+	cout << "Sigmoid P1 = " << P1 << endl;
+	cout << "Sigmoid P2 = " << P2 << endl;
+
+	double denom = P1 + P2;
+	double lambda;
+
+	cout << "Crater p1 + p2 = " << denom << endl;
+	cout << "Prev mean = " << prev->GetMean () << endl;
+
+	if (denom == 0.0)
+		lambda = 0.5;
+
+	else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+		lambda = 0.5;
+
+	else
+		lambda = P2 / denom;
+
+	if (lambda < 0.1)
+		lambda = 0.1;
+
+	if (lambda > 0.9)
+		lambda = 0.9;
+
+	cout << "lambda = " << lambda << endl;
+
+	double lambda1 = 1.0 - lambda;
+
+	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
+	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
 	mHeight = 1.0;
 
-	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
-	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
+	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
+	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();
 	SetChannel (prev->GetChannel ());
 	Fit = prev->GetCurveFit ();
 	double temp = next->GetCurveFit ();
@@ -10608,12 +10640,46 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 	mPrevious = prev;
 	mNext = next;
 	SetDoNotCall (true);
-	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
-	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	double P1 = fabs (prev->Peak ());
+	double P2 = fabs (next->Peak ());
+
+	cout << "Sigmoid P1 = " << P1 << endl;
+	cout << "Sigmoid P2 = " << P2 << endl;
+
+	//if ((P1 > 5.0e6) || (P2 > 5.0e6))
+	//	P1 = P2 = 100.0;
+
+	double denom = P1 + P2;
+	double lambda;
+
+	cout << "Crater p1 + p2 = " << denom << endl;
+	cout << "Prev mean = " << prev->GetMean () << endl;
+
+	if (denom == 0.0)
+		lambda = 0.5;
+
+	else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+		lambda = 0.5;
+
+	else
+		lambda = P2 / denom;
+
+	if (lambda < 0.1)
+		lambda = 0.1;
+
+	if (lambda > 0.9)
+		lambda = 0.9;
+
+	cout << "lambda = " << lambda << endl;
+
+	double lambda1 = 1.0 - lambda;
+
+	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
+	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
 	mHeight = 1.0;
 
-	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
-	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
+	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
+	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();
 	SetChannel (prev->GetChannel ());
 	Fit = prev->GetCurveFit ();
 	double temp = next->GetCurveFit ();

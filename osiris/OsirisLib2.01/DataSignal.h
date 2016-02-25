@@ -783,6 +783,7 @@ public:
 	static void InitializeMessageMatrix (bool* matrix, int size);
 	static void ClearInitializationMatrix () { delete[] InitialMatrix; InitialMatrix = NULL; }
 	static int GetScope () { return 1; }
+	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
 
 
 	//*******************************************************************************************************
@@ -876,6 +877,7 @@ protected:
 	static unsigned long signalID;
 	static bool* InitialMatrix;
 	static bool ConsiderAllOLAllelesAccepted;
+	static int NumberOfChannels;
 
 	// Smart Message functions*******************************************************************************
 	//*******************************************************************************************************
