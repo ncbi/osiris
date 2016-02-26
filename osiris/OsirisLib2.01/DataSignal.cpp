@@ -3206,7 +3206,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 	//int locMin;
 	int locMax;
 	locMax = intRight;
-	bool print = false;
 
 	int i;
 	double mu = currentSignal->GetMean ();
@@ -3219,18 +3218,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 	double leftUpper = mu - sigma;
 	double rightLower = mu + sigma;
 
-	//if ((mu > 3054.0) && (mu < 3054.8))
-	//	print = true;
-
-	//else if ((mu > 3744.7) && (mu < 3745.3))
-	//	print = true;
-
-	if (print) {
-		cout << "mu = " << mu << " and sigma = " << sigma << endl;
-		cout << "left = " << intLeft << " and right = " << intRight << endl;
-		cout << "Fit left = " << currentSignal->LeftEndPoint () << " and fit right = " << currentSignal->RightEndPoint () << endl;
-	}
-
 	if (ratio >= 0.62) {
 
 		for (i=intLeft; i<leftUpper; i++) {
@@ -3242,12 +3229,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 				locMax = i;
 				maxDisp = currentDisp;
 			}
-		}
-
-		if (print) {
-
-			cout << "Left max disp = " << maxDisp << " at location = " << locMax << " relative to limit = " << limit << endl;
-			cout << "Raw data at max = " << Measurements [locMax] << " and fit data at max = " << currentSignal->Value ((double)i) << endl;
 		}
 	}
 
@@ -3262,11 +3243,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 				locMax = i;
 				maxDisp = currentDisp;
 			}
-		}
-
-		if (print) {
-			cout << "Right max disp = " << maxDisp << " at location = " << locMax << " relative to limit = " << limit << endl;
-			cout << "Raw data at max = " << Measurements [locMax] << " and fit data at max = " << currentSignal->Value ((double)i) << endl;
 		}
 	}
 
@@ -10589,14 +10565,14 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 	double P1 = fabs (prev->Peak ());
 	double P2 = fabs (next->Peak ());
 
-	cout << "Sigmoid P1 = " << P1 << endl;
-	cout << "Sigmoid P2 = " << P2 << endl;
+	//cout << "Sigmoid P1 = " << P1 << endl;
+	//cout << "Sigmoid P2 = " << P2 << endl;
 
 	double denom = P1 + P2;
 	double lambda;
 
-	cout << "Crater p1 + p2 = " << denom << endl;
-	cout << "Prev mean = " << prev->GetMean () << endl;
+	//cout << "Crater p1 + p2 = " << denom << endl;
+	//cout << "Prev mean = " << prev->GetMean () << endl;
 
 	if (denom == 0.0)
 		lambda = 0.5;
@@ -10613,7 +10589,7 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 	if (lambda > 0.9)
 		lambda = 0.9;
 
-	cout << "lambda = " << lambda << endl;
+	//cout << "lambda = " << lambda << endl;
 
 	double lambda1 = 1.0 - lambda;
 
@@ -10643,17 +10619,14 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 	double P1 = fabs (prev->Peak ());
 	double P2 = fabs (next->Peak ());
 
-	cout << "Sigmoid P1 = " << P1 << endl;
-	cout << "Sigmoid P2 = " << P2 << endl;
-
-	//if ((P1 > 5.0e6) || (P2 > 5.0e6))
-	//	P1 = P2 = 100.0;
+	//cout << "Sigmoid P1 = " << P1 << endl;
+	//cout << "Sigmoid P2 = " << P2 << endl;
 
 	double denom = P1 + P2;
 	double lambda;
 
-	cout << "Crater p1 + p2 = " << denom << endl;
-	cout << "Prev mean = " << prev->GetMean () << endl;
+	//cout << "Crater p1 + p2 = " << denom << endl;
+	//cout << "Prev mean = " << prev->GetMean () << endl;
 
 	if (denom == 0.0)
 		lambda = 0.5;
@@ -10670,7 +10643,7 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 	if (lambda > 0.9)
 		lambda = 0.9;
 
-	cout << "lambda = " << lambda << endl;
+	//cout << "lambda = " << lambda << endl;
 
 	double lambda1 = 1.0 - lambda;
 
