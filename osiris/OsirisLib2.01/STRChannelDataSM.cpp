@@ -4509,7 +4509,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		cout << "No knot values..." << endl;
 	}
 
-//	cout << "First calculated knot height = " << temp << ".  Start Time = " << startTime << endl;
+	//cout << "First calculated knot height = " << temp << ".  Start Time = " << startTime << endl;
 
 	knotTimes.push_front ((double)(startBaselineFit / 2));
 	knotValues.push_front (temp);
@@ -4534,22 +4534,29 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	list<double>::iterator itTimes;
 	list<double>::iterator itValues;
 
-	//cout << "Knot Times";
+	//cout << "Knot Times..." << endl;
 	//int n = 0;
 	double lastTime = -500.0;
 	list<double> knotTimes2;
 	list<double> knotValues2;
 	double tempValue;
 
-	if (STRSampleChannelData::UseOldBaselineEstimation)
+	if (STRSampleChannelData::UseOldBaselineEstimation) {
+
+		//cout << "Using old baseline estimation" << endl;
 		ShapeBaselineData (knotTimes, knotValues);  // commented and added below 08/26/2013
+	}
 
 	else {
 
+		//cout << "Using new baseline estimation" << endl;
 		ShapeBaselineData (knotTimes, knotValues, FitData, FitNegData, rfuThreshold);	 // Commented out 02/03/2014
+		//cout << "Data is shaped; now edit out-of-range data" << endl;
 		//ShapeBaselineData (knotTimes, knotValues);
 		EditPeaksForOutOfRange (knotTimes, knotValues, FitNegData, rfuThreshold);	// 02/03/2014:  This function causes a crash under some conditions...Fixed 02/04/2014
 	}
+
+	//cout << "Shaped baseline data" << endl;
 
 	while (!knotTimes.empty ()) {
 
@@ -4650,7 +4657,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		return 0;
 	}
 
-//	cout << "Baseline analysis succeeded..." << endl;
+	//cout << "Baseline analysis succeeded..." << endl;
 	mBaselineStart = 0;
 
 	if (GetMessageValue (ignoreNegativeBaselineMsg))
@@ -4689,6 +4696,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		dynamicBaseline = mBaseLine->EvaluateSequenceNext ();
 	}
 
+	//cout << "Normalization successful" << endl;
 	return 1;
 }
 
@@ -4763,6 +4771,10 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<double>& knotValues, DataSignal* fitDataPositive, DataSignal* fitDataNegative, double threshold) {
 
 	int n = knotTimes.size ();
+
+	if (knotValues.size () != n)
+		cout << "Knot times = " << n << " and knot values = " << knotValues.size () << endl;
+
 	double* originalTimes = new double [n];
 	double* originalValues = new double [n];
 	int i = 0;
@@ -5803,6 +5815,7 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 	if (n < 8)
 		return 0;
 
+	cout << "Number of knots = " << n << endl;
 	double* originalTimes = new double [n];
 	double* originalValues = new double [n];
 	int i = 0;
@@ -5847,7 +5860,7 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 		currentValue = originalValues [i];
 		currentTime = (int) floor (originalTimes [i] + 0.5);
 
-		if (currentTime < endTime) {
+		if ((currentTime >= 0) && (currentTime < endTime)) {
 
 			ScanRawDataForMinimaLeftAndRight (currentTime, leftMin, rightMin, fitDataNegative, threshold);
 			averageMin = 0.5 * (leftMin + rightMin);

@@ -1881,16 +1881,16 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 						continue;
 
 					if ((prevSignal->Peak () < 0.7 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.7 * prevSignal->Peak ()))
-						continue;
+						break;
 
 					if (prevSignal->GetMessageValue (isControlPeak) || nextSignal->GetMessageValue (isControlPeak))
-						continue;
+						break;
 
 					// Now test to make sure this isn't two separate peaks, which would result in an exceptionally wide crater
 					// Use CoreBioComponent::TestForOffScale (double time) to test for laser off-scale as part of decision
 
 					if (nextSignal->GetApproximateBioID () - prevSignal->GetApproximateBioID () > 1.0) // The two peaks are more than 1 bp apart, so, too wide
-						continue;
+						break;
 
 					double width = mLSData->GetWidthAtTime (0.5 * (prevSignal->GetMean () + nextSignal->GetMean ()));
 					double estimatedSigma = 0.5 * ((nextSignal->GetMean () - prevSignal->GetMean ()) + prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ()); // We might want to scale by height to be more accurate
@@ -1899,7 +1899,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					//	continue;
 
 					if (estimatedSigma > 2.1 * width) // It's too wide to be a crater...test to make sure coefficient is ok
-						continue;
+						break;
 
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
 					//cout << " at bp = " << 0.5 * (nextSignal->GetApproximateBioID () + prevSignal->GetApproximateBioID ()) << endl;
@@ -1939,10 +1939,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					}
 
 					if (posPeak > 3.0 * negPeak)
-						continue;
+						break;
 
 					if (posPeak >= CoreBioComponent::minPrimaryPullupThreshold)
-						continue;
+						break;
 
 					testSignal = new SimpleSigmoidSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
@@ -2141,12 +2141,16 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double ratio;
 	list<int> pChannels;
 	//bool report;
+	RGDList ignoreSidePeaks;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
 		// First test if above primaryThreshold and is not negative.  If so, search in vicinity using Pos and Neg to find peaks within region that could be pull-up
 
 	//	report = false;
+
+		if (ignoreSidePeaks.ContainsReference (nextSignal))
+			continue;
 
 		primaryHeight = nextSignal->Peak ();
 
@@ -2255,6 +2259,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			continue;   // There are no probable pull-up peaks, so go on to next peak.
 
 		// Now process peaks in list probablePullupPeaks...
+
+		if (primeSignal->IsCraterPeak ()) {
+
+			nextSignal2 = primeSignal->GetNextLinkedSignal ();
+
+			if (nextSignal2 != NULL)
+				ignoreSidePeaks.Prepend (nextSignal2);
+		}
 
 		if (probablePullupPeaks.Entries () >= 2) {
 
@@ -2413,6 +2425,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		// We're done with this primary...go on to next
 		
 	}
+
+	ignoreSidePeaks.Clear ();
 
 	// Done finding all probable pull-ups and primary pull-ups.  Now edit previously created multi-peak list to remove those that are not really multi-peaks because they have no cross channel affect
 
@@ -3980,6 +3994,7 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 		return status;
 	}
 
+	//cout << "Finished fitting all characteristics" << endl;
 	return status;
 }
 

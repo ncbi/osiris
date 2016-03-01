@@ -2826,7 +2826,7 @@ DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow
 	else
 		win1 = high;
 
-//	cout << "Filter windows = " << win1 << ", " << win2 << ", and " << win3 << endl;
+	//cout << "Filter windows = " << win1 << ", " << win2 << ", and " << win3 << endl;
 
 	double* filterOut1 = CreateMovingAverageFilteredArray (win1, Measurements);
 	double* filterOut2 = CreateMovingAverageFilteredArray (win2, filterOut1);
