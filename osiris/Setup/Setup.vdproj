@@ -981,6 +981,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_86B1A57CAF914DFDBDB0EA9797694BFF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8748F0038AC743EB816C10E9E6058817"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1474,12 +1480,6 @@
         "Entry"
         {
         "MsmKey" = "8:_C36704E0740A4FC1843F9386628F787F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C48A4315F48A4D61BC9CBE8EC827472D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -5188,6 +5188,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_86B1A57CAF914DFDBDB0EA9797694BFF"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LabSettingsV4.xsd"
+            "TargetName" = "8:LabSettingsV4.xsd"
+            "Tag" = "8:"
+            "Folder" = "8:_BB6B80819B474DF5BE5018BF00963C4B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8748F0038AC743EB816C10E9E6058817"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NGM\\NGM_StdSettings.xml"
@@ -6834,26 +6854,6 @@
             "TargetName" = "8:PP16_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_A4CE696523EF49F08C89A0B3E2E76EB5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C48A4315F48A4D61BC9CBE8EC827472D"
-            {
-            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LabSettingsV4.xsd"
-            "TargetName" = "8:LabSettingsV4.xsd"
-            "Tag" = "8:"
-            "Folder" = "8:_BB6B80819B474DF5BE5018BF00963C4B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
