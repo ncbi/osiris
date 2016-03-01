@@ -43,6 +43,7 @@
 
 Boolean BaseAllele::SearchByName = TRUE;
 bool* BaseLocus::InitialMatrix = NULL;
+RGString BaseLocus::ILSFamilyName;
 RGString BasePopulationMarkerSet::UserLaneStandardName;
 
 

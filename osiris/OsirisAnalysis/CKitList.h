@@ -23,9 +23,22 @@
 *
 * ===========================================================================
 *
-
+*
 *  FileName: CKitList.h
 *  Author:   Douglas Hoffman
+*
+*   1/28/16
+*   this needs to be written because:
+*    1. CPersistKitList has a separate structure for everything about each kit:
+      std::map<wxString, wxArrayString *> m_mLS;               // lane standard for each kit
+      std::map<wxString, wxArrayString *> m_mILS;              // ils family for each kit, where applicable
+      std::map<wxString, int> m_msChannelCount;                // ILS channel for each kit
+      std::map< wxString, CLocusNameList * > m_mapKitLocus;    // loci for each kit
+      std::map< wxString, CKitChannelMap *> m_mapKitChannels;  // channels for each kit
+
+      This should be changed to a collection of kit objects where each object has all of the above for one kit
+
+*    2. All kits are loaded at once and there are now over 30.  It would be better to load on demand
 *
 */
 #ifndef __C_KIT_LIST_H__
@@ -37,8 +50,72 @@
 #include <wx/arrstr.h>
 #include "nwx/stde.h"
 #include "nwx/nwxXmlPersist.h"
+#include "nwx/nwxXmlPersistCollections.h"
 #include "nwx/CIncrementer.h"
 #include "nwx/nsstd.h"
+
+class CILSLadderInfo;
+
+//  new for 2.7 CKitChannelMap, CKitChannel
+//  CKitChannelMap stores <FsaChannelMap>
+//  CKitChannel stores <FsaChannelMap><Channel>
+
+class CKitChannel : public nwxXmlPersist
+{
+public:
+  CKitChannel() : nwxXmlPersist(true)
+  {
+    RegisterAll(true);
+  }
+  CKitChannel(const CKitChannel &x) : nwxXmlPersist(true)
+  {
+    RegisterAll(true);
+    (*this) = x;
+  }
+  const CKitChannel &operator = (const CKitChannel &x)
+  {
+    m_nKitNr = x.m_nKitNr;
+    m_nFsaNr = x.m_nFsaNr;
+    m_sColor = x.m_sColor;
+    m_sDyeName = x.m_sDyeName;
+    return *this;
+  }
+  const wxString &GetColor() const
+  {
+    return m_sColor;
+  }
+  const wxString &GetDyeName() const
+  {
+    return m_sDyeName;
+  }
+  unsigned int GetKitNr() const
+  {
+    return m_nKitNr;
+  }
+  unsigned int GetFsaNr() const
+  {
+    return m_nFsaNr;
+  }
+  unsigned int GetKey() const  
+  {
+    return m_nKitNr;
+  }
+protected:
+  virtual void RegisterAll(bool = false)
+  {
+    RegisterUint(wxT("KitChannelNumber"),&m_nKitNr);
+    RegisterUint(wxT("fsaChannelNumber"),&m_nFsaNr);
+    RegisterWxString(wxT("Color"),&m_sColor);
+    RegisterWxString(wxT("DyeName"),&m_sDyeName);
+  }
+private:
+  wxString m_sColor;
+  wxString m_sDyeName;
+  unsigned int m_nKitNr;
+  unsigned int m_nFsaNr;
+};
+
+typedef TnwxXmlPersistMap<unsigned int,CKitChannel> CKitChannelMap;
 
 class CLocusNameChannel : public nwxXmlPersist
 {
@@ -60,7 +137,7 @@ public:
     m_nChannel = x.m_nChannel;
     return (*this);
   }
-  int GetChannel() const
+  unsigned int GetChannel() const
   {
     return m_nChannel;
   }
@@ -73,13 +150,13 @@ protected:
   virtual void RegisterAll(bool = false)
   {
     RegisterWxString("Name",&m_sName);
-    RegisterInt("Channel",&m_nChannel);
+    RegisterUint("Channel",&m_nChannel);
     RegisterInt("MinBP",&m_nMinBP);
     RegisterInt("MaxBP",&m_nMaxBP);
   }
 private:
   wxString m_sName;
-  int m_nChannel;
+  unsigned int m_nChannel;
   int m_nMinBP;
   int m_nMaxBP;
 };
@@ -124,17 +201,22 @@ private:
 class CPersistKitList : public nwxXmlPersist
 {
 private:
-  typedef map<wxString, wxArrayString *>::iterator LSitr;
-  typedef map<wxString, wxArrayString *>::const_iterator LScitr;
-  typedef map< wxString, CLocusNameList * >::iterator KLNCitr;
-  typedef map< wxString, CLocusNameList * >::const_iterator KLNCcitr;
+  typedef std::map<wxString, wxArrayString *>::iterator LSitr;
+  typedef std::map<wxString, wxArrayString *>::const_iterator LScitr;
+  typedef std::map< wxString, CLocusNameList * >::iterator KLNCitr;
+  typedef std::map< wxString, CLocusNameList * >::const_iterator KLNCcitr;
+  typedef std::map< wxString, CKitChannelMap *>::iterator KCMitr;
+  typedef std::map< wxString, CKitChannelMap *>::const_iterator KCMcitr;
 public:
   CPersistKitList() : nwxXmlPersist(true)
   {
-    m_nInLoad = 0;
-    m_bV1 = false;
+    m_pILS = NULL;
     m_pLastKitLocus = NULL;
     m_pLastKitLS = NULL;
+    m_pLastKit_ILS = NULL;
+    m_pLastKitChannelMap = NULL;
+    m_nInLoad = 0;
+    m_bV1 = false;
 
     Register("Kits",this);
     Register("Set",this);
@@ -143,16 +225,21 @@ public:
     Register("LSName",this);
     Register("ChannelNo",this);
     Register("Locus",this);
+    // new for v 2.7
+    Register("ILS",this);
+    Register("LSBases",this);
+    Register("ILSName",this);
+    Register("FsaChannelMap",this);
   }
-  ~CPersistKitList()
-  {
-    Clear();
-  }
+  virtual ~CPersistKitList();
 
-  bool Load_V1(); // load kit data for Osiris Version 1.x
+  bool Load_V1(); // load kit data for Osiris Version 1.x - unsupported
   bool Load();    // load kit data for Osiris Version 2.x
+  CILSLadderInfo *GetILSLadderInfo();
+
   void SortILS();
   virtual bool LoadFromNode(wxXmlNode *pNode);
+
   const wxArrayString &GetArray() const
   {
     return m_as;
@@ -162,6 +249,11 @@ public:
     LScitr itr = m_mLS.find(sKit);
     return (itr == m_mLS.end()) ? NULL : itr->second;
   }
+  const wxArrayString *GetIlsArray(const wxString &sKit) const
+  {
+    LScitr itr = m_mILS.find(sKit);
+    return (itr == m_mILS.end()) ? NULL : itr->second;
+  }
   const CLocusNameList *GetLocusNameList(const wxString &sKit) const
   {
     KLNCcitr itr = m_mapKitLocus.find(sKit);
@@ -169,13 +261,24 @@ public:
       (itr == m_mapKitLocus.end()) ? NULL : itr->second;
     return pRtn;
   }
-  int GetChannelCount(const wxString &sKit) const
+  int GetChannelCount(const wxString &sKit) const 
+  // 1/28/2016 djh
+  // this actually retrieves the ILS channel number
+  // and at this time is always equal to the number of
+  // channels but that could change
   {
-    map<wxString, int>::const_iterator
+    std::map<wxString, int>::const_iterator
       itr = m_msChannelCount.find(sKit);
     int nRtn =
       (itr == m_msChannelCount.end()) ? 0 : itr->second;
     return nRtn;
+  }
+  unsigned int GetILSchannelNumber(const wxString &sKit) const
+  {
+    // 1/28/16
+    // ILS is always the last channel, so far
+    int n = GetChannelCount(sKit);
+    return (unsigned int)n;
   }
   const wxArrayString *GetLocusArrayString(
     const wxString &sKit, bool bRebuild = false) const
@@ -189,8 +292,18 @@ public:
     }
     return pRtn;
   }
+  const std::map<unsigned int, CKitChannel *> *GetChannelColorMap(const wxString &sKit) const
+  {
+    KCMcitr itr = m_mapKitChannels.find(sKit);
+    CKitChannelMap *pMap =
+      (itr != m_mapKitChannels.end()) ? itr->second : NULL;
+    const std::map<unsigned int, CKitChannel *> *pRtn = (pMap != NULL) ? pMap->Get() : NULL;
+    return pRtn;
+  }
+
 
   void Clear();
+
   virtual void Init(void *p)
   {
     if(!m_nInLoad)
@@ -227,6 +340,7 @@ public:
       m_sLastKit = sKitName;
       m_pLastKitLocus = NULL;
       m_pLastKitLS = NULL;
+      m_pLastKit_ILS = NULL;
     }
     return bRtn;
   }
@@ -245,18 +359,24 @@ private:
   {
     m_sErrorMsg = "Cannot load ladder information.";
   }
-  bool m_bV1;
-  int m_nInLoad;
+  void _HACK_27(CILSLadderInfo *pILS);
   wxArrayString m_as;
   wxString m_sLastKit;
-  map<wxString, wxArrayString *> m_mLS;
-  map<wxString, int> m_msChannelCount;
+  std::map<wxString, wxArrayString *> m_mLS;
+  std::map<wxString, wxArrayString *> m_mILS; // 2.7 ils family
+  std::map<wxString, int> m_msChannelCount;
   nwxXmlIOwxString m_XmlString;
   wxString m_sErrorMsg;
-  map< wxString, CLocusNameList * > m_mapKitLocus;
+  std::map< wxString, CLocusNameList * > m_mapKitLocus;
+  std::map< wxString, CKitChannelMap *> m_mapKitChannels;
 
+  CILSLadderInfo *m_pILS;
   CLocusNameList *m_pLastKitLocus;
   wxArrayString *m_pLastKitLS;
+  wxArrayString *m_pLastKit_ILS; // v2.7 ils family
+  CKitChannelMap *m_pLastKitChannelMap;
+  bool m_bV1;
+  int m_nInLoad;
 };
 
 #endif

@@ -30,6 +30,8 @@
 #include "CGridLocusColumns.h"
 #include "CGridLabThresholds.h"
 #include "CLabSettings.h"
+#include "mainApp.h"
+#include "CKitColors.h"
 #include <stdlib.h>
 
 CGridLabThresholds::CGridLabThresholds(
@@ -39,6 +41,8 @@ CGridLabThresholds::CGridLabThresholds(
     nwxGrid(parent,nID),
     m_pData(NULL),
     m_nRows(nRows),
+    m_nILScolumn(-1),
+    m_nILSchannel(0),
     m_bILS(bILS),
     m_bReadOnly(false),
     m_bCreated(false)
@@ -141,8 +145,9 @@ bool CGridLabThresholds::_SetData(
   const wxChar * const *psLabels)
 {
   m_pData = pData;
+  m_sKitName = sKitName;
   bool bOK = CGridLocusColumns::SetupKit(
-    this,sKitName,true,m_bILS,true,true);
+    this,sKitName,true,m_bILS,true,true,&m_nILScolumn,&m_nILSchannel);
 
       // set row labels
   if(bOK)
@@ -164,6 +169,25 @@ bool CGridLabThresholds::_SetData(
     AutoSize();
   }
   return bOK;
+}
+bool CGridLabThresholds::SetILSDyeName(const wxString &sDyeName)
+{
+  bool bRtn = false;
+  if(m_nILSchannel > 0 && m_nILScolumn >= 0)
+  {
+    wxString sILSdye;
+    wxString sCurrent = GetCellValue(0,m_nILScolumn);
+    CGridLocusColumns::FORMAT_CHANNEL_DYE(&sILSdye,m_nILSchannel,sDyeName);
+    if(sCurrent != sILSdye)
+    {
+      CKitColors *pColors = mainApp::GetKitColors();
+      const wxColour &color = pColors->GetColorByDye(sDyeName);
+      SetCellValue(0,m_nILScolumn,sILSdye);
+      SetCellBackgroundColour(0,m_nILScolumn,color);
+      bRtn = true;
+    }
+  }
+  return bRtn;
 }
 
 

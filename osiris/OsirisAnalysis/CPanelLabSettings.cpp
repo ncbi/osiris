@@ -30,6 +30,7 @@
 */
 #include "mainApp.h"
 #include "Platform.h"
+#include "CILSLadderInfo.h"
 #include <wx/arrstr.h>
 #include <wx/settings.h>
 #include "CPanelLabSettings.h"
@@ -45,6 +46,7 @@
 #include "CParmOsiris.h"
 #include "CVolumes.h"
 #include <stdlib.h>
+
 const wxString CPanelLabSettings::g_sFileNameStrPrompt
   ("File name search criteria");
 const wxString CPanelLabSettings::g_sSampleNameStrPrompt
@@ -578,6 +580,7 @@ CPanelLabSettings::CPanelLabSettings(
       m_pGeneral,"General",true);
   m_pNotebook->AddPage(
     m_pFilenames,"File/Sample Names",false);
+  m_nLocusThresholds = m_pNotebook->GetPageCount();
   m_pNotebook->AddPage(
     m_pLocusThresholds,"Thresholds",false);
   m_pNotebook->AddPage(
@@ -808,6 +811,20 @@ void CPanelLabSettings::OnPageChange(wxNotebookEvent &)
   else if((nPage + 1) == m_pNotebook->GetPageCount())
   {
     bNext = false;
+  }
+  if(nPage == m_nLocusThresholds)
+  {
+    //  STOP HERE
+    //  the method to obtain dye name
+    //  will be changed when the ILS family wxChoice is implemented
+    wxString sILS = m_pGeneral->GetILS();
+    CILSLadderInfo *pILS = mainApp::GetILSLadderInfo();
+    wxString sDyeName = pILS->GetDyeNameFromLS(sILS);
+    if(m_pLocusThresholds->SetILSDyeName(sDyeName))
+    {
+      Layout();
+//      Fit();
+    }
   }
   m_pbBack->Enable(bBack);
   m_pbNext->Enable(bNext);

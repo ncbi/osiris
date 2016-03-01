@@ -1,0 +1,7 @@
+LadderFileName = PowerPlex_ESX17_LadderInfo.xml;
+LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\PowerPlexESX17ConfigFiles\WENBins;
+BinsFileName = PowerPlex_ESX17_Bins_IDX_v3.0.txt;
+OutputConfigPath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\LadderSpecifications;
+ILSName = PROMEGA-ILS-WEN-500;
+;
+

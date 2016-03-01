@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2015 rel. 3 sp1 (x64) (http://www.altova.com) by XMLSpy 2015 Professional Ed. Release 3, Installed for 13 users (with SMP from 2015-04-16 to 2016-04-16) (NIH) -->
+<!-- edited with XMLSpy v2014 sp1 (x64) (http://www.altova.com) by NCBI User (National Library of Medicine) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="KitData">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="Version" type="xs:string" default="2.0" minOccurs="0"/>
+				<xs:element name="Version" type="xs:string" default="2.0"/>
 				<xs:element ref="Kits"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -20,13 +20,40 @@
 						<xs:sequence>
 							<xs:element name="Name" type="xs:string"/>
 							<xs:element name="NChannels" type="xs:int"/>
-							<xs:element name="LS">
-								<xs:annotation>
-									<xs:documentation>Lane Standard</xs:documentation>
-								</xs:annotation>
+							<xs:element name="ILS">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="LSName" type="xs:string" maxOccurs="unbounded"/>
+										<xs:choice>
+											<xs:element name="LSBases">
+												<xs:annotation>
+													<xs:documentation>v 2.7 and above</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="ILSName" type="xs:string" maxOccurs="unbounded">
+															<xs:annotation>
+																<xs:documentation>Name of family of ILS's to be used to index search regions below</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="LS">
+												<xs:annotation>
+													<xs:documentation>Lane Standard
+before v 2.7 </xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="LSName" type="xs:string" maxOccurs="unbounded">
+															<xs:annotation>
+																<xs:documentation>Individual ILS name - old format to be replaced by family names above</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:choice>
 										<xs:element name="ChannelNo" type="xs:int"/>
 									</xs:sequence>
 								</xs:complexType>
@@ -51,8 +78,8 @@
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="AllOLAllelesAccepted" type="xs:boolean" default="false" minOccurs="0"/>
-							<xs:sequence maxOccurs="unbounded">
-								<xs:element name="Locus">
+							<xs:sequence>
+								<xs:element name="Locus" maxOccurs="unbounded">
 									<xs:complexType>
 										<xs:sequence>
 											<xs:element name="Name" type="xs:string"/>
@@ -72,29 +99,41 @@
 												<xs:annotation>
 													<xs:documentation>Only one of these pairs of values is needed.  Prefer 2nd set.</xs:documentation>
 												</xs:annotation>
+												<xs:element name="SearchRegions">
+													<xs:annotation>
+														<xs:documentation>This is new format, eventually to replace above
+v 2.7 and above</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence maxOccurs="unbounded">
+															<xs:element name="Region">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="ILSName" type="xs:string">
+																			<xs:annotation>
+																				<xs:documentation>Name of ILS family for this search region</xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="MinGrid" type="xs:double">
+																			<xs:annotation>
+																				<xs:documentation>Minimum ILS BP to define ladder locus:  for margin of safety, choose somewhat lower than minimum ladder peak</xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="MaxGrid" type="xs:double">
+																			<xs:annotation>
+																				<xs:documentation>Maximum ILS BP to define ladder locus:  for margin of safety, choose somewhat larger than maximum ladder peak</xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
 												<xs:sequence>
-													<xs:element name="MinGridLSIndex">
-														<xs:annotation>
-															<xs:documentation>Legacy value.  Prefer MinGridLSBasePair below</xs:documentation>
-														</xs:annotation>
-														<xs:simpleType>
-															<xs:restriction base="xs:double">
-																<xs:minInclusive value="1.0"/>
-															</xs:restriction>
-														</xs:simpleType>
-													</xs:element>
-													<xs:element name="MaxGridLSIndex">
-														<xs:annotation>
-															<xs:documentation>Legacy value.  Prefer MaxGridLSBasePair below</xs:documentation>
-														</xs:annotation>
-														<xs:simpleType>
-															<xs:restriction base="xs:double">
-																<xs:minInclusive value="1.0"/>
-															</xs:restriction>
-														</xs:simpleType>
-													</xs:element>
-												</xs:sequence>
-												<xs:sequence>
+													<xs:annotation>
+														<xs:documentation>before v2.7</xs:documentation>
+													</xs:annotation>
 													<xs:element name="MinGridLSBasePair" type="xs:double">
 														<xs:annotation>
 															<xs:documentation>Minimum ILS BP to define ladder locus:  for margin of safety, choose somewhat lower than minimum ladder peak</xs:documentation>

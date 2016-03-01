@@ -32,7 +32,6 @@
 #include "COARreview.h"
 #include "nwx/nwxString.h"
 const wxString COARnotes::g_sNode("Notes");
-const wxString COARnotes::g_EmptyString;
 
 void COARnotes::RegisterAll(bool)
 {

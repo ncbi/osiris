@@ -48,11 +48,15 @@ public:
 	~LadderInputFile ();
 
 	int ReadAllInputs (const RGString& inputFileName);
+	int ReadAllInputsAppend (const RGString& inputFileName);
 	int ReadAllInputs ();  // reads stdin
+	int ReadAllInputsAppend ();  // reads stdin
 	int ReadLine ();
 	int AssignString ();
+	int AssignStringAppend ();
 	void OutputAllData ();
 	int AssembleInputs ();
+	int AssembleInputsAppend ();
 
 	int GetChannelForColorName (const RGString& color) const;
 	int GetChannelForDyeName (const RGString& dye) const;
@@ -83,6 +87,9 @@ public:
 	RGString GetVolumeDirectoryName () const { return mVolumeDirectoryName; }
 	RGString GetDefaultVolumePath () const { return mDefaultVolumePath; }
 
+	RGString GetVersion () const { return mVersion; }
+	bool GenerateILSFamilies () const { return mGenerateILSFamilies; }
+
 	int FindMaxExpectedAlleleOverride (const RGString& locusName);
 	int FindMinExpectedAlleleOverride (const RGString& locusName);  // This and above return value in list, if present, and default otherwise
 
@@ -90,6 +97,7 @@ public:
 
 	void ResetInputLines ();
 	RGString* GetNextInputLine ();
+	bool LocusNeedsRelativeHeightInfo (const RGString& locus);
 
 protected:
 	bool mDebug;
@@ -120,6 +128,7 @@ protected:
 
 	RGDList mDyeNumbers;
 	RGDList mColorNumbers;
+	RGDList mRelativeHeightOverrides;
 
 	bool mYLinkedDefault;
 	int mMaxExpectedAllelesPerLocusDefault;
@@ -139,6 +148,8 @@ protected:
 	RGString mStandardPositiveControlName;
 	RGString mVolumeDirectoryName;
 	RGString mDefaultVolumePath;
+	RGString mVersion;
+	bool mGenerateILSFamilies;
 
 	void RemoveLeadingAndTrailingBlanks (RGString& string);
 	void SetEmbeddedSlashesToForward (RGString& string);

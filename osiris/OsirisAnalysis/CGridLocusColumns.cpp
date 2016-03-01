@@ -43,7 +43,9 @@ bool CGridLocusColumns::SetupKit(
   const wxString &sKitName, 
   bool bDefault, bool bILS, 
   bool bAllowAmel,
-  bool bSetError)
+  bool bSetError,
+  int *pnILScolumn,
+  unsigned int *pnILSchannel)
 {
   vector<wxString> vs;
   if(bDefault)
@@ -53,7 +55,7 @@ bool CGridLocusColumns::SetupKit(
     vs.push_back(psDefault);
   }
   bool bRtn = SetupKit(
-    pGrid,sKitName,vs,bILS,bAllowAmel,bSetError);
+    pGrid,sKitName,vs,bILS,bAllowAmel,bSetError,pnILScolumn,pnILSchannel);
   return bRtn;
 }
 bool CGridLocusColumns::SetupKit(
@@ -62,10 +64,11 @@ bool CGridLocusColumns::SetupKit(
   const vector<wxString> &vs, 
   bool bILS, 
   bool bAllowAmel,
-  bool bSetError)
+  bool bSetError,
+  int *pnILScolumn,
+  unsigned int *pnILSchannel)
 {
   wxString sProblem;
-  CKitColors kitColors;
   CPersistKitList *pKit = mainApp::GetKitList();
   const CLocusNameList *pLocus = 
     pKit->GetLocusNameList(sKitName);
@@ -94,22 +97,22 @@ bool CGridLocusColumns::SetupKit(
   }
   else
   {
-    vector<int> vnChannels;
+    vector<unsigned int> vnChannels;
     vector<int> vnCounts;
-    set<int> snChannelsUsed;
+    set<unsigned int> snChannelsUsed;
     wxFont fnBold = pGrid->GetDefaultCellFont();
 
     int nBeforeLoci = (int)vs.size();
-    int nLastChannel = -1;  // invalid channel name for default column
     int nCols = (int)(pLocus->size()) + nBeforeLoci + BINT(bILS);
     int nRemove = 0;
-    int nChannel;
     int nCol;
     int nCount = 1;
-    int nILSchannel = -1;
+    unsigned int nChannel;
+    unsigned int nLastChannel = 0;  // invalid channel name for default column
+    unsigned int nILSchannel = 0;
     const CSingleKitColors *pKitColors;
     const CLocusNameChannel *plc;
-    pKitColors = kitColors.GetKitColors(sKitName);
+    pKitColors = mainApp::GetKitColors()->GetKitColors(sKitName);
 
     pGrid->SetMargins(0, wxSystemSettings::GetMetric(wxSYS_HSCROLL_Y) + 4);
     fnBold.SetWeight(wxFONTWEIGHT_BOLD);
@@ -180,7 +183,7 @@ bool CGridLocusColumns::SetupKit(
 
       int nChannelCount = 
         pKit->GetChannelCount(sKitName);
-      for(nChannel = nChannelCount;
+      for(nChannel = (unsigned int) nChannelCount;
         nChannel > 0;
         --nChannel)
       {
@@ -188,7 +191,11 @@ bool CGridLocusColumns::SetupKit(
           snChannelsUsed.end())
         {
           nILSchannel = nChannel; // unused channel, assume ILS
-          nChannel = 0; // loop exit
+          if(pnILSchannel != NULL)
+          {
+            *pnILSchannel = nChannel;
+          }
+          nChannel = 1; // loop exit
         }
       }
 
@@ -196,6 +203,10 @@ bool CGridLocusColumns::SetupKit(
       pGrid->SetColLabelValue(nCol,"ILS*");
       vnChannels.push_back(nILSchannel);
       vnCounts.push_back(1);
+      if(pnILScolumn != NULL)
+      {
+        *pnILScolumn = nCol;
+      }
     }
 
     // column labels are set
@@ -235,8 +246,8 @@ bool CGridLocusColumns::SetupKit(
           // int k;
           pGrid->SetCellTextColour(0,nCol,*wxWHITE);
           pGrid->SetCellBackgroundColour(
-              0,nCol,pChannelColors->m_ColorAnalyzed);
-          psDyeLabel = (const wxChar *)(pChannelColors->m_sDyeName);
+              0,nCol,pChannelColors->GetColorAnalyzed());
+          psDyeLabel = (const wxChar *)(pChannelColors->GetDyeName());
           bColorSet = true;
         }
         FORMAT_CHANNEL_DYE(&sLabel,(unsigned int) nChannel, psDyeLabel);

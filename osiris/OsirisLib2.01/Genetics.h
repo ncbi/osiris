@@ -111,6 +111,16 @@ struct IdealControlSetInfo {
 };
 
 
+struct ILSNameIndexes {
+
+	ILSNameIndexes (const RGString& name, size_t s, size_t e) { mName = name; mStartIndex = s; mEndIndex = e; }
+
+	RGString mName;
+	size_t mStartIndex;
+	size_t mEndIndex;
+};
+
+
 void SetDifference (RGDList& listA, RGDList& listB, RGDList& AButNotB, RGDList& BButNotA);
 
 
@@ -626,6 +636,7 @@ public:
 	Boolean IsValid () const { return Valid; }
 	RGString GetError () const { return Msg; }
 	RGString GetLaneStandardName () const;
+	RGString GetFamilyName () const { return mFamilyName; }
 	int GetNumberOfCharacteristics () const;
 	double GetMinimumCharacteristic () const;
 	double GetMaximumCharacteristic () const;
@@ -633,6 +644,7 @@ public:
 	const double* GetLaneStandardVector () const { return mLaneStandardTimes; }
 
 	void SetLaneStandardName (const RGString& name);
+	void SetFamilyName (const RGString& name) { mFamilyName = name; }
 	int SelectBestSubsetOfCharacteristics (RGDList& curveList, double& correlation);  // returns index of first (from 0) in contiguous list of characteristics
 	int AssignLaneStandardSignals (RGDList& curveList);   // takes first mNumberOfCharacteristics elements
 
@@ -667,6 +679,7 @@ protected:
 	double* mLaneStandardTimes;
 	int mNumberOfCharacteristics;
 	RGString Msg;
+	RGString mFamilyName;
 };
 
 
@@ -802,6 +815,8 @@ public:
 
 	virtual void Write (RGFile& textOutput, const RGString& indent);
 
+	static bool UseILSFamiliesInLadderFile () { return UseILSFamilies; }
+
 protected:
 	RGHashTable MarkerSets;  // contains objects of type PopulationMarkerSet*
 	Boolean Valid;
@@ -811,6 +826,7 @@ protected:
 	RGString TheWholeSheBang;
 	RGString mILSData;
 	RGString mGridData;
+	static bool UseILSFamilies;
 
 	Boolean BuildMarkerSets (const RGString& textInput);
 };

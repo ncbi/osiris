@@ -31,20 +31,76 @@
 
 #include "mainApp.h"
 #include "CKitColors.h"
-
+#include "CKitColors2.h"
+#include "ConfigDir.h"
+#include "CKitList.h"
+#include "CILSLadderInfo.h"
+#include "nwx/mapptr.h"
 /////////////////////////////////////////////////////////////////////
 
-//         CSingleKitColors
+//         CChannelColors
 
-void CChannelColors::RegisterAll(bool)
+
+CChannelColors::CChannelColors(
+  const CKitChannel *pChannel, const CKitColors2 *pColors2)
 {
-  RegisterUint("nr",&m_nr);
-  RegisterWxString("dye",&m_sDyeName);
-  RegisterWxColour("analyzed",&m_ColorAnalyzed);
-  RegisterWxColour("raw",&m_ColorRaw);
-  RegisterWxColour("ladder",&m_ColorLadder);
+  m_nr = pChannel->GetKitNr();
+  m_sDyeName = pChannel->GetDyeName();
+  const CKitColorDye *pDye = pColors2->GetColorByName(pChannel->GetColor());
+  if(pDye == NULL)
+  {
+    pDye = pColors2->GetColorByDyeName(m_sDyeName);
+  }
+  _SetColors(pDye);
 }
 
+CChannelColors::CChannelColors(
+  unsigned int nChannel,
+  const wxString &sDyeName,
+  const CKitColors2 *pColors2)
+{
+  m_nr = nChannel;
+  m_sDyeName = sDyeName;
+  const CKitColorDye *pDye = pColors2->GetColorByDyeName(m_sDyeName);
+  _SetColors(pDye);
+}
+const wxColour *CChannelColors::GetColorPtr(DATA_TYPE n) const
+{
+  const wxColour *pRtn=NULL;
+  switch(n)
+  {
+  case ANALYZED_DATA:
+    pRtn = GetColorAnalyzedPtr();
+    break;
+  case RAW_DATA:
+    pRtn = GetColorRawPtr();
+    break;
+  case BASELINE_DATA:
+  case LADDER_DATA:
+    pRtn = GetColorLadderPtr();
+    break;
+  default:
+    pRtn = &CKitColors::g_BLACK;
+    break;
+  }
+  return pRtn;
+}
+
+void CChannelColors::_SetColors(const CKitColorDye *pDye)
+{
+  if(pDye == NULL)
+  {
+    m_ColorAnalyzed = CKitColors::g_BLACK;
+    m_ColorRaw.Set(wxT("#999999"));
+    m_ColorLadder.Set(wxT("#C0C0C0"));
+  }
+  else
+  {
+    m_ColorAnalyzed = pDye->GetColorAnalyzed();
+    m_ColorRaw = pDye->GetColorRaw();
+    m_ColorLadder = pDye->GetColorLadder();
+  }
+}
 
 /////////////////////////////////////////////////////////////////////
 
@@ -53,137 +109,139 @@ void CChannelColors::RegisterAll(bool)
 const CChannelColors *CSingleKitColors::GetColorChannel(
         unsigned int nChannel) const
 {
-  const CChannelColors *pRtn(NULL);
-  size_t nSize = m_mapChannelColors.size();
-  map<unsigned int, CChannelColors *>::iterator itrm;
-  if(!nSize)
-  {
-    if(nChannel < m_vChannelColors.size())
-    {
-      pRtn = m_vChannelColors.at(nChannel);
-      if(pRtn->m_nr != nChannel)
-      {
-        // we need the map
-        pRtn = NULL;
-      }
-    }
-    if(pRtn == NULL)
-    {
-      // no value for pRtn yet, build the map
-
-      vector<CChannelColors *>::const_iterator itr;
-      for(itr = m_vChannelColors.begin();
-        itr != m_vChannelColors.end();
-        ++itr)
-      {
-        itrm = m_mapChannelColors.find((*itr)->m_nr);
-        if(itrm != m_mapChannelColors.end())
-        {
-          m_mapChannelColors.erase(itrm);
-        }
-        m_mapChannelColors.insert(
-          map<unsigned int, CChannelColors *>::value_type(
-              (*itr)->m_nr,*itr));
-        if((*itr)->m_nr == nChannel)
-        {
-          pRtn = *itr;
-        }
-      }
-    }
+  std::map<unsigned int, CChannelColors *>::const_iterator itr =
+    m_mapChannelColors.find(nChannel);
+  const CChannelColors *pRtn =
+    (itr != m_mapChannelColors.end()) ? itr->second : NULL;
+  return pRtn;
+}
+const CChannelColors *CSingleKitColors::GetColorChannelFromLS(
+  const wxString &sLSname) const
+{
+  CILSLadderInfo *pILS = mainApp::GetILSLadderInfo();
+  const CILSfamily *pFamily = pILS->GetFamilyFromLS(sLSname);
+  const wxString &sILS = (pFamily != NULL) ? pFamily->GetILSname() : mainApp::EMPTY_STRING;
+  const CChannelColors *pCC = GetILSChannel(sILS);
+  return pCC;
+}
+const CChannelColors *CSingleKitColors::GetILSChannel(const wxString &sILSFamily) const
+{
+  std::map<const wxString, CChannelColors *>::const_iterator itr =
+    m_mapILSColors.find(sILSFamily);
+  const CChannelColors *pRtn = NULL;
+  if(itr != m_mapILSColors.end())
+  { pRtn = itr->second;
   }
   else
-  {
-    itrm = m_mapChannelColors.find(nChannel);
-    if(itrm != m_mapChannelColors.end())
-    {
-      pRtn = itrm->second;
-    }
+  { pRtn = GetColorChannel(m_nILSchannel);
   }
   return pRtn;
 }
 
-void CSingleKitColors::RegisterAll(bool)
+CSingleKitColors::~CSingleKitColors() 
 {
-  RegisterWxString("name",&m_sKitName);
-  Register("channel",&m_IOChannelColors,(void *)&m_vChannelColors);
+  mapptr<unsigned int, CChannelColors>::cleanup(&m_mapChannelColors);
+  mapptr<const wxString,CChannelColors>::cleanup(&m_mapILSColors);
 }
+CSingleKitColors::CSingleKitColors(
+    const wxString &sKitName,
+    CPersistKitList *pKitList,
+    const CKitColors2 *pColors2)
+{
+  m_sKitName = sKitName;
+  m_nILSchannel = pKitList->GetILSchannelNumber(sKitName);
+  const wxArrayString *pILSfamily = pKitList->GetIlsArray(sKitName);
+  const std::map<unsigned int, CKitChannel *> *pChannelMap =
+    pKitList->GetChannelColorMap(sKitName);
+  std::map<unsigned int, CKitChannel *>::const_iterator itrColor;
+  CChannelColors *pChannelColors;
 
+  for(itrColor = pChannelMap->begin();
+    itrColor != pChannelMap->end();
+    ++itrColor)
+  {
+    pChannelColors = new CChannelColors(itrColor->second,pColors2);
+    m_mapChannelColors.insert(
+      std::map<unsigned int, CChannelColors *>::value_type(
+        itrColor->first,pChannelColors));
+  }
+  if(pILSfamily != NULL)
+  {
+    size_t nCount = pILSfamily->Count();
+    size_t i;
+    CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
+    for(i = 0; i < nCount; ++i)
+    {
+      const wxString &sILSname(pILSfamily->Item(i));
+      const wxString &sDyeName = pILS->GetDyeName(sILSname);
+      pChannelColors = new CChannelColors(m_nILSchannel,sDyeName,pColors2);
+      m_mapILSColors.insert(
+        std::map<const wxString,CChannelColors *>::value_type(
+          sILSname,pChannelColors));
+    }
+  }
+}
 /////////////////////////////////////////////////////////////////////
 
 //         CKitColors
 
 const wxColour CKitColors::g_BLACK(0,0,0);
 
-void CKitColors::RegisterAll(bool)
+CKitColors::~CKitColors()
 {
-  Register("kit",&m_IOkitColors,(void *)&m_vpKitColors);
+  if(m_pKitColors2 != NULL)
+  {
+    delete m_pKitColors2;
+  }
+  mapptr<const wxString,CSingleKitColors>::cleanup(&m_mapKitColors);
 }
 
 const CSingleKitColors *CKitColors::GetKitColors(
               const wxString &sKitName) const
 {
-  const CSingleKitColors *pRtn = NULL;
-   map<wxString,CSingleKitColors *>::iterator itrc;
-  if(!m_mapKitColors.size())
-  {
-    vector<CSingleKitColors *>::const_iterator itr;
-    for(itr = m_vpKitColors.begin();
-      itr != m_vpKitColors.end();
-      ++itr)
-    {
-      const wxString &s((*itr)->GetKitName());
-      itrc = m_mapKitColors.find(s);
-      if(itrc != m_mapKitColors.end())
-      {
-        m_mapKitColors.erase(itrc);
-      }
-      m_mapKitColors.insert(
-        map<wxString,CSingleKitColors *>::value_type(s,*itr));
-    }
-  }
-  itrc = m_mapKitColors.find(sKitName);
-  if(itrc != m_mapKitColors.end())
-  {
-    pRtn = itrc->second;
-  }
+  std::map<const wxString,CSingleKitColors *>::const_iterator itr =
+     m_mapKitColors.find(sKitName);
+  const CSingleKitColors *pRtn =
+    (itr != m_mapKitColors.end()) ? itr->second : NULL;
   return pRtn;
 }
-
 const wxColour &CKitColors::GetColor(
-  const wxString &sKitName, DATA_TYPE n, unsigned int nChannel)
+  const wxString &sKitName, DATA_TYPE n, unsigned int nChannel) const
 {
-  const wxColour *pRtn(&g_BLACK);
   const CSingleKitColors *pkc = GetKitColors(sKitName);
-  if(pkc != NULL)
-  {
-    const CChannelColors *pcc = pkc->GetColorChannel(nChannel);
-    if(pcc != NULL)
-    {
-      switch(n)
-      {
-      case ANALYZED_DATA:
-        pRtn = &(pcc->m_ColorAnalyzed);
-        break;
-      case RAW_DATA:
-        pRtn = &(pcc->m_ColorRaw);
-        break;
-      case BASELINE_DATA:
-      case LADDER_DATA:
-        pRtn = &(pcc->m_ColorLadder);
-        break;
-      default:
-        break;
-      }
-    }
-  }
+  const CChannelColors *pcc = (pkc != NULL) ? pkc->GetColorChannel(nChannel) : NULL;
+  const wxColour *pRtn = (pcc != NULL) ? pcc->GetColorPtr(n) : &g_BLACK;
   return *pRtn;
 }
-
-bool CKitColors::Load()
+const wxColour &CKitColors::GetColorFromLS(
+  const wxString &sKitName, DATA_TYPE n, const wxString &sLSname) const
 {
-  // need to enhance to load from user file first
-  ConfigDir *pDir = mainApp::GetConfig();
-  wxString sFileName = pDir->GetILSLadderFilePath();
-  sFileName.Append("kitcolors.xml");
-  return LoadFile(sFileName);
+  const CSingleKitColors *pkc = GetKitColors(sKitName);
+  const CChannelColors *pcc = (pkc != NULL) ? pkc->GetColorChannelFromLS(sLSname) : NULL;
+  const wxColour *pRtn = (pcc != NULL) ? pcc->GetColorPtr(n) : wxBLACK;
+  return *pRtn;
+}
+const wxColour &CKitColors::GetColorByDye(const wxString &sDyeName, DATA_TYPE n) const
+{
+  const CKitColorDye *p = m_pKitColors2->GetColorByDyeName(sDyeName);
+  const wxColour &rtn = p->GetColor(n);
+  return rtn;
+}
+
+bool CKitColors::_Load()
+{
+  bool bRtn = true;
+  CPersistKitList *pKitList = mainApp::GetKitList();
+  CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
+  const vector<CILSkit *> *pKits = pILS->GetKits();
+  vector<CILSkit *>::const_iterator itrKits;
+  m_pKitColors2 = new CKitColors2;
+  for (itrKits = pKits->begin(); itrKits != pKits->end(); ++itrKits)
+  {
+    const wxString &sKitName = (*itrKits)->GetKitName();
+    CSingleKitColors *pColors = new CSingleKitColors(sKitName,pKitList,m_pKitColors2);
+    m_mapKitColors.insert(
+      std::map<const wxString,CSingleKitColors *>::value_type(sKitName,pColors));
+  }
+  return bRtn;
 }

@@ -1,42 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<!-- edited with XMLSpy v2014 sp1 (x64) (http://www.altova.com) by NCBI User (National Library of Medicine) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="LaneStandardData">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="DisplayName" type="xs:string"/>
+			<xs:element name="Characteristics" type="xs:string"/>
+			<xs:element name="RelativeHeights" type="xs:string" minOccurs="0"/>
+			<xs:element name="Omissions" type="xs:string" minOccurs="0"/>
+			<xs:element name="CorrelationAcceptanceThreshold">
+				<xs:annotation>
+					<xs:documentation>Minimum correlation of spacing (after quadratic transform) to avoid failing lane standard</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0.0"/>
+						<xs:maxExclusive value="1.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CorrelationAutoAcceptanceThreshold">
+				<xs:annotation>
+					<xs:documentation>Minimum correlation of spacing (after quadratic transform) to avoid "requires human review" message for lane standard</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minExclusive value="0.0"/>
+						<xs:maxExclusive value="1.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:element name="KitData">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="Version" type="xs:string" default="2.0" minOccurs="0"/>
+				<xs:element name="Version" type="xs:string" default="2.0"/>
 				<xs:element name="LaneStandards">
 					<xs:complexType>
-						<xs:sequence maxOccurs="unbounded">
-							<xs:element name="LaneStandard">
+						<xs:sequence>
+							<xs:element name="ILS" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="Name" type="xs:string"/>
-										<xs:element name="Characteristics" type="xs:string"/>
-										<xs:element name="RelativeHeights" type="xs:string" minOccurs="0"/>
-										<xs:element name="Omissions" type="xs:string" minOccurs="0"/>
-										<xs:element name="CorrelationAcceptanceThreshold">
-											<xs:annotation>
-												<xs:documentation>Minimum correlation of spacing (after quadratic transform) to avoid failing lane standard</xs:documentation>
-											</xs:annotation>
-											<xs:simpleType>
-												<xs:restriction base="xs:double">
-													<xs:minExclusive value="0.0"/>
-													<xs:maxExclusive value="1.0"/>
-												</xs:restriction>
-											</xs:simpleType>
-										</xs:element>
-										<xs:element name="CorrelationAutoAcceptanceThreshold">
-											<xs:annotation>
-												<xs:documentation>Minimum correlation of spacing (after quadratic transform) to avoid "requires human review" message for lane standard</xs:documentation>
-											</xs:annotation>
-											<xs:simpleType>
-												<xs:restriction base="xs:double">
-													<xs:minExclusive value="0.0"/>
-													<xs:maxExclusive value="1.0"/>
-												</xs:restriction>
-											</xs:simpleType>
-										</xs:element>
+										<xs:element name="ILSName" type="xs:string"/>
+										<xs:element name="DyeName" type="xs:string"/>
+										<xs:choice>
+											<xs:element name="LaneStandard" type="LaneStandardData" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>For kit with single list of ILS</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="SubFamily" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>ILS Family, new in v2.7</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="SubFamilyName" type="xs:string"/>
+														<xs:element name="LaneStandard" type="LaneStandardData" maxOccurs="unbounded"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:choice>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>

@@ -164,7 +164,7 @@ public:
     const COARnotes *pNotes = GetNotesPtr(pTime);
     if(pNotes == NULL)
     {
-      return g_sEmptyString;
+      return mainApp::EMPTY_STRING;
     }
     return pNotes->GetText();
   }
@@ -295,7 +295,6 @@ private:
   COARreviewList m_ReviewList;
   COARreviewList m_AcceptanceList;
   COARsample *m_pSample;
-  static const wxString g_sEmptyString;
 };
 
 class CAppendReviewLocus : public IAppendReview

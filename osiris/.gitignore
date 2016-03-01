@@ -34,5 +34,13 @@ OsirisXML/LadderSpecifications/OldIlsAndLadderAndKitColors
 BuildStandardControlFile/Debug
 BuildStandardControlFile/Release
 ResdiualDataFromISP
+Common.xsd
+Documentation/ABIF_File_Format.pdf
+Documentation/Using RT.docx
+Documentation/geneprint 10 system protocol.pdf
+GenerateLadderFile/Common.xsd
+GenerateLadderFile/LabSettingsV4.xsd
+GenerateLadderFile/StandardSettingsV4.xsd
+LabSettingsV4.xsd
 *ipch
 _UpgradeReport_Files

@@ -5,6 +5,9 @@
 
 #include "LadderStructures.h"
 
+bool Locus :: GenerateILSFamilies = false;
+RGString Locus :: ILSName;
+
 
 int CopyVolumeFile (const RGString& inputFileName, const RGString& outputFileName) {
 
@@ -130,14 +133,15 @@ bool Allele :: isEqual (Allele* target) {
 
 
 Locus :: Locus () : mChannel (0), mCoreRepeat (0), mMinLocusBP (0), mMaxLocusBP (0), mMinSearchILSBP (0.0), mMaxSearchILSBP (0.0), mYLinked (false),
-mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false) {
+mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false), 
+mNeedsRelativeHeightInfo (false) {
 
 }
 
 
 Locus :: Locus (const RGString& name, int channel, int coreRepeat) : mName (name), mChannel (channel), mCoreRepeat (coreRepeat), mMinLocusBP (0), mMaxLocusBP (0), 
 	mMinSearchILSBP (0.0), mMaxSearchILSBP (0.0), mYLinked (false), mMinExpectedAlleles (1), mMaxExpectedAlleles (2), mIsMerged (false), 
-	mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false) {
+	mOriginalMinSearchILSBP (0.0), mOriginalMaxSearchILSBP (0.0), mDoNotExtend (false), mNeedsRelativeHeightInfo (false) {
 
 }
 
@@ -225,8 +229,23 @@ void Locus :: OutputTo (RGTextOutput& xmlFile) {
 
 	xmlFile << "\t\t\t\t<MinBP>" << mMinLocusBP << "</MinBP>\n";
 	xmlFile << "\t\t\t\t<MaxBP>" << mMaxLocusBP << "</MaxBP>\n";
-	xmlFile << "\t\t\t\t<MinGridLSBasePair>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGridLSBasePair>\n";
-	xmlFile << "\t\t\t\t<MaxGridLSBasePair>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGridLSBasePair>\n";
+
+	if (GetGenerateILSFamilies ()) {
+
+		xmlFile << "\t\t\t\t<SearchRegions>\n";
+		xmlFile << "\t\t\t\t\t<Region>\n";
+		xmlFile << "\t\t\t\t\t\t<ILSName>" << GetILSName () << "</ILSName>\n";
+		xmlFile << "\t\t\t\t\t\t<MinGrid>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGrid>\n";
+		xmlFile << "\t\t\t\t\t\t<MaxGrid>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGrid>\n";
+		xmlFile << "\t\t\t\t\t</Region>\n";
+		xmlFile << "\t\t\t\t</SearchRegions>\n";
+	}
+
+	else {
+
+		xmlFile << "\t\t\t\t<MinGridLSBasePair>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGridLSBasePair>\n";
+		xmlFile << "\t\t\t\t<MaxGridLSBasePair>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGridLSBasePair>\n";
+	}
 
 	if (mCoreRepeat != 4)
 		xmlFile << "\t\t\t\t<CoreRepeatNumber>" << mCoreRepeat << "</CoreRepeatNumber>\n";
@@ -248,6 +267,10 @@ void Locus :: OutputTo (RGTextOutput& xmlFile) {
 	for (AIterator = mAlleleList.begin(); AIterator != mAlleleList.end(); AIterator++) {
 
 		nextAllele = *AIterator;
+
+		if (mNeedsRelativeHeightInfo)
+			nextAllele->SetRelativeHeight ("H");
+
 		nextAllele->OutputTo (xmlFile);
 	}
 
@@ -474,17 +497,29 @@ void Ladder :: OutputTo (RGTextOutput& xmlFile, LadderInputFile& inputFile) {
 
 	xmlFile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	xmlFile << "<KitData xmlns:xsi=\"" << link.GetData () << "\" xsi:noNamespaceSchemaLocation=\"MarkerSet.xsd\">\n";
-	xmlFile << "\t<Version>2.0</Version>\n";
+	xmlFile << "\t<Version>" << inputFile.GetVersion () << "</Version>\n";
 	xmlFile << "\t<Kits>\n";
 	xmlFile << "\t\t<Set>\n";
 	xmlFile << "\t\t\t<Name>" << mMarkerSetName.GetData () << "</Name>\n";
 	xmlFile << "\t\t\t<NChannels>" << mNumberOfChannels << "</NChannels>\n";
-	xmlFile << "\t\t\t<LS>\n";
-	
-	OutputILSListTo (xmlFile);
+	xmlFile << "\t\t\t<ILS>\n";
+
+	if (inputFile.GenerateILSFamilies ()) {
+
+		xmlFile << "\t\t\t\t<LSBases>\n";
+		OutputILSFamilyListTo (xmlFile);
+		xmlFile << "\t\t\t\t</LSBases>\n";
+	}
+
+	else {
+
+		xmlFile << "\t\t\t<LS>\n";
+		OutputILSListTo (xmlFile);
+		xmlFile << "\t\t\t</LS>\n";
+	}
 
 	xmlFile << "\t\t\t\t<ChannelNo>" << mChannelForILS << "</ChannelNo>\n";
-	xmlFile << "\t\t\t</LS>\n";
+	xmlFile << "\t\t\t</ILS>\n";
 	xmlFile << "\t\t\t<FileNameSuffix>" << mSuffix << "</FileNameSuffix>\n";
 	xmlFile << "\t\t\t<GenotypeSuffix>" << mSuffix << "</GenotypeSuffix>\n";
 	xmlFile << "\t\t\t<DirectorySearchString>" << mSuffix << "</DirectorySearchString>\n";
@@ -515,6 +550,16 @@ void Ladder :: OutputILSListTo (RGTextOutput& xmlFile) {
 }
 
 
+void Ladder :: OutputILSFamilyListTo (RGTextOutput& xmlFile) {
+
+	RGDListIterator it (mILSList);
+	RGString* nextName;
+
+	while (nextName = (RGString*) it ())
+		xmlFile << "\t\t\t\t\t<ILSName>" << nextName->GetData () << "</ILSName>\n";
+}
+
+
 void Ladder :: OutputChannelMapTo (RGTextOutput& xmlFile, LadderInputFile& inputFile) {
 
 	int i;
@@ -531,6 +576,117 @@ void Ladder :: OutputChannelMapTo (RGTextOutput& xmlFile, LadderInputFile& input
 	}
 
 	xmlFile << "\t\t\t</FsaChannelMap>\n";
+}
+
+
+int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderString) {
+
+	RGString newLadderString;
+
+	// Parse oldLadder data into pieces for individual edits
+	RGString locusString;
+	RGString* newLocusString;
+	RGDList locusStrings;
+	size_t startPos = 0;
+	size_t endPos;
+	RGXMLTagSearch locusSearch ("Locus", oldLadderString);
+	RGXMLTagSearch searchRegionsSearch ("SearchRegions", oldLadderString);
+
+	RGString* ilsName = (RGString*)inFile->GetILSNameList ().First ();
+	endPos = 0;
+	oldLadderString.FindNextSubstring (0, "\t\t\t<Locus>", endPos);
+	RGString insertBase;
+	insertBase << "\t\t\t\t\t<ILSName>" << ilsName->GetData () << "</ILSName>\n";
+	insertBase << "\t\t\t\t</LSBases>";
+	RGString leadString = oldLadderString.ExtractSubstring (0, endPos - 1);
+	//cout << "Lead string = \n" << leadString.GetData () << endl;
+	endPos = 0;
+	leadString.FindAndReplaceNextSubstring ("\t\t\t\t</LSBases>", insertBase, endPos);
+	//cout << "Lead string = \n" << leadString.GetData () << endl;
+	newLadderString << leadString;
+
+	startPos = 0;
+
+	while (locusSearch.FindNextTag (startPos, endPos, locusString)) {
+
+		newLocusString = new RGString (locusString);
+		locusStrings.Append (newLocusString);
+		startPos = endPos;
+	}
+
+	if (mLocusList.size () != locusStrings.Entries ()) {
+
+		cout << "Number of loci in bins file does not match number of loci in ladder file" << endl;
+		return -152;
+	}
+
+	Locus* nextLocus;
+	RGString locusInsert;
+	RGString currentLocusString;
+	RGString nameString;
+	RGXMLTagSearch locusNameSearch ("Name", currentLocusString);
+	RGXMLTagSearch coreRepeatSearch ("CoreRepeatNumber", currentLocusString);
+	double minSearch;
+	double maxSearch;
+	RGString repeatString;
+	int repeatNumber;
+
+	while (locusStrings.Entries () > 0) {
+
+		newLocusString = (RGString*) locusStrings.GetFirst ();
+		currentLocusString = *newLocusString;
+		locusNameSearch.ResetSearch ();
+		coreRepeatSearch.ResetSearch ();
+
+		locusNameSearch.FindNextTag (0, endPos, nameString);
+		nextLocus = FindLocusByName (nameString);
+
+		if (nextLocus == NULL) {
+
+			cout << "Could not find locus named " << nameString.GetData () << ".  Exiting..." << endl;
+			return -155;
+		}
+
+		if (!coreRepeatSearch.FindNextTag (0, endPos, repeatString))
+			repeatNumber = 4;
+
+		else
+			repeatNumber = repeatString.ConvertToInteger ();
+
+		locusInsert = "";
+		minSearch = nextLocus->GetMinSearchILSBP () - repeatNumber + 1;
+		maxSearch = nextLocus->GetMaxSearchILSBP () + repeatNumber -1;
+
+		locusInsert << "\t\t\t\t\t<Region>\n";
+		locusInsert << "\t\t\t\t\t\t<ILSName>" << ilsName->GetData () << "</ILSName>\n";
+		locusInsert << "\t\t\t\t\t\t<MinGrid>" << 0.01 * floor (100.0 * minSearch + 0.5) << "</MinGrid>\n";
+		locusInsert << "\t\t\t\t\t\t<MaxGrid>" << 0.01 * floor (100.0 * maxSearch + 0.5) << "</MaxGrid>\n";
+		locusInsert << "\t\t\t\t\t</Region>\n";
+		locusInsert << "\t\t\t\t</SearchRegions>";
+		endPos = 0;
+		currentLocusString.FindAndReplaceNextSubstring ("\t\t\t\t</SearchRegions>", locusInsert, endPos);
+
+		newLadderString << "\t\t\t<Locus>" << currentLocusString << "</Locus>\n";
+		delete newLocusString;
+	}
+
+	newLadderString << "\t\t</Set>\n";
+	newLadderString << "\t</Kits>\n";
+	newLadderString << "</KitData>\n";
+
+	RGString ladderPath = inFile->GetOutputConfigDirectoryPath () + "/" + inFile->GetLadderFileName ();
+	RGTextOutput ladderOutput (ladderPath, FALSE);
+
+	if (!ladderOutput.FileIsValid ()) {
+
+		cout << "Could not open ladder output file:  " << ladderPath.GetData () << endl;
+		return -161;
+	}
+
+	ladderOutput << newLadderString;
+
+	cout << "Ladder update completed successfully..." << endl;
+	return 0;
 }
 
 

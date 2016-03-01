@@ -28,7 +28,6 @@
 *
 *  Provide a toolbar for each plot using the CPanelPlot class
 */
-#include "mainApp.h"
 #include <wx/arrstr.h>
 #include <wx/colour.h>
 #include <wx/sizer.h>
@@ -184,31 +183,36 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->AddSpacer(SPACER);
   wxString sLabel;
   int nID = IDgraphCH1;
-  char label[2] = {0,0};
-  const CChannelColors *pCC;
-  wxColour WHITE(255,255,255);
+  const CChannelColors *pCC = NULL;
+  const CSingleKitColors *pKitColors = pColors->GetKitColors(pData->GetKitName());
+  const wxColour *pColor;
   pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Channel:");
+  unsigned int nChannelILS = pData->GetILSChannel();
+
   pSizer->Add(pStatText, 0, nSizerFlags, ID_BORDER);
   m_vShiftWindows.push_back(pStatText);
-
   for(i = 1; i <= nChannelCount; i++)
   {
-    pCC = pColors->GetColorChannel(pData->GetKitName(),i);
+    if(pKitColors != NULL)
+    {
+      pCC = (i == nChannelILS)
+        ? pKitColors->GetColorChannelFromLS(pData->GetParameters().GetLsName())
+        : pKitColors->GetColorChannel(i);
+    }
     if(pCC != NULL)
     {
-      sLabel = pCC->m_sDyeName;
+      pColor = pCC->GetColorAnalyzedPtr();
+      sLabel = pCC->GetDyeName();
     }
     else
     {
-      label[0] = '0' + i;
-      sLabel = label;
+      pColor = &CKitColors::g_BLACK;
+      sLabel = wxString::Format(wxT("%u"), i);
     }
-    const wxColour &cl(pColors->GetColor(
-      pData->GetKitName(),ANALYZED_DATA,i));
 #if __USING_NATIVE_TOGGLE
     pPanelChannelButton = new wxPanel(m_pPanel,wxID_ANY);
     pSizerChannelButton = new wxBoxSizer(wxHORIZONTAL);
-    pPanelChannelButton->SetBackgroundColour(cl);
+    pPanelChannelButton->SetBackgroundColour(*pColor);
     wxToggleButton *pTgl = new wxToggleButton(pPanelChannelButton,nID,sLabel,
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT
@@ -219,7 +223,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 #else
     wxCustomButton *pTgl = new wxCustomButton(m_pPanel,nID,sLabel,
       wxDefaultPosition, wxDefaultSize, wxCUSTBUT_TOGGLE);
-    pTgl->SetForegroundColour(WHITE);
+    pTgl->SetForegroundColour(*wxWHITE);
     pTgl->SetMargins(DYEMARGIN,true);
     pSizer->Add(pTgl,0,nSizerFlags,ID_BORDER);
 #endif
@@ -229,7 +233,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
       "View or hide data for channel %d\n" 
          "Hold down the shift key to view only channel %d ",i,i));
 
-    pTgl->SetBackgroundColour(cl);
+    pTgl->SetBackgroundColour(*pColor);
   }
   for(i = nChannelCount + 1; i <= CHANNEL_MAX; i++)
   {

@@ -84,7 +84,6 @@ protected:
   void _DisableUnused();
 
   //  data
-  CKitColors m_kitColors;
   wxString m_sKitName;
   vector<unsigned int> m_vnChannelNumbers;
   typedef vector<unsigned int>::iterator ChannelNumberIterator;

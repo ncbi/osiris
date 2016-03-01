@@ -30,6 +30,7 @@
 #ifndef __COAR_NOTES_H__
 #define __COAR_NOTES_H__
 
+#include "mainApp.h"
 #include "COARmisc.h"
 
 //************************************************* COARnotes
@@ -77,7 +78,7 @@ public:
   {
     if(p == NULL)
     {
-      return g_EmptyString;
+      return mainApp::EMPTY_STRING;
     }
     return p->GetText();
   }
@@ -154,7 +155,6 @@ public:
 private:
   wxDateTime m_Update;
   wxString m_sText;
-  static const wxString g_EmptyString;
 };
 
 

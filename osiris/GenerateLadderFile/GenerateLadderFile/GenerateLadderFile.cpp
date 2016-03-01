@@ -73,6 +73,85 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	debugMode = false;
 
 #endif
+	int select;
+	char selectChar;
+	cout << "Enter 0 to create new ladder file; enter 1 to augment existing file" << endl;
+	cin >> select;
+
+	if (select != 0) {
+
+		cout << "You have chosen to augment an existing ladder.  Is this correct? (Y/N)" << endl;
+		cin >> selectChar;
+
+		if ((selectChar == 'N') || (selectChar == 'n')) {
+
+			cout << "Exiting..." << endl;
+			return -51;
+		}
+
+		cout << "Continuing..." << endl;
+		LadderInputFile* inFileAppend = new LadderInputFile (debugMode);
+		int inStatus = inFileAppend->ReadAllInputsAppend ("LadderInputFileAppend.txt");
+
+		if (inStatus != 0) {
+
+			cout << "File input failed.  Terminating..." << endl;
+			return -1;
+		}
+
+		inStatus = inFileAppend->AssembleInputsAppend ();
+
+		if (inStatus != 0) {
+
+			cout << "File input incomplete.  Terminating..." << endl;
+			return -1;
+		}
+
+		cout << "File input succeeded.  Continuing..." << endl << endl;
+
+		// create full path names to open files.  First, echo data:
+		RGString* ILSName = (RGString*)inFileAppend->GetILSNameList ().First ();
+		cout << "Ladder Directory = " << inFileAppend->GetLadderDirectory ().GetData () << endl;
+		cout << "Bins file name = " << inFileAppend->GetBinsFileName ().GetData () << endl;
+		cout << "Output Config Path = " << inFileAppend->GetOutputConfigDirectoryPath ().GetData () << endl;
+		cout << "Ladder file name = " << inFileAppend->GetLadderFileName ().GetData () << endl;
+		cout << "ILS name = " << ILSName->GetData () << endl;
+
+		RGString oldLadderString;
+		RGString newLadderString;
+		RGString ladderPath = inFileAppend->GetOutputConfigDirectoryPath () + "/" + inFileAppend->GetLadderFileName ();
+		RGFile* oldLadderFile = new RGFile (ladderPath, "rt");
+
+		if (!oldLadderFile->isValid ()) {
+
+			cout << "Could not open ladder file for editing.  Exiting..." << endl;
+			return -52;
+		}
+
+		oldLadderString.ReadTextFile (*oldLadderFile);
+		delete oldLadderFile;
+
+		RGString binsFullPath = inFileAppend->GetLadderDirectory () + "/" + inFileAppend->GetBinsFileName ();
+		Bins* binsAppend = new Bins (binsFullPath);
+
+		if (!binsAppend->IsValid ()) {
+
+			cout << "Could not open bins file.  Exiting..." << endl;
+			return -54;
+		}
+
+		RGDList tempList;
+		Ladder* binsLadderAppend = binsAppend->AssembleAllLoci (tempList);
+
+		if (binsLadderAppend == NULL) {
+
+			cout << "Bin file failed" << endl;
+			return -25;
+		}
+
+		inStatus = binsLadderAppend->AmendLadderData (inFileAppend, oldLadderString);
+		return inStatus;
+	}
 
 	LadderInputFile inputFile (debugMode);
 
@@ -84,6 +163,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		cout << "File input failed.  Terminating..." << endl;
 		return -1;
 	}
+
+	cout << "Ladder Input File:  Kit Name = " << inputFile.GetKitName ().GetData () << endl;
+	cout << "Panels file Name = " << inputFile.GetPanelsFileName ().GetData () << endl;
 
 	inputStatus = inputFile.AssembleInputs ();
 
@@ -174,6 +256,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		if (newLocus == NULL)
 			break;
 
+		newLocus->SetRelativeHeightInfo (inputFile.LocusNeedsRelativeHeightInfo (newLocus->GetName ()));
 		status = panelsLadder->AddLocus (newLocus);
 
 		if (status < 0) {

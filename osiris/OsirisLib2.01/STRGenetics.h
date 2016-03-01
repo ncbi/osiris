@@ -88,6 +88,8 @@ public:
 	STRBaseLocus (const RGString& xmlInput);
 	virtual ~STRBaseLocus ();
 
+	bool GetLadderSearchRegion (size_t& startIndex, RGString& input, const RGString& familyName);
+
 	virtual int GetMinimumBound () const;
 	virtual int GetMaximumBound () const;
 	virtual Boolean ExtractGridSignals (RGDList& channelSignalList, const LaneStandard* ls, RGDList& locusDataSignalList, ChannelData* lsData, Locus* locus);

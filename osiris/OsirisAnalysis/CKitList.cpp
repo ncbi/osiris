@@ -32,6 +32,7 @@
 #include "CKitList.h"
 #include "nwx/nwxString.h"
 #include "nwx/vectorptr.h"
+#include "nwx/mapptr.h"
 #include "ConfigDir.h"
 #include "CILSLadderInfo.h"
 #include <memory>
@@ -67,10 +68,23 @@ bool CLocusNameChannel::operator <(const CLocusNameChannel &x) const
   return bRtn;
 }
 
+CPersistKitList::~CPersistKitList()
+{
+    if(m_pILS != NULL) {  delete m_pILS; }
+    Clear();
+}
+
 void CPersistKitList::Clear()
 {
-  for(LSitr itr = m_mLS.begin();
+  LSitr itr;
+  for(itr = m_mLS.begin();
     itr != m_mLS.end();
+    ++itr)
+  {
+    delete itr->second;
+  }
+  for(itr = m_mILS.begin();  // v2.7 ILS family
+    itr != m_mILS.end();
     ++itr)
   {
     delete itr->second;
@@ -83,12 +97,16 @@ void CPersistKitList::Clear()
     setptr<const CLocusNameChannel,CLocusNameChannelLess>::cleanup(p);
     delete p;
   }
+  mapptr<wxString,CKitChannelMap>::cleanup(&m_mapKitChannels);
   m_mLS.clear();
+  m_mILS.clear();
   m_as.Clear();
   m_sLastKit.Empty();
   m_sErrorMsg.Empty();
   m_pLastKitLocus = NULL;
   m_pLastKitLS = NULL;
+  m_pLastKit_ILS = NULL;
+  m_pLastKitChannelMap = NULL;
 }
 
 
@@ -104,17 +122,25 @@ bool CPersistKitList::Load_V1()
   }
   return bRtn;
 }
+CILSLadderInfo *CPersistKitList::GetILSLadderInfo()
+{
+  if(m_pILS == NULL)
+  {
+    m_pILS = new CILSLadderInfo(true);
+    if(m_pILS->IsOK())
+    {
+      _SetLoadError();
+    }
+  }
+  return m_pILS;
+}
 bool CPersistKitList::Load()
 {
   wxString sFile;
-  CILSLadderInfo ldr(true);
   CIncrementer x(m_nInLoad);
-  if(!ldr.IsOK())
-  {
-    _SetLoadError();
-  }
-  vector<CILSkit *> *pvKits = ldr.GetKits();
-  vector<CILSkit *>::iterator itr;
+  CILSLadderInfo *pLdr = GetILSLadderInfo();
+  const std::vector<CILSkit *> *pvKits = pLdr->GetKits();
+  std::vector<CILSkit *>::const_iterator itr;
   CILSkit *pKit;
   int nCount = 0;
   m_bV1 = false;
@@ -130,11 +156,18 @@ bool CPersistKitList::Load()
     m_sLastKit = pKit->GetKitName();
     m_pLastKitLocus = NULL;
     m_pLastKitLS = NULL;
+    m_pLastKitChannelMap = NULL;
     LSitr itrLS = m_mLS.find(m_sLastKit);
     m_pLastKitLS = 
       (itrLS == m_mLS.end())
       ? NULL
       : itrLS->second;
+    itrLS = m_mILS.find(m_sLastKit);
+    m_pLastKit_ILS = 
+      (itrLS == m_mILS.end())
+      ? NULL
+      : itrLS->second;
+
     KLNCitr itrLocus = m_mapKitLocus.find(m_sLastKit);
     m_pLastKitLocus =
       (itrLocus == m_mapKitLocus.end())
@@ -153,15 +186,60 @@ bool CPersistKitList::Load()
     }
   }
   nwxString::Trim(&m_sErrorMsg);
+  _HACK_27(pLdr);
   SortILS();
   return (nCount > 0);
+}
+void CPersistKitList::_HACK_27(CILSLadderInfo *pILS)
+{
+  std::map<wxString, wxArrayString *>::iterator itr,itrLS;
+  wxArrayString *pa,*paLS;
+  const wxString sFamily;
+  size_t nCount,n;
+  std::vector<CILSname *>::const_iterator itrn;
+  for(itr = m_mILS.begin(); itr != m_mILS.end(); ++itr)
+  {
+    pa = itr->second;
+    nCount = pa->GetCount();
+    if(nCount)
+    {
+      itrLS = m_mLS.find(itr->first);
+      if(itrLS == m_mLS.end())
+      {
+        paLS = new wxArrayString;
+        paLS->Alloc(12);
+        m_mLS.insert(map<wxString, wxArrayString *>::value_type(itr->first,paLS));
+      }
+      else
+      {
+        paLS = itrLS->second;
+      }
+      for(n = 0; n < nCount; n++)
+      {
+        const CILSfamily *pFam = pILS->GetFamily(pa->Item(n));
+        if(pFam != NULL)
+        {
+          const std::vector<CILSname *> &vn = pFam->GetNames();
+          for (itrn = vn.begin(); itrn != vn.end(); ++itrn)
+          {
+            paLS->Add((*itrn)->GetName());
+          }
+        }
+      }
+    }
+  }
 }
 
 void CPersistKitList::SortILS()
 {
-  map<wxString, wxArrayString *>::iterator itr;
+  std::map<wxString, wxArrayString *>::iterator itr;
   wxArrayString *pILS;
   for(itr = m_mLS.begin(); itr != m_mLS.end(); ++itr)
+  {
+    pILS = itr->second;
+    pILS->Sort();
+  }
+  for(itr = m_mILS.begin(); itr != m_mILS.end(); ++itr)
   {
     pILS = itr->second;
     pILS->Sort();
@@ -200,15 +278,32 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
         m_pLastKitLS = new wxArrayString;
         m_pLastKitLS->Alloc(6);
         m_mLS.insert(
-          map<wxString, wxArrayString *>::value_type(
+          std::map<wxString, wxArrayString *>::value_type(
                 m_sLastKit,m_pLastKitLS));
       }
       m_pLastKitLS->Add(s);
     }
   }
+  else if( !sNodeName.Cmp("ILSName") && !m_sLastKit.IsEmpty() )
+  {
+    wxString s;
+    m_XmlString.LoadFromNode(pNode,(void *)&s);
+    if(s.Len())
+    {
+      if(m_pLastKit_ILS == NULL)
+      {
+        m_pLastKit_ILS = new wxArrayString;
+        m_pLastKit_ILS->Alloc(6);
+        m_mILS.insert(
+          std::map<wxString, wxArrayString *>::value_type(
+                m_sLastKit,m_pLastKit_ILS));
+      }
+      m_pLastKit_ILS->Add(s);
+    }
+  }
   else if( !sNodeName.Cmp("ChannelNo") && !m_sLastKit.IsEmpty() )
   {
-    map<wxString,int>::iterator itrC = m_msChannelCount.find(m_sLastKit);
+    std::map<wxString,int>::iterator itrC = m_msChannelCount.find(m_sLastKit);
     int nCurrent = 0;
     int n = 0;
     g_IOint.LoadFromNode(pNode,(void *) &n);
@@ -223,7 +318,7 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
     if(nCurrent < n)
     {
       m_msChannelCount.insert(
-          map<wxString,int>::value_type(m_sLastKit,n));
+          std::map<wxString,int>::value_type(m_sLastKit,n));
     }
   }
   else if( !sNodeName.Cmp("Locus") )
@@ -232,7 +327,7 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
     {
       m_pLastKitLocus = new CLocusNameList;
       m_mapKitLocus.insert(
-        map< wxString, CLocusNameList * >::value_type(
+        std::map< wxString, CLocusNameList * >::value_type(
           m_sLastKit,m_pLastKitLocus));
     }
     auto_ptr<CLocusNameChannel> pLC(new CLocusNameChannel);
@@ -244,6 +339,17 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
     {
       bRtn = false;
     }
+  }
+  else if(!sNodeName.Cmp("FsaChannelMap"))
+  {
+    if(m_pLastKitChannelMap == NULL)
+    {
+      m_pLastKitChannelMap = new CKitChannelMap(wxT("Channel"));
+      m_mapKitChannels.insert(
+        std::map<wxString, CKitChannelMap *>::value_type(
+          m_sLastKit,m_pLastKitChannelMap));
+    }
+    bRtn = m_pLastKitChannelMap->LoadFromNode(pNode);
   }
   else
   {
@@ -301,13 +407,13 @@ void CPersistKitList::UnitTest()
         wxS("\nNumber of kits is %d, expected %d"),
         (int)nCount, (int)N_LIST ));
     }
-    map<wxString,size_t> kitLocusCount;
-    map<wxString,size_t>::iterator itrKL;
+    std::map<wxString,size_t> kitLocusCount;
+    std::map<wxString,size_t>::iterator itrKL;
     size_t i;
     for(i = 0; i < N_LIST; i++)
     {
       kitLocusCount.insert(
-        map<wxString,size_t>::value_type(
+        std::map<wxString,size_t>::value_type(
           wxString(LIST[i].psName),LIST[i].n));
     }
 

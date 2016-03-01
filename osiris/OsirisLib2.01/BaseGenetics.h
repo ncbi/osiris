@@ -215,6 +215,9 @@ public:
 	static void ClearInitializationMatrix () { delete[] InitialMatrix; InitialMatrix = NULL; }
 	static int GetScope () { return 2; }
 
+	static RGString GetILSFamilyName () { return ILSFamilyName; }
+	static void SetILSFamilyName (const RGString& name) { ILSFamilyName = name; }
+
 	//***********************************************************************************************************************************************************
 
 protected:
@@ -239,6 +242,7 @@ protected:
 	int mMinExpectedAlleles;
 
 	static bool* InitialMatrix;
+	static RGString ILSFamilyName;
 
 //	RGHashTable AlleleListByName;   // items of type BaseAllele*
 //	RGHashTable AlleleListByCurve;   // items of type BaseAllele*

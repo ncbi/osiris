@@ -50,8 +50,10 @@ osiris_SOURCES =  \
 ../CGridRFUbase.cpp \
 ../CHistoryTime.cpp \
 ../CImageAbout.cpp \
+../CILSLadderInfo.cpp \
+../CILSselection.cpp \
 ../CKitColors.cpp \
-../CKitLadderInfo.cpp \
+../CKitColors2.cpp \
 ../CKitList.cpp \
 ../CLabSettings.cpp \
 ../CLabSettingsFileName.cpp \
