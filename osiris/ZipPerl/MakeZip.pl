@@ -11,6 +11,7 @@ use GetVersion;
 #
 #
 #
+my $NO_ZIP_FILE = 0;
 my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
@@ -137,8 +138,6 @@ sub COPYFILES
     PPY23
     PPY23_HID
     Profiler
-    QIAGEN_ARGUS_x12
-    QIAGEN_ARGUS_x12_HID
     QIAGEN_INVESTIGATOR24PLEX
     QIAGEN_INVESTIGATOR24PLEX_HID
     SEfilerPlus
@@ -209,7 +208,7 @@ sub CopyWin
 
   my $zipFile = "Osiris-${VERSION}-Windows.zip";
 
-  if(&TESTFILES($zipFile,"${dest}"))
+  if((!$NO_ZIP_FILE) && &TESTFILES($zipFile,"${dest}"))
   {
     &SYSTEM("${PATH7Z} a -r ${zipFile} ${dest}");
   }

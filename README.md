@@ -8,13 +8,11 @@ A public domain quality assurance software package that facilitates the assessme
 * Most of the requirements are included with OSIRIS, except for [wxwidgets](http://www.wxwidgets.org/). These were built with multithreading but not DLL, i.e. `/MT` as opposed to `/MD` with a few modifications. 
 * VC++ 2010 Version 10 - In visual C++, see `Help` -> `About Microsoft Visual Studio`), it should be 10 or later to build OSIRIS.
 * wxWidgets (http://www.wxwidgets.org/)
-* [`libxml2` and `libxslt`](http://xmlsoft.org/)
-* [`libiconv`](http://www.gnu.org/software/libiconv/)
-* [Header files for all three libraries for MC VC++](http://www.zlatkovic.com/libxml.en.html), used to replace the corresponding header files in the distribution.
-* Modification (already done) to these libraries
+* [`libxml2`, `libxslt`](http://xmlsoft.org/) and [`libiconv`](http://www.gnu.org/software/libiconv/) are included with the source code with [Header files for all three libraries for MC VC++](http://www.zlatkovic.com/libxml.en.html), used to replace the corresponding header files in the distribution.
+* Modification (already done) to these libraries are:
   * In `libxslt-1.1.26/libexslt`, modified `libexslt.h` and changed `#include <win32config.h>` to `#include <libxslt/win32config.h>`
   * Removed all occurrences of `#include <win32config.h>` from all other `\*.c`, `\*.h` files and made sure that `#include "libexslt/libexslt.h"` is present.
-  * Created VC++ projects and build the the code generation option of "Multithreaded" (`/MT`).
+  * Created VC++ projects.
 
 ### Build steps
 * Download wxWidgets at http://wxwidgets.org/downloads/, either  the ZIP or 7z download.
@@ -37,12 +35,12 @@ A public domain quality assurance software package that facilitates the assessme
 * Select `Release` and `Win32` in the toolbar or from the menubar: `Build` -> `Configuration Manager`
 * Build the solution:  From the menubar: `Build` -> `Rebuild Solution` (Optional - If you built wxWidgets for "Debug" you can also build OSIRIS for "Debug"  however it recommended that you copy the directory structure of an OSIRIS installation to OsirisAnalysis/Debug except for `OsirisAnalysis.exe`).
 
-#### Build OSIRIS .zip file for Windows - Alternative to the .msi
+#### Build OSIRIS .zip file for Windows - Alternative to the .msi file
 * After building OSIRIS, Run the perl script `.\ZipPerl\MakeZip.pl` 
   * Requires [cygwin](http://www.cygwin.com/), [Perl](http://www.activestate.com/), and [7zip](http://www.7-zip.org/).
   * After the above are installed, the commands, 7z and cp must be available from `PATH` environment variable.
 * It will set up the directory structure in `.\ZipPerl\Osiris` and create a `.zip` file.
-* If you want to create the directory structure without a zip file, then modify one lines of code near the beginning of `MakeZip.pl` and change `my $NO_ZIP_FILE = 0;` to `my $NO_ZIP_FILE = 1;`
+* If you want to create the directory structure without a zip file, then modify one line of code near the beginning of `MakeZip.pl` and change `my $NO_ZIP_FILE = 0;` to `my $NO_ZIP_FILE = 1;`
 * The directory structure will be in `.\ZipPerl\Osiris` and can be moved.
 
 ## Mac OS X build
