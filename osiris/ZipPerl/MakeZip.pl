@@ -169,7 +169,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/StandardPositiveControls.xml ${dest}/Config/LadderSpecifications");
 
   #  for 2.7 remove qiagen argus  
-  &SYSTEM("rm -v ${dest}/Config/LadderSpecifications/Q_InvestigatorArgusX12_LadderInfo.xml ${dest}/Config/LadderSpecifications/Q_InvestigatorArgusX12_QS_LadderInfo.xml"
+  &SYSTEM("rm -v ${dest}/Config/LadderSpecifications/Q_InvestigatorArgusX12_LadderInfo.xml ${dest}/Config/LadderSpecifications/Q_InvestigatorArgusX12_QS_LadderInfo.xml")
 
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
