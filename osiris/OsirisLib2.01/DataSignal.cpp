@@ -9984,8 +9984,8 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 	double l2;
 	bool useRightPeak;
 	mPartOfCluster = true;
-	prev->SetPartOfCluster (true);
-	next->SetPartOfCluster (true);
+//	prev->SetPartOfCluster (true);
+//	next->SetPartOfCluster (true);
 
 
 	if (peak2 >= peak1)
@@ -10075,8 +10075,8 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	double l2;
 	bool useRightPeak;
 	mPartOfCluster = true;
-	prev->SetPartOfCluster (true);
-	next->SetPartOfCluster (true);
+//	prev->SetPartOfCluster (true);
+//	next->SetPartOfCluster (true);
 
 	if (peak2 >= peak1)
 		useRightPeak = true;

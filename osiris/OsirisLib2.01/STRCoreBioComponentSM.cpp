@@ -1532,6 +1532,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 			else {
 
 				delete nextSignal;
+				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+				nextSignal2->SetPartOfCluster (false);
+				nextSignal2 = nextSignal->GetNextLinkedSignal ();
+				nextSignal2->SetPartOfCluster (false);
 			}
 		}
 
@@ -1563,6 +1567,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 			else {
 
 				delete nextSignal;
+				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+				nextSignal2->SetPartOfCluster (false);
+				nextSignal2 = nextSignal->GetNextLinkedSignal ();
+				nextSignal2->SetPartOfCluster (false);
 			}
 		}
 

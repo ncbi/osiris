@@ -5966,7 +5966,6 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	double prevResidual;
 	double nextResidual;
 	int prevLocation = 0;
-	bool report = false;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -6009,13 +6008,16 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			//	continue;
 			//}
 
-			if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
+			//if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
 
-				prevSignal = nextSignal;
-				prevAlleleName = alleleName;
-				prevLocation = location;
-				continue;
-			}
+			//	if (report)
+			//		cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
+
+			//	prevSignal = nextSignal;
+			//	prevAlleleName = alleleName;
+			//	prevLocation = location;
+			//	continue;
+			//}
 
 			if (prevSignal->GetMessageValue (primaryPullup) && !nextSignal->GetMessageValue (primaryPullup)) {
 
@@ -6055,32 +6057,10 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
-			if ((prevSignal->GetMean () > 4219.0) && (prevSignal->GetMean () < 4223.0))
-				report = true;
-
 			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
 			currentSignal->CaptureSmartMessages ();
-
-			if (report) {
-
-				cout << "Prev signal mean = " << prevSignal->GetMean () << endl;
-				cout << "Next signal mean = " << nextSignal->GetMean () << endl;
-				cout << "Current signal mean = " << currentSignal->GetMean () << endl;
-
-				if (prevSignal->GetMessageValue (pullup))
-					cout << "Previous is pull up" << endl;
-
-				if (prevSignal->GetMessageValue (primaryPullup))
-					cout << "Previous is primary pull up" << endl;
-
-				if (nextSignal->GetMessageValue (pullup))
-					cout << "Next is pull up" << endl;
-
-				if (nextSignal->GetMessageValue (primaryPullup))
-					cout << "Next is primary pull up" << endl;
-			}
 
 			currentSignal->SetDontLook (false);
 			currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
@@ -6089,6 +6069,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			signalList.RemoveReference (nextSignal);
 			prevLocation = location;
 			prevAlleleName = alleleName;
+			prevSignal = currentSignal;
 		}
 
 		else {
