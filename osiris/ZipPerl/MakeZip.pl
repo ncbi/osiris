@@ -11,6 +11,7 @@ use GetVersion;
 #
 #
 #
+my $NO_ZIP_FILE = 0;
 my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
@@ -137,8 +138,6 @@ sub COPYFILES
     PPY23
     PPY23_HID
     Profiler
-    QIAGEN_ARGUS_x12
-    QIAGEN_ARGUS_x12_HID
     QIAGEN_INVESTIGATOR24PLEX
     QIAGEN_INVESTIGATOR24PLEX_HID
     SEfilerPlus
@@ -168,6 +167,9 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/StandardPositiveControls.xml ${dest}/Config/LadderSpecifications");
+
+  #  for 2.7 remove qiagen argus  
+  &SYSTEM("rm -v ${dest}/Config/LadderSpecifications/Q_InvestigatorArgusX12_LadderInfo.xml ${dest}/Config/LadderSpecifications/Q_InvestigatorArgusX12_QS_LadderInfo.xml")
 
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
@@ -209,7 +211,7 @@ sub CopyWin
 
   my $zipFile = "Osiris-${VERSION}-Windows.zip";
 
-  if(&TESTFILES($zipFile,"${dest}"))
+  if((!$NO_ZIP_FILE) && &TESTFILES($zipFile,"${dest}"))
   {
     &SYSTEM("${PATH7Z} a -r ${zipFile} ${dest}");
   }
