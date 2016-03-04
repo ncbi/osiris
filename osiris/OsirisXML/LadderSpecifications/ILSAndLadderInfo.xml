@@ -532,6 +532,14 @@
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
+      <LaneStandard>
+        <Name>BTO_60_450</Name>
+        <DisplayName>60-450</DisplayName>
+        <Characteristics>60 80 90 100 120 140 160 180 200 220 240 250 260 280 300 320 340 360 380 400 425 450</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
     </ILS>
   </LaneStandards>
   <Kits>
@@ -664,6 +672,10 @@
       <FileName>Q_InvestigatorArgusX12_LadderInfo.xml</FileName>
     </Set>
     <Set>
+		<KitName>Cannabis</KitName>
+		<FileName>RyanClarkeCannabis_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
 		<KitName>QiagenArgusX12_QS</KitName>
 		<FileName>Q_InvestigatorArgusX12_QS_LadderInfo.xml</FileName>
 	</Set>

@@ -151,8 +151,14 @@
     <LabMarkerSetCollection>
       <MarkerSetName>QiagenArgusX12_QS</MarkerSetName>
       <LadderFileName>Q_InvestigatorArgusX12_QS_LadderInfo.xml</LadderFileName>
-      <ILS>BTO-500</ILS>
+       <ILS>BTO_60_450</ILS>
       <UserOverrideILS>true</UserOverrideILS>
+       <OffLadderAlleles>
+        <Locus>
+          <Name>DXS10135</Name>
+          <Allele>21.1</Allele>
+        </Locus>
+      </OffLadderAlleles>
     </LabMarkerSetCollection>
   </LabMarkerSetSpecifications>
   <ReviewAcceptanceCounts>
