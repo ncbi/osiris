@@ -199,6 +199,8 @@ public:
 	void SetTableLink (int linkNumber);
 	RGString GetTableLink () const { return mTableLink; }
 
+	bool IsQualityLocus () { if (mLink == NULL) return false; return mLink->isQualityLocus (); }
+
 //	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
 	RGString GetSampleString () const { return SampleString; }

@@ -92,12 +92,14 @@ public:
 	double GetOriginalMaxSearchILSBP () const { return mOriginalMaxSearchILSBP; }
 	bool GetMerged () const { return mIsMerged; }
 	int GetChannel () const { return mChannel; }
+	bool IsQualityLocus () const { return mIsQualityLocus; }
 
 	void SetMinMaxLocusBP (int min, int max) { mMinLocusBP = min; mMaxLocusBP = max; }
 	void SetMinMaxSearchILSBP (double min, double max);
 	void SetMinSearhILSBP (double min) { mMinSearchILSBP = min; }
 	void SetMaxSearhILSBP (double max) { mMaxSearchILSBP = max; }
 	void SetRelativeHeightInfo (bool rh) { mNeedsRelativeHeightInfo = rh; }
+	void SetQualityLocus (bool b) { mIsQualityLocus = b; }
 
 	void SetDoNotExtend () { mDoNotExtend = true; }
 
@@ -136,6 +138,7 @@ protected:
 	double mOriginalMaxSearchILSBP;
 	bool mDoNotExtend;
 	bool mNeedsRelativeHeightInfo;
+	bool mIsQualityLocus;
 
 	static bool GenerateILSFamilies;
 	static RGString ILSName;

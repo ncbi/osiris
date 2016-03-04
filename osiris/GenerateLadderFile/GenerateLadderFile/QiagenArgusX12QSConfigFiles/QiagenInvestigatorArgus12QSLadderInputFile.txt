@@ -27,4 +27,5 @@ DefaultVolumePath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\NamedxmlC
 DoNotExtend = AMEL;
 DoNotExtend = QS1;
 Version = 2.7;
+QualityLocus = QS1;
 ;

@@ -247,6 +247,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	Locus* newLocus;
 	int status = 0;
 	RGDList doNotExtend = inputFile.DoNotExtends ();
+	RGDList qualityLoci = inputFile.GetQualityLoci ();
 	RGString locusName;
 
 	while (true) {
@@ -269,6 +270,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		if (doNotExtend.Contains (&locusName))
 			newLocus->SetDoNotExtend ();
+
+		if (qualityLoci.Contains (&locusName))
+			newLocus->SetQualityLocus (true);
 	}
 
 	RGDList ilsList = inputFile.GetILSNameList ();

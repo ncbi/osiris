@@ -3744,6 +3744,9 @@ int Locus :: TestPositiveControlSM (IndividualLocus* locus, RGDList& artifacts) 
 //	Notice* newSignalNotice;
 	smPosCtrlLocusMismatch posCtrlLocusMismatch;
 
+	if (mLink->isQualityLocus ())
+		return 0;
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		alleleName = nextSignal->GetAlleleName ();
@@ -4948,7 +4951,9 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 	if (isNegCntl) {
 
-//		SetMessageValue (unexpectedNumberOfPeaks, true);
+		if (mLink->isQualityLocus ())
+			return 0;
+
 		return -1;
 	}
 
