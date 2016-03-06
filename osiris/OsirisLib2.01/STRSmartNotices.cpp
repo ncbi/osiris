@@ -1302,6 +1302,12 @@ int smMaxILSBPForExtendedLocus::sMessageIndex = 0;
 int smMaxILSBPForExtendedLocus::sMessageScope = 0;
 
 
+RGString smIsQualityLocus::sName = "smIsQualityLocus";
+int smIsQualityLocus::sSubject = smIsQualityLocus::LoadType ();
+int smIsQualityLocus::sMessageIndex = 0;
+int smIsQualityLocus::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1518,6 +1524,7 @@ PERSISTENT_DEFINITION (smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset, 
 PERSISTENT_DEFINITION (smExtendLociEdgeToEdgePreset, 2613, "smExtendLociEdgeToEdgePreset")
 PERSISTENT_DEFINITION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset, 2614, "smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset")
 PERSISTENT_DEFINITION (smMaxILSBPForExtendedLocus, 2615, "smMaxILSBPForExtendedLocus")
+PERSISTENT_DEFINITION (smIsQualityLocus, 2616, "smIsQualityLocus")
 
 
 
@@ -14474,6 +14481,66 @@ int smMaxILSBPForExtendedLocus :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smMaxILSBPForExtendedLocus* noticeType = new smMaxILSBPForExtendedLocus;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smIsQualityLocus :: smIsQualityLocus () : SmartNotice () {
+
+}
+
+
+smIsQualityLocus :: smIsQualityLocus (const smIsQualityLocus& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smIsQualityLocus :: ~smIsQualityLocus () {
+
+}
+
+
+int smIsQualityLocus :: GetSubject () const {
+
+	return smIsQualityLocus::sSubject;
+}
+
+
+void smIsQualityLocus :: SetIndexAndScope (int index, int scope) const {
+
+	smIsQualityLocus::sMessageIndex = index;
+	smIsQualityLocus::sMessageScope = scope;
+}
+
+
+int smIsQualityLocus :: GetMessageIndex () const {
+
+	return smIsQualityLocus :: sMessageIndex;
+}
+
+
+int smIsQualityLocus :: GetScope () const {
+
+	return smIsQualityLocus :: sMessageScope;
+}
+
+
+RGString smIsQualityLocus :: GetName () const {
+
+	return smIsQualityLocus :: sName;
+}
+
+
+
+int smIsQualityLocus :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smIsQualityLocus* noticeType = new smIsQualityLocus;
 	warehouse->AddType (noticeType);
 	return 1;
 }

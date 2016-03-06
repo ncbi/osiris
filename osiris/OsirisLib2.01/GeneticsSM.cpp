@@ -4301,6 +4301,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	smAssociatedLadderLocusIsCritical associatedLadderLocusIsCritical;
 	smLocusIsAMEL locusIsAMEL;
 	smLocusIsYLinked locusIsYLinked;
+	smIsQualityLocus qualityLocus;
 
 	double bpNext;
 	//double bpPrev;
@@ -4340,6 +4341,9 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 
 	if (mLink->isYLinked ())
 		SetMessageValue (locusIsYLinked, true);
+
+	if (mLink->isQualityLocus ())
+		SetMessageValue (qualityLocus, true);
 
 	DataSignal* prevSignal;
 	DataSignal* followingSignal;
