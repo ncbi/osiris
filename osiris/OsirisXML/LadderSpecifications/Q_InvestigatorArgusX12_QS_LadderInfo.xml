@@ -59,6 +59,7 @@
 						<MaxGrid>74.</MaxGrid>
 					</Region>
 				</SearchRegions>
+				<QualityLocus>true</QualityLocus>
 				<LadderAlleles>
 					<Allele>
 						<Name>1</Name>
