@@ -123,10 +123,12 @@ public:
 	void SetTableLink (int linkNumber);
 
 	bool isYLinked () const { return mIsYLinked; }
+	bool isQualityLocus () const { return mIsQualityLocus; }
 	int GetMaxExpectedAlleles () const { return mMaxExpectedAlleles; }
 	int GetMinExpectedAlleles () const { return mMinExpectedAlleles; }
 
 	void SetYLinked (bool linked) { mIsYLinked = linked; }
+	void SetQualityLocus (bool q) { mIsQualityLocus = q; }
 	void SetMaxExpectedAlleles (int max) { mMaxExpectedAlleles = max; }
 	void SetMinExpectedAlleles (int min) { mMinExpectedAlleles = min; }
 
@@ -238,6 +240,7 @@ protected:
 	RGString Msg;
 	RGString mTableLink;
 	bool mIsYLinked;
+	bool mIsQualityLocus;
 	int mMaxExpectedAlleles;
 	int mMinExpectedAlleles;
 

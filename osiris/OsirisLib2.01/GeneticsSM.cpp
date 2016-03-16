@@ -3744,6 +3744,9 @@ int Locus :: TestPositiveControlSM (IndividualLocus* locus, RGDList& artifacts) 
 //	Notice* newSignalNotice;
 	smPosCtrlLocusMismatch posCtrlLocusMismatch;
 
+	if (mLink->isQualityLocus ())
+		return 0;
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		alleleName = nextSignal->GetAlleleName ();
@@ -4298,6 +4301,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	smAssociatedLadderLocusIsCritical associatedLadderLocusIsCritical;
 	smLocusIsAMEL locusIsAMEL;
 	smLocusIsYLinked locusIsYLinked;
+	smIsQualityLocus qualityLocus;
 
 	double bpNext;
 	//double bpPrev;
@@ -4337,6 +4341,9 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 
 	if (mLink->isYLinked ())
 		SetMessageValue (locusIsYLinked, true);
+
+	if (mLink->isQualityLocus ())
+		SetMessageValue (qualityLocus, true);
 
 	DataSignal* prevSignal;
 	DataSignal* followingSignal;
@@ -4948,7 +4955,9 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 	if (isNegCntl) {
 
-//		SetMessageValue (unexpectedNumberOfPeaks, true);
+		if (mLink->isQualityLocus ())
+			return 0;
+
 		return -1;
 	}
 
@@ -5609,7 +5618,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RG
 int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes) {
 
 	//
-	//  This is sample stage 3
+	//  This is no longer sample stage 3:  obsolete 02/14/2016
 	//
 
 	RGDListIterator it (LocusSignalList);
@@ -5647,6 +5656,8 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 	bool saveNext;
 
 	double adenylationLimit = GetLocusSpecificSampleAdenylationThreshold ();
+
+	//****02/09/2016 Probably need to eliminate the following section because craters have already been validated.  Instead, just test for two peaks with identical call and create NoisyPeak to replace.
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -5926,6 +5937,169 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 	while (nextSignal = (DataSignal*) tempList.GetFirst ())
 		LocusSignalList.RemoveReference (nextSignal);
 
+	return 0;
+}
+
+
+int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes) {
+
+	//
+	//  This is sample stage 3
+	//
+
+	RGDListIterator it (LocusSignalList);
+	DataSignal* nextSignal;
+	DataSignal* prevSignal = NULL;
+	DataSignal* followingSignal = NULL;
+	DataSignal* currentSignal;
+	RGString alleleName;
+	RGString prevAlleleName;
+	bool prevSignalWasCrater = false;
+	RGString lName = GetLocusName ();
+	bool foundOLAllele = false;
+	RGDList tempList;
+	RGDList SignalsToDeleteFromAll;
+	RGDList SignalsToDeleteFromLocus;
+	int location;
+
+	smExtraneousAMELPeak extraneousPeakInAMEL;
+	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+	smPullUp pullup;
+	smPrimaryInterchannelLink primaryPullup;
+
+	it.Reset ();
+
+	prevSignal = NULL;
+	prevAlleleName = "";
+	double prevResidual;
+	double nextResidual;
+	int prevLocation = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		// test for consecutive signals with same call:  make it a NoisyPeak (This should be done only for peaks that
+		// are unique to this locus
+
+		location = TestSignalPositionRelativeToLocus (nextSignal);
+		alleleName = nextSignal->GetAlleleName (-location);	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
+
+		if ((prevSignal != NULL) && (!alleleName.IsEmpty ()) && (prevAlleleName == alleleName)) {
+
+			if (mIsAMEL) {
+
+				nextResidual = fabs (nextSignal->GetBioIDResidual (-location));	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
+				prevResidual = fabs (prevSignal->GetBioIDResidual (-prevLocation));	// location is relative to locus; must reverse to make relative to prevSignal (03/26/2012)
+
+				if (prevResidual < nextResidual) {
+
+					it.RemoveCurrentItem ();
+					nextSignal->SetMessageValue (extraneousPeakInAMEL, true);
+				}
+
+				else {
+
+					tempList.Append (prevSignal);
+					prevSignal->SetMessageValue (extraneousPeakInAMEL, true);
+					prevSignal = nextSignal;   // changed so that we test nextSignal also
+					prevAlleleName = alleleName;
+					prevLocation = location;
+				}
+
+				continue;
+			}
+
+			//if (prevSignal->IsDoNotCall () || nextSignal->IsDoNotCall ()) {	// Let's try not using this to see what happens 02/25/2016*******
+
+			//	prevSignal = nextSignal;   // changed so that we test nextSignal also
+			//	prevAlleleName = alleleName;
+			//	prevLocation = location;
+			//	continue;
+			//}
+
+			//if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
+
+			//	if (report)
+			//		cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
+
+			//	prevSignal = nextSignal;
+			//	prevAlleleName = alleleName;
+			//	prevLocation = location;
+			//	continue;
+			//}
+
+			if (prevSignal->GetMessageValue (primaryPullup) && !nextSignal->GetMessageValue (primaryPullup)) {
+
+				nextSignal->SetDontLook (true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			else if (nextSignal->GetMessageValue (primaryPullup) && !prevSignal->GetMessageValue (primaryPullup)) {
+
+				prevSignal->SetDontLook (true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (pullup) && !nextSignal->GetMessageValue (pullup)) {
+
+				nextSignal->SetDontLook (true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			else if (nextSignal->GetMessageValue (pullup) && !prevSignal->GetMessageValue (pullup)) {
+
+				prevSignal->SetDontLook (true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
+			currentSignal->CaptureSmartMessages ();
+
+			currentSignal->SetDontLook (false);
+			currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			tempList.Append (currentSignal);
+			signalList.RemoveReference (prevSignal);
+			signalList.RemoveReference (nextSignal);
+			prevLocation = location;
+			prevAlleleName = alleleName;
+			prevSignal = currentSignal;
+		}
+
+		else {
+
+			prevSignal = nextSignal;
+			prevLocation = location;
+			prevAlleleName = alleleName;
+		}
+	}
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+
+		// Add new signals to all lists
+		signalList.InsertWithNoReferenceDuplication (nextSignal);
+		completeList.InsertWithNoReferenceDuplication (nextSignal);
+		smartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+		LocusSignalList.InsertWithNoReferenceDuplication (nextSignal);
+		mSmartList.InsertWithNoReferenceDuplication (nextSignal);
+		//artifacts.InsertWithNoReferenceDuplication (nextSignal);
+	}
+	
 	return 0;
 }
 

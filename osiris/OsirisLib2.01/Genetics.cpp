@@ -8643,6 +8643,7 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 	RGString subString;
 	RGBracketStringSearch SubFamilySearch ("<SubFamily>", "</SubFamily>", ILSString);
 	RGBracketStringSearch ILSNameSearch ("<ILSName>", "</ILSName>", ILSString);
+	RGBracketStringSearch DyeNameSearch ("<DyeName>", "</DyeName>", ILSString);
 	RGBracketStringSearch ILSSubFamilyNameSearch ("<SubFamilyName>", "</SubFamilyName>", subString);
 
 	RGString userILSName = BasePopulationMarkerSet::GetUserLaneStandardName ();
@@ -8661,12 +8662,21 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 	size_t nameEnd;
 	bool foundSubFamily;
 	RGString familyName;
+	size_t dyeNameEnd;
+	RGString dyeNameString;
 
 	while (ILSFamilySearch.FindNextBracketedString (StartPosition, EndPosition, ILSString)) {
 
 		SubFamilySearch.ResetSearch ();
 		subStart = 0;
 		foundSubFamily = false;
+		DyeNameSearch.ResetSearch ();
+
+		if (!DyeNameSearch.FindNextBracketedString (0, dyeNameEnd, dyeNameString)) {
+
+			validity = FALSE;
+			cout << "Could not find dye name for ILS family" << endl;
+		}
 		
 		while (SubFamilySearch.FindNextBracketedString (subStart, subEnd, subString)) {
 
@@ -8681,7 +8691,7 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 			else {
 
-				nameIndexes = new ILSNameIndexes (familyName, subStart + StartPosition, subEnd + StartPosition);
+				nameIndexes = new ILSNameIndexes (familyName, subStart + StartPosition, subEnd + StartPosition, dyeNameString);
 				indices.push_back (nameIndexes);
 			}
 
@@ -8700,7 +8710,7 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 
 			else {
 
-				nameIndexes = new ILSNameIndexes (familyName, StartPosition, EndPosition);
+				nameIndexes = new ILSNameIndexes (familyName, StartPosition, EndPosition, dyeNameString);
 				indices.push_back (nameIndexes);
 			}
 		}
@@ -8735,10 +8745,18 @@ Boolean LaneStandardCollection :: BuildLaneStandards (const RGString& xmlString)
 			if (EndPosition < nameIndexes->mEndIndex) {
 
 				std->SetFamilyName (nameIndexes->mName);
-				cout << "ILS Family Name = " << std->GetFamilyName () << "\n\n\n";
+				std->SetDyeName (nameIndexes->mDyeName);
+				cout << "ILS Family Name = " << std->GetFamilyName () << "\n";
+				cout << "Dye Name = " << std->GetDyeName () << "\n\n\n";
 
-				if (std->GetLaneStandardName () == userILSName)
+				if (std->GetLaneStandardName () == userILSName) {
+
 					BaseLocus::SetILSFamilyName (std->GetFamilyName ());
+					CoreBioComponent::SetILSDyeName (std->GetDyeName ());
+
+					//if (!CoreBioComponent::DyeNamesUnset ())
+
+				}
 
 				break;
 			}

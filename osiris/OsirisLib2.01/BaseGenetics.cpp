@@ -39,6 +39,7 @@
 #include "Genetics.h"
 #include "coordtrans.h"
 #include "ChannelData.h"
+#include "CoreBioComponent.h"
 
 
 Boolean BaseAllele::SearchByName = TRUE;
@@ -535,6 +536,7 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 	RGBracketStringSearch FsaChannelMapSearch ("<FsaChannelMap>", "</FsaChannelMap>", Input);
 	RGBracketStringSearch KitChannelSearch ("<KitChannelNumber>", "</KitChannelNumber>", channelMapString);
 	RGBracketStringSearch FsaChannelSearch ("<fsaChannelNumber>", "</fsaChannelNumber>", channelMapString);
+	RGBracketStringSearch DyeNameSearch ("<DyeName>", "</DyeName>", channelMapString);
 	RGBracketStringSearch allOLAllelesAcceptedSearch ("<AllOLAllelesAccepted>", "</AllOLAllelesAccepted>", Input);
 	size_t startMapSearch = 0;
 	size_t endMapSearch;
@@ -545,6 +547,7 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 	int i;
 	int index;
 	int fsaIndex;
+	RGString dyeName;
 
 	if (!NameToken.FindNextBracketedString (0, FoundEnd, MarkerSetName)) {
 
@@ -562,6 +565,7 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 
 		NChannels = ChannelString.ConvertToInteger ();
 		mChannelMap = new int [NChannels + 1];
+		CoreBioComponent::BuildDyeNameArray (NChannels);
 
 		for (i=0; i<=NChannels; i++)
 			mChannelMap [i] = i;
@@ -612,6 +616,7 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 
 		KitChannelSearch.ResetSearch ();
 		FsaChannelSearch.ResetSearch ();
+		DyeNameSearch.ResetSearch ();
 
 		while (true) {
 
@@ -631,6 +636,19 @@ LSChannelNumber (0), Valid (TRUE), mChannelMap (NULL) {
 			startMapSearch = endMapSearch;
 			fsaIndex = ChannelString.ConvertToInteger ();
 			mChannelMap [index] = fsaIndex;
+
+			if (!DyeNameSearch.FindNextBracketedString (startMapSearch, endMapSearch, dyeName)) {
+
+				continue;
+			}
+
+			startMapSearch = endMapSearch;
+
+			if (index != LSChannelNumber)
+				CoreBioComponent::SetDyeName (index, dyeName);
+
+			else if (!CoreBioComponent::GetILSDyeName ().IsEmpty ())
+				CoreBioComponent::SetDyeName (index, CoreBioComponent::GetILSDyeName ());
 		}
 	}
 

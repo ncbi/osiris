@@ -62,6 +62,8 @@ double CoreBioComponent::minPrimaryPullupThreshold = 500.0;
 
 bool CoreBioComponent::UseHermiteTimeTransforms = false;
 bool CoreBioComponent::UseNaturalCubicSplineTimeTransform = true;
+RGString CoreBioComponent::ILSDyeName;
+RGString* CoreBioComponent::DyeNames = NULL;
 
 
 

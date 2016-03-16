@@ -81,6 +81,7 @@ public:
 	RGDList& GetILSNameList () { return mILSNames; }
 	RGDList& YLinkedOverrides () { return mYLinkedDefaultOverrides; }
 	RGDList& DoNotExtends () { return mDoNotExtends; }
+	RGDList& GetQualityLoci () { return mQualityLoci; }
 
 	bool GetHid () const { return mGenerateHID; }
 	RGString GetStandardPositiveControlName () const { return mStandardPositiveControlName; }
@@ -138,6 +139,7 @@ protected:
 	RGDList mYLinkedDefaultOverrides;
 	RGDList mMaxExpectedAllelesOverrides;
 	RGDList mMinExpectedAllelesOverrides;
+	RGDList mQualityLoci;
 
 	RGDList mDoNotExtends;
 

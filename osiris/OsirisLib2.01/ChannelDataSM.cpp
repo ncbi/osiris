@@ -913,16 +913,18 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 	//cout << "Promoted core signals to alleles" << endl;
 
 	//cout << "Testing for multisignals" << endl;
+	// The code below commented out on 01/29/2016 because, with new pull-up algorithms, we should not be reviewing prior decisions about craters/sigmoidal pull-ups...or not
+	//TestForMultiSignalsSM ();
 
-	TestForMultiSignalsSM ();
+	TestForAlleleDuplicationSM ();
 	it.Reset ();
 
 	//cout << "Channel multisignals tested" << endl;
 
 	while (nextLocus = (Locus*) it ())
-		nextLocus->TestForMultiSignalsSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes);
+		nextLocus->TestForDuplicateAllelesSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes); // Replaces TestForMultiSignalsSM
 
-	//cout << "Locus multisiganls tested" << endl;
+	//cout << "Locus multisignals tested" << endl;
 
 	it.Reset ();
 
@@ -1693,6 +1695,7 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 		if ((!biased) && ((!rightSignal->IsUnimodal ()) || (secondaryContent > 0.9 * rightSignal->Peak ()) || (rightSignal->GetCurveFit () < absoluteMinFit))) {
 
 			delete rightSignal;
+			rightSignal = NULL;
 			rtnValue--;
 		}
 
@@ -1704,8 +1707,11 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 			if (fit < minFit) {
 
 				// In this case, the fit is totally unacceptable or marginal, so try for alternate signatures
-				if (TestForArtifactsSM (rightSignal, fit, 2))
+				if (TestForArtifactsSM (rightSignal, fit, 2)) {
+
+					rightSignal = NULL;
 					rtnValue--;
+				}
 			}
 
 			else {  // rightSignal is acceptable for now, so add it to the CurveList
@@ -1720,6 +1726,7 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 		if ((!biased) && ((!leftSignal->IsUnimodal ()) || (secondaryContent > 0.9 * leftSignal->Peak ()) || (leftSignal->GetCurveFit () < absoluteMinFit))) {
 
 			delete leftSignal;
+			leftSignal = NULL;
 			rtnValue--;
 		}
 
@@ -1731,8 +1738,11 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 			if (fit < minFit) {
 
 				// In this case, the fit is totally unacceptable or marginal, so try for alternate signatures
-				if (TestForArtifactsSM (leftSignal, fit, 1))
+				if (TestForArtifactsSM (leftSignal, fit, 1)) {
+
+					leftSignal = NULL;
 					rtnValue--;
+				}
 			}
 
 			else {  // leftSignal is acceptable for now, so add it to the CurveList
@@ -1746,8 +1756,27 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 	else
 		rtnValue = -1;
 
-	if (rtnValue > 0)
+	if (rtnValue > 0) {
+
 		delete currentSignal;
+
+		if (IsControlChannel () && (leftSignal != NULL) && (rightSignal != NULL)) {
+
+			if (leftSignal->Peak () >= rightSignal->Peak ()) {
+
+				PreliminaryCurveList.RemoveReference (rightSignal);
+				CompleteCurveList.RemoveReference (rightSignal);
+				delete rightSignal;
+			}
+
+			else {
+
+				PreliminaryCurveList.RemoveReference (leftSignal);
+				CompleteCurveList.RemoveReference (leftSignal);
+				delete leftSignal;
+			}
+		}
+	}
 
 	delete TestDual;
 	return rtnValue;
@@ -1796,6 +1825,12 @@ int ChannelData :: TestArtifactListForNoticesWithinLaneStandardSM (ChannelData* 
 
 
 int ChannelData :: TestForMultiSignalsSM () {
+
+	return -1;
+}
+
+
+int ChannelData :: TestForAlleleDuplicationSM () {
 
 	return -1;
 }

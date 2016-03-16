@@ -67,6 +67,7 @@ LadderInputFile :: ~LadderInputFile () {
 	mColorNumbers.ClearAndDelete ();
 	mILSNames.ClearAndDelete ();
 	mRelativeHeightOverrides.ClearAndDelete ();
+	mQualityLoci.ClearAndDelete ();
 }
 
 
@@ -568,6 +569,13 @@ int LadderInputFile :: AssignString () {
 
 		//mStringRight.FindAndReplaceAllSubstrings ("\\", "\/");
 		mDefaultVolumePath = mStringRight;
+		status = 0;
+	}
+
+	else if (mStringLeft == "QualityLocus") {
+
+		newString = new RGString (mStringRight);
+		mQualityLoci.Append (newString);
 		status = 0;
 	}
 

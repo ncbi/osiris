@@ -707,6 +707,39 @@ RGString DataSignal :: GetDebugIDIndent () const {
 }
 
 
+
+void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
+
+	int i;
+	RGString data;
+	int n = 0;
+	smPullUp pullup;
+
+	if (mPrimaryRatios == NULL)
+		return;
+
+	for (i=1; i<=nChannels; i++) {
+
+		if (mPrimaryRatios [i] >= 0.0) {
+
+			if (n == 0)
+				n = 1;
+
+			else
+				data << "; ";
+
+			data << i << " with Ratio " << mPrimaryRatios [i];
+		}
+	}
+
+	if (n > 0) {
+
+		SetMessageValue (pullup, true);
+		AppendDataForSmartMessage (pullup, data);
+	}
+}
+
+
 void DataSignal :: CaptureSmartMessages (const DataSignal* signal) {
 
 	int scope = GetObjectScope ();
@@ -718,6 +751,21 @@ void DataSignal :: CaptureSmartMessages (const DataSignal* signal) {
 		if (signal->mMessageArray [i])
 			SetMessageValue (scope, i, true);
 	}
+
+	//smPullUp pullup;
+
+	//if (signal->GetMessageValue (pullup)) {
+
+	//	int index = pullup.GetMessageIndex ();
+	//	SmartMessageData target (index);
+	//	SmartMessageData* smd = (SmartMessageData*)mMessageDataTable->Find (&target);
+
+	//	if (smd == NULL)
+	//		return;
+
+	//	RGString text = smd->GetText ();
+	//	AppendDataForSmartMessage (pullup, text);
+	//}
 }
 
 
@@ -1537,6 +1585,15 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold () {
 }
 
 
+double CraterSignal :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
+
+	if ((mNext == NULL) || (mPrevious == NULL))
+		return 2.0;
+
+	return nSigmas * mSigma;
+}
+
+
 void CraterSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	DataSignal::OutputDebugID (comm, numHigherObjects);
@@ -1852,6 +1909,47 @@ NegativeSignal :: ~NegativeSignal () {
 	delete mOriginal;
 }
 
+
+double NoisyPeak :: GetPullupToleranceInBP (double noise) const {
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return GetPullupToleranceInBP ();
+
+	double bpLeft = mPrevious->GetApproximateBioID ();
+	double bpRight = mNext->GetApproximateBioID ();
+	double bp = GetApproximateBioID ();
+	bpLeft = bp - bpLeft;
+	bpRight = bpRight - bp;
+	double rtnValue;
+
+	if (bpLeft > bpRight)
+		rtnValue = bpLeft;
+
+	else
+		rtnValue = bpRight;
+
+	return rtnValue;
+}
+
+
+void NoisyPeak :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
+
+	DataSignal::OutputDebugID (comm, numHigherObjects);
+	RGString idData;
+	idData << "\t\t\t\tSignal with Mean:  " << mMean;
+	SmartMessage::OutputDebugString (idData);
+}
+
+
+
+void NoisyPeak :: CaptureSmartMessages () {
+
+	if (mPrevious != NULL)
+		DataSignal::CaptureSmartMessages (mPrevious);
+
+	if (mNext != NULL)
+		DataSignal::CaptureSmartMessages (mNext);
+}
 
 
 

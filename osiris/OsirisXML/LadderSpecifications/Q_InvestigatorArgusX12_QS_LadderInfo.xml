@@ -59,6 +59,7 @@
 						<MaxGrid>74.</MaxGrid>
 					</Region>
 				</SearchRegions>
+				<QualityLocus>true</QualityLocus>
 				<LadderAlleles>
 					<Allele>
 						<Name>1</Name>
@@ -157,55 +158,55 @@
 			<Locus>
 				<Name>DXS8378</Name>
 				<Channel>1</Channel>
-				<MinBP>150</MinBP>
-				<MaxBP>198</MaxBP>
+				<MinBP>149</MinBP>
+				<MaxBP>197</MaxBP>
 				<SearchRegions>
 					<Region>
 						<ILSName>BTO-500</ILSName>
-						<MinGrid>151.</MinGrid>
-						<MaxGrid>185.</MaxGrid>
+						<MinGrid>150.</MinGrid>
+						<MaxGrid>184.</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
 					<Allele>
 						<Name>8</Name>
 						<CurveNo>10</CurveNo>
-						<BP>154</BP>
+						<BP>153</BP>
 					</Allele>
 					<Allele>
 						<Name>9</Name>
 						<CurveNo>15</CurveNo>
-						<BP>158</BP>
+						<BP>157</BP>
 					</Allele>
 					<Allele>
 						<Name>10</Name>
 						<CurveNo>20</CurveNo>
-						<BP>162</BP>
+						<BP>161</BP>
 					</Allele>
 					<Allele>
 						<Name>11</Name>
 						<CurveNo>25</CurveNo>
-						<BP>166</BP>
+						<BP>165</BP>
 					</Allele>
 					<Allele>
 						<Name>12</Name>
 						<CurveNo>30</CurveNo>
-						<BP>170</BP>
+						<BP>169</BP>
 					</Allele>
 					<Allele>
 						<Name>13</Name>
 						<CurveNo>35</CurveNo>
-						<BP>174</BP>
+						<BP>173</BP>
 					</Allele>
 					<Allele>
 						<Name>14</Name>
 						<CurveNo>40</CurveNo>
-						<BP>178</BP>
+						<BP>177</BP>
 					</Allele>
 					<Allele>
 						<Name>15</Name>
 						<CurveNo>45</CurveNo>
-						<BP>182</BP>
+						<BP>181</BP>
 					</Allele>
 				</LadderAlleles>
 			</Locus>
@@ -352,265 +353,265 @@
 			<Locus>
 				<Name>DXS10134</Name>
 				<Channel>1</Channel>
-				<MinBP>293</MinBP>
-				<MaxBP>360</MaxBP>
+				<MinBP>295</MinBP>
+				<MaxBP>362</MaxBP>
 				<SearchRegions>
 					<Region>
 						<ILSName>BTO-500</ILSName>
-						<MinGrid>290.</MinGrid>
-						<MaxGrid>363.</MaxGrid>
+						<MinGrid>292.</MinGrid>
+						<MaxGrid>365.</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
 					<Allele>
 						<Name>28</Name>
 						<CurveNo>10</CurveNo>
-						<BP>293</BP>
+						<BP>295</BP>
 					</Allele>
 					<Allele>
 						<Name>29</Name>
 						<CurveNo>15</CurveNo>
-						<BP>297</BP>
+						<BP>299</BP>
 					</Allele>
 					<Allele>
 						<Name>30</Name>
 						<CurveNo>20</CurveNo>
-						<BP>301</BP>
+						<BP>303</BP>
 					</Allele>
 					<Allele>
 						<Name>31</Name>
 						<CurveNo>25</CurveNo>
-						<BP>305</BP>
+						<BP>307</BP>
 					</Allele>
 					<Allele>
 						<Name>32</Name>
 						<CurveNo>30</CurveNo>
-						<BP>309</BP>
+						<BP>311</BP>
 					</Allele>
 					<Allele>
 						<Name>33</Name>
 						<CurveNo>35</CurveNo>
-						<BP>313</BP>
+						<BP>315</BP>
 					</Allele>
 					<Allele>
 						<Name>34</Name>
 						<CurveNo>40</CurveNo>
-						<BP>317</BP>
+						<BP>319</BP>
 					</Allele>
 					<Allele>
 						<Name>35</Name>
 						<CurveNo>45</CurveNo>
-						<BP>321</BP>
+						<BP>323</BP>
 					</Allele>
 					<Allele>
 						<Name>36</Name>
 						<CurveNo>50</CurveNo>
-						<BP>325</BP>
+						<BP>327</BP>
 					</Allele>
 					<Allele>
 						<Name>37</Name>
 						<CurveNo>55</CurveNo>
-						<BP>329</BP>
+						<BP>331</BP>
 					</Allele>
 					<Allele>
 						<Name>38</Name>
 						<CurveNo>60</CurveNo>
-						<BP>333</BP>
+						<BP>335</BP>
 					</Allele>
 					<Allele>
 						<Name>38.3</Name>
 						<CurveNo>65</CurveNo>
-						<BP>336</BP>
+						<BP>338</BP>
 					</Allele>
 					<Allele>
 						<Name>39.3</Name>
 						<CurveNo>70</CurveNo>
-						<BP>340</BP>
+						<BP>342</BP>
 					</Allele>
 					<Allele>
 						<Name>40.3</Name>
 						<CurveNo>75</CurveNo>
-						<BP>344</BP>
+						<BP>346</BP>
 					</Allele>
 					<Allele>
 						<Name>41.3</Name>
 						<CurveNo>80</CurveNo>
-						<BP>348</BP>
+						<BP>350</BP>
 					</Allele>
 					<Allele>
 						<Name>42.3</Name>
 						<CurveNo>85</CurveNo>
-						<BP>352</BP>
+						<BP>354</BP>
 					</Allele>
 					<Allele>
 						<Name>43.3</Name>
 						<CurveNo>90</CurveNo>
-						<BP>356</BP>
+						<BP>358</BP>
 					</Allele>
 					<Allele>
 						<Name>44.3</Name>
 						<CurveNo>95</CurveNo>
-						<BP>360</BP>
+						<BP>362</BP>
 					</Allele>
 				</LadderAlleles>
 			</Locus>
 			<Locus>
 				<Name>DXS10074</Name>
 				<Channel>2</Channel>
-				<MinBP>100</MinBP>
-				<MaxBP>168</MaxBP>
+				<MinBP>103</MinBP>
+				<MaxBP>171</MaxBP>
 				<SearchRegions>
 					<Region>
 						<ILSName>BTO-500</ILSName>
-						<MinGrid>97.</MinGrid>
-						<MaxGrid>171.</MaxGrid>
+						<MinGrid>100.</MinGrid>
+						<MaxGrid>174.</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
 					<Allele>
 						<Name>4</Name>
 						<CurveNo>10</CurveNo>
-						<BP>100</BP>
+						<BP>103</BP>
 					</Allele>
 					<Allele>
 						<Name>7</Name>
 						<CurveNo>15</CurveNo>
-						<BP>112</BP>
+						<BP>115</BP>
 					</Allele>
 					<Allele>
 						<Name>8</Name>
 						<CurveNo>20</CurveNo>
-						<BP>116</BP>
+						<BP>119</BP>
 					</Allele>
 					<Allele>
 						<Name>9</Name>
 						<CurveNo>25</CurveNo>
-						<BP>120</BP>
+						<BP>123</BP>
 					</Allele>
 					<Allele>
 						<Name>10</Name>
 						<CurveNo>30</CurveNo>
-						<BP>124</BP>
+						<BP>127</BP>
 					</Allele>
 					<Allele>
 						<Name>11</Name>
 						<CurveNo>35</CurveNo>
-						<BP>128</BP>
+						<BP>131</BP>
 					</Allele>
 					<Allele>
 						<Name>12</Name>
 						<CurveNo>40</CurveNo>
-						<BP>132</BP>
+						<BP>135</BP>
 					</Allele>
 					<Allele>
 						<Name>13</Name>
 						<CurveNo>45</CurveNo>
-						<BP>136</BP>
+						<BP>139</BP>
 					</Allele>
 					<Allele>
 						<Name>14</Name>
 						<CurveNo>50</CurveNo>
-						<BP>140</BP>
+						<BP>143</BP>
 					</Allele>
 					<Allele>
 						<Name>15</Name>
 						<CurveNo>55</CurveNo>
-						<BP>144</BP>
+						<BP>147</BP>
 					</Allele>
 					<Allele>
 						<Name>16</Name>
 						<CurveNo>60</CurveNo>
-						<BP>148</BP>
+						<BP>151</BP>
 					</Allele>
 					<Allele>
 						<Name>16.2</Name>
 						<CurveNo>65</CurveNo>
-						<BP>150</BP>
+						<BP>153</BP>
 					</Allele>
 					<Allele>
 						<Name>17</Name>
 						<CurveNo>70</CurveNo>
-						<BP>152</BP>
+						<BP>155</BP>
 					</Allele>
 					<Allele>
 						<Name>18</Name>
 						<CurveNo>75</CurveNo>
-						<BP>156</BP>
+						<BP>159</BP>
 					</Allele>
 					<Allele>
 						<Name>19</Name>
 						<CurveNo>80</CurveNo>
-						<BP>160</BP>
+						<BP>163</BP>
 					</Allele>
 					<Allele>
 						<Name>20</Name>
 						<CurveNo>85</CurveNo>
-						<BP>164</BP>
+						<BP>167</BP>
 					</Allele>
 					<Allele>
 						<Name>21</Name>
 						<CurveNo>90</CurveNo>
-						<BP>168</BP>
+						<BP>171</BP>
 					</Allele>
 				</LadderAlleles>
 			</Locus>
 			<Locus>
 				<Name>DXS7132</Name>
 				<Channel>2</Channel>
-				<MinBP>199</MinBP>
-				<MaxBP>251</MaxBP>
+				<MinBP>201</MinBP>
+				<MaxBP>253</MaxBP>
 				<SearchRegions>
 					<Region>
 						<ILSName>BTO-500</ILSName>
-						<MinGrid>212.</MinGrid>
-						<MaxGrid>250.</MaxGrid>
+						<MinGrid>214.</MinGrid>
+						<MaxGrid>252.</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
 					<Allele>
 						<Name>10</Name>
 						<CurveNo>10</CurveNo>
-						<BP>215</BP>
+						<BP>217</BP>
 					</Allele>
 					<Allele>
 						<Name>11</Name>
 						<CurveNo>15</CurveNo>
-						<BP>219</BP>
+						<BP>221</BP>
 					</Allele>
 					<Allele>
 						<Name>12</Name>
 						<CurveNo>20</CurveNo>
-						<BP>223</BP>
+						<BP>225</BP>
 					</Allele>
 					<Allele>
 						<Name>13</Name>
 						<CurveNo>25</CurveNo>
-						<BP>227</BP>
+						<BP>229</BP>
 					</Allele>
 					<Allele>
 						<Name>14</Name>
 						<CurveNo>30</CurveNo>
-						<BP>231</BP>
+						<BP>233</BP>
 					</Allele>
 					<Allele>
 						<Name>15</Name>
 						<CurveNo>35</CurveNo>
-						<BP>235</BP>
+						<BP>237</BP>
 					</Allele>
 					<Allele>
 						<Name>16</Name>
 						<CurveNo>40</CurveNo>
-						<BP>239</BP>
+						<BP>241</BP>
 					</Allele>
 					<Allele>
 						<Name>17</Name>
 						<CurveNo>45</CurveNo>
-						<BP>243</BP>
+						<BP>245</BP>
 					</Allele>
 					<Allele>
 						<Name>18</Name>
 						<CurveNo>50</CurveNo>
-						<BP>247</BP>
+						<BP>249</BP>
 					</Allele>
 				</LadderAlleles>
 			</Locus>
@@ -1032,305 +1033,305 @@
 			<Locus>
 				<Name>HPRTB</Name>
 				<Channel>4</Channel>
-				<MinBP>131</MinBP>
-				<MaxBP>183</MaxBP>
+				<MinBP>134</MinBP>
+				<MaxBP>186</MaxBP>
 				<SearchRegions>
 					<Region>
 						<ILSName>BTO-500</ILSName>
-						<MinGrid>136.</MinGrid>
-						<MaxGrid>178.</MaxGrid>
+						<MinGrid>139.</MinGrid>
+						<MaxGrid>181.</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
 					<Allele>
 						<Name>8</Name>
 						<CurveNo>10</CurveNo>
-						<BP>139</BP>
+						<BP>142</BP>
 					</Allele>
 					<Allele>
 						<Name>9</Name>
 						<CurveNo>15</CurveNo>
-						<BP>143</BP>
+						<BP>146</BP>
 					</Allele>
 					<Allele>
 						<Name>10</Name>
 						<CurveNo>20</CurveNo>
-						<BP>147</BP>
+						<BP>150</BP>
 					</Allele>
 					<Allele>
 						<Name>11</Name>
 						<CurveNo>25</CurveNo>
-						<BP>151</BP>
+						<BP>154</BP>
 					</Allele>
 					<Allele>
 						<Name>12</Name>
 						<CurveNo>30</CurveNo>
-						<BP>155</BP>
+						<BP>158</BP>
 					</Allele>
 					<Allele>
 						<Name>13</Name>
 						<CurveNo>35</CurveNo>
-						<BP>159</BP>
+						<BP>162</BP>
 					</Allele>
 					<Allele>
 						<Name>14</Name>
 						<CurveNo>40</CurveNo>
-						<BP>163</BP>
+						<BP>166</BP>
 					</Allele>
 					<Allele>
 						<Name>15</Name>
 						<CurveNo>45</CurveNo>
-						<BP>167</BP>
+						<BP>170</BP>
 					</Allele>
 					<Allele>
 						<Name>16</Name>
 						<CurveNo>50</CurveNo>
-						<BP>171</BP>
+						<BP>174</BP>
 					</Allele>
 					<Allele>
 						<Name>17</Name>
 						<CurveNo>55</CurveNo>
-						<BP>175</BP>
+						<BP>178</BP>
 					</Allele>
 				</LadderAlleles>
 			</Locus>
 			<Locus>
 				<Name>DXS10148</Name>
 				<Channel>4</Channel>
-				<MinBP>210</MinBP>
-				<MaxBP>308</MaxBP>
+				<MinBP>206</MinBP>
+				<MaxBP>304</MaxBP>
 				<SearchRegions>
 					<Region>
 						<ILSName>BTO-500</ILSName>
-						<MinGrid>207.</MinGrid>
-						<MaxGrid>311.</MaxGrid>
+						<MinGrid>203.</MinGrid>
+						<MaxGrid>307.</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
 					<Allele>
 						<Name>13.3</Name>
 						<CurveNo>10</CurveNo>
-						<BP>210</BP>
+						<BP>206</BP>
 					</Allele>
 					<Allele>
 						<Name>16</Name>
 						<CurveNo>15</CurveNo>
-						<BP>219</BP>
+						<BP>215</BP>
 					</Allele>
 					<Allele>
 						<Name>17</Name>
 						<CurveNo>20</CurveNo>
-						<BP>223</BP>
+						<BP>219</BP>
 					</Allele>
 					<Allele>
 						<Name>18</Name>
 						<CurveNo>25</CurveNo>
-						<BP>227</BP>
+						<BP>223</BP>
 					</Allele>
 					<Allele>
 						<Name>19</Name>
 						<CurveNo>30</CurveNo>
-						<BP>231</BP>
+						<BP>227</BP>
 					</Allele>
 					<Allele>
 						<Name>20</Name>
 						<CurveNo>35</CurveNo>
-						<BP>235</BP>
+						<BP>231</BP>
 					</Allele>
 					<Allele>
 						<Name>21</Name>
 						<CurveNo>40</CurveNo>
-						<BP>239</BP>
+						<BP>235</BP>
 					</Allele>
 					<Allele>
 						<Name>22.1</Name>
 						<CurveNo>45</CurveNo>
-						<BP>244</BP>
+						<BP>240</BP>
 					</Allele>
 					<Allele>
 						<Name>23.1</Name>
 						<CurveNo>50</CurveNo>
-						<BP>248</BP>
+						<BP>244</BP>
 					</Allele>
 					<Allele>
 						<Name>24.1</Name>
 						<CurveNo>55</CurveNo>
-						<BP>252</BP>
+						<BP>248</BP>
 					</Allele>
 					<Allele>
 						<Name>25.1</Name>
 						<CurveNo>60</CurveNo>
-						<BP>256</BP>
+						<BP>252</BP>
 					</Allele>
 					<Allele>
 						<Name>26.1</Name>
 						<CurveNo>65</CurveNo>
-						<BP>260</BP>
+						<BP>256</BP>
 					</Allele>
 					<Allele>
 						<Name>27.1</Name>
 						<CurveNo>70</CurveNo>
-						<BP>264</BP>
+						<BP>260</BP>
 					</Allele>
 					<Allele>
 						<Name>28.1</Name>
 						<CurveNo>75</CurveNo>
-						<BP>268</BP>
+						<BP>264</BP>
 					</Allele>
 					<Allele>
 						<Name>29.1</Name>
 						<CurveNo>80</CurveNo>
-						<BP>272</BP>
+						<BP>268</BP>
 					</Allele>
 					<Allele>
 						<Name>30.1</Name>
 						<CurveNo>85</CurveNo>
-						<BP>276</BP>
+						<BP>272</BP>
 					</Allele>
 					<Allele>
 						<Name>31</Name>
 						<CurveNo>90</CurveNo>
-						<BP>279</BP>
+						<BP>275</BP>
 					</Allele>
 					<Allele>
 						<Name>33.1</Name>
 						<CurveNo>95</CurveNo>
-						<BP>288</BP>
+						<BP>284</BP>
 					</Allele>
 					<Allele>
 						<Name>38.1</Name>
 						<CurveNo>100</CurveNo>
-						<BP>308</BP>
+						<BP>304</BP>
 					</Allele>
 				</LadderAlleles>
 			</Locus>
 			<Locus>
 				<Name>D21S11</Name>
 				<Channel>4</Channel>
-				<MinBP>330</MinBP>
-				<MaxBP>382</MaxBP>
+				<MinBP>332</MinBP>
+				<MaxBP>384</MaxBP>
 				<SearchRegions>
 					<Region>
 						<ILSName>BTO-500</ILSName>
-						<MinGrid>327.</MinGrid>
-						<MaxGrid>385.</MaxGrid>
+						<MinGrid>329.</MinGrid>
+						<MaxGrid>387.</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
 					<Allele>
 						<Name>24</Name>
 						<CurveNo>10</CurveNo>
-						<BP>330</BP>
+						<BP>332</BP>
 					</Allele>
 					<Allele>
 						<Name>24.2</Name>
 						<CurveNo>15</CurveNo>
-						<BP>332</BP>
+						<BP>334</BP>
 					</Allele>
 					<Allele>
 						<Name>25</Name>
 						<CurveNo>20</CurveNo>
-						<BP>334</BP>
+						<BP>336</BP>
 					</Allele>
 					<Allele>
 						<Name>26</Name>
 						<CurveNo>25</CurveNo>
-						<BP>338</BP>
+						<BP>340</BP>
 					</Allele>
 					<Allele>
 						<Name>26.2</Name>
 						<CurveNo>30</CurveNo>
-						<BP>340</BP>
+						<BP>342</BP>
 					</Allele>
 					<Allele>
 						<Name>27</Name>
 						<CurveNo>35</CurveNo>
-						<BP>342</BP>
+						<BP>344</BP>
 					</Allele>
 					<Allele>
 						<Name>28</Name>
 						<CurveNo>40</CurveNo>
-						<BP>346</BP>
+						<BP>348</BP>
 					</Allele>
 					<Allele>
 						<Name>28.2</Name>
 						<CurveNo>45</CurveNo>
-						<BP>348</BP>
+						<BP>350</BP>
 					</Allele>
 					<Allele>
 						<Name>29</Name>
 						<CurveNo>50</CurveNo>
-						<BP>350</BP>
+						<BP>352</BP>
 					</Allele>
 					<Allele>
 						<Name>29.2</Name>
 						<CurveNo>55</CurveNo>
-						<BP>352</BP>
+						<BP>354</BP>
 					</Allele>
 					<Allele>
 						<Name>30</Name>
 						<CurveNo>60</CurveNo>
-						<BP>354</BP>
+						<BP>356</BP>
 					</Allele>
 					<Allele>
 						<Name>31</Name>
 						<CurveNo>65</CurveNo>
-						<BP>358</BP>
+						<BP>360</BP>
 					</Allele>
 					<Allele>
 						<Name>31.2</Name>
 						<CurveNo>70</CurveNo>
-						<BP>360</BP>
+						<BP>362</BP>
 					</Allele>
 					<Allele>
 						<Name>32</Name>
 						<CurveNo>75</CurveNo>
-						<BP>362</BP>
+						<BP>364</BP>
 					</Allele>
 					<Allele>
 						<Name>32.2</Name>
 						<CurveNo>80</CurveNo>
-						<BP>364</BP>
+						<BP>366</BP>
 					</Allele>
 					<Allele>
 						<Name>33</Name>
 						<CurveNo>85</CurveNo>
-						<BP>366</BP>
+						<BP>368</BP>
 					</Allele>
 					<Allele>
 						<Name>33.2</Name>
 						<CurveNo>90</CurveNo>
-						<BP>368</BP>
+						<BP>370</BP>
 					</Allele>
 					<Allele>
 						<Name>34</Name>
 						<CurveNo>95</CurveNo>
-						<BP>370</BP>
+						<BP>372</BP>
 					</Allele>
 					<Allele>
 						<Name>34.2</Name>
 						<CurveNo>100</CurveNo>
-						<BP>372</BP>
+						<BP>374</BP>
 					</Allele>
 					<Allele>
 						<Name>35</Name>
 						<CurveNo>105</CurveNo>
-						<BP>374</BP>
+						<BP>376</BP>
 					</Allele>
 					<Allele>
 						<Name>36</Name>
 						<CurveNo>110</CurveNo>
-						<BP>378</BP>
+						<BP>380</BP>
 					</Allele>
 					<Allele>
 						<Name>36.2</Name>
 						<CurveNo>115</CurveNo>
-						<BP>380</BP>
+						<BP>382</BP>
 					</Allele>
 					<Allele>
 						<Name>37</Name>
 						<CurveNo>120</CurveNo>
-						<BP>382</BP>
+						<BP>384</BP>
 					</Allele>
 				</LadderAlleles>
 			</Locus>

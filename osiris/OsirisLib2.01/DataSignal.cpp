@@ -61,6 +61,7 @@ double DataSignal :: maxHeight = -1.0;
 unsigned long DataSignal :: signalID = 0;
 bool* DataSignal::InitialMatrix = NULL;
 bool DataSignal::ConsiderAllOLAllelesAccepted = false;
+int DataSignal::NumberOfChannels = 0;
 
 double SampledData::PeakFractionForFlatCurveTest = 0.25;
 double SampledData::PeakLevelForFlatCurveTest = 60.0;
@@ -358,6 +359,7 @@ PERSISTENT_DEFINITION (DualDoubleGaussian, _DUALDOUBLEGAUSSIAN_, "DualDoubleGaus
 PERSISTENT_DEFINITION (CraterSignal, _CRATERSIGNAL_, "CraterSignal")
 PERSISTENT_DEFINITION (SimpleSigmoidSignal, _SIMPLESIGMOIDSIGNAL_, "SimpleSigmoidSignal")
 PERSISTENT_DEFINITION (NegativeSignal, _NEGATIVESIGNAL_, "NegativeSignal")
+PERSISTENT_DEFINITION (NoisyPeak, _NOISYPEAK_, "NoisyPeak")
 
 
 SampleDataInfo :: SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, 
@@ -1022,7 +1024,8 @@ mResidualLeft (ds.mResidualLeft), mResidualRight (ds.mResidualRight), mPossibleI
 mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
-mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance) {
+mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
+mPartOfCluster (ds.mPartOfCluster) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1038,6 +1041,7 @@ DataSignal :: ~DataSignal () {
 	NoticeList.ClearAndDelete ();
 	NewNoticeList.ClearAndDelete ();
 	mCrossChannelSignalLinks.Clear ();
+	delete[] mPrimaryRatios;
 }
 
 
@@ -1553,6 +1557,31 @@ void DataSignal :: SetCurveFit (double fit) {
 RGString DataSignal :: GetSignalType () const {
 
 	return RGString ("DataSignal");
+}
+
+
+void DataSignal :: SetPullupRatio (int channel, double ratio, int nChannels) {
+
+	int i;
+
+	if (mPrimaryRatios == NULL) {
+
+		mPrimaryRatios = new double [nChannels + 1];
+
+		for (i=1; i<=nChannels; i++)
+			mPrimaryRatios [i] = -1.0;
+	}
+
+	mPrimaryRatios [channel] = ratio;
+}
+
+
+double DataSignal :: GetPullupRatio (int channel) {
+
+	if (mPrimaryRatios == NULL)
+		return 0.0;
+
+	return mPrimaryRatios [channel];
 }
 
 
@@ -2797,7 +2826,7 @@ DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow
 	else
 		win1 = high;
 
-//	cout << "Filter windows = " << win1 << ", " << win2 << ", and " << win3 << endl;
+	//cout << "Filter windows = " << win1 << ", " << win2 << ", and " << win3 << endl;
 
 	double* filterOut1 = CreateMovingAverageFilteredArray (win1, Measurements);
 	double* filterOut2 = CreateMovingAverageFilteredArray (win2, filterOut1);
@@ -3177,7 +3206,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 	//int locMin;
 	int locMax;
 	locMax = intRight;
-	bool print = false;
 
 	int i;
 	double mu = currentSignal->GetMean ();
@@ -3190,18 +3218,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 	double leftUpper = mu - sigma;
 	double rightLower = mu + sigma;
 
-	//if ((mu > 3054.0) && (mu < 3054.8))
-	//	print = true;
-
-	//else if ((mu > 3744.7) && (mu < 3745.3))
-	//	print = true;
-
-	if (print) {
-		cout << "mu = " << mu << " and sigma = " << sigma << endl;
-		cout << "left = " << intLeft << " and right = " << intRight << endl;
-		cout << "Fit left = " << currentSignal->LeftEndPoint () << " and fit right = " << currentSignal->RightEndPoint () << endl;
-	}
-
 	if (ratio >= 0.62) {
 
 		for (i=intLeft; i<leftUpper; i++) {
@@ -3213,12 +3229,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 				locMax = i;
 				maxDisp = currentDisp;
 			}
-		}
-
-		if (print) {
-
-			cout << "Left max disp = " << maxDisp << " at location = " << locMax << " relative to limit = " << limit << endl;
-			cout << "Raw data at max = " << Measurements [locMax] << " and fit data at max = " << currentSignal->Value ((double)i) << endl;
 		}
 	}
 
@@ -3233,11 +3243,6 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 				locMax = i;
 				maxDisp = currentDisp;
 			}
-		}
-
-		if (print) {
-			cout << "Right max disp = " << maxDisp << " at location = " << locMax << " relative to limit = " << limit << endl;
-			cout << "Raw data at max = " << Measurements [locMax] << " and fit data at max = " << currentSignal->Value ((double)i) << endl;
 		}
 	}
 
@@ -9963,15 +9968,45 @@ CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0),
 
 	mIsGraphable = false;
 	mPullupTolerance = halfCraterPullupTolerance;
+	mPartOfCluster = true;
 }
 
 
-CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCurve (), mPrevious (prev), mNext (next) {
+CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByProportion) : ParametricCurve (), mPrevious (prev), mNext (next) {
 
-	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
-	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	// This is modified on 02/10/2016 so we can use proportional estimation of mean, etc instead of a fixed 50%.  Also, improved estimate of 
+	// standard deviation for crater.
+	
 	double peak1 = prev->Peak ();
 	double peak2 = next->Peak ();
+	double d = peak1 + peak2;
+	double l1;
+	double l2;
+	bool useRightPeak;
+	mPartOfCluster = true;
+//	prev->SetPartOfCluster (true);
+//	next->SetPartOfCluster (true);
+
+
+	if (peak2 >= peak1)
+		useRightPeak = true;
+
+	else
+		useRightPeak = false;
+
+	if (assignByProportion && (d > 0.0)) {
+
+		l1 = peak1 / d;
+		l2 = peak2 / d;
+	}
+
+	else {
+
+		l1 = l2 = 0.5;
+	}
+	
+	mMean = l1 * prev->GetMean () + l2 * next->GetMean ();
+
 	double v1 = prev->Value (mMean);
 	double v2 = next->Value (mMean);
 	double est1 = peak1 + (peak1 - v1);
@@ -9979,7 +10014,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	double max;
 	mPullupTolerance = halfCraterPullupTolerance;
 
-	if (peak1 > peak2)
+	if (peak1 >= peak2)
 		max = peak1;
 
 	else
@@ -9990,10 +10025,16 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 	if (mHeight < max)
 		mHeight = max;
 
-	BioID = 0.5 * (next->GetBioID () + prev->GetBioID ());
+	if (useRightPeak)
+		mSigma = (next->GetMean () - mMean) + next->GetStandardDeviation () * (peak2 / mHeight);
+
+	else
+		mSigma = (mMean - prev->GetMean ()) + prev->GetStandardDeviation () * (peak1 / mHeight);
+
+	BioID = l2 * next->GetBioID () + l1 * prev->GetBioID ();
 	SetChannel (prev->GetChannel ());
-	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
-	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
+	ApproximateBioID = l2 * next->GetApproximateBioID () + l1 * prev->GetApproximateBioID ();
+	mApproxBioIDPrime = l2 * next->GetApproxBioIDPrime () + l1 * prev->GetApproxBioIDPrime ();
 	int IntBP = (int) floor (BioID + 0.5);
 	Residual = BioID - (double)IntBP;
 
@@ -10005,29 +10046,57 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next) : ParametricCu
 
 	mIsGraphable = false;
 
-	mBioIDLeft = 0.5 * (next->GetBioID (-1) + prev->GetBioID (-1));
+	mBioIDLeft = l2 * next->GetBioID (-1) + l1 * prev->GetBioID (-1);
 	mAlleleNameLeft = next->GetAlleleName (-1);
-	mResidualLeft = 0.5 * (next->GetBioIDResidual (-1) + prev->GetBioIDResidual (-1));
+	mResidualLeft = l2 * next->GetBioIDResidual (-1) + l1 * prev->GetBioIDResidual (-1);
 	mPossibleInterAlleleLeft = next->IsPossibleInterlocusAllele (-1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleLeft = next->IsAcceptedTriAllele (-1);
 	mAlleleName = next->GetAlleleName ();
 	mIsOffGridLeft = next->IsOffGrid (-1);
 
-	mBioIDRight = 0.5 * (next->GetBioID (1) + prev->GetBioID (1));
+	mBioIDRight = l2 * next->GetBioID (1) + l1 * prev->GetBioID (1);
 	mAlleleNameRight = next->GetAlleleName (1);
-	mResidualRight = 0.5 * (next->GetBioIDResidual (1) + prev->GetBioIDResidual (1));
+	mResidualRight = l2 * next->GetBioIDResidual (1) + l1 * prev->GetBioIDResidual (1);
 	mPossibleInterAlleleRight = next->IsPossibleInterlocusAllele (1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleRight = next->IsAcceptedTriAllele (1);
 	mIsOffGridRight = next->IsOffGrid (1);
 }
 
 
-CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* primaryLink) : ParametricCurve (), mPrevious (prev), mNext (next) {
+CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* primaryLink, bool assignByProportion) : ParametricCurve (), mPrevious (prev), mNext (next) {
 
-	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
-	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	// This is modified on 02/10/2016 so we can use proportional estimation of mean, etc instead of a fixed 50%.  Also, improved estimate of 
+	// standard deviation for crater.
+	
 	double peak1 = prev->Peak ();
 	double peak2 = next->Peak ();
+	double d = peak1 + peak2;
+	double l1;
+	double l2;
+	bool useRightPeak;
+	mPartOfCluster = true;
+//	prev->SetPartOfCluster (true);
+//	next->SetPartOfCluster (true);
+
+	if (peak2 >= peak1)
+		useRightPeak = true;
+
+	else
+		useRightPeak = false;
+
+	if (assignByProportion && (d > 0.0)) {
+
+		l1 = peak1 / d;
+		l2 = peak2 / d;
+	}
+
+	else {
+
+		l1 = l2 = 0.5;
+	}
+	
+	mMean = l1 * prev->GetMean () + l2 * next->GetMean ();
+
 	double v1 = prev->Value (mMean);
 	double v2 = next->Value (mMean);
 	double est1 = peak1 + (peak1 - v1);
@@ -10035,7 +10104,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	double max;
 	mPullupTolerance = halfCraterPullupTolerance;
 
-	if (peak1 > peak2)
+	if (peak1 >= peak2)
 		max = peak1;
 
 	else
@@ -10046,10 +10115,16 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	if (mHeight < max)
 		mHeight = max;
 
-	BioID = 0.5* (next->GetBioID () + prev->GetBioID ());
+	if (useRightPeak)
+		mSigma = (next->GetMean () - mMean) + next->GetStandardDeviation () * (peak2 / mHeight);
+
+	else
+		mSigma = (mMean - prev->GetMean ()) + prev->GetStandardDeviation () * (peak1 / mHeight);
+
+	BioID = l2 * next->GetBioID () + l1 * prev->GetBioID ();
 	SetChannel (prev->GetChannel ());
-	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
-	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
+	ApproximateBioID = l2 * next->GetApproximateBioID () + l1 * prev->GetApproximateBioID ();
+	mApproxBioIDPrime = l2 * next->GetApproxBioIDPrime () + l1 * prev->GetApproxBioIDPrime ();
 	int IntBP = (int) floor (BioID + 0.5);
 	Residual = BioID - (double)IntBP;
 
@@ -10063,17 +10138,17 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	primaryLink->AddCrossChannelSignalLink ((DataSignal*)this);
 	mIsGraphable = false;
 
-	mBioIDLeft = 0.5 * (next->GetBioID (-1) + prev->GetBioID (-1));
+	mBioIDLeft = l2 * next->GetBioID (-1) + l1 * prev->GetBioID (-1);
 	mAlleleNameLeft = next->GetAlleleName (-1);
-	mResidualLeft = 0.5 * (next->GetBioIDResidual (-1) + prev->GetBioIDResidual (-1));
+	mResidualLeft = l2 * next->GetBioIDResidual (-1) + l1 * prev->GetBioIDResidual (-1);
 	mPossibleInterAlleleLeft = next->IsPossibleInterlocusAllele (-1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleLeft = next->IsAcceptedTriAllele (-1);
 	mAlleleName = next->GetAlleleName ();
 	mIsOffGridLeft = next->IsOffGrid (-1);
 
-	mBioIDRight = 0.5 * (next->GetBioID (1) + prev->GetBioID (1));
+	mBioIDRight = l2 * next->GetBioID (1) + l1 * prev->GetBioID (1);
 	mAlleleNameRight = next->GetAlleleName (1);
-	mResidualRight = 0.5 * (next->GetBioIDResidual (1) + prev->GetBioIDResidual (1));
+	mResidualRight = l2 * next->GetBioIDResidual (1) + l1 * prev->GetBioIDResidual (1);
 	mPossibleInterAlleleRight = next->IsPossibleInterlocusAllele (1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleRight = next->IsAcceptedTriAllele (1);
 	mIsOffGridRight = next->IsOffGrid (1);
@@ -10487,12 +10562,43 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 	mPrevious = prev;
 	mNext = next;
 	SetDoNotCall (true);
-	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
-	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	double P1 = fabs (prev->Peak ());
+	double P2 = fabs (next->Peak ());
+
+	//cout << "Sigmoid P1 = " << P1 << endl;
+	//cout << "Sigmoid P2 = " << P2 << endl;
+
+	double denom = P1 + P2;
+	double lambda;
+
+	//cout << "Crater p1 + p2 = " << denom << endl;
+	//cout << "Prev mean = " << prev->GetMean () << endl;
+
+	if (denom == 0.0)
+		lambda = 0.5;
+
+	else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+		lambda = 0.5;
+
+	else
+		lambda = P2 / denom;
+
+	if (lambda < 0.1)
+		lambda = 0.1;
+
+	if (lambda > 0.9)
+		lambda = 0.9;
+
+	//cout << "lambda = " << lambda << endl;
+
+	double lambda1 = 1.0 - lambda;
+
+	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
+	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
 	mHeight = 1.0;
 
-	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
-	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
+	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
+	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();
 	SetChannel (prev->GetChannel ());
 	Fit = prev->GetCurveFit ();
 	double temp = next->GetCurveFit ();
@@ -10510,12 +10616,43 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 	mPrevious = prev;
 	mNext = next;
 	SetDoNotCall (true);
-	mMean = 0.5 * (prev->GetMean () + next->GetMean ());
-	mSigma = prev->GetStandardDeviation () + next->GetStandardDeviation ();
+	double P1 = fabs (prev->Peak ());
+	double P2 = fabs (next->Peak ());
+
+	//cout << "Sigmoid P1 = " << P1 << endl;
+	//cout << "Sigmoid P2 = " << P2 << endl;
+
+	double denom = P1 + P2;
+	double lambda;
+
+	//cout << "Crater p1 + p2 = " << denom << endl;
+	//cout << "Prev mean = " << prev->GetMean () << endl;
+
+	if (denom == 0.0)
+		lambda = 0.5;
+
+	else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+		lambda = 0.5;
+
+	else
+		lambda = P2 / denom;
+
+	if (lambda < 0.1)
+		lambda = 0.1;
+
+	if (lambda > 0.9)
+		lambda = 0.9;
+
+	//cout << "lambda = " << lambda << endl;
+
+	double lambda1 = 1.0 - lambda;
+
+	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
+	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
 	mHeight = 1.0;
 
-	ApproximateBioID = 0.5 * (next->GetApproximateBioID () + prev->GetApproximateBioID ());
-	mApproxBioIDPrime = 0.5 * (next->GetApproxBioIDPrime () + prev->GetApproxBioIDPrime ());
+	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
+	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();
 	SetChannel (prev->GetChannel ());
 	Fit = prev->GetCurveFit ();
 	double temp = next->GetCurveFit ();
@@ -10849,5 +10986,166 @@ void SimpleSigmoidSignal :: SetMessageValue (int scope, int location, bool value
 		}
 	}
 }
+
+
+NoisyPeak :: NoisyPeak () : CraterSignal () {}
+
+
+NoisyPeak :: NoisyPeak (DataSignal* prev, DataSignal* next, bool assignByProportion) : CraterSignal (prev, next, true) {
+
+	double peak1 = prev->Peak ();
+	double peak2 = next->Peak ();
+	double d = peak1 + peak2;
+	bool useRightPeak;
+	prev->SetDoNotCall (true);
+	next->SetDoNotCall (true);
+	prev->SetDontLook (true);
+	next->SetDontLook (true);
+
+	if (peak2 >= peak1)
+		useRightPeak = true;
+
+	else
+		useRightPeak = false;
+
+	if (d > 0.0) {
+
+		mL1 = peak1 / d;
+		mL2 = peak2 / d;
+	}
+
+	else {
+
+		mL1 = mL2 = 0.5;
+	}
+}
+
+
+NoisyPeak :: NoisyPeak (DataSignal* prev, DataSignal* next, DataSignal* primaryLink, bool assignByProportion) : CraterSignal (prev, next, primaryLink, true) {
+
+	double peak1 = prev->Peak ();
+	double peak2 = next->Peak ();
+	double d = peak1 + peak2;
+	bool useRightPeak;
+	prev->SetDoNotCall (true);
+	next->SetDoNotCall (true);
+	prev->SetDontLook (true);
+	next->SetDontLook (true);
+
+	if (peak2 >= peak1)
+		useRightPeak = true;
+
+	else
+		useRightPeak = false;
+
+	if (d > 0.0) {
+
+		mL1 = peak1 / d;
+		mL2 = peak2 / d;
+	}
+
+	else {
+
+		mL1 = mL2 = 0.5;
+	}
+}
+
+
+NoisyPeak :: NoisyPeak (const NoisyPeak& c) : CraterSignal ((CraterSignal&) c), mL1 (c.mL1), mL2 (c.mL2) {
+
+}
+
+
+
+NoisyPeak :: NoisyPeak (double mean, const NoisyPeak& c) : CraterSignal (mean, (CraterSignal&)c), mL1 (c.mL1), mL2 (c.mL2) {
+
+}
+
+
+
+NoisyPeak :: NoisyPeak (const NoisyPeak& c, CoordinateTransform* trans) : CraterSignal ((CraterSignal&)c, trans), mL1 (c.mL1), mL2 (c.mL2) {
+
+}
+
+
+NoisyPeak :: ~NoisyPeak () {
+
+}
+
+
+
+DataSignal* NoisyPeak :: MakeCopy (double mean) const {
+
+	DataSignal* newSignal = new NoisyPeak (mean, *this);
+	return newSignal;
+}
+
+
+
+double NoisyPeak :: GetPrimaryPullupDisplacementThreshold () {
+
+	if ((mNext == NULL) || (mPrevious == NULL))
+		return 2.0;
+
+	return mSigma;
+}
+
+
+
+double NoisyPeak :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
+
+	return nSigmas * mSigma;
+}
+
+
+
+RGString NoisyPeak :: GetSignalType () const {
+
+	return RGString ("NoisySignal");
+}
+
+
+
+bool NoisyPeak :: TestForMultipleSignals (DataSignal*& prev, DataSignal*& next) {
+
+	prev = mPrevious;
+	next = mNext;
+	return false;
+}
+
+
+bool NoisyPeak :: TestForMultipleSignals (DataSignal*& prev, DataSignal*& next, int location) {
+
+	prev = mPrevious;
+	next = mNext;
+	return false;
+}
+
+
+bool NoisyPeak :: TestForMultipleSignalsWithinLocus (DataSignal*& prev, DataSignal*& next, int location, bool isAmel, double adenylationLimit) {
+
+	prev = mPrevious;
+	next = mNext;
+	return false;
+}
+
+
+
+bool NoisyPeak :: TestSignalGroupsWithinILS (double ilsLeft, double ilsRight, double minBioID) {
+
+	return true;
+}
+
+void NoisyPeak :: SetAlleleInformation (int position) {
+
+	DataSignal::SetAlleleInformation (position);
+
+	if (mPrevious != NULL)
+		mPrevious->SetAlleleInformation (position);
+
+	if (mNext != NULL)
+		mNext->SetAlleleInformation (position);
+}
+
 
 

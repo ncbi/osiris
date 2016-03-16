@@ -245,11 +245,12 @@ void ChannelData :: MakePreliminaryCalls (bool isNegCntl, bool isPosCntl, Genoty
 		nextLocus->CallAlleles (isNegCntl, pGenotypes, ArtifactList, PreliminaryCurveList, CompleteCurveList);
 	// This is what it used to be:  nextLocus->CallAlleles (CompleteCurveList, isNegCntl, pGenotypes, ArtifactList, PreliminaryCurveList);
 
-	TestForMultiSignals ();
-	it.Reset ();
+	// The code below commented out on 01/29/2016 because, with new pull-up algorithms, we should not be reviewing prior decisions about craters/sigmoidal pull-ups
+	//TestForMultiSignals ();
+	//it.Reset ();
 
-	while (nextLocus = (Locus*) it ())
-		nextLocus->TestForMultiSignals (ArtifactList, PreliminaryCurveList, CompleteCurveList);
+	//while (nextLocus = (Locus*) it ())
+	//	nextLocus->TestForMultiSignals (ArtifactList, PreliminaryCurveList, CompleteCurveList);
 
 	TestProximityArtifacts ();
 	TestForInterlocusProximityArtifacts ();

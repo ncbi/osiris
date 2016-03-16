@@ -227,6 +227,7 @@ PERSISTENT_PREDECLARATION (smMakeLadderArtifactsRightOfCoreLadderNonCriticalPres
 PERSISTENT_PREDECLARATION (smExtendLociEdgeToEdgePreset)
 PERSISTENT_PREDECLARATION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset)
 PERSISTENT_PREDECLARATION (smMaxILSBPForExtendedLocus)
+PERSISTENT_PREDECLARATION (smIsQualityLocus)
 
 
 
@@ -6258,6 +6259,34 @@ public:
 	smMaxILSBPForExtendedLocus ();
 	smMaxILSBPForExtendedLocus (const smMaxILSBPForExtendedLocus& note);
 	virtual ~smMaxILSBPForExtendedLocus ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smIsQualityLocus : public SmartNotice {
+
+PERSISTENT_DECLARATION (smIsQualityLocus)
+
+public:
+	smIsQualityLocus ();
+	smIsQualityLocus (const smIsQualityLocus& note);
+	virtual ~smIsQualityLocus ();
 
 	virtual int GetSubject () const;
 

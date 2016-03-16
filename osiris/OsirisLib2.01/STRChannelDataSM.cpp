@@ -2169,6 +2169,148 @@ int STRLaneStandardChannelData :: TestForRaisedBaselineAndExcessiveNoiseSM (doub
 }
 
 
+int STRLaneStandardChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+
+	
+	//
+	//  This is sample stage 1
+	//
+	
+	STRTracePrequalification trace;
+	DataSignal* nextSignal;
+	double fit;
+	DataSignal* signature;
+	double minRFU = GetMinimumHeight ();
+	double maxRFU = GetMaximumHeight ();
+	double detectionRFU = GetDetectionThreshold ();
+	double minAcceptableFit = ParametricCurve::GetMinimumFitThreshold ();
+	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
+	double minFit = minFitForArtifactTest;
+	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
+	int i;
+
+	if (minAcceptableFit > minFit)
+		minFit = minAcceptableFit;
+
+	if (CoreBioComponent::GetGaussianSignature ())
+		signature = new NormalizedGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	else
+		signature = new DoubleGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	mNegativeCurveList.ClearAndDelete ();
+	double lineFit;
+	SampledData* negativePeaks = new SampledData (*(SampledData*)mData);
+	negativePeaks->SetNoiseRange (mData->GetNoiseRange ());
+	double* negArray = (double*)negativePeaks->GetData ();
+	int n = negativePeaks->GetNumberOfSamples ();
+
+	for (i=0; i<n; i++) {
+
+		if (negArray [i] > 0.0)
+			negArray [i] = 0.0;
+
+		else
+			negArray [i] = -negArray [i];
+	}
+
+	negativePeaks->ResetCharacteristicsFromRight (trace, text, detectionRFU, print);
+
+	Endl endLine;
+	ExcelText.SetOutputLevel (1);
+	ExcelText << "Using minimum RFU = " << detectionRFU << " for negative peaks" << endLine;
+	ExcelText.ResetOutputLevel ();
+	double absoluteMinFitLessEpsilon = absoluteMinFit - 0.01;
+
+	double constantHeight;
+	int leftEndPoint;
+	int rightEndPoint;
+	//cout << "Finding next char. from right (2)" << endl;
+
+	while (nextSignal = negativePeaks->FindNextCharacteristicFromRight (*signature, fit, mNegativeCurveList)) {
+
+		//secondaryContent = fabs(nextSignal->GetScale (2));
+		//double mean = nextSignal->GetMean ();
+		lineFit = negativePeaks->TestConstantCharacteristicRetry (constantHeight, leftEndPoint, rightEndPoint);
+
+		if (lineFit > minFitForArtifactTest) {
+
+			delete nextSignal;
+			continue;
+		}
+
+		nextSignal->SetPeakIsNegative ();
+		nextSignal->SetCannotBePrimary (true);
+		mNegativeCurveList.Prepend (nextSignal);
+
+	}   //  We are done finding negative characteristics
+
+	//cout << "Done finding characteristics" << endl;
+	DataSignal* prevSignal = NULL;
+	RGDList tempList;
+	prevSignal = (DataSignal*)mNegativeCurveList.GetFirst ();
+
+	if (prevSignal == NULL) {
+
+		delete signature;
+		return 0;
+	}
+
+	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
+	//cout << "Eliminating neg peaks that are too close (2)" << endl;
+
+	//
+	//	Do we really want to do this???
+	//
+
+	while (nextSignal = (DataSignal*) mNegativeCurveList.GetFirst ()) {
+
+		if (prevSignal != NULL) {
+
+			if (fabs(prevSignal->GetMean () - nextSignal->GetMean ()) < minDistance) {
+
+				// "get rid" of the one that fits least well and use the other for the next test.
+				// later, if we want, we can add redundant signal to artifact list with a notice...
+
+				if (prevSignal->GetCurveFit () > nextSignal->GetCurveFit ()) {
+
+					// keep prevSignal and "lose" nextSignal
+		//			ArtifactList.RemoveReference (nextSignal);
+					delete nextSignal;
+					continue;
+				}
+
+				else {
+
+		//			ArtifactList.RemoveReference (prevSignal);
+					delete prevSignal;
+					prevSignal = nextSignal;
+					continue;
+				}
+			}
+
+			else {
+
+				tempList.Append (prevSignal);
+				prevSignal = nextSignal;
+			}
+		}
+	}
+
+	if (prevSignal != NULL)
+		tempList.Append (prevSignal);
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ())
+		mNegativeCurveList.Append (nextSignal);
+
+	//cout << "Done testing 'too close'" << endl;
+
+	delete signature;
+//	ProjectNeighboringSignalsAndTest (1.0, 1.0);
+	return 0;
+}
+
+
 int STRLaneStandardChannelData :: TestSignalsForOffScaleSM () {
 
 	RGDListIterator it (SmartPeaks);
@@ -2886,7 +3028,7 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 	// What's left are ambiguous signals and also those that are truly interlocus.  Test the ambiguous ones for possible craters...
 
 	//
-	//  This is sample stage 3
+	//  This is no longer sample stage 3 - obsolete 02/14/2016
 	//
 
 	RGDListIterator it (PreliminaryCurveList);
@@ -2921,6 +3063,9 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 		nextLocus->PromoteNonAmbiguousSignalsToAlleles (PreliminaryCurveList);
 
 	it.Reset ();
+
+	//****02/09/2016 Probably this next section should be removed.  Craters have already been validated and should not be undone.
+	// Amiguous crater probably can't happen because craters are found before assignment to loci.
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -3032,6 +3177,8 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 	//	delete nextSignal;
 	}
 
+	//****02/09/2016 see below
+
 	it.Reset ();
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smAmbiguousInterlocusWithPoorMorphology ambiguousInterlocusWithPoorMorphology;
@@ -3069,6 +3216,9 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 				continue;
 			}
 
+			// ****02/09/2016 Revise below without crater peaks, but with new peak called NoisyPeak?  Then, add NoisyPeak as new signal. Already know it is not pull-up
+			// Do not remove any craters because they have already been validated as craters by cross channel analysis algorithm
+
 			if (prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1)) {
 
 				if (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1)) {
@@ -3104,6 +3254,7 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 				else {
 
 					// These are ambiguous signals...close enough to be called the same in locus to left but not to right
+					// ****What to do here?  Probably this can happen, but what does it mean?
 
 					nextLocus = (Locus*) nextSignal->GetLocus (-1);
 
@@ -3123,6 +3274,7 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 			else if (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1)) {
 
 				// These are ambiguous signals...close enough to be called the same in locus to right but not to left
+				// ****What to do here?  Probably this can happen, but what does it mean?
 
 				nextLocus = (Locus*) nextSignal->GetLocus (1);
 
@@ -3164,6 +3316,125 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 
 		if (nextLocus != NULL)
 			nextLocus->RemoveSignalFromLocusList (nextSignal);
+	}
+
+	return 0;
+}
+
+
+int STRSampleChannelData :: TestForAlleleDuplicationSM () {
+
+	// All signals outside lane standard have already been removed.  Also, all signals definitely assigned to a locus are gone.
+	// What's left are ambiguous signals and also those that are truly interlocus.  Test the ambiguous ones for possible duplicate allele calls...
+
+	//
+	//  This is sample stage 3
+	//
+
+	RGDListIterator it (PreliminaryCurveList);
+	DataSignal* nextSignal;
+	DataSignal* prevSignal = NULL;
+	DataSignal* currentSignal;
+
+	Locus* nextLocus;
+	const Locus* flankingLocusLeft;
+	const Locus* flankingLocusRight;
+	RGDListIterator locusIt (mLocusList);
+
+	RGDList SignalsToDeleteFromSignalList;
+	RGDList SignalsToDeleteFromAll;
+	RGDList signalsToAddToList;
+
+	while (nextLocus = (Locus*) locusIt ())
+		nextLocus->PromoteNonAmbiguousSignalsToAlleles (PreliminaryCurveList);
+
+	//****02/09/2016 see below
+
+	it.Reset ();
+	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+	smAmbiguousInterlocusWithPoorMorphology ambiguousInterlocusWithPoorMorphology;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		// Now check for undiagnosed craters
+
+		if (prevSignal != NULL) {
+
+			if (!prevSignal->IsPossibleInterlocusAllele (-1)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (!nextSignal->IsPossibleInterlocusAllele (-1)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			flankingLocusLeft = prevSignal->GetLocus (-1);
+			flankingLocusRight = prevSignal->GetLocus (1);
+
+			if ((flankingLocusLeft == NULL) || (flankingLocusRight == NULL)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if ((flankingLocusLeft != nextSignal->GetLocus (-1)) || (flankingLocusRight != nextSignal->GetLocus (1))) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			// ****02/09/2016 Revise below without crater peaks, but with new peak called NoisyPeak?  Then, add NoisyPeak as new signal. Already know it is not pull-up
+			// Do not remove any craters because they have already been validated as craters by cross channel analysis algorithm
+
+			if ((prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1)) || (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1))) {
+
+				// This is not a crater though...01/01/2014
+
+				nextSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
+				SignalsToDeleteFromSignalList.Append (nextSignal);
+				prevSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
+				SignalsToDeleteFromSignalList.Append (prevSignal);
+
+				prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+				nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+
+				currentSignal = new NoisyPeak (prevSignal, nextSignal);
+				currentSignal->CaptureSmartMessages ();
+				currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+				currentSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
+				signalsToAddToList.Append (currentSignal);
+					
+				prevSignal = nextSignal;
+			}
+		}
+
+		else
+			prevSignal = nextSignal;
+	}
+
+	while (nextSignal = (DataSignal*) SignalsToDeleteFromSignalList.GetFirst ()) {
+
+		PreliminaryCurveList.RemoveReference (nextSignal);
+		nextLocus = (Locus*) nextSignal->GetLocus (-1);
+
+		if (nextLocus != NULL)
+			nextLocus->RemoveSignalFromLocusList (nextSignal);
+
+		nextLocus = (Locus*) nextSignal->GetLocus (1);
+
+		if (nextLocus != NULL)
+			nextLocus->RemoveSignalFromLocusList (nextSignal);
+	}
+
+	while (nextSignal = (DataSignal*) signalsToAddToList.GetFirst ()) {
+
+		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
 	return 0;
@@ -4238,7 +4509,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		cout << "No knot values..." << endl;
 	}
 
-//	cout << "First calculated knot height = " << temp << ".  Start Time = " << startTime << endl;
+	//cout << "First calculated knot height = " << temp << ".  Start Time = " << startTime << endl;
 
 	knotTimes.push_front ((double)(startBaselineFit / 2));
 	knotValues.push_front (temp);
@@ -4263,22 +4534,29 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	list<double>::iterator itTimes;
 	list<double>::iterator itValues;
 
-	//cout << "Knot Times";
+	//cout << "Knot Times..." << endl;
 	//int n = 0;
 	double lastTime = -500.0;
 	list<double> knotTimes2;
 	list<double> knotValues2;
 	double tempValue;
 
-	if (STRSampleChannelData::UseOldBaselineEstimation)
+	if (STRSampleChannelData::UseOldBaselineEstimation) {
+
+		//cout << "Using old baseline estimation" << endl;
 		ShapeBaselineData (knotTimes, knotValues);  // commented and added below 08/26/2013
+	}
 
 	else {
 
+		//cout << "Using new baseline estimation" << endl;
 		ShapeBaselineData (knotTimes, knotValues, FitData, FitNegData, rfuThreshold);	 // Commented out 02/03/2014
+		//cout << "Data is shaped; now edit out-of-range data" << endl;
 		//ShapeBaselineData (knotTimes, knotValues);
 		EditPeaksForOutOfRange (knotTimes, knotValues, FitNegData, rfuThreshold);	// 02/03/2014:  This function causes a crash under some conditions...Fixed 02/04/2014
 	}
+
+	//cout << "Shaped baseline data" << endl;
 
 	while (!knotTimes.empty ()) {
 
@@ -4379,7 +4657,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		return 0;
 	}
 
-//	cout << "Baseline analysis succeeded..." << endl;
+	//cout << "Baseline analysis succeeded..." << endl;
 	mBaselineStart = 0;
 
 	if (GetMessageValue (ignoreNegativeBaselineMsg))
@@ -4418,6 +4696,7 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		dynamicBaseline = mBaseLine->EvaluateSequenceNext ();
 	}
 
+	//cout << "Normalization successful" << endl;
 	return 1;
 }
 
@@ -4492,6 +4771,10 @@ int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<dou
 int STRSampleChannelData :: ShapeBaselineData (list<double>& knotTimes, list<double>& knotValues, DataSignal* fitDataPositive, DataSignal* fitDataNegative, double threshold) {
 
 	int n = knotTimes.size ();
+
+	if (knotValues.size () != n)
+		cout << "Knot times = " << n << " and knot values = " << knotValues.size () << endl;
+
 	double* originalTimes = new double [n];
 	double* originalValues = new double [n];
 	int i = 0;
@@ -5532,6 +5815,7 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 	if (n < 8)
 		return 0;
 
+	cout << "Number of knots = " << n << endl;
 	double* originalTimes = new double [n];
 	double* originalValues = new double [n];
 	int i = 0;
@@ -5576,7 +5860,7 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 		currentValue = originalValues [i];
 		currentTime = (int) floor (originalTimes [i] + 0.5);
 
-		if (currentTime < endTime) {
+		if ((currentTime >= 0) && (currentTime < endTime)) {
 
 			ScanRawDataForMinimaLeftAndRight (currentTime, leftMin, rightMin, fitDataNegative, threshold);
 			averageMin = 0.5 * (leftMin + rightMin);

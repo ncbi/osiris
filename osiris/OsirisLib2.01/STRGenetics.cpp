@@ -188,6 +188,7 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 	RGBracketStringSearch NoExtensionSearch ("<NoExtension>", "</NoExtension>", Input);
 
 	RGXMLTagSearch yLinkedSearch ("YLinked", Input);
+	RGXMLTagSearch qualityLocusSearch ("QualityLocus", Input);
 	RGXMLTagSearch maxExpectedAllelesSearch ("MaxExpectedAlleles", Input);
 	RGXMLTagSearch minExpectedAllelesSearch ("MinExpectedAlleles", Input);
 	size_t EndPosition;
@@ -197,7 +198,7 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 	bool upperBoundFound = false;
 	RGString trueString ("true");
 	RGString familyName = BaseLocus::GetILSFamilyName ();
-//	cout << "Current Family Name = " << familyName.GetData () << endl;  // This was a test to make sure the family name is known at this point.  Test succeeded 12/31/2015.
+	//cout << "Current Family Name = " << familyName.GetData () << endl;  // This was a test to make sure the family name is known at this point.  Test succeeded 12/31/2015.
 	bool useILSFamilies = PopulationCollection::UseILSFamiliesInLadderFile ();  // if true, use families; otherwise, use the old way.
 	bool isValid = true;
 	size_t StartPosition = 0;
@@ -299,6 +300,18 @@ UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
 
 		else
 			mIsYLinked = true;
+	}
+
+	if (!qualityLocusSearch.FindNextTag (0, EndPosition, BPString))
+		mIsQualityLocus = false;
+
+	else {
+
+		if (BPString == "false")
+			mIsQualityLocus = false;
+
+		else
+			mIsQualityLocus = true;
 	}
 
 	if (!maxExpectedAllelesSearch.FindNextTag (0, EndPosition, BPString))

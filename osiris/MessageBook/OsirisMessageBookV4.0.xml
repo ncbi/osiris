@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.61</VersionNumber>
-	<BuildTime>12 04 2015 12:09 PM</BuildTime>
+	<VersionNumber>6.63</VersionNumber>
+	<BuildTime>03 05 2016 10:12 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -48,6 +48,17 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>LOCUS IS AMEL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smIsQualityLocus</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>LOCUS IS QUALITY TYPE</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
@@ -537,7 +548,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smPrimaryInterchannelLink OR smNotInterchannelLink)</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Pull-up</Text>
 			<TextForData> from Primary Channel </TextForData>
@@ -6058,6 +6069,7 @@
 						<Name>smLocusIsPosControl</Name>
 						<Name>smNPeaksForLocusUnavailable</Name>
 						<Name>smAssociatedLadderLocusIsCritical</Name>
+						<Name>smIsQualityLocus</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smPeaksAboveMax</Name>
@@ -6248,7 +6260,7 @@
 						<Name>smExcessiveResidualDisplacementRight</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS</Expression>
+						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS AND NOT smIsQualityLocus</Expression>
 						<Expression>smPurePullup = smPullUp AND NOT smPrimaryInterchannelLink AND NOT smNotInterchannelLink</Expression>
 						<Expression>smTemp1Left = sm0UnambiguousPeaksLeft AND NOT sm0UnambiguousPeaksRight</Expression>
 						<Expression>smTemp1Right = sm0UnambiguousPeaksRight AND NOT sm0UnambiguousPeaksLeft</Expression>

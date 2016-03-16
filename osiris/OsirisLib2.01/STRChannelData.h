@@ -185,6 +185,7 @@ public:
 	virtual double GetDetectionThreshold () const;
 
 	virtual double GetMeasurementRatio () const;
+	virtual bool IsControlChannel () const { return true; }
 
 
 	// Obsolete...not used**********************************************************************************************************************
@@ -224,6 +225,8 @@ public:
 	virtual int CorrectLaneStandardCrossChannelAnalysisSM ();	//This no longer does anything
 	virtual int FinalTestForCriticalLaneStandardNoticesSM ();
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);
+
+	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
 	virtual int TestSignalsForOffScaleSM ();
 
@@ -286,6 +289,8 @@ public:
 	virtual double GetMaximumHeight () const;
 	virtual double GetFractionalFilter () const;
 	virtual double GetDetectionThreshold () const;
+
+	virtual bool IsControlChannel () const { return true; }
 
 
 	// Legacy Message functions*****************************************************************************************************************
@@ -398,6 +403,7 @@ public:
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes);
 	virtual int TestForMultiSignalsSM ();
 	virtual int TestProximityArtifactsSM ();
+	virtual int TestForAlleleDuplicationSM ();
 	virtual int AssignSignalToFirstLocusAndDeleteFromSecondSM (DataSignal* target, Locus* locus1, Locus* locus2);
 	virtual int RemoveSignalFromBothLociSM (DataSignal* target, Locus* locus1, Locus* locus2);
 	virtual bool TestIfSignalBelongsToFirstLocusSM (DataSignal* target, Locus* locus1, Locus* locus2);
