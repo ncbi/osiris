@@ -667,5 +667,17 @@
       <KitName>QiagenInvestigator24plex</KitName>
       <FileName>Q_Investigator24plex_LadderInfo.xml</FileName>
     </Set>
+    <Set>
+      <KitName>QiagenArgusX12</KitName>
+      <FileName>Q_InvestigatorArgusX12_LadderInfo.xml</FileName>
+    </Set>
+    <Set>
+		<KitName>Cannabis</KitName>
+		<FileName>RyanClarkeCannabis_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>QiagenArgusX12_QS</KitName>
+		<FileName>Q_InvestigatorArgusX12_QS_LadderInfo.xml</FileName>
+	</Set>
   </Kits>
 </KitData>
