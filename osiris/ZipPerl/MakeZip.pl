@@ -99,6 +99,7 @@ sub COPYFILES
   &MKDIR("${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} -R ${src}/docs/TestAnalysis ${destTest}");
   for my $sdir (qw/
+    CANNABIS
     Cofiler
     GF
     GFHID
@@ -138,6 +139,10 @@ sub COPYFILES
     PPY23
     PPY23_HID
     Profiler
+    QIAGEN_ARGUS_x12
+    QIAGEN_ARGUS_x12_HID
+    QIAGEN_ARGUS_x12_QS
+    QIAGEN_ARGUS_x12_QS_HID
     QIAGEN_INVESTIGATOR24PLEX
     QIAGEN_INVESTIGATOR24PLEX_HID
     SEfilerPlus
