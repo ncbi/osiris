@@ -1,0 +1,6 @@
+Version	GMID-X v 1.0						
+Kit type:	MICROSATELLITE						
+Chemistry Kit	NMI01	null					
+Panel	NMI01	null					
+NMI01	YELLOW	00	1	2	6	none	2, 16.1, 22.1, 23, 26, 28, 30.1,
+
