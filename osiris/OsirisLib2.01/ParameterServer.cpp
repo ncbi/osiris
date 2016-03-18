@@ -98,25 +98,25 @@ locusSpecificLimitsStruct :: ~locusSpecificLimitsStruct () {
 
 void locusSpecificLimitsStruct :: CopyPositiveThresholdsFrom (const locusSpecificLimitsStruct& limits) {
 
-	if (limits.fractionOfMaxPeak > 0.0)
+	if (limits.fractionOfMaxPeak >= 0.0)
 		fractionOfMaxPeak = limits.fractionOfMaxPeak;
 
-	if (limits.pullupFractionalFilter > 0.0)
+	if (limits.pullupFractionalFilter >= 0.0)
 		pullupFractionalFilter = limits.pullupFractionalFilter;
 
-	if (limits.stutterThreshold > 0.0)
+	if (limits.stutterThreshold >= 0.0)
 		stutterThreshold = limits.stutterThreshold;
 
-	if (limits.plusStutterThreshold > 0.0)
+	if (limits.plusStutterThreshold >= 0.0)
 		plusStutterThreshold = limits.plusStutterThreshold;
 
-	if (limits.adenylationThreshold > 0.0)
+	if (limits.adenylationThreshold >= 0.0)
 		adenylationThreshold  = limits.adenylationThreshold;
 
-	if (limits.heterozygousImbalanceLimit > 0.0)
+	if (limits.heterozygousImbalanceLimit >= 0.0)
 		heterozygousImbalanceLimit = limits.heterozygousImbalanceLimit;
 
-	if (limits.minBoundForHomozygote > 0.0)
+	if (limits.minBoundForHomozygote >= 0.0)
 		minBoundForHomozygote = limits.minBoundForHomozygote;
 }
 
@@ -688,37 +688,37 @@ int ParameterServer :: AddSampleLocusSpecificThreshold (const locusSpecificLimit
 
 int ParameterServer :: SetSampleLocusSpecificThresholds (Locus* locus, locusSpecificLimitsStruct* limits) {
 
-	if (limits->stutterThreshold > 0.0)
+	if (limits->stutterThreshold >= 0.0)
 		locus->SetLocusSpecificSampleStutterThreshold (limits->stutterThreshold);
 
 	else
 		locus->SetLocusSpecificSampleStutterThreshold (Locus::GetSampleStutterThreshold ());
 
-	if (limits->plusStutterThreshold > 0.0)
+	if (limits->plusStutterThreshold >= 0.0)
 		locus->SetLocusSpecificSamplePlusStutterThreshold (limits->plusStutterThreshold);
 
 	else
 		locus->SetLocusSpecificSamplePlusStutterThreshold (Locus::GetSamplePlusStutterThreshold ());
 
-	if (limits->adenylationThreshold > 0.0)
+	if (limits->adenylationThreshold >= 0.0)
 		locus->SetLocusSpecificSampleAdenylationThreshold (limits->adenylationThreshold);
 
 	else
 		locus->SetLocusSpecificSampleAdenylationThreshold (Locus::GetSampleAdenylationThreshold ());
 
-	if (limits->fractionOfMaxPeak > 0.0)
+	if (limits->fractionOfMaxPeak >= 0.0)
 		locus->SetLocusSpecificSampleFractionalFilter (limits->fractionOfMaxPeak);
 
 	else
 		locus->SetLocusSpecificSampleFractionalFilter (Locus::GetSampleFractionalFilter ());
 
-	if (limits->pullupFractionalFilter > 0.0)
+	if (limits->pullupFractionalFilter >= 0.0)
 		locus->SetLocusSpecificSamplePullupFractionalFilter (limits->pullupFractionalFilter);
 
 	else
 		locus->SetLocusSpecificSamplePullupFractionalFilter (Locus::GetSamplePullupFractionalFilter ());
 
-	if (limits->heterozygousImbalanceLimit > 0.0)
+	if (limits->heterozygousImbalanceLimit >= 0.0)
 		locus->SetLocusSpecificSampleHeterozygousImbalanceThreshold (limits->heterozygousImbalanceLimit);
 
 	else
@@ -753,25 +753,25 @@ int ParameterServer :: SetSampleLocusSpecificThresholds (Locus* locus, locusSpec
 
 int ParameterServer :: SetLadderLocusSpecificThresholds (Locus* locus, locusSpecificLimitsStruct* limits) {
 
-	if (limits->stutterThreshold > 0.0)
+	if (limits->stutterThreshold >= 0.0)
 		locus->SetLocusSpecificLadderStutterThreshold (limits->stutterThreshold);
 
 	else
 		locus->SetLocusSpecificLadderStutterThreshold (Locus::GetGridStutterThreshold ());
 
-	if (limits->adenylationThreshold > 0.0)
+	if (limits->adenylationThreshold >= 0.0)
 		locus->SetLocusSpecificLadderAdenylationThreshold (limits->adenylationThreshold);
 
 	else
 		locus->SetLocusSpecificLadderAdenylationThreshold (Locus::GetGridAdenylationThreshold ());
 
-	if (limits->fractionOfMaxPeak > 0.0)
+	if (limits->fractionOfMaxPeak >= 0.0)
 		locus->SetLocusSpecificLadderFractionalFilter (limits->fractionOfMaxPeak);
 
 	else
 		locus->SetLocusSpecificLadderFractionalFilter (Locus::GetGridFractionalFilter ());
 
-	if (limits->pullupFractionalFilter > 0.0)
+	if (limits->pullupFractionalFilter >= 0.0)
 		locus->SetLocusSpecificLadderPullupFractionalFilter (limits->pullupFractionalFilter);
 
 	else
