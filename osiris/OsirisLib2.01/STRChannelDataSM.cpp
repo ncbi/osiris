@@ -4298,6 +4298,8 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	//	Put Baseline Analysis here...
 	//
 
+	//cout << "Normalizing channel " << mChannel << endl;
+
 	smIgnoreNegativeRelativeBaselinePreset ignoreNegativeBaselineMsg;
 	bool ignoreNegativeBaseline = false;
 
@@ -4638,13 +4640,18 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 		mBaseLine = new CSplineTransform (knotTimes2, knotValues2);
 	}
 
+	//cout << "Normalization spline created" << endl;
 	knotTimes2.clear ();
 	knotValues2.clear ();
 	firstList.clear ();
 	lastList.clear ();
 
-	if (HasFilteredData ())	//  Moved these two lines above test for baseline validity in case it's not valid.  At least we then restore the original baseline 08/01/2014
+	if (HasFilteredData ()) {	//  Moved these two lines above test for baseline validity in case it's not valid.  At least we then restore the original baseline 08/01/2014
+
+		//cout << "Restoring raw data and deleting filtered data" << endl;
 		RestoreRawDataAndDeleteFilteredSignal ();
+		//cout << "Raw data restored" << endl;
+	}
 
 	//cout << "Raw data restored for channel " << mChannel << endl;
 
@@ -5815,7 +5822,7 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 	if (n < 8)
 		return 0;
 
-	cout << "Number of knots = " << n << endl;
+	//cout << "Number of knots = " << n << endl;
 	double* originalTimes = new double [n];
 	double* originalValues = new double [n];
 	int i = 0;
@@ -5910,6 +5917,7 @@ int STRSampleChannelData :: EditPeaksForOutOfRange (list<double>& times, list<do
 
 	delete[] originalTimes;
 	delete[] originalValues;
+	//cout << "Done editing peaks for out of range, channel = " << mChannel << endl;
 	return 0;
 }
 

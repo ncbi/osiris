@@ -32,6 +32,8 @@
 // measurement data.  Methods allow simple transforms and basic searches for signatures
 //
 
+
+
 #include "DataSignal.h"
 #include "rgfile.h"
 #include "rgvstream.h"
@@ -50,8 +52,10 @@
 #include "SmartMessage.h"
 #include "STRSmartNotices.h"
 #include "OsirisPosix.h"
+#include <cmath>
+#include <limits>
 
-
+using namespace::std;
 
 double PeakInfoForClusters::HeightFactor = 1.0;
 Boolean DataSignal :: DebugFlag = FALSE;
@@ -9986,6 +9990,16 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 	mPartOfCluster = true;
 //	prev->SetPartOfCluster (true);
 //	next->SetPartOfCluster (true);
+	bool useCalculatedProportion = true;
+
+	if (assignByProportion) {
+
+		if (ISNAN(peak1) || (peak1 == numeric_limits<double>::infinity( )))
+			useCalculatedProportion = false;
+
+		else if (ISNAN(peak2) || (peak2 == numeric_limits<double>::infinity( )))
+			useCalculatedProportion = false;
+	}
 
 
 	if (peak2 >= peak1)
@@ -9994,7 +10008,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 	else
 		useRightPeak = false;
 
-	if (assignByProportion && (d > 0.0)) {
+	if (assignByProportion && useCalculatedProportion && (d > 0.0)) {
 
 		l1 = peak1 / d;
 		l2 = peak2 / d;
@@ -10078,13 +10092,24 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 //	prev->SetPartOfCluster (true);
 //	next->SetPartOfCluster (true);
 
+	bool useCalculatedProportion = true;
+
+	if (assignByProportion) {
+
+		if (ISNAN(peak1) || (peak1 == numeric_limits<double>::infinity( )))
+			useCalculatedProportion = false;
+
+		else if (ISNAN(peak2) || (peak2 == numeric_limits<double>::infinity( )))
+			useCalculatedProportion = false;
+	}
+
 	if (peak2 >= peak1)
 		useRightPeak = true;
 
 	else
 		useRightPeak = false;
 
-	if (assignByProportion && (d > 0.0)) {
+	if (assignByProportion && useCalculatedProportion && (d > 0.0)) {
 
 		l1 = peak1 / d;
 		l2 = peak2 / d;
@@ -10573,12 +10598,18 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 
 	//cout << "Crater p1 + p2 = " << denom << endl;
 	//cout << "Prev mean = " << prev->GetMean () << endl;
+	//cout << "Next mean = " << next->GetMean () << endl;
+	//cout << "Prev fit = " << prev->GetCurveFit () << endl;
+	//cout << "Next fit = " << next->GetCurveFit () << endl;
 
 	if (denom == 0.0)
 		lambda = 0.5;
 
-	else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+	else if (ISNAN(P1) || ISNAN(P2) || (P1 == numeric_limits<double>::infinity( )) || (P2 == numeric_limits<double>::infinity( )))
 		lambda = 0.5;
+
+	//else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+	//	lambda = 0.5;
 
 	else
 		lambda = P2 / denom;
@@ -10631,8 +10662,11 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 	if (denom == 0.0)
 		lambda = 0.5;
 
-	else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+	else if (ISNAN(P1) || ISNAN(P2) || (P1 == numeric_limits<double>::infinity( )) || (P2 == numeric_limits<double>::infinity( )))
 		lambda = 0.5;
+
+	//else if ((prev->GetCurveFit () < 0.97) || (next->GetCurveFit () < 0.97))
+	//	lambda = 0.5;
 
 	else
 		lambda = P2 / denom;

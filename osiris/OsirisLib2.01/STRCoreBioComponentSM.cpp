@@ -1974,8 +1974,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				break;
 		}
 
-		//cout << "Found all potential craters/sigmoids" << endl;
-
 		delete tempIterator;
 		tempIterator = new RGDListIterator (*nextMultiPeakList);
 
@@ -1996,6 +1994,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		//
 	}
 
+	cout << "Found all potential craters/sigmoids" << endl;
 	delete[] sequenceLineUp;
 
 	//

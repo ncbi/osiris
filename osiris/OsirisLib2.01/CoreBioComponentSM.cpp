@@ -1536,7 +1536,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 		status = -1;
 	}
 
-	//cout << "Normalized baseline" << endl;
+	//cout << "Normalized all baselines" << endl;
 
 	//RestoreRawDataAndDeleteFilteredSignalNonILS ();	// 02/02/2014:  This is now done at the channel level within normalization function.
 	status = FitNonLaneStandardCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
@@ -1570,8 +1570,12 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	//AnalyzeCrossChannelSM ();
 	//AnalyzeCrossChannelWithNegativePeaksSM ();  // Commented out 01/31/2016
 
+	//cout << "Done fitting normalized positive and negative peaks,  Preparing to perform cross channel analysis." << endl;
+
 	AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
 //	TestSignalsForLaserOffScaleSM ();	//  Moved inside AnalyzeCrossChannelWithNegativePeaksSM 09/09/2014
+
+	//cout << "Analyze cross channel successful" << endl;
 
 	Progress = 4;
 	return 0;

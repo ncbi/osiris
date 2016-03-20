@@ -40,6 +40,13 @@
 #include <sys/types.h>
 #endif
 
+#ifndef _WINDOWS
+#include <cmath>
+#define ISNAN(x) std::isnan(x)
+#else
+#define ISNAN(x)  _isnan(x)
+#endif
+
 #define Boolean int
 #ifndef TRUE
 #define TRUE true
@@ -147,6 +154,9 @@ extern char *_ltoa(long value, char *buffer, int radix);
 extern char *_ultoa(unsigned long value, char *buffer, int radix);
 extern char *itoa(int value, char *buffer, int radix);
 #endif
+
+
+
 
 
 #endif  /*  _RGDEFS_H_  */
