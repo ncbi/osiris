@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.63</VersionNumber>
-	<BuildTime>03 05 2016 10:12 PM</BuildTime>
+	<VersionNumber>6.67</VersionNumber>
+	<BuildTime>03 31 2016 03:28 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -2113,6 +2113,36 @@
 			<Scope>1</Scope>
 			<CallCriterion>
 				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAmbiguousCoreVsExtendedLeft</Name>
+			<Description>Peak lies in an extended locus region to the left and one core locus (OL) and is above fractional filter height for both</Description>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Ambiguous Extended Left and Core Locus Allele (Assigned to Core)</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>1</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAmbiguousCoreVsExtendedRight</Name>
+			<Description>Peak lies in an extended locus region to the right and one core locus (OL) and is above fractional filter height for both</Description>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Ambiguous Extended Right and Core Locus Allele (Assigned to Core)</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>1</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -6189,7 +6219,7 @@
 						<Expression>smInferredPullupFFRight = smPartOfExtendedLocusRight AND smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
 						<Expression>smFFLeft = ((smBelowFractionalFilterLeft AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterLeft AND NOT smDisablePullupFractionalFilter) OR smInferredFFLeft OR smInferredPullupFFLeft)</Expression>
 						<Expression>smFFRight = ((smBelowFractionalFilterRight AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterRight AND NOT smDisablePullupFractionalFilter) OR smInferredFFRight OR smInferredPullupFFRight)</Expression>
-						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
+						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter AND NOT smPeakInCoreLadderLocus</Expression>
 						<Expression>smUnassignedInterlocusPeak = NOT (smPeakInCoreLadderLocus OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSampleIsLadder OR smSignalIsCtrlPeak OR smUnexpectedILSPeak OR smChannelIsILS)</Expression>
 					</Evaluations>
 				</ScopeDynamics>
@@ -6274,8 +6304,8 @@
 						<Expression>smTemp6Right = (sm1UnambiguousPeakRight AND sm2PlusUnambiguousPeaksLeft) AND NOT (smTemp1Left OR smTemp2Left OR smTemp3Left OR smTemp5Left)</Expression>
 						<Expression>smTemp7Left = smTemp1Left OR ((smTemp2Left OR smTemp3Left OR smTemp5Left OR smTemp6Left OR smSignalIsIntegralMultipleOfRepeatLeft) AND NOT smFFLeft)</Expression>
 						<Expression>smTemp7Right = smTemp1Right OR ((smTemp2Right OR smTemp3Right OR smTemp5Right OR smTemp6Right OR smSignalIsIntegralMultipleOfRepeatRight) AND NOT smFFRight)</Expression>
-						<Expression>smCouldBelongToLocusLeft = (smTemp7Left AND smPartOfExtendedLocusLeft) AND NOT smTemp7Right AND NOT smPeakInCoreLadderLocus</Expression>
-						<Expression>smCouldBelongToLocusRight = (smTemp7Right AND smPartOfExtendedLocusRight) AND NOT smTemp7Left AND NOT smPeakInCoreLadderLocus</Expression>
+						<Expression>smCouldBelongToLocusLeft = (smTemp7Left AND smPartOfExtendedLocusLeft) AND NOT smTemp7Right AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
+						<Expression>smCouldBelongToLocusRight = (smTemp7Right AND smPartOfExtendedLocusRight) AND NOT smTemp7Left AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 						<Expression>smPullUpAtControlPeak = smSignalIsCtrlPeak AND smPurePullup</Expression>
 						<Expression>smInterlocusPullUp = (NOT (smPeakInCoreLadderLocus OR smSampleIsLadder OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSignalIsCtrlPeak OR smChannelIsILS)) AND smPurePullup</Expression>
 						<Expression>smInterlocusPullUpWithPoorFit = smInterlocusPullUp AND (smPoorPeakMorphology OR smCurveFitMarginal OR smCurveFitFailed)</Expression>
@@ -6357,7 +6387,9 @@
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
 						<Expression>smPurePullupLateStage = smPurePullup</Expression>
 						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
-						<Expression>smAmbiguousInterlocus = NOT smCouldBelongToLocusLeft AND NOT smCouldBelongToLocusRight AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT smPeakInCoreLadderLocus AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight)</Expression>
+						<Expression>smAmbiguousInterlocus = NOT (smCouldBelongToLocusLeft AND smCouldBelongToLocusRight) AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL) AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight)</Expression>
+						<Expression>smAmbiguousCoreVsExtendedLeft = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusLeft</Expression>
+						<Expression>smAmbiguousCoreVsExtendedRight = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusRight</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smAmbiguousInterlocus (NOT smRestrictedPriorityPeak): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
