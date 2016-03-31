@@ -6017,16 +6017,16 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			//	continue;
 			//}
 
-			//if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
+			if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
 
-			//	if (report)
-			//		cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
+				//if (report)
+				//	cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
 
-			//	prevSignal = nextSignal;
-			//	prevAlleleName = alleleName;
-			//	prevLocation = location;
-			//	continue;
-			//}
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
 
 			if (prevSignal->GetMessageValue (primaryPullup) && !nextSignal->GetMessageValue (primaryPullup)) {
 
