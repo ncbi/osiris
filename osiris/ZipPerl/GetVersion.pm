@@ -44,11 +44,18 @@ sub Get
   }
   $VERSION;
 }
+sub GetDirectory
+{
+  my $s = &Get();
+  $s =~ s/ /-/g;
+  "Osiris-${s}";
+}
 
 if ("/$0" =~ m/[\\\/]GetVersion.pm$/)
 {
   my $s = &DIRNAME("${0}");
   print $s,"\n";
   print &Get(),"\n";
+  print &GetDirectory(),"\n";
 }
 1;

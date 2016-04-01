@@ -195,7 +195,9 @@ sub CopyWin
   length($dir) && (chdir($dir) || die("Cannot chdir ${dir}"));
 
   my $src = "..";
-  my $dest = "./Osiris";
+  my $sSuffix = "${VERSION}";
+  $sSuffix =~ s/ /-/g;
+  my $dest = './' . &GetVersion::GetDirectory();
   &COPYFILES($src,$dest);
   &MKDIR("${dest}/site");
   if ($COPYDLL)
@@ -211,10 +213,11 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
-  my $zipFile = "Osiris-${VERSION}-Windows.zip";
+  my $zipFile = "${dest}-Windows.zip";
 
   if((!$NO_ZIP_FILE) && &TESTFILES($zipFile,"${dest}"))
   {
+    (-r $zipFile) && (unlink($zipFile) || die("Cannot remove ${zipFile}"));
     &SYSTEM("${PATH7Z} a -r ${zipFile} ${dest}");
   }
 }
@@ -232,7 +235,8 @@ sub CopyMac
   {
     &MKDIR($TOP);
   }
-  my $APPDIR = "${TOP}/Osiris.app";
+  my $sDir = &GetVersion::GetDirectory();
+  my $APPDIR = "${TOP}/${sDir}.app";
   my $CONTENTS = "${APPDIR}/Contents";
   my $DEST = "${CONTENTS}/MacOS";
   my $CONFIG = "${DEST}/Config";
@@ -275,7 +279,7 @@ sub CopyMac
     if( ($#ARGV >= 0) || &TESTFILES($zipFile,$DEST) ||
         &TESTFILES($zipFile,$testDest) )
     {
-      &SYSTEM("cd \"${TOP}\" ; /usr/bin/tar zcvf ${zipFile} TestAnalysis OsirisXSL Osiris.app");
+      &SYSTEM("cd \"${TOP}\" ; /usr/bin/tar zcvf ${zipFile} TestAnalysis OsirisXSL ${sDir}.app");
     }
   }  ## end if(1)
   ### END make tar.gz
