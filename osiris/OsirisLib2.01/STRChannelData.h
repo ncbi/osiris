@@ -215,6 +215,8 @@ public:
 	// Smart Message functions******************************************************************************************************************
 	//******************************************************************************************************************************************
 
+	bool FoundPrimerPeaksSM (RGDList& peakList, double firstIntervalFraction, double smallestIntervalFraction, double& lastPrimerTime, int Size, double& maxPeak, RGTextOutput& ExcelText);
+
 	virtual int SetDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataSM (SampleData& fileData, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataFromColorCorrectedArraySM (double* dataArray, int arraySize, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);

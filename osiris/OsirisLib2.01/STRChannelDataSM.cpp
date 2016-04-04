@@ -351,6 +351,532 @@ int STRChannelData :: TestSignalsForOffScaleSM () {
 }
 
 
+bool STRLaneStandardChannelData :: FoundPrimerPeaksSM (RGDList& peaks, double firstIntervalFraction, double smallestIntervalFraction, double& lastPrimerTime, int Size, double& maxPeak, RGTextOutput& ExcelText) {
+
+	//
+	//	Stage 1 samples and ladders
+	//
+
+	smScaleILSPrimerSearchPreset scaleILSPrimerSearch;
+	smNumberOfLastILSPeaksInScale numberOfLastILSPeaks;
+	smPercentLastILSPeaksInScaling percentLeastOfLastILSPeaks;
+
+	//
+	// if scaleILSPrimerSearch is true, then remove all peaks less than specified percentage of last numberOfLastILSPeaks in ILS
+	//
+
+	//
+	// This still needs work because we need to account for peaks removed, etc and with new threshold, we may not have done that correctly
+	//
+
+	int nPeaks = peaks.Entries ();
+
+	if (nPeaks < Size)
+		return false;
+
+	RGDList* localPeaks;
+	double min = 0.0;
+	int nLast = GetThreshold (numberOfLastILSPeaks);
+	int percent = GetThreshold (percentLeastOfLastILSPeaks);
+	int count;
+	DataSignal* nextSignal; 
+	double height;
+	int i = 0;
+	RGDListIterator itPeaks (peaks);
+	
+	double threshold;
+	bool deepCopy = false;
+
+	if (GetMessageValue (scaleILSPrimerSearch) && (nLast > 0) && (percent > 0)) {
+
+		RGDListIterator tempIt (peaks);
+		tempIt.ResetToEnd ();
+		nextSignal = (DataSignal*) tempIt.CurrentItem ();
+
+		if (nextSignal == NULL)
+			return false;
+
+		count = 1;
+		height = nextSignal->Peak ();
+
+		if (height > 0.0)
+			min = height;
+
+		while (true) {
+
+			if (count >= nLast)
+				break;
+
+			count++;
+			--tempIt;
+			nextSignal = (DataSignal*) tempIt.CurrentItem ();
+
+			if (nextSignal == NULL)
+				break;
+
+			height = nextSignal->Peak ();
+
+			if (height > 0.0) {
+				
+				if (height < min)
+					min = height;
+			}
+		}
+	}
+
+	if (min == 0.0) {
+
+		localPeaks = new RGDList (peaks);
+		deepCopy = true;
+	}
+
+	else {
+
+		threshold = 0.01 * (double)percent * min;
+		localPeaks = new RGDList;
+		deepCopy = false;
+		itPeaks.Reset ();
+		cout << "Primer peak filter threshold = " << threshold << " RFU" << endl;
+
+		while (nextSignal = (DataSignal*) itPeaks ()) {
+
+			if (nextSignal->Peak () >= threshold)
+				localPeaks->Append (nextSignal);
+		}
+	}
+
+	RGDListIterator it (*localPeaks);
+	cout << "Original number of peaks = " << nPeaks;
+	nPeaks = localPeaks->Entries ();
+	cout << ".  New number after threshold filtering = " << nPeaks << endl;
+	PeakInfoForClusters** peakList;
+	PeakInfoForClusters* nextPeak;
+//	PeakInfoForClusters* prevPeak;
+	lastPrimerTime = -1.0;
+	maxPeak = 0.0;
+
+	peakList = new PeakInfoForClusters* [nPeaks];
+	i = 0;
+	vector<PeakInfoForClusters*> peakVector;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		nextPeak = new PeakInfoForClusters (nextSignal);
+		peakList [i] = nextPeak;
+		peakVector.push_back (nextPeak);
+		nextPeak->SetIndex (i);
+		i++;
+	}
+
+	const double* largeCharacteristics;
+	int nLargeCharacteristics = mLaneStandard->GetLargeCharacteristicArray (largeCharacteristics);
+
+	int nTestIntervals;  // this will be the number of intervals in which we test peak density and max peak height.
+	double startMean = peakList [0]->GetMean ();
+	double endMean = peakList [nPeaks - 1]->GetMean ();
+	double testDuration = endMean - startMean;
+	double testInterval = smallestIntervalFraction * testDuration;
+
+	if (smallestIntervalFraction > 0.0)
+		nTestIntervals = (int) ceil (1.0 / smallestIntervalFraction);
+
+	else {
+
+		nTestIntervals = Size + 5;
+		testInterval = testDuration / (double)nTestIntervals;
+	}
+
+	cout << "Number of test intervals = " << nTestIntervals << " and test interval width = " << testInterval << endl;
+	int* density = new int [nTestIntervals];
+	double* localMaxPeak = new double [nTestIntervals];
+	double firstGapInterval = firstIntervalFraction * testDuration;
+	double currentIntervalEnd = startMean + testInterval;
+	int j = 0;
+	double maxLocalPeak;
+	int nLocalPeaks;
+	double currentMean;
+	double currentPeak;
+	double overallMaxPeak = 0.0;
+	int overallMaxDensity = 0;
+
+	vector<double> localPeakMaxima;
+	vector<int> localDensities;
+
+	for (i=0; i<nTestIntervals; i++) {
+
+		maxLocalPeak = 0.0;
+		nLocalPeaks = 0;
+
+		while (j < nPeaks) {
+
+			currentMean = peakList [j]->GetMean ();
+			currentPeak = peakList [j]->GetPeak ();
+
+			if (currentMean < currentIntervalEnd) {
+
+				nLocalPeaks++;
+
+				if (currentPeak > maxLocalPeak)
+					maxLocalPeak = currentPeak;
+
+				j++;
+			}
+
+			else
+				break;
+		}
+
+		localMaxPeak [i] = maxLocalPeak;
+		density [i] = nLocalPeaks;
+		currentIntervalEnd += testInterval;
+		localPeakMaxima.push_back (maxLocalPeak);
+		localDensities.push_back (nLocalPeaks);
+
+		if (maxLocalPeak > overallMaxPeak)
+			overallMaxPeak = maxLocalPeak;
+
+		if (nLocalPeaks > overallMaxDensity)
+			overallMaxDensity = nLocalPeaks;
+	}
+
+	// Now analyze these arrays of data...
+	sort (localPeakMaxima.begin (), localPeakMaxima.end ());
+	sort (localDensities.begin (), localDensities.end ());
+
+	// Let's try to localize the primer peaks
+
+	j = 0;
+	double peakCutoff = 0.4 * overallMaxPeak;
+	double densityCutoff = 0.4 * (double)overallMaxDensity;
+	int nIntervalsAbovePeakCutoff = 0;
+	int nIntervalsAboveDensityCutoff = 0;
+
+	int firstHighDensityInterval = 0;
+	int firstNonHighDensityInterval = 0;
+	bool foundFirstHighDensityInterval = false;
+	bool quitLookingForHighDensity = false;
+
+	int firstHighPeakInterval = 0;
+	int firstNonHighPeakInterval = 0;
+	bool foundFirstHighPeakInterval = false;
+	bool quitLookingForHighPeak = false;
+
+	int lastHighPeakInterval = 0;
+	int lastHighDensityInterval = 0;
+
+	for (i=0; i<nTestIntervals; i++) {
+
+		if (localMaxPeak [i] > peakCutoff) {
+
+			nIntervalsAbovePeakCutoff++;
+			lastHighPeakInterval = i;
+
+			if (!quitLookingForHighPeak) {
+
+				if (!foundFirstHighPeakInterval) {
+
+					firstHighPeakInterval = i;
+					foundFirstHighPeakInterval = true;
+				}
+			}
+		}
+
+		else if (!quitLookingForHighPeak && foundFirstHighPeakInterval) {
+
+			quitLookingForHighPeak = true;
+			firstNonHighPeakInterval = i;
+		}
+
+		if (density [i] > densityCutoff) {
+
+			nIntervalsAboveDensityCutoff++;
+			lastHighDensityInterval = i;
+
+			if (!quitLookingForHighDensity) {
+
+				if (!foundFirstHighDensityInterval) {
+
+					firstHighDensityInterval = i;
+					foundFirstHighDensityInterval = true;
+				}
+			}
+		}
+
+		else if (!quitLookingForHighDensity && foundFirstHighDensityInterval) {
+
+			quitLookingForHighDensity = true;
+			firstNonHighDensityInterval = i;
+		}
+	}
+
+	if (!quitLookingForHighPeak)
+		firstNonHighPeakInterval = nTestIntervals;
+
+	if (!quitLookingForHighDensity)
+		firstNonHighDensityInterval = nTestIntervals;
+
+	// Estimate the end of the primer peaks...if there are some!
+	double endPrimers = startMean;
+	bool foundPrimers = false;
+	int halfWay = nTestIntervals / 2;
+
+	if (lastHighPeakInterval < halfWay) {
+
+		// At least the high peaks are at the beginning, not spread out, which indicates there are primer peaks
+
+		if (firstHighPeakInterval == firstHighDensityInterval) {
+
+			// this is a VERY good indication of primer peaks:  high peaks together with high density
+
+			endPrimers = ((double)firstNonHighPeakInterval) * testInterval + startMean;
+			foundPrimers = true;
+		}
+
+		else if (density [firstHighPeakInterval] > densityCutoff) {
+
+			// this is also a VERY good indication of primer peaks:  high peaks together with high density
+
+			endPrimers = ((double)firstNonHighPeakInterval) * testInterval + startMean;
+			foundPrimers = true;
+		}
+
+		else if (density [firstHighPeakInterval] > 3) {
+
+			// this is a pretty good indication of primer peaks:  high peaks together with higer than expected density
+
+			endPrimers = ((double)firstNonHighPeakInterval) * testInterval + startMean;
+			foundPrimers = true;
+		}
+
+		else {
+
+			for (i=firstHighPeakInterval; i<firstNonHighPeakInterval; i++) {
+
+				if (density [i] > densityCutoff) {
+
+					endPrimers = ((double)firstNonHighPeakInterval) * testInterval + startMean;
+					foundPrimers = true;
+					break;
+				}
+			}
+		}
+	}
+
+	else {
+
+		// There are two possibilities:  either there are no primer peaks and the high peaks are truly the ILS peaks or
+		// there is additional junk after the primer peaks.
+
+		if (nLargeCharacteristics > 0) {
+
+			if (nLargeCharacteristics < Size) {
+
+				if ((nIntervalsAbovePeakCutoff < nLargeCharacteristics) && (firstHighPeakInterval < halfWay)) {
+
+					// High probability that there are primer peaks...not enough tall peaks to make up ILS peaks
+
+					endPrimers = ((double)firstNonHighPeakInterval) * testInterval + startMean;
+					foundPrimers = true;
+				}
+			}
+
+			else {
+
+				if ((nIntervalsAbovePeakCutoff < nLargeCharacteristics - 2) && (firstHighPeakInterval < halfWay)) {
+
+					// High probability that there are primer peaks...not enough tall peaks to make up ILS peaks
+
+					endPrimers = ((double)firstNonHighPeakInterval) * testInterval + startMean;
+					foundPrimers = true;
+				}
+			}
+		}
+	}
+
+	double lastPrimerMean = startMean;
+	double firstNonPrimerMean = startMean;
+	double peakValue;
+	double meanValue;
+	int nCurvesRemoved = 0;
+	itPeaks.Reset ();
+
+	if (foundPrimers) {
+
+		while (nextSignal = (DataSignal*) itPeaks ()) {
+
+			meanValue = nextSignal->GetMean ();
+
+			if (meanValue >= endPrimers) {
+				
+				if (firstNonPrimerMean <= lastPrimerMean)
+					firstNonPrimerMean = meanValue;
+
+				break;
+			}
+
+			peakValue = nextSignal->Peak ();
+
+			if (peakValue > peakCutoff)
+				lastPrimerMean = meanValue;
+
+			else if (firstNonPrimerMean <= lastPrimerMean)
+				firstNonPrimerMean = meanValue;
+		}
+	}
+
+	endPrimers = 0.5 * (lastPrimerMean + firstNonPrimerMean);
+	itPeaks.Reset ();
+
+	if (foundPrimers) {
+
+		while (nextSignal = (DataSignal*) itPeaks ()) {
+
+			if (nextSignal->GetMean () < endPrimers)
+				nCurvesRemoved++;
+
+			else
+				break;
+		}
+	}
+
+	int origPeaks = peaks.Entries ();
+
+	if (origPeaks - nCurvesRemoved < Size) {
+
+		foundPrimers = false;
+		endPrimers = 0.0;
+		nCurvesRemoved = 0;
+	}
+
+	Endl endline;
+	cout << "Start mean = " << startMean << " and end mean = " << endMean << endl;
+
+	ExcelText.SetOutputLevel (1);
+	ExcelText << "Start mean = " << startMean << " and end mean = " << endMean << endline;
+	ExcelText << "Test interval width = " << testInterval << endline;
+	ExcelText << "Max Peak = " << overallMaxPeak << " and Max Density = " << overallMaxDensity << endline << endline;
+	ExcelText << "Number of high peak intervals = " << nIntervalsAbovePeakCutoff << " out of " << nTestIntervals << endline;
+	ExcelText << "First high peak interval = " << firstHighPeakInterval << " and first non high peak interval to follow = " << firstNonHighPeakInterval << endline;
+	ExcelText << "Last high peak interval = " << lastHighPeakInterval << endline << endline;
+	
+	ExcelText << "Number of high density intervals = " << nIntervalsAboveDensityCutoff << " out of " << nTestIntervals << endline;
+	ExcelText << "First high density interval = " << firstHighDensityInterval << " and first non high density interval to follow = " << firstNonHighDensityInterval << endline;
+	ExcelText << "Last high density interval = " << lastHighDensityInterval << endline << endline;
+
+	if (foundPrimers)
+		ExcelText << "Found primer peaks to left of " << endPrimers << " removing " << nCurvesRemoved << " out of " << origPeaks << endline << endline;
+
+	else
+		ExcelText << "Did not find primer peaks" << endline << endline;
+
+	int nIsolatedPeaks = 0;
+	itPeaks.Reset ();
+
+	while (nextSignal = (DataSignal*) itPeaks ()) {
+
+		if (nextSignal->GetMean () < endPrimers)
+			continue;
+
+		if (nextSignal->Peak () > peakCutoff)
+			nIsolatedPeaks++;
+	}
+
+	ExcelText << "Found " << nIsolatedPeaks << " isolated peaks" << endline;
+
+	if (nLargeCharacteristics > 0) {
+
+		if (nLargeCharacteristics < Size) {
+
+			if (nIsolatedPeaks >= nLargeCharacteristics) {
+
+				// High probability that the so-called isolated peaks are the large characteristics...
+
+				nIsolatedPeaks = 0;
+				ExcelText << "May have removed large characteristics.  Restoring..." << endline << endline;
+			}
+		}
+
+		else {
+
+			if (nIsolatedPeaks >= nLargeCharacteristics - 2) {
+
+				// High probability that the so-called isolated peaks are the large characteristics...
+
+				nIsolatedPeaks = 0;
+				ExcelText << "May have removed large characteristics.  Restoring..." << endline << endline;
+			}
+		}
+	}
+
+	if (origPeaks - nCurvesRemoved - nIsolatedPeaks < Size) {
+
+		ExcelText << "Removed too many peaks:  " << nCurvesRemoved + nIsolatedPeaks << " of " << nPeaks << ".  Restoring..." << endline << endline;
+		nIsolatedPeaks = 0;
+	}
+
+	else
+		ExcelText << "Removing " << nCurvesRemoved + nIsolatedPeaks << " of " << nPeaks << endline << endline;
+
+	double tempMaxPeak = 0.0;
+	itPeaks.Reset ();
+
+	if (nIsolatedPeaks > 0) {
+
+		while (nextSignal = (DataSignal*) itPeaks ()) {
+
+			if (nextSignal->GetMean () < endPrimers)
+				continue;
+
+			peakValue = nextSignal->Peak ();
+
+			if (peakValue > peakCutoff)
+				continue;
+
+			if (peakValue > tempMaxPeak)
+				tempMaxPeak = peakValue;
+		}
+	}
+
+	else {
+
+		while (nextSignal = (DataSignal*) itPeaks ()) {
+
+			if (nextSignal->GetMean () < endPrimers)
+				continue;
+
+			peakValue = nextSignal->Peak ();
+
+			if (peakValue > tempMaxPeak)
+				tempMaxPeak = peakValue;
+		}
+	}
+
+	maxPeak = tempMaxPeak;
+	ExcelText << "Max Peak Allowed for ILS = " << maxPeak << endline << endline;
+	lastPrimerTime = endPrimers;
+	ExcelText.ResetOutputLevel ();
+
+	for (i=0; i<nPeaks; i++)
+		delete peakList [i];
+
+	delete[] peakList;
+	peakVector.clear ();
+	localPeakMaxima.clear ();
+	localDensities.clear ();
+	delete[] density;
+	delete[] localMaxPeak;
+
+	if (deepCopy)
+		localPeaks->ClearAndDelete ();
+
+	else
+		localPeaks->Clear ();
+
+	delete localPeaks;
+	return foundPrimers;
+}
+
+
 int STRLaneStandardChannelData :: SetDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak) {
 
 	//
@@ -1397,7 +1923,8 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	RGDList totallyTempCurveList;
 
 	double primerTime;
-	FoundPrimerPeaks (PreliminaryCurveList, mLaneStandard->GetFirstIntervalFraction (), mLaneStandard->GetSmallestIntervalFraction (), primerTime, Size, maxPeak, ExcelText);
+	//FoundPrimerPeaks (PreliminaryCurveList, mLaneStandard->GetFirstIntervalFraction (), mLaneStandard->GetSmallestIntervalFraction (), primerTime, Size, maxPeak, ExcelText);
+	FoundPrimerPeaksSM (PreliminaryCurveList, mLaneStandard->GetFirstIntervalFraction (), mLaneStandard->GetSmallestIntervalFraction (), primerTime, Size, maxPeak, ExcelText);	// Added 04/04/2016
 
 	// Save peaks to tempCurveList and operate on that.  This algorithm must not change PreliminaryCurveList unless it finds a successful fit!
 
