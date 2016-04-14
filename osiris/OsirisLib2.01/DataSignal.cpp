@@ -3283,6 +3283,8 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 
 		if (!secondaryPeak) {
 
+
+
 			lineFit = InnerProductWithConstantFunction ((int)floor (endSearch), locMax, aveHeight);
 
 			if (lineFit < 0.95)
