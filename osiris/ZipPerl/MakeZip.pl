@@ -159,7 +159,7 @@ sub COPYFILES
 
   my $config;
 
-  for $config (qw|Common.xsd LabSettingsV4.xsd LadderSpecifications/ILSAndLadderInfo.xsd LadderSpecifications/MarkerSetV4.xsd StandardSettingsV4.xsd OsirisAnalysisReport-2.0.xsd StandardSettingsType.xsd|)
+  for $config (qw|Common.xsd ArtifactLabelsSchema.xsd LabSettingsV4.xsd LadderSpecifications/ILSAndLadderInfo.xsd LadderSpecifications/MarkerSetV4.xsd StandardSettingsV4.xsd OsirisAnalysisReport-2.0.xsd StandardSettingsType.xsd|)
   {
     &SYSTEM("${CP} ${src}/OsirisXML/${config} ${dest}/Config/xsd");
   }
@@ -171,6 +171,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");
+  &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/ArtifactLabels.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/StandardPositiveControls.xml ${dest}/Config/LadderSpecifications");
 
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
