@@ -266,6 +266,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CArtifactLabels.cpp" />
     <ClCompile Include="CComboLabels.cpp" />
     <ClCompile Include="CDialogAbout.cpp" />
     <ClCompile Include="CDialogAcceptAlerts.cpp" />
@@ -398,6 +399,7 @@
   <ItemGroup>
     <ClInclude Include="CAlertViewStatus.h" />
     <ClInclude Include="CAllLoci.h" />
+    <ClInclude Include="CArtifactLabels.h" />
     <ClInclude Include="CComboLabels.h" />
     <ClInclude Include="CDialogAbout.h" />
     <ClInclude Include="CDialogAcceptAlerts.h" />
@@ -541,6 +543,7 @@
     <ClInclude Include="wxIDS.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="helix32_256.bmp" />
     <None Include="icon1.ico" />
     <None Include="OsirisIcon.xpm" />

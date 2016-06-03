@@ -620,8 +620,19 @@
     </xsl:variable>
     <xsl:variable name="UD123dir" select="exsl:node-set($tmpUD123dir)"/>
     <xsl:variable name="countUD123dir" select="count($UD123dir/udset/*)"/>
+    <xsl:variable name="noexport" select="$exports//Protocol[DoNotExport = 'true' and string-length(Notification) != 0]"/>
+    <xsl:if test="$noexport">
+      <xsl:message>
+        <xsl:for-each select="$noexport">
+          <xsl:if test="position() != 0">&#10;</xsl:if>
+          <xsl:value-of select="Level"/>
+          <xsl:text> level message: </xsl:text>
+          <xsl:value-of select="Notification"/>
+        </xsl:for-each>
+      </xsl:message>
+    </xsl:if>
     <directory>
-    
+
       <xsl:if test="$countUD123dir">
         <xsl:copy-of select="$UD123dir"/>
       </xsl:if>

@@ -23,9 +23,11 @@
 *
 * ===========================================================================
 *
-
+*
 *  FileName: nwxPlotCtrl.h
 *  Author:   Douglas Hoffman
+*
+*   need to remove m_pTimer and inherit nwxTimerReceiver 5/27/16
 *
 */
 #ifndef __NWX_PLOT_CTRL_H__
@@ -180,6 +182,7 @@ public:
   }
 
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
+  virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
   void SetupToolTip();
   void ClearToolTip();
 
@@ -225,7 +228,9 @@ private:
   void SendContextMenuEvent(wxMouseEvent &e);
   void ProcessMousePosition(const wxPoint &pt);
   void _Init();
-
+#ifdef __WXDEBUG__
+  void _LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel);
+#endif
   nwxPlotDrawerLabel m_Labels;
   nwxPlotDrawerXLabel m_XLabels;
   nwxPlotDrawerXShade m_Xshade;

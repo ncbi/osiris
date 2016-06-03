@@ -42,6 +42,7 @@
 #include "CParmOsiris.h"
 #include "CImageAbout.h"
 #include <time.h>
+#include "nwx/nwxLog.h"
 #include "nwx/nwxXmlMRU.h"
 #include "nwx/nwxString.h"
 #include "nwx/nwxFileUtil.h"
@@ -49,6 +50,7 @@
 #include "ConfigDir.h"
 #include "CKitList.h"
 #include "CKitColors.h"
+#include "CArtifactLabels.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -69,6 +71,7 @@ ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
 CKitColors *mainApp::m_pKitColors = NULL;
+CArtifactLabels *mainApp::m_pArtifactLabels = NULL;
 mainApp *mainApp::g_pThis = NULL;
 
 wxFile *mainApp::m_pFout = NULL;
@@ -88,6 +91,11 @@ mainApp::~mainApp()
     {
       delete m_pMRU;
       m_pMRU = NULL;
+    }
+    if(m_pArtifactLabels != NULL)
+    {
+      delete m_pArtifactLabels;
+      m_pArtifactLabels = NULL;
     }
     if(m_pKitColors != NULL)
     {
@@ -128,6 +136,14 @@ CKitColors *mainApp::GetKitColors()
     m_pKitColors = new CKitColors();
   }
   return m_pKitColors;
+}
+CArtifactLabels *mainApp::GetArtifactLabels()
+{
+  if(m_pArtifactLabels == NULL)
+  {
+    m_pArtifactLabels = new CArtifactLabels();
+  }
+  return m_pArtifactLabels;
 }
 CPersistKitList *mainApp::GetKitList()
 {
@@ -183,10 +199,7 @@ bool mainApp::OnInit()
     LogMessageV(psFormat,i,argv[i].wc_str());
     m_pFrame->OpenFile(argv[i]);
   }
-//  time_t t;
-//  time(&t);
   wxString sPID = wxString::Format(wxS("PID: %d"),(int)getpid());
-//  wxLog::OnLog(wxLOG_Message,(const wxChar *)sPID,t);
   LogMessage(sPID);
 #if defined(__WXDEBUG__)
   const wxPlatformInfo &plat(wxPlatformInfo::Get());
@@ -264,14 +277,8 @@ void mainApp::_OpenMessageStream()
       {
         delete m_pFout;
         m_pFout = NULL;
-        time_t t;
-        time(&t);
-        wxLog::OnLog(wxLOG_Message,"Cannot open message log",t);
+        nwxLog::LogMessage(wxT("Cannot open message log"));
       }
-//      else
-//      {
-//        LogMessage("File Opened ****************************");
-//      }
     }
   }
 }
@@ -311,11 +318,11 @@ void mainApp::LogMessageV(const wxChar *psFormat,...)
 }
 void mainApp::_LogMessage(const wxString &sMsg)
 {
-  time_t t;
-  time(&t);
-  wxLog::OnLog(wxLOG_Message,sMsg,t);
+  nwxLog::LogMessage(sMsg);
   if(LogIsOpen())
   {
+    time_t t;
+    time(&t);
     _LogMessageFile(sMsg,t);
   }
 }
@@ -359,7 +366,7 @@ void mainApp::_LogMessageFile(const wxString &sMsg, time_t t)
     {
       nToWrite = 0; // loop exit
       _CloseMessageStream();
-      wxLog::OnLog(wxLOG_Message,"Cannot write to message log, file has been closed",t);
+      nwxLog::LogMessage(wxT("Cannot write to message log, file has been closed"));
     }
     else
     {

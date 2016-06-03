@@ -47,11 +47,15 @@
 
 bool nwxPointLabel::operator == (const nwxPointLabel &x) const
 {
-  return (m_dy == x.m_dy) &&
+  return 
+    (m_bStrikeThrough == x.m_bStrikeThrough) &&
+    (m_pData == x.m_pData) &&
+    (m_dy == x.m_dy) &&
     (m_dx == x.m_dx) &&
     (m_sLabel == x.m_sLabel) &&
     (m_color == x.m_color) &&
-    (m_nAlign == x.m_nAlign)
+    (m_nAlign == x.m_nAlign) &&
+    (m_sToolTip == x.m_sToolTip)
     ;
 }
 
@@ -103,6 +107,10 @@ bool nwxPointLabel::operator < (const nwxPointLabel &x) const
   else if(m_nAlign != x.m_nAlign)
   {
     bRtn = m_nAlign < x.m_nAlign;
+  }
+  else if(m_pData != x.m_pData)
+  {
+    bRtn = m_pData < x.m_pData;
   }
   return bRtn;
 }

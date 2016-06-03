@@ -37,6 +37,7 @@
 #include "CPlotData.h"
 #include "COARfile.h"
 #include "CKitColors.h"
+#include "CArtifactLabels.h"
 #include "nwx/nwxString.h"
 #include "CDialogParameters.h"
 #include "nwx/vectorptr.h"
@@ -53,6 +54,33 @@ void CPlotCtrl::OnClickXLabel(const nwxPointLabel &x, const wxPoint &)
 {
   m_pPlot->ZoomToLocus(x.GetLabel(),0);
   return;
+}
+void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
+{
+  //  STOP HERE - edit or delete point, or edit artifact
+  COARpeakAny *p = (COARpeakAny *)x.GetData();
+#ifdef __WXDEBUG__
+  {
+    wxString s;
+    if(p == NULL) 
+    {
+      s = wxT("OnClickLabel - no peak info");
+    }
+    else if(p->IsArtifact())
+    {
+      s = wxT("OnClickLabel - Artifact");
+    }
+    else if(p->IsAllele())
+    {
+      s = wxT("OnClickLabel - Allele");
+    }
+    else
+    {
+      s = wxT("OnClickLabel - neither artifact nor allele");
+    }
+    mainApp::LogMessage(s);
+  }
+#endif
 }
 bool CPlotCtrl::SetViewRect(
   const wxRect2DDouble &view, bool send_event)
@@ -256,6 +284,11 @@ CPanelPlot::~CPanelPlot()
     m_pMenu = NULL;
   }
   if(m_pMenuPopup != NULL) { delete m_pMenuPopup;}
+  _CleanupPeakAny();
+}
+void CPanelPlot::_CleanupPeakAny()
+{
+  vectorptr<COARpeakAny>::cleanup(&m_vPeakAny);
 }
 
 void CPanelPlot::CleanupMinRfuLines()
@@ -914,7 +947,6 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
       bLadder  
     )
   {
-    wxString sLabel;
     wxString sLocus;
     wxString sToolTip;
     wxString sChannelName;
@@ -925,6 +957,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
     const vector<CSamplePeak *> *pp;
     const vector<CArtifact *> *pa;
     const CChannelColors *pChannelColor;
+    CArtifactLabels *pArtLabels = mainApp::GetArtifactLabels();
     if(_nChannel)
     {
       nChannelStart = _nChannel;
@@ -960,15 +993,16 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
         _BuildPeakLabels(
           pp, colourData,  sChannelName,nChannel,anLabelTypes);
         n = (pa == NULL) ? 0 : pa->size();
-        sLabel = "A";
         for(j = 0; j < n; j++)
         {
           const CArtifact *pArt = pa->at(j);
           if(pArt->LevelSelected(nArtifact))
           {
             sToolTip = _ArtifactToolTip(pArt,sChannelName);
+            const wxString &sArtifactLabel = pArt->GetArtifactLabel();
+            const wxString &sPlotLabel = pArtLabels->GetDisplayFromString(sArtifactLabel);
             nwxPointLabel label(
-                  sLabel,
+                  sPlotLabel,
                   pArt->GetTime(),
                   pArt->GetRFU(),
                   colourData,
@@ -1013,13 +1047,13 @@ void CPanelPlot::_BuildOARlabels()
     wxString sLocus;
     wxString sToolTip;
     wxString sChannelName;
-    const wxString sA("A");
+    //const wxString sA("A");
     size_t n;
     size_t j;
     size_t nChannelCount = (pSample == NULL) ? 0 : m_pData->GetChannelCount();
     const COARchannel *pChannel;
     bool bOARHasArtifacts = bArtifact && m_pOARfile->CanEditArtifacts();
-
+    _CleanupPeakAny();
     for(unsigned int nChannel = 1;
       nChannel <= nChannelCount;
       nChannel++)
@@ -1044,11 +1078,12 @@ void CPanelPlot::_BuildOARlabels()
           : pChannelColor->GetDyeName();
         const wxColour &colour(m_pColors->GetColor(
           m_pData->GetKitName(),ANALYZED_DATA,nChannel));
-
+        CArtifactLabels *pArtLabels = mainApp::GetArtifactLabels();
         n = (pPeaks.get() == NULL) ? 0 : pPeaks->size();
         for(j = 0; j < n; j++)
         {
           COARpeakAny *pPeak = pPeaks.get()->at(j);
+          m_vPeakAny.push_back(pPeak); // hold in array, delete later
           if(bLabels && pPeak->IsAllele())
           {
             sLabel = _AlleleLabel(pPeak,anLabelTypes);
@@ -1059,7 +1094,9 @@ void CPanelPlot::_BuildOARlabels()
                     pPeak->GetRFU(),
                     colour,
                     sToolTip,
-                    wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM);
+                    wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
+                    false,
+                    pPeak);
             m_pPlotCtrl->AddLabel(label);
           }
           if(bOARHasArtifacts &&
@@ -1067,14 +1104,18 @@ void CPanelPlot::_BuildOARlabels()
             (pPeak->GetCriticalLevel() <= nArtifact)
             )
           {
+            const wxString &sArtifactLabel = pPeak->GetArtifactLabel();
+            const wxString &sPlotLabel = pArtLabels->GetDisplayFromString(sArtifactLabel);
             sToolTip = _ArtifactToolTip(pPeak,sChannelName);
             nwxPointLabel label(
-                  sA,
+                  sPlotLabel,
                   pPeak->GetTime(),
                   pPeak->GetRFU(),
                   colour,
                   sToolTip,
-                  wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM);
+                  wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
+                  false,
+                  pPeak);
             m_pPlotCtrl->AddLabel(label);
           }
         }
@@ -1082,6 +1123,7 @@ void CPanelPlot::_BuildOARlabels()
         {
           _AppendLadderPeaks(nChannel,sChannelName);
         }
+        pPeaks->clear();  // prevent deleting items in array
       }
     }
     if(bLadderLabels)
@@ -1111,6 +1153,7 @@ void CPanelPlot::UpdateLadderLabels()
 void CPanelPlot::RebuildLabels(bool bRedraw)
 {
   m_pPlotCtrl->RemoveAllLabels();
+  _CleanupPeakAny();
   vector<unsigned int> an;
   bool bLabels = !!m_pMenu->GetLabelTypes(&an);
   int nArtifact = m_pMenu->ArtifactValue();

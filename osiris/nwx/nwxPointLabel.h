@@ -47,13 +47,17 @@ public:
     double dy,
     const wxColour &c,
     const wxString sToolTip = wxEmptyString,
-    int nAlign = nwxDEF_ALIGN) :
+    int nAlign = nwxDEF_ALIGN,
+    bool bStrikeThrough = false,
+    void *pData = NULL) :
         m_sLabel(sLabel),
         m_sToolTip(sToolTip),
         m_color(c),
         m_dx(dx),
         m_dy(dy),
-        m_nAlign(nAlign)
+        m_nAlign(nAlign),
+        m_pData(pData),
+        m_bStrikeThrough(bStrikeThrough)
           {;}
 
 #undef nwxDEF_ALIGN
@@ -70,17 +74,20 @@ public:
     m_dx = x.m_dx;
     m_dy = x.m_dy;
     m_nAlign = x.m_nAlign;
+    m_bStrikeThrough = x.m_bStrikeThrough;
+    m_pData = x.m_pData;
     return *this;
   }
-  bool operator < (const nwxPointLabel &x) const;
-  bool operator == (const nwxPointLabel &x) const;
+  bool operator < (const nwxPointLabel &x) const; 
+      // in nwxPlotDrawerLabel.cpp used for set<nwxPointLabel>
+  bool operator > (const nwxPointLabel &x) const
+  {
+    return x < *this;
+  }
+  bool operator == (const nwxPointLabel &x) const; // nwxPlotDrawerLabel.cpp
   bool operator != (const nwxPointLabel &x) const
   {
     return !((*this) == x);
-  }
-  bool operator > (const nwxPointLabel &x) const
-  {
-    return (x < (*this));
   }
 
   // Get functions
@@ -109,6 +116,14 @@ public:
   {
     return m_nAlign;
   }
+  void *GetData() const
+  {
+    return m_pData;
+  }
+  bool GetStrikeThrough() const
+  {
+    return m_bStrikeThrough;
+  }
 
   // Set functions
 
@@ -136,6 +151,14 @@ public:
   {
     m_nAlign = n;
   }
+  void SetData(void *p)
+  {
+    m_pData = p;
+  }
+  void SetStrikeThrough(bool b)
+  {
+    m_bStrikeThrough = b;
+  }
   void SetToolTip(const wxString &x)
   {
     m_sToolTip = x;
@@ -152,6 +175,8 @@ private:
   double m_dx;
   double m_dy;
   int m_nAlign;
+  void *m_pData;
+  bool m_bStrikeThrough;
 };
 
 #endif

@@ -32,6 +32,7 @@
 #include <wx/cursor.h>
 #include "nwx/nwxPlotCtrl.h"
 #include "nwx/nwxBatch.h"
+#include "nwx/nwxLog.h"
 #include "clear15.xpm"
 
 IMPLEMENT_CLASS(nwxPlotCtrl, wxPlotCtrl )
@@ -135,6 +136,8 @@ void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
   }
   else if(pt.y < ptArea.y)
   {
+    //  STOP HERE - also process clicking for all labels 5/26/2016
+
     pt.y -= ptArea.y;
     pt.x -= ptArea.x;
     if(e.ButtonDown(wxMOUSE_BTN_LEFT))
@@ -145,15 +148,20 @@ void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
     else if(e.ButtonUp(wxMOUSE_BTN_LEFT))
     {
       m_bClear = true;
+      const nwxPointLabel *pLabel = NULL;
       if(m_pLastXLabel != NULL)
       {
-        const nwxPointLabel *pLabel = m_XLabels.FindLabel(pt);
+        pLabel = m_XLabels.FindLabel(pt);
         if(pLabel == m_pLastXLabel)
         {
           OnClickXLabel(*pLabel,pt);
         }
         m_pLastXLabel = NULL;
       }
+#ifdef __WXDEBUG__
+      _LogMouseUp(pt,pLabel); // debugging
+#endif
+      bSkip = true;
     }
     else if(e.Leaving())
     {
@@ -175,7 +183,20 @@ void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
   }
   e.Skip(bSkip);
 }
+#ifdef __WXDEBUG__
+void nwxPlotCtrl::_LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel)
+{
+  wxString s = wxString::Format( wxT("Button up %d,%d\n"),pt.x,pt.y);
 
+  if(pLabel != NULL)
+  {
+    s += pLabel->GetLabel();
+    s += wxChar('\n');
+    s += pLabel->GetToolTip();
+  }
+  nwxLog::LogMessage(s);
+}
+#endif
 void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi)
 {
   TnwxBatch<nwxPlotCtrl> XXXX(this);
@@ -197,6 +218,18 @@ void nwxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event )
   if(event.ButtonUp(wxMOUSE_BTN_RIGHT))
   {
     SendContextMenuEvent(event);
+  }
+  else if (event.ButtonUp(wxMOUSE_BTN_LEFT))
+  {
+      const nwxPointLabel *pLabel = m_Labels.FindLabel(pt);
+      if(pLabel != NULL)
+      {
+        OnClickLabel(*pLabel,pt);
+      }
+      // DEBUGGING
+#ifdef __WXDEBUG__
+      _LogMouseUp(pt,pLabel);
+#endif
   }
 }
 
@@ -233,12 +266,9 @@ void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
   }
   else
   {
-    if(!m_nTimeHere)
-    {
-      ClearToolTip();
-    }
+    bool bSetup = !m_nTimeHere && (m_pToolTip != NULL);
     m_nTimeHere++;
-    if(m_nTimeHere == TIMER_COUNT)
+    if(bSetup || (m_nTimeHere == TIMER_COUNT))
     {
       SetupToolTip();
       StopTimer();
@@ -343,6 +373,8 @@ void nwxPlotCtrl::SetupToolTip()
   {
     bool bLayout = true;
     bool bRefresh = false;
+    bool bMove = true;
+    bool bHideCursor = false;
     if(m_pToolTip == NULL)
     {
       wxColour cbg =
@@ -377,7 +409,11 @@ void nwxPlotCtrl::SetupToolTip()
     }
     else
     {
+      // tool tip for label is showing but the cursor has moved
+      // and is still within range.  Do not layout or move the
+      // tool tip.
       bLayout = false;
+      bMove = !m_pToolTip->IsShown(); // move only if not shown
     }
     if(bLayout)
     {
@@ -386,60 +422,62 @@ void nwxPlotCtrl::SetupToolTip()
     }
 
     // set position
-    wxWindow *pArea = GetPlotArea();
-    wxPoint pos(pArea->GetPosition());
-    bool bHideCursor = false;
-    pos += m_PositionMouse;
-#if __TOOLTIP_TO_FRAME__
-    _OffsetToolTipPosition(&pos);
-#endif
-    wxSize tipSize = m_pToolTip->GetSize();
-    wxSize winSize = m_pToolTip->GetParent()->GetSize();
-    if(pos.y < tipSize.y)
+    if(bMove)
     {
-      pos.y += 24;
-    }
-    else
-    {
-      pos.y -= tipSize.y;
-    }
-    if( (pos.y + tipSize.y) > winSize.y)
-    {
-      // tool tip clipped on bottom of window,
-      // move it up
-      pos.y = winSize.y - tipSize.y;
-      if(pos.y < 0)
+      wxWindow *pArea = GetPlotArea();
+      wxPoint pos(pArea->GetPosition());
+      pos += m_PositionMouse;
+  #if __TOOLTIP_TO_FRAME__
+      _OffsetToolTipPosition(&pos);
+  #endif
+      wxSize tipSize = m_pToolTip->GetSize();
+      wxSize winSize = m_pToolTip->GetParent()->GetSize();
+      if(pos.y < tipSize.y)
       {
-        // clipped by top of window, move down
-        pos.y = 0;
-      }
-      if(pos.x > tipSize.x)
-      {
-        pos.x -= tipSize.x;
+        pos.y += 24;
       }
       else
       {
-        // cursor will obscure tool tip
-        bHideCursor = true;
+        pos.y -= tipSize.y;
       }
-    }
-    if( (pos.x + tipSize.x) > winSize.x)
-    {
-      // tool tip is clipped on the right
-      // move it left
-      pos.x -= tipSize.x;
-      if(pos.x < 0)
+      if( (pos.y + tipSize.y) > winSize.y)
       {
-        // tool tip is clipped on the left
-        // move right
-        pos.x = 0;
-        bHideCursor = true;  // cursor will obscure tool tip
+        // tool tip clipped on bottom of window,
+        // move it up
+        pos.y = winSize.y - tipSize.y;
+        if(pos.y < 0)
+        {
+          // clipped by top of window, move down
+          pos.y = 0;
+        }
+        if(pos.x > tipSize.x)
+        {
+          pos.x -= tipSize.x;
+        }
+        else
+        {
+          // cursor will obscure tool tip
+          bHideCursor = true;
+        }
       }
-    }
-    if(m_pToolTip->GetPosition() != pos)
-    {
-      m_pToolTip->Move(pos);
-      bRefresh = true;
+      if( (pos.x + tipSize.x) > winSize.x)
+      {
+        // tool tip is clipped on the right
+        // move it left
+        pos.x -= tipSize.x;
+        if(pos.x < 0)
+        {
+          // tool tip is clipped on the left
+          // move right
+          pos.x = 0;
+          bHideCursor = true;  // cursor will obscure tool tip
+        }
+      }
+      if(m_pToolTip->GetPosition() != pos)
+      {
+        m_pToolTip->Move(pos);
+        bRefresh = true;
+      }
     }
     if(!m_pToolTip->IsShown())
     {
@@ -456,6 +494,10 @@ void nwxPlotCtrl::SetupToolTip()
       wxCursor c(wxCURSOR_BLANK);
       SetCursor(c);
     }
+  }
+  else if(m_pToolTip != NULL)
+  {
+    ClearToolTip();
   }
   return;
 }
@@ -477,6 +519,7 @@ void nwxPlotCtrl::OnViewChanged(wxPlotCtrlEvent &e)
 }
 
 void nwxPlotCtrl::OnClickXLabel(const nwxPointLabel &, const wxPoint &) {;}
+void nwxPlotCtrl::OnClickLabel(const nwxPointLabel &, const wxPoint &) {;}
 
 void nwxPlotCtrl::SendContextMenuEvent(wxMouseEvent &e)
 {

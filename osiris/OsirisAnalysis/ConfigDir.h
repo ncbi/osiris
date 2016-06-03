@@ -120,24 +120,27 @@ public:
   }
   wxString GetMessageBookFileName() const
   {
-    wxString sRtn = GetExeConfigPath();
-    nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append("LadderSpecifications");
-    nwxFileUtil::EndWithSeparator(&sRtn);
+    wxString sRtn = GetILSLadderFilePath();
     sRtn.Append("MessageBook.xml");
     return sRtn;
-  }	
-#if 0
-  wxString GetMessageBookFileName() const
+  }
+#define ARTIFACT_FILE_NAME wxT("ArtifactLabels.xml")
+  wxString LocalArtifactLabelsFileName() const
   {
-    //  this needs a kit name
-    wxString sRtn = GetExeConfigPath();
-    nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append("OsirisMessageBookV4.0.xml");
+    wxString sRtn;
+    _BuildFileName(GetSitePath(),ARTIFACT_FILE_NAME,&sRtn);
     return sRtn;
   }
-#endif
-
+  wxString FindArtifactLabelsFileName() const
+  {
+    wxString sRtn;
+    if(!_FindFileName(ARTIFACT_FILE_NAME,&sRtn))
+    {
+      sRtn.Clear();
+    }
+    return sRtn;
+  }
+#undef ARTIFACT_FILE_NAME
 #ifdef __WXDEBUG__
   void Log();
 #endif
@@ -167,6 +170,32 @@ private:
   bool m_bError;
     // true is an error occurred when creating a directory
   void _SetupSitePath();
+
+  static bool _BuildFileName(const wxString &sPath, const wxChar *psFileName, wxString *psRtn)
+  {
+    // load the file name in psRtn whether or not it exists
+    wxString sRtn = sPath;
+    nwxFileUtil::EndWithSeparator(&sRtn);
+    sRtn.Append(psFileName);
+    *psRtn = sRtn;
+    bool bRtn = wxFileName::IsFileReadable(sRtn);
+    return bRtn;
+  }
+  bool _FindFileName(const wxChar *psFileName, wxString *psRtn) const
+  {
+    // load the file name only if it exists
+    wxString sRtn;
+    bool bRtn = _BuildFileName(GetSitePath(),psFileName,&sRtn);
+    if(!bRtn)
+    {
+      bRtn = _BuildFileName(GetILSLadderFilePath(),psFileName,&sRtn);
+    }
+    if(bRtn)
+    {
+      *psRtn = sRtn;
+    }
+    return bRtn;
+  }
 
 };
 

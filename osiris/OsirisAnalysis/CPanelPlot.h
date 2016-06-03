@@ -61,17 +61,18 @@ class CFramePlot;
 class wxTimer;
 class IOARpeak;
 class CSamplePeak;
+class COARpeakAny;
 
 typedef map<int,wxPlotData *> mapChannelPlot;
 typedef vector<wxPlotData *> vectorILSlines;
 typedef map<double,wxPlotData *> mapMinRfu;
-
 
 class CPlotCtrl : public nwxPlotCtrl
 {
 public:
   CPlotCtrl(wxWindow *parent, CPanelPlot *pPlot, wxWindowID id = wxID_ANY);
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
+  virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
   bool SetViewRect(const wxRect2DDouble &view, bool send_event=false);
 private:
   CPanelPlot *m_pPlot;
@@ -581,6 +582,7 @@ private:
     unsigned int nStart = 0);
   wxPlotData *FindData(DATA_TYPE nType, unsigned int nChannel, bool bNoise = false);
   void _CleanupLadderPeakSet();
+  void _CleanupPeakAny();
   int _GetLadderPeakCount();
   //void _CleanupMenu(); // remove m_pMenuItem from its menu and delete
   void _BuildMenu(int nPlotNr);
@@ -593,6 +595,7 @@ private:
 
   mapChannelPlot *m_pmapChannelPlot[COUNT_DATA];
   mapChannelPlot *m_pmapChannelPlotNoise[COUNT_DATA];
+  vector<COARpeakAny *> m_vPeakAny;
   vectorILSlines m_vILS;
   CPlotData *m_pData;
   COARfile *m_pOARfile;
