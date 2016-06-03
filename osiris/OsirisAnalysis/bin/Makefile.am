@@ -1,6 +1,7 @@
 bin_PROGRAMS = osiris
 AUTOMAKE_OPTIONS = subdir-objects
 osiris_SOURCES =  \
+../CArtifactLabels.cpp \
 ../CComboLabels.cpp \
 ../CDialogAbout.cpp \
 ../CDialogAcceptAlerts.cpp \
