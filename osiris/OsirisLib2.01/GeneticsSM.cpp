@@ -523,6 +523,9 @@ Boolean Locus :: ReportXMLSmartNoticeObjects (RGTextOutput& text, RGTextOutput& 
 					//tempText << "\t\t\t</ExportProtocolList>\n";
 				}
 
+				else
+					tempText << "\t\t\t<MsgName>" << nextNotice->GetMessageName () << "</MsgName>\n";
+
 				tempText << "\t\t</Message>\n";
 			}
 		}

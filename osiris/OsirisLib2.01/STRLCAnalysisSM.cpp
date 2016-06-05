@@ -60,6 +60,7 @@
 #include "Genetics.h"
 #include "OsirisVersion.h"
 #include "TracePrequalification.h"
+#include "LeastMedianOfSquares.h"
 #include <list>
 #include <iostream>
 #include <time.h>
@@ -293,6 +294,116 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	Boolean print = TRUE;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
+	//double yLMS [8] = {579, 117, 103, 323, 276, 750, 689, 2070 };
+	//double xLMS [8] = {8381, 7726, 7866, 8191, 7167, 9522, 9427, 11068.0};
+	//double yLMS [9] = {159, 20, 1, 15, -1, 5, 2, -2, 20 };
+	//double xLMS [9] = {1485, 1590, 1699, 1394, 1608, 1478, 1285, 1342, 1422};
+	double yLMS [8] = {34, 13, 16, 16, 11, 15, 18, 8 };
+	double xLMS [8] = {2109, 1625, 1402, 1309, 1141, 1162, 1696, 1823};
+	int iLMS;
+	int num = 8;
+
+	LeastMedianOfSquares1D lmsTest (num, xLMS, yLMS);
+	list<double> xs;
+	list<double> ys;
+
+	if (!lmsTest.DataIsOK ())
+		cout << "Least median of squares data problematic" << endl;
+
+	else {
+
+		double result = lmsTest.CalculateLMS ();
+
+		if (result < 0.0) {
+
+			cout << "Could not find valid least median values" << endl;
+		}
+
+		else {
+
+			double leastMed = lmsTest.GetLMSValue ();
+			cout << "Least median value = " << leastMed << endl;
+			double lMed2 = lmsTest.GetMedianSquaredForLMS ();
+			cout << "Least median squared = " << lMed2 << endl;
+			cout << "Outlier threshold = " << lmsTest.GetOutlierThreshold () << endl;
+			cout << "Data included in minimum:  ";
+
+			for (iLMS=0; iLMS<num; iLMS++) {
+
+				if (lmsTest.ElementIsOutlier (iLMS))
+					continue;
+
+				cout << yLMS [iLMS] << ", ";
+				xs.push_back (xLMS [iLMS]);
+				ys.push_back (yLMS [iLMS]);
+			}
+
+			cout << "..." << endl;
+			cout << "Outliers:  ";
+
+			for (iLMS=0; iLMS<num; iLMS++) {
+
+				if (lmsTest.ElementIsOutlier (iLMS))
+					cout << yLMS [iLMS] << ", ";
+			}
+
+			cout << "..." << endl;
+		}
+	}
+
+	LeastSquaresQuadraticModel LQS (xs, ys);
+	xs.clear ();
+	ys.clear ();
+
+	if (!LQS.DataIsOK ())
+		cout << "Least squares model could not set up..." << endl;
+
+	else {
+
+		double linearLS;
+		double quadraticLS;
+
+		double LS = LQS.CalculateLeastSquare (linearLS, quadraticLS);
+
+		cout << "\n\nLeast squares model:  linear = " << linearLS << ", and quadratic = " << quadraticLS << endl;
+		cout << "Least squares = " << LS << endl << endl;
+	}
+
+	LeastMedianOfSquares2DExhaustive lmsTest2 (num, xLMS, yLMS);
+
+	if (!lmsTest2.DataIsOK ())
+		cout << "Least median of squares 2 data problematic" << endl;
+
+	else {
+
+		lmsTest2.CalculateLMS ();
+		double leastMed = lmsTest2.GetLMSValue ();
+		double leastMedSlope = lmsTest2.GetLMSValue2 ();
+		cout << "Least median value = " << leastMed << " and Least median slope = " << leastMedSlope << endl;
+		double lMed2 = lmsTest2.GetMedianSquaredForLMS ();
+		cout << "Least median squared = " << lMed2 << endl;
+		cout << "Outlier threshold = " << lmsTest2.GetOutlierThreshold () << endl;
+		cout << "Data included in minimum:  ";
+
+		for (iLMS=0; iLMS<num; iLMS++) {
+
+			if (lmsTest2.ElementIsOutlier (iLMS))
+				continue;
+
+			cout << yLMS [iLMS] << ", ";
+		}
+
+		cout << "..." << endl;
+		cout << "Outliers:  ";
+
+		for (iLMS=0; iLMS<num; iLMS++) {
+
+			if (lmsTest2.ElementIsOutlier (iLMS))
+				cout << yLMS [iLMS] << ", ";
+		}
+
+		cout << "..." << endl;
+	}
 
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
@@ -1877,6 +1988,9 @@ Boolean STRLCAnalysis :: ReportXMLSmartNoticeObjects (RGTextOutput& text, RGText
 					//tempText << "\t\t\t" << nextNotice->GetExportProtocolInformation ();
 					//tempText << "\t\t\t</ExportProtocolList>\n";
 				}
+
+				else
+					tempText << "\t\t\t<MsgName>" << nextNotice->GetMessageName () << "</MsgName>\n";
 
 				tempText << "\t\t</Message>\n";
 			}
