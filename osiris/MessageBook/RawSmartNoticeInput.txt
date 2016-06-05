@@ -215,5 +215,7 @@ smExtendLociEdgeToEdgePreset	1097	2613
 smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset	1098	2614
 smMaxILSBPForExtendedLocus	1099	2615
 smIsQualityLocus	1100	2616
-
+smScaleILSPrimerSearchPreset	1101	2617
+smNumberOfLastILSPeaksInScale	1102	2618
+smPercentLastILSPeaksInScaling	1103	2619
 

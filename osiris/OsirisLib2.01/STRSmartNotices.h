@@ -228,6 +228,9 @@ PERSISTENT_PREDECLARATION (smExtendLociEdgeToEdgePreset)
 PERSISTENT_PREDECLARATION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset)
 PERSISTENT_PREDECLARATION (smMaxILSBPForExtendedLocus)
 PERSISTENT_PREDECLARATION (smIsQualityLocus)
+PERSISTENT_PREDECLARATION (smScaleILSPrimerSearchPreset)
+PERSISTENT_PREDECLARATION (smNumberOfLastILSPeaksInScale)
+PERSISTENT_PREDECLARATION (smPercentLastILSPeaksInScaling)
 
 
 
@@ -6287,6 +6290,90 @@ public:
 	smIsQualityLocus ();
 	smIsQualityLocus (const smIsQualityLocus& note);
 	virtual ~smIsQualityLocus ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smScaleILSPrimerSearchPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smScaleILSPrimerSearchPreset)
+
+public:
+	smScaleILSPrimerSearchPreset ();
+	smScaleILSPrimerSearchPreset (const smScaleILSPrimerSearchPreset& note);
+	virtual ~smScaleILSPrimerSearchPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smNumberOfLastILSPeaksInScale : public SmartNotice {
+
+PERSISTENT_DECLARATION (smNumberOfLastILSPeaksInScale)
+
+public:
+	smNumberOfLastILSPeaksInScale ();
+	smNumberOfLastILSPeaksInScale (const smNumberOfLastILSPeaksInScale& note);
+	virtual ~smNumberOfLastILSPeaksInScale ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPercentLastILSPeaksInScaling : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPercentLastILSPeaksInScaling)
+
+public:
+	smPercentLastILSPeaksInScaling ();
+	smPercentLastILSPeaksInScaling (const smPercentLastILSPeaksInScaling& note);
+	virtual ~smPercentLastILSPeaksInScaling ();
 
 	virtual int GetSubject () const;
 

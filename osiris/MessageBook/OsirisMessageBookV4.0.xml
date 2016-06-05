@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.67</VersionNumber>
-	<BuildTime>03 31 2016 03:28 PM</BuildTime>
+	<VersionNumber>6.68</VersionNumber>
+	<BuildTime>04 01 2016 06:07 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5826,6 +5826,58 @@
 			<Text>Report (Non-critical) Shoulder Artifacts</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smScaleILSPrimerSearchPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Scale ILS Primer Peak Search Based on Last ILS Peaks</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Scale ILS Primer Search</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smNumberOfLastILSPeaksInScale</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of right end peaks of ILS to use in scale</Description>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>4</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                Number of End Peaks to Use in Scaling</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Number of End Peaks to Use in Scaling</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPercentLastILSPeaksInScaling</Name>
+			<MessageType>count</MessageType>
+			<Description>Percent of least of last ILS Peaks to Use as Threshold</Description>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>75</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                Percent of Least of Last ILS Peaks to Use as Scale</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Percent of Least of Last ILS Peaks to Use as Scale</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacerInternalLaneStandardShouldersEnd</Name>

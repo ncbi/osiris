@@ -1308,6 +1308,24 @@ int smIsQualityLocus::sMessageIndex = 0;
 int smIsQualityLocus::sMessageScope = 0;
 
 
+RGString smScaleILSPrimerSearchPreset::sName = "smScaleILSPrimerSearchPreset";
+int smScaleILSPrimerSearchPreset::sSubject = smScaleILSPrimerSearchPreset::LoadType ();
+int smScaleILSPrimerSearchPreset::sMessageIndex = 0;
+int smScaleILSPrimerSearchPreset::sMessageScope = 0;
+
+
+RGString smNumberOfLastILSPeaksInScale::sName = "smNumberOfLastILSPeaksInScale";
+int smNumberOfLastILSPeaksInScale::sSubject = smNumberOfLastILSPeaksInScale::LoadType ();
+int smNumberOfLastILSPeaksInScale::sMessageIndex = 0;
+int smNumberOfLastILSPeaksInScale::sMessageScope = 0;
+
+
+RGString smPercentLastILSPeaksInScaling::sName = "smPercentLastILSPeaksInScaling";
+int smPercentLastILSPeaksInScaling::sSubject = smPercentLastILSPeaksInScaling::LoadType ();
+int smPercentLastILSPeaksInScaling::sMessageIndex = 0;
+int smPercentLastILSPeaksInScaling::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1525,6 +1543,9 @@ PERSISTENT_DEFINITION (smExtendLociEdgeToEdgePreset, 2613, "smExtendLociEdgeToEd
 PERSISTENT_DEFINITION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset, 2614, "smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset")
 PERSISTENT_DEFINITION (smMaxILSBPForExtendedLocus, 2615, "smMaxILSBPForExtendedLocus")
 PERSISTENT_DEFINITION (smIsQualityLocus, 2616, "smIsQualityLocus")
+PERSISTENT_DEFINITION (smScaleILSPrimerSearchPreset, 2617, "smScaleILSPrimerSearchPreset")
+PERSISTENT_DEFINITION (smNumberOfLastILSPeaksInScale, 2618, "smNumberOfLastILSPeaksInScale")
+PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPeaksInScaling")
 
 
 
@@ -14541,6 +14562,186 @@ int smIsQualityLocus :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smIsQualityLocus* noticeType = new smIsQualityLocus;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smScaleILSPrimerSearchPreset :: smScaleILSPrimerSearchPreset () : SmartNotice () {
+
+}
+
+
+smScaleILSPrimerSearchPreset :: smScaleILSPrimerSearchPreset (const smScaleILSPrimerSearchPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smScaleILSPrimerSearchPreset :: ~smScaleILSPrimerSearchPreset () {
+
+}
+
+
+int smScaleILSPrimerSearchPreset :: GetSubject () const {
+
+	return smScaleILSPrimerSearchPreset::sSubject;
+}
+
+
+void smScaleILSPrimerSearchPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smScaleILSPrimerSearchPreset::sMessageIndex = index;
+	smScaleILSPrimerSearchPreset::sMessageScope = scope;
+}
+
+
+int smScaleILSPrimerSearchPreset :: GetMessageIndex () const {
+
+	return smScaleILSPrimerSearchPreset :: sMessageIndex;
+}
+
+
+int smScaleILSPrimerSearchPreset :: GetScope () const {
+
+	return smScaleILSPrimerSearchPreset :: sMessageScope;
+}
+
+
+RGString smScaleILSPrimerSearchPreset :: GetName () const {
+
+	return smScaleILSPrimerSearchPreset :: sName;
+}
+
+
+
+int smScaleILSPrimerSearchPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smScaleILSPrimerSearchPreset* noticeType = new smScaleILSPrimerSearchPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smNumberOfLastILSPeaksInScale :: smNumberOfLastILSPeaksInScale () : SmartNotice () {
+
+}
+
+
+smNumberOfLastILSPeaksInScale :: smNumberOfLastILSPeaksInScale (const smNumberOfLastILSPeaksInScale& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smNumberOfLastILSPeaksInScale :: ~smNumberOfLastILSPeaksInScale () {
+
+}
+
+
+int smNumberOfLastILSPeaksInScale :: GetSubject () const {
+
+	return smNumberOfLastILSPeaksInScale::sSubject;
+}
+
+
+void smNumberOfLastILSPeaksInScale :: SetIndexAndScope (int index, int scope) const {
+
+	smNumberOfLastILSPeaksInScale::sMessageIndex = index;
+	smNumberOfLastILSPeaksInScale::sMessageScope = scope;
+}
+
+
+int smNumberOfLastILSPeaksInScale :: GetMessageIndex () const {
+
+	return smNumberOfLastILSPeaksInScale :: sMessageIndex;
+}
+
+
+int smNumberOfLastILSPeaksInScale :: GetScope () const {
+
+	return smNumberOfLastILSPeaksInScale :: sMessageScope;
+}
+
+
+RGString smNumberOfLastILSPeaksInScale :: GetName () const {
+
+	return smNumberOfLastILSPeaksInScale :: sName;
+}
+
+
+
+int smNumberOfLastILSPeaksInScale :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smNumberOfLastILSPeaksInScale* noticeType = new smNumberOfLastILSPeaksInScale;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPercentLastILSPeaksInScaling :: smPercentLastILSPeaksInScaling () : SmartNotice () {
+
+}
+
+
+smPercentLastILSPeaksInScaling :: smPercentLastILSPeaksInScaling (const smPercentLastILSPeaksInScaling& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPercentLastILSPeaksInScaling :: ~smPercentLastILSPeaksInScaling () {
+
+}
+
+
+int smPercentLastILSPeaksInScaling :: GetSubject () const {
+
+	return smPercentLastILSPeaksInScaling::sSubject;
+}
+
+
+void smPercentLastILSPeaksInScaling :: SetIndexAndScope (int index, int scope) const {
+
+	smPercentLastILSPeaksInScaling::sMessageIndex = index;
+	smPercentLastILSPeaksInScaling::sMessageScope = scope;
+}
+
+
+int smPercentLastILSPeaksInScaling :: GetMessageIndex () const {
+
+	return smPercentLastILSPeaksInScaling :: sMessageIndex;
+}
+
+
+int smPercentLastILSPeaksInScaling :: GetScope () const {
+
+	return smPercentLastILSPeaksInScaling :: sMessageScope;
+}
+
+
+RGString smPercentLastILSPeaksInScaling :: GetName () const {
+
+	return smPercentLastILSPeaksInScaling :: sName;
+}
+
+
+
+int smPercentLastILSPeaksInScaling :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPercentLastILSPeaksInScaling* noticeType = new smPercentLastILSPeaksInScaling;
 	warehouse->AddType (noticeType);
 	return 1;
 }
