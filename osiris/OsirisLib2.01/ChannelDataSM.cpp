@@ -2516,6 +2516,12 @@ int ChannelData :: TestSignalsForOffScaleSM () {
 }
 
 
+int ChannelData :: PreTestForSignalOffScaleSM () {
+
+	return -1;
+}
+
+
 int ChannelData :: TestSignalsForRaisedBaseline (double left, double report) {
 
 	return -1;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.68</VersionNumber>
-	<BuildTime>04 01 2016 06:07 PM</BuildTime>
+	<VersionNumber>6.69</VersionNumber>
+	<BuildTime>06 06 2016 12:29 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -340,6 +340,17 @@
 				<Expression>NOT smNotInterchannelLink</Expression>
 			</ReportCriterion>
 			<Text>Pull-up at Extraneous ILS Peak</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLaserOffScale</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Laser Off Scale</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -6067,6 +6078,9 @@
 						<Name>smILSShoulderFilterPercentThreshold</Name>
 						<Name>smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset</Name>
 						<Name>smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset</Name>
+						<Name>smScaleILSPrimerSearchPreset</Name>
+						<Name>smNumberOfLastILSPeaksInScale</Name>
+						<Name>smPercentLastILSPeaksInScaling</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6133,6 +6147,7 @@
 						<Name>smPartOfDualSignal</Name>
 						<Name>smNegativePeak</Name>
 						<Name>smILSShoulderPeak</Name>
+						<Name>smLaserOffScale</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smCountThisSignal = true</Expression>

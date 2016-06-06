@@ -335,6 +335,7 @@ public:
 	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM ();
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();
+	virtual int PreTestSignalsForLaserOffScaleSM ();
 
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
 

@@ -231,6 +231,7 @@ PERSISTENT_PREDECLARATION (smIsQualityLocus)
 PERSISTENT_PREDECLARATION (smScaleILSPrimerSearchPreset)
 PERSISTENT_PREDECLARATION (smNumberOfLastILSPeaksInScale)
 PERSISTENT_PREDECLARATION (smPercentLastILSPeaksInScaling)
+PERSISTENT_PREDECLARATION (smLaserOffScale)
 
 
 
@@ -6374,6 +6375,34 @@ public:
 	smPercentLastILSPeaksInScaling ();
 	smPercentLastILSPeaksInScaling (const smPercentLastILSPeaksInScaling& note);
 	virtual ~smPercentLastILSPeaksInScaling ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smLaserOffScale : public SmartNotice {
+
+PERSISTENT_DECLARATION (smLaserOffScale)
+
+public:
+	smLaserOffScale ();
+	smLaserOffScale (const smLaserOffScale& note);
+	virtual ~smLaserOffScale ();
 
 	virtual int GetSubject () const;
 

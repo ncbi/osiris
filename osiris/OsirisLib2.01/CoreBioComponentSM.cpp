@@ -93,6 +93,27 @@ int CoreBioComponent :: TestSignalsForLaserOffScaleSM () {
 }
 
 
+int CoreBioComponent :: PreTestSignalsForLaserOffScaleSM () {
+
+	//
+	//	Sample stage 1  (Ladder?)
+	//
+
+	int ans = 0;
+	int temp;
+
+	for (int j=1; j<=mNumberOfChannels; j++) {
+
+		temp = mDataChannels [j]->PreTestForSignalOffScaleSM ();
+
+		if (temp < 0)
+			ans = temp;
+	}
+
+	return ans;
+}
+
+
 bool CoreBioComponent :: EvaluateSmartMessagesForStage (int stage, bool allMessages, bool signalsOnly) {
 
 	int i;

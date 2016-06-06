@@ -403,6 +403,7 @@ public:
 	virtual void TestAllelesAgainstOverloadThresholdSM ();
 
 	virtual int TestSignalsForOffScaleSM ();
+	virtual int PreTestForSignalOffScaleSM ();
 	virtual int TestSignalsForRaisedBaseline (double left, double report);
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);
 

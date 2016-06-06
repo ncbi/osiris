@@ -785,6 +785,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 //	PullUpPrimaryChannel primaryPullupNotice;
 
 	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	PreTestSignalsForLaserOffScaleSM ();
 
 	ParameterServer* pServer = new ParameterServer;
 	double measurementResolution = pServer->GetInterSampleSpacing ();
@@ -1703,6 +1704,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 //	PullUpPrimaryChannel primaryPullupNotice;
 
 	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	PreTestSignalsForLaserOffScaleSM ();
 
 	ParameterServer* pServer = new ParameterServer;
 	double measurementResolution = pServer->GetInterSampleSpacing ();

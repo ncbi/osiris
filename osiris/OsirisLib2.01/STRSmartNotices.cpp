@@ -1326,6 +1326,12 @@ int smPercentLastILSPeaksInScaling::sMessageIndex = 0;
 int smPercentLastILSPeaksInScaling::sMessageScope = 0;
 
 
+RGString smLaserOffScale::sName = "smLaserOffScale";
+int smLaserOffScale::sSubject = smLaserOffScale::LoadType ();
+int smLaserOffScale::sMessageIndex = 0;
+int smLaserOffScale::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1546,6 +1552,7 @@ PERSISTENT_DEFINITION (smIsQualityLocus, 2616, "smIsQualityLocus")
 PERSISTENT_DEFINITION (smScaleILSPrimerSearchPreset, 2617, "smScaleILSPrimerSearchPreset")
 PERSISTENT_DEFINITION (smNumberOfLastILSPeaksInScale, 2618, "smNumberOfLastILSPeaksInScale")
 PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPeaksInScaling")
+PERSISTENT_DEFINITION (smLaserOffScale, 2620, "smLaserOffScale")
 
 
 
@@ -14742,6 +14749,66 @@ int smPercentLastILSPeaksInScaling :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPercentLastILSPeaksInScaling* noticeType = new smPercentLastILSPeaksInScaling;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smLaserOffScale :: smLaserOffScale () : SmartNotice () {
+
+}
+
+
+smLaserOffScale :: smLaserOffScale (const smLaserOffScale& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smLaserOffScale :: ~smLaserOffScale () {
+
+}
+
+
+int smLaserOffScale :: GetSubject () const {
+
+	return smLaserOffScale::sSubject;
+}
+
+
+void smLaserOffScale :: SetIndexAndScope (int index, int scope) const {
+
+	smLaserOffScale::sMessageIndex = index;
+	smLaserOffScale::sMessageScope = scope;
+}
+
+
+int smLaserOffScale :: GetMessageIndex () const {
+
+	return smLaserOffScale :: sMessageIndex;
+}
+
+
+int smLaserOffScale :: GetScope () const {
+
+	return smLaserOffScale :: sMessageScope;
+}
+
+
+RGString smLaserOffScale :: GetName () const {
+
+	return smLaserOffScale :: sName;
+}
+
+
+
+int smLaserOffScale :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smLaserOffScale* noticeType = new smLaserOffScale;
 	warehouse->AddType (noticeType);
 	return 1;
 }

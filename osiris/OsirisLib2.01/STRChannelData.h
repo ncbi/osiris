@@ -129,6 +129,7 @@ public:
 	int TestNeighborsSM (DataSignal* previous, DataSignal* testSignal, DataSignal* following);
 
 	virtual int TestSignalsForOffScaleSM ();
+	virtual int PreTestForSignalOffScaleSM ();
 
 	virtual bool FindLimitsOnPrimaryPullupPeaks ();	// returns true if it made a change in the channel
 	virtual bool ValidateAndCorrectCrossChannelAnalysisSM ();	// returns true if it made a change in the channel
@@ -231,6 +232,7 @@ public:
 	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
 	virtual int TestSignalsForOffScaleSM ();
+	virtual int PreTestForSignalOffScaleSM ();
 
 
 	//******************************************************************************************************************************************

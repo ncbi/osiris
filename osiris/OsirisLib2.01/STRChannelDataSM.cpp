@@ -320,6 +320,7 @@ int STRChannelData :: TestSignalsForOffScaleSM () {
 	smLaserOffScalePullupOrCraterNotPrimary laserOffScaleNotPrimary;
 	smLaserOffScalePrimary laserOffScalePrimary;
 	smLaserOffScaleNoInterchannelLink laserOffScaleNoInterchannelLink;
+	smLaserOffScale laserOffScale;
 
 	bool isPullup;
 	bool isCrater;
@@ -328,7 +329,7 @@ int STRChannelData :: TestSignalsForOffScaleSM () {
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (CoreBioComponent::TestForOffScale (nextSignal->GetMean ())) {
+		if (nextSignal->GetMessageValue (laserOffScale)) {
 
 			isPullup = nextSignal->GetMessageValue (pullup);
 			isCrater = (nextSignal->GetMessageValue (crater) && !nextSignal->GetMessageValue (notCrater));
@@ -345,6 +346,23 @@ int STRChannelData :: TestSignalsForOffScaleSM () {
 			else
 				nextSignal->SetMessageValue (laserOffScaleNoInterchannelLink, true);
 		}
+	}
+
+	return 0;
+}
+
+
+int STRChannelData :: PreTestForSignalOffScaleSM () {
+
+	RGDListIterator it (PreliminaryCurveList);
+	DataSignal* nextSignal;
+
+	smLaserOffScale laserOffScale;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (CoreBioComponent::TestForOffScale (nextSignal->GetMean ()))
+			nextSignal->SetMessageValue (laserOffScale, true);
 	}
 
 	return 0;
@@ -2852,6 +2870,7 @@ int STRLaneStandardChannelData :: TestSignalsForOffScaleSM () {
 	smLaserOffScalePullupOrCraterNotPrimary laserOffScaleNotPrimary;
 	smLaserOffScalePrimary laserOffScalePrimary;
 	smLaserOffScaleNoInterchannelLink laserOffScaleNoInterchannelLink;
+	smLaserOffScale laserOffScale;
 
 	bool isPullup;
 	bool isCrater;
@@ -2860,7 +2879,7 @@ int STRLaneStandardChannelData :: TestSignalsForOffScaleSM () {
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (CoreBioComponent::TestForOffScale (nextSignal->GetMean ())) {
+		if (nextSignal->GetMessageValue (laserOffScale)) {
 
 			isPullup = nextSignal->GetMessageValue (pullup);
 			isCrater = (nextSignal->GetMessageValue (crater) && !nextSignal->GetMessageValue (notCrater));
@@ -2877,6 +2896,22 @@ int STRLaneStandardChannelData :: TestSignalsForOffScaleSM () {
 			else
 				nextSignal->SetMessageValue (laserOffScaleNoInterchannelLink, true);
 		}
+	}
+
+	return 0;
+}
+
+
+int STRLaneStandardChannelData :: PreTestForSignalOffScaleSM () {
+
+	RGDListIterator it (SmartPeaks);
+	DataSignal* nextSignal;
+	smLaserOffScale laserOffScale;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (CoreBioComponent::TestForOffScale (nextSignal->GetMean ()))
+				nextSignal->SetMessageValue (laserOffScale, true);
 	}
 
 	return 0;
