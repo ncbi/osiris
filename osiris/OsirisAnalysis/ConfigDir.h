@@ -70,6 +70,11 @@ public:
   {
     return m_sSitePath;
   }
+  bool IsSitePathWritable() const
+  {
+    bool bRtn = wxFileName::IsDirWritable(m_sSitePath);
+    return bRtn;
+  }
   const wxString &GetConfigPath() const
   {
     return m_sConfigPath;
@@ -124,23 +129,21 @@ public:
     sRtn.Append("MessageBook.xml");
     return sRtn;
   }
-#define ARTIFACT_FILE_NAME wxT("ArtifactLabels.xml")
-  wxString LocalArtifactLabelsFileName() const
+  wxString GetArtifactLabelsFileName() const
   {
     wxString sRtn;
-    _BuildFileName(GetSitePath(),ARTIFACT_FILE_NAME,&sRtn);
-    return sRtn;
-  }
-  wxString FindArtifactLabelsFileName() const
-  {
-    wxString sRtn;
-    if(!_FindFileName(ARTIFACT_FILE_NAME,&sRtn))
+    if(!_BuildFileName(GetILSLadderFilePath(),wxT("ArtifactLabels.xml"),&sRtn))
     {
       sRtn.Clear();
     }
     return sRtn;
   }
-#undef ARTIFACT_FILE_NAME
+  wxString GetArtifactLabelsUserFileName() const
+  {
+    wxString sRtn;
+    _BuildFileName(GetSitePath(),wxT("UserArtifactLabels.xml"),&sRtn);
+    return sRtn;
+  }
 #ifdef __WXDEBUG__
   void Log();
 #endif
@@ -181,6 +184,7 @@ private:
     bool bRtn = wxFileName::IsFileReadable(sRtn);
     return bRtn;
   }
+#if 0
   bool _FindFileName(const wxChar *psFileName, wxString *psRtn) const
   {
     // load the file name only if it exists
@@ -196,7 +200,7 @@ private:
     }
     return bRtn;
   }
-
+#endif
 };
 
 #endif

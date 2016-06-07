@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ArtifactLabels xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Users/goorrob/Documents/GitHub/osiris/OsirisXML/ArtifactLabelsSchema.xsd">
+<ArtifactLabels>
 	<SubGroup>
+		<ID>Pullup</ID>
 		<Label>Pull-up</Label>
 		<Display>PU</Display>
 		<Priority>1</Priority>
 		<MsgName>smPullupAtExtraneousILSPeak</MsgName>
-    <MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
-    <MsgName>smPullUp</MsgName>
-    <MsgName>smInterlocusPullUp</MsgName>
-    <MsgName>smInterlocusPullUpWithPoorFit</MsgName>
-    <MsgName>smSigmoidalPullup</MsgName>
-    <SearchString>pull.?up</SearchString>
+		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
+		<MsgName>smPullUp</MsgName>
+		<MsgName>smInterlocusPullUp</MsgName>
+		<MsgName>smInterlocusPullUpWithPoorFit</MsgName>
+		<MsgName>smSigmoidalPullup</MsgName>
+		<SearchString>pull.?up</SearchString>
 	</SubGroup>
 	<SubGroup>
-		<Label>LaserOffScale</Label>
+		<ID>LaserOffScale</ID>
+		<Label>Laser Off Scale</Label>
 		<Display>LO</Display>
 		<Priority>2</Priority>
 		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
 		<MsgName>smLaserOffScalePrimary</MsgName>
 		<MsgName>smLaserOffScaleNoInterchannelLink</MsgName>
-    <SearchString>laser.?off.?scale</SearchString>
+		<SearchString>laser.?off.?scale</SearchString>
 	</SubGroup>
 	<SubGroup>
-		<Label>PoorPeakMorphology</Label>
+		<ID>PoorPeakMorphology</ID>
+		<Label>Poor Peak Morphology</Label>
 		<Display>MO</Display>
 		<Priority>3</Priority>
 		<MsgName>smCurveFitMarginal</MsgName>
@@ -31,56 +34,62 @@
 		<MsgName>smCurveFitFailed</MsgName>
 		<MsgName>smPoorPeakMorphology</MsgName>
 		<MsgName>smAmbiguousInterlocusWithPoorMorphology</MsgName>
-    <SearchString>morphology</SearchString>
+		<SearchString>morphology</SearchString>
 	</SubGroup>
 	<SubGroup>
+		<ID>Stutter</ID>
 		<Label>Stutter</Label>
 		<Display>ST</Display>
 		<Priority>4</Priority>
 		<MsgName>smStutter</MsgName>
 		<MsgName>smBaselineRelativeStutter</MsgName>
-    <SearchString>stutter</SearchString>
+		<SearchString>stutter</SearchString>
 	</SubGroup>
 	<SubGroup>
+		<ID>Adenylation</ID>
 		<Label>Adenylation</Label>
 		<Display>AD</Display>
 		<Priority>5</Priority>
 		<MsgName>smAdenylation</MsgName>
 		<MsgName>smBaselineRelativeAdenylation</MsgName>
-    <SearchString>adenylation</SearchString>
+		<SearchString>adenylation</SearchString>
 	</SubGroup>
 	<SubGroup>
-		<Label>AmgiguousExtendedLocus</Label>
+		<ID>AmgiguousExtendedLocus</ID>
+		<Label>Amgiguous Extended Locus</Label>
 		<Display>AM</Display>
 		<Priority>6</Priority>
 		<MsgName>smAmbiguousInterlocus</MsgName>
 		<MsgName>smAmbiguousInterlocusWithPoorMorphology</MsgName>
 		<MsgName>smAmbiguousCoreVsExtendedRight</MsgName>
 		<MsgName>smPossibleAmbiguousInterlocusAssignedToLocus</MsgName>
-    <SearchString>amgiguous.?extended.?locus</SearchString>
+		<SearchString>amgiguous.?extended.?locus</SearchString>
 	</SubGroup>
 	<SubGroup>
-		<Label>ExcessiveResidual</Label>
+		<ID>Excessive Residual</ID>
+		<Label>Excessive Residual</Label>
 		<Display>ER</Display>
 		<Priority>7</Priority>
 		<MsgName>smAlleleHasExcessiveResidual</MsgName>
-    <SearchString>residual</SearchString>
+		<SearchString>residual</SearchString>
 	</SubGroup>
 	<SubGroup>
-		<Label>ExcessiveResidualDisplacement</Label>
+		<ID>ExcessiveResidualDisplacement</ID>
+		<Label>Excessive Residual Displacement</Label>
 		<Display>ERD</Display>
 		<Priority>8</Priority>
 		<MsgName>smExcessiveResidualDisplacement</MsgName>
 		<MsgName>smExcessiveResidualDisplacementLeft</MsgName>
 		<MsgName>smExcessiveResidualDisplacementRight</MsgName>
-    <SearchString>residual.*displacement</SearchString>
+		<SearchString>residual.*displacement</SearchString>
 	</SubGroup>
 	<SubGroup>
-		<Label>PrimaryPull-up</Label>
+		<ID>Primary Pull-up</ID>
+		<Label>Primary Pull-up</Label>
 		<Display>PPU</Display>
 		<Priority>9</Priority>
 		<MsgName>smPrimaryInterchannelLink</MsgName>
 		<MsgName>smLaserOffScalePrimary</MsgName>
-    <SearchString>primary.*pull.?up</SearchString>
+		<SearchString>primary.*pull.?up</SearchString>
 	</SubGroup>
 </ArtifactLabels>

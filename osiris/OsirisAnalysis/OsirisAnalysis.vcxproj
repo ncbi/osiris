@@ -267,6 +267,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CArtifactLabels.cpp" />
+    <ClCompile Include="CArtifactLabelsUser.cpp" />
     <ClCompile Include="CComboLabels.cpp" />
     <ClCompile Include="CDialogAbout.cpp" />
     <ClCompile Include="CDialogAcceptAlerts.cpp" />
@@ -400,6 +401,7 @@
     <ClInclude Include="CAlertViewStatus.h" />
     <ClInclude Include="CAllLoci.h" />
     <ClInclude Include="CArtifactLabels.h" />
+    <ClInclude Include="CArtifactLabelsUser.h" />
     <ClInclude Include="CComboLabels.h" />
     <ClInclude Include="CDialogAbout.h" />
     <ClInclude Include="CDialogAcceptAlerts.h" />
@@ -529,6 +531,7 @@
     <ClInclude Include="CXMLmessageBook.h" />
     <ClInclude Include="CXSLExportFileType.h" />
     <ClInclude Include="extractCXSLExportFile.h" />
+    <ClInclude Include="IArtifactGroup.h" />
     <ClInclude Include="ISetDateTime.h" />
     <ClInclude Include="LABEL_TYPES.h" />
     <ClInclude Include="mainApp.h" />
@@ -539,6 +542,7 @@
     <ClInclude Include="..\Version\OsirisVersion.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TArtifactGreater.h" />
     <ClInclude Include="UnitTest.h" />
     <ClInclude Include="wxIDS.h" />
   </ItemGroup>

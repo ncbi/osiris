@@ -10,6 +10,7 @@
 				<xs:element name="SubGroup">
 					<xs:complexType>
 						<xs:sequence>
+							<xs:element name="ID" type="xs:string"/>
 							<xs:element name="Label" type="xs:string"/>
 							<xs:element name="Display" type="xs:string"/>
 							<xs:element name="Priority" type="xs:integer"/>

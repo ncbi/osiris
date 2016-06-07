@@ -23,34 +23,46 @@
 *
 * ===========================================================================
 *
-*  FileName: CArtifactLabels.ch
+*  FileName: CArtifactLabelsUser.h
 *  Author:   Douglas Hoffman
 *
-*  Class for loading and retrieving the labels shown
-*  for artifacts on a plot.  These are stored in the file,
-*  ArtifactLabels.xml in the Config/LadderSpecifications directory
-*  of the OSIRIS distribution
+*  Class for loading and storing the labels shown
+*  for artifacts on a plot as entered by the user.
+*  These labels override the default labels in the
+*  OSIRIS distribution and are stored in SiteArtifactLabels.xml
+*  in the installation's site folder.
+*
+*  When loading from a file, the info is merged with the global 
+*  CArtifactLabels instance which contains data from ArtifactLabels.xml 
+*  from the OSIRIS distribution.
+*
+*  When editing, a new instance of CArtifactLabelsUser is created
+*  from the instance of CArtifactLabels, the changes are written
+*  to SiteArtifactLabels.xml and merged back into the same instance
+*  of CArtifactsLabels.
 * 
 */
-#ifndef __C_ARTIFACT_LABELS_H__
-#define __C_ARTIFACT_LABELS_H__
+#ifndef __C_ARTIFACT_LABELS_USER_H__
+#define __C_ARTIFACT_LABELS_USER_H__
 
-#include <wx/string.h>
-#include <wx/regex.h>
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
 #include "IArtifactGroup.h"
 
-class CArtifactLabelsUser;
+class CArtifactGroup;
+class CArtifactLabels;
 
-class CArtifactGroup : public nwxXmlPersist, public IArtifactGroup
+class CArtifactGroupUser : public nwxXmlPersist, public IArtifactGroup
 {
 public:
-  CArtifactGroup();
-  virtual ~CArtifactGroup() {}
-  void SetDisplay(const IArtifactGroup &g);
-  bool IsStringMatch(const wxString &s) const;
-  bool IsMsgTypeMatch(const wxString &s) const;
+  CArtifactGroupUser()
+  {
+    RegisterAll(true);
+    ClearDistDefaults();
+  }
+  CArtifactGroupUser(const IArtifactGroup &g);
+  virtual ~CArtifactGroupUser() {}
+  void Set(const IArtifactGroup &g);
   virtual const wxString &GetID() const
   {
     return m_sID;
@@ -58,6 +70,14 @@ public:
   virtual const wxString &GetLabel() const
   {
     return m_sLabel;
+  }
+  virtual const wxString &GetDisplay() const
+  {
+    const wxString *pRtn = 
+      m_sDisplayUser.IsEmpty()
+        ? &m_sDisplay
+        : &m_sDisplayUser;
+    return *pRtn;
   }
   virtual const wxString &GetDisplayDefault() const
   {
@@ -67,13 +87,9 @@ public:
   {
     return m_sDisplayUser;
   }
-  virtual const wxString &GetDisplay() const
+  virtual int GetPriority() const
   {
-    const wxString *pRtn =
-      m_sDisplayUser.IsEmpty()
-        ? &m_sDisplay
-        : &m_sDisplayUser;
-    return *pRtn;
+    return (m_nPriorityUser >= 0) ? m_nPriorityUser : m_nPriority;
   }
   virtual int GetPriorityDefault() const
   {
@@ -83,34 +99,33 @@ public:
   {
     return m_nPriorityUser;
   }
-  virtual int GetPriority() const
+  virtual void SetDisplay(const wxChar *p)
   {
-    return (m_nPriorityUser >= 0)
-      ? m_nPriorityUser
-      : m_nPriority;
+    m_sDisplayUser = p;
   }
   virtual void SetPriority(int n)
   {
     m_nPriorityUser = n;
   }
-  virtual void SetDisplay(const wxChar *p)
-  {
-    m_sDisplayUser = p;
-  }
   virtual void Init()
   {
     nwxXmlPersist::Init();
-    SetDefaults();
+    ClearDistDefaults();
   }
   virtual void Init(void *p)
   {
     nwxXmlPersist::Init(p);
     if(p == (void *)this)
     {
-      SetDefaults();
+      ClearDistDefaults();
     }
   }
-  void SetDefaults()
+  void ClearDistDefaults()
+  {
+    m_sDisplay.Clear();
+    m_nPriority = -1;
+  }
+  void ClearUserData()
   {
     m_sDisplayUser.Clear();
     m_nPriorityUser = -1;
@@ -118,11 +133,6 @@ public:
 protected:
   virtual void RegisterAll(bool = false);
 private:
-  void _buildRegEx() const;
-  nwxXmlIOPersistVectorWxString m_ios;
-  std::vector<wxString> m_vsMsgName;
-  std::vector<wxString> m_vsSearchString;
-  mutable std::vector<wxRegEx *> m_pvSearchRE;
   wxString m_sID;
   wxString m_sLabel;
   wxString m_sDisplay;
@@ -131,18 +141,28 @@ private:
   int m_nPriorityUser;
 };
 
-
-class CArtifactLabels : public nwxXmlPersist
+class CArtifactLabelsUser : public nwxXmlPersist
 {
 public:
-  CArtifactLabels();
-  virtual ~CArtifactLabels();
-  virtual bool LoadFile(const wxString &sFileName, bool bLock);
+  CArtifactLabelsUser(bool bLoadFile = false);
+  virtual ~CArtifactLabelsUser()
+  {
+    m_io.Cleanup();
+  }
+  virtual bool LoadFile(const wxString &sFileName, bool bLock)
+  {
+    bool bRtn = nwxXmlPersist::LoadFile(sFileName,bLock);
+    Sort();
+    return bRtn;
+  }
+  void AddLabel(const IArtifactGroup &g)
+  {
+    m_vector.push_back(new CArtifactGroupUser(g));
+  }
   virtual void Init()
   {
     nwxXmlPersist::Init();
     m_io.Cleanup();
-    m_bOK = true;
   }
   virtual void Init(void *p)
   {
@@ -152,36 +172,26 @@ public:
       m_io.Cleanup();
     }
   }
-  bool IsOK() const
+  const CArtifactGroupUser *Get(size_t n) const
   {
-    return m_bOK;
-  }
-  const CArtifactGroup *Get(size_t n) const
-  {
-    const CArtifactGroup *pRtn = (n < m_vector.size()) ? m_vector[n] : NULL;
+    const CArtifactGroupUser *pRtn = (n < m_vector.size()) ? m_vector[n] : NULL;
     return pRtn;
   }
   size_t GetCount() const
   {
     return m_vector.size();
   }
+
   void Sort();
-  bool SetUserLabels(const CArtifactLabelsUser &labels);
-  CArtifactLabelsUser *BuildUserLabels() const;
-  void ResetDefaults();
-  const wxString &GetDisplayFromString(const wxString &sArtifactString) const;
-  const wxString &GetDisplayFromMsgType(const wxString &sMsgType) const;
 protected:
   virtual void RegisterAll(bool = false)
   {
     Register(wxT("SubGroup"),&m_io,&m_vector);
   }
 private:
-  TnwxXmlIOPersistVector<CArtifactGroup> m_io;
-  std::vector<CArtifactGroup *> m_vector;
-  bool m_bOK;
-  static const wxString g_sDEFAULT_LABEL;
+  TnwxXmlIOPersistVector<CArtifactGroupUser> m_io;
+  std::vector<CArtifactGroupUser *> m_vector;
+  static const wxString g_sROOT;
 };
-
 
 #endif
