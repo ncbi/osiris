@@ -55,6 +55,7 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   pMenuTools->Append(IDlab,"Lab Settings\tAlt+L");
   pMenuTools->Append(IDexport,"Export File Settings\tAlt+E");
   pMenuTools->Append(IDeditColours,"Edit Grid Colors\tAlt+C");
+  pMenuTools->Append(IDartifactLabels,"Edit Artifact Labels\tCtrl+Alt+A");
   pMenuTools->Append(IDlog,"Message Log");
   pMenuHelp->Append(IDhelp,"&Documentation\tF1");
   pMenuHelp->Append(IDhelpContactUs,"&Contact Us...");

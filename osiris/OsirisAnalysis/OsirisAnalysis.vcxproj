@@ -274,6 +274,7 @@
     <ClCompile Include="CDialogAcceptAllele.cpp" />
     <ClCompile Include="CDialogAnalysis.cpp" />
     <ClCompile Include="CDialogApprove.cpp" />
+    <ClCompile Include="CDialogArtifactLabels.cpp" />
     <ClCompile Include="CDialogCellHistory.cpp" />
     <ClCompile Include="CDialogCMF.cpp" />
     <ClCompile Include="CDialogContactUs.cpp" />
@@ -408,6 +409,7 @@
     <ClInclude Include="CDialogAcceptAllele.h" />
     <ClInclude Include="CDialogAnalysis.h" />
     <ClInclude Include="CDialogApprove.h" />
+    <ClInclude Include="CDialogArtifactLabels.h" />
     <ClInclude Include="CDialogCellHistory.h" />
     <ClInclude Include="CDialogCMF.h" />
     <ClInclude Include="CDialogContactUs.h" />

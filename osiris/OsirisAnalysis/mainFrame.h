@@ -123,6 +123,7 @@ public:
   void OnShowLog(wxCommandEvent &);
   void OnAnalyze(wxCommandEvent &);
   void OnLabSettings(wxCommandEvent &);
+  void OnArtifactLabels(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);
   void OnTimer(wxTimerEvent &);

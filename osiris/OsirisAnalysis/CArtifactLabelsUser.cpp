@@ -60,7 +60,7 @@ void CArtifactGroupUser::RegisterAll(bool b)
   RegisterInt(wxT("Priority"),    &m_nPriorityUser);
 }
 
-const wxString CArtifactLabelsUser::g_sROOT(wxT("ArtifactLabels"));
+const wxString CArtifactLabelsUser::g_sROOT(wxT("UserArtifactLabels"));
 
 CArtifactLabelsUser::CArtifactLabelsUser(bool bLoadFile)
 {

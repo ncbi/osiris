@@ -2,12 +2,14 @@ bin_PROGRAMS = osiris
 AUTOMAKE_OPTIONS = subdir-objects
 osiris_SOURCES =  \
 ../CArtifactLabels.cpp \
+../CArtifactLabelsUser.cpp \
 ../CComboLabels.cpp \
 ../CDialogAbout.cpp \
 ../CDialogAcceptAlerts.cpp \
 ../CDialogAcceptAllele.cpp \
 ../CDialogAnalysis.cpp \
 ../CDialogApprove.cpp \
+../CDialogArtifactLabels.cpp \
 ../CDialogCMF.cpp \
 ../CDialogCellHistory.cpp \
 ../CDialogContactUs.cpp \

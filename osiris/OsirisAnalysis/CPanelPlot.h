@@ -310,6 +310,7 @@ public:
   void RebuildCurves(bool bIgnoreViewRect = false);
   wxRect2DDouble GetZoomOutRect(bool bAll = false);
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
+  void EditPeak(COARpeakAny *pPeak);
   wxRect2DDouble GetZoomLocus(const wxString &sLocus);
 
   void ShowToolbar(bool bShow);

@@ -314,6 +314,22 @@ void CMDIfileManager::RefreshAllOAR()
     }
   }
 }
+void CMDIfileManager::RefreshAllPlot()
+{
+  wxBusyCursor xxx;
+  CMDI_WF::iterator itr;
+  CFramePlot *pf;
+  for(itr = m_mapWindowFile.begin();
+      _IteratorOK(itr);
+      ++itr)
+  {
+    if(itr->first->GetType() == CMDIFrame::FRAME_PLOT)
+    {
+      pf = (CFramePlot *)(itr->first);
+      pf->RebuildAll();
+    }
+  }
+}
 bool CMDIfileManager::CloseAll()
 {
   size_t nSize = m_mapWindowFile.size();

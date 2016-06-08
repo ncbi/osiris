@@ -62,6 +62,7 @@
 #include "COsirisIcon.h"
 
 #include "CDialogVolumes.h"
+#include "CDialogArtifactLabels.h"
 #include "CLabSettings.h"
 #include "CLabSettingsFileName.h"
 #include "CDialogAbout.h"
@@ -756,8 +757,22 @@ void mainFrame::OnLabSettings(wxCommandEvent &)
     wxBeginBusyCursor();
     CDialogVolumes dlg(DialogParent());
     wxEndBusyCursor();
-//    CPointerHold<CDialogVolumes> x(m_pVolumes,&dlg);
     dlg.ShowModal();
+  }
+  return;
+}
+void mainFrame::OnArtifactLabels(wxCommandEvent &)
+{
+  {
+    wxBeginBusyCursor();
+    CDialogArtifactLabels dlg(DialogParent());
+    wxEndBusyCursor();
+    dlg.ShowModal();
+    if(dlg.IsModified())
+    {
+      m_MDImgr.RefreshAllPlot();
+      m_MDImgr.RefreshAllOAR();
+    }
   }
   return;
 }

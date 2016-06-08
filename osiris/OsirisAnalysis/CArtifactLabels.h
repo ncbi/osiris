@@ -47,7 +47,10 @@ class CArtifactGroup : public nwxXmlPersist, public IArtifactGroup
 {
 public:
   CArtifactGroup();
-  virtual ~CArtifactGroup() {}
+  virtual ~CArtifactGroup() 
+  {
+    _cleanupRegEx();
+  }
   void SetDisplay(const IArtifactGroup &g);
   bool IsStringMatch(const wxString &s) const;
   bool IsMsgTypeMatch(const wxString &s) const;
@@ -119,6 +122,7 @@ protected:
   virtual void RegisterAll(bool = false);
 private:
   void _buildRegEx() const;
+  void _cleanupRegEx() const;
   nwxXmlIOPersistVectorWxString m_ios;
   std::vector<wxString> m_vsMsgName;
   std::vector<wxString> m_vsSearchString;

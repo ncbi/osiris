@@ -68,7 +68,7 @@ class COARsample;
 class CDialogAnalysis;
 class CPanelAlerts;
 class CXSLExportFileType;
-
+class COARpeakAny;
 /*
 typedef enum
 {
@@ -186,6 +186,7 @@ public:
   void DoEditLocus(COARsample *pSample, COARlocus *pLocus);
   bool CheckIfHistoryOK();
   void CheckSaveStatus();
+  void EditPeak(COARpeakAny *, CMDIFrame * = NULL) {} // STOP HERE
 private:
   CXSLExportFileType *GetFileTypeByID(int nID);
 

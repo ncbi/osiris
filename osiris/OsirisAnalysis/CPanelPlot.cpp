@@ -81,6 +81,7 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
     mainApp::LogMessage(s);
   }
 #endif
+  m_pPlot->EditPeak(p);
 }
 bool CPlotCtrl::SetViewRect(
   const wxRect2DDouble &view, bool send_event)
@@ -1607,6 +1608,18 @@ void CPanelPlot::ZoomToLocus(const wxString &sLocus, unsigned int nDelay)
   wxRect2DDouble r = GetZoomLocus(sLocus);
   SetViewRect(r,false,nDelay);
 }
+void CPanelPlot::EditPeak(COARpeakAny *pPeak)
+{
+  if(m_pFramePlot != NULL)
+  {
+    m_pFramePlot->EditPeak(pPeak);
+  }
+  else if(m_pFrameAnalysis != NULL)
+  {
+    m_pFrameAnalysis->EditPeak(pPeak);
+  }
+}
+
 wxRect2DDouble CPanelPlot::GetZoomLocus(const wxString &sLocus)
 {
   wxRect2DDouble rectRtn(0.0,0.0,1.0,1.0);

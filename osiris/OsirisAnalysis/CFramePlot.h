@@ -62,6 +62,7 @@ class mainFrame;
 class CFramePlotMenu;
 class CDialogExportPlot;
 class wxScrolledWindow;
+class COARpeakAny;
 
 typedef enum
 {
@@ -93,6 +94,7 @@ public:
   virtual void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
   void UpdateOARfile(const wxString &sSampleName);
+  void EditPeak(COARpeakAny *) {;}  // STOP HERE
 
   virtual bool Show(bool show = true);
 //  void ShowScrollbars(bool bShow);

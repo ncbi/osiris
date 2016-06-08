@@ -89,6 +89,7 @@ public:
     return m_mapWindowFile.size();
   }
   void RefreshAllOAR();
+  void RefreshAllPlot();
 #ifdef __WINDOW_LIST__
   void MoveToTop(CMDIFrame *);
   void BringAllToFront();

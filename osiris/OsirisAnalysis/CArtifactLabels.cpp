@@ -59,10 +59,14 @@ void CArtifactGroup::SetDisplay(const IArtifactGroup &g)
   SetDisplay(g.GetDisplayUser());
   SetPriority(g.GetPriorityUser());
 }
-
+void CArtifactGroup::_cleanupRegEx() const
+{
+  vectorptr<wxRegEx>::cleanup(&m_pvSearchRE);
+}
 void CArtifactGroup::_buildRegEx() const
 {
   std::vector<wxString>::const_iterator itr;
+  _cleanupRegEx();
   for(itr = m_vsSearchString.begin();
     itr != m_vsSearchString.end();
     ++itr)

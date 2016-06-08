@@ -148,6 +148,11 @@ public:
   virtual ~CArtifactLabelsUser()
   {
     m_io.Cleanup();
+    vectorptr<CArtifactGroupUser>::cleanup(&m_vector);
+  }
+  virtual const wxString &RootNode(void) const
+  {
+    return g_sROOT;
   }
   virtual bool LoadFile(const wxString &sFileName, bool bLock)
   {
@@ -175,6 +180,11 @@ public:
   const CArtifactGroupUser *Get(size_t n) const
   {
     const CArtifactGroupUser *pRtn = (n < m_vector.size()) ? m_vector[n] : NULL;
+    return pRtn;
+  }
+  CArtifactGroupUser *Get(size_t n)
+  {
+    CArtifactGroupUser *pRtn = (n < m_vector.size()) ? m_vector[n] : NULL;
     return pRtn;
   }
   size_t GetCount() const
