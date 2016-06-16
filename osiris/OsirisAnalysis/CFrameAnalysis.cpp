@@ -43,6 +43,7 @@
 #include "CDialogAcceptAllele.h"
 #include "CDialogAcceptAlerts.h"
 #include "CDialogApprove.h"
+#include "CDialogEditPeak.h"
 #include "CLabSettings.h"
 #include "COARfile.h"
 #include "CReAnalyze.h"
@@ -87,6 +88,7 @@
 
 
 DEFINE_EVENT_TYPE(CEventRepaint)
+DEFINE_EVENT_TYPE(CEventRestoreScroll)
 
 const int CFrameAnalysis::STATUS_COLUMN = 0;
 const int CFrameAnalysis::ILS_COLUMN = 1;
@@ -473,6 +475,28 @@ void CFrameAnalysis::CheckSaveStatus()
   bool bSaveAs = CanSaveAs();
   bool bSave = m_pOARfile->CanSave();
   m_pMenuBar->EnableSave(bSaveAs,bSave,bSaveAs);
+}
+void CFrameAnalysis::EditPeak(
+  COARpeakAny *pPeak, COARsample *pSample, CMDIFrame *parent)
+{
+  int n = -1;
+  if(parent == NULL) { parent = this; }
+  if(pPeak != NULL && pSample != NULL)
+  {
+    CDialogEditPeak xx(parent,pSample,pPeak);
+    n = xx.ShowModal();
+    if(n != wxID_CANCEL)
+    {
+      bool b = xx.UpdateFile(m_pOARfile,this,parent);
+      if(!b)
+      {
+        wxString ss = wxT("Problem with CDialogEditPeak::UpdateFile");
+        wxASSERT_MSG(0,ss);
+        mainApp::LogMessage(ss);
+      }
+    }
+  }
+  return;
 }
 bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
 {
@@ -1595,7 +1619,7 @@ void CFrameAnalysis::_UpdatePreview()
     _SetPreviewMenu(m_pPanelPlotPreview->GetMenu());
   }
 }
-void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus)
+void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus, wxWindow *parent)
 {
   if(_XmlFile() && 
       m_pOARfile->CanEditArtifacts() && 
@@ -1605,9 +1629,13 @@ void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus)
     const wxString &sSampleName(pSample->GetName());
     if(pLocus != NULL)
     {
+      if(parent == NULL)
+      {
+        parent = this;
+      }
       CDialogAcceptAllele dlg(
         pLocus,m_pOARfile->GetMessages(),
-        this,wxID_ANY,
+        parent,wxID_ANY,
         m_pOARfile->GetReviewerAllowUserOverride(),
         sSampleName,
         wxSize(SIZE_EDIT_LOCUS));
@@ -1705,7 +1733,7 @@ void CFrameAnalysis::_OnEditAlertsByType(COARsample *pSample, int nType)
   }
 }
 void CFrameAnalysis::DoEditLocus(
-  COARsample *pSample, COARlocus *pLocus)
+  COARsample *pSample, COARlocus *pLocus, wxWindow *pParent)
 {
   if((pLocus != NULL) && (pSample != NULL) && _XmlFile())
   {
@@ -1723,15 +1751,14 @@ void CFrameAnalysis::DoEditLocus(
 				  wxS("in CFrameAnalysis::_OnEditLocus()"),
           nChannel);
       }
+      if(pParent == NULL) { pParent = this; }
       CDialogEditAllele dlg(pSample,nChannel,*pLocus,
         *m_pOARfile->GetMessages(),
         m_pOARfile->GetReviewerAllowUserOverride(),
-        this,wxID_ANY,sSampleName,sz);
+        pParent,wxID_ANY,sSampleName,sz);
       if(dlg.EditData(m_pOARfile))
       {
-        CheckSaveStatus();
-        m_pParent->UpdateSamplePlot(m_pOARfile,pSample->GetName());
-        RepaintData();
+        RepaintAllData(pSample);
       }
     }
     else
@@ -1741,9 +1768,7 @@ void CFrameAnalysis::DoEditLocus(
         this,wxID_ANY,sSampleName,sz);
       if(dlg.EditData(m_pOARfile,pSample))
       {
-        CheckSaveStatus();
-        m_pParent->UpdateSamplePlot(m_pOARfile,pSample->GetName());
-        RepaintData();
+        RepaintAllData(pSample);
       }
     }
   }
@@ -2042,6 +2067,13 @@ bool CFrameAnalysis::_SaveOERFile(const wxString &sFileName)
   bool bRtn = m_pOARfile->SaveFile(sFileName);
   return bRtn;
 }
+void CFrameAnalysis::RepaintAllData(const wxString &sSampleName)
+{
+  CheckSaveStatus();
+  m_pParent->UpdateSamplePlot(m_pOARfile,sSampleName);
+  RepaintData();
+}
+
 bool CFrameAnalysis::SaveFile()
 {
   bool bRtn = false;
@@ -2214,8 +2246,15 @@ void CFrameAnalysis::RepaintGridXML()
     m_pGrid->UpdateGrid(pFile,&m_SampleSort,n,n2,
       m_pButtonHistory->GetSelectedTime(),&dc);
     _LayoutAll();
-    m_pGrid->RestoreScrollPosition();
+
+    wxCommandEvent ee(CEventRestoreScroll,GetId());
+    ee.SetEventObject(this);
+    GetEventHandler()->AddPendingEvent(ee);
   }
+}
+void CFrameAnalysis::_OnRestoreScroll(wxCommandEvent &)
+{
+    m_pGrid->RestoreScrollPosition();
 }
 void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
 {
@@ -3074,6 +3113,7 @@ EVT_SET_FOCUS(CFrameAnalysis::OnFocusSet)
 EVT_KILL_FOCUS(CFrameAnalysis::OnFocusKill)
 
 EVT_COMMAND(wxID_ANY, CEventRepaint,CFrameAnalysis::_OnRepaint)
+EVT_COMMAND(wxID_ANY, CEventRestoreScroll,CFrameAnalysis::_OnRestoreScroll)
 
 EVT_CLOSE(CFrameAnalysis::OnClose)
 END_EVENT_TABLE()

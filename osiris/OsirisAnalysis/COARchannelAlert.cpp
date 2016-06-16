@@ -31,6 +31,16 @@
 #include "nwx/vectorptr.h"
 #include "nwx/nsstd.h"
 
+COARartifactAllele &COARartifactAllele::operator = (const COARartifactAllele &x)
+{
+  COARcopy(m_sName);
+  COARcopy(m_sLocus);
+  COARcopy(m_sOffLadder);
+  COARcopy(m_dBPS);
+  COARcopy(m_nLocation);
+  COARcopy(m_nCount);
+  return (*this);
+}
 void COARartifactAllele::RegisterAll(bool)
 {
   RegisterWxString("Name",&m_sName);
@@ -50,9 +60,13 @@ COARchannelAlert::~COARchannelAlert()
 
 COARartifact::~COARartifact() 
 {
-  m_ioAllele.Cleanup();
+  _Cleanup();
 }
-
+void COARartifact::_Cleanup()
+{
+  m_ioAllele.Cleanup();
+  vectorptr<COARartifactAllele>::cleanup(&m_vpAllele);
+}
 void COARartifact::RegisterAll(bool)
 {
   RegisterInt("Id",&m_nID);
@@ -64,24 +78,47 @@ void COARartifact::RegisterAll(bool)
   RegisterDoubleM1("Fit",&m_dFit);
   RegisterBoolTrue("AllowPeakEdit",&m_bIsEditable);
   RegisterWxString("Label",&m_sLabel);
+  RegisterWxStringNotEmpty("UserDisplay",&m_sUserDisplay);
   RegisterBoolSkipFalse("Disabled",&m_bDisabled);
   RegisterWxDateTimeNonZero("Update",&m_dtUpdate);
   Register(COARfile::g_sMessageNumber, &COARfile::g_iovn,(void *) &m_vnMessageNumber);
   Register("Allele",&m_ioAllele,&m_vpAllele);
   m_ioAllele.Manage(&m_vpAllele);
 }
+void COARartifact::_CopyCurrentAllele(const COARartifact &x)
+{
+  ClearAmbiguousAllele();
+  if( (m_pAlleleCurrent == NULL) && 
+      (x.m_pAlleleCurrent != NULL)
+    )
+  {
+    size_t nSize = x.m_vpAllele.size();
+    for(size_t i = 0; i < nSize; i++)
+    {
+      if(x.m_vpAllele.at(i) == x.m_pAlleleCurrent)
+      {
+        m_pAlleleCurrent = m_vpAllele.at(i);
+        i = nSize;
+      }
+    }
+  }
+}
 COARartifact &COARartifact::operator =(const COARartifact &x)
 {
+  _Cleanup();
   COARcopy(m_sLabel);
+  COARcopy(m_sUserDisplay);
   COARcopy(m_dtUpdate);
   COARcopy(m_vnMessageNumber);
+
   COARcopyVP(COARartifactAllele,m_vpAllele);
+  _CopyCurrentAllele(x); // after COARcopyVP
+
   COARcopy(m_dRFU);
   COARcopy(m_dMeanBPS);
   COARcopy(m_dPeakArea);
   COARcopy(m_dTime);
   COARcopy(m_dFit);
-  COARcopy(m_pAlleleCurrent);
   COARcopy(m_nID);
   COARcopy(m_nLevel);
   COARcopy(m_bDisabled);
@@ -93,12 +130,19 @@ bool COARartifact::SetLocus(const wxString &s) const
 {
   vector<COARartifactAllele *>::const_iterator itr;
   m_pAlleleCurrent = NULL;
-  if(!s.IsEmpty())
+#ifdef __WXDEBUG__
+  size_t nSize = m_vpAllele.size();
+  int COUNT = 0;
+#endif
+  if(!(s.IsEmpty() || m_vpAllele.empty()))
   {
     for(itr = m_vpAllele.begin();
       itr != m_vpAllele.end();
       ++itr)
     {
+#ifdef __WXDEBUG__
+      COUNT++;
+#endif
       if( ! ((*itr)->GetLocus().CmpNoCase(s)) )
       {
         m_pAlleleCurrent = *itr;
@@ -170,8 +214,13 @@ bool COARchannelAlert::UpdateArtifact(
 void COARchannelAlert::GetArtifactsByTime(
   const wxString &sLocus, // empty if for any locus
   vector<const COARartifact *> *pva, 
-  const wxDateTime *pTime) const
+  const wxDateTime *pTime,
+  int nID) const
 {
+  // insert COARartifact instance pointers into pva
+  // these pointers are part of this class instance
+  // and should NOT be deleted by the calling function
+
   size_t ndx1;
   size_t i;
   size_t nCount;
@@ -187,6 +236,8 @@ void COARchannelAlert::GetArtifactsByTime(
   };
   size_t nArrayCount = (pTime == NULL) ? 1 : 2;
   // if pTime is NULL, then ignore old (edited) artifacts
+
+  bool bUniqueID = true; // ID is unique on first loop because
   for(ndx1 = 0; ndx1 < nArrayCount; ++ndx1)
   {
     ppva = apva[ndx1];
@@ -196,8 +247,8 @@ void COARchannelAlert::GetArtifactsByTime(
       pA = ppva->at(i);
       const wxDateTime &dt(pA->GetUpdate());
       if( ((pTime == NULL) || (*pTime >= dt))
-        && 
-        (sLocus.IsEmpty() || pA->SetLocus(sLocus))
+        && (sLocus.IsEmpty() || pA->SetLocus(sLocus))
+        && ((nID < 0) || (nID == pA->GetID()))
         )
       {
         // time for this artifact is OK
@@ -207,6 +258,14 @@ void COARchannelAlert::GetArtifactsByTime(
         itrA = mapA.find(pA->GetID());
         if(itrA != mapA.end())
         {
+#ifdef __WXDEBUG__
+          if(bUniqueID)
+          {
+            wxString s = wxT("Non unique artifact ID found in COARchannelAlert::GetArtifactsByTime - ");
+            s += nwxString::FormatNumber(pA->GetID());
+            wxASSERT_MSG(0,s);
+          }
+#endif
           if(itrA->second->GetUpdate() < dt)
           {
             // time for this artifact is newer than
@@ -224,12 +283,17 @@ void COARchannelAlert::GetArtifactsByTime(
         {
           mapA.insert(map<int,const COARartifact *>::value_type(
             pA->GetID(),pA ));
+
+          if(bUniqueID && (nID >= 0))
+          {
+            break;
+          }
         }
       }
     }
+    bUniqueID = false;
   }
-  vectorptr<const COARartifact>::cleanup(pva);
-  pva->reserve(mapA.size());
+  pva->reserve(pva->size() + mapA.size());
   for(itrA = mapA.begin();
     itrA != mapA.end();
     ++itrA)

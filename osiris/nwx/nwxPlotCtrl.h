@@ -69,11 +69,15 @@ public:
     m_PositionMouse(-1,-1),
     m_pTimer(NULL),
     m_bClear(false),
+    m_bStopTimer(false),
     m_nTimeHere(0),
     m_pToolTip(NULL),
     m_pToolText(NULL),
     m_pLastXLabel(NULL),
-    m_pToolTipParent(NULL)
+    m_pToolTipParent(NULL),
+    m_cursorHand(wxCURSOR_HAND),
+    m_cursorBlank(wxCURSOR_BLANK),
+    m_bHideCursor(false)
   { }
   nwxPlotCtrl( wxWindow *parent, wxWindowID win_id = wxID_ANY,
         const wxPoint &pos = wxDefaultPosition,
@@ -89,10 +93,14 @@ public:
       m_PositionMouse(0,0),
       m_pTimer(NULL),
       m_bClear(false),
+      m_bStopTimer(false),
       m_nTimeHere(0),
       m_pToolTip(NULL),
       m_pLastXLabel(NULL),
-      m_pToolTipParent(NULL)
+      m_pToolTipParent(NULL),
+      m_cursorHand(wxCURSOR_HAND),
+      m_cursorBlank(wxCURSOR_BLANK),
+      m_bHideCursor(false)
       {
         _Init();
       }
@@ -155,6 +163,7 @@ public:
   }
   void StartTimer()
   {
+    m_bStopTimer = false;
     if(m_pTimer == NULL)
     {
       m_pTimer = new wxTimer(this,wxID_ANY);
@@ -166,10 +175,7 @@ public:
   }
   void StopTimer()
   {
-    if(m_pTimer != NULL)
-    {
-      m_pTimer->Stop();
-    }
+    m_bStopTimer = true;
   }
   void ShowScrollbars(bool b);
 
@@ -184,7 +190,14 @@ public:
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
   virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
   void SetupToolTip();
-  void ClearToolTip();
+  void ClearToolTip()
+  {
+    if( (m_pToolTip != NULL) && m_pToolTip->IsShown() )
+    {
+      m_bClear = true; // timer will take it from here
+      StartTimer();
+    }
+  }
 
   void OnViewChanged(wxPlotCtrlEvent &e);
   void nwxOnMouse(wxMouseEvent &event);
@@ -224,7 +237,11 @@ private:
 private:
   static const int TIMER_ELAPSE;
   static const unsigned int TIMER_COUNT;
-
+  void _ClearToolTip();
+  bool _OnMouseDown(wxMouseEvent &e); // called from nwxOnMouse
+  bool _OnMouseUp(wxMouseEvent &e);   //
+  bool _OnMouseDownXLabel(wxMouseEvent &e); // called from nwxOnMouse
+  bool _OnMouseUpXLabel(wxMouseEvent &e);   //
   void SendContextMenuEvent(wxMouseEvent &e);
   void ProcessMousePosition(const wxPoint &pt);
   void _Init();
@@ -238,14 +255,20 @@ private:
   wxPoint m_PositionMouse;
   wxTimer *m_pTimer;
   bool m_bClear;
+  bool m_bStopTimer;
   unsigned int m_nTimeHere;
   wxPanel *m_pToolTip;
   wxStaticText *m_pToolText;
   const nwxPointLabel *m_pLastXLabel;
+  const nwxPointLabel *m_pLastLabel;
   wxWindow *m_pToolTipParent;
   wxBitmap m_bmActiveBackup;
   wxBitmap m_bmInactiveBackup;
   wxBitmap m_bmClear;
+  wxCursor m_cursorHand;
+  wxCursor m_cursorDefault;
+  wxCursor m_cursorBlank;
+  bool m_bHideCursor;
 
   DECLARE_CLASS(nwxPlotCtrl)
   DECLARE_EVENT_TABLE()

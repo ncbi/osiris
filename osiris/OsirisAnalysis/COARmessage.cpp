@@ -241,18 +241,21 @@ bool COARmessages::FindNotHidden(const vector<int> &vn, const wxDateTime *pTime)
   }
   return bRtn;
 }
-bool COARmessages::FindDisplayed(const vector<int> &vn, const wxDateTime *pTime) const
+size_t COARmessages::CountDisplayed(const vector<int> &vn, const wxDateTime *pTime, bool bStopAtOne) const
 {
-  bool bRtn = false;
+  size_t nRtn = 0;
   int n;
   for(vector<int>::const_iterator itr = vn.begin();
-    (itr != vn.end()) && !bRtn;
+    (itr != vn.end()) && !(bStopAtOne && nRtn);
     ++itr)
   {
     n = *itr;
-    bRtn = IsDisplayed(n,pTime);
+    if(IsDisplayed(n,pTime))
+    {
+      nRtn++;
+    }
   }
-  return bRtn;
+  return nRtn;
 }
 bool COARmessages::FindEdited(const vector<int> &vn,const wxDateTime *pTime) const
 {

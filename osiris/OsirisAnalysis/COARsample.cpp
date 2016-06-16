@@ -33,6 +33,7 @@
 #include "nwx/stdb.h"
 #include <set>
 #include <map>
+#include <memory>
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
 #include "nwx/nwxString.h"
@@ -119,6 +120,7 @@ void COARsample::LocalInit()
   vectorptr<COARnotes>::cleanup(&m_vpOldNotesSample);
   vectorptr<COARnotes>::cleanup(&m_vpOldNotesChannel);
   vectorptr<COARnotes>::cleanup(&m_vpOldNotesILS);
+  m_mapIDchannel.clear();
 }
 
 
@@ -254,14 +256,18 @@ bool COARsample::IsEdited(
 void COARsample::_AddAllelesToMap(
   MAP_ID_PEAK *pmapPeak,
   const COARlocus *pLocus,
-  const wxDateTime *pTime) const
+  const wxDateTime *pTime,
+  int nPeakID) const
 {
   vector<const COARallele *> va;
   const COARallele *pAllele;
   COARpeakAny *pPeak;
+  MAP_ID_PEAK::iterator itrIDP;
   pLocus->GetAllelesByTime(&va,pTime);
   size_t n = va.size();
   size_t i;
+  bool bDone;
+  bool bReplace;
   int nID;
   for(i = 0; i < n; i++)
   {
@@ -273,18 +279,74 @@ void COARsample::_AddAllelesToMap(
 
     {
       nID = pAllele->GetID();
-      if(!nID)
+      if( (nPeakID < 0) || (nPeakID == nID) )
       {
-        // older OAR version
-        nID = _MakeID(pAllele);
-      }
-      if(pmapPeak->find(nID) == pmapPeak->end())
-      {
-        pPeak = new COARpeakAny(*pAllele);
-        pmapPeak->insert(MAP_ID_PEAK::value_type(nID,pPeak));
+        if(!nID)
+        {
+          // older OAR version
+          nID = _MakeID(pAllele);
+        }
+        // 6/10/16, if there is an allele match
+        //  take the enabled one
+        itrIDP = pmapPeak->find(nID);
+        bDone = false;
+        bReplace = false;
+        if(itrIDP == pmapPeak->end()) {} // OK
+        else if( !pAllele->IsDisabled() )
+        {
+          // prefer the enabled allele
+#ifdef __WXDEBUG__
+          if(!itrIDP->second->IsDisabled())
+          {
+            wxString s = wxT("multiple enabled alleles for ID ");
+            s += nwxString::FormatNumber(nID);
+            wxASSERT_MSG(0,s);
+          }
+#endif
+          bReplace = true;
+        }
+        else if(!itrIDP->second->IsDisabled())
+        {
+          bDone = true;  // keep it
+        }
+        else if(pAllele->GetUpdateTime() > itrIDP->second->GetUpdateTime())
+        {
+          // we have a newer one
+          bReplace = true;
+        }
+        else
+        {
+          bDone = true;
+        }
+        if(!bDone)
+        {
+          if(bReplace)
+          {
+            delete (itrIDP->second);
+            pmapPeak->erase(itrIDP);
+          }
+          pPeak = new COARpeakAny(*pAllele);
+          pmapPeak->insert(MAP_ID_PEAK::value_type(nID,pPeak));
+        }
       }
     }
   }
+}
+bool COARsample::_GetArtifactsByChannel(
+  vector<const COARartifact *> *pPeaks, 
+  int nChannel,
+  const wxString &sLocus, 
+  const wxDateTime *pTime,
+  int nPeakID) const
+{
+  const COARchannelAlert *pcha = GetChannelAlertsByChannel(nChannel);
+  bool bRtn = false;
+  if(pcha != NULL)
+  {
+    pcha->GetArtifactsByTime(sLocus,pPeaks,pTime,nPeakID);
+    bRtn = !pPeaks->empty();
+  }
+  return bRtn;
 }
 void COARsample::_AddArtifactsToMap(
   MAP_ID_PEAK *pmapPeak,
@@ -294,18 +356,16 @@ void COARsample::_AddArtifactsToMap(
   bool bIncludeDisabled,
   bool bIncludeNotEditable) const
 {
-  const COARchannelAlert *pcha = GetChannelAlertsByChannel(nChannel);
-  if(pcha != NULL)
+  vector<const COARartifact *> vArtifact;
+  if(_GetArtifactsByChannel(&vArtifact,nChannel,sLocus,pTime))
   {
     MAP_ID_PEAK::iterator itrMap;
-    vector<const COARartifact *> vArtifact;
     const COARartifact *pArtifact;
     COARpeakAny *pPeak;
     size_t nSizeA;
     size_t j;
     int nID;
 
-    pcha->GetArtifactsByTime(sLocus,&vArtifact,pTime);
     nSizeA = vArtifact.size();
     for(j = 0; j < nSizeA; ++j)
     {
@@ -327,7 +387,9 @@ void COARsample::_AddArtifactsToMap(
           pmapPeak->insert(map<int,COARpeakAny *>::value_type(
             nID,pPeak));
         }
-        else if(!pArtifact->IsDisabled())
+        else  //  if(!pArtifact->IsDisabled())  
+              // commented out condition, 
+              //  6/10/16 disabled should be included
         {
           // set up as artifact
           itrMap->second->SetupArtifactInfo(pArtifact);
@@ -366,13 +428,13 @@ vectorptr<COARpeakAny> *COARsample::_SortMap(MAP_ID_PEAK *pmapPeak)
   return pRtn.release();
 }
 
-vectorptr<COARpeakAny> *COARsample::GetPeaksByChannel(
-  const COARchannel *pChannel, 
-  const wxDateTime *pTime, 
+void COARsample::_MapIDPeakByChannel(
+  MAP_ID_PEAK *pMapPeak,
+  const COARchannel *pChannel,
+  const wxDateTime *pTime,
   bool bIncludeDisabled) const
 {
   wxString sLocus;
-  MAP_ID_PEAK mapPeak;
   size_t nLocus = pChannel->GetLocusCount();
   size_t i;
   int nChannel = pChannel->GetChannelNr();
@@ -384,11 +446,131 @@ vectorptr<COARpeakAny> *COARsample::GetPeaksByChannel(
     pLocus = _FindLocus(sLocus);
     if(pLocus != NULL)
     {
-      _AddAllelesToMap(&mapPeak,pLocus,pTime);
+      _AddAllelesToMap(pMapPeak,pLocus,pTime);
     }
   }
   sLocus.Clear();
-  _AddArtifactsToMap(&mapPeak,nChannel,sLocus,pTime,bIncludeDisabled);
+  _AddArtifactsToMap(pMapPeak,nChannel,sLocus,pTime,bIncludeDisabled);
+}
+
+void COARsample::_BuildMapIDchannel() const
+{
+  if(m_mapIDchannel.empty())
+  {
+    // build map of ID to locus
+    // first find all peak IDs
+    vectorptr<COARpeakAny>::iterator itr;
+    const COARchannel *pChannel;
+    size_t nCount = m_pFile->GetChannelCount();
+    size_t i;
+    int nID;
+    for(i =  0; i < nCount; ++i)
+    {
+      pChannel = m_pFile->GetChannel(i);
+      auto_ptr< vectorptr<COARpeakAny> > pPeaks(
+        GetPeaksByChannel(pChannel,NULL,true));
+      for(itr = pPeaks->begin(); itr != pPeaks->end(); ++itr)
+      {
+        nID = (*itr)->GetID();
+          m_mapIDchannel.insert(
+            map_ID_CHANNEL::value_type(nID,pChannel->GetChannelNr()));
+      }
+    }
+  }
+}
+COARartifact *COARsample::GetArtifactByID(int nID) const
+{
+  COARartifact *pRtn = NULL;
+  bool bOK = (nID > 0) && m_pFile->CanEditArtifacts(); // && !IsLadderType(); not sure about ladders
+  if(bOK)
+  {
+    vector<const COARartifact *> vArt;
+    _BuildMapIDchannel();
+    map_ID_CHANNEL::iterator itr =  m_mapIDchannel.find(nID);
+    if(itr == m_mapIDchannel.end()) {}
+    else if( _GetArtifactsByChannel(&vArt,itr->second,wxEmptyString,NULL,nID))
+    {
+      vector<const COARartifact *>::iterator itr = vArt.begin();
+      pRtn = new COARartifact(*(*itr));
+      if(vArt.size() > 1)
+      {
+        wxString s = nwxString::FormatNumber((int)vArt.size());
+        s += wxT(" artifacts found for peak ID: ");
+        s += nwxString::FormatNumber(nID);
+#ifdef __WXDEBUG__
+        wxASSERT_MSG(0,s);
+#else
+        mainApp::LogMessage(s);
+#endif
+      }
+    }
+  }
+  return pRtn;
+}
+size_t COARsample::GetAllelesByID(int nID, bool bInjectArtifact, vector<COARpeakAny *> *pv) const
+{
+  bool bOK = (nID > 0) && m_pFile->CanEditArtifacts();
+  size_t nRtn = 0;
+  if(bOK)
+  {
+    _BuildMapIDchannel();
+    map_ID_CHANNEL::iterator itr =  m_mapIDchannel.find(nID);
+    if(itr != m_mapIDchannel.end())
+    {
+      const COARchannel *pcha = m_pFile->GetChannelByNr(itr->second);
+      if(pcha != NULL)
+      {
+        auto_ptr<COARartifact> apArt(
+          bInjectArtifact ? GetArtifactByID(nID) : NULL);
+        COARartifact *pArt = apArt.get();
+
+        const COARlocus *pLocus;
+        const COARallele *pAllele;
+        COARpeakAny *pPeak;
+        size_t nLocus = pcha->GetLocusCount();
+        size_t i;
+        for(i = 0; i < nLocus; i++)
+        {
+          const wxString &sLocusName(pcha->GetLocusName(i));
+          pPeak = NULL;
+          if( (pLocus = _FindLocus(sLocusName)) == NULL ) 
+          {}
+          else if ( (pAllele = pLocus->GetAlleleByID(nID)) == NULL )
+          {
+            if( (pArt != NULL) && (pArt->SetLocus(sLocusName)) )
+            {
+              pPeak = new COARpeakAny(*pArt);
+              pPeak->SetIsAllele(false);
+            }
+          }
+          else
+          {
+            pPeak = new COARpeakAny(*pAllele);
+            if(pArt != NULL)
+            {
+              pPeak->SetupArtifactInfo(pArt);
+            }
+          }
+          if(pPeak != NULL)
+          {
+            pv->push_back(pPeak);
+            nRtn++;
+          }
+        }
+      }
+    }
+  }
+  return nRtn;
+}
+
+
+vectorptr<COARpeakAny> *COARsample::GetPeaksByChannel(
+  const COARchannel *pChannel, 
+  const wxDateTime *pTime, 
+  bool bIncludeDisabled) const
+{
+  MAP_ID_PEAK mapPeak;
+  _MapIDPeakByChannel(&mapPeak,pChannel,pTime,bIncludeDisabled);
   vectorptr<COARpeakAny> *pRtn = _SortMap(&mapPeak);
   return pRtn;
 }
@@ -489,6 +671,8 @@ bool COARsample::SetPeaksByLocusName(
           // the peak isn't used for an allele call
           // in another locus
           _CheckForSingleAllele((*itr)->GetID(), pcha, sLocus);
+          //  6/9/16 need to make this more efficient 
+          //  using GetPeaksByID -- STOP HERE 
         }
       }
     }
@@ -514,6 +698,9 @@ bool COARsample::SetPeaksByLocusName(
   }
   return bUpdate;
 }
+
+
+
 //  3/13/09, if an allele is updated, make sure it isn't
 //  an allele call in an adjacent locus
 

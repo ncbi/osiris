@@ -48,6 +48,8 @@ public:
     (*this) = x;
   }
   virtual ~COARartifactAllele(){;}
+  COARartifactAllele &operator = (const COARartifactAllele &x);
+
   const wxString &GetName() const
   {
     return m_sName;
@@ -186,6 +188,10 @@ public:
   virtual const wxString &GetArtifactLabel() const
   {
     return m_sLabel;
+  }
+  virtual const wxString &GetArtifactUserDisplay() const
+  {
+    return m_sUserDisplay;
   }
   virtual const wxString &GetAlleleName() const
   {
@@ -359,6 +365,10 @@ public:
   {
     m_sLabel = s;
   }
+  virtual void SetArtifactUserDisplay(const wxString &s)
+  {
+    m_sUserDisplay = s;
+  }
 
   //************ END virtual IOARpeak functions
 
@@ -418,7 +428,10 @@ public:
 protected:
   virtual void RegisterAll(bool = false);
 private:
+  void _CopyCurrentAllele(const COARartifact &x);
+  void _Cleanup();
   wxString m_sLabel;
+  wxString m_sUserDisplay;
   wxDateTime m_dtUpdate;
   vector<int> m_vnMessageNumber;
   vector<COARartifactAllele *> m_vpAllele;
@@ -464,14 +477,16 @@ public:
   void GetArtifactsByTime(
     const wxString &sLocus,
     vector<const COARartifact *> *pva,
-    const wxDateTime *pTime) const;
+    const wxDateTime *pTime,
+    int nID = -1) const;
 
   void GetArtifactsByTime(
     vector<const COARartifact *> *pva,
-    const wxDateTime *pTime) const
+    const wxDateTime *pTime,
+    int nID = -1) const
   {
     const wxString s("");
-    GetArtifactsByTime(s,pva,pTime);
+    GetArtifactsByTime(s,pva,pTime,nID);
   }
 
 

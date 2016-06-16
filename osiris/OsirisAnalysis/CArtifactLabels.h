@@ -37,6 +37,7 @@
 
 #include <wx/string.h>
 #include <wx/regex.h>
+#include <wx/arrstr.h>
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
 #include "IArtifactGroup.h"
@@ -175,14 +176,20 @@ public:
   void ResetDefaults();
   const wxString &GetDisplayFromString(const wxString &sArtifactString) const;
   const wxString &GetDisplayFromMsgType(const wxString &sMsgType) const;
+  const wxArrayString &GetChoiceList() const;
 protected:
   virtual void RegisterAll(bool = false)
   {
     Register(wxT("SubGroup"),&m_io,&m_vector);
   }
 private:
+  void _ClearChoiceList() const
+  {
+    m_asChoiceList.Clear();
+  }
   TnwxXmlIOPersistVector<CArtifactGroup> m_io;
   std::vector<CArtifactGroup *> m_vector;
+  mutable wxArrayString m_asChoiceList;
   bool m_bOK;
   static const wxString g_sDEFAULT_LABEL;
 };

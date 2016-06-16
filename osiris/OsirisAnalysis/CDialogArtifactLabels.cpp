@@ -86,7 +86,7 @@ CDialogArtifactLabels::CDialogArtifactLabels(wxWindow *parent) :
   m_pCheckDefault = new wxCheckBox(this,wxID_ANY,wxT(" Use Default"));
   m_pTextDisplay = new wxTextCtrl(this,wxID_ANY);
 
-  m_pTextDisplay->SetMaxLength(20);
+  m_pTextDisplay->SetMaxLength(CArtifactLabelsUser::MAX_LENGTH);
   wxFont font = m_pLabelArtifactLabel->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   m_pLabelArtifactLabel->SetFont(font);

@@ -281,6 +281,7 @@
     <ClCompile Include="CDialogEditAllele.cpp" />
     <ClCompile Include="CDialogEditChannelAlerts.cpp" />
     <ClCompile Include="CDialogEditGridColours.cpp" />
+    <ClCompile Include="CDialogEditPeak.cpp" />
     <ClCompile Include="CDialogEnableMultiple.cpp" />
     <ClCompile Include="CDialogExportFile.cpp" />
     <ClCompile Include="CDialogExportPlot.cpp" />
@@ -416,6 +417,7 @@
     <ClInclude Include="CDialogEditAllele.h" />
     <ClInclude Include="CDialogEditChannelAlerts.h" />
     <ClInclude Include="CDialogEditGridColours.h" />
+    <ClInclude Include="CDialogEditPeak.h" />
     <ClInclude Include="CDialogEnableMultiple.h" />
     <ClInclude Include="CDialogExportFile.h" />
     <ClInclude Include="CDialogExportPlot.h" />

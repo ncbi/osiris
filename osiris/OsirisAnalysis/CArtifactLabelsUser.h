@@ -193,6 +193,7 @@ public:
   }
 
   void Sort();
+  static const int MAX_LENGTH;
 protected:
   virtual void RegisterAll(bool = false)
   {

@@ -51,12 +51,14 @@ public:
   static const wxString OL_ACCEPTED;
   static const wxString OL_YES;
   static const wxString OL_NO;
+  static const wxString OL_NO_DISPLAYED;
   virtual ~IOARpeak();
   // Get... functions
   virtual const wxString &GetLocusName() const = 0;
   virtual const wxString &GetAlleleName() const = 0;
   virtual const wxDateTime &GetUpdateTime() const = 0;
   virtual const wxString &GetArtifactLabel() const = 0;
+  virtual const wxString &GetArtifactUserDisplay() const = 0;
 
   virtual int GetID() const = 0;
   virtual int  GetAlleleCount() const = 0;
@@ -116,6 +118,7 @@ public:
   virtual void SetAlleleName(const wxString &s, bool bAmel = false) = 0;
   virtual void SetUpdateTime(const wxDateTime &x) = 0;
   virtual void SetArtifactLabel(const wxString &s) = 0;
+  virtual void SetArtifactUserDisplay(const wxString &s) = 0;
   virtual void SetUpdateTimeCurrent() = 0;
 
   virtual void Set(const IOARpeak &x) = 0;
@@ -200,7 +203,11 @@ public:
     bool bCheckAllele = true, bool bCheckArtifact = true);
   static bool DoubleEqual(double d1, double d2, unsigned int nPlaces = 3);
   static void SetIsCritical(IOARpeak *p, bool bCritical);
-  static bool  IsCritical(const IOARpeak &x);
+  static bool  IsCritical(int nLevel);
+  static bool  IsCritical(const IOARpeak &x)
+  {
+    return IsCritical(x.GetCriticalLevel());
+  }
 
   static wxString FormatBool
 		(bool b, const char *psTrue = "1", const char *psFalse = "")
@@ -381,7 +388,6 @@ class COARpeakAny : public COARpeak
   // (or used to create) an artifact or allele
 public:
   virtual ~COARpeakAny();
-  COARpeakAny(int nID = 0);
   COARpeakAny(const IOARpeak &x)
   {
     Set(x);
@@ -409,6 +415,7 @@ public:
   virtual const wxString &GetAlleleName() const;
   virtual const wxDateTime &GetUpdateTime() const;
   virtual const wxString &GetArtifactLabel() const;
+  virtual const wxString &GetArtifactUserDisplay() const;
 
   // Set functions
 
@@ -431,6 +438,7 @@ public:
   virtual void SetLocusName(const wxString &s);
   virtual void SetUpdateTime(const wxDateTime &x);
   virtual void SetArtifactLabel(const wxString &s);
+  virtual void SetArtifactUserDisplay(const wxString &s);
   virtual void SetUpdateTimeCurrent();
 private:
   void _Init();
@@ -438,6 +446,7 @@ private:
   wxString m_sName;
   wxString m_sLocusName;
   wxString m_sArtifactLabel;
+  wxString m_sArtifactUserDisplay;
   wxString m_sOffLadder;
   wxDateTime m_dtUpdate;
   double m_dRFU;

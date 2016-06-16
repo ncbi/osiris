@@ -56,7 +56,7 @@ void CArtifactGroupUser::RegisterAll(bool b)
 {
   nwxXmlPersist::RegisterAll(b);
   RegisterWxString(wxT("ID"),  &m_sID);
-  RegisterWxString(wxT("Display"),&m_sDisplayUser);
+  RegisterWxStringNotEmpty(wxT("Display"),&m_sDisplayUser);
   RegisterInt(wxT("Priority"),    &m_nPriorityUser);
 }
 
@@ -93,3 +93,4 @@ void CArtifactLabelsUser::Sort()
   }
 }
 
+const int CArtifactLabelsUser::MAX_LENGTH = 20;

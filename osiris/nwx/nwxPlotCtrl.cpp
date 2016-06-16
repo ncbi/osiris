@@ -122,10 +122,72 @@ void nwxPlotCtrl::DrawPlotCtrl(wxDC *dc)
   m_XLabels.Draw(dc,true);
 }
 
-
+bool nwxPlotCtrl::_OnMouseDown(wxMouseEvent &e)
+{
+  wxPoint pt(e.GetPosition());
+  m_pLastLabel = m_Labels.FindLabel(pt);
+  return false;
+}
+bool nwxPlotCtrl::_OnMouseDownXLabel(wxMouseEvent &e)
+{
+  wxPoint pt(e.GetPosition());
+  wxPoint ptArea = GetPlotArea()->GetPosition();
+  bool bSkip = false;
+  if(pt.y < ptArea.y)
+  {
+    pt.y -= ptArea.y;
+    pt.x -= ptArea.x;
+    m_pLastXLabel = m_XLabels.FindLabel(pt);
+  }
+  else
+  {
+    bSkip = _OnMouseDown(e);
+  }
+  return bSkip;
+}
+bool nwxPlotCtrl::_OnMouseUp(wxMouseEvent &e)
+{
+  if(m_pLastLabel != NULL)
+  {
+    wxPoint pt(e.GetPosition());
+    const nwxPointLabel *pLabel = m_Labels.FindLabel(pt);
+    if(pLabel == m_pLastLabel)
+    {
+      m_pLastLabel = NULL;
+      _ClearToolTip();
+      OnClickLabel(*pLabel,pt);
+    }
+  }
+  return false;
+}
+bool nwxPlotCtrl::_OnMouseUpXLabel(wxMouseEvent &e)
+{
+  wxPoint pt(e.GetPosition());
+  wxPoint ptArea = GetPlotArea()->GetPosition();
+  bool bSkip = false;
+  bool bOutside = (pt.y < ptArea.y);
+  if(!bOutside)
+  {
+    bSkip = _OnMouseUp(e);
+  }
+  else if(m_pLastXLabel != NULL)
+  {
+    pt.y -= ptArea.y;
+    pt.x -= ptArea.x;
+    const nwxPointLabel *pLabel = m_XLabels.FindLabel(pt);
+    if(pLabel == m_pLastXLabel)
+    {
+      m_pLastXLabel = NULL;
+      _ClearToolTip();
+      OnClickXLabel(*pLabel,pt);
+    }
+  }
+  return bSkip;
+}
 
 void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
 {
+  // mouse event outside the plot area
   wxPoint pt(e.GetPosition());
   wxPoint ptArea = GetPlotArea()->GetPosition();
   bool bSkip = false;
@@ -134,48 +196,25 @@ void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
     bSkip = true;
     SendContextMenuEvent(e);
   }
-  else if(pt.y < ptArea.y)
+  else if(e.ButtonDown(wxMOUSE_BTN_LEFT))
   {
-    //  STOP HERE - also process clicking for all labels 5/26/2016
-
-    pt.y -= ptArea.y;
+    bSkip = _OnMouseDownXLabel(e);
+  }
+  else if(e.ButtonUp(wxMOUSE_BTN_LEFT))
+  {
+    bSkip = _OnMouseUpXLabel(e);
+  }
+  else if(e.Leaving())
+  {
+    ClearToolTip();
+    m_pLastXLabel = NULL;
+    m_pLastLabel = NULL;
+  }
+  else if(!( e.Dragging() || e.Button(wxMOUSE_BTN_ANY) ))
+  {
     pt.x -= ptArea.x;
-    if(e.ButtonDown(wxMOUSE_BTN_LEFT))
-    {
-      m_bClear = true;
-      m_pLastXLabel = m_XLabels.FindLabel(pt);
-    }
-    else if(e.ButtonUp(wxMOUSE_BTN_LEFT))
-    {
-      m_bClear = true;
-      const nwxPointLabel *pLabel = NULL;
-      if(m_pLastXLabel != NULL)
-      {
-        pLabel = m_XLabels.FindLabel(pt);
-        if(pLabel == m_pLastXLabel)
-        {
-          OnClickXLabel(*pLabel,pt);
-        }
-        m_pLastXLabel = NULL;
-      }
-#ifdef __WXDEBUG__
-      _LogMouseUp(pt,pLabel); // debugging
-#endif
-      bSkip = true;
-    }
-    else if(e.Leaving())
-    {
-      m_bClear = true;
-      m_pLastXLabel = NULL;
-    }
-    else if(!( e.Dragging() || e.Button(wxMOUSE_BTN_ANY) ))
-    {
-      ProcessMousePosition(pt);
-    }
-    else
-    {
-      bSkip = true;
-    }
+    pt.y -= ptArea.y;
+    ProcessMousePosition(pt);
   }
   else
   {
@@ -183,6 +222,29 @@ void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
   }
   e.Skip(bSkip);
 }
+void nwxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event )
+{
+  // mouse events inside the plot area
+  wxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS(event);
+  wxPoint pt = event.GetPosition();
+  if(event.ButtonUp(wxMOUSE_BTN_LEFT))
+  {
+    _OnMouseUp(event);
+  }
+  else if(event.ButtonDown(wxMOUSE_BTN_LEFT))
+  {
+    _OnMouseDown(event);
+  }
+  else if(event.ButtonUp(wxMOUSE_BTN_RIGHT))
+  {
+    SendContextMenuEvent(event);
+  }
+  else
+  {
+    ProcessMousePosition(pt);
+  }
+}
+
 #ifdef __WXDEBUG__
 void nwxPlotCtrl::_LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel)
 {
@@ -210,28 +272,6 @@ void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi)
   m_XLabels.SetOffset(nX);
   m_Labels.SetMinY(n);
 }
-void nwxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event )
-{
-  wxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS(event);
-  wxPoint pt = event.GetPosition();
-  ProcessMousePosition(pt);
-  if(event.ButtonUp(wxMOUSE_BTN_RIGHT))
-  {
-    SendContextMenuEvent(event);
-  }
-  else if (event.ButtonUp(wxMOUSE_BTN_LEFT))
-  {
-      const nwxPointLabel *pLabel = m_Labels.FindLabel(pt);
-      if(pLabel != NULL)
-      {
-        OnClickLabel(*pLabel,pt);
-      }
-      // DEBUGGING
-#ifdef __WXDEBUG__
-      _LogMouseUp(pt,pLabel);
-#endif
-  }
-}
 
 void nwxPlotCtrl::ProcessMousePosition(const wxPoint &pt)
 {
@@ -239,9 +279,8 @@ void nwxPlotCtrl::ProcessMousePosition(const wxPoint &pt)
   {
     m_PositionMouse = pt;
     m_nTimeHere = 0;
+    StartTimer();
   }
-  StartTimer();
-
 }
 void nwxPlotCtrl::_Init()
 {
@@ -259,7 +298,7 @@ void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
 {
   if(m_bClear)
   {
-    ClearToolTip();
+    _ClearToolTip();
     m_bClear = false;
     m_nTimeHere = 0;
     StopTimer();
@@ -271,8 +310,13 @@ void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
     if(bSetup || (m_nTimeHere == TIMER_COUNT))
     {
       SetupToolTip();
-      StopTimer();
+      //StopTimer();
+      m_nTimeHere = 0;
     }
+  }
+  if(m_bStopTimer)
+  {
+    m_pTimer->Stop();
   }
 }
 #if __TOOLTIP_TO_FRAME__
@@ -491,8 +535,12 @@ void nwxPlotCtrl::SetupToolTip()
     }
     if(bHideCursor)
     {
-      wxCursor c(wxCURSOR_BLANK);
-      SetCursor(c);
+      m_bHideCursor = true;
+      if(!m_cursorDefault.IsOk())
+      {
+        m_cursorDefault = GetCursor();
+      }
+      SetCursor(m_cursorBlank);
     }
   }
   else if(m_pToolTip != NULL)
@@ -501,12 +549,17 @@ void nwxPlotCtrl::SetupToolTip()
   }
   return;
 }
-void nwxPlotCtrl::ClearToolTip()
+void nwxPlotCtrl::_ClearToolTip()
 {
   if(m_pToolTip != NULL)
   {
     m_pToolTip->Show(false);
-    SetCursor(wxNullCursor);
+    if(m_bHideCursor)
+    {
+      m_bHideCursor = false;
+      SetCursor(m_cursorDefault);
+    }
+    // SetCursor(wxNullCursor);
   }
   return;
 }
@@ -514,7 +567,7 @@ void nwxPlotCtrl::ClearToolTip()
 
 void nwxPlotCtrl::OnViewChanged(wxPlotCtrlEvent &e)
 {
-  m_bClear = true;
+  ClearToolTip();
   e.Skip();
 }
 

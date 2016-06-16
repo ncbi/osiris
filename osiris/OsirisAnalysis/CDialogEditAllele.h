@@ -26,6 +26,7 @@
 *  FileName: CDialogEditAllele.h
 *  Author:   Douglas Hoffman
 *
+*   THIS SHOULD HAVE BEEN NAMED CDialogEditLocus
 */
 #ifndef __C_DIALOG_EDIT_ALLELE_H__
 #define __C_DIALOG_EDIT_ALLELE_H__

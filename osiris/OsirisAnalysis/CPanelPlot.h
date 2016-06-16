@@ -53,6 +53,7 @@
 #include "wxIDS.h"
 class CFrameAnalysis;
 class COARfile;
+class COARsample;
 class CPlotData;
 class CKitColors;
 class CPanelPlot;
@@ -258,6 +259,7 @@ public:
   {
     return (m_pButtonPanel != NULL);
   }
+  COARsample *GetSample();
   bool CanShowPeakArea();
   void SetSashAndMinHeight(bool bShowSash, int nHeight);
   void SetLabelType(LABEL_PLOT_TYPE n,LABEL_PLOT_TYPE nDefault = LABEL_NONE);

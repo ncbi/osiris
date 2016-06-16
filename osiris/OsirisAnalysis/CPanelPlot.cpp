@@ -42,7 +42,9 @@
 #include "CDialogParameters.h"
 #include "nwx/vectorptr.h"
 #include "nwx/mapptr.h"
-
+#ifdef __WXDEBUG__
+#include "nwx/nwxString.h"
+#endif
 #define RESIDUAL_THRESHOLD 0.0005
 #define FIT "\nFit: "
 
@@ -52,7 +54,8 @@ CPlotCtrl::CPlotCtrl(
 
 void CPlotCtrl::OnClickXLabel(const nwxPointLabel &x, const wxPoint &)
 {
-  m_pPlot->ZoomToLocus(x.GetLabel(),0);
+  wxString s = x.GetLabel(); // x will be destroyed by ZoomToLocus
+  m_pPlot->ZoomToLocus(s,0);
   return;
 }
 void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
@@ -66,17 +69,29 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
     {
       s = wxT("OnClickLabel - no peak info");
     }
-    else if(p->IsArtifact())
-    {
-      s = wxT("OnClickLabel - Artifact");
-    }
-    else if(p->IsAllele())
-    {
-      s = wxT("OnClickLabel - Allele");
-    }
     else
     {
-      s = wxT("OnClickLabel - neither artifact nor allele");
+      wxString sID = nwxString::FormatNumber(p->GetID());
+      if(p->IsAllele())
+      {
+        if(p->IsArtifact())
+        {
+          s = wxT("OnClickLabel - Allele and Artifact");
+        }
+        else
+        {
+          s = wxT("OnClickLabel - Allele");
+        }
+      }
+      else if(p->IsArtifact())
+      {
+        s = wxT("OnClickLabel - Artifact ");
+      }
+      else
+      {
+        s = wxT("OnClickLabel - neither artifact nor allele ");
+      }
+      s += sID;
     }
     mainApp::LogMessage(s);
   }
@@ -1055,6 +1070,7 @@ void CPanelPlot::_BuildOARlabels()
     const COARchannel *pChannel;
     bool bOARHasArtifacts = bArtifact && m_pOARfile->CanEditArtifacts();
     _CleanupPeakAny();
+    CArtifactLabels *pArtLabels = mainApp::GetArtifactLabels();
     for(unsigned int nChannel = 1;
       nChannel <= nChannelCount;
       nChannel++)
@@ -1079,7 +1095,6 @@ void CPanelPlot::_BuildOARlabels()
           : pChannelColor->GetDyeName();
         const wxColour &colour(m_pColors->GetColor(
           m_pData->GetKitName(),ANALYZED_DATA,nChannel));
-        CArtifactLabels *pArtLabels = mainApp::GetArtifactLabels();
         n = (pPeaks.get() == NULL) ? 0 : pPeaks->size();
         for(j = 0; j < n; j++)
         {
@@ -1106,7 +1121,11 @@ void CPanelPlot::_BuildOARlabels()
             )
           {
             const wxString &sArtifactLabel = pPeak->GetArtifactLabel();
-            const wxString &sPlotLabel = pArtLabels->GetDisplayFromString(sArtifactLabel);
+            const wxString &sArtifactUserDisplay = pPeak->GetArtifactUserDisplay();
+            const wxString &sPlotLabel = 
+              sArtifactUserDisplay.IsEmpty()
+              ? pArtLabels->GetDisplayFromString(sArtifactLabel)
+              : sArtifactUserDisplay;
             sToolTip = _ArtifactToolTip(pPeak,sChannelName);
             nwxPointLabel label(
                   sPlotLabel,
@@ -1124,7 +1143,7 @@ void CPanelPlot::_BuildOARlabels()
         {
           _AppendLadderPeaks(nChannel,sChannelName);
         }
-        pPeaks->clear();  // prevent deleting items in array
+        pPeaks.get()->clear();  // prevent deleting items in array
       }
     }
     if(bLadderLabels)
@@ -1441,13 +1460,18 @@ void CPanelPlot::SetSashAndMinHeight(bool bShowSash, int nHeight)
   }
   SetSashVisible(wxSASH_BOTTOM, bShowSash);
 }
+COARsample *CPanelPlot::GetSample()
+{
+  COARsample *pSample =
+      m_pOARfile->GetSampleByName(m_pData->GetFilename());
+  return pSample;
+}
 bool CPanelPlot::CanShowPeakArea()
 {
   bool bRtn = (m_pOARfile != NULL);
   if(bRtn)
   {
-    COARsample *pSample =
-      m_pOARfile->GetSampleByName(m_pData->GetFilename());
+    COARsample *pSample = GetSample();
     bRtn = (pSample != NULL) && !pSample->IsLadderType();
   }
   return bRtn;
@@ -1610,13 +1634,14 @@ void CPanelPlot::ZoomToLocus(const wxString &sLocus, unsigned int nDelay)
 }
 void CPanelPlot::EditPeak(COARpeakAny *pPeak)
 {
+  COARsample *pSample = GetSample();
   if(m_pFramePlot != NULL)
   {
-    m_pFramePlot->EditPeak(pPeak);
+    m_pFramePlot->EditPeak(pPeak,pSample);
   }
   else if(m_pFrameAnalysis != NULL)
   {
-    m_pFrameAnalysis->EditPeak(pPeak);
+    m_pFrameAnalysis->EditPeak(pPeak,pSample);
   }
 }
 

@@ -35,6 +35,7 @@ const wxString IOARpeak::OL_FALSE("false");
 const wxString IOARpeak::OL_ACCEPTED("accepted");
 const wxString IOARpeak::OL_YES("yes");
 const wxString IOARpeak::OL_NO(" ");
+const wxString IOARpeak::OL_NO_DISPLAYED("no");
 
 const unsigned int COARpeak::FIT_DIGIT_MATCH(8);
 const wxString COARpeak::EMPTY_STRING;
@@ -68,14 +69,13 @@ bool COARpeak::GetCountBool(const IOARpeak &x)
 }
 
 
-bool COARpeak::IsCritical(const IOARpeak &x)
-{
-  int n = x.GetCriticalLevel();
-  return (n > 0) && (n <= MIN_CRITICAL_ARTIFACT);  // in wxIDS.h
-}
 void COARpeak::SetIsCritical(IOARpeak *p, bool bCritical)
 {
   p->SetCriticalLevel(bCritical ? 1 : ARTIFACT_NOT_CRITICAL);
+}
+bool COARpeak::IsCritical(int nLevel)
+{
+  return (nLevel > 0) && (nLevel <= MIN_CRITICAL_ARTIFACT);  // in wxIDS.h
 }
 
 void COARpeak::Set(const IOARpeak &x)
@@ -101,6 +101,7 @@ void COARpeak::Copy(IOARpeak *pTo, const IOARpeak &x)
   pTo->SetAlleleName(x.GetAlleleName());
   pTo->SetLocusName(x.GetLocusName());
   pTo->SetArtifactLabel(x.GetArtifactLabel());
+  pTo->SetArtifactUserDisplay(x.GetArtifactUserDisplay());
   pTo->SetUpdateTime(x.GetUpdateTime());
 }
 
@@ -227,6 +228,8 @@ bool COARpeak::Equal(
   { bRtn = false; }
   else if(bCheckArtifact && (x1.GetArtifactLabel() != x2.GetArtifactLabel()))
   { bRtn = false; }
+  else if(bCheckArtifact && (x1.GetArtifactUserDisplay() != x2.GetArtifactUserDisplay()))
+  { bRtn = false; }
 
   return bRtn;
 }
@@ -297,6 +300,7 @@ void COARpeakAny::_Init()
   m_sName.Empty();
   m_sLocusName.Empty();
   m_sArtifactLabel.Empty();
+  m_sArtifactUserDisplay.Empty();
   m_dtUpdate.Set((time_t)0);
   m_dRFU = 0.0;
   m_dTime = 0.0;
@@ -323,6 +327,7 @@ void COARpeakAny::SetupArtifactInfo(const IOARpeak *p)
   {
     SetIsArtifact(true);
     SetArtifactLabel(p->GetArtifactLabel());
+    SetArtifactUserDisplay(p->GetArtifactUserDisplay());
     SetCriticalLevel(p->GetCriticalLevel());
     const wxDateTime &dt(p->GetUpdateTime());
     if(dt > GetUpdateTime())
@@ -402,6 +407,10 @@ const wxString &COARpeakAny::GetLocusName() const
 const wxString &COARpeakAny::GetArtifactLabel() const
 {
   return m_sArtifactLabel;
+}
+const wxString &COARpeakAny::GetArtifactUserDisplay() const
+{
+  return m_sArtifactUserDisplay;
 }
 const wxDateTime &COARpeakAny::GetUpdateTime() const
 {
@@ -484,6 +493,10 @@ void COARpeakAny::SetLocusName(const wxString &s)
 void COARpeakAny::SetArtifactLabel(const wxString &s)
 {
   m_sArtifactLabel = s;
+}
+void COARpeakAny::SetArtifactUserDisplay(const wxString &s)
+{
+  m_sArtifactUserDisplay = s;
 }
 void COARpeakAny::SetUpdateTime(const wxDateTime &x)
 {

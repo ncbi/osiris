@@ -38,6 +38,7 @@
 #include "CArtifactLabels.h"
 #include "CArtifactLabelsUser.h"
 #include "nwx/vectorSort.h"
+#include "nwx/nwxString.h"
 #include "TArtifactGreater.h"
 
 CArtifactGroup::CArtifactGroup() : nwxXmlPersist(true)
@@ -148,6 +149,7 @@ bool CArtifactLabels::LoadFile(const wxString &sFileName, bool bLock)
   bool bRtn = nwxXmlPersist::LoadFile(sFileName,bLock);
   if(bRtn) { Sort(); }
   else { vectorptr<CArtifactGroup>::cleanup(&m_vector); }
+  _ClearChoiceList();
   return bRtn;
 }
 
@@ -235,7 +237,11 @@ bool CArtifactLabels::SetUserLabels(const CArtifactLabelsUser &labels)
         bRtn = true;
       }
     }
-    if(bRtn) { Sort(); }
+    if(bRtn) 
+    {
+      Sort();
+      _ClearChoiceList();
+    }
   }
   return bRtn;
 }
@@ -258,4 +264,21 @@ void CArtifactLabels::ResetDefaults()
     (*itr)->SetDefaults();
   }
   Sort();
+  _ClearChoiceList();
+}
+
+const wxArrayString &CArtifactLabels::GetChoiceList() const
+{
+  if(m_asChoiceList.IsEmpty())
+  {
+    set<wxString,nwxStringLessNoCase> setChoice;
+    std::vector<CArtifactGroup *>::const_iterator itr;
+    m_asChoiceList.Alloc(m_vector.size() + 1);
+    m_asChoiceList.Add(wxEmptyString);
+    for(itr = m_vector.begin(); itr != m_vector.end(); ++itr)
+    {
+      m_asChoiceList.Add((*itr)->GetDisplay());
+    }
+  }
+  return m_asChoiceList;
 }
