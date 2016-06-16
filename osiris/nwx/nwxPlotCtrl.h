@@ -75,7 +75,6 @@ public:
     m_pToolText(NULL),
     m_pLastXLabel(NULL),
     m_pToolTipParent(NULL),
-    m_cursorHand(wxCURSOR_HAND),
     m_cursorBlank(wxCURSOR_BLANK),
     m_bHideCursor(false)
   { }
@@ -98,7 +97,6 @@ public:
       m_pToolTip(NULL),
       m_pLastXLabel(NULL),
       m_pToolTipParent(NULL),
-      m_cursorHand(wxCURSOR_HAND),
       m_cursorBlank(wxCURSOR_BLANK),
       m_bHideCursor(false)
       {
@@ -262,12 +260,11 @@ private:
   const nwxPointLabel *m_pLastXLabel;
   const nwxPointLabel *m_pLastLabel;
   wxWindow *m_pToolTipParent;
+  wxCursor m_cursorDefault;
+  wxCursor m_cursorBlank;
   wxBitmap m_bmActiveBackup;
   wxBitmap m_bmInactiveBackup;
   wxBitmap m_bmClear;
-  wxCursor m_cursorHand;
-  wxCursor m_cursorDefault;
-  wxCursor m_cursorBlank;
   bool m_bHideCursor;
 
   DECLARE_CLASS(nwxPlotCtrl)

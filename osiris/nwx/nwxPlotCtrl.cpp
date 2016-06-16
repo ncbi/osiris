@@ -153,8 +153,6 @@ bool nwxPlotCtrl::_OnMouseUp(wxMouseEvent &e)
     const nwxPointLabel *pLabel = m_Labels.FindLabel(pt);
     if(pLabel == m_pLastLabel)
     {
-      m_pLastLabel = NULL;
-      _ClearToolTip();
       OnClickLabel(*pLabel,pt);
     }
   }
@@ -404,15 +402,19 @@ wxWindow *nwxPlotCtrl::_FindFrameParent()
 void nwxPlotCtrl::SetupToolTip()
 {
   wxString sText;
+  const nwxPointLabel *pLabel = NULL;
   if(m_PositionMouse.y < 0)
   {
-    sText = m_XLabels.GetToolTipText(m_PositionMouse);
+    pLabel = m_XLabels.FindLabel(m_PositionMouse);
   }
   else
   {
-    sText = m_Labels.GetToolTipText(m_PositionMouse);
+    pLabel = m_Labels.FindLabel(m_PositionMouse);
   }
-
+  if(pLabel != NULL)
+  {
+    sText = pLabel->GetToolTip();
+  }
   if(!sText.IsEmpty())
   {
     bool bLayout = true;

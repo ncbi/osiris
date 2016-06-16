@@ -106,7 +106,8 @@ bool CPlotCtrl::SetViewRect(
   return bRtn;
 }
 
-
+const int CPanelPlot::ALLELE_SORT = 1000;
+const int CPanelPlot::ARTIFACT_SORT = 1;
 
 CPanelPlot::CPanelPlot(
   wxWindow *parent,
@@ -869,7 +870,9 @@ void CPanelPlot::_BuildPeakLabels(
             pPeak->GetRFU(),
             colour,
             sToolTip,
-            wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM);
+            wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
+            ALLELE_SORT,
+            nwxPointLabel::STYLE_BOX);
     m_pPlotCtrl->AddLabel(label);
   }
 }
@@ -1023,7 +1026,8 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
                   pArt->GetRFU(),
                   colourData,
                   sToolTip,
-                  wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM);
+                  wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
+                  ARTIFACT_SORT + pArt->GetCriticalLevel());
             m_pPlotCtrl->AddLabel(label);
           }
         }
@@ -1111,7 +1115,8 @@ void CPanelPlot::_BuildOARlabels()
                     colour,
                     sToolTip,
                     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
-                    false,
+                    ALLELE_SORT,
+                    nwxPointLabel::STYLE_BOX,
                     pPeak);
             m_pPlotCtrl->AddLabel(label);
           }
@@ -1134,7 +1139,8 @@ void CPanelPlot::_BuildOARlabels()
                   colour,
                   sToolTip,
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
-                  false,
+                  ARTIFACT_SORT + pPeak->GetCriticalLevel(),
+                  0,
                   pPeak);
             m_pPlotCtrl->AddLabel(label);
           }
@@ -1211,7 +1217,12 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
           sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
           nwxPointLabel label(
-            pLocus->GetName(),(double) nx,0.0,colour,sToolTip);
+            pLocus->GetName(),
+            (double) nx, 
+            0.0, colour, 
+            sToolTip, 
+            wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM, 
+            1000 - nChannel);
           label.SetToolTip(sToolTip);
           m_pPlotCtrl->AddXLabel(label);
         }

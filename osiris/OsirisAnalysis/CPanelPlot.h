@@ -230,6 +230,8 @@ private:
 
 public:
   // constructor for CFramePlot - MDI window with plots
+  static const int ALLELE_SORT;
+  static const int ARTIFACT_SORT;
   CPanelPlot(
     CFramePlot *parent, 
     CPlotData *pData,

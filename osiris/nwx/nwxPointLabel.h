@@ -37,18 +37,26 @@ class nwxPointLabel
 {
 public:
 
-#define nwxDEF_ALIGN (wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM)
-
+  static const int ALIGN_DEFAULT;
+  static const int STYLE_BOX;
+  static const int STYLE_DISABLED;
   nwxPointLabel()
-    : m_color(0,0,0), m_dx(0.0), m_dy(0.0),  m_nAlign(nwxDEF_ALIGN) {;}
+    : m_color(0,0,0), 
+      m_dx(0.0), 
+      m_dy(0.0),  
+      m_nAlign(ALIGN_DEFAULT),
+      m_nSortGroup(0),
+      m_nLabelStyle(0),
+      m_pData(NULL) {;}
   nwxPointLabel(
     const wxString &sLabel,
     double dx,
     double dy,
     const wxColour &c,
     const wxString sToolTip = wxEmptyString,
-    int nAlign = nwxDEF_ALIGN,
-    bool bStrikeThrough = false,
+    int nAlign = ALIGN_DEFAULT,
+    int nSortGroup = 0,
+    int nLabelStyle = 0,
     void *pData = NULL) :
         m_sLabel(sLabel),
         m_sToolTip(sToolTip),
@@ -56,11 +64,10 @@ public:
         m_dx(dx),
         m_dy(dy),
         m_nAlign(nAlign),
-        m_pData(pData),
-        m_bStrikeThrough(bStrikeThrough)
+        m_nSortGroup(nSortGroup),
+        m_nLabelStyle(nLabelStyle),
+        m_pData(pData)
           {;}
-
-#undef nwxDEF_ALIGN
 
   nwxPointLabel(const nwxPointLabel &x)
   {
@@ -74,7 +81,8 @@ public:
     m_dx = x.m_dx;
     m_dy = x.m_dy;
     m_nAlign = x.m_nAlign;
-    m_bStrikeThrough = x.m_bStrikeThrough;
+    m_nSortGroup = x.m_nSortGroup;
+    m_nLabelStyle = x.m_nLabelStyle;
     m_pData = x.m_pData;
     return *this;
   }
@@ -116,13 +124,17 @@ public:
   {
     return m_nAlign;
   }
+  int GetSortGroup() const
+  {
+    return m_nSortGroup;
+  }
   void *GetData() const
   {
     return m_pData;
   }
-  bool GetStrikeThrough() const
+  int GetStyle() const
   {
-    return m_bStrikeThrough;
+    return m_nLabelStyle;
   }
 
   // Set functions
@@ -151,13 +163,17 @@ public:
   {
     m_nAlign = n;
   }
+  void SetSortGroup(int n)
+  {
+    m_nSortGroup = n;
+  }
   void SetData(void *p)
   {
     m_pData = p;
   }
-  void SetStrikeThrough(bool b)
+  void SetStyle(int b)
   {
-    m_bStrikeThrough = b;
+    m_nLabelStyle = b;
   }
   void SetToolTip(const wxString &x)
   {
@@ -175,8 +191,9 @@ private:
   double m_dx;
   double m_dy;
   int m_nAlign;
+  int m_nSortGroup; // for sorting labels in the same location
+  int m_nLabelStyle;
   void *m_pData;
-  bool m_bStrikeThrough;
 };
 
 #endif
