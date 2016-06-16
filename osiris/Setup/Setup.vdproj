@@ -2076,7 +2076,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.8b2.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.8b3.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -9785,7 +9785,7 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{FD25B033-C7BB-4646-8E5A-46B738E0EC29}"
+        "ProductCode" = "8:{6B42625C-52BA-4277-8530-8B398BF181F0}"
         "PackageCode" = "8:{33DEEE07-ABC5-4D91-A22C-8C702B6E7CE5}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
