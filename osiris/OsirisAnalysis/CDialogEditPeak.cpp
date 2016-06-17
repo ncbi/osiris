@@ -79,6 +79,7 @@ CDialogEditPeak::CDialogEditPeak(
   else if(m_pPeak->IsEditable())
   {
     _BuildAllele();
+    CentreOnParent();
   }
   else
   {
