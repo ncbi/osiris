@@ -62,6 +62,11 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
 {
   //  STOP HERE - edit or delete point, or edit artifact
   COARpeakAny *p = (COARpeakAny *)x.GetData();
+  if((p == NULL) || !p->IsEditable())
+  {
+    p = NULL;
+    mainApp::ShowAlert("This peak cannot be edited.",this);
+  }
 #ifdef __WXDEBUG__
   {
     wxString s;
@@ -96,8 +101,11 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
     mainApp::LogMessage(s);
   }
 #endif
-  nwxPlotControlToolTipDisabler xx(this);
-  m_pPlot->EditPeak(p);
+  if(p != NULL)
+  {
+    nwxPlotControlToolTipDisabler xx(this);
+    m_pPlot->EditPeak(p);
+  }
 }
 bool CPlotCtrl::SetViewRect(
   const wxRect2DDouble &view, bool send_event)

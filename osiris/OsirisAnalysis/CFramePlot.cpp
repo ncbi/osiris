@@ -1573,7 +1573,10 @@ void CFramePlot::EditPeak(COARpeakAny *pPeak, COARsample *pSample)
   if(m_pOARfile != NULL)
   {
     CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
-    pFrame->EditPeak(pPeak,pSample,this);
+    if(pFrame != NULL)
+    {
+      pFrame->EditPeak(pPeak,pSample,this);
+    }
   }
 }
 void CFramePlot::OnHistoryButton(wxCommandEvent &e)
