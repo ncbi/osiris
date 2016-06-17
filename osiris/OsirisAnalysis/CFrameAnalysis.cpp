@@ -2140,8 +2140,10 @@ bool CFrameAnalysis::SaveFileAs()
       this,"Save File",sFilePath,sFileName,
       FILE_TYPE_REPORT_SAVE_AS,
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT  );
-
-    if(dlg.ShowModal() == wxID_OK)
+    int n = dlg.ShowModal();
+    SetFocus(); // OS-522, another window get the focus
+                // when this dialog is shown
+    if(n == wxID_OK)
     {
       sFileName = dlg.GetPath();
       CMDIFrame *pFrame = m_pParent->FindWindowByName(sFileName);
