@@ -16,6 +16,7 @@ osiris_SOURCES =  \
 ../CDialogEditAllele.cpp \
 ../CDialogEditChannelAlerts.cpp \
 ../CDialogEditGridColours.cpp \
+../CDialogEditPeak.cpp \
 ../CDialogEnableMultiple.cpp \
 ../CDialogExportFile.cpp \
 ../CDialogExportPlot.cpp \
