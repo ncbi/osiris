@@ -96,6 +96,7 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
     mainApp::LogMessage(s);
   }
 #endif
+  nwxPlotControlToolTipDisabler xx(this);
   m_pPlot->EditPeak(p);
 }
 bool CPlotCtrl::SetViewRect(

@@ -294,7 +294,7 @@ void nwxPlotCtrl::_Init()
 
 void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
 {
-  if(m_bClear)
+  if(m_bClear || m_nDisableToolTip)
   {
     _ClearToolTip();
     m_bClear = false;

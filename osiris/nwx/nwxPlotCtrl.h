@@ -68,6 +68,7 @@ public:
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
     m_PositionMouse(-1,-1),
     m_pTimer(NULL),
+    m_nDisableToolTip(0),
     m_bClear(false),
     m_bStopTimer(false),
     m_nTimeHere(0),
@@ -91,6 +92,7 @@ public:
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
       m_PositionMouse(0,0),
       m_pTimer(NULL),
+      m_nDisableToolTip(0),
       m_bClear(false),
       m_bStopTimer(false),
       m_nTimeHere(0),
@@ -196,6 +198,16 @@ public:
       StartTimer();
     }
   }
+  void DisableToolTip()
+  {
+    m_nDisableToolTip++;
+    if(m_nDisableToolTip == 1) { ClearToolTip(); }
+  }
+  void EnableToolTip()
+  {
+    m_nDisableToolTip--;
+    if(!m_nDisableToolTip) { StartTimer(); }
+  }
 
   void OnViewChanged(wxPlotCtrlEvent &e);
   void nwxOnMouse(wxMouseEvent &event);
@@ -252,6 +264,7 @@ private:
   wxFont m_fontLabel;
   wxPoint m_PositionMouse;
   wxTimer *m_pTimer;
+  int m_nDisableToolTip;
   bool m_bClear;
   bool m_bStopTimer;
   unsigned int m_nTimeHere;
@@ -271,7 +284,24 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-
+class nwxPlotControlToolTipDisabler
+{
+public:
+  nwxPlotControlToolTipDisabler(nwxPlotCtrl *p) : m_pPlotCtrl(p)
+  {
+    m_pPlotCtrl->DisableToolTip();
+  }
+  nwxPlotControlToolTipDisabler(const nwxPlotControlToolTipDisabler &x) : m_pPlotCtrl(x.m_pPlotCtrl)
+  {
+    m_pPlotCtrl->DisableToolTip();
+  }
+  virtual ~nwxPlotControlToolTipDisabler()
+  {
+    m_pPlotCtrl->EnableToolTip();
+  }
+private:
+  mutable nwxPlotCtrl *m_pPlotCtrl;
+};
 
 
 #endif
