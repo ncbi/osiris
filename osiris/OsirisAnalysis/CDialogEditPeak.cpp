@@ -140,7 +140,7 @@ void CDialogEditPeak::_BuildAllele()
   size_t nAllele = m_vpAlleles.size();
   if(nAllele < 1 || nAllele > 2)
   {
-    wxString sProblem = nwxString::FormatNumber(nAllele);
+    wxString sProblem = nwxString::FormatNumber((int)nAllele);
     sProblem += wxT(" alleles found for ID ");
     sProblem += nwxString::FormatNumber(nID);
     wxASSERT_MSG(0,sProblem);
