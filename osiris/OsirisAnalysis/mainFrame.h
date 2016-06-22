@@ -192,9 +192,9 @@ public:
   {
     return m_MDImgr.FindOARfile(sName);
   }
-  void UpdateSamplePlot(COARfile *pFile, const wxString &sSampleName)
+  void UpdateSamplePlot(COARfile *pFile, const wxString &sSampleFileName)
   {
-    m_MDImgr.UpdateSamplePlot(pFile,sSampleName);
+    m_MDImgr.UpdateSamplePlot(pFile,sSampleFileName);
   }
   void DiscardChanges(COARfile *pFile)
   {

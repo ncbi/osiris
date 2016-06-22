@@ -167,10 +167,10 @@ public:
     ee.SetEventObject(this);
     GetEventHandler()->AddPendingEvent(ee);
   }
-  void RepaintAllData(const wxString &sSampleName);
+  void RepaintAllData(const wxString &sSampleFileName);
   void RepaintAllData(const COARsample *p)
   {
-    RepaintAllData(p->GetSampleName());
+    RepaintAllData(p->GetFileName(false));
   }
   bool FileEmpty();
   bool SaveFile();

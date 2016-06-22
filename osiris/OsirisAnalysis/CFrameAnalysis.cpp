@@ -2067,10 +2067,10 @@ bool CFrameAnalysis::_SaveOERFile(const wxString &sFileName)
   bool bRtn = m_pOARfile->SaveFile(sFileName);
   return bRtn;
 }
-void CFrameAnalysis::RepaintAllData(const wxString &sSampleName)
+void CFrameAnalysis::RepaintAllData(const wxString &sSampleFileName)
 {
   CheckSaveStatus();
-  m_pParent->UpdateSamplePlot(m_pOARfile,sSampleName);
+  m_pParent->UpdateSamplePlot(m_pOARfile,sSampleFileName);
   RepaintData();
 }
 

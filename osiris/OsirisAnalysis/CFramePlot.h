@@ -94,7 +94,7 @@ public:
   virtual wxString GetFileName();
   virtual void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
-  void UpdateOARfile(const wxString &sSampleName);
+  void UpdateOARfile(const wxString &sSampleFileName);
   void EditPeak(COARpeakAny *,COARsample *);
 
   virtual bool Show(bool show = true);
