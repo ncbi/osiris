@@ -764,7 +764,6 @@ public:
   static const int TYPE_ALL;
 
   CPlotData() :
-    m_parm(CParmOsiris::NO_INIT),
     m_IOchannel(true),
     m_IOlocus(true)
   {
@@ -960,7 +959,7 @@ private:
   void _FixBaseline();
   void _Cleanup();
   CPlotChannel *FindChannel(unsigned int n);
-  CParmOsiris m_parm;
+  CParmOsirisLite m_parm;
   wxString m_sFilename;
   wxString m_sLadder;
   wxString m_sKit;

@@ -594,12 +594,12 @@ void CFramePlot::OnTimer(wxTimerEvent &e)
   }
 #endif
 }
-void CFramePlot::UpdateOARfile(const wxString &sSampleName)
+void CFramePlot::UpdateOARfile(const wxString &sSampleFileName)
 {
   // call this when the OAR file has been edited
   if( (m_pOARfile != NULL) &&
       nwxString::FileNameStringEqual(
-      m_pData->GetFilename(),sSampleName) &&
+      m_pData->GetFilename(),sSampleFileName) &&
       (GetSelectedTime() == NULL)
       )
   {

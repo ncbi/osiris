@@ -504,10 +504,11 @@ public:
     */
   }
   const wxString GetFullFileName() const;
-  const wxString GetFileName() const
+  const wxString GetFileName(bool bFullName = true) const
   {
     // retrive file name w/o path
-    wxString sName = GetFullFileName();
+    wxString sName =
+      bFullName ? GetFullFileName() : m_sName;
     if(sName.Find(wxFileName::GetPathSeparator()) != wxNOT_FOUND)
     {
       wxFileName fn(sName);
