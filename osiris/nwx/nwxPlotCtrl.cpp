@@ -561,6 +561,7 @@ void nwxPlotCtrl::_ClearToolTip()
       m_bHideCursor = false;
       SetCursor(m_cursorDefault);
     }
+    _ResetMousePosition();
     // SetCursor(wxNullCursor);
   }
   return;

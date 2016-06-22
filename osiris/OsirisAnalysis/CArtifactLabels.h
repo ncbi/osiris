@@ -123,11 +123,16 @@ protected:
   virtual void RegisterAll(bool = false);
 private:
   void _buildRegEx() const;
+  static void _BUILD_REG_EX(
+    const std::vector<wxString> &vs, 
+    std::vector<wxRegEx *> *pvre);
   void _cleanupRegEx() const;
   nwxXmlIOPersistVectorWxString m_ios;
   std::vector<wxString> m_vsMsgName;
   std::vector<wxString> m_vsSearchString;
+  std::vector<wxString> m_vsNoString;
   mutable std::vector<wxRegEx *> m_pvSearchRE;
+  mutable std::vector<wxRegEx *> m_pvNoRE;
   wxString m_sID;
   wxString m_sLabel;
   wxString m_sDisplay;

@@ -254,6 +254,11 @@ private:
   bool _OnMouseUpXLabel(wxMouseEvent &e);   //
   void SendContextMenuEvent(wxMouseEvent &e);
   void ProcessMousePosition(const wxPoint &pt);
+  void _ResetMousePosition()
+  {
+    m_PositionMouse.x = -1;
+    m_PositionMouse.y = -1;
+  }
   void _Init();
 #ifdef __WXDEBUG__
   void _LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel);

@@ -12,6 +12,7 @@
 		<MsgName>smInterlocusPullUpWithPoorFit</MsgName>
 		<MsgName>smSigmoidalPullup</MsgName>
 		<SearchString>pull.?up</SearchString>
+    <NoString>primary</NoString>
 	</SubGroup>
 	<SubGroup>
 		<ID>LaserOffScale</ID>
@@ -72,6 +73,7 @@
 		<Priority>7</Priority>
 		<MsgName>smAlleleHasExcessiveResidual</MsgName>
 		<SearchString>residual</SearchString>
+    <NoString>displacement</NoString>
 	</SubGroup>
 	<SubGroup>
 		<ID>ExcessiveResidualDisplacement</ID>

@@ -54,6 +54,7 @@ void CArtifactGroup::RegisterAll(bool)
   RegisterInt(wxT("Priority"),    &m_nPriority);
   Register(wxT("MsgName"),     &m_ios, (void *) &m_vsMsgName);
   Register(wxT("SearchString"),&m_ios, (void *) &m_vsSearchString);
+  Register(wxT("NoString"),&m_ios, (void *) &m_vsNoString);
 }
 void CArtifactGroup::SetDisplay(const IArtifactGroup &g)
 {
@@ -63,13 +64,15 @@ void CArtifactGroup::SetDisplay(const IArtifactGroup &g)
 void CArtifactGroup::_cleanupRegEx() const
 {
   vectorptr<wxRegEx>::cleanup(&m_pvSearchRE);
+  vectorptr<wxRegEx>::cleanup(&m_pvNoRE);
 }
-void CArtifactGroup::_buildRegEx() const
+void CArtifactGroup::_BUILD_REG_EX(
+    const std::vector<wxString> &vs, 
+    std::vector<wxRegEx *> *pvre)
 {
   std::vector<wxString>::const_iterator itr;
-  _cleanupRegEx();
-  for(itr = m_vsSearchString.begin();
-    itr != m_vsSearchString.end();
+  for(itr = vs.begin();
+    itr != vs.end();
     ++itr)
   {
     wxRegEx *pRE = new wxRegEx(*itr,wxRE_ICASE | wxRE_ADVANCED );
@@ -81,18 +84,30 @@ void CArtifactGroup::_buildRegEx() const
       sMsg += *itr;
       mainApp::LogMessage(sMsg);
     }
-    m_pvSearchRE.push_back(pRE); // push back even if null to make count match
+    pvre->push_back(pRE); // push back even if null to make count match
   }
+}
+void CArtifactGroup::_buildRegEx() const
+{
+  _cleanupRegEx();
+  _BUILD_REG_EX(m_vsSearchString,&m_pvSearchRE);
+  _BUILD_REG_EX(m_vsNoString,&m_pvNoRE);
 }
 bool CArtifactGroup::IsStringMatch(const wxString &s) const
 {
   std::vector<wxRegEx *>::iterator itr;
   bool bRtn = false;
 
-  if(m_pvSearchRE.size() != m_vsSearchString.size())
+  // a string is a match if it matches 1 or more
+  // regular expressions found in <SearchString> (m_vsSearchString)
+  // and NONE found in <NoString> (m_vsNoString)
+
+  if( (m_pvSearchRE.size() != m_vsSearchString.size()) ||
+    (m_pvNoRE.size() != m_vsNoString.size()) )
   {
     _buildRegEx();
   }
+
 
   for(itr = m_pvSearchRE.begin();
     (itr != m_pvSearchRE.end()) && (!bRtn);
@@ -103,6 +118,16 @@ bool CArtifactGroup::IsStringMatch(const wxString &s) const
       bRtn = true;
     }
   }
+  for(itr = m_pvNoRE.begin();
+    (itr != m_pvNoRE.end()) && bRtn;
+    ++itr)
+  {
+    if( ((*itr) != NULL) && (*itr)->Matches(s) )
+    {
+      bRtn = false;
+    }
+  }
+
   return bRtn;
 }
 bool CArtifactGroup::IsMsgTypeMatch(const wxString &s) const
