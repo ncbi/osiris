@@ -509,8 +509,17 @@ COARartifact *COARsample::GetArtifactByID(int nID) const
 }
 size_t COARsample::GetAlleleCountByID(int nID) const
 {
+  size_t nRtn = 0;
   auto_ptr<COARartifact> p(GetArtifactByID(nID));
-  size_t nRtn = (p.get() == NULL) ? 0 : p.get()->GetNumberOfAlleles();
+  if(p.get() == NULL)
+  {
+    std::vector<COARpeakAny *> vp;
+    nRtn = GetAllelesByID(nID,false,&vp);
+  }
+  else
+  {
+    nRtn = p.get()->GetNumberOfAlleles();
+  }
   return nRtn;
 }
 

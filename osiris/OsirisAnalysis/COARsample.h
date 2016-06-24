@@ -333,7 +333,8 @@ public:
   size_t GetAlleleCountByID(int nID) const;
   bool IsPeakEditable(COARpeakAny *p) const
   {
-    bool bRtn = (p != NULL) && p->IsEditable() && GetAlleleCountByID(p->GetID());
+    bool bRtn = (p != NULL) && p->IsEditable() && 
+      GetAlleleCountByID(p->GetID()) && true;
     return bRtn;
   }
   bool SetPeaksByLocusName(

@@ -481,7 +481,10 @@ void CFrameAnalysis::EditPeak(
 {
   int n = -1;
   if(parent == NULL) { parent = this; }
-  if(pPeak != NULL && pSample != NULL && pPeak->IsEditable() && pSample->GetAlleleCountByID(pPeak->GetID()) )
+  if(
+    pPeak != NULL && 
+    pSample != NULL && 
+    pSample->IsPeakEditable(pPeak) )
   {
     CDialogEditPeak xx(parent,pSample,pPeak);
     if(xx.IsOK())

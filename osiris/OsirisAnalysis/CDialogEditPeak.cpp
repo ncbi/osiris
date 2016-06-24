@@ -45,6 +45,13 @@
 #include "CFrameAnalysis.h"
 #include "COARreview.h"
 
+//  set up combobox sorting if supported
+#ifdef __WXOSX_COCOA__
+#define CBSORT 0
+#else
+#define CBSORT  wxCB_SORT
+#endif
+
 const int CDialogEditPeak::ID_ACCEPT = CDialogEditPeak::m_ID_ACCEPT;
 const int CDialogEditPeak::ID_EDIT = CDialogEditPeak::m_ID_EDIT;
 
@@ -114,7 +121,7 @@ void CDialogEditPeak::_BuildComboLabel()
   m_pComboLabel = new wxComboBox(
     this,wxID_ANY,wxEmptyString, 
     wxDefaultPosition, wxDefaultSize,
-    as,wxCB_DROPDOWN | wxCB_SORT );
+    as,wxCB_DROPDOWN | CBSORT);
 }
 size_t CDialogEditPeak::_SetupAlleles()
 {
