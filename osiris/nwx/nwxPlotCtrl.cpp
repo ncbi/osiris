@@ -502,7 +502,7 @@ void nwxPlotCtrl::SetupToolTip()
 
       wxPoint posLOW(rect.x,rect.y); // corners of label box
       wxPoint posHI(posLOW);
-      const INT DELTA = 2;
+      const int DELTA = 2;
       bool bXout = false;
       posHI.x += rect.width + DELTA;
       posHI.y += rect.height + DELTA;
