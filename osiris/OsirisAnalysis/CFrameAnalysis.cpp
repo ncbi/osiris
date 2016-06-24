@@ -481,20 +481,31 @@ void CFrameAnalysis::EditPeak(
 {
   int n = -1;
   if(parent == NULL) { parent = this; }
-  if(pPeak != NULL && pSample != NULL)
+  if(pPeak != NULL && pSample != NULL && pPeak->IsEditable() && pSample->GetAlleleCountByID(pPeak->GetID()) )
   {
     CDialogEditPeak xx(parent,pSample,pPeak);
-    n = xx.ShowModal();
-    if(n != wxID_CANCEL)
+    if(xx.IsOK())
     {
-      bool b = xx.UpdateFile(m_pOARfile,this,parent);
-      if(!b)
+      n = xx.ShowModal();
+      if(n != wxID_CANCEL)
       {
-        wxString ss = wxT("Problem with CDialogEditPeak::UpdateFile");
-        wxASSERT_MSG(0,ss);
-        mainApp::LogMessage(ss);
+        bool b = xx.UpdateFile(m_pOARfile,this,parent);
+        if(!b)
+        {
+          wxString ss = wxT("Problem with CDialogEditPeak::UpdateFile");
+          wxASSERT_MSG(0,ss);
+          mainApp::LogMessage(ss);
+        }
       }
     }
+    else
+    {
+      mainApp::ShowAlert("There was a problem creating the peak edit window",parent);
+    }
+  }
+  else
+  {
+    mainApp::ShowAlert("This peak cannot be edited.",parent);
   }
   return;
 }

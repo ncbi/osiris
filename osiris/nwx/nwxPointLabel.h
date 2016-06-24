@@ -32,7 +32,7 @@
 #define __NWX_POINT_LABEL_H__
 
 #include <wx/colour.h>
-
+#include <wx/cursor.h>
 class nwxPointLabel
 {
 public:
@@ -47,6 +47,7 @@ public:
       m_nAlign(ALIGN_DEFAULT),
       m_nSortGroup(0),
       m_nLabelStyle(0),
+      m_nCursor(wxCURSOR_NONE),
       m_pData(NULL) {;}
   nwxPointLabel(
     const wxString &sLabel,
@@ -57,6 +58,7 @@ public:
     int nAlign = ALIGN_DEFAULT,
     int nSortGroup = 0,
     int nLabelStyle = 0,
+    wxStockCursor cur = wxCURSOR_NONE,
     void *pData = NULL) :
         m_sLabel(sLabel),
         m_sToolTip(sToolTip),
@@ -66,6 +68,7 @@ public:
         m_nAlign(nAlign),
         m_nSortGroup(nSortGroup),
         m_nLabelStyle(nLabelStyle),
+        m_nCursor(cur),
         m_pData(pData)
           {;}
 
@@ -83,6 +86,7 @@ public:
     m_nAlign = x.m_nAlign;
     m_nSortGroup = x.m_nSortGroup;
     m_nLabelStyle = x.m_nLabelStyle;
+    m_nCursor = x.m_nCursor;
     m_pData = x.m_pData;
     return *this;
   }
@@ -131,6 +135,10 @@ public:
   void *GetData() const
   {
     return m_pData;
+  }
+  wxStockCursor GetCursor() const
+  {
+    return m_nCursor;
   }
   int GetStyle() const
   {
@@ -183,6 +191,10 @@ public:
   {
     m_sToolTip = ps;
   }
+  void SetCursor(wxStockCursor nCur)
+  {
+    m_nCursor = nCur;
+  }
 
 private:
   wxString m_sLabel;
@@ -193,6 +205,7 @@ private:
   int m_nAlign;
   int m_nSortGroup; // for sorting labels in the same location
   int m_nLabelStyle;
+  wxStockCursor m_nCursor;
   void *m_pData;
 };
 

@@ -55,6 +55,10 @@ public:
     const COARpeakAny *pPeak);
   virtual ~CDialogEditPeak();
   virtual bool TransferDataToWindow();
+  bool IsOK()
+  {
+    return m_bOK;
+  }
   const COARpeakAny *GetEditedPeak()
   {
     return m_pCurrent;
@@ -92,6 +96,7 @@ private:
   void _BuildNoEdit();
   void _BuildAllele();
   void _BuildArtifactLabel();
+  size_t _SetupAlleles();
   const wxString &_GetOffLadderValue();
 
   void _BuildComboLabel();
@@ -121,6 +126,7 @@ private:
 
   bool m_bCanAcceptHere;
   bool m_bLocusNeedsAcceptance;
+  bool m_bOK;
   enum
   {
     _junk = wxID_HIGHEST,

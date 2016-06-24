@@ -194,7 +194,8 @@ bool COARpeak::Equal(
     {
       int n1 = x1.GetCriticalLevel();
       int n2 = x2.GetCriticalLevel();
-      bRtn = (n1 == n2);
+      bRtn = (n1 == n2) &&
+        (x1.IsEditable() == x2.IsEditable());
     }
   }
   if(!bRtn) {;}
@@ -314,6 +315,7 @@ void COARpeakAny::_Init()
 
   m_bArtifact = false;
   m_bAllele = false;
+  m_bEditable = true;
   m_sOffLadder = COARpeak::OL_FALSE;
 };
 
@@ -329,6 +331,7 @@ void COARpeakAny::SetupArtifactInfo(const IOARpeak *p)
     SetArtifactLabel(p->GetArtifactLabel());
     SetArtifactUserDisplay(p->GetArtifactUserDisplay());
     SetCriticalLevel(p->GetCriticalLevel());
+    SetIsEditable(p->IsEditable());
     const wxDateTime &dt(p->GetUpdateTime());
     if(dt > GetUpdateTime())
     {
@@ -389,7 +392,7 @@ bool COARpeakAny::IsDisabled() const
 }
 bool COARpeakAny::IsEditable() const
 {
-  return true;
+  return m_bEditable;
 }
 const wxString &COARpeakAny::GetOffLadderString() const
 {
@@ -464,8 +467,10 @@ void COARpeakAny::SetIsAllele(bool b)
 {
   m_bAllele = b;
 }
-void COARpeakAny::SetIsEditable(bool)
-{}
+void COARpeakAny::SetIsEditable(bool b)
+{
+  m_bEditable = b;
+}
 /*
 //void COARpeakAny::SetIsDisabled(bool b)
 {

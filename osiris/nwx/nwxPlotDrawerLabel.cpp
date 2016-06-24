@@ -61,7 +61,8 @@ bool nwxPointLabel::operator == (const nwxPointLabel &x) const
     (m_color == x.m_color) &&
     (m_nAlign == x.m_nAlign) &&
     (m_nSortGroup == x.m_nSortGroup) &&
-    (m_sToolTip == x.m_sToolTip)
+    (m_sToolTip == x.m_sToolTip) &&
+    (m_nCursor == x.m_nCursor)
     ;
 }
 
@@ -328,7 +329,7 @@ wxString nwxPlotDrawerLabel::GetToolTipText(const wxPoint &pos)
   return sRtn;
 }
 
-const nwxPointLabel *nwxPlotDrawerLabel::FindLabel(const wxPoint &pos)
+const nwxPointLabel *nwxPlotDrawerLabel::FindLabel(const wxPoint &pos,wxRect *pRect)
 {
   wxRect rect;
   size_t nSize = m_vRect.size();
@@ -340,6 +341,10 @@ const nwxPointLabel *nwxPlotDrawerLabel::FindLabel(const wxPoint &pos)
     if(rect.Contains(pos))
     {
       pLabel = m_vpLabel.at(i);
+      if(pRect != NULL)
+      {
+        *pRect = rect;
+      }
       i = nSize; // loop exit
     }
   }

@@ -461,6 +461,7 @@ private:
   int m_nCriticalLevel; // 1 is critical, 20 not so much
   bool m_bArtifact;
   bool m_bAllele;
+  bool m_bEditable;
 };
 
 typedef std::set<COARpeakAny *,COARpeakLessTime> setCOARpeakAny;

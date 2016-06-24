@@ -62,12 +62,7 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
 {
   //  STOP HERE - edit or delete point, or edit artifact
   COARpeakAny *p = (COARpeakAny *)x.GetData();
-  if((p == NULL) || !p->IsEditable())
-  {
-    p = NULL;
-    mainApp::ShowAlert("This peak cannot be edited.",this);
-  }
-#ifdef __WXDEBUG__
+  #ifdef __WXDEBUG__
   {
     wxString s;
     if(p == NULL) 
@@ -101,11 +96,8 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
     mainApp::LogMessage(s);
   }
 #endif
-  if(p != NULL)
-  {
-    nwxPlotControlToolTipDisabler xx(this);
-    m_pPlot->EditPeak(p);
-  }
+  nwxPlotControlToolTipDisabler xx(this);
+  m_pPlot->EditPeak(p);
 }
 bool CPlotCtrl::SetViewRect(
   const wxRect2DDouble &view, bool send_event)
@@ -1117,6 +1109,10 @@ void CPanelPlot::_BuildOARlabels()
           {
             sLabel = _AlleleLabel(pPeak,anLabelTypes);
             sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
+            wxStockCursor cur =
+              (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
+              ? wxCURSOR_HAND 
+              : wxCURSOR_NONE;
             nwxPointLabel label(
                     sLabel,
                     pPeak->GetTime(),
@@ -1126,6 +1122,7 @@ void CPanelPlot::_BuildOARlabels()
                     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                     ALLELE_SORT,
                     nwxPointLabel::STYLE_BOX,
+                    cur,
                     pPeak);
             m_pPlotCtrl->AddLabel(label);
           }
@@ -1141,6 +1138,10 @@ void CPanelPlot::_BuildOARlabels()
               ? pArtLabels->GetDisplayFromString(sArtifactLabel)
               : sArtifactUserDisplay;
             sToolTip = _ArtifactToolTip(pPeak,sChannelName);
+            wxStockCursor cur =
+              (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
+              ? wxCURSOR_HAND 
+              : wxCURSOR_NONE;
             nwxPointLabel label(
                   sPlotLabel,
                   pPeak->GetTime(),
@@ -1150,6 +1151,7 @@ void CPanelPlot::_BuildOARlabels()
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                   ARTIFACT_SORT + pPeak->GetCriticalLevel(),
                   0,
+                  cur,
                   pPeak);
             m_pPlotCtrl->AddLabel(label);
           }
@@ -1231,7 +1233,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
             0.0, colour, 
             sToolTip, 
             wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM, 
-            1000 - nChannel);
+            1000 - nChannel,0,wxCURSOR_HAND);
           label.SetToolTip(sToolTip);
           m_pPlotCtrl->AddXLabel(label);
         }

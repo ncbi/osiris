@@ -69,20 +69,22 @@ CDialogEditPeak::CDialogEditPeak(
     m_pButtonEditLocus(NULL),
 
     m_bCanAcceptHere(false),
-    m_bLocusNeedsAcceptance(false)
+    m_bLocusNeedsAcceptance(false),
+    m_bOK(true)
 
 {
   if(m_pPeak == NULL)
   {
     _BuildNoEdit();
   }
-  else if(m_pPeak->IsEditable())
+  else if(m_pPeak->IsEditable() && _SetupAlleles())
   {
     _BuildAllele();
     CentreOnParent();
   }
   else
   {
+//    _BuildNoEdit();
     _BuildArtifactLabel();
   }
 }
@@ -114,6 +116,17 @@ void CDialogEditPeak::_BuildComboLabel()
     wxDefaultPosition, wxDefaultSize,
     as,wxCB_DROPDOWN | wxCB_SORT );
 }
+size_t CDialogEditPeak::_SetupAlleles()
+{
+  if( (m_pPeak != NULL) && (m_pSample != NULL) && m_vpAlleles.empty() )
+  {
+    int nID = m_pPeak->GetID();
+    m_pSample->GetAllelesByID(nID,true,&m_vpAlleles);
+  }
+  size_t nRtn = m_vpAlleles.size();
+  if(!nRtn) { m_bOK = false; }
+  return nRtn;
+}
 void CDialogEditPeak::_BuildAllele()
 {
   wxString sAlleleLabel;
@@ -121,7 +134,7 @@ void CDialogEditPeak::_BuildAllele()
   int nID = m_pPeak->GetID();
   int windowID;
   COARpeakAny *pPeak;
-  m_pSample->GetAllelesByID(nID,true,&m_vpAlleles);
+  _SetupAlleles();
 
   wxRadioButton *pRadio;
   wxBoxSizer *pSizerAll = new wxBoxSizer(wxVERTICAL);
@@ -229,74 +242,77 @@ void CDialogEditPeak::_BuildAllele()
 }
 bool CDialogEditPeak::TransferDataToWindow()
 {
-  bool bRtn = true;
-  //  select allele
-  size_t nAllele = m_vpAlleles.size();
-  size_t i;
-  COARpeakAny *pPeak;
-  wxRadioButton *pRadio = NULL;
-  if(m_pOriginal != NULL)
+  bool bRtn = IsOK();
+  if(bRtn)
   {
-    delete m_pOriginal;
-    m_pOriginal = NULL;
-    wxASSERT_MSG(0,wxT("CDialogEditPeak::TransferDataToWindow, m_pOriginal != NULL"));
-  }
-  if(m_pCurrent != NULL)
-  {
-    delete m_pCurrent;
-    m_pCurrent = NULL;
-    wxASSERT_MSG(0,wxT("CDialogEditPeak::TransferDataToWindow, m_pCurrent != NULL"));
-  }
-  for(i = 0; i < nAllele; ++i)
-  {
-    pPeak = m_vpAlleles.at(i);
-    if(pPeak->IsAllele())
+    //  select allele
+    size_t nAllele = m_vpAlleles.size();
+    size_t i;
+    COARpeakAny *pPeak;
+    wxRadioButton *pRadio = NULL;
+    if(m_pOriginal != NULL)
     {
-      m_pOriginal = new COARpeakAny(*pPeak);
-      pRadio = m_vpRadioAllele.at(i);
-      m_nCurrentAllele = i;
-      i = nAllele;
+      delete m_pOriginal;
+      m_pOriginal = NULL;
+      wxASSERT_MSG(0,wxT("CDialogEditPeak::TransferDataToWindow, m_pOriginal != NULL"));
     }
-  }
-  if(pRadio == NULL)
-  {
-    m_nCurrentAllele = m_vpRadioAllele.size();
-    if(m_nCurrentAllele) 
+    if(m_pCurrent != NULL)
     {
-      --m_nCurrentAllele; 
-      pRadio = m_vpRadioAllele.at(m_nCurrentAllele);
-    } // should always happen
-    COARartifact *pArt = m_pSample->GetArtifactByID(m_pPeak->GetID());
-    if(pArt != NULL)
-    {
-      m_pOriginal = new COARpeakAny(*pArt);
-      delete pArt;
+      delete m_pCurrent;
+      m_pCurrent = NULL;
+      wxASSERT_MSG(0,wxT("CDialogEditPeak::TransferDataToWindow, m_pCurrent != NULL"));
     }
-    else
+    for(i = 0; i < nAllele; ++i)
     {
-      m_pOriginal = new COARpeakAny(*(*m_vpAlleles.begin()));
-      wxASSERT_MSG(0,"CDialogEditPeak::TransferDataToWindow, could not find allele nor artifact");
+      pPeak = m_vpAlleles.at(i);
+      if(pPeak->IsAllele())
+      {
+        m_pOriginal = new COARpeakAny(*pPeak);
+        pRadio = m_vpRadioAllele.at(i);
+        m_nCurrentAllele = i;
+        i = nAllele;
+      }
     }
-    m_pOriginal->SetIsAllele(false);
-  }
-  m_pCurrent = new COARpeakAny(*m_pOriginal);
-  pRadio->SetValue(true);
-  _TransferCurrentToOffLadder();
+    if(pRadio == NULL)
+    {
+      m_nCurrentAllele = m_vpRadioAllele.size();
+      if(m_nCurrentAllele) 
+      {
+        --m_nCurrentAllele; 
+        pRadio = m_vpRadioAllele.at(m_nCurrentAllele);
+      } // should always happen
+      COARartifact *pArt = m_pSample->GetArtifactByID(m_pPeak->GetID());
+      if(pArt != NULL)
+      {
+        m_pOriginal = new COARpeakAny(*pArt);
+        delete pArt;
+      }
+      else
+      {
+        m_pOriginal = new COARpeakAny(*(*m_vpAlleles.begin()));
+        wxASSERT_MSG(0,"CDialogEditPeak::TransferDataToWindow, could not find allele nor artifact");
+      }
+      m_pOriginal->SetIsAllele(false);
+    }
+    m_pCurrent = new COARpeakAny(*m_pOriginal);
+    pRadio->SetValue(true);
+    _TransferCurrentToOffLadder();
 
-  m_sDefaultArtifactLabel = 
-      mainApp::GetArtifactLabels()->GetDisplayFromString
-          (m_pCurrent->GetArtifactLabel());
-  m_sOriginalLabel = m_pCurrent->GetArtifactUserDisplay();
-  const wxString &sLabel =
-    (m_sOriginalLabel.IsEmpty() ? m_sDefaultArtifactLabel : m_sOriginalLabel);
-  if(!m_pComboLabel->SetStringSelection(sLabel))
-  {
-    m_pComboLabel->Append(sLabel);
-    m_pComboLabel->SetStringSelection(sLabel);
+    m_sDefaultArtifactLabel = 
+        mainApp::GetArtifactLabels()->GetDisplayFromString
+            (m_pCurrent->GetArtifactLabel());
+    m_sOriginalLabel = m_pCurrent->GetArtifactUserDisplay();
+    const wxString &sLabel =
+      (m_sOriginalLabel.IsEmpty() ? m_sDefaultArtifactLabel : m_sOriginalLabel);
+    if(!m_pComboLabel->SetStringSelection(sLabel))
+    {
+      m_pComboLabel->Append(sLabel);
+      m_pComboLabel->SetStringSelection(sLabel);
+    }
+    m_pCheckEnabled->SetValue(m_pCurrent->IsArtifact());
+    m_pCheckCritical->SetValue(m_pCurrent->IsCritical());
+    _SetupWidgets();
   }
-  m_pCheckEnabled->SetValue(m_pCurrent->IsArtifact());
-  m_pCheckCritical->SetValue(m_pCurrent->IsCritical());
-  _SetupWidgets();
   return bRtn;
 }
 
@@ -344,9 +360,11 @@ void CDialogEditPeak::_SetupCanAccept()
 }
 void CDialogEditPeak::_BuildNoEdit()
 {
+  m_bOK = false;
 }
 void CDialogEditPeak::_BuildArtifactLabel()
 {
+  m_bOK = false;
 }
 void CDialogEditPeak::OnWidget(wxCommandEvent &e)
 {

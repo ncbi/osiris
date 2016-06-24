@@ -75,9 +75,7 @@ public:
     m_pToolTip(NULL),
     m_pToolText(NULL),
     m_pLastXLabel(NULL),
-    m_pToolTipParent(NULL),
-    m_cursorBlank(wxCURSOR_BLANK),
-    m_bHideCursor(false)
+    m_pToolTipParent(NULL)
   { }
   nwxPlotCtrl( wxWindow *parent, wxWindowID win_id = wxID_ANY,
         const wxPoint &pos = wxDefaultPosition,
@@ -98,9 +96,7 @@ public:
       m_nTimeHere(0),
       m_pToolTip(NULL),
       m_pLastXLabel(NULL),
-      m_pToolTipParent(NULL),
-      m_cursorBlank(wxCURSOR_BLANK),
-      m_bHideCursor(false)
+      m_pToolTipParent(NULL)
       {
         _Init();
       }
@@ -247,6 +243,7 @@ private:
 private:
   static const int TIMER_ELAPSE;
   static const unsigned int TIMER_COUNT;
+  void _SetupCursor(const nwxPointLabel *pLabel);
   void _ClearToolTip();
   bool _OnMouseDown(wxMouseEvent &e); // called from nwxOnMouse
   bool _OnMouseUp(wxMouseEvent &e);   //
@@ -258,6 +255,18 @@ private:
   {
     m_PositionMouse.x = -1;
     m_PositionMouse.y = -1;
+  }
+  bool CursorInPlotArea()
+  {
+    bool bRtn = false;
+    if( (m_PositionMouse.x >= 0) && (m_PositionMouse.y >= 0) )
+    {
+      int x,y;
+      GetPlotArea()->GetSize(&x,&y);
+      bRtn = (m_PositionMouse.x <= x) &&
+        (m_PositionMouse.y <= y);
+    }
+    return bRtn;
   }
   void _Init();
 #ifdef __WXDEBUG__
@@ -279,11 +288,10 @@ private:
   const nwxPointLabel *m_pLastLabel;
   wxWindow *m_pToolTipParent;
   wxCursor m_cursorDefault;
-  wxCursor m_cursorBlank;
+  wxCursor m_cursorAreaDefault;
   wxBitmap m_bmActiveBackup;
   wxBitmap m_bmInactiveBackup;
   wxBitmap m_bmClear;
-  bool m_bHideCursor;
 
   DECLARE_CLASS(nwxPlotCtrl)
   DECLARE_EVENT_TABLE()

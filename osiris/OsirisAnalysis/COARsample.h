@@ -330,6 +330,12 @@ public:
       // not free/delete the object
   size_t GetAllelesByID(int nID, bool bInjectArtifact, std::vector<COARpeakAny *> *pv) const;
     // stores a new copy of alleles in pv.  The caller must free the memory of each item
+  size_t GetAlleleCountByID(int nID) const;
+  bool IsPeakEditable(COARpeakAny *p) const
+  {
+    bool bRtn = (p != NULL) && p->IsEditable() && GetAlleleCountByID(p->GetID());
+    return bRtn;
+  }
   bool SetPeaksByLocusName(
     const wxString &sLocus,
     int nChannel,

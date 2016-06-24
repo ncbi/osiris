@@ -403,24 +403,31 @@ void nwxPlotCtrl::SetupToolTip()
 {
   wxString sText;
   const nwxPointLabel *pLabel = NULL;
+  wxRect rect(0,0,0,0);
   if(m_PositionMouse.y < 0)
   {
-    pLabel = m_XLabels.FindLabel(m_PositionMouse);
+    pLabel = m_XLabels.FindLabel(m_PositionMouse,&rect);
   }
   else
   {
-    pLabel = m_Labels.FindLabel(m_PositionMouse);
+    pLabel = m_Labels.FindLabel(m_PositionMouse,&rect);
   }
   if(pLabel != NULL)
   {
     sText = pLabel->GetToolTip();
   }
-  if(!sText.IsEmpty())
+  if(sText.IsEmpty())
+  {
+    if(m_pToolTip != NULL)
+    {
+      ClearToolTip();
+    }
+  }
+  else
   {
     bool bLayout = true;
     bool bRefresh = false;
     bool bMove = true;
-    bool bHideCursor = false;
     if(m_pToolTip == NULL)
     {
       wxColour cbg =
@@ -470,54 +477,84 @@ void nwxPlotCtrl::SetupToolTip()
     // set position
     if(bMove)
     {
+      /*
+        Hovering tool tip:
+        IF fits above label -> show above at mouse x, scoot left if needed
+                            (if it doesn't fit on the right)
+        ELSE IF fits below label -> show at mouse x, scoot left if needed
+        ELSE
+          set y = 0
+          IF fits on right -> show it
+          ELSE IF fits on left -> show it
+          ELSE -> show at x = 0
+
+          plot ctrl - entire plot control
+          plot area - inside plot control, contains lines, grid, etc
+      */
       wxWindow *pArea = GetPlotArea();
       wxPoint pos(pArea->GetPosition());
-      pos += m_PositionMouse;
-  #if __TOOLTIP_TO_FRAME__
-      _OffsetToolTipPosition(&pos);
-  #endif
+      wxPoint posMouse(m_PositionMouse); // position of mouse
+      rect.x += pos.x;        // label rectangle in plot ctrl
+      rect.y += pos.y;
+      posMouse += pos; // mouse position in plot ctrl 
       wxSize tipSize = m_pToolTip->GetSize();
       wxSize winSize = m_pToolTip->GetParent()->GetSize();
-      if(pos.y < tipSize.y)
+
+      wxPoint posLOW(rect.x,rect.y); // corners of label box
+      wxPoint posHI(posLOW);
+      const INT DELTA = 2;
+      bool bXout = false;
+      posHI.x += rect.width + DELTA;
+      posHI.y += rect.height + DELTA;
+      posLOW.x = (posLOW.x > DELTA) ? posLOW.x - DELTA : 0;
+      posLOW.y = (posLOW.y > DELTA) ? posLOW.y - DELTA : 0;
+      if(posHI.y > winSize.y) { posHI.y = winSize.y; }
+      if(posHI.x > winSize.x) { posHI.x = winSize.x; }
+#if __TOOLTIP_TO_FRAME__
+      _OffsetToolTipPosition(&posLOW);
+      _OffsetToolTipPosition(&posHI
+#endif
+      const int CURSOR_SIZE = 24;
+      int nHiY = posMouse.y + CURSOR_SIZE;
+      if(nHiY < posHI.y) { nHiY = posHI.y; }
+      if(posLOW.y > tipSize.y)
       {
-        pos.y += 24;
+        pos.y = posLOW.y - tipSize.y;
+      }
+      else if((nHiY + tipSize.y) < winSize.y)
+      {
+        pos.y = nHiY;
       }
       else
       {
-        pos.y -= tipSize.y;
+        pos.y = 0;
+        bXout = true; // make sure x position is outside of label
       }
-      if( (pos.y + tipSize.y) > winSize.y)
+      if(bXout)
       {
-        // tool tip clipped on bottom of window,
-        // move it up
-        pos.y = winSize.y - tipSize.y;
-        if(pos.y < 0)
+        int nHiX = posMouse.x + CURSOR_SIZE;
+        if(nHiX < posHI.x) { nHiX = posHI.x; }
+        if( (nHiX + tipSize.x) < winSize.x )
         {
-          // clipped by top of window, move down
-          pos.y = 0;
+          pos.x = nHiX;
         }
-        if(pos.x > tipSize.x)
+        else if(posLOW.x > tipSize.x)
         {
-          pos.x -= tipSize.x;
+          pos.x = posLOW.x - tipSize.x;
         }
         else
         {
-          // cursor will obscure tool tip
-          bHideCursor = true;
+          pos.x = 0;
         }
       }
-      if( (pos.x + tipSize.x) > winSize.x)
+      else if( (posMouse.x + tipSize.x) < winSize.x )
       {
-        // tool tip is clipped on the right
-        // move it left
-        pos.x -= tipSize.x;
-        if(pos.x < 0)
-        {
-          // tool tip is clipped on the left
-          // move right
-          pos.x = 0;
-          bHideCursor = true;  // cursor will obscure tool tip
-        }
+        pos.x = posMouse.x;
+      }
+      else
+      {
+        pos.x = winSize.x - tipSize.x;
+        if(pos.x < 0) { pos.x = 0;}
       }
       if(m_pToolTip->GetPosition() != pos)
       {
@@ -535,19 +572,7 @@ void nwxPlotCtrl::SetupToolTip()
     {
       Refresh(true);
     }
-    if(bHideCursor)
-    {
-      m_bHideCursor = true;
-      if(!m_cursorDefault.IsOk())
-      {
-        m_cursorDefault = GetCursor();
-      }
-      SetCursor(m_cursorBlank);
-    }
-  }
-  else if(m_pToolTip != NULL)
-  {
-    ClearToolTip();
+    _SetupCursor(pLabel);
   }
   return;
 }
@@ -556,15 +581,44 @@ void nwxPlotCtrl::_ClearToolTip()
   if(m_pToolTip != NULL)
   {
     m_pToolTip->Show(false);
-    if(m_bHideCursor)
-    {
-      m_bHideCursor = false;
-      SetCursor(m_cursorDefault);
-    }
     _ResetMousePosition();
+    _SetupCursor(NULL);
     // SetCursor(wxNullCursor);
   }
   return;
+}
+
+void nwxPlotCtrl::_SetupCursor(const nwxPointLabel *p)
+{
+  wxStockCursor nCur = (p == NULL) ? wxCURSOR_NONE : p->GetCursor();
+  if(nCur == wxCURSOR_NONE)
+  {
+    if(m_cursorDefault.IsOk())
+    {
+      SetCursor(m_cursorDefault);
+    }
+    if(m_cursorAreaDefault.IsOk())
+    {
+      GetPlotArea()->SetCursor(m_cursorAreaDefault);
+    }
+  }
+  else if(!CursorInPlotArea())
+  {
+    if(!m_cursorDefault.IsOk())
+    {
+      m_cursorDefault = GetCursor();
+    }
+    SetCursor(wxCursor(nCur));
+  }
+  else
+  {
+    wxWindow *pArea = GetPlotArea();
+    if(!m_cursorAreaDefault.IsOk())
+    {
+      m_cursorAreaDefault = pArea->GetCursor();
+    }
+    pArea->SetCursor(wxCursor(nCur));
+  }
 }
 
 

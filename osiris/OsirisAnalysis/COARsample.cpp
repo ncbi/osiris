@@ -507,6 +507,13 @@ COARartifact *COARsample::GetArtifactByID(int nID) const
   }
   return pRtn;
 }
+size_t COARsample::GetAlleleCountByID(int nID) const
+{
+  auto_ptr<COARartifact> p(GetArtifactByID(nID));
+  size_t nRtn = (p.get() == NULL) ? 0 : p.get()->GetNumberOfAlleles();
+  return nRtn;
+}
+
 size_t COARsample::GetAllelesByID(int nID, bool bInjectArtifact, vector<COARpeakAny *> *pv) const
 {
   bool bOK = (nID > 0) && m_pFile->CanEditArtifacts();
