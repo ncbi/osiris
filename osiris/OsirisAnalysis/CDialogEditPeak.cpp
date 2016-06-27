@@ -137,7 +137,6 @@ size_t CDialogEditPeak::_SetupAlleles()
 void CDialogEditPeak::_BuildAllele()
 {
   wxString sAlleleLabel;
-  wxString sLocus;
   int nID = m_pPeak->GetID();
   int windowID;
   COARpeakAny *pPeak;
@@ -178,9 +177,11 @@ void CDialogEditPeak::_BuildAllele()
     {
       sAlleleLabel += wxT("OL ");
     }
-    sAlleleLabel += pPeak->GetAlleleName();
+    const wxString &sLocus = pPeak->GetLocusName();
+    sAlleleLabel += 
+      COARpeak::FormatAlleleName(*pPeak,COARlocus::IsAmel(sLocus),false);
     sAlleleLabel += wxT(" - ");
-    sAlleleLabel += pPeak->GetLocusName();
+    sAlleleLabel += sLocus;
     pRadio = new wxRadioButton(
       this,windowID,sAlleleLabel,
       wxDefaultPosition,wxDefaultSize,
