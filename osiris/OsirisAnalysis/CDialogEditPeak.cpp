@@ -353,10 +353,12 @@ void CDialogEditPeak::_SetupCanAccept()
       &nR, &nA,
       CLabReview::REVIEW_LOCUS);
     m_bLocusNeedsAcceptance = pLocus->NeedAcceptance(nA);
+#if 0
     m_bCanAcceptHere =
       m_bLocusNeedsAcceptance &&
       m_pCurrent->IsArtifact() &&
       (pLocus->AlertCount() == 1);
+#endif
   }
   else
   {

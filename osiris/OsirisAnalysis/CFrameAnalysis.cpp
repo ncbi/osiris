@@ -481,10 +481,15 @@ void CFrameAnalysis::EditPeak(
 {
   int n = -1;
   if(parent == NULL) { parent = this; }
-  if(
-    pPeak != NULL && 
-    pSample != NULL && 
-    pSample->IsPeakEditable(pPeak) )
+  if( (pPeak == NULL) || (pSample == NULL) || !pSample->IsPeakEditable(pPeak) )
+  {
+    mainApp::ShowAlert("This peak cannot be edited.",parent);
+  }
+  else if(pSample->IsDisabled())
+  {
+    mainApp::ShowAlert("This sample has been disabled.",parent);
+  }
+  else
   {
     CDialogEditPeak xx(parent,pSample,pPeak);
     if(xx.IsOK())
@@ -505,10 +510,6 @@ void CFrameAnalysis::EditPeak(
     {
       mainApp::ShowAlert("There was a problem creating the peak edit window",parent);
     }
-  }
-  else
-  {
-    mainApp::ShowAlert("This peak cannot be edited.",parent);
   }
   return;
 }
@@ -1671,7 +1672,7 @@ void CFrameAnalysis::_OnAcceptLocus(wxCommandEvent &e)
   COARsample *pSample = NULL;
   COARlocus *pLocus = NULL;
   _SetupLocusColumn(e,&pSample,&pLocus);
-  if(pLocus != NULL)
+  if(pLocus != NULL && pSample != NULL && !pSample->IsDisabled())
   {
     DoAcceptLocus(pSample,pLocus);
   }
