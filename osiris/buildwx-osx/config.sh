@@ -25,8 +25,29 @@ else
   CF="--enable-debug --enable-debug_gdb"  
   CPPFLAGS=""
 fi
+if test "$XCODE" != ""; then
+  XPATH=$XCODE/Contents/Developer/usr/bin
+  if test -d "${XPATH}" -a -x "${XPATH}/gcc" ; then
+    PATH="${XPATH}:${PATH}"
+    export PATH
+  fi
+fi
+function setupConfigure
+{
+  test -r ../configure
+  checkrc $? "Cannot find ../configure"
+  if test ! -x ../configure ; then
+    chmod +x ../configure
+  fi
+  test -x ../configure
+  checkrc $? "../configure is not executable"
+  chmod +x `find .. -name \*.py`
+}
+
 mkdir -p ${PREFIX}
 checkrc $?
+setupConfigure
+
 ../configure ${CF} \
   --with-macosx-version-min=10.9 \
   --with-cocoa \
