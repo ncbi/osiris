@@ -56,6 +56,7 @@
 #include "nwx/nwxKeyState.h"
 // #include "nwx/CPointerHold.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/nwxFileUtil.h"
 
 #include "CPlotData.h"
 #include "CMenuBar.h"
@@ -320,9 +321,10 @@ bool mainFrame::Startup(bool bHasArgs)
   bool bRtn = true;
 #endif
 
+  CParmOsirisGlobal parm;
+  nwxFileUtil::SetDoNotSelectFile(parm->GetShowFileLocationDir());
   if(bRtn && !bHasArgs)
   {
-    CParmOsirisGlobal parm;
     if(parm->GetStartupMRU())
     {
       // send event to start up with the MRU window
