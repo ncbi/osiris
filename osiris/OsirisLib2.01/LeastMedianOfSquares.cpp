@@ -855,7 +855,7 @@ double LeastSquaresQuadraticModel :: CalculateLeastSquareWithOneTermZero (double
 		sum += temp * temp;
 	}
 
-	double sum2;
+	double sum2 = 0.0;
 	double beta;
 
 	// Now try quadratic only

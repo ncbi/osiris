@@ -781,6 +781,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	smSigmoidalPullup sigmoidalPullup;
 	smMinPrimaryPullupThreshold primaryPullupThreshold;
 	smSignalIsCtrlPeak isControlPeak;
+	smLaserOffScale laserOffScale;
 //	PullUpFound pullupNotice;
 //	PullUpPrimaryChannel primaryPullupNotice;
 
@@ -1002,6 +1003,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 					testSignal = new CraterSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
+
+					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
+						testSignal->SetMessageValue (laserOffScale, true);
+
 					testSignal2 = (DataSignal*) nextCraterPeakList->Last ();
 
 					if ((testSignal2 == NULL) || (testSignal->GetMean () > testSignal2->GetMean ()))
@@ -1041,6 +1046,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 					testSignal2 = (DataSignal*) nextMultiPeakList->Last ();
 					//prevSignal->ResetPullupTolerance (-1.0);
 					//nextSignal->ResetPullupTolerance (-1.0);
+
+					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
+						testSignal->SetMessageValue (laserOffScale, true);
 
 					if ((testSignal2 == NULL) || (testSignal->GetMean () > testSignal2->GetMean ()))
 						nextMultiPeakList->Append (testSignal);
@@ -1144,7 +1152,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	}
 
 	delete[] TempList;
-
+	
 	RGDListIterator it (OverallList);
 	cout << "Number of overall signals:  " << (int)OverallList.Entries() << endl;
 
@@ -1617,7 +1625,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	delete[] means;
 	delete[] isDone;
 
-	TestSignalsForLaserOffScaleSM ();	// Added 09/09/2014 because AnalyzeCrossChannel... called in two places and want to make sure laser off scale tested no matter what
+	//TestSignalsForLaserOffScaleSM ();	// Added 09/09/2014 because AnalyzeCrossChannel... called in two places and want to make sure laser off scale tested no matter what
 //	UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM ();
 		
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -1649,15 +1657,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	bool NowWeAreDone = false;
 	DataSignal* nextSignal;
 	DataSignal* nextSignal2;
-//	double minPeak;
-//	double maxPeak;
-//	double minWidth;
-//	double maxWidth;
 	DataSignal* primeSignal;
-	//int maxIndex;
-	//double currentPeak;
-//	double currentWidth;
-//	double calculatedNormalWidth;
 	double mTimeTolerance = 0.0375;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
 	double mWidthToleranceForSpike = 1.1;  // Width must be less than this width to qualify as a spike
@@ -1668,14 +1668,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	NowWeAreDone = true;
 	double mean1;
 	double mean2;
-	int channel1;
-//	int channel2;
-	//int NPossibleCraters;
-	//int NCraters;
-	//int NCraterTests;
-	//double CraterLeftLimit;
-	//double CraterRightLimit;
-//	int LookCount;
 	mNumberOfPullups = 0;
 	mNumberOfPrimaryPullups = 0;
 	int i;
@@ -1684,9 +1676,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList** TempMultiPeakList = new RGDList* [mNumberOfChannels + 1];
 	RGDList** TempCraterPeakList = new RGDList* [mNumberOfChannels + 1];
 	DataSignal* prevSignal;
-//	double saturationArtifactTolerance;
-//	double deltaTime;
-//	DataSignal* newCraterSignal;
 	ChannelData* nextChannel;
 	RGDList* nextList;
 	RGDList multiPeakSignals;
@@ -1700,8 +1689,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	smSigmoidalPullup sigmoidalPullup;
 	smMinPrimaryPullupThreshold primaryPullupThreshold;
 	smSignalIsCtrlPeak isControlPeak;
-//	PullUpFound pullupNotice;
-//	PullUpPrimaryChannel primaryPullupNotice;
+	smLaserOffScale laserOffScale;
 
 	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
 	PreTestSignalsForLaserOffScaleSM ();
@@ -1711,7 +1699,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double minPullupThreshold = 0.5 * measurementResolution;
 	delete pServer;
 
-	//RGDList NewCraterSignalsToAdd;
 	RGDList CraterSignalsToRemove;
 	InterchannelLinkage* iChannel;
 
@@ -1719,8 +1706,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	//cout << "Found first time of ILS = " << first << endl;
 
-//	double peak1;
-//	double peak2;
 	int nInterchannelLinks = 0;
 
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -1827,7 +1812,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	//cout << "Done merging positive and negative curves into TempList's" << endl;
 
 	RGDListIterator* tempIterator;
-//	DataSignal* savedSignal;
 	RGDList newTempList;
 	RGDList* nextMultiPeakList;
 	RGDList* nextCraterPeakList;
@@ -1920,6 +1904,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					testSignal->SetChannel (i);
 					testSignal2 = (DataSignal*) nextCraterPeakList->Last ();
 
+					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
+						testSignal->SetMessageValue (laserOffScale, true);
+
 					if ((testSignal2 == NULL) || (testSignal->GetMean () > testSignal2->GetMean ()))
 						nextCraterPeakList->Append (testSignal);
 
@@ -1959,6 +1946,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					testSignal->RecalculatePullupTolerance ();
 					testSignal2 = (DataSignal*) nextMultiPeakList->Last ();
 
+					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
+						testSignal->SetMessageValue (laserOffScale, true);
+
 					if ((testSignal2 == NULL) || (testSignal->GetMean () > testSignal2->GetMean ()))
 						nextMultiPeakList->Append (testSignal);
 
@@ -1992,12 +1982,18 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		delete tempIterator;
 
 		//
-		//	Save all of the multi peak lists for later, to iterator thru and find multipeaks with no interchannel links
+		//	Save all of the multi peak lists for later, to iterate thru and find multipeaks with no interchannel links
 		//
 	}
 
 	cout << "Found all potential craters/sigmoids" << endl;
 	delete[] sequenceLineUp;
+	RGDListIterator** itArray = new RGDListIterator* [mNumberOfChannels + 1];
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		itArray [i] = new RGDListIterator (*TempList [i]);
+	}
 
 	//
 	//	Each TempList contains all CompleteList peaks and all NegativeCurvePeaks and all potential multipeaks.  Later, look for interchannel links and then remove crater/simplesigmoid code below
@@ -2005,7 +2001,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 	
-		OnDeck [i] = (DataSignal*) TempList [i]->GetFirst ();  //used to be:  mDataChannels [i]->GetNextPreliminaryCurve ();
+		OnDeck [i] = (DataSignal*) (*(itArray [i])) ();   //used to be:  OnDeck [i] = (DataSignal*) TempList [i]->GetFirst ();  //used to be:  mDataChannels [i]->GetNextPreliminaryCurve ();
 
 		if (OnDeck [i] != NULL) {
 
@@ -2031,7 +2027,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			currentIndex = MinimumIndex (means, mNumberOfChannels);
 
 			OverallList.Append (OnDeck [currentIndex]);
-			OnDeck [currentIndex] = (DataSignal*) TempList [currentIndex]->GetFirst ();   //used to be:  mDataChannels [currentIndex]->GetNextPreliminaryCurve ();
+			OnDeck [currentIndex] = (DataSignal*) (*(itArray [currentIndex])) ();   //used to be:  mDataChannels [currentIndex]->GetNextPreliminaryCurve ();
 
 			if (OnDeck [currentIndex] == NULL) {
 
@@ -2052,14 +2048,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			}
 		}
 	}
-
-	for (i=1; i<=mNumberOfChannels; i++) {
-
-		TempList [i]->Clear ();
-		delete TempList [i];
-	}
-
-	delete[] TempList;
 
 	RGDListIterator it (OverallList);
 	RGDListIterator Pos (OverallList);
@@ -2128,13 +2116,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	//cout << "Number of crater signals:  " << n << endl;
 
 	it.Reset ();
-//	bool debug;
 
 	RGDList peaksInSameChannel;
 	RGDList probablePullupPeaks;
 	RGDList pullupList;
 	RGDList signalsToRemove;
-	//bool primaryOK;
 	RGDListIterator probableIt (probablePullupPeaks);
 	RGDListIterator sameChannelIterator (peaksInSameChannel);
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
@@ -2147,9 +2133,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double leftLimit;
 	double primaryHeight;
 	double primaryWidth;
-	double ratio;
-	list<int> pChannels;
-	//bool report;
 	RGDList ignoreSidePeaks;
 
 	while (nextSignal = (DataSignal*) it ()) {
@@ -2398,37 +2381,29 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 			mInterchannelLinkageList.push_back (iChannel);
-			pChannels.clear ();
+			iChannel->SetPrimaryDataSignal (primeSignal);
+			DataSignal** pullupArray = CollectAndSortPullupPeaksSM (primeSignal, probablePullupPeaks);
+			int kk;
 
-			while (testSignal = (DataSignal*) probablePullupPeaks.GetFirst ()) {		// this was wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
+			for (kk=1; kk<=mNumberOfChannels; kk++) {  // this was wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
 
-				iChannel->AddDataSignal (testSignal);
-			//	testSignal->SetInterchannelLink (iChannel);  // fix this!  Not needed.  Only primaries need to keep these links
-				primeSignal->AddCrossChannelSignalLink (testSignal);
-				ratio = 0.01 * floor (10000.0 * (testSignal->Peak () / primaryHeight) + 0.5);
-				testSignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
-				testSignal->SetMessageValue (pullup, true);
-			//	testSignal->AddCrossChannelSignalLink (primeSignal);
+				testSignal = pullupArray [kk];
 
-				pChannels.push_back (testSignal->GetChannel ());
-				mNumberOfPullups++;  // fix this...we need to count pull-up peaks, not pull-up pairs...already have counting message which will be accurate and don't do anything with this anyway
+				if (testSignal != NULL) {
+
+					iChannel->AddDataSignal (testSignal);
+					primeSignal->AddCrossChannelSignalLink (testSignal);
+					testSignal->SetMessageValue (pullup, true);
+					testSignal->SetPrimarySignalFromChannel (primaryChannel, primeSignal, mNumberOfChannels);
+					mNumberOfPullups++;  // fix this...we need to count pull-up peaks, not pull-up pairs...already have counting message which will be accurate and don't do anything with this anyway
+				}
 			}
 
-			iChannel->SetPrimaryDataSignal (primeSignal);
+			probablePullupPeaks.Clear ();
+			delete[] pullupArray;
+
 			primeSignal->SetInterchannelLink (iChannel);  // this is sort of ok.  There can only be one primary signal interchannel link per signal, but pull-up links not needed, so it's ok.
 			primeSignal->SetMessageValue (primaryLink, true);
-			pChannels.sort ();
-			pChannels.unique ();
-
-			while (!pChannels.empty ()) {
-
-				channel1 = pChannels.front ();
-				primeSignal->AppendDataForSmartMessage (primaryLink, channel1);
-				pChannels.pop_front ();
-			}
-
-			mNumberOfPrimaryPullups++;  // this is ok
-		//	iChannel->RecalculatePrimarySignalSM ();  // because pull-up data can be multi-primary, this is handled above and final setting of artifact string awaits greater certainty...later on
 		}
 
 		// We're done with this primary...go on to next
@@ -2438,8 +2413,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	ignoreSidePeaks.Clear ();
 
 	// Done finding all probable pull-ups and primary pull-ups.  Now edit previously created multi-peak list to remove those that are not really multi-peaks because they have no cross channel affect
-
-	cout << "Done finding all probable/possible pull-ups and primary pull-ups.  Number of primaries = " << mNumberOfPrimaryPullups << endl;
 
 	it.Reset ();
 
@@ -2453,8 +2426,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	//	Remove multipeaks from multipeak list that are not pull-up and then insert remaining ones into complete and preliminary curve lists
 	//
 
-	//bool bool1;
-	//bool bool2;
 	double minRFU;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
@@ -2552,7 +2523,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		while (nextSignal = nextChannel->GetNextPreliminaryCurve ()) {
 
-			if ((nextSignal->Peak () >= primaryThreshold) && !nextSignal->HasCrossChannelSignalLink ()) {
+			if ((CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, first)) && (nextSignal->Peak () >= primaryThreshold) && !nextSignal->HasCrossChannelSignalLink ()) {
 
 				notPrimaryLists [i]->Append (nextSignal);
 				nextSignal->SetMessageValue (primaryLink, false);
@@ -2560,12 +2531,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 	}
 
+	cout << "Ready to start assessing cross channel using channel patterns..." << endl;
+
 	//
 	//  Somewhere in here, in the future, put sample-level assessment of pull-up that goes beyond mere coincidence******************
-	//  And, BTW, once this is done, do we ever need to reassess the pull-up call???
+	//  And, BTW, once this is done, do we ever need to reassess the pull-up call???  Don't think so...
 	//
 
-	// Probably, use some multiple linear regression here (with some non-linear terms), but let's get it working without this layer first (01/27/2016)*********************************?
+	UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (notPrimaryLists);  // As of 06/24/2016, this uses linear LMS to find outliers and then linear plus quadratic LS to find pullup coefficients
 
 	//
 	// Next, with pull-up peaks remaining, associate associated primary pull-up data
@@ -2575,9 +2548,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMessageValue (pullup))
-			nextSignal->AssociateDataWithPullMessageSM (mNumberOfChannels);
+		nextSignal->SetPullupMessageDataSM (mNumberOfChannels);
+		nextSignal->AssociateDataWithPullMessageSM (mNumberOfChannels);
+
+		if (nextSignal->SetPrimaryPullupMessageDataSM (mNumberOfChannels))
+			mNumberOfPrimaryPullups++;
 	}
+
+	cout << "Done finding all probable/possible pull-ups and primary pull-ups.  Number of primaries = " << mNumberOfPrimaryPullups << endl;
 
 	delete[] TempMultiPeakList;  // each individual list was already deleted
 	delete[] TempCraterPeakList;
@@ -2588,8 +2566,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	delete[] means;
 	delete[] isDone;
 
-	TestSignalsForLaserOffScaleSM ();	// Added 09/09/2014 because AnalyzeCrossChannel... called in two places and want to make sure laser off scale tested no matter what
-//	UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM ();
+	//TestSignalsForLaserOffScaleSM ();	// Added 09/09/2014 because AnalyzeCrossChannel... called in two places and want to make sure laser off scale tested no matter what
 		
 	for (i=1; i<=mNumberOfChannels; i++) {
 
@@ -2597,110 +2574,189 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		delete notPrimaryLists [i];
 	}
 
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		TempList [i]->Clear ();
+		delete TempList [i];
+		delete itArray [i];
+	}
+
+	delete[] TempList;
+	delete[] itArray;
+
 	delete[] notPrimaryLists;
 	cout << "Finished cross channel analysis" << endl;
 	return 0;
 }
 
 
-int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM () {
+int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList** notPrimaryLists) {
 
 	int i;
 	int j;
-	int k;
-	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
-	RGTarray<DataSignal> primaries;
-	RGTarray<DataSignal> secondaries;
-	RGTarray<InterchannelLinkage> localLinks;
-	list<double> ratios;
-	int arraySize;
-	list<InterchannelLinkage*>::iterator linkIt;
-	InterchannelLinkage* nextLinkage;
-	double ratio;
-	bool isSigmoidal;
-	bool channelHasSigmoid;
-	bool channelHasPulldown;
-	DataSignal* primarySignal;
-	DataSignal* secondarySignal;
+	bool newResult = false;
+	bool individualResult;
+	bool allOK = true;
+	RGDList* currentNonPrimaryList;
+	double linear;
+	double quadratic;
 
-	smSigmoidalPullup sigmoidalPullup;
-	smPullUp pullup;
-	smPrimaryInterchannelLink primaryPullup;
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		currentNonPrimaryList = notPrimaryLists [i];
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			if (j == i)
+				continue;
+
+			cout << "Analyze negative peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, true);
+		}
+
+		cout << "\n";
+	}
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		currentNonPrimaryList = notPrimaryLists [i];
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			if (!mPullupTestedMatrix [i][j]) {
+
+				if (j == i)
+					continue;
+
+				cout << "Analyze positive peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+			
+				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, false);
+				newResult = newResult | individualResult;
+
+				if (individualResult = false)
+					allOK = false;
+
+				cout << "\n";
+			}
+		}
+	}
+
+	if (newResult && !allOK) {
+
+		newResult = false;
+		allOK = true;
+
+		for (i=1; i<=mNumberOfChannels; i++) {
+
+			currentNonPrimaryList = notPrimaryLists [i];
+
+			for (j=1; j<=mNumberOfChannels; j++) {
+
+				if (j == i)
+					continue;
+
+				if (!mPullupTestedMatrix [i][j]) {
+
+					cout << "Analyze positive peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+
+					individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, false);
+					newResult = newResult | individualResult;
+
+					if (individualResult = false)
+						allOK = false;
+
+					cout << "\n";
+				}
+			}
+		}
+	}
+
+	// compute all pullup ratios, etc. and insert into smart data...is this necessary?  We should already have stored pullup values from each other channel
+
+	// now repeat for laser off scale; but, first, reset the pull-up parameter matrices!!
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		for (j=1; j<=mNumberOfChannels; j++) {
 
-			if (i == j)
+			mPullupTestedMatrix [i][j] = false;
+			mLinearPullupMatrix [i][j] = 0.0;
+			mQuadraticPullupMatrix [i][j] = 0.0;
+		}
+	}
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		currentNonPrimaryList = notPrimaryLists [i];
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			if (j == i)
 				continue;
 
-			channelHasSigmoid = false;
-			channelHasPulldown = false;
-			primaries.Clear ();
-			secondaries.Clear ();
-			ratios.clear ();
-			localLinks.Clear ();
+			cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
+		}
 
-			for (linkIt = mInterchannelLinkageList.begin(); linkIt != mInterchannelLinkageList.end(); linkIt++) {
+		cout << "\n";
+	}
 
-				nextLinkage = *linkIt;
+	newResult = false;
+	allOK = true;
 
-				if (nextLinkage->AnySignalHasLaserOffScaleSM ())
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		currentNonPrimaryList = notPrimaryLists [i];
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			if (j == i)
+				continue;
+
+			cout << "Analyze positive peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+
+			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, false);
+			newResult = newResult | individualResult;
+
+			if (individualResult = false)
+				allOK = false;
+
+			cout << "\n";
+		}
+	}
+
+	if (newResult && !allOK) {
+
+		newResult = false;
+		allOK = true;
+
+		for (i=1; i<=mNumberOfChannels; i++) {
+
+			currentNonPrimaryList = notPrimaryLists [i];
+
+			for (j=1; j<=mNumberOfChannels; j++) {
+
+				if (j == i)
 					continue;
 
-				if (!nextLinkage->PrimarySignalHasChannel (i))
-					continue;
+				if (!mPullupTestedMatrix [i][j]) {
 
-				if (!nextLinkage->PossibleSecondaryPullupSM (i, j, ratio, isSigmoidal, secondarySignal))
-					continue;
+					cout << "Analyze positive peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
 
-				localLinks.Append (nextLinkage);
+					individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, false);
+					newResult = newResult | individualResult;
 
-				if (isSigmoidal)
-					channelHasSigmoid = true;
+					if (individualResult = false)
+						allOK = false;
 
-				if (secondarySignal->IsNegativePeak ())
-					channelHasPulldown = true;
-
-				primarySignal = nextLinkage->GetPrimarySignal ();
-				primaries.Append (primarySignal);
-				secondaries.Append (secondarySignal);
-				ratios.push_back (ratio);
-				cout << "Added link for primary channel " << i << " and secondary channel " << j << endl;
-			}
-
-			arraySize = ratios.size ();
-			cout << "Found " << arraySize << " primaries" << endl;
-
-			if (channelHasPulldown) {
-
-				// eliminate all pull-ups except for sigmoidal pull-up
-				//nextLinkage->IsEmpty (
-
-				cout << "Pulldown found for primary channel " << i << " and secondary channel " << j << endl;
-
-				for (k=0; k<arraySize; k++) {
-
-					secondarySignal = secondaries.GetElementAt (k);
-
-					if (!secondarySignal->IsNegativePeak () && !secondarySignal->GetMessageValue (sigmoidalPullup)) {
-
-						cout << "Found false positive for primary channel " << i << " and secondary channel " << j << endl;
-						//primarySignal->SetMessageValue (primaryPullup, false);   // this is done in RemoveDataSignalSM below
-						nextLinkage = localLinks.GetElementAt (k);
-						nextLinkage->RemoveDataSignalSM (primarySignal);
-
-						if (nextLinkage->IsEmpty ())
-							nextLinkage->RemoveAllBasedOnValiditySM ();
-
-						else
-							nextLinkage->RecalculatePrimarySignalBasedOnValiditySM ();
-					}
+					cout << "\n";
 				}
 			}
 		}
 	}
-	
+
+	// compute all pullup ratios, etc. and insert into smart data...is this necessary?  We should already have stored pullup values from each other channel
+
 	return 0;
 }
 
@@ -3029,6 +3085,8 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 		// This should not come here...FitNonLaneStandardCharacteristics only returns 0?
 		return status;
 	}
+
+	cout << "Ready to look for ladder pullup..." << endl;
 
 	AnalyzeCrossChannelSM ();
 
@@ -3498,6 +3556,7 @@ int STRLadderCoreBioComponent :: AnalyzeCrossChannelSM () {
 		}
 	}
 
+	cout << "Ladder cross channel analysis complete..." << endl;
 	OverallList.Clear ();
 
 	delete[] OnDeck;

@@ -48,6 +48,7 @@
 #include "SmartNotice.h"
 #include "STRSmartNotices.h"
 #include "DirectoryManager.h"
+#include "LeastMedianOfSquares.h"
 
 
 Boolean CoreBioComponent::SearchByName = TRUE;
@@ -105,9 +106,33 @@ mPrint (print) {
 }
 
 
+PullupPair :: PullupPair (DataSignal* primary, DataSignal* pullup) : mPrimary (primary), mPullup (pullup), mIsOutlier (false) {
+
+	mPrimaryHeight = primary->Peak ();
+	mPullupHeight = pullup->TroughHeight ();
+
+	if (pullup->IsNegativePeak ())
+		mPullupHeight = - mPullupHeight;
+}
+
+
+PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NULL), mIsOutlier (false) {
+
+	mPrimaryHeight = primary->Peak ();
+	mPullupHeight = 0.0;
+}
+
+
+
+PullupPair :: PullupPair (const PullupPair& pup) : mPrimary (pup.mPrimary), mPullup (pup.mPullup), mPrimaryHeight (pup.mPrimaryHeight), mPullupHeight (pup.mPullupHeight), 
+	mIsOutlier (pup.mIsOutlier) {
+
+}
+
+
 
 CoreBioComponent :: CoreBioComponent () : SmartMessagingObject (), mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), 
-mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL) {
+mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -115,7 +140,7 @@ mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL) {
 
 CoreBioComponent :: CoreBioComponent (const RGString& name) : SmartMessagingObject (), mName (name), 
 mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (NULL) {
+mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -124,7 +149,7 @@ mAssociatedGrid (NULL) {
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component) : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL) {
 
 	InitializeSmartMessages (component);
 }
@@ -133,11 +158,26 @@ mAssociatedGrid (component.mAssociatedGrid) {
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component, CoordinateTransform* trans)  : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL) {
 
 	mDataChannels = new ChannelData* [mNumberOfChannels + 1];
+	mPullupTestedMatrix = new bool* [mNumberOfChannels + 1];
+	mLinearPullupMatrix = new double* [mNumberOfChannels + 1];
+	mQuadraticPullupMatrix = new double* [mNumberOfChannels + 1];
+	int j;
 
 	for (int i=1; i<=mNumberOfChannels; i++) {
+
+		mPullupTestedMatrix [i] = new bool [mNumberOfChannels + 1];
+		mLinearPullupMatrix [i] = new double [mNumberOfChannels + 1];
+		mQuadraticPullupMatrix [i] = new double [mNumberOfChannels + 1];
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			mPullupTestedMatrix [i][j] = false;
+			mLinearPullupMatrix [i][j] = 0.0;
+			mQuadraticPullupMatrix [i][j] = 0.0;
+		}
 
 		if (i == mLaneStandardChannel)
 			mDataChannels [i] = NULL;
@@ -156,13 +196,38 @@ mAssociatedGrid (component.mAssociatedGrid) {
 CoreBioComponent :: ~CoreBioComponent () {
 
 	mChannelList.Clear ();
+	int i;
 
 	if (mDataChannels != NULL) {
 
-		for (int i=1; i<=mNumberOfChannels; i++)
+		for (i=1; i<=mNumberOfChannels; i++)
 			delete mDataChannels [i];
 
 		delete[] mDataChannels;
+	}
+
+	if (mPullupTestedMatrix != NULL) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			delete mPullupTestedMatrix [i];
+
+		delete[] mPullupTestedMatrix;
+	}
+
+	if (mLinearPullupMatrix != NULL) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			delete mLinearPullupMatrix [i];
+
+		delete[] mLinearPullupMatrix;
+	}
+
+	if (mQuadraticPullupMatrix != NULL) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			delete mQuadraticPullupMatrix [i];
+
+		delete[] mQuadraticPullupMatrix;
 	}
 
 	delete mMarkerSet;
@@ -662,6 +727,506 @@ void CoreBioComponent :: ReportSampleData (RGTextOutput& ExcelText) {
 			mDataChannels [i]->ReportArtifacts (ExcelText, indent2);
 		}
 	}
+}
+
+
+bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart) {
+
+	// Create lists of pairs (or arrays) and perform 1D LMS to get outliers; then perform ordinary LS on non-outliers to get coefficients
+	// Return false if insufficiently many data values.  Otherwise, return true;
+
+	linearPart = quadraticPart = 0.0;
+	int n = pairList.size ();
+	PullupPair** pairArray = new PullupPair* [n];
+	double* yValues = new double [n];
+	double* xValues = new double [n];
+	PullupPair* pair;
+	PullupPair* newPair;
+	int i = 0;
+	list<PullupPair*>::const_iterator it;
+	int nNegatives = 0;
+	double maxFit = 0.0;
+	double fit;
+
+	for (it=pairList.begin (); it!=pairList.end (); it++) {
+
+		pair = *it;
+		newPair = pairArray [i] = new PullupPair (*pair);	
+		xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
+
+		if (newPair->mPullup == NULL)
+			yValues [i] = newPair->mPullupHeight = 0.0;
+
+		else if ((newPair->mPullup)->IsNegativePeak ()) {
+
+			nNegatives++;
+			fit = (newPair->mPullup)->GetCurveFit ();
+			yValues [i] = newPair->mPullupHeight = - (newPair->mPullup)->TroughHeight ();
+
+			if (fit > maxFit)
+				maxFit = fit;
+		}
+
+		else
+			yValues [i] = newPair->mPullupHeight = (newPair->mPullup)->TroughHeight ();
+
+		i++;
+	}
+
+	// if nNegatives at least 1 or 2, use a different algorithm that does not mix + and - pullup
+
+	if ((nNegatives >= 2) || ((nNegatives > 0) && (maxFit >= 0.99))) {
+
+		// Need different algorithm which considers non-negative peaks to be outliers
+
+		bool ans = ComputePullupParametersForNegativePeaks (nNegatives, pairList, linearPart, quadraticPart);
+		delete[] xValues;
+		delete[] yValues;
+
+		for (i=0; i<n; i++)
+			delete pairArray [i];
+
+		delete[] pairArray;
+		return ans;
+	}
+
+	LeastMedianOfSquares1D* lms = new LeastMedianOfSquares1D (n, xValues, yValues);
+
+	if (!lms->DataIsOK ()) {
+
+		// clean up
+		delete lms;
+		delete[] yValues;
+		delete[] xValues;
+
+		for (i=0; i<n; i++)
+			delete pairArray [i];
+
+		delete[] pairArray;	
+		return false;
+	}
+
+	double lmsValue = lms->CalculateLMS ();
+	bool performRefinement = true;
+	cout << "Least Median Square value for height ratio = " << lmsValue << endl;
+	cout << "Outlier threshold = " << lms->GetOutlierThreshold () << endl;
+
+	for (i=0; i<n; i++) {
+
+		if (lms->ElementIsOutlier (i))
+			pairArray [i]->mIsOutlier = true;
+
+		else if (DataSignal::PeakCannotBePurePullup (pairArray [i]->mPullup, pairArray [i]->mPrimary))
+			pairArray [i]->mIsOutlier = true;
+
+		else {
+
+			pairArray [i]->mIsOutlier = false;
+
+			// Test for negative peaks and/or sigmoidal peaks here.  If so, do not refine outliers based on widths
+
+			if (DataSignal::IsNegativeOrSigmoid (pairArray [i]->mPullup))
+				performRefinement = false;
+		}
+	}
+
+	// insert outlier info back into orginal pairList
+
+	i = 0;
+
+	for (it=pairList.begin (); it!=pairList.end (); it++) {
+
+		pair = *it;
+		pair->mIsOutlier = pairArray [i]->mIsOutlier;
+		i++;
+	}
+
+	// now perform refinement and double check based on peak width patterns...
+
+	//double widthFactor;
+
+	//if (performRefinement)
+	//	ComputeRefinedOutlierList (pairList, widthFactor);  // This is a check of the non-outliers using primary width versus pullup width
+
+	list<double> xList;
+	list<double> yList;
+
+	for (i=0; i<n; i++) {
+
+		newPair = pairArray [i];
+
+		if (!newPair->mIsOutlier) {
+
+			xList.push_back (newPair->mPrimaryHeight);
+			yList.push_back (newPair->mPullupHeight);
+		}
+	}
+
+	LeastSquaresQuadraticModel* lsq = new LeastSquaresQuadraticModel (xList, yList);
+	double leastSquares;
+
+	if (!lsq->DataIsOK ()) {
+
+		linearPart = lmsValue;
+	}
+
+	else
+		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart);
+
+	// clean up
+
+	xList.clear ();
+	yList.clear ();
+	delete lsq;
+	delete lms;
+	delete[] xValues;
+	delete[] yValues;
+
+	for (i=0; i<n; i++)
+		delete pairArray [i];
+
+	delete[] pairArray;	
+	return true;
+}
+
+
+bool CoreBioComponent :: ComputeRefinedOutlierList (list<PullupPair*>& pairList, double& linearPart) {
+
+	// Create lists of pairs (or arrays) and perform 1D LMS to get outliers; then perform ordinary LS on non-outliers to get coefficients
+	// Return false if insufficiently many data values.  Otherwise, return true;
+
+	linearPart = 0.0;
+	int n;
+	list<PullupPair*>::const_iterator it;
+	list<PullupPair*> nonOutlierPairs;
+	PullupPair* pair;
+	int k = 0;
+
+	for (it=pairList.begin (); it!=pairList.end (); it++) {
+
+		pair = *it;
+
+		if (pair->mIsOutlier)
+			continue;
+
+		k++;
+		nonOutlierPairs.push_back (pair);
+	}
+
+	n = k;
+	PullupPair** pairArray = new PullupPair* [n];
+	double* yValues = new double [n];
+	double* xValues = new double [n];
+	PullupPair* newPair;
+	int i = 0;
+	
+	int nNegatives = 0;
+	double maxFit = 0.0;
+	DataSignal* pullupPeak;
+
+	for (it=nonOutlierPairs.begin (); it!=nonOutlierPairs.end (); it++) {
+
+		pair = *it;
+		newPair = pairArray [i] = new PullupPair (*pair);	
+		xValues [i] = (newPair->mPrimary)->GetStandardDeviation ();
+		pullupPeak = newPair->mPullup;
+
+		if (pullupPeak == NULL)
+			yValues [i] = 0.0;
+
+		else if (pullupPeak->IsNegativePeak () && !newPair->mIsOutlier) {
+
+			nNegatives++;
+			yValues [i] = pullupPeak->GetStandardDeviation ();
+		}
+
+		else {
+
+			yValues [i] = pullupPeak->GetStandardDeviation ();
+
+			if (pullupPeak->IsNegativePeak () && !newPair->mIsOutlier)
+				nNegatives++;
+		}
+
+		i++;
+	}
+
+	if (nNegatives > 0) {
+
+		delete[] xValues;
+		delete[] yValues;
+
+		for (i=0; i<n; i++)
+			delete pairArray [i];
+
+		delete[] pairArray;
+		nonOutlierPairs.clear ();
+		return true;
+	}
+
+	LeastMedianOfSquares1D* lms = new LeastMedianOfSquares1D (n, xValues, yValues);
+
+	if (!lms->DataIsOK ()) {
+
+		// clean up
+		delete lms;
+		delete[] yValues;
+		delete[] xValues;
+
+		for (i=0; i<n; i++)
+			delete pairArray [i];
+
+		delete[] pairArray;
+		nonOutlierPairs.clear ();
+		return false;
+	}
+
+	double lmsValue = lms->CalculateLMS ();
+	linearPart = lmsValue;
+	cout << "Width factor = " << linearPart << endl;
+	cout << "Width outlier threshold = " << lms->GetOutlierThreshold () << endl;
+
+	for (i=0; i<n; i++) {
+
+		if (lms->ElementIsOutlier (i)) {
+
+			// first test that it's an outlier and too large.  Too narrow is ok
+
+			if (lmsValue * xValues [i] < yValues [i]) {
+
+				pairArray [i]->mIsOutlier = true;
+				cout << "Width outlier at time = " << (pairArray [i]->mPrimary)->GetMean () << endl;
+			}
+		}
+	}
+
+	i = 0;
+
+	for (it=nonOutlierPairs.begin (); it!=nonOutlierPairs.end (); it++) {
+
+		pair = *it;
+		pair->mIsOutlier = pairArray [i]->mIsOutlier;
+		i++;
+	}
+
+	// clean up
+	delete lms;
+	delete[] yValues;
+	delete[] xValues;
+
+	for (i=0; i<n; i++)
+		delete pairArray [i];
+
+	delete[] pairArray;
+	nonOutlierPairs.clear ();
+	return true;
+}
+
+
+bool CoreBioComponent :: PullupTestedMatrix (int i, int j) {
+
+	if (mPullupTestedMatrix == NULL)
+		return false;
+
+	return mPullupTestedMatrix [i][j];
+}
+
+
+double CoreBioComponent :: LinearPullupCoefficient (int i, int j) {
+
+	if (mLinearPullupMatrix == NULL)
+		return 0.0;
+
+	return mLinearPullupMatrix [i][j];
+}
+
+
+double CoreBioComponent :: QuadraticPullupCoefficient (int i, int j) {
+
+	if (mQuadraticPullupMatrix == NULL)
+		return 0.0;
+
+	return mQuadraticPullupMatrix [i][j];
+}
+
+
+void CoreBioComponent :: SetPullupTestedMatrix (int i, int j, bool value) {
+
+	if (mPullupTestedMatrix != NULL)
+		mPullupTestedMatrix [i][j] = value;
+}
+
+
+void CoreBioComponent :: SetLinearPullupMatrix (int i, int j, double value) {
+
+	if (mLinearPullupMatrix != NULL)
+		mLinearPullupMatrix [i][j] = value;
+}
+
+
+void CoreBioComponent :: SetQuadraticPullupMatrix (int i, int j, double value) {
+
+	if (mQuadraticPullupMatrix != NULL)
+		mQuadraticPullupMatrix [i][j] = value;
+}
+
+
+void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList) {
+
+	if ((mLinearPullupMatrix == NULL) || (mQuadraticPullupMatrix == NULL))
+		return;
+
+	list<PullupPair*>::iterator it;
+	PullupPair* nextPair;
+	DataSignal* pullupPeak;
+	DataSignal* primaryPeak;
+	double linear = mLinearPullupMatrix [i][j];
+	double quad = mQuadraticPullupMatrix [i][j];
+	double pp;
+	double value;
+	double ratio;
+
+	for (it=pairList.begin(); it!=pairList.end(); it++) {
+
+		nextPair = *it;
+		pullupPeak = nextPair->mPullup;
+
+		if (pullupPeak == NULL)
+			continue;
+
+		primaryPeak = nextPair->mPrimary;
+		pp = primaryPeak->Peak ();
+		value = pp * (linear + pp * quad);
+		pullupPeak->SetPullupFromChannel (i, value, mNumberOfChannels);
+		ratio = 0.01 * floor (10000.0 * (value / pp) + 0.5);
+		pullupPeak->SetPullupRatio (i, ratio, mNumberOfChannels);
+	}
+}
+
+
+bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart) {
+
+	linearPart = quadraticPart = 0.0;
+	PullupPair** pairArray = new PullupPair* [nNegatives];
+	double* yValues = new double [nNegatives];
+	double* xValues = new double [nNegatives];
+	PullupPair* pair;
+	PullupPair* newPair;
+	int i = 0;
+	int n = 0;
+	list<PullupPair*>::const_iterator it;
+
+	for (it=pairList.begin (); it!=pairList.end (); it++) {
+
+		pair = *it;
+
+		if ((pair->mPullup == NULL) || (pair->mPullup)->IsNegativePeak ()) {
+
+			newPair = pairArray [i] = new PullupPair (*pair);	
+			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
+
+			if (newPair->mPullup == NULL)
+				yValues [i] = newPair->mPullupHeight = 0.0;
+
+			else
+				yValues [i] = newPair->mPullupHeight = - (newPair->mPullup)->TroughHeight ();
+
+			n++;
+			i++;
+		}
+
+		else
+			pair->mIsOutlier = true;
+
+	}
+
+	LeastMedianOfSquares1D* lms = new LeastMedianOfSquares1D (n, xValues, yValues);
+
+	if (!lms->DataIsOK ()) {
+
+		double ave = 0.0;
+
+		for (i=0; i<n; i++)
+			ave += yValues [i] / xValues [i];
+
+		ave = ave / (double)n;
+		linearPart = ave;
+
+		// clean up
+		delete lms;
+		delete[] yValues;
+		delete[] xValues;
+
+		for (i=0; i<n; i++)
+			delete pairArray [i];
+
+		delete[] pairArray;	
+		return true;
+	}
+
+	double lmsValue = lms->CalculateLMS ();
+
+	for (i=0; i<nNegatives; i++) {
+
+		if (lms->ElementIsOutlier (i))
+			pairArray [i]->mIsOutlier = true;
+
+		else
+			pairArray [i]->mIsOutlier = false;
+	}
+
+	i = 0;
+
+	for (it=pairList.begin (); it!=pairList.end (); it++) {
+
+		pair = *it;
+
+		if (pair->mIsOutlier)
+			continue;
+
+		pair->mIsOutlier = pairArray [i]->mIsOutlier;
+		i++;
+	}
+
+	list<double> xList;
+	list<double> yList;
+
+	for (i=0; i<nNegatives; i++) {
+
+		newPair = pairArray [i];
+
+		if (!newPair->mIsOutlier) {
+
+			xList.push_back (newPair->mPrimaryHeight);
+			yList.push_back (newPair->mPullupHeight);
+		}
+	}
+
+	LeastSquaresQuadraticModel* lsq = new LeastSquaresQuadraticModel (xList, yList);
+	double leastSquares;
+
+	if (!lsq->DataIsOK ()) {
+
+		linearPart = lmsValue;
+	}
+
+	else
+		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart);
+
+	// clean up
+
+	xList.clear ();
+	yList.clear ();
+	delete lsq;
+	delete lms;
+	delete[] xValues;
+	delete[] yValues;
+
+	for (i=0; i<nNegatives; i++)
+		delete pairArray [i];
+
+	delete[] pairArray;
+	return true;
 }
 
 
@@ -1389,6 +1954,22 @@ int CoreBioComponent :: Initialize (SampleData& fileData, PopulationCollection* 
 
 	for (i=0; i<=mNumberOfChannels; i++)
 		mDataChannels [i] = NULL;
+
+	int j;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		mPullupTestedMatrix [i] = new bool [mNumberOfChannels + 1];
+		mLinearPullupMatrix [i] = new double [mNumberOfChannels + 1];
+		mQuadraticPullupMatrix [i] = new double [mNumberOfChannels + 1];
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			mPullupTestedMatrix [i][j] = false;
+			mLinearPullupMatrix [i][j] = 0.0;
+			mQuadraticPullupMatrix [i][j] = 0.0;
+		}
+	}
 
 	mLaneStandardChannel = mMarkerSet->GetLaneStandardChannel ();
 

@@ -494,6 +494,7 @@ InterchannelLinkage :: InterchannelLinkage (int nChannels) : mPrimarySignal (NUL
 	mIsAboveNoiseThreshold = new bool [channels1];
 	mIsNegativePeak = new bool [channels1];
 	mPeakHeights = new double [channels1];
+	mSecondaryIterator = new RGDListIterator (mSecondarySignals);
 
 	int i;
 	int j;
@@ -532,6 +533,7 @@ InterchannelLinkage :: InterchannelLinkage (int nChannels) : mPrimarySignal (NUL
 InterchannelLinkage :: ~InterchannelLinkage () {
 
 	mSecondarySignals.Clear ();
+	delete mSecondaryIterator;
 
 	int i;
 
@@ -802,6 +804,78 @@ int InterchannelLinkage :: MapOutSignalProperties (double noiseMultiple, double 
 }
 
 
+DataSignal* InterchannelLinkage :: GetSecondarySignalOnChannelIfNoSecondPrimary (int secondaryChannel) {
+
+	DataSignal* nextSignal;
+	DataSignal* returnSignal = NULL;
+	RGDListIterator it (mSecondarySignals);
+	double maxHeightForOtherPrimaries;
+	int nPrimaries = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal == mPrimarySignal)
+			continue;
+
+		if (nextSignal->GetChannel () == secondaryChannel)
+			returnSignal = nextSignal;
+
+		if (nextSignal->HasCrossChannelSignalLink ())
+			nPrimaries++;
+	}
+
+	if (returnSignal == NULL)
+		return NULL;
+
+	if (nPrimaries == 0)
+		return returnSignal;
+
+	if ((nPrimaries == 1) && (returnSignal->HasCrossChannelSignalLink ()))
+		return returnSignal;
+
+	if (!returnSignal->HasCrossChannelSignalLink ())
+		return NULL;
+
+	it.Reset ();
+	maxHeightForOtherPrimaries = returnSignal->Peak ();
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal == mPrimarySignal)
+			continue;
+
+		if (nextSignal == returnSignal)
+			continue;
+
+		if (nextSignal->HasCrossChannelSignalLink ()) {
+
+			if (nextSignal->Peak () > maxHeightForOtherPrimaries)
+				return NULL;
+		}
+	}
+
+	return returnSignal;	
+}
+
+
+DataSignal* InterchannelLinkage :: GetSecondarySignalOnChannel (int secondaryChannel) {
+
+	DataSignal* nextSignal;
+	RGDListIterator it (mSecondarySignals);
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal == mPrimarySignal)
+			continue;
+
+		if (nextSignal->GetChannel () == secondaryChannel)
+			return nextSignal;
+	}
+
+	return NULL;
+}
+
+
 
 STRInterchannelLinkage :: STRInterchannelLinkage (int nChannels) : InterchannelLinkage (nChannels) {
 
@@ -1029,7 +1103,7 @@ mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLe
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
-mPartOfCluster (ds.mPartOfCluster) {
+mPullupCorrectionArray (NULL), mTestedForPullupArray (NULL), mIsPurePullupArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1046,6 +1120,10 @@ DataSignal :: ~DataSignal () {
 	NewNoticeList.ClearAndDelete ();
 	mCrossChannelSignalLinks.Clear ();
 	delete[] mPrimaryRatios;
+	delete[] mPullupCorrectionArray;
+	delete[] mTestedForPullupArray;
+	delete[] mIsPurePullupArray;
+	delete[] mPrimaryPullupInChannel;
 }
 
 
@@ -1200,6 +1278,141 @@ bool DataSignal :: HasCrossChannelSignalLink () const {
 
 	return IsSecondaryCrossChannelSignalLink () || IsPrimaryCrossChannelSignalLink ();
 }
+
+
+double DataSignal :: GetPullupFromChannel (int i) const {
+
+	if (mPullupCorrectionArray == NULL)
+		return 0.0;
+
+	return mPullupCorrectionArray [i];
+}
+
+
+double DataSignal :: GetTotalPullupFromOtherChannels (int numberOfChannels) const {
+
+	if (mPullupCorrectionArray == NULL)
+		return 0.0;
+
+	int i;
+	double total = 0.0;
+
+	for (i=1; i<=numberOfChannels; i++)
+		total += mPullupCorrectionArray [i];
+
+	return total;
+}
+
+
+void DataSignal :: SetPullupFromChannel (int i, double value, int numberOfChannels) {
+
+	if (mPullupCorrectionArray == NULL) {
+
+		mPullupCorrectionArray = new double [numberOfChannels + 1];
+		int j;
+
+		for (j=1; j<=numberOfChannels; j++)
+			mPullupCorrectionArray [j] = 0.0;
+	}
+
+	mPullupCorrectionArray [i] = value;
+}
+
+
+
+bool DataSignal :: TestedPullupFromChannel (int i) const {
+
+	if (mTestedForPullupArray == NULL)
+		return false;
+
+	return mTestedForPullupArray [i];
+}
+
+
+void DataSignal :: SetPullupTestedFromChannel (int i, bool value, int numberOfChannels) {
+
+	if (mTestedForPullupArray == NULL) {
+
+		mTestedForPullupArray = new bool [numberOfChannels + 1];
+		int j;
+
+		for (j=1; j<=numberOfChannels; j++)
+			mTestedForPullupArray [j] = false;
+	}
+
+	mTestedForPullupArray [i] = value;
+}
+
+
+
+bool DataSignal :: IsPurePullupFromChannel (int i) const {
+
+	if (mIsPurePullupArray == NULL)
+		return false;
+
+	return mIsPurePullupArray [i];
+}
+
+
+void DataSignal :: SetIsPurePullupFromChannel (int i, bool value, int numberOfChannels) {
+
+	if (mIsPurePullupArray == NULL) {
+
+		mIsPurePullupArray = new bool [numberOfChannels + 1];
+		int j;
+
+		for (j=1; j<=numberOfChannels; j++)
+			mIsPurePullupArray [j] = false;
+	}
+
+	mIsPurePullupArray [i] = value;
+}
+
+
+DataSignal* DataSignal :: HasPrimarySignalFromChannel (int i) const {
+
+	if (mPrimaryPullupInChannel == NULL)
+		return NULL;
+
+	return mPrimaryPullupInChannel [i];
+}
+
+
+void DataSignal :: SetPrimarySignalFromChannel (int i, DataSignal* ds, int numberOfChannels) {
+
+	if (mPrimaryPullupInChannel == NULL) {
+
+		mPrimaryPullupInChannel = new DataSignal* [numberOfChannels + 1];
+		int j;
+
+		for (j=1; j<=numberOfChannels; j++)
+			mPrimaryPullupInChannel [j] = NULL;
+	}
+
+	mPrimaryPullupInChannel [i] = ds;
+}
+
+
+bool DataSignal :: HasAnyPrimarySignals (int numberOfChannels) const {
+
+	int i;
+	int myChannel = GetChannel ();
+
+	if (mPrimaryPullupInChannel == NULL)
+		return NULL;
+
+	for (i=1; i<=numberOfChannels; i++) {
+
+		if (myChannel == i)
+			continue;
+
+		if (mPrimaryPullupInChannel [i] != NULL)
+			return true;
+	}
+
+	return false;
+}
+
 
 
 void DataSignal :: SetBioID (double id, int position) {
@@ -9970,7 +10183,7 @@ DataSignal* DualDoubleGaussian :: GetSecondCurve () {
 }
 
 
-CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0), mHeight (0.0), mPrevious (NULL), mNext (NULL) {
+CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0), mHeight (0.0), mTroughHeight (0.0), mPrevious (NULL), mNext (NULL) {
 
 	mIsGraphable = false;
 	mPullupTolerance = halfCraterPullupTolerance;
@@ -10037,6 +10250,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 		max = peak2;
 
 	mHeight = 0.5 * (est1 + est2);
+	mTroughHeight = 0.5 * (v1 + v2);
 
 	if (mHeight < max)
 		mHeight = max;
@@ -10138,6 +10352,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 		max = peak2;
 
 	mHeight = 0.5 * (est1 + est2);
+	mTroughHeight = 0.5 * (v1 + v2);
 
 	if (mHeight < max)
 		mHeight = max;
@@ -10184,7 +10399,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 
 
 CraterSignal :: CraterSignal (const CraterSignal& c) : ParametricCurve (c), mMean (c.mMean), mSigma (c.mSigma), mHeight (c.mHeight),
-mPrevious (c.mPrevious), mNext (c.mNext) {
+mTroughHeight (c.mTroughHeight), mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
@@ -10195,7 +10410,7 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 
 CraterSignal :: CraterSignal (double mean, const CraterSignal& c) : ParametricCurve (c), mMean (mean), mSigma (c.mSigma), mHeight (c.mHeight),
-mPrevious (c.mPrevious), mNext (c.mNext) {
+mTroughHeight (c.mTroughHeight), mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
@@ -10206,7 +10421,7 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 
 
-CraterSignal :: CraterSignal (const CraterSignal& c, CoordinateTransform* trans) : ParametricCurve (c), mHeight (c.mHeight),
+CraterSignal :: CraterSignal (const CraterSignal& c, CoordinateTransform* trans) : ParametricCurve (c), mHeight (c.mHeight), mTroughHeight (c.mTroughHeight),
 mPrevious (c.mPrevious), mNext (c.mNext)  {
 
 	mMean = trans->EvaluateWithExtrapolation (c.mMean);

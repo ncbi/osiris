@@ -298,112 +298,112 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	//double xLMS [8] = {8381, 7726, 7866, 8191, 7167, 9522, 9427, 11068.0};
 	//double yLMS [9] = {159, 20, 1, 15, -1, 5, 2, -2, 20 };
 	//double xLMS [9] = {1485, 1590, 1699, 1394, 1608, 1478, 1285, 1342, 1422};
-	double yLMS [8] = {34, 13, 16, 16, 11, 15, 18, 8 };
-	double xLMS [8] = {2109, 1625, 1402, 1309, 1141, 1162, 1696, 1823};
-	int iLMS;
-	int num = 8;
+	//double yLMS [8] = {34, 13, 16, 16, 11, 15, 18, 8 };
+	//double xLMS [8] = {2109, 1625, 1402, 1309, 1141, 1162, 1696, 1823};
+	//int iLMS;
+	//int num = 8;
 
-	LeastMedianOfSquares1D lmsTest (num, xLMS, yLMS);
-	list<double> xs;
-	list<double> ys;
+	//LeastMedianOfSquares1D lmsTest (num, xLMS, yLMS);
+	//list<double> xs;
+	//list<double> ys;
 
-	if (!lmsTest.DataIsOK ())
-		cout << "Least median of squares data problematic" << endl;
+	//if (!lmsTest.DataIsOK ())
+	//	cout << "Least median of squares data problematic" << endl;
 
-	else {
+	//else {
 
-		double result = lmsTest.CalculateLMS ();
+	//	double result = lmsTest.CalculateLMS ();
 
-		if (result < 0.0) {
+	//	if (result < 0.0) {
 
-			cout << "Could not find valid least median values" << endl;
-		}
+	//		cout << "Could not find valid least median values" << endl;
+	//	}
 
-		else {
+	//	else {
 
-			double leastMed = lmsTest.GetLMSValue ();
-			cout << "Least median value = " << leastMed << endl;
-			double lMed2 = lmsTest.GetMedianSquaredForLMS ();
-			cout << "Least median squared = " << lMed2 << endl;
-			cout << "Outlier threshold = " << lmsTest.GetOutlierThreshold () << endl;
-			cout << "Data included in minimum:  ";
+	//		double leastMed = lmsTest.GetLMSValue ();
+	//		cout << "Least median value = " << leastMed << endl;
+	//		double lMed2 = lmsTest.GetMedianSquaredForLMS ();
+	//		cout << "Least median squared = " << lMed2 << endl;
+	//		cout << "Outlier threshold = " << lmsTest.GetOutlierThreshold () << endl;
+	//		cout << "Data included in minimum:  ";
 
-			for (iLMS=0; iLMS<num; iLMS++) {
+	//		for (iLMS=0; iLMS<num; iLMS++) {
 
-				if (lmsTest.ElementIsOutlier (iLMS))
-					continue;
+	//			if (lmsTest.ElementIsOutlier (iLMS))
+	//				continue;
 
-				cout << yLMS [iLMS] << ", ";
-				xs.push_back (xLMS [iLMS]);
-				ys.push_back (yLMS [iLMS]);
-			}
+	//			cout << yLMS [iLMS] << ", ";
+	//			xs.push_back (xLMS [iLMS]);
+	//			ys.push_back (yLMS [iLMS]);
+	//		}
 
-			cout << "..." << endl;
-			cout << "Outliers:  ";
+	//		cout << "..." << endl;
+	//		cout << "Outliers:  ";
 
-			for (iLMS=0; iLMS<num; iLMS++) {
+	//		for (iLMS=0; iLMS<num; iLMS++) {
 
-				if (lmsTest.ElementIsOutlier (iLMS))
-					cout << yLMS [iLMS] << ", ";
-			}
+	//			if (lmsTest.ElementIsOutlier (iLMS))
+	//				cout << yLMS [iLMS] << ", ";
+	//		}
 
-			cout << "..." << endl;
-		}
-	}
+	//		cout << "..." << endl;
+	//	}
+	//}
 
-	LeastSquaresQuadraticModel LQS (xs, ys);
-	xs.clear ();
-	ys.clear ();
+	//LeastSquaresQuadraticModel LQS (xs, ys);
+	//xs.clear ();
+	//ys.clear ();
 
-	if (!LQS.DataIsOK ())
-		cout << "Least squares model could not set up..." << endl;
+	//if (!LQS.DataIsOK ())
+	//	cout << "Least squares model could not set up..." << endl;
 
-	else {
+	//else {
 
-		double linearLS;
-		double quadraticLS;
+	//	double linearLS;
+	//	double quadraticLS;
 
-		double LS = LQS.CalculateLeastSquare (linearLS, quadraticLS);
+	//	double LS = LQS.CalculateLeastSquare (linearLS, quadraticLS);
 
-		cout << "\n\nLeast squares model:  linear = " << linearLS << ", and quadratic = " << quadraticLS << endl;
-		cout << "Least squares = " << LS << endl << endl;
-	}
+	//	cout << "\n\nLeast squares model:  linear = " << linearLS << ", and quadratic = " << quadraticLS << endl;
+	//	cout << "Least squares = " << LS << endl << endl;
+	//}
 
-	LeastMedianOfSquares2DExhaustive lmsTest2 (num, xLMS, yLMS);
+	//LeastMedianOfSquares2DExhaustive lmsTest2 (num, xLMS, yLMS);
 
-	if (!lmsTest2.DataIsOK ())
-		cout << "Least median of squares 2 data problematic" << endl;
+	//if (!lmsTest2.DataIsOK ())
+	//	cout << "Least median of squares 2 data problematic" << endl;
 
-	else {
+	//else {
 
-		lmsTest2.CalculateLMS ();
-		double leastMed = lmsTest2.GetLMSValue ();
-		double leastMedSlope = lmsTest2.GetLMSValue2 ();
-		cout << "Least median value = " << leastMed << " and Least median slope = " << leastMedSlope << endl;
-		double lMed2 = lmsTest2.GetMedianSquaredForLMS ();
-		cout << "Least median squared = " << lMed2 << endl;
-		cout << "Outlier threshold = " << lmsTest2.GetOutlierThreshold () << endl;
-		cout << "Data included in minimum:  ";
+	//	lmsTest2.CalculateLMS ();
+	//	double leastMed = lmsTest2.GetLMSValue ();
+	//	double leastMedSlope = lmsTest2.GetLMSValue2 ();
+	//	cout << "Least median value = " << leastMed << " and Least median slope = " << leastMedSlope << endl;
+	//	double lMed2 = lmsTest2.GetMedianSquaredForLMS ();
+	//	cout << "Least median squared = " << lMed2 << endl;
+	//	cout << "Outlier threshold = " << lmsTest2.GetOutlierThreshold () << endl;
+	//	cout << "Data included in minimum:  ";
 
-		for (iLMS=0; iLMS<num; iLMS++) {
+	//	for (iLMS=0; iLMS<num; iLMS++) {
 
-			if (lmsTest2.ElementIsOutlier (iLMS))
-				continue;
+	//		if (lmsTest2.ElementIsOutlier (iLMS))
+	//			continue;
 
-			cout << yLMS [iLMS] << ", ";
-		}
+	//		cout << yLMS [iLMS] << ", ";
+	//	}
 
-		cout << "..." << endl;
-		cout << "Outliers:  ";
+	//	cout << "..." << endl;
+	//	cout << "Outliers:  ";
 
-		for (iLMS=0; iLMS<num; iLMS++) {
+	//	for (iLMS=0; iLMS<num; iLMS++) {
 
-			if (lmsTest2.ElementIsOutlier (iLMS))
-				cout << yLMS [iLMS] << ", ";
-		}
+	//		if (lmsTest2.ElementIsOutlier (iLMS))
+	//			cout << yLMS [iLMS] << ", ";
+	//	}
 
-		cout << "..." << endl;
-	}
+	//	cout << "..." << endl;
+	//}
 
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
@@ -916,6 +916,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
 		FullPathName = DirectoryName + "/" + LadderFileName;
+		cout << "Found ladder name " << (char*)FullPathName.GetData () << endl;
 		nLadders++;
 
 		if (WorkingFile != NULL) {

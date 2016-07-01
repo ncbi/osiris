@@ -308,45 +308,48 @@ int STRChannelData :: TestNeighborsSM (DataSignal* previous, DataSignal* testSig
 
 int STRChannelData :: TestSignalsForOffScaleSM () {
 
-	RGDListIterator it (PreliminaryCurveList);
-	DataSignal* nextSignal;
+	//RGDListIterator it (PreliminaryCurveList);
+	//DataSignal* nextSignal;
 
-	smCrater crater;
-	smSignalNotACrater notCrater;
-	smPrimaryInterchannelLink primaryPullup;
-	smPullUp pullup;
-	smNotInterchannelLink notInterchannel;
+	//smCrater crater;
+	//smSignalNotACrater notCrater;
+	//smPrimaryInterchannelLink primaryPullup;
+	//smPullUp pullup;
+	//smCalculatedPurePullup purePullup;
+	//smNotInterchannelLink notInterchannel;
 
-	smLaserOffScalePullupOrCraterNotPrimary laserOffScaleNotPrimary;
-	smLaserOffScalePrimary laserOffScalePrimary;
-	smLaserOffScaleNoInterchannelLink laserOffScaleNoInterchannelLink;
-	smLaserOffScale laserOffScale;
+	//smLaserOffScalePullupOrCraterNotPrimary laserOffScaleNotPrimary;
+	//smLaserOffScalePrimary laserOffScalePrimary;
+	//smLaserOffScaleNoInterchannelLink laserOffScaleNoInterchannelLink;
+	//smLaserOffScale laserOffScale;
 
-	bool isPullup;
-	bool isCrater;
-	bool isPrimary;
-	bool isNotInterchannel;
+	//bool isPullup;
+	//bool isCrater;
+	//bool isPrimary;
+	//bool isNotInterchannel;
+	//bool isPurePullup;
 
-	while (nextSignal = (DataSignal*) it ()) {
+	//while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMessageValue (laserOffScale)) {
+	//	if (nextSignal->GetMessageValue (laserOffScale)) {
 
-			isPullup = nextSignal->GetMessageValue (pullup);
-			isCrater = (nextSignal->GetMessageValue (crater) && !nextSignal->GetMessageValue (notCrater));
-			isPrimary = nextSignal->GetMessageValue (primaryPullup);
-			isNotInterchannel = (!isPullup || nextSignal->GetMessageValue (notInterchannel));
+	//		isPullup = nextSignal->GetMessageValue (pullup);
+	//		isPurePullup = nextSignal->GetMessageValue (purePullup);
+	//		isCrater = (nextSignal->GetMessageValue (crater) && !nextSignal->GetMessageValue (notCrater));
+	//		isPrimary = nextSignal->GetMessageValue (primaryPullup);
+	//		isNotInterchannel = (!isPullup || nextSignal->GetMessageValue (notInterchannel));
 
-			if ((isPullup || isCrater) && !isPrimary && !isNotInterchannel)
-				nextSignal->SetMessageValue (laserOffScaleNotPrimary, true);
+	//		if ((isPullup || isCrater || isPurePullup) && !isPrimary && isNotInterchannel)
+	//			nextSignal->SetMessageValue (laserOffScaleNotPrimary, true);
 
-			//else if (isPrimary  && !isNotInterchannel)
-			else if (isPrimary)
-				nextSignal->SetMessageValue (laserOffScalePrimary, true);
+	//		//else if (isPrimary  && !isNotInterchannel)
+	//		else if (isPrimary)
+	//			nextSignal->SetMessageValue (laserOffScalePrimary, true);
 
-			else
-				nextSignal->SetMessageValue (laserOffScaleNoInterchannelLink, true);
-		}
-	}
+	//		else
+	//			nextSignal->SetMessageValue (laserOffScaleNoInterchannelLink, true);
+	//	}
+	//}
 
 	return 0;
 }
@@ -2858,45 +2861,45 @@ int STRLaneStandardChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput&
 
 int STRLaneStandardChannelData :: TestSignalsForOffScaleSM () {
 
-	RGDListIterator it (SmartPeaks);
-	DataSignal* nextSignal;
+	//RGDListIterator it (SmartPeaks);
+	//DataSignal* nextSignal;
 
-	smCrater crater;
-	smSignalNotACrater notCrater;
-	smPrimaryInterchannelLink primaryPullup;
-	smPullUp pullup;
-	smNotInterchannelLink notInterchannel;
+	//smCrater crater;
+	//smSignalNotACrater notCrater;
+	//smPrimaryInterchannelLink primaryPullup;
+	//smPullUp pullup;
+	//smNotInterchannelLink notInterchannel;
 
-	smLaserOffScalePullupOrCraterNotPrimary laserOffScaleNotPrimary;
-	smLaserOffScalePrimary laserOffScalePrimary;
-	smLaserOffScaleNoInterchannelLink laserOffScaleNoInterchannelLink;
-	smLaserOffScale laserOffScale;
+	//smLaserOffScalePullupOrCraterNotPrimary laserOffScaleNotPrimary;
+	//smLaserOffScalePrimary laserOffScalePrimary;
+	//smLaserOffScaleNoInterchannelLink laserOffScaleNoInterchannelLink;
+	//smLaserOffScale laserOffScale;
 
-	bool isPullup;
-	bool isCrater;
-	bool isPrimary;
-	bool isNotInterchannel;
+	//bool isPullup;
+	//bool isCrater;
+	//bool isPrimary;
+	//bool isNotInterchannel;
 
-	while (nextSignal = (DataSignal*) it ()) {
+	//while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetMessageValue (laserOffScale)) {
+	//	if (nextSignal->GetMessageValue (laserOffScale)) {
 
-			isPullup = nextSignal->GetMessageValue (pullup);
-			isCrater = (nextSignal->GetMessageValue (crater) && !nextSignal->GetMessageValue (notCrater));
-			isPrimary = nextSignal->GetMessageValue (primaryPullup);
-			isNotInterchannel = (!isPullup || nextSignal->GetMessageValue (notInterchannel));
+	//		isPullup = nextSignal->GetMessageValue (pullup);
+	//		isCrater = (nextSignal->GetMessageValue (crater) && !nextSignal->GetMessageValue (notCrater));
+	//		isPrimary = nextSignal->GetMessageValue (primaryPullup);
+	//		isNotInterchannel = (!isPullup || nextSignal->GetMessageValue (notInterchannel));
 
-			if ((isPullup || isCrater) && !isPrimary && !isNotInterchannel)
-				nextSignal->SetMessageValue (laserOffScaleNotPrimary, true);
+	//		if ((isPullup || isCrater) && !isPrimary && !isNotInterchannel)
+	//			nextSignal->SetMessageValue (laserOffScaleNotPrimary, true);
 
-			//else if (isPrimary  && !isNotInterchannel)
-			else if (isPrimary)
-				nextSignal->SetMessageValue (laserOffScalePrimary, true);
+	//		//else if (isPrimary  && !isNotInterchannel)
+	//		else if (isPrimary)
+	//			nextSignal->SetMessageValue (laserOffScalePrimary, true);
 
-			else
-				nextSignal->SetMessageValue (laserOffScaleNoInterchannelLink, true);
-		}
-	}
+	//		else
+	//			nextSignal->SetMessageValue (laserOffScaleNoInterchannelLink, true);
+	//	}
+	//}
 
 	return 0;
 }
@@ -3317,6 +3320,7 @@ int STRSampleChannelData :: TestFractionalFiltersSM () {
 	smPartOfExtendedLocusLeft extendedLocusLeft;
 	smPartOfExtendedLocusRight extendedLocusRight;
 	smPullUp pullup;
+	smCalculatedPurePullup purePullup;
 	smHeightBelowFractionalFilter belowFractionalFilter;
 	smHeightBelowPullupFractionalFilter belowPullupFractionalFilter;
 
@@ -3359,7 +3363,7 @@ int STRSampleChannelData :: TestFractionalFiltersSM () {
 	}
 
 	cIt.Reset ();
-//	bool removeSignal;
+	bool peakIsPullup;
 
 	while (nextSignal = (DataSignal*) cIt ()) {
 
@@ -3375,7 +3379,9 @@ int STRSampleChannelData :: TestFractionalFiltersSM () {
 			nextSignal->SetMessageValue (belowFractionalFilter, true);
 		}
 
-		if (nextSignal->GetMessageValue (pullup) && (peak < pullupFractionalThreshold)) {
+		peakIsPullup = nextSignal->GetMessageValue (pullup) || nextSignal->GetMessageValue (purePullup);
+
+		if (peakIsPullup && (peak < pullupFractionalThreshold)) {
 
 //			removeSignal = true;
 			nextSignal->SetMessageValue (belowPullupFractionalFilter, true);

@@ -98,6 +98,22 @@ struct SampleDataStruct {
 };
 
 
+struct PullupPair {
+
+	PullupPair () : mPrimary (NULL), mPullup (NULL), mPrimaryHeight (0.0), mPullupHeight (0.0), mIsOutlier (false) {}
+	PullupPair (DataSignal* primary, DataSignal* pullup);
+	PullupPair (DataSignal* primary);
+	PullupPair (const PullupPair& pup);
+	~PullupPair () {}
+
+	DataSignal* mPrimary;
+	DataSignal* mPullup;
+	double mPrimaryHeight;
+	double mPullupHeight;
+	bool mIsOutlier;
+};
+
+
 
 class CoreBioComponent : public SmartMessagingObject {
 
@@ -144,6 +160,19 @@ public:
 
 	int GetLocusAndChannelHighestMessageLevel ();
 	Boolean PrepareLociForOutput ();
+
+	bool ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart);
+	bool ComputeRefinedOutlierList (list<PullupPair*>& pairList, double& linearPart);
+	bool ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart);
+
+	bool PullupTestedMatrix (int i, int j);
+	double LinearPullupCoefficient (int i, int j);
+	double QuadraticPullupCoefficient (int i, int j);
+
+	void SetPullupTestedMatrix (int i, int j, bool value);
+	void SetLinearPullupMatrix (int i, int j, double value);
+	void SetQuadraticPullupMatrix (int i, int j, double value);
+	void CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList);
 
 	void ReportSampleTableRow (RGTextOutput& text);
 	void ReportSampleTableRowWithLinks (RGTextOutput& text);
@@ -332,14 +361,18 @@ public:
 	virtual int AnalyzeCrossChannelSM ();
 	virtual int AnalyzeCrossChannelWithNegativePeaksSM ();
 	virtual int AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
-	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM ();
+	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList** notPrimaryLists);
+	virtual bool CollectDataAndComputeCrossChannelEffectForChannelsSM (int primaryChannel, int pullupChannel, RGDList* primaryChannelPeaks, double& linearPart, double& quadraticPart, bool testLaserOffScale, bool testNegativePUOnly);
+	virtual DataSignal** CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals);
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();
 	virtual int PreTestSignalsForLaserOffScaleSM ();
 
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
 
+	void RemovePrimaryLinksAndSecondaryLinksFrom (DataSignal* ds);
 	virtual bool ValidateAndCorrectCrossChannelAnalysesSM ();
+	void RemovePeakAsPrimarySM (DataSignal* ds);
 
 	virtual int SetLaneStandardDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);
 	virtual int FitLaneStandardCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
@@ -452,6 +485,10 @@ protected:
 
 	RGString mPositiveControlName;
 	list<InterchannelLinkage*> mInterchannelLinkageList;
+
+	bool** mPullupTestedMatrix;
+	double** mLinearPullupMatrix;
+	double** mQuadraticPullupMatrix;
 
 	// Smart Message Data*****************************************************************************************************************
 	//************************************************************************************************************************************

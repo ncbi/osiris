@@ -148,9 +148,6 @@ smLocusHasPeaksBetweenDetectionAndAnalysisThresholds	1030	2546
 smUnexpectedNoOfGridPeaks	1031	2547
 smMoreThanThreeAlleles	1032	2548
 smDefaultsAreOverridden	1033	2549
-smLaserOffScalePullupOrCraterNotPrimary	1034	2550
-smLaserOffScalePrimary	1035	2551
-smLaserOffScaleNoInterchannelLink	1036	2552
 smAssociatedLadderIsCritical	1037	2553
 smAssociatedLadderLocusIsCritical	1038	2554
 smChannelHasRaisedBaseline	1039	2555
@@ -170,8 +167,6 @@ smLocusIsYLinked	1052	2568
 smNumberAllelesBelowExpectation	1053	2569
 smBaselineRelativeStutter	1054	2570
 smBaselineRelativeAdenylation	1055	2571
-smBaselineRelativeFractionalFilter	1056	2572
-smBaselineRelativePullupFractionalFilter	1057	2573
 smBaselineRelativeBelowMinRFU	1058	2574
 smBaselineRelativeBelowMinInterlocusRFU	1059	2575
 smTestRelativeBaselinePreset	1060	2576
@@ -219,4 +214,5 @@ smScaleILSPrimerSearchPreset	1101	2617
 smNumberOfLastILSPeaksInScale	1102	2618
 smPercentLastILSPeaksInScaling	1103	2619
 smLaserOffScale	1104	2620
+smCalculatedPurePullup	1105	2621
 

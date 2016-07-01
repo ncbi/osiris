@@ -174,6 +174,7 @@ public:
 	virtual bool RemoveAllSM (SmartNotice&  primaryTarget, SmartNotice&  primaryReplace, SmartNotice&  secondaryTarget, SmartNotice&  secondaryReplace);
 
 	virtual bool RemoveDataSignalSM (DataSignal* oldSignal);
+	virtual bool RemoveDataSignalFromSecondaryList (DataSignal* oldSignal);
 	virtual bool RecalculatePrimarySignalSM ();
 	virtual bool RemoveAllSM ();
 
@@ -182,6 +183,8 @@ public:
 
 	bool IsEmpty ();
 	DataSignal* GetPrimarySignal ();
+	void ResetSecondaryIterator () { mSecondaryIterator->Reset (); }
+	DataSignal* GetNextSecondarySignal () { return (DataSignal*) (*mSecondaryIterator)(); }
 
 	bool PrimarySignalHasChannel (int n) const;
 	bool PrimaryHasLaserOffScaleSM () const;
@@ -193,10 +196,13 @@ public:
 	int NumberOfSecondarySignals () const;
 	int NumberOfSecondarySignalsAbovePrimaryThreshold (double threshold);
 	int MapOutSignalProperties (double noiseMultiple, double primaryThreshold, double* channelNoiseLevels);
+	DataSignal* GetSecondarySignalOnChannelIfNoSecondPrimary (int secondaryChannel);
+	DataSignal* GetSecondarySignalOnChannel (int secondaryChannel);
 
 protected:
 	DataSignal* mPrimarySignal;
 	RGDList mSecondarySignals;
+	RGDListIterator* mSecondaryIterator;
 	int mNChannels;
 
 	int** mDirectedGraph;
@@ -299,7 +305,8 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPartOfCluster (false) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
+	mTestedForPullupArray (NULL), mIsPurePullupArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -315,7 +322,8 @@ public:
 	mCannotBePrimary (false), mBioIDLeft (0.0), mBioIDRight (0.0), mResidualLeft (0.0), mResidualRight (0.0), mPossibleInterAlleleLeft (false),
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
-	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPartOfCluster (false) {
+	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
+	mTestedForPullupArray (NULL), mIsPurePullupArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -336,7 +344,7 @@ public:
 		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
-		mPrimaryRatios (NULL), mPartOfCluster (ds.mPartOfCluster) {
+		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mTestedForPullupArray (NULL), mIsPurePullupArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -472,7 +480,20 @@ public:
 	bool IsGraphable () const { return mIsGraphable; }
 
 	bool CannotBePrimaryPullup () const { return mCannotBePrimaryPullup; }
-  //	bool SetCannotBePrimaryPullup (bool pp) { mCannotBePrimaryPullup = pp; }
+
+	double GetPullupFromChannel (int i) const;
+	double GetTotalPullupFromOtherChannels (int numberOfChannels) const;
+	void SetPullupFromChannel (int i, double value, int numberOfChannels);
+
+	bool TestedPullupFromChannel (int i) const;
+	void SetPullupTestedFromChannel (int i, bool value, int numberOfChannels);
+
+	bool IsPurePullupFromChannel (int i) const;
+	void SetIsPurePullupFromChannel (int i, bool value, int numberOfChannels);
+
+	DataSignal* HasPrimarySignalFromChannel (int i) const;
+	void SetPrimarySignalFromChannel (int i, DataSignal* ds, int numberOfChannels);
+	bool HasAnyPrimarySignals (int numberOfChannels) const;
 
 //	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
@@ -558,6 +579,7 @@ public:
 	virtual double Value (int n) const = 0;
 	virtual void SetOrthogonalScale (int curve, double scale) {}
 	virtual double Peak () const { return -DOUBLEMAX; }
+	virtual double TroughHeight () const { return Peak (); }
 	virtual Boolean CanBeNegative () const { return FALSE; }
 	virtual int AddToSample (double* sample, double sampleLeft, double sampleRight) const { return -1; }
 	virtual int AddToSampleArray (double* sample, double sampleLeft, double sampleRight, double verticalResolution) const { return -1; }
@@ -778,12 +800,17 @@ public:
 	void RemovePrimaryCrossChannelSignalLinkSM (DataSignal* remove);
 	void RemoveSecondaryCrossChannelSignalLinkSM ();
 	void RemoveAllCrossChannelSignalLinksSM ();
+	bool IsPullupFromChannelsOtherThan (int primaryChannel, int numberOfChannels) const;
+	bool SetPullupMessageDataSM (int numberOfChannels);
+	bool SetPrimaryPullupMessageDataSM (int numberOfChannels);
 
 	static void CreateInitializationData (int scope);
 	static void InitializeMessageMatrix (bool* matrix, int size);
 	static void ClearInitializationMatrix () { delete[] InitialMatrix; InitialMatrix = NULL; }
 	static int GetScope () { return 1; }
 	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
+	static bool IsNegativeOrSigmoid (DataSignal* ds);
+	static bool PeakCannotBePurePullup (DataSignal* pullup, DataSignal* primary);
 
 
 	//*******************************************************************************************************
@@ -868,6 +895,10 @@ protected:
 
 	double mPullupTolerance;
 	double* mPrimaryRatios;
+	double* mPullupCorrectionArray;
+	bool* mTestedForPullupArray;
+	bool* mIsPurePullupArray;
+	DataSignal** mPrimaryPullupInChannel;
 	bool mPartOfCluster;
 
 	static double SignalSpacing;
@@ -1650,6 +1681,7 @@ public:
 	virtual RGString GetSignalType () const;
 	virtual bool IsUnimodal () const { return false; }
 	virtual bool IsCraterPeak () const { return true; }
+	virtual double TroughHeight () const { return mTroughHeight; }
 
 	virtual int AddNoticeToList (Notice* newNotice);
 
@@ -1694,6 +1726,7 @@ protected:
 	double mMean;
 	double mSigma;
 	double mHeight;
+	double mTroughHeight;
 	DataSignal* mPrevious;
 	DataSignal* mNext;
 };
@@ -1717,6 +1750,7 @@ public:
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold () { return 0.0; }
 	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.0; }  // should never be called
+	virtual double TroughHeight () const { return Peak (); }
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
@@ -1782,6 +1816,7 @@ public:
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold ();
 	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas);
+	virtual double TroughHeight () const { return Peak (); }
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 

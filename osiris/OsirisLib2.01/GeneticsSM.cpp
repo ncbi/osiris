@@ -3050,6 +3050,7 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 	int location;
 //	PullUpFound pullupNotice;
 	smPullUp pullUp;
+	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
 	smHeightBelowFractionalFilter belowFractionalFilter;
 	smHeightBelowPullupFractionalFilter belowPullupFractionalFilter;
@@ -3069,6 +3070,7 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 	double pullupFractionalFilter = GetLocusSpecificSamplePullupFractionalFilter ();
 	bool peakIsLessThanFractionalThreshold;
 	bool peakIsLessThanPullupFractionalThreshold;
+	bool peakIsPullup;
 
 	smPartOfExtendedLocusLeft partOfExtendedLocusLeft;
 	smPartOfExtendedLocusRight partOfExtendedLocusRight;
@@ -3105,7 +3107,8 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 
 			peak = nextSignal->Peak ();
 			peakIsLessThanFractionalThreshold = (peak <= fractionalThreshold);
-			peakIsLessThanPullupFractionalThreshold = (nextSignal->GetMessageValue (pullUp) && !nextSignal->GetMessageValue (primaryPullup)) && (peak <= pullupFractionalThreshold);
+			peakIsPullup = nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (purePullup);
+			peakIsLessThanPullupFractionalThreshold = (peakIsPullup && !nextSignal->GetMessageValue (primaryPullup)) && (peak <= pullupFractionalThreshold);
 
 			if (peakIsLessThanFractionalThreshold || peakIsLessThanPullupFractionalThreshold) {
 
