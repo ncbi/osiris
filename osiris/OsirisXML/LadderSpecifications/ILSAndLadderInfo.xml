@@ -541,6 +541,42 @@
         <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
     </ILS>
+    <ILS>
+      <ILSName>NetBio500</ILSName>
+      <DyeName>WEN</DyeName>
+      <LaneStandard>
+        <Name>NetBio60_500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>NetBio80_500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>NetBio60_450</Name>
+        <DisplayName>60-450</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>NetBio80_450</Name>
+        <DisplayName>80-450</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450</Characteristics>
+        <RelativeHeights>H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
   </LaneStandards>
   <Kits>
     <Set>
@@ -678,6 +714,10 @@
 	<Set>
 		<KitName>QiagenArgusX12_QS</KitName>
 		<FileName>Q_InvestigatorArgusX12_QS_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>NetBio_FlexPlex</KitName>
+		<FileName>NetBioFlexPlex_LadderInfo.xml</FileName>
 	</Set>
   </Kits>
 </KitData>
