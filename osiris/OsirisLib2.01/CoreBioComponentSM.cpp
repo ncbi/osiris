@@ -1545,24 +1545,8 @@ DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primar
 	double nextMean;
 	RGDListIterator it (pullupSignals);
 	smCraterSidePeak craterSidePeak;
-	int nNegs = 0;
-	int nPos = 0;
-
-	while (nextSignal = (DataSignal*) it ()) {
-
-		if (nextSignal == primarySignal)
-			continue;
-
-		if (nextSignal->IsNegativePeak ())
-			nNegs++;
-
-		else
-			nPos++;
-	}
-
-	bool netPos = (nPos >= nNegs);
-
-	it.Reset ();
+	smCrater crater;
+	smSigmoidalPullup sigmoid;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -1570,71 +1554,58 @@ DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primar
 			continue;
 
 		currentChannel = nextSignal->GetChannel ();
+		currentSignal = pullupArray [currentChannel];
 
-		if (pullupArray [currentChannel] == NULL)
+		if (currentSignal == NULL)
 			pullupArray [currentChannel] = nextSignal;
 
 		else {
 
-			currentSignal = pullupArray [currentChannel];
+			currentMean = currentSignal->GetMean ();
+			nextMean = nextSignal->GetMean ();
+			double deltaCurrent = fabs (primaryMean - currentMean);
+			double deltaNext = fabs (primaryMean - nextMean);
 
-			if (currentSignal->GetMessageValue (craterSidePeak))
+			if (nextMean == primaryMean) {
+
 				pullupArray [currentChannel] = nextSignal;
-
-			else if (nextSignal->GetMessageValue (craterSidePeak))
 				continue;
+			}
+
+			if (deltaCurrent < deltaNext)
+				continue;
+
+			else if (deltaCurrent > deltaNext)
+				pullupArray [currentChannel] = nextSignal;
 
 			else {
 
-				currentMean = currentSignal->GetMean ();
-				nextMean = nextSignal->GetMean ();
-				double deltaCurrent = fabs (primaryMean - currentMean);
-				double deltaNext = fabs (primaryMean - nextMean);
-
-				if (deltaCurrent < deltaNext)
-					continue;
-
-				else if (deltaCurrent > deltaNext)
+				if (nextSignal->IsNegativePeak () && currentSignal->IsNegativePeak ())
 					pullupArray [currentChannel] = nextSignal;
 
-				else {
+				else if (nextSignal->GetMessageValue (sigmoid) && currentSignal->GetMessageValue (sigmoid))
+					pullupArray [currentChannel] = nextSignal;
 
-					if (netPos) {
+				else if (nextSignal->IsNegativePeak () && !currentSignal->IsNegativePeak ())
+					pullupArray [currentChannel] = nextSignal;
 
-						if (!nextSignal->IsNegativePeak ()) {
+				else if (!nextSignal->IsNegativePeak () && currentSignal->IsNegativePeak ())
+					continue;
 
-							if (currentSignal->IsNegativePeak ())
-								pullupArray [currentChannel] = nextSignal;
+				else if (currentSignal->GetMessageValue (craterSidePeak) && nextSignal->GetMessageValue (crater))
+					pullupArray [currentChannel] = nextSignal;
 
-							else if (nextSignal->Peak () >= currentSignal->Peak ()) 
-								pullupArray [currentChannel] = nextSignal;
-						}
+				else if (currentSignal->GetMessageValue (crater) && nextSignal->GetMessageValue (craterSidePeak))
+					continue;
 
-						else if (currentSignal->IsNegativePeak ()) {
+				else if (currentSignal->GetMessageValue (sigmoid) && ((currentSignal->GetPreviousLinkedSignal () == nextSignal) || (currentSignal->GetNextLinkedSignal () == nextSignal)))
+					continue;
 
-							if (nextSignal->Peak () >= currentSignal->Peak ())
-								pullupArray [currentChannel] = nextSignal;
-						}
-					}
+				else if (nextSignal->GetMessageValue (sigmoid) && ((nextSignal->GetPreviousLinkedSignal () == currentSignal) || (nextSignal->GetNextLinkedSignal () == currentSignal)))
+					pullupArray [currentChannel] = nextSignal;
 
-					else {  // netPos = false
-
-						if (nextSignal->IsNegativePeak ()) {
-
-							if (!currentSignal->IsNegativePeak ())
-								pullupArray [currentChannel] = nextSignal;
-
-							else if (nextSignal->Peak () >= currentSignal->Peak ()) 
-								pullupArray [currentChannel] = nextSignal;
-						}
-
-						else if (!currentSignal->IsNegativePeak ()) {
-
-							if (nextSignal->Peak () >= currentSignal->Peak ())
-								pullupArray [currentChannel] = nextSignal;
-						}
-					}
-				}
+				else if (nextSignal->Peak () < currentSignal->Peak ())
+					pullupArray [currentChannel] = nextSignal;
 			}
 		}
 	}

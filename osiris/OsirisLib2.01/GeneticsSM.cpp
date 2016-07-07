@@ -5972,6 +5972,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
 	smPullUp pullup;
+	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
 
 	it.Reset ();
@@ -6027,6 +6028,14 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 
 				//if (report)
 				//	cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (purePullup)) {
 
 				prevSignal = nextSignal;
 				prevAlleleName = alleleName;

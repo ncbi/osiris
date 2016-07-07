@@ -2161,9 +2161,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		rightLimit = primaryMean + primaryTolerance;
 		leftLimit = primaryMean - primaryTolerance;
 		probablePullupPeaks.Clear ();
-		double leastDistance;
-		double testDistance;
-		DataSignal* closestSignal;
 
 		//if ((5571.0 < primaryMean) && (primaryMean < 5572.0))
 		//	report = true;
@@ -2260,104 +2257,106 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				ignoreSidePeaks.Prepend (nextSignal2);
 		}
 
-		if (probablePullupPeaks.Entries () >= 2) {
+		// unsuccessful attempt to eliminate multiple peaks in a channel  07/06/2016...try eliminating this...
 
-			for (i=1; i<=mNumberOfChannels; i++) {
+		//if (probablePullupPeaks.Entries () >= 2) {
 
-				if (i == primaryChannel)
-					continue;
+		//	for (i=1; i<=mNumberOfChannels; i++) {
 
-				probableIt.Reset ();
-				peaksInSameChannel.Clear ();
+		//		if (i == primaryChannel)
+		//			continue;
 
-				while (testSignal = (DataSignal*) probableIt ()) {
+		//		probableIt.Reset ();
+		//		peaksInSameChannel.Clear ();
 
-					if (testSignal->GetChannel () == i)
-						peaksInSameChannel.Append (testSignal);
-				}
+		//		while (testSignal = (DataSignal*) probableIt ()) {
 
-				if (peaksInSameChannel.Entries () <= 1)
-					continue;
+		//			if (testSignal->GetChannel () == i)
+		//				peaksInSameChannel.Append (testSignal);
+		//		}
 
-				sameChannelIterator.Reset ();
-				closestSignal = NULL;
-				signalsToRemove.Clear ();
+		//		if (peaksInSameChannel.Entries () <= 1)
+		//			continue;
 
-				while (testSignal = (DataSignal*) sameChannelIterator ()) {
+		//		sameChannelIterator.Reset ();
+		//		closestSignal = NULL;
+		//		signalsToRemove.Clear ();
 
-					if (signalsToRemove.Contains (testSignal))
-						continue;
+		//		while (testSignal = (DataSignal*) sameChannelIterator ()) {
 
-					if (testSignal->IsCraterPeak ()) {
+		//			if (signalsToRemove.Contains (testSignal))
+		//				continue;
 
-						prevSignal = testSignal->GetPreviousLinkedSignal ();
-						nextSignal2 = testSignal->GetNextLinkedSignal ();
-						bool containsWholeCrater = probablePullupPeaks.ContainsReference (prevSignal) && probablePullupPeaks.ContainsReference (nextSignal2);
-						bool isSigmoid = prevSignal->IsNegativePeak () || nextSignal2->IsNegativePeak ();
+		//			if (testSignal->IsCraterPeak ()) {
 
-						if (containsWholeCrater || isSigmoid) {
+		//				prevSignal = testSignal->GetPreviousLinkedSignal ();
+		//				nextSignal2 = testSignal->GetNextLinkedSignal ();
+		//				bool containsWholeCrater = probablePullupPeaks.ContainsReference (prevSignal) && probablePullupPeaks.ContainsReference (nextSignal2);
+		//				bool isSigmoid = prevSignal->IsNegativePeak () || nextSignal2->IsNegativePeak ();
 
-							// This may be valid pull-up crater.  Remove side peaks and verify that there are no more
+		//				if (containsWholeCrater || isSigmoid) {
 
-							signalsToRemove.Append (prevSignal);
-							signalsToRemove.Append (nextSignal2);
-							probablePullupPeaks.RemoveReference (prevSignal);
-							probablePullupPeaks.RemoveReference (nextSignal2);
+		//					// This may be valid pull-up crater.  Remove side peaks and verify that there are no more
 
-							if (closestSignal == NULL) {
+		//					signalsToRemove.Append (prevSignal);
+		//					signalsToRemove.Append (nextSignal2);
+		//					probablePullupPeaks.RemoveReference (prevSignal);
+		//					probablePullupPeaks.RemoveReference (nextSignal2);
 
-								closestSignal = testSignal;
-								leastDistance = fabs (testSignal->GetMean () - primaryMean);
-							}
+		//					if (closestSignal == NULL) {
 
-							else {
+		//						closestSignal = testSignal;
+		//						leastDistance = fabs (testSignal->GetMean () - primaryMean);
+		//					}
 
-								testDistance = fabs (testSignal->GetMean () - primaryMean);
+		//					else {
 
-								if (testDistance < leastDistance) {
+		//						testDistance = fabs (testSignal->GetMean () - primaryMean);
 
-									leastDistance = testDistance;
-									signalsToRemove.Append (closestSignal);
-									probablePullupPeaks.RemoveReference (closestSignal);
-									closestSignal = testSignal;
-								}
-							}
-						}
+		//						if (testDistance < leastDistance) {
 
-						else {
+		//							leastDistance = testDistance;
+		//							signalsToRemove.Append (closestSignal);
+		//							probablePullupPeaks.RemoveReference (closestSignal);
+		//							closestSignal = testSignal;
+		//						}
+		//					}
+		//				}
 
-							signalsToRemove.Append (testSignal);
-							probablePullupPeaks.RemoveReference (testSignal);
-						}
-					}
+		//				else {
 
-					else {
+		//					signalsToRemove.Append (testSignal);
+		//					probablePullupPeaks.RemoveReference (testSignal);
+		//				}
+		//			}
 
-						if (closestSignal == NULL) {
+		//			else {
 
-							closestSignal = testSignal;
-							leastDistance = fabs (testSignal->GetMean () - primaryMean);
-						}
+		//				if (closestSignal == NULL) {
 
-						else {
+		//					closestSignal = testSignal;
+		//					leastDistance = fabs (testSignal->GetMean () - primaryMean);
+		//				}
 
-							testDistance = fabs (testSignal->GetMean () - primaryMean);
+		//				else {
 
-							if (testDistance < leastDistance) {
+		//					testDistance = fabs (testSignal->GetMean () - primaryMean);
 
-								leastDistance = testDistance;
-								signalsToRemove.Append (closestSignal);
-								probablePullupPeaks.RemoveReference (closestSignal);
-								closestSignal = testSignal;
-							}
-						}
-					}
-				}
-			}
+		//					if (testDistance < leastDistance) {
 
-			peaksInSameChannel.Clear ();
-			signalsToRemove.Clear ();
-		}  // This ends section in which duplicate peaks in a channel are weeded out
+		//						leastDistance = testDistance;
+		//						signalsToRemove.Append (closestSignal);
+		//						probablePullupPeaks.RemoveReference (closestSignal);
+		//						closestSignal = testSignal;
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+
+		//	peaksInSameChannel.Clear ();
+		//	signalsToRemove.Clear ();
+		//}  // This ends section in which duplicate peaks in a channel are weeded out:  see above...commented out 07/06/2016
 
 		if (probablePullupPeaks.IsEmpty ())
 			continue;
@@ -2366,7 +2365,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		// If we're here, we know nextSignal = primeSignal is primary and there are some pull-up peaks within specified distance
 		// First, test for spike
 
-		if ((primaryWidth < mWidthToleranceForSpike) && (probablePullupPeaks.Entries () == mNumberOfChannels - 1)) {  // primary is too narrow and all channels involved in bleed through
+		// The following test needs to be moved until after channel-duplicates have been removed from list
+
+		if ((primaryWidth < mWidthToleranceForSpike) && (probablePullupPeaks.Entries () == mNumberOfChannels - 1)) {  // primary is too narrow and all channels involved in bleed through,
 
 			probableIt.Reset ();
 			primeSignal->SetMessageValue (spike, true);
@@ -2427,6 +2428,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	//
 
 	double minRFU;
+	bool sidePeaksArePullup;
+	DataSignal* fixPullupPeak;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2438,8 +2441,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			testSignal = nextSignal->GetPreviousLinkedSignal ();
 			testSignal2 = nextSignal->GetNextLinkedSignal ();
+			
+			if ((testSignal == NULL) || (testSignal2 == NULL))
+				sidePeaksArePullup = true;
 
-			if (nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) {
+			else
+				sidePeaksArePullup = (testSignal->GetMessageValue (pullup) && testSignal2->GetMessageValue (pullup));
+
+			if ((nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) && !sidePeaksArePullup) {
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
@@ -2475,7 +2484,16 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
 
-			if (nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) {
+			testSignal = nextSignal->GetPreviousLinkedSignal ();
+			testSignal2 = nextSignal->GetNextLinkedSignal (); 
+
+			if ((testSignal == NULL) || (testSignal2 == NULL))
+				sidePeaksArePullup = true;
+
+			else
+				sidePeaksArePullup = (testSignal->GetMessageValue (pullup) && testSignal2->GetMessageValue (pullup));
+
+			if ((nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) && !sidePeaksArePullup) {
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
@@ -2496,6 +2514,27 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				nextSignal2 = nextSignal->GetNextLinkedSignal ();
 				nextSignal2->SetMessageValue (craterSidePeak, false);
 				OverallList.RemoveReference (nextSignal);
+				iChannel = nextSignal->GetInterchannelLink ();
+
+				if (iChannel != NULL) {
+
+					mInterchannelLinkageList.remove (iChannel);
+					// remove pullup info as well
+
+					iChannel->ResetSecondaryIterator ();
+
+					while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
+
+						fixPullupPeak->SetPullupFromChannel (i, 0.0, mNumberOfChannels);
+						fixPullupPeak->SetPrimarySignalFromChannel (i, NULL, mNumberOfChannels);
+
+						if (!testSignal->HasAnyPrimarySignals (mNumberOfChannels))
+							testSignal->SetMessageValue (pullup, false);
+					}
+
+					delete iChannel;
+				}
+
 				delete nextSignal;
 			}
 		}
@@ -2633,7 +2672,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, false);
 				newResult = newResult | individualResult;
 
-				if (individualResult = false)
+				if (individualResult == false)
 					allOK = false;
 
 				cout << "\n";
@@ -2662,7 +2701,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 					individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, false);
 					newResult = newResult | individualResult;
 
-					if (individualResult = false)
+					if (individualResult == false)
 						allOK = false;
 
 					cout << "\n";
@@ -2694,8 +2733,11 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 			if (j == i)
 				continue;
 
-			cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
-			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
+			if (!mPullupTestedMatrix [i][j]) {
+
+				cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
+			}
 		}
 
 		cout << "\n";
@@ -2718,7 +2760,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, false);
 			newResult = newResult | individualResult;
 
-			if (individualResult = false)
+			if (individualResult == false)
 				allOK = false;
 
 			cout << "\n";
@@ -2746,7 +2788,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 					individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, false);
 					newResult = newResult | individualResult;
 
-					if (individualResult = false)
+					if (individualResult == false)
 						allOK = false;
 
 					cout << "\n";

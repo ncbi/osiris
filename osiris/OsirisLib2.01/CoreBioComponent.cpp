@@ -745,41 +745,70 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 	int i = 0;
 	list<PullupPair*>::const_iterator it;
 	int nNegatives = 0;
+	int nSigmoids = 0;
+	int totalForNegativeAnalysis;
 	double maxFit = 0.0;
 	double fit;
+	DataSignal* pullUp;
 
 	for (it=pairList.begin (); it!=pairList.end (); it++) {
 
 		pair = *it;
-		newPair = pairArray [i] = new PullupPair (*pair);	
+		pullUp = pair->mPullup;
+
+		if (pullUp == NULL)
+			continue;
+
+		if (pullUp->IsNegativePeak ())
+			nNegatives++;
+
+		else if (DataSignal::IsNegativeOrSigmoid (pullUp))
+			nSigmoids++;
+	}
+
+	for (it=pairList.begin (); it!=pairList.end (); it++) {
+
+		pair = *it;
+		newPair = pairArray [i] = new PullupPair (*pair);
+		pullUp = newPair->mPullup;
 		xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
 
-		if (newPair->mPullup == NULL)
+		if (pullUp == NULL)
 			yValues [i] = newPair->mPullupHeight = 0.0;
 
-		else if ((newPair->mPullup)->IsNegativePeak ()) {
+		else if (pullUp->IsNegativePeak ()) {
 
-			nNegatives++;
-			fit = (newPair->mPullup)->GetCurveFit ();
-			yValues [i] = newPair->mPullupHeight = - (newPair->mPullup)->TroughHeight ();
+			fit = pullUp->GetCurveFit ();
+			yValues [i] = newPair->mPullupHeight = - pullUp->TroughHeight ();
 
 			if (fit > maxFit)
 				maxFit = fit;
 		}
 
+		else if (DataSignal::IsNegativeOrSigmoid (pullUp)) {
+
+			if (nNegatives > 0)
+				yValues [i] = newPair->mPullupHeight = - pullUp->TroughHeight ();
+
+			else
+				yValues [i] = newPair->mPullupHeight = pullUp->TroughHeight ();
+		}
+
 		else
-			yValues [i] = newPair->mPullupHeight = (newPair->mPullup)->TroughHeight ();
+			yValues [i] = newPair->mPullupHeight = pullUp->TroughHeight ();
 
 		i++;
 	}
 
-	// if nNegatives at least 1 or 2, use a different algorithm that does not mix + and - pullup
+	totalForNegativeAnalysis = nNegatives + nSigmoids;
 
-	if ((nNegatives >= 2) || ((nNegatives > 0) && (maxFit >= 0.99))) {
+	// if nNegatives at least 0, use a different algorithm that does not mix + and - pullup
+
+	if (nNegatives > 0) {
 
 		// Need different algorithm which considers non-negative peaks to be outliers
 
-		bool ans = ComputePullupParametersForNegativePeaks (nNegatives, pairList, linearPart, quadraticPart);
+		bool ans = ComputePullupParametersForNegativePeaks (totalForNegativeAnalysis, pairList, linearPart, quadraticPart);
 		delete[] xValues;
 		delete[] yValues;
 
@@ -1106,6 +1135,8 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 
 bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart) {
 
+	// nNegatives includes number of sigmoids...
+	
 	linearPart = quadraticPart = 0.0;
 	PullupPair** pairArray = new PullupPair* [nNegatives];
 	double* yValues = new double [nNegatives];
@@ -1120,7 +1151,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 
 		pair = *it;
 
-		if ((pair->mPullup == NULL) || (pair->mPullup)->IsNegativePeak ()) {
+		if ((pair->mPullup == NULL) || DataSignal::IsNegativeOrSigmoid (pair->mPullup)) {
 
 			newPair = pairArray [i] = new PullupPair (*pair);	
 			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();

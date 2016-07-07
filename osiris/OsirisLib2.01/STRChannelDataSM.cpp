@@ -4490,6 +4490,12 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 			continue;
 		}
 
+		if (fit < minFitForArtifactTest) {
+
+			delete nextSignal;
+			continue;
+		}
+
 		nextSignal->SetPeakIsNegative ();
 		nextSignal->SetCannotBePrimary (true);
 		mNegativeCurveList.Prepend (nextSignal);
