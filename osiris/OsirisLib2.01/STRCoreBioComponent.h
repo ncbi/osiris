@@ -82,7 +82,7 @@ public:
 	virtual int AnalyzeCrossChannelSM ();
 	virtual int AnalyzeCrossChannelWithNegativePeaksSM ();
 	virtual int AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
-	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList** notPrimaryLists);
+	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList*** notPrimaryLists);
 	virtual int WriteXMLGraphicDataSM (const RGString& graphicDirectory, const RGString& localFileName, SampleData* data, int analysisStage, const RGString& intro);
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine);
 

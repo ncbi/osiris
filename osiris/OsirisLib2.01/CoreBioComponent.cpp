@@ -1105,8 +1105,6 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 	if ((mLinearPullupMatrix == NULL) || (mQuadraticPullupMatrix == NULL))
 		return;
 
-	list<PullupPair*>::iterator it;
-	PullupPair* nextPair;
 	DataSignal* pullupPeak;
 	DataSignal* primaryPeak;
 	double linear = mLinearPullupMatrix [i][j];
@@ -1114,21 +1112,35 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 	double pp;
 	double value;
 	double ratio;
+	list<InterchannelLinkage*>::iterator it;
+	InterchannelLinkage* nextLink;
 
-	for (it=pairList.begin(); it!=pairList.end(); it++) {
+	if ((linear == 0.0) && (quad == 0.0))
+		NegatePullupForChannelsSM (i, j, pairList);
 
-		nextPair = *it;
-		pullupPeak = nextPair->mPullup;
+	else {
 
-		if (pullupPeak == NULL)
-			continue;
+		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
 
-		primaryPeak = nextPair->mPrimary;
-		pp = primaryPeak->Peak ();
-		value = pp * (linear + pp * quad);
-		pullupPeak->SetPullupFromChannel (i, value, mNumberOfChannels);
-		ratio = 0.01 * floor (10000.0 * (value / pp) + 0.5);
-		pullupPeak->SetPullupRatio (i, ratio, mNumberOfChannels);
+			nextLink = *it;
+			primaryPeak = nextLink->GetPrimarySignal ();
+
+			if (primaryPeak->GetChannel () != i)
+				continue;
+
+			pullupPeak = nextLink->GetSecondarySignalOnChannel (j);
+
+			if (pullupPeak == NULL)
+				continue;
+
+			pp = primaryPeak->Peak ();
+			value = pp * (linear + pp * quad);
+			pullupPeak->SetPullupFromChannel (i, value, mNumberOfChannels);
+			//ratio = 0.01 * floor (10000.0 * (value / pp) + 0.5);
+			ratio = 100.0 * (linear + pp * quad);
+			pullupPeak->SetPullupRatio (i, ratio, mNumberOfChannels);
+			pullupPeak->SetPrimarySignalFromChannel (i, primaryPeak, mNumberOfChannels);
+		}
 	}
 }
 

@@ -603,6 +603,7 @@ public:
 
 	virtual bool IsUnimodal () const { return false; }
 	virtual bool IsCraterPeak () const { return false; }
+	virtual bool IsSigmoidalPeak () const { return false; }
 
 	virtual double GetNoiseRange () const { return 0.0; }
 	virtual void SetNoiseRange (double noise) {}
@@ -803,6 +804,7 @@ public:
 	bool IsPullupFromChannelsOtherThan (int primaryChannel, int numberOfChannels) const;
 	bool SetPullupMessageDataSM (int numberOfChannels);
 	bool SetPrimaryPullupMessageDataSM (int numberOfChannels);
+	bool HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfChannels);
 
 	static void CreateInitializationData (int scope);
 	static void InitializeMessageMatrix (bool* matrix, int size);
@@ -1750,6 +1752,7 @@ public:
 	virtual double GetPullupToleranceInBP (double noise) const;
 	virtual double GetPrimaryPullupDisplacementThreshold () { return 0.0; }
 	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.0; }  // should never be called
+	virtual bool IsSigmoidalPeak () const { return true; }
 	virtual double TroughHeight () const { return Peak (); }
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);

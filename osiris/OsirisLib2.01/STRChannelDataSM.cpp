@@ -4490,7 +4490,7 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 			continue;
 		}
 
-		if (fit < minFitForArtifactTest) {
+		if (fit < minFit) {
 
 			delete nextSignal;
 			continue;

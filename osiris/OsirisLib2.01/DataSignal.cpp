@@ -1786,7 +1786,7 @@ void DataSignal :: SetPullupRatio (int channel, double ratio, int nChannels) {
 		mPrimaryRatios = new double [nChannels + 1];
 
 		for (i=1; i<=nChannels; i++)
-			mPrimaryRatios [i] = -1.0;
+			mPrimaryRatios [i] = 0.0;
 	}
 
 	mPrimaryRatios [channel] = ratio;

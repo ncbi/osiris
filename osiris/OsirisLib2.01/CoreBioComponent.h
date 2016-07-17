@@ -363,7 +363,10 @@ public:
 	virtual int AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
 	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList** notPrimaryLists);
 	virtual bool CollectDataAndComputeCrossChannelEffectForChannelsSM (int primaryChannel, int pullupChannel, RGDList* primaryChannelPeaks, double& linearPart, double& quadraticPart, bool testLaserOffScale, bool testNegativePUOnly);
+	virtual bool NegatePullupForChannelsSM (int primaryChannel, int pullupChannel, list<PullupPair*>& pairList);
 	virtual DataSignal** CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals);
+	virtual bool AcknowledgePullupPeaksWhenThereIsNoPatternSM (int primaryChannel, int secondaryChannel, bool testLaserOffScale);
+
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();
 	virtual int PreTestSignalsForLaserOffScaleSM ();

@@ -724,13 +724,19 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	int n = 0;
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
+	DataSignal* primary;
 
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
 
 	for (i=1; i<=nChannels; i++) {
 
-		if (mPrimaryRatios [i] >= 0.0) {
+		if (IsNegativePeak ())
+			continue;
+
+		primary = mPrimaryPullupInChannel [i];
+
+		if (primary != NULL) {
 
 			if (n == 0)
 				n = 1;
@@ -738,7 +744,10 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 			else
 				data << "; ";
 
-			data << i << " with Ratio " << mPrimaryRatios [i];
+			if (mPrimaryRatios == NULL)
+				cout << "Primary signal is set but not ratio for signal on channel " << GetChannel () << " at time " << GetMean () << endl;
+
+			data << i << " with Ratio " << GetPullupRatio (i);
 		}
 	}
 
@@ -1501,8 +1510,68 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 	double ratio;
 	int myChannel = GetChannel ();
 	bool addedRatio = false;
+	double totalNegative = 0.0;
+	double totalPositive = 0.0;
+	double correctedHeight;
+	double peakCorrectedForNegative;
 
-	if (isPullup || isPurePullup) {
+	if (isPurePullup) {
+
+		for (i=1; i<=numberOfChannels; i++) {
+
+			primarySignal = mPrimaryPullupInChannel [i];
+
+			if (primarySignal != NULL) {
+
+				correctedHeight = mPullupCorrectionArray [i];
+
+				if (correctedHeight > 0.0) {
+
+					totalPositive += correctedHeight;
+					continue;
+				}
+
+				else if (correctedHeight < 0.0) {
+
+					totalNegative += correctedHeight;
+					primaryHeight = primarySignal->Peak ();
+					ratio = 100.0 * (correctedHeight / primaryHeight);
+					SetPullupRatio (i, ratio, numberOfChannels);
+					addedRatio = true;
+				}
+
+				else
+					cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+			}
+		}
+
+		peakCorrectedForNegative = Peak () - totalNegative;
+		
+		// Now do positive
+
+		if (totalPositive > 0.0) {
+
+			for (i=1; i<=numberOfChannels; i++) {
+
+				primarySignal = mPrimaryPullupInChannel [i];
+
+				if (primarySignal != NULL) {
+
+					correctedHeight = mPullupCorrectionArray [i];
+
+					if (correctedHeight > 0.0) {
+
+						primaryHeight = primarySignal->Peak ();
+						ratio = 100.0 * (correctedHeight / totalPositive) * (peakCorrectedForNegative / primaryHeight);
+						SetPullupRatio (i, ratio, numberOfChannels);
+						addedRatio = true;
+					}
+				}
+			}
+		}
+	}
+
+	else if (isPullup) {
 
 		for (i=1; i<=numberOfChannels; i++) {
 
@@ -1514,10 +1583,17 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 			if (primarySignal == NULL)
 				continue;
 
-			primaryHeight = primarySignal->Peak ();  // Use corrected value?
-			ratio = 0.01 * floor (10000.0 * (GetPullupFromChannel (i) / primaryHeight) + 0.5);  // this is a percent
-			SetPullupRatio (i, ratio, numberOfChannels);
-			addedRatio = true;
+			if (GetPullupFromChannel (i) != 0.0) {
+
+				primaryHeight = primarySignal->Peak ();  // Use corrected value?
+	//			ratio = 0.01 * floor (10000.0 * (GetPullupFromChannel (i) / primaryHeight) + 0.5);  // this is a percent
+				ratio = 100.0 * (GetPullupFromChannel (i) / primaryHeight);
+				SetPullupRatio (i, ratio, numberOfChannels);
+				addedRatio = true;
+			}
+
+			else
+				cout << "Corrected height = 0 for partial pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
 		}
 	}
 
@@ -1558,6 +1634,40 @@ bool DataSignal :: SetPrimaryPullupMessageDataSM (int numberOfChannels) {
 	}
 
 	return true;
+}
+
+
+bool DataSignal :: HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfChannels) {
+
+	smPullUp pullup;
+	
+	if (!GetMessageValue (pullup))
+		return false;
+
+	if (!ds->GetMessageValue (pullup))
+		return false;
+
+	int i;
+	DataSignal* myPrimary;
+	DataSignal* dsPrimary;
+
+	for (i=1; i<=numberOfChannels; i++) {
+
+		myPrimary = mPrimaryPullupInChannel [i];
+
+		if (myPrimary == NULL)
+			continue;
+
+		dsPrimary = ds->mPrimaryPullupInChannel [i];
+
+		if (dsPrimary == NULL)
+			continue;
+
+		if (myPrimary == dsPrimary)
+			return true;
+	}
+
+	return false;
 }
 
 

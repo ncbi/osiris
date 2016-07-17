@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.73</VersionNumber>
-	<BuildTime>07 01 2016 07:27 PM</BuildTime>
+	<VersionNumber>6.74</VersionNumber>
+	<BuildTime>0717/2016 06:36 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -531,6 +531,23 @@
 			<TextForData> from Primary Channel </TextForData>
 			<SeparatorText> with Primary Ratio: </SeparatorText>
 			<ClosingText>%</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smPullUpAtControlPeak OR smInterlocusPullUp OR smSignalIsCtrlPeak OR (smSignalIsAllele AND smMakePullupAtAlleleNonCriticalPreset)</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPossiblePullUp</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Possible Pullup</Text>
 			<ReportLevel>1</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
@@ -6080,6 +6097,7 @@
 						<Name>smBlob</Name>
 						<Name>smPullUp</Name>
 						<Name>smCalculatedPurePullup</Name>
+						<Name>smPossiblePullUp</Name>
 						<Name>smPeakOutsideILS</Name>
 						<Name>smBelowMinRFU</Name>
 						<Name>smBaselineRelativeBelowMinRFU</Name>

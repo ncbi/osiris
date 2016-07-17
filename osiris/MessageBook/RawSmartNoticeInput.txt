@@ -215,4 +215,5 @@ smNumberOfLastILSPeaksInScale	1102	2618
 smPercentLastILSPeaksInScaling	1103	2619
 smLaserOffScale	1104	2620
 smCalculatedPurePullup	1105	2621
+smPossiblePullUp	1106	2622
 
