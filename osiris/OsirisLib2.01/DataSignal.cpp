@@ -1296,7 +1296,7 @@ double DataSignal :: GetTotalPullupFromOtherChannels (int numberOfChannels) cons
 	double total = 0.0;
 
 	for (i=1; i<=numberOfChannels; i++)
-		total += mPullupCorrectionArray [i];
+		total += GetPullupFromChannel (i);
 
 	return total;
 }

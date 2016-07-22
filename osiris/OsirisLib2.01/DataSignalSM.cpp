@@ -1635,8 +1635,8 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 						primaryHeight = primarySignal->Peak ();
 						ratio = 100.0 * (correctedHeight / totalPositive) * (peakCorrectedForNegative / primaryHeight);
 						SetPullupRatio (i, ratio, numberOfChannels);
-						mPullupCorrectionArray [i] = (correctedHeight / totalPositive) * peakCorrectedForNegative;
-						SetPullupFromChannel (i, (correctedHeight / totalNegative) * peakCorrectedForNegative, DataSignal::NumberOfChannels);
+						//mPullupCorrectionArray [i] = (correctedHeight / totalPositive) * peakCorrectedForNegative;
+						SetPullupFromChannel (i, (correctedHeight / totalPositive) * peakCorrectedForNegative, DataSignal::NumberOfChannels);
 						addedRatio = true;
 					}
 				}
