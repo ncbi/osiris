@@ -9,6 +9,9 @@
 			<LS>
 				<LSName>NetBio60_500</LSName>
 				<LSName>NetBio60_450</LSName>
+				<LSName>NetBio80_500</LSName>
+				<LSName>NetBio100_500</LSName>
+				<LSName>NetBio80_450</LSName>
 			</LS>
 				<ChannelNo>6</ChannelNo>
 			</ILS>
