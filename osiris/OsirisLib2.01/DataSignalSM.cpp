@@ -734,7 +734,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 		if (IsNegativePeak ())
 			continue;
 
-		primary = mPrimaryPullupInChannel [i];
+		primary = HasPrimarySignalFromChannel (i);
 
 		if (primary != NULL) {
 
@@ -838,8 +838,8 @@ void DataSignal :: WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& 
 //			text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
+			text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
 			text << indent << "\t<allele>" << GetAlleleName () << suffix << "</allele>" << endLine;
-			text << indent << "\t<width>" << 4.0 * GetStandardDeviation () << "</width>" << endLine;
 			text << indent << "\t<fit>" << GetCurveFit () << "</fit>" << endLine;
 			text << indent << "</" + bracketTag << ">" << endLine;
 		}
@@ -887,11 +887,11 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 //				text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
+				text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
 
 				if (virtualAllele.Length () > 0)
 					text << indent << "\t<equivAllele>" << virtualAllele << suffix << "</equivAllele>" << endLine;
 
-				text << indent << "\t<width>" << 4.0 * GetStandardDeviation () << "</width>" << endLine;
 				text << indent << "\t<fit>" << GetCurveFit () << "</fit>" << endLine;
 				label = indent + "\t<label>";
 				thisIsFirstNotice = false;
@@ -973,6 +973,7 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 	SmartMessageReporter* nextNotice;
 	text.SetOutputLevel (1);
 	int msgNum;
+	double totalCorrection;
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
@@ -991,8 +992,15 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 		text << indent << "\t<Id>" << GetSignalID () << "</Id>" << endLine;
 		text << indent << "\t<Level>" << reportedMessageLevel << "</Level>" << endLine;
 		text << indent << "\t<RFU>" << peak << "</RFU>" << endLine;
+
+		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		if (totalCorrection != 0.0)
+			text << indent << "\t<PullupCorrectedHeight>" << (int) floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
+
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
+		text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 
@@ -1486,7 +1494,7 @@ bool DataSignal :: IsPullupFromChannelsOtherThan (int primaryChannel, int number
 		if (i == primaryChannel)
 			continue;
 
-		if (mPrimaryPullupInChannel [i] != NULL)
+		if (HasPrimarySignalFromChannel (i) != NULL)
 			return true;
 	}
 
@@ -1501,9 +1509,13 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
+	smSigmoidalPullup sigmoid;
 
 	bool isPullup = GetMessageValue (pullup);
 	bool isPurePullup = GetMessageValue (purePullup);
+	bool isSigmoidal = GetMessageValue (sigmoid);
+	bool noPositiveCorrection = true;
+	bool noPositiveAndSigmoid;
 	int i;
 	DataSignal* primarySignal;
 	double primaryHeight;
@@ -1515,15 +1527,33 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 	double correctedHeight;
 	double peakCorrectedForNegative;
 
-	if (isPurePullup) {
+	if (isPurePullup || isSigmoidal) {
 
 		for (i=1; i<=numberOfChannels; i++) {
 
-			primarySignal = mPrimaryPullupInChannel [i];
+			primarySignal = HasPrimarySignalFromChannel (i);
 
 			if (primarySignal != NULL) {
 
-				correctedHeight = mPullupCorrectionArray [i];
+				correctedHeight = GetPullupFromChannel (i);
+
+				if (correctedHeight > 0.0) {
+
+					noPositiveCorrection = false;
+					break;
+				}
+			}
+		}
+
+		noPositiveAndSigmoid = noPositiveCorrection && isSigmoidal;
+
+		for (i=1; i<=numberOfChannels; i++) {
+
+			primarySignal = HasPrimarySignalFromChannel (i);
+
+			if (primarySignal != NULL) {
+
+				correctedHeight = GetPullupFromChannel (i);
 
 				if (correctedHeight > 0.0) {
 
@@ -1534,14 +1564,55 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 				else if (correctedHeight < 0.0) {
 
 					totalNegative += correctedHeight;
-					primaryHeight = primarySignal->Peak ();
-					ratio = 100.0 * (correctedHeight / primaryHeight);
-					SetPullupRatio (i, ratio, numberOfChannels);
-					addedRatio = true;
 				}
 
 				else
 					cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+			}
+		}
+
+		if (noPositiveAndSigmoid && (totalNegative != 0.0)) {
+
+			for (i=1; i<=numberOfChannels; i++) {
+
+				primarySignal = HasPrimarySignalFromChannel (i);
+
+				if (primarySignal != NULL) {
+
+					correctedHeight = GetPullupFromChannel (i);
+
+					if (correctedHeight < 0.0) {
+
+						primaryHeight = primarySignal->Peak ();
+						ratio = -100.0 * (correctedHeight / totalNegative) * (1.0 / primaryHeight);
+						SetPullupRatio (i, ratio, numberOfChannels);
+						SetPullupFromChannel (i, -(correctedHeight / totalNegative), DataSignal::NumberOfChannels);
+						addedRatio = true;
+					}
+				}
+			}
+
+			return addedRatio;
+		}
+
+		else {
+
+			for (i=1; i<=numberOfChannels; i++) {
+
+				primarySignal = HasPrimarySignalFromChannel (i);
+
+				if (primarySignal != NULL) {
+
+					correctedHeight = GetPullupFromChannel (i);
+
+					if (correctedHeight < 0.0) {
+
+						primaryHeight = primarySignal->Peak ();
+						ratio = 100.0 * (correctedHeight / primaryHeight);
+						SetPullupRatio (i, ratio, numberOfChannels);
+						addedRatio = true;
+					}
+				}
 			}
 		}
 
@@ -1553,17 +1624,19 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 
 			for (i=1; i<=numberOfChannels; i++) {
 
-				primarySignal = mPrimaryPullupInChannel [i];
+				primarySignal = HasPrimarySignalFromChannel (i);
 
 				if (primarySignal != NULL) {
 
-					correctedHeight = mPullupCorrectionArray [i];
+					correctedHeight = GetPullupFromChannel (i);
 
 					if (correctedHeight > 0.0) {
 
 						primaryHeight = primarySignal->Peak ();
 						ratio = 100.0 * (correctedHeight / totalPositive) * (peakCorrectedForNegative / primaryHeight);
 						SetPullupRatio (i, ratio, numberOfChannels);
+						mPullupCorrectionArray [i] = (correctedHeight / totalPositive) * peakCorrectedForNegative;
+						SetPullupFromChannel (i, (correctedHeight / totalNegative) * peakCorrectedForNegative, DataSignal::NumberOfChannels);
 						addedRatio = true;
 					}
 				}
@@ -1653,12 +1726,12 @@ bool DataSignal :: HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfCha
 
 	for (i=1; i<=numberOfChannels; i++) {
 
-		myPrimary = mPrimaryPullupInChannel [i];
+		myPrimary = HasPrimarySignalFromChannel (i);
 
 		if (myPrimary == NULL)
 			continue;
 
-		dsPrimary = ds->mPrimaryPullupInChannel [i];
+		dsPrimary = ds->HasPrimarySignalFromChannel (i);
 
 		if (dsPrimary == NULL)
 			continue;

@@ -517,6 +517,8 @@ public:
 	static void SetCallOnLadderAdenylation (bool s) { CallOnLadderAdenylation = s; }
 	static bool GetCallOnLadderAdenylation () { return CallOnLadderAdenylation; }
 
+	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
+
 protected:
 	BaseLocus* mLink;
 	RGHashTable AlleleListByName;   // items of type Allele*
@@ -612,6 +614,7 @@ protected:
 	static bool DisableStutterFilter;
 	static bool DisableAdenylationFilter;
 	static bool CallOnLadderAdenylation;
+	static int NumberOfChannels;
 
 	Boolean BuildAlleleLists (const RGString& xmlString);
 	Boolean BuildMappings (RGDList& signalList);

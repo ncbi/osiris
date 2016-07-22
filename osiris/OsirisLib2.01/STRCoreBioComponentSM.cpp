@@ -1944,7 +1944,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					testSignal = new SimpleSigmoidSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
 					testSignal->RecalculatePullupTolerance ();
-					cout << "Added possible sigmoid on channel " << i << " with left peak at " << prevSignal->GetMean () << " and right peak at " << nextSignal->GetMean () << " and center = " << testSignal->GetMean () << endl;
+					//cout << "Added possible sigmoid on channel " << i << " with left peak at " << prevSignal->GetMean () << " and right peak at " << nextSignal->GetMean () << " and center = " << testSignal->GetMean () << endl;
 					testSignal2 = (DataSignal*) nextMultiPeakList->Last ();
 
 					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
@@ -2432,6 +2432,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	bool sidePeaksArePullup;
 	bool sidePeaksHaveSamePrimaryChannel;
 	DataSignal* fixPullupPeak;
+	RGDList removedPeakList;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2477,7 +2478,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				nextSignal2 = nextSignal->GetNextLinkedSignal ();
 				nextSignal2->SetMessageValue (craterSidePeak, false);
 				OverallList.RemoveReference (nextSignal);
-				delete nextSignal;
+				//delete nextSignal;
+				removedPeakList.Append (nextSignal);
 			}
 		}
 
@@ -2601,7 +2603,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					delete iChannel;
 				}
 
-				delete nextSignal;
+				//delete nextSignal;
+				removedPeakList.Append (nextSignal);
 			}
 		}
 
@@ -2609,6 +2612,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	}
 
 	list<InterchannelLinkage*>::iterator tempIt;
+	list<InterchannelLinkage*> channelRemoval;
 
 	for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
 
@@ -2618,10 +2622,33 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		primaryChannel = primeSignal->GetChannel ();
 
 		while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
+
+			if (removedPeakList.ContainsReference (fixPullupPeak)) {
+
+				//cout << "Found 'deleted' signal in inter-channel linkage in channel " << fixPullupPeak->GetChannel () << " at time " << fixPullupPeak->GetMean () << endl;
+				iChannel->RemoveDataSignalFromSecondaryList (fixPullupPeak);
+
+				if (iChannel->IsEmpty ()) {
+
+					channelRemoval.push_back (iChannel);
+					primeSignal->SetMessageValue (primaryLink, false);
+					//cout << "  Removing link for primary signal in channel " << primeSignal->GetChannel () << " at time " << primeSignal->GetMean () << endl;
+				}
+
+				continue;
+			}
 		
 			fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, primeSignal, mNumberOfChannels);
 			fixPullupPeak->SetMessageValue (pullup, true);
 		}
+	}
+
+	while (!channelRemoval.empty ()) {
+
+		iChannel = channelRemoval.front ();
+		mInterchannelLinkageList.remove (iChannel);
+		delete iChannel;
+		channelRemoval.pop_front ();
 	}
 
 	cout << "Removed multi-signals with no cross channel effect" << endl;
@@ -2691,32 +2718,32 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	cout << "Ready to start assessing cross channel using channel patterns..." << endl;
 
-	for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
+	//for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
 
-		iChannel = *tempIt;
-		primeSignal = iChannel->GetPrimarySignal ();
-		iChannel->ResetSecondaryIterator ();
-		primaryChannel = primeSignal->GetChannel ();
-		cout << "/nPrimary channel " << primeSignal->GetChannel () << " with peak height " << primeSignal->Peak () << " and";
+	//	iChannel = *tempIt;
+	//	primeSignal = iChannel->GetPrimarySignal ();
+	//	iChannel->ResetSecondaryIterator ();
+	//	primaryChannel = primeSignal->GetChannel ();
+	//	cout << "/nPrimary channel " << primeSignal->GetChannel () << " with peak height " << primeSignal->Peak () << " and";
 
-		if (primeSignal->GetMessageValue (laserOffScale))
-			cout << " has laser off scale" << endl;
+	//	if (primeSignal->GetMessageValue (laserOffScale))
+	//		cout << " has laser off scale" << endl;
 
-		else
-			cout << " does not have laser off scale" << endl;
+	//	else
+	//		cout << " does not have laser off scale" << endl;
 
-		while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
-		
-			//fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, primeSignal, mNumberOfChannels);
-			//fixPullupPeak->SetMessageValue (pullup, true);
-			double tempp = fixPullupPeak->Peak ();
+	//	while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
+	//	
+	//		//fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, primeSignal, mNumberOfChannels);
+	//		//fixPullupPeak->SetMessageValue (pullup, true);
+	//		double tempp = fixPullupPeak->Peak ();
 
-			if (fixPullupPeak->IsNegativePeak ())
-				tempp = -tempp;
+	//		if (fixPullupPeak->IsNegativePeak ())
+	//			tempp = -tempp;
 
-			cout << "(Primary, pullup) channels (" << primeSignal->GetChannel () << ", " << fixPullupPeak->GetChannel () << ") at time " << primeSignal->GetMean () << " and PU Height = " << tempp << endl;
-		}
-	}
+	//		cout << "(Primary, pullup) channels (" << primeSignal->GetChannel () << ", " << fixPullupPeak->GetChannel () << ") at time " << primeSignal->GetMean () << " and PU Height = " << tempp << endl;
+	//	}
+	//}
 
 	//
 	//  Somewhere in here, in the future, put sample-level assessment of pull-up that goes beyond mere coincidence******************
@@ -2725,18 +2752,18 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (notPrimaryLists);  // As of 06/24/2016, this uses linear LMS to find outliers and then linear plus quadratic LS to find pullup coefficients
 
-	//for (i=1; i<=mNumberOfChannels; i++) {
+	for (i=1; i<=mNumberOfChannels; i++) {
 
-	//	 for (j=1; j<=mNumberOfChannels; j++) {
+		 for (j=1; j<=mNumberOfChannels; j++) {
 
-	//		 notPrimaryLists [i][j]->Clear ();
-	//		 delete notPrimaryLists [i][j];
-	//	 }
+			 notPrimaryLists [i][j]->Clear ();
+			 delete notPrimaryLists [i][j];
+		 }
 
-	//	 delete[] notPrimaryLists [i];
-	//}
+		 delete[] notPrimaryLists [i];
+	}
 
-	//delete[] notPrimaryLists;
+	delete[] notPrimaryLists;
 
 	//
 	// Next, with pull-up peaks remaining, associate associated primary pull-up data
@@ -2758,6 +2785,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	delete[] TempMultiPeakList;  // each individual list was already deleted
 	delete[] TempCraterPeakList;
 	OverallList.Clear ();
+	removedPeakList.ClearAndDelete ();
 
 	delete[] OnDeck;
 	delete[] noiseLevels;
@@ -2802,11 +2830,11 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 			currentNonPrimaryList = notPrimaryLists [i][j];
 
-			cout << "Analyze negative peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+			//cout << "Analyze negative peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
 			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, true);
 		}
 
-		cout << "\n";
+		//cout << "\n";
 	}
 
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -2820,7 +2848,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 				currentNonPrimaryList = notPrimaryLists [i][j];
 
-				cout << "Analyze positive peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+				//cout << "Analyze positive peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
 			
 				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, false);
 				newResult = newResult | individualResult;
@@ -2828,7 +2856,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 				if (individualResult == false)
 					allOK = false;
 
-				cout << "\n";
+				//cout << "\n";
 			}
 		}
 	}
@@ -2849,7 +2877,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 				if (!mPullupTestedMatrix [i][j]) {
 
-					cout << "Analyze positive peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+					//cout << "Analyze positive peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
 
 					individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, false);
 					newResult = newResult | individualResult;
@@ -2857,23 +2885,20 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 					if (individualResult == false)
 						allOK = false;
 
-					cout << "\n";
+					//cout << "\n";
 				}
 			}
 		}
 	}
 
-	if (!allOK) {
+	for (i=1; i<=mNumberOfChannels; i++) {
 
-		for (i=1; i<=mNumberOfChannels; i++) {
+		for (j=1; j<=mNumberOfChannels; j++) {
 
-			for (j=1; j<=mNumberOfChannels; j++) {
+			if (j == i)
+				continue;
 
-				if (j == i)
-					continue;
-
-				AcknowledgePullupPeaksWhenThereIsNoPatternSM (i, j, false);
-			}
+			AcknowledgePullupPeaksWhenThereIsNoPatternSM (i, j, false);
 		}
 	}
 
@@ -2902,12 +2927,12 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 			if (!mPullupTestedMatrix [i][j]) {
 
-				cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+				//cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
 				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
 			}
 		}
 
-		cout << "\n";
+		//cout << "\n";
 	}
 
 	newResult = false;
@@ -2924,7 +2949,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 			if (!mPullupTestedMatrix [i][j]) {
 
-				cout << "Analyze positive peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+				//cout << "Analyze positive peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
 
 				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, false);
 				newResult = newResult | individualResult;
@@ -2932,7 +2957,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 				if (individualResult == false)
 					allOK = false;
 
-				cout << "\n";
+				//cout << "\n";
 			}
 		}
 	}
@@ -2953,7 +2978,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 				if (!mPullupTestedMatrix [i][j]) {
 
-					cout << "Analyze positive peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+					//cout << "Analyze positive peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
 
 					individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, false);
 					newResult = newResult | individualResult;
@@ -2961,23 +2986,20 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 					if (individualResult == false)
 						allOK = false;
 
-					cout << "\n";
+					//cout << "\n";
 				}
 			}
 		}
 	}
 
-	if (!allOK) {
+	for (i=1; i<=mNumberOfChannels; i++) {
 
-		for (i=1; i<=mNumberOfChannels; i++) {
+		for (j=1; j<=mNumberOfChannels; j++) {
 
-			for (j=1; j<=mNumberOfChannels; j++) {
+			if (j == i)
+				continue;
 
-				if (j == i)
-					continue;
-
-				AcknowledgePullupPeaksWhenThereIsNoPatternSM (i, j, true);
-			}
+			AcknowledgePullupPeaksWhenThereIsNoPatternSM (i, j, true);
 		}
 	}
 
@@ -3426,7 +3448,7 @@ int STRLadderCoreBioComponent :: AnalyzeCrossChannelSM () {
 	mNumberOfPrimaryPullups = 0;
 	int i;
 	smSpike spike;
-	smPullUp pullup;
+	smPossiblePullUp pullup;
 	smPrimaryInterchannelLink primaryPullup;
 	smCrater crater;
 	smCraterSidePeak craterSidePeak;

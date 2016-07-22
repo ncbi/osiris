@@ -1313,7 +1313,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	// Modify code below to account for pullup corrections to secondary peaks that are also primary, and maybe to primary peaks?
 
-	cout << "Chosen (time, primary, pullup) pairs:  ";
+	//cout << "Chosen (time, primary, pullup) pairs:  ";
 	int n = 0;
 	double factor;
 	linearPart = quadraticPart = 0.0;
@@ -1359,8 +1359,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		numerator = secondarySignal->Peak ();
 
-		if (n > 0)
-			cout << ", ";
+		//if (n > 0)
+		//	cout << ", ";
 
 		if (secondarySignal->IsNegativePeak ())
 			factor = -1.0;
@@ -1368,7 +1368,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		else
 			factor = 1.0;
 
-		cout << "(" << primarySignal->GetMean () << ", " << currentPeak << ", " << factor * numerator << ")";
+		//cout << "(" << primarySignal->GetMean () << ", " << currentPeak << ", " << factor * numerator << ")";
 		n++;
 
 		if (numerator > 3.0) {
@@ -1380,17 +1380,17 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		}
 	}
 
-	cout << "\n";
+	//cout << "\n";
 
 	if (minRatio < 1.0) {
 
-		cout << "Minimum pullup ratio = " << minRatio << endl;
+		//cout << "Minimum pullup ratio = " << minRatio << endl;
 		minRatioLessThan1 = true;
 	}
 
 	if (pairList.empty ()) {
 
-		cout << "There are no pullup peaks..." << endl;
+		//cout << "There are no pullup peaks..." << endl;
 		SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
 		SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
 		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
@@ -1406,7 +1406,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			pairList.pop_front ();
 		}
 
-		cout << "Aborting test because of positive/negative mismatch..." << endl;
+		//cout << "Aborting test because of positive/negative mismatch..." << endl;
 		return false;
 	}
 
@@ -1420,7 +1420,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		RGDListIterator channelIterator (*primaryChannelPeaks);
 		double threshold = 0.9 * minHeight;
-		cout << "Adding unpaired signals (time, primary):  ";
+		//cout << "Adding unpaired signals (time, primary):  ";
 
 		while (nextSignal = (DataSignal*) channelIterator ()) {
 
@@ -1439,7 +1439,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 					nextPair = new PullupPair (nextSignal);
 					pairList.push_back (nextPair);
-					cout << "(" << nextSignal->GetMean () << ", " << nextSignal->Peak () << "). ";
+					//cout << "(" << nextSignal->GetMean () << ", " << nextSignal->Peak () << "). ";
 				}
 			}
 
@@ -1447,11 +1447,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				nextPair = new PullupPair (nextSignal);
 				pairList.push_back (nextPair);
-				cout << "(" << nextSignal->GetMean () << ", " << nextSignal->Peak () << "). ";
+				//cout << "(" << nextSignal->GetMean () << ", " << nextSignal->Peak () << "). ";
 			}
 		}
 
-		cout << "\n";
+		//cout << "\n";
 	}
 
 	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart);
@@ -1475,7 +1475,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		DataSignal* pullupPeak;
 		double correctedHeight;
 		list<DataSignal*> removePrimaryList;
-		cout << "Least squares fit gives (linear, quadratic) coefficients:  (" << linearPart << ", " << quadraticPart << ")" << endl;
+		//cout << "Least squares fit gives (linear, quadratic) coefficients:  (" << linearPart << ", " << quadraticPart << ")" << endl;
 
 		for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
 
@@ -1734,6 +1734,10 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 	list<InterchannelLinkage*>::iterator it;
 	smPossiblePullUp possiblePullup;
 	smLaserOffScale laserOffScale;
+	smCalculatedPurePullup purePullup;
+	smPrimaryInterchannelLink primaryLink;
+	smPullUp pullup;
+	list<InterchannelLinkage*> removeList;
 
 	for (it=mInterchannelLinkageList.begin (); it!=mInterchannelLinkageList.end (); it++) {
 
@@ -1754,10 +1758,35 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		if (secondarySignal->GetPullupFromChannel (primaryChannel) != 0.0)
 			continue;
 
-		// modify to test for pure pullup.  If so, do not insert possible pullup designation and remove from link, with appropriate consequences...
+		if (secondarySignal->GetMessageValue (purePullup)) {
 
-		secondarySignal->SetMessageValue (possiblePullup, true);
-		secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
+			// secondary is pure pullup.  Do not insert possible pullup designation and remove from link, with appropriate consequences...
+
+			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+			secondarySignal->SetMessageValue (pullup, false);   // need this?  if purePullup = true, than ordinary pullup should already be false
+			nextLink->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+			if (nextLink->IsEmpty ()) {
+
+				removeList.push_back (nextLink);
+				primarySignal->SetMessageValue (primaryLink, false);
+				primarySignal->SetInterchannelLink (NULL);
+			}
+		}
+
+		else {
+
+			secondarySignal->SetMessageValue (possiblePullup, true);
+			secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
+		}
+	}
+
+	while (!removeList.empty ()) {
+
+		nextLink = removeList.front ();
+		removeList.pop_front ();
+		mInterchannelLinkageList.remove (nextLink);
+		delete nextLink;
 	}
 
 	return true;

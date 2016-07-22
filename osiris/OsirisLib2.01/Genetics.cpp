@@ -90,6 +90,7 @@ bool Locus::NoYForAMEL = false;
 bool Locus::DisableStutterFilter = false;
 bool Locus::DisableAdenylationFilter = false;
 bool Locus::CallOnLadderAdenylation = false;
+int Locus::NumberOfChannels = 0;
 
 bool PopulationCollection::UseILSFamilies = false;
 
@@ -4998,6 +4999,7 @@ void Locus :: ReportXMLSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput
 	int IntBP;
 	text.SetOutputLevel (1);
 	bool isHomozygote = false;
+	double totalCorrection;
 
 	if (LocusSignalList.Entries () == 1)
 		isHomozygote = true;
@@ -5011,8 +5013,15 @@ void Locus :: ReportXMLSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput
 		text << "\t\t\t\t\t<Name>" << nextSignal->GetAlleleName () << "</Name>\n";
 		text << "\t\t\t\t\t<BPS>" << bp << "</BPS>\n";
 		text << "\t\t\t\t\t<RFU>" << (int) floor (nextSignal->Peak () + 0.5) << "</RFU>\n";
+
+		totalCorrection = nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		if (totalCorrection != 0.0)
+			text <<"\t\t\t\t\t<PullupCorrectedHeight>" << (int) floor (nextSignal->Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>\n";
+
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";
+		text << "\t\t\t\t\t<width>" << 2.0 * nextSignal->GetStandardDeviation () << "</width>\n";
 		text << "\t\t\t\t\t<Time>" << nextSignal->GetMean () << "</Time>\n";
 		text << "\t\t\t\t\t<Fit>" << nextSignal->GetCurveFit () << "</Fit>\n";
 

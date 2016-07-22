@@ -201,16 +201,16 @@ double LeastMedianOfSquares1D :: CalculateLMS () {
 		sortList.push_back (mRatioArray [i]);
 
 	sortList.sort ();
-	cout << "Sorted list:  ";
+	//cout << "Sorted list:  ";
 
 	for (i=0; i<mSize; i++) {
 
 		sortedArray [i] = sortList.front ();
 		sortList.pop_front ();
-		cout << sortedArray [i] << ", ";
+	//	cout << sortedArray [i] << ", ";
 	}
 
-	cout << "..." << endl;
+	//cout << "..." << endl;
 
 	// sortList should now be empty.
 

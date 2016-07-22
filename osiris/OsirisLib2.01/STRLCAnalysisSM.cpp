@@ -691,6 +691,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	ExcelText << "    " << DirectoryName.GetData() << endLine;
 
 	int expectedNumberOfChannels = set->GetNumberOfChannels ();
+	DataSignal::SetNumberOfChannels (expectedNumberOfChannels);
+	Locus::SetNumberOfChannels (expectedNumberOfChannels);
 
 	pServer->Report (text, "");
 	pServer->Report (ExcelText, "");

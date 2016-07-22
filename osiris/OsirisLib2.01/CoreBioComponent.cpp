@@ -837,8 +837,8 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 
 	double lmsValue = lms->CalculateLMS ();
 	bool performRefinement = true;
-	cout << "Least Median Square value for height ratio = " << lmsValue << endl;
-	cout << "Outlier threshold = " << lms->GetOutlierThreshold () << endl;
+	//cout << "Least Median Square value for height ratio = " << lmsValue << endl;
+	//cout << "Outlier threshold = " << lms->GetOutlierThreshold () << endl;
 
 	for (i=0; i<n; i++) {
 

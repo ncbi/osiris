@@ -1103,7 +1103,7 @@ mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLe
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
-mPullupCorrectionArray (NULL), mTestedForPullupArray (NULL), mIsPurePullupArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster) {
+mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1121,8 +1121,6 @@ DataSignal :: ~DataSignal () {
 	mCrossChannelSignalLinks.Clear ();
 	delete[] mPrimaryRatios;
 	delete[] mPullupCorrectionArray;
-	delete[] mTestedForPullupArray;
-	delete[] mIsPurePullupArray;
 	delete[] mPrimaryPullupInChannel;
 }
 
@@ -1316,56 +1314,6 @@ void DataSignal :: SetPullupFromChannel (int i, double value, int numberOfChanne
 	}
 
 	mPullupCorrectionArray [i] = value;
-}
-
-
-
-bool DataSignal :: TestedPullupFromChannel (int i) const {
-
-	if (mTestedForPullupArray == NULL)
-		return false;
-
-	return mTestedForPullupArray [i];
-}
-
-
-void DataSignal :: SetPullupTestedFromChannel (int i, bool value, int numberOfChannels) {
-
-	if (mTestedForPullupArray == NULL) {
-
-		mTestedForPullupArray = new bool [numberOfChannels + 1];
-		int j;
-
-		for (j=1; j<=numberOfChannels; j++)
-			mTestedForPullupArray [j] = false;
-	}
-
-	mTestedForPullupArray [i] = value;
-}
-
-
-
-bool DataSignal :: IsPurePullupFromChannel (int i) const {
-
-	if (mIsPurePullupArray == NULL)
-		return false;
-
-	return mIsPurePullupArray [i];
-}
-
-
-void DataSignal :: SetIsPurePullupFromChannel (int i, bool value, int numberOfChannels) {
-
-	if (mIsPurePullupArray == NULL) {
-
-		mIsPurePullupArray = new bool [numberOfChannels + 1];
-		int j;
-
-		for (j=1; j<=numberOfChannels; j++)
-			mIsPurePullupArray [j] = false;
-	}
-
-	mIsPurePullupArray [i] = value;
 }
 
 
@@ -2377,6 +2325,7 @@ void DataSignal :: WriteTableArtifactInfoToXML (RGTextOutput& text, RGTextOutput
 	int reportedMessageLevel;
 	bool hasThreeLoci;
 	bool needLocus0;
+	double totalCorrection;
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
@@ -2396,8 +2345,15 @@ void DataSignal :: WriteTableArtifactInfoToXML (RGTextOutput& text, RGTextOutput
 		text << indent << "\t<Id>" << GetSignalID () << "</Id>" << endLine;
 		text << indent << "\t<Level>" << reportedMessageLevel << "</Level>" << endLine;
 		text << indent << "\t<RFU>" << peak << "</RFU>" << endLine;
+
+		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		if (totalCorrection != 0.0)
+			text << indent << "\t<PullupCorrectedHeight>" << (int) floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
+
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
+		text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 
