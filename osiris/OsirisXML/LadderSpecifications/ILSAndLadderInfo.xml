@@ -556,9 +556,17 @@
         <Name>NetBio80_500</Name>
         <DisplayName>80-500</DisplayName>
         <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
-        <RelativeHeights>H H H H H H H H H H H H H H H H H H H</RelativeHeights>
+        <RelativeHeights>MH H H H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>NetBio100_500</Name>
+        <DisplayName>100-500</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>H MH H H H H H H H H H H H H H H H H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.9915</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.996</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
         <Name>NetBio60_450</Name>
