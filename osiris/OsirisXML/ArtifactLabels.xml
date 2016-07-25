@@ -5,6 +5,7 @@
 		<Display>PU</Display>
 		<Priority>1</Priority>
 		<MsgName>smPullupAtExtraneousILSPeak</MsgName>
+		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
         <MsgName>smPullUp</MsgName>
         <MsgName>smCalculatedPurePullup</MsgName>
         <MsgName>smPossiblePullup</MsgName>
@@ -17,6 +18,9 @@
 		<Display>LO</Display>
 		<Priority>2</Priority>
 		<MsgName>smLaserOffScale</MsgName>
+		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
+		<MsgName>smLaserOffScalePrimary</MsgName>
+		<MsgName>smLaserOffScaleNoInterchannelLink</MsgName>
 	</SubGroup>
 	<SubGroup>
 		<Label>PoorPeakMorphology</Label>
