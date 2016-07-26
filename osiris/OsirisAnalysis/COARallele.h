@@ -48,13 +48,14 @@ public:
   {
     RegisterAll(true);
   }
-  COARallele(const COARallele &x) :
+  COARallele(const COARallele &x, COARlocus *pLocus = NULL) :
       m_tUpdate((time_t)0),
       m_bDisabled(false),
       m_pLocus(NULL)
   {
     RegisterAll(true);
     (*this) = x;
+    if(pLocus != NULL) { SetLocus(pLocus); }
   }
   COARallele &operator =(const COARallele &x);
   virtual ~COARallele() {;}
@@ -83,6 +84,10 @@ public:
     return m_sLocusName;
   }
   virtual const wxString &GetArtifactLabel() const
+  {
+    return COARpeak::EMPTY_STRING;
+  }
+  virtual const wxString &GetArtifactUserDisplay() const
   {
     return COARpeak::EMPTY_STRING;
   }
@@ -235,6 +240,8 @@ public:
     }
   }
   virtual void SetArtifactLabel(const wxString &)
+  {;}
+  virtual void SetArtifactUserDisplay(const wxString &)
   {;}
   virtual void SetUpdateTime(const wxDateTime &t)
   {

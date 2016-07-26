@@ -55,12 +55,32 @@ extern "C"
 
   void GenericErrorFunction(void *, const char *msg,...)
   {
-    wxString s;
     va_list ap;
     va_start(ap,msg);
-    s = wxString::FormatV(msg,ap);
+    const size_t BUFFERSIZE = 4095;
+    char sBuffer[BUFFERSIZE + 1];
+
+    // CYA, vsprintf does not seem to work as documented
+    memset(sBuffer,0, sizeof(sBuffer)); 
+
+    vsnprintf(sBuffer,BUFFERSIZE,msg,ap);
+
+    // if buffer is too small in VC++, need to clean up 
+    // did not work as documented while debugging
+    sBuffer[BUFFERSIZE] = 0; 
     va_end(ap);
-    wxXml2Object::SendError(s);
+
+    size_t nLen = strlen(sBuffer);
+    while(nLen > 0 && sBuffer[nLen - 1] <= 32)
+    {
+      nLen--;
+      sBuffer[nLen] = 0;
+    }
+    if(sBuffer[0]) // not empty
+    {
+      wxString s(sBuffer);
+      wxXml2Object::SendError(s);
+    }
   }
 };
 

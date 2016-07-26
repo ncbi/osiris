@@ -266,18 +266,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CArtifactLabels.cpp" />
+    <ClCompile Include="CArtifactLabelsUser.cpp" />
     <ClCompile Include="CComboLabels.cpp" />
     <ClCompile Include="CDialogAbout.cpp" />
     <ClCompile Include="CDialogAcceptAlerts.cpp" />
     <ClCompile Include="CDialogAcceptAllele.cpp" />
     <ClCompile Include="CDialogAnalysis.cpp" />
     <ClCompile Include="CDialogApprove.cpp" />
+    <ClCompile Include="CDialogArtifactLabels.cpp" />
     <ClCompile Include="CDialogCellHistory.cpp" />
     <ClCompile Include="CDialogCMF.cpp" />
     <ClCompile Include="CDialogContactUs.cpp" />
     <ClCompile Include="CDialogEditAllele.cpp" />
     <ClCompile Include="CDialogEditChannelAlerts.cpp" />
     <ClCompile Include="CDialogEditGridColours.cpp" />
+    <ClCompile Include="CDialogEditPeak.cpp" />
     <ClCompile Include="CDialogEnableMultiple.cpp" />
     <ClCompile Include="CDialogExportFile.cpp" />
     <ClCompile Include="CDialogExportPlot.cpp" />
@@ -398,18 +402,22 @@
   <ItemGroup>
     <ClInclude Include="CAlertViewStatus.h" />
     <ClInclude Include="CAllLoci.h" />
+    <ClInclude Include="CArtifactLabels.h" />
+    <ClInclude Include="CArtifactLabelsUser.h" />
     <ClInclude Include="CComboLabels.h" />
     <ClInclude Include="CDialogAbout.h" />
     <ClInclude Include="CDialogAcceptAlerts.h" />
     <ClInclude Include="CDialogAcceptAllele.h" />
     <ClInclude Include="CDialogAnalysis.h" />
     <ClInclude Include="CDialogApprove.h" />
+    <ClInclude Include="CDialogArtifactLabels.h" />
     <ClInclude Include="CDialogCellHistory.h" />
     <ClInclude Include="CDialogCMF.h" />
     <ClInclude Include="CDialogContactUs.h" />
     <ClInclude Include="CDialogEditAllele.h" />
     <ClInclude Include="CDialogEditChannelAlerts.h" />
     <ClInclude Include="CDialogEditGridColours.h" />
+    <ClInclude Include="CDialogEditPeak.h" />
     <ClInclude Include="CDialogEnableMultiple.h" />
     <ClInclude Include="CDialogExportFile.h" />
     <ClInclude Include="CDialogExportPlot.h" />
@@ -527,6 +535,7 @@
     <ClInclude Include="CXMLmessageBook.h" />
     <ClInclude Include="CXSLExportFileType.h" />
     <ClInclude Include="extractCXSLExportFile.h" />
+    <ClInclude Include="IArtifactGroup.h" />
     <ClInclude Include="ISetDateTime.h" />
     <ClInclude Include="LABEL_TYPES.h" />
     <ClInclude Include="mainApp.h" />
@@ -537,10 +546,12 @@
     <ClInclude Include="..\Version\OsirisVersion.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TArtifactGreater.h" />
     <ClInclude Include="UnitTest.h" />
     <ClInclude Include="wxIDS.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="helix32_256.bmp" />
     <None Include="icon1.ico" />
     <None Include="OsirisIcon.xpm" />

@@ -56,6 +56,11 @@
 
 
 DECLARE_EVENT_TYPE(CEventRepaint,-1)
+DECLARE_EVENT_TYPE(CEventRestoreScroll,-1)
+// 6/8/15 CEventRestoreScroll - when repainting the grid
+//   the scrolling position needs to be saved and restored
+//   the restore needs to be in a queued event, otherwise
+//   the grid will be scrolled to top/left
 
 class mainFrame;
 class CMenuSort;
@@ -68,7 +73,7 @@ class COARsample;
 class CDialogAnalysis;
 class CPanelAlerts;
 class CXSLExportFileType;
-
+class COARpeakAny;
 /*
 typedef enum
 {
@@ -162,6 +167,11 @@ public:
     ee.SetEventObject(this);
     GetEventHandler()->AddPendingEvent(ee);
   }
+  void RepaintAllData(const wxString &sSampleFileName);
+  void RepaintAllData(const COARsample *p)
+  {
+    RepaintAllData(p->GetFileName(false));
+  }
   bool FileEmpty();
   bool SaveFile();
   bool SaveFileAs();
@@ -182,10 +192,13 @@ public:
   void DoReviewSample(int nReviewType,COARsample *pSample);
   void DoAcceptSample(int nReviewType,COARsample *pSample);
   void DoReviewLocus(COARsample *pSample, COARlocus *pLocus);
-  void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus);
-  void DoEditLocus(COARsample *pSample, COARlocus *pLocus);
+  void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus, wxWindow *parent = NULL);
+  void DoEditLocus(COARsample *pSample, 
+    COARlocus *pLocus, 
+    wxWindow *pParent = NULL);
   bool CheckIfHistoryOK();
   void CheckSaveStatus();
+  void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
 private:
   CXSLExportFileType *GetFileTypeByID(int nID);
 
@@ -213,6 +226,7 @@ private:
   void _OnAcceptLocus(wxCommandEvent &e);
   void _OnReviewLocus(wxCommandEvent &e);
   void _OnRepaint(wxCommandEvent &);
+  void _OnRestoreScroll(wxCommandEvent &);
   void _OnReviewSample(int nReviewType);
   void _OnAcceptSample(int nReviewType);
   void _OnEnableMultiple();

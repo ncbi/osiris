@@ -236,12 +236,12 @@ wxString COARlocus::GetCell(int nLabelType, const wxDateTime *pTime) const
   return sRtn;
 }
 
-COARallele *COARlocus::GetAlleleByID(int nID)
+int COARlocus::_FindAlleleByID(int nID) const
 {
   size_t nAlleleCount = AlleleCount();
   size_t i;
-  COARallele *pRtn(NULL);
-  COARallele *p;
+  int nRtn = -1;
+  const COARallele *p;
   // nAlleleCount should be small, <= 4, 
   // so this is hopefully fast enough
   for(i = 0; i < nAlleleCount; i++)
@@ -249,12 +249,25 @@ COARallele *COARlocus::GetAlleleByID(int nID)
     p = GetAllele(i);
     if(p->GetID() == nID)
     {
-      pRtn = p;
+      nRtn = (int)i;
       i = nAlleleCount; // loop exit
     }
   }
+  return nRtn;
+}
+const COARallele *COARlocus::GetAlleleByID(int nID) const
+{
+  int nRtn = _FindAlleleByID(nID);
+  const COARallele *pRtn((nRtn < 0) ? NULL : GetAllele(nRtn));
   return pRtn;
 }
+COARallele *COARlocus::GetAlleleByID(int nID)
+{
+  int nRtn = _FindAlleleByID(nID);
+  COARallele *pRtn((nRtn < 0) ? NULL : GetAllele(nRtn));
+  return pRtn;
+}
+
 bool COARlocus::UpdateAllele(IOARpeak *pAllele)
 {
   COARallele *pCurrent = GetAlleleByID(pAllele->GetID());
@@ -370,10 +383,10 @@ void COARlocus::AppendAlerts(vector<int> *pvn, const wxDateTime *pTime) const
   }
 }
 
-bool COARlocus::HasAlerts(const COARmessages *pmsgs, const wxDateTime *pTime) const
+size_t COARlocus::AlertCount(const COARmessages *pmsgs, const wxDateTime *pTime, bool bStopAtOne) const
 {
-  bool bRtn = pmsgs->FindDisplayed(m_vnLocusAlerts,pTime);
-  if(!bRtn)
+  size_t nRtn = pmsgs->CountDisplayed(m_vnLocusAlerts,pTime,bStopAtOne);
+  if(!(bStopAtOne && nRtn))
   {
     // try alleles
     vector<const COARallele *> vpa;
@@ -386,15 +399,15 @@ bool COARlocus::HasAlerts(const COARmessages *pmsgs, const wxDateTime *pTime) co
       if(!pa->IsDisabled())
       {
         const vector<int> &msgs(pa->GetMessages());
-        if(pmsgs->FindDisplayed(msgs,pTime))
+        nRtn += pmsgs->CountDisplayed(msgs,pTime,bStopAtOne);
+        if(bStopAtOne && nRtn)
         {
-          bRtn = true;
-          i = n; // loop exit
+          i = n;
         }
       }
     }
   }
-  return bRtn;
+  return nRtn;
 }
 const COARmessages *COARlocus::GetMessages() const
 {

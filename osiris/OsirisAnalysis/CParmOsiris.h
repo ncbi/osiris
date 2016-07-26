@@ -212,6 +212,10 @@ public:
   {
     return m_bCMFviewLocation;
   }
+  bool GetShowFileLocationDir() const
+  {
+    return m_bShowFileLocationDir;
+  }
 
   //  PNG Export Settings
 
@@ -588,6 +592,10 @@ public:
   {
     __SET_VALUE(m_bCMFviewLocation,b);
   }
+  void SetShowFileLocationDir(bool b)
+  {
+    __SET_VALUE(m_bShowFileLocationDir,b);
+  }
 
   //  PNG Export Settings
 
@@ -928,6 +936,7 @@ protected:
   wxString m_sCMFbatchFormat;
   wxString m_sCMFuserID;
   bool m_bCMFviewLocation;
+  bool m_bShowFileLocationDir;
 
   //  PNG Export Settings
 

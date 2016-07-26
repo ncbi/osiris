@@ -813,7 +813,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		PlotString << pResult;
 
 	PlotString << "\t\t<minRFUILS>" << minLaneStdRFU << "</minRFUILS>\n\t\t<minRFUladder>" << minLadderRFU;
-	PlotString << "</minRFUladder>\n\t\t<minRFUinterlocus>" << minInterlocusRFU << "</minRFUinterlocus>\n\t\t<DataAnalyzed>";
+	PlotString << "</minRFUladder>\n\t\t<minRFUinterlocus>" << minInterlocusRFU << "</minRFUinterlocus>\n";
+	PlotString << "\t\t<minRFUladderInterlocus>" << minLadderInterlocusRFU << "</minRFUladderInterlocus>\n";
+	PlotString << "\t\t<minRFUsampleDetection>" << minRFUSampleDetectionRFU << "</minRFUsampleDetection>\n";
+	PlotString << "\t\t<DataAnalyzed>";
 
 	if (CoreBioComponent::GetUseRawData ())
 		PlotString << "false</DataAnalyzed>\n\t\t<StdPosControlName>";

@@ -313,10 +313,19 @@ public:
   {
     return FindNotHidden(*a.Get(),pTime);
   }
-  bool FindDisplayed(const vector<int> &vn, const wxDateTime *pTime = NULL) const;
+  size_t CountDisplayed(const vector<int> &vn, const wxDateTime *pTime = NULL, bool bStopAtOne = false) const;
+  size_t CountDisplayed(const COARalerts &a, const wxDateTime *pTime = NULL, bool bStopAtOne = false) const
+  {
+    return CountDisplayed(*a.Get(),pTime,bStopAtOne);
+  }
+  bool FindDisplayed(const vector<int> &vn, const wxDateTime *pTime = NULL) const
+  {
+    return (CountDisplayed(vn,pTime,true) > 0);
+  }
+
   bool FindDisplayed(const COARalerts &a, const wxDateTime *pTime = NULL) const
   {
-    return FindDisplayed(*a.Get(),pTime);
+    return (CountDisplayed(*a.Get(),pTime,true) > 0);
   }
 
   size_t CountNotHidden(const vector<int> &vn, const wxDateTime *pTime = NULL) const;

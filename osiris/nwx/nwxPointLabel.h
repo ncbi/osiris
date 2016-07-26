@@ -32,31 +32,45 @@
 #define __NWX_POINT_LABEL_H__
 
 #include <wx/colour.h>
-
+#include <wx/cursor.h>
 class nwxPointLabel
 {
 public:
 
-#define nwxDEF_ALIGN (wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM)
-
+  static const int ALIGN_DEFAULT;
+  static const int STYLE_BOX;
+  static const int STYLE_DISABLED;
   nwxPointLabel()
-    : m_color(0,0,0), m_dx(0.0), m_dy(0.0),  m_nAlign(nwxDEF_ALIGN) {;}
+    : m_color(0,0,0), 
+      m_dx(0.0), 
+      m_dy(0.0),  
+      m_nAlign(ALIGN_DEFAULT),
+      m_nSortGroup(0),
+      m_nLabelStyle(0),
+      m_nCursor(wxCURSOR_NONE),
+      m_pData(NULL) {;}
   nwxPointLabel(
     const wxString &sLabel,
     double dx,
     double dy,
     const wxColour &c,
     const wxString sToolTip = wxEmptyString,
-    int nAlign = nwxDEF_ALIGN) :
+    int nAlign = ALIGN_DEFAULT,
+    int nSortGroup = 0,
+    int nLabelStyle = 0,
+    wxStockCursor cur = wxCURSOR_NONE,
+    void *pData = NULL) :
         m_sLabel(sLabel),
         m_sToolTip(sToolTip),
         m_color(c),
         m_dx(dx),
         m_dy(dy),
-        m_nAlign(nAlign)
+        m_nAlign(nAlign),
+        m_nSortGroup(nSortGroup),
+        m_nLabelStyle(nLabelStyle),
+        m_nCursor(cur),
+        m_pData(pData)
           {;}
-
-#undef nwxDEF_ALIGN
 
   nwxPointLabel(const nwxPointLabel &x)
   {
@@ -70,17 +84,22 @@ public:
     m_dx = x.m_dx;
     m_dy = x.m_dy;
     m_nAlign = x.m_nAlign;
+    m_nSortGroup = x.m_nSortGroup;
+    m_nLabelStyle = x.m_nLabelStyle;
+    m_nCursor = x.m_nCursor;
+    m_pData = x.m_pData;
     return *this;
   }
-  bool operator < (const nwxPointLabel &x) const;
-  bool operator == (const nwxPointLabel &x) const;
+  bool operator < (const nwxPointLabel &x) const; 
+      // in nwxPlotDrawerLabel.cpp used for set<nwxPointLabel>
+  bool operator > (const nwxPointLabel &x) const
+  {
+    return x < *this;
+  }
+  bool operator == (const nwxPointLabel &x) const; // nwxPlotDrawerLabel.cpp
   bool operator != (const nwxPointLabel &x) const
   {
     return !((*this) == x);
-  }
-  bool operator > (const nwxPointLabel &x) const
-  {
-    return (x < (*this));
   }
 
   // Get functions
@@ -109,6 +128,22 @@ public:
   {
     return m_nAlign;
   }
+  int GetSortGroup() const
+  {
+    return m_nSortGroup;
+  }
+  void *GetData() const
+  {
+    return m_pData;
+  }
+  wxStockCursor GetCursor() const
+  {
+    return m_nCursor;
+  }
+  int GetStyle() const
+  {
+    return m_nLabelStyle;
+  }
 
   // Set functions
 
@@ -136,6 +171,18 @@ public:
   {
     m_nAlign = n;
   }
+  void SetSortGroup(int n)
+  {
+    m_nSortGroup = n;
+  }
+  void SetData(void *p)
+  {
+    m_pData = p;
+  }
+  void SetStyle(int b)
+  {
+    m_nLabelStyle = b;
+  }
   void SetToolTip(const wxString &x)
   {
     m_sToolTip = x;
@@ -143,6 +190,10 @@ public:
   void SetToolTip(const char *ps)
   {
     m_sToolTip = ps;
+  }
+  void SetCursor(wxStockCursor nCur)
+  {
+    m_nCursor = nCur;
   }
 
 private:
@@ -152,6 +203,10 @@ private:
   double m_dx;
   double m_dy;
   int m_nAlign;
+  int m_nSortGroup; // for sorting labels in the same location
+  int m_nLabelStyle;
+  wxStockCursor m_nCursor;
+  void *m_pData;
 };
 
 #endif

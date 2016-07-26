@@ -148,6 +148,7 @@ enum
   IDMaxLadderLabels,  // maximum number of peak labels on ladder graph. 12/07/10
   IDpreview,
   IDlab,
+  IDartifactLabels,
   IDexport,
   IDeditColours,
   IDlog,

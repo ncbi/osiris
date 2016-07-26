@@ -133,6 +133,10 @@ CDialogParameters::CDialogParameters(
     sVolume = pLabSettings->GetVolumeName();
     sKit = pLabSettings->GetKitName();
   }
+  else
+  {
+    sKit = pOsiris->GetKitName();
+  }
 
 
   int FLAG = wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT;

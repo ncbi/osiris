@@ -56,12 +56,14 @@
 #include "nwx/nwxKeyState.h"
 // #include "nwx/CPointerHold.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/nwxFileUtil.h"
 
 #include "CPlotData.h"
 #include "CMenuBar.h"
 #include "COsirisIcon.h"
 
 #include "CDialogVolumes.h"
+#include "CDialogArtifactLabels.h"
 #include "CLabSettings.h"
 #include "CLabSettingsFileName.h"
 #include "CDialogAbout.h"
@@ -319,9 +321,10 @@ bool mainFrame::Startup(bool bHasArgs)
   bool bRtn = true;
 #endif
 
+  CParmOsirisGlobal parm;
+  nwxFileUtil::SetDoNotSelectFile(parm->GetShowFileLocationDir());
   if(bRtn && !bHasArgs)
   {
-    CParmOsirisGlobal parm;
     if(parm->GetStartupMRU())
     {
       // send event to start up with the MRU window
@@ -756,8 +759,22 @@ void mainFrame::OnLabSettings(wxCommandEvent &)
     wxBeginBusyCursor();
     CDialogVolumes dlg(DialogParent());
     wxEndBusyCursor();
-//    CPointerHold<CDialogVolumes> x(m_pVolumes,&dlg);
     dlg.ShowModal();
+  }
+  return;
+}
+void mainFrame::OnArtifactLabels(wxCommandEvent &)
+{
+  {
+    wxBeginBusyCursor();
+    CDialogArtifactLabels dlg(DialogParent());
+    wxEndBusyCursor();
+    dlg.ShowModal();
+    if(dlg.IsModified())
+    {
+      m_MDImgr.RefreshAllPlot();
+      m_MDImgr.RefreshAllOAR();
+    }
   }
   return;
 }

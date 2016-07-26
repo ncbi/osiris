@@ -88,6 +88,7 @@ my $VARLIST =
   ["m_sCMFbatchFormat", "wxString","DEFAULT_BATCH_FORMAT",undef,"m_ioBatchFormat"],
   ["m_sCMFuserID", "wxString","wxGetUserId()"],
   ["m_bCMFviewLocation", "bool"],
+  ["m_bShowFileLocationDir","bool"],
 
   ["PNG Export Settings"],
 

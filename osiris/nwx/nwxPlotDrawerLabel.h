@@ -54,6 +54,7 @@ public:
   void AddLabel(const nwxPointLabel &x)
   {
     m_setLabels.insert(x);
+    _CleanupLists();
   }
   void RemoveLabel(const nwxPointLabel &x)
   {
@@ -61,6 +62,7 @@ public:
     if(itr != m_setLabels.end())
     {
       m_setLabels.erase(itr);
+      _CleanupLists();
     }
   }
   void RemoveAllLabels()
@@ -70,6 +72,7 @@ public:
   void Clear()
   {
     m_setLabels.clear();
+    _CleanupLists();
   }
   static int DPIpixelOffset(double dDPI)
   {
@@ -91,7 +94,7 @@ public:
   }
 
   wxString GetToolTipText(const wxPoint &pos);
-  const nwxPointLabel *FindLabel(const wxPoint &pos);
+  const nwxPointLabel *FindLabel(const wxPoint &pos, wxRect *pRect = NULL);
 
 
 protected:
@@ -99,6 +102,12 @@ protected:
   vector<wxRect> m_vRect;
   vector<const nwxPointLabel *> m_vpLabel;
   int m_nMinY;
+
+  void _CleanupLists()
+  {
+    m_vRect.clear();
+    m_vpLabel.clear();
+  }
 };
 
 class nwxPlotDrawerXLabel : public nwxPlotDrawerLabel

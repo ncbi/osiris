@@ -96,6 +96,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_sCMFbatchFormat);
   CP(m_sCMFuserID);
   CP(m_bCMFviewLocation);
+  CP(m_bShowFileLocationDir);
 
   //  PNG Export Settings
 
@@ -199,6 +200,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_sCMFbatchFormat)
   CP(m_sCMFuserID)
   CP(m_bCMFviewLocation)
+  CP(m_bShowFileLocationDir)
 
   //  PNG Export Settings
 
@@ -311,6 +313,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   Register("CMFbatchFormat",&m_ioBatchFormat,(void *) &m_sCMFbatchFormat);
   RegisterWxString("CMFuserID", &m_sCMFuserID);
   RegisterBool("CMFviewLocation", &m_bCMFviewLocation);
+  RegisterBool("ShowFileLocationDir", &m_bShowFileLocationDir);
 
   //  PNG Export Settings
 
@@ -427,6 +430,7 @@ void CParmOsiris::SetDefaults()
   m_sCMFbatchFormat = DEFAULT_BATCH_FORMAT;
   m_sCMFuserID = wxGetUserId();
   m_bCMFviewLocation = false;
+  m_bShowFileLocationDir = false;
 
   //  PNG Export Settings
 

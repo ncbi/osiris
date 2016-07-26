@@ -31,7 +31,6 @@
 #ifndef __MAIN_APP_H__
 #define __MAIN_APP_H__
 
-#include <wx/log.h>
 #include <wx/app.h>
 #include <wx/string.h>
 #include <wx/arrstr.h>
@@ -42,6 +41,7 @@ class ConfigDir;
 class CPersistKitList;
 class CILSLadderInfo;
 class CKitColors;
+class CArtifactLabels;
 class nwxXmlMRU;
 class CParmOsiris;
 class wxFile;
@@ -75,6 +75,7 @@ DECLARE_CMD_HANDLER(OnOpen)
 DECLARE_CMD_HANDLER(OnQuit)
 DECLARE_CMD_HANDLER(OnRecentFiles)
 DECLARE_CMD_HANDLER(OnLabSettings)
+DECLARE_CMD_HANDLER(OnArtifactLabels)
 DECLARE_CMD_HANDLER(OnExportSettings)
 DECLARE_CMD_HANDLER(OnEditGridColours)
 DECLARE_CMD_HANDLER(OnShowLog)
@@ -134,6 +135,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static ConfigDir *GetConfig();
   static nwxXmlMRU *GetMRU();
   static CKitColors *GetKitColors();
+  static CArtifactLabels *GetArtifactLabels();
   static CPersistKitList *GetKitList();
   static CILSLadderInfo *GetILSLadderInfo();
   static const wxString FormatWindowTitle(
@@ -162,6 +164,7 @@ private:
   static nwxXmlMRU *m_pMRU;
   static CPersistKitList *m_pKitList;
   static CKitColors *m_pKitColors;
+  static CArtifactLabels *m_pArtifactLabels;
   static wxFile *m_pFout;
   static int g_count;
   static int g_nMaxLogLevel;

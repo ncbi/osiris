@@ -279,6 +279,14 @@ public:
     ((COARsample *)p)->Init();
   }
   virtual void RegisterAll(bool = false);
+  const COARfile *GetFile() const
+  {
+    return m_pFile;
+  }
+  COARfile *GetFile()
+  {
+    return m_pFile;
+  }
   void PostProcessFile(COARfile *pFile = NULL); // whatever needs to be done after file is loaded
   size_t CountAlerts(const COARmessages *, const wxDateTime *pTime = NULL) const;
   bool HasAnyAlerts(const COARmessages *, const wxDateTime *pTime = NULL) const;
@@ -308,10 +316,27 @@ public:
     int nChannel,
     const wxDateTime *pTime = NULL,
     bool bIncludeNotEditable = true) const;
+      // caller must manage memory in returned
+      // pointer and each item in the vector
   vectorptr<COARpeakAny> *GetPeaksByChannel(
     const COARchannel *pChannel,
     const wxDateTime *pTime = NULL,
     bool bIncludeDisabled = false) const;
+      // caller must manage memory in returned
+      // pointer and each item in the vector
+  COARartifact *GetArtifactByID(int nID) const;
+      // retrieve artifact stored in the sample
+      // no memory is allocated and the caller should
+      // not free/delete the object
+  size_t GetAllelesByID(int nID, bool bInjectArtifact, std::vector<COARpeakAny *> *pv) const;
+    // stores a new copy of alleles in pv.  The caller must free the memory of each item
+  size_t GetAlleleCountByID(int nID) const;
+  bool IsPeakEditable(COARpeakAny *p) const
+  {
+    bool bRtn = (p != NULL) && p->IsEditable() && 
+      GetAlleleCountByID(p->GetID()) && true;
+    return bRtn;
+  }
   bool SetPeaksByLocusName(
     const wxString &sLocus,
     int nChannel,
@@ -486,10 +511,11 @@ public:
     */
   }
   const wxString GetFullFileName() const;
-  const wxString GetFileName() const
+  const wxString GetFileName(bool bFullName = true) const
   {
     // retrive file name w/o path
-    wxString sName = GetFullFileName();
+    wxString sName =
+      bFullName ? GetFullFileName() : m_sName;
     if(sName.Find(wxFileName::GetPathSeparator()) != wxNOT_FOUND)
     {
       wxFileName fn(sName);
@@ -808,6 +834,12 @@ private:
   }
 
   static vectorptr<COARpeakAny> *_SortMap(MAP_ID_PEAK *mapPeak);
+  void _MapIDPeakByChannel(
+    MAP_ID_PEAK *pMapPeak,
+    const COARchannel *pChannel,
+    const wxDateTime *pTime,
+    bool bIncludeDisabled) const;
+
   static int _MakeID(const IOARpeak *pPeak)
   {
     return nwxRound::Round(pPeak->GetTime() * 100.0);
@@ -815,7 +847,15 @@ private:
   void _AddAllelesToMap(
     MAP_ID_PEAK *mapPeak,
     const COARlocus *pLocus,
-    const wxDateTime *pTime = NULL) const;
+    const wxDateTime *pTime = NULL,
+    int nPeakID = -1) const;
+  bool _GetArtifactsByChannel(
+    vector<const COARartifact *> *pPeaks,
+    int nChannel,
+    const wxString &sLocus = wxEmptyString,
+    const wxDateTime *pTime = NULL,
+    int nPeakID = -1) const;
+
   void _AddArtifactsToMap(
     MAP_ID_PEAK *mapPeak,
     int nChannel,
@@ -825,6 +865,7 @@ private:
     bool bIncludeNotEditable = true) const;
 
   void _BuildSetLocus() const;
+  void _BuildMapIDchannel() const;
   const COARlocus *_FindLocus(const wxString &sName) const;
   wxString m_sName;
   wxString m_sSampleName;
@@ -852,6 +893,8 @@ private:
   vector<COARnotes *> m_vpOldNotesSample;
   vector<COARnotes *> m_vpOldNotesChannel;
   vector<COARnotes *> m_vpOldNotesILS;
+  typedef std::map<int,int> map_ID_CHANNEL;
+  mutable map_ID_CHANNEL  m_mapIDchannel;
   COARfile *m_pFile;
 
 private:

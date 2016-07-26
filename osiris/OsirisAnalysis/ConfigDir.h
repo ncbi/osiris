@@ -70,6 +70,11 @@ public:
   {
     return m_sSitePath;
   }
+  bool IsSitePathWritable() const
+  {
+    bool bRtn = wxFileName::IsDirWritable(m_sSitePath);
+    return bRtn;
+  }
   const wxString &GetConfigPath() const
   {
     return m_sConfigPath;
@@ -120,24 +125,25 @@ public:
   }
   wxString GetMessageBookFileName() const
   {
-    wxString sRtn = GetExeConfigPath();
-    nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append("LadderSpecifications");
-    nwxFileUtil::EndWithSeparator(&sRtn);
+    wxString sRtn = GetILSLadderFilePath();
     sRtn.Append("MessageBook.xml");
     return sRtn;
-  }	
-#if 0
-  wxString GetMessageBookFileName() const
+  }
+  wxString GetArtifactLabelsFileName() const
   {
-    //  this needs a kit name
-    wxString sRtn = GetExeConfigPath();
-    nwxFileUtil::EndWithSeparator(&sRtn);
-    sRtn.Append("OsirisMessageBookV4.0.xml");
+    wxString sRtn;
+    if(!_BuildFileName(GetILSLadderFilePath(),wxT("ArtifactLabels.xml"),&sRtn))
+    {
+      sRtn.Clear();
+    }
     return sRtn;
   }
-#endif
-
+  wxString GetArtifactLabelsUserFileName() const
+  {
+    wxString sRtn;
+    _BuildFileName(GetSitePath(),wxT("UserArtifactLabels.xml"),&sRtn);
+    return sRtn;
+  }
 #ifdef __WXDEBUG__
   void Log();
 #endif
@@ -168,6 +174,33 @@ private:
     // true is an error occurred when creating a directory
   void _SetupSitePath();
 
+  static bool _BuildFileName(const wxString &sPath, const wxChar *psFileName, wxString *psRtn)
+  {
+    // load the file name in psRtn whether or not it exists
+    wxString sRtn = sPath;
+    nwxFileUtil::EndWithSeparator(&sRtn);
+    sRtn.Append(psFileName);
+    *psRtn = sRtn;
+    bool bRtn = wxFileName::IsFileReadable(sRtn);
+    return bRtn;
+  }
+#if 0
+  bool _FindFileName(const wxChar *psFileName, wxString *psRtn) const
+  {
+    // load the file name only if it exists
+    wxString sRtn;
+    bool bRtn = _BuildFileName(GetSitePath(),psFileName,&sRtn);
+    if(!bRtn)
+    {
+      bRtn = _BuildFileName(GetILSLadderFilePath(),psFileName,&sRtn);
+    }
+    if(bRtn)
+    {
+      *psRtn = sRtn;
+    }
+    return bRtn;
+  }
+#endif
 };
 
 #endif

@@ -110,6 +110,7 @@ private:
   void XferIsAllele(int nCol);
   void XferIsArtifact(int nCol);
   void XferIsCritical(int nCol);
+  void XferUserDisplay(int nCol);
   void XferHomozygous(int nCol);
   bool TransferColumnFromWindow(int nCol);
   bool IsColumnDisabled(int n);
