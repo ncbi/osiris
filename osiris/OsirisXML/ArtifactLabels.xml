@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ArtifactLabels
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="ArtifactLabelsSchema.xsd">
+	<SubGroup>
+		<ID>Pullup</ID>
+		<Label>Pull-up</Label>
+		<Display>PU</Display>
+		<Priority>1</Priority>
+		<MsgName>smPullupAtExtraneousILSPeak</MsgName>
+		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
+    <MsgName>smPullUp</MsgName>
+    <MsgName>smCalculatedPurePullup</MsgName>
+    <MsgName>smPossiblePullup</MsgName>
+    <MsgName>smInterlocusPullUp</MsgName>
+    <MsgName>smInterlocusPullUpWithPoorFit</MsgName>
+    <MsgName>smSigmoidalPullup</MsgName>
+		<SearchString>pull.?up</SearchString>
+    <NoString>primary</NoString>
+	</SubGroup>
+	<SubGroup>
+		<ID>LaserOffScale</ID>
+		<Label>Laser Off Scale</Label>
+		<Display>LO</Display>
+		<Priority>2</Priority>
+		<MsgName>smLaserOffScale</MsgName>
+		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
+		<MsgName>smLaserOffScalePrimary</MsgName>
+		<MsgName>smLaserOffScaleNoInterchannelLink</MsgName>
+		<SearchString>laser.?off.?scale</SearchString>
+	</SubGroup>
+	<SubGroup>
+		<ID>PoorPeakMorphology</ID>
+		<Label>Poor Peak Morphology</Label>
+		<Display>MO</Display>
+		<Priority>3</Priority>
+		<MsgName>smCurveFitMarginal</MsgName>
+		<MsgName>smSpike</MsgName>
+		<MsgName>smBlob</MsgName>
+		<MsgName>smCurveFitFailed</MsgName>
+		<MsgName>smPoorPeakMorphology</MsgName>
+		<MsgName>smAmbiguousInterlocusWithPoorMorphology</MsgName>
+		<SearchString>morphology</SearchString>
+	</SubGroup>
+	<SubGroup>
+		<ID>Stutter</ID>
+		<Label>Stutter</Label>
+		<Display>ST</Display>
+		<Priority>4</Priority>
+		<MsgName>smStutter</MsgName>
+		<MsgName>smBaselineRelativeStutter</MsgName>
+		<SearchString>stutter</SearchString>
+	</SubGroup>
+	<SubGroup>
+		<ID>Adenylation</ID>
+		<Label>Adenylation</Label>
+		<Display>AD</Display>
+		<Priority>5</Priority>
+		<MsgName>smAdenylation</MsgName>
+		<MsgName>smBaselineRelativeAdenylation</MsgName>
+		<SearchString>adenylation</SearchString>
+	</SubGroup>
+	<SubGroup>
+		<ID>AmgiguousExtendedLocus</ID>
+		<Label>Amgiguous Extended Locus</Label>
+		<Display>AM</Display>
+		<Priority>6</Priority>
+		<MsgName>smAmbiguousInterlocus</MsgName>
+		<MsgName>smAmbiguousInterlocusWithPoorMorphology</MsgName>
+		<MsgName>smAmbiguousCoreVsExtendedRight</MsgName>
+		<MsgName>smPossibleAmbiguousInterlocusAssignedToLocus</MsgName>
+		<SearchString>amgiguous.?extended.?locus</SearchString>
+	</SubGroup>
+	<SubGroup>
+		<ID>Excessive Residual</ID>
+		<Label>Excessive Residual</Label>
+		<Display>ER</Display>
+		<Priority>7</Priority>
+		<MsgName>smAlleleHasExcessiveResidual</MsgName>
+		<SearchString>residual</SearchString>
+    <NoString>displacement</NoString>
+	</SubGroup>
+	<SubGroup>
+		<ID>ExcessiveResidualDisplacement</ID>
+		<Label>Excessive Residual Displacement</Label>
+		<Display>ERD</Display>
+		<Priority>8</Priority>
+		<MsgName>smExcessiveResidualDisplacement</MsgName>
+		<MsgName>smExcessiveResidualDisplacementLeft</MsgName>
+		<MsgName>smExcessiveResidualDisplacementRight</MsgName>
+		<SearchString>residual.*displacement</SearchString>
+	</SubGroup>
+	<SubGroup>
+		<ID>Primary Pull-up</ID>
+		<Label>Primary Pull-up</Label>
+		<Display>PPU</Display>
+		<Priority>9</Priority>
+		<MsgName>smPrimaryInterchannelLink</MsgName>
+		<MsgName>smLaserOffScalePrimary</MsgName>
+		<SearchString>primary.*pull.?up</SearchString>
+	</SubGroup>
+</ArtifactLabels>
