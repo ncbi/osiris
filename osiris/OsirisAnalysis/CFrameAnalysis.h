@@ -74,6 +74,7 @@ class CDialogAnalysis;
 class CPanelAlerts;
 class CXSLExportFileType;
 class COARpeakAny;
+class CFrameSample;
 /*
 typedef enum
 {
@@ -354,9 +355,42 @@ private:
   void SelectRow(int nRow);
   void ShowGraphicByRow(int nRow = -1);
   void ShowStatusText(bool bIncludeStatusPanel = true );
-
   wxString m_sPath;
   COARsampleSort m_SampleSort;
+
+  std::map<COARsample *, CFrameSample *> m_mapSamples;
+  CFrameSample *_FindSample(COARsample *pSample)
+  {
+    std::map<COARsample *, CFrameSample *>::iterator itr =
+      m_mapSamples.find(pSample);
+    return (itr == m_mapSamples.end()) ? NULL : itr->second;
+  }
+  void _AddSample(COARsample *ps,CFrameSample *pf)
+  {
+    m_mapSamples.insert(
+      std::pair<COARsample *, CFrameSample *>(ps,pf));
+  }
+  void _DestroySamples();
+public:
+  void RemoveSample(COARsample *pSample,CFrameSample *pf)
+  {
+    std::map<COARsample *, CFrameSample *>::iterator itr =
+      m_mapSamples.find(pSample);
+    if(itr != m_mapSamples.end() &&
+       itr->first == pSample && 
+       itr->second == pf)
+    {
+      m_mapSamples.erase(itr);
+    }
+#ifdef __WXDEBUG__
+    else
+    {
+      wxASSERT_MSG(0,wxT("Problem in CFrameAnalysis::RemoveSample"));
+    }
+#endif
+  }
+private:
+
   COARfile *m_pOARfile;
   CMenuAnalysis *m_pMenu;
   CMenuBarAnalysis *m_pMenuBar;
@@ -457,6 +491,7 @@ public:
   void OnRightClickCell(wxGridEvent &);
 
   void OnShowGraphic(wxCommandEvent &);
+  void OnShowSample(wxCommandEvent &);
   void OnShowDetails(wxCommandEvent &);
   void OnGridGraph(wxGridEvent &);
   void OnGridCellGraph(wxGridEvent &);

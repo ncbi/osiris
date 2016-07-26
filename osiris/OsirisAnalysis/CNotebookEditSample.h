@@ -23,16 +23,16 @@
 *
 * ===========================================================================
 *
-*  FileName: CPanelSampleAlertNotebook.h
+*  FileName: CNotebookEditSample.h
 *  Author:   Douglas Hoffman
 *
 */
-#ifndef __C_PANEL_SAMPLE_ALERT_NOTEBOOK_H__
-#define __C_PANEL_SAMPLE_ALERT_NOTEBOOK_H__
+#ifndef __C_NOTEBOOK_EDIT_SAMPLE_H__
+#define __C_NOTEBOOK_EDIT_SAMPLE_H__
 
 #include <wx/datetime.h>
 #include <wx/splitter.h>
-#include <wx/notebook.h>
+#include <wx/treebook.h>
 #include <wx/panel.h>
 #include <wx/textctrl.h>
 #include "CGridAlerts.h"
@@ -53,23 +53,20 @@ typedef enum
   SA_NDX_CHANNEL,
   SA_WINDOW_COUNT
 } WINDOW_ARRAY_INDEX; // used in arrays below
+
 #endif
 
-class CPanelSampleAlertNotebook : public wxPanel, public ISetDateTime
+class CNotebookEditSample : public wxPanel, public ISetDateTime
 {
 public:
-  CPanelSampleAlertNotebook(
+  CNotebookEditSample(
     const COARfile *pFile,
     const COARsample *pSample, 
     wxWindow *parent,
     wxWindowID id = wxID_ANY,
-    const map<int,wxString> *pmapChannelNames = NULL,
-    bool bSplitHorizontal = true,
-    bool bReadOnly = false,
-    int nSelect = SA_NDX_SAMPLE,
-    bool bShowOne = false
+    const map<int,wxString> *pmapChannelNames = NULL
     );
-  virtual ~CPanelSampleAlertNotebook();
+  virtual ~CNotebookEditSample();
   virtual bool TransferDataToWindow();
   virtual bool Validate();
   bool IsModified(int n);
@@ -89,7 +86,7 @@ public:
   {
     return m_pSplitter[n];
   }
-  wxNotebook *GetNotebookWindow()
+  wxTreebook *GetNotebookWindow()
   {
     return m_pNotebook;
   }
@@ -110,55 +107,23 @@ public:
   {
     return m_MsgChannel;
   }
-/*
-  const wxString &GetNotes(int i)
-  {
-    _TransferNotes(i);
-    return m_sText[i];
-  }
-  const wxString &GetSampleNotes()
-  {
-    return GetNotes(SA_NDX_SAMPLE);
-  }
-  const wxString &GetILSNotes()
-  {
-    return GetNotes(SA_NDX_ILS);
-  }
-  const wxString &GetChannelNotes()
-  {
-    return GetNotes(SA_NDX_CHANNEL);
-  }
-*/
-
-  wxString GetNewNotes(int n)
-  {
-    wxString sRtn;
-    CPanelSampleAlertDetails *psd = m_pSplitter[n];
-
-    if(psd != NULL)
-    {
-      sRtn = psd->GetNewNotesValue();
-    }
-    return sRtn;
-  }
   wxString GetNewSampleNotes()
   {
-    return GetNewNotes(SA_NDX_SAMPLE);
+    return _GetNewNotes(SA_NDX_SAMPLE);
   }
   wxString GetNewILSNotes()
   {
-    return GetNewNotes(SA_NDX_ILS);
+    return _GetNewNotes(SA_NDX_ILS);
   }
   wxString GetNewChannelNotes()
   {
-    return GetNewNotes(SA_NDX_CHANNEL);
+    return _GetNewNotes(SA_NDX_CHANNEL);
   }
   wxString GetNewDirNotes()
   {
-    return GetNewNotes(SA_NDX_DIR);
+    return _GetNewNotes(SA_NDX_DIR);
   }
 
-  //  bool IsNotesEmpty(int n);
   bool IsAlertsModified(int n);
 
   bool IsIndexUsed(int n)
@@ -171,7 +136,6 @@ public:
   }
 
 private:
-//  void _TransferNotes(int i);
   bool _ProcessEvent();
   const COARnotes *_GetNotes(int n, const wxDateTime *pdt = NULL);
   wxString _GetReviewAcceptance(int n, const wxDateTime *pdt = NULL);
@@ -179,18 +143,28 @@ private:
   {
     return COARnotes::GetText(_GetNotes(n,pdt));
   }
+  wxString _GetNewNotes(int n)
+  {
+    wxString sRtn;
+    CPanelSampleAlertDetails *psd = m_pSplitter[n];
+
+    if(psd != NULL)
+    {
+      sRtn = psd->GetNewNotesValue();
+    }
+    return sRtn;
+  }
 
   CHistoryTime m_HistTime;
   COARmessages m_MsgDir;
   COARmessages m_MsgSample;
   COARmessages m_MsgILS;
   COARmessages m_MsgChannel;
-//  wxString m_sText[SA_WINDOW_COUNT];
 
   const COARsample *m_pSample;
   const COARfile *m_pFile;
 
-  wxNotebook *m_pNotebook;
+  wxTreebook *m_pNotebook;
   CPanelUserID *m_pPanelUser;
   CPanelSampleAlertDetails *m_pSplitter[SA_WINDOW_COUNT];
   bool m_bReadOnly;

@@ -302,6 +302,7 @@
     <ClCompile Include="CFrameAnalysis.cpp" />
     <ClCompile Include="CFramePlot.cpp" />
     <ClCompile Include="CFrameRunAnalysis.cpp" />
+    <ClCompile Include="CFrameSample.cpp" />
     <ClCompile Include="CGridAlerts.cpp" />
     <ClCompile Include="CGridAllele.cpp" />
     <ClCompile Include="CGridAnalysis.cpp" />
@@ -341,6 +342,7 @@
     <ClCompile Include="CMenuLabels.cpp" />
     <ClCompile Include="CMenuPlot.cpp" />
     <ClCompile Include="CMenuWindow.cpp" />
+    <ClCompile Include="CNotebookEditSample.cpp" />
     <ClCompile Include="COARallele.cpp" />
     <ClCompile Include="COARchannelAlert.cpp" />
     <ClCompile Include="COARdirectoryAlerts.cpp" />
@@ -439,6 +441,7 @@
     <ClInclude Include="CFrameAnalysis.h" />
     <ClInclude Include="CFramePlot.h" />
     <ClInclude Include="CFrameRunAnalysis.h" />
+    <ClInclude Include="CFrameSample.h" />
     <ClInclude Include="CGridAlerts.h" />
     <ClInclude Include="CGridAllele.h" />
     <ClInclude Include="CGridAnalysis.h" />
@@ -481,6 +484,7 @@
     <ClInclude Include="CMenuWindow.h" />
     <ClInclude Include="CMessageDialogCheckCancel.h" />
     <ClInclude Include="CMruListIcons.h" />
+    <ClInclude Include="CNotebookEditSample.h" />
     <ClInclude Include="COARallele.h" />
     <ClInclude Include="COARchannelAlert.h" />
     <ClInclude Include="COARdirectoryAlerts.h" />
@@ -553,7 +557,6 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="helix32_256.bmp" />
-    <None Include="icon1.ico" />
     <None Include="OsirisIcon.xpm" />
     <None Include="icon2.ico" />
   </ItemGroup>

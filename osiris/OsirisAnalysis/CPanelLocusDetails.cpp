@@ -38,6 +38,8 @@
 #include "Platform.h"
 #include "CLabels.h"
 
+IMPLEMENT_ABSTRACT_CLASS(CPanelLocusDetails,wxPanel)
+
 CPanelLocusDetails::~CPanelLocusDetails() {;}
 CPanelLocusDetails::CPanelLocusDetails(
   const COARlocus *pLocus,
@@ -65,6 +67,7 @@ CPanelLocusDetails::CPanelLocusDetails(
   wxWindow *parent,
   wxWindowID id,
   bool bSplitHorizontal,
+  bool bSplitLocusHorizontal,
   bool bReadOnly) :
     wxPanel(parent,id),
     m_LocusEdit(*pLocus),
@@ -75,12 +78,17 @@ CPanelLocusDetails::CPanelLocusDetails(
     m_bReadOnly(bReadOnly),
     m_bOAR12(false)
 {
-  _InitCommon(bSplitHorizontal,pSample,nChannel);
+  _InitCommon(
+    bSplitHorizontal,bSplitLocusHorizontal,
+    pSample,nChannel);
 }
 
 
 void CPanelLocusDetails::_InitCommon(
-  bool bSplitHorizontal, const COARsample *pSample, int nChannel)
+  bool bSplitHorizontal, 
+  bool bSplitLocusHorizontal,
+  const COARsample *pSample,
+  int nChannel)
 {
   wxPanel *pPanelNotes;
   wxBoxSizer *pSizer;
@@ -154,7 +162,14 @@ void CPanelLocusDetails::_InitCommon(
   m_pSplitter->SetSashGravity(1.0);
   m_pSplitter->SetMinimumPaneSize(1);
 #if !PANEL_LOCUS_NOTEBOOK
-  m_pSplitterLocus->SplitVertically(m_pGridLocus,m_pGridAlerts,0);
+  if(bSplitLocusHorizontal)
+  {
+    m_pSplitterLocus->SplitHorizontally(m_pGridLocus,m_pGridAlerts,0);
+  }
+  else
+  {
+    m_pSplitterLocus->SplitVertically(m_pGridLocus,m_pGridAlerts,0);
+  }
   m_pSplitterLocus->SetSashGravity(0.5);
   m_pSplitterLocus->SetMinimumPaneSize(1);
 #endif

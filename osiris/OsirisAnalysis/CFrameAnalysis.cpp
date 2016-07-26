@@ -76,8 +76,10 @@
 #include "CMenuBar.h"
 #include "CGridLocusPeaks.h"
 #include "CPanelStatus.h"
+#include "CFrameSample.h"
 #include "nwx/stdb.h"
 #include <memory>
+#include <vector>
 #include "nwx/stde.h"
 #include <wx/filedlg.h>
 
@@ -550,6 +552,9 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
     {
     case IDmenuDisplayGraph:
       OnShowGraphic(e);
+      break;
+    case IDmenuDisplaySample: // temporary STOP HERE
+      OnShowSample(e);
       break;
     case IDmenuAcceptLocus:
       _OnAcceptLocus(e);
@@ -1041,6 +1046,61 @@ void CFrameAnalysis::OnShowGraphic(wxCommandEvent &)
 {
   ShowGraphicByRow(-1);
 }
+#ifdef __WXDEBUG__
+_CRTIMP extern long _crtBreakAlloc;
+extern long _lRequestCurr;
+#endif
+
+void CFrameAnalysis::OnShowSample(wxCommandEvent &)
+{
+  if(_XmlFile() && m_pOARfile->CanEditArtifacts())
+  {
+    int nRow = m_pGrid->GetGridCursorRow();
+    COARsample *pSample = m_SampleSort.GetSample((size_t)nRow);
+    CFrameSample *pFrame = NULL;
+    if(pSample == NULL)
+    {
+      wxString sError(wxT("Cannot find sample for row "));
+      sError.Append(nwxString::FormatNumber(nRow + 1));
+      mainApp::ShowError(sError,this);
+    }
+    else if((pFrame = _FindSample(pSample)) != NULL)
+    {
+      pFrame->Raise();  // STOP HERE
+    }
+    else
+    {
+      pFrame = new CFrameSample(this,m_pParent,wxDefaultSize,m_pOARfile,pSample);
+      this->_AddSample(pSample,pFrame);
+    }
+  }
+}
+void CFrameAnalysis::_DestroySamples()
+{
+  size_t n = m_mapSamples.size();
+  if(n)
+  {
+    std::vector<CFrameSample *> vSamples;
+    std::vector<CFrameSample *>::iterator itrv;
+    std::map<COARsample *, CFrameSample *>::iterator itr;
+    vSamples.reserve(n);
+    // first copy CFrameSample pointers to a vector because
+    // when each is destroyed, m_mapSamples may be modified
+    for(itr = m_mapSamples.begin();
+        itr != m_mapSamples.end(); 
+        ++itr)
+    {
+      vSamples.push_back(itr->second);
+    }
+    for(itrv = vSamples.begin();
+      itrv != vSamples.end();
+      ++itrv)
+    {
+      (*itrv)->Destroy();
+    }
+    m_mapSamples.clear();
+  }
+}
 
 void CFrameAnalysis::OnHistoryUpdate(wxCommandEvent &e)
 {
@@ -1322,7 +1382,7 @@ void CFrameAnalysis::_OnEnableMultiple()
 {
   if(_XmlFile() && m_pOARfile->CanEditArtifacts())
   {
-    const vector<COARsample *> *pvs = m_SampleSort.GetSamples();
+    const std::vector<COARsample *> *pvs = m_SampleSort.GetSamples();
     
 #ifdef __WXMAC__
     wxWindow *parent = this;
@@ -1585,8 +1645,8 @@ void CFrameAnalysis::_UpdatePreview()
       }
       else if(nCol == CHANNEL_ALERT_COLUMN)
       {
-        vector<unsigned int> vn;
-        vector<wxString> vs;
+        std::vector<unsigned int> vn;
+        std::vector<wxString> vs;
         int nChannel;
         size_t nSize;
         nRow = m_pGrid->GetGridCursorRow();
@@ -2238,6 +2298,7 @@ void CFrameAnalysis::OnClose(wxCloseEvent &e)
   bool bDone = CheckSaveOnCloseFile();
   if(bDone)
   {
+    _DestroySamples(); // destroy sample windows
     Destroy();
   }
   else if(e.CanVeto())
@@ -3062,7 +3123,7 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
       {
         wxString sError;
         wxString sAppend;
-        const vector<wxString> &asErrors = errorReceiver.GetErrors();
+        const std::vector<wxString> &asErrors = errorReceiver.GetErrors();
         size_t nCount = asErrors.size();
         const size_t MAX_ERRORS = 5;
         if(nCount > MAX_ERRORS)

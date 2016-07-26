@@ -66,6 +66,7 @@ public:
     wxWindow *parent,
     wxWindowID id = wxID_ANY,
     bool bSplitHorizontal = true,
+    bool bSplitLocusHorizontal = false,
     bool bReadOnly = false
     );
   void SetPanelUserID(CPanelUserID *p)
@@ -120,7 +121,11 @@ public:
 private:
   void _UpdateNotes();
   wxPanel *_CreateNotesPanel();
-  void _InitCommon(bool bSplitHorizontal,const COARsample *pSample = NULL, int nChannel = -1);
+  void _InitCommon(
+      bool bSplitHorizontal,
+      bool bSplitLocusHorizontal = false,
+      const COARsample *pSample = NULL, 
+      int nChannel = -1);
   CHistoryTime m_HistTime;
   COARlocus m_LocusEdit;
   COARmessages m_MsgEdit;
@@ -150,7 +155,8 @@ private:
 public:
   void OnCellChange(wxGridEvent &e);
   void OnNotesChange(wxCommandEvent &e);
-  DECLARE_EVENT_TABLE();
+  DECLARE_ABSTRACT_CLASS(CPanelLocusDetails)
+  DECLARE_EVENT_TABLE()
 };
 
 

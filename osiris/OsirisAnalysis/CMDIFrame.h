@@ -66,7 +66,8 @@ public:
     FRAME_NONE,
     FRAME_ANALYSIS,
     FRAME_PLOT,
-    FRAME_RUN
+    FRAME_RUN,
+    FRAME_SAMPLE
   };
   static const wxString HIDE_TOOLBARS;
   static const wxString SHOW_TOOLBARS;

@@ -255,6 +255,11 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
     "Display Graph",
     "Display channel plots.  Hold the shift key down for a single plot"
     );
+  Append(
+    IDmenuDisplaySample,
+    "Display Sample",
+    "Display all details for the current sample"
+    );
   m_pMenuItemPreview = Append(
     IDmenuTogglePreview,
     SHOW_PREVIEW,

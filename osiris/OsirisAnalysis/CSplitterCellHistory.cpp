@@ -472,9 +472,9 @@ void CSplitterCellHistory::_BuildWindow(
   else
   {
     pLocusPanelTop = new CPanelLocusDetails(pSample,nChannel,
-      pLocus,pMsg,m_pPanelTop,wxID_ANY,false,true);
+      pLocus,pMsg,m_pPanelTop,wxID_ANY,false,false,true);
     pLocusPanelBottom = new CPanelLocusDetails(pSample,nChannel,
-      pLocus,pMsg,m_pPanelBottom,wxID_ANY,false,true);
+      pLocus,pMsg,m_pPanelBottom,wxID_ANY,false,false,true);
   }
 
   _LayoutWindow(pLocusPanelTop,pLocusPanelBottom);
