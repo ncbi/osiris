@@ -89,12 +89,21 @@ public:
  
   void AppendAlerts(vector<int> *pvn, const wxDateTime *pTime = NULL) const;
   const COARmessages *GetMessages() const;
-  bool HasAlerts(const COARmessages *pmsgs, const wxDateTime *pTime = NULL) const;
-  bool HasAlerts(const wxDateTime *pTime = NULL) const
+  size_t AlertCount(const COARmessages *pmsgs, const wxDateTime *pTime = NULL, bool bStopAtOne = false) const;
+  size_t AlertCount(const wxDateTime *pTime = NULL, bool bStopAtOne = false) const
   {
     const COARmessages *pmsgs = GetMessages();
-    bool bRtn = (pmsgs == NULL) ? false : HasAlerts(pmsgs,pTime);
-    return bRtn;
+    size_t nRtn =
+      (pmsgs == NULL) ? 0 : AlertCount(pmsgs,pTime,bStopAtOne);
+    return nRtn;
+  }
+  bool HasAlerts(const COARmessages *pmsgs, const wxDateTime *pTime = NULL) const
+  {
+    return (AlertCount(pmsgs,pTime,true) > 0);
+  }
+  bool HasAlerts(const wxDateTime *pTime = NULL) const
+  {
+    return (AlertCount(pTime,true) > 0);
   }
   size_t CountAlerts(
     const COARmessages *pmsgs, const wxDateTime *pTime = NULL) const;
@@ -128,6 +137,7 @@ public:
     return m_sLocusName;
   }
   size_t EnabledAlleleCount() const;
+  const COARallele *GetAlleleByID(int nID) const;
   COARallele *GetAlleleByID(int nID);
   size_t AlleleCount() const
   {
@@ -279,6 +289,7 @@ private:
   wxString _GetCellRFU(const wxDateTime *pTime = NULL) const;
   wxString _GetCellTime(const wxDateTime *pTime = NULL) const;
   wxString _GetCellPeakArea(const wxDateTime *pTime = NULL) const;
+  int _FindAlleleByID(int nID) const;
 
   wxString m_sLocusName;
   COARalerts m_vnLocusAlerts;

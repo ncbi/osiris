@@ -75,7 +75,7 @@ public:
   COARfile *FindOARfile(const wxString &sName);
   CFrameAnalysis *FindAnalysisFrame(COARfile *pFile);
   void UpdateHistory(COARfile *pFile);
-  void UpdateSamplePlot(COARfile *pFile, const wxString &sSampleName);
+  void UpdateSamplePlot(COARfile *pFile, const wxString &sSampleFileName);
   void UpdateOARfile(COARfile *pFile, bool bUpdateAnalysis = true);
   void UpdateLadderLabels();
   void UpdateFileMenu();
@@ -89,6 +89,7 @@ public:
     return m_mapWindowFile.size();
   }
   void RefreshAllOAR();
+  void RefreshAllPlot();
 #ifdef __WINDOW_LIST__
   void MoveToTop(CMDIFrame *);
   void BringAllToFront();

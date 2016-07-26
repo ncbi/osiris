@@ -30,8 +30,12 @@
 #include <wx/file.h>
 #include <wx/dir.h>
 #include <wx/utils.h>
+#include <wx/filefn.h>
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxString.h"
+#include "nwx/nwxLog.h"
+
+bool nwxFileUtil::DO_NOT_SELECT_FILE = false;
 
 wxFileDialog *nwxFileUtil::CreateSaveDialog(
   wxWindow *parent,
@@ -139,30 +143,92 @@ wxString nwxFileUtil::BaseName(const wxString &_sDir)
   return sRtn;
 }
 
+bool nwxFileUtil::_ShowFolder(const wxString &sFolderName)
+{
+  wxString sURL("file:///");
+  sURL.Append(sFolderName);
+  wxBusyCursor x;
+  sURL.Replace(wxS("%"),wxS("%25"));
+  sURL.Replace(wxS(" "),wxS("%20"));
+  sURL.Replace(wxS("+"),wxS("%2b"));
+  bool bRtn = wxLaunchDefaultBrowser(sURL);
+  return bRtn;
+}
+#undef __EXE_NAME__
+#ifdef __WXMAC__
+#define __EXE_NAME__ wxT("open")
+#endif
+#ifdef __WXMSW__
+#define __EXE_NAME__ wxT("explorer.exe")
+#endif
+
 bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
 {
-  bool bRtn = true;
-  wxString sURL("file:///");
+  wxFileName fn(sFileName);
+  bool bRtn = false;
   if(wxDir::Exists(sFileName))
   {
-    sURL.Append(sFileName);
+    bRtn = _ShowFolder(fn.GetFullPath());
   }
-  else
+  else if(wxFileName::IsFileReadable(sFileName))
   {
-    wxFileName fn(sFileName);
-    bRtn = fn.FileExists() && fn.MakeAbsolute();
-    if(bRtn)
+    bRtn = true;
+    bool bFallback = true;
+#ifdef __EXE_NAME__
+    wxPathList apList;
+    apList.AddEnvList(wxT("PATH"));
+    wxString sPathName = apList.FindAbsoluteValidPath(__EXE_NAME__);
+    if(DO_NOT_SELECT_FILE) {}
+    else if(sPathName.IsEmpty()) {}
+    else if(!wxFileName::IsFileExecutable(sPathName)) {}
+    else
     {
-      sURL.Append(fn.GetPath());
+      bFallback = false;
+      wxString sCommand = __EXE_NAME__; 
+      wxString sFileArg;
+      // windows has a problem in that 
+      // wxFileExists("c:\Windows\system32\explorer.exe")
+      // returns true even though that is not the correct path
+      // as a work around, omit the path
+#ifdef __WXMSW__
+      sFileArg = wxT("/select,");
+#endif
+      sFileArg.Append(sFileName);
+
+#ifdef __WXMSW__
+//      sCommand.Append(wxT(" "));
+//      sCommand.Append(sFileArg);
+      // wxExecute seems to have problems with ARGV[1] in windows
+//      int nRtn = system(sCommand.utf8_str()) & 255;
+//      bFallback = (nRtn > 1);
+#endif
+      const wchar_t *ARGV[4];
+      size_t ndx = 0;
+      ARGV[ndx++] = sCommand.wx_str();
+#ifdef __WXMAC__
+      ARGV[ndx++] = wxT("-R");
+#endif
+      ARGV[ndx++] = sFileArg.wx_str();
+      ARGV[ndx++] = NULL;
+      long nRtn = wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
+#ifdef __WXMSW__
+      bFallback = (nRtn < 0) && (nRtn > 1);
+#else
+      bFallback = !!nRtn;
+#endif
+#if 1
+      wxString sLog = wxT("Show file: ");
+      sLog += sFileName;
+      sLog += "; return code = ";
+      sLog = nwxString::FormatNumber((int) nRtn);
+      nwxLog::LogMessage(sLog);
+#endif
     }
-  }
-  if(bRtn)
-  {
-    wxBusyCursor x;
-    sURL.Replace(wxS("%"),wxS("%25"));
-    sURL.Replace(wxS(" "),wxS("%20"));
-    sURL.Replace(wxS("+"),wxS("%2b"));
-    bRtn = wxLaunchDefaultBrowser(sURL);
+#endif // defined(__EXE_NAME__)
+    if(bFallback)
+    {
+      bRtn = _ShowFolder(fn.GetPath());
+    }
   }
   return bRtn;
 }

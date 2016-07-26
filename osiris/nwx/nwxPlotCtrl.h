@@ -23,9 +23,11 @@
 *
 * ===========================================================================
 *
-
+*
 *  FileName: nwxPlotCtrl.h
 *  Author:   Douglas Hoffman
+*
+*   need to remove m_pTimer and inherit nwxTimerReceiver 5/27/16
 *
 */
 #ifndef __NWX_PLOT_CTRL_H__
@@ -66,7 +68,9 @@ public:
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
     m_PositionMouse(-1,-1),
     m_pTimer(NULL),
+    m_nDisableToolTip(0),
     m_bClear(false),
+    m_bStopTimer(false),
     m_nTimeHere(0),
     m_pToolTip(NULL),
     m_pToolText(NULL),
@@ -86,7 +90,9 @@ public:
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
       m_PositionMouse(0,0),
       m_pTimer(NULL),
+      m_nDisableToolTip(0),
       m_bClear(false),
+      m_bStopTimer(false),
       m_nTimeHere(0),
       m_pToolTip(NULL),
       m_pLastXLabel(NULL),
@@ -153,6 +159,7 @@ public:
   }
   void StartTimer()
   {
+    m_bStopTimer = false;
     if(m_pTimer == NULL)
     {
       m_pTimer = new wxTimer(this,wxID_ANY);
@@ -164,10 +171,7 @@ public:
   }
   void StopTimer()
   {
-    if(m_pTimer != NULL)
-    {
-      m_pTimer->Stop();
-    }
+    m_bStopTimer = true;
   }
   void ShowScrollbars(bool b);
 
@@ -180,8 +184,26 @@ public:
   }
 
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
+  virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
   void SetupToolTip();
-  void ClearToolTip();
+  void ClearToolTip()
+  {
+    if( (m_pToolTip != NULL) && m_pToolTip->IsShown() )
+    {
+      m_bClear = true; // timer will take it from here
+      StartTimer();
+    }
+  }
+  void DisableToolTip()
+  {
+    m_nDisableToolTip++;
+    if(m_nDisableToolTip == 1) { ClearToolTip(); }
+  }
+  void EnableToolTip()
+  {
+    m_nDisableToolTip--;
+    if(!m_nDisableToolTip) { StartTimer(); }
+  }
 
   void OnViewChanged(wxPlotCtrlEvent &e);
   void nwxOnMouse(wxMouseEvent &event);
@@ -221,23 +243,52 @@ private:
 private:
   static const int TIMER_ELAPSE;
   static const unsigned int TIMER_COUNT;
-
+  void _SetupCursor(const nwxPointLabel *pLabel);
+  void _ClearToolTip();
+  bool _OnMouseDown(wxMouseEvent &e); // called from nwxOnMouse
+  bool _OnMouseUp(wxMouseEvent &e);   //
+  bool _OnMouseDownXLabel(wxMouseEvent &e); // called from nwxOnMouse
+  bool _OnMouseUpXLabel(wxMouseEvent &e);   //
   void SendContextMenuEvent(wxMouseEvent &e);
   void ProcessMousePosition(const wxPoint &pt);
+  void _ResetMousePosition()
+  {
+    m_PositionMouse.x = -1;
+    m_PositionMouse.y = -1;
+  }
+  bool CursorInPlotArea()
+  {
+    bool bRtn = false;
+    if( (m_PositionMouse.x >= 0) && (m_PositionMouse.y >= 0) )
+    {
+      int x,y;
+      GetPlotArea()->GetSize(&x,&y);
+      bRtn = (m_PositionMouse.x <= x) &&
+        (m_PositionMouse.y <= y);
+    }
+    return bRtn;
+  }
   void _Init();
-
+#ifdef __WXDEBUG__
+  void _LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel);
+#endif
   nwxPlotDrawerLabel m_Labels;
   nwxPlotDrawerXLabel m_XLabels;
   nwxPlotDrawerXShade m_Xshade;
   wxFont m_fontLabel;
   wxPoint m_PositionMouse;
   wxTimer *m_pTimer;
+  int m_nDisableToolTip;
   bool m_bClear;
+  bool m_bStopTimer;
   unsigned int m_nTimeHere;
   wxPanel *m_pToolTip;
   wxStaticText *m_pToolText;
   const nwxPointLabel *m_pLastXLabel;
+  const nwxPointLabel *m_pLastLabel;
   wxWindow *m_pToolTipParent;
+  wxCursor m_cursorDefault;
+  wxCursor m_cursorAreaDefault;
   wxBitmap m_bmActiveBackup;
   wxBitmap m_bmInactiveBackup;
   wxBitmap m_bmClear;
@@ -246,7 +297,24 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-
+class nwxPlotControlToolTipDisabler
+{
+public:
+  nwxPlotControlToolTipDisabler(nwxPlotCtrl *p) : m_pPlotCtrl(p)
+  {
+    m_pPlotCtrl->DisableToolTip();
+  }
+  nwxPlotControlToolTipDisabler(const nwxPlotControlToolTipDisabler &x) : m_pPlotCtrl(x.m_pPlotCtrl)
+  {
+    m_pPlotCtrl->DisableToolTip();
+  }
+  virtual ~nwxPlotControlToolTipDisabler()
+  {
+    m_pPlotCtrl->EnableToolTip();
+  }
+private:
+  mutable nwxPlotCtrl *m_pPlotCtrl;
+};
 
 
 #endif

@@ -1,7 +1,8 @@
 MIN_VERSION=10.9
+SDK_VERSION=10.11
 VMIN="-mmacosx-version-min=${MIN_VERSION}"
 ARCH=""
-CPPTOP=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${MIN_VERSION}.sdk/usr
+CPPTOP=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${SDK_VERSION}.sdk/usr
 PLATFORM=`sh ../../osname`
 WXHOME=`sh ../../findwx`
 WXCXX=`${WXHOME}/bin/wx-config --cxxflags`

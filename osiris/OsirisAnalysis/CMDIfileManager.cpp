@@ -63,7 +63,7 @@ void CMDIfileManager::UpdateHistory(COARfile *pFile)
     }
   }
 }
-void CMDIfileManager::UpdateSamplePlot(COARfile *pFile, const wxString &sSampleName)
+void CMDIfileManager::UpdateSamplePlot(COARfile *pFile, const wxString &sSampleFileName)
 {
   // call this after a sample using this OAR file
   // has been edited in the analysis window
@@ -78,7 +78,7 @@ void CMDIfileManager::UpdateSamplePlot(COARfile *pFile, const wxString &sSampleN
       if((*itrF)->GetType() == CMDIFrame::FRAME_PLOT)
       {
         CFramePlot *pFrame = (CFramePlot *)(*itrF);
-        pFrame->UpdateOARfile(sSampleName);
+        pFrame->UpdateOARfile(sSampleFileName);
       }
     }
   }
@@ -311,6 +311,22 @@ void CMDIfileManager::RefreshAllOAR()
     {
       pf = (CFrameAnalysis *)(itr->first);
       pf->RepaintData();
+    }
+  }
+}
+void CMDIfileManager::RefreshAllPlot()
+{
+  wxBusyCursor xxx;
+  CMDI_WF::iterator itr;
+  CFramePlot *pf;
+  for(itr = m_mapWindowFile.begin();
+      _IteratorOK(itr);
+      ++itr)
+  {
+    if(itr->first->GetType() == CMDIFrame::FRAME_PLOT)
+    {
+      pf = (CFramePlot *)(itr->first);
+      pf->RebuildAll();
     }
   }
 }

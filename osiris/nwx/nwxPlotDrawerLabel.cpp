@@ -45,13 +45,24 @@
 #include "nwx/nwxPlotShade.h"
 #include "wx/plotctrl/plotctrl.h"
 
+const int nwxPointLabel::ALIGN_DEFAULT = (wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM);
+//  bitwise flags
+const int nwxPointLabel::STYLE_BOX = 1;
+const int nwxPointLabel::STYLE_DISABLED = 2;
+
 bool nwxPointLabel::operator == (const nwxPointLabel &x) const
 {
-  return (m_dy == x.m_dy) &&
+  return 
+    (m_nLabelStyle == x.m_nLabelStyle) &&
+    (m_pData == x.m_pData) &&
+    (m_dy == x.m_dy) &&
     (m_dx == x.m_dx) &&
     (m_sLabel == x.m_sLabel) &&
     (m_color == x.m_color) &&
-    (m_nAlign == x.m_nAlign)
+    (m_nAlign == x.m_nAlign) &&
+    (m_nSortGroup == x.m_nSortGroup) &&
+    (m_sToolTip == x.m_sToolTip) &&
+    (m_nCursor == x.m_nCursor)
     ;
 }
 
@@ -70,6 +81,10 @@ bool nwxPointLabel::operator < (const nwxPointLabel &x) const
   else if( (m_dy != x.m_dy) )
   {
     bRtn = (m_dy > x.m_dy);
+  }
+  else if(m_nSortGroup != x.m_nSortGroup)
+  {
+    bRtn = m_nSortGroup < x.m_nSortGroup;
   }
   else if((nCmp = m_sLabel.Cmp(x.m_sLabel)) != 0)
   {
@@ -104,6 +119,10 @@ bool nwxPointLabel::operator < (const nwxPointLabel &x) const
   {
     bRtn = m_nAlign < x.m_nAlign;
   }
+  else if(m_pData != x.m_pData)
+  {
+    bRtn = m_pData < x.m_pData;
+  }
   return bRtn;
 }
 
@@ -115,6 +134,8 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     SET_LABEL::iterator itr;
     vector<bool> vbCanMoveUp;
     wxRect rect;
+    const int PAD_X = 2;
+    const int DELTA_WIDTH = PAD_X + PAD_X;
     int nx;
     int ny;
     int hl;
@@ -143,6 +164,7 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       ny = m_owner->GetClientCoordFromPlotY(label.GetY());
       pdc->GetMultiLineTextExtent(
         label.GetLabel(),&rect.width,&rect.height,&hl);
+      rect.width += DELTA_WIDTH;
       if(nAlign & wxALIGN_CENTER)
       {
         nx -= (rect.width >> 1);
@@ -267,14 +289,29 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
         }
       }
     }
+    wxPen pen(*wxBLACK_PEN);
+    pdc->SetBrush(*wxWHITE_BRUSH);
     for(i = 0; i < nSize; i++)
     {
       const nwxPointLabel *pLabel = m_vpLabel.at(i);
       const wxRect &rrect(m_vRect.at(i));
       pdc->SetTextForeground(pLabel->GetColour());
+      pen.SetColour(pLabel->GetColour());
+      pdc->SetPen(pen);
       nX = rrect.GetX();
       nY = rrect.GetY();
-      pdc->DrawText(pLabel->GetLabel(),nX,nY);
+      int nStyle = pLabel->GetStyle();
+      if(nStyle & nwxPointLabel::STYLE_BOX)
+      {
+        pdc->DrawRectangle(rrect);
+      }
+      pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY);
+      if(nStyle & nwxPointLabel::STYLE_DISABLED)
+      {
+        wxPoint pt1(nX,nY);
+        wxPoint pt2(nX + rrect.GetWidth(),nY + rrect.GetHeight());
+        pdc->DrawLine(pt1,pt2);
+      }
     }
     pdc->SetTextForeground(cFG);
     pdc->SetTextBackground(cBG);
@@ -292,7 +329,7 @@ wxString nwxPlotDrawerLabel::GetToolTipText(const wxPoint &pos)
   return sRtn;
 }
 
-const nwxPointLabel *nwxPlotDrawerLabel::FindLabel(const wxPoint &pos)
+const nwxPointLabel *nwxPlotDrawerLabel::FindLabel(const wxPoint &pos,wxRect *pRect)
 {
   wxRect rect;
   size_t nSize = m_vRect.size();
@@ -304,6 +341,10 @@ const nwxPointLabel *nwxPlotDrawerLabel::FindLabel(const wxPoint &pos)
     if(rect.Contains(pos))
     {
       pLabel = m_vpLabel.at(i);
+      if(pRect != NULL)
+      {
+        *pRect = rect;
+      }
       i = nSize; // loop exit
     }
   }

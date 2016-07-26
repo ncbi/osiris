@@ -123,6 +123,7 @@ public:
   void OnShowLog(wxCommandEvent &);
   void OnAnalyze(wxCommandEvent &);
   void OnLabSettings(wxCommandEvent &);
+  void OnArtifactLabels(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);
   void OnTimer(wxTimerEvent &);
@@ -191,9 +192,9 @@ public:
   {
     return m_MDImgr.FindOARfile(sName);
   }
-  void UpdateSamplePlot(COARfile *pFile, const wxString &sSampleName)
+  void UpdateSamplePlot(COARfile *pFile, const wxString &sSampleFileName)
   {
-    m_MDImgr.UpdateSamplePlot(pFile,sSampleName);
+    m_MDImgr.UpdateSamplePlot(pFile,sSampleFileName);
   }
   void DiscardChanges(COARfile *pFile)
   {

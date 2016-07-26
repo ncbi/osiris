@@ -71,6 +71,14 @@ public:
   {
     return IsNewer(sFileName,dt.GetTicks());
   }
+  static void SetDoNotSelectFile(bool b = true)
+  {
+    DO_NOT_SELECT_FILE = b;
+  }
+  static bool GetDoNotSelectFile()
+  {
+    return DO_NOT_SELECT_FILE;
+  }
 #if 0
   // written but not tested, used wxCopyFile instead
   static int CopyFile(
@@ -93,6 +101,8 @@ public:
     const wxString &sTo);
 #endif
 private:
+  static bool DO_NOT_SELECT_FILE;
+  static bool _ShowFolder(const wxString &sFileName);
   nwxFileUtil() {;} // prevent instantiation
 };
 

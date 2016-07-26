@@ -199,6 +199,7 @@
     <ClInclude Include="nwxListMRU.h" />
     <ClInclude Include="nwxLock.h" />
     <ClInclude Include="nwxLockFile.h" />
+    <ClInclude Include="nwxLog.h" />
     <ClInclude Include="nwxMenuItem.h" />
     <ClInclude Include="nwxNumberValidator.h" />
     <ClInclude Include="nwxPlotCtrl.h" />

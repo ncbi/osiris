@@ -69,6 +69,10 @@ public:
   {
     return COARpeak::EMPTY_STRING;
   }
+  virtual const wxString &GetArtifactUserDisplay() const
+  {
+    return COARpeak::EMPTY_STRING;
+  }
   virtual const wxString &GetLocusName() const
   {
     return COARpeak::EMPTY_STRING;
@@ -184,6 +188,7 @@ public:
   }
 
   virtual void SetArtifactLabel(const wxString &) {;}
+  virtual void SetArtifactUserDisplay(const wxString &) {;}
   virtual void SetLocusName(const wxString &) {;}
   virtual void SetAlleleName(const wxString &s, bool bAmel = false)
   {
@@ -286,6 +291,10 @@ public:
   virtual const wxString &GetArtifactLabel() const
   {
     return m_sLabel;
+  }
+  virtual const wxString &GetArtifactUserDisplay() const
+  {
+    return COARpeak::EMPTY_STRING;
   }
 
   virtual int GetID() const
@@ -404,6 +413,7 @@ public:
   {
     m_sLabel = s;
   }
+  virtual void SetArtifactUserDisplay(const wxString &) {}
   virtual void SetUpdateTimeCurrent() {;}
   virtual void Set(const IOARpeak &x)
   {
@@ -754,7 +764,6 @@ public:
   static const int TYPE_ALL;
 
   CPlotData() :
-    m_parm(CParmOsiris::NO_INIT),
     m_IOchannel(true),
     m_IOlocus(true)
   {
@@ -950,7 +959,7 @@ private:
   void _FixBaseline();
   void _Cleanup();
   CPlotChannel *FindChannel(unsigned int n);
-  CParmOsiris m_parm;
+  CParmOsirisLite m_parm;
   wxString m_sFilename;
   wxString m_sLadder;
   wxString m_sKit;

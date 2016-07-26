@@ -594,12 +594,12 @@ void CFramePlot::OnTimer(wxTimerEvent &e)
   }
 #endif
 }
-void CFramePlot::UpdateOARfile(const wxString &sSampleName)
+void CFramePlot::UpdateOARfile(const wxString &sSampleFileName)
 {
   // call this when the OAR file has been edited
   if( (m_pOARfile != NULL) &&
       nwxString::FileNameStringEqual(
-      m_pData->GetFilename(),sSampleName) &&
+      m_pData->GetFilename(),sSampleFileName) &&
       (GetSelectedTime() == NULL)
       )
   {
@@ -1568,6 +1568,17 @@ void CFramePlot::OnContextMenu(wxContextMenuEvent &)
   }
 }
 
+void CFramePlot::EditPeak(COARpeakAny *pPeak, COARsample *pSample)
+{
+  if(m_pOARfile != NULL)
+  {
+    CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
+    if(pFrame != NULL)
+    {
+      pFrame->EditPeak(pPeak,pSample,this);
+    }
+  }
+}
 void CFramePlot::OnHistoryButton(wxCommandEvent &e)
 {
   if(m_pOARfile != NULL)

@@ -37,6 +37,8 @@
 #include "nwx/vectorptr.h"
 #include <wx/dcclient.h>
 #include <wx/arrstr.h>
+#include "CArtifactLabelsUser.h"
+#include "CArtifactLabels.h"
 
 typedef enum
 {
@@ -50,7 +52,8 @@ typedef enum
   ROW_FIT,
   ROW_IS_ALLELE,
   ROW_IS_ARTIFACT,
-  ROW_IS_CRITICAL
+  ROW_IS_CRITICAL,
+  ROW_ARTF_LABEL
 } ROW_NUMBER;
 
 // read only row numbers
@@ -69,7 +72,8 @@ static const wxChar *labels[] =
   wxS("Fit"),
   wxS("Allele Peak"),
   wxS("Artifact Peak"),
-  wxS("Critical")
+  wxS("Critical"),
+  wxS("Plot Label")
 };
 
 static const int nLABELS = sizeof(labels) / sizeof(labels[0]);
@@ -215,6 +219,8 @@ void CGridLocusPeaks::_ImplementColumn(int nCol)
         pe->SetParameters("1");
         SetCellEditor(ROW_ALLELE,k,pe);
       }
+      wxGridCellChoiceEditor *pgLabel = new wxGridCellChoiceEditor(mainApp::GetArtifactLabels()->GetChoiceList(),true);
+      SetCellEditor(ROW_ARTF_LABEL,k,pgLabel);
     }
 
     SetCellAlignment(ROW_OFF_LADDER, k,wxALIGN_CENTRE, wxALIGN_CENTRE);
@@ -224,6 +230,7 @@ void CGridLocusPeaks::_ImplementColumn(int nCol)
     SetCellAlignment(ROW_TIME,       k,wxALIGN_RIGHT, wxALIGN_CENTRE);
     SetCellAlignment(ROW_PEAK_AREA,  k,wxALIGN_RIGHT, wxALIGN_CENTRE);
     SetCellAlignment(ROW_FIT,        k,wxALIGN_RIGHT, wxALIGN_CENTRE);
+    SetCellAlignment(ROW_ARTF_LABEL, k,wxALIGN_LEFT,  wxALIGN_CENTRE);
   }
 }
 
@@ -304,6 +311,7 @@ bool CGridLocusPeaks::TransferDataToWindow()
       SetCellValue(ROW_IS_ALLELE, k, pPeak->FormatIsAllele());
       SetCellValue(ROW_IS_ARTIFACT, k, pPeak->FormatIsArtifact());
       SetCellValue(ROW_IS_CRITICAL, k, pPeak->FormatIsCritical());
+      SetCellValue(ROW_ARTF_LABEL, k, pPeak->GetArtifactUserDisplay());
       UpdateDisabledAlleles(k);
     }
     AutoSizeColumns();
@@ -344,6 +352,9 @@ bool CGridLocusPeaks::TransferCellFromWindow(int nRow, int nCol)
     XferIsAllele(nCol);
     UpdateDisabledAlleles(nCol);
     break;
+  case ROW_ARTF_LABEL:
+    XferUserDisplay(nCol);
+    break;
   default:
     break;
   }
@@ -369,6 +380,16 @@ void CGridLocusPeaks::XferIsCritical(int nCol)
 {
   COARpeak *pPeak = GetPeak(nCol);
   pPeak->SetIsCritical(GetBoolValue(ROW_IS_CRITICAL,nCol));
+}
+void CGridLocusPeaks::XferUserDisplay(int nCol)
+{
+  COARpeak *pPeak = GetPeak(nCol);
+  wxString s(GetCellValue(ROW_ARTF_LABEL,nCol));
+  if((int)s.Len() > CArtifactLabelsUser::MAX_LENGTH)
+  {
+    s.Truncate(CArtifactLabelsUser::MAX_LENGTH);
+  }
+  pPeak->SetArtifactUserDisplay(s);
 }
 
 bool CGridLocusPeaks::XferName(int nCol)
@@ -514,6 +535,7 @@ void CGridLocusPeaks::UpdateDisabledAlleles(int nCol)
   DisableEdit(ROW_OFF_LADDER,nCol,!bAllele);
   DisableEdit(ROW_HOMOZYGOUS,nCol,!bAllele);
   DisableEdit(ROW_IS_CRITICAL,nCol,!bArtifact);
+  DisableEdit(ROW_ARTF_LABEL,nCol,!bArtifact); 
   Refresh();
 }
 
