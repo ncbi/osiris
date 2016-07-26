@@ -237,6 +237,10 @@ public:
   {
     return m_dRFU;
   }
+  virtual double GetPullupCorrectionHeight() const
+  {
+    return m_dPullupCorrectionHeight;
+  }
   virtual double GetTime() const
   {
     return m_dTime;
@@ -244,6 +248,10 @@ public:
   virtual double GetPeakArea() const
   {
     return m_dPeakArea;
+  }
+  virtual double GetWidth() const
+  {
+    return m_dWidth;
   }
   virtual double GetFit() const
   {
@@ -307,6 +315,10 @@ public:
   {
     m_dRFU = d;
   }
+  virtual void SetPullupCorrectionHeight(double d) 
+  {
+    m_dPullupCorrectionHeight = d;
+  }
   virtual void SetTime(double d)
   {
     m_dTime = d;
@@ -314,6 +326,10 @@ public:
   virtual void SetPeakArea(double d)
   {
     m_dPeakArea = d;
+  }
+  virtual void SetWidth(double d)  
+  {
+    m_dWidth = d;
   }
   virtual void SetFit(double d)
   {
@@ -437,8 +453,10 @@ private:
   vector<COARartifactAllele *> m_vpAllele;
   TnwxXmlIOPersistVector<COARartifactAllele> m_ioAllele;
   double m_dRFU;
+  double m_dPullupCorrectionHeight;
   double m_dMeanBPS;
   double m_dPeakArea;
+  double m_dWidth;
   double m_dTime;
   double m_dFit;
   mutable COARartifactAllele *m_pAlleleCurrent;

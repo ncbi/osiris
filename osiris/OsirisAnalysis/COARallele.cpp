@@ -39,8 +39,11 @@ void COARallele::RegisterAll(bool)
     &g_ioArtifact,(void *) &m_nArtifactLevel);
   RegisterDouble("BPS",&m_dBPS);
   RegisterDouble("RFU",&m_dRFU);
+  RegisterDouble("PullupCorrectionHeight",&m_dPullupCorrectionHeight);
+  
   RegisterDouble("meanbps",&m_dMeanBPS);
   RegisterDouble("PeakArea",&m_dPeakArea);
+  RegisterDouble("Width",&m_dWidth);
   RegisterDouble("Time",&m_dTime);
   RegisterDouble("Fit",&m_dFit);
   Register("OffLadder",&COARpeak::IO_OL,&m_sOffLadder);
@@ -80,7 +83,9 @@ COARallele &COARallele::operator =(const COARallele &x)
   COARcopy(m_tUpdate);
   COARcopy(m_dBPS);
   COARcopy(m_dRFU);
+  COARcopy(m_dPullupCorrectionHeight);
   COARcopy(m_dPeakArea);
+  COARcopy(m_dWidth);
   COARcopy(m_dMeanBPS);
   COARcopy(m_dTime); // time of peak in seconds
   COARcopy(m_dFit);
@@ -102,7 +107,11 @@ bool COARallele::operator ==(const COARallele &x) const
   else if(m_sName != x.m_sName) { bRtn = false; }
   else if(!COARpeak::DoubleEqual(m_dBPS,x.m_dBPS)) { bRtn = false; }
   else if(!COARpeak::DoubleEqual(m_dRFU,x.m_dRFU)) { bRtn = false; }
+  else if(!COARpeak::DoubleEqual(m_dPullupCorrectionHeight,x.m_dPullupCorrectionHeight))
+    { bRtn = false; }
   else if(!COARpeak::DoubleEqual(m_dPeakArea,x.m_dPeakArea)) 
+    { bRtn = false; }
+  else if(!COARpeak::DoubleEqual(m_dWidth,x.m_dWidth)) 
     { bRtn = false; }
   else if(!COARpeak::DoubleEqual(
     m_dFit,x.m_dFit,COARpeak::FIT_DIGIT_MATCH)) { bRtn = false; }
