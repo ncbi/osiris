@@ -2156,6 +2156,7 @@ void DataSignal :: WritePeakInfoToXML (RGTextOutput& text, const RGString& inden
 	int peak;
 	Endl endLine;
 	RGString suffix;
+	double totalCorrection;
 	
 	if (signalLink == NULL) {
 
@@ -2172,6 +2173,12 @@ void DataSignal :: WritePeakInfoToXML (RGTextOutput& text, const RGString& inden
 			text << indent << "<" << bracketTag << ">" << endLine;
 			text << indent << "\t<mean>" << GetMean () << "</mean>" << endLine;
 			text << indent << "\t<height>" << peak << "</height>" << endLine;
+
+			totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+			if (totalCorrection != 0.0)
+				text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+
 			text << indent << "\t<BPS>" << GetBioID () << "</BPS>" << endLine;
 	//		text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
@@ -2215,6 +2222,7 @@ void DataSignal :: WriteArtifactInfoToXML (RGTextOutput& text, const RGString& i
 	int highestMessageLevel = GetHighestMessageLevel ();
 	int maxMessageLevel = GetMaxAllowedMessageLevel ();
 	int reportedMessageLevel;
+	double totalCorrection;
 
 	if (highestMessageLevel > maxMessageLevel)
 		reportedMessageLevel = highestMessageLevel;
@@ -2235,6 +2243,12 @@ void DataSignal :: WriteArtifactInfoToXML (RGTextOutput& text, const RGString& i
 		text << indent << "\t<level>" << reportedMessageLevel << "</level>" << endLine;
 		text << indent << "\t<mean>" << GetMean () << "</mean>" << endLine;
 		text << indent << "\t<height>" << peak << "</height>" << endLine;
+
+		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		if (totalCorrection != 0.0)
+			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+
 //		text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 
@@ -2349,11 +2363,11 @@ void DataSignal :: WriteTableArtifactInfoToXML (RGTextOutput& text, RGTextOutput
 		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
 		if (totalCorrection != 0.0)
-			text << indent << "\t<PullupCorrectedHeight>" << (int) floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
+			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
 
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-		text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
+		text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 

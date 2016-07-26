@@ -821,6 +821,7 @@ void DataSignal :: WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& 
 	int peak;
 	Endl endLine;
 	RGString suffix;
+	double totalCorrection;
 	
 //	if (HasCrossChannelSignalLink ()) {
 
@@ -834,11 +835,17 @@ void DataSignal :: WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& 
 			text << indent << "<" << bracketTag << ">" << endLine;
 			text << indent << "\t<mean>" << GetMean () << "</mean>" << endLine;
 			text << indent << "\t<height>" << peak << "</height>" << endLine;
+
+			totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+			if (totalCorrection != 0.0)
+				text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+
 			text << indent << "\t<BPS>" << GetBioID () << "</BPS>" << endLine;
 //			text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-			text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
+			text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
 			text << indent << "\t<allele>" << GetAlleleName () << suffix << "</allele>" << endLine;
 			text << indent << "\t<fit>" << GetCurveFit () << "</fit>" << endLine;
 			text << indent << "</" + bracketTag << ">" << endLine;
@@ -860,6 +867,7 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 
 	reportedMessageLevel = GetHighestMessageLevelWithRestrictionSM ();
 	bool thisIsFirstNotice = true;
+	double totalCorrection;
 
 	if ((!DontLook ()) && (NumberOfSmartNoticeObjects () != 0)) {
 	
@@ -884,10 +892,16 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 				text << indent << "\t<level>" << reportedMessageLevel << "</level>" << endLine;
 				text << indent << "\t<mean>" << GetMean () << "</mean>" << endLine;
 				text << indent << "\t<height>" << peak << "</height>" << endLine;
+
+				totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+				if (totalCorrection != 0.0)
+					text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+
 //				text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-				text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
+				text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
 
 				if (virtualAllele.Length () > 0)
 					text << indent << "\t<equivAllele>" << virtualAllele << suffix << "</equivAllele>" << endLine;
@@ -996,11 +1010,11 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
 		if (totalCorrection != 0.0)
-			text << indent << "\t<PullupCorrectedHeight>" << (int) floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
+			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
 
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-		text << indent << "\t<width>" << 2.0 * GetStandardDeviation () << "</width>" << endLine;
+		text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 
