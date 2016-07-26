@@ -494,6 +494,7 @@ InterchannelLinkage :: InterchannelLinkage (int nChannels) : mPrimarySignal (NUL
 	mIsAboveNoiseThreshold = new bool [channels1];
 	mIsNegativePeak = new bool [channels1];
 	mPeakHeights = new double [channels1];
+	mSecondaryIterator = new RGDListIterator (mSecondarySignals);
 
 	int i;
 	int j;
@@ -532,6 +533,7 @@ InterchannelLinkage :: InterchannelLinkage (int nChannels) : mPrimarySignal (NUL
 InterchannelLinkage :: ~InterchannelLinkage () {
 
 	mSecondarySignals.Clear ();
+	delete mSecondaryIterator;
 
 	int i;
 
@@ -802,6 +804,78 @@ int InterchannelLinkage :: MapOutSignalProperties (double noiseMultiple, double 
 }
 
 
+DataSignal* InterchannelLinkage :: GetSecondarySignalOnChannelIfNoSecondPrimary (int secondaryChannel) {
+
+	DataSignal* nextSignal;
+	DataSignal* returnSignal = NULL;
+	RGDListIterator it (mSecondarySignals);
+	double maxHeightForOtherPrimaries;
+	int nPrimaries = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal == mPrimarySignal)
+			continue;
+
+		if (nextSignal->GetChannel () == secondaryChannel)
+			returnSignal = nextSignal;
+
+		if (nextSignal->HasCrossChannelSignalLink ())
+			nPrimaries++;
+	}
+
+	if (returnSignal == NULL)
+		return NULL;
+
+	if (nPrimaries == 0)
+		return returnSignal;
+
+	if ((nPrimaries == 1) && (returnSignal->HasCrossChannelSignalLink ()))
+		return returnSignal;
+
+	if (!returnSignal->HasCrossChannelSignalLink ())
+		return NULL;
+
+	it.Reset ();
+	maxHeightForOtherPrimaries = returnSignal->Peak ();
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal == mPrimarySignal)
+			continue;
+
+		if (nextSignal == returnSignal)
+			continue;
+
+		if (nextSignal->HasCrossChannelSignalLink ()) {
+
+			if (nextSignal->Peak () > maxHeightForOtherPrimaries)
+				return NULL;
+		}
+	}
+
+	return returnSignal;	
+}
+
+
+DataSignal* InterchannelLinkage :: GetSecondarySignalOnChannel (int secondaryChannel) {
+
+	DataSignal* nextSignal;
+	RGDListIterator it (mSecondarySignals);
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal == mPrimarySignal)
+			continue;
+
+		if (nextSignal->GetChannel () == secondaryChannel)
+			return nextSignal;
+	}
+
+	return NULL;
+}
+
+
 
 STRInterchannelLinkage :: STRInterchannelLinkage (int nChannels) : InterchannelLinkage (nChannels) {
 
@@ -1029,7 +1103,7 @@ mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLe
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
-mPartOfCluster (ds.mPartOfCluster) {
+mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1046,6 +1120,8 @@ DataSignal :: ~DataSignal () {
 	NewNoticeList.ClearAndDelete ();
 	mCrossChannelSignalLinks.Clear ();
 	delete[] mPrimaryRatios;
+	delete[] mPullupCorrectionArray;
+	delete[] mPrimaryPullupInChannel;
 }
 
 
@@ -1200,6 +1276,91 @@ bool DataSignal :: HasCrossChannelSignalLink () const {
 
 	return IsSecondaryCrossChannelSignalLink () || IsPrimaryCrossChannelSignalLink ();
 }
+
+
+double DataSignal :: GetPullupFromChannel (int i) const {
+
+	if (mPullupCorrectionArray == NULL)
+		return 0.0;
+
+	return mPullupCorrectionArray [i];
+}
+
+
+double DataSignal :: GetTotalPullupFromOtherChannels (int numberOfChannels) const {
+
+	if (mPullupCorrectionArray == NULL)
+		return 0.0;
+
+	int i;
+	double total = 0.0;
+
+	for (i=1; i<=numberOfChannels; i++)
+		total += GetPullupFromChannel (i);
+
+	return total;
+}
+
+
+void DataSignal :: SetPullupFromChannel (int i, double value, int numberOfChannels) {
+
+	if (mPullupCorrectionArray == NULL) {
+
+		mPullupCorrectionArray = new double [numberOfChannels + 1];
+		int j;
+
+		for (j=1; j<=numberOfChannels; j++)
+			mPullupCorrectionArray [j] = 0.0;
+	}
+
+	mPullupCorrectionArray [i] = value;
+}
+
+
+DataSignal* DataSignal :: HasPrimarySignalFromChannel (int i) const {
+
+	if (mPrimaryPullupInChannel == NULL)
+		return NULL;
+
+	return mPrimaryPullupInChannel [i];
+}
+
+
+void DataSignal :: SetPrimarySignalFromChannel (int i, DataSignal* ds, int numberOfChannels) {
+
+	if (mPrimaryPullupInChannel == NULL) {
+
+		mPrimaryPullupInChannel = new DataSignal* [numberOfChannels + 1];
+		int j;
+
+		for (j=1; j<=numberOfChannels; j++)
+			mPrimaryPullupInChannel [j] = NULL;
+	}
+
+	mPrimaryPullupInChannel [i] = ds;
+}
+
+
+bool DataSignal :: HasAnyPrimarySignals (int numberOfChannels) const {
+
+	int i;
+	int myChannel = GetChannel ();
+
+	if (mPrimaryPullupInChannel == NULL)
+		return NULL;
+
+	for (i=1; i<=numberOfChannels; i++) {
+
+		if (myChannel == i)
+			continue;
+
+		if (mPrimaryPullupInChannel [i] != NULL)
+			return true;
+	}
+
+	return false;
+}
+
 
 
 void DataSignal :: SetBioID (double id, int position) {
@@ -1573,7 +1734,7 @@ void DataSignal :: SetPullupRatio (int channel, double ratio, int nChannels) {
 		mPrimaryRatios = new double [nChannels + 1];
 
 		for (i=1; i<=nChannels; i++)
-			mPrimaryRatios [i] = -1.0;
+			mPrimaryRatios [i] = 0.0;
 	}
 
 	mPrimaryRatios [channel] = ratio;
@@ -1995,6 +2156,7 @@ void DataSignal :: WritePeakInfoToXML (RGTextOutput& text, const RGString& inden
 	int peak;
 	Endl endLine;
 	RGString suffix;
+	double totalCorrection;
 	
 	if (signalLink == NULL) {
 
@@ -2011,6 +2173,12 @@ void DataSignal :: WritePeakInfoToXML (RGTextOutput& text, const RGString& inden
 			text << indent << "<" << bracketTag << ">" << endLine;
 			text << indent << "\t<mean>" << GetMean () << "</mean>" << endLine;
 			text << indent << "\t<height>" << peak << "</height>" << endLine;
+
+			totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+			if (totalCorrection != 0.0)
+				text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+
 			text << indent << "\t<BPS>" << GetBioID () << "</BPS>" << endLine;
 	//		text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
@@ -2054,6 +2222,7 @@ void DataSignal :: WriteArtifactInfoToXML (RGTextOutput& text, const RGString& i
 	int highestMessageLevel = GetHighestMessageLevel ();
 	int maxMessageLevel = GetMaxAllowedMessageLevel ();
 	int reportedMessageLevel;
+	double totalCorrection;
 
 	if (highestMessageLevel > maxMessageLevel)
 		reportedMessageLevel = highestMessageLevel;
@@ -2074,6 +2243,12 @@ void DataSignal :: WriteArtifactInfoToXML (RGTextOutput& text, const RGString& i
 		text << indent << "\t<level>" << reportedMessageLevel << "</level>" << endLine;
 		text << indent << "\t<mean>" << GetMean () << "</mean>" << endLine;
 		text << indent << "\t<height>" << peak << "</height>" << endLine;
+
+		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		if (totalCorrection != 0.0)
+			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+
 //		text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 
@@ -2164,6 +2339,7 @@ void DataSignal :: WriteTableArtifactInfoToXML (RGTextOutput& text, RGTextOutput
 	int reportedMessageLevel;
 	bool hasThreeLoci;
 	bool needLocus0;
+	double totalCorrection;
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
@@ -2183,8 +2359,15 @@ void DataSignal :: WriteTableArtifactInfoToXML (RGTextOutput& text, RGTextOutput
 		text << indent << "\t<Id>" << GetSignalID () << "</Id>" << endLine;
 		text << indent << "\t<Level>" << reportedMessageLevel << "</Level>" << endLine;
 		text << indent << "\t<RFU>" << peak << "</RFU>" << endLine;
+
+		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		if (totalCorrection != 0.0)
+			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
+
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
+		text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 
@@ -3282,6 +3465,8 @@ bool SampledData :: TestForBiasedFit (const DataSignal* currentSignal, double li
 		}
 
 		if (!secondaryPeak) {
+
+
 
 			lineFit = InnerProductWithConstantFunction ((int)floor (endSearch), locMax, aveHeight);
 
@@ -9968,7 +10153,7 @@ DataSignal* DualDoubleGaussian :: GetSecondCurve () {
 }
 
 
-CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0), mHeight (0.0), mPrevious (NULL), mNext (NULL) {
+CraterSignal :: CraterSignal () : ParametricCurve (), mMean (0.0), mSigma (1.0), mHeight (0.0), mTroughHeight (0.0), mPrevious (NULL), mNext (NULL) {
 
 	mIsGraphable = false;
 	mPullupTolerance = halfCraterPullupTolerance;
@@ -10035,6 +10220,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 		max = peak2;
 
 	mHeight = 0.5 * (est1 + est2);
+	mTroughHeight = 0.5 * (v1 + v2);
 
 	if (mHeight < max)
 		mHeight = max;
@@ -10136,6 +10322,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 		max = peak2;
 
 	mHeight = 0.5 * (est1 + est2);
+	mTroughHeight = 0.5 * (v1 + v2);
 
 	if (mHeight < max)
 		mHeight = max;
@@ -10182,7 +10369,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 
 
 CraterSignal :: CraterSignal (const CraterSignal& c) : ParametricCurve (c), mMean (c.mMean), mSigma (c.mSigma), mHeight (c.mHeight),
-mPrevious (c.mPrevious), mNext (c.mNext) {
+mTroughHeight (c.mTroughHeight), mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
@@ -10193,7 +10380,7 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 
 CraterSignal :: CraterSignal (double mean, const CraterSignal& c) : ParametricCurve (c), mMean (mean), mSigma (c.mSigma), mHeight (c.mHeight),
-mPrevious (c.mPrevious), mNext (c.mNext) {
+mTroughHeight (c.mTroughHeight), mPrevious (c.mPrevious), mNext (c.mNext) {
 
 	mIsGraphable = false;
 	ApproximateBioID = c.ApproximateBioID;
@@ -10204,7 +10391,7 @@ mPrevious (c.mPrevious), mNext (c.mNext) {
 
 
 
-CraterSignal :: CraterSignal (const CraterSignal& c, CoordinateTransform* trans) : ParametricCurve (c), mHeight (c.mHeight),
+CraterSignal :: CraterSignal (const CraterSignal& c, CoordinateTransform* trans) : ParametricCurve (c), mHeight (c.mHeight), mTroughHeight (c.mTroughHeight),
 mPrevious (c.mPrevious), mNext (c.mNext)  {
 
 	mMean = trans->EvaluateWithExtrapolation (c.mMean);

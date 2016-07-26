@@ -315,6 +315,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_252224A74E06453C9BD3564D2C471781"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_26A0D08DBA4B479EBB3174C521A8F791"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -652,6 +658,12 @@
         "Entry"
         {
         "MsmKey" = "8:_4D1E31028E2E46A38949B16BB36B5017"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4DC8306541404A48A397E07747885308"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1059,6 +1071,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_831DE8A14B3448349CB630E6370CD0F0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_834A9FA7EE764061953D456123205818"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1084,6 +1102,12 @@
         "Entry"
         {
         "MsmKey" = "8:_859A0F099A0F45C5B5682609B5BEE7CC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_859FF439EA7F49D29F154AC844878319"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1198,6 +1222,18 @@
         "Entry"
         {
         "MsmKey" = "8:_968FA30299C6493BB483C93E5E8E3E6F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_969ECB8976164C3296511CC1C5C9074B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_96AB7F2B31604E8E944F16D4ACC7D2BB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1881,6 +1917,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E6774C800F404E2E82967C23ABD67F33"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E9AEECA762CC4CA8A047C07EEAE66DF3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1899,6 +1941,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_ECE633289B8741C79FCCA1A623674959"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_ED01ABB406FE4829934AB2C1B3B49CF4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1906,6 +1954,12 @@
         "Entry"
         {
         "MsmKey" = "8:_EDB2269B2C7F4C19BDF5C4A62257028D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EF291618AB814FE7A3A13F8E4828E0AF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3118,6 +3172,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_252224A74E06453C9BD3564D2C471781"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX_HID\\NETBIO_FLEXPLEX_HID_LabSettings.xml"
+            "TargetName" = "8:NETBIO_FLEXPLEX_HID_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_405C515E542547A9848B214F97A44D1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_26A0D08DBA4B479EBB3174C521A8F791"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\RyanClarkeCannabis_LadderInfo.xml"
@@ -4244,6 +4318,26 @@
             "TargetName" = "8:IDNO250_HID_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_5A5D98D08AD34DCC8A0FFE107C4D6892"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4DC8306541404A48A397E07747885308"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX_HID\\NETBIO_FLEXPLEX_HID_access.txt"
+            "TargetName" = "8:NETBIO_FLEXPLEX_HID_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_405C515E542547A9848B214F97A44D1E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5598,6 +5692,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_831DE8A14B3448349CB630E6370CD0F0"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX\\NETBIO_FLEXPLEX_LabSettings.xml"
+            "TargetName" = "8:NETBIO_FLEXPLEX_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_F05BDBA8F989465E9BC1D41FCC231903"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_834A9FA7EE764061953D456123205818"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\IDplusNO250\\IDplusNO250_access.txt"
@@ -5684,6 +5798,26 @@
             "TargetName" = "8:PPESX17_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_B48106DFA4DB4C2E90FA92F0434DF1FE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_859FF439EA7F49D29F154AC844878319"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX_HID\\NETBIO_FLEXPLEX_HID_StdSettings.xml"
+            "TargetName" = "8:NETBIO_FLEXPLEX_HID_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_405C515E542547A9848B214F97A44D1E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6064,6 +6198,46 @@
             "TargetName" = "8:GFHID_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_73FD1C50E6AD4DCBAEA98C7B60F7D802"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_969ECB8976164C3296511CC1C5C9074B"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX_HID\\NETBIO_FLEXPLEX_HID_MessageBookV4.0.xml"
+            "TargetName" = "8:NETBIO_FLEXPLEX_HID_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_405C515E542547A9848B214F97A44D1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_96AB7F2B31604E8E944F16D4ACC7D2BB"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX\\NETBIO_FLEXPLEX_MessageBookV4.0.xml"
+            "TargetName" = "8:NETBIO_FLEXPLEX_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_F05BDBA8F989465E9BC1D41FCC231903"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8338,6 +8512,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E6774C800F404E2E82967C23ABD67F33"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX\\NETBIO_FLEXPLEX_StdSettings.xml"
+            "TargetName" = "8:NETBIO_FLEXPLEX_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_F05BDBA8F989465E9BC1D41FCC231903"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E9AEECA762CC4CA8A047C07EEAE66DF3"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\PowerPlexFusionHID\\PPF_ladder1_A12_01.hid"
@@ -8398,6 +8592,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ECE633289B8741C79FCCA1A623674959"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX\\NETBIO_FLEXPLEX_access.txt"
+            "TargetName" = "8:NETBIO_FLEXPLEX_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_F05BDBA8F989465E9BC1D41FCC231903"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ED01ABB406FE4829934AB2C1B3B49CF4"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\ID\\ID_access.txt"
@@ -8424,6 +8638,26 @@
             "TargetName" = "8:QIAGEN_ARGUS_x12_QS_HID_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_BB683411A462421FA2D9F92136A0208D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EF291618AB814FE7A3A13F8E4828E0AF"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\NetBioFlexPlex_LadderInfo.xml"
+            "TargetName" = "8:NetBioFlexPlex_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -9334,6 +9568,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_405C515E542547A9848B214F97A44D1E"
+                                    {
+                                    "Name" = "8:NETBIO_FLEXPLEX_HID"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_B5C727706A6042FDB923097C5B54767F"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_41E9A6935278444CAF46F35941BEDF0E"
                                     {
                                     "Name" = "8:PP18D_HID"
@@ -9730,6 +9975,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_F05BDBA8F989465E9BC1D41FCC231903"
+                                    {
+                                    "Name" = "8:NETBIO_FLEXPLEX"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_F77BC941285A42DB88BF210A6F23FAAE"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -9785,8 +10041,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{F0760426-362B-4332-909B-BE210F988E10}"
-        "PackageCode" = "8:{AFBC481B-3B17-40A9-8A43-7493AEA637DB}"
+        "ProductCode" = "8:{5BCAEA4C-50E1-4862-AFEB-0C4FC04331A4}"
+        "PackageCode" = "8:{A5D829D5-16AA-4869-9CF7-41F6EF482416}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

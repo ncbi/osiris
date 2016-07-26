@@ -669,6 +669,9 @@ Boolean ChannelData :: ReportXMLSmartNoticeObjects (RGTextOutput& text, RGTextOu
 				//tempText << "\t\t\t</ExportProtocolList>\n";
 			}
 
+			else
+				tempText << "\t\t\t<MsgName>" << nextNotice->GetMessageName () << "</MsgName>\n";
+
 			tempText << "\t\t</Message>\n";
 			text.ResetOutputLevel ();
 			tempText.ResetOutputLevel ();
@@ -776,6 +779,9 @@ Boolean ChannelData :: ReportXMLILSSmartNoticeObjects (RGTextOutput& text, RGTex
 					//tempText << "\t\t\t" << nextNotice->GetExportProtocolInformation ();
 					//tempText << "\t\t\t</ExportProtocolList>\n";
 				}
+
+				else
+					tempText << "\t\t\t<MsgName>" << nextNotice->GetMessageName () << "</MsgName>\n";
 
 				tempText << "\t\t</Message>\n";
 			}
@@ -2505,6 +2511,12 @@ void ChannelData :: TestAllelesAgainstOverloadThresholdSM () {
 
 
 int ChannelData :: TestSignalsForOffScaleSM () {
+
+	return -1;
+}
+
+
+int ChannelData :: PreTestForSignalOffScaleSM () {
 
 	return -1;
 }

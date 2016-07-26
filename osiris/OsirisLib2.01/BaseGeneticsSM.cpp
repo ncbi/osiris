@@ -322,6 +322,7 @@ Boolean BaseLocus :: ReportXMLSmartNoticeObjects (RGTextOutput& text, RGTextOutp
 					tempText << "\t\t<Message>\n";
 					tempText << "\t\t\t<MessageNumber>" << msgNum << "</MessageNumber>\n";
 					tempText << "\t\t\t<Text>" << nextNotice->GetMessage () << nextNotice->GetMessageData () << "</Text>\n";
+					tempText << "\t\t\t<MsgName>" << nextNotice->GetMessageName () << "</MsgName>\n";
 					tempText << "\t\t</Message>\n";
 				}
 			}
@@ -427,6 +428,9 @@ Boolean BaseLocus :: ReportXMLSmartNoticeObjectsWithExport (RGTextOutput& text, 
 					//tempText << "\t\t\t" << nextNotice->GetExportProtocolInformation ();
 					//tempText << "\t\t\t</ExportProtocolList>\n";
 				}
+
+				else
+					tempText << "\t\t\t<MsgName>" << nextNotice->GetMessageName () << "</MsgName>\n";
 
 				tempText << "\t\t</Message>\n";
 			}

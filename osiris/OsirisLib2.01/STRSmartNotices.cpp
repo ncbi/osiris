@@ -906,24 +906,6 @@ int smDefaultsAreOverridden::sMessageIndex = 0;
 int smDefaultsAreOverridden::sMessageScope = 0;
 
 
-RGString smLaserOffScalePullupOrCraterNotPrimary::sName = "smLaserOffScalePullupOrCraterNotPrimary";
-int smLaserOffScalePullupOrCraterNotPrimary::sSubject = smLaserOffScalePullupOrCraterNotPrimary::LoadType ();
-int smLaserOffScalePullupOrCraterNotPrimary::sMessageIndex = 0;
-int smLaserOffScalePullupOrCraterNotPrimary::sMessageScope = 0;
-
-
-RGString smLaserOffScalePrimary::sName = "smLaserOffScalePrimary";
-int smLaserOffScalePrimary::sSubject = smLaserOffScalePrimary::LoadType ();
-int smLaserOffScalePrimary::sMessageIndex = 0;
-int smLaserOffScalePrimary::sMessageScope = 0;
-
-
-RGString smLaserOffScaleNoInterchannelLink::sName = "smLaserOffScaleNoInterchannelLink";
-int smLaserOffScaleNoInterchannelLink::sSubject = smLaserOffScaleNoInterchannelLink::LoadType ();
-int smLaserOffScaleNoInterchannelLink::sMessageIndex = 0;
-int smLaserOffScaleNoInterchannelLink::sMessageScope = 0;
-
-
 RGString smAssociatedLadderIsCritical::sName = "smAssociatedLadderIsCritical";
 int smAssociatedLadderIsCritical::sSubject = smAssociatedLadderIsCritical::LoadType ();
 int smAssociatedLadderIsCritical::sMessageIndex = 0;
@@ -1036,18 +1018,6 @@ RGString smBaselineRelativeAdenylation::sName = "smBaselineRelativeAdenylation";
 int smBaselineRelativeAdenylation::sSubject = smBaselineRelativeAdenylation::LoadType ();
 int smBaselineRelativeAdenylation::sMessageIndex = 0;
 int smBaselineRelativeAdenylation::sMessageScope = 0;
-
-
-RGString smBaselineRelativeFractionalFilter::sName = "smBaselineRelativeFractionalFilter";
-int smBaselineRelativeFractionalFilter::sSubject = smBaselineRelativeFractionalFilter::LoadType ();
-int smBaselineRelativeFractionalFilter::sMessageIndex = 0;
-int smBaselineRelativeFractionalFilter::sMessageScope = 0;
-
-
-RGString smBaselineRelativePullupFractionalFilter::sName = "smBaselineRelativePullupFractionalFilter";
-int smBaselineRelativePullupFractionalFilter::sSubject = smBaselineRelativePullupFractionalFilter::LoadType ();
-int smBaselineRelativePullupFractionalFilter::sMessageIndex = 0;
-int smBaselineRelativePullupFractionalFilter::sMessageScope = 0;
 
 
 RGString smBaselineRelativeBelowMinRFU::sName = "smBaselineRelativeBelowMinRFU";
@@ -1308,6 +1278,42 @@ int smIsQualityLocus::sMessageIndex = 0;
 int smIsQualityLocus::sMessageScope = 0;
 
 
+RGString smScaleILSPrimerSearchPreset::sName = "smScaleILSPrimerSearchPreset";
+int smScaleILSPrimerSearchPreset::sSubject = smScaleILSPrimerSearchPreset::LoadType ();
+int smScaleILSPrimerSearchPreset::sMessageIndex = 0;
+int smScaleILSPrimerSearchPreset::sMessageScope = 0;
+
+
+RGString smNumberOfLastILSPeaksInScale::sName = "smNumberOfLastILSPeaksInScale";
+int smNumberOfLastILSPeaksInScale::sSubject = smNumberOfLastILSPeaksInScale::LoadType ();
+int smNumberOfLastILSPeaksInScale::sMessageIndex = 0;
+int smNumberOfLastILSPeaksInScale::sMessageScope = 0;
+
+
+RGString smPercentLastILSPeaksInScaling::sName = "smPercentLastILSPeaksInScaling";
+int smPercentLastILSPeaksInScaling::sSubject = smPercentLastILSPeaksInScaling::LoadType ();
+int smPercentLastILSPeaksInScaling::sMessageIndex = 0;
+int smPercentLastILSPeaksInScaling::sMessageScope = 0;
+
+
+RGString smLaserOffScale::sName = "smLaserOffScale";
+int smLaserOffScale::sSubject = smLaserOffScale::LoadType ();
+int smLaserOffScale::sMessageIndex = 0;
+int smLaserOffScale::sMessageScope = 0;
+
+
+RGString smCalculatedPurePullup::sName = "smCalculatedPurePullup";
+int smCalculatedPurePullup::sSubject = smCalculatedPurePullup::LoadType ();
+int smCalculatedPurePullup::sMessageIndex = 0;
+int smCalculatedPurePullup::sMessageScope = 0;
+
+
+RGString smPossiblePullUp::sName = "smPossiblePullUp";
+int smPossiblePullUp::sSubject = smPossiblePullUp::LoadType ();
+int smPossiblePullUp::sMessageIndex = 0;
+int smPossiblePullUp::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1458,9 +1464,6 @@ PERSISTENT_DEFINITION (smLocusHasPeaksBetweenDetectionAndAnalysisThresholds, 254
 PERSISTENT_DEFINITION (smUnexpectedNoOfGridPeaks, 2547, "smUnexpectedNoOfGridPeaks")
 PERSISTENT_DEFINITION (smMoreThanThreeAlleles, 2548, "smMoreThanThreeAlleles")
 PERSISTENT_DEFINITION (smDefaultsAreOverridden, 2549, "smDefaultsAreOverridden")
-PERSISTENT_DEFINITION (smLaserOffScalePullupOrCraterNotPrimary, 2550, "smLaserOffScalePullupOrCraterNotPrimary")
-PERSISTENT_DEFINITION (smLaserOffScalePrimary, 2551, "smLaserOffScalePrimary")
-PERSISTENT_DEFINITION (smLaserOffScaleNoInterchannelLink, 2552, "smLaserOffScaleNoInterchannelLink")
 PERSISTENT_DEFINITION (smAssociatedLadderIsCritical, 2553, "smAssociatedLadderIsCritical")
 PERSISTENT_DEFINITION (smAssociatedLadderLocusIsCritical, 2554, "smAssociatedLadderLocusIsCritical")
 PERSISTENT_DEFINITION (smChannelHasRaisedBaseline, 2555, "smChannelHasRaisedBaseline")
@@ -1480,8 +1483,6 @@ PERSISTENT_DEFINITION (smLocusIsYLinked, 2568, "smLocusIsYLinked")
 PERSISTENT_DEFINITION (smNumberAllelesBelowExpectation, 2569, "smNumberAllelesBelowExpectation")
 PERSISTENT_DEFINITION (smBaselineRelativeStutter, 2570, "smBaselineRelativeStutter")
 PERSISTENT_DEFINITION (smBaselineRelativeAdenylation, 2571, "smBaselineRelativeAdenylation")
-PERSISTENT_DEFINITION (smBaselineRelativeFractionalFilter, 2572, "smBaselineRelativeFractionalFilter")
-PERSISTENT_DEFINITION (smBaselineRelativePullupFractionalFilter, 2573, "smBaselineRelativePullupFractionalFilter")
 PERSISTENT_DEFINITION (smBaselineRelativeBelowMinRFU, 2574, "smBaselineRelativeBelowMinRFU")
 PERSISTENT_DEFINITION (smBaselineRelativeBelowMinInterlocusRFU, 2575, "smBaselineRelativeBelowMinInterlocusRFU")
 PERSISTENT_DEFINITION (smTestRelativeBaselinePreset, 2576, "smTestRelativeBaselinePreset")
@@ -1525,6 +1526,12 @@ PERSISTENT_DEFINITION (smExtendLociEdgeToEdgePreset, 2613, "smExtendLociEdgeToEd
 PERSISTENT_DEFINITION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset, 2614, "smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset")
 PERSISTENT_DEFINITION (smMaxILSBPForExtendedLocus, 2615, "smMaxILSBPForExtendedLocus")
 PERSISTENT_DEFINITION (smIsQualityLocus, 2616, "smIsQualityLocus")
+PERSISTENT_DEFINITION (smScaleILSPrimerSearchPreset, 2617, "smScaleILSPrimerSearchPreset")
+PERSISTENT_DEFINITION (smNumberOfLastILSPeaksInScale, 2618, "smNumberOfLastILSPeaksInScale")
+PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPeaksInScaling")
+PERSISTENT_DEFINITION (smLaserOffScale, 2620, "smLaserOffScale")
+PERSISTENT_DEFINITION (smCalculatedPurePullup, 2621, "smCalculatedPurePullup")
+PERSISTENT_DEFINITION (smPossiblePullUp, 2622, "smPossiblePullUp")
 
 
 
@@ -10529,186 +10536,6 @@ int smDefaultsAreOverridden :: LoadType () {
 
 
 
-smLaserOffScalePullupOrCraterNotPrimary :: smLaserOffScalePullupOrCraterNotPrimary () : SmartNotice () {
-
-}
-
-
-smLaserOffScalePullupOrCraterNotPrimary :: smLaserOffScalePullupOrCraterNotPrimary (const smLaserOffScalePullupOrCraterNotPrimary& note) : SmartNotice ((const SmartNotice&) note) {
-
-}
-
-
-
-smLaserOffScalePullupOrCraterNotPrimary :: ~smLaserOffScalePullupOrCraterNotPrimary () {
-
-}
-
-
-int smLaserOffScalePullupOrCraterNotPrimary :: GetSubject () const {
-
-	return smLaserOffScalePullupOrCraterNotPrimary::sSubject;
-}
-
-
-void smLaserOffScalePullupOrCraterNotPrimary :: SetIndexAndScope (int index, int scope) const {
-
-	smLaserOffScalePullupOrCraterNotPrimary::sMessageIndex = index;
-	smLaserOffScalePullupOrCraterNotPrimary::sMessageScope = scope;
-}
-
-
-int smLaserOffScalePullupOrCraterNotPrimary :: GetMessageIndex () const {
-
-	return smLaserOffScalePullupOrCraterNotPrimary :: sMessageIndex;
-}
-
-
-int smLaserOffScalePullupOrCraterNotPrimary :: GetScope () const {
-
-	return smLaserOffScalePullupOrCraterNotPrimary :: sMessageScope;
-}
-
-
-RGString smLaserOffScalePullupOrCraterNotPrimary :: GetName () const {
-
-	return smLaserOffScalePullupOrCraterNotPrimary :: sName;
-}
-
-
-
-int smLaserOffScalePullupOrCraterNotPrimary :: LoadType () {
-
-	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smLaserOffScalePullupOrCraterNotPrimary* noticeType = new smLaserOffScalePullupOrCraterNotPrimary;
-	warehouse->AddType (noticeType);
-	return 1;
-}
-
-
-
-
-
-smLaserOffScalePrimary :: smLaserOffScalePrimary () : SmartNotice () {
-
-}
-
-
-smLaserOffScalePrimary :: smLaserOffScalePrimary (const smLaserOffScalePrimary& note) : SmartNotice ((const SmartNotice&) note) {
-
-}
-
-
-
-smLaserOffScalePrimary :: ~smLaserOffScalePrimary () {
-
-}
-
-
-int smLaserOffScalePrimary :: GetSubject () const {
-
-	return smLaserOffScalePrimary::sSubject;
-}
-
-
-void smLaserOffScalePrimary :: SetIndexAndScope (int index, int scope) const {
-
-	smLaserOffScalePrimary::sMessageIndex = index;
-	smLaserOffScalePrimary::sMessageScope = scope;
-}
-
-
-int smLaserOffScalePrimary :: GetMessageIndex () const {
-
-	return smLaserOffScalePrimary :: sMessageIndex;
-}
-
-
-int smLaserOffScalePrimary :: GetScope () const {
-
-	return smLaserOffScalePrimary :: sMessageScope;
-}
-
-
-RGString smLaserOffScalePrimary :: GetName () const {
-
-	return smLaserOffScalePrimary :: sName;
-}
-
-
-
-int smLaserOffScalePrimary :: LoadType () {
-
-	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smLaserOffScalePrimary* noticeType = new smLaserOffScalePrimary;
-	warehouse->AddType (noticeType);
-	return 1;
-}
-
-
-
-
-
-smLaserOffScaleNoInterchannelLink :: smLaserOffScaleNoInterchannelLink () : SmartNotice () {
-
-}
-
-
-smLaserOffScaleNoInterchannelLink :: smLaserOffScaleNoInterchannelLink (const smLaserOffScaleNoInterchannelLink& note) : SmartNotice ((const SmartNotice&) note) {
-
-}
-
-
-
-smLaserOffScaleNoInterchannelLink :: ~smLaserOffScaleNoInterchannelLink () {
-
-}
-
-
-int smLaserOffScaleNoInterchannelLink :: GetSubject () const {
-
-	return smLaserOffScaleNoInterchannelLink::sSubject;
-}
-
-
-void smLaserOffScaleNoInterchannelLink :: SetIndexAndScope (int index, int scope) const {
-
-	smLaserOffScaleNoInterchannelLink::sMessageIndex = index;
-	smLaserOffScaleNoInterchannelLink::sMessageScope = scope;
-}
-
-
-int smLaserOffScaleNoInterchannelLink :: GetMessageIndex () const {
-
-	return smLaserOffScaleNoInterchannelLink :: sMessageIndex;
-}
-
-
-int smLaserOffScaleNoInterchannelLink :: GetScope () const {
-
-	return smLaserOffScaleNoInterchannelLink :: sMessageScope;
-}
-
-
-RGString smLaserOffScaleNoInterchannelLink :: GetName () const {
-
-	return smLaserOffScaleNoInterchannelLink :: sName;
-}
-
-
-
-int smLaserOffScaleNoInterchannelLink :: LoadType () {
-
-	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smLaserOffScaleNoInterchannelLink* noticeType = new smLaserOffScaleNoInterchannelLink;
-	warehouse->AddType (noticeType);
-	return 1;
-}
-
-
-
-
-
 smAssociatedLadderIsCritical :: smAssociatedLadderIsCritical () : SmartNotice () {
 
 }
@@ -11841,126 +11668,6 @@ int smBaselineRelativeAdenylation :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smBaselineRelativeAdenylation* noticeType = new smBaselineRelativeAdenylation;
-	warehouse->AddType (noticeType);
-	return 1;
-}
-
-
-
-
-
-smBaselineRelativeFractionalFilter :: smBaselineRelativeFractionalFilter () : SmartNotice () {
-
-}
-
-
-smBaselineRelativeFractionalFilter :: smBaselineRelativeFractionalFilter (const smBaselineRelativeFractionalFilter& note) : SmartNotice ((const SmartNotice&) note) {
-
-}
-
-
-
-smBaselineRelativeFractionalFilter :: ~smBaselineRelativeFractionalFilter () {
-
-}
-
-
-int smBaselineRelativeFractionalFilter :: GetSubject () const {
-
-	return smBaselineRelativeFractionalFilter::sSubject;
-}
-
-
-void smBaselineRelativeFractionalFilter :: SetIndexAndScope (int index, int scope) const {
-
-	smBaselineRelativeFractionalFilter::sMessageIndex = index;
-	smBaselineRelativeFractionalFilter::sMessageScope = scope;
-}
-
-
-int smBaselineRelativeFractionalFilter :: GetMessageIndex () const {
-
-	return smBaselineRelativeFractionalFilter :: sMessageIndex;
-}
-
-
-int smBaselineRelativeFractionalFilter :: GetScope () const {
-
-	return smBaselineRelativeFractionalFilter :: sMessageScope;
-}
-
-
-RGString smBaselineRelativeFractionalFilter :: GetName () const {
-
-	return smBaselineRelativeFractionalFilter :: sName;
-}
-
-
-
-int smBaselineRelativeFractionalFilter :: LoadType () {
-
-	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smBaselineRelativeFractionalFilter* noticeType = new smBaselineRelativeFractionalFilter;
-	warehouse->AddType (noticeType);
-	return 1;
-}
-
-
-
-
-
-smBaselineRelativePullupFractionalFilter :: smBaselineRelativePullupFractionalFilter () : SmartNotice () {
-
-}
-
-
-smBaselineRelativePullupFractionalFilter :: smBaselineRelativePullupFractionalFilter (const smBaselineRelativePullupFractionalFilter& note) : SmartNotice ((const SmartNotice&) note) {
-
-}
-
-
-
-smBaselineRelativePullupFractionalFilter :: ~smBaselineRelativePullupFractionalFilter () {
-
-}
-
-
-int smBaselineRelativePullupFractionalFilter :: GetSubject () const {
-
-	return smBaselineRelativePullupFractionalFilter::sSubject;
-}
-
-
-void smBaselineRelativePullupFractionalFilter :: SetIndexAndScope (int index, int scope) const {
-
-	smBaselineRelativePullupFractionalFilter::sMessageIndex = index;
-	smBaselineRelativePullupFractionalFilter::sMessageScope = scope;
-}
-
-
-int smBaselineRelativePullupFractionalFilter :: GetMessageIndex () const {
-
-	return smBaselineRelativePullupFractionalFilter :: sMessageIndex;
-}
-
-
-int smBaselineRelativePullupFractionalFilter :: GetScope () const {
-
-	return smBaselineRelativePullupFractionalFilter :: sMessageScope;
-}
-
-
-RGString smBaselineRelativePullupFractionalFilter :: GetName () const {
-
-	return smBaselineRelativePullupFractionalFilter :: sName;
-}
-
-
-
-int smBaselineRelativePullupFractionalFilter :: LoadType () {
-
-	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smBaselineRelativePullupFractionalFilter* noticeType = new smBaselineRelativePullupFractionalFilter;
 	warehouse->AddType (noticeType);
 	return 1;
 }
@@ -14541,6 +14248,366 @@ int smIsQualityLocus :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smIsQualityLocus* noticeType = new smIsQualityLocus;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smScaleILSPrimerSearchPreset :: smScaleILSPrimerSearchPreset () : SmartNotice () {
+
+}
+
+
+smScaleILSPrimerSearchPreset :: smScaleILSPrimerSearchPreset (const smScaleILSPrimerSearchPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smScaleILSPrimerSearchPreset :: ~smScaleILSPrimerSearchPreset () {
+
+}
+
+
+int smScaleILSPrimerSearchPreset :: GetSubject () const {
+
+	return smScaleILSPrimerSearchPreset::sSubject;
+}
+
+
+void smScaleILSPrimerSearchPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smScaleILSPrimerSearchPreset::sMessageIndex = index;
+	smScaleILSPrimerSearchPreset::sMessageScope = scope;
+}
+
+
+int smScaleILSPrimerSearchPreset :: GetMessageIndex () const {
+
+	return smScaleILSPrimerSearchPreset :: sMessageIndex;
+}
+
+
+int smScaleILSPrimerSearchPreset :: GetScope () const {
+
+	return smScaleILSPrimerSearchPreset :: sMessageScope;
+}
+
+
+RGString smScaleILSPrimerSearchPreset :: GetName () const {
+
+	return smScaleILSPrimerSearchPreset :: sName;
+}
+
+
+
+int smScaleILSPrimerSearchPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smScaleILSPrimerSearchPreset* noticeType = new smScaleILSPrimerSearchPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smNumberOfLastILSPeaksInScale :: smNumberOfLastILSPeaksInScale () : SmartNotice () {
+
+}
+
+
+smNumberOfLastILSPeaksInScale :: smNumberOfLastILSPeaksInScale (const smNumberOfLastILSPeaksInScale& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smNumberOfLastILSPeaksInScale :: ~smNumberOfLastILSPeaksInScale () {
+
+}
+
+
+int smNumberOfLastILSPeaksInScale :: GetSubject () const {
+
+	return smNumberOfLastILSPeaksInScale::sSubject;
+}
+
+
+void smNumberOfLastILSPeaksInScale :: SetIndexAndScope (int index, int scope) const {
+
+	smNumberOfLastILSPeaksInScale::sMessageIndex = index;
+	smNumberOfLastILSPeaksInScale::sMessageScope = scope;
+}
+
+
+int smNumberOfLastILSPeaksInScale :: GetMessageIndex () const {
+
+	return smNumberOfLastILSPeaksInScale :: sMessageIndex;
+}
+
+
+int smNumberOfLastILSPeaksInScale :: GetScope () const {
+
+	return smNumberOfLastILSPeaksInScale :: sMessageScope;
+}
+
+
+RGString smNumberOfLastILSPeaksInScale :: GetName () const {
+
+	return smNumberOfLastILSPeaksInScale :: sName;
+}
+
+
+
+int smNumberOfLastILSPeaksInScale :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smNumberOfLastILSPeaksInScale* noticeType = new smNumberOfLastILSPeaksInScale;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPercentLastILSPeaksInScaling :: smPercentLastILSPeaksInScaling () : SmartNotice () {
+
+}
+
+
+smPercentLastILSPeaksInScaling :: smPercentLastILSPeaksInScaling (const smPercentLastILSPeaksInScaling& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPercentLastILSPeaksInScaling :: ~smPercentLastILSPeaksInScaling () {
+
+}
+
+
+int smPercentLastILSPeaksInScaling :: GetSubject () const {
+
+	return smPercentLastILSPeaksInScaling::sSubject;
+}
+
+
+void smPercentLastILSPeaksInScaling :: SetIndexAndScope (int index, int scope) const {
+
+	smPercentLastILSPeaksInScaling::sMessageIndex = index;
+	smPercentLastILSPeaksInScaling::sMessageScope = scope;
+}
+
+
+int smPercentLastILSPeaksInScaling :: GetMessageIndex () const {
+
+	return smPercentLastILSPeaksInScaling :: sMessageIndex;
+}
+
+
+int smPercentLastILSPeaksInScaling :: GetScope () const {
+
+	return smPercentLastILSPeaksInScaling :: sMessageScope;
+}
+
+
+RGString smPercentLastILSPeaksInScaling :: GetName () const {
+
+	return smPercentLastILSPeaksInScaling :: sName;
+}
+
+
+
+int smPercentLastILSPeaksInScaling :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPercentLastILSPeaksInScaling* noticeType = new smPercentLastILSPeaksInScaling;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smLaserOffScale :: smLaserOffScale () : SmartNotice () {
+
+}
+
+
+smLaserOffScale :: smLaserOffScale (const smLaserOffScale& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smLaserOffScale :: ~smLaserOffScale () {
+
+}
+
+
+int smLaserOffScale :: GetSubject () const {
+
+	return smLaserOffScale::sSubject;
+}
+
+
+void smLaserOffScale :: SetIndexAndScope (int index, int scope) const {
+
+	smLaserOffScale::sMessageIndex = index;
+	smLaserOffScale::sMessageScope = scope;
+}
+
+
+int smLaserOffScale :: GetMessageIndex () const {
+
+	return smLaserOffScale :: sMessageIndex;
+}
+
+
+int smLaserOffScale :: GetScope () const {
+
+	return smLaserOffScale :: sMessageScope;
+}
+
+
+RGString smLaserOffScale :: GetName () const {
+
+	return smLaserOffScale :: sName;
+}
+
+
+
+int smLaserOffScale :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smLaserOffScale* noticeType = new smLaserOffScale;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smCalculatedPurePullup :: smCalculatedPurePullup () : SmartNotice () {
+
+}
+
+
+smCalculatedPurePullup :: smCalculatedPurePullup (const smCalculatedPurePullup& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smCalculatedPurePullup :: ~smCalculatedPurePullup () {
+
+}
+
+
+int smCalculatedPurePullup :: GetSubject () const {
+
+	return smCalculatedPurePullup::sSubject;
+}
+
+
+void smCalculatedPurePullup :: SetIndexAndScope (int index, int scope) const {
+
+	smCalculatedPurePullup::sMessageIndex = index;
+	smCalculatedPurePullup::sMessageScope = scope;
+}
+
+
+int smCalculatedPurePullup :: GetMessageIndex () const {
+
+	return smCalculatedPurePullup :: sMessageIndex;
+}
+
+
+int smCalculatedPurePullup :: GetScope () const {
+
+	return smCalculatedPurePullup :: sMessageScope;
+}
+
+
+RGString smCalculatedPurePullup :: GetName () const {
+
+	return smCalculatedPurePullup :: sName;
+}
+
+
+
+int smCalculatedPurePullup :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smCalculatedPurePullup* noticeType = new smCalculatedPurePullup;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPossiblePullUp :: smPossiblePullUp () : SmartNotice () {
+
+}
+
+
+smPossiblePullUp :: smPossiblePullUp (const smPossiblePullUp& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPossiblePullUp :: ~smPossiblePullUp () {
+
+}
+
+
+int smPossiblePullUp :: GetSubject () const {
+
+	return smPossiblePullUp::sSubject;
+}
+
+
+void smPossiblePullUp :: SetIndexAndScope (int index, int scope) const {
+
+	smPossiblePullUp::sMessageIndex = index;
+	smPossiblePullUp::sMessageScope = scope;
+}
+
+
+int smPossiblePullUp :: GetMessageIndex () const {
+
+	return smPossiblePullUp :: sMessageIndex;
+}
+
+
+int smPossiblePullUp :: GetScope () const {
+
+	return smPossiblePullUp :: sMessageScope;
+}
+
+
+RGString smPossiblePullUp :: GetName () const {
+
+	return smPossiblePullUp :: sName;
+}
+
+
+
+int smPossiblePullUp :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPossiblePullUp* noticeType = new smPossiblePullUp;
 	warehouse->AddType (noticeType);
 	return 1;
 }

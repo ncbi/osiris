@@ -161,9 +161,6 @@ PERSISTENT_PREDECLARATION (smLocusHasPeaksBetweenDetectionAndAnalysisThresholds)
 PERSISTENT_PREDECLARATION (smUnexpectedNoOfGridPeaks)
 PERSISTENT_PREDECLARATION (smMoreThanThreeAlleles)
 PERSISTENT_PREDECLARATION (smDefaultsAreOverridden)
-PERSISTENT_PREDECLARATION (smLaserOffScalePullupOrCraterNotPrimary)
-PERSISTENT_PREDECLARATION (smLaserOffScalePrimary)
-PERSISTENT_PREDECLARATION (smLaserOffScaleNoInterchannelLink)
 PERSISTENT_PREDECLARATION (smAssociatedLadderIsCritical)
 PERSISTENT_PREDECLARATION (smAssociatedLadderLocusIsCritical)
 PERSISTENT_PREDECLARATION (smChannelHasRaisedBaseline)
@@ -183,8 +180,6 @@ PERSISTENT_PREDECLARATION (smLocusIsYLinked)
 PERSISTENT_PREDECLARATION (smNumberAllelesBelowExpectation)
 PERSISTENT_PREDECLARATION (smBaselineRelativeStutter)
 PERSISTENT_PREDECLARATION (smBaselineRelativeAdenylation)
-PERSISTENT_PREDECLARATION (smBaselineRelativeFractionalFilter)
-PERSISTENT_PREDECLARATION (smBaselineRelativePullupFractionalFilter)
 PERSISTENT_PREDECLARATION (smBaselineRelativeBelowMinRFU)
 PERSISTENT_PREDECLARATION (smBaselineRelativeBelowMinInterlocusRFU)
 PERSISTENT_PREDECLARATION (smTestRelativeBaselinePreset)
@@ -228,6 +223,12 @@ PERSISTENT_PREDECLARATION (smExtendLociEdgeToEdgePreset)
 PERSISTENT_PREDECLARATION (smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset)
 PERSISTENT_PREDECLARATION (smMaxILSBPForExtendedLocus)
 PERSISTENT_PREDECLARATION (smIsQualityLocus)
+PERSISTENT_PREDECLARATION (smScaleILSPrimerSearchPreset)
+PERSISTENT_PREDECLARATION (smNumberOfLastILSPeaksInScale)
+PERSISTENT_PREDECLARATION (smPercentLastILSPeaksInScaling)
+PERSISTENT_PREDECLARATION (smLaserOffScale)
+PERSISTENT_PREDECLARATION (smCalculatedPurePullup)
+PERSISTENT_PREDECLARATION (smPossiblePullUp)
 
 
 
@@ -4431,90 +4432,6 @@ protected:
 
 
 
-class smLaserOffScalePullupOrCraterNotPrimary : public SmartNotice {
-
-PERSISTENT_DECLARATION (smLaserOffScalePullupOrCraterNotPrimary)
-
-public:
-	smLaserOffScalePullupOrCraterNotPrimary ();
-	smLaserOffScalePullupOrCraterNotPrimary (const smLaserOffScalePullupOrCraterNotPrimary& note);
-	virtual ~smLaserOffScalePullupOrCraterNotPrimary ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smLaserOffScalePrimary : public SmartNotice {
-
-PERSISTENT_DECLARATION (smLaserOffScalePrimary)
-
-public:
-	smLaserOffScalePrimary ();
-	smLaserOffScalePrimary (const smLaserOffScalePrimary& note);
-	virtual ~smLaserOffScalePrimary ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smLaserOffScaleNoInterchannelLink : public SmartNotice {
-
-PERSISTENT_DECLARATION (smLaserOffScaleNoInterchannelLink)
-
-public:
-	smLaserOffScaleNoInterchannelLink ();
-	smLaserOffScaleNoInterchannelLink (const smLaserOffScaleNoInterchannelLink& note);
-	virtual ~smLaserOffScaleNoInterchannelLink ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
 class smAssociatedLadderIsCritical : public SmartNotice {
 
 PERSISTENT_DECLARATION (smAssociatedLadderIsCritical)
@@ -5027,62 +4944,6 @@ public:
 	smBaselineRelativeAdenylation ();
 	smBaselineRelativeAdenylation (const smBaselineRelativeAdenylation& note);
 	virtual ~smBaselineRelativeAdenylation ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smBaselineRelativeFractionalFilter : public SmartNotice {
-
-PERSISTENT_DECLARATION (smBaselineRelativeFractionalFilter)
-
-public:
-	smBaselineRelativeFractionalFilter ();
-	smBaselineRelativeFractionalFilter (const smBaselineRelativeFractionalFilter& note);
-	virtual ~smBaselineRelativeFractionalFilter ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smBaselineRelativePullupFractionalFilter : public SmartNotice {
-
-PERSISTENT_DECLARATION (smBaselineRelativePullupFractionalFilter)
-
-public:
-	smBaselineRelativePullupFractionalFilter ();
-	smBaselineRelativePullupFractionalFilter (const smBaselineRelativePullupFractionalFilter& note);
-	virtual ~smBaselineRelativePullupFractionalFilter ();
 
 	virtual int GetSubject () const;
 
@@ -6287,6 +6148,174 @@ public:
 	smIsQualityLocus ();
 	smIsQualityLocus (const smIsQualityLocus& note);
 	virtual ~smIsQualityLocus ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smScaleILSPrimerSearchPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smScaleILSPrimerSearchPreset)
+
+public:
+	smScaleILSPrimerSearchPreset ();
+	smScaleILSPrimerSearchPreset (const smScaleILSPrimerSearchPreset& note);
+	virtual ~smScaleILSPrimerSearchPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smNumberOfLastILSPeaksInScale : public SmartNotice {
+
+PERSISTENT_DECLARATION (smNumberOfLastILSPeaksInScale)
+
+public:
+	smNumberOfLastILSPeaksInScale ();
+	smNumberOfLastILSPeaksInScale (const smNumberOfLastILSPeaksInScale& note);
+	virtual ~smNumberOfLastILSPeaksInScale ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPercentLastILSPeaksInScaling : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPercentLastILSPeaksInScaling)
+
+public:
+	smPercentLastILSPeaksInScaling ();
+	smPercentLastILSPeaksInScaling (const smPercentLastILSPeaksInScaling& note);
+	virtual ~smPercentLastILSPeaksInScaling ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smLaserOffScale : public SmartNotice {
+
+PERSISTENT_DECLARATION (smLaserOffScale)
+
+public:
+	smLaserOffScale ();
+	smLaserOffScale (const smLaserOffScale& note);
+	virtual ~smLaserOffScale ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCalculatedPurePullup : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCalculatedPurePullup)
+
+public:
+	smCalculatedPurePullup ();
+	smCalculatedPurePullup (const smCalculatedPurePullup& note);
+	virtual ~smCalculatedPurePullup ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPossiblePullUp : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPossiblePullUp)
+
+public:
+	smPossiblePullUp ();
+	smPossiblePullUp (const smPossiblePullUp& note);
+	virtual ~smPossiblePullUp ();
 
 	virtual int GetSubject () const;
 

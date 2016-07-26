@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ArtifactLabels>
+<ArtifactLabels
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="ArtifactLabelsSchema.xsd">
 	<SubGroup>
 		<ID>Pullup</ID>
 		<Label>Pull-up</Label>
@@ -7,10 +9,12 @@
 		<Priority>1</Priority>
 		<MsgName>smPullupAtExtraneousILSPeak</MsgName>
 		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
-		<MsgName>smPullUp</MsgName>
-		<MsgName>smInterlocusPullUp</MsgName>
-		<MsgName>smInterlocusPullUpWithPoorFit</MsgName>
-		<MsgName>smSigmoidalPullup</MsgName>
+    <MsgName>smPullUp</MsgName>
+    <MsgName>smCalculatedPurePullup</MsgName>
+    <MsgName>smPossiblePullup</MsgName>
+    <MsgName>smInterlocusPullUp</MsgName>
+    <MsgName>smInterlocusPullUpWithPoorFit</MsgName>
+    <MsgName>smSigmoidalPullup</MsgName>
 		<SearchString>pull.?up</SearchString>
     <NoString>primary</NoString>
 	</SubGroup>
@@ -19,6 +23,7 @@
 		<Label>Laser Off Scale</Label>
 		<Display>LO</Display>
 		<Priority>2</Priority>
+		<MsgName>smLaserOffScale</MsgName>
 		<MsgName>smLaserOffScalePullupOrCraterNotPrimary</MsgName>
 		<MsgName>smLaserOffScalePrimary</MsgName>
 		<MsgName>smLaserOffScaleNoInterchannelLink</MsgName>

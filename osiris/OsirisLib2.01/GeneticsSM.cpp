@@ -523,6 +523,9 @@ Boolean Locus :: ReportXMLSmartNoticeObjects (RGTextOutput& text, RGTextOutput& 
 					//tempText << "\t\t\t</ExportProtocolList>\n";
 				}
 
+				else
+					tempText << "\t\t\t<MsgName>" << nextNotice->GetMessageName () << "</MsgName>\n";
+
 				tempText << "\t\t</Message>\n";
 			}
 		}
@@ -566,6 +569,7 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 	int IntBP;
 	text.SetOutputLevel (1);
 	bool isHomozygote = false;
+	double totalCorrection;
 
 	if ((LocusSignalList.Entries () == 1) && (!mLink->isYLinked ()))
 		isHomozygote = true;
@@ -579,8 +583,15 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 		text << "\t\t\t\t\t<Name>" << nextSignal->GetAlleleName () << "</Name>\n";
 		text << "\t\t\t\t\t<BPS>" << bp << "</BPS>\n";
 		text << "\t\t\t\t\t<RFU>" << (int) floor (nextSignal->Peak () + 0.5) << "</RFU>\n";
+
+		totalCorrection = nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		if (totalCorrection != 0.0)
+			text << "\t\t\t\t\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";
+		text << "\t\t\t\t\t<Width>" << 2.0 * nextSignal->GetStandardDeviation () << "</Width>\n";
 		text << "\t\t\t\t\t<Time>" << nextSignal->GetMean () << "</Time>\n";
 		text << "\t\t\t\t\t<Fit>" << nextSignal->GetCurveFit () << "</Fit>\n";
 
@@ -3047,6 +3058,7 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 	int location;
 //	PullUpFound pullupNotice;
 	smPullUp pullUp;
+	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
 	smHeightBelowFractionalFilter belowFractionalFilter;
 	smHeightBelowPullupFractionalFilter belowPullupFractionalFilter;
@@ -3066,6 +3078,7 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 	double pullupFractionalFilter = GetLocusSpecificSamplePullupFractionalFilter ();
 	bool peakIsLessThanFractionalThreshold;
 	bool peakIsLessThanPullupFractionalThreshold;
+	bool peakIsPullup;
 
 	smPartOfExtendedLocusLeft partOfExtendedLocusLeft;
 	smPartOfExtendedLocusRight partOfExtendedLocusRight;
@@ -3102,7 +3115,8 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 
 			peak = nextSignal->Peak ();
 			peakIsLessThanFractionalThreshold = (peak <= fractionalThreshold);
-			peakIsLessThanPullupFractionalThreshold = (nextSignal->GetMessageValue (pullUp) && !nextSignal->GetMessageValue (primaryPullup)) && (peak <= pullupFractionalThreshold);
+			peakIsPullup = nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (purePullup);
+			peakIsLessThanPullupFractionalThreshold = (peakIsPullup && !nextSignal->GetMessageValue (primaryPullup)) && (peak <= pullupFractionalThreshold);
 
 			if (peakIsLessThanFractionalThreshold || peakIsLessThanPullupFractionalThreshold) {
 
@@ -5966,6 +5980,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
 	smPullUp pullup;
+	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
 
 	it.Reset ();
@@ -6021,6 +6036,14 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 
 				//if (report)
 				//	cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (purePullup)) {
 
 				prevSignal = nextSignal;
 				prevAlleleName = alleleName;

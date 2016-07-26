@@ -90,8 +90,10 @@ void COARpeak::Copy(IOARpeak *pTo, const IOARpeak &x)
   pTo->SetBPS(x.GetBPS());
   pTo->SetMeanBPS(x.GetMeanBPS());
   pTo->SetRFU(x.GetRFU());
+  pTo->SetPullupCorrectionHeight(x.GetPullupCorrectionHeight());
   pTo->SetTime(x.GetTime());
   pTo->SetPeakArea(x.GetPeakArea());
+  pTo->SetWidth(x.GetWidth());
   pTo->SetFit(x.GetFit());
   pTo->SetIsArtifact(x.IsArtifact());
   pTo->SetIsAllele(x.IsAllele());
@@ -209,9 +211,13 @@ bool COARpeak::Equal(
   { bRtn = false; }
   else if(!DoubleEqual(x1.GetRFU(),x2.GetRFU()))
   { bRtn = false; }
+  else if(!DoubleEqual(x1.GetPullupCorrectionHeight(),x2.GetPullupCorrectionHeight()))
+  { bRtn = false; }
   else if(!DoubleEqual(x1.GetTime(),x2.GetTime()))
   { bRtn = false; }
   else if(!DoubleEqual(x1.GetPeakArea(),x2.GetPeakArea()))
+  { bRtn = false; }
+  else if(!DoubleEqual(x1.GetWidth(),x2.GetWidth()))
   { bRtn = false; }
   else if(!DoubleEqual(x1.GetFit(),x2.GetFit(),FIT_DIGIT_MATCH))
   { bRtn = false; }
@@ -304,8 +310,10 @@ void COARpeakAny::_Init()
   m_sArtifactUserDisplay.Empty();
   m_dtUpdate.Set((time_t)0);
   m_dRFU = 0.0;
+  m_dPullupCorrectionHeight = 0.0;
   m_dTime = 0.0;
   m_dPeakArea = 0.0;
+  m_dWidth = 0.0;
   m_dFit = 0.0;
   m_dBPS = 0.0;
 
@@ -365,6 +373,10 @@ double COARpeakAny::GetRFU() const
 {
   return m_dRFU;
 }
+double COARpeakAny::GetPullupCorrectionHeight() const
+{
+  return m_dPullupCorrectionHeight;
+}
 double COARpeakAny::GetTime() const
 {
   return m_dTime;
@@ -372,6 +384,10 @@ double COARpeakAny::GetTime() const
 double COARpeakAny::GetPeakArea() const
 {
   return m_dPeakArea;
+}
+double COARpeakAny::GetWidth() const
+{
+  return m_dWidth;
 }
 double COARpeakAny::GetFit() const
 {
@@ -446,6 +462,10 @@ void COARpeakAny::SetRFU(double d)
 {
   m_dRFU = d;
 }
+void COARpeakAny::SetPullupCorrectionHeight(double d)
+{
+  m_dPullupCorrectionHeight = d;
+}
 void COARpeakAny::SetTime(double d)
 {
   m_dTime = d;
@@ -454,6 +474,10 @@ void COARpeakAny::SetTime(double d)
 void COARpeakAny::SetPeakArea(double d)
 {
   m_dPeakArea = d;
+}
+void COARpeakAny::SetWidth(double d)
+{
+  m_dWidth = d;
 }
 void COARpeakAny::SetFit(double d)
 {

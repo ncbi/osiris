@@ -129,6 +129,7 @@ public:
 	int TestNeighborsSM (DataSignal* previous, DataSignal* testSignal, DataSignal* following);
 
 	virtual int TestSignalsForOffScaleSM ();
+	virtual int PreTestForSignalOffScaleSM ();
 
 	virtual bool FindLimitsOnPrimaryPullupPeaks ();	// returns true if it made a change in the channel
 	virtual bool ValidateAndCorrectCrossChannelAnalysisSM ();	// returns true if it made a change in the channel
@@ -215,6 +216,8 @@ public:
 	// Smart Message functions******************************************************************************************************************
 	//******************************************************************************************************************************************
 
+	bool FoundPrimerPeaksSM (RGDList& peakList, double firstIntervalFraction, double smallestIntervalFraction, double& lastPrimerTime, int Size, double& maxPeak, RGTextOutput& ExcelText);
+
 	virtual int SetDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataSM (SampleData& fileData, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataFromColorCorrectedArraySM (double* dataArray, int arraySize, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
@@ -229,6 +232,7 @@ public:
 	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
 	virtual int TestSignalsForOffScaleSM ();
+	virtual int PreTestForSignalOffScaleSM ();
 
 
 	//******************************************************************************************************************************************

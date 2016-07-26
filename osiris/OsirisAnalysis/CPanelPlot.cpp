@@ -47,6 +47,20 @@
 #endif
 #define RESIDUAL_THRESHOLD 0.0005
 #define FIT "\nFit: "
+#define FORMAT_RFU "RFU: %d\n"
+#define FORMAT_CORR_RFU "Corr RFU: %d\n"
+#define FORMAT_PEAK_AREA "\nPeak Area: %.1f"
+#define FORMAT_TIME "Time: %g"
+#define FORMAT_ILS_REF "\nILS Ref.: %.2f"
+#define FORMAT_CHANNEL "Channel: %ls"
+#define FORMAT_LOCUS "Locus: %ls\n"
+#define FORMAT_LOCUS_ALLELE "\n" FORMAT_LOCUS "Allele: %ls"
+#define FORMAT_ALLELE_BPS "\nAllele BPS: %d"
+#define FORMAT_RESIDUAL "Residual: %.3f"
+#define FORMAT_WIDTH "\nWidth: %.4f"
+
+#define FORMAT_CONDITION(fmt,d,cond) \
+  if(cond) { sToolTip += wxString::Format(fmt,d); }
 
 CPlotCtrl::CPlotCtrl(
   wxWindow *parent, CPanelPlot *pPlot, wxWindowID id) 
@@ -711,19 +725,24 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
 {
   wxString sToolTip;
   double dBPS = pPeak->GetMeanBPS();
+  double dRFU = pPeak->GetRFU();
+  double dCorr = pPeak->GetPullupCorrectionHeight();
+  double dWidth = pPeak->GetWidth();
+  double dPeakArea = pPeak->GetPeakArea();
 
   sToolTip += wxString::Format(
       "Artifact: %ls\n"
-      "RFU: %d\n"
-      "Time: %g\n",
+      FORMAT_RFU,
       pPeak->GetArtifactLabel().wc_str(),
-      nwxRound::Round(pPeak->GetRFU()),
-      pPeak->GetTime());
-  if(dBPS > 1.0)
-  {
-    sToolTip += wxString::Format("ILS Ref.: %.2f\n",dBPS);
-  }
-  sToolTip += wxString::Format("Channel: %ls",sChannelName.wc_str());
+      nwxRound::Round(dRFU));
+
+  FORMAT_CONDITION(FORMAT_CORR_RFU,nwxRound::Round(dRFU - dCorr),dCorr != 0.0);
+  sToolTip += wxString::Format(FORMAT_TIME,pPeak->GetTime());
+  // STOP HERE width after time
+  FORMAT_CONDITION(FORMAT_PEAK_AREA,dPeakArea,dPeakArea > 0.0);
+  FORMAT_CONDITION(FORMAT_WIDTH,dWidth,  dWidth > 0.0);
+  FORMAT_CONDITION(FORMAT_ILS_REF,dBPS,dBPS > 1.0);
+  sToolTip += wxString::Format(FORMAT_CHANNEL,sChannelName.wc_str());
   if(!pPeak->IsAllele())
   {
     wxString sLocus = pPeak->GetLocusName();
@@ -742,22 +761,17 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
       double dBPSresid = pPeak->GetBPS();
       int nBPS = nwxRound::Round(dBPSresid);
       sToolTip += wxString::Format(
-				   "\nLocus: %ls\nAllele: %ls",
+				   FORMAT_LOCUS_ALLELE,
            sLocus.wc_str(),
            sAllele.wc_str()
            );
       if(nBPS)
       {
-        sToolTip += wxString::Format(
-          "\nAllele BPS: %d",
-           nBPS);
-
+        sToolTip += wxString::Format(FORMAT_ALLELE_BPS, nBPS);
         dBPSresid -= (double)nBPS;
-        if( dBPSresid > RESIDUAL_THRESHOLD || dBPSresid < -RESIDUAL_THRESHOLD )
-        {
-          sToolTip += wxString::Format(
-            "\nResidual: %.3f",dBPSresid);
-        }
+        FORMAT_CONDITION("\n" FORMAT_RESIDUAL,dBPSresid,
+          dBPSresid > RESIDUAL_THRESHOLD || 
+              dBPSresid < -RESIDUAL_THRESHOLD);
       }
     }
   }
@@ -797,15 +811,18 @@ wxString CPanelPlot::_AlleleToolTip(
   }
 
   sToolTip = wxString::Format(
-      "Channel: %ls\n",
+      FORMAT_CHANNEL "\n",
       sChannelName.wc_str());
   if(!sLocus.IsEmpty())
   {
     sToolTip += wxString::Format(
-        "Locus: %ls\n",
+        FORMAT_LOCUS,
         sLocus.wc_str());
   }
   double dBPS = pPeak->GetBPS();
+  double dCorrection = pPeak->GetPullupCorrectionHeight();
+  double dRFU = pPeak->GetRFU();
+
   int nBPS = nwxRound::Round(dBPS);
   double dBPSresid = dBPS - (double)nBPS;
   sToolTip += wxString::Format(
@@ -817,27 +834,23 @@ wxString CPanelPlot::_AlleleToolTip(
 
   //  The 'if' may be temporary
   
-  if( dBPSresid > RESIDUAL_THRESHOLD || dBPSresid < -RESIDUAL_THRESHOLD )
-  {
-    sToolTip += wxString::Format(
-//        "BPS w/ resid: %.3f\n"
-        "Residual: %.3f\n",
-//      dBPS,
-      dBPSresid);
-  }
-
+  FORMAT_CONDITION(FORMAT_RESIDUAL "\n",  dBPSresid,
+    dBPSresid > RESIDUAL_THRESHOLD || 
+      dBPSresid < -RESIDUAL_THRESHOLD);
   sToolTip += wxString::Format(
-      "RFU: %d\n"
-      "Time: %g",
-    nwxRound::Round(pPeak->GetRFU()),
-    dTime);
-
+      FORMAT_RFU,
+    nwxRound::Round(dRFU));
+  FORMAT_CONDITION(
+      FORMAT_CORR_RFU,
+      nwxRound::Round(dRFU - dCorrection),
+      dCorrection != 0.0);
+  sToolTip += wxString::Format(FORMAT_TIME,dTime);
+  double dWidth = pPeak->GetWidth();
+  double dPeakArea = pPeak->GetPeakArea();
+  FORMAT_CONDITION(FORMAT_PEAK_AREA,dPeakArea,dPeakArea > 0.0);
+  FORMAT_CONDITION(FORMAT_WIDTH,dWidth,dWidth > 0.0);
   double dILSref = pPeak->GetMeanBPS();
-  if(dILSref > 1.0)
-  {
-    sToolTip += wxString::Format("\nILS Ref.: %.2f",dILSref);
-  }
-
+  FORMAT_CONDITION(FORMAT_ILS_REF,dILSref,dILSref > 1.0);
   if(pPeak->GetFit() >= 0.0)
   {
     sToolTip += FIT;
