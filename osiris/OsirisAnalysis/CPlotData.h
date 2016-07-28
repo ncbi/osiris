@@ -58,7 +58,7 @@ public:
     m_dPeakArea = 0.0;
     m_dWidth = 0.0;
     m_nHeight = 0;
-    m_dPullupCorrectionHeight = 0;
+    m_dPullupHeightCorrection = 0;
     m_dMean = 0.0;
     m_dFit = 0.0;
     m_sAllele.Clear();
@@ -117,9 +117,9 @@ public:
   {
     return (double) m_nHeight;
   }
-  virtual double GetPullupCorrectionHeight() const
+  virtual double GetPullupHeightCorrection() const
   {
-    return m_dPullupCorrectionHeight;
+    return m_dPullupHeightCorrection;
   }
   virtual double GetPeakArea() const
   {
@@ -180,9 +180,9 @@ public:
   {
     m_nHeight = nwxRound::Round(d);
   }
-  virtual void SetPullupCorrectionHeight(double d)
+  virtual void SetPullupHeightCorrection(double d)
   {
-    m_dPullupCorrectionHeight = d;
+    m_dPullupHeightCorrection = d;
   }
   virtual void SetTime(double d)
   {
@@ -263,7 +263,7 @@ protected:
   virtual void RegisterAll(bool bInConstructor = false);
 private:
   wxString m_sAllele;
-  double m_dPullupCorrectionHeight;
+  double m_dPullupHeightCorrection;
   double m_dMeanBps;
   double m_dPeakArea;
   double m_dWidth;
@@ -286,7 +286,7 @@ public:
   virtual void Init(void *)
   {
     m_nHeight = 0;
-    m_dPullupCorrectionHeight = 0.0;
+    m_dPullupHeightCorrection = 0.0;
     m_dMean = 0.0;
     m_dFit = 0.0;
     m_nLevel = 0;
@@ -349,9 +349,9 @@ public:
   {
     return (double)m_nHeight;
   }
-  virtual double GetPullupCorrectionHeight() const
+  virtual double GetPullupHeightCorrection() const
   {
-    return m_dPullupCorrectionHeight;
+    return m_dPullupHeightCorrection;
   }
   virtual double GetTime() const
   {
@@ -416,9 +416,9 @@ public:
   {
     m_nHeight = nwxRound::Round(d);
   }
-  virtual void SetPullupCorrectionHeight(double d)
+  virtual void SetPullupHeightCorrection(double d)
   {
-    m_dPullupCorrectionHeight = d;
+    m_dPullupHeightCorrection = d;
   }
   virtual void SetTime(double d)
   {
@@ -512,7 +512,7 @@ private:
   double m_dPeakArea;
   double m_dWidth;
   double m_dFit;
-  double m_dPullupCorrectionHeight;
+  double m_dPullupHeightCorrection;
   int m_nHeight;
   int m_nLevel;
 };

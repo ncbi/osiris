@@ -123,9 +123,9 @@ public:
   {
     return m_dRFU;
   }
-  virtual double GetPullupCorrectionHeight() const
+  virtual double GetPullupHeightCorrection() const
   {
-    return m_dPullupCorrectionHeight;
+    return m_dPullupHeightCorrection;
   }
   virtual double GetTime() const // time, in seconds, of the peak
   {
@@ -196,9 +196,9 @@ public:
   {
     m_dRFU = d;
   }
-  virtual void SetPullupCorrectionHeight(double d)
+  virtual void SetPullupHeightCorrection(double d)
   {
-    m_dPullupCorrectionHeight = d;
+    m_dPullupHeightCorrection = d;
   }
   virtual void SetTime(double d)
   {
@@ -389,7 +389,7 @@ private:
   wxDateTime m_tUpdate;
   double m_dBPS;
   double m_dRFU;
-  double m_dPullupCorrectionHeight;
+  double m_dPullupHeightCorrection;
   double m_dPeakArea;
   double m_dWidth;
   double m_dMeanBPS;

@@ -46,21 +46,31 @@
 #include "nwx/nwxString.h"
 #endif
 #define RESIDUAL_THRESHOLD 0.0005
-#define FIT "\nFit: "
 #define FORMAT_RFU "RFU: %d\n"
 #define FORMAT_CORR_RFU "Corr RFU: %d\n"
-#define FORMAT_PEAK_AREA "\nPeak Area: %.1f"
-#define FORMAT_TIME "Time: %g"
-#define FORMAT_ILS_REF "\nILS Ref.: %.2f"
-#define FORMAT_CHANNEL "Channel: %ls"
+#define FORMAT_PEAK_AREA "Peak Area: %.1f\n"
+#define FORMAT_TIME "Time: %g\n"
+#define FORMAT_ILS_REF "ILS Ref.: %.2f\n"
+#define FORMAT_CHANNEL "Channel: %ls\n"
 #define FORMAT_LOCUS "Locus: %ls\n"
-#define FORMAT_LOCUS_ALLELE "\n" FORMAT_LOCUS "Allele: %ls"
-#define FORMAT_ALLELE_BPS "\nAllele BPS: %d"
-#define FORMAT_RESIDUAL "Residual: %.3f"
-#define FORMAT_WIDTH "\nWidth: %.4f"
+#define FORMAT_LOCUS_ALLELE FORMAT_LOCUS "Allele: %ls\n"
+#define FORMAT_ALLELE_BPS "Allele BPS: %d\n"
+#define FORMAT_RESIDUAL "Residual: %.3f\n"
+#define FORMAT_WIDTH "Width: %.4f\n"
+#define OFF_LADDER          "    Off Ladder\n"
+#define OFF_LADDER_ACCEPTED "    Accepted Off Ladder\n"
 
 #define FORMAT_CONDITION(fmt,d,cond) \
   if(cond) { sToolTip += wxString::Format(fmt,d); }
+
+#define FORMAT_FIT(pPeak,bEND) \
+  sToolTip.Append(COARpeak::FormatFitNr(pPeak->GetFit(),!bEND))
+
+#define APPEND_OFF_LADDER(pPeak,sAllele)   \
+  if(pPeak->IsOffLadder())                 \
+  { sAllele.Append(OFF_LADDER); }          \
+  else if(pPeak->IsOffLadderAccepted())    \
+  { sAllele.Append(OFF_LADDER_ACCEPTED); }
 
 CPlotCtrl::CPlotCtrl(
   wxWindow *parent, CPanelPlot *pPlot, wxWindowID id) 
@@ -726,7 +736,7 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
   wxString sToolTip;
   double dBPS = pPeak->GetMeanBPS();
   double dRFU = pPeak->GetRFU();
-  double dCorr = pPeak->GetPullupCorrectionHeight();
+  double dCorr = pPeak->GetPullupHeightCorrection();
   double dWidth = pPeak->GetWidth();
   double dPeakArea = pPeak->GetPeakArea();
 
@@ -747,15 +757,7 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
   {
     wxString sLocus = pPeak->GetLocusName();
     wxString sAllele = pPeak->GetAlleleName();
-    if(pPeak->IsOffLadder())
-    {
-      sAllele.Append(OFF_LADDER);
-    }
-    else if(pPeak->IsOffLadderAccepted())
-    {
-      sAllele.Append(OFF_LADDER_ACCEPTED);
-    }
-
+    APPEND_OFF_LADDER(pPeak,sAllele);
     if(!( sLocus.IsEmpty() || sAllele.IsEmpty() ))
     {
       double dBPSresid = pPeak->GetBPS();
@@ -769,21 +771,15 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
       {
         sToolTip += wxString::Format(FORMAT_ALLELE_BPS, nBPS);
         dBPSresid -= (double)nBPS;
-        FORMAT_CONDITION("\n" FORMAT_RESIDUAL,dBPSresid,
+        FORMAT_CONDITION(FORMAT_RESIDUAL,dBPSresid,
           dBPSresid > RESIDUAL_THRESHOLD || 
               dBPSresid < -RESIDUAL_THRESHOLD);
       }
     }
   }
-  if(pPeak->GetFit() >= 0.0)
-  {
-    sToolTip += FIT;
-    sToolTip += COARpeak::FormatFit(*pPeak);
-  }
+  FORMAT_FIT(pPeak,1);
   return sToolTip;
 }
-const char *CPanelPlot::OFF_LADDER("\n    Off Ladder");
-const char *CPanelPlot::OFF_LADDER_ACCEPTED("\n    Accepted Off Ladder");
 wxString CPanelPlot::_AlleleToolTip(
   const IOARpeak *pPeak, int nChannel, const wxString &sChannelName)
 {
@@ -801,26 +797,14 @@ wxString CPanelPlot::_AlleleToolTip(
   bool bAmel = COARlocus::IsAmel(sLocus);
   wxString sAllele =
     COARpeak::FormatAlleleName(*pPeak,bAmel,false);
-  if(pPeak->IsOffLadder())
-  {
-    sAllele.Append(OFF_LADDER);
-  }
-  else if(pPeak->IsOffLadderAccepted())
-  {
-    sAllele.Append(OFF_LADDER_ACCEPTED);
-  }
+  APPEND_OFF_LADDER(pPeak,sAllele);
 
   sToolTip = wxString::Format(
-      FORMAT_CHANNEL "\n",
+      FORMAT_CHANNEL,
       sChannelName.wc_str());
-  if(!sLocus.IsEmpty())
-  {
-    sToolTip += wxString::Format(
-        FORMAT_LOCUS,
-        sLocus.wc_str());
-  }
+  FORMAT_CONDITION(FORMAT_LOCUS,sLocus.wc_str(),!sLocus.IsEmpty());
   double dBPS = pPeak->GetBPS();
-  double dCorrection = pPeak->GetPullupCorrectionHeight();
+  double dCorrection = pPeak->GetPullupHeightCorrection();
   double dRFU = pPeak->GetRFU();
 
   int nBPS = nwxRound::Round(dBPS);
@@ -834,7 +818,7 @@ wxString CPanelPlot::_AlleleToolTip(
 
   //  The 'if' may be temporary
   
-  FORMAT_CONDITION(FORMAT_RESIDUAL "\n",  dBPSresid,
+  FORMAT_CONDITION(FORMAT_RESIDUAL,  dBPSresid,
     dBPSresid > RESIDUAL_THRESHOLD || 
       dBPSresid < -RESIDUAL_THRESHOLD);
   sToolTip += wxString::Format(
@@ -851,11 +835,8 @@ wxString CPanelPlot::_AlleleToolTip(
   FORMAT_CONDITION(FORMAT_WIDTH,dWidth,dWidth > 0.0);
   double dILSref = pPeak->GetMeanBPS();
   FORMAT_CONDITION(FORMAT_ILS_REF,dILSref,dILSref > 1.0);
-  if(pPeak->GetFit() >= 0.0)
-  {
-    sToolTip += FIT;
-    sToolTip += COARpeak::FormatFit(*pPeak);
-  }
+  FORMAT_FIT(pPeak,1);
+  nwxString::Trim(&sToolTip);
   return sToolTip;
 }
 

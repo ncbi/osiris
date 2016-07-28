@@ -67,7 +67,7 @@ public:
   virtual double GetMeanBPS() const = 0;
   virtual double GetBPS() const = 0;
   virtual double GetRFU() const = 0;
-  virtual double GetPullupCorrectionHeight() const = 0;
+  virtual double GetPullupHeightCorrection() const = 0;
   virtual double GetTime() const = 0;
   virtual double GetPeakArea() const = 0;
   virtual double GetWidth() const = 0;
@@ -106,7 +106,7 @@ public:
   virtual void SetMeanBPS(double d) = 0;
   virtual void SetBPS(double d) = 0;
   virtual void SetRFU(double d) = 0;
-  virtual void SetPullupCorrectionHeight(double d) = 0;
+  virtual void SetPullupHeightCorrection(double d) = 0;
   virtual void SetTime(double d) = 0;
   virtual void SetPeakArea(double d) = 0;
   virtual void SetWidth(double d) = 0;
@@ -264,9 +264,9 @@ public:
   {
     return nwxString::FormatDouble(x.GetRFU());
   }
-  static wxString FormatPullupCorrectionHeight(const IOARpeak &x)
+  static wxString FormatPullupHeightCorrection(const IOARpeak &x)
   {
-    return nwxString::FormatDouble(x.GetPullupCorrectionHeight());
+    return nwxString::FormatDouble(x.GetPullupHeightCorrection());
   }
   static wxString FormatTime(const IOARpeak &x)
   {
@@ -280,14 +280,21 @@ public:
   {
     return nwxString::FormatDouble(x.GetWidth());
   }
-  static wxString FormatFit(const IOARpeak &x)
+  static wxString FormatFitNr(double d,bool bWithEOL = false)
   {
     wxString s;
-    if(x.GetFit() >= 0.0)
+    if(d >= 0.0)
     {
-      s = nwxString::FormatDouble(x.GetFit(),"%.4f");
+      s = nwxString::FormatDouble(d,FORMAT_FIT);
+      if(bWithEOL)
+      { s.Append(wxT("\n"));
+      }
     }
     return s;
+  }
+  static wxString FormatFit(const IOARpeak &x)
+  {
+    return FormatFitNr(x.GetFit());
   }
   static wxString FormatIsAllele(const IOARpeak &x)
   {
@@ -360,9 +367,9 @@ public:
   {
     return FormatRFU(*this);
   }
-  wxString FormatPullupCorrectionHeight() const
+  wxString FormatPullupHeightCorrection() const
   {
-    return FormatPullupCorrectionHeight(*this);
+    return FormatPullupHeightCorrection(*this);
   }
   wxString FormatTime() const
   {
@@ -396,6 +403,7 @@ public:
   static const unsigned int FIT_DIGIT_MATCH;
   static const wxString EMPTY_STRING;
   static const wxDateTime ZERO_TIME;
+  static const char * const FORMAT_FIT;
   static COARIOstringOL IO_OL;
 };
 
@@ -421,7 +429,7 @@ public:
   virtual double GetMeanBPS() const;
   virtual double GetBPS() const;
   virtual double GetRFU() const;
-  virtual double GetPullupCorrectionHeight() const;
+  virtual double GetPullupHeightCorrection() const;
   virtual double GetTime() const;
   virtual double GetPeakArea() const;
   virtual double GetWidth() const;
@@ -447,7 +455,7 @@ public:
   virtual void SetMeanBPS(double d);
   virtual void SetBPS(double d);
   virtual void SetRFU(double d);
-  virtual void SetPullupCorrectionHeight(double d);
+  virtual void SetPullupHeightCorrection(double d);
   virtual void SetTime(double d);
   virtual void SetPeakArea(double d);
   virtual void SetWidth(double d);
@@ -474,7 +482,7 @@ private:
   wxString m_sOffLadder;
   wxDateTime m_dtUpdate;
   double m_dRFU;
-  double m_dPullupCorrectionHeight;
+  double m_dPullupHeightCorrection;
   double m_dTime;
   double m_dPeakArea;
   double m_dWidth;

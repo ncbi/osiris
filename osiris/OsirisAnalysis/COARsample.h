@@ -328,7 +328,7 @@ public:
       // retrieve artifact stored in the sample
       // no memory is allocated and the caller should
       // not free/delete the object
-  size_t GetAllelesByID(int nID, bool bInjectArtifact, std::vector<COARpeakAny *> *pv) const;
+  size_t GetAllelesByID(int nID, bool bInjectArtifact, std::vector<COARpeakAny *> *pv = NULL) const;
     // stores a new copy of alleles in pv.  The caller must free the memory of each item
   size_t GetAlleleCountByID(int nID) const;
   bool IsPeakEditable(COARpeakAny *p) const

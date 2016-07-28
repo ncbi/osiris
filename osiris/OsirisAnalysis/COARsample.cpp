@@ -513,8 +513,7 @@ size_t COARsample::GetAlleleCountByID(int nID) const
   auto_ptr<COARartifact> p(GetArtifactByID(nID));
   if(p.get() == NULL)
   {
-    std::vector<COARpeakAny *> vp;
-    nRtn = GetAllelesByID(nID,false,&vp);
+    nRtn = GetAllelesByID(nID,false);
   }
   else
   {
@@ -555,22 +554,29 @@ size_t COARsample::GetAllelesByID(int nID, bool bInjectArtifact, vector<COARpeak
           {
             if( (pArt != NULL) && (pArt->SetLocus(sLocusName)) )
             {
-              pPeak = new COARpeakAny(*pArt);
-              pPeak->SetIsAllele(false);
+              if(pv != NULL)
+              {
+                pPeak = new COARpeakAny(*pArt);
+                pPeak->SetIsAllele(false);
+              }
+              nRtn++;
             }
           }
           else
           {
-            pPeak = new COARpeakAny(*pAllele);
-            if(pArt != NULL)
+            if(pv != NULL)
             {
-              pPeak->SetupArtifactInfo(pArt);
+              pPeak = new COARpeakAny(*pAllele);
+              if(pArt != NULL)
+              {
+                pPeak->SetupArtifactInfo(pArt);
+              }
             }
+            nRtn++;
           }
           if(pPeak != NULL)
           {
             pv->push_back(pPeak);
-            nRtn++;
           }
         }
       }

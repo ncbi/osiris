@@ -40,6 +40,7 @@ const wxString IOARpeak::OL_NO_DISPLAYED("no");
 const unsigned int COARpeak::FIT_DIGIT_MATCH(8);
 const wxString COARpeak::EMPTY_STRING;
 const wxDateTime COARpeak::ZERO_TIME((time_t)0);
+const char * const COARpeak::FORMAT_FIT = "%.4f";
 COARIOstringOL COARpeak::IO_OL;
 
 IOARpeak::~IOARpeak()
@@ -90,7 +91,7 @@ void COARpeak::Copy(IOARpeak *pTo, const IOARpeak &x)
   pTo->SetBPS(x.GetBPS());
   pTo->SetMeanBPS(x.GetMeanBPS());
   pTo->SetRFU(x.GetRFU());
-  pTo->SetPullupCorrectionHeight(x.GetPullupCorrectionHeight());
+  pTo->SetPullupHeightCorrection(x.GetPullupHeightCorrection());
   pTo->SetTime(x.GetTime());
   pTo->SetPeakArea(x.GetPeakArea());
   pTo->SetWidth(x.GetWidth());
@@ -211,7 +212,7 @@ bool COARpeak::Equal(
   { bRtn = false; }
   else if(!DoubleEqual(x1.GetRFU(),x2.GetRFU()))
   { bRtn = false; }
-  else if(!DoubleEqual(x1.GetPullupCorrectionHeight(),x2.GetPullupCorrectionHeight()))
+  else if(!DoubleEqual(x1.GetPullupHeightCorrection(),x2.GetPullupHeightCorrection()))
   { bRtn = false; }
   else if(!DoubleEqual(x1.GetTime(),x2.GetTime()))
   { bRtn = false; }
@@ -310,7 +311,7 @@ void COARpeakAny::_Init()
   m_sArtifactUserDisplay.Empty();
   m_dtUpdate.Set((time_t)0);
   m_dRFU = 0.0;
-  m_dPullupCorrectionHeight = 0.0;
+  m_dPullupHeightCorrection = 0.0;
   m_dTime = 0.0;
   m_dPeakArea = 0.0;
   m_dWidth = 0.0;
@@ -373,9 +374,9 @@ double COARpeakAny::GetRFU() const
 {
   return m_dRFU;
 }
-double COARpeakAny::GetPullupCorrectionHeight() const
+double COARpeakAny::GetPullupHeightCorrection() const
 {
-  return m_dPullupCorrectionHeight;
+  return m_dPullupHeightCorrection;
 }
 double COARpeakAny::GetTime() const
 {
@@ -462,9 +463,9 @@ void COARpeakAny::SetRFU(double d)
 {
   m_dRFU = d;
 }
-void COARpeakAny::SetPullupCorrectionHeight(double d)
+void COARpeakAny::SetPullupHeightCorrection(double d)
 {
-  m_dPullupCorrectionHeight = d;
+  m_dPullupHeightCorrection = d;
 }
 void COARpeakAny::SetTime(double d)
 {

@@ -488,8 +488,6 @@ public:
 //    m_pMenu->ResetDefaults();
   }
 private:
-  static const char *OFF_LADDER;
-  static const char *OFF_LADDER_ACCEPTED;
   static wxColour COLOUR_RFU;
 
   void SetupLabelMenus();
