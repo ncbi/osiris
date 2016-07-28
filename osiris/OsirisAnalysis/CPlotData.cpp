@@ -63,7 +63,7 @@ void CArtifact::RegisterAll(bool bInConstructor)
   RegisterInt("level",&m_nLevel);
   RegisterDouble("mean",&m_dMean);
   RegisterInt("height",&m_nHeight);
-  RegisterDouble("PullupCorrectionHeight",&m_dPullupCorrectionHeight);
+  RegisterDouble("PullupHeightCorrection",&m_dPullupHeightCorrection);
   RegisterDouble("meanbps",&m_dMeanBPS);
   RegisterDouble("PeakArea",&m_dPeakArea);
   RegisterDouble("Width",&m_dWidth);
@@ -82,7 +82,7 @@ void CSamplePeak::RegisterAll(bool bInConstructor)
 {
   RegisterDouble("mean",&m_dMean);
   RegisterInt("height",&m_nHeight);
-  RegisterDouble("PullupCorrectionHeight",&m_dPullupCorrectionHeight);
+  RegisterDouble("PullupHeightCorrection",&m_dPullupHeightCorrection);
   RegisterDouble("meanbps",&m_dMeanBps);
   RegisterDouble("PeakArea",&m_dPeakArea);
   RegisterDouble("Width",&m_dWidth);

@@ -237,9 +237,9 @@ public:
   {
     return m_dRFU;
   }
-  virtual double GetPullupCorrectionHeight() const
+  virtual double GetPullupHeightCorrection() const
   {
-    return m_dPullupCorrectionHeight;
+    return m_dPullupHeightCorrection;
   }
   virtual double GetTime() const
   {
@@ -315,9 +315,9 @@ public:
   {
     m_dRFU = d;
   }
-  virtual void SetPullupCorrectionHeight(double d) 
+  virtual void SetPullupHeightCorrection(double d) 
   {
-    m_dPullupCorrectionHeight = d;
+    m_dPullupHeightCorrection = d;
   }
   virtual void SetTime(double d)
   {
@@ -453,7 +453,7 @@ private:
   vector<COARartifactAllele *> m_vpAllele;
   TnwxXmlIOPersistVector<COARartifactAllele> m_ioAllele;
   double m_dRFU;
-  double m_dPullupCorrectionHeight;
+  double m_dPullupHeightCorrection;
   double m_dMeanBPS;
   double m_dPeakArea;
   double m_dWidth;

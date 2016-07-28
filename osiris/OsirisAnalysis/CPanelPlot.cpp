@@ -726,7 +726,7 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
   wxString sToolTip;
   double dBPS = pPeak->GetMeanBPS();
   double dRFU = pPeak->GetRFU();
-  double dCorr = pPeak->GetPullupCorrectionHeight();
+  double dCorr = pPeak->GetPullupHeightCorrection();
   double dWidth = pPeak->GetWidth();
   double dPeakArea = pPeak->GetPeakArea();
 
@@ -820,7 +820,7 @@ wxString CPanelPlot::_AlleleToolTip(
         sLocus.wc_str());
   }
   double dBPS = pPeak->GetBPS();
-  double dCorrection = pPeak->GetPullupCorrectionHeight();
+  double dCorrection = pPeak->GetPullupHeightCorrection();
   double dRFU = pPeak->GetRFU();
 
   int nBPS = nwxRound::Round(dBPS);
