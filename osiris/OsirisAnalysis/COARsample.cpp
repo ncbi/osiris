@@ -515,6 +515,7 @@ size_t COARsample::GetAlleleCountByID(int nID) const
   {
     std::vector<COARpeakAny *> vp;
     nRtn = GetAllelesByID(nID,false,&vp);
+    vectorptr<COARpeakAny>::cleanup(&vp);
   }
   else
   {
