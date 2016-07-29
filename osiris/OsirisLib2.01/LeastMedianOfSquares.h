@@ -102,11 +102,13 @@ protected:
 
 
 struct IndexedDouble {
-
+public:
 	IndexedDouble& operator= (const DualLine& l) { mIndex = l.GetIndex (); mSlope = l.GetSlope (); return *this;}
-	IndexedDouble& operator= (IndexedDouble& is);
-	bool operator< (IndexedDouble& s) { return (mSlope < s.mSlope); }
-	bool operator== (IndexedDouble& s) { return (mSlope == s.mSlope); }
+	IndexedDouble& operator= (const IndexedDouble& is);
+	bool operator< (const IndexedDouble& s) const
+  { return (mSlope < s.mSlope); }
+	bool operator== (const IndexedDouble& s) const
+  { return (mSlope == s.mSlope); }
 
 	int mIndex;
 	double mSlope;
