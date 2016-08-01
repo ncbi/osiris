@@ -16,7 +16,7 @@
     <MsgName>smInterlocusPullUpWithPoorFit</MsgName>
     <MsgName>smSigmoidalPullup</MsgName>
 		<SearchString>pull.?up</SearchString>
-    <NoString>primary</NoString>
+    <NoString>primary.pull.?up</NoString>
 	</SubGroup>
 	<SubGroup>
 		<ID>LaserOffScale</ID>

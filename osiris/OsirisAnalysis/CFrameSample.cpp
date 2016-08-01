@@ -33,6 +33,7 @@
 #include "CNotebookEditSample.h"
 #include "mainFrame.h"
 #include "CFrameAnalysis.h"
+#include "CMenuSample.h"
 #include "wx/sizer.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CFrameSample,CMDIFrame)
@@ -58,6 +59,7 @@ CFrameSample::CFrameSample(
   SetSizer(pSizer);
   Layout();
   m_pParent->InsertWindow(this,m_pOARfile);
+  SetMenuBar(new CMenuBarSample());
 }
 CFrameSample::~CFrameSample() {}
 
@@ -79,7 +81,27 @@ bool CFrameSample::TransferDataToWindow()
 {
   return m_pPanel->TransferDataToWindow();
 }
-
+bool CFrameSample::MenuEvent(wxCommandEvent &e)
+{
+  int nID = e.GetId();
+  bool bRtn = true;
+  switch(nID)
+  {
+  case IDmenuDisplayGraph:
+    break;
+  case IDmenuTable:
+    break;
+  case IDmenuHistory:
+    break;
+  case IDSampleApplyAll:
+    break;
+  case IDmenuDisableSample:
+    break;
+  default:
+    break;
+  }
+  return bRtn;
+}
 void CFrameSample::OnClose(wxCloseEvent &)
 {
   m_pCreator->RemoveSample(m_pSample,this);

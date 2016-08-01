@@ -52,6 +52,7 @@ public:
   virtual int GetType();
   virtual bool TransferDataToWindow();
   virtual void OnTimer(wxTimerEvent &);
+  virtual bool MenuEvent(wxCommandEvent &e);
   void OnClose(wxCloseEvent &e);
   void SetupTitle();
 

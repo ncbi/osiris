@@ -341,6 +341,7 @@
     <ClCompile Include="CMenuHistory.cpp" />
     <ClCompile Include="CMenuLabels.cpp" />
     <ClCompile Include="CMenuPlot.cpp" />
+    <ClCompile Include="CMenuSample.cpp" />
     <ClCompile Include="CMenuWindow.cpp" />
     <ClCompile Include="CNotebookEditSample.cpp" />
     <ClCompile Include="COARallele.cpp" />
@@ -480,6 +481,7 @@
     <ClInclude Include="CMenuHistory.h" />
     <ClInclude Include="CMenuLabels.h" />
     <ClInclude Include="CMenuPlot.h" />
+    <ClInclude Include="CMenuSample.h" />
     <ClInclude Include="CMenuSort.h" />
     <ClInclude Include="CMenuWindow.h" />
     <ClInclude Include="CMessageDialogCheckCancel.h" />

@@ -179,6 +179,12 @@ enum
   IDbuttonClearSearchMRU,
   IDbuttonCleanMRU,
 
+  // sample window
+  IDSampleApplyAll,
+  IDSampleApply,
+  IDSampleAccept,
+  IDSampleApprove,
+
   IDlistProcesses,
 
   IDlistMRU,
