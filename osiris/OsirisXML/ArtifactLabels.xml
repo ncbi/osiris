@@ -97,6 +97,6 @@
 		<Priority>9</Priority>
 		<MsgName>smPrimaryInterchannelLink</MsgName>
 		<MsgName>smLaserOffScalePrimary</MsgName>
-		<SearchString>primary.*pull.?up</SearchString>
+		<SearchString>primary.pull.?up</SearchString>
 	</SubGroup>
 </ArtifactLabels>
