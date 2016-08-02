@@ -441,7 +441,7 @@ bool CPageName::Show(bool show)
     // if no file, send event to open the file dialog
     wxCommandEvent e(wxEVT_COMMAND_BUTTON_CLICKED,IDbrowseInput);
     e.SetEventObject(m_pButtonBrowseXSL);
-    AddPendingEvent(e);
+    GetEventHandler()->AddPendingEvent(e);
   }
   return bRtn;
 }

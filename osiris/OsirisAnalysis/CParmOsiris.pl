@@ -103,6 +103,7 @@ my $VARLIST =
   ["m_bHideGraphicToolbar", "bool"],
   ["m_bHideGraphicScrollbar", "bool"],
   ["m_bHideTextToolbar", "bool"],
+  ["m_bHideSampleToolbar", "bool"],
   ["m_bStartupMRU", "bool true"],
   ["m_bCheckBeforeExit", "bool true"],
   ["m_bWarnOnHistory", "bool true"],

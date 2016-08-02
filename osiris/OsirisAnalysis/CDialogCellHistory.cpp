@@ -136,3 +136,74 @@ CDialogCellHistory::CDialogCellHistory(
   SetTitle(s);
   _Setup(pSplitter);
 }
+
+void CDialogCellHistory::ShowHistory(
+  wxWindow *parent,
+  COARfile *pOARfile,
+  COARsample *pSample,
+  const wxString &sLocusName,
+  int nHistoryType)
+{
+  const COARmessages *pMsg = pOARfile->GetMessages();
+  if(!sLocusName.IsEmpty())
+  {
+    COARlocus *pLocus = pSample->FindLocus(sLocusName);
+    if((pLocus == NULL) || (!pLocus->HasBeenEdited(pMsg,NULL)))
+    {
+      const wxString sMsg = 
+        "There is no history for this locus.";
+      mainApp::ShowAlert(sMsg,parent);
+    }
+    else if(pOARfile->CanEditArtifacts())
+    {
+      wxSize sz(SIZE_LOCUS_HISTORY);
+      const COARchannel *pChannel =
+        pOARfile->GetChannelFromLocus(sLocusName);
+      int nChannel =
+        (pChannel == NULL) ? -1 : pChannel->GetChannelNr();
+      CDialogCellHistory dlg(
+        *pSample,
+        nChannel,
+        *pLocus,
+        *pMsg,
+        *(pOARfile->GetHistory()),
+        parent,
+        wxID_ANY,
+        sz);
+      dlg.ShowModal();
+    }
+    else
+    {
+      wxSize sz(SIZE_EDIT_LOCUS);
+      CDialogCellHistory dlg(
+        *pLocus,
+        *pMsg,
+        *(pOARfile->GetHistory()),
+        pSample->GetName(),
+        parent,
+        wxID_ANY,
+        sz);
+      dlg.ShowModal();
+    }
+  }
+  else if(!pSample->IsEdited(pMsg,NULL,false))
+  {
+    const wxString sMsg = 
+    "There is no history for sample, channel, or ILS alerts.";
+    mainApp::ShowAlert(sMsg,parent);
+  }
+  else
+  {
+    wxSize sz(SIZE_EDIT_LOCUS);
+    map<int,wxString> mapChannelNames; // empty for now
+    CDialogCellHistory dlg(
+      nHistoryType,
+      *pOARfile,
+      *pSample,
+      mapChannelNames,
+      parent,
+      wxID_ANY,
+      sz);
+    dlg.ShowModal();
+  }
+}

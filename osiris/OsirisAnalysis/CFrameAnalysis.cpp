@@ -98,12 +98,6 @@ const int CFrameAnalysis::CHANNEL_ALERT_COLUMN = 2;
 const int CFrameAnalysis::FIRST_LOCUS_COLUMN = 3;
 
 
-
-#define SIZE_EDIT_LOCUS 800,600
-#define SIZE_EDIT_ALERTS 640,480
-#define SIZE_LOCUS_HISTORY 920,690
-
-
 CFrameAnalysis::~CFrameAnalysis()
 {
 #if 0
@@ -415,14 +409,14 @@ void CFrameAnalysis::_Build()
     // send an event to draw the preview so that the grid will be ready 
     // before the event is handled
     wxCommandEvent e(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,IDmenuTogglePreview);
-    AddPendingEvent(e);
+    GetEventHandler()->AddPendingEvent(e);
   }
   if(bControlAtTop)
   {
     // workaround for problem setting it before the window is displayed
     wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,IDmenuSortControlsAtTop);
     e.SetInt(1);
-    AddPendingEvent(e);
+    GetEventHandler()->AddPendingEvent(e);
   }
   {
     wxCommandEvent e(wxEVT_COMMAND_ENTER,IDsplitterWindow); 

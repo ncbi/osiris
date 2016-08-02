@@ -110,6 +110,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bHideGraphicToolbar);
   CP(m_bHideGraphicScrollbar);
   CP(m_bHideTextToolbar);
+  CP(m_bHideSampleToolbar);
   CP(m_bStartupMRU);
   CP(m_bCheckBeforeExit);
   CP(m_bWarnOnHistory);
@@ -214,6 +215,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bHideGraphicToolbar)
   CP(m_bHideGraphicScrollbar)
   CP(m_bHideTextToolbar)
+  CP(m_bHideSampleToolbar)
   CP(m_bStartupMRU)
   CP(m_bCheckBeforeExit)
   CP(m_bWarnOnHistory)
@@ -327,6 +329,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("HideGraphicToolbar", &m_bHideGraphicToolbar);
   RegisterBool("HideGraphicScrollbar", &m_bHideGraphicScrollbar);
   RegisterBool("HideTextToolbar", &m_bHideTextToolbar);
+  RegisterBool("HideSampleToolbar", &m_bHideSampleToolbar);
   RegisterBoolTrue("StartupMRU", &m_bStartupMRU);
   RegisterBoolTrue("CheckBeforeExit", &m_bCheckBeforeExit);
   RegisterBoolTrue("WarnOnHistory", &m_bWarnOnHistory);
@@ -444,6 +447,7 @@ void CParmOsiris::SetDefaults()
   m_bHideGraphicToolbar = false;
   m_bHideGraphicScrollbar = false;
   m_bHideTextToolbar = false;
+  m_bHideSampleToolbar = false;
   m_bStartupMRU = true;
   m_bCheckBeforeExit = true;
   m_bWarnOnHistory = true;

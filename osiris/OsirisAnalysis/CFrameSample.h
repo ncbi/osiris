@@ -38,6 +38,8 @@ class COARsample;
 class COARfile;
 class CHistoryTime;
 class CFrameAnalysis;
+class CToolbarSample;
+class CMenuBarSample;
 
 class CFrameSample : public CMDIFrame
 {
@@ -53,19 +55,25 @@ public:
   virtual bool TransferDataToWindow();
   virtual void OnTimer(wxTimerEvent &);
   virtual bool MenuEvent(wxCommandEvent &e);
+  virtual wxMenu *GetMenu();
   void OnClose(wxCloseEvent &e);
   void SetupTitle();
 
 private:
+  void _ToggleToolbar();
+  void _OpenGraphic();
+  void _History();
+  void _ShowToolbar(bool bShow);
+
   CHistoryTime m_Hist;
-  CNotebookEditSample *m_pPanel;
+  CNotebookEditSample *m_pNoteBook;
   CFrameAnalysis *m_pCreator;
   mainFrame *m_pParent;
   COARfile *m_pOARfile;
   COARsample *m_pSample;
-
+  CToolbarSample *m_pToolbar;
+  CMenuBarSample *m_pMenuBar;
 public:
-  CNotebookEditSample *m_pNoteBook;
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CFrameAnalysis)
 };

@@ -330,7 +330,7 @@ bool mainFrame::Startup(bool bHasArgs)
       // send event to start up with the MRU window
       wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,IDlistMRU);
       e.SetInt(MRU_AT_STARTUP);
-      AddPendingEvent(e);
+      GetEventHandler()->AddPendingEvent(e);
     }
   }
   return bRtn;
@@ -1153,7 +1153,7 @@ void mainFrame::DropFiles()
 {
   wxCommandEvent ee(CEventDragDropDelay,GetId());
   ee.SetEventObject(this);
-  AddPendingEvent(ee);
+  GetEventHandler()->AddPendingEvent(ee);
 }
 #endif
 

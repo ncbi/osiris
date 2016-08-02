@@ -316,7 +316,7 @@ void CMDIFrame::_Kill()
 {
   wxCommandEvent ee(CEventKillWindow,GetId());
   ee.SetEventObject(this);
-  AddPendingEvent(ee);
+  GetEventHandler()->AddPendingEvent(ee);
 }
 
 bool CMDIFrame::DialogIsShowingOrNoFocus()

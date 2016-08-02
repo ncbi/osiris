@@ -78,6 +78,10 @@ public:
     // select notebook page, Sample, ILS, or Channel
     m_pNotebook->ChangeSelection((size_t)n);
   }
+  int GetSelection()
+  {
+    return m_pNotebook->GetSelection();
+  }
   CPanelSampleAlertDetails **GetSplitterWindows()
   {
     return &m_pSplitter[0];
@@ -134,6 +138,7 @@ public:
   {
     m_pPanelUser = p;
   }
+  const wxString &GetCurrentLocus();
 
 private:
   bool _ProcessEvent();
@@ -155,6 +160,7 @@ private:
     return sRtn;
   }
 
+  std::vector<const wxString> m_asLocus;
   CHistoryTime m_HistTime;
   COARmessages m_MsgDir;
   COARmessages m_MsgSample;

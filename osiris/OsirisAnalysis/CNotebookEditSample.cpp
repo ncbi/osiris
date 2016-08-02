@@ -159,13 +159,14 @@ CNotebookEditSample::CNotebookEditSample(
   size_t j,k,nLocusCount;
   const COARchannel *pChannel;
   const COARlocus *pLocus;
-  for(k = 1; k < nChannelCount; ++k)
+  for(k = 1; k <= nChannelCount; ++k)
   {
     pChannel = m_pFile->GetChannelByNr(k);
     nLocusCount = pChannel->GetLocusCount();
     for(j = 0; j < nLocusCount; ++j)
     {
       const wxString &sLocusName = pChannel->GetLocusName(j);
+      m_asLocus.push_back(sLocusName);
       pLocus = pSample->FindLocus(sLocusName);
       CPanelLocusDetails *pPanelLocus = new CPanelLocusDetails(
         pSample, (int) k,
@@ -175,7 +176,6 @@ CNotebookEditSample::CNotebookEditSample(
       m_pNotebook->AddPage(pPanelLocus,sLocusName,false);
     }
   }
-
   // layout this
 
   pSizer = new wxBoxSizer(wxVERTICAL);
@@ -192,6 +192,22 @@ CNotebookEditSample::CNotebookEditSample(
       pSplitter->Split();
     }
   }
+}
+const wxString &CNotebookEditSample::GetCurrentLocus()
+{
+  int nSelect = m_pNotebook->GetSelection() - SA_WINDOW_COUNT;
+  const wxString *pRtn = NULL;
+  if((nSelect < 0) ||
+    (nSelect >= (int)m_asLocus.size())
+    )
+  {
+    pRtn = &mainApp::EMPTY_STRING;
+  }
+  else
+  {
+    pRtn = &(m_asLocus.at((size_t)nSelect));
+  }
+  return *pRtn;
 }
 
 bool CNotebookEditSample::Validate()

@@ -34,6 +34,7 @@
 #include "mainFrame.h"
 #include "CFrameAnalysis.h"
 #include "CMenuSample.h"
+#include "CDialogCellHistory.h"
 #include "wx/sizer.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CFrameSample,CMDIFrame)
@@ -46,20 +47,27 @@ CFrameSample::CFrameSample(
   COARsample *pSample) : 
     CMDIFrame(parent,wxID_ANY,wxEmptyString,wxDefaultPosition,sz),
     m_Hist(NULL),
-    m_pPanel(NULL),
+    m_pNoteBook(NULL),
     m_pCreator(pCreator),
     m_pParent(parent),
     m_pOARfile(pFile),
     m_pSample(pSample)
 {
   SetupTitle();
-  m_pPanel = new CNotebookEditSample(m_pOARfile,m_pSample,this,wxID_ANY,NULL);
+  m_pNoteBook = new CNotebookEditSample(m_pOARfile,m_pSample,this,wxID_ANY,NULL);
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
-  pSizer->Add(m_pPanel,1,wxEXPAND,0);
+  m_pToolbar = new CToolbarSample(this,
+    !pFile->GetReviewerAllowUserOverride());
+  pSizer->Add(m_pToolbar,0,wxEXPAND);
+  pSizer->Add(m_pNoteBook,1,wxEXPAND,0);
   SetSizer(pSizer);
-  Layout();
   m_pParent->InsertWindow(this,m_pOARfile);
-  SetMenuBar(new CMenuBarSample());
+  m_pMenuBar = new CMenuBarSample();
+  SetMenuBar(m_pMenuBar);
+  CParmOsirisGlobal parm;
+  bool b = parm->GetHideTextToolbar();
+  _ShowToolbar(!b);
+  Layout();
 }
 CFrameSample::~CFrameSample() {}
 
@@ -67,19 +75,39 @@ int CFrameSample::GetType()
 {
   return FRAME_SAMPLE;
 }
-
+wxMenu *CFrameSample::GetMenu()
+{
+  return m_pMenuBar->GetMenu();
+}
+void CFrameSample::_ToggleToolbar()
+{
+  bool bWasShown = m_pToolbar->IsShown();
+  _ShowToolbar(!bWasShown);
+  CParmOsirisGlobal parm;
+  parm->SetHideSampleToolbar(bWasShown);
+}
 void CFrameSample::SetupTitle()
 {
   wxString s = m_pOARfile->GetFileName();
   bool bMod = false;
   const CParmOsiris &parm(m_pOARfile->GetParameters());
-  SetTitle(mainApp::FormatWindowTitle(s,bMod,&parm,NULL));
+  wxString sTitle = mainApp::FormatWindowTitle(s,bMod,&parm,NULL);
+  int n = sTitle.Find(s);
+  if(n > 0)
+  {
+    wxString ss = sTitle.Left(n);
+    ss.Append(m_pSample->GetSampleName());
+    ss.Append(wxT("; "));
+    ss.Append(sTitle.Mid(n));
+    sTitle = ss;
+  }
+  SetTitle(sTitle);
 }
 
 void CFrameSample::OnTimer(wxTimerEvent &) {}
 bool CFrameSample::TransferDataToWindow()
 {
-  return m_pPanel->TransferDataToWindow();
+  return m_pNoteBook->TransferDataToWindow();
 }
 bool CFrameSample::MenuEvent(wxCommandEvent &e)
 {
@@ -88,11 +116,18 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
   switch(nID)
   {
   case IDmenuDisplayGraph:
+    _OpenGraphic();
     break;
   case IDmenuTable:
+    m_pCreator->Show(true);
+    m_pCreator->Raise();
     break;
   case IDmenuHistory:
+    _History();
     break;
+  case IDmenuShowHideToolbar:
+      _ToggleToolbar();
+      break;
   case IDSampleApplyAll:
     break;
   case IDmenuDisableSample:
@@ -102,6 +137,30 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
   }
   return bRtn;
 }
+
+void CFrameSample::_OpenGraphic()
+{
+  const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
+  const wxString &sFileName = m_pOARfile->FindPlotFile(m_pSample);
+  m_pParent->OpenFile(sFileName,sLocus,m_pOARfile);
+}
+void CFrameSample::_History()
+{
+  const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
+  int nSelected = m_pNoteBook->GetSelection();
+  CDialogCellHistory::ShowHistory(
+    this,m_pOARfile, m_pSample,sLocus,nSelected);
+}
+void CFrameSample::_ShowToolbar(bool bShow)
+{
+  if(bShow != m_pToolbar->IsShown())
+  {
+    m_pToolbar->Show(bShow);
+    Layout();
+    SetToolbarMenuLabel(!bShow);
+  }
+}
+
 void CFrameSample::OnClose(wxCloseEvent &)
 {
   m_pCreator->RemoveSample(m_pSample,this);

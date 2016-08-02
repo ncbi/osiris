@@ -259,6 +259,10 @@ public:
   {
     return m_bHideTextToolbar;
   }
+  bool GetHideSampleToolbar() const
+  {
+    return m_bHideSampleToolbar;
+  }
   bool GetStartupMRU() const
   {
     return m_bStartupMRU;
@@ -639,6 +643,10 @@ public:
   {
     __SET_VALUE(m_bHideTextToolbar,b);
   }
+  void SetHideSampleToolbar(bool b)
+  {
+    __SET_VALUE(m_bHideSampleToolbar,b);
+  }
   void SetStartupMRU(bool b)
   {
     __SET_VALUE(m_bStartupMRU,b);
@@ -950,6 +958,7 @@ protected:
   bool m_bHideGraphicToolbar;
   bool m_bHideGraphicScrollbar;
   bool m_bHideTextToolbar;
+  bool m_bHideSampleToolbar;
   bool m_bStartupMRU;
   bool m_bCheckBeforeExit;
   bool m_bWarnOnHistory;

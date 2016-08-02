@@ -68,6 +68,13 @@ public:
     wxWindow *parent,
     wxWindowID id = wxID_ANY,
     const wxSize &sz = wxDefaultSize);
+  static void ShowHistory(
+    wxWindow *parent,
+    COARfile *pFile,
+    COARsample *pSample,
+    const wxString &sLocusName,
+    int nHistoryType);
+
 private:
   void _Setup(CSplitterCellHistory *pSplitter);
 };

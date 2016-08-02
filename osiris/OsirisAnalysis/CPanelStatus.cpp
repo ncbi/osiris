@@ -279,7 +279,7 @@ void CPanelStatus::OnClick(wxHyperlinkEvent &e)
       case IDmenuReviewILS:
       case IDmenuReviewChannels:
       case IDmenuReviewDirectory:
-        AddPendingEvent(ee);
+        GetEventHandler()->AddPendingEvent(ee);
         break;
       default:
         wxASSERT_MSG(0,"CPanelStatus::OnClick() invalid ID");
