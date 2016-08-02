@@ -845,7 +845,7 @@ void DataSignal :: WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& 
 //			text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-			text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
+			text << indent << "\t<Width>" << GetWidth () << "</Width>" << endLine;
 			text << indent << "\t<allele>" << GetAlleleName () << suffix << "</allele>" << endLine;
 			text << indent << "\t<fit>" << GetCurveFit () << "</fit>" << endLine;
 			text << indent << "</" + bracketTag << ">" << endLine;
@@ -901,7 +901,7 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 //				text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-				text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
+				text << indent << "\t<Width>" << GetWidth () << "</Width>" << endLine;
 
 				if (virtualAllele.Length () > 0)
 					text << indent << "\t<equivAllele>" << virtualAllele << suffix << "</equivAllele>" << endLine;
@@ -1014,7 +1014,7 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-		text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
+		text << indent << "\t<Width>" << GetWidth () << "</Width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 

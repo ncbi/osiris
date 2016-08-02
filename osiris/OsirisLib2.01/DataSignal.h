@@ -580,6 +580,7 @@ public:
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const { tailLeft = tailRight = 0.0; }
 	virtual double GetMean () const { return -DOUBLEMAX; }
 	virtual double GetStandardDeviation () const { return -DOUBLEMAX; }
+	virtual double GetWidth () const { return -DOUBLEMAX; }
 	virtual double GetVariance () const { return -DOUBLEMAX; }
 	virtual double GetScale (int curve) const { return -DOUBLEMAX; }
 	virtual double GetOrthogonalScale (int curve) const { return -DOUBLEMAX; }
@@ -1176,6 +1177,7 @@ public:
 	virtual double Peak () const;
 	virtual double GetMean () const;
 	virtual double GetStandardDeviation () const;
+	virtual double GetWidth () const;
 	virtual double GetVariance () const;
 	virtual void SetPeak (double peak);
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const;
@@ -1315,6 +1317,7 @@ public:
 	virtual Boolean CanBeNegative () const;
 	virtual double GetMean () const;
 	virtual double GetStandardDeviation () const;
+	virtual double GetWidth () const;
 	virtual double GetVariance () const;
 	virtual double GetScale (int curve) const;
 	virtual double GetOrthogonalScale (int curve) const;
@@ -1432,6 +1435,7 @@ public:
 	virtual double Peak () const;
 	virtual double GetMean () const;
 	virtual double GetStandardDeviation () const;
+	virtual double GetWidth () const;
 	virtual double GetVariance () const;
 	virtual void SetPeak (double peak);
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const;
@@ -1700,6 +1704,7 @@ public:
 	virtual double Peak () const;
 	virtual double GetMean () const;
 	virtual double GetStandardDeviation () const;
+	virtual double GetWidth () const;
 	virtual double GetVariance () const;
 
 	virtual void SetMessageValue (int scope, int location, bool value);
@@ -1886,6 +1891,7 @@ public:
 	virtual void SetDisplacement (double disp) { mOriginal->SetDisplacement (disp); }
 	virtual void SetScale (double scale) { mOriginal->SetScale (scale); }
 	virtual double GetStandardDeviation () const { return mOriginal->GetStandardDeviation (); }
+	virtual double GetWidth () const { return mOriginal->GetWidth (); }
 	virtual double GetVariance () const { return mOriginal->GetVariance (); }
 	virtual void SetPeak (double peak) { mOriginal->SetPeak (peak); }
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const { mOriginal->ComputeTails (tailLeft, tailRight); }

@@ -1347,7 +1347,7 @@ bool DataSignal :: HasAnyPrimarySignals (int numberOfChannels) const {
 	int myChannel = GetChannel ();
 
 	if (mPrimaryPullupInChannel == NULL)
-		return NULL;
+		return false;
 
 	for (i=1; i<=numberOfChannels; i++) {
 
@@ -2367,7 +2367,7 @@ void DataSignal :: WriteTableArtifactInfoToXML (RGTextOutput& text, RGTextOutput
 
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-		text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
+		text << indent << "\t<Width>" << GetWidth () << "</Width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 
@@ -4908,6 +4908,12 @@ double Gaussian :: GetStandardDeviation () const {
 }
 
 
+double Gaussian :: GetWidth () const {
+
+	return 2.0 * StandardDeviation;
+}
+
+
 double Gaussian :: GetVariance () const {
 
 	return StandardDeviation * StandardDeviation;
@@ -6294,6 +6300,19 @@ double DoubleGaussian :: GetMean () const {
 double DoubleGaussian :: GetStandardDeviation () const {
 
 	return StandardDeviation;
+}
+
+
+double DoubleGaussian :: GetWidth () const {
+
+	double D = Peak ();
+
+	if (D == 0.0)
+		return 2.0 * StandardDeviation;
+
+	double lambda1 = PrimaryScale * PrimaryCurve->Peak () / D;
+	double lambda2 = 1.0 - lambda1;
+	return 2.0 * StandardDeviation * (lambda1 + lambda2 * SigmaRatio);
 }
 
 
@@ -8215,6 +8234,12 @@ double SuperGaussian :: GetMean () const {
 double SuperGaussian :: GetStandardDeviation () const {
 
 	return Sigma1;
+}
+
+
+double SuperGaussian :: GetWidth () const {
+
+	return 2.0 * Sigma1;
 }
 
 
@@ -10636,6 +10661,12 @@ double CraterSignal :: GetMean () const {
 double CraterSignal :: GetStandardDeviation () const {
 
 	return mSigma;
+}
+
+
+double CraterSignal :: GetWidth () const {
+
+	return 2.0 * mSigma;
 }
 
 

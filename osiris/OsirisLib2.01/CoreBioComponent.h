@@ -172,7 +172,7 @@ public:
 	void SetPullupTestedMatrix (int i, int j, bool value);
 	void SetLinearPullupMatrix (int i, int j, double value);
 	void SetQuadraticPullupMatrix (int i, int j, double value);
-	void CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList);
+	void CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList, bool testLaserOffScale);
 
 	void ReportSampleTableRow (RGTextOutput& text);
 	void ReportSampleTableRowWithLinks (RGTextOutput& text);
@@ -363,7 +363,7 @@ public:
 	virtual int AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
 	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList** notPrimaryLists);
 	virtual bool CollectDataAndComputeCrossChannelEffectForChannelsSM (int primaryChannel, int pullupChannel, RGDList* primaryChannelPeaks, double& linearPart, double& quadraticPart, bool testLaserOffScale, bool testNegativePUOnly);
-	virtual bool NegatePullupForChannelsSM (int primaryChannel, int pullupChannel, list<PullupPair*>& pairList);
+	virtual bool NegatePullupForChannelsSM (int primaryChannel, int pullupChannel, list<PullupPair*>& pairList, bool testLaserOffScale);
 	virtual DataSignal** CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals);
 	virtual bool AcknowledgePullupPeaksWhenThereIsNoPatternSM (int primaryChannel, int secondaryChannel, bool testLaserOffScale);
 

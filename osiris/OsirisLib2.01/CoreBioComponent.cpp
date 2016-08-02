@@ -1100,7 +1100,7 @@ void CoreBioComponent :: SetQuadraticPullupMatrix (int i, int j, double value) {
 }
 
 
-void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList) {
+void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList, bool testLaserOffScale) {
 
 	if ((mLinearPullupMatrix == NULL) || (mQuadraticPullupMatrix == NULL))
 		return;
@@ -1114,9 +1114,10 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 	double ratio;
 	list<InterchannelLinkage*>::iterator it;
 	InterchannelLinkage* nextLink;
+	smLaserOffScale laserOffScale;
 
 	if ((linear == 0.0) && (quad == 0.0))
-		NegatePullupForChannelsSM (i, j, pairList);
+		NegatePullupForChannelsSM (i, j, pairList, testLaserOffScale);
 
 	else {
 
@@ -1126,6 +1127,9 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 			primaryPeak = nextLink->GetPrimarySignal ();
 
 			if (primaryPeak->GetChannel () != i)
+				continue;
+
+			if (primaryPeak->GetMessageValue (laserOffScale) != testLaserOffScale)
 				continue;
 
 			pullupPeak = nextLink->GetSecondarySignalOnChannel (j);

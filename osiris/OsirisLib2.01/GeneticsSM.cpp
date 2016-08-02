@@ -591,7 +591,7 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";
-		text << "\t\t\t\t\t<Width>" << 2.0 * nextSignal->GetStandardDeviation () << "</Width>\n";
+		text << "\t\t\t\t\t<Width>" << 2.0 * nextSignal->GetWidth () << "</Width>\n";
 		text << "\t\t\t\t\t<Time>" << nextSignal->GetMean () << "</Time>\n";
 		text << "\t\t\t\t\t<Fit>" << nextSignal->GetCurveFit () << "</Fit>\n";
 
@@ -5980,8 +5980,12 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
 	smPullUp pullup;
-	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
+	smCalculatedPurePullup purePullup;
+	smBelowMinRFU belowMinRFU;
+
+	bool prevBelowMinRFU;
+	bool nextBelowMinRFU;
 
 	it.Reset ();
 
@@ -6087,6 +6091,31 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				prevAlleleName = alleleName;
 				prevLocation = location;
 				continue;
+			}
+
+			else {
+
+				prevBelowMinRFU = prevSignal->GetMessageValue (belowMinRFU);
+				nextBelowMinRFU = nextSignal->GetMessageValue (belowMinRFU);
+
+				if (prevBelowMinRFU && !nextBelowMinRFU) {
+
+					prevSignal = nextSignal;
+					prevAlleleName = alleleName;
+					prevLocation = location;
+					continue;
+				}
+
+				else if (!prevBelowMinRFU && nextBelowMinRFU)
+					continue;
+
+				else if (prevBelowMinRFU && nextBelowMinRFU) {
+
+					prevSignal = nextSignal;
+					prevAlleleName = alleleName;
+					prevLocation = location;
+					continue;
+				}
 			}
 
 			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
