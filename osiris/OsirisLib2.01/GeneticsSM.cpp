@@ -591,7 +591,7 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";
-		text << "\t\t\t\t\t<Width>" << 2.0 * nextSignal->GetWidth () << "</Width>\n";
+		text << "\t\t\t\t\t<Width>" << nextSignal->GetWidth () << "</Width>\n";
 		text << "\t\t\t\t\t<Time>" << nextSignal->GetMean () << "</Time>\n";
 		text << "\t\t\t\t\t<Fit>" << nextSignal->GetCurveFit () << "</Fit>\n";
 

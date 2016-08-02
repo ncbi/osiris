@@ -6305,14 +6305,30 @@ double DoubleGaussian :: GetStandardDeviation () const {
 
 double DoubleGaussian :: GetWidth () const {
 
-	double D = Peak ();
+	/*double range = 2.0 * SigmaRatio * StandardDeviation;
+	double mu = GetMean ();
+	double upperLimit = mu + range;
+	double lowerLimit = mu - range;
+	double numerator = 0.0;
+	double denominator = 0.0;
+	int iUpperLimit = (int) ceil (upperLimit + 0.5);
+	int iLowerLimit = (int) floor (lowerLimit - 0.5);
+	int i;
+	double diff;
+	double v;
 
-	if (D == 0.0)
+	for (i=iLowerLimit; i<=iUpperLimit; i++) {
+
+		v = Value ((double)i);
+		diff = (double)i - mu;
+		numerator += diff * diff * v;
+		denominator += v;
+	}
+
+	if (denominator == 0.0)*/
 		return 2.0 * StandardDeviation;
 
-	double lambda1 = PrimaryScale * PrimaryCurve->Peak () / D;
-	double lambda2 = 1.0 - lambda1;
-	return 2.0 * StandardDeviation * (lambda1 + lambda2 * SigmaRatio);
+	//return 2.0 * sqrt (numerator / denominator);
 }
 
 
