@@ -28,6 +28,7 @@ libosiris_a_SOURCES = \
 ../GenotypeSpecs.cpp \
 ../IndividualGenotype.cpp \
 ../LadderData.cpp \
+../LeastMedianOfSquares.cpp \
 ../Notice.cpp \
 ../OsirisInputFile.cpp \
 ../OsirisMsg.cpp \

@@ -63,7 +63,10 @@ void CArtifact::RegisterAll(bool bInConstructor)
   RegisterInt("level",&m_nLevel);
   RegisterDouble("mean",&m_dMean);
   RegisterInt("height",&m_nHeight);
+  RegisterDouble("PullupHeightCorrection",&m_dPullupHeightCorrection);
   RegisterDouble("meanbps",&m_dMeanBPS);
+  RegisterDouble("PeakArea",&m_dPeakArea);
+  RegisterDouble("Width",&m_dWidth);
   RegisterDouble("fit",&m_dFit);
   RegisterWxString("label",&m_sLabel);
   RegisterWxString("equivAllele",&m_sEquivAllele);
@@ -79,7 +82,10 @@ void CSamplePeak::RegisterAll(bool bInConstructor)
 {
   RegisterDouble("mean",&m_dMean);
   RegisterInt("height",&m_nHeight);
+  RegisterDouble("PullupHeightCorrection",&m_dPullupHeightCorrection);
   RegisterDouble("meanbps",&m_dMeanBps);
+  RegisterDouble("PeakArea",&m_dPeakArea);
+  RegisterDouble("Width",&m_dWidth);
   RegisterDouble("BPS",&m_dBPS);
   RegisterWxString("allele",&m_sAllele);
   RegisterDoubleM1("fit",&m_dFit);

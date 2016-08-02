@@ -67,8 +67,10 @@ public:
   virtual double GetMeanBPS() const = 0;
   virtual double GetBPS() const = 0;
   virtual double GetRFU() const = 0;
+  virtual double GetPullupHeightCorrection() const = 0;
   virtual double GetTime() const = 0;
   virtual double GetPeakArea() const = 0;
+  virtual double GetWidth() const = 0;
   virtual double GetFit() const = 0;
 
   virtual bool IsArtifact() const = 0;
@@ -104,8 +106,10 @@ public:
   virtual void SetMeanBPS(double d) = 0;
   virtual void SetBPS(double d) = 0;
   virtual void SetRFU(double d) = 0;
+  virtual void SetPullupHeightCorrection(double d) = 0;
   virtual void SetTime(double d) = 0;
   virtual void SetPeakArea(double d) = 0;
+  virtual void SetWidth(double d) = 0;
   virtual void SetFit(double d) = 0;
   virtual void SetIsArtifact(bool b) = 0;
   virtual void SetIsAllele(bool b) = 0;
@@ -260,6 +264,10 @@ public:
   {
     return nwxString::FormatDouble(x.GetRFU());
   }
+  static wxString FormatPullupHeightCorrection(const IOARpeak &x)
+  {
+    return nwxString::FormatDouble(x.GetPullupHeightCorrection());
+  }
   static wxString FormatTime(const IOARpeak &x)
   {
     return nwxString::FormatDouble(x.GetTime());
@@ -267,6 +275,10 @@ public:
   static wxString FormatPeakArea(const IOARpeak &x)
   {
     return nwxString::FormatDouble(x.GetPeakArea());
+  }
+  static wxString FormatWidth(const IOARpeak &x)
+  {
+    return nwxString::FormatDouble(x.GetWidth());
   }
   static wxString FormatFit(const IOARpeak &x)
   {
@@ -348,6 +360,10 @@ public:
   {
     return FormatRFU(*this);
   }
+  wxString FormatPullupHeightCorrection() const
+  {
+    return FormatPullupHeightCorrection(*this);
+  }
   wxString FormatTime() const
   {
     return FormatTime(*this);
@@ -355,6 +371,10 @@ public:
   wxString FormatPeakArea() const
   {
     return FormatPeakArea(*this);
+  }
+  wxString FormatWidth() const
+  {
+    return FormatWidth(*this);
   }
   wxString FormatFit() const
   {
@@ -401,8 +421,10 @@ public:
   virtual double GetMeanBPS() const;
   virtual double GetBPS() const;
   virtual double GetRFU() const;
+  virtual double GetPullupHeightCorrection() const;
   virtual double GetTime() const;
   virtual double GetPeakArea() const;
+  virtual double GetWidth() const;
   virtual double GetFit() const;
 
   virtual bool IsArtifact() const;
@@ -425,8 +447,10 @@ public:
   virtual void SetMeanBPS(double d);
   virtual void SetBPS(double d);
   virtual void SetRFU(double d);
+  virtual void SetPullupHeightCorrection(double d);
   virtual void SetTime(double d);
   virtual void SetPeakArea(double d);
+  virtual void SetWidth(double d);
   virtual void SetFit(double d);
   virtual void SetIsArtifact(bool b);
   virtual void SetIsAllele(bool b);
@@ -450,8 +474,10 @@ private:
   wxString m_sOffLadder;
   wxDateTime m_dtUpdate;
   double m_dRFU;
+  double m_dPullupHeightCorrection;
   double m_dTime;
   double m_dPeakArea;
+  double m_dWidth;
   double m_dBPS;
   double m_dMeanBPS;
   double m_dFit;

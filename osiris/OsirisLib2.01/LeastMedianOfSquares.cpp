@@ -76,7 +76,7 @@ double DualLine :: YAtXEquals (double x) {
 }
 
 
-IndexedDouble& IndexedDouble :: operator= (IndexedDouble& is) {
+IndexedDouble& IndexedDouble :: operator= (const IndexedDouble& is) {
 
 	if (this == &is)
 		return *this;
@@ -626,7 +626,7 @@ void LeastMedianOfSquares2DExhaustive :: DeleteVertexMatrix (IntersectionPoint**
 }
 
 
-LeastSquaresQuadraticModel :: LeastSquaresQuadraticModel (int n, double* x, double* y) : mSize (n), mIsOK (true), mXvalues (NULL), mYvalues (NULL), mX2values (NULL) {
+LeastSquaresQuadraticModel :: LeastSquaresQuadraticModel (int n, double* x, double* y) : mIsOK (true), mSize (n), mXvalues (NULL), mYvalues (NULL), mX2values (NULL) {
 
 	if (n < 3) {
 

@@ -55,7 +55,10 @@ public:
   {
     m_dBPS = 0.0;
     m_dMeanBps = 0.0;
+    m_dPeakArea = 0.0;
+    m_dWidth = 0.0;
     m_nHeight = 0;
+    m_dPullupHeightCorrection = 0;
     m_dMean = 0.0;
     m_dFit = 0.0;
     m_sAllele.Clear();
@@ -114,9 +117,17 @@ public:
   {
     return (double) m_nHeight;
   }
+  virtual double GetPullupHeightCorrection() const
+  {
+    return m_dPullupHeightCorrection;
+  }
   virtual double GetPeakArea() const
   {
-    return 0.0;
+    return m_dPeakArea;
+  }
+  virtual double GetWidth() const
+  {
+    return m_dWidth;
   }
   virtual double GetFit() const
   {
@@ -169,12 +180,23 @@ public:
   {
     m_nHeight = nwxRound::Round(d);
   }
+  virtual void SetPullupHeightCorrection(double d)
+  {
+    m_dPullupHeightCorrection = d;
+  }
   virtual void SetTime(double d)
   {
     m_dMean = d;
   }
 
-  virtual void SetPeakArea(double)  {;}
+  virtual void SetPeakArea(double d)  
+  {
+    m_dPeakArea = d;
+  }
+  virtual void SetWidth(double d)
+  {
+    m_dWidth = d;
+  }
   virtual void SetFit(double) {;}
   virtual void SetIsArtifact(bool) {;}
   virtual void SetIsAllele(bool) {;}
@@ -241,7 +263,10 @@ protected:
   virtual void RegisterAll(bool bInConstructor = false);
 private:
   wxString m_sAllele;
+  double m_dPullupHeightCorrection;
   double m_dMeanBps;
+  double m_dPeakArea;
+  double m_dWidth;
   double m_dBPS;
   double m_dFit;
   double m_dMean;
@@ -261,6 +286,7 @@ public:
   virtual void Init(void *)
   {
     m_nHeight = 0;
+    m_dPullupHeightCorrection = 0.0;
     m_dMean = 0.0;
     m_dFit = 0.0;
     m_nLevel = 0;
@@ -323,13 +349,21 @@ public:
   {
     return (double)m_nHeight;
   }
+  virtual double GetPullupHeightCorrection() const
+  {
+    return m_dPullupHeightCorrection;
+  }
   virtual double GetTime() const
   {
     return m_dMean;
   }
   virtual double GetPeakArea() const
   {
-    return 0.0;
+    return m_dPeakArea;
+  }
+  virtual double GetWidth() const
+  {
+    return m_dWidth;
   }
   virtual double GetFit() const
   {
@@ -382,11 +416,22 @@ public:
   {
     m_nHeight = nwxRound::Round(d);
   }
+  virtual void SetPullupHeightCorrection(double d)
+  {
+    m_dPullupHeightCorrection = d;
+  }
   virtual void SetTime(double d)
   {
     m_dMean = d;
   }
-  virtual void SetPeakArea(double) {;}
+  virtual void SetPeakArea(double d) 
+  {
+    m_dPeakArea = d;
+  }
+  virtual void SetWidth(double d)
+  {
+    m_dWidth = d;
+  }
   virtual void SetFit(double d)
   {
     m_dFit = d;
@@ -464,7 +509,10 @@ private:
   wxString m_sEquivAllele;
   double m_dMean;
   double m_dMeanBPS;
+  double m_dPeakArea;
+  double m_dWidth;
   double m_dFit;
+  double m_dPullupHeightCorrection;
   int m_nHeight;
   int m_nLevel;
 };

@@ -72,8 +72,10 @@ void COARartifact::RegisterAll(bool)
   RegisterInt("Id",&m_nID);
   RegisterInt("Level", &m_nLevel);
   RegisterDouble("RFU",&m_dRFU);
+  RegisterDouble("PullupHeightCorrection",&m_dPullupHeightCorrection);
   RegisterDouble("meanbps",&m_dMeanBPS);
   RegisterDouble("PeakArea",&m_dPeakArea);
+  RegisterDouble("Width",&m_dWidth);
   RegisterDouble("Time",&m_dTime);
   RegisterDoubleM1("Fit",&m_dFit);
   RegisterBoolTrue("AllowPeakEdit",&m_bIsEditable);
@@ -115,8 +117,10 @@ COARartifact &COARartifact::operator =(const COARartifact &x)
   _CopyCurrentAllele(x); // after COARcopyVP
 
   COARcopy(m_dRFU);
+  COARcopy(m_dPullupHeightCorrection);
   COARcopy(m_dMeanBPS);
   COARcopy(m_dPeakArea);
+  COARcopy(m_dWidth);
   COARcopy(m_dTime);
   COARcopy(m_dFit);
   COARcopy(m_nID);
