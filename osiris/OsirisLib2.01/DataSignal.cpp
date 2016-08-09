@@ -1092,7 +1092,7 @@ bool LessDistance (const PeakInfoForClusters* p1, const PeakInfoForClusters* p2)
 
 DataSignal :: DataSignal (const DataSignal& ds, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)ds), LeftSearch (ds.LeftSearch),
 RightSearch (ds.RightSearch), Fit (ds.Fit), ResidualPower (ds.ResidualPower), MeanVariability (ds.MeanVariability), BioID (ds.BioID), 
-ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), 
+ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mWidth (-1.0), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), 
 signalLink (NULL), mPrimaryCrossChannelLink (NULL), mDontLook (ds.mDontLook), mTestLeftEndPoint (ds.mTestLeftEndPoint), mTestRightEndPoint (ds.mTestRightEndPoint), 
 mDataMode (ds.mDataMode), mRawDataBelowMinHeight (ds.mRawDataBelowMinHeight), mOsirisFitBelowMinHeight (ds.mOsirisFitBelowMinHeight),
 mRawDataAboveMaxHeight (ds.mRawDataAboveMaxHeight), mOsirisFitAboveMaxHeight (ds.mOsirisFitAboveMaxHeight), mIsGraphable (ds.mIsGraphable), 
@@ -1122,6 +1122,8 @@ DataSignal :: ~DataSignal () {
 	delete[] mPrimaryRatios;
 	delete[] mPullupCorrectionArray;
 	delete[] mPrimaryPullupInChannel;
+	mUncertainPullupChannels.clear ();
+	mProbablePullupPeaks.Clear ();
 }
 
 
@@ -1359,6 +1361,113 @@ bool DataSignal :: HasAnyPrimarySignals (int numberOfChannels) const {
 	}
 
 	return false;
+}
+
+
+void DataSignal :: AddUncertainPullupChannel (int channel) {
+
+	mUncertainPullupChannels.insert (channel);
+}
+
+
+bool DataSignal :: UncertainPullupChannelListIsEmpty () {
+
+	return (mUncertainPullupChannels.empty ());
+}
+
+
+
+bool DataSignal :: PullupChannelIsUncertain (int channel) {
+
+	return (mUncertainPullupChannels.find (channel) != mUncertainPullupChannels.end ());
+}
+
+
+
+RGString DataSignal :: CreateUncertainPullupString () {
+
+	RGString result;
+
+	if (mUncertainPullupChannels.empty ())
+		return result;
+
+	set<int>::iterator it;
+	int i = 0;
+	int channel;
+
+	for (it=mUncertainPullupChannels.begin (); it!=mUncertainPullupChannels.end (); it++) {
+
+		channel = *it;
+
+		if (i > 0)
+			result << ", ";
+
+		result << channel;
+	}
+
+	return result;
+}
+
+
+void DataSignal :: AddProbablePullups (RGDList& prototype) {
+
+	RGDListIterator it (prototype);
+	DataSignal* nextSignal;
+
+	while (nextSignal = (DataSignal*) it ())
+		mProbablePullupPeaks.InsertWithNoReferenceDuplication (nextSignal);
+}
+
+
+void DataSignal :: RemoveProbablePullup (const DataSignal* removeSignal) {
+
+	mProbablePullupPeaks.RemoveReference (removeSignal);
+}
+
+
+bool DataSignal :: ReconfigurePullupFromLinkForChannel (int channel) {
+
+	RGDListIterator it (mProbablePullupPeaks);
+	DataSignal* currentPullup = NULL;
+	DataSignal* nextPullup;
+	double mu = GetMean ();
+	double distance;
+	double currentDistance;
+
+	while (nextPullup = (DataSignal*) it ()) {
+
+		if (nextPullup->GetChannel () == channel) {
+
+			distance = fabs (nextPullup->GetMean () - mu);
+
+			if (currentPullup == NULL) {
+
+				currentPullup = nextPullup;
+				currentDistance = distance;
+			}
+
+			else {
+
+				if (distance <= currentDistance) {
+
+					currentPullup = nextPullup;
+					currentDistance = distance;
+				}
+			}
+		}
+	}
+
+	if (currentPullup == NULL)
+		return false;
+
+	InterchannelLinkage* iChannel = GetInterchannelLink ();
+
+	if (iChannel == NULL)
+		return false;
+
+	iChannel->AddDataSignal (currentPullup);
+	currentPullup->SetPrimarySignalFromChannel (GetChannel (), (DataSignal*) this, NumberOfChannels);
+	return true;
 }
 
 
@@ -1747,6 +1856,100 @@ double DataSignal :: GetPullupRatio (int channel) {
 		return 0.0;
 
 	return mPrimaryRatios [channel];
+}
+
+
+double DataSignal :: GetWidth () {
+
+	if (mWidth > 0.0)
+		return mWidth;
+
+	double leftSearch = GetMean ();
+	double mu = leftSearch;
+	double sigma = GetStandardDeviation ();
+	double targetWidth = 0.01 * sigma;
+	double rightSearch = leftSearch + sigma;
+	int i;
+	double targetValue = 0.5 * Peak ();
+	double leftValue;
+	double rightValue;
+	double midPoint;
+	double midValue;
+	bool foundInterval = false;
+
+	for (i=0; i<10; i++) {
+
+		leftValue = Value (leftSearch);
+		rightValue = Value (rightSearch);
+
+		if (leftValue == targetValue) {
+
+			mWidth = 2.0 * (leftSearch - mu);
+			return mWidth;
+		}
+
+		if (rightValue == targetValue) {
+
+			mWidth = 2.0 * (rightSearch - mu);
+			return mWidth;
+		}
+
+		if (rightValue > targetValue) {  // bump interval
+
+			leftSearch = rightSearch;
+			rightSearch += sigma;
+		}
+
+		else {  // we found a bracketing interval!
+
+			foundInterval = true;
+			break;
+		}
+	}
+
+	if (!foundInterval) {
+
+		cout << "Could not find width bracketing interval for peak at " << GetMean () << " with sigma = " << GetStandardDeviation () << " and peak = " << Peak () << endl;
+		mWidth = 3.14159;
+		return mWidth;
+	}
+
+	midPoint = 0.5 * (leftSearch + rightSearch);
+	i = 0;
+
+	while (true) {
+
+		midValue = Value (midPoint);
+
+		if (midValue == targetValue) {
+
+			mWidth = 2.0 * (midPoint - mu);
+			return mWidth;
+		}
+
+		if (midValue > targetValue)  // replace leftSearch
+			leftSearch = midPoint;
+
+		else
+			rightSearch = midPoint;
+
+		midPoint = 0.5 * (leftSearch + rightSearch);
+
+		if (fabs (rightSearch - leftSearch) < targetWidth) {
+
+			mWidth = 2.0 * (midPoint - mu);
+			return mWidth;
+		}
+
+		i++;
+
+		if (i > 10)
+			break;
+	}
+
+	cout << "Could not terminate binary search for peak at " << GetMean () << " with sigma = " << GetStandardDeviation () << " and peak = " << Peak () << endl;
+	mWidth = 3.14159;
+	return mWidth;
 }
 
 
@@ -4908,12 +5111,6 @@ double Gaussian :: GetStandardDeviation () const {
 }
 
 
-double Gaussian :: GetWidth () const {
-
-	return 2.0 * StandardDeviation;
-}
-
-
 double Gaussian :: GetVariance () const {
 
 	return StandardDeviation * StandardDeviation;
@@ -6300,35 +6497,6 @@ double DoubleGaussian :: GetMean () const {
 double DoubleGaussian :: GetStandardDeviation () const {
 
 	return StandardDeviation;
-}
-
-
-double DoubleGaussian :: GetWidth () const {
-
-	/*double range = 2.0 * SigmaRatio * StandardDeviation;
-	double mu = GetMean ();
-	double upperLimit = mu + range;
-	double lowerLimit = mu - range;
-	double numerator = 0.0;
-	double denominator = 0.0;
-	int iUpperLimit = (int) ceil (upperLimit + 0.5);
-	int iLowerLimit = (int) floor (lowerLimit - 0.5);
-	int i;
-	double diff;
-	double v;
-
-	for (i=iLowerLimit; i<=iUpperLimit; i++) {
-
-		v = Value ((double)i);
-		diff = (double)i - mu;
-		numerator += diff * diff * v;
-		denominator += v;
-	}
-
-	if (denominator == 0.0)*/
-		return 2.0 * StandardDeviation;
-
-	//return 2.0 * sqrt (numerator / denominator);
 }
 
 
@@ -8250,12 +8418,6 @@ double SuperGaussian :: GetMean () const {
 double SuperGaussian :: GetStandardDeviation () const {
 
 	return Sigma1;
-}
-
-
-double SuperGaussian :: GetWidth () const {
-
-	return 2.0 * Sigma1;
 }
 
 
@@ -10680,9 +10842,13 @@ double CraterSignal :: GetStandardDeviation () const {
 }
 
 
-double CraterSignal :: GetWidth () const {
+double CraterSignal :: GetWidth () {
 
-	return 2.0 * mSigma;
+	if (mWidth > 0.0)
+		return mWidth;
+
+	mWidth = mNext->GetMean () - mPrevious->GetMean () + 0.5 * (mPrevious->GetWidth () + mNext->GetWidth ());
+	return mWidth;
 }
 
 
@@ -10989,6 +11155,16 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (const SimpleSigmoidSignal& c, Coordi
 
 SimpleSigmoidSignal :: ~SimpleSigmoidSignal () {
 
+}
+
+
+double SimpleSigmoidSignal :: GetWidth () {
+
+	if (mWidth > 0.0)
+		return mWidth;
+
+	mWidth = mNext->GetMean () - mPrevious->GetMean ();
+	return mWidth;
 }
 
 
@@ -11338,6 +11514,16 @@ NoisyPeak :: NoisyPeak (const NoisyPeak& c, CoordinateTransform* trans) : Crater
 
 NoisyPeak :: ~NoisyPeak () {
 
+}
+
+
+double NoisyPeak :: GetWidth () {
+
+	if (mWidth > 0.0)
+		return mWidth;
+
+	mWidth = 0.5 * (mPrevious->GetWidth () + mNext->GetWidth ());
+	return mWidth;
 }
 
 

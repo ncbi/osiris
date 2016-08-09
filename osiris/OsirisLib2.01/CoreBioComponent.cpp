@@ -1116,8 +1116,11 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 	InterchannelLinkage* nextLink;
 	smLaserOffScale laserOffScale;
 
-	if ((linear == 0.0) && (quad == 0.0))
-		NegatePullupForChannelsSM (i, j, pairList, testLaserOffScale);
+	if ((linear == 0.0) && (quad == 0.0)) {
+
+		//NegatePullupForChannelsSM (i, j, pairList, testLaserOffScale);
+		return;
+	}
 
 	else {
 

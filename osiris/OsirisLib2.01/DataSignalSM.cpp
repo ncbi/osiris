@@ -722,9 +722,15 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	int i;
 	RGString data;
 	int n = 0;
+	int k = 0;
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
+	smPossiblePullUp possiblePullup;
 	DataSignal* primary;
+	RGString uncertain;
+	RGString narrow;
+	RGString channelList;
+	bool uncertainListNotEmpty = false;
 
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
@@ -737,6 +743,13 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 		primary = HasPrimarySignalFromChannel (i);
 
 		if (primary != NULL) {
+
+			if (PullupChannelIsUncertain (i)) {
+
+				k = 1;
+				uncertainListNotEmpty = true;
+				continue;
+			}
 
 			if (n == 0)
 				n = 1;
@@ -751,16 +764,43 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 		}
 	}
 
-	if (n > 0) {
+	if (n > 0)
+		data << "%";
+
+	if (n + k > 0) {
 
 		bool isPullup = GetMessageValue (pullup);
 		bool isPurePullup = GetMessageValue (purePullup);
 
-		if (isPullup)
-			AppendDataForSmartMessage (pullup, data);
+		if (isPullup) {
 
-		if (isPurePullup)
+			if (GetMessageValue (possiblePullup)) {
+
+				uncertain << "(Uncertain Channels: ";
+				channelList = CreateUncertainPullupString ();
+				uncertain << channelList;
+				uncertain << ") ";
+				data = uncertain + data;
+				//AppendDataForSmartMessage (pullup, uncertain);
+			}
+
+			AppendDataForSmartMessage (pullup, data);
+		}
+
+		else if (isPurePullup) {
+
+			if (GetMessageValue (possiblePullup)) {
+
+				narrow << "(Narrow Channels: ";
+				channelList = CreateUncertainPullupString ();
+				narrow << channelList;
+				narrow << ") ";
+				data = narrow + data;
+				//AppendDataForSmartMessage (pullup, uncertain);
+			}
+
 			AppendDataForSmartMessage (purePullup, data);
+		}
 	}
 }
 
@@ -1668,6 +1708,9 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 			primarySignal = HasPrimarySignalFromChannel (i);
 
 			if (primarySignal == NULL)
+				continue;
+
+			if (PullupChannelIsUncertain (i))
 				continue;
 
 			if (GetPullupFromChannel (i) != 0.0) {

@@ -5673,6 +5673,7 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 
 	//****02/09/2016 Probably need to eliminate the following section because craters have already been validated.  Instead, just test for two peaks with identical call and create NoisyPeak to replace.
 
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		location = TestSignalPositionRelativeToLocus (nextSignal);
@@ -5787,6 +5788,8 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 
 	//	delete nextSignal;
 	}
+
+
 
 	it.Reset ();
 //	bool previousPullUp;
@@ -5983,6 +5986,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smPrimaryInterchannelLink primaryPullup;
 	smCalculatedPurePullup purePullup;
 	smBelowMinRFU belowMinRFU;
+	smCrater crater;
 
 	bool prevBelowMinRFU;
 	bool nextBelowMinRFU;
@@ -6040,6 +6044,18 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 
 				//if (report)
 				//	cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (crater) || nextSignal->GetMessageValue (crater)) {
+
+				//if (report)
+				if ((nextSignal->GetMean () > 5570.0) && (nextSignal->GetMean () < 5572.0))
+					cout << "A signal at mean " << prevSignal->GetMean () << " or at mean " << nextSignal->GetMean () << " is part of a crater" << endl;
 
 				prevSignal = nextSignal;
 				prevAlleleName = alleleName;

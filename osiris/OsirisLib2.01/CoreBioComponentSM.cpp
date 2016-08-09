@@ -1293,6 +1293,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	list<InterchannelLinkage*>::const_iterator it;
 	InterchannelLinkage* nextLink;
+	InterchannelLinkage* iChannel;
 	DataSignal* primarySignal;
 	DataSignal* secondarySignal;
 	DataSignal* nextSignal;
@@ -1306,6 +1307,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	smLaserOffScale laserOffScale;
 	smPossiblePullUp possiblePullup;
 	smCraterSidePeak sidePeak;
+	smPrimaryInterchannelLink primaryPullup;
 	double currentRatio;
 	double minRatio = 1.0;
 	double numerator;
@@ -1342,6 +1344,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
 		if (secondarySignal == NULL)
+			continue;
+
+		if (primarySignal->GetWidth () < secondarySignal->GetWidth ())
 			continue;
 
 		nextPair = new PullupPair (primarySignal, secondarySignal);
@@ -1466,6 +1471,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	bool secondaryNarrow;
 	DataSignal* pullupPeak;
 	double ratio;
+	list<InterchannelLinkage*> emptyLinks;
+	RGDList testedPullups;
 
 	if (answer) {
 
@@ -1481,103 +1488,188 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		
 		double correctedHeight;
 		list<DataSignal*> removePrimaryList;
+		
 		//cout << "Least squares fit gives (linear, quadratic) coefficients:  (" << linearPart << ", " << quadraticPart << ")" << endl;
 
-		for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
+		if ((linearPart == 0.0) && (quadraticPart == 0.0)) {  // There is a pattern and it is that there is no pullup
 
-			nextPair = *pairIt;
-			pullupPeak = nextPair->mPullup;
+			// remove all cross channel links except those for which pullup is sufficiently narrow
 
-			if (pullupPeak == NULL)
-				continue;
+			for (it=mInterchannelLinkageList.begin (); it!=mInterchannelLinkageList.end (); it++) {
 
-			primarySignal = nextPair->mPrimary;
-			sigmaPrimary = primarySignal->GetStandardDeviation ();
-			sigmaSecondary = pullupPeak->GetStandardDeviation ();
+				iChannel = *it;
+				primarySignal = iChannel->GetPrimarySignal ();
 
-			secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
+				if (primarySignal->GetChannel () != primaryChannel)
+					continue;
 
-			//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
-			//belowMinRFU = (correctedHeight < analysisThreshold);
+				if (primarySignal->GetMessageValue (laserOffScale) != testLaserOffScale)
+					continue;
 
-			if ((!nextPair->mIsOutlier) || secondaryNarrow) {
+				secondarySignal = iChannel->GetSecondarySignalOnChannel (pullupChannel);
 
-				// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
+				if (secondarySignal == NULL)
+					continue;
 
-				pullupPeak->SetMessageValue (purePullup, true);
-				pullupPeak->SetMessageValue (pullup, false);
+				// Test for width criterion; otherwise continue below
 
-				if (pullupPeak->HasCrossChannelSignalLink ()) {
+				sigmaPrimary = primarySignal->GetStandardDeviation ();
+				sigmaSecondary = secondarySignal->GetStandardDeviation ();
 
-					// remove link; this is not a primary peak
-					RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
+				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
+
+				if (secondaryNarrow) {
+
+					secondarySignal->SetMessageValue (possiblePullup, true);
+					secondarySignal->AddUncertainPullupChannel (primaryChannel);
+					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+					//secondarySignal->SetMessageValue (purePullup, true);
+					//secondarySignal->SetMessageValue (pullup, false);
+
+					//if (secondarySignal->HasCrossChannelSignalLink ()) {
+
+					//	// remove link; this is not a primary peak
+					//	RemovePrimaryLinksAndSecondaryLinksFrom (secondarySignal);
+					//}
+
 				}
+
+				else {
+
+					secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+					secondarySignal->SetPullupRatio (primaryChannel, 0.0, mNumberOfChannels);
+					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+					iChannel->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+					if (iChannel->IsEmpty ()) {
+
+						primarySignal->SetMessageValue (primaryPullup, false);
+						primarySignal->SetInterchannelLink (NULL);
+						emptyLinks.push_back (iChannel);
+					}
+
+					if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+						secondarySignal->SetMessageValue (pullup, false);
+						secondarySignal->SetMessageValue (purePullup, false);
+					}
+				}
+			}
+
+			while (!emptyLinks.empty ()) {
+
+				iChannel = emptyLinks.front ();
+				emptyLinks.pop_front ();
+				mInterchannelLinkageList.remove (iChannel);
+				delete iChannel;
 			}
 		}
 
-		for (linkIt=mInterchannelLinkageList.begin (); linkIt!=mInterchannelLinkageList.end (); linkIt++) {
+		else {  // There is a pattern and there is actual pullup
 
-			nextLink = *linkIt;
-			primarySignal = nextLink->GetPrimarySignal ();
+			for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
 
-			if (primarySignal->GetChannel () != primaryChannel)
-				continue;
+				nextPair = *pairIt;
+				pullupPeak = nextPair->mPullup;
 
-			if (primarySignal->GetMessageValue (laserOffScale) != testLaserOffScale)
-				continue;
+				if (pullupPeak == NULL)
+					continue;
 
-			secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
+				primarySignal = nextPair->mPrimary;
+				sigmaPrimary = primarySignal->GetStandardDeviation ();
+				sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
-			if (secondarySignal == NULL)
-				continue;
+				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
 
-			secondaryNarrow = (secondarySignal->GetStandardDeviation () < 0.5* primarySignal->GetStandardDeviation ());
-			correctedHeight = secondarySignal->TroughHeight () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
-			belowMinRFU = (correctedHeight < analysisThreshold);
+				//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
+				//belowMinRFU = (correctedHeight < analysisThreshold);
 
-			if (belowMinRFU || secondaryNarrow) {
+				if ((!nextPair->mIsOutlier) || secondaryNarrow) {
 
-				// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
+					// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
 
-				secondarySignal->SetMessageValue (purePullup, true);
-				secondarySignal->SetMessageValue (pullup, false);
+					pullupPeak->SetMessageValue (purePullup, true);
+					pullupPeak->SetMessageValue (pullup, false);
+					nextPair->mIsOutlier = false;
+					testedPullups.Append (pullupPeak);
 
-				if (secondarySignal->HasCrossChannelSignalLink ()) {
+					if (pullupPeak->HasCrossChannelSignalLink ()) {
 
-					// remove link; this is not a primary peak
-					removePrimaryList.push_back (secondarySignal);
+						// remove link; this is not a primary peak
+						RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
+					}
 				}
 			}
 
-			else {
+			for (linkIt=mInterchannelLinkageList.begin (); linkIt!=mInterchannelLinkageList.end (); linkIt++) {
 
-				// This is both an outlier and correction is above minRFU; test if correection below primary pullup threshold if it has a cross channel signal link;
-				// if so, remove link
+				nextLink = *linkIt;
+				primarySignal = nextLink->GetPrimarySignal ();
 
-				secondarySignal->SetMessageValue (possiblePullup, true);
+				if (primarySignal->GetChannel () != primaryChannel)
+					continue;
 
-				if (secondarySignal->HasCrossChannelSignalLink () && (correctedHeight < pullupThreshold)) {
+				if (primarySignal->GetMessageValue (laserOffScale) != testLaserOffScale)
+					continue;
 
-					// This is not a primary.  As above, remove links...
-					removePrimaryList.push_back (secondarySignal);
+				secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
+
+				if (secondarySignal == NULL)
+					continue;
+
+				//if (testedPullups.ContainsReference (secondarySignal))
+				//	continue;
+
+				secondaryNarrow = (secondarySignal->GetStandardDeviation () < 0.5* primarySignal->GetStandardDeviation ());
+				correctedHeight = secondarySignal->TroughHeight () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
+				belowMinRFU = (correctedHeight < analysisThreshold);
+
+				if (belowMinRFU || secondaryNarrow) {
+
+					// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
+
+					secondarySignal->SetMessageValue (purePullup, true);
+					secondarySignal->SetMessageValue (pullup, false);
+
+					if (secondarySignal->HasCrossChannelSignalLink ()) {
+
+						// remove link; this is not a primary peak
+						removePrimaryList.push_back (secondarySignal);
+					}
+				}
+
+				else {
+
+					// This is both an outlier and correction is above minRFU; test if correection below primary pullup threshold if it has a cross channel signal link;
+					// if so, remove link
+
+					//secondarySignal->SetMessageValue (possiblePullup, true);
+
+					if (secondarySignal->HasCrossChannelSignalLink () && (correctedHeight < pullupThreshold)) {
+
+						// This is not a primary.  As above, remove links...
+						removePrimaryList.push_back (secondarySignal);
+					}
 				}
 			}
-		}
 
-		// for other outliers, the jury is still out until all channel contributions are tallied
-		removePrimaryList.unique ();
+			// for other outliers, the jury is still out until all channel contributions are tallied
+			removePrimaryList.unique ();
+			testedPullups.Clear ();
 
-		while (!removePrimaryList.empty ()) {
+			while (!removePrimaryList.empty ()) {
 
-			pullupPeak = removePrimaryList.front ();
-			removePrimaryList.pop_front ();
-			RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
+				pullupPeak = removePrimaryList.front ();
+				removePrimaryList.pop_front ();
+				RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
+			}
 		}
 	}
 
 	else {
 
-		// Test widths of primaries and secondaries
+		// Test widths of primaries and secondaries...there is insufficient data to detect a pattern
 
 		for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
 
@@ -1613,6 +1705,13 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					// remove link; this is not a primary peak
 					RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
 				}
+			}
+
+			else {
+
+				pullupPeak->SetMessageValue (possiblePullup, true);
+				pullupPeak->AddUncertainPullupChannel (primaryChannel);
+				pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			}
 		}
 	}
@@ -1836,8 +1935,10 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		else {
 
 			secondarySignal->SetMessageValue (possiblePullup, true);
-			secondarySignal->SetPullupRatio (primaryChannel, 100.0 * secondarySignal->Peak () / primarySignal->Peak (), mNumberOfChannels);
-			secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
+			secondarySignal->AddUncertainPullupChannel (primaryChannel);
+			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+			//secondarySignal->SetPullupRatio (primaryChannel, 100.0 * secondarySignal->Peak () / primarySignal->Peak (), mNumberOfChannels);
+			//secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
 		}
 	}
 

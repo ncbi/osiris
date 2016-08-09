@@ -992,6 +992,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 					if (prevSignal->GetMessageValue (isControlPeak) || nextSignal->GetMessageValue (isControlPeak))
 						continue;
 
+					double sideMean = 0.5 * (prevSignal->GetMean () + nextSignal->GetMean ());
+
 					// Now test to make sure this isn't two separate peaks, which would result in an exceptionally wide crater
 
 					double width = mLSData->GetWidthAtTime (0.5 * (prevSignal->GetMean () + nextSignal->GetMean ()));
@@ -1560,6 +1562,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
 
+			if ((i == 2) && (nextSignal->GetMean () > 5570.) && (nextSignal->GetMean () < 5572.))
+				cout << "Found crater in channel 2 at " << nextSignal->GetMean () << endl;
+
 			if (nextSignal->HasCrossChannelSignalLink ()) {
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
@@ -1880,6 +1885,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 					if (prevSignal->GetMessageValue (isControlPeak) || nextSignal->GetMessageValue (isControlPeak))
 						break;
+
+					double sideMean = 0.5 * (prevSignal->GetMean () + nextSignal->GetMean ());
 
 					// Now test to make sure this isn't two separate peaks, which would result in an exceptionally wide crater
 					// Use CoreBioComponent::TestForOffScale (double time) to test for laser off-scale as part of decision
@@ -2392,6 +2399,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 			mInterchannelLinkageList.push_back (iChannel);
 			iChannel->SetPrimaryDataSignal (primeSignal);
+			primeSignal->AddProbablePullups (probablePullupPeaks);
 			DataSignal** pullupArray = CollectAndSortPullupPeaksSM (primeSignal, probablePullupPeaks);
 			int kk;
 
@@ -2510,22 +2518,59 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 						if (iChannel == NULL)
 							continue;
 
+						nextSignal2->RemoveProbablePullup (nextSignal);
 						iChannel->RemoveDataSignalFromSecondaryList (nextSignal);  // Consider testing side peaks as pullup candidates
 
-						if (iChannel->IsEmpty ()) {
+						if (!nextSignal2->ReconfigurePullupFromLinkForChannel (i)) {
 
-							nextSignal2->SetInterchannelLink (NULL);
-							nextSignal2->SetMessageValue (primaryLink, false);
-							channelRemoval.insert (iChannel);
-							mInterchannelLinkageList.remove (iChannel);
+							if (iChannel->IsEmpty ()) {
+
+								nextSignal2->SetInterchannelLink (NULL);
+								nextSignal2->SetMessageValue (primaryLink, false);
+								channelRemoval.insert (iChannel);
+								mInterchannelLinkageList.remove (iChannel);
+							}
 						}
 					}
 				}
+
+				//if (sidePeaksHaveSamePrimaryChannel) {
+
+				//}
+
+				//if (testSignal->GetMessageValue (pullup)) {
+
+				//	for (j=1; j<=mNumberOfChannels; j++) {
+
+				//		if (i == j)
+				//			continue;
+
+				//		nextSignal2 = testSignal->HasPrimarySignalFromChannel (j);
+
+				//		if (nextSignal2 != NULL) {
+
+				//			iChannel = nextSignal2->GetInterchannelLink ();
+
+				//			if (iChannel != NULL) {
+
+				//				if (iChannel->GetSecondarySignalOnChannel (i) (
+				//			}
+				//		}
+				//	}
+				//}
+
+				//if (testSignal2->GetMessageValue (pullup)) {
+
+				//}
 			}
 		}
 
 		delete nextMultiPeakList;
 	}
+
+	InterchannelLinkage* iChannelPrimary;
+	InterchannelLinkage* secondaryChannel1;
+	InterchannelLinkage* secondaryChannel2;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2554,6 +2599,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
+				nextSignal->SetMessageValue (crater, true);
+				iChannelPrimary = nextSignal->GetInterchannelLink ();
 				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
 				nextSignal2->SetMessageValue (craterSidePeak, true);
 
@@ -2564,18 +2611,27 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 					if (channelRemoval.find (iChannel) == channelRemoval.end ()) {  // this means that iChannel is not in channelRemoval
 
-						mInterchannelLinkageList.remove (iChannel);
+						//mInterchannelLinkageList.remove (iChannel);
 						// remove pullup info as well
 
 						iChannel->ResetSecondaryIterator ();
 
 						while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
 
-							fixPullupPeak->SetPullupFromChannel (i, 0.0, mNumberOfChannels);
-							fixPullupPeak->SetPrimarySignalFromChannel (i, NULL, mNumberOfChannels);
+							if ((iChannelPrimary != NULL) && (fixPullupPeak == iChannelPrimary->GetSecondarySignalOnChannel (fixPullupPeak->GetChannel ()))) {
 
-							if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels))
-								fixPullupPeak->SetMessageValue (pullup, false);
+								//fixPullupPeak->SetPullupFromChannel (i, fixPullup->Peak (), mNumberOfChannels);
+								fixPullupPeak->SetPrimarySignalFromChannel (i, nextSignal, mNumberOfChannels);
+							}
+
+							else {
+
+								fixPullupPeak->SetPullupFromChannel (i, 0.0, mNumberOfChannels);
+								fixPullupPeak->SetPrimarySignalFromChannel (i, NULL, mNumberOfChannels);
+
+								if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels))
+									fixPullupPeak->SetMessageValue (pullup, false);
+							}
 						}
 
 						nextSignal2->SetInterchannelLink (NULL);
@@ -2595,18 +2651,27 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 					if (channelRemoval.find (iChannel) == channelRemoval.end ()) {  // this means that iChannel is not in channelRemoval
 
-						mInterchannelLinkageList.remove (iChannel);
+						//mInterchannelLinkageList.remove (iChannel);
 						// remove pullup info as well
 
 						iChannel->ResetSecondaryIterator ();
 
 						while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
 
-							fixPullupPeak->SetPullupFromChannel (i, 0.0, mNumberOfChannels);
-							fixPullupPeak->SetPrimarySignalFromChannel (i, NULL, mNumberOfChannels);
+							if ((iChannelPrimary != NULL) && (fixPullupPeak == iChannelPrimary->GetSecondarySignalOnChannel (fixPullupPeak->GetChannel ()))) {
 
-							if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels))
-								fixPullupPeak->SetMessageValue (pullup, false);
+								//fixPullupPeak->SetPullupFromChannel (i, fixPullup->Peak (), mNumberOfChannels);
+								fixPullupPeak->SetPrimarySignalFromChannel (i, nextSignal, mNumberOfChannels);
+							}
+
+							else {
+
+								fixPullupPeak->SetPullupFromChannel (i, 0.0, mNumberOfChannels);
+								fixPullupPeak->SetPrimarySignalFromChannel (i, NULL, mNumberOfChannels);
+
+								if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels))
+									fixPullupPeak->SetMessageValue (pullup, false);
+							}
 						}
 
 						nextSignal2->SetInterchannelLink (NULL);
@@ -2624,10 +2689,12 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			else {
 
-				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
-				nextSignal2->SetMessageValue (craterSidePeak, false);
-				nextSignal2 = nextSignal->GetNextLinkedSignal ();
-				nextSignal2->SetMessageValue (craterSidePeak, false);
+				testSignal = nextSignal->GetPreviousLinkedSignal ();
+				testSignal->SetMessageValue (craterSidePeak, false);
+				secondaryChannel1 = testSignal->GetInterchannelLink ();
+				testSignal2 = nextSignal->GetNextLinkedSignal ();
+				testSignal2->SetMessageValue (craterSidePeak, false);
+				secondaryChannel2 = testSignal2->GetInterchannelLink ();
 				OverallList.RemoveReference (nextSignal);
 				iChannel = nextSignal->GetInterchannelLink ();
 
@@ -2635,18 +2702,33 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 					if (channelRemoval.find (iChannel) == channelRemoval.end ()) {  // this means that iChannel is not in channelRemoval
 
-						mInterchannelLinkageList.remove (iChannel);
+						//mInterchannelLinkageList.remove (iChannel);
 						// remove pullup info as well
 
 						iChannel->ResetSecondaryIterator ();
 
 						while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
 
-							fixPullupPeak->SetPullupFromChannel (i, 0.0, mNumberOfChannels);
-							fixPullupPeak->SetPrimarySignalFromChannel (i, NULL, mNumberOfChannels);
+							if ((secondaryChannel1 != NULL) && (fixPullupPeak == secondaryChannel1->GetSecondarySignalOnChannel (fixPullupPeak->GetChannel ()))) {
 
-							if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels))
-								fixPullupPeak->SetMessageValue (pullup, false);
+								//fixPullupPeak->SetPullupFromChannel (i, fixPullupPeak->Peak (), mNumberOfChannels);
+								fixPullupPeak->SetPrimarySignalFromChannel (i, testSignal, mNumberOfChannels);
+							}
+
+							else if ((secondaryChannel2 != NULL) && (fixPullupPeak == secondaryChannel2->GetSecondarySignalOnChannel (fixPullupPeak->GetChannel ()))) {
+
+								//fixPullupPeak->SetPullupFromChannel (i, fixPullupPeak->Peak (), mNumberOfChannels);
+								fixPullupPeak->SetPrimarySignalFromChannel (i, testSignal2, mNumberOfChannels);
+							}
+
+							else {
+
+								fixPullupPeak->SetPullupFromChannel (i, 0.0, mNumberOfChannels);
+								fixPullupPeak->SetPrimarySignalFromChannel (i, NULL, mNumberOfChannels);
+
+								if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels))
+									fixPullupPeak->SetMessageValue (pullup, false);
+							}
 						}
 
 						nextSignal->SetInterchannelLink (NULL);

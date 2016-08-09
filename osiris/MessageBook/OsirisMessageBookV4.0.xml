@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.76</VersionNumber>
-	<BuildTime>07/29/2016 01:13 PM</BuildTime>
+	<VersionNumber>6.77</VersionNumber>
+	<BuildTime>08/08/2016 09:43 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -529,8 +529,6 @@
 			</ReportCriterion>
 			<Text>Partial Pullup</Text>
 			<TextForData> from Primary Channel </TextForData>
-			<SeparatorText> with Primary Ratio: </SeparatorText>
-			<ClosingText>%</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
@@ -545,7 +543,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>No Pullup Pattern Identified</Text>
 			<ReportLevel>1</ReportLevel>
@@ -1603,8 +1601,6 @@
 			</ReportCriterion>
 			<Text>Pullup</Text>
 			<TextForData> from Primary Channel </TextForData>
-			<SeparatorText> with Primary Ratio: </SeparatorText>
-			<ClosingText>%</ClosingText>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -6420,7 +6416,7 @@
 						<Expression>smAmbiguousCoreVsExtendedRight = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusRight</Expression>
 					</Evaluations>
 					<Triggers>
-						<TriggerExpression>smAmbiguousInterlocus (NOT smRestrictedPriorityPeak): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
+						<TriggerExpression>smAmbiguousInterlocus (NOT (smRestrictedPriorityPeak OR smCalculatedPurePullup OR smExcessiveResidualDisplacement OR (smExcessiveResidualDisplacementLeft AND smExcessiveResidualDisplacementRight))): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
 						<TriggerExpression>smTrueCrater (NOT smRestrictedPriorityPeak): smNumberOfCratersInSample</TriggerExpression>
 						<TriggerExpression>smTrueCrater (smActuallyAnAllele): smLocusContainsCrater</TriggerExpression>
 						<TriggerExpression>smExtraneousAMELPeak (NOT smRestrictedPriorityPeak): smAMELHasExtraneousPeaks</TriggerExpression>
