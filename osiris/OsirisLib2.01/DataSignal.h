@@ -307,7 +307,7 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -324,7 +324,7 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -345,7 +345,7 @@ public:
 		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
-		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster) {
+		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -503,6 +503,7 @@ public:
 	int GetMaxAllowedMessageLevel () const { return mMaxMessageLevel; }
 	bool IsDoNotCall () const { return mDoNotCall; }
 	void SetDoNotCall (bool value) { mDoNotCall = value; }
+	void SetIsPossiblePullup (bool value) { mIsPossiblePullup = value; }
 
 	Boolean FlankingPeakProportionExceeds (double fraction) {
 		if ((Peak() < fraction * nextPeak) && (Peak() < fraction * previousPeak))
@@ -905,6 +906,7 @@ protected:
 	double* mPullupCorrectionArray;
 	DataSignal** mPrimaryPullupInChannel;
 	bool mPartOfCluster;
+	bool mIsPossiblePullup;
 
 	set<int> mUncertainPullupChannels;
 	RGDList mProbablePullupPeaks;

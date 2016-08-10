@@ -1305,7 +1305,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
 	smLaserOffScale laserOffScale;
-	smPossiblePullUp possiblePullup;
 	smCraterSidePeak sidePeak;
 	smPrimaryInterchannelLink primaryPullup;
 	double currentRatio;
@@ -1524,7 +1523,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				if (secondaryNarrow) {
 
-					secondarySignal->SetMessageValue (possiblePullup, true);
+					secondarySignal->SetIsPossiblePullup (true);
 					secondarySignal->AddUncertainPullupChannel (primaryChannel);
 					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 					//secondarySignal->SetMessageValue (purePullup, true);
@@ -1648,8 +1647,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					// This is both an outlier and correction is above minRFU; test if correection below primary pullup threshold if it has a cross channel signal link;
 					// if so, remove link
 
-					//secondarySignal->SetMessageValue (possiblePullup, true);
-
 					if (secondarySignal->HasCrossChannelSignalLink () && (correctedHeight < pullupThreshold)) {
 
 						// This is not a primary.  As above, remove links...
@@ -1713,7 +1710,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 			else {
 
-				pullupPeak->SetMessageValue (possiblePullup, true);
+				pullupPeak->SetIsPossiblePullup (true);
 				pullupPeak->AddUncertainPullupChannel (primaryChannel);
 				pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			}
@@ -1892,7 +1889,6 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 	DataSignal* secondarySignal;
 	InterchannelLinkage* nextLink;
 	list<InterchannelLinkage*>::iterator it;
-	smPossiblePullUp possiblePullup;
 	smLaserOffScale laserOffScale;
 	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryLink;
@@ -1938,7 +1934,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 		else {
 
-			secondarySignal->SetMessageValue (possiblePullup, true);
+			secondarySignal->SetIsPossiblePullup (true);
 			secondarySignal->AddUncertainPullupChannel (primaryChannel);
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			//secondarySignal->SetPullupRatio (primaryChannel, 100.0 * secondarySignal->Peak () / primarySignal->Peak (), mNumberOfChannels);

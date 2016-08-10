@@ -1308,12 +1308,6 @@ int smCalculatedPurePullup::sMessageIndex = 0;
 int smCalculatedPurePullup::sMessageScope = 0;
 
 
-RGString smPossiblePullUp::sName = "smPossiblePullUp";
-int smPossiblePullUp::sSubject = smPossiblePullUp::LoadType ();
-int smPossiblePullUp::sMessageIndex = 0;
-int smPossiblePullUp::sMessageScope = 0;
-
-
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1531,7 +1525,6 @@ PERSISTENT_DEFINITION (smNumberOfLastILSPeaksInScale, 2618, "smNumberOfLastILSPe
 PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPeaksInScaling")
 PERSISTENT_DEFINITION (smLaserOffScale, 2620, "smLaserOffScale")
 PERSISTENT_DEFINITION (smCalculatedPurePullup, 2621, "smCalculatedPurePullup")
-PERSISTENT_DEFINITION (smPossiblePullUp, 2622, "smPossiblePullUp")
 
 
 
@@ -14548,66 +14541,6 @@ int smCalculatedPurePullup :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smCalculatedPurePullup* noticeType = new smCalculatedPurePullup;
-	warehouse->AddType (noticeType);
-	return 1;
-}
-
-
-
-
-
-smPossiblePullUp :: smPossiblePullUp () : SmartNotice () {
-
-}
-
-
-smPossiblePullUp :: smPossiblePullUp (const smPossiblePullUp& note) : SmartNotice ((const SmartNotice&) note) {
-
-}
-
-
-
-smPossiblePullUp :: ~smPossiblePullUp () {
-
-}
-
-
-int smPossiblePullUp :: GetSubject () const {
-
-	return smPossiblePullUp::sSubject;
-}
-
-
-void smPossiblePullUp :: SetIndexAndScope (int index, int scope) const {
-
-	smPossiblePullUp::sMessageIndex = index;
-	smPossiblePullUp::sMessageScope = scope;
-}
-
-
-int smPossiblePullUp :: GetMessageIndex () const {
-
-	return smPossiblePullUp :: sMessageIndex;
-}
-
-
-int smPossiblePullUp :: GetScope () const {
-
-	return smPossiblePullUp :: sMessageScope;
-}
-
-
-RGString smPossiblePullUp :: GetName () const {
-
-	return smPossiblePullUp :: sName;
-}
-
-
-
-int smPossiblePullUp :: LoadType () {
-
-	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smPossiblePullUp* noticeType = new smPossiblePullUp;
 	warehouse->AddType (noticeType);
 	return 1;
 }

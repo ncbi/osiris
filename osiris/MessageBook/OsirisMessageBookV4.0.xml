@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.78</VersionNumber>
-	<BuildTime>08/10/2016 09:03 AM</BuildTime>
+	<VersionNumber>6.79</VersionNumber>
+	<BuildTime>08/10/2016 01:48 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -540,27 +540,7 @@
 			<CallCriterion>
 				<Expression>1</Expression>
 			</CallCriterion>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPossiblePullUp</Name>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>No Pullup Pattern Identified</Text>
-			<ReportLevel>1</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>20</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smPullUpAtControlPeak OR smInterlocusPullUp OR smSignalIsCtrlPeak OR (smSignalIsAllele AND smMakePullupAtAlleleNonCriticalPreset)</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>1</Expression>
-			</CallCriterion>
-		</SmartMessage>
+		</SmartMessage>		
 		<SmartMessage>
 			<Name>smNegativePeak</Name>
 			<Subject>1</Subject>
@@ -6099,7 +6079,6 @@
 						<Name>smBlob</Name>
 						<Name>smPullUp</Name>
 						<Name>smCalculatedPurePullup</Name>
-						<Name>smPossiblePullUp</Name>
 						<Name>smPeakOutsideILS</Name>
 						<Name>smBelowMinRFU</Name>
 						<Name>smBaselineRelativeBelowMinRFU</Name>
