@@ -2978,6 +2978,8 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		//cout << "\n";
 	}
 
+	bool wereHere = false;
+
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		for (j=1; j<=mNumberOfChannels; j++) {
@@ -2986,6 +2988,9 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 				if (j == i)
 					continue;
+
+				if ((i == 2) && (j == 3))
+					wereHere = true;
 
 				currentNonPrimaryList = notPrimaryLists [i][j];
 
@@ -3589,7 +3594,7 @@ int STRLadderCoreBioComponent :: AnalyzeCrossChannelSM () {
 	mNumberOfPrimaryPullups = 0;
 	int i;
 	smSpike spike;
-	smPossiblePullUp pullup;
+	smPullUp pullup;
 	smPrimaryInterchannelLink primaryPullup;
 	smCrater crater;
 	smCraterSidePeak craterSidePeak;

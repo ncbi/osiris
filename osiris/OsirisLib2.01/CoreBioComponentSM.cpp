@@ -1313,6 +1313,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double numerator;
 	double minRFUForSecondaryChannel = 0.5 * (mDataChannels [pullupChannel]->GetDetectionThreshold () + mDataChannels [pullupChannel]->GetMinimumHeight ());
 	bool minRatioLessThan1 = false;
+	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
 
 	// Modify code below to account for pullup corrections to secondary peaks that are also primary, and maybe to primary peaks?
 
@@ -1346,8 +1347,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if (secondarySignal == NULL)
 			continue;
 
-		if (primarySignal->GetWidth () < secondarySignal->GetWidth ())
-			continue;
+		//if (primarySignal->GetWidth () < secondarySignal->GetWidth ())
+		//	continue;
 
 		nextPair = new PullupPair (primarySignal, secondarySignal);
 		pairList.push_back (nextPair);
@@ -1438,6 +1439,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 			if (nextSignal->GetMessageValue (sidePeak))
 				continue;
+
+			//if (nextSignal->Peak () < primaryThreshold)
+			//	continue;
 
 			if (minRatioLessThan1) {
 

@@ -731,6 +731,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	RGString narrow;
 	RGString channelList;
 	bool uncertainListNotEmpty = false;
+	RGString data2;
 
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
@@ -771,6 +772,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 
 		bool isPullup = GetMessageValue (pullup);
 		bool isPurePullup = GetMessageValue (purePullup);
+		data2 = data;
 
 		if (isPullup) {
 
@@ -787,7 +789,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 			AppendDataForSmartMessage (pullup, data);
 		}
 
-		else if (isPurePullup) {
+		if (isPurePullup) {
 
 			if (GetMessageValue (possiblePullup)) {
 
@@ -795,13 +797,15 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 				channelList = CreateUncertainPullupString ();
 				narrow << channelList;
 				narrow << ") ";
-				data = narrow + data;
+				data2 = narrow + data2;
 				//AppendDataForSmartMessage (pullup, uncertain);
 			}
 
-			AppendDataForSmartMessage (purePullup, data);
+			AppendDataForSmartMessage (purePullup, data2);
 		}
 	}
+
+	SetMessageValue (possiblePullup, false);
 }
 
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.77</VersionNumber>
-	<BuildTime>08/08/2016 09:43 PM</BuildTime>
+	<VersionNumber>6.78</VersionNumber>
+	<BuildTime>08/10/2016 09:03 AM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -537,13 +537,16 @@
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>1</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPossiblePullUp</Name>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>No Pullup Pattern Identified</Text>
 			<ReportLevel>1</ReportLevel>
@@ -554,6 +557,9 @@
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>1</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smNegativePeak</Name>
@@ -2003,7 +2009,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Signal Is an Inter-Locus Pull-up</Text>
 			<ReportLevel>20</ReportLevel>
@@ -3106,19 +3112,19 @@
 			<Subject>5</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</ReportCriterion>
 			<Text>Signal is Possible Off-Ladder Allele</Text>
 			<ReportLevel>20</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>1</AlternateReportLevel>
 				<AlternateReportCriterion>
-					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
+					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
