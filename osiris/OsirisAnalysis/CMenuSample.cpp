@@ -9,13 +9,13 @@
 CMenuSample::CMenuSample() : wxMenu()
 {
   Append(IDmenuDisplayGraph,
-    "Display &Graph",
+    "Display &Graph\tAlt+G",
     "Display channel plots.  Hold the shift key down for a single plot"
     );
-  Append(IDmenuTable,"Show &Table\tCtrl+T","Display the analysis table");
-  Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBARS);
+  Append(IDmenuTable,"Show &Table\tAlt+T","Display the analysis table");
+  Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBAR);
   Append(IDmenuHistory,"&History...\tCtrl+H");
-  Append(IDSampleApplyAll,"&Apply All\tCtrl+P");
+  Append(IDSampleApplyAll,"&Apply All\tAlt+A");
   Append(IDmenuDisableSample,"&Disable Sample\tAlt+X");
 };
 

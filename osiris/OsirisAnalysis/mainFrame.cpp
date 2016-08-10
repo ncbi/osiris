@@ -161,7 +161,25 @@ const wxPoint &mainFrame::GetStartPosition()
   SetupSize();
   return g_point5;
 }
+const wxSize &mainFrame::mainFrameSize()
+{
+  const wxSize &x = GET_PERSISTENT_SIZE(mainFrame);
+  if(x != wxDefaultSize)
+  {
+    return x;
+  }
+  return Size90();
+}
 
+const wxPoint &mainFrame::mainFramePos()
+{
+  const wxPoint &x = GET_PERSISTENT_POSITION(mainFrame);
+  if(x != wxDefaultPosition)
+  {
+    return x;
+  }
+  return GetStartPosition();
+}
 
 void mainFrame::SetupSize()
 {
@@ -219,11 +237,13 @@ void mainFrame::_SetupCommonMenuBar()
 #endif
 }
 
+int mainFrame::g_mainFrameCount = 0;
+
 mainFrame::mainFrame() :
 #if mainFrameIsWindow
   mainFrameSuper(NULL, wxID_ANY, wxS("OSIRIS"),
-      GetStartPosition(),
-        Size90(),
+        mainFramePos(),
+        mainFrameSize(),
         wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxSYSTEM_MENU | wxDEFAULT_FRAME_STYLE
         ),
 //#else
@@ -256,7 +276,6 @@ mainFrame::mainFrame() :
 #ifndef __NO_MDI__
   CreateStatusBar(1);
 #endif
-
   _SetupCommonMenuBar();
   SetupTimer();
   COsirisIcon x;
@@ -266,8 +285,7 @@ mainFrame::mainFrame() :
   m_pDialogErrorLog = new nwxDialogLog(
     DialogParent(),wxID_ANY,"OSIRIS Message Log");
   m_pDialogErrorLog->SetIcon(x);
-  wxLog *pLog = m_pDialogErrorLog->SetTarget();
-  delete pLog;
+  m_pDialogErrorLog->SetTarget();
 #if DRAG_DROP_FILES
   m_pDropTarget = CFileDropTarget::Make(this);
 #endif
@@ -276,11 +294,13 @@ mainFrame::mainFrame() :
 #ifndef __NO_MDI__
   CheckActiveFrame();
 #endif
+  ++g_mainFrameCount;
 }
 
+  
 mainFrame::~mainFrame()
 {
-
+  --g_mainFrameCount;
 #if DRAG_DROP_FILES
   GetClientWindow()->SetDropTarget(NULL);
 #endif
@@ -1521,6 +1541,27 @@ void mainFrame::OnDropFiles(wxCommandEvent &)
 }
 #endif
 
+#if mainFrameIsWindow
+IMPLEMENT_ABSTRACT_CLASS(mainFrame,mainFrameSuper)
+#ifdef __WXDEBUG__
+void mainFrame::OnPersistMove(wxMoveEvent &e)
+{
+  if(e.GetEventObject() == this)
+  {
+    wxPoint pointE = e.GetPosition();
+    wxPoint pointW = this->GetPosition() ;
+    nwxXmlWindowSizes *ps = mainApp::GetWindowSizes();
+    ps->SaveWindowPos( wxString( "mainFrame" ), pointW );
+  }
+  e.Skip();
+}
+IMPLEMENT_PERSISTENT_SIZE(mainFrame)
+#else
+IMPLEMENT_PERSISTENT_SIZE_POSITION(mainFrame)
+#endif
+#endif
+
+
 BEGIN_EVENT_TABLE(mainFrame,mainFrameSuper)
 
 #if mainFrameIsWindow
@@ -1535,6 +1576,7 @@ EVT_COMMAND(wxID_ANY,CEventDragDropDelay, mainFrame::OnDropFiles)
 
 EVT_MENU_OPEN(mainFrame::OnMenuOpen)
 EVT_MENU_CLOSE(mainFrame::OnMenuClose)
-
-
+#if mainFrameIsWindow
+EVT_PERSISTENT_SIZE_POSITION(mainFrame)
+#endif
 END_EVENT_TABLE()

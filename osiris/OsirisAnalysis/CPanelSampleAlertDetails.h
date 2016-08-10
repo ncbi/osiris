@@ -102,6 +102,8 @@ private:
   COARmessages *m_pMsgEdit;
 //  bool m_bChannelGrid;
   bool m_bSplitHorizontal;
+public:
+  DECLARE_ABSTRACT_CLASS(CPanelSampleAlertDetails);
 };
 
 #endif

@@ -53,6 +53,8 @@ CFrameSample::CFrameSample(
     m_pOARfile(pFile),
     m_pSample(pSample)
 {
+    wxString s = wxPanelNameStr;
+
   SetupTitle();
   m_pNoteBook = new CNotebookEditSample(m_pOARfile,m_pSample,this,wxID_ANY,NULL);
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
@@ -65,7 +67,7 @@ CFrameSample::CFrameSample(
   m_pMenuBar = new CMenuBarSample();
   SetMenuBar(m_pMenuBar);
   CParmOsirisGlobal parm;
-  bool b = parm->GetHideTextToolbar();
+  bool b = parm->GetHideSampleToolbar();
   _ShowToolbar(!b);
   Layout();
 }
@@ -138,6 +140,19 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
   return bRtn;
 }
 
+void CFrameSample::InitiateRepaintData()
+{
+  m_pCreator->RepaintAllData(m_pSample);
+}
+void CFrameSample::RepaintData()
+{
+  m_pNoteBook->RepaintData();
+}
+const wxString CFrameSample::GetUserID()
+{
+  return m_pToolbar->GetUserID();
+}
+
 void CFrameSample::_OpenGraphic()
 {
   const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
@@ -161,16 +176,17 @@ void CFrameSample::_ShowToolbar(bool bShow)
   }
 }
 
-void CFrameSample::OnClose(wxCloseEvent &)
+bool CFrameSample::Destroy()
 {
   m_pCreator->RemoveSample(m_pSample,this);
-  Destroy();
+  return SUPER::Destroy();
 }
 
+IMPLEMENT_PERSISTENT_SIZE(CFrameSample)
+
 BEGIN_EVENT_TABLE(CFrameSample,CMDIFrame)
-EVT_SET_FOCUS(CFrameSample::OnFocusSet)
-EVT_KILL_FOCUS(CFrameSample::OnFocusKill)
-EVT_CLOSE(CFrameSample::OnClose)
+EVT_PERSISTENT_SIZE(CFrameSample)
 END_EVENT_TABLE()
+
 
 

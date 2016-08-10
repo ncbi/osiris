@@ -133,8 +133,8 @@ typedef wxFrame CMDIFrameSuper;
 
 class wxMDIParentFrame;
 class wxMDIChildFrame;
-typedef wxMDIChildFrame CMDIFrameSuper;
-typedef wxMDIParentFrame mainFrameSuper;
+#define CMDIFrameSuper wxMDIChildFrame
+#define mainFrameSuper wxMDIParentFrame
 #define CMDIFramePARENT parent
 #define mainFrameIsWindow 1
 #define DRAG_DROP_FILES 1
@@ -144,8 +144,8 @@ typedef wxMDIParentFrame mainFrameSuper;
 
 //  maybe GTK someday
 class wxFrame;
-typedef wxFrame mainFrameSuper;
-typedef wxFrame CMDIFrameSuper;
+#define CMDIFrameSuper wxFrame
+#define mainFrameSuper wxFrame
 #define CMDIFramePARENT NULL
 #define mainFrameIsWindow 1
 #define DRAG_DROP_FILES 0

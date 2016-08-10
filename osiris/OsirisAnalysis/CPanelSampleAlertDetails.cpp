@@ -246,3 +246,4 @@ wxString CPanelSampleAlertDetails::GetNewNotes(const COARnotes *pCurrent, const 
   return sRtn;
 }
 */
+IMPLEMENT_ABSTRACT_CLASS(CPanelSampleAlertDetails,wxSplitterWindow)

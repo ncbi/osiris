@@ -52,7 +52,7 @@ typedef enum
   SA_NDX_ILS,
   SA_NDX_CHANNEL,
   SA_WINDOW_COUNT
-} WINDOW_ARRAY_INDEX; // used in arrays below
+} ALERT_WINDOW_TYPE; // used in arrays below
 #endif
 
 class CPanelSampleAlertNotebook : public wxPanel, public ISetDateTime

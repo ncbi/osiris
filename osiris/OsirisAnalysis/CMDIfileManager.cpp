@@ -138,6 +138,7 @@ void CMDIfileManager::KillOARfile(COARfile *pFile)
   CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);
   if(_IteratorOK(itr))
   {
+    CMDI_WF::iterator itrWin;
     set<CMDIFrame *>::iterator itrF;
     vector<CMDIFrame *> vpFrame;
     vpFrame.reserve(itr->second.size());
@@ -151,7 +152,11 @@ void CMDIfileManager::KillOARfile(COARfile *pFile)
       itrX != vpFrame.end();
       ++itrX)
     {
-      (*itrX)->Destroy();
+      itrWin = m_mapWindowFile.find(*itrX);
+      if(_IteratorOK(itrWin))
+      {
+        (*itrX)->Destroy();
+      }
     }
   }
 }
@@ -358,7 +363,10 @@ bool CMDIfileManager::CloseAll()
       ++itrv)
     {
       pf = *itrv;
-      if(!pf->Close(false))
+      itr = m_mapWindowFile.find(pf);
+      if(!_IteratorOK(itr))
+      {} // prevent window from being destroyed more than one
+      else if(!pf->Close(false))
       {
         bRtn = false;
       }

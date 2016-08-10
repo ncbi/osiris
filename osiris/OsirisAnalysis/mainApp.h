@@ -43,6 +43,7 @@ class CILSLadderInfo;
 class CKitColors;
 class CArtifactLabels;
 class nwxXmlMRU;
+class nwxXmlWindowSizes;
 class CParmOsiris;
 class wxFile;
 class wxDateTime;
@@ -91,6 +92,8 @@ DECLARE_CMD_HANDLER(OnMenu)
 DECLARE_CMD_HANDLER(OnMaxLadderLabels)
 DECLARE_CMD_HANDLER(OnSave)
 
+  void OnActivate(wxActivateEvent &e);
+
 #ifdef __WINDOW_LIST__
 DECLARE_CMD_HANDLER(OnWindowMenu)
 #endif
@@ -134,6 +137,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static bool ConfirmModificationsLost(wxWindow *parent);
   static ConfigDir *GetConfig();
   static nwxXmlMRU *GetMRU();
+  static nwxXmlWindowSizes *GetWindowSizes();
   static CKitColors *GetKitColors();
   static CArtifactLabels *GetArtifactLabels();
   static CPersistKitList *GetKitList();
@@ -156,12 +160,17 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   // minimum number to be entered for an RFU value
 
 private:
+#ifdef __WXDEBUG__
+  static const wxString g_sACTIVE;
+  static const wxString g_sINACTIVE;
+#endif
   static void _LogMessage(const wxString &sMsg);
   static void _LogMessageFile(const wxString &sMsg, time_t t);
   static void _CloseMessageStream();
   static void _OpenMessageStream();
   static ConfigDir *m_pConfig;
   static nwxXmlMRU *m_pMRU;
+  static nwxXmlWindowSizes *m_pWindowSize;
   static CPersistKitList *m_pKitList;
   static CKitColors *m_pKitColors;
   static CArtifactLabels *m_pArtifactLabels;

@@ -174,6 +174,7 @@
     <ClCompile Include="nwxXmlCMFtest.cpp" />
     <ClCompile Include="nwxXmlMRU.cpp" />
     <ClCompile Include="nwxXmlPersist.cpp" />
+    <ClCompile Include="nwxXmlWindowSizes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CArrowImages.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="nwxBatch.h" />
     <ClInclude Include="nwxBookCtrlFocus.h" />
     <ClInclude Include="nwxButtonMenu.h" />
+    <ClInclude Include="CleanupGlobal.h" />
     <ClInclude Include="nwxColorUtil.h" />
     <ClInclude Include="nwxDialogBitmap.h" />
     <ClInclude Include="nwxDialogLog.h" />
@@ -228,6 +230,8 @@
     <ClInclude Include="nwxXmlPersist.h" />
     <ClInclude Include="nwxXmlPersistCollections.h" />
     <ClInclude Include="nwxXmlUnitTest.h" />
+    <ClInclude Include="nwxXmlWindowSizes.h" />
+    <ClInclude Include="PersistentSize.h" />
     <ClInclude Include="setptr.h" />
     <ClInclude Include="stdb.h" />
     <ClInclude Include="stde.h" />

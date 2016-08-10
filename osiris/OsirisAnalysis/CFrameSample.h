@@ -33,6 +33,7 @@
 
 #include "CMDIFrame.h"
 #include "CHistoryTime.h"
+#include "nwx/PersistentSize.h"
 class CNotebookEditSample;
 class COARsample;
 class COARfile;
@@ -56,10 +57,14 @@ public:
   virtual void OnTimer(wxTimerEvent &);
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual wxMenu *GetMenu();
-  void OnClose(wxCloseEvent &e);
+  virtual bool Destroy();
   void SetupTitle();
-
+  void InitiateRepaintData();
+  void RepaintData();
+  const wxString GetUserID();
+  DECLARE_PERSISTENT_SIZE
 private:
+  typedef CMDIFrame SUPER;
   void _ToggleToolbar();
   void _OpenGraphic();
   void _History();
@@ -75,7 +80,7 @@ private:
   CMenuBarSample *m_pMenuBar;
 public:
   DECLARE_EVENT_TABLE()
-  DECLARE_ABSTRACT_CLASS(CFrameAnalysis)
+  DECLARE_ABSTRACT_CLASS(CFrameSample)
 };
 
 #endif

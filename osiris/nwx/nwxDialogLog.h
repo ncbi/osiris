@@ -35,6 +35,7 @@
 #include <wx/dialog.h>
 #include <wx/textctrl.h>
 #include <wx/button.h>
+#include "nwx/PersistentSize.h"
 
 class nwxDialogLog : public wxDialog
 {
@@ -43,7 +44,8 @@ public:
     wxWindow *parent, 
     wxWindowID id = wxID_ANY, 
     const wxString &sTitle = "Error Log", 
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    bool bPersistSizePos = true);
   virtual ~nwxDialogLog();
   wxLogTextCtrl *GetLog()
   {
@@ -53,12 +55,17 @@ public:
   void OnClear(wxCommandEvent &);
   wxLog *SetTarget()
   {
-    return wxLog::SetActiveTarget(m_pLog);
+    m_pSave = wxLog::SetActiveTarget(m_pLog);
+    m_bSave = true;
+    return m_pSave;
   }
 private:
   wxLogTextCtrl *m_pLog;
   wxTextCtrl *m_pTextCtrl;
   wxButton *m_pButtonOK;
+  bool m_bSave;
+  wxLog *m_pSave;
+  DECLARE_PERSISTENT_SIZE_POSITION_OPTIONAL
   DECLARE_EVENT_TABLE()
 };
 

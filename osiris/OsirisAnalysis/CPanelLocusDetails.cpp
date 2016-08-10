@@ -150,9 +150,24 @@ void CPanelLocusDetails::_InitCommon(
   SetSizer(pSizer);
   pSizer->Layout();
 
+
+#if !PANEL_LOCUS_NOTEBOOK
+  double dGravity = 0.5;
+  if(bSplitLocusHorizontal)
+  {
+    m_pSplitterLocus->SplitHorizontally(m_pGridLocus,m_pGridAlerts,256);
+    dGravity = 0.0;
+  }
+  else
+  {
+    m_pSplitterLocus->SplitVertically(m_pGridLocus,m_pGridAlerts,0);
+  }
+  m_pSplitterLocus->SetSashGravity(dGravity);
+  m_pSplitterLocus->SetMinimumPaneSize(1);
+#endif
   if(bSplitHorizontal)
   {
-    m_pSplitter->SplitHorizontally(pPanelLocus,pPanelNotes,0);
+    m_pSplitter->SplitHorizontally(pPanelLocus,pPanelNotes,440);
   }
   else
   {
@@ -161,19 +176,6 @@ void CPanelLocusDetails::_InitCommon(
   }
   m_pSplitter->SetSashGravity(1.0);
   m_pSplitter->SetMinimumPaneSize(1);
-#if !PANEL_LOCUS_NOTEBOOK
-  if(bSplitLocusHorizontal)
-  {
-    m_pSplitterLocus->SplitHorizontally(m_pGridLocus,m_pGridAlerts,0);
-  }
-  else
-  {
-    m_pSplitterLocus->SplitVertically(m_pGridLocus,m_pGridAlerts,0);
-  }
-  m_pSplitterLocus->SetSashGravity(0.5);
-  m_pSplitterLocus->SetMinimumPaneSize(1);
-#endif
-
 }
 wxPanel *CPanelLocusDetails::_CreateNotesPanel()
 {

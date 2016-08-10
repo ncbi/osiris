@@ -71,7 +71,9 @@
 #include "CMenuBar.h"
 #include "wxIDs.h"
 #include "wxXsl/wxXslObject.h"
-
+#if mainFrameIsWindow
+#include "nwx/PersistentSize.h"
+#endif
 
 class COARfile;
 class CFrameAnalysis;
@@ -98,6 +100,13 @@ typedef enum
 class mainFrame : public mainFrameSuper
 {
 public:
+#if mainFrameIsWindow
+  DECLARE_ABSTRACT_CLASS(mainFrame)
+#endif
+  static int GetCount()
+  {
+    return g_mainFrameCount;
+  }
   mainFrame();
   virtual ~mainFrame();
   virtual bool Startup(bool bHasArgs= false);
@@ -279,6 +288,8 @@ public:
 #if mainFrameIsWindow
   static const wxSize &Size90();
   static const wxSize &Size80();
+  static const wxSize &mainFrameSize();
+  static const wxPoint &mainFramePos();
 #endif
 
 private:
@@ -335,6 +346,7 @@ private:
   static const char * const NOFIND; 
   static const size_t MAX_FRAMES;
   static const int MRU_AT_STARTUP;
+  static int g_mainFrameCount;
 
   // message if lab settings file not found
   
@@ -357,7 +369,7 @@ private:
     }
   }
   CFrameAnalysis *GetAnalysisFrame();
-  wxXslObject XXX; 
+  wxXslObject XXX;
     // presence of this object 
     // causes initialization and cleanup of libxml2
     // and libxslt to happen only once
@@ -385,6 +397,9 @@ private:
   int m_nFrameSpace;
 #endif
   static CMDIFrame *INIT_LAST_ACTIVE;
+#if mainFrameIsWindow
+  DECLARE_PERSISTENT_SIZE_POSITION
+#endif
   DECLARE_EVENT_TABLE()
 };
 

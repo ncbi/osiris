@@ -31,20 +31,29 @@
 #include <nwx/nwxDialogLog.h>
 #include <wx/sizer.h>
 #include "nwx/nwxString.h"
+#include "nwx/PersistentSize.h"
 
-nwxDialogLog::~nwxDialogLog() {;}
+nwxDialogLog::~nwxDialogLog() 
+{
+  if(m_bSave && (wxLog::GetActiveTarget() == m_pLog))
+  {
+    wxLog::SetActiveTarget(m_pSave);
+    delete m_pLog;
+  }
+}
 
 nwxDialogLog::nwxDialogLog(
   wxWindow *parent, 
   wxWindowID id, 
   const wxString &sTitle, 
-  long style) : 
+  long style,
+  bool bPersistSizePos) : 
     wxDialog(
       parent,
       id,
       sTitle,
-      wxDefaultPosition,
-      wxDefaultSize,
+      GET_PERSISTENT_POSITION_OPTIONAL(nwxDialogLog,bPersistSizePos),
+      GET_PERSISTENT_SIZE_OPTIONAL(nwxDialogLog,bPersistSizePos),
       style)
 {
   const int SIZER_BORDER = 
@@ -54,6 +63,9 @@ nwxDialogLog::nwxDialogLog(
     4
 #endif
     ;
+  m_pSave = NULL;
+  m_bSave = false;
+  INIT_PERSISTENT_SIZE_POSITION(bPersistSizePos);
   wxSizer *pButtonSizer(NULL);
   m_pTextCtrl = new wxTextCtrl(
     this,wxID_ANY,wxEmptyString,
@@ -95,6 +107,9 @@ void nwxDialogLog::OnClear(wxCommandEvent &)
   m_pTextCtrl->Clear();
 }
 
+IMPLEMENT_PERSISTENT_SIZE_POSITION_OPTIONAL(nwxDialogLog)
+
 BEGIN_EVENT_TABLE(nwxDialogLog,wxDialog)
 EVT_BUTTON(wxID_CLEAR,  nwxDialogLog::OnClear)
+EVT_PERSISTENT_SIZE_POSITION(nwxDialogLog)
 END_EVENT_TABLE()

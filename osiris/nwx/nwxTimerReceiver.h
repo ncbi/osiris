@@ -128,6 +128,10 @@ public:
   {
     m_nWaiting = nms;
   }
+  void ResetWaitTime()
+  {
+    m_nWaiting = m_nIntervalMS;
+  }
   void SetInterval(int nms = 0)
   {
     m_nIntervalMS = nms;

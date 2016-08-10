@@ -44,6 +44,7 @@
 #include <time.h>
 #include "nwx/nwxLog.h"
 #include "nwx/nwxXmlMRU.h"
+#include "nwx/nwxXmlWindowSizes.h"
 #include "nwx/nwxString.h"
 #include "nwx/nwxFileUtil.h"
 #include "Platform.h"
@@ -69,6 +70,7 @@ int mainApp::g_nMaxLogLevel = 1000;
 bool mainApp::g_bSuppressMessages = false;
 ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
+nwxXmlWindowSizes *mainApp::m_pWindowSize = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
 CKitColors *mainApp::m_pKitColors = NULL;
 CArtifactLabels *mainApp::m_pArtifactLabels = NULL;
@@ -91,6 +93,11 @@ mainApp::~mainApp()
     {
       delete m_pMRU;
       m_pMRU = NULL;
+    }
+    if(m_pWindowSize != NULL)
+    {
+      delete m_pWindowSize;
+      m_pWindowSize = NULL;
     }
     if(m_pArtifactLabels != NULL)
     {
@@ -129,6 +136,17 @@ nwxXmlMRU *mainApp::GetMRU()
   }
   return m_pMRU;
 }
+nwxXmlWindowSizes *mainApp::GetWindowSizes()
+{
+  if(g_count && (m_pWindowSize == NULL))
+  {
+    wxString sPath = m_pConfig->GetConfigPath();
+    nwxFileUtil::EndWithSeparator(&sPath);
+    sPath.Append("wsize.xml");
+    m_pWindowSize = nwxXmlWindowSizes::SetupGlobal(sPath);
+  }
+  return m_pWindowSize;
+}
 CKitColors *mainApp::GetKitColors()
 {
   if(m_pKitColors == NULL)
@@ -163,6 +181,7 @@ bool mainApp::OnInit()
 {
   if(g_pThis != NULL) return false;
 	if(!wxApp::OnInit()) return false;
+
   g_pThis = this;
   // Set up splash screen
 #ifndef _DEBUG
@@ -177,6 +196,7 @@ bool mainApp::OnInit()
   }
 #endif
   GetConfig();
+  GetWindowSizes();
   // set up log file if Debug directory exists
   _OpenMessageStream();
 
@@ -318,7 +338,10 @@ void mainApp::LogMessageV(const wxChar *psFormat,...)
 }
 void mainApp::_LogMessage(const wxString &sMsg)
 {
-  nwxLog::LogMessage(sMsg);
+  if(mainFrame::GetCount() > 0)
+  {
+    nwxLog::LogMessage(sMsg);
+  }
   if(LogIsOpen())
   {
     time_t t;
@@ -458,6 +481,23 @@ void mainApp::OnInitCmdLine (wxCmdLineParser &parser)
 }
 #endif
 
+#ifdef __WXDEBUG__
+const wxString mainApp::g_sACTIVE(wxT("mainApp::OnActivate: active"));
+const wxString mainApp::g_sINACTIVE(wxT("mainApp::OnActivate: inactive"));
+#endif
+
+void mainApp::OnActivate(wxActivateEvent &e)
+{
+#ifdef __WXDEBUG__
+    bool b = IsActive();
+    const wxString *ps =
+      b ? &g_sACTIVE : &g_sINACTIVE;
+    mainApp::LogMessage(*ps);
+#endif
+    e.Skip();
+}
+
+
 #define DEFINE_CMD_HANDLER(x) \
   void mainApp::x (wxCommandEvent &e) { m_pFrame->x(e); }
 
@@ -521,5 +561,5 @@ EVT_MENU_RANGE(IDmenuWindow_Minimize,IDmenuWindow_Frame_END,mainApp::OnWindowMen
 EVT_MENU_RANGE(IDmenuWindowFrame,IDmenuWindow_Frame_END,mainApp::OnWindowMenu)
 #endif
 #endif
-
+EVT_ACTIVATE_APP(mainApp::OnActivate)
 END_EVENT_TABLE()

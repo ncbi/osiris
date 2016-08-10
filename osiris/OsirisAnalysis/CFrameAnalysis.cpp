@@ -48,6 +48,7 @@
 #include "COARfile.h"
 #include "CReAnalyze.h"
 #include "CGridAnalysisDisplay.h"
+#include "nwx/PersistentSize.h"
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/msgdlg.h>
@@ -1064,7 +1065,8 @@ void CFrameAnalysis::OnShowSample(wxCommandEvent &)
     }
     else
     {
-      pFrame = new CFrameSample(this,m_pParent,wxDefaultSize,m_pOARfile,pSample);
+      const wxSize &sz = GET_PERSISTENT_SIZE(CFrameSample);
+      pFrame = new CFrameSample(this,m_pParent,sz,m_pOARfile,pSample);
       this->_AddSample(pSample,pFrame);
     }
   }
