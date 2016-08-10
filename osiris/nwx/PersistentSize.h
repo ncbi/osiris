@@ -1,0 +1,142 @@
+/*
+* ===========================================================================
+*
+*                            PUBLIC DOMAIN NOTICE                          
+*               National Center for Biotechnology Information
+*                                                                          
+*  This software/database is a "United States Government Work" under the   
+*  terms of the United States Copyright Act.  It was written as part of    
+*  the author's official duties as a United States Government employee and 
+*  thus cannot be copyrighted.  This software/database is freely available 
+*  to the public for use. The National Library of Medicine and the U.S.    
+*  Government have not placed any restriction on its use or reproduction.  
+*                                                                          
+*  Although all reasonable efforts have been taken to ensure the accuracy  
+*  and reliability of the software and data, the NLM and the U.S.          
+*  Government do not and cannot warrant the performance or results that    
+*  may be obtained by using this software or data. The NLM and the U.S.    
+*  Government disclaim all warranties, express or implied, including       
+*  warranties of performance, merchantability or fitness for any particular
+*  purpose.                                                                
+*                                                                          
+*  Please cite the author in any work or product based on this material.   
+*
+* ===========================================================================
+*
+*  FileName: PersistentSize.h
+*  Author:   Douglas Hoffman
+*
+*  Macros for saving and restoring the size of a window for future use
+*/
+#ifndef __PERSISTENT_SIZE_H__
+#define __PERSISTENT_SIZE_H__
+
+#include <wx/event.h>
+#include <wx/string.h>
+#include "nwx/nwxXmlWindowSizes.h"
+
+#define DECLARE_PERSISTENT_SIZE \
+public: \
+  void OnPersistResize(wxSizeEvent &e); \
+\
+
+#define DECLARE_PERSISTENT_SIZE_OPTIONAL \
+private: \
+  bool m_bPERSIST_SIZE; \
+  DECLARE_PERSISTENT_SIZE \
+  void SetUsePersistSize(bool b = true) { m_bPERSIST_SIZE = b; } \
+  bool GetUsePersistSize() { return m_bPERSIST_SIZE; } \
+\
+
+#define DECLARE_PERSISTENT_POSITION \
+public: \
+void OnPersistMove(wxMoveEvent &); \
+
+#define DECLARE_PERSISTENT_POSITION_OPTIONAL \
+private: \
+  bool m_bPERSIST_MOVE; \
+  DECLARE_PERSISTENT_POSITION \
+  void SetUsePersistPosition(bool b = true) { m_bPERSIST_MOVE = b; } \
+  bool GetUsePersistPosition() { return m_bPERSIST_MOVE; } \
+\
+
+#define DECLARE_PERSISTENT_SIZE_POSITION \
+  DECLARE_PERSISTENT_SIZE \
+  DECLARE_PERSISTENT_POSITION \
+
+
+#define DECLARE_PERSISTENT_SIZE_POSITION_OPTIONAL \
+  DECLARE_PERSISTENT_SIZE_OPTIONAL \
+  DECLARE_PERSISTENT_POSITION_OPTIONAL \
+\
+
+
+#define INIT_PERSISTENT_SIZE(b) SetUsePersistSize(b);
+#define INIT_PERSISTENT_POSITION(b) SetUsePersistPosition(b);
+#define INIT_PERSISTENT_SIZE_POSITION(b) \
+  INIT_PERSISTENT_POSITION(b) \
+  INIT_PERSISTENT_SIZE(b) \
+
+
+#define FUNC_ON_RESIZE(className,check) \
+void className::OnPersistResize(wxSizeEvent &e) \
+{ \
+  if(e.GetEventObject() == this) \
+  { nwxXmlWindowSizes::SaveWindowSizeGlobal( \
+      wxString( #className ), e.GetSize(), check ); \
+  } \
+  e.Skip(); \
+} \
+
+#define IMPLEMENT_PERSISTENT_SIZE(className) \
+  FUNC_ON_RESIZE(className, true)
+
+#define IMPLEMENT_PERSISTENT_SIZE_OPTIONAL(className) \
+  FUNC_ON_RESIZE(className, GetUsePersistSize() )
+
+#define FUNC_ON_POSITION(className, check) \
+void className::OnPersistMove(wxMoveEvent &e) \
+{ \
+  if(e.GetEventObject() == this) \
+  { nwxXmlWindowSizes::SaveWindowPosGlobal( \
+      wxString( #className ), GetPosition(), check); \
+  } \
+  e.Skip(); \
+} \
+
+#define IMPLEMENT_PERSISTENT_POSITION(className) \
+   FUNC_ON_POSITION(className,true)
+
+#define IMPLEMENT_PERSISTENT_POSITION_OPTIONAL(className) \
+   FUNC_ON_POSITION(className,GetUsePersistPosition())
+
+#define IMPLEMENT_PERSISTENT_SIZE_POSITION(className) \
+  IMPLEMENT_PERSISTENT_SIZE(className) \
+  IMPLEMENT_PERSISTENT_POSITION(className) \
+
+#define IMPLEMENT_PERSISTENT_SIZE_POSITION_OPTIONAL(className) \
+  IMPLEMENT_PERSISTENT_SIZE_OPTIONAL(className) \
+  IMPLEMENT_PERSISTENT_POSITION_OPTIONAL(className) \
+
+
+#define GET_PERSISTENT_SIZE(className) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ) )
+#define GET_PERSISTENT_POSITION(className) nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ) )
+
+#define GET_PERSISTENT_SIZE_OPTIONAL(className, Implemented) \
+  nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ), Implemented )
+#define GET_PERSISTENT_POSITION_OPTIONAL(className, Implemented) \
+  nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ), Implemented )
+
+
+#define EVT_PERSISTENT_SIZE(className) \
+EVT_SIZE(className::OnPersistResize)
+
+#define EVT_PERSISTENT_POSITION(className) \
+EVT_MOVE(className::OnPersistMove)
+
+#define EVT_PERSISTENT_SIZE_POSITION(className) \
+  EVT_PERSISTENT_POSITION(className) \
+  EVT_PERSISTENT_SIZE(className)
+
+
+#endif
