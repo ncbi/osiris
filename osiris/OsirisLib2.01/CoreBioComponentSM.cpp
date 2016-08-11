@@ -1346,6 +1346,14 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if (secondarySignal == NULL)
 			continue;
 
+		secondarySignal->ResetIgnoreWidthTest ();
+
+		if (secondarySignal->TestForIntersectionWithPrimary (primarySignal)) {
+
+			secondarySignal->IgnoreWidthTest ();
+			continue;
+		}
+
 		//if (primarySignal->GetWidth () < secondarySignal->GetWidth ())
 		//	continue;
 
@@ -1521,7 +1529,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
 
-				if (secondaryNarrow) {
+				if (secondaryNarrow && !secondarySignal->IgnoreWidthTest ()) {
 
 					secondarySignal->SetIsPossiblePullup (true);
 					secondarySignal->AddUncertainPullupChannel (primaryChannel);
@@ -1583,7 +1591,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				sigmaPrimary = primarySignal->GetStandardDeviation ();
 				sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
-				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
+				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !pullupPeak->IgnoreWidthTest ();
 
 				//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 				//belowMinRFU = (correctedHeight < analysisThreshold);
@@ -1624,7 +1632,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				//if (testedPullups.ContainsReference (secondarySignal))
 				//	continue;
 
-				secondaryNarrow = (secondarySignal->GetStandardDeviation () < 0.5* primarySignal->GetStandardDeviation ());
+				secondaryNarrow = (secondarySignal->GetStandardDeviation () < 0.5* primarySignal->GetStandardDeviation ())  && !secondarySignal->IgnoreWidthTest ();
 				correctedHeight = secondarySignal->TroughHeight () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 				belowMinRFU = (correctedHeight < analysisThreshold);
 
@@ -1684,7 +1692,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			sigmaPrimary = primarySignal->GetStandardDeviation ();
 			sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
-			secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
+			secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary) && !pullupPeak->IgnoreWidthTest ();
 
 			//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 			//belowMinRFU = (correctedHeight < analysisThreshold);

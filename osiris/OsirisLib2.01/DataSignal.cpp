@@ -2298,6 +2298,56 @@ double DataSignal :: ValueFreeBound (double x) const {
 }
 
 
+bool DataSignal :: LiesBelowHeightAt (double x, double height) {
+
+	if (Value (x) <= height)
+		return true;
+
+	return false;
+}
+
+
+bool DataSignal :: TestForIntersectionWithPrimary (DataSignal* primary) {
+
+	int i = 0;
+	double sigma = GetStandardDeviation ();
+	double mu = GetMean ();
+	double peakTest = 0.25 * Peak ();
+	double testPlus;
+	double testMinus;
+	double heightPlus;
+	double heightMinus;
+	double delta;
+
+	if (primary->LiesBelowHeightAt (mu, Value (mu)))
+		return true;
+
+	while (true) {
+
+		i++;
+		delta = (double)i * sigma;
+		testPlus = mu + delta;
+		testMinus = mu - delta;
+		heightPlus = Value (testPlus);
+		heightMinus = Value (testMinus);
+
+		if ((heightPlus < peakTest) || (heightMinus < peakTest))
+			break;
+
+		if (primary->LiesBelowHeightAt (testPlus, heightPlus))
+			return true;
+
+		if (primary->LiesBelowHeightAt (testMinus, heightMinus))
+			return true;
+
+		if (i > 5)
+			break;
+	}
+
+	return false;
+}
+
+
 void DataSignal :: ResetCharacteristicsFromRight (TracePrequalification& trace, RGTextOutput& text, double minRFU, Boolean print) {
 	
 	RightSearch = Right;
@@ -11168,6 +11218,33 @@ double SimpleSigmoidSignal :: GetWidth () {
 }
 
 
+bool SimpleSigmoidSignal :: LiesBelowHeightAt (double x, double height) {
+
+	return true;
+}
+
+
+
+bool SimpleSigmoidSignal :: TestForIntersectionWithPrimary (DataSignal* primary) {
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return false;
+
+	double mu1 = mPrevious->GetMean ();
+	double mu2 = mNext->GetMean ();
+	double p1 = mPrevious->Value (mu1);
+	double p2 = mNext->Value (mu2);
+
+	if (primary->LiesBelowHeightAt (mu1, p1))
+		return true;
+
+	if (primary->LiesBelowHeightAt (mu2, p2))
+		return true;
+
+	return false;
+}
+
+
 DataSignal* SimpleSigmoidSignal :: MakeCopy (double mean) const {
 
 	DataSignal* newSignal = new SimpleSigmoidSignal (mean, *this);
@@ -11525,7 +11602,6 @@ double NoisyPeak :: GetWidth () {
 	mWidth = 0.5 * (mPrevious->GetWidth () + mNext->GetWidth ());
 	return mWidth;
 }
-
 
 
 DataSignal* NoisyPeak :: MakeCopy (double mean) const {

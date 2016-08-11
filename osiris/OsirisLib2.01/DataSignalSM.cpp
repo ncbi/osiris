@@ -1987,6 +1987,78 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
 }
 
 
+bool CraterSignal :: LiesBelowHeightAt (double x, double height) {
+
+	if ((mNext == NULL) || (mPrevious == NULL))
+		return false;
+
+	double mu1 = mPrevious->GetMean ();
+	double mu2 = mNext->GetMean ();
+
+	if ((mu1 < x) && (x < mu2))
+		return false;
+
+	if (x <= mu1)
+		return mPrevious->LiesBelowHeightAt (x, height);
+
+	return mNext->LiesBelowHeightAt (x, height);
+
+}
+
+
+bool CraterSignal :: TestForIntersectionWithPrimary (DataSignal* primary) {
+
+	int i = 0;
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return false;
+
+	double sigma1 = mPrevious->GetStandardDeviation ();
+	double sigma2 = mNext->GetStandardDeviation ();
+	double mu1 = mPrevious->GetMean ();
+	double mu2 = mNext->GetMean ();
+	double peakTest1 = 0.25 * mPrevious->Peak ();
+	double peakTest2 = 0.25 * mNext->Peak ();
+	double testPlus;
+	double testMinus;
+	double heightPlus;
+	double heightMinus;
+	double delta1;
+	double delta2;
+
+	if (primary->LiesBelowHeightAt (mu1, mPrevious->Value (mu1)))
+		return true;
+
+	if (primary->LiesBelowHeightAt (mu2, mNext->Value (mu2)))
+		return true;
+
+	while (true) {
+
+		i++;
+		delta1 = (double)i * sigma1;
+		delta2 = (double)i * sigma2;
+		testPlus = mu2 + delta2;
+		testMinus = mu1 - delta1;
+		heightPlus = mNext->Value (testPlus);
+		heightMinus = mPrevious->Value (testMinus);
+
+		if ((heightPlus < peakTest2) || (heightMinus < peakTest1))
+			break;
+
+		if (primary->LiesBelowHeightAt (testPlus, heightPlus))
+			return true;
+
+		if (primary->LiesBelowHeightAt (testMinus, heightMinus))
+			return true;
+
+		if (i > 5)
+			break;
+	}
+
+	return false;
+}
+
+
 void CraterSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	DataSignal::OutputDebugID (comm, numHigherObjects);

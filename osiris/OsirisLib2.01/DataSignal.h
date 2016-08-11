@@ -504,6 +504,8 @@ public:
 	bool IsDoNotCall () const { return mDoNotCall; }
 	void SetDoNotCall (bool value) { mDoNotCall = value; }
 	void SetIsPossiblePullup (bool value) { mIsPossiblePullup = value; }
+	void ResetIgnoreWidthTest () { mIgnoreWidthTest = false; }
+	bool IgnoreWidthTest () const { return mIgnoreWidthTest; }
 
 	Boolean FlankingPeakProportionExceeds (double fraction) {
 		if ((Peak() < fraction * nextPeak) && (Peak() < fraction * previousPeak))
@@ -625,6 +627,9 @@ public:
 
 	virtual double ValueFreeBound (int n) const;
 	virtual double ValueFreeBound (double x) const;
+
+	virtual bool LiesBelowHeightAt (double x, double height);
+	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
 
 	virtual const double* GetData () const { return NULL; }
 	virtual int GetNumberOfSamples () const { return 0; }
@@ -907,6 +912,7 @@ protected:
 	DataSignal** mPrimaryPullupInChannel;
 	bool mPartOfCluster;
 	bool mIsPossiblePullup;
+	bool mIgnoreWidthTest;
 
 	set<int> mUncertainPullupChannels;
 	RGDList mProbablePullupPeaks;
@@ -1693,6 +1699,9 @@ public:
 	virtual bool IsCraterPeak () const { return true; }
 	virtual double TroughHeight () const { return mTroughHeight; }
 
+	virtual bool LiesBelowHeightAt (double x, double height);
+	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
+
 	virtual int AddNoticeToList (Notice* newNotice);
 
 	virtual void CaptureSmartMessages ();
@@ -1764,6 +1773,8 @@ public:
 	virtual bool IsSigmoidalPeak () const { return true; }
 	virtual double TroughHeight () const { return Peak (); }
 	virtual double GetWidth ();
+	virtual bool LiesBelowHeightAt (double x, double height);
+	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
