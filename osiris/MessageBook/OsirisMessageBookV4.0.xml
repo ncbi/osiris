@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.74</VersionNumber>
-	<BuildTime>0717/2016 06:36 PM</BuildTime>
+	<VersionNumber>6.79</VersionNumber>
+	<BuildTime>08/10/2016 01:48 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -529,8 +529,6 @@
 			</ReportCriterion>
 			<Text>Partial Pullup</Text>
 			<TextForData> from Primary Channel </TextForData>
-			<SeparatorText> with Primary Ratio: </SeparatorText>
-			<ClosingText>%</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
@@ -539,24 +537,10 @@
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPossiblePullUp</Name>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
+			<CallCriterion>
 				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Possible Pullup</Text>
-			<ReportLevel>1</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>20</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smPullUpAtControlPeak OR smInterlocusPullUp OR smSignalIsCtrlPeak OR (smSignalIsAllele AND smMakePullupAtAlleleNonCriticalPreset)</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
-			<Scope>1</Scope>
-		</SmartMessage>
+			</CallCriterion>
+		</SmartMessage>		
 		<SmartMessage>
 			<Name>smNegativePeak</Name>
 			<Subject>1</Subject>
@@ -1603,8 +1587,6 @@
 			</ReportCriterion>
 			<Text>Pullup</Text>
 			<TextForData> from Primary Channel </TextForData>
-			<SeparatorText> with Primary Ratio: </SeparatorText>
-			<ClosingText>%</ClosingText>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -2007,7 +1989,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Signal Is an Inter-Locus Pull-up</Text>
 			<ReportLevel>20</ReportLevel>
@@ -3110,19 +3092,19 @@
 			<Subject>5</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</ReportCriterion>
 			<Text>Signal is Possible Off-Ladder Allele</Text>
 			<ReportLevel>20</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>1</AlternateReportLevel>
 				<AlternateReportCriterion>
-					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
+					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -6097,7 +6079,6 @@
 						<Name>smBlob</Name>
 						<Name>smPullUp</Name>
 						<Name>smCalculatedPurePullup</Name>
-						<Name>smPossiblePullUp</Name>
 						<Name>smPeakOutsideILS</Name>
 						<Name>smBelowMinRFU</Name>
 						<Name>smBaselineRelativeBelowMinRFU</Name>
@@ -6334,10 +6315,10 @@
 						<Expression>smTemp7Right = smTemp1Right OR ((smTemp2Right OR smTemp3Right OR smTemp5Right OR smTemp6Right OR smSignalIsIntegralMultipleOfRepeatRight) AND NOT smFFRight)</Expression>
 						<Expression>smCouldBelongToLocusLeft = (smTemp7Left AND smPartOfExtendedLocusLeft) AND NOT smTemp7Right AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
 						<Expression>smCouldBelongToLocusRight = (smTemp7Right AND smPartOfExtendedLocusRight) AND NOT smTemp7Left AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
-						<Expression>smPullUpAtControlPeak = smSignalIsCtrlPeak AND smPullup</Expression>
-						<Expression>smInterlocusPullUp = (NOT (smPeakInCoreLadderLocus OR smSampleIsLadder OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSignalIsCtrlPeak OR smChannelIsILS)) AND (smPullup OR smCalculatedPurePullup)</Expression>
+						<Expression>smPullUpAtControlPeak = smSignalIsCtrlPeak AND smPullUp</Expression>
+						<Expression>smInterlocusPullUp = (NOT (smPeakInCoreLadderLocus OR smSampleIsLadder OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSignalIsCtrlPeak OR smChannelIsILS)) AND (smPullUp OR smCalculatedPurePullup)</Expression>
 						<Expression>smInterlocusPullUpWithPoorFit = smInterlocusPullUp AND (smPoorPeakMorphology OR smCurveFitMarginal OR smCurveFitFailed)</Expression>
-						<Expression>smPullupAtExtraneousILSPeak = smChannelIsILS AND smPullup AND smUnexpectedILSPeak</Expression>
+						<Expression>smPullupAtExtraneousILSPeak = smChannelIsILS AND smPullUp AND smUnexpectedILSPeak</Expression>
 						<Expression>smPossibleValidInterlocusLeft = smCouldBelongToLocusLeft</Expression>
 						<Expression>smPossibleValidInterlocusRight = smPartOfExtendedLocusRight AND NOT (smFFRight OR smInterlocusPullUp)</Expression>
 						<Expression>smValidOLInterlocusLeft = smCouldBelongToLocusLeft</Expression>
@@ -6408,7 +6389,7 @@
 						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
-						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullup AND NOT smRestrictedPriorityPeak</Expression>
+						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullUp AND NOT smRestrictedPriorityPeak</Expression>
 						<Expression>smAlleleHasExcessiveResidual = smBPResidualTooLarge AND smSignalIsAllele</Expression>
 						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT smRestrictedPriorityPeak</Expression>
 						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
@@ -6420,7 +6401,7 @@
 						<Expression>smAmbiguousCoreVsExtendedRight = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusRight</Expression>
 					</Evaluations>
 					<Triggers>
-						<TriggerExpression>smAmbiguousInterlocus (NOT smRestrictedPriorityPeak): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
+						<TriggerExpression>smAmbiguousInterlocus (NOT (smRestrictedPriorityPeak OR smCalculatedPurePullup OR smExcessiveResidualDisplacement OR (smExcessiveResidualDisplacementLeft AND smExcessiveResidualDisplacementRight))): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
 						<TriggerExpression>smTrueCrater (NOT smRestrictedPriorityPeak): smNumberOfCratersInSample</TriggerExpression>
 						<TriggerExpression>smTrueCrater (smActuallyAnAllele): smLocusContainsCrater</TriggerExpression>
 						<TriggerExpression>smExtraneousAMELPeak (NOT smRestrictedPriorityPeak): smAMELHasExtraneousPeaks</TriggerExpression>

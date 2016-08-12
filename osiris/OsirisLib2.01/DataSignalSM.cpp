@@ -722,9 +722,15 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	int i;
 	RGString data;
 	int n = 0;
+	int k = 0;
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
 	DataSignal* primary;
+	RGString uncertain;
+	RGString narrow;
+	RGString channelList;
+	bool uncertainListNotEmpty = false;
+	RGString data2;
 
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
@@ -737,6 +743,13 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 		primary = HasPrimarySignalFromChannel (i);
 
 		if (primary != NULL) {
+
+			if (PullupChannelIsUncertain (i)) {
+
+				k = 1;
+				uncertainListNotEmpty = true;
+				continue;
+			}
 
 			if (n == 0)
 				n = 1;
@@ -751,16 +764,44 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 		}
 	}
 
-	if (n > 0) {
+	if (n > 0)
+		data << "%";
+
+	if (n + k > 0) {
 
 		bool isPullup = GetMessageValue (pullup);
 		bool isPurePullup = GetMessageValue (purePullup);
+		data2 = data;
 
-		if (isPullup)
+		if (isPullup) {
+
+			if (mIsPossiblePullup) {
+
+				uncertain << "(Uncertain Channels: ";
+				channelList = CreateUncertainPullupString ();
+				uncertain << channelList;
+				uncertain << ") ";
+				data = uncertain + data;
+				//AppendDataForSmartMessage (pullup, uncertain);
+			}
+
 			AppendDataForSmartMessage (pullup, data);
+		}
 
-		if (isPurePullup)
-			AppendDataForSmartMessage (purePullup, data);
+		if (isPurePullup) {
+
+			if (mIsPossiblePullup) {
+
+				narrow << "(Narrow Channels: ";
+				channelList = CreateUncertainPullupString ();
+				narrow << channelList;
+				narrow << ") ";
+				data2 = narrow + data2;
+				//AppendDataForSmartMessage (pullup, uncertain);
+			}
+
+			AppendDataForSmartMessage (purePullup, data2);
+		}
 	}
 }
 
@@ -845,7 +886,7 @@ void DataSignal :: WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& 
 //			text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 			text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-			text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
+			text << indent << "\t<Width>" << GetWidth () << "</Width>" << endLine;
 			text << indent << "\t<allele>" << GetAlleleName () << suffix << "</allele>" << endLine;
 			text << indent << "\t<fit>" << GetCurveFit () << "</fit>" << endLine;
 			text << indent << "</" + bracketTag << ">" << endLine;
@@ -901,7 +942,7 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 //				text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-				text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
+				text << indent << "\t<Width>" << GetWidth () << "</Width>" << endLine;
 
 				if (virtualAllele.Length () > 0)
 					text << indent << "\t<equivAllele>" << virtualAllele << suffix << "</equivAllele>" << endLine;
@@ -1014,7 +1055,7 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
-		text << indent << "\t<Width>" << 2.0 * GetStandardDeviation () << "</Width>" << endLine;
+		text << indent << "\t<Width>" << GetWidth () << "</Width>" << endLine;
 		text << indent << "\t<Time>" << GetMean () << "</Time>" << endLine;
 		text << indent << "\t<Fit>" << GetCurveFit () << "</Fit>" << endLine;
 
@@ -1670,6 +1711,9 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 			if (primarySignal == NULL)
 				continue;
 
+			if (PullupChannelIsUncertain (i))
+				continue;
+
 			if (GetPullupFromChannel (i) != 0.0) {
 
 				primaryHeight = primarySignal->Peak ();  // Use corrected value?
@@ -1940,6 +1984,78 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
 		return 2.0;
 
 	return nSigmas * mSigma;
+}
+
+
+bool CraterSignal :: LiesBelowHeightAt (double x, double height) {
+
+	if ((mNext == NULL) || (mPrevious == NULL))
+		return false;
+
+	double mu1 = mPrevious->GetMean ();
+	double mu2 = mNext->GetMean ();
+
+	if ((mu1 < x) && (x < mu2))
+		return false;
+
+	if (x <= mu1)
+		return mPrevious->LiesBelowHeightAt (x, height);
+
+	return mNext->LiesBelowHeightAt (x, height);
+
+}
+
+
+bool CraterSignal :: TestForIntersectionWithPrimary (DataSignal* primary) {
+
+	int i = 0;
+
+	if ((mPrevious == NULL) || (mNext == NULL))
+		return false;
+
+	double sigma1 = mPrevious->GetStandardDeviation ();
+	double sigma2 = mNext->GetStandardDeviation ();
+	double mu1 = mPrevious->GetMean ();
+	double mu2 = mNext->GetMean ();
+	double peakTest1 = 0.25 * mPrevious->Peak ();
+	double peakTest2 = 0.25 * mNext->Peak ();
+	double testPlus;
+	double testMinus;
+	double heightPlus;
+	double heightMinus;
+	double delta1;
+	double delta2;
+
+	if (primary->LiesBelowHeightAt (mu1, mPrevious->Value (mu1)))
+		return true;
+
+	if (primary->LiesBelowHeightAt (mu2, mNext->Value (mu2)))
+		return true;
+
+	while (true) {
+
+		i++;
+		delta1 = (double)i * sigma1;
+		delta2 = (double)i * sigma2;
+		testPlus = mu2 + delta2;
+		testMinus = mu1 - delta1;
+		heightPlus = mNext->Value (testPlus);
+		heightMinus = mPrevious->Value (testMinus);
+
+		if ((heightPlus < peakTest2) || (heightMinus < peakTest1))
+			break;
+
+		if (primary->LiesBelowHeightAt (testPlus, heightPlus))
+			return true;
+
+		if (primary->LiesBelowHeightAt (testMinus, heightMinus))
+			return true;
+
+		if (i > 5)
+			break;
+	}
+
+	return false;
 }
 
 

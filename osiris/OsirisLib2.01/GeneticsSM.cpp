@@ -591,7 +591,7 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";
-		text << "\t\t\t\t\t<Width>" << 2.0 * nextSignal->GetStandardDeviation () << "</Width>\n";
+		text << "\t\t\t\t\t<Width>" << nextSignal->GetWidth () << "</Width>\n";
 		text << "\t\t\t\t\t<Time>" << nextSignal->GetMean () << "</Time>\n";
 		text << "\t\t\t\t\t<Fit>" << nextSignal->GetCurveFit () << "</Fit>\n";
 
@@ -5673,6 +5673,7 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 
 	//****02/09/2016 Probably need to eliminate the following section because craters have already been validated.  Instead, just test for two peaks with identical call and create NoisyPeak to replace.
 
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		location = TestSignalPositionRelativeToLocus (nextSignal);
@@ -5787,6 +5788,8 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 
 	//	delete nextSignal;
 	}
+
+
 
 	it.Reset ();
 //	bool previousPullUp;
@@ -5980,8 +5983,13 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
 	smPullUp pullup;
-	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
+	smCalculatedPurePullup purePullup;
+	smBelowMinRFU belowMinRFU;
+	smCrater crater;
+
+	bool prevBelowMinRFU;
+	bool nextBelowMinRFU;
 
 	it.Reset ();
 
@@ -6043,6 +6051,18 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
+			if (prevSignal->GetMessageValue (crater) || nextSignal->GetMessageValue (crater)) {
+
+				//if (report)
+				if ((nextSignal->GetMean () > 5570.0) && (nextSignal->GetMean () < 5572.0))
+					cout << "A signal at mean " << prevSignal->GetMean () << " or at mean " << nextSignal->GetMean () << " is part of a crater" << endl;
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
 			if (prevSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (purePullup)) {
 
 				prevSignal = nextSignal;
@@ -6087,6 +6107,31 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				prevAlleleName = alleleName;
 				prevLocation = location;
 				continue;
+			}
+
+			else {
+
+				prevBelowMinRFU = prevSignal->GetMessageValue (belowMinRFU);
+				nextBelowMinRFU = nextSignal->GetMessageValue (belowMinRFU);
+
+				if (prevBelowMinRFU && !nextBelowMinRFU) {
+
+					prevSignal = nextSignal;
+					prevAlleleName = alleleName;
+					prevLocation = location;
+					continue;
+				}
+
+				else if (!prevBelowMinRFU && nextBelowMinRFU)
+					continue;
+
+				else if (prevBelowMinRFU && nextBelowMinRFU) {
+
+					prevSignal = nextSignal;
+					prevAlleleName = alleleName;
+					prevLocation = location;
+					continue;
+				}
 			}
 
 			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);

@@ -3921,6 +3921,7 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 	it.Reset ();
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smAmbiguousInterlocusWithPoorMorphology ambiguousInterlocusWithPoorMorphology;
+	smCrater crater;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -3935,6 +3936,12 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 			}
 
 			if (!nextSignal->IsPossibleInterlocusAllele (-1)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (crater) || nextSignal->GetMessageValue (crater)) {
 
 				prevSignal = nextSignal;
 				continue;

@@ -43,6 +43,7 @@
 
 
 #include <list>
+#include <set>
 #include <math.h>
 
 //
@@ -297,7 +298,7 @@ ABSTRACT_DECLARATION (DataSignal)
 
 public:
 	DataSignal () : SmartMessagingObject (), Left (0.0), Right (1.0), LeftSearch (0.0), RightSearch (0.0), Fit (0.0), ResidualPower (1.0),
-	MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0), mApproxBioIDPrime (0.0), 
+	MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0), mApproxBioIDPrime (0.0), mWidth (-1.0),
 	mNoticeObjectIterator (NewNoticeList), markForDeletion (false), mOffGrid (false), mAcceptedOffGrid (false), signalLink (NULL), mPrimaryCrossChannelLink (NULL), 
 	mDontLook (false), mTestLeftEndPoint (0.0), mTestRightEndPoint (0.0), mDataMode (0.0), mRawDataBelowMinHeight (false), mOsirisFitBelowMinHeight (false),
 	mRawDataAboveMaxHeight (false), mOsirisFitAboveMaxHeight (false), mPossibleInterlocusAllele (false), 
@@ -306,7 +307,7 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -314,7 +315,7 @@ public:
 	}
 
 	DataSignal (double left, double right) : SmartMessagingObject (), Left (left), Right (right), LeftSearch (left), 
-	RightSearch (right), Fit (0.0), ResidualPower (1.0), MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0), mApproxBioIDPrime (0.0), 
+	RightSearch (right), Fit (0.0), ResidualPower (1.0), MeanVariability (0.0), BioID (0.0), ApproximateBioID (-1.0), mApproxBioIDPrime (0.0), mWidth (-1.0), 
 	mNoticeObjectIterator (NewNoticeList), markForDeletion (false), mOffGrid (false), mAcceptedOffGrid (false), signalLink (NULL), 
 	mPrimaryCrossChannelLink (NULL), mDontLook (false), mTestLeftEndPoint (0.0), mTestRightEndPoint (0.0), mDataMode (0.0), mRawDataBelowMinHeight (false), 
 	mOsirisFitBelowMinHeight (false), mRawDataAboveMaxHeight (false), mOsirisFitAboveMaxHeight (false), mPossibleInterlocusAllele (false), 
@@ -323,7 +324,7 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -332,7 +333,7 @@ public:
 
 	DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMessagingObject&)ds), Left (ds.Left), Right (ds.Right), LeftSearch (ds.LeftSearch),
 		RightSearch (ds.RightSearch), Fit (ds.Fit), ResidualPower (ds.ResidualPower), MeanVariability (ds.MeanVariability), BioID (ds.BioID), 
-		ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), signalLink (NULL), 
+		ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mWidth (-1.0), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), signalLink (NULL), 
 		mPrimaryCrossChannelLink (NULL), mDontLook (ds.mDontLook), mTestLeftEndPoint (ds.mTestLeftEndPoint), mTestRightEndPoint (ds.mTestRightEndPoint), 
 		mDataMode (ds.mDataMode), mRawDataBelowMinHeight (ds.mRawDataBelowMinHeight), mOsirisFitBelowMinHeight (ds.mOsirisFitBelowMinHeight),
 		mRawDataAboveMaxHeight (ds.mRawDataAboveMaxHeight), mOsirisFitAboveMaxHeight (ds.mOsirisFitAboveMaxHeight), mPossibleInterlocusAllele (ds.mPossibleInterlocusAllele), 
@@ -344,7 +345,7 @@ public:
 		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
-		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster) {
+		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -488,12 +489,23 @@ public:
 	DataSignal* HasPrimarySignalFromChannel (int i) const;
 	void SetPrimarySignalFromChannel (int i, DataSignal* ds, int numberOfChannels);
 	bool HasAnyPrimarySignals (int numberOfChannels) const;
+	void AddUncertainPullupChannel (int channel);
+	bool UncertainPullupChannelListIsEmpty ();
+	bool PullupChannelIsUncertain (int channel);
+	RGString CreateUncertainPullupString ();
+
+	void AddProbablePullups (RGDList& prototype);
+	void RemoveProbablePullup (const DataSignal* removeSignal);
+	bool ReconfigurePullupFromLinkForChannel (int channel);
 
 //	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
 	int GetMaxAllowedMessageLevel () const { return mMaxMessageLevel; }
 	bool IsDoNotCall () const { return mDoNotCall; }
 	void SetDoNotCall (bool value) { mDoNotCall = value; }
+	void SetIsPossiblePullup (bool value) { mIsPossiblePullup = value; }
+	void ResetIgnoreWidthTest () { mIgnoreWidthTest = false; }
+	bool IgnoreWidthTest () const { return mIgnoreWidthTest; }
 
 	Boolean FlankingPeakProportionExceeds (double fraction) {
 		if ((Peak() < fraction * nextPeak) && (Peak() < fraction * previousPeak))
@@ -580,6 +592,7 @@ public:
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const { tailLeft = tailRight = 0.0; }
 	virtual double GetMean () const { return -DOUBLEMAX; }
 	virtual double GetStandardDeviation () const { return -DOUBLEMAX; }
+	virtual double GetWidth ();
 	virtual double GetVariance () const { return -DOUBLEMAX; }
 	virtual double GetScale (int curve) const { return -DOUBLEMAX; }
 	virtual double GetOrthogonalScale (int curve) const { return -DOUBLEMAX; }
@@ -614,6 +627,9 @@ public:
 
 	virtual double ValueFreeBound (int n) const;
 	virtual double ValueFreeBound (double x) const;
+
+	virtual bool LiesBelowHeightAt (double x, double height);
+	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
 
 	virtual const double* GetData () const { return NULL; }
 	virtual int GetNumberOfSamples () const { return 0; }
@@ -825,6 +841,7 @@ protected:
 	double ApproximateBioID;
 	double mApproxBioIDPrime;
 	double Residual;
+	double mWidth;
 
 	double nextPeak;
 	double previousPeak;
@@ -894,6 +911,11 @@ protected:
 	double* mPullupCorrectionArray;
 	DataSignal** mPrimaryPullupInChannel;
 	bool mPartOfCluster;
+	bool mIsPossiblePullup;
+	bool mIgnoreWidthTest;
+
+	set<int> mUncertainPullupChannels;
+	RGDList mProbablePullupPeaks;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;
@@ -1677,6 +1699,9 @@ public:
 	virtual bool IsCraterPeak () const { return true; }
 	virtual double TroughHeight () const { return mTroughHeight; }
 
+	virtual bool LiesBelowHeightAt (double x, double height);
+	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
+
 	virtual int AddNoticeToList (Notice* newNotice);
 
 	virtual void CaptureSmartMessages ();
@@ -1700,6 +1725,7 @@ public:
 	virtual double Peak () const;
 	virtual double GetMean () const;
 	virtual double GetStandardDeviation () const;
+	virtual double GetWidth ();
 	virtual double GetVariance () const;
 
 	virtual void SetMessageValue (int scope, int location, bool value);
@@ -1746,6 +1772,9 @@ public:
 	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.0; }  // should never be called
 	virtual bool IsSigmoidalPeak () const { return true; }
 	virtual double TroughHeight () const { return Peak (); }
+	virtual double GetWidth ();
+	virtual bool LiesBelowHeightAt (double x, double height);
+	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
@@ -1812,6 +1841,7 @@ public:
 	virtual double GetPrimaryPullupDisplacementThreshold ();
 	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas);
 	virtual double TroughHeight () const { return Peak (); }
+	virtual double GetWidth ();
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
@@ -1886,6 +1916,7 @@ public:
 	virtual void SetDisplacement (double disp) { mOriginal->SetDisplacement (disp); }
 	virtual void SetScale (double scale) { mOriginal->SetScale (scale); }
 	virtual double GetStandardDeviation () const { return mOriginal->GetStandardDeviation (); }
+	virtual double GetWidth () { return mOriginal->GetWidth (); }
 	virtual double GetVariance () const { return mOriginal->GetVariance (); }
 	virtual void SetPeak (double peak) { mOriginal->SetPeak (peak); }
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const { mOriginal->ComputeTails (tailLeft, tailRight); }
