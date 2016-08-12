@@ -40,9 +40,9 @@
 #include "COARfile.h"
 #include "CHistoryTime.h"
 #include "ISetDateTime.h"
-#include "IEditPanel.h"
 #include "CPanelSampleAlertDetails.h"
 
+class IPageEditSample;
 class CPanelUserID;
 class CNotebookEditSample;
 
@@ -59,191 +59,6 @@ typedef enum
 
 #endif
 
-// probably doesn't need to be in .h file
-/*
-class CPageEditSample : public wxPanel
-{
-  //  a notebook page for CNotebookEditSample
-  //  the parameter, pEditPanel, creates a 
-  //  panel for editing which will be a child 
-  //  window of this
-public:
-  CPageEditSample(CNotebookEditSample *pParentPanel, IEditPanel *pEditPanel);
-  bool NeedsApply();
-  void DoApply();
-  void RepaintData();
-  const wxString &GetUserID();
-private:
-  IEditPanel *m_pEditPanel;
-  CNotebookEditSample *m_pParent;
-};
-*/
-
-class CEditAlertsBase : public IEditPanel
-{
-public:
-  CEditAlertsBase(CNotebookEditSample *pParentPanel, COARfile *pFile, int nCountType, bool bReadOnly = false) :
-      m_pFile(pFile),
-      m_pParent(pParentPanel),
-      m_pPanel(NULL),
-      m_nReviewerCount(-1),
-      m_nAcceptanceCount(-1),
-      m_pReview(NULL),
-      m_pAccept(NULL),
-      m_bReadOnly(bReadOnly)
-      {
-        m_pFile->GetReviewerCounts(
-          &m_nReviewerCount, 
-          &m_nAcceptanceCount,
-          nCountType);      
-      };
-  virtual ~CEditAlertsBase();
-  bool IsReadOnly()
-  {
-    return m_bReadOnly;
-  }
-  virtual bool NeedsApply();
-  virtual operator wxWindow *()
-  {
-    return GetPanel();
-  }
-  virtual void DoReview();
-  virtual void DoAccept();
-  wxWindow *GetParentWindow();
-protected:
-  virtual wxWindow *GetPanel() = 0;
-  virtual IAppendReview *GetReviewReceiver() = 0;
-  virtual IAppendReview *GetAcceptReceiver() = 0;
-
-  COARmessages m_Msg;
-  COARfile *m_pFile;
-  CNotebookEditSample *m_pParent;
-  CPanelSampleAlertDetails *m_pPanel;
-  int m_nReviewerCount;
-  int m_nAcceptanceCount;
-private:
-  IAppendReview *m_pReview;
-  IAppendReview *m_pAccept;
-  bool m_bReadOnly;
-};
-class CEditAlertsDir : public CEditAlertsBase
-{
-public:
-  CEditAlertsDir(
-    CNotebookEditSample *pParentPanel, 
-    COARfile *pFile, 
-    bool bReadOnly = false) :
-      CEditAlertsBase(
-        pParentPanel,
-        pFile,
-        CLabReview::REVIEW_DIR,
-        bReadOnly)
-  {}
-  virtual bool NeedsAcceptance();
-  virtual bool NeedsReview();
-  virtual bool HasHistory();
-  virtual void DoApply();
-protected:
-  virtual wxWindow *GetPanel();
-  virtual IAppendReview *GetReviewReceiver();
-  virtual IAppendReview *GetAcceptReceiver();
-};
-
-class CEditAlertsSample : public CEditAlertsBase
-{
-public:
-  CEditAlertsSample(    
-    CNotebookEditSample *pParentPanel, 
-    COARsample *pSample, 
-    bool bReadOnly = false) :
-      CEditAlertsBase(
-        pParentPanel,
-        pSample->GetFile(),
-        CLabReview::REVIEW_SAMPLE,
-        bReadOnly),
-          m_pSample(pSample)
-  {}
-  virtual bool NeedsAcceptance();
-  virtual bool NeedsReview();
-  virtual bool HasHistory();
-  virtual void DoApply();
-  virtual void DoReview();
-  virtual void DoAccept();
-protected:
-  virtual wxWindow *GetPanel();
-private:
-  COARsample *m_pSample;
-};
-
-class CEditAlertsILS : public CEditAlertsBase
-{
-public:
-  CEditAlertsILS(
-    CNotebookEditSample *pParentPanel, 
-    COARsample *pSample, 
-    bool bReadOnly = false) :
-      CEditAlertsBase(
-        pParentPanel,
-        pSample->GetFile(),
-        CLabReview::REVIEW_ILS,
-        bReadOnly),
-          m_pSample(pSample)
-  {}
-  virtual bool NeedsAcceptance();
-  virtual bool NeedsReview();
-  virtual bool HasHistory();
-  virtual void DoApply();
-  virtual void DoReview();
-  virtual void DoAccept();
-protected:
-  virtual wxWindow *GetPanel();
-private:
-  COARsample *m_pSample;
-};
-
-class CEditAlertsChannel : public CEditAlertsBase
-{
-public:
-  CEditAlertsChannel(    
-    CNotebookEditSample *pParentPanel, 
-    COARsample *pSample, 
-    bool bReadOnly = false) :
-      CEditAlertsBase(
-        pParentPanel,
-        pSample->GetFile(),
-        CLabReview::REVIEW_CHANNEL,
-        bReadOnly),
-          m_pSample(pSample)
-  {}
-  virtual bool NeedsAcceptance();
-  virtual bool NeedsReview();
-  virtual bool HasHistory();
-protected:
-  virtual wxWindow *GetPanel();
-private:
-  COARsample *m_pSample;
-};
-
-
-class CEditLocus : public CEditAlertsBase
-{
-public:
-  CEditLocus(
-    CNotebookEditSample *pParentPanel, 
-    COARsample *pSample, 
-    const wxString &sLocusName,
-    bool bReadOnly = false) :
-      CEditAlertsBase(
-          pParentPanel,
-          pSample->GetFile(),
-          CLabReview::REVIEW_LOCUS,
-          bReadOnly),
-      m_sLocusName(sLocusName)
-  {};
-private:
-  wxString m_sLocusName;
-  
-};
 
 class CNotebookEditSample : public wxPanel, public ISetDateTime
 {
@@ -284,6 +99,10 @@ public:
     return m_pNotebook;
   }
   virtual bool SetDateTime(const wxDateTime *pTime);
+  virtual const wxDateTime *GetDateTime()
+  {
+    return m_HistTime.GetDateTime();
+  }
   const COARmessages &GetDirMessages()
   {
     return m_MsgDir;
@@ -323,10 +142,6 @@ public:
   {
     return (m_pSplitter[n] != NULL);
   }
-  void SetPanelUserID(CPanelUserID *p)
-  {
-    m_pPanelUser = p;
-  }
   const wxString &GetCurrentLocus();
   const wxString &GetUserID();
   void RepaintData();
@@ -363,7 +178,7 @@ private:
   const COARfile *m_pFile;
 
   wxTreebook *m_pNotebook;
-  CPanelUserID *m_pPanelUser;
+  vector<IPageEditSample *> m_vpPanels;
   CPanelSampleAlertDetails *m_pSplitter[SA_WINDOW_COUNT];
   bool m_bReadOnly;
 

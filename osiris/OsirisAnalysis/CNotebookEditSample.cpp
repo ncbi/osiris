@@ -51,191 +51,8 @@
 #define COAR_NOTICE_DISPLAY_CAP "Notices"
 
 
-//
-//  BEGIN CEditAlertsBase
-//
-CEditAlertsBase::~CEditAlertsBase()
-{
-  if(m_pReview != NULL) { delete m_pReview; }
-  if(m_pAccept != NULL) { delete m_pAccept; }
-}
-wxWindow *CEditAlertsBase::GetParentWindow()
-{
-  return m_pParent->GetNotebookWindow();
-}
-bool CEditAlertsBase::NeedsApply()
-{
-  GetPanel();
-  bool bRtn = m_pPanel->IsNotesModified();
-  if(!bRtn)
-  { bRtn = m_Msg.IsModified(*m_pFile->GetMessages());
-  }
-  return bRtn;
-}
-void CEditAlertsBase::DoAccept()
-{
-  if(GetAcceptReceiver()->AppendReview(m_pParent->GetUserID()))
-  {
-    m_pParent->InitiateRepaintData();
-  }
-}
-void CEditAlertsBase::DoReview()
-{
-  if(GetReviewReceiver()->AppendReview(m_pParent->GetUserID()))
-  {
-    m_pParent->InitiateRepaintData();
-  }
-}
-//
-//  END CEditAlertsBase
-//  BEGIN CEditAlertsDir
-//
 
-
-wxWindow *CEditAlertsDir::GetPanel()
-{
-  if(m_pPanel == NULL)
-  {
-    vector<wxString> vsLocus;
-    m_pFile->GetDirectoryAlerts()->BuildMessageList(&m_Msg,&vsLocus,*m_pFile->GetMessages());
-    m_pPanel = new CPanelSampleAlertDetails(
-      GetParentWindow(),
-      &m_Msg,
-      wxString(S_DIR COAR_NOTICE_DISPLAY_CAP),
-      CGridAlerts::TYPE_LOCUS,
-      true,
-      IsReadOnly());
-    m_pPanel->SetupLocusColumn(vsLocus);
-  }
-  return m_pPanel;
-}
-bool CEditAlertsDir::NeedsAcceptance()
-{
-  bool bRtn = m_pFile->NeedDirAcceptance();
-  return bRtn;
-}
-bool CEditAlertsDir::NeedsReview()
-{
-  bool bRtn = m_pFile->NeedDirReview();
-  return bRtn;
-}
-bool CEditAlertsDir::HasHistory()
-{
-  bool bRtn = m_pFile->IsDirMessageEdited();
-  return bRtn;
-}
-//
-//  END CEditAlertsDir
-//  BEGIN CEditAlertsSample
-//
-wxWindow *CEditAlertsSample::GetPanel()
-{
-  if(m_pPanel == NULL)
-  {
-    m_Msg.CopyOnly(*m_pFile->GetMessages(),m_pSample->GetSampleAlerts()->Get());
-    m_pPanel = new CPanelSampleAlertDetails(
-        GetParentWindow(),
-        &m_Msg,
-        wxString(S_SAMPLE COAR_NOTICE_DISPLAY_CAP),
-        0,
-        true,
-        IsReadOnly());
-  }
-  return m_pPanel;
-}
-bool CEditAlertsSample::NeedsAcceptance()
-{
-  bool bRtn = m_pSample->NeedSampleAcceptance(m_nAcceptanceCount,NULL)
-    && !NeedsApply();
-  return bRtn;
-}
-bool CEditAlertsSample::NeedsReview()
-{
-  bool bRtn = m_pSample->NeedSampleReview(m_nReviewerCount,NULL)
-    && !NeedsApply();
-  return bRtn;
-}
-bool CEditAlertsSample::HasHistory()
-{
-  bool bRtn = m_pSample->IsSampleLevelEdited();
-  return bRtn;
-}
-//
-//  END CEditAlertsSample
-//  BEGIN CEditAlertsILS
-//
-wxWindow *CEditAlertsILS::GetPanel()
-{
-  if(m_pPanel == NULL)
-  {
-    m_Msg.CopyOnly(*m_pFile->GetMessages(),m_pSample->GetILSAlerts()->Get());
-    m_pPanel = new CPanelSampleAlertDetails(
-        GetParentWindow(),
-        &m_Msg,
-        wxString(S_ILS COAR_NOTICE_DISPLAY_CAP),
-        0,
-        true,
-        IsReadOnly());
-  }
-  return m_pPanel;
-}
-bool CEditAlertsILS::NeedsAcceptance()
-{
-  bool bRtn = m_pSample->NeedILSAcceptance(m_nAcceptanceCount,NULL) &&
-      !NeedsApply();
-  return bRtn;
-}
-bool CEditAlertsILS::NeedsReview()
-{
-  bool bRtn = m_pSample->NeedILSReview(m_nReviewerCount,NULL) &&
-      !NeedsApply();
-  return bRtn;
-}
-bool CEditAlertsILS::HasHistory()
-{
-  bool bRtn = m_pSample->IsCellILSEdited();
-  return bRtn;
-}
-//
-//  END CEditAlertsILS
-//  BEGIN CEditAlertsChannel
-//
-wxWindow *CEditAlertsChannel::GetPanel()
-{
-  if(m_pPanel == NULL)
-  {
-    m_Msg.CopyOnly(*m_pFile->GetMessages(),m_pSample->GetILSAlerts()->Get());
-    m_pPanel = new CPanelSampleAlertDetails(
-        GetParentWindow(),
-        &m_Msg,
-        wxString(S_CHANNEL COAR_NOTICE_DISPLAY_CAP),
-        CGridAlerts::TYPE_CHANNEL,
-        true,
-        IsReadOnly());
-
-  }
-  return m_pPanel;
-}
-bool CEditAlertsChannel::NeedsAcceptance()
-{
-  bool bRtn = m_pSample->NeedChannelAcceptance(m_nAcceptanceCount,NULL) &&
-    !NeedsApply();
-  return bRtn;
-}
-bool CEditAlertsChannel::NeedsReview()
-{
-  bool bRtn = m_pSample->NeedChannelReview(m_nReviewerCount,NULL) &&
-    !NeedsApply();
-  return bRtn;
-}
-bool CEditAlertsChannel::HasHistory()
-{
-  bool bRtn = m_pSample->IsCellChannelEdited();
-  return bRtn;
-}
-//
-//  END CEditAlertsChannel
-//
+//  CNotebookEditSample
 
 const wxString CNotebookEditSample::g_sLabelDirNotices(S_DIR COAR_NOTICE_DISPLAY_CAP);
 const wxString CNotebookEditSample::g_sLabelSampleNotices(S_SAMPLE COAR_NOTICE_DISPLAY_CAP);
@@ -371,7 +188,9 @@ CNotebookEditSample::CNotebookEditSample(
   SetSizer(pSizer);
   pSizer->Layout();
 
+#if 0
   //  split alert editing panels (non locus)
+  // should be
   for(i = 0; i < SA_WINDOW_COUNT; i++)
   {
     pSplitter = m_pSplitter[i];
@@ -380,6 +199,7 @@ CNotebookEditSample::CNotebookEditSample(
       pSplitter->Split();
     }
   }
+#endif
 }
 const wxString &CNotebookEditSample::GetCurrentLocus()
 {
@@ -400,6 +220,7 @@ const wxString &CNotebookEditSample::GetCurrentLocus()
 
 bool CNotebookEditSample::Validate()
 {
+  // NEEDS REWRITE STOP HERE
   bool bRtn = true;
   if(!m_bReadOnly)
   {
@@ -482,6 +303,7 @@ wxString CNotebookEditSample::_GetReviewAcceptance(int n, const wxDateTime *pdt)
 
 bool CNotebookEditSample::TransferDataToWindow()
 {
+// Should not be needed STOP HERE
   for(int i = 0; i < SA_WINDOW_COUNT; i++)
   {
     CPanelSampleAlertDetails *psd = m_pSplitter[i];

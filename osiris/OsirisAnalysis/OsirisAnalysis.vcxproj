@@ -361,6 +361,7 @@
     <ClCompile Include="ConfigDir.cpp" />
     <ClCompile Include="COsirisIcon.cpp" />
     <ClCompile Include="CPageAuto.cpp" />
+    <ClCompile Include="CPageEditSample.cpp" />
     <ClCompile Include="CPageName.cpp" />
     <ClCompile Include="CPageNoParameters.cpp" />
     <ClCompile Include="CPageParameters.cpp" />
@@ -505,6 +506,7 @@
     <ClInclude Include="ConfigDir.h" />
     <ClInclude Include="COsirisIcon.h" />
     <ClInclude Include="CPageAuto.h" />
+    <ClInclude Include="CPageEditSample.h" />
     <ClInclude Include="CPageName.h" />
     <ClInclude Include="CPageNoParameters.h" />
     <ClInclude Include="CPageParameters.h" />
@@ -542,7 +544,7 @@
     <ClInclude Include="CXSLExportFileType.h" />
     <ClInclude Include="extractCXSLExportFile.h" />
     <ClInclude Include="IArtifactGroup.h" />
-    <ClInclude Include="IEditPanel.h" />
+    <ClInclude Include="IPageEditSample.h" />
     <ClInclude Include="ISetDateTime.h" />
     <ClInclude Include="LABEL_TYPES.h" />
     <ClInclude Include="mainApp.h" />

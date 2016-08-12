@@ -23,10 +23,10 @@
 *
 * ===========================================================================
 *
-*  FileName: IEditPanel.cpp
+*  FileName: IPageEditSample.h
 *  Author:   Douglas Hoffman
 *
-*  Interface class for any panel used for editing in order to determine state
+*  Interface class for any panel used for editing part of a sample
 *
 */
 
@@ -40,10 +40,10 @@
 
 class wxWindow;
 
-class IEditPanel
+class IPageEditSample
 {
 public:
-  virtual ~IEditPanel() {};
+  virtual ~IPageEditSample() {};
   /* virtual void OnChange(wxCommandEvent &e) = 0; */
   virtual operator wxWindow *() = 0;
   virtual bool NeedsApply() = 0;
@@ -51,26 +51,14 @@ public:
   virtual bool NeedsReview() = 0;
   virtual bool HasHistory() = 0;
   virtual void DoApply() = 0;
-  virtual void DoReview() = 0;
-  virtual void DoAccept() = 0;
-  /*
-  virtual wxButton *GetApplyButton() = 0;
-  virtual wxButton *GetAcceptButton() = 0;
-  virtual wxButton *GetReviewButton() = 0;
-  static void UpdateButtonPanel(IEditPanel *p)
-  {
-    bool bModified = p->IsModified();
-    _EnableButton(p->GetApplyButton(),bModified);
-    _EnableButton(p->GetAcceptButton(),!bModified && p->NeedsAcceptance());
-    _EnableButton(p->GetReviewButton(), p->NeedsReview());
-  }
-  */
+  virtual bool DoReview() = 0;
+  virtual bool DoAccept() = 0;
 protected:
   /* static void _EnableButton(wxButton *pButton, bool bEnable)
   { if(pButton != NULL) { pButton->Enable(bEnable); }
   }
   */
-  IEditPanel() {};
+  IPageEditSample() {};
 };
 
 #endif
