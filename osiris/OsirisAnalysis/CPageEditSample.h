@@ -39,8 +39,6 @@
 #include "COARfile.h"
 class CNotebookEditSample;
 
-
-
 class CPageEditSample : public IPageEditSample
 {
 public:
@@ -64,31 +62,25 @@ public:
   {
     return m_bReadOnly;
   }
-  virtual bool NeedsApply();
   virtual operator wxWindow *()
   {
     return GetPanel();
   }
   virtual bool DoReview();
   virtual bool DoAccept();
-  virtual void DoApply();
   wxWindow *GetParentWindow();
+  virtual const wxString &GetPageLabel() = 0;
 protected:
   const wxString &GetUserID();
-  virtual const wxString &GetNotes();
   virtual wxWindow *GetPanel();
 
-  virtual void UpdateNotes() = 0;
   virtual wxWindow *CreatePanel() = 0;
   virtual IAppendReview *CreateReviewReceiver() = 0;
   virtual IAppendReview *CreateAcceptReceiver() = 0;
-  virtual wxString GetReviewAcceptance() = 0;
 
 private:
   wxString m_sUserID;
-  wxString m_sNotes;
 protected:
-  COARmessages m_Msg;
   COARfile *m_pFile;
   CNotebookEditSample *m_pParent;
   wxWindow *m_pPanel;
@@ -100,51 +92,106 @@ private:
   bool m_bReadOnly;
 };
 
+class CPageEditSampleAlerts : public CPageEditSample
+{
+public:
+    CPageEditSampleAlerts(
+      CNotebookEditSample *pParentPanel,
+      COARfile *pFile,
+      int nCountType,
+      bool bReadOnly = false) :
+        CPageEditSample(
+          pParentPanel,
+          pFile,
+          nCountType,
+          bReadOnly)
+      {}
+  virtual void DoApply();
+  virtual bool TransferDataToPage();
+  virtual bool NeedsApply();
+  virtual const wxString &GetPageLabel()
+  {
+    return m_sLabel;
+  }
+protected:
+  const wxString &GetLabelPrefix()
+  {
+    return m_sShortLabel;
+  }
+  void _SETUP_LABELS(const wxChar *ps)
+  {
+    m_sShortLabel = ps;
+    m_sShortLabel.Append(wxT(" "));
+    m_sLabel = m_sShortLabel;
+    m_sLabel.Append("Notices");
+  }
+  virtual wxString GetReviewAcceptance() = 0;
+  virtual const wxString &GetNewNotes();
+  virtual void UpdateNotes() = 0;
+  virtual const COARnotes *GetNotes() = 0;
+  const wxString &GetNotesText()
+  {
+    return COARnotes::GetText(GetNotes());
+  }
+  COARmessages m_Msg;
+private:
+  wxString m_sLabel;
+  wxString m_sLabelShort;
+  wxString m_sNotes;
+};
 
-class CEditAlertsDir : public CPageEditSample
+
+class CEditAlertsDir : public CPageEditSampleAlerts
 {
 public:
   CEditAlertsDir(
     CNotebookEditSample *pParentPanel, 
     COARfile *pFile, 
     bool bReadOnly = false) :
-      CPageEditSample(
+      CPageEditSampleAlerts(
         pParentPanel,
         pFile,
         CLabReview::REVIEW_DIR,
         bReadOnly)
-  {}
+  {
+    _SETUP_LABELS(wxT("Directory"));
+  }
   virtual bool NeedsAcceptance();
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
   virtual void UpdateNotes();
+  virtual const COARnotes *GetNotes();
   virtual wxWindow *CreatePanel();
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
+  virtual void SetupPageLabel(wxString *ps);
 };
 
 
-class CEditAlertsSample : public CPageEditSample
+class CEditAlertsSample : public CPageEditSampleAlerts
 {
 public:
   CEditAlertsSample(    
     CNotebookEditSample *pParentPanel, 
     COARsample *pSample, 
     bool bReadOnly = false) :
-      CPageEditSample(
+      CPageEditSampleAlerts(
         pParentPanel,
         pSample->GetFile(),
         CLabReview::REVIEW_SAMPLE,
         bReadOnly),
           m_pSample(pSample)
-  {}
+  {
+    _SETUP_LABELS(wxT("Sample"));
+  }
   virtual bool NeedsAcceptance();
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
   virtual void UpdateNotes();
+  virtual const COARnotes *GetNotes();
   virtual wxWindow *CreatePanel();
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
@@ -154,35 +201,39 @@ private:
 };
 
 
-class CEditAlertsILS : public CPageEditSample
+class CEditAlertsILS : public CPageEditSampleAlerts
 {
 public:
   CEditAlertsILS(
     CNotebookEditSample *pParentPanel, 
     COARsample *pSample, 
     bool bReadOnly = false) :
-      CPageEditSample(
+      CPageEditSampleAlerts(
         pParentPanel,
         pSample->GetFile(),
         CLabReview::REVIEW_ILS,
         bReadOnly),
           m_pSample(pSample)
-  {}
+  {
+    _SETUP_LABELS(wxT("ILS"));
+  }
   virtual bool NeedsAcceptance();
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
   virtual void UpdateNotes();
+  virtual const COARnotes *GetNotes();
   virtual wxWindow *CreatePanel();
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
+  virtual void SetupPageLabel(wxString *ps);
 private:
   COARsample *m_pSample;
 };
 
 
-class CEditAlertsChannel : public CPageEditSample
+class CEditAlertsChannel : public CPageEditSampleAlerts
 {
 public:
   CEditAlertsChannel(    
@@ -190,33 +241,38 @@ public:
     COARsample *pSample, 
     const map<int,wxString> *pmapChannelNames,
     bool bReadOnly = false) :
-      CPageEditSample(
+      CPageEditSampleAlerts(
         pParentPanel,
         pSample->GetFile(),
         CLabReview::REVIEW_CHANNEL,
         bReadOnly),
           m_pSample(pSample),
           m_pmapChannelNames(pmapChannelNames)
-  {}
+  {
+    _SETUP_LABELS(wxT("Channel"));
+    m_sLabel = S_CHANNEL COAR_NOTICE_DISPLAY_CAP;
+  }
   virtual bool NeedsAcceptance();
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
   virtual void UpdateNotes();
+  virtual const COARnotes *GetNotes();
   virtual wxWindow *CreatePanel();
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
+  virtual void SetupPageLabel(wxString *ps);
 private:
   COARsample *m_pSample;
   const map<int,wxString> *m_pmapChannelNames;
 };
 
 
-class CEditLocus : public CPageEditSample
+class CPageEditLocus : public CPageEditSample
 {
 public:
-  CEditLocus(
+  CPageEditLocus(
     CNotebookEditSample *pParentPanel, 
     COARsample *pSample, 
     const wxString &sLocusName,
@@ -240,12 +296,18 @@ public:
   virtual bool NeedsReview();
   virtual bool HasHistory();
   virtual void DoApply();
+  virtual bool TransferDataToPage();
+  virtual const wxString &GetPageLabel()
+  {
+    return m_sLocusName;
+  }
 protected:
   virtual void UpdateNotes();
   virtual wxWindow *CreatePanel();
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
+  virtual void SetupPageLabel(wxString *ps);
 private:
   wxString m_sLocusName;
   int m_nChannel;

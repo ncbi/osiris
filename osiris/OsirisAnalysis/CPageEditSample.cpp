@@ -33,13 +33,9 @@
 #include "CPageEditSample.h"
 #include "CNotebookEditSample.h"
 #include "CPanelLocusDetails.h"
+#include "CLabels.h"
 
-#define S_DIR "Directory "
-#define S_SAMPLE "Sample "
-#define S_ILS "ILS "
-#define S_CHANNEL "Channel "
-#define S_NOTES "Notes"
-#define COAR_NOTICE_DISPLAY_CAP "Notices"
+
 
 //
 // BEGIN CPageEditSample
@@ -56,23 +52,6 @@ wxWindow *CPageEditSample::GetParentWindow()
 const wxString &CPageEditSample::GetUserID()
 {
   return m_pParent->GetUserID();
-}
-bool CPageEditSample::NeedsApply()
-{
-  // appropriate only if m_pPanel is CPanelSampleAlertDetails
-  bool bRtn = false;
-  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
-  if(pPanel == NULL)
-  {}
-  else if(pPanel->IsNotesModified())
-  {
-    bRtn = true;
-  }
-  else
-  { 
-    bRtn = m_Msg.IsModified(*m_pFile->GetMessages());
-  }
-  return bRtn;
 }
 bool CPageEditSample::DoAccept()
 {
@@ -102,19 +81,6 @@ bool CPageEditSample::DoReview()
   }
   return bRtn;
 }
-const wxString &CPageEditSample::GetNotes()
-{
-  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
-  if(pPanel == NULL)
-  {
-    m_sNotes.Empty();
-  }
-  else
-  {
-    m_sNotes = pPanel->GetNewNotesValue();
-  }
-  return m_sNotes;
-}
 wxWindow *CPageEditSample::GetPanel()
 {
   if(m_pPanel == NULL)
@@ -123,22 +89,11 @@ wxWindow *CPageEditSample::GetPanel()
   }
   return m_pPanel;
 }
-void CPageEditSample::DoApply()
-{
-  // updates notes and notices, needs to be overridden for locus
-  if(NeedsApply())
-  {
-    wxDateTime t;
-    t.SetToCurrent();
-    m_pFile->UpdateMessages(m_Msg,t);
-    DoReview();
-    UpdateNotes();
-    m_pFile->SetIsModified(true);
-  }
-}
+
+
 //
 //  END CPageEditSample
-//  BEGIN CEditAlertsDir, CEditAlertsSample, CEditAlertsILS, CEditAlertsChannel, CEditLocus
+//  BEGIN CEditAlertsDir, CEditAlertsSample, CEditAlertsILS, CEditAlertsChannel, CPageEditLocus
 //
 //  BEGIN CreatePanel
 //
@@ -149,7 +104,7 @@ wxWindow *CEditAlertsDir::CreatePanel()
   CPanelSampleAlertDetails *pPanel = new CPanelSampleAlertDetails(
     GetParentWindow(),
     &m_Msg,
-    wxString(S_DIR COAR_NOTICE_DISPLAY_CAP),
+    GetLabelPrefix(),
     CGridAlerts::TYPE_LOCUS,
     true,
     IsReadOnly());
@@ -162,7 +117,7 @@ wxWindow *CEditAlertsSample::CreatePanel()
   CPanelSampleAlertDetails *pPanel = new CPanelSampleAlertDetails(
       GetParentWindow(),
       &m_Msg,
-      wxString(S_SAMPLE COAR_NOTICE_DISPLAY_CAP),
+      GetLabelPrefix(),
       0,
       true,
       IsReadOnly());
@@ -174,7 +129,7 @@ wxWindow *CEditAlertsILS::CreatePanel()
   CPanelSampleAlertDetails *pPanel = new CPanelSampleAlertDetails(
       GetParentWindow(),
       &m_Msg,
-      wxString(S_ILS COAR_NOTICE_DISPLAY_CAP),
+      GetLabelPrefix(),
       0,
       true,
       IsReadOnly());
@@ -186,14 +141,14 @@ wxWindow *CEditAlertsChannel::CreatePanel()
   CPanelSampleAlertDetails *pPanel = new CPanelSampleAlertDetails(
       GetParentWindow(),
       &m_Msg,
-      wxString(S_CHANNEL COAR_NOTICE_DISPLAY_CAP),
+      GetLabelPrefix(),
       CGridAlerts::TYPE_CHANNEL,
       true,
       IsReadOnly());
   pPanel->SetupChannelColumn(m_pSample,m_pmapChannelNames);
   return pPanel;
 }
-wxWindow *CEditLocus::CreatePanel()
+wxWindow *CPageEditLocus::CreatePanel()
 {
   CPanelLocusDetails *pRtn = new CPanelLocusDetails(
     m_pSample, m_nChannel,
@@ -285,21 +240,21 @@ bool CEditAlertsChannel::HasHistory()
   return bRtn;
 }
 //
-//  CEditLocus
+//  CPageEditLocus
 //
-bool CEditLocus::NeedsAcceptance()
+bool CPageEditLocus::NeedsAcceptance()
 {
   bool bRtn = m_pLocus->NeedAcceptance(m_nAcceptanceCount,NULL) &&
     !NeedsApply();
   return bRtn;
 }
-bool CEditLocus::NeedsReview()
+bool CPageEditLocus::NeedsReview()
 {
   bool bRtn = m_pLocus->NeedReview(m_nReviewerCount,NULL) &&
     !NeedsApply();
   return bRtn;
 }
-bool CEditLocus::HasHistory()
+bool CPageEditLocus::HasHistory()
 {
   bool bRtn = m_pLocus->HasBeenEdited(m_pFile->GetMessages(),m_pSample,m_nChannel);
   return bRtn;
@@ -323,7 +278,7 @@ IAppendReview *CEditAlertsChannel::CreateReviewReceiver()
 {
   return new COARsampleChannelAppendReview(m_pSample);
 }
-IAppendReview *CEditLocus::CreateReviewReceiver()
+IAppendReview *CPageEditLocus::CreateReviewReceiver()
 {
   return new CAppendReviewLocus(m_pLocus);
 }
@@ -347,7 +302,7 @@ IAppendReview *CEditAlertsChannel::CreateAcceptReceiver()
 {
   return new COARsampleChannelAppendAccept(m_pSample);
 }
-IAppendReview *CEditLocus::CreateAcceptReceiver()
+IAppendReview *CPageEditLocus::CreateAcceptReceiver()
 {
   return new CAppendAcceptanceLocus(m_pLocus);
 }
@@ -356,23 +311,56 @@ IAppendReview *CEditLocus::CreateAcceptReceiver()
 
 void CEditAlertsDir::UpdateNotes()
 {
-  m_pFile->AppendNotesDir(GetNotes(),GetUserID());
+  m_pFile->AppendNotesDir(GetNewNotes(),GetUserID());
 }
 void CEditAlertsSample::UpdateNotes()
 {
-  m_pSample->AppendNotesSample(GetNotes(),GetUserID());
+  m_pSample->AppendNotesSample(GetNewNotes(),GetUserID());
 }
 void CEditAlertsILS::UpdateNotes()
 {
-  m_pSample->AppendNotesILS(GetNotes(), GetUserID());
+  m_pSample->AppendNotesILS(GetNewNotes(), GetUserID());
 }
 void CEditAlertsChannel::UpdateNotes()
 {
-  m_pSample->AppendNotesChannel(GetNotes(),GetUserID());
+  m_pSample->AppendNotesChannel(GetNewNotes(),GetUserID());
 }
-void CEditLocus::UpdateNotes() 
-{ }
 //  END UpdateNotes
+//  BEGIN GetNotes
+const COARnotes *CEditAlertsDir::GetNotes()
+{
+  return m_pFile->GetNotesDir();
+}
+const COARnotes *CEditAlertsSample::GetNotes()
+{
+  return m_pSample->GetNotesSample();
+}
+const COARnotes *CEditAlertsILS::GetNotes()
+{
+  return m_pSample->GetNotesILS();
+}
+const COARnotes *CEditAlertsChannel::GetNotes()
+{
+  return m_pSample->GetNotesChannel();
+}
+//  END GetNotes
+//  BEGIN SetupPageLabel
+void CEditAlertsDir::SetupPageLabel(wxString *ps)
+{
+}
+void CEditAlertsDir::SetupPageLabel(wxString *ps)
+{
+}
+void CEditAlertsDir::SetupPageLabel(wxString *ps)
+{
+}
+void CEditAlertsDir::SetupPageLabel(wxString *ps)
+{
+}
+void CEditAlertsDir::SetupPageLabel(wxString *ps)
+{
+}
+//  END SetupPageLabel
 //  BEGIN GetReviewAcceptance() - notes to display for past review and acceptance
 
 wxString CEditAlertsDir::GetReviewAcceptance()
@@ -391,18 +379,88 @@ wxString CEditAlertsChannel::GetReviewAcceptance()
 {
   return m_pSample->FormatChannelReviewAcceptance(NULL);
 }
-wxString CEditLocus::GetReviewAcceptance()
+//  END CEditAlertsDir, CEditAlertsSample, CEditAlertsILS, CEditAlertsChannel
+
+const wxString &CPageEditSampleAlerts::GetNewNotes()
 {
-  return wxEmptyString;
+  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  if(pPanel == NULL)
+  {
+    m_sNotes.Empty();
+  }
+  else
+  {
+    m_sNotes = pPanel->GetNewNotesValue();
+  }
+  return m_sNotes;
 }
 
-bool CEditLocus::NeedsApply()
+
+//  CPageEditSampleAlerts, CPageLocus
+//  NeedsApply, DoApply, TransferDataToPage
+
+
+bool CPageEditSampleAlerts::NeedsApply()
+{
+  // appropriate only if m_pPanel is CPanelSampleAlertDetails
+  bool bRtn = false;
+  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  if(pPanel == NULL)
+  {}
+  else if(pPanel->IsNotesModified())
+  {
+    bRtn = true;
+  }
+  else
+  { 
+    bRtn = m_Msg.IsModified(*m_pFile->GetMessages());
+  }
+  return bRtn;
+}
+
+void CPageEditSampleAlerts::DoApply()
+{
+  // updates notes and notices, needs to be overridden for locus
+  if(NeedsApply())
+  {
+    wxDateTime t;
+    t.SetToCurrent();
+    m_pFile->UpdateMessages(m_Msg,t);
+    DoReview();
+    UpdateNotes();
+    m_pFile->SetIsModified(true);
+  }
+}
+  // appropriate only if m_pPanel is CPanelSampleAlertDetails
+bool CPageEditSampleAlerts::TransferDataToPage()
+{
+  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  bool bRtn = (pPanel != NULL);
+  if(bRtn)
+  {
+    wxString s = GetReviewAcceptance();
+    const wxString &sNotes(GetNotesText());
+    if(!sNotes.IsEmpty())
+    {
+      if(!s.IsEmpty())
+      {
+        s.Append(CLabels::NOTES_AFTER_REVIEW);
+      }
+      s.Append(sNotes);
+    }
+    pPanel->SetNotesText(s);
+  }
+  return bRtn;
+}
+
+
+bool CPageEditLocus::NeedsApply()
 {
   CPanelLocusDetails *pWindow = wxDynamicCast(GetPanel(),CPanelLocusDetails);
   bool bRtn = pWindow->IsModified();
   return bRtn;
 }
-void CEditLocus::DoApply()
+void CPageEditLocus::DoApply()
 {
   CPanelLocusDetails *pWindow = wxDynamicCast(GetPanel(),CPanelLocusDetails);
   if((pWindow != NULL) && pWindow->IsModified())
@@ -412,5 +470,8 @@ void CEditLocus::DoApply()
     m_pFile->SetIsModified(true);
   }
 }
-//  END CEditAlertsDir, CEditAlertsSample, CEditAlertsILS, CEditAlertsChannel
+bool CPageEditLocus::TransferDataToPage()
+{
+  return GetPanel()->TransferDataToWindow();
+}
 

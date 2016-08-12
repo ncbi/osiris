@@ -53,6 +53,7 @@ public:
   virtual void DoApply() = 0;
   virtual bool DoReview() = 0;
   virtual bool DoAccept() = 0;
+  virtual bool TransferDataToPage() = 0;
 protected:
   /* static void _EnableButton(wxButton *pButton, bool bEnable)
   { if(pButton != NULL) { pButton->Enable(bEnable); }
