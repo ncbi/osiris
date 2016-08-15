@@ -62,17 +62,22 @@ public:
   {
     return m_bReadOnly;
   }
-  virtual operator wxWindow *()
-  {
-    return GetPanel();
-  }
+//  virtual operator wxWindow *()
+//  {
+//    return GetPanel();
+//  }
   virtual bool DoReview();
   virtual bool DoAccept();
   wxWindow *GetParentWindow();
   virtual const wxString &GetPageLabel() = 0;
+  virtual const wxString &GetNewNotes() = 0;
+  bool IsNewNotesEmpty()
+  {
+    return GetNewNotes().IsEmpty();
+  }
+  virtual wxWindow *GetPanel();
 protected:
   const wxString &GetUserID();
-  virtual wxWindow *GetPanel();
 
   virtual wxWindow *CreatePanel() = 0;
   virtual IAppendReview *CreateReviewReceiver() = 0;
@@ -113,20 +118,20 @@ public:
   {
     return m_sLabel;
   }
+  virtual const wxString &GetNewNotes();
 protected:
   const wxString &GetLabelPrefix()
   {
-    return m_sShortLabel;
+    return m_sLabelShort;
   }
   void _SETUP_LABELS(const wxChar *ps)
   {
-    m_sShortLabel = ps;
-    m_sShortLabel.Append(wxT(" "));
-    m_sLabel = m_sShortLabel;
+    m_sLabelShort = ps;
+    m_sLabelShort.Append(wxT(" "));
+    m_sLabel = m_sLabelShort;
     m_sLabel.Append("Notices");
   }
   virtual wxString GetReviewAcceptance() = 0;
-  virtual const wxString &GetNewNotes();
   virtual void UpdateNotes() = 0;
   virtual const COARnotes *GetNotes() = 0;
   const wxString &GetNotesText()
@@ -166,7 +171,6 @@ protected:
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
-  virtual void SetupPageLabel(wxString *ps);
 };
 
 
@@ -227,7 +231,6 @@ protected:
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
-  virtual void SetupPageLabel(wxString *ps);
 private:
   COARsample *m_pSample;
 };
@@ -250,7 +253,6 @@ public:
           m_pmapChannelNames(pmapChannelNames)
   {
     _SETUP_LABELS(wxT("Channel"));
-    m_sLabel = S_CHANNEL COAR_NOTICE_DISPLAY_CAP;
   }
   virtual bool NeedsAcceptance();
   virtual bool NeedsReview();
@@ -262,7 +264,6 @@ protected:
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
-  virtual void SetupPageLabel(wxString *ps);
 private:
   COARsample *m_pSample;
   const map<int,wxString> *m_pmapChannelNames;
@@ -301,15 +302,14 @@ public:
   {
     return m_sLocusName;
   }
+  virtual const wxString &GetNewNotes();
 protected:
-  virtual void UpdateNotes();
   virtual wxWindow *CreatePanel();
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
-  virtual wxString GetReviewAcceptance();
-  virtual void SetupPageLabel(wxString *ps);
 private:
   wxString m_sLocusName;
+  wxString m_sNotes;
   int m_nChannel;
   COARsample *m_pSample;
   COARlocus *m_pLocus;

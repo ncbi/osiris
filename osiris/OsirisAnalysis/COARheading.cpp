@@ -31,7 +31,7 @@
 
 void COARchannel::RegisterAll(bool)
 {
-  RegisterWxString("ChannelName",&m_sChannelName);
+  RegisterWxStringNotEmpty("ChannelName",&m_sChannelName);
   RegisterInt("ChannelNr",&m_nChannelNr);
   Register(
     COARfile::g_sLocusName,

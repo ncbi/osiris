@@ -45,8 +45,6 @@
 
 class CPanelUserID;
 
-#define PANEL_LOCUS_NOTEBOOK 0
-
 class CPanelLocusDetails : public wxPanel, public ISetDateTime
 {
 public:
@@ -82,23 +80,19 @@ public:
   bool IsNotesEmpty();
   bool IsAlertsModified();
   bool IsLocusModified();
-
+  const wxString GetNewNotesValue()
+  {
+    return m_pTextNewNotes->GetValue();
+  }
 
   wxSplitterWindow *GetSplitterWindow()
   {
     return m_pSplitter;
   }
-#if PANEL_LOCUS_NOTEBOOK
-  wxNotebook *GetNotebookWindow()
-  {
-    return m_pNotebook;
-  }
-#else
   wxSplitterWindow *GetLocusSplitterWindow()
   {
     return m_pSplitterLocus;
   }
-#endif
   const COARmessages &GetMessages() const
   {
     return m_MsgEdit;
@@ -129,11 +123,7 @@ private:
   CHistoryTime m_HistTime;
   COARlocus m_LocusEdit;
   COARmessages m_MsgEdit;
-#if PANEL_LOCUS_NOTEBOOK
-  wxNotebook *m_pNotebook;
-#else
   wxSplitterWindow *m_pSplitterLocus;
-#endif
   wxSplitterWindow *m_pSplitter;
   wxTextCtrl *m_pTextNewNotes;
   wxTextCtrl *m_pTextNotes;

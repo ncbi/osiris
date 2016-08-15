@@ -45,7 +45,7 @@ class IPageEditSample
 public:
   virtual ~IPageEditSample() {};
   /* virtual void OnChange(wxCommandEvent &e) = 0; */
-  virtual operator wxWindow *() = 0;
+  //virtual operator wxWindow *() = 0;
   virtual bool NeedsApply() = 0;
   virtual bool NeedsAcceptance() = 0;
   virtual bool NeedsReview() = 0;

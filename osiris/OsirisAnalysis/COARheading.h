@@ -60,10 +60,12 @@ public:
   {
     return m_vsLocusName.size();
   }
+  /*  failed on 8/12/2016
   const wxString &GetChannelName() const
   {
     return m_sChannelName;
   }
+  */
   int GetChannelNr() const
   {
     return m_nChannelNr;
@@ -204,6 +206,10 @@ public:
   CLabSettings &GetLabSettings()
   {
     return m_LabSettings;
+  }
+  const wxString &GetMarkerSet() const
+  {
+    return m_sMarkerSet;
   }
 private:
   wxString m_sFileName;

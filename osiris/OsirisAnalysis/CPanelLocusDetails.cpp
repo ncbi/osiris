@@ -104,17 +104,9 @@ void CPanelLocusDetails::_InitCommon(
     wxDefaultPosition,wxDefaultSize, nStyle);
   pPanelLocus = new wxPanel(m_pSplitter,wxID_ANY);
   pPanelNotes = _CreateNotesPanel();
-#if PANEL_LOCUS_NOTEBOOK
-  m_pNotebook = new wxNotebook(
-    pPanelLocus,wxID_ANY,
-    wxDefaultPosition, wxDefaultSize,
-    wxNB_TOP);
-  pWindowLocus = m_pNotebook;
-#else
   m_pSplitterLocus = new wxSplitterWindow(pPanelLocus,wxID_ANY,
     wxDefaultPosition, wxDefaultSize, ID_SPLITTER_STYLE);
   pWindowLocus = m_pSplitterLocus;
-#endif
 
   if(nChannel < 0)
   {
@@ -135,23 +127,18 @@ void CPanelLocusDetails::_InitCommon(
   m_pGridAlerts = new CGridAlerts(
     &m_MsgEdit,pWindowLocus,wxID_ANY,0,m_bReadOnly);
 
-#if PANEL_LOCUS_NOTEBOOK
-  m_pNotebook->AddPage(m_pGridLocus,"Alleles",true);
-  m_pNotebook->AddPage(
-    m_pGridAlerts,COAR_NOTICE_DISPLAY_CAP,false);
-#endif
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(pWindowLocus,1, wxEXPAND | wxALL,   
-    PANEL_LOCUS_NOTEBOOK ? ID_BORDER : 0);
+    0);
   pPanelLocus->SetSizer(pSizer);
 
+#if 0
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(m_pSplitter,1, wxEXPAND);
   SetSizer(pSizer);
   pSizer->Layout();
+#endif
 
-
-#if !PANEL_LOCUS_NOTEBOOK
   double dGravity = 0.5;
   if(bSplitLocusHorizontal)
   {
@@ -164,7 +151,6 @@ void CPanelLocusDetails::_InitCommon(
   }
   m_pSplitterLocus->SetSashGravity(dGravity);
   m_pSplitterLocus->SetMinimumPaneSize(1);
-#endif
   if(bSplitHorizontal)
   {
     m_pSplitter->SplitHorizontally(pPanelLocus,pPanelNotes,440);
@@ -172,10 +158,15 @@ void CPanelLocusDetails::_InitCommon(
   else
   {
     m_pSplitter->SplitVertically(pPanelLocus,pPanelNotes,
-      PANEL_LOCUS_NOTEBOOK ? 0 : -250);
+      -250);
   }
   m_pSplitter->SetSashGravity(1.0);
   m_pSplitter->SetMinimumPaneSize(1);
+
+  pSizer = new wxBoxSizer(wxVERTICAL);
+  pSizer->Add(m_pSplitter,1, wxEXPAND);
+  SetSizer(pSizer);
+  pSizer->Layout();
 }
 wxPanel *CPanelLocusDetails::_CreateNotesPanel()
 {

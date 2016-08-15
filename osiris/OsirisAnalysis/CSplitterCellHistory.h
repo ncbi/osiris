@@ -145,9 +145,7 @@ private:
   void _OnScroll(wxCommandEvent &e);
   nwxSyncSplitter m_syncSplitter;
   nwxSyncNotebook m_syncNotebook;
-#if !PANEL_LOCUS_NOTEBOOK
   nwxSyncSplitter m_syncSplitter2;
-#endif
   vector<nwxSyncScrollwin *> m_apSyncScroll;
   ISetDateTime *m_pDateTime;
 

@@ -42,7 +42,7 @@
 #include "ISetDateTime.h"
 #include "CPanelSampleAlertDetails.h"
 
-class IPageEditSample;
+class CPageEditSample;
 class CPanelUserID;
 class CNotebookEditSample;
 
@@ -60,12 +60,12 @@ typedef enum
 #endif
 
 
-class CNotebookEditSample : public wxPanel, public ISetDateTime
+class CNotebookEditSample : public wxPanel //, public ISetDateTime
 {
 public:
   CNotebookEditSample(
-    const COARfile *pFile, // dont' need pFile, get it from pSample
-    const COARsample *pSample, 
+    COARfile *pFile, // dont' need pFile, get it from pSample
+    COARsample *pSample, 
     wxWindow *parent,
     wxWindowID id = wxID_ANY,
     const map<int,wxString> *pmapChannelNames = NULL
@@ -73,9 +73,7 @@ public:
   virtual ~CNotebookEditSample();
   virtual bool TransferDataToWindow();
   virtual bool Validate();
-  bool IsModified(int n);
   bool IsModified();
-  bool IsNotesModified(int n);
 
   void Select(int n)
   {
@@ -86,6 +84,17 @@ public:
   {
     return m_pNotebook->GetSelection();
   }
+  wxTreebook *GetNotebookWindow()
+  {
+    return m_pNotebook;
+  }
+  /*
+  virtual bool SetDateTime(const wxDateTime *pTime);
+  virtual const wxDateTime *GetDateTime()
+  {
+    return m_HistTime.GetDateTime();
+  }
+
   CPanelSampleAlertDetails **GetSplitterWindows()
   {
     return &m_pSplitter[0];
@@ -93,15 +102,6 @@ public:
   CPanelSampleAlertDetails *GetSplitterWindow(int n)
   {
     return m_pSplitter[n];
-  }
-  wxTreebook *GetNotebookWindow()
-  {
-    return m_pNotebook;
-  }
-  virtual bool SetDateTime(const wxDateTime *pTime);
-  virtual const wxDateTime *GetDateTime()
-  {
-    return m_HistTime.GetDateTime();
   }
   const COARmessages &GetDirMessages()
   {
@@ -142,64 +142,33 @@ public:
   {
     return (m_pSplitter[n] != NULL);
   }
+  */
   const wxString &GetCurrentLocus();
   const wxString &GetUserID();
   void RepaintData();
   void InitiateRepaintData();
 private:
   bool _ProcessEvent();
-  const COARnotes *_GetNotes(int n, const wxDateTime *pdt = NULL);
-  wxString _GetReviewAcceptance(int n, const wxDateTime *pdt = NULL);
-  const wxString &_GetNotesText(int n, const wxDateTime *pdt = NULL)
-  {
-    return COARnotes::GetText(_GetNotes(n,pdt));
-  }
-  wxString _GetNewNotes(int n)
-  {
-    wxString sRtn;
-    CPanelSampleAlertDetails *psd = m_pSplitter[n];
-
-    if(psd != NULL)
-    {
-      sRtn = psd->GetNewNotesValue();
-    }
-    return sRtn;
-  }
-
+  /* wxString _GetReviewAcceptance(int n, const wxDateTime *pdt = NULL);
+  */
   std::vector<const wxString> m_asLocus;
+  std::vector<CPageEditSample *> m_vpPanels;
   wxString m_sUserID;
+  /*
   CHistoryTime m_HistTime;
   COARmessages m_MsgDir;
   COARmessages m_MsgSample;
   COARmessages m_MsgILS;
   COARmessages m_MsgChannel;
-
-  const COARsample *m_pSample;
-  const COARfile *m_pFile;
+  */
+  COARsample *m_pSample;
+  COARfile *m_pFile;
 
   wxTreebook *m_pNotebook;
-  vector<IPageEditSample *> m_vpPanels;
-  CPanelSampleAlertDetails *m_pSplitter[SA_WINDOW_COUNT];
+//  CPanelSampleAlertDetails *m_pSplitter[SA_WINDOW_COUNT];
   bool m_bReadOnly;
 
 
-  static const wxString g_sLabelDirNotices;
-  static const wxString g_sLabelSampleNotices;
-  static const wxString g_sLabelILSNotices;
-  static const wxString g_sLabelChannelNotices;
-  static const wxString * const g_psLabels[SA_WINDOW_COUNT];
-  static const wxString * const g_psNotesLabels[SA_WINDOW_COUNT];
-public:
-  static const wxString g_sLabelDir;
-  static const wxString g_sLabelSample;
-  static const wxString g_sLabelILS;
-  static const wxString g_sLabelChannel;
-
-  static const wxString &GetLabel(int ndx)
-  {
-    const wxString *psRtn = g_psLabels[ndx];
-    return *psRtn;
-  }
 public:
   void OnCellChange(wxGridEvent &e);
   void OnNotesChange(wxCommandEvent &e);

@@ -489,13 +489,8 @@ void CSplitterCellHistory::_BuildWindow(
   m_syncSplitter.Add(pLocusPanelTop->GetSplitterWindow());
   m_syncSplitter.Add(pLocusPanelBottom->GetSplitterWindow());
 
-#if PANEL_LOCUS_NOTEBOOK
-  m_syncNotebook.Add(pLocusPanelTop->GetNotebookWindow());
-  m_syncNotebook.Add(pLocusPanelBottom->GetNotebookWindow());
-#else
   m_syncSplitter2.Add(pLocusPanelTop->GetLocusSplitterWindow());
   m_syncSplitter2.Add(pLocusPanelBottom->GetLocusSplitterWindow());
-#endif
 
   nwxSyncScrollwin *pSync;
   m_apSyncScroll.reserve(2);
@@ -596,9 +591,7 @@ void CSplitterCellHistory::OnSplitterChange(wxSplitterEvent &e)
   if(p != this)
   {
     m_syncSplitter.Sync(p);
-#if !PANEL_LOCUS_NOTEBOOK
     m_syncSplitter2.Sync(p);
-#endif
   }
 }
 void CSplitterCellHistory::OnSplitterChanging(wxSplitterEvent &e)
@@ -610,9 +603,7 @@ void CSplitterCellHistory::OnSplitterChanging(wxSplitterEvent &e)
   if(p != this)
   {
     m_syncSplitter.SetIsChanging(p);
-#if !PANEL_LOCUS_NOTEBOOK
     m_syncSplitter2.SetIsChanging(p);
-#endif
   }
 }
 

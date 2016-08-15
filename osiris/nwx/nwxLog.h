@@ -57,4 +57,21 @@ public:
   }
 };
 
+#ifdef __WXDEBUG__
+
+#ifdef WIN32
+#define __func__ __FUNCTION__
+#endif
+
+#define nwxLog_I_WAS_HERE \
+  nwxLog::LogMessageV(wxT("I WAS HERE: %ls, line %d, %ls"),wxString(__FILE__).wc_str(),__LINE__,wxString(__func__).wc_str())
+
+//  CNotebookEditSample
+
+#else
+
+#define nwxLog_I_WAS_HERE
+
+#endif
+
 #endif

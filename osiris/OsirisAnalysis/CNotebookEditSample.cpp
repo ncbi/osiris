@@ -28,6 +28,7 @@
 *
 */
 #include "mainApp.h"
+#include "CKitColors.h"
 #include "CNotebookEditSample.h"
 #include <wx/stattext.h>
 #include <wx/sizer.h>
@@ -38,53 +39,23 @@
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
 #include "nwx/nwxString.h"
+#include "nwx/vectorptr.h"
+#include "nwx/nwxLog.h"
 #include "CPanelUserID.h"
 #include "CPanelLocusDetails.h"
 #include "CLabels.h"
 #include "CFrameSample.h"
-
-#define S_DIR "Directory "
-#define S_SAMPLE "Sample "
-#define S_ILS "ILS "
-#define S_CHANNEL "Channel "
-#define S_NOTES "Notes"
-#define COAR_NOTICE_DISPLAY_CAP "Notices"
+#include "CPageEditSample.h"
 
 
-
-//  CNotebookEditSample
-
-const wxString CNotebookEditSample::g_sLabelDirNotices(S_DIR COAR_NOTICE_DISPLAY_CAP);
-const wxString CNotebookEditSample::g_sLabelSampleNotices(S_SAMPLE COAR_NOTICE_DISPLAY_CAP);
-const wxString CNotebookEditSample::g_sLabelILSNotices(S_ILS COAR_NOTICE_DISPLAY_CAP);
-const wxString CNotebookEditSample::g_sLabelChannelNotices(S_CHANNEL COAR_NOTICE_DISPLAY_CAP);
-
-const wxString CNotebookEditSample::g_sLabelDir(S_DIR);
-const wxString CNotebookEditSample::g_sLabelSample(S_SAMPLE);
-const wxString CNotebookEditSample::g_sLabelILS(S_ILS);
-const wxString CNotebookEditSample::g_sLabelChannel(S_CHANNEL);
-
-const wxString * const CNotebookEditSample::g_psLabels[SA_WINDOW_COUNT] =
+CNotebookEditSample::~CNotebookEditSample() 
 {
-  &CNotebookEditSample::g_sLabelDirNotices,
-  &CNotebookEditSample::g_sLabelSampleNotices,
-  &CNotebookEditSample::g_sLabelILSNotices,
-  &CNotebookEditSample::g_sLabelChannelNotices
-};
-
-const wxString * const CNotebookEditSample::g_psNotesLabels[SA_WINDOW_COUNT] =
-{
-  &CNotebookEditSample::g_sLabelDir,
-  &CNotebookEditSample::g_sLabelSample,
-  &CNotebookEditSample::g_sLabelILS,
-  &CNotebookEditSample::g_sLabelChannel
-};
-
-CNotebookEditSample::~CNotebookEditSample() {;}
+  vectorptr<CPageEditSample>::cleanup(&m_vpPanels);
+}
 
 CNotebookEditSample::CNotebookEditSample(
-  const COARfile *pFile,
-  const COARsample *pSample,
+  COARfile *pFile,
+  COARsample *pSample,
   wxWindow *parent,
   wxWindowID id,
   const map<int,wxString> *pmapChannelNames) :
@@ -94,91 +65,102 @@ CNotebookEditSample::CNotebookEditSample(
     m_bReadOnly(false)
 {
   vector<wxString> vsLocus;
-  vector<int> vn;
   // set up notes
-  COARmessages *pMsgEdit[] = 
-  {
-    &m_MsgDir,
-    &m_MsgSample,
-    &m_MsgILS,
-    &m_MsgChannel
-  };
-
+  nwxLog_I_WAS_HERE;
   //  set up sample alert details
 
   CPanelSampleAlertDetails *pSplitter;
   wxBoxSizer *pSizer;
   int i;
 
-  pSample->AppendChannelAlerts(&vn);
-  pFile->GetDirectoryAlerts()->BuildMessageList(&m_MsgDir,&vsLocus,*pFile->GetMessages());
-  m_MsgSample.CopyOnly(*pFile->GetMessages(),pSample->GetSampleAlerts()->Get());
-  m_MsgILS.CopyOnly(*pFile->GetMessages(),pSample->GetILSAlerts()->Get());
-  m_MsgChannel.CopyOnly(*pFile->GetMessages(),&vn);
-
   m_pNotebook = new wxTreebook(
     this,wxID_ANY,
     wxDefaultPosition, wxDefaultSize,
     wxNB_LEFT);
-  int nType;
+  CPageEditSample *pPage;
+  m_vpPanels.reserve(30);
   for(i = 0; i < SA_WINDOW_COUNT; i++)
   {
     switch(i)
     {
-    case SA_NDX_CHANNEL:
-      nType = CGridAlerts::TYPE_CHANNEL;
-      break;
     case SA_NDX_DIR:
-      nType = CGridAlerts::TYPE_LOCUS;
+      pPage = new CEditAlertsDir(this,pFile);
+      break;
+    case SA_NDX_SAMPLE:
+      pPage = new CEditAlertsSample(this,pSample);
+      break;
+    case SA_NDX_ILS:
+      pPage = new CEditAlertsILS(this,pSample);
+      break;
+    case SA_NDX_CHANNEL:
+      pPage = new CEditAlertsChannel(this,pSample,pmapChannelNames);
       break;
     default:
-      nType = 0;
-      break;
+      pPage = NULL;
     }
-    pSplitter = new CPanelSampleAlertDetails(
-      m_pNotebook,
-      pMsgEdit[i],
-      *g_psNotesLabels[i],
-      nType,
-      true,
-      false);
-
-    m_pSplitter[i] = pSplitter;
-    m_pNotebook->AddPage(pSplitter,*g_psLabels[i],!i);
+    m_vpPanels.push_back(pPage);
+    wxWindow *pWin = pPage->GetPanel();
+    pSplitter = wxDynamicCast(pWin,CPanelSampleAlertDetails);
+    if(pSplitter == NULL)
+    {
+      wxString sErr =
+        wxString::Format("Cannot create page for type %d",i);
+      wxASSERT_MSG(0, sErr);
+    }
+    m_pNotebook->AddPage(pSplitter,pPage->GetPageLabel(),!i);
   }
   
-  if((pSplitter = m_pSplitter[SA_NDX_CHANNEL]) != NULL)
-  {
-    pSplitter->SetupChannelColumn(
-      pSample,pmapChannelNames);
-  }
-  if((pSplitter = m_pSplitter[SA_NDX_DIR]) != NULL)
-  {
-    pSplitter->SetupLocusColumn(vsLocus);
-  }
-
   //****************************************************************
   // done with sample alert details, now set up loci
   //****************************************************************
+  const wxString &sKitName = m_pFile->GetKitName();
+  CKitColors *pKitColors = mainApp::GetKitColors();
+  const CSingleKitColors *pSingleKit = pKitColors->GetKitColors(sKitName);
+  const CChannelColors *pCC;
+
+
   size_t nChannelCount = m_pFile->GetChannelCount();
   size_t j,k,nLocusCount;
   const COARchannel *pChannel;
-  const COARlocus *pLocus;
+  vector<size_t> vnExpand;
+  vector<size_t>::iterator itrExpand;
+  vnExpand.reserve(nChannelCount);
   for(k = 1; k <= nChannelCount; ++k)
   {
+    // STOP HERE pChanel->GetChannelName() returns nothing
+    pCC = pSingleKit->GetColorChannel(k);
+    wxString sDyeName = pCC->GetDyeName();
+    bool bEmpty = sDyeName.IsEmpty(); // for test/debug
+    if(bEmpty)
+    {
+      sDyeName.Format("Channel %d",(int) k);
+    }
+    else
+    {
+      sDyeName.Append(wxString::Format(" - %d",(int)k));
+    }
     pChannel = m_pFile->GetChannelByNr(k);
+    m_pNotebook->AddPage(NULL,sDyeName);
+    vnExpand.push_back(m_vpPanels.size());
+    m_vpPanels.push_back(NULL);
+    m_asLocus.push_back(wxEmptyString);
+
     nLocusCount = pChannel->GetLocusCount();
     for(j = 0; j < nLocusCount; ++j)
     {
       const wxString &sLocusName = pChannel->GetLocusName(j);
       m_asLocus.push_back(sLocusName);
-      pLocus = pSample->FindLocus(sLocusName);
-      CPanelLocusDetails *pPanelLocus = new CPanelLocusDetails(
-        pSample, (int) k,
-        pLocus, m_pFile->GetMessages(),
-        m_pNotebook,wxID_ANY,
-        true, true, false);
-      m_pNotebook->AddPage(pPanelLocus,sLocusName,false);
+      pPage = new CPageEditLocus(this,pSample,sLocusName,(int)k);
+      wxWindow *pWin = pPage->GetPanel();
+      CPanelLocusDetails *pPanelLocus = wxDynamicCast(pWin,CPanelLocusDetails);
+      if(pPanelLocus == NULL)
+      {
+        wxString sErr(wxT("Cannot create page for "));
+        sErr.Append(sLocusName);
+        wxASSERT_MSG(0, sErr);
+      }
+      m_pNotebook->AddSubPage(pPanelLocus,sLocusName,false);
+      m_vpPanels.push_back(pPage);
     }
   }
   // layout this
@@ -187,19 +169,10 @@ CNotebookEditSample::CNotebookEditSample(
   pSizer->Add(m_pNotebook,1,wxEXPAND);
   SetSizer(pSizer);
   pSizer->Layout();
-
-#if 0
-  //  split alert editing panels (non locus)
-  // should be
-  for(i = 0; i < SA_WINDOW_COUNT; i++)
+  for(itrExpand = vnExpand.begin(); itrExpand != vnExpand.end(); ++itrExpand)
   {
-    pSplitter = m_pSplitter[i];
-    if(pSplitter != NULL)
-    {
-      pSplitter->Split();
-    }
+    m_pNotebook->ExpandNode(*itrExpand,true);
   }
-#endif
 }
 const wxString &CNotebookEditSample::GetCurrentLocus()
 {
@@ -220,7 +193,6 @@ const wxString &CNotebookEditSample::GetCurrentLocus()
 
 bool CNotebookEditSample::Validate()
 {
-  // NEEDS REWRITE STOP HERE
   bool bRtn = true;
   if(!m_bReadOnly)
   {
@@ -228,12 +200,16 @@ bool CNotebookEditSample::Validate()
     const wxChar *LF(wxS("\n"));
     int nCount = 0;
     int nPage = -1;
-    for(int i = 0; i < SA_WINDOW_COUNT; i++)
+    std::vector<CPageEditSample *>::iterator itr;
+    CPageEditSample *pPage;
+    int i = 0;
+    for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
     {
-      if(IsAlertsModified(i) && !IsNotesModified(i))
+      pPage = *itr;
+      if( (pPage != NULL) && pPage->NeedsApply() && pPage->IsNewNotesEmpty() )
       {
         sMessage += "You haven't entered notes for ";
-        sMessage += *g_psLabels[i];
+        sMessage += pPage->GetPageLabel();
         sMessage += LF;
         nCount++;
         if(nPage < 0)
@@ -241,6 +217,7 @@ bool CNotebookEditSample::Validate()
           nPage = i;
         }
       }
+      ++i;
     }
     if(nPage >= 0)
     {
@@ -259,115 +236,19 @@ bool CNotebookEditSample::Validate()
   return bRtn;
 }
 
-const COARnotes *CNotebookEditSample::_GetNotes(
-  int n, const wxDateTime *pdt)
-{
-  const COARnotes *pRtn(NULL);
-  switch(n)
-  {
-    case SA_NDX_SAMPLE:
-      pRtn = m_pSample->GetNotesSample(pdt);
-      break;
-    case SA_NDX_ILS:
-      pRtn = m_pSample->GetNotesILS(pdt);
-      break;
-    case SA_NDX_CHANNEL:
-      pRtn = m_pSample->GetNotesChannel(pdt);
-      break;
-    case SA_NDX_DIR:
-      pRtn = m_pFile->GetNotesDir(pdt);
-      break;
-  }
-  return pRtn;
-}
-wxString CNotebookEditSample::_GetReviewAcceptance(int n, const wxDateTime *pdt)
-{
-  wxString sRtn;
-  switch(n)
-  {
-    case SA_NDX_SAMPLE:
-      sRtn = m_pSample->FormatSampleReviewAcceptance(pdt);
-      break;
-    case SA_NDX_ILS:
-      sRtn = m_pSample->FormatILSReviewAcceptance(pdt);
-      break;
-    case SA_NDX_CHANNEL:
-      sRtn = m_pSample->FormatChannelReviewAcceptance(pdt);
-      break;
-    case SA_NDX_DIR:
-      sRtn = m_pFile->FormatReviewAcceptance(pdt);
-      break;
-  }
-  return sRtn;
-}
 
 bool CNotebookEditSample::TransferDataToWindow()
 {
-// Should not be needed STOP HERE
-  for(int i = 0; i < SA_WINDOW_COUNT; i++)
-  {
-    CPanelSampleAlertDetails *psd = m_pSplitter[i];
-    if(psd != NULL)
-    {
-      wxString s = _GetReviewAcceptance(i,m_HistTime);
-      const wxString &sNotes(_GetNotesText(i,m_HistTime));
-      if(!sNotes.IsEmpty())
-      {
-        if(!s.IsEmpty())
-        {
-          s.Append(CLabels::NOTES_AFTER_REVIEW);
-        }
-        s.Append(sNotes);
-      }
-      psd->SetNotesText(s);
-      psd->SetDateTime(m_HistTime,true);
-    }
-  }
-  // STOP HERE transfer locus data
-  size_t n,nCount = m_pNotebook->GetPageCount();
-  CPanelLocusDetails *pPanel;
-  for(n = (size_t) SA_WINDOW_COUNT; n < nCount; ++n)
-  {
-    pPanel = wxDynamicCast(m_pNotebook->GetPage(n),CPanelLocusDetails);
-    wxASSERT_MSG(pPanel != NULL,"Invalid locus page in CNotebookEditSample");
-    pPanel->SetDateTime(m_HistTime.GetDateTime());
-    pPanel->TransferDataToWindow();
-  }
-  return true;
-}
 
-bool CNotebookEditSample::IsNotesModified(int n)
-{
-  CPanelSampleAlertDetails *psd;
-  bool bRtn =
-    !m_bReadOnly
-    && ((psd = m_pSplitter[n]) != NULL)
-    && psd->IsNotesModified();
-  return bRtn;
-}
-bool CNotebookEditSample::IsAlertsModified(int n)
-{
-  bool bRtn = false;
-  CPanelSampleAlertDetails *psd;
-  if( (!m_bReadOnly) && ((psd = m_pSplitter[n]) != NULL) )
+  std::vector<CPageEditSample *>::iterator itr;
+  CPageEditSample *pPage;
+  bool bRtn = true;
+  for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
   {
-    bRtn = psd->GetMsgEdit()->IsModified(*m_pFile->GetMessages());
-  }
-  return bRtn;
-}
-
-bool CNotebookEditSample::IsModified(int n)
-{
-  bool bRtn = false;
-  if(!m_bReadOnly)
-  {
-    if(IsAlertsModified(n))
+    pPage = *itr;
+    if( (pPage != NULL) && !pPage->TransferDataToPage() )
     {
-      bRtn = true;
-    }
-    else if(IsNotesModified(n))
-    {
-      bRtn = true;
+      bRtn = false;
     }
   }
   return bRtn;
@@ -376,17 +257,20 @@ bool CNotebookEditSample::IsModified(int n)
 bool CNotebookEditSample::IsModified()
 {
   bool bRtn = false;
-  for(int i = 0; i < SA_WINDOW_COUNT; ++i)
+  std::vector<CPageEditSample *>::iterator itr;
+  CPageEditSample *pPage;
+  for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
   {
-    if(IsModified(i))
+    pPage = *itr;
+    if( (pPage != NULL) && pPage->NeedsApply() )
     {
       bRtn = true;
-      i = SA_WINDOW_COUNT; // loop exit
+      break;
     }
   }
   return bRtn;
 }
-
+/*
 
 bool CNotebookEditSample::SetDateTime(const wxDateTime *pTime)
 {
@@ -394,24 +278,14 @@ bool CNotebookEditSample::SetDateTime(const wxDateTime *pTime)
   TransferDataToWindow();
   return bRtn;
 }
+*/
 
 
-
-void CNotebookEditSample::OnNotesChange(wxCommandEvent &e)
+void CNotebookEditSample::OnNotesChange(wxCommandEvent &)
 {
   if(!m_bReadOnly)
   {
-    wxTextCtrl *p = (wxTextCtrl *)e.GetEventObject();
-    CPanelSampleAlertDetails *psd;
-    for(int i = 0; i < SA_WINDOW_COUNT; ++i)
-    {
-      psd = m_pSplitter[i];
-      if( (psd != NULL) && psd->IsNotesCtrl(p) )
-      {
-        _ProcessEvent();
-        i = SA_WINDOW_COUNT;
-      }
-    }
+    _ProcessEvent();
   }
 }
 void CNotebookEditSample::OnCellChange(wxGridEvent &)

@@ -344,23 +344,6 @@ const COARnotes *CEditAlertsChannel::GetNotes()
   return m_pSample->GetNotesChannel();
 }
 //  END GetNotes
-//  BEGIN SetupPageLabel
-void CEditAlertsDir::SetupPageLabel(wxString *ps)
-{
-}
-void CEditAlertsDir::SetupPageLabel(wxString *ps)
-{
-}
-void CEditAlertsDir::SetupPageLabel(wxString *ps)
-{
-}
-void CEditAlertsDir::SetupPageLabel(wxString *ps)
-{
-}
-void CEditAlertsDir::SetupPageLabel(wxString *ps)
-{
-}
-//  END SetupPageLabel
 //  BEGIN GetReviewAcceptance() - notes to display for past review and acceptance
 
 wxString CEditAlertsDir::GetReviewAcceptance()
@@ -381,19 +364,6 @@ wxString CEditAlertsChannel::GetReviewAcceptance()
 }
 //  END CEditAlertsDir, CEditAlertsSample, CEditAlertsILS, CEditAlertsChannel
 
-const wxString &CPageEditSampleAlerts::GetNewNotes()
-{
-  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
-  if(pPanel == NULL)
-  {
-    m_sNotes.Empty();
-  }
-  else
-  {
-    m_sNotes = pPanel->GetNewNotesValue();
-  }
-  return m_sNotes;
-}
 
 
 //  CPageEditSampleAlerts, CPageLocus
@@ -451,6 +421,35 @@ bool CPageEditSampleAlerts::TransferDataToPage()
     pPanel->SetNotesText(s);
   }
   return bRtn;
+}
+
+// GetNewNotes
+
+const wxString &CPageEditSampleAlerts::GetNewNotes()
+{
+  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  if(pPanel == NULL)
+  {
+    m_sNotes.Empty();
+  }
+  else
+  {
+    m_sNotes = pPanel->GetNewNotesValue();
+  }
+  return m_sNotes;
+}
+const wxString &CPageEditLocus::GetNewNotes()
+{
+  CPanelLocusDetails *pPanel = wxDynamicCast(GetPanel(),CPanelLocusDetails);
+  if(pPanel == NULL)
+  {
+    m_sNotes.Empty();
+  }
+  else
+  {
+    m_sNotes = pPanel->GetNewNotesValue();
+  }
+  return m_sNotes;
 }
 
 
