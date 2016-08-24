@@ -1785,20 +1785,13 @@ bool DataSignal :: HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfCha
 	for (i=1; i<=numberOfChannels; i++) {
 
 		myPrimary = HasPrimarySignalFromChannel (i);
-
-		if (myPrimary == NULL)
-			continue;
-
 		dsPrimary = ds->HasPrimarySignalFromChannel (i);
 
-		if (dsPrimary == NULL)
-			continue;
-
-		if (myPrimary == dsPrimary)
-			return true;
+		if (myPrimary != dsPrimary)
+			return false;
 	}
 
-	return false;
+	return true;
 }
 
 

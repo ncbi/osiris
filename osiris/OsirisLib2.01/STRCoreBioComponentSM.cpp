@@ -1696,6 +1696,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	smMinPrimaryPullupThreshold primaryPullupThreshold;
 	smSignalIsCtrlPeak isControlPeak;
 	smLaserOffScale laserOffScale;
+	smPartOfDualSignal dualPeak;
+	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+
+	bool testForPeaksTooCloseTogether = true;
+	double dualPeakBPTolerance = 0.20;
 
 	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
 	PreTestSignalsForLaserOffScaleSM ();
@@ -2698,7 +2703,92 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				OverallList.RemoveReference (nextSignal);
 				iChannel = nextSignal->GetInterchannelLink ();
 
-				if (nextSignal2->HasCrossChannelSignalLink () && (iChannel != NULL)) {
+				bool sidePeaksTooClose = (fabs (testSignal2->GetApproximateBioID () - testSignal->GetApproximateBioID ()) < dualPeakBPTolerance);
+				bool atLeastOneSidePeakIsPullup = (testSignal->GetMessageValue (pullup) || testSignal2->GetMessageValue (pullup));
+				bool sidePeaksAreDualSignals = (testSignal->GetMessageValue (dualPeak) && testSignal2->GetMessageValue (dualPeak));
+				bool sidePeakIsPrimary = ((testSignal->GetInterchannelLink () != NULL) || (testSignal2->GetInterchannelLink () != NULL));
+
+				if (testForPeaksTooCloseTogether && sidePeaksTooClose && sidePeaksAreDualSignals && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary) {
+
+					// Either only one side peak is pullup or both are and from same channel, plus, peaks are close and are dual signals, and test is enabled, and neither side peak is primary pullup...whew!
+					// We wouldn't be here if nextSignal were either a primary peak or a pullup, so, don't have to worry about cross channel effects on nextSignal.
+					// Create noisy peak and transfer pullups to the new peak from side peaks.  We know at least one of side peaks is a pullup.
+
+					DataSignal* noisySignal = new NoisyPeak (testSignal, testSignal2, true);
+					noisySignal->CaptureSmartMessages ();
+
+					noisySignal->SetDontLook (false);
+					noisySignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+					testSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+					testSignal2->SetMessageValue (poorPeakMorphologyOrResolution, true);
+					noisySignal->SetMessageValue (pullup, true);
+
+					if (noisySignal->Peak () >= minRFU)
+						noisySignal->SetMessageValue (belowMinRFU, false);
+
+					else
+						noisySignal->SetMessageValue (belowMinRFU, true);
+
+					// Remove (?) testSignal and testSignal2 from PreliminaryCurveList for appropriate channel and add noisySignal to same list and to CompleteList
+					nextChannel->InsertIntoCompleteCurveList (noisySignal);
+					nextChannel->InsertIntoPreliminaryCurveList (noisySignal);
+
+					if (testSignal->GetMessageValue (pullup)) {
+
+						DataSignal* prevPrimary;
+						InterchannelLinkage* prevLinkage;
+						noisySignal->SetMessageValue (pullup, true);
+
+						for (j=1; j<=mNumberOfChannels; j++) {
+
+							if (i == j)
+								continue;
+
+							prevPrimary = testSignal->HasPrimarySignalFromChannel (j);
+
+							if (prevPrimary != NULL) {
+
+								noisySignal->SetPrimarySignalFromChannel (j, prevPrimary, mNumberOfChannels);
+								prevLinkage = prevPrimary->GetInterchannelLink ();
+
+								if (prevLinkage != NULL) {
+
+									prevLinkage->RemoveDataSignalFromSecondaryList (testSignal);
+									prevLinkage->AddDataSignal (noisySignal);
+								}
+							}
+						}
+					}
+
+					else if (testSignal2->GetMessageValue (pullup)) {
+
+						DataSignal* nextPrimary;
+						InterchannelLinkage* nextLinkage;
+						noisySignal->SetMessageValue (pullup, true);
+
+						for (j=1; j<=mNumberOfChannels; j++) {
+
+							if (i == j)
+								continue;
+
+							nextPrimary = testSignal2->HasPrimarySignalFromChannel (j);
+
+							if (nextPrimary != NULL) {
+
+								noisySignal->SetPrimarySignalFromChannel (j, nextPrimary, mNumberOfChannels);
+								nextLinkage = nextPrimary->GetInterchannelLink ();
+
+								if (nextLinkage != NULL) {
+
+									nextLinkage->RemoveDataSignalFromSecondaryList (testSignal2);
+									nextLinkage->AddDataSignal (noisySignal);
+								}
+							}
+						}
+					}
+				}
+
+				else if (nextSignal->HasCrossChannelSignalLink () && (iChannel != NULL)) {
 
 					if (channelRemoval.find (iChannel) == channelRemoval.end ()) {  // this means that iChannel is not in channelRemoval
 
@@ -2978,8 +3068,6 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		//cout << "\n";
 	}
 
-	bool wereHere = false;
-
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		for (j=1; j<=mNumberOfChannels; j++) {
@@ -2988,9 +3076,6 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 				if (j == i)
 					continue;
-
-				if ((i == 2) && (j == 3))
-					wereHere = true;
 
 				currentNonPrimaryList = notPrimaryLists [i][j];
 
