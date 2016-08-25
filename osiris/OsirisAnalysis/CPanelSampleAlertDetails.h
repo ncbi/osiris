@@ -89,6 +89,13 @@ public:
   {
     m_pTextNotes->SetValue(sNotes);
   }
+  void ClearNewNotes()
+  {
+    if(m_pTextNewNotes != NULL)
+    {
+      m_pTextNewNotes->SetValue(wxEmptyString);
+    }
+  }
   wxString GetNewNotesValue();
   // wxString GetNotesText(const wxString &sUser = wxEmptyString);
   //wxString GetNewNotes(const COARnotes *pCurrent, const wxString &sUser = wxEmptyString);

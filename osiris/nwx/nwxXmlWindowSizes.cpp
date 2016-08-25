@@ -79,6 +79,7 @@ void nwxXmlWindowSizes::_CheckLoadFile(bool bForce)
       {
         m_bLoaded = true;
       }
+      Unlock();
       _ResetInterval();
     }
   }

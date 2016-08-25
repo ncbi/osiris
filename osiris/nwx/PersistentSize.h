@@ -81,9 +81,9 @@ private: \
 #define FUNC_ON_RESIZE(className,check) \
 void className::OnPersistResize(wxSizeEvent &e) \
 { \
-  if(e.GetEventObject() == this) \
+  if((e.GetEventObject() == this) && !IsMaximized() && !IsIconized()) \
   { nwxXmlWindowSizes::SaveWindowSizeGlobal( \
-      wxString( #className ), e.GetSize(), check ); \
+      wxString( #className ), GetSize(), check ); \
   } \
   e.Skip(); \
 } \
@@ -97,7 +97,7 @@ void className::OnPersistResize(wxSizeEvent &e) \
 #define FUNC_ON_POSITION(className, check) \
 void className::OnPersistMove(wxMoveEvent &e) \
 { \
-  if(e.GetEventObject() == this) \
+  if(e.GetEventObject() == this && !IsMaximized() && !IsIconized()) \
   { nwxXmlWindowSizes::SaveWindowPosGlobal( \
       wxString( #className ), GetPosition(), check); \
   } \
@@ -120,6 +120,7 @@ void className::OnPersistMove(wxMoveEvent &e) \
 
 
 #define GET_PERSISTENT_SIZE(className) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ) )
+#define GET_PERSISTENT_SIZE_DEFAULT(className, szDefault) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ), szDefault)
 #define GET_PERSISTENT_POSITION(className) nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ) )
 
 #define GET_PERSISTENT_SIZE_OPTIONAL(className, Implemented) \

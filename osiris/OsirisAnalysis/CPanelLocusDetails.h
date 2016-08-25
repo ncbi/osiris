@@ -111,9 +111,9 @@ public:
     return m_pGridAlerts;
   }
   virtual bool SetDateTime(const wxDateTime *pTime);
-  void UpdateFile(COARfile *pF, COARsample *pSample = NULL);
+  void UpdateFile(COARfile *pF, COARsample *pSample = NULL,const wxString &sUser = wxEmptyString);
 private:
-  void _UpdateNotes();
+  void _UpdateNotes(const wxString &_sUser);
   wxPanel *_CreateNotesPanel();
   void _InitCommon(
       bool bSplitHorizontal,

@@ -1078,7 +1078,7 @@ void CFrameAnalysis::_DestroySamples()
   {
     std::vector<CFrameSample *> vSamples;
     std::vector<CFrameSample *>::iterator itrv;
-    std::map<COARsample *, CFrameSample *>::iterator itr;
+    MapSampleFrame::iterator itr;
     vSamples.reserve(n);
     // first copy CFrameSample pointers to a vector because
     // when each is destroyed, m_mapSamples may be modified
@@ -2138,12 +2138,26 @@ bool CFrameAnalysis::_SaveOERFile(const wxString &sFileName)
   bool bRtn = m_pOARfile->SaveFile(sFileName);
   return bRtn;
 }
+/*
 void CFrameAnalysis::RepaintAllData(const wxString &sSampleFileName)
 {
   CheckSaveStatus();
   m_pParent->UpdateSamplePlot(m_pOARfile,sSampleFileName);
   RepaintData();
 }
+*/
+void CFrameAnalysis::RepaintAllData(const COARsample *p)
+{
+  CheckSaveStatus();
+  m_pParent->UpdateSamplePlot(m_pOARfile,p->GetFileName(false));
+  CFrameSample *pF = _FindSample(p);
+  if(pF != NULL)
+  {
+    pF->RepaintData();
+  }
+  RepaintData();
+}
+
 
 bool CFrameAnalysis::SaveFile()
 {

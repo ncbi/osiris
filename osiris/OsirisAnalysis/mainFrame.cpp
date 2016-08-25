@@ -728,16 +728,16 @@ void mainFrame::OnRecentFiles(wxCommandEvent &e)
         if(m_pDialogMRU == NULL)
         {
           int nStyle = MRU_STYLE_CLEANUP | MRU_STYLE_OPEN_STARTUP;
-          m_pDialogMRU = new CDialogMRU(mainApp::GetMRU(),this,nStyle);
+          wxSize sz = GetChildSize(80);
+          m_pDialogMRU = new CDialogMRU(mainApp::GetMRU(),this,sz,nStyle);
         }
         else
         {
           m_pDialogMRU->TransferDataToWindow();
           m_pDialogMRU->ClearSelection();
         }
-        wxSize sz = GetChildSize(80);
-        m_pDialogMRU->SetSize(sz);
-        m_pDialogMRU->CentreOnParent();
+//        m_pDialogMRU->SetSize(sz);
+//        m_pDialogMRU->CentreOnParent();
       } // bracket will remove busy cursor before showing window
       bool bBefore = m_pDialogMRU->StartupChecked();
       if(m_pDialogMRU->ShowModal() == wxID_OK)

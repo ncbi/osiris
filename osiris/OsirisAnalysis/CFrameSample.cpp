@@ -35,41 +35,57 @@
 #include "CFrameAnalysis.h"
 #include "CMenuSample.h"
 #include "CDialogCellHistory.h"
+#include "CPageEditSample.h"
 #include "wx/sizer.h"
+#include "nwx/nwxKeyState.h"
+#include "nwx/nwxLog.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CFrameSample,CMDIFrame)
+
+#ifdef __WXMSW__
+#define INITSIZE(sz) wxSize(sz.x < 0 ? -1 : sz.x - 1 ,sz.y)
+#else
+#define INITSIZE(sz) sz
+#endif
 
 CFrameSample::CFrameSample(
   CFrameAnalysis *pCreator,
   mainFrame *parent,
-  wxSize sz,
+  const wxSize &sz,
   COARfile *pFile,
   COARsample *pSample) : 
-    CMDIFrame(parent,wxID_ANY,wxEmptyString,wxDefaultPosition,sz),
+    CMDIFrame(parent,wxID_ANY,wxEmptyString,wxDefaultPosition,INITSIZE(sz)),
+    m_sz(sz),
     m_Hist(NULL),
     m_pNoteBook(NULL),
     m_pCreator(pCreator),
     m_pParent(parent),
     m_pOARfile(pFile),
-    m_pSample(pSample)
+    m_pSample(pSample),
+    m_bTitleMod(false)
 {
     wxString s = wxPanelNameStr;
 
-  SetupTitle();
-  m_pNoteBook = new CNotebookEditSample(m_pOARfile,m_pSample,this,wxID_ANY,NULL);
-  wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
-  m_pToolbar = new CToolbarSample(this,
-    !pFile->GetReviewerAllowUserOverride());
-  pSizer->Add(m_pToolbar,0,wxEXPAND);
-  pSizer->Add(m_pNoteBook,1,wxEXPAND,0);
-  SetSizer(pSizer);
+  SetupTitle(true);
+  wxPanel *pPanel = new wxPanel(this);
+  m_pNoteBook = new CNotebookEditSample(m_pOARfile,m_pSample,pPanel,wxID_ANY,NULL);
+  m_pToolbar = new CToolbarSample(this,pPanel);
   m_pParent->InsertWindow(this,m_pOARfile);
   m_pMenuBar = new CMenuBarSample();
   SetMenuBar(m_pMenuBar);
+  SetupMenuItems(); 
   CParmOsirisGlobal parm;
-  bool b = parm->GetHideSampleToolbar();
-  _ShowToolbar(!b);
+//  bool b = parm->GetHideSampleToolbar();
+//  _ShowToolbar(!b);
+  wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
+  pSizer->Add(m_pNoteBook,1,wxEXPAND,0);
+  pSizer->Add(m_pToolbar,0,wxEXPAND);
+  pPanel->SetSizer(pSizer);
+  pSizer = new wxBoxSizer(wxVERTICAL);
+  pSizer->Add(pPanel,1,wxEXPAND | wxALL,0);
+  SetSizer(pSizer);
   Layout();
+
 }
 CFrameSample::~CFrameSample() {}
 
@@ -81,35 +97,72 @@ wxMenu *CFrameSample::GetMenu()
 {
   return m_pMenuBar->GetMenu();
 }
-void CFrameSample::_ToggleToolbar()
+void CFrameSample::SetupTitle(bool bForce)
 {
-  bool bWasShown = m_pToolbar->IsShown();
-  _ShowToolbar(!bWasShown);
-  CParmOsirisGlobal parm;
-  parm->SetHideSampleToolbar(bWasShown);
-}
-void CFrameSample::SetupTitle()
-{
-  wxString s = m_pOARfile->GetFileName();
-  bool bMod = false;
-  const CParmOsiris &parm(m_pOARfile->GetParameters());
-  wxString sTitle = mainApp::FormatWindowTitle(s,bMod,&parm,NULL);
-  int n = sTitle.Find(s);
-  if(n > 0)
+  bool bMod = (m_pNoteBook != NULL) && m_pNoteBook->IsModified();
+  if(bForce || (bMod != m_bTitleMod))
   {
-    wxString ss = sTitle.Left(n);
-    ss.Append(m_pSample->GetSampleName());
-    ss.Append(wxT("; "));
-    ss.Append(sTitle.Mid(n));
-    sTitle = ss;
+    m_bTitleMod = bMod;
+    wxString s = m_pSample->GetSampleName();
+    s.Append(wxT("; "));
+    wxFileName fn(m_pOARfile->GetFileName());
+    s.Append(fn.GetFullName());
+    const CParmOsiris &parm(m_pOARfile->GetParameters());
+    wxString sTitle = mainApp::FormatWindowTitle(s,bMod,&parm,NULL);
+    SetTitle(sTitle);
   }
-  SetTitle(sTitle);
 }
 
 void CFrameSample::OnTimer(wxTimerEvent &) {}
 bool CFrameSample::TransferDataToWindow()
 {
+  //  it seems that this isn't being used
+  SetupMenuItems();
   return m_pNoteBook->TransferDataToWindow();
+}
+void CFrameSample::_ApplyAll()
+{
+
+  // STOP HERE
+  size_t nCount = m_pNoteBook->GetPanelCount();
+  CPageEditSample *pPage;
+  bool bRefresh = false;
+  for(size_t i = 0; i < nCount; ++i)
+  {
+    pPage = m_pNoteBook->GetPanel(i);
+    if((pPage != NULL) && pPage->NeedsApply() && pPage->DoApply())
+    {
+      bRefresh = true;
+    }
+  }
+  if(bRefresh)
+  {
+    InitiateRepaintData();
+  }
+}
+void CFrameSample::_Apply()
+{
+  CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
+  if((pPage != NULL) && pPage->DoApply())
+  {
+    InitiateRepaintData();
+  }
+}
+void CFrameSample::_Accept()
+{
+  CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
+  if((pPage != NULL) && pPage->DoAccept())
+  {
+    InitiateRepaintData();
+  }
+}
+void CFrameSample::_Approve()
+{
+  CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
+  if((pPage != NULL) && pPage->DoReview())
+  {
+    InitiateRepaintData();
+  }
 }
 bool CFrameSample::MenuEvent(wxCommandEvent &e)
 {
@@ -127,10 +180,17 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
   case IDmenuHistory:
     _History();
     break;
-  case IDmenuShowHideToolbar:
-      _ToggleToolbar();
-      break;
   case IDSampleApplyAll:
+    _ApplyAll();
+    break;
+  case IDSampleApply:
+    _Apply();
+    break;
+  case IDSampleAccept:
+    _Accept();
+    break;
+  case IDSampleApprove:
+    _Approve();
     break;
   case IDmenuDisableSample:
     break;
@@ -146,11 +206,36 @@ void CFrameSample::InitiateRepaintData()
 }
 void CFrameSample::RepaintData()
 {
-  m_pNoteBook->RepaintData();
+  m_pNoteBook->TransferDataToWindow();
+  SetupMenuItems();
 }
-const wxString CFrameSample::GetUserID()
+const wxString &CFrameSample::GetUserID()
 {
-  return m_pToolbar->GetUserID();
+  if(m_sUserID.IsEmpty())
+  {
+    if(CanOverrideUserID())
+    {
+      CParmOsiris *parm = CParmOsiris::GetGlobal();
+      m_sUserID = parm->GetCMFuserID();
+    }
+    if(m_sUserID.IsEmpty())
+    {
+      m_sUserID = wxGetUserId();
+    }
+  }
+  return m_sUserID;
+}
+bool CFrameSample::CanOverrideUserID()
+{
+  return m_pOARfile->GetReviewerAllowUserOverride();
+}
+void CFrameSample::SaveUserID()
+{
+  if( CanOverrideUserID() && !m_sUserID.IsEmpty() )
+  {
+    CParmOsiris *parm = CParmOsiris::GetGlobal();
+    parm->SetCMFuserID(m_sUserID);
+  }
 }
 
 void CFrameSample::_OpenGraphic()
@@ -166,6 +251,7 @@ void CFrameSample::_History()
   CDialogCellHistory::ShowHistory(
     this,m_pOARfile, m_pSample,sLocus,nSelected);
 }
+#if 0
 void CFrameSample::_ShowToolbar(bool bShow)
 {
   if(bShow != m_pToolbar->IsShown())
@@ -175,17 +261,85 @@ void CFrameSample::_ShowToolbar(bool bShow)
     SetToolbarMenuLabel(!bShow);
   }
 }
+#endif
 
 bool CFrameSample::Destroy()
 {
   m_pCreator->RemoveSample(m_pSample,this);
   return SUPER::Destroy();
 }
+void CFrameSample::OnButton(wxCommandEvent &e)
+{
+  if( (e.GetId() == IDSampleApply) && nwxKeyState::Shift())
+  {
+    e.SetId(IDSampleApplyAll);
+  }
+  MenuEvent(e);
+}
+void CFrameSample::UpdateSizeHack(bool bForce)
+{
+  //  this frame does not render properly 
+  //  until it is resized, so, here goes
+#if 0
+  SendSizeEvent(/*wxSEND_EVENT_POST*/);
+#else
+  wxSize szBeenHere(-5,-5);
+  bool bDoIt = (m_sz != szBeenHere);
+  if(bDoIt && !bForce)
+  {
+    bDoIt = IsShown() &&
+      !(IsMaximized() || IsIconized());
+  }
+  if(!bDoIt) {}
+  else if(m_sz == wxDefaultSize) 
+  {
+    m_sz = GetSize();
+    m_sz.x--;
+  }
+  else if(m_sz == GetSize())
+  {
+    if(bForce)
+    {
+      m_sz.x--;
+    }
+    else
+    {
+      bDoIt = false;
+    }
+  }
+  if(bDoIt)
+  {
+    SetSize(m_sz);
+#ifdef __WXDEBUG__
+    wxString s;
+    s.Format(wxT("size %d x %d"),m_sz.x,m_sz.y);
+    nwxLog_I_WAS_HERE_MSG(s);
+#endif
+    m_sz = szBeenHere;
+  }
+#endif
+}
+
+void CFrameSample::SetupMenuItems()
+{
+  bool bSampleEnabled = m_pSample->IsEnabled();
+  CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
+  if(pPage != NULL)
+  {
+    _EnableItem(IDmenuHistory,pPage->HasHistory());
+    _EnableItem(IDSampleAccept, bSampleEnabled && pPage->NeedsAcceptance());
+    _EnableItem(IDSampleApprove, bSampleEnabled && pPage->NeedsReview());
+    _EnableItem(IDSampleApply,bSampleEnabled && pPage->NeedsApply());
+    _EnableItem(IDSampleApplyAll, m_pNoteBook->IsModified());
+    _SetSampleEnabled(bSampleEnabled);
+  }
+}
 
 IMPLEMENT_PERSISTENT_SIZE(CFrameSample)
 
 BEGIN_EVENT_TABLE(CFrameSample,CMDIFrame)
 EVT_PERSISTENT_SIZE(CFrameSample)
+EVT_BUTTON(wxID_ANY,CFrameSample::OnButton)
 END_EVENT_TABLE()
 
 

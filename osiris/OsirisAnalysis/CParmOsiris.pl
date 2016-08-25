@@ -491,6 +491,7 @@ EOF1
 #define __C_PARM_OSIRIS_H__
 
 #include "nwx/nwxXmlPersist.h"
+#include "nwx/nwxGlobalObject.h"
 #include "ConfigDir.h"
 
 
@@ -772,37 +773,7 @@ ${sStringHeader}
 //  **************************************   static/global stuff
 
 public:
-
-  static CParmOsiris *GetGlobal()
-  {
-    if(g_p == NULL)
-    {
-      g_p = new CParmOsiris(true); // auto save
-    }
-    else
-    {
-      g_p->CheckFileModification(true);
-    }
-    return g_p;
-  }
-  static void CleanupGlobal()
-  {
-    if(g_p != NULL)
-    {
-      delete g_p;
-      g_p = NULL;
-    }
-  }
-
-private:
-  class CCleanupGlobal
-  {
-  public:
-    CCleanupGlobal() {;}
-    ~CCleanupGlobal() { CParmOsiris::CleanupGlobal();}
-  };
-  static CParmOsiris *g_p;
-  static CCleanupGlobal g_xxx;
+  nwxDECLARE_GLOBAL_OBJECT_XML(CParmOsiris)
 
 };
 
@@ -909,9 +880,8 @@ EOF
 #include <wx/filename.h>
 #include <wx/utils.h>
 
+nwxIMPLEMENT_GLOBAL_OBJECT(CParmOsiris)
 
-CParmOsiris *CParmOsiris::g_p(NULL); // global pointer
-CParmOsiris::CCleanupGlobal CParmOsiris::g_xxx;
 const wxString CParmOsiris::NO_INIT(wxS(":"));
 
 void CParmOsiris::_Init()

@@ -32,6 +32,7 @@
 #define __C_PARM_OSIRIS_H__
 
 #include "nwx/nwxXmlPersist.h"
+#include "nwx/nwxGlobalObject.h"
 #include "ConfigDir.h"
 
 
@@ -1036,37 +1037,7 @@ public:
 //  **************************************   static/global stuff
 
 public:
-
-  static CParmOsiris *GetGlobal()
-  {
-    if(g_p == NULL)
-    {
-      g_p = new CParmOsiris(true); // auto save
-    }
-    else
-    {
-      g_p->CheckFileModification(true);
-    }
-    return g_p;
-  }
-  static void CleanupGlobal()
-  {
-    if(g_p != NULL)
-    {
-      delete g_p;
-      g_p = NULL;
-    }
-  }
-
-private:
-  class CCleanupGlobal
-  {
-  public:
-    CCleanupGlobal() {;}
-    ~CCleanupGlobal() { CParmOsiris::CleanupGlobal();}
-  };
-  static CParmOsiris *g_p;
-  static CCleanupGlobal g_xxx;
+  nwxDECLARE_GLOBAL_OBJECT_XML(CParmOsiris)
 
 };
 

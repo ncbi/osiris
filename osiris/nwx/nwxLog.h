@@ -66,11 +66,15 @@ public:
 #define nwxLog_I_WAS_HERE \
   nwxLog::LogMessageV(wxT("I WAS HERE: %ls, line %d, %ls"),wxString(__FILE__).wc_str(),__LINE__,wxString(__func__).wc_str())
 
-//  CNotebookEditSample
+#define nwxLog_I_WAS_HERE_MSG(msg) \
+  nwxLog::LogMessageV(wxT("I WAS HERE: %ls, line %d, %ls\n    %ls"),wxString(__FILE__).wc_str(),__LINE__,wxString(__func__).wc_str(), wxString(msg).wc_str())
+
+
 
 #else
 
 #define nwxLog_I_WAS_HERE
+#define nwxLog_I_WAS_HERE_MSG(msg)
 
 #endif
 

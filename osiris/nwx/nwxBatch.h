@@ -31,8 +31,11 @@
 #ifndef __NWX_BATCH_H__
 #define __NWX_BATCH_H__
 
+#include "nwx/stdb.h"
 #include <set>
 #include <vector>
+#include "nwx/stde.h"
+#include "nwx/nwxGlobalObject.h"
 
 template <class T> class TnwxBatch
 {
@@ -49,6 +52,13 @@ public:
 private:
   T *m_p;
 };
+template <class T> class TnwxBatchGlobal : public TnwxBatch<T>
+{
+public:
+  TnwxBatchGlobal<T>() : TnwxBatch<T>(nwxGET_GLOBAL(T)) {}
+  virtual ~TnwxBatchGlobal<T>() {}
+};
+
 
 template < class T, class TYP  = std::set<T *> > class TnwxBatchColl
 {

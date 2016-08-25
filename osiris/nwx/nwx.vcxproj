@@ -193,6 +193,7 @@
     <ClInclude Include="nwxDoubleLess.h" />
     <ClInclude Include="nwxDoubleValidator.h" />
     <ClInclude Include="nwxFileUtil.h" />
+    <ClInclude Include="nwxGlobalObject.h" />
     <ClInclude Include="nwxGrid.h" />
     <ClInclude Include="nwxHoldScrollPos.h" />
     <ClInclude Include="nwxIntValidator.h" />

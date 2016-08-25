@@ -93,7 +93,6 @@ void CPanelLocusDetails::_InitCommon(
   wxPanel *pPanelNotes;
   wxBoxSizer *pSizer;
   wxPanel *pPanelLocus;
-  wxWindow *pWindowLocus;
   m_MsgEdit.CopyOnly(*m_pMsgs,m_LocusEdit.GetAlerts());
   int nStyle = ID_SPLITTER_STYLE;
   if(!bSplitHorizontal)
@@ -106,12 +105,11 @@ void CPanelLocusDetails::_InitCommon(
   pPanelNotes = _CreateNotesPanel();
   m_pSplitterLocus = new wxSplitterWindow(pPanelLocus,wxID_ANY,
     wxDefaultPosition, wxDefaultSize, ID_SPLITTER_STYLE);
-  pWindowLocus = m_pSplitterLocus;
 
   if(nChannel < 0)
   {
     m_pGridLocus11 = new CGridLocus(
-      &m_LocusEdit,pWindowLocus,wxID_ANY,m_bReadOnly);
+      &m_LocusEdit,m_pSplitterLocus,wxID_ANY,m_bReadOnly);
     m_pGridLocus = m_pGridLocus11;
     m_pGridLocusPeaks = NULL;
   }
@@ -119,16 +117,16 @@ void CPanelLocusDetails::_InitCommon(
   {
     m_pGridLocusPeaks = new CGridLocusPeaks(pSample,
       nChannel,m_pLocus->GetName(),
-      pWindowLocus,wxID_ANY,m_bReadOnly);
+      m_pSplitterLocus,wxID_ANY,m_bReadOnly);
     m_pGridLocus = m_pGridLocusPeaks;
     m_pGridLocus11 = NULL;
   }
 
   m_pGridAlerts = new CGridAlerts(
-    &m_MsgEdit,pWindowLocus,wxID_ANY,0,m_bReadOnly);
+    &m_MsgEdit,m_pSplitterLocus,wxID_ANY,0,m_bReadOnly);
 
   pSizer = new wxBoxSizer(wxVERTICAL);
-  pSizer->Add(pWindowLocus,1, wxEXPAND | wxALL,   
+  pSizer->Add(m_pSplitterLocus,1, wxEXPAND | wxALL,   
     0);
   pPanelLocus->SetSizer(pSizer);
 
@@ -150,10 +148,10 @@ void CPanelLocusDetails::_InitCommon(
     m_pSplitterLocus->SplitVertically(m_pGridLocus,m_pGridAlerts,0);
   }
   m_pSplitterLocus->SetSashGravity(dGravity);
-  m_pSplitterLocus->SetMinimumPaneSize(1);
+  m_pSplitterLocus->SetMinimumPaneSize(10);
   if(bSplitHorizontal)
   {
-    m_pSplitter->SplitHorizontally(pPanelLocus,pPanelNotes,440);
+    m_pSplitter->SplitHorizontally(pPanelLocus,pPanelNotes,-180);
   }
   else
   {
@@ -161,7 +159,7 @@ void CPanelLocusDetails::_InitCommon(
       -250);
   }
   m_pSplitter->SetSashGravity(1.0);
-  m_pSplitter->SetMinimumPaneSize(1);
+  m_pSplitter->SetMinimumPaneSize(10);
 
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(m_pSplitter,1, wxEXPAND);
@@ -219,6 +217,7 @@ bool CPanelLocusDetails::TransferDataToWindow()
     s.Append(sNotes);
   }
   m_pTextNotes->SetValue(s);
+  m_pTextNewNotes->Clear();
   if(m_pGridLocus11 != NULL)
   {
     m_pGridLocus11->SetDateTime(m_HistTime,true);
@@ -319,7 +318,8 @@ bool CPanelLocusDetails::SetDateTime(const wxDateTime *pTime)
   return bRtn;
 }
 
-void CPanelLocusDetails::UpdateFile(COARfile *pF, COARsample *pSample)
+void CPanelLocusDetails::UpdateFile(
+  COARfile *pF, COARsample *pSample, const wxString &sUser)
 {
   wxDateTime t;
   t.SetToCurrent();
@@ -349,8 +349,14 @@ void CPanelLocusDetails::UpdateFile(COARfile *pF, COARsample *pSample)
     }
     else
     {
-      if(m_pPanelUser != NULL)
+      if(!sUser.IsEmpty())
       {
+        CAppendReviewLocus x(pLocus);
+        x.AppendReview(sUser); // don't need return value here
+      }
+      else if(m_pPanelUser != NULL)
+      {
+        // this will be obsolete
         CAppendReviewLocus x(pLocus);
         if(!m_pPanelUser->AddReview(&x,false))
         {
@@ -360,7 +366,7 @@ void CPanelLocusDetails::UpdateFile(COARfile *pF, COARsample *pSample)
           mainApp::LogMessage(sErr);
         }
       }
-      _UpdateNotes();
+      _UpdateNotes(sUser);
       pLocus->UpdateNotes(*m_LocusEdit.GetNotesPtr(),t);
       pF->UpdateMessages(GetMessages(),t);
       pF->SetIsModified(true);
@@ -368,9 +374,9 @@ void CPanelLocusDetails::UpdateFile(COARfile *pF, COARsample *pSample)
   }
 }
 #if 1
-void CPanelLocusDetails::_UpdateNotes()
+void CPanelLocusDetails::_UpdateNotes(const wxString &_sUser)
 {
-  wxString sUser;
+  wxString sUser(_sUser);
   wxString sAppend;
   if(m_pTextNewNotes != NULL)
   {

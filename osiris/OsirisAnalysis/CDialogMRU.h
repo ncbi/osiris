@@ -42,6 +42,8 @@
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
 #include "nwx/nwxProgressCallback.h"
+#include "nwx/PersistentSize.h"
+
 
 class nwxXmlMRU;
 class mainFrame;
@@ -77,6 +79,7 @@ class CDialogMRU : public wxDialog
 public:
   CDialogMRU(
     nwxXmlMRU *pMRU, mainFrame *parent,
+    const wxSize &szDefault = wxDefaultSize,
     int nStyle = 0
     );
   virtual ~CDialogMRU();
@@ -127,7 +130,9 @@ private:
   size_t m_nMAX;
   time_t m_tMessage;
   vector<wxString> m_vsFiles;
-  DECLARE_EVENT_TABLE();
+  DECLARE_PERSISTENT_SIZE_POSITION
+  DECLARE_ABSTRACT_CLASS(CDialogMRU)
+  DECLARE_EVENT_TABLE()
 };
 
 

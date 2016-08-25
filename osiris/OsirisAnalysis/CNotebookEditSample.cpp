@@ -46,12 +46,14 @@
 #include "CLabels.h"
 #include "CFrameSample.h"
 #include "CPageEditSample.h"
+#include "CEditSampleIcons.h"
 
 
 CNotebookEditSample::~CNotebookEditSample() 
 {
   vectorptr<CPageEditSample>::cleanup(&m_vpPanels);
 }
+#define NOTEBOOK_OUT_OF_RANGE 999999
 
 CNotebookEditSample::CNotebookEditSample(
   COARfile *pFile,
@@ -62,21 +64,34 @@ CNotebookEditSample::CNotebookEditSample(
     wxPanel(parent,id),
     m_pSample(pSample),
     m_pFile(pFile),
+    m_pFrame(NULL),
+    m_pNotebook(NULL),
+    m_nSelectPage(0),
+    m_nTimerCount(1), // delay setting notebook page
+               // because of rendering problem
+               // on the 'Notices' pages
+               // see OnTimer() for details
+    m_nBatch(0),
     m_bReadOnly(false)
 {
+  BeginBatch();
   vector<wxString> vsLocus;
-  // set up notes
   nwxLog_I_WAS_HERE;
-  //  set up sample alert details
 
-  CPanelSampleAlertDetails *pSplitter;
   wxBoxSizer *pSizer;
-  int i;
+  CEditSampleIcons *pIcons = nwxGET_GLOBAL(CEditSampleIcons);
+  pIcons->CheckForUpdates();
+  CEditSampleIconsBatch xxx;
 
-  m_pNotebook = new wxTreebook(
+  int ndxNeedsAttn = pIcons->GetNeedsAttnImage();
+  int ndxOK = pIcons->GetOKImage();
+#define STAT_IMG(bNeedsAttn) ((bNeedsAttn) ? ndxNeedsAttn : ndxOK)
+  int i;
+  m_pNotebook = new CNOTEBOOK_TYPE(
     this,wxID_ANY,
     wxDefaultPosition, wxDefaultSize,
-    wxNB_LEFT);
+    CNOTEBOOK_STYLE);
+  m_pNotebook->SetImageList(pIcons->GetList());
   CPageEditSample *pPage;
   m_vpPanels.reserve(30);
   for(i = 0; i < SA_WINDOW_COUNT; i++)
@@ -99,20 +114,21 @@ CNotebookEditSample::CNotebookEditSample(
       pPage = NULL;
     }
     m_vpPanels.push_back(pPage);
-    wxWindow *pWin = pPage->GetPanel();
-    pSplitter = wxDynamicCast(pWin,CPanelSampleAlertDetails);
-    if(pSplitter == NULL)
+    wxWindow *pWin = pPage->GetPanelPage();
+    if(pWin == NULL)
     {
       wxString sErr =
         wxString::Format("Cannot create page for type %d",i);
       wxASSERT_MSG(0, sErr);
     }
-    m_pNotebook->AddPage(pSplitter,pPage->GetPageLabel(),!i);
+    m_pNotebook->AddPage(pWin,pPage->GetPageLabel(),
+      false,STAT_IMG(pPage->NeedsAttn()));
   }
   
   //****************************************************************
   // done with sample alert details, now set up loci
   //****************************************************************
+  const wxColour *pColour;
   const wxString &sKitName = m_pFile->GetKitName();
   CKitColors *pKitColors = mainApp::GetKitColors();
   const CSingleKitColors *pSingleKit = pKitColors->GetKitColors(sKitName);
@@ -122,13 +138,14 @@ CNotebookEditSample::CNotebookEditSample(
   size_t nChannelCount = m_pFile->GetChannelCount();
   size_t j,k,nLocusCount;
   const COARchannel *pChannel;
-  vector<size_t> vnExpand;
-  vector<size_t>::iterator itrExpand;
-  vnExpand.reserve(nChannelCount);
+//  vector<size_t> vnExpand;
+//  vector<size_t>::iterator itrExpand;
+//  vnExpand.reserve(nChannelCount);
   for(k = 1; k <= nChannelCount; ++k)
   {
     // STOP HERE pChanel->GetChannelName() returns nothing
     pCC = pSingleKit->GetColorChannel(k);
+    pColour = pCC->GetColorAnalyzedPtr();
     wxString sDyeName = pCC->GetDyeName();
     bool bEmpty = sDyeName.IsEmpty(); // for test/debug
     if(bEmpty)
@@ -140,8 +157,8 @@ CNotebookEditSample::CNotebookEditSample(
       sDyeName.Append(wxString::Format(" - %d",(int)k));
     }
     pChannel = m_pFile->GetChannelByNr(k);
-    m_pNotebook->AddPage(NULL,sDyeName);
-    vnExpand.push_back(m_vpPanels.size());
+    m_pNotebook->AddPage(NULL,sDyeName,false,pIcons->GetSolidImage(*pColour));
+//    vnExpand.push_back(m_vpPanels.size());
     m_vpPanels.push_back(NULL);
     m_asLocus.push_back(wxEmptyString);
 
@@ -151,28 +168,44 @@ CNotebookEditSample::CNotebookEditSample(
       const wxString &sLocusName = pChannel->GetLocusName(j);
       m_asLocus.push_back(sLocusName);
       pPage = new CPageEditLocus(this,pSample,sLocusName,(int)k);
-      wxWindow *pWin = pPage->GetPanel();
-      CPanelLocusDetails *pPanelLocus = wxDynamicCast(pWin,CPanelLocusDetails);
-      if(pPanelLocus == NULL)
+      wxWindow *pWin = pPage->GetPanelPage();
+      if(pWin == NULL)
       {
         wxString sErr(wxT("Cannot create page for "));
         sErr.Append(sLocusName);
         wxASSERT_MSG(0, sErr);
       }
-      m_pNotebook->AddSubPage(pPanelLocus,sLocusName,false);
       m_vpPanels.push_back(pPage);
+      m_pNotebook->ADD_SUB_PAGE(pWin,sLocusName,false,
+        STAT_IMG(pPage->NeedsAttn()));
     }
   }
   // layout this
-
+  m_pNotebook->SetSelection(m_pNotebook->GetPageCount() - 1);
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(m_pNotebook,1,wxEXPAND);
   SetSizer(pSizer);
-  pSizer->Layout();
-  for(itrExpand = vnExpand.begin(); itrExpand != vnExpand.end(); ++itrExpand)
+//  pSizer->Layout();
+#if TREEBOOK
+  m_pNotebook->GetTreeCtrl()->ExpandAll();
+#endif
+  _SetupFrame();
+  // OnTimer() was called before constructor was done during testing
+#undef STAT_IMG
+  EndBatch();
+}
+void CNotebookEditSample::_SetupFrame()
+{
+  if(m_pFrame == NULL)
   {
-    m_pNotebook->ExpandNode(*itrExpand,true);
+    wxWindow *pWin = GetParent();
+    while(pWin != NULL)
+    {
+      m_pFrame = wxDynamicCast(pWin,CFrameSample);
+      pWin = (m_pFrame == NULL) ? pWin->GetParent() : NULL;
+    }
   }
+  return;
 }
 const wxString &CNotebookEditSample::GetCurrentLocus()
 {
@@ -200,7 +233,7 @@ bool CNotebookEditSample::Validate()
     const wxChar *LF(wxS("\n"));
     int nCount = 0;
     int nPage = -1;
-    std::vector<CPageEditSample *>::iterator itr;
+    CPanelListIterator itr;
     CPageEditSample *pPage;
     int i = 0;
     for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
@@ -240,7 +273,7 @@ bool CNotebookEditSample::Validate()
 bool CNotebookEditSample::TransferDataToWindow()
 {
 
-  std::vector<CPageEditSample *>::iterator itr;
+  CPanelListIterator itr;
   CPageEditSample *pPage;
   bool bRtn = true;
   for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
@@ -257,15 +290,18 @@ bool CNotebookEditSample::TransferDataToWindow()
 bool CNotebookEditSample::IsModified()
 {
   bool bRtn = false;
-  std::vector<CPageEditSample *>::iterator itr;
-  CPageEditSample *pPage;
-  for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
+  if(m_pSample->IsEnabled())
   {
-    pPage = *itr;
-    if( (pPage != NULL) && pPage->NeedsApply() )
+    CPanelListIterator itr;
+    CPageEditSample *pPage;
+    for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
     {
-      bRtn = true;
-      break;
+      pPage = *itr;
+      if( (pPage != NULL) && pPage->NeedsApply() )
+      {
+        bRtn = true;
+        break;
+      }
     }
   }
   return bRtn;
@@ -281,50 +317,125 @@ bool CNotebookEditSample::SetDateTime(const wxDateTime *pTime)
 */
 
 
-void CNotebookEditSample::OnNotesChange(wxCommandEvent &)
+void CNotebookEditSample::OnEnter(wxCommandEvent &)
 {
   if(!m_bReadOnly)
   {
-    _ProcessEvent();
+    _UpdateMenu();
   }
 }
 void CNotebookEditSample::OnCellChange(wxGridEvent &)
 {
   if(!m_bReadOnly)
   {
-    _ProcessEvent();
+    _UpdateMenu();
+  }
+}
+void CNotebookEditSample::_UpdateMenu()
+{
+  if(m_pFrame != NULL)
+  {
+    m_pFrame->SetupMenuItems();
   }
 }
 
-bool CNotebookEditSample::_ProcessEvent()
-{
-  wxCommandEvent eSend(wxEVT_COMMAND_ENTER ,GetId());
-  eSend.SetEventObject(this);
-  return ProcessEvent(eSend);
-}
 const wxString &CNotebookEditSample::GetUserID()
 {
-  CFrameSample *pFrame = wxDynamicCast(GetParent(),CFrameSample);
-  if(pFrame != NULL)
-  {
-    m_sUserID = pFrame->GetUserID();
-  }
-  return m_sUserID;
+  return m_pFrame->GetUserID();
 }
 void CNotebookEditSample::InitiateRepaintData()
 {
-  CFrameSample *pFrame = wxDynamicCast(GetParent(),CFrameSample);
-  if(pFrame != NULL)
+  if(m_pFrame != NULL)
   {
-    pFrame->InitiateRepaintData();
+    m_pFrame->InitiateRepaintData();
+  }
+}
+void CNotebookEditSample::OnChanged(wxBookCtrlEvent &e)
+{
+//  GetParent()->Refresh();
+  _UpdateMenu();
+  e.Skip();
+}
+
+void CNotebookEditSample::OnChanging(wxBookCtrlEvent &e)
+{
+  int nPage = e.GetSelection();
+  if( nPage != wxNOT_FOUND )
+  {
+    //bool bUP  = wxGetKeyState(WXK_UP);
+    //bool bDown = wxGetKeyState(WXK_DOWN);
+    wxWindow *pWin = m_pNotebook->GetPage((size_t) nPage);
+    if(pWin == NULL)
+    {
+      int nPrev = e.GetOldSelection();
+      CNOTEBOOK_TYPE *pBook = wxDynamicCast(e.GetEventObject(),CNOTEBOOK_TYPE);
+      if(
+        (pBook != m_pNotebook) ||
+        (nPrev == wxNOT_FOUND) || 
+        (nPrev == nPage)
+        )
+      {}
+      else if(nPrev < nPage)
+      {
+        m_nSelectPage = (size_t)nPage + 1;
+      }
+      else if(nPage > 0)
+      {
+        m_nSelectPage = (size_t)nPage - 1;
+      }
+      //e.Veto();
+    }
   }
 }
 void CNotebookEditSample::RepaintData()
 {
   // STOP HERE - need to implement
+  TransferDataToWindow();
+}
+
+void CNotebookEditSample::OnTimer(wxTimerEvent &)
+{
+  if(InBatch() || (m_pNotebook == NULL)) {}
+  else if(m_nTimerCount > 0)
+  {
+    // UGLY HACK!
+    //
+    // upon creation of this window, (MS Windows)
+    // there are rendering problem with the
+    // notebook page until the page is changed
+    // m_nTimerCount delays changing
+    // the displayed page by one timer 'tick'
+    // (about 1/4 second)
+    //
+    //  8/17/2016 djh 
+    if(m_pNotebook->IsShown())
+    {
+      m_nTimerCount--;
+    }
+  }
+  else if(
+    (m_nSelectPage < NOTEBOOK_OUT_OF_RANGE) && 
+    (m_nSelectPage < m_pNotebook->GetPageCount()) &&
+    ((int)m_nSelectPage != m_pNotebook->GetSelection())
+    )
+  {
+    if(m_pNotebook->IsShown())
+    {
+      m_pNotebook->SetSelection(m_nSelectPage);
+      m_nSelectPage = NOTEBOOK_OUT_OF_RANGE;
+      m_pFrame->UpdateSizeHack(true);
+    }
+  }
+  else
+  {
+    m_nSelectPage = NOTEBOOK_OUT_OF_RANGE;
+  }
 }
 
 BEGIN_EVENT_TABLE(CNotebookEditSample,wxPanel)
-EVT_TEXT(wxID_ANY,CNotebookEditSample::OnNotesChange)
+EVT_TEXT(wxID_ANY,CNotebookEditSample::OnEnter)
+EVT_COMMAND_ENTER(wxID_ANY, CNotebookEditSample::OnEnter)
 EVT_GRID_CMD_CELL_CHANGED(wxID_ANY,CNotebookEditSample::OnCellChange)
+C_EVT_CHANGING(wxID_ANY, CNotebookEditSample::OnChanging)
+C_EVT_CHANGED(wxID_ANY, CNotebookEditSample::OnChanged)
 END_EVENT_TABLE()

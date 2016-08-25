@@ -127,6 +127,10 @@ bool CMDIFrame::Show(bool show)
   {
     Raise();
     _NotifyParent();
+    //SendSizeEvent(/*wxSEND_EVENT_POST*/);
+    // SendSizeEvent: had a problem with CFrameSample
+    // allele tables had a 'bad spot' near the bottom
+    // 8/17/2016 djh
   }
   return bRtn;
 }

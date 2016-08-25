@@ -134,19 +134,12 @@ bool COARartifact::SetLocus(const wxString &s) const
 {
   vector<COARartifactAllele *>::const_iterator itr;
   m_pAlleleCurrent = NULL;
-#ifdef __WXDEBUG__
-  size_t nSize = m_vpAllele.size();
-  int COUNT = 0;
-#endif
   if(!(s.IsEmpty() || m_vpAllele.empty()))
   {
     for(itr = m_vpAllele.begin();
       itr != m_vpAllele.end();
       ++itr)
     {
-#ifdef __WXDEBUG__
-      COUNT++;
-#endif
       if( ! ((*itr)->GetLocus().CmpNoCase(s)) )
       {
         m_pAlleleCurrent = *itr;

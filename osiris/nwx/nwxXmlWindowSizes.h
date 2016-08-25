@@ -267,6 +267,15 @@ public:
     }
     return g_pXWS->GetWindowSize(s);
   }
+  static const wxSize &GetWindowSizeGlobal(const wxString &s, const wxSize &szDefault, bool bImplemented = true)
+  {
+    const wxSize &szRtn = GetWindowSizeGlobal(s,bImplemented);
+    if(szRtn == wxDefaultSize)
+    {
+      return szDefault;
+    }
+    return szRtn;
+  }
   static void SaveWindowSizeGlobal(const wxString &s, const wxSize &sz, bool bImplemented = true)
   {
     if(bImplemented && (g_pXWS != NULL))

@@ -32,7 +32,8 @@
 
 #include <wx/datetime.h>
 #include <wx/splitter.h>
-#include <wx/treebook.h>
+
+
 #include <wx/panel.h>
 #include <wx/textctrl.h>
 #include "CLabSettings.h"
@@ -41,10 +42,31 @@
 #include "CHistoryTime.h"
 #include "ISetDateTime.h"
 #include "CPanelSampleAlertDetails.h"
+#include "nwx/nwxTimerReceiver.h"
+
+#define TREEBOOK 1
+#if TREEBOOK
+#include <wx/treebook.h>
+#define CNOTEBOOK_TYPE wxTreebook
+#define CNOTEBOOK_STYLE wxNB_LEFT
+#define ADD_SUB_PAGE AddSubPage
+#define C_EVT_CHANGING EVT_TREEBOOK_PAGE_CHANGING
+#define C_EVT_CHANGED EVT_TREEBOOK_PAGE_CHANGED
+#else
+#include <wx/notebook.h>
+#define CNOTEBOOK_TYPE wxNotebook
+#define CNOTEBOOK_STYLE wxNB_TOP
+#define ADD_SUB_PAGE AddPage
+#define C_EVT_CHANGING EVT_NOTEBOOK_PAGE_CHANGING
+#define C_EVT_CHANGED EVT_NOTEBOOK_PAGE_CHANGED
+#endif
 
 class CPageEditSample;
 class CPanelUserID;
 class CNotebookEditSample;
+class CFrameSample;
+
+
 
 #ifndef __WINDOW_ARRAY_INDEX__
 #define __WINDOW_ARRAY_INDEX__
@@ -60,20 +82,39 @@ typedef enum
 #endif
 
 
-class CNotebookEditSample : public wxPanel //, public ISetDateTime
+class CNotebookEditSample : public wxPanel, public nwxTimerReceiver
+  //, public ISetDateTime
 {
 public:
   CNotebookEditSample(
     COARfile *pFile, // dont' need pFile, get it from pSample
     COARsample *pSample, 
     wxWindow *parent,
-    wxWindowID id = wxID_ANY,
+    wxWindowID id = IDSampleNotebook,
     const map<int,wxString> *pmapChannelNames = NULL
-    );
+    )
+;
   virtual ~CNotebookEditSample();
   virtual bool TransferDataToWindow();
   virtual bool Validate();
+  virtual void OnTimer(wxTimerEvent &);
   bool IsModified();
+  bool InBatch()
+  {
+    return m_nBatch != 0;
+  }
+  void BeginBatch()
+  {
+    m_nBatch++;
+  }
+  void EndBatch()
+  {
+    if(InBatch())
+    {
+      m_nBatch--;
+    }
+  }
+
 
   void Select(int n)
   {
@@ -84,9 +125,26 @@ public:
   {
     return m_pNotebook->GetSelection();
   }
-  wxTreebook *GetNotebookWindow()
+  CNOTEBOOK_TYPE *GetNotebookWindow()
   {
     return m_pNotebook;
+  }
+  size_t GetPanelCount()
+  {
+    return m_pNotebook->GetPageCount();
+  }
+  CPageEditSample *GetPanel(size_t n)
+  {
+    CPageEditSample *pRtn = 
+      (n < m_vpPanels.size()) ? m_vpPanels.at(n) : NULL;
+    return pRtn;
+  }
+  CPageEditSample *GetCurrentPanel()
+  {
+    int n = GetSelection();
+    CPageEditSample *pRtn =
+      (n == wxNOT_FOUND) ? NULL : m_vpPanels.at((size_t) n);
+    return pRtn;
   }
   /*
   virtual bool SetDateTime(const wxDateTime *pTime);
@@ -148,30 +206,32 @@ public:
   void RepaintData();
   void InitiateRepaintData();
 private:
-  bool _ProcessEvent();
+  void _SetupFrame();
+  void _UpdateMenu();
   /* wxString _GetReviewAcceptance(int n, const wxDateTime *pdt = NULL);
   */
   std::vector<const wxString> m_asLocus;
-  std::vector<CPageEditSample *> m_vpPanels;
+  typedef std::vector<CPageEditSample *> CPanelList;
+  typedef std::vector<CPageEditSample *>::iterator CPanelListIterator;
+  CPanelList m_vpPanels;
+
   wxString m_sUserID;
-  /*
-  CHistoryTime m_HistTime;
-  COARmessages m_MsgDir;
-  COARmessages m_MsgSample;
-  COARmessages m_MsgILS;
-  COARmessages m_MsgChannel;
-  */
   COARsample *m_pSample;
   COARfile *m_pFile;
-
-  wxTreebook *m_pNotebook;
+  CFrameSample *m_pFrame;
+  CNOTEBOOK_TYPE *m_pNotebook;
 //  CPanelSampleAlertDetails *m_pSplitter[SA_WINDOW_COUNT];
+  size_t m_nSelectPage;
+  size_t m_nTimerCount;
+  size_t m_nBatch;
   bool m_bReadOnly;
 
 
 public:
+  void OnChanging(wxBookCtrlEvent &e);
+  void OnChanged(wxBookCtrlEvent &e);
   void OnCellChange(wxGridEvent &e);
-  void OnNotesChange(wxCommandEvent &e);
+  void OnEnter(wxCommandEvent &e);
   DECLARE_EVENT_TABLE();
 };
 

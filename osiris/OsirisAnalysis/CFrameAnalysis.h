@@ -168,11 +168,8 @@ public:
     ee.SetEventObject(this);
     GetEventHandler()->AddPendingEvent(ee);
   }
-  void RepaintAllData(const wxString &sSampleFileName);
-  void RepaintAllData(const COARsample *p)
-  {
-    RepaintAllData(p->GetFileName(false));
-  }
+//  void RepaintAllData(const wxString &sSampleFileName);
+  void RepaintAllData(const COARsample *p);
   bool FileEmpty();
   bool SaveFile();
   bool SaveFileAs();
@@ -358,24 +355,25 @@ private:
   wxString m_sPath;
   COARsampleSort m_SampleSort;
 
-  std::map<COARsample *, CFrameSample *> m_mapSamples;
-  CFrameSample *_FindSample(COARsample *pSample)
+  typedef std::map<const COARsample *, CFrameSample *> MapSampleFrame;
+  typedef std::pair<const COARsample *, CFrameSample *> PairSampleFrame;
+  MapSampleFrame m_mapSamples;
+  CFrameSample *_FindSample(const COARsample *pSample)
   {
-    std::map<COARsample *, CFrameSample *>::iterator itr =
+    MapSampleFrame::iterator itr =
       m_mapSamples.find(pSample);
     return (itr == m_mapSamples.end()) ? NULL : itr->second;
   }
-  void _AddSample(COARsample *ps,CFrameSample *pf)
+  void _AddSample(const COARsample *ps,CFrameSample *pf)
   {
     m_mapSamples.insert(
-      std::pair<COARsample *, CFrameSample *>(ps,pf));
+      PairSampleFrame(ps,pf));
   }
   void _DestroySamples();
 public:
   void RemoveSample(COARsample *pSample,CFrameSample *pf)
   {
-    std::map<COARsample *, CFrameSample *>::iterator itr =
-      m_mapSamples.find(pSample);
+    MapSampleFrame::iterator itr = m_mapSamples.find(pSample);
     if(itr != m_mapSamples.end() &&
        itr->first == pSample && 
        itr->second == pf)

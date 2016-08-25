@@ -103,7 +103,7 @@ CPanelSampleAlertDetails::CPanelSampleAlertDetails(
   // before the parent calls Layout
 
   SetSashGravity(1.0);
-  SetMinimumPaneSize(1);
+  SetMinimumPaneSize(10);
   _SetupColours();
 }
 

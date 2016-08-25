@@ -34,13 +34,12 @@
 #include "CMDIFrame.h"
 #include "CHistoryTime.h"
 #include "nwx/PersistentSize.h"
+#include "CMenuSample.h"
 class CNotebookEditSample;
 class COARsample;
 class COARfile;
 class CHistoryTime;
 class CFrameAnalysis;
-class CToolbarSample;
-class CMenuBarSample;
 
 class CFrameSample : public CMDIFrame
 {
@@ -48,7 +47,7 @@ public:
   CFrameSample(
     CFrameAnalysis *pCreator,
     mainFrame *parent,
-    wxSize sz, 
+    const wxSize &sz, 
     COARfile *pFile,
     COARsample *pSample);
   virtual ~CFrameSample();
@@ -58,18 +57,39 @@ public:
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual wxMenu *GetMenu();
   virtual bool Destroy();
-  void SetupTitle();
+  void OnButton(wxCommandEvent &e);
+  void UpdateMenu();
+  void SetupTitle(bool bForce = false);
   void InitiateRepaintData();
   void RepaintData();
-  const wxString GetUserID();
+  const wxString &GetUserID();
+  void SaveUserID();
+  bool CanOverrideUserID();
+  void UpdateSizeHack(bool bForce = true);
+  void SetupMenuItems();
   DECLARE_PERSISTENT_SIZE
 private:
+  void _EnableItem(int nID, bool bEnable)
+  {
+    m_pToolbar->EnableItem(nID,bEnable);
+    m_pMenuBar->EnableItem(nID,bEnable);
+  }
+  void _SetSampleEnabled(bool bSampleEnabled)
+  {
+    m_pToolbar->SetSampleEnabled(bSampleEnabled);
+    m_pMenuBar->SetSampleEnabled(bSampleEnabled);
+  }
   typedef CMDIFrame SUPER;
-  void _ToggleToolbar();
   void _OpenGraphic();
   void _History();
-  void _ShowToolbar(bool bShow);
+  void _ApplyAll();
+  void _Apply();
+  void _Accept();
+  void _Approve();
+  //void _ShowToolbar(bool bShow);
 
+  wxString m_sUserID;
+  wxSize m_sz;
   CHistoryTime m_Hist;
   CNotebookEditSample *m_pNoteBook;
   CFrameAnalysis *m_pCreator;
@@ -78,6 +98,7 @@ private:
   COARsample *m_pSample;
   CToolbarSample *m_pToolbar;
   CMenuBarSample *m_pMenuBar;
+  bool m_bTitleMod;
 public:
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CFrameSample)

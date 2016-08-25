@@ -299,6 +299,7 @@
     <ClCompile Include="CDialogVolumes.cpp" />
     <ClCompile Include="CDialogWarnHistory.cpp" />
     <ClCompile Include="CDirList.cpp" />
+    <ClCompile Include="CEditSampleIcons.cpp" />
     <ClCompile Include="CFrameAnalysis.cpp" />
     <ClCompile Include="CFramePlot.cpp" />
     <ClCompile Include="CFrameRunAnalysis.cpp" />
@@ -439,6 +440,7 @@
     <ClInclude Include="CDialogVolumes.h" />
     <ClInclude Include="CDialogWarnHistory.h" />
     <ClInclude Include="CDirList.h" />
+    <ClInclude Include="CEditSampleIcons.h" />
     <ClInclude Include="CEventScroll.h" />
     <ClInclude Include="CFrameAnalysis.h" />
     <ClInclude Include="CFramePlot.h" />
@@ -544,7 +546,6 @@
     <ClInclude Include="CXSLExportFileType.h" />
     <ClInclude Include="extractCXSLExportFile.h" />
     <ClInclude Include="IArtifactGroup.h" />
-    <ClInclude Include="IPageEditSample.h" />
     <ClInclude Include="ISetDateTime.h" />
     <ClInclude Include="LABEL_TYPES.h" />
     <ClInclude Include="mainApp.h" />

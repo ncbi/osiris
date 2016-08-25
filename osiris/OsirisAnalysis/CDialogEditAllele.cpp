@@ -75,7 +75,7 @@ CDialogEditAllele::CDialogEditAllele(
   m_pSample = pSample;
   m_pPanel = new CPanelLocusDetails(
     pSample, nChannel,
-    &Locus,&MsgIn,this,wxID_ANY,true,false,false);
+    &Locus,&MsgIn,this,wxID_ANY,true,true,false);
   _InitCommon(Locus.GetName(),sSampleName);
 }
 void CDialogEditAllele::_InitCommon(

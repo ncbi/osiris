@@ -34,17 +34,17 @@
 
 #include <wx/datetime.h>
 #include <wx/window.h>
-#include "IPageEditSample.h"
 #include "CLabSettings.h"
 #include "COARfile.h"
 class CNotebookEditSample;
+class CPanelSampleAlertDetails;
 
-class CPageEditSample : public IPageEditSample
+class CPageEditSample
 {
 public:
   CPageEditSample(CNotebookEditSample *pParentPanel, COARfile *pFile, int nCountType, bool bReadOnly = false) :
       m_pFile(pFile),
-      m_pParent(pParentPanel),
+      m_pParentNotebook(pParentPanel),
       m_pPanel(NULL),
       m_nReviewerCount(-1),
       m_nAcceptanceCount(-1),
@@ -58,28 +58,36 @@ public:
           nCountType);      
       };
   virtual ~CPageEditSample();
+  virtual bool NeedsApply() = 0;
+  virtual bool NeedsAcceptance() = 0;
+  virtual bool NeedsReview() = 0;
+  virtual bool HasHistory() = 0;
+  virtual bool DoApply() = 0;
+  virtual bool TransferDataToPage() = 0;
+  virtual const wxString &GetPageLabel() = 0;
+  virtual const wxString &GetNewNotes() = 0;
+  bool NeedsAttn()
+  {
+    return NeedsAcceptance() || NeedsReview();
+  }
+
+  virtual bool DoReview();
+  virtual bool DoAccept();
+  virtual wxWindow *GetPanel();
+  virtual wxWindow *GetPanelPage();
+  wxWindow *GetParentWindow();
   bool IsReadOnly()
   {
     return m_bReadOnly;
   }
-//  virtual operator wxWindow *()
-//  {
-//    return GetPanel();
-//  }
-  virtual bool DoReview();
-  virtual bool DoAccept();
-  wxWindow *GetParentWindow();
-  virtual const wxString &GetPageLabel() = 0;
-  virtual const wxString &GetNewNotes() = 0;
   bool IsNewNotesEmpty()
   {
     return GetNewNotes().IsEmpty();
   }
-  virtual wxWindow *GetPanel();
 protected:
   const wxString &GetUserID();
 
-  virtual wxWindow *CreatePanel() = 0;
+  virtual wxWindow *CreatePanel(wxWindow *parent) = 0;
   virtual IAppendReview *CreateReviewReceiver() = 0;
   virtual IAppendReview *CreateAcceptReceiver() = 0;
 
@@ -87,8 +95,9 @@ private:
   wxString m_sUserID;
 protected:
   COARfile *m_pFile;
-  CNotebookEditSample *m_pParent;
+  CNotebookEditSample *m_pParentNotebook;
   wxWindow *m_pPanel;
+  //wxWindow *m_pPanelPage;
   int m_nReviewerCount;
   int m_nAcceptanceCount;
   IAppendReview *m_pReview;
@@ -111,7 +120,7 @@ public:
           nCountType,
           bReadOnly)
       {}
-  virtual void DoApply();
+  virtual bool DoApply();
   virtual bool TransferDataToPage();
   virtual bool NeedsApply();
   virtual const wxString &GetPageLabel()
@@ -131,9 +140,12 @@ protected:
     m_sLabel = m_sLabelShort;
     m_sLabel.Append("Notices");
   }
+  virtual wxWindow *CreatePanel(wxWindow *parent);
+  virtual CPanelSampleAlertDetails *CreateSubPanel(wxWindow *parent) = 0;
   virtual wxString GetReviewAcceptance() = 0;
   virtual void UpdateNotes() = 0;
   virtual const COARnotes *GetNotes() = 0;
+  virtual void UpdateMessages() = 0;
   const wxString &GetNotesText()
   {
     return COARnotes::GetText(GetNotes());
@@ -165,12 +177,15 @@ public:
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
+  virtual void UpdateMessages();
   virtual void UpdateNotes();
   virtual const COARnotes *GetNotes();
-  virtual wxWindow *CreatePanel();
+  virtual CPanelSampleAlertDetails *CreateSubPanel(wxWindow *parent);
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
+private:
+  std::vector<wxString> m_vsLocus;
 };
 
 
@@ -194,9 +209,10 @@ public:
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
+  virtual void UpdateMessages();
   virtual void UpdateNotes();
   virtual const COARnotes *GetNotes();
-  virtual wxWindow *CreatePanel();
+  virtual CPanelSampleAlertDetails *CreateSubPanel(wxWindow *pParent);
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
@@ -225,9 +241,10 @@ public:
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
+  virtual void UpdateMessages();
   virtual void UpdateNotes();
   virtual const COARnotes *GetNotes();
-  virtual wxWindow *CreatePanel();
+  virtual CPanelSampleAlertDetails *CreateSubPanel(wxWindow *pParent);
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
@@ -258,9 +275,10 @@ public:
   virtual bool NeedsReview();
   virtual bool HasHistory();
 protected:
+  virtual void UpdateMessages();
   virtual void UpdateNotes();
   virtual const COARnotes *GetNotes();
-  virtual wxWindow *CreatePanel();
+  virtual CPanelSampleAlertDetails *CreateSubPanel(wxWindow *pParent);
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
@@ -296,7 +314,7 @@ public:
   virtual bool NeedsAcceptance();
   virtual bool NeedsReview();
   virtual bool HasHistory();
-  virtual void DoApply();
+  virtual bool DoApply();
   virtual bool TransferDataToPage();
   virtual const wxString &GetPageLabel()
   {
@@ -304,7 +322,7 @@ public:
   }
   virtual const wxString &GetNewNotes();
 protected:
-  virtual wxWindow *CreatePanel();
+  virtual wxWindow *CreatePanel(wxWindow *parent);
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
 private:

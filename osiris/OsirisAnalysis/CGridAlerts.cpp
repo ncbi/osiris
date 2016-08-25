@@ -121,6 +121,7 @@ bool CGridAlerts::TransferDataToWindow()
   if(nCount)
   {
     const COARmessage *pMsg;
+    SetRowCount((int)nCount);
     for(size_t j = 0; j < nCount; j++)
     {
       pMsg = m_pMsgEdit->GetMessage(j,m_dtHistory);

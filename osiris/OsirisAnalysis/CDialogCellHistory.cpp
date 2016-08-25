@@ -186,10 +186,18 @@ void CDialogCellHistory::ShowHistory(
       dlg.ShowModal();
     }
   }
-  else if(!pSample->IsEdited(pMsg,NULL,false))
+  else if( (nHistoryType != SA_NDX_DIR) &&
+    !pSample->IsEdited(pMsg,NULL,false) )
   {
     const wxString sMsg = 
     "There is no history for sample, channel, or ILS alerts.";
+    mainApp::ShowAlert(sMsg,parent);
+  }
+  else if( (nHistoryType == SA_NDX_DIR) &&
+    !pOARfile->IsDirMessageEdited() )
+  {
+    const wxString sMsg = 
+    "There is no history for directory alerts.";
     mainApp::ShowAlert(sMsg,parent);
   }
   else

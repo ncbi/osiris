@@ -39,6 +39,8 @@
 #include "CMruListIcons.h"
 #include "wxIDS.h"
 
+IMPLEMENT_ABSTRACT_CLASS(CDialogMRU,wxDialog)
+
 void CDialogMRU::_SetupImageList()
 {
   long nImage;
@@ -59,9 +61,9 @@ void CDialogMRU::_SetupImageList()
 }
 
 CDialogMRU::CDialogMRU(
-      nwxXmlMRU *pMRU, mainFrame *parent, int nStyle) : 
+      nwxXmlMRU *pMRU, mainFrame *parent, const wxSize &szDefault,int nStyle) : 
   wxDialog(parent->DialogParent(),wxID_ANY,"Recently Viewed Files",
-    wxDefaultPosition, wxDefaultSize,
+    GET_PERSISTENT_POSITION(CDialogMRU),GET_PERSISTENT_SIZE_DEFAULT(CDialogMRU,szDefault),
     mainApp::DIALOG_STYLE),
   m_pCBstartup(NULL),
   m_pButtonCleanup(NULL),
@@ -137,7 +139,7 @@ CDialogMRU::CDialogMRU(
 
   pSizer->Layout();
   SetMinSize(wxDefaultSize);
-  CentreOnParent();
+  //CentreOnParent();
   _SetupImageList();
 }
 
@@ -317,7 +319,10 @@ void CDialogMRU::OnColumnClick(wxListEvent &e)
   if(n >= 0) {m_pListMRU->SortBy(n);}
 }
 */
+IMPLEMENT_PERSISTENT_SIZE_POSITION(CDialogMRU)
+
 BEGIN_EVENT_TABLE(CDialogMRU,wxDialog)
+EVT_PERSISTENT_SIZE_POSITION(CDialogMRU)
 EVT_BUTTON(IDbuttonClearSearchMRU, CDialogMRU::OnClearSearch)
 EVT_BUTTON(IDbuttonCleanMRU,CDialogMRU::OnCleanup)
 EVT_TEXT(IDtextSearchMRU,CDialogMRU::OnSearch)

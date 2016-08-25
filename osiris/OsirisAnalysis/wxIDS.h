@@ -184,6 +184,7 @@ enum
   IDSampleApply,
   IDSampleAccept,
   IDSampleApprove,
+  IDSampleNotebook,
 
   IDlistProcesses,
 
