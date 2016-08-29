@@ -34,8 +34,10 @@ osiris_SOURCES =  \
 ../CDialogVolumes.cpp \
 ../CDialogWarnHistory.cpp \
 ../CDirList.cpp \
+../CEditSampleIcons.cpp \
 ../CFrameAnalysis.cpp \
 ../CFramePlot.cpp \
+../CFrameSample.cpp \
 ../CFrameRunAnalysis.cpp \
 ../CGridAlerts.cpp \
 ../CGridAllele.cpp \
@@ -76,7 +78,9 @@ osiris_SOURCES =  \
 ../CMenuHistory.cpp \
 ../CMenuLabels.cpp \
 ../CMenuPlot.cpp \
+../CMenuSample.cpp \
 ../CMenuWindow.cpp \
+../CNotebookEditSample.cpp \
 ../COARallele.cpp \
 ../COARchannelAlert.cpp \
 ../COARdirectoryAlerts.cpp \
@@ -93,6 +97,7 @@ osiris_SOURCES =  \
 ../COmittedAlerts.cpp \
 ../COsirisIcon.cpp \
 ../CPageAuto.cpp \
+../CPageEditSample.cpp \
 ../CPageName.cpp \
 ../CPageNoParameters.cpp \
 ../CPageParameters.cpp \
