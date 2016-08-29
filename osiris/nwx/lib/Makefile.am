@@ -24,7 +24,9 @@ libnwx_a_SOURCES = \
 ../nwxSysOpt.cpp \
 ../nwxTabOrder.cpp \
 ../nwxTextCtrl.cpp \
+../nwxTreebook.cpp \
 ../nwxXmlCMF.cpp \
 ../nwxXmlMRU.cpp \
-../nwxXmlPersist.cpp
+../nwxXmlPersist.cpp \
+../nwxXmlSizer.cpp
 
