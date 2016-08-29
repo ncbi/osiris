@@ -28,5 +28,5 @@ libnwx_a_SOURCES = \
 ../nwxXmlCMF.cpp \
 ../nwxXmlMRU.cpp \
 ../nwxXmlPersist.cpp  \
-../nwxXmlWindowSizes.h
+../nwxXmlWindowSizes.cpp
 
