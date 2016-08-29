@@ -53,7 +53,9 @@ CFrameSample::CFrameSample(
   mainFrame *parent,
   const wxSize &sz,
   COARfile *pFile,
-  COARsample *pSample) : 
+  COARsample *pSample,
+  int nSelectAlerts,
+  const wxString &sSelectLocus) : 
     CMDIFrame(parent,wxID_ANY,wxEmptyString,wxDefaultPosition,INITSIZE(sz)),
     m_sz(sz),
     m_Hist(NULL),
@@ -63,12 +65,21 @@ CFrameSample::CFrameSample(
     m_pOARfile(pFile),
     m_pSample(pSample),
     m_bTitleMod(false)
+    //,m_bFirstShow(true)
 {
     wxString s = wxPanelNameStr;
 
   SetupTitle(true);
   wxPanel *pPanel = new wxPanel(this);
   m_pNoteBook = new CNotebookEditSample(m_pOARfile,m_pSample,pPanel,wxID_ANY,NULL);
+  if(!sSelectLocus.IsEmpty())
+  {
+    SelectLocus(sSelectLocus);
+  }
+  else if(nSelectAlerts >= 0)
+  {
+    SelectAlerts(nSelectAlerts);
+  }
   m_pToolbar = new CToolbarSample(this,pPanel);
   m_pParent->InsertWindow(this,m_pOARfile);
   m_pMenuBar = new CMenuBarSample();
@@ -83,12 +94,35 @@ CFrameSample::CFrameSample(
   pPanel->SetSizer(pSizer);
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(pPanel,1,wxEXPAND | wxALL,0);
-  SetSizer(pSizer);
-  Layout();
 
+  SetSizer(pSizer);
+  TransferDataToWindow();
+  Layout();  // layout before transferring data
 }
 CFrameSample::~CFrameSample() {}
 
+void CFrameSample::SelectLocus(const wxString &sLocus)
+{
+  m_pNoteBook->SelectLocus(sLocus);
+}
+void CFrameSample::SelectAlerts(int nAlertType)
+{
+  m_pNoteBook->SelectAlerts(nAlertType);
+}
+
+#if 0
+bool CFrameSample::Show(bool show)
+{
+  bool bRtn = CMDIFrame::Show(show);
+  if(show && m_bFirstShow)
+  {
+    Layout();
+    TransferDataToWindow();
+    m_bFirstShow = false;
+  }
+  return bRtn;
+}
+#endif
 int CFrameSample::GetType()
 {
   return FRAME_SAMPLE;

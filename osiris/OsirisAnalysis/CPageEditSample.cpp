@@ -67,6 +67,25 @@ bool CPageEditSample::DoAccept()
   }
   return bRtn;
 }
+const wxString &CPageEditSample::GetTreePageLabel()
+{
+  if(NeedsApply())
+  {
+    if(m_sTreePageLabelModified.IsEmpty())
+    {
+      m_sTreePageLabelModified = GetPageLabel();
+      m_sTreePageLabelModified.Append(wxT(" *"));
+    }
+    return m_sTreePageLabelModified;
+  }
+  if(m_sTreePageLabelPlain.IsEmpty())
+  {
+    m_sTreePageLabelPlain = GetPageLabel();
+    m_sTreePageLabelPlain.Append(wxT("    "));
+  }
+  return m_sTreePageLabelPlain;
+}
+
 bool CPageEditSample::DoReview()
 {
   bool bRtn = false;
@@ -365,21 +384,40 @@ const COARnotes *CEditAlertsChannel::GetNotes()
 //  END GetNotes
 //  BEGIN GetReviewAcceptance() - notes to display for past review and acceptance
 
+#define APPEND_STRINGS(s1,s2) \
+  if(!s2.IsEmpty())           \
+  { if(!s1.IsEmpty())         \
+    { s1.Append(wxT("\n")); } \
+    s1.Append(s2);            \
+  }
+
 wxString CEditAlertsDir::GetReviewAcceptance()
 {
-  return m_pFile->FormatReviewAcceptance();
+  wxString s1 = m_pFile->FormatReviewAcceptance();
+  wxString s2 = m_pFile->CheckDirStatus();
+  nwxString::Append(&s1,s2);
+  return s1;
 }
 wxString CEditAlertsSample::GetReviewAcceptance()
 {
-  return m_pSample->FormatSampleReviewAcceptance(NULL);
+  wxString s1 = m_pSample->FormatSampleReviewAcceptance(NULL);
+  wxString s2 = m_pFile->CheckSampleStatus(m_pSample);
+  nwxString::Append(&s1,s2);
+  return s1;
 }
 wxString CEditAlertsILS::GetReviewAcceptance()
 {
-  return m_pSample->FormatILSReviewAcceptance(NULL);
+  wxString s1 = m_pSample->FormatILSReviewAcceptance(NULL);
+  wxString s2 = m_pFile->CheckILSStatus(m_pSample);
+  nwxString::Append(&s1,s2);
+  return s1;
 }
 wxString CEditAlertsChannel::GetReviewAcceptance()
 {
-  return m_pSample->FormatChannelReviewAcceptance(NULL);
+  wxString s1 = m_pSample->FormatChannelReviewAcceptance(NULL);
+  wxString s2 = m_pFile->CheckChannelStatus(m_pSample);
+  nwxString::Append(&s1,s2);
+  return s1;
 }
 //  END GetReviewAcceptance()
 //  BEGIN UpdateMessages
@@ -455,14 +493,7 @@ bool CPageEditSampleAlerts::TransferDataToPage()
     UpdateMessages();
     wxString s = GetReviewAcceptance();
     const wxString &sNotes(GetNotesText());
-    if(!sNotes.IsEmpty())
-    {
-      if(!s.IsEmpty())
-      {
-        s.Append(CLabels::NOTES_AFTER_REVIEW);
-      }
-      s.Append(sNotes);
-    }
+    nwxString::Append(&s,sNotes,CLabels::NOTES_AFTER_REVIEW);
     pPanel->SetNotesText(s);
     pPanel->ClearNewNotes();
     pPanel->TransferDataToWindow();

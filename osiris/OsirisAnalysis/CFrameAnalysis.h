@@ -191,12 +191,15 @@ public:
   void DoAcceptSample(int nReviewType,COARsample *pSample);
   void DoReviewLocus(COARsample *pSample, COARlocus *pLocus);
   void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus, wxWindow *parent = NULL);
+#if 0
   void DoEditLocus(COARsample *pSample, 
     COARlocus *pLocus, 
     wxWindow *pParent = NULL);
+#endif
   bool CheckIfHistoryOK();
   void CheckSaveStatus();
   void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
+  void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType);
 private:
   CXSLExportFileType *GetFileTypeByID(int nID);
 
@@ -230,9 +233,10 @@ private:
   void _OnEnableMultiple();
   void _OnEnableSample();
   void _OnReAnalyze();
+#if 0
   void _OnEditLocus(COARsample *pSample, int nCol);
   void _OnEditAlerts(COARsample *pSample, int nCol);
-  void _OnEditAlertsByType(COARsample *pSample, int nType);
+#endif
   int _GetPreviewColumn();
   void _UpdatePreview();
   void _SetupLocusPanel(COARsample *pSample, int nChannel, const wxString &sLocusName);
@@ -494,8 +498,8 @@ public:
   void OnGridGraph(wxGridEvent &);
   void OnGridCellGraph(wxGridEvent &);
   void OnLabelClick(wxGridEvent &);
-  void OnEdit(wxCommandEvent &);
-  void OnEditDirectory(wxCommandEvent &);
+  //void OnEdit(wxCommandEvent &);
+  //void OnEditDirectory(wxCommandEvent &);
   void OnEditMenu(wxGridEvent &);
   void OnEditFromGrid(wxGridEvent &);
   void OnTogglePreview(wxCommandEvent &);

@@ -170,6 +170,7 @@
     <ClCompile Include="nwxTabOrder.cpp" />
     <ClCompile Include="nwxTextCtrl.cpp" />
     <ClCompile Include="nwxTimerReceiver.cpp" />
+    <ClCompile Include="nwxTreebook.cpp" />
     <ClCompile Include="nwxXmlCMF.cpp" />
     <ClCompile Include="nwxXmlCMFtest.cpp" />
     <ClCompile Include="nwxXmlMRU.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="nwxTabOrder.h" />
     <ClInclude Include="nwxTextCtrl.h" />
     <ClInclude Include="nwxTimerReceiver.h" />
+    <ClInclude Include="nwxTreebook.h" />
     <ClInclude Include="nwxTypeValidator.h" />
     <ClInclude Include="nwxXmlCMF.h" />
     <ClInclude Include="nwxXmlMRU.h" />

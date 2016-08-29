@@ -49,8 +49,14 @@ public:
     mainFrame *parent,
     const wxSize &sz, 
     COARfile *pFile,
-    COARsample *pSample);
+    COARsample *pSample,
+    int nSelectAlerts = -1,
+    const wxString &sSelectLocus = wxEmptyString);
   virtual ~CFrameSample();
+  //virtual bool Show(bool show = true);
+  void SelectLocus(const wxString &sLocus);
+
+  void SelectAlerts(int nAlertType);
   virtual int GetType();
   virtual bool TransferDataToWindow();
   virtual void OnTimer(wxTimerEvent &);
@@ -99,6 +105,7 @@ private:
   CToolbarSample *m_pToolbar;
   CMenuBarSample *m_pMenuBar;
   bool m_bTitleMod;
+  //bool m_bFirstShow;
 public:
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CFrameSample)

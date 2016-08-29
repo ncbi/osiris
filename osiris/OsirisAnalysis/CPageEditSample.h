@@ -66,6 +66,7 @@ public:
   virtual bool TransferDataToPage() = 0;
   virtual const wxString &GetPageLabel() = 0;
   virtual const wxString &GetNewNotes() = 0;
+  virtual const wxString &GetTreePageLabel();
   bool NeedsAttn()
   {
     return NeedsAcceptance() || NeedsReview();
@@ -94,6 +95,8 @@ protected:
 private:
   wxString m_sUserID;
 protected:
+  wxString m_sTreePageLabelModified;
+  wxString m_sTreePageLabelPlain;
   COARfile *m_pFile;
   CNotebookEditSample *m_pParentNotebook;
   wxWindow *m_pPanel;

@@ -43,23 +43,14 @@
 #include "ISetDateTime.h"
 #include "CPanelSampleAlertDetails.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/stdb.h"
+#include <vector>
+#include <map>
+#include "nwx/stde.h"
 
-#define TREEBOOK 1
-#if TREEBOOK
-#include <wx/treebook.h>
-#define CNOTEBOOK_TYPE wxTreebook
-#define CNOTEBOOK_STYLE wxNB_LEFT
-#define ADD_SUB_PAGE AddSubPage
+#include <nwx/nwxTreebook.h>
 #define C_EVT_CHANGING EVT_TREEBOOK_PAGE_CHANGING
 #define C_EVT_CHANGED EVT_TREEBOOK_PAGE_CHANGED
-#else
-#include <wx/notebook.h>
-#define CNOTEBOOK_TYPE wxNotebook
-#define CNOTEBOOK_STYLE wxNB_TOP
-#define ADD_SUB_PAGE AddPage
-#define C_EVT_CHANGING EVT_NOTEBOOK_PAGE_CHANGING
-#define C_EVT_CHANGED EVT_NOTEBOOK_PAGE_CHANGED
-#endif
 
 class CPageEditSample;
 class CPanelUserID;
@@ -98,6 +89,8 @@ public:
   virtual bool TransferDataToWindow();
   virtual bool Validate();
   virtual void OnTimer(wxTimerEvent &);
+  void SelectLocus(const wxString &sLocus);
+  void SelectAlerts(int nAlertType);
   bool IsModified();
   bool InBatch()
   {
@@ -125,7 +118,7 @@ public:
   {
     return m_pNotebook->GetSelection();
   }
-  CNOTEBOOK_TYPE *GetNotebookWindow()
+  nwxTreebook *GetNotebookWindow()
   {
     return m_pNotebook;
   }
@@ -206,8 +199,47 @@ public:
   void RepaintData();
   void InitiateRepaintData();
 private:
+  void _SetSelection(size_t n)
+  {
+    m_nSelectPage = n;
+    // 2016-08-29 djh
+    // another UGLY hack around UI problem
+    // by default, the last locus is selected.
+    // if the last locus is selected by the user
+    // it won't render properly unless another
+    // page in the 'treebook' is selected
+    // when the window is first rendered.
+    //
+    size_t nCheck = SA_WINDOW_COUNT + 1;
+    if(m_nTimerCount && (m_nSelectPage > nCheck))
+    {
+      m_pNotebook->SetSelection(nCheck);
+    }
+#if 0
+    if(m_pNotebook->IsShown())
+    {
+      m_pNotebook->SetSelection(n);
+    }
+    else
+    {
+      m_nSelectPage = n;
+    }
+#endif
+  }
   void _SetupFrame();
   void _UpdateMenu();
+
+#ifdef __WXDEBUG__
+  bool m_bTreeDumped;
+  void _DumpTree();
+  void _DumpItems(
+    std::vector<wxString> *pvs, 
+    wxTreeCtrl *pTree, 
+    const wxTreeItemId &id,
+    int nLevel);
+
+#endif
+
   /* wxString _GetReviewAcceptance(int n, const wxDateTime *pdt = NULL);
   */
   std::vector<const wxString> m_asLocus;
@@ -219,7 +251,7 @@ private:
   COARsample *m_pSample;
   COARfile *m_pFile;
   CFrameSample *m_pFrame;
-  CNOTEBOOK_TYPE *m_pNotebook;
+  nwxTreebook *m_pNotebook;
 //  CPanelSampleAlertDetails *m_pSplitter[SA_WINDOW_COUNT];
   size_t m_nSelectPage;
   size_t m_nTimerCount;

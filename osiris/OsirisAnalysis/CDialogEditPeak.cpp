@@ -503,6 +503,11 @@ const wxString CDialogEditPeak::GetLocusName()
   }
   return sRtn;
 }
+#define SETUP_SAMPLE_LOCUS_NAME \
+COARsample *pSample = \
+  pFile->GetSampleByName(m_pSample->GetName()); \
+const wxString &sLocusName(m_pCurrent->GetLocusName())
+
 #define SETUP_SAMPLE_LOCUS \
 COARsample *pSample = \
   pFile->GetSampleByName(m_pSample->GetName()); \
@@ -535,15 +540,6 @@ bool CDialogEditPeak::_Do_Accept(
     pFrame->DoAcceptLocus(pSample,pLocus,parent);
   }
   return bRtn;
-}
-bool CDialogEditPeak::_Do_EditLocus(
-  COARfile *pFile,
-  CFrameAnalysis *pFrame,
-  wxWindow *parent)
-{
-  SETUP_SAMPLE_LOCUS;
-  pFrame->DoEditLocus(pSample,pLocus,parent);
-  return true;
 }
 bool CDialogEditPeak::_Do_UpdatePeak(
     COARfile *pFile, CFrameAnalysis *pFrame)
@@ -596,7 +592,9 @@ bool CDialogEditPeak::UpdateFile(
   }
   else if(nRtnCode == ID_EDIT)
   {
-    bRtn = _Do_EditLocus(pFile,pFrame,parent);
+    SETUP_SAMPLE_LOCUS_NAME;
+    pFrame->ShowSampleFrame(pSample,sLocusName,-1);
+    bRtn = true;
   }
   else if(nRtnCode == wxID_OK)
   {

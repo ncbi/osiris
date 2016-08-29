@@ -71,6 +71,17 @@ public:
     char x[2] = {csep,0};
     Join(ss,ps,x);
   }
+  static void Append(wxString *ps1, const wxString &s2, const wxChar *psSep = wxT("\n"))
+  {
+    if(!s2.IsEmpty())
+    {
+      if(!ps1->IsEmpty())
+      {
+        ps1->Append(psSep);
+      }
+      ps1->Append(s2);
+    }
+  }
   static size_t SplitLines(const char *ps, vector<wxString> *pvs, bool bClearEmpty = false, bool bTrim = false)
   {
     wxString s(ps);

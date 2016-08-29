@@ -274,21 +274,27 @@ const COARnotes *CPanelSampleAlertNotebook::_GetNotes(
 wxString CPanelSampleAlertNotebook::_GetReviewAcceptance(int n, const wxDateTime *pdt)
 {
   wxString sRtn;
+  wxString s2;
   switch(n)
   {
     case SA_NDX_SAMPLE:
       sRtn = m_pSample->FormatSampleReviewAcceptance(pdt);
+      s2 = m_pFile->CheckSampleStatus(m_pSample,pdt);
       break;
     case SA_NDX_ILS:
       sRtn = m_pSample->FormatILSReviewAcceptance(pdt);
+      s2 = m_pFile->CheckILSStatus(m_pSample,pdt);
       break;
     case SA_NDX_CHANNEL:
       sRtn = m_pSample->FormatChannelReviewAcceptance(pdt);
+      s2 = m_pFile->CheckChannelStatus(m_pSample,pdt);
       break;
     case SA_NDX_DIR:
       sRtn = m_pFile->FormatReviewAcceptance(pdt);
+      s2 = m_pFile->CheckDirStatus(pdt);
       break;
   }
+  nwxString::Append(&sRtn,s2);
   return sRtn;
 }
 

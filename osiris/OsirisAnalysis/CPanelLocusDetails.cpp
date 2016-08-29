@@ -49,9 +49,10 @@ CPanelLocusDetails::CPanelLocusDetails(
   bool bSplitHorizontal,
   bool bReadOnly) :
     wxPanel(parent,id),
-    m_LocusEdit(*pLocus),
+//    m_LocusEdit(*pLocus), // init replaced by _InitData()
 //    m_MsgEdit(*pMessages),
     m_pPanelUser(NULL),
+    m_pSample(NULL),
     m_pLocus(pLocus),
     m_pMsgs(pMessages),
     m_bReadOnly(bReadOnly),
@@ -70,9 +71,10 @@ CPanelLocusDetails::CPanelLocusDetails(
   bool bSplitLocusHorizontal,
   bool bReadOnly) :
     wxPanel(parent,id),
-    m_LocusEdit(*pLocus),
+//    m_LocusEdit(*pLocus), // init replaced by _InitData()
 //    m_MsgEdit(*pMessages),
     m_pPanelUser(NULL),
+    m_pSample(pSample),
     m_pLocus(pLocus),
     m_pMsgs(pMessages),
     m_bReadOnly(bReadOnly),
@@ -93,7 +95,8 @@ void CPanelLocusDetails::_InitCommon(
   wxPanel *pPanelNotes;
   wxBoxSizer *pSizer;
   wxPanel *pPanelLocus;
-  m_MsgEdit.CopyOnly(*m_pMsgs,m_LocusEdit.GetAlerts());
+  //m_MsgEdit.CopyOnly(*m_pMsgs,m_LocusEdit.GetAlerts()); // replaced with _InitData()
+  _InitData();
   int nStyle = ID_SPLITTER_STYLE;
   if(!bSplitHorizontal)
   {
@@ -121,7 +124,6 @@ void CPanelLocusDetails::_InitCommon(
     m_pGridLocus = m_pGridLocusPeaks;
     m_pGridLocus11 = NULL;
   }
-
   m_pGridAlerts = new CGridAlerts(
     &m_MsgEdit,m_pSplitterLocus,wxID_ANY,0,m_bReadOnly);
 
@@ -206,18 +208,17 @@ wxPanel *CPanelLocusDetails::_CreateNotesPanel()
 }
 bool CPanelLocusDetails::TransferDataToWindow()
 {
+   _InitData();
   wxString s = m_LocusEdit.FormatReviewAcceptance(m_HistTime);
-  wxString sNotes = m_LocusEdit.GetNotes(m_HistTime);
-  if(!sNotes.IsEmpty())
-  {
-    if(!s.IsEmpty())
-    {
-      s.Append(CLabels::NOTES_AFTER_REVIEW);
-    }
-    s.Append(sNotes);
-  }
+  wxString sNotes = m_pSample->GetFile()->CheckLocusStatus(m_pLocus,m_HistTime);
+  nwxString::Append(&s,sNotes);
+  sNotes = m_LocusEdit.GetNotes(m_HistTime);
+  nwxString::Append(&s,sNotes,CLabels::NOTES_AFTER_REVIEW);
   m_pTextNotes->SetValue(s);
-  m_pTextNewNotes->Clear();
+  if(m_pTextNewNotes != NULL)
+  {
+    m_pTextNewNotes->Clear();
+  }
   if(m_pGridLocus11 != NULL)
   {
     m_pGridLocus11->SetDateTime(m_HistTime,true);

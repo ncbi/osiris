@@ -33,10 +33,6 @@
 #include <wx/stattext.h>
 #include <wx/sizer.h>
 #include "wxIDS.h"
-#include "nwx/stdb.h"
-#include <vector>
-#include <map>
-#include "nwx/stde.h"
 #include "nwx/nsstd.h"
 #include "nwx/nwxString.h"
 #include "nwx/vectorptr.h"
@@ -48,6 +44,16 @@
 #include "CPageEditSample.h"
 #include "CEditSampleIcons.h"
 
+#define SETUP_STAT_IMG \
+  CEditSampleIcons *pIcons = nwxGET_GLOBAL(CEditSampleIcons); \
+  pIcons->CheckForUpdates(); \
+  CEditSampleIconsBatch CEditSampleIconsBatch_XXX; \
+  int ndxNeedsAttn = pIcons->GetNeedsAttnImage(); \
+  int ndxOK = pIcons->GetOKImage();
+
+#define STAT_IMG(bNeedsAttn) ((bNeedsAttn) ? ndxNeedsAttn : ndxOK)
+
+#define STAT_IMG_PAGE(pPage) STAT_IMG(pPage->NeedsAttn())
 
 CNotebookEditSample::~CNotebookEditSample() 
 {
@@ -79,18 +85,13 @@ CNotebookEditSample::CNotebookEditSample(
   nwxLog_I_WAS_HERE;
 
   wxBoxSizer *pSizer;
-  CEditSampleIcons *pIcons = nwxGET_GLOBAL(CEditSampleIcons);
-  pIcons->CheckForUpdates();
-  CEditSampleIconsBatch xxx;
+  SETUP_STAT_IMG
 
-  int ndxNeedsAttn = pIcons->GetNeedsAttnImage();
-  int ndxOK = pIcons->GetOKImage();
-#define STAT_IMG(bNeedsAttn) ((bNeedsAttn) ? ndxNeedsAttn : ndxOK)
   int i;
-  m_pNotebook = new CNOTEBOOK_TYPE(
-    this,wxID_ANY,
-    wxDefaultPosition, wxDefaultSize,
-    CNOTEBOOK_STYLE);
+#ifdef __WXDEBUG__
+  m_bTreeDumped = false;
+#endif
+  m_pNotebook = new nwxTreebook(this,true);
   m_pNotebook->SetImageList(pIcons->GetList());
   CPageEditSample *pPage;
   m_vpPanels.reserve(30);
@@ -121,8 +122,8 @@ CNotebookEditSample::CNotebookEditSample(
         wxString::Format("Cannot create page for type %d",i);
       wxASSERT_MSG(0, sErr);
     }
-    m_pNotebook->AddPage(pWin,pPage->GetPageLabel(),
-      false,STAT_IMG(pPage->NeedsAttn()));
+    m_pNotebook->AddPage(pWin,pPage->GetTreePageLabel(),
+      false,STAT_IMG_PAGE(pPage));
   }
   
   //****************************************************************
@@ -176,22 +177,19 @@ CNotebookEditSample::CNotebookEditSample(
         wxASSERT_MSG(0, sErr);
       }
       m_vpPanels.push_back(pPage);
-      m_pNotebook->ADD_SUB_PAGE(pWin,sLocusName,false,
-        STAT_IMG(pPage->NeedsAttn()));
+      m_pNotebook->AddSubPage(pWin,pPage->GetTreePageLabel(),false,
+        STAT_IMG_PAGE(pPage));
     }
   }
   // layout this
+  m_pNotebook->GetTreeCtrl()->ExpandAll();
   m_pNotebook->SetSelection(m_pNotebook->GetPageCount() - 1);
+  _SetupFrame();
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(m_pNotebook,1,wxEXPAND);
   SetSizer(pSizer);
-//  pSizer->Layout();
-#if TREEBOOK
-  m_pNotebook->GetTreeCtrl()->ExpandAll();
-#endif
-  _SetupFrame();
+  Layout();
   // OnTimer() was called before constructor was done during testing
-#undef STAT_IMG
   EndBatch();
 }
 void CNotebookEditSample::_SetupFrame()
@@ -276,13 +274,24 @@ bool CNotebookEditSample::TransferDataToWindow()
   CPanelListIterator itr;
   CPageEditSample *pPage;
   bool bRtn = true;
+  int nPos = 0;
+  SETUP_STAT_IMG
+
   for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
   {
     pPage = *itr;
-    if( (pPage != NULL) && !pPage->TransferDataToPage() )
+    if(pPage == NULL)
+    {}
+    else if( !pPage->TransferDataToPage() )
     {
       bRtn = false;
     }
+    else
+    {
+      m_pNotebook->SetPageImage(nPos,STAT_IMG_PAGE(pPage));
+      m_pNotebook->SetPageText(nPos,pPage->GetTreePageLabel());
+    }
+    nPos++;
   }
   return bRtn;
 }
@@ -336,6 +345,11 @@ void CNotebookEditSample::_UpdateMenu()
   if(m_pFrame != NULL)
   {
     m_pFrame->SetupMenuItems();
+    CPageEditSample *pPage = GetCurrentPanel();
+    if(pPage != NULL)
+    {
+      m_pNotebook->SetPageText(m_pNotebook->GetSelection(),pPage->GetTreePageLabel());
+    }
   }
 }
 
@@ -368,7 +382,7 @@ void CNotebookEditSample::OnChanging(wxBookCtrlEvent &e)
     if(pWin == NULL)
     {
       int nPrev = e.GetOldSelection();
-      CNOTEBOOK_TYPE *pBook = wxDynamicCast(e.GetEventObject(),CNOTEBOOK_TYPE);
+      nwxTreebook *pBook = wxDynamicCast(e.GetEventObject(),nwxTreebook);
       if(
         (pBook != m_pNotebook) ||
         (nPrev == wxNOT_FOUND) || 
@@ -424,6 +438,9 @@ void CNotebookEditSample::OnTimer(wxTimerEvent &)
       m_pNotebook->SetSelection(m_nSelectPage);
       m_nSelectPage = NOTEBOOK_OUT_OF_RANGE;
       m_pFrame->UpdateSizeHack(true);
+#ifdef __WXDEBUG__
+      if(!m_bTreeDumped) _DumpTree();
+#endif
     }
   }
   else
@@ -431,6 +448,87 @@ void CNotebookEditSample::OnTimer(wxTimerEvent &)
     m_nSelectPage = NOTEBOOK_OUT_OF_RANGE;
   }
 }
+
+void CNotebookEditSample::SelectLocus(const wxString &sLocus)
+{
+  if(!sLocus.IsEmpty())
+  {
+    size_t i = SA_WINDOW_COUNT;
+    size_t BIG = 100000;
+    for(std::vector<const wxString>::iterator itr = m_asLocus.begin();
+      (itr != m_asLocus.end()) && (i < BIG);
+      ++itr)
+    {
+      if((*itr) == sLocus)
+      {
+        _SetSelection(i);
+        i = BIG;
+      }
+      i++;
+    }
+  }
+}
+void CNotebookEditSample::SelectAlerts(int nAlertType)
+{
+  if(nAlertType >= 0 && nAlertType < SA_WINDOW_COUNT)
+  {
+    _SetSelection((size_t)nAlertType);
+  }
+}
+
+
+#ifdef __WXDEBUG__
+
+void CNotebookEditSample::_DumpItems(
+  std::vector<wxString> *pvs,
+  wxTreeCtrl *pTree,
+  const wxTreeItemId &id,
+  int nLevel)
+{
+  if(id.IsOk())
+  {
+    wxString s;
+    wxTreeItemId idN;
+    if(nLevel >= 0)
+    {
+      s.Append(wxT("\n"));
+      for(int i = 1; i < nLevel; ++i)
+      {
+        s.Append(wxT("--"));
+      }
+      s.Append(wxT(" "));
+      s.Append(nwxString::FormatNumber(pvs->size()));
+      s.Append(wxT(" "));
+      s.Append(pTree->GetItemText(id));
+      pvs->push_back(s);
+    }
+    wxTreeItemIdValue cookie;
+    for(idN = pTree->GetFirstChild(id,cookie);
+      idN.IsOk();
+      idN = pTree->GetNextChild(id,cookie))
+    {
+      _DumpItems(pvs,pTree,idN,nLevel+1);
+    }
+  }
+}
+void CNotebookEditSample::_DumpTree()
+{
+  std::vector<wxString> vs;
+  vs.reserve(32);
+  wxTreeCtrl *pTree = m_pNotebook->GetTreeCtrl();
+  long nStyle1 = pTree->GetWindowStyleFlag();
+  long nStyle2 = pTree->GetWindowStyle();
+  bool bHideRoot = !!((nStyle1 | nStyle2) & wxTR_HIDE_ROOT);
+  wxTreeItemId idRoot = pTree->GetRootItem();
+  _DumpItems(&vs,pTree,idRoot,bHideRoot ? -1 : 0);
+  wxString s;
+  nwxString::Join(vs,&s,"");
+  nwxLog_I_WAS_HERE;
+  nwxLog::LogMessage(s);
+  m_bTreeDumped = true;
+}
+
+#endif
 
 BEGIN_EVENT_TABLE(CNotebookEditSample,wxPanel)
 EVT_TEXT(wxID_ANY,CNotebookEditSample::OnEnter)

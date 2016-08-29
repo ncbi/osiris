@@ -516,36 +516,90 @@ public:
     return AddLine(pvs,sRtn);
   }
   bool NeedDirReview();
+
   bool NeedDirAcceptance();
   wxString CheckDirStatus(
     int nReview,
     int nAccept,
     const wxDateTime *pTime,
     bool *pbReview = NULL) const;
+
+  wxString CheckDirStatus(
+    const wxDateTime *pTime = NULL,
+    bool *pbReview = NULL) const
+  {
+    int nReview,nAccept;
+    GetReviewerCounts(&nReview,&nAccept,CLabReview::REVIEW_DIR);
+    return CheckDirStatus(nReview,nAccept,pTime,pbReview);
+  }
+
   wxString CheckChannelStatus(
     const COARsample *pSample,
     int nReview,
     int nAccept,
     const wxDateTime *pTime,
     bool *pbReview = NULL) const;
+
+  wxString CheckChannelStatus(
+    const COARsample *pSample,
+    const wxDateTime *pTime = NULL,
+    bool *pbReview = NULL) const
+  {
+    int nReview,nAccept;
+    GetReviewerCounts(&nReview,&nAccept,CLabReview::REVIEW_CHANNEL);
+    return CheckChannelStatus(pSample,nReview,nAccept,pTime,pbReview);
+  }
+
   wxString CheckILSStatus(
     const COARsample *pSample,
     int nReview,
     int nAccept,
     const wxDateTime *pTime,
     bool *pbReview = NULL) const;
+
+  wxString CheckILSStatus(
+    const COARsample *pSample,
+    const wxDateTime *pTime = NULL,
+    bool *pbReview = NULL) const
+  {
+    int nReview,nAccept;
+    GetReviewerCounts(&nReview,&nAccept,CLabReview::REVIEW_ILS);
+    return CheckILSStatus(pSample,nReview,nAccept,pTime,pbReview);
+  }
+  
   wxString CheckSampleStatus(
     const COARsample *pSample,
     int nReview,
     int nAccept,
     const wxDateTime *pTime,
     bool *pbReview = NULL) const;
+
+  wxString CheckSampleStatus(
+    const COARsample *pSample,
+    const wxDateTime *pTime = NULL,
+    bool *pbReview = NULL) const
+  {
+    int nReview,nAccept;
+    GetReviewerCounts(&nReview,&nAccept,CLabReview::REVIEW_SAMPLE);
+    return CheckSampleStatus(pSample,nReview,nAccept,pTime,pbReview);
+  }
+
   wxString CheckLocusStatus(
     const COARlocus *pLocus,
     int nReview,
     int nAccept,
     const wxDateTime *pTime,
     bool *pbReview = NULL) const;
+
+  wxString CheckLocusStatus(
+    const COARlocus *pLocus,
+    const wxDateTime *pTime = NULL,
+    bool *pbReview = NULL) const
+  {
+    int nReview,nAccept;
+    GetReviewerCounts(&nReview,&nAccept,CLabReview::REVIEW_LOCUS);
+    return CheckLocusStatus(pLocus,nReview,nAccept,pTime,pbReview);
+  }
 
 
   size_t CheckChannelStatus(

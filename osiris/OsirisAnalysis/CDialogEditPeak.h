@@ -84,8 +84,6 @@ private:
     COARfile *pFile, CFrameAnalysis *pFrame, wxWindow *parent);
   bool _Do_UpdatePeak(
     COARfile *pFile, CFrameAnalysis *pFrame);
-  bool _Do_EditLocus(
-    COARfile *pFile, CFrameAnalysis *pFrame, wxWindow *parent);
   void _EnableOffLadder(bool b = true);
   void _TransferCurrentToOffLadder();
   void _TransferOffLadderToCurrent();

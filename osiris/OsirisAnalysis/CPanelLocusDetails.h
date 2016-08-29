@@ -113,6 +113,11 @@ public:
   virtual bool SetDateTime(const wxDateTime *pTime);
   void UpdateFile(COARfile *pF, COARsample *pSample = NULL,const wxString &sUser = wxEmptyString);
 private:
+  void _InitData()
+  {
+    m_LocusEdit = *m_pLocus;
+    m_MsgEdit.CopyOnly(*m_pMsgs,m_LocusEdit.GetAlerts());
+  }
   void _UpdateNotes(const wxString &_sUser);
   wxPanel *_CreateNotesPanel();
   void _InitCommon(
@@ -135,6 +140,7 @@ private:
   CGridAlerts *m_pGridAlerts;
   CPanelUserID *m_pPanelUser;
   const COARlocus *m_pLocus;
+  const COARsample *m_pSample;
   const COARmessages *m_pMsgs;
   bool m_bReadOnly;
   bool m_bOAR12; // true if using OAR file version 1.2 or later
