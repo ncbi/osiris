@@ -350,7 +350,11 @@ bool mainFrame::Startup(bool bHasArgs)
       // send event to start up with the MRU window
       wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,IDlistMRU);
       e.SetInt(MRU_AT_STARTUP);
+#ifdef __WXMSW__
       GetEventHandler()->AddPendingEvent(e);
+#else
+      AddPendingEvent(e);
+#endif
     }
   }
   return bRtn;
