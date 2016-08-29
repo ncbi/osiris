@@ -667,7 +667,7 @@ bool InterchannelLinkage :: RemoveAll (Notice* primaryTarget, Notice* primaryRep
 
 bool InterchannelLinkage :: IsEmpty () {
 
-	if (mSecondarySignals.Entries () <= 1)
+	if (mSecondarySignals.IsEmpty ())
 		return true;
 
 	return false;

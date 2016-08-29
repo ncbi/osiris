@@ -1,8 +1,8 @@
-InputDirectory = F:/ROB/TestNCI;
+InputDirectory = F:/QA/Editing/Identifiler_Zoo;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/Documents/Osiris;
 MarkerSetName = IdentifilerPlus Less ILS250;
-LaneStandardName = ABI-LIZ-LESS250and340-450;
+LaneStandardName = ABI-LIZ-LESS250-500;
 CriticalOutputLevel = 15;
 StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20160801-122226/V-20160801-122226_StdSettings.xml;
 LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20160801-122226/V-20160801-122226_LabSettings.xml;
@@ -15,5 +15,4 @@ MinLadderInterlocusRFU = 250;
 SampleDetectionThreshold = 100;
 RawDataString = R;
 ;
-
 
