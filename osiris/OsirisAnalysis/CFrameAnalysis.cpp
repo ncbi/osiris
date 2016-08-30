@@ -1058,16 +1058,14 @@ void CFrameAnalysis::ShowSampleFrame(
   else
   {
     CFrameSample *pFrame = _FindSample(pSample);
-    if(pFrame != NULL)
-    {
-      pFrame->Raise();
-    }
-    else
+    if(pFrame == NULL)
     {
       const wxSize &sz = GET_PERSISTENT_SIZE(CFrameSample);
       pFrame = new CFrameSample(this,m_pParent,sz,m_pOARfile,pSample);
       _AddSample(pSample,pFrame);
     }
+    pFrame->Show(true);
+    pFrame->Raise();
     if(sLocus.IsEmpty())
     {
       pFrame->SelectAlerts(nAlertType);
@@ -1222,6 +1220,7 @@ void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
           wxID_ANY,
           sz);
     int n = dlg.ShowModal();
+    bool bGridFocus = true;
     if(n == wxID_OK)
     {
       RepaintData();
@@ -1229,8 +1228,12 @@ void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
     else if(n == IDmenuEditCell)
     {
       ShowSampleFrame(pSample,pLocus->GetName(),-1);
+      bGridFocus = false;
     }
-    m_pGrid->SetFocus();
+    if(bGridFocus)
+    {
+      m_pGrid->SetFocus();
+    }
   }
 }
 void CFrameAnalysis::_SetupLocusColumn(wxCommandEvent &e,

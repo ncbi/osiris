@@ -201,30 +201,9 @@ public:
 private:
   void _SetSelection(size_t n)
   {
+    // delay the selection of a page
+    // using OnTimer()
     m_nSelectPage = n;
-    // 2016-08-29 djh
-    // another UGLY hack around UI problem
-    // by default, the last locus is selected.
-    // if the last locus is selected by the user
-    // it won't render properly unless another
-    // page in the 'treebook' is selected
-    // when the window is first rendered.
-    //
-    size_t nCheck = SA_WINDOW_COUNT + 1;
-    if(m_nTimerCount && (m_nSelectPage > nCheck))
-    {
-      m_pNotebook->SetSelection(nCheck);
-    }
-#if 0
-    if(m_pNotebook->IsShown())
-    {
-      m_pNotebook->SetSelection(n);
-    }
-    else
-    {
-      m_nSelectPage = n;
-    }
-#endif
   }
   void _SetupFrame();
   void _UpdateMenu();

@@ -72,7 +72,7 @@ CNotebookEditSample::CNotebookEditSample(
     m_pFile(pFile),
     m_pFrame(NULL),
     m_pNotebook(NULL),
-    m_nSelectPage(0),
+    m_nSelectPage(SA_NDX_SAMPLE),
     m_nTimerCount(1), // delay setting notebook page
                // because of rendering problem
                // on the 'Notices' pages
@@ -391,11 +391,11 @@ void CNotebookEditSample::OnChanging(wxBookCtrlEvent &e)
       {}
       else if(nPrev < nPage)
       {
-        m_nSelectPage = (size_t)nPage + 1;
+        _SetSelection((size_t)nPage + 1);
       }
       else if(nPage > 0)
       {
-        m_nSelectPage = (size_t)nPage - 1;
+        _SetSelection((size_t)nPage - 1);
       }
       //e.Veto();
     }
@@ -461,6 +461,18 @@ void CNotebookEditSample::SelectLocus(const wxString &sLocus)
     {
       if((*itr) == sLocus)
       {
+        if(m_nTimerCount)
+        {
+          // 2016-08-30 djh
+          // UGLY hack around UI problem
+          // by default, the last locus is selected.
+          // if the last locus is selected by the user
+          // it won't render properly unless another
+          // page in the 'treebook' is selected
+          // when the window is first rendered.
+          //
+          m_pNotebook->SetSelection(0);
+        }
         _SetSelection(i);
         i = BIG;
       }
