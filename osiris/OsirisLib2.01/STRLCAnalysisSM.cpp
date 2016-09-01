@@ -916,7 +916,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	bool isFirstLadder = true;
 	RGString ABIModelNumber;
 	int nLadders = 0;
-	ChannelData::SetTestForDualSignal (false);
+	//ChannelData::SetTestForDualSignal (false);
+	ChannelData::SetTestForDualSignal (true);
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
