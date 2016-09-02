@@ -81,8 +81,9 @@ public:
     COARfile *pFile, // dont' need pFile, get it from pSample
     COARsample *pSample, 
     wxWindow *parent,
-    wxWindowID id = IDSampleNotebook,
-    const map<int,wxString> *pmapChannelNames = NULL
+    wxWindowID id = wxID_ANY,
+    const map<int,wxString> *pmapChannelNames = NULL,
+    bool bReadOnly = false
     )
 ;
   virtual ~CNotebookEditSample();

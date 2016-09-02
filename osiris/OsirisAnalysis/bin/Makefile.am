@@ -5,16 +5,12 @@ osiris_SOURCES =  \
 ../CArtifactLabelsUser.cpp \
 ../CComboLabels.cpp \
 ../CDialogAbout.cpp \
-../CDialogAcceptAlerts.cpp \
-../CDialogAcceptAllele.cpp \
 ../CDialogAnalysis.cpp \
 ../CDialogApprove.cpp \
 ../CDialogArtifactLabels.cpp \
 ../CDialogCMF.cpp \
 ../CDialogCellHistory.cpp \
 ../CDialogContactUs.cpp \
-../CDialogEditAllele.cpp \
-../CDialogEditChannelAlerts.cpp \
 ../CDialogEditGridColours.cpp \
 ../CDialogEditPeak.cpp \
 ../CDialogEnableMultiple.cpp \

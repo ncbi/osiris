@@ -54,13 +54,16 @@ CDialogApprove::CDialogApprove(
     const COARmessages &Msg,
     const set<wxDateTime> &setDateTime,
     bool bAllowUserNameOverride,
+    bool bShowUserID,
     wxWindow *parent, 
     wxWindowID id,
     const wxSize &sz)
     : wxDialog(parent,id,wxEmptyString,
         wxDefaultPosition,sz,
         mainApp::DIALOG_STYLE),
-      m_bAllowUserNameOverride(bAllowUserNameOverride)
+      m_sPersistName(wxT("CDialogApproveLocus")),
+      m_bAllowUserNameOverride(bAllowUserNameOverride),
+      m_bShowUserID(bShowUserID)
 {
   CSplitterCellHistory *pSplitter = 
     new CSplitterCellHistory(
@@ -87,14 +90,17 @@ CDialogApprove::CDialogApprove(
     int nSelect,
     COARfile *pFile,
     COARsample *pSample,
-    const map<int,wxString> &mapChannelNames,
+    bool bShowUserID,
+//    const map<int,wxString> &mapChannelNames,
     wxWindow *parent,
     wxWindowID id,
     const wxSize &sz)
     : wxDialog(parent,id,wxEmptyString,
         wxDefaultPosition,sz,
         mainApp::DIALOG_STYLE),
-      m_bAllowUserNameOverride(pFile->GetReviewerAllowUserOverride())
+      m_sPersistName(wxT("CDialogApproveAlert")),
+      m_bAllowUserNameOverride(pFile->GetReviewerAllowUserOverride()),
+      m_bShowUserID(bShowUserID)
 {
   CSplitterCellHistory *pSplitter = 
     new CSplitterCellHistory(
@@ -102,7 +108,6 @@ CDialogApprove::CDialogApprove(
       true,
       *pFile,
       *pSample,
-      mapChannelNames,
       this,
       IDhistoryPanel);
   wxString sType;
@@ -147,9 +152,10 @@ CDialogApprove::CDialogApprove(
 void CDialogApprove::_Setup(
   CSplitterCellHistory *pSplitter)
 {
-  const int USER_FLAG =
-    UID_BTN_APPROVE | UID_BTN_CANCEL | UID_BTN_EDIT |
-    UID_SPACER_BTN_CENTER | UID_SEND_BTN_EVENTS;
+  int USER_FLAG =
+    UID_BTN_APPROVE | UID_BTN_CANCEL |
+    UID_SPACER_BTN_CENTER | UID_SEND_BTN_EVENTS |
+    (m_bShowUserID ?  UID_BTN_EDIT : UID_NO_USER_TEXT_BOX);
 
   CPanelUserID *pPanel = new CPanelUserID(
     this,wxID_ANY,wxID_ANY,m_pApprove,USER_FLAG,
@@ -169,6 +175,9 @@ void CDialogApprove::OnEdit(
   EndModal(n);
 }
 
+IMPLEMENT_PERSISTENT_SIZE_POSITION_NAME(CDialogApprove,m_sPersistName)
+
 BEGIN_EVENT_TABLE(CDialogApprove,wxDialog)
 EVT_BUTTON(IDmenuEditCell,CDialogApprove::OnEdit)
+EVT_PERSISTENT_SIZE_POSITION(CDialogApprove)
 END_EVENT_TABLE()

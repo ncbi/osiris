@@ -82,6 +82,15 @@ public:
     wxWindow *parent,
     wxWindowID id);
 
+  CSplitterCellHistory(
+    int nSelect,
+    bool bSingle,
+    const COARfile &File,
+    const COARsample &Sample,
+    wxWindow *parent,
+    wxWindowID id);
+
+
   virtual ~CSplitterCellHistory();
   void OnNotebookChange(wxNotebookEvent &);
   void OnHistoryChange(wxCommandEvent &);

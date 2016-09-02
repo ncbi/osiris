@@ -758,6 +758,14 @@ public:
   {
     return m_pFile->AppendDirReview(sName);
   }
+  virtual bool IsReview() const
+  {
+    return true;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
+  }
 private:
   COARfile *m_pFile;
 };
@@ -772,6 +780,14 @@ public:
   virtual bool AppendReview(const wxString &sName)
   {
     return m_pFile->AppendDirAcceptance(sName);
+  }
+  virtual bool IsReview() const
+  {
+    return false;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
   }
 private:
   COARfile *m_pFile;

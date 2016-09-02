@@ -69,19 +69,18 @@ public:
   }
   bool UpdateFile(
     COARfile *pFile,
-    CFrameAnalysis *pFrame, 
-    wxWindow *parent = NULL);
+    CFrameAnalysis *pFrame);
   const wxString GetLocusName();
   bool IsModified();
-  static const int ID_ACCEPT;
+//  static const int ID_ACCEPT;
   static const int ID_EDIT;
 private:
-  void OnAccept(wxCommandEvent &);
+  //void OnAccept(wxCommandEvent &);
   void OnEdit(wxCommandEvent &);
   void OnWidget(wxCommandEvent &);
   void _Cleanup();
-  bool _Do_Accept(
-    COARfile *pFile, CFrameAnalysis *pFrame, wxWindow *parent);
+  //bool _Do_Accept(
+  //  COARfile *pFile, CFrameAnalysis *pFrame, wxWindow *parent);
   bool _Do_UpdatePeak(
     COARfile *pFile, CFrameAnalysis *pFrame);
   void _EnableOffLadder(bool b = true);
@@ -119,7 +118,7 @@ private:
   wxCheckBox *m_pCheckCritical;
   wxCheckBox *m_pCheckDontShowAgain;
   wxCheckBox *m_pCheckBoxLadderAccept;
-  wxButton *m_pButtonAccept;
+  //wxButton *m_pButtonAccept;
   wxButton *m_pButtonEditLocus;
 
   bool m_bCanAcceptHere;
@@ -134,7 +133,7 @@ private:
     m_ID_OFF_LADDER_ACCEPTED,
     m_ID_ARTIFACT_ENABLED,
     m_ID_ARTIFACT_CRITICAL,
-    m_ID_ACCEPT,
+//    m_ID_ACCEPT,
     m_ID_EDIT
   };
   DECLARE_EVENT_TABLE();

@@ -301,16 +301,17 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       nX = rrect.GetX();
       nY = rrect.GetY();
       int nStyle = pLabel->GetStyle();
-      if(nStyle & nwxPointLabel::STYLE_BOX)
-      {
-        pdc->DrawRectangle(rrect);
-      }
       pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY);
       if(nStyle & nwxPointLabel::STYLE_DISABLED)
       {
         wxPoint pt1(nX,nY);
         wxPoint pt2(nX + rrect.GetWidth(),nY + rrect.GetHeight());
         pdc->DrawLine(pt1,pt2);
+      }
+      if(nStyle & nwxPointLabel::STYLE_BOX)
+      {
+        pdc->SetBrush(*wxTRANSPARENT_BRUSH);
+        pdc->DrawRectangle(rrect);
       }
     }
     pdc->SetTextForeground(cFG);
@@ -433,8 +434,8 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
       nx += ptArea.x;
       rect.SetX(nx);
       rect.SetY(ny);
-      pdc->DrawRectangle(rect);
       pdc->SetTextForeground(label.GetColour());
+      pdc->DrawRectangle(rect);
       pdc->DrawText(label.GetLabel(),nx,ny);
       rect.x -= ptArea.x;  // set to plot area coordinates
       rect.y -= ptArea.y;

@@ -66,7 +66,8 @@ CNotebookEditSample::CNotebookEditSample(
   COARsample *pSample,
   wxWindow *parent,
   wxWindowID id,
-  const map<int,wxString> *pmapChannelNames) :
+  const map<int,wxString> *pmapChannelNames,
+  bool bReadOnly) :
     wxPanel(parent,id),
     m_pSample(pSample),
     m_pFile(pFile),
@@ -78,7 +79,7 @@ CNotebookEditSample::CNotebookEditSample(
                // on the 'Notices' pages
                // see OnTimer() for details
     m_nBatch(0),
-    m_bReadOnly(false)
+    m_bReadOnly(bReadOnly)
 {
   BeginBatch();
   vector<wxString> vsLocus;
@@ -100,16 +101,16 @@ CNotebookEditSample::CNotebookEditSample(
     switch(i)
     {
     case SA_NDX_DIR:
-      pPage = new CEditAlertsDir(this,pFile);
+      pPage = new CEditAlertsDir(this,pFile,m_bReadOnly);
       break;
     case SA_NDX_SAMPLE:
-      pPage = new CEditAlertsSample(this,pSample);
+      pPage = new CEditAlertsSample(this,pSample,m_bReadOnly);
       break;
     case SA_NDX_ILS:
-      pPage = new CEditAlertsILS(this,pSample);
+      pPage = new CEditAlertsILS(this,pSample,m_bReadOnly);
       break;
     case SA_NDX_CHANNEL:
-      pPage = new CEditAlertsChannel(this,pSample,pmapChannelNames);
+      pPage = new CEditAlertsChannel(this,pSample,pmapChannelNames,m_bReadOnly);
       break;
     default:
       pPage = NULL;
@@ -168,7 +169,7 @@ CNotebookEditSample::CNotebookEditSample(
     {
       const wxString &sLocusName = pChannel->GetLocusName(j);
       m_asLocus.push_back(sLocusName);
-      pPage = new CPageEditLocus(this,pSample,sLocusName,(int)k);
+      pPage = new CPageEditLocus(this,pSample,sLocusName,(int)k,m_bReadOnly);
       wxWindow *pWin = pPage->GetPanelPage();
       if(pWin == NULL)
       {
@@ -290,6 +291,10 @@ bool CNotebookEditSample::TransferDataToWindow()
     {
       m_pNotebook->SetPageImage(nPos,STAT_IMG_PAGE(pPage));
       m_pNotebook->SetPageText(nPos,pPage->GetTreePageLabel());
+      if(!m_bReadOnly)
+      {
+        pPage->CheckReadOnly();
+      }
     }
     nPos++;
   }

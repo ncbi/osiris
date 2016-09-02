@@ -88,12 +88,12 @@ CGridAlerts::CGridAlerts(
       if(bChannel)
       {
         SetCellAlignment((int)j,m_nChannelColumn,wxALIGN_CENTRE,wxALIGN_CENTRE);
-        SetReadOnly((int)j,m_nChannelColumn,true);
+        wxGrid::SetReadOnly((int)j,m_nChannelColumn,true);
       }
       if(bLocus)
       {
         SetCellAlignment((int)j,m_nLocusColumn,wxALIGN_LEFT,wxALIGN_CENTRE);
-        SetReadOnly((int)j,m_nLocusColumn,true);
+        wxGrid::SetReadOnly((int)j,m_nLocusColumn,true);
       }
       SetRowLabelValue((int)j,wxEmptyString);
     }
@@ -115,6 +115,18 @@ CGridAlerts::CGridAlerts(
 
 CGridAlerts::~CGridAlerts() {;}
 
+void CGridAlerts::SetTableReadOnly(bool bReadOnly)
+{
+  _CGridEdit::SetTableReadOnly(bReadOnly);
+  if(bReadOnly)
+  {
+    DisableDragColSize();
+  }
+  else
+  {
+    EnableDragColSize();
+  }
+}
 bool CGridAlerts::TransferDataToWindow()
 {
   size_t nCount = m_pMsgEdit->GetMessageCount();

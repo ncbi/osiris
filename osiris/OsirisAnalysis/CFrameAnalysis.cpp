@@ -40,8 +40,8 @@
 #include "CDialogWarnHistory.h"
 #include "CDialogCMF.h"
 #include "CDialogToggleEnabled.h"
-#include "CDialogAcceptAllele.h"
-#include "CDialogAcceptAlerts.h"
+//#include "CDialogAcceptAllele.h"
+//#include "CDialogAcceptAlerts.h"
 #include "CDialogApprove.h"
 #include "CDialogEditPeak.h"
 #include "CLabSettings.h"
@@ -67,8 +67,6 @@
 #include "CXSLExportFileType.h"
 #include "CDialogHistoryAll.h"
 #include "CDialogParameters.h"
-#include "CDialogEditAllele.h"
-#include "CDialogEditChannelAlerts.h"
 #include "CDialogCellHistory.h"
 #include "CPanelSampleAlertNotebook.h"
 #include "COsirisIcon.h"
@@ -494,7 +492,7 @@ void CFrameAnalysis::EditPeak(
       n = xx.ShowModal();
       if(n != wxID_CANCEL)
       {
-        bool b = xx.UpdateFile(m_pOARfile,this,parent);
+        bool b = xx.UpdateFile(m_pOARfile,this);
         if(!b)
         {
           wxString ss = wxT("Problem with CDialogEditPeak::UpdateFile");
@@ -553,6 +551,7 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
       break;
     case IDmenuAcceptLocus:
       _OnAcceptLocus(e);
+      //OnShowSample(e);
       break;
     case IDmenuReviewLocus:
       _OnReviewLocus(e);
@@ -1216,6 +1215,7 @@ void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
           *pMsg,
           *(m_pOARfile->GetHistory()),
           m_pOARfile->GetReviewerAllowUserOverride(),
+          true,
           this,
           wxID_ANY,
           sz);
@@ -1303,6 +1303,8 @@ void CFrameAnalysis::DoAcceptSample(int nReviewType,COARsample *pSample)
     }
     if(nSelect >= 0)
     {
+      ShowSampleFrame(pSample,wxEmptyString,nSelect);
+#if 0
       wxSize sz(SIZE_EDIT_ALERTS);
       map<int,wxString> mapChannelNames; // empty for now
       CDialogAcceptAlerts dlg(
@@ -1323,6 +1325,7 @@ void CFrameAnalysis::DoAcceptSample(int nReviewType,COARsample *pSample)
         ShowSampleFrame(pSample,wxEmptyString,nSelect);
       }
       m_pGrid->SetFocus();
+#endif
     }
   }
 }
@@ -1357,12 +1360,11 @@ void CFrameAnalysis::DoReviewSample(int nReviewType, COARsample *pSample)
     if(nSelect >= 0)
     {
       wxSize sz(SIZE_EDIT_LOCUS);
-      map<int,wxString> mapChannelNames; // empty for now
       CDialogApprove dlg(
         nSelect,
         m_pOARfile,
         pSample,
-        mapChannelNames,
+        true,
         this,
         wxID_ANY,
         sz);
@@ -1739,13 +1741,15 @@ void CFrameAnalysis::_UpdatePreview()
     _SetPreviewMenu(m_pPanelPlotPreview->GetMenu());
   }
 }
-void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus, wxWindow *parent)
+void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus)
 {
   if(_XmlFile() && 
       m_pOARfile->CanEditArtifacts() && 
       (pSample != NULL) &&
       (pLocus != NULL) )
   {
+    ShowSampleFrame(pSample,pLocus->GetName(),-1);
+#if 0
     const wxString &sSampleName(pSample->GetName());
     if(pLocus != NULL)
     {
@@ -1770,8 +1774,10 @@ void CFrameAnalysis::DoAcceptLocus(COARsample *pSample, COARlocus *pLocus, wxWin
       }
       m_pGrid->SetFocus();
     }
+#endif
   }
 }
+
 void CFrameAnalysis::_OnAcceptLocus(wxCommandEvent &e)
 {
   COARsample *pSample = NULL;
@@ -1782,7 +1788,6 @@ void CFrameAnalysis::_OnAcceptLocus(wxCommandEvent &e)
     DoAcceptLocus(pSample,pLocus);
   }
 }
-
 #if 0
 void CFrameAnalysis::OnEditDirectory(wxCommandEvent &)
 {
@@ -2045,6 +2050,18 @@ bool CFrameAnalysis::IsEdited()
   bool bRtn = _XmlFile() ? m_pOARfile->IsModified() : false;
   return bRtn;
 }
+void CFrameAnalysis::SelectRowCol(int nRow, int nCol)
+{
+  if(nRow < 0 || nCol < 0)
+  {}
+  else if(nRow == m_nLastRowSelect && nCol == m_nLastColSelect)
+  {}
+  else
+  {
+    m_pGrid->SetGridCursor(nRow,nCol);
+    CheckSelection(true);
+  }
+}
 void CFrameAnalysis::SelectRow(int nRow)
 {
   if(nRow >= 0)
@@ -2102,9 +2119,9 @@ void CFrameAnalysis::UpdateStatusBar()
   m_pParent->SetStatusText(sText);
 }
 #endif
-bool CFrameAnalysis::SelectSample(const wxString &sSample)
+size_t CFrameAnalysis::GetSampleRow(const wxString &sSample)
 {
-  bool bRtn = false;
+  size_t nRtn = (size_t)wxNOT_FOUND;
   if(_XmlFile())
   {
     size_t nSize = m_SampleSort.GetCount();
@@ -2115,11 +2132,54 @@ bool CFrameAnalysis::SelectSample(const wxString &sSample)
       pSample = m_SampleSort.GetSample(i);
       if(pSample != NULL && nwxString::FileNameStringEqual(pSample->GetName(),sSample))
       {
-        SelectRow((int)i);
+        nRtn = i;
         i = nSize; // loop exit
-        bRtn = true; // found the sample
       }
     }
+  }
+  return nRtn;
+}
+bool CFrameAnalysis::SelectSample(const wxString &sSample)
+{
+  bool bRtn = false;
+  size_t nRow = GetSampleRow(sSample);
+  if(nRow != wxNOT_FOUND)
+  {
+    bRtn = true;
+    SelectRow((int)nRow);
+  }
+  return bRtn;
+}
+bool CFrameAnalysis::SelectSampleLocus(const wxString &sSample, const wxString &sLocus)
+{
+  size_t nRow = GetSampleRow(sSample);
+  bool bRtn = false;
+  if(nRow != wxNOT_FOUND)
+  {
+    size_t nCount = m_pOARfile->GetLocusCount();
+    for(size_t i = 0; i < nCount; ++i)
+    {
+      const wxString &s(m_pOARfile->GetLocusName(i));
+      if(!sLocus.CmpNoCase(s))
+      {
+        SelectRowCol(int(nRow),int(i) + FIRST_LOCUS_COLUMN);
+        i = nCount; // loop exit
+        bRtn = true;
+      }
+    }
+  }
+  return bRtn;
+}
+bool CFrameAnalysis::SelectSampleType(const wxString &sSample, int nType)
+{
+  size_t nRow = GetSampleRow(sSample);
+  bool bRtn = false;
+  if(nRow != wxNOT_FOUND)
+  {
+    int nCol = _TypeToCol(nType);
+    if(nCol < 0) { nCol = 0; };
+    SelectRowCol(nRow,nCol);
+    bRtn = true;
   }
   return bRtn;
 }

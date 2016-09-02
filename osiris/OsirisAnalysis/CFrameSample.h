@@ -92,6 +92,8 @@ private:
   void _Apply();
   void _Accept();
   void _Approve();
+  void _ToggleDisabled();
+  void _ShowTable();
   //void _ShowToolbar(bool bShow);
 
   wxString m_sUserID;

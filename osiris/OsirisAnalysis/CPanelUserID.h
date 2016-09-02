@@ -84,11 +84,8 @@ public:
   {
     return m_pTextCtrl;
   }
-  wxString GetValue();
-  void SetValue(const wxString &s)
-  {
-    m_pTextCtrl->ChangeValue(s);
-  }
+  const wxString &GetValue();
+  void SetValue(const wxString &s);
   virtual bool Enable(bool bEnable = true);
   void OnButton(wxCommandEvent &);
   void SetReviewReceiver(IAppendReview *pRev)
@@ -97,19 +94,24 @@ public:
   }
   void UpdateSize()
   {
-    m_pTextCtrl->UpdateSize();
+    if(m_bTextCtrl)
+    {  m_pTextCtrl->UpdateSize();
+    }
   }
   bool AddReview(IAppendReview *pReview = NULL,bool bNoDup = true);
   bool IsUserIDValid(wxString *psError = NULL);
 private:
   wxString m_sUserError;
+  wxString m_sUserID; 
+  // m_sUserID is needed if m_pTextCtrl is null,
+  //  and accessed only from GetValue() and SetValue()
   IAppendReview *m_pReview;
-  wxStaticText *m_pLabel;
   CTextUserID *m_pTextCtrl;
   wxButton *m_pButtonOK;
   wxButton *m_pButtonCancel;
   bool m_bSendBtnEvents;
   bool m_bDisableOnReview;
+  bool m_bTextCtrl;
 
   DECLARE_EVENT_TABLE()
 
@@ -125,5 +127,6 @@ private:
 #define UID_SPACER_BTN_RIGHT        128
 #define UID_SEND_BTN_EVENTS         256
 #define UID_DISABLE_ON_REVIEW       512
+#define UID_NO_USER_TEXT_BOX        1024
 
 #endif

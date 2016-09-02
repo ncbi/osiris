@@ -77,35 +77,49 @@ private: \
   INIT_PERSISTENT_POSITION(b) \
   INIT_PERSISTENT_SIZE(b) \
 
-
-#define FUNC_ON_RESIZE(className,check) \
+#define FUNC_ON_RESIZE_NAME(className,check, sName) \
 void className::OnPersistResize(wxSizeEvent &e) \
 { \
   if((e.GetEventObject() == this) && !IsMaximized() && !IsIconized()) \
   { nwxXmlWindowSizes::SaveWindowSizeGlobal( \
-      wxString( #className ), GetSize(), check ); \
+      sName, GetSize(), check ); \
   } \
   e.Skip(); \
 } \
+
+
+
+#define FUNC_ON_RESIZE(className,check) \
+  FUNC_ON_RESIZE_NAME( className,check,wxString( #className) )
+
 
 #define IMPLEMENT_PERSISTENT_SIZE(className) \
   FUNC_ON_RESIZE(className, true)
 
+#define IMPLEMENT_PERSISTENT_SIZE_NAME(className,sName) \
+  FUNC_ON_RESIZE_NAME(className, true, sName)
+
 #define IMPLEMENT_PERSISTENT_SIZE_OPTIONAL(className) \
   FUNC_ON_RESIZE(className, GetUsePersistSize() )
 
-#define FUNC_ON_POSITION(className, check) \
+#define FUNC_ON_POSITION_NAME(className, check, sName) \
 void className::OnPersistMove(wxMoveEvent &e) \
 { \
   if(e.GetEventObject() == this && !IsMaximized() && !IsIconized()) \
   { nwxXmlWindowSizes::SaveWindowPosGlobal( \
-      wxString( #className ), GetPosition(), check); \
+      sName, GetPosition(), check); \
   } \
   e.Skip(); \
 } \
 
+#define FUNC_ON_POSITION(className,check) \
+  FUNC_ON_POSITION_NAME(className, check, wxString( #className ))
+
 #define IMPLEMENT_PERSISTENT_POSITION(className) \
    FUNC_ON_POSITION(className,true)
+
+#define IMPLEMENT_PERSISTENT_POSITION_NAME(className,sName) \
+   FUNC_ON_POSITION_NAME(className,true,sName)
 
 #define IMPLEMENT_PERSISTENT_POSITION_OPTIONAL(className) \
    FUNC_ON_POSITION(className,GetUsePersistPosition())
@@ -113,6 +127,11 @@ void className::OnPersistMove(wxMoveEvent &e) \
 #define IMPLEMENT_PERSISTENT_SIZE_POSITION(className) \
   IMPLEMENT_PERSISTENT_SIZE(className) \
   IMPLEMENT_PERSISTENT_POSITION(className) \
+
+#define IMPLEMENT_PERSISTENT_SIZE_POSITION_NAME(className,sName) \
+  IMPLEMENT_PERSISTENT_SIZE_NAME(className,sName) \
+  IMPLEMENT_PERSISTENT_POSITION_NAME(className,sName) \
+
 
 #define IMPLEMENT_PERSISTENT_SIZE_POSITION_OPTIONAL(className) \
   IMPLEMENT_PERSISTENT_SIZE_OPTIONAL(className) \

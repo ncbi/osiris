@@ -37,6 +37,7 @@
 #include <map>
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
+#include "nwx/PersistentSize.h"
 
 class CSplitterCellHistory;
 class COARsample;
@@ -55,6 +56,7 @@ public:
     const COARmessages &Msg,
     const set<wxDateTime> &setDateTime,
     bool bAllowUserNameOverride,
+    bool bShowUserID,
     wxWindow *parent, 
     wxWindowID id = wxID_ANY,
     const wxSize &sz = wxDefaultSize);
@@ -62,16 +64,23 @@ public:
     int nSelect,
     COARfile *pFile,
     COARsample *pSample,
-    const map<int,wxString> &mapChannelNames,
+    bool bShowUserID,
     wxWindow *parent,
     wxWindowID id = wxID_ANY,
-    const wxSize &sz = wxDefaultSize);
+    const wxSize &sz = wxDefaultSize
+    );
   virtual ~CDialogApprove();
+
+  DECLARE_PERSISTENT_SIZE_POSITION
+
 private:
   void _Setup(CSplitterCellHistory *pSplitter);
   void OnEdit(wxCommandEvent &e);
+  wxString m_sPersistName;
   IAppendReview *m_pApprove;
+  IAppendReview *m_pIARmanaged;
   bool m_bAllowUserNameOverride;
+  bool m_bShowUserID;
   DECLARE_EVENT_TABLE()
 };
 

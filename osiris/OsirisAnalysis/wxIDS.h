@@ -179,13 +179,6 @@ enum
   IDbuttonClearSearchMRU,
   IDbuttonCleanMRU,
 
-  // sample window
-  IDSampleApplyAll,
-  IDSampleApply,
-  IDSampleAccept,
-  IDSampleApprove,
-  IDSampleNotebook,
-
   IDlistProcesses,
 
   IDlistMRU,
@@ -315,6 +308,12 @@ enum
   IDmenuPlotBase_7 = IDmenuPlotBase_6 + IDmenuPlot_MAX,
 
   IDmenuPlotBase_END,
+
+    // sample window
+  IDSampleApplyAll,
+  IDSampleApply,
+  IDSampleAccept,
+  IDSampleApprove,
 
   IDmenu_END,
 

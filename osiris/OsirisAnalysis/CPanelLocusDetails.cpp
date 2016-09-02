@@ -47,7 +47,8 @@ CPanelLocusDetails::CPanelLocusDetails(
   wxWindow *parent,
   wxWindowID id,
   bool bSplitHorizontal,
-  bool bReadOnly) :
+  bool bReadOnly,
+  bool bReadOnlyMayChange) :
     wxPanel(parent,id),
 //    m_LocusEdit(*pLocus), // init replaced by _InitData()
 //    m_MsgEdit(*pMessages),
@@ -56,7 +57,9 @@ CPanelLocusDetails::CPanelLocusDetails(
     m_pLocus(pLocus),
     m_pMsgs(pMessages),
     m_bReadOnly(bReadOnly),
-    m_bOAR12(false)
+    m_bReadOnlyMayChange(bReadOnlyMayChange) 
+     // if read only and bReadOnlyMayChange == true,
+     // a "new notes" text box is created
 {
   _InitCommon(bSplitHorizontal);
 }
@@ -69,7 +72,8 @@ CPanelLocusDetails::CPanelLocusDetails(
   wxWindowID id,
   bool bSplitHorizontal,
   bool bSplitLocusHorizontal,
-  bool bReadOnly) :
+  bool bReadOnly,
+  bool bReadOnlyMayChange) :
     wxPanel(parent,id),
 //    m_LocusEdit(*pLocus), // init replaced by _InitData()
 //    m_MsgEdit(*pMessages),
@@ -78,7 +82,7 @@ CPanelLocusDetails::CPanelLocusDetails(
     m_pLocus(pLocus),
     m_pMsgs(pMessages),
     m_bReadOnly(bReadOnly),
-    m_bOAR12(false)
+    m_bReadOnlyMayChange(bReadOnlyMayChange)
 {
   _InitCommon(
     bSplitHorizontal,bSplitLocusHorizontal,
@@ -185,7 +189,7 @@ wxPanel *CPanelLocusDetails::_CreateNotesPanel()
     pTextLabel,0, (wxALL ^ wxBOTTOM) | wxALIGN_LEFT,ID_BORDER);
   pSizer->Add(
     m_pTextNotes,2, (wxALL ^ wxTOP) | wxEXPAND,ID_BORDER);
-  if(m_bReadOnly)
+  if(m_bReadOnly && !m_bReadOnlyMayChange)
   {
     m_pTextNewNotes = NULL;
   }
@@ -201,6 +205,7 @@ wxPanel *CPanelLocusDetails::_CreateNotesPanel()
       wxLEFT | wxRIGHT | wxALIGN_LEFT,ID_BORDER);
     pSizer->Add(m_pTextNewNotes,1,
       (wxALL ^ wxTOP) | wxEXPAND, ID_BORDER);
+    if(m_bReadOnly) { m_pTextNewNotes->Enable(false); }
   }
 
   pPanelNotes->SetSizer(pSizer);
