@@ -48,6 +48,14 @@ public:
   virtual ~CEnableDisableMultiple()
   {}
   virtual bool AppendReview(const wxString &sName);
+  virtual bool IsReview() const
+  {
+    return false;
+  }
+  virtual bool IsAccept() const
+  {
+    return false;
+  }
 private:
   CDialogEnableMultiple *m_pDialog;
 };

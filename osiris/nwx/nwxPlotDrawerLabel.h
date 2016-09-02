@@ -48,7 +48,7 @@ class nwxPlotDrawerLabel : public wxPlotDrawerBase
 public:
   typedef set<nwxPointLabel> SET_LABEL;
   nwxPlotDrawerLabel(wxPlotCtrl *pOwner) :
-    wxPlotDrawerBase(pOwner), m_nMinY(0) {}
+    wxPlotDrawerBase(pOwner), m_nMinY(1) {}
   virtual ~nwxPlotDrawerLabel() {}
   virtual void Draw(wxDC *dc, bool refresh);
   void AddLabel(const nwxPointLabel &x)

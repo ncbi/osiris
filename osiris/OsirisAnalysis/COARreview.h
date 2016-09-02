@@ -38,6 +38,9 @@ class IAppendReview
 public:
   virtual ~IAppendReview() {}
   virtual bool AppendReview(const wxString &sName) = 0;
+  virtual bool IsReview() const = 0;
+  virtual bool IsAccept() const = 0;
+  static const wxString &FormatError(wxString *psBuffer, IAppendReview *pRA, const wxString &sUser);
 };
 
 class COARreview : public nwxXmlPersist
@@ -244,6 +247,14 @@ public:
 
   bool FindName(const wxString &sName);
   virtual void Sort();
+  virtual bool IsReview() const
+  {
+    return !GetNodeName().CmpNoCase(wxT("review"));
+  }
+  virtual bool IsAccept() const
+  {
+    return !GetNodeName().CmpNoCase(wxT("accept"));
+  }
   void GetReviews(
     vector<const COARreview *> *pRtnList,
     const wxDateTime *ptLastEdit,

@@ -109,7 +109,7 @@ public:
   void SetupChannelColumn(
     const CGridChannelCount &vpChannelCount,
     const map<int,wxString> *pmapChannelNames = NULL);
-
+  virtual void SetTableReadOnly(bool bReadOnly = true);
 
 private:
   void UpdateDisabledFromRow(int nRow, COARmessage *pMsg);

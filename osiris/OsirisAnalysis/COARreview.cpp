@@ -34,6 +34,30 @@
 // this should probably be in lab settings
 const wxChar * const COARreview::TIME_FORMAT(wxS("%c"));
 
+const wxString &IAppendReview::FormatError(wxString *psBuffer, IAppendReview *pRA, const wxString &sUser)
+{
+  const wxChar *ps;
+  if(pRA->IsAccept())
+  {
+    ps = wxT("accepted");
+  }
+  else if(pRA->IsReview())
+  {
+    ps = wxT("reviewed");
+  }
+  else
+  {
+    ps = wxT("accepted or approved");  // 20
+  }
+  psBuffer->Alloc(128);
+  *psBuffer = sUser;
+  psBuffer->Append(" has already ");  // 13
+  psBuffer->Append(ps);
+  psBuffer->Append(" this data."); // 11
+  return *psBuffer;
+}
+
+
 COARenabled::~COARenabled() {;}
 COARreview::~COARreview() {;}
 

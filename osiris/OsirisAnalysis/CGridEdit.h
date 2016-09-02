@@ -51,7 +51,7 @@ public:
   {
     return m_bReadOnly;
   }
-  void SetTableReadOnly(bool b = true)
+  virtual void SetTableReadOnly(bool b = true)
   {
     m_bReadOnly = b;
     EnableEditing(!m_bReadOnly);

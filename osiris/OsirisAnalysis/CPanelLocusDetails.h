@@ -54,8 +54,12 @@ public:
     wxWindow *parent,
     wxWindowID id = wxID_ANY,
     bool bSplitHorizontal = true,
-    bool bReadOnly = false
+    bool bReadOnly = false,
+    bool bReadOnlyMayChange = false
     );
+     // if read only and bReadOnlyMayChange == true,
+     // a "new notes" text box is created
+
   CPanelLocusDetails(
     const COARsample *pSample,
     int nChannel,
@@ -65,7 +69,8 @@ public:
     wxWindowID id = wxID_ANY,
     bool bSplitHorizontal = true,
     bool bSplitLocusHorizontal = false,
-    bool bReadOnly = false
+    bool bReadOnly = false,
+    bool bReadOnlyMayChange = false
     );
   void SetPanelUserID(CPanelUserID *p)
   {
@@ -112,6 +117,22 @@ public:
   }
   virtual bool SetDateTime(const wxDateTime *pTime);
   void UpdateFile(COARfile *pF, COARsample *pSample = NULL,const wxString &sUser = wxEmptyString);
+  void SetReadOnly(bool bReadOnly)
+  {
+    if(m_pTextNewNotes != NULL)
+    {
+      m_pTextNewNotes->Enable(!bReadOnly);
+    }
+    if(m_pGridLocus11 != NULL)
+    {
+      m_pGridLocus11->SetTableReadOnly(bReadOnly);
+    }
+    else if(m_pGridLocusPeaks != NULL)
+    {
+      m_pGridLocusPeaks->SetTableReadOnly(bReadOnly);
+    }
+    m_pGridAlerts->SetTableReadOnly(bReadOnly);
+  }
 private:
   void _InitData()
   {
@@ -143,7 +164,7 @@ private:
   const COARsample *m_pSample;
   const COARmessages *m_pMsgs;
   bool m_bReadOnly;
-  bool m_bOAR12; // true if using OAR file version 1.2 or later
+  bool m_bReadOnlyMayChange;
 
   void _OnAlertChange(wxGridEvent &e);
   void _OnLocusChange(wxGridEvent &e);

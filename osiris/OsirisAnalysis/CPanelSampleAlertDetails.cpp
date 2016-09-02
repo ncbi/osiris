@@ -56,7 +56,8 @@ CPanelSampleAlertDetails::CPanelSampleAlertDetails(
     const wxString &_sNotesLabel,
     int nGridType,
     bool bSplitHorizontal,
-    bool bReadOnly) : wxSplitterWindow
+    bool bReadOnly,
+    bool bReadOnlyMayChange) : wxSplitterWindow
       ( parent,wxID_ANY,
         wxDefaultPosition,wxDefaultSize, 
         ID_SPLITTER_STYLE
@@ -85,7 +86,7 @@ CPanelSampleAlertDetails::CPanelSampleAlertDetails(
     pLabelNotes,0, (wxALL ^ wxBOTTOM) | wxALIGN_LEFT,ID_BORDER);
   pSizer->Add(
     m_pTextNotes,2,(wxALL ^ wxTOP) | wxEXPAND, ID_BORDER);
-  if(!bReadOnly)
+  if(bReadOnlyMayChange || !bReadOnly)
   {
     wxStaticText *pLabelNewNotes = new wxStaticText(
       m_pPanelNotes,wxID_ANY,CLabels::ADDITIONAL_NOTES);
@@ -96,6 +97,7 @@ CPanelSampleAlertDetails::CPanelSampleAlertDetails(
        wxLEFT | wxRIGHT | wxALIGN_LEFT, ID_BORDER);
     pSizer->Add(m_pTextNewNotes,1,
       (wxALL ^ wxTOP) | wxEXPAND, ID_BORDER);
+    if(bReadOnly) { m_pTextNewNotes->Enable(false); }
   }
   m_pPanelNotes->SetSizer(pSizer);
 

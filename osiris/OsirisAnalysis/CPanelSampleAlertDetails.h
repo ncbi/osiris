@@ -55,7 +55,10 @@ public:
     const wxString &sNotesLabel = "Notes",
     int nGridType = 0,
     bool bSplitHorizontal = true,
-    bool bReadOnly = false);
+    bool bReadOnly = false,
+    bool bReadOnlyMayChange = false);
+      // bReadOnlyMayChange - forces creation of 
+      // the "new notes" text box if (bReadOnly == true)
 
   void SetupChannelColumn(
     const COARsample *pSample,
@@ -97,6 +100,14 @@ public:
     }
   }
   wxString GetNewNotesValue();
+  void SetReadOnly(bool bReadOnly)
+  {
+    m_pGridAlerts->SetTableReadOnly(bReadOnly);
+    if(m_pTextNewNotes != NULL)
+    {
+      m_pTextNewNotes->Enable(!bReadOnly);
+    }
+  }
   // wxString GetNotesText(const wxString &sUser = wxEmptyString);
   //wxString GetNewNotes(const COARnotes *pCurrent, const wxString &sUser = wxEmptyString);
 private:

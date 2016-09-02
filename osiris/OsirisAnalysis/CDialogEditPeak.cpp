@@ -52,7 +52,7 @@
 #define CBSORT  wxCB_SORT
 #endif
 
-const int CDialogEditPeak::ID_ACCEPT = CDialogEditPeak::m_ID_ACCEPT;
+//const int CDialogEditPeak::ID_ACCEPT = CDialogEditPeak::m_ID_ACCEPT;
 const int CDialogEditPeak::ID_EDIT = CDialogEditPeak::m_ID_EDIT;
 
 CDialogEditPeak::CDialogEditPeak(
@@ -72,7 +72,7 @@ CDialogEditPeak::CDialogEditPeak(
     m_pCheckEnabled(NULL),
     m_pCheckCritical(NULL),
     m_pCheckDontShowAgain(NULL),
-    m_pButtonAccept(NULL),
+    //m_pButtonAccept(NULL),
     m_pButtonEditLocus(NULL),
 
     m_bCanAcceptHere(false),
@@ -227,8 +227,8 @@ void CDialogEditPeak::_BuildAllele()
   pSizerLR->Add(pSizerRight,0,wxALIGN_TOP | wxALIGN_CENTER_HORIZONTAL | wxLEFT, ID_BORDER);
   pSizerLR->AddStretchSpacer(1);
   wxSizer *pSizerButtons = new wxBoxSizer(wxHORIZONTAL);
-  m_pButtonAccept = new wxButton(this,m_ID_ACCEPT,wxT("&Accept Locus"));
-  pSizerButtons->Add(m_pButtonAccept,0,wxLEFT | wxRIGHT | wxALIGN_CENTRE_VERTICAL,ID_BORDER);
+//  m_pButtonAccept = new wxButton(this,m_ID_ACCEPT,wxT("&Accept Locus"));
+//  pSizerButtons->Add(m_pButtonAccept,0,wxLEFT | wxRIGHT | wxALIGN_CENTRE_VERTICAL,ID_BORDER);
   m_pButtonEditLocus = new wxButton(this,m_ID_EDIT,wxT("&Edit Locus"));
   pSizerButtons->Add(m_pButtonEditLocus,0,wxLEFT | wxRIGHT | wxALIGN_CENTRE_VERTICAL,ID_BORDER);
   pSizerButtons->AddStretchSpacer(1);
@@ -366,7 +366,7 @@ void CDialogEditPeak::_SetupCanAccept()
     m_bLocusNeedsAcceptance = false;
     m_bCanAcceptHere = false;
   }
-  m_pButtonAccept->Enable(m_bLocusNeedsAcceptance);
+  //m_pButtonAccept->Enable(m_bLocusNeedsAcceptance);
 }
 void CDialogEditPeak::_BuildNoEdit()
 {
@@ -391,10 +391,12 @@ void CDialogEditPeak::OnWidget(wxCommandEvent &e)
   }
   _SetupWidgets();
 }
+#if 0
 void CDialogEditPeak::OnAccept(wxCommandEvent &)
 {
   EndModal(ID_ACCEPT);
 }
+#endif
 void CDialogEditPeak::OnEdit(wxCommandEvent &)
 {
   EndModal(ID_EDIT);
@@ -514,33 +516,6 @@ COARsample *pSample = \
 COARlocus *pLocus = \
   pSample->FindLocus(m_pCurrent->GetLocusName())
 
-bool CDialogEditPeak::_Do_Accept(
-  COARfile *pFile, CFrameAnalysis *pFrame, wxWindow *parent)
-{
-  SETUP_SAMPLE_LOCUS;
-  bool bRtn = true;
-  if(m_bCanAcceptHere)
-  {
-    CAppendAcceptanceLocus x(pLocus);
-    if(!x.AppendReview(wxGetUserId()))
-    {
-      wxString s(wxT("Could not accept locus from Edit Peak"));
-      mainApp::LogMessage(s);
-      mainApp::ShowError(s,pFrame);
-      bRtn = false;
-    }
-    else
-    {
-      pFile->SetIsModified(true);
-      pFrame->RepaintAllData(pSample);
-    }
-  }
-  else
-  {
-    pFrame->DoAcceptLocus(pSample,pLocus,parent);
-  }
-  return bRtn;
-}
 bool CDialogEditPeak::_Do_UpdatePeak(
     COARfile *pFile, CFrameAnalysis *pFrame)
 {
@@ -580,17 +555,17 @@ bool CDialogEditPeak::_Do_UpdatePeak(
 
 bool CDialogEditPeak::UpdateFile(
   COARfile *pFile,
-  CFrameAnalysis *pFrame,
-  wxWindow *parent)
+  CFrameAnalysis *pFrame)
 {
   int nRtnCode = GetReturnCode();
   bool bRtn = true;
   // need pointers that are not constants
-  if(nRtnCode == ID_ACCEPT)
-  {
-    bRtn = _Do_Accept(pFile,pFrame,parent);
-  }
-  else if(nRtnCode == ID_EDIT)
+//  if(nRtnCode == ID_ACCEPT)
+//  {
+//    bRtn = _Do_Accept(pFile,pFrame,parent);
+//  }
+//  else 
+  if(nRtnCode == ID_EDIT)
   {
     SETUP_SAMPLE_LOCUS_NAME;
     pFrame->ShowSampleFrame(pSample,sLocusName,-1);
@@ -615,7 +590,6 @@ bool CDialogEditPeak::UpdateFile(
 }
 
 BEGIN_EVENT_TABLE(CDialogEditPeak,wxDialog)
-EVT_BUTTON(m_ID_ACCEPT, CDialogEditPeak::OnAccept) 
 EVT_BUTTON(m_ID_EDIT, CDialogEditPeak::OnEdit)
 EVT_CHECKBOX(wxID_ANY,CDialogEditPeak::OnWidget)
 EVT_RADIOBUTTON(wxID_ANY,CDialogEditPeak::OnWidget)

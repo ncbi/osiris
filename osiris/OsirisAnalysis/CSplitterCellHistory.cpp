@@ -68,6 +68,23 @@ CSplitterCellHistory::CSplitterCellHistory(
   _BuildWindow(File,Sample,setDateTimeKeep,nSelect,bSingle);
 }
 
+CSplitterCellHistory::CSplitterCellHistory(
+  int nSelect,
+  bool bSingle,
+  const COARfile &File,
+  const COARsample &Sample,
+  wxWindow *parent,
+  wxWindowID id) :
+    wxSplitterWindow(
+      parent,id,
+      wxDefaultPosition, wxDefaultSize,
+      ID_SPLITTER_STYLE)
+{
+  set<wxDateTime> setDateTimeKeep;
+
+  _SetupSetDateTime(File,Sample,&setDateTimeKeep);
+  _BuildWindow(File,Sample,setDateTimeKeep,nSelect,bSingle);
+}
 
 CSplitterCellHistory::CSplitterCellHistory(
   const COARlocus &Locus,

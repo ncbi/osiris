@@ -184,13 +184,16 @@ public:
   virtual bool IsEdited();
   bool CheckSaveOnCloseFile();
   bool SelectSample(const wxString &sSample);
+  bool SelectSampleType(const wxString &sSample, int nType);
+  bool SelectSampleLocus(const wxString &sSample, const wxString &sLocus);
+  size_t GetSampleRow(const wxString &sSample);
 #if HAS_STATUS_BAR
   virtual void UpdateStatusBar();
 #endif
   void DoReviewSample(int nReviewType,COARsample *pSample);
   void DoAcceptSample(int nReviewType,COARsample *pSample);
   void DoReviewLocus(COARsample *pSample, COARlocus *pLocus);
-  void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus, wxWindow *parent = NULL);
+  void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus);
 #if 0
   void DoEditLocus(COARsample *pSample, 
     COARlocus *pLocus, 
@@ -352,7 +355,7 @@ private:
   void _CleanupMessageBook();
 
   void SetFileNameLabel(COARsample *pSample);
-
+  void SelectRowCol(int nRow, int nCol);
   void SelectRow(int nRow);
   void ShowGraphicByRow(int nRow = -1);
   void ShowStatusText(bool bIncludeStatusPanel = true );

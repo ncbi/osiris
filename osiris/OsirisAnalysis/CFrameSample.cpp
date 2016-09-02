@@ -35,6 +35,7 @@
 #include "CFrameAnalysis.h"
 #include "CMenuSample.h"
 #include "CDialogCellHistory.h"
+#include "CDialogApprove.h"
 #include "CPageEditSample.h"
 #include "wx/sizer.h"
 #include "nwx/nwxKeyState.h"
@@ -136,13 +137,18 @@ void CFrameSample::SetupTitle(bool bForce)
   bool bMod = (m_pNoteBook != NULL) && m_pNoteBook->IsModified();
   if(bForce || (bMod != m_bTitleMod))
   {
+    CParmOsiris *pParmGlobal = CParmOsiris::GetGlobal();
+    int nSampleNameLabel = pParmGlobal->GetTableShowSampleDisplayNames();
+    wxString sName = (nSampleNameLabel == IDmenuDisplayNameSample)
+      ? m_pSample->GetSampleName() //  sample name
+      : m_pSample->GetName();      //  sample file name (plt, fsa, hid)
+
     m_bTitleMod = bMod;
-    wxString s = m_pSample->GetSampleName();
-    s.Append(wxT("; "));
+    sName.Append(wxT("; "));
     wxFileName fn(m_pOARfile->GetFileName());
-    s.Append(fn.GetFullName());
+    sName.Append(fn.GetFullName());
     const CParmOsiris &parm(m_pOARfile->GetParameters());
-    wxString sTitle = mainApp::FormatWindowTitle(s,bMod,&parm,NULL);
+    wxString sTitle = mainApp::FormatWindowTitle(sName,bMod,&parm,NULL);
     SetTitle(sTitle);
   }
 }
@@ -192,10 +198,76 @@ void CFrameSample::_Accept()
 }
 void CFrameSample::_Approve()
 {
-  CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
-  if((pPage != NULL) && pPage->DoReview())
+  const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
+  int nSelected = m_pNoteBook->GetSelection();
+  int n = -1;
+  if(nSelected < SA_WINDOW_COUNT)
+  {
+    wxSize sz(SIZE_LOCUS_HISTORY);
+    CDialogApprove dlg(
+      nSelected,
+      m_pOARfile,
+      m_pSample,
+      false,
+      this,
+      wxID_ANY,sz);
+    n = dlg.ShowModal();
+  }
+  else
+  {
+    wxASSERT_MSG(!sLocus.IsEmpty(),wxT("CFrameSample::_Approve() locus not specified"));
+    wxSize sz(SIZE_EDIT_LOCUS);
+    const COARmessages *pMsg = m_pOARfile->GetMessages();
+    COARlocus *pLocus = m_pSample->FindLocus(sLocus);
+    const COARchannel *pChannel =
+          m_pOARfile->GetChannelFromLocus(sLocus);
+    int nChannel =
+          (pChannel == NULL) ? -1 : pChannel->GetChannelNr();
+    CDialogApprove dlg(
+      *m_pSample,
+      nChannel,
+      pLocus,
+      *pMsg,
+      *(m_pOARfile->GetHistory()),
+      false,
+      false,
+      this,
+      wxID_ANY,
+      sz);
+    n = dlg.ShowModal();
+  }
+  if(n == wxID_OK)
   {
     InitiateRepaintData();
+  }   
+}
+void CFrameSample::_ToggleDisabled()
+{
+  CPageEditSample *pPage = m_pNoteBook->GetPanel(SA_NDX_SAMPLE);
+  if( (pPage != NULL) && (pPage->DoToggleEnabled()) )
+  {
+    InitiateRepaintData();
+  }
+}
+void CFrameSample::_ShowTable()
+{
+  m_pCreator->Show(true);
+  m_pCreator->Raise();
+  const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
+  wxString sName = m_pSample->GetName();
+  bool b = false;
+  if(sLocus.IsEmpty())
+  {
+    int n = m_pNoteBook->GetSelection();
+    b = m_pCreator->SelectSampleType(sName,n);
+  }
+  else
+  {
+    b = m_pCreator->SelectSampleLocus(sName, sLocus);
+  }
+  if(!b)
+  {
+    nwxLog::LogMessage("CFrameSample::_ShowTable() could not locate row/col");
   }
 }
 bool CFrameSample::MenuEvent(wxCommandEvent &e)
@@ -208,8 +280,7 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
     _OpenGraphic();
     break;
   case IDmenuTable:
-    m_pCreator->Show(true);
-    m_pCreator->Raise();
+    _ShowTable();
     break;
   case IDmenuHistory:
     _History();
@@ -227,6 +298,7 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
     _Approve();
     break;
   case IDmenuDisableSample:
+    _ToggleDisabled();
     break;
   default:
     break;
@@ -242,12 +314,15 @@ void CFrameSample::RepaintData()
 {
   m_pNoteBook->TransferDataToWindow();
   SetupMenuItems();
+  SetupTitle(true);
 }
 const wxString &CFrameSample::GetUserID()
 {
   if(m_sUserID.IsEmpty())
   {
+#ifndef __WXDEBUG__
     if(CanOverrideUserID())
+#endif
     {
       CParmOsiris *parm = CParmOsiris::GetGlobal();
       m_sUserID = parm->GetCMFuserID();

@@ -42,7 +42,7 @@ class CPanelSampleAlertDetails;
 class CPageEditSample
 {
 public:
-  CPageEditSample(CNotebookEditSample *pParentPanel, COARfile *pFile, int nCountType, bool bReadOnly = false) :
+  CPageEditSample(CNotebookEditSample *pParentPanel, COARfile *pFile, COARsample *pSample, int nCountType, bool bReadOnly = false) :
       m_pFile(pFile),
       m_pParentNotebook(pParentPanel),
       m_pPanel(NULL),
@@ -50,6 +50,8 @@ public:
       m_nAcceptanceCount(-1),
       m_pReview(NULL),
       m_pAccept(NULL),
+      m_pDisable(NULL),
+      m_pSample(pSample),
       m_bReadOnly(bReadOnly)
       {
         m_pFile->GetReviewerCounts(
@@ -64,6 +66,16 @@ public:
   virtual bool HasHistory() = 0;
   virtual bool DoApply() = 0;
   virtual bool TransferDataToPage() = 0;
+  virtual void SetReadOnly(bool bReadOnly) = 0;
+  virtual void CheckReadOnly()
+  {
+    COARsample *pSample = GetSample();
+    bool b = IsReadOnly();
+    if( (pSample != NULL) && (pSample->IsDisabled() != b) )
+    {
+      SetReadOnly(!b);
+    }
+  }
   virtual const wxString &GetPageLabel() = 0;
   virtual const wxString &GetNewNotes() = 0;
   virtual const wxString &GetTreePageLabel();
@@ -71,9 +83,13 @@ public:
   {
     return NeedsAcceptance() || NeedsReview();
   }
-
+  COARsample *GetSample()
+  {
+    return m_pSample;
+  }
   virtual bool DoReview();
   virtual bool DoAccept();
+  virtual bool DoToggleEnabled();
   virtual wxWindow *GetPanel();
   virtual wxWindow *GetPanelPage();
   wxWindow *GetParentWindow();
@@ -91,6 +107,11 @@ protected:
   virtual wxWindow *CreatePanel(wxWindow *parent) = 0;
   virtual IAppendReview *CreateReviewReceiver() = 0;
   virtual IAppendReview *CreateAcceptReceiver() = 0;
+  virtual IAppendReview *CreateDisableReceiver();
+  void _SetReadOnlyRaw(bool b)
+  {
+    m_bReadOnly = b;
+  }
 
 private:
   wxString m_sUserID;
@@ -105,7 +126,9 @@ protected:
   int m_nAcceptanceCount;
   IAppendReview *m_pReview;
   IAppendReview *m_pAccept;
+  IAppendReview *m_pDisable;
 private:
+  COARsample *m_pSample;
   bool m_bReadOnly;
 };
 
@@ -115,11 +138,13 @@ public:
     CPageEditSampleAlerts(
       CNotebookEditSample *pParentPanel,
       COARfile *pFile,
+      COARsample *pSample,
       int nCountType,
       bool bReadOnly = false) :
         CPageEditSample(
           pParentPanel,
           pFile,
+          pSample,
           nCountType,
           bReadOnly)
       {}
@@ -131,6 +156,7 @@ public:
     return m_sLabel;
   }
   virtual const wxString &GetNewNotes();
+  virtual void SetReadOnly(bool bReadOnly);
 protected:
   const wxString &GetLabelPrefix()
   {
@@ -171,6 +197,7 @@ public:
       CPageEditSampleAlerts(
         pParentPanel,
         pFile,
+        (COARsample *)NULL,
         CLabReview::REVIEW_DIR,
         bReadOnly)
   {
@@ -202,9 +229,9 @@ public:
       CPageEditSampleAlerts(
         pParentPanel,
         pSample->GetFile(),
+        pSample,
         CLabReview::REVIEW_SAMPLE,
-        bReadOnly),
-          m_pSample(pSample)
+        bReadOnly)
   {
     _SETUP_LABELS(wxT("Sample"));
   }
@@ -219,8 +246,6 @@ protected:
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
-private:
-  COARsample *m_pSample;
 };
 
 
@@ -234,9 +259,9 @@ public:
       CPageEditSampleAlerts(
         pParentPanel,
         pSample->GetFile(),
+        pSample,
         CLabReview::REVIEW_ILS,
-        bReadOnly),
-          m_pSample(pSample)
+        bReadOnly)
   {
     _SETUP_LABELS(wxT("ILS"));
   }
@@ -251,8 +276,6 @@ protected:
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
-private:
-  COARsample *m_pSample;
 };
 
 
@@ -267,9 +290,9 @@ public:
       CPageEditSampleAlerts(
         pParentPanel,
         pSample->GetFile(),
+        pSample,
         CLabReview::REVIEW_CHANNEL,
         bReadOnly),
-          m_pSample(pSample),
           m_pmapChannelNames(pmapChannelNames)
   {
     _SETUP_LABELS(wxT("Channel"));
@@ -286,7 +309,6 @@ protected:
   virtual IAppendReview *CreateAcceptReceiver();
   virtual wxString GetReviewAcceptance();
 private:
-  COARsample *m_pSample;
   const map<int,wxString> *m_pmapChannelNames;
 };
 
@@ -303,14 +325,14 @@ public:
       CPageEditSample(
           pParentPanel,
           pSample->GetFile(),
+          pSample,
           CLabReview::REVIEW_LOCUS,
           bReadOnly),
       m_sLocusName(sLocusName),
       m_nChannel(nChannelNr),
-      m_pSample(pSample),
       m_pLocus(NULL)
   {
-    m_pLocus = m_pSample->FindLocus(m_sLocusName);
+    m_pLocus = pSample->FindLocus(m_sLocusName);
   };
   virtual bool NeedsApply(); 
       // CPageEditSample::NeedsApply is not appropriate
@@ -324,6 +346,7 @@ public:
     return m_sLocusName;
   }
   virtual const wxString &GetNewNotes();
+  virtual void SetReadOnly(bool bReadOnly);
 protected:
   virtual wxWindow *CreatePanel(wxWindow *parent);
   virtual IAppendReview *CreateReviewReceiver();
@@ -332,7 +355,6 @@ private:
   wxString m_sLocusName;
   wxString m_sNotes;
   int m_nChannel;
-  COARsample *m_pSample;
   COARlocus *m_pLocus;
   
 };

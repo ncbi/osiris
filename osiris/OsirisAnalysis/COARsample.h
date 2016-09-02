@@ -916,6 +916,14 @@ public:
   {
     return m_pSample->ToggleEnabled(sName);
   }
+  virtual bool IsAccept() const
+  {
+    return false;
+  }
+  virtual bool IsReview() const
+  {
+    return false;
+  }
 private:
   COARsample *m_pSample;
 };
@@ -933,6 +941,14 @@ public:
   {
     return m_pSample->AppendSampleReview(sName);
   }
+  virtual bool IsReview() const
+  {
+    return true;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
+  }
 private:
   COARsample *m_pSample;
 };
@@ -947,6 +963,14 @@ public:
   {
     return m_pSample->AppendILSReview(sName);
   }
+  virtual bool IsReview() const
+  {
+    return true;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
+  }
 private:
   COARsample *m_pSample;
 };
@@ -960,6 +984,14 @@ public:
   virtual bool AppendReview(const wxString &sName)
   {
     return m_pSample->AppendChannelReview(sName);
+  }
+  virtual bool IsReview() const
+  {
+    return true;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
   }
 private:
   COARsample *m_pSample;
@@ -977,6 +1009,14 @@ public:
   {
     return m_pSample->AppendSampleAcceptance(sName);
   }
+  virtual bool IsReview() const
+  {
+    return false;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
+  }
 private:
   COARsample *m_pSample;
 };
@@ -991,6 +1031,15 @@ public:
   {
     return m_pSample->AppendILSAcceptance(sName);
   }
+  virtual bool IsReview() const
+  {
+    return false;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
+  }
+
 private:
   COARsample *m_pSample;
 };
@@ -1004,6 +1053,14 @@ public:
   virtual bool AppendReview(const wxString &sName)
   {
     return m_pSample->AppendChannelAcceptance(sName);
+  }
+  virtual bool IsReview() const
+  {
+    return false;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
   }
 private:
   COARsample *m_pSample;

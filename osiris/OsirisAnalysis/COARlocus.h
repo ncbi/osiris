@@ -318,6 +318,14 @@ public:
     bool bRtn = m_pLocus->AppendReview(sName);
     return bRtn;
   }
+  virtual bool IsReview() const
+  {
+    return true;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
+  }
 private:
   COARlocus *m_pLocus;
 
@@ -330,6 +338,14 @@ public:
   {
     bool bRtn = m_pLocus->AppendAcceptance(sName);
     return bRtn;
+  }
+  virtual bool IsReview() const
+  {
+    return false;
+  }
+  virtual bool IsAccept() const
+  {
+    return !IsReview();
   }
 private:
   COARlocus *m_pLocus;

@@ -45,20 +45,7 @@ CTextUserID::CTextUserID(
     wxTextCtrl(parent,id,value),
     m_pOK(NULL)
 {
-  if(!value.IsEmpty())
-  {}
-  else if(bReadOnly)
-  {
-    ChangeValue(wxGetUserId());
-  }
-  else
-  {
-    CParmOsirisGlobal parm;
-    const wxString &s(parm->GetCMFuserID());
-    ChangeValue(s);
-  }
   SetEditable(!bReadOnly);
-//  UpdateSize();
   SetMaxLength(20);
 }
 
@@ -137,11 +124,14 @@ CPanelUserID::CPanelUserID(
   const wxString &value) : 
     wxPanel(parent,id), 
     m_pReview(pReview),
+    m_pTextCtrl(NULL),
     m_pButtonOK(NULL),
     m_pButtonCancel(NULL),
     m_bSendBtnEvents(!!(nFlag & UID_SEND_BTN_EVENTS)),
-    m_bDisableOnReview(!!(nFlag & UID_DISABLE_ON_REVIEW))
+    m_bDisableOnReview(!!(nFlag & UID_DISABLE_ON_REVIEW)),
+    m_bTextCtrl(!(nFlag & UID_NO_USER_TEXT_BOX))
 {
+  wxStaticText *pLabel(NULL);
   wxButton *pButtonEdit(NULL);
   const wxChar *psUserLabel = wxS("User ID: ");
   bool btn = false;
@@ -169,13 +159,40 @@ CPanelUserID::CPanelUserID(
       wxBU_EXACTFIT);
     btn = true;
   }
-  m_pLabel = new wxStaticText(this,wxID_ANY,psUserLabel);
-  mainApp::SetBoldFont(m_pLabel);
-  m_pTextCtrl = new CTextUserID(this,idText,bUserReadOnly,value);
-  if(m_pButtonOK != NULL)
+
+  // set up user ID
+
+  wxString sUserID(value);
+  if(!sUserID.IsEmpty())
+  {}
+#ifndef __WXDEBUG__
+  else if(bUserReadOnly)
   {
-    m_pTextCtrl->SetOKWindow(m_pButtonOK);
+    sUserID = wxGetUserId();
   }
+#endif
+  else
+  {
+    CParmOsirisGlobal parm;
+    sUserID = parm->GetCMFuserID();
+  }
+
+
+  if(m_bTextCtrl)
+  {
+    pLabel = new wxStaticText(this,wxID_ANY,psUserLabel);
+    mainApp::SetBoldFont(pLabel);
+    m_pTextCtrl = new CTextUserID(this,idText,bUserReadOnly,sUserID);
+    if(m_pButtonOK != NULL)
+    {
+      m_pTextCtrl->SetOKWindow(m_pButtonOK);
+    }
+  }
+  else
+  {
+    SetValue(sUserID);
+  }
+
   if(nFlag & UID_BTN_EDIT)
   {
     pButtonEdit = new wxButton(this,IDmenuEditCell,"Edit",
@@ -191,18 +208,23 @@ CPanelUserID::CPanelUserID(
     btn = true;
   }
   wxBoxSizer *pSizerAll(NULL);
-  wxBoxSizer *pSizerText = new wxBoxSizer(wxHORIZONTAL);
-  wxBoxSizer *pSizerTextCtrl = new wxBoxSizer(wxVERTICAL);
+  wxBoxSizer *pSizerText = NULL;
+  wxBoxSizer *pSizerTextCtrl = NULL;
 
-  // pSizerTextCtrl allows m_pTextCtrl to expand
-  // horizontally without expanding vertically
-  pSizerTextCtrl->AddStretchSpacer(1);
-  pSizerTextCtrl->Add(m_pTextCtrl,0,wxEXPAND);
-  pSizerTextCtrl->AddStretchSpacer(1);
-  pSizerText->Add(
-    m_pLabel,0,wxRIGHT | wxALIGN_CENTER_VERTICAL,ID_BORDER);
-  pSizerText->Add(pSizerTextCtrl,1,wxEXPAND);
+  if(m_bTextCtrl)
+  {
+    pSizerText = new wxBoxSizer(wxHORIZONTAL);
+    pSizerTextCtrl = new wxBoxSizer(wxVERTICAL);
 
+    // pSizerTextCtrl allows m_pTextCtrl to expand
+    // horizontally without expanding vertically
+    pSizerTextCtrl->AddStretchSpacer(1);
+    pSizerTextCtrl->Add(m_pTextCtrl,0,wxEXPAND);
+    pSizerTextCtrl->AddStretchSpacer(1);
+    pSizerText->Add(
+      pLabel,0,wxRIGHT | wxALIGN_CENTER_VERTICAL,ID_BORDER);
+    pSizerText->Add(pSizerTextCtrl,1,wxEXPAND);
+  }
   if(btn)
   {
     wxBoxSizer *pSizerBtn = new wxBoxSizer(wxHORIZONTAL);
@@ -225,16 +247,22 @@ CPanelUserID::CPanelUserID(
     pSizerAll = new wxBoxSizer(wxHORIZONTAL);
     if(!(nFlag & UID_SPACER_ALL))
     {
-      pSizerAll->Add(pSizerText, 0, 
-        wxRIGHT | wxALIGN_CENTER_VERTICAL, ID_BORDER);
+      if(m_bTextCtrl)
+      {
+        pSizerAll->Add(pSizerText, 0, 
+          wxRIGHT | wxALIGN_CENTER_VERTICAL, ID_BORDER);
+      }
       pSizerAll->Add(pSizerBtn, 0, wxALIGN_CENTER_VERTICAL);
     }
     else if(nFlag & UID_SPACER_TEXT_CENTER)
     {
       // text in the center
       pSizerAll->AddStretchSpacer(1);
-      pSizerAll->Add(pSizerText,0,
-        wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL,ID_BORDER);
+      if(m_bTextCtrl)
+      {
+        pSizerAll->Add(pSizerText,0,
+          wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL,ID_BORDER);
+      }
       if(!(nFlag & UID_SPACER_BTN_CENTER))
       {
         // buttons on the right
@@ -253,8 +281,15 @@ CPanelUserID::CPanelUserID(
     {
       // text on far left
       // buttons in center
-      pSizerAll->Add(pSizerText,1,
-        wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxEXPAND);
+      if(m_bTextCtrl)
+      {
+        pSizerAll->Add(pSizerText,1,
+          wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxEXPAND);
+      }
+      else
+      {
+        pSizerAll->AddStretchSpacer(1);
+      }
       pSizerAll->Add(pSizerBtn,0,
         wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT,
         ID_BORDER);
@@ -264,15 +299,18 @@ CPanelUserID::CPanelUserID(
     {
       // text on far left
       // button on far right
-      pSizerAll->Add(pSizerText,0,
-        wxALIGN_CENTER_VERTICAL | wxRIGHT | wxALIGN_LEFT);
+      if(m_bTextCtrl)
+      {
+        pSizerAll->Add(pSizerText,0,
+          wxALIGN_CENTER_VERTICAL | wxRIGHT | wxALIGN_LEFT);
+      }
       pSizerAll->AddStretchSpacer(1);
       pSizerAll->Add(pSizerBtn,0,
         wxALIGN_CENTER_VERTICAL | wxLEFT | wxALIGN_RIGHT,
         ID_BORDER);
     }
   }
-  else
+  else if(m_bTextCtrl)
   {
     if(nFlag & UID_SPACER_TEXT_CENTER)
     {
@@ -293,23 +331,37 @@ bool CPanelUserID::Enable(bool bEnable)
   if((m_pButtonCancel != NULL) && (m_pButtonOK != NULL))
   {
     bRtn = m_pButtonOK->Enable(bEnable);
-    m_pTextCtrl->Enable(bEnable);
+    if(m_bTextCtrl)
+    { m_pTextCtrl->Enable(bEnable);
+    }
   }
   else
   {
     bRtn = wxPanel::Enable(bEnable);
-    if(bEnable)
+    if(bEnable && m_bTextCtrl)
     {
       m_pTextCtrl->Enable(bEnable);
     }
   }
   return bRtn;
 }
-wxString CPanelUserID::GetValue()
+const wxString &CPanelUserID::GetValue()
 {
-  wxString s = m_pTextCtrl->GetValue();
-  nwxString::Trim(&s);
-  return s;
+  if(m_bTextCtrl)
+  {
+    m_sUserID = m_pTextCtrl->GetValue();
+    nwxString::Trim(&m_sUserID);
+  }
+  return m_sUserID;
+}
+void CPanelUserID::SetValue(const wxString &s)
+{
+  m_sUserID = s;
+  nwxString::Trim(&m_sUserID);
+  if(m_bTextCtrl)
+  {
+    m_pTextCtrl->ChangeValue(m_sUserID);
+  }
 }
 bool CPanelUserID::IsUserIDValid(wxString *psError)
 {
@@ -349,10 +401,13 @@ bool CPanelUserID::AddReview(IAppendReview *pReview, bool bNoDup)
     {}
     else if( (!pReview->AppendReview(s)) && bNoDup )
     {
+      IAppendReview::FormatError(&sError,pReview,s);
+      /*
       sError = s;
       sError.Append(" has already ");
       sError.Append(m_sUserError);
       sError.Append(" this data.");
+      */
     }
     else
     {
