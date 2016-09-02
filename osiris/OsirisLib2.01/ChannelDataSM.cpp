@@ -901,19 +901,6 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 	it.Reset ();
 
 	while (nextLocus = (Locus*) it ())
-		nextLocus->GetLargestPeak ();
-
-	if (GetMessageValue (residualDisplacementTestPreset)) {
-
-		it.Reset ();
-
-		while (nextLocus = (Locus*) it ())
-			nextLocus->TestResidualDisplacement ();
-	}
-
-	it.Reset ();
-
-	while (nextLocus = (Locus*) it ())
 		nextLocus->PromoteOwnCoreSignalsToAllelesAndRemoveOthers (PreliminaryCurveList);
 
 	//cout << "Promoted core signals to alleles" << endl;
@@ -931,6 +918,19 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 		nextLocus->TestForDuplicateAllelesSM (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks, pGenotypes); // Replaces TestForMultiSignalsSM
 
 	//cout << "Locus multisignals tested" << endl;
+
+	it.Reset ();  // Next section of code moved 09/01/2016 so that ERD computed after duplicates eliminated
+
+	while (nextLocus = (Locus*) it ())
+		nextLocus->GetLargestPeak ();
+
+	if (GetMessageValue (residualDisplacementTestPreset)) {
+
+		it.Reset ();
+
+		while (nextLocus = (Locus*) it ())
+			nextLocus->TestResidualDisplacement ();
+	}
 
 	it.Reset ();
 
