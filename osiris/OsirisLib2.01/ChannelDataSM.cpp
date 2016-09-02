@@ -1680,10 +1680,13 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 	//	double delta = rightMean - leftMean;
 		double currentMean = currentSignal->GetMean ();
 		bool biased = false;
+		bool farApart;
 	//	double ratio = (currentMean - leftMean) / delta;
 
 		if ((currentMean <= leftMean + 0.5) || (currentMean >= rightMean - 0.5))
 			biased = true;
+
+		farApart = (fabs (rightMean - leftMean) > 0.5 * (leftSignal->GetWidth () + rightSignal->GetWidth ()));
 
 		//else if ((ratio <= 0.2) || (ratio >= 0.8))
 		//	biased = true;
@@ -1694,6 +1697,49 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 			delete rightSignal;
 			delete TestDual;
 			return -1;
+		}
+
+		if (farApart) {
+
+			fit = rightSignal->GetCurveFit ();
+			TestFitCriteriaSM (rightSignal);
+
+			if (fit < minFit) {
+
+				// In this case, the fit is totally unacceptable or marginal, so try for alternate signatures
+				if (TestForArtifactsSM (rightSignal, fit, 2)) {
+
+					rightSignal = NULL;
+				}
+			}
+
+			else {  // rightSignal is acceptable for now, so add it to the CurveList
+
+				PreliminaryCurveList.Prepend (rightSignal);
+				CompleteCurveList.Prepend (rightSignal);
+			}
+
+			fit = leftSignal->GetCurveFit ();
+			TestFitCriteriaSM (leftSignal);
+
+			if (fit < minFit) {
+
+				// In this case, the fit is totally unacceptable or marginal, so try for alternate signatures
+				if (TestForArtifactsSM (leftSignal, fit, 1)) {
+
+					leftSignal = NULL;
+				}
+			}
+
+			else {  // leftSignal is acceptable for now, so add it to the CurveList
+
+				PreliminaryCurveList.Prepend (leftSignal);
+				CompleteCurveList.Prepend (leftSignal);
+			}
+
+			delete currentSignal;
+			delete TestDual;
+			return 2;
 		}
 
 		secondaryContent = fabs(rightSignal->GetScale (2));
