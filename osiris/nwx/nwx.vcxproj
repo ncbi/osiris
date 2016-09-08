@@ -214,6 +214,7 @@
     <ClInclude Include="nwxProgressCallback.h" />
     <ClInclude Include="nwxRectSet.h" />
     <ClInclude Include="nwxRound.h" />
+    <ClInclude Include="nwxSettingsFile.h" />
     <ClInclude Include="nwxShiftBitmaps.h" />
     <ClInclude Include="nwxShiftSizer.h" />
     <ClInclude Include="nwxStaticBitmap.h" />

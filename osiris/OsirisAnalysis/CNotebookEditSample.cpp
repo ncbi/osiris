@@ -223,6 +223,7 @@ const wxString &CNotebookEditSample::GetCurrentLocus()
   return *pRtn;
 }
 
+#if 0
 bool CNotebookEditSample::Validate()
 {
   bool bRtn = true;
@@ -267,7 +268,7 @@ bool CNotebookEditSample::Validate()
   }
   return bRtn;
 }
-
+#endif
 
 bool CNotebookEditSample::TransferDataToWindow()
 {
@@ -301,21 +302,27 @@ bool CNotebookEditSample::TransferDataToWindow()
   return bRtn;
 }
 
-bool CNotebookEditSample::IsModified()
+bool CNotebookEditSample::IsModified(int *pnFirstPage)
 {
   bool bRtn = false;
   if(m_pSample->IsEnabled())
   {
     CPanelListIterator itr;
     CPageEditSample *pPage;
+    int nPage = 0;
     for(itr = m_vpPanels.begin(); itr != m_vpPanels.end(); ++itr)
     {
       pPage = *itr;
       if( (pPage != NULL) && pPage->NeedsApply() )
       {
+        if(pnFirstPage != NULL)
+        {
+          *pnFirstPage = nPage;
+        }
         bRtn = true;
         break;
       }
+      ++nPage;
     }
   }
   return bRtn;
@@ -336,6 +343,7 @@ void CNotebookEditSample::OnEnter(wxCommandEvent &)
   if(!m_bReadOnly)
   {
     _UpdateMenu();
+    CheckDirPage();
   }
 }
 void CNotebookEditSample::OnCellChange(wxGridEvent &)
@@ -343,6 +351,7 @@ void CNotebookEditSample::OnCellChange(wxGridEvent &)
   if(!m_bReadOnly)
   {
     _UpdateMenu();
+    CheckDirPage();
   }
 }
 void CNotebookEditSample::_UpdateMenu()
@@ -357,6 +366,27 @@ void CNotebookEditSample::_UpdateMenu()
     }
   }
 }
+void CNotebookEditSample::CheckDirPage()
+{
+  if(GetSelection() == SA_NDX_DIR)
+  {
+    CEditAlertsDir *pPage = (CEditAlertsDir *)m_vpPanels.at(SA_NDX_DIR);
+    pPage->SyncAll();
+  }
+}
+void CNotebookEditSample::UpdateDirPage()
+{
+  if(GetSelection() == SA_NDX_DIR)
+  {
+    _UpdateMenu();
+  }
+  else
+  {
+    m_pNotebook->SetPageText(SA_NDX_DIR,
+      this->GetPanel(SA_NDX_DIR)->GetTreePageLabel());
+  }
+}
+
 
 const wxString &CNotebookEditSample::GetUserID()
 {

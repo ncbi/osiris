@@ -44,6 +44,7 @@
 //#include "CDialogAcceptAlerts.h"
 #include "CDialogApprove.h"
 #include "CDialogEditPeak.h"
+#include "CButtonGraph.h"
 #include "CLabSettings.h"
 #include "COARfile.h"
 #include "CReAnalyze.h"
@@ -90,6 +91,9 @@
 
 DEFINE_EVENT_TYPE(CEventRepaint)
 DEFINE_EVENT_TYPE(CEventRestoreScroll)
+
+
+#define LINE_SPACER "\n    "
 
 const int CFrameAnalysis::STATUS_COLUMN = 0;
 const int CFrameAnalysis::ILS_COLUMN = 1;
@@ -216,14 +220,7 @@ void CFrameAnalysis::_Build()
     wxDefaultPosition,
     wxDefaultSize,
     wxTE_READONLY);
-  m_pButtonGraphic = new wxButton(
-    m_pPanelToolbar,
-    IDmenuDisplayGraph,
-    "Graph",
-    wxDefaultPosition,
-    wxDefaultSize,
-    wxBU_EXACTFIT
-    );
+  m_pButtonGraphic = new CButtonGraph(m_pPanelToolbar);
   m_SampleSort.Sort(m_pOARfile,NULL);
   m_pTogglePreview = new wxToggleButton(
     m_pPanelToolbar,
@@ -272,9 +269,6 @@ void CFrameAnalysis::_Build()
     );
   m_pButtonParms->SetToolTip(CMenuAnalysis::PARAMETERS_TOOL_TIP);
   m_pButtonGraphic->Enable(false);
-  m_pButtonGraphic->SetToolTip(
-    "View data plot for each channel of this sample.\n"
-    "Hold the shift key down to show only one plot.");
   m_pButtonParms->Enable(false);
 
   wxFont fn(m_pLabelFile->GetFont());
@@ -1114,9 +1108,67 @@ void CFrameAnalysis::OnShowSample(wxCommandEvent &e)
     }
   }
 }
-void CFrameAnalysis::_DestroySamples()
+bool CFrameAnalysis::_CheckSamples()
+{
+  std::vector<CFrameSample *> vpSamples;
+  std::vector<CFrameSample *>::iterator itrv;
+  std::vector<wxString> vsUnsaved;
+  std::vector<int> vnPage;
+  std::vector<int>::iterator itrPage;
+  MapSampleFrame::iterator itr;
+  CFrameSample *pFrame;
+  int nPage;
+  for(itr = m_mapSamples.begin();
+      itr != m_mapSamples.end(); 
+      ++itr)
+  {
+    pFrame = itr->second;
+    if(pFrame->IsModified(&nPage))
+    {
+      vsUnsaved.push_back(pFrame->GetDisplayedSampleName());
+      vnPage.push_back(nPage);
+      vpSamples.push_back(pFrame);
+    }
+  }
+  size_t nSize = vnPage.size();
+  if(nSize)
+  {
+    wxString sMessage;
+    wxString sName;
+    if(nSize > 1)
+    {
+      sMessage = 
+        "The following sample has been modified\n"
+        "and the changes have not been applied:";
+    }
+    else
+    {
+      sMessage = 
+        "The following samples have been modified\n"
+        "and the changes have not been applied:";
+    }
+    sMessage.Append(LINE_SPACER);
+    nwxString::Join(vsUnsaved,&sName,LINE_SPACER);
+    sMessage.Append(sName);
+    sMessage.Append(
+      "\n\nThis window cannot be closed until all changes\n"
+      "are applied or sample windows have been closed.");
+    mainApp::ShowAlert(sMessage,this);
+    for(itrv = vpSamples.begin(), itrPage = vnPage.begin();
+      itrv != vpSamples.end();
+      ++itrv, ++itrPage)
+    {
+      (*itrv)->Show();
+      (*itrv)->Raise();
+      (*itrv)->Select(*itrPage);
+    }
+  }
+  return !nSize;
+}
+bool CFrameAnalysis::_DestroySamples()
 {
   size_t n = m_mapSamples.size();
+  bool bRtn = true;
   if(n)
   {
     std::vector<CFrameSample *> vSamples;
@@ -1135,10 +1187,16 @@ void CFrameAnalysis::_DestroySamples()
       itrv != vSamples.end();
       ++itrv)
     {
-      (*itrv)->Destroy();
+      // STOP HERE, determine if successful
+      if(!(*itrv)->Close(false))
+      {
+        bRtn = false;
+      }
+      //(*itrv)->Destroy();
     }
-    m_mapSamples.clear();
+    m_mapSamples.clear(); // Should already be cleared
   }
+  return bRtn;
 }
 
 void CFrameAnalysis::OnHistoryUpdate(wxCommandEvent &e)
@@ -1465,7 +1523,8 @@ void CFrameAnalysis::_OnEnableSample()
       this);
     if(dlg.ShowModal() == wxID_OK)
     {
-      RepaintData();
+      RepaintAllData(pSample);
+      //RepaintData();
     }
   }
   m_pGrid->SetFocus();
@@ -2415,10 +2474,21 @@ void CFrameAnalysis::OnClose(wxCloseEvent &e)
 {
   CIncrementer xxx(m_nFocusRecursive);
   wxBusyCursor xxxx;
-  bool bDone = CheckSaveOnCloseFile();
+  bool bDone = true;
+  if(!_CheckSamples())
+  {
+    bDone = false;
+  }
+  else if(!CheckSaveOnCloseFile())
+  {
+    bDone = false;
+  }
+  else if(!_DestroySamples())
+  {
+    bDone = false;
+  }
   if(bDone)
   {
-    _DestroySamples(); // destroy sample windows
     Destroy();
   }
   else if(e.CanVeto())

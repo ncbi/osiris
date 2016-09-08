@@ -35,6 +35,9 @@
 #include "CHistoryTime.h"
 #include "nwx/PersistentSize.h"
 #include "CMenuSample.h"
+#include "nwx/stdb.h"
+#include <vector>
+#include "nwx/stde.h"
 class CNotebookEditSample;
 class COARsample;
 class COARfile;
@@ -55,7 +58,8 @@ public:
   virtual ~CFrameSample();
   //virtual bool Show(bool show = true);
   void SelectLocus(const wxString &sLocus);
-
+  void Select(int n);
+  wxString GetDisplayedSampleName();
   void SelectAlerts(int nAlertType);
   virtual int GetType();
   virtual bool TransferDataToWindow();
@@ -63,7 +67,10 @@ public:
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual wxMenu *GetMenu();
   virtual bool Destroy();
+  bool IsModified(int *pnFirstPage = NULL);
+
   void OnButton(wxCommandEvent &e);
+  void OnClose(wxCloseEvent &e);
   void UpdateMenu();
   void SetupTitle(bool bForce = false);
   void InitiateRepaintData();
@@ -73,6 +80,8 @@ public:
   bool CanOverrideUserID();
   void UpdateSizeHack(bool bForce = true);
   void SetupMenuItems();
+  static void FormatCloseWarning(const std::vector<wxString> &vsSamples, wxString *ps);
+  bool CheckApplyNoNotes(int nPanel = -1);
   DECLARE_PERSISTENT_SIZE
 private:
   void _EnableItem(int nID, bool bEnable)

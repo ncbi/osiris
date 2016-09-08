@@ -253,6 +253,36 @@ void CGridAlerts::SetupChannelColumn(
   }
 }
 
+void CGridAlerts::CopyState(CGridAlerts *pFrom)
+{
+  int nCols = GetNumberCols();
+  int nRows = GetNumberRows();
+  if(nCols == pFrom->GetNumberCols() &&
+    nRows == pFrom->GetNumberRows())
+  {
+    bool b;
+    wxString s;
+    int nColText = nCols - 1;
+    int nColBool = nColText - 1;
+    for(int nRow = 0; nRow < nRows;++nRow)
+    {
+      b = pFrom->GetBoolValue(nRow,nColBool);
+      if(GetBoolValue(nRow,nColBool) != b)
+      {
+        SetBoolValue(nRow,nColBool,b);
+        DisableEdit(nRow,nColText,b);
+        DoCellChange(nRow,nColBool);
+      }
+      s = pFrom->GetCellValue(nRow,nColText);
+      if(GetCellValue(nRow,nColText) != s)
+      {
+        SetCellValue(nRow,nColText,s);
+        DoCellChange(nRow,nColText);
+      }
+    }
+  }
+  Refresh();
+}
 
 
 void CGridAlerts::UpdateDisabledFromRow(
@@ -286,14 +316,12 @@ bool CGridAlerts::TransferDataToRow(int nRow, const COARmessage *pMsg)
   return true;
 }
 
-void CGridAlerts::OnCellChange(wxGridEvent &e)
+void CGridAlerts::DoCellChange(int nRow, int nCol)
 {
   if( !(m_nInCellChangeEvent || IsTableReadOnly()) )
   {
     CIncrementer x(m_nInCellChangeEvent);
     nwxGridBatch xxxx(this);
-    int nRow = e.GetRow();
-    int nCol = e.GetCol();
     COARmessage *pMsg = m_pMsgEdit->GetMessage((size_t) nRow);
     int nCols = GetNumberCols();
     const wxString &sName(pMsg->GetMessageName());
@@ -342,6 +370,10 @@ void CGridAlerts::OnCellChange(wxGridEvent &e)
       }
     }
   }
+}
+void CGridAlerts::OnCellChange(wxGridEvent &e)
+{
+  DoCellChange(e.GetRow(),e.GetCol());
   e.Skip(true);
 }
 BEGIN_EVENT_TABLE(CGridAlerts,_CGridEdit)

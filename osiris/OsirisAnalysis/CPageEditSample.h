@@ -38,6 +38,7 @@
 #include "COARfile.h"
 class CNotebookEditSample;
 class CPanelSampleAlertDetails;
+class CPanelLocusDetails;
 
 class CPageEditSample
 {
@@ -86,6 +87,10 @@ public:
   COARsample *GetSample()
   {
     return m_pSample;
+  }
+  COARfile *GetFile()
+  {
+    return m_pFile;
   }
   virtual bool DoReview();
   virtual bool DoAccept();
@@ -171,6 +176,7 @@ protected:
   }
   virtual wxWindow *CreatePanel(wxWindow *parent);
   virtual CPanelSampleAlertDetails *CreateSubPanel(wxWindow *parent) = 0;
+  CPanelSampleAlertDetails *GetSubPanel();
   virtual wxString GetReviewAcceptance() = 0;
   virtual void UpdateNotes() = 0;
   virtual const COARnotes *GetNotes() = 0;
@@ -189,6 +195,27 @@ private:
 
 class CEditAlertsDir : public CPageEditSampleAlerts
 {
+private:
+  class CDirPanelSet
+  {
+  public:
+    static void Add(CEditAlertsDir *pPanel);
+    static void Remove(CEditAlertsDir *pPanel);
+    static void SyncAllTo(CEditAlertsDir *pPanel);
+  private:
+    CDirPanelSet() {} // private, prevent instantiation
+    typedef std::set<CEditAlertsDir *> SET_PANEL;
+    typedef std::map<COARfile *, SET_PANEL *> MAP_ALL;
+    typedef MAP_ALL::iterator MAP_ALL_ITERATOR;
+    static MAP_ALL g_mapAll;
+    static MAP_ALL_ITERATOR _Find(CEditAlertsDir *pPanel)
+    {
+      MAP_ALL_ITERATOR rtn = g_mapAll.find(pPanel->GetFile());
+      return rtn;
+    }
+  };
+
+
 public:
   CEditAlertsDir(
     CNotebookEditSample *pParentPanel, 
@@ -202,10 +229,38 @@ public:
         bReadOnly)
   {
     _SETUP_LABELS(wxT("Directory"));
+    CDirPanelSet::Add(this);
+  }
+  virtual ~CEditAlertsDir()
+  {
+    CDirPanelSet::Remove(this);
   }
   virtual bool NeedsAcceptance();
   virtual bool NeedsReview();
   virtual bool HasHistory();
+  virtual bool DoApply()
+  {
+    bool bRtn = CPageEditSampleAlerts::DoApply();
+    SyncAll();
+    return bRtn;
+  }
+  virtual bool DoReview()
+  {
+    bool bRtn = CPageEditSampleAlerts::DoReview();
+    SyncAll();
+    return bRtn;
+  }
+  virtual bool DoAccept()
+  {
+    bool bRtn = CPageEditSampleAlerts::DoAccept();
+    SyncAll();
+    return bRtn;
+  }
+  void SyncAll() 
+  {
+    CDirPanelSet::SyncAllTo(this);
+  }
+  void SyncTo(CEditAlertsDir *pFromThis);
 protected:
   virtual void UpdateMessages();
   virtual void UpdateNotes();
@@ -217,6 +272,8 @@ protected:
 private:
   std::vector<wxString> m_vsLocus;
 };
+
+
 
 
 class CEditAlertsSample : public CPageEditSampleAlerts
@@ -348,6 +405,7 @@ public:
   virtual const wxString &GetNewNotes();
   virtual void SetReadOnly(bool bReadOnly);
 protected:
+  CPanelLocusDetails *GetLocusPanel();
   virtual wxWindow *CreatePanel(wxWindow *parent);
   virtual IAppendReview *CreateReviewReceiver();
   virtual IAppendReview *CreateAcceptReceiver();

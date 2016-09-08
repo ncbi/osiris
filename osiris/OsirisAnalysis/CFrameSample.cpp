@@ -37,11 +37,17 @@
 #include "CDialogCellHistory.h"
 #include "CDialogApprove.h"
 #include "CPageEditSample.h"
-#include "wx/sizer.h"
+#include "CSiteSettings.h"
+#include <wx/sizer.h>
+#include <wx/msgdlg.h>
 #include "nwx/nwxKeyState.h"
 #include "nwx/nwxLog.h"
+#include "nwx/nwxString.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CFrameSample,CMDIFrame)
+
+
+#define LINE_SPACER "\n    "
 
 #ifdef __WXMSW__
 #define INITSIZE(sz) wxSize(sz.x < 0 ? -1 : sz.x - 1 ,sz.y)
@@ -66,6 +72,7 @@ CFrameSample::CFrameSample(
     m_pOARfile(pFile),
     m_pSample(pSample),
     m_bTitleMod(false)
+
     //,m_bFirstShow(true)
 {
     wxString s = wxPanelNameStr;
@@ -132,17 +139,21 @@ wxMenu *CFrameSample::GetMenu()
 {
   return m_pMenuBar->GetMenu();
 }
+wxString CFrameSample::GetDisplayedSampleName()
+{
+  CParmOsiris *pParmGlobal = CParmOsiris::GetGlobal();
+  int nSampleNameLabel = pParmGlobal->GetTableShowSampleDisplayNames();
+  wxString sName = (nSampleNameLabel == IDmenuDisplayNameSample)
+    ? m_pSample->GetSampleName() //  sample name
+    : m_pSample->GetName();      //  sample file name (plt, fsa, hid)
+  return sName;
+}
 void CFrameSample::SetupTitle(bool bForce)
 {
   bool bMod = (m_pNoteBook != NULL) && m_pNoteBook->IsModified();
   if(bForce || (bMod != m_bTitleMod))
   {
-    CParmOsiris *pParmGlobal = CParmOsiris::GetGlobal();
-    int nSampleNameLabel = pParmGlobal->GetTableShowSampleDisplayNames();
-    wxString sName = (nSampleNameLabel == IDmenuDisplayNameSample)
-      ? m_pSample->GetSampleName() //  sample name
-      : m_pSample->GetName();      //  sample file name (plt, fsa, hid)
-
+    wxString sName = GetDisplayedSampleName();
     m_bTitleMod = bMod;
     sName.Append(wxT("; "));
     wxFileName fn(m_pOARfile->GetFileName());
@@ -160,11 +171,65 @@ bool CFrameSample::TransferDataToWindow()
   SetupMenuItems();
   return m_pNoteBook->TransferDataToWindow();
 }
+
+bool CFrameSample::CheckApplyNoNotes(int nPanel)
+{
+  //  returns false if no new notes have been entered
+  //  and the user replies "No" to continue processing
+  //  when prompted
+  const CSiteSettings *pSettings = nwxGET_GLOBAL(CSiteSettings);
+  bool bWarnOnNotes = pSettings->GetBoolValue("WarnEmptyNotes",true);
+  bool bRtn = true;
+  if(bWarnOnNotes)
+  {
+    std::vector<wxString> vsPages;
+    size_t nStart = 0;
+    size_t nEnd;
+    CPageEditSample *pPage;
+    if(nPanel < 0)
+    {
+      nStart = 0;
+      nEnd = m_pNoteBook->GetPanelCount();
+      vsPages.reserve(nEnd);
+    }
+    else
+    {
+      nEnd = nStart = (size_t)nPanel;
+      ++nEnd;
+    }
+    for(size_t i = nStart; i < nEnd; ++i)
+    {
+      pPage = m_pNoteBook->GetPanel(i);
+      if((pPage != NULL) && 
+          pPage->NeedsApply() &&
+          pPage->IsNewNotesEmpty())
+      {
+        vsPages.push_back(pPage->GetPageLabel());
+      }
+    }
+    size_t nSize = vsPages.size();
+    if(nSize)
+    {
+      wxString sMessage;
+      wxString sList;
+      nwxString::Join(vsPages,&sList,LINE_SPACER);
+      sMessage.Append(wxT("You haven't entered notes for"));
+      sMessage.Append(LINE_SPACER);
+      sMessage.Append(sList);
+      sMessage.Append(wxT("\n\nDo you wish to continue to apply changes?"));
+
+      wxMessageDialog dlg(this,sMessage,wxT("Warning"),wxYES_NO | wxNO_DEFAULT);
+      bRtn = (dlg.ShowModal() == wxID_YES);
+    }
+  }
+  return bRtn;
+}
+
 void CFrameSample::_ApplyAll()
 {
-
-  // STOP HERE
-  size_t nCount = m_pNoteBook->GetPanelCount();
+  bool bContinue = CheckApplyNoNotes();
+  size_t nCount = 
+    bContinue ? m_pNoteBook->GetPanelCount() : 0;
   CPageEditSample *pPage;
   bool bRefresh = false;
   for(size_t i = 0; i < nCount; ++i)
@@ -182,10 +247,12 @@ void CFrameSample::_ApplyAll()
 }
 void CFrameSample::_Apply()
 {
-  CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
-  if((pPage != NULL) && pPage->DoApply())
+  int n = m_pNoteBook->GetSelection();
+  if( (n >= 0) && 
+      CheckApplyNoNotes(n) &&
+      m_pNoteBook->GetCurrentPanel()->DoApply() )
   {
-    InitiateRepaintData();
+      InitiateRepaintData();
   }
 }
 void CFrameSample::_Accept()
@@ -372,11 +439,76 @@ void CFrameSample::_ShowToolbar(bool bShow)
 }
 #endif
 
+bool CFrameSample::IsModified(int *pnFirstPage)
+{
+  return m_pNoteBook->IsModified(pnFirstPage);
+}
+void CFrameSample::Select(int n)
+{
+  m_pNoteBook->Select(n);
+}
 bool CFrameSample::Destroy()
 {
   m_pCreator->RemoveSample(m_pSample,this);
   return SUPER::Destroy();
 }
+void CFrameSample::FormatCloseWarning(const std::vector<wxString> &vsSamples, wxString *ps)
+{
+  wxString sName;
+  const wxChar *ps1;
+  const wxChar *ps2 = wxT(
+    ",\nhave not been applied and will be lost.\n\nDo you wish to close this window?"
+    );  // 76
+  size_t nSize = vsSamples.size();
+  ps->Clear();
+  if(nSize)
+  {
+    if(nSize == 1)
+    {
+      ps1 = wxT("Modifications to this sample,");
+      sName = vsSamples.at(0);
+    }
+    else
+    {
+      // nSize > 1
+      ps1 = wxT("Modification to these samples:");  // 30
+      nwxString::Join(vsSamples,&sName,LINE_SPACER);
+      ps2++; // skip over comma
+    }
+    ps->reserve(128 + sName.Len());
+    ps->Append(ps1);
+    ps->Append(LINE_SPACER);
+    ps->Append(sName);
+    ps->Append(ps2);
+  }
+}
+
+void CFrameSample::OnClose(wxCloseEvent &e)
+{
+  if(e.CanVeto())
+  {
+    int nSelect;
+    if(m_pNoteBook->IsModified(&nSelect))
+    {
+      wxString sWarning;
+      std::vector<wxString> vs;
+      vs.push_back(GetDisplayedSampleName());
+      FormatCloseWarning(vs,&sWarning);
+      wxMessageDialog dlg(this,sWarning,wxT("Warning"),wxYES_NO | wxNO_DEFAULT);
+      int n = dlg.ShowModal();
+      if(n == wxID_YES)
+      {
+        Destroy();
+      }
+      else
+      {
+        e.Veto(true);
+        m_pNoteBook->Select(nSelect);
+      }
+    }
+  }
+}
+
 void CFrameSample::OnButton(wxCommandEvent &e)
 {
   if( (e.GetId() == IDSampleApply) && nwxKeyState::Shift())
@@ -431,15 +563,20 @@ void CFrameSample::UpdateSizeHack(bool bForce)
 
 void CFrameSample::SetupMenuItems()
 {
-  bool bSampleEnabled = m_pSample->IsEnabled();
   CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
   if(pPage != NULL)
   {
+    int nItem = m_pNoteBook->GetSelection();
+    bool bSampleEnabled = m_pSample->IsEnabled();
+    bool bDirPanel = (nItem == SA_NDX_DIR);
+    bool bEnabledOrDir = bSampleEnabled || bDirPanel;
     _EnableItem(IDmenuHistory,pPage->HasHistory());
-    _EnableItem(IDSampleAccept, bSampleEnabled && pPage->NeedsAcceptance());
-    _EnableItem(IDSampleApprove, bSampleEnabled && pPage->NeedsReview());
-    _EnableItem(IDSampleApply,bSampleEnabled && pPage->NeedsApply());
-    _EnableItem(IDSampleApplyAll, m_pNoteBook->IsModified());
+    _EnableItem(IDSampleAccept, bEnabledOrDir && pPage->NeedsAcceptance());
+    _EnableItem(IDSampleApprove, bEnabledOrDir && pPage->NeedsReview());
+    _EnableItem(IDSampleApply,bEnabledOrDir && pPage->NeedsApply());
+    _EnableItem(IDSampleApplyAll, bSampleEnabled && m_pNoteBook->IsModified());
+    _EnableItem(IDmenuDisableSample, 
+      m_pSample->IsSampleType() && !bDirPanel);
     _SetSampleEnabled(bSampleEnabled);
   }
 }
@@ -449,6 +586,7 @@ IMPLEMENT_PERSISTENT_SIZE(CFrameSample)
 BEGIN_EVENT_TABLE(CFrameSample,CMDIFrame)
 EVT_PERSISTENT_SIZE(CFrameSample)
 EVT_BUTTON(wxID_ANY,CFrameSample::OnButton)
+EVT_CLOSE(CFrameSample::OnClose)
 END_EVENT_TABLE()
 
 

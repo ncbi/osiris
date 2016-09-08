@@ -40,7 +40,7 @@ public:
   }
 };
 
-#define nwxDECLARE_GLOBAL_OBJECT_OTHER(T) \
+#define nwxDECLARE_GLOBAL_OBJECT_base(T) \
   static void CleanupGlobal()       \
   {                                 \
     if(g_pGlobal != NULL)           \
@@ -62,7 +62,7 @@ public:                             \
     }                               \
     return g_pGlobal;               \
   }                                 \
-nwxDECLARE_GLOBAL_OBJECT_OTHER(T)
+nwxDECLARE_GLOBAL_OBJECT_base(T)
 
 #define nwxDECLARE_GLOBAL_OBJECT_XML(T)   \
 public:                                   \
@@ -78,7 +78,7 @@ public:                                   \
     }                                     \
     return g_pGlobal;                     \
   }                                       \
-nwxDECLARE_GLOBAL_OBJECT_OTHER(T)
+nwxDECLARE_GLOBAL_OBJECT_base(T)
 
 
 #define nwxIMPLEMENT_GLOBAL_OBJECT(T) \

@@ -102,6 +102,10 @@ public:
     return bEnabled ? DISABLE : ENABLE;
   }
 private:
+  void _StoreButton(wxButton *p, int nID)
+  {
+    m_mapButton.insert(mapButton::value_type(nID,p));
+  }
   wxButton *_FindButton(int nID);
   typedef std::map<int, wxButton *> mapButton;
   mapButton m_mapButton;

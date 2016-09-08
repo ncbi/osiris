@@ -102,6 +102,7 @@ public:
   {
     return m_dtHistory.GetDateTime();
   }
+  void CopyState(CGridAlerts *pFrom);
   void SetupLocusColumn(const vector<wxString> &vsLocus);
   void SetupChannelColumn(
     const COARsample *pSample,
@@ -112,6 +113,7 @@ public:
   virtual void SetTableReadOnly(bool bReadOnly = true);
 
 private:
+  void DoCellChange(int nRow, int nCol);
   void UpdateDisabledFromRow(int nRow, COARmessage *pMsg);
   void UpdateTextFromRow(int nRow, COARmessage *pMsg);
   bool TransferDataToRow(int nRow, const COARmessage *pMsg);

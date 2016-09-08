@@ -214,6 +214,18 @@ wxWindow *CPageEditSampleAlerts::CreatePanel(wxWindow *parent)
   return pPanel;
 #endif
 }
+CPanelSampleAlertDetails *CPageEditSampleAlerts::GetSubPanel()
+{
+  CPanelSampleAlertDetails *pRtn = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  return pRtn;
+}
+
+CPanelLocusDetails *CPageEditLocus::GetLocusPanel()
+{
+  CPanelLocusDetails *pRtn = wxDynamicCast(GetPanel(),CPanelLocusDetails);
+  return pRtn;
+}
+
 wxWindow *CPageEditLocus::CreatePanel(wxWindow *parent)
 {
   CPanelLocusDetails *pRtn = new CPanelLocusDetails(
@@ -485,6 +497,80 @@ void CEditAlertsChannel::UpdateMessages()
 }
 //  END UpdateMessages
 
+// CEditAlertsDir SyncTo - sync changes to other
+//   instances of this class
+
+void CEditAlertsDir::SyncTo(CEditAlertsDir *pFromThis)
+{
+  CPanelSampleAlertDetails *pPanel = GetSubPanel();
+  CPanelSampleAlertDetails *pPanelFrom = pFromThis->GetSubPanel();
+  pPanel->CopyState(pPanelFrom);
+  m_pParentNotebook->UpdateDirPage();
+}
+
+//  class CEditAlertsDir::CDirPanelSet - container
+//   for instances of CEditAlertsDir for syncing
+//   all instances from the same file
+
+CEditAlertsDir::CDirPanelSet::MAP_ALL
+  CEditAlertsDir::CDirPanelSet::g_mapAll;
+
+void CEditAlertsDir::CDirPanelSet::Add(CEditAlertsDir *pPanel)
+{
+  MAP_ALL_ITERATOR itrMap = _Find(pPanel);
+  SET_PANEL *pSet = NULL;
+  if(itrMap == g_mapAll.end())
+  {
+    pSet = new SET_PANEL;
+    g_mapAll.insert(
+      MAP_ALL::value_type(pPanel->GetFile(),pSet));
+  }
+  else
+  {
+    pSet = itrMap->second;
+  }
+  if(pSet->find(pPanel) == pSet->end())
+  {
+    pSet->insert(pPanel);
+  }
+}
+void CEditAlertsDir::CDirPanelSet::Remove(CEditAlertsDir *pPanel)
+{
+  MAP_ALL_ITERATOR itrMap = _Find(pPanel);
+  if(itrMap != g_mapAll.end())
+  {
+    SET_PANEL *pSet = itrMap->second;
+    SET_PANEL::iterator itr = pSet->find(pPanel);
+    if(itr != pSet->end())
+    {
+      pSet->erase(itr);
+      if(pSet->size() == 0)
+      {
+        delete pSet;
+        g_mapAll.erase(itrMap);
+      }
+    }
+  }
+}
+void CEditAlertsDir::CDirPanelSet::SyncAllTo(CEditAlertsDir *pPanel)
+{
+  MAP_ALL_ITERATOR itrMap = _Find(pPanel);
+  if(itrMap != g_mapAll.end())
+  {
+    SET_PANEL *pSet = itrMap->second;
+    for(SET_PANEL::iterator itr = pSet->begin();
+      itr != pSet->end();
+      ++itr)
+    {
+      if(pPanel != *itr)
+      {
+        (*itr)->SyncTo(pPanel);
+      }
+    }
+  }
+}
+
+
 //  END CEditAlertsDir, CEditAlertsSample, CEditAlertsILS, CEditAlertsChannel
 
 
@@ -496,7 +582,7 @@ bool CPageEditSampleAlerts::NeedsApply()
 {
   // appropriate only if m_pPanel is CPanelSampleAlertDetails
   bool bRtn = false;
-  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  CPanelSampleAlertDetails *pPanel = GetSubPanel();
   if(pPanel == NULL)
   {}
   else if(pPanel->IsNotesModified())
@@ -529,7 +615,7 @@ bool CPageEditSampleAlerts::DoApply()
   // appropriate only if m_pPanel is CPanelSampleAlertDetails
 bool CPageEditSampleAlerts::TransferDataToPage()
 {
-  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  CPanelSampleAlertDetails *pPanel = GetSubPanel();
   bool bRtn = (pPanel != NULL);
   if(bRtn)
   {
@@ -552,7 +638,7 @@ void CPageEditSampleAlerts::SetReadOnly(bool b)
   if(b != IsReadOnly())
   {
     _SetReadOnlyRaw(b);
-    CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+    CPanelSampleAlertDetails *pPanel = GetSubPanel();
     if(pPanel != NULL)
     {
       pPanel->SetReadOnly(b);
@@ -564,7 +650,7 @@ void CPageEditLocus::SetReadOnly(bool b)
   if(b != IsReadOnly())
   {
     _SetReadOnlyRaw(b);
-    CPanelLocusDetails *pPanel = wxDynamicCast(GetPanel(),CPanelLocusDetails);
+    CPanelLocusDetails *pPanel = GetLocusPanel();
     if(pPanel != NULL)
     {
       pPanel->SetReadOnly(b);
@@ -576,7 +662,7 @@ void CPageEditLocus::SetReadOnly(bool b)
 
 const wxString &CPageEditSampleAlerts::GetNewNotes()
 {
-  CPanelSampleAlertDetails *pPanel = wxDynamicCast(GetPanel(),CPanelSampleAlertDetails);
+  CPanelSampleAlertDetails *pPanel = GetSubPanel();
   if(pPanel == NULL)
   {
     m_sNotes.Empty();
@@ -589,7 +675,7 @@ const wxString &CPageEditSampleAlerts::GetNewNotes()
 }
 const wxString &CPageEditLocus::GetNewNotes()
 {
-  CPanelLocusDetails *pPanel = wxDynamicCast(GetPanel(),CPanelLocusDetails);
+  CPanelLocusDetails *pPanel = GetLocusPanel();
   if(pPanel == NULL)
   {
     m_sNotes.Empty();
@@ -604,13 +690,13 @@ const wxString &CPageEditLocus::GetNewNotes()
 
 bool CPageEditLocus::NeedsApply()
 {
-  CPanelLocusDetails *pWindow = wxDynamicCast(GetPanel(),CPanelLocusDetails);
+  CPanelLocusDetails *pWindow = GetLocusPanel();
   bool bRtn = pWindow->IsModified();
   return bRtn;
 }
 bool CPageEditLocus::DoApply()
 {
-  CPanelLocusDetails *pWindow = wxDynamicCast(GetPanel(),CPanelLocusDetails);
+  CPanelLocusDetails *pWindow = GetLocusPanel();
   bool bRtn = false;
   if((pWindow != NULL) && pWindow->IsModified())
   {

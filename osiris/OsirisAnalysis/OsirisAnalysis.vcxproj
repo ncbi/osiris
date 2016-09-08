@@ -388,6 +388,7 @@
     <ClCompile Include="CProcess.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
+    <ClCompile Include="CSiteSettings.cpp" />
     <ClCompile Include="CSplitterCellHistory.cpp" />
     <ClCompile Include="CStandardSettings.cpp" />
     <ClCompile Include="CVolumes.cpp" />
@@ -405,6 +406,7 @@
     <ClInclude Include="CAllLoci.h" />
     <ClInclude Include="CArtifactLabels.h" />
     <ClInclude Include="CArtifactLabelsUser.h" />
+    <ClInclude Include="CButtonGraph.h" />
     <ClInclude Include="CComboLabels.h" />
     <ClInclude Include="CDialogAbout.h" />
     <ClInclude Include="CDialogAnalysis.h" />
@@ -531,6 +533,7 @@
     <ClInclude Include="CProcess.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
+    <ClInclude Include="CSiteSettings.h" />
     <ClInclude Include="CSplitterCellHistory.h" />
     <ClInclude Include="CStandardSettings.h" />
     <ClInclude Include="CVolumes.h" />

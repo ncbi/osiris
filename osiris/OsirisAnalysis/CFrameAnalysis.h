@@ -376,7 +376,8 @@ private:
     m_mapSamples.insert(
       PairSampleFrame(ps,pf));
   }
-  void _DestroySamples();
+  bool _DestroySamples();
+  bool _CheckSamples();
 public:
   void RemoveSample(COARsample *pSample,CFrameSample *pf)
   {

@@ -108,6 +108,24 @@ public:
       m_pTextNewNotes->Enable(!bReadOnly);
     }
   }
+  void CopyState(CPanelSampleAlertDetails *pPanelFrom)
+  {
+    m_pGridAlerts->CopyState(pPanelFrom->m_pGridAlerts);
+    wxString s = pPanelFrom->m_pTextNotes->GetValue();
+    if(m_pTextNotes->GetValue() != s)
+    {
+      m_pTextNotes->SetValue(s);
+    }
+    if( m_pTextNewNotes != NULL &&
+        pPanelFrom->m_pTextNewNotes != NULL)
+    {
+      s = pPanelFrom->m_pTextNewNotes->GetValue();
+      if(m_pTextNewNotes->GetValue() != s)
+      {
+        m_pTextNewNotes->SetValue(s);
+      }
+    }
+  }
   // wxString GetNotesText(const wxString &sUser = wxEmptyString);
   //wxString GetNewNotes(const COARnotes *pCurrent, const wxString &sUser = wxEmptyString);
 private:

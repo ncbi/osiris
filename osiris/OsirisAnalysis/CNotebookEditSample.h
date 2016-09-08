@@ -88,11 +88,11 @@ public:
 ;
   virtual ~CNotebookEditSample();
   virtual bool TransferDataToWindow();
-  virtual bool Validate();
+  //virtual bool Validate();
   virtual void OnTimer(wxTimerEvent &);
   void SelectLocus(const wxString &sLocus);
   void SelectAlerts(int nAlertType);
-  bool IsModified();
+  bool IsModified(int *pnFirstPage = NULL);
   bool InBatch()
   {
     return m_nBatch != 0;
@@ -113,7 +113,8 @@ public:
   void Select(int n)
   {
     // select notebook page, Sample, ILS, or Channel
-    m_pNotebook->ChangeSelection((size_t)n);
+    _SetSelection(n);
+    //    m_pNotebook->ChangeSelection((size_t)n);
   }
   int GetSelection()
   {
@@ -140,6 +141,8 @@ public:
       (n == wxNOT_FOUND) ? NULL : m_vpPanels.at((size_t) n);
     return pRtn;
   }
+  void UpdateDirPage();
+  void CheckDirPage();
   /*
   virtual bool SetDateTime(const wxDateTime *pTime);
   virtual const wxDateTime *GetDateTime()

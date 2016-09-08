@@ -33,6 +33,7 @@
 #include <wx/utils.h>
 #include <wx/wrapsizer.h>
 #include "CMDIFrame.h"
+#include "CButtonGraph.h"
 #include "wxIDS.h"
 
 CMenuSample::CMenuSample() : wxMenu()
@@ -71,7 +72,7 @@ wxButton *CToolbarSample::_CreateButton(int nID,const wxString &sLabel)
 {
   wxButton *pRtn = new wxButton(this,nID,sLabel,
       wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-  m_mapButton.insert(mapButton::value_type(nID,pRtn));
+  _StoreButton(pRtn, nID);
   return pRtn;
 }
 wxButton *CToolbarSample::_FindButton(int nID)
@@ -103,7 +104,8 @@ CToolbarSample::CToolbarSample(CMDIFrame *m_pFrame, wxWindow *parent) :
 {
   const int FLAG =
     wxTOP | wxBOTTOM | wxLEFT | wxALIGN_CENTRE_VERTICAL;
-  wxButton *pButtonGraph = _CreateButton(IDmenuDisplayGraph,wxT("Graph"));
+  wxButton *pButtonGraph = new CButtonGraph(this);
+  _StoreButton(pButtonGraph, pButtonGraph->GetId());
   wxButton *pButtonTable = _CreateButton(IDmenuTable,wxT("Table"));
   wxButton *pButtonHistory = _CreateButton(IDmenuHistory,wxT("History"));
   wxButton *pButtonDisable = _CreateButton(IDmenuDisableSample,DISABLE);
