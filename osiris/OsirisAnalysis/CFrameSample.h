@@ -69,7 +69,6 @@ public:
   virtual bool Destroy();
   bool IsModified(int *pnFirstPage = NULL);
 
-  void OnButton(wxCommandEvent &e);
   void OnClose(wxCloseEvent &e);
   void UpdateMenu();
   void SetupTitle(bool bForce = false);

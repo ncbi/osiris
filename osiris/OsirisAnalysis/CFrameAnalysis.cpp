@@ -45,6 +45,7 @@
 #include "CDialogApprove.h"
 #include "CDialogEditPeak.h"
 #include "CButtonGraph.h"
+#include "CButtonSample.h"
 #include "CLabSettings.h"
 #include "COARfile.h"
 #include "CReAnalyze.h"
@@ -220,6 +221,7 @@ void CFrameAnalysis::_Build()
     wxDefaultPosition,
     wxDefaultSize,
     wxTE_READONLY);
+  m_pButtonSample = new CButtonSample(m_pPanelToolbar);
   m_pButtonGraphic = new CButtonGraph(m_pPanelToolbar);
   m_SampleSort.Sort(m_pOARfile,NULL);
   m_pTogglePreview = new wxToggleButton(
@@ -269,6 +271,7 @@ void CFrameAnalysis::_Build()
     );
   m_pButtonParms->SetToolTip(CMenuAnalysis::PARAMETERS_TOOL_TIP);
   m_pButtonGraphic->Enable(false);
+  m_pButtonSample->Enable(false);
   m_pButtonParms->Enable(false);
 
   wxFont fn(m_pLabelFile->GetFont());
@@ -279,8 +282,10 @@ void CFrameAnalysis::_Build()
   m_pPanelInfo->SetBackgroundColour(clrTextNoEdit);
 
   wxBoxSizer *pSizerLabel = new wxBoxSizer(wxHORIZONTAL);
-  pSizerLabel->Add(m_pButtonGraphic,0,
+  pSizerLabel->Add(m_pButtonSample,0,
     wxALL | wxALIGN_CENTER_VERTICAL, ID_BORDER);
+  pSizerLabel->Add(m_pButtonGraphic,0,
+    (wxALL ^ wxLEFT) | wxALIGN_CENTER_VERTICAL, ID_BORDER);
   pSizerLabel->Add(m_pTogglePreview,0,
     (wxALL ^ wxLEFT) | wxALIGN_CENTER_VERTICAL, ID_BORDER);
   m_pButtonEdit->Enable(false);
@@ -959,6 +964,7 @@ void CFrameAnalysis::ShowStatusText(bool bIncludeStatusPanel)
   if(bIncludeStatusPanel)
   {
     m_pButtonGraphic->Enable(true);
+    m_pButtonSample->Enable(true);
     m_pButtonParms->Enable(true);
     m_pPanelToolbar->Layout();
 
@@ -1000,6 +1006,7 @@ bool CFrameAnalysis::TransferDataToWindow()
   m_pText->Clear();
   SetFileNameLabel(wxEmptyString);
   m_pButtonGraphic->Enable(false);
+  m_pButtonSample->Enable(false);
   m_pButtonParms->Enable(false);
   _DestroyStatusPanel();
   _DestroyLocusPanel();
@@ -1194,7 +1201,7 @@ bool CFrameAnalysis::_DestroySamples()
       }
       //(*itrv)->Destroy();
     }
-    m_mapSamples.clear(); // Should already be cleared
+    //m_mapSamples.clear(); // Should already be cleared
   }
   return bRtn;
 }

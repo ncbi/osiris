@@ -416,6 +416,7 @@ private:
   wxPanel *m_pPanelInfo;
   CPanelPlotPreview *m_pPanelPlotPreview;
   wxButton *m_pButtonGraphic;
+  wxButton *m_pButtonSample;
   wxButton *m_pButtonParms;
 #if EDIT_MENU
   nwxButtonMenu *m_pButtonEdit;

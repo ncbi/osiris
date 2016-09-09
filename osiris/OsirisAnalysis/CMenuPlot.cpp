@@ -181,6 +181,9 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   if(!m_bPreview)
   {
     m_pMenuData->Append(
+      IDmenuDisplaySample,
+      "Edit Sample");
+    m_pMenuData->Append(
       IDmenuTable,
       "Show Table");
   }

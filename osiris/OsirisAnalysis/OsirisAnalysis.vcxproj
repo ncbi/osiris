@@ -407,6 +407,7 @@
     <ClInclude Include="CArtifactLabels.h" />
     <ClInclude Include="CArtifactLabelsUser.h" />
     <ClInclude Include="CButtonGraph.h" />
+    <ClInclude Include="CButtonSample.h" />
     <ClInclude Include="CComboLabels.h" />
     <ClInclude Include="CDialogAbout.h" />
     <ClInclude Include="CDialogAnalysis.h" />

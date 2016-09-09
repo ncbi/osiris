@@ -57,6 +57,7 @@
 #include "CMenuEdit.h"
 #include "CParmOsiris.h"
 #include "CPanelHistoryMenu.h"
+#include "CNotebookEditSample.h"
 
 #if FP_SCROLL_EVENT
 DEFINE_EVENT_TYPE(wxEVT_SCROLL_PLOT)
@@ -146,6 +147,7 @@ CFramePlotMenu::CFramePlotMenu()
   Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBARS);
   Append(IDmenuShowHidePlotScrollbars,"Hide Plot Scrollbars");
   AppendCheckItem(IDmenuShowHideWindowScrollbar,"Resizable Plots");
+  Append(IDmenuDisplaySample,"&Edit Sample");
   Append(IDmenuTable,"Show T&able");
   SetHistorySubMenu(NULL);
   Append(IDMaxLadderLabels,
@@ -838,7 +840,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     }
 
   }
-  else if(nID == IDmenuTable)
+  else if(nID == IDmenuTable || nID == IDmenuDisplaySample)
   {
     OnTableButton(e);
   }
@@ -1596,6 +1598,8 @@ void CFramePlot::OnHistoryButton(wxCommandEvent &e)
 }
 void CFramePlot::OnTableButton(wxCommandEvent &e)
 {
+  //  callback function for the table or sample button
+
   if(m_pOARfile == NULL)
   {
     _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_TABLE);
@@ -1615,7 +1619,17 @@ void CFramePlot::OnTableButton(wxCommandEvent &e)
     CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
     if(pFrame != NULL)
     {
-      pFrame->SelectSample(m_pData->GetFilename());
+      const wxString &sFile = m_pData->GetFilename();
+      pFrame->SelectSample(sFile);
+      if(e.GetId() == IDmenuDisplaySample)
+      {
+        COARsample *pSample = m_pOARfile->GetSampleByName(sFile);
+        if(pSample != NULL)
+        {
+          RaiseWindow();
+          pFrame->ShowSampleFrame(pSample,wxEmptyString, SA_NDX_SAMPLE);
+        }
+      }
     }
   }
 }
@@ -2075,6 +2089,7 @@ EVT_CLOSE(CFramePlot::OnClose)
 EVT_CONTEXT_MENU(CFramePlot::OnContextMenu)
 EVT_BUTTON(IDhistoryButton,CFramePlot::OnHistoryButton)
 EVT_BUTTON(IDgraphTable, CFramePlot::OnTableButton)
+EVT_BUTTON(IDmenuDisplaySample, CFramePlot::OnTableButton)
 EVT_SASH_DRAGGED(wxID_ANY,CFramePlot::OnSashDragged)
 EVT_SIZE(CFramePlot::OnSize)
 EVT_COMMAND(IDframePlot,wxEVT_SIZE_DELAY_PLOT,CFramePlot::OnSizeAction)

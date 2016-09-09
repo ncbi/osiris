@@ -38,6 +38,7 @@
 #include "COARmisc.h"
 #include "CPanelHistoryMenu.h"
 #include "CMenuLabels.h"
+#include "CButtonSample.h"
 #include "Platform.h"
 //**********************************************  CComboArtifact
 
@@ -172,11 +173,13 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 
 
   // view table
+  wxButton *pButtonSample = new CButtonSample(m_pPanel);
   wxButton *pButtonTable =
     new wxButton(m_pPanel,IDgraphTable,"Table",
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT);
   pButtonTable->SetToolTip("View a table containing the analysis data.");
+  pSizer->Add(pButtonSample,0,nSizerFlags,ID_BORDER);
   pSizer->Add(pButtonTable,0,nSizerFlags,ID_BORDER);
 
 

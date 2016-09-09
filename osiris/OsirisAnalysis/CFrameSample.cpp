@@ -40,7 +40,6 @@
 #include "CSiteSettings.h"
 #include <wx/sizer.h>
 #include <wx/msgdlg.h>
-#include "nwx/nwxKeyState.h"
 #include "nwx/nwxLog.h"
 #include "nwx/nwxString.h"
 
@@ -318,8 +317,7 @@ void CFrameSample::_ToggleDisabled()
 }
 void CFrameSample::_ShowTable()
 {
-  m_pCreator->Show(true);
-  m_pCreator->Raise();
+  m_pCreator->RaiseWindow();
   const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
   wxString sName = m_pSample->GetName();
   bool b = false;
@@ -485,6 +483,7 @@ void CFrameSample::FormatCloseWarning(const std::vector<wxString> &vsSamples, wx
 
 void CFrameSample::OnClose(wxCloseEvent &e)
 {
+  bool bDestroy = true;
   if(e.CanVeto())
   {
     int nSelect;
@@ -496,27 +495,21 @@ void CFrameSample::OnClose(wxCloseEvent &e)
       FormatCloseWarning(vs,&sWarning);
       wxMessageDialog dlg(this,sWarning,wxT("Warning"),wxYES_NO | wxNO_DEFAULT);
       int n = dlg.ShowModal();
-      if(n == wxID_YES)
+      if(n != wxID_YES)
       {
-        Destroy();
-      }
-      else
-      {
+        bDestroy = false;
         e.Veto(true);
         m_pNoteBook->Select(nSelect);
+        RaiseWindow();
       }
     }
   }
+  if(bDestroy)
+  {
+    e.Skip();
+  }
 }
 
-void CFrameSample::OnButton(wxCommandEvent &e)
-{
-  if( (e.GetId() == IDSampleApply) && nwxKeyState::Shift())
-  {
-    e.SetId(IDSampleApplyAll);
-  }
-  MenuEvent(e);
-}
 void CFrameSample::UpdateSizeHack(bool bForce)
 {
   //  this frame does not render properly 
@@ -585,7 +578,6 @@ IMPLEMENT_PERSISTENT_SIZE(CFrameSample)
 
 BEGIN_EVENT_TABLE(CFrameSample,CMDIFrame)
 EVT_PERSISTENT_SIZE(CFrameSample)
-EVT_BUTTON(wxID_ANY,CFrameSample::OnButton)
 EVT_CLOSE(CFrameSample::OnClose)
 END_EVENT_TABLE()
 

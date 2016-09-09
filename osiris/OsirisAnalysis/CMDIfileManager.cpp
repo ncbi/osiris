@@ -37,9 +37,13 @@
 #include "CMDIFrame.h"
 #include "CFrameRunAnalysis.h"
 #include "CFrameAnalysis.h"
+#include "CFrameSample.h"
 #include "COARfile.h"
 #include "CFramePlot.h"
 #include "mainApp.h"
+#include "nwx/stdb.h"
+#include <list>
+#include "nwx/stde.h"
 
 CMDIfileManager::~CMDIfileManager()
 {
@@ -54,7 +58,7 @@ void CMDIfileManager::UpdateHistory(COARfile *pFile)
   CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);
   if(_IteratorOK(itr))
   {
-    set<CMDIFrame *>::iterator itrF;
+    std::set<CMDIFrame *>::iterator itrF;
     for(itrF = itr->second.begin();
       itrF != itr->second.end();
       ++itrF)
@@ -70,7 +74,7 @@ void CMDIfileManager::UpdateSamplePlot(COARfile *pFile, const wxString &sSampleF
   CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);
   if(_IteratorOK(itr))
   {
-    set<CMDIFrame *>::iterator itrF;
+    std::set<CMDIFrame *>::iterator itrF;
     for(itrF = itr->second.begin();
       itrF != itr->second.end();
       ++itrF)
@@ -91,7 +95,7 @@ void CMDIfileManager::UpdateOARfile(COARfile *pFile, bool bUpdateAnalysis)
   CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);
   if(_IteratorOK(itr))
   {
-    set<CMDIFrame *>::iterator itrF;
+    std::set<CMDIFrame *>::iterator itrF;
     for(itrF = itr->second.begin();
       itrF != itr->second.end();
       ++itrF)
@@ -139,8 +143,8 @@ void CMDIfileManager::KillOARfile(COARfile *pFile)
   if(_IteratorOK(itr))
   {
     CMDI_WF::iterator itrWin;
-    set<CMDIFrame *>::iterator itrF;
-    vector<CMDIFrame *> vpFrame;
+    std::set<CMDIFrame *>::iterator itrF;
+    std::vector<CMDIFrame *> vpFrame;
     vpFrame.reserve(itr->second.size());
     for(itrF = itr->second.begin();
       itrF != itr->second.end();
@@ -166,7 +170,7 @@ CFrameAnalysis *CMDIfileManager::FindAnalysisFrame(COARfile *pFile)
   CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);
   if(_IteratorOK(itr))
   {
-    set<CMDIFrame *>::iterator itrF;
+    std::set<CMDIFrame *>::iterator itrF;
     for(itrF = itr->second.begin();
       itrF != itr->second.end();
       ++itrF)
@@ -188,7 +192,7 @@ void CMDIfileManager::DiscardChanges(COARfile *pFile)
   {
     bool bReloaded = false;
     bool bKill = false;
-    set<CMDIFrame *>::iterator itrF;
+    std::set<CMDIFrame *>::iterator itrF;
     for(itrF = itr->second.begin();
       itrF != itr->second.end();
       ++itrF)
@@ -211,11 +215,11 @@ void CMDIfileManager::DiscardChanges(COARfile *pFile)
       // we had a problem reloading the OAR file,
       // so set all plots to have NO oar file
       // since this removes the frame from the itr->second
-      // set<> we will first copy all frames to a vector
-      // otherwise looping through a set<>::iterator
-      // while the set<> is changing will cause a crash
+      // std::set<> we will first copy all frames to a vector
+      // otherwise looping through a std::set<>::iterator
+      // while the std::set<> is changing will cause a crash
       //
-      vector<CFramePlot *> vpFrame;
+      std::vector<CFramePlot *> vpFrame;
       vpFrame.reserve(itr->second.size());
       for(itrF = itr->second.begin();
         itrF != itr->second.end();
@@ -348,17 +352,23 @@ bool CMDIfileManager::CloseAll()
     //  copy all frame pointers because m_mapWindowFile
     //  will change each time a window is closed
 
-    vector<CMDIFrame *> vpFrame;
-    vpFrame.reserve(nSize);
+    std::list<CMDIFrame *> vpFrame;
 
     for(itr = m_mapWindowFile.begin();
       bRtn && _IteratorOK(itr);
       ++itr)
     {
-      vpFrame.push_back(itr->first);
+      pf = itr->first;
+      if(wxDynamicCast(pf,CFrameSample) == NULL)
+      {
+        vpFrame.push_back(pf);
+      }
+      else
+      {
+        vpFrame.push_front(pf);
+      }
     }
-
-    for(vector<CMDIFrame *>::iterator itrv = vpFrame.begin();
+    for(std::list<CMDIFrame *>::iterator itrv = vpFrame.begin();
       itrv != vpFrame.end();
       ++itrv)
     {
@@ -369,6 +379,7 @@ bool CMDIfileManager::CloseAll()
       else if(!pf->Close(false))
       {
         bRtn = false;
+        break;
       }
     }
   }
@@ -465,7 +476,7 @@ void CMDIfileManager::_RemoveCOARfile(COARfile *pFile, CMDIFrame *pWin)
     CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);
     if(_IteratorOK(itr))
     {
-      set<CMDIFrame *>::iterator itrw = itr->second.find(pWin);
+      std::set<CMDIFrame *>::iterator itrw = itr->second.find(pWin);
       if(itrw != itr->second.end())
       {
         itr->second.erase(itrw);
@@ -487,8 +498,8 @@ void CMDIfileManager::_InsertCOARfile(COARfile *pFile, CMDIFrame *pWin)
     CMDI_FW::iterator itr = m_mapFileWindows.find(pFile);
     if(!_IteratorOK(itr))
     {
-      set<CMDIFrame *> x;
-      pair<CMDI_FW::iterator,bool> pr;
+      std::set<CMDIFrame *> x;
+      std::pair<CMDI_FW::iterator,bool> pr;
       pr = m_mapFileWindows.insert(CMDI_FW::value_type(pFile,x));
       itr = pr.first;
     }
@@ -559,9 +570,9 @@ void CMDIfileManager::MoveToTop(CMDIFrame *p)
 
 void CMDIfileManager::BringAllToFront()
 {
-  vector<CMDIFrame *> vw;
+  std::vector<CMDIFrame *> vw;
   CMDI_LIST::reverse_iterator itr;
-  vector<CMDIFrame *>::iterator itrv;
+  std::vector<CMDIFrame *>::iterator itrv;
   vw.reserve(m_mapWindowFile.size());
 
   // make a local list of windows because m_listXOrder

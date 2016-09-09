@@ -34,6 +34,7 @@
 #include <wx/wrapsizer.h>
 #include "CMDIFrame.h"
 #include "CButtonGraph.h"
+#include "nwx/nwxKeyState.h"
 #include "wxIDS.h"
 
 CMenuSample::CMenuSample() : wxMenu()
@@ -130,6 +131,10 @@ CToolbarSample::CToolbarSample(CMDIFrame *m_pFrame, wxWindow *parent) :
 }
 void CToolbarSample::OnButton(wxCommandEvent &e)
 {
+  if( (e.GetId() == IDSampleApply) && nwxKeyState::Shift())
+  {
+    e.SetId(IDSampleApplyAll);
+  }
   m_pParent->MenuEvent(e);
 }
 const wxChar * const CToolbarSample::DISABLE(wxT("Disable"));

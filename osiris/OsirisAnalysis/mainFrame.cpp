@@ -489,11 +489,13 @@ CFramePlot *mainFrame::OpenGraphicFile(
 void mainFrame::OnQuit(wxCommandEvent &e)
 {
   bool bSkip;
-#if mainFrameIsWindow
   wxBusyCursor xxx;
-  bSkip = Close();
-#else
   bSkip = DoClose();
+#if mainFrameIsWindow
+  if(bSkip)
+  {
+    bSkip = Close();
+  }
 #endif
   e.Skip(bSkip);
 }
