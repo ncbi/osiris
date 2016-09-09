@@ -58,7 +58,6 @@ osiris_SOURCES =  \
 ../CKitColors2.cpp \
 ../CKitList.cpp \
 ../CLabSettings.cpp \
-../CLabSettingsFileName.cpp \
 ../CLabels.cpp \
 ../CListProcess.cpp \
 ../CMDIFrame.cpp \
@@ -123,6 +122,7 @@ osiris_SOURCES =  \
 ../CProcess.cpp \
 ../CProcessAnalysis.cpp \
 ../CReAnalyze.cpp \
+../CSiteSettings.cpp \
 ../CSplitterCellHistory.cpp \
 ../CStandardSettings.cpp \
 ../CVolumes.cpp \
