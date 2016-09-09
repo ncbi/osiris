@@ -123,6 +123,7 @@ osiris_SOURCES =  \
 ../CProcess.cpp \
 ../CProcessAnalysis.cpp \
 ../CReAnalyze.cpp \
+../CSiteSettings.cpp \
 ../CSplitterCellHistory.cpp \
 ../CStandardSettings.cpp \
 ../CVolumes.cpp \
