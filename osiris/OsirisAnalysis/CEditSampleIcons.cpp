@@ -155,6 +155,10 @@ void CEditSampleIcons::_CenterSizes(wxPoint *ppt, const wxSize &szIn, const wxSi
 {
   ppt->x = (szOut.x - szIn.x) >> 1;
   ppt->y = (szOut.y - szIn.y) >> 1;
+#ifdef __WXMAC__
+  ppt->x--;
+  ppt->y--;
+#endif
 }
 
 void CEditSampleIcons::_CheckUpToDate()
