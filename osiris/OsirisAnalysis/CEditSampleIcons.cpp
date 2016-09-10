@@ -93,6 +93,10 @@ void CEditSampleIcons::_Build()
   // size is now determined, set text positions
   _CenterSizes(&m_ptOK, szOK, m_sizeImg);
   _CenterSizes(&m_ptNeedsAttn, szNeedsAttn, m_sizeImg);
+#ifdef __WXMAC__
+  m_ptOK.y -= 2;
+  m_ptNeedsAttn.y -= 2;
+#endif
 
   // set up image list
   m_List.Create(m_sizeImg.x,m_sizeImg.y,false);
@@ -155,10 +159,6 @@ void CEditSampleIcons::_CenterSizes(wxPoint *ppt, const wxSize &szIn, const wxSi
 {
   ppt->x = (szOut.x - szIn.x) >> 1;
   ppt->y = (szOut.y - szIn.y) >> 1;
-#ifdef __WXMAC__
-  ppt->x--;
-  ppt->y--;
-#endif
 }
 
 void CEditSampleIcons::_CheckUpToDate()
