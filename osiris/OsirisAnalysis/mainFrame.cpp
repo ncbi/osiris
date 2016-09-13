@@ -1145,7 +1145,7 @@ void mainFrame::TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight)
   sz = this->GetClientSize();
 #else
   sz.SetWidth(wxSystemSettings::GetMetric(wxSYS_SCREEN_X));
-  sz.SetHeight(int nhs = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y));
+  sz.SetHeight(wxSystemSettings::GetMetric(wxSYS_SCREEN_Y));
 #endif
   int nHalf = (sz.x >> 1);
   wxSize szLeft = pLeft->GetSize();
