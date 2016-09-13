@@ -88,10 +88,10 @@ private:
   // GetGlobal() and CleanupGlobal()
   // defined in nwxGlobalObject.h
 public:
-  const wxString &GetValue(const wxString &sKey, const wxString &Default = wxEmptyString) const
+  wxString GetValue(const wxString &sKey, const wxString &Default = wxEmptyString) const
   {
     const CSetting *ps = Find(sKey);
-    const wxString &rtn = (ps == NULL) ? Default : ps->GetValue();
+    const wxString rtn = (ps == NULL) ? Default : ps->GetValue();
     return rtn;
   }
   int GetIntValue(const wxString &sKey, int Default = 0) const
