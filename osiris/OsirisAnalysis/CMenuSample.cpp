@@ -43,6 +43,7 @@ CMenuSample::CMenuSample() : wxMenu()
     "Display &Graph\tAlt+G",
     "Display channel plots.  Hold the shift key down for a single plot"
     );
+  Append(IDmenuSampleTile,"&Split Screen with Graph\tCtrl+G");
   Append(IDmenuTable,"Show &Table\tAlt+T","Display the analysis table");
 //  Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBAR);
   Append(IDmenuHistory,"&History...\tCtrl+H");

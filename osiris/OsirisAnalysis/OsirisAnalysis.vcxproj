@@ -379,6 +379,7 @@
     <ClCompile Include="CPanelPlotToolbar.cpp" />
     <ClCompile Include="CPanelSampleAlertDetails.cpp" />
     <ClCompile Include="CPanelSampleAlertNotebook.cpp" />
+    <ClCompile Include="CPanelSampleTitle.cpp" />
     <ClCompile Include="CPanelStatus.cpp" />
     <ClCompile Include="CPanelUserID.cpp" />
     <ClCompile Include="CParmGridAttributes.cpp" />
@@ -525,6 +526,7 @@
     <ClInclude Include="CPanelPlotToolbar.h" />
     <ClInclude Include="CPanelSampleAlertDetails.h" />
     <ClInclude Include="CPanelSampleAlertNotebook.h" />
+    <ClInclude Include="CPanelSampleTitle.h" />
     <ClInclude Include="CPanelStatus.h" />
     <ClInclude Include="CPanelUserID.h" />
     <ClInclude Include="CParmGridAttributes.h" />

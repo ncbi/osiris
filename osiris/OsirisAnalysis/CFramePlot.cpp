@@ -412,6 +412,7 @@ void CFramePlot::_SetupTitle()
     sFileName = "error...";
   }
   SetTitle(mainApp::FormatWindowTitle(
+    wxT("Graph"),
     sFileName,false,&m_pData->GetParameters(), GetSelectedTime()));
 }
 
@@ -436,7 +437,7 @@ CFramePlot::CFramePlot(
   ) :
     CMDIFrame(pOwner, IDframePlot, "",
       wxDefaultPosition,
-      size
+      GET_PERSISTENT_SIZE_DEFAULT(CFramePlot,size)
       ),
     m_pPanel(NULL),
     m_pDialogPlot(NULL),
@@ -1627,7 +1628,7 @@ void CFramePlot::OnTableButton(wxCommandEvent &e)
         if(pSample != NULL)
         {
           RaiseWindow();
-          pFrame->ShowSampleFrame(pSample,wxEmptyString, SA_NDX_SAMPLE);
+          pFrame->ShowSampleFrame(pSample,wxEmptyString, SA_NDX_SAMPLE,true);
         }
       }
     }
@@ -2083,7 +2084,13 @@ void CFramePlot::UpdateStatusBar()
 }
 #endif
 
+IMPLEMENT_PERSISTENT_SIZE(CFramePlot)
+IMPLEMENT_ABSTRACT_CLASS(CFramePlot,CMDIFrame)
+
+
 BEGIN_EVENT_TABLE(CFramePlot,CMDIFrame)
+EVT_PERSISTENT_SIZE(CFramePlot)
+
 EVT_COMMAND(IDhistoryButton,CEventHistory,CFramePlot::OnHistoryUpdate)
 EVT_CLOSE(CFramePlot::OnClose)
 EVT_CONTEXT_MENU(CFramePlot::OnContextMenu)

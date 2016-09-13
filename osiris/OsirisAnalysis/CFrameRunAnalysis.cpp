@@ -49,6 +49,9 @@
 #include "NeedsAttnOAR.h"
 #include "CMenuBar.h"
 
+
+#define WINDOW_TYPE wxT("Analysis")
+
 CFrameRunAnalysis::CFrameRunAnalysis(
     mainFrame *parent, 
     const wxSize &sz,
@@ -176,7 +179,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   wxString sTitle;
   if(m_DirList.LoadFile(sFileName))
   {
-    sTitle = mainApp::FormatWindowTitle(m_DirList.GetBaseFileName());
+    sTitle = mainApp::FormatWindowTitle(WINDOW_TYPE,m_DirList.GetBaseFileName());
     wxString sDirLoad = m_DirList.GetDirLoad();
     nwxFileUtil::NoEndWithSeparator(&sDirLoad);
     wxFileName fn(sDirLoad);
@@ -966,7 +969,7 @@ void CFrameRunAnalysis::_Run()
     {
       nwxXmlMRU *pMRU = mainApp::GetMRU();
       pMRU->UpdateFileAccess(m_DirList.GetFileName());
-      sTitle = mainApp::FormatWindowTitle(m_DirList.GetBaseFileName());
+      sTitle = mainApp::FormatWindowTitle(WINDOW_TYPE,m_DirList.GetBaseFileName());
     }
     else
     {

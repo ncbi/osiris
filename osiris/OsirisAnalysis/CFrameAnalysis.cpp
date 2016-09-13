@@ -115,7 +115,8 @@ CFrameAnalysis::CFrameAnalysis(
     mainFrame *parent, wxSize sz, const wxString &sFileName) :
   CMDIFrame(
     parent, wxID_ANY,"",
-    wxDefaultPosition,sz),
+    wxDefaultPosition,
+    GET_PERSISTENT_SIZE_DEFAULT(CFrameAnalysis,sz)),
   m_pOARfile(NULL),
   m_pMenu(NULL),
   m_pMenuBar(NULL),
@@ -144,7 +145,9 @@ CFrameAnalysis::CFrameAnalysis(
     mainFrame *parent, wxSize sz, COARfile *pFile) :
   CMDIFrame(
     parent, wxID_ANY,"",
-    wxDefaultPosition,sz),
+    wxDefaultPosition,
+    GET_PERSISTENT_SIZE_DEFAULT(CFrameAnalysis,sz)
+    ),
   m_pOARfile(pFile),
   m_pMenu(NULL),
   m_pMenuBar(NULL),
@@ -545,7 +548,7 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
     case IDmenuDisplayGraph:
       OnShowGraphic(e);
       break;
-    case IDmenuDisplaySample: // temporary STOP HERE
+    case IDmenuDisplaySample:
       OnShowSample(e);
       break;
     case IDmenuAcceptLocus:
@@ -1049,7 +1052,7 @@ extern long _lRequestCurr;
 #endif
 
 void CFrameAnalysis::ShowSampleFrame(
-  COARsample *pSample, const wxString &sLocus, int nAlertType)
+  COARsample *pSample, const wxString &sLocus, int nAlertType, bool bNoChange)
 {
   if(pSample == NULL)
   {
@@ -1063,10 +1066,13 @@ void CFrameAnalysis::ShowSampleFrame(
       const wxSize &sz = GET_PERSISTENT_SIZE(CFrameSample);
       pFrame = new CFrameSample(this,m_pParent,sz,m_pOARfile,pSample);
       _AddSample(pSample,pFrame);
+      bNoChange = false; // new window, select page by sLocus or alert type
     }
     pFrame->Show(true);
     pFrame->Raise();
-    if(sLocus.IsEmpty())
+    if(bNoChange)
+    {}
+    else if(sLocus.IsEmpty())
     {
       pFrame->SelectAlerts(nAlertType);
     }
@@ -1194,14 +1200,11 @@ bool CFrameAnalysis::_DestroySamples()
       itrv != vSamples.end();
       ++itrv)
     {
-      // STOP HERE, determine if successful
       if(!(*itrv)->Close(false))
       {
         bRtn = false;
       }
-      //(*itrv)->Destroy();
     }
-    //m_mapSamples.clear(); // Should already be cleared
   }
   return bRtn;
 }
@@ -2937,7 +2940,7 @@ void CFrameAnalysis::SetupTitle()
     bMod = m_pOARfile->IsModified();
     pTime = m_pButtonHistory->GetSelectedTime();
   }
-  SetTitle(mainApp::FormatWindowTitle(s,bMod,&parm,pTime));
+  SetTitle(mainApp::FormatWindowTitle(wxT("Table"),s,bMod,&parm,pTime));
 }
 
 void CFrameAnalysis::OnSortGrid(wxCommandEvent &e)
@@ -3355,9 +3358,11 @@ void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
   ExportCMF();
 }
 
+IMPLEMENT_PERSISTENT_SIZE(CFrameAnalysis)
 IMPLEMENT_ABSTRACT_CLASS(CFrameAnalysis,CMDIFrame)
 
 BEGIN_EVENT_TABLE(CFrameAnalysis,CMDIFrame)
+EVT_PERSISTENT_SIZE(CFrameAnalysis)
 
 EVT_CONTEXT_MENU(CFrameAnalysis::OnContextMenu)
 EVT_COMMAND(IDhistoryButton,CEventHistory,CFrameAnalysis::OnHistoryUpdate)

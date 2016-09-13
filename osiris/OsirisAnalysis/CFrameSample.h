@@ -43,6 +43,7 @@ class COARsample;
 class COARfile;
 class CHistoryTime;
 class CFrameAnalysis;
+class CPanelSampleTitle;
 
 class CFrameSample : public CMDIFrame
 {
@@ -74,6 +75,7 @@ public:
   void SetupTitle(bool bForce = false);
   void InitiateRepaintData();
   void RepaintData();
+  const wxString &GetDefaultUserID();
   const wxString &GetUserID();
   void SaveUserID();
   bool CanOverrideUserID();
@@ -94,7 +96,8 @@ private:
     m_pMenuBar->SetSampleEnabled(bSampleEnabled);
   }
   typedef CMDIFrame SUPER;
-  void _OpenGraphic();
+  void _OpenGraphic(bool bNoChange = false);
+  void _TileWithGraph();
   void _History();
   void _ApplyAll();
   void _Apply();
@@ -113,6 +116,7 @@ private:
   COARfile *m_pOARfile;
   COARsample *m_pSample;
   CToolbarSample *m_pToolbar;
+  CPanelSampleTitle *m_pTitle;
   CMenuBarSample *m_pMenuBar;
   bool m_bTitleMod;
   //bool m_bFirstShow;

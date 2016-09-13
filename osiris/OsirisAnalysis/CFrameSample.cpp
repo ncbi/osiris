@@ -42,6 +42,8 @@
 #include <wx/msgdlg.h>
 #include "nwx/nwxLog.h"
 #include "nwx/nwxString.h"
+#include "COsirisIcon.h"
+#include "CPanelSampleTitle.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CFrameSample,CMDIFrame)
 
@@ -91,6 +93,10 @@ CFrameSample::CFrameSample(
   m_pParent->InsertWindow(this,m_pOARfile);
   m_pMenuBar = new CMenuBarSample();
   SetMenuBar(m_pMenuBar);
+  bool bOverride =
+    m_pOARfile->GetLabSettings().GetReviewerAllowUserOverride();
+  m_pTitle = new CPanelSampleTitle(this, m_pSample,
+    GetDefaultUserID(), !bOverride);
   SetupMenuItems(); 
   CParmOsirisGlobal parm;
 //  bool b = parm->GetHideSampleToolbar();
@@ -100,11 +106,14 @@ CFrameSample::CFrameSample(
   pSizer->Add(m_pToolbar,0,wxEXPAND);
   pPanel->SetSizer(pSizer);
   pSizer = new wxBoxSizer(wxVERTICAL);
+  pSizer->Add(m_pTitle,0,wxEXPAND);
   pSizer->Add(pPanel,1,wxEXPAND | wxALL,0);
 
   SetSizer(pSizer);
   TransferDataToWindow();
   Layout();  // layout before transferring data
+  COsirisIcon x;
+  SetIcon(x);
 }
 CFrameSample::~CFrameSample() {}
 
@@ -158,7 +167,7 @@ void CFrameSample::SetupTitle(bool bForce)
     wxFileName fn(m_pOARfile->GetFileName());
     sName.Append(fn.GetFullName());
     const CParmOsiris &parm(m_pOARfile->GetParameters());
-    wxString sTitle = mainApp::FormatWindowTitle(sName,bMod,&parm,NULL);
+    wxString sTitle = mainApp::FormatWindowTitle(wxT("Sample"),sName,bMod,&parm,NULL);
     SetTitle(sTitle);
   }
 }
@@ -341,6 +350,9 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
   bool bRtn = true;
   switch(nID)
   {
+  case IDmenuSampleTile:
+    _TileWithGraph();
+    break;
   case IDmenuDisplayGraph:
     _OpenGraphic();
     break;
@@ -383,6 +395,10 @@ void CFrameSample::RepaintData()
 }
 const wxString &CFrameSample::GetUserID()
 {
+  return m_pTitle->GetUserID();
+}
+const wxString &CFrameSample::GetDefaultUserID()
+{
   if(m_sUserID.IsEmpty())
   {
 #ifndef __WXDEBUG__
@@ -412,11 +428,27 @@ void CFrameSample::SaveUserID()
   }
 }
 
-void CFrameSample::_OpenGraphic()
+void CFrameSample::_TileWithGraph()
 {
+  _OpenGraphic(true);
+  const wxString &sFileName = m_pOARfile->FindPlotFile(m_pSample);
+  CMDIFrame *pFrame = m_pParent->FindWindowByName(sFileName);
+  if(pFrame == NULL)
+  {
+    mainApp::ShowError(wxT("Cannot find plot window"),this);
+  }
+  else
+  {
+    m_pParent->TileTwoWindows(this,pFrame);
+  }
+}
+
+void CFrameSample::_OpenGraphic(bool bNoChange)
+{
+  // bNoChange - if true and window exists, do not change view
   const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
   const wxString &sFileName = m_pOARfile->FindPlotFile(m_pSample);
-  m_pParent->OpenFile(sFileName,sLocus,m_pOARfile);
+  m_pParent->OpenFile(sFileName,sLocus,m_pOARfile,bNoChange);
 }
 void CFrameSample::_History()
 {

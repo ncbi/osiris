@@ -144,7 +144,7 @@ wxSize mainFrame::g_size80(0,0);
 wxSize mainFrame::g_size90(0,0);
 wxPoint mainFrame::g_point5(0,0);
 wxPoint mainFrame::g_point50(0,0);
-wxPoint mainFrame::g_point100(0,0);
+//wxPoint mainFrame::g_point100(0,0);
 
 const wxSize &mainFrame::Size80()
 {
@@ -200,10 +200,10 @@ void mainFrame::SetupSize()
       g_size90.SetWidth(nx);
       g_point5.x = ((nw - nx) >> 1) + r.GetX();
       g_point5.y = ((nh - ny) >> 1) + r.GetY();
-      int nws = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
-      int nhs = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
-      g_point100.x = nws + 1;
-      g_point100.y = nhs + 1;
+//      int nws = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+//      int nhs = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+//      g_point100.x = nws + 1;
+//      g_point100.y = nhs + 1;
   }
 }
 
@@ -241,7 +241,7 @@ int mainFrame::g_mainFrameCount = 0;
 
 mainFrame::mainFrame() :
 #if mainFrameIsWindow
-  mainFrameSuper(NULL, wxID_ANY, wxS("OSIRIS"),
+  mainFrameSuper(NULL, wxID_ANY, OSIRIS_WINDOW_TITLE,
         mainFramePos(),
         mainFrameSize(),
         wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxSYSTEM_MENU | wxDEFAULT_FRAME_STYLE
@@ -1011,7 +1011,8 @@ bool mainFrame::CheckMaxFrames(bool bShowError)
 void mainFrame::OpenFile(
   const wxString &sFileName,
   const wxString &sLocus,
-  COARfile *pOARfile)
+  COARfile *pOARfile,
+  bool bNoChange)
 {
   CMDIFrame *pFrame = FindWindowByName(sFileName,false);
   if(pFrame != NULL)
@@ -1021,7 +1022,10 @@ void mainFrame::OpenFile(
       CFramePlot *pF = (CFramePlot *) pFrame;
       bool bShiftKeyDown = nwxKeyState::Shift();
       pF->SetOARfile(pOARfile);
-      pF->ReInitialize(sLocus,bShiftKeyDown);
+      if(!bNoChange)
+      {
+        pF->ReInitialize(sLocus,bShiftKeyDown);
+      }
     }
     pFrame->RaiseWindow();
   }
@@ -1133,6 +1137,33 @@ void mainFrame::RemoveWindow(CMDIFrame *p)
   {
     ClearStatusText();
   }
+}
+void mainFrame::TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight)
+{
+  wxSize sz;
+#if mainFrameIsWindow
+  sz = this->GetClientSize();
+#else
+  sz.SetWidth(wxSystemSettings::GetMetric(wxSYS_SCREEN_X));
+  sz.SetHeight(int nhs = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y));
+#endif
+  int nHalf = (sz.x >> 1);
+  wxSize szLeft = pLeft->GetSize();
+  wxSize szRight;
+  if(szLeft.GetWidth() > nHalf)
+  {
+    szLeft.SetWidth(nHalf);
+  }
+  szLeft.SetHeight(sz.GetHeight());
+  szRight.SetHeight(sz.GetHeight());
+  szRight.SetWidth(sz.GetWidth() - szLeft.GetWidth());
+  wxPoint ptLeft(0,0);
+  wxPoint ptRight(szLeft.GetWidth(),0);
+  pLeft->SetSize(wxRect(ptLeft,szLeft),wxSIZE_FORCE);
+  pRight->SetSize(wxRect(ptRight,szRight),wxSIZE_FORCE);
+  pRight->Raise();
+  pLeft->Raise();
+  pLeft->SetFocus();
 }
 
 void mainFrame::ErrorMessage(const wxString &sMessage)

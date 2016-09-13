@@ -38,7 +38,7 @@
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include "nwx/nsstd.h"
-
+#include "nwx/PersistentSize.h"
 #include "CMDIFrame.h"
 #include "CPlotData.h"
 #include "wxIDS.h"
@@ -337,6 +337,8 @@ public:
 #if FP_SCROLL_EVENT
   void OnScrollPlot(wxCommandEvent &e);
 #endif
+  DECLARE_PERSISTENT_SIZE
+  DECLARE_ABSTRACT_CLASS(CFramePlot)
   DECLARE_EVENT_TABLE()
 };
 

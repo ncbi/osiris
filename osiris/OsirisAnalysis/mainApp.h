@@ -143,6 +143,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static CPersistKitList *GetKitList();
   static CILSLadderInfo *GetILSLadderInfo();
   static const wxString FormatWindowTitle(
+    const wxChar *psType,
     const wxString &fileName,
     bool bModified = false,
     const CParmOsiris *pParm = NULL,

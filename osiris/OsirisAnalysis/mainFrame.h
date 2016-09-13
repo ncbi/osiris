@@ -114,7 +114,8 @@ public:
   void OpenFile(
     const wxString &sFileName, 
     const wxString &sLocus = wxEmptyString, 
-    COARfile *pFile = NULL);
+    COARfile *pFile = NULL,
+    bool bNoChange = false);
   bool ShowColourDialog(wxColour *pColour);
   bool DoClose();
 
@@ -188,6 +189,7 @@ public:
     // remove its use
     m_MDImgr.KillOARfile(pFile);
   }
+  void TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight);
   CMDIFrame *FindWindowByName(const wxString &sPath, bool bRaise = false)
   {
     CMDIFrame *pRtn = m_MDImgr.FindWindowByName(sPath,bRaise);

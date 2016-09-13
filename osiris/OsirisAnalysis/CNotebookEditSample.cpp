@@ -183,7 +183,9 @@ CNotebookEditSample::CNotebookEditSample(
     }
   }
   // layout this
-  m_pNotebook->GetTreeCtrl()->ExpandAll();
+  wxTreeCtrl *pTreeCtrl = m_pNotebook->GetTreeCtrl();
+  pTreeCtrl->ExpandAll();
+  pTreeCtrl->Bind(wxEVT_LEFT_DCLICK,&CNotebookEditSample::OnDClickTree,this);
   m_pNotebook->SetSelection(m_pNotebook->GetPageCount() - 1);
   _SetupFrame();
   pSizer = new wxBoxSizer(wxVERTICAL);
@@ -346,6 +348,13 @@ void CNotebookEditSample::OnEnter(wxCommandEvent &)
     CheckDirPage();
   }
 }
+void CNotebookEditSample::OnDClickTree(wxMouseEvent &)
+{
+  wxCommandEvent e;
+  e.SetId(IDmenuDisplayGraph);
+  m_pFrame->MenuEvent(e);
+}
+
 void CNotebookEditSample::OnCellChange(wxGridEvent &)
 {
   if(!m_bReadOnly)

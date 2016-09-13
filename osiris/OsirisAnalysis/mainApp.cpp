@@ -415,6 +415,7 @@ void mainApp::_CloseMessageStream()
 }
 
 const wxString mainApp::FormatWindowTitle(
+  const wxChar *psType,
   const wxString &fileName,
   bool bModified,
   const CParmOsiris *pParm,
@@ -422,22 +423,27 @@ const wxString mainApp::FormatWindowTitle(
 {
   wxString s;
   wxString sRtn;
-  if(!fileName.IsEmpty())
+  if(fileName.IsEmpty())
+  {}
+  else if(fileName.Contains(wxT("; ")))
+  {
+    s = fileName;
+  }
+  else
   {
     wxFileName fn(fileName);
     s = fn.GetFullName();
   }
-  size_t nLen(s.Len());
-  sRtn.Alloc(nLen + 16);
-  sRtn = "OSIRIS";
+  sRtn.Alloc(512);
+  sRtn = psType;
   if(s.Len())
   {
     sRtn.Append(" - ");
     sRtn.Append(s);
-    if(bModified)
-    {
-      sRtn.Append(" *");
-    }
+  }
+  if(bModified)
+  {
+    sRtn.Append(" *");
   }
   if(pParm != NULL)
   {
@@ -451,6 +457,7 @@ const wxString mainApp::FormatWindowTitle(
     sRtn.Append(" on ");
     sRtn.Append(nwxString::FormatDateTime(*pTime));
   }
+  sRtn.Append(" - OSIRIS");
   return sRtn;
 }
 wxWindow *mainApp::GetTopLevelParent(wxWindow *p)

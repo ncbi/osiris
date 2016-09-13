@@ -247,6 +247,7 @@ public:
   void OnChanged(wxBookCtrlEvent &e);
   void OnCellChange(wxGridEvent &e);
   void OnEnter(wxCommandEvent &e);
+  void OnDClickTree(wxMouseEvent &e);
   DECLARE_EVENT_TABLE();
 };
 

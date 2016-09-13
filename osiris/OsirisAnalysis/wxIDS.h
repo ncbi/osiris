@@ -242,6 +242,7 @@ enum
   IDmenuDisableMultiple,
   IDmenuDisplayGraph,
   IDmenuDisplaySample, // Temporary sample window trigger STOP HERE
+
   IDmenuTogglePreview,
   IDmenuReAnalyze,
   IDmenuHistoryView,
@@ -310,6 +311,7 @@ enum
   IDmenuPlotBase_END,
 
     // sample window
+  IDmenuSampleTile,
   IDSampleApplyAll,
   IDSampleApply,
   IDSampleAccept,

@@ -39,6 +39,7 @@
 #include <wx/menu.h>
 #include "nwx/nsstd.h"
 #include "nwx/nwxColorUtil.h"
+#include "nwx/PersistentSize.h"
 #include "CMDIFrame.h"
 #include "CKitColors.h"
 #include "CParmOsiris.h"
@@ -202,7 +203,7 @@ public:
   bool CheckIfHistoryOK();
   void CheckSaveStatus();
   void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
-  void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType);
+  void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType, bool bNoChange = false);
 private:
   CXSLExportFileType *GetFileTypeByID(int nID);
 
@@ -515,7 +516,7 @@ public:
   void OnSortGrid(wxCommandEvent &);
   void OnExportCMF(wxCommandEvent &);
   void OnUserExport(wxCommandEvent &);
-  
+  DECLARE_PERSISTENT_SIZE  
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CFrameAnalysis)
 
