@@ -113,6 +113,7 @@ osiris_SOURCES =  \
 ../CPanelPlotToolbar.cpp \
 ../CPanelSampleAlertDetails.cpp \
 ../CPanelSampleAlertNotebook.cpp \
+../CPanelSampleTitle.cpp \
 ../CPanelStatus.cpp \
 ../CPanelUserID.cpp \
 ../CParmGridAttributes.cpp \
