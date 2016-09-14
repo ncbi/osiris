@@ -203,7 +203,7 @@ public:
   bool CheckIfHistoryOK();
   void CheckSaveStatus();
   void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
-  void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType, bool bNoChange = false);
+  void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID = -1);
 private:
   CXSLExportFileType *GetFileTypeByID(int nID);
 

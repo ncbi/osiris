@@ -23,10 +23,12 @@
 *
 * ===========================================================================
 *
-
 *  FileName: CFramePlot.h
 *  Author:   Douglas Hoffman
 *
+*  NOTE: This code has way too many hacked patches
+*     to combat unwanted behavior and should be cleaned up
+*     mainly by use of CBatchPlot(this) to delay any redrawing
 */
 #ifndef __C_FRAME_PLOT_H__
 #define __C_FRAME_PLOT_H__
@@ -147,20 +149,37 @@ public:
   wxRect2DDouble GetZoomOutRect(bool bAll = false);
   void BeginBatch()
   {
-    m_nMenuBatchCount++;
-    m_pPanel->Show(false);
+    m_nBatchCount++;
+    if(m_pPanel != NULL)
+    {
+      m_pPanel->Show(false);
+    }
   }
   void EndBatch()
   {
-    m_nMenuBatchCount--;
-    if(!m_nMenuBatchCount)
+    m_nBatchCount--;
+    if(!m_nBatchCount)
     {
       _CheckRebuildMenu();
       if(!m_pPanel->IsShown())
       {
         m_pPanel->Show(true);
       }
+      Layout();
+      _SendSizeAction();
+      if(m_nDelayViewState)
+      {
+        _UpdateViewState();
+      }
     }
+  }
+  bool IsInBatch()
+  {
+    return (m_nBatchCount > 0);
+  }
+  bool NotInBatch()
+  {
+    return !IsInBatch();
   }
   wxBitmap *CreateBitmap(
     int nWidth, int nHeight, int nDPI, 
@@ -221,7 +240,7 @@ private:
 
   void _CheckRebuildMenu()
   {
-    if(m_bUpdateMenu && !m_nMenuBatchCount)
+    if(m_bUpdateMenu && !IsInBatch())
     {
       _RebuildMenu();
     }
@@ -241,10 +260,13 @@ private:
   }
   void _SendSizeAction(int n = 0)
   {
-    wxCommandEvent ee(wxEVT_SIZE_DELAY_PLOT,GetId());
-    ee.SetEventObject(this);
-    ee.SetInt(n);
-    GetEventHandler()->AddPendingEvent(ee);
+    if(!IsInBatch())
+    {
+      wxCommandEvent ee(wxEVT_SIZE_DELAY_PLOT,GetId());
+      ee.SetEventObject(this);
+      ee.SetInt(n);
+      GetEventHandler()->AddPendingEvent(ee);
+    }
   }
 
   bool _SyncTo(CPanelPlot *p);
@@ -313,9 +335,10 @@ private:
   int m_nInSync;
   int m_nMinHeight;
   int m_nMenuUp;
-  int m_nMenuBatchCount;
+  int m_nBatchCount;
   int m_nScrollOnTimer; // plot number to scroll to top
   int m_nScrollOnTimerOffset; // offset of scrolling in pixels
+  int m_nDelayViewState;
 #if DELAY_PLOT_AREA_SYNC
   int m_nSyncThisTimer;
 #endif

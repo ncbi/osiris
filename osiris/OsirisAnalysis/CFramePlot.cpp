@@ -148,6 +148,7 @@ CFramePlotMenu::CFramePlotMenu()
   Append(IDmenuShowHidePlotScrollbars,"Hide Plot Scrollbars");
   AppendCheckItem(IDmenuShowHideWindowScrollbar,"Resizable Plots");
   Append(IDmenuDisplaySample,"&Edit Sample");
+  Append(IDmenuSampleTile,"Split Screen with Sample\tCtrl+G");
   Append(IDmenuTable,"Show T&able");
   SetHistorySubMenu(NULL);
   Append(IDMaxLadderLabels,
@@ -457,16 +458,18 @@ CFramePlot::CFramePlot(
     m_nInSync(0),
     m_nMinHeight(-1),
     m_nMenuUp(0),
-    m_nMenuBatchCount(0),
+    m_nBatchCount(0),
     m_nScrollOnTimer(-1),
     m_nScrollOnTimerOffset(0),
+    m_nDelayViewState(0),
 #if DELAY_PLOT_AREA_SYNC
     m_nSyncThisTimer(0),
 #endif
     m_bUpdateMenu(false),
     m_bUseExternalTimer(bUseExternalTimer),
     m_bFixed(true)
-{ 
+{
+  CBatchPlot BATCH(this);
   m_pPanel = new wxScrolledWindow(this,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxVSCROLL);
   {
     CParmOsirisGlobal parm;
@@ -548,7 +551,6 @@ void CFramePlot::ReInitialize(const wxString &sLocus, bool bSingle)
       nScroll = m_pData->GetChannelFromLocus(sLocus) - 1;
     }
   }
-  _SendSizeAction();
   SetFocusPlot(nScroll);
 #if FP_SCROLL_EVENT
 //  SendScrollPlotEvent(nScroll);
@@ -841,7 +843,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     }
 
   }
-  else if(nID == IDmenuTable || nID == IDmenuDisplaySample)
+  else if(nID == IDmenuTable || nID == IDmenuDisplaySample || nID == IDmenuSampleTile)
   {
     OnTableButton(e);
   }
@@ -1622,13 +1624,14 @@ void CFramePlot::OnTableButton(wxCommandEvent &e)
     {
       const wxString &sFile = m_pData->GetFilename();
       pFrame->SelectSample(sFile);
-      if(e.GetId() == IDmenuDisplaySample)
+      int nID = e.GetId();
+      if(nID == IDmenuDisplaySample || nID == IDmenuSampleTile)
       {
         COARsample *pSample = m_pOARfile->GetSampleByName(sFile);
         if(pSample != NULL)
         {
           RaiseWindow();
-          pFrame->ShowSampleFrame(pSample,wxEmptyString, SA_NDX_SAMPLE,true);
+          pFrame->ShowSampleFrame(pSample,wxEmptyString, SA_NDX_SAMPLE,nID);
         }
       }
     }
@@ -1659,34 +1662,45 @@ void CFramePlot::_UpdateViewState(bool bForce)
   // this is called when the number of plots
   // has changed, including when the window
   // is created
-
-  CFramePlotState nState = 
-    m_bFixed 
-    ? FP_FIXED
-    : ( 
-        (m_setPlots.size() > 1)
-        ? FP_VARIABLE_MANY_PLOTS
-        : FP_VARIABLE_1PLOT
-      );
-  if(bForce || (nState != m_nState))
+  const int DELAY = 1;
+  const int WITH_FORCE = 2;
+  const int DELAY_WITH_FORCE = 3;
+  if(IsInBatch())
   {
-    m_nState = nState;
-    if(m_nState != FP_VARIABLE_MANY_PLOTS)
-    {
-      m_nMinHeight = -1;
-      m_pPanel->SetScrollbars(0,0,0,0,0,0,true);
-    }
-    else
-    {
-      m_pPanel->SetScrollRate(0,SCROLL_UNITS);
-    }
+    m_nDelayViewState |= (bForce ? DELAY_WITH_FORCE : DELAY);
   }
-  if(m_nState == FP_VARIABLE_MANY_PLOTS)
+  else
   {
-    _UpdateMinHeight();
-    _UpdateVirtualWidth();
+    CFramePlotState nState = 
+      m_bFixed 
+      ? FP_FIXED
+      : ( 
+          (m_setPlots.size() > 1)
+          ? FP_VARIABLE_MANY_PLOTS
+          : FP_VARIABLE_1PLOT
+        );
+    if(bForce || 
+      (m_nDelayViewState & WITH_FORCE) || 
+      (nState != m_nState))
+    {
+      m_nState = nState;
+      if(m_nState != FP_VARIABLE_MANY_PLOTS)
+      {
+        m_nMinHeight = -1;
+        m_pPanel->SetScrollbars(0,0,0,0,0,0,true);
+      }
+      else
+      {
+        m_pPanel->SetScrollRate(0,SCROLL_UNITS);
+      }
+    }
+    if(m_nState == FP_VARIABLE_MANY_PLOTS)
+    {
+      _UpdateMinHeight();
+      _UpdateVirtualWidth();
+    }
+    m_nDelayViewState = 0;
   }
-  m_pSizer->Layout();
 }
 void CFramePlot::_UpdateVirtualWidth()
 {
@@ -1905,7 +1919,7 @@ void CFramePlot::OnScrollPlot(wxCommandEvent &e)
 void CFramePlot::OnSizeAction(wxCommandEvent &e)
 {
   int nInt = e.GetInt();
-  if(!IsShown())
+  if(!(IsShown() && m_pPanel->IsShown()))
   {} // do nothing
   else if(nInt > 1)
   {

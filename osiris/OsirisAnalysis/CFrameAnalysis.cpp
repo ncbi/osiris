@@ -1052,7 +1052,7 @@ extern long _lRequestCurr;
 #endif
 
 void CFrameAnalysis::ShowSampleFrame(
-  COARsample *pSample, const wxString &sLocus, int nAlertType, bool bNoChange)
+  COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID )
 {
   if(pSample == NULL)
   {
@@ -1061,6 +1061,7 @@ void CFrameAnalysis::ShowSampleFrame(
   else
   {
     CFrameSample *pFrame = _FindSample(pSample);
+    bool bNoChange = (nEventID > 0);
     if(pFrame == NULL)
     {
       const wxSize &sz = GET_PERSISTENT_SIZE(CFrameSample);
@@ -1079,6 +1080,12 @@ void CFrameAnalysis::ShowSampleFrame(
     else
     {
       pFrame->SelectLocus(sLocus);
+    }
+    if(nEventID == IDmenuSampleTile)
+    {
+      wxCommandEvent e;
+      e.SetId(nEventID);
+      pFrame->MenuEvent(e);
     }
   }
 }

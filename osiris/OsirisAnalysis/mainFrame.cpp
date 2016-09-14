@@ -1028,6 +1028,8 @@ void mainFrame::OpenFile(
       }
     }
     pFrame->RaiseWindow();
+    pFrame->Show();
+    pFrame->Layout();
   }
   else if(!wxFileName::IsFileReadable(sFileName))
   {
