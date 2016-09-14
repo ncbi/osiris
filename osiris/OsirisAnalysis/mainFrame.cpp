@@ -1142,12 +1142,13 @@ void mainFrame::RemoveWindow(CMDIFrame *p)
 }
 void mainFrame::TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight)
 {
-  wxSize sz;
 #if mainFrameIsWindow
-  sz = this->GetClientSize();
+  wxSize sz(GetClientSize());
+  wxPoint ptLeft(0,0);
 #else
-  sz.SetWidth(wxSystemSettings::GetMetric(wxSYS_SCREEN_X));
-  sz.SetHeight(wxSystemSettings::GetMetric(wxSYS_SCREEN_Y));
+  wxRect rect = wxGetClientDisplayRect();
+  wxSize sz(rect.GetWidth(),rect.GetHeight());
+  wxPoint ptLeft(rect.GetLeft(),rect.GetTop());
 #endif
   int nHalf = (sz.x >> 1);
   wxSize szLeft = pLeft->GetSize();
@@ -1159,8 +1160,7 @@ void mainFrame::TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight)
   szLeft.SetHeight(sz.GetHeight());
   szRight.SetHeight(sz.GetHeight());
   szRight.SetWidth(sz.GetWidth() - szLeft.GetWidth());
-  wxPoint ptLeft(0,0);
-  wxPoint ptRight(szLeft.GetWidth(),0);
+  wxPoint ptRight(ptLeft.x + szLeft.GetWidth(),ptLeft.y);
   pLeft->SetSize(wxRect(ptLeft,szLeft),wxSIZE_FORCE);
   pRight->SetSize(wxRect(ptRight,szRight),wxSIZE_FORCE);
   pRight->Raise();
