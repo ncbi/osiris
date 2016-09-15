@@ -366,11 +366,22 @@ private:
   typedef std::map<const COARsample *, CFrameSample *> MapSampleFrame;
   typedef std::pair<const COARsample *, CFrameSample *> PairSampleFrame;
   MapSampleFrame m_mapSamples;
-  CFrameSample *_FindSample(const COARsample *pSample)
+  CFrameSample *_FindSampleFrame(const COARsample *pSample)
   {
     MapSampleFrame::iterator itr =
       m_mapSamples.find(pSample);
     return (itr == m_mapSamples.end()) ? NULL : itr->second;
+  }
+  CFrameSample *_FindSampleFrameByRow(int nRow = -1)
+  {
+    COARsample *pSample = _FindSampleByRow(nRow);
+    return _FindSampleFrame(pSample);
+  }
+  COARsample *_FindSampleByRow(int nRow = -1)
+  {
+    if(nRow < 0) { nRow = m_pGrid->GetGridCursorRow(); }
+    COARsample *pSample = m_SampleSort.GetSample((size_t) nRow);
+    return pSample;
   }
   void _AddSample(const COARsample *ps,CFrameSample *pf)
   {
@@ -500,6 +511,7 @@ public:
 
   void OnShowGraphic(wxCommandEvent &);
   void OnShowSample(wxCommandEvent &);
+  void OnShowSampleAndGraphic(wxCommandEvent &);
   void OnShowDetails(wxCommandEvent &);
   void OnGridGraph(wxGridEvent &);
   void OnGridCellGraph(wxGridEvent &);

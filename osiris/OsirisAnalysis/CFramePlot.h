@@ -97,7 +97,7 @@ public:
   virtual void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
   void UpdateOARfile(const wxString &sSampleFileName);
-  void EditPeak(COARpeakAny *,COARsample *);
+  void EditPeak(COARpeakAny *);
 
   virtual bool Show(bool show = true);
 //  void ShowScrollbars(bool bShow);

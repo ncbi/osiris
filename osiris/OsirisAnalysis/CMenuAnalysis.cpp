@@ -260,6 +260,11 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
     "Display Sample",
     "Display all details for the current sample"
     );
+  Append(
+    IDmenuSampleTile,
+    "Display Sample and Graph\tCtrl+G",
+    "Display all details for the current sample"
+    );
   m_pMenuItemPreview = Append(
     IDmenuTogglePreview,
     SHOW_PREVIEW,

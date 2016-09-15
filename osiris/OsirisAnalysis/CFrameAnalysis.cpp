@@ -551,6 +551,9 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
     case IDmenuDisplaySample:
       OnShowSample(e);
       break;
+    case IDmenuSampleTile:
+      OnShowSampleAndGraphic(e);
+      break;
     case IDmenuAcceptLocus:
       _OnAcceptLocus(e);
       //OnShowSample(e);
@@ -1060,7 +1063,7 @@ void CFrameAnalysis::ShowSampleFrame(
   }
   else
   {
-    CFrameSample *pFrame = _FindSample(pSample);
+    CFrameSample *pFrame = _FindSampleFrame(pSample);
     bool bNoChange = (nEventID > 0);
     if(pFrame == NULL)
     {
@@ -1094,7 +1097,7 @@ void CFrameAnalysis::OnShowSample(wxCommandEvent &e)
   if(_XmlFile() && m_pOARfile->CanEditArtifacts())
   {
     int nRow = m_pGrid->GetGridCursorRow();
-    COARsample *pSample = m_SampleSort.GetSample((size_t)nRow);
+    COARsample *pSample = _FindSampleByRow(nRow);
     if(pSample != NULL)
     {
       wxString sLocus;
@@ -1128,6 +1131,16 @@ void CFrameAnalysis::OnShowSample(wxCommandEvent &e)
     }
   }
 }
+void CFrameAnalysis::OnShowSampleAndGraphic(wxCommandEvent &e)
+{
+  OnShowSample(e);
+  CFrameSample *pFrame = _FindSampleFrameByRow();
+  if(pFrame != NULL)
+  {
+    pFrame->MenuEvent(e);
+  }
+}
+
 bool CFrameAnalysis::_CheckSamples()
 {
   std::vector<CFrameSample *> vpSamples;
@@ -2336,7 +2349,7 @@ void CFrameAnalysis::RepaintAllData(const COARsample *p)
 {
   CheckSaveStatus();
   m_pParent->UpdateSamplePlot(m_pOARfile,p->GetFileName(false));
-  CFrameSample *pF = _FindSample(p);
+  CFrameSample *pF = _FindSampleFrame(p);
   if(pF != NULL)
   {
     pF->RepaintData();
@@ -3379,6 +3392,7 @@ EVT_COMMAND_ENTER(IDsplitterWindow,CFrameAnalysis::OnCheckSplitter)
 EVT_BUTTON(IDExportCMF,CFrameAnalysis::OnExportCMF)
 //EVT_BUTTON(IDmenuEditCell,  CFrameAnalysis::OnEdit)
 EVT_TOGGLEBUTTON(IDmenuTogglePreview,  CFrameAnalysis::OnTogglePreview)
+EVT_BUTTON(IDmenuSampleTile,CFrameAnalysis::OnShowSampleAndGraphic)
 EVT_BUTTON(IDmenuDisplaySample,CFrameAnalysis::OnShowSample)
 EVT_BUTTON(IDmenuDisplayGraph, CFrameAnalysis::OnShowGraphic)
 EVT_BUTTON(IDmenuParameters, CFrameAnalysis::OnShowDetails)

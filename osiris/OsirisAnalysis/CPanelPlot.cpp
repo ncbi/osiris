@@ -1650,13 +1650,13 @@ void CPanelPlot::ZoomToLocus(const wxString &sLocus, unsigned int nDelay)
 }
 void CPanelPlot::EditPeak(COARpeakAny *pPeak)
 {
-  COARsample *pSample = GetSample();
   if(m_pFramePlot != NULL)
   {
-    m_pFramePlot->EditPeak(pPeak,pSample);
+    m_pFramePlot->EditPeak(pPeak);
   }
   else if(m_pFrameAnalysis != NULL)
   {
+    COARsample *pSample = GetSample();
     m_pFrameAnalysis->EditPeak(pPeak,pSample);
   }
 }

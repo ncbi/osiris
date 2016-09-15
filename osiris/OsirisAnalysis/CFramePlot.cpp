@@ -1573,17 +1573,30 @@ void CFramePlot::OnContextMenu(wxContextMenuEvent &)
   }
 }
 
-void CFramePlot::EditPeak(COARpeakAny *pPeak, COARsample *pSample)
+void CFramePlot::EditPeak(COARpeakAny *pPeak)
 {
-  if(m_pOARfile != NULL)
+  if(m_pOARfile == NULL)
+  {
+    wxCommandEvent e;
+    e.SetId(-1);
+    OnTableButton(e);
+    if(m_pOARfile != NULL)
+    {
+      RaiseWindow();
+    }
+  }
+  if(m_pOARfile != NULL && pPeak != NULL)
   {
     CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
     if(pFrame != NULL)
     {
+      COARsample *pSample =
+        m_pOARfile->GetSampleByName(m_pData->GetFilename());
       pFrame->EditPeak(pPeak,pSample,this);
     }
   }
 }
+
 void CFramePlot::OnHistoryButton(wxCommandEvent &e)
 {
   if(m_pOARfile != NULL)
@@ -1606,7 +1619,9 @@ void CFramePlot::OnTableButton(wxCommandEvent &e)
   if(m_pOARfile == NULL)
   {
     _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_TABLE);
-    if(m_pOARfile != NULL)
+    if(m_pOARfile == NULL)
+    {}
+    else if(e.GetId() > 0)
     {
       // if this is a menu event,change to button
       // because processing is faster
@@ -1614,6 +1629,12 @@ void CFramePlot::OnTableButton(wxCommandEvent &e)
       ee.SetEventType(wxEVT_COMMAND_BUTTON_CLICKED);
       ee.SetEventObject(this);
       GetEventHandler()->AddPendingEvent(e);
+    }
+    else
+    {
+      // call recursively to force analysis 
+      //  frame to show immediately
+      OnTableButton(e);
     }
   }
   else
