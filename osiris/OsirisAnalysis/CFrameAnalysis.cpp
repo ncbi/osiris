@@ -1133,11 +1133,14 @@ void CFrameAnalysis::OnShowSample(wxCommandEvent &e)
 }
 void CFrameAnalysis::OnShowSampleAndGraphic(wxCommandEvent &e)
 {
+  OnShowGraphic(e);
   OnShowSample(e);
   CFrameSample *pFrame = _FindSampleFrameByRow();
   if(pFrame != NULL)
   {
-    pFrame->MenuEvent(e);
+    wxCommandEvent ee(wxEVT_MENU);
+    ee.SetId(e.GetId());
+    pFrame->GetEventHandler()->AddPendingEvent(ee);
   }
 }
 

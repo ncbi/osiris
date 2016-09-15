@@ -120,6 +120,7 @@ public:
   {
     return m_pNotebook->GetSelection();
   }
+
   nwxTreebook *GetNotebookWindow()
   {
     return m_pNotebook;
@@ -198,7 +199,7 @@ public:
     return (m_pSplitter[n] != NULL);
   }
   */
-  const wxString &GetCurrentLocus();
+  const wxString &GetCurrentLocus(bool bPending = false);
   const wxString &GetUserID();
   void RepaintData();
   void InitiateRepaintData();

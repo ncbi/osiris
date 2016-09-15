@@ -446,7 +446,7 @@ void CFrameSample::_TileWithGraph()
 void CFrameSample::_OpenGraphic(bool bNoChange)
 {
   // bNoChange - if true and window exists, do not change view
-  const wxString &sLocus = m_pNoteBook->GetCurrentLocus();
+  const wxString &sLocus = m_pNoteBook->GetCurrentLocus(true);
   const wxString &sFileName = m_pOARfile->FindPlotFile(m_pSample);
   m_pParent->OpenFile(sFileName,sLocus,m_pOARfile,bNoChange);
 }

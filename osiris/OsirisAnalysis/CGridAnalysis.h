@@ -93,16 +93,6 @@ public:
   {
     m_nLabelSize = 0;
   }
-  /*
-  bool SetGridSortOrder(int nGridSort)
-  {
-    // if 'true' is returned, then UpdateGrid should be called
-
-    bool bRtn = (nGridSort != m_nIDmenuSort);
-    m_nIDmenuSort = nGridSort;
-    return bRtn;
-  }
-  //*/
 
   void UpdateGridRowLabels(
     COARsampleSort *pSort, 
@@ -196,7 +186,6 @@ private:
   int m_nLabelType;
   int m_nXScroll;
   int m_nYScroll;
-  int m_nIDmenuSort;
 
   static wxPen g_LIGHT_GREY;
   static wxFont g_fontStatus;

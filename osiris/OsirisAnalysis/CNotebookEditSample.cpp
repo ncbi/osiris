@@ -208,9 +208,16 @@ void CNotebookEditSample::_SetupFrame()
   }
   return;
 }
-const wxString &CNotebookEditSample::GetCurrentLocus()
+const wxString &CNotebookEditSample::GetCurrentLocus(bool bPending)
 {
-  int nSelect = m_pNotebook->GetSelection() - SA_WINDOW_COUNT;
+  int nSelect =
+    ( bPending &&
+      (m_nSelectPage < NOTEBOOK_OUT_OF_RANGE) && 
+      (m_nSelectPage < m_pNotebook->GetPageCount())
+    )
+      ? m_nSelectPage
+      : m_pNotebook->GetSelection();
+  nSelect -= SA_WINDOW_COUNT;
   const wxString *pRtn = NULL;
   if((nSelect < 0) ||
     (nSelect >= (int)m_asLocus.size())

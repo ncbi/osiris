@@ -67,8 +67,7 @@ CGridAnalysis::CGridAnalysis(wxWindow *pParent) :
   m_nLabelSize(0),
   m_nLabelType(-1),
   m_nXScroll(0),
-  m_nYScroll(0),
-  m_nIDmenuSort(IDmenuSortFileName)
+  m_nYScroll(0)
 {
   CreateGrid(1,1);
   SetRowLabelValue(0,wxEmptyString);
