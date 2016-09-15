@@ -1665,7 +1665,6 @@ void CFramePlot::OnSashDragged(wxSashEvent &e)
   wxRect r = e.GetDragRect();
   wxPoint pt = pw->GetPosition();
   wxSize szC = m_pPanel->GetClientSize();
-  wxSize szV = m_pPanel->GetVirtualSize();
   int nH = r.GetHeight();
   int nHC = szC.GetHeight();
   if(nH > nHC)
@@ -1949,7 +1948,6 @@ void CFramePlot::OnSizeAction(wxCommandEvent &e)
   else if(m_nState ==  FP_VARIABLE_MANY_PLOTS)
   {
     wxSize szC = m_pPanel->GetClientSize();
-    wxSize szV = m_pPanel->GetVirtualSize();
     int nHC = szC.GetHeight();
     if(nHC < m_nMinHeight)
     {
