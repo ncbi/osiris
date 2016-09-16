@@ -1,4 +1,4 @@
-InputDirectory = F:/QA/Editing/Identifiler_Zoo;
+InputDirectory = F:/NCITest;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/Documents/Osiris;
 MarkerSetName = IdentifilerPlus Less ILS250;
@@ -15,4 +15,3 @@ MinLadderInterlocusRFU = 250;
 SampleDetectionThreshold = 100;
 RawDataString = R;
 ;
-
