@@ -2579,7 +2579,23 @@ void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
   }
 }
 
-
+void CFrameAnalysis::OnSave(wxCommandEvent &e)
+{
+  int n = e.GetId();
+  if(n == wxID_SAVE)
+  {
+    SaveFile();
+  }
+  else if(n == wxID_SAVEAS)
+  {
+    SaveFileAs();
+  }
+  else
+  {
+    mainApp::LogMessage(wxT("CFrameAnalysis::OnSave() called with ID != ID_SAVE nor ID_SAVE_AS"));
+    e.Skip();
+  }
+}
 void CFrameAnalysis::OnLabelNameChangedMenu(wxCommandEvent &e)
 {
   if(m_pOARfile)
@@ -3419,6 +3435,10 @@ EVT_KILL_FOCUS(CFrameAnalysis::OnFocusKill)
 
 EVT_COMMAND(wxID_ANY, CEventRepaint,CFrameAnalysis::_OnRepaint)
 EVT_COMMAND(wxID_ANY, CEventRestoreScroll,CFrameAnalysis::_OnRestoreScroll)
+
+EVT_MENU(wxID_SAVEAS, CFrameAnalysis::OnSave)
+EVT_MENU(wxID_SAVE, CFrameAnalysis::OnSave)
+
 
 EVT_CLOSE(CFrameAnalysis::OnClose)
 END_EVENT_TABLE()

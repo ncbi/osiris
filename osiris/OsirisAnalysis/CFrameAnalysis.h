@@ -502,6 +502,7 @@ private:
 public:
   void OnContextMenu(wxContextMenuEvent &e);
   void OnClose(wxCloseEvent &e);
+  void OnSave(wxCommandEvent &);
   void OnLabelNameChangedMenu(wxCommandEvent &);
   void OnLabelNameChanged(wxCommandEvent &);
   void OnLabelTypeChanged(wxCommandEvent &);

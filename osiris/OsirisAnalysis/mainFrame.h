@@ -142,7 +142,6 @@ public:
   void OnHelp(wxCommandEvent &);
   void OnContactUs(wxCommandEvent &);
   void OnMaxLadderLabels(wxCommandEvent &);
-  void OnSave(wxCommandEvent &);
   void OnMenu(wxCommandEvent &e);
 #ifdef __WINDOW_LIST__
   void OnWindowMenu(wxCommandEvent &e);
@@ -278,7 +277,7 @@ public:
   {
     if(p == m_pLastActive)
     {
-      m_pLastActive = NULL;
+      SetActiveFrame(NULL);
     }
   }
 
@@ -391,7 +390,7 @@ private:
 #endif
   CAllLoci *m_pAllLoci;
   int m_nTimerCount;
-  CMDIFrame *m_pLastActive;
+  CMDIFrame *m_pLastActive; // should be set in SetActiveFrame() only so a breakpoint can be set
 #if DRAG_DROP_FILES
   list<wxString> m_lsDragDropQueue;
 #endif

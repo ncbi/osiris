@@ -527,7 +527,7 @@ DEFINE_CMD_HANDLER(OnCheckForUpdates)
 DEFINE_CMD_HANDLER(OnContactUs)
 DEFINE_CMD_HANDLER(OnMenu)
 DEFINE_CMD_HANDLER(OnMaxLadderLabels)
-DEFINE_CMD_HANDLER(OnSave)
+//DEFINE_CMD_HANDLER(OnSave) // commented out 9/16/16
 
 #ifdef __WINDOW_LIST__
 DEFINE_CMD_HANDLER(OnWindowMenu)
@@ -557,8 +557,8 @@ EVT_MENU(IDhelpContactUs, mainApp::OnContactUs)
 EVT_MENU(IDExportGraphic, mainApp::OnMenu)
 EVT_MENU(IDMaxLadderLabels, mainApp::OnMaxLadderLabels)
 
-EVT_MENU(wxID_SAVEAS, mainApp::OnSave)
-EVT_MENU(wxID_SAVE, mainApp::OnSave)
+//EVT_MENU(wxID_SAVEAS, mainApp::OnSave) // commented out 9/16/16b
+//EVT_MENU(wxID_SAVE, mainApp::OnSave)
 
 
 #ifdef __WINDOW_LIST__

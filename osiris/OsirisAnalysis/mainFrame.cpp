@@ -869,7 +869,7 @@ void mainFrame::CheckActiveFrame()
   CMDIFrame *pActive = (CMDIFrame *)GetActiveChild();
   if( (pActive != m_pLastActive) && FindWindow(pActive) )
   {
-    m_pLastActive = pActive;
+    SetActiveFrame(pActive);
     m_pLastActive->UpdateStatusBar();
   }
   else if(pActive == NULL)
@@ -985,6 +985,9 @@ void mainFrame::OnMaxLadderLabels(wxCommandEvent &)
 }
 CFrameAnalysis *mainFrame::GetAnalysisFrame()
 {
+#ifndef __NO_MDI__
+  CheckActiveFrame();
+#endif
   CFrameAnalysis *p = 
     ( (m_pLastActive != NULL) && (m_pLastActive != INIT_LAST_ACTIVE) &&
         (m_pLastActive->GetType() == CMDIFrame::FRAME_ANALYSIS) )
@@ -1133,7 +1136,7 @@ void mainFrame::RemoveWindow(CMDIFrame *p)
   m_MDImgr.RemoveWindow(p);
   if(p == m_pLastActive)
   {
-    m_pLastActive = NULL;
+    SetActiveFrame(NULL);
   }
   if(!m_MDImgr.Size())
   {
@@ -1177,6 +1180,8 @@ void mainFrame::OnShowLog(wxCommandEvent &)
   m_pDialogErrorLog->Show(true);
   m_pDialogErrorLog->Raise();
 }
+#if 0
+// 9/16/16 commented out
 void mainFrame::OnSave(wxCommandEvent &e)
 {
   CFrameAnalysis *pf = GetAnalysisFrame();
@@ -1192,8 +1197,13 @@ void mainFrame::OnSave(wxCommandEvent &e)
       pf->SaveFileAs();
     }
   }
+  else
+  {
+    e.Skip();
+  }
 }
 
+#endif
 
 void mainFrame::OnMenu(wxCommandEvent &e)
 {

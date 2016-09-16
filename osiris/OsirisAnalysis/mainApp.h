@@ -90,7 +90,7 @@ DECLARE_CMD_HANDLER(OnCheckForUpdates)
 DECLARE_CMD_HANDLER(OnContactUs)
 DECLARE_CMD_HANDLER(OnMenu)
 DECLARE_CMD_HANDLER(OnMaxLadderLabels)
-DECLARE_CMD_HANDLER(OnSave)
+//DECLARE_CMD_HANDLER(OnSave) // commented out 9/16/16
 
   void OnActivate(wxActivateEvent &e);
 
