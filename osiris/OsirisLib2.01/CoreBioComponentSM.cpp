@@ -1283,7 +1283,7 @@ int CoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM (
 }
 
 
-int CoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList** notPrimaryLists) {
+int CoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList*** notPrimaryLists) {
 
 	return 0;
 }

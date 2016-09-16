@@ -2913,9 +2913,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (i == j)
 				continue;
 
-			nextChannel->ResetPreliminaryIterator ();
+			nextChannel->ResetCompleteIterator ();
 
-			while (nextSignal = nextChannel->GetNextPreliminaryCurve ()) {
+			while (nextSignal = nextChannel->GetNextCompleteCurve ()) {
 
 				if (nextSignal->GetMessageValue (laserOffScale))
 					continue;
