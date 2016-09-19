@@ -473,7 +473,7 @@ void CFrameSample::_TileWithGraph()
     {
       mainApp::ShowError(
         wxT(
-        s"Cannot resize the graph window while\nit is utilizing the entire screen"),
+        "Cannot resize the graph window while\nit is utilizing the entire screen"),
         this);     
       bCancel = true;
     }
