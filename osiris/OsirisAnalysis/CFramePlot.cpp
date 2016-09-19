@@ -46,7 +46,6 @@
 #include "nwx/CPointerHold.h"
 #include "nwx/CIncrementer.h"
 #include "nwx/nwxString.h"
-#include "nwx/nwxBatch.h"
 #include "CDialogExportPlot.h"
 #include "COsirisIcon.h"
 #include "CKitColors.h"
@@ -387,7 +386,6 @@ void CFramePlotMenu::UpdateLabels()
 
 //**************************************************** CFramePlot
 
-typedef TnwxBatch<CFramePlot> CBatchPlot;
 
 void CFramePlot::_SetupTitle()
 {

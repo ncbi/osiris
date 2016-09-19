@@ -41,6 +41,7 @@
 #include <wx/panel.h>
 #include "nwx/nsstd.h"
 #include "nwx/PersistentSize.h"
+#include "nwx/nwxBatch.h"
 #include "CMDIFrame.h"
 #include "CPlotData.h"
 #include "wxIDS.h"
@@ -74,6 +75,8 @@ typedef enum
   FP_VARIABLE_1PLOT,
   FP_VARIABLE_MANY_PLOTS
 } CFramePlotState;
+
+typedef TnwxBatch<CFramePlot> CBatchPlot;
 
 class CFramePlot : public CMDIFrame
 {

@@ -44,6 +44,7 @@
 #include "nwx/nwxString.h"
 #include "COsirisIcon.h"
 #include "CPanelSampleTitle.h"
+#include "CFramePlot.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CFrameSample,CMDIFrame)
 
@@ -432,13 +433,16 @@ void CFrameSample::_TileWithGraph()
 {
   _OpenGraphic(true);
   const wxString &sFileName = m_pOARfile->FindPlotFile(m_pSample);
-  CMDIFrame *pFrame = m_pParent->FindWindowByName(sFileName);
+  CMDIFrame *pTempFrame = m_pParent->FindWindowByName(sFileName);
+  CFramePlot *pFrame = pTempFrame == NULL ? NULL 
+    : wxDynamicCast(pTempFrame,CFramePlot);
   if(pFrame == NULL)
   {
     mainApp::ShowError(wxT("Cannot find plot window"),this);
   }
   else
   {
+    CBatchPlot xxx(pFrame);
     m_pParent->TileTwoWindows(this,pFrame);
   }
 }
