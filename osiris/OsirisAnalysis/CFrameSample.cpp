@@ -454,16 +454,13 @@ void CFrameSample::_TileWithGraph()
   else if(!m_nTileWithGraph)
   {
     bool bDelay = false;
-    if(!IsShown()) { bDelay = true; }
-    if(!pFrame->IsShown()) { bDelay = true; }
     if(CheckRestore()) { bDelay = true; }
     if(pFrame->CheckRestore()) { bDelay = true; }
+    if(!IsShown()) { bDelay = true; }
+    if(!pFrame->IsShown()) { bDelay = true; }
     if(bDelay)
     {
       m_nTileWithGraph++;
-#ifdef __WXMAC__
-      m_nTileWithGraph++;
-#endif
     }
     else
     {

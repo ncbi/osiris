@@ -37,7 +37,6 @@
 #include <wx/menu.h>
 #include "wxIDs.h"
 #include "nwx/nwxTimerReceiver.h"
-#include "nwx/nwxLog.h"
 #include "nwx/stdb.h"
 #include <set>
 #ifdef __WINDOW_LIST__
@@ -127,7 +126,6 @@ public:
     {
       Restore();
       bRtn = true;
-      nwxLog::LogMessage(wxT("Restored frame"));
     }
     return bRtn;
   }
