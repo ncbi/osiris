@@ -1072,8 +1072,11 @@ void CFrameAnalysis::ShowSampleFrame(
       _AddSample(pSample,pFrame);
       bNoChange = false; // new window, select page by sLocus or alert type
     }
-    pFrame->Show(true);
-    pFrame->Raise();
+    if(nEventID != IDmenuSampleTile)
+    {
+      pFrame->Show(true);
+      pFrame->Raise();
+    }
     if(bNoChange)
     {}
     else if(sLocus.IsEmpty())
@@ -1088,6 +1091,7 @@ void CFrameAnalysis::ShowSampleFrame(
     {
       wxCommandEvent e;
       e.SetId(nEventID);
+      pFrame->Iconize(); // show later and force delay
       pFrame->MenuEvent(e);
     }
   }
