@@ -462,7 +462,7 @@ void CFrameSample::_TileWithGraph()
     {
       m_nTileWithGraph++;
 #ifdef __WXMAC__
-//      m_nTileWithGraph++;
+      m_nTileWithGraph++;
 #endif
     }
     else
