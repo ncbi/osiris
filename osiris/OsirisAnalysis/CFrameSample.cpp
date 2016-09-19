@@ -476,6 +476,11 @@ void CFrameSample::_TileWithGraph()
         "Cannot resize the graph window while\nit is utilizing the entire screen"),
         this);     
       bCancel = true;
+      if(!IsShown())
+      {
+        Show(true);
+        m_pCreator->Raise();
+      }
     }
 #endif
     if(bCancel)
