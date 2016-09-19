@@ -30,6 +30,7 @@
 #include "nwx/nwxXmlWindowSizes.h"
 #include "nwx/nwxLog.h"
 #include "nwx/CleanupGlobal.h"
+#include <wx/gdicmn.h>
 const wxString nwxXmlWindowSizes::g_sROOT(wxT("sizes"));
 
 #define INTERVAL_WAIT_TIME 10000
@@ -106,6 +107,20 @@ void nwxXmlWindowSizes::OnTimer(wxTimerEvent &e)
   }
 }
 
+bool nwxXmlWindowSizes::SizeWithinScreen(const wxSize &sz)
+{
+  wxRect r = wxGetClientDisplayRect();
+  return(
+    (sz.GetWidth() <= r.GetWidth()) &&
+    (sz.GetHeight() <= r.GetHeight())
+    );  
+}
+bool nwxXmlWindowSizes::PositionWithinScreen(const wxPoint &pt)
+{
+  wxRect r = wxGetClientDisplayRect();
+  return r.Contains(pt);
+}
+
 nwxWindowSize *nwxXmlWindowSizes::_FindWindowSize(const wxString &sName, bool bCreate)
 {
   _CheckLoadFile();
@@ -149,13 +164,19 @@ nwxSplitterPos *nwxXmlWindowSizes::_FindSplitterPos(const wxString &sName, bool 
 
 void nwxXmlWindowSizes::SaveWindowSize(const wxString &sName, const wxSize &sz)
 {
-  nwxWindowSize *pSize = _FindWindowSize(sName,true);
-  if(pSize->SetSize(sz)) { m_bLocallyModified = true; }
+  if(SizeWithinScreen(sz))
+  {
+    nwxWindowSize *pSize = _FindWindowSize(sName,true);
+    if(pSize->SetSize(sz)) { m_bLocallyModified = true; }
+  }
 }
 void nwxXmlWindowSizes::SaveWindowPos(const wxString &sName, const wxPoint &pt)
 {
-  nwxWindowSize *pSize = _FindWindowSize(sName,true);
-  if(pSize->SetPos(pt)) { m_bLocallyModified = true; }
+  if(PositionWithinScreen(pt))
+  {
+    nwxWindowSize *pSize = _FindWindowSize(sName,true);
+    if(pSize->SetPos(pt)) { m_bLocallyModified = true; }
+  }
 }
 
 void nwxXmlWindowSizes::SaveWindowSizePos(wxWindow *pwin, const wxString &sName)
@@ -163,22 +184,34 @@ void nwxXmlWindowSizes::SaveWindowSizePos(wxWindow *pwin, const wxString &sName)
   wxSize sz(pwin->GetSize());
   wxPoint pt(pwin->GetPosition());
   nwxWindowSize *pSize = _FindWindowSize(sName,true);
-  if(pSize->SetSize(sz)) { m_bLocallyModified = true; }
-  if(pSize->SetPos(pt)) { m_bLocallyModified = true; }
+  if(PositionWithinScreen(pt) && pSize->SetPos(pt))
+  { m_bLocallyModified = true; }
+  if(SizeWithinScreen(sz) && pSize->SetSize(sz))
+  { m_bLocallyModified = true; }
 }
 
 const wxSize &nwxXmlWindowSizes::GetWindowSize(const wxString &sName)
 {
   nwxWindowSize *psz = _FindWindowSize(sName,false);
-  const wxSize &rtn = (psz == NULL) ? wxDefaultSize : psz->GetSize();
-  return rtn;
+  if(psz == NULL) {  return wxDefaultSize; }
+  const wxSize &rtn = psz->GetSize();
+  if(SizeWithinScreen(rtn))
+  {
+    return rtn;
+  }
+  return wxDefaultSize;
 }
 
 const wxPoint &nwxXmlWindowSizes::GetWindowPos(const wxString &sName)
 {
   nwxWindowSize *psz = _FindWindowSize(sName,false);
-  const wxPoint &rtn = (psz == NULL) ? wxDefaultPosition : psz->GetPos();
-  return rtn;
+  if(psz == NULL) { return wxDefaultPosition; }
+  const wxPoint &rtn = psz->GetPos();
+  if(PositionWithinScreen(rtn))
+  {
+    return rtn;
+  }
+  return wxDefaultPosition;
 }
 
 void nwxXmlWindowSizes::SaveSplitterPos(const wxString &sName, int n)

@@ -454,11 +454,30 @@ void CFrameSample::_TileWithGraph()
   else if(!m_nTileWithGraph)
   {
     bool bDelay = false;
+    bool bCancel = false;
     if(CheckRestore()) { bDelay = true; }
     if(pFrame->CheckRestore()) { bDelay = true; }
     if(!IsShown()) { bDelay = true; }
     if(!pFrame->IsShown()) { bDelay = true; }
-    if(bDelay)
+#ifdef __WXMAC__
+    if(!nwxXmlWindowSizes::SizeWithinScreenGlobal(this))
+    {
+      mainApp::ShowError(
+        wxT(
+        "Cannot resize the sample window while\nit is utilizing the entire screen"),
+        this);
+      bCancel = true;
+
+    }
+    else if(!nwxXmlWindowSizes::SizeWithinScreenGlobal(pFrame))
+    {
+      pFrame->Destroy();
+      bDelay = true;
+    }
+#endif
+    if(bCancel)
+    {}
+    else if(bDelay)
     {
       m_nTileWithGraph++;
     }

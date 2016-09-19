@@ -298,6 +298,41 @@ public:
     }
     return g_pXWS->GetWindowPos(s);
   }
+  static bool SizeWithinScreenGlobal(const wxSize &sz)
+  {
+    return (g_pXWS != NULL) && g_pXWS->SizeWithinScreen(sz);
+  }
+  static bool SizeWithinScreenGlobal(wxWindow *pw)
+  {
+    return SizeWithinScreenGlobal(pw->GetSize());
+  }
+  static bool PositionWithinScreenGlobal(const wxPoint &pt)
+  {
+    return (g_pXWS != NULL) && g_pXWS->PositionWithinScreen(pt);
+  }
+  static bool PositionWithinScreenGlobal(wxWindow *pw)
+  {
+    return PositionWithinScreenGlobal(pw->GetPosition());
+  }
+  bool SizeWithinScreen(const wxSize &sz);
+  bool PositionWithinScreen(const wxPoint &pt);
+  bool SizeWithinScreen(wxWindow *pw)
+  {
+    return SizeWithinScreen(pw->GetSize());
+  }
+  bool PositionWithinScreen(wxWindow *pw)
+  {
+    return PositionWithinScreen(pw->GetPosition());
+  }
+  bool SizeAndPositionWithinScreen(wxWindow *pw)
+  {
+    return SizeWithinScreen(pw) && PositionWithinScreen(pw);
+  }
+  bool SizeAndPositionWithinScreenGlobal(wxWindow *pw)
+  {
+    return (g_pXWS != NULL) &&
+      g_pXWS->SizeAndPositionWithinScreen(pw);
+  }
 
   nwxXmlWindowSizes(const wxString &sPath);
   virtual ~nwxXmlWindowSizes()
