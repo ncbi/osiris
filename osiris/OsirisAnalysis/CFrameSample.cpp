@@ -478,8 +478,8 @@ void CFrameSample::_TileWithGraph()
       bCancel = true;
       if(!IsShown())
       {
-        Show(true);
         m_pCreator->Raise();
+        Show(true);
       }
     }
 #endif
