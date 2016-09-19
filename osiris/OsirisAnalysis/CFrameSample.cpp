@@ -471,8 +471,11 @@ void CFrameSample::_TileWithGraph()
     }
     else if(!nwxXmlWindowSizes::SizeWithinScreenGlobal(pFrame))
     {
-      pFrame->Destroy();
-      bDelay = true;
+      mainApp::ShowError(
+        wxT(
+        s"Cannot resize the graph window while\nit is utilizing the entire screen"),
+        this);     
+      bCancel = true;
     }
 #endif
     if(bCancel)
