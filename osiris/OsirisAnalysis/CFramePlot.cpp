@@ -843,7 +843,13 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
   }
   else if(nID == IDmenuTable || nID == IDmenuDisplaySample || nID == IDmenuSampleTile)
   {
-    OnTableButton(e);
+#ifdef __WXMAC__
+    if(!(  (nID == IDmenuSampleTile) && 
+          CheckCannotTile(this,true)  ))
+#endif
+    {
+      OnTableButton(e);
+    }
   }
   else if(nID == IDmenuParameters)
   {

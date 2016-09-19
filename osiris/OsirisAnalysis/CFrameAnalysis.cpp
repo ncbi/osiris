@@ -1065,34 +1065,57 @@ void CFrameAnalysis::ShowSampleFrame(
   {
     CFrameSample *pFrame = _FindSampleFrame(pSample);
     bool bNoChange = (nEventID > 0);
+    bool bCancel = false;
     if(pFrame == NULL)
     {
-      const wxSize &sz = GET_PERSISTENT_SIZE(CFrameSample);
-      pFrame = new CFrameSample(this,m_pParent,sz,m_pOARfile,pSample);
-      _AddSample(pSample,pFrame);
-      bNoChange = false; // new window, select page by sLocus or alert type
+#ifdef __WXMAC__
+      if(
+        (nEventID == IDmenuSampleTile) &&
+        CheckCannotTile(this,true)
+        )
+      {
+        bCancel = true;
+      }
+      else
+#endif
+      {
+        const wxSize &sz = GET_PERSISTENT_SIZE(CFrameSample);
+        pFrame = new CFrameSample(this,m_pParent,sz,m_pOARfile,pSample);
+        _AddSample(pSample,pFrame);
+        bNoChange = false; // new window, select page by sLocus or alert type
+      }
     }
-    if(nEventID != IDmenuSampleTile)
+#ifdef __WXMAC__
+    else if(CheckCannotTile(pFrame,false))
     {
-      pFrame->Show(true);
-      pFrame->Raise();
+      RaiseWindow();
+      bCancel = true;
     }
-    if(bNoChange)
-    {}
-    else if(sLocus.IsEmpty())
+#endif
+
+    if(!bCancel)
     {
-      pFrame->SelectAlerts(nAlertType);
-    }
-    else
-    {
-      pFrame->SelectLocus(sLocus);
-    }
-    if(nEventID == IDmenuSampleTile)
-    {
-      wxCommandEvent e;
-      e.SetId(nEventID);
-      pFrame->Iconize(); // show later and force delay
-      pFrame->MenuEvent(e);
+      if(nEventID != IDmenuSampleTile)
+      {
+        pFrame->Show(true);
+        pFrame->Raise();
+      }
+      if(bNoChange)
+      {}
+      else if(sLocus.IsEmpty())
+      {
+        pFrame->SelectAlerts(nAlertType);
+      }
+      else
+      {
+        pFrame->SelectLocus(sLocus);
+      }
+      if(nEventID == IDmenuSampleTile)
+      {
+        wxCommandEvent e;
+        e.SetId(nEventID);
+        pFrame->MenuEvent(e);
+      }
     }
   }
 }

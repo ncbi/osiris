@@ -363,7 +363,12 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
   switch(nID)
   {
   case IDmenuSampleTile:
-    _TileWithGraph();
+#ifdef __WXMAC__
+    if(!CheckCannotTile(this,true))
+#endif
+    {
+      _TileWithGraph();
+    }
     break;
   case IDmenuDisplayGraph:
     _OpenGraphic();
@@ -451,41 +456,20 @@ void CFrameSample::_TileWithGraph()
   {
     mainApp::ShowError(wxT("Cannot find plot window"),this);
   }
+#ifdef __WXMAC__
+  else if(CheckCannotTile(pFrame))
+  {
+    m_pCreator->Raise();
+  }
+#endif
   else if(!m_nTileWithGraph)
   {
     bool bDelay = false;
-    bool bCancel = false;
     if(CheckRestore()) { bDelay = true; }
     if(pFrame->CheckRestore()) { bDelay = true; }
     if(!IsShown()) { bDelay = true; }
     if(!pFrame->IsShown()) { bDelay = true; }
-#ifdef __WXMAC__
-    if(!nwxXmlWindowSizes::SizeWithinScreenGlobal(this))
-    {
-      mainApp::ShowError(
-        wxT(
-        "Cannot resize the sample window while\nit is utilizing the entire screen"),
-        this);
-      bCancel = true;
-
-    }
-    else if(!nwxXmlWindowSizes::SizeWithinScreenGlobal(pFrame))
-    {
-      mainApp::ShowError(
-        wxT(
-        "Cannot resize the graph window while\nit is utilizing the entire screen"),
-        this);     
-      bCancel = true;
-      if(!IsShown())
-      {
-        m_pCreator->Raise();
-        Show(true);
-      }
-    }
-#endif
-    if(bCancel)
-    {}
-    else if(bDelay)
+    if(bDelay)
     {
       m_nTileWithGraph++;
     }

@@ -33,8 +33,12 @@
 #include "CMDIFrame.h"
 #include "wxIDS.h"
 #include "nwx/CIncrementer.h"
+#include "nwx/nwxXmlWindowSizes.h"
 #include "Platform.h"
 #include "CMenuWindow.h"
+#include "CFrameAnalysis.h"
+#include "CFrameSample.h"
+#include "CFramePlot.h"
 
 DEFINE_EVENT_TYPE(CEventKillWindow)
 
@@ -118,6 +122,43 @@ bool CMDIFrame::Destroy()
   wxBusyCursor xx;
   m_pParent->RemoveWindow(this);
   return CMDIFrameSuper::Destroy();
+}
+void CMDIFrame::CannotTileError(CMDIFrame *pFrame, bool bRaise)
+{
+  wxChar *ps = NULL;
+  if(wxDynamicCast(pFrame,CFrameSample) != NULL)
+  {
+    ps = wxT("sample");
+  }
+  else if(wxDynamicCast(pFrame,CFrameAnalysis) != NULL)
+  {
+    ps = wxT("table");
+  }
+  else if(wxDynamicCast(pFrame,CFramePlot) != NULL)
+  {
+    ps = wxT("graph");
+  }
+  else
+  {
+    ps = wxT("this");
+  }
+  wxString sMessage = wxString::Format(
+     wxT("Cannot resize the %ls window while\nit is utilizing the entire screen"),
+     ps);
+  if(bRaise)
+  {
+    pFrame->Raise();
+  }
+  mainApp::ShowError(sMessage,pFrame);
+}
+bool CMDIFrame::CheckCannotTile(CMDIFrame *pFrame, bool bRaise)
+{
+  bool bRtn = !nwxXmlWindowSizes::SizeWithinScreenGlobal(pFrame);
+  if(bRtn)
+  {
+    CannotTileError(pFrame,bRaise);
+  }
+  return bRtn;
 }
 
 bool CMDIFrame::Show(bool show)

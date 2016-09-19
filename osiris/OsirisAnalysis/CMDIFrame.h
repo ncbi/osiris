@@ -105,6 +105,8 @@ public:
   }
 #endif
   static bool DialogIsShowingOrNoFocus();
+  static void CannotTileError(CMDIFrame *pFrame, bool bRaise = false);
+  static bool CheckCannotTile(CMDIFrame *pFrame, bool bRaise = false);
   wxMenu *GetLastMenuShown()
   {
     return m_pLastMenuShown;

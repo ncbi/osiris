@@ -188,6 +188,7 @@ public:
     // remove its use
     m_MDImgr.KillOARfile(pFile);
   }
+
   void TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight);
   CMDIFrame *FindWindowByName(const wxString &sPath, bool bRaise = false)
   {
