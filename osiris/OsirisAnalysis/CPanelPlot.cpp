@@ -64,6 +64,7 @@
   if(cond) { sToolTip += wxString::Format(fmt,d); }
 
 #define FORMAT_FIT(pPeak,bEND) \
+  sToolTip.Append(wxT("Fit: ")); \
   sToolTip.Append(COARpeak::FormatFitNr(pPeak->GetFit(),!bEND))
 
 #define APPEND_OFF_LADDER(pPeak,sAllele)   \

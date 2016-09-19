@@ -1154,6 +1154,8 @@ void mainFrame::TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight)
   wxPoint ptLeft(rect.GetLeft(),rect.GetTop());
 #endif
   int nHalf = (sz.x >> 1);
+  pLeft->CheckRestore();
+  pRight->CheckRestore();
   wxSize szLeft = pLeft->GetSize();
   wxSize szRight;
   if(szLeft.GetWidth() > nHalf)

@@ -119,6 +119,16 @@ public:
     bool b = (m_setMenus.find(p) != m_setMenus.end());
     return b;
   }
+  bool CheckRestore()
+  {
+    bool bRtn = false;
+    if(IsIconized() || IsMaximized())
+    {
+      Restore();
+      bRtn = true;
+    }
+    return bRtn;
+  }
 
 protected:
   CMDIFrame(
