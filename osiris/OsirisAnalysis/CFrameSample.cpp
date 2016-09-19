@@ -73,6 +73,7 @@ CFrameSample::CFrameSample(
     m_pParent(parent),
     m_pOARfile(pFile),
     m_pSample(pSample),
+    m_nTileWithGraph(0),
     m_bTitleMod(false)
 
     //,m_bFirstShow(true)
@@ -173,7 +174,17 @@ void CFrameSample::SetupTitle(bool bForce)
   }
 }
 
-void CFrameSample::OnTimer(wxTimerEvent &) {}
+void CFrameSample::OnTimer(wxTimerEvent &) 
+{
+  if(m_nTileWithGraph > 0)
+  {
+    --m_nTileWithGraph;
+    if(!m_nTileWithGraph)
+    {
+      _TileWithGraph();
+    }
+  }
+}
 bool CFrameSample::TransferDataToWindow()
 {
   //  it seems that this isn't being used
@@ -440,10 +451,23 @@ void CFrameSample::_TileWithGraph()
   {
     mainApp::ShowError(wxT("Cannot find plot window"),this);
   }
-  else
+  else if(!m_nTileWithGraph)
   {
-    CBatchPlot xxx(pFrame);
-    m_pParent->TileTwoWindows(this,pFrame);
+    bool bDelay = false;
+    if(CheckRestore()) { bDelay = true; }
+    if(pFrame->CheckRestore()) { bDelay = true; }
+    if(bDelay)
+    {
+      m_nTileWithGraph++;
+#ifdef __WXMAC__
+//      m_nTileWithGraph++;
+#endif
+    }
+    else
+    {
+      CBatchPlot xxx(pFrame);
+      m_pParent->TileTwoWindows(this,pFrame);
+    }
   }
 }
 

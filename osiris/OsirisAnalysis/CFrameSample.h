@@ -118,6 +118,7 @@ private:
   CToolbarSample *m_pToolbar;
   CPanelSampleTitle *m_pTitle;
   CMenuBarSample *m_pMenuBar;
+  int m_nTileWithGraph;
   bool m_bTitleMod;
   //bool m_bFirstShow;
 public:
