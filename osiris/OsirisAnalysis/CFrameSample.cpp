@@ -128,19 +128,6 @@ void CFrameSample::SelectAlerts(int nAlertType)
   m_pNoteBook->SelectAlerts(nAlertType);
 }
 
-#if 0
-bool CFrameSample::Show(bool show)
-{
-  bool bRtn = CMDIFrame::Show(show);
-  if(show && m_bFirstShow)
-  {
-    Layout();
-    TransferDataToWindow();
-    m_bFirstShow = false;
-  }
-  return bRtn;
-}
-#endif
 int CFrameSample::GetType()
 {
   return FRAME_SAMPLE;
@@ -367,7 +354,7 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
     if(!CheckCannotTile(this,true))
 #endif
     {
-      _TileWithGraph();
+      m_nTileWithGraph++;
     }
     break;
   case IDmenuDisplayGraph:
@@ -465,10 +452,24 @@ void CFrameSample::_TileWithGraph()
   else if(!m_nTileWithGraph)
   {
     bool bDelay = false;
-    if(CheckRestore()) { bDelay = true; }
-    if(pFrame->CheckRestore()) { bDelay = true; }
-    if(!IsShown()) { bDelay = true; }
-    if(!pFrame->IsShown()) { bDelay = true; }
+    if(CheckRestore()) 
+    {
+      bDelay = true; 
+    }
+    else if(!IsShown()) 
+    {
+      Show(true);
+      bDelay = true; 
+    }
+    if(pFrame->CheckRestore()) 
+    {
+      bDelay = true; 
+    }
+    else if(!pFrame->IsShown()) 
+    {
+      pFrame->Show(true);
+      bDelay = true;
+    }
     if(bDelay)
     {
       m_nTileWithGraph++;
@@ -495,17 +496,6 @@ void CFrameSample::_History()
   CDialogCellHistory::ShowHistory(
     this,m_pOARfile, m_pSample,sLocus,nSelected);
 }
-#if 0
-void CFrameSample::_ShowToolbar(bool bShow)
-{
-  if(bShow != m_pToolbar->IsShown())
-  {
-    m_pToolbar->Show(bShow);
-    Layout();
-    SetToolbarMenuLabel(!bShow);
-  }
-}
-#endif
 
 bool CFrameSample::IsModified(int *pnFirstPage)
 {
@@ -584,9 +574,6 @@ void CFrameSample::UpdateSizeHack(bool bForce)
 {
   //  this frame does not render properly 
   //  until it is resized, so, here goes
-#if 0
-  SendSizeEvent(/*wxSEND_EVENT_POST*/);
-#else
   wxSize szBeenHere(-5,-5);
   bool bDoIt = (m_sz != szBeenHere);
   if(bDoIt && !bForce)
@@ -621,7 +608,6 @@ void CFrameSample::UpdateSizeHack(bool bForce)
 #endif
     m_sz = szBeenHere;
   }
-#endif
 }
 
 void CFrameSample::SetupMenuItems()

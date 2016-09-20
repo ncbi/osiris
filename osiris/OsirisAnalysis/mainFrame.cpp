@@ -1166,12 +1166,12 @@ void mainFrame::TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight)
   szRight.SetHeight(sz.GetHeight());
   szRight.SetWidth(sz.GetWidth() - szLeft.GetWidth());
   wxPoint ptRight(ptLeft.x + szLeft.GetWidth(),ptLeft.y);
-  pLeft->SetSize(wxRect(ptLeft,szLeft),wxSIZE_FORCE);
-  pRight->SetSize(wxRect(ptRight,szRight),wxSIZE_FORCE);
   pRight->Show(true);
   pRight->Raise();
   pLeft->Show(true);
   pLeft->Raise();
+  pLeft->SetSize(wxRect(ptLeft,szLeft),wxSIZE_FORCE);
+  pRight->SetSize(wxRect(ptRight,szRight),wxSIZE_FORCE);
   pLeft->SetFocus();
 }
 

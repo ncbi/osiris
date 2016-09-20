@@ -52,7 +52,6 @@
 #include "CMenuAnalysis.h"
 #include "CMenuBarAnalysis.h"
 #include "LABEL_TYPES.h"
-//#include "CMenuAnalysis.h"
 #include "Platform.h"
 
 
@@ -169,7 +168,6 @@ public:
     ee.SetEventObject(this);
     GetEventHandler()->AddPendingEvent(ee);
   }
-//  void RepaintAllData(const wxString &sSampleFileName);
   void RepaintAllData(const COARsample *p);
   bool FileEmpty();
   bool SaveFile();
@@ -333,7 +331,6 @@ private:
     {
       nCol = CHANNEL_ALERT_COLUMN;
     }
-    // else {nCol = -1;} // sample
     return nCol;
   }
 #if 0
@@ -517,8 +514,6 @@ public:
   void OnGridGraph(wxGridEvent &);
   void OnGridCellGraph(wxGridEvent &);
   void OnLabelClick(wxGridEvent &);
-  //void OnEdit(wxCommandEvent &);
-  //void OnEditDirectory(wxCommandEvent &);
   void OnEditMenu(wxGridEvent &);
   void OnEditFromGrid(wxGridEvent &);
   void OnTogglePreview(wxCommandEvent &);

@@ -57,7 +57,6 @@ public:
     int nSelectAlerts = -1,
     const wxString &sSelectLocus = wxEmptyString);
   virtual ~CFrameSample();
-  //virtual bool Show(bool show = true);
   void SelectLocus(const wxString &sLocus);
   void Select(int n);
   wxString GetDisplayedSampleName();
@@ -83,6 +82,14 @@ public:
   void SetupMenuItems();
   static void FormatCloseWarning(const std::vector<wxString> &vsSamples, wxString *ps);
   bool CheckApplyNoNotes(int nPanel = -1);
+  void SaveSizeHack()
+  {
+    if(IsShown() && (m_sz.x > 0) && (m_sz.y > 0))
+    {
+      m_sz = GetSize();
+      m_sz.x++;
+    }
+  }
   DECLARE_PERSISTENT_SIZE
 private:
   void _EnableItem(int nID, bool bEnable)
@@ -105,7 +112,6 @@ private:
   void _Approve();
   void _ToggleDisabled();
   void _ShowTable();
-  //void _ShowToolbar(bool bShow);
 
   wxString m_sUserID;
   wxSize m_sz;
@@ -120,7 +126,6 @@ private:
   CMenuBarSample *m_pMenuBar;
   int m_nTileWithGraph;
   bool m_bTitleMod;
-  //bool m_bFirstShow;
 public:
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CFrameSample)
