@@ -228,6 +228,7 @@ PERSISTENT_PREDECLARATION (smNumberOfLastILSPeaksInScale)
 PERSISTENT_PREDECLARATION (smPercentLastILSPeaksInScaling)
 PERSISTENT_PREDECLARATION (smLaserOffScale)
 PERSISTENT_PREDECLARATION (smCalculatedPurePullup)
+PERSISTENT_PREDECLARATION (smPartialPullupBelowMinRFU)
 
 
 
@@ -6287,6 +6288,34 @@ public:
 	smCalculatedPurePullup ();
 	smCalculatedPurePullup (const smCalculatedPurePullup& note);
 	virtual ~smCalculatedPurePullup ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPartialPullupBelowMinRFU : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPartialPullupBelowMinRFU)
+
+public:
+	smPartialPullupBelowMinRFU ();
+	smPartialPullupBelowMinRFU (const smPartialPullupBelowMinRFU& note);
+	virtual ~smPartialPullupBelowMinRFU ();
 
 	virtual int GetSubject () const;
 

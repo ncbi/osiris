@@ -725,6 +725,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	int k = 0;
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU partialPullupBelowMin; 
 	DataSignal* primary;
 	RGString uncertain;
 	RGString narrow;
@@ -771,6 +772,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 
 		bool isPullup = GetMessageValue (pullup);
 		bool isPurePullup = GetMessageValue (purePullup);
+		bool isPartialPullupBelowMin = GetMessageValue (partialPullupBelowMin);
 		data2 = data;
 
 		if (isPullup) {
@@ -801,6 +803,21 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 			}
 
 			AppendDataForSmartMessage (purePullup, data2);
+		}
+
+		if (isPartialPullupBelowMin) {
+
+			if (mIsPossiblePullup) {
+
+				uncertain << "(Uncertain Channels: ";
+				channelList = CreateUncertainPullupString ();
+				uncertain << channelList;
+				uncertain << ") ";
+				data = uncertain + data;
+				//AppendDataForSmartMessage (pullup, uncertain);
+			}
+
+			AppendDataForSmartMessage (partialPullupBelowMin, data);
 		}
 	}
 }
@@ -1564,11 +1581,13 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU partialPullupBelowMin;
 	smSigmoidalPullup sigmoid;
 
 	bool isPullup = GetMessageValue (pullup);
 	bool isPurePullup = GetMessageValue (purePullup);
 	bool isSigmoidal = GetMessageValue (sigmoid);
+	bool isPartialBelowMin = GetMessageValue (partialPullupBelowMin);
 	bool noPositiveCorrection = true;
 	bool noPositiveAndSigmoid;
 	int i;
@@ -1699,7 +1718,7 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 		}
 	}
 
-	else if (isPullup) {
+	else if (isPullup || isPartialBelowMin) {
 
 		for (i=1; i<=numberOfChannels; i++) {
 

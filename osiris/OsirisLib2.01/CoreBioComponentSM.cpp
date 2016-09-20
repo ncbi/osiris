@@ -1304,6 +1304,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double currentPeak;
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU partialPullupBelowMin;
 	smLaserOffScale laserOffScale;
 	smCraterSidePeak sidePeak;
 	smPrimaryInterchannelLink primaryPullup;
@@ -1480,6 +1481,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double sigmaPrimary;
 	double sigmaSecondary;
 	bool secondaryNarrow;
+	bool secondaryNarrow2;
 	DataSignal* pullupPeak;
 	double ratio;
 	list<InterchannelLinkage*> emptyLinks;
@@ -1592,11 +1594,12 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
 				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !pullupPeak->IgnoreWidthTest ();
+				secondaryNarrow2 = (pullupPeak->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !pullupPeak->IgnoreWidthTest ();
 
 				//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 				//belowMinRFU = (correctedHeight < analysisThreshold);
 
-				if ((!nextPair->mIsOutlier) || secondaryNarrow) {
+				if ((!nextPair->mIsOutlier) || secondaryNarrow || secondaryNarrow2) {
 
 					// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
 
@@ -1632,11 +1635,16 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				//if (testedPullups.ContainsReference (secondarySignal))
 				//	continue;
 
+				if (secondarySignal->GetMessageValue (purePullup))
+					continue;
+
 				secondaryNarrow = (secondarySignal->GetStandardDeviation () < 0.5* primarySignal->GetStandardDeviation ())  && !secondarySignal->IgnoreWidthTest ();
-				correctedHeight = secondarySignal->TroughHeight () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
+				secondaryNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
+				//correctedHeight = secondarySignal->TroughHeight () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
+				correctedHeight = secondarySignal->Peak () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 				belowMinRFU = (correctedHeight < analysisThreshold);
 
-				if (belowMinRFU || secondaryNarrow) {
+				if (secondaryNarrow || secondaryNarrow2) {
 
 					// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
 
@@ -1650,16 +1658,35 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					}
 				}
 
+				else if (belowMinRFU) {
+
+					// This is a partial pullup with correction less than minRFU.  Assign appropriate message.
+
+					secondarySignal->SetMessageValue (partialPullupBelowMin, true);
+					secondarySignal->SetMessageValue (pullup, false);
+
+					// eliminate this and place it at end because a further analysis may undo...
+					//if (secondarySignal->HasCrossChannelSignalLink ()) {
+
+					//	// remove link; this is not a primary peak
+					//	removePrimaryList.push_back (secondarySignal);
+					//}
+				}
+
 				else {
 
 					// This is both an outlier and correction is above minRFU; test if correection below primary pullup threshold if it has a cross channel signal link;
 					// if so, remove link
 
-					if (secondarySignal->HasCrossChannelSignalLink () && (correctedHeight < pullupThreshold)) {
+					secondarySignal->SetMessageValue (partialPullupBelowMin, false);
+					secondarySignal->SetMessageValue (pullup, true);
 
-						// This is not a primary.  As above, remove links...
-						removePrimaryList.push_back (secondarySignal);
-					}
+					// Save for later, after all channels are done
+					//if (secondarySignal->HasCrossChannelSignalLink () && (correctedHeight < pullupThreshold)) {
+
+					//	// This is not a primary.  As above, remove links...
+					//	removePrimaryList.push_back (secondarySignal);
+					//}
 				}
 			}
 
