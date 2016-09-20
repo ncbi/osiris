@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.79</VersionNumber>
-	<BuildTime>08/10/2016 01:48 PM</BuildTime>
+	<VersionNumber>6.80</VersionNumber>
+	<BuildTime>09/19/2016 04:53 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1586,6 +1586,27 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Pullup</Text>
+			<TextForData> from Primary Channel </TextForData>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPartialPullupBelowMinRFU</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Partial Pullup Corrected Below MinRFU</Text>
 			<TextForData> from Primary Channel </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
@@ -6079,6 +6100,7 @@
 						<Name>smBlob</Name>
 						<Name>smPullUp</Name>
 						<Name>smCalculatedPurePullup</Name>
+						<Name>smPartialPullupBelowMinRFU</Name>
 						<Name>smPeakOutsideILS</Name>
 						<Name>smBelowMinRFU</Name>
 						<Name>smBaselineRelativeBelowMinRFU</Name>

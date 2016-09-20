@@ -1687,6 +1687,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList multiPeakSignals;
 
 	smPullUp pullup;
+	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU partialPullupBelowMin;
 	smPrimaryInterchannelLink primaryLink;
 	smCrater crater;
 	smCraterSidePeak craterSidePeak;
@@ -2995,6 +2997,53 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	}
 
 	delete[] notPrimaryLists;
+
+	//
+	// Go through list of pullup pairs and remove those for which corrected primary height is less than min primary threshold.
+	//
+
+	//*******September 19, 2016
+
+	double pullupThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+
+	for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
+
+		iChannel = *tempIt;
+		primeSignal = iChannel->GetPrimarySignal ();
+		i = primeSignal->GetChannel ();
+		double analysisThreshold = mDataChannels [i]->GetMinimumHeight ();
+		double primaryPeak = primeSignal->Peak ();
+
+		if ((primaryPeak < pullupThreshold) || (primaryPeak < analysisThreshold)) {
+
+			iChannel->ResetSecondaryIterator ();
+
+			while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
+
+				iChannel->RemoveDataSignalFromSecondaryList (fixPullupPeak);		
+				fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+				if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+					fixPullupPeak->SetMessageValue (pullup, false);
+					fixPullupPeak->SetMessageValue (purePullup, false);
+					fixPullupPeak->SetMessageValue (partialPullupBelowMin, false);
+				}				
+			}
+
+			channelRemoval.insert (iChannel);
+			primeSignal->SetMessageValue (primaryLink, false);
+			primeSignal->SetInterchannelLink (NULL);
+		}
+
+	}
+
+	for (rChannelIt=channelRemoval.begin (); rChannelIt!=channelRemoval.end(); rChannelIt++) {
+
+		iChannel = *rChannelIt;
+		mInterchannelLinkageList.remove (iChannel);
+		delete iChannel;
+	}
 
 	//
 	// Next, with pull-up peaks remaining, associate associated primary pull-up data

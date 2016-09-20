@@ -1308,6 +1308,12 @@ int smCalculatedPurePullup::sMessageIndex = 0;
 int smCalculatedPurePullup::sMessageScope = 0;
 
 
+RGString smPartialPullupBelowMinRFU::sName = "smPartialPullupBelowMinRFU";
+int smPartialPullupBelowMinRFU::sSubject = smPartialPullupBelowMinRFU::LoadType ();
+int smPartialPullupBelowMinRFU::sMessageIndex = 0;
+int smPartialPullupBelowMinRFU::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1525,6 +1531,7 @@ PERSISTENT_DEFINITION (smNumberOfLastILSPeaksInScale, 2618, "smNumberOfLastILSPe
 PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPeaksInScaling")
 PERSISTENT_DEFINITION (smLaserOffScale, 2620, "smLaserOffScale")
 PERSISTENT_DEFINITION (smCalculatedPurePullup, 2621, "smCalculatedPurePullup")
+PERSISTENT_DEFINITION (smPartialPullupBelowMinRFU, 2622, "smPartialPullupBelowMinRFU")
 
 
 
@@ -14541,6 +14548,66 @@ int smCalculatedPurePullup :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smCalculatedPurePullup* noticeType = new smCalculatedPurePullup;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPartialPullupBelowMinRFU :: smPartialPullupBelowMinRFU () : SmartNotice () {
+
+}
+
+
+smPartialPullupBelowMinRFU :: smPartialPullupBelowMinRFU (const smPartialPullupBelowMinRFU& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPartialPullupBelowMinRFU :: ~smPartialPullupBelowMinRFU () {
+
+}
+
+
+int smPartialPullupBelowMinRFU :: GetSubject () const {
+
+	return smPartialPullupBelowMinRFU::sSubject;
+}
+
+
+void smPartialPullupBelowMinRFU :: SetIndexAndScope (int index, int scope) const {
+
+	smPartialPullupBelowMinRFU::sMessageIndex = index;
+	smPartialPullupBelowMinRFU::sMessageScope = scope;
+}
+
+
+int smPartialPullupBelowMinRFU :: GetMessageIndex () const {
+
+	return smPartialPullupBelowMinRFU :: sMessageIndex;
+}
+
+
+int smPartialPullupBelowMinRFU :: GetScope () const {
+
+	return smPartialPullupBelowMinRFU :: sMessageScope;
+}
+
+
+RGString smPartialPullupBelowMinRFU :: GetName () const {
+
+	return smPartialPullupBelowMinRFU :: sName;
+}
+
+
+
+int smPartialPullupBelowMinRFU :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPartialPullupBelowMinRFU* noticeType = new smPartialPullupBelowMinRFU;
 	warehouse->AddType (noticeType);
 	return 1;
 }
