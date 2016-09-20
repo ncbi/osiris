@@ -45,6 +45,7 @@ class COARlocus;
 class COARmessages;
 class IAppendReview;
 class COARfile;
+class CPanelUserID;
 
 class CDialogApprove : public wxDialog
 {
@@ -70,7 +71,8 @@ public:
     const wxSize &sz = wxDefaultSize
     );
   virtual ~CDialogApprove();
-
+  void SetUserID(const wxString &sUser);
+  const wxString &GetUserID();
   DECLARE_PERSISTENT_SIZE_POSITION
 
 private:
@@ -78,7 +80,8 @@ private:
   void OnEdit(wxCommandEvent &e);
   wxString m_sPersistName;
   IAppendReview *m_pApprove;
-  IAppendReview *m_pIARmanaged;
+//  IAppendReview *m_pIARmanaged;
+  CPanelUserID *m_pPanelUser;
   bool m_bAllowUserNameOverride;
   bool m_bShowUserID;
   DECLARE_EVENT_TABLE()

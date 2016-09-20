@@ -157,13 +157,13 @@ void CDialogApprove::_Setup(
     UID_SPACER_BTN_CENTER | UID_SEND_BTN_EVENTS |
     (m_bShowUserID ?  UID_BTN_EDIT : UID_NO_USER_TEXT_BOX);
 
-  CPanelUserID *pPanel = new CPanelUserID(
+  m_pPanelUser = new CPanelUserID(
     this,wxID_ANY,wxID_ANY,m_pApprove,USER_FLAG,
     !m_bAllowUserNameOverride);
 
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(pSplitter,1,wxEXPAND);
-  pSizer->Add(pPanel,0,wxALL | wxEXPAND,ID_BORDER);
+  pSizer->Add(m_pPanelUser,0,wxALL | wxEXPAND,ID_BORDER);
   SetSizer(pSizer);
   pSizer->Layout();
   pSplitter->Split();
@@ -174,7 +174,14 @@ void CDialogApprove::OnEdit(
   int n = e.GetId();
   EndModal(n);
 }
-
+void CDialogApprove::SetUserID(const wxString &sUser)
+{
+  m_pPanelUser->SetValue(sUser);
+}
+const wxString &CDialogApprove::GetUserID()
+{
+  return m_pPanelUser->GetValue();
+}
 IMPLEMENT_PERSISTENT_SIZE_POSITION_NAME(CDialogApprove,m_sPersistName)
 
 BEGIN_EVENT_TABLE(CDialogApprove,wxDialog)

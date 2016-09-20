@@ -285,6 +285,7 @@ void CFrameSample::_Approve()
       false,
       this,
       wxID_ANY,sz);
+    dlg.SetUserID(GetUserID());
     n = dlg.ShowModal();
   }
   else
@@ -308,6 +309,7 @@ void CFrameSample::_Approve()
       this,
       wxID_ANY,
       sz);
+    dlg.SetUserID(GetUserID());
     n = dlg.ShowModal();
   }
   if(n == wxID_OK)
