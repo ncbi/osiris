@@ -361,7 +361,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PlotShowILS", &m_bPlotShowILS);
   RegisterBool("PlotShowRFU", &m_bPlotShowRFU);
   RegisterBool("PlotShowLadderLabels", &m_bPlotShowLadderLabels);
-  RegisterBool("PlotResizable", &m_bPlotResizable);
+  RegisterBoolTrue("PlotResizable", &m_bPlotResizable);
   Register("PlotMinHeight",&m_ioInt_1,(void *) &m_nPlotMinHeight);
   Register("PlotShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPlotShowArtifact);
   RegisterUintVector("PlotDisplayPeak", &m_anPlotDisplayPeak);
@@ -479,7 +479,7 @@ void CParmOsiris::SetDefaults()
   m_bPlotShowILS = false;
   m_bPlotShowRFU = false;
   m_bPlotShowLadderLabels = false;
-  m_bPlotResizable = false;
+  m_bPlotResizable = true;
   m_nPlotMinHeight = -1;
   m_nPlotShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
   m_anPlotDisplayPeak.clear();

@@ -138,7 +138,7 @@ my $VARLIST =
   ["m_bPlotShowILS", "bool"],
   ["m_bPlotShowRFU", "bool"],
   ["m_bPlotShowLadderLabels", "bool"],
-  ["m_bPlotResizable", "bool"],
+  ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
   ["m_nPlotShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
   ["m_anPlotDisplayPeak", "vector<unsigned int>","1"],
