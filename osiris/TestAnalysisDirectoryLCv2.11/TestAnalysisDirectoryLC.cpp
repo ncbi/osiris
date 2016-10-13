@@ -68,6 +68,7 @@
 #include "xmlwriter.h"
 #include "OsirisInputFile.h"
 #include "IndividualGenotype.h"
+#include "rgparray.h"
 
 
 #include <string>
@@ -119,6 +120,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	RGString defaultLabSettingsFile ("../OsirisXML/GenericLabSettings.xml");
 	RGString ConfigDirectory;
 	CoreBioComponent::SetUseRawData ();
+	RGPArray::ResetDefaultSize (20);
+	RGPArray::ResetDefaultIncrement (20);
 
 	//
 	//	OsirisInputFile is always started with a debug value of "false", even for debug runs, because the debugger

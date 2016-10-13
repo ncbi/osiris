@@ -633,6 +633,23 @@ bool ChannelData :: HasPrimerPeaks (ChannelData* laneStd) {
 }
 
 
+void ChannelData :: SetCompleteSignalListSequence () {
+
+	RGDListIterator it (CompleteCurveList);
+	DataSignal* nextSignal;
+	DataSignal* prevSignal = NULL;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (prevSignal != NULL)
+			prevSignal->SetNextSignal (nextSignal);
+
+		nextSignal->SetPreviousSignal (prevSignal);
+		prevSignal = nextSignal;
+	}
+}
+
+
 int ChannelData :: CreateAndSubstituteSinglePassFilteredSignalForRawData (int window) {
 
 	if (mBackupData != NULL)

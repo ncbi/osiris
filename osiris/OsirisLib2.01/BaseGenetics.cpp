@@ -287,6 +287,38 @@ void BaseLocus :: SetTableLink (int linkNumber) {
 }
 
 
+double BaseLocus :: GetNonStandardStutterThreshold (int bp) {
+
+	RGPDouble* threshold;
+
+	if (bp >= 0)
+		threshold = (RGPDouble*)mPositiveNonStandardStutter.GetElementAt (bp);
+
+	else
+		threshold = (RGPDouble*)mNegativeNonStandardStutter.GetElementAt (-bp);
+
+	if (threshold == NULL)
+		return -1.0;
+
+	if (threshold->IsNullElement ())
+		return -1.0;
+
+	return threshold->GetDouble ();
+}
+
+
+void BaseLocus :: SetNonStandardStutterThreshold (int bp, double threshold) {
+
+	RGPDouble* newThreshold = new RGPDouble (threshold);
+
+	if (bp >= 0)
+		mPositiveNonStandardStutter.ReplaceElementAt (bp, newThreshold);
+
+	else
+		mNegativeNonStandardStutter.ReplaceElementAt (-bp, newThreshold);
+}
+
+
 void BaseLocus :: SetLocusVector (RGDList& alleleList) {
 
 	mLocusSize = alleleList.Entries ();

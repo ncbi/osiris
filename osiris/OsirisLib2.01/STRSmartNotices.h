@@ -229,6 +229,13 @@ PERSISTENT_PREDECLARATION (smPercentLastILSPeaksInScaling)
 PERSISTENT_PREDECLARATION (smLaserOffScale)
 PERSISTENT_PREDECLARATION (smCalculatedPurePullup)
 PERSISTENT_PREDECLARATION (smPartialPullupBelowMinRFU)
+PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
+PERSISTENT_PREDECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
+PERSISTENT_PREDECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
+PERSISTENT_PREDECLARATION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset)
+PERSISTENT_PREDECLARATION (smPlusStutter)
+PERSISTENT_PREDECLARATION (smNonStandardStutter)
+PERSISTENT_PREDECLARATION (smPlusNonStandardStutter)
 
 
 
@@ -6316,6 +6323,202 @@ public:
 	smPartialPullupBelowMinRFU ();
 	smPartialPullupBelowMinRFU (const smPartialPullupBelowMinRFU& note);
 	virtual ~smPartialPullupBelowMinRFU ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCallStutterPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCallStutterPeaksPreset)
+
+public:
+	smCallStutterPeaksPreset ();
+	smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note);
+	virtual ~smCallStutterPeaksPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDoNotCallStutterPeaksForSingleSourceSamplesPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
+
+public:
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset ();
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset (const smDoNotCallStutterPeaksForSingleSourceSamplesPreset& note);
+	virtual ~smDoNotCallStutterPeaksForSingleSourceSamplesPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
+
+public:
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset ();
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset (const smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset& note);
+	virtual ~smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset)
+
+public:
+	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset ();
+	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset (const smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset& note);
+	virtual ~smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPlusStutter : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPlusStutter)
+
+public:
+	smPlusStutter ();
+	smPlusStutter (const smPlusStutter& note);
+	virtual ~smPlusStutter ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smNonStandardStutter : public SmartNotice {
+
+PERSISTENT_DECLARATION (smNonStandardStutter)
+
+public:
+	smNonStandardStutter ();
+	smNonStandardStutter (const smNonStandardStutter& note);
+	virtual ~smNonStandardStutter ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPlusNonStandardStutter : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPlusNonStandardStutter)
+
+public:
+	smPlusNonStandardStutter ();
+	smPlusNonStandardStutter (const smPlusNonStandardStutter& note);
+	virtual ~smPlusNonStandardStutter ();
 
 	virtual int GetSubject () const;
 

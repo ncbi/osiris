@@ -939,6 +939,8 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 
 	//cout << "Promoted core signals to alleles again!" << endl;
 
+	SetCompleteSignalListSequence ();  // This establishes the order CompleteCurveList within the individual peaks.
+
 	TestProximityArtifactsSM ();
 	TestForInterlocusProximityArtifactsSM ();
 	//TestSignalsForOffScaleSM ();	//  Commented out 07/25/2014 to test moving it right after cross channel analysis for smarter pull-up analysis

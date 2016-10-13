@@ -1314,6 +1314,48 @@ int smPartialPullupBelowMinRFU::sMessageIndex = 0;
 int smPartialPullupBelowMinRFU::sMessageScope = 0;
 
 
+RGString smCallStutterPeaksPreset::sName = "smCallStutterPeaksPreset";
+int smCallStutterPeaksPreset::sSubject = smCallStutterPeaksPreset::LoadType ();
+int smCallStutterPeaksPreset::sMessageIndex = 0;
+int smCallStutterPeaksPreset::sMessageScope = 0;
+
+
+RGString smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sName = "smDoNotCallStutterPeaksForSingleSourceSamplesPreset";
+int smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sSubject = smDoNotCallStutterPeaksForSingleSourceSamplesPreset::LoadType ();
+int smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sMessageIndex = 0;
+int smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sMessageScope = 0;
+
+
+RGString smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sName = "smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset";
+int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sSubject = smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::LoadType ();
+int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sMessageIndex = 0;
+int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sMessageScope = 0;
+
+
+RGString smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sName = "smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset";
+int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sSubject = smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::LoadType ();
+int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageIndex = 0;
+int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageScope = 0;
+
+
+RGString smPlusStutter::sName = "smPlusStutter";
+int smPlusStutter::sSubject = smPlusStutter::LoadType ();
+int smPlusStutter::sMessageIndex = 0;
+int smPlusStutter::sMessageScope = 0;
+
+
+RGString smNonStandardStutter::sName = "smNonStandardStutter";
+int smNonStandardStutter::sSubject = smNonStandardStutter::LoadType ();
+int smNonStandardStutter::sMessageIndex = 0;
+int smNonStandardStutter::sMessageScope = 0;
+
+
+RGString smPlusNonStandardStutter::sName = "smPlusNonStandardStutter";
+int smPlusNonStandardStutter::sSubject = smPlusNonStandardStutter::LoadType ();
+int smPlusNonStandardStutter::sMessageIndex = 0;
+int smPlusNonStandardStutter::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1532,6 +1574,13 @@ PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPe
 PERSISTENT_DEFINITION (smLaserOffScale, 2620, "smLaserOffScale")
 PERSISTENT_DEFINITION (smCalculatedPurePullup, 2621, "smCalculatedPurePullup")
 PERSISTENT_DEFINITION (smPartialPullupBelowMinRFU, 2622, "smPartialPullupBelowMinRFU")
+PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2623, "smCallStutterPeaksPreset")
+PERSISTENT_DEFINITION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset, 2624, "smDoNotCallStutterPeaksForSingleSourceSamplesPreset")
+PERSISTENT_DEFINITION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset, 2625, "smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset")
+PERSISTENT_DEFINITION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset, 2626, "smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset")
+PERSISTENT_DEFINITION (smPlusStutter, 2627, "smPlusStutter")
+PERSISTENT_DEFINITION (smNonStandardStutter, 2628, "smNonStandardStutter")
+PERSISTENT_DEFINITION (smPlusNonStandardStutter, 2629, "smPlusNonStandardStutter")
 
 
 
@@ -14608,6 +14657,426 @@ int smPartialPullupBelowMinRFU :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPartialPullupBelowMinRFU* noticeType = new smPartialPullupBelowMinRFU;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smCallStutterPeaksPreset :: smCallStutterPeaksPreset () : SmartNotice () {
+
+}
+
+
+smCallStutterPeaksPreset :: smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smCallStutterPeaksPreset :: ~smCallStutterPeaksPreset () {
+
+}
+
+
+int smCallStutterPeaksPreset :: GetSubject () const {
+
+	return smCallStutterPeaksPreset::sSubject;
+}
+
+
+void smCallStutterPeaksPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smCallStutterPeaksPreset::sMessageIndex = index;
+	smCallStutterPeaksPreset::sMessageScope = scope;
+}
+
+
+int smCallStutterPeaksPreset :: GetMessageIndex () const {
+
+	return smCallStutterPeaksPreset :: sMessageIndex;
+}
+
+
+int smCallStutterPeaksPreset :: GetScope () const {
+
+	return smCallStutterPeaksPreset :: sMessageScope;
+}
+
+
+RGString smCallStutterPeaksPreset :: GetName () const {
+
+	return smCallStutterPeaksPreset :: sName;
+}
+
+
+
+int smCallStutterPeaksPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smCallStutterPeaksPreset* noticeType = new smCallStutterPeaksPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: smDoNotCallStutterPeaksForSingleSourceSamplesPreset () : SmartNotice () {
+
+}
+
+
+smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: smDoNotCallStutterPeaksForSingleSourceSamplesPreset (const smDoNotCallStutterPeaksForSingleSourceSamplesPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: ~smDoNotCallStutterPeaksForSingleSourceSamplesPreset () {
+
+}
+
+
+int smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: GetSubject () const {
+
+	return smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sSubject;
+}
+
+
+void smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sMessageIndex = index;
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sMessageScope = scope;
+}
+
+
+int smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: GetMessageIndex () const {
+
+	return smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: sMessageIndex;
+}
+
+
+int smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: GetScope () const {
+
+	return smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: sMessageScope;
+}
+
+
+RGString smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: GetName () const {
+
+	return smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: sName;
+}
+
+
+
+int smDoNotCallStutterPeaksForSingleSourceSamplesPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset* noticeType = new smDoNotCallStutterPeaksForSingleSourceSamplesPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset () : SmartNotice () {
+
+}
+
+
+smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset (const smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: ~smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset () {
+
+}
+
+
+int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: GetSubject () const {
+
+	return smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sSubject;
+}
+
+
+void smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sMessageIndex = index;
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sMessageScope = scope;
+}
+
+
+int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: GetMessageIndex () const {
+
+	return smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: sMessageIndex;
+}
+
+
+int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: GetScope () const {
+
+	return smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: sMessageScope;
+}
+
+
+RGString smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: GetName () const {
+
+	return smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: sName;
+}
+
+
+
+int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset* noticeType = new smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset () : SmartNotice () {
+
+}
+
+
+smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset (const smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: ~smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset () {
+
+}
+
+
+int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetSubject () const {
+
+	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sSubject;
+}
+
+
+void smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageIndex = index;
+	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageScope = scope;
+}
+
+
+int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetMessageIndex () const {
+
+	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: sMessageIndex;
+}
+
+
+int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetScope () const {
+
+	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: sMessageScope;
+}
+
+
+RGString smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetName () const {
+
+	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: sName;
+}
+
+
+
+int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset* noticeType = new smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPlusStutter :: smPlusStutter () : SmartNotice () {
+
+}
+
+
+smPlusStutter :: smPlusStutter (const smPlusStutter& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPlusStutter :: ~smPlusStutter () {
+
+}
+
+
+int smPlusStutter :: GetSubject () const {
+
+	return smPlusStutter::sSubject;
+}
+
+
+void smPlusStutter :: SetIndexAndScope (int index, int scope) const {
+
+	smPlusStutter::sMessageIndex = index;
+	smPlusStutter::sMessageScope = scope;
+}
+
+
+int smPlusStutter :: GetMessageIndex () const {
+
+	return smPlusStutter :: sMessageIndex;
+}
+
+
+int smPlusStutter :: GetScope () const {
+
+	return smPlusStutter :: sMessageScope;
+}
+
+
+RGString smPlusStutter :: GetName () const {
+
+	return smPlusStutter :: sName;
+}
+
+
+
+int smPlusStutter :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPlusStutter* noticeType = new smPlusStutter;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smNonStandardStutter :: smNonStandardStutter () : SmartNotice () {
+
+}
+
+
+smNonStandardStutter :: smNonStandardStutter (const smNonStandardStutter& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smNonStandardStutter :: ~smNonStandardStutter () {
+
+}
+
+
+int smNonStandardStutter :: GetSubject () const {
+
+	return smNonStandardStutter::sSubject;
+}
+
+
+void smNonStandardStutter :: SetIndexAndScope (int index, int scope) const {
+
+	smNonStandardStutter::sMessageIndex = index;
+	smNonStandardStutter::sMessageScope = scope;
+}
+
+
+int smNonStandardStutter :: GetMessageIndex () const {
+
+	return smNonStandardStutter :: sMessageIndex;
+}
+
+
+int smNonStandardStutter :: GetScope () const {
+
+	return smNonStandardStutter :: sMessageScope;
+}
+
+
+RGString smNonStandardStutter :: GetName () const {
+
+	return smNonStandardStutter :: sName;
+}
+
+
+
+int smNonStandardStutter :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smNonStandardStutter* noticeType = new smNonStandardStutter;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPlusNonStandardStutter :: smPlusNonStandardStutter () : SmartNotice () {
+
+}
+
+
+smPlusNonStandardStutter :: smPlusNonStandardStutter (const smPlusNonStandardStutter& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPlusNonStandardStutter :: ~smPlusNonStandardStutter () {
+
+}
+
+
+int smPlusNonStandardStutter :: GetSubject () const {
+
+	return smPlusNonStandardStutter::sSubject;
+}
+
+
+void smPlusNonStandardStutter :: SetIndexAndScope (int index, int scope) const {
+
+	smPlusNonStandardStutter::sMessageIndex = index;
+	smPlusNonStandardStutter::sMessageScope = scope;
+}
+
+
+int smPlusNonStandardStutter :: GetMessageIndex () const {
+
+	return smPlusNonStandardStutter :: sMessageIndex;
+}
+
+
+int smPlusNonStandardStutter :: GetScope () const {
+
+	return smPlusNonStandardStutter :: sMessageScope;
+}
+
+
+RGString smPlusNonStandardStutter :: GetName () const {
+
+	return smPlusNonStandardStutter :: sName;
+}
+
+
+
+int smPlusNonStandardStutter :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPlusNonStandardStutter* noticeType = new smPlusNonStandardStutter;
 	warehouse->AddType (noticeType);
 	return 1;
 }

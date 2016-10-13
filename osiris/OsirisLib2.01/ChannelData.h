@@ -138,6 +138,8 @@ public:
 	int GetNumberOfSignals () const { return CompleteCurveList.Entries (); }
 	bool HasPrimerPeaks (ChannelData* laneStd);
 
+	void SetCompleteSignalListSequence ();
+
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
 
 	double GetBeginAnalysisTime () const { return mBeginAnalysis; }

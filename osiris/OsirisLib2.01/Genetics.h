@@ -237,6 +237,8 @@ public:
 	bool SignalIsIntegralMultipleOfRepeatAboveLadder (DataSignal* nextSignal);
 	bool SignalIsIntegralMultipleOfRepeatBelowLadder (DataSignal* nextSignal);
 
+	double GetNonStandardStutterThreshold (int bp) { return mLink->GetNonStandardStutterThreshold (bp); }
+
 	RGString ReconstructAlleleName (int id, Boolean& isOffGrid);
 	virtual int InsertAlleleSignals (RGDList& curveList);  // virtual ???
 	virtual const DataSignal* GetCurve (const RGString& alleleName);  // virtual ???
