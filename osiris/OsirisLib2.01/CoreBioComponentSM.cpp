@@ -1319,6 +1319,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	//cout << "Chosen (time, primary, pullup) pairs:  ";
 	int n = 0;
+	int nNegatives = 0;
+	int nSigmoids = 0;
 	double factor;
 	linearPart = quadraticPart = 0.0;
 
@@ -1342,6 +1344,15 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if (primarySignal->GetMessageValue (purePullup))
 			continue;
 
+		if (primarySignal->IsNoisySidePeak ())
+			continue;
+
+		if (primarySignal->IsDoNotCall ())
+			continue;
+
+		if (primarySignal->DontLook ())
+			continue;
+
 		secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
 		if (secondarySignal == NULL)
@@ -1361,8 +1372,14 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		nextPair = new PullupPair (primarySignal, secondarySignal);
 		pairList.push_back (nextPair);
 
-		if (secondarySignal->IsNegativePeak ())
+		if (secondarySignal->IsNegativePeak ()) {
+
 			hasNegativePullup = true;
+			nNegatives++;
+		}
+
+		if (secondarySignal->IsSigmoidalPeak ())
+			nSigmoids++;
 
 		currentPeak = primarySignal->Peak ();
 
@@ -1526,8 +1543,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				// Test for width criterion; otherwise continue below
 
-				sigmaPrimary = primarySignal->GetStandardDeviation ();
-				sigmaSecondary = secondarySignal->GetStandardDeviation ();
+				sigmaPrimary = primarySignal->GetWidth ();
+				sigmaSecondary = secondarySignal->GetWidth ();
 
 				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
 

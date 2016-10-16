@@ -1907,8 +1907,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					//if (prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation () > 1.9 * width)
 					//	continue;
 
-					if (estimatedSigma > 2.1 * width) // It's too wide to be a crater...test to make sure coefficient is ok
-						break;
+					//if (estimatedSigma > 2.1 * width) // It's too wide to be a crater...test to make sure coefficient is ok
+					//	break;
 
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
 					//cout << " at bp = " << 0.5 * (nextSignal->GetApproximateBioID () + prevSignal->GetApproximateBioID ()) << endl;
