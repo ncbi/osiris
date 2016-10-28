@@ -1321,8 +1321,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	int n = 0;
 	int nNegatives = 0;
 	int nSigmoids = 0;
-	double factor;
+	int nPos = 0;
+	//double factor;
 	linearPart = quadraticPart = 0.0;
+	int nPossibleNegative;
+	list<PullupPair*> negativePairs;
 
 	for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
 
@@ -1360,11 +1363,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		secondarySignal->ResetIgnoreWidthTest ();
 
-		if (secondarySignal->TestForIntersectionWithPrimary (primarySignal)) {
+		//if (secondarySignal->TestForIntersectionWithPrimary (primarySignal)) {
 
-			secondarySignal->IgnoreWidthTest ();
-			continue;
-		}
+		//	secondarySignal->IgnoreWidthTest ();
+		//	continue;
+		//}
 
 		//if (primarySignal->GetWidth () < secondarySignal->GetWidth ())
 		//	continue;
@@ -1375,11 +1378,15 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if (secondarySignal->IsNegativePeak ()) {
 
 			hasNegativePullup = true;
+			negativePairs.push_back (nextPair);
 			nNegatives++;
 		}
 
-		if (secondarySignal->IsSigmoidalPeak ())
+		else if (secondarySignal->IsSigmoidalPeak ())
 			nSigmoids++;
+
+		else
+			nPos++;
 
 		currentPeak = primarySignal->Peak ();
 
@@ -1394,11 +1401,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		//if (n > 0)
 		//	cout << ", ";
 
-		if (secondarySignal->IsNegativePeak ())
-			factor = -1.0;
+		//if (secondarySignal->IsNegativePeak ())
+		//	factor = -1.0;
 
-		else
-			factor = 1.0;
+		//else
+		//	factor = 1.0;
 
 		//cout << "(" << primarySignal->GetMean () << ", " << currentPeak << ", " << factor * numerator << ")";
 		n++;
@@ -1427,6 +1434,40 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
 		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
 		return true;
+	}
+
+	// Perform additional tests to see if hasNegativePullup accurately reflects reality... (10/16/2016)
+
+	if (hasNegativePullup) {
+
+		nPossibleNegative = nNegatives + nSigmoids;
+
+		if (n != nPossibleNegative) {
+
+			if (nPossibleNegative == 1) {
+
+				nextPair = negativePairs.front ();
+
+				if (nextPair != NULL) {
+
+					secondarySignal = nextPair->mPullup;
+					double secondaryHeight = nextPair->mPullupHeight;
+
+					if (secondarySignal != NULL) {
+
+						double secondaryMean = secondarySignal->GetMean ();
+						double baseline = mDataChannels [secondarySignal->GetChannel ()]->EvaluateBaselineAtTime (secondaryMean);
+
+						if (3.0 * baseline >= secondaryHeight) {
+
+							hasNegativePullup = false;
+							pairList.remove (nextPair);
+							n--;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	if (testNegativePUOnly != hasNegativePullup) {
@@ -1624,6 +1665,10 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					pullupPeak->SetMessageValue (pullup, false);
 					nextPair->mIsOutlier = false;
 					testedPullups.Append (pullupPeak);
+					ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
+					pullupPeak->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+					pullupPeak->SetPullupFromChannel (primaryChannel, pullupPeak->Peak (), mNumberOfChannels);
+					pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 
 					if (pullupPeak->HasCrossChannelSignalLink ()) {
 
@@ -1667,6 +1712,10 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 					secondarySignal->SetMessageValue (purePullup, true);
 					secondarySignal->SetMessageValue (pullup, false);
+					ratio = 100.0 * (secondarySignal->Peak () / primarySignal->Peak ());
+					secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+					secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
+					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 
 					if (secondarySignal->HasCrossChannelSignalLink ()) {
 
@@ -1737,11 +1786,12 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
 			secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary) && !pullupPeak->IgnoreWidthTest ();
+			secondaryNarrow2 = (pullupPeak->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !pullupPeak->IgnoreWidthTest ();
 
 			//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 			//belowMinRFU = (correctedHeight < analysisThreshold);
 
-			if (secondaryNarrow) {
+			if (secondaryNarrow || secondaryNarrow2) {
 
 				// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
 

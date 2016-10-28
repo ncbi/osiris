@@ -229,6 +229,7 @@ PERSISTENT_PREDECLARATION (smPercentLastILSPeaksInScaling)
 PERSISTENT_PREDECLARATION (smLaserOffScale)
 PERSISTENT_PREDECLARATION (smCalculatedPurePullup)
 PERSISTENT_PREDECLARATION (smPartialPullupBelowMinRFU)
+PERSISTENT_PREDECLARATION (smSigmoidalSidePeak)
 
 
 
@@ -6316,6 +6317,34 @@ public:
 	smPartialPullupBelowMinRFU ();
 	smPartialPullupBelowMinRFU (const smPartialPullupBelowMinRFU& note);
 	virtual ~smPartialPullupBelowMinRFU ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSigmoidalSidePeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSigmoidalSidePeak)
+
+public:
+	smSigmoidalSidePeak ();
+	smSigmoidalSidePeak (const smSigmoidalSidePeak& note);
+	virtual ~smSigmoidalSidePeak ();
 
 	virtual int GetSubject () const;
 

@@ -1314,6 +1314,12 @@ int smPartialPullupBelowMinRFU::sMessageIndex = 0;
 int smPartialPullupBelowMinRFU::sMessageScope = 0;
 
 
+RGString smSigmoidalSidePeak::sName = "smSigmoidalSidePeak";
+int smSigmoidalSidePeak::sSubject = smSigmoidalSidePeak::LoadType ();
+int smSigmoidalSidePeak::sMessageIndex = 0;
+int smSigmoidalSidePeak::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1532,6 +1538,7 @@ PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPe
 PERSISTENT_DEFINITION (smLaserOffScale, 2620, "smLaserOffScale")
 PERSISTENT_DEFINITION (smCalculatedPurePullup, 2621, "smCalculatedPurePullup")
 PERSISTENT_DEFINITION (smPartialPullupBelowMinRFU, 2622, "smPartialPullupBelowMinRFU")
+PERSISTENT_DEFINITION (smSigmoidalSidePeak, 2623, "smSigmoidalSidePeak")
 
 
 
@@ -14608,6 +14615,66 @@ int smPartialPullupBelowMinRFU :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPartialPullupBelowMinRFU* noticeType = new smPartialPullupBelowMinRFU;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSigmoidalSidePeak :: smSigmoidalSidePeak () : SmartNotice () {
+
+}
+
+
+smSigmoidalSidePeak :: smSigmoidalSidePeak (const smSigmoidalSidePeak& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSigmoidalSidePeak :: ~smSigmoidalSidePeak () {
+
+}
+
+
+int smSigmoidalSidePeak :: GetSubject () const {
+
+	return smSigmoidalSidePeak::sSubject;
+}
+
+
+void smSigmoidalSidePeak :: SetIndexAndScope (int index, int scope) const {
+
+	smSigmoidalSidePeak::sMessageIndex = index;
+	smSigmoidalSidePeak::sMessageScope = scope;
+}
+
+
+int smSigmoidalSidePeak :: GetMessageIndex () const {
+
+	return smSigmoidalSidePeak :: sMessageIndex;
+}
+
+
+int smSigmoidalSidePeak :: GetScope () const {
+
+	return smSigmoidalSidePeak :: sMessageScope;
+}
+
+
+RGString smSigmoidalSidePeak :: GetName () const {
+
+	return smSigmoidalSidePeak :: sName;
+}
+
+
+
+int smSigmoidalSidePeak :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSigmoidalSidePeak* noticeType = new smSigmoidalSidePeak;
 	warehouse->AddType (noticeType);
 	return 1;
 }

@@ -758,8 +758,8 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 			else
 				data << "; ";
 
-			if (mPrimaryRatios == NULL)
-				cout << "Primary signal is set but not ratio for signal on channel " << GetChannel () << " at time " << GetMean () << endl;
+			//if (mPrimaryRatios == NULL)
+			//	cout << "Primary signal is set but not ratio for signal on channel " << GetChannel () << " at time " << GetMean () << endl;
 
 			data << i << " with Ratio " << GetPullupRatio (i);
 		}
@@ -1640,8 +1640,8 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 					totalNegative += correctedHeight;
 				}
 
-				else
-					cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+				//else
+				//	cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
 			}
 		}
 
@@ -1742,8 +1742,8 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 				addedRatio = true;
 			}
 
-			else
-				cout << "Corrected height = 0 for partial pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+			//else
+			//	cout << "Corrected height = 0 for partial pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
 		}
 	}
 

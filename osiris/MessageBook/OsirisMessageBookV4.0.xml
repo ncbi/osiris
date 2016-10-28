@@ -1154,6 +1154,26 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smDoNotCall</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Do Not Call</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smStutter</Name>
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
@@ -1165,12 +1185,95 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>smDisableStutterFilter</Expression>
+				<Expression>smCallStutterPeaksPreset AND NOT (smDoNotCallStutterPeaksForSingleSourceSamplesPreset AND NOT smSampleSatisfiesPossibleMixtureIDCriteria)</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
 				<RestrictionCriterion>
-					<Expression>NOT smDisableStutterFilter</Expression>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPlusStutter</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>NOT smDisableStutterFilter</Expression>
+			</ReportCriterion>
+			<Text>Plus Stutter</Text>
+			<TextForData> with ratio </TextForData>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smCallStutterPeaksPreset AND NOT (smDoNotCallStutterPeaksForSingleSourceSamplesPreset AND NOT smSampleSatisfiesPossibleMixtureIDCriteria)</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smNonStandardStutter</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>NOT smDisableStutterFilter</Expression>
+			</ReportCriterion>
+			<Text>Non-Standard Stutter</Text>
+			<TextForData> at bp </TextForData>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smCallStutterPeaksPreset AND NOT (smDoNotCallStutterPeaksForSingleSourceSamplesPreset AND NOT smSampleSatisfiesPossibleMixtureIDCriteria)</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPlusNonStandardStutter</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>NOT smDisableStutterFilter</Expression>
+			</ReportCriterion>
+			<Text>Plus Non-Standard Stutter</Text>
+			<TextForData> at bp </TextForData>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smCallStutterPeaksPreset AND NOT (smDoNotCallStutterPeaksForSingleSourceSamplesPreset AND NOT smSampleSatisfiesPossibleMixtureIDCriteria)</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smIsSomeKindOfStutter</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Some Type of Stutter</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>NOT smDoNotCall</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
 				</RestrictionCriterion>
 			</Restriction>
 		</SmartMessage>
@@ -1222,7 +1325,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))</Expression>
+				<Expression>NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND (NOT smSignalOL AND NOT smIsAcceptedOLAllele)))</Expression>
 			</ReportCriterion>
 			<Text>Adenylation</Text>
 			<ReportLevel>20</ReportLevel>
@@ -2343,6 +2446,18 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smIsAcceptedOLAllele</Name>
+			<Description>Valid interlocus allele that is on user list</Description>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Accepted OL Core Ladder Allele</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smAcceptedInterlocusLeft</Name>
 			<Description>Valid interlocus allele that is on user list</Description>
 			<Subject>15</Subject>
@@ -2502,6 +2617,20 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Possible Sigmoidal Pull-up</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSigmoidalSidePeak</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Possible Sigmoidal Side Peak</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -5193,22 +5322,6 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smCallOnLadderAdenylationPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Call Peaks That Are Identified as Adenylation If On-Ladder</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Call Peaks That Are Identified as Adenylation If On-Ladder</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smDoNotCallExcessResidualPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -5224,6 +5337,158 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerStutterCallCriteriaBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerStutterCallCriteriaTitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        Stutter Call Criteria:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smCallStutterPeaksPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>                Call Peaks That Are Identified as Stutter</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Call Peaks That Are Identified as Stutter</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>                Do Not Call Stutter Peaks For Single Source Samples</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Do Not Call Stutter Peaks For Single Source Samples</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		
+		
+		<SmartMessage>
+			<Name>smSpacerStutterCallCriteriaEnd</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerAdenylationCallCriteriaTitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        Adenylation Call Criteria:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smCallOnLadderAdenylationPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>                Call Peaks That Are Identified as Adenylation If On-Ladder</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Call Peaks That Are Identified as Adenylation If On-Ladder</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>                Call Peaks And Show Artifact for Accepted On Ladder Adenylation</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Call Peaks And Show Artifact for Accepted On Ladder Adenylation</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>                Do Not Call Adenylation Peaks For Single Source Samples</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Do Not Call Adenylation Peaks For Single Source Samples</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		
+		
 		<SmartMessage>
 			<Name>smSpacerCallCriteriaEnd</Name>
 			<MessageType>count</MessageType>
@@ -6028,6 +6293,10 @@
 						<Name>smExtendLociEdgeToEdgePreset</Name>
 						<Name>smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset</Name>
 						<Name>smMaxILSBPForExtendedLocus</Name>
+						<Name>smCallStutterPeaksPreset</Name>
+						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
+						<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
+						<Name>smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6281,9 +6550,13 @@
 					<Scope>1</Scope>
 					<MeasuredMessages>
 						<Name>smStutter</Name>
+						<Name>smPlusStutter</Name>
+						<Name>smNonStandardStutter</Name>
+						<Name>smPlusNonStandardStutter</Name>
 						<Name>smBaselineRelativeStutter</Name>
 						<Name>smAdenylation</Name>
 						<Name>smSignalOL</Name>
+						<Name>smIsAcceptedOLAllele</Name>
 						<Name>smBaselineRelativeAdenylation</Name>
 						<Name>smNotInterchannelLink</Name>
 						<Name>smAmbiguousInterlocusCrater</Name>
@@ -6291,6 +6564,7 @@
 						<Name>smPrimaryInterchannelLink</Name>
 						<Name>smCrater</Name>
 						<Name>smSigmoidalPullup</Name>
+						<Name>smSigmoidalSidePeak</Name>
 						<Name>smCraterSidePeak</Name>
 						<Name>smSignalNotACrater</Name>
 						<Name>smSignalNotACraterSidePeak</Name>
@@ -6321,6 +6595,7 @@
 						<Name>smExcessiveResidualDisplacementRight</Name>
 					</MeasuredMessages>
 					<Evaluations>
+						<Expression>smIsSomeKindOfStutter = smStutter OR smPlusStutter OR smNonStandardStutter OR smPlusNonStandardStutter</Expression>
 						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS AND NOT smIsQualityLocus</Expression>
 						<Expression>smPurePullup = smPullUp AND NOT smPrimaryInterchannelLink AND NOT smNotInterchannelLink</Expression>
 						<Expression>smTemp1Left = sm0UnambiguousPeaksLeft AND NOT sm0UnambiguousPeaksRight</Expression>
@@ -6348,6 +6623,7 @@
 						<Expression>smAcceptedInterlocusLeft = smPossibleValidInterlocusLeft AND smAcceptedOLLeft</Expression>
 						<Expression>smAcceptedInterlocusRight = smPossibleValidInterlocusRight AND smAcceptedOLRight</Expression>
 						<Expression>smLaserOffScaleForTrigger = smLaserOffScale</Expression>
+						<Expression>smDoNotCall = (smIsSomeKindOfStutter AND (NOT smCallStutterPeaksPreset OR (smDoNotCallStutterPeaksForSingleSourceSamplesPreset AND NOT smSampleSatisfiesPossibleMixtureIDCriteria))) OR (smAdenylation AND (NOT smCallOnLadderAdenylationPreset OR smSignalOL))</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smStutter (NOT smBelowMinRFU AND NOT smDisableStutterFilter): smNumberOfStuttersInSample</TriggerExpression>
@@ -6408,7 +6684,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullUp AND NOT smRestrictedPriorityPeak</Expression>
