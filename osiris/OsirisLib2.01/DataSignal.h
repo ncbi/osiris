@@ -500,6 +500,7 @@ public:
 	void AddProbablePullups (RGDList& prototype);
 	void RemoveProbablePullup (const DataSignal* removeSignal);
 	bool ReconfigurePullupFromLinkForChannel (int channel);
+	bool IsInProbablePullupList (const DataSignal* testSignal);
 
 //	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }

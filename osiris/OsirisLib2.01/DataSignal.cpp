@@ -1471,6 +1471,15 @@ bool DataSignal :: ReconfigurePullupFromLinkForChannel (int channel) {
 }
 
 
+bool DataSignal :: IsInProbablePullupList (const DataSignal* testSignal) {
+
+	if (mProbablePullupPeaks.ContainsReference (testSignal))
+		return true;
+
+	return false;
+}
+
+
 
 void DataSignal :: SetBioID (double id, int position) {
 

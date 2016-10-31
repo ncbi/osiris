@@ -2645,6 +2645,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	InterchannelLinkage* iChannelPrimary;
 	InterchannelLinkage* secondaryChannel1;
 	InterchannelLinkage* secondaryChannel2;
+	list<DataSignal*> finalCraterList;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2677,6 +2678,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				iChannelPrimary = nextSignal->GetInterchannelLink ();
 				nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
 				nextSignal2->SetMessageValue (craterSidePeak, true);
+				finalCraterList.push_back (nextSignal);
 
 				//***
 				iChannel = nextSignal2->GetInterchannelLink ();
@@ -2935,6 +2937,112 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 
 		delete nextMultiPeakList;
+	}
+
+	while (!finalCraterList.empty ()) {
+
+		nextSignal = finalCraterList.front ();
+		finalCraterList.pop_front ();
+
+		nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+
+		if ((nextSignal2 != NULL) && (nextSignal2->GetMessageValue (pullup))) {
+
+			nextSignal2->SetMessageValue (pullup, false);
+
+			for (j=1; j<=mNumberOfChannels; j++) {
+
+				if (j == nextSignal2->GetChannel ())
+					continue;
+
+				testSignal = nextSignal2->HasPrimarySignalFromChannel (j);
+
+				if (testSignal == NULL)
+					continue;
+
+				if (!testSignal->HasCrossChannelSignalLink ())
+					continue;
+
+				iChannelPrimary = testSignal->GetInterchannelLink ();
+
+				if (iChannelPrimary == NULL)
+					continue;
+
+				testSignal->RemoveProbablePullup (nextSignal2);
+				iChannelPrimary->RemoveDataSignalFromSecondaryList (nextSignal2);
+				nextSignal2->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
+						
+				if (nextSignal->IsInProbablePullupList (testSignal)) {
+
+					testSignal2 = nextSignal->HasPrimarySignalFromChannel (j);
+
+					if ((testSignal2 == NULL) || (testSignal2 == testSignal)) {
+
+						iChannelPrimary->AddDataSignal (nextSignal);
+						nextSignal->SetPrimarySignalFromChannel (j, testSignal, mNumberOfChannels);
+						nextSignal->SetMessageValue (pullup, true);
+						continue;
+					}
+				}
+
+				if (iChannelPrimary->IsEmpty ()) {
+
+					testSignal->SetInterchannelLink (NULL);
+					testSignal->SetMessageValue (primaryLink, false);
+					channelRemoval.insert (iChannel);
+				}
+			}
+		}
+
+		nextSignal2 = nextSignal->GetNextLinkedSignal ();
+
+		if ((nextSignal2 != NULL) && (nextSignal2->GetMessageValue (pullup))) {
+
+			nextSignal2->SetMessageValue (pullup, false);
+
+			for (j=1; j<=mNumberOfChannels; j++) {
+
+				if (j == nextSignal2->GetChannel ())
+					continue;
+
+				testSignal = nextSignal2->HasPrimarySignalFromChannel (j);
+
+				if (testSignal == NULL)
+					continue;
+
+				if (!testSignal->HasCrossChannelSignalLink ())
+					continue;
+
+				iChannelPrimary = testSignal->GetInterchannelLink ();
+
+				if (iChannelPrimary == NULL)
+					continue;
+
+				testSignal->RemoveProbablePullup (nextSignal2);
+				iChannelPrimary->RemoveDataSignalFromSecondaryList (nextSignal2);
+				nextSignal2->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
+						
+				if (nextSignal->IsInProbablePullupList (testSignal)) {
+
+					testSignal2 = nextSignal->HasPrimarySignalFromChannel (j);
+
+					if ((testSignal2 == NULL) || (testSignal2 == testSignal)) {
+
+						iChannelPrimary->AddDataSignal (nextSignal);
+						nextSignal->SetPrimarySignalFromChannel (j, testSignal, mNumberOfChannels);
+						nextSignal->SetMessageValue (pullup, true);
+						continue;
+					}
+				}
+
+				if (iChannelPrimary->IsEmpty ()) {
+
+					testSignal->SetInterchannelLink (NULL);
+					testSignal->SetMessageValue (primaryLink, false);
+					channelRemoval.insert (iChannel);
+				}
+			}
+		}
 	}
 
 	list<InterchannelLinkage*>::iterator tempIt;
