@@ -57,8 +57,8 @@
 #define FORMAT_ALLELE_BPS "Allele BPS: %d\n"
 #define FORMAT_RESIDUAL "Residual: %.3f\n"
 #define FORMAT_WIDTH "Width: %.4f\n"
-#define OFF_LADDER          "    Off Ladder\n"
-#define OFF_LADDER_ACCEPTED "    Accepted Off Ladder\n"
+#define OFF_LADDER          "\n  Off Ladder"
+#define OFF_LADDER_ACCEPTED "\n  Accepted Off Ladder"
 
 #define FORMAT_CONDITION(fmt,d,cond) \
   if(cond) { sToolTip += wxString::Format(fmt,d); }
