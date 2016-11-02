@@ -57,8 +57,13 @@ private:
     CSetting(const wxString &sKey, const wxString &sValue) :
         m_sKey(sKey),
         m_sValue(sValue)
-        {}
-    CSetting() {}
+    {
+      RegisterAll(true);
+    }
+    CSetting() 
+    {
+      RegisterAll(true);
+    }
     virtual ~CSetting() {}
     const wxString &GetKey() const
     {

@@ -89,7 +89,6 @@ bool CPageEditSample::DoReview()
   if((m_pReview != NULL) && m_pReview->AppendReview(GetUserID()))
   {
     bRtn = true;
-    m_pParentNotebook->InitiateRepaintData();
   }
   return bRtn;
 }
@@ -608,6 +607,7 @@ bool CPageEditSampleAlerts::DoApply()
     DoReview();
     UpdateNotes();
     m_pFile->SetIsModified(true);
+    m_pParentNotebook->InitiateRepaintData();
     bRtn = true;
   }
   return bRtn;
