@@ -1,4 +1,10 @@
 <SiteSettings>
+  <!--
+    Copy this file to your site folder if you don't 
+    want to be warned when editing and not adding notes.
+    If you are not familiar with the site folder, select 
+    "Help" then "Contact us" from the OSIRIS menu bar.
+  -->
   <Setting>
     <Name>WarnEmptyNotes</Name>
     <Value>false</Value>
