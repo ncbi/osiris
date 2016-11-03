@@ -31,6 +31,8 @@
 #define __CDIALOG_SHOW_LAB_SETTINGS_H__
 
 #include <wx/dialog.h>
+#include "nwx/PersistentSize.h"
+
 class wxBoxSizer;
 class CLabSettings;
 class CXMLmessageBook;
@@ -48,6 +50,8 @@ public:
   virtual bool TransferDataToWindow();
 private:
   CPanelLabSettings *m_pPanel;
+  DECLARE_PERSISTENT_SIZE_POSITION
+  DECLARE_EVENT_TABLE()
 };
 
 #endif

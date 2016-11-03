@@ -13,3 +13,6 @@ This hack works around the mystery behind wxWidgets wxScrolledWindow and wxVScro
    See CPanelLabLocusThresholds for an example.
      Create a general purpose function with the following args to be called from OnSize()
        (wxWindow *pScrolledWin, wxWindow *pPanel, wxCoord nRowHeight);
+       
+When the window is created, the scrollbar is not shown, whether or not it is needed.  
+The window must be resized smaller to show it.       

@@ -39,7 +39,9 @@ CDialogShowLabSettings::CDialogShowLabSettings(
   CLabSettings *pLab,
   const CXMLmessageBook *pBook) :
     wxDialog(parent,id,"Lab Settings",
-         wxDefaultPosition, wxDefaultSize,
+         GET_PERSISTENT_POSITION(CDialogShowLabSettings),
+         GET_PERSISTENT_SIZE_DEFAULT(
+            CDialogShowLabSettings,mainFrame::Size80()),
          mainApp::DIALOG_STYLE)
 {
   m_pPanel = new CPanelLabSettings(this,true,false);
@@ -47,13 +49,14 @@ CDialogShowLabSettings::CDialogShowLabSettings(
   m_pPanel->TransferDataToWindow();
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(m_pPanel,1,wxEXPAND,0);
-#ifndef __NO_MDI__
-  SetMaxSize(mainFrame::Size80());
-#endif
+//  2016-11-03 commented out, don't remember why it's there, annoying
+//#ifndef __NO_MDI__
+//  SetMaxSize(mainFrame::Size80());
+//#endif
   SetSizer(pSizer);
   Layout();
-  Fit();
-  CentreOnParent();
+//  Fit();
+//  CentreOnParent();
 }
 CDialogShowLabSettings::~CDialogShowLabSettings() {}
 
@@ -61,3 +64,10 @@ bool CDialogShowLabSettings::TransferDataToWindow()
 {
   return true;
 }
+
+IMPLEMENT_PERSISTENT_SIZE_POSITION(CDialogShowLabSettings)
+
+BEGIN_EVENT_TABLE(CDialogShowLabSettings,wxDialog)
+EVT_PERSISTENT_SIZE_POSITION(CDialogShowLabSettings)
+END_EVENT_TABLE()
+

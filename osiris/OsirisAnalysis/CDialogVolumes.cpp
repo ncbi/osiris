@@ -224,7 +224,8 @@ CDialogVolumes::CDialogVolumes(
       const wxString &_sSelect, 
       bool bReadOnly) :
   wxDialog(parent,wxID_ANY,"OSIRIS Lab Settings",
-    wxDefaultPosition, wxDefaultSize,
+    GET_PERSISTENT_POSITION(CDialogVolumes),
+    GET_PERSISTENT_SIZE_DEFAULT(CDialogVolumes,mainFrame::Size80()),
     mainApp::DIALOG_STYLE
 #ifdef __WXMAC__
     & ~wxCLOSE_BOX 
@@ -292,7 +293,7 @@ CDialogVolumes::CDialogVolumes(
     pSizer->Add(m_pPanelLab,1,wxEXPAND,0);
     SetSizer(pSizer);
     _SetVolume();
-    CentreOnParent();
+//    CentreOnParent();
     SetMaxSize(wxDefaultSize);
     SetEscapeId(wxID_NONE);
   }
@@ -368,6 +369,9 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
       m_pPanelLab->Layout();
       bool bIsShown = IsShown();
       wxSize szSave;
+#if 1
+      Layout();
+#else
       if(bIsShown)
       {
         // purpose of this is to not change the width of the window
@@ -395,6 +399,7 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
         m_pPanelLab->Fit();
         Fit();
       }
+#endif
       Refresh();
       if(bIsShown)
       {
@@ -752,4 +757,5 @@ EVT_BUTTON(IDrename,CDialogVolumes::OnRename)
 EVT_CHOICE(IDvolume,CDialogVolumes::OnChangeVolume)
 EVT_GRID_CMD_EDITOR_SHOWN(wxID_ANY, CDialogVolumes::OnGridEditStart) 
 EVT_GRID_CMD_EDITOR_HIDDEN(wxID_ANY, CDialogVolumes::OnGridEditEnd) 
+EVT_PERSISTENT_SIZE_POSITION(CDialogVolumes)
 END_EVENT_TABLE()

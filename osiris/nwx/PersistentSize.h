@@ -27,6 +27,12 @@
 *  Author:   Douglas Hoffman
 *
 *  Macros for saving and restoring the size of a window for future use
+*
+*  Usage: Add appropriate DECLARE_ macro in class definition
+*         Add appropriate IMPLEMENT_ macro in class .cpp file
+*         Add appropriate EVT_ macro in EVENT_TABLE in .cpp file
+*         Use appropriate GET_PERSISTENT_ macros when creating windows, 
+*                            usually passed to parent class constructor
 */
 #ifndef __PERSISTENT_SIZE_H__
 #define __PERSISTENT_SIZE_H__
@@ -141,6 +147,12 @@ void className::OnPersistMove(wxMoveEvent &e) \
 #define GET_PERSISTENT_SIZE(className) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ) )
 #define GET_PERSISTENT_SIZE_DEFAULT(className, szDefault) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ), szDefault)
 #define GET_PERSISTENT_POSITION(className) nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ) )
+
+#define GET_PERSISTENT_POSITION_SIZE(className) \
+  GET_PERSISTENT_POSITION(className), \
+  GET_PERSISTENT_SIZE(className)
+//  previous is in the same order as a wx constructor
+
 
 #define GET_PERSISTENT_SIZE_OPTIONAL(className, Implemented) \
   nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ), Implemented )
