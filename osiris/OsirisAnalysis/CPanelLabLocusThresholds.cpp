@@ -32,6 +32,7 @@
 #include <wx/stattext.h>
 #include <wx/sizer.h>
 
+
 //********************************************************************
 //
 //    CChoiceHomozygote
@@ -67,38 +68,40 @@ const wxChar CChoiceHomozygote::VALUE_RFU = 'R';
 
 CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   wxWindow *parent, wxWindowID id) : 
-    nwxPanel(parent,id),
+    SUPER_CPanelLabLocusThresholds(parent,id,wxDefaultPosition,wxDefaultSize,wxVSCROLL),
     m_pData(NULL)
 {
   wxArrayString aChoices;
   aChoices.Alloc(2);
   aChoices.Add("RFU");
   aChoices.Add("% of Min. RFU");
+  m_pPanel = new wxPanel(this);
+  wxWindow *PANEL = m_pPanel;
 
-  m_pGridRFU = new CGridRFULimits(this,wxID_ANY);
-  m_pAllowOverride = new wxCheckBox(this,wxID_ANY,"Allow User to Override Min. RFU");
+  m_pGridRFU = new CGridRFULimits(PANEL,wxID_ANY);
+  m_pAllowOverride = new wxCheckBox(PANEL,wxID_ANY,"Allow User to Override Min. RFU");
 
   wxStaticText *pTextRFU = new wxStaticText(
-    this,wxID_ANY,"RFU Limits");
+    PANEL,wxID_ANY,"RFU Limits");
   wxStaticText *psSampleLabel = 
-    new wxStaticText(this,wxID_ANY,
+    new wxStaticText(PANEL,wxID_ANY,
     "Locus Limits for Samples");
   wxStaticText *psLadderLabel =
-    new wxStaticText(this,wxID_ANY,
+    new wxStaticText(PANEL,wxID_ANY,
     "Locus Limits for Ladders/ILS Limits");
   mainApp::SetBoldFont(pTextRFU);
   mainApp::SetBoldFont(psSampleLabel);
   mainApp::SetBoldFont(psLadderLabel);
   wxStaticText *psDisclaimer =
-    new wxStaticText(this,wxID_ANY,
+    new wxStaticText(PANEL,wxID_ANY,
     "* Note: The default settings for "
       "ladder do not affect the ILS.");
   wxStaticText *psChoice = 
-    new wxStaticText(this,wxID_ANY,
+    new wxStaticText(PANEL,wxID_ANY,
     "Min. homozygote threshold units:");
-  m_pGridSample = new CGridLabThresholdsSample(this,wxID_ANY);
-  m_pGridLadder = new CGridLabThresholdsLadder(this,wxID_ANY);
-  m_pChoiceHomozygoteUnits = new CChoiceHomozygote(this,wxID_ANY);
+  m_pGridSample = new CGridLabThresholdsSample(PANEL,wxID_ANY);
+  m_pGridLadder = new CGridLabThresholdsLadder(PANEL,wxID_ANY);
+  m_pChoiceHomozygoteUnits = new CChoiceHomozygote(PANEL,wxID_ANY);
   
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *pSizerChoice = new wxBoxSizer(wxHORIZONTAL);
@@ -118,7 +121,10 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   pSizer->Add(psLadderLabel,0,wxALIGN_LEFT | wxLEFT | wxRIGHT,ID_BORDER);
   pSizer->Add(m_pGridLadder,0, /* wxEXPAND  | */ wxLEFT | wxRIGHT, ID_BORDER);
   pSizer->Add(psDisclaimer,0,wxALIGN_LEFT | (wxALL ^ wxTOP),ID_BORDER);
-  pSizer->AddStretchSpacer(1);
+  //pSizer->AddStretchSpacer(1);
+  PANEL->SetSizer(pSizer);
+  pSizer = new wxBoxSizer(wxHORIZONTAL);
+  pSizer->Add(PANEL,0,wxALIGN_TOP | wxALIGN_LEFT,0);
   SetSizer(pSizer);
 }
 
@@ -181,3 +187,24 @@ bool CPanelLabLocusThresholds::TransferDataFromWindow()
   return bRtn;
 }
 
+void CPanelLabLocusThresholds::OnSize(wxSizeEvent &)
+{
+  int ncx,ncy,nvx,nvy,npx,npy;
+  wxCoord ROW_HEIGHT = OnGetRowHeight(0);
+  m_pPanel->GetSize(&npx,&npy);
+  GetVirtualSize(&nvx,&nvy);
+  GetClientSize(&ncx,&ncy);
+  int nHeight = (npy > ncy) ? npy : ncy;
+  int nRowCount = nHeight / ROW_HEIGHT;
+  m_pPanel->SetSize(ncx,npy);
+  SetVirtualSize(ncx,nHeight);
+  SetRowCount(nRowCount);
+#ifdef __WXDEBUG__
+  const wxChar *p = wxT("CPanelLabLocusThresholds::OnSize Panel %d %d, Virtual %d %d, Client %d %d, row count %d, height %d");
+  mainApp::LogMessageV(p,npx,npy,nvx,nvy,ncx,ncy,nRowCount,nHeight);
+#endif
+  Layout();
+}
+BEGIN_EVENT_TABLE(CPanelLabLocusThresholds,SUPER_CPanelLabLocusThresholds)
+EVT_SIZE(CPanelLabLocusThresholds::OnSize)
+END_EVENT_TABLE()

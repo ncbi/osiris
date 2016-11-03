@@ -1,0 +1,15 @@
+Vertical Scroll Bar Management
+
+This hack works around the mystery behind wxWidgets wxScrolledWindow and wxVScrolledWindow
+
+1. Implement virtual wxCoord OnGetRowHeight(size_t) const and return a constant, 8 sounds good to me
+2. Create one child, wxPanel, put everything in it with a sizer
+3. Create a wxBoxSizer and add the wxPanel, align top, align left, no border
+4. Create EVT_SIZE handler, EVT_SIZE(ClassName::OnSize)
+   In the size handler, get the panel size, virtual size, client size
+   Set the panel width to the client width
+   Set the virtual size to have the client width
+   Set the row count to the max(panel height, client height) / row height
+   See CPanelLabLocusThresholds for an example.
+     Create a general purpose function with the following args to be called from OnSize()
+       (wxWindow *pScrolledWin, wxWindow *pPanel, wxCoord nRowHeight);

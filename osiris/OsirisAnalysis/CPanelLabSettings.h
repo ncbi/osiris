@@ -106,11 +106,11 @@ private:
   wxNotebook *m_pNotebook;
 
   CPanelLabGeneral *m_pGeneral;                    //  label - General
-  CPanelLabSampleThresholds *m_pSampleThresholds;  //    File/Sample Names
+  CPanelLabSampleThresholds *m_pSampleThresholds;  //    Sample Limits
   CPanelLabLocusThresholds *m_pLocusThresholds;    //    Thresholds
-  CPanelLabNameStrings *m_pFilenames;              //    Assignments
-  CPanelLabMarkerSet *m_pMarkerSet;                //    Sample Limits
-  CPanelLabReviewAcceptance *m_pReview;
+  CPanelLabNameStrings *m_pFilenames;              //    File/Sample Names
+  CPanelLabMarkerSet *m_pMarkerSet;                //    Assignments
+  CPanelLabReviewAcceptance *m_pReview;            //    Accept/Review
   size_t m_nLocusThresholds; // panel index for CPanelLabLocusThresholds
   bool m_bReadOnly;
   bool m_bAlwaysReadOnly;

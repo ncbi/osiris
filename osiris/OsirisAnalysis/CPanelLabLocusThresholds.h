@@ -34,7 +34,7 @@
 #include "CGridLabThresholds.h"
 #include "CGridRFULimits.h"
 #include <wx/checkbox.h>
-
+#include <wx/vscroll.h>
 
 //********************************************************************
 //
@@ -51,7 +51,9 @@ public:
   static const wxChar VALUE_PCT;
 };
 
-class CPanelLabLocusThresholds: public nwxPanel
+typedef wxVScrolledWindow SUPER_CPanelLabLocusThresholds;
+
+class CPanelLabLocusThresholds: public SUPER_CPanelLabLocusThresholds, public ISetReadOnly
 {
 public:
   CPanelLabLocusThresholds(wxWindow *parent, wxWindowID id);
@@ -71,14 +73,21 @@ public:
     m_pGridRFU->SetData(pData,sKitName);
     return b1 && b2;
   }
-  
+  void OnSize(wxSizeEvent &e);
+protected:
+  virtual wxCoord OnGetRowHeight(size_t) const
+  {
+    return wxCoord(8);
+  }
 private:
+  wxPanel *m_pPanel;
   CLabThresholds *m_pData;
   CGridRFULimits *m_pGridRFU;
   wxCheckBox *m_pAllowOverride;
   CGridLabThresholdsSample *m_pGridSample;
   CGridLabThresholdsLadder *m_pGridLadder;
   CChoiceHomozygote *m_pChoiceHomozygoteUnits;
+  DECLARE_EVENT_TABLE()
 };
 
 #endif
