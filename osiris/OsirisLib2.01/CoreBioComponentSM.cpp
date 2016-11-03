@@ -1373,9 +1373,14 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		//	continue;
 
 		nextPair = new PullupPair (primarySignal, secondarySignal);
-		pairList.push_back (nextPair);
 
 		if (secondarySignal->IsNegativePeak ()) {
+
+			if (secondarySignal->GetCurveFit () < 0.999) {
+
+				delete nextPair;
+				continue;
+			}
 
 			hasNegativePullup = true;
 			negativePairs.push_back (nextPair);
@@ -1388,6 +1393,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		else
 			nPos++;
 
+		pairList.push_back (nextPair);
 		currentPeak = primarySignal->Peak ();
 
 		if (minHeight == 0.0)
@@ -1442,32 +1448,45 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		nPossibleNegative = nNegatives + nSigmoids;
 
-		if (n != nPossibleNegative) {
+		if (nNegatives < nPos) {
 
-			if (nPossibleNegative == 1) {
+			hasNegativePullup = false;
+
+			while (!negativePairs.empty ()) {
 
 				nextPair = negativePairs.front ();
-
-				if (nextPair != NULL) {
-
-					secondarySignal = nextPair->mPullup;
-					double secondaryHeight = nextPair->mPullupHeight;
-
-					if (secondarySignal != NULL) {
-
-						double secondaryMean = secondarySignal->GetMean ();
-						double baseline = mDataChannels [secondarySignal->GetChannel ()]->EvaluateBaselineAtTime (secondaryMean);
-
-						if (3.0 * baseline >= secondaryHeight) {
-
-							hasNegativePullup = false;
-							pairList.remove (nextPair);
-							n--;
-						}
-					}
-				}
+				negativePairs.pop_front ();
+				pairList.remove (nextPair);
+				delete nextPair;
 			}
 		}
+
+		//if (n != nPossibleNegative) {
+
+		//	if (nPossibleNegative == 1) {
+
+		//		nextPair = negativePairs.front ();
+
+		//		if (nextPair != NULL) {
+
+		//			secondarySignal = nextPair->mPullup;
+		//			double secondaryHeight = nextPair->mPullupHeight;
+
+		//			if (secondarySignal != NULL) {
+
+		//				double secondaryMean = secondarySignal->GetMean ();
+		//				double baseline = mDataChannels [secondarySignal->GetChannel ()]->EvaluateBaselineAtTime (secondaryMean);
+
+		//				if (3.0 * baseline >= secondaryHeight) {
+
+		//					hasNegativePullup = false;
+		//					pairList.remove (nextPair);
+		//					n--;
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 	}
 
 	if (testNegativePUOnly != hasNegativePullup) {
@@ -1712,6 +1731,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 					secondarySignal->SetMessageValue (purePullup, true);
 					secondarySignal->SetMessageValue (pullup, false);
+					secondarySignal->SetMessageValue (partialPullupBelowMin, false);
 					ratio = 100.0 * (secondarySignal->Peak () / primarySignal->Peak ());
 					secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
 					secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
@@ -1731,7 +1751,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					secondarySignal->SetMessageValue (partialPullupBelowMin, true);
 					secondarySignal->SetMessageValue (pullup, false);
 
-					// eliminate this and place it at end because a further analysis may undo...
+					ratio = 100.0 * (secondarySignal->Peak () / primarySignal->Peak ());
+					secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+
+					// eliminate this and place it at end because a further analysis may undo...??
 					//if (secondarySignal->HasCrossChannelSignalLink ()) {
 
 					//	// remove link; this is not a primary peak

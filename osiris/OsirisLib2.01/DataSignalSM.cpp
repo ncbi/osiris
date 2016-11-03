@@ -49,6 +49,7 @@
 #include "Genetics.h"
 #include "SmartMessage.h"
 #include "STRSmartNotices.h"
+#include "xmlwriter.h"
 
 #include <math.h>
 
@@ -732,6 +733,8 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	RGString channelList;
 	bool uncertainListNotEmpty = false;
 	RGString data2;
+	RGString temp;
+	RGString pResult;
 
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
@@ -758,10 +761,11 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 			else
 				data << "; ";
 
-			//if (mPrimaryRatios == NULL)
-			//	cout << "Primary signal is set but not ratio for signal on channel " << GetChannel () << " at time " << GetMean () << endl;
+			if (mPrimaryRatios == NULL)
+				cout << "Primary signal is set but not ratio for signal on channel " << GetChannel () << " at time " << GetMean () << endl;
 
-			data << i << " with Ratio " << GetPullupRatio (i);
+			temp.ConvertWithMin (GetPullupRatio (i), 0.01, 2);
+			data << i << " with Ratio " << xmlwriter::EscAscii (temp, &pResult);
 		}
 	}
 

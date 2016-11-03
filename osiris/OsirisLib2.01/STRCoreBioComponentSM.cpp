@@ -3181,35 +3181,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	cout << "Ready to start assessing cross channel using channel patterns..." << endl;
 
-	//for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
-
-	//	iChannel = *tempIt;
-	//	primeSignal = iChannel->GetPrimarySignal ();
-	//	iChannel->ResetSecondaryIterator ();
-	//	primaryChannel = primeSignal->GetChannel ();
-	//	cout << "/nPrimary channel " << primeSignal->GetChannel () << " with peak height " << primeSignal->Peak () << " and";
-
-	//	if (primeSignal->GetMessageValue (laserOffScale))
-	//		cout << " has laser off scale" << endl;
-
-	//	else
-	//		cout << " does not have laser off scale" << endl;
-
-	//	while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
-	//	
-	//		//fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, primeSignal, mNumberOfChannels);
-	//		//fixPullupPeak->SetMessageValue (pullup, true);
-	//		double tempp = fixPullupPeak->Peak ();
-
-	//		if (fixPullupPeak->IsNegativePeak ())
-	//			tempp = -tempp;
-
-	//		cout << "(Primary, pullup) channels (" << primeSignal->GetChannel () << ", " << fixPullupPeak->GetChannel () << ") at time " << primeSignal->GetMean () << " and PU Height = " << tempp << endl;
-	//	}
-	//}
-
 	//
-	//  Somewhere in here, in the future, put sample-level assessment of pull-up that goes beyond mere coincidence******************
+	//  Perform sample-level assessment of pull-up that goes beyond mere coincidence******************
 	//  And, BTW, once this is done, do we ever need to reassess the pull-up call???  Don't think so...
 	//
 
