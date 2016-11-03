@@ -739,6 +739,7 @@ bool CDialogVolumes::_IsGridEditorShown()
   return bRtn;
 }
 
+IMPLEMENT_PERSISTENT_SIZE_POSITION(CDialogVolumes)
 
 BEGIN_EVENT_TABLE(CDialogVolumes,wxDialog)
 EVT_BUTTON(wxID_OK,CDialogVolumes::OnOK)

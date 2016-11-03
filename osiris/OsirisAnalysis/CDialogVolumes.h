@@ -36,6 +36,7 @@
 #include <wx/string.h>
 #include <wx/arrstr.h>
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/PersistentSize.h"
 
 class CDialogVolumes : public wxDialog, public nwxTimerReceiver
 {
@@ -103,6 +104,7 @@ private:
   wxGrid *m_pGridObject;
   bool m_bGridEditorShown;
   bool m_bReadOnly;
+  DECLARE_PERSISTENT_SIZE_POSITION
   DECLARE_EVENT_TABLE()
 };
 
