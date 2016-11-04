@@ -1314,10 +1314,10 @@ int smPartialPullupBelowMinRFU::sMessageIndex = 0;
 int smPartialPullupBelowMinRFU::sMessageScope = 0;
 
 
-RGString smCallStutterPeaksPreset::sName = "smCallStutterPeaksPreset";
-int smCallStutterPeaksPreset::sSubject = smCallStutterPeaksPreset::LoadType ();
-int smCallStutterPeaksPreset::sMessageIndex = 0;
-int smCallStutterPeaksPreset::sMessageScope = 0;
+RGString smSigmoidalSidePeak::sName = "smSigmoidalSidePeak";
+int smSigmoidalSidePeak::sSubject = smSigmoidalSidePeak::LoadType ();
+int smSigmoidalSidePeak::sMessageIndex = 0;
+int smSigmoidalSidePeak::sMessageScope = 0;
 
 
 RGString smDoNotCallStutterPeaksForSingleSourceSamplesPreset::sName = "smDoNotCallStutterPeaksForSingleSourceSamplesPreset";
@@ -1354,6 +1354,12 @@ RGString smPlusNonStandardStutter::sName = "smPlusNonStandardStutter";
 int smPlusNonStandardStutter::sSubject = smPlusNonStandardStutter::LoadType ();
 int smPlusNonStandardStutter::sMessageIndex = 0;
 int smPlusNonStandardStutter::sMessageScope = 0;
+
+
+RGString smCallStutterPeaksPreset::sName = "smCallStutterPeaksPreset";
+int smCallStutterPeaksPreset::sSubject = smCallStutterPeaksPreset::LoadType ();
+int smCallStutterPeaksPreset::sMessageIndex = 0;
+int smCallStutterPeaksPreset::sMessageScope = 0;
 
 
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
@@ -1574,13 +1580,14 @@ PERSISTENT_DEFINITION (smPercentLastILSPeaksInScaling, 2619, "smPercentLastILSPe
 PERSISTENT_DEFINITION (smLaserOffScale, 2620, "smLaserOffScale")
 PERSISTENT_DEFINITION (smCalculatedPurePullup, 2621, "smCalculatedPurePullup")
 PERSISTENT_DEFINITION (smPartialPullupBelowMinRFU, 2622, "smPartialPullupBelowMinRFU")
-PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2623, "smCallStutterPeaksPreset")
+PERSISTENT_DEFINITION (smSigmoidalSidePeak, 2623, "smSigmoidalSidePeak")
 PERSISTENT_DEFINITION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset, 2624, "smDoNotCallStutterPeaksForSingleSourceSamplesPreset")
 PERSISTENT_DEFINITION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset, 2625, "smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset")
 PERSISTENT_DEFINITION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset, 2626, "smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset")
 PERSISTENT_DEFINITION (smPlusStutter, 2627, "smPlusStutter")
 PERSISTENT_DEFINITION (smNonStandardStutter, 2628, "smNonStandardStutter")
 PERSISTENT_DEFINITION (smPlusNonStandardStutter, 2629, "smPlusNonStandardStutter")
+PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2630, "smCallStutterPeaksPreset")
 
 
 
@@ -14665,58 +14672,58 @@ int smPartialPullupBelowMinRFU :: LoadType () {
 
 
 
-smCallStutterPeaksPreset :: smCallStutterPeaksPreset () : SmartNotice () {
+smSigmoidalSidePeak :: smSigmoidalSidePeak () : SmartNotice () {
 
 }
 
 
-smCallStutterPeaksPreset :: smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note) : SmartNotice ((const SmartNotice&) note) {
+smSigmoidalSidePeak :: smSigmoidalSidePeak (const smSigmoidalSidePeak& note) : SmartNotice ((const SmartNotice&) note) {
 
 }
 
 
 
-smCallStutterPeaksPreset :: ~smCallStutterPeaksPreset () {
+smSigmoidalSidePeak :: ~smSigmoidalSidePeak () {
 
 }
 
 
-int smCallStutterPeaksPreset :: GetSubject () const {
+int smSigmoidalSidePeak :: GetSubject () const {
 
-	return smCallStutterPeaksPreset::sSubject;
+	return smSigmoidalSidePeak::sSubject;
 }
 
 
-void smCallStutterPeaksPreset :: SetIndexAndScope (int index, int scope) const {
+void smSigmoidalSidePeak :: SetIndexAndScope (int index, int scope) const {
 
-	smCallStutterPeaksPreset::sMessageIndex = index;
-	smCallStutterPeaksPreset::sMessageScope = scope;
+	smSigmoidalSidePeak::sMessageIndex = index;
+	smSigmoidalSidePeak::sMessageScope = scope;
 }
 
 
-int smCallStutterPeaksPreset :: GetMessageIndex () const {
+int smSigmoidalSidePeak :: GetMessageIndex () const {
 
-	return smCallStutterPeaksPreset :: sMessageIndex;
+	return smSigmoidalSidePeak :: sMessageIndex;
 }
 
 
-int smCallStutterPeaksPreset :: GetScope () const {
+int smSigmoidalSidePeak :: GetScope () const {
 
-	return smCallStutterPeaksPreset :: sMessageScope;
+	return smSigmoidalSidePeak :: sMessageScope;
 }
 
 
-RGString smCallStutterPeaksPreset :: GetName () const {
+RGString smSigmoidalSidePeak :: GetName () const {
 
-	return smCallStutterPeaksPreset :: sName;
+	return smSigmoidalSidePeak :: sName;
 }
 
 
 
-int smCallStutterPeaksPreset :: LoadType () {
+int smSigmoidalSidePeak :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smCallStutterPeaksPreset* noticeType = new smCallStutterPeaksPreset;
+	smSigmoidalSidePeak* noticeType = new smSigmoidalSidePeak;
 	warehouse->AddType (noticeType);
 	return 1;
 }
@@ -15077,6 +15084,66 @@ int smPlusNonStandardStutter :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPlusNonStandardStutter* noticeType = new smPlusNonStandardStutter;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smCallStutterPeaksPreset :: smCallStutterPeaksPreset () : SmartNotice () {
+
+}
+
+
+smCallStutterPeaksPreset :: smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smCallStutterPeaksPreset :: ~smCallStutterPeaksPreset () {
+
+}
+
+
+int smCallStutterPeaksPreset :: GetSubject () const {
+
+	return smCallStutterPeaksPreset::sSubject;
+}
+
+
+void smCallStutterPeaksPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smCallStutterPeaksPreset::sMessageIndex = index;
+	smCallStutterPeaksPreset::sMessageScope = scope;
+}
+
+
+int smCallStutterPeaksPreset :: GetMessageIndex () const {
+
+	return smCallStutterPeaksPreset :: sMessageIndex;
+}
+
+
+int smCallStutterPeaksPreset :: GetScope () const {
+
+	return smCallStutterPeaksPreset :: sMessageScope;
+}
+
+
+RGString smCallStutterPeaksPreset :: GetName () const {
+
+	return smCallStutterPeaksPreset :: sName;
+}
+
+
+
+int smCallStutterPeaksPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smCallStutterPeaksPreset* noticeType = new smCallStutterPeaksPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

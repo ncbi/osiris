@@ -144,6 +144,7 @@ public:
 
 	double GetBeginAnalysisTime () const { return mBeginAnalysis; }
 	double GetNoiseRange () const { return mData->GetNoiseRange (); }
+	double EvaluateBaselineAtTime (double time);
 
 	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
 	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);

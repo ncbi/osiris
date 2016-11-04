@@ -229,13 +229,14 @@ PERSISTENT_PREDECLARATION (smPercentLastILSPeaksInScaling)
 PERSISTENT_PREDECLARATION (smLaserOffScale)
 PERSISTENT_PREDECLARATION (smCalculatedPurePullup)
 PERSISTENT_PREDECLARATION (smPartialPullupBelowMinRFU)
-PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
+PERSISTENT_PREDECLARATION (smSigmoidalSidePeak)
 PERSISTENT_PREDECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
 PERSISTENT_PREDECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
 PERSISTENT_PREDECLARATION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset)
 PERSISTENT_PREDECLARATION (smPlusStutter)
 PERSISTENT_PREDECLARATION (smNonStandardStutter)
 PERSISTENT_PREDECLARATION (smPlusNonStandardStutter)
+PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
 
 
 
@@ -6343,14 +6344,14 @@ protected:
 
 
 
-class smCallStutterPeaksPreset : public SmartNotice {
+class smSigmoidalSidePeak : public SmartNotice {
 
-PERSISTENT_DECLARATION (smCallStutterPeaksPreset)
+PERSISTENT_DECLARATION (smSigmoidalSidePeak)
 
 public:
-	smCallStutterPeaksPreset ();
-	smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note);
-	virtual ~smCallStutterPeaksPreset ();
+	smSigmoidalSidePeak ();
+	smSigmoidalSidePeak (const smSigmoidalSidePeak& note);
+	virtual ~smSigmoidalSidePeak ();
 
 	virtual int GetSubject () const;
 
@@ -6519,6 +6520,34 @@ public:
 	smPlusNonStandardStutter ();
 	smPlusNonStandardStutter (const smPlusNonStandardStutter& note);
 	virtual ~smPlusNonStandardStutter ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCallStutterPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCallStutterPeaksPreset)
+
+public:
+	smCallStutterPeaksPreset ();
+	smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note);
+	virtual ~smCallStutterPeaksPreset ();
 
 	virtual int GetSubject () const;
 

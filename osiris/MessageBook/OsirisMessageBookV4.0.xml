@@ -2624,6 +2624,20 @@
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSigmoidalSidePeak</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Possible Sigmoidal Side Peak</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smTrueCraterSidePeak</Name>
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
@@ -6550,6 +6564,7 @@
 						<Name>smPrimaryInterchannelLink</Name>
 						<Name>smCrater</Name>
 						<Name>smSigmoidalPullup</Name>
+						<Name>smSigmoidalSidePeak</Name>
 						<Name>smCraterSidePeak</Name>
 						<Name>smSignalNotACrater</Name>
 						<Name>smSignalNotACraterSidePeak</Name>

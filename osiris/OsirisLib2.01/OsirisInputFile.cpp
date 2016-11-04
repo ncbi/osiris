@@ -694,7 +694,7 @@ void OsirisInputFile :: OutputAnalysisThresholdOverrides () {
 	for (cIterator = mAnalysisThresholds->begin (); cIterator != mAnalysisThresholds->end (); cIterator++) {
 
 		nextThreshold = *cIterator;
-		cout << "AnalysisThresholdOverride:" << nextThreshold->mChannel << " = " << (int)nextThreshold->mThreshold << "\n";
+		cout << "AnalysisThresholdOverride:" << nextThreshold->mChannel << " = " << (int)nextThreshold->mThreshold << ";\n";
 	}
 }
 
@@ -708,7 +708,7 @@ void OsirisInputFile :: OutputDetectionThresholdOverrides () {
 	for (cIterator = mDetectionThresholds->begin (); cIterator != mDetectionThresholds->end (); cIterator++) {
 
 		nextThreshold = *cIterator;
-		cout << "DetectionThresholdOverride:" << nextThreshold->mChannel << " = " << (int)nextThreshold->mThreshold << "\n";
+		cout << "DetectionThresholdOverride:" << nextThreshold->mChannel << " = " << (int)nextThreshold->mThreshold << ";\n";
 	}
 }
 

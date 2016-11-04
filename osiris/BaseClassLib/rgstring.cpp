@@ -654,6 +654,59 @@ void RGString :: Convert (int i, unsigned long base) {
 }
 
 
+void RGString :: ConvertWithMin (double d, double min, int maxNumberDecimals) {
+
+	int i;
+	int temp;
+	char pResult [30];
+	RGString format = "%.";
+	format << maxNumberDecimals << "f";
+
+	if (d >= 0.0) {
+
+		if (d < min) {
+
+			*this = "< 0.";
+
+			for (i=1; i<maxNumberDecimals; i++)
+				*this += "0";
+
+			if (maxNumberDecimals >= 1)
+				*this += "1";
+		}
+
+		else {
+
+			//temp = (int)floor ((d / min) + 0.5);
+			sprintf (pResult, (char*)format.GetData (), d);
+			*this << pResult;
+		}
+	}
+
+	else {
+
+		if (-d < min) {
+
+			*this = "> -0.";
+
+			for (i=1; i<maxNumberDecimals; i++)
+				*this += "0";
+
+			if (maxNumberDecimals >= 1)
+				*this += "1";
+		}
+
+		else {
+
+			//temp = (int)floor ((d / min) + 0.5);
+			//*this << temp * min;
+			sprintf (pResult, (char*)format.GetData (), d);
+			*this << pResult;
+		}
+	}
+}
+
+
 void RGString :: Reverse () {
 
 	char temp;

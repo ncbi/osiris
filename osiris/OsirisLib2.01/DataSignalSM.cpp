@@ -49,6 +49,7 @@
 #include "Genetics.h"
 #include "SmartMessage.h"
 #include "STRSmartNotices.h"
+#include "xmlwriter.h"
 
 #include <math.h>
 
@@ -732,6 +733,8 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	RGString channelList;
 	bool uncertainListNotEmpty = false;
 	RGString data2;
+	RGString temp;
+	RGString pResult;
 
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
@@ -761,7 +764,8 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 			if (mPrimaryRatios == NULL)
 				cout << "Primary signal is set but not ratio for signal on channel " << GetChannel () << " at time " << GetMean () << endl;
 
-			data << i << " with Ratio " << GetPullupRatio (i);
+			temp.ConvertWithMin (GetPullupRatio (i), 0.01, 2);
+			data << i << " with Ratio " << xmlwriter::EscAscii (temp, &pResult);
 		}
 	}
 
@@ -1640,8 +1644,8 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 					totalNegative += correctedHeight;
 				}
 
-				else
-					cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+				//else
+				//	cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
 			}
 		}
 
@@ -1742,8 +1746,8 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 				addedRatio = true;
 			}
 
-			else
-				cout << "Corrected height = 0 for partial pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+			//else
+			//	cout << "Corrected height = 0 for partial pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
 		}
 	}
 
