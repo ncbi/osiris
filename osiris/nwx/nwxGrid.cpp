@@ -277,7 +277,43 @@ void nwxGrid::SetMessageGrid(wxGrid *p, const wxString &sMessage)
   p->AutoSizeColumns();
   ComputeSizeSet(p);
 }
+bool nwxGrid::CheckAutoExpandRows(wxGrid *pGrid, int nRowsFromBottom, int nAddCount)
+{
+  int nRowCount = pGrid->GetNumberRows();
+  int nColCount = pGrid->GetNumberCols();
+  int nRow;
+  int nCol;
+  bool bFound = false;
 
+  if(nRowCount > 0 && nColCount > 0)
+  {
+    wxString s;
+#define CHECK_LIMIT(var,nMAX)  if(var < 1) { var = 1;} else if(var > nMAX) { var = nMAX; }  
+    CHECK_LIMIT(nRowsFromBottom,10);
+    CHECK_LIMIT(nRowsFromBottom,nRowCount);
+    CHECK_LIMIT(nAddCount, 100);
+#undef CHECK_LIMIT
+    for( nRow = nRowCount - nRowsFromBottom;
+          nRow < nRowCount;
+          ++nRow)
+    {
+      for (nCol = 0; nCol < nColCount; ++nCol)
+      {
+        s = pGrid->GetCellValue(nRow,nCol);
+        nwxString::Trim(&s);
+        if(!s.IsEmpty())
+        {
+          // found non empty
+          bFound = true;
+          nCol = nColCount; // loop exit
+          nRow = nRowCount; // loop exit
+          nwxGrid::SetRowCount(pGrid, nRowCount + 4);
+        }
+      }
+    }
+  }
+  return bFound;
+}
 void nwxGrid::UpdateLabelSizes(wxGrid *p)
 {
   int nRow = p->GetNumberRows();

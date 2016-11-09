@@ -816,6 +816,9 @@ bool CGridAlleleBase::ValidateCell(
 
 void CGridAlleleBase::CheckRowCount()
 {
+#if 1
+  nwxGrid::CheckAutoExpandRows(this);
+#else
   wxString s;
   int nRows = GetNumberRows();
   int nCols = GetNumberCols();
@@ -841,6 +844,7 @@ void CGridAlleleBase::CheckRowCount()
       }
     }
   }
+#endif
 }
 bool CGridAlleleBase::AutoExpand()
 {
@@ -853,16 +857,20 @@ void CGridAlleleBase::OnCellChange(wxGridEvent &e)
   {
     int nRows = GetNumberRows();
     int nThisRow = e.GetRow();
-    int nThisCol = e.GetCol();
     if(nThisRow >= (nRows - 2))
     {
+#if 1
+      nwxGrid::CheckAutoExpandRows(this);
+#else
       // last or second to last row, add some rows
+      int nThisCol = e.GetCol();
       wxString sValue = GetCellValue(nThisRow,nThisCol);
       nwxString::Trim(&sValue);
       if(sValue.Len())
       {
         nwxGrid::SetRowCount(nRows + 4);
       }
+#endif
     }
   }
   e.Skip();

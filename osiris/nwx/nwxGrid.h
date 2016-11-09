@@ -305,6 +305,7 @@ public:
     p->SetSize(sz);
     return sz;
   }
+  static bool CheckAutoExpandRows(wxGrid *pGrid, int nRowsFromBottom = 2, int nAddCount = 4);
   static void SetMessageGrid(wxGrid *p, const wxString &sMessage);
   static void UpdateLabelSizes(wxGrid *p);
 
@@ -369,6 +370,10 @@ public:
     wxString s = GetCellValue(nRow,nCol);
     nwxString::Trim(&s);
     return s;
+  }
+  bool CheckAutoExpandRows(int nRowsFromBottom = 2, int nAddCount = 4)
+  {
+    return CheckAutoExpandRows(this,nRowsFromBottom,nAddCount);
   }
   static wxString GetCellValueTrimmed(wxGrid *p, int nRow, int nCol)
   {

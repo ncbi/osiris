@@ -107,37 +107,6 @@ void CGridLabThresholds::_ClearColumn(int nCol)
   }
 }
 
-#if 0
-void CGridLabThresholds::_SetColCount(int nCols)
-{
-  int nOldCount = m_bCreated ? GetNumberCols() : 0;
-  int nCol;
-  int nRow;
-  _CreateGrid(m_nRows,nCols);
-  if(nOldCount <= 1)
-  {
-    nOldCount = 0;
-  }
-  else
-  {
-    // ummerge all cells in first row
-    for(nCol = 0; nCol < nOldCount; nCol++)
-    {
-      SetCellSize(0,nCol,1,1);
-    }
-  }
-
-  // set Renderer and Editor
-  for(nRow = 1; nRow < m_nRows; nRow++)
-  {
-    for(nCol = nOldCount; nCol < nCols; nCol++)
-    {
-      SetCellEditor(nRow,nCol,new wxGridCellFloatEditor(-1,4));
-      SetReadOnly(nRow,nCol,m_bReadOnly);
-    }
-  }
-}
-#endif
 
 bool CGridLabThresholds::_SetData(
   CLabThresholds *pData, 

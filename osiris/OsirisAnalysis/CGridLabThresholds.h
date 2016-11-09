@@ -47,6 +47,7 @@ class CGridLabThresholds : public nwxGrid
 public:
   CGridLabThresholds(
     int nRows,
+
     bool bILS,
     wxWindow *parent,
     wxWindowID nID);

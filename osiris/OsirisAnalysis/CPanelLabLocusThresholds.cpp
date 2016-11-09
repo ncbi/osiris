@@ -186,24 +186,32 @@ bool CPanelLabLocusThresholds::TransferDataFromWindow()
 
   return bRtn;
 }
-
 void CPanelLabLocusThresholds::OnSize(wxSizeEvent &)
 {
+  _UpdateView();
+}
+
+  
+void CPanelLabLocusThresholds::_UpdateView()
+{
   int ncx,ncy,nvx,nvy,npx,npy;
-  wxCoord ROW_HEIGHT = OnGetRowHeight(0);
   m_pPanel->GetSize(&npx,&npy);
   GetVirtualSize(&nvx,&nvy);
   GetClientSize(&ncx,&ncy);
   int nHeight = (npy > ncy) ? npy : ncy;
-  int nRowCount = nHeight / ROW_HEIGHT;
   m_pPanel->SetSize(ncx,npy);
+  m_pPanel->SetMaxSize(wxSize(ncx,-1));
   SetVirtualSize(ncx,nHeight);
-  SetRowCount(nRowCount);
-#ifdef __WXDEBUG__
-  const wxChar *p = wxT("CPanelLabLocusThresholds::OnSize Panel %d %d, Virtual %d %d, Client %d %d, row count %d, height %d");
-  mainApp::LogMessageV(p,npx,npy,nvx,nvy,ncx,ncy,nRowCount,nHeight);
-#endif
+  if(npy > ncy)
+  {
+    SetScrollRate(0,8);
+  }
+  else
+  {
+    SetScrollbars(0,0,0,0,0,0,true);
+  }
   Layout();
+  Refresh();
 }
 BEGIN_EVENT_TABLE(CPanelLabLocusThresholds,SUPER_CPanelLabLocusThresholds)
 EVT_SIZE(CPanelLabLocusThresholds::OnSize)

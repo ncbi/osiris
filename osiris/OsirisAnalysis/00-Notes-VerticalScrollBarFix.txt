@@ -9,10 +9,9 @@ This hack works around the mystery behind wxWidgets wxScrolledWindow and wxVScro
    In the size handler, get the panel size, virtual size, client size
    Set the panel width to the client width
    Set the virtual size to have the client width
-   Set the row count to the max(panel height, client height) / row height
    See CPanelLabLocusThresholds for an example.
-     Create a general purpose function with the following args to be called from OnSize()
+     Need to create a general purpose function with the following args to be called from OnSize()
        (wxWindow *pScrolledWin, wxWindow *pPanel, wxCoord nRowHeight);
        
 When the window is created, the scrollbar is not shown, whether or not it is needed.  
-The window must be resized smaller to show it.       
+The window must be resized smaller to show it.
