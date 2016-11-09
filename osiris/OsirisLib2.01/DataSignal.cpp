@@ -1103,7 +1103,7 @@ mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLe
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
-mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup) {
+mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1468,6 +1468,15 @@ bool DataSignal :: ReconfigurePullupFromLinkForChannel (int channel) {
 	iChannel->AddDataSignal (currentPullup);
 	currentPullup->SetPrimarySignalFromChannel (GetChannel (), (DataSignal*) this, NumberOfChannels);
 	return true;
+}
+
+
+bool DataSignal :: IsInProbablePullupList (const DataSignal* testSignal) {
+
+	if (mProbablePullupPeaks.ContainsReference (testSignal))
+		return true;
+
+	return false;
 }
 
 
@@ -11522,6 +11531,8 @@ NoisyPeak :: NoisyPeak (DataSignal* prev, DataSignal* next, bool assignByProport
 	next->SetDoNotCall (true);
 	prev->SetDontLook (true);
 	next->SetDontLook (true);
+	prev->SetNoisySidePeak (true);
+	next->SetNoisySidePeak (true);
 
 	if (peak2 >= peak1)
 		useRightPeak = true;
@@ -11552,6 +11563,8 @@ NoisyPeak :: NoisyPeak (DataSignal* prev, DataSignal* next, DataSignal* primaryL
 	next->SetDoNotCall (true);
 	prev->SetDontLook (true);
 	next->SetDontLook (true);
+	prev->SetNoisySidePeak (true);
+	next->SetNoisySidePeak (true);
 
 	if (peak2 >= peak1)
 		useRightPeak = true;

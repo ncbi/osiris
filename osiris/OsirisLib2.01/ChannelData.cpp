@@ -633,6 +633,15 @@ bool ChannelData :: HasPrimerPeaks (ChannelData* laneStd) {
 }
 
 
+double ChannelData :: EvaluateBaselineAtTime (double time) {
+
+	if (mBaseLine == NULL)
+		return 0.0;
+
+	return mBaseLine->EvaluateWithExtrapolation (time);
+}
+
+
 int ChannelData :: CreateAndSubstituteSinglePassFilteredSignalForRawData (int window) {
 
 	if (mBackupData != NULL)

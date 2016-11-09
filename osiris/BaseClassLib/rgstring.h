@@ -142,6 +142,7 @@ public:
 	void ToLower ();
 	void Convert (unsigned long i, unsigned long base);
 	void Convert (int i, unsigned long base);
+	void ConvertWithMin (double d, double min, int maxNumberOfDecimals);
 	void Reverse ();
 
 	int ConvertToInteger () const;
