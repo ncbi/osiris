@@ -40,8 +40,7 @@ CDialogShowLabSettings::CDialogShowLabSettings(
   const CXMLmessageBook *pBook) :
     wxDialog(parent,id,"Lab Settings",
          GET_PERSISTENT_POSITION(CDialogShowLabSettings),
-         GET_PERSISTENT_SIZE_DEFAULT(
-            CDialogShowLabSettings,mainFrame::Size80()),
+         GET_PERSISTENT_SIZE(CDialogShowLabSettings),
          mainApp::DIALOG_STYLE)
 {
   m_pPanel = new CPanelLabSettings(this,true,false);
