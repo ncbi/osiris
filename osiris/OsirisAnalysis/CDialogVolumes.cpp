@@ -225,7 +225,7 @@ CDialogVolumes::CDialogVolumes(
       bool bReadOnly) :
   wxDialog(parent,wxID_ANY,"OSIRIS Lab Settings",
     GET_PERSISTENT_POSITION(CDialogVolumes),
-    GET_PERSISTENT_SIZE_DEFAULT(CDialogVolumes,mainFrame::Size80()),
+    GET_PERSISTENT_SIZE(CDialogVolumes),
     mainApp::DIALOG_STYLE
 #ifdef __WXMAC__
     & ~wxCLOSE_BOX 
