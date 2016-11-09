@@ -56,6 +56,7 @@ public:
   virtual ~CPanelLabSettings();
   static const wxSize g_SIZE_NUMBER;
   static const wxSize g_SIZE_MULTILINE_TEXT;
+  static const wxSize g_SIZE_FRAME;
   static const wxString g_sFileNameStrPrompt;
   static const wxString g_sSampleNameStrPrompt;
 

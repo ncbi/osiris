@@ -53,6 +53,7 @@ const wxString CPanelLabSettings::g_sSampleNameStrPrompt
   ("Sample name search criteria");
 const wxSize CPanelLabSettings::g_SIZE_NUMBER(wxSize(60,-1));
 const wxSize CPanelLabSettings::g_SIZE_MULTILINE_TEXT(wxSize(300,200));
+const wxSize CPanelLabSettings::g_SIZE_FRAME(wxSize(850,760));
 
 //********************************************************************
 //
