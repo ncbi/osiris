@@ -4328,6 +4328,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset allowCoreLocusOverlapsPreset;
 	smMaxILSBPForExtendedLocus maxILSBPForExtendedLocusThreshold;
 
+	mGridLocus = gridLocus;
 	bool extendLociEdgeToEdge = false; 
 	
 	if (GetMessageValue (extendLociEdgeToEdgePreset))
@@ -5475,6 +5476,250 @@ int Locus :: TestProximityArtifactsSM (RGDList& artifacts, RGDList& type1List, R
 
 				else
 					mExtendedRight.RemoveReference (nextSignal);
+			}
+		}
+	}
+
+	return 0;
+}
+
+
+int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* timeMap) {
+
+	//
+	//  This will be the new sample stage 3 for stutter and adenylation
+	//
+	//		mean = nextSignal->GetMean ();
+	//		gridTime = timeMap->EvaluateWithExtrapolation (mean);
+	//		Use ExtendedLocusContainsID (double id, int& location) plus knowledge of 'stutter' peak left or right of core to determine location
+	//		int bp = mGridLocus->GetBPFromTimeForAnalysis (gridTime), -location);
+	// so we're going to need gridLocus as well
+
+	if (DisableStutterFilter && DisableAdenylationFilter)
+		return 0;
+
+	DataSignal* nextSignal;
+	DataSignal* testSignal;
+	RGDListIterator it (LocusSignalList);
+
+	//int nextBP;
+	//int testBP;
+	int diff;
+	int repeatNumber = mLink->GetCoreNumber ();
+	double peak;
+	double primaryPeak;
+	//bool hasStutter;
+	//bool hasAdenylation;
+	//int location1;
+	//int location2;
+	double mean;
+	double gridTime;
+	double threshold;
+	double nonStandardFraction;
+
+	double stutterLimit = GetLocusSpecificSampleStutterThreshold ();
+	double plusStutterLimit = GetLocusSpecificSamplePlusStutterThreshold ();
+	double adenylationLimit = GetLocusSpecificSampleAdenylationThreshold ();
+	smStutter stutterFound;
+	smBaselineRelativeStutter baselineRelativeStutter;
+	smAdenylation adenylationFound;
+	smBaselineRelativeAdenylation baselineRelativeAdenylation;
+
+	smAcceptedOLLeft acceptedOLLeft;
+	smAcceptedOLRight acceptedOLRight;
+	smSignalOL offLadder;
+
+	//bool ignoreAdenylation;
+	//bool onLadderInLocus;
+	int bpPrimary;
+	int bpTest;
+	int leftBp = mLink->GetMaxNegativeNonStandardStutter () + 1;
+	int rightBp = mLink->GetMaxPositiveNonStandardStutter () + 1;
+
+	if (leftBp < repeatNumber)
+		leftBp = repeatNumber;
+
+	if (rightBp < repeatNumber)
+		rightBp = repeatNumber;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		bpPrimary = (int) floor (nextSignal->GetBioID () + 0.5);
+		primaryPeak = nextSignal->Peak ();
+		testSignal = nextSignal;
+
+		if (!mIsAMEL) {
+
+			while (true) {
+
+				testSignal = testSignal->GetNextSignal ();
+
+				if (testSignal == NULL)
+					break;
+
+				mean = testSignal->GetMean ();
+				peak = testSignal->Peak ();
+				gridTime = timeMap->EvaluateWithExtrapolation (mean);
+				bpTest = (int) floor (mGridLocus->GetBPFromTimeForAnalysis (gridTime) + 0.5);
+				diff = bpTest - bpPrimary;
+
+				if (diff > rightBp)
+					break;
+
+				if (diff == repeatNumber) {
+
+					//Uses standard plus stutter test
+
+					if (plusStutterLimit > 0.0) {
+
+						threshold = plusStutterLimit * primaryPeak;
+						testSignal->AddToCumulativeStutterThreshold (threshold);
+
+						if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
+							testSignal->SetMessageValue (stutterFound, true);
+					
+						testSignal->AddPrimaryStutterSignalToList (nextSignal, 1);
+						nextSignal->AddStandardStutterSignalToList (testSignal, 1);
+
+						if (testSignal->IsPossibleInterlocusAllele (-1))
+							testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, 1);
+
+						else if (testSignal->IsPossibleInterlocusAllele (1))
+							testSignal->AddRightPrimaryStutterSignalToList (nextSignal, 1);
+
+						if (nextSignal->IsPossibleInterlocusAllele (-1))
+							nextSignal->AddStutterSignalToListRight (testSignal);
+
+						else if (nextSignal->IsPossibleInterlocusAllele (1))
+							nextSignal->AddStutterSignalToListLeft (testSignal);
+
+						nextSignal->AddStutterSignalToList (testSignal);
+					}
+				}
+			
+				else  {
+				 
+					nonStandardFraction = mLink->GetNonStandardStutterThreshold (diff);
+
+					if (nonStandardFraction > 0.0) {
+
+						threshold = nonStandardFraction * primaryPeak;
+						testSignal->AddToCumulativeStutterThreshold (threshold);
+
+						if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
+							testSignal->SetMessageValue (stutterFound, true);
+
+						testSignal->AddPrimaryStutterSignalToList (nextSignal, 1);
+
+						if (testSignal->IsPossibleInterlocusAllele (-1))
+							testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, 1);
+
+						else if (testSignal->IsPossibleInterlocusAllele (1))
+							testSignal->AddRightPrimaryStutterSignalToList (nextSignal, 1);
+
+						if (nextSignal->IsPossibleInterlocusAllele (-1))
+							nextSignal->AddStutterSignalToListRight (testSignal);
+
+						else if (nextSignal->IsPossibleInterlocusAllele (1))
+							nextSignal->AddStutterSignalToListLeft (testSignal);
+
+						nextSignal->AddStutterSignalToList (testSignal);
+					}
+				}
+			}
+		}
+
+		testSignal = nextSignal;
+
+		while (true) {
+
+			testSignal = testSignal->GetPreviousSignal ();
+
+			if (testSignal == NULL)
+				break;
+
+			mean = testSignal->GetMean ();
+			peak = testSignal->Peak ();
+			gridTime = timeMap->EvaluateWithExtrapolation (mean);
+			bpTest = (int) floor (mGridLocus->GetBPFromTimeForAnalysis (gridTime) + 0.5);
+			diff = bpPrimary - bpTest;
+
+			if (diff > leftBp)
+				break;
+
+
+			if ((diff == repeatNumber) && !mIsAMEL) {
+
+				//Uses standard minus stutter test
+
+				if (stutterLimit > 0.0) {
+
+					threshold = stutterLimit * primaryPeak;
+					testSignal->AddToCumulativeStutterThreshold (threshold);
+
+					if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
+						testSignal->SetMessageValue (stutterFound, true);
+
+					testSignal->AddPrimaryStutterSignalToList (nextSignal, -1);
+					nextSignal->AddStandardStutterSignalToList (testSignal, -1);
+
+					if (testSignal->IsPossibleInterlocusAllele (-1))
+						testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, -1);
+
+					else if (testSignal->IsPossibleInterlocusAllele (1))
+						testSignal->AddRightPrimaryStutterSignalToList (nextSignal, -1);
+
+					if (nextSignal->IsPossibleInterlocusAllele (-1))
+						nextSignal->AddStutterSignalToListRight (testSignal);
+
+					else if (nextSignal->IsPossibleInterlocusAllele (1))
+						nextSignal->AddStutterSignalToListLeft (testSignal);
+
+					nextSignal->AddStutterSignalToList (testSignal);
+				}
+			}
+
+			else if (diff == 1) {
+
+				// may be adenylation
+
+				if (adenylationLimit > 0.0) {
+
+					threshold = adenylationLimit * primaryPeak;
+
+					if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
+						testSignal->SetMessageValue (adenylationFound, true);
+				}
+			}
+			
+			else if (!mIsAMEL)  {
+				 
+				nonStandardFraction = mLink->GetNonStandardStutterThreshold (-diff);
+
+				if (nonStandardFraction > 0.0) {
+
+					threshold = nonStandardFraction * primaryPeak;
+					testSignal->AddToCumulativeStutterThreshold (threshold);
+
+					if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
+						testSignal->SetMessageValue (stutterFound, true);
+
+					testSignal->AddPrimaryStutterSignalToList (nextSignal, -1);
+
+					if (testSignal->IsPossibleInterlocusAllele (-1))
+						testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, -1);
+
+					else if (testSignal->IsPossibleInterlocusAllele (1))
+						testSignal->AddRightPrimaryStutterSignalToList (nextSignal, -1);
+
+					if (nextSignal->IsPossibleInterlocusAllele (-1))
+						nextSignal->AddStutterSignalToListRight (testSignal);
+
+					else if (nextSignal->IsPossibleInterlocusAllele (1))
+						nextSignal->AddStutterSignalToListLeft (testSignal);
+
+					nextSignal->AddStutterSignalToList (testSignal);
+				}
 			}
 		}
 	}

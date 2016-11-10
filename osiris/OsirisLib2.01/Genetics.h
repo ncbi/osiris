@@ -63,6 +63,7 @@
 #include "BaseGenetics.h"
 #include "Notices.h"
 #include "SmartMessagingObject.h"
+#include "coordtrans.h"
 
 #include <list>
 
@@ -446,6 +447,7 @@ public:
 	int CleanUpGridSignalListSM (RGDList& artifacts);
 
 	int TestProximityArtifactsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
+	int TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* timeMap);
 	int TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
 	int TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
 	int TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
@@ -575,6 +577,7 @@ protected:
 
 	double mFirstTime;
 	double mLastTime;
+	Locus* mGridLocus;
 
 	// Smart Message data************************************************************************************
 	//*******************************************************************************************************

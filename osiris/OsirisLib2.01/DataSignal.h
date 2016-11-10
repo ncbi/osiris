@@ -638,6 +638,30 @@ public:
 	virtual double ValueFreeBound (int n) const;
 	virtual double ValueFreeBound (double x) const;
 
+	void AddPrimaryStutterSignalToList (DataSignal* primary, int dir) { if (dir) mStutterPrimaryList.Append (primary); else mStutterPrimaryList.Prepend (primary); }
+	void AddLeftPrimaryStutterSignalToList (DataSignal* primary, int dir) { if (dir) mLeftStutterPrimaryList.Append (primary); else mLeftStutterPrimaryList.Prepend (primary); }
+	void AddRightPrimaryStutterSignalToList (DataSignal* primary, int dir) { if (dir) mRightStutterPrimaryList.Append (primary); else mRightStutterPrimaryList.Prepend (primary); }
+	void AddToCumulativeStutterThreshold (double add) { mCumulativeStutterThreshold += add; }
+
+	void AddStandardStutterSignalToList (DataSignal* stutter, int dir) { if (dir) mHasStandardStutterList.Append (stutter); else mHasStandardStutterList.Prepend (stutter); }
+	void AddStutterSignalToList (DataSignal* stutter) { mHasStutterList.Append (stutter); }
+	void AddStutterSignalToListLeft (DataSignal* stutter) { mHasStutterLeftList.Append (stutter); }
+	void AddStutterSignalToListRight (DataSignal* stutter) { mHasStutterRightList.Append (stutter); }
+
+	Boolean SignalIsStandardStutter (DataSignal* ds) { return mHasStandardStutterList.ContainsReference (ds); }
+	Boolean SignalHasStutter () { return !mHasStutterList.IsEmpty (); }
+	Boolean SignalHasStutterFromLocusToLeft () { return !mHasStutterLeftList.IsEmpty (); }
+	Boolean SignalHasStutterFromLocusToRight () { return !mHasStutterRightList.IsEmpty (); }
+
+	int GetNumberOfPrimaryStutterSignals () const { return mStutterPrimaryList.Entries (); }
+	int GetNumberOfLeftPrimaryStutterSignals () const { return mLeftStutterPrimaryList.Entries (); }
+	int GetNumberOfRightPrimaryStutterSignals () const { return mRightStutterPrimaryList.Entries (); }
+	RGString GetStutterRatio () const;
+	RGString GetLeftStutterRatio () const;
+	RGString GetRightStutterRatio () const;
+	double GetCumulativeStutterThreshold () const { return mCumulativeStutterThreshold; }
+
+
 	virtual bool LiesBelowHeightAt (double x, double height);
 	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
 
@@ -930,6 +954,15 @@ protected:
 
 	DataSignal* mNextSignal;
 	DataSignal* mPreviousSignal;
+
+	RGDList mStutterPrimaryList;
+	RGDList mLeftStutterPrimaryList;
+	RGDList mRightStutterPrimaryList;
+	RGDList mHasStandardStutterList;
+	RGDList mHasStutterList;
+	RGDList mHasStutterLeftList;
+	RGDList mHasStutterRightList;
+	double mCumulativeStutterThreshold;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;

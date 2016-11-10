@@ -220,10 +220,7 @@ smSigmoidalSidePeak	1107	2623
 smDoNotCallStutterPeaksForSingleSourceSamplesPreset	1108	2624
 smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset	1109	2625
 smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset	1110	2626
-smPlusStutter	1111	2627
-smNonStandardStutter	1112	2628
-smPlusNonStandardStutter	1113	2629
-smCallStutterPeaksPreset	1114	2630
+smCallStutterPeaksPreset	1111	2627
 
 
 

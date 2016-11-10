@@ -492,6 +492,7 @@ protected:
 
 	CSplineTransform* mBaseLine;
 	int mBaselineStart;
+	CoordinateTransform* mTimeMap;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

@@ -3224,6 +3224,8 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 	Locus* prevGridLocus;
 	Locus* followingGridLocus;
 
+	mTimeMap = timeMap;  // do not delete this...it is deleted in CoreBioComponent
+
 	nextLocus = (Locus*) it ();
 
 	while (nextLocus != NULL) {

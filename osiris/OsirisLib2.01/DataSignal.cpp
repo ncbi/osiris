@@ -1124,6 +1124,14 @@ DataSignal :: ~DataSignal () {
 	delete[] mPrimaryPullupInChannel;
 	mUncertainPullupChannels.clear ();
 	mProbablePullupPeaks.Clear ();
+	mStutterPrimaryList.Clear ();
+	mLeftStutterPrimaryList.Clear ();
+	mRightStutterPrimaryList.Clear ();
+
+	mHasStandardStutterList.Clear ();
+	mHasStutterList.Clear ();
+	mHasStutterLeftList.Clear ();
+	mHasStutterRightList.Clear ();
 }
 
 

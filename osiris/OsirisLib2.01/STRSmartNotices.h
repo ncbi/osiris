@@ -233,9 +233,6 @@ PERSISTENT_PREDECLARATION (smSigmoidalSidePeak)
 PERSISTENT_PREDECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
 PERSISTENT_PREDECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
 PERSISTENT_PREDECLARATION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset)
-PERSISTENT_PREDECLARATION (smPlusStutter)
-PERSISTENT_PREDECLARATION (smNonStandardStutter)
-PERSISTENT_PREDECLARATION (smPlusNonStandardStutter)
 PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
 
 
@@ -6436,90 +6433,6 @@ public:
 	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset ();
 	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset (const smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset& note);
 	virtual ~smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smPlusStutter : public SmartNotice {
-
-PERSISTENT_DECLARATION (smPlusStutter)
-
-public:
-	smPlusStutter ();
-	smPlusStutter (const smPlusStutter& note);
-	virtual ~smPlusStutter ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smNonStandardStutter : public SmartNotice {
-
-PERSISTENT_DECLARATION (smNonStandardStutter)
-
-public:
-	smNonStandardStutter ();
-	smNonStandardStutter (const smNonStandardStutter& note);
-	virtual ~smNonStandardStutter ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smPlusNonStandardStutter : public SmartNotice {
-
-PERSISTENT_DECLARATION (smPlusNonStandardStutter)
-
-public:
-	smPlusNonStandardStutter ();
-	smPlusNonStandardStutter (const smPlusNonStandardStutter& note);
-	virtual ~smPlusNonStandardStutter ();
 
 	virtual int GetSubject () const;
 
