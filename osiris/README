@@ -44,7 +44,7 @@
 #
 # wxWidgets:
 #
-#  OSIRIS uses wxWidgets v 3.0.1, however their web site recommends 3.0.2.
+#  OSIRIS uses wxWidgets v 3.0.2
 #  Download wxWidgets at http://wxwidgets.org/downloads/ and select either 
 #  the ZIP or 7z download.
 #  Create a new folder, (for example wxWidgets-3.0.2) and unpack the 
@@ -57,6 +57,10 @@
 #  should be 10 or later to build OSIRIS.
 #  Build in Visual C++ for "Release" and "Win32" and optionally for "Debug" 
 #  and "Win32"  Both can coexist in the same directory structure.
+#
+#  for debugging, the file, include\wx\msw\msvcrt.h,
+#  was edited and "#define _CRTDBG_MAP_ALLOC" was added above "#include <stdlib>"
+#  as per instructions at https://msdn.microsoft.com/en-us/library/x98tx3cf.aspx
 #
 # Build OSIRIS:
 #
