@@ -408,6 +408,7 @@ public:
 	virtual int TestForMultiSignalsSM ();
 	virtual int TestProximityArtifactsSM ();
 	virtual int TestForAlleleDuplicationSM ();
+	virtual int RemoveStutterLinksFromNonStutterPeaksSM ();
 	virtual int AssignSignalToFirstLocusAndDeleteFromSecondSM (DataSignal* target, Locus* locus1, Locus* locus2);
 	virtual int RemoveSignalFromBothLociSM (DataSignal* target, Locus* locus1, Locus* locus2);
 	virtual bool TestIfSignalBelongsToFirstLocusSM (DataSignal* target, Locus* locus1, Locus* locus2);
@@ -416,6 +417,7 @@ public:
 	virtual int ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();
 	virtual int TestSignalsForRaisedBaseline (double left, double report);
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);
+	virtual int AppendDataForStutterPeaksSM ();
 
 	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 

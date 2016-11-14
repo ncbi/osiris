@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.81</VersionNumber>
-	<BuildTime>11/07/2016 11:53 AM</BuildTime>
+	<VersionNumber>6.83</VersionNumber>
+	<BuildTime>11/14/2016 11:55 AM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1181,7 +1181,7 @@
 				<Expression>NOT smDisableStutterFilter</Expression>
 			</ReportCriterion>
 			<Text>Stutter</Text>
-			<TextForData> with ratio </TextForData>
+			<TextForData> with displacement(s):  </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -1245,6 +1245,7 @@
 				<Expression>NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND (NOT smSignalOL AND NOT smIsAcceptedOLAllele)))</Expression>
 			</ReportCriterion>
 			<Text>Adenylation</Text>
+			<TextForData> with ratio </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -5320,8 +5321,6 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
-		
-		
 		<SmartMessage>
 			<Name>smSpacerStutterCallCriteriaEnd</Name>
 			<MessageType>count</MessageType>

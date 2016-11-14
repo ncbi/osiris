@@ -50,6 +50,7 @@
 #include "SmartMessage.h"
 #include "SmartNotice.h"
 #include "STRSmartNotices.h"
+#include "xmlwriter.h"
 
 #include <iostream>
 #include <vector>
@@ -4880,6 +4881,22 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 	smHeterozygousImbalance heterozygousImbalance;
 	smLocusIsHomozygous locusIsHomozygous;
 	smNumberAllelesBelowExpectation numberOfAllelesBelowExpectation;
+	smAdenylation adenylation;
+	smStutter stutter;
+	smCallStutterPeaksPreset callStutterPreset;
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset doNotCallStutterForSingleSource;
+
+	//smSampleSatisfiesPossibleMixtureIDCriteria sampleSatisfiesMixtureCriteria;
+	//smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
+
+	//smDisableStutterFilter disableStutterFilter;
+	//smDisableAdenylationFilter disableAdenylationFilter;
+	//smCallOnLadderAdenylationPreset callOnLadderAdenylation;
+
+	bool callStutter = GetMessageValue (callStutterPreset);
+	bool dontCallStutterThisSample = GetMessageValue (doNotCallStutterForSingleSource) && IsSingleSourceSample;
+	bool localDontCallStutter = dontCallStutterThisSample || !callStutter;
+
 	int retValue = 0;
 
 	double minBioID = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
@@ -4887,6 +4904,8 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 	//
 	// Consider eliminating the whole next while loop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//
+
+	int nStutter = 0;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -4900,6 +4919,20 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 		if (nextSignal->IsDoNotCall ()) {
 
 	//		it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			continue;
+		}
+
+		if (localDontCallStutter && nextSignal->GetMessageValue (stutter)) {
+
+			it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			continue;
+		}
+
+		if (nextSignal->GetMessageValue (adenylation)) {
+
+			it.RemoveCurrentItem ();
 			LocusSignalList.RemoveReference (nextSignal);
 			continue;
 		}
@@ -5524,13 +5557,16 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	smBaselineRelativeStutter baselineRelativeStutter;
 	smAdenylation adenylationFound;
 	smBaselineRelativeAdenylation baselineRelativeAdenylation;
+	smCalculatedPurePullup purePullup;
+	smPullUp partialPullup;
+	smCraterSidePeak craterSidePeak;
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
 	smSignalOL offLadder;
 
-	//bool ignoreAdenylation;
-	//bool onLadderInLocus;
+//	bool ignoreAdenylation;
+	bool onLadderInLocus;
 	int bpPrimary;
 	int bpTest;
 	int leftBp = mLink->GetMaxNegativeNonStandardStutter () + 1;
@@ -5544,11 +5580,23 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 	while (nextSignal = (DataSignal*) it ()) {
 
+		if (nextSignal->GetMessageValue (purePullup))
+			continue;
+
+		if (nextSignal->GetMessageValue (craterSidePeak))
+			continue;
+
 		bpPrimary = (int) floor (nextSignal->GetBioID () + 0.5);
-		primaryPeak = nextSignal->Peak ();
+
+		if (nextSignal->GetMessageValue (partialPullup))
+			primaryPeak = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		else
+			primaryPeak = nextSignal->Peak ();
+
 		testSignal = nextSignal;
 
-		if (!mIsAMEL) {
+		if (!mIsAMEL  && !DisableStutterFilter) {
 
 			while (true) {
 
@@ -5559,6 +5607,10 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 				mean = testSignal->GetMean ();
 				peak = testSignal->Peak ();
+
+				if (peak >= primaryPeak)
+					continue;
+
 				gridTime = timeMap->EvaluateWithExtrapolation (mean);
 				bpTest = (int) floor (mGridLocus->GetBPFromTimeForAnalysis (gridTime) + 0.5);
 				diff = bpTest - bpPrimary;
@@ -5574,6 +5626,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 						threshold = plusStutterLimit * primaryPeak;
 						testSignal->AddToCumulativeStutterThreshold (threshold);
+						testSignal->AddStutterDisplacement (diff, 1);
 
 						if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
 							testSignal->SetMessageValue (stutterFound, true);
@@ -5610,6 +5663,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 							testSignal->SetMessageValue (stutterFound, true);
 
 						testSignal->AddPrimaryStutterSignalToList (nextSignal, 1);
+						testSignal->AddStutterDisplacement (diff, 1);
 
 						if (testSignal->IsPossibleInterlocusAllele (-1))
 							testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, 1);
@@ -5640,6 +5694,10 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 			mean = testSignal->GetMean ();
 			peak = testSignal->Peak ();
+
+			if (peak >= primaryPeak)
+					continue;
+
 			gridTime = timeMap->EvaluateWithExtrapolation (mean);
 			bpTest = (int) floor (mGridLocus->GetBPFromTimeForAnalysis (gridTime) + 0.5);
 			diff = bpPrimary - bpTest;
@@ -5648,7 +5706,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 				break;
 
 
-			if ((diff == repeatNumber) && !mIsAMEL) {
+			if ((diff == repeatNumber) && !mIsAMEL && !DisableStutterFilter) {
 
 				//Uses standard minus stutter test
 
@@ -5662,6 +5720,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 					testSignal->AddPrimaryStutterSignalToList (nextSignal, -1);
 					nextSignal->AddStandardStutterSignalToList (testSignal, -1);
+					testSignal->AddStutterDisplacement (-diff, -1);
 
 					if (testSignal->IsPossibleInterlocusAllele (-1))
 						testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, -1);
@@ -5679,20 +5738,31 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 				}
 			}
 
-			else if (diff == 1) {
+			else if ((diff == 1) && !DisableAdenylationFilter) {
 
 				// may be adenylation
 
 				if (adenylationLimit > 0.0) {
 
 					threshold = adenylationLimit * primaryPeak;
+					onLadderInLocus = !testSignal->GetMessageValue (offLadder) || testSignal->GetMessageValue (acceptedOLRight) || testSignal->GetMessageValue (acceptedOLLeft);
+					bool testThisPeakForAdenylation = !(CallOnLadderAdenylation && onLadderInLocus);
 
-					if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
+					if (testThisPeakForAdenylation && ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))) {
+
 						testSignal->SetMessageValue (adenylationFound, true);
+						double ratio = 100.0 * peak / primaryPeak;
+						RGString ratioString;
+						RGString pResult;
+						ratioString.ConvertWithMin (ratio, 0.01, 2);
+						xmlwriter::EscAscii (ratioString, &pResult);
+						pResult << "%";
+						testSignal->SetDataForSmartMessage (adenylationFound, pResult);
+					}
 				}
 			}
 			
-			else if (!mIsAMEL)  {
+			else if (!mIsAMEL && !DisableStutterFilter)  {
 				 
 				nonStandardFraction = mLink->GetNonStandardStutterThreshold (-diff);
 
@@ -5705,6 +5775,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 						testSignal->SetMessageValue (stutterFound, true);
 
 					testSignal->AddPrimaryStutterSignalToList (nextSignal, -1);
+					testSignal->AddStutterDisplacement (-diff, -1);
 
 					if (testSignal->IsPossibleInterlocusAllele (-1))
 						testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, -1);

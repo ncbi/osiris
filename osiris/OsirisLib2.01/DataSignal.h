@@ -638,20 +638,25 @@ public:
 	virtual double ValueFreeBound (int n) const;
 	virtual double ValueFreeBound (double x) const;
 
-	void AddPrimaryStutterSignalToList (DataSignal* primary, int dir) { if (dir) mStutterPrimaryList.Append (primary); else mStutterPrimaryList.Prepend (primary); }
-	void AddLeftPrimaryStutterSignalToList (DataSignal* primary, int dir) { if (dir) mLeftStutterPrimaryList.Append (primary); else mLeftStutterPrimaryList.Prepend (primary); }
-	void AddRightPrimaryStutterSignalToList (DataSignal* primary, int dir) { if (dir) mRightStutterPrimaryList.Append (primary); else mRightStutterPrimaryList.Prepend (primary); }
+	void AddPrimaryStutterSignalToList (DataSignal* primary, int dir);
+	void AddLeftPrimaryStutterSignalToList (DataSignal* primary, int dir);
+	void AddRightPrimaryStutterSignalToList (DataSignal* primary, int dir);
 	void AddToCumulativeStutterThreshold (double add) { mCumulativeStutterThreshold += add; }
+	Boolean HasNoStutterLinks () const { return mStutterPrimaryList.IsEmpty (); }
+	void RemoveAllStutterLinks ();
+	void AddDataToStutterArtifactSM ();
 
-	void AddStandardStutterSignalToList (DataSignal* stutter, int dir) { if (dir) mHasStandardStutterList.Append (stutter); else mHasStandardStutterList.Prepend (stutter); }
+	void AddStandardStutterSignalToList (DataSignal* stutter, int dir);
 	void AddStutterSignalToList (DataSignal* stutter) { mHasStutterList.Append (stutter); }
 	void AddStutterSignalToListLeft (DataSignal* stutter) { mHasStutterLeftList.Append (stutter); }
 	void AddStutterSignalToListRight (DataSignal* stutter) { mHasStutterRightList.Append (stutter); }
+	void AddStutterDisplacement (int disp, int dir);
 
 	Boolean SignalIsStandardStutter (DataSignal* ds) { return mHasStandardStutterList.ContainsReference (ds); }
 	Boolean SignalHasStutter () { return !mHasStutterList.IsEmpty (); }
 	Boolean SignalHasStutterFromLocusToLeft () { return !mHasStutterLeftList.IsEmpty (); }
 	Boolean SignalHasStutterFromLocusToRight () { return !mHasStutterRightList.IsEmpty (); }
+	void RemoveStutterLink (DataSignal* ds);
 
 	int GetNumberOfPrimaryStutterSignals () const { return mStutterPrimaryList.Entries (); }
 	int GetNumberOfLeftPrimaryStutterSignals () const { return mLeftStutterPrimaryList.Entries (); }
@@ -962,6 +967,7 @@ protected:
 	RGDList mHasStutterList;
 	RGDList mHasStutterLeftList;
 	RGDList mHasStutterRightList;
+	list<int> mStutterDisplacements;
 	double mCumulativeStutterThreshold;
 
 	static double SignalSpacing;

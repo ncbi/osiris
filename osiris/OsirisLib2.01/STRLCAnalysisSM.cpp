@@ -1283,6 +1283,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				hasNegControl = true;;
 				bioComponent->SetNegativeControlTrueSM ();
 				bioComponent->SetMessageValue (sampleIsNegCtrl, true);
+				Locus::SetSingleSourceSample (true);
 			}
 
 			else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
@@ -1290,6 +1291,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				hasPosControl = true;
 				bioComponent->SetPositiveControlTrueSM ();
 				bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+				Locus::SetSingleSourceSample (true);
 			}
 
 			bioComponent->SetPossibleMixtureIDFalseSM ();
@@ -1305,13 +1307,17 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
 		//}
 
-		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+		//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+		else if (sampleOK) {
 
 			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
 
 				bioComponent->SetPossibleMixtureIDTrueSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
 				possibleMixture = true;
+				Locus::SetSingleSourceSample (false);
+				cout << "Sample is being treated as a mixture\n";
 			}
 
 			else {
@@ -1319,8 +1325,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				bioComponent->SetPossibleMixtureIDFalseSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
 				possibleMixture = false;
+				Locus::SetSingleSourceSample (true);
+				cout << "Sample is being treated as a single source sample\n";
 			}
-
 		}
 
 		//

@@ -4029,34 +4029,65 @@ int STRSampleChannelData :: TestProximityArtifactsSM () {
 
 	RGDListIterator it (mLocusList);
 	Locus* nextLocus;
-	RGDList stutterList;
-	RGDList adenylationList;
+	//RGDList stutterList;
+	//RGDList adenylationList;
+
+	// Replace the following with nextLocus->TestProximityArtifactsUsingLocusBasePairsSM (mTimeMap);
+	// Then call RemoveStutterLinksFromNonStutterPeaksSM ();
+	// Then call function to allocate data to stutter peaks
+
+	//while (nextLocus = (Locus*) it ())
+	//	nextLocus->TestProximityArtifactsUsingLocusBasePairsSM (ArtifactList, adenylationList, stutterList);
 
 	while (nextLocus = (Locus*) it ())
-		nextLocus->TestProximityArtifactsUsingLocusBasePairsSM (ArtifactList, adenylationList, stutterList);
+		nextLocus->TestProximityArtifactsUsingLocusBasePairsSM (mTimeMap);
 
+	RemoveStutterLinksFromNonStutterPeaksSM ();
+	AppendDataForStutterPeaksSM ();
+
+//	DataSignal* nextSignal;
+
+//	smStutter stutter;
+//	smAdenylation adenylation;
+//	smPartOfExtendedLocusLeft partOfExtendedLocusLeft;
+//	smPartOfExtendedLocusRight partOfExtendedLocusRight;
+//
+//	while (nextSignal = (DataSignal*) stutterList.GetFirst ()) {
+//
+////		ArtifactList.InsertWithNoReferenceDuplication (nextSignal);	// Need this??????????????????????????????????????????????????????????????
+//		PreliminaryCurveList.RemoveReference (nextSignal);
+//		nextSignal->SetMessageValue (stutter, true);
+//
+//		if (adenylationList.RemoveReference (nextSignal) != NULL)
+//			nextSignal->SetMessageValue (adenylation, true);
+//	}
+//
+//	while (nextSignal = (DataSignal*) adenylationList.GetFirst ()) {
+//
+////		ArtifactList.InsertWithNoReferenceDuplication (nextSignal);	// Need this??????????????????????????????????????????????????????????????
+//		PreliminaryCurveList.RemoveReference (nextSignal);
+//		nextSignal->SetMessageValue (adenylation, true);
+//	}
+
+	return 0;
+}
+
+
+int STRSampleChannelData :: RemoveStutterLinksFromNonStutterPeaksSM () {
+
+	smStutter stutterPeak;
+	RGDListIterator it (CompleteCurveList);
 	DataSignal* nextSignal;
 
-	smStutter stutter;
-	smAdenylation adenylation;
-	smPartOfExtendedLocusLeft partOfExtendedLocusLeft;
-	smPartOfExtendedLocusRight partOfExtendedLocusRight;
+	while (nextSignal = (DataSignal*) it ()) {
 
-	while (nextSignal = (DataSignal*) stutterList.GetFirst ()) {
+		if (nextSignal->GetMessageValue (stutterPeak))
+			continue;
 
-//		ArtifactList.InsertWithNoReferenceDuplication (nextSignal);	// Need this??????????????????????????????????????????????????????????????
-		PreliminaryCurveList.RemoveReference (nextSignal);
-		nextSignal->SetMessageValue (stutter, true);
+		if (nextSignal->HasNoStutterLinks ())
+			continue;
 
-		if (adenylationList.RemoveReference (nextSignal) != NULL)
-			nextSignal->SetMessageValue (adenylation, true);
-	}
-
-	while (nextSignal = (DataSignal*) adenylationList.GetFirst ()) {
-
-//		ArtifactList.InsertWithNoReferenceDuplication (nextSignal);	// Need this??????????????????????????????????????????????????????????????
-		PreliminaryCurveList.RemoveReference (nextSignal);
-		nextSignal->SetMessageValue (adenylation, true);
+		nextSignal->RemoveAllStutterLinks ();
 	}
 
 	return 0;
@@ -4425,6 +4456,22 @@ int STRSampleChannelData :: TestForRaisedBaselineAndExcessiveNoiseSM (double lef
 	}
 
 	mPoorFits.clearAndDestroy ();
+	return 0;
+}
+
+
+int STRSampleChannelData :: AppendDataForStutterPeaksSM () {
+
+	smStutter stutter;
+	RGDListIterator it (CompleteCurveList);
+	DataSignal* nextSignal;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetMessageValue (stutter))
+			nextSignal->AddDataToStutterArtifactSM ();
+	}
+
 	return 0;
 }
 

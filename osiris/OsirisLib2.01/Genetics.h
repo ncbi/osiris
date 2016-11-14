@@ -522,6 +522,7 @@ public:
 	static bool GetCallOnLadderAdenylation () { return CallOnLadderAdenylation; }
 
 	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
+	static void SetSingleSourceSample (bool d) { IsSingleSourceSample = d; }
 
 protected:
 	BaseLocus* mLink;
@@ -620,6 +621,7 @@ protected:
 	static bool DisableAdenylationFilter;
 	static bool CallOnLadderAdenylation;
 	static int NumberOfChannels;
+	static bool IsSingleSourceSample;
 
 	Boolean BuildAlleleLists (const RGString& xmlString);
 	Boolean BuildMappings (RGDList& signalList);
