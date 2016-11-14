@@ -120,7 +120,7 @@
 # If gcc is not installed, you will receive a message indicating that, 
 # otherwise it will display version information.
 #
-# Build wxWidgets 3.0.1 - Go to http://wxwidgets.org/downloads/
+# Build wxWidgets 3.0.2 - Go to http://wxwidgets.org/downloads/
 # and download the source code from the link showing: 
 #    "Source for Linux, OS X,etc."
 # Unpack the download to a new directory, for example
