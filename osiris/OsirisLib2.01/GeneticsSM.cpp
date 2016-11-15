@@ -4894,7 +4894,7 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 	//smCallOnLadderAdenylationPreset callOnLadderAdenylation;
 
 	bool callStutter = GetMessageValue (callStutterPreset);
-	bool dontCallStutterThisSample = GetMessageValue (doNotCallStutterForSingleSource) && IsSingleSourceSample;
+	bool dontCallStutterThisSample = isNegCntl || isPosCntl;
 	bool localDontCallStutter = dontCallStutterThisSample || !callStutter;
 
 	int retValue = 0;
@@ -4906,6 +4906,7 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 	//
 
 	int nStutter = 0;
+	int nDoNotCall = 0;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -4920,6 +4921,7 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 	//		it.RemoveCurrentItem ();
 			LocusSignalList.RemoveReference (nextSignal);
+			nDoNotCall++;
 			continue;
 		}
 
@@ -4927,6 +4929,7 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 			it.RemoveCurrentItem ();
 			LocusSignalList.RemoveReference (nextSignal);
+			nStutter++;
 			continue;
 		}
 
@@ -4938,6 +4941,8 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 		}
 	}
 
+	//cout << "Number of do not call peaks removed from locus = " << nDoNotCall << "\n";
+	//cout << "Number of stutter peaks removed from locus = " << nStutter << "\n";
 	RGDListIterator it2 (LocusSignalList);
 
 	while (nextSignal = (DataSignal*) it2()) {
@@ -5575,6 +5580,9 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	if (leftBp < repeatNumber)
 		leftBp = repeatNumber;
 
+	if (leftBp == 0)
+		leftBp = 1;
+
 	if (rightBp < repeatNumber)
 		rightBp = repeatNumber;
 
@@ -5745,7 +5753,8 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 				if (adenylationLimit > 0.0) {
 
 					threshold = adenylationLimit * primaryPeak;
-					onLadderInLocus = !testSignal->GetMessageValue (offLadder) || testSignal->GetMessageValue (acceptedOLRight) || testSignal->GetMessageValue (acceptedOLLeft);
+					bool assignedToLocus = (testSignal->GetLocus (0) != NULL) || (testSignal->GetLocus (-1) != NULL) || (testSignal->GetLocus (1) != NULL);
+					onLadderInLocus = assignedToLocus && (!testSignal->GetMessageValue (offLadder) || testSignal->GetMessageValue (acceptedOLRight) || testSignal->GetMessageValue (acceptedOLLeft));
 					bool testThisPeakForAdenylation = !(CallOnLadderAdenylation && onLadderInLocus);
 
 					if (testThisPeakForAdenylation && ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))) {

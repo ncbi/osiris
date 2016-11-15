@@ -1309,7 +1309,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
-		else if (sampleOK) {
+		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
 			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
 

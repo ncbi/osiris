@@ -637,7 +637,8 @@ bool ChannelData :: HasPrimerPeaks (ChannelData* laneStd) {
 
 void ChannelData :: SetCompleteSignalListSequence () {
 
-	RGDListIterator it (CompleteCurveList);
+	//RGDListIterator it (CompleteCurveList);
+	RGDListIterator it (SmartPeaks);
 	DataSignal* nextSignal;
 	DataSignal* prevSignal = NULL;
 

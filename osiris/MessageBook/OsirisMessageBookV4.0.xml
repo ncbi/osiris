@@ -1178,14 +1178,14 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smDisableStutterFilter</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Stutter</Text>
 			<TextForData> with displacement(s):  </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>smCallStutterPeaksPreset AND NOT (smDoNotCallStutterPeaksForSingleSourceSamplesPreset AND NOT smSampleSatisfiesPossibleMixtureIDCriteria)</Expression>
+				<Expression>smCallStutterPeaksPreset AND NOT (smSampleIsPosCtrl OR smSampleIsNegCtrl)</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>

@@ -1,11 +1,11 @@
-InputDirectory = C:/Users/goorrob/ClintPUSubset;
+InputDirectory = C:/Users/goorrob/ClintBeta4-5Issues;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/Documents/Osiris;
 MarkerSetName = GlobalFiler;
 LaneStandardName = ABI-LIZ-600-60-TO-460;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20160523-094604/V-20160523-094604_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20160523-094604/V-20160523-094604_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20161114-112450/V-20161114-112450_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20161114-112450/V-20161114-112450_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
 MinSampleRFU = 47;
 MinLaneStandardRFU = 300;
