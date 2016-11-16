@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.83</VersionNumber>
-	<BuildTime>11/14/2016 11:55 AM</BuildTime>
+	<VersionNumber>6.84</VersionNumber>
+	<BuildTime>11/15/2016 03:08 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1185,7 +1185,7 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>smCallStutterPeaksPreset AND NOT (smSampleIsPosCtrl OR smSampleIsNegCtrl)</Expression>
+				<Expression>1</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
@@ -1242,14 +1242,14 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND (NOT smSignalOL AND NOT smIsAcceptedOLAllele)))</Expression>
+				<Expression>NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smUnassignedInterlocusPeak))</Expression>
 			</ReportCriterion>
 			<Text>Adenylation</Text>
 			<TextForData> with ratio </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>(smCallOnLadderAdenylationPreset AND NOT smSignalOL) OR smDisableAdenylationFilter</Expression>
+				<Expression>(smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smUnassignedInterlocusPeak) OR smDisableAdenylationFilter</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
@@ -6535,7 +6535,7 @@
 						<Expression>smAcceptedInterlocusLeft = smPossibleValidInterlocusLeft AND smAcceptedOLLeft</Expression>
 						<Expression>smAcceptedInterlocusRight = smPossibleValidInterlocusRight AND smAcceptedOLRight</Expression>
 						<Expression>smLaserOffScaleForTrigger = smLaserOffScale</Expression>
-						<Expression>smDoNotCall = (smStutter AND (NOT smCallStutterPeaksPreset OR (smDoNotCallStutterPeaksForSingleSourceSamplesPreset AND NOT smSampleSatisfiesPossibleMixtureIDCriteria))) OR (smAdenylation AND (NOT smCallOnLadderAdenylationPreset OR smSignalOL))</Expression>
+						<Expression>smDoNotCall = (smAdenylation AND (NOT smCallOnLadderAdenylationPreset OR smSignalOL))</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smStutter (NOT smBelowMinRFU AND NOT smDisableStutterFilter): smNumberOfStuttersInSample</TriggerExpression>
