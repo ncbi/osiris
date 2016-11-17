@@ -54,6 +54,7 @@ class Allele;
 class CoordinateTransform;
 class ChannelData;
 class Locus;
+struct locusSpecificNonStandardStutterStruct;
 
 
 
@@ -136,6 +137,7 @@ public:
 	void SetMaxExpectedAlleles (int max) { mMaxExpectedAlleles = max; }
 	void SetMinExpectedAlleles (int min) { mMinExpectedAlleles = min; }
 	void SetNonStandardStutterThreshold (int bp, double threshold);
+	void SetNonStandardStutterArray (const locusSpecificNonStandardStutterStruct& limits);
 
 	RGString GetError () const { return Msg; }
 

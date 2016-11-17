@@ -58,6 +58,7 @@
 #include "RGLogBook.h"
 #include "SmartMessage.h"
 #include "BaseGenetics.h"
+//#include "rgparray.h"
 
 #include <list>
 
@@ -126,6 +127,21 @@ struct locusSpecificLimitsStruct {
 };
 
 
+struct locusSpecificNonStandardStutterStruct {
+
+	locusSpecificNonStandardStutterStruct ();
+	locusSpecificNonStandardStutterStruct (const locusSpecificNonStandardStutterStruct& limits);
+	~locusSpecificNonStandardStutterStruct ();
+
+	void SetNonStandardStutterThreshold (int bp, double threshold);
+	void Reset () { mPositiveNonStandardStutter.ResetArray (); mNegativeNonStandardStutter.ResetArray (); }
+
+	RGString locusName;
+	RGPArray mPositiveNonStandardStutter;
+	RGPArray mNegativeNonStandardStutter;
+};
+
+
 class ParameterServer {
 
 public:
@@ -144,6 +160,7 @@ public:
 
 	int AddLadderLocusSpecificThreshold (const locusSpecificLimitsStruct& limits);
 	int AddSampleLocusSpecificThreshold (const locusSpecificLimitsStruct& limits);
+	int AddSampleLocusSpecificNonStandardStutterCollection (const locusSpecificNonStandardStutterStruct& nsLocusStutter);
 
 	int SetSampleLocusSpecificThresholds (Locus* locus, locusSpecificLimitsStruct* limits);
 	int SetLadderLocusSpecificThresholds (Locus* locus, locusSpecificLimitsStruct* limits);
@@ -269,6 +286,7 @@ protected:
 
 	RGDList* mSmartMessageThresholds;
 	list<locusSpecificLimitsStruct*>* mSampleLocusSpecificThresholds;
+	list<locusSpecificNonStandardStutterStruct*>* mSampleNonStandardStutterThresholds;
 	list<locusSpecificLimitsStruct*>* mLadderLocusSpecificThresholds;
 	list<channelThreshold*>* mAnalysisThresholds;
 	list<channelThreshold*>* mDetectionThresholds;

@@ -79,7 +79,7 @@ RGPArray :: ~RGPArray () {
 }
 
 
-RGPersistent* RGPArray :: GetElementAt(size_t i) {
+RGPersistent* RGPArray :: GetElementAt(size_t i) const {
 	
 	if (i >= CurrentLength)
 		return NULL;

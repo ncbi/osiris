@@ -121,6 +121,57 @@ void locusSpecificLimitsStruct :: CopyPositiveThresholdsFrom (const locusSpecifi
 }
 
 
+locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct () {
+
+}
+
+
+
+locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct (const locusSpecificNonStandardStutterStruct& limits) {
+
+	int max = (limits.mNegativeNonStandardStutter).Length ();
+	int i;
+	RGPDouble* pThreshold;
+	locusName = limits.locusName;
+
+	for (i=1; i<max; i++) {
+
+		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
+
+		if (pThreshold != NULL)
+			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
+	}
+
+	max = (limits.mPositiveNonStandardStutter).Length ();
+
+	for (i=1; i<max; i++) {
+
+		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
+
+		if (pThreshold != NULL)
+			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
+	}
+}
+
+
+
+locusSpecificNonStandardStutterStruct :: ~locusSpecificNonStandardStutterStruct () {
+
+}
+
+
+void locusSpecificNonStandardStutterStruct :: SetNonStandardStutterThreshold (int bp, double threshold) {
+
+	RGPDouble* newThreshold = new RGPDouble (threshold);
+
+	if (bp >= 0)
+		mPositiveNonStandardStutter.ReplaceElementAt (bp, newThreshold);
+
+	else
+		mNegativeNonStandardStutter.ReplaceElementAt (-bp, newThreshold);
+}
+
+
 void locusSpecificLimitsStruct :: Reset () {
 
 	locusName = "";
@@ -149,6 +200,7 @@ ParameterServer :: ParameterServer () {
 		mSmartMessageThresholds = new RGDList;
 		mLadderLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
 		mSampleLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
+		mSampleNonStandardStutterThresholds = new list<locusSpecificNonStandardStutterStruct*>;
 		mAnalysisThresholds = new list<channelThreshold*>;
 		mDetectionThresholds = new list<channelThreshold*>;
 	}
@@ -169,6 +221,7 @@ ParameterServer :: ParameterServer (const RGString& xmlString) : mValid (true) {
 		mSmartMessageThresholds = new RGDList;
 		mLadderLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
 		mSampleLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
+		mSampleNonStandardStutterThresholds = new list<locusSpecificNonStandardStutterStruct*>;
 	}
 
 	ParameterServer::ReferenceCount++;
@@ -256,6 +309,9 @@ ParameterServer :: ~ParameterServer () {
 
 		mSampleLocusSpecificThresholds->clear ();
 		delete mSampleLocusSpecificThresholds;
+		mSampleNonStandardStutterThresholds->clear ();
+		delete mSampleNonStandardStutterThresholds;
+
 	}
 }
 
@@ -686,6 +742,14 @@ int ParameterServer :: AddSampleLocusSpecificThreshold (const locusSpecificLimit
 }
 
 
+int ParameterServer :: AddSampleLocusSpecificNonStandardStutterCollection (const locusSpecificNonStandardStutterStruct& nsLocusStutter) {
+
+	locusSpecificNonStandardStutterStruct* newStruct = new locusSpecificNonStandardStutterStruct (nsLocusStutter);
+	mSampleNonStandardStutterThresholds->push_back (newStruct);
+	return 0;
+}
+
+
 int ParameterServer :: SetSampleLocusSpecificThresholds (Locus* locus, locusSpecificLimitsStruct* limits) {
 
 	if (limits->stutterThreshold >= 0.0)
@@ -824,6 +888,22 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 		else
 			status = -1;
 	}
+
+	list<locusSpecificNonStandardStutterStruct*>::iterator it;
+	locusSpecificNonStandardStutterStruct* nextNSLink;
+
+	for (it = mSampleNonStandardStutterThresholds->begin (); it != mSampleNonStandardStutterThresholds->end (); it++) {
+
+		nextNSLink = *it;
+		locus = mSet->FindLocus (nextNSLink->locusName);
+
+		if (locus != NULL)
+			locus->SetLocusSpecificNonStandardStutterArray (*nextNSLink);
+
+		else
+			status = -1;
+	}
+
 
 	return status;
 }
@@ -1873,6 +1953,77 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 		}
 
 		AddSampleLocusSpecificThreshold (limits);
+	}
+
+	RGString nsStutterThresholdString;
+	RGString nsStutterLocusThresholdString;
+	RGString nsRatioString;
+	locusSpecificNonStandardStutterStruct nsLocusStutter;
+
+	RGXMLTagSearch nonStandardStutterSearch ("NsStutterThresholds", XMLString);
+	RGXMLTagSearch nonStandardLocusSearch ("Locus", nsStutterThresholdString);
+	RGXMLTagSearch nonStandardLocusNameSearch ("Name", nsStutterThresholdString);
+	RGXMLTagSearch nonStandardLocusThresholdSearch ("Threshold", nsStutterThresholdString);
+	RGXMLTagSearch nonStandardLocusBpSearch ("Bps", nsRatioString);
+	RGXMLTagSearch nonStandardLocusRatioSearch ("Ratio", nsRatioString);
+
+	cout << "Start offset for non-standard stutter = " << startOffset << endl;
+
+	if (nonStandardStutterSearch.FindNextTag (startOffset, endOffset, nsStutterThresholdString)) {
+
+		startOffset = endOffset;
+		startLocusOffset = endLocusOffset = 0;
+		nonStandardLocusSearch.ResetSearch ();
+
+		while (nonStandardLocusSearch.FindNextTag (startLocusOffset, endLocusOffset, nsStutterLocusThresholdString)) {
+
+			startLocusOffset = endLocusOffset;
+			nonStandardLocusNameSearch.ResetSearch ();
+			nonStandardLocusThresholdSearch.ResetSearch ();
+			size_t locusThresholdStartOffset = 0;
+			size_t locusThresholdEndOffset = 0;
+			nsLocusStutter.Reset ();
+
+			if (!nonStandardLocusNameSearch.FindNextNonemptyTag (locusThresholdStartOffset, locusThresholdEndOffset, result)) {
+
+				cout << "Could not find locus name in non-standard stutter set-up" << endl;
+				return false;
+			}
+
+			locusThresholdStartOffset = locusThresholdEndOffset;
+			nsLocusStutter.locusName = result;
+
+			while (nonStandardLocusThresholdSearch.FindNextTag (locusThresholdStartOffset, locusThresholdEndOffset, nsRatioString)) {
+
+				locusThresholdStartOffset = locusThresholdEndOffset;
+				nonStandardLocusBpSearch.ResetSearch ();
+				nonStandardLocusRatioSearch.ResetSearch ();
+				size_t thisStart = 0;
+				size_t thisEnd = 0;
+				int bp;
+				double threshold;
+
+				if (!nonStandardLocusBpSearch.FindNextTag (thisStart, thisEnd, result)) {
+
+					cout << "Could not find bps in non-standard stutter search for locus named " << (char*) nsLocusStutter.locusName.GetData () << endl;
+					return false;
+				}
+
+				bp = result.ConvertToInteger ();
+
+				if (!nonStandardLocusRatioSearch.FindNextTag (thisStart, thisEnd, result)) {
+
+					cout << "Could not find ratio in non-standard stutter search for locus named " << (char*) nsLocusStutter.locusName.GetData () << endl;
+					return false;
+				}
+
+				threshold = result.ConvertToDouble ();
+				nsLocusStutter.SetNonStandardStutterThreshold (bp, threshold);
+				cout << "Found non-standard stutter threshold for locus named " << (char*) nsLocusStutter.locusName.GetData () << " with base pair displacement = " << bp << " and threshold = " << threshold << endl;
+			}
+
+			AddSampleLocusSpecificNonStandardStutterCollection (nsLocusStutter);
+		}		
 	}
 
 	return true;

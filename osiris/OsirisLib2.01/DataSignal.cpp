@@ -2316,12 +2316,14 @@ double DataSignal :: ValueFreeBound (double x) const {
 
 
 void DataSignal :: AddPrimaryStutterSignalToList (DataSignal* primary, int dir) {
-	
-	if (dir)
-		mStutterPrimaryList.Append (primary); 
-	
-	else
-		mStutterPrimaryList.Prepend (primary);
+
+	mStutterPrimaryList.InsertWithNoReferenceDuplication (primary);
+	//
+	//if (dir)
+	//	mStutterPrimaryList.Append (primary); 
+	//
+	//else
+	//	mStutterPrimaryList.Prepend (primary);
 }
 
 

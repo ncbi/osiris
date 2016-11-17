@@ -835,13 +835,14 @@ void DataSignal :: AddDataToStutterArtifactSM () {
 	RGString data;
 	int n = 0;
 	DataSignal* nextSignal;
-	RGDListIterator it (mStutterPrimaryList);
+	//RGDListIterator it (mStutterPrimaryList);
 	bool isStandardDisplacement;
 	RGString ratioString;
 	RGString pResult;
 	mStutterDisplacements.sort ();
+	double ratio;
 
-	while (nextSignal = (DataSignal*) it ()) {
+	while (nextSignal = (DataSignal*) mStutterPrimaryList.GetLast ()) {
 
 		disp = mStutterDisplacements.front ();
 		mStutterDisplacements.pop_front ();
@@ -854,6 +855,9 @@ void DataSignal :: AddDataToStutterArtifactSM () {
 
 		if (n > 0)
 			data << ", ";
+
+		else
+			ratio = 100.0 * Peak () / nextSignal->Peak ();
 
 		n++;
 
@@ -872,7 +876,6 @@ void DataSignal :: AddDataToStutterArtifactSM () {
 
 		data << ":  ratio = ";
 		nextSignal = (DataSignal*) mStutterPrimaryList.First ();
-		double ratio = 100.0 * Peak () / nextSignal->Peak ();
 		ratioString.ConvertWithMin (ratio, 0.01, 2);
 		data << xmlwriter::EscAscii (ratioString, &pResult) << "%";
 	}

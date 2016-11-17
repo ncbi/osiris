@@ -297,6 +297,7 @@ public:
 	void SetLocusSpecificSamplePullupFractionalFilter (double limit) { if (mLink != NULL) mLink->SetSamplePullupFractionalFilter (limit); }
 	void SetLocusSpecificSampleHeterozygousImbalanceThreshold (double limit) { if (mLink != NULL) mLink->SetSampleHeterozygousImbalanceThreshold (limit); }
 	void SetLocusSpecificSampleMinBoundForHomozygote (double limit) { if (mLink != NULL) mLink->SetSampleMinBoundForHomozygote (limit); }
+	void SetLocusSpecificNonStandardStutterArray (const locusSpecificNonStandardStutterStruct& limits) { if (mLink != NULL) mLink->SetNonStandardStutterArray (limits); }
 
 	void SetLocusSpecificLadderStutterThreshold (double limit) { if (mLink != NULL) mLink->SetLadderStutterThreshold (limit); }
 	void SetLocusSpecificLadderAdenylationThreshold (double limit) { if (mLink != NULL) mLink->SetLadderAdenylationThreshold (limit); }
