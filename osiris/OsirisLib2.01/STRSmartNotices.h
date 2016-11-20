@@ -232,7 +232,6 @@ PERSISTENT_PREDECLARATION (smPartialPullupBelowMinRFU)
 PERSISTENT_PREDECLARATION (smSigmoidalSidePeak)
 PERSISTENT_PREDECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
 PERSISTENT_PREDECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
-PERSISTENT_PREDECLARATION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset)
 PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
 
 
@@ -6405,34 +6404,6 @@ public:
 	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset ();
 	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset (const smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset& note);
 	virtual ~smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset ();
-
-	virtual int GetSubject () const;
-
-	virtual void SetIndexAndScope (int index, int scope) const;
-	virtual int GetMessageIndex () const;
-	virtual int GetScope () const;
-	virtual RGString GetName () const;
-
-	static int LoadType ();
-
-protected:
-	static RGString sName;
-	static int sSubject;
-	static int sMessageIndex;
-	static int sMessageScope;
-};
-
-
-
-
-class smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset : public SmartNotice {
-
-PERSISTENT_DECLARATION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset)
-
-public:
-	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset ();
-	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset (const smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset& note);
-	virtual ~smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset ();
 
 	virtual int GetSubject () const;
 

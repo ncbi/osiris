@@ -524,6 +524,7 @@ public:
 
 	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
 	static void SetSingleSourceSample (bool d) { IsSingleSourceSample = d; }
+	static void SetControlSample (bool d) { IsControlSample = d; }
 
 protected:
 	BaseLocus* mLink;
@@ -623,6 +624,7 @@ protected:
 	static bool CallOnLadderAdenylation;
 	static int NumberOfChannels;
 	static bool IsSingleSourceSample;
+	static bool IsControlSample;
 
 	Boolean BuildAlleleLists (const RGString& xmlString);
 	Boolean BuildMappings (RGDList& signalList);

@@ -1275,6 +1275,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		ChannelData::SetDisableStutterFilter (false);
 		possibleMixture = false;
 	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
+		Locus::SetControlSample (false);
 
 		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
 
@@ -1284,6 +1285,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				bioComponent->SetNegativeControlTrueSM ();
 				bioComponent->SetMessageValue (sampleIsNegCtrl, true);
 				Locus::SetSingleSourceSample (true);
+				Locus::SetControlSample (true);
 			}
 
 			else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
@@ -1292,6 +1294,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				bioComponent->SetPositiveControlTrueSM ();
 				bioComponent->SetMessageValue (sampleIsPosCtrl, true);
 				Locus::SetSingleSourceSample (true);
+				Locus::SetControlSample (true);
 			}
 
 			bioComponent->SetPossibleMixtureIDFalseSM ();

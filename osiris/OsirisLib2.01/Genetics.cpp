@@ -92,6 +92,7 @@ bool Locus::DisableAdenylationFilter = false;
 bool Locus::CallOnLadderAdenylation = false;
 int Locus::NumberOfChannels = 0;
 bool Locus::IsSingleSourceSample = false;
+bool Locus::IsControlSample = false;
 
 bool PopulationCollection::UseILSFamilies = false;
 

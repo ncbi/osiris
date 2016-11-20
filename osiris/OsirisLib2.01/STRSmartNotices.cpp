@@ -1332,12 +1332,6 @@ int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sMessageIn
 int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset::sMessageScope = 0;
 
 
-RGString smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sName = "smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset";
-int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sSubject = smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::LoadType ();
-int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageIndex = 0;
-int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageScope = 0;
-
-
 RGString smCallStutterPeaksPreset::sName = "smCallStutterPeaksPreset";
 int smCallStutterPeaksPreset::sSubject = smCallStutterPeaksPreset::LoadType ();
 int smCallStutterPeaksPreset::sMessageIndex = 0;
@@ -1565,8 +1559,7 @@ PERSISTENT_DEFINITION (smPartialPullupBelowMinRFU, 2622, "smPartialPullupBelowMi
 PERSISTENT_DEFINITION (smSigmoidalSidePeak, 2623, "smSigmoidalSidePeak")
 PERSISTENT_DEFINITION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset, 2624, "smDoNotCallStutterPeaksForSingleSourceSamplesPreset")
 PERSISTENT_DEFINITION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset, 2625, "smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset")
-PERSISTENT_DEFINITION (smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset, 2626, "smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset")
-PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2627, "smCallStutterPeaksPreset")
+PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2626, "smCallStutterPeaksPreset")
 
 
 
@@ -14823,66 +14816,6 @@ int smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset :: LoadType
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset* noticeType = new smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset;
-	warehouse->AddType (noticeType);
-	return 1;
-}
-
-
-
-
-
-smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset () : SmartNotice () {
-
-}
-
-
-smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset (const smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset& note) : SmartNotice ((const SmartNotice&) note) {
-
-}
-
-
-
-smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: ~smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset () {
-
-}
-
-
-int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetSubject () const {
-
-	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sSubject;
-}
-
-
-void smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: SetIndexAndScope (int index, int scope) const {
-
-	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageIndex = index;
-	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset::sMessageScope = scope;
-}
-
-
-int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetMessageIndex () const {
-
-	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: sMessageIndex;
-}
-
-
-int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetScope () const {
-
-	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: sMessageScope;
-}
-
-
-RGString smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: GetName () const {
-
-	return smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: sName;
-}
-
-
-
-int smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset :: LoadType () {
-
-	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset* noticeType = new smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

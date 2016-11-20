@@ -219,8 +219,7 @@ smPartialPullupBelowMinRFU	1106	2622
 smSigmoidalSidePeak	1107	2623
 smDoNotCallStutterPeaksForSingleSourceSamplesPreset	1108	2624
 smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset	1109	2625
-smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset	1110	2626
-smCallStutterPeaksPreset	1111	2627
+smCallStutterPeaksPreset	1110	2626
 
 
 

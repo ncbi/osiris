@@ -4732,6 +4732,16 @@ int Locus :: MeasureInterlocusSignalAttributesSM () {
 	sm2PlusAmbiguousPeaksRight are2PlusAmbiguousPeaksRight;
 	smSignalIsIntegralMultipleOfRepeatLeft signalIsIntegralMultipleOfRepeatLeft;
 	smSignalIsIntegralMultipleOfRepeatRight signalIsIntegralMultipleOfRepeatRight;
+	smAdenylation adenylation;
+	smStutter stutter;
+	smCallStutterPeaksPreset callStutterPreset;
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset doNotCallStutterForSingleSource;
+
+	bool callStutter = GetMessageValue (callStutterPreset);
+	bool dontCallStutterThisSample = IsControlSample;
+	bool isSingleSourceAndDontCallForSingleSource = IsSingleSourceSample && GetMessageValue (doNotCallStutterForSingleSource);
+	bool localDontCallStutter = dontCallStutterThisSample || !callStutter || isSingleSourceAndDontCallForSingleSource;
+
 	int nAmb = 0;
 	int nUnamb;
 	int nTotal = 0;
@@ -4739,6 +4749,12 @@ int Locus :: MeasureInterlocusSignalAttributesSM () {
 	while (nextSignal = (DataSignal*) it ()) {
 
 		if (nextSignal->IsDoNotCall ())
+			continue;
+
+		if (nextSignal->GetMessageValue (adenylation))
+			continue;
+
+		if (localDontCallStutter && nextSignal->GetMessageValue (stutter))
 			continue;
 
 		nTotal++;
@@ -4895,16 +4911,13 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 	bool callStutter = GetMessageValue (callStutterPreset);
 	bool dontCallStutterThisSample = isNegCntl || isPosCntl;
-	bool localDontCallStutter = dontCallStutterThisSample || !callStutter;
+	bool isSingleSourceAndDontCallForSingleSource = IsSingleSourceSample && GetMessageValue (doNotCallStutterForSingleSource);
+	bool localDontCallStutter = dontCallStutterThisSample || !callStutter || isSingleSourceAndDontCallForSingleSource;
 
 	int retValue = 0;
 
 	double minBioID = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
 	
-	//
-	// Consider eliminating the whole next while loop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	//
-
 	int nStutter = 0;
 	int nDoNotCall = 0;
 
@@ -5525,7 +5538,7 @@ int Locus :: TestProximityArtifactsSM (RGDList& artifacts, RGDList& type1List, R
 int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* timeMap) {
 
 	//
-	//  This will be the new sample stage 3 for stutter and adenylation
+	//  This is sample stage 3 for stutter and adenylation...as of November 2016
 	//
 	//		mean = nextSignal->GetMean ();
 	//		gridTime = timeMap->EvaluateWithExtrapolation (mean);
@@ -5540,16 +5553,10 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	DataSignal* testSignal;
 	RGDListIterator it (LocusSignalList);
 
-	//int nextBP;
-	//int testBP;
 	int diff;
 	int repeatNumber = mLink->GetCoreNumber ();
 	double peak;
 	double primaryPeak;
-	//bool hasStutter;
-	//bool hasAdenylation;
-	//int location1;
-	//int location2;
 	double mean;
 	double gridTime;
 	double threshold;
@@ -5565,12 +5572,12 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	smCalculatedPurePullup purePullup;
 	smPullUp partialPullup;
 	smCraterSidePeak craterSidePeak;
+	smSigmoidalSidePeak sigmoidalSidePeak;
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
 	smSignalOL offLadder;
 
-//	bool ignoreAdenylation;
 	bool onLadderInLocus;
 	int bpPrimary;
 	int bpTest;
@@ -5594,6 +5601,15 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 		if (nextSignal->GetMessageValue (craterSidePeak))
 			continue;
 
+		if (nextSignal->IsDoNotCall ())
+			continue;
+
+		if (nextSignal->DontLook ())
+			continue;
+
+		if (nextSignal->GetMessageValue (sigmoidalSidePeak))
+			continue;
+
 		bpPrimary = (int) floor (nextSignal->GetBioID () + 0.5);
 
 		if (nextSignal->GetMessageValue (partialPullup))
@@ -5612,6 +5628,9 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 				if (testSignal == NULL)
 					break;
+
+				if (testSignal->SignalIsPrimaryStutter (nextSignal))
+					continue;
 
 				mean = testSignal->GetMean ();
 				peak = testSignal->Peak ();
@@ -5699,6 +5718,9 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 			if (testSignal == NULL)
 				break;
+
+			if (testSignal->SignalIsPrimaryStutter (nextSignal))
+					continue;
 
 			mean = testSignal->GetMean ();
 			peak = testSignal->Peak ();
@@ -5811,7 +5833,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List) {
 
 	//
-	//  This is sample stage 3
+	//  This was sample stage 3 but has been superceded as of November 2016
 	//
 
 	if (mIsAMEL)
@@ -6377,10 +6399,6 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			}
 
 			if (prevSignal->GetMessageValue (crater) || nextSignal->GetMessageValue (crater)) {
-
-				//if (report)
-				if ((nextSignal->GetMean () > 5570.0) && (nextSignal->GetMean () < 5572.0))
-					cout << "A signal at mean " << prevSignal->GetMean () << " or at mean " << nextSignal->GetMean () << " is part of a crater" << endl;
 
 				prevSignal = nextSignal;
 				prevAlleleName = alleleName;

@@ -641,8 +641,22 @@ void ChannelData :: SetCompleteSignalListSequence () {
 	RGDListIterator it (SmartPeaks);
 	DataSignal* nextSignal;
 	DataSignal* prevSignal = NULL;
+	smSigmoidalSidePeak sigmoidalSidePeak;
+	smCraterSidePeak craterSidePeak;
 
 	while (nextSignal = (DataSignal*) it ()) {
+
+		//if (nextSignal->IsDoNotCall ())
+		//	continue;
+
+		//if (nextSignal->DontLook ())
+		//	continue;
+
+		//if (nextSignal->GetMessageValue (sigmoidalSidePeak))
+		//	continue;
+
+		//if (nextSignal->GetMessageValue (craterSidePeak))
+		//	continue;
 
 		if (prevSignal != NULL)
 			prevSignal->SetNextSignal (nextSignal);

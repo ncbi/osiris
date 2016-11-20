@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.84</VersionNumber>
-	<BuildTime>11/15/2016 03:08 PM</BuildTime>
+	<VersionNumber>6.85</VersionNumber>
+	<BuildTime>11/18/2016 04:46 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5388,24 +5388,6 @@
 			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                Do Not Call Adenylation Peaks For Single Source Samples</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Do Not Call Adenylation Peaks For Single Source Samples</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		
-		
-		<SmartMessage>
 			<Name>smSpacerCallCriteriaEnd</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -6212,7 +6194,6 @@
 						<Name>smCallStutterPeaksPreset</Name>
 						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
 						<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
-						<Name>smDoNotCallAdenylationPeaksForSingleSourceSamplesPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
