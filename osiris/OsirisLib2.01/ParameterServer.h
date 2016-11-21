@@ -80,9 +80,13 @@ struct RFULimitsStruct {
 	double stutterThreshold;
 	double plusStutterThreshold;
 	double adenylationThreshold;
+
+	void Reset ();
 };
 
 struct labNonRFULimitsStruct {
+
+	labNonRFULimitsStruct ();
 
 	double heterozygousImbalanceLimit;
 	double minBoundForHomozygote;

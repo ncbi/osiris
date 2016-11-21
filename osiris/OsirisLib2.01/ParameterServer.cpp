@@ -66,6 +66,33 @@ int ParameterServer :: ReferenceCount = 0;
 ParameterServer* ParameterServer :: OneAndOnlySelf = NULL;
 
 
+void RFULimitsStruct :: Reset () {
+
+	minRFU = 0.0;
+	fractionOfMaxPeak = 0.0;
+	pullupFractionOfMaxPeak = 0.0;
+	stutterThreshold = 0.0;
+	plusStutterThreshold = 0.0;
+	adenylationThreshold = 0.0;
+}
+
+
+labNonRFULimitsStruct :: labNonRFULimitsStruct () {
+
+	heterozygousImbalanceLimit = -1.0;
+	minBoundForHomozygote = -1.0;
+	maxNumberPullupsPerSample = -1;
+	maxNumberStutterPerSample = -1;
+	maxNumberSpikesPerSample = -1;
+	maxNumberAdenylationPerSample = -1;
+	maxNumberOLAllelesPerSample = -1;
+	maxResidualForAlleleCall = -1.0;
+	minBPSForArtifacts = -1;
+	alleleRFUOverloadThreshold = -1.0;
+	maxNumberExcessiveResidualsPerSample = -1;
+}
+
+
 locusSpecificLimitsStruct :: locusSpecificLimitsStruct () : 
 fractionOfMaxPeak (-1.0),
 pullupFractionalFilter (-1.0),
@@ -379,6 +406,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		}
 
 		startOffset = endOffset;
+		rfuLimits.Reset ();
 
 		if (!ReadLadderLabLimits (rfuString, rfuLimits)) {
 
@@ -409,6 +437,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		}
 
 		startOffset = endOffset;
+		rfuLimits.Reset ();
 
 		if (!ReadRFULimits (rfuString, rfuLimits)) {
 
@@ -430,6 +459,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 			return false;
 
 		startOffset = endOffset;
+		rfuLimits.Reset ();
 
 		if (!ReadSampleLabLimits (rfuString, rfuLimits))
 			return false;
@@ -1835,6 +1865,12 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	RGXMLTagSearch locusAdenylationSearch ("AdenylationThreshold", locusThresholdString);
 	RGXMLTagSearch locusHeterozygousImbalanceSearch ("HeterozygousImbalanceLimit", locusThresholdString);
 	RGXMLTagSearch locusBoundForHomozygoteSearch ("MinBoundForHomozygote", locusThresholdString);
+
+	int totalLength = XMLString.Length ();
+	size_t endDefaults;
+
+	if (!XMLString.FindSubstring ("<LocusThreshold>", endDefaults))
+		endDefaults = totalLength;
 	
 	size_t startOffset = 0;
 	size_t endOffset = 0;
@@ -1851,19 +1887,34 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	if (!maxRFUSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.maxRFU = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.maxRFU = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.maxRFU = -1.0;
 
 	if (!fractionOfMaxRFUSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.fractionOfMaxPeak = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.fractionOfMaxPeak = result.ConvertToDouble ();
+	}
 
 	if (pullupFractionOfMaxRFUSearch.FindNextTag (startOffset, endOffset, result)) {
 
-		startOffset = endOffset;
-		rfuLimits.pullupFractionOfMaxPeak = result.ConvertToDouble ();
+		if (endOffset < endDefaults) {
+
+			startOffset = endOffset;
+			rfuLimits.pullupFractionOfMaxPeak = result.ConvertToDouble ();
+		}
+
+		else
+			rfuLimits.pullupFractionOfMaxPeak = -1.0;
 	}
 
 	else
@@ -1872,20 +1923,41 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	if (!stutterThresholdSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.stutterThreshold = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.stutterThreshold = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.stutterThreshold = -1.0;
 
 	if (plusStutterThresholdSearch.FindNextTag (startOffset, endOffset, result)) {
 
-		startOffset = endOffset;
-		rfuLimits.plusStutterThreshold = result.ConvertToDouble ();
+		if (endOffset < endDefaults) {
+
+			startOffset = endOffset;
+			rfuLimits.plusStutterThreshold = result.ConvertToDouble ();
+		}
+
+		else
+			rfuLimits.plusStutterThreshold = -1.0;
 	}
+
+	else
+		rfuLimits.plusStutterThreshold = -1.0;
 
 	if (!adenylationThresholdSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.adenylationThreshold = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.adenylationThreshold = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.adenylationThreshold = -1.0;
 
 	size_t startLocusOffset;
 	size_t endLocusOffset;

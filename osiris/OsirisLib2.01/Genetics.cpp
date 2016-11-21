@@ -72,11 +72,11 @@ double Locus::MaximumMultipleOfAverageSamplePeak = -1.0;
 double Locus::HeterozygousImbalanceLimit = -1.0;
 double Locus::MinBoundForHomozygote = -1.0;
 
-double Locus::SampleStutterThreshold = 0.15;
-double Locus::SamplePlusStutterThreshold = 0.05;
-double Locus::SampleAdenylationThreshold = 0.3333;
-double Locus::GridStutterThreshold = 0.15;
-double Locus::GridAdenylationThreshold = 0.3333;
+double Locus::SampleStutterThreshold = -1.0;
+double Locus::SamplePlusStutterThreshold = -1.0;
+double Locus::SampleAdenylationThreshold = -1.0;
+double Locus::GridStutterThreshold = -1.0;
+double Locus::GridAdenylationThreshold = -1.0;
 
 double Locus::SampleFractionalFilter = -1.0;
 double Locus::GridFractionalFilter = -1.0;
