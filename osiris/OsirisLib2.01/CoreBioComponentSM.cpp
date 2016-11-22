@@ -2704,20 +2704,20 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	smUseMaxSecondDerivativesForSampleToLadderFit use2ndDeriv;
 	bool useSecondDerivative = GetMessageValue (use2ndDeriv);
 
-	CSplineTransform* timeMap;
+	//CSplineTransform* timeMap;
 	CoreBioComponent* grid;
 //	CoreBioComponent* grid = GetBestGridBasedOnMaxDelta3DerivForAnalysis (gridList, timeMap);
 
 	if (useSecondDerivative) {
 
 		cout << "Using 2nd derivative criterion for ladder fit..." << endl;
-		grid = GetBestGridBasedOnMax2DerivForAnalysis (gridList, timeMap);
+		grid = GetBestGridBasedOnMax2DerivForAnalysis (gridList, mTimeMap);
 	}
 
 	else {
 
 		cout << "Using minimum error criterion for ladder fit..." << endl;
-		grid = GetBestGridBasedOnLeastTransformError (gridList, timeMap, characteristicArray);
+		grid = GetBestGridBasedOnLeastTransformError (gridList, mTimeMap, characteristicArray);
 	}
 
 	if (grid == NULL)
@@ -2727,7 +2727,7 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	//	Get other fit data from timeMap
 	//
 
-	timeMap->OutputHighDerivativesAndErrors (characteristicArray);
+	mTimeMap->OutputHighDerivativesAndErrors (characteristicArray);
 
 	//smTempUseNaturalCubicSplineForTimeTransform useNaturalCubicSpline;
 	//smTempUseChordalDerivApproxHermiteSplinesForTimeTransform useChordalDerivsForHermiteSpline;
@@ -2762,8 +2762,8 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 
 	RemoveAllSignalsOutsideLaneStandardSM ();
 //	ValidateAndCorrectCrossChannelAnalysesSM ();
-	int status = AssignSampleCharacteristicsToLociSM (grid, timeMap);
-	delete timeMap;	// Added 09/26/2014 to prevent memory leak
+	int status = AssignSampleCharacteristicsToLociSM (grid, mTimeMap);
+	//delete timeMap;	// Added 09/26/2014 to prevent memory leak
 	return status;
 }
 

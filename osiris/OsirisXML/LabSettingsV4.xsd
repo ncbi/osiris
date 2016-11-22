@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
-<!-- edited with XMLSpy v2015 rel. 3 sp1 (x64) (http://www.altova.com) by XMLSpy 2015 Professional Ed. Release 3, Installed for 13 users (with SMP from 2015-04-16 to 2016-04-16) (NIH) -->
+<!-- edited with XMLSpy v2016 rel. 2 (http://www.altova.com) by Altova XMLSpy 2015 Professional Edition Release 2, Installed for 13 users (NCBI/NLM/NIH) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="Common.xsd"/>
 	<xs:element name="LabSettings" type="LabSettingsType">
@@ -245,6 +245,29 @@ Added Info tag</xs:documentation>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="LocusThreshold" type="SampleLocusSpecificThreshold"/>
 			</xs:sequence>
+			<xs:element name="NsStutterThresholds" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="Locus">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Name" type="xs:string"/>
+									<xs:sequence maxOccurs="unbounded">
+										<xs:element name="Threshold">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Bps" type="xs:int"/>
+													<xs:element name="Ratio" type="xs:double"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RFULadderLimitsType">

@@ -138,6 +138,8 @@ public:
 	int GetNumberOfSignals () const { return CompleteCurveList.Entries (); }
 	bool HasPrimerPeaks (ChannelData* laneStd);
 
+	void SetCompleteSignalListSequence ();
+
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
 
 	double GetBeginAnalysisTime () const { return mBeginAnalysis; }
@@ -347,6 +349,7 @@ public:
 	virtual int SetRawDataSM (SampleData& fileData, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataFromColorCorrectedArraySM (double* dataArray, int arraySize, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual void ClearAllPeaksBelowAnalysisThreshold ();
+	virtual int RemoveStutterLinksFromNonStutterPeaksSM () { return -1; }
 
 	virtual int TestFitCriteriaSM (DataSignal* signal);
 	virtual int FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
@@ -398,6 +401,7 @@ public:
 	virtual int TestForInterlocusProximityArtifactsSM ();
 	virtual int TestPositiveControlSM (IndividualGenotype* genotype);
 	virtual int FilterSmartNoticesBelowMinimumBioID (ChannelData* laneStd, int minBioID);
+	virtual int AppendDataForStutterPeaksSM () { return -1; }
 
 	virtual int WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& indent, const RGString& tagName) = 0;
 	virtual int WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGString& indent, ChannelData* laneStd) = 0;
@@ -490,6 +494,7 @@ protected:
 
 	CSplineTransform* mBaseLine;
 	int mBaselineStart;
+	CoordinateTransform* mTimeMap;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

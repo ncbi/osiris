@@ -63,6 +63,7 @@
 #include "BaseGenetics.h"
 #include "Notices.h"
 #include "SmartMessagingObject.h"
+#include "coordtrans.h"
 
 #include <list>
 
@@ -237,6 +238,8 @@ public:
 	bool SignalIsIntegralMultipleOfRepeatAboveLadder (DataSignal* nextSignal);
 	bool SignalIsIntegralMultipleOfRepeatBelowLadder (DataSignal* nextSignal);
 
+	double GetNonStandardStutterThreshold (int bp) { return mLink->GetNonStandardStutterThreshold (bp); }
+
 	RGString ReconstructAlleleName (int id, Boolean& isOffGrid);
 	virtual int InsertAlleleSignals (RGDList& curveList);  // virtual ???
 	virtual const DataSignal* GetCurve (const RGString& alleleName);  // virtual ???
@@ -294,6 +297,7 @@ public:
 	void SetLocusSpecificSamplePullupFractionalFilter (double limit) { if (mLink != NULL) mLink->SetSamplePullupFractionalFilter (limit); }
 	void SetLocusSpecificSampleHeterozygousImbalanceThreshold (double limit) { if (mLink != NULL) mLink->SetSampleHeterozygousImbalanceThreshold (limit); }
 	void SetLocusSpecificSampleMinBoundForHomozygote (double limit) { if (mLink != NULL) mLink->SetSampleMinBoundForHomozygote (limit); }
+	void SetLocusSpecificNonStandardStutterArray (const locusSpecificNonStandardStutterStruct& limits) { if (mLink != NULL) mLink->SetNonStandardStutterArray (limits); }
 
 	void SetLocusSpecificLadderStutterThreshold (double limit) { if (mLink != NULL) mLink->SetLadderStutterThreshold (limit); }
 	void SetLocusSpecificLadderAdenylationThreshold (double limit) { if (mLink != NULL) mLink->SetLadderAdenylationThreshold (limit); }
@@ -444,6 +448,7 @@ public:
 	int CleanUpGridSignalListSM (RGDList& artifacts);
 
 	int TestProximityArtifactsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
+	int TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* timeMap);
 	int TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
 	int TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
 	int TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
@@ -518,6 +523,8 @@ public:
 	static bool GetCallOnLadderAdenylation () { return CallOnLadderAdenylation; }
 
 	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
+	static void SetSingleSourceSample (bool d) { IsSingleSourceSample = d; }
+	static void SetControlSample (bool d) { IsControlSample = d; }
 
 protected:
 	BaseLocus* mLink;
@@ -573,6 +580,7 @@ protected:
 
 	double mFirstTime;
 	double mLastTime;
+	Locus* mGridLocus;
 
 	// Smart Message data************************************************************************************
 	//*******************************************************************************************************
@@ -615,6 +623,8 @@ protected:
 	static bool DisableAdenylationFilter;
 	static bool CallOnLadderAdenylation;
 	static int NumberOfChannels;
+	static bool IsSingleSourceSample;
+	static bool IsControlSample;
 
 	Boolean BuildAlleleLists (const RGString& xmlString);
 	Boolean BuildMappings (RGDList& signalList);

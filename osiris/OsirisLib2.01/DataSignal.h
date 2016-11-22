@@ -307,7 +307,7 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -324,7 +324,7 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -345,7 +345,8 @@ public:
 		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
-		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak) {
+		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
+		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -434,6 +435,12 @@ public:
 	void SetCurveFit (double fit);
 	double GetResidualPower () const { return ResidualPower; }
 	double GetMeanVariability () const { return MeanVariability; }
+
+	DataSignal* GetNextSignal () const { return mNextSignal; }
+	DataSignal* GetPreviousSignal () const { return mPreviousSignal; }
+
+	void SetNextSignal (DataSignal* ds) { mNextSignal = ds; }
+	void SetPreviousSignal (DataSignal* ds) { mPreviousSignal = ds; }
 
 	void SetNextPeak (double peak) { nextPeak = peak; }
 	double GetNextPeak () const { return nextPeak; }
@@ -631,6 +638,36 @@ public:
 
 	virtual double ValueFreeBound (int n) const;
 	virtual double ValueFreeBound (double x) const;
+
+	void AddPrimaryStutterSignalToList (DataSignal* primary, int dir);
+	void AddLeftPrimaryStutterSignalToList (DataSignal* primary, int dir);
+	void AddRightPrimaryStutterSignalToList (DataSignal* primary, int dir);
+	void AddToCumulativeStutterThreshold (double add) { mCumulativeStutterThreshold += add; }
+	Boolean HasNoStutterLinks () const { return mStutterPrimaryList.IsEmpty (); }
+	void RemoveAllStutterLinks ();
+	void AddDataToStutterArtifactSM ();
+
+	void AddStandardStutterSignalToList (DataSignal* stutter, int dir);
+	void AddStutterSignalToList (DataSignal* stutter) { mHasStutterList.Append (stutter); }
+	void AddStutterSignalToListLeft (DataSignal* stutter) { mHasStutterLeftList.Append (stutter); }
+	void AddStutterSignalToListRight (DataSignal* stutter) { mHasStutterRightList.Append (stutter); }
+	void AddStutterDisplacement (int disp, int dir);
+
+	Boolean SignalIsPrimaryStutter (DataSignal* ds) { return mStutterPrimaryList.ContainsReference (ds); }
+	Boolean SignalIsStandardStutter (DataSignal* ds) { return mHasStandardStutterList.ContainsReference (ds); }
+	Boolean SignalHasStutter () { return !mHasStutterList.IsEmpty (); }
+	Boolean SignalHasStutterFromLocusToLeft () { return !mHasStutterLeftList.IsEmpty (); }
+	Boolean SignalHasStutterFromLocusToRight () { return !mHasStutterRightList.IsEmpty (); }
+	void RemoveStutterLink (DataSignal* ds);
+
+	int GetNumberOfPrimaryStutterSignals () const { return mStutterPrimaryList.Entries (); }
+	int GetNumberOfLeftPrimaryStutterSignals () const { return mLeftStutterPrimaryList.Entries (); }
+	int GetNumberOfRightPrimaryStutterSignals () const { return mRightStutterPrimaryList.Entries (); }
+	RGString GetStutterRatio () const;
+	RGString GetLeftStutterRatio () const;
+	RGString GetRightStutterRatio () const;
+	double GetCumulativeStutterThreshold () const { return mCumulativeStutterThreshold; }
+
 
 	virtual bool LiesBelowHeightAt (double x, double height);
 	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
@@ -921,6 +958,19 @@ protected:
 	set<int> mUncertainPullupChannels;
 	RGDList mProbablePullupPeaks;
 	bool mIsNoisySidePeak;
+
+	DataSignal* mNextSignal;
+	DataSignal* mPreviousSignal;
+
+	RGDList mStutterPrimaryList;
+	RGDList mLeftStutterPrimaryList;
+	RGDList mRightStutterPrimaryList;
+	RGDList mHasStandardStutterList;
+	RGDList mHasStutterList;
+	RGDList mHasStutterLeftList;
+	RGDList mHasStutterRightList;
+	list<int> mStutterDisplacements;
+	double mCumulativeStutterThreshold;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;

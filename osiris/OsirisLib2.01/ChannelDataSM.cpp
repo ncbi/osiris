@@ -939,8 +939,10 @@ void ChannelData :: MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, Geno
 
 	//cout << "Promoted core signals to alleles again!" << endl;
 
+	SetCompleteSignalListSequence ();  // This establishes the order CompleteCurveList within the individual peaks.
+
 	TestProximityArtifactsSM ();
-	TestForInterlocusProximityArtifactsSM ();
+	//TestForInterlocusProximityArtifactsSM ();  // **** 11/11/2016:  when replace stutter analysis with primary-centric analysis, do we need this?  Probably not.  Should be subsumed in previous line:  TestProximityArtifactsSM ();
 	//TestSignalsForOffScaleSM ();	//  Commented out 07/25/2014 to test moving it right after cross channel analysis for smarter pull-up analysis
 
 	//cout << "Tested proximity artifacts" << endl;

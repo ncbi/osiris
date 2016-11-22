@@ -40,6 +40,7 @@
 #include "coordtrans.h"
 #include "ChannelData.h"
 #include "CoreBioComponent.h"
+#include "ParameterServer.h"
 
 
 Boolean BaseAllele::SearchByName = TRUE;
@@ -284,6 +285,64 @@ void BaseLocus :: SetTableLink (int linkNumber) {
 	RGString temp;
 	temp.Convert (linkNumber, 10);
 	mTableLink = "&" + temp + "&";
+}
+
+
+double BaseLocus :: GetNonStandardStutterThreshold (int bp) {
+
+	RGPDouble* threshold;
+
+	if (bp >= 0)
+		threshold = (RGPDouble*)mPositiveNonStandardStutter.GetElementAt (bp);
+
+	else
+		threshold = (RGPDouble*)mNegativeNonStandardStutter.GetElementAt (-bp);
+
+	if (threshold == NULL)
+		return -1.0;
+
+	if (threshold->IsNullElement ())
+		return -1.0;
+
+	return threshold->GetDouble ();
+}
+
+
+void BaseLocus :: SetNonStandardStutterThreshold (int bp, double threshold) {
+
+	RGPDouble* newThreshold = new RGPDouble (threshold);
+
+	if (bp >= 0)
+		mPositiveNonStandardStutter.ReplaceElementAt (bp, newThreshold);
+
+	else
+		mNegativeNonStandardStutter.ReplaceElementAt (-bp, newThreshold);
+}
+
+
+void BaseLocus :: SetNonStandardStutterArray (const locusSpecificNonStandardStutterStruct& limits) {
+
+	int max = (limits.mNegativeNonStandardStutter).Length ();
+	int i;
+	RGPDouble* pThreshold;
+
+	for (i=1; i<max; i++) {
+
+		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
+
+		if (pThreshold != NULL)
+			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
+	}
+
+	max = (limits.mPositiveNonStandardStutter).Length ();
+
+	for (i=1; i<max; i++) {
+
+		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
+
+		if (pThreshold != NULL)
+			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
+	}
 }
 
 

@@ -72,11 +72,11 @@ double Locus::MaximumMultipleOfAverageSamplePeak = -1.0;
 double Locus::HeterozygousImbalanceLimit = -1.0;
 double Locus::MinBoundForHomozygote = -1.0;
 
-double Locus::SampleStutterThreshold = 0.15;
-double Locus::SamplePlusStutterThreshold = 0.05;
-double Locus::SampleAdenylationThreshold = 0.3333;
-double Locus::GridStutterThreshold = 0.15;
-double Locus::GridAdenylationThreshold = 0.3333;
+double Locus::SampleStutterThreshold = -1.0;
+double Locus::SamplePlusStutterThreshold = -1.0;
+double Locus::SampleAdenylationThreshold = -1.0;
+double Locus::GridStutterThreshold = -1.0;
+double Locus::GridAdenylationThreshold = -1.0;
 
 double Locus::SampleFractionalFilter = -1.0;
 double Locus::GridFractionalFilter = -1.0;
@@ -91,6 +91,8 @@ bool Locus::DisableStutterFilter = false;
 bool Locus::DisableAdenylationFilter = false;
 bool Locus::CallOnLadderAdenylation = false;
 int Locus::NumberOfChannels = 0;
+bool Locus::IsSingleSourceSample = false;
+bool Locus::IsControlSample = false;
 
 bool PopulationCollection::UseILSFamilies = false;
 
@@ -263,7 +265,7 @@ void Allele :: Write (RGFile& textOutput, const RGString& indent) {
 Locus :: Locus () : SmartMessagingObject (), mLink (NULL), Linked (FALSE), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (0.0), MinimumSampleTime (0.0), mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0),
 mTimeForOneIDUnitRight (0.0), mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0),
-mMaxPeak (0.0), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0) {
+mMaxPeak (0.0), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL) {
 
 	mLink = new BaseLocus ();
 	AlleleIterator = new RGDListIterator (AlleleList);
@@ -275,7 +277,7 @@ Locus :: Locus (BaseLocus* link, const RGString& xmlString) : SmartMessagingObje
 mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), MaximumSampleTime (0.0), MinimumSampleTime (0.0), 
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
 mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0), mMaxPeak (0.0), mLargestPeak (NULL), 
-mFirstTime (0.0), mLastTime (0.0) {
+mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 	Valid = BuildAlleleLists (xmlString);
@@ -291,7 +293,7 @@ Locus :: Locus (const Locus& locus) : SmartMessagingObject ((SmartMessagingObjec
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
 mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), mIsAMEL (locus.mIsAMEL), mMinExtendedLocusTime (locus.mMinExtendedLocusTime), 
-mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0) {
+mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 
@@ -327,7 +329,7 @@ mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), 
 Locus :: Locus (const Locus& locus, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)locus), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), 
-mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0) {
+mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 

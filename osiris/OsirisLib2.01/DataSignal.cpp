@@ -1103,7 +1103,8 @@ mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLe
 mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
-mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak) {
+mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
+mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1124,6 +1125,14 @@ DataSignal :: ~DataSignal () {
 	delete[] mPrimaryPullupInChannel;
 	mUncertainPullupChannels.clear ();
 	mProbablePullupPeaks.Clear ();
+	mStutterPrimaryList.Clear ();
+	mLeftStutterPrimaryList.Clear ();
+	mRightStutterPrimaryList.Clear ();
+
+	mHasStandardStutterList.Clear ();
+	mHasStutterList.Clear ();
+	mHasStutterLeftList.Clear ();
+	mHasStutterRightList.Clear ();
 }
 
 
@@ -2304,6 +2313,94 @@ double DataSignal :: ValueFreeBound (int n) const {
 double DataSignal :: ValueFreeBound (double x) const {
 
 	return -3.14159;
+}
+
+
+void DataSignal :: AddPrimaryStutterSignalToList (DataSignal* primary, int dir) {
+
+	mStutterPrimaryList.InsertWithNoReferenceDuplication (primary);
+	//
+	//if (dir)
+	//	mStutterPrimaryList.Append (primary); 
+	//
+	//else
+	//	mStutterPrimaryList.Prepend (primary);
+}
+
+
+
+void DataSignal :: AddLeftPrimaryStutterSignalToList (DataSignal* primary, int dir) {
+	
+	if (dir)
+		mLeftStutterPrimaryList.Append (primary);
+	
+	else
+		mLeftStutterPrimaryList.Prepend (primary);
+}
+
+
+
+void DataSignal :: AddRightPrimaryStutterSignalToList (DataSignal* primary, int dir) {
+	
+	if (dir)
+		mRightStutterPrimaryList.Append (primary);
+	
+	else
+		mRightStutterPrimaryList.Prepend (primary);
+}
+
+
+
+void DataSignal :: RemoveAllStutterLinks () {
+
+	DataSignal* nextSignal;
+
+	while (nextSignal = (DataSignal*) mStutterPrimaryList.GetFirst ()) {
+
+		nextSignal->RemoveStutterLink ((DataSignal*)this);
+	}
+
+	while (nextSignal = (DataSignal*) mLeftStutterPrimaryList.GetFirst ()) {
+
+		nextSignal->RemoveStutterLink ((DataSignal*)this);
+	}
+
+	while (nextSignal = (DataSignal*) mRightStutterPrimaryList.GetFirst ()) {
+
+		nextSignal->RemoveStutterLink ((DataSignal*)this);
+	}
+}
+
+
+
+void DataSignal :: AddStandardStutterSignalToList (DataSignal* stutter, int dir) {
+	
+	if (dir)
+		mHasStandardStutterList.Append (stutter);
+	
+	else
+		mHasStandardStutterList.Prepend (stutter);
+}
+
+
+
+void DataSignal :: AddStutterDisplacement (int disp, int dir) {
+	
+	if (dir)
+		mStutterDisplacements.push_back (disp);
+	
+	else
+		mStutterDisplacements.push_front (disp);
+}
+
+
+void DataSignal :: RemoveStutterLink (DataSignal* ds) {
+
+	mHasStandardStutterList.RemoveReference (ds);
+	mHasStutterList.RemoveReference (ds);
+	mHasStutterLeftList.RemoveReference (ds);
+	mHasStutterRightList.RemoveReference (ds);
+
 }
 
 

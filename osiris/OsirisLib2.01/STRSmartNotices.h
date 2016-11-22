@@ -230,6 +230,9 @@ PERSISTENT_PREDECLARATION (smLaserOffScale)
 PERSISTENT_PREDECLARATION (smCalculatedPurePullup)
 PERSISTENT_PREDECLARATION (smPartialPullupBelowMinRFU)
 PERSISTENT_PREDECLARATION (smSigmoidalSidePeak)
+PERSISTENT_PREDECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
+PERSISTENT_PREDECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
+PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
 
 
 
@@ -6345,6 +6348,90 @@ public:
 	smSigmoidalSidePeak ();
 	smSigmoidalSidePeak (const smSigmoidalSidePeak& note);
 	virtual ~smSigmoidalSidePeak ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDoNotCallStutterPeaksForSingleSourceSamplesPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
+
+public:
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset ();
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset (const smDoNotCallStutterPeaksForSingleSourceSamplesPreset& note);
+	virtual ~smDoNotCallStutterPeaksForSingleSourceSamplesPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
+
+public:
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset ();
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset (const smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset& note);
+	virtual ~smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCallStutterPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCallStutterPeaksPreset)
+
+public:
+	smCallStutterPeaksPreset ();
+	smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note);
+	virtual ~smCallStutterPeaksPreset ();
 
 	virtual int GetSubject () const;
 

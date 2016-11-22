@@ -63,7 +63,7 @@ public:
 	void Append (RGPersistent* NewItem);
 	void ResetArray ();
 
-	RGPersistent* GetElementAt(size_t);  // performs limit checking and expands array if needed 
+	RGPersistent* GetElementAt(size_t) const;  // performs limit checking and expands array if needed 
 	void ReplaceElementAt (size_t index, RGPersistent* NewItem);  // performs limit checking and expands array if needed
 	RGPersistent* RemoveElementAt (size_t);
 

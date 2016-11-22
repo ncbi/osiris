@@ -66,6 +66,33 @@ int ParameterServer :: ReferenceCount = 0;
 ParameterServer* ParameterServer :: OneAndOnlySelf = NULL;
 
 
+void RFULimitsStruct :: Reset () {
+
+	minRFU = 0.0;
+	fractionOfMaxPeak = 0.0;
+	pullupFractionOfMaxPeak = 0.0;
+	stutterThreshold = 0.0;
+	plusStutterThreshold = 0.0;
+	adenylationThreshold = 0.0;
+}
+
+
+labNonRFULimitsStruct :: labNonRFULimitsStruct () {
+
+	heterozygousImbalanceLimit = -1.0;
+	minBoundForHomozygote = -1.0;
+	maxNumberPullupsPerSample = -1;
+	maxNumberStutterPerSample = -1;
+	maxNumberSpikesPerSample = -1;
+	maxNumberAdenylationPerSample = -1;
+	maxNumberOLAllelesPerSample = -1;
+	maxResidualForAlleleCall = -1.0;
+	minBPSForArtifacts = -1;
+	alleleRFUOverloadThreshold = -1.0;
+	maxNumberExcessiveResidualsPerSample = -1;
+}
+
+
 locusSpecificLimitsStruct :: locusSpecificLimitsStruct () : 
 fractionOfMaxPeak (-1.0),
 pullupFractionalFilter (-1.0),
@@ -121,6 +148,57 @@ void locusSpecificLimitsStruct :: CopyPositiveThresholdsFrom (const locusSpecifi
 }
 
 
+locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct () {
+
+}
+
+
+
+locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct (const locusSpecificNonStandardStutterStruct& limits) {
+
+	int max = (limits.mNegativeNonStandardStutter).Length ();
+	int i;
+	RGPDouble* pThreshold;
+	locusName = limits.locusName;
+
+	for (i=1; i<max; i++) {
+
+		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
+
+		if (pThreshold != NULL)
+			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
+	}
+
+	max = (limits.mPositiveNonStandardStutter).Length ();
+
+	for (i=1; i<max; i++) {
+
+		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
+
+		if (pThreshold != NULL)
+			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
+	}
+}
+
+
+
+locusSpecificNonStandardStutterStruct :: ~locusSpecificNonStandardStutterStruct () {
+
+}
+
+
+void locusSpecificNonStandardStutterStruct :: SetNonStandardStutterThreshold (int bp, double threshold) {
+
+	RGPDouble* newThreshold = new RGPDouble (threshold);
+
+	if (bp >= 0)
+		mPositiveNonStandardStutter.ReplaceElementAt (bp, newThreshold);
+
+	else
+		mNegativeNonStandardStutter.ReplaceElementAt (-bp, newThreshold);
+}
+
+
 void locusSpecificLimitsStruct :: Reset () {
 
 	locusName = "";
@@ -149,6 +227,7 @@ ParameterServer :: ParameterServer () {
 		mSmartMessageThresholds = new RGDList;
 		mLadderLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
 		mSampleLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
+		mSampleNonStandardStutterThresholds = new list<locusSpecificNonStandardStutterStruct*>;
 		mAnalysisThresholds = new list<channelThreshold*>;
 		mDetectionThresholds = new list<channelThreshold*>;
 	}
@@ -169,6 +248,7 @@ ParameterServer :: ParameterServer (const RGString& xmlString) : mValid (true) {
 		mSmartMessageThresholds = new RGDList;
 		mLadderLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
 		mSampleLocusSpecificThresholds = new list<locusSpecificLimitsStruct*>;
+		mSampleNonStandardStutterThresholds = new list<locusSpecificNonStandardStutterStruct*>;
 	}
 
 	ParameterServer::ReferenceCount++;
@@ -256,6 +336,9 @@ ParameterServer :: ~ParameterServer () {
 
 		mSampleLocusSpecificThresholds->clear ();
 		delete mSampleLocusSpecificThresholds;
+		mSampleNonStandardStutterThresholds->clear ();
+		delete mSampleNonStandardStutterThresholds;
+
 	}
 }
 
@@ -323,6 +406,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		}
 
 		startOffset = endOffset;
+		rfuLimits.Reset ();
 
 		if (!ReadLadderLabLimits (rfuString, rfuLimits)) {
 
@@ -353,6 +437,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		}
 
 		startOffset = endOffset;
+		rfuLimits.Reset ();
 
 		if (!ReadRFULimits (rfuString, rfuLimits)) {
 
@@ -374,6 +459,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 			return false;
 
 		startOffset = endOffset;
+		rfuLimits.Reset ();
 
 		if (!ReadSampleLabLimits (rfuString, rfuLimits))
 			return false;
@@ -686,6 +772,14 @@ int ParameterServer :: AddSampleLocusSpecificThreshold (const locusSpecificLimit
 }
 
 
+int ParameterServer :: AddSampleLocusSpecificNonStandardStutterCollection (const locusSpecificNonStandardStutterStruct& nsLocusStutter) {
+
+	locusSpecificNonStandardStutterStruct* newStruct = new locusSpecificNonStandardStutterStruct (nsLocusStutter);
+	mSampleNonStandardStutterThresholds->push_back (newStruct);
+	return 0;
+}
+
+
 int ParameterServer :: SetSampleLocusSpecificThresholds (Locus* locus, locusSpecificLimitsStruct* limits) {
 
 	if (limits->stutterThreshold >= 0.0)
@@ -824,6 +918,22 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 		else
 			status = -1;
 	}
+
+	list<locusSpecificNonStandardStutterStruct*>::iterator it;
+	locusSpecificNonStandardStutterStruct* nextNSLink;
+
+	for (it = mSampleNonStandardStutterThresholds->begin (); it != mSampleNonStandardStutterThresholds->end (); it++) {
+
+		nextNSLink = *it;
+		locus = mSet->FindLocus (nextNSLink->locusName);
+
+		if (locus != NULL)
+			locus->SetLocusSpecificNonStandardStutterArray (*nextNSLink);
+
+		else
+			status = -1;
+	}
+
 
 	return status;
 }
@@ -1755,6 +1865,12 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	RGXMLTagSearch locusAdenylationSearch ("AdenylationThreshold", locusThresholdString);
 	RGXMLTagSearch locusHeterozygousImbalanceSearch ("HeterozygousImbalanceLimit", locusThresholdString);
 	RGXMLTagSearch locusBoundForHomozygoteSearch ("MinBoundForHomozygote", locusThresholdString);
+
+	int totalLength = XMLString.Length ();
+	size_t endDefaults;
+
+	if (!XMLString.FindSubstring ("<LocusThreshold>", endDefaults))
+		endDefaults = totalLength;
 	
 	size_t startOffset = 0;
 	size_t endOffset = 0;
@@ -1771,19 +1887,34 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	if (!maxRFUSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.maxRFU = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.maxRFU = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.maxRFU = -1.0;
 
 	if (!fractionOfMaxRFUSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.fractionOfMaxPeak = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.fractionOfMaxPeak = result.ConvertToDouble ();
+	}
 
 	if (pullupFractionOfMaxRFUSearch.FindNextTag (startOffset, endOffset, result)) {
 
-		startOffset = endOffset;
-		rfuLimits.pullupFractionOfMaxPeak = result.ConvertToDouble ();
+		if (endOffset < endDefaults) {
+
+			startOffset = endOffset;
+			rfuLimits.pullupFractionOfMaxPeak = result.ConvertToDouble ();
+		}
+
+		else
+			rfuLimits.pullupFractionOfMaxPeak = -1.0;
 	}
 
 	else
@@ -1792,20 +1923,41 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	if (!stutterThresholdSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.stutterThreshold = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.stutterThreshold = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.stutterThreshold = -1.0;
 
 	if (plusStutterThresholdSearch.FindNextTag (startOffset, endOffset, result)) {
 
-		startOffset = endOffset;
-		rfuLimits.plusStutterThreshold = result.ConvertToDouble ();
+		if (endOffset < endDefaults) {
+
+			startOffset = endOffset;
+			rfuLimits.plusStutterThreshold = result.ConvertToDouble ();
+		}
+
+		else
+			rfuLimits.plusStutterThreshold = -1.0;
 	}
+
+	else
+		rfuLimits.plusStutterThreshold = -1.0;
 
 	if (!adenylationThresholdSearch.FindNextTag (startOffset, endOffset, result))
 		return false;
 
-	startOffset = endOffset;
-	rfuLimits.adenylationThreshold = result.ConvertToDouble ();
+	if (endOffset < endDefaults) {
+
+		startOffset = endOffset;
+		rfuLimits.adenylationThreshold = result.ConvertToDouble ();
+	}
+
+	else
+		rfuLimits.adenylationThreshold = -1.0;
 
 	size_t startLocusOffset;
 	size_t endLocusOffset;
@@ -1873,6 +2025,77 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 		}
 
 		AddSampleLocusSpecificThreshold (limits);
+	}
+
+	RGString nsStutterThresholdString;
+	RGString nsStutterLocusThresholdString;
+	RGString nsRatioString;
+	locusSpecificNonStandardStutterStruct nsLocusStutter;
+
+	RGXMLTagSearch nonStandardStutterSearch ("NsStutterThresholds", XMLString);
+	RGXMLTagSearch nonStandardLocusSearch ("Locus", nsStutterThresholdString);
+	RGXMLTagSearch nonStandardLocusNameSearch ("Name", nsStutterThresholdString);
+	RGXMLTagSearch nonStandardLocusThresholdSearch ("Threshold", nsStutterThresholdString);
+	RGXMLTagSearch nonStandardLocusBpSearch ("Bps", nsRatioString);
+	RGXMLTagSearch nonStandardLocusRatioSearch ("Ratio", nsRatioString);
+
+	cout << "Start offset for non-standard stutter = " << startOffset << endl;
+
+	if (nonStandardStutterSearch.FindNextTag (startOffset, endOffset, nsStutterThresholdString)) {
+
+		startOffset = endOffset;
+		startLocusOffset = endLocusOffset = 0;
+		nonStandardLocusSearch.ResetSearch ();
+
+		while (nonStandardLocusSearch.FindNextTag (startLocusOffset, endLocusOffset, nsStutterLocusThresholdString)) {
+
+			startLocusOffset = endLocusOffset;
+			nonStandardLocusNameSearch.ResetSearch ();
+			nonStandardLocusThresholdSearch.ResetSearch ();
+			size_t locusThresholdStartOffset = 0;
+			size_t locusThresholdEndOffset = 0;
+			nsLocusStutter.Reset ();
+
+			if (!nonStandardLocusNameSearch.FindNextNonemptyTag (locusThresholdStartOffset, locusThresholdEndOffset, result)) {
+
+				cout << "Could not find locus name in non-standard stutter set-up" << endl;
+				return false;
+			}
+
+			locusThresholdStartOffset = locusThresholdEndOffset;
+			nsLocusStutter.locusName = result;
+
+			while (nonStandardLocusThresholdSearch.FindNextTag (locusThresholdStartOffset, locusThresholdEndOffset, nsRatioString)) {
+
+				locusThresholdStartOffset = locusThresholdEndOffset;
+				nonStandardLocusBpSearch.ResetSearch ();
+				nonStandardLocusRatioSearch.ResetSearch ();
+				size_t thisStart = 0;
+				size_t thisEnd = 0;
+				int bp;
+				double threshold;
+
+				if (!nonStandardLocusBpSearch.FindNextTag (thisStart, thisEnd, result)) {
+
+					cout << "Could not find bps in non-standard stutter search for locus named " << (char*) nsLocusStutter.locusName.GetData () << endl;
+					return false;
+				}
+
+				bp = result.ConvertToInteger ();
+
+				if (!nonStandardLocusRatioSearch.FindNextTag (thisStart, thisEnd, result)) {
+
+					cout << "Could not find ratio in non-standard stutter search for locus named " << (char*) nsLocusStutter.locusName.GetData () << endl;
+					return false;
+				}
+
+				threshold = result.ConvertToDouble ();
+				nsLocusStutter.SetNonStandardStutterThreshold (bp, threshold);
+				cout << "Found non-standard stutter threshold for locus named " << (char*) nsLocusStutter.locusName.GetData () << " with base pair displacement = " << bp << " and threshold = " << threshold << endl;
+			}
+
+			AddSampleLocusSpecificNonStandardStutterCollection (nsLocusStutter);
+		}		
 	}
 
 	return true;

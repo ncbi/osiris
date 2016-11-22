@@ -827,6 +827,92 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 }
 
 
+void DataSignal :: AddDataToStutterArtifactSM () {
+
+	smStutter stutter;
+	int disp;
+	int nStutters = mStutterPrimaryList.Entries ();
+	RGString data;
+	int n = 0;
+	DataSignal* nextSignal;
+	//RGDListIterator it (mStutterPrimaryList);
+	bool isStandardDisplacement;
+	RGString ratioString;
+	RGString pResult;
+	mStutterDisplacements.sort ();
+	double ratio;
+	bool hasDuplicates = false;
+	RGDList tempSignals;
+	set<int> tempDisp;
+
+	while (nextSignal = (DataSignal*) mStutterPrimaryList.GetLast ()) {
+
+		disp = mStutterDisplacements.front ();
+		mStutterDisplacements.pop_front ();
+		tempSignals.Append (nextSignal);
+
+		if (tempDisp.find (disp) != tempDisp.end ())
+			hasDuplicates = true;
+
+		tempDisp.insert (disp);
+
+		if (nextSignal->SignalIsStandardStutter ((DataSignal*)this))
+			isStandardDisplacement = true;
+
+		else
+			isStandardDisplacement = false;
+
+		if (n > 0)
+			data << ", ";
+
+		else
+			ratio = 100.0 * Peak () / nextSignal->Peak ();
+
+		n++;
+
+		if (disp > 0)
+			data << "+";
+
+		data << disp;
+
+		if (isStandardDisplacement)
+			data << " (std)";
+	}
+
+	data << " bps";
+
+	if (nStutters == 1) {
+
+		data << ":  ratio = ";
+		nextSignal = (DataSignal*) mStutterPrimaryList.First ();
+		ratioString.ConvertWithMin (ratio, 0.01, 2);
+		data << xmlwriter::EscAscii (ratioString, &pResult) << "%";
+	}
+
+	if (hasDuplicates) {
+
+		cout << "Duplicate displacements from channel " << GetChannel () << ":  ";
+		n = 0;
+
+		while (nextSignal = (DataSignal*) tempSignals.GetFirst ()) {
+
+			if (n > 0)
+				cout << "; ";
+
+			n++;
+			cout << "mean = " << nextSignal->GetMean () << " and name = " << nextSignal->GetAlleleName ();
+		}
+
+		cout << endl << endl;
+	}
+
+	tempDisp.clear ();
+	tempSignals.Clear ();
+
+	SetDataForSmartMessage (stutter, data);
+}
+
+
 void DataSignal :: CaptureSmartMessages (const DataSignal* signal) {
 
 	int scope = GetObjectScope ();

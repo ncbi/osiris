@@ -41,6 +41,7 @@
 #include "rghashtable.h"
 #include "rgdlist.h"
 #include "SmartMessagingObject.h"
+#include "rgparray.h"
 
 
 class DataSignal;
@@ -53,6 +54,7 @@ class Allele;
 class CoordinateTransform;
 class ChannelData;
 class Locus;
+struct locusSpecificNonStandardStutterStruct;
 
 
 
@@ -126,11 +128,16 @@ public:
 	bool isQualityLocus () const { return mIsQualityLocus; }
 	int GetMaxExpectedAlleles () const { return mMaxExpectedAlleles; }
 	int GetMinExpectedAlleles () const { return mMinExpectedAlleles; }
+	double GetNonStandardStutterThreshold (int bp);
+	int GetMaxPositiveNonStandardStutter () const { return mPositiveNonStandardStutter.Length (); }
+	int GetMaxNegativeNonStandardStutter () const { return mNegativeNonStandardStutter.Length (); }
 
 	void SetYLinked (bool linked) { mIsYLinked = linked; }
 	void SetQualityLocus (bool q) { mIsQualityLocus = q; }
 	void SetMaxExpectedAlleles (int max) { mMaxExpectedAlleles = max; }
 	void SetMinExpectedAlleles (int min) { mMinExpectedAlleles = min; }
+	void SetNonStandardStutterThreshold (int bp, double threshold);
+	void SetNonStandardStutterArray (const locusSpecificNonStandardStutterStruct& limits);
 
 	RGString GetError () const { return Msg; }
 
@@ -243,6 +250,9 @@ protected:
 	bool mIsQualityLocus;
 	int mMaxExpectedAlleles;
 	int mMinExpectedAlleles;
+
+	RGPArray mPositiveNonStandardStutter;
+	RGPArray mNegativeNonStandardStutter;
 
 	static bool* InitialMatrix;
 	static RGString ILSFamilyName;
