@@ -656,7 +656,7 @@ bool CGridLabNsStutter::TransferDataToWindow()
       ++itr)
     {
       s = nwxString::FormatNumber(*itr);
-      SetCellValue(s,nRow,0);
+      SetCellValue(nRow,0,s);
       ++nRow;
     }
     for(nCol = 1; nCol < nCols; ++nCol)
@@ -673,7 +673,7 @@ bool CGridLabNsStutter::TransferDataToWindow()
           if(dRatio > 0.0)
           {
             s = nwxString::FormatDouble(dRatio);
-            SetCellValue(s,nRow,nCol);
+            SetCellValue(nRow,nCol,s);
           }
           ++nRow;
         }
