@@ -750,7 +750,7 @@ void CGridLabNsStutter::InitColour()
   {
     for(nCol = 0; nCol < nCols; ++nCol)
     {
-      SetCellBackgroundColour(c,nRow,nCol);
+      SetCellBackgroundColour(nRow,nCol,c);
     }
   }
 }
@@ -761,14 +761,14 @@ void CGridLabNsStutter::SetRowReadOnlyColour(int nRow, bool bReadOnly)
   int nCol;
   for(nCol = 0; nCol < nCols; ++nCol)
   {
-    SetCellBackgroundColour(c,nRow,nCol);
+    SetCellBackgroundColour(nRow,nCol,c);
   }
   SetRowReadOnly(nRow,bReadOnly);
 }
 void CGridLabNsStutter::SetReadOnlyColour(int nRow, int nCol, bool bReadOnly)
 {
   wxColour c = _GetBackgroundColour(bReadOnly);
-  SetCellBackgroundColour(c,nRow,nCol);
+  SetCellBackgroundColour(nRow,nCol,c);
   SetReadOnly(nRow,nCol,bReadOnly);
 }
 
