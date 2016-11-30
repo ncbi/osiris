@@ -1464,7 +1464,7 @@ public:
       Threshold *pp = (Threshold *)p;
       return pp->Skip();
     }
-
+#if 0
     bool Validate()
     {
       bool bRtn = true;
@@ -1488,6 +1488,7 @@ public:
       }
       return bRtn;
     }
+#endif
     bool Skip() const
     {
       bool bRtn = !(CLabNsStutter::RatioOK(m_dRatio) && CLabNsStutter::BpsOK(m_nBPS));
