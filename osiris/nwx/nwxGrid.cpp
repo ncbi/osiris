@@ -579,12 +579,29 @@ void nwxGrid::ForceRefreshAll(wxWindow *p)
   }
 }
 
+void nwxGrid::_OnCellChange(wxGridEvent &e)
+{
+  OnCellChange(e);
+}
+void nwxGrid::_OnSelectCell(wxGridEvent &e)
+{
+  OnSelectCell(e);
+}
+void nwxGrid::_OnEditorStart(wxGridEvent &e)
+{
+  OnEditorStart(e);
+}
+void nwxGrid::_OnEditorEnd(wxGridEvent &e)
+{
+  OnEditorEnd(e);
+}
+
 BEGIN_EVENT_TABLE(nwxGrid,wxGrid)
 wx__DECLARE_GRIDEVT(START_EDIT,wxID_ANY,nwxGrid::OnEditCell)
-EVT_GRID_EDITOR_SHOWN(nwxGrid::OnEditorStart)
-EVT_GRID_EDITOR_HIDDEN(nwxGrid::OnEditorEnd)
-EVT_GRID_CELL_CHANGED(nwxGrid::OnCellChange)
-EVT_GRID_SELECT_CELL(nwxGrid::OnSelectCell)
+EVT_GRID_EDITOR_SHOWN(nwxGrid::_OnEditorStart)
+EVT_GRID_EDITOR_HIDDEN(nwxGrid::_OnEditorEnd)
+EVT_GRID_CELL_CHANGED(nwxGrid::_OnCellChange)
+EVT_GRID_SELECT_CELL(nwxGrid::_OnSelectCell)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(nwxGrid,wxGrid)

@@ -883,11 +883,170 @@ bool CLabSampleChannelThreshold::Skip()
 {
   return IsEmpty();
 }
+
+//************************************************* CLabNsStutter
+const double CLabNsStutter::INVALID_RATIO(-1.0);
+const int CLabNsStutter::INVALID_BPS(-10000);
+
+
+void CLabNsStutter::LocusStutter::Init()
+{
+  setptr<Threshold,ThresholdLess>::cleanup(&m_setThreshold);
+  m_sLocusName.Clear();
+}
+double CLabNsStutter::LocusStutter::FindRatio(int nBPS) const
+{
+  Threshold t(nBPS);
+  std::set<Threshold *,ThresholdLess>::const_iterator itr =
+    m_setThreshold.find(&t);
+  double dRtn = 
+    (itr == m_setThreshold.end()) 
+    ? CLabNsStutter::INVALID_RATIO
+    : (*itr)->GetRatio();
+  return dRtn;
+}
+void CLabNsStutter::LocusStutter::SetRatio(int nBPS,double dRatio)
+{
+  if(CLabNsStutter::BpsOK(nBPS))
+  {
+    CLabNsStutter::Threshold xt(nBPS);
+    std::set<CLabNsStutter::Threshold *,CLabNsStutter::ThresholdLess>::iterator
+      itr = m_setThreshold.find(&xt);
+    bool bInsert = CLabNsStutter::RatioOK(dRatio);
+    if(itr == m_setThreshold.end()) {}
+    else if( bInsert && ((*itr)->GetRatio() == dRatio) )
+    {
+      bInsert = false; // valid and no change
+    }
+    else
+    {
+      m_setThreshold.erase(itr); // replace it with different ratio
+    }
+    if(bInsert)
+    {
+      m_setThreshold.insert(new CLabNsStutter::Threshold(nBPS,dRatio));
+    }
+  }
+}
+CLabNsStutter::LocusStutter &CLabNsStutter::LocusStutter::operator = (const CLabNsStutter::LocusStutter &x)
+{
+  setptr<Threshold,ThresholdLess>::copy(&m_setThreshold,x.m_setThreshold);
+  m_sLocusName = x.m_sLocusName;
+  return (*this);
+}
+
+void CLabNsStutter::Init()
+{
+  setptr<LocusStutter,LocusStutterLess>::cleanup(&m_data);
+}
+int CLabNsStutter::LocusStutter::FindAllBPS(std::vector<int> *pan) const
+{
+  std::set<Threshold *,ThresholdLess>::const_iterator itr;
+  pan->clear();
+  pan->reserve(m_setThreshold.size());
+  for(itr = m_setThreshold.begin();
+    itr != m_setThreshold.end();
+    ++itr)
+  {
+    if(!(*itr)->Skip())
+    {
+      pan->push_back((*itr)->GetBPS());
+    }
+  }
+  int nRtn = int(pan->size());
+  return nRtn;
+}
+bool CLabNsStutter::LocusStutter::operator==(const CLabNsStutter::LocusStutter &x) const
+{
+  bool bRtn = (m_sLocusName == x.m_sLocusName) &&
+        setptr<Threshold,ThresholdLess>::IsEqual(
+          m_setThreshold,x.m_setThreshold);
+  return bRtn;
+}
+
+int CLabNsStutter::FindAllBPS(std::vector<int> *pan) const
+{
+  std::vector<int> anTemp;
+  std::vector<int>::iterator itrN;
+  std::set<LocusStutter *,LocusStutterLess>::const_iterator itrL;
+  int nRtn = 0;
+  pan->clear();
+  pan->reserve(m_data.size() << 2);  // reserve 4 per locus
+
+  for(itrL = m_data.begin(); itrL != m_data.end(); ++itrL)
+  {
+    (*itrL)->FindAllBPS(&anTemp);
+    for(itrN = anTemp.begin(); itrN != anTemp.end(); ++itrN)
+    {
+      pan->push_back(*itrN);
+    }
+  }
+  if(pan->size())
+  {
+    vectorSort<int>::Sort(pan);
+    nRtn = (int) pan->size();
+  }
+  return nRtn;
+}
+CLabNsStutter &CLabNsStutter::operator=(const CLabNsStutter &x)
+{
+  setptr<LocusStutter,LocusStutterLess>::copy(&m_data,x.m_data);
+  return *this;
+}
+bool CLabNsStutter::operator == (const CLabNsStutter &x) const
+{
+  bool bRtn = setptr<LocusStutter,LocusStutterLess>::IsEqual(
+    m_data,x.m_data);
+  return bRtn;
+}
+double CLabNsStutter::FindRatio(const wxString &sLocus, int nBPS) const
+{
+  std::set<LocusStutter *,LocusStutterLess>::const_iterator itr =
+    _Iterator(sLocus);
+  double dRtn = (itr == m_data.end()) 
+    ? CLabNsStutter::INVALID_RATIO
+    : (*itr)->FindRatio(nBPS);
+  return dRtn;
+}
+std::set<CLabNsStutter::LocusStutter *,CLabNsStutter::LocusStutterLess>::const_iterator 
+    CLabNsStutter::_Iterator(const wxString &sLocus) const
+{
+  CLabNsStutter::LocusStutter ls(sLocus);
+  std::set<LocusStutter *,LocusStutterLess>::const_iterator itr =
+    m_data.find(&ls);
+  return itr;
+}
+bool CLabNsStutter::LocusUsed(const wxString &sLocus) const
+{
+  std::set<LocusStutter *,LocusStutterLess>::const_iterator
+    itr = _Iterator(sLocus);
+  return (itr != m_data.end());
+}
+void CLabNsStutter::Set(const wxString &sLocus, int nBPS, double dRatio)
+{
+  LocusStutter x(sLocus);
+  LocusStutter *px = NULL;
+  std::set<LocusStutter *,LocusStutterLess>::iterator itr =
+    m_data.find(&x);
+  if(itr == m_data.end())
+  {
+    px = new LocusStutter(sLocus);
+    m_data.insert(px);
+  }
+  else
+  {
+    px = *itr;
+  }
+  px->SetRatio(nBPS,dRatio);
+}
+
+
 //************************************************* CLabRFU
 
 void CLabRFU::Init()
 {
   m_apLocusThreshold.Cleanup();
+  m_NsStutter.Init();
   nwxXmlPersist::Init();
   m_dPullupFractionFilter = -1.0;
   m_dFractionMaxPeak = -1.0;
@@ -962,12 +1121,19 @@ void CLabRFU::RegisterAll(bool b)
     "LocusThreshold",
     &m_ioLocusThreshold,
     (void *)&m_apLocusThreshold);
+  if(m_nType == TYPE_SAMPLE)
+  {
+    Register(
+      "NsStutterThresholds",
+      &m_NsStutter);
+  }
 }
 
 bool CLabRFU::operator ==(const CLabRFU &x) const
 {
   bool bRtn = false;
   LABEQLOG(m_apLocusThreshold,"CLabRFU.m_apLocusThreshold")
+  else LABEQLOG(m_NsStutter,"CLabRFU.m_NsStutter")
   else LABEQDLOG(m_dPullupFractionFilter,"CLabRFU.m_dPullupFractionFilter")
   else LABEQDLOG(m_dFractionMaxPeak,"CLabRFU.m_dFractionMaxPeak")
   else LABEQDLOG(m_dStutter,"CLabRFU.m_dStutter")

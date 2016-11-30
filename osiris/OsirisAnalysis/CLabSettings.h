@@ -1389,6 +1389,303 @@ public:
 
 //************************************************************ level 3
 //
+//  CLabNsStutterThreshold
+//
+class CLabNsStutter : public nwxXmlPersist
+{
+public:
+
+  //******** begin classes
+  class Threshold : public nwxXmlPersist
+  {
+  public:
+    Threshold()
+    {
+      Init();
+      RegisterAll();
+    }
+    Threshold(int nBPS, double dRatio)
+    {
+      SetBPS(nBPS);
+      SetRatio(dRatio);
+      RegisterAll();
+    }
+    Threshold(int nBPS)
+    {
+      Init();
+      SetBPS(nBPS);
+      RegisterAll();
+    }
+    Threshold(const Threshold &x)
+    {
+      (*this) = x;
+      RegisterAll();
+    }
+    virtual ~Threshold() {}
+    Threshold &operator = (const Threshold &x)
+    {
+      SetBPS(x.GetBPS());
+      SetRatio(x.GetRatio());
+      return *this;
+    }
+    bool operator == (const Threshold &x) const
+    {
+      return (m_dRatio == x.m_dRatio) &&
+        (m_nBPS == x.m_nBPS);
+    }
+    void SetRatio(double d)
+    {
+      m_dRatio = _CheckGetRatio(d);
+    }
+    void SetBPS(int n)
+    {
+      m_nBPS = _CheckGetBps(n);
+    }
+    int GetBPS() const
+    {
+      return _CheckGetBps(m_nBPS);
+    }
+    double GetRatio() const
+    {
+      return _CheckGetRatio(m_dRatio);
+    }
+    virtual void Init(void *p)
+    {
+      Threshold *pp = (Threshold *)p;
+      pp->Init();
+    }
+    virtual void Init()
+    {
+      m_dRatio = CLabNsStutter::INVALID_RATIO;
+      m_nBPS = CLabNsStutter::INVALID_BPS;
+    }
+    virtual bool Skip(void *p)
+    {
+      Threshold *pp = (Threshold *)p;
+      return pp->Skip();
+    }
+
+    bool Validate()
+    {
+      bool bRtn = true;
+      double d = GetRatio();
+      int n = GetBPS();
+      if(n != m_nBPS)
+      {
+        // stored value was invalid
+        SetBPS(n);
+        bRtn = false;
+      }
+      if(d != m_dRatio)
+      {
+        // stored value was invalid
+        SetRatio(d);
+        bRtn = false;
+      }
+      if(bRtn && Skip())
+      {
+        bRtn = false;
+      }
+      return bRtn;
+    }
+    bool Skip() const
+    {
+      bool bRtn = !(CLabNsStutter::RatioOK(m_dRatio) && CLabNsStutter::BpsOK(m_nBPS));
+      return bRtn;
+    }
+
+  protected:
+    virtual void RegisterAll(bool = false)
+    {
+      RegisterInt(wxT("Bps"),&m_nBPS);
+      RegisterDouble(wxT("Ratio"),&m_dRatio);
+    }
+  private:
+    static double _CheckGetRatio(double d)
+    {
+      return CLabNsStutter::RatioOK(d) ? d : CLabNsStutter::INVALID_RATIO;
+    }
+    static int _CheckGetBps(int n)
+    {
+      return CLabNsStutter::BpsOK(n) ? n : CLabNsStutter::INVALID_BPS;
+    }
+    double m_dRatio;
+    int m_nBPS;
+  };
+
+  class ThresholdLess
+  {
+  public:
+    ThresholdLess() {;}
+    bool operator()(const Threshold &x1, const Threshold &x2) const
+    {
+      bool bRtn = (x1.GetBPS() < x2.GetBPS());
+      return bRtn;
+    }
+    bool operator()(const Threshold *p1,const Threshold *p2) const
+    {
+      return (*this)(*p1,*p2);
+    }
+  };
+
+  class LocusStutter : public nwxXmlPersist
+  {
+  public:
+    LocusStutter()
+    {
+      Init();
+      RegisterAll(true);
+    }
+    LocusStutter(const LocusStutter &x)
+    {
+      Init();
+      (*this) = x;
+      RegisterAll();
+    }
+    LocusStutter(const wxString &sName)
+    {
+      Init();
+      RegisterAll();
+      m_sLocusName = sName;
+    }
+    virtual ~LocusStutter()
+    {
+      Init();
+    }
+    const wxString &GetName() const
+    {
+      return m_sLocusName;
+    }
+    virtual void Init(void *p)
+    {
+      LocusStutter *pp = (LocusStutter *)p;
+      pp->Init();
+    }
+    virtual bool Skip(void *p)
+    {
+      LocusStutter *pp = (LocusStutter *)p;
+      return pp->_Skip();
+    }
+    bool operator == (const LocusStutter &x) const;
+    LocusStutter &operator = (const LocusStutter &x);
+    virtual void Init();
+    double FindRatio(int nBPS) const;
+    void SetRatio(int nBPS,double dRatio);
+    int FindAllBPS(std::vector<int> *pan) const;
+
+  protected:
+    virtual void RegisterAll(bool = false)
+    {
+      RegisterWxString(wxT("Name"),&m_sLocusName);
+      Register(wxT("Threshold"),&m_io,&m_setThreshold);
+    }
+  private:
+    bool _Skip() const
+    {
+      std::set<Threshold *,ThresholdLess>::iterator itr;
+      bool bRtn = true;
+      for(itr = m_setThreshold.begin();
+        bRtn && (itr != m_setThreshold.end());
+        ++itr)
+      {
+        if(!(*itr)->Skip())
+        {
+          bRtn = false;
+        }
+      }
+      return m_setThreshold.empty();
+    }
+    wxString m_sLocusName;
+    std::set<Threshold *,ThresholdLess> m_setThreshold;
+    TnwxXmlIOPersistSet<Threshold,ThresholdLess> m_io;
+  };
+  class LocusStutterLess
+  {
+  public:
+    LocusStutterLess() {;}
+    bool operator()(const LocusStutter &x1,const LocusStutter &x2) const
+    {
+      return nwxString::CompareSort(x1.GetName(),x2.GetName()) < 0;
+    }
+    bool operator()(const LocusStutter *p1,const LocusStutter *p2) const
+    {
+      return (*this)(*p1,*p2);
+    }
+  };
+
+  //******** end classes
+
+  CLabNsStutter()
+  {
+    Init();
+    RegisterAll(true);
+  }
+  CLabNsStutter(const CLabNsStutter &x)
+  {
+    Init();
+    RegisterAll(true);
+    (*this) = x;
+  }
+  virtual ~CLabNsStutter()
+  {
+    Init();
+  }
+  CLabNsStutter &operator = (const CLabNsStutter &x);
+  bool operator == (const CLabNsStutter &x) const;
+  virtual bool Skip(void *p)
+  {
+    CLabNsStutter *pp = (CLabNsStutter *)p;
+    return pp->_Skip();
+  }
+  virtual void Init(void *p)
+  {
+    CLabNsStutter *pp = (CLabNsStutter *)p;
+    pp->Init();
+  }
+  virtual void Init();
+  int FindAllBPS(std::vector<int> *pRtn) const;
+  double FindRatio(const wxString &sLocus, int nBPS) const;
+  void Set(const wxString &sLocus, int nBPS, double dRatio);
+  bool LocusUsed(const wxString &sLocus) const;
+
+  static bool RatioOK(double d)
+  {
+    return ((d >= 0.0) && (d <= 1.0));
+  }
+  static bool BpsOK(int n)
+  {
+    return (n && (n >= -20) && (n <= 20));
+  }
+
+
+  static const int INVALID_BPS;
+  static const double INVALID_RATIO;
+protected:
+  virtual void RegisterAll(bool = false)
+  {
+    Register(wxT("Locus"),&m_io,&m_data);
+  }
+private:
+  std::set<LocusStutter *,LocusStutterLess>::const_iterator 
+    _Iterator(const wxString &sLocus) const;
+  bool _Skip()
+  {
+    bool bRtn = true;
+    std::set<LocusStutter *,LocusStutterLess>::iterator itr;
+    for(itr = m_data.begin(); bRtn && (itr != m_data.end()); ++itr)
+    {
+      if(!(*itr)->Skip(*itr))
+      {
+        bRtn = false;
+      }
+    }
+    return bRtn;
+  }
+  std::set<LocusStutter *,LocusStutterLess> m_data;
+  TnwxXmlIOPersistSet<LocusStutter,LocusStutterLess> m_io;
+};
+//************************************************************ level 3
+//
 //  CLabRFU
 //
 class CLabRFU : public nwxXmlPersist
@@ -1440,6 +1737,7 @@ public:
     LABCP(m_nMinInterlocus);
     LABCP(m_nMax);
     LABCP(m_nDetection);
+    LABCP(m_NsStutter);
     return *this;
   }
   bool operator == (const CLabRFU &x) const;
@@ -1531,7 +1829,12 @@ public:
   {
     m_apLocusThreshold.Set(x);
   }
-
+  CLabNsStutter *GetNsStutter()
+  {
+    return (m_nType == TYPE_SAMPLE)
+      ? &m_NsStutter
+      : NULL;
+  }
 
   virtual void Init(void *p);
   virtual void Init();
@@ -1540,6 +1843,7 @@ protected:
 private:
   SetLabLocusThreshold m_apLocusThreshold;
   SetLabLocusThresholdIO m_ioLocusThreshold;
+  CLabNsStutter m_NsStutter;
   double m_dPullupFractionFilter;
   double m_dFractionMaxPeak;
   double m_dStutter;
@@ -1730,7 +2034,10 @@ public:
   virtual void Init(void *p);
   virtual void Init();
 
-
+  CLabNsStutter *GetNsStutter()
+  {
+    return m_rfuSample.GetNsStutter();
+  }
   int GetValue(const wxString &sMsgName, int nDefault = -1) const;
   void SetValue(const wxString &sMsgName,
     int nValue,
@@ -2225,6 +2532,10 @@ public:
   const CLabThresholds *GetThresholds() const
   {
     return &m_thresholds;
+  }
+  CLabNsStutter *GetNsStutter()
+  {
+    return m_thresholds.GetNsStutter();
   }
   CLabMarkerSetSpecifications *GetMarkers()
   {

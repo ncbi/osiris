@@ -71,8 +71,9 @@ public:
     m_pData = pData;
     bool b1 = m_pGridSample->SetData(pData,sKitName);
     bool b2 = m_pGridLadder->SetData(pData,sKitName);
+    bool b3 = m_pGridStutter->SetData(pData->GetNsStutter(),sKitName);
     m_pGridRFU->SetData(pData,sKitName);
-    return b1 && b2;
+    return b1 && b2 && b3;
   }
   void OnSize(wxSizeEvent &e);
 
@@ -85,6 +86,7 @@ private:
   wxCheckBox *m_pAllowOverride;
   CGridLabThresholdsSample *m_pGridSample;
   CGridLabThresholdsLadder *m_pGridLadder;
+  CGridLabNsStutter *m_pGridStutter;
   CChoiceHomozygote *m_pChoiceHomozygoteUnits;
   DECLARE_EVENT_TABLE()
 };
