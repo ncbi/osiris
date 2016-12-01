@@ -34,6 +34,17 @@ if test "$XCODE" != ""; then
 fi
 function setupConfigure
 {
+  QTD=../include/QuickTime
+  QTH="${QTD}/QuickTime.h"
+  if test ! -d "${QTD}" ; then
+    mkdir "${QTD}"
+    checkrc $? "Cannot create dir ${QTD}"
+  fi
+  if test ! -r "${QTH}" ; then
+    touch "${QTH}"
+    test -r "${QTH}"
+    checkrc $? "Cannot create file ${QTH}"
+  fi
   test -r ../configure
   checkrc $? "Cannot find ../configure"
   if test ! -x ../configure ; then
@@ -53,6 +64,7 @@ setupConfigure
   --with-cocoa \
   --disable-shared \
   --disable-compat28 \
+  --disable-mediactrl \
   --without-libjbig \
   --without-liblzma \
   --without-libtiff \
