@@ -2034,8 +2034,8 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 
 	RGXMLTagSearch nonStandardStutterSearch ("NsStutterThresholds", XMLString);
 	RGXMLTagSearch nonStandardLocusSearch ("Locus", nsStutterThresholdString);
-	RGXMLTagSearch nonStandardLocusNameSearch ("Name", nsStutterThresholdString);
-	RGXMLTagSearch nonStandardLocusThresholdSearch ("Threshold", nsStutterThresholdString);
+	RGXMLTagSearch nonStandardLocusNameSearch ("Name", nsStutterLocusThresholdString);
+	RGXMLTagSearch nonStandardLocusThresholdSearch ("Threshold", nsStutterLocusThresholdString);
 	RGXMLTagSearch nonStandardLocusBpSearch ("Bps", nsRatioString);
 	RGXMLTagSearch nonStandardLocusRatioSearch ("Ratio", nsRatioString);
 

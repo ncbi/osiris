@@ -138,7 +138,7 @@ struct locusSpecificNonStandardStutterStruct {
 	~locusSpecificNonStandardStutterStruct ();
 
 	void SetNonStandardStutterThreshold (int bp, double threshold);
-	void Reset () { mPositiveNonStandardStutter.ResetArray (); mNegativeNonStandardStutter.ResetArray (); }
+	void Reset () { mPositiveNonStandardStutter.ResetArray (); mNegativeNonStandardStutter.ResetArray (); locusName = ""; }
 
 	RGString locusName;
 	RGPArray mPositiveNonStandardStutter;

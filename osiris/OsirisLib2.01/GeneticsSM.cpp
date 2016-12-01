@@ -5632,6 +5632,9 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 				if (testSignal->SignalIsPrimaryStutter (nextSignal))
 					continue;
 
+				if (testSignal->GetMessageValue (craterSidePeak))
+					continue;
+
 				mean = testSignal->GetMean ();
 				peak = testSignal->Peak ();
 
@@ -5720,7 +5723,10 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 				break;
 
 			if (testSignal->SignalIsPrimaryStutter (nextSignal))
-					continue;
+				continue;
+
+			if (testSignal->GetMessageValue (craterSidePeak))
+				continue;
 
 			mean = testSignal->GetMean ();
 			peak = testSignal->Peak ();
@@ -6487,6 +6493,8 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			tempList.Append (currentSignal);
 			signalList.RemoveReference (prevSignal);
 			signalList.RemoveReference (nextSignal);
+			smartPeaks.RemoveReference (prevSignal);
+			smartPeaks.RemoveReference (nextSignal);
 			prevLocation = location;
 			prevAlleleName = alleleName;
 			prevSignal = currentSignal;
