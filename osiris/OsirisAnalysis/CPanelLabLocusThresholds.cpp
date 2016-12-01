@@ -89,9 +89,13 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   wxStaticText *psLadderLabel =
     new wxStaticText(PANEL,wxID_ANY,
     "Locus Limits for Ladders/ILS Limits");
+  wxStaticText *psStutterLabel =
+    new wxStaticText(PANEL,wxID_ANY,
+    "Non-Standard Stutter");
   mainApp::SetBoldFont(pTextRFU);
   mainApp::SetBoldFont(psSampleLabel);
   mainApp::SetBoldFont(psLadderLabel);
+  mainApp::SetBoldFont(psStutterLabel);
   wxStaticText *psDisclaimer =
     new wxStaticText(PANEL,wxID_ANY,
     "* Note: The default settings for "
@@ -101,6 +105,7 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
     "Min. homozygote threshold units:");
   m_pGridSample = new CGridLabThresholdsSample(PANEL,wxID_ANY);
   m_pGridLadder = new CGridLabThresholdsLadder(PANEL,wxID_ANY);
+  m_pGridStutter = new CGridLabNsStutter(PANEL,wxID_ANY);
   m_pChoiceHomozygoteUnits = new CChoiceHomozygote(PANEL,wxID_ANY);
   
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
@@ -121,7 +126,12 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   pSizer->Add(psLadderLabel,0,wxALIGN_LEFT | wxLEFT | wxRIGHT,ID_BORDER);
   pSizer->Add(m_pGridLadder,0, /* wxEXPAND  | */ wxLEFT | wxRIGHT, ID_BORDER);
   pSizer->Add(psDisclaimer,0,wxALIGN_LEFT | (wxALL ^ wxTOP),ID_BORDER);
-  //pSizer->AddStretchSpacer(1);
+
+  pSizer->AddSpacer(ID_BORDER << 2);
+  pSizer->Add(psStutterLabel,0,wxALIGN_LEFT | wxLEFT | wxRIGHT,ID_BORDER);
+  pSizer->Add(m_pGridStutter,0, /* wxEXPAND  | */ wxLEFT | wxRIGHT, ID_BORDER);
+
+
   PANEL->SetSizer(pSizer);
   pSizer = new wxBoxSizer(wxHORIZONTAL);
   pSizer->Add(PANEL,0,wxALIGN_TOP | wxALIGN_LEFT,0);
@@ -137,6 +147,7 @@ void CPanelLabLocusThresholds::SetReadOnly(bool bReadOnly)
   m_pGridRFU->SetAllReadOnly(bReadOnly);
   m_pGridSample->SetAllReadOnly(bReadOnly);
   m_pGridLadder->SetAllReadOnly(bReadOnly);
+  m_pGridStutter->SetAllReadOnly(bReadOnly);
 }
 bool CPanelLabLocusThresholds::TransferDataToWindow()
 {
@@ -159,6 +170,11 @@ bool CPanelLabLocusThresholds::TransferDataToWindow()
     {
       bRtn = false;
     }
+    if(!m_pGridStutter->TransferDataToWindow())
+    {
+      bRtn = false;
+    }
+    Layout();
   }
   return bRtn;
 }
@@ -179,6 +195,10 @@ bool CPanelLabLocusThresholds::TransferDataFromWindow()
       bRtn = false;
     }
     if(!m_pGridLadder->TransferDataFromWindow())
+    {
+      bRtn = false;
+    }
+    if(!m_pGridStutter->TransferDataFromWindow())
     {
       bRtn = false;
     }

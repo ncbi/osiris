@@ -41,6 +41,7 @@
 
 class CLabThresholds;
 class CLabLocusThreshold;
+class CLabNsStutter;
 
 class CGridLabThresholds : public nwxGrid
 {
@@ -133,6 +134,101 @@ private:
     ROW_ADENYLATION_THRESHOLD,
     ROWS
   };
+};
+
+class CGridLabNsStutter : public nwxGrid
+{
+public:
+  CGridLabNsStutter(
+    wxWindow *parent,
+    wxWindowID nID = wxID_ANY);
+  virtual ~CGridLabNsStutter() {}
+  virtual bool TransferDataToWindow();
+  virtual bool TransferDataFromWindow();
+  virtual void OnCellChange(wxGridEvent &);
+  void SetAllReadOnly(bool bReadOnly = true);
+  bool SetData(CLabNsStutter *pLabStutter, const wxString &sKitName);
+  void InitColour();
+  void SetRowReadOnlyColour(int nRow, bool bReadOnly = true);
+  void SetReadOnlyColour(int nRow, int nCol, bool bReadOnly = true);
+
+
+  // validation
+  bool IsBPSEmpty(int nRow);
+  bool IsRowEmptyRatio(int nRow);
+  void SetupReadOnlyByData();
+private:
+  wxColour _GetBackgroundColour(bool bReadOnly)
+  {
+    wxColour c = bReadOnly ? GetDisabledColour() : GetDefaultCellBackgroundColour();
+    return c;
+  }
+  CLabNsStutter *m_pLabStutter;
+  bool m_bReadOnly;
+  bool m_bValidatorSet;
+
+  class CValidatorRatio : public nwxGridCellDoubleRangeValidator
+  {
+  public:
+    CValidatorRatio(CGridLabNsStutter *pGrid) :
+        nwxGridCellDoubleRangeValidator(0.0,1.0,true),
+        m_pGrid(pGrid)
+    {}
+    virtual ~CValidatorRatio()
+    {}
+    virtual bool Validate(
+      const wxString &sCellValue, 
+      wxString *pErrorMessage = NULL,
+      wxGrid *pGrid = NULL,
+      int nRow = -1,
+      int nCol = -1)
+    {
+      bool bRtn = nwxGridCellDoubleRangeValidator::Validate(sCellValue,pErrorMessage,pGrid,nRow,nCol);
+      m_pGrid->SetupReadOnlyByData();
+      return bRtn;
+    }
+  private:
+    CGridLabNsStutter *m_pGrid;
+  };
+  class CValidatorBPS : public TnwxGridCellRangeValidator<int>
+  {
+  public: 
+    CValidatorBPS(CGridLabNsStutter *pGrid) :
+      TnwxGridCellRangeValidator<int>(-20,20,true),
+        m_pGrid(pGrid)
+    {}
+    virtual ~CValidatorBPS() {}
+    virtual bool Validate(
+      const wxString &sCellValue, 
+      wxString *pErrorMessage = NULL,
+      wxGrid *pGrid = NULL,
+      int nRow = -1,
+      int nCol = -1);
+
+    virtual bool IsType(const wxString &s)
+    {
+      return nwxString::IsInteger(s,true);
+    }
+    virtual int StringToValue(const wxString &s)
+    {
+      return atoi(s.utf8_str());
+    }
+    virtual const wxChar *InvalidTypeMessage() const
+    {
+      return wxS("A non-zero integer is required.");
+    }
+    const wxChar *InvalidTypeMessageNotEmpty() const
+    {
+      return wxS("A non-zero integer is required when the row is not empty.");
+    }
+    const wxChar *InvalidNotUnique() const
+    {
+      return wxS("A number of BPS should appear on only one row");
+    }
+  private:
+    CGridLabNsStutter *m_pGrid;
+  };
+
 };
 
 

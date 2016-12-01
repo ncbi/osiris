@@ -50,7 +50,12 @@ class nwxGridCellValidator
 public:
   virtual ~nwxGridCellValidator() {}
   virtual bool Validate(
-    const wxString &sCellValue, wxString *pErrorMessage = NULL) = 0;
+    const wxString &sCellValue, 
+    wxString *pErrorMessage = NULL,
+    wxGrid *pGrid = NULL,
+    int nRow = -1,
+    int nCol = -1
+    ) = 0;
 };
 
 template<class T> class TnwxGridCellRangeValidator 
@@ -72,7 +77,12 @@ public:
   virtual const wxChar *InvalidTypeMessage() const = 0;
 
   virtual bool Validate(
-    const wxString &sCellValue, wxString *psError = NULL)
+    const wxString &sCellValue, 
+    wxString *psError = NULL,
+    wxGrid * = NULL,
+    int = -1,
+    int = -1
+    )
   {
     wxString s(sCellValue);
     bool bRtn = true;
@@ -447,7 +457,7 @@ public:
     nwxGridCellValidator *pv = m_validators.Find(nRow,nCol);
     if(pv != NULL)
     {
-      bRtn = pv->Validate(s,pError);
+      bRtn = pv->Validate(s,pError,this,nRow,nCol);
     }
     return bRtn;
   }
@@ -481,13 +491,17 @@ public:
     m_validators.Init();
   }
   wxColour GetDisabledColour();
-  void OnEditorStart(wxGridEvent &e);
-  void OnEditorEnd(wxGridEvent &e);
-  void OnCellChange(wxGridEvent &e);
-  void OnSelectCell(wxGridEvent &e);
+  virtual void OnEditorStart(wxGridEvent &e);
+  virtual void OnEditorEnd(wxGridEvent &e);
+  virtual void OnCellChange(wxGridEvent &e);
+  virtual void OnSelectCell(wxGridEvent &e);
   void OnEditCell(wxGridEvent &e);
   static bool CheckVirtualSize(wxScrolledWindow *p,wxSize *pSize = NULL);
 private:
+  void _OnCellChange(wxGridEvent &e);
+  void _OnSelectCell(wxGridEvent &e);
+  void _OnEditorStart(wxGridEvent &e);
+  void _OnEditorEnd(wxGridEvent &e);
   nwxGridCellValidatorCollection m_validators;
   wxColour m_clrDisabled;
   wxString m_sValue;

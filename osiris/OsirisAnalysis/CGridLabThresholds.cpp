@@ -532,3 +532,295 @@ bool CGridLabThresholdsLadder::TransferDataToWindow()
   }
   return bRtn;
 }
+
+//**************************************************************
+//
+//    CGridLabNsStutter
+//
+//  ToDo: allow empty bps, warn if closing after changes
+//     set unused rows readonly except 1
+//
+CGridLabNsStutter::CGridLabNsStutter(
+    wxWindow *parent,
+    wxWindowID nID) : 
+      nwxGrid(parent,nID),
+      m_pLabStutter(NULL),
+      m_bReadOnly(false),
+      m_bValidatorSet(false)
+{
+  CreateGrid(1,1);
+  SetRowLabelSize(1);
+  EnableDragColSize(false);
+  EnableDragRowSize(false);
+  SetDefaultCellAlignment(wxALIGN_RIGHT,wxALIGN_CENTRE);
+  SetColLabelSize(GetRowSize(0));
+}
+bool CGridLabNsStutter::CValidatorBPS::Validate(
+  const wxString &sCellValue, 
+  wxString *pErrorMessage,
+  wxGrid *,
+  int nRow,
+  int)
+{
+  bool bRtn = true;
+  if(sCellValue.IsEmpty())
+  {
+    bRtn = m_pGrid->IsRowEmptyRatio(nRow);
+    if(!bRtn && pErrorMessage != NULL)
+    {
+      *pErrorMessage = InvalidTypeMessageNotEmpty();
+    }
+  }
+  else
+  {
+    bRtn = TnwxGridCellRangeValidator<int>::Validate(sCellValue,pErrorMessage);
+    if(bRtn)
+    {
+      int n = StringToValue(sCellValue);
+      if(!n)
+      {
+        bRtn = false;
+        if(pErrorMessage != NULL)
+        {
+          *pErrorMessage = InvalidTypeMessage();
+        }
+      }
+      else
+      {
+        int nRows = m_pGrid->GetNumberRows();
+        int nr;
+        for(nr = 1; nr < nRows; ++nr)
+        {
+          if(nr == nRow) {}
+          else if(StringToValue(m_pGrid->GetCellValue(nr,0)) == n)
+          {
+            // we have a duplicate
+            bRtn = false;
+            nr = nRows; // loop exit
+            if(pErrorMessage != NULL)
+            {
+              *pErrorMessage = InvalidNotUnique();
+            }
+          }
+        }
+      }
+    }
+  }
+  m_pGrid->SetupReadOnlyByData();
+  return bRtn;
+}
+
+bool CGridLabNsStutter::SetData(CLabNsStutter *pLabStutter, const wxString &sKitName)
+{
+
+  vector<wxString> vsColumns;
+  vsColumns.push_back(wxT("BPS"));
+  ClearGrid();
+  bool bOK = CGridLocusColumns::SetupKit(this,sKitName,vsColumns,false,true,true);
+  if(bOK)
+  {
+    m_pLabStutter = pLabStutter;
+    if(!m_bValidatorSet)
+    {
+      SetDefaultCellValidator(new CValidatorRatio(this));
+      SetColumnCellValidator(new CValidatorBPS(this), 0);
+      m_bValidatorSet = true;
+    }
+  }
+  return bOK;
+}
+void CGridLabNsStutter::OnCellChange(wxGridEvent &e)
+{
+  nwxGrid::OnCellChange(e);
+  SetupReadOnlyByData();
+}
+bool CGridLabNsStutter::TransferDataToWindow()
+{
+  int n = GetNumberCols();
+  bool bRtn = (n > 1) && (m_pLabStutter != NULL);
+  if(bRtn)
+  {
+    wxString s;
+    wxString sLocus;
+    std::vector<int> vnBPS;
+    std::vector<int>::iterator itr;
+    double dRatio;
+    size_t nCount = m_pLabStutter->FindAllBPS(&vnBPS);
+    int nRow = 1;
+    int nCol;
+    int nCols = GetNumberCols();
+    int nRowCount = (nCount >= 6) ? nCount + 2 : 8;
+    nwxGrid::SetRowCount(this,nRowCount);
+    for(itr = vnBPS.begin();
+      itr != vnBPS.end();
+      ++itr)
+    {
+      s = nwxString::FormatNumber(*itr);
+      SetCellValue(nRow,0,s);
+      ++nRow;
+    }
+    for(nCol = 1; nCol < nCols; ++nCol)
+    {
+      sLocus = GetColLabelValue(nCol);
+      if(m_pLabStutter->LocusUsed(sLocus))
+      {
+        nRow = 1;
+        for(itr = vnBPS.begin();
+          itr != vnBPS.end();
+          ++itr)
+        {
+          dRatio = m_pLabStutter->FindRatio(sLocus,*itr);
+          if(dRatio > 0.0)
+          {
+            s = nwxString::FormatDouble(dRatio);
+            SetCellValue(nRow,nCol,s);
+          }
+          ++nRow;
+        }
+      }
+    }
+    SetAllReadOnly(m_bReadOnly);
+    if(!m_bReadOnly) { SetupReadOnlyByData(); }
+  }
+  return bRtn;
+}
+void CGridLabNsStutter::SetAllReadOnly(bool bReadOnly)
+{
+  CGridLocusColumns::SetReadOnly(this,bReadOnly);
+  InitColour();
+  m_bReadOnly = bReadOnly;
+}
+
+bool CGridLabNsStutter::TransferDataFromWindow()
+{
+  wxString sLocus;
+  wxString s;
+  double dRatio;
+  int nRows = GetNumberRows();
+  int nCols = GetNumberCols();
+  int nRow;
+  int nCol;
+  int nBPS;
+  bool bRtn = true;
+  m_pLabStutter->Init();
+  for(nRow = 1; nRow < nRows; ++nRow)
+  {
+    s = GetCellValueTrimmed(nRow,0);
+    if(!s.IsEmpty())
+    {
+      nBPS = atoi(s.utf8_str());
+      if(CLabNsStutter::BpsOK(nBPS))
+      {
+        sLocus.Clear();
+        for(nCol = 1; nCol < nCols; ++nCol)
+        {
+          s = GetCellValueTrimmed(nRow,nCol);
+          if(!s.IsEmpty())
+          {
+            dRatio = atof(s.utf8_str());
+            if(CLabNsStutter::RatioOK(dRatio))
+            {
+              sLocus = GetColLabelValue(nCol);
+              m_pLabStutter->Set(sLocus,nBPS,dRatio);
+            }
+            else
+            {
+              bRtn = false;
+            }
+          }
+        }
+      }
+      else
+      {
+        bRtn = false;
+      }
+    }
+  }
+  return bRtn;
+}
+
+void CGridLabNsStutter::InitColour()
+{
+  wxColour c = GetDefaultCellBackgroundColour();
+  int nCols = GetNumberCols();
+  int nRows = GetNumberRows();
+  int nRow; 
+  int nCol;
+  for(nRow = 1; nRow < nRows; ++nRow)
+  {
+    for(nCol = 0; nCol < nCols; ++nCol)
+    {
+      SetCellBackgroundColour(nRow,nCol,c);
+    }
+  }
+}
+void CGridLabNsStutter::SetRowReadOnlyColour(int nRow, bool bReadOnly)
+{
+  wxColour c = _GetBackgroundColour(bReadOnly);
+  int nCols = GetNumberCols();
+  int nCol;
+  for(nCol = 0; nCol < nCols; ++nCol)
+  {
+    SetCellBackgroundColour(nRow,nCol,c);
+  }
+  SetRowReadOnly(nRow,bReadOnly);
+}
+void CGridLabNsStutter::SetReadOnlyColour(int nRow, int nCol, bool bReadOnly)
+{
+  wxColour c = _GetBackgroundColour(bReadOnly);
+  SetCellBackgroundColour(nRow,nCol,c);
+  SetReadOnly(nRow,nCol,bReadOnly);
+}
+
+void CGridLabNsStutter::SetupReadOnlyByData()
+{
+  if(!m_bReadOnly)
+  {
+    int nRows = GetNumberRows();
+    int nRow;
+    bool bFoundEditRow = false;
+    bool bEmpty;
+    for(nRow = 1; nRow < nRows; ++nRow)
+    {
+      bEmpty = IsBPSEmpty(nRow);
+      SetRowReadOnlyColour(nRow,bEmpty);
+      if( !bFoundEditRow && (bEmpty || IsRowEmptyRatio(nRow)) )
+      {
+        SetReadOnlyColour(nRow,0,false);
+        bFoundEditRow = true;
+      }
+    }
+    if(!bFoundEditRow)
+    {
+      // need a new row
+      SetRowCount(nRows + 1);
+      SetRowReadOnlyColour(nRows,true);
+      SetReadOnlyColour(nRows,0,false);
+    }
+    Refresh();
+  }
+}
+bool CGridLabNsStutter::IsBPSEmpty(int nRow)
+{
+  bool bRtn = (nRow > 0) &&
+    (nRow < GetNumberRows()) &&
+    GetCellValue(nRow,0).IsEmpty();
+  return bRtn;
+}
+bool CGridLabNsStutter::IsRowEmptyRatio(int nRow)
+{
+  bool bRtn = (nRow > 0) && (nRow < GetNumberRows());
+  if(bRtn)
+  {
+    int nCols = GetNumberCols();
+    for(int nCol = 1; nCol < nCols; ++nCol)
+    {
+      if(!GetCellValue(nRow,nCol).IsEmpty())
+      {
+        nCol = nCols; //loop exit
+        bRtn = false;
+      }
+    }
+  }
+  return bRtn;
+}
