@@ -233,6 +233,7 @@ PERSISTENT_PREDECLARATION (smSigmoidalSidePeak)
 PERSISTENT_PREDECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
 PERSISTENT_PREDECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
 PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
+PERSISTENT_PREDECLARATION (smIsAcceptedOLAllele)
 
 
 
@@ -6432,6 +6433,34 @@ public:
 	smCallStutterPeaksPreset ();
 	smCallStutterPeaksPreset (const smCallStutterPeaksPreset& note);
 	virtual ~smCallStutterPeaksPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smIsAcceptedOLAllele : public SmartNotice {
+
+PERSISTENT_DECLARATION (smIsAcceptedOLAllele)
+
+public:
+	smIsAcceptedOLAllele ();
+	smIsAcceptedOLAllele (const smIsAcceptedOLAllele& note);
+	virtual ~smIsAcceptedOLAllele ();
 
 	virtual int GetSubject () const;
 

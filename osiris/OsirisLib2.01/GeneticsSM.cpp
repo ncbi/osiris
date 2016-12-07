@@ -2787,6 +2787,7 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
 	smSignalOL offLadder;
+	smIsAcceptedOLAllele acceptedOL;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2840,6 +2841,8 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 					nextSignal->SetAcceptedOffGrid (true);
 					nextSignal->SetMessageValue (offLadder, false);
 				}
+
+				nextSignal->SetMessageValue (acceptedOL, true);  // This is purely for adenylation reporting control:  12/06/2016
 			}
 
 			else {
@@ -4901,6 +4904,8 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 	smStutter stutter;
 	smCallStutterPeaksPreset callStutterPreset;
 	smDoNotCallStutterPeaksForSingleSourceSamplesPreset doNotCallStutterForSingleSource;
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset reportAdenylationWithCallPreset;
+	smIsAcceptedOLAllele acceptedOL;
 
 	//smSampleSatisfiesPossibleMixtureIDCriteria sampleSatisfiesMixtureCriteria;
 	//smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
@@ -4947,6 +4952,12 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 		}
 
 		if (nextSignal->GetMessageValue (adenylation)) {
+
+			bool isAcceptedOL = nextSignal->GetMessageValue (acceptedOL);
+			bool callAdenylationAndAllele = nextSignal->GetMessageValue (reportAdenylationWithCallPreset);
+
+			if (isAcceptedOL && callAdenylationAndAllele && CallOnLadderAdenylation)
+				continue;
 
 			it.RemoveCurrentItem ();
 			LocusSignalList.RemoveReference (nextSignal);
@@ -5573,6 +5584,8 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	smPullUp partialPullup;
 	smCraterSidePeak craterSidePeak;
 	smSigmoidalSidePeak sigmoidalSidePeak;
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset reportAdenylationWithCallPreset;
+	smIsAcceptedOLAllele acceptedOL;
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
@@ -5783,9 +5796,11 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 					threshold = adenylationLimit * primaryPeak;
 					bool assignedToLocus = (testSignal->GetLocus (0) != NULL) || (testSignal->GetLocus (-1) != NULL) || (testSignal->GetLocus (1) != NULL);
 					onLadderInLocus = assignedToLocus && (!testSignal->GetMessageValue (offLadder) || testSignal->GetMessageValue (acceptedOLRight) || testSignal->GetMessageValue (acceptedOLLeft));
-					bool testThisPeakForAdenylation = !(CallOnLadderAdenylation && onLadderInLocus);
+					bool reportAdenylationWithCall = testSignal->GetMessageValue (reportAdenylationWithCallPreset);
+					bool isAcceptedOL = testSignal->GetMessageValue (acceptedOL);
+					bool testThisPeakForAdenylation = !(CallOnLadderAdenylation && onLadderInLocus && !(isAcceptedOL && reportAdenylationWithCall));
 
-					if (testThisPeakForAdenylation && ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))) {
+					if (testThisPeakForAdenylation && (peak <= threshold)) {
 
 						testSignal->SetMessageValue (adenylationFound, true);
 						double ratio = 100.0 * peak / primaryPeak;

@@ -1338,6 +1338,12 @@ int smCallStutterPeaksPreset::sMessageIndex = 0;
 int smCallStutterPeaksPreset::sMessageScope = 0;
 
 
+RGString smIsAcceptedOLAllele::sName = "smIsAcceptedOLAllele";
+int smIsAcceptedOLAllele::sSubject = smIsAcceptedOLAllele::LoadType ();
+int smIsAcceptedOLAllele::sMessageIndex = 0;
+int smIsAcceptedOLAllele::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1560,6 +1566,7 @@ PERSISTENT_DEFINITION (smSigmoidalSidePeak, 2623, "smSigmoidalSidePeak")
 PERSISTENT_DEFINITION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset, 2624, "smDoNotCallStutterPeaksForSingleSourceSamplesPreset")
 PERSISTENT_DEFINITION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset, 2625, "smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset")
 PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2626, "smCallStutterPeaksPreset")
+PERSISTENT_DEFINITION (smIsAcceptedOLAllele, 2627, "smIsAcceptedOLAllele")
 
 
 
@@ -14876,6 +14883,66 @@ int smCallStutterPeaksPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smCallStutterPeaksPreset* noticeType = new smCallStutterPeaksPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smIsAcceptedOLAllele :: smIsAcceptedOLAllele () : SmartNotice () {
+
+}
+
+
+smIsAcceptedOLAllele :: smIsAcceptedOLAllele (const smIsAcceptedOLAllele& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smIsAcceptedOLAllele :: ~smIsAcceptedOLAllele () {
+
+}
+
+
+int smIsAcceptedOLAllele :: GetSubject () const {
+
+	return smIsAcceptedOLAllele::sSubject;
+}
+
+
+void smIsAcceptedOLAllele :: SetIndexAndScope (int index, int scope) const {
+
+	smIsAcceptedOLAllele::sMessageIndex = index;
+	smIsAcceptedOLAllele::sMessageScope = scope;
+}
+
+
+int smIsAcceptedOLAllele :: GetMessageIndex () const {
+
+	return smIsAcceptedOLAllele :: sMessageIndex;
+}
+
+
+int smIsAcceptedOLAllele :: GetScope () const {
+
+	return smIsAcceptedOLAllele :: sMessageScope;
+}
+
+
+RGString smIsAcceptedOLAllele :: GetName () const {
+
+	return smIsAcceptedOLAllele :: sName;
+}
+
+
+
+int smIsAcceptedOLAllele :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smIsAcceptedOLAllele* noticeType = new smIsAcceptedOLAllele;
 	warehouse->AddType (noticeType);
 	return 1;
 }
