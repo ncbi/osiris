@@ -233,6 +233,17 @@ void CPanelLabLocusThresholds::_UpdateView()
   Layout();
   Refresh();
 }
+
+bool CPanelLabLocusThresholds::Show(bool show)
+{
+  bool bUpdate = show && !IsShown();
+  bool bRtn = SUPER_CPanelLabLocusThresholds::Show(show);
+  if(bUpdate)
+  {
+    _UpdateView();
+  }
+  return bRtn;
+}
 BEGIN_EVENT_TABLE(CPanelLabLocusThresholds,SUPER_CPanelLabLocusThresholds)
 EVT_SIZE(CPanelLabLocusThresholds::OnSize)
 END_EVENT_TABLE()

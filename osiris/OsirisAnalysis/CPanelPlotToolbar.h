@@ -221,6 +221,19 @@ public:
   {
     return m_pMenuLabels;
   }
+  void RefreshChannelButtons()
+  {
+    // when covered by a dialog, IsEnabled() sometimes returns a false
+    // negative, this function corrects this when needed
+    for(unsigned int n = 0; n <= CHANNEL_MAX; ++n)
+    {
+      CHANNEL_BUTTON *pButton = GetChannelButton(n);
+      if(pButton != NULL)
+      {
+        pButton->Refresh();
+      }
+    }
+  }
 
 private:
   void _EnableBaseline(bool b)

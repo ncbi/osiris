@@ -76,6 +76,7 @@ public:
     return b1 && b2 && b3;
   }
   void OnSize(wxSizeEvent &e);
+  virtual bool Show(bool show = true);
 
 private:
   void _UpdateView();
