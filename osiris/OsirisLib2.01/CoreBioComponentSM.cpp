@@ -1310,10 +1310,18 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	smPrimaryInterchannelLink primaryPullup;
 	double currentRatio;
 	double minRatio = 1.0;
+	double maxRatio = 0.0;
 	double numerator;
 	double minRFUForSecondaryChannel = 0.5 * (mDataChannels [pullupChannel]->GetDetectionThreshold () + mDataChannels [pullupChannel]->GetMinimumHeight ());
 	bool minRatioLessThan1 = false;
+	bool maxRatioLargerThan0 = false;
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	double minPullupHeight = 0.0;
+
+	bool stop = false;
+
+	if ((primaryChannel == 2) && (pullupChannel == 1) && !testNegativePUOnly && testLaserOffScale)
+		stop = true;
 
 	// Modify code below to account for pullup corrections to secondary peaks that are also primary, and maybe to primary peaks?
 
@@ -1422,6 +1430,15 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 			if (currentRatio < minRatio)
 				minRatio = currentRatio;
+
+			if (currentRatio > maxRatio)
+				maxRatio = currentRatio;
+
+			if (minPullupHeight == 0.0)
+				minPullupHeight = numerator;
+
+			else if (numerator < minPullupHeight)
+				minPullupHeight = numerator;
 		}
 	}
 
@@ -1431,6 +1448,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		//cout << "Minimum pullup ratio = " << minRatio << endl;
 		minRatioLessThan1 = true;
+	}
+
+	if (maxRatio > 0.0) {
+
+		maxRatioLargerThan0 = true;
 	}
 
 	if (pairList.empty ()) {
@@ -1514,6 +1536,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		double threshold = 0.9 * minHeight;
 		//cout << "Adding unpaired signals (time, primary):  ";
 
+		double minPullupThreshold = 0.75 * minPullupHeight;
+
+		if (minPullupThreshold < minRFUForSecondaryChannel)
+			minRFUForSecondaryChannel = minPullupThreshold;
+
 		while (nextSignal = (DataSignal*) channelIterator ()) {
 
 			if (nextSignal->GetMessageValue (laserOffScale) != testLaserOffScale)
@@ -1528,9 +1555,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			//if (nextSignal->Peak () < primaryThreshold)
 			//	continue;
 
-			if (minRatioLessThan1) {
+			if (maxRatioLargerThan0) {
 
-				if (minRatio * nextSignal->Peak () >= minRFUForSecondaryChannel) {
+				if (maxRatio * nextSignal->Peak () >= minRFUForSecondaryChannel) {
 
 					nextPair = new PullupPair (nextSignal);
 					pairList.push_back (nextPair);
@@ -1601,49 +1628,23 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				if (secondarySignal == NULL)
 					continue;
 
-				// Test for width criterion; otherwise continue below
+				secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+				secondarySignal->SetPullupRatio (primaryChannel, 0.0, mNumberOfChannels);
+				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
 
-				sigmaPrimary = primarySignal->GetWidth ();
-				sigmaSecondary = secondarySignal->GetWidth ();
+				iChannel->RemoveDataSignalFromSecondaryList (secondarySignal);
 
-				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary);
+				if (iChannel->IsEmpty ()) {
 
-				if (secondaryNarrow && !secondarySignal->IgnoreWidthTest ()) {
-
-					secondarySignal->SetIsPossiblePullup (true);
-					secondarySignal->AddUncertainPullupChannel (primaryChannel);
-					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
-					//secondarySignal->SetMessageValue (purePullup, true);
-					//secondarySignal->SetMessageValue (pullup, false);
-
-					//if (secondarySignal->HasCrossChannelSignalLink ()) {
-
-					//	// remove link; this is not a primary peak
-					//	RemovePrimaryLinksAndSecondaryLinksFrom (secondarySignal);
-					//}
-
+					primarySignal->SetMessageValue (primaryPullup, false);
+					primarySignal->SetInterchannelLink (NULL);
+					emptyLinks.push_back (iChannel);
 				}
 
-				else {
+				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
 
-					secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
-					secondarySignal->SetPullupRatio (primaryChannel, 0.0, mNumberOfChannels);
-					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
-
-					iChannel->RemoveDataSignalFromSecondaryList (secondarySignal);
-
-					if (iChannel->IsEmpty ()) {
-
-						primarySignal->SetMessageValue (primaryPullup, false);
-						primarySignal->SetInterchannelLink (NULL);
-						emptyLinks.push_back (iChannel);
-					}
-
-					if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
-
-						secondarySignal->SetMessageValue (pullup, false);
-						secondarySignal->SetMessageValue (purePullup, false);
-					}
+					secondarySignal->SetMessageValue (pullup, false);
+					secondarySignal->SetMessageValue (purePullup, false);
 				}
 			}
 

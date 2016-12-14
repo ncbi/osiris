@@ -1874,6 +1874,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				if (nextSignal == NULL)
 					break;
 
+				if ((mean1 < 151.0) && (mean1 > 150.0) && (i == 2))
+					bool HereItIs = true;
+
 				mean2 = nextSignal->GetApproximateBioID ();
 
 				//
@@ -1882,8 +1885,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				if (prevSignal->IsNegativePeak () == nextSignal->IsNegativePeak ()) {
 
-					if (mean2 - mean1 >= 0.65)		//check for value?
-						break;
+					//if (mean2 - mean1 >= 0.65)		//check for value?
+					//	break;
 
 					if (prevSignal->IsNegativePeak ())
 						continue;
@@ -2412,6 +2415,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			primeSignal->AddProbablePullups (probablePullupPeaks);
 			int kk;
 
+			if ((primeSignal->GetMean () < 4812.0) && (primeSignal->GetMean () > 4801.0) && (primeSignal->GetChannel () == 2))
+				bool hereItIs = true;
+
 			for (kk=1; kk<=mNumberOfChannels; kk++) {  // this was wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
 
 				testSignal = pullupArray [kk];
@@ -2657,6 +2663,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			testSignal = nextSignal->GetPreviousLinkedSignal ();
 			testSignal2 = nextSignal->GetNextLinkedSignal (); 
+
+			if ((nextSignal->GetMean () < 4812.0) && (nextSignal->GetMean () > 4801.0) && (nextSignal->GetChannel () == 2))
+				bool hereItIs = true;
+
 
 			if ((testSignal == NULL) || (testSignal2 == NULL)) {
 

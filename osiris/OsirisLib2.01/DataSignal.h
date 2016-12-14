@@ -826,6 +826,7 @@ public:
 	bool EvaluateAllReportLevels (int* const reportLevelMatrix);
 
 	void SetAllowPeakEdit (bool allow) { mAllowPeakEdit = allow; }
+	void CapturePullupDataFromSM (DataSignal* prevSignal, DataSignal* nextSignal);
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual RGString GetDebugIDIndent () const;
@@ -856,6 +857,9 @@ public:
 	bool SetPullupMessageDataSM (int numberOfChannels);
 	bool SetPrimaryPullupMessageDataSM (int numberOfChannels);
 	bool HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfChannels);
+
+	RGString GetDataForNoticeSM (SmartNotice& sn);
+	void CapturePullupCorrections (DataSignal* ds);
 
 	static void CreateInitializationData (int scope);
 	static void InitializeMessageMatrix (bool* matrix, int size);

@@ -6502,6 +6502,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
 			currentSignal->CaptureSmartMessages ();
+			currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
 
 			currentSignal->SetDontLook (false);
 			currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);

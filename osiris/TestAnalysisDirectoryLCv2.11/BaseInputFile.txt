@@ -1,6 +1,6 @@
-InputDirectory = C:/Users/goorrob/ClintBeta4-5Issues;
+InputDirectory = F:/MenagerieForTestingPullup/ClintPullupB03;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
-ReportDirectory = C:/Users/goorrob/Documents/Osiris;
+ReportDirectory = C:/Users/goorrob/Documents/Osiris/Stutter;
 MarkerSetName = GlobalFiler;
 LaneStandardName = ABI-LIZ-600-60-TO-460;
 CriticalOutputLevel = 15;
@@ -20,3 +20,4 @@ AnalysisThresholdOverride:4 = 76;
 AnalysisThresholdOverride:5 = 87;
 RawDataString = R;
 ;
+

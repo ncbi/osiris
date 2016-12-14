@@ -661,6 +661,7 @@ void RGString :: ConvertWithMin (double d, double min, int maxNumberDecimals) {
 	char pResult [30];
 	RGString format = "%.";
 	format << maxNumberDecimals << "f";
+	*this = "";
 
 	if (d >= 0.0) {
 

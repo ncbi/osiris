@@ -3981,6 +3981,7 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 
 				currentSignal = new NoisyPeak (prevSignal, nextSignal);
 				currentSignal->CaptureSmartMessages ();
+				currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
 				currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 				currentSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
 				signalsToAddToList.Append (currentSignal);

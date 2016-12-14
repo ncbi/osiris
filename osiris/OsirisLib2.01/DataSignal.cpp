@@ -11706,11 +11706,7 @@ NoisyPeak :: ~NoisyPeak () {
 
 double NoisyPeak :: GetWidth () {
 
-	if (mWidth > 0.0)
-		return mWidth;
-
-	mWidth = 0.5 * (mPrevious->GetWidth () + mNext->GetWidth ());
-	return mWidth;
+	return CraterSignal::GetWidth ();
 }
 
 

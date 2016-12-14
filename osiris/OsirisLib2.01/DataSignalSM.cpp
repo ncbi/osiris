@@ -703,6 +703,99 @@ bool DataSignal :: EvaluateAllReportLevels (int* const reportLevelMatrix) {
 }
 
 
+void DataSignal :: CapturePullupDataFromSM (DataSignal* prevSignal, DataSignal* nextSignal) {
+
+	smPullUp partialPullup;
+	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU partialPUBelowMinRFU;
+	smPrimaryInterchannelLink primaryPullup;
+	RGString prevData;
+	RGString nextData;
+
+	if (prevSignal->GetMessageValue (partialPullup) || nextSignal->GetMessageValue (partialPullup)) {
+
+		prevData = prevSignal->GetDataForNoticeSM (partialPullup);
+		nextData = nextSignal->GetDataForNoticeSM (partialPullup);
+		SetMessageValue (partialPullup, true);
+
+		if (nextData.Length () >= prevData.Length ()) {
+
+			nextData.FindAndReplaceAllSubstrings (" from Primary Channel ", "");
+			SetDataForSmartMessage (partialPullup, nextData);
+			CapturePullupCorrections (nextSignal);
+		}
+
+		else {
+
+			prevData.FindAndReplaceAllSubstrings (" from Primary Channel ", "");
+			SetDataForSmartMessage (partialPullup, prevData);
+			CapturePullupCorrections (prevSignal);
+		}
+	}
+
+	else if (prevSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (purePullup)) {
+
+		prevData = prevSignal->GetDataForNoticeSM (purePullup);
+		nextData = nextSignal->GetDataForNoticeSM (purePullup);
+		SetMessageValue (purePullup, true);
+
+		if (nextData.Length () >= prevData.Length ()) {
+
+			nextData.FindAndReplaceAllSubstrings (" from Primary Channel ", "");
+			SetDataForSmartMessage (purePullup, nextData);
+			CapturePullupCorrections (nextSignal);
+		}
+
+		else {
+
+			prevData.FindAndReplaceAllSubstrings (" from Primary Channel ", "");
+			SetDataForSmartMessage (purePullup, prevData);
+			CapturePullupCorrections (prevSignal);
+		}
+	}
+
+	else if (prevSignal->GetMessageValue (partialPUBelowMinRFU) || nextSignal->GetMessageValue (partialPUBelowMinRFU)) {
+
+		prevData = prevSignal->GetDataForNoticeSM (partialPUBelowMinRFU);
+		nextData = nextSignal->GetDataForNoticeSM (partialPUBelowMinRFU);
+		SetMessageValue (partialPUBelowMinRFU, true);
+
+		if (nextData.Length () >= prevData.Length ()) {
+
+			nextData.FindAndReplaceAllSubstrings (" from Primary Channel ", "");
+			SetDataForSmartMessage (partialPUBelowMinRFU, nextData);
+			CapturePullupCorrections (nextSignal);
+		}
+
+		else {
+
+			prevData.FindAndReplaceAllSubstrings (" from Primary Channel ", "");
+			SetDataForSmartMessage (partialPUBelowMinRFU, prevData);
+			CapturePullupCorrections (prevSignal);
+		}
+	}
+
+	 if (prevSignal->GetMessageValue (primaryPullup) || nextSignal->GetMessageValue (primaryPullup)) {
+
+		prevData = prevSignal->GetDataForNoticeSM (primaryPullup);
+		nextData = nextSignal->GetDataForNoticeSM (primaryPullup);
+		SetMessageValue (primaryPullup, true);
+
+		if (nextData.Length () >= prevData.Length ()) {
+
+			nextData.FindAndReplaceAllSubstrings (" into channel(s): ", "");
+			SetDataForSmartMessage (primaryPullup, nextData);
+		}
+
+		else {
+
+			prevData.FindAndReplaceAllSubstrings (" into channel(s): ", "");
+			SetDataForSmartMessage (primaryPullup, prevData);
+		}
+	}
+}
+
+
 void DataSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	int higherObjectIndex = numHigherObjects - 2;
@@ -1901,6 +1994,44 @@ bool DataSignal :: HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfCha
 	}
 
 	return true;
+}
+
+
+RGString DataSignal :: GetDataForNoticeSM (SmartNotice& sn) {
+
+	RGString str;
+	SmartMessageData target;
+	SmartMessageData* smd;
+
+	int k = sn.GetScope ();
+
+	if (k != 1)
+		return str;
+
+	int i = sn.GetMessageIndex ();
+
+	target.SetIndex (i);
+	smd = (SmartMessageData*) mMessageDataTable->Find (&target);
+
+	if (smd != NULL) {
+
+		str = smd->GetText ();
+	}
+
+	return str;
+}
+
+
+void DataSignal :: CapturePullupCorrections (DataSignal* ds) {
+
+	int i;
+
+	for (i=1; i<=NumberOfChannels; i++) {
+
+		SetPullupRatio (i, ds->GetPullupRatio (i), NumberOfChannels);
+		SetPullupFromChannel (i, ds->GetPullupFromChannel (i), NumberOfChannels);
+		SetPrimarySignalFromChannel (i, ds->HasPrimarySignalFromChannel (i), NumberOfChannels);
+	}
 }
 
 
