@@ -216,8 +216,8 @@ double LeastMedianOfSquares1D :: CalculateLMS () {
 
 	int midSize = ((mSize - 1) / 2);
 
-	if ((mSize%2 == 0) && (mSize > 2))
-		midSize++;
+	//if ((mSize%2 == 0) && (mSize > 2))   // commented out on 12/15/2016 to allow for each lot size (when mSize is even) to be exactly half of mSize.
+	//	midSize++;   // For even values of mSize, this calls for a greater number of tested intervals, each of which is one item shorter
 
 	double* low = sortedArray;
 	double* high = sortedArray + midSize;
