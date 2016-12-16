@@ -469,7 +469,7 @@ void nwxGrid::OnCellChange(wxGridEvent &e)
         && !sPrompt.IsEmpty() )
     {
       sPrompt.Append(
-        "\nWould you like to continue editiing?");
+        "\nWould you like to continue editing?");
       wxMessageDialog dlg(this,sPrompt,"Error",
         wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
       int n = dlg.ShowModal();

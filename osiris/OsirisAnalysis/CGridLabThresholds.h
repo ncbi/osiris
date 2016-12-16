@@ -217,6 +217,10 @@ private:
     {
       return wxS("A non-zero integer is required.");
     }
+    virtual const wxChar *InvalidNeg1() const
+    {
+      return wxS("-1 BPS is adenylation, not stutter");
+    }
     const wxChar *InvalidTypeMessageNotEmpty() const
     {
       return wxS("A non-zero integer is required when the row is not empty.");

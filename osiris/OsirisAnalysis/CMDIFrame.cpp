@@ -235,12 +235,14 @@ void CMDIFrame::OnActivate(wxActivateEvent &e)
   if(!e.GetActive())
   {
     m_pParent->KillActiveFrame(this);
+    OnActivateCB(e);
   }
   else if(!m_nFocusRecursive)
   {
     CIncrementer xxx(m_nFocusRecursive);
     m_pParent->SetActiveFrame(this);
     CheckFileModification();
+    OnActivateCB(e);
   }
   e.Skip();
 }
@@ -251,14 +253,20 @@ void CMDIFrame::OnFocusSet(wxFocusEvent &e)
     CIncrementer xxx(m_nFocusRecursive);
     m_pParent->SetActiveFrame(this);
     CheckFileModification();
+    OnFocusSetCB(e);
   }
   e.Skip(); // not sure why
 }
 void CMDIFrame::OnFocusKill(wxFocusEvent &e)
 {
   m_pParent->KillActiveFrame(this);
+  OnFocusKillCB(e);
   e.Skip(); // not sure why
 }
+
+void CMDIFrame::OnActivateCB(wxActivateEvent &) {}
+void CMDIFrame::OnFocusSetCB(wxFocusEvent &) {}
+void CMDIFrame::OnFocusKillCB(wxFocusEvent &) {}
 
 void CMDIFrame::SetLastMenuShown(wxMenu *p)
 {

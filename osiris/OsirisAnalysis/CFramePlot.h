@@ -213,6 +213,9 @@ public:
 #if HAS_STATUS_BAR
   virtual void UpdateStatusBar();
 #endif
+  virtual void OnActivateCB(wxActivateEvent &);
+
+
 private:
 
   // following two functions are for setting and getting info from the value of

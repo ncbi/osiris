@@ -585,6 +585,14 @@ bool CGridLabNsStutter::CValidatorBPS::Validate(
           *pErrorMessage = InvalidTypeMessage();
         }
       }
+      else if(n == -1)
+      {
+        bRtn = false;
+        if(pErrorMessage != NULL)
+        {
+          *pErrorMessage = InvalidNeg1();
+        }
+      }
       else
       {
         int nRows = m_pGrid->GetNumberRows();

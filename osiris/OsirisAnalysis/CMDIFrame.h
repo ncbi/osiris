@@ -159,6 +159,10 @@ private:
   int m_nMenuCount;
   bool m_bLastMenuPopup;
 public:
+  virtual void OnFocusSetCB(wxFocusEvent &);  // callbacks for inherited classes
+  virtual void OnFocusKillCB(wxFocusEvent &);
+  virtual void OnActivateCB(wxActivateEvent &e);
+
   void RaiseWindow();
   void OnActivate(wxActivateEvent &e);
   void OnFocusSet(wxFocusEvent &e);

@@ -2121,6 +2121,32 @@ void CFramePlot::UpdateStatusBar()
 }
 #endif
 
+void CFramePlot::OnActivateCB(wxActivateEvent &e)
+{
+  // when a dialog is opened, the wxThings toggle buttons
+  // return a false negative for "IsEnabled" and show grey
+  // text.  This hack refreshes all toggle buttons
+  if(e.GetActive())
+  {
+    set<CPanelPlot *>::iterator itr;
+    CPanelPlot *pPlot;
+    for (itr = m_setPlots.begin();
+      itr != m_setPlots.end();
+      ++itr)
+    {
+      pPlot = *itr;
+      if(!pPlot->IsToolbarShown())
+      {
+        break;
+      }
+      else
+      {
+        pPlot->GetToolbar()->RefreshChannelButtons();
+      }
+    }
+  }
+}
+
 IMPLEMENT_PERSISTENT_SIZE(CFramePlot)
 IMPLEMENT_ABSTRACT_CLASS(CFramePlot,CMDIFrame)
 
