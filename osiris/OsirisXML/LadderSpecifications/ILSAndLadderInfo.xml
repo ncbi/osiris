@@ -462,21 +462,28 @@
         <DisplayName>60-600</DisplayName>
         <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
         <Name>RapidCXR500</Name>
         <DisplayName>60-500</DisplayName>
         <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
         <Name>RapidCXR600less60</Name>
         <DisplayName>80-600</DisplayName>
         <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 550 600</Characteristics>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>RapidCXR500Less60</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
     </ILS>
     <ILS>

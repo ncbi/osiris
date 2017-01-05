@@ -16,6 +16,7 @@
         <LSName>RapidCXR600</LSName>
         <LSName>RapidCXR600less60</LSName>
         <LSName>RapidCXR500</LSName>
+        <LSName>RapidCXR500Less60</LSName>
         <ChannelNo>4</ChannelNo>
       </LS>
       <FileNameSuffix>PP16</FileNameSuffix>
