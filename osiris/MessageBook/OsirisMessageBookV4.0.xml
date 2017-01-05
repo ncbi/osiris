@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.87</VersionNumber>
-	<BuildTime>12/19/2016 12:07 PM</BuildTime>
+	<VersionNumber>6.88</VersionNumber>
+	<BuildTime>01/05/2017 11:57 AM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -6587,7 +6587,7 @@
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
 						<Expression>smPurePullupLateStage = smPurePullup OR smCalculatedPurePullup OR smPartialPullupBelowMinRFU</Expression>
 						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smPullUp AND NOT smNotInterchannelLink) OR smCalculatedPurePullup OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
-						<Expression>smAmbiguousInterlocus = NOT (smCouldBelongToLocusLeft AND smCouldBelongToLocusRight) AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL) AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight)</Expression>
+						<Expression>smAmbiguousInterlocus = NOT (smCouldBelongToLocusLeft AND smCouldBelongToLocusRight) AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL) AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight) AND NOT smPossibleAmbiguousInterlocusAssignedToLocus</Expression>
 						<Expression>smAmbiguousCoreVsExtendedLeft = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusLeft</Expression>
 						<Expression>smAmbiguousCoreVsExtendedRight = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusRight</Expression>
 					</Evaluations>
