@@ -9984,6 +9984,7 @@ void CompositeCurve :: ProjectNeighboringSignals (double horizontalResolution, d
 	double nextTail;
 	double spacing = DataSignal::GetSampleSpacing ();
 	mTempCurveList.Clear ();
+	double Right5 = 0.2 * Right;
 
 	double f0, f1, x0, x1, xm, fm;
 
@@ -10023,6 +10024,15 @@ void CompositeCurve :: ProjectNeighboringSignals (double horizontalResolution, d
 	it.Reset ();
 
 	while (nextSignal = (DataSignal*)it ()) {
+
+		double sigma = nextSignal->GetStandardDeviation ();
+		double height = nextSignal->Peak ();
+
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma > Right5)) {
+
+			nextSignal->MarkForDeletion (true);
+			continue;
+		}
 
 		if (previousSignal != NULL) {
 
