@@ -101,7 +101,7 @@
         <xsl:with-param name="delim" select="';'"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:variable name="ud2">
+    <xsl:variable name="ud2tmp">
       <xsl:call-template name="join">
         <xsl:with-param name="nodes"
           select="$sample//UD2[@priority = $min2 and string-length(.)]"/>
@@ -115,6 +115,22 @@
         <xsl:with-param name="delim" select="';'"/>
       </xsl:call-template>
     </xsl:variable>
+    <xsl:variable name="ud2">
+     <xsl:choose>
+        <xsl:when test="$ud1 != 'REEXTRACT'">
+          <xsl:value-of select="$ud2tmp"/>
+        </xsl:when>
+        <xsl:when test="$ud2tmp = 'SWAB'">
+          <xsl:text>REEXTSWAB</xsl:text>
+        </xsl:when>
+        <xsl:when test="$ud2tmp = 'BLOOD'">
+          <xsl:text>REEXTBLOOD</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$ud2tmp"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable
     <xsl:variable name="sampleName" select="$sample/@name"/>
     <xsl:variable name="sampleFile" select="$sample/@file"/>
     <xsl:variable name="verification" select="os:IsVerificationSample($sample)"/>
