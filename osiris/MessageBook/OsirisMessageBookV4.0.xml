@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.88</VersionNumber>
-	<BuildTime>01/05/2017 11:57 AM</BuildTime>
+	<VersionNumber>6.89</VersionNumber>
+	<BuildTime>01/17/2017 12:54 AM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5280,7 +5280,7 @@
 			<CountingDataInfo>
 				<Threshold>-1</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Stutter Call Criteria:</ThresholdDescriptor>
+				<ThresholdDescriptor>        Stutter Call Criteria...For Peaks Identified as Stutter:</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5296,7 +5296,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Call Peaks That Are Identified as Stutter</ThresholdDescriptor>
+				<ThresholdDescriptor>                Checked:  Call Allele and Stutter Artifact; Unchecked:  Call Artifact But Not Allele</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5306,13 +5306,30 @@
 			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSpacerStutterCallCriteriaSubTitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                If Previous is Checked, for Samples Identified as Single Source:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                Do Not Call Stutter Peaks For Single Source Samples</ThresholdDescriptor>
+				<ThresholdDescriptor>                        Checked:  Call Artifact but Not Allele; Unchecked:  Call Allele and Artifact</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
