@@ -120,17 +120,17 @@
         <xsl:when test="$ud1 != 'REEXTRACT'">
           <xsl:value-of select="$ud2tmp"/>
         </xsl:when>
-        <xsl:when test="$ud2tmp = 'SWAB'">
+        <xsl:when test="$ud2tmp = 'SWAB' or $ud2tmp = 'REEXTRACT SWAB'">
           <xsl:text>REEXTSWAB</xsl:text>
         </xsl:when>
-        <xsl:when test="$ud2tmp = 'BLOOD'">
+        <xsl:when test="$ud2tmp = 'BLOOD' or $ud2tmp = 'REEXTRACT BLOOD'">
           <xsl:text>REEXTBLOOD</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$ud2tmp"/>
         </xsl:otherwise>
       </xsl:choose>
-    </xsl:variable
+    </xsl:variable>
     <xsl:variable name="sampleName" select="$sample/@name"/>
     <xsl:variable name="sampleFile" select="$sample/@file"/>
     <xsl:variable name="verification" select="os:IsVerificationSample($sample)"/>
@@ -149,14 +149,25 @@
           <xsl:value-of select="$sampleName"/>
           <xsl:value-of select="$TAB"/>
           <xsl:value-of select="@name"/>
-          <xsl:for-each select="allele[position() &lt; 5]">
-            <xsl:value-of select="$TAB"/>
-            <xsl:value-of select="@name"/>
-          </xsl:for-each>
-          <xsl:call-template name="repeat">
-            <xsl:with-param name="str" select="$TAB"/>
-            <xsl:with-param name="count" select="4 - count(allele)"/>
-          </xsl:call-template>
+          
+          <xsl:choose>
+            <xsl:when test="$ud1 = 'REEXTRACT' or $ud1 = 'REAMP'">
+              <xsl:call-template name="repeat">
+                <xsl:with-param name="str" select="$TAB"/>
+                <xsl:with-param name="count" select="4"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:for-each select="allele[position() &lt; 5]">
+                <xsl:value-of select="$TAB"/>
+                <xsl:value-of select="@name"/>
+              </xsl:for-each>
+              <xsl:call-template name="repeat">
+                <xsl:with-param name="str" select="$TAB"/>
+                <xsl:with-param name="count" select="4 - count(allele)"/>
+              </xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:value-of select="$TAB"/>
           <xsl:value-of select="$ud1"/>
           <xsl:value-of select="$TAB"/>

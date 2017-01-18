@@ -224,7 +224,7 @@ const wxColour &CKitColors::GetColorFromLS(
 const wxColour &CKitColors::GetColorByDye(const wxString &sDyeName, DATA_TYPE n) const
 {
   const CKitColorDye *p = m_pKitColors2->GetColorByDyeName(sDyeName);
-  const wxColour &rtn = p->GetColor(n);
+  const wxColour &rtn = (p == NULL) ? *wxBLACK : p->GetColor(n);
   return rtn;
 }
 
