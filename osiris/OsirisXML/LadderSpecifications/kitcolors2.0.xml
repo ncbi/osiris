@@ -59,6 +59,7 @@
 		  <Name>WEN-6C</Name>
 		  <Name>WEN</Name>
 		  <Name>BTO</Name>
+      <Name>DY632</Name>
 	  </Names>
       <analyzed>RGB(180,90,0)</analyzed>
       <raw>RGB(144,96,48)</raw>
@@ -69,6 +70,7 @@
 	  <Names>
 		  <Name>SID</Name>
 		  <Name>TOM-6C</Name>
+		  <Name>TOM</Name>
 	  </Names>
       <analyzed>RGB(144,0,144)</analyzed>
       <raw>RGB(144,96,144)</raw>
