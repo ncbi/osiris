@@ -70,7 +70,11 @@ bool CLocusNameChannel::operator <(const CLocusNameChannel &x) const
 
 CPersistKitList::~CPersistKitList()
 {
-    if(m_pILS != NULL) {  delete m_pILS; }
+    if(m_pILS != NULL) 
+    {
+      delete m_pILS;
+      m_pILS = NULL;
+    }
     Clear();
 }
 
@@ -83,12 +87,16 @@ void CPersistKitList::Clear()
   {
     delete itr->second;
   }
+  m_mLS.clear();
+
   for(itr = m_mILS.begin();  // v2.7 ILS family
     itr != m_mILS.end();
     ++itr)
   {
     delete itr->second;
   }
+  m_mILS.clear();
+
   for(KLNCitr itr2 = m_mapKitLocus.begin();
     itr2 != m_mapKitLocus.end();
     ++itr2)
@@ -97,9 +105,9 @@ void CPersistKitList::Clear()
     setptr<const CLocusNameChannel,CLocusNameChannelLess>::cleanup(p);
     delete p;
   }
+  m_mapKitLocus.clear();
+
   mapptr<wxString,CKitChannelMap>::cleanup(&m_mapKitChannels);
-  m_mLS.clear();
-  m_mILS.clear();
   m_as.Clear();
   m_sLastKit.Empty();
   m_sErrorMsg.Empty();
@@ -127,7 +135,7 @@ CILSLadderInfo *CPersistKitList::GetILSLadderInfo()
   if(m_pILS == NULL)
   {
     m_pILS = new CILSLadderInfo(true);
-    if(m_pILS->IsOK())
+    if(!m_pILS->IsOK())
     {
       _SetLoadError();
     }
@@ -138,7 +146,7 @@ bool CPersistKitList::Load()
 {
   wxString sFile;
   CIncrementer x(m_nInLoad);
-  CILSLadderInfo *pLdr = GetILSLadderInfo();
+  const CILSLadderInfo *pLdr = GetILSLadderInfo();
   const std::vector<CILSkit *> *pvKits = pLdr->GetKits();
   std::vector<CILSkit *>::const_iterator itr;
   CILSkit *pKit;
@@ -190,7 +198,7 @@ bool CPersistKitList::Load()
   SortILS();
   return (nCount > 0);
 }
-void CPersistKitList::_HACK_27(CILSLadderInfo *pILS)
+void CPersistKitList::_HACK_27(const CILSLadderInfo *pILS)
 {
   std::map<wxString, wxArrayString *>::iterator itr,itrLS;
   wxArrayString *pa,*paLS;

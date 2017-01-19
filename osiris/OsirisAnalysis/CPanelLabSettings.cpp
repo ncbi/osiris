@@ -45,6 +45,7 @@
 #include "nwx/stde.h"
 #include "CParmOsiris.h"
 #include "CVolumes.h"
+#include "CKitList.h"
 #include <stdlib.h>
 
 const wxString CPanelLabSettings::g_sFileNameStrPrompt
@@ -732,7 +733,7 @@ bool CPanelLabSettings::SetData(
     m_pGeneral->SetData(pData->GetLabSettingsInfo(),pMarker);
     m_pSampleThresholds->SetData(pData->GetThresholds(),pBook);
     if(!m_pLocusThresholds->SetData(pData->GetThresholds(),
-      pData->GetKitName()))
+      pData->GetKitName(),_GetILSDyeName()))
     {
       bRtn = false;
     }
@@ -799,7 +800,60 @@ wxString CPanelLabSettings::Number2Str(int n, int nDefaultBlank)
   }
   return sRtn;
 }
-
+wxString CPanelLabSettings::_GetILSDyeName()
+{
+  wxString sDyeName;
+  if(m_pData == NULL)
+  {
+    mainApp::LogMessage(wxT("CPanelLabSettings::_GetILSDyeName - m_pData == NULL"));
+  }
+  else
+  {
+    wxString sKitName = m_pData->GetKitName();
+    CPersistKitList *pKitList = mainApp::GetKitList();
+    bool bFam = pKitList->ILSDyeNamesByFamily(sKitName);
+    const wxChar * const NO_DYE_NAME =
+      wxT("Cannot find ILS Dye name for kit: ");
+    if(!bFam)
+    {
+      unsigned int nChannel = pKitList->GetILSchannelNumber(sKitName);
+      const CSingleKitColors *pKC = mainApp::GetKitColors()->GetKitColors(sKitName);
+      const CChannelColors *pCC =
+          (pKC == NULL) ? NULL : pKC->GetColorChannel(nChannel);
+      if(pCC != NULL)
+      {
+        sDyeName = pCC->GetDyeName();
+      }
+      if(sDyeName.IsEmpty())
+      {
+        wxString sErr;
+        if(pKC == NULL)
+        {
+          sErr = wxT("Cannot find kit colors for kit: ");
+          sErr.Append(sKitName);
+          mainApp::LogMessage(sErr);
+        }
+        sErr = NO_DYE_NAME;
+        sErr.Append(sKitName);
+        sErr.Append(wxT(", trying ILSAndLadderInfo.xml"));
+        mainApp::LogMessage(sErr);
+      }
+    }
+    if(bFam || sDyeName.IsEmpty())
+    {
+      wxString sILS = m_pGeneral->GetILS();
+      CILSLadderInfo *pILS = mainApp::GetILSLadderInfo();
+      sDyeName = pILS->GetDyeNameFromLS(sILS);
+      if(sDyeName.IsEmpty())
+      {
+        wxString sErr(NO_DYE_NAME);
+        sErr.Append(sKitName);
+        mainApp::LogMessage(sErr);
+      }
+    }
+  }
+  return sDyeName;
+}
 void CPanelLabSettings::OnPageChange(wxNotebookEvent &)
 {
   size_t nPage = m_pNotebook->GetSelection();
@@ -818,10 +872,7 @@ void CPanelLabSettings::OnPageChange(wxNotebookEvent &)
     //  STOP HERE
     //  the method to obtain dye name
     //  will be changed when the ILS family wxChoice is implemented
-    wxString sILS = m_pGeneral->GetILS();
-    CILSLadderInfo *pILS = mainApp::GetILSLadderInfo();
-    wxString sDyeName = pILS->GetDyeNameFromLS(sILS);
-    if(m_pLocusThresholds->SetILSDyeName(sDyeName))
+    if(UpdateILSDyeName())
     {
       Layout();
 //      Fit();

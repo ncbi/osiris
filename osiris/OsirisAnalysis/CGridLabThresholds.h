@@ -38,6 +38,7 @@
 #include "nwx/nsstd.h"
 #include "nwx/nwxGrid.h"
 #include <wx/pen.h>
+#include "mainApp.h"
 
 class CLabThresholds;
 class CLabLocusThreshold;
@@ -122,7 +123,7 @@ public:
   virtual ~CGridLabThresholdsLadder() {}
   virtual bool TransferDataToWindow();
   virtual bool TransferDataFromWindow();
-  bool SetData(CLabThresholds *pData, const wxString &sKitName);
+  bool SetData(CLabThresholds *pData, const wxString &sKitName, const wxString &sILSDyeName = mainApp::EMPTY_STRING);
 private:
   bool _GetColumn(int nCol, CLabLocusThreshold *pLocus);
   void _SetColumn(int nCol, const CLabLocusThreshold &locus);
