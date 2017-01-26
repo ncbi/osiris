@@ -337,6 +337,8 @@ public:
 
 	int CountSignalsWithNoticeSM (const SmartNotice& target, ChannelData* laneStd);
 
+	void AccumulatePeakHeightsForChannelAndAddToTotalsSM (double* totalArray, int nChannels);
+
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual RGString GetDebugIDIndent () const;
 

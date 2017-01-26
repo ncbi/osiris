@@ -828,6 +828,45 @@ int ChannelData :: CountSignalsWithNoticeSM (const SmartNotice& target, ChannelD
 }
 
 
+void ChannelData :: AccumulatePeakHeightsForChannelAndAddToTotalsSM (double* totalArray, int nChannels) {
+
+	smPullUp pullup;
+	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU partialPullupBelowMin;
+	smPrimaryInterchannelLink primaryPullup;
+	DataSignal* nextSignal;
+	RGDListIterator it (SmartPeaks);
+	double P;
+	double PC;
+	double correctedHeight;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		P = nextSignal->Peak ();
+		PC = nextSignal->GetTotalPullupFromOtherChannels (nChannels);
+		correctedHeight = P - PC;
+
+		totalArray [0] += correctedHeight;
+		totalArray [1] += P;
+
+		if (PC != 0.0) {
+
+			totalArray [3] += correctedHeight;
+			totalArray [4] += P;
+
+			if (nextSignal->GetMessageValue (partialPullupBelowMin) || nextSignal->GetMessageValue (pullup)) {
+
+				totalArray [8] += correctedHeight;
+				totalArray [10] += P;
+			}
+		}
+
+		if (nextSignal->GetMessageValue (primaryPullup))
+			totalArray [6] += P;
+	}
+}
+
+
 void ChannelData :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	RGString idData;

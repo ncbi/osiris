@@ -3395,6 +3395,33 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
+	// Record all non-laser off-scale coefficients *****12/21/2016
+	Endl endLine;
+
+	if ((NonLaserOffScalePUCoefficients != NULL) && (NonLaserOffScalePUCoefficients->FileIsValid ())) {
+
+		for (i=1; i<=mNumberOfChannels; i++) {
+
+			for (j=1; j<=mNumberOfChannels; j++) {
+
+				if (j == i)
+					continue;
+
+				if (!mPullupTestedMatrix [i][j])
+					*NonLaserOffScalePUCoefficients << "?\t?\t";
+
+				else {
+
+					double lin = 100.0 * mLinearPullupMatrix [i][j];
+					double quad = 100.0 * mQuadraticPullupMatrix [i][j];
+					*NonLaserOffScalePUCoefficients << lin << "\t" << quad << "\t";
+				}
+			}
+		}
+
+		*NonLaserOffScalePUCoefficients << endLine;
+	}
+
 	// compute all pullup ratios, etc. and insert into smart data...is this necessary?  We should already have stored pullup values from each other channel
 
 	// now repeat for laser off scale; but, first, reset the pull-up parameter matrices!!
@@ -3552,6 +3579,9 @@ int STRCoreBioComponent :: WriteXMLGraphicDataSM (const RGString& graphicDirecto
 	RGString indent2 = indent + indent;
 
 	for (int i=1; i<=mNumberOfChannels; i++) {
+
+		if (i == 2)
+			bool stop = true;
 
 		output << indent << "<channel>" << endLine;
 		output << indent2 << "<nr>" << i << "</nr>" << endLine;

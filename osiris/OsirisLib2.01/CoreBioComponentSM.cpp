@@ -863,6 +863,44 @@ bool CoreBioComponent :: GetIgnoreNoiseAboveDetectionInSmoothingFlag () const {
 }
 
 
+void CoreBioComponent :: WriteDataToHeightFileSM () {
+
+	int i;
+	double totals [12];
+	Endl endLine;
+
+	if (HeightFile == NULL)
+		return;
+
+	if (!HeightFile->FileIsValid ())
+		return;
+
+	for (i=0; i<12; i++)
+		totals [i] = 0.0;
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		mDataChannels [i]->AccumulatePeakHeightsForChannelAndAddToTotalsSM (totals, mNumberOfChannels);
+
+	if (totals [1] != 0.0) {
+
+		totals [2] = 100.0 * totals [0] / totals [1];
+		totals [7] = 100.0 * totals [6] / totals [1];
+		totals [9] = 100.0 * totals [8] / totals [1];
+	}
+
+	if (totals [4] != 0.0)
+		totals [5] = 100.0 * totals [3] / totals [4];		
+
+	if (totals [10] != 0.0)
+		totals [11] = 100.0 * totals [8] / totals [10];
+
+	for (i=0; i<12; i++)
+		*HeightFile << totals [i] << "\t\t";
+
+	*HeightFile << endLine;
+}
+
+
 void CoreBioComponent :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	RGString idData = "Sample:  " + mName;

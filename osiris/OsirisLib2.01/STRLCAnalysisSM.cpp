@@ -605,6 +605,33 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	OsirisMsg Message (&OutputFile, "\t", 10);
 	Endl endLine;
 
+	//RGString accumulatedHeightDataName = FullPathForReports + "/PeakHeightData.tab";
+	//RGTextOutput* heightText = new RGTextOutput (accumulatedHeightDataName, FALSE);
+
+	//if (heightText->FileIsValid ()) {
+
+	//	*heightText << "Cumulative Height Data" << endLine;
+	//	*heightText << "A = Corrected Peak Heights" << endLine;
+	//	*heightText << "B = Uncorrected Peak Heights" << endLine;
+	//	*heightText << "C = percent A / B" << endLine;
+	//	*heightText << "D = Corrected Peak Heights of Corrected Peaks Only" << endLine;
+	//	*heightText << "E = Uncorrected Peak Heights of Corrected Peaks Only" << endLine;
+	//	*heightText << "F = percent D / E" << endLine;
+	//	*heightText << "G = Total Heights of Primary Peaks" << endLine;
+	//	*heightText << "H = percent G / B" << endLine;
+	//	*heightText << "I = Corrected Peak Heights of Corrected Partial Pullup Peaks Only" << endLine;
+	//	*heightText << "J = percent I / B" << endLine;
+	//	*heightText << "K = Uncorrected Peak Heights of Partial Pullup Peaks Only" << endLine;
+	//	*heightText << "L = percent I / K" << endLine << endLine;
+	//	*heightText << "A\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH\t\tI\t\tJ\t\tK\t\tL" << endLine;
+	//}
+
+	//CoreBioComponent::SetHeightFile (heightText);
+
+	RGString nonLaserOffScalePullupFractionName = FullPathForReports + "/PullupFractions.tab";
+	RGTextOutput* nonLaserOffScalePullupFractions = new RGTextOutput (nonLaserOffScalePullupFractionName, FALSE);
+	CoreBioComponent::SetNonLaserOffScalePUCoeffsFile (nonLaserOffScalePullupFractions);
+
 	if (!OutputFile.isValid ()) {
 
 		cout << "Could not open output file:  " << OutputFullPath << endl;
@@ -917,7 +944,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	RGString ABIModelNumber;
 	int nLadders = 0;
 	//ChannelData::SetTestForDualSignal (false);
-	ChannelData::SetTestForDualSignal (false);
+	ChannelData::SetTestForDualSignal (true);    // 01/24/2017 This is a test because ladders are missing split peaks that should not be missed.  It used to be set to true.
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
@@ -1190,6 +1217,32 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		goto finishOutput;
 	}
 
+	else {
+
+		ladderBioComponent = (CoreBioComponent*) LadderList.First ();
+		int numChannels = ladderBioComponent->GetNumberOfChannels ();
+
+		if (nonLaserOffScalePullupFractions->FileIsValid ()) {
+
+			*nonLaserOffScalePullupFractions << "Laser Not Off Scale Pullup Fractions (Linear and Quadratic Parts) Per Channel Pairs" << endLine;
+			int ii;
+			int jj;
+
+			for (ii=1; ii<=numChannels; ii++) {
+
+				for (jj=1; jj<=numChannels; jj++) {
+
+					if (ii == jj)
+						continue;
+
+					*nonLaserOffScalePullupFractions << ii << "->" << jj << " lin.\t" << ii << "->" << jj << " quad.\t";
+				}
+			}
+
+			*nonLaserOffScalePullupFractions << endLine;
+		}
+	}
+
 	SampleDirectory->RewindDirectory ();
 	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
 
@@ -1438,6 +1491,13 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		if (sampleOK)
 			bioComponent->SampleQualityTestSM (pGenotypes);
+
+		//
+		//  Put peak height accumulation algorithm here (12/16/2016)
+		//
+
+		//if (sampleOK)
+		//	bioComponent->WriteDataToHeightFileSM ();
 
 		//cout << "Sample quality test complete" << endl;
 

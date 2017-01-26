@@ -146,6 +146,7 @@ public:
 	RGString GetDataSampleName () const { return mSampleName; }
 	RGString GetControlIdName () const { return mControlIdName; }
 	PackedTime GetSampleTime () const { return mTime; }
+	int GetNumberOfChannels () const { return mNumberOfChannels; }
 
 	void SetTableLink (int linkNumber);
 	RGString GetTableLink () const { return mTableLink; }
@@ -340,6 +341,8 @@ public:
 
 	bool GetIgnoreNoiseAboveDetectionInSmoothingFlag () const;
 
+	void WriteDataToHeightFileSM ();
+
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 
 	virtual void MakeNonCoreLadderArtifactsNoncritical () {}
@@ -453,6 +456,8 @@ public:
 	static bool DyeNamesUnset () { return (DyeNames == NULL); }
 
 	static void SetOffScaleDataLength (int length) { OffScaleDataLength = length; }
+	static void SetHeightFile (RGTextOutput* hf) { HeightFile = hf; }
+	static void SetNonLaserOffScalePUCoeffsFile (RGTextOutput* puf) { NonLaserOffScalePUCoefficients = puf; }
 
 	//************************************************************************************************************************************
 
@@ -517,6 +522,8 @@ protected:
 	static bool UseNaturalCubicSplineTimeTransform;
 	static RGString ILSDyeName;
 	static RGString* DyeNames;
+	static RGTextOutput* HeightFile;
+	static RGTextOutput* NonLaserOffScalePUCoefficients;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();
