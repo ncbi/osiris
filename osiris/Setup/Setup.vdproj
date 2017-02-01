@@ -2073,12 +2073,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_FB8D58365E144B5E925DF94F88B42459"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_FCA140B3A2AB4D48ABA885446D0EDAAB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -9024,26 +9018,6 @@
             "TargetName" = "8:Minifiler_LadderInfo.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FB8D58365E144B5E925DF94F88B42459"
-            {
-            "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\STRbaseIF\\MIX05case1_victim.fsa"
-            "TargetName" = "8:MIX05case1_victim.fsa"
-            "Tag" = "8:"
-            "Folder" = "8:_1EE3D123200E4B09B66956ED59DA6186"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
