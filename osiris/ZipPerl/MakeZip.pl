@@ -269,7 +269,7 @@ sub CopyMac
   &COPYFILES($src,$DEST,$TOP);
 
   ### BEGIN make tar.gz
-  if(0)
+  if(1)
   {
     my $zipDir = $ENV{OSIRISTGZ};
     if(!(-d $zipDir && -w $zipDir))
