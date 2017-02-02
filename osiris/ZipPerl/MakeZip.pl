@@ -259,6 +259,7 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/PkgInfo ${CONTENTS}");
 
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/sudo.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
   &SYSTEM("${CP} ${src}/fsa2xml/bin/fsa2xml ${DEST}");
@@ -268,7 +269,7 @@ sub CopyMac
   &COPYFILES($src,$DEST,$TOP);
 
   ### BEGIN make tar.gz
-  if(1)
+  if(0)
   {
     my $zipDir = $ENV{OSIRISTGZ};
     if(!(-d $zipDir && -w $zipDir))
