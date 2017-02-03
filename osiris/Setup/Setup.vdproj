@@ -2620,7 +2620,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0C0E139D4B934ADE875E55B78ED7E4F2"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\ArtifactLabels.xml"
+            "SourcePath" = "8:..\\OsirisXML\\ArtifactLabels.xml"
             "TargetName" = "8:ArtifactLabels.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
@@ -4820,7 +4820,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_617A18E42EF14A0B83D5BC162E908937"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\ArtifactLabelsSchema.xsd"
+            "SourcePath" = "8:..\\OsirisXML\\ArtifactLabelsSchema.xsd"
             "TargetName" = "8:ArtifactLabelsSchema.xsd"
             "Tag" = "8:"
             "Folder" = "8:_BB6B80819B474DF5BE5018BF00963C4B"
