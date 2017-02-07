@@ -78,6 +78,10 @@ void CGridRFULimits::_Build()
   SetCellValidator(pVreqd,ROW_RFU_MIN,m_nCOL_SAMPLE);
   SetCellValidator(pVreqd,ROW_RFU_MIN,m_nCOL_ILS);
   SetCellValidator(pVreqd,ROW_RFU_MIN,m_nCOL_LADDER);
+  SetRowCellValidator(
+    new nwxGridCellUIntRangeValidator(
+      0,mainApp::RFU_MAX_ENTER,true),
+    ROW_DETECTION);
 
   EnableDragColSize(false);
   EnableDragRowSize(false);

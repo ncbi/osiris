@@ -288,7 +288,7 @@ private:
   bool m_bLabSettingsOK;
   bool m_bDataAnalyzed;
   bool m_bProblem;
-
+  bool m_bParmsFromConstructor;
   DECLARE_EVENT_TABLE()
 };
 

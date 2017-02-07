@@ -396,7 +396,7 @@ CGridLabThresholdsLadder::CGridLabThresholdsLadder(
 {}
 
 bool CGridLabThresholdsLadder::SetData(
-  CLabThresholds *pData, const wxString &sKitName)
+  CLabThresholds *pData, const wxString &sKitName, const wxString &sILSDyeName)
 {
   const wxChar * const psLabels[] = 
   {
@@ -407,6 +407,10 @@ bool CGridLabThresholdsLadder::SetData(
     NULL
   };
   bool bOK = _SetData(pData,sKitName,psLabels);
+  if(bOK && !sILSDyeName.IsEmpty())
+  {
+      SetILSDyeName(sILSDyeName);
+  }
   return bOK;
 }
 bool CGridLabThresholdsLadder::_GetColumn(

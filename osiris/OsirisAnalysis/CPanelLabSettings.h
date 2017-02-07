@@ -97,7 +97,13 @@ public:
     const CXMLmessageBook *pBook,
     bool bReadOnly = false);
   bool SetupAll(CVolume *pVolume);
+  bool UpdateILSDyeName()
+  {
+    return m_pLocusThresholds->SetILSDyeName(_GetILSDyeName());
+  }
+
 private:
+  wxString _GetILSDyeName();
   CLabSettings *m_pData;
   const CXMLmessageBook *m_pMessageBook;
   wxButton *m_pbBack;

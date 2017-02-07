@@ -49,6 +49,10 @@ CGridRFURun::CGridRFURun(CDialogAnalysis *parent,wxWindowID id) :
   SetCellValidator(pVreqd,m_nROW_ILS,COL_ANALYSIS);
   SetCellValidator(pVreqd,m_nROW_SAMPLE,COL_INTERLOCUS);
   SetCellValidator(pVreqd,m_nROW_LADDER,COL_INTERLOCUS);
+  SetColumnCellValidator(
+    new nwxGridCellUIntRangeValidator(
+      0,mainApp::RFU_MAX_ENTER,true),
+    COL_DETECTION);
 }
 
 

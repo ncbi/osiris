@@ -254,6 +254,11 @@ public:
     LScitr itr = m_mILS.find(sKit);
     return (itr == m_mILS.end()) ? NULL : itr->second;
   }
+  bool ILSDyeNamesByFamily(const wxString &sKit) const
+  {
+    bool b = GetIlsArray(sKit) != NULL;
+    return b;
+  }
   const CLocusNameList *GetLocusNameList(const wxString &sKit) const
   {
     KLNCcitr itr = m_mapKitLocus.find(sKit);
@@ -359,7 +364,7 @@ private:
   {
     m_sErrorMsg = "Cannot load ladder information.";
   }
-  void _HACK_27(CILSLadderInfo *pILS);
+  void _HACK_27(const CILSLadderInfo *pILS);
   wxArrayString m_as;
   wxString m_sLastKit;
   std::map<wxString, wxArrayString *> m_mLS;

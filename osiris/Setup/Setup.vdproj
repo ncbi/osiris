@@ -1371,6 +1371,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A61604FF7C2043C38AB22E9F99DB2AE1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A67F5D7464A7487B83396B68264CEACF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2073,12 +2079,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_FB8D58365E144B5E925DF94F88B42459"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_FCA140B3A2AB4D48ABA885446D0EDAAB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2136,7 +2136,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.9b5.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.9.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -2620,7 +2620,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0C0E139D4B934ADE875E55B78ED7E4F2"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\ArtifactLabels.xml"
+            "SourcePath" = "8:..\\OsirisXML\\ArtifactLabels.xml"
             "TargetName" = "8:ArtifactLabels.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
@@ -4820,7 +4820,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_617A18E42EF14A0B83D5BC162E908937"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\ArtifactLabelsSchema.xsd"
+            "SourcePath" = "8:..\\OsirisXML\\ArtifactLabelsSchema.xsd"
             "TargetName" = "8:ArtifactLabelsSchema.xsd"
             "Tag" = "8:"
             "Folder" = "8:_BB6B80819B474DF5BE5018BF00963C4B"
@@ -6684,6 +6684,26 @@
             "TargetName" = "8:NFX1_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_B36182C303454EAA99306364E322EBCA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A61604FF7C2043C38AB22E9F99DB2AE1"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.8_2.9.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.8_2.9.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -9038,26 +9058,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FB8D58365E144B5E925DF94F88B42459"
-            {
-            "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\STRbaseIF\\MIX05case1_victim.fsa"
-            "TargetName" = "8:MIX05case1_victim.fsa"
-            "Tag" = "8:"
-            "Folder" = "8:_1EE3D123200E4B09B66956ED59DA6186"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FCA140B3A2AB4D48ABA885446D0EDAAB"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PP18D\\PP18D_LabSettings.xml"
@@ -10067,15 +10067,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{0844BCCA-B134-4947-94CC-5D2F93794BBB}"
-        "PackageCode" = "8:{D1CE22B8-DC29-4B2D-8736-39C68C3CAC9A}"
+        "ProductCode" = "8:{1233E895-A77B-4BA6-9D0C-368FCE20F22E}"
+        "PackageCode" = "8:{31FE0A24-A8A6-4117-AAD0-6AE204AF588F}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.9.0005"
+        "ProductVersion" = "8:2.9.0006"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

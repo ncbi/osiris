@@ -45,7 +45,8 @@ CPanelLabGeneral::CPanelLabGeneral(
         wxWindow *parent) :
   nwxPanel(parent, wxID_ANY),
   m_pInfo(NULL),
-  m_pMarker(NULL)
+  m_pMarker(NULL),
+  m_bTransferred(false)
 {
   vector<wxString> vsFileTypes;
   wxRadioButton *pRadio;
@@ -331,5 +332,6 @@ bool CPanelLabGeneral::TransferDataToWindow()
       }
     }
   }
+  m_bTransferred = bRtn;
   return bRtn;  
 }

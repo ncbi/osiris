@@ -184,6 +184,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.5.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.7.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.8_2.9.pdf ${dest}");
 }
 
 sub CopyWin

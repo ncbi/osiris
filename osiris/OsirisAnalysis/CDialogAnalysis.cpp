@@ -61,7 +61,8 @@ CDialogAnalysis::CDialogAnalysis(
     m_bUseLabSettings(bUseLabSettings),
     m_bLabSettingsOK(true),
     m_bDataAnalyzed(false),
-    m_bProblem(false)
+    m_bProblem(false),
+    m_bParmsFromConstructor(pParm != NULL)
 {
 
   if(m_bLabSettingsOK)
@@ -473,6 +474,11 @@ bool CDialogAnalysis::TransferDataToWindow()
       m_sVolumeName = m_pParm->GetVolumeOrKit();
     }
     SelectVolumeByName(m_sVolumeName);
+    if(m_bParmsFromConstructor)
+    {
+      const wxString &sLS = m_pParm->GetLsName();
+      if(!sLS.IsEmpty()) { m_pComboLsName->SetStringSelection(sLS); }
+    }
   }
   return true;
 }

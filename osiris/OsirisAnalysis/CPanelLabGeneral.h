@@ -56,10 +56,20 @@ public:
   {
     m_pInfo = pInfo;
     m_pMarker = pMarker;
+    m_bTransferred = false;
   }
   wxString GetILS()
   {
-    return m_pChoiceILS->GetStringSelection();
+    wxString s;
+    if(m_bTransferred)
+    {
+      s = m_pChoiceILS->GetStringSelection();
+    }
+    else if(m_pMarker != NULL)
+    {
+      s = m_pMarker->GetILSName();
+    }
+    return s;
   }
 private:
   void _AddLine(
@@ -84,6 +94,9 @@ private:
   wxTextCtrl *m_pTextProtocol;
   wxTextCtrl *m_pTextLot;
   wxTextCtrl *m_pTextNotes;
+  bool m_bTransferred; // set to true after TransferDataToWindow
+                       // set to false after SetData
+                       // determines how to get selected ILS name
 };
 
 #endif
