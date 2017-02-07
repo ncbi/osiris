@@ -638,6 +638,40 @@ protected:
 };
 
 
+class ILSHistory {
+
+public:
+	ILSHistory ();
+	~ILSHistory ();
+
+	void SetNumberOfCharacteristics (int n);
+	void AddILS (double* times);
+
+	void ResetBoundsUsingFactor (double factor);
+	void ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal);
+	int TestILS (int index, DataSignal* candidate);
+	bool FindAndTestILS (int index, DataSignal* startCandidate, RGDList& foundPeaks, DataSignal*& mostAveragePeak);
+
+protected:
+	int mNumberOfCharacteristics;
+	int mNum1;
+	double* mILSLowBounds;
+	double* mILSHighBounds;
+	double* mILSAverage;
+	bool mSampleAdded;
+	double mStart;
+	double mEnd;
+	double mWidth;
+	double mCurrentStartForTest;
+	double mCurrentEndForTest;
+	double mCurrentWidthForTest;
+	double mCurrentSlopeForTest;
+	DataSignal* mStartSignalForTests;
+	double mCurrentDistance;
+	DataSignal* mClosestSignal;
+};
+
+
 class LaneStandard : public RGPersistent {
 
 	PERSISTENT_DECLARATION (LaneStandard)

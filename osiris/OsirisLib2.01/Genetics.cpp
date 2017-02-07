@@ -5686,6 +5686,187 @@ Boolean Locus :: BuildMappings (RGDList& signalList) {
 }
 
 
+ILSHistory :: ILSHistory () : mNumberOfCharacteristics (0), mNum1 (-1), mILSLowBounds (NULL), mILSHighBounds (NULL), mILSAverage (NULL), mSampleAdded (false),
+mStart (0.0), mEnd (0.0), mWidth (0.0), mCurrentStartForTest (0.0), mCurrentEndForTest (0.0), mCurrentWidthForTest (0.0) {
+
+}
+
+
+
+ILSHistory :: ~ILSHistory () {
+
+	delete[] mILSLowBounds;
+	delete[] mILSHighBounds;
+	delete[] mILSAverage;
+}
+
+
+void ILSHistory :: SetNumberOfCharacteristics (int n) {
+
+	mNumberOfCharacteristics = n;
+	mNum1 = n - 1;
+	mILSLowBounds = new double [n];
+	mILSHighBounds = new double [n];
+	mILSAverage = new double [n];
+}
+
+
+void ILSHistory :: AddILS (double* times) {
+
+	int i;
+
+	if (mSampleAdded) {
+
+		double currentEnd = times [mNum1];
+		double currentStart = times [0];
+		double currentWidth = currentEnd - currentStart;
+
+		if (currentWidth == 0.0)
+			return;
+
+		double slope = mWidth / currentWidth;
+		double t;
+
+		for (i=1; i<mNum1; i++) {
+
+			t = mStart + slope * (times [i] - currentStart);
+
+			if (t < mILSLowBounds [i])
+				mILSLowBounds [i] = t;
+
+			else if (t > mILSHighBounds [i])
+				mILSHighBounds [i] = t;
+		}
+	}
+
+	else {
+
+		for (i=0; i<mNumberOfCharacteristics; i++) {
+
+			mILSLowBounds [i] = times [i];
+			mILSHighBounds [i] = times [i];
+		}
+
+		mStart = times [0];
+		mEnd = times [mNumberOfCharacteristics - 1];
+		mWidth = mEnd - mStart;
+		mSampleAdded = true;
+	}
+}
+
+
+void ILSHistory :: ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal) {
+
+	mCurrentStartForTest = startC;
+	mCurrentEndForTest = endC;
+	mCurrentWidthForTest = endC - startC;
+
+	if (mCurrentWidthForTest == 0.0)
+		mCurrentSlopeForTest = 0.0;
+
+	else
+		mCurrentSlopeForTest = mWidth / mCurrentWidthForTest;
+
+	mStartSignalForTests = startSignal;
+}
+
+
+void ILSHistory :: ResetBoundsUsingFactor (double factor) {
+
+	int i;
+
+	for (i=1; i<mNum1; i++) {
+
+		mILSAverage [i] = 0.5 * (mILSLowBounds [i] + mILSHighBounds [i]);
+		mILSLowBounds [i] = mILSLowBounds [i] - factor * mWidth;
+		mILSHighBounds [i] = mILSHighBounds [i] + factor * mWidth;
+	}
+}
+
+
+
+int ILSHistory :: TestILS (int index, DataSignal* candidate) {
+
+	double t = candidate->GetMean ();
+	double tStar = mStart + mCurrentSlopeForTest * (t - mCurrentStartForTest);
+
+	if (tStar < mILSLowBounds [index])
+		return -1;
+
+	if (tStar > mILSHighBounds [index])
+		return 1;
+
+	mCurrentDistance = fabs (tStar - mILSAverage [index]);
+	return 0;
+}
+
+
+
+bool ILSHistory :: FindAndTestILS (int index, DataSignal* startCandidate, RGDList& foundPeaks, DataSignal*& mostAveragePeak) {
+
+	// Assumes all has been initialized for this start candidate and the end candidate
+	DataSignal* nextSignal = startCandidate;
+	double low;
+	double high;
+	int testValue;
+	double leastDistance;
+
+	low = mILSLowBounds [index];
+	high = mILSHighBounds [index];
+	mCurrentDistance = 0.0;
+	leastDistance = high - low;
+	foundPeaks.Clear ();
+	mostAveragePeak = NULL;
+
+	while (nextSignal = nextSignal->GetNextSignal ()) {
+
+		if (nextSignal->GetMean () > mCurrentEndForTest)
+			break;
+			
+		testValue = TestILS (index, nextSignal);
+
+		if (testValue < 0)
+			continue;
+
+		else if (testValue > 0) {
+
+			if (foundPeaks.IsEmpty ())
+				return false;
+
+			return true;
+		}
+
+		else {
+
+			if (mCurrentDistance < leastDistance) {
+
+				leastDistance = mCurrentDistance;
+				mostAveragePeak = nextSignal;
+			}
+
+			foundPeaks.Append (nextSignal);
+		}
+	}
+
+	if (foundPeaks.IsEmpty ())
+		return false;
+
+	return true;
+}
+
+/*
+	int mNumberOfCharacteristics;
+	double* mILSLowBounds;
+	double* mILSHighBounds;
+	bool mSampleAdded;
+	double mStart;
+	double mEnd;
+	double mWidth;
+	double mCurrentStartForTest;
+	double mCurrentEndForTest;
+	double mCurrentWidthForTest;
+*/
+
 LaneStandard :: LaneStandard () : RGPersistent (), Linked (FALSE), Valid (FALSE) {
 
 	mLink = new BaseLaneStandard ();
