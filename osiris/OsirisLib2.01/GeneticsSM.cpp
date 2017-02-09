@@ -5684,7 +5684,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 				if (diff != (int) floor (diffDouble + 0.5)) {
 
-					cout << "Peak at mean " << testSignal->GetMean () << " is not stutter to signal at mean " << nextSignal->GetMean () << endl;
+					//cout << "Peak at mean " << testSignal->GetMean () << " is not stutter to signal at mean " << nextSignal->GetMean () << endl;
 					continue;
 				}
 
@@ -5802,7 +5802,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 			if (diff != (int) floor (diffDouble + 0.5)) {
 
-				cout << "Peak at mean " << testSignal->GetMean () << " is not stutter to signal at mean " << nextSignal->GetMean () << endl;
+				//cout << "Peak at mean " << testSignal->GetMean () << " is not stutter to signal at mean " << nextSignal->GetMean () << endl;
 				continue;
 			}
 

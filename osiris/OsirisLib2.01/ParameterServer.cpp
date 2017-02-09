@@ -159,24 +159,37 @@ locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct (
 	int max = (limits.mNegativeNonStandardStutter).Length ();
 	int i;
 	RGPDouble* pThreshold;
+	RGPersistent* result;
 	locusName = limits.locusName;
 
 	for (i=1; i<max; i++) {
 
-		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
+		result = limits.mNegativeNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
-			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
+		if (result != NULL) {
+
+			if (!result->IsNullElement ()) {
+
+				pThreshold = (RGPDouble*) result;
+				SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
+			}
+		}
 	}
 
 	max = (limits.mPositiveNonStandardStutter).Length ();
 
 	for (i=1; i<max; i++) {
 
-		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
+		result = limits.mPositiveNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
-			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
+		if (result != NULL) {
+
+			if (!result->IsNullElement ()) {
+
+				pThreshold = (RGPDouble*) result;
+				SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
+			}
+		}
 	}
 }
 

@@ -291,19 +291,21 @@ void BaseLocus :: SetTableLink (int linkNumber) {
 double BaseLocus :: GetNonStandardStutterThreshold (int bp) {
 
 	RGPDouble* threshold;
+	RGPersistent* result;
 
 	if (bp >= 0)
-		threshold = (RGPDouble*)mPositiveNonStandardStutter.GetElementAt (bp);
+		result = mPositiveNonStandardStutter.GetElementAt (bp);
 
 	else
-		threshold = (RGPDouble*)mNegativeNonStandardStutter.GetElementAt (-bp);
+		result = mNegativeNonStandardStutter.GetElementAt (-bp);
 
-	if (threshold == NULL)
+	if (result == NULL)
 		return -1.0;
 
-	if (threshold->IsNullElement ())
+	if (result->IsNullElement ())
 		return -1.0;
 
+	threshold = (RGPDouble*) result;
 	return threshold->GetDouble ();
 }
 
@@ -325,23 +327,36 @@ void BaseLocus :: SetNonStandardStutterArray (const locusSpecificNonStandardStut
 	int max = (limits.mNegativeNonStandardStutter).Length ();
 	int i;
 	RGPDouble* pThreshold;
+	RGPersistent* result;
 
 	for (i=1; i<max; i++) {
 
-		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
+		result = limits.mNegativeNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
-			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
+		if (result != NULL) {
+
+			if (!result->IsNullElement ()) {
+
+				pThreshold = (RGPDouble*) result;
+				SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
+			}
+		}
 	}
 
 	max = (limits.mPositiveNonStandardStutter).Length ();
 
 	for (i=1; i<max; i++) {
 
-		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
+		result = limits.mPositiveNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
-			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
+		if (result != NULL) {
+
+			if (!result->IsNullElement ()) {
+
+				pThreshold = (RGPDouble*) result;
+				SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
+			}
+		}
 	}
 }
 
