@@ -20,4 +20,3 @@ AnalysisThresholdOverride:4 = 80;
 AnalysisThresholdOverride:5 = 90;
 RawDataString = R;
 ;
-
