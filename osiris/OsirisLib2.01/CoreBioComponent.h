@@ -166,6 +166,8 @@ public:
 	bool ComputeRefinedOutlierList (list<PullupPair*>& pairList, double& linearPart);
 	bool ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart);
 
+	bool AddILSToHistory () { return mDataChannels [mLaneStandardChannel]->AddILSToHistoryList (); }
+
 	bool PullupTestedMatrix (int i, int j);
 	double LinearPullupCoefficient (int i, int j);
 	double QuadraticPullupCoefficient (int i, int j);

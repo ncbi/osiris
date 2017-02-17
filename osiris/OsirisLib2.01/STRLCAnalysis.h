@@ -133,6 +133,7 @@ public:
 
 	static void SetOutputSubDirectory (const RGString& subDir) { OutputSubDirectory = subDir; }
 	static RGString GetOutputSubDirectory () { return OutputSubDirectory; }
+	static void SetCollectILSHistory (bool s) { CollectILSHistory = s; }
 
 protected:
 	PopulationCollection* mCollection;
@@ -170,6 +171,7 @@ protected:
 	static RGString OverrideString;
 	static RGString OutputSubDirectory;
 	static RGString MsgBookBuildTime;
+	static bool CollectILSHistory;
 };
 
 

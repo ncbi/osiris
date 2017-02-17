@@ -645,7 +645,7 @@ public:
 	~ILSHistory ();
 
 	void SetNumberOfCharacteristics (int n);
-	void AddILS (double* times);
+	bool AddILS (double* times);
 
 	void ResetBoundsUsingFactor (double factor);
 	void ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal);
@@ -701,6 +701,11 @@ public:
 	int SelectBestSubsetOfCharacteristics (RGDList& curveList, double& correlation);  // returns index of first (from 0) in contiguous list of characteristics
 	int AssignLaneStandardSignals (RGDList& curveList);   // takes first mNumberOfCharacteristics elements
 
+	bool AddILSToHistory (double* times) { return mILSHistory.AddILS (times); }
+	void ResetBoundsUsingFactorToILSHistory (double factor) { mILSHistory.ResetBoundsUsingFactor (factor); }
+	void ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal) { mILSHistory.ResetStartAndEndTimesForILSTests (startC, endC, startSignal); }
+	int TestILSUsingHistory (int index, DataSignal* candidate) { return mILSHistory.TestILS (index, candidate); }
+
 	virtual int GetCharacteristicArray (const double*& array) const;  // returns array size or -1
 	virtual int GetCharacteristicDifferenceArray (const double*& array) const;  // returns array size or -1
 	virtual int GetUnnormalizedCharacteristicDifferenceArray (const double*& array) const;  // returns array size or -1
@@ -734,6 +739,7 @@ protected:
 	RGString Msg;
 	RGString mFamilyName;
 	RGString mDyeName;
+	ILSHistory mILSHistory;
 };
 
 

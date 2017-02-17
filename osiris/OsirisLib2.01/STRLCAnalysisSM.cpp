@@ -896,6 +896,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smNoNegCtrlFound noNegCtrlFound;
 	smSampleSatisfiesPossibleMixtureIDCriteria sampleSatisfiesMixtureCriteria;
 	smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
+	smSaveLadderILSHistoryPreset saveLadderILSHistory;
+	smLatitudeForILSFit latitudeForILSFit;
 
 	smStage1Successful stage1Successful;
 	smStage2Successful stage2Successful;
@@ -906,6 +908,13 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smDisableStutterFilter disableStutterFilter;
 	smDisableAdenylationFilter disableAdenylationFilter;
 	smCallOnLadderAdenylationPreset callOnLadderAdenylation;
+
+	if (GetMessageValue (saveLadderILSHistory)) {
+
+		STRLCAnalysis::SetCollectILSHistory (true);
+		ChannelData::SetUseILSHistory (true);
+		ChannelData::SetLatitudeFactorForILSHistory (0.01 * (double) GetThreshold (latitudeForILSFit));
+	}
 
 	bool ignoreNoise;
 
@@ -1192,6 +1201,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			NoticeStr << "\n";
 			ExcelText.Write (1, NoticeStr);
 			text << NoticeStr;
+
+			if (CollectILSHistory)
+				ladderBioComponent->AddILSToHistory (); 
 		}
 	}
 

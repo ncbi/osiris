@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.89</VersionNumber>
-	<BuildTime>01/17/2017 12:54 AM</BuildTime>
+	<VersionNumber>6.91</VersionNumber>
+	<BuildTime>02/16/2017 07:18 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -2858,7 +2858,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smDoNotCallExcessResidualPreset</Expression>
+				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Base Pair Residual Exceeds Threshold Prevents Call</Text>
 			<TextForData> (</TextForData>
@@ -6038,6 +6038,40 @@
 			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSaveLadderILSHistoryPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Save Ladder ILS History To Aid Sample Analyses</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Save Ladder ILS History</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>5</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLatitudeForILSFit</Name>
+			<MessageType>count</MessageType>
+			<Description>Latitude For ILS Fit (100ths of percent of overall interval)</Description>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                Latitude For ILS Fit (100ths of percent of overall interval)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Latitude For ILS Fit (100ths of percent of overall interval)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>5</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerInternalLaneStandardShouldersEnd</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -6267,6 +6301,13 @@
 						<Name>smDisableAdenylationFilterPreset</Name>
 						<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
 						<Name>smCallOnLadderAdenylationPreset</Name>
+					</MeasuredMessages>
+				</ScopeDynamics>
+				<ScopeDynamics>
+					<Scope>5</Scope>
+					<MeasuredMessages>
+						<Name>smSaveLadderILSHistoryPreset</Name>
+						<Name>smLatitudeForILSFit</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
@@ -6598,7 +6639,6 @@
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullUp AND NOT smRestrictedPriorityPeak</Expression>
-						<Expression>smAlleleHasExcessiveResidual = smBPResidualTooLarge AND smSignalIsAllele</Expression>
 						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT smRestrictedPriorityPeak</Expression>
 						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
@@ -6607,6 +6647,7 @@
 						<Expression>smAmbiguousInterlocus = NOT (smCouldBelongToLocusLeft AND smCouldBelongToLocusRight) AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL) AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight) AND NOT smPossibleAmbiguousInterlocusAssignedToLocus</Expression>
 						<Expression>smAmbiguousCoreVsExtendedLeft = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusLeft</Expression>
 						<Expression>smAmbiguousCoreVsExtendedRight = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusRight</Expression>
+						<Expression>smAlleleHasExcessiveResidual = (smBPResidualTooLarge AND smSignalIsAllele) AND NOT smAmbiguousInterlocus</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smAmbiguousInterlocus (NOT (smRestrictedPriorityPeak OR smCalculatedPurePullup OR smExcessiveResidualDisplacement OR (smExcessiveResidualDisplacementLeft AND smExcessiveResidualDisplacementRight))): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>

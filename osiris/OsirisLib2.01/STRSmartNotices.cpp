@@ -1344,6 +1344,18 @@ int smIsAcceptedOLAllele::sMessageIndex = 0;
 int smIsAcceptedOLAllele::sMessageScope = 0;
 
 
+RGString smSaveLadderILSHistoryPreset::sName = "smSaveLadderILSHistoryPreset";
+int smSaveLadderILSHistoryPreset::sSubject = smSaveLadderILSHistoryPreset::LoadType ();
+int smSaveLadderILSHistoryPreset::sMessageIndex = 0;
+int smSaveLadderILSHistoryPreset::sMessageScope = 0;
+
+
+RGString smLatitudeForILSFit::sName = "smLatitudeForILSFit";
+int smLatitudeForILSFit::sSubject = smLatitudeForILSFit::LoadType ();
+int smLatitudeForILSFit::sMessageIndex = 0;
+int smLatitudeForILSFit::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1567,6 +1579,8 @@ PERSISTENT_DEFINITION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset, 2624
 PERSISTENT_DEFINITION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset, 2625, "smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset")
 PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2626, "smCallStutterPeaksPreset")
 PERSISTENT_DEFINITION (smIsAcceptedOLAllele, 2627, "smIsAcceptedOLAllele")
+PERSISTENT_DEFINITION (smSaveLadderILSHistoryPreset, 2628, "smSaveLadderILSHistoryPreset")
+PERSISTENT_DEFINITION (smLatitudeForILSFit, 2629, "smLatitudeForILSFit")
 
 
 
@@ -14943,6 +14957,126 @@ int smIsAcceptedOLAllele :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smIsAcceptedOLAllele* noticeType = new smIsAcceptedOLAllele;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSaveLadderILSHistoryPreset :: smSaveLadderILSHistoryPreset () : SmartNotice () {
+
+}
+
+
+smSaveLadderILSHistoryPreset :: smSaveLadderILSHistoryPreset (const smSaveLadderILSHistoryPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSaveLadderILSHistoryPreset :: ~smSaveLadderILSHistoryPreset () {
+
+}
+
+
+int smSaveLadderILSHistoryPreset :: GetSubject () const {
+
+	return smSaveLadderILSHistoryPreset::sSubject;
+}
+
+
+void smSaveLadderILSHistoryPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smSaveLadderILSHistoryPreset::sMessageIndex = index;
+	smSaveLadderILSHistoryPreset::sMessageScope = scope;
+}
+
+
+int smSaveLadderILSHistoryPreset :: GetMessageIndex () const {
+
+	return smSaveLadderILSHistoryPreset :: sMessageIndex;
+}
+
+
+int smSaveLadderILSHistoryPreset :: GetScope () const {
+
+	return smSaveLadderILSHistoryPreset :: sMessageScope;
+}
+
+
+RGString smSaveLadderILSHistoryPreset :: GetName () const {
+
+	return smSaveLadderILSHistoryPreset :: sName;
+}
+
+
+
+int smSaveLadderILSHistoryPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSaveLadderILSHistoryPreset* noticeType = new smSaveLadderILSHistoryPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smLatitudeForILSFit :: smLatitudeForILSFit () : SmartNotice () {
+
+}
+
+
+smLatitudeForILSFit :: smLatitudeForILSFit (const smLatitudeForILSFit& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smLatitudeForILSFit :: ~smLatitudeForILSFit () {
+
+}
+
+
+int smLatitudeForILSFit :: GetSubject () const {
+
+	return smLatitudeForILSFit::sSubject;
+}
+
+
+void smLatitudeForILSFit :: SetIndexAndScope (int index, int scope) const {
+
+	smLatitudeForILSFit::sMessageIndex = index;
+	smLatitudeForILSFit::sMessageScope = scope;
+}
+
+
+int smLatitudeForILSFit :: GetMessageIndex () const {
+
+	return smLatitudeForILSFit :: sMessageIndex;
+}
+
+
+int smLatitudeForILSFit :: GetScope () const {
+
+	return smLatitudeForILSFit :: sMessageScope;
+}
+
+
+RGString smLatitudeForILSFit :: GetName () const {
+
+	return smLatitudeForILSFit :: sName;
+}
+
+
+
+int smLatitudeForILSFit :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smLatitudeForILSFit* noticeType = new smLatitudeForILSFit;
 	warehouse->AddType (noticeType);
 	return 1;
 }

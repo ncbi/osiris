@@ -3483,6 +3483,26 @@ CoordinateTransform* STRLaneStandardChannelData :: GetIDMap () {
 }
 
 
+bool STRLaneStandardChannelData :: AddILSToHistoryList () {
+
+	int n = FinalCurveList.Entries ();
+	double* times = new double [n];
+	int i = 0;
+	RGDListIterator it (FinalCurveList);
+	DataSignal* nextSignal;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		times [i] = nextSignal->GetMean ();
+		i++;
+	}
+
+	bool result = mLaneStandard->AddILSToHistory (times);
+	delete[] times;
+	return result;
+}
+
+
 double STRLaneStandardChannelData :: GetMinimumHeight () const {
 
 	return STRLaneStandardChannelData::minLaneStandardRFU;

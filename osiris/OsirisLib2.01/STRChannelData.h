@@ -181,6 +181,8 @@ public:
 	virtual double GetTimeForSpecifiedID (double id);
 	virtual CoordinateTransform* GetIDMap ();
 
+	virtual bool AddILSToHistoryList ();
+
 	virtual double GetMinimumHeight () const;
 	virtual double GetMaximumHeight () const;
 	virtual double GetDetectionThreshold () const;

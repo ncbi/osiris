@@ -5711,9 +5711,12 @@ void ILSHistory :: SetNumberOfCharacteristics (int n) {
 }
 
 
-void ILSHistory :: AddILS (double* times) {
+bool ILSHistory :: AddILS (double* times) {
 
 	int i;
+
+	if (mNumberOfCharacteristics == 0)
+		return false;
 
 	if (mSampleAdded) {
 
@@ -5722,7 +5725,7 @@ void ILSHistory :: AddILS (double* times) {
 		double currentWidth = currentEnd - currentStart;
 
 		if (currentWidth == 0.0)
-			return;
+			return false;
 
 		double slope = mWidth / currentWidth;
 		double t;
@@ -5752,6 +5755,8 @@ void ILSHistory :: AddILS (double* times) {
 		mWidth = mEnd - mStart;
 		mSampleAdded = true;
 	}
+
+	return true;
 }
 
 
@@ -5881,6 +5886,7 @@ mLink (link), Linked (TRUE) {
 
 	Valid = mLink->IsValid ();
 	mNumberOfCharacteristics = GetNumberOfCharacteristics ();
+	mILSHistory.SetNumberOfCharacteristics (mNumberOfCharacteristics);
 
 	if (mNumberOfCharacteristics > 1)
 		mLaneStandardTimes = new double [mNumberOfCharacteristics];

@@ -202,6 +202,8 @@ public:
 
 	virtual ChannelData* CreateNewTransformedChannel (const ChannelData& cd, CoordinateTransform* trans) = 0;
 
+	virtual bool AddILSToHistoryList ();
+
 	virtual int CompareTo (const RGPersistent* p) const;
 	virtual unsigned HashNumber (unsigned long Base) const;
 	virtual Boolean IsEqualTo (const RGPersistent* p) const;
@@ -446,6 +448,8 @@ public:
 	static void SetDisableAdenylationFilter (bool s) { DisableAdenylationFilter = s; }
 
 	static void SetTestForDualSignal (bool s) { TestForDualSignal = s; }
+	static void SetUseILSHistory (bool s) { UseILSHistory = s; }
+	static void SetLatitudeFactorForILSHistory (double factor) { LatitudeFactorForILSHistory = factor; }
 
 protected:
 	int mChannel;
@@ -505,6 +509,8 @@ protected:
 	static bool DisableStutterFilter;
 	static bool DisableAdenylationFilter;
 	static bool TestForDualSignal;
+	static bool UseILSHistory;
+	static double LatitudeFactorForILSHistory;
 };
 
 
