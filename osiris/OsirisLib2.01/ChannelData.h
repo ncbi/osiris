@@ -203,6 +203,9 @@ public:
 	virtual ChannelData* CreateNewTransformedChannel (const ChannelData& cd, CoordinateTransform* trans) = 0;
 
 	virtual bool AddILSToHistoryList ();
+	virtual ILSCandidate* TestILSStartAndEndSignals (DataSignal* startSignal, DataSignal* endSignal) { return NULL; }
+	virtual bool TestAllILSStartAndEndSignals (RGDList& finalILSPeaks, double& correlation) { return false; }
+	virtual void ResetBoundsUsingFactorToILSHistory (double factor) {};
 
 	virtual int CompareTo (const RGPersistent* p) const;
 	virtual unsigned HashNumber (unsigned long Base) const;
@@ -450,6 +453,7 @@ public:
 	static void SetTestForDualSignal (bool s) { TestForDualSignal = s; }
 	static void SetUseILSHistory (bool s) { UseILSHistory = s; }
 	static void SetLatitudeFactorForILSHistory (double factor) { LatitudeFactorForILSHistory = factor; }
+	static double GetLatitudeFactorForILSHistory () { return LatitudeFactorForILSHistory; }
 
 protected:
 	int mChannel;

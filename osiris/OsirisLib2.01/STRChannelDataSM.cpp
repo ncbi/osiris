@@ -1980,6 +1980,23 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 //	MergeListAIntoListB (overFlow, ArtifactList);
 	overFlow.Clear ();
 
+	itt.Reset ();
+	nextSignal = (DataSignal*)tempCurveList.First ();
+	DataSignal* prevSignal = NULL;
+
+	while (nextSignal = (DataSignal*) itt ()) {
+
+		nextSignal->SetPreviousSignal (prevSignal);
+
+		if (prevSignal != NULL)
+			prevSignal->SetNextSignal (nextSignal);
+
+		prevSignal = nextSignal;
+	}
+
+	if (prevSignal != NULL)
+		prevSignal->SetNextSignal (NULL);
+
 	// Now we test to see if we have few enough peaks to just go ahead and fit the spacing.  We're not necessarily confident we have the "true" maxPeak, so
 	// we're a little leary of using it for fractional filters, etc.  If we can get away without it, we will.  On the other hand, if we have too many peaks, we'll
 	// try to reduce the number using the known number of large characteristics.  After we find the true set of ILS peaks, we'll use the maxPeak of those selected
@@ -2093,13 +2110,59 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 
 //	MergeListAIntoListB (overFlow, ArtifactList);  //????????????????????????????????????????????????????
 	overFlow.Clear ();
+	bool noILSFoundYet = true;
 
-	if (FinalCurveList.Entries () == Size) {
+	if (UseILSHistory)
+		cout << "Use Ladder ILS history flag is true..." << endl;
 
-		correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
+	else
+		cout << "Use Ladder ILS history flag is false..." << endl;
+
+	if (UseILSHistory) {
+
+		// Insert new code here for interpolating end points to test spacing (if specified by user in lab settings)
+		// Must populate FinalCurveList and return correlation.  Change next "else" to an "if", in case this doesn't work
+
+		cout << "Attempting to use Ladder ILS history..." << endl;
+		RGDList ilsHistoryList;
+		ClearAndRepopulateFromList (PreliminaryCurveList, ilsHistoryList, overFlow);
+
+		RGDListIterator ilsIt (ilsHistoryList);
+		DataSignal* ilsPrev = NULL;
+		DataSignal* ilsNext = NULL;
+
+		while (ilsNext = (DataSignal*) ilsIt ()) {
+
+			ilsNext->SetNextSignal (ilsPrev);
+
+			if (ilsPrev != NULL)
+				ilsPrev->SetNextSignal (ilsNext);
+
+			ilsPrev = ilsNext;
+		}
+		
+		if (TestAllILSStartAndEndSignals (ilsHistoryList, correlation)) {
+
+			noILSFoundYet = false;
+			ClearAndRepopulateFromList (ilsHistoryList, FinalCurveList, overFlow);
+			cout << "Correlation from Ladder ILS History method = " << correlation << endl;
+		}
+
+		else
+			cout << "Using Ladder ILS History failed." << endl;
+
+		ilsHistoryList.Clear ();
 	}
 
-	else {
+	else if (FinalCurveList.Entries () == Size) {
+
+		correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
+		// add bool for new test below
+		noILSFoundYet = false;
+		cout << "ILS curve list had exactly expected number of peaks..." << endl;
+	}
+
+	if (noILSFoundYet) {
 
 		overFlow.Clear ();
 
@@ -2352,7 +2415,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	}
 
 	CurveIterator.Reset ();
-	DataSignal* prevSignal = NULL;
+	prevSignal = NULL;
 	double stutterLimit = STRLaneStandardChannelData::GetILSStutterThreshold ();
 	
 	double prevPeak = 0.0;

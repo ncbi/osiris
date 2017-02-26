@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.91</VersionNumber>
-	<BuildTime>02/16/2017 07:18 PM</BuildTime>
+	<VersionNumber>6.92</VersionNumber>
+	<BuildTime>02/23/2017 01:44 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -4362,7 +4362,7 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>1</ReportLevel>
-			<Scope>5</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smLocusSummaryPercentCraters</Name>
@@ -4382,7 +4382,7 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>1</ReportLevel>
-			<Scope>5</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smAlleleAboveOverloadLimit</Name>
@@ -6051,7 +6051,7 @@
 			</ReportCriterion>
 			<Text>Save Ladder ILS History</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>5</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smLatitudeForILSFit</Name>
@@ -6069,7 +6069,7 @@
 			</ReportCriterion>
 			<Text>Latitude For ILS Fit (100ths of percent of overall interval)</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>5</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacerInternalLaneStandardShouldersEnd</Name>
@@ -6304,7 +6304,7 @@
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
-					<Scope>5</Scope>
+					<Scope>6</Scope>
 					<MeasuredMessages>
 						<Name>smSaveLadderILSHistoryPreset</Name>
 						<Name>smLatitudeForILSFit</Name>
@@ -6821,7 +6821,7 @@
 			<Stage>1</Stage>
 			<StageDynamics>
 				<ScopeDynamics>
-					<Scope>5</Scope>
+					<Scope>6</Scope>
 					<TriggeredMessages>
 						<Name>smLocusSummaryNumberOfCraters</Name>
 					</TriggeredMessages>
@@ -6859,7 +6859,7 @@
 			<Stage>2</Stage>
 			<StageDynamics>
 				<ScopeDynamics>
-					<Scope>5</Scope>
+					<Scope>6</Scope>
 					<Evaluations>
 						<Expression>smLocusSummaryPercentCraters = smLocusSummaryNumberOfCraters / smTotalNumberOfSamplesExcludingNegativeControls</Expression>
 					</Evaluations>

@@ -912,9 +912,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	if (GetMessageValue (saveLadderILSHistory)) {
 
 		STRLCAnalysis::SetCollectILSHistory (true);
-		ChannelData::SetUseILSHistory (true);
-		ChannelData::SetLatitudeFactorForILSHistory (0.01 * (double) GetThreshold (latitudeForILSFit));
+		ChannelData::SetUseILSHistory (false);
+
+		int threshold = GetThreshold (latitudeForILSFit);
+
+		if (threshold > 0)
+			ChannelData::SetLatitudeFactorForILSHistory (0.0001 * (double) threshold);
+
+		else
+			ChannelData::SetLatitudeFactorForILSHistory (0.01);
+
+		cout << "Collecting Ladder ILS History with latitude factor = " << threshold << endl;
 	}
+
+	else
+		cout << "Not collecting ladder ILS History..." << endl;
 
 	bool ignoreNoise;
 
@@ -1202,8 +1214,11 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			ExcelText.Write (1, NoticeStr);
 			text << NoticeStr;
 
-			if (CollectILSHistory)
-				ladderBioComponent->AddILSToHistory (); 
+			if (CollectILSHistory) {
+
+				ladderBioComponent->AddILSToHistory ();
+				cout << "Ladder ILS added to history..." << endl;
+			}
 		}
 	}
 
@@ -1257,6 +1272,15 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	SampleDirectory->RewindDirectory ();
 	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
+	
+	if (CollectILSHistory) {
+
+		STRLCAnalysis::SetCollectILSHistory (false);
+		ChannelData::SetUseILSHistory (true);
+		ladderBioComponent = (CoreBioComponent*) LadderList.First ();
+		ladderBioComponent->ResetBoundsForILSUsingFactor (ChannelData::GetLatitudeFactorForILSHistory ());
+		cout << "All ladder ILS history collected and bounds reset..." << endl;
+	}
 
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 

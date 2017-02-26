@@ -799,6 +799,7 @@ mCorrelationAcceptanceThreshold (0.993), mCorrelationAutoAcceptanceThreshold (0.
 		mSize = (int)tokens.Entries ();
 		NCharacteristics = mSize;
 		mCharacteristicArray = new double [mSize];
+		LaneStandard::SetILSHistoryNumberOfCharacteristics (mSize);
 		mDifferenceSize = mSize - 1;
 		mDifferenceArray = new double [mDifferenceSize];
 		mUnnormalizedDifferenceArray = new double [mDifferenceSize];

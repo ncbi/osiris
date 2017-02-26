@@ -323,5 +323,9 @@ void RGTextOutput :: GetString (long l) {
 void RGTextOutput :: GetString (double d) {
 
 	gcvt (d, RGTextOutput::Resolution, buffer);
+	size_t l = strlen (buffer);
+
+	if ((l > 0) && (buffer [l-1] == '.'))
+		buffer [l-1] = '\0';
 }
 

@@ -136,6 +136,7 @@ public:
 	void SetTime (const RGString& time);
 	void SetTime (const PackedTime& time);
 	void SetProgress (int progress) { Progress = progress; }
+	void ResetBoundsForILSUsingFactor (double factor) { if (mLaneStandard != NULL) mLaneStandard->ResetBoundsUsingFactorToILSHistory (factor); }
 
 //	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }

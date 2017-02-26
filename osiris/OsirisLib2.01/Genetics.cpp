@@ -94,6 +94,8 @@ int Locus::NumberOfChannels = 0;
 bool Locus::IsSingleSourceSample = false;
 bool Locus::IsControlSample = false;
 
+ILSHistory LaneStandard::mILSHistory;
+
 bool PopulationCollection::UseILSFamilies = false;
 
 
@@ -5686,8 +5688,8 @@ Boolean Locus :: BuildMappings (RGDList& signalList) {
 }
 
 
-ILSHistory :: ILSHistory () : mNumberOfCharacteristics (0), mNum1 (-1), mILSLowBounds (NULL), mILSHighBounds (NULL), mILSAverage (NULL), mSampleAdded (false),
-mStart (0.0), mEnd (0.0), mWidth (0.0), mCurrentStartForTest (0.0), mCurrentEndForTest (0.0), mCurrentWidthForTest (0.0) {
+ILSHistory :: ILSHistory () : mNumberOfCharacteristics (0), mNum1 (-1), mILSLowBounds (NULL), mILSHighBounds (NULL), mILSAverage (NULL), mNormalizedDifferences (NULL), mSampleAdded (false),
+mStart (0.0), mEnd (0.0), mWidth (0.0), mCurrentStartForTest (0.0), mCurrentEndForTest (0.0), mCurrentWidthForTest (0.0), mCurrentSlopeForTest (0.0), mCurrentInterceptForTest (0.0), mMaxWidth (0.0), mMinWidth (0.0) {
 
 }
 
@@ -5698,6 +5700,7 @@ ILSHistory :: ~ILSHistory () {
 	delete[] mILSLowBounds;
 	delete[] mILSHighBounds;
 	delete[] mILSAverage;
+	delete[] mNormalizedDifferences;
 }
 
 
@@ -5708,6 +5711,7 @@ void ILSHistory :: SetNumberOfCharacteristics (int n) {
 	mILSLowBounds = new double [n];
 	mILSHighBounds = new double [n];
 	mILSAverage = new double [n];
+	mNormalizedDifferences = new double [mNum1];
 }
 
 
@@ -5740,6 +5744,12 @@ bool ILSHistory :: AddILS (double* times) {
 			else if (t > mILSHighBounds [i])
 				mILSHighBounds [i] = t;
 		}
+
+		if (currentWidth < mMinWidth)
+			mMinWidth = currentWidth;
+
+		if (currentWidth > mMaxWidth)
+			mMaxWidth = currentWidth;
 	}
 
 	else {
@@ -5754,6 +5764,7 @@ bool ILSHistory :: AddILS (double* times) {
 		mEnd = times [mNumberOfCharacteristics - 1];
 		mWidth = mEnd - mStart;
 		mSampleAdded = true;
+		mMaxWidth = mMinWidth = mWidth;
 	}
 
 	return true;
@@ -5772,6 +5783,7 @@ void ILSHistory :: ResetStartAndEndTimesForILSTests (double startC, double endC,
 	else
 		mCurrentSlopeForTest = mWidth / mCurrentWidthForTest;
 
+	mCurrentInterceptForTest = mStart - startC * mCurrentSlopeForTest;
 	mStartSignalForTests = startSignal;
 }
 
@@ -5779,21 +5791,34 @@ void ILSHistory :: ResetStartAndEndTimesForILSTests (double startC, double endC,
 void ILSHistory :: ResetBoundsUsingFactor (double factor) {
 
 	int i;
+	double temp;
+	double sum = 0.0;
 
-	for (i=1; i<mNum1; i++) {
+	for (i=0; i<mNumberOfCharacteristics; i++) {
 
 		mILSAverage [i] = 0.5 * (mILSLowBounds [i] + mILSHighBounds [i]);
 		mILSLowBounds [i] = mILSLowBounds [i] - factor * mWidth;
 		mILSHighBounds [i] = mILSHighBounds [i] + factor * mWidth;
 	}
+
+	for (i=0; i<mNum1; i++) {
+
+		temp = mNormalizedDifferences [i] = mILSAverage [i+1] - mILSAverage [i];
+		sum += temp * temp;
+	}
+
+	sum = sqrt (sum);
+
+	for (i=0; i<mNum1; i++)
+		mNormalizedDifferences [i] = mNormalizedDifferences [i] / sum;
 }
 
 
 
 int ILSHistory :: TestILS (int index, DataSignal* candidate) {
 
-	double t = candidate->GetMean ();
-	double tStar = mStart + mCurrentSlopeForTest * (t - mCurrentStartForTest);
+	double t = candidate->GetMean () - mCurrentStartForTest;
+	double tStar = mCurrentSlopeForTest * t + mStart;
 
 	if (tStar < mILSLowBounds [index])
 		return -1;
@@ -5803,6 +5828,56 @@ int ILSHistory :: TestILS (int index, DataSignal* candidate) {
 
 	mCurrentDistance = fabs (tStar - mILSAverage [index]);
 	return 0;
+}
+
+
+bool ILSHistory :: FindAndTestILS (int index, DataSignal* startCandidate, DataSignal*& mostAveragePeak) {
+
+	// Assumes all has been initialized for this start candidate and the end candidate
+	DataSignal* nextSignal = startCandidate;
+	double low;
+	double high;
+	int testValue;
+	double leastDistance;
+
+	low = mILSLowBounds [index];
+	high = mILSHighBounds [index];
+	mCurrentDistance = 0.0;
+	leastDistance = high - low;
+	mostAveragePeak = NULL;
+
+	while (nextSignal = nextSignal->GetNextSignal ()) {
+
+		if (nextSignal->GetMean () > mCurrentEndForTest)
+			break;
+			
+		testValue = TestILS (index, nextSignal);
+
+		if (testValue < 0)
+			continue;
+
+		else if (testValue > 0) {
+
+			if (mostAveragePeak == NULL)
+				return false;
+
+			return true;
+		}
+
+		else {
+
+			if (mCurrentDistance < leastDistance) {
+
+				leastDistance = mCurrentDistance;
+				mostAveragePeak = nextSignal;
+			}
+		}
+	}
+
+	if (mostAveragePeak == NULL)
+		return false;
+
+	return true;
 }
 
 
@@ -5859,18 +5934,82 @@ bool ILSHistory :: FindAndTestILS (int index, DataSignal* startCandidate, RGDLis
 	return true;
 }
 
-/*
-	int mNumberOfCharacteristics;
-	double* mILSLowBounds;
-	double* mILSHighBounds;
-	bool mSampleAdded;
-	double mStart;
-	double mEnd;
-	double mWidth;
-	double mCurrentStartForTest;
-	double mCurrentEndForTest;
-	double mCurrentWidthForTest;
-*/
+
+ILSCandidate :: ILSCandidate (RGDList& peakList) {
+
+	RGDListIterator it (peakList);
+	DataSignal* nextSignal;
+	mSize = peakList.Entries ();
+	mPeakList = new DataSignal* [mSize];
+	int i = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		mPeakList [i] = nextSignal;
+		i++;
+	}
+
+	nextSignal = (DataSignal*)peakList.Last ();
+	DataSignal* prevSignal = (DataSignal*)peakList.First ();
+
+	if (mSize > 0)
+		mWidth = mPeakList [mSize-1]->GetMean () - mPeakList [0]->GetMean ();
+
+	else
+		mWidth = 0.0;
+}
+
+
+
+ILSCandidate :: ~ILSCandidate () {
+
+	delete[] mPeakList;
+}
+
+
+double ILSCandidate :: CalculateNormalizedDotProduct (double* normalizedSpacing) {
+
+	double num = 0.0;
+	double norm2 = 0.0;
+	double temp;
+	int i;
+	int size1 = mSize - 1;
+
+	for (i=0; i<size1; i++) {
+
+		temp = mPeakList [i+1]->GetMean () - mPeakList [i]->GetMean ();
+		num += temp * normalizedSpacing [i];
+		norm2 += temp * temp;
+	}
+
+	norm2 = sqrt (norm2);
+
+	if (norm2 >= num) {
+
+		if (norm2 > 0.0)
+			return num / norm2;
+
+		else
+			return 0.0;
+	}
+
+	return 0.0;
+}
+
+
+void ILSCandidate :: SaveSignalsToList (RGDList& finalCurveList) {
+
+	DataSignal* nextSignal;
+	finalCurveList.Clear ();
+	int i;
+
+	for (i=0; i<mSize; i++) {
+
+		nextSignal = mPeakList [i];
+		finalCurveList.Append (nextSignal);
+	}
+}
+
 
 LaneStandard :: LaneStandard () : RGPersistent (), Linked (FALSE), Valid (FALSE) {
 
@@ -5886,7 +6025,7 @@ mLink (link), Linked (TRUE) {
 
 	Valid = mLink->IsValid ();
 	mNumberOfCharacteristics = GetNumberOfCharacteristics ();
-	mILSHistory.SetNumberOfCharacteristics (mNumberOfCharacteristics);
+//	mILSHistory.SetNumberOfCharacteristics (mNumberOfCharacteristics);
 
 	if (mNumberOfCharacteristics > 1)
 		mLaneStandardTimes = new double [mNumberOfCharacteristics];
@@ -5908,6 +6047,7 @@ LaneStandard :: LaneStandard (const LaneStandard& std) : RGPersistent () {
 		Linked = TRUE;
 		Valid = std.Valid;
 		mNumberOfCharacteristics = GetNumberOfCharacteristics ();
+	//	mILSHistory.SetNumberOfCharacteristics (mNumberOfCharacteristics);
 		mLaneStandardTimes = new double [mNumberOfCharacteristics];
 
 		if (!Valid)
@@ -9213,6 +9353,13 @@ Boolean PopulationCollection :: BuildMarkerSets (const RGString& textInput) {
 
 		LSName = baseSet->GetLaneStandardName ();
 		ls = mLaneStandardCollection->GetNamedLaneStandard (LSName);
+
+		if (ls != NULL) {
+
+			int nChar = ls->GetNumberOfCharacteristics ();
+			LaneStandard::SetILSHistoryNumberOfCharacteristics (nChar);
+		}
+
 		markerSet = new PopulationMarkerSet (baseSet, SetString);
 		markerSet->SetLaneStandard (ls);
 

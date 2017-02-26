@@ -70,6 +70,7 @@ double STRSampleChannelData::maxSampleRFU = -1.0;
 double STRLaneStandardChannelData::ILSStutterThreshold;
 double STRLaneStandardChannelData::ILSAdenylationThreshold;
 double STRLaneStandardChannelData::ILSFractionalFilter = -1.0;
+bool STRLaneStandardChannelData::TestIsOn = false;
 
 
 PERSISTENT_DEFINITION (STRChannelData, _STRCHANNELDATA_, "STRChannelData")
@@ -3501,6 +3502,179 @@ bool STRLaneStandardChannelData :: AddILSToHistoryList () {
 	delete[] times;
 	return result;
 }
+
+
+
+ILSCandidate* STRLaneStandardChannelData :: TestILSStartAndEndSignals (DataSignal* startSignal, DataSignal* endSignal) {
+
+	int index;
+	DataSignal* nextCandidate;
+	DataSignal* nextStartSignal;
+	RGDList possibleILSPeaks;
+	ILSCandidate* result;
+	int nChar = mLaneStandard->GetNumberOfCharacteristics ();
+	int nChar1 = nChar - 1;
+	bool testResult;
+	double startTime = startSignal->GetMean ();
+	double endTime = endSignal->GetMean ();
+
+	// First test overall width to see if too wide or too narrow
+
+	double width = endTime - startTime;
+	double maxwidth = mLaneStandard->GetMaxILSWidth ();
+	double minwidth = mLaneStandard->GetMinILSWidth ();
+
+	if (width < 0.9 * mLaneStandard->GetMinILSWidth ())
+		return NULL;
+
+	if (width > 1.1 * mLaneStandard->GetMaxILSWidth ())
+		return NULL;
+
+	// Now test that all the peaks are there, with the proper spacing...
+
+	mLaneStandard->ResetStartAndEndTimesForILSTests (startTime, endTime, startSignal);
+	possibleILSPeaks.Append (startSignal);
+	nextStartSignal = startSignal;
+
+	for (index=1; index<nChar1; index++) {
+
+		if (TestIsOn && (index == 3))
+			bool stopHere = true;
+
+		testResult = mLaneStandard->FindAndTestILS (index, nextStartSignal, nextCandidate);
+
+		if (!testResult || (nextCandidate == NULL)) {
+
+			if (TestIsOn)
+				bool stopHere = true;
+
+			possibleILSPeaks.Clear ();
+			return NULL;
+		}
+
+		possibleILSPeaks.Append (nextCandidate);
+		nextStartSignal = nextCandidate;
+	}
+
+	possibleILSPeaks.Append (endSignal);
+
+	if (possibleILSPeaks.Entries () != nChar) {
+
+		if (TestIsOn)
+			bool stopHere = true;
+
+		possibleILSPeaks.Clear ();
+		return NULL;
+	}
+
+	result = new ILSCandidate (possibleILSPeaks);
+	possibleILSPeaks.Clear ();
+	return result;
+}
+
+
+bool STRLaneStandardChannelData :: TestAllILSStartAndEndSignals (RGDList& finalILSPeaks, double& correlation) {
+
+	int n = finalILSPeaks.Entries ();
+	DataSignal** peakList = new DataSignal* [n];
+	int nChar = mLaneStandard->GetNumberOfCharacteristics ();
+	int nChar1 = nChar - 1;
+	DataSignal* startPeak;
+	DataSignal* endPeak;
+	ILSCandidate* nextCandidate;
+	list<ILSCandidate*> candidateList;
+	int i;
+	int j;
+	int maxIndex = n - nChar;
+	int jMin;
+	RGDListIterator it (finalILSPeaks);
+	DataSignal* nextSignal;
+	i = 0;
+	correlation = 0.0;
+
+	// Need to precompute normalized displacement list...!!!!!!!
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		peakList [i] = nextSignal;
+		i++;
+	}
+
+	for (i=0; i<maxIndex; i++) {
+
+		jMin = i + nChar - 1;
+
+		for (j=jMin; j<n; j++) {
+
+			startPeak = peakList [i];
+			endPeak = peakList [j];
+			TestIsOn = false;
+
+			if ((fabs (startPeak->GetMean () - 2617.13) < 0.1) && (fabs (endPeak->GetMean () - 7130.53) < 0.1))
+				TestIsOn = true;
+
+			nextCandidate = TestILSStartAndEndSignals (startPeak, endPeak);
+
+			if (nextCandidate == NULL)
+				continue;
+
+			candidateList.push_back (nextCandidate);
+		}
+	}
+
+	if (candidateList.empty ())
+		return false;
+
+	double* normalizedIdealDifferences = mLaneStandard->GetILSNormalizedDifferences ();
+
+	if (candidateList.size () == 1) {
+
+		nextCandidate = candidateList.front ();
+		candidateList.clear ();
+		correlation = nextCandidate->CalculateNormalizedDotProduct (normalizedIdealDifferences);
+		finalILSPeaks.Clear ();
+		nextCandidate->SaveSignalsToList (finalILSPeaks);
+		delete nextCandidate;
+		cout << "Used ladder ILS spacings and reduced to single option." << endl;
+		return true;
+	}
+
+	// If multiple candidates, choose; calculate correlation and return
+
+	ILSCandidate* bestCandidate = NULL;
+	double bestCorrelation = 0.0;
+	double corr;
+
+	while (!candidateList.empty ()) {
+
+		nextCandidate = candidateList.front ();
+		candidateList.pop_front ();
+		corr = nextCandidate->CalculateNormalizedDotProduct (normalizedIdealDifferences);
+
+		if (corr > bestCorrelation) {
+
+			bestCorrelation = corr;
+			delete bestCandidate;
+			bestCandidate = nextCandidate;
+		}
+
+		else
+			delete nextCandidate;
+	}
+
+	if (bestCandidate != NULL) {
+
+		correlation = bestCorrelation;
+		finalILSPeaks.Clear ();
+		bestCandidate->SaveSignalsToList (finalILSPeaks);
+		delete bestCandidate;
+		cout << "Used ladder ILS spacings and selected from multiple options." << endl;
+		return true;
+	}
+
+	return false;
+}
+
 
 
 double STRLaneStandardChannelData :: GetMinimumHeight () const {

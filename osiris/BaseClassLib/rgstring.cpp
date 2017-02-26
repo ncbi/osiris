@@ -705,6 +705,9 @@ void RGString :: ConvertWithMin (double d, double min, int maxNumberDecimals) {
 			*this << pResult;
 		}
 	}
+
+	if (GetLastCharacter () == '.')
+		RemoveLastCharacter ();
 }
 
 

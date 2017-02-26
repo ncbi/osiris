@@ -64,6 +64,7 @@
 #include "Notices.h"
 #include "SmartMessagingObject.h"
 #include "coordtrans.h"
+#include "DataSignal.h"
 
 #include <list>
 
@@ -647,9 +648,14 @@ public:
 	void SetNumberOfCharacteristics (int n);
 	bool AddILS (double* times);
 
+	double GetMinWidth () const { return mMinWidth; }
+	double GetMaxWidth () const { return mMaxWidth; }
+	double* GetNormalizedDifferences () const { return mNormalizedDifferences; }
+
 	void ResetBoundsUsingFactor (double factor);
 	void ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal);
 	int TestILS (int index, DataSignal* candidate);
+	bool FindAndTestILS (int index, DataSignal* startCandidate, DataSignal*& mostAveragePeak);
 	bool FindAndTestILS (int index, DataSignal* startCandidate, RGDList& foundPeaks, DataSignal*& mostAveragePeak);
 
 protected:
@@ -658,6 +664,7 @@ protected:
 	double* mILSLowBounds;
 	double* mILSHighBounds;
 	double* mILSAverage;
+	double* mNormalizedDifferences;
 	bool mSampleAdded;
 	double mStart;
 	double mEnd;
@@ -666,9 +673,29 @@ protected:
 	double mCurrentEndForTest;
 	double mCurrentWidthForTest;
 	double mCurrentSlopeForTest;
+	double mCurrentInterceptForTest;
 	DataSignal* mStartSignalForTests;
 	double mCurrentDistance;
 	DataSignal* mClosestSignal;
+	double mMaxWidth;
+	double mMinWidth;
+};
+
+
+class ILSCandidate {
+
+public:
+	ILSCandidate (RGDList& peakList);
+	~ILSCandidate ();
+
+	double GetTimeSpan () const { return mWidth; }
+	double CalculateNormalizedDotProduct (double* normalizedSpacing);
+	void SaveSignalsToList (RGDList& finalCurveList);
+
+protected:
+	int mSize;
+	DataSignal** mPeakList;
+	double mWidth;
 };
 
 
@@ -701,10 +728,14 @@ public:
 	int SelectBestSubsetOfCharacteristics (RGDList& curveList, double& correlation);  // returns index of first (from 0) in contiguous list of characteristics
 	int AssignLaneStandardSignals (RGDList& curveList);   // takes first mNumberOfCharacteristics elements
 
+	double GetMaxILSWidth () const { return mILSHistory.GetMaxWidth (); }
+	double GetMinILSWidth () const { return mILSHistory.GetMinWidth (); }
+	double* GetILSNormalizedDifferences () const { return mILSHistory.GetNormalizedDifferences (); }
 	bool AddILSToHistory (double* times) { return mILSHistory.AddILS (times); }
 	void ResetBoundsUsingFactorToILSHistory (double factor) { mILSHistory.ResetBoundsUsingFactor (factor); }
 	void ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal) { mILSHistory.ResetStartAndEndTimesForILSTests (startC, endC, startSignal); }
 	int TestILSUsingHistory (int index, DataSignal* candidate) { return mILSHistory.TestILS (index, candidate); }
+	bool FindAndTestILS (int index, DataSignal* startCandidate, DataSignal*& mostAveragePeak) { return mILSHistory.FindAndTestILS (index, startCandidate, mostAveragePeak); }
 
 	virtual int GetCharacteristicArray (const double*& array) const;  // returns array size or -1
 	virtual int GetCharacteristicDifferenceArray (const double*& array) const;  // returns array size or -1
@@ -729,6 +760,7 @@ public:
 	virtual Boolean IsEqualTo (const RGPersistent* p) const;
 
 	virtual void Write (RGFile& textOutput, const RGString& indent);
+	static void SetILSHistoryNumberOfCharacteristics (int n) { mILSHistory.SetNumberOfCharacteristics (n); }
 
 protected:
 	BaseLaneStandard* mLink;
@@ -739,7 +771,7 @@ protected:
 	RGString Msg;
 	RGString mFamilyName;
 	RGString mDyeName;
-	ILSHistory mILSHistory;
+	static ILSHistory mILSHistory;
 };
 
 
