@@ -3538,15 +3538,9 @@ ILSCandidate* STRLaneStandardChannelData :: TestILSStartAndEndSignals (DataSigna
 
 	for (index=1; index<nChar1; index++) {
 
-		if (TestIsOn && (index == 3))
-			bool stopHere = true;
-
 		testResult = mLaneStandard->FindAndTestILS (index, nextStartSignal, nextCandidate);
 
 		if (!testResult || (nextCandidate == NULL)) {
-
-			if (TestIsOn)
-				bool stopHere = true;
 
 			possibleILSPeaks.Clear ();
 			return NULL;
@@ -3559,9 +3553,6 @@ ILSCandidate* STRLaneStandardChannelData :: TestILSStartAndEndSignals (DataSigna
 	possibleILSPeaks.Append (endSignal);
 
 	if (possibleILSPeaks.Entries () != nChar) {
-
-		if (TestIsOn)
-			bool stopHere = true;
 
 		possibleILSPeaks.Clear ();
 		return NULL;
@@ -3608,10 +3599,10 @@ bool STRLaneStandardChannelData :: TestAllILSStartAndEndSignals (RGDList& finalI
 
 			startPeak = peakList [i];
 			endPeak = peakList [j];
-			TestIsOn = false;
+			//TestIsOn = false;
 
-			if ((fabs (startPeak->GetMean () - 2617.13) < 0.1) && (fabs (endPeak->GetMean () - 7130.53) < 0.1))
-				TestIsOn = true;
+			//if ((fabs (startPeak->GetMean () - 2617.13) < 0.1) && (fabs (endPeak->GetMean () - 7130.53) < 0.1))
+			//	TestIsOn = true;
 
 			nextCandidate = TestILSStartAndEndSignals (startPeak, endPeak);
 
