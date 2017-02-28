@@ -3520,6 +3520,11 @@ ILSCandidate* STRLaneStandardChannelData :: TestILSStartAndEndSignals (DataSigna
 
 	// First test overall width to see if too wide or too narrow
 
+	//TestIsOn = false;
+
+	//if ((fabs (startTime - 2193.68) < 0.2) && (fabs (endTime - 6981.56) < 0.2))
+	//	TestIsOn = true;
+
 	double width = endTime - startTime;
 	double maxwidth = mLaneStandard->GetMaxILSWidth ();
 	double minwidth = mLaneStandard->GetMinILSWidth ();
@@ -3576,20 +3581,34 @@ bool STRLaneStandardChannelData :: TestAllILSStartAndEndSignals (RGDList& finalI
 	list<ILSCandidate*> candidateList;
 	int i;
 	int j;
-	int maxIndex = n - nChar;
+	int maxIndex = n - nChar1;
 	int jMin;
 	RGDListIterator it (finalILSPeaks);
 	DataSignal* nextSignal;
 	i = 0;
 	correlation = 0.0;
 
+	//cout << "Number of peaks for history analysis = " << n << "\n";
+	//cout << "Total left peaks = " << maxIndex << "\n";
+
 	// Need to precompute normalized displacement list...!!!!!!!
+	//cout << "Peaks to test using ILS history: \n\n";
+	DataSignal* prevSignal = NULL;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
 		peakList [i] = nextSignal;
+		nextSignal->SetPreviousSignal (prevSignal);
+		//cout << "    Mean = " << nextSignal->GetMean () << "\n";
+
+		if (prevSignal != NULL)
+			prevSignal->SetNextSignal (nextSignal);
+
+		prevSignal = nextSignal;
 		i++;
 	}
+
+	prevSignal->SetNextSignal (NULL);
 
 	for (i=0; i<maxIndex; i++) {
 
@@ -3601,7 +3620,7 @@ bool STRLaneStandardChannelData :: TestAllILSStartAndEndSignals (RGDList& finalI
 			endPeak = peakList [j];
 			//TestIsOn = false;
 
-			//if ((fabs (startPeak->GetMean () - 2617.13) < 0.1) && (fabs (endPeak->GetMean () - 7130.53) < 0.1))
+			//if ((i == 15) && (j == 35))
 			//	TestIsOn = true;
 
 			nextCandidate = TestILSStartAndEndSignals (startPeak, endPeak);
@@ -3641,6 +3660,7 @@ bool STRLaneStandardChannelData :: TestAllILSStartAndEndSignals (RGDList& finalI
 		nextCandidate = candidateList.front ();
 		candidateList.pop_front ();
 		corr = nextCandidate->CalculateNormalizedDotProduct (normalizedIdealDifferences);
+		cout << "ILS candidate start time = " << nextCandidate->GetFirstTime () << " and end time = " << nextCandidate->GetLastTime () << endl;
 
 		if (corr > bestCorrelation) {
 

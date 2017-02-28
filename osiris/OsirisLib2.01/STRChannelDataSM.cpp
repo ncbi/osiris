@@ -1910,8 +1910,36 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		return -50;
 	}
 
-	RGDList shoulderPeaks;
+	RGDList ilsHistoryList;
+	DataSignal* prevSignal;
+	RGDListIterator finalIterator (FinalCurveList);
+	CurveIterator.Reset ();
 
+	if (UseILSHistory) {
+
+		prevSignal = NULL;
+
+		while (nextSignal = (DataSignal*) CurveIterator ()) {
+
+			nextSignal->SetPreviousSignal (prevSignal);
+		//	cout << "Sample ILS peak candidate mean = " << nextSignal->GetMean () << endl;
+
+			ilsHistoryList.Append (nextSignal);
+
+			if (prevSignal != NULL)
+				prevSignal->SetNextSignal (nextSignal);
+
+			prevSignal = nextSignal;
+		}
+
+		if (prevSignal != NULL)
+			prevSignal->SetNextSignal (NULL);
+
+		//ClearAndRepopulateFromList (PreliminaryCurveList, ilsHistoryList, overFlow);
+		//overFlow.Clear ();
+	}
+
+	RGDList shoulderPeaks;
 	CurveIterator.Reset ();
 	DataSignal* nextNextSignal;
 
@@ -1980,23 +2008,6 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 //	MergeListAIntoListB (overFlow, ArtifactList);
 	overFlow.Clear ();
 
-	itt.Reset ();
-	nextSignal = (DataSignal*)tempCurveList.First ();
-	DataSignal* prevSignal = NULL;
-
-	while (nextSignal = (DataSignal*) itt ()) {
-
-		nextSignal->SetPreviousSignal (prevSignal);
-
-		if (prevSignal != NULL)
-			prevSignal->SetNextSignal (nextSignal);
-
-		prevSignal = nextSignal;
-	}
-
-	if (prevSignal != NULL)
-		prevSignal->SetNextSignal (NULL);
-
 	// Now we test to see if we have few enough peaks to just go ahead and fit the spacing.  We're not necessarily confident we have the "true" maxPeak, so
 	// we're a little leary of using it for fractional filters, etc.  If we can get away without it, we will.  On the other hand, if we have too many peaks, we'll
 	// try to reduce the number using the known number of large characteristics.  After we find the true set of ILS peaks, we'll use the maxPeak of those selected
@@ -2030,7 +2041,6 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 //	double newMaxPeak;
 	double minPeak;
 	int sizeFactor2 = sizeFactor + 2;
-	RGDListIterator finalIterator (FinalCurveList);
 
 	IdealControlSetInfo ctlInfo (actualArray, differenceArray, leftNorm2s, rightNorm2s, hts, Size, false);
 	int startPts;
@@ -2124,22 +2134,20 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		// Must populate FinalCurveList and return correlation.  Change next "else" to an "if", in case this doesn't work
 
 		cout << "Attempting to use Ladder ILS history..." << endl;
-		RGDList ilsHistoryList;
-		ClearAndRepopulateFromList (PreliminaryCurveList, ilsHistoryList, overFlow);
 
-		RGDListIterator ilsIt (ilsHistoryList);
-		DataSignal* ilsPrev = NULL;
-		DataSignal* ilsNext = NULL;
+		//RGDListIterator ilsIt (ilsHistoryList);
+		//DataSignal* ilsPrev = NULL;
+		//DataSignal* ilsNext = NULL;
 
-		while (ilsNext = (DataSignal*) ilsIt ()) {
+		//while (ilsNext = (DataSignal*) ilsIt ()) {
 
-			ilsNext->SetNextSignal (ilsPrev);
+		//	ilsNext->SetNextSignal (ilsPrev);
 
-			if (ilsPrev != NULL)
-				ilsPrev->SetNextSignal (ilsNext);
+		//	if (ilsPrev != NULL)
+		//		ilsPrev->SetNextSignal (ilsNext);
 
-			ilsPrev = ilsNext;
-		}
+		//	ilsPrev = ilsNext;
+		//}
 		
 		if (TestAllILSStartAndEndSignals (ilsHistoryList, correlation)) {
 

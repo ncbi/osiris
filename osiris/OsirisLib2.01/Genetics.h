@@ -688,6 +688,9 @@ public:
 	ILSCandidate (RGDList& peakList);
 	~ILSCandidate ();
 
+	double GetFirstTime () const { return mPeakList [0]->GetMean (); }
+	double GetLastTime () const { return mPeakList [mSize - 1]->GetMean (); }
+
 	double GetTimeSpan () const { return mWidth; }
 	double CalculateNormalizedDotProduct (double* normalizedSpacing);
 	void SaveSignalsToList (RGDList& finalCurveList);
