@@ -1356,6 +1356,18 @@ int smLatitudeForILSFit::sMessageIndex = 0;
 int smLatitudeForILSFit::sMessageScope = 0;
 
 
+RGString smUseLadderEndPointILSAlgorithmPreset::sName = "smUseLadderEndPointILSAlgorithmPreset";
+int smUseLadderEndPointILSAlgorithmPreset::sSubject = smUseLadderEndPointILSAlgorithmPreset::LoadType ();
+int smUseLadderEndPointILSAlgorithmPreset::sMessageIndex = 0;
+int smUseLadderEndPointILSAlgorithmPreset::sMessageScope = 0;
+
+
+RGString smPlusLatitudeForLadderEndPointILSFit::sName = "smPlusLatitudeForLadderEndPointILSFit";
+int smPlusLatitudeForLadderEndPointILSFit::sSubject = smPlusLatitudeForLadderEndPointILSFit::LoadType ();
+int smPlusLatitudeForLadderEndPointILSFit::sMessageIndex = 0;
+int smPlusLatitudeForLadderEndPointILSFit::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1581,6 +1593,8 @@ PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2626, "smCallStutterPeaksPreset
 PERSISTENT_DEFINITION (smIsAcceptedOLAllele, 2627, "smIsAcceptedOLAllele")
 PERSISTENT_DEFINITION (smSaveLadderILSHistoryPreset, 2628, "smSaveLadderILSHistoryPreset")
 PERSISTENT_DEFINITION (smLatitudeForILSFit, 2629, "smLatitudeForILSFit")
+PERSISTENT_DEFINITION (smUseLadderEndPointILSAlgorithmPreset, 2630, "smUseLadderEndPointILSAlgorithmPreset")
+PERSISTENT_DEFINITION (smPlusLatitudeForLadderEndPointILSFit, 2631, "smPlusLatitudeForLadderEndPointILSFit")
 
 
 
@@ -15077,6 +15091,126 @@ int smLatitudeForILSFit :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smLatitudeForILSFit* noticeType = new smLatitudeForILSFit;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smUseLadderEndPointILSAlgorithmPreset :: smUseLadderEndPointILSAlgorithmPreset () : SmartNotice () {
+
+}
+
+
+smUseLadderEndPointILSAlgorithmPreset :: smUseLadderEndPointILSAlgorithmPreset (const smUseLadderEndPointILSAlgorithmPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smUseLadderEndPointILSAlgorithmPreset :: ~smUseLadderEndPointILSAlgorithmPreset () {
+
+}
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: GetSubject () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset::sSubject;
+}
+
+
+void smUseLadderEndPointILSAlgorithmPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smUseLadderEndPointILSAlgorithmPreset::sMessageIndex = index;
+	smUseLadderEndPointILSAlgorithmPreset::sMessageScope = scope;
+}
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: GetMessageIndex () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset :: sMessageIndex;
+}
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: GetScope () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset :: sMessageScope;
+}
+
+
+RGString smUseLadderEndPointILSAlgorithmPreset :: GetName () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset :: sName;
+}
+
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smUseLadderEndPointILSAlgorithmPreset* noticeType = new smUseLadderEndPointILSAlgorithmPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPlusLatitudeForLadderEndPointILSFit :: smPlusLatitudeForLadderEndPointILSFit () : SmartNotice () {
+
+}
+
+
+smPlusLatitudeForLadderEndPointILSFit :: smPlusLatitudeForLadderEndPointILSFit (const smPlusLatitudeForLadderEndPointILSFit& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPlusLatitudeForLadderEndPointILSFit :: ~smPlusLatitudeForLadderEndPointILSFit () {
+
+}
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: GetSubject () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit::sSubject;
+}
+
+
+void smPlusLatitudeForLadderEndPointILSFit :: SetIndexAndScope (int index, int scope) const {
+
+	smPlusLatitudeForLadderEndPointILSFit::sMessageIndex = index;
+	smPlusLatitudeForLadderEndPointILSFit::sMessageScope = scope;
+}
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: GetMessageIndex () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit :: sMessageIndex;
+}
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: GetScope () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit :: sMessageScope;
+}
+
+
+RGString smPlusLatitudeForLadderEndPointILSFit :: GetName () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit :: sName;
+}
+
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPlusLatitudeForLadderEndPointILSFit* noticeType = new smPlusLatitudeForLadderEndPointILSFit;
 	warehouse->AddType (noticeType);
 	return 1;
 }

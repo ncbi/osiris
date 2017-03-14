@@ -1904,9 +1904,9 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 			return -50;
 
 		nextSignal = (DataSignal*)PreliminaryCurveList.First ();
-		cout << "First peak at time " << nextSignal->GetMean () << endl;
+		cout << "First peak at time " << nextSignal->GetMean () << "\n";
 		nextSignal = (DataSignal*)PreliminaryCurveList.Last ();
-		cout << "Last peak at time " << nextSignal->GetMean () << endl;
+		cout << "Last peak at time " << nextSignal->GetMean () << "\n";
 		return -50;
 	}
 
@@ -1915,7 +1915,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	RGDListIterator finalIterator (FinalCurveList);
 	CurveIterator.Reset ();
 
-	if (UseILSHistory) {
+	if (UseILSHistory || UseLadderILSEndPointAlgorithm) {
 
 		prevSignal = NULL;
 
@@ -2123,41 +2123,51 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	bool noILSFoundYet = true;
 
 	if (UseILSHistory)
-		cout << "Use Ladder ILS history flag is true..." << endl;
+		cout << "Use Ladder ILS history flag is true...\n";
 
 	else
-		cout << "Use Ladder ILS history flag is false..." << endl;
+		cout << "Use Ladder ILS history flag is false...\n";
+
+	if (UseLadderILSEndPointAlgorithm)
+		cout << "Use Ladder ILS Start and End Points Algorithm flag is true...\n";
+
+	else
+		cout << "Use Ladder ILS Start and End Points Algorithm flag is false...\n";
 
 	if (UseILSHistory) {
 
 		// Insert new code here for interpolating end points to test spacing (if specified by user in lab settings)
 		// Must populate FinalCurveList and return correlation.  Change next "else" to an "if", in case this doesn't work
 
-		cout << "Attempting to use Ladder ILS history..." << endl;
-
-		//RGDListIterator ilsIt (ilsHistoryList);
-		//DataSignal* ilsPrev = NULL;
-		//DataSignal* ilsNext = NULL;
-
-		//while (ilsNext = (DataSignal*) ilsIt ()) {
-
-		//	ilsNext->SetNextSignal (ilsPrev);
-
-		//	if (ilsPrev != NULL)
-		//		ilsPrev->SetNextSignal (ilsNext);
-
-		//	ilsPrev = ilsNext;
-		//}
+		cout << "Attempting to use Ladder ILS history...\n";
 		
 		if (TestAllILSStartAndEndSignals (ilsHistoryList, correlation)) {
 
 			noILSFoundYet = false;
 			ClearAndRepopulateFromList (ilsHistoryList, FinalCurveList, overFlow);
-			cout << "Correlation from Ladder ILS History method = " << correlation << endl;
+			cout << "Correlation from Ladder ILS History method = " << correlation << "\n";
 		}
 
 		else
-			cout << "Using Ladder ILS History failed." << endl;
+			cout << "Using Ladder ILS History failed.\n";
+
+		ilsHistoryList.Clear ();
+	}
+
+	else if (UseLadderILSEndPointAlgorithm) {
+
+		mLaneStandard->ResetIdealCharacteristicsAndIntervalsForLadderILS (actualArray, differenceArray, LatitudeFactorForLadderILS);  // later, replace 0.02 with user specified factor
+		cout << "Attempting to use Ladder ILS End Point Algorithm...\n";
+
+		if (TestAllLadderILSStartAndEndSignals (ilsHistoryList, correlation)) {
+
+			noILSFoundYet = false;
+			ClearAndRepopulateFromList (ilsHistoryList, FinalCurveList, overFlow);
+			cout << "Correlation from Ladder ILS End Point method = " << correlation << "\n";
+		}
+
+		else
+			cout << "Using Ladder ILS End Point failed.\n";
 
 		ilsHistoryList.Clear ();
 	}
@@ -2167,7 +2177,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
 		// add bool for new test below
 		noILSFoundYet = false;
-		cout << "ILS curve list had exactly expected number of peaks..." << endl;
+		cout << "ILS curve list had exactly expected number of peaks...\n";
 	}
 
 	if (noILSFoundYet) {
@@ -2187,7 +2197,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 			if (startPts > 6)
 				startPts = 6;
 
-			cout << "Could not pare down ILS list sufficiently..." << endl;
+			cout << "Could not pare down ILS list sufficiently...\n";
 		}
 
 		ClearAndRepopulateFromList (FinalCurveList, totallyTempCurveList, overFlow);
@@ -2204,14 +2214,14 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 
 		else {
 
-			cout << "ILS linear correlation = " << correlation << endl;
+			cout << "ILS linear correlation = " << correlation << "\n";
 			correlation = DotProductWithQuadraticFit (FinalCurveList, Size, actualArray, differenceArray, leftNorm2s [Size-2]);
 
 			if (correlation < correlationAcceptanceThreshold)
 				relativeHeightsFailed = true;
 
 			else
-				cout << "ILS quadratic correlation = " << correlation << endl;
+				cout << "ILS quadratic correlation = " << correlation << "\n";
 		}
 
 		bool searchForSubset = (testedRelativeHeights && relativeHeightsFailed) || (!testedRelativeHeights);

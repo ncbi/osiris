@@ -95,6 +95,7 @@ bool Locus::IsSingleSourceSample = false;
 bool Locus::IsControlSample = false;
 
 ILSHistory LaneStandard::mILSHistory;
+ILSHistory LaneStandard::mLadderILSHistory;
 
 bool PopulationCollection::UseILSFamilies = false;
 
@@ -5689,7 +5690,8 @@ Boolean Locus :: BuildMappings (RGDList& signalList) {
 
 
 ILSHistory :: ILSHistory () : mNumberOfCharacteristics (0), mNum1 (-1), mILSLowBounds (NULL), mILSHighBounds (NULL), mILSAverage (NULL), mNormalizedDifferences (NULL), mSampleAdded (false),
-mStart (0.0), mEnd (0.0), mWidth (0.0), mCurrentStartForTest (0.0), mCurrentEndForTest (0.0), mCurrentWidthForTest (0.0), mCurrentSlopeForTest (0.0), mCurrentInterceptForTest (0.0), mMaxWidth (0.0), mMinWidth (0.0) {
+mStart (0.0), mEnd (0.0), mWidth (0.0), mCurrentStartForTest (0.0), mCurrentEndForTest (0.0), mCurrentWidthForTest (0.0), mCurrentSlopeForTest (0.0), mCurrentInterceptForTest (0.0), mMaxWidth (0.0), mMinWidth (0.0),
+mCharacteristicArray (NULL), mNormalizedCharacteristicDifferences (NULL), mLadderILSLowBounds (NULL), mLadderILSHighBounds (NULL),  mLadderWidth (0.0), mLadderStart (0.0), mLadderEnd (0.0) {
 
 }
 
@@ -5701,6 +5703,10 @@ ILSHistory :: ~ILSHistory () {
 	delete[] mILSHighBounds;
 	delete[] mILSAverage;
 	delete[] mNormalizedDifferences;
+	delete[] mCharacteristicArray;
+	delete[] mNormalizedCharacteristicDifferences;
+	delete[] mLadderILSLowBounds;
+	delete[] mLadderILSHighBounds;
 }
 
 
@@ -5788,6 +5794,63 @@ void ILSHistory :: ResetStartAndEndTimesForILSTests (double startC, double endC,
 }
 
 
+void ILSHistory :: ResetStartAndEndTimesForLadderILSTests (double startC, double endC, DataSignal* startSignal) {
+
+	mCurrentStartForTest = startC;
+	mCurrentEndForTest = endC;
+	mCurrentWidthForTest = endC - startC;
+
+	if (mCurrentWidthForTest == 0.0)
+		mCurrentSlopeForTest = 0.0;
+
+	else
+		mCurrentSlopeForTest = mLadderWidth / mCurrentWidthForTest;
+
+	mCurrentInterceptForTest = mLadderStart;
+	mStartSignalForTests = startSignal;
+}
+
+
+void ILSHistory :: ResetIdealCharacteristicsAndIntervalsForLadderILS (const double* actualArray, const double* differenceArray, double factor) {
+
+	if (mCharacteristicArray != NULL)
+		return;
+
+	mCharacteristicArray = new double [mNumberOfCharacteristics];
+	mNormalizedCharacteristicDifferences = new double [mNum1];
+	int i;
+	double sum = 0.0;
+	double temp;
+
+	for (i=0; i<mNum1; i++) {
+
+		temp = mNormalizedCharacteristicDifferences [i] = differenceArray [i];
+		sum += temp * temp;
+		mCharacteristicArray [i] = actualArray [i];
+	}
+
+	mCharacteristicArray [mNum1] = actualArray [mNum1];
+	sum = sqrt (sum);
+
+	for (i=0; i<mNum1; i++)
+		mNormalizedCharacteristicDifferences [i] = mNormalizedCharacteristicDifferences [i] / sum;
+
+	mLadderStart = actualArray [0];
+	mLadderEnd = actualArray [mNum1];
+	mLadderWidth = mLadderEnd - mLadderStart;
+
+	mLadderILSLowBounds = new double [mNumberOfCharacteristics];
+	mLadderILSHighBounds = new double [mNumberOfCharacteristics];
+	double ladderAllowance = factor * mLadderWidth;
+
+	for (i=0; i<mNumberOfCharacteristics; i++) {
+
+		mLadderILSLowBounds [i] = actualArray [i] - ladderAllowance;
+		mLadderILSHighBounds [i] = actualArray [i] + ladderAllowance;
+	}
+}
+
+
 void ILSHistory :: ResetBoundsUsingFactor (double factor) {
 
 	int i;
@@ -5828,6 +5891,69 @@ int ILSHistory :: TestILS (int index, DataSignal* candidate) {
 
 	mCurrentDistance = fabs (tStar - mILSAverage [index]);
 	return 0;
+}
+
+
+int ILSHistory :: TestLadderILS (int index, DataSignal* candidate) {
+
+	double t = candidate->GetMean () - mCurrentStartForTest;
+	double tStar = mCurrentSlopeForTest * t + mLadderStart;
+
+	if (tStar < mLadderILSLowBounds [index])
+		return -1;
+
+	if (tStar > mLadderILSHighBounds [index])
+		return 1;
+
+	//mCurrentDistance = fabs (tStar - mILSAverage [index]);
+	return 0;
+}
+
+
+bool ILSHistory :: FindAndTestLadderILS (int index, DataSignal* startCandidate, DataSignal*& firstPeakFound) {
+
+	//  This algorithm returns the first peak found within the acceptable range of the index'th characteristic peak.  If
+	// none are found, we return false.  The assumption is that ladder ILS's are clean and so there are no extraneous peaks between
+	// the ideal location and the correct peak.
+	
+	DataSignal* nextSignal = startCandidate;
+	double low;
+	double high;
+	int testValue;
+	double leastDistance;
+
+	low = mLadderILSLowBounds [index];
+	high = mLadderILSHighBounds [index];
+	mCurrentDistance = 0.0;
+	leastDistance = high - low;
+	firstPeakFound = NULL;
+
+	while (nextSignal = nextSignal->GetNextSignal ()) {
+
+		if (nextSignal->GetMean () > mCurrentEndForTest)
+			break;
+			
+		testValue = TestLadderILS (index, nextSignal);
+
+		if (testValue < 0)
+			continue;
+
+		else if (testValue > 0) {
+
+			if (firstPeakFound == NULL)
+				return false;
+
+			return true;
+		}
+
+		else {
+
+			firstPeakFound = nextSignal;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

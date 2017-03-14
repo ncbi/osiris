@@ -3648,6 +3648,161 @@ double SampledData :: GetModeHeightAndLocationFromDataInterval (int& location) {
 }
 
 
+const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (const DataSignal* prevSignal, const DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold) {
+
+	int startTime = (int) ceil (prevSignal->GetMean () + 1.0);
+	int endTime = (int) floor (nextSignal->GetMean () - 1.0);
+	double maxDifference = 0.0;
+	int mode = 0;
+	int i;
+	double maxFunctionValue;
+	double minValue;
+	double temp;
+
+	for (i=startTime; i<=endTime; i++) {
+
+		maxFunctionValue = prevSignal->Value ((double)i);
+		temp = nextSignal->Value ((double)i);
+
+		if (temp > maxFunctionValue)
+			maxFunctionValue = temp;
+
+		temp = Value (i) - maxFunctionValue;
+
+		if (temp > maxDifference) {
+
+			maxDifference = temp;
+			mode = i;
+		}
+	}
+
+	if (maxDifference <= 0.0)
+		return NULL;
+
+	if (maxDifference < analysisThreshold)
+		return NULL;
+
+	for (i=mode; i<=endTime; i++) {
+
+		maxFunctionValue = prevSignal->Value ((double)i);
+		temp = nextSignal->Value ((double)i);
+
+		if (temp > maxFunctionValue)
+			maxFunctionValue = temp;
+
+		temp = Value (i) - maxFunctionValue;
+
+		if (temp <= 0.0) {
+
+			endTime = i - 1;
+			break;
+		}
+	}
+
+	for (i=mode; i>=startTime; i--) {
+
+		maxFunctionValue = prevSignal->Value ((double)i);
+		temp = nextSignal->Value ((double)i);
+
+		if (temp > maxFunctionValue)
+			maxFunctionValue = temp;
+
+		temp = Value (i) - maxFunctionValue;
+
+		if (temp <= 0.0) {
+
+			startTime = i + 1;
+			break;
+		}
+	}
+
+	maxFunctionValue = 0.0;
+	int halfTime = (endTime - startTime) / 2;
+
+	for (i=startTime; i<=endTime; i++) {
+
+		// search for true mode and if too near end points, quit
+
+		temp = Value (i);
+
+		if (temp > maxFunctionValue) {
+
+			maxFunctionValue = temp;
+			mode = i;
+		}
+	}
+
+	if (maxFunctionValue <= 0.0)
+		return NULL;
+
+	if (mode <= startTime + 1)
+		return NULL;
+
+	if (mode >= endTime - 1)
+		return NULL;
+
+	double maxAtMode = maxFunctionValue;
+	minValue = maxFunctionValue;
+	int minTime = startTime;
+
+	for (i=startTime; i<=mode; i++) {
+
+		temp = Value (i);
+
+		if (temp < minValue) {
+
+			minValue = temp;
+			minTime = i;
+		}
+	}
+
+	startTime = minTime;
+	minValue = maxFunctionValue;
+
+	for (i=mode; i<=endTime; i++) {
+
+		temp = Value (i);
+
+		if (temp < minValue) {
+
+			minValue = temp;
+			minTime = i;
+		}
+	}
+
+	endTime = minTime;
+
+	//if (endTime - startTime <= 3) {
+
+	//	// This is a spike...maybe we should ignore it?  Or try to fit?
+	//}
+
+	// Create a DataInterval using this start and end time and try to fit various curves
+
+	int channel = prevSignal->GetChannel ();
+	//int centerTime = (startTime + endTime) / 2;
+	int centerTime = mode;
+	DataInterval* shoulderInterval = new DataInterval (startTime, centerTime, endTime);
+	shoulderInterval->SetMode (mode);
+	shoulderInterval->SetMaxAtMode (Value (mode));
+
+	int unUsedWindowSize = 0;
+	RGDList unUsedList;
+
+	DataSignal* nextSignal = signature.FindCharacteristicAsymmetric (this, shoulderInterval, unUsedWindowSize, fit, unUsedList);
+	DataSignal* copySignal = nextSignal->MakeCopy (nextSignal->GetMean ());
+	copySignal->SetCurveFit (fit);
+	delete nextSignal;
+
+	if (copySignal != NULL)
+		copySignal->SetDataMode (maxAtMode);
+
+	delete shoulderInterval;
+	return copySignal;
+	//return NULL;
+}
+
+
 DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous) {
 
 	DataInterval* nextInterval = (DataInterval*)PeakIterator->CurrentItem ();

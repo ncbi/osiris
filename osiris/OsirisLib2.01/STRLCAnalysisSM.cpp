@@ -898,6 +898,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
 	smSaveLadderILSHistoryPreset saveLadderILSHistory;
 	smLatitudeForILSFit latitudeForILSFit;
+	smUseLadderEndPointILSAlgorithmPreset useLadderEndPointILSAlgorithm;
+	smPlusLatitudeForLadderEndPointILSFit plusLatitudeForLadderEndPointILSFit;
 
 	smStage1Successful stage1Successful;
 	smStage2Successful stage2Successful;
@@ -922,11 +924,30 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		else
 			ChannelData::SetLatitudeFactorForILSHistory (0.01);
 
-		cout << "Collecting Ladder ILS History with latitude factor = " << threshold << endl;
+		cout << "Collecting Ladder ILS History with latitude factor = " << 0.0001 * (double) threshold << "\n";
 	}
 
 	else
-		cout << "Not collecting ladder ILS History..." << endl;
+		cout << "Not collecting ladder ILS History...\n";
+
+	if (GetMessageValue (useLadderEndPointILSAlgorithm)) {
+
+		ChannelData::SetUseILSLadderEndPointAlgorithm (true);
+		ChannelData::SetLatitudeFactorForLadderILS (0.02);
+		cout << "Using End Point Algorithm for Ladder ILS Analysis...\n";
+		int threshold2 = GetThreshold (plusLatitudeForLadderEndPointILSFit);  // Substitute ladder latitude
+
+		if (threshold2 > 0)
+			ChannelData::SetLatitudeFactorForLadderILS (0.0001 * (double) threshold2); // Substitute ladder latitude
+
+		else
+			ChannelData::SetLatitudeFactorForLadderILS (0.05);  // Substitute ladder latitude
+
+		cout << "Testing Ladder ILS start and end points with latitude factor = " << 0.0001 * (double) threshold2 << "\n";
+	}
+
+	else
+		cout << "Not using End Point Algorithm for Ladder ILS Analysis...\n";
 
 	bool ignoreNoise;
 
@@ -1224,6 +1245,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	cout << "Processed all ladders.  Number of ladders = " << LadderList.Entries () << endl;
 	ChannelData::SetTestForDualSignal (true);
+	ChannelData::SetUseILSLadderEndPointAlgorithm (false);
 	RGString SampleName;
 	bool sampleOK;
 	bool populatedBaseLocusList = false;

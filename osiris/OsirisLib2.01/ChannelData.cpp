@@ -58,7 +58,9 @@ bool ChannelData::DisableStutterFilter = false;
 bool ChannelData::DisableAdenylationFilter = false;
 bool ChannelData::TestForDualSignal = true;
 bool ChannelData::UseILSHistory = false;
+bool ChannelData::UseLadderILSEndPointAlgorithm = false;
 double ChannelData::LatitudeFactorForILSHistory = 0.0;
+double ChannelData::LatitudeFactorForLadderILS = 0.01;
 
 
 bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& second) {

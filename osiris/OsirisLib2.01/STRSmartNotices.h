@@ -236,6 +236,8 @@ PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
 PERSISTENT_PREDECLARATION (smIsAcceptedOLAllele)
 PERSISTENT_PREDECLARATION (smSaveLadderILSHistoryPreset)
 PERSISTENT_PREDECLARATION (smLatitudeForILSFit)
+PERSISTENT_PREDECLARATION (smUseLadderEndPointILSAlgorithmPreset)
+PERSISTENT_PREDECLARATION (smPlusLatitudeForLadderEndPointILSFit)
 
 
 
@@ -6519,6 +6521,62 @@ public:
 	smLatitudeForILSFit ();
 	smLatitudeForILSFit (const smLatitudeForILSFit& note);
 	virtual ~smLatitudeForILSFit ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUseLadderEndPointILSAlgorithmPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUseLadderEndPointILSAlgorithmPreset)
+
+public:
+	smUseLadderEndPointILSAlgorithmPreset ();
+	smUseLadderEndPointILSAlgorithmPreset (const smUseLadderEndPointILSAlgorithmPreset& note);
+	virtual ~smUseLadderEndPointILSAlgorithmPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPlusLatitudeForLadderEndPointILSFit : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPlusLatitudeForLadderEndPointILSFit)
+
+public:
+	smPlusLatitudeForLadderEndPointILSFit ();
+	smPlusLatitudeForLadderEndPointILSFit (const smPlusLatitudeForLadderEndPointILSFit& note);
+	virtual ~smPlusLatitudeForLadderEndPointILSFit ();
 
 	virtual int GetSubject () const;
 

@@ -651,10 +651,15 @@ public:
 	double GetMinWidth () const { return mMinWidth; }
 	double GetMaxWidth () const { return mMaxWidth; }
 	double* GetNormalizedDifferences () const { return mNormalizedDifferences; }
+	double* GetLadderNormalizedDifferences () const { return mNormalizedCharacteristicDifferences; }
 
+	void ResetIdealCharacteristicsAndIntervalsForLadderILS (const double* actualArray, const double* differenceArray, double factor);
 	void ResetBoundsUsingFactor (double factor);
 	void ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal);
+	void ResetStartAndEndTimesForLadderILSTests (double startC, double endC, DataSignal* startSignal);
 	int TestILS (int index, DataSignal* candidate);
+	int TestLadderILS (int index, DataSignal* candidate);
+	bool FindAndTestLadderILS (int index, DataSignal* startCandidate, DataSignal*& firstPeakFound);
 	bool FindAndTestILS (int index, DataSignal* startCandidate, DataSignal*& mostAveragePeak);
 	bool FindAndTestILS (int index, DataSignal* startCandidate, RGDList& foundPeaks, DataSignal*& mostAveragePeak);
 
@@ -679,6 +684,13 @@ protected:
 	DataSignal* mClosestSignal;
 	double mMaxWidth;
 	double mMinWidth;
+	double* mCharacteristicArray;
+	double* mNormalizedCharacteristicDifferences;
+	double* mLadderILSLowBounds;
+	double* mLadderILSHighBounds;
+	double mLadderWidth;
+	double mLadderStart;
+	double mLadderEnd;
 };
 
 
@@ -734,11 +746,15 @@ public:
 	double GetMaxILSWidth () const { return mILSHistory.GetMaxWidth (); }
 	double GetMinILSWidth () const { return mILSHistory.GetMinWidth (); }
 	double* GetILSNormalizedDifferences () const { return mILSHistory.GetNormalizedDifferences (); }
+	double* GetLadderILSNormalizedDifferences () const { return mLadderILSHistory.GetLadderNormalizedDifferences (); }
 	bool AddILSToHistory (double* times) { return mILSHistory.AddILS (times); }
 	void ResetBoundsUsingFactorToILSHistory (double factor) { mILSHistory.ResetBoundsUsingFactor (factor); }
 	void ResetStartAndEndTimesForILSTests (double startC, double endC, DataSignal* startSignal) { mILSHistory.ResetStartAndEndTimesForILSTests (startC, endC, startSignal); }
+	void ResetStartAndEndTimesForLadderILSTests (double startC, double endC, DataSignal* startSignal) { mLadderILSHistory.ResetStartAndEndTimesForLadderILSTests (startC, endC, startSignal); }
+	void ResetIdealCharacteristicsAndIntervalsForLadderILS (const double* actualArray, const double* differenceArray, double factor) { mLadderILSHistory.ResetIdealCharacteristicsAndIntervalsForLadderILS (actualArray, differenceArray, factor); }
 	int TestILSUsingHistory (int index, DataSignal* candidate) { return mILSHistory.TestILS (index, candidate); }
 	bool FindAndTestILS (int index, DataSignal* startCandidate, DataSignal*& mostAveragePeak) { return mILSHistory.FindAndTestILS (index, startCandidate, mostAveragePeak); }
+	bool FindAndTestLadderILS (int index, DataSignal* startCandidate, DataSignal*& firstPeakFound) {  return mLadderILSHistory.FindAndTestLadderILS (index, startCandidate, firstPeakFound); }
 
 	virtual int GetCharacteristicArray (const double*& array) const;  // returns array size or -1
 	virtual int GetCharacteristicDifferenceArray (const double*& array) const;  // returns array size or -1
@@ -763,7 +779,7 @@ public:
 	virtual Boolean IsEqualTo (const RGPersistent* p) const;
 
 	virtual void Write (RGFile& textOutput, const RGString& indent);
-	static void SetILSHistoryNumberOfCharacteristics (int n) { mILSHistory.SetNumberOfCharacteristics (n); }
+	static void SetILSHistoryNumberOfCharacteristics (int n) { mILSHistory.SetNumberOfCharacteristics (n); mLadderILSHistory.SetNumberOfCharacteristics (n); }
 
 protected:
 	BaseLaneStandard* mLink;
@@ -775,6 +791,7 @@ protected:
 	RGString mFamilyName;
 	RGString mDyeName;
 	static ILSHistory mILSHistory;
+	static ILSHistory mLadderILSHistory;
 };
 
 

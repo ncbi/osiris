@@ -693,6 +693,8 @@ public:
 	virtual DataSignal* FindNextCharacteristicFromLeft (const DataSignal& Signature, 
 		double& fit, RGDList& previous) = 0;
 
+	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (const DataSignal* prevSignal, const DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold) { return NULL; }
+
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous) {
 		return NULL;
 	}
@@ -700,6 +702,9 @@ public:
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous, int dualCurve) {
 		return NULL;
 	}
+
+	virtual DataSignal* FindCharacteristicAsymmetric (const DataSignal* Target, const DataInterval* Segment, 
+		int windowSize, double& fit, RGDList& previous) const { return NULL; }
 
 	virtual double TestConstantCharacteristicRetry () { return 0.0; }
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right) { return 0.0; }
@@ -1034,6 +1039,7 @@ public:
 		double& fit, RGDList& previous);
 	virtual DataSignal* FindNextCharacteristicFromLeft (const DataSignal& Signature, 
 		double& fit, RGDList& previous);
+	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (const DataSignal* prevSignal, const DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold);
 
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous);
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous, int dualCurve);

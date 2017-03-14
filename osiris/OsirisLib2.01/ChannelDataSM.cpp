@@ -1248,6 +1248,45 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		}		
 	}   //  We are done finding characteristics
 
+	//
+	// Now review CompleteCurveList for missed peaks...look at pairs of peaks and call mData->FindCharacteristicBetweenTwoPeaks.  If find a peak, insert into CompleteCurveList and PreliminaryCurveList
+	//
+
+	DataSignal* previousSignal = NULL;
+	RGDListIterator itt (CompleteCurveList);
+	const DataSignal* shoulderSignal;
+	DataSignal* shoulderCopy;
+	RGDList shoulderSignals;
+
+	while (nextSignal = (DataSignal*) itt ()) {
+
+		if (previousSignal == NULL) {
+
+			previousSignal = nextSignal;
+			continue;
+		}
+
+		nextSignal->SetChannel (mChannel);
+
+		shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU);
+
+		if (shoulderSignal != NULL) {
+
+			shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+
+			shoulderSignals.Append (shoulderCopy);
+			delete shoulderSignal;
+		}
+
+		previousSignal = nextSignal;
+	}
+
+	while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+
+		PreliminaryCurveList.Insert (nextSignal);
+		CompleteCurveList.Insert (nextSignal);
+	}
+
 	RGDListIterator it (PreliminaryCurveList);
 
 	while (nextSignal = (DataSignal*) it ()) {
