@@ -1368,6 +1368,12 @@ int smPlusLatitudeForLadderEndPointILSFit::sMessageIndex = 0;
 int smPlusLatitudeForLadderEndPointILSFit::sMessageScope = 0;
 
 
+RGString smApplyEnhancedShoulderFittingAlgorithmPreset::sName = "smApplyEnhancedShoulderFittingAlgorithmPreset";
+int smApplyEnhancedShoulderFittingAlgorithmPreset::sSubject = smApplyEnhancedShoulderFittingAlgorithmPreset::LoadType ();
+int smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageIndex = 0;
+int smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1595,6 +1601,7 @@ PERSISTENT_DEFINITION (smSaveLadderILSHistoryPreset, 2628, "smSaveLadderILSHisto
 PERSISTENT_DEFINITION (smLatitudeForILSFit, 2629, "smLatitudeForILSFit")
 PERSISTENT_DEFINITION (smUseLadderEndPointILSAlgorithmPreset, 2630, "smUseLadderEndPointILSAlgorithmPreset")
 PERSISTENT_DEFINITION (smPlusLatitudeForLadderEndPointILSFit, 2631, "smPlusLatitudeForLadderEndPointILSFit")
+PERSISTENT_DEFINITION (smApplyEnhancedShoulderFittingAlgorithmPreset, 2632, "smApplyEnhancedShoulderFittingAlgorithmPreset")
 
 
 
@@ -15211,6 +15218,66 @@ int smPlusLatitudeForLadderEndPointILSFit :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPlusLatitudeForLadderEndPointILSFit* noticeType = new smPlusLatitudeForLadderEndPointILSFit;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smApplyEnhancedShoulderFittingAlgorithmPreset :: smApplyEnhancedShoulderFittingAlgorithmPreset () : SmartNotice () {
+
+}
+
+
+smApplyEnhancedShoulderFittingAlgorithmPreset :: smApplyEnhancedShoulderFittingAlgorithmPreset (const smApplyEnhancedShoulderFittingAlgorithmPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smApplyEnhancedShoulderFittingAlgorithmPreset :: ~smApplyEnhancedShoulderFittingAlgorithmPreset () {
+
+}
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: GetSubject () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset::sSubject;
+}
+
+
+void smApplyEnhancedShoulderFittingAlgorithmPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageIndex = index;
+	smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageScope = scope;
+}
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: GetMessageIndex () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset :: sMessageIndex;
+}
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: GetScope () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset :: sMessageScope;
+}
+
+
+RGString smApplyEnhancedShoulderFittingAlgorithmPreset :: GetName () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset :: sName;
+}
+
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smApplyEnhancedShoulderFittingAlgorithmPreset* noticeType = new smApplyEnhancedShoulderFittingAlgorithmPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

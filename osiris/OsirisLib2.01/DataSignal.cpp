@@ -3659,62 +3659,62 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (const DataSi
 	double minValue;
 	double temp;
 
-	for (i=startTime; i<=endTime; i++) {
+	//for (i=startTime; i<=endTime; i++) {
 
-		maxFunctionValue = prevSignal->Value ((double)i);
-		temp = nextSignal->Value ((double)i);
+	//	maxFunctionValue = prevSignal->Value ((double)i);
+	//	temp = nextSignal->Value ((double)i);
 
-		if (temp > maxFunctionValue)
-			maxFunctionValue = temp;
+	//	if (temp > maxFunctionValue)
+	//		maxFunctionValue = temp;
 
-		temp = Value (i) - maxFunctionValue;
+	//	temp = Value (i) - maxFunctionValue;
 
-		if (temp > maxDifference) {
+	//	if (temp > maxDifference) {
 
-			maxDifference = temp;
-			mode = i;
-		}
-	}
+	//		maxDifference = temp;
+	//		mode = i;
+	//	}
+	//}
 
-	if (maxDifference <= 0.0)
-		return NULL;
+	//if (maxDifference <= 0.0)
+	//	return NULL;
 
-	if (maxDifference < analysisThreshold)
-		return NULL;
+	//if (maxDifference < analysisThreshold)
+	//	return NULL;
 
-	for (i=mode; i<=endTime; i++) {
+	//for (i=mode; i<=endTime; i++) {
 
-		maxFunctionValue = prevSignal->Value ((double)i);
-		temp = nextSignal->Value ((double)i);
+	//	maxFunctionValue = prevSignal->Value ((double)i);
+	//	temp = nextSignal->Value ((double)i);
 
-		if (temp > maxFunctionValue)
-			maxFunctionValue = temp;
+	//	if (temp > maxFunctionValue)
+	//		maxFunctionValue = temp;
 
-		temp = Value (i) - maxFunctionValue;
+	//	temp = Value (i) - maxFunctionValue;
 
-		if (temp <= 0.0) {
+	//	if (temp <= 0.0) {
 
-			endTime = i - 1;
-			break;
-		}
-	}
+	//		endTime = i - 1;
+	//		break;
+	//	}
+	//}
 
-	for (i=mode; i>=startTime; i--) {
+	//for (i=mode; i>=startTime; i--) {
 
-		maxFunctionValue = prevSignal->Value ((double)i);
-		temp = nextSignal->Value ((double)i);
+	//	maxFunctionValue = prevSignal->Value ((double)i);
+	//	temp = nextSignal->Value ((double)i);
 
-		if (temp > maxFunctionValue)
-			maxFunctionValue = temp;
+	//	if (temp > maxFunctionValue)
+	//		maxFunctionValue = temp;
 
-		temp = Value (i) - maxFunctionValue;
+	//	temp = Value (i) - maxFunctionValue;
 
-		if (temp <= 0.0) {
+	//	if (temp <= 0.0) {
 
-			startTime = i + 1;
-			break;
-		}
-	}
+	//		startTime = i + 1;
+	//		break;
+	//	}
+	//}
 
 	maxFunctionValue = 0.0;
 	int halfTime = (endTime - startTime) / 2;
@@ -3725,24 +3725,34 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (const DataSi
 
 		temp = Value (i);
 
-		if (temp > maxFunctionValue) {
+		if ((temp >= Value (i - 1)) && (temp >= Value (i + 1)) && (temp > maxFunctionValue)) {
 
 			maxFunctionValue = temp;
 			mode = i;
 		}
 	}
 
-	if (maxFunctionValue <= 0.0)
-		return NULL;
-
-	if (mode <= startTime + 1)
-		return NULL;
-
-	if (mode >= endTime - 1)
-		return NULL;
-
 	double maxAtMode = maxFunctionValue;
-	minValue = maxFunctionValue;
+
+	if (maxFunctionValue < analysisThreshold)
+		return NULL;
+
+	if (mode <= startTime)
+		return NULL;
+
+	if (mode >= endTime)
+		return NULL;
+
+	maxFunctionValue = prevSignal->Value ((double)mode);
+	temp = nextSignal->Value ((double)mode);
+
+	if (temp > maxFunctionValue)
+		maxFunctionValue = temp;
+
+	if (maxAtMode - maxFunctionValue < analysisThreshold)
+		return NULL;
+	
+	minValue = maxAtMode;
 	int minTime = startTime;
 
 	for (i=startTime; i<=mode; i++) {
@@ -3790,6 +3800,10 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (const DataSi
 	RGDList unUsedList;
 
 	DataSignal* nextSignal = signature.FindCharacteristicAsymmetric (this, shoulderInterval, unUsedWindowSize, fit, unUsedList);
+
+	if (nextSignal == NULL)
+		return NULL;
+
 	DataSignal* copySignal = nextSignal->MakeCopy (nextSignal->GetMean ());
 	copySignal->SetCurveFit (fit);
 	delete nextSignal;
@@ -3799,7 +3813,6 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (const DataSi
 
 	delete shoulderInterval;
 	return copySignal;
-	//return NULL;
 }
 
 

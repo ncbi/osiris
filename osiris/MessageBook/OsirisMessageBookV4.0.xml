@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.93</VersionNumber>
-	<BuildTime>03/03/2017 06:53 PM</BuildTime>
+	<VersionNumber>6.94</VersionNumber>
+	<BuildTime>03/15/2017 01:49 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5005,6 +5005,22 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smApplyEnhancedShoulderFittingAlgorithmPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Apply Enhanced Shoulder-Fitting Algorithm</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>APPLY ENHANCED SHOULDER-FITTING ALGORITHM</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacer1</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -6299,6 +6315,7 @@
 						<Name>smScaleILSPrimerSearchPreset</Name>
 						<Name>smNumberOfLastILSPeaksInScale</Name>
 						<Name>smPercentLastILSPeaksInScaling</Name>
+						<Name>smApplyEnhancedShoulderFittingAlgorithmPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

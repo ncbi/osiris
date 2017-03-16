@@ -3809,6 +3809,7 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 	RGString notice;
 	smILSFailed ilsFailed;
 
+	ChannelData::SetBeginAnalysisTime (-1.0);
 	status = FitLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 
 	if (status < 0) {
@@ -4778,6 +4779,7 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 	RGString notice;
 	smILSFailed ilsFailed;
 
+	ChannelData::SetBeginAnalysisTime (-1.0);
 	status = FitLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 
 	if (status < 0) {

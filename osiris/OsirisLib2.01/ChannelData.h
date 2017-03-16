@@ -459,6 +459,7 @@ public:
 	static double GetLatitudeFactorForILSHistory () { return LatitudeFactorForILSHistory; }
 	static void SetLatitudeFactorForLadderILS (double factor) { LatitudeFactorForLadderILS = factor; }
 	static double GetLatitudeFactorForLadderILS () { return LatitudeFactorForLadderILS; }
+	static void SetBeginAnalysisTime (double t) { BeginAnalysis = t; }
 
 protected:
 	int mChannel;
@@ -522,6 +523,7 @@ protected:
 	static bool UseLadderILSEndPointAlgorithm;
 	static double LatitudeFactorForILSHistory;
 	static double LatitudeFactorForLadderILS;
+	static double BeginAnalysis;
 };
 
 

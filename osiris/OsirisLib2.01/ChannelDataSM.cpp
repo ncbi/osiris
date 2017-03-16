@@ -1257,34 +1257,51 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	const DataSignal* shoulderSignal;
 	DataSignal* shoulderCopy;
 	RGDList shoulderSignals;
+	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
 
-	while (nextSignal = (DataSignal*) itt ()) {
+	if ((BeginAnalysis >= 0.0) && (GetMessageValue (applyEnhancedShoulderAlgorithm))) {
 
-		if (previousSignal == NULL) {
+		while (nextSignal = (DataSignal*) itt ()) {
+
+			if (nextSignal->GetMean () < BeginAnalysis) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			if (previousSignal == NULL) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			nextSignal->SetChannel (mChannel);
+			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU);
+
+			if (shoulderSignal != NULL) {
+
+				int left = (int) floor (shoulderSignal->LeftEndPoint () + 0.5);
+				int right = (int) floor (shoulderSignal->RightEndPoint () + 0.5);
+
+				lineFit = mData->InnerProductWithConstantFunction (left, right, constantHeight);
+
+				if (lineFit <= minFitForArtifactTest) {
+
+					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+					shoulderSignals.Append (shoulderCopy);
+				}
+
+				delete shoulderSignal;
+			}
 
 			previousSignal = nextSignal;
-			continue;
 		}
 
-		nextSignal->SetChannel (mChannel);
+		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-		shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU);
-
-		if (shoulderSignal != NULL) {
-
-			shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
-
-			shoulderSignals.Append (shoulderCopy);
-			delete shoulderSignal;
+			PreliminaryCurveList.Insert (nextSignal);
+			CompleteCurveList.Insert (nextSignal);
 		}
-
-		previousSignal = nextSignal;
-	}
-
-	while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
-
-		PreliminaryCurveList.Insert (nextSignal);
-		CompleteCurveList.Insert (nextSignal);
 	}
 
 	RGDListIterator it (PreliminaryCurveList);

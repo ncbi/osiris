@@ -1652,6 +1652,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 	}
 
 	double lowMean = Means [0];
+	BeginAnalysis = lowMean;
 	double highMean = Means [NumberOfAcceptedCurves - 1];
 	double currentMean;
 
@@ -2385,6 +2386,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	}
 
 	double lowMean = Means [0];
+	BeginAnalysis = lowMean;
 	double highMean = Means [NumberOfAcceptedCurves - 1];
 	double currentMean;
 

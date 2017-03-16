@@ -708,6 +708,7 @@ public:
 
 	virtual double TestConstantCharacteristicRetry () { return 0.0; }
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right) { return 0.0; }
+	virtual double InnerProductWithConstantFunction (int left, int right, double& height) const { return 0.0; }
 	virtual bool HasAtLeastOneLocalMinimum () { return false; }
 	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit) { return false; }
 	virtual DataSignal* FindCharacteristic (const DataSignal* Target, const DataInterval* Segment, 
@@ -1046,7 +1047,7 @@ public:
 
 	virtual double GetModeHeightAndLocationFromDataInterval (int& location);
 	virtual double TestConstantCharacteristicRetry ();
-	double InnerProductWithConstantFunction (int left, int right) const;
+	virtual double InnerProductWithConstantFunction (int left, int right) const;
 
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right);
 	virtual bool HasAtLeastOneLocalMinimum ();

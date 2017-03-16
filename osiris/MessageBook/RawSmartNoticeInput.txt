@@ -225,6 +225,7 @@ smSaveLadderILSHistoryPreset	1112	2628
 smLatitudeForILSFit	1113	2629
 smUseLadderEndPointILSAlgorithmPreset	1114	2630
 smPlusLatitudeForLadderEndPointILSFit	1115	2631
+smApplyEnhancedShoulderFittingAlgorithmPreset	1116	2632
 
 
 
