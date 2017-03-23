@@ -158,6 +158,18 @@ struct CompoundSignalInfo {
 };
 
 
+struct ConcaveDownSet {
+
+	ConcaveDownSet (int st, int en, double value, int pos) : mStart (st), mEnd (en), mMaxValue (value), mPosition (pos) {}
+	~ConcaveDownSet () {}
+
+	int mStart;
+	int mEnd;
+	double mMaxValue;
+	int mPosition;
+};
+
+
 class InterchannelLinkage {
 
 public:
@@ -693,7 +705,7 @@ public:
 	virtual DataSignal* FindNextCharacteristicFromLeft (const DataSignal& Signature, 
 		double& fit, RGDList& previous) = 0;
 
-	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (const DataSignal* prevSignal, const DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold) { return NULL; }
+	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (DataSignal* prevSignal, DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold, double noiseThreshold) { return NULL; }
 
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous) {
 		return NULL;
@@ -874,6 +886,7 @@ public:
 	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
 	static bool IsNegativeOrSigmoid (DataSignal* ds);
 	static bool PeakCannotBePurePullup (DataSignal* pullup, DataSignal* primary);
+	static void SetNumberOfIntervalsForConcaveDownAlgorithm (int n) { NumberOfIntervalsForConcaveDownAlgorithm = n; }
 
 
 	//*******************************************************************************************************
@@ -990,6 +1003,7 @@ protected:
 	static bool* InitialMatrix;
 	static bool ConsiderAllOLAllelesAccepted;
 	static int NumberOfChannels;
+	static int NumberOfIntervalsForConcaveDownAlgorithm;
 
 	// Smart Message functions*******************************************************************************
 	//*******************************************************************************************************
@@ -1040,7 +1054,7 @@ public:
 		double& fit, RGDList& previous);
 	virtual DataSignal* FindNextCharacteristicFromLeft (const DataSignal& Signature, 
 		double& fit, RGDList& previous);
-	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (const DataSignal* prevSignal, const DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold);
+	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (DataSignal* prevSignal, DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold, double noiseThreshold);
 
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous);
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous, int dualCurve);

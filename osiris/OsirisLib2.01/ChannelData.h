@@ -460,6 +460,7 @@ public:
 	static void SetLatitudeFactorForLadderILS (double factor) { LatitudeFactorForLadderILS = factor; }
 	static double GetLatitudeFactorForLadderILS () { return LatitudeFactorForLadderILS; }
 	static void SetBeginAnalysisTime (double t) { BeginAnalysis = t; }
+	static void SetUseEnhancedShoulderAlgorithm (bool status) { UseEnhancedShoulderAlgorithm = status; }
 
 protected:
 	int mChannel;
@@ -524,6 +525,7 @@ protected:
 	static double LatitudeFactorForILSHistory;
 	static double LatitudeFactorForLadderILS;
 	static double BeginAnalysis;
+	static bool UseEnhancedShoulderAlgorithm;
 };
 
 

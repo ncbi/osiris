@@ -1374,6 +1374,18 @@ int smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageIndex = 0;
 int smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageScope = 0;
 
 
+RGString smNoiseFactorForShoulderAcceptanceThreshold::sName = "smNoiseFactorForShoulderAcceptanceThreshold";
+int smNoiseFactorForShoulderAcceptanceThreshold::sSubject = smNoiseFactorForShoulderAcceptanceThreshold::LoadType ();
+int smNoiseFactorForShoulderAcceptanceThreshold::sMessageIndex = 0;
+int smNoiseFactorForShoulderAcceptanceThreshold::sMessageScope = 0;
+
+
+RGString smConcaveDownAcceptanceThreshold::sName = "smConcaveDownAcceptanceThreshold";
+int smConcaveDownAcceptanceThreshold::sSubject = smConcaveDownAcceptanceThreshold::LoadType ();
+int smConcaveDownAcceptanceThreshold::sMessageIndex = 0;
+int smConcaveDownAcceptanceThreshold::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1602,6 +1614,8 @@ PERSISTENT_DEFINITION (smLatitudeForILSFit, 2629, "smLatitudeForILSFit")
 PERSISTENT_DEFINITION (smUseLadderEndPointILSAlgorithmPreset, 2630, "smUseLadderEndPointILSAlgorithmPreset")
 PERSISTENT_DEFINITION (smPlusLatitudeForLadderEndPointILSFit, 2631, "smPlusLatitudeForLadderEndPointILSFit")
 PERSISTENT_DEFINITION (smApplyEnhancedShoulderFittingAlgorithmPreset, 2632, "smApplyEnhancedShoulderFittingAlgorithmPreset")
+PERSISTENT_DEFINITION (smNoiseFactorForShoulderAcceptanceThreshold, 2633, "smNoiseFactorForShoulderAcceptanceThreshold")
+PERSISTENT_DEFINITION (smConcaveDownAcceptanceThreshold, 2634, "smConcaveDownAcceptanceThreshold")
 
 
 
@@ -15278,6 +15292,126 @@ int smApplyEnhancedShoulderFittingAlgorithmPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smApplyEnhancedShoulderFittingAlgorithmPreset* noticeType = new smApplyEnhancedShoulderFittingAlgorithmPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smNoiseFactorForShoulderAcceptanceThreshold :: smNoiseFactorForShoulderAcceptanceThreshold () : SmartNotice () {
+
+}
+
+
+smNoiseFactorForShoulderAcceptanceThreshold :: smNoiseFactorForShoulderAcceptanceThreshold (const smNoiseFactorForShoulderAcceptanceThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smNoiseFactorForShoulderAcceptanceThreshold :: ~smNoiseFactorForShoulderAcceptanceThreshold () {
+
+}
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: GetSubject () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold::sSubject;
+}
+
+
+void smNoiseFactorForShoulderAcceptanceThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smNoiseFactorForShoulderAcceptanceThreshold::sMessageIndex = index;
+	smNoiseFactorForShoulderAcceptanceThreshold::sMessageScope = scope;
+}
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: GetMessageIndex () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold :: sMessageIndex;
+}
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: GetScope () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold :: sMessageScope;
+}
+
+
+RGString smNoiseFactorForShoulderAcceptanceThreshold :: GetName () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold :: sName;
+}
+
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smNoiseFactorForShoulderAcceptanceThreshold* noticeType = new smNoiseFactorForShoulderAcceptanceThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smConcaveDownAcceptanceThreshold :: smConcaveDownAcceptanceThreshold () : SmartNotice () {
+
+}
+
+
+smConcaveDownAcceptanceThreshold :: smConcaveDownAcceptanceThreshold (const smConcaveDownAcceptanceThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smConcaveDownAcceptanceThreshold :: ~smConcaveDownAcceptanceThreshold () {
+
+}
+
+
+int smConcaveDownAcceptanceThreshold :: GetSubject () const {
+
+	return smConcaveDownAcceptanceThreshold::sSubject;
+}
+
+
+void smConcaveDownAcceptanceThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smConcaveDownAcceptanceThreshold::sMessageIndex = index;
+	smConcaveDownAcceptanceThreshold::sMessageScope = scope;
+}
+
+
+int smConcaveDownAcceptanceThreshold :: GetMessageIndex () const {
+
+	return smConcaveDownAcceptanceThreshold :: sMessageIndex;
+}
+
+
+int smConcaveDownAcceptanceThreshold :: GetScope () const {
+
+	return smConcaveDownAcceptanceThreshold :: sMessageScope;
+}
+
+
+RGString smConcaveDownAcceptanceThreshold :: GetName () const {
+
+	return smConcaveDownAcceptanceThreshold :: sName;
+}
+
+
+
+int smConcaveDownAcceptanceThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smConcaveDownAcceptanceThreshold* noticeType = new smConcaveDownAcceptanceThreshold;
 	warehouse->AddType (noticeType);
 	return 1;
 }

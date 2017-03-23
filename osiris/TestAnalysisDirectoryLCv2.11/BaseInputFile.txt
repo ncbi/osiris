@@ -1,6 +1,7 @@
-InputDirectory = C:/Users/goorrob/DFSCMissingPeaks;
+InputDirectory = C:/Users/goorrob/GFLadderIssuesWithShoulderAlgorithm;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+OutputSubdirectory = 20170322_201808;
 MarkerSetName = GlobalFiler;
 LaneStandardName = ABI-LIZ-600-60-TO-460;
 CriticalOutputLevel = 15;
@@ -20,3 +21,4 @@ AnalysisThresholdOverride:4 = 80;
 AnalysisThresholdOverride:5 = 90;
 RawDataString = R;
 ;
+

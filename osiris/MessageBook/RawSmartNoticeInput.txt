@@ -226,6 +226,8 @@ smLatitudeForILSFit	1113	2629
 smUseLadderEndPointILSAlgorithmPreset	1114	2630
 smPlusLatitudeForLadderEndPointILSFit	1115	2631
 smApplyEnhancedShoulderFittingAlgorithmPreset	1116	2632
+smNoiseFactorForShoulderAcceptanceThreshold	1117	2633
+smConcaveDownAcceptanceThreshold	1118	2634
 
 
 

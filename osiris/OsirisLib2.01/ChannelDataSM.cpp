@@ -1155,6 +1155,11 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
 	double minFit = minFitForArtifactTest;
 	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
+	double minRFU2 = 0.9 * minRFU;
+	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
+	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+
+	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
 	if (minAcceptableFit > minFit)
 		minFit = minAcceptableFit;
@@ -1259,7 +1264,12 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	RGDList shoulderSignals;
 	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
 
-	if ((BeginAnalysis >= 0.0) && (GetMessageValue (applyEnhancedShoulderAlgorithm))) {
+	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
+	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).
+
+	if ((BeginAnalysis >= 0.0) && (GetMessageValue (applyEnhancedShoulderAlgorithm)) && UseEnhancedShoulderAlgorithm) {
+
+		DataSignal::SetNumberOfIntervalsForConcaveDownAlgorithm (GetThreshold (concaveDownAcceptanceThreshold));
 
 		while (nextSignal = (DataSignal*) itt ()) {
 
@@ -1276,7 +1286,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			}
 
 			nextSignal->SetChannel (mChannel);
-			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU);
+			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
 
 			if (shoulderSignal != NULL) {
 

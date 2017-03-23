@@ -2412,6 +2412,12 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
 		CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
 
+	if (GetMessageValue (normalizeRawData))
+		ChannelData::SetUseEnhancedShoulderAlgorithm (false);
+
+	else
+		ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
+
 //	status = FitAllCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 	status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 
@@ -2510,6 +2516,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	//cout << "Normalized all baselines" << endl;
 
 	//RestoreRawDataAndDeleteFilteredSignalNonILS ();	// 02/02/2014:  This is now done at the channel level within normalization function.
+	ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
 	status = FitNonLaneStandardCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 	FitNonLaneStandardNegativeCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);
 

@@ -1917,10 +1917,37 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
 					//cout << " at bp = " << 0.5 * (nextSignal->GetApproximateBioID () + prevSignal->GetApproximateBioID ()) << endl;
 
-					// It's not too wide
+					// It may still be too wide...test for width of crater and side peaks.  To be OK, the crater should be within width dicatated by ILS or it could be too wide if both side peaks are too narrow
 
 					testSignal = new CraterSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
+
+					double width = testSignal->GetStandardDeviation ();
+					double mean = testSignal->GetMean ();
+					double targetWidth = mLSData->GetWidthAtTime (mean);
+					double tooWide = 2.0 * targetWidth;
+
+					if (width > tooWide) {
+
+						mean = prevSignal->GetMean ();
+						double tooNarrow = 0.5 *mLSData->GetWidthAtTime (mean);
+
+						if (prevSignal->GetStandardDeviation () > tooNarrow) {
+
+							delete testSignal;
+							break;
+						}
+
+						mean = nextSignal->GetMean ();
+						tooNarrow = 0.5 * mLSData->GetWidthAtTime (mean);
+
+						if (nextSignal->GetStandardDeviation () > tooNarrow) {
+
+							delete testSignal;
+							break;
+						}
+					}
+
 					testSignal2 = (DataSignal*) nextCraterPeakList->Last ();
 
 					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
@@ -2949,10 +2976,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		delete nextMultiPeakList;
 	}
 
+	list<DataSignal*> postCraterList;
+
 	while (!finalCraterList.empty ()) {
 
 		nextSignal = finalCraterList.front ();
 		finalCraterList.pop_front ();
+		postCraterList.push_back (nextSignal);
 
 		nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
 
@@ -3249,6 +3279,36 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			primeSignal->SetInterchannelLink (NULL);
 		}
 
+	}
+
+	while (!postCraterList.empty ()) {
+
+		primeSignal = postCraterList.front ();
+		postCraterList.pop_front ();
+		bool hasCrossChannelEffect = primeSignal->GetMessageValue (primaryLink) || primeSignal->GetMessageValue (pullup) || primeSignal->GetMessageValue (purePullup) || primeSignal->GetMessageValue (partialPullupBelowMin);
+
+		if (!hasCrossChannelEffect) {
+
+			primeSignal->SetMessageValue (crater, false);
+			prevSignal = primeSignal->GetPreviousLinkedSignal ();
+			nextSignal = primeSignal->GetNextLinkedSignal ();
+			
+			if (prevSignal != NULL) {
+
+				prevSignal->SetMessageValue (craterSidePeak, false);
+			}
+
+			if (nextSignal != NULL) {
+
+				nextSignal->SetMessageValue (craterSidePeak, false);
+			}
+
+			nextChannel = mDataChannels [primeSignal->GetChannel ()];
+			nextChannel->RemoveCompleteCurveReference (primeSignal);
+			nextChannel->RemovePreliminaryCurveReference (primeSignal);
+			OverallList.RemoveReference (primeSignal);
+			removedPeakList.InsertWithNoReferenceDuplication (primeSignal);
+		}
 	}
 
 	for (rChannelIt=channelRemoval.begin (); rChannelIt!=channelRemoval.end(); rChannelIt++) {
@@ -3850,6 +3910,7 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 	cout << "Window width = " << TracePrequalification::GetWindowWidth () << endl;
 	cout << "Noise threshold = " << TracePrequalification::GetNoiseThreshold () << endl;
 
+	ChannelData::SetUseEnhancedShoulderAlgorithm (true);  //  Use of the algorithm still depends on the user preset setting
 	status = FitNonLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 
 	if (status < 0) {

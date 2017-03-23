@@ -239,6 +239,8 @@ PERSISTENT_PREDECLARATION (smLatitudeForILSFit)
 PERSISTENT_PREDECLARATION (smUseLadderEndPointILSAlgorithmPreset)
 PERSISTENT_PREDECLARATION (smPlusLatitudeForLadderEndPointILSFit)
 PERSISTENT_PREDECLARATION (smApplyEnhancedShoulderFittingAlgorithmPreset)
+PERSISTENT_PREDECLARATION (smNoiseFactorForShoulderAcceptanceThreshold)
+PERSISTENT_PREDECLARATION (smConcaveDownAcceptanceThreshold)
 
 
 
@@ -6606,6 +6608,62 @@ public:
 	smApplyEnhancedShoulderFittingAlgorithmPreset ();
 	smApplyEnhancedShoulderFittingAlgorithmPreset (const smApplyEnhancedShoulderFittingAlgorithmPreset& note);
 	virtual ~smApplyEnhancedShoulderFittingAlgorithmPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smNoiseFactorForShoulderAcceptanceThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smNoiseFactorForShoulderAcceptanceThreshold)
+
+public:
+	smNoiseFactorForShoulderAcceptanceThreshold ();
+	smNoiseFactorForShoulderAcceptanceThreshold (const smNoiseFactorForShoulderAcceptanceThreshold& note);
+	virtual ~smNoiseFactorForShoulderAcceptanceThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smConcaveDownAcceptanceThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smConcaveDownAcceptanceThreshold)
+
+public:
+	smConcaveDownAcceptanceThreshold ();
+	smConcaveDownAcceptanceThreshold (const smConcaveDownAcceptanceThreshold& note);
+	virtual ~smConcaveDownAcceptanceThreshold ();
 
 	virtual int GetSubject () const;
 
