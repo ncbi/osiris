@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.95</VersionNumber>
-	<BuildTime>03/23/2017 01:57 PM</BuildTime>
+	<VersionNumber>6.96</VersionNumber>
+	<BuildTime>03/27/2017 04:25 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5026,9 +5026,9 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<CountingDataInfo>
-				<Threshold>150</Threshold>
+				<Threshold>100</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Percentage Of Standard Noise Threshold For Shoulder Acceptance (Default = 150)</ThresholdDescriptor>
+				<ThresholdDescriptor>                Percentage Of Standard Noise Threshold For Shoulder Acceptance (Default = 100)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
