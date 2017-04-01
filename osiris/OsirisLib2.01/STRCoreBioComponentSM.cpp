@@ -2492,6 +2492,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	DataSignal* fixPullupPeak;
 	RGDList removedPeakList;
 	set<InterchannelLinkage*> channelRemoval;
+	list<DataSignal*> postSigmoidList;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2524,6 +2525,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				testSignal->SetMessageValue (sigmoidalSidePeak, true);
 				testSignal2->SetMessageValue (sigmoidalSidePeak, true);
 				nextSignal->SetMessageValue (sigmoidalPullup, true);
+				postSigmoidList.push_back (nextSignal);
 
 				if (nextSignal->Peak () < minRFU)
 					nextSignal->SetMessageValue (belowMinRFU, true);
@@ -2690,10 +2692,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			testSignal = nextSignal->GetPreviousLinkedSignal ();
 			testSignal2 = nextSignal->GetNextLinkedSignal (); 
-
-			if ((nextSignal->GetMean () < 4812.0) && (nextSignal->GetMean () > 4801.0) && (nextSignal->GetChannel () == 2))
-				bool hereItIs = true;
-
 
 			if ((testSignal == NULL) || (testSignal2 == NULL)) {
 
@@ -3285,7 +3283,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		primeSignal = postCraterList.front ();
 		postCraterList.pop_front ();
-		bool hasCrossChannelEffect = primeSignal->GetMessageValue (primaryLink) || primeSignal->GetMessageValue (pullup) || primeSignal->GetMessageValue (purePullup) || primeSignal->GetMessageValue (partialPullupBelowMin);
+		bool hasCrossChannelEffect = primeSignal->GetMessageValue (primaryLink) || primeSignal->HasAnyPrimarySignals (mNumberOfChannels);
 
 		if (!hasCrossChannelEffect) {
 
@@ -3296,11 +3294,51 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (prevSignal != NULL) {
 
 				prevSignal->SetMessageValue (craterSidePeak, false);
+				prevSignal->SetPartOfCluster (false);
+				prevSignal->SetDoNotCall (false);
 			}
 
 			if (nextSignal != NULL) {
 
 				nextSignal->SetMessageValue (craterSidePeak, false);
+				nextSignal->SetPartOfCluster (false);
+				nextSignal->SetDoNotCall (false);
+			}
+
+			nextChannel = mDataChannels [primeSignal->GetChannel ()];
+			nextChannel->RemoveCompleteCurveReference (primeSignal);
+			nextChannel->RemovePreliminaryCurveReference (primeSignal);
+			OverallList.RemoveReference (primeSignal);
+			removedPeakList.InsertWithNoReferenceDuplication (primeSignal);
+		}
+	}
+
+	// add similar code to above for sigmoidal signals...
+
+	while (!postSigmoidList.empty ()) {
+
+		primeSignal = postSigmoidList.front ();
+		postSigmoidList.pop_front ();
+		bool hasCrossChannelEffect = primeSignal->HasAnyPrimarySignals (mNumberOfChannels);
+
+		if (!hasCrossChannelEffect) {
+
+			primeSignal->SetMessageValue (sigmoidalPullup, false);
+			prevSignal = primeSignal->GetPreviousLinkedSignal ();
+			nextSignal = primeSignal->GetNextLinkedSignal ();
+			
+			if (prevSignal != NULL) {
+
+				prevSignal->SetMessageValue (sigmoidalSidePeak, false);
+				prevSignal->SetPartOfCluster (false);
+				prevSignal->SetDoNotCall (false);
+			}
+
+			if (nextSignal != NULL) {
+
+				nextSignal->SetMessageValue (sigmoidalSidePeak, false);
+				nextSignal->SetPartOfCluster (false);
+				nextSignal->SetDoNotCall (false);
 			}
 
 			nextChannel = mDataChannels [primeSignal->GetChannel ()];
