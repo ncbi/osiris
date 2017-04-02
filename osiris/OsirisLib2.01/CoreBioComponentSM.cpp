@@ -1968,6 +1968,14 @@ bool CoreBioComponent :: NegatePullupForChannelsSM (int primaryChannel, int pull
 
 DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals) {
 
+	//
+	//   This is sample stage 1.  
+	//
+	//   It inserts pullup peaks into primary signal's pullup array.  We should arrange that if primaryChannel == currentChannel, we continue.
+	//   Consider commenting out preferential treatment for possible sigmoidal peaks.  We used to need this to prevent negative peaks from messing up the determination of
+	//   the pullup pattern, but we no longer need to do that.  A single negative peak no longer determines that the pattern has to be negative (04/01/2017...no fooling!)
+	//
+
 	DataSignal** pullupArray = new DataSignal* [mNumberOfChannels + 1];
 	int i;
 
@@ -2001,14 +2009,16 @@ DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primar
 			double deltaCurrent = fabs (primaryMean - currentMean);
 			double deltaNext = fabs (primaryMean - nextMean);
 
-			if (nextSignal->IsSigmoidalPeak ()) {
-				
-				pullupArray [currentChannel] = nextSignal;
-				continue;
-			}
+			//  Experiment with commenting out the next few lines...sigmoids and craters are not special...04/01/2017...no fooling!
 
-			else if (currentSignal->IsSigmoidalPeak ())
-				continue;
+			//if (nextSignal->IsSigmoidalPeak ()) {
+			//	
+			//	pullupArray [currentChannel] = nextSignal;
+			//	continue;
+			//}
+
+			//else if (currentSignal->IsSigmoidalPeak ())
+			//	continue;
 
 			if (nextMean == primaryMean) {
 
