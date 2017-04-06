@@ -605,6 +605,33 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	OsirisMsg Message (&OutputFile, "\t", 10);
 	Endl endLine;
 
+	//RGString accumulatedHeightDataName = FullPathForReports + "/PeakHeightData.tab";
+	//RGTextOutput* heightText = new RGTextOutput (accumulatedHeightDataName, FALSE);
+
+	//if (heightText->FileIsValid ()) {
+
+	//	*heightText << "Cumulative Height Data" << endLine;
+	//	*heightText << "A = Corrected Peak Heights" << endLine;
+	//	*heightText << "B = Uncorrected Peak Heights" << endLine;
+	//	*heightText << "C = percent A / B" << endLine;
+	//	*heightText << "D = Corrected Peak Heights of Corrected Peaks Only" << endLine;
+	//	*heightText << "E = Uncorrected Peak Heights of Corrected Peaks Only" << endLine;
+	//	*heightText << "F = percent D / E" << endLine;
+	//	*heightText << "G = Total Heights of Primary Peaks" << endLine;
+	//	*heightText << "H = percent G / B" << endLine;
+	//	*heightText << "I = Corrected Peak Heights of Corrected Partial Pullup Peaks Only" << endLine;
+	//	*heightText << "J = percent I / B" << endLine;
+	//	*heightText << "K = Uncorrected Peak Heights of Partial Pullup Peaks Only" << endLine;
+	//	*heightText << "L = percent I / K" << endLine << endLine;
+	//	*heightText << "A\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH\t\tI\t\tJ\t\tK\t\tL" << endLine;
+	//}
+
+	//CoreBioComponent::SetHeightFile (heightText);
+
+	RGString nonLaserOffScalePullupFractionName = FullPathForReports + "/PullupFractions.tab";
+	RGTextOutput* nonLaserOffScalePullupFractions = new RGTextOutput (nonLaserOffScalePullupFractionName, FALSE);
+	CoreBioComponent::SetNonLaserOffScalePUCoeffsFile (nonLaserOffScalePullupFractions);
+
 	if (!OutputFile.isValid ()) {
 
 		cout << "Could not open output file:  " << OutputFullPath << endl;
@@ -869,6 +896,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smNoNegCtrlFound noNegCtrlFound;
 	smSampleSatisfiesPossibleMixtureIDCriteria sampleSatisfiesMixtureCriteria;
 	smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
+	smSaveLadderILSHistoryPreset saveLadderILSHistory;
+	smLatitudeForILSFit latitudeForILSFit;
+	smUseLadderEndPointILSAlgorithmPreset useLadderEndPointILSAlgorithm;
+	smPlusLatitudeForLadderEndPointILSFit plusLatitudeForLadderEndPointILSFit;
 
 	smStage1Successful stage1Successful;
 	smStage2Successful stage2Successful;
@@ -879,6 +910,44 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smDisableStutterFilter disableStutterFilter;
 	smDisableAdenylationFilter disableAdenylationFilter;
 	smCallOnLadderAdenylationPreset callOnLadderAdenylation;
+
+	if (GetMessageValue (saveLadderILSHistory)) {
+
+		STRLCAnalysis::SetCollectILSHistory (true);
+		ChannelData::SetUseILSHistory (false);
+
+		int threshold = GetThreshold (latitudeForILSFit);
+
+		if (threshold > 0)
+			ChannelData::SetLatitudeFactorForILSHistory (0.0001 * (double) threshold);
+
+		else
+			ChannelData::SetLatitudeFactorForILSHistory (0.01);
+
+		cout << "Collecting Ladder ILS History with latitude factor = " << 0.0001 * (double) threshold << "\n";
+	}
+
+	else
+		cout << "Not collecting ladder ILS History...\n";
+
+	if (GetMessageValue (useLadderEndPointILSAlgorithm)) {
+
+		ChannelData::SetUseILSLadderEndPointAlgorithm (true);
+		ChannelData::SetLatitudeFactorForLadderILS (0.02);
+		cout << "Using End Point Algorithm for Ladder ILS Analysis...\n";
+		int threshold2 = GetThreshold (plusLatitudeForLadderEndPointILSFit);  // Substitute ladder latitude
+
+		if (threshold2 > 0)
+			ChannelData::SetLatitudeFactorForLadderILS (0.0001 * (double) threshold2); // Substitute ladder latitude
+
+		else
+			ChannelData::SetLatitudeFactorForLadderILS (0.05);  // Substitute ladder latitude
+
+		cout << "Testing Ladder ILS start and end points with latitude factor = " << 0.0001 * (double) threshold2 << "\n";
+	}
+
+	else
+		cout << "Not using End Point Algorithm for Ladder ILS Analysis...\n";
 
 	bool ignoreNoise;
 
@@ -917,7 +986,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	RGString ABIModelNumber;
 	int nLadders = 0;
 	//ChannelData::SetTestForDualSignal (false);
-	ChannelData::SetTestForDualSignal (false);
+	ChannelData::SetTestForDualSignal (true);    // 01/24/2017 This is a test because ladders are missing split peaks that should not be missed.  It used to be set to true.
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
@@ -1165,11 +1234,18 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			NoticeStr << "\n";
 			ExcelText.Write (1, NoticeStr);
 			text << NoticeStr;
+
+			if (CollectILSHistory) {
+
+				ladderBioComponent->AddILSToHistory ();
+				cout << "Ladder ILS added to history..." << endl;
+			}
 		}
 	}
 
 	cout << "Processed all ladders.  Number of ladders = " << LadderList.Entries () << endl;
 	ChannelData::SetTestForDualSignal (true);
+	ChannelData::SetUseILSLadderEndPointAlgorithm (false);
 	RGString SampleName;
 	bool sampleOK;
 	bool populatedBaseLocusList = false;
@@ -1190,8 +1266,43 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		goto finishOutput;
 	}
 
+	else {
+
+		ladderBioComponent = (CoreBioComponent*) LadderList.First ();
+		int numChannels = ladderBioComponent->GetNumberOfChannels ();
+
+		if (nonLaserOffScalePullupFractions->FileIsValid ()) {
+
+			*nonLaserOffScalePullupFractions << "Laser Not Off Scale Pullup Fractions (Linear and Quadratic Parts) Per Channel Pairs" << endLine;
+			int ii;
+			int jj;
+
+			for (ii=1; ii<=numChannels; ii++) {
+
+				for (jj=1; jj<=numChannels; jj++) {
+
+					if (ii == jj)
+						continue;
+
+					*nonLaserOffScalePullupFractions << ii << "->" << jj << " lin.\t" << ii << "->" << jj << " quad.\t";
+				}
+			}
+
+			*nonLaserOffScalePullupFractions << endLine;
+		}
+	}
+
 	SampleDirectory->RewindDirectory ();
 	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
+	
+	if (CollectILSHistory) {
+
+		STRLCAnalysis::SetCollectILSHistory (false);
+		ChannelData::SetUseILSHistory (true);
+		ladderBioComponent = (CoreBioComponent*) LadderList.First ();
+		ladderBioComponent->ResetBoundsForILSUsingFactor (ChannelData::GetLatitudeFactorForILSHistory ());
+		cout << "All ladder ILS history collected and bounds reset..." << endl;
+	}
 
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
@@ -1438,6 +1549,13 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		if (sampleOK)
 			bioComponent->SampleQualityTestSM (pGenotypes);
+
+		//
+		//  Put peak height accumulation algorithm here (12/16/2016)
+		//
+
+		//if (sampleOK)
+		//	bioComponent->WriteDataToHeightFileSM ();
 
 		//cout << "Sample quality test complete" << endl;
 

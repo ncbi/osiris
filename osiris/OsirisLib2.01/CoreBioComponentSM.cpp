@@ -863,6 +863,44 @@ bool CoreBioComponent :: GetIgnoreNoiseAboveDetectionInSmoothingFlag () const {
 }
 
 
+void CoreBioComponent :: WriteDataToHeightFileSM () {
+
+	int i;
+	double totals [12];
+	Endl endLine;
+
+	if (HeightFile == NULL)
+		return;
+
+	if (!HeightFile->FileIsValid ())
+		return;
+
+	for (i=0; i<12; i++)
+		totals [i] = 0.0;
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		mDataChannels [i]->AccumulatePeakHeightsForChannelAndAddToTotalsSM (totals, mNumberOfChannels);
+
+	if (totals [1] != 0.0) {
+
+		totals [2] = 100.0 * totals [0] / totals [1];
+		totals [7] = 100.0 * totals [6] / totals [1];
+		totals [9] = 100.0 * totals [8] / totals [1];
+	}
+
+	if (totals [4] != 0.0)
+		totals [5] = 100.0 * totals [3] / totals [4];		
+
+	if (totals [10] != 0.0)
+		totals [11] = 100.0 * totals [8] / totals [10];
+
+	for (i=0; i<12; i++)
+		*HeightFile << totals [i] << "\t\t";
+
+	*HeightFile << endLine;
+}
+
+
 void CoreBioComponent :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	RGString idData = "Sample:  " + mName;
@@ -1930,6 +1968,14 @@ bool CoreBioComponent :: NegatePullupForChannelsSM (int primaryChannel, int pull
 
 DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals) {
 
+	//
+	//   This is sample stage 1.  
+	//
+	//   It inserts pullup peaks into primary signal's pullup array.  We should arrange that if primaryChannel == currentChannel, we continue.
+	//   Consider commenting out preferential treatment for possible sigmoidal peaks.  We used to need this to prevent negative peaks from messing up the determination of
+	//   the pullup pattern, but we no longer need to do that.  A single negative peak no longer determines that the pattern has to be negative (04/01/2017...no fooling!)
+	//
+
 	DataSignal** pullupArray = new DataSignal* [mNumberOfChannels + 1];
 	int i;
 
@@ -1963,14 +2009,16 @@ DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primar
 			double deltaCurrent = fabs (primaryMean - currentMean);
 			double deltaNext = fabs (primaryMean - nextMean);
 
-			if (nextSignal->IsSigmoidalPeak ()) {
-				
-				pullupArray [currentChannel] = nextSignal;
-				continue;
-			}
+			//  Experiment with commenting out the next few lines...sigmoids and craters are not special...04/01/2017...no fooling!
 
-			else if (currentSignal->IsSigmoidalPeak ())
-				continue;
+			//if (nextSignal->IsSigmoidalPeak ()) {
+			//	
+			//	pullupArray [currentChannel] = nextSignal;
+			//	continue;
+			//}
+
+			//else if (currentSignal->IsSigmoidalPeak ())
+			//	continue;
 
 			if (nextMean == primaryMean) {
 
@@ -2374,6 +2422,12 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
 		CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
 
+	if (GetMessageValue (normalizeRawData))
+		ChannelData::SetUseEnhancedShoulderAlgorithm (false);
+
+	else
+		ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
+
 //	status = FitAllCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 	status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 
@@ -2472,6 +2526,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	//cout << "Normalized all baselines" << endl;
 
 	//RestoreRawDataAndDeleteFilteredSignalNonILS ();	// 02/02/2014:  This is now done at the channel level within normalization function.
+	ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
 	status = FitNonLaneStandardCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 	FitNonLaneStandardNegativeCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);
 

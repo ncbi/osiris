@@ -485,6 +485,13 @@
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
+      <LaneStandard>
+        <Name>RapidCXR500Less60-80</Name>
+        <DisplayName>100-500</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.99</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
     </ILS>
     <ILS>
       <ILSName>SG-SIZE-DY632</ILSName>

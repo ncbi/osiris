@@ -221,6 +221,14 @@ smDoNotCallStutterPeaksForSingleSourceSamplesPreset	1108	2624
 smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset	1109	2625
 smCallStutterPeaksPreset	1110	2626
 smIsAcceptedOLAllele	1111	2627
+smSaveLadderILSHistoryPreset	1112	2628
+smLatitudeForILSFit	1113	2629
+smUseLadderEndPointILSAlgorithmPreset	1114	2630
+smPlusLatitudeForLadderEndPointILSFit	1115	2631
+smApplyEnhancedShoulderFittingAlgorithmPreset	1116	2632
+smNoiseFactorForShoulderAcceptanceThreshold	1117	2633
+smConcaveDownAcceptanceThreshold	1118	2634
+
 
 
 

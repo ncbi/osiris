@@ -1344,6 +1344,48 @@ int smIsAcceptedOLAllele::sMessageIndex = 0;
 int smIsAcceptedOLAllele::sMessageScope = 0;
 
 
+RGString smSaveLadderILSHistoryPreset::sName = "smSaveLadderILSHistoryPreset";
+int smSaveLadderILSHistoryPreset::sSubject = smSaveLadderILSHistoryPreset::LoadType ();
+int smSaveLadderILSHistoryPreset::sMessageIndex = 0;
+int smSaveLadderILSHistoryPreset::sMessageScope = 0;
+
+
+RGString smLatitudeForILSFit::sName = "smLatitudeForILSFit";
+int smLatitudeForILSFit::sSubject = smLatitudeForILSFit::LoadType ();
+int smLatitudeForILSFit::sMessageIndex = 0;
+int smLatitudeForILSFit::sMessageScope = 0;
+
+
+RGString smUseLadderEndPointILSAlgorithmPreset::sName = "smUseLadderEndPointILSAlgorithmPreset";
+int smUseLadderEndPointILSAlgorithmPreset::sSubject = smUseLadderEndPointILSAlgorithmPreset::LoadType ();
+int smUseLadderEndPointILSAlgorithmPreset::sMessageIndex = 0;
+int smUseLadderEndPointILSAlgorithmPreset::sMessageScope = 0;
+
+
+RGString smPlusLatitudeForLadderEndPointILSFit::sName = "smPlusLatitudeForLadderEndPointILSFit";
+int smPlusLatitudeForLadderEndPointILSFit::sSubject = smPlusLatitudeForLadderEndPointILSFit::LoadType ();
+int smPlusLatitudeForLadderEndPointILSFit::sMessageIndex = 0;
+int smPlusLatitudeForLadderEndPointILSFit::sMessageScope = 0;
+
+
+RGString smApplyEnhancedShoulderFittingAlgorithmPreset::sName = "smApplyEnhancedShoulderFittingAlgorithmPreset";
+int smApplyEnhancedShoulderFittingAlgorithmPreset::sSubject = smApplyEnhancedShoulderFittingAlgorithmPreset::LoadType ();
+int smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageIndex = 0;
+int smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageScope = 0;
+
+
+RGString smNoiseFactorForShoulderAcceptanceThreshold::sName = "smNoiseFactorForShoulderAcceptanceThreshold";
+int smNoiseFactorForShoulderAcceptanceThreshold::sSubject = smNoiseFactorForShoulderAcceptanceThreshold::LoadType ();
+int smNoiseFactorForShoulderAcceptanceThreshold::sMessageIndex = 0;
+int smNoiseFactorForShoulderAcceptanceThreshold::sMessageScope = 0;
+
+
+RGString smConcaveDownAcceptanceThreshold::sName = "smConcaveDownAcceptanceThreshold";
+int smConcaveDownAcceptanceThreshold::sSubject = smConcaveDownAcceptanceThreshold::LoadType ();
+int smConcaveDownAcceptanceThreshold::sMessageIndex = 0;
+int smConcaveDownAcceptanceThreshold::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1567,6 +1609,13 @@ PERSISTENT_DEFINITION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset, 2624
 PERSISTENT_DEFINITION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset, 2625, "smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset")
 PERSISTENT_DEFINITION (smCallStutterPeaksPreset, 2626, "smCallStutterPeaksPreset")
 PERSISTENT_DEFINITION (smIsAcceptedOLAllele, 2627, "smIsAcceptedOLAllele")
+PERSISTENT_DEFINITION (smSaveLadderILSHistoryPreset, 2628, "smSaveLadderILSHistoryPreset")
+PERSISTENT_DEFINITION (smLatitudeForILSFit, 2629, "smLatitudeForILSFit")
+PERSISTENT_DEFINITION (smUseLadderEndPointILSAlgorithmPreset, 2630, "smUseLadderEndPointILSAlgorithmPreset")
+PERSISTENT_DEFINITION (smPlusLatitudeForLadderEndPointILSFit, 2631, "smPlusLatitudeForLadderEndPointILSFit")
+PERSISTENT_DEFINITION (smApplyEnhancedShoulderFittingAlgorithmPreset, 2632, "smApplyEnhancedShoulderFittingAlgorithmPreset")
+PERSISTENT_DEFINITION (smNoiseFactorForShoulderAcceptanceThreshold, 2633, "smNoiseFactorForShoulderAcceptanceThreshold")
+PERSISTENT_DEFINITION (smConcaveDownAcceptanceThreshold, 2634, "smConcaveDownAcceptanceThreshold")
 
 
 
@@ -14943,6 +14992,426 @@ int smIsAcceptedOLAllele :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smIsAcceptedOLAllele* noticeType = new smIsAcceptedOLAllele;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSaveLadderILSHistoryPreset :: smSaveLadderILSHistoryPreset () : SmartNotice () {
+
+}
+
+
+smSaveLadderILSHistoryPreset :: smSaveLadderILSHistoryPreset (const smSaveLadderILSHistoryPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSaveLadderILSHistoryPreset :: ~smSaveLadderILSHistoryPreset () {
+
+}
+
+
+int smSaveLadderILSHistoryPreset :: GetSubject () const {
+
+	return smSaveLadderILSHistoryPreset::sSubject;
+}
+
+
+void smSaveLadderILSHistoryPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smSaveLadderILSHistoryPreset::sMessageIndex = index;
+	smSaveLadderILSHistoryPreset::sMessageScope = scope;
+}
+
+
+int smSaveLadderILSHistoryPreset :: GetMessageIndex () const {
+
+	return smSaveLadderILSHistoryPreset :: sMessageIndex;
+}
+
+
+int smSaveLadderILSHistoryPreset :: GetScope () const {
+
+	return smSaveLadderILSHistoryPreset :: sMessageScope;
+}
+
+
+RGString smSaveLadderILSHistoryPreset :: GetName () const {
+
+	return smSaveLadderILSHistoryPreset :: sName;
+}
+
+
+
+int smSaveLadderILSHistoryPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSaveLadderILSHistoryPreset* noticeType = new smSaveLadderILSHistoryPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smLatitudeForILSFit :: smLatitudeForILSFit () : SmartNotice () {
+
+}
+
+
+smLatitudeForILSFit :: smLatitudeForILSFit (const smLatitudeForILSFit& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smLatitudeForILSFit :: ~smLatitudeForILSFit () {
+
+}
+
+
+int smLatitudeForILSFit :: GetSubject () const {
+
+	return smLatitudeForILSFit::sSubject;
+}
+
+
+void smLatitudeForILSFit :: SetIndexAndScope (int index, int scope) const {
+
+	smLatitudeForILSFit::sMessageIndex = index;
+	smLatitudeForILSFit::sMessageScope = scope;
+}
+
+
+int smLatitudeForILSFit :: GetMessageIndex () const {
+
+	return smLatitudeForILSFit :: sMessageIndex;
+}
+
+
+int smLatitudeForILSFit :: GetScope () const {
+
+	return smLatitudeForILSFit :: sMessageScope;
+}
+
+
+RGString smLatitudeForILSFit :: GetName () const {
+
+	return smLatitudeForILSFit :: sName;
+}
+
+
+
+int smLatitudeForILSFit :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smLatitudeForILSFit* noticeType = new smLatitudeForILSFit;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smUseLadderEndPointILSAlgorithmPreset :: smUseLadderEndPointILSAlgorithmPreset () : SmartNotice () {
+
+}
+
+
+smUseLadderEndPointILSAlgorithmPreset :: smUseLadderEndPointILSAlgorithmPreset (const smUseLadderEndPointILSAlgorithmPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smUseLadderEndPointILSAlgorithmPreset :: ~smUseLadderEndPointILSAlgorithmPreset () {
+
+}
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: GetSubject () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset::sSubject;
+}
+
+
+void smUseLadderEndPointILSAlgorithmPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smUseLadderEndPointILSAlgorithmPreset::sMessageIndex = index;
+	smUseLadderEndPointILSAlgorithmPreset::sMessageScope = scope;
+}
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: GetMessageIndex () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset :: sMessageIndex;
+}
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: GetScope () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset :: sMessageScope;
+}
+
+
+RGString smUseLadderEndPointILSAlgorithmPreset :: GetName () const {
+
+	return smUseLadderEndPointILSAlgorithmPreset :: sName;
+}
+
+
+
+int smUseLadderEndPointILSAlgorithmPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smUseLadderEndPointILSAlgorithmPreset* noticeType = new smUseLadderEndPointILSAlgorithmPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPlusLatitudeForLadderEndPointILSFit :: smPlusLatitudeForLadderEndPointILSFit () : SmartNotice () {
+
+}
+
+
+smPlusLatitudeForLadderEndPointILSFit :: smPlusLatitudeForLadderEndPointILSFit (const smPlusLatitudeForLadderEndPointILSFit& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPlusLatitudeForLadderEndPointILSFit :: ~smPlusLatitudeForLadderEndPointILSFit () {
+
+}
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: GetSubject () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit::sSubject;
+}
+
+
+void smPlusLatitudeForLadderEndPointILSFit :: SetIndexAndScope (int index, int scope) const {
+
+	smPlusLatitudeForLadderEndPointILSFit::sMessageIndex = index;
+	smPlusLatitudeForLadderEndPointILSFit::sMessageScope = scope;
+}
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: GetMessageIndex () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit :: sMessageIndex;
+}
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: GetScope () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit :: sMessageScope;
+}
+
+
+RGString smPlusLatitudeForLadderEndPointILSFit :: GetName () const {
+
+	return smPlusLatitudeForLadderEndPointILSFit :: sName;
+}
+
+
+
+int smPlusLatitudeForLadderEndPointILSFit :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPlusLatitudeForLadderEndPointILSFit* noticeType = new smPlusLatitudeForLadderEndPointILSFit;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smApplyEnhancedShoulderFittingAlgorithmPreset :: smApplyEnhancedShoulderFittingAlgorithmPreset () : SmartNotice () {
+
+}
+
+
+smApplyEnhancedShoulderFittingAlgorithmPreset :: smApplyEnhancedShoulderFittingAlgorithmPreset (const smApplyEnhancedShoulderFittingAlgorithmPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smApplyEnhancedShoulderFittingAlgorithmPreset :: ~smApplyEnhancedShoulderFittingAlgorithmPreset () {
+
+}
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: GetSubject () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset::sSubject;
+}
+
+
+void smApplyEnhancedShoulderFittingAlgorithmPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageIndex = index;
+	smApplyEnhancedShoulderFittingAlgorithmPreset::sMessageScope = scope;
+}
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: GetMessageIndex () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset :: sMessageIndex;
+}
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: GetScope () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset :: sMessageScope;
+}
+
+
+RGString smApplyEnhancedShoulderFittingAlgorithmPreset :: GetName () const {
+
+	return smApplyEnhancedShoulderFittingAlgorithmPreset :: sName;
+}
+
+
+
+int smApplyEnhancedShoulderFittingAlgorithmPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smApplyEnhancedShoulderFittingAlgorithmPreset* noticeType = new smApplyEnhancedShoulderFittingAlgorithmPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smNoiseFactorForShoulderAcceptanceThreshold :: smNoiseFactorForShoulderAcceptanceThreshold () : SmartNotice () {
+
+}
+
+
+smNoiseFactorForShoulderAcceptanceThreshold :: smNoiseFactorForShoulderAcceptanceThreshold (const smNoiseFactorForShoulderAcceptanceThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smNoiseFactorForShoulderAcceptanceThreshold :: ~smNoiseFactorForShoulderAcceptanceThreshold () {
+
+}
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: GetSubject () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold::sSubject;
+}
+
+
+void smNoiseFactorForShoulderAcceptanceThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smNoiseFactorForShoulderAcceptanceThreshold::sMessageIndex = index;
+	smNoiseFactorForShoulderAcceptanceThreshold::sMessageScope = scope;
+}
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: GetMessageIndex () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold :: sMessageIndex;
+}
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: GetScope () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold :: sMessageScope;
+}
+
+
+RGString smNoiseFactorForShoulderAcceptanceThreshold :: GetName () const {
+
+	return smNoiseFactorForShoulderAcceptanceThreshold :: sName;
+}
+
+
+
+int smNoiseFactorForShoulderAcceptanceThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smNoiseFactorForShoulderAcceptanceThreshold* noticeType = new smNoiseFactorForShoulderAcceptanceThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smConcaveDownAcceptanceThreshold :: smConcaveDownAcceptanceThreshold () : SmartNotice () {
+
+}
+
+
+smConcaveDownAcceptanceThreshold :: smConcaveDownAcceptanceThreshold (const smConcaveDownAcceptanceThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smConcaveDownAcceptanceThreshold :: ~smConcaveDownAcceptanceThreshold () {
+
+}
+
+
+int smConcaveDownAcceptanceThreshold :: GetSubject () const {
+
+	return smConcaveDownAcceptanceThreshold::sSubject;
+}
+
+
+void smConcaveDownAcceptanceThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smConcaveDownAcceptanceThreshold::sMessageIndex = index;
+	smConcaveDownAcceptanceThreshold::sMessageScope = scope;
+}
+
+
+int smConcaveDownAcceptanceThreshold :: GetMessageIndex () const {
+
+	return smConcaveDownAcceptanceThreshold :: sMessageIndex;
+}
+
+
+int smConcaveDownAcceptanceThreshold :: GetScope () const {
+
+	return smConcaveDownAcceptanceThreshold :: sMessageScope;
+}
+
+
+RGString smConcaveDownAcceptanceThreshold :: GetName () const {
+
+	return smConcaveDownAcceptanceThreshold :: sName;
+}
+
+
+
+int smConcaveDownAcceptanceThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smConcaveDownAcceptanceThreshold* noticeType = new smConcaveDownAcceptanceThreshold;
 	warehouse->AddType (noticeType);
 	return 1;
 }

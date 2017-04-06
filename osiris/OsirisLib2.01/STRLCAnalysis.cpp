@@ -64,6 +64,7 @@ bool* STRLCAnalysis::InitialMatrix = NULL;
 RGString STRLCAnalysis::OverrideString;
 RGString STRLCAnalysis::OutputSubDirectory;
 RGString STRLCAnalysis::MsgBookBuildTime;
+bool STRLCAnalysis::CollectILSHistory = false;
 
 
 PERSISTENT_DEFINITION (STRLCAnalysis, _STRLCANALYSIS_, "STRLCAnalysis")
@@ -939,6 +940,9 @@ int STRLCAnalysis :: AnalyzeIncrementally (const RGString& prototypeInputDirecto
 	size_t startPosition = 0;
 	size_t endPosition;
 
+	if (true)
+		STRLCAnalysis::SetCollectILSHistory (true);
+
 	if (PrototypeInputDirectory.GetLastCharacter () == '/')
 		PrototypeInputDirectory.ExtractAndRemoveLastCharacters (1);
 
@@ -1482,6 +1486,9 @@ int STRLCAnalysis :: AnalyzeIncrementally (const RGString& prototypeInputDirecto
 			NoticeStr << "\n";
 			ExcelText.Write (1, NoticeStr);
 			text << NoticeStr;
+
+			if (CollectILSHistory)
+				ladderBioComponent->AddILSToHistory ();
 		}
 	}
 

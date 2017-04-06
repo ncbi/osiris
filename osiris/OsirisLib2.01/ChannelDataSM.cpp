@@ -828,6 +828,45 @@ int ChannelData :: CountSignalsWithNoticeSM (const SmartNotice& target, ChannelD
 }
 
 
+void ChannelData :: AccumulatePeakHeightsForChannelAndAddToTotalsSM (double* totalArray, int nChannels) {
+
+	smPullUp pullup;
+	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU partialPullupBelowMin;
+	smPrimaryInterchannelLink primaryPullup;
+	DataSignal* nextSignal;
+	RGDListIterator it (SmartPeaks);
+	double P;
+	double PC;
+	double correctedHeight;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		P = nextSignal->Peak ();
+		PC = nextSignal->GetTotalPullupFromOtherChannels (nChannels);
+		correctedHeight = P - PC;
+
+		totalArray [0] += correctedHeight;
+		totalArray [1] += P;
+
+		if (PC != 0.0) {
+
+			totalArray [3] += correctedHeight;
+			totalArray [4] += P;
+
+			if (nextSignal->GetMessageValue (partialPullupBelowMin) || nextSignal->GetMessageValue (pullup)) {
+
+				totalArray [8] += correctedHeight;
+				totalArray [10] += P;
+			}
+		}
+
+		if (nextSignal->GetMessageValue (primaryPullup))
+			totalArray [6] += P;
+	}
+}
+
+
 void ChannelData :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	RGString idData;
@@ -1116,6 +1155,11 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
 	double minFit = minFitForArtifactTest;
 	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
+	double minRFU2 = 0.9 * minRFU;
+	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
+	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+
+	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
 	if (minAcceptableFit > minFit)
 		minFit = minAcceptableFit;
@@ -1208,6 +1252,67 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 //			i++;
 		}		
 	}   //  We are done finding characteristics
+
+	//
+	// Now review CompleteCurveList for missed peaks...look at pairs of peaks and call mData->FindCharacteristicBetweenTwoPeaks.  If find a peak, insert into CompleteCurveList and PreliminaryCurveList
+	//
+
+	DataSignal* previousSignal = NULL;
+	RGDListIterator itt (CompleteCurveList);
+	const DataSignal* shoulderSignal;
+	DataSignal* shoulderCopy;
+	RGDList shoulderSignals;
+	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
+
+	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
+	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).
+
+	if ((BeginAnalysis >= 0.0) && (GetMessageValue (applyEnhancedShoulderAlgorithm)) && UseEnhancedShoulderAlgorithm) {
+
+		DataSignal::SetNumberOfIntervalsForConcaveDownAlgorithm (GetThreshold (concaveDownAcceptanceThreshold));
+
+		while (nextSignal = (DataSignal*) itt ()) {
+
+			if (nextSignal->GetMean () < BeginAnalysis) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			if (previousSignal == NULL) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			nextSignal->SetChannel (mChannel);
+			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
+
+			if (shoulderSignal != NULL) {
+
+				int left = (int) floor (shoulderSignal->LeftEndPoint () + 0.5);
+				int right = (int) floor (shoulderSignal->RightEndPoint () + 0.5);
+
+				lineFit = mData->InnerProductWithConstantFunction (left, right, constantHeight);
+
+				if (lineFit <= minFitForArtifactTest) {
+
+					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+					shoulderSignals.Append (shoulderCopy);
+				}
+
+				delete shoulderSignal;
+			}
+
+			previousSignal = nextSignal;
+		}
+
+		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+
+			PreliminaryCurveList.Insert (nextSignal);
+			CompleteCurveList.Insert (nextSignal);
+		}
+	}
 
 	RGDListIterator it (PreliminaryCurveList);
 

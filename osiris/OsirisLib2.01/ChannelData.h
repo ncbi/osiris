@@ -202,6 +202,13 @@ public:
 
 	virtual ChannelData* CreateNewTransformedChannel (const ChannelData& cd, CoordinateTransform* trans) = 0;
 
+	virtual bool AddILSToHistoryList ();
+	virtual ILSCandidate* TestILSStartAndEndSignals (DataSignal* startSignal, DataSignal* endSignal) { return NULL; }
+	virtual ILSCandidate* TestLadderILSStartAndEndSignals (DataSignal* startSignal, DataSignal* endSignal) { return NULL; }
+	virtual bool TestAllILSStartAndEndSignals (RGDList& finalILSPeaks, double& correlation) { return false; }
+	virtual bool TestAllLadderILSStartAndEndSignals (RGDList& finalILSPeaks, double& correlation) { return false; }
+	virtual void ResetBoundsUsingFactorToILSHistory (double factor) {};
+
 	virtual int CompareTo (const RGPersistent* p) const;
 	virtual unsigned HashNumber (unsigned long Base) const;
 	virtual Boolean IsEqualTo (const RGPersistent* p) const;
@@ -337,6 +344,8 @@ public:
 
 	int CountSignalsWithNoticeSM (const SmartNotice& target, ChannelData* laneStd);
 
+	void AccumulatePeakHeightsForChannelAndAddToTotalsSM (double* totalArray, int nChannels);
+
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual RGString GetDebugIDIndent () const;
 
@@ -444,6 +453,14 @@ public:
 	static void SetDisableAdenylationFilter (bool s) { DisableAdenylationFilter = s; }
 
 	static void SetTestForDualSignal (bool s) { TestForDualSignal = s; }
+	static void SetUseILSHistory (bool s) { UseILSHistory = s; }
+	static void SetUseILSLadderEndPointAlgorithm (bool s) { UseLadderILSEndPointAlgorithm = s; }
+	static void SetLatitudeFactorForILSHistory (double factor) { LatitudeFactorForILSHistory = factor; }
+	static double GetLatitudeFactorForILSHistory () { return LatitudeFactorForILSHistory; }
+	static void SetLatitudeFactorForLadderILS (double factor) { LatitudeFactorForLadderILS = factor; }
+	static double GetLatitudeFactorForLadderILS () { return LatitudeFactorForLadderILS; }
+	static void SetBeginAnalysisTime (double t) { BeginAnalysis = t; }
+	static void SetUseEnhancedShoulderAlgorithm (bool status) { UseEnhancedShoulderAlgorithm = status; }
 
 protected:
 	int mChannel;
@@ -503,6 +520,12 @@ protected:
 	static bool DisableStutterFilter;
 	static bool DisableAdenylationFilter;
 	static bool TestForDualSignal;
+	static bool UseILSHistory;
+	static bool UseLadderILSEndPointAlgorithm;
+	static double LatitudeFactorForILSHistory;
+	static double LatitudeFactorForLadderILS;
+	static double BeginAnalysis;
+	static bool UseEnhancedShoulderAlgorithm;
 };
 
 

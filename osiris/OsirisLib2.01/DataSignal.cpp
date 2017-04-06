@@ -66,6 +66,7 @@ unsigned long DataSignal :: signalID = 0;
 bool* DataSignal::InitialMatrix = NULL;
 bool DataSignal::ConsiderAllOLAllelesAccepted = false;
 int DataSignal::NumberOfChannels = 0;
+int DataSignal::NumberOfIntervalsForConcaveDownAlgorithm = 3;
 
 double SampledData::PeakFractionForFlatCurveTest = 0.25;
 double SampledData::PeakLevelForFlatCurveTest = 60.0;
@@ -3645,6 +3646,366 @@ double SampledData :: GetModeHeightAndLocationFromDataInterval (int& location) {
 
 	location = (int) floor (nextInterval->GetMode () + 0.5);
 	return nextInterval->GetMaxAtMode ();
+}
+
+
+const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* prevSignal, DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold, double noiseThreshold) {
+
+	int startTime = (int) ceil (prevSignal->GetMean () + 1.0);
+	int endTime = (int) floor (nextSignal->GetMean () - 1.0);
+	double maxDifference = 0.0;
+	int mode = 0;
+	int i;
+	double maxFunctionValue;
+	double minValue;
+	double temp;
+	double prevHalfWidth = 0.5 * prevSignal->GetWidth ();
+	double nextHalfWidth = 0.5 * nextSignal->GetWidth ();
+	int lowerLimit = (int) ceil (prevSignal->GetMean () + prevHalfWidth) - 1;
+	int upperLimit = (int) floor (nextSignal->GetMean () - nextHalfWidth) + 1;
+
+	//for (i=startTime; i<=endTime; i++) {
+
+	//	maxFunctionValue = prevSignal->Value ((double)i);
+	//	temp = nextSignal->Value ((double)i);
+
+	//	if (temp > maxFunctionValue)
+	//		maxFunctionValue = temp;
+
+	//	temp = Value (i) - maxFunctionValue;
+
+	//	if (temp > maxDifference) {
+
+	//		maxDifference = temp;
+	//		mode = i;
+	//	}
+	//}
+
+	//if (maxDifference <= 0.0)
+	//	return NULL;
+
+	//if (maxDifference < analysisThreshold)
+	//	return NULL;
+
+	//for (i=mode; i<=endTime; i++) {
+
+	//	maxFunctionValue = prevSignal->Value ((double)i);
+	//	temp = nextSignal->Value ((double)i);
+
+	//	if (temp > maxFunctionValue)
+	//		maxFunctionValue = temp;
+
+	//	temp = Value (i) - maxFunctionValue;
+
+	//	if (temp <= 0.0) {
+
+	//		endTime = i - 1;
+	//		break;
+	//	}
+	//}
+
+	//for (i=mode; i>=startTime; i--) {
+
+	//	maxFunctionValue = prevSignal->Value ((double)i);
+	//	temp = nextSignal->Value ((double)i);
+
+	//	if (temp > maxFunctionValue)
+	//		maxFunctionValue = temp;
+
+	//	temp = Value (i) - maxFunctionValue;
+
+	//	if (temp <= 0.0) {
+
+	//		startTime = i + 1;
+	//		break;
+	//	}
+	//}
+
+	maxFunctionValue = 0.0;
+	int halfTime = (endTime - startTime) / 2;
+	bool foundLocalMax = false;
+
+	// Concave down search variables:
+	bool foundConcaveDown = false;
+	int numberPtsConcaveDown = 0;
+	bool foundEnoughPtsConcaveDown = false;
+	int enoughConcaveDownPoints = DataSignal::NumberOfIntervalsForConcaveDownAlgorithm;
+	double temp0;
+	double temp1;
+	list<ConcaveDownSet*> CDList;
+	ConcaveDownSet* nextSet;
+	ConcaveDownSet* bestSet = NULL;
+	double tempMax;
+	int tempPos;
+	double totalMaxValue = 0.0;
+
+	for (i=startTime+1; i<endTime; i++) {
+
+		// search for true mode and if too near end points, quit
+
+		temp = Value (i);
+		temp0 = Value (i - 1);
+		temp1 = Value (i + 1);
+
+		if ((temp >= temp0) && (temp >= temp1) && (temp > maxFunctionValue)) {
+
+			maxFunctionValue = temp;
+			mode = i;
+			foundLocalMax = true;
+		}
+
+		if (2.0 * temp >= temp0 + temp1) {
+
+			// Concave down at this point
+
+			if (!foundConcaveDown) {
+
+				foundConcaveDown = true;
+				numberPtsConcaveDown = 1;
+				tempMax = temp;
+				tempPos = i;
+
+				if (temp0 > tempMax) {
+
+					tempMax = temp0;
+					tempPos = i - 1;
+				}
+
+				if (temp1 > tempMax) {
+
+					tempMax = temp1;
+					tempPos = i + 1;
+				}
+
+				nextSet = new ConcaveDownSet (i - 1, i + 1, tempMax, tempPos);
+			}
+
+			else {
+
+				numberPtsConcaveDown++;
+				tempMax = nextSet->mMaxValue;
+
+				if (temp1 > tempMax) {
+
+					nextSet->mMaxValue = temp1;
+					nextSet->mPosition = i + 1;
+				}
+
+				nextSet->mEnd = i + 1;
+			}
+		}
+
+		else if (foundConcaveDown) {
+
+			if (numberPtsConcaveDown >= enoughConcaveDownPoints) {
+
+				if (nextSet->mStart < lowerLimit) {
+
+					delete nextSet;
+					numberPtsConcaveDown = 0;
+					foundConcaveDown = false;
+					continue;
+				}
+
+				if (nextSet->mEnd > upperLimit) {
+
+					delete nextSet;
+					numberPtsConcaveDown = 0;
+					foundConcaveDown = false;
+					continue;
+				}
+
+				CDList.push_back (nextSet);
+
+				if (nextSet->mMaxValue > totalMaxValue) {
+
+					totalMaxValue = nextSet->mMaxValue;
+					bestSet = nextSet;
+					foundEnoughPtsConcaveDown = true;
+				}
+
+				numberPtsConcaveDown = 0;
+				foundConcaveDown = false;
+			}
+
+			else {
+
+				delete nextSet;
+				numberPtsConcaveDown = 0;
+				foundConcaveDown = false;
+			}
+		}
+	}
+
+	if (foundConcaveDown) {
+
+		if (numberPtsConcaveDown >= enoughConcaveDownPoints) {
+
+			CDList.push_back (nextSet);
+
+			if (nextSet->mMaxValue > totalMaxValue) {
+
+				totalMaxValue = nextSet->mMaxValue;
+				bestSet = nextSet;
+				foundEnoughPtsConcaveDown = true;
+			}
+		}
+
+		else {
+
+			delete nextSet;
+			numberPtsConcaveDown = 0;
+			foundConcaveDown = false;
+		}
+	}
+
+	double maxAtMode = maxFunctionValue;
+	bool noShoulder1 = (maxFunctionValue < analysisThreshold);
+	bool noShoulder2 = (totalMaxValue < analysisThreshold);
+
+	if (noShoulder1 && noShoulder2) {
+
+		while (!CDList.empty ()) {
+
+			nextSet = CDList.front ();
+			CDList.pop_front ();
+			delete nextSet;
+		}
+
+		return NULL;
+	}
+
+	if (noShoulder1 || (mode <= startTime) || (mode >= endTime)) {
+
+		if (CDList.empty ())
+			return NULL;
+
+		if (noShoulder2) {
+
+			while (!CDList.empty ()) {
+
+				nextSet = CDList.front ();
+				CDList.pop_front ();
+				delete nextSet;
+			}
+
+			return NULL;
+		}
+
+		while (!CDList.empty ()) {
+
+			nextSet = CDList.front ();
+			CDList.pop_front ();
+
+			if (nextSet != bestSet)
+				delete nextSet;
+		}
+
+		if (bestSet == NULL)
+			return NULL;
+
+		mode = bestSet->mPosition;
+		maxAtMode = bestSet->mMaxValue + 0.000001;
+		delete bestSet;
+
+		if ((mode - startTime < 5) || (endTime - mode < 5))
+			return NULL;
+	}
+
+	maxFunctionValue = prevSignal->Value ((double)mode);
+	temp = nextSignal->Value ((double)mode);
+
+	if (temp > maxFunctionValue)
+		maxFunctionValue = temp;
+
+	if (maxAtMode - maxFunctionValue < noiseThreshold)
+		return NULL;
+	
+	minValue = maxAtMode;
+	int minTime = startTime;
+
+	for (i=startTime; i<=mode; i++) {
+
+		temp = Value (i);
+
+		if (temp < minValue) {
+
+			minValue = temp;
+			minTime = i;
+		}
+	}
+
+	startTime = minTime;
+	minValue = maxFunctionValue;
+
+	for (i=mode; i<=endTime; i++) {
+
+		temp = Value (i);
+
+		if (temp < minValue) {
+
+			minValue = temp;
+			minTime = i;
+		}
+	}
+
+	endTime = minTime;
+
+	if (endTime - startTime < 3)
+		return NULL;
+
+	//if (endTime - startTime <= 3) {
+
+	//	// This is a spike...maybe we should ignore it?  Or try to fit?
+	//}
+
+	// Create a DataInterval using this start and end time and try to fit various curves
+
+	int channel = prevSignal->GetChannel ();
+	//int centerTime = (startTime + endTime) / 2;
+	int centerTime = mode;
+	DataInterval* shoulderInterval = new DataInterval (startTime, centerTime, endTime);
+	shoulderInterval->SetMode (mode);
+	shoulderInterval->SetMaxAtMode (Value (mode));
+
+	int unUsedWindowSize = 0;
+	RGDList unUsedList;
+
+	DataSignal* newSignal = signature.FindCharacteristicAsymmetric (this, shoulderInterval, unUsedWindowSize, fit, unUsedList);
+
+	if (newSignal == NULL)
+		return NULL;
+
+	if ((fit > 1.0000001) || (fit < 0.85)) {
+
+		delete newSignal;
+		return NULL;
+	}
+
+	double sigma = newSignal->GetStandardDeviation ();
+	double height = newSignal->Peak ();
+
+	if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity())) {
+
+		delete newSignal;
+		return NULL;
+	}
+
+	if ((sigma > 2.0 * nextSignal->GetStandardDeviation ()) || (sigma > 2.0 * prevSignal->GetStandardDeviation ())) {
+
+		delete newSignal;
+		return NULL;
+	}
+
+	DataSignal* copySignal = newSignal->MakeCopy (newSignal->GetMean ());
+	copySignal->SetCurveFit (fit);
+	delete newSignal;
+
+	if (copySignal != NULL)
+		copySignal->SetDataMode (maxAtMode);
+
+	delete shoulderInterval;
+	return copySignal;
 }
 
 

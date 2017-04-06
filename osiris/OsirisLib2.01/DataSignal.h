@@ -158,6 +158,18 @@ struct CompoundSignalInfo {
 };
 
 
+struct ConcaveDownSet {
+
+	ConcaveDownSet (int st, int en, double value, int pos) : mStart (st), mEnd (en), mMaxValue (value), mPosition (pos) {}
+	~ConcaveDownSet () {}
+
+	int mStart;
+	int mEnd;
+	double mMaxValue;
+	int mPosition;
+};
+
+
 class InterchannelLinkage {
 
 public:
@@ -693,6 +705,8 @@ public:
 	virtual DataSignal* FindNextCharacteristicFromLeft (const DataSignal& Signature, 
 		double& fit, RGDList& previous) = 0;
 
+	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (DataSignal* prevSignal, DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold, double noiseThreshold) { return NULL; }
+
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous) {
 		return NULL;
 	}
@@ -701,8 +715,12 @@ public:
 		return NULL;
 	}
 
+	virtual DataSignal* FindCharacteristicAsymmetric (const DataSignal* Target, const DataInterval* Segment, 
+		int windowSize, double& fit, RGDList& previous) const { return NULL; }
+
 	virtual double TestConstantCharacteristicRetry () { return 0.0; }
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right) { return 0.0; }
+	virtual double InnerProductWithConstantFunction (int left, int right, double& height) const { return 0.0; }
 	virtual bool HasAtLeastOneLocalMinimum () { return false; }
 	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit) { return false; }
 	virtual DataSignal* FindCharacteristic (const DataSignal* Target, const DataInterval* Segment, 
@@ -868,6 +886,7 @@ public:
 	static void SetNumberOfChannels (int n) { NumberOfChannels = n; }
 	static bool IsNegativeOrSigmoid (DataSignal* ds);
 	static bool PeakCannotBePurePullup (DataSignal* pullup, DataSignal* primary);
+	static void SetNumberOfIntervalsForConcaveDownAlgorithm (int n) { NumberOfIntervalsForConcaveDownAlgorithm = n; }
 
 
 	//*******************************************************************************************************
@@ -984,6 +1003,7 @@ protected:
 	static bool* InitialMatrix;
 	static bool ConsiderAllOLAllelesAccepted;
 	static int NumberOfChannels;
+	static int NumberOfIntervalsForConcaveDownAlgorithm;
 
 	// Smart Message functions*******************************************************************************
 	//*******************************************************************************************************
@@ -1034,13 +1054,14 @@ public:
 		double& fit, RGDList& previous);
 	virtual DataSignal* FindNextCharacteristicFromLeft (const DataSignal& Signature, 
 		double& fit, RGDList& previous);
+	virtual const DataSignal* FindCharacteristicBetweenTwoPeaks (DataSignal* prevSignal, DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold, double noiseThreshold);
 
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous);
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous, int dualCurve);
 
 	virtual double GetModeHeightAndLocationFromDataInterval (int& location);
 	virtual double TestConstantCharacteristicRetry ();
-	double InnerProductWithConstantFunction (int left, int right) const;
+	virtual double InnerProductWithConstantFunction (int left, int right) const;
 
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right);
 	virtual bool HasAtLeastOneLocalMinimum ();

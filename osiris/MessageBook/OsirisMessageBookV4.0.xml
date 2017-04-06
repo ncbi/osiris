@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.89</VersionNumber>
-	<BuildTime>01/17/2017 12:54 AM</BuildTime>
+	<VersionNumber>6.96</VersionNumber>
+	<BuildTime>03/27/2017 04:25 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -2858,7 +2858,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smDoNotCallExcessResidualPreset</Expression>
+				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Base Pair Residual Exceeds Threshold Prevents Call</Text>
 			<TextForData> (</TextForData>
@@ -4362,7 +4362,7 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>1</ReportLevel>
-			<Scope>5</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smLocusSummaryPercentCraters</Name>
@@ -4382,7 +4382,7 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>1</ReportLevel>
-			<Scope>5</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smAlleleAboveOverloadLimit</Name>
@@ -5003,6 +5003,56 @@
 			<Scope>4</Scope>
 			<Editable>false</Editable>
 			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smApplyEnhancedShoulderFittingAlgorithmPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Apply Enhanced Shoulder-Fitting Algorithm</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>APPLY ENHANCED SHOULDER-FITTING ALGORITHM</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smNoiseFactorForShoulderAcceptanceThreshold</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                Percentage Of Standard Noise Threshold For Shoulder Acceptance (Default = 100)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENTAGE OF STANDARD NOISE TRESHOLD FOR SHOULDER ACCEPTANCE</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smConcaveDownAcceptanceThreshold</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>3</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                Minimum Number of Points Concave Down (Default = 3)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MINIMUM NUMBER OF POINTS CONCAVE DOWN</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacer1</Name>
@@ -6038,6 +6088,74 @@
 			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSaveLadderILSHistoryPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Save Ladder ILS History To Aid Sample Analyses</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Save Ladder ILS History</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLatitudeForILSFit</Name>
+			<MessageType>count</MessageType>
+			<Description>Latitude For ILS Fit (100ths of percent of overall interval)</Description>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                Latitude For ILS Fit (100ths of percent of overall interval)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Latitude For ILS Fit (100ths of percent of overall interval)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smUseLadderEndPointILSAlgorithmPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Use Ladder ILS End Point Algorithm</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Save Ladder ILS History</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPlusLatitudeForLadderEndPointILSFit</Name>
+			<MessageType>count</MessageType>
+			<Description>Latitude For ILS Fit (100ths of percent of overall interval)</Description>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                Latitude For Ladder End Point ILS Fit (100ths of percent of overall interval)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Latitude For ILS Fit (100ths of percent of overall interval)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerInternalLaneStandardShouldersEnd</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -6231,6 +6349,9 @@
 						<Name>smScaleILSPrimerSearchPreset</Name>
 						<Name>smNumberOfLastILSPeaksInScale</Name>
 						<Name>smPercentLastILSPeaksInScaling</Name>
+						<Name>smApplyEnhancedShoulderFittingAlgorithmPreset</Name>
+						<Name>smNoiseFactorForShoulderAcceptanceThreshold</Name>
+						<Name>smConcaveDownAcceptanceThreshold</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6267,6 +6388,15 @@
 						<Name>smDisableAdenylationFilterPreset</Name>
 						<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
 						<Name>smCallOnLadderAdenylationPreset</Name>
+					</MeasuredMessages>
+				</ScopeDynamics>
+				<ScopeDynamics>
+					<Scope>6</Scope>
+					<MeasuredMessages>
+						<Name>smSaveLadderILSHistoryPreset</Name>
+						<Name>smLatitudeForILSFit</Name>
+						<Name>smUseLadderEndPointILSAlgorithmPreset</Name>
+						<Name>smPlusLatitudeForLadderEndPointILSFit</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
@@ -6598,7 +6728,6 @@
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullUp AND NOT smRestrictedPriorityPeak</Expression>
-						<Expression>smAlleleHasExcessiveResidual = smBPResidualTooLarge AND smSignalIsAllele</Expression>
 						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT smRestrictedPriorityPeak</Expression>
 						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
@@ -6607,6 +6736,7 @@
 						<Expression>smAmbiguousInterlocus = NOT (smCouldBelongToLocusLeft AND smCouldBelongToLocusRight) AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL) AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight) AND NOT smPossibleAmbiguousInterlocusAssignedToLocus</Expression>
 						<Expression>smAmbiguousCoreVsExtendedLeft = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusLeft</Expression>
 						<Expression>smAmbiguousCoreVsExtendedRight = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusRight</Expression>
+						<Expression>smAlleleHasExcessiveResidual = (smBPResidualTooLarge AND smSignalIsAllele) AND NOT smAmbiguousInterlocus</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smAmbiguousInterlocus (NOT (smRestrictedPriorityPeak OR smCalculatedPurePullup OR smExcessiveResidualDisplacement OR (smExcessiveResidualDisplacementLeft AND smExcessiveResidualDisplacementRight))): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
@@ -6780,7 +6910,7 @@
 			<Stage>1</Stage>
 			<StageDynamics>
 				<ScopeDynamics>
-					<Scope>5</Scope>
+					<Scope>6</Scope>
 					<TriggeredMessages>
 						<Name>smLocusSummaryNumberOfCraters</Name>
 					</TriggeredMessages>
@@ -6818,7 +6948,7 @@
 			<Stage>2</Stage>
 			<StageDynamics>
 				<ScopeDynamics>
-					<Scope>5</Scope>
+					<Scope>6</Scope>
 					<Evaluations>
 						<Expression>smLocusSummaryPercentCraters = smLocusSummaryNumberOfCraters / smTotalNumberOfSamplesExcludingNegativeControls</Expression>
 					</Evaluations>

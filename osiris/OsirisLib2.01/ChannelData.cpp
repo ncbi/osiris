@@ -57,6 +57,12 @@ bool ChannelData::UseFilterForNormalization = false;
 bool ChannelData::DisableStutterFilter = false;
 bool ChannelData::DisableAdenylationFilter = false;
 bool ChannelData::TestForDualSignal = true;
+bool ChannelData::UseILSHistory = false;
+bool ChannelData::UseLadderILSEndPointAlgorithm = false;
+double ChannelData::LatitudeFactorForILSHistory = 0.0;
+double ChannelData::LatitudeFactorForLadderILS = 0.01;
+double ChannelData::BeginAnalysis = -1.0;
+bool ChannelData::UseEnhancedShoulderAlgorithm = false;
 
 
 bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& second) {
@@ -2736,6 +2742,12 @@ bool ChannelData :: ComputeExtendedLocusTimes (CoreBioComponent* grid, Coordinat
 	}
 
 	return status;
+}
+
+
+bool ChannelData :: AddILSToHistoryList () {
+
+	return false;
 }
 
 

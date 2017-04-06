@@ -181,6 +181,13 @@ public:
 	virtual double GetTimeForSpecifiedID (double id);
 	virtual CoordinateTransform* GetIDMap ();
 
+	virtual bool AddILSToHistoryList ();
+	virtual ILSCandidate* TestILSStartAndEndSignals (DataSignal* startSignal, DataSignal* endSignal);
+	virtual ILSCandidate* TestLadderILSStartAndEndSignals (DataSignal* startSignal, DataSignal* endSignal);
+	virtual bool TestAllILSStartAndEndSignals (RGDList& finalILSPeaks, double& correlation);
+	virtual bool TestAllLadderILSStartAndEndSignals (RGDList& finalILSPeaks, double& correlation);
+	virtual void ResetBoundsUsingFactorToILSHistory (double factor) { if (mLaneStandard != NULL) mLaneStandard->ResetBoundsUsingFactorToILSHistory (factor); }
+
 	virtual double GetMinimumHeight () const;
 	virtual double GetMaximumHeight () const;
 	virtual double GetDetectionThreshold () const;
@@ -268,6 +275,7 @@ protected:
 	static double ILSStutterThreshold;
 	static double ILSAdenylationThreshold;
 	static double ILSFractionalFilter;
+	static bool TestIsOn;
 };
 
 

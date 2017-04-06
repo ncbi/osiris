@@ -234,6 +234,13 @@ PERSISTENT_PREDECLARATION (smDoNotCallStutterPeaksForSingleSourceSamplesPreset)
 PERSISTENT_PREDECLARATION (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset)
 PERSISTENT_PREDECLARATION (smCallStutterPeaksPreset)
 PERSISTENT_PREDECLARATION (smIsAcceptedOLAllele)
+PERSISTENT_PREDECLARATION (smSaveLadderILSHistoryPreset)
+PERSISTENT_PREDECLARATION (smLatitudeForILSFit)
+PERSISTENT_PREDECLARATION (smUseLadderEndPointILSAlgorithmPreset)
+PERSISTENT_PREDECLARATION (smPlusLatitudeForLadderEndPointILSFit)
+PERSISTENT_PREDECLARATION (smApplyEnhancedShoulderFittingAlgorithmPreset)
+PERSISTENT_PREDECLARATION (smNoiseFactorForShoulderAcceptanceThreshold)
+PERSISTENT_PREDECLARATION (smConcaveDownAcceptanceThreshold)
 
 
 
@@ -6461,6 +6468,202 @@ public:
 	smIsAcceptedOLAllele ();
 	smIsAcceptedOLAllele (const smIsAcceptedOLAllele& note);
 	virtual ~smIsAcceptedOLAllele ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSaveLadderILSHistoryPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSaveLadderILSHistoryPreset)
+
+public:
+	smSaveLadderILSHistoryPreset ();
+	smSaveLadderILSHistoryPreset (const smSaveLadderILSHistoryPreset& note);
+	virtual ~smSaveLadderILSHistoryPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smLatitudeForILSFit : public SmartNotice {
+
+PERSISTENT_DECLARATION (smLatitudeForILSFit)
+
+public:
+	smLatitudeForILSFit ();
+	smLatitudeForILSFit (const smLatitudeForILSFit& note);
+	virtual ~smLatitudeForILSFit ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUseLadderEndPointILSAlgorithmPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUseLadderEndPointILSAlgorithmPreset)
+
+public:
+	smUseLadderEndPointILSAlgorithmPreset ();
+	smUseLadderEndPointILSAlgorithmPreset (const smUseLadderEndPointILSAlgorithmPreset& note);
+	virtual ~smUseLadderEndPointILSAlgorithmPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPlusLatitudeForLadderEndPointILSFit : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPlusLatitudeForLadderEndPointILSFit)
+
+public:
+	smPlusLatitudeForLadderEndPointILSFit ();
+	smPlusLatitudeForLadderEndPointILSFit (const smPlusLatitudeForLadderEndPointILSFit& note);
+	virtual ~smPlusLatitudeForLadderEndPointILSFit ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smApplyEnhancedShoulderFittingAlgorithmPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smApplyEnhancedShoulderFittingAlgorithmPreset)
+
+public:
+	smApplyEnhancedShoulderFittingAlgorithmPreset ();
+	smApplyEnhancedShoulderFittingAlgorithmPreset (const smApplyEnhancedShoulderFittingAlgorithmPreset& note);
+	virtual ~smApplyEnhancedShoulderFittingAlgorithmPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smNoiseFactorForShoulderAcceptanceThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smNoiseFactorForShoulderAcceptanceThreshold)
+
+public:
+	smNoiseFactorForShoulderAcceptanceThreshold ();
+	smNoiseFactorForShoulderAcceptanceThreshold (const smNoiseFactorForShoulderAcceptanceThreshold& note);
+	virtual ~smNoiseFactorForShoulderAcceptanceThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smConcaveDownAcceptanceThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smConcaveDownAcceptanceThreshold)
+
+public:
+	smConcaveDownAcceptanceThreshold ();
+	smConcaveDownAcceptanceThreshold (const smConcaveDownAcceptanceThreshold& note);
+	virtual ~smConcaveDownAcceptanceThreshold ();
 
 	virtual int GetSubject () const;
 

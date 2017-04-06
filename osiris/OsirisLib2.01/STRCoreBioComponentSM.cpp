@@ -1917,10 +1917,37 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
 					//cout << " at bp = " << 0.5 * (nextSignal->GetApproximateBioID () + prevSignal->GetApproximateBioID ()) << endl;
 
-					// It's not too wide
+					// It may still be too wide...test for width of crater and side peaks.  To be OK, the crater should be within width dicatated by ILS or it could be too wide if both side peaks are too narrow
 
 					testSignal = new CraterSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
+
+					double width = testSignal->GetStandardDeviation ();
+					double mean = testSignal->GetMean ();
+					double targetWidth = mLSData->GetWidthAtTime (mean);
+					double tooWide = 2.0 * targetWidth;
+
+					if (width > tooWide) {
+
+						mean = prevSignal->GetMean ();
+						double tooNarrow = 0.5 *mLSData->GetWidthAtTime (mean);
+
+						if (prevSignal->GetStandardDeviation () > tooNarrow) {
+
+							delete testSignal;
+							break;
+						}
+
+						mean = nextSignal->GetMean ();
+						tooNarrow = 0.5 * mLSData->GetWidthAtTime (mean);
+
+						if (nextSignal->GetStandardDeviation () > tooNarrow) {
+
+							delete testSignal;
+							break;
+						}
+					}
+
 					testSignal2 = (DataSignal*) nextCraterPeakList->Last ();
 
 					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
@@ -2465,6 +2492,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	DataSignal* fixPullupPeak;
 	RGDList removedPeakList;
 	set<InterchannelLinkage*> channelRemoval;
+	list<DataSignal*> postSigmoidList;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2497,6 +2525,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				testSignal->SetMessageValue (sigmoidalSidePeak, true);
 				testSignal2->SetMessageValue (sigmoidalSidePeak, true);
 				nextSignal->SetMessageValue (sigmoidalPullup, true);
+				postSigmoidList.push_back (nextSignal);
 
 				if (nextSignal->Peak () < minRFU)
 					nextSignal->SetMessageValue (belowMinRFU, true);
@@ -2663,10 +2692,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			testSignal = nextSignal->GetPreviousLinkedSignal ();
 			testSignal2 = nextSignal->GetNextLinkedSignal (); 
-
-			if ((nextSignal->GetMean () < 4812.0) && (nextSignal->GetMean () > 4801.0) && (nextSignal->GetChannel () == 2))
-				bool hereItIs = true;
-
 
 			if ((testSignal == NULL) || (testSignal2 == NULL)) {
 
@@ -2949,10 +2974,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		delete nextMultiPeakList;
 	}
 
+	list<DataSignal*> postCraterList;
+
 	while (!finalCraterList.empty ()) {
 
 		nextSignal = finalCraterList.front ();
 		finalCraterList.pop_front ();
+		postCraterList.push_back (nextSignal);
 
 		nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
 
@@ -3251,6 +3279,76 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	}
 
+	while (!postCraterList.empty ()) {
+
+		primeSignal = postCraterList.front ();
+		postCraterList.pop_front ();
+		bool hasCrossChannelEffect = primeSignal->GetMessageValue (primaryLink) || primeSignal->HasAnyPrimarySignals (mNumberOfChannels);
+
+		if (!hasCrossChannelEffect) {
+
+			primeSignal->SetMessageValue (crater, false);
+			prevSignal = primeSignal->GetPreviousLinkedSignal ();
+			nextSignal = primeSignal->GetNextLinkedSignal ();
+			
+			if (prevSignal != NULL) {
+
+				prevSignal->SetMessageValue (craterSidePeak, false);
+				prevSignal->SetPartOfCluster (false);
+				prevSignal->SetDoNotCall (false);
+			}
+
+			if (nextSignal != NULL) {
+
+				nextSignal->SetMessageValue (craterSidePeak, false);
+				nextSignal->SetPartOfCluster (false);
+				nextSignal->SetDoNotCall (false);
+			}
+
+			nextChannel = mDataChannels [primeSignal->GetChannel ()];
+			nextChannel->RemoveCompleteCurveReference (primeSignal);
+			nextChannel->RemovePreliminaryCurveReference (primeSignal);
+			OverallList.RemoveReference (primeSignal);
+			removedPeakList.InsertWithNoReferenceDuplication (primeSignal);
+		}
+	}
+
+	// add similar code to above for sigmoidal signals...
+
+	while (!postSigmoidList.empty ()) {
+
+		primeSignal = postSigmoidList.front ();
+		postSigmoidList.pop_front ();
+		bool hasCrossChannelEffect = primeSignal->HasAnyPrimarySignals (mNumberOfChannels);
+
+		if (!hasCrossChannelEffect) {
+
+			primeSignal->SetMessageValue (sigmoidalPullup, false);
+			prevSignal = primeSignal->GetPreviousLinkedSignal ();
+			nextSignal = primeSignal->GetNextLinkedSignal ();
+			
+			if (prevSignal != NULL) {
+
+				prevSignal->SetMessageValue (sigmoidalSidePeak, false);
+				prevSignal->SetPartOfCluster (false);
+				prevSignal->SetDoNotCall (false);
+			}
+
+			if (nextSignal != NULL) {
+
+				nextSignal->SetMessageValue (sigmoidalSidePeak, false);
+				nextSignal->SetPartOfCluster (false);
+				nextSignal->SetDoNotCall (false);
+			}
+
+			nextChannel = mDataChannels [primeSignal->GetChannel ()];
+			nextChannel->RemoveCompleteCurveReference (primeSignal);
+			nextChannel->RemovePreliminaryCurveReference (primeSignal);
+			OverallList.RemoveReference (primeSignal);
+			removedPeakList.InsertWithNoReferenceDuplication (primeSignal);
+		}
+	}
+
 	for (rChannelIt=channelRemoval.begin (); rChannelIt!=channelRemoval.end(); rChannelIt++) {
 
 		iChannel = *rChannelIt;
@@ -3393,6 +3491,33 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 			AcknowledgePullupPeaksWhenThereIsNoPatternSM (i, j, false);
 		}
+	}
+
+	// Record all non-laser off-scale coefficients *****12/21/2016
+	Endl endLine;
+
+	if ((NonLaserOffScalePUCoefficients != NULL) && (NonLaserOffScalePUCoefficients->FileIsValid ())) {
+
+		for (i=1; i<=mNumberOfChannels; i++) {
+
+			for (j=1; j<=mNumberOfChannels; j++) {
+
+				if (j == i)
+					continue;
+
+				if (!mPullupTestedMatrix [i][j])
+					*NonLaserOffScalePUCoefficients << "?\t?\t";
+
+				else {
+
+					double lin = 100.0 * mLinearPullupMatrix [i][j];
+					double quad = 100.0 * mQuadraticPullupMatrix [i][j];
+					*NonLaserOffScalePUCoefficients << lin << "\t" << quad << "\t";
+				}
+			}
+		}
+
+		*NonLaserOffScalePUCoefficients << endLine;
 	}
 
 	// compute all pullup ratios, etc. and insert into smart data...is this necessary?  We should already have stored pullup values from each other channel
@@ -3552,6 +3677,9 @@ int STRCoreBioComponent :: WriteXMLGraphicDataSM (const RGString& graphicDirecto
 	RGString indent2 = indent + indent;
 
 	for (int i=1; i<=mNumberOfChannels; i++) {
+
+		if (i == 2)
+			bool stop = true;
 
 		output << indent << "<channel>" << endLine;
 		output << indent2 << "<nr>" << i << "</nr>" << endLine;
@@ -3779,6 +3907,7 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 	RGString notice;
 	smILSFailed ilsFailed;
 
+	ChannelData::SetBeginAnalysisTime (-1.0);
 	status = FitLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 
 	if (status < 0) {
@@ -3819,6 +3948,7 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 	cout << "Window width = " << TracePrequalification::GetWindowWidth () << endl;
 	cout << "Noise threshold = " << TracePrequalification::GetNoiseThreshold () << endl;
 
+	ChannelData::SetUseEnhancedShoulderAlgorithm (true);  //  Use of the algorithm still depends on the user preset setting
 	status = FitNonLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 
 	if (status < 0) {
@@ -4748,6 +4878,7 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 	RGString notice;
 	smILSFailed ilsFailed;
 
+	ChannelData::SetBeginAnalysisTime (-1.0);
 	status = FitLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 
 	if (status < 0) {

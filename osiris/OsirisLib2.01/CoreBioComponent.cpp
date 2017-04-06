@@ -65,6 +65,8 @@ bool CoreBioComponent::UseHermiteTimeTransforms = false;
 bool CoreBioComponent::UseNaturalCubicSplineTimeTransform = true;
 RGString CoreBioComponent::ILSDyeName;
 RGString* CoreBioComponent::DyeNames = NULL;
+RGTextOutput* CoreBioComponent::HeightFile = NULL;
+RGTextOutput* CoreBioComponent::NonLaserOffScalePUCoefficients = NULL;
 
 
 
