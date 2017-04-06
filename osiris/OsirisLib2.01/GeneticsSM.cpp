@@ -5565,7 +5565,6 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	RGDListIterator it (LocusSignalList);
 
 	int diff;
-	double diffDouble;
 	int repeatNumber = mLink->GetCoreNumber ();
 	double peak;
 	double primaryPeak;
@@ -5585,7 +5584,6 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	smPullUp partialPullup;
 	smCraterSidePeak craterSidePeak;
 	smSigmoidalSidePeak sigmoidalSidePeak;
-	smSigmoidalPullup sigmoidalPeak;
 	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset reportAdenylationWithCallPreset;
 	smIsAcceptedOLAllele acceptedOL;
 
@@ -5593,17 +5591,11 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	smAcceptedOLRight acceptedOLRight;
 	smSignalOL offLadder;
 
-	RGString alleleName;
-	int isOffGrid;
-
 	bool onLadderInLocus;
 	int bpPrimary;
-	double bpPrimaryDouble;
 	int bpTest;
-	double bpTestDouble;
 	int leftBp = mLink->GetMaxNegativeNonStandardStutter () + 1;
 	int rightBp = mLink->GetMaxPositiveNonStandardStutter () + 1;
-	int location;
 
 	if (leftBp < repeatNumber)
 		leftBp = repeatNumber;
@@ -5631,12 +5623,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 		if (nextSignal->GetMessageValue (sigmoidalSidePeak))
 			continue;
 
-		if (nextSignal->GetMessageValue (sigmoidalPeak))
-			continue;
-
-		location = TestSignalPositionRelativeToLocus (nextSignal);
-		bpPrimaryDouble = nextSignal->GetBioID (-location);
-		bpPrimary = (int) floor (bpPrimaryDouble + 0.5);
+		bpPrimary = (int) floor (nextSignal->GetBioID () + 0.5);
 
 		if (nextSignal->GetMessageValue (partialPullup))
 			primaryPeak = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
@@ -5661,12 +5648,6 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 				if (testSignal->GetMessageValue (craterSidePeak))
 					continue;
 
-				if (testSignal->GetMessageValue (sigmoidalSidePeak))
-					continue;
-
-				if (testSignal->GetMessageValue (sigmoidalPeak))
-					continue;
-
 				mean = testSignal->GetMean ();
 				peak = testSignal->Peak ();
 
@@ -5674,22 +5655,11 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 					continue;
 
 				gridTime = timeMap->EvaluateWithExtrapolation (mean);
-				bpTestDouble = mGridLocus->GetBPFromTimeForAnalysis (gridTime);
-				bpTest = (int) floor (bpTestDouble + 0.5);
-				diffDouble = bpTestDouble - bpPrimaryDouble;
+				bpTest = (int) floor (mGridLocus->GetBPFromTimeForAnalysis (gridTime) + 0.5);
 				diff = bpTest - bpPrimary;
 
 				if (diff > rightBp)
 					break;
-
-				if (diff != (int) floor (diffDouble + 0.5)) {
-
-					//cout << "Peak at mean " << testSignal->GetMean () << " is not stutter to signal at mean " << nextSignal->GetMean () << endl;
-					continue;
-				}
-
-				//if (fabs (diffDouble - diff) > 0.45)
-				//	continue;
 
 				if (diff == repeatNumber) {
 
@@ -5771,43 +5741,19 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 			if (testSignal->GetMessageValue (craterSidePeak))
 				continue;
 
-			if (testSignal->GetMessageValue (sigmoidalSidePeak))
-				continue;
-
-			if (testSignal->GetMessageValue (sigmoidalPeak))
-				continue;
-
 			mean = testSignal->GetMean ();
 			peak = testSignal->Peak ();
 
 			if (peak >= primaryPeak)
 					continue;
 
-			//if ((nextSignal->GetMean () < 5088.1) && (nextSignal->GetMean () > 5087.9))
-			//	bool pauseHere = true;
-
 			gridTime = timeMap->EvaluateWithExtrapolation (mean);
-			bpTestDouble = mGridLocus->GetBPFromTimeForAnalysis (gridTime);
-			bpTest = (int) floor (bpTestDouble + 0.5);
-			diffDouble = bpPrimaryDouble - bpTestDouble;
+			bpTest = (int) floor (mGridLocus->GetBPFromTimeForAnalysis (gridTime) + 0.5);
 			diff = bpPrimary - bpTest;
 
 			if (diff > leftBp)
 				break;
 
-			alleleName = ReconstructAlleleName (bpTest, isOffGrid);
-
-			if ((alleleName == "$") || (alleleName == ""))
-				break;
-
-			if (diff != (int) floor (diffDouble + 0.5)) {
-
-				//cout << "Peak at mean " << testSignal->GetMean () << " is not stutter to signal at mean " << nextSignal->GetMean () << endl;
-				continue;
-			}
-
-			//if (fabs (diffDouble - diff) > 0.45)
-			//	continue;
 
 			if ((diff == repeatNumber) && !mIsAMEL && !DisableStutterFilter) {
 

@@ -984,7 +984,7 @@ void DataSignal :: AddDataToStutterArtifactSM () {
 
 	if (hasDuplicates) {
 
-		cout << "Duplicate displacements from channel " << GetChannel () << " for stutter signal at mean = " << GetMean () << ":  ";
+		cout << "Duplicate displacements from channel " << GetChannel () << ":  ";
 		n = 0;
 
 		while (nextSignal = (DataSignal*) tempSignals.GetFirst ()) {
