@@ -366,6 +366,14 @@
         <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
+        <Name>Promega-ILS-350</Name>
+        <DisplayName>60-350</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
         <Name>Promega-ILS-LESS475-600</Name>
         <DisplayName>60-600 OMIT 475</DisplayName>
         <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 500 550 600</Characteristics>
@@ -740,6 +748,10 @@
 	<Set>
 		<KitName>NetBio_FlexPlex</KitName>
 		<FileName>NetBioFlexPlex_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>PowerPlexS5</KitName>
+		<FileName>PowerPlexS5_LadderInfo.xml</FileName>
 	</Set>
   </Kits>
 </KitData>
