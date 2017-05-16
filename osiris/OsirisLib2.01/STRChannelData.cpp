@@ -3586,9 +3586,6 @@ ILSCandidate* STRLaneStandardChannelData :: TestLadderILSStartAndEndSignals (Dat
 
 	TestIsOn = false;
 
-	if ((fabs (startTime - 2198.59) < 0.2) && (fabs (endTime - 7040.94) < 0.2))
-		TestIsOn = true;
-
 	// Now test that all the peaks are there, with the proper spacing...
 
 	mLaneStandard->ResetStartAndEndTimesForLadderILSTests (startTime, endTime, startSignal);

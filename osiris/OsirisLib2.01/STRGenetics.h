@@ -228,6 +228,8 @@ public:
 	virtual int GetMaxRelativeHeight () const;
 	virtual double GetCorrelationAcceptanceThreshold () const;
 	virtual double GetCorrelationAutoAcceptanceThreshold () const;
+	virtual bool HasAltSpacingFormula () const { return (mAltSpacingFormula.Length () > 0); }
+	virtual double* GetAltSpacingArray ();
 
 	//virtual int GetLastHalfCharacteristicArray (const double*& array) const;  // returns array size or -1
 	//virtual int GetLastHalfUnnormalizedCharacteristicDifferenceArray (const double*& array) const;  // returns array size or -1
@@ -262,6 +264,10 @@ protected:
 	int mMaxRelativeHeight;
 	double mCorrelationAcceptanceThreshold;
 	double mCorrelationAutoAcceptanceThreshold;
+	RGString mAltSpacingFormula;
+	double* mAltSpacingArray;
+	double* mAltSpacingCoefficients;
+	int mFormulaTerms;
 
 	//int mLastHalfSize;
 	//double* mLastHalfCharacteristicArray;

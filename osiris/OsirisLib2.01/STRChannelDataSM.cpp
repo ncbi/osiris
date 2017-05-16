@@ -1875,6 +1875,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	double shoulderThresholdFraction;
 	double shoulderProximity;
 
+	double* altSpacing = mLaneStandard->GetAltSpacingArray ();
+	bool useStartAndEndPointsForLadders = UseLadderILSEndPointAlgorithm && (altSpacing != NULL);
+	bool useStartAndEndPoints = UseILSHistory || useStartAndEndPointsForLadders;
+
 	if (Size <= 0) {
 
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are no expected peaks for the ILS.\n";
@@ -1916,7 +1920,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	RGDListIterator finalIterator (FinalCurveList);
 	CurveIterator.Reset ();
 
-	if (UseILSHistory || UseLadderILSEndPointAlgorithm) {
+	if (useStartAndEndPoints) {
 
 		prevSignal = NULL;
 
@@ -1943,6 +1947,12 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	RGDList shoulderPeaks;
 	CurveIterator.Reset ();
 	DataSignal* nextNextSignal;
+
+	if (altSpacing == NULL)
+		cout << "Alternate spacing array is null." << endl;
+
+	else
+		cout << "Alternate spacing array first coefficient = " << altSpacing [0] << endl;
 
 	if (GetMessageValue (ilsFilterLeftShoulders)) {
 
@@ -2053,7 +2063,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	if (reduction > reductionMax)
 		reduction = reductionMax;
 
-	if (FinalCurveList.Entries () < Size) {  // This block resolves bug in JIRA OS-533, 09/18/2015
+	if ((FinalCurveList.Entries () < Size) && !useStartAndEndPointsForLadders) {  // This block resolves bug in JIRA OS-533, 09/18/2015
 
 		if (print)
 			msg.WriteInsufficientPeaksForILS ();
@@ -2155,9 +2165,9 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ilsHistoryList.Clear ();
 	}
 
-	else if (UseLadderILSEndPointAlgorithm) {
+	else if (useStartAndEndPointsForLadders) {
 
-		mLaneStandard->ResetIdealCharacteristicsAndIntervalsForLadderILS (actualArray, differenceArray, LatitudeFactorForLadderILS);  // later, replace 0.02 with user specified factor
+		mLaneStandard->ResetIdealCharacteristicsAndIntervalsForLadderILS (altSpacing, NULL, LatitudeFactorForLadderILS);  // later, replace 0.02 with user specified factor
 		cout << "Attempting to use Ladder ILS End Point Algorithm...\n";
 
 		if (TestAllLadderILSStartAndEndSignals (ilsHistoryList, correlation)) {
@@ -2179,6 +2189,29 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		// add bool for new test below
 		noILSFoundYet = false;
 		cout << "ILS curve list had exactly expected number of peaks...\n";
+	}
+
+	else if (FinalCurveList.Entries () < Size) {
+
+		if (print)
+			msg.WriteInsufficientPeaksForILS ();
+
+		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
+		status = -1;
+		SetMessageValue (tooFewPeaks, true);
+		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+		AppendDataForSmartMessage (tooFewPeaks, Size);
+		cout << ErrorString << endl;
+		cout << "There are too few peaks available in the ILS:  " << FinalCurveList.Entries () << " peaks out of " << Size << endl;
+
+		if (FinalCurveList.Entries () == 0)
+			return -50;
+
+		nextSignal = (DataSignal*)FinalCurveList.First ();
+		cout << "First peak at time " << nextSignal->GetMean () << endl;
+		nextSignal = (DataSignal*)FinalCurveList.Last ();
+		cout << "Last peak at time " << nextSignal->GetMean () << endl;
+		return -50;
 	}
 
 	if (noILSFoundYet) {

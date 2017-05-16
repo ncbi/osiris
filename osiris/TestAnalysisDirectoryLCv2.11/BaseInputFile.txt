@@ -1,17 +1,18 @@
-InputDirectory = C:/Apps/User_Installs/NCBI/Osiris/TestAnalysis/Identifiler/STRbaseIFCraterBug;
+InputDirectory = F:/Menageries/MenagerieOfRapidKits/NetBioFlexPlexWithNetBioILS/KathyWebbANDE1;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = Identifiler;
-LaneStandardName = ABI-LIZ450;
+MarkerSetName = NetBio_FlexPlex;
+LaneStandardName = NetBio60_500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/Config/Volumes/ID/ID_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/Config/Volumes/ID/ID_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/Volumes/ID/ID_MessageBookV4.0.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20170419-155537/V-20170419-155537_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20170419-155537/V-20170419-155537_LabSettings.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
 MinSampleRFU = 150;
-MinLaneStandardRFU = 150;
-MinLadderRFU = 150;
+MinLaneStandardRFU = 200;
+MinLadderRFU = 2500;
 MinInterlocusRFU = 150;
-MinLadderInterlocusRFU = 150;
+MinLadderInterlocusRFU = 5000;
 SampleDetectionThreshold = 150;
 RawDataString = R;
 ;
+

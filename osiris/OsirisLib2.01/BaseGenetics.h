@@ -363,6 +363,9 @@ public:
 	virtual double GetCorrelationAcceptanceThreshold () const;
 	virtual double GetCorrelationAutoAcceptanceThreshold () const;
 
+	virtual bool HasAltSpacingFormula () const { return false; }
+	virtual double* GetAltSpacingArray () { return NULL; }
+
 	virtual int GetNormsLeft (const double*& array) const;  // returns array size, or -1
 	virtual int GetNormsRight (const double*& array) const;  // returns array size, or -1
 	virtual int GetRelativeSizes (const int*& array) const;  // returns array size, or 0, or -1

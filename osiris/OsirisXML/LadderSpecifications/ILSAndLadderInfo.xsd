@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2014 sp1 (x64) (http://www.altova.com) by NCBI User (National Library of Medicine) -->
+<!-- edited with XMLSpy v2016 rel. 2 (http://www.altova.com) by Altova XMLSpy 2015 Professional Edition Release 2, Installed for 13 users (NCBI/NLM/NIH) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:complexType name="LaneStandardData">
-		<xs:sequence>
+		<xs:sequence minOccurs="0">
 			<xs:element name="Name" type="xs:string"/>
 			<xs:element name="DisplayName" type="xs:string"/>
 			<xs:element name="Characteristics" type="xs:string"/>
@@ -30,6 +30,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
+			<xs:element name="AltSpacing" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="KitData">
