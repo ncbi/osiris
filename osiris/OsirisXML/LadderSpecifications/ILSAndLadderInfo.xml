@@ -600,6 +600,7 @@
         <RelativeHeights>H H H H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = 0.043738943216x4 - 0.455460772097x3 + 0.702239613045x2 + 0.709870151031x - 0.000265093535</AltSpacing>
       </LaneStandard>
       <LaneStandard>
         <Name>NetBio80_450</Name>
@@ -608,6 +609,7 @@
         <RelativeHeights>H H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = 0.032506118144x4 - 0.386981298385x3 + 0.585520326155x2 + 0.769056224485x + 0.000002331201</AltSpacing>
       </LaneStandard>
     </ILS>
   </LaneStandards>
