@@ -5934,6 +5934,9 @@ bool ILSHistory :: FindAndTestLadderILS (int index, DataSignal* startCandidate, 
 	firstPeakFound = NULL;
 	double maxHeight = 0.0;
 	double currentHeight;
+	double spikeWidth = 2.2;
+	double currentWidth;
+	double nextWidth;
 
 	while (nextSignal = nextSignal->GetNextSignal ()) {
 
@@ -5957,10 +5960,32 @@ bool ILSHistory :: FindAndTestLadderILS (int index, DataSignal* startCandidate, 
 
 			currentHeight = nextSignal->Peak ();
 
+			if (firstPeakFound == NULL) {
+
+				firstPeakFound = nextSignal;
+				currentWidth = firstPeakFound->GetWidth ();
+				maxHeight = currentHeight;
+				continue;
+			}
+
+			nextWidth = nextSignal->GetWidth ();
+
+			if ((currentWidth > spikeWidth) && (nextWidth <= spikeWidth))
+				continue;
+
+			if ((currentWidth <= spikeWidth) && (nextWidth > spikeWidth)) {
+
+				firstPeakFound = nextSignal;
+				maxHeight = currentHeight;
+				currentWidth = nextWidth;
+				continue;
+			}
+
 			if (currentHeight > maxHeight) {
 
 				firstPeakFound = nextSignal;
 				maxHeight = currentHeight;
+				currentWidth = nextWidth;
 				continue;
 			}
 		}
@@ -5989,6 +6014,9 @@ bool ILSHistory :: FindAndTestILS (int index, DataSignal* startCandidate, DataSi
 	mostAveragePeak = NULL;
 	double maxHeight = 0.0;
 	double currentHeight;
+	double spikeWidth = 2.2;
+	double currentWidth;
+	double nextWidth;
 
 	while (nextSignal = nextSignal->GetNextSignal ()) {
 
@@ -6012,9 +6040,31 @@ bool ILSHistory :: FindAndTestILS (int index, DataSignal* startCandidate, DataSi
 
 			currentHeight = nextSignal->Peak ();
 
+			if (mostAveragePeak == NULL) {
+
+				mostAveragePeak = nextSignal;
+				currentWidth = mostAveragePeak->GetWidth ();
+				maxHeight = currentHeight;
+				continue;
+			}
+
+			nextWidth = nextSignal->GetWidth ();
+
+			if ((currentWidth > spikeWidth) && (nextWidth <= spikeWidth))
+				continue;
+
+			if ((currentWidth <= spikeWidth) && (nextWidth > spikeWidth)) {
+
+				mostAveragePeak = nextSignal;
+				maxHeight = currentHeight;
+				currentWidth = nextWidth;
+				continue;
+			}
+
 			if (currentHeight > maxHeight) {
 
 				maxHeight = currentHeight;
+				currentWidth = nextWidth;
 				mostAveragePeak = nextSignal;
 			}
 		}
