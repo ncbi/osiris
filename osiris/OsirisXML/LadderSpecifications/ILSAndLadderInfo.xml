@@ -312,6 +312,7 @@
         <RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = -0.145310835437x4 + 0.202711408958x3 + 0.119356154941x2 + 0.822192429314x + 0.000682029180</AltSpacing>
       </LaneStandard>
       <LaneStandard>
         <Name>BV-80-500</Name>
