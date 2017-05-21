@@ -321,6 +321,7 @@
         <RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = -0.119369931049x4 + 0.145887959174x3 + 0.154066893327x2 + 0.819017852499x + 0.000100471474</AltSpacing>
       </LaneStandard>
     </ILS>
     <ILS>
