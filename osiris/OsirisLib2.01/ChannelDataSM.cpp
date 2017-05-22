@@ -1298,6 +1298,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 				if (lineFit <= minFitForArtifactTest) {
 
 					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+					shoulderCopy->SetShoulderSignal (true);
 					shoulderSignals.Append (shoulderCopy);
 				}
 

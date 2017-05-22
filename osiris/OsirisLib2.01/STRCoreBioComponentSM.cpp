@@ -3987,6 +3987,15 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 	}
 
 	RemoveAllSignalsOutsideLaneStandardSM ();  // Moved to follow setting of all approximate bioID's, above, or nothing is saved in SmartPeaks!
+
+	//
+	//  Remove shoulder signals that are "too close" to primary signal on each non-ILS channel...need a new function for this, say 'RemoveAllShoulderTooCloseToPrimarySignal'.
+	//  This function will have to call function by the same name that is specialized for each channel.  Because these functions are called here, after all approximate ID's (ILS-BPs)
+	//  have been set, we can use that info to determine "too close".  Because these will only be called for ladders, should we also have a relative height criterion for those peaks that are
+	//  far enough away from the primary, but are much smaller in height.  This would weed out the noisy peaks as well...
+	//
+
+
 	Progress = 4;
 
 	if (AssignCharacteristicsToLociSM () < 0) {
