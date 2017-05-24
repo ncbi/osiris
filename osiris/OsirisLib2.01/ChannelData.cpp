@@ -1117,6 +1117,85 @@ int ChannelData :: SetAllApproximateIDs (ChannelData* laneStd) {
 }
 
 
+int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
+
+	RGDListIterator it (PreliminaryCurveList);
+	DataSignal* nextSignal;
+	DataSignal* prevSignal;
+	double nextBP;
+	double prevBP;
+	double nextWidth;
+	double prevWidth;
+	bool tooNarrow;
+	bool tooCloseByWidths;
+
+	prevSignal = NULL;
+	RGDList tempSignals;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		nextBP = nextSignal->GetApproximateBioID ();
+		nextWidth = nextSignal->GetWidth ();
+
+		if (prevSignal == NULL) {
+
+			prevSignal = nextSignal;
+			prevBP = nextBP;
+			prevWidth = nextWidth;
+			continue;
+		}
+
+		if (prevSignal->IsShoulderSignal ()) {
+
+			if (nextBP - prevBP < 0.5)
+				tempSignals.Append (prevSignal);
+
+			else if (nextBP - prevBP < 0.8) {
+
+				tooNarrow = (prevWidth < 0.5 * nextWidth);
+				tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.5 * (prevWidth + nextWidth));
+
+				if (tooNarrow || tooCloseByWidths)
+					tempSignals.Append (prevSignal);
+			}
+		}
+
+		else if (nextSignal->IsShoulderSignal ()) {
+
+			if (nextBP - prevBP < 0.5)
+				tempSignals.Append (nextSignal);
+
+			else if (nextBP - prevBP < 0.8) {
+
+				tooNarrow = (prevWidth < 0.5 * nextWidth);
+				tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.5 * (prevWidth + nextWidth));
+
+				if (tooNarrow || tooCloseByWidths)
+					tempSignals.Append (nextSignal);
+			}
+		}
+
+		prevBP = nextBP;
+		prevWidth = nextWidth;
+		prevSignal = nextSignal;
+	}
+
+	while (nextSignal = (DataSignal*) tempSignals.GetFirst ()) {
+
+		PreliminaryCurveList.RemoveReference (nextSignal);
+		CompleteCurveList.RemoveReference (nextSignal);
+		FinalCurveList.RemoveReference (nextSignal);
+		ArtifactList.RemoveReference (nextSignal);
+		SmartPeaks.RemoveReference (nextSignal);
+		nextSignal->RemoveCrossChannelSignalLinkSM ();
+
+		delete nextSignal;
+	}
+
+	return 0;
+}
+
+
 bool ChannelData :: TestForArtifacts (DataSignal* currentSignal, double fit) {
 
 	NormalizedSuperGaussian BlobSignature3 (0.0, ParametricCurve::GetSigmaForSignature (), 6);

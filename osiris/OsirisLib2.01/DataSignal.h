@@ -492,6 +492,7 @@ public:
 
 	void SetPrimaryCrossChannelSignalLink (DataSignal* ds) { mPrimaryCrossChannelLink = ds; mHasCrossChannelLink = true;}
 	void AddCrossChannelSignalLink (DataSignal* ds);
+	DataSignal* GetPrimaryCrossChannelSignalLink () { return mPrimaryCrossChannelLink; }
 
 	void SetShoulderSignal (bool val) { mIsShoulderSignal = val; }
 	bool IsShoulderSignal () const { return mIsShoulderSignal; }
