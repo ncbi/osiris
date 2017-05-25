@@ -118,6 +118,7 @@ sub COPYFILES
     NFX1
     NGM
     NGMSElect
+    POWERPLEXS5
     PP12
     PP16
     PP16_HID
