@@ -1148,7 +1148,7 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 		if (prevSignal->IsShoulderSignal ()) {
 
 			if (nextBP - prevBP < 0.5)
-				tempSignals.Append (prevSignal);
+				tempSignals.InsertWithNoReferenceDuplication (prevSignal);
 
 			else if (nextBP - prevBP < 0.8) {
 
@@ -1156,14 +1156,14 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 				tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.5 * (prevWidth + nextWidth));
 
 				if (tooNarrow || tooCloseByWidths)
-					tempSignals.Append (prevSignal);
+					tempSignals.InsertWithNoReferenceDuplication (prevSignal);
 			}
 		}
 
 		else if (nextSignal->IsShoulderSignal ()) {
 
 			if (nextBP - prevBP < 0.5)
-				tempSignals.Append (nextSignal);
+				tempSignals.InsertWithNoReferenceDuplication (nextSignal);
 
 			else if (nextBP - prevBP < 0.8) {
 
@@ -1171,7 +1171,7 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 				tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.5 * (prevWidth + nextWidth));
 
 				if (tooNarrow || tooCloseByWidths)
-					tempSignals.Append (nextSignal);
+					tempSignals.InsertWithNoReferenceDuplication (nextSignal);
 			}
 		}
 
@@ -1180,7 +1180,9 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 		prevSignal = nextSignal;
 	}
 
-	while (nextSignal = (DataSignal*) tempSignals.GetFirst ()) {
+	RGDListIterator tempIt (tempSignals);
+
+	while (nextSignal = (DataSignal*) tempIt ()) {
 
 		PreliminaryCurveList.RemoveReference (nextSignal);
 		CompleteCurveList.RemoveReference (nextSignal);
@@ -1188,10 +1190,9 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 		ArtifactList.RemoveReference (nextSignal);
 		SmartPeaks.RemoveReference (nextSignal);
 		nextSignal->RemoveCrossChannelSignalLinkSM ();
-
-		delete nextSignal;
 	}
 
+	tempSignals.ClearAndDelete ();
 	return 0;
 }
 
