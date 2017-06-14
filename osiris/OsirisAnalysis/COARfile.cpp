@@ -1405,6 +1405,31 @@ bool COARfile::SamplesDisabled() const
   return bRtn;
 }
 
+void COARfile::DeleteDisabledSamples()
+{
+  vector<size_t> vnKill;
+  vector<size_t>::const_iterator itrndx;
+  vector<COARsample *>::const_reverse_iterator itr;
+  size_t ndx = m_vpTable.Size();
+  vnKill.reserve(16);
+  for(itr = m_vpTable.Get()->rbegin();
+    itr != m_vpTable.Get()->rend();
+    ++itr)
+  {
+    --ndx;
+    if((*itr)->IsDisabled())
+    {
+      vnKill.push_back(ndx);
+    }
+  }
+  for(itrndx = vnKill.begin();
+    itrndx != vnKill.end();
+    ++itrndx)
+  {
+    m_vpTable.removeAt(*itrndx);
+  }
+}
+
 size_t COARfile::GetDisabledSamples(
   vector<const COARsample *> *pv,
   bool bIncludeNonSamples) const
@@ -1414,8 +1439,11 @@ size_t COARfile::GetDisabledSamples(
   bool bDisabled;
   bool bSampleType;
 
-  pv->clear();
-  pv->reserve(16);
+  if(pv != NULL)
+  {
+    pv->clear();
+    pv->reserve(16);
+  }
   for(itr = m_vpTable.Get()->begin();
     itr != m_vpTable.Get()->end();
     ++itr)
@@ -1428,7 +1456,10 @@ size_t COARfile::GetDisabledSamples(
     if( (bDisabled && bSampleType) ||
         (bIncludeNonSamples && !bSampleType) )
     {
-      pv->push_back(*itr);
+      if(pv != NULL)
+      {
+        pv->push_back(*itr);
+      }
       if(bSampleType)
       {
         nRtn++;

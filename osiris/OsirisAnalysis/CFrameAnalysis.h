@@ -235,6 +235,7 @@ private:
   void _OnEnableMultiple();
   void _OnEnableSample();
   void _OnReAnalyze();
+  void _OnDeleteDisabled();
 #if 0
   void _OnEditLocus(COARsample *pSample, int nCol);
   void _OnEditAlerts(COARsample *pSample, int nCol);

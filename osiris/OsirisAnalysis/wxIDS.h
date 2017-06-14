@@ -240,6 +240,7 @@ enum
   IDmenuReviewDirectory,
   IDmenuDisableSample,
   IDmenuDisableMultiple,
+  IDmenuDeleteDisabled,
   IDmenuDisplayGraph,
   IDmenuDisplaySample, // Temporary sample window trigger STOP HERE
 

@@ -198,6 +198,7 @@ public:
     bool bRtn = CanSave() && SaveFile(m_sFileName);
     return bRtn;
   }
+  void DeleteDisabledSamples();
   const wxString &GetFileName() const
   {
     return m_sFileName;

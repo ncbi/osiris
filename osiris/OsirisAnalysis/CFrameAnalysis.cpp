@@ -578,6 +578,9 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
     case IDmenuDisableMultiple:
       _OnEnableMultiple();
       break;
+    case IDmenuDeleteDisabled:
+      _OnDeleteDisabled();
+      break;
     case IDmenuReAnalyze:
       _OnReAnalyze();
       break;
@@ -1517,6 +1520,9 @@ void CFrameAnalysis::_OnReAnalyze()
       mainApp::ShowError(rz.GetErrorMessage(),this);
     }
   }
+}
+void CFrameAnalysis::_OnDeleteDisabled()
+{
 }
 void CFrameAnalysis::_OnEnableMultiple()
 {
