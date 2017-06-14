@@ -35,6 +35,7 @@
 #include <wx/file.h>
 #include "CFrameAnalysis.h"
 #include "OsirisFileTypes.h"
+#include "CDialogDeleteDisabled.h"
 #include "CDialogEnableMultiple.h"
 #include "CDialogExportFile.h"
 #include "CDialogWarnHistory.h"
@@ -1523,6 +1524,50 @@ void CFrameAnalysis::_OnReAnalyze()
 }
 void CFrameAnalysis::_OnDeleteDisabled()
 {
+  std::vector<const COARsample *> vps;
+  if(m_pOARfile->GetDisabledSamples(&vps,false))
+  {
+    // STOP HERE
+    int nLabelTypeName = m_pComboName->GetSelection();
+    std::vector<const wxString> vsNames;
+    std::vector<const COARsample *>::const_iterator itr;
+    vsNames.reserve(vps.size());
+    if(nLabelTypeName == IDmenuDisplayNameSample)
+    {
+      for(itr = vps.begin(); itr != vps.end(); ++itr)
+      {
+        // show sample names
+        vsNames.push_back((*itr)->GetSampleName());
+      }
+    }
+    else
+    {
+      for(itr = vps.begin(); itr != vps.end(); ++itr)
+      {
+        // show file names
+        vsNames.push_back((*itr)->GetName());
+      }
+    }
+    CDialogDeleteDisabled dlg(this, vsNames);
+    if(dlg.ShowModal() == wxID_OK)
+    {
+      CFrameSample *pFrame;
+      std::vector<const COARsample *>::iterator itr;
+      for(itr = vps.begin();
+        itr != vps.end();
+        ++itr)
+      {
+        pFrame = _FindSampleFrame(*itr);
+        if(pFrame != NULL)
+        {
+          pFrame->Close(false);
+        }
+      }
+      m_pOARfile->DeleteDisabledSamples();
+      RepaintData();
+      m_pGrid->SetFocus();
+    }
+  }
 }
 void CFrameAnalysis::_OnEnableMultiple()
 {

@@ -198,7 +198,6 @@ public:
     bool bRtn = CanSave() && SaveFile(m_sFileName);
     return bRtn;
   }
-  void DeleteDisabledSamples();
   const wxString &GetFileName() const
   {
     return m_sFileName;
@@ -237,9 +236,11 @@ public:
     bool bRtn = s.EndsWith(EXT_REPORT);
     return bRtn;
   }
-  bool SamplesDisabled() const; // return true is at least one sample is disabled
+  bool SamplesDisabled() const; // return true if at least one sample is disabled
+  size_t GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx = NULL) const;
+  size_t DeleteDisabledSamples();
   size_t GetDisabledSamples(
-    vector<const COARsample *> *pv, 
+    std::vector<const COARsample *> *pv, 
     bool bIncludeNonSamples = true) const;
   void SetLastSampleDisabled(const COARsample *pSample) const
   {

@@ -1404,14 +1404,27 @@ bool COARfile::SamplesDisabled() const
   }
   return bRtn;
 }
-
-void COARfile::DeleteDisabledSamples()
+size_t COARfile::GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx) const
 {
-  vector<size_t> vnKill;
-  vector<size_t>::const_iterator itrndx;
-  vector<COARsample *>::const_reverse_iterator itr;
+  // parameter
+  //   pvNdx - pointer to a vector containing the list of disabled samples
+  //
+  // return
+  //   number of disabled samples
+  //
+  // retrieve a list of sample indexes of disabled samples
+  // sorted in descending order
+  // the items in this list can be used to retrieve a sample
+  // using GetSample(size_t n)
+  //
+  std::vector<COARsample *>::const_reverse_iterator itr;
+  size_t nRtn = 0;
   size_t ndx = m_vpTable.Size();
-  vnKill.reserve(16);
+  if(pvNdx != NULL)
+  {
+    pvNdx->clear();
+    pvNdx->reserve(16);
+  }
   for(itr = m_vpTable.Get()->rbegin();
     itr != m_vpTable.Get()->rend();
     ++itr)
@@ -1419,22 +1432,35 @@ void COARfile::DeleteDisabledSamples()
     --ndx;
     if((*itr)->IsDisabled())
     {
-      vnKill.push_back(ndx);
+      ++nRtn;
+      if(pvNdx != NULL)
+      {
+        pvNdx->push_back(ndx);
+      }
     }
   }
+  return nRtn;
+}
+size_t COARfile::DeleteDisabledSamples()
+{
+  std::vector<size_t> vnKill;
+  std::vector<size_t>::const_iterator itrndx;
+  size_t nRtn = GetDisabledSamplesByIndex(&vnKill);
+
   for(itrndx = vnKill.begin();
     itrndx != vnKill.end();
     ++itrndx)
   {
     m_vpTable.removeAt(*itrndx);
   }
+  return nRtn;
 }
 
 size_t COARfile::GetDisabledSamples(
-  vector<const COARsample *> *pv,
+  std::vector<const COARsample *> *pv,
   bool bIncludeNonSamples) const
 {
-  vector<COARsample *>::const_iterator itr;
+  std::vector<COARsample *>::const_iterator itr;
   size_t nRtn = 0;
   bool bDisabled;
   bool bSampleType;
