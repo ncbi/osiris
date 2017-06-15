@@ -4086,6 +4086,13 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 			if ((prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1)) || (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1))) {
 
 				// This is not a crater though...01/01/2014
+				int location;
+
+				if (prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1))
+					location = -1;
+
+				else
+					location = 1;
 
 				nextSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
 				SignalsToDeleteFromSignalList.Append (nextSignal);
@@ -4097,6 +4104,7 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 
 				currentSignal = new NoisyPeak (prevSignal, nextSignal);
 				currentSignal->CaptureSmartMessages ();
+				currentSignal->SetLocus ((Locus*)nextSignal->GetLocus (location), location);
 				currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
 				currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 				currentSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
@@ -4127,7 +4135,7 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 	while (nextSignal = (DataSignal*) signalsToAddToList.GetFirst ()) {
 
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
-		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	//	PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
 	}
 

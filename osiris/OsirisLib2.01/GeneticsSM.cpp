@@ -6504,6 +6504,8 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			currentSignal->CaptureSmartMessages ();
 			currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
 
+			currentSignal->SetLocus ((Locus*)this, -location);
+
 			currentSignal->SetDontLook (false);
 			currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 			tempList.Append (currentSignal);
@@ -6527,7 +6529,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
 
 		// Add new signals to all lists
-		signalList.InsertWithNoReferenceDuplication (nextSignal);
+	//	signalList.InsertWithNoReferenceDuplication (nextSignal);
 		completeList.InsertWithNoReferenceDuplication (nextSignal);
 		smartPeaks.InsertWithNoReferenceDuplication (nextSignal);
 		LocusSignalList.InsertWithNoReferenceDuplication (nextSignal);

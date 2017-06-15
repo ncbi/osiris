@@ -2418,6 +2418,9 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 	smInterlocusPeaksToLeft interlocusToLeft;
 	smRestrictedPriorityPeak restrictedPriorityPeak;
 
+	if (mChannel == 3)
+		bool pauseHere = true;
+
 	while (nextSignal = (DataSignal*) PreliminaryCurveList.GetFirst ()) {
 
 		mean = nextSignal->GetMean ();
@@ -2530,6 +2533,9 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 		}
 
 		else if (!TestIfTimeIsLeftOfLocus (mean, previousLocus, previousGridLocus)) {
+
+			if (previousGridLocus->TestSignalTimeRelativeToGridLocus (mean) == 0)
+				continue;
 
 			if (!nextSignal->GetMessageValue (restrictedPriorityPeak)) {
 
