@@ -1444,14 +1444,26 @@ size_t COARfile::GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx) const
 size_t COARfile::DeleteDisabledSamples()
 {
   std::vector<size_t> vnKill;
-  std::vector<size_t>::const_iterator itrndx;
   size_t nRtn = GetDisabledSamplesByIndex(&vnKill);
-
-  for(itrndx = vnKill.begin();
-    itrndx != vnKill.end();
-    ++itrndx)
+  if(nRtn > 0)
   {
-    m_vpTable.removeAt(*itrndx);
+    std::vector<size_t>::const_iterator itrndx;
+    wxString sNotes;
+    if(nRtn == 1)
+    {
+      sNotes = wxT("One sample was deleted.");
+    }
+    else
+    {
+      sNotes = wxString::Format(wxT("%d samples were deleted."),(int)nRtn);
+    }
+    for(itrndx = vnKill.begin();
+      itrndx != vnKill.end();
+      ++itrndx)
+    {
+      m_vpTable.removeAt(*itrndx);
+    }
+    this->AppendNotesDir(sNotes,wxGetUserId());
   }
   return nRtn;
 }
