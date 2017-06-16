@@ -1527,7 +1527,6 @@ void CFrameAnalysis::_OnDeleteDisabled()
   std::vector<const COARsample *> vps;
   if(m_pOARfile->GetDisabledSamples(&vps,false))
   {
-    // STOP HERE
     int nLabelTypeName = m_pComboName->GetSelection();
     std::vector<const wxString> vsNames;
     std::vector<const COARsample *>::const_iterator itr;
@@ -1551,7 +1550,8 @@ void CFrameAnalysis::_OnDeleteDisabled()
     CDialogDeleteDisabled dlg(this, vsNames);
     if(dlg.ShowModal() == wxID_OK)
     {
-      CFrameSample *pFrame;
+      wxString sPath;
+      CMDIFrame *pFrame;
       std::vector<const COARsample *>::iterator itr;
       for(itr = vps.begin();
         itr != vps.end();
@@ -1562,8 +1562,15 @@ void CFrameAnalysis::_OnDeleteDisabled()
         {
           pFrame->Close(false);
         }
+        sPath = m_pOARfile->FindPlotFile(*itr);
+        pFrame = sPath.IsEmpty() ? NULL : m_pParent->FindWindowByName(sPath);
+        if(pFrame != NULL)
+        {
+          pFrame->Close(false);
+        }
       }
       m_pOARfile->DeleteDisabledSamples();
+      m_SampleSort.UpdateSort();
       RepaintData();
       m_pGrid->SetFocus();
     }

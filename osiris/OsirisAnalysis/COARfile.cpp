@@ -356,7 +356,7 @@ CXMLmessageBook *COARfile::GetMessageBook()
   }
   return m_pMsgBook;
 }
-wxString COARfile::FindFileByName(const wxString &sName)
+wxString COARfile::FindFileByName(const wxString &sName) const
 {
   vector<wxString> vsPath;
   wxString sPath;
@@ -407,7 +407,7 @@ wxString COARfile::FindMessageBookFile()
   }
   return sRtn;
 }
-wxString COARfile::FindPlotFile(COARsample *pSample)
+wxString COARfile::FindPlotFile(const COARsample *pSample) const
 {
   wxString sRtn;
   if(pSample != NULL)

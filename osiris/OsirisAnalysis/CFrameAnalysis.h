@@ -364,6 +364,7 @@ private:
   typedef std::map<const COARsample *, CFrameSample *> MapSampleFrame;
   typedef std::pair<const COARsample *, CFrameSample *> PairSampleFrame;
   MapSampleFrame m_mapSamples;
+  
   CFrameSample *_FindSampleFrame(const COARsample *pSample)
   {
     MapSampleFrame::iterator itr =

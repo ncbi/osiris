@@ -59,6 +59,13 @@ public:
   virtual ~COARsampleSort() {;}
 
   void Sort(COARfile *pFile, const wxDateTime *pTime = NULL);
+  void UpdateSort()
+  {
+    if(m_pFile != NULL)
+    {
+      _Sort();
+    }
+  }
   const vector<COARsample *> *GetSamples()
   {
     _CheckUpdate();

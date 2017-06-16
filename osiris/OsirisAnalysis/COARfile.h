@@ -298,9 +298,9 @@ public:
     return b;
   }
   */
-  wxString FindFileByName(const wxString &sName);
+  wxString FindFileByName(const wxString &sName) const;
   wxString FindMessageBookFile();
-  wxString FindPlotFile(COARsample *pSample);
+  wxString FindPlotFile(const COARsample *pSample) const;
   virtual void RegisterAll(bool = false);
   virtual const wxString &RootNode(void) const;
   const COARchannel *GetChannelFromLocus(const wxString &sLocusName) const;

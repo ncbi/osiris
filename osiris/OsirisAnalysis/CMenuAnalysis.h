@@ -107,6 +107,7 @@ private:
   wxMenuItem *m_pMenuItemDisable;
   wxMenuItem *m_pMenuItemDisableMulti;
   wxMenuItem *m_pMenuItemReAnalyze;
+  wxMenuItem *m_pMenuItemDeleteDisabled;
   COARfile *m_pFile;
 
 };
