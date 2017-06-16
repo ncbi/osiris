@@ -11,6 +11,7 @@ osiris_SOURCES =  \
 ../CDialogCMF.cpp \
 ../CDialogCellHistory.cpp \
 ../CDialogContactUs.cpp \
+../CDialogDeleteDisabled.cpp \
 ../CDialogEditGridColours.cpp \
 ../CDialogEditPeak.cpp \
 ../CDialogEnableMultiple.cpp \
