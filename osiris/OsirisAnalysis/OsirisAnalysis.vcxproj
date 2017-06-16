@@ -276,6 +276,7 @@
     <ClCompile Include="CDialogCellHistory.cpp" />
     <ClCompile Include="CDialogCMF.cpp" />
     <ClCompile Include="CDialogContactUs.cpp" />
+    <ClCompile Include="CDialogDeleteDisabled.cpp" />
     <ClCompile Include="CDialogEditGridColours.cpp" />
     <ClCompile Include="CDialogEditPeak.cpp" />
     <ClCompile Include="CDialogEnableMultiple.cpp" />
@@ -417,6 +418,7 @@
     <ClInclude Include="CDialogCellHistory.h" />
     <ClInclude Include="CDialogCMF.h" />
     <ClInclude Include="CDialogContactUs.h" />
+    <ClInclude Include="CDialogDeleteDisabled.h" />
     <ClInclude Include="CDialogEditGridColours.h" />
     <ClInclude Include="CDialogEditPeak.h" />
     <ClInclude Include="CDialogEnableMultiple.h" />

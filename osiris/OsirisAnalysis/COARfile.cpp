@@ -356,7 +356,7 @@ CXMLmessageBook *COARfile::GetMessageBook()
   }
   return m_pMsgBook;
 }
-wxString COARfile::FindFileByName(const wxString &sName)
+wxString COARfile::FindFileByName(const wxString &sName) const
 {
   vector<wxString> vsPath;
   wxString sPath;
@@ -407,7 +407,7 @@ wxString COARfile::FindMessageBookFile()
   }
   return sRtn;
 }
-wxString COARfile::FindPlotFile(COARsample *pSample)
+wxString COARfile::FindPlotFile(const COARsample *pSample) const
 {
   wxString sRtn;
   if(pSample != NULL)
@@ -1404,18 +1404,72 @@ bool COARfile::SamplesDisabled() const
   }
   return bRtn;
 }
+size_t COARfile::GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx) const
+{
+  // parameter
+  //   pvNdx - pointer to a vector containing the list of disabled samples
+  //
+  // return
+  //   number of disabled samples
+  //
+  // retrieve a list of sample indexes of disabled samples
+  // sorted in descending order
+  // the items in this list can be used to retrieve a sample
+  // using GetSample(size_t n)
+  //
+  std::vector<COARsample *>::const_reverse_iterator itr;
+  size_t nRtn = 0;
+  size_t ndx = m_vpTable.Size();
+  if(pvNdx != NULL)
+  {
+    pvNdx->clear();
+    pvNdx->reserve(16);
+  }
+  for(itr = m_vpTable.Get()->rbegin();
+    itr != m_vpTable.Get()->rend();
+    ++itr)
+  {
+    --ndx;
+    if((*itr)->IsDisabled())
+    {
+      ++nRtn;
+      if(pvNdx != NULL)
+      {
+        pvNdx->push_back(ndx);
+      }
+    }
+  }
+  return nRtn;
+}
+size_t COARfile::DeleteDisabledSamples()
+{
+  std::vector<size_t> vnKill;
+  std::vector<size_t>::const_iterator itrndx;
+  size_t nRtn = GetDisabledSamplesByIndex(&vnKill);
+
+  for(itrndx = vnKill.begin();
+    itrndx != vnKill.end();
+    ++itrndx)
+  {
+    m_vpTable.removeAt(*itrndx);
+  }
+  return nRtn;
+}
 
 size_t COARfile::GetDisabledSamples(
-  vector<const COARsample *> *pv,
+  std::vector<const COARsample *> *pv,
   bool bIncludeNonSamples) const
 {
-  vector<COARsample *>::const_iterator itr;
+  std::vector<COARsample *>::const_iterator itr;
   size_t nRtn = 0;
   bool bDisabled;
   bool bSampleType;
 
-  pv->clear();
-  pv->reserve(16);
+  if(pv != NULL)
+  {
+    pv->clear();
+    pv->reserve(16);
+  }
   for(itr = m_vpTable.Get()->begin();
     itr != m_vpTable.Get()->end();
     ++itr)
@@ -1428,7 +1482,10 @@ size_t COARfile::GetDisabledSamples(
     if( (bDisabled && bSampleType) ||
         (bIncludeNonSamples && !bSampleType) )
     {
-      pv->push_back(*itr);
+      if(pv != NULL)
+      {
+        pv->push_back(*itr);
+      }
       if(bSampleType)
       {
         nRtn++;
