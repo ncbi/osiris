@@ -152,6 +152,7 @@ void CMenuAnalysis::SetSampleEnabled(bool bEnable,bool bAllowDisable)
   CBaseMenuEdit::SetSampleEnabled(bEnable,bAllowDisable);
   bool bHasDisabled = m_pFile->SamplesDisabled();
   Enable(IDmenuReAnalyze,bHasDisabled);
+  Enable(IDmenuDeleteDisabled,bHasDisabled);
   if(m_pMenuEdit != NULL)
   {
     m_pMenuEdit->SetSampleEnabled(bEnable,bAllowDisable);
@@ -290,6 +291,10 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
     IDmenuReAnalyze,
     "Reanalyze Disabled...",
     "Reanalyze disabled samples");
+  m_pMenuItemDeleteDisabled = Append(
+    IDmenuDeleteDisabled,
+    "Delete Disabled Samples...",
+    "Delete disabled samples");
   AppendSubMenu(
     m_pMenuHistory,"&History");
   AppendSubMenu(m_pMenuSort,"&Sort");
@@ -324,6 +329,7 @@ void CMenuAnalysis::CopyState(CMenuAnalysis *pTo)
   CBaseMenuEdit::CopyState(pTo->m_pMenuItemDisable,m_pMenuItemDisable);
   CBaseMenuEdit::CopyState(pTo->m_pMenuItemDisableMulti,m_pMenuItemDisableMulti);
   CBaseMenuEdit::CopyState(pTo->m_pMenuItemReAnalyze,m_pMenuItemReAnalyze);
+  CBaseMenuEdit::CopyState(pTo->m_pMenuItemDeleteDisabled,m_pMenuItemDeleteDisabled);
   pTo->UpdateChildren();
 }
 

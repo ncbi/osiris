@@ -355,6 +355,7 @@ void CGridAnalysis::UpdateGrid(
   int nAcceptCount;
   int nReviewNeeded;
   int nAcceptNeeded;
+  size_t nNumberRows = (size_t)GetNumberRows();
   size_t nRowCount = pSort->GetCount();
   size_t nAlleleColCount = pFile->GetLocusCount();
   size_t i;
@@ -371,23 +372,17 @@ void CGridAnalysis::UpdateGrid(
   bool bSampleDisabled;
   m_nLabelSize = 0;
   m_nLabelType = nLabelTypeName;
-
   
+  // OS-657 - row count may need to be reduced
 
-#if 0
-  // moved to next loop
-  // Set up row labels
-  for(iRow = 0; iRow < (int)nRowCount; ++iRow)
+  if(nNumberRows > nRowCount)
   {
-    pSample = pSort->GetSample((size_t)iRow);
-    sName = pSample->GetName();
-    if(pSample->IsSampleLevelEdited(pFile->GetMessages(),pHistory))
-    {
-      sName.Append(COARsample::g_sCellChannelEdited);
-    }
-    SetRowLabel(iRow,sName);
+    DeleteRows(nRowCount,nNumberRows - nRowCount);
   }
-#endif
+  else if(nNumberRows < nRowCount)
+  {
+    AppendRows(nRowCount - nNumberRows);
+  }
 
   // set up cells
   pFile->GetReviewerCounts(&nReviewNeeded,&nAcceptNeeded,CLabReview::REVIEW_SAMPLE);

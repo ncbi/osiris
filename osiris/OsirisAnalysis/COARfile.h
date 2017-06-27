@@ -236,9 +236,11 @@ public:
     bool bRtn = s.EndsWith(EXT_REPORT);
     return bRtn;
   }
-  bool SamplesDisabled() const; // return true is at least one sample is disabled
+  bool SamplesDisabled() const; // return true if at least one sample is disabled
+  size_t GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx = NULL) const;
+  size_t DeleteDisabledSamples();
   size_t GetDisabledSamples(
-    vector<const COARsample *> *pv, 
+    std::vector<const COARsample *> *pv, 
     bool bIncludeNonSamples = true) const;
   void SetLastSampleDisabled(const COARsample *pSample) const
   {
@@ -296,9 +298,9 @@ public:
     return b;
   }
   */
-  wxString FindFileByName(const wxString &sName);
+  wxString FindFileByName(const wxString &sName) const;
   wxString FindMessageBookFile();
-  wxString FindPlotFile(COARsample *pSample);
+  wxString FindPlotFile(const COARsample *pSample) const;
   virtual void RegisterAll(bool = false);
   virtual const wxString &RootNode(void) const;
   const COARchannel *GetChannelFromLocus(const wxString &sLocusName) const;

@@ -35,6 +35,7 @@
 #include <wx/file.h>
 #include "CFrameAnalysis.h"
 #include "OsirisFileTypes.h"
+#include "CDialogDeleteDisabled.h"
 #include "CDialogEnableMultiple.h"
 #include "CDialogExportFile.h"
 #include "CDialogWarnHistory.h"
@@ -577,6 +578,9 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
       break;
     case IDmenuDisableMultiple:
       _OnEnableMultiple();
+      break;
+    case IDmenuDeleteDisabled:
+      _OnDeleteDisabled();
       break;
     case IDmenuReAnalyze:
       _OnReAnalyze();
@@ -1515,6 +1519,60 @@ void CFrameAnalysis::_OnReAnalyze()
     else
     {
       mainApp::ShowError(rz.GetErrorMessage(),this);
+    }
+  }
+}
+void CFrameAnalysis::_OnDeleteDisabled()
+{
+  std::vector<const COARsample *> vps;
+  if(m_pOARfile->GetDisabledSamples(&vps,false))
+  {
+    int nLabelTypeName = m_pComboName->GetSelection();
+    std::vector<const wxString> vsNames;
+    std::vector<const COARsample *>::const_iterator itr;
+    vsNames.reserve(vps.size());
+    if(nLabelTypeName == IDmenuDisplayNameSample)
+    {
+      for(itr = vps.begin(); itr != vps.end(); ++itr)
+      {
+        // show sample names
+        vsNames.push_back((*itr)->GetSampleName());
+      }
+    }
+    else
+    {
+      for(itr = vps.begin(); itr != vps.end(); ++itr)
+      {
+        // show file names
+        vsNames.push_back((*itr)->GetName());
+      }
+    }
+    CDialogDeleteDisabled dlg(this, vsNames);
+    if(dlg.ShowModal() == wxID_OK)
+    {
+      wxString sPath;
+      CMDIFrame *pFrame;
+      std::vector<const COARsample *>::iterator itr;
+      for(itr = vps.begin();
+        itr != vps.end();
+        ++itr)
+      {
+        pFrame = _FindSampleFrame(*itr);
+        if(pFrame != NULL)
+        {
+          pFrame->Close(false);
+        }
+        sPath = m_pOARfile->FindPlotFile(*itr);
+        pFrame = sPath.IsEmpty() ? NULL : m_pParent->FindWindowByName(sPath);
+        if(pFrame != NULL)
+        {
+          pFrame->Close(false);
+        }
+      }
+      m_pOARfile->DeleteDisabledSamples();
+      m_SampleSort.UpdateSort();
+      RepaintData();
+      m_pGrid->SetFocus();
     }
   }
 }
