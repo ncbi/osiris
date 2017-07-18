@@ -108,6 +108,7 @@ public:
     COARcopy(m_StandardSettings);
     COARcopy(m_RuntimeSettings);
     COARcopy(m_sMarkerSet);
+    COARcopy(m_nDeletedSamples);
     COARcopy(m_nStatus);
     COARcopy(m_nILSchannelNr);
     COARcopyVP(COARchannel, m_vpChannel);
@@ -120,6 +121,14 @@ public:
     vectorptr<COARchannel>::cleanup(&m_vpChannel);
   }
   virtual void RegisterAll(bool = false);
+  void AddDeletedSamples(size_t n)
+  {
+    m_nDeletedSamples += n;
+  }
+  unsigned int GetDeletedSampleCount() const
+  {
+    return m_nDeletedSamples;
+  }
   void CorrectFileTime(const wxDateTime &dt);
     //
     // bug fix in file corrected in this function
@@ -224,6 +233,7 @@ private:
   wxString m_sMarkerSet;
   vector<COARchannel *> m_vpChannel;
   nwxXmlPersistSetWxDateTime m_setSaveHistory;
+  unsigned int m_nDeletedSamples;
   int m_nStatus;
   int m_nILSchannelNr;
   mutable bool m_bTampered;

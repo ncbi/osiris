@@ -48,6 +48,7 @@ void COARheading::RegisterAll(bool)
   Register("SaveHistory",&m_setSaveHistory);
   Register("CommandLine",&m_vsCommandLine);
   RegisterBoolSkipFalse("StatusOK",&m_bTampered);
+  RegisterUint("DeletedSampleCount",&m_nDeletedSamples);
   RegisterInt("Status",&m_nStatus);
   RegisterWxString("StatusText",&m_sStatusText);
   Register("LabSettings",&m_LabSettings);

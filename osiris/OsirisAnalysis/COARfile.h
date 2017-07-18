@@ -82,6 +82,7 @@ public:
     m_pLastSampleDisabled = NULL;
     m_dtLastLoad.Set((time_t)0);
     m_bModified = false;
+    m_bSetupInputPath = false;
     RegisterAll(true);
   }
   COARfile(const COARfile &x) :
@@ -198,6 +199,10 @@ public:
     bool bRtn = CanSave() && SaveFile(m_sFileName);
     return bRtn;
   }
+  unsigned int GetDeletedSampleCount() const
+  {
+    return m_heading.GetDeletedSampleCount();
+  }
   const wxString &GetFileName() const
   {
     return m_sFileName;
@@ -299,8 +304,10 @@ public:
   }
   */
   wxString FindFileByName(const wxString &sName) const;
-  wxString FindMessageBookFile();
+  wxString FindMessageBookFile() const ;
   wxString FindPlotFile(const COARsample *pSample) const;
+  wxString FindInputFile(const COARsample *pSample) const; // FSA or HID
+  const wxString &GetInputFileType() const;
   virtual void RegisterAll(bool = false);
   virtual const wxString &RootNode(void) const;
   const COARchannel *GetChannelFromLocus(const wxString &sLocusName) const;
@@ -339,6 +346,10 @@ public:
   {
     return m_vpTable.at(n);
   }
+  const COARsample *GetSample(size_t n) const
+  {
+    return m_vpTable.at(n);
+  }
   COARsample *GetSampleByName(const wxString &sName);
   void LocalInit()
   {
@@ -346,6 +357,9 @@ public:
     m_pLastSampleDisabled = NULL;
     m_sFileName.Clear();
     m_bModified = false;
+    m_mapInputPath.clear();
+    m_sInputType.Empty();
+    m_bSetupInputPath = false;
     _ClearLocusInfo();
     _ClearMessageBook();
   }
@@ -707,14 +721,18 @@ private:
   TnwxXmlPersistVector<COARnotes> m_pvOldNotes;
   COARmessages m_messages;
   COARmsgExportMap m_mapExportSpecifications;
+  mutable wxString m_sInputType;
+  mutable map<wxString,wxString> m_mapInputPath;
   mutable map<wxString,const COARchannel *> m_mapLocusChannel; //**
   mutable vector<wxString> m_vsLocus; //**
   mutable vector<int> m_vnChannelNr; //**
   mutable const COARsample *m_pLastSampleDisabled; //**
   bool m_bModified; //**
   bool m_bCheckedMsgBook; //**
+  mutable bool m_bSetupInputPath;
 
 private:
+  static void _ChopFileExtension(wxString *ps);
   static void _JoinStrings(
     wxString &s,
     const vector<wxString> &vs, 
@@ -729,6 +747,7 @@ private:
     const CAlertViewStatus &viewStatus,
     const wxDateTime *pTime = NULL,
     bool bReverse = false) const;
+  bool _SetupInputPath() const;
 
   void _ClearMessageBook();
   void _ClearLocusInfo() const

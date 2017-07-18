@@ -1,4 +1,32 @@
-
+/*
+* ===========================================================================
+*
+*                            PUBLIC DOMAIN NOTICE                          
+*               National Center for Biotechnology Information
+*                                                                          
+*  This software/database is a "United States Government Work" under the   
+*  terms of the United States Copyright Act.  It was written as part of    
+*  the author's official duties as a United States Government employee and 
+*  thus cannot be copyrighted.  This software/database is freely available 
+*  to the public for use. The National Library of Medicine and the U.S.    
+*  Government have not placed any restriction on its use or reproduction.  
+*                                                                          
+*  Although all reasonable efforts have been taken to ensure the accuracy  
+*  and reliability of the software and data, the NLM and the U.S.          
+*  Government do not and cannot warrant the performance or results that    
+*  may be obtained by using this software or data. The NLM and the U.S.    
+*  Government disclaim all warranties, express or implied, including       
+*  warranties of performance, merchantability or fitness for any particular
+*  purpose.                                                                
+*                                                                          
+*  Please cite the author in any work or product based on this material.   
+*
+* ===========================================================================
+*
+*  FileName: nwxZipInput.cpp
+*  Author:   Douglas Hoffman
+*
+*/
 #include "nwxZipInput.h"
 #include <wx/zipstrm.h>
 #include <wx/wfstream.h>
@@ -159,9 +187,10 @@ bool nwxZipInput::IsFile(const wxString &sFileName, bool bFullPath)
   return (pE != NULL) && !pE->IsDir();
 }
 
-size_t nwxZipInput::GetFiles(wxArrayString *pas, bool bCwd, bool bDirs)
+size_t nwxZipInput::GetFiles(wxArrayString *pas, bool bCwd, bool bDirs,const wxString &sPattern)
 {
   size_t nCount = m_sAll.GetCount();
+  bool bNoPattern = sPattern.IsEmpty();
   pas->Empty();
   pas->Alloc(nCount);
   if(_Dir().IsEmpty()) { bCwd = false; }
@@ -179,7 +208,10 @@ size_t nwxZipInput::GetFiles(wxArrayString *pas, bool bCwd, bool bDirs)
     } // skip
     else
     {
-      pas->Add(s);
+      if(bNoPattern || s.Matches(sPattern))
+      {
+        pas->Add(s);
+      }
     }
   }
   return  pas->GetCount();
@@ -260,6 +292,21 @@ bool nwxZipInput::WriteFile(const wxString &sOutputFilePath, const wxString &sFi
   }
   return bRtn;
 }
+
+size_t nwxZipInput::GetOutputFilePaths(wxArrayString *pasOut, const wxString &sOutputPath, const wxArrayString &as)
+{
+  size_t nCount = as.GetCount();
+  size_t i;
+  size_t nRtn = 0;
+  for(i = 0; i < nCount; i++)
+  {
+    const wxString &sFileName = as.Item(i);
+    wxFileName fname(__MAKE_PATH(sOutputPath,sFileName));
+    pasOut->Add(fname.GetFullPath());
+    nRtn++;
+  }
+  return nRtn;
+}
 bool nwxZipInput::WriteDir(const wxString &sOutputPath, const wxString &sDir, bool bFullPath)
 {
   bool bRtn = false;
@@ -267,11 +314,13 @@ bool nwxZipInput::WriteDir(const wxString &sOutputPath, const wxString &sDir, bo
   if(Chdir(sDir,bFullPath))
   {
     wxArrayString as;
+    wxArrayString asOut;
     size_t i;
     size_t nLast = 0;
     bool bDir;
     bRtn = true;
     GetFiles(&as,true,true);
+    GetOutputFilePaths(&asOut,sOutputPath,as);
     size_t nCount = as.GetCount();
     for(i = 0; bRtn && (i < nCount); i++)
     {
@@ -281,19 +330,18 @@ bool nwxZipInput::WriteDir(const wxString &sOutputPath, const wxString &sDir, bo
       wxFileName fname(__MAKE_PATH(sOutputPath,sFileName));
       if(bDir)
       {
-        bRtn = fname.Mkdir(wxS_DIR_DEFAULT,wxPATH_MKDIR_FULL);
+        bRtn = wxFileName::Mkdir(asOut.Item(i),wxS_DIR_DEFAULT,wxPATH_MKDIR_FULL);
       }
       else
       {
-        bRtn = WriteFile(fname.GetFullPath(),sFileName,true);
+        bRtn = WriteFile(asOut.Item(i),sFileName,true);
       }
     }
     if(!bRtn)
     {
       for(i = 0; i < nLast; ++i)
       {
-        const wxString &sFileName = as.Item(nLast - i - 1);
-        wxFileName fname(__MAKE_PATH(sOutputPath,sFileName));
+        wxFileName fname(asOut.Item(nLast - i - 1));
         if(!fname.Exists())
         {}
         else if(fname.IsDir())
@@ -309,8 +357,21 @@ bool nwxZipInput::WriteDir(const wxString &sOutputPath, const wxString &sDir, bo
   }
   return bRtn;
 }
-bool nwxZipInput::WriteAll(const wxString &sOutputPath)
+size_t nwxZipInput::FilesExist(const wxString &sOutputPath, const wxString &sDir, bool bFullPath)
 {
-  bool bRtn = WriteDir(sOutputPath,wxEmptyString,true);
-  return bRtn;
+  size_t nRtn = 0;
+  DIR_HOLD xxx(this);
+  if(Chdir(sDir,bFullPath))
+  {
+    wxArrayString as;
+    wxArrayString asOut;
+    GetFiles(&as,true,true);
+    size_t n = GetOutputFilePaths(&asOut,sOutputPath,as);
+    size_t i;
+    for(i = 0; i < n; ++i)
+    {
+      if(wxFileName::FileExists(asOut.Item(i))) { nRtn++;}      
+    }
+  }
+  return nRtn;
 }

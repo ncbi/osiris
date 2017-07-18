@@ -41,16 +41,25 @@ const wxString CMenuFileAnalysis::EXPORT_CMF("Export CMF File...");
 const wxString CMenuFileAnalysis::EXPORT_CMF_HELP(
   "Export analysis data to a CODIS CMF 3.2 file.");
 
-
 CMenuFileAnalysis::CMenuFileAnalysis() :
   m_TimerInterval(CMenuFileAnalysis::UPDATE_INTERVAL,0),
   m_pSubMenu(NULL),
   m_nUpdating(0),
   m_bNeedsUpdate(true)
 {
-  size_t nInsert = CMenuBar::GetPosition(this,IDlistMRU);
+  size_t nInsert = GetInsertPoint();
+       // CMenuBar::GetPosition(this,IDlistMRU);
+  Insert(nInsert++,IDArchiveCreate,ARCHIVE_CREATE);
   Insert(nInsert++,wxID_SAVE);
   Insert(nInsert++,wxID_SAVEAS);
+  // STOP HERE - add entries for archives
+//  IDArchiveCreate;
+//  IDArchiveExtract
+//   static const wxString ARCHIVE_CREATE;
+//   static const wxString ARCHIVE_EXTRACT;
+
+
+
   Insert(nInsert++,
     IDExportCMF,EXPORT_CMF,EXPORT_CMF_HELP);
 }

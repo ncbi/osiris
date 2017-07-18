@@ -94,7 +94,7 @@ class CFileDropTarget;
 
 typedef enum
 {
-  TYPE_REPORT = 0, TYPE_PLOT = 1, TYPE_BATCH = 2
+  TYPE_REPORT = 0, TYPE_PLOT = 1, TYPE_BATCH = 2, TYPE_ARCHIVE = 3
 } OSIRIS_FILE_TYPE;
 
 class mainFrame : public mainFrameSuper
@@ -130,6 +130,7 @@ public:
   void OnOpen(wxCommandEvent &);
   void OnOpenPlot(wxCommandEvent &);
   void OnOpenBatch(wxCommandEvent &);
+  void OnOpenArchive(wxCommandEvent &);
   void OnShowLog(wxCommandEvent &);
   void OnAnalyze(wxCommandEvent &);
   void OnLabSettings(wxCommandEvent &);
@@ -320,6 +321,7 @@ private:
     const wxArrayString &filenames,
     wxArrayString *psNewFilenames);
   bool _VerifyClose();
+  void OpenArchiveFile(const wxString &sFileName);
   void OpenAnalysisFile(const wxString &sFileName);
   void OpenAnalysisFile(COARfile *pFile);
   void _CheckAnalysisFile(CFrameAnalysis *pWin);

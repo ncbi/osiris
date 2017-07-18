@@ -51,6 +51,9 @@
 #include "COARfile.h"
 #include "CReAnalyze.h"
 #include "CGridAnalysisDisplay.h"
+#include "CDirList.h"
+#include "CArchiveCollection.h"
+#include "CDialogArchiveCreate.h"
 #include "nwx/PersistentSize.h"
 #include <wx/filename.h>
 #include <wx/image.h>
@@ -615,6 +618,9 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
       break;
     case IDExportCMF:
       OnExportCMF(e);
+      break;
+    case IDArchiveCreate:
+      OnArchiveCreate(e);
       break;
     case IDmenuDisplayNameBASE + IDmenuDisplayNameFile:
     case IDmenuDisplayNameBASE + IDmenuDisplayNameSample:
@@ -3322,6 +3328,71 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
   }
 }
 
+void CFrameAnalysis::OnArchiveCreate(wxCommandEvent &)
+{
+  static const wxString sCONFIRM(
+      "The analysis file has been modified and must\n"
+      "be saved before the data are archived.\n"
+      "Would you like to save the analysis file now?");
+  bool bOK = PromptSaveFileNow(sCONFIRM);
+  if(bOK)
+  {
+    CArchiveCollection orz(m_pOARfile);
+    if(!orz.HasPlotFiles())
+    {
+      mainApp::ShowError(wxT("No plot files found,\nCannot create an archive."),this);
+    }
+    else
+    {
+      bool bIncludeInput = false;
+      bool bShowFile = false;
+      bOK = false;
+      {
+        CDialogArchiveCreate dlgc(&orz,this);
+        if(dlgc.ShowModal() == wxID_OK)
+        {
+          bIncludeInput = dlgc.IncludeInputFiles();
+          bShowFile = dlgc.ShowFileLocation();
+          bOK = true;
+        }
+        // in braces to destroy dialog window here
+      }
+      if(bOK)
+      {
+        wxFileName fn(m_pOARfile->GetLastFileName());
+        wxString sDefaultFileName = nwxFileUtil::SetupFileName
+          (fn.GetFullPath(),wxT(".orz"));
+        wxFileName fnDef(sDefaultFileName);
+        wxFileDialog dlg(
+          this,
+          wxT("Create OSIRIS Archive"),
+          fnDef.GetPath(),
+          fnDef.GetFullName(),
+          FILE_TYPE_ARCHIVE, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+        if(dlg.ShowModal() == wxID_OK)
+        {
+          //  save archive here
+          wxString sFile = dlg.GetPath();
+          bool bOK = false;
+          {
+            wxBusyCursor x;
+            bOK = orz.WriteArchive(sFile,bIncludeInput);
+          }
+          if(!bOK)
+          {
+            mainApp::ShowError(
+              wxT("Cannot create archive file.\nCheck file and folder permissions."),
+              this);
+          }
+          else if(bShowFile)
+          {
+            nwxFileUtil::ShowFileFolder(sFile);
+          }
+        }
+      }
+    }
+  }
+}
 void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
 {
   ExportCMF();

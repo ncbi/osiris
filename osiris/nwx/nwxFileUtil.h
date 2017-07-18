@@ -33,6 +33,7 @@
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/datetime.h>
+#include <wx/dir.h>
 
 class nwxFileUtil
 {
@@ -54,6 +55,7 @@ public:
   static void EndWithSeparator(wxString *psDir);
   static bool UpDir(wxString *psDir, int n = 1);
   static bool MkDir(const wxString &sDir);
+  static size_t GetAllFilesNoCase(const wxString &sDirName, wxArrayString *pasFile, const wxString &sFileSpec, int flags = wxDIR_DEFAULT);
   static bool IsNewer(const wxString &sFileName, time_t t)
   {
     bool bRtn = !t;

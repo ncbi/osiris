@@ -50,6 +50,8 @@ public:
   static const wxString EXPORT_CMF;
   static const wxString EXPORT_CMF_HELP;
 
+
+
   CMenuFileAnalysis();
   virtual ~CMenuFileAnalysis();
   bool CheckUpdate(); // check if user export file formats have changed

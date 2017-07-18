@@ -358,6 +358,8 @@ CXMLmessageBook *COARfile::GetMessageBook()
 }
 wxString COARfile::FindFileByName(const wxString &sName) const
 {
+  //  7/14/17 - very inefficient, should not rebuild the
+  //    directory array on every call
   vector<wxString> vsPath;
   wxString sPath;
   size_t PATHCOUNT = 3;
@@ -391,7 +393,7 @@ wxString COARfile::FindFileByName(const wxString &sName) const
   return sPath;
 }
 
-wxString COARfile::FindMessageBookFile()
+wxString COARfile::FindMessageBookFile() const
 {
   wxString sRtn;
   wxString s = GetHeadingFileName();
@@ -407,21 +409,134 @@ wxString COARfile::FindMessageBookFile()
   }
   return sRtn;
 }
+void COARfile::_ChopFileExtension(wxString *ps)
+{
+  wxString sExt = CDirList::GetValidExtension(*ps);
+  size_t nLen = sExt.Len();
+  if(nLen)
+  {
+    ps->Truncate(ps->Len() - nLen - 1);
+  }
+}
 wxString COARfile::FindPlotFile(const COARsample *pSample) const
 {
   wxString sRtn;
   if(pSample != NULL)
   {
     wxString sName = pSample->GetName();
-    wxString sExt = CDirList::GetValidExtension(sName);
-    size_t nLen = sExt.Len();
-    if(nLen)
-    {
-      size_t n = sName.Len();
-      sName = sName.Truncate(n - nLen - 1);
-    }
+    _ChopFileExtension(&sName);
     sName.Append(".plt");
     sRtn = FindFileByName(sName);
+  }
+  return sRtn;
+}
+
+bool COARfile::_SetupInputPath() const
+{
+  if(!m_bSetupInputPath)
+  {
+    m_bSetupInputPath = true;
+    wxArrayString as;
+    wxString s;
+    wxString s2;
+    const wxString sInput("input");
+    const CParmOsiris &Parm = GetParameters();
+    wxString sType = wxT("*.");
+    sType.Append(GetInputFileType()); // should check each directory for file type
+
+    s = Parm.GetInputDirectory();
+    nwxFileUtil::GetAllFilesNoCase(s,&as,sType,wxDIR_FILES | wxDIR_HIDDEN);
+    // get parent directory of this file
+    s = GetFileName();
+    if(nwxFileUtil::UpDir(&s,1))
+    {
+      nwxFileUtil::GetAllFilesNoCase(s,&as,sType,wxDIR_FILES | wxDIR_HIDDEN);
+      nwxFileUtil::EndWithSeparator(&s);
+      s.Append(sInput);
+      nwxFileUtil::GetAllFilesNoCase(s,&as,sType,wxDIR_FILES | wxDIR_HIDDEN);
+    }
+
+    // get parent directory of OAR file
+    s2 = s;
+    s = GetHeadingFileName();
+    if(wxFileName::Exists(s) &&
+      nwxFileUtil::UpDir(&s,1) &&
+      (s2 != s))
+    {
+      nwxFileUtil::GetAllFilesNoCase(s,&as,sType,wxDIR_FILES | wxDIR_HIDDEN);
+      nwxFileUtil::EndWithSeparator(&s);
+      s.Append(sInput);
+      nwxFileUtil::GetAllFilesNoCase(s,&as,sType,wxDIR_FILES | wxDIR_HIDDEN);
+    }
+    m_mapInputPath.clear();
+    wxString sFullPath;
+    size_t nCount = as.Count();
+    size_t nTrunc = sType.Len() - 1;
+    for(size_t i = 0; i < nCount; ++i)
+    {
+      wxFileName fn(as.Item(i));
+      fn.MakeAbsolute();
+      if(fn.IsFileReadable())
+      {
+        sFullPath = fn.GetFullPath();
+        s = fn.GetFullName();
+        s.Truncate(s.Len() - nTrunc);
+        if(m_mapInputPath.find(s) == m_mapInputPath.end())
+        {
+          m_mapInputPath.insert(
+            std::map<wxString,wxString>::value_type(
+              s,sFullPath));
+          s2 = s;
+          s2.MakeLower();
+          if((s2 != s) && (m_mapInputPath.find(s2) == m_mapInputPath.end()))
+          {
+            m_mapInputPath.insert(
+              std::map<wxString,wxString>::value_type(
+                s2,sFullPath));
+          }
+        }
+      }
+    }
+  }
+  return(m_mapInputPath.size() > 0);
+}
+const wxString &COARfile::GetInputFileType() const
+{
+  if(m_sInputType.IsEmpty())
+  {
+    m_sInputType = GetLabSettings().GetLabSettingsInfo()->GetDataFileType();
+    if(m_sInputType.IsEmpty())
+    {
+      m_sInputType = CDirList::GetDefaultExt();
+    }
+  }
+  return m_sInputType;
+}
+wxString COARfile::FindInputFile(const COARsample *pSample) const
+{
+  // find FSA or HID file for this sample
+  wxString sRtn;
+  if(_SetupInputPath())
+  {
+    wxString sName = pSample->GetName();
+    _ChopFileExtension(&sName);
+    std::map<wxString,wxString>::iterator itr =
+      m_mapInputPath.find(sName);
+    bool bFound = (itr != m_mapInputPath.end());
+    if(!bFound)
+    {
+      wxString sLower = sName;
+      sLower.MakeLower();
+      if(sLower != sName)
+      {
+        itr = m_mapInputPath.find(sLower);
+        bFound = (itr != m_mapInputPath.end());
+      }
+    }
+    if(bFound)
+    {
+      sRtn = itr->second;
+    }
   }
   return sRtn;
 }
@@ -1457,6 +1572,7 @@ size_t COARfile::DeleteDisabledSamples()
     {
       sNotes = wxString::Format(wxT("%d samples were deleted."),(int)nRtn);
     }
+    m_heading.AddDeletedSamples(nRtn);
     for(itrndx = vnKill.begin();
       itrndx != vnKill.end();
       ++itrndx)

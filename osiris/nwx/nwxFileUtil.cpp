@@ -305,6 +305,35 @@ bool nwxFileUtil::MkDir(const wxString &sDir)
   return bRtn;
 }
 
+size_t nwxFileUtil::GetAllFilesNoCase(
+  const wxString &sDirName, wxArrayString *pasFile, 
+  const wxString &sFileSpec, int flags)
+{
+  size_t nRtn = 0;
+  if(wxDir::Exists(sDirName))
+  {
+    wxArrayString as;
+    wxString s;
+    wxString sSpec = sFileSpec;
+    sSpec.MakeLower();
+    size_t n = wxDir::GetAllFiles(sDirName,&as,wxEmptyString,flags);
+    size_t i;
+    for(i = 0; i < n; ++i)
+    {
+      const wxString &sItem = as.Item(i);
+      s = sItem;
+      s.MakeLower();
+      if(sFileSpec.IsEmpty() || s.Matches(sSpec))
+      {
+        pasFile->Add(sItem);
+        nRtn++;
+      }
+    }
+  }
+  return nRtn;
+}
+
+
 #if 0
 
 // written but not tested, used wxCopyFile instead
