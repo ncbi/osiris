@@ -108,7 +108,7 @@ private:
   {
     return _BeenDoneRaw(s);
   }
-  void _SetDone(const wxString &s);
+  void _SetDone(const wxString &s)
   {
     _SetDoneRaw(s);
   }

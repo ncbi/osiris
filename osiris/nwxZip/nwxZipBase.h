@@ -60,8 +60,8 @@ protected:
       m_pZip->_Chdir(m_sCWD);
     }
   private:
-    wxString m_sCWD;
     nwxZipBase *m_pZip;
+    wxString m_sCWD;
   };
 
   wxString _BUILD_PATH(
