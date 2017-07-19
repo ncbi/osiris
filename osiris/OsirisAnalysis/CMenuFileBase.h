@@ -37,6 +37,12 @@ class CMenuFileBase : public wxMenu
 public:
   CMenuFileBase(bool bClose = true);
   virtual ~CMenuFileBase();
+  size_t GetInsertPoint()
+  {
+    return m_nInsertPoint;
+  }
+  static const wxString ARCHIVE_CREATE;
+  static const wxString ARCHIVE_EXTRACT;
 protected:  
   size_t m_nInsertPoint;
 

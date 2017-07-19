@@ -23,59 +23,90 @@
 *
 * ===========================================================================
 *
-*  FileName: OsirisFileTypes.h
+*  FileName: nwxZipBase.h
 *  Author:   Douglas Hoffman
 *
 */
-#ifndef __OSIRIS_FILE_TYPES_H__
-#define __OSIRIS_FILE_TYPES_H__
+#ifndef __NWX_ZIP_BASE_H__
+#define __NWX_ZIP_BASE_H__
 
-#define EXT_GRAPHIC ".plt"
-#define EXT_REPORT ".oar"
-#define EXT_REPORT_EDITED ".oer"
-#define EXT_BATCH ".obr"
-#define EXT_ARCHIVE ".orz"
-#define EXT_CMF ".cmf"
+#include <wx/string.h>
 
-
-#define EXT_PNG ".png"
-
-#define DESCRIPTION_PNG "Portable Network Graphics"
-
-#define DESCRIPTION_GRAPHIC "Plot"
-#define DESCRIPTION_REPORT "Report"
-#define DESCRIPTION_REPORT_EDITED "Edited Report"
-#define DESCRIPTION_BATCH "Batch"
-#define DESCRIPTION_ARCHIVE "Archive"
-
-#define FILE_TYPE(S,X) "OSIRIS " S " (*" X ")|*" X
-#define FILE_TYPE2(S,X,X2) "OSIRIS " S " (*" X ";*" X2 ")|*" X ";*" X2
-
-#define FILE_TYPE_REPORT_SAVE_AS FILE_TYPE(DESCRIPTION_REPORT_EDITED,EXT_REPORT_EDITED)
-#define FILE_TYPE_REPORT FILE_TYPE2(DESCRIPTION_REPORT,  EXT_REPORT, EXT_REPORT_EDITED)
-#define FILE_TYPE_GRAPHIC FILE_TYPE(DESCRIPTION_GRAPHIC, EXT_GRAPHIC)
-#define FILE_TYPE_BATCH   FILE_TYPE(DESCRIPTION_BATCH,   EXT_BATCH)
-#define FILE_TYPE_PNG     FILE_TYPE(DESCRIPTION_PNG,     EXT_PNG)
-#define FILE_TYPE_ARCHIVE FILE_TYPE(DESCRIPTION_ARCHIVE, EXT_ARCHIVE)
-#define FILE_TYPE_CMF     "CODIS CMF 3.2 File (*" EXT_CMF  ")|*" EXT_CMF
-
-inline bool IS_FILE_TYPE(const wxString &s, const char *psType)
+class nwxZipBase
 {
-  size_t nLen = strlen(psType);
-  size_t nsLen = s.Len();
-  bool bRtn = false;
-  if(nsLen > nLen)
+public:
+  nwxZipBase() {}
+  virtual ~nwxZipBase() {}
+  wxString Getdir()
   {
-    wxString sEnd(s.Mid(nsLen - nLen));
-    bRtn = !sEnd.CmpNoCase(psType);
+    return m_sCWD;
   }
-  return bRtn;
-}
-inline bool IS_ANALYSIS_FILE(const wxString &s)
-{
-  wxString sLower = s;
-  bool b = sLower.EndsWith(EXT_REPORT) || sLower.EndsWith(EXT_REPORT_EDITED);
-  return b;
-}
+  const wxString &GetOpenZipFilePath()
+  {
+    return m_sZipPath;
+  }
+
+protected:
+  friend class DIR_HOLD;
+  class DIR_HOLD
+  {
+  public:
+    DIR_HOLD(nwxZipBase *p) :
+        m_pZip(p),
+        m_sCWD(p->_Dir())
+    {}
+    virtual ~DIR_HOLD()
+    {
+      m_pZip->_Chdir(m_sCWD);
+    }
+  private:
+    nwxZipBase *m_pZip;
+    wxString m_sCWD;
+  };
+
+  wxString _BUILD_PATH(
+    const wxString &sFileName, 
+    bool bFullPath)
+  {
+    wxString sRtn;
+    if(bFullPath)
+    {
+      sRtn = sFileName;
+    }
+    else
+    {
+      sRtn = __MAKE_PATH(_Dir(),sFileName);
+    }
+    return sRtn;
+  }
+  void _Chdir(const wxString &s)
+  {
+    m_sCWD = s;
+  }
+  void _ClearDir()
+  {
+    m_sCWD.Empty();
+  }
+  void _ClearBase()
+  {
+    _ClearDir();
+    m_sZipPath.Empty();
+  }
+  const wxString &_Dir() const
+  {
+    return m_sCWD;
+  }
+  void _SetOpenZipFilePath(const wxString &s)
+  {
+    m_sZipPath = s;
+  }
+  static wxString __MAKE_PATH(const wxString &sDir, const wxString &sPath);
+  // __MAKE_PATH is implemented in nwxZipInput.cpp
+private:
+  wxString m_sCWD;
+  wxString m_sZipPath;
+
+};
+
 
 #endif

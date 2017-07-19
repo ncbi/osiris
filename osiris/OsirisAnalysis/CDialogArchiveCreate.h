@@ -23,59 +23,38 @@
 *
 * ===========================================================================
 *
-*  FileName: OsirisFileTypes.h
+*  FileName: CDialogArchiveCreate.h
 *  Author:   Douglas Hoffman
 *
 */
-#ifndef __OSIRIS_FILE_TYPES_H__
-#define __OSIRIS_FILE_TYPES_H__
 
-#define EXT_GRAPHIC ".plt"
-#define EXT_REPORT ".oar"
-#define EXT_REPORT_EDITED ".oer"
-#define EXT_BATCH ".obr"
-#define EXT_ARCHIVE ".orz"
-#define EXT_CMF ".cmf"
+#ifndef __C_DIALOG_ARCHIVE_CREATE_H__
+#define __C_DIALOG_ARCHIVE_CREATE_H__
 
+#include <wx/dialog.h>
+#include <wx/checkbox.h>
+class CArchiveCollection;
 
-#define EXT_PNG ".png"
-
-#define DESCRIPTION_PNG "Portable Network Graphics"
-
-#define DESCRIPTION_GRAPHIC "Plot"
-#define DESCRIPTION_REPORT "Report"
-#define DESCRIPTION_REPORT_EDITED "Edited Report"
-#define DESCRIPTION_BATCH "Batch"
-#define DESCRIPTION_ARCHIVE "Archive"
-
-#define FILE_TYPE(S,X) "OSIRIS " S " (*" X ")|*" X
-#define FILE_TYPE2(S,X,X2) "OSIRIS " S " (*" X ";*" X2 ")|*" X ";*" X2
-
-#define FILE_TYPE_REPORT_SAVE_AS FILE_TYPE(DESCRIPTION_REPORT_EDITED,EXT_REPORT_EDITED)
-#define FILE_TYPE_REPORT FILE_TYPE2(DESCRIPTION_REPORT,  EXT_REPORT, EXT_REPORT_EDITED)
-#define FILE_TYPE_GRAPHIC FILE_TYPE(DESCRIPTION_GRAPHIC, EXT_GRAPHIC)
-#define FILE_TYPE_BATCH   FILE_TYPE(DESCRIPTION_BATCH,   EXT_BATCH)
-#define FILE_TYPE_PNG     FILE_TYPE(DESCRIPTION_PNG,     EXT_PNG)
-#define FILE_TYPE_ARCHIVE FILE_TYPE(DESCRIPTION_ARCHIVE, EXT_ARCHIVE)
-#define FILE_TYPE_CMF     "CODIS CMF 3.2 File (*" EXT_CMF  ")|*" EXT_CMF
-
-inline bool IS_FILE_TYPE(const wxString &s, const char *psType)
+class CDialogArchiveCreate : public wxDialog
 {
-  size_t nLen = strlen(psType);
-  size_t nsLen = s.Len();
-  bool bRtn = false;
-  if(nsLen > nLen)
+public:
+  CDialogArchiveCreate(
+    CArchiveCollection *par,
+    wxWindow *parent);
+  virtual ~CDialogArchiveCreate();
+  bool IncludeInputFiles()
   {
-    wxString sEnd(s.Mid(nsLen - nLen));
-    bRtn = !sEnd.CmpNoCase(psType);
+    return (m_pCBIncludeInput != NULL) &&
+      m_pCBIncludeInput->IsChecked();
   }
-  return bRtn;
-}
-inline bool IS_ANALYSIS_FILE(const wxString &s)
-{
-  wxString sLower = s;
-  bool b = sLower.EndsWith(EXT_REPORT) || sLower.EndsWith(EXT_REPORT_EDITED);
-  return b;
-}
+  bool ShowFileLocation()
+  {
+    return m_pCBlocation->IsChecked();
+  }
+private:
+  wxCheckBox *m_pCBlocation;
+  wxCheckBox *m_pCBIncludeInput;
+};
+
 
 #endif

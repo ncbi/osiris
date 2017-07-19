@@ -9363,6 +9363,29 @@
                     }
                 }
             }
+            "{5EB83D71-FA18-4901-BE56-DE22E13CC478}:_AE45437F781D4FE19D203BE6CA903DC9"
+            {
+            "Name" = "8:OSIRIS Archive"
+            "Description" = "8:Osiris Analysis Archive"
+            "Extensions" = "8:orz"
+            "MIME" = "8:"
+            "Icon" = "8:_BF105CE7AB61485F80B8EB9CC66931D1"
+            "IconIndex" = "3:115"
+                "Command"
+                {
+                "Command" = "8:_BF105CE7AB61485F80B8EB9CC66931D1"
+                }
+                "Verbs"
+                {
+                    "{95C0C507-CBF0-42B8-B119-07219E384A4A}:_BDB0C1C38F6F4FBB90357F7293FBB55B"
+                    {
+                    "Command" = "8:&Extract in OSIRIS"
+                    "Verb" = "8:open"
+                    "Arguments" = "8:\"%1\""
+                    "Order" = "3:0"
+                    }
+                }
+            }
         }
         "Folder"
         {

@@ -525,6 +525,7 @@ public:
   void OnHistoryView(wxCommandEvent &);
   void OnSortGrid(wxCommandEvent &);
   void OnExportCMF(wxCommandEvent &);
+  void OnArchiveCreate(wxCommandEvent &);
   void OnUserExport(wxCommandEvent &);
   DECLARE_PERSISTENT_SIZE  
   DECLARE_EVENT_TABLE()

@@ -81,6 +81,22 @@
     <dict>
        <key>CFBundleTypeExtensions</key>
       <array>
+        <string>orz</string>
+       </array>
+      <key>CFBundleTypeOSTypes</key>
+      <array>
+        <string>****</string>
+      </array>
+       <key>CFBundleTypeName</key>
+      <string>OSIRIS Analysis Archive</string>
+      <key>CFBundleTypeIconFile</key>
+      <string>wxmac</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+    </dict>
+    <dict>
+       <key>CFBundleTypeExtensions</key>
+      <array>
         <string>plt</string>
        </array>
       <key>CFBundleTypeOSTypes</key>

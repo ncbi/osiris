@@ -23,36 +23,4 @@
 *
 * ===========================================================================
 *
-*  FileName: CMenuFileBase.cpp
-*  Author:   Douglas Hoffman
-*
 */
-
-#include "CMenuFileBase.h"
-#include "wxIDS.h"
-
-const wxString CMenuFileBase::ARCHIVE_CREATE(wxT("Create Analysis Archive..."));
-const wxString CMenuFileBase::ARCHIVE_EXTRACT(wxT("Extract Analysis Archive..."));
-
-CMenuFileBase::CMenuFileBase(bool bClose)
-{
-  Append(IDanalyze,"&New Analysis...\tCtrl+N");
-  Append(wxID_OPEN);
-  Append(IDArchiveExtract,ARCHIVE_EXTRACT);
-  m_nInsertPoint =  GetMenuItemCount();
-#ifndef __WXMAC__
-  Append(IDopenPlot,"O&pen Plot File...\tCtrl+P");
-  Append(IDopenBatch,"Open &Batch File...\tCtrl+B");
-#endif
-  Append(IDlistMRU,"Recent Files...\tCtrl+R");
-  if(bClose) Append(wxID_CLOSE ,"&Close\tCtrl+W");
-  AppendSeparator();
-#ifdef __WXMSW__
-  Append(wxID_EXIT, "E&xit\tAlt+F4");
-#else    
-  Append(wxID_EXIT);
-#endif
-
-}
-
-CMenuFileBase::~CMenuFileBase() {}

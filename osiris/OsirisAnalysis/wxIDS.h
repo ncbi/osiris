@@ -182,6 +182,7 @@ enum
   IDlistProcesses,
 
   IDlistMRU,
+  IDArchiveExtract,
 
   IDhelpAbout,
   IDhelpContactUs,
@@ -274,6 +275,7 @@ enum
   IDmenuDisplayBEGIN,
   IDmenuDisplayEND = IDmenuDisplayBEGIN + IDmenuDisplay_MAX,
 
+  IDArchiveCreate,
   IDExportCMF,
   // user defined export options
   IDExportUser,

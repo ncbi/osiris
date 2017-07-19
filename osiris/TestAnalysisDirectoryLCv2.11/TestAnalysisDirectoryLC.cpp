@@ -34,7 +34,7 @@
 //	This is for version 2.0
 //
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS)
 #include "stdafx.h"
 #else
 #define _tmain main
