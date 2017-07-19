@@ -3107,6 +3107,11 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 		}
 
 		mMaxPeak = maxPeak;
+		cout << "Locus " << (char*)(mLink->GetLocusName ()).GetData () << " has maxPeak = " << maxPeak << "\n";
+		cout << "Locus " << (char*)(mLink->GetLocusName ()).GetData () << " has fractional filter = " << fractionalFilter << "\n";
+
+		if (mLink->GetLocusName () == "vWA")
+			bool stopHere = true;
 
 		if (maxPeak <= 0.0)
 			return 0;
