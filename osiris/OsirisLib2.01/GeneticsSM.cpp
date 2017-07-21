@@ -2909,7 +2909,7 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 
 DataSignal*  Locus :: GetLargestPeak () {
 
-	smPullUp pullupPeak;
+	smCalculatedPurePullup pullupPeak;
 	smSpike spike;
 	smBlob blob;
 	smCurveFitFailed curveFitFailed;
@@ -2966,7 +2966,7 @@ DataSignal*  Locus :: GetLargestPeak () {
 	if (maxSignal == NULL)
 		return NULL;
 
-	if (maxSignal->GetMessageValue (pullupPeak) || maxSignal->GetMessageValue (curveFitFailed) || maxSignal->GetMessageValue (spike) || maxSignal->GetMessageValue (blob)) {
+	if (maxSignal->GetMessageValue (pullupPeak) || maxSignal->GetMessageValue (spike) || maxSignal->GetMessageValue (blob)) {  // removed test for curve fit failed, which should be irrelevent for the largest peak
 
 		if (secondSignal == NULL) {
 
@@ -3061,7 +3061,7 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 
 	int location;
 //	PullUpFound pullupNotice;
-	smPullUp pullUp;
+	smCalculatedPurePullup pullUp;
 	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
 	smHeightBelowFractionalFilter belowFractionalFilter;
