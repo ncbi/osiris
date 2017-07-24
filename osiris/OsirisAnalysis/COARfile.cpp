@@ -913,7 +913,7 @@ bool COARfile::UpdateMessages(const COARmessages &msgs, const wxDateTime &t)
   {
     size_t nCount = msgs.GetMessageCount();
     size_t i;
-    m_bModified = true;
+    SetIsModified(true);
     const COARmessage *pMsg;
     for(i = 0; i < nCount; i++)
     {
@@ -921,7 +921,7 @@ bool COARfile::UpdateMessages(const COARmessages &msgs, const wxDateTime &t)
       if(m_messages.UpdateMessage(*pMsg,t))
       {
         bRtn = true;
-        m_bModified = true;
+        //m_bModified = true;
       }
     }
   }
@@ -938,7 +938,7 @@ bool COARfile::UpdateSampleLocus(
     if(pLocus->Update(Locus,t))
     {
       bRtn = true;
-      m_bModified = true;
+      SetIsModified(true);
     }
   }
   return bRtn;
@@ -1579,7 +1579,8 @@ size_t COARfile::DeleteDisabledSamples()
     {
       m_vpTable.removeAt(*itrndx);
     }
-    this->AppendNotesDir(sNotes,wxGetUserId());
+    AppendNotesDir(sNotes,wxGetUserId());
+    SetIsModified(true);
   }
   return nRtn;
 }
