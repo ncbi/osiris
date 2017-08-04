@@ -196,6 +196,8 @@ public:
 	RGString GetFileNameSearchCriterion () const { return mFileNameSearchString; }
 	IndividualLocus* FindLocus (const RGString& name) const;
 	bool Matches (const IndividualGenotype& genotype) const;
+	bool IsAssignedPositiveControl () const { return mIsAssignedPositiveCtl; }
+	void SetAssignedPositiveControl (bool assigned) { mIsAssignedPositiveCtl = assigned; }
 
 	void WriteXML (RGTextOutput& text, const RGString& indent, const RGString& tag);
 
@@ -210,6 +212,7 @@ protected:
 	RGString mFileNameSearchString;
 	LocusCollection* mLoci;
 	bool mValid;
+	bool mIsAssignedPositiveCtl;
 };
 
 

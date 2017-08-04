@@ -1386,6 +1386,30 @@ int smConcaveDownAcceptanceThreshold::sMessageIndex = 0;
 int smConcaveDownAcceptanceThreshold::sMessageScope = 0;
 
 
+RGString smCorePeakSharesAlleleBin::sName = "smCorePeakSharesAlleleBin";
+int smCorePeakSharesAlleleBin::sSubject = smCorePeakSharesAlleleBin::LoadType ();
+int smCorePeakSharesAlleleBin::sMessageIndex = 0;
+int smCorePeakSharesAlleleBin::sMessageScope = 0;
+
+
+RGString smMinImbalanceThresholdForCreatingNoisyPeak::sName = "smMinImbalanceThresholdForCreatingNoisyPeak";
+int smMinImbalanceThresholdForCreatingNoisyPeak::sSubject = smMinImbalanceThresholdForCreatingNoisyPeak::LoadType ();
+int smMinImbalanceThresholdForCreatingNoisyPeak::sMessageIndex = 0;
+int smMinImbalanceThresholdForCreatingNoisyPeak::sMessageScope = 0;
+
+
+RGString smPeakSharesAlleleBinLeft::sName = "smPeakSharesAlleleBinLeft";
+int smPeakSharesAlleleBinLeft::sSubject = smPeakSharesAlleleBinLeft::LoadType ();
+int smPeakSharesAlleleBinLeft::sMessageIndex = 0;
+int smPeakSharesAlleleBinLeft::sMessageScope = 0;
+
+
+RGString smPeakSharesAlleleBinRight::sName = "smPeakSharesAlleleBinRight";
+int smPeakSharesAlleleBinRight::sSubject = smPeakSharesAlleleBinRight::LoadType ();
+int smPeakSharesAlleleBinRight::sMessageIndex = 0;
+int smPeakSharesAlleleBinRight::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1616,6 +1640,10 @@ PERSISTENT_DEFINITION (smPlusLatitudeForLadderEndPointILSFit, 2631, "smPlusLatit
 PERSISTENT_DEFINITION (smApplyEnhancedShoulderFittingAlgorithmPreset, 2632, "smApplyEnhancedShoulderFittingAlgorithmPreset")
 PERSISTENT_DEFINITION (smNoiseFactorForShoulderAcceptanceThreshold, 2633, "smNoiseFactorForShoulderAcceptanceThreshold")
 PERSISTENT_DEFINITION (smConcaveDownAcceptanceThreshold, 2634, "smConcaveDownAcceptanceThreshold")
+PERSISTENT_DEFINITION (smCorePeakSharesAlleleBin, 2635, "smCorePeakSharesAlleleBin")
+PERSISTENT_DEFINITION (smMinImbalanceThresholdForCreatingNoisyPeak, 2636, "smMinImbalanceThresholdForCreatingNoisyPeak")
+PERSISTENT_DEFINITION (smPeakSharesAlleleBinLeft, 2637, "smPeakSharesAlleleBinLeft")
+PERSISTENT_DEFINITION (smPeakSharesAlleleBinRight, 2638, "smPeakSharesAlleleBinRight")
 
 
 
@@ -15412,6 +15440,246 @@ int smConcaveDownAcceptanceThreshold :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smConcaveDownAcceptanceThreshold* noticeType = new smConcaveDownAcceptanceThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smCorePeakSharesAlleleBin :: smCorePeakSharesAlleleBin () : SmartNotice () {
+
+}
+
+
+smCorePeakSharesAlleleBin :: smCorePeakSharesAlleleBin (const smCorePeakSharesAlleleBin& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smCorePeakSharesAlleleBin :: ~smCorePeakSharesAlleleBin () {
+
+}
+
+
+int smCorePeakSharesAlleleBin :: GetSubject () const {
+
+	return smCorePeakSharesAlleleBin::sSubject;
+}
+
+
+void smCorePeakSharesAlleleBin :: SetIndexAndScope (int index, int scope) const {
+
+	smCorePeakSharesAlleleBin::sMessageIndex = index;
+	smCorePeakSharesAlleleBin::sMessageScope = scope;
+}
+
+
+int smCorePeakSharesAlleleBin :: GetMessageIndex () const {
+
+	return smCorePeakSharesAlleleBin :: sMessageIndex;
+}
+
+
+int smCorePeakSharesAlleleBin :: GetScope () const {
+
+	return smCorePeakSharesAlleleBin :: sMessageScope;
+}
+
+
+RGString smCorePeakSharesAlleleBin :: GetName () const {
+
+	return smCorePeakSharesAlleleBin :: sName;
+}
+
+
+
+int smCorePeakSharesAlleleBin :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smCorePeakSharesAlleleBin* noticeType = new smCorePeakSharesAlleleBin;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMinImbalanceThresholdForCreatingNoisyPeak :: smMinImbalanceThresholdForCreatingNoisyPeak () : SmartNotice () {
+
+}
+
+
+smMinImbalanceThresholdForCreatingNoisyPeak :: smMinImbalanceThresholdForCreatingNoisyPeak (const smMinImbalanceThresholdForCreatingNoisyPeak& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMinImbalanceThresholdForCreatingNoisyPeak :: ~smMinImbalanceThresholdForCreatingNoisyPeak () {
+
+}
+
+
+int smMinImbalanceThresholdForCreatingNoisyPeak :: GetSubject () const {
+
+	return smMinImbalanceThresholdForCreatingNoisyPeak::sSubject;
+}
+
+
+void smMinImbalanceThresholdForCreatingNoisyPeak :: SetIndexAndScope (int index, int scope) const {
+
+	smMinImbalanceThresholdForCreatingNoisyPeak::sMessageIndex = index;
+	smMinImbalanceThresholdForCreatingNoisyPeak::sMessageScope = scope;
+}
+
+
+int smMinImbalanceThresholdForCreatingNoisyPeak :: GetMessageIndex () const {
+
+	return smMinImbalanceThresholdForCreatingNoisyPeak :: sMessageIndex;
+}
+
+
+int smMinImbalanceThresholdForCreatingNoisyPeak :: GetScope () const {
+
+	return smMinImbalanceThresholdForCreatingNoisyPeak :: sMessageScope;
+}
+
+
+RGString smMinImbalanceThresholdForCreatingNoisyPeak :: GetName () const {
+
+	return smMinImbalanceThresholdForCreatingNoisyPeak :: sName;
+}
+
+
+
+int smMinImbalanceThresholdForCreatingNoisyPeak :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMinImbalanceThresholdForCreatingNoisyPeak* noticeType = new smMinImbalanceThresholdForCreatingNoisyPeak;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPeakSharesAlleleBinLeft :: smPeakSharesAlleleBinLeft () : SmartNotice () {
+
+}
+
+
+smPeakSharesAlleleBinLeft :: smPeakSharesAlleleBinLeft (const smPeakSharesAlleleBinLeft& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPeakSharesAlleleBinLeft :: ~smPeakSharesAlleleBinLeft () {
+
+}
+
+
+int smPeakSharesAlleleBinLeft :: GetSubject () const {
+
+	return smPeakSharesAlleleBinLeft::sSubject;
+}
+
+
+void smPeakSharesAlleleBinLeft :: SetIndexAndScope (int index, int scope) const {
+
+	smPeakSharesAlleleBinLeft::sMessageIndex = index;
+	smPeakSharesAlleleBinLeft::sMessageScope = scope;
+}
+
+
+int smPeakSharesAlleleBinLeft :: GetMessageIndex () const {
+
+	return smPeakSharesAlleleBinLeft :: sMessageIndex;
+}
+
+
+int smPeakSharesAlleleBinLeft :: GetScope () const {
+
+	return smPeakSharesAlleleBinLeft :: sMessageScope;
+}
+
+
+RGString smPeakSharesAlleleBinLeft :: GetName () const {
+
+	return smPeakSharesAlleleBinLeft :: sName;
+}
+
+
+
+int smPeakSharesAlleleBinLeft :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPeakSharesAlleleBinLeft* noticeType = new smPeakSharesAlleleBinLeft;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPeakSharesAlleleBinRight :: smPeakSharesAlleleBinRight () : SmartNotice () {
+
+}
+
+
+smPeakSharesAlleleBinRight :: smPeakSharesAlleleBinRight (const smPeakSharesAlleleBinRight& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPeakSharesAlleleBinRight :: ~smPeakSharesAlleleBinRight () {
+
+}
+
+
+int smPeakSharesAlleleBinRight :: GetSubject () const {
+
+	return smPeakSharesAlleleBinRight::sSubject;
+}
+
+
+void smPeakSharesAlleleBinRight :: SetIndexAndScope (int index, int scope) const {
+
+	smPeakSharesAlleleBinRight::sMessageIndex = index;
+	smPeakSharesAlleleBinRight::sMessageScope = scope;
+}
+
+
+int smPeakSharesAlleleBinRight :: GetMessageIndex () const {
+
+	return smPeakSharesAlleleBinRight :: sMessageIndex;
+}
+
+
+int smPeakSharesAlleleBinRight :: GetScope () const {
+
+	return smPeakSharesAlleleBinRight :: sMessageScope;
+}
+
+
+RGString smPeakSharesAlleleBinRight :: GetName () const {
+
+	return smPeakSharesAlleleBinRight :: sName;
+}
+
+
+
+int smPeakSharesAlleleBinRight :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPeakSharesAlleleBinRight* noticeType = new smPeakSharesAlleleBinRight;
 	warehouse->AddType (noticeType);
 	return 1;
 }

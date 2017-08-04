@@ -241,6 +241,10 @@ PERSISTENT_PREDECLARATION (smPlusLatitudeForLadderEndPointILSFit)
 PERSISTENT_PREDECLARATION (smApplyEnhancedShoulderFittingAlgorithmPreset)
 PERSISTENT_PREDECLARATION (smNoiseFactorForShoulderAcceptanceThreshold)
 PERSISTENT_PREDECLARATION (smConcaveDownAcceptanceThreshold)
+PERSISTENT_PREDECLARATION (smCorePeakSharesAlleleBin)
+PERSISTENT_PREDECLARATION (smMinImbalanceThresholdForCreatingNoisyPeak)
+PERSISTENT_PREDECLARATION (smPeakSharesAlleleBinLeft)
+PERSISTENT_PREDECLARATION (smPeakSharesAlleleBinRight)
 
 
 
@@ -6664,6 +6668,118 @@ public:
 	smConcaveDownAcceptanceThreshold ();
 	smConcaveDownAcceptanceThreshold (const smConcaveDownAcceptanceThreshold& note);
 	virtual ~smConcaveDownAcceptanceThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smCorePeakSharesAlleleBin : public SmartNotice {
+
+PERSISTENT_DECLARATION (smCorePeakSharesAlleleBin)
+
+public:
+	smCorePeakSharesAlleleBin ();
+	smCorePeakSharesAlleleBin (const smCorePeakSharesAlleleBin& note);
+	virtual ~smCorePeakSharesAlleleBin ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smMinImbalanceThresholdForCreatingNoisyPeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smMinImbalanceThresholdForCreatingNoisyPeak)
+
+public:
+	smMinImbalanceThresholdForCreatingNoisyPeak ();
+	smMinImbalanceThresholdForCreatingNoisyPeak (const smMinImbalanceThresholdForCreatingNoisyPeak& note);
+	virtual ~smMinImbalanceThresholdForCreatingNoisyPeak ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPeakSharesAlleleBinLeft : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPeakSharesAlleleBinLeft)
+
+public:
+	smPeakSharesAlleleBinLeft ();
+	smPeakSharesAlleleBinLeft (const smPeakSharesAlleleBinLeft& note);
+	virtual ~smPeakSharesAlleleBinLeft ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPeakSharesAlleleBinRight : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPeakSharesAlleleBinRight)
+
+public:
+	smPeakSharesAlleleBinRight ();
+	smPeakSharesAlleleBinRight (const smPeakSharesAlleleBinRight& note);
+	virtual ~smPeakSharesAlleleBinRight ();
 
 	virtual int GetSubject () const;
 

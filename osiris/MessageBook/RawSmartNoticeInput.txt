@@ -228,6 +228,10 @@ smPlusLatitudeForLadderEndPointILSFit	1115	2631
 smApplyEnhancedShoulderFittingAlgorithmPreset	1116	2632
 smNoiseFactorForShoulderAcceptanceThreshold	1117	2633
 smConcaveDownAcceptanceThreshold	1118	2634
+smCorePeakSharesAlleleBin	1119	2635
+smMinImbalanceThresholdForCreatingNoisyPeak	1120	2636
+smPeakSharesAlleleBinLeft	1121	2637
+smPeakSharesAlleleBinRight	1122	2638
 
 
 

@@ -6360,6 +6360,12 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smCalculatedPurePullup purePullup;
 	smBelowMinRFU belowMinRFU;
 	smCrater crater;
+	smCorePeakSharesAlleleBin corePeakSharesAlleleBin;
+	smHeightBelowFractionalFilter fractionalFilter;
+	smHeightBelowPullupFractionalFilter pullupFractionalFilter;
+	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+
+	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
 
 	bool prevBelowMinRFU;
 	bool nextBelowMinRFU;
@@ -6379,8 +6385,13 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 
 		location = TestSignalPositionRelativeToLocus (nextSignal);
 		alleleName = nextSignal->GetAlleleName (-location);	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
+		bool isCore = (location == 0);
+		bool isAmbiguous = (nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1));
+		const Locus* otherLocus = nextSignal->GetLocus (0);
+		bool isOtherCore = ((otherLocus != NULL) && (otherLocus != this));
+		bool isUnique = isCore || !isAmbiguous || !isOtherCore;
 
-		if ((prevSignal != NULL) && (!alleleName.IsEmpty ()) && (prevAlleleName == alleleName)) {
+		if ((prevSignal != NULL) && (!alleleName.IsEmpty ()) && (prevAlleleName == alleleName) && isUnique) {
 
 			if (mIsAMEL) {
 
@@ -6412,6 +6423,9 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			//	prevLocation = location;
 			//	continue;
 			//}
+
+			double prevPeak = prevSignal->Peak ();
+			double nextPeak = nextSignal->Peak ();
 
 			if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
 
@@ -6478,6 +6492,24 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
+			else if (prevPeak <= heightFraction * nextPeak) {
+
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			else if (nextPeak <= heightFraction * nextPeak) {
+
+				nextSignal->SetDoNotCall (true);
+				nextSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+				signalList.RemoveReference (nextSignal);
+			}
+
 			else {
 
 				prevBelowMinRFU = prevSignal->GetMessageValue (belowMinRFU);
@@ -6508,6 +6540,12 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
 			currentSignal->CaptureSmartMessages ();
 			currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
+
+			if (!prevSignal->GetMessageValue (fractionalFilter) || !nextSignal->GetMessageValue (fractionalFilter))
+				currentSignal->SetMessageValue (fractionalFilter, false);
+
+			if (!prevSignal->GetMessageValue (pullupFractionalFilter) || !nextSignal->GetMessageValue (pullupFractionalFilter))
+				currentSignal->SetMessageValue (pullupFractionalFilter, false);
 
 			currentSignal->SetLocus ((Locus*)this, -location);
 

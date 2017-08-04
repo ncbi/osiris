@@ -4020,7 +4020,7 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 	RGDListIterator it (PreliminaryCurveList);
 	DataSignal* nextSignal;
 	DataSignal* prevSignal = NULL;
-	DataSignal* currentSignal;
+	//DataSignal* currentSignal;
 
 	Locus* nextLocus;
 	const Locus* flankingLocusLeft;
@@ -4029,7 +4029,7 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 
 	RGDList SignalsToDeleteFromSignalList;
 	RGDList SignalsToDeleteFromAll;
-	RGDList signalsToAddToList;
+	//RGDList signalsToAddToList;
 
 	while (nextLocus = (Locus*) locusIt ())
 		nextLocus->PromoteNonAmbiguousSignalsToAlleles (PreliminaryCurveList);
@@ -4040,6 +4040,8 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
 	smAmbiguousInterlocusWithPoorMorphology ambiguousInterlocusWithPoorMorphology;
 	smCrater crater;
+	smPeakSharesAlleleBinLeft sharesBinLeft;
+	smPeakSharesAlleleBinRight sharesBinRight;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -4086,13 +4088,21 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 			if ((prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1)) || (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1))) {
 
 				// This is not a crater though...01/01/2014
-				int location;
+				//int location;
 
-				if (prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1))
-					location = -1;
+				if (prevSignal->GetAlleleName (-1) == nextSignal->GetAlleleName (-1)) {
 
-				else
-					location = 1;
+					//location = -1;
+					prevSignal->SetMessageValue (sharesBinLeft, true);
+					nextSignal->SetMessageValue (sharesBinLeft, true);
+				}
+
+				if (prevSignal->GetAlleleName (1) == nextSignal->GetAlleleName (1)) {
+
+					//location = 1;
+					prevSignal->SetMessageValue (sharesBinRight, true);
+					nextSignal->SetMessageValue (sharesBinRight, true);
+				}
 
 				nextSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
 				SignalsToDeleteFromSignalList.Append (nextSignal);
@@ -4102,13 +4112,13 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 				prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 				nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 
-				currentSignal = new NoisyPeak (prevSignal, nextSignal);
-				currentSignal->CaptureSmartMessages ();
-				currentSignal->SetLocus ((Locus*)nextSignal->GetLocus (location), location);
-				currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
-				currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
-				currentSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
-				signalsToAddToList.Append (currentSignal);
+				//currentSignal = new NoisyPeak (prevSignal, nextSignal);
+				//currentSignal->CaptureSmartMessages ();
+				//currentSignal->SetLocus ((Locus*)nextSignal->GetLocus (location), location);
+				//currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
+				//currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+				//currentSignal->SetMessageValue (ambiguousInterlocusWithPoorMorphology, true);
+				//signalsToAddToList.Append (currentSignal);
 					
 				prevSignal = nextSignal;
 			}
@@ -4132,12 +4142,12 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 			nextLocus->RemoveSignalFromLocusList (nextSignal);
 	}
 
-	while (nextSignal = (DataSignal*) signalsToAddToList.GetFirst ()) {
+	//while (nextSignal = (DataSignal*) signalsToAddToList.GetFirst ()) {
 
-		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
-	//	PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
-		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
-	}
+	//	CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	////	PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	//	SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+	//}
 
 	return 0;
 }
