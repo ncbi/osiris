@@ -4681,7 +4681,7 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 			continue;
 		}
 
-		if (fit < minFit) {
+		if ((fit < minFit) || (nextSignal->Peak () < 0.0)) {
 
 			delete nextSignal;
 			continue;

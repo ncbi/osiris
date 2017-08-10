@@ -1728,6 +1728,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					pullupPeak->SetPullupFromChannel (primaryChannel, pullupPeak->Peak (), mNumberOfChannels);
 					pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 
+					if (nextPair->mIsOutlier && !testLaserOffScale)
+						cout << "Half width test triggered for outlier in sample name = " << (char*)mName.GetData () << " in channel " << pullupChannel << " at time " << pullupPeak->GetMean () << "\n";
+
 					if (pullupPeak->HasCrossChannelSignalLink ()) {
 
 						// remove link; this is not a primary peak
@@ -1758,6 +1761,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				if (secondarySignal->GetMessageValue (purePullup))
 					continue;
 
+				if (DataSignal::IsNegativeOrSigmoid (secondarySignal))
+					continue;
+
 				secondaryNarrow = (secondarySignal->GetStandardDeviation () < 0.5* primarySignal->GetStandardDeviation ())  && !secondarySignal->IgnoreWidthTest ();
 				secondaryNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
 				//correctedHeight = secondarySignal->TroughHeight () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
@@ -1775,6 +1781,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
 					secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
 					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+
+					if (!testLaserOffScale)
+						cout << "Half width test triggered for other peak in sample name = " << (char*)mName.GetData () << " in channel " << pullupChannel << " at time " << secondarySignal->GetMean () << "\n";
 
 					if (secondarySignal->HasCrossChannelSignalLink ()) {
 

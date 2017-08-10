@@ -1886,6 +1886,13 @@ double DataSignal :: GetWidth () {
 	double leftSearch = GetMean ();
 	double mu = leftSearch;
 	double sigma = GetStandardDeviation ();
+
+	if (sigma < 1.0) {
+
+		mWidth = 1.0;
+		return mWidth;
+	}
+
 	double targetWidth = 0.01 * sigma;
 	double rightSearch = leftSearch + sigma;
 	int i;
