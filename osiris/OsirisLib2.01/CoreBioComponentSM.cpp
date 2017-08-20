@@ -2118,6 +2118,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 	quadraticPart = mQuadraticPullupMatrix [primaryChannel][secondaryChannel];
 	double LMV = mLeastMedianValue [primaryChannel][secondaryChannel];
 	double outlierThreshold = mOutlierThreshold [primaryChannel][secondaryChannel];
+	bool pattern = ((linearPart != 0.0) || (quadraticPart != 0.0));
 
 	double sigmaPrimary;
 	double sigmaSecondary;
@@ -2143,7 +2144,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 		p = primarySignal->Peak ();
 		ratio = secondarySignal->Peak () / p;
-		isOutlier = (fabs (ratio - LMV) > outlierThreshold);
+		isOutlier = pattern && (fabs (ratio - LMV) > outlierThreshold);
 		ratio = (linearPart + p * quadraticPart);
 		double h = secondarySignal->Peak () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 
@@ -2157,7 +2158,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 		isNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !secondarySignal->IgnoreWidthTest ();
 		isNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
-		halfWidth = (isNarrow || isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());
+		halfWidth = pattern && (isNarrow || isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());
 
 		if (secondarySignal->GetMessageValue (purePullup) || !isOutlier || halfWidth) {
 
