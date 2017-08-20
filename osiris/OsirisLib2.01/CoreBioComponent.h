@@ -163,7 +163,7 @@ public:
 	int GetLocusAndChannelHighestMessageLevel ();
 	Boolean PrepareLociForOutput ();
 
-	bool ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart);
+	bool ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold);
 	bool ComputeRefinedOutlierList (list<PullupPair*>& pairList, double& linearPart);
 	bool ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart);
 
@@ -500,6 +500,8 @@ protected:
 	bool** mPullupTestedMatrix;
 	double** mLinearPullupMatrix;
 	double** mQuadraticPullupMatrix;
+	double** mLeastMedianValue;
+	double** mOutlierThreshold;
 
 	CSplineTransform* mTimeMap;
 

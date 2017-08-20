@@ -3531,6 +3531,8 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 			mPullupTestedMatrix [i][j] = false;
 			mLinearPullupMatrix [i][j] = 0.0;
 			mQuadraticPullupMatrix [i][j] = 0.0;
+			mLeastMedianValue [i][j] = 0.0;
+			mOutlierThreshold [i][j] = 0.0;
 		}
 	}
 
