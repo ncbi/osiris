@@ -232,6 +232,7 @@ smCorePeakSharesAlleleBin	1119	2635
 smMinImbalanceThresholdForCreatingNoisyPeak	1120	2636
 smPeakSharesAlleleBinLeft	1121	2637
 smPeakSharesAlleleBinRight	1122	2638
+smConstrainPullupPatternAnalysisPreset	1123	2639
 
 
 

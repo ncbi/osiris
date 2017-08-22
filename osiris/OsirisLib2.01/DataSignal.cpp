@@ -1889,8 +1889,7 @@ double DataSignal :: GetWidth () {
 
 	if (sigma < 1.0) {
 
-		mWidth = 1.0;
-		return mWidth;
+		sigma = 1.0;
 	}
 
 	double targetWidth = 0.01 * sigma;

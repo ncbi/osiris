@@ -1410,6 +1410,12 @@ int smPeakSharesAlleleBinRight::sMessageIndex = 0;
 int smPeakSharesAlleleBinRight::sMessageScope = 0;
 
 
+RGString smConstrainPullupPatternAnalysisPreset::sName = "smConstrainPullupPatternAnalysisPreset";
+int smConstrainPullupPatternAnalysisPreset::sSubject = smConstrainPullupPatternAnalysisPreset::LoadType ();
+int smConstrainPullupPatternAnalysisPreset::sMessageIndex = 0;
+int smConstrainPullupPatternAnalysisPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1644,6 +1650,7 @@ PERSISTENT_DEFINITION (smCorePeakSharesAlleleBin, 2635, "smCorePeakSharesAlleleB
 PERSISTENT_DEFINITION (smMinImbalanceThresholdForCreatingNoisyPeak, 2636, "smMinImbalanceThresholdForCreatingNoisyPeak")
 PERSISTENT_DEFINITION (smPeakSharesAlleleBinLeft, 2637, "smPeakSharesAlleleBinLeft")
 PERSISTENT_DEFINITION (smPeakSharesAlleleBinRight, 2638, "smPeakSharesAlleleBinRight")
+PERSISTENT_DEFINITION (smConstrainPullupPatternAnalysisPreset, 2639, "smConstrainPullupPatternAnalysisPreset")
 
 
 
@@ -15680,6 +15687,66 @@ int smPeakSharesAlleleBinRight :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPeakSharesAlleleBinRight* noticeType = new smPeakSharesAlleleBinRight;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smConstrainPullupPatternAnalysisPreset :: smConstrainPullupPatternAnalysisPreset () : SmartNotice () {
+
+}
+
+
+smConstrainPullupPatternAnalysisPreset :: smConstrainPullupPatternAnalysisPreset (const smConstrainPullupPatternAnalysisPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smConstrainPullupPatternAnalysisPreset :: ~smConstrainPullupPatternAnalysisPreset () {
+
+}
+
+
+int smConstrainPullupPatternAnalysisPreset :: GetSubject () const {
+
+	return smConstrainPullupPatternAnalysisPreset::sSubject;
+}
+
+
+void smConstrainPullupPatternAnalysisPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smConstrainPullupPatternAnalysisPreset::sMessageIndex = index;
+	smConstrainPullupPatternAnalysisPreset::sMessageScope = scope;
+}
+
+
+int smConstrainPullupPatternAnalysisPreset :: GetMessageIndex () const {
+
+	return smConstrainPullupPatternAnalysisPreset :: sMessageIndex;
+}
+
+
+int smConstrainPullupPatternAnalysisPreset :: GetScope () const {
+
+	return smConstrainPullupPatternAnalysisPreset :: sMessageScope;
+}
+
+
+RGString smConstrainPullupPatternAnalysisPreset :: GetName () const {
+
+	return smConstrainPullupPatternAnalysisPreset :: sName;
+}
+
+
+
+int smConstrainPullupPatternAnalysisPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smConstrainPullupPatternAnalysisPreset* noticeType = new smConstrainPullupPatternAnalysisPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

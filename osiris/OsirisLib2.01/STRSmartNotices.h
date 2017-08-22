@@ -245,6 +245,7 @@ PERSISTENT_PREDECLARATION (smCorePeakSharesAlleleBin)
 PERSISTENT_PREDECLARATION (smMinImbalanceThresholdForCreatingNoisyPeak)
 PERSISTENT_PREDECLARATION (smPeakSharesAlleleBinLeft)
 PERSISTENT_PREDECLARATION (smPeakSharesAlleleBinRight)
+PERSISTENT_PREDECLARATION (smConstrainPullupPatternAnalysisPreset)
 
 
 
@@ -6780,6 +6781,34 @@ public:
 	smPeakSharesAlleleBinRight ();
 	smPeakSharesAlleleBinRight (const smPeakSharesAlleleBinRight& note);
 	virtual ~smPeakSharesAlleleBinRight ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smConstrainPullupPatternAnalysisPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smConstrainPullupPatternAnalysisPreset)
+
+public:
+	smConstrainPullupPatternAnalysisPreset ();
+	smConstrainPullupPatternAnalysisPreset (const smConstrainPullupPatternAnalysisPreset& note);
+	virtual ~smConstrainPullupPatternAnalysisPreset ();
 
 	virtual int GetSubject () const;
 

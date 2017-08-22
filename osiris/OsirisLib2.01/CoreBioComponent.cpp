@@ -775,6 +775,8 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 	double maxFit = 0.0;
 	double fit;
 	DataSignal* pullUp;
+	smConstrainPullupPatternAnalysisPreset constrain;
+	bool constrainLSQ = GetMessageValue (constrain);
 
 	for (it=pairList.begin (); it!=pairList.end (); it++) {
 
@@ -833,7 +835,7 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 
 		// Need different algorithm which considers non-negative peaks to be outliers
 
-		bool ans = ComputePullupParametersForNegativePeaks (totalForNegativeAnalysis, pairList, linearPart, quadraticPart);
+		bool ans = ComputePullupParametersForNegativePeaks (totalForNegativeAnalysis, pairList, linearPart, quadraticPart, constrainLSQ);
 		delete[] xValues;
 		delete[] yValues;
 
@@ -927,7 +929,7 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 	}
 
 	else
-		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart);
+		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart, constrainLSQ);
 
 	// clean up
 
@@ -1179,7 +1181,7 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 }
 
 
-bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart) {
+bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, bool constrainLSQ) {
 
 	// nNegatives includes number of sigmoids...
 	
@@ -1288,7 +1290,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 	}
 
 	else
-		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart);
+		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart, constrainLSQ);
 
 	// clean up
 

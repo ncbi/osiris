@@ -2139,7 +2139,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		if (secondarySignal == NULL)
 			continue;
 
-		if ((secondarySignal->GetPullupFromChannel (primaryChannel) != 0.0) || (secondarySignal->HasPrimarySignalFromChannel (primaryChannel) != NULL))
+		if ((secondarySignal->GetPullupFromChannel (primaryChannel) != 0.0) || (secondarySignal->HasPrimarySignalFromChannel (primaryChannel) != NULL))  // skip this test???
 			continue;
 
 		p = primarySignal->Peak ();
@@ -2160,7 +2160,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		isNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
 		halfWidth = pattern && (isNarrow || isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());
 
-		if (secondarySignal->GetMessageValue (purePullup) || !isOutlier || halfWidth) {
+		if (secondarySignal->GetMessageValue (purePullup) || !isOutlier || halfWidth) {   // include pattern?!
 
 			// secondary is pure pullup.  Do not insert possible pullup designation and remove from link, with appropriate consequences...
 
