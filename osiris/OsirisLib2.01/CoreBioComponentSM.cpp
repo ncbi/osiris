@@ -1746,8 +1746,22 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					pullupPeak->SetPullupFromChannel (primaryChannel, pullupPeak->Peak (), mNumberOfChannels);
 					pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 
-					if (nextPair->mIsOutlier && !testLaserOffScale)
-						cout << "Half width test triggered for outlier in sample name = " << (char*)mName.GetData () << " in channel " << pullupChannel << " at time " << pullupPeak->GetMean () << "\n";
+					if (halfWidth && nextPair->mIsOutlier) {
+
+						cout << "Half width criterion (original peaks) triggered for outlier in sample name " << (char*)mName.GetData () << " for channel " << pullupChannel << " at time " << pullupPeak->GetMean () << " for primary ";
+
+						if (testLaserOffScale)
+							cout << "laser off-scale ";
+
+						else
+							cout << "laser not off-scale ";
+
+						if (primarySignal->IsCraterPeak ())
+							cout << "and crater\n";
+
+						else
+							cout << "and not crater\n";
+					}
 
 					if (pullupPeak->HasCrossChannelSignalLink ()) {
 
@@ -2139,8 +2153,8 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		if (secondarySignal == NULL)
 			continue;
 
-		if ((secondarySignal->GetPullupFromChannel (primaryChannel) != 0.0) || (secondarySignal->HasPrimarySignalFromChannel (primaryChannel) != NULL))  // skip this test???
-			continue;
+		//if ((secondarySignal->GetPullupFromChannel (primaryChannel) != 0.0) || (secondarySignal->HasPrimarySignalFromChannel (primaryChannel) != NULL))  // skip this test???
+		//	continue;
 
 		p = primarySignal->Peak ();
 		ratio = secondarySignal->Peak () / p;
@@ -2160,9 +2174,30 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		isNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
 		halfWidth = pattern && (isNarrow || isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());
 
-		if (secondarySignal->GetMessageValue (purePullup) || !isOutlier || halfWidth) {   // include pattern?!
+		if (secondarySignal->GetMessageValue (purePullup) || (pattern && !isOutlier) || halfWidth) {   // include pattern?!
 
 			// secondary is pure pullup.  Do not insert possible pullup designation and remove from link, with appropriate consequences...
+
+			if (!secondarySignal->GetMessageValue (purePullup)) {
+
+				if (halfWidth && isOutlier) {
+
+					cout << "Half width criterion triggered for outlier in sample name " << (char*)mName.GetData () << " for channel " << secondaryChannel << " at time " << secondarySignal->GetMean () << " for primary ";
+
+					if (testLaserOffScale)
+						cout << "laser off-scale ";
+
+					else
+						cout << "laser not off-scale ";
+
+					if (primarySignal->IsCraterPeak ())
+						cout << "and crater\n";
+
+					else
+						cout << "and not crater\n";
+				}
+
+			}
 
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);  // Fix this and next line to reflect contributions from primary peaks on other channels
@@ -2214,19 +2249,24 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 				if (nextLink != NULL) {
 
-					RemovePrimaryLinksAndSecondaryLinksFrom (secondarySignal);
 					removeList.push_back (nextLink);
 				}
 			}
 		}
 	}
 
+	removeList.unique ();
+
 	while (!removeList.empty ()) {
 
 		nextLink = removeList.front ();
 		removeList.pop_front ();
-		mInterchannelLinkageList.remove (nextLink);
-		delete nextLink;
+
+		if (nextLink != NULL) {
+
+			primarySignal = nextLink->GetPrimarySignal ();
+			RemovePrimaryLinksAndSecondaryLinksFrom (primarySignal);
+		}
 	}
 
 	return true;

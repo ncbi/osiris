@@ -1151,6 +1151,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double minRFU = GetMinimumHeight ();
 	double maxRFU = GetMaximumHeight ();
 	double detectionRFU = GetDetectionThreshold ();
+	SampledData::SetDetectionRFU (detectionRFU);
 	double minAcceptableFit = ParametricCurve::GetMinimumFitThreshold ();
 	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
 	double minFit = minFitForArtifactTest;
@@ -1383,6 +1384,29 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ())
 		PreliminaryCurveList.Append (nextSignal);
+
+	it.Reset ();
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetStandardDeviation () < 0.14) {
+
+			CompleteCurveList.RemoveReference (nextSignal);
+			it.RemoveCurrentItem ();
+			double mean = floor (nextSignal->GetMean () + 0.5);
+			double peak = nextSignal->Peak ();
+			prevSignal = new SpikeSignal (mean, peak, 0.0, 0.0);
+			prevSignal->SetCurveFit (1.0);
+			prevSignal->SetDataMode (peak);
+			tempList.Append (prevSignal);
+		}
+	}
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+		
+		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
 
 	delete signature;
 //	ProjectNeighboringSignalsAndTest (1.0, 1.0);
@@ -1777,14 +1801,6 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 		rightSignal = TestDual->GetSecondCurve ();
 
 		if ((leftSignal == NULL) || (rightSignal == NULL)) {
-
-			delete leftSignal;
-			delete rightSignal;
-			delete TestDual;
-			return -1;
-		}
-
-		if ((rightSignal->Peak () < 0.0) || (leftSignal->Peak () < 0.0)) {
 
 			delete leftSignal;
 			delete rightSignal;
@@ -2428,9 +2444,6 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 	smInterlocusPeaksToRight interlocusToRight;
 	smInterlocusPeaksToLeft interlocusToLeft;
 	smRestrictedPriorityPeak restrictedPriorityPeak;
-
-	if (mChannel == 3)
-		bool pauseHere = true;
 
 	while (nextSignal = (DataSignal*) PreliminaryCurveList.GetFirst ()) {
 
