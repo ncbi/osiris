@@ -2433,6 +2433,7 @@ bool CFrameAnalysis::CheckSaveOnCloseFile()
       else if(n == wxID_NO)
       {
         bDone = true;
+        _DestroySamples();
         m_pParent->DiscardChanges(m_pOARfile);
       }
     }
