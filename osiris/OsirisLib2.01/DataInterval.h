@@ -97,6 +97,9 @@ public:
 
 	void ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSignal* data);
 	void RecomputeRelativeMinimum (const DataSignal* currentSignal, double mean, int localMax, double maxValue, const DataSignal* rawData);
+	void AddSideValues (DataSignal* sampledData);
+	DataSignal* TestForSpike (double& fit) const;
+	Boolean IsOKtoTestForSpike () const { return mOKtoTestForSpike; }
 
 	virtual size_t StoreSize () const;
 
@@ -123,6 +126,9 @@ protected:
 	int mSecondaryMode;
 	double mMaxAtSecondaryMode;
 	Boolean mPureMinimum;
+	double mValueLeftOfMax;
+	double mValueRightOfMax;
+	Boolean mOKtoTestForSpike;
 };
 
 

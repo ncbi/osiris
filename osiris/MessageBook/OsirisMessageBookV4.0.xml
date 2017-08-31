@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>6.96</VersionNumber>
-	<BuildTime>03/27/2017 04:25 PM</BuildTime>
+	<VersionNumber>7.00</VersionNumber>
+	<BuildTime>08/22/2017 02:41 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -342,6 +342,66 @@
 			<Text>Pull-up at Extraneous ILS Peak</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smCorePeakSharesAlleleBin</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Shares Allele Bin in Core Locus</Text>
+			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeSharedBinArtifactsCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPeakSharesAlleleBinLeft</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Shares Allele Bin in Locus to the Left</Text>
+			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeSharedBinArtifactsCriticalPreset AND NOT smPeakInCoreLadderLocus</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smPeakInCoreLadderLocus</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPeakSharesAlleleBinRight</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Shares Allele Bin in Locus to the Right</Text>
+			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeSharedBinArtifactsCriticalPreset AND NOT smPeakInCoreLadderLocus</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smPeakInCoreLadderLocus</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smLaserOffScale</Name>
@@ -4772,6 +4832,22 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smConstrainPullupPatternAnalysisPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Constrain Pullup Pattern Analysis (Default: checked - Version 2.9.2 Compatible)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>CONSTRAIN PULLUP PATTERN ANALYSIS</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerExcessiveNoiseBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -6305,6 +6381,77 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
+		
+		<SmartMessage>
+			<Name>smSpacerNoisyPeakOptionsBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smNoisyPeakOptionsHeader</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Noisy Peak Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Noisy Peak Options</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Make Shared Bin Artifacts Critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Make Shared Bin Artifacts Critical</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
+			<MessageType>count</MessageType>
+			<Description>Minimum ratio to create noisy peak</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>70</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>        Minimum Imbalance Ratio to Create Noisy Peak (%)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Minimum Imbalance Ratio to Create Noisy Peak</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		
+		
 	</MessageDeclarations>
 	<TestUnitsSampleLevel>
 		<ConditionalTestUnit>
@@ -6318,6 +6465,7 @@
 						<Name>smILSReportShoulderArtifactPreset</Name>
 						<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
 						<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
+						<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6329,6 +6477,7 @@
 						<Name>smMaxILSBPForExtendedLocus</Name>
 						<Name>smCallStutterPeaksPreset</Name>
 						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
+						<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6388,6 +6537,7 @@
 						<Name>smDisableAdenylationFilterPreset</Name>
 						<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
 						<Name>smCallOnLadderAdenylationPreset</Name>
+						<Name>smConstrainPullupPatternAnalysisPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6634,6 +6784,9 @@
 						<Name>smExcessiveResidualDisplacement</Name>
 						<Name>smExcessiveResidualDisplacementLeft</Name>
 						<Name>smExcessiveResidualDisplacementRight</Name>
+						<Name>smCorePeakSharesAlleleBin</Name>
+						<Name>smPeakSharesAlleleBinLeft</Name>
+						<Name>smPeakSharesAlleleBinRight</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS AND NOT smIsQualityLocus</Expression>

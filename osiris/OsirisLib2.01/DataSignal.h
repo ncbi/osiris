@@ -73,6 +73,7 @@ const int _PEAKINFOFORCLUSTERS_ = 1021;
 const int _SIMPLESIGMOIDSIGNAL_ = 1019;
 const int _NEGATIVESIGNAL_ = 1020;
 const int _NOISYPEAK_ = 1022;
+const int _SPIKESIGNAL_ = 1023;
 
 const double Pi = acos (-1.0);
 const double sqrtPi = sqrt (Pi);
@@ -112,6 +113,7 @@ PERSISTENT_PREDECLARATION (CraterSignal)
 PERSISTENT_PREDECLARATION (SimpleSigmoidSignal)
 PERSISTENT_PREDECLARATION (NegativeSignal)
 PERSISTENT_PREDECLARATION (NoisyPeak)
+PERSISTENT_PREDECLARATION (SpikeSignal)
 
 
 Boolean QuadraticRegression (const double* means, const double* sigmas, int N, double* parameters);
@@ -1123,6 +1125,9 @@ public:
 	static void SetIgnoreNoiseAnalysisAboveDetectionInSmoothing (bool ignore) { IgnoreNoiseAnalysisAboveDetectionInSmoothing = ignore; }
 	static bool GetIgnoreNoiseAnalysisAboveDetectionInSmoothing () { return IgnoreNoiseAnalysisAboveDetectionInSmoothing; }
 
+	static void SetDetectionRFU (double d) { DetectionRFU = d; }
+	static double GetDetectionRFU () { return DetectionRFU; }
+
 protected:
 	int NumberOfSamples;
 	double* Measurements;
@@ -1149,6 +1154,7 @@ protected:
 	static double PeakFractionForFlatCurveTest;
 	static double PeakLevelForFlatCurveTest;
 	static bool IgnoreNoiseAnalysisAboveDetectionInSmoothing;
+	static double DetectionRFU;
 
 	int GetSampleNumber (double abscissa) const;
 	double GetNorm2 (int nleft, int nright);
@@ -2027,6 +2033,74 @@ public:
 protected:
 
 	DataSignal* mOriginal;
+};
+
+
+class SpikeSignal : public ParametricCurve {
+
+PERSISTENT_DECLARATION (SpikeSignal)
+
+public:
+	SpikeSignal ();
+	SpikeSignal (double mean, double peak, double leftValue, double rightValue);
+	SpikeSignal (const SpikeSignal& spike);
+	SpikeSignal (double mean, const SpikeSignal& spike);
+	virtual ~SpikeSignal ();
+
+	virtual DataSignal* MakeCopy (double mean) const;
+
+	virtual RGString GetSignalType () const;
+
+	virtual double GetWidth ();
+
+	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
+	virtual double GetPullupToleranceInBP (double noise) const;
+	virtual double GetPrimaryPullupDisplacementThreshold () { return 1.0; }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 1.0; }
+
+	virtual void SetDisplacement (double disp);
+	virtual double Value (double x) const;
+	virtual double Value (int x) const;
+	virtual double Peak () const;
+	virtual double GetMean () const;
+	virtual double GetStandardDeviation () const;
+	virtual double GetVariance () const;
+	virtual void SetPeak (double peak);
+	virtual void ComputeTails (double& tailLeft, double& tailRight) const;
+
+	//virtual DataSignal* Project (double left, double right) const;
+	//virtual DataSignal* Project (const DataSignal* target) const;
+
+	virtual double Centroid () const;
+//	virtual double Centroid (double left, double right) const;
+//	virtual double SecondMoment (double left, double right) const;
+
+	virtual double Norm ();
+	virtual double Norm (double left, double right);
+	virtual double Norm2 ();  // norm squared
+	virtual double Norm2 (double left, double right);
+	virtual DataSignal* Normalize (double& norm);
+	virtual DataSignal* Normalize (double left, double right, double& norm);
+
+	virtual void CalculateTheoreticalArea ();
+
+	virtual double OneNorm ();
+	virtual double OneNorm (double left, double right);
+	virtual int FirstMomentForOneNorm (double left, double right, double& oneNorm, double& mean);
+	virtual int SecondMomentForOneNorm (double left, double right, double& oneNorm, double& mean, double& secondMoment);
+
+	virtual void Report (RGTextOutput& text, const RGString& indent);
+
+	virtual size_t StoreSize () const;
+
+	virtual void RestoreAll (RGFile&);
+	virtual void RestoreAll (RGVInStream&);
+	virtual void SaveAll (RGFile&) const;
+	virtual void SaveAll (RGVOutStream&) const;
+
+protected:
+	double mMean;
+	double mPeak;
 };
 
 

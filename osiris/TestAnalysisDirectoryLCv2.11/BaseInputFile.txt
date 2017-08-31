@@ -1,17 +1,18 @@
-InputDirectory = C:/Apps/User_Installs/NCBI/osiris/TestAnalysis/Cofiler/STRBaseTest;
+InputDirectory = F:/MenagerieForTestingPullup/ChrisHeffordGlobalFiler;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = Cofiler;
-LaneStandardName = ABI-ROX400;
+MarkerSetName = GlobalFiler;
+LaneStandardName = ABI-LIZ-600-80-TO-460;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20170609-133152/V-20170609-133152_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20170609-133152/V-20170609-133152_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 150;
+MinSampleRFU = 20;
 MinLaneStandardRFU = 150;
 MinLadderRFU = 150;
-MinInterlocusRFU = 150;
+MinInterlocusRFU = 20;
 MinLadderInterlocusRFU = 150;
-SampleDetectionThreshold = 150;
+SampleDetectionThreshold = 20;
 RawDataString = R;
 ;
+

@@ -314,14 +314,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 		if (nextSignal2 == NULL)
 			break;
 
-		if ((nextSignal->GetMean () > 1365.0) && (nextSignal->GetMean () < 1390.0)) {
-
-			debug = true;
-		}
-
-		if (debug) cout << "1st, 2nd signals have means " << nextSignal->GetMean () << ", " << nextSignal2->GetMean () << endl;
-		if (debug) cout << "1st, 2nd signals have channels " << nextSignal->GetChannel () << ", " << nextSignal2->GetChannel () << endl;
-
 		if (nextSignal->GetChannel () == nextSignal2->GetChannel ()) {
 
 			--it;
@@ -338,14 +330,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 		//	mTimeTolerance = minPullupThreshold;
 
 		mTimeTolerance = 0.075;
-
-		if (debug) {
-			
-			cout << "time tolerance for pullup " << mTimeTolerance << endl;
-			cout << "1st mean = " << mean2 << " on channel " << nextSignal->GetChannel () << endl;
-			cout << "2nd mean = " << mean1 << " on channel " << nextSignal2->GetChannel () << endl;
-
-		}
 
 		if (mean1 - mean2 >= mTimeTolerance) {
 
@@ -366,7 +350,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 
 		channel1 = nextSignal->GetChannel ();
 		channel2 = nextSignal2->GetChannel ();
-		if (debug) cout << "Pullup for channels " << channel1 << " and channel " << channel2 << endl;
 		OnDeck [channel1] = nextSignal;
 		OnDeck [channel2] = nextSignal2;
 		primeSignal = nextSignal2;
@@ -391,8 +374,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 			//	mTimeTolerance = minPullupThreshold;
 
 			mTimeTolerance = 0.075;
-
-			if (debug) cout << "time tolerance for pullup = " << mTimeTolerance << endl;
 
 			if (nextSignal->GetApproximateBioID () - nextSignal2->GetApproximateBioID () >= mTimeTolerance) {
 
@@ -438,8 +419,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 		primeSignal = OnDeck [maxIndex]; // This is the primary bleed through or spike, whichever...
 		mean1 = primeSignal->GetMean ();
 		BracketLeft [maxIndex] = BracketRight [maxIndex] = NULL;
-
-		if (debug) cout << "prime signal on channel " << maxIndex << " with mean " << mean1 << endl;
 
 		for (j=1; j<=mNumberOfChannels; j++) {
 
@@ -683,8 +662,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 					nextSignal->SetMessageValue (pullup, true);
 					iChannel->AddDataSignal (nextSignal);
 					nextSignal->SetInterchannelLink (iChannel);
-
-					if (debug) cout << "new crater on channel " << i << " with side peaks at " << testSignal->GetMean () << " and " << testSignal2->GetMean () << endl;
 
 			//		mDataChannels [i]->InsertIntoArtifactList (nextSignal);	// Need this????????????????????????????????????????????
 					mDataChannels [i]->InsertIntoCompleteCurveList (nextSignal);
@@ -1874,9 +1851,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				if (nextSignal == NULL)
 					break;
 
-				if ((mean1 < 151.0) && (mean1 > 150.0) && (i == 2))
-					bool HereItIs = true;
-
 				mean2 = nextSignal->GetApproximateBioID ();
 
 				//
@@ -1990,7 +1964,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					testSignal = new SimpleSigmoidSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
 					testSignal->RecalculatePullupTolerance ();
-					//cout << "Added possible sigmoid on channel " << i << " with left peak at " << prevSignal->GetMean () << " and right peak at " << nextSignal->GetMean () << " and center = " << testSignal->GetMean () << endl;
 					testSignal2 = (DataSignal*) nextMultiPeakList->Last ();
 
 					if (CoreBioComponent::TestForOffScale (testSignal->GetMean ()))
@@ -2229,24 +2202,12 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (nextSignal2->IsNegativePeak ()) {
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
-
-				//if (report) {
-
-				//	cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
-				//}
-
 				continue;
 			}
 
 			if (nextSignal2->Peak () < primaryHeight) {
 
 				probablePullupPeaks.Append (nextSignal2);
-
-				//if (report) {
-
-				//	cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
-				//}
-
 				continue;
 			}
 		}
@@ -2262,34 +2223,17 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (nextSignal2->IsNegativePeak ()) {
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
-
-				//if (report) {
-
-				//	cout << "Found negative peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << endl;
-				//}
-
 				continue;
 			}
 
 			if (nextSignal2->Peak () < primaryHeight) {
 
 				probablePullupPeaks.Append (nextSignal2);
-
-				//if (report) {
-
-				//	cout << "Found positive peak on channel " << nextSignal2->GetChannel () << " at mean = " << nextSignal2->GetMean () << " with height = " << nextSignal2->Peak () << endl;
-				//}
-
 				continue;
 			}
 		}
 
 		//cout << "Done with pull-up tests for peak at " << primaryMean << endl;
-
-		//if (report) {
-
-		//	cout << "Number of probable pull-up peaks (including potential channel duplicates) + " << probablePullupPeaks.Entries () << endl;
-		//}
 
 		if (probablePullupPeaks.IsEmpty ())
 			continue;   // There are no probable pull-up peaks, so go on to next peak.
@@ -2441,9 +2385,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			DataSignal** pullupArray = CollectAndSortPullupPeaksSM (primeSignal, probablePullupPeaks);
 			primeSignal->AddProbablePullups (probablePullupPeaks);
 			int kk;
-
-			if ((primeSignal->GetMean () < 4812.0) && (primeSignal->GetMean () > 4801.0) && (primeSignal->GetChannel () == 2))
-				bool hereItIs = true;
 
 			for (kk=1; kk<=mNumberOfChannels; kk++) {  // this was wrong...we want peaks from pullupList and they should removed from probablePullupPeaks
 
@@ -2823,8 +2764,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					DataSignal* noisySignal = new NoisyPeak (testSignal, testSignal2, true);
 					noisySignal->CaptureSmartMessages ();
 
-					//cout << "Noisy Signal created with mean = " << noisySignal->GetMean () << " on channel " << noisySignal->GetChannel () << endl;
-
 					noisySignal->SetDontLook (false);
 					noisySignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 					testSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
@@ -3103,7 +3042,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			if (removedPeakList.ContainsReference (fixPullupPeak)) {
 
-				//cout << "Found 'deleted' signal in inter-channel linkage in channel " << fixPullupPeak->GetChannel () << " at time " << fixPullupPeak->GetMean () << endl;
 				localRemovePeaks.push_back (fixPullupPeak);
 				continue;
 			}
@@ -3531,6 +3469,8 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 			mPullupTestedMatrix [i][j] = false;
 			mLinearPullupMatrix [i][j] = 0.0;
 			mQuadraticPullupMatrix [i][j] = 0.0;
+			mLeastMedianValue [i][j] = 0.0;
+			mOutlierThreshold [i][j] = 0.0;
 		}
 	}
 
@@ -3677,9 +3617,6 @@ int STRCoreBioComponent :: WriteXMLGraphicDataSM (const RGString& graphicDirecto
 	RGString indent2 = indent + indent;
 
 	for (int i=1; i<=mNumberOfChannels; i++) {
-
-		if (i == 2)
-			bool stop = true;
 
 		output << indent << "<channel>" << endLine;
 		output << indent2 << "<nr>" << i << "</nr>" << endLine;
