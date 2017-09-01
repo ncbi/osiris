@@ -218,7 +218,7 @@ bool wxXml2Document::Save(
   bool bOK = m_pXmlDoc != NULL;
   if(bOK)
   {
-#if 1
+#if 0
     int nHold = xmlKeepBlanksDefault(0);
     int nBytes = xmlSaveFormatFileEnc(filename.utf8_str(),m_pXmlDoc,"UTF-8",!!indentstep);
     bOK = (nBytes > 0);
@@ -227,7 +227,7 @@ bool wxXml2Document::Save(
       xmlKeepBlanksDefault(nHold);
     }
 #else
-    wxFileOutputStream fs(filename);
+    wxTempFileOutputStream fs(filename);
     bOK = fs.IsOk();
     if(bOK)
     {

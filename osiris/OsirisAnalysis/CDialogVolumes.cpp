@@ -409,6 +409,16 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
         // the code above is probably not needed.
         nwxGrid::ForceRefreshAll(this);
       }
+      if(bReadOnly && !m_bReadOnly && 
+          m_pVolumeCurrent->IsLocked() &&
+          !m_pVolumeCurrent->IsReadOnly()
+          )
+      {
+        // could not lock volume, try again and show dialog
+        // if it fails
+        wxCommandEvent ee(wxEVT_COMMAND_BUTTON_CLICKED,IDlock);
+        GetEventHandler()->AddPendingEvent(ee);
+      }
     }
   }
   return bRtn;

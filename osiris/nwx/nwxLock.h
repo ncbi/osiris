@@ -39,6 +39,10 @@
 #define nwxLock_TIMEOUT 120
 #define nwxLock_FILE "lock"
 
+
+#if 0
+//  OS-679 - removed because access time is unreliable
+
 class nwxLockRead
 {
 public:
@@ -89,6 +93,7 @@ public:
 private:
   wxFileName m_fnFile;
 };
+#endif
 
 class nwxLock
 {

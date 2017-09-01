@@ -33,6 +33,7 @@
 #include "COARlocus.h"
 #include "COARpeak.h"
 #include "COARfile.h"
+#include "CParmOsiris.h"
 #include "mainApp.h"
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -58,7 +59,8 @@ const int CDialogEditPeak::ID_EDIT = CDialogEditPeak::m_ID_EDIT;
 CDialogEditPeak::CDialogEditPeak(
   wxWindow *parent, 
   const COARsample *pSample, 
-  const COARpeakAny *pPeak) :
+  const COARpeakAny *pPeak,
+  bool bAllowUserOverride) :
     wxDialog(parent,wxID_ANY,wxEmptyString,
       wxDefaultPosition, wxDefaultSize,
       mainApp::DIALOG_STYLE),
@@ -77,9 +79,11 @@ CDialogEditPeak::CDialogEditPeak(
 
     m_bCanAcceptHere(false),
     m_bLocusNeedsAcceptance(false),
-    m_bOK(true)
+    m_bOK(true),
+    m_bShowUser(false)
 
 {
+  _SetupUser(bAllowUserOverride);
   if(m_pPeak == NULL)
   {
     _BuildNoEdit();
@@ -241,6 +245,15 @@ void CDialogEditPeak::_BuildAllele()
 
   pSizerAll->Add(pSizerLR,1,
     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_CENTRE_VERTICAL);
+  if(m_bShowUser)
+  {
+    wxString sUser(wxT("User: "));
+    sUser.Append(m_sUser);
+    wxStaticText *pUser = new wxStaticText(this,wxID_ANY,sUser);
+    pSizerAll->Add(pUser,0,
+      wxALIGN_CENTRE_HORIZONTAL | wxALIGN_CENTER_VERTICAL | (wxALL ^ wxBOTTOM),
+      ID_BORDER);
+  }
   pSizerAll->Add(pSizerButtons,0,
     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_CENTRE_VERTICAL | wxALL | wxEXPAND
     ,ID_BORDER);
@@ -516,21 +529,35 @@ COARsample *pSample = \
 COARlocus *pLocus = \
   pSample->FindLocus(m_pCurrent->GetLocusName())
 
+void CDialogEditPeak::_SetupUser(bool bAllowOverride)
+{
+  wxString sUserID = wxGetUserId();
+  m_sUser.Empty();
+  if(bAllowOverride)
+  {
+    CParmOsirisGlobal parm;
+    m_sUser = parm->GetCMFuserID();
+  }
+  if(m_sUser.IsEmpty())
+  {
+    m_sUser = sUserID;
+  }
+  m_bShowUser = (m_sUser != sUserID);
+}
 bool CDialogEditPeak::_Do_UpdatePeak(
     COARfile *pFile, CFrameAnalysis *pFrame)
 {
   bool bRtn = true;
   if(!COARpeak::Equal(*m_pCurrent,*m_pOriginal))
   {
-    wxString sUser = wxGetUserId();
     wxString sErr;
     wxString sComma;
     SETUP_SAMPLE_LOCUS;
     std::vector<COARpeakAny *> vp;
     vp.push_back(m_pCurrent);
     CAppendReviewLocus x(pLocus);
-    x.AppendReview(sUser); // will return false if user already edited
-    pLocus->AppendNotes(wxT("Edit Peak from plot"),sUser);
+    x.AppendReview(m_sUser); // will return false if user already edited
+    pLocus->AppendNotes(wxT("Edit Peak from plot"),m_sUser);
     if(!pSample->SetPeaksByLocusName(
       pLocus->GetName(),
       pLocus->GetChannelNr(),

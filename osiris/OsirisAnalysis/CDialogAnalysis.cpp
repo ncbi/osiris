@@ -237,6 +237,8 @@ CDialogAnalysis::~CDialogAnalysis()
 }
 #define LOCK_READ_MS 5000 // every 5 seconds
 
+#if 0
+//  OS-679 - removed because access time is unreliable
 void CDialogAnalysis::OnTimer(wxTimerEvent &e)
 {
   if(m_pVolume != NULL)
@@ -244,6 +246,7 @@ void CDialogAnalysis::OnTimer(wxTimerEvent &e)
     m_pVolume->SetInUseOnTimer(e.GetInterval());
   }
 }
+#endif
 void CDialogAnalysis::OnBrowseInput(wxCommandEvent &)
 {
   wxDirDialog *pDir = GetInputDialog();
@@ -599,12 +602,16 @@ bool CDialogAnalysis::TransferDataFromWindow()
       sError += sLockUser;
       sError += ".\nPlease try again later.\n";
     }
+#if 0
+    //  OS-679 - removed because access time is unreliable
+
     else if(!m_pVolume->SetInUse())
     {
       sError += "This " Volume_string ", ";
       sError += m_pVolume->GetVolumeName();
       sError += ", cannot be accessed at this time.\n";
     }
+#endif
     if(!wxDirExists(m_sInputDirectory))
     {
       sError += "Input directory does not exist\n";

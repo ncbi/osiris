@@ -68,15 +68,12 @@ void UnitTest::_Run()
     nwxLock::UnitTest();
 
     {
-      // nwxLockRead::UnitTest()
-
       ConfigDir *pDir = mainApp::GetConfig();
       wxString sPath = pDir->GetExeVolumePath();
       nwxFileUtil::EndWithSeparator(&sPath);
       sPath.Append("ID");
       nwxFileUtil::EndWithSeparator(&sPath);
       sPath.Append("ID_access.txt");
-      nwxLockRead::UnitTest(sPath);
     }
     CVolumes::UnitTest();
     CPersistKitList::UnitTest();

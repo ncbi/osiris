@@ -52,7 +52,8 @@ public:
   CDialogEditPeak(
     wxWindow *parent,
     const COARsample *pSample,
-    const COARpeakAny *pPeak);
+    const COARpeakAny *pPeak,
+    bool bAllowUserOverride);
   virtual ~CDialogEditPeak();
   virtual bool TransferDataToWindow();
   bool IsOK()
@@ -83,6 +84,7 @@ private:
   //  COARfile *pFile, CFrameAnalysis *pFrame, wxWindow *parent);
   bool _Do_UpdatePeak(
     COARfile *pFile, CFrameAnalysis *pFrame);
+  void _SetupUser(bool bAllowOverride);
   void _EnableOffLadder(bool b = true);
   void _TransferCurrentToOffLadder();
   void _TransferOffLadderToCurrent();
@@ -98,6 +100,7 @@ private:
 
   void _BuildComboLabel();
   size_t _GetSelectedAllele();
+  wxString m_sUser;
   wxString m_sDefaultArtifactLabel;
   wxString m_sOriginalLabel;
   std::vector<wxRadioButton *> m_vpRadioAllele;
@@ -124,6 +127,7 @@ private:
   bool m_bCanAcceptHere;
   bool m_bLocusNeedsAcceptance;
   bool m_bOK;
+  bool m_bShowUser;
   enum
   {
     _junk = wxID_HIGHEST,
