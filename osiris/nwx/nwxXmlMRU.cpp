@@ -297,7 +297,7 @@ nwxMRU *nwxXmlMRU::Find(const wxString &sPath, bool bCreate)
       m_bMod = true;
     }
   }
-  else if(bCreate && m.GetAccessTime())
+  else if(bCreate)
   {
     pRtn = new nwxMRU(m);
     pSet->insert(pRtn);
