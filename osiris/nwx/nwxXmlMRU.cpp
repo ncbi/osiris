@@ -46,17 +46,16 @@ const wxString nwxXmlMRU::g_sMRU("MRU");
 nwxMRU::nwxMRU(const wxString &sPath) : m_pfn(NULL)
 {
   wxFileName fn(sPath);
+  m_timeAccess.Set((time_t) 0);
   if(fn.FileExists())
   {
-    wxDateTime tCreate;
     m_sPath = fn.GetFullPath();
-    fn.GetTimes(&m_timeAccess,&m_timeMod,&tCreate);
+    fn.GetTimes(NULL,&m_timeMod,NULL);
   }
   else
   {
     m_sPath = sPath;
     m_timeMod.Set((time_t) 0);
-    m_timeAccess.Set((time_t) 0);
   }
   RegisterAll(true);
 }
@@ -298,7 +297,7 @@ nwxMRU *nwxXmlMRU::Find(const wxString &sPath, bool bCreate)
       m_bMod = true;
     }
   }
-  else if(bCreate && m.GetAccessTime())
+  else if(bCreate)
   {
     pRtn = new nwxMRU(m);
     pSet->insert(pRtn);

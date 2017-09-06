@@ -407,9 +407,7 @@ const wxString &CFrameSample::GetDefaultUserID()
 {
   if(m_sUserID.IsEmpty())
   {
-#ifndef __WXDEBUG__
     if(CanOverrideUserID())
-#endif
     {
       CParmOsiris *parm = CParmOsiris::GetGlobal();
       m_sUserID = parm->GetCMFuserID();

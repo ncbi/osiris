@@ -105,10 +105,10 @@ CPanelSampleTitle::CPanelSampleTitle(
   pLabelFileName->SetFont(fnBold);
 
   wxFlexGridSizer *pSizerGrid = new wxFlexGridSizer(2,0,6);
-  pSizerGrid->Add(pLabelSampleName);
-  pSizerGrid->Add(pSampleName);
-  pSizerGrid->Add(pLabelFileName);
-  pSizerGrid->Add(pFileName);
+  pSizerGrid->Add(pLabelSampleName,0,wxALIGN_BOTTOM);
+  pSizerGrid->Add(pSampleName,0,wxALIGN_BOTTOM);
+  pSizerGrid->Add(pLabelFileName,0,wxALIGN_BOTTOM);
+  pSizerGrid->Add(pFileName,0,wxALIGN_BOTTOM);
   if(!sRunStart.IsEmpty())
   {
     wxStaticText *pLabelRunStart =
@@ -116,8 +116,8 @@ CPanelSampleTitle::CPanelSampleTitle(
     wxStaticText *pRunStart =
       new wxStaticText(this,wxID_ANY,sRunStart);
     pLabelRunStart->SetFont(fnBold);
-    pSizerGrid->Add(pLabelRunStart);
-    pSizerGrid->Add(pRunStart);
+    pSizerGrid->Add(pLabelRunStart,0,wxALIGN_BOTTOM);
+    pSizerGrid->Add(pRunStart,0,wxALIGN_BOTTOM);
   }
   wxStaticText *pUserLabel = new wxStaticText(this,wxID_ANY,"User ID:");
   pUserLabel->SetFont(fnBold);
@@ -132,8 +132,8 @@ CPanelSampleTitle::CPanelSampleTitle(
       wxDefaultPosition, wxDefaultSize, wxBORDER_NONE | wxHL_ALIGN_LEFT);
     pUser = m_pwUser;
   }
-  pSizerGrid->Add(pUserLabel);
-  pSizerGrid->Add(pUser);
+  pSizerGrid->Add(pUserLabel,0,wxALIGN_BOTTOM);
+  pSizerGrid->Add(pUser,0,wxALIGN_BOTTOM);
   wxBoxSizer *pSizer = new wxBoxSizer(wxHORIZONTAL);
 //  pSizer->AddStretchSpacer(1);
   pSizer->Add(pSizerGrid,0,wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL,ID_BORDER);

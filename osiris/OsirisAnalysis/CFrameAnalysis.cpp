@@ -489,7 +489,7 @@ void CFrameAnalysis::EditPeak(
   }
   else
   {
-    CDialogEditPeak xx(parent,pSample,pPeak);
+    CDialogEditPeak xx(parent,pSample,pPeak,this->m_pOARfile->GetReviewerAllowUserOverride());
     if(xx.IsOK())
     {
       n = xx.ShowModal();
@@ -748,10 +748,12 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
   if(!m_nNoTimer)
   {
     CheckSelection();
+#if 0
     if(m_pDlgAnalysis != NULL)
     {
       m_pDlgAnalysis->OnTimer(e);
     }
+#endif
     if(m_pPanelPlotPreview != NULL)
     {
       m_pPanelPlotPreview->OnTimer(e);
@@ -1348,7 +1350,7 @@ void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
     bool bGridFocus = true;
     if(n == wxID_OK)
     {
-      RepaintData();
+      RepaintAllData(pSample);
     }
     else if(n == IDmenuEditCell)
     {
@@ -1474,7 +1476,7 @@ void CFrameAnalysis::DoReviewSample(int nReviewType, COARsample *pSample)
       int n = dlg.ShowModal();
       if(n == wxID_OK)
       {
-        RepaintData();
+        RepaintAllData(pSample);
       }
       else if(n == IDmenuEditCell)
       {
@@ -1623,7 +1625,6 @@ void CFrameAnalysis::_OnEnableSample()
     if(dlg.ShowModal() == wxID_OK)
     {
       RepaintAllData(pSample);
-      //RepaintData();
     }
   }
   m_pGrid->SetFocus();
@@ -2276,14 +2277,6 @@ bool CFrameAnalysis::_SaveOERFile(const wxString &sFileName)
   bool bRtn = m_pOARfile->SaveFile(sFileName);
   return bRtn;
 }
-/*
-void CFrameAnalysis::RepaintAllData(const wxString &sSampleFileName)
-{
-  CheckSaveStatus();
-  m_pParent->UpdateSamplePlot(m_pOARfile,sSampleFileName);
-  RepaintData();
-}
-*/
 void CFrameAnalysis::RepaintAllData(const COARsample *p)
 {
   CheckSaveStatus();
@@ -2433,6 +2426,7 @@ bool CFrameAnalysis::CheckSaveOnCloseFile()
       else if(n == wxID_NO)
       {
         bDone = true;
+        _DestroySamples();
         m_pParent->DiscardChanges(m_pOARfile);
       }
     }

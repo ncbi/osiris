@@ -123,14 +123,16 @@ public:
   {
     return m_bNewVolume;
   }
+#if 0
+//  OS-679 - removed because access time is unreliable
   bool SetInUseOnTimer(int nms);
   bool SetInUse()
   {
     bool b = m_lockRead.Touch();
     return b;
   }
-
   bool AccessedSince(int nSeconds = 300);
+#endif
   wxString GetLockUser();
   bool Lock();
   bool HasLock();
@@ -151,7 +153,7 @@ private:
   void _InitError();
   wxString _GetFilePath(const wxChar *pFileName) const;
   nwxLock m_lock;
-  nwxLockRead m_lockRead;
+//  nwxLockRead m_lockRead;
   CLabSettings m_lab;
   CXMLmessageBook m_book;
   wxString m_sPath;

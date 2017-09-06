@@ -39,6 +39,9 @@
 #include <wx/debug.h>
 #endif
 
+#if 0
+//  OS-679 - removed because access time is unreliable
+
 unsigned long nwxLockRead::SinceLastAccess()
 {
   unsigned long nRtn = 0;
@@ -98,7 +101,7 @@ bool nwxLockRead::Touch()
   return bRtn;
 }
         
-
+#endif
 
 #define CHECK_TIMEOUT(n) (((n) < 4) ? 4 : n)
 
@@ -313,7 +316,7 @@ void nwxLock::Clear()
 }
 
 #ifdef __WXDEBUG__
-
+#if 0
 void nwxLockRead::UnitTest(const wxString &sFileName)
 {
 #define FN "nwxLockRead::UnitTest() "
@@ -335,6 +338,7 @@ void nwxLockRead::UnitTest(const wxString &sFileName)
   }
 #undef FN
 }
+#endif
 
 void nwxLock::UnitTest()
 {
@@ -395,6 +399,9 @@ void nwxLock::UnitTest()
 #define READ_FILE "/bin/pwd"
 #endif
 
+#if 0
+    //  OS-679 - removed because access time is unreliable
+
   nwxLockRead lockRead;
   if(!lockRead.SetFileName(READ_FILE))
   {
@@ -404,6 +411,7 @@ void nwxLock::UnitTest()
   {
     sError.Append("Cannot update access time of file: " READ_FILE "\n");
   }
+#endif
   wxASSERT_MSG(sError.IsEmpty(),sError);
 #undef FN
 }

@@ -513,7 +513,7 @@ void CFrameRunAnalysis::_RunAutoExport(CDirEntry *pEntry)
     m_asErrors.clear();
   }
 }
-void CFrameRunAnalysis::OnTimer(wxTimerEvent &e)
+void CFrameRunAnalysis::OnTimer(wxTimerEvent &)
 {
   if(m_pAnalysis != NULL)
   {
@@ -524,7 +524,8 @@ void CFrameRunAnalysis::OnTimer(wxTimerEvent &e)
     bool bData = bMod && m_pAnalysis->IsOutputModified();
     if(m_pAnalysis->IsRunning())
     {
-      m_volume.SetInUseOnTimer(e.GetInterval());
+      //  OS-679 - removed because access time is unreliable
+      //m_volume.SetInUseOnTimer(e.GetInterval());
       if(m_pAnalysis->ProcessIO(8192))
       {
         bData = true;
