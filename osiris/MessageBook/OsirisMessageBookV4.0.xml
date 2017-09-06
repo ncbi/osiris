@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.00</VersionNumber>
-	<BuildTime>08/22/2017 02:41 PM</BuildTime>
+	<VersionNumber>7.02</VersionNumber>
+	<BuildTime>09/06/2017 09:51 AM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5347,7 +5347,7 @@
 			</ReportCriterion>
 			<Text>Do Not Call OL Allele If Pull-up</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
+			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smDontCallAnyOLsIfTooManyPreset</Name>
@@ -5379,7 +5379,7 @@
 			</ReportCriterion>
 			<Text>Do Not Call Alleles With Excess Residual</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
+			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacerStutterCallCriteriaBegin</Name>
@@ -6450,8 +6450,6 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
-		
-		
 	</MessageDeclarations>
 	<TestUnitsSampleLevel>
 		<ConditionalTestUnit>
@@ -6466,6 +6464,8 @@
 						<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
 						<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
 						<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
+						<Name>smDontCallPullupPlusOLPreset</Name>
+						<Name>smDoNotCallExcessResidualPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -6515,9 +6515,7 @@
 						<Name>smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing</Name>
 						<Name>smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset</Name>
 						<Name>smCraterPlusRaisedBaselinePreset</Name>
-						<Name>smDontCallPullupPlusOLPreset</Name>
 						<Name>smDontCallAnyOLsIfTooManyPreset</Name>
-						<Name>smDoNotCallExcessResidualPreset</Name>
 						<Name>smDoNotReportHeterozygousImbalanceIfMixturePreset</Name>
 						<Name>smNormalizeRawDataRelativeToBaselinePreset</Name>
 						<Name>smPercentOfStandardNoiseThreshold</Name>
