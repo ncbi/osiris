@@ -191,8 +191,8 @@ bool CVolume::CheckReload(bool bForceReload)
   bool bRtn = false;
   if(!IsOK())
   {} // not previously loaded
-  else if(IsLocked() && !HasLock())
-  {} // someone else has it locked, cannot load
+//  else if(IsLocked() && !HasLock())  // 9/7/16, continue to check even if locked
+//  {} // someone else has it locked, cannot load
   else if(bForceReload)
   {
     bRtn = m_lab.ReloadFile()
@@ -274,6 +274,7 @@ bool CVolume::Lock()
 #endif
   else if(m_lock.Lock(m_sPath))
   {
+    CheckReload();
     bRtn = true;
   }
   else
