@@ -109,7 +109,7 @@ CDialogArchiveCreate::CDialogArchiveCreate(
   {
     pSizer->Add(m_pCBIncludeInput,0,wxALL ^ wxBOTTOM,ID_BORDER);
   }
-  m_pCBlocation = new wxCheckBox(this, wxID_ANY, wxT("Show file location"));
+  m_pCBlocation = new wxCheckBox(this, wxID_ANY, wxT("Show archive file location"));
   m_pCBlocation->SetValue(true);
   pSizer->Add(m_pCBlocation,0,wxALL ^ wxBOTTOM, ID_BORDER);
   pSizer->Add(CreateButtonSizer(wxOK | wxCANCEL),0,wxALL | wxALIGN_CENTRE, ID_BORDER);
