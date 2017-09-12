@@ -223,14 +223,7 @@ bool CVolume::SetInUseOnTimer(int nms)
 wxString CVolume::GetLockUser()
 {
   wxString sRtn;
-  if(IsLocked())
-  {
-    sRtn = m_lock.GetLockUser();
-  }
-  else
-  {
-    sRtn = nwxLock::GetLockUser(m_sPath);
-  }
+  sRtn = nwxLock::GetLockUser(m_sPath);
   return sRtn;
 }
 
