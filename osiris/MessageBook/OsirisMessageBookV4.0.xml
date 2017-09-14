@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.02</VersionNumber>
-	<BuildTime>09/06/2017 09:51 AM</BuildTime>
+	<VersionNumber>7.03</VersionNumber>
+	<BuildTime>09/14/2017 06:47 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -4788,7 +4788,7 @@
 			<CountingDataInfo>
 				<Threshold>500</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Min RFU for a peak to be considered as a primary pull-up (Default = 500)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Min RFU for a peak to be considered as a peak that causes pull-up (primary pull-up) (Default = 500)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4838,7 +4838,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Constrain Pullup Pattern Analysis (Default: checked - Version 2.9.2 Compatible)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Constrain Pull-up Pattern Analysis (Default: checked - Functions like Version 2.9.1)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
