@@ -352,7 +352,7 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
     m_labCopy = *pLab;
     bReadOnly = 
       m_bReadOnly || !m_pVolumeCurrent->Lock();
-    bool bOK = m_pPanelLab->SetupAll(m_pVolumeCurrent);
+    bool bOK = _SetupAll();
     if(!bOK)
     {
       bRtn = _ResetVolume(pHold);
@@ -450,12 +450,6 @@ bool CDialogVolumes::TransferDataFromWindow()
   }
   return bRtn;
 }
-/*
-bool CDialogVolumes::TransferDataToWindow()
-{
-  return true;
-}
-*/
 bool CDialogVolumes::_SaveCurrent(bool bWarnUser)
 {
   bool bRtn = false;
@@ -524,21 +518,6 @@ void CDialogVolumes::OnCancel(wxCommandEvent &)
   else if(m_pPanelLab != NULL) // && _CurrentVolumeModified())
   {
     bEnd = _ChangeVolumeWarningOK();
-    /*
-    wxMessageDialog dlg(
-      this,
-      "Warning: The current " Volume_string " has been modified\n"
-         "and all modifications will be lost.\n\n"
-         "Do you wish to continue?"),
-      "Warning"),
-      wxYES_NO | wxNO_DEFAULT | wxICON_EXCLAMATION );
-    int n = dlg.ShowModal();
-    bEnd = (n == wxID_YES) || (n == wxID_OK);
-    if(bEnd)
-    {
-      Restore();
-    }
-    */
   }
   if(bEnd)
   {
@@ -553,7 +532,8 @@ void CDialogVolumes::OnApply(wxCommandEvent &)
 bool CDialogVolumes::_ChangeVolumeWarningOK()
 {
   bool bOK = true;
-  if(_CurrentVolumeModified())
+  
+  if(m_pVolumeCurrent->HasLock() && _CurrentVolumeModified())
   {
     wxMessageDialog dlg(
       this,
@@ -615,13 +595,23 @@ void CDialogVolumes::OnLock(wxCommandEvent &)
   else if(m_bReadOnly) {} // don't lock
   else if(m_pVolumeCurrent->Lock())
   {
-    m_pPanelLab->SetupAll(m_pVolumeCurrent);
+    _SetupAll();
   }
   else
   {
     wxString sMessage = m_pVolumeCurrent->GetLastError();
     mainApp::ShowAlert(sMessage,this);
   }
+}
+
+bool CDialogVolumes::_SetupAll()
+{
+  bool bRtn = m_pPanelLab->SetupAll(m_pVolumeCurrent);
+  if(bRtn)
+  {
+     m_labCopy = *m_pVolumeCurrent->GetLabSettings();
+  }
+  return bRtn;
 }
 
 void CDialogVolumes::OnAdd(wxCommandEvent &e)

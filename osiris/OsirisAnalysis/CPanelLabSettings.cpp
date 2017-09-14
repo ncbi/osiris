@@ -746,22 +746,31 @@ bool CPanelLabSettings::SetData(
 }
 bool CPanelLabSettings::SetupAll(CVolume *pVolume)
 {
-  bool bRtn = true;
-  if( (pVolume->GetLabSettings() == m_pData) &&
-    (pVolume->GetMessageBook() == m_pMessageBook) )
+  bool bRtn;
+  pVolume->CheckReload();
+  bRtn = pVolume->IsOK();
+  if(bRtn)
   {
-    SetReadOnly(!pVolume->HasLock());
-  }
-  else if(SetData(
-        pVolume->GetLabSettings(),
-        pVolume->GetMessageBook(),
-        !pVolume->HasLock()))
-  {
-    bRtn = TransferDataToWindow();
-  }
-  if(m_pbLock != NULL)
-  {
-    m_pbLock->Enable(!( pVolume->IsReadOnly() || pVolume->HasLock() ));
+    if( (pVolume->GetLabSettings() == m_pData) &&
+      (pVolume->GetMessageBook() == m_pMessageBook) )
+    {
+      SetReadOnly(!pVolume->HasLock());
+    }
+    else
+    {
+      bRtn = SetData(
+          pVolume->GetLabSettings(),
+          pVolume->GetMessageBook(),
+          !pVolume->HasLock());
+    }
+    if(bRtn)
+    {
+      bRtn = TransferDataToWindow();
+    }
+    if(m_pbLock != NULL)
+    {
+      m_pbLock->Enable(!( pVolume->IsReadOnly() || pVolume->HasLock() ));
+    }
   }
   return bRtn;
 }
