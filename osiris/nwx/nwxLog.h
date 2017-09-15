@@ -38,14 +38,21 @@
 
 class nwxLog
 {
-private:
-  nwxLog() {} // prevent instantiation
 public:
+  typedef void(*CALLBACK)(const wxString &, time_t);
+  static void SetCallback(CALLBACK f = NULL)
+  {
+    g_CALLBACK = f;
+  }
   static void LogMessage(const wxString &sMsg)
   {
     time_t t;
     time(&t);
     wxLog::OnLog(wxLOG_Message,sMsg,t);
+    if(g_CALLBACK != NULL)
+    {
+      (*g_CALLBACK)(sMsg,t);
+    }
   }
   static void LogMessageV(const wxChar *psFormat,...)
   {
@@ -55,9 +62,13 @@ public:
     va_end(ap);
     LogMessage(s);
   }
+private:
+  nwxLog() {} // prevent instantiation
+  static CALLBACK g_CALLBACK;
 };
 
-#ifdef __WXDEBUG__
+#if 1
+// #ifdef __WXDEBUG__
 
 #ifdef WIN32
 #define __func__ __FUNCTION__

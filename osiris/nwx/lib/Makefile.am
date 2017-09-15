@@ -14,6 +14,7 @@ libnwx_a_SOURCES = \
 ../nwxListMRU.cpp \
 ../nwxLock.cpp \
 ../nwxLockFile.cpp \
+../nwxLog.cpp \
 ../nwxPlotCtrl.cpp \
 ../nwxPlotDrawerLabel.cpp \
 ../nwxPlotDrawerShade.cpp \
