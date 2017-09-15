@@ -159,6 +159,7 @@
     <ClCompile Include="nwxListMRU.cpp" />
     <ClCompile Include="nwxLock.cpp" />
     <ClCompile Include="nwxLockFile.cpp" />
+    <ClCompile Include="nwxLog.cpp" />
     <ClCompile Include="nwxPlotCtrl.cpp" />
     <ClCompile Include="nwxPlotDrawerLabel.cpp" />
     <ClCompile Include="nwxPlotDrawerShade.cpp" />
