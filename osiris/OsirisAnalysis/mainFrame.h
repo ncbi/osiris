@@ -55,7 +55,7 @@
 #endif
 
 #include <wx/event.h>
-#include <wx/timer.h>
+//#include <wx/timer.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include "nwx/nwxString.h"
@@ -74,6 +74,7 @@
 #if mainFrameIsWindow
 #include "nwx/PersistentSize.h"
 #endif
+#include "nwx/nwxTimerReceiver.h"
 
 class COARfile;
 class CFrameAnalysis;
@@ -97,7 +98,7 @@ typedef enum
   TYPE_REPORT = 0, TYPE_PLOT = 1, TYPE_BATCH = 2, TYPE_ARCHIVE = 3
 } OSIRIS_FILE_TYPE;
 
-class mainFrame : public mainFrameSuper
+class mainFrame : public mainFrameSuper, nwxTimerReceiver
 {
 public:
 #if mainFrameIsWindow
@@ -126,7 +127,6 @@ public:
   void OnClose(wxCloseEvent &e);
 #endif
   void OnRecentFiles(wxCommandEvent &);
-  void OnQuit(wxCommandEvent &);
   void OnOpen(wxCommandEvent &);
   void OnOpenPlot(wxCommandEvent &);
   void OnOpenBatch(wxCommandEvent &);
@@ -137,7 +137,7 @@ public:
   void OnArtifactLabels(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);
-  void OnTimer(wxTimerEvent &);
+  virtual void OnTimer(wxTimerEvent &);
   void OnAbout(wxCommandEvent &);
   void OnCheckForUpdates(wxCommandEvent &);
   void OnHelp(wxCommandEvent &);
@@ -364,6 +364,7 @@ private:
     }
     return m_pAllLoci;
   }
+#if 0
   void SetupTimer()
   {
     if(m_pTimer == NULL)
@@ -372,6 +373,7 @@ private:
       m_pTimer->Start(250,false);
     }
   }
+#endif
   CFrameAnalysis *GetAnalysisFrame();
   wxXslObject XXX;
     // presence of this object 
@@ -383,7 +385,7 @@ private:
 //  CDialogVolumes *m_pVolumes;
 //  CDialogAnalysis *m_pDlgAnalysis;
   nwxDialogLog *m_pDialogErrorLog;
-  wxTimer *m_pTimer;
+  //  wxTimer *m_pTimer;
   CDialogEditGridColours *m_pColourEditDialog;
 #if HAS_CUSTOM_COLORS
   wxColourDialog *m_pDialogColour;

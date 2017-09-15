@@ -58,6 +58,7 @@
 #include "nwx/nwxTimerReceiver.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwxZip/nwxZipInput.h"
+#include "nwx/nwxLog.h"
 
 #include "CPlotData.h"
 #include "CMenuBar.h"
@@ -258,7 +259,7 @@ mainFrame::mainFrame() :
 //    m_pVolumes(NULL),
 //    m_pDlgAnalysis(NULL),
     m_pDialogErrorLog(NULL),
-    m_pTimer(NULL),
+//    m_pTimer(NULL),
     m_pColourEditDialog(NULL),
 #if HAS_CUSTOM_COLORS
     m_pDialogColour(NULL),
@@ -274,11 +275,12 @@ mainFrame::mainFrame() :
 #endif
 
 {
+  nwxLog_I_WAS_HERE;
 #ifndef __NO_MDI__
   CreateStatusBar(1);
 #endif
   _SetupCommonMenuBar();
-  SetupTimer();
+//  SetupTimer();
   COsirisIcon x;
 #if mainFrameIsWindow
   SetIcon(x);
@@ -305,34 +307,37 @@ mainFrame::~mainFrame()
 #if DRAG_DROP_FILES
   GetClientWindow()->SetDropTarget(NULL);
 #endif
-
+  nwxLog_I_WAS_HERE;
   if(m_pDialogMRU != NULL)
   {
-    delete m_pDialogMRU;
+    m_pDialogMRU->Destroy();
   }
   if(m_pDialogOpen != NULL)
   {
-    delete m_pDialogOpen;
+    m_pDialogOpen->Destroy();
   }
+#if 0
   if(m_pTimer != NULL)
   {
     delete m_pTimer;
   }
+#endif
   if(m_pAllLoci != NULL)
   {
     delete m_pAllLoci;
   }
   if(m_pColourEditDialog != NULL)
   {
-    delete m_pColourEditDialog;
+    m_pColourEditDialog->Destroy();
   }
 #if HAS_CUSTOM_COLORS
   if(m_pDialogColour != NULL)
   {
-    delete m_pDialogColour;
+    m_pDialogColour->Destroy();
   }
 #endif
-  delete m_pDialogErrorLog;
+  nwxLog_I_WAS_HERE;
+  m_pDialogErrorLog->Destroy();
 }
 bool mainFrame::Startup(bool bHasArgs)
 {
@@ -487,20 +492,6 @@ CFramePlot *mainFrame::OpenGraphicFile(
   return pPlot;
 }
 
-void mainFrame::OnQuit(wxCommandEvent &e)
-{
-  bool bSkip;
-  wxBusyCursor xxx;
-  bSkip = DoClose();
-#if mainFrameIsWindow
-  if(bSkip)
-  {
-    bSkip = Close();
-  }
-#endif
-  e.Skip(bSkip);
-}
-
 void mainFrame::OnOpen(wxCommandEvent &)
 {
   if(!CheckMaxFrames(true))
@@ -643,6 +634,7 @@ bool mainFrame::DoClose()
   {
     bDone = m_MDImgr.CloseAll();
   }
+#if 0
   if(bDone)
   {
     if(m_pTimer != NULL)
@@ -650,6 +642,7 @@ bool mainFrame::DoClose()
       m_pTimer->Stop();
     }
   }
+#endif
   return bDone;
 }
 
@@ -1746,7 +1739,7 @@ BEGIN_EVENT_TABLE(mainFrame,mainFrameSuper)
 EVT_CLOSE(mainFrame::OnClose)
 #endif
 
-EVT_TIMER(IDtimer, mainFrame::OnTimer)
+//EVT_TIMER(IDtimer, mainFrame::OnTimer)
 
 #if DRAG_DROP_FILES
 EVT_COMMAND(wxID_ANY,CEventDragDropDelay, mainFrame::OnDropFiles)

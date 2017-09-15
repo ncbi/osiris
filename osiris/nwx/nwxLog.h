@@ -35,6 +35,7 @@
 #include <stdarg.h>
 #include <wx/log.h>
 #include <wx/string.h>
+#include "nwx/nwxString.h"
 
 class nwxLog
 {
@@ -45,6 +46,16 @@ public:
     g_CALLBACK = f;
   }
   static void LogMessage(const wxString &sMsg)
+  {
+    wxLogMessage("%s",sMsg.utf8_str());
+    if(g_CALLBACK != NULL)
+    {
+      time_t t;
+      time(&t);
+      (*g_CALLBACK)(sMsg,t);
+    }
+  }
+  static void _LogMessage(const wxString &sMsg)
   {
     time_t t;
     time(&t);
