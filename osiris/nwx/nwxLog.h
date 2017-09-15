@@ -78,8 +78,8 @@ private:
   static CALLBACK g_CALLBACK;
 };
 
-#if 1
-// #ifdef __WXDEBUG__
+
+#ifdef __WXDEBUG__
 
 #ifdef WIN32
 #define __func__ __FUNCTION__

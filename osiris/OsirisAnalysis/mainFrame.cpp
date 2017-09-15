@@ -275,7 +275,6 @@ mainFrame::mainFrame() :
 #endif
 
 {
-  nwxLog_I_WAS_HERE;
 #ifndef __NO_MDI__
   CreateStatusBar(1);
 #endif
@@ -307,7 +306,6 @@ mainFrame::~mainFrame()
 #if DRAG_DROP_FILES
   GetClientWindow()->SetDropTarget(NULL);
 #endif
-  nwxLog_I_WAS_HERE;
   if(m_pDialogMRU != NULL)
   {
     m_pDialogMRU->Destroy();
@@ -336,7 +334,6 @@ mainFrame::~mainFrame()
     m_pDialogColour->Destroy();
   }
 #endif
-  nwxLog_I_WAS_HERE;
   m_pDialogErrorLog->Destroy();
 }
 bool mainFrame::Startup(bool bHasArgs)
