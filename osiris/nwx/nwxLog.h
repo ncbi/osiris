@@ -40,8 +40,8 @@
 class nwxLog
 {
 public:
-  typedef void(*CALLBACK)(const wxString &, time_t);
-  static void SetCallback(CALLBACK f = NULL)
+  typedef void (*logCALLBACK)(const wxString &, time_t);
+  static void SetCallback(logCALLBACK f = NULL)
   {
     g_CALLBACK = f;
   }
@@ -75,7 +75,7 @@ public:
   }
 private:
   nwxLog() {} // prevent instantiation
-  static CALLBACK g_CALLBACK;
+  static logCALLBACK g_CALLBACK;
 };
 
 
