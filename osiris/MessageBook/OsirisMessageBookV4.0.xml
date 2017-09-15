@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.03</VersionNumber>
-	<BuildTime>09/14/2017 06:47 PM</BuildTime>
+	<VersionNumber>7.04</VersionNumber>
+	<BuildTime>09/15/2017 01:43 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -6203,7 +6203,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
-				<Threshold>0</Threshold>
+				<Threshold>1</Threshold>
 				<ThresholdDescriptor>        Use Ladder ILS End Point Algorithm</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
