@@ -74,7 +74,6 @@
 #if mainFrameIsWindow
 #include "nwx/PersistentSize.h"
 #endif
-#include "nwx/nwxTimerReceiver.h"
 
 class COARfile;
 class CFrameAnalysis;
@@ -98,7 +97,7 @@ typedef enum
   TYPE_REPORT = 0, TYPE_PLOT = 1, TYPE_BATCH = 2, TYPE_ARCHIVE = 3
 } OSIRIS_FILE_TYPE;
 
-class mainFrame : public mainFrameSuper, nwxTimerReceiver
+class mainFrame : public mainFrameSuper
 {
 public:
 #if mainFrameIsWindow
@@ -137,7 +136,7 @@ public:
   void OnArtifactLabels(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);
-  virtual void OnTimer(wxTimerEvent &);
+  void OnTimer(wxTimerEvent &);
   void OnAbout(wxCommandEvent &);
   void OnCheckForUpdates(wxCommandEvent &);
   void OnHelp(wxCommandEvent &);
@@ -364,7 +363,6 @@ private:
     }
     return m_pAllLoci;
   }
-#if 0
   void SetupTimer()
   {
     if(m_pTimer == NULL)
@@ -373,7 +371,6 @@ private:
       m_pTimer->Start(250,false);
     }
   }
-#endif
   CFrameAnalysis *GetAnalysisFrame();
   wxXslObject XXX;
     // presence of this object 
@@ -385,7 +382,7 @@ private:
 //  CDialogVolumes *m_pVolumes;
 //  CDialogAnalysis *m_pDlgAnalysis;
   nwxDialogLog *m_pDialogErrorLog;
-  //  wxTimer *m_pTimer;
+  wxTimer *m_pTimer;
   CDialogEditGridColours *m_pColourEditDialog;
 #if HAS_CUSTOM_COLORS
   wxColourDialog *m_pDialogColour;
@@ -402,6 +399,7 @@ private:
 #ifdef MANUALLY_PLACE_FRAMES
   int m_nFrameSpace;
 #endif
+  bool m_bDoCloseCalled;
   static CMDIFrame *INIT_LAST_ACTIVE;
 #if mainFrameIsWindow
   DECLARE_PERSISTENT_SIZE_POSITION

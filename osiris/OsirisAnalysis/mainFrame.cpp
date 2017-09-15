@@ -55,10 +55,10 @@
 #include "nwx/nwxXmlMRU.h"
 #include "nwx/nwxKeyState.h"
 // #include "nwx/CPointerHold.h"
-#include "nwx/nwxTimerReceiver.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwxZip/nwxZipInput.h"
 #include "nwx/nwxLog.h"
+#include "nwx/nwxTimerReceiver.h"
 
 #include "CPlotData.h"
 #include "CMenuBar.h"
@@ -259,7 +259,7 @@ mainFrame::mainFrame() :
 //    m_pVolumes(NULL),
 //    m_pDlgAnalysis(NULL),
     m_pDialogErrorLog(NULL),
-//    m_pTimer(NULL),
+    m_pTimer(NULL),
     m_pColourEditDialog(NULL),
 #if HAS_CUSTOM_COLORS
     m_pDialogColour(NULL),
@@ -273,13 +273,13 @@ mainFrame::mainFrame() :
 #ifdef MANUALLY_PLACE_FRAMES
     ,m_nFrameSpace(-1)
 #endif
-
+    ,m_bDoCloseCalled(false)
 {
 #ifndef __NO_MDI__
   CreateStatusBar(1);
 #endif
   _SetupCommonMenuBar();
-//  SetupTimer();
+  SetupTimer();
   COsirisIcon x;
 #if mainFrameIsWindow
   SetIcon(x);
@@ -303,6 +303,7 @@ mainFrame::mainFrame() :
 mainFrame::~mainFrame()
 {
   --g_mainFrameCount;
+  DoClose();
 #if DRAG_DROP_FILES
   GetClientWindow()->SetDropTarget(NULL);
 #endif
@@ -314,12 +315,10 @@ mainFrame::~mainFrame()
   {
     m_pDialogOpen->Destroy();
   }
-#if 0
   if(m_pTimer != NULL)
   {
     delete m_pTimer;
   }
-#endif
   if(m_pAllLoci != NULL)
   {
     delete m_pAllLoci;
@@ -623,23 +622,25 @@ bool mainFrame::_VerifyClose()
 bool mainFrame::DoClose()
 {
   bool bDone = true;
-  if(!_VerifyClose())
+  if(!m_bDoCloseCalled)
   {
-    bDone = false;
-  }
-  else
-  {
-    bDone = m_MDImgr.CloseAll();
-  }
-#if 0
-  if(bDone)
-  {
-    if(m_pTimer != NULL)
+    if(!_VerifyClose())
     {
-      m_pTimer->Stop();
+      bDone = false;
+    }
+    else
+    {
+      bDone = m_MDImgr.CloseAll();
+    }
+    if(bDone)
+    {
+      m_bDoCloseCalled = true;
+      if(m_pTimer != NULL)
+      {
+        m_pTimer->Stop();
+      }
     }
   }
-#endif
   return bDone;
 }
 
@@ -840,18 +841,6 @@ void mainFrame::OnTimer(wxTimerEvent &e)
     UnitTest::Run();
 #endif
     nwxTimerReceiver::DispatchTimer(e);
-/*
-   // 1/6/11 - removed code and started using nwxTimerReceiver
-    m_MDImgr.OnTimer(e);
-    if(m_pVolumes != NULL)
-    {
-      m_pVolumes->OnTimer(e);
-    }
-    if(m_pDlgAnalysis != NULL)
-    {
-      m_pDlgAnalysis->OnTimer(e);
-    }
-*/
 #if CHECK_FRAME_ON_TIMER && !defined(__NO_MDI__)
     CheckActiveFrame();
 #endif
@@ -1736,7 +1725,7 @@ BEGIN_EVENT_TABLE(mainFrame,mainFrameSuper)
 EVT_CLOSE(mainFrame::OnClose)
 #endif
 
-//EVT_TIMER(IDtimer, mainFrame::OnTimer)
+EVT_TIMER(IDtimer, mainFrame::OnTimer)
 
 #if DRAG_DROP_FILES
 EVT_COMMAND(wxID_ANY,CEventDragDropDelay, mainFrame::OnDropFiles)
