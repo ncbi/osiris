@@ -32,7 +32,7 @@
 #include "nwx/vectorptr.h"
 
 // this should probably be in lab settings
-const wxChar * const COARreview::TIME_FORMAT(wxS("%c"));
+const wxString COARreview::TIME_FORMAT(wxS("%c"));
 
 const wxString &IAppendReview::FormatError(wxString *psBuffer, IAppendReview *pRA, const wxString &sUser)
 {
