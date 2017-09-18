@@ -31,8 +31,8 @@
 #include "COARreview.h"
 #include "nwx/vectorptr.h"
 
-// this should probably be in lab settings
-const wxChar * const COARreview::TIME_FORMAT(wxS("%c"));
+// this should probably be in site settings
+const wxChar * const COARreview::TIME_FORMAT(wxS("%Y-%m-%d %H:%M:%S"));
 
 const wxString &IAppendReview::FormatError(wxString *psBuffer, IAppendReview *pRA, const wxString &sUser)
 {
