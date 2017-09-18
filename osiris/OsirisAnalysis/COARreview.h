@@ -118,7 +118,7 @@ public:
     _Format(&sRtn,psAction);
     return sRtn;
   }
-  static const wxString TIME_FORMAT;
+  static const wxChar * const TIME_FORMAT;
 protected:
   virtual void RegisterAll(bool = false);
   void _Format(wxString *ps, const wxChar *psAction) const
