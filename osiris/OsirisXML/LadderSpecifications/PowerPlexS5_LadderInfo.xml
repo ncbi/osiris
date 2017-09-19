@@ -75,8 +75,8 @@
 				<SearchRegions>
 					<Region>
 						<ILSName>PROMEGA-ILS-600</ILSName>
-						<MinGrid>115.06</MinGrid>
-						<MaxGrid>198.63</MaxGrid>
+						<MinGrid>114.06</MinGrid>
+						<MaxGrid>200.63</MaxGrid>
 					</Region>
 				</SearchRegions>
 				<LadderAlleles>
