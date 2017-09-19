@@ -55,9 +55,10 @@
 #include "nwx/nwxXmlMRU.h"
 #include "nwx/nwxKeyState.h"
 // #include "nwx/CPointerHold.h"
-#include "nwx/nwxTimerReceiver.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwxZip/nwxZipInput.h"
+#include "nwx/nwxLog.h"
+#include "nwx/nwxTimerReceiver.h"
 
 #include "CPlotData.h"
 #include "CMenuBar.h"
@@ -272,7 +273,7 @@ mainFrame::mainFrame() :
 #ifdef MANUALLY_PLACE_FRAMES
     ,m_nFrameSpace(-1)
 #endif
-
+    ,m_bDoCloseCalled(false)
 {
 #ifndef __NO_MDI__
   CreateStatusBar(1);
@@ -302,17 +303,17 @@ mainFrame::mainFrame() :
 mainFrame::~mainFrame()
 {
   --g_mainFrameCount;
+  DoClose();
 #if DRAG_DROP_FILES
   GetClientWindow()->SetDropTarget(NULL);
 #endif
-
   if(m_pDialogMRU != NULL)
   {
-    delete m_pDialogMRU;
+    m_pDialogMRU->Destroy();
   }
   if(m_pDialogOpen != NULL)
   {
-    delete m_pDialogOpen;
+    m_pDialogOpen->Destroy();
   }
   if(m_pTimer != NULL)
   {
@@ -324,15 +325,15 @@ mainFrame::~mainFrame()
   }
   if(m_pColourEditDialog != NULL)
   {
-    delete m_pColourEditDialog;
+    m_pColourEditDialog->Destroy();
   }
 #if HAS_CUSTOM_COLORS
   if(m_pDialogColour != NULL)
   {
-    delete m_pDialogColour;
+    m_pDialogColour->Destroy();
   }
 #endif
-  delete m_pDialogErrorLog;
+  m_pDialogErrorLog->Destroy();
 }
 bool mainFrame::Startup(bool bHasArgs)
 {
@@ -487,20 +488,6 @@ CFramePlot *mainFrame::OpenGraphicFile(
   return pPlot;
 }
 
-void mainFrame::OnQuit(wxCommandEvent &e)
-{
-  bool bSkip;
-  wxBusyCursor xxx;
-  bSkip = DoClose();
-#if mainFrameIsWindow
-  if(bSkip)
-  {
-    bSkip = Close();
-  }
-#endif
-  e.Skip(bSkip);
-}
-
 void mainFrame::OnOpen(wxCommandEvent &)
 {
   if(!CheckMaxFrames(true))
@@ -635,19 +622,23 @@ bool mainFrame::_VerifyClose()
 bool mainFrame::DoClose()
 {
   bool bDone = true;
-  if(!_VerifyClose())
+  if(!m_bDoCloseCalled)
   {
-    bDone = false;
-  }
-  else
-  {
-    bDone = m_MDImgr.CloseAll();
-  }
-  if(bDone)
-  {
-    if(m_pTimer != NULL)
+    if(!_VerifyClose())
     {
-      m_pTimer->Stop();
+      bDone = false;
+    }
+    else
+    {
+      bDone = m_MDImgr.CloseAll();
+    }
+    if(bDone)
+    {
+      m_bDoCloseCalled = true;
+      if(m_pTimer != NULL)
+      {
+        m_pTimer->Stop();
+      }
     }
   }
   return bDone;
@@ -850,18 +841,6 @@ void mainFrame::OnTimer(wxTimerEvent &e)
     UnitTest::Run();
 #endif
     nwxTimerReceiver::DispatchTimer(e);
-/*
-   // 1/6/11 - removed code and started using nwxTimerReceiver
-    m_MDImgr.OnTimer(e);
-    if(m_pVolumes != NULL)
-    {
-      m_pVolumes->OnTimer(e);
-    }
-    if(m_pDlgAnalysis != NULL)
-    {
-      m_pDlgAnalysis->OnTimer(e);
-    }
-*/
 #if CHECK_FRAME_ON_TIMER && !defined(__NO_MDI__)
     CheckActiveFrame();
 #endif

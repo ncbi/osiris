@@ -1,3 +1,3 @@
 #include "nwx/nwxLog.h"
 
-nwxLog::CALLBACK nwxLog::g_CALLBACK = NULL;
+nwxLog::logCALLBACK nwxLog::g_CALLBACK = NULL;

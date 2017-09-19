@@ -56,13 +56,12 @@ public:
   mainApp()
   {
     g_count++;
-#ifdef __WXMAC__
     m_pFrame = NULL;
-#endif
     wxXml2Object::AddReceiver(this);
   }
   virtual ~mainApp();
   virtual bool OnInit();
+  void OnQuit(wxCommandEvent &e);
 
   // cmd line override
 #ifndef __WXMAC__
@@ -73,7 +72,6 @@ public:
 #define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);
 
 DECLARE_CMD_HANDLER(OnOpen)
-DECLARE_CMD_HANDLER(OnQuit)
 DECLARE_CMD_HANDLER(OnRecentFiles)
 DECLARE_CMD_HANDLER(OnLabSettings)
 DECLARE_CMD_HANDLER(OnArtifactLabels)
@@ -166,6 +164,7 @@ private:
   static const wxString g_sACTIVE;
   static const wxString g_sINACTIVE;
 #endif
+  void _Cleanup();
   static void _LogMessage(const wxString &sMsg);
   static void _LogMessageFile(const wxString &sMsg, time_t t);
   static void _CloseMessageStream();

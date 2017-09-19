@@ -78,11 +78,9 @@ mainApp *mainApp::g_pThis = NULL;
 
 wxFile *mainApp::m_pFout = NULL;
 
-mainApp::~mainApp()
+void mainApp::_Cleanup()
 {
-  g_count--;
-  wxXml2Object::RemoveReceiver(this);
-  if(!g_count)
+  if(g_count <= 1)
   {
     if(m_pConfig != NULL)
     {
@@ -114,8 +112,14 @@ mainApp::~mainApp()
       delete m_pKitList;
       m_pKitList = NULL;
     }
-    _CloseMessageStream();
   }
+}
+mainApp::~mainApp()
+{
+  wxXml2Object::RemoveReceiver(this);
+  g_count--;
+  _Cleanup(); // should be redundant but harmless
+  if(!g_count) { _CloseMessageStream(); }
 }
 ConfigDir *mainApp::GetConfig()
 {
@@ -299,6 +303,10 @@ void mainApp::_OpenMessageStream()
         m_pFout = NULL;
         nwxLog::LogMessage(wxT("Cannot open message log"));
       }
+      else
+      {
+        nwxLog::SetCallback(_LogMessageFile);
+      }
     }
   }
 }
@@ -338,15 +346,11 @@ void mainApp::LogMessageV(const wxChar *psFormat,...)
 }
 void mainApp::_LogMessage(const wxString &sMsg)
 {
+#if mainFrameIsWindow
   if(mainFrame::GetCount() > 0)
+#endif
   {
     nwxLog::LogMessage(sMsg);
-  }
-  if(LogIsOpen())
-  {
-    time_t t;
-    time(&t);
-    _LogMessageFile(sMsg,t);
   }
 }
 void mainApp::ReceiveXml2Error(const wxString &s)
@@ -371,6 +375,11 @@ bool mainApp::ConfirmModificationsLost(wxWindow *parent)
 
 void mainApp::_LogMessageFile(const wxString &sMsg, time_t t)
 {
+  if(!LogIsOpen())  { return; }
+  if(!t)
+  {
+    time(&t);
+  }
   wxString sTime = nwxString::FormatDateTime(t);
   wxString sFullMessage;
   sFullMessage.Alloc(sMsg.Len() + sTime.Len() + 8);
@@ -408,9 +417,10 @@ void mainApp::_CloseMessageStream()
 {
   if(LogIsOpen())
   {
-    delete m_pFout;
+    _LogMessageFile("Closing log file on exit.",0);
+    wxFile *p = m_pFout;
     m_pFout = NULL;
-    _LogMessage("File closed on exit");
+    delete p;
   }
 }
 
@@ -504,13 +514,34 @@ void mainApp::OnActivate(wxActivateEvent &e)
     e.Skip();
 }
 
+void mainApp::OnQuit(wxCommandEvent &e)
+{
+  bool bSkip;
+  wxBusyCursor xxx;
+  bSkip = m_pFrame->DoClose();
+#if mainFrameIsWindow
+  if(bSkip)
+  {
+    bSkip = m_pFrame->Close();
+  }
+#else
+  if(bSkip)
+  {
+    m_pFrame->DeletePendingEvents();
+    delete m_pFrame;
+    m_pFrame = NULL;
+    _Cleanup();
+  }
+#endif
+  e.Skip(bSkip);
+  _LogMessageFile(wxT("mainApp::OnQuit"),0);
+}
 
 #define DEFINE_CMD_HANDLER(x) \
   void mainApp::x (wxCommandEvent &e) { m_pFrame->x(e); }
 
 
 DEFINE_CMD_HANDLER(OnOpen)
-DEFINE_CMD_HANDLER(OnQuit)
 DEFINE_CMD_HANDLER(OnRecentFiles)
 DEFINE_CMD_HANDLER(OnLabSettings)
 DEFINE_CMD_HANDLER(OnArtifactLabels)

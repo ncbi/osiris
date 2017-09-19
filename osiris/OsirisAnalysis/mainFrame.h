@@ -55,7 +55,7 @@
 #endif
 
 #include <wx/event.h>
-#include <wx/timer.h>
+//#include <wx/timer.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include "nwx/nwxString.h"
@@ -126,7 +126,6 @@ public:
   void OnClose(wxCloseEvent &e);
 #endif
   void OnRecentFiles(wxCommandEvent &);
-  void OnQuit(wxCommandEvent &);
   void OnOpen(wxCommandEvent &);
   void OnOpenPlot(wxCommandEvent &);
   void OnOpenBatch(wxCommandEvent &);
@@ -400,6 +399,7 @@ private:
 #ifdef MANUALLY_PLACE_FRAMES
   int m_nFrameSpace;
 #endif
+  bool m_bDoCloseCalled;
   static CMDIFrame *INIT_LAST_ACTIVE;
 #if mainFrameIsWindow
   DECLARE_PERSISTENT_SIZE_POSITION
