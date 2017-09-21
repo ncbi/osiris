@@ -32,14 +32,16 @@
 #include <wx/stattext.h>
 #include <wx/button.h>
 #include "CDialogDeleteDisabled.h"
+#include "CPanelUserID.h"
 
 CDialogDeleteDisabled::~CDialogDeleteDisabled() {}
 
 CDialogDeleteDisabled::CDialogDeleteDisabled(
-  wxWindow *parent, const std::vector<const wxString> &vsNames) :
+  wxWindow *parent, const std::vector<const wxString> &vsNames, bool bAllowUserOverride) :
     wxDialog(parent,wxID_ANY,wxT("Delete samples..."),
         wxDefaultPosition,wxDefaultSize,
-        mainApp::DIALOG_STYLE)
+        mainApp::DIALOG_STYLE),
+    m_pPanelUser(NULL)
 {
   std::vector<const wxString>::const_iterator itr;
   wxString sPlural;
@@ -61,9 +63,19 @@ CDialogDeleteDisabled::CDialogDeleteDisabled(
     pSizer2->Add(pStat,0,wxALIGN_LEFT | wxLEFT | wxRIGHT | wxBOTTOM,ID_BORDER);
   }
   pSizer1->Add(pSizer2,0,wxALIGN_CENTRE,0);
-  pSizer1->Add(CreateButtonSizer(wxOK | wxCANCEL),0,wxALIGN_CENTRE | wxLEFT | wxRIGHT | wxBOTTOM,ID_BORDER);
+  m_pPanelUser = new CPanelUserID(
+    this, wxID_ANY, wxID_ANY, NULL, 
+    UID_BTN_OK | UID_BTN_CANCEL | 
+      UID_SPACER_BTN_RIGHT | UID_SEND_BTN_EVENTS ,
+    !bAllowUserOverride);
+  pSizer1->Add(m_pPanelUser,0,wxALIGN_CENTRE | wxLEFT | wxRIGHT | wxBOTTOM,ID_BORDER);
   SetSizer(pSizer1);
   Layout();
   Fit();
   CentreOnParent();
+}
+
+const wxString &CDialogDeleteDisabled::GetUserID()
+{
+  return m_pPanelUser->GetValue();
 }

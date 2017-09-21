@@ -1555,7 +1555,8 @@ void CFrameAnalysis::_OnDeleteDisabled()
         vsNames.push_back((*itr)->GetName());
       }
     }
-    CDialogDeleteDisabled dlg(this, vsNames);
+    CDialogDeleteDisabled dlg(
+      this, vsNames,m_pOARfile->GetReviewerAllowUserOverride());
     if(dlg.ShowModal() == wxID_OK)
     {
       wxString sPath;
@@ -1577,7 +1578,7 @@ void CFrameAnalysis::_OnDeleteDisabled()
           pFrame->Close(false);
         }
       }
-      m_pOARfile->DeleteDisabledSamples();
+      m_pOARfile->DeleteDisabledSamples(dlg.GetUserID());
       m_SampleSort.UpdateSort();
       RepaintData();
       m_pGrid->SetFocus();

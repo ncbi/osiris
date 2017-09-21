@@ -35,11 +35,19 @@
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
 
+class CPanelUserID;
+
 class CDialogDeleteDisabled: public wxDialog
 {
 public:
-  CDialogDeleteDisabled(wxWindow *parent, const std::vector<const wxString> &vsNames);
+  CDialogDeleteDisabled(
+    wxWindow *parent,
+    const std::vector<const wxString> &vsNames,
+    bool bAllowUserOverride);
   virtual ~CDialogDeleteDisabled();
+  const wxString &GetUserID();
+private:
+  CPanelUserID *m_pPanelUser;
 };
 
 #endif
