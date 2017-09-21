@@ -26,7 +26,7 @@
     <MsgName>smExcessiveResidualDisplacement</MsgName>
     <MsgName>smExcessiveResidualDisplacementLeft</MsgName>
     <MsgName>smExcessiveResidualDisplacementRight</MsgName>
-    <SearchString>residual.*displacement</SearchString>
+    <SearchString>excess.*residual.*displacement</SearchString>
   </SubGroup>
   <SubGroup>
     <ID>Stutter</ID>
