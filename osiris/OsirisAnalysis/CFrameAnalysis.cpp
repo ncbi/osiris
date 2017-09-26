@@ -2082,21 +2082,27 @@ bool CFrameAnalysis::IsEdited()
 }
 void CFrameAnalysis::SelectRowCol(int nRow, int nCol)
 {
-  if(nRow < 0 || nCol < 0)
+  int nR = m_pGrid->GetNumberRows();
+  int nC = m_pGrid->GetNumberCols();
+  if(nRow < 0 || nCol < 0 || nR < 1 || nC < 1)
   {}
   else if(nRow == m_nLastRowSelect && nCol == m_nLastColSelect)
   {}
   else
   {
-    m_pGrid->SetGridCursor(nRow,nCol);
+    m_pGrid->SetGridCursor(
+      nRow < nR ? nRow : (nR-1),
+      nCol < nC ? nCol : (nC-1));
     CheckSelection(true);
   }
 }
 void CFrameAnalysis::SelectRow(int nRow)
 {
-  if(nRow >= 0)
+  int nR = m_pGrid->GetNumberRows();
+  if(nRow >= 0 && nR > 0)
   {
     nwxGridBatch xx(m_pGrid);
+    if(nRow >= nR) { nRow = nR - 1; }
     bool bNewRow = (nRow != m_nLastRowSelect);
     m_nLastColSelect = 0;
     m_nLastRowSelect = nRow;

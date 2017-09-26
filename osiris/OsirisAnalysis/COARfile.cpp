@@ -1573,6 +1573,7 @@ size_t COARfile::DeleteDisabledSamples(const wxString &sUserID)
       sNotes = wxString::Format(wxT("%d samples were deleted."),(int)nRtn);
     }
     m_heading.AddDeletedSamples(nRtn);
+    SetLastSampleDisabled(NULL);
     for(itrndx = vnKill.begin();
       itrndx != vnKill.end();
       ++itrndx)
