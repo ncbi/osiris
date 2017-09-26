@@ -1058,9 +1058,11 @@ void CFrameAnalysis::OnShowGraphic(wxCommandEvent &)
 {
   ShowGraphicByRow(-1);
 }
+#ifndef __WXMAC__
 #ifdef __WXDEBUG__
 _CRTIMP extern long _crtBreakAlloc;
 extern long _lRequestCurr;
+#endif
 #endif
 
 void CFrameAnalysis::ShowSampleFrame(
