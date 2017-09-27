@@ -312,6 +312,7 @@
         <RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = -0.145310835437x4 + 0.202711408958x3 + 0.119356154941x2 + 0.822192429314x + 0.000682029180</AltSpacing>
       </LaneStandard>
       <LaneStandard>
         <Name>BV-80-500</Name>
@@ -320,6 +321,7 @@
         <RelativeHeights>H H MH MH MH MH MH MH MH MH MH MH MH MH MH M M M M M M M M M</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = -0.119369931049x4 + 0.145887959174x3 + 0.154066893327x2 + 0.819017852499x + 0.000100471474</AltSpacing>
       </LaneStandard>
     </ILS>
     <ILS>
@@ -362,6 +364,14 @@
         <DisplayName>60-400</DisplayName>
         <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400</Characteristics>
         <RelativeHeights>M M H M M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-350</Name>
+        <DisplayName>60-350</DisplayName>
+        <Characteristics>60 80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M M H M M M M H M M M H M M M</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
@@ -565,6 +575,7 @@
         <RelativeHeights>H H H H H H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = 0.079441303276325900x4 - 0.612694816534713000x3 + 0.815417599629654000x2 + 0.718089786419796000x - 0.000199189152510826</AltSpacing>
       </LaneStandard>
       <LaneStandard>
         <Name>NetBio80_500</Name>
@@ -573,6 +584,7 @@
         <RelativeHeights>MH H H H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = 0.067498994375x4 - 0.537056588548x3 + 0.690230955432x2 + 0.779316925338x + 0.000060676966</AltSpacing>
       </LaneStandard>
       <LaneStandard>
         <Name>NetBio100_500</Name>
@@ -581,6 +593,7 @@
         <RelativeHeights>H MH H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.9915</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.996</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = 0.060563325718x4 - 0.477266145512x3 + 0.584289125935x2 + 0.832740740779x - 0.000259323506</AltSpacing>
       </LaneStandard>
       <LaneStandard>
         <Name>NetBio60_450</Name>
@@ -589,6 +602,7 @@
         <RelativeHeights>H H H H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = 0.043738943216x4 - 0.455460772097x3 + 0.702239613045x2 + 0.709870151031x - 0.000265093535</AltSpacing>
       </LaneStandard>
       <LaneStandard>
         <Name>NetBio80_450</Name>
@@ -597,6 +611,7 @@
         <RelativeHeights>H H H H H H H H H H H H H H H H H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.990</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.994</CorrelationAutoAcceptanceThreshold>
+        <AltSpacing>y = 0.032506118144x4 - 0.386981298385x3 + 0.585520326155x2 + 0.769056224485x + 0.000002331201</AltSpacing>
       </LaneStandard>
     </ILS>
   </LaneStandards>
@@ -740,6 +755,10 @@
 	<Set>
 		<KitName>NetBio_FlexPlex</KitName>
 		<FileName>NetBioFlexPlex_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>PowerPlexS5</KitName>
+		<FileName>PowerPlexS5_LadderInfo.xml</FileName>
 	</Set>
   </Kits>
 </KitData>

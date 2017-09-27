@@ -156,7 +156,7 @@ bool CVolume::Load(const wxString &sPath, bool bSetReadOnly)
   m_bOK = true; // must be true for GetLabSettingsFileName() and GetMessageBookFileName()
   m_bOK = m_lab.LoadFile(GetLabSettingsFileName())
       && m_book.LoadFile(GetMessageBookFileName());
-  m_lockRead.SetFileName(GetAccessFileName());
+//  m_lockRead.SetFileName(GetAccessFileName());
   return m_bOK;
 }
 
@@ -191,8 +191,8 @@ bool CVolume::CheckReload(bool bForceReload)
   bool bRtn = false;
   if(!IsOK())
   {} // not previously loaded
-  else if(IsLocked() && !HasLock())
-  {} // someone else has it locked, cannot load
+//  else if(IsLocked() && !HasLock())  // 9/7/16, continue to check even if locked
+//  {} // someone else has it locked, cannot load
   else if(bForceReload)
   {
     bRtn = m_lab.ReloadFile()
@@ -205,7 +205,9 @@ bool CVolume::CheckReload(bool bForceReload)
   }
   return bRtn;
 }
+#if 0
 
+//  OS-679 - removed because access time is unreliable
 bool CVolume::SetInUseOnTimer(int nms)
 {
   m_nCountDown -= nms;
@@ -217,25 +219,23 @@ bool CVolume::SetInUseOnTimer(int nms)
   }
   return bRtn;
 }
-
+#endif
 wxString CVolume::GetLockUser()
 {
   wxString sRtn;
-  if(IsLocked())
-  {
-    sRtn = m_lock.GetLockUser();
-  }
-  else
-  {
-    sRtn = nwxLock::GetLockUser(m_sPath);
-  }
+  sRtn = nwxLock::GetLockUser(m_sPath);
   return sRtn;
 }
+
+#if 0
+//  OS-679 - removed because access time is unreliable
+
 bool CVolume::AccessedSince(int nSeconds)
 {
   bool bRtn = m_lockRead.AccessedSince(nSeconds);
   return bRtn;
 }
+#endif
 void CVolume::_InitError()
 {
   m_sLastError = "This " Volume_string ", ";
@@ -253,6 +253,9 @@ bool CVolume::Lock()
       "cannot be locked because it is read only,\n"
          "and cannot be modified");
   }
+#if 0
+  //  OS-679 - removed because access time is unreliable
+
   else if((!m_bIgnoreReadLock) && AccessedSince(30))
   {
     _InitError();
@@ -261,8 +264,10 @@ bool CVolume::Lock()
         "cannot be locked because it in use.\n"
         "Please try again later.");
   }
+#endif
   else if(m_lock.Lock(m_sPath))
   {
+    CheckReload();
     bRtn = true;
   }
   else

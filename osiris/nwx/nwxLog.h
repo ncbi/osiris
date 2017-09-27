@@ -35,17 +35,35 @@
 #include <stdarg.h>
 #include <wx/log.h>
 #include <wx/string.h>
+#include "nwx/nwxString.h"
 
 class nwxLog
 {
-private:
-  nwxLog() {} // prevent instantiation
 public:
+  typedef void (*logCALLBACK)(const wxString &, time_t);
+  static void SetCallback(logCALLBACK f = NULL)
+  {
+    g_CALLBACK = f;
+  }
   static void LogMessage(const wxString &sMsg)
+  {
+    wxLogMessage("%s",sMsg.utf8_str());
+    if(g_CALLBACK != NULL)
+    {
+      time_t t;
+      time(&t);
+      (*g_CALLBACK)(sMsg,t);
+    }
+  }
+  static void _LogMessage(const wxString &sMsg)
   {
     time_t t;
     time(&t);
     wxLog::OnLog(wxLOG_Message,sMsg,t);
+    if(g_CALLBACK != NULL)
+    {
+      (*g_CALLBACK)(sMsg,t);
+    }
   }
   static void LogMessageV(const wxChar *psFormat,...)
   {
@@ -55,7 +73,11 @@ public:
     va_end(ap);
     LogMessage(s);
   }
+private:
+  nwxLog() {} // prevent instantiation
+  static logCALLBACK g_CALLBACK;
 };
+
 
 #ifdef __WXDEBUG__
 

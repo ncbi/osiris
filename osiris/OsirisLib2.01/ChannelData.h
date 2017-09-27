@@ -156,6 +156,7 @@ public:
 	double TotalPeakHeight (int& numberOfPeaks);
 	virtual int AddLocus (Locus* locus);
 	virtual int SetAllApproximateIDs (ChannelData* laneStd);
+	virtual int RemoveAllShouldersTooCloseToPrimary ();
 
 	virtual bool ChannelIsValid () const { if (mData == NULL) return false; return true; }
 	virtual bool IsControlChannel () const { return false; }

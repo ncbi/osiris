@@ -68,9 +68,13 @@ bool DataSignal::ConsiderAllOLAllelesAccepted = false;
 int DataSignal::NumberOfChannels = 0;
 int DataSignal::NumberOfIntervalsForConcaveDownAlgorithm = 3;
 
+const double two_thirds = 2.0 / 3.0;
+const double sqRoot_two_thirds = sqrt (two_thirds);
+
 double SampledData::PeakFractionForFlatCurveTest = 0.25;
 double SampledData::PeakLevelForFlatCurveTest = 60.0;
 bool SampledData::IgnoreNoiseAnalysisAboveDetectionInSmoothing = false;
+double SampledData::DetectionRFU = 1;
 
 double ParametricCurve::FitTolerance = 0.999995;
 double ParametricCurve::TriggerForArtifactTest = 0.992;
@@ -365,6 +369,7 @@ PERSISTENT_DEFINITION (CraterSignal, _CRATERSIGNAL_, "CraterSignal")
 PERSISTENT_DEFINITION (SimpleSigmoidSignal, _SIMPLESIGMOIDSIGNAL_, "SimpleSigmoidSignal")
 PERSISTENT_DEFINITION (NegativeSignal, _NEGATIVESIGNAL_, "NegativeSignal")
 PERSISTENT_DEFINITION (NoisyPeak, _NOISYPEAK_, "NoisyPeak")
+PERSISTENT_DEFINITION (SpikeSignal, _SPIKESIGNAL_, "SpikeSignal")
 
 
 SampleDataInfo :: SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, 
@@ -1105,7 +1110,7 @@ mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRigh
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
 mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0) {
+mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1886,6 +1891,12 @@ double DataSignal :: GetWidth () {
 	double leftSearch = GetMean ();
 	double mu = leftSearch;
 	double sigma = GetStandardDeviation ();
+
+	if (sigma < 1.0) {
+
+		sigma = 1.0;
+	}
+
 	double targetWidth = 0.01 * sigma;
 	double rightSearch = leftSearch + sigma;
 	int i;
@@ -1966,7 +1977,7 @@ double DataSignal :: GetWidth () {
 			break;
 	}
 
-	cout << "Could not terminate binary search for peak at " << GetMean () << " with sigma = " << GetStandardDeviation () << " and peak = " << Peak () << endl;
+	cout << "Could not terminate binary search for peak of type " << GetSignalType () << " at " << GetMean () << " with sigma = " << GetStandardDeviation () << " and peak = " << Peak () << endl;
 	mWidth = 3.14159;
 	return mWidth;
 }
@@ -3595,13 +3606,22 @@ DataSignal* SampledData :: FindNextCharacteristicFromRight (const DataSignal& Si
 	if (nextInterval == NULL)
 		return NULL;
 
+	nextInterval->AddSideValues (this);
 	DataSignal* value = NULL;
 
 	while (value == NULL) {
-	
+
 		value = Signature.FindCharacteristic (this, nextInterval, TraceWindowSize, fit, previous);
 
 		if (value != NULL) {
+
+			if (value->GetStandardDeviation () < 0.14) {
+
+				delete value;
+				value = new SpikeSignal (nextInterval->GetMode (), nextInterval->GetMaxAtMode (), 0.0, 0.0);
+				value->SetCurveFit (1.0);
+				fit = 1.0;
+			}
 
 			value->SetDataMode (nextInterval->GetMaxAtMode ());
 			break;
@@ -3625,6 +3645,7 @@ DataSignal* SampledData :: FindNextCharacteristicFromLeft (const DataSignal& Sig
 	if (nextInterval == NULL)
 		return NULL;
 
+	nextInterval->AddSideValues (this);
 	DataSignal* value = Signature.FindCharacteristic (this, nextInterval, TraceWindowSize, fit, previous);
 
 	if (value != NULL)
@@ -4018,8 +4039,27 @@ DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signat
 
 	DataSignal* value = Signature.FindCharacteristic (this, nextInterval, TraceWindowSize, fit, previous);
 
-	if (value != NULL)
+	if (value != NULL) {
+
+		double sigma = value->GetStandardDeviation ();
+		double height = value->Peak ();
+
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0)) {
+
+			delete value;
+			return NULL;
+		}
+
+		if (sigma < 0.14) {
+
+			delete value;
+			value = new SpikeSignal (nextInterval->GetMode (), nextInterval->GetMaxAtMode (), 0.0, 0.0);
+			value->SetCurveFit (1.0);
+			fit = 1.0;
+		}
+
 		value->SetDataMode (nextInterval->GetMaxAtMode ());
+	}
 
 	return value;
 }
@@ -4320,8 +4360,10 @@ DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signat
 
 	DataSignal* value = Signature.FindCharacteristic (this, testInterval, TraceWindowSize, fit, previous);
 
-	if (value != NULL)
+	if (value != NULL) {
+
 		value->SetDataMode (nextInterval->GetMaxAtMode ());
+	}
 
 	delete testInterval;
 	return value;
@@ -5158,8 +5200,26 @@ int ParametricCurve :: AddToSample (double* sample, double sampleLeft, double sa
 	for (int i=Low; i<=High; i++) {
 
 		x = sampleLeft + i * spacing;
-//		sample [i] += Value (x);
-		sample [i] = Value (x);
+		double temp;
+
+		if (GetStandardDeviation () < 0.14) {
+
+			double mean = floor (GetMean () + 0.5);
+
+			if (x <= mean - 1.0)
+				temp = 0.0;
+
+			else if (x >= mean + 1.0)
+				temp = 0.0;
+
+			else
+				temp = Peak ();
+		}
+
+		else
+			temp = Value (x);
+
+		sample [i] = temp;
 	}
 
 	return High - Low;
@@ -6071,6 +6131,11 @@ int windowSize, double& fit, RGDList& previous) const {
 	double coeffs [3];
 	double scaleFactors [3];
 	double newScale;
+
+	DataSignal* possibleSpike = Segment->TestForSpike (fit);
+
+	if (possibleSpike != NULL)
+		return possibleSpike;
 
 	int MaxHalfWindow = SegmentCenter - SegmentLeft;   // Added to make sure we don't exceed Segment boundary (by much)
 	int tempSeg = SegmentRight - SegmentCenter;   //  ditto
@@ -7161,6 +7226,11 @@ int windowSize, double& fit, RGDList& previous) const {
 
 	// 1:
 
+	DataSignal* possibleSpike = Segment->TestForSpike (fit);
+
+	if (possibleSpike != NULL)
+		return possibleSpike;
+
 	if (Segment->HasAFixedEndPoint ())
 		return FindCharacteristicAsymmetric (Target, Segment, windowSize, fit, previous);
 
@@ -7720,6 +7790,12 @@ DataSignal* DoubleGaussian :: FindCharacteristicAsymmetric (const DataSignal* Ta
 	//
 
 	// 1:	
+
+	DataSignal* possibleSpike = Segment->TestForSpike (fit);
+
+	if (possibleSpike != NULL)
+		return possibleSpike;
+
 	int SegmentLeft = Segment->GetLeft ();
 	int SegmentRight = Segment->GetRight ();
 	int SegmentMode =  (int) Segment->GetMode ();
@@ -9419,6 +9495,12 @@ int windowSize, double& fit, RGDList& previous) const {
 	//
 
 	// 1:	
+
+	DataSignal* possibleSpike = Segment->TestForSpike (fit);
+
+	if (possibleSpike != NULL)
+		return possibleSpike;
+
 	int SegmentLeft = Segment->GetLeft ();
 	int SegmentRight = Segment->GetRight ();
 	int SegmentCenter = Segment->GetCenter ();
@@ -10814,10 +10896,58 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 	DualDoubleGaussian* rtnValue = new DualDoubleGaussian;
 	DoubleGaussian* first = (DoubleGaussian*) signature.FindCharacteristicAsymmetric (Target, segmentLeft, windowSize, fitLeft, previous);
 	DoubleGaussian* second = (DoubleGaussian*) signature.FindCharacteristicAsymmetric (Target, segmentRight, windowSize, fitRight, previous);
-	rtnValue->SetFirstCurve (first);
-	rtnValue->SetSecondCurve (second);
+	
 	first->SetDataMode (segmentLeft->GetMaxAtMode ());
 	second->SetDataMode (segmentRight->GetMaxAtMode ());
+
+	double sigma;
+	double height;
+	double mean;
+	double mode;
+
+	sigma = first->GetStandardDeviation ();
+	height = first->Peak ();
+	mean = first->GetMean ();
+
+	if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0)) {
+
+		delete first;
+		delete second;
+		delete segmentLeft;
+		delete segmentRight;
+		return NULL;
+	}
+
+	if (sigma < 0.14) {
+
+		delete first;
+		mode = floor (mean + 0.5);
+		first = new DoubleGaussian (mode, 1.0);
+		first->SetScale (1, height);
+		first->SetScale (2, 0.0);
+		first->SetLeftEndPoint (mode - 2.0);
+		first->SetRightEndPoint (mode + 2.0);
+		first->SetCurveFit (fitLeft);
+	}
+
+	sigma = second->GetStandardDeviation ();
+	height = second->Peak ();
+	mean = second->GetMean ();
+
+	if (sigma < 0.14) {
+
+		delete second;
+		mode = floor (mean + 0.5);
+		second = new DoubleGaussian (mode, 1.0);
+		second->SetScale (1, height);
+		second->SetScale (2, 0.0);
+		second->SetLeftEndPoint (mode - 2.0);
+		second->SetRightEndPoint (mode + 2.0);
+		second->SetCurveFit (fitRight);
+	}
+
+	rtnValue->SetFirstCurve (first);
+	rtnValue->SetSecondCurve (second);
 
 	// calculate fit and delete subsegments
 
@@ -12152,6 +12282,294 @@ void NoisyPeak :: SetAlleleInformation (int position) {
 
 	if (mNext != NULL)
 		mNext->SetAlleleInformation (position);
+}
+
+
+SpikeSignal :: SpikeSignal () : ParametricCurve (-1.0, 1.0), mMean (0.0), mPeak (1.0) {}
+
+
+SpikeSignal :: SpikeSignal (double mean, double peak, double leftValue, double rightValue) : ParametricCurve (-1.0, 1.0), mMean (mean), mPeak (peak) {}
+
+
+SpikeSignal :: SpikeSignal (const SpikeSignal& spike) : ParametricCurve ((ParametricCurve&)spike), mMean (spike.mMean), mPeak (spike.mPeak) {}
+
+
+SpikeSignal :: SpikeSignal (double mean, const SpikeSignal& spike) : ParametricCurve ((ParametricCurve&)spike), mMean (mean), mPeak (spike.mPeak) {
+
+}
+
+
+SpikeSignal :: ~SpikeSignal () {
+
+}
+
+
+DataSignal* SpikeSignal :: MakeCopy (double mean) const {
+
+	DataSignal* newSignal = new SpikeSignal (mean, *this);
+	return newSignal;
+}
+
+
+RGString SpikeSignal :: GetSignalType () const {
+
+	return RGString ("SpikeSignal");
+}
+
+
+double SpikeSignal :: GetWidth () {
+
+	return 1.0;
+}
+
+
+
+double SpikeSignal :: GetPullupToleranceInBP (double noise) const {
+
+	//pullUpToleranceFactor
+	double P = mPeak;
+
+	if (P <= 0.0)
+		return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47));
+
+	double localFit = Fit;
+
+	if (localFit < 0.1)
+		localFit = 0.1;
+
+	double localNoise = noise;
+	
+	double LN = 0.95 * P;
+
+	if (localNoise > LN)
+		localNoise = LN;
+
+	double temp1 = 1.0 / localFit;
+	double temp = 2.0 * (temp1 * temp1 - 1.0) * sqRoot_two_thirds * log (P / (P - localNoise));
+	return (mPullupTolerance + pullUpToleranceFactor * mApproxBioIDPrime * sqrt (temp));
+}
+
+
+void SpikeSignal :: SetDisplacement (double disp) {
+
+	mMean += disp;
+}
+
+
+double SpikeSignal :: Value (double x) const {
+
+	if (x <= mMean) {
+
+		if (x <= mMean - 1.0)
+			return 0.0;
+
+		return mPeak * (x + 1.0 - mMean);
+	}
+
+	else {
+
+		if (x > mMean + 1.0)
+			return 0.0;
+
+		return mPeak * (mMean + 1.0 - x);
+	}
+}
+
+
+double SpikeSignal :: Value (int x) const {
+
+	int mean = (int) mMean;
+
+	if (x <= mean - 1)
+		return 0.0;
+
+	if (x >= mean + 1)
+		return 0.0;
+
+	return mPeak;
+}
+
+
+double SpikeSignal :: Peak () const {
+
+	return mPeak;
+}
+
+
+double SpikeSignal :: GetMean () const {
+
+	return mMean;
+}
+
+
+double SpikeSignal :: GetStandardDeviation () const {
+
+	return sqRoot_two_thirds;
+}
+
+
+double SpikeSignal :: GetVariance () const {
+
+	return two_thirds;
+}
+
+
+void SpikeSignal :: SetPeak (double peak) {
+
+	mPeak = peak;
+}
+
+
+
+void SpikeSignal :: ComputeTails (double& tailLeft, double& tailRight) const {
+
+	tailLeft = mMean - 1.0;
+	tailRight = mMean + 1.0;
+}
+
+
+//DataSignal* SpikeSignal :: Project (double left, double right) const {
+//
+//}
+//
+//
+//
+//DataSignal* Project (const DataSignal* target) const {
+//
+//}
+
+
+double SpikeSignal :: Centroid () const {
+
+	return mMean;
+}
+
+
+double SpikeSignal :: Norm () {
+
+	return mPeak;
+}
+
+
+double SpikeSignal :: Norm (double left, double right) {
+
+	return Norm ();
+}
+
+
+double SpikeSignal :: Norm2 () {  // norm squared
+
+	return mPeak * mPeak;
+}
+
+
+double SpikeSignal :: Norm2 (double left, double right) {
+
+	return Norm2 ();
+}
+
+
+DataSignal* SpikeSignal :: Normalize (double& norm) {
+
+	norm = Norm ();
+	DataSignal* newSpike = new SpikeSignal (*this);
+	newSpike->SetPeak (1.0);
+	return newSpike;
+}
+
+
+
+DataSignal* SpikeSignal :: Normalize (double left, double right, double& norm) {
+
+	return Normalize (norm);
+}
+
+
+
+void SpikeSignal :: CalculateTheoreticalArea () {
+
+	mArea = mPeak;
+}
+
+
+
+double SpikeSignal :: OneNorm () {
+
+	return mPeak;
+}
+
+
+double SpikeSignal :: OneNorm (double left, double right) {
+
+	return mPeak;
+}
+
+
+int SpikeSignal :: FirstMomentForOneNorm (double left, double right, double& oneNorm, double& mean) {
+
+	oneNorm = OneNorm ();
+	mean = mMean;
+	return 0;
+}
+
+
+int SpikeSignal :: SecondMomentForOneNorm (double left, double right, double& oneNorm, double& mean, double& secondMoment) {
+
+	oneNorm = OneNorm ();
+	mean = mMean;
+	secondMoment = Norm2 ();
+	return 0;
+}
+
+void SpikeSignal :: Report (RGTextOutput& text, const RGString& indent) {
+
+	Endl endLine;
+	text << indent << "Spike Signal with parameters:\n" << endLine;
+	text << indent << "   Mean  = " << mMean << endLine;
+	text << indent << "   Height = " << mPeak << endLine;
+	double mass = OneNorm ();
+	text << indent << "   Mass  = " << mass << endLine;
+	text << indent << "   Fit   = " << Fit << endLine;
+}
+
+
+
+size_t SpikeSignal :: StoreSize () const {
+
+	size_t size = ParametricCurve::StoreSize ();
+	size += 2 * sizeof (double);
+	return size;
+}
+
+void SpikeSignal :: RestoreAll (RGFile& f) {
+
+	ParametricCurve::RestoreAll (f);
+	f.Read (mMean);
+	f.Read (mPeak);
+}
+
+
+void SpikeSignal :: RestoreAll (RGVInStream& r) {
+
+	ParametricCurve::RestoreAll (r);
+	r >> mMean;
+	r >> mPeak;
+}
+
+
+void SpikeSignal :: SaveAll (RGFile& f) const {
+
+	ParametricCurve::SaveAll (f);
+	f.Write (mMean);
+	f.Write (mPeak);
+}
+
+
+void SpikeSignal :: SaveAll (RGVOutStream& r) const {
+
+	ParametricCurve::SaveAll (r);
+	r << mMean;
+	r << mPeak;
 }
 
 

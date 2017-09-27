@@ -83,7 +83,6 @@ CNotebookEditSample::CNotebookEditSample(
 {
   BeginBatch();
   vector<wxString> vsLocus;
-  nwxLog_I_WAS_HERE;
 
   wxBoxSizer *pSizer;
   SETUP_STAT_IMG
@@ -560,7 +559,7 @@ void CNotebookEditSample::_DumpItems(
         s.Append(wxT("--"));
       }
       s.Append(wxT(" "));
-      s.Append(nwxString::FormatNumber(pvs->size()));
+      s.Append(nwxString::FormatNumber((int)pvs->size()));
       s.Append(wxT(" "));
       s.Append(pTree->GetItemText(id));
       pvs->push_back(s);
@@ -586,7 +585,6 @@ void CNotebookEditSample::_DumpTree()
   _DumpItems(&vs,pTree,idRoot,bHideRoot ? -1 : 0);
   wxString s;
   nwxString::Join(vs,&s,"");
-  nwxLog_I_WAS_HERE;
   nwxLog::LogMessage(s);
   m_bTreeDumped = true;
 }

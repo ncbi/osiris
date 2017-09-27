@@ -1151,6 +1151,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double minRFU = GetMinimumHeight ();
 	double maxRFU = GetMaximumHeight ();
 	double detectionRFU = GetDetectionThreshold ();
+	SampledData::SetDetectionRFU (detectionRFU);
 	double minAcceptableFit = ParametricCurve::GetMinimumFitThreshold ();
 	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
 	double minFit = minFitForArtifactTest;
@@ -1229,7 +1230,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			continue;
 		}
 
-		if (secondaryContent > 0.9 * nextSignal->Peak ()) {
+		if ((nextSignal->Peak () < 0.0) || secondaryContent > 0.9 * nextSignal->Peak ()) {
 
 			TestForArtifactsSM (nextSignal, fit);
 			continue;
@@ -1245,12 +1246,15 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			continue;
 		}
 
-		else {  // nextSignal is acceptable for now, so add it to the CurveList
+		else if (nextSignal->Peak () > 0.0) {  // nextSignal is acceptable for now, so add it to the CurveList
 
 			PreliminaryCurveList.Prepend (nextSignal);
 			CompleteCurveList.Prepend (nextSignal);
 //			i++;
-		}		
+		}
+
+		else
+			delete nextSignal;
 	}   //  We are done finding characteristics
 
 	//
@@ -1298,6 +1302,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 				if (lineFit <= minFitForArtifactTest) {
 
 					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+					shoulderCopy->SetShoulderSignal (true);
 					shoulderSignals.Append (shoulderCopy);
 				}
 
@@ -1379,6 +1384,29 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ())
 		PreliminaryCurveList.Append (nextSignal);
+
+	it.Reset ();
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetStandardDeviation () < 0.14) {
+
+			CompleteCurveList.RemoveReference (nextSignal);
+			it.RemoveCurrentItem ();
+			double mean = floor (nextSignal->GetMean () + 0.5);
+			double peak = nextSignal->Peak ();
+			prevSignal = new SpikeSignal (mean, peak, 0.0, 0.0);
+			prevSignal->SetCurveFit (1.0);
+			prevSignal->SetDataMode (peak);
+			tempList.Append (prevSignal);
+		}
+	}
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+		
+		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
 
 	delete signature;
 //	ProjectNeighboringSignalsAndTest (1.0, 1.0);
@@ -1505,7 +1533,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 	gaussianSignal = mData->FindNextCharacteristicRetry (GaussianSignature, gaussianFit, CompleteCurveList);
 	justSuperSignal = mData->FindNextCharacteristicRetry (JustSuperGaussianSignature, justSuperFit, CompleteCurveList);
 
-	if ((blobSignal != NULL) && (blobFit > fit) && (blobSignal->GetStandardDeviation () >= 6.0) && (blobFit >= absoluteMinFit) && (!blobSignal->MayBeUnacceptable ())) {
+	if ((blobSignal != NULL) && (blobFit > fit) && (blobSignal->GetStandardDeviation () >= 6.0) && (blobFit >= absoluteMinFit) && (!blobSignal->MayBeUnacceptable ()) && (blobSignal->Peak () > 0.0)) {
 	
 		signalArray [0] = blobSignal;
 		fitArray [0] = blobFit;
@@ -1518,7 +1546,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 	else
 		delete blobSignal;
 
-	if ((gaussianSignal != NULL) && (gaussianFit > fit) && (gaussianFit >= absoluteMinFit) && (!gaussianSignal->MayBeUnacceptable ())) {
+	if ((gaussianSignal != NULL) && (gaussianFit > fit) && (gaussianFit >= absoluteMinFit) && (!gaussianSignal->MayBeUnacceptable ()) && (gaussianSignal->Peak () > 0.0)) {
 
 		signalArray [index] = gaussianSignal;
 		fitArray [index] = gaussianFit;
@@ -1529,7 +1557,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 	else
 		delete gaussianSignal;
 
-	if ((justSuperSignal != NULL) && (justSuperFit > fit) && (justSuperFit >= absoluteMinFit) && (!justSuperSignal->MayBeUnacceptable ())) {
+	if ((justSuperSignal != NULL) && (justSuperFit > fit) && (justSuperFit >= absoluteMinFit) && (!justSuperSignal->MayBeUnacceptable ()) && (justSuperSignal->Peak () > 0.0)) {
 
 		signalArray [index] = justSuperSignal;
 		fitArray [index] = justSuperFit;
@@ -1573,7 +1601,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 
 	else {
 
-		if (fit >= absoluteMinFit) {
+		if ((fit >= absoluteMinFit) && (currentSignal->Peak () > 0.0)) {
 
 			CompleteCurveList.InsertWithNoReferenceDuplication (currentSignal);
 			PreliminaryCurveList.InsertWithNoReferenceDuplication (currentSignal);  // This is a test!  We keep poor fits in case they are needed later, at which point we point them out.
@@ -2529,6 +2557,9 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 		}
 
 		else if (!TestIfTimeIsLeftOfLocus (mean, previousLocus, previousGridLocus)) {
+
+			if (previousGridLocus->TestSignalTimeRelativeToGridLocus (mean) == 0)
+				continue;
 
 			if (!nextSignal->GetMessageValue (restrictedPriorityPeak)) {
 

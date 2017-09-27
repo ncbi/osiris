@@ -55,8 +55,10 @@
 #include "nwx/nwxXmlMRU.h"
 #include "nwx/nwxKeyState.h"
 // #include "nwx/CPointerHold.h"
-#include "nwx/nwxTimerReceiver.h"
 #include "nwx/nwxFileUtil.h"
+#include "nwxZip/nwxZipInput.h"
+#include "nwx/nwxLog.h"
+#include "nwx/nwxTimerReceiver.h"
 
 #include "CPlotData.h"
 #include "CMenuBar.h"
@@ -271,7 +273,7 @@ mainFrame::mainFrame() :
 #ifdef MANUALLY_PLACE_FRAMES
     ,m_nFrameSpace(-1)
 #endif
-
+    ,m_bDoCloseCalled(false)
 {
 #ifndef __NO_MDI__
   CreateStatusBar(1);
@@ -301,17 +303,17 @@ mainFrame::mainFrame() :
 mainFrame::~mainFrame()
 {
   --g_mainFrameCount;
+  DoClose();
 #if DRAG_DROP_FILES
   GetClientWindow()->SetDropTarget(NULL);
 #endif
-
   if(m_pDialogMRU != NULL)
   {
-    delete m_pDialogMRU;
+    m_pDialogMRU->Destroy();
   }
   if(m_pDialogOpen != NULL)
   {
-    delete m_pDialogOpen;
+    m_pDialogOpen->Destroy();
   }
   if(m_pTimer != NULL)
   {
@@ -323,15 +325,15 @@ mainFrame::~mainFrame()
   }
   if(m_pColourEditDialog != NULL)
   {
-    delete m_pColourEditDialog;
+    m_pColourEditDialog->Destroy();
   }
 #if HAS_CUSTOM_COLORS
   if(m_pDialogColour != NULL)
   {
-    delete m_pDialogColour;
+    m_pDialogColour->Destroy();
   }
 #endif
-  delete m_pDialogErrorLog;
+  m_pDialogErrorLog->Destroy();
 }
 bool mainFrame::Startup(bool bHasArgs)
 {
@@ -486,20 +488,6 @@ CFramePlot *mainFrame::OpenGraphicFile(
   return pPlot;
 }
 
-void mainFrame::OnQuit(wxCommandEvent &e)
-{
-  bool bSkip;
-  wxBusyCursor xxx;
-  bSkip = DoClose();
-#if mainFrameIsWindow
-  if(bSkip)
-  {
-    bSkip = Close();
-  }
-#endif
-  e.Skip(bSkip);
-}
-
 void mainFrame::OnOpen(wxCommandEvent &)
 {
   if(!CheckMaxFrames(true))
@@ -518,11 +506,14 @@ void mainFrame::OpenFileDialog(OSIRIS_FILE_TYPE x)
       const char *psReport = FILE_TYPE_REPORT;
       const char *psPlot =   FILE_TYPE_GRAPHIC;
       const char *psBatch =  FILE_TYPE_BATCH;
+      const char *psArchive = FILE_TYPE_ARCHIVE;
       wxString sTypes(psReport);
       sTypes.Append("|");
       sTypes.Append(psPlot);
       sTypes.Append("|");
       sTypes.Append(psBatch);
+      sTypes.Append("|");
+      sTypes.Append(psArchive);
       wxString sFilePath = parm->GetOutputDirectory();
       m_pDialogOpen = new wxFileDialog(
         DialogParent(),"Open File",sFilePath,wxEmptyString,
@@ -570,6 +561,13 @@ void mainFrame::OpenFileCheckNewer(const wxString &_sFileName)
   }
 }
 
+void mainFrame::OnOpenArchive(wxCommandEvent &)
+{
+  if(!CheckMaxFrames(true))
+  {
+    OpenFileDialog(TYPE_ARCHIVE);
+  }
+}
 void mainFrame::OnOpenPlot(wxCommandEvent &)
 {
   if(!CheckMaxFrames(true))
@@ -624,19 +622,23 @@ bool mainFrame::_VerifyClose()
 bool mainFrame::DoClose()
 {
   bool bDone = true;
-  if(!_VerifyClose())
+  if(!m_bDoCloseCalled)
   {
-    bDone = false;
-  }
-  else
-  {
-    bDone = m_MDImgr.CloseAll();
-  }
-  if(bDone)
-  {
-    if(m_pTimer != NULL)
+    if(!_VerifyClose())
     {
-      m_pTimer->Stop();
+      bDone = false;
+    }
+    else
+    {
+      bDone = m_MDImgr.CloseAll();
+    }
+    if(bDone)
+    {
+      m_bDoCloseCalled = true;
+      if(m_pTimer != NULL)
+      {
+        m_pTimer->Stop();
+      }
     }
   }
   return bDone;
@@ -839,18 +841,6 @@ void mainFrame::OnTimer(wxTimerEvent &e)
     UnitTest::Run();
 #endif
     nwxTimerReceiver::DispatchTimer(e);
-/*
-   // 1/6/11 - removed code and started using nwxTimerReceiver
-    m_MDImgr.OnTimer(e);
-    if(m_pVolumes != NULL)
-    {
-      m_pVolumes->OnTimer(e);
-    }
-    if(m_pDlgAnalysis != NULL)
-    {
-      m_pDlgAnalysis->OnTimer(e);
-    }
-*/
 #if CHECK_FRAME_ON_TIMER && !defined(__NO_MDI__)
     CheckActiveFrame();
 #endif
@@ -1059,6 +1049,10 @@ void mainFrame::OpenFile(
     {
       OpenBatchFile(sFileName);
     }
+    else if(sFileLower.EndsWith(EXT_ARCHIVE))
+    {
+      OpenArchiveFile(sFileName);
+    }
     else if(pOARfile != NULL)
     {
       OpenAnalysisFile(pOARfile);
@@ -1088,6 +1082,115 @@ void mainFrame::_CheckAnalysisFile(CFrameAnalysis *pWin)
   {
     pWin->Destroy();
   }
+}
+void mainFrame::OpenArchiveFile(const wxString &sFileName)
+{
+  nwxZipInput zipFile(sFileName);
+  if(!zipFile.IsZipOpen())
+  {
+    mainApp::ShowError(wxT("Invalid OSIRIS Archive"),DialogParent());
+  }
+  else
+  {
+    wxString sFile;
+    wxArrayString as;
+    wxString sPattern;
+    wxString sPatternBase = wxT("*");
+    nwxFileUtil::EndWithSeparator(&sPatternBase);
+    sPatternBase.Append(wxT("output"));
+    nwxFileUtil::EndWithSeparator(&sPatternBase);
+    sPatternBase.Append(wxT("*"));
+    wxDateTime t0;
+    wxDateTime t((time_t)0);
+
+    sPattern = sPatternBase;
+    sPattern.Append(EXT_REPORT_EDITED);
+    size_t nCount = zipFile.GetFiles(&as,false,false, sPattern);
+    if(!nCount)
+    {
+      sPattern = sPatternBase;
+      sPattern.Append(EXT_REPORT);
+      nCount = zipFile.GetFiles(&as,false,false, sPattern);
+    }
+    // if more than one file, find the newest.
+    for(size_t i = 0; i < nCount; i++)
+    {
+      const wxString &s = as.Item(i);
+      t0 = zipFile.GetDateTime(s,true);
+      if(t0 > t)
+      {
+        t = t0;
+        sFile = s; // sFile contains the path of the file we want to open
+      }
+    }
+    if(sFile.IsEmpty())
+    {
+      mainApp::ShowError(wxT("Invalid OSIRIS Archive,\ncannot find analysis file."),DialogParent());
+    }
+    else
+    {
+      wxFileName fn(sFileName);
+      wxString sPath;
+      if(fn.IsDirWritable())
+      {
+        sPath = fn.GetPath();
+      }
+      else
+      {
+        sPath = mainApp::GetConfig()->GetFilePath();
+      }
+      wxDirDialog dDlg(DialogParent(),
+        wxT("Extract OSIRIS Archive"),sPath);
+      bool bDone = false;
+      bool bWritten = false;
+      
+      while(!bDone)
+      {
+        bDone = true;
+        if(dDlg.ShowModal() == wxID_OK)
+        {
+          sPath = dDlg.GetPath();
+          size_t nExist = zipFile.FilesExist(sPath);
+          if(nExist)
+          {
+            wxString sMsg;
+            if(nExist == 1)
+            {
+              sMsg = wxT("One file");
+            }
+            else
+            {
+              sMsg = wxString::Format(wxT("%d files"),(int) nExist);
+            }
+            sMsg.Append(wxT(" will be overwritten.\nDo you wish to continue?"));
+            wxMessageDialog dlgAsk(DialogParent(),sMsg,wxT("Overwrite?"),wxYES_NO | wxNO_DEFAULT);
+            bDone = (dlgAsk.ShowModal() == wxID_YES);
+          }
+          if(bDone) 
+          {
+            bWritten = false;
+            {
+              wxBusyCursor x;
+              bWritten = zipFile.WriteAll(sPath);
+            }
+            if(!bWritten)
+            {
+              mainApp::ShowError(wxT("Could not extract OSIRIS archive at specified location."),DialogParent());
+              bDone = false;  // try again
+            }
+          }
+        }
+      }
+      if(bWritten)
+      {
+        nwxFileUtil::EndWithSeparator(&sPath);
+        nwxFileUtil::NoStartWithSeparator(&sFile);
+        sPath.Append(sFile);
+        OpenFile(sPath);
+      }
+    }
+  }
+  return;
 }
 void mainFrame::OpenAnalysisFile(const wxString &sFileName)
 {
@@ -1238,7 +1341,8 @@ bool mainFrame::FileExtensionOK(const wxString &s)
     EXT_GRAPHIC,
     EXT_REPORT,
     EXT_REPORT_EDITED,
-    EXT_BATCH
+    EXT_BATCH,
+    EXT_ARCHIVE
   };
   static const size_t EXT_COUNT = sizeof(EXT) / sizeof(EXT[0]);
   sl.MakeLower();

@@ -105,9 +105,9 @@
       <AdditionalIncludeDirectories>$(WXHOME)\lib\vc_lib\msw;$(WXHOME)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30ud_adv.lib;wxmsw30ud_html.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30ud_adv.lib;wxmsw30ud_html.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -197,9 +197,9 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>wxplotctrl.lib;wxthings.lib;wxXsl.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30u_core.lib;wxbase30u.lib;wxmsw30u_adv.lib;wxmsw30u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxplotctrl.lib;wxthings.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30u_core.lib;wxbase30u.lib;wxmsw30u_adv.lib;wxmsw30u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
@@ -266,16 +266,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CArchiveCollection.cpp" />
     <ClCompile Include="CArtifactLabels.cpp" />
     <ClCompile Include="CArtifactLabelsUser.cpp" />
     <ClCompile Include="CComboLabels.cpp" />
     <ClCompile Include="CDialogAbout.cpp" />
     <ClCompile Include="CDialogAnalysis.cpp" />
     <ClCompile Include="CDialogApprove.cpp" />
+    <ClCompile Include="CDialogArchiveCreate.cpp" />
     <ClCompile Include="CDialogArtifactLabels.cpp" />
     <ClCompile Include="CDialogCellHistory.cpp" />
     <ClCompile Include="CDialogCMF.cpp" />
     <ClCompile Include="CDialogContactUs.cpp" />
+    <ClCompile Include="CDialogDeleteDisabled.cpp" />
     <ClCompile Include="CDialogEditGridColours.cpp" />
     <ClCompile Include="CDialogEditPeak.cpp" />
     <ClCompile Include="CDialogEnableMultiple.cpp" />
@@ -405,6 +408,7 @@
   <ItemGroup>
     <ClInclude Include="CAlertViewStatus.h" />
     <ClInclude Include="CAllLoci.h" />
+    <ClInclude Include="CArchiveCollection.h" />
     <ClInclude Include="CArtifactLabels.h" />
     <ClInclude Include="CArtifactLabelsUser.h" />
     <ClInclude Include="CButtonGraph.h" />
@@ -413,10 +417,12 @@
     <ClInclude Include="CDialogAbout.h" />
     <ClInclude Include="CDialogAnalysis.h" />
     <ClInclude Include="CDialogApprove.h" />
+    <ClInclude Include="CDialogArchiveCreate.h" />
     <ClInclude Include="CDialogArtifactLabels.h" />
     <ClInclude Include="CDialogCellHistory.h" />
     <ClInclude Include="CDialogCMF.h" />
     <ClInclude Include="CDialogContactUs.h" />
+    <ClInclude Include="CDialogDeleteDisabled.h" />
     <ClInclude Include="CDialogEditGridColours.h" />
     <ClInclude Include="CDialogEditPeak.h" />
     <ClInclude Include="CDialogEnableMultiple.h" />

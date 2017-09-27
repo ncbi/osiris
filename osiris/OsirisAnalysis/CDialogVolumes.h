@@ -47,7 +47,6 @@ public:
     bool bReadOnly = false);
   virtual ~CDialogVolumes();
   virtual bool TransferDataFromWindow();
-//  virtual bool TransferDataToWindow();
   virtual void OnTimer(wxTimerEvent &e);
   const wxString &GetSelection()
   {
@@ -57,6 +56,7 @@ public:
   static int FindString(const wxString &s, const wxArrayString &as);
 private:
   bool _UpdateVolumeNames();
+  bool _SetupAll();
   bool _SetVolume(/*bool bFit = false*/);
   bool _ResetVolume(CVolume *);
   bool _CurrentVolumeModified();

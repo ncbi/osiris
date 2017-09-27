@@ -5691,7 +5691,7 @@ Boolean Locus :: BuildMappings (RGDList& signalList) {
 
 ILSHistory :: ILSHistory () : mNumberOfCharacteristics (0), mNum1 (-1), mILSLowBounds (NULL), mILSHighBounds (NULL), mILSAverage (NULL), mNormalizedDifferences (NULL), mSampleAdded (false),
 mStart (0.0), mEnd (0.0), mWidth (0.0), mCurrentStartForTest (0.0), mCurrentEndForTest (0.0), mCurrentWidthForTest (0.0), mCurrentSlopeForTest (0.0), mCurrentInterceptForTest (0.0), mMaxWidth (0.0), mMinWidth (0.0),
-mCharacteristicArray (NULL), mNormalizedCharacteristicDifferences (NULL), mLadderILSLowBounds (NULL), mLadderILSHighBounds (NULL),  mLadderWidth (0.0), mLadderStart (0.0), mLadderEnd (0.0) {
+mCharacteristicArray (NULL), mNormalizedCharacteristicDifferences (NULL), mLadderILSTargets (NULL), mLadderILSLowBounds (NULL), mLadderILSHighBounds (NULL),  mLadderWidth (0.0), mLadderStart (0.0), mLadderEnd (0.0) {
 
 }
 
@@ -5705,6 +5705,7 @@ ILSHistory :: ~ILSHistory () {
 	delete[] mNormalizedDifferences;
 	delete[] mCharacteristicArray;
 	delete[] mNormalizedCharacteristicDifferences;
+	delete[] mLadderILSTargets;
 	delete[] mLadderILSLowBounds;
 	delete[] mLadderILSHighBounds;
 }
@@ -5799,14 +5800,18 @@ void ILSHistory :: ResetStartAndEndTimesForLadderILSTests (double startC, double
 	mCurrentStartForTest = startC;
 	mCurrentEndForTest = endC;
 	mCurrentWidthForTest = endC - startC;
+	double factor = mLadderFactor * mCurrentWidthForTest;
+	double temp;
 
-	if (mCurrentWidthForTest == 0.0)
-		mCurrentSlopeForTest = 0.0;
+	int i;
 
-	else
-		mCurrentSlopeForTest = mLadderWidth / mCurrentWidthForTest;
+	for (i=0; i<mNumberOfCharacteristics; i++) {
 
-	mCurrentInterceptForTest = mLadderStart;
+		temp = mLadderILSTargets [i] = mCharacteristicArray [i] * mCurrentWidthForTest + startC;
+		mLadderILSLowBounds [i] = temp - factor;
+		mLadderILSHighBounds [i] = temp + factor;
+	}
+
 	mStartSignalForTests = startSignal;
 }
 
@@ -5824,7 +5829,7 @@ void ILSHistory :: ResetIdealCharacteristicsAndIntervalsForLadderILS (const doub
 
 	for (i=0; i<mNum1; i++) {
 
-		temp = mNormalizedCharacteristicDifferences [i] = differenceArray [i];
+		temp = mNormalizedCharacteristicDifferences [i] = actualArray [i + 1] - actualArray [i];
 		sum += temp * temp;
 		mCharacteristicArray [i] = actualArray [i];
 	}
@@ -5835,19 +5840,20 @@ void ILSHistory :: ResetIdealCharacteristicsAndIntervalsForLadderILS (const doub
 	for (i=0; i<mNum1; i++)
 		mNormalizedCharacteristicDifferences [i] = mNormalizedCharacteristicDifferences [i] / sum;
 
-	mLadderStart = actualArray [0];
-	mLadderEnd = actualArray [mNum1];
-	mLadderWidth = mLadderEnd - mLadderStart;
+	//mLadderStart = actualArray [0];
+	//mLadderEnd = actualArray [mNum1];
+	//mLadderWidth = mLadderEnd - mLadderStart;
 
+	mLadderILSTargets = new double [mNumberOfCharacteristics];
 	mLadderILSLowBounds = new double [mNumberOfCharacteristics];
 	mLadderILSHighBounds = new double [mNumberOfCharacteristics];
-	double ladderAllowance = factor * mLadderWidth;
+	mLadderFactor = factor;
 
-	for (i=0; i<mNumberOfCharacteristics; i++) {
+	//for (i=0; i<mNumberOfCharacteristics; i++) {
 
-		mLadderILSLowBounds [i] = actualArray [i] - ladderAllowance;
-		mLadderILSHighBounds [i] = actualArray [i] + ladderAllowance;
-	}
+	//	mLadderILSLowBounds [i] = actualArray [i] - ladderAllowance;
+	//	mLadderILSHighBounds [i] = actualArray [i] + ladderAllowance;
+	//}
 }
 
 
@@ -5896,8 +5902,7 @@ int ILSHistory :: TestILS (int index, DataSignal* candidate) {
 
 int ILSHistory :: TestLadderILS (int index, DataSignal* candidate) {
 
-	double t = candidate->GetMean () - mCurrentStartForTest;
-	double tStar = mCurrentSlopeForTest * t + mLadderStart;
+	double tStar = candidate->GetMean ();
 
 	if (tStar < mLadderILSLowBounds [index])
 		return -1;
@@ -5927,6 +5932,11 @@ bool ILSHistory :: FindAndTestLadderILS (int index, DataSignal* startCandidate, 
 	mCurrentDistance = 0.0;
 	leastDistance = high - low;
 	firstPeakFound = NULL;
+	double maxHeight = 0.0;
+	double currentHeight;
+	double spikeWidth = 2.2;
+	double currentWidth;
+	double nextWidth;
 
 	while (nextSignal = nextSignal->GetNextSignal ()) {
 
@@ -5948,12 +5958,43 @@ bool ILSHistory :: FindAndTestLadderILS (int index, DataSignal* startCandidate, 
 
 		else {
 
-			firstPeakFound = nextSignal;
-			return true;
+			currentHeight = nextSignal->Peak ();
+
+			if (firstPeakFound == NULL) {
+
+				firstPeakFound = nextSignal;
+				currentWidth = firstPeakFound->GetWidth ();
+				maxHeight = currentHeight;
+				continue;
+			}
+
+			nextWidth = nextSignal->GetWidth ();
+
+			if ((currentWidth > spikeWidth) && (nextWidth <= spikeWidth))
+				continue;
+
+			if ((currentWidth <= spikeWidth) && (nextWidth > spikeWidth)) {
+
+				firstPeakFound = nextSignal;
+				maxHeight = currentHeight;
+				currentWidth = nextWidth;
+				continue;
+			}
+
+			if (currentHeight > maxHeight) {
+
+				firstPeakFound = nextSignal;
+				maxHeight = currentHeight;
+				currentWidth = nextWidth;
+				continue;
+			}
 		}
 	}
 
-	return false;
+	if (firstPeakFound == NULL)
+		return false;
+
+	return true;
 }
 
 
@@ -5971,6 +6012,11 @@ bool ILSHistory :: FindAndTestILS (int index, DataSignal* startCandidate, DataSi
 	mCurrentDistance = 0.0;
 	leastDistance = high - low;
 	mostAveragePeak = NULL;
+	double maxHeight = 0.0;
+	double currentHeight;
+	double spikeWidth = 2.2;
+	double currentWidth;
+	double nextWidth;
 
 	while (nextSignal = nextSignal->GetNextSignal ()) {
 
@@ -5992,9 +6038,33 @@ bool ILSHistory :: FindAndTestILS (int index, DataSignal* startCandidate, DataSi
 
 		else {
 
-			if (mCurrentDistance < leastDistance) {
+			currentHeight = nextSignal->Peak ();
 
-				leastDistance = mCurrentDistance;
+			if (mostAveragePeak == NULL) {
+
+				mostAveragePeak = nextSignal;
+				currentWidth = mostAveragePeak->GetWidth ();
+				maxHeight = currentHeight;
+				continue;
+			}
+
+			nextWidth = nextSignal->GetWidth ();
+
+			if ((currentWidth > spikeWidth) && (nextWidth <= spikeWidth))
+				continue;
+
+			if ((currentWidth <= spikeWidth) && (nextWidth > spikeWidth)) {
+
+				mostAveragePeak = nextSignal;
+				maxHeight = currentHeight;
+				currentWidth = nextWidth;
+				continue;
+			}
+
+			if (currentHeight > maxHeight) {
+
+				maxHeight = currentHeight;
+				currentWidth = nextWidth;
 				mostAveragePeak = nextSignal;
 			}
 		}

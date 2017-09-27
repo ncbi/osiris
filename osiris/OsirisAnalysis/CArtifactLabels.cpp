@@ -101,30 +101,37 @@ bool CArtifactGroup::IsStringMatch(const wxString &s) const
   // a string is a match if it matches 1 or more
   // regular expressions found in <SearchString> (m_vsSearchString)
   // and NONE found in <NoString> (m_vsNoString)
-
+  std::vector<wxString> vs;
+  std::vector<wxString>::iterator itrs;
+  nwxString::Split(s.utf8_str(),&vs,char(10));
   if( (m_pvSearchRE.size() != m_vsSearchString.size()) ||
     (m_pvNoRE.size() != m_vsNoString.size()) )
   {
     _buildRegEx();
   }
 
-
   for(itr = m_pvSearchRE.begin();
     (itr != m_pvSearchRE.end()) && (!bRtn);
     ++itr)
   {
-    if( ((*itr) != NULL) && (*itr)->Matches(s) )
+    for (itrs = vs.begin(); (!bRtn) && (itrs != vs.end()); ++itrs)
     {
-      bRtn = true;
+      if( ((*itr) != NULL) && (*itr)->Matches(*itrs) )
+      {
+        bRtn = true;
+      }
     }
   }
   for(itr = m_pvNoRE.begin();
     (itr != m_pvNoRE.end()) && bRtn;
     ++itr)
   {
-    if( ((*itr) != NULL) && (*itr)->Matches(s) )
+    for (itrs = vs.begin(); bRtn && (itrs != vs.end()); ++itrs)
     {
-      bRtn = false;
+      if( ((*itr) != NULL) && (*itr)->Matches(*itrs) )
+      {
+        bRtn = false;
+      }
     }
   }
 

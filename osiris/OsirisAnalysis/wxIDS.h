@@ -182,6 +182,7 @@ enum
   IDlistProcesses,
 
   IDlistMRU,
+  IDArchiveExtract,
 
   IDhelpAbout,
   IDhelpContactUs,
@@ -240,6 +241,7 @@ enum
   IDmenuReviewDirectory,
   IDmenuDisableSample,
   IDmenuDisableMultiple,
+  IDmenuDeleteDisabled,
   IDmenuDisplayGraph,
   IDmenuDisplaySample, // Temporary sample window trigger STOP HERE
 
@@ -273,6 +275,7 @@ enum
   IDmenuDisplayBEGIN,
   IDmenuDisplayEND = IDmenuDisplayBEGIN + IDmenuDisplay_MAX,
 
+  IDArchiveCreate,
   IDExportCMF,
   // user defined export options
   IDExportUser,

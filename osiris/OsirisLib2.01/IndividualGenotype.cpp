@@ -500,13 +500,13 @@ void LocusCollection :: WriteXML (RGTextOutput& text, const RGString& indent) {
 
 
 
-IndividualGenotype :: IndividualGenotype () : RGPersistent (), mValid (false) {
+IndividualGenotype :: IndividualGenotype () : RGPersistent (), mValid (false), mIsAssignedPositiveCtl (false) {
 
 	mLoci = new LocusCollection;
 }
 
 
-IndividualGenotype :: IndividualGenotype (const RGString& xmlString) : RGPersistent (), mValid (true) {
+IndividualGenotype :: IndividualGenotype (const RGString& xmlString) : RGPersistent (), mValid (true), mIsAssignedPositiveCtl (false) {
 
 	RGString XMLString (xmlString);
 	RGBracketStringSearch nameSearch ("<Name>", "</Name>", XMLString);
@@ -542,7 +542,7 @@ IndividualGenotype :: IndividualGenotype (const RGString& xmlString) : RGPersist
 
 
 IndividualGenotype :: IndividualGenotype (const IndividualGenotype& genotype) : RGPersistent (), mName (genotype.mName),
-mFileNameSearchString (genotype.mFileNameSearchString), mValid (genotype.mValid) {
+mFileNameSearchString (genotype.mFileNameSearchString), mValid (genotype.mValid), mIsAssignedPositiveCtl (genotype.mIsAssignedPositiveCtl) {
 
 	mLoci = new LocusCollection (*genotype.mLoci);
 }
@@ -672,8 +672,12 @@ bool GenotypesForAMarkerSet :: AddLabPositiveControlStringsToControlLists (Synon
 	while (genotype = (IndividualGenotype*) it ()) {
 
 		name = genotype->GetFileNameSearchCriterion ();
-		controlIDs->AddSynonym (name);
-		posControlIDs->AddSynonym (name);
+		
+		if (genotype->IsAssignedPositiveControl ()) {  // Added 07/27/2017 ****
+
+			controlIDs->AddSynonym (name);
+			posControlIDs->AddSynonym (name);
+		}
 	}
 
 	return true;
@@ -1087,6 +1091,7 @@ bool GenotypesForAMarkerSet :: AddCollectionToTablesFromLabSettings (const RGStr
 			cout << "Found positive control..." << endl;
 			startPControls = endPControls;
 			nextGenotype = new IndividualGenotype (positiveControlString);
+			nextGenotype->SetAssignedPositiveControl (true);  // Added 07/27/2017 ****
 
 			if (!nextGenotype->isValid ()) {
 

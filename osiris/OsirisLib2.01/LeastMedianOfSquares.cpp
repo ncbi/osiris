@@ -761,7 +761,7 @@ bool LeastSquaresQuadraticModel :: CreateArrayOfXSquares () {
 
 
 
-double LeastSquaresQuadraticModel :: CalculateLeastSquare (double& linearTerm, double& quadTerm) {
+double LeastSquaresQuadraticModel :: CalculateLeastSquare (double& linearTerm, double& quadTerm, bool constrainLSQ) {
 
 	// First calculate unconstrained least square solution.  If linear and quadratic coefficients have opposite signs, 
 	// recompute with quadratic term = 0 (unconstrained, single coefficient) and recompute with linear term = 0.  Use whichever
@@ -809,7 +809,7 @@ double LeastSquaresQuadraticModel :: CalculateLeastSquare (double& linearTerm, d
 	linearTerm = mLinearTerm = MInv [0][0] * XTy [0] + MInv [0][1] * XTy [1];
 	quadTerm = mQuadraticTerm = MInv [1][0] * XTy [0] + MInv [1][1] * XTy [1];
 
-	if (linearTerm * quadTerm < 0.0) {
+	if (constrainLSQ && (linearTerm * quadTerm < 0.0)) {
 
 		// Try again with linear term = 0 and then with quadratic term = 0;
 		return CalculateLeastSquareWithOneTermZero (linearTerm, quadTerm);

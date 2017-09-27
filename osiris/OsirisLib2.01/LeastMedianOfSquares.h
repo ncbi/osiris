@@ -198,7 +198,7 @@ public:
 	bool TestXValuesForIndependence ();
 	bool CreateArrayOfXSquares ();
 
-	double CalculateLeastSquare (double& linearTerm, double& quadTerm);
+	double CalculateLeastSquare (double& linearTerm, double& quadTerm, bool constrainLSQ);
 
 protected:
 	bool mIsOK;

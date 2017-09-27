@@ -283,10 +283,51 @@ void DataInterval :: RecomputeRelativeMinimum (const DataSignal* currentSignal, 
 }
 
 
+void DataInterval :: AddSideValues (DataSignal* sampledData) {
+
+	int N = sampledData->GetNumberOfSamples ();
+
+	if ((Mode < 1) || (Mode > N - 2))
+		return;
+
+	mValueLeftOfMax = sampledData->Value (Mode - 1);
+	mValueRightOfMax = sampledData->Value (Mode + 1);
+	mOKtoTestForSpike = TRUE;
+}
+
+
+DataSignal* DataInterval :: TestForSpike (double& fit) const {
+
+	DataSignal* value = NULL;
+
+	double detectionRFU = SampledData::GetDetectionRFU ();
+	double threshold = 0.07 * MaxAtMode;
+
+	if (!mOKtoTestForSpike)
+		return NULL;
+
+	if ((MaxAtMode < detectionRFU) || (mValueLeftOfMax >= threshold) || (mValueRightOfMax >= threshold))
+		return NULL;
+
+	value = new SpikeSignal (Mode, MaxAtMode, mValueLeftOfMax, mValueRightOfMax);
+	double denom = MaxAtMode * MaxAtMode;
+
+	if (mValueLeftOfMax > 0.0)
+		denom += + mValueLeftOfMax * mValueLeftOfMax;
+
+	if (mValueRightOfMax > 0.0)
+		denom += + mValueRightOfMax * mValueRightOfMax;
+
+	fit = MaxAtMode / sqrt (denom);
+	value->SetCurveFit (fit);
+	return value;
+}
+
+
 size_t DataInterval :: StoreSize () const {
 
 	size_t size = RGPersistent::StoreSize ();
-	size += 4 * sizeof (int) + 3 * sizeof (double) + 2 * sizeof (Boolean);
+	size += 4 * sizeof (int) + 5 * sizeof (double) + 2 * sizeof (Boolean);
 	return size;
 }
 
@@ -303,6 +344,8 @@ void DataInterval :: RestoreAll (RGFile& f) {
 	f.Read (MaxAtMode);
 	f.Read (FixedLeft);
 	f.Read (FixedRight);
+	f.Read (mValueLeftOfMax);
+	f.Read (mValueRightOfMax);
 }
 
 
@@ -318,6 +361,8 @@ void DataInterval :: RestoreAll (RGVInStream& f) {
 	f >> MaxAtMode;
 	f >> FixedLeft;
 	f >> FixedRight;
+	f >> mValueLeftOfMax;
+	f >> mValueRightOfMax;
 }
 
 
@@ -333,6 +378,8 @@ void DataInterval :: SaveAll (RGFile& f) const {
 	f.Write (MaxAtMode);
 	f.Write (FixedLeft);
 	f.Write (FixedRight);
+	f.Write (mValueLeftOfMax);
+	f.Write (mValueRightOfMax);
 }
 
 
@@ -348,6 +395,8 @@ void DataInterval :: SaveAll (RGVOutStream& f) const {
 	f << MaxAtMode;
 	f << FixedLeft;
 	f << FixedRight;
+	f << mValueLeftOfMax;
+	f << mValueRightOfMax;
 }
 
 

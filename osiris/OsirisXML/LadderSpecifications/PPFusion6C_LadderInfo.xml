@@ -662,8 +662,8 @@
         <Channel>2</Channel>
         <MinBP>84</MinBP>
         <MaxBP>132</MaxBP>
-        <MinGridLSBasePair>73.5</MinGridLSBasePair>
-        <MaxGridLSBasePair>131.3</MaxGridLSBasePair>
+        <MinGridLSBasePair>71.0</MinGridLSBasePair>
+        <MaxGridLSBasePair>129.8</MaxGridLSBasePair>
         <LadderAlleles>
           <Allele>
             <Name>4</Name>
@@ -750,7 +750,7 @@
         <Channel>2</Channel>
         <MinBP>134</MinBP>
         <MaxBP>214</MaxBP>
-        <MinGridLSBasePair>129.4</MinGridLSBasePair>
+        <MinGridLSBasePair>128.0</MinGridLSBasePair>
         <MaxGridLSBasePair>217.7</MaxGridLSBasePair>
         <LadderAlleles>
           <Allele>
@@ -1193,7 +1193,7 @@
         <Channel>3</Channel>
         <MinBP>72</MinBP>
         <MaxBP>115</MaxBP>
-        <MinGridLSBasePair>64.1</MinGridLSBasePair>
+        <MinGridLSBasePair>61.1</MinGridLSBasePair>
         <MaxGridLSBasePair>119.0</MaxGridLSBasePair>
         <LadderAlleles>
           <Allele>

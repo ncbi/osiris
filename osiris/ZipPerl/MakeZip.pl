@@ -118,6 +118,7 @@ sub COPYFILES
     NFX1
     NGM
     NGMSElect
+    POWERPLEXS5
     PP12
     PP16
     PP16_HID
@@ -185,6 +186,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.7.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.8_2.9.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.pdf ${dest}");
 }
 
 sub CopyWin

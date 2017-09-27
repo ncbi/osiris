@@ -235,6 +235,7 @@ private:
   void _OnEnableMultiple();
   void _OnEnableSample();
   void _OnReAnalyze();
+  void _OnDeleteDisabled();
 #if 0
   void _OnEditLocus(COARsample *pSample, int nCol);
   void _OnEditAlerts(COARsample *pSample, int nCol);
@@ -363,6 +364,7 @@ private:
   typedef std::map<const COARsample *, CFrameSample *> MapSampleFrame;
   typedef std::pair<const COARsample *, CFrameSample *> PairSampleFrame;
   MapSampleFrame m_mapSamples;
+  
   CFrameSample *_FindSampleFrame(const COARsample *pSample)
   {
     MapSampleFrame::iterator itr =
@@ -523,6 +525,7 @@ public:
   void OnHistoryView(wxCommandEvent &);
   void OnSortGrid(wxCommandEvent &);
   void OnExportCMF(wxCommandEvent &);
+  void OnArchiveCreate(wxCommandEvent &);
   void OnUserExport(wxCommandEvent &);
   DECLARE_PERSISTENT_SIZE  
   DECLARE_EVENT_TABLE()

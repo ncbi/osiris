@@ -31,11 +31,14 @@
 #include "CMenuFileBase.h"
 #include "wxIDS.h"
 
+const wxString CMenuFileBase::ARCHIVE_CREATE(wxT("Create Analysis Archive..."));
+const wxString CMenuFileBase::ARCHIVE_EXTRACT(wxT("Extract Analysis Archive..."));
+
 CMenuFileBase::CMenuFileBase(bool bClose)
 {
   Append(IDanalyze,"&New Analysis...\tCtrl+N");
   Append(wxID_OPEN);
-
+  Append(IDArchiveExtract,ARCHIVE_EXTRACT);
   m_nInsertPoint =  GetMenuItemCount();
 #ifndef __WXMAC__
   Append(IDopenPlot,"O&pen Plot File...\tCtrl+P");

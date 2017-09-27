@@ -697,7 +697,7 @@ mDifferenceArray (NULL), mUnnormalizedDifferenceArray(0),
 mNormsLeft (NULL), mNormsRight (NULL), mRelativeSizes (NULL), mSize (0), mDifferenceSize (0), mOmissionSize (0),
 mOmissionArray (NULL), mNumberOfLargePeaks (0), mLargeCharacteristicArray (NULL), mLargeDifferenceArray (NULL),
 mNumberOfLargeDifferences (0), mFirstIntervalFraction (-1.0), mSmallestIntervalFraction (-1.0), mMaxRelativeHeight (-1),
-mCorrelationAcceptanceThreshold (0.993), mCorrelationAutoAcceptanceThreshold (0.9975)
+mCorrelationAcceptanceThreshold (0.993), mCorrelationAutoAcceptanceThreshold (0.9975), mAltSpacingArray (NULL), mAltSpacingCoefficients (NULL), mFormulaTerms (0)
 //
 //, mLastHalfSize (0), mLastHalfCharacteristicArray (NULL), mLastHalfUnnormalizedDifferenceArray (NULL),
 //mLastHalfRelativeSizes (NULL), mLastHalfDifferenceSize (0), mLastHalfNormsLeft (NULL), mLastHalfNormsRight (NULL) 
@@ -713,7 +713,7 @@ mNormsLeft (NULL), mNormsRight (NULL), mRelativeSizes (NULL),
 mSize (0), mDifferenceSize (0), mOmissionSize (0), mOmissionArray (NULL), mNumberOfLargePeaks (0), 
 mLargeCharacteristicArray (NULL), mLargeDifferenceArray (NULL), mNumberOfLargeDifferences (0), 
 mFirstIntervalFraction (-1.0), mSmallestIntervalFraction (-1.0), mMaxRelativeHeight (-1),
-mCorrelationAcceptanceThreshold (0.993), mCorrelationAutoAcceptanceThreshold (0.9975)
+mCorrelationAcceptanceThreshold (0.993), mCorrelationAutoAcceptanceThreshold (0.9975), mAltSpacingArray (NULL), mAltSpacingCoefficients (NULL), mFormulaTerms (0)
 //
 //, mLastHalfSize (0), mLastHalfCharacteristicArray (NULL), mLastHalfUnnormalizedDifferenceArray (NULL),
 //mLastHalfRelativeSizes (NULL), mLastHalfDifferenceSize (0), mLastHalfNormsLeft (NULL), mLastHalfNormsRight (NULL)
@@ -727,6 +727,7 @@ mCorrelationAcceptanceThreshold (0.993), mCorrelationAutoAcceptanceThreshold (0.
 	RGBracketStringSearch OmissionSearch ("<Omissions>", "</Omissions>", TextInput);
 	RGBracketStringSearch AcceptanceThresholdSearch ("<CorrelationAcceptanceThreshold>", "</CorrelationAcceptanceThreshold>", TextInput);
 	RGBracketStringSearch AutoAcceptanceThresholdSearch ("<CorrelationAutoAcceptanceThreshold>", "</CorrelationAutoAcceptanceThreshold>", TextInput);
+	RGBracketStringSearch AltSpacingSearch ("<AltSpacing>", "</AltSpacing>", TextInput);
 	RGString OmissionString;
 	size_t endPosition;
 	RGString token;
@@ -1111,6 +1112,9 @@ mCorrelationAcceptanceThreshold (0.993), mCorrelationAutoAcceptanceThreshold (0.
 		mCorrelationAutoAcceptanceThreshold = numberString.ConvertToDouble ();
 		cout << "\tFrom ILS settings...ILS auto acceptance threshold = " << mCorrelationAutoAcceptanceThreshold << endl << endl;
 	}
+
+	if (AltSpacingSearch.FindNextBracketedString (0, endPosition, mAltSpacingFormula))
+		cout << "\tAlternate Spacing Formula = " << mAltSpacingFormula.GetData () << endl << endl;
 }
 
 
@@ -1126,6 +1130,8 @@ STRBaseLaneStandard :: ~STRBaseLaneStandard () {
 	delete[] mOmissionArray;
 	delete[] mLargeCharacteristicArray;
 	delete[] mLargeDifferenceArray;
+	delete[] mAltSpacingArray;
+	delete[] mAltSpacingCoefficients;
 
 	//delete[] mLastHalfCharacteristicArray;
 	//delete[] mLastHalfUnnormalizedDifferenceArray;
@@ -1286,6 +1292,108 @@ double STRBaseLaneStandard :: GetCorrelationAcceptanceThreshold () const {
 double STRBaseLaneStandard :: GetCorrelationAutoAcceptanceThreshold () const {
 
 	return mCorrelationAutoAcceptanceThreshold;
+}
+
+
+
+double* STRBaseLaneStandard :: GetAltSpacingArray () {
+
+	if (mAltSpacingArray != NULL)
+		return mAltSpacingArray;
+
+	if (mAltSpacingFormula.Length () == 0)
+		return NULL;
+
+	//RGStringArray tokens;
+	//RGStringArray delims;
+	RGString token;
+	RGStringTokenizer polynomial (mAltSpacingFormula);
+	
+	polynomial.AddDelimiter ("x2");
+	polynomial.AddDelimiter ("x3");
+	polynomial.AddDelimiter ("x4");
+	polynomial.AddDelimiter ("x5");
+	polynomial.AddDelimiter ("x6");
+	polynomial.AddDelimiter ("x7");
+	polynomial.AddDelimiter ("x8");
+	polynomial.AddDelimiter ("x9");
+	polynomial.AddDelimiter ("x10");
+	polynomial.AddDelimiter ("y =");
+	polynomial.AddDelimiter ("x");
+
+	//polynomial.Split (tokens, delims);
+
+	RGString delim;
+	list<double> coeffList;
+	double temp;
+	int i = 0;
+//	int index;
+
+	while (polynomial.NextToken (token, delim)) {
+
+		token.FindAndReplaceAllSubstrings (" ", "");
+
+		if (token.Length () == 0)
+			continue;
+
+		temp = token.ConvertToDouble ();
+		coeffList.push_back (temp);
+		cout << "Spacing coefficient number " << i << " = " << temp << endl;
+		i++;
+	}
+
+	mFormulaTerms = coeffList.size ();
+	mAltSpacingCoefficients = new double [mFormulaTerms];
+	mAltSpacingArray = new double [mSize];
+
+	i = 0;
+
+	while (!coeffList.empty ()) {
+
+		temp = coeffList.front ();
+		coeffList.pop_front ();
+		mAltSpacingCoefficients [i] = temp;
+		i++;
+	}
+
+	//for (i=0; i<mFormulaTerms; i++) {
+
+	//	tokens [i].FindAndReplaceAllSubstrings (" ", "");
+	//	temp = tokens [i].ConvertToDouble ();
+	//	index = mFormulaTerms - i - 1;
+	//	mAltSpacingCoefficients [index] = temp;
+	//	cout << "Spacing coefficient number " << index << " = " << temp << endl;
+	//}
+
+	// Now create the scaled array
+
+	double bpRange = mCharacteristicArray [mSize - 1] - mCharacteristicArray [0];
+	double firstBP = mCharacteristicArray [0];
+	double x;
+	int j;
+
+	cout << "Spacing array = ";
+
+	for (i=0; i<mSize; i++) {
+
+		x = (mCharacteristicArray [i] - firstBP) / bpRange;
+		temp = mAltSpacingCoefficients [0];
+
+		for (j=1; j<mFormulaTerms; j++) {
+
+			temp = x * temp + mAltSpacingCoefficients [j]; 
+		}
+
+		mAltSpacingArray [i] = temp;
+
+		cout << temp << "   ";
+	}
+
+	cout << endl;
+	//mAltSpacingArray [0] = 0.0;
+	//mAltSpacingArray [mSize - 1] = 1.0;
+
+	return mAltSpacingArray;
 }
 
 

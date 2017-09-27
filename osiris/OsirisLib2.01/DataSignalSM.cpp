@@ -2651,5 +2651,17 @@ void NoisyPeak :: CaptureSmartMessages () {
 
 
 
+void SpikeSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
+
+	DataSignal::OutputDebugID (comm, numHigherObjects);
+	RGString idData;
+	idData << "\t\t\t\tSignal with Mean:  " << mMean;
+	SmartMessage::OutputDebugString (idData);
+}
+
+
+
+
+
 
 

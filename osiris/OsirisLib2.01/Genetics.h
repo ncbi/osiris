@@ -686,11 +686,13 @@ protected:
 	double mMinWidth;
 	double* mCharacteristicArray;
 	double* mNormalizedCharacteristicDifferences;
+	double* mLadderILSTargets;
 	double* mLadderILSLowBounds;
 	double* mLadderILSHighBounds;
 	double mLadderWidth;
 	double mLadderStart;
 	double mLadderEnd;
+	double mLadderFactor;
 };
 
 
@@ -736,6 +738,8 @@ public:
 	double GetMaximumCharacteristic () const;
 	double GetLaneStandardTimeForCharacteristicNumber (int i) const;  // Assume the first characteristic is number 1 (not 0)
 	const double* GetLaneStandardVector () const { return mLaneStandardTimes; }
+
+	double* GetAltSpacingArray () { return mLink->GetAltSpacingArray (); }
 
 	void SetLaneStandardName (const RGString& name);
 	void SetFamilyName (const RGString& name) { mFamilyName = name; }

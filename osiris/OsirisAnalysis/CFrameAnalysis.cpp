@@ -35,6 +35,7 @@
 #include <wx/file.h>
 #include "CFrameAnalysis.h"
 #include "OsirisFileTypes.h"
+#include "CDialogDeleteDisabled.h"
 #include "CDialogEnableMultiple.h"
 #include "CDialogExportFile.h"
 #include "CDialogWarnHistory.h"
@@ -50,6 +51,9 @@
 #include "COARfile.h"
 #include "CReAnalyze.h"
 #include "CGridAnalysisDisplay.h"
+#include "CDirList.h"
+#include "CArchiveCollection.h"
+#include "CDialogArchiveCreate.h"
 #include "nwx/PersistentSize.h"
 #include <wx/filename.h>
 #include <wx/image.h>
@@ -485,7 +489,7 @@ void CFrameAnalysis::EditPeak(
   }
   else
   {
-    CDialogEditPeak xx(parent,pSample,pPeak);
+    CDialogEditPeak xx(parent,pSample,pPeak,this->m_pOARfile->GetReviewerAllowUserOverride());
     if(xx.IsOK())
     {
       n = xx.ShowModal();
@@ -578,6 +582,9 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
     case IDmenuDisableMultiple:
       _OnEnableMultiple();
       break;
+    case IDmenuDeleteDisabled:
+      _OnDeleteDisabled();
+      break;
     case IDmenuReAnalyze:
       _OnReAnalyze();
       break;
@@ -611,6 +618,9 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
       break;
     case IDExportCMF:
       OnExportCMF(e);
+      break;
+    case IDArchiveCreate:
+      OnArchiveCreate(e);
       break;
     case IDmenuDisplayNameBASE + IDmenuDisplayNameFile:
     case IDmenuDisplayNameBASE + IDmenuDisplayNameSample:
@@ -738,10 +748,12 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
   if(!m_nNoTimer)
   {
     CheckSelection();
+#if 0
     if(m_pDlgAnalysis != NULL)
     {
       m_pDlgAnalysis->OnTimer(e);
     }
+#endif
     if(m_pPanelPlotPreview != NULL)
     {
       m_pPanelPlotPreview->OnTimer(e);
@@ -1046,9 +1058,11 @@ void CFrameAnalysis::OnShowGraphic(wxCommandEvent &)
 {
   ShowGraphicByRow(-1);
 }
+#ifndef __WXMAC__
 #ifdef __WXDEBUG__
 _CRTIMP extern long _crtBreakAlloc;
 extern long _lRequestCurr;
+#endif
 #endif
 
 void CFrameAnalysis::ShowSampleFrame(
@@ -1338,7 +1352,7 @@ void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
     bool bGridFocus = true;
     if(n == wxID_OK)
     {
-      RepaintData();
+      RepaintAllData(pSample);
     }
     else if(n == IDmenuEditCell)
     {
@@ -1464,7 +1478,7 @@ void CFrameAnalysis::DoReviewSample(int nReviewType, COARsample *pSample)
       int n = dlg.ShowModal();
       if(n == wxID_OK)
       {
-        RepaintData();
+        RepaintAllData(pSample);
       }
       else if(n == IDmenuEditCell)
       {
@@ -1518,6 +1532,61 @@ void CFrameAnalysis::_OnReAnalyze()
     }
   }
 }
+void CFrameAnalysis::_OnDeleteDisabled()
+{
+  std::vector<const COARsample *> vps;
+  if(m_pOARfile->GetDisabledSamples(&vps,false))
+  {
+    int nLabelTypeName = m_pComboName->GetSelection();
+    std::vector<const wxString> vsNames;
+    std::vector<const COARsample *>::const_iterator itr;
+    vsNames.reserve(vps.size());
+    if(nLabelTypeName == IDmenuDisplayNameSample)
+    {
+      for(itr = vps.begin(); itr != vps.end(); ++itr)
+      {
+        // show sample names
+        vsNames.push_back((*itr)->GetSampleName());
+      }
+    }
+    else
+    {
+      for(itr = vps.begin(); itr != vps.end(); ++itr)
+      {
+        // show file names
+        vsNames.push_back((*itr)->GetName());
+      }
+    }
+    CDialogDeleteDisabled dlg(
+      this, vsNames,m_pOARfile->GetReviewerAllowUserOverride());
+    if(dlg.ShowModal() == wxID_OK)
+    {
+      wxString sPath;
+      CMDIFrame *pFrame;
+      std::vector<const COARsample *>::iterator itr;
+      for(itr = vps.begin();
+        itr != vps.end();
+        ++itr)
+      {
+        pFrame = _FindSampleFrame(*itr);
+        if(pFrame != NULL)
+        {
+          pFrame->Close(false);
+        }
+        sPath = m_pOARfile->FindPlotFile(*itr);
+        pFrame = sPath.IsEmpty() ? NULL : m_pParent->FindWindowByName(sPath);
+        if(pFrame != NULL)
+        {
+          pFrame->Close(false);
+        }
+      }
+      m_pOARfile->DeleteDisabledSamples(dlg.GetUserID());
+      m_SampleSort.UpdateSort();
+      RepaintData();
+      m_pGrid->SetFocus();
+    }
+  }
+}
 void CFrameAnalysis::_OnEnableMultiple()
 {
   if(_XmlFile() && m_pOARfile->CanEditArtifacts())
@@ -1559,7 +1628,6 @@ void CFrameAnalysis::_OnEnableSample()
     if(dlg.ShowModal() == wxID_OK)
     {
       RepaintAllData(pSample);
-      //RepaintData();
     }
   }
   m_pGrid->SetFocus();
@@ -2016,21 +2084,27 @@ bool CFrameAnalysis::IsEdited()
 }
 void CFrameAnalysis::SelectRowCol(int nRow, int nCol)
 {
-  if(nRow < 0 || nCol < 0)
+  int nR = m_pGrid->GetNumberRows();
+  int nC = m_pGrid->GetNumberCols();
+  if(nRow < 0 || nCol < 0 || nR < 1 || nC < 1)
   {}
   else if(nRow == m_nLastRowSelect && nCol == m_nLastColSelect)
   {}
   else
   {
-    m_pGrid->SetGridCursor(nRow,nCol);
+    m_pGrid->SetGridCursor(
+      nRow < nR ? nRow : (nR-1),
+      nCol < nC ? nCol : (nC-1));
     CheckSelection(true);
   }
 }
 void CFrameAnalysis::SelectRow(int nRow)
 {
-  if(nRow >= 0)
+  int nR = m_pGrid->GetNumberRows();
+  if(nRow >= 0 && nR > 0)
   {
     nwxGridBatch xx(m_pGrid);
+    if(nRow >= nR) { nRow = nR - 1; }
     bool bNewRow = (nRow != m_nLastRowSelect);
     m_nLastColSelect = 0;
     m_nLastRowSelect = nRow;
@@ -2212,14 +2286,6 @@ bool CFrameAnalysis::_SaveOERFile(const wxString &sFileName)
   bool bRtn = m_pOARfile->SaveFile(sFileName);
   return bRtn;
 }
-/*
-void CFrameAnalysis::RepaintAllData(const wxString &sSampleFileName)
-{
-  CheckSaveStatus();
-  m_pParent->UpdateSamplePlot(m_pOARfile,sSampleFileName);
-  RepaintData();
-}
-*/
 void CFrameAnalysis::RepaintAllData(const COARsample *p)
 {
   CheckSaveStatus();
@@ -2369,6 +2435,7 @@ bool CFrameAnalysis::CheckSaveOnCloseFile()
       else if(n == wxID_NO)
       {
         bDone = true;
+        _DestroySamples();
         m_pParent->DiscardChanges(m_pOARfile);
       }
     }
@@ -3264,6 +3331,71 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
   }
 }
 
+void CFrameAnalysis::OnArchiveCreate(wxCommandEvent &)
+{
+  static const wxString sCONFIRM(
+      "The analysis file has been modified and must\n"
+      "be saved before the data are archived.\n"
+      "Would you like to save the analysis file now?");
+  bool bOK = PromptSaveFileNow(sCONFIRM);
+  if(bOK)
+  {
+    CArchiveCollection orz(m_pOARfile);
+    if(!orz.HasPlotFiles())
+    {
+      mainApp::ShowError(wxT("No plot files found,\nCannot create an archive."),this);
+    }
+    else
+    {
+      bool bIncludeInput = false;
+      bool bShowFile = false;
+      bOK = false;
+      {
+        CDialogArchiveCreate dlgc(&orz,this);
+        if(dlgc.ShowModal() == wxID_OK)
+        {
+          bIncludeInput = dlgc.IncludeInputFiles();
+          bShowFile = dlgc.ShowFileLocation();
+          bOK = true;
+        }
+        // in braces to destroy dialog window here
+      }
+      if(bOK)
+      {
+        wxFileName fn(m_pOARfile->GetLastFileName());
+        wxString sDefaultFileName = nwxFileUtil::SetupFileName
+          (fn.GetFullPath(),wxT(".orz"));
+        wxFileName fnDef(sDefaultFileName);
+        wxFileDialog dlg(
+          this,
+          wxT("Create OSIRIS Archive"),
+          fnDef.GetPath(),
+          fnDef.GetFullName(),
+          FILE_TYPE_ARCHIVE, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+        if(dlg.ShowModal() == wxID_OK)
+        {
+          //  save archive here
+          wxString sFile = dlg.GetPath();
+          bool bOK = false;
+          {
+            wxBusyCursor x;
+            bOK = orz.WriteArchive(sFile,bIncludeInput);
+          }
+          if(!bOK)
+          {
+            mainApp::ShowError(
+              wxT("Cannot create archive file.\nCheck file and folder permissions."),
+              this);
+          }
+          else if(bShowFile)
+          {
+            nwxFileUtil::ShowFileFolder(sFile);
+          }
+        }
+      }
+    }
+  }
+}
 void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
 {
   ExportCMF();
