@@ -1,7 +1,7 @@
-LadderFileName = PowerPlex_ESI17_LadderInfo.xml;
-LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenerateLadderFile\PowerPlexESI17ConfigFiles\WENBins;
-BinsFileName = PowerPlex_ESI17_Bins_IDX_v3.0.txt;
+LadderFileName = PPFusion_LadderInfo.xml;
+LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\PPFusionConfigFiles\WenPop7V2Bins;
+BinsFileName = PowerPlex_Fusion_POP7_Bins_IDX_v2.0.txt;
 OutputConfigPath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\LadderSpecifications;
-ILSName = PROMEGA-ILS-WEN-500;
+ILSName = PROMEGA-ILS-WEN-Pop7-V2-500;
 ;
 
