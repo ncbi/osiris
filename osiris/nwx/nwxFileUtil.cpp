@@ -193,9 +193,7 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
 #ifdef __WXMSW__
       sFileArg = wxT("/select,");
 #endif
-      sFileArg.Append('"');
       sFileArg.Append(sFileName);
-      sFileArg.Append('"');
 
 #ifdef __WXMSW__
 //      sCommand.Append(wxT(" "));
