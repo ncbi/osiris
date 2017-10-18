@@ -2833,6 +2833,284 @@ int STRLaneStandardChannelData :: TestForRaisedBaselineAndExcessiveNoiseSM (doub
 }
 
 
+int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+
+	//
+	//  This is ladder and sample stage 1
+	//
+	
+	STRTracePrequalification trace;
+	DataSignal* nextSignal;
+	double fit;
+	int TestResult;
+	DataSignal* signature;
+	double secondaryContent;
+	double minRFU = GetMinimumHeight ();
+	double maxRFU = GetMaximumHeight ();
+	double detectionRFU = GetDetectionThreshold ();
+	SampledData::SetDetectionRFU (detectionRFU);
+	double minAcceptableFit = ParametricCurve::GetMinimumFitThreshold ();
+	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
+	double minFit = minFitForArtifactTest;
+	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
+	double minRFU2 = 0.9 * minRFU;
+	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
+	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+
+	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
+
+	if (minAcceptableFit > minFit)
+		minFit = minAcceptableFit;
+
+	if (CoreBioComponent::GetGaussianSignature ())
+		signature = new NormalizedGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	else
+		signature = new DoubleGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	ArtifactList.Clear ();
+	MarginalCurveList.Clear ();
+	FinalCurveList.Clear ();
+	msg.ResetMessage ();
+	PreliminaryCurveList.Clear ();
+	CompleteCurveList.ClearAndDelete ();
+	double lineFit;
+
+	mData->ResetCharacteristicsFromRight (trace, text, detectionRFU, print);
+
+	Endl endLine;
+	ExcelText.SetOutputLevel (1);
+	ExcelText << "Using minimum RFU = " << minRFU << endLine;
+	ExcelText.ResetOutputLevel ();
+	int dualReturn;
+	double absoluteMinFitLessEpsilon = absoluteMinFit - 0.01;
+
+	double constantHeight;
+	int leftEndPoint;
+	int rightEndPoint;
+	RaisedBaseLineData* rbld;
+	mRaisedBaseLines.clearAndDestroy ();
+
+	while (nextSignal = mData->FindNextCharacteristicFromRight (*signature, fit, CompleteCurveList)) {
+
+		secondaryContent = fabs(nextSignal->GetScale (2));
+		double mean = nextSignal->GetMean ();
+		lineFit = mData->TestConstantCharacteristicRetry (constantHeight, leftEndPoint, rightEndPoint);
+
+		if (lineFit > minFitForArtifactTest) {
+
+			rbld = new RaisedBaseLineData (constantHeight, leftEndPoint, rightEndPoint);
+			mRaisedBaseLines.prepend (rbld);
+			delete nextSignal;
+			continue;
+		}
+
+		//if (nextSignal->GetStandardDeviation () > 0.0) {
+
+		//	if (nextSignal->GetMean () < nextSignal->LeftEndPoint () + 0.2 * nextSignal->GetStandardDeviation ()) {
+
+		//		delete nextSignal;
+		//		continue;
+		//	}
+		//}
+
+		TestFitCriteriaSM (nextSignal);
+
+		//if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum ()) {
+		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && mData->TestForBiasedFit (nextSignal, minRFU))) {
+
+			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList, true);
+
+			if (dualReturn <= 0)
+				TestForArtifactsSM (nextSignal, absoluteMinFitLessEpsilon);
+
+			continue;
+		}
+
+		if ((nextSignal->Peak () < 0.0) || secondaryContent > 0.9 * nextSignal->Peak ()) {
+
+			TestForArtifactsSM (nextSignal, fit);
+			continue;
+		}
+
+		if (fit < minFit) {
+
+			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList);
+
+			if (dualReturn <= 0)
+				TestForArtifactsSM (nextSignal, fit);
+
+			continue;
+		}
+
+		else if (nextSignal->Peak () > 0.0) {  // nextSignal is acceptable for now, so add it to the CurveList
+
+			PreliminaryCurveList.Prepend (nextSignal);
+			CompleteCurveList.Prepend (nextSignal);
+//			i++;
+		}
+
+		else
+			delete nextSignal;
+	}   //  We are done finding characteristics
+
+	//
+	// Now review CompleteCurveList for missed peaks...look at pairs of peaks and call mData->FindCharacteristicBetweenTwoPeaks.  If find a peak, insert into CompleteCurveList and PreliminaryCurveList
+	//
+
+	DataSignal* previousSignal = NULL;
+	RGDListIterator itt (CompleteCurveList);
+	const DataSignal* shoulderSignal;
+	DataSignal* shoulderCopy;
+	RGDList shoulderSignals;
+	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
+
+	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
+	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).
+
+	if ((BeginAnalysis >= 0.0) && (GetMessageValue (applyEnhancedShoulderAlgorithm)) && UseEnhancedShoulderAlgorithm) {
+
+		DataSignal::SetNumberOfIntervalsForConcaveDownAlgorithm (GetThreshold (concaveDownAcceptanceThreshold));
+
+		while (nextSignal = (DataSignal*) itt ()) {
+
+			if (nextSignal->GetMean () < BeginAnalysis) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			if (previousSignal == NULL) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			nextSignal->SetChannel (mChannel);
+			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
+
+			if (shoulderSignal != NULL) {
+
+				int left = (int) floor (shoulderSignal->LeftEndPoint () + 0.5);
+				int right = (int) floor (shoulderSignal->RightEndPoint () + 0.5);
+
+				lineFit = mData->InnerProductWithConstantFunction (left, right, constantHeight);
+
+				if (lineFit <= minFitForArtifactTest) {
+
+					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+					shoulderCopy->SetShoulderSignal (true);
+					shoulderSignals.Append (shoulderCopy);
+				}
+
+				delete shoulderSignal;
+			}
+
+			previousSignal = nextSignal;
+		}
+
+		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+
+			PreliminaryCurveList.Insert (nextSignal);
+			CompleteCurveList.Insert (nextSignal);
+		}
+	}
+
+	RGDListIterator it (PreliminaryCurveList);
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+//		TestResult = mTestPeak->TestSM (nextSignal, minRFU, maxRFU);
+		TestResult = mTestPeak->TestSM (nextSignal, detectionRFU, minRFU, maxRFU);
+
+		if (TestResult < 0) {
+
+			it.RemoveCurrentItem ();
+
+			if (TestResult != -20) {
+
+//				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				nextSignal->ClearSmartNoticeObjects ();
+			}
+		}
+	}
+
+	DataSignal* prevSignal = NULL;
+	RGDList tempList;
+	prevSignal = (DataSignal*)PreliminaryCurveList.GetFirst ();
+	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
+
+	while (nextSignal = (DataSignal*) PreliminaryCurveList.GetFirst ()) {
+
+		if (prevSignal != NULL) {
+
+			if (fabs(prevSignal->GetMean () - nextSignal->GetMean ()) < minDistance) {
+
+				// "get rid" of the one that fits least well and use the other for the next test.
+				// later, if we want, we can add redundant signal to artifact list with a notice...
+
+				if (prevSignal->GetCurveFit () > nextSignal->GetCurveFit ()) {
+
+					// keep prevSignal and "lose" nextSignal
+					CompleteCurveList.RemoveReference (nextSignal);
+		//			ArtifactList.RemoveReference (nextSignal);
+					delete nextSignal;
+					continue;
+				}
+
+				else {
+
+					CompleteCurveList.RemoveReference (prevSignal);
+		//			ArtifactList.RemoveReference (prevSignal);
+					delete prevSignal;
+					prevSignal = nextSignal;
+					continue;
+				}
+			}
+
+			else {
+
+				tempList.Append (prevSignal);
+				prevSignal = nextSignal;
+			}
+		}
+	}
+
+	if (prevSignal != NULL)
+		tempList.Append (prevSignal);
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ())
+		PreliminaryCurveList.Append (nextSignal);
+
+	it.Reset ();
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetStandardDeviation () < 0.14) {
+
+			CompleteCurveList.RemoveReference (nextSignal);
+			it.RemoveCurrentItem ();
+			double mean = floor (nextSignal->GetMean () + 0.5);
+			double peak = nextSignal->Peak ();
+			prevSignal = new SpikeSignal (mean, peak, 0.0, 0.0);
+			prevSignal->SetCurveFit (1.0);
+			prevSignal->SetDataMode (peak);
+			tempList.Append (prevSignal);
+		}
+	}
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+		
+		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	delete signature;
+//	ProjectNeighboringSignalsAndTest (1.0, 1.0);
+	return 0;
+}
+
+
 int STRLaneStandardChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	
@@ -3038,6 +3316,286 @@ int STRLaneStandardChannelData :: PreTestForSignalOffScaleSM () {
 
 
 // Smart Message related methods*****************************************************************************************************
+
+
+
+int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+
+	//
+	//  This is ladder and sample stage 1
+	//
+	
+	STRTracePrequalification trace;
+	DataSignal* nextSignal;
+	double fit;
+	int TestResult;
+	DataSignal* signature;
+	double secondaryContent;
+	double minRFU = GetMinimumHeight ();
+	double maxRFU = GetMaximumHeight ();
+	double detectionRFU = GetDetectionThreshold ();
+	SampledData::SetDetectionRFU (detectionRFU);
+	double minAcceptableFit = ParametricCurve::GetMinimumFitThreshold ();
+	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
+	double minFit = minFitForArtifactTest;
+	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
+	double minRFU2 = 0.9 * minRFU;
+	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
+	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+
+	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
+
+	if (minAcceptableFit > minFit)
+		minFit = minAcceptableFit;
+
+	if (CoreBioComponent::GetGaussianSignature ())
+		signature = new NormalizedGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	else
+		signature = new DoubleGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
+
+	ArtifactList.Clear ();
+	MarginalCurveList.Clear ();
+	FinalCurveList.Clear ();
+	msg.ResetMessage ();
+	PreliminaryCurveList.Clear ();
+	CompleteCurveList.ClearAndDelete ();
+	double lineFit;
+
+	mData->ResetCharacteristicsFromRight (trace, text, detectionRFU, print);
+
+	Endl endLine;
+	ExcelText.SetOutputLevel (1);
+	ExcelText << "Using minimum RFU = " << minRFU << endLine;
+	ExcelText.ResetOutputLevel ();
+	int dualReturn;
+	double absoluteMinFitLessEpsilon = absoluteMinFit - 0.01;
+
+	double constantHeight;
+	int leftEndPoint;
+	int rightEndPoint;
+	RaisedBaseLineData* rbld;
+	mRaisedBaseLines.clearAndDestroy ();
+
+	while (nextSignal = mData->FindNextCharacteristicFromRight (*signature, fit, CompleteCurveList)) {
+
+		secondaryContent = fabs(nextSignal->GetScale (2));
+		double mean = nextSignal->GetMean ();
+		lineFit = mData->TestConstantCharacteristicRetry (constantHeight, leftEndPoint, rightEndPoint);
+
+		if (lineFit > minFitForArtifactTest) {
+
+			rbld = new RaisedBaseLineData (constantHeight, leftEndPoint, rightEndPoint);
+			mRaisedBaseLines.prepend (rbld);
+			delete nextSignal;
+			continue;
+		}
+
+		//if (nextSignal->GetStandardDeviation () > 0.0) {
+
+		//	if (nextSignal->GetMean () < nextSignal->LeftEndPoint () + 0.2 * nextSignal->GetStandardDeviation ()) {
+
+		//		delete nextSignal;
+		//		continue;
+		//	}
+		//}
+
+		TestFitCriteriaSM (nextSignal);
+
+		//if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum ()) {
+		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && mData->TestForBiasedFit (nextSignal, minRFU))) {
+
+			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList, true);
+
+			if (dualReturn <= 0)
+				TestForArtifactsSM (nextSignal, absoluteMinFitLessEpsilon);
+
+			continue;
+		}
+
+		if ((nextSignal->Peak () < 0.0) || secondaryContent > 0.9 * nextSignal->Peak ()) {
+
+			TestForArtifactsSM (nextSignal, fit);
+			continue;
+		}
+
+		if (fit < minFit) {
+
+			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList);
+
+			if (dualReturn <= 0)
+				TestForArtifactsSM (nextSignal, fit);
+
+			continue;
+		}
+
+		else if (nextSignal->Peak () > 0.0) {  // nextSignal is acceptable for now, so add it to the CurveList
+
+			PreliminaryCurveList.Prepend (nextSignal);
+			CompleteCurveList.Prepend (nextSignal);
+//			i++;
+		}
+
+		else
+			delete nextSignal;
+	}   //  We are done finding characteristics
+
+	//
+	// Now review CompleteCurveList for missed peaks...look at pairs of peaks and call mData->FindCharacteristicBetweenTwoPeaks.  If find a peak, insert into CompleteCurveList and PreliminaryCurveList
+	//
+
+	DataSignal* previousSignal = NULL;
+	RGDListIterator itt (CompleteCurveList);
+	const DataSignal* shoulderSignal;
+	DataSignal* shoulderCopy;
+	RGDList shoulderSignals;
+	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
+
+	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
+	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).
+
+	if ((BeginAnalysis >= 0.0) && (GetMessageValue (applyEnhancedShoulderAlgorithm)) && UseEnhancedShoulderAlgorithm) {
+
+		DataSignal::SetNumberOfIntervalsForConcaveDownAlgorithm (GetThreshold (concaveDownAcceptanceThreshold));
+
+		while (nextSignal = (DataSignal*) itt ()) {
+
+			if (nextSignal->GetMean () < BeginAnalysis) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			if (previousSignal == NULL) {
+
+				previousSignal = nextSignal;
+				continue;
+			}
+
+			nextSignal->SetChannel (mChannel);
+			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
+
+			if (shoulderSignal != NULL) {
+
+				int left = (int) floor (shoulderSignal->LeftEndPoint () + 0.5);
+				int right = (int) floor (shoulderSignal->RightEndPoint () + 0.5);
+
+				lineFit = mData->InnerProductWithConstantFunction (left, right, constantHeight);
+
+				if (lineFit <= minFitForArtifactTest) {
+
+					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+					shoulderCopy->SetShoulderSignal (true);
+					shoulderSignals.Append (shoulderCopy);
+				}
+
+				delete shoulderSignal;
+			}
+
+			previousSignal = nextSignal;
+		}
+
+		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+
+			PreliminaryCurveList.Insert (nextSignal);
+			CompleteCurveList.Insert (nextSignal);
+		}
+	}
+
+	RGDListIterator it (PreliminaryCurveList);
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+//		TestResult = mTestPeak->TestSM (nextSignal, minRFU, maxRFU);
+		TestResult = mTestPeak->TestSM (nextSignal, detectionRFU, minRFU, maxRFU);
+
+		if (TestResult < 0) {
+
+			it.RemoveCurrentItem ();
+
+			if (TestResult != -20) {
+
+//				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				nextSignal->ClearSmartNoticeObjects ();
+			}
+		}
+	}
+
+	DataSignal* prevSignal = NULL;
+	RGDList tempList;
+	prevSignal = (DataSignal*)PreliminaryCurveList.GetFirst ();
+	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
+
+	while (nextSignal = (DataSignal*) PreliminaryCurveList.GetFirst ()) {
+
+		if (prevSignal != NULL) {
+
+			if (fabs(prevSignal->GetMean () - nextSignal->GetMean ()) < minDistance) {
+
+				// "get rid" of the one that fits least well and use the other for the next test.
+				// later, if we want, we can add redundant signal to artifact list with a notice...
+
+				if (prevSignal->GetCurveFit () > nextSignal->GetCurveFit ()) {
+
+					// keep prevSignal and "lose" nextSignal
+					CompleteCurveList.RemoveReference (nextSignal);
+		//			ArtifactList.RemoveReference (nextSignal);
+					delete nextSignal;
+					continue;
+				}
+
+				else {
+
+					CompleteCurveList.RemoveReference (prevSignal);
+		//			ArtifactList.RemoveReference (prevSignal);
+					delete prevSignal;
+					prevSignal = nextSignal;
+					continue;
+				}
+			}
+
+			else {
+
+				tempList.Append (prevSignal);
+				prevSignal = nextSignal;
+			}
+		}
+	}
+
+	if (prevSignal != NULL)
+		tempList.Append (prevSignal);
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ())
+		PreliminaryCurveList.Append (nextSignal);
+
+	it.Reset ();
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (nextSignal->GetStandardDeviation () < 0.14) {
+
+			CompleteCurveList.RemoveReference (nextSignal);
+			it.RemoveCurrentItem ();
+			double mean = floor (nextSignal->GetMean () + 0.5);
+			double peak = nextSignal->Peak ();
+			prevSignal = new SpikeSignal (mean, peak, 0.0, 0.0);
+			prevSignal->SetCurveFit (1.0);
+			prevSignal->SetDataMode (peak);
+			tempList.Append (prevSignal);
+		}
+	}
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+		
+		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
+		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	delete signature;
+//	ProjectNeighboringSignalsAndTest (1.0, 1.0);
+	return 0;
+}
+
 
 
 int STRLadderChannelData :: SetDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak) {
@@ -4630,6 +5188,21 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 	double minFit = minFitForArtifactTest;
 	double absoluteMinFit = ParametricCurve::GetAbsoluteMinimumFit ();
 	int i;
+
+	if (UseNoiseLevelPercentForFit) {
+
+		double range = mData->GetNoiseRange ();
+
+		if (IsNormalizationPass) {
+
+			detectionRFU = 0.01 * range * NoisePercentNormalizationPass;
+		}
+
+		else {
+
+			detectionRFU = 0.01 * range * NoisePercentFinalPass;
+		}
+	}
 
 	if (minAcceptableFit > minFit)
 		minFit = minAcceptableFit;

@@ -236,6 +236,7 @@ public:
 	virtual int FinalTestForCriticalLaneStandardNoticesSM ();
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);
 
+	virtual int FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
 	virtual int TestSignalsForOffScaleSM ();
@@ -319,6 +320,7 @@ public:
 	// Smart Message functions******************************************************************************************************************
 	//******************************************************************************************************************************************
 
+	virtual int FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int SetDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataSM (SampleData& fileData, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataFromColorCorrectedArraySM (double* dataArray, int arraySize, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);

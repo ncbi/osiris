@@ -246,6 +246,9 @@ PERSISTENT_PREDECLARATION (smMinImbalanceThresholdForCreatingNoisyPeak)
 PERSISTENT_PREDECLARATION (smPeakSharesAlleleBinLeft)
 PERSISTENT_PREDECLARATION (smPeakSharesAlleleBinRight)
 PERSISTENT_PREDECLARATION (smConstrainPullupPatternAnalysisPreset)
+PERSISTENT_PREDECLARATION (smOverrideNoiseLevelPercentsInSmoothing)
+PERSISTENT_PREDECLARATION (smPercentOverrideOfNoiseThresholdForNormalizationPhase)
+PERSISTENT_PREDECLARATION (smPercentOverrideOfNoiseThresholdForFinalPhase)
 
 
 
@@ -6809,6 +6812,90 @@ public:
 	smConstrainPullupPatternAnalysisPreset ();
 	smConstrainPullupPatternAnalysisPreset (const smConstrainPullupPatternAnalysisPreset& note);
 	virtual ~smConstrainPullupPatternAnalysisPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smOverrideNoiseLevelPercentsInSmoothing : public SmartNotice {
+
+PERSISTENT_DECLARATION (smOverrideNoiseLevelPercentsInSmoothing)
+
+public:
+	smOverrideNoiseLevelPercentsInSmoothing ();
+	smOverrideNoiseLevelPercentsInSmoothing (const smOverrideNoiseLevelPercentsInSmoothing& note);
+	virtual ~smOverrideNoiseLevelPercentsInSmoothing ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPercentOverrideOfNoiseThresholdForNormalizationPhase : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPercentOverrideOfNoiseThresholdForNormalizationPhase)
+
+public:
+	smPercentOverrideOfNoiseThresholdForNormalizationPhase ();
+	smPercentOverrideOfNoiseThresholdForNormalizationPhase (const smPercentOverrideOfNoiseThresholdForNormalizationPhase& note);
+	virtual ~smPercentOverrideOfNoiseThresholdForNormalizationPhase ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPercentOverrideOfNoiseThresholdForFinalPhase : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPercentOverrideOfNoiseThresholdForFinalPhase)
+
+public:
+	smPercentOverrideOfNoiseThresholdForFinalPhase ();
+	smPercentOverrideOfNoiseThresholdForFinalPhase (const smPercentOverrideOfNoiseThresholdForFinalPhase& note);
+	virtual ~smPercentOverrideOfNoiseThresholdForFinalPhase ();
 
 	virtual int GetSubject () const;
 

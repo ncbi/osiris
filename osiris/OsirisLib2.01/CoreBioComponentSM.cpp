@@ -2471,6 +2471,12 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	smILSFailed ilsRequiresReview;
 	smNormalizeRawDataRelativeToBaselinePreset normalizeRawData;
 	smEnableRawDataFilterForNormalizationPreset enableFilteringForNormalization;
+
+	smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing useDetectionLevelInSmoothing;
+	smOverrideNoiseLevelPercentsInSmoothing overrideNoiseLevelPercentsInSmoothing;
+	smPercentOverrideOfNoiseThresholdForNormalizationPhase percentOverrideNormalizationPhase;
+	smPercentOverrideOfNoiseThresholdForFinalPhase percentOverrideFinalPhase;
+
 	Progress = 0;
 	int j;
 
@@ -2540,6 +2546,42 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 
 	else
 		ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
+
+	ChannelData::SetUseNoiseLevelDefaultForFit (true);
+	bool useDetectionLevel = GetMessageValue (useDetectionLevelInSmoothing);
+	bool usePercentNoiseLevel = GetMessageValue (overrideNoiseLevelPercentsInSmoothing);
+
+	if (useDetectionLevel) {
+
+		ChannelData::SetUseDetectionLevelForFit (true);
+		ChannelData::SetUseNoiseLevelDefaultForFit (false);
+		SampledData::SetIgnoreNoiseAnalysisAboveDetectionInSmoothing (true);
+	}
+
+	else
+		ChannelData::SetUseDetectionLevelForFit (false);
+
+	if (usePercentNoiseLevel) {
+
+		ChannelData::SetUseNoiseLevelPercentForFit (true);
+		ChannelData::SetUseDetectionLevelForFit (false);
+		ChannelData::SetUseNoiseLevelDefaultForFit (false);
+		SampledData::SetIgnoreNoiseAnalysisAboveDetectionInSmoothing (true);
+		ChannelData::SetNoisePercentForFinalPass ((double)GetThreshold (percentOverrideFinalPhase));
+		ChannelData::SetNoisePercentForNormalizationPass ((double)GetThreshold (percentOverrideNormalizationPhase));
+	}
+
+	else
+		ChannelData::SetUseNoiseLevelPercentForFit (false);
+
+	if (!useDetectionLevel && !usePercentNoiseLevel)
+		SampledData::SetIgnoreNoiseAnalysisAboveDetectionInSmoothing (false);
+
+	if (GetMessageValue (normalizeRawData))
+		ChannelData::SetIsNormalizationPass (true);
+
+	else
+		ChannelData::SetIsNormalizationPass (false);
 
 //	status = FitAllCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 	status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
@@ -2637,6 +2679,8 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	}
 
 	//cout << "Normalized all baselines" << endl;
+
+	ChannelData::SetIsNormalizationPass (false);
 
 	//RestoreRawDataAndDeleteFilteredSignalNonILS ();	// 02/02/2014:  This is now done at the channel level within normalization function.
 	ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
