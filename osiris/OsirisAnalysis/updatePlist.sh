@@ -22,10 +22,10 @@ checkerror $? "cannot find xsl file, ${XSL}"
 V=`grep "define OSIRIS_VERS_BASE " ../Version/OsirisVersion.h | sed 's/^.* "//' | sed 's/".*//'`
 test "$V" != ""
 checkerror $? "cannot obtain osiris version"
-echo "$V"
+echo "version: $V"
 head -2 "${XML}" > $OUTFILE
 checkerror $?
-xsltproc --param "version" "'${V}'" "$XSL" "$XML" >> $OUTFILE
+xsltproc --param "version" "'${V} '" "$XSL" "$XML" >> $OUTFILE
 checkerror $?
 mv "$XML" "$BACKUP"
 checkerror $?

@@ -559,7 +559,7 @@ void CNotebookEditSample::_DumpItems(
         s.Append(wxT("--"));
       }
       s.Append(wxT(" "));
-      s.Append(nwxString::FormatNumber(pvs->size()));
+      s.Append(nwxString::FormatNumber((int)pvs->size()));
       s.Append(wxT(" "));
       s.Append(pTree->GetItemText(id));
       pvs->push_back(s);

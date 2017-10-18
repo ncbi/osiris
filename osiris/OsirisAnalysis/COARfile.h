@@ -243,7 +243,7 @@ public:
   }
   bool SamplesDisabled() const; // return true if at least one sample is disabled
   size_t GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx = NULL) const;
-  size_t DeleteDisabledSamples();
+  size_t DeleteDisabledSamples(const wxString &sUserID = wxEmptyString);
   size_t GetDisabledSamples(
     std::vector<const COARsample *> *pv, 
     bool bIncludeNonSamples = true) const;

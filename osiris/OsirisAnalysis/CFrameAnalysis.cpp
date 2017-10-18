@@ -1058,9 +1058,11 @@ void CFrameAnalysis::OnShowGraphic(wxCommandEvent &)
 {
   ShowGraphicByRow(-1);
 }
+#ifndef __WXMAC__
 #ifdef __WXDEBUG__
 _CRTIMP extern long _crtBreakAlloc;
 extern long _lRequestCurr;
+#endif
 #endif
 
 void CFrameAnalysis::ShowSampleFrame(
@@ -1555,7 +1557,8 @@ void CFrameAnalysis::_OnDeleteDisabled()
         vsNames.push_back((*itr)->GetName());
       }
     }
-    CDialogDeleteDisabled dlg(this, vsNames);
+    CDialogDeleteDisabled dlg(
+      this, vsNames,m_pOARfile->GetReviewerAllowUserOverride());
     if(dlg.ShowModal() == wxID_OK)
     {
       wxString sPath;
@@ -1577,7 +1580,7 @@ void CFrameAnalysis::_OnDeleteDisabled()
           pFrame->Close(false);
         }
       }
-      m_pOARfile->DeleteDisabledSamples();
+      m_pOARfile->DeleteDisabledSamples(dlg.GetUserID());
       m_SampleSort.UpdateSort();
       RepaintData();
       m_pGrid->SetFocus();
@@ -2081,21 +2084,27 @@ bool CFrameAnalysis::IsEdited()
 }
 void CFrameAnalysis::SelectRowCol(int nRow, int nCol)
 {
-  if(nRow < 0 || nCol < 0)
+  int nR = m_pGrid->GetNumberRows();
+  int nC = m_pGrid->GetNumberCols();
+  if(nRow < 0 || nCol < 0 || nR < 1 || nC < 1)
   {}
   else if(nRow == m_nLastRowSelect && nCol == m_nLastColSelect)
   {}
   else
   {
-    m_pGrid->SetGridCursor(nRow,nCol);
+    m_pGrid->SetGridCursor(
+      nRow < nR ? nRow : (nR-1),
+      nCol < nC ? nCol : (nC-1));
     CheckSelection(true);
   }
 }
 void CFrameAnalysis::SelectRow(int nRow)
 {
-  if(nRow >= 0)
+  int nR = m_pGrid->GetNumberRows();
+  if(nRow >= 0 && nR > 0)
   {
     nwxGridBatch xx(m_pGrid);
+    if(nRow >= nR) { nRow = nR - 1; }
     bool bNewRow = (nRow != m_nLastRowSelect);
     m_nLastColSelect = 0;
     m_nLastRowSelect = nRow;

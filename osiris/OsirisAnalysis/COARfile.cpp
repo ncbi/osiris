@@ -1556,7 +1556,7 @@ size_t COARfile::GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx) const
   }
   return nRtn;
 }
-size_t COARfile::DeleteDisabledSamples()
+size_t COARfile::DeleteDisabledSamples(const wxString &sUserID)
 {
   std::vector<size_t> vnKill;
   size_t nRtn = GetDisabledSamplesByIndex(&vnKill);
@@ -1573,13 +1573,15 @@ size_t COARfile::DeleteDisabledSamples()
       sNotes = wxString::Format(wxT("%d samples were deleted."),(int)nRtn);
     }
     m_heading.AddDeletedSamples(nRtn);
+    SetLastSampleDisabled(NULL);
     for(itrndx = vnKill.begin();
       itrndx != vnKill.end();
       ++itrndx)
     {
       m_vpTable.removeAt(*itrndx);
     }
-    AppendNotesDir(sNotes,wxGetUserId());
+    wxString s = sUserID.IsEmpty() ? wxGetUserId() : sUserID;
+    AppendNotesDir(sNotes,s);
     SetIsModified(true);
   }
   return nRtn;
