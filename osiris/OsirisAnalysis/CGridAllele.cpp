@@ -851,7 +851,7 @@ bool CGridAlleleBase::AutoExpand()
   return true;
 }
 
-void CGridAlleleBase::OnCellChange(wxGridEvent &e)
+void CGridAlleleBase::CellChangeExpand(wxGridEvent &e)
 {
   if(AutoExpand())
   {
@@ -878,5 +878,5 @@ void CGridAlleleBase::OnCellChange(wxGridEvent &e)
 
 
 BEGIN_EVENT_TABLE(CGridAlleleBase,nwxGrid)
-EVT_GRID_CELL_CHANGED(CGridAlleleBase::OnCellChange)
+EVT_GRID_CELL_CHANGED(CGridAlleleBase::CellChangeExpand)
 END_EVENT_TABLE()

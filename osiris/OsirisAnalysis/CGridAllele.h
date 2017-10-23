@@ -93,7 +93,7 @@ protected:
   bool SetupKit(const wxString &sKitName, bool bAllowAmel);
   int _GetLocusColumn(const wxString &s);
 
-  void OnCellChange(wxGridEvent &e);
+  void CellChangeExpand(wxGridEvent &e);
   virtual bool ValidateCell(
     int nRow, int nCol, wxString *psPrompt);
 
@@ -200,7 +200,6 @@ public:
 protected:
   virtual bool AutoExpand();
 private:
-  //void OnCellChangeP(wxGridEvent &e);
   void OnCellSelect(wxGridEvent &e);
   bool _NameIsUsed(int nRow, const wxString &s = wxEmptyString);
   bool _PromptDeleteRow(int nRow);

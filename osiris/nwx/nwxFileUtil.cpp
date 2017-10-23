@@ -174,6 +174,7 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
   {
     bRtn = true;
     bool bFallback = true;
+    const wchar_t *ARGV[4];
 #ifdef __EXE_NAME__
     wxPathList apList;
     apList.AddEnvList(wxT("PATH"));
@@ -185,38 +186,31 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
     {
       bFallback = false;
       wxString sCommand = __EXE_NAME__; 
-      wxString sFileArg;
       // windows has a problem in that 
       // wxFileExists("c:\Windows\system32\explorer.exe")
       // returns true even though that is not the correct path
       // as a work around, omit the path
-#ifdef __WXMSW__
-      sFileArg = wxT("/select,");
-#endif
-      sFileArg.Append(sFileName);
-
-#ifdef __WXMSW__
-//      sCommand.Append(wxT(" "));
-//      sCommand.Append(sFileArg);
-      // wxExecute seems to have problems with ARGV[1] in windows
-//      int nRtn = system(sCommand.utf8_str()) & 255;
-//      bFallback = (nRtn > 1);
-#endif
-      const wchar_t *ARGV[4];
       size_t ndx = 0;
       ARGV[ndx++] = sCommand.wx_str();
 #ifdef __WXMAC__
       ARGV[ndx++] = wxT("-R");
 #endif
-      ARGV[ndx++] = sFileArg.wx_str();
+#ifdef __WXMSW__
+      // OS-746, setting /select, and the filename as two paramters
+      // will work if there is a space in the file name
+      // if there is no space, concatenation of the two parameters
+      // works fine.
+      ARGV[ndx++] = wxT("/select,");
+#endif
+      ARGV[ndx++] = sFileName.wx_str();
       ARGV[ndx++] = NULL;
       long nRtn = wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
 #ifdef __WXMSW__
-      bFallback = (nRtn < 0) && (nRtn > 1);
+      bFallback = (nRtn < 0) || (nRtn > 1);
 #else
       bFallback = !!nRtn;
 #endif
-#if 1
+#ifdef __WXDEBUG__
       wxString sLog = wxT("Show file: ");
       sLog += sFileName;
       sLog += "; return code = ";
