@@ -1139,7 +1139,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	// This code should be moved to STRChannelData...it's not generic enough for ChannelData
 
 	//
-	//  This is ladder and sample stage 1
+	//  This is sample stage 1
 	//
 	
 	STRTracePrequalification trace;
@@ -1151,6 +1151,26 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double minRFU = GetMinimumHeight ();
 	double maxRFU = GetMaximumHeight ();
 	double detectionRFU = GetDetectionThreshold ();
+
+	//
+	//  Calculate appropriate detectionRFU based on settings and curve fit phase
+	//
+
+	if (UseNoiseLevelPercentForFit) {
+
+		double range = mData->GetNoiseRange ();
+
+		if (IsNormalizationPass) {
+
+			detectionRFU = 0.01 * range * NoisePercentNormalizationPass;
+		}
+
+		else {
+
+			detectionRFU = 0.01 * range * NoisePercentFinalPass;
+		}
+	}
+
 	SampledData::SetDetectionRFU (detectionRFU);
 	double minAcceptableFit = ParametricCurve::GetMinimumFitThreshold ();
 	double minFitForArtifactTest = ParametricCurve::GetTriggerForArtifactTest ();
@@ -1267,6 +1287,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	DataSignal* shoulderCopy;
 	RGDList shoulderSignals;
 	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
+	detectionRFU = GetDetectionThreshold ();
 
 	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
 	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).

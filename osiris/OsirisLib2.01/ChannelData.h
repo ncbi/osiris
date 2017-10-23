@@ -463,6 +463,15 @@ public:
 	static void SetBeginAnalysisTime (double t) { BeginAnalysis = t; }
 	static void SetUseEnhancedShoulderAlgorithm (bool status) { UseEnhancedShoulderAlgorithm = status; }
 
+	static void SetUseNoiseLevelDefaultForFit (bool s) { UseNoiseLevelDefaultForFit = s; }
+	static void SetUseDetectionLevelForFit (bool s) { UseDetectionLevelForFit = s; }
+	static void SetUseNoiseLevelPercentForFit (bool s) { UseNoiseLevelPercentForFit = s; }
+
+	static void SetNoisePercentForNormalizationPass (double d) { NoisePercentNormalizationPass = d; }
+	static void SetNoisePercentForFinalPass (double d) { NoisePercentFinalPass = d; }
+
+	static void SetIsNormalizationPass (bool s) { IsNormalizationPass = s; }
+
 protected:
 	int mChannel;
 	DataSignal* mData;  // This is really SampledData*
@@ -527,6 +536,15 @@ protected:
 	static double LatitudeFactorForLadderILS;
 	static double BeginAnalysis;
 	static bool UseEnhancedShoulderAlgorithm;
+
+	static bool UseNoiseLevelDefaultForFit;
+	static bool UseDetectionLevelForFit;
+	static bool UseNoiseLevelPercentForFit;
+
+	static double NoisePercentNormalizationPass;
+	static double NoisePercentFinalPass;
+
+	static bool IsNormalizationPass;
 };
 
 

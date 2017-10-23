@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.04</VersionNumber>
-	<BuildTime>09/15/2017 01:43 PM</BuildTime>
+	<VersionNumber>7.06</VersionNumber>
+	<BuildTime>10/18/2017 04:02 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5046,18 +5046,36 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing</Name>
-			<MessageType>preset</MessageType>
+			<Name>smCurveFitOptionsSensitivitySubtitle</Name>
+			<MessageType>count</MessageType>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Ignore noise analysis in peak detection when above detection threshold</ThresholdDescriptor>
-			</PresetDataInfo>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>    Peak Fit Sensitivity (based on 4 raw data properties: Area, Height, Min-to-Max Height and Noise Level):</ThresholdDescriptor>
+			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>IGNORE NOISE ANALYZE IN SMOOTHING WHEN ABOVE DETECTION THRESHOLD</Text>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smCurveFitOptionsAreaSubtitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        Area Threshold:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -5069,7 +5087,7 @@
 			<CountingDataInfo>
 				<Threshold>100</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Percentage Of Standard Noise Threshold For Peak Identification (Default = 100)</ThresholdDescriptor>
+				<ThresholdDescriptor>                Require Area &gt; Percent of Standard Area Threshold (Default = 100%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5081,13 +5099,117 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smCurveFitOptionsHeightSubtitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        Height Threshold:  Require Min-to-Max Height &gt; Noise Level ...</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>                Or, require Height &gt; Detection Threshold</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>IGNORE NOISE ANALYSIS IN SMOOTHING WHEN ABOVE DETECTION THRESHOLD</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smOverrideNoiseLevelPercentsInSmoothing</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>                Or, require Height &gt; Percent of Noise Level (overrides Detection Threshold above)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENT OF MEASURED NOISE FOR NORMALIZATION PHASE OF CURVE FITTING</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPercentOverrideOfNoiseThresholdForNormalizationPhase</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>50</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                      Percent of Noise Level for Normalization (Default = 50%)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENT OF MEASURED NOISE FOR FINAL PHASE OF CURVE FITTING</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPercentOverrideOfNoiseThresholdForFinalPhase</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>75</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                      Percent of Noise Level for final Curve Fitting (Default = 75%)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENT OF MEASURED NOISE FOR FINAL PHASE OF CURVE FITTING</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerCurveFitOptionsMiddle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smApplyEnhancedShoulderFittingAlgorithmPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Apply Enhanced Shoulder-Fitting Algorithm</ThresholdDescriptor>
+				<ThresholdDescriptor>    Apply Enhanced Shoulder-Fitting Algorithm</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5104,7 +5226,7 @@
 			<CountingDataInfo>
 				<Threshold>100</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Percentage Of Standard Noise Threshold For Shoulder Acceptance (Default = 100)</ThresholdDescriptor>
+				<ThresholdDescriptor>            Percent of Standard Noise Threshold For Shoulder Acceptance (Default = 100%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5121,7 +5243,7 @@
 			<CountingDataInfo>
 				<Threshold>3</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Minimum Number of Points Concave Down (Default = 3)</ThresholdDescriptor>
+				<ThresholdDescriptor>            Minimum Number of Points Concave Down (Default = 3)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -6536,6 +6658,9 @@
 						<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
 						<Name>smCallOnLadderAdenylationPreset</Name>
 						<Name>smConstrainPullupPatternAnalysisPreset</Name>
+						<Name>smOverrideNoiseLevelPercentsInSmoothing</Name>
+						<Name>smPercentOverrideOfNoiseThresholdForNormalizationPhase</Name>
+						<Name>smPercentOverrideOfNoiseThresholdForFinalPhase</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

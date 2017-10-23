@@ -64,6 +64,15 @@ double ChannelData::LatitudeFactorForLadderILS = 0.01;
 double ChannelData::BeginAnalysis = -1.0;
 bool ChannelData::UseEnhancedShoulderAlgorithm = false;
 
+bool ChannelData::UseNoiseLevelDefaultForFit = true;
+bool ChannelData::UseDetectionLevelForFit = false;
+bool ChannelData::UseNoiseLevelPercentForFit = false;
+
+double ChannelData::NoisePercentNormalizationPass = 50.0;
+double ChannelData::NoisePercentFinalPass = 75.0;
+
+bool ChannelData::IsNormalizationPass = true;
+
 
 bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& second) {
 

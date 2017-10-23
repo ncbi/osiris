@@ -109,15 +109,18 @@ Allele :: ~Allele () {
 
 void Allele :: OutputTo (RGTextOutput& xmlFile) {
 
-	xmlFile << "\t\t\t\t\t<Allele>\n";
-	xmlFile << "\t\t\t\t\t\t<Name>" << mName.GetData () << "</Name>\n";
-	xmlFile << "\t\t\t\t\t\t<CurveNo>" << mCurveNumber << "</CurveNo>\n";
-	xmlFile << "\t\t\t\t\t\t<BP>" << mBP << "</BP>\n";
+	RGString blank10 = "          ";
+	RGString blank12 = "            ";
+
+	xmlFile << blank10 << "<Allele>\n";
+	xmlFile << blank12 << "<Name>" << mName.GetData () << "</Name>\n";
+	xmlFile << blank12 << "<CurveNo>" << mCurveNumber << "</CurveNo>\n";
+	xmlFile << blank12 << "<BP>" << mBP << "</BP>\n";
 
 	if (mRelativeHeight.Length () > 0)
-		xmlFile << "\t\t\t\t\t\t<RelativeHeight>" << mRelativeHeight.GetData () << "</RelativeHeight>\n";
+		xmlFile << blank12 << "<RelativeHeight>" << mRelativeHeight.GetData () << "</RelativeHeight>\n";
 
-	xmlFile << "\t\t\t\t\t</Allele>\n";
+	xmlFile << blank10 << "</Allele>\n";
 }
 
 
@@ -220,49 +223,54 @@ void Locus :: AdjustSearchRegion () {
 
 void Locus :: OutputTo (RGTextOutput& xmlFile) {
 
-	xmlFile << "\t\t\t<Locus>\n";
-	xmlFile << "\t\t\t\t<Name>" << mName.GetData () << "</Name>\n";
-	xmlFile << "\t\t\t\t<Channel>" << mChannel << "</Channel>\n";
+	RGString blank6 = "      ";
+	RGString blank8 = "        ";
+	RGString blank10 = "          ";
+	RGString blank12 = "            ";
+
+	xmlFile << blank6 << "<Locus>\n";
+	xmlFile << blank8 << "<Name>" << mName.GetData () << "</Name>\n";
+	xmlFile << blank8 << "<Channel>" << mChannel << "</Channel>\n";
 
 	if (mDoNotExtend)
-		xmlFile << "\t\t\t\t<NoExtension>true</NoExtension>\n";
+		xmlFile << blank8 << "<NoExtension>true</NoExtension>\n";
 
-	xmlFile << "\t\t\t\t<MinBP>" << mMinLocusBP << "</MinBP>\n";
-	xmlFile << "\t\t\t\t<MaxBP>" << mMaxLocusBP << "</MaxBP>\n";
+	xmlFile << blank8 << "<MinBP>" << mMinLocusBP << "</MinBP>\n";
+	xmlFile << blank8 << "<MaxBP>" << mMaxLocusBP << "</MaxBP>\n";
 
 	if (GetGenerateILSFamilies ()) {
 
-		xmlFile << "\t\t\t\t<SearchRegions>\n";
-		xmlFile << "\t\t\t\t\t<Region>\n";
-		xmlFile << "\t\t\t\t\t\t<ILSName>" << GetILSName () << "</ILSName>\n";
-		xmlFile << "\t\t\t\t\t\t<MinGrid>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGrid>\n";
-		xmlFile << "\t\t\t\t\t\t<MaxGrid>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGrid>\n";
-		xmlFile << "\t\t\t\t\t</Region>\n";
-		xmlFile << "\t\t\t\t</SearchRegions>\n";
+		xmlFile << blank8 << "<SearchRegions>\n";
+		xmlFile << blank10 << "<Region>\n";
+		xmlFile << blank12 << "<ILSName>" << GetILSName () << "</ILSName>\n";
+		xmlFile << blank12 << "<MinGrid>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGrid>\n";
+		xmlFile << blank12 << "<MaxGrid>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGrid>\n";
+		xmlFile << blank10 << "</Region>\n";
+		xmlFile << blank8 << "</SearchRegions>\n";
 	}
 
 	else {
 
-		xmlFile << "\t\t\t\t<MinGridLSBasePair>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGridLSBasePair>\n";
-		xmlFile << "\t\t\t\t<MaxGridLSBasePair>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGridLSBasePair>\n";
+		xmlFile << blank8 << "<MinGridLSBasePair>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGridLSBasePair>\n";
+		xmlFile << blank8 << "<MaxGridLSBasePair>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGridLSBasePair>\n";
 	}
 
 	if (mCoreRepeat != 4)
-		xmlFile << "\t\t\t\t<CoreRepeatNumber>" << mCoreRepeat << "</CoreRepeatNumber>\n";
+		xmlFile << blank8 << "<CoreRepeatNumber>" << mCoreRepeat << "</CoreRepeatNumber>\n";
 
 	if (mYLinked)
-		xmlFile << "\t\t\t\t<YLinked>true</YLinked>\n";
+		xmlFile << blank8 << "<YLinked>true</YLinked>\n";
 
 	if (mIsQualityLocus)
-		xmlFile << "\t\t\t\t<QualityLocus>true</QualityLocus>\n";
+		xmlFile << blank8 << "<QualityLocus>true</QualityLocus>\n";
 
 	if (mMaxExpectedAlleles != 2)
-		xmlFile << "\t\t\t\t<MaxExpectedAlleles>" << mMaxExpectedAlleles << "</MaxExpectedAlleles>\n";
+		xmlFile << blank8 << "<MaxExpectedAlleles>" << mMaxExpectedAlleles << "</MaxExpectedAlleles>\n";
 
 	if (mMinExpectedAlleles != 1)
-		xmlFile << "\t\t\t\t<MinExpectedAlleles>" << mMinExpectedAlleles << "</MinExpectedAlleles>\n";
+		xmlFile << blank8 << "<MinExpectedAlleles>" << mMinExpectedAlleles << "</MinExpectedAlleles>\n";
 
-	xmlFile << "\t\t\t\t<LadderAlleles>\n";
+	xmlFile << blank8 << "<LadderAlleles>\n";
 
 	list <Allele*>::const_iterator AIterator;
 	Allele* nextAllele;
@@ -277,8 +285,8 @@ void Locus :: OutputTo (RGTextOutput& xmlFile) {
 		nextAllele->OutputTo (xmlFile);
 	}
 
-	xmlFile << "\t\t\t\t</LadderAlleles>\n";
-	xmlFile << "\t\t\t</Locus>\n";
+	xmlFile << blank8 << "</LadderAlleles>\n";
+	xmlFile << blank6 << "</Locus>\n";
 }
 
 
@@ -497,35 +505,41 @@ int Ladder :: AddILS (const RGString& newILSName) {
 void Ladder :: OutputTo (RGTextOutput& xmlFile, LadderInputFile& inputFile) {
 
 	RGString link ("http://www.w3.org/2001/XMLSchema-instance");
+	RGString blank2 = "  ";
+	RGString blank4 = "    ";
+	RGString blank6 = "      ";
+	RGString blank8 = "        ";
+	RGString blank10 = "          ";
+	RGString blank12 = "            ";
 
 	xmlFile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	xmlFile << "<KitData xmlns:xsi=\"" << link.GetData () << "\" xsi:noNamespaceSchemaLocation=\"MarkerSet.xsd\">\n";
-	xmlFile << "\t<Version>" << inputFile.GetVersion () << "</Version>\n";
-	xmlFile << "\t<Kits>\n";
-	xmlFile << "\t\t<Set>\n";
-	xmlFile << "\t\t\t<Name>" << mMarkerSetName.GetData () << "</Name>\n";
-	xmlFile << "\t\t\t<NChannels>" << mNumberOfChannels << "</NChannels>\n";
-	xmlFile << "\t\t\t<ILS>\n";
+	xmlFile << blank2 << "<Version>" << inputFile.GetVersion () << "</Version>\n";
+	xmlFile << blank2 << "\t<Kits>\n";
+	xmlFile << blank4 << "<Set>\n";
+	xmlFile << blank6 << "<Name>" << mMarkerSetName.GetData () << "</Name>\n";
+	xmlFile << blank6 << "<NChannels>" << mNumberOfChannels << "</NChannels>\n";
+	xmlFile << blank6 << "<ILS>\n";
 
 	if (inputFile.GenerateILSFamilies ()) {
 
-		xmlFile << "\t\t\t\t<LSBases>\n";
+		xmlFile << blank8 << "<LSBases>\n";
 		OutputILSFamilyListTo (xmlFile);
-		xmlFile << "\t\t\t\t</LSBases>\n";
+		xmlFile << blank8 << "</LSBases>\n";
 	}
 
 	else {
 
-		xmlFile << "\t\t\t<LS>\n";
+		xmlFile << blank6 << "<LS>\n";
 		OutputILSListTo (xmlFile);
-		xmlFile << "\t\t\t</LS>\n";
+		xmlFile << blank6 << "</LS>\n";
 	}
 
-	xmlFile << "\t\t\t\t<ChannelNo>" << mChannelForILS << "</ChannelNo>\n";
-	xmlFile << "\t\t\t</ILS>\n";
-	xmlFile << "\t\t\t<FileNameSuffix>" << mSuffix << "</FileNameSuffix>\n";
-	xmlFile << "\t\t\t<GenotypeSuffix>" << mSuffix << "</GenotypeSuffix>\n";
-	xmlFile << "\t\t\t<DirectorySearchString>" << mSuffix << "</DirectorySearchString>\n";
+	xmlFile << blank8 << "<ChannelNo>" << mChannelForILS << "</ChannelNo>\n";
+	xmlFile << blank6 << "</ILS>\n";
+	xmlFile << blank6 << "<FileNameSuffix>" << mSuffix << "</FileNameSuffix>\n";
+	xmlFile << blank6 << "<GenotypeSuffix>" << mSuffix << "</GenotypeSuffix>\n";
+	xmlFile << blank6 << "<DirectorySearchString>" << mSuffix << "</DirectorySearchString>\n";
 	OutputChannelMapTo (xmlFile, inputFile);
 
 	list <Locus*>::const_iterator locusIterator;
@@ -537,48 +551,56 @@ void Ladder :: OutputTo (RGTextOutput& xmlFile, LadderInputFile& inputFile) {
 		nextLocus->OutputTo (xmlFile);
 	}
 
-	xmlFile << "\t\t</Set>\n";
-	xmlFile << "\t</Kits>\n";
+	xmlFile << blank4 << "</Set>\n";
+	xmlFile << blank2 << "</Kits>\n";
 	xmlFile << "</KitData>";
 }
 
 
 void Ladder :: OutputILSListTo (RGTextOutput& xmlFile) {
 
+	RGString blank8 = "        ";
+	
 	RGDListIterator it (mILSList);
 	RGString* nextName;
 
 	while (nextName = (RGString*) it ())
-		xmlFile << "\t\t\t\t<LSName>" << nextName->GetData () << "</LSName>\n";
+		xmlFile << blank8 << "<LSName>" << nextName->GetData () << "</LSName>\n";
 }
 
 
 void Ladder :: OutputILSFamilyListTo (RGTextOutput& xmlFile) {
 
+	RGString blank10 = "          ";
+
 	RGDListIterator it (mILSList);
 	RGString* nextName;
 
 	while (nextName = (RGString*) it ())
-		xmlFile << "\t\t\t\t\t<ILSName>" << nextName->GetData () << "</ILSName>\n";
+		xmlFile << blank10 << "<ILSName>" << nextName->GetData () << "</ILSName>\n";
 }
 
 
 void Ladder :: OutputChannelMapTo (RGTextOutput& xmlFile, LadderInputFile& inputFile) {
 
 	int i;
-	xmlFile << "\t\t\t<FsaChannelMap>\n";
+	RGString blank6 = "      ";
+	RGString blank8 = "        ";
+	RGString blank10 = "          ";
+
+	xmlFile << blank6 << "<FsaChannelMap>\n";
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
-		xmlFile << "\t\t\t\t<Channel>\n";
-		xmlFile << "\t\t\t\t\t<KitChannelNumber>" << i << "</KitChannelNumber>\n";
-		xmlFile << "\t\t\t\t\t<fsaChannelNumber>" << inputFile.GetFsaChannelForKitChannel (i) << "</fsaChannelNumber>\n";
-		xmlFile << "\t\t\t\t\t<Color>" << inputFile.GetColorName (i).GetData () << "</Color>\n";
-		xmlFile << "\t\t\t\t\t<DyeName>" << inputFile.GetDyeName (i).GetData () << "</DyeName>\n";
-		xmlFile << "\t\t\t\t</Channel>\n";
+		xmlFile << blank8 << "<Channel>\n";
+		xmlFile << blank10 << "<KitChannelNumber>" << i << "</KitChannelNumber>\n";
+		xmlFile << blank10 << "<fsaChannelNumber>" << inputFile.GetFsaChannelForKitChannel (i) << "</fsaChannelNumber>\n";
+		xmlFile << blank10 << "<Color>" << inputFile.GetColorName (i).GetData () << "</Color>\n";
+		xmlFile << blank10 << "<DyeName>" << inputFile.GetDyeName (i).GetData () << "</DyeName>\n";
+		xmlFile << blank8 << "</Channel>\n";
 	}
 
-	xmlFile << "\t\t\t</FsaChannelMap>\n";
+	xmlFile << blank6 << "</FsaChannelMap>\n";
 }
 
 
@@ -594,19 +616,27 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 	size_t endPos;
 	RGXMLTagSearch locusSearch ("Locus", oldLadderString);
 	RGXMLTagSearch searchRegionsSearch ("SearchRegions", oldLadderString);
+	RGString blank2 = "  ";
+	RGString blank4 = "    ";
+	RGString blank6 = "      ";
+	RGString blank8 = "        ";
+	RGString blank10 = "          ";
+	RGString blank12 = "            ";
 
 	RGString* ilsName = (RGString*)inFile->GetILSNameList ().First ();
 	endPos = 0;
-	oldLadderString.FindNextSubstring (0, "\t\t\t<Locus>", endPos);
+	oldLadderString.FindNextSubstring (0, "      <Locus>", endPos);
 	RGString insertBase;
-	insertBase << "\t\t\t\t\t<ILSName>" << ilsName->GetData () << "</ILSName>\n";
-	insertBase << "\t\t\t\t</LSBases>";
+	insertBase << blank10 << "<ILSName>" << ilsName->GetData () << "</ILSName>\n";
+	insertBase << blank8 << "</LSBases>";
 	RGString leadString = oldLadderString.ExtractSubstring (0, endPos - 1);
 	//cout << "Lead string = \n" << leadString.GetData () << endl;
 	endPos = 0;
-	leadString.FindAndReplaceNextSubstring ("\t\t\t\t</LSBases>", insertBase, endPos);
+	RGString blank8PlusLSBases = blank8 + "</LSBases>";
+	leadString.FindAndReplaceNextSubstring (blank8PlusLSBases, insertBase, endPos);
 	//cout << "Lead string = \n" << leadString.GetData () << endl;
 	newLadderString << leadString;
+
 
 	startPos = 0;
 
@@ -633,6 +663,7 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 	double maxSearch;
 	RGString repeatString;
 	int repeatNumber;
+	RGString blank8PlusSearchRegions = blank8 + "</SearchRegions>";
 
 	while (locusStrings.Entries () > 0) {
 
@@ -660,21 +691,21 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 		minSearch = nextLocus->GetMinSearchILSBP () - repeatNumber + 1;
 		maxSearch = nextLocus->GetMaxSearchILSBP () + repeatNumber -1;
 
-		locusInsert << "\t\t\t\t\t<Region>\n";
-		locusInsert << "\t\t\t\t\t\t<ILSName>" << ilsName->GetData () << "</ILSName>\n";
-		locusInsert << "\t\t\t\t\t\t<MinGrid>" << 0.01 * floor (100.0 * minSearch + 0.5) << "</MinGrid>\n";
-		locusInsert << "\t\t\t\t\t\t<MaxGrid>" << 0.01 * floor (100.0 * maxSearch + 0.5) << "</MaxGrid>\n";
-		locusInsert << "\t\t\t\t\t</Region>\n";
-		locusInsert << "\t\t\t\t</SearchRegions>";
+		locusInsert << blank10 << "<Region>\n";
+		locusInsert << blank12 << "<ILSName>" << ilsName->GetData () << "</ILSName>\n";
+		locusInsert << blank12 << "<MinGrid>" << 0.01 * floor (100.0 * minSearch + 0.5) << "</MinGrid>\n";
+		locusInsert << blank12 << "<MaxGrid>" << 0.01 * floor (100.0 * maxSearch + 0.5) << "</MaxGrid>\n";
+		locusInsert << blank10 << "</Region>\n";
+		locusInsert << blank8 << "</SearchRegions>";
 		endPos = 0;
-		currentLocusString.FindAndReplaceNextSubstring ("\t\t\t\t</SearchRegions>", locusInsert, endPos);
+		currentLocusString.FindAndReplaceNextSubstring (blank8PlusSearchRegions, locusInsert, endPos);
 
 		newLadderString << "\t\t\t<Locus>" << currentLocusString << "</Locus>\n";
 		delete newLocusString;
 	}
 
-	newLadderString << "\t\t</Set>\n";
-	newLadderString << "\t</Kits>\n";
+	newLadderString <<  blank4 << "</Set>\n";
+	newLadderString << blank2 << "</Kits>\n";
 	newLadderString << "</KitData>\n";
 
 	RGString ladderPath = inFile->GetOutputConfigDirectoryPath () + "/" + inFile->GetLadderFileName ();

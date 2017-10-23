@@ -1416,6 +1416,24 @@ int smConstrainPullupPatternAnalysisPreset::sMessageIndex = 0;
 int smConstrainPullupPatternAnalysisPreset::sMessageScope = 0;
 
 
+RGString smOverrideNoiseLevelPercentsInSmoothing::sName = "smOverrideNoiseLevelPercentsInSmoothing";
+int smOverrideNoiseLevelPercentsInSmoothing::sSubject = smOverrideNoiseLevelPercentsInSmoothing::LoadType ();
+int smOverrideNoiseLevelPercentsInSmoothing::sMessageIndex = 0;
+int smOverrideNoiseLevelPercentsInSmoothing::sMessageScope = 0;
+
+
+RGString smPercentOverrideOfNoiseThresholdForNormalizationPhase::sName = "smPercentOverrideOfNoiseThresholdForNormalizationPhase";
+int smPercentOverrideOfNoiseThresholdForNormalizationPhase::sSubject = smPercentOverrideOfNoiseThresholdForNormalizationPhase::LoadType ();
+int smPercentOverrideOfNoiseThresholdForNormalizationPhase::sMessageIndex = 0;
+int smPercentOverrideOfNoiseThresholdForNormalizationPhase::sMessageScope = 0;
+
+
+RGString smPercentOverrideOfNoiseThresholdForFinalPhase::sName = "smPercentOverrideOfNoiseThresholdForFinalPhase";
+int smPercentOverrideOfNoiseThresholdForFinalPhase::sSubject = smPercentOverrideOfNoiseThresholdForFinalPhase::LoadType ();
+int smPercentOverrideOfNoiseThresholdForFinalPhase::sMessageIndex = 0;
+int smPercentOverrideOfNoiseThresholdForFinalPhase::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1651,6 +1669,9 @@ PERSISTENT_DEFINITION (smMinImbalanceThresholdForCreatingNoisyPeak, 2636, "smMin
 PERSISTENT_DEFINITION (smPeakSharesAlleleBinLeft, 2637, "smPeakSharesAlleleBinLeft")
 PERSISTENT_DEFINITION (smPeakSharesAlleleBinRight, 2638, "smPeakSharesAlleleBinRight")
 PERSISTENT_DEFINITION (smConstrainPullupPatternAnalysisPreset, 2639, "smConstrainPullupPatternAnalysisPreset")
+PERSISTENT_DEFINITION (smOverrideNoiseLevelPercentsInSmoothing, 2640, "smOverrideNoiseLevelPercentsInSmoothing")
+PERSISTENT_DEFINITION (smPercentOverrideOfNoiseThresholdForNormalizationPhase, 2641, "smPercentOverrideOfNoiseThresholdForNormalizationPhase")
+PERSISTENT_DEFINITION (smPercentOverrideOfNoiseThresholdForFinalPhase, 2642, "smPercentOverrideOfNoiseThresholdForFinalPhase")
 
 
 
@@ -15747,6 +15768,186 @@ int smConstrainPullupPatternAnalysisPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smConstrainPullupPatternAnalysisPreset* noticeType = new smConstrainPullupPatternAnalysisPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smOverrideNoiseLevelPercentsInSmoothing :: smOverrideNoiseLevelPercentsInSmoothing () : SmartNotice () {
+
+}
+
+
+smOverrideNoiseLevelPercentsInSmoothing :: smOverrideNoiseLevelPercentsInSmoothing (const smOverrideNoiseLevelPercentsInSmoothing& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smOverrideNoiseLevelPercentsInSmoothing :: ~smOverrideNoiseLevelPercentsInSmoothing () {
+
+}
+
+
+int smOverrideNoiseLevelPercentsInSmoothing :: GetSubject () const {
+
+	return smOverrideNoiseLevelPercentsInSmoothing::sSubject;
+}
+
+
+void smOverrideNoiseLevelPercentsInSmoothing :: SetIndexAndScope (int index, int scope) const {
+
+	smOverrideNoiseLevelPercentsInSmoothing::sMessageIndex = index;
+	smOverrideNoiseLevelPercentsInSmoothing::sMessageScope = scope;
+}
+
+
+int smOverrideNoiseLevelPercentsInSmoothing :: GetMessageIndex () const {
+
+	return smOverrideNoiseLevelPercentsInSmoothing :: sMessageIndex;
+}
+
+
+int smOverrideNoiseLevelPercentsInSmoothing :: GetScope () const {
+
+	return smOverrideNoiseLevelPercentsInSmoothing :: sMessageScope;
+}
+
+
+RGString smOverrideNoiseLevelPercentsInSmoothing :: GetName () const {
+
+	return smOverrideNoiseLevelPercentsInSmoothing :: sName;
+}
+
+
+
+int smOverrideNoiseLevelPercentsInSmoothing :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smOverrideNoiseLevelPercentsInSmoothing* noticeType = new smOverrideNoiseLevelPercentsInSmoothing;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPercentOverrideOfNoiseThresholdForNormalizationPhase :: smPercentOverrideOfNoiseThresholdForNormalizationPhase () : SmartNotice () {
+
+}
+
+
+smPercentOverrideOfNoiseThresholdForNormalizationPhase :: smPercentOverrideOfNoiseThresholdForNormalizationPhase (const smPercentOverrideOfNoiseThresholdForNormalizationPhase& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPercentOverrideOfNoiseThresholdForNormalizationPhase :: ~smPercentOverrideOfNoiseThresholdForNormalizationPhase () {
+
+}
+
+
+int smPercentOverrideOfNoiseThresholdForNormalizationPhase :: GetSubject () const {
+
+	return smPercentOverrideOfNoiseThresholdForNormalizationPhase::sSubject;
+}
+
+
+void smPercentOverrideOfNoiseThresholdForNormalizationPhase :: SetIndexAndScope (int index, int scope) const {
+
+	smPercentOverrideOfNoiseThresholdForNormalizationPhase::sMessageIndex = index;
+	smPercentOverrideOfNoiseThresholdForNormalizationPhase::sMessageScope = scope;
+}
+
+
+int smPercentOverrideOfNoiseThresholdForNormalizationPhase :: GetMessageIndex () const {
+
+	return smPercentOverrideOfNoiseThresholdForNormalizationPhase :: sMessageIndex;
+}
+
+
+int smPercentOverrideOfNoiseThresholdForNormalizationPhase :: GetScope () const {
+
+	return smPercentOverrideOfNoiseThresholdForNormalizationPhase :: sMessageScope;
+}
+
+
+RGString smPercentOverrideOfNoiseThresholdForNormalizationPhase :: GetName () const {
+
+	return smPercentOverrideOfNoiseThresholdForNormalizationPhase :: sName;
+}
+
+
+
+int smPercentOverrideOfNoiseThresholdForNormalizationPhase :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPercentOverrideOfNoiseThresholdForNormalizationPhase* noticeType = new smPercentOverrideOfNoiseThresholdForNormalizationPhase;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPercentOverrideOfNoiseThresholdForFinalPhase :: smPercentOverrideOfNoiseThresholdForFinalPhase () : SmartNotice () {
+
+}
+
+
+smPercentOverrideOfNoiseThresholdForFinalPhase :: smPercentOverrideOfNoiseThresholdForFinalPhase (const smPercentOverrideOfNoiseThresholdForFinalPhase& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPercentOverrideOfNoiseThresholdForFinalPhase :: ~smPercentOverrideOfNoiseThresholdForFinalPhase () {
+
+}
+
+
+int smPercentOverrideOfNoiseThresholdForFinalPhase :: GetSubject () const {
+
+	return smPercentOverrideOfNoiseThresholdForFinalPhase::sSubject;
+}
+
+
+void smPercentOverrideOfNoiseThresholdForFinalPhase :: SetIndexAndScope (int index, int scope) const {
+
+	smPercentOverrideOfNoiseThresholdForFinalPhase::sMessageIndex = index;
+	smPercentOverrideOfNoiseThresholdForFinalPhase::sMessageScope = scope;
+}
+
+
+int smPercentOverrideOfNoiseThresholdForFinalPhase :: GetMessageIndex () const {
+
+	return smPercentOverrideOfNoiseThresholdForFinalPhase :: sMessageIndex;
+}
+
+
+int smPercentOverrideOfNoiseThresholdForFinalPhase :: GetScope () const {
+
+	return smPercentOverrideOfNoiseThresholdForFinalPhase :: sMessageScope;
+}
+
+
+RGString smPercentOverrideOfNoiseThresholdForFinalPhase :: GetName () const {
+
+	return smPercentOverrideOfNoiseThresholdForFinalPhase :: sName;
+}
+
+
+
+int smPercentOverrideOfNoiseThresholdForFinalPhase :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPercentOverrideOfNoiseThresholdForFinalPhase* noticeType = new smPercentOverrideOfNoiseThresholdForFinalPhase;
 	warehouse->AddType (noticeType);
 	return 1;
 }
