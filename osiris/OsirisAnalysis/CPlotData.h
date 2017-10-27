@@ -908,7 +908,14 @@ public:
     CPlotChannel *p = FindChannel(nChannel);
     return (p == NULL) ? 0.0 : p->GetMinRfu();
   }
-
+  const wxString &GetFullVersion() const
+  {
+    if (m_sFullVersion.IsEmpty())
+    {
+      return m_sVersion;
+    }
+    return m_sFullVersion;
+  }
   const wxString &GetFilename() const
   {
     return m_sFilename;
@@ -1008,6 +1015,8 @@ private:
   void _Cleanup();
   CPlotChannel *FindChannel(unsigned int n);
   CParmOsirisLite m_parm;
+  wxString m_sVersion;
+  wxString m_sFullVersion;
   wxString m_sFilename;
   wxString m_sLadder;
   wxString m_sKit;

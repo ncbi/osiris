@@ -228,6 +228,7 @@
     <ClInclude Include="nwxTabOrder.h" />
     <ClInclude Include="nwxTextCtrl.h" />
     <ClInclude Include="nwxTimerReceiver.h" />
+    <ClInclude Include="nwxToggleButton.h" />
     <ClInclude Include="nwxTreebook.h" />
     <ClInclude Include="nwxTypeValidator.h" />
     <ClInclude Include="nwxXmlCMF.h" />

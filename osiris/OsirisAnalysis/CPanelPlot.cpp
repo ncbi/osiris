@@ -518,11 +518,12 @@ void CPanelPlot::OnBtnDetails(wxCommandEvent &)
     pMsgBook = m_pOARfile->GetMessageBook();
   }
 
+  const wxString &sVersion(m_pData->GetFullVersion());
   const CParmOsiris &parm(m_pData->GetParameters());
   const wxString &sLadder(m_pData->GetLadder());
   const wxString &sFileName(m_pData->GetFilename());
   CDialogParameters dlg(
-    pParent,&parm,&sFileName,&sLadder,pLab,pMsgBook);
+    pParent,&parm,&sFileName,&sLadder,&sVersion,pLab,pMsgBook);
   dlg.ShowModal();
 }
 void CPanelPlot::OnSync(wxCommandEvent &e)

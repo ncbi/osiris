@@ -41,7 +41,7 @@
 #include "nwx/stde.h"
 #include <wx/combobox.h>
 #include <wx/bitmap.h>
-#include <wx/tglbtn.h>
+#include <nwx/nwxToggleButton.h>
 #include <wx/button.h>
 #include <wx/scrolwin.h>
 #include "nwx/nwxShiftSizer.h"
@@ -51,7 +51,7 @@
 #include "wx/things/toggle.h"
 typedef wxCustomButton CHANNEL_BUTTON;
 #else
-typedef wxToggleButton CHANNEL_BUTTON;
+typedef nwxToggleButton CHANNEL_BUTTON;
 #endif
 
 #include "nwx/nsstd.h"
@@ -250,14 +250,14 @@ private:
   CHANNEL_BUTTON *m_pButtonChannel[CHANNEL_MAX + 1]; 
        // add one to size to make it a 1 based array
   CComboArtifact *m_pComboArtifact;
-  wxToggleButton *m_pButtonSync;
-  wxToggleButton *m_pButtonAnalyzed;
-  wxToggleButton *m_pButtonRaw;
-  wxToggleButton *m_pButtonLadder;
-  wxToggleButton *m_pButtonBaseline;
-  wxToggleButton *m_pButtonRfu;
-  wxToggleButton *m_pButtonLadderLabels;
-  wxToggleButton *m_pButtonILS;
+  nwxToggleButton *m_pButtonSync;
+  nwxToggleButton *m_pButtonAnalyzed;
+  nwxToggleButton *m_pButtonRaw;
+  nwxToggleButton *m_pButtonLadder;
+  nwxToggleButton *m_pButtonBaseline;
+  nwxToggleButton *m_pButtonRfu;
+  nwxToggleButton *m_pButtonLadderLabels;
+  nwxToggleButton *m_pButtonILS;
   wxButton *m_pButtonDelete;
   wxButton *m_pButtonAppend;
   nwxButtonMenu *m_pButtonLabels;

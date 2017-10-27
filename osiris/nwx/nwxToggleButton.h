@@ -23,46 +23,63 @@
 *
 * ===========================================================================
 *
-
-*  FileName: CDialogParameters.h
+*  FileName: nwxToggleButton
 *  Author:   Douglas Hoffman
 *
+*  When wxToggleButton (windows) is set and disabled, it looks enabled
+*   unset it if disabled but return the 'set' value when calling GetValue()
+*
 */
-#ifndef __C_DIALOG_PARAMETERS_H__
-#define __C_DIALOG_PARAMETERS_H__
+#ifndef __NWX_TOGGLE_BUTTON_H__
+#define __NWX_TOGGLE_BUTTON_H__
 
-#include <wx/wx.h>
-#include "CParmOsiris.h"
+#include <wx/tglbtn.h>
 
-class wxHyperlinkEvent;
-class CLabSettings;
-class CXMLmessageBook;
-
-class CDialogParameters : public wxDialog
+class nwxToggleButton : public wxToggleButton
 {
 public:
-  CDialogParameters( 
+  nwxToggleButton() : wxToggleButton(), m_bValue(false)
+  {}
+ 	nwxToggleButton (
     wxWindow *parent, 
-    const CParmOsiris *pOsiris, 
-    const wxString *psFileName = NULL,
-    const wxString *psLadderInfo = NULL,
-    const wxString *psOrigin = NULL,
-    CLabSettings *pLabSettings = NULL,
-    const CXMLmessageBook *pMsgBook = NULL
-    );
-  virtual ~CDialogParameters();
-  void OnHyperlink(wxHyperlinkEvent &);
+    wxWindowID id, 
+    const wxString &label, 
+    const wxPoint &pos=wxDefaultPosition, 
+    const wxSize &size=wxDefaultSize, 
+    long style=0, 
+    const wxValidator &val=wxDefaultValidator, 
+    const wxString &name=wxCheckBoxNameStr):
+   	  wxToggleButton (parent, id, label, pos, size, style, val, name),
+      m_bValue(false)
+  {}
+  virtual ~nwxToggleButton() {}
+  virtual bool GetValue() const
+  {
+    return m_bValue;
+  }
+  virtual void SetValue(bool state)
+  {
+    m_bValue = state;
+    if(IsEnabled())
+    {
+      wxToggleButton::SetValue(state);
+    }
+  }
+  virtual bool Enable(bool enable = true)
+  {
+    bool bRtn = wxToggleButton::Enable(enable);
+    if(!enable)
+    {
+      wxToggleButton::SetValue(false);
+    }
+    return bRtn;
+  }
+  bool Disable()
+  {
+    return Enable(false);
+  }
 private:
-  wxWindow *CreateLabSettingsLink(const wxString &sLabel);
-  wxWindow *CreateHyperlink(int nID,const wxString &sDir, bool bForce = false);
-#if 0
-  static wxString CreateFileURL(const wxString &s, bool bForce = false);
-#endif
-  wxString m_sFileName;
-  CLabSettings *m_pLabSettings;
-  const CXMLmessageBook *m_pMsgBook;
-  DECLARE_EVENT_TABLE()
+  bool m_bValue;
 };
-
 
 #endif

@@ -109,6 +109,7 @@ CDialogParameters::CDialogParameters(
   const CParmOsiris *pOsiris, 
   const wxString *psFileName,
   const wxString *pLadderInfo,
+  const wxString *psOrigin,
   CLabSettings *pLabSettings,
   const CXMLmessageBook *pMsgBook) :
     wxDialog(parent,wxID_ANY,"Analysis Parameters",
@@ -143,19 +144,30 @@ CDialogParameters::CDialogParameters(
   int FLAG_TOP = wxALIGN_TOP | wxALIGN_LEFT;
   int nLadder = (pLadderInfo != NULL) && !pLadderInfo->IsEmpty();
   int nVolume = !sVolume.IsEmpty();
+  int nOrigin = (psOrigin != NULL) && !psOrigin->IsEmpty();
   
   wxWindow *pLink;
-  wxFlexGridSizer *pSizerTop = new wxFlexGridSizer(7 + nVolume + nLadder,2,ID_BORDER,ID_BORDER);
+  wxFlexGridSizer *pSizerTop = new wxFlexGridSizer(7 + nOrigin + nVolume + nLadder,2,ID_BORDER,ID_BORDER);
   pSizerTop->SetFlexibleDirection(wxBOTH);
 
 #define BOLD_LABEL(pWin,sText) \
   pWin = new wxStaticText(this,wxID_ANY,sText); \
   mainApp::SetBoldFont(pWin);
+  wxStaticText *pLabel;
 
+  // Origin
+
+  if(nOrigin)
+  {
+    BOLD_LABEL(pLabel,CParmOsiris::LABEL_ORIGIN);
+    pSizerTop->Add(pLabel,0, FLAG);
+    pSizerTop->Add(
+       new wxStaticText(this,wxID_ANY,*psOrigin),
+       0, FLAG);
+  }
   // Input directory and font
 
   pLink = CreateHyperlink(IDhyperlinkInput,pOsiris->GetInputDirectory());
-  wxStaticText *pLabel;
   BOLD_LABEL(pLabel,CParmOsiris::LABEL_INPUT);
   pSizerTop->Add(pLabel,0, FLAG);
   pSizerTop->Add(pLink, 0, FLAG);

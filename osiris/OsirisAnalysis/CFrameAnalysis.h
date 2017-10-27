@@ -34,7 +34,7 @@
 #include <wx/grid.h>
 #include <wx/splitter.h>
 #include <wx/sizer.h>
-#include <wx/tglbtn.h>
+#include <nwx/nwxToggleButton.h>
 #include <wx/string.h>
 #include <wx/menu.h>
 #include "nwx/nsstd.h"
@@ -434,7 +434,7 @@ private:
 #else
   wxButton *m_pButtonEdit;
 #endif
-  wxToggleButton *m_pTogglePreview;
+  nwxToggleButton *m_pTogglePreview;
   wxBoxSizer *m_pSizerInfo;
   CComboLabels *m_pComboCellType;
   CComboLabelsName *m_pComboName;
