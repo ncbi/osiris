@@ -144,7 +144,6 @@ enum
   IDanalyze,
   IDopenPlot,
   IDopenBatch,
-  IDExportGraphic,
   IDMaxLadderLabels,  // maximum number of peak labels on ladder graph. 12/07/10
   IDpreview,
   IDlab,
@@ -289,6 +288,7 @@ enum
   IDmenuShowHideWindowScrollbar, // CFramePlot
   IDframePlot,
   IDmenuTable,
+
   // file history menu items
 
   IDmenuHistoryTop, // used for history submenu,
@@ -298,6 +298,9 @@ enum
   IDmenuHistoryMore,
   IDmenuHistory,
   IDmenuHistoryMAX = IDmenuHistory + 20,
+
+  // plot window
+  IDExportGraphic,
 
   // Plot Menus, base numbers with offsets
   //   in IDmenuPlot enumeration above
