@@ -286,6 +286,8 @@ void CPlotData::_Cleanup()
 }
 void CPlotData::RegisterAll(bool bInConstructor)
 {
+  RegisterWxString("Version",&m_sVersion);
+  RegisterWxString("FullVersion",&m_sFullVersion);
   RegisterWxString("filename",&m_sFilename);
   RegisterWxString("associatedLadder",&m_sLadder);
   RegisterUint("start",&m_nStart);

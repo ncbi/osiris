@@ -127,7 +127,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   m_vShiftWindows.push_back(pStatText);
 
   // analyzed data button
-  m_pButtonAnalyzed = new wxToggleButton(
+  m_pButtonAnalyzed = new nwxToggleButton(
     m_pPanel,IDgraphAnalyzed,"A",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
@@ -140,7 +140,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->Add(m_pButtonAnalyzed,0,nSizerFlags,ID_BORDER);
 
   // raw data button
-  m_pButtonRaw = new wxToggleButton(m_pPanel,IDgraphRaw,"R",
+  m_pButtonRaw = new nwxToggleButton(m_pPanel,IDgraphRaw,"R",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
@@ -150,7 +150,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->Add(m_pButtonRaw,0,nSizerFlags,ID_BORDER);
 
   // ladder data button
-  m_pButtonLadder = new wxToggleButton(m_pPanel,IDgraphLadder,"L",
+  m_pButtonLadder = new nwxToggleButton(m_pPanel,IDgraphLadder,"L",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
@@ -160,7 +160,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->Add(m_pButtonLadder,0,nSizerFlags,ID_BORDER);
 
   // baseline data button
-  m_pButtonBaseline = new wxToggleButton(m_pPanel,IDgraphBaseline,"B",
+  m_pButtonBaseline = new nwxToggleButton(m_pPanel,IDgraphBaseline,"B",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
@@ -216,7 +216,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
     pPanelChannelButton = new wxPanel(m_pPanel,wxID_ANY);
     pSizerChannelButton = new wxBoxSizer(wxHORIZONTAL);
     pPanelChannelButton->SetBackgroundColour(*pColor);
-    wxToggleButton *pTgl = new wxToggleButton(pPanelChannelButton,nID,sLabel,
+    nwxToggleButton *pTgl = new nwxToggleButton(pPanelChannelButton,nID,sLabel,
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT
       );
@@ -246,7 +246,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->AddSpacer(SPACER);
 
   // sync button
-  m_pButtonSync = new wxToggleButton(m_pPanel,IDgraphSyncAxes,"Sync",
+  m_pButtonSync = new nwxToggleButton(m_pPanel,IDgraphSyncAxes,"Sync",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
@@ -259,7 +259,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 
   // ILS button
 
-  m_pButtonILS = new wxToggleButton(m_pPanel,
+  m_pButtonILS = new nwxToggleButton(m_pPanel,
     IDgraphILS, "ILS",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
@@ -270,7 +270,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 
 
   // rfu button
-  m_pButtonRfu = new wxToggleButton(m_pPanel,IDgraphRFU,"RFU",
+  m_pButtonRfu = new nwxToggleButton(m_pPanel,IDgraphRFU,"RFU",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT
     );
@@ -278,7 +278,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   m_pButtonRfu->SetValue(false);
   pSizer->Add(m_pButtonRfu,0,nSizerFlags,ID_BORDER);
 
-  m_pButtonLadderLabels = new wxToggleButton(
+  m_pButtonLadderLabels = new nwxToggleButton(
     m_pPanel, IDgraphLadderLabels,"Ladder",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);

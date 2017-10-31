@@ -163,6 +163,7 @@ my $STATIC_STRINGS =
   ["DEFAULT_BATCH_FORMAT", "%Y%m%d_%H%M%S"],
   ["LABEL_VIEW_LOCATION", "View File Location"],
 
+  ["LABEL_ORIGIN", "Origin "],
   ["LABEL_INPUT", "Input Directory "],
   ["LABEL_OUTPUT", "Output Directory "],
   ["LABEL_KIT", "Kit Name "],

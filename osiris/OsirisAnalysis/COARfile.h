@@ -491,7 +491,14 @@ public:
     double d = GetVersion();
     return (d > 1.101);  // 1.2 or later
   }
-
+  const wxString &GetFullVersion() const
+  {
+    if (m_sFullVersion.IsEmpty())
+    {
+      return m_sVersion;
+    }
+    return m_sFullVersion;
+  }
   nwxXmlCMF *CreateCMF(COARsample2CMFSpecimen *pMap = NULL);
   void UpdateVersion();
   void SetIsModified(bool b = true)

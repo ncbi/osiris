@@ -515,6 +515,7 @@ bool CParmOsiris::Save()
 
 const wxString CParmOsiris::DEFAULT_BATCH_FORMAT("%Y%m%d_%H%M%S");
 const wxString CParmOsiris::LABEL_VIEW_LOCATION("View File Location");
+const wxString CParmOsiris::LABEL_ORIGIN("Origin ");
 const wxString CParmOsiris::LABEL_INPUT("Input Directory ");
 const wxString CParmOsiris::LABEL_OUTPUT("Output Directory ");
 const wxString CParmOsiris::LABEL_KIT("Kit Name ");

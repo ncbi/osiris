@@ -1015,6 +1015,7 @@ protected:
 public:
   static const wxString DEFAULT_BATCH_FORMAT;
   static const wxString LABEL_VIEW_LOCATION;
+  static const wxString LABEL_ORIGIN;
   static const wxString LABEL_INPUT;
   static const wxString LABEL_OUTPUT;
   static const wxString LABEL_KIT;

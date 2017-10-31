@@ -228,7 +228,7 @@ void CFrameAnalysis::_Build()
   m_pButtonSample = new CButtonSample(m_pPanelToolbar);
   m_pButtonGraphic = new CButtonGraph(m_pPanelToolbar);
   m_SampleSort.Sort(m_pOARfile,NULL);
-  m_pTogglePreview = new wxToggleButton(
+  m_pTogglePreview = new nwxToggleButton(
     m_pPanelToolbar,
     IDmenuTogglePreview,
     "Preview");
@@ -1044,6 +1044,7 @@ void CFrameAnalysis::OnShowDetails(wxCommandEvent &)
       &parm,
       &sFileName,
       NULL,
+      &m_pOARfile->GetFullVersion(),
       &m_pOARfile->GetLabSettings(),
       m_pOARfile->GetMessageBook());
     dlg.ShowModal();
