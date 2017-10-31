@@ -1,18 +1,20 @@
-InputDirectory = F:/MenagerieForTestingPullup/ChrisHeffordGlobalFiler;
+InputDirectory = F:/JaneLi;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = GlobalFiler;
-LaneStandardName = ABI-LIZ-600-80-TO-460;
+MarkerSetName = PowerPlex Fusion;
+LaneStandardName = Promega-ILS-CC5-500-IDX;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171024-164142/V-20171024-164142_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171024-164142/V-20171024-164142_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 20;
-MinLaneStandardRFU = 150;
-MinLadderRFU = 150;
-MinInterlocusRFU = 20;
-MinLadderInterlocusRFU = 150;
-SampleDetectionThreshold = 20;
+MinSampleRFU = 150;
+MinLaneStandardRFU = 1000;
+MinLadderRFU = 1500;
+MinInterlocusRFU = 150;
+MinLadderInterlocusRFU = 1500;
+SampleDetectionThreshold = 150;
 RawDataString = R;
 ;
+
+
 

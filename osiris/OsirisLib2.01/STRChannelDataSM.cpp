@@ -3363,6 +3363,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 	double lineFit;
 
 	mData->ResetCharacteristicsFromRight (trace, text, detectionRFU, print);
+	mData->SetChannel (mChannel);
 
 	Endl endLine;
 	ExcelText.SetOutputLevel (1);
@@ -3473,6 +3474,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 			}
 
 			nextSignal->SetChannel (mChannel);
+
 			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
 
 			if (shoulderSignal != NULL) {

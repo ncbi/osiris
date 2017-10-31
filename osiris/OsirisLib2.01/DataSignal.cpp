@@ -3770,9 +3770,12 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 
 		if ((temp >= temp0) && (temp >= temp1) && (temp > maxFunctionValue)) {
 
-			maxFunctionValue = temp;
-			mode = i;
-			foundLocalMax = true;
+			if ((i >= lowerLimit) && (i <= upperLimit)) {
+
+				maxFunctionValue = temp;
+				mode = i;
+				foundLocalMax = true;
+			}
 		}
 
 		if (2.0 * temp >= temp0 + temp1) {
@@ -3862,13 +3865,30 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 
 		if (numberPtsConcaveDown >= enoughConcaveDownPoints) {
 
-			CDList.push_back (nextSet);
+			if (nextSet->mStart < lowerLimit) {
 
-			if (nextSet->mMaxValue > totalMaxValue) {
+				delete nextSet;
+				numberPtsConcaveDown = 0;
+				foundConcaveDown = false;
+			}
 
-				totalMaxValue = nextSet->mMaxValue;
-				bestSet = nextSet;
-				foundEnoughPtsConcaveDown = true;
+			else if (nextSet->mEnd > upperLimit) {
+
+				delete nextSet;
+				numberPtsConcaveDown = 0;
+				foundConcaveDown = false;
+			}
+
+			else {
+
+				CDList.push_back (nextSet);
+
+				if (nextSet->mMaxValue > totalMaxValue) {
+
+					totalMaxValue = nextSet->mMaxValue;
+					bestSet = nextSet;
+					foundEnoughPtsConcaveDown = true;
+				}
 			}
 		}
 
@@ -3957,7 +3977,8 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 	}
 
 	startTime = minTime;
-	minValue = maxFunctionValue;
+	minValue = maxAtMode;
+	minTime = mode;
 
 	for (i=mode; i<=endTime; i++) {
 
@@ -3988,6 +4009,7 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 	DataInterval* shoulderInterval = new DataInterval (startTime, centerTime, endTime);
 	shoulderInterval->SetMode (mode);
 	shoulderInterval->SetMaxAtMode (Value (mode));
+	shoulderInterval->AddSideValues (this);
 
 	int unUsedWindowSize = 0;
 	RGDList unUsedList;
@@ -10785,12 +10807,12 @@ void CompositeCurve :: SaveAll (RGVOutStream& f) const {
 }
 
 
-DualDoubleGaussian :: DualDoubleGaussian () : ParametricCurve (), PrimaryCurve (NULL), SecondaryCurve (NULL) {
+DualDoubleGaussian :: DualDoubleGaussian () : ParametricCurve (), PrimaryCurve (NULL), SecondaryCurve (NULL), mMean (0.0), mSigma (0.0), mPeak (0.0) {
 
 }
 
 
-DualDoubleGaussian :: DualDoubleGaussian (const DualDoubleGaussian& ddg) : ParametricCurve (ddg), PrimaryCurve (NULL), SecondaryCurve (NULL) {
+DualDoubleGaussian :: DualDoubleGaussian (const DualDoubleGaussian& ddg) : ParametricCurve (ddg), PrimaryCurve (NULL), SecondaryCurve (NULL), mMean (ddg.mMean), mSigma (ddg.mSigma), mPeak (ddg.mPeak) {
 
 	if (ddg.PrimaryCurve != NULL)
 		PrimaryCurve = new DoubleGaussian (*ddg.PrimaryCurve);
@@ -10800,7 +10822,7 @@ DualDoubleGaussian :: DualDoubleGaussian (const DualDoubleGaussian& ddg) : Param
 }
 
 
-DualDoubleGaussian :: DualDoubleGaussian (double mean, const DualDoubleGaussian& ddg) : ParametricCurve (ddg), PrimaryCurve (NULL), SecondaryCurve (NULL) {
+DualDoubleGaussian :: DualDoubleGaussian (double mean, const DualDoubleGaussian& ddg) : ParametricCurve (ddg), PrimaryCurve (NULL), SecondaryCurve (NULL), mMean (mean), mSigma (ddg.mSigma), mPeak (ddg.mPeak) {
 
 	if (ddg.PrimaryCurve != NULL)
 		PrimaryCurve = new DoubleGaussian (mean, *ddg.PrimaryCurve);
@@ -10893,12 +10915,14 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 	DoubleGaussian signature;
 	double fitLeft;
 	double fitRight;
-	DualDoubleGaussian* rtnValue = new DualDoubleGaussian;
+	
 	DoubleGaussian* first = (DoubleGaussian*) signature.FindCharacteristicAsymmetric (Target, segmentLeft, windowSize, fitLeft, previous);
 	DoubleGaussian* second = (DoubleGaussian*) signature.FindCharacteristicAsymmetric (Target, segmentRight, windowSize, fitRight, previous);
 	
 	first->SetDataMode (segmentLeft->GetMaxAtMode ());
 	second->SetDataMode (segmentRight->GetMaxAtMode ());
+	first->SetCurveFit (fitLeft);
+	second->SetCurveFit (fitRight);
 
 	double sigma;
 	double height;
@@ -10946,8 +10970,10 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 		second->SetCurveFit (fitRight);
 	}
 
+	DualDoubleGaussian* rtnValue = new DualDoubleGaussian;
 	rtnValue->SetFirstCurve (first);
 	rtnValue->SetSecondCurve (second);
+	rtnValue->SetInfo ();
 
 	// calculate fit and delete subsegments
 
@@ -10994,8 +11020,25 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 
 	delete segmentLeft;
 	delete segmentRight;
+	rtnValue->SetCurveFit (fit);
 
 	return rtnValue;
+}
+
+
+void DualDoubleGaussian :: SetInfo () {
+
+	if ((PrimaryCurve == NULL) || (SecondaryCurve == NULL))
+		return;
+
+	mMean = 0.5 * (PrimaryCurve->GetMean () + SecondaryCurve->GetMean ());
+	mPeak = PrimaryCurve->Peak ();
+	double peak = SecondaryCurve->Peak ();
+
+	if (peak > mPeak)
+		mPeak = peak;
+
+	mSigma = 0.5 * (PrimaryCurve->GetStandardDeviation () + SecondaryCurve->GetStandardDeviation ());
 }
 
 

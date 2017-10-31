@@ -1738,6 +1738,10 @@ public:
 
 	virtual DataSignal* MakeCopy (double mean) const;
 
+	virtual double Peak () const { return mPeak; }
+	virtual double GetMean () const { return mMean; }
+	virtual double GetStandardDeviation () const { return mSigma; }
+
 	virtual RGString GetSignalType () const;
 	virtual bool IsUnimodal () const { return false; }
 
@@ -1752,12 +1756,16 @@ public:
 
 	void SetFirstCurve (DoubleGaussian* dg) { PrimaryCurve = dg; }
 	void SetSecondCurve (DoubleGaussian* dg) { SecondaryCurve = dg; }
+	void SetInfo ();
 	DataSignal* GetFirstCurve ();
 	DataSignal* GetSecondCurve ();
 
 protected:
 	DoubleGaussian* PrimaryCurve;
 	DoubleGaussian* SecondaryCurve;
+	double mMean;
+	double mSigma;
+	double mPeak;
 };
 
 
