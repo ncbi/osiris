@@ -318,6 +318,8 @@ public:
 	double GetLocusSpecificLadderFractionalFilter () const;
 	double GetLocusSpecificLadderPullupFractionalFilter () const;
 
+	double GetMinimumILSBP () const { return mLink->GetMinimumBPILS (); }
+
 	virtual int CompareTo (const RGPersistent* p) const;
 	virtual unsigned HashNumber (unsigned long Base) const;
 	virtual Boolean IsEqualTo (const RGPersistent* p) const;
@@ -818,6 +820,7 @@ public:
 	Locus* FindLocus (const RGString& name);
 	int GetLaneStandardChannel () const;
 	int GetNumberOfChannels () const;
+	double GetMinimumILSBPSearchRegion ();
 
 	void BuildChannelAndLocusListForHeader (RGString& headerList);
 

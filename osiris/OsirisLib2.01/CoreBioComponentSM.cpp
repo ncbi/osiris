@@ -3052,9 +3052,14 @@ void CoreBioComponent :: InitializeMessageData () {
 
 bool CoreBioComponent :: SignalIsWithinAnalysisRegion (DataSignal* testSignal, double firstILSTime) {
 
+	double approxBP = testSignal->GetApproximateBioID ();
+
+	if (approxBP >= CoreBioComponent::GetMinBioIDForLadderLoci ())
+		return true;
+
 	if (minBioIDForArtifacts > 0) {
 
-		if (testSignal->GetApproximateBioID () >= (double) minBioIDForArtifacts)
+		if (approxBP >= (double) minBioIDForArtifacts)
 			return true;
 
 		return false;

@@ -988,6 +988,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	//ChannelData::SetTestForDualSignal (false);
 	ChannelData::SetTestForDualSignal (true);    // 01/24/2017 This is a test because ladders are missing split peaks that should not be missed.  It used to be set to true.
 
+	double leastBP = set->GetMinimumILSBPSearchRegion ();
+	CoreBioComponent::SetMinBioIDForLadderLoci (leastBP);
+	cout << "Minimum ILS BP for ladder loci = " << leastBP << "\n\n";
+
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
 		FullPathName = DirectoryName + "/" + LadderFileName;

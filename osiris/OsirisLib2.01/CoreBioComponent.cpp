@@ -56,6 +56,7 @@ Boolean CoreBioComponent::GaussianSignature = TRUE;
 Boolean CoreBioComponent::UseRawData = TRUE;
 RGDList CoreBioComponent::testChannelArtifactNoticeList;
 int CoreBioComponent::minBioIDForArtifacts = 0;
+double CoreBioComponent::minBioIDForLadderLoci = -1.0;
 bool* CoreBioComponent::InitialMatrix = NULL;
 bool* CoreBioComponent::OffScaleData = NULL;
 int CoreBioComponent::OffScaleDataLength = 0;

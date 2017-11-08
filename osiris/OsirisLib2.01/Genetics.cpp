@@ -6649,6 +6649,29 @@ int PopulationMarkerSet :: GetNumberOfChannels () const {
 }
 
 
+
+double PopulationMarkerSet :: GetMinimumILSBPSearchRegion () {
+
+	RGDListIterator it (LocusList);
+	Locus* nextLocus;
+	double leastBP = -1.0;
+	double currentBP;
+
+	while (nextLocus = (Locus*) it ()) {
+
+		currentBP = nextLocus->GetMinimumILSBP ();
+
+		if (leastBP < 0.0)
+			leastBP = currentBP;
+
+		else if (currentBP < leastBP)
+			leastBP = currentBP;
+	}
+
+	return leastBP;
+}
+
+
 void PopulationMarkerSet :: BuildChannelAndLocusListForHeader (RGString& headerList) {
 
 	headerList = "";

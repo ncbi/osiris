@@ -122,6 +122,8 @@ public:
 	virtual double GetLadderFractionalFilter () const { return mLadderLocusSpecificFractionalFilter; }
 	virtual double GetLadderPullupFractionalFilter () const { return mLadderLocusSpecificPullupFractionalFilter; }
 
+	virtual double GetMinimumBPILS () const { return LowerBoundGridLSBasePair; }
+
 	virtual int GetCoreNumber () const;
 	virtual bool AllowsNoExtension () const;
 

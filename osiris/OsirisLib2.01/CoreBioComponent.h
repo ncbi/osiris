@@ -439,6 +439,8 @@ public:
 
 	static int GetMinBioIDForArtifacts () { return minBioIDForArtifacts; }
 	static void SetMinBioIDForArtifacts (int minBioID) { minBioIDForArtifacts = minBioID; }
+	static double GetMinBioIDForLadderLoci () { return minBioIDForLadderLoci; }
+	static void SetMinBioIDForLadderLoci (double minBioID) { minBioIDForLadderLoci = minBioID; }
 	static bool SignalIsWithinAnalysisRegion (DataSignal* testSignal, double firstILSTime);
 
 	friend CSplineTransform* TimeTransform (const CoreBioComponent& cd1, const CoreBioComponent& cd2);
@@ -519,6 +521,7 @@ protected:
 	static Boolean UseRawData;
 	static RGDList testChannelArtifactNoticeList;
 	static int minBioIDForArtifacts;
+	static double minBioIDForLadderLoci;
 	static bool* InitialMatrix;
 	static bool* OffScaleData;
 	static int OffScaleDataLength;
