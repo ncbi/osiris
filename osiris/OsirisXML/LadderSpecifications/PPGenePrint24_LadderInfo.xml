@@ -56,13 +56,13 @@
         <SearchRegions>
           <Region>
             <ILSName>PROMEGA-ILS-WEN-500</ILSName>
-            <MinGrid>74.58</MinGrid>
-            <MaxGrid>90.75</MaxGrid>
+            <MinGrid>77.58</MinGrid>
+            <MaxGrid>87.75</MaxGrid>
           </Region>
           <Region>
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
-            <MinGrid>77.31</MinGrid>
-            <MaxGrid>93.46</MaxGrid>
+            <MinGrid>80.31</MinGrid>
+            <MaxGrid>90.46</MaxGrid>
           </Region>
         </SearchRegions>
         <CoreRepeatNumber>6</CoreRepeatNumber>
