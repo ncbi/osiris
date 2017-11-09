@@ -780,9 +780,5 @@
 		<KitName>PowerPlexS5</KitName>
 		<FileName>PowerPlexS5_LadderInfo.xml</FileName>
 	</Set>
-	<Set>
-		<KitName>PowerPlex GenePrint24</KitName>
-		<FileName>PPGenePrint24_LadderInfo.xml</FileName>
-	</Set>
   </Kits>
 </KitData>
