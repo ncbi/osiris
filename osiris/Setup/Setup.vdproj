@@ -1875,6 +1875,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DD228A3B02754B81A4AFE07C787DADBA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DDDF9FFA4999492BB777DEBECE7CB547"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2172,7 +2178,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.10.2-beta-1.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.10.2.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -8414,6 +8420,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DD228A3B02754B81A4AFE07C787DADBA"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\PPGenePrint24_LadderInfo.xml"
+            "TargetName" = "8:PPGenePrint24_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DDDF9FFA4999492BB777DEBECE7CB547"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\Identifiler_Artifacts\\_mixture_G01_ESM7.fsa"
@@ -9795,6 +9821,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_444DC6E6D56046CAB7E80CAE6CE6E411"
+                                    {
+                                    "Name" = "8:PPGenePrint24"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_5DF3C61CCF3C4B598668DAD64134F287"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_44CD19D57DB249249AF79D48C8CF4E21"
                                     {
                                     "Name" = "8:GP10"
@@ -10136,6 +10173,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_CFFE27611E8B4C188572138B37272379"
+                                    {
+                                    "Name" = "8:PPGenePrint24_HID"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_D1DD21933A794F5B8AD22428DAE5469A"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_D2AB36DF36CC4333A83C3C18CC310D58"
                                     {
                                     "Name" = "8:QIAGEN_ARGUS_x12_QS"
@@ -10257,15 +10305,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{48957A8F-3D17-44EC-8B3B-980E5BB963D2}"
-        "PackageCode" = "8:{1CEE8FCD-818E-41EE-B165-671B7BACF95D}"
+        "ProductCode" = "8:{80B2492D-3280-49CF-B9A5-75BF17D8A41D}"
+        "PackageCode" = "8:{D184D287-6708-4E71-B583-BACB703A9D44}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.10.2001"
+        "ProductVersion" = "8:2.10.2002"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

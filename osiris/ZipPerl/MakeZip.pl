@@ -141,6 +141,8 @@ sub COPYFILES
     PPY
     PPY23
     PPY23_HID
+    PPGenePrint24
+    PPGenePrint24_HID
     Profiler
     QIAGEN_ARGUS_x12
     QIAGEN_ARGUS_x12_HID
