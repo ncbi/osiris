@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.06</VersionNumber>
-	<BuildTime>10/18/2017 04:02 PM</BuildTime>
+	<VersionNumber>7.07</VersionNumber>
+	<BuildTime>11/09/2017 03:41 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5106,7 +5106,7 @@
 			<CountingDataInfo>
 				<Threshold>-1</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Height Threshold:  Require Min-to-Max Height &gt; Noise Level ...</ThresholdDescriptor>
+				<ThresholdDescriptor>        Height Threshold:  Require Min-to-Max Height &gt; Noise Level ... (Default)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5122,7 +5122,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Or, require Height &gt; Detection Threshold</ThresholdDescriptor>
+				<ThresholdDescriptor>                Or, require Height &gt; Detection Threshold (overrides Default height threshold)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5138,7 +5138,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Or, require Height &gt; Percent of Noise Level (overrides Detection Threshold above)</ThresholdDescriptor>
+				<ThresholdDescriptor>                Or, require Height &gt; Percent of Noise Level (overrides Default and Detection Threshold)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
