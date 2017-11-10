@@ -15,7 +15,14 @@ my $NO_ZIP_FILE = 0;
 my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
-my $DRIVE = "/cygdrive/c";
+my $DRIVE;
+
+for my $sDrive ("/cygdrive/c","/c")
+{
+  my $ok = system("test -d ${sDrive}");
+  ($ok == 0) && ($DRIVE = $sDrive) && last;
+}
+$DRIVE || die("Cannot find mingw or cygwin c drive");
 my $VCDIR = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
 my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
 my $PATH7Z = "7z";  ## if 7z.exe is not in the path, set the full DOS path here
