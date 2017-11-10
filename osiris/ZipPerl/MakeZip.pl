@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+#
+# under windows, this should run from activeperl
+#
 use strict 'vars';
 use GetVersion;
 #
@@ -15,18 +18,7 @@ my $NO_ZIP_FILE = 0;
 my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
-my $DRIVE;
 
-if ($VERSION =~ m/windows/i)
-{
-  for my $sDrive ("/cygdrive/c","/c")
-  {
-    my $ok = system("test -d ${sDrive}");
-    ($ok == 0) && ($DRIVE = $sDrive) && last;
-  }
-  $DRIVE || die("Cannot find mingw or cygwin c drive");
-}
-my $VCDIR = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC";
 my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
 my $PATH7Z = "7z";  ## if 7z.exe is not in the path, set the full DOS path here
 
@@ -200,6 +192,22 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.8_2.9.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.pdf ${dest}");
 }
+sub GetVCDir
+{
+  my $DRIVE = undef;
+  my $PLAT = "x86";
+  for my $sDrive ("/cygdrive/c","/c")
+  {
+    my $ok = system("test -d ${sDrive}");
+    ($ok == 0) && ($DRIVE = $sDrive) && last;
+  }
+  $DRIVE || die("Cannot find mingw or cygwin c drive");
+  my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC"; 
+  system("test -d \"$p\"") && die("Cannot find MS Visual Studio (${p})");
+  my $DLLPATH= "${p}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
+  system("test -d \"$DLLPATH\"") && die("Cannot find MS runtime");
+  $DLLPATH;
+}
 
 sub CopyWin
 {
@@ -207,7 +215,6 @@ sub CopyWin
   (length($testCP) < 10) &&
     die("Cannot find cp command, need to install " .
         "cygwin or include it in the path");
-  my $PLAT = "x86";
   my $dir = `dirname $0`;
   $dir =~ s/\\/\//g;
   chomp $dir;
@@ -221,9 +228,9 @@ sub CopyWin
   &MKDIR("${dest}/site");
   if ($COPYDLL)
   {
-    my $DLLPATH= "${VCDIR}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
-    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}");
-    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}");
+    my $DLLPATH = &GetVCDir();
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}") && die();
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}") && die();
   }
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
