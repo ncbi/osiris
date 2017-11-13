@@ -1473,6 +1473,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_AB2418791A8243A6BB5AA0AFB1528EBA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_AB6ECFFE7CAC4A20B188F8CAFFE7D08E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -7128,6 +7134,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB2418791A8243A6BB5AA0AFB1528EBA"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.10.2.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.10.2.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB6ECFFE7CAC4A20B188F8CAFFE7D08E"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\SEfilerPlus_LadderInfo.xml"
@@ -10513,15 +10539,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{80B2492D-3280-49CF-B9A5-75BF17D8A41D}"
-        "PackageCode" = "8:{C13FAC62-C8F1-47EE-8F5D-6663FE268B5C}"
+        "ProductCode" = "8:{960A5206-D8BD-4BCD-9233-E7B537600278}"
+        "PackageCode" = "8:{248470BD-5E05-4419-B5BD-D25D2EC98F87}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.10.2002"
+        "ProductVersion" = "8:2.10.2003"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"
