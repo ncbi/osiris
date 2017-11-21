@@ -3754,7 +3754,7 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 	double temp0;
 	double temp1;
 	list<ConcaveDownSet*> CDList;
-	ConcaveDownSet* nextSet;
+	ConcaveDownSet* nextSet = NULL;
 	ConcaveDownSet* bestSet = NULL;
 	double tempMax;
 	int tempPos;
@@ -3826,6 +3826,7 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 				if (nextSet->mStart < lowerLimit) {
 
 					delete nextSet;
+					nextSet = NULL;
 					numberPtsConcaveDown = 0;
 					foundConcaveDown = false;
 					continue;
@@ -3834,6 +3835,7 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 				if (nextSet->mEnd > upperLimit) {
 
 					delete nextSet;
+					nextSet = NULL;
 					numberPtsConcaveDown = 0;
 					foundConcaveDown = false;
 					continue;
@@ -3850,11 +3852,13 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 
 				numberPtsConcaveDown = 0;
 				foundConcaveDown = false;
+				nextSet = NULL;
 			}
 
 			else {
 
 				delete nextSet;
+				nextSet = NULL;
 				numberPtsConcaveDown = 0;
 				foundConcaveDown = false;
 			}
@@ -3868,6 +3872,7 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 			if (nextSet->mStart < lowerLimit) {
 
 				delete nextSet;
+				nextSet = NULL;
 				numberPtsConcaveDown = 0;
 				foundConcaveDown = false;
 			}
@@ -3875,6 +3880,7 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 			else if (nextSet->mEnd > upperLimit) {
 
 				delete nextSet;
+				nextSet = NULL;
 				numberPtsConcaveDown = 0;
 				foundConcaveDown = false;
 			}
@@ -3889,12 +3895,16 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 					bestSet = nextSet;
 					foundEnoughPtsConcaveDown = true;
 				}
+
+				foundConcaveDown = false;
+				nextSet = NULL;
 			}
 		}
 
 		else {
 
 			delete nextSet;
+			nextSet = NULL;
 			numberPtsConcaveDown = 0;
 			foundConcaveDown = false;
 		}
