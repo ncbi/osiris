@@ -70,7 +70,7 @@ Boolean STRBaseLocus :: ExtractGridSignalsSM (RGDList& channelSignalList, const 
 		return FALSE;
 	}
 
-	cout << "Extract SM, lower bound = " << LowerBoundGridLSBasePair << "\n";
+	//cout << "Extract SM, lower bound = " << LowerBoundGridLSBasePair << "\n";
 
 	if (LowerBoundGridLSBasePair < 0.0) {
 

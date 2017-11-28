@@ -1,19 +1,18 @@
-InputDirectory = C:/Users/goorrob/PaoloProfilerOn310/M5.14_IDP;
+InputDirectory = F:/Version2.10.2.bug/NIHDropoutIssue_20171121-002052/input2;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = ProfilerPlus;
-LaneStandardName = ABI-ROX400;
+MarkerSetName = PowerPlex 16;
+LaneStandardName = Promega-ILS-500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150611-113702/V-20150611-113702_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150611-113702/V-20150611-113702_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20140730-145857/V-20140730-145857_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20140730-145857/V-20140730-145857_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 150;
-MinLaneStandardRFU = 150;
+MinSampleRFU = 30;
+MinLaneStandardRFU = 100;
 MinLadderRFU = 150;
-MinInterlocusRFU = 150;
+MinInterlocusRFU = 30;
 MinLadderInterlocusRFU = 150;
-SampleDetectionThreshold = 150;
+SampleDetectionThreshold = 20;
 RawDataString = R;
 ;
-
 
