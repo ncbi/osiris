@@ -4380,6 +4380,8 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 
 	if (!edgeToEdge) {
 
+		cout << "Locus = " << (char*)GetLocusName ().GetData() << " is not edge to edge" << endl;
+
 		while (nextSignal = (DataSignal*) it()) {
 
 			mean = nextSignal->GetMean ();
@@ -4474,6 +4476,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 
 			mean = nextSignal->GetMean ();
 			gridTime = timeMap->EvaluateWithExtrapolation (mean);
+
 		//	bpNext = (int)gridLocus->GetBPFromTimeForAnalysis (gridTime);
 			addSignalToLocus = false;
 			inExtendedLocus = gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location) && allowCoreLocusOverlaps;

@@ -1151,6 +1151,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double minRFU = GetMinimumHeight ();
 	double maxRFU = GetMaximumHeight ();
 	double detectionRFU = GetDetectionThreshold ();
+	double endAnalysis = (double)mData->GetNumberOfSamples ();
 
 	//
 	//  Calculate appropriate detectionRFU based on settings and curve fit phase
@@ -1228,6 +1229,12 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			continue;
 		}
 
+		else if (mean >= endAnalysis) {
+
+			delete nextSignal;
+			continue;
+		}
+
 		//if (nextSignal->GetStandardDeviation () > 0.0) {
 
 		//	if (nextSignal->GetMean () < nextSignal->LeftEndPoint () + 0.2 * nextSignal->GetStandardDeviation ()) {
@@ -1288,6 +1295,36 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	RGDList shoulderSignals;
 	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
 	detectionRFU = GetDetectionThreshold ();
+	RGDListIterator it (PreliminaryCurveList);
+	RGDList outOfOrderList;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if (previousSignal == NULL) {
+
+			previousSignal = nextSignal;
+			continue;
+		}
+
+		if (previousSignal->GetMean () > nextSignal->GetMean ()) {
+
+			outOfOrderList.Append (previousSignal);
+			delete previousSignal;
+		}
+
+		previousSignal = nextSignal;
+	}
+
+	while (nextSignal = (DataSignal*) outOfOrderList.GetFirst ()) {
+
+		PreliminaryCurveList.RemoveReference (nextSignal);
+		CompleteCurveList.RemoveReference (nextSignal);
+	//	delete nextSignal;
+	}
+
+	previousSignal = NULL;
+	it.Reset ();
+	itt.Reset ();
 
 	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
 	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).
@@ -1317,14 +1354,18 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 				int left = (int) floor (shoulderSignal->LeftEndPoint () + 0.5);
 				int right = (int) floor (shoulderSignal->RightEndPoint () + 0.5);
+				double mean = shoulderSignal->GetMean ();
 
 				lineFit = mData->InnerProductWithConstantFunction (left, right, constantHeight);
 
 				if (lineFit <= minFitForArtifactTest) {
 
-					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
-					shoulderCopy->SetShoulderSignal (true);
-					shoulderSignals.Append (shoulderCopy);
+					if ((mean >= BeginAnalysis) && (mean < endAnalysis)) {
+
+						shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
+						shoulderCopy->SetShoulderSignal (true);
+						shoulderSignals.Append (shoulderCopy);
+					}
 				}
 
 				delete shoulderSignal;
@@ -1340,7 +1381,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		}
 	}
 
-	RGDListIterator it (PreliminaryCurveList);
+	it.Reset ();
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -1431,6 +1472,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 	delete signature;
 //	ProjectNeighboringSignalsAndTest (1.0, 1.0);
+
 	return 0;
 }
 

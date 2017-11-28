@@ -4075,8 +4075,9 @@ DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signat
 
 		double sigma = value->GetStandardDeviation ();
 		double height = value->Peak ();
+		double mean = value->GetMean ();
 
-		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0)) {
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= NumberOfSamples) || (sigma > 0.2 * (double)NumberOfSamples)) {
 
 			delete value;
 			return NULL;
@@ -5333,7 +5334,7 @@ RGString ParametricCurve :: GetVirtualAlleleName () const {
 
 double ParametricCurve :: Centroid () const {
 
-	return - DOUBLEMAX;
+	return GetMean ();
 }
 
 
