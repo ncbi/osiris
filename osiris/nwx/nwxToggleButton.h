@@ -55,6 +55,10 @@ public:
   virtual ~nwxToggleButton() {}
   virtual bool GetValue() const
   {
+    if(IsEnabled())
+    {
+      m_bValue = wxToggleButton::GetValue();
+    }
     return m_bValue;
   }
   virtual void SetValue(bool state)
@@ -67,10 +71,16 @@ public:
   }
   virtual bool Enable(bool enable = true)
   {
-    bool bRtn = wxToggleButton::Enable(enable);
-    if(!enable)
+    bool bRtn = IsEnabled();
+    if(enable != bRtn)
     {
-      wxToggleButton::SetValue(false);
+      if(!enable)
+      {
+        // currently enabled, going to disable
+        GetValue(); // sets m_bValue
+        wxToggleButton::SetValue(false);
+      }
+      wxToggleButton::Enable(enable);
     }
     return bRtn;
   }
@@ -79,7 +89,7 @@ public:
     return Enable(false);
   }
 private:
-  bool m_bValue;
+  mutable bool m_bValue;
 };
 
 #endif
