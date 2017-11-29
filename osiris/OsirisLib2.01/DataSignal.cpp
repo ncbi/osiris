@@ -4080,7 +4080,7 @@ DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signat
 		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= NumberOfSamples) || (sigma > 0.2 * (double)NumberOfSamples)) {
 
 			if (mean >= NumberOfSamples)
-				cout << "Found a bad peak:  Data in interval (" << nextInterval->GetLeft () << ", " << nextInterval->GetRight () << ")\n";
+				cout << "Found a bad peak on channel " << mChannel << ":  Data in interval (" << nextInterval->GetLeft () << ", " << nextInterval->GetRight () << ") with mean = " << mean << " and sigma = " << sigma << "\n";
 
 			delete value;
 			return NULL;

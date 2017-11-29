@@ -1152,6 +1152,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double maxRFU = GetMaximumHeight ();
 	double detectionRFU = GetDetectionThreshold ();
 	double endAnalysis = (double)mData->GetNumberOfSamples ();
+	mData->SetChannel (mChannel);
 
 	//
 	//  Calculate appropriate detectionRFU based on settings and curve fit phase
@@ -1192,6 +1193,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	else
 		signature = new DoubleGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
 
+	signature->SetChannel (mChannel);
 	ArtifactList.Clear ();
 	MarginalCurveList.Clear ();
 	FinalCurveList.Clear ();
@@ -1297,8 +1299,29 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	detectionRFU = GetDetectionThreshold ();
 	RGDListIterator it (PreliminaryCurveList);
 	RGDList outOfOrderList;
+	double numberOfSamples = (double)mData->GetNumberOfSamples ();
+	int nBadPeaks = 0;
+	int position = 0;
 
 	while (nextSignal = (DataSignal*) it ()) {
+
+		// Add tests for peak sanity here
+
+		double sigma = nextSignal->GetStandardDeviation ();
+		double height = nextSignal->Peak ();
+		double mean = nextSignal->GetMean ();
+		position++;
+
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples)) {
+
+			nBadPeaks++;
+
+			if (mean >= numberOfSamples)
+				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << "\n";
+
+			outOfOrderList.Append (nextSignal);
+			continue;
+		}
 
 		if (previousSignal == NULL) {
 
@@ -1309,7 +1332,10 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		if (previousSignal->GetMean () > nextSignal->GetMean ()) {
 
 			outOfOrderList.Append (previousSignal);
-			delete previousSignal;
+			nBadPeaks++;
+
+			cout << "Found a bad peak out of order on channel " << mChannel << ":  mean = " << previousSignal->GetMean () << ", height = " << previousSignal->Peak () << ", and sigma = " << previousSignal->GetStandardDeviation () << " in position " << position << "\n";
+			//delete previousSignal;
 		}
 
 		previousSignal = nextSignal;
@@ -1319,7 +1345,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 		PreliminaryCurveList.RemoveReference (nextSignal);
 		CompleteCurveList.RemoveReference (nextSignal);
-	//	delete nextSignal;
+		delete nextSignal;
 	}
 
 	previousSignal = NULL;
