@@ -2964,6 +2964,40 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 	DataSignal* shoulderCopy;
 	RGDList shoulderSignals;
 	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
+	RGDListIterator it (PreliminaryCurveList);
+	RGDList outOfOrderList;
+	double numberOfSamples = (double)mData->GetNumberOfSamples ();
+	int position = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		// Add tests for peak sanity here
+
+		double sigma = nextSignal->GetStandardDeviation ();
+		double height = nextSignal->Peak ();
+		double mean = nextSignal->GetMean ();
+		position++;
+
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples)) {
+
+			if (mean >= numberOfSamples)
+				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << "\n";
+
+			outOfOrderList.Append (nextSignal);
+			continue;
+		}
+	}
+
+	while (nextSignal = (DataSignal*) outOfOrderList.GetFirst ()) {
+
+		PreliminaryCurveList.RemoveReference (nextSignal);
+		CompleteCurveList.RemoveReference (nextSignal);
+		delete nextSignal;
+	}
+
+	previousSignal = NULL;
+	it.Reset ();
+	itt.Reset ();
 
 	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
 	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).
@@ -3000,7 +3034,17 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 					shoulderCopy->SetShoulderSignal (true);
-					shoulderSignals.Append (shoulderCopy);
+					//shoulderSignals.Append (shoulderCopy);
+
+					// PreliminaryCurveList and CompleteCurveList should be identical at this time
+
+					--itt;
+					--it;
+					itt.InsertAfterCurrentItem (shoulderCopy);
+					it.InsertAfterCurrentItem (shoulderCopy);
+					cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
+					++itt;
+					++it;
 				}
 
 				delete shoulderSignal;
@@ -3009,14 +3053,12 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 			previousSignal = nextSignal;
 		}
 
-		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+		//while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Insert (nextSignal);
-			CompleteCurveList.Insert (nextSignal);
-		}
+		//	PreliminaryCurveList.Insert (nextSignal);
+		//	CompleteCurveList.Insert (nextSignal);
+		//}
 	}
-
-	RGDListIterator it (PreliminaryCurveList);
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -3452,6 +3494,40 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 	RGDList shoulderSignals;
 	smApplyEnhancedShoulderFittingAlgorithmPreset applyEnhancedShoulderAlgorithm;
 
+	RGDListIterator it (PreliminaryCurveList);
+	RGDList outOfOrderList;
+	double numberOfSamples = (double)mData->GetNumberOfSamples ();
+	int position = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		// Add tests for peak sanity here
+
+		double sigma = nextSignal->GetStandardDeviation ();
+		double height = nextSignal->Peak ();
+		double mean = nextSignal->GetMean ();
+		position++;
+
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples)) {
+
+			if (mean >= numberOfSamples)
+				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << "\n";
+
+			outOfOrderList.Append (nextSignal);
+			continue;
+		}
+	}
+
+	while (nextSignal = (DataSignal*) outOfOrderList.GetFirst ()) {
+
+		PreliminaryCurveList.RemoveReference (nextSignal);
+		CompleteCurveList.RemoveReference (nextSignal);
+		delete nextSignal;
+	}
+
+	it.Reset ();
+	itt.Reset ();
+
 	// The condition UseEnhancedShoulderAlgorithm below prevents use of enhanced shoulder algorithm during baseline prenormalization, if selected.  Under the normalization option, 
 	//  this algorithm can only be used on ladder locus channels and post-normalization sample locus channels.  It is never used on lane standard channels (for which BeginAnalysis is initialize to be negative).
 
@@ -3488,7 +3564,15 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 
 					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 					shoulderCopy->SetShoulderSignal (true);
-					shoulderSignals.Append (shoulderCopy);
+				//	shoulderSignals.Append (shoulderCopy);
+
+					--itt;
+					--it;
+					itt.InsertAfterCurrentItem (shoulderCopy);
+					it.InsertAfterCurrentItem (shoulderCopy);
+					cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
+					++itt;
+					++it;
 				}
 
 				delete shoulderSignal;
@@ -3497,14 +3581,15 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 			previousSignal = nextSignal;
 		}
 
-		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+		//while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Insert (nextSignal);
-			CompleteCurveList.Insert (nextSignal);
-		}
+		//	PreliminaryCurveList.Insert (nextSignal);
+		//	CompleteCurveList.Insert (nextSignal);
+		//}
 	}
 
-	RGDListIterator it (PreliminaryCurveList);
+	it.Reset ();
+	itt.Reset ();
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -3571,6 +3656,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 		PreliminaryCurveList.Append (nextSignal);
 
 	it.Reset ();
+	itt.Reset ();
 
 	while (nextSignal = (DataSignal*) it ()) {
 

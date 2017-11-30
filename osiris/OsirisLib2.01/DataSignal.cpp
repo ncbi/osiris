@@ -4077,14 +4077,14 @@ DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signat
 		double height = value->Peak ();
 		double mean = value->GetMean ();
 
-		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= NumberOfSamples) || (sigma > 0.2 * (double)NumberOfSamples)) {
+		//if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= NumberOfSamples) || (sigma > 0.2 * (double)NumberOfSamples)) {
 
-			if (mean >= NumberOfSamples)
-				cout << "Found a bad peak on channel " << mChannel << ":  Data in interval (" << nextInterval->GetLeft () << ", " << nextInterval->GetRight () << ") with mean = " << mean << " and sigma = " << sigma << "\n";
+		//	if (mean >= NumberOfSamples)
+		//		cout << "Found a bad peak on channel " << mChannel << ":  Data in interval (" << nextInterval->GetLeft () << ", " << nextInterval->GetRight () << ") with mean = " << mean << " and sigma = " << sigma << "\n";
 
-			delete value;
-			return NULL;
-		}
+		//	delete value;
+		//	return NULL;
+		//}
 
 		if (sigma < 0.14) {
 

@@ -1300,7 +1300,6 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	RGDListIterator it (PreliminaryCurveList);
 	RGDList outOfOrderList;
 	double numberOfSamples = (double)mData->GetNumberOfSamples ();
-	int nBadPeaks = 0;
 	int position = 0;
 
 	while (nextSignal = (DataSignal*) it ()) {
@@ -1314,31 +1313,12 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples)) {
 
-			nBadPeaks++;
-
 			if (mean >= numberOfSamples)
 				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << "\n";
 
 			outOfOrderList.Append (nextSignal);
 			continue;
 		}
-
-		if (previousSignal == NULL) {
-
-			previousSignal = nextSignal;
-			continue;
-		}
-
-		if (previousSignal->GetMean () > nextSignal->GetMean ()) {
-
-			outOfOrderList.Append (previousSignal);
-			nBadPeaks++;
-
-			cout << "Found a bad peak out of order on channel " << mChannel << ":  mean = " << previousSignal->GetMean () << ", height = " << previousSignal->Peak () << ", and sigma = " << previousSignal->GetStandardDeviation () << " in position " << position << "\n";
-			//delete previousSignal;
-		}
-
-		previousSignal = nextSignal;
 	}
 
 	while (nextSignal = (DataSignal*) outOfOrderList.GetFirst ()) {
@@ -1360,6 +1340,8 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		DataSignal::SetNumberOfIntervalsForConcaveDownAlgorithm (GetThreshold (concaveDownAcceptanceThreshold));
 
 		while (nextSignal = (DataSignal*) itt ()) {
+
+			it ();
 
 			if (nextSignal->GetMean () < BeginAnalysis) {
 
@@ -1390,7 +1372,17 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 						shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 						shoulderCopy->SetShoulderSignal (true);
-						shoulderSignals.Append (shoulderCopy);
+						//shoulderSignals.Append (shoulderCopy);
+
+						// PreliminaryCurveList and CompleteCurveList should be identical at this time
+
+						--itt;
+						--it;
+						itt.InsertAfterCurrentItem (shoulderCopy);
+						it.InsertAfterCurrentItem (shoulderCopy);
+						cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
+						++itt;
+						++it;
 					}
 				}
 
@@ -1400,11 +1392,11 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			previousSignal = nextSignal;
 		}
 
-		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+		//while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Insert (nextSignal);
-			CompleteCurveList.Insert (nextSignal);
-		}
+		//	PreliminaryCurveList.Insert (nextSignal);
+		//	CompleteCurveList.Insert (nextSignal);
+		//}
 	}
 
 	it.Reset ();
