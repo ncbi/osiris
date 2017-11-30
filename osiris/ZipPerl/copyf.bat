@@ -1,2 +1,3 @@
 @echo off
-bash copyf.sh
+PATH=C:\Program Files\Git\usr\bin;%PATH%
+bash copyf.sh %1 %2
