@@ -4380,7 +4380,7 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 
 	if (!edgeToEdge) {
 
-		cout << "Locus = " << (char*)GetLocusName ().GetData() << " is not edge to edge" << endl;
+	//F	cout << "Locus = " << (char*)GetLocusName ().GetData() << " is not edge to edge" << endl;
 
 		while (nextSignal = (DataSignal*) it()) {
 

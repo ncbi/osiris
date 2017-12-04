@@ -7320,6 +7320,9 @@ int windowSize, double& fit, RGDList& previous) const {
 
 	int OldSegmentLeft = SegmentLeft;
 
+	if (left < 0.0)
+		cout << "Original left is < 0:  " << left << "\n";
+
 	const DataSignal* Overlapped = BuildOverlappedSignal (left, right, previous, Target);
 
 	double sampleTwoNorm2;
@@ -7368,6 +7371,9 @@ int windowSize, double& fit, RGDList& previous) const {
 	left = Target->LeftEndPoint () + SegmentLeft * IntervalSpacing;
 	right = Target->LeftEndPoint () + SegmentRight * IntervalSpacing;
 
+	if ((SegmentLeft < 0.0) || (left < 0.0))
+		cout << "Segment left or transformed left < 0:  " << left << ", " << SegmentLeft << "\n";
+
 	if ((left < OldLeft) || (right > OldRight)) {
 
 		if (Overlapped != Target)
@@ -7408,6 +7414,12 @@ int windowSize, double& fit, RGDList& previous) const {
 		SegmentCenter -= OldSegmentLeft;
 		SegmentLeft -= OldSegmentLeft;
 	}
+
+	if (SegmentLeft < 0.0)
+		cout << "Final Segment Left < 0:  " << SegmentLeft << endl;
+
+	if (SegmentLeft < 10.0)
+		cout << "DoubleGaussian with left segment = " << SegmentLeft << "\n";
 
 	SampleDataInfo SampleInfo (*Overlapped, SegmentLeft, SegmentCenter, SegmentRight, NSamples);
 
@@ -7837,7 +7849,7 @@ DataSignal* DoubleGaussian :: FindCharacteristicAsymmetric (const DataSignal* Ta
 	int SegmentMode =  (int) Segment->GetMode ();
 	int SegmentWindow = SegmentRight - SegmentLeft;
 	double coeffs [3];
-
+	
 	double IntervalSpacing = DataSignal::GetSampleSpacing ();
 
 	// 2:
