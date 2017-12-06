@@ -51,6 +51,10 @@ Mode (0), MaxAtMode (-DOUBLEMAX), FixedLeft (FALSE), FixedRight (FALSE), mPureMi
 DataInterval :: DataInterval (int left, int center, int right) : RGPersistent (), Left (left), Right (right), 
 Center (center), Mass (0.0), Height (0.0), Mode (0), MaxAtMode (-DOUBLEMAX), FixedLeft (FALSE), FixedRight (FALSE), mPureMinimum (FALSE), mValueLeftOfMax (0.0), mValueRightOfMax (0.0), mOKtoTestForSpike (FALSE) {}
 
+DataInterval :: DataInterval (const DataInterval& di) : RGPersistent (di), Left (di.Left), Right (di.Right), 
+	Center (di.Center), Mass (di.Mass), Height (di.Height), Mode (di.Mode), MaxAtMode (di.MaxAtMode), FixedLeft (di.FixedLeft), FixedRight (di.FixedRight), mPureMinimum (di.mPureMinimum), mValueLeftOfMax (di.mValueLeftOfMax), 
+	mValueRightOfMax (di.mValueRightOfMax), mOKtoTestForSpike (di.mOKtoTestForSpike) {}
+
 
 DataInterval :: ~DataInterval () {}
 
@@ -71,6 +75,7 @@ DataInterval* DataInterval :: Split (DataInterval*& secondInterval) const {
 	if (FixedLeft)
 		rtnValue->SetFixedLeftTrue ();
 
+	ctr = (mLocalMinimum + Right) / 2;
 	secondInterval = new DataInterval (mLocalMinimum, ctr, Right);
 	secondInterval->SetNumberOfMinima (0);
 	secondInterval->SetFixedLeftTrue ();

@@ -321,7 +321,8 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
+	mThisDataSegment (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -338,36 +339,17 @@ public:
 	mPossibleInterAlleleRight (false), mIsAcceptedTriAlleleLeft (false), mIsAcceptedTriAlleleRight (false), mIsOffGridLeft (false), mIsOffGridRight (false), mArea (0.0),
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
-	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false) {
+	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
+	mThisDataSegment (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
 		InitializeSmartMessages ();
 	}
 
-	DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMessagingObject&)ds), Left (ds.Left), Right (ds.Right), LeftSearch (ds.LeftSearch),
-		RightSearch (ds.RightSearch), Fit (ds.Fit), ResidualPower (ds.ResidualPower), MeanVariability (ds.MeanVariability), BioID (ds.BioID), 
-		ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mWidth (-1.0), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), signalLink (NULL), 
-		mPrimaryCrossChannelLink (NULL), mDontLook (ds.mDontLook), mTestLeftEndPoint (ds.mTestLeftEndPoint), mTestRightEndPoint (ds.mTestRightEndPoint), 
-		mDataMode (ds.mDataMode), mRawDataBelowMinHeight (ds.mRawDataBelowMinHeight), mOsirisFitBelowMinHeight (ds.mOsirisFitBelowMinHeight),
-		mRawDataAboveMaxHeight (ds.mRawDataAboveMaxHeight), mOsirisFitAboveMaxHeight (ds.mOsirisFitAboveMaxHeight), mPossibleInterlocusAllele (ds.mPossibleInterlocusAllele), 
-		mLeftLocus (ds.mLeftLocus), mRightLocus (ds.mRightLocus), mIsGraphable (ds.mIsGraphable), 
-		mHasCrossChannelLink (ds.mHasCrossChannelLink), mIsSaturationArtifact (ds.mIsSaturationArtifact), mInterchannelLink (ds.mInterchannelLink),
-		mCannotBePrimary (ds.mCannotBePrimary), mBioIDLeft (ds.mBioIDLeft), mBioIDRight (ds.mBioIDRight), mAlleleNameLeft (ds.mAlleleNameLeft), mAlleleNameRight (ds.mAlleleNameRight), 
-		mResidualLeft (ds.mResidualLeft), mResidualRight (ds.mResidualRight), mPossibleInterAlleleLeft (ds.mPossibleInterAlleleLeft), 
-		mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
-		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
-		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
-		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
-		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()) {
 
-		NoticeList = ds.NoticeList;
-		NewNoticeList = ds.NewNoticeList;
-		InitializeSmartMessages (ds);
-	}
 
-	
+	DataSignal (const DataSignal& ds);
 	DataSignal (const DataSignal& ds, CoordinateTransform* trans);
 	virtual ~DataSignal () = 0;
 
@@ -561,6 +543,9 @@ public:
 	int PromoteOtherExtendedLocus (Locus* dontKeep);
 	int RemoveFromAllLoci ();
 
+	void SetCurrentDataInterval (const DataInterval* di);
+	DataInterval* GetCurrentDataInterval () { return mThisDataSegment; }
+
 	//bool IsPossibleInterlocusAlleleLeft () const { return mPossibleInterAlleleLeft; }
 	//bool IsPossibleInterlocusAlleleRight () const { return mPossibleInterAlleleRight; }
 	//bool IsAcceptedTriAlleleLeft () const { return mIsAcceptedTriAlleleLeft; }
@@ -694,6 +679,7 @@ public:
 	virtual int GetNumberOfSamples () const { return 0; }
 
 	virtual double GetModeHeightAndLocationFromDataInterval (int& location) { location = 0; return 0.0; }
+	virtual DataInterval* GetCurrentIntervalFromList () { return NULL; }
 
 	virtual DataSignal* Project (double left, double right) const { return NULL; }
 	virtual DataSignal* Project (const DataSignal* target) const { return NULL; }
@@ -726,6 +712,7 @@ public:
 
 	virtual double TestConstantCharacteristicRetry () { return 0.0; }
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right) { return 0.0; }
+	virtual double TestConstantCharacteristicRetry (DataSignal* currentSignal, double& height, int& left, int& right) { return 0.0; }
 	virtual double InnerProductWithConstantFunction (int left, int right, double& height) const { return 0.0; }
 	virtual bool HasAtLeastOneLocalMinimum () { return false; }
 	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit) { return false; }
@@ -1001,6 +988,7 @@ protected:
 	list<int> mStutterDisplacements;
 	double mCumulativeStutterThreshold;
 	bool mIsShoulderSignal;
+	DataInterval* mThisDataSegment;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;
@@ -1067,10 +1055,12 @@ public:
 	virtual DataSignal* FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous, int dualCurve);
 
 	virtual double GetModeHeightAndLocationFromDataInterval (int& location);
+	virtual DataInterval* GetCurrentIntervalFromList ();
 	virtual double TestConstantCharacteristicRetry ();
 	virtual double InnerProductWithConstantFunction (int left, int right) const;
 
 	virtual double TestConstantCharacteristicRetry (double& height, int& left, int& right);
+	virtual double TestConstantCharacteristicRetry (DataSignal* currentSignal, double& height, int& left, int& right);
 	virtual bool HasAtLeastOneLocalMinimum ();
 	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit);
 	double InnerProductWithConstantFunction (int left, int right, double& height) const;

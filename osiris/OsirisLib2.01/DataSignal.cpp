@@ -1096,6 +1096,35 @@ bool LessDistance (const PeakInfoForClusters* p1, const PeakInfoForClusters* p2)
 }
 
 
+DataSignal :: DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMessagingObject&)ds), Left (ds.Left), Right (ds.Right), LeftSearch (ds.LeftSearch),
+		RightSearch (ds.RightSearch), Fit (ds.Fit), ResidualPower (ds.ResidualPower), MeanVariability (ds.MeanVariability), BioID (ds.BioID), 
+		ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mWidth (-1.0), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), signalLink (NULL), 
+		mPrimaryCrossChannelLink (NULL), mDontLook (ds.mDontLook), mTestLeftEndPoint (ds.mTestLeftEndPoint), mTestRightEndPoint (ds.mTestRightEndPoint), 
+		mDataMode (ds.mDataMode), mRawDataBelowMinHeight (ds.mRawDataBelowMinHeight), mOsirisFitBelowMinHeight (ds.mOsirisFitBelowMinHeight),
+		mRawDataAboveMaxHeight (ds.mRawDataAboveMaxHeight), mOsirisFitAboveMaxHeight (ds.mOsirisFitAboveMaxHeight), mPossibleInterlocusAllele (ds.mPossibleInterlocusAllele), 
+		mLeftLocus (ds.mLeftLocus), mRightLocus (ds.mRightLocus), mIsGraphable (ds.mIsGraphable), 
+		mHasCrossChannelLink (ds.mHasCrossChannelLink), mIsSaturationArtifact (ds.mIsSaturationArtifact), mInterchannelLink (ds.mInterchannelLink),
+		mCannotBePrimary (ds.mCannotBePrimary), mBioIDLeft (ds.mBioIDLeft), mBioIDRight (ds.mBioIDRight), mAlleleNameLeft (ds.mAlleleNameLeft), mAlleleNameRight (ds.mAlleleNameRight), 
+		mResidualLeft (ds.mResidualLeft), mResidualRight (ds.mResidualRight), mPossibleInterAlleleLeft (ds.mPossibleInterAlleleLeft), 
+		mPossibleInterAlleleRight (ds.mPossibleInterAlleleRight), mIsAcceptedTriAlleleLeft (ds.mIsAcceptedTriAlleleLeft), mIsAcceptedTriAlleleRight (ds.mIsAcceptedTriAlleleRight), 
+		mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRight (ds.mIsOffGridRight), mSignalID (ds.mSignalID), mArea (ds.mArea), mLocus (ds.mLocus), 
+		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
+		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
+		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
+		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()) {
+
+		NoticeList = ds.NoticeList;
+		NewNoticeList = ds.NewNoticeList;
+		InitializeSmartMessages (ds);
+
+		if (ds.mThisDataSegment != NULL)
+			mThisDataSegment = new DataInterval (*ds.mThisDataSegment);
+
+		else
+			mThisDataSegment = NULL;
+	}
+
+
 DataSignal :: DataSignal (const DataSignal& ds, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)ds), LeftSearch (ds.LeftSearch),
 RightSearch (ds.RightSearch), Fit (ds.Fit), ResidualPower (ds.ResidualPower), MeanVariability (ds.MeanVariability), BioID (ds.BioID), 
 ApproximateBioID (ds.ApproximateBioID), mApproxBioIDPrime (ds.mApproxBioIDPrime), mWidth (-1.0), mNoticeObjectIterator (NewNoticeList), markForDeletion (ds.markForDeletion), mOffGrid (ds.mOffGrid), mAcceptedOffGrid (ds.mAcceptedOffGrid), 
@@ -1117,6 +1146,12 @@ mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds
 	NoticeList = ds.NoticeList;
 	NewNoticeList = ds.NewNoticeList;
 	InitializeSmartMessages (ds);
+
+	if (ds.mThisDataSegment != NULL)
+		mThisDataSegment = new DataInterval (*ds.mThisDataSegment);
+
+	else
+		mThisDataSegment = NULL;
 }
 
 
@@ -1139,6 +1174,8 @@ DataSignal :: ~DataSignal () {
 	mHasStutterList.Clear ();
 	mHasStutterLeftList.Clear ();
 	mHasStutterRightList.Clear ();
+
+	delete mThisDataSegment;
 }
 
 
@@ -1663,6 +1700,17 @@ int DataSignal :: RemoveFromAllLoci () {
 
 	return 0;
 }
+
+
+void DataSignal :: SetCurrentDataInterval (const DataInterval* di) {
+	
+	if (di != NULL)
+		mThisDataSegment = new DataInterval (*di);
+
+	else
+		di = NULL;
+}
+
 
 
 bool DataSignal :: IsPossibleInterlocusAllele (int position) const {
@@ -3670,6 +3718,12 @@ double SampledData :: GetModeHeightAndLocationFromDataInterval (int& location) {
 }
 
 
+DataInterval* SampledData :: GetCurrentIntervalFromList () {
+
+	return (DataInterval*) PeakIterator->CurrentItem ();
+}
+
+
 const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* prevSignal, DataSignal* nextSignal, const DataSignal& signature, double& fit, double detectionThreshold, double analysisThreshold, double noiseThreshold) {
 
 	int startTime = (int) ceil (prevSignal->GetMean () + 1.0);
@@ -4052,6 +4106,7 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 
 	DataSignal* copySignal = newSignal->MakeCopy (newSignal->GetMean ());
 	copySignal->SetCurveFit (fit);
+	copySignal->SetCurrentDataInterval (NULL);
 	delete newSignal;
 
 	if (copySignal != NULL)
@@ -4151,6 +4206,21 @@ double SampledData :: InnerProductWithConstantFunction (int left, int right) con
 double SampledData :: TestConstantCharacteristicRetry (double& height, int& left, int& right) {
 
 	DataInterval* nextInterval = (DataInterval*)PeakIterator->CurrentItem ();
+
+	if (nextInterval == NULL)
+		return 0.0;
+
+	left = nextInterval->GetLeft ();
+	right = nextInterval->GetRight ();
+
+	double ans = InnerProductWithConstantFunction (nextInterval->GetLeft (), nextInterval->GetRight (), height);
+	return ans;
+}
+
+
+double SampledData :: TestConstantCharacteristicRetry (DataSignal* currentSignal, double& height, int& left, int& right) {
+
+	DataInterval* nextInterval = currentSignal->GetCurrentDataInterval ();
 
 	if (nextInterval == NULL)
 		return 0.0;
@@ -6600,6 +6670,7 @@ int windowSize, double& fit, RGDList& previous) const {
 	returnValue->SetScale (newScale);
 	returnValue->SetLeftEndPoint (left);
 	returnValue->SetRightEndPoint (right);
+	returnValue->SetCurrentDataInterval (Segment);
 
 	if ((sampleMean < (double)Segment->GetLeft ()) || (sampleMean > (double)Segment->GetRight ())) {
 
@@ -7765,6 +7836,7 @@ int windowSize, double& fit, RGDList& previous) const {
 	returnValue->SetScale (1, OGCoeff1);
 	returnValue->SetScale (2, OGCoeff2);
 	returnValue->SetCurveFit (fit);
+	returnValue->SetCurrentDataInterval (Segment);
 
 	// These two lines below are removed because they truncate the curve too abruptly.  We want to fit curves based on a fairly narrow 
 	// interval because the center of the sample curve contains the most reliable information, but then we want to carry the entire 
@@ -8195,6 +8267,7 @@ DataSignal* DoubleGaussian :: FindCharacteristicAsymmetric (const DataSignal* Ta
 	returnValue->SetScale (1, OGCoeff1);
 	returnValue->SetScale (2, OGCoeff2);
 	returnValue->SetCurveFit (fit);
+	returnValue->SetCurrentDataInterval (Segment);
 
 	// These two lines below are removed because they truncate the curve too abruptly.  We want to fit curves based on a fairly narrow 
 	// interval because the center of the sample curve contains the most reliable information, but then we want to carry the entire 
@@ -9929,6 +10002,7 @@ int windowSize, double& fit, RGDList& previous) const {
 	returnValue->SetLeftEndPoint (left);
 	returnValue->SetRightEndPoint (right);
 	returnValue->SetCurveFit (fit);
+	returnValue->SetCurrentDataInterval (Segment);
 
 	if (Overlapped != Target)
 		delete Overlapped;
@@ -10949,6 +11023,8 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 	second->SetDataMode (segmentRight->GetMaxAtMode ());
 	first->SetCurveFit (fitLeft);
 	second->SetCurveFit (fitRight);
+	first->SetCurrentDataInterval (segmentLeft);
+	second->SetCurrentDataInterval (segmentRight);
 
 	double sigma;
 	double height;
@@ -10978,6 +11054,7 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 		first->SetLeftEndPoint (mode - 2.0);
 		first->SetRightEndPoint (mode + 2.0);
 		first->SetCurveFit (fitLeft);
+		first->SetCurrentDataInterval (segmentLeft);
 	}
 
 	sigma = second->GetStandardDeviation ();
@@ -10994,6 +11071,7 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 		second->SetLeftEndPoint (mode - 2.0);
 		second->SetRightEndPoint (mode + 2.0);
 		second->SetCurveFit (fitRight);
+		second->SetCurrentDataInterval (segmentRight);
 	}
 
 	DualDoubleGaussian* rtnValue = new DualDoubleGaussian;

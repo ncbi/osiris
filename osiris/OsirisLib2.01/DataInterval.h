@@ -55,6 +55,7 @@ PERSISTENT_DECLARATION (DataInterval)
 public:
 	DataInterval ();
 	DataInterval (int left, int center, int right);
+	DataInterval (const DataInterval& di);
 	virtual ~DataInterval ();
 
 	DataInterval* Split (DataInterval*& secondInterval) const;

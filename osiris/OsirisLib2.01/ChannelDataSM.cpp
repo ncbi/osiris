@@ -1216,26 +1216,31 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	int rightEndPoint;
 	RaisedBaseLineData* rbld;
 	mRaisedBaseLines.clearAndDestroy ();
+	bool printOn = false;
+	bool channel2 = false;
+
+	if (mChannel == 2)
+		channel2 = true;
 
 	while (nextSignal = mData->FindNextCharacteristicFromRight (*signature, fit, CompleteCurveList)) {
 
 		secondaryContent = fabs(nextSignal->GetScale (2));
-		double mean = nextSignal->GetMean ();
-		lineFit = mData->TestConstantCharacteristicRetry (constantHeight, leftEndPoint, rightEndPoint);
+		//double mean = nextSignal->GetMean ();
+		//lineFit = mData->TestConstantCharacteristicRetry (constantHeight, leftEndPoint, rightEndPoint);
 
-		if (lineFit > minFitForArtifactTest) {
+		//if (lineFit > minFitForArtifactTest) {
 
-			rbld = new RaisedBaseLineData (constantHeight, leftEndPoint, rightEndPoint);
-			mRaisedBaseLines.prepend (rbld);
-			delete nextSignal;
-			continue;
-		}
+		//	rbld = new RaisedBaseLineData (constantHeight, leftEndPoint, rightEndPoint);
+		//	mRaisedBaseLines.prepend (rbld);
+		//	delete nextSignal;
+		//	continue;
+		//}
 
-		else if (mean >= endAnalysis) {
+		//if (mean >= endAnalysis) {
 
-			delete nextSignal;
-			continue;
-		}
+		//	delete nextSignal;
+		//	continue;
+		//}
 
 		//if (nextSignal->GetStandardDeviation () > 0.0) {
 
@@ -1245,6 +1250,12 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		//		continue;
 		//	}
 		//}
+
+		if (channel2 && (nextSignal->GetMean () < 10.0))
+			printOn = true;
+
+		if (printOn)
+			cout << "Found peak with mean = " << nextSignal->GetMean () << " and sigma = " << nextSignal->GetStandardDeviation () <<"\n";
 
 		TestFitCriteriaSM (nextSignal);
 
@@ -1301,15 +1312,22 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	RGDList outOfOrderList;
 	double numberOfSamples = (double)mData->GetNumberOfSamples ();
 	int position = 0;
-
-	nextSignal = (DataSignal*) PreliminaryCurveList.First ();
-	
-	if (mChannel == 2)
-		cout << "First signal on Preliminary Curve List has mean = " << nextSignal->GetMean () << "\n";
+	printOn = false;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		// Add tests for peak sanity here
+		if (channel2 && (nextSignal->GetMean () < 5.0))
+			printOn = true;
+
+		lineFit = mData->TestConstantCharacteristicRetry (nextSignal, constantHeight, leftEndPoint, rightEndPoint);
+
+		if ((lineFit > minFitForArtifactTest) && (lineFit > nextSignal->GetCurveFit ())) {
+
+			rbld = new RaisedBaseLineData (constantHeight, leftEndPoint, rightEndPoint);
+			mRaisedBaseLines.prepend (rbld);
+			outOfOrderList.Append (nextSignal);
+			continue;
+		}
 
 		double sigma = nextSignal->GetStandardDeviation ();
 		double height = nextSignal->Peak ();
@@ -1325,7 +1343,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			continue;
 		}
 	}
-
+	
 	while (nextSignal = (DataSignal*) outOfOrderList.GetFirst ()) {
 
 		PreliminaryCurveList.RemoveReference (nextSignal);
@@ -1373,7 +1391,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 				if (lineFit <= minFitForArtifactTest) {
 
-					if ((mean >= BeginAnalysis) && (mean < endAnalysis)) {
+					if ((mean >= BeginAnalysis) && (mean < endAnalysis) && !shoulderSignal->MayBeUnacceptable ()) {
 
 						shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 						shoulderCopy->SetShoulderSignal (true);
@@ -1706,6 +1724,7 @@ bool ChannelData :: TestForArtifactsSM (DataSignal* currentSignal, double fit) {
 			currentSignal->SetMessageValue (fitFailed, true);
 			currentSignal->SetDataMode (height);
 			currentSignal->SetCurveFit (0.795);
+			currentSignal->SetCurrentDataInterval (mData->GetCurrentIntervalFromList ());
 			CompleteCurveList.InsertWithNoReferenceDuplication (currentSignal);
 			PreliminaryCurveList.InsertWithNoReferenceDuplication (currentSignal);  // This is a test!  We keep poor fits in case they are needed later, at which point we point them out.
 			rtn = true;
