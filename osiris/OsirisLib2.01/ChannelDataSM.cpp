@@ -1216,11 +1216,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	int rightEndPoint;
 	RaisedBaseLineData* rbld;
 	mRaisedBaseLines.clearAndDestroy ();
-	bool printOn = false;
-	bool channel2 = false;
-
-	if (mChannel == 2)
-		channel2 = true;
+	bool biasedFit;
 
 	while (nextSignal = mData->FindNextCharacteristicFromRight (*signature, fit, CompleteCurveList)) {
 
@@ -1251,16 +1247,11 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		//	}
 		//}
 
-		if (channel2 && (nextSignal->GetMean () < 10.0))
-			printOn = true;
-
-		if (printOn)
-			cout << "Found peak with mean = " << nextSignal->GetMean () << " and sigma = " << nextSignal->GetStandardDeviation () <<"\n";
-
 		TestFitCriteriaSM (nextSignal);
+		biasedFit =  mData->TestForBiasedFit (nextSignal, minRFU);
 
 		//if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum ()) {
-		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && mData->TestForBiasedFit (nextSignal, minRFU))) {
+		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && biasedFit)) {
 
 			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList, true);
 
@@ -1312,12 +1303,8 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	RGDList outOfOrderList;
 	double numberOfSamples = (double)mData->GetNumberOfSamples ();
 	int position = 0;
-	printOn = false;
 
 	while (nextSignal = (DataSignal*) it ()) {
-
-		if (channel2 && (nextSignal->GetMean () < 5.0))
-			printOn = true;
 
 		lineFit = mData->TestConstantCharacteristicRetry (nextSignal, constantHeight, leftEndPoint, rightEndPoint);
 
@@ -1334,7 +1321,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		double mean = nextSignal->GetMean ();
 		position++;
 
-		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples)) {
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable ()) {
 
 			if (mean >= numberOfSamples)
 				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << " with left limit = " << nextSignal->LeftEndPoint () << " and right limit = " << nextSignal->RightEndPoint () << " with type " << nextSignal->GetSignalType () << "\n";
@@ -1379,6 +1366,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			}
 
 			nextSignal->SetChannel (mChannel);
+
 			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
 
 			if (shoulderSignal != NULL) {
@@ -1395,17 +1383,17 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 						shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 						shoulderCopy->SetShoulderSignal (true);
-						//shoulderSignals.Append (shoulderCopy);
+						shoulderSignals.Append (shoulderCopy);
 
 						// PreliminaryCurveList and CompleteCurveList should be identical at this time
 
-						--itt;
-						--it;
-						itt.InsertAfterCurrentItem (shoulderCopy);
-						it.InsertAfterCurrentItem (shoulderCopy);
+						//--itt;
+						//--it;
+						//itt.InsertAfterCurrentItem (shoulderCopy);
+						//it.InsertAfterCurrentItem (shoulderCopy);
 						cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
-						++itt;
-						++it;
+						//++itt;
+						//++it;
 					}
 				}
 
@@ -1415,11 +1403,11 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			previousSignal = nextSignal;
 		}
 
-		//while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-		//	PreliminaryCurveList.Insert (nextSignal);
-		//	CompleteCurveList.Insert (nextSignal);
-		//}
+			PreliminaryCurveList.Insert (nextSignal);
+			CompleteCurveList.Insert (nextSignal);
+		}
 	}
 
 	it.Reset ();
@@ -2054,18 +2042,21 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 
 		if (IsControlChannel () && (leftSignal != NULL) && (rightSignal != NULL)) {
 
-			if (leftSignal->Peak () >= rightSignal->Peak ()) {
+			if (fabs (rightSignal->GetMean () - leftSignal->GetMean ()) < 0.4 * (leftSignal->GetWidth () + rightSignal->GetWidth ())) {  // 0.4 = 0.5 * 0.8, so this is 0.80 * average width between left and right
 
-				PreliminaryCurveList.RemoveReference (rightSignal);
-				CompleteCurveList.RemoveReference (rightSignal);
-				delete rightSignal;
-			}
+				if (leftSignal->Peak () >= rightSignal->Peak ()) {
 
-			else {
+					PreliminaryCurveList.RemoveReference (rightSignal);
+					CompleteCurveList.RemoveReference (rightSignal);
+					delete rightSignal;
+				}
 
-				PreliminaryCurveList.RemoveReference (leftSignal);
-				CompleteCurveList.RemoveReference (leftSignal);
-				delete leftSignal;
+				else {
+
+					PreliminaryCurveList.RemoveReference (leftSignal);
+					CompleteCurveList.RemoveReference (leftSignal);
+					delete leftSignal;
+				}
 			}
 		}
 	}

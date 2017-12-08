@@ -4438,6 +4438,12 @@ DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signat
 
 	if (nextInterval->GetNumberOfMinima () == 0)
 		return NULL;
+
+	if (!nextInterval->IsSecondaryModeSet ()) {
+
+		cout << "Interval set for split has no secondary mode:  channel = " << mChannel << ", left = " << nextInterval->GetLeft () << ", and right = " << nextInterval->GetRight () << "\n";
+		return NULL;
+	}
 	
 	DataInterval* leftInterval;
 	DataInterval* rightInterval;

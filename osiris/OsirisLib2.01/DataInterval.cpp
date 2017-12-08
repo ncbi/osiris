@@ -45,15 +45,19 @@ PERSISTENT_DEFINITION(NoiseInterval, _NOISEINTERVAL_, "NoiseInterval")
 
 
 DataInterval :: DataInterval () : RGPersistent (), Left (0), Right (0), Center (0), Mass (0.0), Height (0.0),
-Mode (0), MaxAtMode (-DOUBLEMAX), FixedLeft (FALSE), FixedRight (FALSE), mPureMinimum (FALSE), mValueLeftOfMax (0.0), mValueRightOfMax (0.0), mOKtoTestForSpike (FALSE) {}
+	Mode (0), MaxAtMode (-DOUBLEMAX), FixedLeft (FALSE), FixedRight (FALSE), LeftMinimum (0.0), RightMinimum (0.0), mNumberOfMinima (0), 
+	mLocalMinimum (0), mLocalMinValue (0.0), mSecondaryMode (0), mMaxAtSecondaryMode (0.0), 
+	mPureMinimum (FALSE), mValueLeftOfMax (0.0), mValueRightOfMax (0.0), mOKtoTestForSpike (FALSE), mSecondaryModeSet (false) {}
 
 
 DataInterval :: DataInterval (int left, int center, int right) : RGPersistent (), Left (left), Right (right), 
-Center (center), Mass (0.0), Height (0.0), Mode (0), MaxAtMode (-DOUBLEMAX), FixedLeft (FALSE), FixedRight (FALSE), mPureMinimum (FALSE), mValueLeftOfMax (0.0), mValueRightOfMax (0.0), mOKtoTestForSpike (FALSE) {}
+	Center (center), Mass (0.0), Height (0.0), Mode (0), MaxAtMode (-DOUBLEMAX), FixedLeft (FALSE), FixedRight (FALSE), LeftMinimum (0.0), RightMinimum (0.0), mNumberOfMinima (0), 
+	mLocalMinimum (0), mLocalMinValue (0.0), mSecondaryMode (0), mMaxAtSecondaryMode (0.0), mPureMinimum (FALSE), mValueLeftOfMax (0.0), mValueRightOfMax (0.0), mOKtoTestForSpike (FALSE), mSecondaryModeSet (false) {}
 
 DataInterval :: DataInterval (const DataInterval& di) : RGPersistent (di), Left (di.Left), Right (di.Right), 
-	Center (di.Center), Mass (di.Mass), Height (di.Height), Mode (di.Mode), MaxAtMode (di.MaxAtMode), FixedLeft (di.FixedLeft), FixedRight (di.FixedRight), mPureMinimum (di.mPureMinimum), mValueLeftOfMax (di.mValueLeftOfMax), 
-	mValueRightOfMax (di.mValueRightOfMax), mOKtoTestForSpike (di.mOKtoTestForSpike) {}
+	Center (di.Center), Mass (di.Mass), Height (di.Height), Mode (di.Mode), MaxAtMode (di.MaxAtMode), FixedLeft (di.FixedLeft), FixedRight (di.FixedRight), LeftMinimum (di.LeftMinimum), RightMinimum (di.RightMinimum), mNumberOfMinima (di.mNumberOfMinima), 
+	mLocalMinimum (di.mLocalMinimum), mLocalMinValue (di.mLocalMinValue), mSecondaryMode (di.mSecondaryMode), mMaxAtSecondaryMode (di.mMaxAtSecondaryMode), mPureMinimum (di.mPureMinimum), mValueLeftOfMax (di.mValueLeftOfMax), 
+	mValueRightOfMax (di.mValueRightOfMax), mOKtoTestForSpike (di.mOKtoTestForSpike), mSecondaryModeSet (di.mSecondaryModeSet) {}
 
 
 DataInterval :: ~DataInterval () {}

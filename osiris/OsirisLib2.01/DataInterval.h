@@ -74,7 +74,7 @@ public:
 	void SetNumberOfMinima (int minima) { mNumberOfMinima = minima; }
 	void SetLocalMinimum (int localMin) { mLocalMinimum = localMin; }
 	void SetLocalMinValue (double val) { mLocalMinValue = val; }
-	void SetSecondaryMode (int mode) { mSecondaryMode = mode; }
+	void SetSecondaryMode (int mode) { mSecondaryMode = mode; mSecondaryModeSet = true; }
 
 	int GetLeft () const { return Left; }
 	int GetRight () const { return Right; }
@@ -86,6 +86,7 @@ public:
 	double GetRightMinimum () const { return RightMinimum; }
 	double GetMaxAtMode () const { return MaxAtMode; }
 	double GetMaxAtSecondaryMode () const { return mMaxAtSecondaryMode; }
+	bool IsSecondaryModeSet () const { return mSecondaryModeSet; }
 
 	Boolean HasAFixedEndPoint () const { return FixedLeft || FixedRight; }
 	Boolean HasFixedLeftEndPoint () const { return FixedLeft; }
@@ -130,6 +131,7 @@ protected:
 	double mValueLeftOfMax;
 	double mValueRightOfMax;
 	Boolean mOKtoTestForSpike;
+	bool mSecondaryModeSet;
 };
 
 

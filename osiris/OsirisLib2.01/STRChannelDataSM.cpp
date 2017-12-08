@@ -2875,6 +2875,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 	PreliminaryCurveList.Clear ();
 	CompleteCurveList.ClearAndDelete ();
 	double lineFit;
+	bool biasedFit;
 
 	mData->ResetCharacteristicsFromRight (trace, text, detectionRFU, print);
 
@@ -2915,9 +2916,10 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 		//}
 
 		TestFitCriteriaSM (nextSignal);
+		biasedFit =  mData->TestForBiasedFit (nextSignal, minRFU);
 
 		//if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum ()) {
-		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && mData->TestForBiasedFit (nextSignal, minRFU))) {
+		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && biasedFit)) {
 
 			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList, true);
 
@@ -3034,17 +3036,17 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 					shoulderCopy->SetShoulderSignal (true);
-					//shoulderSignals.Append (shoulderCopy);
+					shoulderSignals.Append (shoulderCopy);
 
 					// PreliminaryCurveList and CompleteCurveList should be identical at this time
 
-					--itt;
-					--it;
-					itt.InsertAfterCurrentItem (shoulderCopy);
-					it.InsertAfterCurrentItem (shoulderCopy);
+					//--itt;
+					//--it;
+					//itt.InsertAfterCurrentItem (shoulderCopy);
+					//it.InsertAfterCurrentItem (shoulderCopy);
 					cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
-					++itt;
-					++it;
+					//++itt;
+					//++it;
 				}
 
 				delete shoulderSignal;
@@ -3053,11 +3055,11 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 			previousSignal = nextSignal;
 		}
 
-		//while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-		//	PreliminaryCurveList.Insert (nextSignal);
-		//	CompleteCurveList.Insert (nextSignal);
-		//}
+			PreliminaryCurveList.Insert (nextSignal);
+			CompleteCurveList.Insert (nextSignal);
+		}
 	}
 
 	while (nextSignal = (DataSignal*) it ()) {
@@ -3419,6 +3421,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 	int rightEndPoint;
 	RaisedBaseLineData* rbld;
 	mRaisedBaseLines.clearAndDestroy ();
+	bool biasedFit;
 
 	while (nextSignal = mData->FindNextCharacteristicFromRight (*signature, fit, CompleteCurveList)) {
 
@@ -3444,9 +3447,10 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 		//}
 
 		TestFitCriteriaSM (nextSignal);
+		biasedFit =  mData->TestForBiasedFit (nextSignal, minRFU);
 
 		//if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || mData->HasAtLeastOneLocalMinimum ()) {
-		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && mData->TestForBiasedFit (nextSignal, minRFU))) {
+		if ((!nextSignal->IsUnimodal ()) || (fit < absoluteMinFit) || nextSignal->MayBeUnacceptable () || (TestForDualSignal && mData->HasAtLeastOneLocalMinimum ()) || (TestForDualSignal && biasedFit)) {
 
 			dualReturn = TestForDualPeakSM (minRFU, maxRFU, nextSignal, fit, CompleteCurveList, true);
 
@@ -3550,7 +3554,6 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 			}
 
 			nextSignal->SetChannel (mChannel);
-
 			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
 
 			if (shoulderSignal != NULL) {
@@ -3560,19 +3563,19 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 
 				lineFit = mData->InnerProductWithConstantFunction (left, right, constantHeight);
 
-				if (lineFit <= minFitForArtifactTest) {
+				if (lineFit <= minFitForArtifactTest)  {
 
 					shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 					shoulderCopy->SetShoulderSignal (true);
-				//	shoulderSignals.Append (shoulderCopy);
+					shoulderSignals.Append (shoulderCopy);
 
-					--itt;
-					--it;
-					itt.InsertAfterCurrentItem (shoulderCopy);
-					it.InsertAfterCurrentItem (shoulderCopy);
+					//--itt;
+					//--it;
+					//itt.InsertAfterCurrentItem (shoulderCopy);
+					//it.InsertAfterCurrentItem (shoulderCopy);
 					cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
-					++itt;
-					++it;
+					//++itt;
+					//++it;
 				}
 
 				delete shoulderSignal;
@@ -3581,11 +3584,11 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 			previousSignal = nextSignal;
 		}
 
-		//while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-		//	PreliminaryCurveList.Insert (nextSignal);
-		//	CompleteCurveList.Insert (nextSignal);
-		//}
+			PreliminaryCurveList.Insert (nextSignal);
+			CompleteCurveList.Insert (nextSignal);
+		}
 	}
 
 	it.Reset ();
@@ -3674,7 +3677,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 	}
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
-		
+
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
