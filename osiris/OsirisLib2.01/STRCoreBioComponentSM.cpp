@@ -3896,7 +3896,7 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 
 	cout << "Ready to look for ladder pullup..." << endl;
 
-	AnalyzeCrossChannelSM ();
+	//AnalyzeCrossChannelSM ();   // 12/10/2017 ***** this is a test
 
 	//
 	// Call function to flag all peaks outside lane standard and above user-specified error-reporting threshold

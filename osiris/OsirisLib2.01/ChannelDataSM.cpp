@@ -1366,7 +1366,6 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			}
 
 			nextSignal->SetChannel (mChannel);
-
 			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
 
 			if (shoulderSignal != NULL) {
@@ -1391,7 +1390,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 						//--it;
 						//itt.InsertAfterCurrentItem (shoulderCopy);
 						//it.InsertAfterCurrentItem (shoulderCopy);
-						cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
+						//cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
 						//++itt;
 						//++it;
 					}
@@ -2042,21 +2041,23 @@ int ChannelData :: TestForDualPeakSM (double minRFU, double maxRFU, DataSignal* 
 
 		if (IsControlChannel () && (leftSignal != NULL) && (rightSignal != NULL)) {
 
-			if (fabs (rightSignal->GetMean () - leftSignal->GetMean ()) < 0.4 * (leftSignal->GetWidth () + rightSignal->GetWidth ())) {  // 0.4 = 0.5 * 0.8, so this is 0.80 * average width between left and right
+			// 12/09/2017:  Add proximity test here, but base it on ILS-bp values from previously run mapping to be computed.  This mapping will
+			// consist of either 1 bp or 0.5 bp limits at each measurement, so it will be an array of size "number of samples".  Since ILS is computed
+			// before any other channel, we have to test first if the array exists.  If not, this is the ILS channel.  Otherwise, we could make a different
+			// version of this function for ILS and Ladder channels...
 
-				if (leftSignal->Peak () >= rightSignal->Peak ()) {
+			if (leftSignal->Peak () >= rightSignal->Peak ()) {
 
-					PreliminaryCurveList.RemoveReference (rightSignal);
-					CompleteCurveList.RemoveReference (rightSignal);
-					delete rightSignal;
-				}
+				PreliminaryCurveList.RemoveReference (rightSignal);
+				CompleteCurveList.RemoveReference (rightSignal);
+				delete rightSignal;
+			}
 
-				else {
+			else {
 
-					PreliminaryCurveList.RemoveReference (leftSignal);
-					CompleteCurveList.RemoveReference (leftSignal);
-					delete leftSignal;
-				}
+				PreliminaryCurveList.RemoveReference (leftSignal);
+				CompleteCurveList.RemoveReference (leftSignal);
+				delete leftSignal;
 			}
 		}
 	}

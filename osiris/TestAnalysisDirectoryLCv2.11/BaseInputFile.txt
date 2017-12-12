@@ -1,19 +1,18 @@
-InputDirectory = C:/Users/goorrob/ESI17WENIssue;
+InputDirectory = F:/Menageries/MenagerieForTestingShoulders/2.9 GF single base pair resolution samples and mixtures/4 person shoulder test2;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
-ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-OutputSubdirectory = 20170313_170006;
-MarkerSetName = PowerPlex ESI17;
-LaneStandardName = Promega-ILS-WEN-500;
+ReportDirectory = F:/Menageries/MenagerieForTestingShoulders/2.9 GF single base pair resolution samples and mixtures/4 person shoulder test2;
+MarkerSetName = GlobalFiler;
+LaneStandardName = ABI-LIZ-600-60-TO-460;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20170308-115506/V-20170308-115506_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20170308-115506/V-20170308-115506_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171201-163851/V-20171201-163851_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171201-163851/V-20171201-163851_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 250;
+MinSampleRFU = 40;
 MinLaneStandardRFU = 500;
 MinLadderRFU = 500;
-MinInterlocusRFU = 250;
+MinInterlocusRFU = 40;
 MinLadderInterlocusRFU = 500;
-SampleDetectionThreshold = 250;
+SampleDetectionThreshold = 40;
 RawDataString = R;
 ;
 

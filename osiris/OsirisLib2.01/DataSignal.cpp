@@ -3964,57 +3964,91 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 		}
 	}
 
-	double maxAtMode = maxFunctionValue;
-	bool noShoulder1 = (maxFunctionValue < analysisThreshold);
-	bool noShoulder2 = (totalMaxValue < analysisThreshold);
+	if ((bestSet == NULL) && !foundLocalMax)
+		return NULL;
 
-	if (noShoulder1 && noShoulder2) {
+	double maxAtMode;
 
-		while (!CDList.empty ()) {
+	if (foundLocalMax && (bestSet != NULL)) {
 
-			nextSet = CDList.front ();
-			CDList.pop_front ();
-			delete nextSet;
+		if ((mode >= bestSet->mStart) && (mode <= bestSet->mEnd))
+			maxAtMode = maxFunctionValue;
+
+		else if (maxFunctionValue < totalMaxValue) {
+
+			maxAtMode = totalMaxValue;
+			mode = bestSet->mPosition;
 		}
+
+		else
+			maxAtMode = maxFunctionValue;
+	}
+
+	else if (bestSet != NULL) {
+
+		maxAtMode = bestSet->mMaxValue;
+		mode = bestSet->mPosition;
+	}
+
+	else
+		maxAtMode = maxFunctionValue;
+
+	bool noShoulder1 = (maxAtMode < analysisThreshold);
+
+	while (!CDList.empty ()) {
+
+		nextSet = CDList.front ();
+		CDList.pop_front ();
+		delete nextSet;
+	}
+
+	if (noShoulder1) {
+
+		//while (!CDList.empty ()) {
+
+		//	nextSet = CDList.front ();
+		//	CDList.pop_front ();
+		//	delete nextSet;
+		//}
 
 		return NULL;
 	}
 
-	if (noShoulder1 || (mode <= startTime) || (mode >= endTime)) {
+	if ((mode <= startTime + 5) || (mode >= endTime - 5)) {
 
-		if (CDList.empty ())
+		//if (CDList.empty ())
+		//	return NULL;
+
+		////if (noShoulder2) {
+
+		//	while (!CDList.empty ()) {
+
+		//		nextSet = CDList.front ();
+		//		CDList.pop_front ();
+		//		delete nextSet;
+		//	}
+
 			return NULL;
+		//}
 
-		if (noShoulder2) {
+		//while (!CDList.empty ()) {
 
-			while (!CDList.empty ()) {
+		//	nextSet = CDList.front ();
+		//	CDList.pop_front ();
 
-				nextSet = CDList.front ();
-				CDList.pop_front ();
-				delete nextSet;
-			}
+		//	if (nextSet != bestSet)
+		//		delete nextSet;
+		//}
 
-			return NULL;
-		}
+		//if (bestSet == NULL)
+		//	return NULL;
 
-		while (!CDList.empty ()) {
+		//mode = bestSet->mPosition;
+		//maxAtMode = bestSet->mMaxValue + 0.000001;
+		//delete bestSet;
 
-			nextSet = CDList.front ();
-			CDList.pop_front ();
-
-			if (nextSet != bestSet)
-				delete nextSet;
-		}
-
-		if (bestSet == NULL)
-			return NULL;
-
-		mode = bestSet->mPosition;
-		maxAtMode = bestSet->mMaxValue + 0.000001;
-		delete bestSet;
-
-		if ((mode - startTime < 5) || (endTime - mode < 5))
-			return NULL;
+		//if ((mode - startTime < 5) || (endTime - mode < 5))
+		//	return NULL;
 	}
 
 	maxFunctionValue = prevSignal->Value ((double)mode);
@@ -4027,9 +4061,9 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 		return NULL;
 	
 	minValue = maxAtMode;
-	int minTime = startTime;
+	int minTime = mode;
 
-	for (i=startTime; i<=mode; i++) {
+	for (i=mode-1; i>=startTime; i--) {
 
 		temp = Value (i);
 
@@ -4038,13 +4072,27 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 			minValue = temp;
 			minTime = i;
 		}
+
+		else
+			break;
 	}
+
+	//for (i=startTime; i<=mode; i++) {
+
+	//	temp = Value (i);
+
+	//	if (temp < minValue) {
+
+	//		minValue = temp;
+	//		minTime = i;
+	//	}
+	//}
 
 	startTime = minTime;
 	minValue = maxAtMode;
 	minTime = mode;
 
-	for (i=mode; i<=endTime; i++) {
+	for (i=mode+1; i<=endTime; i++) {
 
 		temp = Value (i);
 
@@ -4053,6 +4101,9 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 			minValue = temp;
 			minTime = i;
 		}
+
+		else
+			break;
 	}
 
 	endTime = minTime;
@@ -4074,6 +4125,8 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 	shoulderInterval->SetMode (mode);
 	shoulderInterval->SetMaxAtMode (Value (mode));
 	shoulderInterval->AddSideValues (this);
+	shoulderInterval->SetFixedLeftTrue ();
+	shoulderInterval->SetFixedRightTrue ();
 
 	int unUsedWindowSize = 0;
 	RGDList unUsedList;
@@ -4091,14 +4144,15 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 
 	double sigma = newSignal->GetStandardDeviation ();
 	double height = newSignal->Peak ();
+	double width = newSignal->GetWidth ();
 
-	if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity())) {
+	if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || ISNAN (width) || (width == numeric_limits<double>::infinity())) {
 
 		delete newSignal;
 		return NULL;
 	}
 
-	if ((sigma > 2.0 * nextSignal->GetStandardDeviation ()) || (sigma > 2.0 * prevSignal->GetStandardDeviation ())) {
+	if ((width > 3.0 * nextSignal->GetWidth ()) && (sigma > 3.0 * prevSignal->GetWidth ())) {
 
 		delete newSignal;
 		return NULL;

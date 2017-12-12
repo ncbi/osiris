@@ -3044,7 +3044,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 					//--it;
 					//itt.InsertAfterCurrentItem (shoulderCopy);
 					//it.InsertAfterCurrentItem (shoulderCopy);
-					cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
+					//cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
 					//++itt;
 					//++it;
 				}
@@ -3573,7 +3573,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 					//--it;
 					//itt.InsertAfterCurrentItem (shoulderCopy);
 					//it.InsertAfterCurrentItem (shoulderCopy);
-					cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
+					//cout << "Inserted Shoulder in channel " << mChannel << " at time = " << shoulderCopy->GetMean () << "\n";
 					//++itt;
 					//++it;
 				}
