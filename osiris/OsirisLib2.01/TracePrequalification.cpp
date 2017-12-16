@@ -36,6 +36,8 @@
 #include "TracePrequalification.h"
 #include "rgfile.h"
 #include "rgvstream.h"
+#include "rgpscalar.h"
+#include "rgcommlist.h"
 #include "DataInterval.h"
 #include "DataSignal.h"
 #include "RGTextOutput.h"
@@ -329,6 +331,8 @@ DataInterval* STRTracePrequalification :: GetNextDataInterval (NoiseInterval*& C
 
 		if (absCurrentSlope > maxSlope)
 			maxSlope = absCurrentSlope;
+
+
 
 		//
 		// Now test for maximum at CurrentConvolution; if not perform another iteration; if
@@ -793,6 +797,9 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 	double secondaryMax;
 	double temp;
 	int currentSecondaryMode;
+	RGPDouble* scalarDouble = NULL;
+	CommDataElement<RGPDouble>* nextElement = NULL;
+	list<CommDataElement<RGPDouble>*> indexedSlopeList;
 //	int halfWindow = WindowWidth / 2;
 //	int localMinSamplesForRegression = TracePrequalification::GetMinSamplesForSlopeRegression ();
 
@@ -867,6 +874,7 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 	//
 
 	LocationOfLastMin = CurrentIndex;
+	RGPDouble* rgSlope;
 
 	while (CurrentIndex > 0) {
 
@@ -892,6 +900,10 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 
 		if (absCurrentSlope > maxSlope)
 			maxSlope = absCurrentSlope;
+
+		scalarDouble = new RGPDouble (absCurrentSlope);
+		nextElement = new CommDataElement<RGPDouble> (scalarDouble, (unsigned long) CurrentIndex);
+		indexedSlopeList.push_front (nextElement);
 
 		//
 		// Now test for maximum at CurrentConvolution; if not perform another iteration; if
@@ -1014,6 +1026,28 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 
 //				if ((currentSlope > 0.0) && (currentSlope > maxSlope))
 //					maxSlope = currentSlope;
+
+				maxSlope = 0.0;
+				int index;
+				double slope;
+
+				while (!indexedSlopeList.empty ()) {
+
+					nextElement = (CommDataElement<RGPDouble>*) indexedSlopeList.front ();
+					index = (int)nextElement->GetID ();
+					rgSlope = nextElement->GetData ();
+					slope = fabs (rgSlope->GetDouble ());
+
+					if ((index >= CurrentIndex) && (index <= PeakRight)) {
+
+						if (slope > maxSlope)
+							maxSlope = slope;
+					}
+
+					indexedSlopeList.pop_front ();
+					delete nextElement;
+					delete rgSlope;
+				}
 
 				if (!slopeExceededThresholdOnDescent) {
 
@@ -1273,6 +1307,15 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 
 					if (foundLocalMin) {
 
+						while (!indexedSlopeList.empty ()) {
+
+							nextElement = (CommDataElement<RGPDouble>*) indexedSlopeList.front ();
+							indexedSlopeList.pop_front ();
+							rgSlope = nextElement->GetData ();
+							delete nextElement;
+							delete rgSlope;
+						}
+
 						dataInterval->SetFixedLeftTrue ();
 						return dataInterval;
 					}
@@ -1280,6 +1323,15 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 					if ((slopeReversal) || (PeakLeft > CurrentIndex) || convolutionReversal) {
 
 						dataInterval->SetFixedLeftTrue ();
+
+						while (!indexedSlopeList.empty ()) {
+
+							nextElement = (CommDataElement<RGPDouble>*) indexedSlopeList.front ();
+							indexedSlopeList.pop_front ();
+							rgSlope = nextElement->GetData ();
+							delete nextElement;
+							delete rgSlope;
+						}
 						
 						/*lastIndex = CurrentIndex;
 
@@ -1342,10 +1394,28 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 					if (peakValueNegative)
 						CurrentIndex--;
 
+					while (!indexedSlopeList.empty ()) {
+
+						nextElement = (CommDataElement<RGPDouble>*) indexedSlopeList.front ();
+						indexedSlopeList.pop_front ();
+						rgSlope = nextElement->GetData ();
+						delete nextElement;
+						delete rgSlope;
+					}
+
 					return dataInterval;
 				}
 
 				if (convolutionReversal) {
+
+					while (!indexedSlopeList.empty ()) {
+
+						nextElement = (CommDataElement<RGPDouble>*) indexedSlopeList.front ();
+						indexedSlopeList.pop_front ();
+						rgSlope = nextElement->GetData ();
+						delete nextElement;
+						delete rgSlope;
+					}
 
 					CurrentIndex++;
 					return dataInterval;
@@ -1383,6 +1453,15 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 		dataInterval->SetLeftMinimum (peakValueLeft);
 		dataInterval->SetRightMinimum (Data->Value (PeakRight));
 
+		while (!indexedSlopeList.empty ()) {
+
+			nextElement = (CommDataElement<RGPDouble>*) indexedSlopeList.front ();
+			indexedSlopeList.pop_front ();
+			rgSlope = nextElement->GetData ();
+			delete nextElement;
+			delete rgSlope;
+		}
+
 		/*PreviousConvolution = CurrentConvolution;
 		CurrentConvolution = NewConvolution;*/
 
@@ -1402,6 +1481,15 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 		}
 
 		return dataInterval;
+	}
+
+	while (!indexedSlopeList.empty ()) {
+
+		nextElement = (CommDataElement<RGPDouble>*) indexedSlopeList.front ();
+		indexedSlopeList.pop_front ();
+		rgSlope = nextElement->GetData ();
+		delete nextElement;
+		delete rgSlope;
 	}
 
 	return NULL;
