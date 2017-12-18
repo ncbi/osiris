@@ -249,6 +249,41 @@ sub CopyWin
   }
 }
 
+sub SignAppMac()
+{
+  my $PATH=shift;
+  my $SIG=$ENV{SIGNATURE};
+  my $NOSIGN = "\nApplication will not be signed.";
+  if(! -d $PATH)
+  {
+    print STDERR "Application path, ${PATH}, is not a directory",$NOSIGN;
+    return undef;
+  }
+  if(!length($SIG))
+  {
+    print STDERR "Cannot find environment variable, SIGNATURE",$NOSIGN;
+    return undef;
+  }
+  my $XDISP=$ENV{DISPLAY};
+  if(!length($XDISP))
+  {
+    print STDERR "Cannot find environment variable, DISPLAY,\n",
+                 "and cannot determine if this is the mac console.",$NOSIGN;
+    return undef;
+  }
+  if($XDISP !~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/)
+  {
+    print STDERR "Environment variable, DISPLAY=${XDISP}\n",
+                 "and cannot determine if this is the mac console.",$NOSIGN;
+    return undef;
+  }
+  my $cmd = "codesign -f --deep -s \"${SIG}\" \"${PATH}\"";
+  print "\n\n\nSigning ${PATH}:\n${cmd}\n";
+  my $rtn = system($cmd);
+  my $s = $rtn ? " not" : "";
+  print "\nApplication was${s} signed\n\n\n";
+}
+
 sub CopyMac
 {
   $CP = "cp -p ";
@@ -293,6 +328,7 @@ sub CopyMac
   ### BEGIN make tar.gz
   if(1)
   {
+    &SignAppMac($APPDIR);
     my $zipDir = $ENV{OSIRISTGZ};
     if(!(-d $zipDir && -w $zipDir))
     {

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rapid="urn:CODISRapidImportFile-schema" xmlns:r="urn:CODISRapidImportFile-schema" targetNamespace="urn:CODISRapidImportFile-schema" elementFormDefault="qualified">
+  <element name="CODISRapidImportFile">
+    <complexType>
+      <sequence maxOccurs="1" id="SeqImportFile" minOccurs="1">
+        <element name="HEADER" type="rapid:MessageHeaderType" minOccurs="1" maxOccurs="1"/>
+        <element name="DEVICE" type="rapid:DeviceType" minOccurs="1" maxOccurs="1"/>
+        <element name="SPECIMEN" type="rapid:SpecimenType" minOccurs="1" maxOccurs="unbounded">
+          <unique name="UNIQUE_LOCI">
+            <selector xpath="r:LOCUS"/>
+            <field xpath="r:LOCUSNAME"/>
+          </unique>
+        </element>
+      </sequence>
+    </complexType>
+    <unique name="UNIQUE_SPEC">
+      <selector xpath="r:SPECIMEN"/>
+      <field xpath="r:SPECIMENID"/>
+    </unique>
+  </element>
+  <simpleType name="CODISMessageVersionType">
+    <restriction base="decimal">
+      <totalDigits value="3"/>
+      <fractionDigits value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="CODISMessageType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="1"/>
+      <enumeration value="Rapid Import"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="CODISMessageIDType">
+    <restriction base="integer">
+      <minInclusive value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="CODISDate">
+    <restriction base="dateTime">
+      <minInclusive value="1900-01-01T00:00:00"/>
+      <maxInclusive value="9999-12-31T00:00:00"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="CODISORIType">
+    <restriction base="string">
+      <maxLength value="10"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="InstrumentIDType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="ManufacturerType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="ModelType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="SoftwareVersionType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="CODISUserIDType">
+    <restriction base="string">
+      <maxLength value="20"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="SpecimenIDType">
+    <restriction base="string">
+      <maxLength value="24"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="SpecimenCategoryType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="1"/>
+      <enumeration value="Arrestee"/>
+      <enumeration value="Convicted Offender"/>
+      <enumeration value="Detainee"/>
+      <enumeration value="Juvenile"/>
+      <enumeration value="Legal"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="SpecimenCommentType">
+    <restriction base="string">
+      <maxLength value="512"/>
+      <minLength value="0"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="FBINumberUCNType">
+    <restriction base="string">
+      <maxLength value="9"/>
+      <minLength value="0"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="SIDType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="0"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="UniqueEventIDType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="0"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="CustomIDType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="0"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="OffenseCategoryType">
+    <restriction base="string">
+      <maxLength value="300"/>
+      <minLength value="0"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LocusNameType">
+    <restriction base="string">
+      <maxLength value="10"/>
+      <minLength value="1"/>
+      <enumeration value="Amelogenin"/>
+      <enumeration value="CSF1PO"/>
+      <enumeration value="D10S1248"/>
+      <enumeration value="D12S391"/>
+      <enumeration value="D13S317"/>
+      <enumeration value="D16S539"/>
+      <enumeration value="D18S51"/>
+      <enumeration value="D19S433"/>
+      <enumeration value="D1S1656"/>
+      <enumeration value="D21S11"/>
+      <enumeration value="D22S1045"/>
+      <enumeration value="D2S1338"/>
+      <enumeration value="D2S441"/>
+      <enumeration value="D3S1358"/>
+      <enumeration value="D5S818"/>
+      <enumeration value="D7S820"/>
+      <enumeration value="D8S1179"/>
+      <enumeration value="FGA"/>
+      <enumeration value="Penta D"/>
+      <enumeration value="Penta E"/>
+      <enumeration value="SE33"/>
+      <enumeration value="TH01"/>
+      <enumeration value="TPOX"/>
+      <enumeration value="vWA"/>
+      <enumeration value="DYS19"/>
+      <enumeration value="DYS385"/>
+      <enumeration value="DYS389 I"/>
+      <enumeration value="DYS389 II"/>
+      <enumeration value="DYS390"/>
+      <enumeration value="DYS391"/>
+      <enumeration value="DYS392"/>
+      <enumeration value="DYS393"/>
+      <enumeration value="DYS437"/>
+      <enumeration value="DYS438"/>
+      <enumeration value="DYS439"/>
+      <enumeration value="DYS448"/>
+      <enumeration value="DYS456"/>
+      <enumeration value="DYS458"/>
+      <enumeration value="DYS481"/>
+      <enumeration value="DYS533"/>
+      <enumeration value="DYS549"/>
+      <enumeration value="DYS570"/>
+      <enumeration value="DYS576"/>
+      <enumeration value="DYS635"/>
+      <enumeration value="DYS643"/>
+      <enumeration value="YGATAH4"/>
+      <enumeration value="Yindel"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="BatchIDType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="0"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="KitType">
+    <restriction base="string">
+      <maxLength value="32"/>
+      <minLength value="0"/>
+      <enumeration value="GlobalFiler"/>
+      <enumeration value="GlobalFiler Express"/>
+      <enumeration value="PowerPlex Fusion"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="AlleleValueType">
+    <restriction base="string">
+      <maxLength value="10"/>
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <complexType name="MessageHeaderType">
+    <sequence id="SeqMessageHeader" minOccurs="1" maxOccurs="1">
+      <element name="MESSAGEVERSION" type="rapid:CODISMessageVersionType" minOccurs="1" maxOccurs="1"/>
+      <element name="MESSAGETYPE" type="rapid:CODISMessageType" minOccurs="1" maxOccurs="1"/>
+      <element name="MESSAGEID" type="rapid:CODISMessageIDType" minOccurs="1" maxOccurs="1"/>
+      <element name="MESSAGEDATETIME" type="rapid:CODISDate" minOccurs="1" maxOccurs="1"/>
+      <element name="MSGCREATORUSERID" type="rapid:CODISUserIDType" minOccurs="1" maxOccurs="1"/>
+      <element name="DESTINATIONORI" type="rapid:CODISORIType" minOccurs="1" maxOccurs="1"/>
+      <element name="SOURCEORI" type="rapid:CODISORIType" minOccurs="1" maxOccurs="1"/>
+      <element name="ALTSOURCEORI" type="rapid:CODISORIType" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+  <complexType name="DeviceType">
+    <sequence id="SeqDevice" minOccurs="1" maxOccurs="1">
+      <element name="INSTRUMENTID" type="rapid:InstrumentIDType" minOccurs="1" maxOccurs="1"/>
+      <element name="MANUFACTURER" type="rapid:ManufacturerType" minOccurs="0" maxOccurs="1"/>
+      <element name="MODEL" type="rapid:ModelType" minOccurs="0" maxOccurs="1"/>
+      <element name="SOFTWAREVERSION" type="rapid:SoftwareVersionType" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+  <complexType name="SpecimenType">
+    <sequence id="SeqSpecimen" minOccurs="1">
+      <element name="SPECIMENID" type="rapid:SpecimenIDType" minOccurs="1" maxOccurs="1"/>
+      <element name="SPECIMENCATEGORY" type="rapid:SpecimenCategoryType" minOccurs="1" maxOccurs="1"/>
+      <element name="SID" type="rapid:SIDType" minOccurs="0" maxOccurs="1"/>
+      <element name="FBI_NUMBER_UCN" type="rapid:FBINumberUCNType" minOccurs="0" maxOccurs="1"/>
+      <element name="UNIQUEEVENTID" type="rapid:UniqueEventIDType" minOccurs="1" maxOccurs="1"/>
+      <element name="BOOKINGCUSTOMID" type="rapid:CustomIDType" minOccurs="0" maxOccurs="1"/>
+      <element name="ARRESTINGCUSTOMID" type="rapid:CustomIDType" minOccurs="0" maxOccurs="1"/>
+      <element name="ARRESTDATE" type="rapid:CODISDate" minOccurs="0" maxOccurs="1"/>
+      <element name="FINGERPRINTDATE" type="rapid:CODISDate" minOccurs="1" maxOccurs="1"/>
+      <element name="ARRESTOFFENSECATEGORY" type="rapid:OffenseCategoryType" minOccurs="1" maxOccurs="1"/>
+      <element name="SPECIMENCOMMENT" type="rapid:SpecimenCommentType" minOccurs="0" maxOccurs="1"/>
+      <element name="LOCUS" minOccurs="1" maxOccurs="64">
+        <complexType>
+          <sequence id="SeqLocus">
+            <element name="LOCUSNAME" type="rapid:LocusNameType" minOccurs="1" maxOccurs="1"/>
+            <element name="KIT" type="rapid:KitType" minOccurs="0" maxOccurs="1"/>
+            <element name="BATCHID" type="rapid:BatchIDType" minOccurs="0" maxOccurs="1"/>
+            <element name="ALLELE" type="rapid:AlleleType" minOccurs="1" maxOccurs="8"/>
+          </sequence>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="AlleleType">
+    <sequence id="SeqAllele" minOccurs="1" maxOccurs="1">
+      <element name="ALLELEVALUE" type="rapid:AlleleValueType" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+</schema>
