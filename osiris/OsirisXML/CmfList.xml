@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CmfList>
+  <KitType>
+    <Item>AmpFLSTR NGM</Item>
+    <Item>AmpFLSTR NGM SElect</Item>
+    <Item>AmpFlSTR Yfiler Plus</Item>
+    <Item>COfiler</Item>
+    <Item>GlobalFiler</Item>
+    <Item>GlobalFiler Express</Item>
+    <Item>Identifiler</Item>
+    <Item>Identifiler Direct</Item>
+    <Item>Identifiler Plus</Item>
+    <Item>Investigator 24plex GO! Kit</Item>
+    <Item>Investigator 24plex QS Kit</Item>
+    <Item>MiniFiler</Item>
+    <Item>Monoplex CSF1PO</Item>
+    <Item>Monoplex D13S317</Item>
+    <Item>Monoplex D16S539</Item>
+    <Item>Monoplex D5S818</Item>
+    <Item>Monoplex D7S820</Item>
+    <Item>Monoplex TH01</Item>
+    <Item>Monoplex TPOX</Item>
+    <Item>Monoplex vWA</Item>
+    <Item>PowerPlex 1.1</Item>
+    <Item>PowerPlex 1.2</Item>
+    <Item>PowerPlex 16</Item>
+    <Item>PowerPlex 16 HS</Item>
+    <Item>PowerPlex 2.1</Item>
+    <Item>PowerPlex ESI 16</Item>
+    <Item>PowerPlex ESI 17 Pro</Item>
+    <Item>PowerPlex ESX 16</Item>
+    <Item>PowerPlex ESX 17</Item>
+    <Item>PowerPlex Fusion</Item>
+    <Item>PowerPlex Fusion 6C</Item>
+    <Item>Powerplex Y</Item>
+    <Item>Powerplex Y23</Item>
+    <Item>Profiler Plus</Item>
+    <Item>SGM Plus</Item>
+    <Item>Y-PLEX 5</Item>
+    <Item>Y-PLEX 6</Item>
+    <Item>Yfiler</Item>
+  </KitType>
+  <SpecimenCategoryType>
+    <Item>Alleged Father</Item>
+    <Item>Alleged Mother</Item>
+    <Item>Arrestee</Item>
+    <Item>Biological Child</Item>
+    <Item>Biological Father</Item>
+    <Item>Biological Mother</Item>
+    <Item>Biological Sibling</Item>
+    <Item>CO Duplicate</Item>
+    <Item>Convicted Offender</Item>
+    <Item>Deceased</Item>
+    <Item>Deduced Missing Person</Item>
+    <Item>Deduced Suspect</Item>
+    <Item>Detainee</Item>
+    <Item>Elimination, Known</Item>
+    <Item>Forensic Mixture</Item>
+    <Item>Forensic Partial</Item>
+    <Item>Forensic Targeted</Item>
+    <Item>Forensic, Unknown</Item>
+    <Item>Juvenile</Item>
+    <Item>Legal</Item>
+    <Item>Maternal Relative</Item>
+    <Item>Missing Person</Item>
+    <Item>Multi-allelic Offender</Item>
+    <Item>Other</Item>
+    <Item>Paternal Relative</Item>
+    <Item>Population</Item>
+    <Item>Proficiency</Item>
+    <Item>Spouse</Item>
+    <Item>Staff</Item>
+    <Item>Suspect, Known</Item>
+    <Item>Unidentified Person</Item>
+    <Item>Unreviewed Offender</Item>
+    <Item>Victim, Known</Item>
+    <Item>Volunteer</Item>
+  </SpecimenCategoryType>
+  <LocusNameType>
+    <Item>AMEL</Item>
+    <Item>Amelogenin</Item>
+    <Item>CSF1PO</Item>
+    <Item>D10S1248</Item>
+    <Item>D12S391</Item>
+    <Item>D13S317</Item>
+    <Item>D16S539</Item>
+    <Item>D18S51</Item>
+    <Item>D19S433</Item>
+    <Item>D1S1656</Item>
+    <Item>D21S11</Item>
+    <Item>D22S1045</Item>
+    <Item>D2S1338</Item>
+    <Item>D2S441</Item>
+    <Item>D3S1358</Item>
+    <Item>D5S818</Item>
+    <Item>D7S820</Item>
+    <Item>D8S1179</Item>
+    <Item>FGA</Item>
+    <Item>Penta D</Item>
+    <Item>Penta E</Item>
+    <Item>SE33</Item>
+    <Item>TH01</Item>
+    <Item>THO1</Item>
+    <Item>TP0X</Item>
+    <Item>TPOX</Item>
+    <Item>vWA</Item>
+    <Item>DYF387S1</Item>
+    <Item>DYS19</Item>
+    <Item>DYS385</Item>
+    <Item>DYS389 I</Item>
+    <Item>DYS389 II</Item>
+    <Item>DYS390</Item>
+    <Item>DYS391</Item>
+    <Item>DYS392</Item>
+    <Item>DYS393</Item>
+    <Item>DYS437</Item>
+    <Item>DYS438</Item>
+    <Item>DYS439</Item>
+    <Item>DYS448</Item>
+    <Item>DYS449</Item>
+    <Item>DYS456</Item>
+    <Item>DYS458</Item>
+    <Item>DYS460</Item>
+    <Item>DYS481</Item>
+    <Item>DYS518</Item>
+    <Item>DYS533</Item>
+    <Item>DYS549</Item>
+    <Item>DYS570</Item>
+    <Item>DYS576</Item>
+    <Item>DYS627</Item>
+    <Item>DYS635</Item>
+    <Item>DYS643</Item>
+    <Item>YGATAH4</Item>
+    <Item>Yindel</Item>
+  </LocusNameType>
+</CmfList>

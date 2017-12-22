@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:CODISImportFile-schema" xmlns:r="urn:CODISImportFile-schema" elementFormDefault="qualified" targetNamespace="urn:CODISImportFile-schema">
+  <xsd:element name="CODISImportFile">
+    <xsd:complexType>
+      <xsd:sequence maxOccurs="1" id="SeqImportFile" minOccurs="1">
+        <xsd:element name="HEADERVERSION" type="CODISHeaderVersionType" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="MESSAGETYPE" type="CODISMessageType" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="DESTINATIONORI" type="CODISLabType" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="SOURCELAB" type="CODISLabType" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="SUBMITBYUSERID" type="CODISUserType" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="SUBMITDATETIME" type="CODISImportDate" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="BATCHID" type="BatchIDType" maxOccurs="1" minOccurs="0"/>
+        <xsd:element name="KIT" type="KitType" maxOccurs="1" minOccurs="0"/>
+        <xsd:element name="SPECIMEN" type="SpecimenType" minOccurs="1" maxOccurs="unbounded">
+          <xsd:unique name="UNIQUE_LOCI">
+            <xsd:selector xpath="r:LOCUS"/>
+            <xsd:field xpath="r:LOCUSNAME"/>
+          </xsd:unique>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+    <xsd:unique name="UNIQUE_SPEC">
+      <xsd:selector xpath="r:SPECIMEN"/>
+      <xsd:field xpath="r:SPECIMENID"/>
+    </xsd:unique>
+  </xsd:element>
+  <xsd:simpleType name="CODISHeaderVersionType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:totalDigits value="2"/>
+      <xsd:fractionDigits value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CODISMessageType">
+    <xsd:restriction base="xsd:string">
+      <xsd:length value="6"/>
+      <xsd:enumeration value="Import"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CODISLabType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CODISUserType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="20"/>
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CODISImportDate">
+    <xsd:restriction base="xsd:dateTime">
+      <xsd:minExclusive value="1900-01-01T00:00:00"/>
+      <xsd:maxExclusive value="2079-06-06T00:00:00"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="SpecimenIDType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="24"/>
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="SpecimenCategoryType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="32"/>
+      <xsd:minLength value="1"/>
+      <xsd:enumeration value="Alleged Father"/>
+      <xsd:enumeration value="Alleged Mother"/>
+      <xsd:enumeration value="Arrestee"/>
+      <xsd:enumeration value="Biological Child"/>
+      <xsd:enumeration value="Biological Father"/>
+      <xsd:enumeration value="Biological Mother"/>
+      <xsd:enumeration value="Biological Sibling"/>
+      <xsd:enumeration value="CO Duplicate"/>
+      <xsd:enumeration value="Convicted Offender"/>
+      <xsd:enumeration value="Deceased"/>
+      <xsd:enumeration value="Deduced Missing Person"/>
+      <xsd:enumeration value="Deduced Suspect"/>
+      <xsd:enumeration value="Detainee"/>
+      <xsd:enumeration value="Elimination, Known"/>
+      <xsd:enumeration value="Forensic Mixture"/>
+      <xsd:enumeration value="Forensic Partial"/>
+      <xsd:enumeration value="Forensic Targeted"/>
+      <xsd:enumeration value="Forensic, Unknown"/>
+      <xsd:enumeration value="Juvenile"/>
+      <xsd:enumeration value="Legal"/>
+      <xsd:enumeration value="Maternal Relative"/>
+      <xsd:enumeration value="Missing Person"/>
+      <xsd:enumeration value="Multi-allelic Offender"/>
+      <xsd:enumeration value="Other"/>
+      <xsd:enumeration value="Paternal Relative"/>
+      <xsd:enumeration value="Population"/>
+      <xsd:enumeration value="Proficiency"/>
+      <xsd:enumeration value="Spouse"/>
+      <xsd:enumeration value="Staff"/>
+      <xsd:enumeration value="Suspect, Known"/>
+      <xsd:enumeration value="Unidentified Person"/>
+      <xsd:enumeration value="Unreviewed Offender"/>
+      <xsd:enumeration value="Victim, Known"/>
+      <xsd:enumeration value="Volunteer"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="SpecimenCommentType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="255"/>
+      <xsd:minLength value="0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="SourceIDType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+      <xsd:minLength value="0"/>
+      <xsd:enumeration value="Yes"/>
+      <xsd:enumeration value="No"/>
+      <xsd:enumeration value="N/A"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CaseIDType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="32"/>
+      <xsd:minLength value="0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="LocusNameType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+      <xsd:minLength value="1"/>
+      <xsd:enumeration value="AMEL"/>
+      <xsd:enumeration value="Amelogenin"/>
+      <xsd:enumeration value="CSF1PO"/>
+      <xsd:enumeration value="D10S1248"/>
+      <xsd:enumeration value="D12S391"/>
+      <xsd:enumeration value="D13S317"/>
+      <xsd:enumeration value="D16S539"/>
+      <xsd:enumeration value="D18S51"/>
+      <xsd:enumeration value="D19S433"/>
+      <xsd:enumeration value="D1S1656"/>
+      <xsd:enumeration value="D21S11"/>
+      <xsd:enumeration value="D22S1045"/>
+      <xsd:enumeration value="D2S1338"/>
+      <xsd:enumeration value="D2S441"/>
+      <xsd:enumeration value="D3S1358"/>
+      <xsd:enumeration value="D5S818"/>
+      <xsd:enumeration value="D7S820"/>
+      <xsd:enumeration value="D8S1179"/>
+      <xsd:enumeration value="FGA"/>
+      <xsd:enumeration value="Penta D"/>
+      <xsd:enumeration value="Penta E"/>
+      <xsd:enumeration value="SE33"/>
+      <xsd:enumeration value="TH01"/>
+      <xsd:enumeration value="THO1"/>
+      <xsd:enumeration value="TP0X"/>
+      <xsd:enumeration value="TPOX"/>
+      <xsd:enumeration value="vWA"/>
+      <xsd:enumeration value="DYF387S1"/>
+      <xsd:enumeration value="DYS19"/>
+      <xsd:enumeration value="DYS385"/>
+      <xsd:enumeration value="DYS389 I"/>
+      <xsd:enumeration value="DYS389 II"/>
+      <xsd:enumeration value="DYS390"/>
+      <xsd:enumeration value="DYS391"/>
+      <xsd:enumeration value="DYS392"/>
+      <xsd:enumeration value="DYS393"/>
+      <xsd:enumeration value="DYS437"/>
+      <xsd:enumeration value="DYS438"/>
+      <xsd:enumeration value="DYS439"/>
+      <xsd:enumeration value="DYS448"/>
+      <xsd:enumeration value="DYS449"/>
+      <xsd:enumeration value="DYS456"/>
+      <xsd:enumeration value="DYS458"/>
+      <xsd:enumeration value="DYS460"/>
+      <xsd:enumeration value="DYS481"/>
+      <xsd:enumeration value="DYS518"/>
+      <xsd:enumeration value="DYS533"/>
+      <xsd:enumeration value="DYS549"/>
+      <xsd:enumeration value="DYS570"/>
+      <xsd:enumeration value="DYS576"/>
+      <xsd:enumeration value="DYS627"/>
+      <xsd:enumeration value="DYS635"/>
+      <xsd:enumeration value="DYS643"/>
+      <xsd:enumeration value="YGATAH4"/>
+      <xsd:enumeration value="Yindel"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="BatchIDType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="32"/>
+      <xsd:minLength value="0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="KitType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="32"/>
+      <xsd:minLength value="0"/>
+      <xsd:enumeration value="AmpFLSTR NGM"/>
+      <xsd:enumeration value="AmpFLSTR NGM SElect"/>
+      <xsd:enumeration value="AmpFlSTR Yfiler Plus"/>
+      <xsd:enumeration value="COfiler"/>
+      <xsd:enumeration value="GlobalFiler"/>
+      <xsd:enumeration value="GlobalFiler Express"/>
+      <xsd:enumeration value="Identifiler"/>
+      <xsd:enumeration value="Identifiler Direct"/>
+      <xsd:enumeration value="Identifiler Plus"/>
+      <xsd:enumeration value="Investigator 24plex GO! Kit"/>
+      <xsd:enumeration value="Investigator 24plex QS Kit"/>
+      <xsd:enumeration value="MiniFiler"/>
+      <xsd:enumeration value="Monoplex CSF1PO"/>
+      <xsd:enumeration value="Monoplex D13S317"/>
+      <xsd:enumeration value="Monoplex D16S539"/>
+      <xsd:enumeration value="Monoplex D5S818"/>
+      <xsd:enumeration value="Monoplex D7S820"/>
+      <xsd:enumeration value="Monoplex TH01"/>
+      <xsd:enumeration value="Monoplex TPOX"/>
+      <xsd:enumeration value="Monoplex vWA"/>
+      <xsd:enumeration value="PowerPlex 1.1"/>
+      <xsd:enumeration value="PowerPlex 1.2"/>
+      <xsd:enumeration value="PowerPlex 16"/>
+      <xsd:enumeration value="PowerPlex 16 HS"/>
+      <xsd:enumeration value="PowerPlex 2.1"/>
+      <xsd:enumeration value="PowerPlex ESI 16"/>
+      <xsd:enumeration value="PowerPlex ESI 17 Pro"/>
+      <xsd:enumeration value="PowerPlex ESX 16"/>
+      <xsd:enumeration value="PowerPlex ESX 17"/>
+      <xsd:enumeration value="PowerPlex Fusion"/>
+      <xsd:enumeration value="PowerPlex Fusion 6C"/>
+      <xsd:enumeration value="Powerplex Y"/>
+      <xsd:enumeration value="Powerplex Y23"/>
+      <xsd:enumeration value="Profiler Plus"/>
+      <xsd:enumeration value="SGM Plus"/>
+      <xsd:enumeration value="Y-PLEX 5"/>
+      <xsd:enumeration value="Y-PLEX 6"/>
+      <xsd:enumeration value="Yfiler"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="AlleleValueType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="SpecimenType">
+    <xsd:sequence id="SeqSpecimen" minOccurs="1">
+      <xsd:element name="SPECIMENID" type="SpecimenIDType" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="SPECIMENCATEGORY" type="SpecimenCategoryType" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="SPECIMENCOMMENT" type="SpecimenCommentType" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="LOCUS" minOccurs="1" maxOccurs="64">
+        <xsd:complexType>
+          <xsd:sequence id="SeqLocus" minOccurs="1" maxOccurs="1">
+            <xsd:element name="LOCUSNAME" type="LocusNameType" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="READINGBY" type="CODISUserType" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="READINGDATETIME" type="CODISImportDate" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="ALLELE" type="AlleleType" minOccurs="1" maxOccurs="8"/>
+          </xsd:sequence>
+          <xsd:attribute name="BATCHID" type="BatchIDType"/>
+          <xsd:attribute name="KIT" type="KitType"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="SOURCEID" type="SourceIDType"/>
+    <xsd:attribute name="CASEID" type="CaseIDType"/>
+    <xsd:attribute name="PARTIAL" type="xsd:boolean"/>
+  </xsd:complexType>
+  <xsd:complexType name="AlleleType">
+    <xsd:sequence id="SeqAllele" minOccurs="1" maxOccurs="1">
+      <xsd:element name="ALLELEVALUE" type="AlleleValueType" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="ALLELEREQUIRED" type="xsd:boolean" default="false"/>
+  </xsd:complexType>
+</xsd:schema>
