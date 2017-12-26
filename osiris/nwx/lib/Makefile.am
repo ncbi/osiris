@@ -27,6 +27,7 @@ libnwx_a_SOURCES = \
 ../nwxTextCtrl.cpp \
 ../nwxTreebook.cpp \
 ../nwxXmlCMF.cpp \
+../nwxXmlCmfList.cpp \
 ../nwxXmlMRU.cpp \
 ../nwxXmlPersist.cpp  \
 ../nwxXmlWindowSizes.cpp

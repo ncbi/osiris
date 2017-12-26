@@ -133,4 +133,10 @@
     <Item>YGATAH4</Item>
     <Item>Yindel</Item>
   </LocusNameType>
+  <LocusAlias>
+    <Item>
+      <Name>DYS385 a/b</Name>
+      <Value>DYS385</Value>
+    </Item>
+  </LocusAlias>
 </CmfList>

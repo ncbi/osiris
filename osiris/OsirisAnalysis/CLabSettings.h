@@ -867,10 +867,10 @@ public:
   virtual bool Skip(void *p);
 
   static const char *LongestType();
+  static const char *GetType(size_t ndx);
   static void AppendTypeArray(wxArrayString *pas, bool bClear = false);
   static size_t TypeCount();
   static bool IndexInRange(size_t ndx);
-  static const char * const TYPES[];
 protected:
   virtual void RegisterAll(bool = false)
   {
@@ -881,7 +881,8 @@ private:
   wxString m_sCategoryName;
   vector<wxString> m_vsSynonym;
   nwxXmlIOPersistVectorWxString m_ioSynonym;
-  static const char *LONGEST_TYPE;
+  static const vector<wxString> &GetSpecimenCategories();
+  static wxString g_sLONGEST_TYPE;
 };
 
 class CLabSpecimenLess
@@ -924,7 +925,7 @@ public:
     if(CLabSpecimenCategory::IndexInRange(ndx))
     {
       SetSynonyms(
-        CLabSpecimenCategory::TYPES[ndx],
+        CLabSpecimenCategory::GetType(ndx),
         sList);
     }
   }
@@ -934,7 +935,7 @@ public:
     if(CLabSpecimenCategory::IndexInRange(ndx))
     {
       SetSynonyms(
-        CLabSpecimenCategory::TYPES[ndx],
+        CLabSpecimenCategory::GetType(ndx),
         vsList);
     }
   }
@@ -961,7 +962,7 @@ public:
   }
   const vector<wxString> *GetSynonyms(size_t ndx)
   {
-    return GetSynonyms(CLabSpecimenCategory::TYPES[ndx]);
+    return GetSynonyms(CLabSpecimenCategory::GetType(ndx));
   }
   CLabSetSpecimenCategory &operator = (const CLabSetSpecimenCategory &x);
   wxString GetCategory(const wxString &sSample) const;

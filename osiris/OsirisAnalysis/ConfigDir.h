@@ -138,6 +138,12 @@ public:
     }
     return sRtn;
   }
+  wxString GetCMFListFileName() const
+  {
+    wxString sRtn = GetExeConfigPath();
+    sRtn.Append(wxS("CmfList.xml"));
+    return sRtn;
+  }
   wxString GetArtifactLabelsUserFileName() const
   {
     wxString sRtn;

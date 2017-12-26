@@ -37,6 +37,7 @@
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxString.h"
 #include "nwx/vectorSort.h"
+#include "nwx/nwxXmlCmfList.h"
 
 const wxString CLabSynonym::g_SYNONYM("Synonym");
 
@@ -70,40 +71,9 @@ const char * const CLabNameStrings::TYPE_POS_CONTROL("Positive Control");
 const char * const CLabNameStrings::TYPE_NEG_CONTROL("Negative Control");
 const char * const CLabNameStrings::TYPE_POSSIBLE_MIXTURE("Possible mixture");
 const char * const CLabNameStrings::TYPE_SINGLE_SOURCE("Single source");
-const char * CLabSpecimenCategory::LONGEST_TYPE(NULL);
 
-const char * const CLabSpecimenCategory::TYPES[] =
-{
-  "Alleged Father",
-  "Alleged Mother",
-  "Arrestee",
-  "Biological Child",
-  "Biological Father",
-  "Biological Mother",
-  "Biological Sibling",
-  "CO Duplicate",
-  "Convicted Offender",
-  "Deceased",
-  "Deduced Suspect",
-  "Deduced Victim Known",
-  "Elimination, Known",
-  "Forensic Mixture",
-  "Forensic, Unknown",
-  "Juvenile",
-  "Legal",
-  "Maternal Relative",
-  "Missing Person",
-  __OTHER__,
-  "Paternal Relative",
-  "Population",
-  "Proficiency",
-  "Spouse",
-  "Staff",
-  "Suspect, Known",
-  "Unidentified Person",
-  "Victim, Known",
-  "Volunteer"
-};
+wxString CLabSpecimenCategory::g_sLONGEST_TYPE;
+
 
 CLabSettingsInfo::~CLabSettingsInfo() {}
 
@@ -606,47 +576,67 @@ bool CLabSpecimenCategory::Skip(void *pObj)
 
 void CLabSpecimenCategory::AppendTypeArray(wxArrayString *pas, bool bClear)
 {
-  wxString s;
-  size_t n = TypeCount();
-  size_t i;
+  const std::vector<wxString> &aSpecimen = GetSpecimenCategories();
+  std::vector<wxString>::const_iterator itr;
+  size_t n = aSpecimen.size();
   if(bClear)
   {
     pas->Empty();
   }
   pas->Alloc(pas->GetCount() + n);
-  for(i = 0; i < n; i++)
+  for (itr = aSpecimen.begin();
+    itr != aSpecimen.end();
+    ++itr)
   {
-    s = TYPES[i];
-    pas->Add(s);
+    pas->Add(*itr);
   }
 }
 
 size_t CLabSpecimenCategory::TypeCount()
 {
-  return sizeof(TYPES) / sizeof(TYPES[0]);
+  const std::vector<wxString> &aSpecimen = GetSpecimenCategories();
+  std::vector<wxString>::const_iterator itr;
+  size_t n = aSpecimen.size();
+  return n;
 }
 
 const char *CLabSpecimenCategory::LongestType()
 {
-  if(LONGEST_TYPE == NULL)
+  if(g_sLONGEST_TYPE.IsEmpty())
   {
-    size_t n = TypeCount();
-    size_t i;
+    const std::vector<wxString> &aSpecimen = GetSpecimenCategories();
+    std::vector<wxString>::const_iterator itr;
+    std::vector<wxString>::const_iterator itrMax;
     size_t nLen;
     size_t nLenMax = 0;
-    const char *ps;
-    for(i = 0; i < n; i++)
+    for (itr = aSpecimen.begin();
+      itr != aSpecimen.end();
+      ++itr)
     {
-      ps = TYPES[i];
-      nLen = strlen(ps);
+      nLen = (*itr).Length();
       if(nLen > nLenMax)
       {
         nLenMax = nLen;
-        LONGEST_TYPE = ps;
+        itrMax = itr;
       }
     }
+    g_sLONGEST_TYPE = *itrMax;
   }
-  return LONGEST_TYPE;
+  return g_sLONGEST_TYPE.c_str();
+}
+const std::vector<wxString> &CLabSpecimenCategory::GetSpecimenCategories()
+{
+  return mainApp::GetCMFlist()->GetSpecimenCategories();
+}
+const char *CLabSpecimenCategory::GetType(size_t ndx)
+{
+  const std::vector<wxString> &aSpecimen = GetSpecimenCategories();
+  const char *psRtn = NULL;
+  if(ndx < aSpecimen.size())
+  {
+    psRtn = aSpecimen.at(ndx).c_str();
+  }
+  return psRtn;
 }
 
 
@@ -668,11 +658,10 @@ bool CLabSpecimenCategory::IndexInRange(size_t ndx)
 }
 void CLabSpecimenCategory::SetName(size_t ndx)
 {
-  // set name from index in TYPES array
-  bool bInRange = IndexInRange(ndx);
-  if(bInRange)
+  const std::vector<wxString> &aSpecimen = GetSpecimenCategories();
+  if(ndx < aSpecimen.size())
   {
-    m_sCategoryName = TYPES[ndx];
+    m_sCategoryName = aSpecimen.at(ndx);
   }
 }
 

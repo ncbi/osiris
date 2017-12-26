@@ -33,6 +33,8 @@
 
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
+class nwxXmlCmfList;
+class nwxNameValuePair;
 
 //*********************************************** nwxXmlCMFAllele
 
@@ -440,6 +442,14 @@ public:
 
   static bool SetupKitName(wxString *ps);
   static bool SetupLocusName(wxString *ps);
+  static void SetCmfList(nwxXmlCmfList *p)
+  {
+    g_pCMFlist = p;
+  }
+  static nwxXmlCmfList *GetCmfList()
+  {
+    return g_pCMFlist;
+  }
 protected:
   static const wxString g_sCODISImportFile;
   static const wxString g_sSchemaLocationValue;
@@ -480,8 +490,10 @@ private:
   //  have the expected upper/lower case letters
   static map<wxString,wxString> g_mapKit;
   static map<wxString,wxString> g_mapLocus;
+  static nwxXmlCmfList *g_pCMFlist;
   static void _SetupMaps();
-  static void _SetupMap(const char **list, size_t SIZE, map<wxString,wxString> *pmss);
+  static void _SetupMap(const std::vector<wxString> &asList, map<wxString,wxString> *pmss);
+  static void _AddToMap(const std::vector<nwxNameValuePair *> &apList, std::map<wxString,wxString> *pmss);
   static void _SetupSearch(wxString *ps);
   static bool _Find(wxString *ps,const map<wxString,wxString> &mapss);
 };

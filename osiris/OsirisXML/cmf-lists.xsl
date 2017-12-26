@@ -54,6 +54,17 @@
       </xsl:for-each>
     </xsl:element>
   </xsl:template>
+  
+  <xsl:template name="locus-alias">
+    <!-- add name/value pairs where the locus in the kit 
+         does not match the name in the CMF list -->
+    <LocusAlias>
+      <Item>
+        <Name>DYS385 a/b</Name>
+        <Value>DYS385</Value>
+      </Item>
+    </LocusAlias>
+  </xsl:template>
     
   <xsl:template match="/">
     <CmfList>
@@ -66,6 +77,7 @@
       <xsl:call-template name="write-list">
         <xsl:with-param name="type" select="'LocusNameType'"/>
       </xsl:call-template>
+      <xsl:call-template name="locus-alias"/>
     </CmfList>
   </xsl:template>
 

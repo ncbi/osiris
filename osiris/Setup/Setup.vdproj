@@ -1953,6 +1953,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DF08913F4BB64044BF386CB311B5DA09"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E06A136680B844BAB83B25B739EB71B4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -8740,6 +8746,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF08913F4BB64044BF386CB311B5DA09"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\CmfList.xml"
+            "TargetName" = "8:CmfList.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_CABCA89BC3984DC1A0B6894645D5BB7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E06A136680B844BAB83B25B739EB71B4"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPFusion6C\\PPFusion6C_access.txt"
@@ -10566,7 +10592,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
         "ProductCode" = "8:{5E2EFC70-F84A-4E5E-BE9C-5FD5C0954F3C}"
-        "PackageCode" = "8:{A42AC072-6B56-48B9-9DEA-0D05E4B69BC7}"
+        "PackageCode" = "8:{AA710308-6016-4AF7-ADA1-F78344C548A4}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

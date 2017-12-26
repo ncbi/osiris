@@ -134,7 +134,7 @@ CPanelLabNameStrings::CPanelLabNameStrings(
   m_pvTextSpecimenTypes.reserve(nTYPES);
   for(i = 0; i < nTYPES; ++i)
   {
-    sType = CLabSpecimenCategory::TYPES[i];
+    sType = CLabSpecimenCategory::GetType(i);
     pPanel = new nwxTextPanel(m_pChoiceBook, wxID_ANY);
     m_pvTextSpecimenTypes.push_back(pPanel->GetTextCtrl());
     m_pChoiceBook->AddPage(pPanel,sType);

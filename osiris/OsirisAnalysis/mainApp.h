@@ -44,6 +44,7 @@ class CKitColors;
 class CArtifactLabels;
 class nwxXmlMRU;
 class nwxXmlWindowSizes;
+class nwxXmlCmfList;
 class CParmOsiris;
 class wxFile;
 class wxDateTime;
@@ -136,11 +137,13 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static bool ConfirmModificationsLost(wxWindow *parent);
   static ConfigDir *GetConfig();
   static nwxXmlMRU *GetMRU();
+  static nwxXmlCmfList *GetCMFlist();
   static nwxXmlWindowSizes *GetWindowSizes();
   static CKitColors *GetKitColors();
   static CArtifactLabels *GetArtifactLabels();
   static CPersistKitList *GetKitList();
   static CILSLadderInfo *GetILSLadderInfo();
+  static void SetupCMFlist();
   static const wxString FormatWindowTitle(
     const wxChar *psType,
     const wxString &fileName,
@@ -171,6 +174,7 @@ private:
   static void _OpenMessageStream();
   static ConfigDir *m_pConfig;
   static nwxXmlMRU *m_pMRU;
+  static nwxXmlCmfList *m_pCMFlist;
   static nwxXmlWindowSizes *m_pWindowSize;
   static CPersistKitList *m_pKitList;
   static CKitColors *m_pKitColors;

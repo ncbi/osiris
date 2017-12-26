@@ -45,8 +45,10 @@
 #include "nwx/nwxLog.h"
 #include "nwx/nwxXmlMRU.h"
 #include "nwx/nwxXmlWindowSizes.h"
+#include "nwx/nwxXmlCmfList.h"
 #include "nwx/nwxString.h"
 #include "nwx/nwxFileUtil.h"
+#include "nwx/nwxXmlCMF.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
@@ -70,6 +72,7 @@ int mainApp::g_nMaxLogLevel = 1000;
 bool mainApp::g_bSuppressMessages = false;
 ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
+nwxXmlCmfList *mainApp::m_pCMFlist = NULL;
 nwxXmlWindowSizes *mainApp::m_pWindowSize = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
 CKitColors *mainApp::m_pKitColors = NULL;
@@ -91,6 +94,11 @@ void mainApp::_Cleanup()
     {
       delete m_pMRU;
       m_pMRU = NULL;
+    }
+    if(m_pCMFlist != NULL)
+    {
+      delete m_pCMFlist;
+      m_pCMFlist = NULL;
     }
     if(m_pWindowSize != NULL)
     {
@@ -140,6 +148,15 @@ nwxXmlMRU *mainApp::GetMRU()
   }
   return m_pMRU;
 }
+nwxXmlCmfList *mainApp::GetCMFlist()
+{
+  if(g_count && (m_pCMFlist == NULL))
+  {
+    wxString sPath = m_pConfig->GetCMFListFileName();
+    m_pCMFlist = new nwxXmlCmfList(sPath);
+  }
+  return m_pCMFlist;
+}
 nwxXmlWindowSizes *mainApp::GetWindowSizes()
 {
   if(g_count && (m_pWindowSize == NULL))
@@ -179,6 +196,11 @@ CPersistKitList *mainApp::GetKitList()
 CILSLadderInfo *mainApp::GetILSLadderInfo()
 {
   return GetKitList()->GetILSLadderInfo();
+}
+
+void mainApp::SetupCMFlist()
+{
+  nwxXmlCMF::SetCmfList(mainApp::GetCMFlist());
 }
 
 bool mainApp::OnInit()

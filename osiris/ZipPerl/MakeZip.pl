@@ -178,6 +178,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");
+  &SYSTEM("${CP} ${src}/OsirisXML/CmfList.xml ${dest}/Config");
   &SYSTEM("${CP} ${src}/OsirisXML/ArtifactLabels.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/SiteSettings.xml ${dest}/Config");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/StandardPositiveControls.xml ${dest}/Config/LadderSpecifications");

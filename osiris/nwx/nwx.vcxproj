@@ -173,6 +173,7 @@
     <ClCompile Include="nwxTimerReceiver.cpp" />
     <ClCompile Include="nwxTreebook.cpp" />
     <ClCompile Include="nwxXmlCMF.cpp" />
+    <ClCompile Include="nwxXmlCmfList.cpp" />
     <ClCompile Include="nwxXmlCMFtest.cpp" />
     <ClCompile Include="nwxXmlMRU.cpp" />
     <ClCompile Include="nwxXmlPersist.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="nwxLockFile.h" />
     <ClInclude Include="nwxLog.h" />
     <ClInclude Include="nwxMenuItem.h" />
+    <ClInclude Include="nwxNameValuePair.h" />
     <ClInclude Include="nwxNumberValidator.h" />
     <ClInclude Include="nwxPlotCtrl.h" />
     <ClInclude Include="nwxPlotDrawerLabel.h" />
@@ -232,6 +234,8 @@
     <ClInclude Include="nwxTreebook.h" />
     <ClInclude Include="nwxTypeValidator.h" />
     <ClInclude Include="nwxXmlCMF.h" />
+    <ClInclude Include="nwxXmlCmfList.h" />
+    <ClInclude Include="nwxXmlCmfListStatic.h" />
     <ClInclude Include="nwxXmlMRU.h" />
     <ClInclude Include="nwxXmlPersist.h" />
     <ClInclude Include="nwxXmlPersistCollections.h" />

@@ -30,6 +30,8 @@
 */
 
 #include "nwxXmlCMF.h"
+#include "nwxXmlCmfList.h"
+#include "nwxNameValuePair.h"
 
 #define CP(elem) elem = x.elem
 #define CPV(Type,elem) vectorptr<Type>::copy(&elem,x.elem)
@@ -48,6 +50,7 @@ const size_t nwxXmlCMF::LEN_DEST_LAB(10);
 const size_t nwxXmlCMF::LEN_SOURCE_LAB(10);
 const size_t nwxXmlCMF::LEN_SUBMIT_BY(20);
 const size_t nwxXmlCMF::LEN_BATCH_ID(32);
+nwxXmlCmfList *nwxXmlCMF::g_pCMFlist(NULL);
 
 
 //***********************************************  nwxXmlCMFAllele
@@ -389,6 +392,8 @@ void nwxXmlCMF::_SetupSearch(wxString *ps)
   ps->Replace(wxS("\t"),wxS(""),true);
   ps->Replace(wxS("\r"),wxS(""),true);
   ps->Replace(wxS("\n"),wxS(""),true);
+  ps->Replace(wxS("-"),wxS(""),true);
+  ps->Replace(wxS("/"),wxS(""),true);
   ps->MakeLower();
 }
 
@@ -409,64 +414,51 @@ bool nwxXmlCMF::_Find(wxString *ps, const map<wxString,wxString> &mapss)
   return bRtn;
 }
 
-void nwxXmlCMF::_SetupMap(const char **list, size_t SIZE, map<wxString,wxString> *pmss)
+void nwxXmlCMF::_SetupMap(const std::vector<wxString> &asList, map<wxString,wxString> *pmss)
 {
-  size_t i;
+  std::vector<wxString>::const_iterator itr;
   wxString sName;
   wxString sValue;
   pmss->clear();
-  for(i = 0; i < SIZE; ++i)
+  for(itr = asList.begin(); itr != asList.end(); ++itr)
   {
-    sName = list[i];
+    sName = *itr;
     sValue = sName;
     _SetupSearch(&sName);
     pmss->insert(map<wxString,wxString>::value_type(sName,sValue));
   }
 }
 
+void nwxXmlCMF::_AddToMap(const std::vector<nwxNameValuePair *> &asList, std::map<wxString,wxString> *pmss)
+{
+  std::vector<nwxNameValuePair *>::const_iterator itr;
+  nwxNameValuePair *pp;
+  wxString sName;
+  for(itr = asList.begin(); itr != asList.end(); ++itr)
+  {
+    pp = *itr;
+    sName = pp->GetName();
+    const wxString &sValue = pp->GetValue();
+    _SetupSearch(&sName);
+    pmss->insert(map<wxString,wxString>::value_type(sName,sValue));
+  }
+}
+
+
 void nwxXmlCMF::_SetupMaps()
 {
   if(!g_mapKit.size())
   {
-    wxString sValue;
-    wxString sName;
-
-    static const char *listKits[] = 
+    nwxXmlCmfList *pList = g_pCMFlist;
+    std::auto_ptr<nwxXmlCmfList> apl(NULL);
+    if(pList == NULL)
     {
-      "COfiler",
-      "Profiler Plus",
-      "Identifiler",
-      "PowerPlex 16"
-    };
-    static const char *listLocus[] = 
-    {
-      "AMEL",
-      "Amelogenin",
-      "CSF1PO",
-      "D13S317",
-      "D16S539",
-      "D18S51",
-      "D19S433",
-      "D21S11",
-      "D2S1338",
-      "D3S1358",
-      "D5S818",
-      "D7S820",
-      "D8S1179",
-      "FGA",
-      "Penta D",
-      "Penta E",
-      "TH01",
-      "THO1",
-      "TP0X",
-      "TPOX",
-      "vWA"
-    };
-
-    size_t SZkit = sizeof(listKits) / sizeof(listKits[0]);
-    size_t SZlocus = sizeof(listLocus) / sizeof(listLocus[0]);
-    _SetupMap(listKits,SZkit,&g_mapKit);
-    _SetupMap(listLocus,SZlocus,&g_mapLocus);
+      apl = std::auto_ptr<nwxXmlCmfList>(new nwxXmlCmfList);
+      pList = apl.get();
+    }
+    _SetupMap(pList->GetKits(),&g_mapKit);
+    _SetupMap(pList->GetLoci(),&g_mapLocus);
+    _AddToMap(pList->GetLocusAlias(), &g_mapLocus);
   }
 }
 bool nwxXmlCMF::SetupKitName(wxString *ps)

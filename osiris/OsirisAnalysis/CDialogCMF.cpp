@@ -74,6 +74,7 @@ CDialogCMF::CDialogCMF(
     m_bIncomplete(false),
     m_bTransferred(false)
 {
+  mainApp::SetupCMFlist();
   wxSize szText(200,-1);
   wxStaticText *pLabelSourceLab = 
     new wxStaticText(this,wxID_ANY,"Source Lab: ");
