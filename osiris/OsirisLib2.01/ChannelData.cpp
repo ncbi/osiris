@@ -1136,7 +1136,7 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 	double nextWidth;
 	double prevWidth;
 	bool tooNarrow;
-	bool tooCloseByWidths;
+	//bool tooCloseByWidths;
 
 	prevSignal = NULL;
 	RGDList tempSignals;
@@ -1162,9 +1162,9 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 			else if (nextBP - prevBP < 0.8) {
 
 				tooNarrow = (prevWidth < 0.5 * nextWidth);
-				tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.35 * (prevWidth + nextWidth));
+		//		tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.35 * (prevWidth + nextWidth));
 
-				if (tooNarrow || tooCloseByWidths)
+				if (tooNarrow)  // || tooCloseByWidths)
 					tempSignals.InsertWithNoReferenceDuplication (prevSignal);
 			}
 		}
@@ -1177,9 +1177,9 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 			else if (nextBP - prevBP < 0.8) {
 
 				tooNarrow = (prevWidth < 0.5 * nextWidth);
-				tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.35 * (prevWidth + nextWidth));
+			//	tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.35 * (prevWidth + nextWidth));
 
-				if (tooNarrow || tooCloseByWidths)
+				if (tooNarrow)  // || tooCloseByWidths)
 					tempSignals.InsertWithNoReferenceDuplication (nextSignal);
 			}
 		}
