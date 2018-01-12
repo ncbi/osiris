@@ -1,18 +1,18 @@
-InputDirectory = F:/PaoloPromegaESI17Hid/corse ESI17 deg corrette;
+InputDirectory = F:/Menageries/MenagerieOfRapidKits/IntegenXGlobalFilerBV70-500/MoreIntegenxRapidHIT-GF-BV70-500;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
-ReportDirectory = F:/PaoloPromegaESI17Hid/corse ESI17 deg corrette;
-MarkerSetName = PowerPlex ESI17;
-LaneStandardName = Promega-ILS-WEN-500;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+MarkerSetName = GlobalFiler;
+LaneStandardName = BV-80-500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20140313-114740/V-20140313-114740_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20140313-114740/V-20140313-114740_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 150;
-MinLaneStandardRFU = 40;
+MinSampleRFU = 20;
+MinLaneStandardRFU = 50;
 MinLadderRFU = 150;
-MinInterlocusRFU = 150;
+MinInterlocusRFU = 20;
 MinLadderInterlocusRFU = 150;
-SampleDetectionThreshold = 150;
+SampleDetectionThreshold = 20;
 RawDataString = R;
 ;
 

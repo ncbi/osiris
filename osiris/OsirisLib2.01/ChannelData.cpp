@@ -1176,7 +1176,7 @@ int ChannelData :: RemoveAllShouldersTooCloseToPrimary () {
 
 			else if (nextBP - prevBP < 0.8) {
 
-				tooNarrow = (prevWidth < 0.5 * nextWidth);
+				tooNarrow = (nextWidth < 0.5 * prevWidth);
 			//	tooCloseByWidths = (nextSignal->GetMean () - prevSignal->GetMean () < 0.35 * (prevWidth + nextWidth));
 
 				if (tooNarrow)  // || tooCloseByWidths)

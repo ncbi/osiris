@@ -2535,7 +2535,7 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 //	Locus* lastLocus;
 	double bp;
 	int ibp;
-	Locus* previousGridLocus;
+	Locus* previousGridLocus = NULL;
 	bool thisPeakRight;
 	bool thisPeakLeft;
 	smInterlocusPeaksToRight interlocusToRight;
@@ -2655,7 +2655,7 @@ int ChannelData :: RemoveInterlocusSignalsSM (double left, double ilsLeft, doubl
 
 		else if (!TestIfTimeIsLeftOfLocus (mean, previousLocus, previousGridLocus)) {
 
-			if (previousGridLocus->TestSignalTimeRelativeToGridLocus (mean) == 0)
+			if ((previousGridLocus != NULL) && (previousGridLocus->TestSignalTimeRelativeToGridLocus (mean) == 0))
 				continue;
 
 			if (!nextSignal->GetMessageValue (restrictedPriorityPeak)) {

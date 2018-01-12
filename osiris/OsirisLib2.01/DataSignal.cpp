@@ -4014,41 +4014,41 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 		return NULL;
 	}
 
-	if ((mode <= startTime + 5) || (mode >= endTime - 5)) {
+	if ((mode <= lowerLimit + 1) || (mode >= upperLimit - 1)) {   // This test may be overly restrictive, esp. for rapid kits.  Changed "+-5" to width related distances
 
-		//if (CDList.empty ())
-		//	return NULL;
+	//	//if (CDList.empty ())
+	//	//	return NULL;
 
-		////if (noShoulder2) {
+	//	////if (noShoulder2) {
 
-		//	while (!CDList.empty ()) {
+	//	//	while (!CDList.empty ()) {
 
-		//		nextSet = CDList.front ();
-		//		CDList.pop_front ();
-		//		delete nextSet;
-		//	}
+	//	//		nextSet = CDList.front ();
+	//	//		CDList.pop_front ();
+	//	//		delete nextSet;
+	//	//	}
 
 			return NULL;
-		//}
+	//	//}
 
-		//while (!CDList.empty ()) {
+	//	//while (!CDList.empty ()) {
 
-		//	nextSet = CDList.front ();
-		//	CDList.pop_front ();
+	//	//	nextSet = CDList.front ();
+	//	//	CDList.pop_front ();
 
-		//	if (nextSet != bestSet)
-		//		delete nextSet;
-		//}
+	//	//	if (nextSet != bestSet)
+	//	//		delete nextSet;
+	//	//}
 
-		//if (bestSet == NULL)
-		//	return NULL;
+	//	//if (bestSet == NULL)
+	//	//	return NULL;
 
-		//mode = bestSet->mPosition;
-		//maxAtMode = bestSet->mMaxValue + 0.000001;
-		//delete bestSet;
+	//	//mode = bestSet->mPosition;
+	//	//maxAtMode = bestSet->mMaxValue + 0.000001;
+	//	//delete bestSet;
 
-		//if ((mode - startTime < 5) || (endTime - mode < 5))
-		//	return NULL;
+	//	//if ((mode - startTime < 5) || (endTime - mode < 5))
+	//	//	return NULL;
 	}
 
 	maxFunctionValue = prevSignal->Value ((double)mode);
