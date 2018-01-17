@@ -2676,6 +2676,58 @@ int STRLaneStandardChannelData :: HierarchicalLaneStandardChannelAnalysisSM (RGT
 }
 
 
+int STRLaneStandardChannelData :: TestArtifactListForNoticesWithinLaneStandardSM (ChannelData* laneStandard, CoreBioComponent* associatedGrid) {
+
+	// Look for critical level notices in SmartPeaks list on channel.  This list should only consist of peaks within lane standard
+	// and above user specified min BioID for reporting artifacts
+
+	//
+	//  This is ladder and sample stage 5
+	//
+
+	RGDListIterator it (SmartPeaks);
+	DataSignal* nextSignal;
+	double bp;
+	int ibp;
+	int msgLevel;
+	int trigger = Notice::GetMessageTrigger ();
+
+	smSignalIsCtrlPeak isControlPeak;
+	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset suppressCriticalArtifacts;
+	smChannelPeaksHaveCriticalArtifacts criticalArtifacts;
+
+	bool suppress = GetMessageValue (suppressCriticalArtifacts);
+	bool ctrlPeak;
+	bool foundFirstILSPeak = false;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		ctrlPeak = nextSignal->GetMessageValue (isControlPeak);
+
+		if (ctrlPeak)
+			foundFirstILSPeak = true;
+
+		if (!foundFirstILSPeak)
+			continue;
+
+		if (suppress && ctrlPeak)
+			continue;
+
+		msgLevel = nextSignal->GetHighestMessageLevelWithRestrictionSM ();
+
+		if ((msgLevel > 0) && (msgLevel <= trigger)) {
+
+			bp = nextSignal->GetApproximateBioID ();
+			ibp = (int) floor (bp + 0.5);
+			SetMessageValue (criticalArtifacts, true);
+			AppendDataForSmartMessage (criticalArtifacts, ibp);
+		}
+	}
+
+	return 0;
+}
+
+
 int STRLaneStandardChannelData :: CorrectLaneStandardCrossChannelAnalysisSM () {
 
 	//
@@ -2750,15 +2802,21 @@ int STRLaneStandardChannelData :: FinalTestForCriticalLaneStandardNoticesSM () {
 	int nextSignalLevel;
 	RGDListIterator it (FinalCurveList);
 	DataSignal* nextSignal;
+	smSignalIsCtrlPeak isControlPeak;
+	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset suppressArtifacts;
 //	RGString info;
+
+	bool suppress = GetMessageValue (suppressArtifacts);
+	bool skipPeak;
 
 	smCriticalMessagesAtILS criticalNotices;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
 		nextSignalLevel = nextSignal->GetHighestMessageLevelWithRestrictionSM ();
+		skipPeak = suppress && nextSignal->GetMessageValue (isControlPeak);
 
-		if ((nextSignalLevel > 0) && (nextSignalLevel <= criticalLevel)) {
+		if (!skipPeak && (nextSignalLevel > 0) && (nextSignalLevel <= criticalLevel)) {
 
 			criticalArtifactFound = true;
 			SetMessageValue (criticalNotices, true);

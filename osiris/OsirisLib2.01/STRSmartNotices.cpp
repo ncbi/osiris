@@ -1434,6 +1434,18 @@ int smPercentOverrideOfNoiseThresholdForFinalPhase::sMessageIndex = 0;
 int smPercentOverrideOfNoiseThresholdForFinalPhase::sMessageScope = 0;
 
 
+RGString smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::sName = "smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset";
+int smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::sSubject = smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::LoadType ();
+int smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::sMessageIndex = 0;
+int smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::sMessageScope = 0;
+
+
+RGString smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sName = "smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset";
+int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sSubject = smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::LoadType ();
+int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sMessageIndex = 0;
+int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1672,6 +1684,8 @@ PERSISTENT_DEFINITION (smConstrainPullupPatternAnalysisPreset, 2639, "smConstrai
 PERSISTENT_DEFINITION (smOverrideNoiseLevelPercentsInSmoothing, 2640, "smOverrideNoiseLevelPercentsInSmoothing")
 PERSISTENT_DEFINITION (smPercentOverrideOfNoiseThresholdForNormalizationPhase, 2641, "smPercentOverrideOfNoiseThresholdForNormalizationPhase")
 PERSISTENT_DEFINITION (smPercentOverrideOfNoiseThresholdForFinalPhase, 2642, "smPercentOverrideOfNoiseThresholdForFinalPhase")
+PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset, 2643, "smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset")
+PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset, 2644, "smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset")
 
 
 
@@ -15948,6 +15962,126 @@ int smPercentOverrideOfNoiseThresholdForFinalPhase :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPercentOverrideOfNoiseThresholdForFinalPhase* noticeType = new smPercentOverrideOfNoiseThresholdForFinalPhase;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset () : SmartNotice () {
+
+}
+
+
+smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset (const smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: ~smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset () {
+
+}
+
+
+int smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: GetSubject () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::sSubject;
+}
+
+
+void smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::sMessageIndex = index;
+	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset::sMessageScope = scope;
+}
+
+
+int smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: GetMessageIndex () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: sMessageIndex;
+}
+
+
+int smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: GetScope () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: sMessageScope;
+}
+
+
+RGString smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: GetName () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: sName;
+}
+
+
+
+int smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset* noticeType = new smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset () : SmartNotice () {
+
+}
+
+
+smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset (const smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: ~smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset () {
+
+}
+
+
+int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: GetSubject () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sSubject;
+}
+
+
+void smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sMessageIndex = index;
+	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sMessageScope = scope;
+}
+
+
+int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: GetMessageIndex () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: sMessageIndex;
+}
+
+
+int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: GetScope () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: sMessageScope;
+}
+
+
+RGString smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: GetName () const {
+
+	return smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: sName;
+}
+
+
+
+int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset* noticeType = new smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

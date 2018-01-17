@@ -249,6 +249,8 @@ PERSISTENT_PREDECLARATION (smConstrainPullupPatternAnalysisPreset)
 PERSISTENT_PREDECLARATION (smOverrideNoiseLevelPercentsInSmoothing)
 PERSISTENT_PREDECLARATION (smPercentOverrideOfNoiseThresholdForNormalizationPhase)
 PERSISTENT_PREDECLARATION (smPercentOverrideOfNoiseThresholdForFinalPhase)
+PERSISTENT_PREDECLARATION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset)
+PERSISTENT_PREDECLARATION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset)
 
 
 
@@ -6896,6 +6898,62 @@ public:
 	smPercentOverrideOfNoiseThresholdForFinalPhase ();
 	smPercentOverrideOfNoiseThresholdForFinalPhase (const smPercentOverrideOfNoiseThresholdForFinalPhase& note);
 	virtual ~smPercentOverrideOfNoiseThresholdForFinalPhase ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset)
+
+public:
+	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset ();
+	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset (const smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset& note);
+	virtual ~smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset)
+
+public:
+	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset ();
+	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset (const smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset& note);
+	virtual ~smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset ();
 
 	virtual int GetSubject () const;
 

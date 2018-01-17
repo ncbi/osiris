@@ -6597,17 +6597,27 @@ void Locus :: RetrieveSmartNoticesFromGridArtifactList (ChannelData* laneStandar
 	RGString info;
 	RGString localAlleleName;
 	smCriticalMessagesAtAlleles criticalMessagesAtAlleles;
+	smSignalIsCtrlPeak isControlPeak;
+	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset suppressCriticalArtifacts;
 
 	RGDListIterator FinalIterator (FinalSignalList);
 	bool criticalArtifactFound = false;
 	int criticalLevel = Notice::GetMessageTrigger ();
 	int nextSignalLevel;
+	bool isControl;
+	bool isCritical;
+	bool suppress = laneStandard->GetMessageValue (suppressCriticalArtifacts);
 
 	while (nextSignal = (DataSignal*) FinalIterator ()) {
 
 		nextSignalLevel = nextSignal->GetHighestMessageLevelWithRestrictionSM ();
+		isControl = nextSignal->GetMessageValue (isControlPeak);
+		isCritical = (nextSignalLevel > 0) && (nextSignalLevel <= criticalLevel);
 
-		if (((nextSignalLevel > 0) && (nextSignalLevel <= criticalLevel)) || (nextSignal->IsDoNotCall ())) {
+		if (suppress && isControl)
+			continue;
+
+		if (isCritical || nextSignal->IsDoNotCall ()) {
 
 			if (!criticalArtifactFound) {
 

@@ -2084,9 +2084,16 @@ int ChannelData :: TestArtifactListForNoticesWithinLaneStandardSM (ChannelData* 
 	int trigger = Notice::GetMessageTrigger ();
 	bool isCore;
 
+	smSignalIsCtrlPeak isControlPeak;
+	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset suppressCriticalArtifacts;
 	smChannelPeaksHaveCriticalArtifacts criticalArtifacts;
 
+	bool suppress = GetMessageValue (suppressCriticalArtifacts);
+
 	while (nextSignal = (DataSignal*) it ()) {
+
+		if (suppress && nextSignal->GetMessageValue (isControlPeak))
+			continue;
 
 		isCore = (nextSignal->GetLocus (0) != NULL);
 

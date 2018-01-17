@@ -232,6 +232,8 @@ public:
 	int AnalyzeLaneStandardChannelRecursivelyUsingDensitySM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int HierarchicalLaneStandardChannelAnalysisSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
+	virtual int TestArtifactListForNoticesWithinLaneStandardSM (ChannelData* laneStandard, CoreBioComponent* associatedGrid);
+
 	virtual int CorrectLaneStandardCrossChannelAnalysisSM ();	//This no longer does anything
 	virtual int FinalTestForCriticalLaneStandardNoticesSM ();
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);

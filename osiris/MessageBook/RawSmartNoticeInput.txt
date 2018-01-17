@@ -235,7 +235,9 @@ smPeakSharesAlleleBinRight	1122	2638
 smConstrainPullupPatternAnalysisPreset	1123	2639
 smOverrideNoiseLevelPercentsInSmoothing	1124	2640
 smPercentOverrideOfNoiseThresholdForNormalizationPhase	1125	2641
-smPercentOverrideOfNoiseThresholdForFinalPhase	1123	2642
+smPercentOverrideOfNoiseThresholdForFinalPhase	1126	2642
+smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset	1127	2643
+smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset	1128	2644
 
 
 
