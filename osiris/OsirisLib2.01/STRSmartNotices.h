@@ -251,6 +251,7 @@ PERSISTENT_PREDECLARATION (smPercentOverrideOfNoiseThresholdForNormalizationPhas
 PERSISTENT_PREDECLARATION (smPercentOverrideOfNoiseThresholdForFinalPhase)
 PERSISTENT_PREDECLARATION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset)
 PERSISTENT_PREDECLARATION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset)
+PERSISTENT_PREDECLARATION (smDisplaySigmoidalPeaksPreset)
 
 
 
@@ -6954,6 +6955,34 @@ public:
 	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset ();
 	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset (const smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset& note);
 	virtual ~smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDisplaySigmoidalPeaksPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDisplaySigmoidalPeaksPreset)
+
+public:
+	smDisplaySigmoidalPeaksPreset ();
+	smDisplaySigmoidalPeaksPreset (const smDisplaySigmoidalPeaksPreset& note);
+	virtual ~smDisplaySigmoidalPeaksPreset ();
 
 	virtual int GetSubject () const;
 

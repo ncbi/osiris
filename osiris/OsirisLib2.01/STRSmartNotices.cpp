@@ -1446,6 +1446,12 @@ int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sMessageIndex = 0;
 int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset::sMessageScope = 0;
 
 
+RGString smDisplaySigmoidalPeaksPreset::sName = "smDisplaySigmoidalPeaksPreset";
+int smDisplaySigmoidalPeaksPreset::sSubject = smDisplaySigmoidalPeaksPreset::LoadType ();
+int smDisplaySigmoidalPeaksPreset::sMessageIndex = 0;
+int smDisplaySigmoidalPeaksPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1686,6 +1692,7 @@ PERSISTENT_DEFINITION (smPercentOverrideOfNoiseThresholdForNormalizationPhase, 2
 PERSISTENT_DEFINITION (smPercentOverrideOfNoiseThresholdForFinalPhase, 2642, "smPercentOverrideOfNoiseThresholdForFinalPhase")
 PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset, 2643, "smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset")
 PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset, 2644, "smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset")
+PERSISTENT_DEFINITION (smDisplaySigmoidalPeaksPreset, 2645, "smDisplaySigmoidalPeaksPreset")
 
 
 
@@ -16082,6 +16089,66 @@ int smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset* noticeType = new smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDisplaySigmoidalPeaksPreset :: smDisplaySigmoidalPeaksPreset () : SmartNotice () {
+
+}
+
+
+smDisplaySigmoidalPeaksPreset :: smDisplaySigmoidalPeaksPreset (const smDisplaySigmoidalPeaksPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDisplaySigmoidalPeaksPreset :: ~smDisplaySigmoidalPeaksPreset () {
+
+}
+
+
+int smDisplaySigmoidalPeaksPreset :: GetSubject () const {
+
+	return smDisplaySigmoidalPeaksPreset::sSubject;
+}
+
+
+void smDisplaySigmoidalPeaksPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smDisplaySigmoidalPeaksPreset::sMessageIndex = index;
+	smDisplaySigmoidalPeaksPreset::sMessageScope = scope;
+}
+
+
+int smDisplaySigmoidalPeaksPreset :: GetMessageIndex () const {
+
+	return smDisplaySigmoidalPeaksPreset :: sMessageIndex;
+}
+
+
+int smDisplaySigmoidalPeaksPreset :: GetScope () const {
+
+	return smDisplaySigmoidalPeaksPreset :: sMessageScope;
+}
+
+
+RGString smDisplaySigmoidalPeaksPreset :: GetName () const {
+
+	return smDisplaySigmoidalPeaksPreset :: sName;
+}
+
+
+
+int smDisplaySigmoidalPeaksPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDisplaySigmoidalPeaksPreset* noticeType = new smDisplaySigmoidalPeaksPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

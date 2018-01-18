@@ -2087,13 +2087,22 @@ int ChannelData :: TestArtifactListForNoticesWithinLaneStandardSM (ChannelData* 
 	smSignalIsCtrlPeak isControlPeak;
 	smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset suppressCriticalArtifacts;
 	smChannelPeaksHaveCriticalArtifacts criticalArtifacts;
+	smSigmoidalPullup sigmoid;
+	smDisplaySigmoidalPeaksPreset displaySigmoids;
 
 	bool suppress = GetMessageValue (suppressCriticalArtifacts);
+	bool dontDisplay = !GetMessageValue (displaySigmoids);
 
 	while (nextSignal = (DataSignal*) it ()) {
 
 		if (suppress && nextSignal->GetMessageValue (isControlPeak))
 			continue;
+
+		if (dontDisplay && nextSignal->GetMessageValue (sigmoid)) {
+
+			it.RemoveCurrentItem ();
+			continue;
+		}
 
 		isCore = (nextSignal->GetLocus (0) != NULL);
 
