@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.10</VersionNumber>
-	<BuildTime>01/18/2018 12:46 PM</BuildTime>
+	<VersionNumber>7.11</VersionNumber>
+	<BuildTime>01/19/2018 05:48 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -6021,7 +6021,7 @@
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
-				<Threshold>17</Threshold>
+				<Threshold>20</Threshold>
 				<Comparison>Less</Comparison>
 				<ThresholdDescriptor>        Max % BP For Residual Displacement Test (Default = 17% BP)</ThresholdDescriptor>
 			</CountingDataInfo>
@@ -6049,6 +6049,26 @@
 			<Text>Make Excessive Residual Displacement Message Critical</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smResidualDisplacementFractionalLimit</Name>
+			<MessageType>count</MessageType>
+			<Description>Fraction of Max Peak in Locus Below Which Residual Displacement Can Be Assigned</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>50</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>        Max % of Tallest Locus Peak To Assign Excessive Residual Displacement (Default = 50)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAX % OF TALLEST LOCUS PEAK TO ASSIGN EXCESSIVE RESIDUAL DISPLACEMENT</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacerERDEnd</Name>
@@ -6642,6 +6662,7 @@
 					<Scope>2</Scope>
 					<MeasuredMessages>
 						<Name>smResidualDisplacementThreshold</Name>
+						<Name>smResidualDisplacementFractionalLimit</Name>
 						<Name>smExtendLociEdgeToEdgePreset</Name>
 						<Name>smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset</Name>
 						<Name>smMaxILSBPForExtendedLocus</Name>

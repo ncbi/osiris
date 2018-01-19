@@ -239,6 +239,7 @@ smPercentOverrideOfNoiseThresholdForFinalPhase	1126	2642
 smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset	1127	2643
 smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset	1128	2644
 smDisplaySigmoidalPeaksPreset	1129	2645
+smResidualDisplacementFractionalLimit	1130	2646
 
 
 

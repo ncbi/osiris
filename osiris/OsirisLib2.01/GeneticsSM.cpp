@@ -3015,9 +3015,21 @@ int Locus :: TestResidualDisplacement () {
 	smResidualDisplacementThreshold residualDisplacementThreshold;
 	smExcessiveResidualDisplacementLeft excessiveResidualDisplacementLeft;
 	smExcessiveResidualDisplacementRight excessiveResidualDisplacementRight;
+	smResidualDisplacementFractionalLimit erdFractionalLimit;
+
+	double fractionalLimit = 0.01 * (double) GetThreshold (erdFractionalLimit);
+	bool testFractionalLimit = true;
+
+	if (fractionalLimit <= 0.0)
+		testFractionalLimit = false;
 
 	if (maxSignal == NULL)
 		return -1;
+
+	double maxHeight = maxSignal->Peak ();
+	
+	if (testFractionalLimit)
+		fractionalLimit = fractionalLimit * maxHeight;
 
 	int location = -TestSignalPositionRelativeToLocus (maxSignal);  // return value is signal position relative to locus...reverse it to get locus position relative to signal
 	double maxResidual = maxSignal->GetBioIDResidual (location);
@@ -3035,14 +3047,17 @@ int Locus :: TestResidualDisplacement () {
 
 		if (residualDisplacement > threshold) {
 
-			if (nextLocation == 0)
-				nextSignal->SetMessageValue (excessiveResidualDisplacement, true);
+			if (!testFractionalLimit || (nextSignal->Peak () <= fractionalLimit)) {
 
-			else if (nextLocation < 0)
-				nextSignal->SetMessageValue (excessiveResidualDisplacementLeft, true);
+				if (nextLocation == 0)
+					nextSignal->SetMessageValue (excessiveResidualDisplacement, true);
 
-			else
-				nextSignal->SetMessageValue (excessiveResidualDisplacementRight, true);
+				else if (nextLocation < 0)
+					nextSignal->SetMessageValue (excessiveResidualDisplacementLeft, true);
+
+				else
+					nextSignal->SetMessageValue (excessiveResidualDisplacementRight, true);
+			}
 		}
 	}
 

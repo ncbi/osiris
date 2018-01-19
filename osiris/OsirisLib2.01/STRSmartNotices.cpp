@@ -1452,6 +1452,12 @@ int smDisplaySigmoidalPeaksPreset::sMessageIndex = 0;
 int smDisplaySigmoidalPeaksPreset::sMessageScope = 0;
 
 
+RGString smResidualDisplacementFractionalLimit::sName = "smResidualDisplacementFractionalLimit";
+int smResidualDisplacementFractionalLimit::sSubject = smResidualDisplacementFractionalLimit::LoadType ();
+int smResidualDisplacementFractionalLimit::sMessageIndex = 0;
+int smResidualDisplacementFractionalLimit::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1693,6 +1699,7 @@ PERSISTENT_DEFINITION (smPercentOverrideOfNoiseThresholdForFinalPhase, 2642, "sm
 PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset, 2643, "smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset")
 PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset, 2644, "smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset")
 PERSISTENT_DEFINITION (smDisplaySigmoidalPeaksPreset, 2645, "smDisplaySigmoidalPeaksPreset")
+PERSISTENT_DEFINITION (smResidualDisplacementFractionalLimit, 2646, "smResidualDisplacementFractionalLimit")
 
 
 
@@ -16149,6 +16156,66 @@ int smDisplaySigmoidalPeaksPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smDisplaySigmoidalPeaksPreset* noticeType = new smDisplaySigmoidalPeaksPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smResidualDisplacementFractionalLimit :: smResidualDisplacementFractionalLimit () : SmartNotice () {
+
+}
+
+
+smResidualDisplacementFractionalLimit :: smResidualDisplacementFractionalLimit (const smResidualDisplacementFractionalLimit& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smResidualDisplacementFractionalLimit :: ~smResidualDisplacementFractionalLimit () {
+
+}
+
+
+int smResidualDisplacementFractionalLimit :: GetSubject () const {
+
+	return smResidualDisplacementFractionalLimit::sSubject;
+}
+
+
+void smResidualDisplacementFractionalLimit :: SetIndexAndScope (int index, int scope) const {
+
+	smResidualDisplacementFractionalLimit::sMessageIndex = index;
+	smResidualDisplacementFractionalLimit::sMessageScope = scope;
+}
+
+
+int smResidualDisplacementFractionalLimit :: GetMessageIndex () const {
+
+	return smResidualDisplacementFractionalLimit :: sMessageIndex;
+}
+
+
+int smResidualDisplacementFractionalLimit :: GetScope () const {
+
+	return smResidualDisplacementFractionalLimit :: sMessageScope;
+}
+
+
+RGString smResidualDisplacementFractionalLimit :: GetName () const {
+
+	return smResidualDisplacementFractionalLimit :: sName;
+}
+
+
+
+int smResidualDisplacementFractionalLimit :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smResidualDisplacementFractionalLimit* noticeType = new smResidualDisplacementFractionalLimit;
 	warehouse->AddType (noticeType);
 	return 1;
 }
