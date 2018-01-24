@@ -1787,6 +1787,7 @@ public:
 	virtual bool IsUnimodal () const { return false; }
 	virtual bool IsCraterPeak () const { return true; }
 	virtual double TroughHeight () const { return mTroughHeight; }
+	virtual void CalculateTheoreticalArea ();
 
 	virtual bool LiesBelowHeightAt (double x, double height);
 	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);

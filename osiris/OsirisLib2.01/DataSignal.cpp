@@ -11327,6 +11327,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 	mPossibleInterAlleleRight = next->IsPossibleInterlocusAllele (1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleRight = next->IsAcceptedTriAllele (1);
 	mIsOffGridRight = next->IsOffGrid (1);
+	CalculateTheoreticalArea ();
 }
 
 
@@ -11431,6 +11432,7 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 	mPossibleInterAlleleRight = next->IsPossibleInterlocusAllele (1);  // within extended locus and above fractional filter
 	mIsAcceptedTriAlleleRight = next->IsAcceptedTriAllele (1);
 	mIsOffGridRight = next->IsOffGrid (1);
+	CalculateTheoreticalArea ();
 }
 
 
@@ -11443,6 +11445,7 @@ mTroughHeight (c.mTroughHeight), mPrevious (c.mPrevious), mNext (c.mNext) {
 	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	mPullupTolerance = c.mPullupTolerance;
+	mArea = c.mArea;
 }
 
 
@@ -11454,6 +11457,7 @@ mTroughHeight (c.mTroughHeight), mPrevious (c.mPrevious), mNext (c.mNext) {
 	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	mPullupTolerance = c.mPullupTolerance;
+	mArea = c.mArea;
 }
 
 
@@ -11469,6 +11473,7 @@ mPrevious (c.mPrevious), mNext (c.mNext)  {
 	mApproxBioIDPrime = c.mApproxBioIDPrime;
 	SetChannel (c.GetChannel ());
 	mPullupTolerance = c.mPullupTolerance;
+	mArea = c.mArea;
 }
 
 
@@ -11490,6 +11495,77 @@ DataSignal* CraterSignal :: MakeCopy (double mean) const {
 RGString CraterSignal :: GetSignalType () const {
 
 	return RGString ("CraterSignal");
+}
+
+
+void CraterSignal :: CalculateTheoreticalArea () {
+
+	if (mPrevious == NULL)
+		return;
+
+	if (mNext == NULL)
+		return;
+
+	double mean1 = mPrevious->GetMean ();
+	double mean2 = mNext->GetMean ();
+
+	double centerTime = 0.5 * (mean1 + mean2);
+
+	double first1 = mPrevious->Peak ();
+	double first2 = mNext->Peak ();
+	double Cumulative = 0.0;
+	double last;
+	double sigma1 = mPrevious->GetStandardDeviation ();
+	double sigma2 = mNext->GetStandardDeviation ();
+	double sigma;
+
+	if (sigma1 >= sigma2)
+		sigma = sigma2;
+
+	else
+		sigma = sigma1;
+
+	double abscissa = centerTime;
+//	double temp2;
+	double temp1;
+	double prevLast = Value (centerTime);
+	double saveLast = prevLast;
+	double cutOff = 0.01 * first2;
+	double step = 0.1 * sigma;
+	int i;
+
+	for (i=1; i<=20; i++) {
+
+		last = Value (abscissa);
+
+		if ((last <= cutOff) && (i > 1))
+			break;
+
+		Cumulative += last;
+		prevLast = last;
+		abscissa += step;
+	}
+
+	temp1 = step * (Cumulative - 0.5 * prevLast);
+	Cumulative = 0.0;
+	abscissa = centerTime;
+	cutOff = 0.01 * first1;
+	prevLast = saveLast;
+
+	for (i=1; i<=20; i++) {
+
+		last = Value (abscissa);
+
+		if ((last <= cutOff) && (i > 1))
+			break;
+
+		Cumulative += last;
+		prevLast = last;
+		abscissa -= step;
+	}
+
+	temp1 +=step * (Cumulative - 0.5 * prevLast - saveLast);
+	mArea = temp1;
 }
 
 
