@@ -16,7 +16,7 @@ A public domain quality assurance software package that facilitates the assessme
 
 ### Build steps
 * Download wxWidgets at http://wxwidgets.org/downloads/, either  the ZIP or 7z download.
-* [Download the source code for OSIRIS version 2.5](https://github.com/amanjeev/osiris/archive/Version-2.5.zip) (or 2.4 or later) from [Github](https://github.com/ncbi/osiris) (Version 2.3 requires an older version of `wxWidgets`). Or select the version from the `Branch` pulldown on the left side of the web page and select `Download ZIP` from the right side.  
+* Download the osiris source code from https://github.com/ncbi/osiris (Version 2.3 requires an older version of `wxWidgets`). Or select the version from the `Branch` pulldown on the left side of the web page and select `Download ZIP` from the right side.  
 
 #### Build wxWidgets
 * Create a new folder, (for example `wxWidgets-3.0.2`) and unpack the contents of the zip file there.
@@ -46,13 +46,13 @@ A public domain quality assurance software package that facilitates the assessme
 ## Mac OS X build
 
 ### Requirements and tools
-* Mac OS X 10.9 to 10.10 build.
+* Mac OS X 10.9 and later build.
 * Unix command line.
 * [Mac OS X Developer tools](https://developer.apple.com/xcode/) - try `gcc --version` to see if you have `gcc` available from the tools.
 
 ### Build steps
-* [Download the source code for OSIRIS version 2.6](https://github.com/amanjeev/osiris/archive/Version-2.5.zip) and unzip it to `osiris` directory.
 * Download wxWidgets 3.0.2 at http://wxwidgets.org/downloads/, `Source for Linux, OS X, etc.` ([Current](https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.2/wxWidgets-3.0.2.tar.bz2)).
+* Download the osiris source code from https://github.com/ncbi/osiris (Version 2.3 requires an older version of `wxWidgets`). Or select the version from the `Branch` pulldown on the left side of the web page and select `Download ZIP` from the right side.  
 
 #### Build and install wxWidgets
 * Unpack the download to a new directory: `tar tvf wxWidgets-3.0.2.tar.bz2`. This will create a directory with the wxWidget source code like `wxWidgets-3.0.2`
