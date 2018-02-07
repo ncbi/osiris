@@ -55,6 +55,7 @@ class CoreBioComponent;
 class RGString;
 class IndividualGenotype;
 class SmartMessageReporter;
+class NormalizationInterval;
 
 
 class RaisedBaseLineData {
@@ -92,6 +93,54 @@ public:
 protected:
 	double mHeight;
 	int mMode;
+};
+
+
+class  ProspectiveIntervalForNormalization {
+
+public:
+
+	ProspectiveIntervalForNormalization (int start, DataSignal* sampledData, double* derivFilter, double filterHeight);
+	~ProspectiveIntervalForNormalization ();
+
+	int GetStart () const { return mStart; }
+	int GetEnd () const { return mEnd; }
+	bool IsLongEnough (int minLength) const { return (mEnd - mStart + 1) >= minLength; }
+
+	void DivideIntoNormalizationIntervals (int minLength, double noiseRange, int subLength, int neighborTestLimit);
+	NormalizationInterval* GetNextNormalizationInterval (int minLength);
+
+protected:
+	int mStart;
+	int mEnd;
+	DataSignal* mData;
+	list<NormalizationInterval*> mNormalizationIntervals;
+};
+
+
+
+class NormalizationInterval {
+
+public:
+
+	NormalizationInterval (int start, int end, DataSignal* sampledData, int minLength, int subLength, double noiseRange, int neighborTestLimit);
+	~NormalizationInterval ();
+
+	int GetStart () const { return mStart; }
+	int GetEnd () const { return mEnd; }
+
+	bool IsLongEnough (int minLength) const { return (mEnd - mStart + 1) >= minLength; }
+	bool DivideIntoSubIntervalsAndCalculateKnots ();
+	bool AddKnotsToLists (list<double>& knotTimes, list<double>& knotValues);
+	double ComputeSubIntervalAverage (int startPt, int endPt);
+
+protected:
+	int mStart;
+	int mEnd;
+	DataSignal* mData;
+	int mSubLength;
+	list<double> mKnotTimes;
+	list<double> mKnotValues;
 };
 
 
@@ -137,6 +186,7 @@ public:
 	double GetRightEndpoint () const;
 	int GetNumberOfSignals () const { return CompleteCurveList.Entries (); }
 	bool HasPrimerPeaks (ChannelData* laneStd);
+	void CalculateFirstDerivativeFilter ();
 
 	void SetCompleteSignalListSequence ();
 
@@ -426,6 +476,7 @@ public:
 
 	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
 	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime);
+	virtual int AnalyzeDynamicBaselineUsingDerivativeFilterAndNormalizeRawDataSM (int startTime, double reportMinTime) { return -1; }
 
 	virtual void GetCharacteristicArray (const double*& array) const { if (mLaneStandard != NULL) mLaneStandard->GetCharacteristicArray (array); }
 
@@ -522,6 +573,7 @@ protected:
 	CSplineTransform* mBaseLine;
 	int mBaselineStart;
 	CoordinateTransform* mTimeMap;
+	double* mDerivFilter;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

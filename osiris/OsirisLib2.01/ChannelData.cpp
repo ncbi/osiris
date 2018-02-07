@@ -83,9 +83,263 @@ bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& seco
 }
 
 
+ProspectiveIntervalForNormalization :: ProspectiveIntervalForNormalization (int start, DataSignal* sampledData, double* derivFilter, double filterHeight) : mData (sampledData) {
+
+	int numberOfSamples = mData->GetNumberOfSamples ();
+	int i;
+	bool foundFirstPoint = false;
+	bool foundLastPoint = false;
+
+	for (i=start; i<numberOfSamples; i++) {
+
+		if (derivFilter [i] <= filterHeight) {
+
+			if (!foundFirstPoint) {
+
+				foundFirstPoint = true;
+				mStart = i;
+			}
+		}
+
+		else if (foundFirstPoint) {
+
+			mEnd = i - 1;
+			foundLastPoint = true;
+			break;
+		}
+	}
+
+	if (!foundFirstPoint)
+		mStart = mEnd = numberOfSamples - 1;
+
+	else if (!foundLastPoint)
+		mEnd = numberOfSamples - 1;
+}
+
+
+
+ProspectiveIntervalForNormalization :: ~ProspectiveIntervalForNormalization () {
+
+	mNormalizationIntervals.clear ();  // we assume that this list has already been emptied and deletion of pointers is an outside responsibility
+}
+
+
+
+void ProspectiveIntervalForNormalization :: DivideIntoNormalizationIntervals (int minLength, double noiseRange, int subLength, int neighborTestLimit) {
+
+	if (!IsLongEnough (minLength))
+		return;
+
+	NormalizationInterval* nextInterval;
+	int currentStart = mStart;
+	int currentEnd;
+
+	while (true) {
+
+		nextInterval = new NormalizationInterval (currentStart, mEnd, mData, minLength, subLength, noiseRange, neighborTestLimit);
+		currentEnd = nextInterval->GetEnd ();
+
+		if (!nextInterval->IsLongEnough (minLength))
+			delete nextInterval;
+
+		else
+			mNormalizationIntervals.push_back (nextInterval);
+
+		currentStart = currentEnd;
+
+		if (mEnd - currentStart + 1 < minLength)
+			break;
+	}
+}
+
+
+
+NormalizationInterval* ProspectiveIntervalForNormalization :: GetNextNormalizationInterval (int minLength) {
+
+	NormalizationInterval* nextInterval;
+
+	if (mNormalizationIntervals.empty ())
+		return NULL;
+
+	nextInterval = mNormalizationIntervals.front ();
+	mNormalizationIntervals.pop_front ();
+	return nextInterval;
+}
+
+
+NormalizationInterval :: NormalizationInterval (int start, int endPt, DataSignal* sampledData, int minLength, int subLength, double noiseRange, int neighborTestLimit) : mData (sampledData), mSubLength (subLength) {
+
+	int numberOfSamples = mData->GetNumberOfSamples ();
+	int i;
+	bool foundFirstPoint = false;
+	bool foundLastPoint = false;
+
+	for (i=start; i<=endPt; i++) {
+
+		if (mData->TestIfNeighboringDataWithinRange (i, neighborTestLimit, noiseRange)) {
+
+			if (!foundFirstPoint) {
+
+				foundFirstPoint = true;
+				mStart = i;
+			}
+		}
+
+		else if (foundFirstPoint) {
+
+			mEnd = i - 1;
+			foundLastPoint = true;
+			break;
+		}
+	}
+
+	if (!foundFirstPoint)
+		mStart = mEnd = endPt;
+
+	else if (!foundLastPoint)
+		mEnd = endPt;
+}
+
+
+
+NormalizationInterval :: ~NormalizationInterval () {
+
+	mKnotTimes.clear ();
+	mKnotValues.clear ();
+}
+
+
+bool NormalizationInterval :: DivideIntoSubIntervalsAndCalculateKnots () {
+
+	int length = mEnd - mStart + 1;
+	int nSubIntervals = length / mSubLength;
+
+	if (nSubIntervals == 0)
+		return false;
+
+	int remainder = nSubIntervals * mSubLength;
+	int remainderRight = remainder / 2;
+	int remainderLeft = remainder - remainderRight;
+	int subIntervalsStart = mStart + remainderLeft;
+	int subIntervalsEnd = mEnd - remainderRight;
+	int i;
+
+	int localStart = subIntervalsStart;
+	int localEnd = localStart +mSubLength - 1;
+	double averageHeight;
+	double averageTime;
+
+	for (i=1; i<=nSubIntervals; i++) {
+
+		averageHeight = ComputeSubIntervalAverage (localStart, localEnd);
+		mKnotValues.push_back (averageHeight);
+		averageTime = 0.5 * (double)(localStart + localEnd);
+		mKnotTimes.push_back (averageTime);
+		localStart += mSubLength;
+		localEnd += mSubLength;
+	}
+
+	return true;
+}
+
+
+
+bool NormalizationInterval :: AddKnotsToLists (list<double>& knotTimes, list<double>& knotValues) {
+
+	double nextTime;
+	double nextValue;
+
+	if (mKnotTimes.size () != mKnotValues.size ())
+		return false;
+
+	while (!mKnotTimes.empty ()) {
+
+		nextTime = mKnotTimes.front ();
+		mKnotTimes.pop_front ();
+		knotTimes.push_back (nextTime);
+	}
+
+	while (!mKnotValues.empty ()) {
+
+		nextValue = mKnotValues.front ();
+		mKnotValues.pop_front ();
+		knotValues.push_back (nextValue);
+	}
+	
+	return true;
+}
+
+
+double NormalizationInterval :: ComputeSubIntervalAverage (int startPt, int endPt) {
+
+	list<double> samplePts;
+	double* sampleArray = new double [mSubLength];
+	int i;
+	int keepPts = mSubLength / 2;
+
+	if (mSubLength%2 != 0)
+		keepPts++;
+
+	for (i=startPt; i<=endPt; i++)
+		samplePts.push_back (mData->Value (i));
+
+	samplePts.sort ();
+
+	for (i=0; i<mSubLength; i++) {
+
+		sampleArray [i] = samplePts.front ();
+		samplePts.pop_front ();
+	}
+
+	double minDiff = sampleArray [mSubLength - 1] - sampleArray [0];
+	double average;
+	int minStartIndex = 0;
+
+	if (minDiff == 0.0) {
+
+		average = sampleArray [0];
+		samplePts.clear ();
+		delete[] sampleArray;
+		return average;
+	}
+
+	int lastEnd = mSubLength - 1;
+	int subArrayIncrement = keepPts - 1;
+	double delta;
+	int endIndex;
+
+	for (i=0; i<lastEnd; i++) {
+
+		endIndex = i + subArrayIncrement;
+
+		if (endIndex > lastEnd)
+			break;
+
+		delta = sampleArray [endIndex] - sampleArray [i];
+
+		if (delta <= minDiff) {
+
+			minDiff = delta;
+			minStartIndex = i;
+		}
+	}
+
+	average = 0.0;
+	endIndex = minStartIndex + subArrayIncrement;
+
+	for (i=minStartIndex; i<=endIndex; i++)
+		average += sampleArray [i];
+
+	average = average /(double)keepPts;
+	samplePts.clear ();
+	delete[] sampleArray;
+	return average;
+}
+
+
 ChannelData :: ChannelData () : SmartMessagingObject (), mChannel (-1), mData (NULL), mBackupData (NULL),
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -94,7 +348,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -103,7 +357,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel, LaneStandard* inputLS) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -113,7 +367,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 ChannelData :: ChannelData (const ChannelData& cd) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), 
-mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
 
 	mData = (DataSignal*)cd.mData->Copy ();
 	mLocusList = cd.mLocusList;
@@ -126,7 +380,7 @@ mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLin
 ChannelData :: ChannelData (const ChannelData& cd, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
 
 	mData = NULL;
 	RGDList tempLocusList = cd.mLocusList;
@@ -180,6 +434,7 @@ ChannelData :: ~ChannelData () {
 	delete[] Fits;
 	delete[] Peaks;
 	delete[] SecondaryContent;
+	delete[] mDerivFilter;
 }
 
 
@@ -646,6 +901,29 @@ bool ChannelData :: HasPrimerPeaks (ChannelData* laneStd) {
 	}
 
 	return false;
+}
+
+
+void ChannelData :: CalculateFirstDerivativeFilter () {
+
+	int n = mData->GetNumberOfSamples ();
+	mDerivFilter = new double [n];
+	double v0 = mData->Value (1);
+	double vM1 = mData->Value (0);
+	double vP1;
+	int i;
+	mDerivFilter [0] = 0.0;
+
+	for (i=2; i<n; i++) {
+
+		vP1 = mData->Value (i);
+		//mDerivFilter [i-2] = oneTwelfth * (vM2 + 8.0 * (vP1 - vM1) - vP2);  // This is a five point stencil approximation of the first derivative...see Wikipedia
+		mDerivFilter [i-1] = 0.5 * (vP1 - vM1);  // This is a chordal approximation to the derivative
+		vM1 = v0;
+		v0 = vP1;
+	}
+
+	mDerivFilter [n - 1] = 0.0;
 }
 
 
@@ -3013,8 +3291,28 @@ int ChannelData :: WriteFitData (RGTextOutput& text, const RGString& delim, int 
 
 int ChannelData :: WriteBaselineData (RGTextOutput& text, const RGString& delim, const RGString& indent) {
 
-	if (mBaseLine == NULL)
-		return 0;
+	if (mBaseLine == NULL) {
+
+		if (mDerivFilter == NULL)
+			return 0;
+
+		else {
+
+			Endl endLine;
+			text << indent << "<baselineStart>" << 0 << "</baselineStart>" << endLine;
+			int NSamples = mData->GetNumberOfSamples ();
+			int j;
+			text << indent << "<baselinePoints>";
+	
+			for (j=0; j<NSamples; j++) {
+
+				text << (int)floor (mDerivFilter [j]) << delim;
+			}
+
+			text << "</baselinePoints>" << endLine;
+			return 1;
+		}
+	}
 
 	Endl endLine;
 	text << indent << "<baselineStart>" << mBaselineStart << "</baselineStart>" << endLine;

@@ -636,6 +636,8 @@ public:
 	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next);
 	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next, int location);
 
+	virtual bool TestIfNeighboringDataWithinRange (int testPosition, int neighborLimit, double range) { return false; }
+
 	virtual void SetVirtualAlleleName (const RGString& name);
 	virtual RGString GetVirtualAlleleName () const;
 
@@ -1064,6 +1066,8 @@ public:
 	virtual bool HasAtLeastOneLocalMinimum ();
 	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit);
 	double InnerProductWithConstantFunction (int left, int right, double& height) const;
+
+	virtual bool TestIfNeighboringDataWithinRange (int testPosition, int neighborLimit, double range);
 
 	virtual NoiseInterval* GetNextNoiseInterval ();
 

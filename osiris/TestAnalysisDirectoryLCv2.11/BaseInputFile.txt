@@ -1,18 +1,18 @@
-InputDirectory = F:/Menageries/MenagerieOfRapidKits/IntegenXGlobalFilerBV70-500/MoreIntegenxRapidHIT-GF-BV70-500;
+InputDirectory = C:/Users/goorrob/TestBaseline;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
 MarkerSetName = GlobalFiler;
-LaneStandardName = BV-80-500;
+LaneStandardName = ABI-LIZ-600-60-TO-460;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20150403-150538/V-20150403-150538_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171201-163851/V-20171201-163851_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171201-163851/V-20171201-163851_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 20;
-MinLaneStandardRFU = 50;
-MinLadderRFU = 150;
-MinInterlocusRFU = 20;
-MinLadderInterlocusRFU = 150;
-SampleDetectionThreshold = 20;
+MinSampleRFU = 250;
+MinLaneStandardRFU = 500;
+MinLadderRFU = 500;
+MinInterlocusRFU = 250;
+MinLadderInterlocusRFU = 500;
+SampleDetectionThreshold = 250;
 RawDataString = R;
 ;
 

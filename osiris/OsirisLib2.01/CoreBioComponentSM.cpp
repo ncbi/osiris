@@ -2547,6 +2547,9 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	else
 		ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
 
+	if (!GetMessageValue (normalizeRawData))
+		ComputeDerivativeFilters ();
+
 	ChannelData::SetUseNoiseLevelDefaultForFit (true);
 	bool useDetectionLevel = GetMessageValue (useDetectionLevelInSmoothing);
 	bool usePercentNoiseLevel = GetMessageValue (overrideNoiseLevelPercentsInSmoothing);

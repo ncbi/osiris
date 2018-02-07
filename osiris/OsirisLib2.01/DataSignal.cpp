@@ -4480,6 +4480,48 @@ double SampledData :: InnerProductWithConstantFunction (int left, int right, dou
 }
 
 
+bool SampledData :: TestIfNeighboringDataWithinRange (int testPosition, int neighborLimit, double range) {
+
+	if (testPosition < neighborLimit + 1)
+		return false;
+
+	if (testPosition >= NumberOfSamples - neighborLimit - 1)
+		return false;
+
+	double testValue = Measurements [testPosition];
+	double upperValue = testValue + range;
+	double lowerValue = testValue - range;
+	int i;
+	int upperRange = testPosition + neighborLimit;
+	int lowerRange = testPosition - neighborLimit;
+	double currentValue;
+
+	for (i=testPosition+1; i=upperRange; i++) {
+
+		currentValue = Measurements [i];
+
+		if (currentValue > upperValue)
+			return false;
+
+		if (currentValue < lowerValue)
+			return false;
+	}
+
+	for (i=testPosition-1; i>=lowerRange; i--) {
+
+		currentValue = Measurements [i];
+
+		if (currentValue > upperValue)
+			return false;
+
+		if (currentValue < lowerValue)
+			return false;
+	}
+
+	return true;
+}
+
+
 DataSignal* SampledData :: FindNextCharacteristicRetry (const DataSignal& Signature, double& fit, RGDList& previous, int dualCurve) {
 
 	if (dualCurve == 0)

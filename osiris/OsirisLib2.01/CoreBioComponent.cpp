@@ -1310,6 +1310,32 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 }
 
 
+bool CoreBioComponent :: ComputeDerivativeFilters () {
+
+	int i;
+	int left = (int) floor (mDataChannels [mLaneStandardChannel]->GetFirstAnalyzedMean ());
+
+	double reportMin = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
+	double reportMinTime;
+
+	// below if...else clause added 03/13/2015
+
+	if (reportMin > 0.0)
+		reportMinTime = mDataChannels [mLaneStandardChannel]->GetTimeForSpecifiedID (reportMin);
+
+	else
+		reportMinTime = -1.0;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i != mLaneStandardChannel)
+			mDataChannels[i]->AnalyzeDynamicBaselineUsingDerivativeFilterAndNormalizeRawDataSM (left, reportMinTime);
+	}
+
+	return true;
+}
+
+
 void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 
 	RGString locusName;
