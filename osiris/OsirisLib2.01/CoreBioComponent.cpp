@@ -1312,6 +1312,9 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 
 bool CoreBioComponent :: ComputeDerivativeFilters () {
 
+	//
+	//  Sample phase 1:  must come after ILS analysis!!
+
 	int i;
 	int left = (int) floor (mDataChannels [mLaneStandardChannel]->GetFirstAnalyzedMean ());
 

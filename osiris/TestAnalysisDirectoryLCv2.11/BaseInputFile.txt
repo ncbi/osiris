@@ -1,6 +1,6 @@
-InputDirectory = C:/Users/goorrob/TestBaseline;
+InputDirectory = F:/Menageries/TestShoulders/CalDojMore02162018/Donor group 4PB data/CrashedSampleTest;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
-ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+ReportDirectory = F:/Menageries/TestShoulders/CalDojMore02162018/Donor group 4PB data/CrashedSampleTest;
 MarkerSetName = GlobalFiler;
 LaneStandardName = ABI-LIZ-600-60-TO-460;
 CriticalOutputLevel = 15;

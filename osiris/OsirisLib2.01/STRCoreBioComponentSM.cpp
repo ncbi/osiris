@@ -4891,6 +4891,87 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 }
 
 
+int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsAfterDerivativeFilteringSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+
+		//
+	//  This is sample stage 1
+	//
+
+	int status;
+	int defaultWindow = TracePrequalification::GetDefaultWindowWidth ();
+	double defaultThreshold = TracePrequalification::GetDefaultNoiseThreshold ();
+//	int currentWindow = TracePrequalification::GetWindowWidth ();
+	TracePrequalification::SetWindowWidth (defaultWindow);
+	TracePrequalification::SetNoiseThreshold (defaultThreshold);
+	int currentWindow = defaultWindow;
+	int recommendedWindow;
+	double recommendedThreshold;
+	RGString notice;
+	smILSFailed ilsFailed;
+
+	ChannelData::SetBeginAnalysisTime (-1.0);
+	status = FitLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
+
+	if (status < 0) {
+
+		// This should not come here...FitLaneStandardCharacteristics only returns 0?
+		return status;
+	}
+
+//	mLSData->ClearAllPeaksBelowAnalysisThreshold ();
+
+	if (AnalyzeLaneStandardChannelSM (text, ExcelText, msg, print) < 0) {
+
+		// ErrorString already populated; cannot go on because need a healthy internal lane standard to do anything else
+		SetMessageValue (ilsFailed, true);
+		notice = ":  Could not analyze ladder ILS";
+		AppendDataForSmartMessage (ilsFailed, notice);
+		return -2;
+	}
+
+//	Progress = 3;
+	double ratio = mDataChannels [mLaneStandardChannel]->GetMeasurementRatio ();
+	int intRatio = (int) floor (ratio + 0.5);
+	recommendedWindow = intRatio - 1;
+
+	if (recommendedWindow < 4)
+		recommendedWindow = 4;
+
+	else if (recommendedWindow > defaultWindow)
+		recommendedWindow = defaultWindow;
+
+//	if (recommendedWindow < currentWindow) {
+
+		TracePrequalification::SetWindowWidth (recommendedWindow);
+		recommendedThreshold = ((double)recommendedWindow) * defaultThreshold / ((double)defaultWindow);
+		TracePrequalification::SetNoiseThreshold (recommendedThreshold);
+//	}
+
+	ComputeDerivativeFilters ();
+
+	cout << "Window width = " << TracePrequalification::GetWindowWidth () << endl;
+	cout << "Noise threshold = " << TracePrequalification::GetNoiseThreshold () << endl;
+
+	status = FitNonLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
+	//cout << "Fitting all non-lane standard neg. peaks (2)" << endl;
+	//if (FitNonLaneStandardNegativeCharacteristicsSM (text, ExcelText, msg, print) < 0)
+	//	cout << "Negative characteristics did not analyze correctly" << endl;
+
+	FitNonLaneStandardNegativeCharacteristicsSM (text, ExcelText, msg, print);
+	//cout << "Done fitting all non-lane standard neg. peaks" << endl;
+	mDataChannels [mLaneStandardChannel]->FitAllNegativeCharacteristicsSM (text, ExcelText, msg, print);
+
+	if (status < 0) {
+
+		// This should not come here...FitNonLaneStandardCharacteristics only returns 0?
+		return status;
+	}
+
+	//cout << "Finished fitting all characteristics" << endl;
+	return status;
+}
+
+
 int STRSampleCoreBioComponent :: RemoveInterlocusSignalsSM () {
 
 	//

@@ -2386,6 +2386,12 @@ int CoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& text, RGTex
 }
 
 
+int CoreBioComponent :: FitAllSampleCharacteristicsAfterDerivativeFilteringSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+
+	return -1;
+}
+
+
 int CoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	return -1;
@@ -2547,8 +2553,8 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	else
 		ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
 
-	if (!GetMessageValue (normalizeRawData))
-		ComputeDerivativeFilters ();
+	//if (!GetMessageValue (normalizeRawData))
+	//	ComputeDerivativeFilters ();
 
 	ChannelData::SetUseNoiseLevelDefaultForFit (true);
 	bool useDetectionLevel = GetMessageValue (useDetectionLevelInSmoothing);
@@ -2587,7 +2593,12 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 		ChannelData::SetIsNormalizationPass (false);
 
 //	status = FitAllCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
-	status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
+
+	if (GetMessageValue (normalizeRawData))
+		status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
+
+	//else
+	//	status = FitAllSampleCharacteristicsAfterDerivativeFilteringSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);  // use this function for derivative filtering
 
 	if (status < 0) {
 

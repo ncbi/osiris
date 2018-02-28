@@ -1366,6 +1366,10 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			}
 
 			nextSignal->SetChannel (mChannel);
+
+			if ((mChannel == 3) && (nextSignal->GetMean () < 4077.5) && (nextSignal->GetMean () > 4076.5))
+				bool stopHere = true;
+
 			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
 
 			if (shoulderSignal != NULL) {

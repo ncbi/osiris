@@ -96,6 +96,7 @@ public:
 	int GetNumberOfMinima () const { return mNumberOfMinima; }
 	int GetLocalMinimum () const { return mLocalMinimum; }
 	double GetLocalMinValue () const { return mLocalMinValue; }
+	int GetSecondaryMode () const { return mSecondaryMode; }
 
 	void ReassessRelativeMinimaGivenNoise (double noiseLevel, DataSignal* data);
 	void RecomputeRelativeMinimum (const DataSignal* currentSignal, double mean, int localMax, double maxValue, const DataSignal* rawData);

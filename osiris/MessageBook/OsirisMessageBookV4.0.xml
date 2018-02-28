@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.11</VersionNumber>
-	<BuildTime>01/19/2018 05:48 PM</BuildTime>
+	<VersionNumber>7.12</VersionNumber>
+	<BuildTime>02/21/2018 03:06 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -626,7 +626,7 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR  smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution</Expression>
+				<Expression>(smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution) AND (NOT smRequireExcessiveResidualOffLadderPreset OR (smRequireExcessiveResidualOffLadderPreset AND smAlleleOL))</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak:  Excessive Residual Displacement</Text>
 			<ReportLevel>20</ReportLevel>
@@ -638,7 +638,7 @@
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT (smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution)</Expression>
+				<Expression>NOT ((smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution) AND (NOT smRequireExcessiveResidualOffLadderPreset OR (smRequireExcessiveResidualOffLadderPreset AND smAlleleOL)))</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
@@ -6035,6 +6035,22 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smRequireExcessiveResidualOffLadderPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Require Excessive Residual Displacement Peaks Be Off-Ladder</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Require Excessive Residual Displacement Peaks Be Off-Ladder</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -6656,6 +6672,7 @@
 						<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
 						<Name>smDontCallPullupPlusOLPreset</Name>
 						<Name>smDoNotCallExcessResidualPreset</Name>
+						<Name>smRequireExcessiveResidualOffLadderPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

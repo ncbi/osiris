@@ -6208,12 +6208,14 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineUsingDerivativeFilterAndNormal
 	bool ignoreNegativeBaseline = false;
 	double noiseRange;
 	double filterHeight = noiseRange = mData->GetNoiseRange ();
-	double percentNoiseRangeForDerivativeFilter = 0.75;
+	double percentNoiseRangeForDerivativeFilter = 0.5;
 	int minIntervalLength = 45;
-	int subIntervalLength = 15;
-	int neighborTestLimit = 10;
+	int subIntervalLength = 41;
+	int neighborTestLimit = 20;
+	double noiseRangeFraction = 0.9;
 
 	filterHeight = percentNoiseRangeForDerivativeFilter * filterHeight;
+	noiseRange = noiseRangeFraction * noiseRange;
 
 	if (mData == NULL)
 		return 0;
@@ -6274,78 +6276,80 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineUsingDerivativeFilterAndNormal
 	while (!prospectiveList.empty ()) {
 
 		nextProspectiveInterval = prospectiveList.front ();
-		nextProspectiveInterval->DivideIntoNormalizationIntervals (minIntervalLength, noiseRange, subIntervalLength, neighborTestLimit);
+		//nextProspectiveInterval->DivideIntoNormalizationIntervals (minIntervalLength, noiseRange, subIntervalLength, neighborTestLimit);
+		nextProspectiveInterval->SmoothInteriorPoints (5, 8, mSmoothedRawData);
 
-		while (true) {
+		//while (true) {
 
-			nextNormalizationInterval = nextProspectiveInterval->GetNextNormalizationInterval (minIntervalLength);
+		//	nextNormalizationInterval = nextProspectiveInterval->GetNextNormalizationInterval (minIntervalLength);
 
-			if (nextNormalizationInterval == NULL)
-				break;
+		//	if (nextNormalizationInterval == NULL)
+		//		break;
 
-			normalizationIntervalList.push_back (nextNormalizationInterval);
-		}
+		//	normalizationIntervalList.push_back (nextNormalizationInterval);
+		//}
 
 		prospectiveList.pop_front ();
 		delete nextProspectiveInterval;
 	}
 
-	list<double> knotTimes;
-	list<double> knotValues;
+	//list<double> knotTimes;
+	//list<double> knotValues;
 
-	while (!normalizationIntervalList.empty ()) {
+	//while (!normalizationIntervalList.empty ()) {
 
-		nextNormalizationInterval->DivideIntoSubIntervalsAndCalculateKnots ();
-		nextNormalizationInterval->AddKnotsToLists (knotTimes, knotValues);
-		normalizationIntervalList.pop_front ();
-		delete nextNormalizationInterval;
-	}
+	//	nextNormalizationInterval = normalizationIntervalList.front ();
+	//	nextNormalizationInterval->DivideIntoSubIntervalsAndCalculateKnots ();
+	//	nextNormalizationInterval->AddKnotsToLists (knotTimes, knotValues);
+	//	normalizationIntervalList.pop_front ();
+	//	delete nextNormalizationInterval;
+	//}
 
 
 
-	int left = startBaselineFit;	// modified 03/13/2015
-	//int end = (int)floor (mData->RightEndPoint ());
-	int end = mData->GetNumberOfSamples () - 1;
-	double temp;
+	//int left = startBaselineFit;	// modified 03/13/2015
+	////int end = (int)floor (mData->RightEndPoint ());
+	//int end = mData->GetNumberOfSamples () - 1;
+	//double temp;
 
-	// build list of ProspectiveIntervalForNormalization's and then use these to build list of NormalizationInterval's.  Finally, use
-	// this last list to generate knots.
+	//// build list of ProspectiveIntervalForNormalization's and then use these to build list of NormalizationInterval's.  Finally, use
+	//// this last list to generate knots.
 
-	temp = mData->RightEndPoint ();
-	knotTimes.push_back (temp + 100.0);
-	knotTimes.push_back (temp + 200.0);
-	knotTimes.push_back (temp + 300.0);
-	knotValues.push_back (0.0);
-	knotValues.push_back (0.0);
-	knotValues.push_back (0.0);
+	//temp = mData->RightEndPoint ();
+	//knotTimes.push_back (temp + 100.0);
+	//knotTimes.push_back (temp + 200.0);
+	//knotTimes.push_back (temp + 300.0);
+	//knotValues.push_back (0.0);
+	//knotValues.push_back (0.0);
+	//knotValues.push_back (0.0);
 
-	if (!knotValues.empty ())
-		temp = knotValues.front ();
+	//if (!knotValues.empty ())
+	//	temp = knotValues.front ();
 
-	else {
+	//else {
 
-		temp = 0.0;
-		cout << "No knot values..." << endl;
-	}
+	//	temp = 0.0;
+	//	cout << "No knot values..." << endl;
+	//}
 
-	//cout << "First calculated knot height = " << temp << ".  Start Time = " << startTime << endl;
+	////cout << "First calculated knot height = " << temp << ".  Start Time = " << startTime << endl;
 
-	knotTimes.push_front ((double)(startBaselineFit / 2));
-	knotValues.push_front (temp);
-	knotTimes.push_front (0.0);
-	knotValues.push_front (0.0);
+	//knotTimes.push_front ((double)(startBaselineFit / 2));
+	//knotValues.push_front (temp);
+	//knotTimes.push_front (0.0);
+	//knotValues.push_front (0.0);
 
-	knotTimes.push_front (-100.0);
-	knotTimes.push_front (-200.0);
-	knotTimes.push_front (-300.0);
-	knotValues.push_front (0.0);
-	knotValues.push_front (0.0);
-	knotValues.push_front (0.0);
+	//knotTimes.push_front (-100.0);
+	//knotTimes.push_front (-200.0);
+	//knotTimes.push_front (-300.0);
+	//knotValues.push_front (0.0);
+	//knotValues.push_front (0.0);
+	//knotValues.push_front (0.0);
 
-	list<double>::iterator itTimes;
-	list<double>::iterator itValues;
+	//list<double>::iterator itTimes;
+	//list<double>::iterator itValues;
 
-	//  Let's see if we can do without shaping!
+	////  Let's see if we can do without shaping! Or not (02/14/2018)
 
 	//cout << "Knot Times..." << endl;
 	//int n = 0;
@@ -6363,10 +6367,10 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineUsingDerivativeFilterAndNormal
 	//else {
 
 	//	//cout << "Using new baseline estimation" << endl;
-	//	ShapeBaselineData (knotTimes, knotValues, FitData, FitNegData, rfuThreshold);	 // Commented out 02/03/2014
+	//	ShapeBaselineData (knotTimes, knotValues, NULL, NULL, 0.0);	 // Commented out 02/03/2014
 	//	//cout << "Data is shaped; now edit out-of-range data" << endl;
 	//	//ShapeBaselineData (knotTimes, knotValues);
-	//	EditPeaksForOutOfRange (knotTimes, knotValues, FitNegData, rfuThreshold);	// 02/03/2014:  This function causes a crash under some conditions...Fixed 02/04/2014
+	//	//EditPeaksForOutOfRange (knotTimes, knotValues, FitNegData, rfuThreshold);	// 02/03/2014:  This function causes a crash under some conditions...Fixed 02/04/2014
 	//}
 
 	//cout << "Shaped baseline data" << endl;
@@ -6386,133 +6390,133 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineUsingDerivativeFilterAndNormal
 	//	}
 	//}
 
-	//for (itTimes=knotTimes2.begin (); itTimes!=knotTimes2.end (); itTimes++) {
+	////for (itTimes=knotTimes2.begin (); itTimes!=knotTimes2.end (); itTimes++) {
 
-	//	temp = *itTimes;
+	////	temp = *itTimes;
 
-	//	if (n == 0)
-	//		cout << ":  ";
+	////	if (n == 0)
+	////		cout << ":  ";
 
-	//	else
-	//		cout << ", ";
+	////	else
+	////		cout << ", ";
 
-	//	cout << temp;
-	//	n++;
+	////	cout << temp;
+	////	n++;
+	////}
+
+	////cout << endl << endl;
+
+	////cout << "Knot Values";
+	////n = 0;
+
+	////for (itValues=knotValues2.begin (); itValues!=knotValues2.end (); itValues++) {
+
+	////	temp = *itValues;
+
+	////	if (n == 0)
+	////		cout << ":  ";
+
+	////	else
+	////		cout << ", ";
+
+	////	cout << temp;
+	////	n++;
+	////}
+
+	////cout << endl << endl;
+
+	////if (startTime > 100) {
+
+	////	knotTimes.push_front ((double)(startTime / 2));
+	////	knotValues.push_front (temp);
+	////	knotTimes.push_front (0.0);
+	////	knotValues.push_front (0.0);
+	////}
+
+	////else if (startTime > 50) {
+
+	////	knotTimes.push_front (0.0);
+	////	knotValues.push_front (temp);
+	////}
+
+	////delete FitData;
+	////delete FitNegData;
+	////smTempUseNaturalCubicSplineForNormalization useNaturalCubicSpline;
+
+	//if (UseHermiteCubicSplineForNormalization) {
+
+	//	//cout << "Using Hermite cubic spline for normalization..." << endl;
+	//	mBaseLine = new CSplineTransform (knotTimes2, knotValues2, true, true);  //*****test 04/28/2014
 	//}
 
-	//cout << endl << endl;
+	//else {
 
-	//cout << "Knot Values";
-	//n = 0;
-
-	//for (itValues=knotValues2.begin (); itValues!=knotValues2.end (); itValues++) {
-
-	//	temp = *itValues;
-
-	//	if (n == 0)
-	//		cout << ":  ";
-
-	//	else
-	//		cout << ", ";
-
-	//	cout << temp;
-	//	n++;
+	//	//cout << "Using natural cubic spline for normalization..." << endl;
+	//	mBaseLine = new CSplineTransform (knotTimes2, knotValues2);
 	//}
 
-	//cout << endl << endl;
+	////cout << "Normalization spline created" << endl;
+	////knotTimes2.clear ();
+	////knotValues2.clear ();
+	////firstList.clear ();
+	////lastList.clear ();
 
-	//if (startTime > 100) {
+	//if (HasFilteredData ()) {	//  Moved these two lines above test for baseline validity in case it's not valid.  At least we then restore the original baseline 08/01/2014
 
-	//	knotTimes.push_front ((double)(startTime / 2));
-	//	knotValues.push_front (temp);
-	//	knotTimes.push_front (0.0);
-	//	knotValues.push_front (0.0);
+	//	//cout << "Restoring raw data and deleting filtered data" << endl;
+	//	RestoreRawDataAndDeleteFilteredSignal ();
+	//	//cout << "Raw data restored" << endl;
 	//}
 
-	//else if (startTime > 50) {
+	////cout << "Raw data restored for channel " << mChannel << endl;
 
-	//	knotTimes.push_front (0.0);
-	//	knotValues.push_front (temp);
+
+	//if (!mBaseLine->IsValid ()) {
+
+	//	delete mBaseLine;
+	//	mBaseLine = NULL;
+	//	cout << "Baseline analysis failed..." << endl;
+	//	return 0;
 	//}
 
-	//delete FitData;
-	//delete FitNegData;
-	//smTempUseNaturalCubicSplineForNormalization useNaturalCubicSpline;
+	////cout << "Baseline analysis succeeded..." << endl;
+	//mBaselineStart = 0;
 
-	if (UseHermiteCubicSplineForNormalization) {
+	//if (GetMessageValue (ignoreNegativeBaselineMsg))
+	//	ignoreNegativeBaseline = true;
 
-		//cout << "Using Hermite cubic spline for normalization..." << endl;
-		mBaseLine = new CSplineTransform (knotTimes, knotValues, true, true);  //*****test 04/28/2014
-	}
+	//double dynamicBaseline;
 
-	else {
+	////
+	//// Insert restoration of raw data here and delete filtered data
+	////
 
-		//cout << "Using natural cubic spline for normalization..." << endl;
-		mBaseLine = new CSplineTransform (knotTimes, knotValues);
-	}
+	////cout << "Restoring raw data for channel " << mChannel << endl;
 
-	//cout << "Normalization spline created" << endl;
-	//knotTimes2.clear ();
-	//knotValues2.clear ();
-	//firstList.clear ();
-	//lastList.clear ();
+	//double* sampleData = (double*)mData->GetData ();
+	//int i;
 
-	if (HasFilteredData ()) {	//  Moved these two lines above test for baseline validity in case it's not valid.  At least we then restore the original baseline 08/01/2014
+	////for (i=startTime-1; i>=0; --i) {
 
-		//cout << "Restoring raw data and deleting filtered data" << endl;
-		RestoreRawDataAndDeleteFilteredSignal ();
-		//cout << "Raw data restored" << endl;
-	}
+	////	temp *= 0.97;
+	////	dynamicBaseline = temp;
 
-	//cout << "Raw data restored for channel " << mChannel << endl;
+	////	if ((dynamicBaseline <= 0.0) && ignoreNegativeBaseline)
+	////		continue;
 
+	////	sampleData [i] -= dynamicBaseline;
+	////}
 
-	if (!mBaseLine->IsValid ()) {
+	//dynamicBaseline = mBaseLine->EvaluateSequenceStart (0.0, 1.0);
+	//bool useNegativeBaseline = !ignoreNegativeBaseline;
 
-		delete mBaseLine;
-		mBaseLine = NULL;
-		cout << "Baseline analysis failed..." << endl;
-		return 0;
-	}
+	//for (i=0; i<numSamples; ++i) {   ///Temporary...to test baseline estimation 02/12/2018
 
-	//cout << "Baseline analysis succeeded..." << endl;
-	mBaselineStart = 0;
+	//	if ((dynamicBaseline > 0.0) || useNegativeBaseline)
+	//		sampleData [i] -= dynamicBaseline;
 
-	if (GetMessageValue (ignoreNegativeBaselineMsg))
-		ignoreNegativeBaseline = true;
-
-	double dynamicBaseline;
-
-	//
-	// Insert restoration of raw data here and delete filtered data
-	//
-
-	//cout << "Restoring raw data for channel " << mChannel << endl;
-
-	double* sampleData = (double*)mData->GetData ();
-	int i;
-
-	//for (i=startTime-1; i>=0; --i) {
-
-	//	temp *= 0.97;
-	//	dynamicBaseline = temp;
-
-	//	if ((dynamicBaseline <= 0.0) && ignoreNegativeBaseline)
-	//		continue;
-
-	//	sampleData [i] -= dynamicBaseline;
+	//	dynamicBaseline = mBaseLine->EvaluateSequenceNext ();
 	//}
-
-	dynamicBaseline = mBaseLine->EvaluateSequenceStart (0.0, 1.0);
-	bool useNegativeBaseline = !ignoreNegativeBaseline;
-
-	for (i=0; i<numSamples; ++i) {
-
-		if ((dynamicBaseline > 0.0) || useNegativeBaseline)
-			sampleData [i] -= dynamicBaseline;
-
-		dynamicBaseline = mBaseLine->EvaluateSequenceNext ();
-	}
 
 	//cout << "Normalization successful" << endl;
 	return 1;

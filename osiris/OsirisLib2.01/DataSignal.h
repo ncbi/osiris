@@ -1152,6 +1152,7 @@ protected:
 
 	int GetSampleNumber (double abscissa) const;
 	double GetNorm2 (int nleft, int nright);
+	double FindApproximateIntersection (DataSignal* prevSignal, DataSignal* nextSignal);
 };
 
 

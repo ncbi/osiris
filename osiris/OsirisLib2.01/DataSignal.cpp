@@ -3739,6 +3739,16 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 	int lowerLimit = (int) ceil (prevSignal->GetMean () + prevHalfWidth) - 1;
 	int upperLimit = (int) floor (nextSignal->GetMean () - nextHalfWidth) + 1;
 
+	//double estimatedIntersection = FindApproximateIntersection (prevSignal, nextSignal);
+	//int lowerEstimatedIntersection = (int) floor (estimatedIntersection);
+	//int upperEstimatedIntersection = (int) floor (estimatedIntersection + 0.5);
+
+	//if ((double) lowerLimit > estimatedIntersection)
+	//	lowerLimit = lowerEstimatedIntersection;
+
+	//if ((double) upperLimit < estimatedIntersection)
+	//	upperLimit = upperEstimatedIntersection;
+
 	//for (i=startTime; i<=endTime; i++) {
 
 	//	maxFunctionValue = prevSignal->Value ((double)i);
@@ -4496,7 +4506,7 @@ bool SampledData :: TestIfNeighboringDataWithinRange (int testPosition, int neig
 	int lowerRange = testPosition - neighborLimit;
 	double currentValue;
 
-	for (i=testPosition+1; i=upperRange; i++) {
+	for (i=testPosition+1; i<=upperRange; i++) {
 
 		currentValue = Measurements [i];
 
@@ -5355,6 +5365,39 @@ double SampledData :: GetNorm2 (int nleft, int nright) {
 	Sum1 *= Spacing;
 
 	return Sum1;
+}
+
+
+double SampledData :: FindApproximateIntersection (DataSignal* prevSignal, DataSignal* nextSignal) {
+
+	double h1 = prevSignal->Peak ();
+	double h2 = nextSignal->Peak ();
+	double l1 = prevSignal->GetMean ();
+	double l2 = nextSignal->GetMean ();
+	double sum = h1 + h2;
+
+	if (sum == 0.0) {
+
+		return 0.5 * (l1 + l2);
+	}
+
+	double firstEstimate = (h1 * l2 + h2 * l1) / sum;
+	double H1 = prevSignal->Value (firstEstimate);
+	double H2 = nextSignal->Value (firstEstimate);
+	sum = H1 * l2 - H2 * l1;
+
+	if (fabs (H2 - H1) * l1 * l2 >= (l2 - l1) * fabs (sum)) {
+
+		return firstEstimate;
+	}
+
+	double lambda = (H2 - H1) / sum;
+	double secondEstimate = (firstEstimate - lambda * l1 * l2) / (1.0 + lambda);
+
+	if ((secondEstimate <= l1) || (secondEstimate >= l2))
+		return firstEstimate;
+
+	return secondEstimate;
 }
 
 
@@ -11098,6 +11141,16 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 
 	if (Segment->GetNumberOfMinima () == 0) {
 	
+		fit = 0.0;
+		return NULL;
+	}
+
+	int localMin0 = Segment->GetLocalMinimum ();
+	bool minEqualsMax = (Segment->GetLocalMinimum () == Segment->GetSecondaryMode ());
+	bool intervalTooNarrow = (abs (localMin0 - Segment->GetLeft ()) < 3) || (abs (localMin0 - Segment->GetRight ()) < 3);
+
+	if (minEqualsMax || intervalTooNarrow) {
+
 		fit = 0.0;
 		return NULL;
 	}

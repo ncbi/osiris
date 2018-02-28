@@ -108,6 +108,7 @@ public:
 	bool IsLongEnough (int minLength) const { return (mEnd - mStart + 1) >= minLength; }
 
 	void DivideIntoNormalizationIntervals (int minLength, double noiseRange, int subLength, int neighborTestLimit);
+	void SmoothInteriorPoints (int nSmoothPoints, int nSlackPoints, double* smoothedData);
 	NormalizationInterval* GetNextNormalizationInterval (int minLength);
 
 protected:
@@ -574,6 +575,7 @@ protected:
 	int mBaselineStart;
 	CoordinateTransform* mTimeMap;
 	double* mDerivFilter;
+	double* mSmoothedRawData;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

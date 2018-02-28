@@ -145,10 +145,47 @@ void ProspectiveIntervalForNormalization :: DivideIntoNormalizationIntervals (in
 		else
 			mNormalizationIntervals.push_back (nextInterval);
 
-		currentStart = currentEnd;
+		currentStart = currentEnd + 1;
 
 		if (mEnd - currentStart + 1 < minLength)
 			break;
+	}
+}
+
+
+void ProspectiveIntervalForNormalization :: SmoothInteriorPoints (int nSmoothPoints, int nSlackPoints, double* smoothedData) {
+
+	int disp = nSmoothPoints + nSlackPoints;
+	int startPt = mStart + disp;
+	int endPt = mEnd - disp;
+	int i;
+	int j;
+	double divisor = (double) (2 * nSmoothPoints + 1);
+	bool FirstTime = true;
+	double previous = 0.0;
+
+	for (i=startPt; i<=endPt; i++) {
+
+		double sum = 0.0;
+		int upperLimit = i + nSmoothPoints;
+		int lowerLimit = i - nSmoothPoints;
+
+		if (FirstTime) {
+
+			FirstTime = false;
+
+			for (j=i-nSmoothPoints; j<=upperLimit; j++)
+				sum += mData->Value (j);
+
+			previous = sum;
+			smoothedData [i] = sum / divisor;
+		}
+
+		else {
+
+			previous = previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
+			smoothedData [i] = previous / divisor;
+		}
 	}
 }
 
@@ -225,7 +262,7 @@ bool NormalizationInterval :: DivideIntoSubIntervalsAndCalculateKnots () {
 	int i;
 
 	int localStart = subIntervalsStart;
-	int localEnd = localStart +mSubLength - 1;
+	int localEnd = localStart + mSubLength - 1;
 	double averageHeight;
 	double averageTime;
 
@@ -272,74 +309,84 @@ bool NormalizationInterval :: AddKnotsToLists (list<double>& knotTimes, list<dou
 
 double NormalizationInterval :: ComputeSubIntervalAverage (int startPt, int endPt) {
 
-	list<double> samplePts;
-	double* sampleArray = new double [mSubLength];
+	double average = 0.0;
 	int i;
-	int keepPts = mSubLength / 2;
-
-	if (mSubLength%2 != 0)
-		keepPts++;
 
 	for (i=startPt; i<=endPt; i++)
-		samplePts.push_back (mData->Value (i));
+		average += mData->Value (i);
 
-	samplePts.sort ();
-
-	for (i=0; i<mSubLength; i++) {
-
-		sampleArray [i] = samplePts.front ();
-		samplePts.pop_front ();
-	}
-
-	double minDiff = sampleArray [mSubLength - 1] - sampleArray [0];
-	double average;
-	int minStartIndex = 0;
-
-	if (minDiff == 0.0) {
-
-		average = sampleArray [0];
-		samplePts.clear ();
-		delete[] sampleArray;
-		return average;
-	}
-
-	int lastEnd = mSubLength - 1;
-	int subArrayIncrement = keepPts - 1;
-	double delta;
-	int endIndex;
-
-	for (i=0; i<lastEnd; i++) {
-
-		endIndex = i + subArrayIncrement;
-
-		if (endIndex > lastEnd)
-			break;
-
-		delta = sampleArray [endIndex] - sampleArray [i];
-
-		if (delta <= minDiff) {
-
-			minDiff = delta;
-			minStartIndex = i;
-		}
-	}
-
-	average = 0.0;
-	endIndex = minStartIndex + subArrayIncrement;
-
-	for (i=minStartIndex; i<=endIndex; i++)
-		average += sampleArray [i];
-
-	average = average /(double)keepPts;
-	samplePts.clear ();
-	delete[] sampleArray;
+	average = average /(double) (endPt - startPt + 1);
 	return average;
+
+	//list<double> samplePts;
+	//double* sampleArray = new double [mSubLength];
+	//int i;
+	//int keepPts = mSubLength / 2;
+
+	//if (mSubLength%2 != 0)
+	//	keepPts++;
+
+	//for (i=startPt; i<=endPt; i++)
+	//	samplePts.push_back (mData->Value (i));
+
+	//samplePts.sort ();
+
+	//for (i=0; i<mSubLength; i++) {
+
+	//	sampleArray [i] = samplePts.front ();
+	//	samplePts.pop_front ();
+	//}
+
+	//double minDiff = sampleArray [mSubLength - 1] - sampleArray [0];
+	//double average;
+	//int minStartIndex = 0;
+
+	//if (minDiff == 0.0) {
+
+	//	average = sampleArray [0];
+	//	samplePts.clear ();
+	//	delete[] sampleArray;
+	//	return average;
+	//}
+
+	//int lastEnd = mSubLength - 1;
+	//int subArrayIncrement = keepPts - 1;
+	//double delta;
+	//int endIndex;
+
+	//for (i=0; i<lastEnd; i++) {
+
+	//	endIndex = i + subArrayIncrement;
+
+	//	if (endIndex > lastEnd)
+	//		break;
+
+	//	delta = sampleArray [endIndex] - sampleArray [i];
+
+	//	if (delta <= minDiff) {
+
+	//		minDiff = delta;
+	//		minStartIndex = i;
+	//	}
+	//}
+
+	//average = 0.0;
+	//endIndex = minStartIndex + subArrayIncrement;
+
+	//for (i=minStartIndex; i<=endIndex; i++)
+	//	average += sampleArray [i];
+
+	//average = average /(double)keepPts;
+	//average = 0.5 * (sampleArray [minStartIndex] + sampleArray [endIndex]);
+	//samplePts.clear ();
+	//delete[] sampleArray;
+	//return average;
 }
 
 
 ChannelData :: ChannelData () : SmartMessagingObject (), mChannel (-1), mData (NULL), mBackupData (NULL),
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -348,7 +395,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -357,7 +404,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel, LaneStandard* inputLS) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -367,7 +414,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 ChannelData :: ChannelData (const ChannelData& cd) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), 
-mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
+mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
 
 	mData = (DataSignal*)cd.mData->Copy ();
 	mLocusList = cd.mLocusList;
@@ -380,7 +427,7 @@ mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLin
 ChannelData :: ChannelData (const ChannelData& cd, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
 
 	mData = NULL;
 	RGDList tempLocusList = cd.mLocusList;
@@ -435,6 +482,7 @@ ChannelData :: ~ChannelData () {
 	delete[] Peaks;
 	delete[] SecondaryContent;
 	delete[] mDerivFilter;
+	delete[] mSmoothedRawData;
 }
 
 
@@ -908,11 +956,14 @@ void ChannelData :: CalculateFirstDerivativeFilter () {
 
 	int n = mData->GetNumberOfSamples ();
 	mDerivFilter = new double [n];
+	mSmoothedRawData = new double [n];
 	double v0 = mData->Value (1);
 	double vM1 = mData->Value (0);
 	double vP1;
 	int i;
 	mDerivFilter [0] = 0.0;
+	mSmoothedRawData [0] = mData->Value (0);
+	mSmoothedRawData [1] = mData->Value (1);
 
 	for (i=2; i<n; i++) {
 
@@ -921,6 +972,7 @@ void ChannelData :: CalculateFirstDerivativeFilter () {
 		mDerivFilter [i-1] = 0.5 * (vP1 - vM1);  // This is a chordal approximation to the derivative
 		vM1 = v0;
 		v0 = vP1;
+		mSmoothedRawData [i] = mData->Value (i);
 	}
 
 	mDerivFilter [n - 1] = 0.0;
@@ -3306,7 +3358,7 @@ int ChannelData :: WriteBaselineData (RGTextOutput& text, const RGString& delim,
 	
 			for (j=0; j<NSamples; j++) {
 
-				text << (int)floor (mDerivFilter [j]) << delim;
+				text << (int)floor (mSmoothedRawData [j]) << delim;
 			}
 
 			text << "</baselinePoints>" << endLine;
