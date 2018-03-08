@@ -60,6 +60,10 @@
 #define getpid _getpid
 #endif
 
+#ifdef __WXMAC__
+#include "CSitePath.h"
+#endif
+
 const wxString mainApp::EMPTY_STRING(wxEmptyString);
 const int mainApp::DIALOG_STYLE =
   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER; // | wxTHICK_FRAME; //gone in wx 3.0
@@ -235,6 +239,7 @@ bool mainApp::OnInit()
   {
     bHasArgs = true;
   }
+  CSitePath::GetGlobal()->LogTestString();
 #endif
   
   m_pFrame->Startup(bHasArgs);
@@ -559,6 +564,11 @@ void mainApp::OnQuit(wxCommandEvent &e)
   _LogMessageFile(wxT("mainApp::OnQuit"),0);
 }
 
+bool mainApp::SetupSiteSettings(wxWindow *parent)
+{
+  return g_pThis->m_pFrame->SetupSiteSettings(parent);
+}
+
 #define DEFINE_CMD_HANDLER(x) \
   void mainApp::x (wxCommandEvent &e) { m_pFrame->x(e); }
 
@@ -570,6 +580,11 @@ DEFINE_CMD_HANDLER(OnArtifactLabels)
 DEFINE_CMD_HANDLER(OnExportSettings)
 DEFINE_CMD_HANDLER(OnEditGridColours)
 DEFINE_CMD_HANDLER(OnShowLog)
+
+#ifdef __WXMAC__
+DEFINE_CMD_HANDLER(OnAccessSiteSettings)
+DEFINE_CMD_HANDLER(OnShowSiteSettings)
+#endif
 
 DEFINE_CMD_HANDLER(OnAnalyze)
 DEFINE_CMD_HANDLER(OnOpenPlot)
@@ -600,6 +615,11 @@ EVT_MENU(IDartifactLabels, mainApp::OnArtifactLabels)
 EVT_MENU(IDexport,    mainApp::OnExportSettings)
 EVT_MENU(IDeditColours, mainApp::OnEditGridColours)
 EVT_MENU(IDlog,       mainApp::OnShowLog)
+
+#ifdef __WXMAC__
+EVT_MENU(IDsiteSettings, mainApp::OnAccessSiteSettings)
+EVT_MENU(IDsiteShow, mainApp::OnShowSiteSettings)
+#endif
 
 EVT_MENU(IDanalyze,   mainApp::OnAnalyze)
 EVT_MENU(IDArchiveExtract, mainApp::OnOpenArchive)

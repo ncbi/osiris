@@ -26,6 +26,7 @@ libnwx_a_SOURCES = \
 ../nwxTabOrder.cpp \
 ../nwxTextCtrl.cpp \
 ../nwxTreebook.cpp \
+../nwxUserInfo.cpp \
 ../nwxXmlCMF.cpp \
 ../nwxXmlCmfList.cpp \
 ../nwxXmlMRU.cpp \

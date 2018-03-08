@@ -23,6 +23,7 @@ output .msi file to reflect the new version.
 5. When distributing to the public or releasing a beta,
    update the web site in
    /net/mwebtest2/export/home/web/public/htdocs/projects/SNP/osiris
+   make sure TMP_DEBUG is not defined in osiris.m4 
 
   Update the version info in version.cgi
 

@@ -34,6 +34,7 @@
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxString.h"
 #include "nwx/nwxLog.h"
+#include "nwx/CIncrementer.h"
 
 bool nwxFileUtil::DO_NOT_SELECT_FILE = false;
 
@@ -129,6 +130,49 @@ void nwxFileUtil::NoEndWithSeparator(wxString *psDir)
     nLen--;
   }
 }
+wxString nwxFileUtil::GetExistingParent(const wxString &sPath)
+{
+  wxFileName fn(sPath);
+  wxString sPrev(sPath);
+  wxString sTmp = sPath;
+  while(!( wxFileName::DirExists(sTmp) || fn.FileExists() ))
+  {
+    sTmp = fn.GetPath();
+    if(sTmp == sPrev)
+    {
+      //  probably hit the root, prevent endless loop
+      sTmp.Empty();
+      break;
+    }
+    else
+    {
+      sPrev = sTmp;
+      fn.Assign(sTmp);
+    }
+  }
+  wxString sRtn;
+  if(sTmp.IsEmpty())
+  {}
+  else if(wxFileName::DirExists(sTmp))
+  {
+    sRtn = sTmp;
+  }
+    // if fn.DirExists() is false, it is likley that 
+    // a file exists with the desired path
+    // so a directory cannot be created;
+  return sRtn;
+}
+
+bool nwxFileUtil::ExistingParentWritable(const wxString &sPath)
+{
+  wxString s = GetExistingParent(sPath);
+  bool bRtn = !s.IsEmpty()
+    && wxFileName::IsDirWritable(s)
+    && wxFileName::IsDirReadable(s);
+  return bRtn;
+
+}
+
 wxString nwxFileUtil::BaseName(const wxString &_sDir)
 {
   wxString sDir(_sDir);
@@ -154,6 +198,98 @@ bool nwxFileUtil::_ShowFolder(const wxString &sFolderName)
   bool bRtn = wxLaunchDefaultBrowser(sURL);
   return bRtn;
 }
+
+#ifdef __WXMAC__
+
+// OS-662
+
+mode_t nwxFileUtil::GetDirPermission(const wxString &sPath, bool bCheckExistingParent)
+{
+  mode_t nRtn = 0;
+  if(sPath.IsEmpty()) {}
+  else if(wxFileName::DirExists(sPath))
+  {
+    struct stat statBuf;
+    if(!stat(sPath.utf8_str(),&statBuf))
+    {
+      nRtn = statBuf.st_mode;
+    }
+  }
+  else if(wxFileName::FileExists(sPath))
+  {
+    wxFileName fn(sPath);
+    nRtn = GetDirPermission(fn.GetPath(),false);
+  }
+  else if(bCheckExistingParent)
+  {
+    wxString sPathExist =
+      GetExistingParent(sPath);
+    nRtn = GetDirPermission(sPathExist,false);
+  }
+  return nRtn;
+}
+
+
+bool nwxFileUtil::SetFilePermissionFromDir(
+  const wxString &sPath, bool bLogError)
+{
+  //
+  //  set group and others write permission on
+  //  file or directory specified by sPath using those permissions
+  //  in the containing directory
+  //  This adds permissions if applicable and does not remove any permissions
+
+  bool bRtn = false;
+  bool bDirExists = wxFileName::DirExists(sPath);
+  wxString sError;
+  if(bDirExists || wxFileName::FileExists(sPath))
+  {
+    wxFileName fn(sPath);
+    struct stat statBuffer;
+    mode_t modeDir = 0;
+    mode_t mask  = bDirExists ? 0777 : 0666;
+    if(stat(fn.GetPath().utf8_str(),&statBuffer))
+    {
+      sError.Append(wxS("stat() failed for: "));
+      sError.Append(fn.GetPath());
+      sError.Append(wxS("\n"));
+    } // error
+    else if( (modeDir = statBuffer.st_mode & mask) == 0 ) {} // done
+    else if(!stat(sPath.utf8_str(),&statBuffer))
+    {
+      mode_t modeFile = statBuffer.st_mode;
+      mode_t modeDesired = modeFile | modeDir;
+      bRtn = (modeDesired != modeFile)
+        ? !chmod(sPath.utf8_str(),modeDesired)
+        : true;
+      if(!bRtn)
+      {
+        sError = wxString::Format
+          (wxS("chmod() failed, mode = %d\n"),
+           (int) modeDesired);
+      }
+    }
+    else
+    {
+      sError.Append(wxS("stat() failed for: "));
+      sError.Append(sPath);
+      sError.Append(wxS("\n"));
+    }
+  }
+  if((!bRtn) && bLogError)
+  {
+    nwxLog::LogMessage(
+      wxString::Format(
+        wxS("Cannot set file permission for %s\n%s"),
+        sPath, sError));
+  }
+  return bRtn;
+}
+
+// OS-662 end
+
+#endif
+
 #undef __EXE_NAME__
 #ifdef __WXMAC__
 #define __EXE_NAME__ wxT("open")
@@ -162,15 +298,16 @@ bool nwxFileUtil::_ShowFolder(const wxString &sFolderName)
 #define __EXE_NAME__ wxT("explorer.exe")
 #endif
 
-bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
+bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
 {
   wxFileName fn(sFileName);
   bool bRtn = false;
-  if(wxDir::Exists(sFileName))
+  if(bCheckDir && wxDir::Exists(sFileName))
   {
     bRtn = _ShowFolder(fn.GetFullPath());
   }
-  else if(wxFileName::IsFileReadable(sFileName))
+  else if(wxFileName::IsFileReadable(sFileName)
+          || wxFileName::IsDirReadable(sFileName))
   {
     bRtn = true;
     bool bFallback = true;
@@ -223,6 +360,12 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName)
     {
       bRtn = _ShowFolder(fn.GetPath());
     }
+  }
+  else
+  {
+    wxString sTmp("Cannot show file: ");
+    sTmp.Append(sFileName);
+    nwxLog::LogMessage(sFileName);
   }
   return bRtn;
 }
@@ -278,8 +421,9 @@ bool nwxFileUtil::UpDir(wxString *psDir, int n)
   return bRtn;
 }
 
-bool nwxFileUtil::MkDir(const wxString &sDir)
+bool nwxFileUtil::MkDir(const wxString &sDir, bool bInheritMode)
 {
+  //   STOP HERE need to support bInheritMode
   bool bRtn = false;
   if(wxDir::Exists(sDir))
   {
@@ -287,14 +431,81 @@ bool nwxFileUtil::MkDir(const wxString &sDir)
   }
   else
   {
-    wxString s(sDir);
-    UpDir(&s,1);
-    if(MkDir(s)) // check parent directory
+#ifdef __WXMAC__
+// OS-662
+    mode_t modeParent = bInheritMode
+      ? int(GetDirPermission(sDir,true) & 0777)
+      : 0;
+    int nPerm = wxS_DIR_DEFAULT | modeParent;
+#else
+    int nPerm = wxS_DIR_DEFAULT;
+#endif
+#ifdef TMP_DEBUG
+    int nCalledChmod = 0;
+#endif
+    bRtn = wxFileName::Mkdir
+      (sDir, nPerm, wxPATH_MKDIR_FULL);
+#ifdef __WXMAC__
+    if(bRtn && modeParent)
     {
-      // parent directory now exists
-      // make directory
-      bRtn = ::wxMkdir(sDir);
+      wxString sDirCheck(sDir);
+      bool bDone = false;
+      while(bRtn && !bDone)
+      {
+        NoEndWithSeparator(&sDirCheck);
+        mode_t modeNew = GetDirPermission(sDirCheck,false);
+        if(modeNew && ((modeNew | modeParent) != modeNew))
+        {
+          bRtn = !chmod(sDirCheck.utf8_str(), modeNew | modeParent);
+          nCalledChmod++;
+#ifdef TMP_DEBUG
+          {
+            wxString sMsg =
+              wxString::Format(
+                wxS("-------- chmod(\"%s\",0%o) = %s"),
+                sDirCheck,
+                modeNew | modeParent,
+                bRtn ? "true" : "false");
+            nwxLog::LogMessage(sMsg);
+          }
+#endif
+          wxFileName fn(sDirCheck);
+          sDirCheck = fn.GetPath();
+        }
+        else
+        {
+          bDone = true; // loop exit
+        }
+      }
     }
+
+#ifdef TMP_DEBUG
+    {
+#define BOOL_TO_STR(b) ((b) ? wxS("true") : wxS("false"))
+      wxString strMsg(wxS("nwxFileUtil::MkDir(\""));
+      strMsg.Append(sDir);
+      strMsg.Append(wxS("\", "));
+      strMsg.Append(BOOL_TO_STR(bInheritMode));
+      strMsg.Append(
+        wxString::Format(
+          wxS("): modeParent = %o, bRtn = %s, nCalledChmod = %d"),
+          modeParent,BOOL_TO_STR(bRtn),nCalledChmod
+          ));
+      nwxLog::LogMessage(strMsg);
+#undef BOOL_TO_STR
+    }
+#endif
+#endif
+//
+//  removed 2/26/2018 discard 8/1/2018
+//    wxString s(sDir);
+//    UpDir(&s,1);
+//    if(MkDir(s)) // check parent directory
+//    {
+//      // parent directory now exists
+//      // make directory
+//      bRtn = ::wxMkdir(sDir);
+//    }
   }
   return bRtn;
 }

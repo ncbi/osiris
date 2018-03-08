@@ -33,6 +33,7 @@
 #include <wx/stdpaths.h>
 #ifdef __WXMAC__
 #include <wx/dir.h>
+#include "CSitePath.h"
 #endif
 #ifdef __WXDEBUG__
 #include "mainApp.h"
@@ -51,7 +52,7 @@ void ConfigDir::Log()
     {wxS("m_sTopFilePath = "), m_sTopFilePath},
     {wxS("m_sSubdir = "), m_sSubdir},
     {wxS("m_sFileSubdir = "), m_sFileSubdir},
-    {wxS("m_sSitePath = "), m_sSitePath}
+    {wxS("m_sSitePath = "), GetSitePath()}
   };
   size_t SLIST = sizeof(LIST) / sizeof(LIST[0]);
   size_t i;
@@ -123,6 +124,15 @@ void ConfigDir::SetFileSubdir(const char *psSubdir)
   }
 }
 
+const wxString &ConfigDir::GetSitePath() const
+{
+#ifdef __WXMAC__
+  return CSitePath::GetGlobal()->GetSitePath();
+#else
+  return m_sSitePath;
+#endif
+}
+
 void ConfigDir::_SetupSitePath()
 {
 
@@ -133,6 +143,9 @@ void ConfigDir::_SetupSitePath()
 #endif
 
 #ifdef __WXMAC__
+
+  
+#if 0  
   wxString sEXE = GetExePath();
   const wxChar *psLib = wxS("/Library/Application Support");
   const wxChar *psSubDir = wxS("/Osiris-Files");
@@ -150,5 +163,6 @@ void ConfigDir::_SetupSitePath()
     sUp3.Append(psSubDir);
     m_sSitePath = sUp3;
   }
+#endif
 #endif
 }

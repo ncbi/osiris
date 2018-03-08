@@ -118,7 +118,7 @@ CPageName::CPageName(
   if(m_bReadOnly)
   {
     m_pTextLocation = new wxTextCtrl(
-      this,wxID_ANY,wxEmptyString);
+      this,wxID_ANY,wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
     pSizerLoc->Add(m_pTextLocation,1,wxEXPAND,0);
   }
   else

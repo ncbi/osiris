@@ -616,16 +616,21 @@ bool CDialogVolumes::_SetupAll()
 
 void CDialogVolumes::OnAdd(wxCommandEvent &e)
 {
-  bool bButton = (e.GetEventObject() == (wxObject *)m_pButtonAdd);
-  wxASSERT_MSG(bButton,"CDialogVolumes::OnAdd, wrong button");
-  if(bButton && _ChangeVolumeWarningOK())
+#ifdef __WXMAC__
+  if(mainApp::SetupSiteSettings(this))
+#endif
   {
-    CDialogVolumeAddNew x(&m_volumes,this);
-    if(x.ShowModal() == wxID_OK)
+    bool bButton = (e.GetEventObject() == (wxObject *)m_pButtonAdd);
+    wxASSERT_MSG(bButton,"CDialogVolumes::OnAdd, wrong button");
+    if(bButton && _ChangeVolumeWarningOK())
     {
-      wxString sSave;
-      m_sSelection = x.GetVolName();
-      _UpdateVolumeNames();
+      CDialogVolumeAddNew x(&m_volumes,this);
+      if(x.ShowModal() == wxID_OK)
+      {
+        wxString sSave;
+        m_sSelection = x.GetVolName();
+        _UpdateVolumeNames();
+      }
     }
   }
 }

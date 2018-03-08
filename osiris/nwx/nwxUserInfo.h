@@ -23,53 +23,87 @@
 *
 * ===========================================================================
 *
-*  FileName: CGridCMF.h
+*
+*  FileName: nwxUserInfo.h
 *  Author:   Douglas Hoffman
+*  Date:     2018/02/11
+*
+*  obtains user and group info using the UNIX API, currently Mac OSX
 *
 */
-#ifndef __C_GRID_CMF_H__
-#define __C_GRID_CMF_H__
+#ifndef __NWX_USER_INFO_H__
+#define __NWX_USER_INFO_H__
+#ifdef __WXMAC__
 
 #include "nwx/stdb.h"
+#include <map>
 #include <vector>
 #include "nwx/stde.h"
-#include "nwx/nsstd.h"
-#include "CGridEdit.h"
+#include <sys/types.h>
+#include <wx/string.h>
+#include <wx/arrstr.h>
+#include "nwx/nwxGlobalObject.h"
 
-class CDialogCMF;
-class nwxXmlCMF;
-class COARfile;
-class COARsampleSort;
-class COARsample2CMFSpecimen;
-
-class CGridCMF : public _CGridEdit
+class nwxUserInfo
 {
-public:
-  CGridCMF(
-    CDialogCMF *parent, 
-    wxWindowID id,
-    COARfile *pFile,
-    COARsampleSort *pSort);
-  virtual ~CGridCMF();
-
-  bool TransferDataFromGrid(
-    const wxString &sDefaultSpecimen,
-    COARsample2CMFSpecimen *pMap,
-    vector<wxString> *pErrorMsgs);
-
-  bool TransferDataToGrid();
-  void UpdateEmptyLoci();
-  static const wxString DEFAULT;
 private:
-  vector<wxString> m_vsLocus;
-  vector<COARsample *> m_vpSample;
-    // sample index in COARfile::GetSample for each row of table
-
-  COARfile *m_pFile;
-  COARsampleSort *m_pSort;
-  static wxGridCellChoiceEditor *_CreateTypeEditor();
-  static wxArrayString m_asChoices;
-  static const char * const COL_LABELS[];
+  nwxUserInfo();
+public:
+  typedef std::map<int,const wxString &> MAP_NS;
+  typedef std::map<const wxString &,int> MAP_SN;
+  virtual ~nwxUserInfo() {}
+  const wxString &GetUserName() const
+  {
+    return m_sUser;
+  }
+  uid_t GetUID() const
+  {
+    return m_nUID;
+  }
+  int GetDefaultGID() const
+  {
+    return m_nGID;
+  }
+  int GetLastError() const
+  {
+    return m_nLastError;
+  }
+  const wxString &GetDefaultGroupName() const
+  {
+    return GetGroupNameFromID(m_nGID);
+  }
+  const std::vector<int> &GetGroupIDs() const
+  {
+    return m_anGroupIDs;
+  }
+  const wxArrayString &GetGroupNames() const
+  {
+    return m_asGroupNames;
+  }
+  const wxString &GetGroupNameFromID(int nID) const
+  {
+    MAP_NS::const_iterator itr = m_mapGIDtoName.find(nID);
+    return (itr == m_mapGIDtoName.end()) ? g_EMPTY : itr->second;
+  }
+  int GetGroupIDfromName(const wxString &sName) const
+  {
+    MAP_SN::const_iterator itr = m_mapNameToGID.find(sName);
+    return (itr == m_mapNameToGID.end()) ? -1 : itr->second;
+  }
+private:
+  static const wxString g_EMPTY;
+  wxArrayString m_asGroupNames;
+  std::vector<int> m_anGroupIDs;
+  MAP_NS m_mapGIDtoName;
+  MAP_SN m_mapNameToGID;
+  wxString m_sUser;
+  gid_t m_nGID;
+  uid_t m_nUID;
+  int m_nLastError;
+  nwxDECLARE_GLOBAL_OBJECT(nwxUserInfo);
 };
 
+
+
+#endif
 #endif

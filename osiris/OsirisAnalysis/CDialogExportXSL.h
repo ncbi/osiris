@@ -56,7 +56,6 @@ public:
   {
     return m_bModified;
   }
-private:
   void ShowError(bool bClose = false)
   {
     if(!m_sError.IsEmpty())
@@ -73,6 +72,7 @@ private:
     }
   }
   CExportFiles *GetGlobal();
+private:
   void _SaveParms()
   {
     // save some parameters before opening CDialogExportSetup

@@ -64,6 +64,10 @@
 #include "CMenuBar.h"
 #include "COsirisIcon.h"
 
+#ifdef __WXMAC__
+#include "CDialogSitePath.h"
+#include "CSitePath.h"
+#endif
 #include "CDialogVolumes.h"
 #include "CDialogArtifactLabels.h"
 #include "CLabSettings.h"
@@ -791,6 +795,46 @@ void mainFrame::OnLabSettings(wxCommandEvent &)
   }
   return;
 }
+
+#ifdef __WXMAC__
+void mainFrame::OnAccessSiteSettings(wxCommandEvent &)
+{
+  CDialogSitePath dlg(DialogParent());
+  if(dlg.ShowModal() == wxID_OK)
+  {
+    dlg.ProcessSitePath(true);
+  }
+}
+bool mainFrame::SetupSiteSettings(wxWindow *parent)
+{
+  CSitePath *pSitePath = CSitePath::GetGlobal();
+  bool bExists = pSitePath->SitePathExists();
+  if(!bExists)
+  {
+    wxMessageDialog dlg
+      (DialogParent(),
+       wxS("The folder for OSIRIS site settings has not been created.\nWould you like to create it now?"),
+       "Alert", wxYES_NO | wxICON_EXCLAMATION);
+    if(dlg.ShowModal() == wxID_YES)
+    {
+      wxCommandEvent e;
+      OnAccessSiteSettings(e);
+      bExists = pSitePath->SitePathExists();
+    }
+  }
+  return bExists;
+}
+void mainFrame::OnShowSiteSettings(wxCommandEvent &e)
+{
+  CSitePath *pSitePath = CSitePath::GetGlobal();
+  bool bExists = SetupSiteSettings(DialogParent());
+  if(bExists)
+  {
+    nwxFileUtil::ShowFileFolder(pSitePath->GetSitePath(),false);
+  }
+}
+#endif
+
 void mainFrame::OnArtifactLabels(wxCommandEvent &)
 {
   {
@@ -809,10 +853,20 @@ void mainFrame::OnArtifactLabels(wxCommandEvent &)
 void mainFrame::OnExportSettings(wxCommandEvent &)
 {
   bool bMod = false;
+#ifdef __WXMAC__
+  if(SetupSiteSettings(DialogParent()))
+#endif
   {
     CDialogExportXSL x(DialogParent());
-    x.ShowModal();
-    bMod = x.IsModified();
+    if(x.GetGlobal() == NULL)
+    {
+      x.ShowError();
+    }
+    else
+    {
+      x.ShowModal();
+      bMod = x.IsModified();
+    }
   }
   if(bMod)
   {

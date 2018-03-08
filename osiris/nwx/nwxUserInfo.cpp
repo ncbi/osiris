@@ -23,53 +23,80 @@
 *
 * ===========================================================================
 *
-*  FileName: CGridCMF.h
+*
+*  FileName: nwxUserInfo.cpp
 *  Author:   Douglas Hoffman
+*  Date:     2018/02/11
+*
+*  obtains user and group info using the UNIX API, currently Mac OSX
 *
 */
-#ifndef __C_GRID_CMF_H__
-#define __C_GRID_CMF_H__
 
-#include "nwx/stdb.h"
-#include <vector>
-#include "nwx/stde.h"
-#include "nwx/nsstd.h"
-#include "CGridEdit.h"
+#ifdef __WXMAC__
 
-class CDialogCMF;
-class nwxXmlCMF;
-class COARfile;
-class COARsampleSort;
-class COARsample2CMFSpecimen;
+#include "nwx/nwxUserInfo.h"
+#include <unistd.h>
+#include <pwd.h>
+#include <grp.h>
+#include <uuid/uuid.h>
+#include <string.h>
+#include <errno.h>
 
-class CGridCMF : public _CGridEdit
+nwxIMPLEMENT_GLOBAL_OBJECT(nwxUserInfo)
+
+nwxUserInfo::nwxUserInfo() : m_nGID(0), m_nUID(0), m_nLastError(0)
 {
-public:
-  CGridCMF(
-    CDialogCMF *parent, 
-    wxWindowID id,
-    COARfile *pFile,
-    COARsampleSort *pSort);
-  virtual ~CGridCMF();
+#define MAX_GID 128  
+  int anList[MAX_GID];
+  int nCount = MAX_GID;
+  struct passwd *pPwEntry;
 
-  bool TransferDataFromGrid(
-    const wxString &sDefaultSpecimen,
-    COARsample2CMFSpecimen *pMap,
-    vector<wxString> *pErrorMsgs);
+  memset(anList,0,sizeof(anList));
+  m_nUID = getuid();
+  pPwEntry = (m_nUID > 0) ? getpwuid(m_nUID) : NULL;
+  errno = 0;
+  if(pPwEntry == NULL)
+  {
+    m_nLastError = errno;
+  }
+  else
+  {
+    m_nGID = pPwEntry->pw_gid;
+    m_sUser = wxString::FromUTF8(pPwEntry->pw_name);
+    int n = getgrouplist(m_sUser.utf8_str(), m_nGID, anList, &nCount);
+    if( (n == 0 || n == -1) && (nCount > 0) )
+    {
+      wxString ss;
+      char *psGroup;
+      int nID;
+      int n;
+      m_asGroupNames.Alloc(nCount);
+      m_anGroupIDs.reserve(nCount);
+      for(n = 0; n < nCount; ++n)
+      {
+        nID = anList[n];
+        psGroup = group_from_gid(nID,0);
+        if(psGroup != NULL)
+        {
+          m_asGroupNames.Add(wxString::FromUTF8(psGroup));
+          m_anGroupIDs.push_back(nID);
+          m_mapGIDtoName.insert(
+            MAP_NS::value_type(
+              nID,m_asGroupNames.Item(n)));
+          m_mapNameToGID.insert(
+            MAP_SN::value_type(
+              m_asGroupNames.Item(n),nID));
+        }  
+      }
+    }
+    else
+    {
+      m_nLastError = errno;
+    }
+  }
+#undef MAX_GID
+}
 
-  bool TransferDataToGrid();
-  void UpdateEmptyLoci();
-  static const wxString DEFAULT;
-private:
-  vector<wxString> m_vsLocus;
-  vector<COARsample *> m_vpSample;
-    // sample index in COARfile::GetSample for each row of table
 
-  COARfile *m_pFile;
-  COARsampleSort *m_pSort;
-  static wxGridCellChoiceEditor *_CreateTypeEditor();
-  static wxArrayString m_asChoices;
-  static const char * const COL_LABELS[];
-};
-
+const wxString nwxUserInfo::g_EMPTY(wxEmptyString);
 #endif

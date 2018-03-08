@@ -242,6 +242,10 @@ private:
   bool _BuildNewPath(const CVolume *pCopyFrom, wxString *psPath);
 
   void _SetErrorNameExists(const wxString &s);
+#ifdef __WXMAC__
+  // OS-662
+  bool _SetFilePermission(const wxString &sFileName);
+#endif
   void _Load()
   {
     _Cleanup();

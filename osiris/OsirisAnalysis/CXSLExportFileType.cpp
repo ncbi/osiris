@@ -31,6 +31,7 @@
 #include "ConfigDir.h"
 #include "CXSLExportFileType.h"
 #include "nwx/nwxFileUtil.h"
+#include "nwx/nwxLog.h"
 #include <wx/filename.h>
 #include <wx/filefn.h>
 #include <wx/arrstr.h>
@@ -857,10 +858,18 @@ CExportFiles::CExportFilesGlobal CExportFiles::g_xxx;
 
 void CExportFiles::_SetupFileName()
 {
-  ConfigDir *pDir = mainApp::GetConfig();
-  g_sFileName = pDir->GetSitePath();
-  nwxFileUtil::EndWithSeparator(&g_sFileName);
-  g_sFileName.Append("exports.xml");
+  if(g_sFileName.IsEmpty())
+  {
+    ConfigDir *pDir = mainApp::GetConfig();
+    g_sFileName = pDir->GetSitePath();
+    nwxFileUtil::EndWithSeparator(&g_sFileName);
+    g_sFileName.Append("exports.xml");
+#ifdef TMP_DEBUG
+    wxString s = "Export file name: ";
+    s.Append(g_sFileName);
+    nwxLog::LogMessage(s);
+#endif
+  }
 }
 
 bool CExportFiles::FileExists()
@@ -870,6 +879,14 @@ bool CExportFiles::FileExists()
     _SetupFileName();
   }
   bool b = wxFileName::FileExists(g_sFileName);
+#ifdef TMP_DEBUG
+  if(!b)
+  {
+    wxString s = "Cannot find export file: ";
+    s.Append(g_sFileName);
+    nwxLog::LogMessage(s);
+  }
+#endif
   return b;
 }
 bool CExportFiles::SaveExportFile()
@@ -888,6 +905,10 @@ bool CExportFiles::SaveExportFile()
   {
     UpdateExePath();
     bRtn = SaveFile(g_sFileName);
+    if(bRtn)
+    {
+      nwxFileUtil::SetFilePermissionFromDir(g_sFileName);
+    }
   }
   return bRtn;
 }
@@ -929,30 +950,47 @@ bool CExportFiles::LockExportFile(int nWait)
 
 bool CExportFiles::LoadExportFile()
 {
+  // OS-357, there were problems when the file was locked
+  //  although it can be ignored here
   bool bRtn = false;
-  bool bLocked = IsLocked() || (m_nBatch > 0);
-  if(bLocked || (m_nBatch > 0))
+  _SetupFileName();
+#ifdef TMP_DEBUG
+  wxString sMsg = "CExportFiles::LoadExportFile(): ";
+#endif
+  if(!FileExists())
   {
-    // don't check for reload nor save if locked
-    bRtn = true;
-  }
-  else if(!FileExists())
-  {
-    // SaveFile(g_sFileName); -- 
-    // don't need to save an empty file
+#ifdef TMP_DEBUG
+    sMsg.Append("!FileExists() ");
+#endif
     Init();
     bRtn = true;
   }
-  else if(GetLastFileName() == g_sFileName)
+  else if(GetLastFileName() != g_sFileName)
   {
-    bRtn = CheckFileModification(false)
-      ? ReloadFile()
-      : true;
+#ifdef TMP_DEBUG
+    sMsg.Append("GetLastFileName() != g_sFileName ");
+    sMsg.Append("\nGetLastFileName: ");
+    sMsg.Append(GetLastFileName());
+    sMsg.Append("\ng_sFileName: ");
+    sMsg.Append(g_sFileName);
+    sMsg.Append("\n");
+#endif
+    bRtn = LoadFile(g_sFileName);
   }
   else
   {
-    bRtn = LoadFile(g_sFileName);
+    bool bCheck = (m_nBatch == 0) && CheckFileModification(false);
+#ifdef TMP_DEBUG
+    sMsg.Append(bCheck ? "Reload() " : "No Reload() ");
+#endif
+    bRtn = bCheck
+      ? ReloadFile()
+      : true;
   }
+#ifdef TMP_DEBUG
+  sMsg.Append(bRtn ? "true" : "false");
+  nwxLog::LogMessage(sMsg);
+#endif
   return bRtn;
 }
 size_t CExportFiles::GetAutoList(vector<CXSLExportFileType *> *pList)

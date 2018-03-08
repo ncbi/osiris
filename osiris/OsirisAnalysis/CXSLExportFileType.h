@@ -1018,7 +1018,7 @@ public:
   bool CheckXSLmodification();
   bool LoadExportFile();
   bool SaveExportFile();
-  bool LockExportFile(int nWait = 3);
+  bool LockExportFile(int nWait = 0);
   static bool FileExists();
   bool CreateFileIfNotExists();
   size_t GetAutoList(vector<CXSLExportFileType *> *pList);

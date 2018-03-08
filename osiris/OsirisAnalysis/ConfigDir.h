@@ -66,13 +66,10 @@ public:
     }
     return m_sConfigPath;
   }
-  const wxString &GetSitePath() const
-  {
-    return m_sSitePath;
-  }
+  const wxString &GetSitePath() const;
   bool IsSitePathWritable() const
   {
-    bool bRtn = wxFileName::IsDirWritable(m_sSitePath);
+    bool bRtn = wxFileName::IsDirWritable(GetSitePath());
     return bRtn;
   }
   const wxString &GetConfigPath() const
@@ -174,7 +171,9 @@ private:
     // Subdir for config files (.osiris)
   wxString m_sFileSubdir;
     // Subdir for data files (Osiris)
+#ifndef __WXMAC__
   wxString m_sSitePath;
+#endif
     // Subdir for user config files, operating procedures (volumes), etc.
   bool m_bError;
     // true is an error occurred when creating a directory

@@ -159,13 +159,22 @@ bool CVolume::Load(const wxString &sPath, bool bSetReadOnly)
 //  m_lockRead.SetFileName(GetAccessFileName());
   return m_bOK;
 }
-
+#ifdef __WXMAC__
+// OS-662
+#endif
 bool CVolume::Save()
 {
   bool bRtn = false;
   if(IsOK() && !IsReadOnly() && HasLock())
   {
-    bRtn = m_lab.SaveFile(GetLabSettingsFileName());
+    wxString sFileName = GetLabSettingsFileName();
+    bRtn = m_lab.SaveFile(sFileName);
+#ifdef __WXMAC__
+// OS-662
+    nwxFileUtil::SetFilePermissionFromDir(sFileName);
+#endif
+
+      
   }
   return bRtn;
 }
@@ -818,7 +827,7 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
       m_sLastError.Append(pDir->GetExeVolumePath());
       wxASSERT_MSG(0,m_sLastError);
     }
-    else if(!nwxFileUtil::MkDir(sNewPath))
+    else if(!nwxFileUtil::MkDir(sNewPath,true))
     {
       m_sLastError = "Cannot create directory for new volume:\n";
       m_sLastError += sNewPath;
@@ -838,7 +847,14 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
         sTo.Append(*pp);
         sFrom = sFromPrefix;
         sFrom.Append(*pp);
-        if(!::wxCopyFile(sFrom,sTo))
+        if(::wxCopyFile(sFrom,sTo))
+        {
+#ifdef __WXMAC__
+          //OS-662
+          nwxFileUtil::SetFilePermissionFromDir(sTo);
+#endif
+        }
+        else
         {
           bRtn = false;
           m_sLastError = "Cannot copy\n";

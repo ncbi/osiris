@@ -29,6 +29,7 @@ osiris_SOURCES =  \
 ../CDialogPromptNewerFile.cpp \
 ../CDialogReallyQuit.cpp \
 ../CDialogShowLabSettings.cpp \
+../CDialogSitePath.cpp \
 ../CDialogToggleEnabled.cpp \
 ../CDialogVolumes.cpp \
 ../CDialogWarnHistory.cpp \
@@ -126,6 +127,7 @@ osiris_SOURCES =  \
 ../CProcess.cpp \
 ../CProcessAnalysis.cpp \
 ../CReAnalyze.cpp \
+../CSitePath.cpp \
 ../CSiteSettings.cpp \
 ../CSplitterCellHistory.cpp \
 ../CStandardSettings.cpp \

@@ -34,6 +34,10 @@
 #include <wx/filename.h>
 #include <wx/datetime.h>
 #include <wx/dir.h>
+#ifdef __WXMAC__
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif
 
 class nwxFileUtil
 {
@@ -48,13 +52,21 @@ public:
   static wxString SetupFileName(
     const wxString &sOriginalFile,
     const wxString &sExt);
-  static bool ShowFileFolder(const wxString &sFileName);
+#ifdef __WXMAC__
+  static mode_t GetDirPermission
+    (const wxString &sPath, bool bCheckExistingParent = false);
+  static bool SetFilePermissionFromDir
+    (const wxString &sPath, bool bLogError = true);
+#endif
+  static bool ShowFileFolder(const wxString &sFileName, bool bCheckDir = true);
   static wxString BaseName(const wxString &sDir);
+  static wxString GetExistingParent(const wxString &s);
+  static bool ExistingParentWritable(const wxString &s);
   static void NoEndWithSeparator(wxString *psDir);
   static void NoStartWithSeparator(wxString *psDir);
   static void EndWithSeparator(wxString *psDir);
   static bool UpDir(wxString *psDir, int n = 1);
-  static bool MkDir(const wxString &sDir);
+  static bool MkDir(const wxString &sDir, bool bInheritMode = false);
   static size_t GetAllFilesNoCase(const wxString &sDirName, wxArrayString *pasFile, const wxString &sFileSpec, int flags = wxDIR_DEFAULT);
   static bool IsNewer(const wxString &sFileName, time_t t)
   {

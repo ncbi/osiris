@@ -92,7 +92,6 @@ CGridCMF::CGridCMF(
   COARfile *pFile,
   COARsampleSort *pSort)
   : _CGridEdit(parent,id,false),
-    m_pParent(parent),
     m_pFile(pFile),
     m_pSort(pSort)
 {

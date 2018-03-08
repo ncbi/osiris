@@ -1145,9 +1145,10 @@ public:
     _SetFileName(wxEmptyString);
     return bRtn;
   }
-  virtual bool LoadFile(const wxString &sFileName, bool bLock)
+  virtual bool LoadFile(const wxString &sFileName, bool bLock, int nLockWait = 0)
   {
-    nwxLockFile Lock;
+    //  discard this and following lines on 6/5/2018
+    // nwxLockFile Lock;
     auto_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
     if(m_pLock == NULL)
     {
@@ -1155,8 +1156,10 @@ public:
     }
     bool bExist = wxFileName::FileExists(sFileName);
     bool bRtn = 
-      (bLock ? m_pLock->LockWait(sFileName,3) : true) &&
-      (m_pLock->HasLock(sFileName) || m_pLock->WaitUntilUnlocked(sFileName,3)) &&
+      (bLock ? m_pLock->LockWait(sFileName,nLockWait) : true) &&
+      // OS-357, no need to wait for lock, will check reload later.
+      //  discard this and following lines on 6/5/2018
+      // (m_pLock->HasLock(sFileName) || m_pLock->WaitUntilUnlocked(sFileName,3)) &&
       (bExist ? apDoc->Load(sFileName) : true);
     m_dtFileModTime.Set((time_t)0);
     if(!bRtn) {}

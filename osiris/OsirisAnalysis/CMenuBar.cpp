@@ -56,6 +56,10 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   pMenuTools->Append(IDexport,"Export File Settings\tAlt+E");
   pMenuTools->Append(IDeditColours,"Edit Grid Colors\tAlt+C");
   pMenuTools->Append(IDartifactLabels,"Edit Artifact Labels\tCtrl+Alt+A");
+#ifdef __WXMAC__
+  pMenuTools->Append(IDsiteSettings,"Access site settings...");
+  pMenuTools->Append(IDsiteShow,"Show site settings folder...");
+#endif
   pMenuTools->Append(IDlog,"Message Log");
   pMenuHelp->Append(IDhelp,"&Documentation\tF1");
   pMenuHelp->Append(IDhelpContactUs,"&Contact Us...");

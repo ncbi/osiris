@@ -149,6 +149,8 @@ enum
   IDlab,
   IDartifactLabels,
   IDexport,
+  IDsiteSettings,
+  IDsiteShow,
   IDeditColours,
   IDlog,
   IDgrid,
