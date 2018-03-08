@@ -614,6 +614,7 @@ public:
 	virtual int FindAndRemoveFixedOffset ();
 	virtual DataSignal* CreateMovingAverageFilteredSignal (int window);
 	virtual DataSignal* CreateThreeMovingAverageFilteredSignal (int window);
+	virtual DataSignal* CreateAveragingFilteredSignal (int nPasses, int halfWidth);
 	virtual double GetPullupToleranceInBP () const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // The trig expression corrects for poor fit - this is proportional to Hilbert Space distance 07/22/2014;
 	                                                                                                                       // with a proportionality coefficient of 1 / 4.47, so that a fit of 0.999 has a correction of 0.01 (changed from 1/10 07/23/2014)
 	virtual double GetPullupToleranceInBP (double noise) const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // see above
@@ -1040,6 +1041,7 @@ public:
 	double* CreateMovingAverageFilteredArray (int window, double* inputArray);
 	virtual DataSignal* CreateMovingAverageFilteredSignal (int window);
 	virtual DataSignal* CreateThreeMovingAverageFilteredSignal (int minWindow);
+	virtual DataSignal* CreateAveragingFilteredSignal (int nPasses, int halfWidth);
 
 	virtual DataSignal* Project (double left, double right) const;
 	virtual DataSignal* Project (const DataSignal* target) const;

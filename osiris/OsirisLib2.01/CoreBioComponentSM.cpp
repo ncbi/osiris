@@ -2386,12 +2386,6 @@ int CoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& text, RGTex
 }
 
 
-int CoreBioComponent :: FitAllSampleCharacteristicsAfterDerivativeFilteringSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
-
-	return -1;
-}
-
-
 int CoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	return -1;
@@ -2553,9 +2547,6 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	else
 		ChannelData::SetUseEnhancedShoulderAlgorithm (true);  // It will still only use the algorithm if directed to by the preset.
 
-	//if (!GetMessageValue (normalizeRawData))
-	//	ComputeDerivativeFilters ();
-
 	ChannelData::SetUseNoiseLevelDefaultForFit (true);
 	bool useDetectionLevel = GetMessageValue (useDetectionLevelInSmoothing);
 	bool usePercentNoiseLevel = GetMessageValue (overrideNoiseLevelPercentsInSmoothing);
@@ -2592,13 +2583,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	else
 		ChannelData::SetIsNormalizationPass (false);
 
-//	status = FitAllCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
-
-	if (GetMessageValue (normalizeRawData))
-		status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
-
-	//else
-	//	status = FitAllSampleCharacteristicsAfterDerivativeFilteringSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);  // use this function for derivative filtering
+	status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 
 	if (status < 0) {
 
@@ -2615,17 +2600,17 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	if (!GetMessageValue (normalizeRawData)) {
 
 		//AnalyzeCrossChannelSM ();	// Moved below - 07/31/2013
-		//status = AnalyzeLaneStandardChannelSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, sampleData->mPrint);
+		/*status = AnalyzeLaneStandardChannelSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, sampleData->mPrint);
 
-		//if (status < 0) {
+		if (status < 0) {
 
-		//	notice << "BIOCOMPONENT COULD NOT ANALYZE INTERNAL LANE STANDARD.  Skipping...";
-		//	cout << notice << endl;
-		//	sampleData->mExcelText << CLevel (1) << notice << "\n" << ErrorString << "Skipping...\n" << PLevel ();
-		//	sampleData->mText << notice << "\n" << ErrorString << "Skipping...\n";
-		//	SetMessageValue (ilsRequiresReview, true);
-		//	return -4;
-		//}
+			notice << "BIOCOMPONENT COULD NOT ANALYZE INTERNAL LANE STANDARD.  Skipping...";
+			cout << notice << endl;
+			sampleData->mExcelText << CLevel (1) << notice << "\n" << ErrorString << "Skipping...\n" << PLevel ();
+			sampleData->mText << notice << "\n" << ErrorString << "Skipping...\n";
+			SetMessageValue (ilsRequiresReview, true);
+			return -4;
+		}*/
 
 		status = 0;
 
@@ -2685,7 +2670,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 			status = -1;
 	}
 
-	if (NormalizeBaselineForNonILSChannelsSM () < 0) {
+	if (NormalizeBaselineForNonILSChannelsSM () < 0) {  //  Here is where we have to modify the normalization algorithm for derivative filters
 
 		notice << "BIOCOMPONENT COULD NOT ANALYZE BASELINE.  OMITTING BASELINE ANALYSIS...";
 		cout << notice << endl;

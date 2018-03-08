@@ -253,6 +253,9 @@ PERSISTENT_PREDECLARATION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesP
 PERSISTENT_PREDECLARATION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset)
 PERSISTENT_PREDECLARATION (smDisplaySigmoidalPeaksPreset)
 PERSISTENT_PREDECLARATION (smResidualDisplacementFractionalLimit)
+PERSISTENT_PREDECLARATION (smSelectAveragingInPlaceFilterPreset)
+PERSISTENT_PREDECLARATION (smAveragingInPlaceFilterWindowWidth)
+PERSISTENT_PREDECLARATION (smAveragingInPlaceFilterNumberOfPasses)
 
 
 
@@ -7012,6 +7015,90 @@ public:
 	smResidualDisplacementFractionalLimit ();
 	smResidualDisplacementFractionalLimit (const smResidualDisplacementFractionalLimit& note);
 	virtual ~smResidualDisplacementFractionalLimit ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSelectAveragingInPlaceFilterPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSelectAveragingInPlaceFilterPreset)
+
+public:
+	smSelectAveragingInPlaceFilterPreset ();
+	smSelectAveragingInPlaceFilterPreset (const smSelectAveragingInPlaceFilterPreset& note);
+	virtual ~smSelectAveragingInPlaceFilterPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smAveragingInPlaceFilterWindowWidth : public SmartNotice {
+
+PERSISTENT_DECLARATION (smAveragingInPlaceFilterWindowWidth)
+
+public:
+	smAveragingInPlaceFilterWindowWidth ();
+	smAveragingInPlaceFilterWindowWidth (const smAveragingInPlaceFilterWindowWidth& note);
+	virtual ~smAveragingInPlaceFilterWindowWidth ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smAveragingInPlaceFilterNumberOfPasses : public SmartNotice {
+
+PERSISTENT_DECLARATION (smAveragingInPlaceFilterNumberOfPasses)
+
+public:
+	smAveragingInPlaceFilterNumberOfPasses ();
+	smAveragingInPlaceFilterNumberOfPasses (const smAveragingInPlaceFilterNumberOfPasses& note);
+	virtual ~smAveragingInPlaceFilterNumberOfPasses ();
 
 	virtual int GetSubject () const;
 

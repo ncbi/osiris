@@ -346,14 +346,35 @@ double CoreBioComponent :: GetTimeForSpecifiedID (int channel, double id) {
 
 int CoreBioComponent :: CreateAndSubstituteFilteredDataSignalForRawDataNonILS () {
 
+	//
+	//  Sample stage 1
+	//
+
 	int i;
 	smSinglePassFilterWindowWidth filterWindowWidthForSinglePassEstimation;
 	smTriplePassFilterWindowWidth filterWindowWidthForTriplePassEstimation;
 	smSelectTriplePassVsSinglePassFilterPreset selectTripleVsSinglePass;
+	smSelectAveragingInPlaceFilterPreset selectAveragingInPlace;
+	smAveragingInPlaceFilterNumberOfPasses inPlaceNumberOfPasses;
+	smAveragingInPlaceFilterWindowWidth inPlaceHalfWindowWidth;
 	bool useTriplePass = GetMessageValue (selectTripleVsSinglePass);
 	int windowWidth;
+	bool useAverageFilter = GetMessageValue (selectAveragingInPlace);
+	int averageFilterPasses = GetThreshold (inPlaceNumberOfPasses);
+	int averageFilterHalfWidth = GetThreshold (inPlaceHalfWindowWidth);
 
-	if (useTriplePass) {
+	if (useAverageFilter) {
+
+		for (i=1; i<=mNumberOfChannels; i++) {
+
+			if (i == mLaneStandardChannel)
+				continue;
+
+			mDataChannels [i]->CreateAndSubstituteAveragingFilteredSignalForRawData (averageFilterPasses, averageFilterHalfWidth);
+		}
+	}
+
+	else if (useTriplePass) {
 
 		windowWidth = GetThreshold (filterWindowWidthForTriplePassEstimation);
 
@@ -1306,35 +1327,6 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 		delete pairArray [i];
 
 	delete[] pairArray;
-	return true;
-}
-
-
-bool CoreBioComponent :: ComputeDerivativeFilters () {
-
-	//
-	//  Sample phase 1:  must come after ILS analysis!!
-
-	int i;
-	int left = (int) floor (mDataChannels [mLaneStandardChannel]->GetFirstAnalyzedMean ());
-
-	double reportMin = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
-	double reportMinTime;
-
-	// below if...else clause added 03/13/2015
-
-	if (reportMin > 0.0)
-		reportMinTime = mDataChannels [mLaneStandardChannel]->GetTimeForSpecifiedID (reportMin);
-
-	else
-		reportMinTime = -1.0;
-
-	for (i=1; i<=mNumberOfChannels; i++) {
-
-		if (i != mLaneStandardChannel)
-			mDataChannels[i]->AnalyzeDynamicBaselineUsingDerivativeFilterAndNormalizeRawDataSM (left, reportMinTime);
-	}
-
 	return true;
 }
 

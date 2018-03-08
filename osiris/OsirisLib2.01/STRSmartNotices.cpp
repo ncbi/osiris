@@ -1458,6 +1458,24 @@ int smResidualDisplacementFractionalLimit::sMessageIndex = 0;
 int smResidualDisplacementFractionalLimit::sMessageScope = 0;
 
 
+RGString smSelectAveragingInPlaceFilterPreset::sName = "smSelectAveragingInPlaceFilterPreset";
+int smSelectAveragingInPlaceFilterPreset::sSubject = smSelectAveragingInPlaceFilterPreset::LoadType ();
+int smSelectAveragingInPlaceFilterPreset::sMessageIndex = 0;
+int smSelectAveragingInPlaceFilterPreset::sMessageScope = 0;
+
+
+RGString smAveragingInPlaceFilterWindowWidth::sName = "smAveragingInPlaceFilterWindowWidth";
+int smAveragingInPlaceFilterWindowWidth::sSubject = smAveragingInPlaceFilterWindowWidth::LoadType ();
+int smAveragingInPlaceFilterWindowWidth::sMessageIndex = 0;
+int smAveragingInPlaceFilterWindowWidth::sMessageScope = 0;
+
+
+RGString smAveragingInPlaceFilterNumberOfPasses::sName = "smAveragingInPlaceFilterNumberOfPasses";
+int smAveragingInPlaceFilterNumberOfPasses::sSubject = smAveragingInPlaceFilterNumberOfPasses::LoadType ();
+int smAveragingInPlaceFilterNumberOfPasses::sMessageIndex = 0;
+int smAveragingInPlaceFilterNumberOfPasses::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1700,6 +1718,9 @@ PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForLadderAllelesPrese
 PERSISTENT_DEFINITION (smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset, 2644, "smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset")
 PERSISTENT_DEFINITION (smDisplaySigmoidalPeaksPreset, 2645, "smDisplaySigmoidalPeaksPreset")
 PERSISTENT_DEFINITION (smResidualDisplacementFractionalLimit, 2646, "smResidualDisplacementFractionalLimit")
+PERSISTENT_DEFINITION (smSelectAveragingInPlaceFilterPreset, 2647, "smSelectAveragingInPlaceFilterPreset")
+PERSISTENT_DEFINITION (smAveragingInPlaceFilterWindowWidth, 2648, "smAveragingInPlaceFilterWindowWidth")
+PERSISTENT_DEFINITION (smAveragingInPlaceFilterNumberOfPasses, 2649, "smAveragingInPlaceFilterNumberOfPasses")
 
 
 
@@ -16216,6 +16237,186 @@ int smResidualDisplacementFractionalLimit :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smResidualDisplacementFractionalLimit* noticeType = new smResidualDisplacementFractionalLimit;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSelectAveragingInPlaceFilterPreset :: smSelectAveragingInPlaceFilterPreset () : SmartNotice () {
+
+}
+
+
+smSelectAveragingInPlaceFilterPreset :: smSelectAveragingInPlaceFilterPreset (const smSelectAveragingInPlaceFilterPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSelectAveragingInPlaceFilterPreset :: ~smSelectAveragingInPlaceFilterPreset () {
+
+}
+
+
+int smSelectAveragingInPlaceFilterPreset :: GetSubject () const {
+
+	return smSelectAveragingInPlaceFilterPreset::sSubject;
+}
+
+
+void smSelectAveragingInPlaceFilterPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smSelectAveragingInPlaceFilterPreset::sMessageIndex = index;
+	smSelectAveragingInPlaceFilterPreset::sMessageScope = scope;
+}
+
+
+int smSelectAveragingInPlaceFilterPreset :: GetMessageIndex () const {
+
+	return smSelectAveragingInPlaceFilterPreset :: sMessageIndex;
+}
+
+
+int smSelectAveragingInPlaceFilterPreset :: GetScope () const {
+
+	return smSelectAveragingInPlaceFilterPreset :: sMessageScope;
+}
+
+
+RGString smSelectAveragingInPlaceFilterPreset :: GetName () const {
+
+	return smSelectAveragingInPlaceFilterPreset :: sName;
+}
+
+
+
+int smSelectAveragingInPlaceFilterPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSelectAveragingInPlaceFilterPreset* noticeType = new smSelectAveragingInPlaceFilterPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smAveragingInPlaceFilterWindowWidth :: smAveragingInPlaceFilterWindowWidth () : SmartNotice () {
+
+}
+
+
+smAveragingInPlaceFilterWindowWidth :: smAveragingInPlaceFilterWindowWidth (const smAveragingInPlaceFilterWindowWidth& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smAveragingInPlaceFilterWindowWidth :: ~smAveragingInPlaceFilterWindowWidth () {
+
+}
+
+
+int smAveragingInPlaceFilterWindowWidth :: GetSubject () const {
+
+	return smAveragingInPlaceFilterWindowWidth::sSubject;
+}
+
+
+void smAveragingInPlaceFilterWindowWidth :: SetIndexAndScope (int index, int scope) const {
+
+	smAveragingInPlaceFilterWindowWidth::sMessageIndex = index;
+	smAveragingInPlaceFilterWindowWidth::sMessageScope = scope;
+}
+
+
+int smAveragingInPlaceFilterWindowWidth :: GetMessageIndex () const {
+
+	return smAveragingInPlaceFilterWindowWidth :: sMessageIndex;
+}
+
+
+int smAveragingInPlaceFilterWindowWidth :: GetScope () const {
+
+	return smAveragingInPlaceFilterWindowWidth :: sMessageScope;
+}
+
+
+RGString smAveragingInPlaceFilterWindowWidth :: GetName () const {
+
+	return smAveragingInPlaceFilterWindowWidth :: sName;
+}
+
+
+
+int smAveragingInPlaceFilterWindowWidth :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smAveragingInPlaceFilterWindowWidth* noticeType = new smAveragingInPlaceFilterWindowWidth;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smAveragingInPlaceFilterNumberOfPasses :: smAveragingInPlaceFilterNumberOfPasses () : SmartNotice () {
+
+}
+
+
+smAveragingInPlaceFilterNumberOfPasses :: smAveragingInPlaceFilterNumberOfPasses (const smAveragingInPlaceFilterNumberOfPasses& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smAveragingInPlaceFilterNumberOfPasses :: ~smAveragingInPlaceFilterNumberOfPasses () {
+
+}
+
+
+int smAveragingInPlaceFilterNumberOfPasses :: GetSubject () const {
+
+	return smAveragingInPlaceFilterNumberOfPasses::sSubject;
+}
+
+
+void smAveragingInPlaceFilterNumberOfPasses :: SetIndexAndScope (int index, int scope) const {
+
+	smAveragingInPlaceFilterNumberOfPasses::sMessageIndex = index;
+	smAveragingInPlaceFilterNumberOfPasses::sMessageScope = scope;
+}
+
+
+int smAveragingInPlaceFilterNumberOfPasses :: GetMessageIndex () const {
+
+	return smAveragingInPlaceFilterNumberOfPasses :: sMessageIndex;
+}
+
+
+int smAveragingInPlaceFilterNumberOfPasses :: GetScope () const {
+
+	return smAveragingInPlaceFilterNumberOfPasses :: sMessageScope;
+}
+
+
+RGString smAveragingInPlaceFilterNumberOfPasses :: GetName () const {
+
+	return smAveragingInPlaceFilterNumberOfPasses :: sName;
+}
+
+
+
+int smAveragingInPlaceFilterNumberOfPasses :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smAveragingInPlaceFilterNumberOfPasses* noticeType = new smAveragingInPlaceFilterNumberOfPasses;
 	warehouse->AddType (noticeType);
 	return 1;
 }

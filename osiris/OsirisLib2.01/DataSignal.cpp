@@ -2049,6 +2049,12 @@ DataSignal* DataSignal :: CreateThreeMovingAverageFilteredSignal (int window) {
 }
 
 
+DataSignal* DataSignal :: CreateAveragingFilteredSignal (int nPasses, int halfWidth) {
+
+	return NULL;
+}
+
+
 void DataSignal :: SetAlleleName (const RGString& name) {
 
 	mAlleleName = name;
@@ -3444,6 +3450,63 @@ DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow
 	return filteredSignal;
 }
 
+DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfWidth) {
+
+	double* smoothedData = new double [NumberOfSamples];
+	double* tempData = new double [NumberOfSamples];
+
+	int disp = halfWidth;
+	int startPt = disp;
+	int endPt = NumberOfSamples - disp - 1;
+	int i;
+	int j;
+	double divisor = (double) (2 * halfWidth + 1);
+	bool FirstTime = true;
+	double previous = 0.0;
+	int k;
+
+	for (i=0; i<NumberOfSamples; i++)
+		smoothedData [i] = Measurements [i];
+
+	for (k=0; k<nPasses; k++) {
+
+		FirstTime = true;
+
+		for (i=startPt; i<=endPt; i++) {
+
+			double sum = 0.0;
+			int upperLimit = i + halfWidth;
+			int lowerLimit = i - halfWidth;
+
+			if (FirstTime) {
+
+				FirstTime = false;
+
+				for (j=lowerLimit; j<=upperLimit; j++)
+					sum += smoothedData [j]; //mData->Value (j);
+
+				previous = sum;
+				tempData [i] = sum / divisor;
+			}
+
+			else {
+
+				previous = previous - smoothedData [lowerLimit - 1] + smoothedData [upperLimit]; //previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
+				tempData [i] = previous / divisor;
+			}
+		}
+
+		for (i=0; i<NumberOfSamples; i++) {
+
+			smoothedData [i] = tempData [i];
+		}
+	}
+
+	DataSignal* filteredSignal = new SampledData (NumberOfSamples, Left, Right, smoothedData, true);
+	delete[] tempData;
+	return filteredSignal;
+}
+
 
 DataSignal* SampledData :: Project (double left, double right) const {
 	
@@ -3739,15 +3802,15 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 	int lowerLimit = (int) ceil (prevSignal->GetMean () + prevHalfWidth) - 1;
 	int upperLimit = (int) floor (nextSignal->GetMean () - nextHalfWidth) + 1;
 
-	//double estimatedIntersection = FindApproximateIntersection (prevSignal, nextSignal);
-	//int lowerEstimatedIntersection = (int) floor (estimatedIntersection);
-	//int upperEstimatedIntersection = (int) floor (estimatedIntersection + 0.5);
+	double estimatedIntersection = FindApproximateIntersection (prevSignal, nextSignal);
+	int lowerEstimatedIntersection = (int) floor (estimatedIntersection);
+	int upperEstimatedIntersection = (int) floor (estimatedIntersection + 0.5);
 
-	//if ((double) lowerLimit > estimatedIntersection)
-	//	lowerLimit = lowerEstimatedIntersection;
+	if ((double) lowerLimit > estimatedIntersection)
+		lowerLimit = lowerEstimatedIntersection;
 
-	//if ((double) upperLimit < estimatedIntersection)
-	//	upperLimit = upperEstimatedIntersection;
+	if ((double) upperLimit < estimatedIntersection)
+		upperLimit = upperEstimatedIntersection;
 
 	//for (i=startTime; i<=endTime; i++) {
 

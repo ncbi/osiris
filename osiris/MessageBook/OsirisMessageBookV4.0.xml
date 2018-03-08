@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.12</VersionNumber>
-	<BuildTime>02/21/2018 03:06 PM</BuildTime>
+	<VersionNumber>7.14</VersionNumber>
+	<BuildTime>03/08/2018 03:57 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5831,7 +5831,7 @@
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Select Triple Pass (Checked)(Preferred) Or Single Pass (Unchecked)</Text>
+			<Text>Select Triple Low Pass (Checked)(Preferred) Or Single Low Pass (Unchecked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -5870,6 +5870,62 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>SINGLE PASS FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSelectAveragingInPlaceFilterPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>                        Select Averaging In Place Filter (Checked)(Preferred) Vs Low Pass Filters Above (Default = checked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Select Averaging In Place Filter (Checked)(Preferred) Vs Low Pass Filters Above</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAveragingInPlaceFilterWindowWidth</Name>
+			<MessageType>count</MessageType>
+			<Description>Half number of samples in averaging in place filter for baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>10</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Averaging In Place Filter Window Half Width for Baseline Estimation (Default = 10)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Averaging In Place Filter Window Half Width for Baseline Estimation (Default = 10)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAveragingInPlaceFilterNumberOfPasses</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of passes in averaging in place filter for baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>3</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Averaging In Place Filter Number of Passes for Baseline Estimation (Default = 3)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Averaging In Place Filter Number of Passes for Baseline Estimation (Default = 3)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 			<Editable>false</Editable>
@@ -6737,6 +6793,9 @@
 						<Name>smSelectTriplePassVsSinglePassFilterPreset</Name>
 						<Name>smTriplePassFilterWindowWidth</Name>
 						<Name>smSinglePassFilterWindowWidth</Name>
+						<Name>smSelectAveragingInPlaceFilterPreset</Name>
+						<Name>smAveragingInPlaceFilterWindowWidth</Name>
+						<Name>smAveragingInPlaceFilterNumberOfPasses</Name>
 						<Name>smMinPrimaryPullupThreshold</Name>
 						<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 						<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>

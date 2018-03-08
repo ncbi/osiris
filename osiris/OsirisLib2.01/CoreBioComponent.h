@@ -166,7 +166,6 @@ public:
 	bool ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold);
 	bool ComputeRefinedOutlierList (list<PullupPair*>& pairList, double& linearPart);
 	bool ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, bool constrainLSQ);
-	bool ComputeDerivativeFilters ();
 
 	bool AddILSToHistory () { return mDataChannels [mLaneStandardChannel]->AddILSToHistoryList (); }
 
@@ -387,7 +386,6 @@ public:
 	virtual int SetLaneStandardDataSM (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);
 	virtual int FitLaneStandardCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int FitAllSampleCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
-	virtual int FitAllSampleCharacteristicsAfterDerivativeFilteringSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
 	//  The following method assumes that Initialize and SetAllData have both been called.  These should become the public interface!!!
 	virtual int AnalyzeGridSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);

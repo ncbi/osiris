@@ -100,21 +100,25 @@ class  ProspectiveIntervalForNormalization {
 
 public:
 
-	ProspectiveIntervalForNormalization (int start, DataSignal* sampledData, double* derivFilter, double filterHeight);
+	ProspectiveIntervalForNormalization (int start, DataSignal* sampledData, double* derivFilter, double filterHeight, int averagingWidth, double noiseThreshold);
 	~ProspectiveIntervalForNormalization ();
 
 	int GetStart () const { return mStart; }
 	int GetEnd () const { return mEnd; }
+	int GetStrictStart () const { return mStrictStart; }
+	int GetStrictEnd () const { return mStrictEnd; }
 	bool IsLongEnough (int minLength) const { return (mEnd - mStart + 1) >= minLength; }
 
 	void DivideIntoNormalizationIntervals (int minLength, double noiseRange, int subLength, int neighborTestLimit);
-	void SmoothInteriorPoints (int nSmoothPoints, int nSlackPoints, double* smoothedData);
+	void SmoothInteriorPoints (int nSmoothPoints, int nSlackPoints, double* smoothedData, double* tempData);
 	NormalizationInterval* GetNextNormalizationInterval (int minLength);
 
 protected:
 	int mStart;
 	int mEnd;
 	DataSignal* mData;
+	int mStrictStart;
+	int mStrictEnd;
 	list<NormalizationInterval*> mNormalizationIntervals;
 };
 
@@ -187,7 +191,6 @@ public:
 	double GetRightEndpoint () const;
 	int GetNumberOfSignals () const { return CompleteCurveList.Entries (); }
 	bool HasPrimerPeaks (ChannelData* laneStd);
-	void CalculateFirstDerivativeFilter ();
 
 	void SetCompleteSignalListSequence ();
 
@@ -199,6 +202,7 @@ public:
 
 	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
 	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);
+	int CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth);
 	int RestoreRawDataAndDeleteFilteredSignal ();
 	bool HasFilteredData () const;
 	
@@ -477,7 +481,6 @@ public:
 
 	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
 	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime);
-	virtual int AnalyzeDynamicBaselineUsingDerivativeFilterAndNormalizeRawDataSM (int startTime, double reportMinTime) { return -1; }
 
 	virtual void GetCharacteristicArray (const double*& array) const { if (mLaneStandard != NULL) mLaneStandard->GetCharacteristicArray (array); }
 
@@ -574,8 +577,6 @@ protected:
 	CSplineTransform* mBaseLine;
 	int mBaselineStart;
 	CoordinateTransform* mTimeMap;
-	double* mDerivFilter;
-	double* mSmoothedRawData;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

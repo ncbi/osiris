@@ -196,7 +196,6 @@ public:
 	virtual int SignalQualityTestSM ();
 	virtual int RemoveInterlocusSignalsSM ();
 	virtual int FitAllSampleCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
-	virtual int FitAllSampleCharacteristicsAfterDerivativeFilteringSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
 	//******************************************************************************************************************************************
 

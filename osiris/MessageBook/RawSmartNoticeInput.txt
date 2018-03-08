@@ -240,6 +240,10 @@ smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset	1127	2643
 smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset	1128	2644
 smDisplaySigmoidalPeaksPreset	1129	2645
 smResidualDisplacementFractionalLimit	1130	2646
+smSelectAveragingInPlaceFilterPreset	1131	2647
+smAveragingInPlaceFilterWindowWidth	1132	2648
+smAveragingInPlaceFilterNumberOfPasses	1133	2649
+
 
 
 

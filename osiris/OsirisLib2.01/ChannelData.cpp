@@ -83,16 +83,46 @@ bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& seco
 }
 
 
-ProspectiveIntervalForNormalization :: ProspectiveIntervalForNormalization (int start, DataSignal* sampledData, double* derivFilter, double filterHeight) : mData (sampledData) {
+ProspectiveIntervalForNormalization :: ProspectiveIntervalForNormalization (int start, DataSignal* sampledData, double* derivFilter, double filterHeight, int averagingWidth, double noiseThreshold) : mData (sampledData) {
 
 	int numberOfSamples = mData->GetNumberOfSamples ();
 	int i;
+	//int j;
 	bool foundFirstPoint = false;
 	bool foundLastPoint = false;
+	bool derivOK;
+	//bool displacementOK;
+	//double maxDisplacement;
+	//int upperLimit;
+	//int lowerLimit;
+	//double currentValue;
+	//int left = (int)mData->LeftEndPoint ();
 
 	for (i=start; i<numberOfSamples; i++) {
 
-		if (derivFilter [i] <= filterHeight) {
+		derivOK = (derivFilter [i] <= filterHeight);
+		//maxDisplacement = 0.0;
+		//upperLimit = i + averagingWidth;
+		//lowerLimit = i - averagingWidth;
+		//displacementOK = true;
+		//currentValue = mData->Value (i);
+
+		//for (j=lowerLimit; j<=upperLimit; j++) {
+
+		//	if (j < left)
+		//		continue;
+
+		//	if (j >= numberOfSamples)
+		//		break;
+
+		//	if (fabs (currentValue - mData->Value (j)) > noiseThreshold) {
+
+		//		displacementOK = false;
+		//		break;
+		//	}
+		//}
+
+		if (derivOK) {
 
 			if (!foundFirstPoint) {
 
@@ -114,6 +144,9 @@ ProspectiveIntervalForNormalization :: ProspectiveIntervalForNormalization (int 
 
 	else if (!foundLastPoint)
 		mEnd = numberOfSamples - 1;
+
+	mStrictStart = mStart;
+	mStrictEnd = mEnd;
 }
 
 
@@ -153,7 +186,7 @@ void ProspectiveIntervalForNormalization :: DivideIntoNormalizationIntervals (in
 }
 
 
-void ProspectiveIntervalForNormalization :: SmoothInteriorPoints (int nSmoothPoints, int nSlackPoints, double* smoothedData) {
+void ProspectiveIntervalForNormalization :: SmoothInteriorPoints (int nSmoothPoints, int nSlackPoints, double* smoothedData, double* tempData) {
 
 	int disp = nSmoothPoints + nSlackPoints;
 	int startPt = mStart + disp;
@@ -163,30 +196,44 @@ void ProspectiveIntervalForNormalization :: SmoothInteriorPoints (int nSmoothPoi
 	double divisor = (double) (2 * nSmoothPoints + 1);
 	bool FirstTime = true;
 	double previous = 0.0;
+	int k;
 
-	for (i=startPt; i<=endPt; i++) {
+	for (k=0; k<2; k++) {
 
-		double sum = 0.0;
-		int upperLimit = i + nSmoothPoints;
-		int lowerLimit = i - nSmoothPoints;
+		FirstTime = true;
 
-		if (FirstTime) {
+		for (i=startPt; i<=endPt; i++) {
 
-			FirstTime = false;
+			double sum = 0.0;
+			int upperLimit = i + nSmoothPoints;
+			int lowerLimit = i - nSmoothPoints;
 
-			for (j=i-nSmoothPoints; j<=upperLimit; j++)
-				sum += mData->Value (j);
+			if (FirstTime) {
 
-			previous = sum;
-			smoothedData [i] = sum / divisor;
+				FirstTime = false;
+
+				for (j=i-nSmoothPoints; j<=upperLimit; j++)
+					sum += smoothedData [j]; //mData->Value (j);
+
+				previous = sum;
+				tempData [i] = sum / divisor;
+			}
+
+			else {
+
+				previous = previous - smoothedData [lowerLimit - 1] + smoothedData [upperLimit]; //previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
+				tempData [i] = previous / divisor;
+			}
 		}
 
-		else {
+		for (i=startPt; i<=endPt; i++) {
 
-			previous = previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
-			smoothedData [i] = previous / divisor;
+			smoothedData [i] = tempData [i];
 		}
 	}
+
+	mStrictStart = startPt;
+	mStrictEnd = endPt;
 }
 
 
@@ -386,7 +433,7 @@ double NormalizationInterval :: ComputeSubIntervalAverage (int startPt, int endP
 
 ChannelData :: ChannelData () : SmartMessagingObject (), mChannel (-1), mData (NULL), mBackupData (NULL),
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -395,7 +442,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -404,7 +451,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel, LaneStandard* inputLS) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -414,7 +461,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 ChannelData :: ChannelData (const ChannelData& cd) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), 
-mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
+mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
 
 	mData = (DataSignal*)cd.mData->Copy ();
 	mLocusList = cd.mLocusList;
@@ -427,7 +474,7 @@ mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLin
 ChannelData :: ChannelData (const ChannelData& cd, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mDerivFilter (NULL), mSmoothedRawData (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
 
 	mData = NULL;
 	RGDList tempLocusList = cd.mLocusList;
@@ -481,8 +528,6 @@ ChannelData :: ~ChannelData () {
 	delete[] Fits;
 	delete[] Peaks;
 	delete[] SecondaryContent;
-	delete[] mDerivFilter;
-	delete[] mSmoothedRawData;
 }
 
 
@@ -952,33 +997,6 @@ bool ChannelData :: HasPrimerPeaks (ChannelData* laneStd) {
 }
 
 
-void ChannelData :: CalculateFirstDerivativeFilter () {
-
-	int n = mData->GetNumberOfSamples ();
-	mDerivFilter = new double [n];
-	mSmoothedRawData = new double [n];
-	double v0 = mData->Value (1);
-	double vM1 = mData->Value (0);
-	double vP1;
-	int i;
-	mDerivFilter [0] = 0.0;
-	mSmoothedRawData [0] = mData->Value (0);
-	mSmoothedRawData [1] = mData->Value (1);
-
-	for (i=2; i<n; i++) {
-
-		vP1 = mData->Value (i);
-		//mDerivFilter [i-2] = oneTwelfth * (vM2 + 8.0 * (vP1 - vM1) - vP2);  // This is a five point stencil approximation of the first derivative...see Wikipedia
-		mDerivFilter [i-1] = 0.5 * (vP1 - vM1);  // This is a chordal approximation to the derivative
-		vM1 = v0;
-		v0 = vP1;
-		mSmoothedRawData [i] = mData->Value (i);
-	}
-
-	mDerivFilter [n - 1] = 0.0;
-}
-
-
 
 void ChannelData :: SetCompleteSignalListSequence () {
 
@@ -1042,6 +1060,17 @@ int ChannelData :: CreateAndSubstituteTriplePassFilteredSignalForRawData (int wi
 
 	mBackupData = mData;
 	mData = mBackupData->CreateThreeMovingAverageFilteredSignal (window);
+	return 0;
+}
+
+
+int ChannelData :: CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth) {
+
+	if (mBackupData != NULL)
+		delete mBackupData;
+
+	mBackupData = mData;
+	mData = mBackupData->CreateAveragingFilteredSignal (nPasses, halfWidth);
 	return 0;
 }
 
@@ -3343,28 +3372,8 @@ int ChannelData :: WriteFitData (RGTextOutput& text, const RGString& delim, int 
 
 int ChannelData :: WriteBaselineData (RGTextOutput& text, const RGString& delim, const RGString& indent) {
 
-	if (mBaseLine == NULL) {
-
-		if (mDerivFilter == NULL)
-			return 0;
-
-		else {
-
-			Endl endLine;
-			text << indent << "<baselineStart>" << 0 << "</baselineStart>" << endLine;
-			int NSamples = mData->GetNumberOfSamples ();
-			int j;
-			text << indent << "<baselinePoints>";
-	
-			for (j=0; j<NSamples; j++) {
-
-				text << (int)floor (mSmoothedRawData [j]) << delim;
-			}
-
-			text << "</baselinePoints>" << endLine;
-			return 1;
-		}
-	}
+	if (mBaseLine == NULL)
+		return 0;
 
 	Endl endLine;
 	text << indent << "<baselineStart>" << mBaselineStart << "</baselineStart>" << endLine;
