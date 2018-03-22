@@ -2049,7 +2049,7 @@ DataSignal* DataSignal :: CreateThreeMovingAverageFilteredSignal (int window) {
 }
 
 
-DataSignal* DataSignal :: CreateAveragingFilteredSignal (int nPasses, int halfWidth) {
+DataSignal* DataSignal :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, bool* changeArray, double& fractionOfChangedData) {
 
 	return NULL;
 }
@@ -3450,60 +3450,67 @@ DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow
 	return filteredSignal;
 }
 
-DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfWidth) {
+DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, bool* changeArray, double& fractionOfChangedData) {
+
+	// noiseLevel has already been calibrated by user parameter from lab settings
 
 	double* smoothedData = new double [NumberOfSamples];
-	double* tempData = new double [NumberOfSamples];
 
 	int disp = halfWidth;
 	int startPt = disp;
 	int endPt = NumberOfSamples - disp - 1;
 	int i;
 	int j;
-	double divisor = (double) (2 * halfWidth + 1);
+	double divisor;
 	bool FirstTime = true;
 	double previous = 0.0;
 	int k;
+	FirstTime = true;
 
-	for (i=0; i<NumberOfSamples; i++)
-		smoothedData [i] = Measurements [i];
+	divisor = (double) (2 * halfWidth + 1);
 
-	for (k=0; k<nPasses; k++) {
+	for (i=startPt; i<=endPt; i++) {
 
-		FirstTime = true;
+		double sum = 0.0;
+		int upperLimit = i + halfWidth;
+		int lowerLimit = i - halfWidth;
 
-		for (i=startPt; i<=endPt; i++) {
+		if (FirstTime) {
 
-			double sum = 0.0;
-			int upperLimit = i + halfWidth;
-			int lowerLimit = i - halfWidth;
+			FirstTime = false;
 
-			if (FirstTime) {
+			for (j=lowerLimit; j<=upperLimit; j++)
+				sum += Measurements [j]; //mData->Value (j);
 
-				FirstTime = false;
-
-				for (j=lowerLimit; j<=upperLimit; j++)
-					sum += smoothedData [j]; //mData->Value (j);
-
-				previous = sum;
-				tempData [i] = sum / divisor;
-			}
-
-			else {
-
-				previous = previous - smoothedData [lowerLimit - 1] + smoothedData [upperLimit]; //previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
-				tempData [i] = previous / divisor;
-			}
+			previous = sum;
+			smoothedData [i] = sum / divisor;
 		}
 
-		for (i=0; i<NumberOfSamples; i++) {
+		else {
 
-			smoothedData [i] = tempData [i];
+			previous = previous - Measurements [lowerLimit - 1] + Measurements [upperLimit]; //previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
+			smoothedData [i] = previous / divisor;
 		}
 	}
 
+	k = 0;
+
+	for (i=0; i<NumberOfSamples; i++) {
+
+		changeArray [i] = false;
+
+		if (fabs (smoothedData [i] - Measurements [i]) > noiseLevel) {
+
+			smoothedData [i] = Measurements [i];
+			changeArray [i] = true;
+			k++;
+		}
+	}
+
+	fractionOfChangedData = (double)k / (double)NumberOfSamples;
+	cout << "Fraction of unchanged measurements = " << fractionOfChangedData << "  based on noise threshold = " << noiseLevel << "\n";
+
 	DataSignal* filteredSignal = new SampledData (NumberOfSamples, Left, Right, smoothedData, true);
-	delete[] tempData;
 	return filteredSignal;
 }
 

@@ -1470,10 +1470,46 @@ int smAveragingInPlaceFilterWindowWidth::sMessageIndex = 0;
 int smAveragingInPlaceFilterWindowWidth::sMessageScope = 0;
 
 
-RGString smAveragingInPlaceFilterNumberOfPasses::sName = "smAveragingInPlaceFilterNumberOfPasses";
-int smAveragingInPlaceFilterNumberOfPasses::sSubject = smAveragingInPlaceFilterNumberOfPasses::LoadType ();
-int smAveragingInPlaceFilterNumberOfPasses::sMessageIndex = 0;
-int smAveragingInPlaceFilterNumberOfPasses::sMessageScope = 0;
+RGString smUseProximityToPeaksOnlyPreset::sName = "smUseProximityToPeaksOnlyPreset";
+int smUseProximityToPeaksOnlyPreset::sSubject = smUseProximityToPeaksOnlyPreset::LoadType ();
+int smUseProximityToPeaksOnlyPreset::sMessageIndex = 0;
+int smUseProximityToPeaksOnlyPreset::sMessageScope = 0;
+
+
+RGString smDistanceFromPeakThreshold::sName = "smDistanceFromPeakThreshold";
+int smDistanceFromPeakThreshold::sSubject = smDistanceFromPeakThreshold::LoadType ();
+int smDistanceFromPeakThreshold::sMessageIndex = 0;
+int smDistanceFromPeakThreshold::sMessageScope = 0;
+
+
+RGString smUseProximityBothToPeaksAndLevelChangePreset::sName = "smUseProximityBothToPeaksAndLevelChangePreset";
+int smUseProximityBothToPeaksAndLevelChangePreset::sSubject = smUseProximityBothToPeaksAndLevelChangePreset::LoadType ();
+int smUseProximityBothToPeaksAndLevelChangePreset::sMessageIndex = 0;
+int smUseProximityBothToPeaksAndLevelChangePreset::sMessageScope = 0;
+
+
+RGString smDistanceFromLevelChange::sName = "smDistanceFromLevelChange";
+int smDistanceFromLevelChange::sSubject = smDistanceFromLevelChange::LoadType ();
+int smDistanceFromLevelChange::sMessageIndex = 0;
+int smDistanceFromLevelChange::sMessageScope = 0;
+
+
+RGString smPercentOfNoiseRangeForLevelChange::sName = "smPercentOfNoiseRangeForLevelChange";
+int smPercentOfNoiseRangeForLevelChange::sSubject = smPercentOfNoiseRangeForLevelChange::LoadType ();
+int smPercentOfNoiseRangeForLevelChange::sMessageIndex = 0;
+int smPercentOfNoiseRangeForLevelChange::sMessageScope = 0;
+
+
+RGString smMaxPercentLevelChangeToUseLevelChangeProximity::sName = "smMaxPercentLevelChangeToUseLevelChangeProximity";
+int smMaxPercentLevelChangeToUseLevelChangeProximity::sSubject = smMaxPercentLevelChangeToUseLevelChangeProximity::LoadType ();
+int smMaxPercentLevelChangeToUseLevelChangeProximity::sMessageIndex = 0;
+int smMaxPercentLevelChangeToUseLevelChangeProximity::sMessageScope = 0;
+
+
+RGString smPercentOfNoiseRangeToBeConsideredPeak::sName = "smPercentOfNoiseRangeToBeConsideredPeak";
+int smPercentOfNoiseRangeToBeConsideredPeak::sSubject = smPercentOfNoiseRangeToBeConsideredPeak::LoadType ();
+int smPercentOfNoiseRangeToBeConsideredPeak::sMessageIndex = 0;
+int smPercentOfNoiseRangeToBeConsideredPeak::sMessageScope = 0;
 
 
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
@@ -1720,7 +1756,13 @@ PERSISTENT_DEFINITION (smDisplaySigmoidalPeaksPreset, 2645, "smDisplaySigmoidalP
 PERSISTENT_DEFINITION (smResidualDisplacementFractionalLimit, 2646, "smResidualDisplacementFractionalLimit")
 PERSISTENT_DEFINITION (smSelectAveragingInPlaceFilterPreset, 2647, "smSelectAveragingInPlaceFilterPreset")
 PERSISTENT_DEFINITION (smAveragingInPlaceFilterWindowWidth, 2648, "smAveragingInPlaceFilterWindowWidth")
-PERSISTENT_DEFINITION (smAveragingInPlaceFilterNumberOfPasses, 2649, "smAveragingInPlaceFilterNumberOfPasses")
+PERSISTENT_DEFINITION (smUseProximityToPeaksOnlyPreset, 2649, "smUseProximityToPeaksOnlyPreset")
+PERSISTENT_DEFINITION (smDistanceFromPeakThreshold, 2650, "smDistanceFromPeakThreshold")
+PERSISTENT_DEFINITION (smUseProximityBothToPeaksAndLevelChangePreset, 2651, "smUseProximityBothToPeaksAndLevelChangePreset")
+PERSISTENT_DEFINITION (smDistanceFromLevelChange, 2652, "smDistanceFromLevelChange")
+PERSISTENT_DEFINITION (smPercentOfNoiseRangeForLevelChange, 2653, "smPercentOfNoiseRangeForLevelChange")
+PERSISTENT_DEFINITION (smMaxPercentLevelChangeToUseLevelChangeProximity, 2654, "smMaxPercentLevelChangeToUseLevelChangeProximity")
+PERSISTENT_DEFINITION (smPercentOfNoiseRangeToBeConsideredPeak, 2655, "smPercentOfNoiseRangeToBeConsideredPeak")
 
 
 
@@ -16365,58 +16407,418 @@ int smAveragingInPlaceFilterWindowWidth :: LoadType () {
 
 
 
-smAveragingInPlaceFilterNumberOfPasses :: smAveragingInPlaceFilterNumberOfPasses () : SmartNotice () {
+smUseProximityToPeaksOnlyPreset :: smUseProximityToPeaksOnlyPreset () : SmartNotice () {
 
 }
 
 
-smAveragingInPlaceFilterNumberOfPasses :: smAveragingInPlaceFilterNumberOfPasses (const smAveragingInPlaceFilterNumberOfPasses& note) : SmartNotice ((const SmartNotice&) note) {
+smUseProximityToPeaksOnlyPreset :: smUseProximityToPeaksOnlyPreset (const smUseProximityToPeaksOnlyPreset& note) : SmartNotice ((const SmartNotice&) note) {
 
 }
 
 
 
-smAveragingInPlaceFilterNumberOfPasses :: ~smAveragingInPlaceFilterNumberOfPasses () {
+smUseProximityToPeaksOnlyPreset :: ~smUseProximityToPeaksOnlyPreset () {
 
 }
 
 
-int smAveragingInPlaceFilterNumberOfPasses :: GetSubject () const {
+int smUseProximityToPeaksOnlyPreset :: GetSubject () const {
 
-	return smAveragingInPlaceFilterNumberOfPasses::sSubject;
+	return smUseProximityToPeaksOnlyPreset::sSubject;
 }
 
 
-void smAveragingInPlaceFilterNumberOfPasses :: SetIndexAndScope (int index, int scope) const {
+void smUseProximityToPeaksOnlyPreset :: SetIndexAndScope (int index, int scope) const {
 
-	smAveragingInPlaceFilterNumberOfPasses::sMessageIndex = index;
-	smAveragingInPlaceFilterNumberOfPasses::sMessageScope = scope;
+	smUseProximityToPeaksOnlyPreset::sMessageIndex = index;
+	smUseProximityToPeaksOnlyPreset::sMessageScope = scope;
 }
 
 
-int smAveragingInPlaceFilterNumberOfPasses :: GetMessageIndex () const {
+int smUseProximityToPeaksOnlyPreset :: GetMessageIndex () const {
 
-	return smAveragingInPlaceFilterNumberOfPasses :: sMessageIndex;
+	return smUseProximityToPeaksOnlyPreset :: sMessageIndex;
 }
 
 
-int smAveragingInPlaceFilterNumberOfPasses :: GetScope () const {
+int smUseProximityToPeaksOnlyPreset :: GetScope () const {
 
-	return smAveragingInPlaceFilterNumberOfPasses :: sMessageScope;
+	return smUseProximityToPeaksOnlyPreset :: sMessageScope;
 }
 
 
-RGString smAveragingInPlaceFilterNumberOfPasses :: GetName () const {
+RGString smUseProximityToPeaksOnlyPreset :: GetName () const {
 
-	return smAveragingInPlaceFilterNumberOfPasses :: sName;
+	return smUseProximityToPeaksOnlyPreset :: sName;
 }
 
 
 
-int smAveragingInPlaceFilterNumberOfPasses :: LoadType () {
+int smUseProximityToPeaksOnlyPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
-	smAveragingInPlaceFilterNumberOfPasses* noticeType = new smAveragingInPlaceFilterNumberOfPasses;
+	smUseProximityToPeaksOnlyPreset* noticeType = new smUseProximityToPeaksOnlyPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDistanceFromPeakThreshold :: smDistanceFromPeakThreshold () : SmartNotice () {
+
+}
+
+
+smDistanceFromPeakThreshold :: smDistanceFromPeakThreshold (const smDistanceFromPeakThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDistanceFromPeakThreshold :: ~smDistanceFromPeakThreshold () {
+
+}
+
+
+int smDistanceFromPeakThreshold :: GetSubject () const {
+
+	return smDistanceFromPeakThreshold::sSubject;
+}
+
+
+void smDistanceFromPeakThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smDistanceFromPeakThreshold::sMessageIndex = index;
+	smDistanceFromPeakThreshold::sMessageScope = scope;
+}
+
+
+int smDistanceFromPeakThreshold :: GetMessageIndex () const {
+
+	return smDistanceFromPeakThreshold :: sMessageIndex;
+}
+
+
+int smDistanceFromPeakThreshold :: GetScope () const {
+
+	return smDistanceFromPeakThreshold :: sMessageScope;
+}
+
+
+RGString smDistanceFromPeakThreshold :: GetName () const {
+
+	return smDistanceFromPeakThreshold :: sName;
+}
+
+
+
+int smDistanceFromPeakThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDistanceFromPeakThreshold* noticeType = new smDistanceFromPeakThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smUseProximityBothToPeaksAndLevelChangePreset :: smUseProximityBothToPeaksAndLevelChangePreset () : SmartNotice () {
+
+}
+
+
+smUseProximityBothToPeaksAndLevelChangePreset :: smUseProximityBothToPeaksAndLevelChangePreset (const smUseProximityBothToPeaksAndLevelChangePreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smUseProximityBothToPeaksAndLevelChangePreset :: ~smUseProximityBothToPeaksAndLevelChangePreset () {
+
+}
+
+
+int smUseProximityBothToPeaksAndLevelChangePreset :: GetSubject () const {
+
+	return smUseProximityBothToPeaksAndLevelChangePreset::sSubject;
+}
+
+
+void smUseProximityBothToPeaksAndLevelChangePreset :: SetIndexAndScope (int index, int scope) const {
+
+	smUseProximityBothToPeaksAndLevelChangePreset::sMessageIndex = index;
+	smUseProximityBothToPeaksAndLevelChangePreset::sMessageScope = scope;
+}
+
+
+int smUseProximityBothToPeaksAndLevelChangePreset :: GetMessageIndex () const {
+
+	return smUseProximityBothToPeaksAndLevelChangePreset :: sMessageIndex;
+}
+
+
+int smUseProximityBothToPeaksAndLevelChangePreset :: GetScope () const {
+
+	return smUseProximityBothToPeaksAndLevelChangePreset :: sMessageScope;
+}
+
+
+RGString smUseProximityBothToPeaksAndLevelChangePreset :: GetName () const {
+
+	return smUseProximityBothToPeaksAndLevelChangePreset :: sName;
+}
+
+
+
+int smUseProximityBothToPeaksAndLevelChangePreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smUseProximityBothToPeaksAndLevelChangePreset* noticeType = new smUseProximityBothToPeaksAndLevelChangePreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smDistanceFromLevelChange :: smDistanceFromLevelChange () : SmartNotice () {
+
+}
+
+
+smDistanceFromLevelChange :: smDistanceFromLevelChange (const smDistanceFromLevelChange& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smDistanceFromLevelChange :: ~smDistanceFromLevelChange () {
+
+}
+
+
+int smDistanceFromLevelChange :: GetSubject () const {
+
+	return smDistanceFromLevelChange::sSubject;
+}
+
+
+void smDistanceFromLevelChange :: SetIndexAndScope (int index, int scope) const {
+
+	smDistanceFromLevelChange::sMessageIndex = index;
+	smDistanceFromLevelChange::sMessageScope = scope;
+}
+
+
+int smDistanceFromLevelChange :: GetMessageIndex () const {
+
+	return smDistanceFromLevelChange :: sMessageIndex;
+}
+
+
+int smDistanceFromLevelChange :: GetScope () const {
+
+	return smDistanceFromLevelChange :: sMessageScope;
+}
+
+
+RGString smDistanceFromLevelChange :: GetName () const {
+
+	return smDistanceFromLevelChange :: sName;
+}
+
+
+
+int smDistanceFromLevelChange :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smDistanceFromLevelChange* noticeType = new smDistanceFromLevelChange;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPercentOfNoiseRangeForLevelChange :: smPercentOfNoiseRangeForLevelChange () : SmartNotice () {
+
+}
+
+
+smPercentOfNoiseRangeForLevelChange :: smPercentOfNoiseRangeForLevelChange (const smPercentOfNoiseRangeForLevelChange& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPercentOfNoiseRangeForLevelChange :: ~smPercentOfNoiseRangeForLevelChange () {
+
+}
+
+
+int smPercentOfNoiseRangeForLevelChange :: GetSubject () const {
+
+	return smPercentOfNoiseRangeForLevelChange::sSubject;
+}
+
+
+void smPercentOfNoiseRangeForLevelChange :: SetIndexAndScope (int index, int scope) const {
+
+	smPercentOfNoiseRangeForLevelChange::sMessageIndex = index;
+	smPercentOfNoiseRangeForLevelChange::sMessageScope = scope;
+}
+
+
+int smPercentOfNoiseRangeForLevelChange :: GetMessageIndex () const {
+
+	return smPercentOfNoiseRangeForLevelChange :: sMessageIndex;
+}
+
+
+int smPercentOfNoiseRangeForLevelChange :: GetScope () const {
+
+	return smPercentOfNoiseRangeForLevelChange :: sMessageScope;
+}
+
+
+RGString smPercentOfNoiseRangeForLevelChange :: GetName () const {
+
+	return smPercentOfNoiseRangeForLevelChange :: sName;
+}
+
+
+
+int smPercentOfNoiseRangeForLevelChange :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPercentOfNoiseRangeForLevelChange* noticeType = new smPercentOfNoiseRangeForLevelChange;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMaxPercentLevelChangeToUseLevelChangeProximity :: smMaxPercentLevelChangeToUseLevelChangeProximity () : SmartNotice () {
+
+}
+
+
+smMaxPercentLevelChangeToUseLevelChangeProximity :: smMaxPercentLevelChangeToUseLevelChangeProximity (const smMaxPercentLevelChangeToUseLevelChangeProximity& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMaxPercentLevelChangeToUseLevelChangeProximity :: ~smMaxPercentLevelChangeToUseLevelChangeProximity () {
+
+}
+
+
+int smMaxPercentLevelChangeToUseLevelChangeProximity :: GetSubject () const {
+
+	return smMaxPercentLevelChangeToUseLevelChangeProximity::sSubject;
+}
+
+
+void smMaxPercentLevelChangeToUseLevelChangeProximity :: SetIndexAndScope (int index, int scope) const {
+
+	smMaxPercentLevelChangeToUseLevelChangeProximity::sMessageIndex = index;
+	smMaxPercentLevelChangeToUseLevelChangeProximity::sMessageScope = scope;
+}
+
+
+int smMaxPercentLevelChangeToUseLevelChangeProximity :: GetMessageIndex () const {
+
+	return smMaxPercentLevelChangeToUseLevelChangeProximity :: sMessageIndex;
+}
+
+
+int smMaxPercentLevelChangeToUseLevelChangeProximity :: GetScope () const {
+
+	return smMaxPercentLevelChangeToUseLevelChangeProximity :: sMessageScope;
+}
+
+
+RGString smMaxPercentLevelChangeToUseLevelChangeProximity :: GetName () const {
+
+	return smMaxPercentLevelChangeToUseLevelChangeProximity :: sName;
+}
+
+
+
+int smMaxPercentLevelChangeToUseLevelChangeProximity :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMaxPercentLevelChangeToUseLevelChangeProximity* noticeType = new smMaxPercentLevelChangeToUseLevelChangeProximity;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPercentOfNoiseRangeToBeConsideredPeak :: smPercentOfNoiseRangeToBeConsideredPeak () : SmartNotice () {
+
+}
+
+
+smPercentOfNoiseRangeToBeConsideredPeak :: smPercentOfNoiseRangeToBeConsideredPeak (const smPercentOfNoiseRangeToBeConsideredPeak& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPercentOfNoiseRangeToBeConsideredPeak :: ~smPercentOfNoiseRangeToBeConsideredPeak () {
+
+}
+
+
+int smPercentOfNoiseRangeToBeConsideredPeak :: GetSubject () const {
+
+	return smPercentOfNoiseRangeToBeConsideredPeak::sSubject;
+}
+
+
+void smPercentOfNoiseRangeToBeConsideredPeak :: SetIndexAndScope (int index, int scope) const {
+
+	smPercentOfNoiseRangeToBeConsideredPeak::sMessageIndex = index;
+	smPercentOfNoiseRangeToBeConsideredPeak::sMessageScope = scope;
+}
+
+
+int smPercentOfNoiseRangeToBeConsideredPeak :: GetMessageIndex () const {
+
+	return smPercentOfNoiseRangeToBeConsideredPeak :: sMessageIndex;
+}
+
+
+int smPercentOfNoiseRangeToBeConsideredPeak :: GetScope () const {
+
+	return smPercentOfNoiseRangeToBeConsideredPeak :: sMessageScope;
+}
+
+
+RGString smPercentOfNoiseRangeToBeConsideredPeak :: GetName () const {
+
+	return smPercentOfNoiseRangeToBeConsideredPeak :: sName;
+}
+
+
+
+int smPercentOfNoiseRangeToBeConsideredPeak :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPercentOfNoiseRangeToBeConsideredPeak* noticeType = new smPercentOfNoiseRangeToBeConsideredPeak;
 	warehouse->AddType (noticeType);
 	return 1;
 }

@@ -202,7 +202,7 @@ public:
 
 	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
 	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);
-	int CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth);
+	int CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange);
 	int RestoreRawDataAndDeleteFilteredSignal ();
 	bool HasFilteredData () const;
 	
@@ -577,6 +577,8 @@ protected:
 	CSplineTransform* mBaseLine;
 	int mBaselineStart;
 	CoordinateTransform* mTimeMap;
+	bool* mFilterChangeArray;
+	double mFractionOfChangedFilterPoints;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

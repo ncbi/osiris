@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.14</VersionNumber>
-	<BuildTime>03/08/2018 03:57 PM</BuildTime>
+	<VersionNumber>7.18</VersionNumber>
+	<BuildTime>03/21/2018 06:43 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5768,6 +5768,155 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smTestBaselineKnotsHeading</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>                Test Baseline Estimation Knots:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smUseProximityToPeaksOnlyPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>                        Use Proximity to Peaks Only (Default = checked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Use Proximity to Peaks Only (Default = checked)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDistanceFromPeakThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of measurements from peak to remove baseline estimation knot</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>5</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Distance from Peak to Remove Baseline Estimation Knot (Default = 5 Measurements)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Distance from Peak to Remove Baseline Estimation Knot (Default = 5 Measurements)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPercentOfNoiseRangeToBeConsideredPeak</Name>
+			<MessageType>count</MessageType>
+			<Description>Minimum RFU displacement (min to max) as percent of noise range to be considered a peak</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>130</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smUseProximityBothToPeaksAndLevelChangePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>                        Use Proximity Both to Peaks and to Level Change (Overrides Peaks Only Above) (Default = checked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Use Proximity Both to Peaks and to Level Change (Overrides Peaks Only Above) (Default = checked)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smDistanceFromLevelChange</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of measurements from level change to remove baseline estimation knot</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>5</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Distance from Level Change to Remove Baseline Estimation Knot (Default = 5 Measurements)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Distance from Level Change to Remove Baseline Estimation Knot (Default = 5 Measurements)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPercentOfNoiseRangeForLevelChange</Name>
+			<MessageType>count</MessageType>
+			<Description>Percent of measured noise range for lower bound to be considered as level change</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>130</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMaxPercentLevelChangeToUseLevelChangeProximity</Name>
+			<MessageType>count</MessageType>
+			<Description>Max percent of total measurements that can be level changed to all use of level change proximity</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>20</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Max Percent Total Measurement Having Level Change And Still Allow Proximity Test (Default = 20)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Max Percent Total Measurement Having Level Change And Still Allow Proximity Test (Default = 20)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smBaselineEstimationThreshold</Name>
 			<MessageType>count</MessageType>
 			<Description>Level below which fit peak values are considered to be 0 for raw baseline estimation</Description>
@@ -5906,26 +6055,6 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Averaging In Place Filter Window Half Width for Baseline Estimation (Default = 10)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAveragingInPlaceFilterNumberOfPasses</Name>
-			<MessageType>count</MessageType>
-			<Description>Number of passes in averaging in place filter for baseline estimation</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>3</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Averaging In Place Filter Number of Passes for Baseline Estimation (Default = 3)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Averaging In Place Filter Number of Passes for Baseline Estimation (Default = 3)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 			<Editable>false</Editable>
@@ -6751,6 +6880,13 @@
 						<Name>smTestForExcessiveNoisePreset</Name>
 						<Name>smTestForPrimerPeaksInNegControl</Name>
 						<Name>smTestRelativeBaselinePreset</Name>
+						<Name>smUseProximityToPeaksOnlyPreset</Name>
+						<Name>smDistanceFromPeakThreshold</Name>
+						<Name>smPercentOfNoiseRangeToBeConsideredPeak</Name>
+						<Name>smUseProximityBothToPeaksAndLevelChangePreset</Name>
+						<Name>smDistanceFromLevelChange</Name>
+						<Name>smPercentOfNoiseRangeForLevelChange</Name>
+						<Name>smMaxPercentLevelChangeToUseLevelChangeProximity</Name>
 						<Name>smIgnoreNegativeRelativeBaselinePreset</Name>
 						<Name>smBaselineEstimationThreshold</Name>
 						<Name>smResidualDisplacementTestPreset</Name>
@@ -6795,7 +6931,6 @@
 						<Name>smSinglePassFilterWindowWidth</Name>
 						<Name>smSelectAveragingInPlaceFilterPreset</Name>
 						<Name>smAveragingInPlaceFilterWindowWidth</Name>
-						<Name>smAveragingInPlaceFilterNumberOfPasses</Name>
 						<Name>smMinPrimaryPullupThreshold</Name>
 						<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 						<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>

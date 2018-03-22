@@ -433,7 +433,7 @@ double NormalizationInterval :: ComputeSubIntervalAverage (int startPt, int endP
 
 ChannelData :: ChannelData () : SmartMessagingObject (), mChannel (-1), mData (NULL), mBackupData (NULL),
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -442,7 +442,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -451,7 +451,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 
 ChannelData :: ChannelData (int channel, LaneStandard* inputLS) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -461,7 +461,7 @@ Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL),
 ChannelData :: ChannelData (const ChannelData& cd) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), 
-mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0) {
 
 	mData = (DataSignal*)cd.mData->Copy ();
 	mLocusList = cd.mLocusList;
@@ -474,7 +474,7 @@ mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLin
 ChannelData :: ChannelData (const ChannelData& cd, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)cd), mChannel (cd.mChannel), mBackupData (NULL),
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), 
-Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL) {
+Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0) {
 
 	mData = NULL;
 	RGDList tempLocusList = cd.mLocusList;
@@ -500,6 +500,7 @@ ChannelData :: ~ChannelData () {
 	delete mData;
 	delete mBackupData;
 	delete mBaseLine;
+	delete[] mFilterChangeArray;
 
 	if (mDeleteLoci)
 		mLocusList.ClearAndDelete ();
@@ -1064,13 +1065,16 @@ int ChannelData :: CreateAndSubstituteTriplePassFilteredSignalForRawData (int wi
 }
 
 
-int ChannelData :: CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth) {
+int ChannelData :: CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange) {
 
 	if (mBackupData != NULL)
 		delete mBackupData;
 
+	double noiseLevel = fractionNoiseLevelForLevelChange * mData->GetNoiseRange ();
+	mFilterChangeArray = new bool [GetNumberOfSamples ()];
+
 	mBackupData = mData;
-	mData = mBackupData->CreateAveragingFilteredSignal (nPasses, halfWidth);
+	mData = mBackupData->CreateAveragingFilteredSignal (nPasses, halfWidth, noiseLevel, mFilterChangeArray, mFractionOfChangedFilterPoints);
 	return 0;
 }
 

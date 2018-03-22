@@ -255,7 +255,13 @@ PERSISTENT_PREDECLARATION (smDisplaySigmoidalPeaksPreset)
 PERSISTENT_PREDECLARATION (smResidualDisplacementFractionalLimit)
 PERSISTENT_PREDECLARATION (smSelectAveragingInPlaceFilterPreset)
 PERSISTENT_PREDECLARATION (smAveragingInPlaceFilterWindowWidth)
-PERSISTENT_PREDECLARATION (smAveragingInPlaceFilterNumberOfPasses)
+PERSISTENT_PREDECLARATION (smUseProximityToPeaksOnlyPreset)
+PERSISTENT_PREDECLARATION (smDistanceFromPeakThreshold)
+PERSISTENT_PREDECLARATION (smUseProximityBothToPeaksAndLevelChangePreset)
+PERSISTENT_PREDECLARATION (smDistanceFromLevelChange)
+PERSISTENT_PREDECLARATION (smPercentOfNoiseRangeForLevelChange)
+PERSISTENT_PREDECLARATION (smMaxPercentLevelChangeToUseLevelChangeProximity)
+PERSISTENT_PREDECLARATION (smPercentOfNoiseRangeToBeConsideredPeak)
 
 
 
@@ -7091,14 +7097,182 @@ protected:
 
 
 
-class smAveragingInPlaceFilterNumberOfPasses : public SmartNotice {
+class smUseProximityToPeaksOnlyPreset : public SmartNotice {
 
-PERSISTENT_DECLARATION (smAveragingInPlaceFilterNumberOfPasses)
+PERSISTENT_DECLARATION (smUseProximityToPeaksOnlyPreset)
 
 public:
-	smAveragingInPlaceFilterNumberOfPasses ();
-	smAveragingInPlaceFilterNumberOfPasses (const smAveragingInPlaceFilterNumberOfPasses& note);
-	virtual ~smAveragingInPlaceFilterNumberOfPasses ();
+	smUseProximityToPeaksOnlyPreset ();
+	smUseProximityToPeaksOnlyPreset (const smUseProximityToPeaksOnlyPreset& note);
+	virtual ~smUseProximityToPeaksOnlyPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDistanceFromPeakThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDistanceFromPeakThreshold)
+
+public:
+	smDistanceFromPeakThreshold ();
+	smDistanceFromPeakThreshold (const smDistanceFromPeakThreshold& note);
+	virtual ~smDistanceFromPeakThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUseProximityBothToPeaksAndLevelChangePreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUseProximityBothToPeaksAndLevelChangePreset)
+
+public:
+	smUseProximityBothToPeaksAndLevelChangePreset ();
+	smUseProximityBothToPeaksAndLevelChangePreset (const smUseProximityBothToPeaksAndLevelChangePreset& note);
+	virtual ~smUseProximityBothToPeaksAndLevelChangePreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smDistanceFromLevelChange : public SmartNotice {
+
+PERSISTENT_DECLARATION (smDistanceFromLevelChange)
+
+public:
+	smDistanceFromLevelChange ();
+	smDistanceFromLevelChange (const smDistanceFromLevelChange& note);
+	virtual ~smDistanceFromLevelChange ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPercentOfNoiseRangeForLevelChange : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPercentOfNoiseRangeForLevelChange)
+
+public:
+	smPercentOfNoiseRangeForLevelChange ();
+	smPercentOfNoiseRangeForLevelChange (const smPercentOfNoiseRangeForLevelChange& note);
+	virtual ~smPercentOfNoiseRangeForLevelChange ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smMaxPercentLevelChangeToUseLevelChangeProximity : public SmartNotice {
+
+PERSISTENT_DECLARATION (smMaxPercentLevelChangeToUseLevelChangeProximity)
+
+public:
+	smMaxPercentLevelChangeToUseLevelChangeProximity ();
+	smMaxPercentLevelChangeToUseLevelChangeProximity (const smMaxPercentLevelChangeToUseLevelChangeProximity& note);
+	virtual ~smMaxPercentLevelChangeToUseLevelChangeProximity ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPercentOfNoiseRangeToBeConsideredPeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPercentOfNoiseRangeToBeConsideredPeak)
+
+public:
+	smPercentOfNoiseRangeToBeConsideredPeak ();
+	smPercentOfNoiseRangeToBeConsideredPeak (const smPercentOfNoiseRangeToBeConsideredPeak& note);
+	virtual ~smPercentOfNoiseRangeToBeConsideredPeak ();
 
 	virtual int GetSubject () const;
 
