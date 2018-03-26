@@ -340,6 +340,10 @@ sub CopyMac
   {
     &MKDIR($TOP);
   }
+  my $SYSTEM_FOLDER_NAME = "System Applications Folder";
+  my $USER_FOLDER_NAME = "User Applications Folder";
+
+
   my $sDir = &GetVersion::GetDirectory();
   my $APPDIR = "${TOP}/${sDir}.app";
   my $CONTENTS = "${APPDIR}/Contents";
@@ -348,18 +352,23 @@ sub CopyMac
   my $LADDERDIR = "${CONFIG}/LadderSpecifications";
   my $VOLUMEDIR = "${CONFIG}/Volumes";
   my $RESOURCES = "${CONTENTS}/Resources";
-  my $APP_SYS_FOLDER = "${TOP}/System Applications Folder.app";
-  my $APP_USER_FOLDER = "${TOP}/User Applications Folder.app";
-  my $SYS_APP_FOLDER = "${APP_SYS_FOLDER}/Contents/MacOS";
-  my $USER_APP_FOLDER = "${APP_USER_FOLDER}/Contents/MacOS";
+  my $APP_SYS_FOLDER = "${TOP}/${SYSTEM_FOLDER_NAME}.app";
+  my $APP_USER_FOLDER = "${TOP}/${USER_FOLDER_NAME}.app";
+
+  my $SYSTEM_FOLDER_DEST =
+    "${APP_SYS_FOLDER}/Contents/MacOS";
+  my $USER_FOLDER_DEST =
+    "${APP_USER_FOLDER}/Contents/MacOS";
+
+
   my @APP_FOLDERS =
     (
      "${APP_SYS_FOLDER}",
      "${APP_SYS_FOLDER}/Contents",
-     "${SYS_APP_FOLDER}",
+     "${SYSTEM_FOLDER_DEST}",
      "${APP_USER_FOLDER}",
      "${APP_USER_FOLDER}/Contents",
-     "${USER_APP_FOLDER}"
+     "${USER_FOLDER_DEST}"
     );
   my $src = "..";
   my $x;
@@ -367,6 +376,9 @@ sub CopyMac
   {
      &MKDIR($x);
   }
+
+
+
   &SYSTEM("${CP} ${src}/dmg/00_Read_This_First.pdf ${TOP}");
 
   &SYSTEM("${CP} ${src}/OsirisAnalysis/wxmac.icns ${RESOURCES}");
@@ -384,10 +396,12 @@ sub CopyMac
   #
   #  create the folder apps for dmg
   #
-  &SYSTEM("${CP} ${src}/OpenFolder/bin/OpenFolder \"${TOP}/System Applications Folder/Contents/MacOS/System Applications Folder\"")
-  &SYSTEM("${CP} ${src}/OpenFolder/bin/OpenFolder \"${TOP}/User Applications Folder/Contents/MacOS/User Applications Folder\"")
-  &SYSTEM("${CP} ${src}/dmg/sys_folder.sh \"${TOP}/System Applications Folder/Contents/MacOS/folder.sh\"");
-  &SYSTEM("${CP} ${src}/dmg/user_folder.sh \"${TOP}/User Applications Folder/Contents/MacOS/folder.sh\"");
+
+  &SYSTEM("${CP} ${src}/dmg/user_folder.sh \"${USER_FOLDER_DEST}/folder.sh\"");
+  &SYSTEM("${CP} ${src}/dmg/sys_folder.sh \"${SYSTEM_FOLDER_DEST}/folder.sh\"");
+
+  &SYSTEM("${CP} ${src}/OpenFolder/bin/OpenFolder \"${SYSTEM_FOLDER_DEST}/${SYSTEM_FOLDER_NAME}\"");
+  &SYSTEM("${CP} ${src}/OpenFolder/bin/OpenFolder \"${USER_FOLDER_DEST}/${USER_FOLDER_NAME}\"");
 
   # done with folder apps
   #
@@ -397,8 +411,8 @@ sub CopyMac
   for my $folder
     (
      $APPDIR,
-     "${TOP}/System Applications Folder",
-     "${TOP}/User Applications Folder"
+     $APP_SYS_FOLDER,
+     $APP_USER_FOLDER
     )
   {
     &SignAppMac($folder);
