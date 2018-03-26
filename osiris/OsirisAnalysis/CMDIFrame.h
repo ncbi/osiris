@@ -35,7 +35,7 @@
 #include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/menu.h>
-#include "wxIDs.h"
+#include "wxIDS.h"
 #include "nwx/nwxTimerReceiver.h"
 #include "nwx/stdb.h"
 #include <set>

@@ -100,7 +100,7 @@ size_t CDialogSitePath::_setupGroupList(wxArrayString *pasKeep)
     // windows does not have a default groups
     if(*itr == sDefaultGroup)
     {
-      nDefault = asGroupsKeep.GetCount();
+      nDefault = pasKeep->GetCount();
     }
 #endif
     pasKeep->Add(*itr);

@@ -35,7 +35,7 @@
 #include <wx/string.h>
 #include <wx/arrstr.h>
 #include "wxXml2/wxXml2Object.h"
-#include "wxIDs.h"
+#include "wxIDS.h"
 
 class ConfigDir;
 class CPersistKitList;

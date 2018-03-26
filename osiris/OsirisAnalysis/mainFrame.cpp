@@ -857,7 +857,7 @@ void mainFrame::OnExportSettings(wxCommandEvent &)
 {
   bool bMod = false;
 #ifdef __WXMAC__
-  if(SetupSiteSettings(DialogParent()))
+  if(SetupSiteSettings())
 #endif
   {
     CDialogExportXSL x(DialogParent());

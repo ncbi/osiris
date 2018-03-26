@@ -187,7 +187,7 @@ CSitePath::CSitePath() :
   if(wxFileName::FileExists(sPath))
   {
     m_sExeDir = nwxFileUtil::GetRealPath(sPath);
-    if(m_sExeDir.IsEmtpy())
+    if(m_sExeDir.IsEmpty())
     {
       m_nLastError = errno;
       m_sExeDir = sPath;
@@ -534,7 +534,7 @@ bool CSitePath::CreateSitePath(const wxString &sGroup, const wxString &sUser)
   else if(m_bUserPath && !m_bThisUserPath)
   {
     bRtn = false;
-    m_nLastError = EACESS;
+    m_nLastError = EACCES;
   }
   else
   {

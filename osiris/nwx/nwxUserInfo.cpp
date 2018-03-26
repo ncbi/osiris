@@ -44,8 +44,6 @@ nwxIMPLEMENT_GLOBAL_OBJECT(nwxUserInfo)
 #include <string.h>
 #include <errno.h>
 
-nwxIMPLEMENT_GLOBAL_OBJECT(nwxUserInfo)
-
 nwxUserInfo::nwxUserInfo() : m_nGID(0), m_nUID(0), m_nLastError(0)
 {
 #define MAX_GID 128  

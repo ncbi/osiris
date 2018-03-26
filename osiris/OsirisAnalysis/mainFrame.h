@@ -69,7 +69,7 @@
 #include "CDialogMaxLadderLabel.h"
 #include "CDialogPromptNewerFile.h"
 #include "CMenuBar.h"
-#include "wxIDs.h"
+#include "wxIDS.h"
 #include "wxXsl/wxXslObject.h"
 #if mainFrameIsWindow
 #include "nwx/PersistentSize.h"

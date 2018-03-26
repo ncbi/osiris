@@ -597,7 +597,7 @@ void nwxFileUtil::_setupPaths()
 #else
     wxString sPath;
     const char *apsCheck[] =
-    { "/usr/bin/","/bin/",NULL }
+      { "/usr/bin/","/bin/",NULL };
     const char **psCheck;
     for(psCheck = &apsCheck[0]; *psCheck != NULL; ++psCheck)
     {
@@ -781,7 +781,7 @@ wxString nwxFileUtil::GetRealPath(const wxString &sPath)
   }
   else if(realpath(sPath.utf8_str(),buffer) == NULL)
   {
-    bError = true
+    bError = true;
   }
   else
   {

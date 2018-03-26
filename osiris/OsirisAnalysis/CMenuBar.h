@@ -32,7 +32,7 @@
 #define __C_MENU_BAR_H__
 
 #include <wx/menu.h>
-#include "wxIDs.h"
+#include "wxIDS.h"
 
 #ifdef __WINDOW_LIST__
 class CMenuWindow;
