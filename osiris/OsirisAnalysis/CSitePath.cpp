@@ -1025,6 +1025,7 @@ bool CSitePath::_runScript(const wxArrayString &as, bool bElevate)
     {
       ARGV[ndx++] = as.Item(i).wx_str();
     }
+    ARGV[ndx] = NULL;
     size_t nRtn = wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
     bRtn = !nRtn;
     if(!bRtn)

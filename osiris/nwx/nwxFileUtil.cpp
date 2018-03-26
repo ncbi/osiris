@@ -585,7 +585,7 @@ void nwxFileUtil::_setupPaths()
       {
         EndWithSeparator(&sPath);
         wxString sSysPath(sPath);
-        sSysPath.Append("System32/"); 
+        sSysPath.Append("System32\\"); 
         DIR_NOT_EXIST(sSysPath)
         else
         {

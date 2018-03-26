@@ -302,8 +302,10 @@ Function GETOWNER(sPath)
     sOwner = GetFileOwner(sPath)
     If (sOwner = "") Then
       rtn = False
-    ElseIf bVerbose Then
-      STDERR.WriteLine sOwner
+    Else
+      If bVerbose Then
+        STDERR.WriteLine sOwner
+      End If
       rtn = (sOwner <> "\")
     End If
   Else
