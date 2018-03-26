@@ -171,13 +171,9 @@ private:
     // Subdir for config files (.osiris)
   wxString m_sFileSubdir;
     // Subdir for data files (Osiris)
-#ifndef __WXMAC__
-  wxString m_sSitePath;
-#endif
     // Subdir for user config files, operating procedures (volumes), etc.
   bool m_bError;
     // true is an error occurred when creating a directory
-  void _SetupSitePath();
 
   static bool _BuildFileName(const wxString &sPath, const wxChar *psFileName, wxString *psRtn)
   {

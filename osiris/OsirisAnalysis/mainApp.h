@@ -79,12 +79,8 @@ DECLARE_CMD_HANDLER(OnArtifactLabels)
 DECLARE_CMD_HANDLER(OnExportSettings)
 DECLARE_CMD_HANDLER(OnEditGridColours)
 DECLARE_CMD_HANDLER(OnShowLog)
-
-#ifdef __WXMAC__
 DECLARE_CMD_HANDLER(OnAccessSiteSettings)
 DECLARE_CMD_HANDLER(OnShowSiteSettings)
-#endif
-
 DECLARE_CMD_HANDLER(OnAnalyze)
 DECLARE_CMD_HANDLER(OnOpenPlot)
 DECLARE_CMD_HANDLER(OnOpenArchive)
@@ -108,7 +104,6 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   // end event handlers
 
   virtual void ReceiveXml2Error(const wxString &s);
-  static bool SetupSiteSettings(wxWindow *parent = NULL);
   static mainApp *Get()
   {
     return g_pThis;
@@ -141,6 +136,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
     return Confirm(parent,sPrompt,"Confirm");
   }
   static bool ConfirmModificationsLost(wxWindow *parent);
+  static bool SetupSiteSettings();
   static ConfigDir *GetConfig();
   static nwxXmlMRU *GetMRU();
   static nwxXmlCmfList *GetCMFlist();

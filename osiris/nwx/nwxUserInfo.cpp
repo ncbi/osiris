@@ -32,9 +32,11 @@
 *
 */
 
+#include "nwx/nwxUserInfo.h"
+nwxIMPLEMENT_GLOBAL_OBJECT(nwxUserInfo)
+
 #ifdef __WXMAC__
 
-#include "nwx/nwxUserInfo.h"
 #include <unistd.h>
 #include <pwd.h>
 #include <grp.h>
@@ -78,15 +80,21 @@ nwxUserInfo::nwxUserInfo() : m_nGID(0), m_nUID(0), m_nLastError(0)
         psGroup = group_from_gid(nID,0);
         if(psGroup != NULL)
         {
-          m_asGroupNames.Add(wxString::FromUTF8(psGroup));
-          m_anGroupIDs.push_back(nID);
+          ss = wxString::FromUTF8(psGroup);
           m_mapGIDtoName.insert(
             MAP_NS::value_type(
-              nID,m_asGroupNames.Item(n)));
+              nID,ss));
           m_mapNameToGID.insert(
             MAP_SN::value_type(
-              m_asGroupNames.Item(n),nID));
-        }  
+              ss,nID));
+        }
+        for(MAP_SN::iterator itr = m_mapNameToGID.begin();
+          itr != m_mapNameToGID.end();
+          ++itr)
+        {
+          m_asGroupNames.Add(itr->first);
+          m_anGroupIDs.push_back(itr->second);
+        }
       }
     }
     else
@@ -96,7 +104,85 @@ nwxUserInfo::nwxUserInfo() : m_nGID(0), m_nUID(0), m_nLastError(0)
   }
 #undef MAX_GID
 }
-
-
 const wxString nwxUserInfo::g_EMPTY(wxEmptyString);
+
 #endif
+
+#ifdef __WXMSW__
+#include <wx/utils.h> 
+#include <wx/stdpaths.h>
+#include "nwx/nwxFileUtil.h"
+#include "nwx/nwxLog.h"
+#include "nwx/nwxProcess.h"
+
+nwxUserInfo::nwxUserInfo() : m_bGroupsSetup(false), m_nGroupStatus(0)
+{
+  m_sUser = wxGetUserId();
+}
+
+class CProcessGroups : public nwxProcess
+{
+public:
+  CProcessGroups(wxArrayString *pasGroups):
+    nwxProcess(NULL),
+    m_pasGroups(pasGroups)
+  {}
+  virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream);
+  const wxString &GetStdErr() const
+  {
+    return m_sStdErr;
+  }
+private:
+  wxString m_sStdErr;
+  wxString m_sLastGroup;
+  wxArrayString *m_pasGroups;
+};
+
+void CProcessGroups::ProcessLine(const char *p, size_t , bool bErrStream)
+{
+  wxString sLine = wxString::FromUTF8(p);
+  if(bErrStream)
+  {
+    m_sStdErr.Append(sLine);
+  }
+  else
+  {
+    m_pasGroups->Add(sLine);
+  }
+}
+
+void nwxUserInfo::_setupGroupNames()
+{
+  if(!m_bGroupsSetup)
+  {
+    m_bGroupsSetup = true;
+    wxString sWhoAmI = nwxFileUtil::PathFind("whoami.exe",true);
+    if(sWhoAmI.IsEmpty())
+    {
+      nwxLog::LogMessage(wxS("Cannot find whoami.exe, therefore cannot find group names"));
+    }
+    else
+    {
+      CProcessGroups proc(&m_asGroupNames);
+      const char *psWhoAmI;
+      char *argv[5];
+      psWhoAmI = sWhoAmI.utf8_str();
+      argv[0] = (char*) psWhoAmI;
+      argv[1] = "/GROUPS";
+      argv[2] = "/FO";
+      argv[3] = "LIST";
+      argv[4] = NULL;
+      proc.Run(argv, wxEXEC_SYNC);
+      m_nGroupStatus = proc.GetExitStatus();
+      const wxString &sErr(proc.GetStdErr());
+      if(!sErr.IsEmpty())
+      {
+        wxString s(wxS("setup group names: error text\n"));
+        s.Append(sErr);
+        nwxLog::LogMessage(s);
+      }
+    }
+  }
+}
+#endif
+

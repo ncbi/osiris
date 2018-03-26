@@ -92,7 +92,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;../libxslt-1.1.26/win32include;../libxml2-2.7.7/include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\lib\vc_lib\mswud;$(WXHOME)\include;..\wxthings\include;..\wxplotctrl\include;..\Version;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;__WXDEBUG__;_DEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;__WXDEBUG__;_DEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
@@ -183,7 +183,7 @@
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;../libxslt-1.1.26/win32include;../libxml2-2.7.7/include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\lib\vc_lib\mswu;$(WXHOME)\include;..\wxthings\include;..\wxplotctrl\include;..\Version;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;wxDEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;wxDEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -294,6 +294,7 @@
     <ClCompile Include="CDialogPromptNewerFile.cpp" />
     <ClCompile Include="CDialogReallyQuit.cpp" />
     <ClCompile Include="CDialogShowLabSettings.cpp" />
+    <ClCompile Include="CDialogSitePath.cpp" />
     <ClCompile Include="CDialogToggleEnabled.cpp" />
     <ClCompile Include="CDialogVolumes.cpp" />
     <ClCompile Include="CDialogWarnHistory.cpp" />
@@ -389,9 +390,9 @@
     <ClCompile Include="CParmOsiris.cpp" />
     <ClCompile Include="CPlotController.cpp" />
     <ClCompile Include="CPlotData.cpp" />
-    <ClCompile Include="CProcess.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
+    <ClCompile Include="CSitePath.cpp" />
     <ClCompile Include="CSiteSettings.cpp" />
     <ClCompile Include="CSplitterCellHistory.cpp" />
     <ClCompile Include="CStandardSettings.cpp" />
@@ -438,6 +439,7 @@
     <ClInclude Include="CDialogPromptNewerFile.h" />
     <ClInclude Include="CDialogReallyQuit.h" />
     <ClInclude Include="CDialogShowLabSettings.h" />
+    <ClInclude Include="CDialogSitePath.h" />
     <ClInclude Include="CDialogToggleEnabled.h" />
     <ClInclude Include="CDialogVolumes.h" />
     <ClInclude Include="CDialogWarnHistory.h" />
@@ -539,9 +541,9 @@
     <ClInclude Include="CParmOsiris.h" />
     <ClInclude Include="CPlotController.h" />
     <ClInclude Include="CPlotData.h" />
-    <ClInclude Include="CProcess.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
+    <ClInclude Include="CSitePath.h" />
     <ClInclude Include="CSiteSettings.h" />
     <ClInclude Include="CSplitterCellHistory.h" />
     <ClInclude Include="CStandardSettings.h" />

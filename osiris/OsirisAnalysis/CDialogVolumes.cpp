@@ -616,9 +616,7 @@ bool CDialogVolumes::_SetupAll()
 
 void CDialogVolumes::OnAdd(wxCommandEvent &e)
 {
-#ifdef __WXMAC__
-  if(mainApp::SetupSiteSettings(this))
-#endif
+  if(mainApp::SetupSiteSettings())
   {
     bool bButton = (e.GetEventObject() == (wxObject *)m_pButtonAdd);
     wxASSERT_MSG(bButton,"CDialogVolumes::OnAdd, wrong button");

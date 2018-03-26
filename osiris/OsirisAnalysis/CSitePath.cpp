@@ -32,13 +32,6 @@
 *
 */
 #include "CSitePath.h"
-
-#ifdef __WXMAC__
-#include <limits.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <mach-o/dyld.h>
-#include <sys/stat.h>
 #include <wx/utils.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
@@ -50,7 +43,124 @@
 #include "mainApp.h"
 #include "ConfigDir.h"
 
+#ifdef __WXMAC__
+#include <limits.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+//#include <unistd.h>
+//#include <mach-o/dyld.h>
+#endif
+
 nwxIMPLEMENT_GLOBAL_OBJECT(CSitePath)
+
+#define OSIRIS_FILES wxS("Osiris-Files")
+
+// methods identical to windows and mac OSX
+
+wxString CSitePath::GetExistingParent()
+{
+  return nwxFileUtil::GetExistingParent(m_sSiteDir);
+}
+bool CSitePath::ExistingParentWritable()
+{
+  return nwxFileUtil::ExistingParentWritable(m_sSiteDir);
+}
+bool CSitePath::SitePathExists() const
+{
+  bool bRtn = (!m_sSiteDir.IsEmpty()) &&
+    wxFileName::DirExists(m_sSiteDir);
+  return bRtn;
+}
+
+bool CSitePath::CreateSitePathSimple()
+{
+  bool bRtn = 
+    SitePathExists() 
+    ? true
+    : wxFileName::Mkdir(
+        m_sSiteDir, wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+  if(bRtn)
+  {
+    _setupRealSitePath();
+  }
+  return bRtn;
+}
+
+void CSitePath::LogTestString() const
+{
+  wxString s;
+  BuildTestString(&s);
+  nwxLog::LogMessage(s);
+}
+
+
+void CSitePath::BuildTestString(wxString *ps) const
+{
+#define BOOL_TO_STR(b) ((b) ? wxS("true") : wxS("false"))
+  ps->Empty();
+  ps->Append(wxS("\nm_sExeDir: "));
+  ps->Append(m_sExeDir);
+  ps->Append(wxS("\nm_sSiteDir: "));
+  ps->Append(m_sSiteDir);
+  ps->Append(wxS("\nm_sRealSiteDir: "));
+  ps->Append(m_sRealSiteDir);
+  ps->Append(wxS("\nm_bUserPath: "));
+  ps->Append(BOOL_TO_STR(m_bUserPath));
+  ps->Append(wxS("\nm_bThisUserPath: "));
+  ps->Append(BOOL_TO_STR(m_bThisUserPath));
+#ifdef __WXMAC__
+  ps->Append(wxS("\nm_bXattrProblem: "));
+  ps->Append(BOOL_TO_STR(m_bXattrProblem));
+#endif
+  ps->Append(wxS("\nm_nLastError: "));
+  ps->Append(nwxString::FormatNumber(m_nLastError));
+#ifdef __WXMSW__
+  ps->Append(wxS("\nm_sCScript: "));
+  ps->Append(m_sCScript);
+#endif
+  ps->Append(wxS("\n\n"));
+}
+
+const wxString &CSitePath::LastErrorStr()
+{
+  switch(m_nLastError)
+  {
+  case 0:
+    m_sErrorString.Empty();
+    break;
+#ifdef __WXMAC__
+  case SCRIPT_NOT_FOUND:
+    m_sErrorString = wxS("The shell script:\n");
+    m_sErrorString.Append(g_sScriptPath);
+    m_sErrorString.Append(wxS("\nis missing"));
+    break;
+  case SCRIPT_NOT_EXECUTABLE:
+    m_sErrorString = wxS("The shell script:\n");
+    m_sErrorString.Append(g_sScriptPath);
+    m_sErrorString.Append(wxS("\nis not executable"));
+    break;
+  case APPLE_SCRIPT_NOT_FOUND:
+    m_sErrorString = wxS("Cannot find AppleScript: ");
+    m_sErrorString.Append(g_sAppleScript);
+    break;
+#endif
+#ifdef __WXMSW__
+  case SCRIPT_NOT_FOUND:
+    m_sErrorString = wxS("Cannot find script, CSitePath.vbs");
+    break;
+  case WINDOWS_SCRIPT_HOST_NOT_FOUND:
+    m_sErrorString = wxS("Cannot find Windows scripting host, cscript.exe");
+    break;
+#endif
+  default:
+    m_sErrorString = strerror(m_nLastError);
+    break;
+  }
+  return m_sErrorString;
+}
+
+// ********************************************************* mac OS X
+#ifdef __WXMAC__
 
 const wxString CSitePath::g_sAppleScript(wxS("/usr/bin/osascript"));
 wxString CSitePath::g_sScriptPath;
@@ -69,21 +179,28 @@ CSitePath::CSitePath() :
   wxFileName fn(sp.GetExecutablePath());
   char buffer[PATH_MAX + 1];
   wxString sPath = fn.GetFullPath(wxPATH_NATIVE);
-  const wxString sSiteLib(wxT("/Library/Application Support/Osiris-Files"));
-  const wxString sSiteShared(wxT("/Users/Shared/Osiris-Files"));
-  const wxString sSharedHome(wxT("/Users/Shared"));
-  const wxString sSlash(wxT("/"));
+  const wxString sSiteLib(wxS("/Library/Application Support/Osiris-Files"));
+  const wxString sSiteShared(wxS("/Users/Shared/Osiris-Files"));
+  const wxString sSharedHome(wxS("/Users/Shared"));
+  const wxString sSlash(wxS("/"));
   int nApp;
-  if(realpath(sPath.utf8_str(),buffer) == NULL)
+  if(wxFileName::FileExists(sPath))
   {
-    m_nLastError = errno;
-    m_sExePath = sPath;
+    m_sExeDir = nwxFileUtil::GetRealPath(sPath);
+    if(m_sExeDir.IsEmtpy())
+    {
+      m_nLastError = errno;
+      m_sExeDir = sPath;
+    }
   }
   else
   {
-    m_sExePath  = wxString::FromUTF8(buffer);
+    wxString sMsg(wxS("exe path does not exist: "));
+    sMsg.Append(sPath);
+    nwxLog::LogMessage(sMsg);
+    m_sExeDir = sPath;
   }
-  wxString sExeLower(m_sExePath);
+  wxString sExeLower(m_sExeDir);
   sExeLower.MakeLower();
   m_bXattrProblem = !sExeLower.Find("/private/var");
   //  if exe file is in /private/var, then OS X 10.12 or later
@@ -93,7 +210,7 @@ CSitePath::CSitePath() :
 //  figure out path for Osiris-Files
 //  based on application location
 
-  if(m_bXattrProblem || !m_sExePath.find(wxT("/Applications/")))
+  if(m_bXattrProblem || !m_sExeDir.find(wxS("/Applications/")))
   {
     // OSIRIS is in /Applications or unknown (/private/var)
     // look in /Library/Application Support
@@ -102,34 +219,34 @@ CSitePath::CSitePath() :
     if(wxFileName::DirExists(sSiteLib))
     {
       // compatible with older versions
-      m_sSitePath = sSiteLib;
+      m_sSiteDir = sSiteLib;
     }
     else if(wxFileName::DirExists(sSharedHome))
     {
       // preferred location is /Users/Shared/Osiris-Files
-      m_sSitePath = sSiteShared;
+      m_sSiteDir = sSiteShared;
     }
     else
     {
       // fallback if /Users/Shared does not exist
-      m_sSitePath = sSiteLib;
+      m_sSiteDir = sSiteLib;
     }
   }
-  else if( (nApp = sExeLower.Find(wxT(".app"))) > 0 )
+  else if( (nApp = sExeLower.Find(wxS(".app"))) > 0 )
   {
     // look for existing Osiris-Files directory in parent
     //  of .app directory
 
-    wxString sApp(m_sExePath.Mid(0,nApp + 4));
+    wxString sApp(m_sExeDir.Mid(0,nApp + 4));
     wxFileName fnApp(sApp);
     wxString sDirSibling = fnApp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    sDirSibling.Append("Osiris-Files");
+    sDirSibling.Append(OSIRIS_FILES);
     if(wxFileName::DirExists(sDirSibling))
     {
-      m_sSitePath = sDirSibling;
+      m_sSiteDir = sDirSibling;
     }
-    if ( (!m_sExePath.Find(wxT("/Users/"))) &&
-         (!(m_sExePath.Find(sSharedHome + wxT("/")) == 0)) &&
+    if ( (!m_sExeDir.Find(wxS("/Users/"))) &&
+         (!(m_sExeDir.Find(sSharedHome + wxS("/")) == 0)) &&
          (sApp.Replace(sSlash,sSlash,true) >= 3) )
     {
       // find user directory, not necessarily current user
@@ -141,20 +258,20 @@ CSitePath::CSitePath() :
         wxString sHome = wxFileName::GetHomeDir();
         nwxFileUtil::EndWithSeparator(&sHome);
         size_t nLenHome = sHome.Len();
-        m_bThisUserPath = (m_sExePath.Len() > nLenHome) &&
-          (m_sExePath.Left(nLenHome) == sHome);
-        if(m_sSitePath.IsEmpty())
+        m_bThisUserPath = (m_sExeDir.Len() > nLenHome) &&
+          (m_sExeDir.Left(nLenHome) == sHome);
+        if(m_sSiteDir.IsEmpty())
         {
-          m_sSitePath = sApp.Mid(0,nSlash3); // no trailing slash
-          m_sSitePath.Append(sSiteLib);
+          m_sSiteDir = sApp.Mid(0,nSlash3); // no trailing slash
+          m_sSiteDir.Append(sSiteLib);
         }
       }
     }
-    if(m_sSitePath.IsEmpty())
+    if(m_sSiteDir.IsEmpty())
     {
       // not a user directory nor Applications,
       // possible network install
-      m_sSitePath = sDirSibling;
+      m_sSiteDir = sDirSibling;
     }
   }
   _setupRealSitePath();
@@ -163,41 +280,35 @@ CSitePath::CSitePath() :
 void CSitePath::_setupRealSitePath()
 {
   char buffer[PATH_MAX + 1];
-  if(!m_sRealSitePath.IsEmpty()) {}
-  else if(m_sSitePath.IsEmpty()) {}
-  else if(!wxFileName::DirExists(m_sSitePath)) {}
-  else if(realpath(m_sSitePath.utf8_str(),buffer) == NULL)
-  {
-    m_nLastError = errno;
-  }
+  if(!m_sRealSiteDir.IsEmpty()) {}
+  else if(m_sSiteDir.IsEmpty()) {}
+  else if(!wxFileName::DirExists(m_sSiteDir)) {}
   else
   {
-    m_sRealSitePath  = wxString::FromUTF8(buffer);
+    m_sRealSiteDir = nwxFileUtil::GetRealPath(m_sSiteDir);
+    if(m_sRealSiteDir.IsEmpty())
+    {
+      m_nLastError = errno;
+    }
   }
 }
 
-bool CSitePath::SitePathExists() const
-{
-  bool bRtn = (!m_sSitePath.IsEmpty()) &&
-    wxFileName::DirExists(m_sSitePath);
-  return bRtn;
-}
 /*
 bool CSitePath::_appendArg(wxString *pStr, const wxString &sArg)
 {
-  bool bRtn = (sArg.Find(wxT("\"")) == wxNOT_FOUND);
+  bool bRtn = (sArg.Find(wxS("\"")) == wxNOT_FOUND);
   // cannot process a directory name with a double quote "
 
-  //   (sArg.Find(wxT("'")) == wxNOT_FOUND) );
+  //   (sArg.Find(wxS("'")) == wxNOT_FOUND) );
 
   if(bRtn)
   {
-    pStr->Append(wxT(" "));
-    if(sArg.Find(wxT(" ")) != wxNOT_FOUND)
+    pStr->Append(wxS(" "));
+    if(sArg.Find(wxS(" ")) != wxNOT_FOUND)
     {
-      pStr->Append(wxT("'"));
+      pStr->Append(wxS("'"));
       pStr->Append(sArg);
-      pStr->Append(wxT("'"));
+      pStr->Append(wxS("'"));
     }
     else
     {
@@ -278,7 +389,7 @@ const wxString &CSitePath::_prepareShellParm(const wxString &s, wxString *pBuffe
 
 bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
 {
-  wxFileName fnExe(m_sExePath);
+  wxFileName fnExe(m_sExeDir);
   wxString sCmd;
   wxString sArg;
   wxString sBack(wxS("\\"));
@@ -288,7 +399,7 @@ bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
   if(g_sScriptPath.IsEmpty())
   {
     g_sScriptPath = fnExe.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    g_sScriptPath.Append(wxT("CSitePath.sh"));
+    g_sScriptPath.Append(wxS("CSitePath.sh"));
   }
   if(!wxFileName::FileExists(g_sScriptPath))
   {
@@ -372,7 +483,7 @@ bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
       else
       {
         ARGV[0] = g_sAppleScript.wc_str();
-        ARGV[1] = wxT("-e");
+        ARGV[1] = wxS("-e");
         ARGV[2] = sCmd.wc_str();
         ARGV[3] = NULL;
       }
@@ -410,12 +521,6 @@ bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
   return bRtn;
 }
 
-bool CSitePath::CreateSitePathSimple()
-{
-  bool bRtn = wxFileName::Mkdir(
-    m_sSitePath, wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
-  return bRtn;
-}
 
 bool CSitePath::CreateSitePath(const wxString &sGroup, const wxString &sUser)
 {
@@ -426,15 +531,19 @@ bool CSitePath::CreateSitePath(const wxString &sGroup, const wxString &sUser)
     bRtn = false;
     m_nLastError = EEXIST;
   }
+  else if(m_bUserPath && !m_bThisUserPath)
+  {
+    bRtn = false;
+    m_nLastError = EACESS;
+  }
   else
   {
     bRtn = CreateSitePathSimple();
-    if(bRtn) {}
-    else if(!m_bUserPath || m_bThisUserPath)
+    if(!m_bUserPath || m_bThisUserPath)
     {
       wxArrayString as;
-      as.Add(wxT("MKDIR"));
-      as.Add(m_sSitePath);
+      as.Add(bRtn ? wxS("CHGRP") : wxS("MKDIR"));
+      as.Add(m_sSiteDir);
       as.Add(sGroup);
       if(!sUser.IsEmpty())
       {
@@ -462,7 +571,7 @@ bool CSitePath::CreateSitePath(const wxString &sGroup, const wxString &sUser)
   return bRtn;
 }
 
-bool CSitePath::UpdateSitePath(const wxString &sGroup, const wxString &sUser)
+bool CSitePath::UpdateSitePath(const wxString &sGroup, const wxString &sUser, bool bNeedAdmin)
 {
   bool bRtn = true;
   bool bCreated = false;
@@ -475,22 +584,22 @@ bool CSitePath::UpdateSitePath(const wxString &sGroup, const wxString &sUser)
       bCreated = true;
     }
   }
-  if(bRtn && !sGroup.IsEmpty() && !m_sRealSitePath.IsEmpty())
+  if(bRtn && !sGroup.IsEmpty() && !m_sRealSiteDir.IsEmpty())
   {
     wxArrayString as;
     as.Add(wxS("CHGRP"));
-    as.Add(m_sRealSitePath);
+    as.Add(m_sRealSiteDir);
     as.Add(sGroup);
-    bRtn = _runScript(as,!CurrentUserOwnsAll());
+    bRtn = _runScript(as,bNeedAdmin);
   }
   if(bRtn && !bCreated && sGroup.IsEmpty() && !sUser.IsEmpty())
   {
     wxArrayString as;
     as.Add(wxS("MKDIR"));
-    as.Add(m_sRealSitePath);
+    as.Add(m_sRealSiteDir);
     as.Add(wxEmptyString);
     as.Add(sUser);
-    bRtn = _runScript(as,!CurrentUserOwnsAll());
+    bRtn = _runScript(as,bNeedAdmin);
   }
   return bRtn;
 }
@@ -569,7 +678,7 @@ private:
 bool CSitePath::CurrentUserOwnsAll()
 {
   int bRtn = false;
-  if(m_sRealSitePath.IsEmpty())
+  if(m_sRealSiteDir.IsEmpty())
   {
     m_nLastError = EPERM;
   }
@@ -579,7 +688,7 @@ bool CSitePath::CurrentUserOwnsAll()
   }
   else
   {
-    wxDir oDir(m_sRealSitePath);
+    wxDir oDir(m_sRealSiteDir);
     if(!oDir.IsOpened())
     {
       m_nLastError = EPERM;
@@ -587,7 +696,7 @@ bool CSitePath::CurrentUserOwnsAll()
     else
     {
       MyTraverser traverser;
-      traverser.OnDir(m_sRealSitePath);
+      traverser.OnDir(m_sRealSiteDir);
       const size_t n1 = (size_t)-1;
       size_t nCount = oDir.Traverse(traverser,wxEmptyString,
                     wxDIR_FILES |wxDIR_DIRS | wxDIR_HIDDEN);
@@ -646,70 +755,407 @@ wxString CSitePath::GetSitePathGroup()
   }
   return sRtn;
 }
-wxString CSitePath::GetExistingParent()
+
+
+
+
+
+#endif
+
+// ********************************************************* Windows
+
+#ifdef __WXMSW__
+
+void CSitePath::_getPeerPath(wxString *ps)
 {
-  return nwxFileUtil::GetExistingParent(m_sSitePath);
+  // retrieve full path of Osiris-File
+  // with same parent as the installation
+  // directory
+  *ps = m_sExeDir;
+  nwxFileUtil::UpDir(ps);
+  nwxFileUtil::EndWithSeparator(ps);
+  ps->Append(OSIRIS_FILES);
 }
 
-bool CSitePath::ExistingParentWritable()
+bool CSitePath::_checkLegacyPath()
 {
-  return nwxFileUtil::ExistingParentWritable(m_sSitePath);
-}
+  // if legacy site dir exists, use it
+  //   "site" subdirectory in Osiris installation directory
 
-void CSitePath::BuildTestString(wxString *ps) const
-{
-#define BOOL_TO_STR(b) ((b) ? wxT("true") : wxT("false"))
-  ps->Empty();
-  ps->Append(wxT("\nm_sExePath: "));
-  ps->Append(m_sExePath);
-  ps->Append(wxT("\nm_sSitePath: "));
-  ps->Append(m_sSitePath);
-  ps->Append(wxT("\nm_sRealSitePath: "));
-  ps->Append(m_sRealSitePath);
-  ps->Append(wxT("\nm_bUserPath: "));
-  ps->Append(BOOL_TO_STR(m_bUserPath));
-  ps->Append(wxT("\nm_bThisUserPath: "));
-  ps->Append(BOOL_TO_STR(m_bThisUserPath));
-  ps->Append(wxT("\nm_bXattrProblem: "));
-  ps->Append(BOOL_TO_STR(m_bXattrProblem));
-  ps->Append(wxT("\nm_nLastError: "));
-  ps->Append(nwxString::FormatNumber(m_nLastError));
-  ps->Append(wxT("\n\n"));
-}
-
-void CSitePath::LogTestString() const
-{
-  wxString s;
-  BuildTestString(&s);
-  nwxLog::LogMessage(s);
-}
-
-const wxString &CSitePath::LastErrorStr()
-{
-  switch(m_nLastError)
+  wxString sSiteLegacy(m_sExeDir);
+  bool bRtn = false;
+  sSiteLegacy.Append(wxS("site"));
+  if(wxFileName::DirExists(sSiteLegacy))
   {
-  case 0:
-    m_sErrorString.Empty();
-    break;
-  case SCRIPT_NOT_FOUND:
-    m_sErrorString = wxS("The shell script:\n");
-    m_sErrorString.Append(g_sScriptPath);
-    m_sErrorString.Append(wxS("\nis missing"));
-    break;
-  case SCRIPT_NOT_EXECUTABLE:
-    m_sErrorString = wxS("The shell script:\n");
-    m_sErrorString.Append(g_sScriptPath);
-    m_sErrorString.Append(wxS("\nis not executable"));
-    break;
-  case APPLE_SCRIPT_NOT_FOUND:
-    m_sErrorString = wxS("Cannot find AppleScript: ");
-    m_sErrorString.Append(g_sAppleScript);
-    break;
-  default:
-    m_sErrorString = strerror(m_nLastError);
-    break;
+    bRtn = true;
+    m_sSiteDir = sSiteLegacy;
   }
-  return m_sErrorString;
+  else
+  {
+    _getPeerPath(&sSiteLegacy);
+    if(wxFileName::DirExists(sSiteLegacy))
+    {
+      bRtn = true;
+      m_sSiteDir = sSiteLegacy;
+    }
+  }
+  return bRtn;
+}
+void CSitePath::_setupUserPath()
+{
+  wxStandardPathsBase &sp(wxStandardPaths::Get());
+  m_sSiteDir = sp.GetUserConfigDir();
+  nwxFileUtil::EndWithSeparator(&m_sSiteDir);
+  m_sSiteDir.Append(OSIRIS_FILES);
+  m_bUserPath = true;
+  m_bThisUserPath = true;
+}
+bool CSitePath::_checkUserPath()
+{
+  // if OSIRIS is in the user's home path
+  //  put 'Osiris-Files' in AppData\roaming
+  // first check current user
+  wxStandardPathsBase &sp(wxStandardPaths::Get());
+  wxString sHomeDir = wxGetHomeDir();
+  nwxFileUtil::EndWithSeparator(&sHomeDir);
+  wxString sUserConfig = sp.GetUserConfigDir();
+  size_t nLenHome = sHomeDir.Len();
+  size_t nLenConfig = sUserConfig.Len();
+  size_t nLenExe = m_sExeDir.Len();
+  bool bRtn = false;
+  if(!(
+    (nLenHome > 0) &&
+    (nLenHome < nLenConfig) &&
+    nwxString::FileNameStringEqual(sUserConfig.Left(nLenHome),sHomeDir)
+    ))
+  {
+    // if config dir is not in home dir, forget it
+  }
+  else if(
+      (nLenExe > nLenHome) &&
+      nwxString::FileNameStringEqual(sHomeDir,m_sExeDir.Left(nLenHome))
+    )
+  {
+    // osiris is installed in THIS user's path
+    m_sSiteDir = sUserConfig;
+    nwxFileUtil::EndWithSeparator(&m_sSiteDir);
+    m_sSiteDir.Append(OSIRIS_FILES);
+    m_bUserPath = true;
+    m_bThisUserPath = true;
+    bRtn = true;
+  }
+  else
+  {
+    // check other user's directory
+    // first guess at home directory
+    wxString sUsers = sHomeDir;
+    nwxFileUtil::UpDir(&sUsers);
+    nwxFileUtil::EndWithSeparator(&sUsers); // users parent dir
+    size_t nUsersLen = sUsers.Len();
+    if(  (nUsersLen < nLenExe) &&
+         nwxString::FileNameStringEqual(sUsers,m_sExeDir.Left(nUsersLen)) 
+      )
+    {
+      // looks like other user's dir
+      // get owner home and append current user config subdir
+      size_t nSep = m_sExeDir.Mid(nUsersLen).Find(sUsers.Right(1));
+      if(nSep != wxNOT_FOUND)
+      {
+        wxString sConfigSubDir = sUserConfig.Mid(nLenHome); // user config subdir
+        wxString sOwnerConfig = m_sExeDir.Left(nUsersLen + nSep + 1); // owner home
+        sOwnerConfig.Append(sConfigSubDir); // owner config dir
+#ifdef TMP_DEBUG
+        {
+          wxString s;
+          s.Append(wxS("\nuser config: "));
+          s.Append(sUserConfig);
+          s.Append(wxS("\nowner config: "));
+          s.Append(sOwnerConfig);
+          nwxLog::LogMessage(s);
+        }
+#endif
+        if(wxFileName::DirExists(sOwnerConfig))
+        {
+          m_sSiteDir = sOwnerConfig;
+          nwxFileUtil::EndWithSeparator(&m_sSiteDir);
+          m_sSiteDir.Append(OSIRIS_FILES);
+          m_bUserPath = true;
+          m_bThisUserPath = false;
+          bRtn = true;
+        }
+      }
+    }
+  }
+  return bRtn;
+}
+
+bool CSitePath::_checkProgramData()
+{
+  wxStandardPathsBase &sp(wxStandardPaths::Get());
+  wxString sConfig = sp.GetConfigDir();
+  nwxFileUtil::NoEndWithSeparator(&sConfig);
+  if(sConfig.find('\\') != sConfig.rfind('\\'))
+  {
+    nwxFileUtil::UpDir(&sConfig);
+  }
+  bool bRtn = wxFileName::DirExists(sConfig);
+  if(bRtn)
+  {
+    nwxFileUtil::EndWithSeparator(&sConfig);
+    sConfig.Append(OSIRIS_FILES);
+    m_sSiteDir = sConfig;
+  }
+  return bRtn;
+}
+
+void CSitePath::_setupRealSitePath()
+{
+  if(!m_sRealSiteDir.IsEmpty()) {}
+  else if(m_sSiteDir.IsEmpty()) {}
+  else if(!wxFileName::DirExists(m_sSiteDir)) {}
+  else 
+  {
+    m_sRealSiteDir = nwxFileUtil::GetRealPath(m_sSiteDir);
+  }
+}
+
+CSitePath::CSitePath() :
+  m_nLastError(0),
+  m_bUserPath(false),
+  m_bThisUserPath(false)
+{
+  // constructor.  Get path for executable, figure out where
+  //  site folder (Osiris-Files) should be
+  //  not sure what will happen with sym links
+  
+  wxStandardPathsBase &sp(wxStandardPaths::Get());
+  wxFileName fn(sp.GetExecutablePath());
+  wxString sPath = fn.GetFullPath(wxPATH_NATIVE);
+  m_sExeDir = fn.GetPath(wxPATH_GET_SEPARATOR | wxPATH_GET_VOLUME);
+  m_sCScript = nwxFileUtil::PathFind(wxS("cscript.exe"),true,false);
+
+  if(wxFileName::FileExists(m_sCScript))
+  {
+    m_sVBscript = m_sExeDir;
+    nwxFileUtil::EndWithSeparator(&m_sVBscript);
+    m_sVBscript.Append(wxS("CSitePath.vbs"));
+    if(!wxFileName::FileExists(m_sVBscript))
+    {
+      wxString sMsg(wxS("Cannot find script: "));
+      sMsg.Append(m_sVBscript);
+      nwxLog::LogMessage(sMsg);
+      m_sVBscript.Clear();
+    }
+  }
+  else
+  {
+    nwxLog::LogMessage(wxS("Cannot find cscript.exe"));
+  }
+
+  // check for legacy location
+
+  if(!_checkLegacyPath())
+  {
+    wxFSVolumeKind nDriveKind = nwxFileUtil::GetMSWDriveType(m_sExeDir);
+    if(nwxFileUtil::IsMSWDriveReadOnly(nDriveKind))
+    {
+      // optical drives are assumed to be read only
+      // use c:\Users\username\AppData\Roaming
+      _setupUserPath();
+    }
+    else if(nwxFileUtil::IsMSWDriveNetwork(nDriveKind))
+    {
+      _getPeerPath(&m_sSiteDir);
+    }
+    else if(_checkUserPath())
+    {}
+    else if(_checkProgramData())
+    {}
+    else
+    {
+      _getPeerPath(&m_sSiteDir);
+    }
+  }
+  _setupRealSitePath();
+}
+
+bool CSitePath::CurrentUserOwnsAll()
+{
+  bool bRtn = false;
+  _setupRealSitePath();
+  if(!m_sRealSiteDir.IsEmpty())
+  {
+    wxArrayString as;
+    as.Alloc(2);
+    as.Add(wxS("ISOWNER"));
+    as.Add(m_sRealSiteDir.wx_str());
+    bRtn = _runScript(as,false);
+  }
+  return bRtn;
+}
+
+bool CSitePath::_runScript(const wxArrayString &as, bool bElevate)
+{
+  bool bRtn = false;
+  if(m_sCScript.IsEmpty())
+  {
+    m_nLastError = WINDOWS_SCRIPT_HOST_NOT_FOUND;
+  }
+  else if(m_sVBscript.IsEmpty())
+  {
+    m_nLastError = SCRIPT_NOT_FOUND;
+  }
+  else
+  {
+    const wchar_t *ARGV[24];
+    wxString sTmp;
+    size_t ndx = 3;
+    size_t nSize = as.GetCount();
+    ARGV[0] = m_sCScript.wx_str();
+    ARGV[1] = wxS("/NOLOGO");
+    ARGV[2] = m_sVBscript.wx_str();
+    if(bElevate)
+    {
+      const wxString &sTmp = mainApp::GetConfig()->GetConfigPath();
+      ARGV[3] = wxS("-r");
+      ARGV[4] = sTmp.wx_str();
+      ndx = 5;
+    }
+    for(size_t i = 0; i < nSize; ++i)
+    {
+      ARGV[ndx++] = as.Item(i).wx_str();
+    }
+    size_t nRtn = wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
+    bRtn = !nRtn;
+    if(!bRtn)
+    {
+      wxString sMsg;
+      wxString sArg;
+      sMsg.Printf(wxS("Shell failed, errorlevel %d:\n"),(int) nRtn);
+      for(const wchar_t **pArg = ARGV; (*pArg) != NULL; ++pArg)
+      {
+        sArg = *pArg;
+        if(sArg.IsEmpty())
+        {
+          sMsg.Append(wxS("\"\" "));
+        }
+        else if(sArg.Find(wxS(" ")) != wxNOT_FOUND)
+        {
+          sMsg.Append(wxS("\""));
+          sMsg.Append(sArg);
+          sMsg.Append(wxS("\" "));
+        }
+        else
+        {
+          sMsg.Append(sArg);
+          sMsg.Append(wxS(" "));
+        }
+      }
+      nwxLog::LogMessage(sMsg);
+    }
+  }
+  return bRtn;
+}
+bool CSitePath::CreateSitePath(const wxString &sGroup, const wxString &sUser)
+{
+  bool bRtn = true;
+  m_nLastError = 0;
+  if(SitePathExists())
+  {
+    bRtn = false;
+    m_nLastError = EEXIST;
+  }
+  else
+  {
+    if(CreateSitePathSimple())
+    {
+      bRtn = true;
+    }
+    else if(!m_bUserPath || m_bThisUserPath)
+    {
+      wxArrayString as;
+      as.Alloc(4);
+      as.Add(wxS("MKDIR"));
+      as.Add(m_sSiteDir);
+      as.Add(sGroup);
+      if(!sUser.IsEmpty())
+      {
+        as.Add(sUser);
+      }
+      bRtn = _runScript(as, true);
+    }
+    else
+    {
+      bRtn = false;
+      m_nLastError = EACCES;
+    }
+  }
+  if(bRtn)
+  {
+    _setupRealSitePath();
+  }
+#ifdef TMP_DEBUG
+  wxString sMsg(wxS("CSitePath::CreateSitePath(\""));
+  sMsg.Append(sGroup);
+  sMsg.Append(wxS("\", \""));
+  sMsg.Append(sUser);
+  sMsg.Append(
+    wxString::Format(
+      wxS("\"), rtn = %s, m_nLastError = %d"),
+      bRtn ? "true" : "false", m_nLastError));
+  nwxLog::LogMessage(sMsg);
+#endif
+  return bRtn;
+}
+
+bool CSitePath::UpdateSitePath(const wxString &sGroup, const wxString &sUser, bool bElevate)
+{
+  bool bRtn = true;
+  if(!SitePathExists())
+  {
+    bRtn = CreateSitePath(sGroup,sUser);
+  }
+  else if(sGroup.IsEmpty() && sUser.IsEmpty())
+  {
+    bRtn = false;
+  }
+  else
+  {
+    wxArrayString as;
+    as.Alloc(4);
+    as.Add(wxS("CHGRP"));
+    as.Add(m_sSiteDir);
+    as.Add(sGroup);
+    if(!sUser.IsEmpty())
+    {
+      as.Add(sUser);
+    }
+    bRtn = _runScript(as, bElevate);
+  }
+  return bRtn;
+}
+bool CSitePath::IsNTFS()
+{
+  bool bRtn = false;
+  wxString sPath;
+  if(SitePathExists())
+  {
+    _setupRealSitePath();
+    sPath = m_sRealSiteDir;
+  }
+  if(sPath.IsEmpty())
+  {
+    sPath = GetExistingParent();
+  }
+  if(!sPath.IsEmpty())
+  {
+    wxArrayString as;
+    as.Alloc(2);
+    as.Add(wxS("GETOWNER"));
+    as.Add(m_sRealSiteDir);
+    bRtn = _runScript(as,false);
+  }
+  return bRtn;
 }
 
 #endif

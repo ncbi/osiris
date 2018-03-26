@@ -865,7 +865,7 @@ void CFrameRunAnalysis::DoCancel(bool bCancelAll)
   {
     bool bCancel = false;
     {
-      CProcessPause x(m_pAnalysis);
+      nwxProcessPause x(m_pAnalysis);
       wxString sMessage("Do you want to cancel the analysis?");
       wxMessageDialog d(
         this,sMessage,"Cancel", wxYES | wxNO | wxICON_QUESTION);

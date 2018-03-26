@@ -18,6 +18,7 @@ libnwx_a_SOURCES = \
 ../nwxPlotCtrl.cpp \
 ../nwxPlotDrawerLabel.cpp \
 ../nwxPlotDrawerShade.cpp \
+../nwxProcess.cpp \
 ../nwxRectSet.cpp \
 ../nwxShiftSizer.cpp \
 ../nwxStaticBitmap.cpp \

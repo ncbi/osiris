@@ -905,10 +905,14 @@ bool CExportFiles::SaveExportFile()
   {
     UpdateExePath();
     bRtn = SaveFile(g_sFileName);
+#ifndef __WXMSW__
+    // windows NTFS uses inheritance
+    // and does not associate a group with a file
     if(bRtn)
     {
       nwxFileUtil::SetFilePermissionFromDir(g_sFileName);
     }
+#endif
   }
   return bRtn;
 }

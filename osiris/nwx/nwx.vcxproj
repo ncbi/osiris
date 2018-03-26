@@ -75,7 +75,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;..\libxml2-2.7.7\include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\include;$(WXHOME)\lib\vc_lib\mswud;..\wxplotctrl\include;..\wxthings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;__WXDEBUG__;_DEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;__WXDEBUG__;_DEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -112,7 +112,7 @@
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;..\libxml2-2.7.7\include;../libiconv-1.13/include;../libiconv-1.13/libcharset/include;../libiconv-1.13/libcharset;$(WXHOME)\include;$(WXHOME)\lib\vc_lib\mswu;..\wxplotctrl\include;..\wxthings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -163,6 +163,7 @@
     <ClCompile Include="nwxPlotCtrl.cpp" />
     <ClCompile Include="nwxPlotDrawerLabel.cpp" />
     <ClCompile Include="nwxPlotDrawerShade.cpp" />
+    <ClCompile Include="nwxProcess.cpp" />
     <ClCompile Include="nwxRectSet.cpp" />
     <ClCompile Include="nwxShiftSizer.cpp" />
     <ClCompile Include="nwxStaticBitmap.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="nwxTextCtrl.cpp" />
     <ClCompile Include="nwxTimerReceiver.cpp" />
     <ClCompile Include="nwxTreebook.cpp" />
+    <ClCompile Include="nwxUserInfo.cpp" />
     <ClCompile Include="nwxXmlCMF.cpp" />
     <ClCompile Include="nwxXmlCmfList.cpp" />
     <ClCompile Include="nwxXmlCMFtest.cpp" />
@@ -214,6 +216,7 @@
     <ClInclude Include="nwxPlotDrawerShade.h" />
     <ClInclude Include="nwxPlotShade.h" />
     <ClInclude Include="nwxPointLabel.h" />
+    <ClInclude Include="nwxProcess.h" />
     <ClInclude Include="nwxProgressCallback.h" />
     <ClInclude Include="nwxRectSet.h" />
     <ClInclude Include="nwxRound.h" />
@@ -233,6 +236,7 @@
     <ClInclude Include="nwxToggleButton.h" />
     <ClInclude Include="nwxTreebook.h" />
     <ClInclude Include="nwxTypeValidator.h" />
+    <ClInclude Include="nwxUserInfo.h" />
     <ClInclude Include="nwxXmlCMF.h" />
     <ClInclude Include="nwxXmlCmfList.h" />
     <ClInclude Include="nwxXmlCmfListStatic.h" />

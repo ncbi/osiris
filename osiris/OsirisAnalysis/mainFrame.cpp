@@ -64,10 +64,8 @@
 #include "CMenuBar.h"
 #include "COsirisIcon.h"
 
-#ifdef __WXMAC__
 #include "CDialogSitePath.h"
 #include "CSitePath.h"
-#endif
 #include "CDialogVolumes.h"
 #include "CDialogArtifactLabels.h"
 #include "CLabSettings.h"
@@ -300,6 +298,11 @@ mainFrame::mainFrame() :
 #ifndef __NO_MDI__
   CheckActiveFrame();
 #endif
+  CSitePath::GetGlobal()->CreateSitePathSimple(); 
+      // if site path doesn't exist
+      // attempt to create it
+      // if it fails due to permission
+      // siltently move on
   ++g_mainFrameCount;
 }
 
@@ -796,7 +799,7 @@ void mainFrame::OnLabSettings(wxCommandEvent &)
   return;
 }
 
-#ifdef __WXMAC__
+
 void mainFrame::OnAccessSiteSettings(wxCommandEvent &)
 {
   CDialogSitePath dlg(DialogParent());
@@ -805,7 +808,7 @@ void mainFrame::OnAccessSiteSettings(wxCommandEvent &)
     dlg.ProcessSitePath(true);
   }
 }
-bool mainFrame::SetupSiteSettings(wxWindow *parent)
+bool mainFrame::SetupSiteSettings()
 {
   CSitePath *pSitePath = CSitePath::GetGlobal();
   bool bExists = pSitePath->SitePathExists();
@@ -824,16 +827,16 @@ bool mainFrame::SetupSiteSettings(wxWindow *parent)
   }
   return bExists;
 }
-void mainFrame::OnShowSiteSettings(wxCommandEvent &e)
+void mainFrame::OnShowSiteSettings(wxCommandEvent &)
 {
   CSitePath *pSitePath = CSitePath::GetGlobal();
-  bool bExists = SetupSiteSettings(DialogParent());
+  bool bExists = SetupSiteSettings();
   if(bExists)
   {
     nwxFileUtil::ShowFileFolder(pSitePath->GetSitePath(),false);
   }
 }
-#endif
+
 
 void mainFrame::OnArtifactLabels(wxCommandEvent &)
 {

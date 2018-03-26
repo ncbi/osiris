@@ -1203,6 +1203,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_897A5563B1DB47A8B75E0364F5931784"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8AB74334FB2A4C59AA415837B5B75659"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2244,7 +2250,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.11-Beta-4.msi"
+        "OutputFilename" = "8:Release\\Osiris-Setup-2.11-Beta-5.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -6232,6 +6238,26 @@
             "TargetName" = "8:_switched_positive_control_A05_PT84244.fsa"
             "Tag" = "8:"
             "Folder" = "8:_29A20AC60A714F1FB99FA56689F3CDD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_897A5563B1DB47A8B75E0364F5931784"
+            {
+            "SourcePath" = "8:..\\OsirisAnalysis\\CSitePath.vbs"
+            "TargetName" = "8:CSitePath.vbs"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -10540,17 +10566,6 @@
                             }
                         }
                     }
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_FC0EFF7113574861A554F8DC67720B8E"
-                    {
-                    "Name" = "8:site"
-                    "AlwaysCreate" = "11:TRUE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_50AF642425134FCFB9487CC778144770"
-                        "Folders"
-                        {
-                        }
-                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_A8CF8BF0972F43E1B1D655705FD94719"
@@ -10591,15 +10606,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{29680264-8789-4CEC-963F-2243873AA9C2}"
-        "PackageCode" = "8:{5D42B189-13FD-4EA4-A57C-05F3B55F816E}"
+        "ProductCode" = "8:{C38B5815-AE43-48AE-94A6-A897417FA931}"
+        "PackageCode" = "8:{D5E8A33F-51C4-4C91-9EDA-35DCF98583C5}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.11.0004"
+        "ProductVersion" = "8:2.11.0005"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

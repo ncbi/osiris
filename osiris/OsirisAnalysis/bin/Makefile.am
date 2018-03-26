@@ -124,7 +124,6 @@ osiris_SOURCES =  \
 ../CParmOsiris.cpp \
 ../CPlotController.cpp \
 ../CPlotData.cpp \
-../CProcess.cpp \
 ../CProcessAnalysis.cpp \
 ../CReAnalyze.cpp \
 ../CSitePath.cpp \

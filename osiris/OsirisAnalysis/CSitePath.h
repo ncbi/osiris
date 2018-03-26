@@ -29,7 +29,7 @@
 *  Date:     2018/02/05
 *
 *  Performs operations needed for the site path (Osiris-Files folder)
-*  in the Macintosh version of OSIRIS.
+*  in the Macintosh version of OSIRIS. - see windows version below
 *
 *  The location of the Osiris-Files folder depends on the installation
 *  location of Osiris.
@@ -63,12 +63,13 @@
 #ifndef __C_SITE_PATH_H__
 #define __C_SITE_PATH_H__
 
-#ifdef __WXMAC__
-
-#include <errno.h>
 #include <wx/string.h>
 #include <wx/arrstr.h>
 #include "nwx/nwxGlobalObject.h"
+#include <errno.h>
+
+#ifdef __WXMAC__
+
 
 class CSitePath
 {
@@ -97,12 +98,12 @@ public:
   wxString GetSitePathGroup();
   const wxString &GetSitePath() const
   {
-    return m_sSitePath;
+    return m_sSiteDir;
   }
   const wxString &GetRealSitePath()
   {
     _setupRealSitePath();
-    return m_sRealSitePath;
+    return m_sRealSiteDir;
   }
   bool XattrProblem() const
   {
@@ -112,7 +113,7 @@ public:
   bool CreateSitePath(const wxString &sGroup, const wxString &sUser);
   bool CreateSitePathSimple();
   bool CurrentUserOwnsAll();
-  bool UpdateSitePath(const wxString &sGroup, const wxString &sUser);
+  bool UpdateSitePath(const wxString &sGroup, const wxString &sUser, bool bNeedAdmin = false);
   //  bool UpdateFile(const wxString &sTempPath, const wxString &sRealPath);
   //  bool ShowPath() const; // show Osiris-Files in Finder
   int LastError() const
@@ -128,21 +129,89 @@ private:
   //  static bool _appendArg(wxString *pStr, const wxString &sArg);
   static const wxString &_prepareShellParm
     (const wxString &s, wxString *psBuffer);
-  bool _runScript(const wxArrayString &pas, bool bAsAdmin = true);
+  bool _runScript(const wxArrayString &pas, bool bAsAdmin);
   void _setupRealSitePath();
-  wxString m_sExePath;
-  wxString m_sSitePath;
-  wxString m_sRealSitePath;
+  wxString m_sExeDir;
+  wxString m_sSiteDir;
+  wxString m_sRealSiteDir;
   wxString m_sTmpShellScript;
   wxString m_sErrorString;
-  static const wxString g_sAppleScript;
-  static wxString g_sScriptPath;
   int m_nLastError;
   bool m_bUserPath;
   bool m_bThisUserPath;
   bool m_bXattrProblem;
+
+  static const wxString g_sAppleScript;
+  static wxString g_sScriptPath;
   nwxDECLARE_GLOBAL_OBJECT(CSitePath);
 };
+
+#endif
+
+
+#ifdef __WXMSW__
+
+#include <wx/volume.h>
+
+class CSitePath
+{
+private:
+  CSitePath();
+public:
+  enum SITE_PATH_ERROR
+  {
+    BEGIN = 1000, // highest number in errno.h
+    SCRIPT_NOT_FOUND,
+    WINDOWS_SCRIPT_HOST_NOT_FOUND
+  };
+  virtual ~CSitePath() {}
+  const wxString &GetSitePath() const
+  {
+    return m_sSiteDir;
+  }
+  const wxString &GetRealSitePath()
+  {
+    _setupRealSitePath();
+    return m_sRealSiteDir;
+  }
+  int LastError() const
+  {
+    return m_nLastError;
+  }
+  wxString GetExistingParent();
+  bool ExistingParentWritable();
+  bool SitePathExists() const;
+  bool CreateSitePath(const wxString &sGroup, const wxString &sUser);
+  bool CreateSitePathSimple();
+  bool CurrentUserOwnsAll();
+  bool UpdateSitePath(const wxString &sGroup, const wxString &sUser, bool bNeedAdmin = false);
+  const wxString &LastErrorStr();
+  void BuildTestString(wxString *ps) const;
+  void LogTestString() const;
+  bool IsNTFS();
+private:
+  bool _checkLegacyPath();
+  bool _checkUserPath();
+  bool _checkProgramData();
+  void _setupUserPath();
+  void _getPeerPath(wxString *ps);
+  void _setupRealSitePath();
+  bool _runScript(const wxArrayString &pas, bool bAsAdmin);
+  wxString m_sExeDir;   // directory of exe (argv[0]) with trailing space
+  wxString m_sSiteDir;
+  wxString m_sRealSiteDir; // UNC if network drive
+  wxString m_sErrorString;
+  wxString m_sCScript;
+  wxString m_sVBscript;
+  int m_nLastError;
+  bool m_bUserPath;
+  bool m_bThisUserPath;
+  static const wxString g_sCScript; // path of cscript.exe
+  static wxString g_sScriptPath;
+
+  nwxDECLARE_GLOBAL_OBJECT(CSitePath);
+};
+
 
 #endif
 

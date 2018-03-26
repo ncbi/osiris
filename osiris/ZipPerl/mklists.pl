@@ -1,4 +1,5 @@
 #!perl
+use lib '.';
 use strict 'vars';
 use GetVersion;
 my $INSTALLDIR = 'C:\Apps\User_Installs\Osiris';

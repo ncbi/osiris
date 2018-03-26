@@ -32,12 +32,12 @@
 #define __C_PROCESS_ANALYSIS_H__
 
 #include <stdlib.h>
-#include "CProcess.h"
+#include "nwx/nwxProcess.h"
 
 class CDirEntry;
 class CVolume;
 
-class CProcessAnalysis : public CProcess
+class CProcessAnalysis : public nwxProcess
 {
 public:
   CProcessAnalysis(

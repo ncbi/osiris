@@ -46,7 +46,7 @@ CProcessAnalysis::CProcessAnalysis(
   CDirEntry *pDirEntry, 
   const CVolume *pVolume,
   wxEvtHandler *parent, int nID) :
-    CProcess(parent,nID),
+    nwxProcess(parent,nID),
     m_psExe(NULL),
     m_pDirEntry(pDirEntry)
 {

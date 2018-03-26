@@ -24,8 +24,9 @@
 * ===========================================================================
 *
 
-*  FileName: CProcess.h
+*  FileName: nwxProcess.h
 *  Author:   Douglas Hoffman
+*  Date:  3/8/2018 moved from ../OsirisAnalysis/CProcess.h
 *
 */
 #ifndef __C_PROCESS_H__
@@ -36,26 +37,26 @@
 #include <wx/process.h>
 
 
-class CProcess : public wxProcess
+class nwxProcess : public wxProcess
 {
 public:
-  CProcess(wxEvtHandler *parent, int id, char **argv) : 
+  nwxProcess(wxEvtHandler *parent, int id, char **argv) : 
       wxProcess(parent,id)
   {
     Redirect();
     Init();
     Run(argv);
   }
-  CProcess(wxEvtHandler *parent, int id = wxID_ANY) : 
+  nwxProcess(wxEvtHandler *parent, int id = wxID_ANY) : 
     wxProcess(parent,id)
   {
     Redirect();
     Init();
   }
-  virtual ~CProcess();
+  virtual ~nwxProcess();
   virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream) = 0;
   virtual void OnTerminate(int nPID,int nExitCode);
-  bool Run(char **argv);
+  bool Run(char **argv, int nExeFlags = wxEXEC_ASYNC);
   void Pause(bool bPause = true)
   {
     m_bPaused = bPause;
@@ -106,19 +107,19 @@ private:
 };
 
 
-class CProcessPause
+class nwxProcessPause
 {
 public:
-  CProcessPause(CProcess *p) : m_pProcess(p)
+  nwxProcessPause(nwxProcess *p) : m_pProcess(p)
   {
     m_pProcess->Pause(true);
   }
-  virtual ~CProcessPause()
+  virtual ~nwxProcessPause()
   {
     m_pProcess->Pause(false);
   }
 private:
-  CProcess *m_pProcess;
+  nwxProcess *m_pProcess;
 };
 
 #endif

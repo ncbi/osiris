@@ -228,7 +228,6 @@ sub CopyWin
   $sSuffix =~ s/ /-/g;
   my $dest = './' . &GetVersion::GetDirectory();
   &COPYFILES($src,$dest);
-  &MKDIR("${dest}/site");
   if ($COPYDLL)
   {
     my $DLLPATH = &GetVCDir();
@@ -240,6 +239,7 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
   my $zipFile = "${dest}-Windows.zip";

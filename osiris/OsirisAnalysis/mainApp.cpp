@@ -564,9 +564,9 @@ void mainApp::OnQuit(wxCommandEvent &e)
   _LogMessageFile(wxT("mainApp::OnQuit"),0);
 }
 
-bool mainApp::SetupSiteSettings(wxWindow *parent)
+bool mainApp::SetupSiteSettings()
 {
-  return g_pThis->m_pFrame->SetupSiteSettings(parent);
+  return g_pThis->m_pFrame->SetupSiteSettings();
 }
 
 #define DEFINE_CMD_HANDLER(x) \
@@ -580,12 +580,8 @@ DEFINE_CMD_HANDLER(OnArtifactLabels)
 DEFINE_CMD_HANDLER(OnExportSettings)
 DEFINE_CMD_HANDLER(OnEditGridColours)
 DEFINE_CMD_HANDLER(OnShowLog)
-
-#ifdef __WXMAC__
 DEFINE_CMD_HANDLER(OnAccessSiteSettings)
 DEFINE_CMD_HANDLER(OnShowSiteSettings)
-#endif
-
 DEFINE_CMD_HANDLER(OnAnalyze)
 DEFINE_CMD_HANDLER(OnOpenPlot)
 DEFINE_CMD_HANDLER(OnOpenBatch)
@@ -616,10 +612,8 @@ EVT_MENU(IDexport,    mainApp::OnExportSettings)
 EVT_MENU(IDeditColours, mainApp::OnEditGridColours)
 EVT_MENU(IDlog,       mainApp::OnShowLog)
 
-#ifdef __WXMAC__
 EVT_MENU(IDsiteSettings, mainApp::OnAccessSiteSettings)
 EVT_MENU(IDsiteShow, mainApp::OnShowSiteSettings)
-#endif
 
 EVT_MENU(IDanalyze,   mainApp::OnAnalyze)
 EVT_MENU(IDArchiveExtract, mainApp::OnOpenArchive)

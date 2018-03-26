@@ -33,6 +33,11 @@
 */
 #ifndef __NWX_USER_INFO_H__
 #define __NWX_USER_INFO_H__
+
+#include <wx/string.h>
+#include <wx/arrstr.h>
+#include "nwx/nwxGlobalObject.h"
+
 #ifdef __WXMAC__
 
 #include "nwx/stdb.h"
@@ -40,16 +45,13 @@
 #include <vector>
 #include "nwx/stde.h"
 #include <sys/types.h>
-#include <wx/string.h>
-#include <wx/arrstr.h>
-#include "nwx/nwxGlobalObject.h"
 
 class nwxUserInfo
 {
 private:
   nwxUserInfo();
 public:
-  typedef std::map<int,const wxString &> MAP_NS;
+  typedef std::map<int,const wxString &,nwxStringLessNoCase> MAP_NS;
   typedef std::map<const wxString &,int> MAP_SN;
   virtual ~nwxUserInfo() {}
   const wxString &GetUserName() const
@@ -106,4 +108,37 @@ private:
 
 
 #endif
+
+#ifdef __WXMSW__
+
+
+
+#endif
+class nwxUserInfo
+{
+private:
+  nwxUserInfo();
+public:
+  virtual ~nwxUserInfo() {}
+  const wxString &GetUserName() const
+  {
+    return m_sUser;
+  }
+  const wxArrayString &GetGroupNames()
+  {
+    if(!m_bGroupsSetup)
+    {
+      _setupGroupNames();
+    }
+    return m_asGroupNames;
+  }
+private:
+  void _setupGroupNames();
+  wxArrayString m_asGroupNames;
+  wxString m_sUser;
+  int m_nGroupStatus;
+  bool m_bGroupsSetup;
+  bool m_bGroupsSetupDone;
+  nwxDECLARE_GLOBAL_OBJECT(nwxUserInfo);
+};
 #endif

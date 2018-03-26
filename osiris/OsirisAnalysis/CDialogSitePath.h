@@ -36,7 +36,7 @@
 #ifndef __CDIALOG_SITE_PATH_H__
 #define __CDIALOG_SITE_PATH_H__
 
-#ifdef __WXMAC__
+
 
 #include <wx/dialog.h>
 
@@ -49,10 +49,6 @@ class CDialogSitePath: public wxDialog
 public:
   CDialogSitePath(wxWindow *parent);
   virtual ~CDialogSitePath() {;}
-  bool UserOnly()
-  {
-    return m_bUserOnly;
-  }
   const wxString &GetGroup()
   {
     return m_sGroup;
@@ -61,17 +57,19 @@ public:
   void OnRadioButton(wxCommandEvent &);
 private:
   void _promptError();
+  size_t _setupGroupList(wxArrayString *pasKeep);
+#ifdef __WXMAC__
   static bool _filterGroup(const wxString &sGroupName);
+#endif
   wxRadioButton *m_pRadioUserOnly;
   wxRadioButton *m_pRadioGroup;
   wxStaticText *m_pTextGroup;
   wxChoice *m_pChoiceGroup;
   wxString m_sGroup;
-  bool m_bUserOnly;
+  bool m_bNeedAdmin;
   DECLARE_ABSTRACT_CLASS(CDialogSitePath)
   DECLARE_EVENT_TABLE()
 };
 
 
-#endif
 #endif

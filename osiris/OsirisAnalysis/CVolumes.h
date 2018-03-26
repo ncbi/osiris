@@ -44,7 +44,6 @@
 #include <map>
 #include <vector>
 #include "nwx/nsstd.h"
-#include "nwx/nwxString.h"
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxLock.h"
 #include "CLabSettings.h"
@@ -165,10 +164,60 @@ private:
   bool m_bNewVolume;
 };
 
-typedef multimap<wxString, CVolume *,nwxStringLessNoCaseSort>
+class CLessVolumeName
+{
+  // similar to nwxStringLessNoCaseSort and
+  // nwxStringLessNoCase, but puts strings beginning with
+  // a left bracket ([) at the bottom
+  //
+  //  this creates the following scenario
+  //
+  //  'ABC' < 'abc' < 'ABCD'
+  //  and 'ABC' != 'abc'
+  //   '[ABC' > 'ABC'
+  //
+  //  This is useful for case sensitive sets with
+  //  case insensitive sorting
+public:
+  CLessVolumeName() {;}
+  bool operator()(const wxString &x1, const wxString &x2) const
+  {
+    int n = 0;
+    const wxStringCharType *pc1 = x1.wx_str();
+    const wxStringCharType *pc2 = x2.wx_str();
+    if(*pc1 == *pc2)
+    {}
+    else if ((*pc1) == L'[')
+    {
+      n = 1;
+    }
+    else if ((*pc2) == L'[')
+    {
+      n = -1;
+    }
+    if(!n)
+    {
+      n = x1.CmpNoCase(x2);
+      if(!n)
+      {
+        n = x1.Cmp(x2);
+      }
+    }
+    return (n < 0);
+  }
+  bool operator()(const wxString *px1, const wxString *px2) const
+  {
+    return (*this)(*px1,*px2);
+  }
+};
+
+
+
+
+typedef multimap<wxString, CVolume *,CLessVolumeName>
   MapVolume;
 
-typedef set<wxString,nwxStringLessNoCaseSort>
+typedef set<wxString,CLessVolumeName>
   SetVolumeNames;
 
 //******************************************************  CVolumes
@@ -242,10 +291,6 @@ private:
   bool _BuildNewPath(const CVolume *pCopyFrom, wxString *psPath);
 
   void _SetErrorNameExists(const wxString &s);
-#ifdef __WXMAC__
-  // OS-662
-  bool _SetFilePermission(const wxString &sFileName);
-#endif
   void _Load()
   {
     _Cleanup();

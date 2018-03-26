@@ -24,8 +24,9 @@
 * ===========================================================================
 *
 
-*  FileName: CProcess.cpp
+*  FileName: nwxProcess.cpp
 *  Author:   Douglas Hoffman
+*  Date:  3/8/2018 moved from ../OsirisAnalysis/CProcess.cpp
 *
 */
 #include <stdlib.h>
@@ -36,21 +37,28 @@
 #include <string>
 #include "nwx/stde.h"
 
-#include "CProcess.h"
+#include "nwx/nwxProcess.h"
 #include <wx/timer.h>
 #include <wx/utils.h>
 #ifndef __WXMSW__
 #include <sys/wait.h>
 #endif
 
-bool CProcess::Run(char **argv)
+bool nwxProcess::Run(char **argv, int nExeFlags)
 {
   bool bRtn = !m_bRunning;
   if(bRtn)
   {
     Init();
-    m_nPID = ::wxExecute(argv,wxEXEC_ASYNC,this);
-    if(!m_nPID)
+    m_nPID = ::wxExecute(argv,nExeFlags,this);
+    if(nExeFlags &  wxEXEC_SYNC )
+    {
+      m_nExitStatus = (int)m_nPID;
+      m_bRunning = false;
+      m_bFailed = false;
+      m_nPID = 0;
+    }
+    else if(!m_nPID)
     {
       m_nExitStatus = -1;
       m_bRunning = false; 
@@ -65,14 +73,14 @@ bool CProcess::Run(char **argv)
   }
   return bRtn;
 }
-CProcess::~CProcess()
+nwxProcess::~nwxProcess()
 {
   if(m_bRunning)
   {
     Detach();
   }
 }
-void CProcess::Cancel()
+void nwxProcess::Cancel()
 {
   if(m_nPID && m_bRunning && !m_bKilled)
   {
@@ -82,7 +90,7 @@ void CProcess::Cancel()
 }
 
 
-void CProcess::OnTerminate(int nPID,int nStatus)
+void nwxProcess::OnTerminate(int nPID,int nStatus)
 {
   // this is called as an internal event because it is a virtual
   // function that has been overridden and it also called from
@@ -99,7 +107,7 @@ void CProcess::OnTerminate(int nPID,int nStatus)
   }
 }
 
-size_t CProcess::ProcessIO(size_t nLimit)
+size_t nwxProcess::ProcessIO(size_t nLimit)
 {
   size_t nRtn = 0;
   bool bInputClosed = false;
@@ -154,7 +162,7 @@ size_t CProcess::ProcessIO(size_t nLimit)
   }
   return nRtn;
 }
-bool CProcess::IsErrorOpened() const
+bool nwxProcess::IsErrorOpened() const
 {
   wxInputStream *pIn = GetErrorStream();
   bool bRtn = pIn && (pIn->GetLastError() != wxSTREAM_EOF);
@@ -162,7 +170,7 @@ bool CProcess::IsErrorOpened() const
 }
 
 
-size_t CProcess::ProcessIO(
+size_t nwxProcess::ProcessIO(
   wxInputStream *pIn, 
   wxString &sLine,
   bool bErrStream)

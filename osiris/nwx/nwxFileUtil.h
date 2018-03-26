@@ -34,10 +34,17 @@
 #include <wx/filename.h>
 #include <wx/datetime.h>
 #include <wx/dir.h>
-#ifdef __WXMAC__
+#ifndef __WXMSW__
 #include <sys/stat.h>
 #include <sys/types.h>
 #endif
+
+#ifdef __WXMSW__
+#include <wx/volume.h>
+#endif
+#include "nwx/stdb.h"
+#include <vector>
+#include "nwx/stde.h"
 
 class nwxFileUtil
 {
@@ -52,12 +59,27 @@ public:
   static wxString SetupFileName(
     const wxString &sOriginalFile,
     const wxString &sExt);
-#ifdef __WXMAC__
+#ifndef __WXMSW__
   static mode_t GetDirPermission
     (const wxString &sPath, bool bCheckExistingParent = false);
   static bool SetFilePermissionFromDir
     (const wxString &sPath, bool bLogError = true);
 #endif
+#ifdef __WXMSW__
+  static wxString GetMSWDriveLetter(const wxString &sPath);
+  static wxFSVolumeKind GetMSWDriveType(const wxString &sPath);
+  static bool IsMSWDriveReadOnly(wxFSVolumeKind n)
+  {
+    return ((n == wxFS_VOL_CDROM) || (n == wxFS_VOL_DVDROM));
+  }
+  static bool IsMSWDriveNetwork(wxFSVolumeKind n)
+  {
+    return (n == wxFS_VOL_NETWORK);
+  }
+
+#endif
+  static wxString GetRealPath(const wxString &sPath);
+  static wxString PathFind(const wxString &sExeFile, bool bCheckSys = true, bool bCheckPath = true);
   static bool ShowFileFolder(const wxString &sFileName, bool bCheckDir = true);
   static wxString BaseName(const wxString &sDir);
   static wxString GetExistingParent(const wxString &s);
@@ -115,8 +137,14 @@ public:
     const wxString &sTo);
 #endif
 private:
+  static std::vector<wxString> g_asSysPath;
+  static std::vector<wxString> g_asPath;
+  static bool g_PATH_SET;
   static bool DO_NOT_SELECT_FILE;
+  static wxString _pathFind(
+    const wxString &sExeFile, const std::vector<wxString> &asPath);
   static bool _ShowFolder(const wxString &sFileName);
+  static void _setupPaths();
   nwxFileUtil() {;} // prevent instantiation
 };
 

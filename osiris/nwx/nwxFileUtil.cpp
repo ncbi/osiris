@@ -27,6 +27,10 @@
 *  Author:   Douglas Hoffman
 *
 */
+#include <stdlib.h>
+#ifdef __WXMAC__
+#include <limits.h>
+#endif
 #include <wx/file.h>
 #include <wx/dir.h>
 #include <wx/utils.h>
@@ -199,7 +203,7 @@ bool nwxFileUtil::_ShowFolder(const wxString &sFolderName)
   return bRtn;
 }
 
-#ifdef __WXMAC__
+#ifndef __WXMSW__
 
 // OS-662
 
@@ -421,7 +425,13 @@ bool nwxFileUtil::UpDir(wxString *psDir, int n)
   return bRtn;
 }
 
-bool nwxFileUtil::MkDir(const wxString &sDir, bool bInheritMode)
+bool nwxFileUtil::MkDir(
+    const wxString &sDir, 
+    bool
+#ifndef __WXMSW__
+    bInheritMode
+#endif
+    )
 {
   //   STOP HERE need to support bInheritMode
   bool bRtn = false;
@@ -431,7 +441,7 @@ bool nwxFileUtil::MkDir(const wxString &sDir, bool bInheritMode)
   }
   else
   {
-#ifdef __WXMAC__
+#ifndef __WXMSW__
 // OS-662
     mode_t modeParent = bInheritMode
       ? int(GetDirPermission(sDir,true) & 0777)
@@ -440,12 +450,12 @@ bool nwxFileUtil::MkDir(const wxString &sDir, bool bInheritMode)
 #else
     int nPerm = wxS_DIR_DEFAULT;
 #endif
+    bRtn = wxFileName::Mkdir
+      (sDir, nPerm, wxPATH_MKDIR_FULL);
+#ifndef __WXMSW__
 #ifdef TMP_DEBUG
     int nCalledChmod = 0;
 #endif
-    bRtn = wxFileName::Mkdir
-      (sDir, nPerm, wxPATH_MKDIR_FULL);
-#ifdef __WXMAC__
     if(bRtn && modeParent)
     {
       wxString sDirCheck(sDir);
@@ -457,8 +467,8 @@ bool nwxFileUtil::MkDir(const wxString &sDir, bool bInheritMode)
         if(modeNew && ((modeNew | modeParent) != modeNew))
         {
           bRtn = !chmod(sDirCheck.utf8_str(), modeNew | modeParent);
-          nCalledChmod++;
 #ifdef TMP_DEBUG
+          nCalledChmod++;
           {
             wxString sMsg =
               wxString::Format(
@@ -538,6 +548,261 @@ size_t nwxFileUtil::GetAllFilesNoCase(
   return nRtn;
 }
 
+std::vector<wxString> nwxFileUtil::g_asSysPath;
+std::vector<wxString> nwxFileUtil::g_asPath;
+bool nwxFileUtil::g_PATH_SET = false;
+
+#ifdef __WXMSW__
+#define ENV_PATH_SEPARATOR ';'
+#else
+#define ENV_PATH_SEPARATOR ':'
+#endif
+
+void nwxFileUtil::_setupPaths()
+{
+  if(!g_PATH_SET)
+  {
+    g_PATH_SET = true;
+#define DIR_NOT_EXIST(s) \
+    if(!wxFileName::DirExists(s)) \
+    { \
+      wxString sTmp(wxS("Cannot find directory: ")); \
+      sTmp.Append(s); \
+      nwxLog::LogMessage(sTmp); \
+    }
+
+#ifdef __WXMSW__
+    const char *ps = getenv("SystemRoot");
+    if(ps == NULL)
+    {
+      nwxLog::LogMessage(wxS("Cannot find window SystemRoot in environment"));
+    }
+    else
+    {
+      wxString sPath(ps);
+      DIR_NOT_EXIST(sPath)
+      else
+      {
+        EndWithSeparator(&sPath);
+        wxString sSysPath(sPath);
+        sSysPath.Append("System32/"); 
+        DIR_NOT_EXIST(sSysPath)
+        else
+        {
+          g_asSysPath.push_back(sSysPath);
+        }
+        g_asSysPath.push_back(sPath);
+      }
+    }
+#else
+    wxString sPath;
+    const char *apsCheck[] =
+    { "/usr/bin/","/bin/",NULL }
+    const char **psCheck;
+    for(psCheck = &apsCheck[0]; *psCheck != NULL; ++psCheck)
+    {
+      sPath = *psCheck;
+      DIR_NOT_EXIST(sPath)
+      else
+      {
+        g_asSysPath.push_back(sPath);
+      }
+    }
+#endif
+    char *psPath = getenv("PATH");
+    if(psPath != NULL)
+    {
+      nwxString::Split(psPath,&g_asPath,ENV_PATH_SEPARATOR);
+    }
+    else
+    {
+      nwxLog::LogMessage("Cannot find PATH in environment");
+    }
+#ifdef TMP_DEBUG
+    {
+      wxString sTmp;
+      wxString sMsg(wxS("PATH:\n  "));
+      nwxString::Join(g_asSysPath,&sTmp,"\n  ");
+      sMsg.Append(sTmp);
+      sMsg.Append(wxS("\n\nSystem path:\n  "));
+      nwxString::Join(g_asPath,&sTmp,"\n  ");
+      sMsg.Append(sTmp);
+      nwxLog::LogMessage(sTmp);
+    }
+#endif
+  }
+}
+wxString nwxFileUtil::_pathFind(const wxString &sExeFile, const std::vector<wxString> &asPath)
+{
+  wxString sRtn;
+  wxString sFullPath;
+  std::vector<wxString>::const_iterator itr;
+  for(itr = asPath.begin(); itr != asPath.end(); ++itr)
+  {
+    sFullPath = *itr;
+    EndWithSeparator(&sFullPath);
+    sFullPath.Append(sExeFile);
+    if(wxFileName::IsFileExecutable(sFullPath))
+    {
+      sRtn = sFullPath;
+      break;
+    }
+  }
+  return sRtn;
+}
+wxString nwxFileUtil::PathFind(const wxString &sExeFile, bool bCheckSys, bool bCheckPath)
+{
+  wxString sRtn;
+  if(!g_PATH_SET)
+  {
+    _setupPaths();
+  }
+  if(bCheckSys)
+  {
+    sRtn = _pathFind(sExeFile, g_asSysPath);
+  }
+  if(sRtn.IsEmpty() && bCheckPath)
+  {
+    sRtn = _pathFind(sExeFile, g_asPath);
+  }
+  return sRtn;
+}
+
+#ifdef __WXMSW__
+wxString nwxFileUtil::GetMSWDriveLetter(const wxString &sPath)
+{
+  wxString sRtn;
+  size_t nLen = sPath.Len();
+  if(nLen < 2) {}
+  else if (sPath.Mid(1,1) == wxS(":"))
+  {
+    sRtn = sPath.Mid(0,2);
+    sRtn.Append("\\");
+    sRtn.MakeUpper();
+  }
+  return sRtn;
+}
+
+wxFSVolumeKind nwxFileUtil::GetMSWDriveType(const wxString &sPath)
+{
+  size_t nLen = sPath.Len();
+  wxFSVolumeKind nRtn = wxFS_VOL_MAX;
+  if(nLen < 2) {}
+  else if (sPath.Left(2) == wxS("\\\\"))
+  {
+    nRtn = wxFS_VOL_NETWORK;
+  }
+  else
+  {
+    wxString s = GetMSWDriveLetter(sPath);
+    if(!s.IsEmpty())
+    {
+      wxFSVolume v(s);
+      if(v.IsOk())
+      {
+        nRtn = v.GetKind();
+      }
+    }
+  }
+  return nRtn;
+}
+
+wxString nwxFileUtil::GetRealPath(const wxString &sPath)
+{
+  // for MS Windows, replace drive letter with
+  //  UNC, if this is a network drive
+  wxString sDrive;
+  wxString sRtn;
+  bool bError = false;
+  if(wxFileName::FileExists(sPath) || wxFileName::DirExists(sPath))
+  {
+    sDrive = GetMSWDriveLetter(sPath);
+  }
+  else
+  {
+    bError = true;
+  }
+  if(!sDrive.IsEmpty())
+  {
+    wxFSVolume v(sDrive);
+    if(v.IsOk() && IsMSWDriveNetwork(v.GetKind()))
+    {
+      wxString s = v.GetDisplayName();
+      // eg. "subdir (\\node\home\username\) (X:)"
+      size_t nBegin = s.Find(wxS("(\\\\"));
+      if(nBegin > 0)
+      {
+        wxString sSubDir = s.Left(nBegin);
+        wxString sNetPath = s.Mid(nBegin + 1);
+        size_t nEnd = s.Find(wxS(")"));
+        if(nEnd > 0)
+        {
+          wxString sPathNoDrive = sPath.Mid(2);
+          NoStartWithSeparator(&sPathNoDrive);
+          nwxString::Trim(&sPathNoDrive);
+
+          sNetPath = sNetPath.Left(nEnd);
+          nwxString::Trim(&sNetPath);
+          EndWithSeparator(&sNetPath);
+          sNetPath.Append(sSubDir);
+          EndWithSeparator(&sNetPath);
+          sNetPath.Append(sPathNoDrive);
+          sRtn = sNetPath;  // done
+        }
+      }
+    }
+  }
+  if(sRtn.IsEmpty() && !bError)
+  {
+    sRtn = sPath;
+  }
+#ifdef TMP_DEBUG
+  {
+    wxString sMsg(wxS("nwxFileUtil::GetRealPath(\""));
+    sMsg.Append(sPath);
+    sMsg.Append(wxS("\") = "));
+    sMsg.Append(sRtn);
+    nwxLog::LogMessage(sMsg);
+  }
+#endif
+  return sRtn;
+}
+#endif
+
+#ifdef __WXMAC__
+
+wxString nwxFileUtil::GetRealPath(const wxString &sPath)
+{
+  wxString sRtn;
+  char buffer[PATH_MAX + 1];
+  bool bError = false;
+  if(sPath.IsEmpty())
+  {
+  }
+  else if(realpath(sPath.utf8_str(),buffer) == NULL)
+  {
+    bError = true
+  }
+  else
+  {
+    sRtn = wxString::FromUTF8(buffer);
+  }
+#ifdef TMP_DEBUG
+  {
+    wxString sMsg(wxS("nwxFileUtil::GetRealPath(\""));
+    sMsg.Append(sPath);
+    sMsg.Append(wxS("\") = "));
+    sMsg.Append(sRtn);
+    nwxLog::LogMessage(sMsg);
+  }
+#endif
+  return sRtn;
+}
+#endif
+
+#ifdef __WXMAC__
+
+#endif
 
 #if 0
 

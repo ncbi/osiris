@@ -133,11 +133,9 @@ public:
   void OnShowLog(wxCommandEvent &);
   void OnAnalyze(wxCommandEvent &);
   void OnLabSettings(wxCommandEvent &);
-#ifdef __WXMAC__
   void OnAccessSiteSettings(wxCommandEvent &);
   void OnShowSiteSettings(wxCommandEvent &);
-  bool SetupSiteSettings(wxWindow *parent = NULL);
-#endif
+  bool SetupSiteSettings();
   void OnArtifactLabels(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);

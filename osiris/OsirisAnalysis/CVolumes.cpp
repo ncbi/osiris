@@ -32,6 +32,7 @@
 #include "ConfigDir.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxKillDir.h"
+#include "nwx/nwxString.h"
 #include "CKitList.h"
 #include <ctype.h>
 #include <wx/debug.h>
@@ -159,9 +160,6 @@ bool CVolume::Load(const wxString &sPath, bool bSetReadOnly)
 //  m_lockRead.SetFileName(GetAccessFileName());
   return m_bOK;
 }
-#ifdef __WXMAC__
-// OS-662
-#endif
 bool CVolume::Save()
 {
   bool bRtn = false;
@@ -169,7 +167,7 @@ bool CVolume::Save()
   {
     wxString sFileName = GetLabSettingsFileName();
     bRtn = m_lab.SaveFile(sFileName);
-#ifdef __WXMAC__
+#ifndef __WXMSW__
 // OS-662
     nwxFileUtil::SetFilePermissionFromDir(sFileName);
 #endif

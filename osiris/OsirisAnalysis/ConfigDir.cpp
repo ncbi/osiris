@@ -31,10 +31,8 @@
 #include "ConfigDir.h"
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
-#ifdef __WXMAC__
 #include <wx/dir.h>
 #include "CSitePath.h"
-#endif
 #ifdef __WXDEBUG__
 #include "mainApp.h"
 void ConfigDir::Log()
@@ -92,7 +90,6 @@ ConfigDir::ConfigDir(
   nwxFileUtil::EndWithSeparator(&m_sTopFilePath);
   SetConfigSubdir(psSubdir);
   SetFileSubdir(psFileSubdir);
-  _SetupSitePath();
 }
 
 ConfigDir::~ConfigDir() {;}
@@ -126,43 +123,6 @@ void ConfigDir::SetFileSubdir(const char *psSubdir)
 
 const wxString &ConfigDir::GetSitePath() const
 {
-#ifdef __WXMAC__
   return CSitePath::GetGlobal()->GetSitePath();
-#else
-  return m_sSitePath;
-#endif
 }
 
-void ConfigDir::_SetupSitePath()
-{
-
-#ifdef __WXMSW__
-  m_sSitePath = GetExePath();
-  nwxFileUtil::EndWithSeparator(&m_sSitePath);
-  m_sSitePath.Append("site");
-#endif
-
-#ifdef __WXMAC__
-
-  
-#if 0  
-  wxString sEXE = GetExePath();
-  const wxChar *psLib = wxS("/Library/Application Support");
-  const wxChar *psSubDir = wxS("/Osiris-Files");
-  if( sEXE.StartsWith(wxS("/Applications/")) &&
-      wxDir::Exists(psLib) )
-  {
-    m_sSitePath = psLib;
-    m_sSitePath.Append(psSubDir);
-  }
-  else
-  {
-    wxString sUp3 = GetExePath();
-    nwxFileUtil::UpDir(&sUp3,3);
-    nwxFileUtil::NoEndWithSeparator(&sUp3);
-    sUp3.Append(psSubDir);
-    m_sSitePath = sUp3;
-  }
-#endif
-#endif
-}
