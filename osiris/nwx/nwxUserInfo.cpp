@@ -123,17 +123,26 @@ class CProcessGroups : public nwxProcess
 public:
   CProcessGroups(wxArrayString *pasGroups):
     nwxProcess(NULL),
+    m_sGroupName(wxS("Group Name:")),
+    m_sType(wxS("Type:")),
     m_pasGroups(pasGroups)
-  {}
+  {
+    m_nLenGroupName = m_sGroupName.Len();
+    m_nLenType = m_sType.Len();
+  }
   virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream);
   const wxString &GetStdErr() const
   {
     return m_sStdErr;
   }
 private:
+  wxString m_sGroupName;
+  wxString m_sType;
   wxString m_sStdErr;
   wxString m_sLastGroup;
   wxArrayString *m_pasGroups;
+  size_t m_nLenGroupName;
+  size_t m_nLenType;
 };
 
 void CProcessGroups::ProcessLine(const char *p, size_t , bool bErrStream)
@@ -143,9 +152,23 @@ void CProcessGroups::ProcessLine(const char *p, size_t , bool bErrStream)
   {
     m_sStdErr.Append(sLine);
   }
-  else
+  else if(sLine.Left(m_nLenGroupName) == m_sGroupName)
   {
-    m_pasGroups->Add(sLine);
+    wxString s = sLine.Mid(m_nLenGroupName);
+    nwxString::Trim(&s);
+    m_sLastGroup = s;
+  }
+  else if(sLine.Left(m_nLenType) == m_sType)
+  {
+    wxString s = sLine.Mid(m_nLenType);
+    s.MakeLower();
+    if(s.Find(wxS("group")) == wxNOT_FOUND)
+    {}
+    else if(!m_sLastGroup.IsEmpty())
+    {
+      m_pasGroups->Add(m_sLastGroup);
+      m_sLastGroup.Empty();
+    }
   }
 }
 
@@ -171,6 +194,7 @@ void nwxUserInfo::_setupGroupNames()
       argv[3] = "LIST";
       argv[4] = NULL;
       proc.Run(argv, wxEXEC_SYNC);
+      proc.ProcessIO();
       m_nGroupStatus = proc.GetExitStatus();
       const wxString &sErr(proc.GetStdErr());
       if(!sErr.IsEmpty())
