@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundleIdentifier</key>
+  <string>gov.NCBI.Osiris</string>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>English</string>
+  <key>CFBundleExecutable</key>
+  <string>User Applications Folder</string>
+  <key>CFBundleIconFile</key>
+  <string>folder.icns</string>
+  <key>CFBundleName</key>
+  <string>User Applications Folder</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>OSRS</string>
+  <key>CFBundleDisplayName</key>
+  <string>User Applications Folder</string>
+  <key>CFBundleVersion</key>
+  <string>1.0</string>
+  <key>CFBundleShortVersionString</key>
+  <string>1.0</string>
+  <key>CFBundleGetInfoString</key>
+  <string>User Applications Folder</string>
+  <key>CFBundleLongVersionString</key>
+  <string>User Applications Folder</string>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+  </array>
+  <key>NSHumanReadableCopyright</key>
+  <string>forecsics@ncbi.nlm.nih.gov</string>
+  <key>LSRequiresCarbon</key>
+    <false/>
+  <key>CSResourcesFileMapped</key>
+  <true/>
+</dict>
+</plist>

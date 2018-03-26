@@ -15,7 +15,7 @@ use GetVersion;
 #
 #
 my $NO_ZIP_FILE = 0;
-my $MAC_TOP_DIR = $ENV{HOME} . "/Applications";
+my $MAC_TOP_DIR = $ENV{HOME} . "/Applications/dmg";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
 
@@ -251,10 +251,10 @@ sub CopyWin
   }
 }
 
-sub SignAppMac()
+sub CheckSignMac()
 {
   my $PATH=shift;
-  my $SIG=$ENV{SIGNATURE};
+  my $SIG = shift;
   my $NOSIGN = "\nApplication will not be signed.";
   if(! -d $PATH)
   {
@@ -279,11 +279,52 @@ sub SignAppMac()
                  "and cannot determine if this is the mac console.",$NOSIGN;
     return undef;
   }
-  my $cmd = "codesign -f --deep -s \"${SIG}\" \"${PATH}\"";
-  print "\n\n\nSigning ${PATH}:\n${cmd}\n";
-  my $rtn = system($cmd);
-  my $s = $rtn ? " not" : "";
-  print "\nApplication was${s} signed\n\n\n";
+  return 1;
+}
+
+sub SignAppMac()
+{
+  my $PATH=shift;
+  my $SIG=$ENV{SIGNATURE};
+  my $rtn = undef;
+  if(&CheckSignMac($PATH,$SIG))
+  {
+    my $cmd = "codesign -f --deep -s \"${SIG}\" \"${PATH}\"";
+    print "\n\n\nSigning ${PATH}:\n${cmd}\n";
+    my $nRtn = system($cmd);
+    my $s = $nRtn ? " not" : "";
+    print "\nApplication was${s} signed\n\n\n";
+    $rtn = !$nRtn
+  }
+  return $rtn;
+}
+sub SignAppMacFiles()
+{
+  my $PATH=shift;
+  my $SIG=$ENV{SIGNATURE};
+  my $rtn = undef;
+  if(!&CheckSignMac($PATH,$SIG))
+  {}
+  elsif(!open(FIN,"find \"${PATH}\"|"))
+  {
+    print "Cannot run find command on ${PATH}";
+  }
+  else
+  {
+    my $line;
+    my $nRtn = 1;
+    while($line = <FIN>)
+    {
+      chomp $line;
+      my $SIG=$ENV{SIGNATURE};
+      my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
+      $nRtn = system($cmd);
+      last if $nRtn;
+    }
+    close FIN;
+    $rtn = !$nRtn;
+  }
+  return $rtn;
 }
 
 sub CopyMac
@@ -307,13 +348,27 @@ sub CopyMac
   my $LADDERDIR = "${CONFIG}/LadderSpecifications";
   my $VOLUMEDIR = "${CONFIG}/Volumes";
   my $RESOURCES = "${CONTENTS}/Resources";
-
+  my $APP_SYS_FOLDER = "${TOP}/System Applications Folder.app";
+  my $APP_USER_FOLDER = "${TOP}/User Applications Folder.app";
+  my $SYS_APP_FOLDER = "${APP_SYS_FOLDER}/Contents/MacOS";
+  my $USER_APP_FOLDER = "${APP_USER_FOLDER}/Contents/MacOS";
+  my @APP_FOLDERS =
+    (
+     "${APP_SYS_FOLDER}",
+     "${APP_SYS_FOLDER}/Contents",
+     "${SYS_APP_FOLDER}",
+     "${APP_USER_FOLDER}",
+     "${APP_USER_FOLDER}/Contents",
+     "${USER_APP_FOLDER}"
+    );
   my $src = "..";
   my $x;
-  for $x ($APPDIR,$CONTENTS,$DEST,$CONFIG,$LADDERDIR,$VOLUMEDIR,$RESOURCES)
+  for $x ($APPDIR,$CONTENTS,$DEST,$CONFIG,$LADDERDIR,$VOLUMEDIR,$RESOURCES,@APP_FOLDERS)
   {
      &MKDIR($x);
   }
+  &SYSTEM("${CP} ${src}/dmg/00_Read_This_First.pdf ${TOP}");
+
   &SYSTEM("${CP} ${src}/OsirisAnalysis/wxmac.icns ${RESOURCES}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Info.plist ${CONTENTS}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/PkgInfo ${CONTENTS}");
@@ -323,15 +378,34 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
   &SYSTEM("${CP} ${src}/fsa2xml/bin/fsa2xml ${DEST}");
+
+  &SYSTEM("${CP} -R \"${src}/dmg/System Applications Folder.app\" \"${TOP}\"");
+  &SYSTEM("${CP} -R \"${src}/dmg/User Applications Folder.app\" \"${TOP}\"");
+  #
+  #  create the folder apps for dmg
+  #
+  &SYSTEM("${CP} ${src}/OpenFolder/bin/OpenFolder \"${TOP}/System Applications Folder/Contents/MacOS/System Applications Folder\"")
+  &SYSTEM("${CP} ${src}/OpenFolder/bin/OpenFolder \"${TOP}/User Applications Folder/Contents/MacOS/User Applications Folder\"")
+  &SYSTEM("${CP} ${src}/dmg/sys_folder.sh \"${TOP}/System Applications Folder/Contents/MacOS/folder.sh\"");
+  &SYSTEM("${CP} ${src}/dmg/user_folder.sh \"${TOP}/User Applications Folder/Contents/MacOS/folder.sh\"");
+
+  # done with folder apps
+  #
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
-  my $testDest = "${TOP}/TestAnalysis";
   &COPYFILES($src,$DEST,$TOP);
-
-  ### BEGIN make tar.gz
-  if(1)
+  for my $folder
+    (
+     $APPDIR,
+     "${TOP}/System Applications Folder",
+     "${TOP}/User Applications Folder"
+    )
   {
-    &SignAppMac($APPDIR);
+    &SignAppMac($folder);
+  }
+  if(0)
+  {
+    my $testDest = "${TOP}/TestAnalysis";
     my $zipDir = $ENV{OSIRISTGZ};
     if(!(-d $zipDir && -w $zipDir))
     {
