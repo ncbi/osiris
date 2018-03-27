@@ -166,6 +166,19 @@ public:
     m_asStdOut.Empty();
     m_asStdErr.Empty();
   }
+  static wxString ARGV2str(const wchar_t **argv)
+  {
+    wxString s;
+    wxString sTmp;
+    const wchar_t **ps;
+    for(ps = argv; (*ps) != NULL; ++ps)
+    {
+      sTmp = *ps;
+      _appendArg(&s,sTmp);
+    }
+    s.Trim();
+    return s;
+  }
   static wxString ARGV2str(const char **argv)
   {
     wxString s;
@@ -174,21 +187,7 @@ public:
     for(ps = argv; (*ps) != NULL; ++ps)
     {
       sTmp = wxString::FromUTF8(*ps);
-      if(sTmp.IsEmpty())
-      {
-        s.Append("\"\" ");
-      }
-      else if(sTmp.Find(wxS(" ")) != wxNOT_FOUND)
-      {
-        s.Append("\"");
-        s.Append(sTmp);
-        s.Append("\" ");
-      }
-      else
-      {
-        s.Append(wxString::FromUTF8(sTmp));
-        s.Append(wxS(" "));
-      }
+      _appendArg(&s,sTmp);
     }
     s.Trim();
     return s;
@@ -196,6 +195,36 @@ public:
   const wxString &BuildLog(const char **argv)
   {
     m_sLog = ARGV2str(argv);
+    _appendLog();
+    return m_sLog;
+  }
+  const wxString &BuildLog(const wchar_t **argv)
+  {
+    m_sLog = ARGV2str(argv);
+    _appendLog();
+    return m_sLog;
+  }
+private:
+  static void _appendArg(wxString *ps, const wxString sArg)
+  {
+    if(sArg.IsEmpty())
+    {
+      ps->Append("\"\" ");
+    }
+    else if(sArg.Find(wxS(" ")) != wxNOT_FOUND)
+    {
+      ps->Append("\"");
+      ps->Append(sArg);
+      ps->Append("\" ");
+    }
+    else
+    {
+      ps->Append(sArg);
+      ps->Append(wxS(" "));
+    }
+  }
+  void _appendLog()
+  {
     m_sLog.Append(
       wxString::Format(
         wxS("\nreturn code: %d"), GetExitStatus()
@@ -219,9 +248,7 @@ public:
       }
     }
     m_sLog.Append("\n");
-    return m_sLog;
   }
-private:
   wxArrayString m_asStdOut;
   wxArrayString m_asStdErr;
   wxString m_sLog;

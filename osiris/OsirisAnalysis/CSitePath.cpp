@@ -178,7 +178,6 @@ CSitePath::CSitePath() :
   
   wxStandardPathsBase &sp(wxStandardPaths::Get());
   wxFileName fn(sp.GetExecutablePath());
-  char buffer[PATH_MAX + 1];
   wxString sPath = fn.GetFullPath(wxPATH_NATIVE);
   const wxString sSiteLib(wxS("/Library/Application Support/Osiris-Files"));
   const wxString sSiteShared(wxS("/Users/Shared/Osiris-Files"));
@@ -280,7 +279,6 @@ CSitePath::CSitePath() :
 
 void CSitePath::_setupRealSitePath()
 {
-  char buffer[PATH_MAX + 1];
   if(!m_sRealSiteDir.IsEmpty()) {}
   else if(m_sSiteDir.IsEmpty()) {}
   else if(!wxFileName::DirExists(m_sSiteDir)) {}
@@ -504,7 +502,7 @@ bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
       }
 #endif // TMP_DEBUG
       nwxProcessSimple proc;
-      proc.Run(ARGV,wxEXEC_SYNC);
+      proc.Run((wchar_t **)ARGV,wxEXEC_SYNC);
       int nRtn = proc.GetExitStatus();
       if(!nRtn)
       {
@@ -514,7 +512,7 @@ bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
       else
       {
         m_nLastError = (nRtn > 0) ? EACCES : ENOENT;
-        wxString &sMsg = proc.BuildLog(ARGV);
+        const wxString &sMsg = proc.BuildLog(ARGV);
         nwxLog::LogMessage(sMsg);
       }
     }
