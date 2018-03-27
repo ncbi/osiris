@@ -47,6 +47,13 @@ public:
     Init();
     Run(argv);
   }
+  nwxProcess(wxEvtHandler *parent, int id, wchar_t **argv) : 
+      wxProcess(parent,id)
+  {
+    Redirect();
+    Init();
+    Run(argv);
+  }
   nwxProcess(wxEvtHandler *parent, int id = wxID_ANY) : 
     wxProcess(parent,id)
   {
@@ -57,6 +64,7 @@ public:
   virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream) = 0;
   virtual void OnTerminate(int nPID,int nExitCode);
   bool Run(char **argv, int nExeFlags = wxEXEC_ASYNC);
+  bool Run(wchar_t **argv, int nExeFlags = wxEXEC_ASYNC);
   void Pause(bool bPause = true)
   {
     m_bPaused = bPause;
@@ -86,6 +94,8 @@ public:
   size_t ProcessIO(size_t nLimit = 0x7fffffff);
   bool IsErrorOpened() const;
 private:
+  bool _runInit();
+  bool _runSetup(int nExeFlags);
   size_t ProcessIO(wxInputStream *pIn, wxString &sLine, bool bErrStream);
   void Init()
   {
@@ -121,6 +131,102 @@ public:
 private:
   nwxProcess *m_pProcess;
 };
+
+class nwxProcessSimple : public nwxProcess
+{
+public:
+  nwxProcessSimple(wxEvtHandler *parent, int id, char **argv) :
+      nwxProcess(parent,id,argv)
+  {}
+  nwxProcessSimple(wxEvtHandler *parent, int id, wchar_t **argv) :
+      nwxProcess(parent,id,argv)
+  {}
+  nwxProcessSimple(wxEvtHandler *parent, int id = wxID_ANY) : 
+    nwxProcess(parent,id)
+  {}
+  nwxProcessSimple() :
+    nwxProcess(NULL)
+  {}
+  virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream)
+  {
+    wxString s = wxString::FromUTF8(p,nLen);
+    wxArrayString *pas = bErrStream ? &m_asStdErr : &m_asStdOut;
+    pas->Add(s);
+  }
+  const wxArrayString &GetStdErr()
+  {
+    return m_asStdErr;
+  }
+  const wxArrayString &GetStdOut()
+  {
+    return m_asStdOut;
+  }
+  void Clear()
+  {
+    m_asStdOut.Empty();
+    m_asStdErr.Empty();
+  }
+  static wxString ARGV2str(const char **argv)
+  {
+    wxString s;
+    wxString sTmp;
+    const char **ps;
+    for(ps = argv; (*ps) != NULL; ++ps)
+    {
+      sTmp = wxString::FromUTF8(*ps);
+      if(sTmp.IsEmpty())
+      {
+        s.Append("\"\" ");
+      }
+      else if(sTmp.Find(wxS(" ")) != wxNOT_FOUND)
+      {
+        s.Append("\"");
+        s.Append(sTmp);
+        s.Append("\" ");
+      }
+      else
+      {
+        s.Append(wxString::FromUTF8(sTmp));
+        s.Append(wxS(" "));
+      }
+    }
+    s.Trim();
+    return s;
+  }
+  const wxString &BuildLog(const char **argv)
+  {
+    m_sLog = ARGV2str(argv);
+    m_sLog.Append(
+      wxString::Format(
+        wxS("\nreturn code: %d"), GetExitStatus()
+        ));
+    wxArrayString *ppas[2] = {&m_asStdOut, &m_asStdErr};
+    size_t anLen[2] = {m_asStdOut.GetCount(), m_asStdErr.GetCount()};
+    size_t nLen,n;
+    const char *psHeader[2] = {"\n\nstdout:","\n\nstderr"};
+    for (int i = 0; i < 2; ++i)
+    {
+      nLen = anLen[i];
+      if(nLen)
+      {
+        wxArrayString *pas = ppas[i];
+        m_sLog.Append(psHeader[i]);
+        for(n = 0; n < nLen; ++n)
+        {
+          m_sLog.Append("\n");
+          m_sLog.Append(pas->Item(n));
+        }
+      }
+    }
+    m_sLog.Append("\n");
+    return m_sLog;
+  }
+private:
+  wxArrayString m_asStdOut;
+  wxArrayString m_asStdErr;
+  wxString m_sLog;
+};
+
 
 #endif
 

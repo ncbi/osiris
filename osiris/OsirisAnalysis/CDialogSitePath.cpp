@@ -123,6 +123,7 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
   m_pChoiceGroup(NULL),
   m_bNeedAdmin(false)
 {
+  wxBusyCursor x;
   wxArrayString asGroupsKeep;
   wxString sOperation;
   CSitePath *pSitePath = CSitePath::GetGlobal();

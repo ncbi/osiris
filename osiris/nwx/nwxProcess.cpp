@@ -46,32 +46,55 @@
 
 bool nwxProcess::Run(char **argv, int nExeFlags)
 {
+  bool bRtn = _runInit();
+  if(bRtn)
+  {
+    m_nPID = ::wxExecute(argv,nExeFlags,this);
+    bRtn = _runSetup(nExeFlags);
+  }
+  return bRtn;
+}
+bool nwxProcess::Run(wchar_t **argv, int nExeFlags)
+{
+  bool bRtn = _runInit();
+  if(bRtn)
+  {
+    m_nPID = ::wxExecute(argv,nExeFlags,this);
+    bRtn = _runSetup(nExeFlags);
+  }
+  return bRtn;
+}
+bool nwxProcess::_runInit()
+{
   bool bRtn = !m_bRunning;
   if(bRtn)
   {
     Init();
-    m_nPID = ::wxExecute(argv,nExeFlags,this);
-    if(nExeFlags &  wxEXEC_SYNC )
-    {
-      m_nExitStatus = (int)m_nPID;
-      m_bRunning = false;
-      m_bFailed = false;
-      m_nPID = 0;
-    }
-    else if(!m_nPID)
-    {
-      m_nExitStatus = -1;
-      m_bRunning = false; 
-      m_bFailed = true;
-    }
-    else
-    {
-      m_bFailed = false;
-      m_bRunning = true;
-    }
-    bRtn = !m_bFailed;
   }
   return bRtn;
+}
+
+bool nwxProcess::_runSetup(int nExeFlags)
+{
+  if(nExeFlags &  wxEXEC_SYNC )
+  {
+    m_nExitStatus = (int)m_nPID;
+    m_bRunning = false;
+    m_bFailed = false;
+    m_nPID = 0;
+  }
+  else if(!m_nPID)
+  {
+    m_nExitStatus = -1;
+    m_bRunning = false; 
+    m_bFailed = true;
+  }
+  else
+  {
+    m_bFailed = false;
+    m_bRunning = true;
+  }
+  return !m_bFailed;
 }
 nwxProcess::~nwxProcess()
 {

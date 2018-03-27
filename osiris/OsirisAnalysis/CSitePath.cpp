@@ -40,6 +40,7 @@
 #include "nwx/nwxLog.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxUserInfo.h"
+#include "nwx/nwxProcess.h"
 #include "mainApp.h"
 #include "ConfigDir.h"
 
@@ -502,19 +503,19 @@ bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
         nwxLog::LogMessage(sTmp);
       }
 #endif // TMP_DEBUG
-      long nRtn = wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
+      nwxProcessSimple proc;
+      proc.Run(ARGV,wxEXEC_SYNC);
+      int nRtn = proc.GetExitStatus();
       if(!nRtn)
       {
         bRtn = true;
         m_nLastError = 0;
       }
-      else if(nRtn > 0)
-      {
-        m_nLastError = EACCES;
-      }
       else
       {
-        m_nLastError = ENOENT;
+        m_nLastError = (nRtn > 0) ? EACCES : ENOENT;
+        wxString &sMsg = proc.BuildLog(ARGV);
+        nwxLog::LogMessage(sMsg);
       }
     }
   }
@@ -1007,51 +1008,33 @@ bool CSitePath::_runScript(const wxArrayString &as, bool bElevate)
   }
   else
   {
-    const wchar_t *ARGV[24];
+    nwxProcessSimple proc(NULL);
+    const char *ARGV[24];
     wxString sTmp;
     size_t ndx = 3;
     size_t nSize = as.GetCount();
-    ARGV[0] = m_sCScript.wx_str();
-    ARGV[1] = wxS("/NOLOGO");
-    ARGV[2] = m_sVBscript.wx_str();
+    ARGV[0] = m_sCScript.utf8_str();
+    ARGV[1] = "/NOLOGO";
+    ARGV[2] = m_sVBscript.utf8_str();
     if(bElevate)
     {
       const wxString &sTmp = mainApp::GetConfig()->GetConfigPath();
-      ARGV[3] = wxS("-r");
-      ARGV[4] = sTmp.wx_str();
+      ARGV[3] = "-r";
+      ARGV[4] = sTmp.utf8_str();
       ndx = 5;
     }
     for(size_t i = 0; i < nSize; ++i)
     {
-      ARGV[ndx++] = as.Item(i).wx_str();
+      ARGV[ndx++] = as.Item(i).utf8_str();
     }
     ARGV[ndx] = NULL;
-    size_t nRtn = wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
+
+    proc.Run((char **)ARGV,wxEXEC_SYNC);
+    int nRtn = proc.GetExitStatus();
     bRtn = !nRtn;
     if(!bRtn)
     {
-      wxString sMsg;
-      wxString sArg;
-      sMsg.Printf(wxS("Shell failed, errorlevel %d:\n"),(int) nRtn);
-      for(const wchar_t **pArg = ARGV; (*pArg) != NULL; ++pArg)
-      {
-        sArg = *pArg;
-        if(sArg.IsEmpty())
-        {
-          sMsg.Append(wxS("\"\" "));
-        }
-        else if(sArg.Find(wxS(" ")) != wxNOT_FOUND)
-        {
-          sMsg.Append(wxS("\""));
-          sMsg.Append(sArg);
-          sMsg.Append(wxS("\" "));
-        }
-        else
-        {
-          sMsg.Append(sArg);
-          sMsg.Append(wxS(" "));
-        }
-      }
+      const wxString &sMsg = proc.BuildLog(ARGV);
       nwxLog::LogMessage(sMsg);
     }
   }
