@@ -15,7 +15,7 @@ use GetVersion;
 #
 #
 my $NO_ZIP_FILE = 0;
-my $MAC_TOP_DIR = $ENV{HOME} . "/Applications/dmg";
+my $MAC_TOP_DIR = $ENV{HOME} . "/Applications/Osiris-Installer";
 my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
 
