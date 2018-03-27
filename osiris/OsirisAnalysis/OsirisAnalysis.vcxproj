@@ -106,7 +106,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30ud_adv.lib;wxmsw30ud_html.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
+      <OutputFile>F:\Profiles\Software\Debug\OsirisAnalysis.exe</OutputFile>
       <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>

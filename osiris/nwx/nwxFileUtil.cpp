@@ -682,7 +682,16 @@ wxString nwxFileUtil::GetMSWDriveLetter(const wxString &sPath)
   }
   return sRtn;
 }
+bool nwxFileUtil::g_bInitVolumes(false);
 
+void nwxFileUtil::_initVolumes()
+{
+  if(!g_bInitVolumes)
+  {
+    wxArrayString as = wxFSVolume::GetVolumes();
+    g_bInitVolumes = true;
+  }
+}
 wxFSVolumeKind nwxFileUtil::GetMSWDriveType(const wxString &sPath)
 {
   size_t nLen = sPath.Len();
@@ -697,6 +706,11 @@ wxFSVolumeKind nwxFileUtil::GetMSWDriveType(const wxString &sPath)
     wxString s = GetMSWDriveLetter(sPath);
     if(!s.IsEmpty())
     {
+      //   STOP HERE not getting fs type on F Drive
+      if(!g_bInitVolumes)
+      {
+        _initVolumes();
+      }
       wxFSVolume v(s);
       if(v.IsOk())
       {
@@ -724,6 +738,10 @@ wxString nwxFileUtil::GetRealPath(const wxString &sPath)
   }
   if(!sDrive.IsEmpty())
   {
+    if(!g_bInitVolumes)
+    {
+      _initVolumes();
+    }
     wxFSVolume v(sDrive);
     if(v.IsOk() && IsMSWDriveNetwork(v.GetKind()))
     {
@@ -734,7 +752,7 @@ wxString nwxFileUtil::GetRealPath(const wxString &sPath)
       {
         wxString sSubDir = s.Left(nBegin);
         wxString sNetPath = s.Mid(nBegin + 1);
-        size_t nEnd = s.Find(wxS(")"));
+        size_t nEnd = sNetPath.Find(wxS(")"));
         if(nEnd > 0)
         {
           wxString sPathNoDrive = sPath.Mid(2);
@@ -744,6 +762,7 @@ wxString nwxFileUtil::GetRealPath(const wxString &sPath)
           sNetPath = sNetPath.Left(nEnd);
           nwxString::Trim(&sNetPath);
           EndWithSeparator(&sNetPath);
+          nwxString::Trim(&sSubDir);
           sNetPath.Append(sSubDir);
           EndWithSeparator(&sNetPath);
           sNetPath.Append(sPathNoDrive);

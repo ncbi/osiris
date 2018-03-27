@@ -121,7 +121,8 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
   m_pRadioGroup(NULL),
   m_pTextGroup(NULL),
   m_pChoiceGroup(NULL),
-  m_bNeedAdmin(false)
+  m_bNeedAdmin(false),
+  m_bCanSetAccess(true)
 {
   wxBusyCursor x;
   wxArrayString asGroupsKeep;
@@ -129,21 +130,20 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
   CSitePath *pSitePath = CSitePath::GetGlobal();
   size_t nDefault = 0;
   int nButtonSizer = wxOK | wxCANCEL;
-  bool bCanSetAccess = true;
 #ifdef __WXMSW__
   // on windows, OSIRIS will set access only on NTFS file systems
-  bCanSetAccess = pSitePath->IsNTFS();
+  m_bCanSetAccess = pSitePath->IsNTFS();
 #endif
 
-  if(bCanSetAccess)
+  if(m_bCanSetAccess)
   {
     nDefault = _setupGroupList(&asGroupsKeep);
   }
 
   if(pSitePath->SitePathExists())
   {
-    m_bNeedAdmin = !pSitePath->CurrentUserOwnsAll();
-    if(!bCanSetAccess)
+    m_bNeedAdmin = m_bCanSetAccess && !pSitePath->CurrentUserOwnsAll();
+    if(!m_bCanSetAccess)
     {
       nButtonSizer = wxCANCEL;
       sOperation = wxS("OSIRIS cannot set access for site settings on this file system");
@@ -156,7 +156,7 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
   else
   {
     m_bNeedAdmin = !pSitePath->ExistingParentWritable();
-    sOperation = bCanSetAccess
+    sOperation = m_bCanSetAccess
       ? wxS("Initialize and set access for OSIRIS site settings")
       : wxS("Create folder for OSIRIS site settings");
   }
@@ -178,7 +178,7 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
   pSizerMain->Add(pTextTitle, 0,
     wxALIGN_LEFT | wxALL, ID_BORDER);
 #if __WXMSW__
-  if(bCanSetAccess)
+  if(m_bCanSetAccess)
 #endif
   {
     m_pRadioUserOnly = new wxRadioButton
@@ -216,7 +216,7 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
         wxALIGN_LEFT | wxBOTTOM | wxLEFT | wxRIGHT, ID_BORDER);
     }
   }
-  pSizerMain->Add(CreateButtonSizer(wxOK | wxCANCEL), 0,
+  pSizerMain->Add(CreateButtonSizer(nButtonSizer), 0,
     (wxALL ^ wxTOP) | wxALIGN_CENTER,ID_BORDER);
   SetSizer(pSizerMain);
   Layout();

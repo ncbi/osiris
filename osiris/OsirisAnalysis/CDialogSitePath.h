@@ -67,6 +67,7 @@ private:
   wxChoice *m_pChoiceGroup;
   wxString m_sGroup;
   bool m_bNeedAdmin;
+  bool m_bCanSetAccess;
   DECLARE_ABSTRACT_CLASS(CDialogSitePath)
   DECLARE_EVENT_TABLE()
 };

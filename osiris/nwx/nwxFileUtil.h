@@ -145,6 +145,10 @@ private:
     const wxString &sExeFile, const std::vector<wxString> &asPath);
   static bool _ShowFolder(const wxString &sFileName);
   static void _setupPaths();
+#ifdef __WXMSW__
+  static void _initVolumes();
+  static bool g_bInitVolumes;
+#endif
   nwxFileUtil() {;} // prevent instantiation
 };
 
