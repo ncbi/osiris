@@ -76,6 +76,10 @@ public:
   {
     return (n == wxFS_VOL_NETWORK);
   }
+  static bool IsMSWDriveFloppy(wxFSVolumeKind n)
+  {
+    return (n == wxFS_VOL_FLOPPY);
+  }
 
 #endif
   static wxString GetRealPath(const wxString &sPath);

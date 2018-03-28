@@ -231,6 +231,9 @@ Function ShellPiped(sCmdLine)
   nStdOut = 0
   Set rtn = CreateObject("Scripting.Dictionary")
   Set exec = ShellRun(sCmdLine)
+  If (Not IsNull(sCacls)) And (InStr(1,sCmdLine,sCacls,1) > 0) Then
+    exec.StdIn.WriteLine "y"
+  End If
   StreamToArray aStdOut,exec.StdOut
   StreamToArray aStdErr,exec.StdErr
   While exec.Status = 0
@@ -403,19 +406,23 @@ End Function
 
 Function SETUP_CACLS()
   Dim sExe
-  SETUP_CACLS = True
   If IsNull(sIcacls) And IsNull(sCacls) Then
+    SETUP_CACLS = False
     sExe = SystemFind("icacls.exe")
     If not IsNull(sExe) Then
       sIcacls = sExe
-    Else
-      sExe = SystemFind("cacls.exe")
-      If Not IsNull(sExe) Then
-        sCacls = "echo Y|" & sExe
-      Else
-        SETUP_CACLS = False
-      End If
+      SETUP_CACLS = True
     End If
+    sExe = SystemFind("cacls.exe")
+    If Not IsNull(sExe) Then
+      sCacls = sExe
+      SETUP_CACLS = True
+    End If
+  Else
+    SETUP_CACLS = True
+  End If
+  If Not SETUP_CACLS Then
+    PRINT "Cannot find icacls.exe not cacls.exe",bVerbose
   End If
 End Function
 
@@ -557,6 +564,47 @@ Function CHGRP(sPath,sUser,sGroup)
   CHGRP = rtn
 End Function
 
+Function ISNTFS(sPath)
+  ISNTFS = False
+  If Not(fso.FolderExists(sPath) or fso.FileExists(sPath)) Then
+    ISNTFS = False
+    PRINT "cannot find " & sPath, bVerbose
+  ElseIf SETUP_CACLS() Then
+    Dim hOutput, aStdOut, aStdErr,i,n,cmd,sOwner,sCheck1,sCheck2,s
+    ISNTFS = True
+    sOwner = GetFileOwner(sPath)
+    If IsNull(sOwner) or (sOwner = "\") Then
+      ISNTFS = False
+    Else
+      If Not IsNull(sCacls) Then
+        cmd = sCacls & " """ & sPath & """"
+      Else
+        cmd = sIcacls & " """ & sPath & """"
+      End If
+      Set hOutput = ShellPiped(cmd)
+      aStdOut = hOutput.Item("stdout")
+      n = UBound(aStdOut)
+      ISNTFS = True
+      sCheck1 = "The Cacls command can be run only on disk drives that use the NTFS file system."
+      sCheck2 = "No permissions are set. All users have full control."
+      For i = 0 to n
+        s = aStdOut(i)
+        If InStr(1,s,sCheck1,1) > 0 Then
+          ISNTFS = False
+          Exit For
+        ElseIf InStr(1,s,sCheck2,1) > 0 Then
+          ISNTFS = False
+          Exit For
+        End If
+      Next
+    End If
+  End If
+  If ISNTFS Then
+    PRINT "Is NTFS",bVerbose
+  Else
+    PRINT "Is not NTFS", bVerbose
+  End If
+End Function
 
 Function MKDIR(sPath,sUser,sGroup)
   Dim rtn
@@ -915,13 +963,13 @@ sub MAIN
   Wend
 
   Dim sAllCmd, sNoPathCommand, sNoUserCommand, sFunctionSearch
-  sAllCmd = "_:CHGRP:MKDIR:GROUPS:ISOWNER:GETOWNER:"
-  sNoUserCommand = "_:GROUPS:ISOWNER:GETOWNER:"
+  sAllCmd = "_:CHGRP:MKDIR:GROUPS:ISOWNER:GETOWNER:ISNTFS:"
+  sNoUserCommand = "_:GROUPS:ISOWNER:GETOWNER:ISNTFS:"
   sFunctionSearch = ":" & sFunction & ":"
 
   If rtn Then ' not failed yet
     If (sFunction = "") OR (InStr(1, sAllCmd,sFunctionSearch) < 1) Then
-      STDERR.WriteLine "No function (CHGRP, MKDIR, GROUPS, or ISOWNER) specified"
+      STDERR.WriteLine "No function (CHGRP, MKDIR, GROUPS, ISOWNER, ISNTFS) specified"
       bUsage = True
     Else 
       If sPath = "" and sFunction <> "GROUPS" Then
@@ -967,6 +1015,8 @@ sub MAIN
       rtn = ISOWNER(sPath, sUser)
     ElseIf sFunction = "GETOWNER" Then
       rtn = GETOWNER(sPath)
+    ElseIf sFunction = "ISNTFS" Then
+      rtn = ISNTFS(sPath)
     Else
       PRINT "Invalid function, not caught earlier - BUG",True
     End If

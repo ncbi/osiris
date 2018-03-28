@@ -235,6 +235,7 @@ void CDialogSitePath::OnRadioButton(wxCommandEvent &)
 
 bool CDialogSitePath::ProcessSitePath(bool bPromptError)
 {
+  wxBusyCursor x;
   bool bRtn = true;
   wxString sUser;
   wxString sGroup;

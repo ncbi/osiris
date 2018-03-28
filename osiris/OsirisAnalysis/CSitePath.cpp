@@ -962,7 +962,9 @@ CSitePath::CSitePath() :
       // use c:\Users\username\AppData\Roaming
       _setupUserPath();
     }
-    else if(nwxFileUtil::IsMSWDriveNetwork(nDriveKind))
+    else if(nwxFileUtil::IsMSWDriveNetwork(nDriveKind) ||
+      nwxFileUtil::IsMSWDriveFloppy(nDriveKind)
+      )
     {
       _getPeerPath(&m_sSiteDir);
     }
@@ -1133,7 +1135,7 @@ bool CSitePath::IsNTFS()
   {
     wxArrayString as;
     as.Alloc(2);
-    as.Add(wxS("GETOWNER"));
+    as.Add(wxS("ISNTFS"));
     as.Add(m_sRealSiteDir);
     bRtn = _runScript(as,false);
   }
