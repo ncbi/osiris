@@ -72,6 +72,7 @@ double ChannelData::NoisePercentNormalizationPass = 50.0;
 double ChannelData::NoisePercentFinalPass = 75.0;
 
 bool ChannelData::IsNormalizationPass = true;
+double ChannelData::NormalizationSplitTime = -1.0;
 
 
 bool operator== (const RaisedBaseLineData& first, const RaisedBaseLineData& second) {
@@ -1065,16 +1066,20 @@ int ChannelData :: CreateAndSubstituteTriplePassFilteredSignalForRawData (int wi
 }
 
 
-int ChannelData :: CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange) {
+int ChannelData :: CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange, double splitTime) {
 
 	if (mBackupData != NULL)
 		delete mBackupData;
 
-	double noiseLevel = fractionNoiseLevelForLevelChange * mData->GetNoiseRange ();
+	smPrePrimerPercentOfNoiseRangeForLevelChange prePrimerPercentMsg;
+	double startFraction = 0.01 * (double) GetThreshold (prePrimerPercentMsg);
+
+	double postPrimerNoiseLevel = fractionNoiseLevelForLevelChange * mData->GetNoiseRange ();
+	double prePrimerNoiseLevel = startFraction * mData->GetNoiseRange ();
 	mFilterChangeArray = new bool [GetNumberOfSamples ()];
 
 	mBackupData = mData;
-	mData = mBackupData->CreateAveragingFilteredSignal (nPasses, halfWidth, noiseLevel, mFilterChangeArray, mFractionOfChangedFilterPoints);
+	mData = mBackupData->CreateAveragingFilteredSignal (nPasses, halfWidth, postPrimerNoiseLevel, prePrimerNoiseLevel, mFilterChangeArray, mFractionOfChangedFilterPoints, splitTime);
 	return 0;
 }
 

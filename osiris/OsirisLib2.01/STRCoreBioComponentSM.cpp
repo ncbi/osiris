@@ -4829,6 +4829,8 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 	double recommendedThreshold;
 	RGString notice;
 	smILSFailed ilsFailed;
+	smNormalizeRawDataRelativeToBaselinePreset normalizeRawData;
+	smEnableRawDataFilterForNormalizationPreset enableFilteringForNormalization;
 
 	ChannelData::SetBeginAnalysisTime (-1.0);
 	status = FitLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
@@ -4870,6 +4872,9 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 
 	cout << "Window width = " << TracePrequalification::GetWindowWidth () << endl;
 	cout << "Noise threshold = " << TracePrequalification::GetNoiseThreshold () << endl;
+
+	if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
+		CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
 
 	status = FitNonLaneStandardCharacteristicsSM (text, ExcelText, msg, print);
 	//cout << "Fitting all non-lane standard neg. peaks (2)" << endl;

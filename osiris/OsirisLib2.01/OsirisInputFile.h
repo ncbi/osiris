@@ -91,8 +91,8 @@ public:
 	void ResetInputLines ();
 	RGString* GetNextInputLine ();
 
-	void OutputAnalysisThresholdOverrides ();
-	void OutputDetectionThresholdOverrides ();
+	void OutputAnalysisThresholdOverrides (RGString& output);
+	void OutputDetectionThresholdOverrides (RGString& output);
 
 protected:
 	bool mDebug;

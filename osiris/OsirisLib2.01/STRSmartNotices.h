@@ -259,9 +259,12 @@ PERSISTENT_PREDECLARATION (smUseProximityToPeaksOnlyPreset)
 PERSISTENT_PREDECLARATION (smDistanceFromPeakThreshold)
 PERSISTENT_PREDECLARATION (smUseProximityBothToPeaksAndLevelChangePreset)
 PERSISTENT_PREDECLARATION (smDistanceFromLevelChange)
-PERSISTENT_PREDECLARATION (smPercentOfNoiseRangeForLevelChange)
+PERSISTENT_PREDECLARATION (smPostPrimerPercentOfNoiseRangeForLevelChange)
 PERSISTENT_PREDECLARATION (smMaxPercentLevelChangeToUseLevelChangeProximity)
-PERSISTENT_PREDECLARATION (smPercentOfNoiseRangeToBeConsideredPeak)
+PERSISTENT_PREDECLARATION (smPostPrimerPercentOfNoiseRangeToBeConsideredPeak)
+PERSISTENT_PREDECLARATION (smILSBPForEndOfPrimerPeaks)
+PERSISTENT_PREDECLARATION (smPrePrimerPercentOfNoiseRangeToBeConsideredPeak)
+PERSISTENT_PREDECLARATION (smPrePrimerPercentOfNoiseRangeForLevelChange)
 
 
 
@@ -7209,14 +7212,14 @@ protected:
 
 
 
-class smPercentOfNoiseRangeForLevelChange : public SmartNotice {
+class smPostPrimerPercentOfNoiseRangeForLevelChange : public SmartNotice {
 
-PERSISTENT_DECLARATION (smPercentOfNoiseRangeForLevelChange)
+PERSISTENT_DECLARATION (smPostPrimerPercentOfNoiseRangeForLevelChange)
 
 public:
-	smPercentOfNoiseRangeForLevelChange ();
-	smPercentOfNoiseRangeForLevelChange (const smPercentOfNoiseRangeForLevelChange& note);
-	virtual ~smPercentOfNoiseRangeForLevelChange ();
+	smPostPrimerPercentOfNoiseRangeForLevelChange ();
+	smPostPrimerPercentOfNoiseRangeForLevelChange (const smPostPrimerPercentOfNoiseRangeForLevelChange& note);
+	virtual ~smPostPrimerPercentOfNoiseRangeForLevelChange ();
 
 	virtual int GetSubject () const;
 
@@ -7265,14 +7268,98 @@ protected:
 
 
 
-class smPercentOfNoiseRangeToBeConsideredPeak : public SmartNotice {
+class smPostPrimerPercentOfNoiseRangeToBeConsideredPeak : public SmartNotice {
 
-PERSISTENT_DECLARATION (smPercentOfNoiseRangeToBeConsideredPeak)
+PERSISTENT_DECLARATION (smPostPrimerPercentOfNoiseRangeToBeConsideredPeak)
 
 public:
-	smPercentOfNoiseRangeToBeConsideredPeak ();
-	smPercentOfNoiseRangeToBeConsideredPeak (const smPercentOfNoiseRangeToBeConsideredPeak& note);
-	virtual ~smPercentOfNoiseRangeToBeConsideredPeak ();
+	smPostPrimerPercentOfNoiseRangeToBeConsideredPeak ();
+	smPostPrimerPercentOfNoiseRangeToBeConsideredPeak (const smPostPrimerPercentOfNoiseRangeToBeConsideredPeak& note);
+	virtual ~smPostPrimerPercentOfNoiseRangeToBeConsideredPeak ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smILSBPForEndOfPrimerPeaks : public SmartNotice {
+
+PERSISTENT_DECLARATION (smILSBPForEndOfPrimerPeaks)
+
+public:
+	smILSBPForEndOfPrimerPeaks ();
+	smILSBPForEndOfPrimerPeaks (const smILSBPForEndOfPrimerPeaks& note);
+	virtual ~smILSBPForEndOfPrimerPeaks ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPrePrimerPercentOfNoiseRangeToBeConsideredPeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPrePrimerPercentOfNoiseRangeToBeConsideredPeak)
+
+public:
+	smPrePrimerPercentOfNoiseRangeToBeConsideredPeak ();
+	smPrePrimerPercentOfNoiseRangeToBeConsideredPeak (const smPrePrimerPercentOfNoiseRangeToBeConsideredPeak& note);
+	virtual ~smPrePrimerPercentOfNoiseRangeToBeConsideredPeak ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPrePrimerPercentOfNoiseRangeForLevelChange : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPrePrimerPercentOfNoiseRangeForLevelChange)
+
+public:
+	smPrePrimerPercentOfNoiseRangeForLevelChange ();
+	smPrePrimerPercentOfNoiseRangeForLevelChange (const smPrePrimerPercentOfNoiseRangeForLevelChange& note);
+	virtual ~smPrePrimerPercentOfNoiseRangeForLevelChange ();
 
 	virtual int GetSubject () const;
 

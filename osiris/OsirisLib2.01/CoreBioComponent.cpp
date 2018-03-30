@@ -356,14 +356,19 @@ int CoreBioComponent :: CreateAndSubstituteFilteredDataSignalForRawDataNonILS ()
 	smSelectTriplePassVsSinglePassFilterPreset selectTripleVsSinglePass;
 	smSelectAveragingInPlaceFilterPreset selectAveragingInPlace;
 	smAveragingInPlaceFilterWindowWidth inPlaceHalfWindowWidth;
-	smPercentOfNoiseRangeForLevelChange percentNoiseRangeForLevelChange;
+	smPostPrimerPercentOfNoiseRangeForLevelChange postPercentNoiseRangeForLevelChange;
+	smILSBPForEndOfPrimerPeaks splitTimeMsg;
 
 	bool useTriplePass = GetMessageValue (selectTripleVsSinglePass);
 	int windowWidth;
 	bool useAverageFilter = GetMessageValue (selectAveragingInPlace);
 	int averageFilterPasses = 1;
 	int averageFilterHalfWidth = GetThreshold (inPlaceHalfWindowWidth);
-	double fractionNoiseRangeForLevelChange = 0.01 * (double) GetThreshold (percentNoiseRangeForLevelChange);
+	double fractionNoiseRangeForLevelChange = 0.01 * (double) GetThreshold (postPercentNoiseRangeForLevelChange);
+	double bp = GetThreshold (splitTimeMsg);
+
+	double splitTime = mDataChannels [mLaneStandardChannel]->GetTimeForSpecifiedID (bp);
+	ChannelData::SetNormalizationSplitTime (splitTime);
 
 	if (useAverageFilter) {
 
@@ -372,7 +377,7 @@ int CoreBioComponent :: CreateAndSubstituteFilteredDataSignalForRawDataNonILS ()
 			if (i == mLaneStandardChannel)
 				continue;
 
-			mDataChannels [i]->CreateAndSubstituteAveragingFilteredSignalForRawData (averageFilterPasses, averageFilterHalfWidth, fractionNoiseRangeForLevelChange);
+			mDataChannels [i]->CreateAndSubstituteAveragingFilteredSignalForRawData (averageFilterPasses, averageFilterHalfWidth, fractionNoiseRangeForLevelChange, splitTime);
 		}
 	}
 

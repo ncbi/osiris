@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.18</VersionNumber>
-	<BuildTime>03/21/2018 06:43 PM</BuildTime>
+	<VersionNumber>7.20</VersionNumber>
+	<BuildTime>03/28/2018 01:29 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5775,7 +5775,7 @@
 			<CountingDataInfo>
 				<Threshold>-1</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Test Baseline Estimation Knots:</ThresholdDescriptor>
+				<ThresholdDescriptor>                Test Baseline Estimation Knots And Reject If Too Close to Peak or Level Change:</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5783,6 +5783,26 @@
 			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smILSBPForEndOfPrimerPeaks</Name>
+			<MessageType>count</MessageType>
+			<Description>ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>80</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                        ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smUseProximityToPeaksOnlyPreset</Name>
@@ -5821,20 +5841,40 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smPercentOfNoiseRangeToBeConsideredPeak</Name>
+			<Name>smPrePrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
 			<MessageType>count</MessageType>
-			<Description>Minimum RFU displacement (min to max) as percent of noise range to be considered a peak</Description>
+			<Description>Pre-Primer minimum RFU displacement as percent of noise range to be considered a peak</Description>
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
 				<Threshold>130</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</Text>
+			<Text>Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPostPrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
+			<MessageType>count</MessageType>
+			<Description>Post-Primer minimum RFU displacement as percent of noise range to be considered a peak</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 100)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 100)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5877,20 +5917,40 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smPercentOfNoiseRangeForLevelChange</Name>
+			<Name>smPrePrimerPercentOfNoiseRangeForLevelChange</Name>
 			<MessageType>count</MessageType>
-			<Description>Percent of measured noise range for lower bound to be considered as level change</Description>
+			<Description>Pre-primer peak percent of measured noise range for lower bound to be considered as level change</Description>
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
 				<Threshold>130</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</Text>
+			<Text>Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPostPrimerPercentOfNoiseRangeForLevelChange</Name>
+			<MessageType>count</MessageType>
+			<Description>Post-Primer Percent of measured noise range for displacement to be considered as level change</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>                                Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 100)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 100)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5903,14 +5963,14 @@
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
-				<Threshold>20</Threshold>
+				<Threshold>22</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Max Percent Total Measurement Having Level Change And Still Allow Proximity Test (Default = 20)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Max Percent Total Measurements Having Level Change To Allow Proximity Test (Default = 22)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Max Percent Total Measurement Having Level Change And Still Allow Proximity Test (Default = 20)</Text>
+			<Text>Max Percent Total Measurements Having Level Change To Allow Proximity Test (Default = 22)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -6882,10 +6942,12 @@
 						<Name>smTestRelativeBaselinePreset</Name>
 						<Name>smUseProximityToPeaksOnlyPreset</Name>
 						<Name>smDistanceFromPeakThreshold</Name>
-						<Name>smPercentOfNoiseRangeToBeConsideredPeak</Name>
+						<Name>smPrePrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
+						<Name>smPostPrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
 						<Name>smUseProximityBothToPeaksAndLevelChangePreset</Name>
 						<Name>smDistanceFromLevelChange</Name>
-						<Name>smPercentOfNoiseRangeForLevelChange</Name>
+						<Name>smPrePrimerPercentOfNoiseRangeForLevelChange</Name>
+						<Name>smPostPrimerPercentOfNoiseRangeForLevelChange</Name>
 						<Name>smMaxPercentLevelChangeToUseLevelChangeProximity</Name>
 						<Name>smIgnoreNegativeRelativeBaselinePreset</Name>
 						<Name>smBaselineEstimationThreshold</Name>
@@ -6944,6 +7006,7 @@
 						<Name>smOverrideNoiseLevelPercentsInSmoothing</Name>
 						<Name>smPercentOverrideOfNoiseThresholdForNormalizationPhase</Name>
 						<Name>smPercentOverrideOfNoiseThresholdForFinalPhase</Name>
+						<Name>smILSBPForEndOfPrimerPeaks</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

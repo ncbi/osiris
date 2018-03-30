@@ -5956,11 +5956,15 @@ int STRSampleChannelData :: AnalyzeDynamicBaselineAndNormalizeRawDataSM (int sta
 	//}
 
 	//else {
+	int nLefts = lefts.size ();
+	int nTimes = 0;
 
 	while (!lefts.empty ()) {
 
 		localLeft = lefts.front ();
 		localRight = rights.front ();
+		nTimes++;
+
 		lefts.pop_front ();
 		rights.pop_front ();
 		//AppendKnotDataWithEditingToListsAfterFiltering (localLeft, localRight, knotTimes, knotValues, firstList, lastList, firstInterval, mData);
@@ -6627,15 +6631,20 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 	smDistanceFromPeakThreshold distanceFromPeakThreshold;
 	smUseProximityBothToPeaksAndLevelChangePreset useProximityToBothPeaksAndLevelChange;
 	smDistanceFromLevelChange distanceFromLevelChangeForKnot;
-	smPercentOfNoiseRangeToBeConsideredPeak percentOfNoiseRangeForPeak;
+	smPostPrimerPercentOfNoiseRangeToBeConsideredPeak postPrimerPercentOfNoiseRangeForPeak;
+	smPrePrimerPercentOfNoiseRangeToBeConsideredPeak prePrimerPercentOfNoiseRangeForPeak;
 	smMaxPercentLevelChangeToUseLevelChangeProximity percentOfMeasurementsWithLevelChangeToUseProximity;
 
 	bool proximityToPeaks = GetMessageValue (useProximityToPeaksOnly);
 	bool proximityToLevelChange = GetMessageValue (useProximityToBothPeaksAndLevelChange);
 	int distanceFromPeak = GetThreshold (distanceFromPeakThreshold);
 	int distanceFromLevelChange = GetThreshold (distanceFromLevelChangeForKnot);
-	double fractionNoiseRange = 0.01 * (double) GetThreshold (percentOfNoiseRangeForPeak);
+	double postPrimerFractionNoiseRange = 0.01 * (double) GetThreshold (postPrimerPercentOfNoiseRangeForPeak);
+	double prePrimerFractionNoiseRange = 0.01 * (double) GetThreshold (prePrimerPercentOfNoiseRangeForPeak);
 	double fractionMeasurements = 0.01 * (double) GetThreshold (percentOfMeasurementsWithLevelChangeToUseProximity);
+	double splitTime = NormalizationSplitTime;
+
+	double currentFractionNoiseRange;
 
 	if (length < 30) {
 
@@ -6644,7 +6653,13 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 		right = center + 7;
 		time = (double) center;
 
-		if (TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, center, distanceFromPeak, distanceFromLevelChange, fractionNoiseRange, fractionMeasurements))
+		if (center <= splitTime)
+			currentFractionNoiseRange = prePrimerFractionNoiseRange;
+
+		else
+			currentFractionNoiseRange = postPrimerFractionNoiseRange;
+
+		if (TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, center, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements))
 			return;
 
 		value = BaselineAverage (left, right, fitData, 15.0);
@@ -6657,7 +6672,13 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 	right = intervalLeft + 14;
 	time = (double) (intervalLeft + 7);
 
-	if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, intervalLeft + 7, distanceFromPeak, distanceFromLevelChange, fractionNoiseRange, fractionMeasurements)) {
+	if (intervalLeft + 7 <= splitTime)
+		currentFractionNoiseRange = prePrimerFractionNoiseRange;
+
+	else
+		currentFractionNoiseRange = postPrimerFractionNoiseRange;
+
+	if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, intervalLeft + 7, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements)) {
 	
 		value = BaselineAverage (left, right, fitData, 15.0);
 		times.push_back (time);
@@ -6676,7 +6697,13 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 			left = center - 7;
 			right = center + 7;
 
-			if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, center, distanceFromPeak, distanceFromLevelChange, fractionNoiseRange, fractionMeasurements)) {
+			if (center <= splitTime)
+				currentFractionNoiseRange = prePrimerFractionNoiseRange;
+
+			else
+				currentFractionNoiseRange = postPrimerFractionNoiseRange;
+
+			if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, center, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements)) {
 	
 				value = BaselineAverage (left, right, fitData, 15.0);
 				time = (double) center;
@@ -6698,7 +6725,13 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 	left = intervalRight - 14;
 	time = (double) (left + 7);
 
-	if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, left + 7, distanceFromPeak, distanceFromLevelChange, fractionNoiseRange, fractionMeasurements)) {
+	if (left + 7 <= splitTime)
+		currentFractionNoiseRange = prePrimerFractionNoiseRange;
+
+	else
+		currentFractionNoiseRange = postPrimerFractionNoiseRange;
+
+	if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, left + 7, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements)) {
 	
 		value = BaselineAverage (left, right, fitData, 15.0);
 		times.push_back (time);

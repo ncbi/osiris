@@ -2538,8 +2538,8 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	else
 		ChannelData::SetUseNormalizationFilter (false);
 
-	if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
-		CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
+	//if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
+	//	CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
 
 	if (GetMessageValue (normalizeRawData))
 		ChannelData::SetUseEnhancedShoulderAlgorithm (false);

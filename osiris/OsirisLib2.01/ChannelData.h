@@ -202,7 +202,7 @@ public:
 
 	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
 	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);
-	int CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange);
+	int CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange, double splitTime);
 	int RestoreRawDataAndDeleteFilteredSignal ();
 	bool HasFilteredData () const;
 	
@@ -526,6 +526,7 @@ public:
 	static void SetNoisePercentForFinalPass (double d) { NoisePercentFinalPass = d; }
 
 	static void SetIsNormalizationPass (bool s) { IsNormalizationPass = s; }
+	static void SetNormalizationSplitTime (double t) { NormalizationSplitTime = t; }
 
 protected:
 	int mChannel;
@@ -602,6 +603,7 @@ protected:
 	static double NoisePercentFinalPass;
 
 	static bool IsNormalizationPass;
+	static double NormalizationSplitTime;
 };
 
 

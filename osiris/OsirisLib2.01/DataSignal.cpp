@@ -2049,7 +2049,7 @@ DataSignal* DataSignal :: CreateThreeMovingAverageFilteredSignal (int window) {
 }
 
 
-DataSignal* DataSignal :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, bool* changeArray, double& fractionOfChangedData) {
+DataSignal* DataSignal :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, double noiseLevelStart, bool* changeArray, double& fractionOfChangedData, double splitTime) {
 
 	return NULL;
 }
@@ -3450,7 +3450,7 @@ DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow
 	return filteredSignal;
 }
 
-DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, bool* changeArray, double& fractionOfChangedData) {
+DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, double noiseLevelStart, bool* changeArray, double& fractionOfChangedData, double splitTime) {
 
 	// noiseLevel has already been calibrated by user parameter from lab settings
 
@@ -3466,6 +3466,7 @@ DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfW
 	double previous = 0.0;
 	int k;
 	FirstTime = true;
+	int timeSplit = (int) floor (splitTime);
 
 	divisor = (double) (2 * halfWidth + 1);
 
@@ -3495,7 +3496,19 @@ DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfW
 
 	k = 0;
 
-	for (i=0; i<NumberOfSamples; i++) {
+	for (i=0; i<timeSplit; i++) {
+
+		changeArray [i] = false;
+
+		if (fabs (smoothedData [i] - Measurements [i]) > noiseLevelStart) {
+
+			smoothedData [i] = Measurements [i];
+			changeArray [i] = true;
+			k++;
+		}
+	}
+
+	for (i=timeSplit+1; i<NumberOfSamples; i++) {
 
 		changeArray [i] = false;
 
