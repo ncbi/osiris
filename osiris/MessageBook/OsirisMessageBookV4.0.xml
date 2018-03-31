@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.20</VersionNumber>
-	<BuildTime>03/28/2018 01:29 PM</BuildTime>
+	<VersionNumber>7.21</VersionNumber>
+	<BuildTime>03/31/2018 07:54 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5773,14 +5773,14 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<CountingDataInfo>
-				<Threshold>-1</Threshold>
+				<Threshold>0</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Test Baseline Estimation Knots And Reject If Too Close to Peak or Level Change:</ThresholdDescriptor>
+				<ThresholdDescriptor>                Test Baseline Estimation Knots And Reject If Too Close to Peak or Level Change</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>     </Text>
+			<Text>Test Baseline Estimation Knots And Reject If Too Close to Peak or Level Change</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -5793,12 +5793,12 @@
 			<CountingDataInfo>
 				<Threshold>80</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                        ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</ThresholdDescriptor>
+				<ThresholdDescriptor>                        Estimated ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</Text>
+			<Text>Estimated ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 			<Editable>false</Editable>
@@ -5829,12 +5829,12 @@
 			<CountingDataInfo>
 				<Threshold>5</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Distance from Peak to Remove Baseline Estimation Knot (Default = 5 Measurements)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Distance from Peak to Remove Knot (Default = 5 Measurements)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Distance from Peak to Remove Baseline Estimation Knot (Default = 5 Measurements)</Text>
+			<Text>Distance from Peak to Remove Knot (Default = 5 Measurements)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5847,14 +5847,14 @@
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
-				<Threshold>130</Threshold>
+				<Threshold>160</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Pre-Primer Peaks: Height &gt; (Noise Range) x (Percent) (Default = 160%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 130)</Text>
+			<Text>Pre-Primer Peaks: Height &gt; (Noise Range) x (Percent) (Default = 160%)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5869,12 +5869,12 @@
 			<CountingDataInfo>
 				<Threshold>100</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 100)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Post-Primer Peaks: Height &gt; (Noise Range) x (Percent) (Default = 100%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered a Peak (Default = 100)</Text>
+			<Text>Post-Primer Peaks: Height &gt; (Noise Range) x (Percent) (Default = 100%)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5923,14 +5923,14 @@
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
-				<Threshold>130</Threshold>
+				<Threshold>160</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Pre-Primer Levels: Change &gt; (Noise Range) x (Percent) (Default = 160%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Pre-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 130)</Text>
+			<Text>Pre-Primer Levels: Change &gt; (Noise Range) x (Percent) (Default = 160%)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5943,14 +5943,14 @@
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
-				<Threshold>100</Threshold>
+				<Threshold>75</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 100)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Post-Primer Levels: Change &gt; (Noise Range) x (Percent) (Default = 75%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Post-Primer Minimum RFU as Percent of Noise Range for Displacement to be Considered Level Change (Default = 100)</Text>
+			<Text>Post-Primer Levels: Change &gt; (Noise Range) x (Percent) (Default = 75%)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5965,12 +5965,12 @@
 			<CountingDataInfo>
 				<Threshold>22</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Max Percent Total Measurements Having Level Change To Allow Proximity Test (Default = 22)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Test: 100 x (Level Changes)/(Total Measurements) &lt; Percent (Default = 22%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Max Percent Total Measurements Having Level Change To Allow Proximity Test (Default = 22)</Text>
+			<Text>Test: 100 x (Level Changes)/(Total Measurements) &lt; Percent (Default = 22%)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -5983,14 +5983,14 @@
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
-				<Threshold>10</Threshold>
+				<Threshold>1</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Baseline Estimation Threshold (In RFU; Must Be Positive; Default = 10 RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>                Baseline Estimation Threshold (In RFU; Must Be Positive; Default = 1 RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>BASELINE ESTIMATION THRESHOLD (IN RFU; 1+; DEFAULT LARGER THAN 5 RFU)</Text>
+			<Text>BASELINE ESTIMATION THRESHOLD (IN RFU; 1+; DEFAULT 1 RFU)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
@@ -6002,13 +6002,13 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                Ignore Effects of Negative Relative Baseline</ThresholdDescriptor>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>                Ignore Effects of Negative Relative Baseline (Default = Unchecked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Ignore Effects of Negative Relative Baseline</Text>
+			<Text>Ignore Effects of Negative Relative Baseline (Default = Unchecked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -6091,12 +6091,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Select Averaging In Place Filter (Checked)(Preferred) Vs Low Pass Filters Above (Default = checked)</ThresholdDescriptor>
+				<ThresholdDescriptor>                        Select Averaging In Place Filter (Preferred)(Overrides Above)(Default = Checked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Select Averaging In Place Filter (Checked)(Preferred) Vs Low Pass Filters Above</Text>
+			<Text>Select Averaging In Place Filter (Preferred)(Overrides Above)(Default = Checked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -6109,12 +6109,12 @@
 			<CountingDataInfo>
 				<Threshold>10</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Averaging In Place Filter Window Half Width for Baseline Estimation (Default = 10)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Averaging In Place Filter Window Half Width (Default = 10)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Averaging In Place Filter Window Half Width for Baseline Estimation (Default = 10)</Text>
+			<Text>Averaging In Place Filter Window Half Width (Default = 10)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 			<Editable>false</Editable>
