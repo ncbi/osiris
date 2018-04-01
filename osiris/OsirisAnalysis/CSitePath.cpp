@@ -918,10 +918,36 @@ void CSitePath::_setupRealSitePath()
   }
 }
 
+static bool _checkForExe()
+{
+  const wchar_t *cmdList[] =
+  {
+    L"icacls.exe",
+    L"cmd.exe",
+    L"whoami.exe",
+    NULL
+  };
+  const wchar_t **psCmd = cmdList;
+  bool bRtn = true;
+  wxString s;
+  for(psCmd = cmdList; (*psCmd) != NULL; psCmd++)
+  {
+    if(!nwxFileUtil::PathFind(*psCmd,true,false))
+    {
+      bRtn = false;
+      s = wxS("Cannot find ");
+      s.Append(*psCmd);
+      nwxLog::LogMessage(s);
+    }
+  }
+  return bRtn;
+}
+
 CSitePath::CSitePath() :
   m_nLastError(0),
   m_bUserPath(false),
-  m_bThisUserPath(false)
+  m_bThisUserPath(false),
+  m_bExeMissing(false)
 {
   // constructor.  Get path for executable, figure out where
   //  site folder (Osiris-Files) should be
@@ -932,8 +958,16 @@ CSitePath::CSitePath() :
   wxString sPath = fn.GetFullPath(wxPATH_NATIVE);
   m_sExeDir = fn.GetPath(wxPATH_GET_SEPARATOR | wxPATH_GET_VOLUME);
   m_sCScript = nwxFileUtil::PathFind(wxS("cscript.exe"),true,false);
-
-  if(wxFileName::FileExists(m_sCScript))
+  if(m_sCScript.IsEmpty())
+  {
+    nwxLog::LogMessage(wxS("Cannot find cscript.exe"));
+    m_bExeMissing = true;
+  }
+  else if(!_checkForExe())
+  {
+    m_bExeMissing = true;
+  }
+  else
   {
     m_sVBscript = m_sExeDir;
     nwxFileUtil::EndWithSeparator(&m_sVBscript);
@@ -944,11 +978,8 @@ CSitePath::CSitePath() :
       sMsg.Append(m_sVBscript);
       nwxLog::LogMessage(sMsg);
       m_sVBscript.Clear();
+      m_bExeMissing = true;
     }
-  }
-  else
-  {
-    nwxLog::LogMessage(wxS("Cannot find cscript.exe"));
   }
 
   // check for legacy location
@@ -1005,6 +1036,10 @@ bool CSitePath::_runScript(const wxArrayString &as, bool bElevate)
   else if(m_sVBscript.IsEmpty())
   {
     m_nLastError = SCRIPT_NOT_FOUND;
+  }
+  else if(m_bExeMissing)
+  {
+    m_nLastError = WINDOWS_EXE_IS_MISSING;
   }
   else
   {

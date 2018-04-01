@@ -162,7 +162,8 @@ public:
   {
     BEGIN = 1000, // highest number in errno.h
     SCRIPT_NOT_FOUND,
-    WINDOWS_SCRIPT_HOST_NOT_FOUND
+    WINDOWS_SCRIPT_HOST_NOT_FOUND,
+    WINDOWS_EXE_IS_MISSING
   };
   virtual ~CSitePath() {}
   const wxString &GetSitePath() const
@@ -189,6 +190,14 @@ public:
   void BuildTestString(wxString *ps) const;
   void LogTestString() const;
   bool IsNTFS();
+  bool IsOK() const
+  {
+    return !m_bExeMissing;
+  }
+  bool IsExeMissing() const
+  {
+    return m_bExeMissing;
+  }
 private:
   bool _checkLegacyPath();
   bool _checkUserPath();
@@ -206,6 +215,7 @@ private:
   int m_nLastError;
   bool m_bUserPath;
   bool m_bThisUserPath;
+  bool m_bExeMissing;
   static const wxString g_sCScript; // path of cscript.exe
   static wxString g_sScriptPath;
 

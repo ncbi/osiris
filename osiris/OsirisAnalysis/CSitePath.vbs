@@ -447,21 +447,26 @@ End Function
 Function CACLS_RESET(sPath)
   CACLS_RESET = False
   If SETUP_CACLS() Then
-    Dim sCmd, objResult
+    Dim sCmd(2), objResult,i
     If Not IsNull(sIcacls) Then
-      sCmd = """" & sIcacls & """ """ & sPath & """ /reset /T /Q"
-      Set objResult = ShellPiped(sCmd)
-      If (objResult.Item("return") = 1) And _
-          CACLS_OK(objResult.Item("stdout")) Then
-        CACLS_RESET = True
-      End If
+      sCmd(0) = """" & sIcacls & """ """ & sPath & """ /reset /T /Q"
+      sCmd(1) = """" & sIcacls & """ """ & sPath & """ /inheritance:r /Q"
+      CACLS_RESET = True
+      For i = 0 to 1
+        Set objResult = ShellPiped(sCmd(i))
+        If Not( (objResult.Item("return") = 1) And _
+            CACLS_OK(objResult.Item("stdout")) ) Then
+          CACLS_RESET = False
+          Exit For
+        End If
+      Next
     End If
   End If
 End Function
 
 Function CmdGrantAll(sPath,sWho)
   If Not IsNull(sIcacls) Then
-    CmdGrantAll = """" & sIcacls & """ """ & sPath & """ /grant """ & sWho & ":(OI)(CI)F"" /T /Q"
+    CmdGrantAll = """" & sIcacls & """ """ & sPath & """ /grant """ & sWho & ":(OI)(CI)F"" /grant Users:(OI)(CI)(RX) /T /Q"
   ElseIf Not IsNull(sCacls) Then
     CmdGrantAll = """" & sCacls & """ """ & sPath & """ /G """ & sWho & ":F"" /T "
   Else

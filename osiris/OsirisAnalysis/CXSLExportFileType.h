@@ -963,6 +963,7 @@ private:
   wxString m_sDefaultLocation;
   wxString m_sXSLFile;
   wxString m_sExePath;
+  wxString m_sThisPath;
   CXSLmapParam m_mapParam;
   CXSLAutoCreate m_auto;
   bool m_bOverrideExt;
@@ -1020,6 +1021,10 @@ public:
   bool SaveExportFile();
   bool LockExportFile(int nWait = 0);
   static bool FileExists();
+  static const wxString &GetFileName()
+  {
+    return g_sFileName;
+  }
   bool CreateFileIfNotExists();
   size_t GetAutoList(vector<CXSLExportFileType *> *pList);
   size_t GetItems(wxArrayString *pvs);

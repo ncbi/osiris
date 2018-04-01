@@ -388,6 +388,7 @@ CXSLExportFileType &CXSLExportFileType::operator = (
   COPY(m_sDefaultLocation);
   COPY(m_sXSLFile);
   COPY(m_sExePath);
+  COPY(m_sThisPath);
   COPY(m_mapParam);
   COPY(m_auto);
   _SetupSheet();
@@ -441,6 +442,7 @@ bool CXSLExportFileType::operator == (
   else if(NOTEQ(m_sDefaultLocation)) {}
   else if(NOTEQ(m_sXSLFile)) {}
   else if(NOTEQ(m_sExePath)) {}
+  else if(NOTEQ(m_sThisPath)) {}
   else if(NOTEQ(m_mapParam)) {}
   else if(NOTEQ(m_auto)) {}
   else
@@ -453,19 +455,39 @@ bool CXSLExportFileType::operator == (
 const wxString CXSLExportFileType::GetXSLfile(bool bCheck) const
 {
   wxString sRtn(m_sXSLFile);
-  if(bCheck && m_sExePath.Len())
+  const wxString &sThisPath = CExportFiles::GetFileName();
+  if(wxFileName::FileExists(sRtn))
   {
-    wxFileName fn(sRtn);
-    if(!fn.FileExists())
+  }
+  else if(bCheck)
+  {
+    const wxString &sExePath = mainApp::GetConfig()->GetExePath();
+    typedef struct
     {
-      wxString sExePath = mainApp::GetConfig()->GetExePath();
-      if(!nwxString::FileNameStringEqual(sExePath,m_sExePath))
+      const wxString *psPathHere;
+      const wxString *psPathReal;
+    } EXPORT_PATH;
+    EXPORT_PATH Paths[] =
+    {
+      {&m_sExePath, &sExePath},
+      {&m_sThisPath, &sThisPath}
+    }, 
+    *psPath;
+    const size_t COUNT= sizeof(Paths) / sizeof(Paths[0]);
+    for(size_t i = 0; i < COUNT; ++i)
+    {
+      wxFileName fn(sRtn);
+      psPath = &Paths[i];
+      if(psPath->psPathHere->IsEmpty())
+      {}
+      else if(!nwxString::FileNameStringEqual( *(psPath->psPathHere),*(psPath->psPathReal) ))
       {
-        fn.MakeRelativeTo(m_sExePath);
-        fn.MakeAbsolute(sExePath);
+        fn.MakeRelativeTo(*(psPath->psPathHere));
+        fn.MakeAbsolute(*(psPath->psPathReal));
         if(fn.FileExists())
         {
           sRtn = fn.GetFullPath();
+          break;
         }
       }
     }
@@ -479,10 +501,12 @@ bool CXSLExportFileType::SetXSLFile(
   bool bRtn = true;
   wxString sSave = m_sXSLFile;
   wxString sSavePath = m_sExePath;
+  wxString sSavePath2 = m_sThisPath;
   if(s != m_sXSLFile)
   {
     m_sXSLFile = s;
     m_sExePath = mainApp::GetConfig()->GetExePath();
+    m_sThisPath = CExportFiles::GetFileName();
   }
   else
   {
@@ -496,6 +520,7 @@ bool CXSLExportFileType::SetXSLFile(
   {
     m_sXSLFile = sSave;
     m_sExePath = sSavePath;
+    m_sThisPath = sSavePath2;
     _SetupSheet();
   }
   return bRtn;
@@ -504,10 +529,18 @@ bool CXSLExportFileType::SetXSLFile(
 bool CXSLExportFileType::UpdateExePath()
 {
   bool bRtn = false;
-  if(m_Sheet.IsOK() && m_sExePath.IsEmpty())
+  if(m_Sheet.IsOK())
   {
-    m_sExePath = mainApp::GetConfig()->GetExePath();
-    bRtn = true;
+    if(m_sExePath.IsEmpty())
+    {
+      m_sExePath = mainApp::GetConfig()->GetExePath();
+      bRtn = true;
+    }
+    if(m_sThisPath.IsEmpty())
+    {
+      m_sThisPath = CExportFiles::GetFileName();
+      bRtn = true;
+    }
   }
   return bRtn;
 }
@@ -715,6 +748,7 @@ void CXSLExportFileType::RegisterAll(bool)
   RegisterWxString("default-location",&m_sDefaultLocation);
   RegisterWxString("xsl-file",&m_sXSLFile);
   RegisterWxStringNotEmpty("exe-path",&m_sExePath);
+  RegisterWxStringNotEmpty("this-path", &m_sThisPath);
   Register("xsl-params",&m_mapParam);
   Register("auto-create",&m_auto);
 }

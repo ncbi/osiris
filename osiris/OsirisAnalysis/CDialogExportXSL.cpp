@@ -182,6 +182,13 @@ bool CDialogExportXSL::TransferDataToWindow()
     {
       m_pListBox->SetSelection(0);
     }
+    if(pXSL->UpdateExePath() && pXSL->LockExportFile(0))
+    {
+      // update <this-path> in older files
+      //  <this-path> is the fill path of exports.xml and is used
+      //  for finding an xsl file if the absolute path is not found
+      pXSL->SaveExportFile();
+    }
   }
   else if(bLayout || m_bShowingList)
   {

@@ -132,12 +132,17 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
   int nButtonSizer = wxOK | wxCANCEL;
 #ifdef __WXMSW__
   // on windows, OSIRIS will set access only on NTFS file systems
-  m_bCanSetAccess = pSitePath->IsNTFS();
+  m_bCanSetAccess = (!pSitePath->IsExeMissing()) && pSitePath->IsNTFS();
 #endif
 
   if(m_bCanSetAccess)
   {
     nDefault = _setupGroupList(&asGroupsKeep);
+    if(asGroupsKeep.IsEmpty())
+    {
+      // could not get list of groups, disable everything
+      m_bCanSetAccess = false;
+    }
   }
 
   if(pSitePath->SitePathExists())
