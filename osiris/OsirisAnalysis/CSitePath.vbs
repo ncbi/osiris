@@ -406,23 +406,23 @@ End Function
 
 Function SETUP_CACLS()
   Dim sExe
-  If IsNull(sIcacls) And IsNull(sCacls) Then
+  If IsNull(sIcacls) Then
     SETUP_CACLS = False
     sExe = SystemFind("icacls.exe")
     If not IsNull(sExe) Then
       sIcacls = sExe
       SETUP_CACLS = True
     End If
-    sExe = SystemFind("cacls.exe")
-    If Not IsNull(sExe) Then
-      sCacls = sExe
-      SETUP_CACLS = True
-    End If
   Else
     SETUP_CACLS = True
   End If
+  If IsNull(sCacls) Then
+    sExe = SystemFind("cacls.exe")
+    If Not IsNull(sExe) Then
+      sCacls = sExe
+    End If
   If Not SETUP_CACLS Then
-    PRINT "Cannot find icacls.exe not cacls.exe",bVerbose
+    PRINT "Cannot find icacls.exe",bVerbose
   End If
 End Function
 
@@ -467,8 +467,8 @@ End Function
 Function CmdGrantAll(sPath,sWho)
   If Not IsNull(sIcacls) Then
     CmdGrantAll = """" & sIcacls & """ """ & sPath & """ /grant """ & sWho & ":(OI)(CI)F"" /grant Users:(OI)(CI)(RX) /T /Q"
-  ElseIf Not IsNull(sCacls) Then
-    CmdGrantAll = """" & sCacls & """ """ & sPath & """ /G """ & sWho & ":F"" /T "
+'  ElseIf Not IsNull(sCacls) Then
+'    CmdGrantAll = """" & sCacls & """ """ & sPath & """ /G """ & sWho & ":F"" /T "
   Else
     CmdGrantAll = Null
   End If
