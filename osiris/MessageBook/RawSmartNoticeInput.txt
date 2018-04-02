@@ -240,6 +240,23 @@ smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset	1127	2643
 smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset	1128	2644
 smDisplaySigmoidalPeaksPreset	1129	2645
 smResidualDisplacementFractionalLimit	1130	2646
+smSelectAveragingInPlaceFilterPreset	1131	2647
+smAveragingInPlaceFilterWindowWidth	1132	2648
+smUseProximityToPeaksOnlyPreset	1133	2649
+smDistanceFromPeakThreshold	1134	2650
+smUseProximityBothToPeaksAndLevelChangePreset	1135	2651
+smDistanceFromLevelChange	1136	2652
+smPostPrimerPercentOfNoiseRangeForLevelChange	1137	2653
+smMaxPercentLevelChangeToUseLevelChangeProximity	1138	2654
+smPostPrimerPercentOfNoiseRangeToBeConsideredPeak	1139	2655
+smILSBPForEndOfPrimerPeaks	1140	2656
+smPrePrimerPercentOfNoiseRangeToBeConsideredPeak	1141	2657
+smPrePrimerPercentOfNoiseRangeForLevelChange	1142	2658
+
+
+
+
+
 
 
 

@@ -1321,7 +1321,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		double mean = nextSignal->GetMean ();
 		position++;
 
-		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable ()) {
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (height <= 0.0) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable ()) {
 
 			if (mean >= numberOfSamples)
 				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << " with left limit = " << nextSignal->LeftEndPoint () << " and right limit = " << nextSignal->RightEndPoint () << " with type " << nextSignal->GetSignalType () << "\n";
@@ -1366,6 +1366,10 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			}
 
 			nextSignal->SetChannel (mChannel);
+
+			if ((mChannel == 3) && (nextSignal->GetMean () < 4077.5) && (nextSignal->GetMean () > 4076.5))
+				bool stopHere = true;
+
 			shoulderSignal = mData->FindCharacteristicBetweenTwoPeaks (previousSignal, nextSignal, *signature, fit, detectionRFU, minRFU2, noiseThreshold);
 
 			if (shoulderSignal != NULL) {
@@ -1378,7 +1382,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 				if (lineFit <= minFitForArtifactTest) {
 
-					if ((mean >= BeginAnalysis) && (mean < endAnalysis) && !shoulderSignal->MayBeUnacceptable ()) {
+					if ((mean >= BeginAnalysis) && (mean < endAnalysis) && !shoulderSignal->MayBeUnacceptable () && (shoulderSignal->Peak () > 0.0)) {
 
 						shoulderCopy = new DoubleGaussian (*(DoubleGaussian*)shoulderSignal);
 						shoulderCopy->SetShoulderSignal (true);

@@ -4138,6 +4138,14 @@ STRChannelData (strSample, trans) {
 
 STRSampleChannelData :: ~STRSampleChannelData () {
 
+	ProspectiveIntervalForNormalization* nextInterval;
+
+	while (!mProspectiveList.empty ()) {
+
+		nextInterval = mProspectiveList.front ();
+		mProspectiveList.pop_front ();
+		delete nextInterval;
+	}
 }
 
 int STRSampleChannelData :: SetData (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak) {

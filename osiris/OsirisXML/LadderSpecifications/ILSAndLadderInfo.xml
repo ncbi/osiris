@@ -442,6 +442,78 @@
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-100-225</Name>
+        <DisplayName>100-225</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225</Characteristics>
+        <RelativeHeights>H M M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>	  
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-300</Name>
+        <DisplayName>60-300</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-80-300</Name>
+        <DisplayName>80-300</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-325</Name>
+        <DisplayName>60-325</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-80-325</Name>
+        <DisplayName>80-325</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-350</Name>
+        <DisplayName>60-350</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-80-350</Name>
+        <DisplayName>80-350</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard> 
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-475</Name>
+        <DisplayName>60-475</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+        <RelativeHeights>M M M H H H M M H M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-80-475</Name>
+        <DisplayName>80-475</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
     </ILS>
     <ILS>
       <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
@@ -784,5 +856,9 @@
 		<KitName>PowerPlex GenePrint24</KitName>
 		<FileName>PPGenePrint24_LadderInfo.xml</FileName>
 	</Set>
+	<Set>
+      <KitName>Landers Lab FaPlexChip</KitName>
+      <FileName>LLFaPlexChip_LadderInfo.xml</FileName>
+    </Set>
   </Kits>
 </KitData>

@@ -435,6 +435,7 @@ public:
 
 	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
 	virtual int AnalyzeDynamicBaselineAndNormalizeRawDataSM (int startTime, double reportMinTime);
+	bool TestForRawDataPeakDuringNormalization (bool usePeakProximity, bool useBoth, int currentTime, int distanceFromPeak, int distanceFromLevelChange, double fractionOfNoiseRangeToCallPeak, double fractionOfMeasurementsToAllowLevelChange);
 	int ShapeBaselineData (list<double>& knotTimes, list<double>& knotValues);
 	int ShapeBaselineData (list<double>& knotTimes, list<double>& knotValues, DataSignal* fitDataPositive, DataSignal* fitDataNegative, double threshold);
 
@@ -442,6 +443,7 @@ public:
 	//******************************************************************************************************************************************
 
 protected:
+	list<ProspectiveIntervalForNormalization*> mProspectiveList;
 	static double minSampleRFU;
 	static double maxSampleRFU;
 	static double minInterlocusRFU;

@@ -289,7 +289,7 @@ SmartMessagingObject (), mCollection (NULL), mParentDirectoryForReports (parentD
 }
 
 
-int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirectory, const RGString& markerSet, int outputLevel, const RGString& graphicsDirectory) {
+int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirectory, const RGString& markerSet, int outputLevel, const RGString& graphicsDirectory, const RGString& commandInputs) {
 
 	Boolean print = TRUE;
 	smDefaultsAreOverridden defaultsAreOverridden;
@@ -599,6 +599,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	if (!WorkingFile->isValid ())
 		cout << "Could not open output file:  " << WorkingFileName << endl;
+
+	RGString CInputFileName = FullPathForReports + "/BaseInputFile.txt";
+	RGTextOutput CInputFile (CInputFileName, FALSE);
 	
 	RGTextOutput text (WholeConsoleName, FALSE);
 //	RGTextOutput wholeSample (WholeFullPath, FALSE);
@@ -631,6 +634,17 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	RGString nonLaserOffScalePullupFractionName = FullPathForReports + "/PullupFractions.tab";
 	RGTextOutput* nonLaserOffScalePullupFractions = new RGTextOutput (nonLaserOffScalePullupFractionName, FALSE);
 	CoreBioComponent::SetNonLaserOffScalePUCoeffsFile (nonLaserOffScalePullupFractions);
+
+	if (!CInputFile.FileIsValid ()) {
+
+		cout << "Could not open Command Input file:  " << CInputFileName << endl;
+		cout << "Information is reproduced in Details below\n";
+	}
+
+	else {
+
+		CInputFile << commandInputs;
+	}
 
 	if (!OutputFile.isValid ()) {
 

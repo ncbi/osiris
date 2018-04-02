@@ -614,6 +614,7 @@ public:
 	virtual int FindAndRemoveFixedOffset ();
 	virtual DataSignal* CreateMovingAverageFilteredSignal (int window);
 	virtual DataSignal* CreateThreeMovingAverageFilteredSignal (int window);
+	virtual DataSignal* CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, double noiseLevelStart, bool* changeArray, double& fractionOfChangedData, double splitTime);
 	virtual double GetPullupToleranceInBP () const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // The trig expression corrects for poor fit - this is proportional to Hilbert Space distance 07/22/2014;
 	                                                                                                                       // with a proportionality coefficient of 1 / 4.47, so that a fit of 0.999 has a correction of 0.01 (changed from 1/10 07/23/2014)
 	virtual double GetPullupToleranceInBP (double noise) const { return (mPullupTolerance + (2.0 * sin (0.5 * acos (Fit)) / 4.47)); }  // see above
@@ -635,6 +636,8 @@ public:
 
 	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next);
 	virtual bool TestForMultipleSignals (DataSignal*& prev, DataSignal*& next, int location);
+
+	virtual bool TestIfNeighboringDataWithinRange (int testPosition, int neighborLimit, double range) { return false; }
 
 	virtual void SetVirtualAlleleName (const RGString& name);
 	virtual RGString GetVirtualAlleleName () const;
@@ -1038,6 +1041,7 @@ public:
 	double* CreateMovingAverageFilteredArray (int window, double* inputArray);
 	virtual DataSignal* CreateMovingAverageFilteredSignal (int window);
 	virtual DataSignal* CreateThreeMovingAverageFilteredSignal (int minWindow);
+	virtual DataSignal* CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, double noiseLevelStart, bool* changeArray, double& fractionOfChangedData, double splitTime);
 
 	virtual DataSignal* Project (double left, double right) const;
 	virtual DataSignal* Project (const DataSignal* target) const;
@@ -1064,6 +1068,8 @@ public:
 	virtual bool HasAtLeastOneLocalMinimum ();
 	virtual bool TestForBiasedFit (const DataSignal* currentSignal, double limit);
 	double InnerProductWithConstantFunction (int left, int right, double& height) const;
+
+	virtual bool TestIfNeighboringDataWithinRange (int testPosition, int neighborLimit, double range);
 
 	virtual NoiseInterval* GetNextNoiseInterval ();
 
@@ -1148,6 +1154,7 @@ protected:
 
 	int GetSampleNumber (double abscissa) const;
 	double GetNorm2 (int nleft, int nright);
+	double FindApproximateIntersection (DataSignal* prevSignal, DataSignal* nextSignal);
 };
 
 

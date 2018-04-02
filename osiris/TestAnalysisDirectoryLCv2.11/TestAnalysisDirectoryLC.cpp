@@ -183,25 +183,27 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!inputFile.OverrideStringIsEmpty ())
 		STRLCAnalysis::SetOverrideString (inputFile.GetOverrideString ());
 
-	cout << "InputDirectory = " << PrototypeInputDirectory.GetData () << ";" << endl;
-	cout << "LadderDirectory = " << LadderInformationDirectory.GetData () << ";" << endl;
-	cout << "ReportDirectory = " << ParentDirectoryForReports.GetData () << ";" << endl;
+	RGString CommandInputs;
+
+	CommandInputs << "InputDirectory = " << PrototypeInputDirectory.GetData () << ";\n";
+	CommandInputs << "LadderDirectory = " << LadderInformationDirectory.GetData () << ";\n";
+	CommandInputs << "ReportDirectory = " << ParentDirectoryForReports.GetData () << ";\n";
 
 	if (OutputSubDirectory.Length () > 0)
-		cout << "OutputSubdirectory = " << OutputSubDirectory.GetData () << ";" << endl;
+		CommandInputs << "OutputSubdirectory = " << OutputSubDirectory.GetData () << ";\n";
 
-	cout << "MarkerSetName = " << MarkerSetName.GetData () << ";" << endl;
-	cout << "LaneStandardName = " << UserLaneStandardName.GetData () << ";" << endl;
-	cout << "CriticalOutputLevel = " << OutputLevel << ";" << endl;
+	CommandInputs << "MarkerSetName = " << MarkerSetName.GetData () << ";\n";
+	CommandInputs << "LaneStandardName = " << UserLaneStandardName.GetData () << ";\n";
+	CommandInputs << "CriticalOutputLevel = " << OutputLevel << ";\n";
 	//cout << "MessageBook = " << MessageBookPath.GetData () << ";" << endl;
 
 	stdSettingsFileName = inputFile.GetFinalStdSettingsName ();
 	labSettingsFileName = inputFile.GetFinalLabSettingsName ();
 	RGString fullPathMessageBookName = inputFile.GetFinalMessageBookName ();
 
-	cout << "StandardSettings = " << stdSettingsFileName << ";" << endl;
-	cout << "LabSettings = " << labSettingsFileName << ";" << endl;
-	cout << "MessageBook = " << fullPathMessageBookName << ";" << endl;
+	CommandInputs << "StandardSettings = " << stdSettingsFileName << ";\n";
+	CommandInputs << "LabSettings = " << labSettingsFileName << ";\n";
+	CommandInputs << "MessageBook = " << fullPathMessageBookName << ";\n";
 
 	minSampleRFU = inputFile.GetMinSampleRFU ();
 	minLaneStandardRFU = inputFile.GetMinLaneStandardRFU ();
@@ -210,30 +212,32 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	minLadderInterlocusRFU = inputFile.GetMinLadderInterlocusRFU ();
 	sampleDetectionThreshold = inputFile.GetSampleDetectionThreshold ();
 
-	cout << "MinSampleRFU = " << minSampleRFU << ";" << endl;
-	cout << "MinLaneStandardRFU = " << minLaneStandardRFU << ";" << endl;
-	cout << "MinLadderRFU = " << minLadderRFU << ";" << endl;
-	cout << "MinInterlocusRFU = " << minInterlocusRFU << ";" << endl;
-	cout << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";" << endl;
-	cout << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";" << endl;
+	CommandInputs << "MinSampleRFU = " << minSampleRFU << ";\n";
+	CommandInputs << "MinLaneStandardRFU = " << minLaneStandardRFU << ";\n";
+	CommandInputs << "MinLadderRFU = " << minLadderRFU << ";\n";
+	CommandInputs << "MinInterlocusRFU = " << minInterlocusRFU << ";\n";
+	CommandInputs << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";\n";
+	CommandInputs << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";\n";
 
-	inputFile.OutputAnalysisThresholdOverrides ();
-	inputFile.OutputDetectionThresholdOverrides ();
+	inputFile.OutputAnalysisThresholdOverrides (CommandInputs);
+	inputFile.OutputDetectionThresholdOverrides (CommandInputs);
 
 	bool useRawData = inputFile.UseRawData ();
 
 	if (useRawData) {
 
 		CoreBioComponent::SetUseRawData ();
-		cout << "RawDataString = R;" << endl << ";" << endl;
-		cout << "Use raw data..." << endl;
+		CommandInputs << "RawDataString = R;\n\n\n";
+		cout << CommandInputs.GetData ();
+		cout << "Use raw data...\n";
 	}
 
 	else {
 
 		CoreBioComponent::DontUseRawData ();
-		cout << "RawDataString = A;" << endl << ";" << endl;
-		cout << "Don't use raw data..." << endl;
+		CommandInputs << "RawDataString = A;\n\n\n";
+		cout << CommandInputs.GetData ();
+		cout << "Don't use raw data...\n";
 	}
 
 	cout << "\nNumber of arguments = " << argc << endl << endl;
@@ -332,7 +336,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	try {
 
-		status = analysis.AnalyzeIncrementallySM (PrototypeInputDirectory, MarkerSetName, OutputLevel, graphicsDirectory);
+		status = analysis.AnalyzeIncrementallySM (PrototypeInputDirectory, MarkerSetName, OutputLevel, graphicsDirectory, CommandInputs);
 	}
 
 	catch (...) {

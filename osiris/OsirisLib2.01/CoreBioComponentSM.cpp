@@ -2538,8 +2538,8 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	else
 		ChannelData::SetUseNormalizationFilter (false);
 
-	if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
-		CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
+	//if (GetMessageValue (normalizeRawData) && GetMessageValue (enableFilteringForNormalization))
+	//	CreateAndSubstituteFilteredDataSignalForRawDataNonILS ();
 
 	if (GetMessageValue (normalizeRawData))
 		ChannelData::SetUseEnhancedShoulderAlgorithm (false);
@@ -2583,7 +2583,6 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	else
 		ChannelData::SetIsNormalizationPass (false);
 
-//	status = FitAllCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 	status = FitAllSampleCharacteristicsSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, FALSE);	// ->FALSE
 
 	if (status < 0) {
@@ -2601,17 +2600,17 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	if (!GetMessageValue (normalizeRawData)) {
 
 		//AnalyzeCrossChannelSM ();	// Moved below - 07/31/2013
-		//status = AnalyzeLaneStandardChannelSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, sampleData->mPrint);
+		/*status = AnalyzeLaneStandardChannelSM (sampleData->mText, sampleData->mExcelText, sampleData->mMsg, sampleData->mPrint);
 
-		//if (status < 0) {
+		if (status < 0) {
 
-		//	notice << "BIOCOMPONENT COULD NOT ANALYZE INTERNAL LANE STANDARD.  Skipping...";
-		//	cout << notice << endl;
-		//	sampleData->mExcelText << CLevel (1) << notice << "\n" << ErrorString << "Skipping...\n" << PLevel ();
-		//	sampleData->mText << notice << "\n" << ErrorString << "Skipping...\n";
-		//	SetMessageValue (ilsRequiresReview, true);
-		//	return -4;
-		//}
+			notice << "BIOCOMPONENT COULD NOT ANALYZE INTERNAL LANE STANDARD.  Skipping...";
+			cout << notice << endl;
+			sampleData->mExcelText << CLevel (1) << notice << "\n" << ErrorString << "Skipping...\n" << PLevel ();
+			sampleData->mText << notice << "\n" << ErrorString << "Skipping...\n";
+			SetMessageValue (ilsRequiresReview, true);
+			return -4;
+		}*/
 
 		status = 0;
 
@@ -2671,7 +2670,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 			status = -1;
 	}
 
-	if (NormalizeBaselineForNonILSChannelsSM () < 0) {
+	if (NormalizeBaselineForNonILSChannelsSM () < 0) {  //  Here is where we have to modify the normalization algorithm for derivative filters
 
 		notice << "BIOCOMPONENT COULD NOT ANALYZE BASELINE.  OMITTING BASELINE ANALYSIS...";
 		cout << notice << endl;

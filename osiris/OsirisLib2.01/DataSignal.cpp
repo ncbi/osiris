@@ -2049,6 +2049,12 @@ DataSignal* DataSignal :: CreateThreeMovingAverageFilteredSignal (int window) {
 }
 
 
+DataSignal* DataSignal :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, double noiseLevelStart, bool* changeArray, double& fractionOfChangedData, double splitTime) {
+
+	return NULL;
+}
+
+
 void DataSignal :: SetAlleleName (const RGString& name) {
 
 	mAlleleName = name;
@@ -3444,6 +3450,83 @@ DataSignal* SampledData :: CreateThreeMovingAverageFilteredSignal (int minWindow
 	return filteredSignal;
 }
 
+DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfWidth, double noiseLevel, double noiseLevelStart, bool* changeArray, double& fractionOfChangedData, double splitTime) {
+
+	// noiseLevel has already been calibrated by user parameter from lab settings
+
+	double* smoothedData = new double [NumberOfSamples];
+
+	int disp = halfWidth;
+	int startPt = disp;
+	int endPt = NumberOfSamples - disp - 1;
+	int i;
+	int j;
+	double divisor;
+	bool FirstTime = true;
+	double previous = 0.0;
+	int k;
+	FirstTime = true;
+	int timeSplit = (int) floor (splitTime);
+
+	divisor = (double) (2 * halfWidth + 1);
+
+	for (i=startPt; i<=endPt; i++) {
+
+		double sum = 0.0;
+		int upperLimit = i + halfWidth;
+		int lowerLimit = i - halfWidth;
+
+		if (FirstTime) {
+
+			FirstTime = false;
+
+			for (j=lowerLimit; j<=upperLimit; j++)
+				sum += Measurements [j]; //mData->Value (j);
+
+			previous = sum;
+			smoothedData [i] = sum / divisor;
+		}
+
+		else {
+
+			previous = previous - Measurements [lowerLimit - 1] + Measurements [upperLimit]; //previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
+			smoothedData [i] = previous / divisor;
+		}
+	}
+
+	k = 0;
+
+	for (i=0; i<timeSplit; i++) {
+
+		changeArray [i] = false;
+
+		if (fabs (smoothedData [i] - Measurements [i]) > noiseLevelStart) {
+
+			smoothedData [i] = Measurements [i];
+			changeArray [i] = true;
+			k++;
+		}
+	}
+
+	for (i=timeSplit+1; i<NumberOfSamples; i++) {
+
+		changeArray [i] = false;
+
+		if (fabs (smoothedData [i] - Measurements [i]) > noiseLevel) {
+
+			smoothedData [i] = Measurements [i];
+			changeArray [i] = true;
+			k++;
+		}
+	}
+
+	fractionOfChangedData = (double)k / (double)NumberOfSamples;
+	cout << "Fraction of unchanged measurements = " << fractionOfChangedData << "  based on noise threshold = " << noiseLevel << "\n";
+
+	DataSignal* filteredSignal = new SampledData (NumberOfSamples, Left, Right, smoothedData, true);
+	return filteredSignal;
+}
+
 
 DataSignal* SampledData :: Project (double left, double right) const {
 	
@@ -3738,6 +3821,16 @@ const DataSignal* SampledData :: FindCharacteristicBetweenTwoPeaks (DataSignal* 
 	double nextHalfWidth = 0.5 * nextSignal->GetWidth ();
 	int lowerLimit = (int) ceil (prevSignal->GetMean () + prevHalfWidth) - 1;
 	int upperLimit = (int) floor (nextSignal->GetMean () - nextHalfWidth) + 1;
+
+	double estimatedIntersection = FindApproximateIntersection (prevSignal, nextSignal);
+	int lowerEstimatedIntersection = (int) floor (estimatedIntersection);
+	int upperEstimatedIntersection = (int) floor (estimatedIntersection + 0.5);
+
+	if ((double) lowerLimit > estimatedIntersection)
+		lowerLimit = lowerEstimatedIntersection;
+
+	if ((double) upperLimit < estimatedIntersection)
+		upperLimit = upperEstimatedIntersection;
 
 	//for (i=startTime; i<=endTime; i++) {
 
@@ -4477,6 +4570,48 @@ double SampledData :: InnerProductWithConstantFunction (int left, int right, dou
 	}
 
 	return 0.0;
+}
+
+
+bool SampledData :: TestIfNeighboringDataWithinRange (int testPosition, int neighborLimit, double range) {
+
+	if (testPosition < neighborLimit + 1)
+		return false;
+
+	if (testPosition >= NumberOfSamples - neighborLimit - 1)
+		return false;
+
+	double testValue = Measurements [testPosition];
+	double upperValue = testValue + range;
+	double lowerValue = testValue - range;
+	int i;
+	int upperRange = testPosition + neighborLimit;
+	int lowerRange = testPosition - neighborLimit;
+	double currentValue;
+
+	for (i=testPosition+1; i<=upperRange; i++) {
+
+		currentValue = Measurements [i];
+
+		if (currentValue > upperValue)
+			return false;
+
+		if (currentValue < lowerValue)
+			return false;
+	}
+
+	for (i=testPosition-1; i>=lowerRange; i--) {
+
+		currentValue = Measurements [i];
+
+		if (currentValue > upperValue)
+			return false;
+
+		if (currentValue < lowerValue)
+			return false;
+	}
+
+	return true;
 }
 
 
@@ -5313,6 +5448,39 @@ double SampledData :: GetNorm2 (int nleft, int nright) {
 	Sum1 *= Spacing;
 
 	return Sum1;
+}
+
+
+double SampledData :: FindApproximateIntersection (DataSignal* prevSignal, DataSignal* nextSignal) {
+
+	double h1 = prevSignal->Peak ();
+	double h2 = nextSignal->Peak ();
+	double l1 = prevSignal->GetMean ();
+	double l2 = nextSignal->GetMean ();
+	double sum = h1 + h2;
+
+	if (sum == 0.0) {
+
+		return 0.5 * (l1 + l2);
+	}
+
+	double firstEstimate = (h1 * l2 + h2 * l1) / sum;
+	double H1 = prevSignal->Value (firstEstimate);
+	double H2 = nextSignal->Value (firstEstimate);
+	sum = H1 * l2 - H2 * l1;
+
+	if (fabs (H2 - H1) * l1 * l2 >= (l2 - l1) * fabs (sum)) {
+
+		return firstEstimate;
+	}
+
+	double lambda = (H2 - H1) / sum;
+	double secondEstimate = (firstEstimate - lambda * l1 * l2) / (1.0 + lambda);
+
+	if ((secondEstimate <= l1) || (secondEstimate >= l2))
+		return firstEstimate;
+
+	return secondEstimate;
 }
 
 
@@ -11056,6 +11224,16 @@ DataSignal* DualDoubleGaussian :: FindCharacteristic (const DataSignal* Target, 
 
 	if (Segment->GetNumberOfMinima () == 0) {
 	
+		fit = 0.0;
+		return NULL;
+	}
+
+	int localMin0 = Segment->GetLocalMinimum ();
+	bool minEqualsMax = (Segment->GetLocalMinimum () == Segment->GetSecondaryMode ());
+	bool intervalTooNarrow = (abs (localMin0 - Segment->GetLeft ()) < 3) || (abs (localMin0 - Segment->GetRight ()) < 3);
+
+	if (minEqualsMax || intervalTooNarrow) {
+
 		fit = 0.0;
 		return NULL;
 	}

@@ -346,14 +346,42 @@ double CoreBioComponent :: GetTimeForSpecifiedID (int channel, double id) {
 
 int CoreBioComponent :: CreateAndSubstituteFilteredDataSignalForRawDataNonILS () {
 
+	//
+	//  Sample stage 1
+	//
+
 	int i;
 	smSinglePassFilterWindowWidth filterWindowWidthForSinglePassEstimation;
 	smTriplePassFilterWindowWidth filterWindowWidthForTriplePassEstimation;
 	smSelectTriplePassVsSinglePassFilterPreset selectTripleVsSinglePass;
+	smSelectAveragingInPlaceFilterPreset selectAveragingInPlace;
+	smAveragingInPlaceFilterWindowWidth inPlaceHalfWindowWidth;
+	smPostPrimerPercentOfNoiseRangeForLevelChange postPercentNoiseRangeForLevelChange;
+	smILSBPForEndOfPrimerPeaks splitTimeMsg;
+
 	bool useTriplePass = GetMessageValue (selectTripleVsSinglePass);
 	int windowWidth;
+	bool useAverageFilter = GetMessageValue (selectAveragingInPlace);
+	int averageFilterPasses = 1;
+	int averageFilterHalfWidth = GetThreshold (inPlaceHalfWindowWidth);
+	double fractionNoiseRangeForLevelChange = 0.01 * (double) GetThreshold (postPercentNoiseRangeForLevelChange);
+	double bp = GetThreshold (splitTimeMsg);
 
-	if (useTriplePass) {
+	double splitTime = mDataChannels [mLaneStandardChannel]->GetTimeForSpecifiedID (bp);
+	ChannelData::SetNormalizationSplitTime (splitTime);
+
+	if (useAverageFilter) {
+
+		for (i=1; i<=mNumberOfChannels; i++) {
+
+			if (i == mLaneStandardChannel)
+				continue;
+
+			mDataChannels [i]->CreateAndSubstituteAveragingFilteredSignalForRawData (averageFilterPasses, averageFilterHalfWidth, fractionNoiseRangeForLevelChange, splitTime);
+		}
+	}
+
+	else if (useTriplePass) {
 
 		windowWidth = GetThreshold (filterWindowWidthForTriplePassEstimation);
 

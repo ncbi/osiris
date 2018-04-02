@@ -55,6 +55,7 @@ class CoreBioComponent;
 class RGString;
 class IndividualGenotype;
 class SmartMessageReporter;
+class NormalizationInterval;
 
 
 class RaisedBaseLineData {
@@ -92,6 +93,59 @@ public:
 protected:
 	double mHeight;
 	int mMode;
+};
+
+
+class  ProspectiveIntervalForNormalization {
+
+public:
+
+	ProspectiveIntervalForNormalization (int start, DataSignal* sampledData, double* derivFilter, double filterHeight, int averagingWidth, double noiseThreshold);
+	~ProspectiveIntervalForNormalization ();
+
+	int GetStart () const { return mStart; }
+	int GetEnd () const { return mEnd; }
+	int GetStrictStart () const { return mStrictStart; }
+	int GetStrictEnd () const { return mStrictEnd; }
+	bool IsLongEnough (int minLength) const { return (mEnd - mStart + 1) >= minLength; }
+
+	void DivideIntoNormalizationIntervals (int minLength, double noiseRange, int subLength, int neighborTestLimit);
+	void SmoothInteriorPoints (int nSmoothPoints, int nSlackPoints, double* smoothedData, double* tempData);
+	NormalizationInterval* GetNextNormalizationInterval (int minLength);
+
+protected:
+	int mStart;
+	int mEnd;
+	DataSignal* mData;
+	int mStrictStart;
+	int mStrictEnd;
+	list<NormalizationInterval*> mNormalizationIntervals;
+};
+
+
+
+class NormalizationInterval {
+
+public:
+
+	NormalizationInterval (int start, int end, DataSignal* sampledData, int minLength, int subLength, double noiseRange, int neighborTestLimit);
+	~NormalizationInterval ();
+
+	int GetStart () const { return mStart; }
+	int GetEnd () const { return mEnd; }
+
+	bool IsLongEnough (int minLength) const { return (mEnd - mStart + 1) >= minLength; }
+	bool DivideIntoSubIntervalsAndCalculateKnots ();
+	bool AddKnotsToLists (list<double>& knotTimes, list<double>& knotValues);
+	double ComputeSubIntervalAverage (int startPt, int endPt);
+
+protected:
+	int mStart;
+	int mEnd;
+	DataSignal* mData;
+	int mSubLength;
+	list<double> mKnotTimes;
+	list<double> mKnotValues;
 };
 
 
@@ -148,6 +202,7 @@ public:
 
 	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
 	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);
+	int CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange, double splitTime);
 	int RestoreRawDataAndDeleteFilteredSignal ();
 	bool HasFilteredData () const;
 	
@@ -471,6 +526,7 @@ public:
 	static void SetNoisePercentForFinalPass (double d) { NoisePercentFinalPass = d; }
 
 	static void SetIsNormalizationPass (bool s) { IsNormalizationPass = s; }
+	static void SetNormalizationSplitTime (double t) { NormalizationSplitTime = t; }
 
 protected:
 	int mChannel;
@@ -522,6 +578,8 @@ protected:
 	CSplineTransform* mBaseLine;
 	int mBaselineStart;
 	CoordinateTransform* mTimeMap;
+	bool* mFilterChangeArray;
+	double mFractionOfChangedFilterPoints;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;
@@ -545,6 +603,7 @@ protected:
 	static double NoisePercentFinalPass;
 
 	static bool IsNormalizationPass;
+	static double NormalizationSplitTime;
 };
 
 
