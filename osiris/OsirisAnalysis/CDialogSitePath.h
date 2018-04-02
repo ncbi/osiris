@@ -39,6 +39,7 @@
 
 
 #include <wx/dialog.h>
+#include <wx/hyperlink.h>
 
 class wxStaticText;
 class wxChoice;
@@ -55,6 +56,7 @@ public:
   }
   bool ProcessSitePath(bool bPromptError = true);
   void OnRadioButton(wxCommandEvent &);
+  void OnShowSiteSettingsFolder(wxHyperlinkEvent &);
 private:
   void _promptError();
   size_t _setupGroupList(wxArrayString *pasKeep);

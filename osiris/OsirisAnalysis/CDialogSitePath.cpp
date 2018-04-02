@@ -128,6 +128,7 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
   wxArrayString asGroupsKeep;
   wxString sOperation;
   CSitePath *pSitePath = CSitePath::GetGlobal();
+  wxHyperlinkCtrl *pLink(NULL);
   size_t nDefault = 0;
   int nButtonSizer = wxOK | wxCANCEL;
 #ifdef __WXMSW__
@@ -157,6 +158,9 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
     {
       sOperation = wxS("Set access for OSIRIS site settings");
     }
+    pLink = new wxHyperlinkCtrl(this,IDsiteShow,wxS("Show site settings folder..."),
+      wxEmptyString, wxDefaultPosition, wxDefaultSize,
+      wxHL_ALIGN_LEFT  | wxNO_BORDER | wxHL_CONTEXTMENU );
   }
   else
   {
@@ -220,6 +224,11 @@ CDialogSitePath::CDialogSitePath(wxWindow *parent) :
       pSizerMain->Add(pSizerGroup,0,
         wxALIGN_LEFT | wxBOTTOM | wxLEFT | wxRIGHT, ID_BORDER);
     }
+  }
+  if(pLink != NULL)
+  {
+    pSizerMain->Add(pLink,0,
+      wxALIGN_CENTER | wxBOTTOM | wxLEFT | wxRIGHT, ID_BORDER);
   }
   pSizerMain->Add(CreateButtonSizer(nButtonSizer), 0,
     (wxALL ^ wxTOP) | wxALIGN_CENTER,ID_BORDER);
@@ -285,7 +294,12 @@ void CDialogSitePath::_promptError()
   mainApp::ShowError(sMsg, GetParent());
   mainApp::LogMessage(sMsg);
 }
+void CDialogSitePath::OnShowSiteSettingsFolder(wxHyperlinkEvent &e)
+{
+  mainApp::Get()->OnShowSiteSettings(e);
+}
 BEGIN_EVENT_TABLE(CDialogSitePath,wxDialog)
 EVT_RADIOBUTTON(wxID_ANY,CDialogSitePath::OnRadioButton)
+EVT_HYPERLINK(IDsiteShow,CDialogSitePath::OnShowSiteSettingsFolder)
 END_EVENT_TABLE()
 
