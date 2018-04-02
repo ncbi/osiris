@@ -421,6 +421,7 @@ Function SETUP_CACLS()
     If Not IsNull(sExe) Then
       sCacls = sExe
     End If
+  End If
   If Not SETUP_CACLS Then
     PRINT "Cannot find icacls.exe",bVerbose
   End If

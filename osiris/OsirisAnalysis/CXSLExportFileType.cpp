@@ -462,6 +462,13 @@ const wxString CXSLExportFileType::GetXSLfile(bool bCheck) const
   else if(bCheck)
   {
     const wxString &sExePath = mainApp::GetConfig()->GetExePath();
+#ifdef __WXMSW__
+#define _sExePath m_sExePath
+#define _sThisPath m_sThisPath
+#else
+    wxString _sExePath = nwxFileUtil::ForwardSlash(m_sExePath);
+    wxString _sThisPath = nwxFileUtil::ForwardSlash(m_sThisPath);
+#endif
     typedef struct
     {
       const wxString *psPathHere;
@@ -469,8 +476,8 @@ const wxString CXSLExportFileType::GetXSLfile(bool bCheck) const
     } EXPORT_PATH;
     EXPORT_PATH Paths[] =
     {
-      {&m_sExePath, &sExePath},
-      {&m_sThisPath, &sThisPath}
+      {&_sExePath, &sExePath},
+      {&_sThisPath, &sThisPath}
     }, 
     *psPath;
     const size_t COUNT= sizeof(Paths) / sizeof(Paths[0]);

@@ -82,6 +82,7 @@ public:
   }
 
 #endif
+  static wxString ForwardSlash(const wxString &s);
   static wxString GetRealPath(const wxString &sPath);
   static wxString PathFind(const wxString &sExeFile, bool bCheckSys = true, bool bCheckPath = true);
   static bool ShowFileFolder(const wxString &sFileName, bool bCheckDir = true);

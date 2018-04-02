@@ -721,6 +721,34 @@ wxFSVolumeKind nwxFileUtil::GetMSWDriveType(const wxString &sPath)
   return nRtn;
 }
 
+wxString nwxFileUtil::ForwardSlash(const wxString &sPath)
+{
+  wxString sRtn(sPath);
+  if(sRtn.Find(L'\\') != wxNOT_FOUND)
+  {
+    sRtn.Replace(wxS(":"),wxS(""));
+    sRtn.Replace(L'\\',L'/');
+    if(sRtn.at(0) != L'/')
+    {
+      wxString s = L'/';
+      s.Append(sRtn);
+      sRtn = s;
+    }
+    while( sRtn.Replace(wxS("//"),wxS("/")) ) {}
+  }
+#ifdef TMP_DEBUG
+  if(sPath != sRtn)
+  {
+    wxString s(wxS("nwxFileUtil::ForwardSlash("));
+    s.Append(sPath);
+    s.Append(wxS(") = "));
+    s.Append(sRtn);
+    nwxLog::LogMessage(s);
+  }
+#endif
+  return sRtn;
+}
+
 wxString nwxFileUtil::GetRealPath(const wxString &sPath)
 {
   // for MS Windows, replace drive letter with
