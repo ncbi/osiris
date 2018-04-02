@@ -468,7 +468,7 @@ const wxString CXSLExportFileType::GetXSLfile(bool bCheck) const
 #else
     wxString _sExePath = nwxFileUtil::ForwardSlash(m_sExePath);
     wxString _sThisPath = nwxFileUtil::ForwardSlash(m_sThisPath);
-    sRtn = nwxFileUtil::ForwardSlsah(sRtn);
+    sRtn = nwxFileUtil::ForwardSlash(sRtn);
 #endif
     typedef struct
     {
