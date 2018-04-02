@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.21</VersionNumber>
-	<BuildTime>03/31/2018 07:54 PM</BuildTime>
+	<VersionNumber>7.22</VersionNumber>
+	<BuildTime>04/02/2018 12:38 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5769,18 +5769,17 @@
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smTestBaselineKnotsHeading</Name>
-			<MessageType>count</MessageType>
+			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
-			<CountingDataInfo>
+			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Test Baseline Estimation Knots And Reject If Too Close to Peak or Level Change</ThresholdDescriptor>
-			</CountingDataInfo>
+				<ThresholdDescriptor>                Test Baseline Estimation Knots And Reject If Too Close to Peak or to Level Change</ThresholdDescriptor>
+			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Test Baseline Estimation Knots And Reject If Too Close to Peak or Level Change</Text>
+			<Text>Test Baseline Estimation Knots And Reject If Too Close to Peak or to Level Change</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -5887,12 +5886,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Use Proximity Both to Peaks and to Level Change (Overrides Peaks Only Above) (Default = checked)</ThresholdDescriptor>
+				<ThresholdDescriptor>                        Use Proximity Both to Peaks and to Level Changes (Overrides Peaks Only Above) (Default = checked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Use Proximity Both to Peaks and to Level Change (Overrides Peaks Only Above) (Default = checked)</Text>
+			<Text>Use Proximity Both to Peaks and to Level Changes (Overrides Peaks Only Above) (Default = checked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -5905,12 +5904,12 @@
 			<CountingDataInfo>
 				<Threshold>5</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Distance from Level Change to Remove Baseline Estimation Knot (Default = 5 Measurements)</ThresholdDescriptor>
+				<ThresholdDescriptor>                                Distance from Level Change to Remove Knot (Default = 5 Measurements)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Distance from Level Change to Remove Baseline Estimation Knot (Default = 5 Measurements)</Text>
+			<Text>Distance from Level Change to Remove Knot (Default = 5 Measurements)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 			<Editable>false</Editable>
