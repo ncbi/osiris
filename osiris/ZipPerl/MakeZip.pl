@@ -256,6 +256,10 @@ sub CheckSignMac()
   my $PATH=shift;
   my $SIG = shift;
   my $NOSIGN = "\nApplication will not be signed.";
+  if(length($ENV{NOSIGN}))
+  {
+    return undef;
+  }
   if(! -d $PATH)
   {
     print STDERR "Application path, ${PATH}, is not a directory",$NOSIGN;
@@ -415,9 +419,9 @@ sub CopyMac
      $APP_USER_FOLDER
     )
   {
-    &SignAppMac($folder);
+    &SignAppMac($folder) || last;
   }
-  if(0)
+  if(0) # not making tar file
   {
     my $testDest = "${TOP}/TestAnalysis";
     my $zipDir = $ENV{OSIRISTGZ};

@@ -50,7 +50,6 @@ nwxUserInfo::nwxUserInfo() : m_nGID(0), m_nUID(0), m_nLastError(0)
   int anList[MAX_GID];
   int nCount = MAX_GID;
   struct passwd *pPwEntry;
-
   memset(anList,0,sizeof(anList));
   m_nUID = getuid();
   pPwEntry = (m_nUID > 0) ? getpwuid(m_nUID) : NULL;
@@ -63,7 +62,7 @@ nwxUserInfo::nwxUserInfo() : m_nGID(0), m_nUID(0), m_nLastError(0)
   {
     m_nGID = pPwEntry->pw_gid;
     m_sUser = wxString::FromUTF8(pPwEntry->pw_name);
-    int n = getgrouplist(m_sUser.utf8_str(), m_nGID, anList, &nCount);
+    int n = getgrouplist(pPwEntry->pw_name, pPwEntry->pw_gid, anList, &nCount);
     if( (n == 0 || n == -1) && (nCount > 0) )
     {
       wxString ss;
@@ -86,13 +85,13 @@ nwxUserInfo::nwxUserInfo() : m_nGID(0), m_nUID(0), m_nLastError(0)
             MAP_SN::value_type(
               ss,nID));
         }
-        for(MAP_SN::iterator itr = m_mapNameToGID.begin();
+      }
+      for(MAP_SN::iterator itr = m_mapNameToGID.begin();
           itr != m_mapNameToGID.end();
           ++itr)
-        {
-          m_asGroupNames.Add(itr->first);
-          m_anGroupIDs.push_back(itr->second);
-        }
+      {
+        m_asGroupNames.Add(itr->first);
+        m_anGroupIDs.push_back(itr->second);
       }
     }
     else
