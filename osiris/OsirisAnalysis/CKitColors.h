@@ -119,11 +119,16 @@ public:
   {
     return m_sKitName;
   }
+  bool IsOK() const
+  {
+    return m_bISOK;
+  }
 private:
   std::map<unsigned int, CChannelColors *> m_mapChannelColors;
   std::map<const wxString,CChannelColors *> m_mapILSColors;
   wxString m_sKitName;
   unsigned int m_nILSchannel;
+  bool m_bISOK;
 };
 
 class CKitColors

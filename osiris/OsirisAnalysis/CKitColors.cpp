@@ -36,6 +36,7 @@
 #include "CKitList.h"
 #include "CILSLadderInfo.h"
 #include "nwx/mapptr.h"
+#include "nwx/nwxLog.h"
 /////////////////////////////////////////////////////////////////////
 
 //         CChannelColors
@@ -146,7 +147,7 @@ CSingleKitColors::~CSingleKitColors()
 CSingleKitColors::CSingleKitColors(
     const wxString &sKitName,
     CPersistKitList *pKitList,
-    const CKitColors2 *pColors2)
+    const CKitColors2 *pColors2) : m_bISOK(true)
 {
   m_sKitName = sKitName;
   m_nILSchannel = pKitList->GetILSchannelNumber(sKitName);
@@ -155,29 +156,39 @@ CSingleKitColors::CSingleKitColors(
     pKitList->GetChannelColorMap(sKitName);
   std::map<unsigned int, CKitChannel *>::const_iterator itrColor;
   CChannelColors *pChannelColors;
-
-  for(itrColor = pChannelMap->begin();
-    itrColor != pChannelMap->end();
-    ++itrColor)
+  if(pChannelMap == NULL)
   {
-    pChannelColors = new CChannelColors(itrColor->second,pColors2);
-    m_mapChannelColors.insert(
-      std::map<unsigned int, CChannelColors *>::value_type(
-        itrColor->first,pChannelColors));
+    wxString sMsg;
+    m_bISOK = false;
+    sMsg.Append(wxS("\nCannot find channel map for kit: "));
+    sMsg.Append(sKitName);
+    nwxLog::LogMessage(sMsg);
   }
-  if(pILSfamily != NULL)
+  else
   {
-    size_t nCount = pILSfamily->Count();
-    size_t i;
-    CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
-    for(i = 0; i < nCount; ++i)
+    for(itrColor = pChannelMap->begin();
+      itrColor != pChannelMap->end();
+      ++itrColor)
     {
-      const wxString &sILSname(pILSfamily->Item(i));
-      const wxString &sDyeName = pILS->GetDyeName(sILSname);
-      pChannelColors = new CChannelColors(m_nILSchannel,sDyeName,pColors2);
-      m_mapILSColors.insert(
-        std::map<const wxString,CChannelColors *>::value_type(
-          sILSname,pChannelColors));
+      pChannelColors = new CChannelColors(itrColor->second,pColors2);
+      m_mapChannelColors.insert(
+        std::map<unsigned int, CChannelColors *>::value_type(
+          itrColor->first,pChannelColors));
+    }
+    if(pILSfamily != NULL)
+    {
+      size_t nCount = pILSfamily->Count();
+      size_t i;
+      CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
+      for(i = 0; i < nCount; ++i)
+      {
+        const wxString &sILSname(pILSfamily->Item(i));
+        const wxString &sDyeName = pILS->GetDyeName(sILSname);
+        pChannelColors = new CChannelColors(m_nILSchannel,sDyeName,pColors2);
+        m_mapILSColors.insert(
+          std::map<const wxString,CChannelColors *>::value_type(
+            sILSname,pChannelColors));
+      }
     }
   }
 }
@@ -240,8 +251,15 @@ bool CKitColors::_Load()
   {
     const wxString &sKitName = (*itrKits)->GetKitName();
     CSingleKitColors *pColors = new CSingleKitColors(sKitName,pKitList,m_pKitColors2);
-    m_mapKitColors.insert(
-      std::map<const wxString,CSingleKitColors *>::value_type(sKitName,pColors));
+    if(pColors->IsOK())
+    {
+      m_mapKitColors.insert(
+        std::map<const wxString,CSingleKitColors *>::value_type(sKitName,pColors));
+    }
+    else
+    {
+      delete pColors;
+    }
   }
   return bRtn;
 }
