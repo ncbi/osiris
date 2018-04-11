@@ -11453,6 +11453,13 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, bool assignByP
 
 	double v1 = prev->Value (mMean);
 	double v2 = next->Value (mMean);
+
+	if (v1 < 0.0)
+		v1 = 0.0;
+
+	if (v2 < 0.0)
+		v2 = 0.0;
+
 	double est1 = peak1 + (peak1 - v1);
 	double est2 = peak2 + (peak2 - v2);
 	double max;
@@ -11556,6 +11563,13 @@ CraterSignal :: CraterSignal (DataSignal* prev, DataSignal* next, DataSignal* pr
 
 	double v1 = prev->Value (mMean);
 	double v2 = next->Value (mMean);
+
+	if (v1 < 0.0)
+		v1 = 0.0;
+
+	if (v2 < 0.0)
+		v2 = 0.0;
+
 	double est1 = peak1 + (peak1 - v1);
 	double est2 = peak2 + (peak2 - v2);
 	double max;
