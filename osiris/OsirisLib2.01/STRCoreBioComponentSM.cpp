@@ -1539,9 +1539,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
 
-			if ((i == 2) && (nextSignal->GetMean () > 5570.) && (nextSignal->GetMean () < 5572.))
-				cout << "Found crater in channel 2 at " << nextSignal->GetMean () << endl;
-
 			if (nextSignal->HasCrossChannelSignalLink ()) {
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
