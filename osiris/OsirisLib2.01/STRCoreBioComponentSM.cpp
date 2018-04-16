@@ -3428,6 +3428,8 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
+	ReportPullupMatrix (1);
+
 	// Record all non-laser off-scale coefficients *****12/21/2016
 	Endl endLine;
 
@@ -3557,6 +3559,8 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 			AcknowledgePullupPeaksWhenThereIsNoPatternSM (i, j, true);
 		}
 	}
+
+	ReportPullupMatrix (2);
 
 	// compute all pullup ratios, etc. and insert into smart data...is this necessary?  We should already have stored pullup values from each other channel
 
