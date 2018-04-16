@@ -66,6 +66,8 @@
 #include <time.h>
 #include <stdio.h>
 
+#define _MATRIX_OUTPUT_
+
 using namespace std;
 
 
@@ -1346,6 +1348,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		else
 			bioComponent->SetControlIdName (FileName);
+
+		RGString pullupMatrixFileName = FullPathForReports + "/" + FileName + ".matrix.txt";
+		RGTextOutput* pullupMatrixFile = NULL;
+
+#ifdef _MATRIX_OUTPUT_
+		pullupMatrixFile = new RGTextOutput (pullupMatrixFileName, FALSE);
+		CoreBioComponent::SetPullupMatrixFile (pullupMatrixFile);
+
+		if (!pullupMatrixFile->FileIsValid ()) {
+
+			cout << "Could not open Matrix Output File:  " << pullupMatrixFileName << endl;
+			delete pullupMatrixFile;
+			pullupMatrixFile = NULL;
+		}
+#endif
 
 		commSM.SMOStack [1] = (SmartMessagingObject*) bioComponent;
 

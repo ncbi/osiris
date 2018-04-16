@@ -68,6 +68,7 @@ RGString CoreBioComponent::ILSDyeName;
 RGString* CoreBioComponent::DyeNames = NULL;
 RGTextOutput* CoreBioComponent::HeightFile = NULL;
 RGTextOutput* CoreBioComponent::NonLaserOffScalePUCoefficients = NULL;
+RGTextOutput* CoreBioComponent::pullUpMatrixFile = NULL;
 
 
 
@@ -2027,6 +2028,44 @@ CoreBioComponent* CoreBioComponent :: GetBestGridBasedOnMaxDelta3DerivForAnalysi
 	}
 
 	return minGrid;
+}
+
+
+void CoreBioComponent :: ReportPullupMatrix (int pass) {
+
+	RGTextOutput* outputFile = CoreBioComponent::pullUpMatrixFile;
+
+	if (outputFile == NULL)
+		return;
+
+	int i;
+	int j;
+	*outputFile << "FileName = " << mFileName << " and SampleName = " << mSampleName << "\n";
+	RGString laserState;
+
+	if (pass == 1)
+		laserState = "Laser_In_Scale";
+
+	else
+		laserState = "Laser_OffScale";
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		for (j=1; j<=mNumberOfChannels; j++)
+			*outputFile << laserState << " lin " << i << " " << j << " " << mLinearPullupMatrix [i][j] << "\n";
+	}
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		for (j=1; j<=mNumberOfChannels; j++)
+			*outputFile << laserState << " qud " << i << " " << j << " " << mQuadraticPullupMatrix [i][j] << "\n";
+	}
+
+	if (pass == 2) {
+
+		delete CoreBioComponent::pullUpMatrixFile;
+		CoreBioComponent::pullUpMatrixFile = NULL;
+	}
 }
 
 

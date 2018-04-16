@@ -252,6 +252,7 @@ public:
 
 	void ReportXMLGridTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);	//$
 	void ReportXMLSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);	//$
+	void ReportPullupMatrix (int pass); //$
 
 	virtual int Initialize (SampleData& fileData, PopulationCollection* collection, const RGString& markerSetName, Boolean isGrid);	//$
 	virtual int SetAllData (SampleData& fileData, TestCharacteristic* testControlPeak, TestCharacteristic* testSamplePeak);	//$
@@ -465,6 +466,7 @@ public:
 	static void SetOffScaleDataLength (int length) { OffScaleDataLength = length; }
 	static void SetHeightFile (RGTextOutput* hf) { HeightFile = hf; }
 	static void SetNonLaserOffScalePUCoeffsFile (RGTextOutput* puf) { NonLaserOffScalePUCoefficients = puf; }
+	static void SetPullupMatrixFile (RGTextOutput* pumf) { pullUpMatrixFile = pumf; }
 
 	//************************************************************************************************************************************
 
@@ -534,6 +536,7 @@ protected:
 	static RGString* DyeNames;
 	static RGTextOutput* HeightFile;
 	static RGTextOutput* NonLaserOffScalePUCoefficients;
+	static RGTextOutput* pullUpMatrixFile;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();
