@@ -109,7 +109,7 @@ mPrint (print) {
 }
 
 
-PullupPair :: PullupPair (DataSignal* primary, DataSignal* pullup) : mPrimary (primary), mPullup (pullup), mIsOutlier (false) {
+PullupPair :: PullupPair (DataSignal* primary, DataSignal* pullup) : mPrimary (primary), mPullup (pullup), mIsOutlier (false), mIsDuplicate (false) {
 
 	mPrimaryHeight = primary->Peak ();
 	mPullupHeight = pullup->TroughHeight ();
@@ -119,7 +119,14 @@ PullupPair :: PullupPair (DataSignal* primary, DataSignal* pullup) : mPrimary (p
 }
 
 
-PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NULL), mIsOutlier (false) {
+PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NULL), mIsOutlier (false), mIsDuplicate (false) {
+
+	mPrimaryHeight = primary->Peak ();
+	mPullupHeight = 0.0;
+}
+
+
+PullupPair :: PullupPair (DataSignal* primary, bool isDuplicate) : mPrimary (primary), mPullup (NULL), mIsOutlier (false), mIsDuplicate (true) {
 
 	mPrimaryHeight = primary->Peak ();
 	mPullupHeight = 0.0;
@@ -128,7 +135,7 @@ PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NU
 
 
 PullupPair :: PullupPair (const PullupPair& pup) : mPrimary (pup.mPrimary), mPullup (pup.mPullup), mPrimaryHeight (pup.mPrimaryHeight), mPullupHeight (pup.mPullupHeight), 
-	mIsOutlier (pup.mIsOutlier) {
+	mIsOutlier (pup.mIsOutlier), mIsDuplicate (pup.mIsDuplicate) {
 
 }
 

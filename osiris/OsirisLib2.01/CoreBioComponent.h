@@ -103,6 +103,7 @@ struct PullupPair {
 	PullupPair () : mPrimary (NULL), mPullup (NULL), mPrimaryHeight (0.0), mPullupHeight (0.0), mIsOutlier (false) {}
 	PullupPair (DataSignal* primary, DataSignal* pullup);
 	PullupPair (DataSignal* primary);
+	PullupPair (DataSignal* primary, bool isDuplicate);
 	PullupPair (const PullupPair& pup);
 	~PullupPair () {}
 
@@ -111,6 +112,7 @@ struct PullupPair {
 	double mPrimaryHeight;
 	double mPullupHeight;
 	bool mIsOutlier;
+	bool mIsDuplicate;
 };
 
 

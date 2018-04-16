@@ -1348,6 +1348,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	list<PullupPair*> pairList;
 	PullupPair* nextPair;
 	double minHeight = 0.0;
+	double maxHeight = 0.0;
 	bool hasNegativePullup = false;
 	double currentPeak;
 	smPullUp pullup;
@@ -1361,10 +1362,15 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double maxRatio = 0.0;
 	double numerator;
 	double minRFUForSecondaryChannel = 0.5 * (mDataChannels [pullupChannel]->GetDetectionThreshold () + mDataChannels [pullupChannel]->GetMinimumHeight ());
+	double noiseLevelForSecondaryChannel = mDataChannels [pullupChannel]->GetNoiseRange ();
+	double percentNoiseLevel = 100.0;
+
 	bool minRatioLessThan1 = false;
 	bool maxRatioLargerThan0 = false;
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
 	double minPullupHeight = 0.0;
+
+	noiseLevelForSecondaryChannel = 0.01 * percentNoiseLevel * noiseLevelForSecondaryChannel;
 
 	// Modify code below to account for pullup corrections to secondary peaks that are also primary, and maybe to primary peaks?
 
@@ -1459,6 +1465,12 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		else if (currentPeak < minHeight)
 			minHeight = currentPeak;
 
+		if (maxHeight == 0.0)
+			maxHeight = currentPeak;
+
+		else if (currentPeak > maxHeight)
+			maxHeight = currentPeak;
+
 		numerator = secondarySignal->Peak ();
 
 		//if (n > 0)
@@ -1491,7 +1503,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		}
 	}
 
-	//cout << "\n";
+	int additionalPairsRequired = 0;
 
 	if (minRatio < 1.0) {
 
@@ -1575,6 +1587,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	//minRatioLessThan1 = false;   // Consider removing this and the next line...
 	//minRatio = 1.1;
+	bool added;
+	int numberOfOriginalPairedPeaks = pairList.size ();
 
 	if (!hasNegativePullup && !testLaserOffScale) {
 
@@ -1604,33 +1618,78 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			//if (nextSignal->Peak () < primaryThreshold)
 			//	continue;
 
-			if (maxRatioLargerThan0) {
+			currentPeak = nextSignal->Peak ();
+			added = false;
 
-				if (maxRatio * nextSignal->Peak () >= minRFUForSecondaryChannel) {
+			//if (maxRatioLargerThan0) {
+
+			//	// Do we want to do this????  I think not because the largest ratio may include a partial pullup, i.e., a pullup coinciding with an allele, and is likely
+			//     not to be representative of the true pullup.
+
+			//	if (maxRatio * currentPeak >= minRFUForSecondaryChannel) {
+
+			//		nextPair = new PullupPair (nextSignal);
+			//		pairList.push_back (nextPair);
+			//		added = true;
+			//	}
+			//}
+
+			//else 
+
+			// the minimum ratio is more likely to be representative of the true pullup (if any) and the noise level on the pullup channel is a better reflection of the likelihood of being able
+			// to have found a peak in the pullup position.
+			
+			if (minRatioLessThan1) {
+
+				if (minRatio * currentPeak >= noiseLevelForSecondaryChannel) {
 
 					nextPair = new PullupPair (nextSignal);
 					pairList.push_back (nextPair);
-					//cout << "(" << nextSignal->GetMean () << ", " << nextSignal->Peak () << "). ";
+					added = true;
 				}
 			}
 
-			else if (nextSignal->Peak () >= threshold) {
+			//else if (currentPeak >= threshold) {   // Do we want to do this????  I think not, because the user may have input a very low value for the minimum primary pullup height.  The ratio test above is
+			// a more accurate test.
 
-				nextPair = new PullupPair (nextSignal);
-				pairList.push_back (nextPair);
-				//cout << "(" << nextSignal->GetMean () << ", " << nextSignal->Peak () << "). ";
+			//	nextPair = new PullupPair (nextSignal);
+			//	pairList.push_back (nextPair);
+			//	added = true;
+			//}
+
+			if (added) {
+
+				if (currentPeak >= maxHeight) {
+
+					additionalPairsRequired += 2;
+					nextPair = new PullupPair (nextSignal, true);
+					pairList.push_back (nextPair);
+					nextPair = new PullupPair (nextSignal, true);
+					pairList.push_back (nextPair);
+					cout << "Sample File " << (char*)mFileName.GetData () << " has 2 extra primaries from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
+				}
+
+				else if (currentPeak >= minHeight) {
+
+					additionalPairsRequired += 1;
+					nextPair = new PullupPair (nextSignal, true);
+					pairList.push_back (nextPair);
+					cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
+				}
 			}
 		}
-
-		//cout << "\n";
 	}
 
 	double outlierThreshold;
 	double leastMedianValue;
 
+	// add additionalPairsRequired and numberOfOriginalPairedPeaks to calling sequence below so least median of squares can use the info.
+
 	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold);
 	list<PullupPair*>::iterator pairIt;
 	list<InterchannelLinkage*>::iterator linkIt;
+
+
 
 	// check for all pullup peaks beging outliers, vs all non-outliers from 0-peaks
 	// what to do if answer = false?
