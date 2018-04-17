@@ -1357,6 +1357,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	smLaserOffScale laserOffScale;
 	smCraterSidePeak sidePeak;
 	smPrimaryInterchannelLink primaryPullup;
+	smWeakPrimaryInterchannelLink weakPrimaryPullup;
 	double currentRatio;
 	double minRatio = 1.0;
 	double maxRatio = 0.0;
@@ -1843,8 +1844,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				primarySignal = weakPullupPeaks.front ();
 				weakPullupPeaks.pop_front ();
-				//primarySignal->SetMessage (weakPrimaryPullup, true);
-				//primarySignal->SetMessageData (weakPrimaryPullup, pullupChannel);
+				primarySignal->SetMessageValue (weakPrimaryPullup, true);
+				primarySignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
 			}
 
 			//for (linkIt=mInterchannelLinkageList.begin (); linkIt!=mInterchannelLinkageList.end (); linkIt++) {
