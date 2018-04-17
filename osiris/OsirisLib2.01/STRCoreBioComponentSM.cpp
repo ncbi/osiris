@@ -2136,6 +2136,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	RGDList peaksInSameChannel;
 	RGDList probablePullupPeaks;
+	RGDList weakPullupPeaks;
 	RGDList pullupList;
 	RGDList signalsToRemove;
 	RGDListIterator probableIt (probablePullupPeaks);
@@ -2151,6 +2152,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double primaryHeight;
 	double primaryWidth;
 	RGDList ignoreSidePeaks;
+	double rightLimitPlus;
+	double leftLimitPlus;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2177,6 +2180,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		primaryMean = nextSignal->GetMean ();
 		rightLimit = primaryMean + primaryTolerance;
 		leftLimit = primaryMean - primaryTolerance;
+		rightLimitPlus = primaryMean + 3.0 * primaryTolerance;
+		leftLimitPlus = primaryMean - 3.0 * primaryTolerance;
 		probablePullupPeaks.Clear ();
 
 		//if ((5571.0 < primaryMean) && (primaryMean < 5572.0))
@@ -2190,8 +2195,19 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
-			if (nextSignal2->GetMean () > rightLimit)
-				break;  // too far away; we're done in this direction
+			if (nextSignal2->GetMean () > rightLimit) {
+
+				if (nextSignal2->GetMean () > rightLimitPlus)
+					break;  // too far away; we're done in this direction
+
+				if (nextSignal2->GetChannel () == primaryChannel)
+					continue;
+
+				if (TestForWeakPullup (primaryMean, nextSignal2))
+					weakPullupPeaks.Append (nextSignal2);
+
+				continue;
+			}
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
@@ -2211,8 +2227,19 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		while (nextSignal2 = (DataSignal*)(--Neg)) {
 
-			if (nextSignal2->GetMean () < leftLimit)
-				break;  // too far away; we're done in this direction
+			if (nextSignal2->GetMean () < leftLimit) {
+
+				if (nextSignal2->GetMean () < leftLimitPlus)
+					break;  // too far away; we're done in this direction
+
+				if (nextSignal2->GetChannel () == primaryChannel)
+					continue;
+
+				if (TestForWeakPullup (primaryMean, nextSignal2))
+					weakPullupPeaks.Prepend (nextSignal2);
+
+				continue;
+			}
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
@@ -2350,6 +2377,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		//	peaksInSameChannel.Clear ();
 		//	signalsToRemove.Clear ();
 		//}  // This ends section in which duplicate peaks in a channel are weeded out:  see above...commented out 07/06/2016
+
+		if (weakPullupPeaks.Entries () > 0) {
+
+			primeSignal->CreateWeakPullupVector (mNumberOfChannels);
+
+			while (nextSignal2 = (DataSignal*)weakPullupPeaks.GetFirst ())
+				primeSignal->RecordWeakPullupInChannel (mNumberOfChannels, nextSignal2->GetChannel ());
+		}
 
 		if (probablePullupPeaks.IsEmpty ())
 			continue;
@@ -3796,6 +3831,17 @@ double STRCoreBioComponent :: FindPrimaryPeak (RGDList& peakList, DataSignal*& p
 	}
 
 	return maxPeak;
+}
+
+
+bool STRCoreBioComponent :: TestForWeakPullup (double testMean, DataSignal* testSignal) {
+
+	double noiseLevel = mDataChannels [testSignal->GetChannel ()]->GetNoiseRange ();
+
+	if (testSignal->Value (testMean) > noiseLevel)
+		return true;
+
+	return false;
 }
 
 

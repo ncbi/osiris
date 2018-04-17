@@ -1589,6 +1589,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	//minRatio = 1.1;
 	bool added;
 	int numberOfOriginalPairedPeaks = pairList.size ();
+	list<DataSignal*> weakPullupPeaks;
 
 	if (!hasNegativePullup && !testLaserOffScale) {
 
@@ -1643,9 +1644,15 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				if (minRatio * currentPeak >= noiseLevelForSecondaryChannel) {
 
-					nextPair = new PullupPair (nextSignal);
-					pairList.push_back (nextPair);
-					added = true;
+					if (nextSignal->HasWeakPullupInChannel (pullupChannel))
+						weakPullupPeaks.push_back (nextSignal);
+
+					else {
+
+						nextPair = new PullupPair (nextSignal);
+						pairList.push_back (nextPair);
+						added = true;
+					}
 				}
 			}
 
@@ -1725,6 +1732,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if ((linearPart == 0.0) && (quadraticPart == 0.0)) {  // There is a pattern and it is that there is no pullup
 
 			// remove all cross channel links except those for which pullup is sufficiently narrow
+
+			weakPullupPeaks.clear ();
 
 			for (it=mInterchannelLinkageList.begin (); it!=mInterchannelLinkageList.end (); it++) {
 
@@ -1830,6 +1839,14 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				}
 			}
 
+			while (!weakPullupPeaks.empty ()) {
+
+				primarySignal = weakPullupPeaks.front ();
+				weakPullupPeaks.pop_front ();
+				//primarySignal->SetMessage (weakPrimaryPullup, true);
+				//primarySignal->SetMessageData (weakPrimaryPullup, pullupChannel);
+			}
+
 			//for (linkIt=mInterchannelLinkageList.begin (); linkIt!=mInterchannelLinkageList.end (); linkIt++) {
 
 			//	nextLink = *linkIt;
@@ -1927,6 +1944,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			// for other outliers, the jury is still out until all channel contributions are tallied
 			removePrimaryList.unique ();
 			testedPullups.Clear ();
+			weakPullupPeaks.clear ();
 
 			while (!removePrimaryList.empty ()) {
 

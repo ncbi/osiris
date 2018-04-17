@@ -1111,7 +1111,7 @@ DataSignal :: DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMe
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
 		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()) {
+		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -1139,7 +1139,7 @@ mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRigh
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
 mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()) {
+mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1176,6 +1176,7 @@ DataSignal :: ~DataSignal () {
 	mHasStutterRightList.Clear ();
 
 	delete mThisDataSegment;
+	delete[] mWeakPullupVector;
 }
 
 
@@ -1212,6 +1213,34 @@ bool DataSignal :: isMarginallyBelowMaximum () const {
 void DataSignal :: AddCrossChannelSignalLink (DataSignal* ds) {
 
 	mCrossChannelSignalLinks.Append (ds);
+}
+
+
+void DataSignal :: CreateWeakPullupVector (int numberOfChannels) {
+
+	mWeakPullupVector = new bool [numberOfChannels + 1];
+	int i;
+
+	for (i=1; i<=numberOfChannels; i++)
+		mWeakPullupVector [i] = false;
+}
+
+
+bool DataSignal :: HasWeakPullupInChannel (int channel) {
+	
+	if (mWeakPullupVector != NULL)
+		return mWeakPullupVector [channel];
+	
+	return false;
+}
+
+
+void DataSignal :: RecordWeakPullupInChannel (int numberOfChannels, int weakPullupChannel) {
+	
+	if (mWeakPullupVector == NULL)
+		CreateWeakPullupVector (numberOfChannels);
+
+	mWeakPullupVector [weakPullupChannel] = true;
 }
 
 

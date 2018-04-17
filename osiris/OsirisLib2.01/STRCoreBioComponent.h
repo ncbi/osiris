@@ -109,6 +109,7 @@ protected:
 
 	bool AssessPrimaryPullup (DataSignal* primaryPullup, RGDList& peaksInSameChannel, RGDList& probablePullup, RGDList& pullupList);
 	double FindPrimaryPeak (RGDList& peakList, DataSignal*& primarySignal);
+	bool TestForWeakPullup (double testMean, DataSignal* testSignal);
 };
 
 
