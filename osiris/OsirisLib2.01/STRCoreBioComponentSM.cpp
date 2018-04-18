@@ -2180,18 +2180,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		primaryMean = nextSignal->GetMean ();
 		rightLimit = primaryMean + primaryTolerance;
 		leftLimit = primaryMean - primaryTolerance;
-		rightLimitPlus = primaryMean + 3.0 * primaryTolerance;
-		leftLimitPlus = primaryMean - 3.0 * primaryTolerance;
+		rightLimitPlus = primaryMean + 5.0 * primaryTolerance;
+		leftLimitPlus = primaryMean - 5.0 * primaryTolerance;
 		probablePullupPeaks.Clear ();
-
-		//if ((5571.0 < primaryMean) && (primaryMean < 5572.0))
-		//	report = true;
-
-		//if (report) {
-
-		//	cout << "\n\nPossible primary at mean = " << primaryMean << " with height = " << primaryHeight << " and with width = " << primaryWidth << " and channel = " << primaryChannel << endl;
-		//	cout << "Left limit = " << leftLimit << " and Right limit = " << rightLimit << endl;
-		//}
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
@@ -2255,6 +2246,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				probablePullupPeaks.Append (nextSignal2);
 				continue;
 			}
+		}
+
+		if (weakPullupPeaks.Entries () > 0) {
+
+			primeSignal->CreateWeakPullupVector (mNumberOfChannels);
+
+			while (nextSignal2 = (DataSignal*)weakPullupPeaks.GetFirst ())
+				primeSignal->RecordWeakPullupInChannel (mNumberOfChannels, nextSignal2->GetChannel ());
 		}
 
 		//cout << "Done with pull-up tests for peak at " << primaryMean << endl;
@@ -2378,16 +2377,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		//	signalsToRemove.Clear ();
 		//}  // This ends section in which duplicate peaks in a channel are weeded out:  see above...commented out 07/06/2016
 
-		if (weakPullupPeaks.Entries () > 0) {
-
-			primeSignal->CreateWeakPullupVector (mNumberOfChannels);
-
-			while (nextSignal2 = (DataSignal*)weakPullupPeaks.GetFirst ())
-				primeSignal->RecordWeakPullupInChannel (mNumberOfChannels, nextSignal2->GetChannel ());
-		}
-
-		if (probablePullupPeaks.IsEmpty ())
-			continue;
+		//if (probablePullupPeaks.IsEmpty ())
+		//	continue;
 
 		// Now build STRInterChannelLinkage...look below for any important tests:  
 		// If we're here, we know nextSignal = primeSignal is primary and there are some pull-up peaks within specified distance

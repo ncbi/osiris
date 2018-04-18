@@ -1,19 +1,18 @@
-InputDirectory = F:/Menageries/TestShoulders/CalDojMore02162018/2-person mixture data/CalDojBaselineTest;
+InputDirectory = C:/Users/goorrob/USACILPullupIssue;
 LadderDirectory = C:/Apps/User_Installs/NCBI/osiris/Config;
-ReportDirectory = F:/Menageries/TestShoulders/CalDojMore02162018/2-person mixture data/CalDojBaselineTest;
-MarkerSetName = GlobalFiler;
-LaneStandardName = ABI-LIZ-600-60-TO-460;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+MarkerSetName = IdentifilerPlus Less ILS250;
+LaneStandardName = ABI-LIZ-LESS250and340-500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171201-163851/V-20171201-163851_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20171201-163851/V-20171201-163851_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20160201-115334/V-20160201-115334_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/osiris/site/Volumes/V-20160201-115334/V-20160201-115334_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/osiris/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 40;
-MinLaneStandardRFU = 500;
-MinLadderRFU = 500;
-MinInterlocusRFU = 40;
-MinLadderInterlocusRFU = 500;
-SampleDetectionThreshold = 40;
+MinSampleRFU = 24.;
+MinLaneStandardRFU = 100.;
+MinLadderRFU = 75.;
+MinInterlocusRFU = 24.;
+MinLadderInterlocusRFU = 75.;
+SampleDetectionThreshold = 10.;
 RawDataString = R;
-;
 
 
