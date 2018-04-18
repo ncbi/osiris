@@ -2045,13 +2045,7 @@ void CoreBioComponent :: ReportPullupMatrix (int pass) {
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		for (j=1; j<=mNumberOfChannels; j++)
-			*outputFile << laserState << " lin " << i << " " << j << " " << mLinearPullupMatrix [i][j] << "\n";
-	}
-
-	for (i=1; i<=mNumberOfChannels; i++) {
-
-		for (j=1; j<=mNumberOfChannels; j++)
-			*outputFile << laserState << " qud " << i << " " << j << " " << mQuadraticPullupMatrix [i][j] << "\n";
+			*outputFile << laserState << " " << i << " " << j << " lin " << mLinearPullupMatrix [i][j] << " quad " << mQuadraticPullupMatrix [i][j] << "\n";
 	}
 
 	if (pass == 2) {
