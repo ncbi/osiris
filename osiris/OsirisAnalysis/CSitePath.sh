@@ -49,6 +49,46 @@ function CHECKRC()
   fi
 }
 
+function CHECKGROUP
+{
+  ## needs work on find commands
+  DIR="$1"
+  GROUP="$2"
+  XX=$(find "${DIR}" -not -group "${GROUP}" | head -1)
+  if test "${XX}" != ""; then
+    return 1
+  fi
+  XX=$(find "${DIR}" -not -perm -0664 | head -1)
+  if test "${XX}" != ""; then
+    return 1
+  fi
+  XX=$(find "${DIR}" -type d -not -perm -02664 | head -1)
+  if test "${XX}" != ""; then
+    return 1
+  fi
+  return 0  
+}
+
+function CHECKOWN
+{
+  ## needs work on find commands
+  DIR="$1"
+  GROUP="$2"
+  USER="$3"
+  if test "$USER" != ""; then
+    XX=$(find "${DIR}" -not -user "${USER}" | head -1)
+    if test "$XX" != ""; then
+      return 1
+    fi
+  fi
+  if test "$GROUP" = ""; then
+    XX=$(find "${DIR}" -perm +020 | head -1)
+    if test "$XX" != ""; then
+      return 1
+    fi
+  fi
+}
+
 function CHGRP()
 {
   DIR="$1"
@@ -64,6 +104,8 @@ function CHGRP()
   chmod -R g+w "${DIR}"
   CHECKRC $?
   find "${DIR}" -type d -exec chmod g+ws '{}' ';'
+  CHECKRC $?
+  CHECKGROUP "${DIR}" "${GROUP}"
   CHECKRC $?
 }
 
@@ -83,6 +125,8 @@ function MKDIR()
       chmod -R g-ws "${DIR}"
       CHECKRC $?
     fi
+    CHECKOWN "${DIR}" "${GROUP}" "${USER}"
+    CHECKRC $?
   fi
   if test "$GROUP" != ""; then
     CHGRP "${DIR}" "${GROUP}"
