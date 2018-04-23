@@ -78,10 +78,14 @@ READLINK=`FINDEXE greadlink`
 CHMOD=`FINDEXE chmod`
 CHGRP=`FINDEXE chgrp`
 FIND=`FINDEXE find`
+HEAD=`FINDEXE head`
+GREP=`FINDEXE grep`
 
 CHECKEXE "$CHMOD" chmod
 CHECKEXE "$CHGRP" chgrp
 CHECKEXE "$FIND" find
+CHECKEXE "$HEAD" head
+CHECKEXE "$GREP" grep
 
 
 function CHECKGROUP
@@ -89,15 +93,15 @@ function CHECKGROUP
   ## needs work on find commands
   DIR="$1"
   GROUP="$2"
-  XX=$("${FIND}" "${DIR}" -not -group "${GROUP}" | head -1)
+  XX=$("${FIND}" "${DIR}" -not -group "${GROUP}" | "${HEAD}" -1)
   if test "${XX}" != ""; then
     return 1
   fi
-  XX=$("${FIND}" "${DIR}" -not -perm -0664 | head -1)
+  XX=$("${FIND}" "${DIR}" -not -perm -0664 | "${HEAD}" -1)
   if test "${XX}" != ""; then
     return 1
   fi
-  XX=$("${FIND}" "${DIR}" -type d -not -perm -02664 | head -1)
+  XX=$("${FIND}" "${DIR}" -type d -not -perm -02664 | "${HEAD}" -1)
   if test "${XX}" != ""; then
     return 1
   fi
@@ -111,13 +115,13 @@ function CHECKOWN
   GROUP="$2"
   USER="$3"
   if test "$USER" != ""; then
-    XX=$("${FIND}" "${DIR}" -not -user "${USER}" | head -1)
+    XX=$("${FIND}" "${DIR}" -not -user "${USER}" | "${HEAD}" -1)
     if test "$XX" != ""; then
       return 1
     fi
   fi
   if test "$GROUP" = ""; then
-    XX=$("${FIND}" "${DIR}" -perm +020 | head -1)
+    XX=$("${FIND}" "${DIR}" -perm +020 | "${HEAD}" -1)
     if test "$XX" != ""; then
       return 1
     fi
@@ -176,7 +180,7 @@ function MKSUBDIR()
   DIR="$2"
   GROUP="$3"
   USER="$4"
-  SLASH=`echo "${DIR}" | grep ^/`
+  SLASH=`echo "${DIR}" | "${GREP}" ^/`
   test "$SLASH" = ""
   CHECKRC $? "Subdir, ${DIR}, should not begin with a slash /"
   test -d "${PARENT}"
@@ -212,7 +216,7 @@ function SHOWINDIR()
 
 if test "$1" != ""; then
   CMD="$1"
-  EXIST=`typeset -F | grep "^declare -f ${CMD}"'$'`
+  EXIST=`typeset -F | "${GREP}" "^declare -f ${CMD}"'$'`
   test "$EXIST" != ""
   CHECKRC $? "function ${CMD} does not exist"
   shift
