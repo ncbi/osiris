@@ -161,7 +161,8 @@ void CProcessGroups::ProcessLine(const char *p, size_t , bool bErrStream)
   {
     wxString s = sLine.Mid(m_nLenType);
     s.MakeLower();
-    if(s.Find(wxS("group")) == wxNOT_FOUND)
+    if( (s.Find(wxS("group")) == wxNOT_FOUND) &&
+        (s.Find(wxS("alias")) == wxNOT_FOUND) )
     {}
     else if(!m_sLastGroup.IsEmpty())
     {

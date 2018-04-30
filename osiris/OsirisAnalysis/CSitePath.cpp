@@ -925,6 +925,8 @@ static bool _checkForExe()
     L"icacls.exe",
     L"cmd.exe",
     L"whoami.exe",
+    L"takeown.exe",
+    L"attrib.exe",
     NULL
   };
   const wchar_t **psCmd = cmdList;

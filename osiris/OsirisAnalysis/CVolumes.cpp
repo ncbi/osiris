@@ -207,8 +207,14 @@ bool CVolume::CheckReload(bool bForceReload)
   }
   else
   {
-    bRtn = m_lab.CheckFileModification(true) &&
-      m_book.CheckReload();
+    if(m_lab.CheckFileModification(true))
+    {
+      bRtn = true;
+    }
+    if(m_book.CheckReload())
+    {
+      bRtn = true;
+    }
   }
   return bRtn;
 }
