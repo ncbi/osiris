@@ -36,6 +36,7 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
+#include <wx/utils.h>
 #include "nwx/nwxString.h"
 #include "nwx/nwxLog.h"
 #include "nwx/nwxFileUtil.h"
@@ -321,8 +322,8 @@ bool CSitePath::_appendArg(wxString *pStr, const wxString &sArg)
 const wxString &CSitePath::_getTmpShellScript()
 {
   // get user config directory
-  wxString sDir = mainApp::GetConfig()->GetConfigPath();
-  wxString sFormat(wxS("tmp-%d.sh"));
+  wxString sDir = wxGetHomeDir();
+  wxString sFormat(wxS("osiris-tmp-%d.sh"));
   int n = 0;
   nwxFileUtil::EndWithSeparator(&sDir);
   _unlinkTmpShellScript();
@@ -359,7 +360,8 @@ const wxString &CSitePath::_prepareShellParm(const wxString &s, wxString *pBuffe
   bool bQuote1 = nq1 != (size_t)wxNOT_FOUND;
   bool bQuote2 = nq2 != (size_t)wxNOT_FOUND;
   bool bBack = s.Find(cBack) != wxNOT_FOUND;
-  if(!(bSpace || bQuote1 || bQuote2 || bBack))
+  bool bEmpty = s.IsEmpty();
+  if(!(bEmpty || bSpace || bQuote1 || bQuote2 || bBack))
   {
     *pBuffer = s;
   }
@@ -511,6 +513,7 @@ bool CSitePath::_runScript(const wxArrayString &pas, bool bAsAdmin)
       }
       else
       {
+        bRtn = false;
         m_nLastError = (nRtn > 0) ? EACCES : ENOENT;
         const wxString &sMsg = proc.BuildLog(ARGV);
         nwxLog::LogMessage(sMsg);
