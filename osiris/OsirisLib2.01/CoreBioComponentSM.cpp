@@ -1358,6 +1358,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	smCraterSidePeak sidePeak;
 	smPrimaryInterchannelLink primaryPullup;
 	smWeakPrimaryInterchannelLink weakPrimaryPullup;
+	smZeroPullupPrimaryInterchannelLink zeroPullupPrimary;
 	double currentRatio;
 	double minRatio = 1.0;
 	double maxRatio = 0.0;
@@ -1590,7 +1591,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	//minRatio = 1.1;
 	bool added;
 	int numberOfOriginalPairedPeaks = pairList.size ();
-	list<DataSignal*> weakPullupPeaks;
+	//list<DataSignal*> weakPullupPeaks;
 
 	if (!hasNegativePullup && !testLaserOffScale) {
 
@@ -1640,19 +1641,29 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 			// the minimum ratio is more likely to be representative of the true pullup (if any) and the noise level on the pullup channel is a better reflection of the likelihood of being able
 			// to have found a peak in the pullup position.
+
+			if (currentPeak < minPullupHeight) {
+
+				continue;
+			}
 			
 			if (minRatioLessThan1) {
 
 				if (minRatio * currentPeak >= noiseLevelForSecondaryChannel) {
 
-					if (nextSignal->HasWeakPullupInChannel (pullupChannel))
-						weakPullupPeaks.push_back (nextSignal);
+					if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
+
+						//weakPullupPeaks.push_back (nextSignal);
+						nextSignal->SetMessageValue (weakPrimaryPullup, true);
+						nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
+					}
 
 					else {
 
 						nextPair = new PullupPair (nextSignal);
 						pairList.push_back (nextPair);
 						added = true;
+						nextSignal->SetMessageValue (zeroPullupPrimary, true);
 					}
 				}
 			}
@@ -1675,6 +1686,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					nextPair = new PullupPair (nextSignal, true);
 					pairList.push_back (nextPair);
 					cout << "Sample File " << (char*)mFileName.GetData () << " has 2 extra primaries from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
+					RGString data;
+					data << pullupChannel << "(3)";
+					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
 				}
 
 				else if (currentPeak >= minHeight) {
@@ -1683,6 +1697,16 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					nextPair = new PullupPair (nextSignal, true);
 					pairList.push_back (nextPair);
 					cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
+					RGString data;
+					data << pullupChannel << "(2)";
+					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+				}
+
+				else {
+
+					RGString data;
+					data << pullupChannel << "(1)";
+					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
 				}
 			}
 		}
@@ -1734,7 +1758,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 			// remove all cross channel links except those for which pullup is sufficiently narrow
 
-			weakPullupPeaks.clear ();
+			//weakPullupPeaks.clear ();
 
 			for (it=mInterchannelLinkageList.begin (); it!=mInterchannelLinkageList.end (); it++) {
 
@@ -1840,13 +1864,13 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				}
 			}
 
-			while (!weakPullupPeaks.empty ()) {
+			//while (!weakPullupPeaks.empty ()) {
 
-				primarySignal = weakPullupPeaks.front ();
-				weakPullupPeaks.pop_front ();
-				primarySignal->SetMessageValue (weakPrimaryPullup, true);
-				primarySignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
-			}
+			//	primarySignal = weakPullupPeaks.front ();
+			//	weakPullupPeaks.pop_front ();
+			//	primarySignal->SetMessageValue (weakPrimaryPullup, true);
+			//	primarySignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
+			//}
 
 			//for (linkIt=mInterchannelLinkageList.begin (); linkIt!=mInterchannelLinkageList.end (); linkIt++) {
 
@@ -1945,7 +1969,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			// for other outliers, the jury is still out until all channel contributions are tallied
 			removePrimaryList.unique ();
 			testedPullups.Clear ();
-			weakPullupPeaks.clear ();
+			//weakPullupPeaks.clear ();
 
 			while (!removePrimaryList.empty ()) {
 

@@ -127,6 +127,13 @@ PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NU
 }
 
 
+PullupPair :: PullupPair (DataSignal* primary, double rawPullupPeak) : mPrimary (primary), mPullup (NULL), mIsOutlier (false), mIsDuplicate (false) {
+
+	mPrimaryHeight = primary->Peak ();
+	mPullupHeight = rawPullupPeak;
+}
+
+
 PullupPair :: PullupPair (DataSignal* primary, bool isDuplicate) : mPrimary (primary), mPullup (NULL), mIsOutlier (false), mIsDuplicate (true) {
 
 	mPrimaryHeight = primary->Peak ();
@@ -138,6 +145,15 @@ PullupPair :: PullupPair (DataSignal* primary, bool isDuplicate) : mPrimary (pri
 PullupPair :: PullupPair (const PullupPair& pup) : mPrimary (pup.mPrimary), mPullup (pup.mPullup), mPrimaryHeight (pup.mPrimaryHeight), mPullupHeight (pup.mPullupHeight), 
 	mIsOutlier (pup.mIsOutlier), mIsDuplicate (pup.mIsDuplicate) {
 
+}
+
+
+bool PullupPair :: IsRawDataPullup () const {
+
+	if ((mPullup == NULL) && (mPullupHeight != 0.0))
+		return true;
+
+	return false;
 }
 
 
@@ -1343,6 +1359,15 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 
 	delete[] pairArray;
 	return true;
+}
+
+
+double CoreBioComponent :: GetMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth) const {
+
+	if (mDataChannels == NULL)
+		return 0.0;
+
+	return mDataChannels [channel]->GetMaxAbsoluteRawDataInInterval (center, halfWidth);
 }
 
 

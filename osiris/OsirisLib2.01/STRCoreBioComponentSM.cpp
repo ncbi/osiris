@@ -2183,6 +2183,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		rightLimitPlus = primaryMean + 5.0 * primaryTolerance;
 		leftLimitPlus = primaryMean - 5.0 * primaryTolerance;
 		probablePullupPeaks.Clear ();
+		weakPullupPeaks.Clear ();
+
+		if (primaryChannel == 2) {
+
+			if ((primaryMean < 5727.0) && (primaryMean > 5726.0))
+				bool stopHere = true;
+		}
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
@@ -2468,6 +2475,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			testSignal = nextSignal->GetPreviousLinkedSignal ();
 			testSignal2 = nextSignal->GetNextLinkedSignal ();
+
+			if ((testSignal->GetChannel () == 3) && (testSignal->GetMean () < 5726.0) && (testSignal->GetMean () > 5725.0))
+				bool stopHere = true;
 			
 			if ((testSignal == NULL) || (testSignal2 == NULL)) {
 
@@ -2494,76 +2504,78 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				if (nextSignal->Peak () < minRFU)
 					nextSignal->SetMessageValue (belowMinRFU, true);
 
-				if (testSignal->GetMessageValue (pullup)) {
+				//if (testSignal->GetMessageValue (pullup)) {  // Removed 04/29/2018:  we have found peaks that are pullup from one channel while being sigmoids from another
 
-					testSignal->SetMessageValue (pullup, false);
+				//	testSignal->SetMessageValue (pullup, false);
 
-					for (j=1; j<=mNumberOfChannels; j++) {
+				//	for (j=1; j<=mNumberOfChannels; j++) {
 
-						if (j == testSignal->GetChannel ())
-							continue;
+				//		if (j == testSignal->GetChannel ())
+				//			continue;
 
-						nextSignal2 = testSignal->HasPrimarySignalFromChannel (j);
+				//		nextSignal2 = testSignal->HasPrimarySignalFromChannel (j);
 
-						if (nextSignal2 == NULL)
-							continue;
+				//		if (nextSignal2 == NULL)
+				//			continue;
 
-						testSignal->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
-						iChannel = nextSignal2->GetInterchannelLink ();
+				//		testSignal->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
+				//		iChannel = nextSignal2->GetInterchannelLink ();
 
-						if (iChannel != NULL) {
+				//		if (iChannel != NULL) {
 
-							iChannel->RemoveDataSignalFromSecondaryList (testSignal);
+				//			iChannel->RemoveDataSignalFromSecondaryList (testSignal);
 
-							if (iChannel->IsEmpty ()) {
+				//			if (iChannel->IsEmpty ()) {
 
-								nextSignal2->SetInterchannelLink (NULL);
-								nextSignal2->SetMessageValue (primaryLink, false);
-								channelRemoval.insert (iChannel);
-								mInterchannelLinkageList.remove (iChannel);
-							}
-						}
-					}
-				}
+				//				nextSignal2->SetInterchannelLink (NULL);
+				//				nextSignal2->SetMessageValue (primaryLink, false);
+				//				channelRemoval.insert (iChannel);
+				//				mInterchannelLinkageList.remove (iChannel);
+				//			}
+				//		}
+				//	}
+				//}
 
-				if (testSignal2->GetMessageValue (pullup)) {
+				//if (testSignal2->GetMessageValue (pullup)) {
 
-					testSignal2->SetMessageValue (pullup, false);
+				//	testSignal2->SetMessageValue (pullup, false);
 
-					for (j=1; j<=mNumberOfChannels; j++) {
+				//	for (j=1; j<=mNumberOfChannels; j++) {
 
-						if (j == testSignal2->GetChannel ())
-							continue;
+				//		if (j == testSignal2->GetChannel ())
+				//			continue;
 
-						nextSignal2 = testSignal2->HasPrimarySignalFromChannel (j);
+				//		nextSignal2 = testSignal2->HasPrimarySignalFromChannel (j);
 
-						if (nextSignal2 == NULL)
-							continue;
+				//		if (nextSignal2 == NULL)
+				//			continue;
 
-						testSignal2->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
-						iChannel = nextSignal2->GetInterchannelLink ();
+				//		testSignal2->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
+				//		iChannel = nextSignal2->GetInterchannelLink ();
 
-						if (iChannel != NULL) {
+				//		if (iChannel != NULL) {
 
-							iChannel->RemoveDataSignalFromSecondaryList (testSignal2);
+				//			iChannel->RemoveDataSignalFromSecondaryList (testSignal2);
 
-							if (iChannel->IsEmpty ()) {
+				//			if (iChannel->IsEmpty ()) {
 
-								nextSignal2->SetInterchannelLink (NULL);
-								nextSignal2->SetMessageValue (primaryLink, false);
-								channelRemoval.insert (iChannel);
-								mInterchannelLinkageList.remove (iChannel);
-							}
-						}
-					}
-				}
+				//				nextSignal2->SetInterchannelLink (NULL);
+				//				nextSignal2->SetMessageValue (primaryLink, false);
+				//				channelRemoval.insert (iChannel);
+				//				mInterchannelLinkageList.remove (iChannel);
+				//			}
+				//		}
+				//	}
+				//}
 			}
 
 			else {
 
 				testSignal->SetMessageValue (craterSidePeak, false);
+				testSignal->SetMessageValue (sigmoidalSidePeak, false);
 				testSignal->SetMessageValue (sigmoidalPullup, false);
 				testSignal2->SetMessageValue (craterSidePeak, false);
+				testSignal2->SetMessageValue (sigmoidalSidePeak, false);
 				testSignal2->SetMessageValue (sigmoidalPullup, false);
 				OverallList.RemoveReference (nextSignal);
 				//delete nextSignal;

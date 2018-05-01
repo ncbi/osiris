@@ -5162,6 +5162,9 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 		if (!isPosCntl)
 			testForAcceptedTriallele = pGenotypes->ContainsSampleTriallele (GetLocusName (), alleleList);
+
+		else
+			testForAcceptedTriallele = true;
 		
 		alleleList.ClearAndDelete ();
 

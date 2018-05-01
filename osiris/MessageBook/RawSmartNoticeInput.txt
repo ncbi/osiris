@@ -253,6 +253,7 @@ smILSBPForEndOfPrimerPeaks	1140	2656
 smPrePrimerPercentOfNoiseRangeToBeConsideredPeak	1141	2657
 smPrePrimerPercentOfNoiseRangeForLevelChange	1142	2658
 smWeakPrimaryInterchannelLink	1143	2659
+smZeroPullupPrimaryInterchannelLink	1144	2660
 
 
 

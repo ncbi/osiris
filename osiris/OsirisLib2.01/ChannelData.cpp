@@ -1042,6 +1042,45 @@ double ChannelData :: EvaluateBaselineAtTime (double time) {
 }
 
 
+double ChannelData :: GetMaxAbsoluteRawDataInInterval (double center, double halfWidth) const {
+
+	if (mData == NULL)
+		return 0.0;
+
+	int startPt;
+	int endPt;
+
+	startPt = (int) floor (center - halfWidth);
+	endPt = (int) ceil (center + halfWidth);
+
+	if (startPt < 0)
+		startPt = 0;
+
+	if (endPt >= mData->GetNumberOfSamples ())
+		endPt = mData->GetNumberOfSamples () - 1;
+
+	int i;
+	double max = 0.0;
+	double temp;
+	double aTemp;
+	double answer = 0.0;
+
+	for (i=startPt; i<=endPt; i++) {
+
+		temp = mData->Value (i);
+		aTemp = fabs (temp);
+
+		if (aTemp > max) {
+
+			max = aTemp;
+			answer = temp;
+		}
+	}
+
+	return answer;
+}
+
+
 
 int ChannelData :: CreateAndSubstituteSinglePassFilteredSignalForRawData (int window) {
 

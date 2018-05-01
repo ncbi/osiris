@@ -1536,6 +1536,12 @@ int smWeakPrimaryInterchannelLink::sMessageIndex = 0;
 int smWeakPrimaryInterchannelLink::sMessageScope = 0;
 
 
+RGString smZeroPullupPrimaryInterchannelLink::sName = "smZeroPullupPrimaryInterchannelLink";
+int smZeroPullupPrimaryInterchannelLink::sSubject = smZeroPullupPrimaryInterchannelLink::LoadType ();
+int smZeroPullupPrimaryInterchannelLink::sMessageIndex = 0;
+int smZeroPullupPrimaryInterchannelLink::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1791,6 +1797,7 @@ PERSISTENT_DEFINITION (smILSBPForEndOfPrimerPeaks, 2656, "smILSBPForEndOfPrimerP
 PERSISTENT_DEFINITION (smPrePrimerPercentOfNoiseRangeToBeConsideredPeak, 2657, "smPrePrimerPercentOfNoiseRangeToBeConsideredPeak")
 PERSISTENT_DEFINITION (smPrePrimerPercentOfNoiseRangeForLevelChange, 2658, "smPrePrimerPercentOfNoiseRangeForLevelChange")
 PERSISTENT_DEFINITION (smWeakPrimaryInterchannelLink, 2659, "smWeakPrimaryInterchannelLink")
+PERSISTENT_DEFINITION (smZeroPullupPrimaryInterchannelLink, 2660, "smZeroPullupPrimaryInterchannelLink")
 
 
 
@@ -17087,6 +17094,66 @@ int smWeakPrimaryInterchannelLink :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smWeakPrimaryInterchannelLink* noticeType = new smWeakPrimaryInterchannelLink;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smZeroPullupPrimaryInterchannelLink :: smZeroPullupPrimaryInterchannelLink () : SmartNotice () {
+
+}
+
+
+smZeroPullupPrimaryInterchannelLink :: smZeroPullupPrimaryInterchannelLink (const smZeroPullupPrimaryInterchannelLink& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smZeroPullupPrimaryInterchannelLink :: ~smZeroPullupPrimaryInterchannelLink () {
+
+}
+
+
+int smZeroPullupPrimaryInterchannelLink :: GetSubject () const {
+
+	return smZeroPullupPrimaryInterchannelLink::sSubject;
+}
+
+
+void smZeroPullupPrimaryInterchannelLink :: SetIndexAndScope (int index, int scope) const {
+
+	smZeroPullupPrimaryInterchannelLink::sMessageIndex = index;
+	smZeroPullupPrimaryInterchannelLink::sMessageScope = scope;
+}
+
+
+int smZeroPullupPrimaryInterchannelLink :: GetMessageIndex () const {
+
+	return smZeroPullupPrimaryInterchannelLink :: sMessageIndex;
+}
+
+
+int smZeroPullupPrimaryInterchannelLink :: GetScope () const {
+
+	return smZeroPullupPrimaryInterchannelLink :: sMessageScope;
+}
+
+
+RGString smZeroPullupPrimaryInterchannelLink :: GetName () const {
+
+	return smZeroPullupPrimaryInterchannelLink :: sName;
+}
+
+
+
+int smZeroPullupPrimaryInterchannelLink :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smZeroPullupPrimaryInterchannelLink* noticeType = new smZeroPullupPrimaryInterchannelLink;
 	warehouse->AddType (noticeType);
 	return 1;
 }
