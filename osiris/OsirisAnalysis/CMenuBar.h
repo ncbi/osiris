@@ -58,6 +58,7 @@ public:
     }
 #endif
 private:
+  bool _okToAccessSiteSettings();
   wxMenu *m_pMenuFile;
 #ifdef __WINDOW_LIST__
   int m_nRecursive;

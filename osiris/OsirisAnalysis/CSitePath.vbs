@@ -457,7 +457,7 @@ Function CACLS_RESET(sPath)
     n = 0
     If Not IsNull(sIcacls) Then
       If Not IsNull(sTakeOwn) Then
-        sCmd(n) = """" & sTakeOwn & """ /A /R /F """ & sPath
+        sCmd(n) = """" & sTakeOwn & """ /A /R /F """ & sPath & """"
         bCheck(n) = 0
         n=n+1
       End If

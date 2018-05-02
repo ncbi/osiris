@@ -280,7 +280,6 @@ mainFrame::mainFrame() :
 #ifndef __NO_MDI__
   CreateStatusBar(1);
 #endif
-  _SetupCommonMenuBar();
   SetupTimer();
   COsirisIcon x;
 #if mainFrameIsWindow
@@ -290,6 +289,7 @@ mainFrame::mainFrame() :
     DialogParent(),wxID_ANY,"OSIRIS Message Log");
   m_pDialogErrorLog->SetIcon(x);
   m_pDialogErrorLog->SetTarget();
+  _SetupCommonMenuBar();
 #if DRAG_DROP_FILES
   m_pDropTarget = CFileDropTarget::Make(this);
 #endif
