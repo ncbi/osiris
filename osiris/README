@@ -4,7 +4,7 @@
 #  -- problems, contact us at forensics@ncbi.nlm.nih.gov
 #
 #
-# wxWidgets 3.0.1 is required
+# wxWidgets 3.0.4 is required
 # For more information, see http://www.wxwidgets.org
 #
 # This shell script is for building the macintosh version
@@ -134,7 +134,7 @@
 #  mkdir build-cocoa
 #
 # there is a shell script file in this osiris distribution, in 
-# the folder build-osx, named config.sh
+# the folder buildwx-osx, named config.sh
 # copy that file to wxWidgets-3.0.4/build-cocoa
 #
 # if the osiris directory and wxWidgets have the same parent directory, the
