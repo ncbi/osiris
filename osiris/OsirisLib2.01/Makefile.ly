@@ -1,15 +1,19 @@
+BISON=/usr/bin/bison
+FLEX=/usr/bin/flex
+CAT=/bin/cat
+RM=/bin/rm
 
 all: ExpressionParserUX.cpp
 	
 
 ExpressionParserUX.cpp: ExpressionYacc.cpp ExpressionLex.cpp
-	cat ExpressionYacc.cpp ExpressionLex.cpp > ExpressionParserUX.cpp
+	$(CAT) ExpressionYacc.cpp ExpressionLex.cpp > ExpressionParserUX.cpp
 
 ExpressionLex.cpp: SmartExpressionExpr.l Expression.h
-	flex -oExpressionLex.cpp -PExpr SmartExpressionExpr.l
+	$(FLEX) -oExpressionLex.cpp -PExpr SmartExpressionExpr.l
 
 ExpressionYacc.cpp:  SmartExpressionExpr.y Expression.h
-	bison -d -pExpr -oExpressionYacc.cpp SmartExpressionExpr.y
+	$(BISON) -d -pExpr -oExpressionYacc.cpp SmartExpressionExpr.y
 
 clean:
-	rm -rf ExpressionParserUX.cpp ExpressionYacc.cpp ExpressionLex.cpp
+	$(RM) -rf ExpressionParserUX.cpp ExpressionYacc.cpp ExpressionLex.cpp
