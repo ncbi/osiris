@@ -242,12 +242,12 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
-  my $zipFile = "${dest}-Windows.zip";
+  my $zipFile = "${dest}-Windows.exe";
 
   if((!$NO_ZIP_FILE) && &TESTFILES($zipFile,"${dest}"))
   {
     (-r $zipFile) && (unlink($zipFile) || die("Cannot remove ${zipFile}"));
-    &SYSTEM("${PATH7Z} a -r ${zipFile} ${dest}");
+    &SYSTEM("${PATH7Z} a -r -sfx7z.sfx  ${zipFile} ${dest}");
   }
 }
 
