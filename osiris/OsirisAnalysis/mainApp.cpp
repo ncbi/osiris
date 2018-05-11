@@ -509,6 +509,30 @@ wxWindow *mainApp::GetTopLevelParent(wxWindow *p)
   }
   return pRtn;
 }
+void mainApp::LAYOUT_HACK(wxWindow *p)
+{
+  // sometimes a window will 'layout' or cleanup
+  // after a resize when Layout() doesn't work
+  // created as a result of OS-803
+  wxTopLevelWindow *pTop = wxDynamicCast(p,wxTopLevelWindow);
+  if( (pTop != NULL) && pTop->IsMaximized() )
+  {
+    ((wxTopLevelWindow *)p)->Maximize(false);
+    ((wxTopLevelWindow *)p)->Maximize(true);
+  }
+  else
+  {
+    wxSize sz(p->GetSize());
+    if(sz.x > 1)
+    {
+      sz.x--;
+      p->SetSize(sz);
+      sz.x++;
+      p->SetSize(sz);
+    }
+  }
+}
+
 #ifndef __WXMAC__
 void mainApp::OnInitCmdLine (wxCmdLineParser &parser) 
 {

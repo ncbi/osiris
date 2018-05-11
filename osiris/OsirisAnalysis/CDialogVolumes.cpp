@@ -369,38 +369,6 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
       m_pPanelLab->Layout();
       bool bIsShown = IsShown();
       wxSize szSave;
-#if 1
-      Layout();
-#else
-      if(bIsShown)
-      {
-        // purpose of this is to not change the width of the window
-        // when calling Fit()
-        //
-        // need to allow the height to increate because otherwise
-        // the thresholds table will have scrollbars
-        // even if the height does not change automatically
-        //
-        //  if Fit() is NOT called, then
-        //  the scrollbars will not appear on the tables 
-        //  even if needed
-        //    scrollbar fix is below nwxGrid::ForceRefreshAll
-        //    the following is probably not needed
-
-        szSave = GetSize();
-        SetMinSize(szSave); // do not allow height to decrease
-
-        // sz.SetHeight(-1); // allow height to increase - 12/19/11 do not
-        SetMaxSize(szSave); 
-        Layout();
-      }
-      else
-      {
-        m_pPanelLab->Fit();
-        Fit();
-      }
-#endif
-      Refresh();
       if(bIsShown)
       {
         SetMinSize(wxDefaultSize);
@@ -419,6 +387,7 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
         wxCommandEvent ee(wxEVT_COMMAND_BUTTON_CLICKED,IDlock);
         GetEventHandler()->AddPendingEvent(ee);
       }
+      mainApp::LAYOUT_HACK(this);
     }
   }
   return bRtn;
