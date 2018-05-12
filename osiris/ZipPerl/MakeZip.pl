@@ -421,26 +421,9 @@ sub CopyMac
   {
     &SignAppMac($folder) || last;
   }
-  if(0) # not making tar file
-  {
-    my $testDest = "${TOP}/TestAnalysis";
-    my $zipDir = $ENV{OSIRISTGZ};
-    if(!(-d $zipDir && -w $zipDir))
-    {
-      $zipDir = `dirname $0`;
-      chomp $zipDir;
-      chdir "${zipDir}/..";
-      $zipDir = `pwd`;
-      chomp $zipDir;
-    }
-    my $zipFile = "${zipDir}/Osiris-Mac-${VERSION}.tar.gz";
-    if( ($#ARGV >= 0) || &TESTFILES($zipFile,$DEST) ||
-        &TESTFILES($zipFile,$testDest) )
-    {
-      &SYSTEM("cd \"${TOP}\" ; /usr/bin/tar zcvf ${zipFile} TestAnalysis OsirisXSL ${sDir}.app");
-    }
-  }  ## end if(1)
-  ### END make tar.gz
+  system("./makedmg.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"") ||
+    system("./maketar.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"");
+
 }
 
 my $home = $ENV{"HOME"};
