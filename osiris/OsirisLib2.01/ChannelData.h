@@ -200,6 +200,7 @@ public:
 	double GetNoiseRange () const { return mData->GetNoiseRange (); }
 	double EvaluateBaselineAtTime (double time);
 	double GetMaxAbsoluteRawDataInInterval (double center, double halfWidth) const;
+	bool TestMaxAbsoluteRawDataInInterval (double center, double halfWidth, double fractionNoiseRange, double& value) const;
 
 	int CreateAndSubstituteSinglePassFilteredSignalForRawData (int window);
 	int CreateAndSubstituteTriplePassFilteredSignalForRawData (int window);

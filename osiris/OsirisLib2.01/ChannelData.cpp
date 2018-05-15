@@ -1081,6 +1081,24 @@ double ChannelData :: GetMaxAbsoluteRawDataInInterval (double center, double hal
 }
 
 
+bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double halfWidth, double fractionNoiseRange, double& value) const {
+
+	if (mData == NULL) {
+
+		value = 0.0;
+		return false;
+	}
+
+	value = GetMaxAbsoluteRawDataInInterval (center, halfWidth);
+	double noiseRange = fractionNoiseRange * mData->GetNoiseRange ();
+
+	if (fabs (value) >= noiseRange)
+		return true;
+
+	return false;
+}
+
+
 
 int ChannelData :: CreateAndSubstituteSinglePassFilteredSignalForRawData (int window) {
 

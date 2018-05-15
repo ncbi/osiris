@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.25</VersionNumber>
-	<BuildTime>04/27/2018 06:26 PM</BuildTime>
+	<VersionNumber>7.26</VersionNumber>
+	<BuildTime>05/02/2018 06:28 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -704,9 +704,22 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>smViewHighDetailMessages</Expression>
 			</ReportCriterion>
 			<Text>Primary Pullup, Possibly Occluded</Text>
+			<TextForData> into channel(s): </TextForData>
+			<SeparatorText>, </SeparatorText>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smRawDataPrimaryInterchannelLink</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>smViewHighDetailMessages</Expression>
+			</ReportCriterion>
+			<Text>Possible Primary Pullup Based on Raw Data</Text>
 			<TextForData> into channel(s): </TextForData>
 			<SeparatorText>, </SeparatorText>
 			<ReportLevel>20</ReportLevel>
@@ -7265,6 +7278,7 @@
 						<Name>smAmbiguousInterlocusWithPoorMorphology</Name>
 						<Name>smPrimaryInterchannelLink</Name>
 						<Name>smWeakPrimaryInterchannelLink</Name>
+						<Name>smRawDataPrimaryInterchannelLink</Name>
 						<Name>smZeroPullupPrimaryInterchannelLink</Name>
 						<Name>smCrater</Name>
 						<Name>smSigmoidalPullup</Name>

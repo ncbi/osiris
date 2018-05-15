@@ -836,10 +836,16 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		pair = *it;
 		pullUp = pair->mPullup;
 
-		if (pullUp == NULL)
-			continue;
+		if (pullUp == NULL) {
 
-		if (pullUp->IsNegativePeak ())
+			if (pair->mPullupHeight >= 0.0)
+				continue;
+
+			else if (pair->mPullupHeight < -0.5)
+				nNegatives++;
+		}
+
+		else if (pullUp->IsNegativePeak ())
 			nNegatives++;
 
 		else if (DataSignal::IsNegativeOrSigmoid (pullUp))
@@ -854,7 +860,7 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
 
 		if (pullUp == NULL)
-			yValues [i] = newPair->mPullupHeight = 0.0;
+			yValues [i] = newPair->mPullupHeight = pair->mPullupHeight;
 
 		else if (pullUp->IsNegativePeak ()) {
 
@@ -1252,7 +1258,23 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 
 		pair = *it;
 
-		if ((pair->mPullup == NULL) || DataSignal::IsNegativeOrSigmoid (pair->mPullup)) {
+		if (pair->mPullup == NULL) {
+
+			if (pair->mPullupHeight > 0.0) {
+
+				pair->mIsOutlier = true;
+				continue;
+			}
+
+			newPair = pairArray [i] = new PullupPair (*pair);	
+			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
+			yValues [i] = newPair->mPullupHeight = pair->mPullupHeight;
+
+			n++;
+			i++;
+		}
+
+		else if (DataSignal::IsNegativeOrSigmoid (pair->mPullup)) {
 
 			newPair = pairArray [i] = new PullupPair (*pair);	
 			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
@@ -1298,7 +1320,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 
 	double lmsValue = lms->CalculateLMS ();
 
-	for (i=0; i<nNegatives; i++) {
+	for (i=0; i<n; i++) {
 
 		if (lms->ElementIsOutlier (i))
 			pairArray [i]->mIsOutlier = true;
@@ -1323,7 +1345,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 	list<double> xList;
 	list<double> yList;
 
-	for (i=0; i<nNegatives; i++) {
+	for (i=0; i<n; i++) {
 
 		newPair = pairArray [i];
 
@@ -1354,7 +1376,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 	delete[] xValues;
 	delete[] yValues;
 
-	for (i=0; i<nNegatives; i++)
+	for (i=0; i<n; i++)
 		delete pairArray [i];
 
 	delete[] pairArray;
@@ -1362,12 +1384,15 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 }
 
 
-double CoreBioComponent :: GetMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth) const {
+bool CoreBioComponent :: TestMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth, double fractionNoiseRange, double& value) const {
 
-	if (mDataChannels == NULL)
-		return 0.0;
+	if (mDataChannels == NULL) {
 
-	return mDataChannels [channel]->GetMaxAbsoluteRawDataInInterval (center, halfWidth);
+		value = 0.0;
+		return false;
+	}
+
+	return mDataChannels [channel]->TestMaxAbsoluteRawDataInInterval (center, halfWidth, fractionNoiseRange, value);
 }
 
 

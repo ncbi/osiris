@@ -183,7 +183,7 @@ public:
 	void SetQuadraticPullupMatrix (int i, int j, double value);
 	void CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList, bool testLaserOffScale);
 
-	double GetMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth) const;
+	bool TestMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth, double fractionNoiseRange, double& value) const;
 
 	void ReportSampleTableRow (RGTextOutput& text);
 	void ReportSampleTableRowWithLinks (RGTextOutput& text);

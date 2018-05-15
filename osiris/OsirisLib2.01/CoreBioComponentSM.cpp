@@ -1371,6 +1371,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	bool maxRatioLargerThan0 = false;
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
 	double minPullupHeight = 0.0;
+	double rawHeight;
 
 	noiseLevelForSecondaryChannel = 0.01 * percentNoiseLevel * noiseLevelForSecondaryChannel;
 
@@ -1527,7 +1528,66 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		return true;
 	}
 
+	if ((pullupChannel == 4) && (primaryChannel == 5))
+		bool stopHere = true;
+
+	// Add in raw data only pullup here
+
+	RGDList rawDataPullups;  // add raw data primary pullup peaks here so can test later to see if a peak falls in this category
+	RGDList occludedDataPrimaries;  // add primary peaks whose potential pullups are occluded by a nearby peak, but not near enough to cause actual pullup
+
 	// Perform additional tests to see if hasNegativePullup accurately reflects reality... (10/16/2016)
+	RGDListIterator channelIterator (*primaryChannelPeaks);
+	smRawDataPrimaryInterchannelLink rawDataPrimary;
+
+	while (nextSignal = (DataSignal*) channelIterator ()) {
+
+		// Look for raw data primary pullups, classify if positive or negative, form new PullupPair and add to lists
+
+		if (nextSignal->GetMessageValue (laserOffScale) != testLaserOffScale)
+				continue;
+
+			if (nextSignal->GetMessageValue (pullup))   // we leave this in because if the "primary" is also a pullup, we can't know if a cross channel effect is due to this peak
+				continue;
+
+			if (nextSignal->GetMessageValue (sidePeak))
+				continue;
+
+			currentPeak = nextSignal->Peak ();
+
+			if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
+
+				//weakPullupPeaks.push_back (nextSignal);
+				nextSignal->SetMessageValue (weakPrimaryPullup, true);
+				RGString data;
+				data << pullupChannel;
+				nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+				occludedDataPrimaries.Append (nextSignal);
+			}
+
+			else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.25 * nextSignal->GetWidth (), 1.5, rawHeight)) {
+
+				nextPair = new PullupPair (nextSignal, rawHeight);
+				rawDataPullups.Append (nextSignal);
+				pairList.push_back (nextPair);
+				RGString data;
+				data << pullupChannel;
+				nextSignal->SetMessageValue (rawDataPrimary, true);
+				nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+
+				if (rawHeight < 0.0) {
+
+					nNegatives++;
+					negativePairs.push_back (nextPair);
+					hasNegativePullup = true;
+				}
+
+				else {
+
+					nPos++;
+				}
+			}
+	}
 
 	if (hasNegativePullup) {
 
@@ -1540,8 +1600,10 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			while (!negativePairs.empty ()) {
 
 				nextPair = negativePairs.front ();
+				nextSignal = nextPair->mPrimary;
 				negativePairs.pop_front ();
 				pairList.remove (nextPair);
+				rawDataPullups.RemoveReference (nextSignal);  // Do we want to do this?
 				delete nextPair;
 			}
 		}
@@ -1581,6 +1643,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			nextPair = pairList.front ();
 			delete nextPair;
 			pairList.pop_front ();
+			rawDataPullups.Clear ();
+			occludedDataPrimaries.Clear ();
 		}
 
 		//cout << "Aborting test because of positive/negative mismatch..." << endl;
@@ -1598,7 +1662,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		// recruit additional peaks from channel list that may be tall enough to be primary pullup but are not included
 		// because there was no cross channel effect
 
-		RGDListIterator channelIterator (*primaryChannelPeaks);
 		double threshold = 0.9 * minHeight;
 		//cout << "Adding unpaired signals (time, primary):  ";
 
@@ -1606,6 +1669,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		if (minPullupThreshold < minRFUForSecondaryChannel)
 			minRFUForSecondaryChannel = minPullupThreshold;
+
+		channelIterator.Reset ();
 
 		while (nextSignal = (DataSignal*) channelIterator ()) {
 
@@ -1616,6 +1681,12 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				continue;
 
 			if (nextSignal->GetMessageValue (sidePeak))
+				continue;
+
+			if (rawDataPullups.ContainsReference (nextSignal))
+				continue;
+
+			if (occludedDataPrimaries.ContainsReference (nextSignal))
 				continue;
 
 			//if (nextSignal->Peak () < primaryThreshold)
@@ -1642,29 +1713,29 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			// the minimum ratio is more likely to be representative of the true pullup (if any) and the noise level on the pullup channel is a better reflection of the likelihood of being able
 			// to have found a peak in the pullup position.
 
-			if (currentPeak < minPullupHeight) {
+			if (currentPeak < threshold) {
 
 				continue;
 			}
 			
 			if (minRatioLessThan1) {
 
-				if (minRatio * currentPeak >= noiseLevelForSecondaryChannel) {
+				if (minRatio * currentPeak >= minRFUForSecondaryChannel) {
 
-					if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
+					//if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
 
-						//weakPullupPeaks.push_back (nextSignal);
-						nextSignal->SetMessageValue (weakPrimaryPullup, true);
-						nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
-					}
+					//	//weakPullupPeaks.push_back (nextSignal);
+					//	nextSignal->SetMessageValue (weakPrimaryPullup, true);
+					//	nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
+					//}
 
-					else {
+					//else {
 
 						nextPair = new PullupPair (nextSignal);
 						pairList.push_back (nextPair);
 						added = true;
 						nextSignal->SetMessageValue (zeroPullupPrimary, true);
-					}
+					//}
 				}
 			}
 
@@ -1715,6 +1786,25 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double outlierThreshold;
 	double leastMedianValue;
 
+	rawDataPullups.Clear ();
+	occludedDataPrimaries.Clear ();
+
+	//while (nextSignal = (DataSignal*) rawDataPullups.GetFirst ()) {
+
+	//	RGString data;
+	//	data << pullupChannel;
+	//	nextSignal->SetMessageValue (rawDataPrimary, true);
+	//	nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+	//}
+
+	//while (nextSignal = (DataSignal*) occludedDataPrimaries.GetFirst ()) {
+
+	//	nextSignal->SetMessageValue (weakPrimaryPullup, true);
+	//	RGString data;
+	//	data << pullupChannel;
+	//	nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+	//}
+
 	// add additionalPairsRequired and numberOfOriginalPairedPeaks to calling sequence below so least median of squares can use the info.
 
 	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold);
@@ -1723,7 +1813,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 
 
-	// check for all pullup peaks beging outliers, vs all non-outliers from 0-peaks
+	// check for all pullup peaks being outliers, vs all non-outliers from 0-peaks
 	// what to do if answer = false?
 	double sigmaPrimary;
 	double sigmaSecondary;
