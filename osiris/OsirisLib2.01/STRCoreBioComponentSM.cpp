@@ -3385,21 +3385,21 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 	double linear;
 	double quadratic;
 
-	for (i=1; i<=mNumberOfChannels; i++) {
+	//for (i=1; i<=mNumberOfChannels; i++) {
 
-		for (j=1; j<=mNumberOfChannels; j++) {
+	//	for (j=1; j<=mNumberOfChannels; j++) {
 
-			if (j == i)
-				continue;
+	//		if (j == i)
+	//			continue;
 
-			currentNonPrimaryList = notPrimaryLists [i][j];
+	//		currentNonPrimaryList = notPrimaryLists [i][j];
 
-			//cout << "Analyze negative peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
-			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, true);
-		}
+	//		//cout << "Analyze negative peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+	//		individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, true);
+	//	}
 
-		//cout << "\n";
-	}
+	//	//cout << "\n";
+	//}
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
@@ -3511,24 +3511,24 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
-	for (i=1; i<=mNumberOfChannels; i++) {
+	//for (i=1; i<=mNumberOfChannels; i++) {
 
-		for (j=1; j<=mNumberOfChannels; j++) {
+	//	for (j=1; j<=mNumberOfChannels; j++) {
 
-			if (j == i)
-				continue;
+	//		if (j == i)
+	//			continue;
 
-			currentNonPrimaryList = notPrimaryLists [i][j];
+	//		currentNonPrimaryList = notPrimaryLists [i][j];
 
-			if (!mPullupTestedMatrix [i][j]) {
+	//		if (!mPullupTestedMatrix [i][j]) {
 
-				//cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
-				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
-			}
-		}
+	//			//cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+	//			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
+	//		}
+	//	}
 
-		//cout << "\n";
-	}
+	//	//cout << "\n";
+	//}
 
 	newResult = false;
 	allOK = true;

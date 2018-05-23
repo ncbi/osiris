@@ -1384,7 +1384,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	int nPos = 0;
 	//double factor;
 	linearPart = quadraticPart = 0.0;
-	int nPossibleNegative;
+//	int nPossibleNegative;
 	list<PullupPair*> negativePairs;
 
 	for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
@@ -1547,128 +1547,165 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if (nextSignal->GetMessageValue (laserOffScale) != testLaserOffScale)
 				continue;
 
-			if (nextSignal->GetMessageValue (pullup))   // we leave this in because if the "primary" is also a pullup, we can't know if a cross channel effect is due to this peak
-				continue;
+		if (nextSignal->GetMessageValue (pullup))   // we leave this in because if the "primary" is also a pullup, we can't know if a cross channel effect is due to this peak
+			continue;
 
-			if (nextSignal->GetMessageValue (sidePeak))
-				continue;
+		if (nextSignal->GetMessageValue (sidePeak))
+			continue;
 
-			currentPeak = nextSignal->Peak ();
+		currentPeak = nextSignal->Peak ();
 
-			if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
+		if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
 
-				//weakPullupPeaks.push_back (nextSignal);
-				nextSignal->SetMessageValue (weakPrimaryPullup, true);
-				RGString data;
-				data << pullupChannel;
-				nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
-				occludedDataPrimaries.Append (nextSignal);
-			}
-
-			else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.25 * nextSignal->GetWidth (), 1.5, rawHeight)) {
-
-				nextPair = new PullupPair (nextSignal, rawHeight);
-				rawDataPullups.Append (nextSignal);
-				pairList.push_back (nextPair);
-				RGString data;
-				data << pullupChannel;
-				nextSignal->SetMessageValue (rawDataPrimary, true);
-				nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
-
-				if (rawHeight < 0.0) {
-
-					nNegatives++;
-					negativePairs.push_back (nextPair);
-					hasNegativePullup = true;
-				}
-
-				else {
-
-					nPos++;
-				}
-			}
-	}
-
-	if (hasNegativePullup) {
-
-		nPossibleNegative = nNegatives + nSigmoids;
-
-		if (nNegatives < nPos) {
-
-			hasNegativePullup = false;
-
-			while (!negativePairs.empty ()) {
-
-				nextPair = negativePairs.front ();
-				nextSignal = nextPair->mPrimary;
-				negativePairs.pop_front ();
-				pairList.remove (nextPair);
-				rawDataPullups.RemoveReference (nextSignal);  // Do we want to do this?
-				delete nextPair;
-			}
+			//weakPullupPeaks.push_back (nextSignal);
+			//nextSignal->SetMessageValue (weakPrimaryPullup, true);  // call message here and add data even if no pullup found to expose the pattern, whatever it is
+			//RGString data;
+			//data << pullupChannel;
+			//nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+			occludedDataPrimaries.Append (nextSignal);
 		}
 
-		//if (n != nPossibleNegative) {
+		else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight)) {  // Modify min primary and min ratio based on these...
 
-		//	if (nPossibleNegative == 1) {
+			nextPair = new PullupPair (nextSignal, rawHeight);
+			rawDataPullups.Append (nextSignal);
+			pairList.push_back (nextPair);
 
-		//		nextPair = negativePairs.front ();
+			if (currentPeak < minHeight)
+				minHeight = currentPeak;
 
-		//		if (nextPair != NULL) {
+			if (currentPeak > maxHeight)
+				maxHeight = currentPeak;
 
-		//			secondarySignal = nextPair->mPullup;
-		//			double secondaryHeight = nextPair->mPullupHeight;
+			numerator = fabs (rawHeight);
 
-		//			if (secondarySignal != NULL) {
+			//if (numerator > 3.0) {
 
-		//				double secondaryMean = secondarySignal->GetMean ();
-		//				double baseline = mDataChannels [secondarySignal->GetChannel ()]->EvaluateBaselineAtTime (secondaryMean);
+			//	currentRatio = numerator / currentPeak;
 
-		//				if (3.0 * baseline >= secondaryHeight) {
+			//	if (currentRatio < minRatio)
+			//		minRatio = currentRatio;
 
-		//					hasNegativePullup = false;
-		//					pairList.remove (nextPair);
-		//					n--;
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
-	}
+			//	if (currentRatio > maxRatio)
+			//		maxRatio = currentRatio;
 
-	if (testNegativePUOnly != hasNegativePullup) {
+			//	if (minPullupHeight == 0.0)
+			//		minPullupHeight = numerator;
 
-		while (!pairList.empty ()) {
+			//	else if (numerator < minPullupHeight)
+			//		minPullupHeight = numerator;
 
-			nextPair = pairList.front ();
-			delete nextPair;
-			pairList.pop_front ();
-			rawDataPullups.Clear ();
-			occludedDataPrimaries.Clear ();
+			//	if (minRatio < 1.0)
+			//		minRatioLessThan1 = true;
+
+			//	if (maxRatio > 0.0)
+			//		maxRatioLargerThan0 = true;
+
+			//}
+
+			//RGString data;
+			//data << pullupChannel;
+			//nextSignal->SetMessageValue (rawDataPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
+			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+
+			if (rawHeight < 0.0) {
+
+				nNegatives++;
+				negativePairs.push_back (nextPair);
+				hasNegativePullup = true;
+			}
+
+			else {
+
+				nPos++;
+			}
 		}
-
-		//cout << "Aborting test because of positive/negative mismatch..." << endl;
-		return false;
 	}
+
+	negativePairs.clear ();  // we're not using this anyway...
+
+	//if (hasNegativePullup) {   // 05/16/2018: integrating negative pullup into positive to see what will happen...*****
+
+	//	nPossibleNegative = nNegatives + nSigmoids;
+
+	//	if (nNegatives < nPos) {
+
+	//		hasNegativePullup = false;
+
+	//		while (!negativePairs.empty ()) {  // why not leave these in?????
+
+	//			nextPair = negativePairs.front ();
+	//			nextSignal = nextPair->mPrimary;
+	//			negativePairs.pop_front ();
+	//			pairList.remove (nextPair);
+	//			rawDataPullups.RemoveReference (nextSignal);  // Do we want to do this?
+	//			delete nextPair;
+	//		}
+	//	}
+
+	//	//if (n != nPossibleNegative) {
+
+	//	//	if (nPossibleNegative == 1) {
+
+	//	//		nextPair = negativePairs.front ();
+
+	//	//		if (nextPair != NULL) {
+
+	//	//			secondarySignal = nextPair->mPullup;
+	//	//			double secondaryHeight = nextPair->mPullupHeight;
+
+	//	//			if (secondarySignal != NULL) {
+
+	//	//				double secondaryMean = secondarySignal->GetMean ();
+	//	//				double baseline = mDataChannels [secondarySignal->GetChannel ()]->EvaluateBaselineAtTime (secondaryMean);
+
+	//	//				if (3.0 * baseline >= secondaryHeight) {
+
+	//	//					hasNegativePullup = false;
+	//	//					pairList.remove (nextPair);
+	//	//					n--;
+	//	//				}
+	//	//			}
+	//	//		}
+	//	//	}
+	//	//}
+	//}
+
+	// 05/14/2018:  Test not separating negative and positive pullup analysis ***************
+
+	//if (testNegativePUOnly != hasNegativePullup) {
+
+	//	while (!pairList.empty ()) {
+
+	//		nextPair = pairList.front ();
+	//		delete nextPair;
+	//		pairList.pop_front ();
+	//		rawDataPullups.Clear ();
+	//		occludedDataPrimaries.Clear ();
+	//	}
+
+	//	//cout << "Aborting test because of positive/negative mismatch..." << endl;
+	//	return false;
+	//}
 
 	//minRatioLessThan1 = false;   // Consider removing this and the next line...
 	//minRatio = 1.1;
-	bool added;
 	int numberOfOriginalPairedPeaks = pairList.size ();
 	//list<DataSignal*> weakPullupPeaks;
 
-	if (!hasNegativePullup && !testLaserOffScale) {
+	//if (!hasNegativePullup && !testLaserOffScale) {  // Do we really want to skip this step if there is negative pullup???  I think not
+	if (!testLaserOffScale) {
 
 		// recruit additional peaks from channel list that may be tall enough to be primary pullup but are not included
 		// because there was no cross channel effect
 
-		double threshold = 0.9 * minHeight;
+		double threshold = 0.75 * minHeight;
 		//cout << "Adding unpaired signals (time, primary):  ";
 
-		double minPullupThreshold = 0.75 * minPullupHeight;
+		double minPullupThreshold = 0.75 * minRFUForSecondaryChannel;
 
-		if (minPullupThreshold < minRFUForSecondaryChannel)
-			minRFUForSecondaryChannel = minPullupThreshold;
+		//if (minPullupThreshold < minRFUForSecondaryChannel)
+		//	minRFUForSecondaryChannel = minPullupThreshold;
 
 		channelIterator.Reset ();
 
@@ -1693,61 +1730,19 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			//	continue;
 
 			currentPeak = nextSignal->Peak ();
-			added = false;
 
-			//if (maxRatioLargerThan0) {
-
-			//	// Do we want to do this????  I think not because the largest ratio may include a partial pullup, i.e., a pullup coinciding with an allele, and is likely
-			//     not to be representative of the true pullup.
-
-			//	if (maxRatio * currentPeak >= minRFUForSecondaryChannel) {
-
-			//		nextPair = new PullupPair (nextSignal);
-			//		pairList.push_back (nextPair);
-			//		added = true;
-			//	}
-			//}
-
-			//else 
+			bool aboveMinHeight = (currentPeak >= minHeight);
+			bool aboveThreshold = (currentPeak > threshold);
+			bool aboveMinPullup = (minRatio * currentPeak >= minPullupThreshold);
 
 			// the minimum ratio is more likely to be representative of the true pullup (if any) and the noise level on the pullup channel is a better reflection of the likelihood of being able
 			// to have found a peak in the pullup position.
 
-			if (currentPeak < threshold) {
+			if (aboveMinHeight || (aboveThreshold && aboveMinPullup && minRatioLessThan1)) {
 
-				continue;
-			}
-			
-			if (minRatioLessThan1) {
-
-				if (minRatio * currentPeak >= minRFUForSecondaryChannel) {
-
-					//if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
-
-					//	//weakPullupPeaks.push_back (nextSignal);
-					//	nextSignal->SetMessageValue (weakPrimaryPullup, true);
-					//	nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
-					//}
-
-					//else {
-
-						nextPair = new PullupPair (nextSignal);
-						pairList.push_back (nextPair);
-						added = true;
-						nextSignal->SetMessageValue (zeroPullupPrimary, true);
-					//}
-				}
-			}
-
-			//else if (currentPeak >= threshold) {   // Do we want to do this????  I think not, because the user may have input a very low value for the minimum primary pullup height.  The ratio test above is
-			// a more accurate test.
-
-			//	nextPair = new PullupPair (nextSignal);
-			//	pairList.push_back (nextPair);
-			//	added = true;
-			//}
-
-			if (added) {
+				nextPair = new PullupPair (nextSignal);
+				pairList.push_back (nextPair);
+				nextSignal->SetMessageValue (zeroPullupPrimary, true);
 
 				if (currentPeak >= maxHeight) {
 
@@ -1785,9 +1780,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	double outlierThreshold;
 	double leastMedianValue;
-
-	rawDataPullups.Clear ();
-	occludedDataPrimaries.Clear ();
 
 	//while (nextSignal = (DataSignal*) rawDataPullups.GetFirst ()) {
 
@@ -1838,6 +1830,20 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 //		bool belowMinRFU;
 		mLeastMedianValue [primaryChannel][pullupChannel] = leastMedianValue;
 		mOutlierThreshold [primaryChannel][pullupChannel] = outlierThreshold;
+		RGString data;
+		data << pullupChannel;
+
+		while (nextSignal = (DataSignal*) occludedDataPrimaries.GetFirst ()) {
+
+			nextSignal->SetMessageValue (weakPrimaryPullup, true);  // call message here and add data even if no pullup found to expose the pattern, whatever it is
+			nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+		}
+
+		while (nextSignal = (DataSignal*) rawDataPullups.GetFirst ()) {
+
+			nextSignal->SetMessageValue (rawDataPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
+			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+		}
 		
 //		double correctedHeight;
 		list<DataSignal*> removePrimaryList;
@@ -2073,6 +2079,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	else {
 
 		// Test widths of primaries and secondaries...there is insufficient data to detect a pattern
+
+		rawDataPullups.Clear ();
+		occludedDataPrimaries.Clear ();
 
 		for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
 

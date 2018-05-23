@@ -890,20 +890,20 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 
 	// if nNegatives at least 0, use a different algorithm that does not mix + and - pullup
 
-	if (nNegatives > 0) {
+	//if (nNegatives > 0) {
 
-		// Need different algorithm which considers non-negative peaks to be outliers
+	//	// Need different algorithm which considers non-negative peaks to be outliers
 
-		bool ans = ComputePullupParametersForNegativePeaks (totalForNegativeAnalysis, pairList, linearPart, quadraticPart, constrainLSQ);
-		delete[] xValues;
-		delete[] yValues;
+	//	bool ans = ComputePullupParametersForNegativePeaks (totalForNegativeAnalysis, pairList, linearPart, quadraticPart, constrainLSQ);
+	//	delete[] xValues;
+	//	delete[] yValues;
 
-		for (i=0; i<n; i++)
-			delete pairArray [i];
+	//	for (i=0; i<n; i++)
+	//		delete pairArray [i];
 
-		delete[] pairArray;
-		return ans;
-	}
+	//	delete[] pairArray;
+	//	return ans;
+	//}
 
 	LeastMedianOfSquares1D* lms = new LeastMedianOfSquares1D (n, xValues, yValues);
 
