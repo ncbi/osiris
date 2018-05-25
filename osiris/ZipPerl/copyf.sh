@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 DEST="/f/Profiles/OsirisDist"
-BATFILE=~/Documents/digisign/sign-file.bat
+SIGNSCRIPT=~/Documents/digisign/sign-file.sh
 
 function CHECKRC()
 {
@@ -12,22 +12,6 @@ function CHECKRC()
     exit $1
   fi
 }
-
-function DOSPATH()
-{
-  echo "$1" | sed 's|^/||' | sed 's/\(.\)/\1:/' | sed 's|/|\\|g' | sed 's| |\\ |g'
-}
-
-function SIGNFILE()
-{
-  FILE=`DOSPATH "$1"`
-  if test "${BATFILEDOS}" != ""; then
-    cmd.exe /c "${BATFILEDOS} ${FILE}"
-  else
-    echo "Cannot sign file, ${FILE}, batch script not found" 1>&2
-  fi
-}
-
 
 
 function ECHO()
@@ -50,17 +34,10 @@ function COPYFILE()
 }
 
 cd `dirname $0`
-SRCDIR="../Setup/Release"
 if test "$1" = "-v"; then
   VERBOSE=1
 else
   VERBOSE=0
-fi
-
-if test -r "$BATFILE" ; then
-  BATFILEDOS=`DOSPATH "${BATFILE}"`
-else
-  BATFILEDOS=""
 fi
 
 
@@ -78,12 +55,5 @@ EXE=`readlink -f "${TMP}"`
 test -r "$EXE"
 CHECKRC $? "Cannot find exe file: ${EXE}"
 
-SIGNFILE "$EXE"
-SIGNFILE "$MSI"
 COPYFILE "$EXE"
 COPYFILE "$MSI"
-
-
-
-
-

@@ -625,7 +625,7 @@ void CFrameSample::SetupMenuItems()
     _EnableItem(IDSampleApply,bEnabledOrDir && pPage->NeedsApply());
     _EnableItem(IDSampleApplyAll, bSampleEnabled && m_pNoteBook->IsModified());
     _EnableItem(IDmenuDisableSample, 
-      m_pSample->IsSampleType() && !bDirPanel);
+      m_pSample->CanDisableSample() && !bDirPanel);
     _SetSampleEnabled(bSampleEnabled);
   }
 }

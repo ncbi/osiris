@@ -1511,7 +1511,7 @@ bool COARfile::SamplesDisabled() const
     (!bRtn) && (itr != m_vpTable.Get()->end());
     ++itr)
   {
-    if((*itr)->IsDisabled() && (*itr)->IsSampleType())
+    if((*itr)->IsDisabled())
     {
       bRtn = true;
       m_pLastSampleDisabled = *itr;
@@ -1607,7 +1607,7 @@ size_t COARfile::GetDisabledSamples(
   {
     bDisabled = (*itr)->IsDisabled();
     bSampleType = (bIncludeNonSamples || bDisabled)
-      ? (*itr)->IsSampleType()
+      ? (*itr)->CanDisableSample()
       : false;
 
     if( (bDisabled && bSampleType) ||

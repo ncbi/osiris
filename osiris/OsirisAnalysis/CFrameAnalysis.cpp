@@ -1620,7 +1620,7 @@ void CFrameAnalysis::_OnEnableSample()
   COARsample *pSample = m_SampleSort.GetSample((size_t)nRow);
   if(_XmlFile() && 
      m_pOARfile->CanEditArtifacts() && 
-     pSample->IsSampleType())
+     pSample->CanDisableSample())
   {
     CDialogToggleEnabled dlg(
       pSample,
@@ -2774,7 +2774,7 @@ void CFrameAnalysis::_UpdateMenu()
   {
     wxString sLocus;
     COARsample *pSample = m_SampleSort.GetSample((size_t)m_nLastRowSelect);
-    bool bAllowDisabled = pSample->IsSampleType();
+    bool bAllowDisabled = pSample->CanDisableSample();
     bool bLocus = _IsLocusColumn();
     bool bControl = (!bLocus) && _IsControlColumn();
 
