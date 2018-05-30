@@ -32,7 +32,7 @@
 #include "CPageParameters.h"
 #include "CPageNoParameters.h"
 #include "CPageAuto.h"
-#include "ConfigDir.h"
+#include "CSitePath.h"
 #include "CParmOsiris.h"
 #include <wx/dirdlg.h>
 #include <wx/msgdlg.h>
@@ -155,7 +155,7 @@ wxString CDialogExportSetup::GetSearchDir(
   }
   if(sSearch.IsEmpty())
   {
-    sSearch = mainApp::GetConfig()->GetFilePath();
+    sSearch = CSitePath::GetGlobal()->GetRealSitePath();
   }
   return sSearch;  
 }
