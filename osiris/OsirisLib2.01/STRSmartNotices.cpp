@@ -1530,6 +1530,24 @@ int smPrePrimerPercentOfNoiseRangeForLevelChange::sMessageIndex = 0;
 int smPrePrimerPercentOfNoiseRangeForLevelChange::sMessageScope = 0;
 
 
+RGString smWeakPrimaryInterchannelLink::sName = "smWeakPrimaryInterchannelLink";
+int smWeakPrimaryInterchannelLink::sSubject = smWeakPrimaryInterchannelLink::LoadType ();
+int smWeakPrimaryInterchannelLink::sMessageIndex = 0;
+int smWeakPrimaryInterchannelLink::sMessageScope = 0;
+
+
+RGString smZeroPullupPrimaryInterchannelLink::sName = "smZeroPullupPrimaryInterchannelLink";
+int smZeroPullupPrimaryInterchannelLink::sSubject = smZeroPullupPrimaryInterchannelLink::LoadType ();
+int smZeroPullupPrimaryInterchannelLink::sMessageIndex = 0;
+int smZeroPullupPrimaryInterchannelLink::sMessageScope = 0;
+
+
+RGString smRawDataPrimaryInterchannelLink::sName = "smRawDataPrimaryInterchannelLink";
+int smRawDataPrimaryInterchannelLink::sSubject = smRawDataPrimaryInterchannelLink::LoadType ();
+int smRawDataPrimaryInterchannelLink::sMessageIndex = 0;
+int smRawDataPrimaryInterchannelLink::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1784,6 +1802,9 @@ PERSISTENT_DEFINITION (smPostPrimerPercentOfNoiseRangeToBeConsideredPeak, 2655, 
 PERSISTENT_DEFINITION (smILSBPForEndOfPrimerPeaks, 2656, "smILSBPForEndOfPrimerPeaks")
 PERSISTENT_DEFINITION (smPrePrimerPercentOfNoiseRangeToBeConsideredPeak, 2657, "smPrePrimerPercentOfNoiseRangeToBeConsideredPeak")
 PERSISTENT_DEFINITION (smPrePrimerPercentOfNoiseRangeForLevelChange, 2658, "smPrePrimerPercentOfNoiseRangeForLevelChange")
+PERSISTENT_DEFINITION (smWeakPrimaryInterchannelLink, 2659, "smWeakPrimaryInterchannelLink")
+PERSISTENT_DEFINITION (smZeroPullupPrimaryInterchannelLink, 2660, "smZeroPullupPrimaryInterchannelLink")
+PERSISTENT_DEFINITION (smRawDataPrimaryInterchannelLink, 2661, "smRawDataPrimaryInterchannelLink")
 
 
 
@@ -17020,6 +17041,186 @@ int smPrePrimerPercentOfNoiseRangeForLevelChange :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPrePrimerPercentOfNoiseRangeForLevelChange* noticeType = new smPrePrimerPercentOfNoiseRangeForLevelChange;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smWeakPrimaryInterchannelLink :: smWeakPrimaryInterchannelLink () : SmartNotice () {
+
+}
+
+
+smWeakPrimaryInterchannelLink :: smWeakPrimaryInterchannelLink (const smWeakPrimaryInterchannelLink& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smWeakPrimaryInterchannelLink :: ~smWeakPrimaryInterchannelLink () {
+
+}
+
+
+int smWeakPrimaryInterchannelLink :: GetSubject () const {
+
+	return smWeakPrimaryInterchannelLink::sSubject;
+}
+
+
+void smWeakPrimaryInterchannelLink :: SetIndexAndScope (int index, int scope) const {
+
+	smWeakPrimaryInterchannelLink::sMessageIndex = index;
+	smWeakPrimaryInterchannelLink::sMessageScope = scope;
+}
+
+
+int smWeakPrimaryInterchannelLink :: GetMessageIndex () const {
+
+	return smWeakPrimaryInterchannelLink :: sMessageIndex;
+}
+
+
+int smWeakPrimaryInterchannelLink :: GetScope () const {
+
+	return smWeakPrimaryInterchannelLink :: sMessageScope;
+}
+
+
+RGString smWeakPrimaryInterchannelLink :: GetName () const {
+
+	return smWeakPrimaryInterchannelLink :: sName;
+}
+
+
+
+int smWeakPrimaryInterchannelLink :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smWeakPrimaryInterchannelLink* noticeType = new smWeakPrimaryInterchannelLink;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smZeroPullupPrimaryInterchannelLink :: smZeroPullupPrimaryInterchannelLink () : SmartNotice () {
+
+}
+
+
+smZeroPullupPrimaryInterchannelLink :: smZeroPullupPrimaryInterchannelLink (const smZeroPullupPrimaryInterchannelLink& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smZeroPullupPrimaryInterchannelLink :: ~smZeroPullupPrimaryInterchannelLink () {
+
+}
+
+
+int smZeroPullupPrimaryInterchannelLink :: GetSubject () const {
+
+	return smZeroPullupPrimaryInterchannelLink::sSubject;
+}
+
+
+void smZeroPullupPrimaryInterchannelLink :: SetIndexAndScope (int index, int scope) const {
+
+	smZeroPullupPrimaryInterchannelLink::sMessageIndex = index;
+	smZeroPullupPrimaryInterchannelLink::sMessageScope = scope;
+}
+
+
+int smZeroPullupPrimaryInterchannelLink :: GetMessageIndex () const {
+
+	return smZeroPullupPrimaryInterchannelLink :: sMessageIndex;
+}
+
+
+int smZeroPullupPrimaryInterchannelLink :: GetScope () const {
+
+	return smZeroPullupPrimaryInterchannelLink :: sMessageScope;
+}
+
+
+RGString smZeroPullupPrimaryInterchannelLink :: GetName () const {
+
+	return smZeroPullupPrimaryInterchannelLink :: sName;
+}
+
+
+
+int smZeroPullupPrimaryInterchannelLink :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smZeroPullupPrimaryInterchannelLink* noticeType = new smZeroPullupPrimaryInterchannelLink;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smRawDataPrimaryInterchannelLink :: smRawDataPrimaryInterchannelLink () : SmartNotice () {
+
+}
+
+
+smRawDataPrimaryInterchannelLink :: smRawDataPrimaryInterchannelLink (const smRawDataPrimaryInterchannelLink& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smRawDataPrimaryInterchannelLink :: ~smRawDataPrimaryInterchannelLink () {
+
+}
+
+
+int smRawDataPrimaryInterchannelLink :: GetSubject () const {
+
+	return smRawDataPrimaryInterchannelLink::sSubject;
+}
+
+
+void smRawDataPrimaryInterchannelLink :: SetIndexAndScope (int index, int scope) const {
+
+	smRawDataPrimaryInterchannelLink::sMessageIndex = index;
+	smRawDataPrimaryInterchannelLink::sMessageScope = scope;
+}
+
+
+int smRawDataPrimaryInterchannelLink :: GetMessageIndex () const {
+
+	return smRawDataPrimaryInterchannelLink :: sMessageIndex;
+}
+
+
+int smRawDataPrimaryInterchannelLink :: GetScope () const {
+
+	return smRawDataPrimaryInterchannelLink :: sMessageScope;
+}
+
+
+RGString smRawDataPrimaryInterchannelLink :: GetName () const {
+
+	return smRawDataPrimaryInterchannelLink :: sName;
+}
+
+
+
+int smRawDataPrimaryInterchannelLink :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smRawDataPrimaryInterchannelLink* noticeType = new smRawDataPrimaryInterchannelLink;
 	warehouse->AddType (noticeType);
 	return 1;
 }

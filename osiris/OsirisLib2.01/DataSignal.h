@@ -322,7 +322,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -340,7 +340,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -480,6 +480,10 @@ public:
 
 	void SetShoulderSignal (bool val) { mIsShoulderSignal = val; }
 	bool IsShoulderSignal () const { return mIsShoulderSignal; }
+
+	void CreateWeakPullupVector (int numberOfChannels);
+	bool HasWeakPullupInChannel (int channel);
+	void RecordWeakPullupInChannel (int numberOfChannels, int weakPullupChannel);
 
 	void RemoveAllCrossChannelSignalLinks ();
 
@@ -992,6 +996,8 @@ protected:
 	double mCumulativeStutterThreshold;
 	bool mIsShoulderSignal;
 	DataInterval* mThisDataSegment;
+	bool* mWeakPullupVector;
+	list<int> mWeakPullupChannels;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;

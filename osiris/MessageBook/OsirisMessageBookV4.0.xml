@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.22</VersionNumber>
-	<BuildTime>04/02/2018 12:38 PM</BuildTime>
+	<VersionNumber>7.26</VersionNumber>
+	<BuildTime>05/02/2018 06:28 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -694,6 +694,45 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Primary Pullup</Text>
+			<TextForData> into channel(s): </TextForData>
+			<SeparatorText>, </SeparatorText>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smWeakPrimaryInterchannelLink</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>smViewHighDetailMessages</Expression>
+			</ReportCriterion>
+			<Text>Primary Pullup, Possibly Occluded</Text>
+			<TextForData> into channel(s): </TextForData>
+			<SeparatorText>, </SeparatorText>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smRawDataPrimaryInterchannelLink</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>smViewHighDetailMessages</Expression>
+			</ReportCriterion>
+			<Text>Possible Primary Pullup Based on Raw Data</Text>
+			<TextForData> into channel(s): </TextForData>
+			<SeparatorText>, </SeparatorText>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smZeroPullupPrimaryInterchannelLink</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>smViewHighDetailMessages</Expression>
+			</ReportCriterion>
+			<Text>Non-Primary Pullup With Zero Associated Pullup</Text>
 			<TextForData> into channel(s): </TextForData>
 			<SeparatorText>, </SeparatorText>
 			<ReportLevel>20</ReportLevel>
@@ -4658,6 +4697,22 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smViewHighDetailMessages</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>View High Detail Messages (default normal detail = unchecked; high level = checked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>View High Detail Messages (default normal detail = unchecked; high level = checked)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerRaisedBaselineBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -6970,6 +7025,7 @@
 				<ScopeDynamics>
 					<Scope>4</Scope>
 					<MeasuredMessages>
+						<Name>smViewHighDetailMessages</Name>
 						<Name>smTestForPeaksBelowMinRFUForNegCtrlPreset</Name>
 						<Name>smFlagMixedSamplesPreset</Name>
 						<Name>smAmpMoreOnLowHomozygotePreset</Name>
@@ -7221,6 +7277,9 @@
 						<Name>smAmbiguousInterlocusCrater</Name>
 						<Name>smAmbiguousInterlocusWithPoorMorphology</Name>
 						<Name>smPrimaryInterchannelLink</Name>
+						<Name>smWeakPrimaryInterchannelLink</Name>
+						<Name>smRawDataPrimaryInterchannelLink</Name>
+						<Name>smZeroPullupPrimaryInterchannelLink</Name>
 						<Name>smCrater</Name>
 						<Name>smSigmoidalPullup</Name>
 						<Name>smSigmoidalSidePeak</Name>

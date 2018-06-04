@@ -110,7 +110,7 @@ mPrint (print) {
 }
 
 
-PullupPair :: PullupPair (DataSignal* primary, DataSignal* pullup) : mPrimary (primary), mPullup (pullup), mIsOutlier (false) {
+PullupPair :: PullupPair (DataSignal* primary, DataSignal* pullup) : mPrimary (primary), mPullup (pullup), mIsOutlier (false), mIsDuplicate (false) {
 
 	mPrimaryHeight = primary->Peak ();
 	mPullupHeight = pullup->TroughHeight ();
@@ -120,7 +120,21 @@ PullupPair :: PullupPair (DataSignal* primary, DataSignal* pullup) : mPrimary (p
 }
 
 
-PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NULL), mIsOutlier (false) {
+PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NULL), mIsOutlier (false), mIsDuplicate (false) {
+
+	mPrimaryHeight = primary->Peak ();
+	mPullupHeight = 0.0;
+}
+
+
+PullupPair :: PullupPair (DataSignal* primary, double rawPullupPeak) : mPrimary (primary), mPullup (NULL), mIsOutlier (false), mIsDuplicate (false) {
+
+	mPrimaryHeight = primary->Peak ();
+	mPullupHeight = rawPullupPeak;
+}
+
+
+PullupPair :: PullupPair (DataSignal* primary, bool isDuplicate) : mPrimary (primary), mPullup (NULL), mIsOutlier (false), mIsDuplicate (true) {
 
 	mPrimaryHeight = primary->Peak ();
 	mPullupHeight = 0.0;
@@ -129,8 +143,17 @@ PullupPair :: PullupPair (DataSignal* primary) : mPrimary (primary), mPullup (NU
 
 
 PullupPair :: PullupPair (const PullupPair& pup) : mPrimary (pup.mPrimary), mPullup (pup.mPullup), mPrimaryHeight (pup.mPrimaryHeight), mPullupHeight (pup.mPullupHeight), 
-	mIsOutlier (pup.mIsOutlier) {
+	mIsOutlier (pup.mIsOutlier), mIsDuplicate (pup.mIsDuplicate) {
 
+}
+
+
+bool PullupPair :: IsRawDataPullup () const {
+
+	if ((mPullup == NULL) && (mPullupHeight != 0.0))
+		return true;
+
+	return false;
 }
 
 
@@ -813,10 +836,16 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		pair = *it;
 		pullUp = pair->mPullup;
 
-		if (pullUp == NULL)
-			continue;
+		if (pullUp == NULL) {
 
-		if (pullUp->IsNegativePeak ())
+			if (pair->mPullupHeight >= 0.0)
+				continue;
+
+			else if (pair->mPullupHeight < -0.5)
+				nNegatives++;
+		}
+
+		else if (pullUp->IsNegativePeak ())
 			nNegatives++;
 
 		else if (DataSignal::IsNegativeOrSigmoid (pullUp))
@@ -831,7 +860,7 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
 
 		if (pullUp == NULL)
-			yValues [i] = newPair->mPullupHeight = 0.0;
+			yValues [i] = newPair->mPullupHeight = pair->mPullupHeight;
 
 		else if (pullUp->IsNegativePeak ()) {
 
@@ -861,20 +890,20 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 
 	// if nNegatives at least 0, use a different algorithm that does not mix + and - pullup
 
-	if (nNegatives > 0) {
+	//if (nNegatives > 0) {
 
-		// Need different algorithm which considers non-negative peaks to be outliers
+	//	// Need different algorithm which considers non-negative peaks to be outliers
 
-		bool ans = ComputePullupParametersForNegativePeaks (totalForNegativeAnalysis, pairList, linearPart, quadraticPart, constrainLSQ);
-		delete[] xValues;
-		delete[] yValues;
+	//	bool ans = ComputePullupParametersForNegativePeaks (totalForNegativeAnalysis, pairList, linearPart, quadraticPart, constrainLSQ);
+	//	delete[] xValues;
+	//	delete[] yValues;
 
-		for (i=0; i<n; i++)
-			delete pairArray [i];
+	//	for (i=0; i<n; i++)
+	//		delete pairArray [i];
 
-		delete[] pairArray;
-		return ans;
-	}
+	//	delete[] pairArray;
+	//	return ans;
+	//}
 
 	LeastMedianOfSquares1D* lms = new LeastMedianOfSquares1D (n, xValues, yValues);
 
@@ -1229,7 +1258,23 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 
 		pair = *it;
 
-		if ((pair->mPullup == NULL) || DataSignal::IsNegativeOrSigmoid (pair->mPullup)) {
+		if (pair->mPullup == NULL) {
+
+			if (pair->mPullupHeight > 0.0) {
+
+				pair->mIsOutlier = true;
+				continue;
+			}
+
+			newPair = pairArray [i] = new PullupPair (*pair);	
+			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
+			yValues [i] = newPair->mPullupHeight = pair->mPullupHeight;
+
+			n++;
+			i++;
+		}
+
+		else if (DataSignal::IsNegativeOrSigmoid (pair->mPullup)) {
 
 			newPair = pairArray [i] = new PullupPair (*pair);	
 			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
@@ -1275,7 +1320,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 
 	double lmsValue = lms->CalculateLMS ();
 
-	for (i=0; i<nNegatives; i++) {
+	for (i=0; i<n; i++) {
 
 		if (lms->ElementIsOutlier (i))
 			pairArray [i]->mIsOutlier = true;
@@ -1300,7 +1345,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 	list<double> xList;
 	list<double> yList;
 
-	for (i=0; i<nNegatives; i++) {
+	for (i=0; i<n; i++) {
 
 		newPair = pairArray [i];
 
@@ -1331,11 +1376,23 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 	delete[] xValues;
 	delete[] yValues;
 
-	for (i=0; i<nNegatives; i++)
+	for (i=0; i<n; i++)
 		delete pairArray [i];
 
 	delete[] pairArray;
 	return true;
+}
+
+
+bool CoreBioComponent :: TestMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth, double fractionNoiseRange, double& value) const {
+
+	if (mDataChannels == NULL) {
+
+		value = 0.0;
+		return false;
+	}
+
+	return mDataChannels [channel]->TestMaxAbsoluteRawDataInInterval (center, halfWidth, fractionNoiseRange, value);
 }
 
 

@@ -2136,6 +2136,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	RGDList peaksInSameChannel;
 	RGDList probablePullupPeaks;
+	RGDList weakPullupPeaks;
 	RGDList pullupList;
 	RGDList signalsToRemove;
 	RGDListIterator probableIt (probablePullupPeaks);
@@ -2151,6 +2152,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double primaryHeight;
 	double primaryWidth;
 	RGDList ignoreSidePeaks;
+	double rightLimitPlus;
+	double leftLimitPlus;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2177,21 +2180,26 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		primaryMean = nextSignal->GetMean ();
 		rightLimit = primaryMean + primaryTolerance;
 		leftLimit = primaryMean - primaryTolerance;
+		rightLimitPlus = primaryMean + 5.0 * primaryTolerance;
+		leftLimitPlus = primaryMean - 5.0 * primaryTolerance;
 		probablePullupPeaks.Clear ();
-
-		//if ((5571.0 < primaryMean) && (primaryMean < 5572.0))
-		//	report = true;
-
-		//if (report) {
-
-		//	cout << "\n\nPossible primary at mean = " << primaryMean << " with height = " << primaryHeight << " and with width = " << primaryWidth << " and channel = " << primaryChannel << endl;
-		//	cout << "Left limit = " << leftLimit << " and Right limit = " << rightLimit << endl;
-		//}
+		weakPullupPeaks.Clear ();
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
-			if (nextSignal2->GetMean () > rightLimit)
-				break;  // too far away; we're done in this direction
+			if (nextSignal2->GetMean () > rightLimit) {
+
+				if (nextSignal2->GetMean () > rightLimitPlus)
+					break;  // too far away; we're done in this direction
+
+				if (nextSignal2->GetChannel () == primaryChannel)
+					continue;
+
+				if (TestForWeakPullup (primaryMean, nextSignal2))
+					weakPullupPeaks.Append (nextSignal2);
+
+				continue;
+			}
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
@@ -2211,8 +2219,19 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		while (nextSignal2 = (DataSignal*)(--Neg)) {
 
-			if (nextSignal2->GetMean () < leftLimit)
-				break;  // too far away; we're done in this direction
+			if (nextSignal2->GetMean () < leftLimit) {
+
+				if (nextSignal2->GetMean () < leftLimitPlus)
+					break;  // too far away; we're done in this direction
+
+				if (nextSignal2->GetChannel () == primaryChannel)
+					continue;
+
+				if (TestForWeakPullup (primaryMean, nextSignal2))
+					weakPullupPeaks.Prepend (nextSignal2);
+
+				continue;
+			}
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
@@ -2228,6 +2247,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				probablePullupPeaks.Append (nextSignal2);
 				continue;
 			}
+		}
+
+		if (weakPullupPeaks.Entries () > 0) {
+
+			primeSignal->CreateWeakPullupVector (mNumberOfChannels);
+
+			while (nextSignal2 = (DataSignal*)weakPullupPeaks.GetFirst ())
+				primeSignal->RecordWeakPullupInChannel (mNumberOfChannels, nextSignal2->GetChannel ());
 		}
 
 		//cout << "Done with pull-up tests for peak at " << primaryMean << endl;
@@ -2351,8 +2378,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		//	signalsToRemove.Clear ();
 		//}  // This ends section in which duplicate peaks in a channel are weeded out:  see above...commented out 07/06/2016
 
-		if (probablePullupPeaks.IsEmpty ())
-			continue;
+		//if (probablePullupPeaks.IsEmpty ())
+		//	continue;
 
 		// Now build STRInterChannelLinkage...look below for any important tests:  
 		// If we're here, we know nextSignal = primeSignal is primary and there are some pull-up peaks within specified distance
@@ -2468,76 +2495,78 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				if (nextSignal->Peak () < minRFU)
 					nextSignal->SetMessageValue (belowMinRFU, true);
 
-				if (testSignal->GetMessageValue (pullup)) {
+				//if (testSignal->GetMessageValue (pullup)) {  // Removed 04/29/2018:  we have found peaks that are pullup from one channel while being sigmoids from another
 
-					testSignal->SetMessageValue (pullup, false);
+				//	testSignal->SetMessageValue (pullup, false);
 
-					for (j=1; j<=mNumberOfChannels; j++) {
+				//	for (j=1; j<=mNumberOfChannels; j++) {
 
-						if (j == testSignal->GetChannel ())
-							continue;
+				//		if (j == testSignal->GetChannel ())
+				//			continue;
 
-						nextSignal2 = testSignal->HasPrimarySignalFromChannel (j);
+				//		nextSignal2 = testSignal->HasPrimarySignalFromChannel (j);
 
-						if (nextSignal2 == NULL)
-							continue;
+				//		if (nextSignal2 == NULL)
+				//			continue;
 
-						testSignal->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
-						iChannel = nextSignal2->GetInterchannelLink ();
+				//		testSignal->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
+				//		iChannel = nextSignal2->GetInterchannelLink ();
 
-						if (iChannel != NULL) {
+				//		if (iChannel != NULL) {
 
-							iChannel->RemoveDataSignalFromSecondaryList (testSignal);
+				//			iChannel->RemoveDataSignalFromSecondaryList (testSignal);
 
-							if (iChannel->IsEmpty ()) {
+				//			if (iChannel->IsEmpty ()) {
 
-								nextSignal2->SetInterchannelLink (NULL);
-								nextSignal2->SetMessageValue (primaryLink, false);
-								channelRemoval.insert (iChannel);
-								mInterchannelLinkageList.remove (iChannel);
-							}
-						}
-					}
-				}
+				//				nextSignal2->SetInterchannelLink (NULL);
+				//				nextSignal2->SetMessageValue (primaryLink, false);
+				//				channelRemoval.insert (iChannel);
+				//				mInterchannelLinkageList.remove (iChannel);
+				//			}
+				//		}
+				//	}
+				//}
 
-				if (testSignal2->GetMessageValue (pullup)) {
+				//if (testSignal2->GetMessageValue (pullup)) {
 
-					testSignal2->SetMessageValue (pullup, false);
+				//	testSignal2->SetMessageValue (pullup, false);
 
-					for (j=1; j<=mNumberOfChannels; j++) {
+				//	for (j=1; j<=mNumberOfChannels; j++) {
 
-						if (j == testSignal2->GetChannel ())
-							continue;
+				//		if (j == testSignal2->GetChannel ())
+				//			continue;
 
-						nextSignal2 = testSignal2->HasPrimarySignalFromChannel (j);
+				//		nextSignal2 = testSignal2->HasPrimarySignalFromChannel (j);
 
-						if (nextSignal2 == NULL)
-							continue;
+				//		if (nextSignal2 == NULL)
+				//			continue;
 
-						testSignal2->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
-						iChannel = nextSignal2->GetInterchannelLink ();
+				//		testSignal2->SetPrimarySignalFromChannel (j, NULL, mNumberOfChannels);
+				//		iChannel = nextSignal2->GetInterchannelLink ();
 
-						if (iChannel != NULL) {
+				//		if (iChannel != NULL) {
 
-							iChannel->RemoveDataSignalFromSecondaryList (testSignal2);
+				//			iChannel->RemoveDataSignalFromSecondaryList (testSignal2);
 
-							if (iChannel->IsEmpty ()) {
+				//			if (iChannel->IsEmpty ()) {
 
-								nextSignal2->SetInterchannelLink (NULL);
-								nextSignal2->SetMessageValue (primaryLink, false);
-								channelRemoval.insert (iChannel);
-								mInterchannelLinkageList.remove (iChannel);
-							}
-						}
-					}
-				}
+				//				nextSignal2->SetInterchannelLink (NULL);
+				//				nextSignal2->SetMessageValue (primaryLink, false);
+				//				channelRemoval.insert (iChannel);
+				//				mInterchannelLinkageList.remove (iChannel);
+				//			}
+				//		}
+				//	}
+				//}
 			}
 
 			else {
 
 				testSignal->SetMessageValue (craterSidePeak, false);
+				testSignal->SetMessageValue (sigmoidalSidePeak, false);
 				testSignal->SetMessageValue (sigmoidalPullup, false);
 				testSignal2->SetMessageValue (craterSidePeak, false);
+				testSignal2->SetMessageValue (sigmoidalSidePeak, false);
 				testSignal2->SetMessageValue (sigmoidalPullup, false);
 				OverallList.RemoveReference (nextSignal);
 				//delete nextSignal;
@@ -3347,21 +3376,21 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 	double linear;
 	double quadratic;
 
-	for (i=1; i<=mNumberOfChannels; i++) {
+	//for (i=1; i<=mNumberOfChannels; i++) {
 
-		for (j=1; j<=mNumberOfChannels; j++) {
+	//	for (j=1; j<=mNumberOfChannels; j++) {
 
-			if (j == i)
-				continue;
+	//		if (j == i)
+	//			continue;
 
-			currentNonPrimaryList = notPrimaryLists [i][j];
+	//		currentNonPrimaryList = notPrimaryLists [i][j];
 
-			//cout << "Analyze negative peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
-			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, true);
-		}
+	//		//cout << "Analyze negative peaks for non-laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+	//		individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, false, true);
+	//	}
 
-		//cout << "\n";
-	}
+	//	//cout << "\n";
+	//}
 
 	for (i=1; i<=mNumberOfChannels; i++) {
 
@@ -3473,24 +3502,24 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
-	for (i=1; i<=mNumberOfChannels; i++) {
+	//for (i=1; i<=mNumberOfChannels; i++) {
 
-		for (j=1; j<=mNumberOfChannels; j++) {
+	//	for (j=1; j<=mNumberOfChannels; j++) {
 
-			if (j == i)
-				continue;
+	//		if (j == i)
+	//			continue;
 
-			currentNonPrimaryList = notPrimaryLists [i][j];
+	//		currentNonPrimaryList = notPrimaryLists [i][j];
 
-			if (!mPullupTestedMatrix [i][j]) {
+	//		if (!mPullupTestedMatrix [i][j]) {
 
-				//cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
-				individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
-			}
-		}
+	//			//cout << "Analyze negative peaks for laser-off-scale:  primary channel " << i << " and pullup channel " << j << endl;
+	//			individualResult = CollectDataAndComputeCrossChannelEffectForChannelsSM (i, j, currentNonPrimaryList, linear, quadratic, true, true);
+	//		}
+	//	}
 
-		//cout << "\n";
-	}
+	//	//cout << "\n";
+	//}
 
 	newResult = false;
 	allOK = true;
@@ -3796,6 +3825,17 @@ double STRCoreBioComponent :: FindPrimaryPeak (RGDList& peakList, DataSignal*& p
 	}
 
 	return maxPeak;
+}
+
+
+bool STRCoreBioComponent :: TestForWeakPullup (double testMean, DataSignal* testSignal) {
+
+	double noiseLevel = mDataChannels [testSignal->GetChannel ()]->GetNoiseRange ();
+
+	if (testSignal->Value (testMean) > noiseLevel)
+		return true;
+
+	return false;
 }
 
 

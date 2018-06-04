@@ -103,14 +103,19 @@ struct PullupPair {
 	PullupPair () : mPrimary (NULL), mPullup (NULL), mPrimaryHeight (0.0), mPullupHeight (0.0), mIsOutlier (false) {}
 	PullupPair (DataSignal* primary, DataSignal* pullup);
 	PullupPair (DataSignal* primary);
+	PullupPair (DataSignal* primary, double rawPullupPeak);
+	PullupPair (DataSignal* primary, bool isDuplicate);
 	PullupPair (const PullupPair& pup);
 	~PullupPair () {}
+
+	bool IsRawDataPullup () const;
 
 	DataSignal* mPrimary;
 	DataSignal* mPullup;
 	double mPrimaryHeight;
 	double mPullupHeight;
 	bool mIsOutlier;
+	bool mIsDuplicate;
 };
 
 
@@ -177,6 +182,8 @@ public:
 	void SetLinearPullupMatrix (int i, int j, double value);
 	void SetQuadraticPullupMatrix (int i, int j, double value);
 	void CalculatePullupCorrection (int i, int j, list<PullupPair*>& pairList, bool testLaserOffScale);
+
+	bool TestMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth, double fractionNoiseRange, double& value) const;
 
 	void ReportSampleTableRow (RGTextOutput& text);
 	void ReportSampleTableRowWithLinks (RGTextOutput& text);
