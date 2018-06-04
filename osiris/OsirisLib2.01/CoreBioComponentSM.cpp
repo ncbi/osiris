@@ -1528,9 +1528,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		return true;
 	}
 
-	if ((pullupChannel == 4) && (primaryChannel == 5))
-		bool stopHere = true;
-
 	// Add in raw data only pullup here
 
 	RGDList rawDataPullups;  // add raw data primary pullup peaks here so can test later to see if a peak falls in this category

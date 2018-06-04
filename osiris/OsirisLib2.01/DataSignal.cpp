@@ -3525,7 +3525,7 @@ DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfW
 
 	k = 0;
 
-	for (i=0; i<timeSplit; i++) {
+	for (i=0; i<=timeSplit; i++) {
 
 		changeArray [i] = false;
 

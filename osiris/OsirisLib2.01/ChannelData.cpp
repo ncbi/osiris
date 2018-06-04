@@ -1064,10 +1064,22 @@ double ChannelData :: GetMaxAbsoluteRawDataInInterval (double center, double hal
 	double temp;
 	double aTemp;
 	double answer = 0.0;
+	int displacement = endPt - startPt;
+
+	if (displacement < 2)
+		return answer;
+
+	double nPoints = (double) (displacement + 1);
+	double average = 0.0;
+
+	for (i=startPt; i<=endPt; i++)
+		average += mData->Value (i);
+
+	average = average / nPoints;
 
 	for (i=startPt; i<=endPt; i++) {
 
-		temp = mData->Value (i);
+		temp = mData->Value (i) - average;
 		aTemp = fabs (temp);
 
 		if (aTemp > max) {
@@ -1089,12 +1101,153 @@ bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double half
 		return false;
 	}
 
-	value = GetMaxAbsoluteRawDataInInterval (center, halfWidth);
+	int startPt;
+	int endPt;
+
+	startPt = (int) floor (center - halfWidth);
+	endPt = (int) ceil (center + halfWidth);
+
+	if (startPt < 0)
+		startPt = 0;
+
+	if (endPt >= mData->GetNumberOfSamples ())
+		endPt = mData->GetNumberOfSamples () - 1;
+
+	int i;
+	double max = 0.0;
+	double min = 0.0;
+	int minTime = startPt;
+	int maxTime = startPt;
+	double minDistanceFromCenter = center - minTime;
+	double maxDistanceFromCenter = center - maxTime;
+	double temp;
+	value = 0.0;
+	int displacement = endPt - startPt;
+
+	if (displacement < 2)
+		return false;
+
+	double nPoints = (double) (displacement + 1);
+	double average = 0.0;
+
+	for (i=startPt; i<=endPt; i++)
+		average += mData->Value (i);
+
+	average = average / nPoints;
+
+	for (i=startPt; i<=endPt; i++) {
+
+		temp = mData->Value (i) - average;
+		//aTemp = fabs (temp);
+
+		if (temp == 0.0)
+			continue;
+
+		if (temp > max) {
+
+			maxTime = i;
+			max = temp;
+			maxDistanceFromCenter = fabs (center - maxTime);
+		}
+
+		else if (temp == max) {
+
+			if (fabs (i - center) < maxDistanceFromCenter) {
+
+				maxTime = i;
+				max = temp;
+				maxDistanceFromCenter = fabs (center - maxTime);
+			}
+		}
+
+		if (temp < min) {
+
+			minTime = i;
+			min = temp;
+			minDistanceFromCenter = fabs (center - minTime);
+		}
+
+		else if (temp == min) {
+
+			if (fabs (i - center) < minDistanceFromCenter) {
+
+				minTime = i;
+				min = temp;
+				minDistanceFromCenter = fabs (center - minTime);
+			}
+		}
+	}
+
 	double noiseRange = fractionNoiseRange * mData->GetNoiseRange ();
+	bool maxAboveThreshold = (max >= noiseRange);
+	bool minAboveThreshold = (fabs (min) >= noiseRange);
+	bool maxAboveZero = (max > 0.0);
+	bool minBelowZero = (min < 0.0);
+	double sigmoidPosition;
+	double sigmoidDistanceFromCenter;
 
-	if (fabs (value) >= noiseRange)
+	if (!maxAboveZero && !minBelowZero)
+		return false;
+
+	if (maxAboveThreshold && minAboveThreshold) {
+
+		// Then both are non-zero as well
+
+		sigmoidPosition = (minTime * max - maxTime * min) / (max - min);
+		sigmoidDistanceFromCenter = fabs (center - sigmoidPosition);
+
+		if (maxDistanceFromCenter < minDistanceFromCenter) {
+
+			if (maxDistanceFromCenter <= sigmoidDistanceFromCenter) {
+
+				value = max;
+				return true;
+			}
+
+			else {
+
+				value = 1.0;  // The raw data implies a sigmoidal peak
+				return true;
+			}
+		}
+
+		else if (minDistanceFromCenter == maxDistanceFromCenter){
+
+			// This is sigmoidal raw data because the min and max must straddle the center, which implies the sigmoid is closest
+
+			value = 1.0;
+			return true;
+		}
+
+		else { //  minDistanceFromCenter < maxDiistanceFromCenter
+
+			if (minDistanceFromCenter <= sigmoidDistanceFromCenter) {
+
+				value = min;
+				return true;
+			}
+
+			else {
+
+				value = 1.0;  // The raw data implies a sigmoidal peak
+				return true;
+			}
+		}
+	}
+
+	else if (maxAboveThreshold) {
+
+		value = max;
 		return true;
+	}
 
+	else if (minAboveThreshold) {
+
+		value = min;
+		return true;
+	}
+
+	value = 0.0;
 	return false;
 }
 

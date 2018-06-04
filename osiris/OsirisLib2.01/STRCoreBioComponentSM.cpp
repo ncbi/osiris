@@ -2185,12 +2185,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		probablePullupPeaks.Clear ();
 		weakPullupPeaks.Clear ();
 
-		if (primaryChannel == 2) {
-
-			if ((primaryMean < 5727.0) && (primaryMean > 5726.0))
-				bool stopHere = true;
-		}
-
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
 			if (nextSignal2->GetMean () > rightLimit) {
@@ -2475,9 +2469,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			testSignal = nextSignal->GetPreviousLinkedSignal ();
 			testSignal2 = nextSignal->GetNextLinkedSignal ();
-
-			if ((testSignal->GetChannel () == 3) && (testSignal->GetMean () < 5726.0) && (testSignal->GetMean () > 5725.0))
-				bool stopHere = true;
 			
 			if ((testSignal == NULL) || (testSignal2 == NULL)) {
 
