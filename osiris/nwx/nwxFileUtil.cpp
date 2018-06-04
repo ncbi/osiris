@@ -803,15 +803,6 @@ wxString nwxFileUtil::GetRealPath(const wxString &sPath)
   {
     sRtn = sPath;
   }
-#ifdef TMP_DEBUG
-  {
-    wxString sMsg(wxS("nwxFileUtil::GetRealPath(\""));
-    sMsg.Append(sPath);
-    sMsg.Append(wxS("\") = "));
-    sMsg.Append(sRtn);
-    nwxLog::LogMessage(sMsg);
-  }
-#endif
   return sRtn;
 }
 #endif

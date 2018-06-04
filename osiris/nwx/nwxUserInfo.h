@@ -54,8 +54,8 @@ class nwxUserInfo
 private:
   nwxUserInfo();
 public:
-  typedef std::map<int,const wxString &> MAP_NS;
-  typedef std::map<const wxString &,int,nwxStringLessNoCase> MAP_SN;
+  typedef std::map<int,const wxString> MAP_NS;
+  typedef std::map<const wxString,int,nwxStringLessNoCaseSort> MAP_SN;
   virtual ~nwxUserInfo() {}
   const wxString &GetUserName() const
   {

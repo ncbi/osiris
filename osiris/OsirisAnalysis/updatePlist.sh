@@ -10,6 +10,16 @@ function checkerror()
     exit $1
   fi
 }
+UNAME=`uname | grep MINGW`
+if test "$UNAME" != ""; then
+  XSLTPROC=`which xsltproc.exe`
+else
+  XSLTPROC=`which xsltproc`
+fi
+test "$XSLTPROC" != ""
+checkerror $? "Cannot find xsltproc"
+
+
 XML=Info.plist
 BACKUP="Info.plist."`date +%Y%m%d-%H%M%S`
 XSL=updatePlist.xsl
@@ -25,7 +35,7 @@ checkerror $? "cannot obtain osiris version"
 echo "version: $V"
 head -2 "${XML}" > $OUTFILE
 checkerror $?
-xsltproc --param "version" "'${V} '" "$XSL" "$XML" >> $OUTFILE
+"$XSLTPROC" --param "version" "'${V} '" "$XSL" "$XML" >> $OUTFILE
 checkerror $?
 mv "$XML" "$BACKUP"
 checkerror $?

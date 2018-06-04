@@ -109,7 +109,7 @@ CDialogEnableMultiple::CDialogEnableMultiple(
   {
     n++;
     pSample = *itr;
-    if(!pSample->IsSampleType()) {}
+    if(!pSample->CanDisableSample()) {}
     else if(pSample->IsEnabled())
     {
       m_vnEnabled.push_back(n);

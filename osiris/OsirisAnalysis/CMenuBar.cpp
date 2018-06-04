@@ -27,6 +27,8 @@
 *  Author:   Douglas Hoffman
 *
 */
+#include "nwx/nwxFileUtil.h"
+#include "CSitePath.h"
 #include "CMenuBar.h"
 #include "CMenuFileBase.h"
 #include "wxIDS.h"
@@ -56,7 +58,10 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   pMenuTools->Append(IDexport,"Export File Settings\tAlt+E");
   pMenuTools->Append(IDeditColours,"Edit Grid Colors\tAlt+C");
   pMenuTools->Append(IDartifactLabels,"Edit Artifact Labels\tCtrl+Alt+A");
-  pMenuTools->Append(IDsiteSettings,"Access site settings...");
+  if(_okToAccessSiteSettings())
+  {
+    pMenuTools->Append(IDsiteSettings,"Access site settings...");
+  }
   pMenuTools->Append(IDsiteShow,"Show site settings folder...");
   pMenuTools->Append(IDlog,"Message Log");
   pMenuHelp->Append(IDhelp,"&Documentation\tF1");
@@ -79,6 +84,19 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   }
 }
 
+bool CMenuBar::_okToAccessSiteSettings()
+{
+  CSitePath *pSitePath = CSitePath::GetGlobal();
+  bool bRtn = true;
+  if(pSitePath->SitePathExists())
+  {
+    wxString sPath = pSitePath->GetRealSitePath();
+    nwxFileUtil::EndWithSeparator(&sPath);
+    sPath.Append(wxS("noaccess.txt"));
+    bRtn = !wxFileName::FileExists(sPath);
+  }
+  return bRtn;
+}
 bool CMenuBar::SetFileMenu(wxMenu *p)
 {
   bool bRtn = (m_pMenuFile == NULL && p != NULL);

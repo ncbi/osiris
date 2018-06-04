@@ -39,6 +39,7 @@
 #  affect all users of the software instance
 #
 #
+
 function CHECKRC()
 {
   if test "$1" != "0"; then
@@ -49,21 +50,103 @@ function CHECKRC()
   fi
 }
 
+function FINDEXE()
+{
+  EXE="${1}"
+  for p in /usr/bin /bin /sw/bin /sw/sbin /usr/sbin /sbin; do
+    if test -x "${p}/${EXE}"; then
+      echo "${p}/${EXE}"
+      return 0
+    fi
+  done
+  if test "$2" = "x"; then
+    echo "Cannot find ${EXE}, aborting" 1>&2
+    exit 1
+  fi
+  return 1
+}
+function CHECKEXE()
+{
+  EXE="${1}"
+  NAME="${2}"
+  test "${EXE}" != ""
+  CHECKRC $? "Cannot find ${NAME}, aborting..."
+}
+
+export PATH="/usr/bin:/bin:/sw/bin:/sw/sbin:/usr/sbin:/sbin:${PATH}"
+READLINK=`FINDEXE greadlink`
+CHMOD=`FINDEXE chmod`
+CHGRP=`FINDEXE chgrp`
+FIND=`FINDEXE find`
+HEAD=`FINDEXE head`
+GREP=`FINDEXE grep`
+
+CHECKEXE "$CHMOD" chmod
+CHECKEXE "$CHGRP" chgrp
+CHECKEXE "$FIND" find
+CHECKEXE "$HEAD" head
+CHECKEXE "$GREP" grep
+
+
+function CHECKGROUP
+{
+  ## needs work on find commands
+  DIR="$1"
+  GROUP="$2"
+  XX=$("${FIND}" "${DIR}" -not -group "${GROUP}" | "${HEAD}" -1)
+  if test "${XX}" != ""; then
+    return 1
+  fi
+  XX=$("${FIND}" "${DIR}" -not -perm -0664 | "${HEAD}" -1)
+  if test "${XX}" != ""; then
+    return 1
+  fi
+  XX=$("${FIND}" "${DIR}" -type d -not -perm -02664 | "${HEAD}" -1)
+  if test "${XX}" != ""; then
+    return 1
+  fi
+  return 0  
+}
+
+function CHECKOWN
+{
+  ## needs work on find commands
+  DIR="$1"
+  GROUP="$2"
+  USER="$3"
+  if test "$USER" != ""; then
+    XX=$("${FIND}" "${DIR}" -not -user "${USER}" | "${HEAD}" -1)
+    if test "$XX" != ""; then
+      return 1
+    fi
+  fi
+  if test "$GROUP" = ""; then
+    XX=$("${FIND}" "${DIR}" -perm +020 | "${HEAD}" -1)
+    if test "$XX" != ""; then
+      return 1
+    fi
+  fi
+}
+
 function CHGRP()
 {
   DIR="$1"
   GROUP="$2"
-  RDIR=$( greadlink -f "${DIR}" )
-  if test "${RDIR}" != "${DIR}" -a "${RDIR}" != ""; then
-    DIR="${RDIR}"
+  if test "${READLINK}" != ""; then
+    RDIR=$("${READLINK}" -f "${DIR}" )
+    if test "${RDIR}" != "${DIR}" -a "${RDIR}" != ""; then
+      DIR="${RDIR}"
+    fi
   fi
   test -d "${DIR}"
   CHECKRC $?
-  chgrp -R "${GROUP}" "${DIR}"
+  "${CHGRP}" -R "${GROUP}" "${DIR}"
   CHECKRC $?
-  chmod -R g+w "${DIR}"
+  "${CHMOD}" -R g+w "${DIR}"
   CHECKRC $?
-  find "${DIR}" -type d -exec chmod g+ws '{}' ';'
+  "${FIND}" "${DIR}" -type d -exec "${CHMOD}" g+ws '{}' ';'
+  CHECKRC $?
+  CHECKGROUP "${DIR}" "${GROUP}"
   CHECKRC $?
 }
 
@@ -80,9 +163,11 @@ function MKDIR()
     chown -R "${USER}" "${DIR}"
     CHECKRC $?
     if test "$GROUP" = ""; then
-      chmod -R g-ws "${DIR}"
+      "${CHMOD}" -R g-ws "${DIR}"
       CHECKRC $?
     fi
+    CHECKOWN "${DIR}" "${GROUP}" "${USER}"
+    CHECKRC $?
   fi
   if test "$GROUP" != ""; then
     CHGRP "${DIR}" "${GROUP}"
@@ -95,7 +180,7 @@ function MKSUBDIR()
   DIR="$2"
   GROUP="$3"
   USER="$4"
-  SLASH=`echo "${DIR}" | grep ^/`
+  SLASH=`echo "${DIR}" | "${GREP}" ^/`
   test "$SLASH" = ""
   CHECKRC $? "Subdir, ${DIR}, should not begin with a slash /"
   test -d "${PARENT}"
@@ -131,7 +216,7 @@ function SHOWINDIR()
 
 if test "$1" != ""; then
   CMD="$1"
-  EXIST=`typeset -F | grep "^declare -f ${CMD}"'$'`
+  EXIST=`typeset -F | "${GREP}" "^declare -f ${CMD}"'$'`
   test "$EXIST" != ""
   CHECKRC $? "function ${CMD} does not exist"
   shift

@@ -1,6 +1,19 @@
 #!/usr/bin/bash
 
 DEST="/f/Profiles/OsirisDist"
+SIGNSCRIPT=~/Documents/digisign/sign-file.sh
+
+function CHECKRC()
+{
+  if test "$1" != "0"; then
+    if test "$2" != ""; then
+      echo "$2" 1>&2
+    fi
+    exit $1
+  fi
+}
+
+
 function ECHO()
 {
   if test "$VERBOSE" = "1"; then
@@ -8,36 +21,39 @@ function ECHO()
   fi
 
 }
-function copyfile()
+function COPYFILE()
 {
-  FILE="$2"
-  DIR="$1"
-  if test "$FILE" = ""; then
-    ECHO "No file in ${DIR}"
-  elif test -r "${DIR}/${FILE}" ; then
-    ECHO "${DIR}/${FILE}"
-    cp -vup "${DIR}/${FILE}" "${DEST}"
-    chmod g+r "${DEST}/${FILE}"
+  FILE="$1"
+  if test -r "${FILE}" ; then
+    ECHO "${FILE}"
+    cp -vup "${FILE}" "${DEST}"
+    CHECKRC $?
   else
     ECHO "Cannot find file: ${DIR}/${FILE}"
   fi
 }
-function findfile()
-{
-  DIR="$1"
-  EXT="$2"
-  FILE=`ls -1tr "${DIR}" | grep '\.'"${2}"'$' | tail -1`
-  copyfile "${DIR}" "${FILE}"
-}
+
 cd `dirname $0`
-SRCDIR="../Setup/Release"
 if test "$1" = "-v"; then
   VERBOSE=1
 else
   VERBOSE=0
 fi
 
-findfile "../Setup/Release" 'msi'
-findfile "." 'zip'
 
+TMP=`ls -1tr ../Setup/Release/*.msi | tail -1`
+test "$TMP" != ""
+CHECKRC $? "Cannot find msi file"
+MSI=`readlink -f "$TMP"`
+test -r "$MSI"
+CHECKRC $? "Cannot find msi file: ${MSI}"
 
+TMP=`ls -1tr Osiris*.exe | tail -1`
+test "$TMP" != ""
+CHECKRC $? "Cannot find exe file"
+EXE=`readlink -f "${TMP}"`
+test -r "$EXE"
+CHECKRC $? "Cannot find exe file: ${EXE}"
+
+COPYFILE "$EXE"
+COPYFILE "$MSI"

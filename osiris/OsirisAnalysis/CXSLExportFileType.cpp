@@ -1000,43 +1000,22 @@ bool CExportFiles::LoadExportFile()
   //  although it can be ignored here
   bool bRtn = false;
   _SetupFileName();
-#ifdef TMP_DEBUG
-  wxString sMsg = "CExportFiles::LoadExportFile(): ";
-#endif
   if(!FileExists())
   {
-#ifdef TMP_DEBUG
-    sMsg.Append("!FileExists() ");
-#endif
     Init();
     bRtn = true;
   }
   else if(GetLastFileName() != g_sFileName)
   {
-#ifdef TMP_DEBUG
-    sMsg.Append("GetLastFileName() != g_sFileName ");
-    sMsg.Append("\nGetLastFileName: ");
-    sMsg.Append(GetLastFileName());
-    sMsg.Append("\ng_sFileName: ");
-    sMsg.Append(g_sFileName);
-    sMsg.Append("\n");
-#endif
     bRtn = LoadFile(g_sFileName);
   }
   else
   {
     bool bCheck = (m_nBatch == 0) && CheckFileModification(false);
-#ifdef TMP_DEBUG
-    sMsg.Append(bCheck ? "Reload() " : "No Reload() ");
-#endif
     bRtn = bCheck
       ? ReloadFile()
       : true;
   }
-#ifdef TMP_DEBUG
-  sMsg.Append(bRtn ? "true" : "false");
-  nwxLog::LogMessage(sMsg);
-#endif
   return bRtn;
 }
 size_t CExportFiles::GetAutoList(vector<CXSLExportFileType *> *pList)

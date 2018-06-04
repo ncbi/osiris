@@ -856,9 +856,5 @@
 		<KitName>PowerPlex GenePrint24</KitName>
 		<FileName>PPGenePrint24_LadderInfo.xml</FileName>
 	</Set>
-	<Set>
-      <KitName>Landers Lab FaPlexChip</KitName>
-      <FileName>LLFaPlexChip_LadderInfo.xml</FileName>
-    </Set>
   </Kits>
 </KitData>

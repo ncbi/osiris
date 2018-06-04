@@ -242,12 +242,12 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
-  my $zipFile = "${dest}-Windows.zip";
+  my $zipFile = "${dest}-Windows.exe";
 
   if((!$NO_ZIP_FILE) && &TESTFILES($zipFile,"${dest}"))
   {
     (-r $zipFile) && (unlink($zipFile) || die("Cannot remove ${zipFile}"));
-    &SYSTEM("${PATH7Z} a -r ${zipFile} ${dest}");
+    &SYSTEM("${PATH7Z} a -r -sfx7z.sfx  ${zipFile} ${dest}");
   }
 }
 
@@ -256,6 +256,10 @@ sub CheckSignMac()
   my $PATH=shift;
   my $SIG = shift;
   my $NOSIGN = "\nApplication will not be signed.";
+  if(length($ENV{NOSIGN}))
+  {
+    return undef;
+  }
   if(! -d $PATH)
   {
     print STDERR "Application path, ${PATH}, is not a directory",$NOSIGN;
@@ -415,28 +419,11 @@ sub CopyMac
      $APP_USER_FOLDER
     )
   {
-    &SignAppMac($folder);
+    &SignAppMac($folder) || last;
   }
-  if(0)
-  {
-    my $testDest = "${TOP}/TestAnalysis";
-    my $zipDir = $ENV{OSIRISTGZ};
-    if(!(-d $zipDir && -w $zipDir))
-    {
-      $zipDir = `dirname $0`;
-      chomp $zipDir;
-      chdir "${zipDir}/..";
-      $zipDir = `pwd`;
-      chomp $zipDir;
-    }
-    my $zipFile = "${zipDir}/Osiris-Mac-${VERSION}.tar.gz";
-    if( ($#ARGV >= 0) || &TESTFILES($zipFile,$DEST) ||
-        &TESTFILES($zipFile,$testDest) )
-    {
-      &SYSTEM("cd \"${TOP}\" ; /usr/bin/tar zcvf ${zipFile} TestAnalysis OsirisXSL ${sDir}.app");
-    }
-  }  ## end if(1)
-  ### END make tar.gz
+  system("./makedmg.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"") ||
+    system("./maketar.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"");
+
 }
 
 my $home = $ENV{"HOME"};

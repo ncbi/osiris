@@ -153,6 +153,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
     const CParmOsiris *pParm = NULL,
     const wxDateTime *pTime = NULL);
   static wxWindow *GetTopLevelParent(wxWindow *p);
+  static void LAYOUT_HACK(wxWindow *p);
   
   static const wxString EMPTY_STRING;
   static const int DIALOG_STYLE;

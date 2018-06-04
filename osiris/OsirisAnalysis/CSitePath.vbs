@@ -7,12 +7,14 @@ Option Explicit
 '
 
 
-Public wshShell,fso,envProcess,sCacls,sIcacls,bVerbose,sWhoAmI, sEOL, STDOUT, STDERR, sCmdExe
+Public wshShell,fso,envProcess,sCacls,sIcacls,bVerbose,sWhoAmI, sEOL, STDOUT, STDERR, sCmdExe,sAttrib,sTakeOwn
 Const CSCRIPT_PARAM = "/NOLOGO " ' must end with a space unless empty
 
 bVerbose = False
 sCacls = Null
 sIcacls = Null
+sAttrib = Null
+sTakeOwn = Null
 sCmdExe = ""
 Set wshShell = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
@@ -239,7 +241,7 @@ Function ShellPiped(sCmdLine)
   While exec.Status = 0
     Sleep 50
   Wend
-  rtn.Add "return", exec.Status
+  rtn.Add "return", exec.ExitCode
   rtn.Add "stdout", aStdOut
   rtn.Add "stderr", aStdErr
 '  If bVerbose Then
@@ -376,7 +378,7 @@ Function GetGroups(byRef aList)
   if Not IsNull(sWhoAmI) Then
     Dim objShell, aStdErr, aStdout, nLines, i, sLine, sLastGroup
     Set objShell = ShellPiped(sWhoAmI & " /GROUPS /FO LIST")
-    If objShell.Item("return") = 1 Then
+    If objShell.Item("return") = 0 Then
       GetGroups = True
       aStdOut = objShell.Item("stdout")
       nLines = UBound(aStdOut)
@@ -390,7 +392,8 @@ Function GetGroups(byRef aList)
             sLastGroup = Trim(Mid(sLine,12))
           ElseIf Len(sLine) > 5 _
               And Left(sLine,5) = "Type:" _
-              And InStr(1,sLine,"Group",1) > 0 _
+              And ( InStr(1,sLine,"Group",1) > 0 _
+                   Or InStr(1,sLine,"Alias",1) > 0 ) _
               And Len(sLastGroup) > 0 Then
             AddToArray aList,sLastGroup,nNdx
             nNdx = nNdx + 1
@@ -407,20 +410,14 @@ End Function
 Function SETUP_CACLS()
   Dim sExe
   If IsNull(sIcacls) Then
-    SETUP_CACLS = False
-    sExe = SystemFind("icacls.exe")
-    If not IsNull(sExe) Then
-      sIcacls = sExe
-      SETUP_CACLS = True
-    End If
+    sIcacls = SystemFind("icacls.exe")
+    sAttrib = SystemFind("attrib.exe")
+    SETUP_CACLS = not (IsNull(sAttrib) or IsNull(sIcacls))
   Else
     SETUP_CACLS = True
   End If
   If IsNull(sCacls) Then
-    sExe = SystemFind("cacls.exe")
-    If Not IsNull(sExe) Then
-      sCacls = sExe
-    End If
+    sCacls = SystemFind("cacls.exe")
   End If
   If Not SETUP_CACLS Then
     PRINT "Cannot find icacls.exe",bVerbose
@@ -445,35 +442,49 @@ Function CACLS_OK(byRef aStdOut)
     
 End Function
 
+Function CmdGrantAll(sPath,sWho)
+  If Not IsNull(sIcacls) Then
+    CmdGrantAll = """" & sIcacls & """ """ & sPath & """ /grant """ & sWho & ":(OI)(CI)F"" /grant Users:(OI)(CI)(RX) /T /C /Q"
+  Else
+    CmdGrantAll = Null
+  End If
+End Function
+
 Function CACLS_RESET(sPath)
   CACLS_RESET = False
   If SETUP_CACLS() Then
-    Dim sCmd(2), objResult,i
+    Dim sCmd(10), bCheck(10), objResult,i,n
+    n = 0
     If Not IsNull(sIcacls) Then
-      sCmd(0) = """" & sIcacls & """ """ & sPath & """ /reset /T /Q"
-      sCmd(1) = """" & sIcacls & """ """ & sPath & """ /inheritance:r /Q"
+      If Not IsNull(sTakeOwn) Then
+        sCmd(n) = """" & sTakeOwn & """ /A /R /F """ & sPath & """"
+        bCheck(n) = 0
+        n=n+1
+      End If
+      sCmd(n) = """" & sIcacls & """ """ & sPath & """ /reset /T /C /Q"
+      bCheck(n) = 1
+      n=n+1
+      sCmd(n) = """" & sIcacls & """ """ & sPath & """ /inheritance:r /Q"
+      bCheck(n) = 1
+      n=n+1
+      sCmd(n) = CmdGrantAll(sPath,"Administrators")
+      bCheck(n) = 1
+      n=n+1
+	    sCmd(n) = """" & sAttrib & """ -R """ & sPath & """ /S /D"
+      bCheck(n) = 0
       CACLS_RESET = True
-      For i = 0 to 1
+      For i = 0 to n
         Set objResult = ShellPiped(sCmd(i))
-        If Not( (objResult.Item("return") = 1) And _
-            CACLS_OK(objResult.Item("stdout")) ) Then
+        If Not( (objResult.Item("return") = 0) And _
+            ((bCheck(i) = 0) Or CACLS_OK(objResult.Item("stdout"))) ) Then
           CACLS_RESET = False
+          PRINT objResult.Item("stdout"), True
+          PRINT objResult.Item("stderr"), True
           Exit For
         End If
       Next
     End If
   End If
-End Function
-
-Function CmdGrantAll(sPath,sWho)
-  If Not IsNull(sIcacls) Then
-    CmdGrantAll = """" & sIcacls & """ """ & sPath & """ /grant """ & sWho & ":(OI)(CI)F"" /grant Users:(OI)(CI)(RX) /T /Q"
-'  ElseIf Not IsNull(sCacls) Then
-'    CmdGrantAll = """" & sCacls & """ """ & sPath & """ /G """ & sWho & ":F"" /T "
-  Else
-    CmdGrantAll = Null
-  End If
-
 End Function
 
 Function CACLS_SETGROUP(sPath, sGroup)
@@ -484,7 +495,7 @@ Function CACLS_SETGROUP(sPath, sGroup)
     If Not IsNull(sCmd) Then
       Dim objResult
       Set objResult = ShellPiped(sCmd)
-      If objResult.Item("return") = 1 Then
+      If objResult.Item("return") = 0 Then
         CACLS_SETGROUP = CACLS_OK(objResult.Item("stdout"))
       End If
     End If
@@ -501,7 +512,7 @@ Function CACLS_SETOWNER(sPath, sUser)
       sCmd = """" & sIcacls & """ """ & sPath & """ /setowner """ & _
           sUser & """ /T /Q "
       Set objResult = ShellPiped(sCmd)
-      If objResult.Item("return") = 1 Then
+      If objResult.Item("return") = 0 Then
         CACLS_SETOWNER = CACLS_OK(objResult.Item("stdout"))
       End If
     End If
@@ -550,7 +561,7 @@ Function CHGRP(sPath,sUser,sGroup)
         ' works
         sCmd = CmdGrantAll(sPath,sUser)
         Set obj = ShellPiped(sCmd)
-        rtn = (obj.Item("return") = 1) And CACLS_OK(obj.Item("stdout"))
+        rtn = (obj.Item("return") = 0) And CACLS_OK(obj.Item("stdout"))
         If not rtn Then
           PRINT "Grant full access on """ & sPath & """ to """ & sUser & """ failed.", True
         ElseIf bVerbose Then
@@ -943,6 +954,12 @@ sub MAIN
         PRINT "Cannot initialize temp file: " & sTempFile, True
         rtn = False ' failed
         sTempFile = Null
+      Else
+        sTakeOwn = SystemFind("takeown.exe")
+        If IsNull(sTakeOwn) Then
+          PRINT "Cannot find takeown.exe",True
+          rtn = False ' failed
+        End If
       End If
     ElseIf sArg = "-h" Then
       Usage()

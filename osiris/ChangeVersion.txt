@@ -1,0 +1,19 @@
+1. Update the version in ./Version/OsirisVersion.h
+2. in OsirisAnalysis run updatePlist.sh
+3. If this is version change as opposed to Beta change:
+    Edit the image, OsirisAnalysis/Osiris*.png with the correct version:
+    i.   Type the version into wordart.doc, 
+    ii.  Do a print screen and paste into a blank graphic using MS-Paint
+    iii. Copy/paste the version number into the osiris image.
+    iv.  Run f2d.pl in the OsirisAnalysis directory using the image file
+         name as the command line argument.  This will generate osiris_png.h
+         which is used for the splash screen.
+    vi.  add the Osiris*.png image to source control (git)
+3. in MSVC setup change the name of the .msi file and in properties (Alt+Enter) 
+   change the version at the bottom.  When the prompt appears select "Yes"  
+   Save all do not build.
+4. in ./Setup run mkun.sh (before building msi, after "Save All" in MSVC)
+5. in MSVC build .msi and install
+6. in ./ZipPerl run makezip.bat, then run mklists.pl to regenerate mklists.bat, run mklists.bat to compare to installation
+7. in ./ZipPerl run copyf.bat (settings will need to be changed outside NCBI)
+8. git commit and push, build on Macintosh

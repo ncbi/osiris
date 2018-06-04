@@ -548,6 +548,10 @@ public:
     int n = m_sType.CmpNoCase("Ladder");
     return !n;
   }
+  bool CanDisableSample() const
+  {
+    return !IsLadderType();
+  }
   bool IsSampleType() const
   {
     int n = m_sType.CmpNoCase("Sample");
