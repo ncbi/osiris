@@ -661,7 +661,19 @@ void CoreBioComponent :: ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text
 	text << "\t\t\t<Name>" << xmlwriter::EscAscii (SimpleFileName, &pResult) << "</Name>\n";
 	text << "\t\t\t<SampleName>" << xmlwriter::EscAscii (mSampleName, &pResult) << "</SampleName>\n";
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
-	text << "\t\t\t<Type>Ladder</Type>\n" << PLevel ();
+	text << "\t\t\t<Type>Ladder</Type>\n";
+	text << "\t\t\t<Info>\n";
+	int j;
+
+	for (j=1; j<=mNumberOfChannels; j++) {
+
+		text << "\t\t\t\t<Channel>\n";
+		text << "\t\t\t\t\t<Number>" << j << "</Number>\n";
+		text << "\t\t\t\t\t<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
+		text << "\t\t\t\t</Channel>\n";
+	}
+
+	text << "\t\t\t</Info>\n" << PLevel ();
 
 	int trigger = Notice::GetMessageTrigger ();
 //	int channelHighestLevel;
@@ -780,7 +792,19 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 	text << "\t\t\t<Name>" << xmlwriter::EscAscii (SimpleFileName, &pResult) << "</Name>\n";
 	text << "\t\t\t<SampleName>" << xmlwriter::EscAscii (mSampleName, &pResult) << "</SampleName>\n";
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
-	text << "\t\t\t<Type>" << type.GetData () << "</Type>\n" << PLevel ();
+	text << "\t\t\t<Type>" << type.GetData () << "</Type>\n";
+	text << "\t\t\t<Info>\n";
+	int j;
+
+	for (j=1; j<=mNumberOfChannels; j++) {
+
+		text << "\t\t\t\t<Channel>\n";
+		text << "\t\t\t\t\t<Number>" << j << "</Number>\n";
+		text << "\t\t\t\t\t<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
+		text << "\t\t\t\t</Channel>\n";
+	}
+
+	text << "\t\t\t</Info>\n" << PLevel ();
 
 	int trigger = Notice::GetMessageTrigger ();
 //	int channelHighestLevel;

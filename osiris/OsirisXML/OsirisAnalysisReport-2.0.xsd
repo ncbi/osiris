@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by NCBI_User (National Library of Medicine) -->
+<!-- edited with XMLSpy v2018 rel. 2 (http://www.altova.com) by Altova XMLSpy 2018 Professional XML Editor - Release 2, Installed for 13 users (NCBI/NLM/NIH) -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="StandardSettingsType.xsd"/>
@@ -472,6 +472,22 @@
 													<xs:enumeration value="Sample"/>
 												</xs:restriction>
 											</xs:simpleType>
+										</xs:element>
+										<xs:element name="Info" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:sequence maxOccurs="unbounded">
+														<xs:element name="Channel">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="Number" type="xs:int"/>
+																	<xs:element name="Noise" type="xs:double"/>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:sequence>
+											</xs:complexType>
 										</xs:element>
 										<xs:element name="SampleAlerts" minOccurs="0">
 											<xs:complexType>
