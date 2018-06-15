@@ -23,29 +23,21 @@
 *
 * ===========================================================================
 *
-*  FileName: CGridRFURun.h
+*  FileName: nwxUtil.h
 *  Author:   Douglas Hoffman
 *
-*  wxGrid for entering and/or viewing RFU limits for sample, ILS, channel,
-*    for an osiris analysis
-*
+*  misc general purpose utilities for wxWidgets
 */
-#ifndef __C_GRID_RFU_RUN__
-#define __C_GRID_RFU_RUN__
+#ifndef __NWX_UTIL_H__
+#define __NWX_UTIL_H__
 
-#include "CGridRFURunBase.h"
-class CDialogAnalysis;
-
-class CGridRFURun : public CGridRFURunBase
+#include <wx/toplevel.h>
+class nwxUtil
 {
-public:
-  CGridRFURun(CDialogAnalysis *parent,wxWindowID id = wxID_ANY);
-  virtual bool TransferDataFromWindow();
-  virtual bool TransferDataToWindow();
-  virtual void OnCellChange(wxGridEvent &e);
-
 private:
-  CDialogAnalysis *m_pParent;
+  nwxUtil() {} // prevent instantiation
+public:
+  static wxWindow *GetTopLevelParent(wxWindow *p);
 };
 
 #endif

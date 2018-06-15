@@ -42,14 +42,17 @@ bool CGridRFUParam::TransferDataToWindow()
   bool bRtn = (m_pParms != NULL) && !m_sKitName.IsEmpty();
   if(bRtn)
   {
+    nwxLabelGridBatch x(this);
     const vector<int> &anChannelDetection = m_pParms->GetChannelDetection();
     const vector<int> &anChannelRFU = m_pParms->GetChannelRFU();
+    int nMinRFU = m_pParms->GetMinRFU_Sample();
+    int nMinDetection = m_pParms->GetSampleDetectionThreshold();
     ClearGrid();
-    _TransferToChannelRows(anChannelRFU,anChannelDetection);
+    _TransferToChannelRows(anChannelRFU,anChannelDetection, nMinRFU, nMinDetection);
 
-    _SetCellIntValue(m_nROW_SAMPLE,COL_ANALYSIS,m_pParms->GetMinRFU_Sample());
+    _SetCellIntValue(m_nROW_SAMPLE,COL_ANALYSIS,nMinRFU);
     _SetCellIntValue(m_nROW_SAMPLE,COL_INTERLOCUS,m_pParms->GetMinRFU_Interlocus());
-    _SetCellIntValue(m_nROW_SAMPLE,COL_DETECTION,m_pParms->GetSampleDetectionThreshold());
+    _SetCellIntValue(m_nROW_SAMPLE,COL_DETECTION,nMinDetection);
     _SetCellIntValue(m_nROW_LADDER,COL_ANALYSIS,m_pParms->GetMinRFU_Ladder());
     _SetCellIntValue(m_nROW_LADDER,COL_INTERLOCUS,m_pParms->GetMinLadderInterlocusRFU());
     _SetCellIntValue(m_nROW_ILS,COL_ANALYSIS,m_pParms->GetMinRFU_ILS());

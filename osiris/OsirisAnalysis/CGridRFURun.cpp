@@ -58,6 +58,7 @@ CGridRFURun::CGridRFURun(CDialogAnalysis *parent,wxWindowID id) :
 
 bool CGridRFURun::TransferDataFromWindow()
 {
+  nwxLabelGridBatch x(this);
   vector<int> anChannelDetection;
   vector<int> anChannelRFU;
   ChannelNumberIterator itrChannelCol;
@@ -95,18 +96,54 @@ bool CGridRFURun::TransferDataFromWindow()
 }
 bool CGridRFURun::TransferDataToWindow()
 {
+  nwxLabelGridBatch x(this);
   const vector<int> &anChannelDetection = m_pParent->GetChannelDetection();
   const vector<int> &anChannelRFU = m_pParent->GetChannelRFU();
+  int nMinRFU = m_pParent->GetMinRFU();
+  int nMinDetection = m_pParent->GetMinRFU_SampleDetection();
   bool bRtn = true;
   ClearGrid();
-  _TransferToChannelRows(anChannelRFU,anChannelDetection);
+  _TransferToChannelRows(anChannelRFU,anChannelDetection, nMinRFU, nMinDetection);
 
-  _SetCellIntValue(m_nROW_SAMPLE,COL_ANALYSIS,m_pParent->GetMinRFU());
+  _SetCellIntValue(m_nROW_SAMPLE,COL_ANALYSIS,nMinRFU);
   _SetCellIntValue(m_nROW_SAMPLE,COL_INTERLOCUS,m_pParent->GetMinRFU_Interlocus());
-  _SetCellIntValue(m_nROW_SAMPLE,COL_DETECTION,m_pParent->GetMinRFU_SampleDetection());
+  _SetCellIntValue(m_nROW_SAMPLE,COL_DETECTION,nMinDetection);
   _SetCellIntValue(m_nROW_LADDER,COL_ANALYSIS,m_pParent->GetMinRFU_Ladder());
   _SetCellIntValue(m_nROW_LADDER,COL_INTERLOCUS,m_pParent->GetMinRFU_LadderInterlocus());
   _SetCellIntValue(m_nROW_ILS,COL_ANALYSIS,m_pParent->GetMinRFU_ILS());
 
   return bRtn;
+}
+
+void CGridRFURun::OnCellChange(wxGridEvent &e)
+{
+  int nCol = e.GetCol();
+  int nRow = (nCol == COL_ANALYSIS || nCol == COL_DETECTION) 
+    ? e.GetRow() : -1;
+  if( (nRow == m_nROW_SAMPLE) && ValidateCell(nRow,nCol,NULL) )
+  {
+    wxString sValue;
+    int n = _GetCellIntValue(nRow,nCol);
+    if(n > 0)
+    {
+      sValue = nwxString::FormatNumber(n);
+      for (nRow = m_nROW_CHANNEL_START;
+         nRow < m_nROW_AFTER_CHANNEL;
+         ++nRow)
+      {
+        SetLabelValue(nRow, nCol, sValue);
+      }
+    }
+    else
+    {
+      for (nRow = m_nROW_CHANNEL_START;
+         nRow < m_nROW_AFTER_CHANNEL;
+         ++nRow)
+      {
+        ClearLabel(nRow, nCol);
+      }
+    }
+    nwxLabelGridBatch x(this); // force table update
+  }
+  nwxLabelGrid::OnCellChange(e);
 }

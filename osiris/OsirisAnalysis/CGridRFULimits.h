@@ -48,6 +48,7 @@ public:
   void SetData(CLabThresholds *pData, const wxString &sKitName);
   virtual bool TransferDataFromWindow();
   virtual bool TransferDataToWindow();
+  virtual void OnCellChange(wxGridEvent &e);
 private:
   enum
   {
@@ -117,6 +118,8 @@ private:
     _SetupDefaultCell(ROW_RFU_MIN,nCol);
     _SetupDefaultCell(ROW_DETECTION,nCol);
   }
+  void _SetupLabelValues(int nRow, int nValue);
+
   int m_nCOL_SAMPLE;
   int m_nCOL_CHANNEL_START;
   int m_nCOL_AFTER_CHANNEL;

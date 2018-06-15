@@ -58,7 +58,9 @@ protected:
 
   void _TransferToChannelRows(
     const vector<int> &anChannelRFU, 
-    const vector<int> &anChannelDetection);
+    const vector<int> &anChannelDetection,
+    int nDefaultRFU = -1,
+    int nDefaultDetection = -1);
   void _ClearChannelRows()
   {
     int nRow;

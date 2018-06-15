@@ -466,7 +466,7 @@ void nwxGrid::OnCellChange(wxGridEvent &e)
     int nRow = e.GetRow();
     int nCol = e.GetCol();
     if( !ValidateCell(nRow,nCol,&sPrompt)
-        && !sPrompt.IsEmpty() )
+        && !sPrompt.IsEmpty() && IsShown() )
     {
       sPrompt.Append(
         "\nWould you like to continue editing?");
@@ -525,7 +525,8 @@ void nwxGrid::OnEditorEnd(wxGridEvent &e)
     {
       wxString s;
       s = pText->GetValue();
-      if(s == m_sEditorStartValue || s != m_sValue)
+      //if(s == m_sEditorStartValue || s != m_sValue) // 6/14/18 - removed compare to m_sValue
+      if(s == m_sEditorStartValue)
       {
         // value hasn't changed but we still want to force a 
         // CELL_CHANGED event
@@ -605,3 +606,130 @@ EVT_GRID_SELECT_CELL(nwxGrid::_OnSelectCell)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(nwxGrid,wxGrid)
+
+
+// nwxLabelGrid functions
+
+void nwxLabelGrid::OnEditorStart(wxGridEvent &e)
+{
+  if(_LabelsEnabled())
+  {
+    int nRow = e.GetRow();
+    int nCol = e.GetCol();
+    if(IsLabelUsed(nRow, nCol))
+    {
+      wxPoint pt(nRow,nCol);
+      SetCellValue(nRow, nCol, wxEmptyString);
+      const wxFont *pFont = _GetSavedLabelFont(pt);
+      const wxColour *pColour = _GetSavedLabelColour(pt);
+      if(pFont != NULL)
+      {
+        SetCellFont(nRow, nCol, *pFont);
+      }
+      if(pColour != NULL)
+      {
+        SetCellTextColour(nRow, nCol, *pColour);
+      }
+      MAP_POINT_SETTER<bool>::ClearValue(pt,&m_mapLabelUsed);
+    }
+    nwxGrid::OnEditorStart(e);
+  }
+}
+
+void nwxLabelGrid::OnCellChange(wxGridEvent &e)
+{
+  nwxGrid::OnCellChange(e);
+  wxPoint pt(e.GetRow(),e.GetCol());
+  MAP_POINT_SETTER<bool>::ClearValue(pt,&m_mapLabelUsed);
+  nwxLabelGridBatch x(this);  // fix labels
+}
+
+  void nwxLabelGrid::OnEditorEnd(wxGridEvent &e)
+{
+  nwxGrid::OnEditorEnd(e);
+#if 0
+  if(_LabelsEnabled())
+  {
+    int nRow = e.GetRow();
+    int nCol = e.GetCol();
+    wxString s = GetCellValue(nRow, nCol);
+    nwxLabelGridBatch x(this);
+    SetCellValue(nRow, nCol, s);
+  }
+#endif
+}
+void nwxLabelGrid::_EnableLabels(bool bEnable)
+{
+  if(bEnable != m_bLabelsEnabled)
+  {
+    m_bLabelsEnabled = bEnable;
+    if(!bEnable)
+    {
+      // disable labels,
+      // remove labels from cells, 
+      if(m_mapLabelUsed.size())
+      {
+        // loop through m_mapLabelUsed and clear all labels
+        for(MAP_POINT_BOOL::iterator itr = m_mapLabelUsed.begin();
+          itr != m_mapLabelUsed.end();
+          ++itr)
+        {
+          if(itr->second)
+          {
+            const wxPoint &pt(itr->first);
+            const wxFont *pFont = _GetSavedLabelFont(pt);
+            const wxColour *pC = _GetSavedLabelColour(pt);
+            if(pFont != NULL)
+            {
+              SetCellFont(pt.x, pt.y, *pFont);
+            }
+            if(pC != NULL)
+            {
+              SetCellTextColour(pt.x, pt.y, *pC);
+            }
+            SetCellValue(pt.x, pt.y, wxEmptyString);
+          }
+        }
+        m_mapLabelUsed.clear();
+      }
+    }
+    else
+    {
+      if(m_mapLabels.size())
+      {
+        // loop through m_mapLabels and set needed labels
+        bool bTRUE(true);
+        for(MAP_POINT_STR::iterator itr = m_mapLabels.begin();
+          itr != m_mapLabels.end();
+          ++itr)
+        {
+          const wxPoint &pt(itr->first);
+          const wxString sCellValue = GetCellValue(pt.x, pt.y);
+          if(sCellValue.IsEmpty())
+          {
+            const wxString &sValue(itr->second);
+            if(!sValue.IsEmpty())
+            {
+              const wxFont *pFont = GetLabelFont(pt);
+              const wxColour *pC = GetLabelTextColour(pt);
+              if(pFont != NULL)
+              {
+                const wxFont &FontSave = GetCellFont(pt.x, pt.y);
+                SetCellFont(pt.x, pt.y, *pFont);
+                _SetSavedLabelFont(pt, FontSave);
+              }
+              if(pC != NULL)
+              {
+                const wxColour &ColourSave = GetCellTextColour(pt.x, pt.y);
+                SetCellTextColour(pt.x, pt.y, *pC);
+                _SetSavedLabelColour(pt, ColourSave);
+              }
+              MAP_POINT_SETTER<bool>::SetValue(pt,bTRUE,&m_mapLabelUsed);
+              SetCellValue(pt.x, pt.y, sValue);
+            }
+          }
+        }
+      }
+    }
+  }
+}

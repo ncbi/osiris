@@ -43,6 +43,7 @@
 #include <map>
 #include <set>
 #include "nwx/stde.h"
+#include "nwx/nwxBatch.h"
 
 
 class nwxGridCellValidator
@@ -208,6 +209,26 @@ public:
 
 };
 
+class PointLess
+{
+  // pun intended
+  //  used for mapping a wxPoint to an object with std::map<wxPoint, object>
+public:
+  PointLess() {};
+  bool operator ()(const wxPoint &x1, const wxPoint &x2) const
+  {
+    bool bRtn = false;
+    if(x1.x < x2.x)
+    {
+      bRtn = true;
+    }
+    else if((x1.x == x2.x) && (x1.y < x2.y))
+    {
+      bRtn = true;
+    }
+    return bRtn;
+  }
+};
 
 class nwxGridCellValidatorCollection
 {
@@ -240,25 +261,6 @@ private:
   nwxGridCellValidator *_FindCol(int nCol);
   void _InsertRowCol(map<int, nwxGridCellValidator *> *pmap,
     int n, nwxGridCellValidator *p);
-  class PointLess
-  {
-    // pun intended
-  public:
-    PointLess() {};
-    bool operator ()(const wxPoint &x1, const wxPoint &x2) const
-    {
-      bool bRtn = false;
-      if(x1.x < x2.x)
-      {
-        bRtn = true;
-      }
-      else if((x1.x == x2.x) && (x1.y < x2.y))
-      {
-        bRtn = true;
-      }
-      return bRtn;
-    }
-  };
   typedef map<wxPoint,nwxGridCellValidator *,PointLess> MAP2DV;
   typedef map<int, nwxGridCellValidator *> MAPV;
 
@@ -281,13 +283,10 @@ private:
 };
 
 
-
-
-
 class nwxGrid : public wxGrid
 {
-public:
 
+public:
 //  static functions
 
   static void ForceRefreshAll(wxWindow *p);
@@ -514,6 +513,316 @@ private:
   DECLARE_EVENT_TABLE()
   DECLARE_CLASS(nwxGrid)
 };
+
+
+class nwxLabelGrid: public nwxGrid
+{
+  // grid class that displays labels in
+  // otherwise empty cells
+
+private:
+  // types mapped from cell location (wxPoint)
+  typedef std::map<const wxPoint, wxFont, PointLess> MAP_POINT_FONT;
+  typedef std::map<const wxPoint, wxColour, PointLess> MAP_POINT_COLOUR;
+  typedef std::map<const wxPoint, wxString, PointLess> MAP_POINT_STR;
+  typedef std::map<const wxPoint, bool, PointLess> MAP_POINT_BOOL;
+
+
+  //  label data
+
+  MAP_POINT_BOOL m_mapLabelUsed;
+  MAP_POINT_COLOUR m_mapLabelTextColour, m_mapSaveTextColour;
+  MAP_POINT_FONT m_mapLabelFont, m_mapSaveFont;
+  MAP_POINT_STR m_mapLabels;
+  int m_nBatch;
+  bool m_bEnabledAfterBatch;
+  bool m_bLabelsEnabled;
+
+  // BEGIN class MAP_POINT_SETTER
+  template <class T> class MAP_POINT_SETTER
+  {
+    // class for getting/setting values of std::map<wxPoint, T, PointLess>
+
+  private:
+    MAP_POINT_SETTER<T> () {} // private, prevent instantiation
+  public:
+    static void ClearValue(const wxPoint &pt, std::map<const wxPoint, T, PointLess> *pmap)
+    {
+      std::map<const wxPoint, T, PointLess>::iterator itr = pmap->find(pt);
+      if(itr != pmap->end())
+      {
+        pmap->erase(itr);
+      }
+    }
+    static void SetValue(const wxPoint &pt, const T &t, std::map<const wxPoint, T, PointLess> *pmap)
+    {
+      std::map<const wxPoint, T, PointLess>::iterator itr = pmap->find(pt);
+      bool bIns = true;
+      if(itr == pmap->end())
+      {}
+      else if(itr->second != t)
+      {
+        pmap->erase(itr);
+      }
+      else
+      {
+        bIns = false;
+      }
+      if(bIns)
+      {
+        pmap->insert(std::map<const wxPoint, T>::value_type(pt,t));
+      }
+    }
+    static const T *GetValue(const wxPoint &pt, const std::map<const wxPoint, T, PointLess> &pmap)
+    {
+      std::map<const wxPoint, T, PointLess>::const_iterator itr = pmap.find(pt);
+      if(itr == pmap.end())
+      {
+        itr = pmap.find(wxPoint(-1,-1));
+      }
+      return (itr != pmap.end()) ? &(itr->second) : NULL;
+    }
+  };
+  // END class MAP_POINT_SETTER
+public:
+  nwxLabelGrid(
+    wxWindow* parent,
+    wxWindowID id,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxWANTS_CHARS,
+    const wxString& name = wxPanelNameStr) :
+      nwxGrid(parent,id,pos,size,style,name),
+      m_nBatch(0),
+      m_bEnabledAfterBatch(false),
+      m_bLabelsEnabled(true)  
+  {}
+  virtual ~nwxLabelGrid()
+  {}
+  virtual void OnEditorStart(wxGridEvent &e);
+  virtual void OnEditorEnd(wxGridEvent &e);
+  virtual void OnCellChange(wxGridEvent &e);
+
+  bool IsLabelUsed(int nRow, int nCol)
+  {
+    bool bRtn = false;
+    if(_LabelsEnabled())
+    {
+      const bool *pbRtn = MAP_POINT_SETTER<bool>::GetValue(wxPoint(nRow,nCol), m_mapLabelUsed);
+      bRtn = (pbRtn == NULL) ? false : *pbRtn;
+    }
+    else if(GetCellValue(nRow, nCol).IsEmpty())
+    {
+      const wxString *ps = MAP_POINT_SETTER<wxString>::GetValue(wxPoint(nRow,nCol), m_mapLabels);
+      bRtn = ps == NULL ? false : !ps->IsEmpty();
+    }
+    return bRtn;
+  }
+
+  // enable/disable labels
+  // begin/end batch
+  //   after calling BeginBatch(), DisableLabels(), or EnableLabels(false)
+  //   wxGrid::GetCellValue() will provide accurate results
+  //
+  void EnableLabels(bool bEnable = true)
+  {
+    // public function for enabling or disabling labels
+    // on empty table cells
+    if(_InBatch())
+    {
+      // if 'in batch' labels are always disabled but
+      // m_bEnabledAfterBatch is used to determine
+      // if labels should be shown when no longer 
+      // 'in batch'
+      m_bEnabledAfterBatch = bEnable;
+    }
+    else
+    {
+      // not in batch, disable labels if not already done
+      _EnableLabels(bEnable);
+    }
+  }
+  void DisableLabels()
+  {
+    EnableLabels(false);
+  }
+  bool LabelsEnabled()
+  {
+    // public method, return true if labels are enable or will be after
+    // no longer _InBatch()
+    return _InBatch() ? m_bEnabledAfterBatch : m_bLabelsEnabled;
+  }
+  void BeginBatch()
+  {
+    // if labels are used:
+    // call BeginBatch before modifying any cells (value, attributes, etc)
+    // call EndBatch when finished
+    // alternatively and recommended, use the nwxLabelGridBatch class
+    // defined below to perform these functions
+    m_nBatch++;
+    if(_InBatchTopLevel())
+    {
+      wxGrid::BeginBatch();
+      m_bEnabledAfterBatch = m_bLabelsEnabled;
+      _EnableLabels(false);
+    }
+  }
+  void EndBatch()
+  {
+    if(_InBatchTopLevel())
+    {
+      _EnableLabels(m_bEnabledAfterBatch);
+      wxGrid::EndBatch();
+    }
+    m_nBatch--;
+  }
+  void SetActualValue(int nRow, int nCol, const wxString &s)
+  {
+    if(_LabelsEnabled() && IsLabelUsed(nRow, nCol))
+    {
+      TnwxBatch<nwxLabelGrid> x(this);
+      SetCellValue(nRow, nCol, s);
+    }
+    else
+    {
+      // no batch needed
+      SetCellValue(nRow, nCol, s);
+    }
+  }
+  wxString GetActualValue(int nRow, int nCol)
+  {
+    wxString sRtn;
+    if(!( _LabelsEnabled() && IsLabelUsed(nRow, nCol) ))
+    {
+      sRtn = GetCellValue(nRow, nCol);
+    }
+    return sRtn;
+  }
+
+  void SetLabelValue(int nRow, int nCol, const wxString &s)
+  {
+    if(s.IsEmpty())
+    {
+      ClearLabelValue(nRow, nCol);
+    }
+    else
+    {
+      TnwxBatch<nwxLabelGrid> x(this);
+      MAP_POINT_SETTER<wxString>::SetValue(wxPoint(nRow, nCol), s, &m_mapLabels);
+    }
+  }
+  void SetLabelFont(int nRow, int nCol, const wxFont &f)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    MAP_POINT_SETTER<wxFont>::SetValue(wxPoint(nRow, nCol), f, &m_mapLabelFont);
+  }
+  void SetLabelTextColour(int nRow, int nCol, const wxColour &colour)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    MAP_POINT_SETTER<wxColour>::SetValue(wxPoint(nRow, nCol), colour, &m_mapLabelTextColour);
+  }
+
+  void ClearLabelValue(int nRow, int nCol)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    wxPoint pt(nRow, nCol);
+    MAP_POINT_SETTER<wxString>::ClearValue(pt, &m_mapLabels);
+  }
+  void ClearLabelFont(int nRow, int nCol)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    wxPoint pt(nRow, nCol);
+    MAP_POINT_SETTER<wxFont>::ClearValue(pt, &m_mapLabelFont);
+    MAP_POINT_SETTER<wxFont>::ClearValue(pt, &m_mapSaveFont);
+  }
+  void ClearLabelTextColour(int nRow, int nCol)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    wxPoint pt(nRow, nCol);
+    MAP_POINT_SETTER<wxColour>::ClearValue(pt, &m_mapLabelTextColour);
+    MAP_POINT_SETTER<wxColour>::ClearValue(pt, &m_mapSaveTextColour);
+  }
+  void ClearLabel(int nRow, int nCol)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    wxPoint pt(nRow, nCol);
+    MAP_POINT_SETTER<wxString>::ClearValue(pt, &m_mapLabels);
+    MAP_POINT_SETTER<wxFont>::ClearValue(pt, &m_mapLabelFont);
+    MAP_POINT_SETTER<wxFont>::ClearValue(pt, &m_mapSaveFont);
+    MAP_POINT_SETTER<wxColour>::ClearValue(pt, &m_mapLabelTextColour);
+    MAP_POINT_SETTER<wxColour>::ClearValue(pt, &m_mapSaveTextColour);
+  }
+
+  //void SetLabelBackgroundColor(int nRow, int nCol, const wxColour &colour);
+
+  void SetDefaultLabelFont(const wxFont &f)
+  {
+    SetLabelFont(-1, -1, f);
+  }
+  void SetDefaultLabelTextColour(const wxColour &colour)
+  {
+    SetLabelTextColour(-1, -1, colour);
+  }
+
+  const wxString *GetLabelValue(const wxPoint &pt)
+  {
+    return MAP_POINT_SETTER<wxString>::GetValue(pt, m_mapLabels);
+  }
+  const wxString *GetLabelValue(int nRow, int nCol)
+  {
+    return GetLabelValue(wxPoint(nRow, nCol));
+  }
+  const wxFont *GetLabelFont(const wxPoint &pt)
+  {
+    return MAP_POINT_SETTER<wxFont>::GetValue(pt, m_mapLabelFont);
+  }
+  const wxFont *GetLabelFont(int nRow, int nCol)
+  {
+    return GetLabelFont(wxPoint(nRow,nCol));
+  }
+  const wxColour *GetLabelTextColour(const wxPoint &pt)
+  {
+    return MAP_POINT_SETTER<wxColour>::GetValue(pt, m_mapLabelTextColour);
+  }
+  const wxColour *GetLabelTextColour(int nRow, int nCol)
+  {
+    return GetLabelTextColour(wxPoint(nRow,nCol));
+  }
+private:
+  void _EnableLabels(bool bEnable = true);
+  bool _InBatch()
+  {
+    return(m_nBatch > 0);
+  }
+  bool _InBatchTopLevel()
+  {
+    return(m_nBatch == 1);
+  }
+  bool _LabelsEnabled()
+  {
+    return m_bLabelsEnabled;
+  }
+  void _SetSavedLabelFont(const wxPoint &pt, const wxFont &f)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    MAP_POINT_SETTER<wxFont>::SetValue(pt, f, &m_mapSaveFont);
+  }
+  void _SetSavedLabelColour(const wxPoint &pt, const wxColour &colour)
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    MAP_POINT_SETTER<wxColour>::SetValue(pt, colour, &m_mapSaveTextColour);
+  }
+  const wxFont *_GetSavedLabelFont(const wxPoint &pt)
+  {
+    return MAP_POINT_SETTER<wxFont>::GetValue(pt, m_mapSaveFont);
+  }
+  const wxColour *_GetSavedLabelColour(const wxPoint &pt)
+  {
+    return MAP_POINT_SETTER<wxColour>::GetValue(pt, m_mapSaveTextColour);
+  }
+};
+typedef TnwxBatch<nwxLabelGrid> nwxLabelGridBatch;
+
 
 BEGIN_DECLARE_EVENT_TYPES()
 DECLARE_EVENT_TYPE(wxEVT_GRID_START_EDIT, -1)
