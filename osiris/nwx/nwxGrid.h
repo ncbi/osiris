@@ -548,7 +548,7 @@ private:
   public:
     static void ClearValue(const wxPoint &pt, std::map<const wxPoint, T, PointLess> *pmap)
     {
-      std::map<const wxPoint, T, PointLess>::iterator itr = pmap->find(pt);
+      typename std::map<const wxPoint, T, PointLess>::iterator itr = pmap->find(pt);
       if(itr != pmap->end())
       {
         pmap->erase(itr);
@@ -556,7 +556,7 @@ private:
     }
     static void SetValue(const wxPoint &pt, const T &t, std::map<const wxPoint, T, PointLess> *pmap)
     {
-      std::map<const wxPoint, T, PointLess>::iterator itr = pmap->find(pt);
+      typename std::map<const wxPoint, T, PointLess>::iterator itr = pmap->find(pt);
       bool bIns = true;
       if(itr == pmap->end())
       {}
@@ -570,12 +570,12 @@ private:
       }
       if(bIns)
       {
-        pmap->insert(std::map<const wxPoint, T>::value_type(pt,t));
+        pmap->insert(typename std::map<const wxPoint, T>::value_type(pt,t));
       }
     }
     static const T *GetValue(const wxPoint &pt, const std::map<const wxPoint, T, PointLess> &pmap)
     {
-      std::map<const wxPoint, T, PointLess>::const_iterator itr = pmap.find(pt);
+      typename std::map<const wxPoint, T, PointLess>::const_iterator itr = pmap.find(pt);
       if(itr == pmap.end())
       {
         itr = pmap.find(wxPoint(-1,-1));

@@ -78,8 +78,9 @@ public:
   {
     if(!m_pButtonDetails->GetValue())
     {
+      wxCommandEvent e;
       m_pButtonDetails->SetValue(true);
-      OnDetails(*((wxCommandEvent *)NULL));
+      OnDetails(e);
     }
     SetFocus();
     Raise();
