@@ -627,7 +627,8 @@ bool CFrameRunAnalysis::CheckIsDone()
 {
   if(m_pAnalysis != NULL)
   {
-    OnButtonCancelAll( *((wxCommandEvent *)NULL) );
+    wxCommandEvent e;
+    OnButtonCancelAll(e);
   }
   bool bRtn = IsDone();
 #if 0

@@ -28,6 +28,7 @@ libnwx_a_SOURCES = \
 ../nwxTextCtrl.cpp \
 ../nwxTreebook.cpp \
 ../nwxUserInfo.cpp \
+../nwxUtil.cpp \
 ../nwxXmlCMF.cpp \
 ../nwxXmlCmfList.cpp \
 ../nwxXmlMRU.cpp \

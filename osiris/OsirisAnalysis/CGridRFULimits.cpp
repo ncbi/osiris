@@ -52,9 +52,13 @@ CGridRFULimits::CGridRFULimits(wxWindow *parent, wxWindowID id) :
 
 void CGridRFULimits::_Build()
 {
+  nwxLabelGridBatch x(this);
   wxFont fontChannel = GetDefaultCellFont();
-  wxFont fontDefault = fontChannel;
+  wxFont fontLabel = fontChannel;
   fontChannel.SetWeight(wxFONTWEIGHT_BOLD);
+  fontLabel.SetStyle(wxFONTSTYLE_ITALIC);
+  SetDefaultLabelFont(fontLabel);
+  SetDefaultLabelTextColour(wxColour(192, 192, 192));
   const CChannelColors *pChannelColors = NULL;
   int nCurrentColCount = GetNumberCols();
   int i;
@@ -171,6 +175,7 @@ bool CGridRFULimits::TransferDataToWindow()
   bool bRtn = (m_pData != NULL);
   if(bRtn)
   {
+    nwxLabelGridBatch x(this);
     int nCol;
     _ClearChannelColumns();
     _SetRFUColumn(m_pData->GetRFUsample(),m_nCOL_SAMPLE);
@@ -185,6 +190,10 @@ bool CGridRFULimits::TransferDataToWindow()
       _SetCellIntValue(ROW_RFU_MIN,nCol,(*itr)->GetMin());
       _SetCellIntValue(ROW_DETECTION,nCol,(*itr)->GetDetection());
     }
+    int nDefaultSample  = m_pData->GetRFUsample()->GetMinRFU();
+    int nDefaultDetection = m_pData->GetRFUsample()->GetMinDetection();
+    _SetupLabelValues(ROW_RFU_MIN, nDefaultSample);
+    _SetupLabelValues(ROW_DETECTION, nDefaultDetection);
   }
   return bRtn;
 }
@@ -193,6 +202,7 @@ bool CGridRFULimits::TransferDataFromWindow()
   bool bRtn = (m_pData != NULL);
   if(bRtn)
   {
+    nwxLabelGridBatch x(this);
     _GetRFUColumn(m_pData->GetRFUsample(),m_nCOL_SAMPLE);
     _GetRFUColumn(m_pData->GetRFUladder(),m_nCOL_LADDER);
     _GetRFUColumn(m_pData->GetRFUls(),m_nCOL_ILS);
@@ -227,3 +237,38 @@ bool CGridRFULimits::TransferDataFromWindow()
   return bRtn;
 }
 
+void CGridRFULimits::_SetupLabelValues(int nRow, int nValue)
+{
+  if(nValue > 0)
+  {
+    wxString sValue = nwxString::FormatNumber(nValue);
+    for (int nCol = m_nCOL_CHANNEL_START;
+         nCol < m_nCOL_AFTER_CHANNEL;
+         ++nCol)
+    {
+      SetLabelValue(nRow, nCol, sValue);
+    }
+  }
+  else
+  {
+    for (int nCol = m_nCOL_CHANNEL_START;
+         nCol < m_nCOL_AFTER_CHANNEL;
+         ++nCol)
+    {
+      ClearLabel(nRow, nCol);
+    }
+  }
+  nwxLabelGridBatch x(this); // force table update
+}
+
+void CGridRFULimits::OnCellChange(wxGridEvent &e)
+{
+  int nRow = e.GetRow();
+  int nCol = (nRow == ROW_RFU_MIN || nRow == ROW_DETECTION) 
+    ? e.GetCol() : -1;
+  if( (nCol == m_nCOL_SAMPLE) && ValidateCell(nRow,nCol,NULL) )
+  {
+    _SetupLabelValues(nRow, _GetCellIntValue(nRow,nCol));
+  }
+  nwxLabelGrid::OnCellChange(e);
+}

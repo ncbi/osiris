@@ -139,8 +139,16 @@ void CGridRFUbase::_UpdateReadOnly()
   }
 }
 
-void CGridRFUbase::_SetCellIntValue(int nRow, int nCol, int nValue)
+void CGridRFUbase::_SetCellIntValue(int nRow, int nCol, int nValue, int nLabel)
 {
+  if(nLabel > 0)
+  {
+    SetLabelValue(nRow, nCol, nwxString::FormatNumber(nLabel));
+  }
+  else
+  {
+    ClearLabelValue(nRow, nCol);
+  }
   if(_DisabledCell(nRow,nCol) || (nValue == -1))
   {
     SetCellValue(nRow,nCol,"");

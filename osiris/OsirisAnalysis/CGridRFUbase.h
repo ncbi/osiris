@@ -39,11 +39,11 @@
 #include "CLabSettings.h"
 #include "CKitColors.h"
 
-class CGridRFUbase : public nwxGrid
+class CGridRFUbase : public nwxLabelGrid
 {
 public:
   CGridRFUbase(wxWindow *parent, wxWindowID id) :
-      nwxGrid(parent,id),
+      nwxLabelGrid(parent,id),
       m_nChannelCount(-1),
       m_nChannelColumnCount(-1),
       m_nILSchannel(-1),
@@ -79,7 +79,7 @@ protected:
   void _UpdateReadOnly();
 
   bool _SetupKitBase(const wxString &sKitName);
-  void _SetCellIntValue(int nRow, int nCol, int nValue);
+  void _SetCellIntValue(int nRow, int nCol, int nValue, int nLabel = -1);
   int _GetCellIntValue(int nRow, int nCol);
   void _DisableUnused();
 

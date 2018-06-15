@@ -53,9 +53,13 @@ CGridRFURunBase::CGridRFURunBase(wxWindow *parent,wxWindowID id) :
 
 void CGridRFURunBase::_Build()  // called from _SetupKit();
 {
+  nwxLabelGridBatch x(this);
   wxFont fontChannel = GetDefaultCellFont();
-  wxFont fontDefault = fontChannel;
+  wxFont fontLabel = fontChannel;
   fontChannel.SetWeight(wxFONTWEIGHT_BOLD);
+  fontLabel.SetStyle(wxFONTSTYLE_ITALIC);
+  SetDefaultLabelFont(fontLabel);
+  SetDefaultLabelTextColour(wxColour(192, 192, 192));
   const CChannelColors *pChannelColors = NULL;
   int nCurrentRowCount = GetNumberRows();
   int i;
@@ -160,9 +164,13 @@ bool CGridRFURunBase::_DisabledCell(int nRow, int nCol)
 
 void CGridRFURunBase::_TransferToChannelRows(
     const vector<int> &anChannelRFU, 
-    const vector<int> &anChannelDetection)
+    const vector<int> &anChannelDetection,
+    int nDefaultRFU,
+    int nDefaultDetection)
 {
-  if(!( anChannelDetection.empty() && anChannelRFU.empty() ))
+  if(!( anChannelDetection.empty() && anChannelRFU.empty() &&
+    (nDefaultRFU < 0) && (nDefaultDetection < 0)
+    ))
   {
     ChannelNumberIterator itrChannelCol;
     int nRow;
@@ -173,9 +181,11 @@ void CGridRFURunBase::_TransferToChannelRows(
       ++itrChannelCol, ++nRow)
     {
       _SetCellIntValue( nRow,COL_DETECTION,
-        GetVectorChannel(anChannelDetection,(*itrChannelCol)) );
+        GetVectorChannel(anChannelDetection,(*itrChannelCol)),
+        nDefaultDetection);
       _SetCellIntValue( nRow,COL_ANALYSIS,
-        GetVectorChannel(anChannelRFU,(*itrChannelCol)) );
+        GetVectorChannel(anChannelRFU,(*itrChannelCol)),
+        nDefaultRFU);
     }
   }
 }

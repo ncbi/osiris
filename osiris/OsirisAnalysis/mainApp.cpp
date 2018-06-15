@@ -49,6 +49,7 @@
 #include "nwx/nwxString.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxXmlCMF.h"
+#include "nwx/nwxUtil.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
@@ -499,15 +500,7 @@ const wxString mainApp::FormatWindowTitle(
 }
 wxWindow *mainApp::GetTopLevelParent(wxWindow *p)
 {
-  wxClassInfo *pClass = CLASSINFO(wxTopLevelWindow);
-  wxWindow *pRtn = p;
-  wxWindow *pLast = p;
-  while( (pRtn != NULL) && (!pRtn->IsKindOf(pClass))  )
-  {
-    pLast = pRtn;
-    pRtn = pRtn->GetParent();
-  }
-  return pRtn;
+  return nwxUtil::GetTopLevelParent(p);
 }
 void mainApp::LAYOUT_HACK(wxWindow *p)
 {
