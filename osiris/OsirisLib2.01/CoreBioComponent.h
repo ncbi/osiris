@@ -178,6 +178,9 @@ public:
 	double LinearPullupCoefficient (int i, int j);
 	double QuadraticPullupCoefficient (int i, int j);
 
+	double MaxLinearPullupCoefficient () const { return mMaxLinearPullupCoefficient; }
+	double MaxNonlinearPullupCoefficient () const { return mMaxNonlinearPullupCoefficient; }
+
 	void SetPullupTestedMatrix (int i, int j, bool value);
 	void SetLinearPullupMatrix (int i, int j, double value);
 	void SetQuadraticPullupMatrix (int i, int j, double value);
@@ -515,6 +518,9 @@ protected:
 	double** mOutlierThreshold;
 
 	CSplineTransform* mTimeMap;
+
+	double mMaxLinearPullupCoefficient;
+	double mMaxNonlinearPullupCoefficient;
 
 	// Smart Message Data*****************************************************************************************************************
 	//************************************************************************************************************************************

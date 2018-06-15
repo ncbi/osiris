@@ -159,7 +159,8 @@ bool PullupPair :: IsRawDataPullup () const {
 
 
 CoreBioComponent :: CoreBioComponent () : SmartMessagingObject (), mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), 
-mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
+mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (0.0), 
+mMaxNonlinearPullupCoefficient (0.0) {
 
 	InitializeSmartMessages ();
 }
@@ -167,7 +168,7 @@ mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatri
 
 CoreBioComponent :: CoreBioComponent (const RGString& name) : SmartMessagingObject (), mName (name), 
 mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
+mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (0.0), mMaxNonlinearPullupCoefficient (0.0) {
 
 	InitializeSmartMessages ();
 }
@@ -176,7 +177,8 @@ mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), 
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component) : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (component.mMaxLinearPullupCoefficient), 
+mMaxNonlinearPullupCoefficient (component.mMaxNonlinearPullupCoefficient) {
 
 	InitializeSmartMessages (component);
 }
@@ -185,7 +187,8 @@ mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinear
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component, CoordinateTransform* trans)  : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (component.mMaxLinearPullupCoefficient), 
+mMaxNonlinearPullupCoefficient (component.mMaxNonlinearPullupCoefficient) {
 
 	mDataChannels = new ChannelData* [mNumberOfChannels + 1];
 	mPullupTestedMatrix = new bool* [mNumberOfChannels + 1];

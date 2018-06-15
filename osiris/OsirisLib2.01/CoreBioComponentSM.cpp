@@ -663,6 +663,8 @@ void CoreBioComponent :: ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
 	text << "\t\t\t<Type>Ladder</Type>\n";
 	text << "\t\t\t<Info>\n";
+	text << "\t\t\t\t<MaxLinearPullup>0.0</MaxLinearPullup>\n";
+	text << "\t\t\t\t<MaxNonlinearPullup>0.0</MaxNonlinearPullup>\n";
 	int j;
 
 	for (j=1; j<=mNumberOfChannels; j++) {
@@ -794,6 +796,8 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
 	text << "\t\t\t<Type>" << type.GetData () << "</Type>\n";
 	text << "\t\t\t<Info>\n";
+	text << "\t\t\t\t<MaxLinearPullup>" << mMaxLinearPullupCoefficient << "</MaxLinearPullup>\n";
+	text << "\t\t\t\t<MaxNonlinearPullup>" << mMaxNonlinearPullupCoefficient << "</MaxNonlinearPullup>\n";
 	int j;
 
 	for (j=1; j<=mNumberOfChannels; j++) {

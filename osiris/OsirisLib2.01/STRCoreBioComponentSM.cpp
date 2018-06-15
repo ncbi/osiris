@@ -3457,6 +3457,29 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
+	double maxLinear = 0.0;
+	double maxQuad = 0.0;
+	double temp;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			temp = fabs (mLinearPullupMatrix [i][j]);
+
+			if (temp > maxLinear)
+				maxLinear = temp;
+
+			temp = fabs (mQuadraticPullupMatrix [i][j]);
+
+			if (temp > maxQuad)
+				maxQuad = temp;
+		}
+	}
+
+	mMaxLinearPullupCoefficient = maxLinear;
+	mMaxNonlinearPullupCoefficient = maxQuad;
+
 	ReportPullupMatrix (1);
 
 	// Record all non-laser off-scale coefficients *****12/21/2016

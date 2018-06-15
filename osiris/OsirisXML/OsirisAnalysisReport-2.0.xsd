@@ -476,6 +476,8 @@
 										<xs:element name="Info" minOccurs="0">
 											<xs:complexType>
 												<xs:sequence>
+													<xs:element name="MaxLinearPullupCoefficient" type="xs:double" minOccurs="0"/>
+													<xs:element name="MaxNonlinearPullupCoefficient" type="xs:double" minOccurs="0"/>
 													<xs:sequence maxOccurs="unbounded">
 														<xs:element name="Channel">
 															<xs:complexType>
