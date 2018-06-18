@@ -35,7 +35,9 @@
 #include "CGridRFUbase.h"
 #include "CKitList.h"
 #include "mainApp.h"
-
+#ifdef TMP_DEBUG
+#include "nwx/nwxLog.h"
+#endif
 
 bool CGridRFUbase::_SetupKitBase(const wxString &sKitName)
 {
@@ -141,6 +143,17 @@ void CGridRFUbase::_UpdateReadOnly()
 
 void CGridRFUbase::_SetCellIntValue(int nRow, int nCol, int nValue, int nLabel)
 {
+#ifdef TMP_DEBUG
+  if(nRow < 0 || nRow >= this->GetNumberRows() ||
+    nCol < 0 || nCol >= this->GetNumberCols())
+  {
+    wxString sMsg =
+      wxString::Format(
+        wxS("CGridRFUbase::_SetCellIntValue\nrow %d of %d\ncol %d of %d"),
+        nRow, GetNumberRows() - 1, nCol, GetNumberCols() - 1);
+    nwxLog::LogMessage(sMsg);
+  }
+#endif
   if(nLabel > 0)
   {
     SetLabelValue(nRow, nCol, nwxString::FormatNumber(nLabel));
