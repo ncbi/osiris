@@ -102,7 +102,6 @@ void CGridSampleLimits::SetData(
 {
   m_pData = pData;
   m_pMessageBook = pMessageBook;
-  typedef map<wxString,size_t> MSG_THRESHOLDS;
   set<wxString> setMsgThresholds; // message names for thresholds already used
   size_t nCount = 
     ((m_pMessageBook != NULL) && m_pMessageBook->IsOK())

@@ -147,7 +147,8 @@ class CArtifactLabels : public nwxXmlPersist
 public:
   CArtifactLabels();
   virtual ~CArtifactLabels();
-  virtual bool LoadFile(const wxString &sFileName, bool bLock);
+  virtual bool LoadFile
+    (const wxString &sFileName, bool bLock, int nLockWait = 0);
   virtual void Init()
   {
     nwxXmlPersist::Init();
