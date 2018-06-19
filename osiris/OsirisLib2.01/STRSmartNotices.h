@@ -268,6 +268,7 @@ PERSISTENT_PREDECLARATION (smPrePrimerPercentOfNoiseRangeForLevelChange)
 PERSISTENT_PREDECLARATION (smWeakPrimaryInterchannelLink)
 PERSISTENT_PREDECLARATION (smZeroPullupPrimaryInterchannelLink)
 PERSISTENT_PREDECLARATION (smRawDataPrimaryInterchannelLink)
+PERSISTENT_PREDECLARATION (smThreePointPeak)
 
 
 
@@ -7447,6 +7448,34 @@ public:
 	smRawDataPrimaryInterchannelLink ();
 	smRawDataPrimaryInterchannelLink (const smRawDataPrimaryInterchannelLink& note);
 	virtual ~smRawDataPrimaryInterchannelLink ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smThreePointPeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smThreePointPeak)
+
+public:
+	smThreePointPeak ();
+	smThreePointPeak (const smThreePointPeak& note);
+	virtual ~smThreePointPeak ();
 
 	virtual int GetSubject () const;
 

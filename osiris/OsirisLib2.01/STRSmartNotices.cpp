@@ -1548,6 +1548,12 @@ int smRawDataPrimaryInterchannelLink::sMessageIndex = 0;
 int smRawDataPrimaryInterchannelLink::sMessageScope = 0;
 
 
+RGString smThreePointPeak::sName = "smThreePointPeak";
+int smThreePointPeak::sSubject = smThreePointPeak::LoadType ();
+int smThreePointPeak::sMessageIndex = 0;
+int smThreePointPeak::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1805,6 +1811,7 @@ PERSISTENT_DEFINITION (smPrePrimerPercentOfNoiseRangeForLevelChange, 2658, "smPr
 PERSISTENT_DEFINITION (smWeakPrimaryInterchannelLink, 2659, "smWeakPrimaryInterchannelLink")
 PERSISTENT_DEFINITION (smZeroPullupPrimaryInterchannelLink, 2660, "smZeroPullupPrimaryInterchannelLink")
 PERSISTENT_DEFINITION (smRawDataPrimaryInterchannelLink, 2661, "smRawDataPrimaryInterchannelLink")
+PERSISTENT_DEFINITION (smThreePointPeak, 2662, "smThreePointPeak")
 
 
 
@@ -17221,6 +17228,66 @@ int smRawDataPrimaryInterchannelLink :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smRawDataPrimaryInterchannelLink* noticeType = new smRawDataPrimaryInterchannelLink;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smThreePointPeak :: smThreePointPeak () : SmartNotice () {
+
+}
+
+
+smThreePointPeak :: smThreePointPeak (const smThreePointPeak& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smThreePointPeak :: ~smThreePointPeak () {
+
+}
+
+
+int smThreePointPeak :: GetSubject () const {
+
+	return smThreePointPeak::sSubject;
+}
+
+
+void smThreePointPeak :: SetIndexAndScope (int index, int scope) const {
+
+	smThreePointPeak::sMessageIndex = index;
+	smThreePointPeak::sMessageScope = scope;
+}
+
+
+int smThreePointPeak :: GetMessageIndex () const {
+
+	return smThreePointPeak :: sMessageIndex;
+}
+
+
+int smThreePointPeak :: GetScope () const {
+
+	return smThreePointPeak :: sMessageScope;
+}
+
+
+RGString smThreePointPeak :: GetName () const {
+
+	return smThreePointPeak :: sName;
+}
+
+
+
+int smThreePointPeak :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smThreePointPeak* noticeType = new smThreePointPeak;
 	warehouse->AddType (noticeType);
 	return 1;
 }

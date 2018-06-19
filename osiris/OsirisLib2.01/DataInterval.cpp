@@ -34,6 +34,7 @@
 
 #include "DataInterval.h"
 #include "DataSignal.h"
+#include "STRSmartNotices.h"
 #include "rgfile.h"
 #include "rgvstream.h"
 #include "rgdefs.h"
@@ -308,15 +309,66 @@ void DataInterval :: AddSideValues (DataSignal* sampledData) {
 DataSignal* DataInterval :: TestForSpike (double& fit) const {
 
 	DataSignal* value = NULL;
+	smThreePointPeak threePointPeak;
 
 	double detectionRFU = SampledData::GetDetectionRFU ();
 	double threshold = 0.07 * MaxAtMode;
+	int center = Mode;
 
 	if (!mOKtoTestForSpike)
 		return NULL;
 
-	if ((MaxAtMode < detectionRFU) || (mValueLeftOfMax >= threshold) || (mValueRightOfMax >= threshold))
-		return NULL;
+	bool threePoint = (Right - Left <= 2);
+
+	if ((MaxAtMode < detectionRFU) || (mValueLeftOfMax >= threshold) || (mValueRightOfMax >= threshold)) {
+
+		if (threePoint) {
+
+			// Create a Gaussian of fixed height, sigma and mu.  Then, compute fit and set MaxAtMode and fit.
+
+			//if (Mode != Right + 1)
+			//	return NULL;
+
+			value = new Gaussian ((double)center, 1.0);
+			value->SetPeak (MaxAtMode);
+			value->SetLeftEndPoint (center - 2);
+			value->SetRightEndPoint (center + 2);
+			value->SetMessageValue (threePointPeak, true);
+			
+			double temp1 = 0.0;
+			double temp2 = 0.0;
+			double temp3 = 0.0;
+			double temp4;
+
+			temp1 = mValueLeftOfMax * mValueLeftOfMax + MaxAtMode * MaxAtMode + mValueRightOfMax * mValueRightOfMax;
+			temp4 = value->Value ((double)(center - 1));
+			temp2 += mValueLeftOfMax * temp4;
+			temp3 += temp4 * temp4;
+
+			temp4 = value->Value ((double)center);
+			temp2 += MaxAtMode * temp4;
+			temp3 += temp4 * temp4;
+
+			temp4 = value->Value ((double)(center + 1));
+			temp2 += mValueRightOfMax * temp4;
+			temp3 += temp4 * temp4;
+
+			double denom = temp1 * temp3;
+			double fit;
+			
+			if (denom >= 1.0)
+				fit = temp2 / sqrt (denom);
+
+			else
+				fit = 1.0;
+
+			value->SetCurveFit (fit);
+			return value;
+		}
+
+		else
+			return NULL;
+	}
 
 	value = new SpikeSignal (Mode, MaxAtMode, mValueLeftOfMax, mValueRightOfMax);
 	double denom = MaxAtMode * MaxAtMode;
