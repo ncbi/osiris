@@ -34,9 +34,6 @@
 
 #include "CGridRFULimits.h"
 #include "CGridLocusColumns.h"
-#ifdef TMP_DEBUG
-#include "nwx/nwxLog.h"
-#endif
 
 CGridRFULimits::CGridRFULimits(wxWindow *parent, wxWindowID id) :
   CGridRFUbase(parent,id),
@@ -55,12 +52,7 @@ CGridRFULimits::CGridRFULimits(wxWindow *parent, wxWindowID id) :
 
 void CGridRFULimits::_Build()
 {
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("CGridRFULimits::_Build() - enter"));
-  this->BeginBatch();
-#else
   nwxLabelGridBatch x(this);
-#endif
   ClearAll();  // nwxGrid.h nwxLabelGrid::ClearAll();
   wxFont fontChannel = GetDefaultCellFont();
   wxFont fontLabel = fontChannel;
@@ -99,14 +91,6 @@ void CGridRFULimits::_Build()
   EnableDragColSize(false);
   EnableDragRowSize(false);
   SetDefaultCellAlignment(wxALIGN_RIGHT,wxALIGN_CENTRE);
-#ifdef TMP_DEBUG
-  {
-    wxString sTmp = wxString::Format(
-      wxS("CGridRFULimits::_Build() - before init cells, ROW_COUNT = %d, m_nCOL_COUNT = %d"),
-      int(ROW_COUNT), int(m_nCOL_COUNT));
-    nwxLog::LogMessage(sTmp);
-  }
-#endif
   for(i = 0; i < ROW_COUNT; i++)
   {
     for(j = 0; j < m_nCOL_COUNT; j++)
@@ -118,9 +102,6 @@ void CGridRFULimits::_Build()
       }
     }
   }
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("CGridRFULimits::_Build() - after init cells"));
-#endif
   SetDefaultEditor(new wxGridCellFloatEditor(1,0));
   SetColLabelValue(m_nCOL_SAMPLE,"Sample");
   SetColLabelValue(m_nCOL_LADDER,"Ladder");
@@ -135,21 +116,11 @@ void CGridRFULimits::_Build()
   int nCol;
   const wxChar *psDye = NULL;
   wxString sLabel;
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("CGridRFULimits::_Build() - before for-loop"));
-#endif
   for(itrChannelCol = m_vnChannelNumbers.begin(), 
           nCol = m_nCOL_CHANNEL_START;
     itrChannelCol != m_vnChannelNumbers.end();
     ++itrChannelCol, ++nCol)
   {
-#ifdef TMP_DEBUG
-    {
-      wxString sTmp(wxS("CGridRFULimits::_Build() for loop, nCol = "));
-      sTmp.Append(nwxString::FormatNumber(nCol));
-      nwxLog::LogMessage(sTmp);
-    }
-#endif
     if(m_pKitColors != NULL)
     {
       pChannelColors = m_pKitColors->GetColorChannel(*itrChannelCol);
@@ -166,43 +137,23 @@ void CGridRFULimits::_Build()
       _SetupDefaultChannelColumn(nCol);
     }
   }
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("CGridRFULimits::_Build() - after for-loop"));
-#endif
 
   nwxGrid::UpdateLabelSizes(this);
   AutoSize();
   _DisableUnused();
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("  before EndBatch()"));
-  this->EndBatch();
-  nwxLog::LogMessage(wxS("CGridRFULimits::_Build() - exit"));
-#endif
 }
 
 void CGridRFULimits::SetData(CLabThresholds *pData, const wxString &sKitName)
 {
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("CGridRFULimits::SetData() - enter"));
-#endif
   m_pData = pData;
   if(_SetupKitBase(sKitName))
   {
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("    after _SetupKitBase()"));
-#endif
     m_nCOL_AFTER_CHANNEL = m_nCOL_CHANNEL_START + m_nChannelColumnCount;
     m_nCOL_LADDER = m_nCOL_AFTER_CHANNEL;
     m_nCOL_ILS = m_nCOL_LADDER + 1;
     m_nCOL_COUNT = m_nCOL_ILS + 1;
     _Build();
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("    after _Build()"));
-#endif
   }
-#ifdef TMP_DEBUG
-  nwxLog::LogMessage(wxS("CGridRFULimits::SetData() - exit"));
-#endif
 }
 
 
