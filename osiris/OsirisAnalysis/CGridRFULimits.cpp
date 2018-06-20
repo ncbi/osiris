@@ -53,6 +53,7 @@ CGridRFULimits::CGridRFULimits(wxWindow *parent, wxWindowID id) :
 void CGridRFULimits::_Build()
 {
   nwxLabelGridBatch x(this);
+  ClearAll();  // nwxGrid.h nwxLabelGrid::ClearAll();
   wxFont fontChannel = GetDefaultCellFont();
   wxFont fontLabel = fontChannel;
   fontChannel.SetWeight(wxFONTWEIGHT_BOLD);
@@ -136,6 +137,7 @@ void CGridRFULimits::_Build()
       _SetupDefaultChannelColumn(nCol);
     }
   }
+
   nwxGrid::UpdateLabelSizes(this);
   AutoSize();
   _DisableUnused();

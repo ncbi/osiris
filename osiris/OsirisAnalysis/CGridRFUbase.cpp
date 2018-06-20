@@ -36,7 +36,6 @@
 #include "CKitList.h"
 #include "mainApp.h"
 
-
 bool CGridRFUbase::_SetupKitBase(const wxString &sKitName)
 {
   wxString sProblem;

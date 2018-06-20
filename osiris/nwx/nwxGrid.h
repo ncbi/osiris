@@ -752,6 +752,15 @@ public:
     MAP_POINT_SETTER<wxColour>::ClearValue(pt, &m_mapLabelTextColour);
     MAP_POINT_SETTER<wxColour>::ClearValue(pt, &m_mapSaveTextColour);
   }
+  void ClearAll()
+  {
+    TnwxBatch<nwxLabelGrid> x(this);
+    m_mapLabels.clear();
+    m_mapLabelFont.clear();
+    m_mapSaveFont.clear();
+    m_mapLabelTextColour.clear();
+    m_mapSaveTextColour.clear();
+  }
 
   //void SetLabelBackgroundColor(int nRow, int nCol, const wxColour &colour);
 

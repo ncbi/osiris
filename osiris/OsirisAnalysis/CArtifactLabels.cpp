@@ -176,9 +176,9 @@ CArtifactLabels::~CArtifactLabels()
   m_io.Cleanup();
 }
 
-bool CArtifactLabels::LoadFile(const wxString &sFileName, bool bLock)
+bool CArtifactLabels::LoadFile(const wxString &sFileName, bool bLock, int nLockWait)
 {
-  bool bRtn = nwxXmlPersist::LoadFile(sFileName,bLock);
+  bool bRtn = nwxXmlPersist::LoadFile(sFileName,bLock,nLockWait);
   if(bRtn) { Sort(); }
   else { vectorptr<CArtifactGroup>::cleanup(&m_vector); }
   _ClearChoiceList();

@@ -154,9 +154,9 @@ public:
   {
     return g_sROOT;
   }
-  virtual bool LoadFile(const wxString &sFileName, bool bLock)
+  virtual bool LoadFile(const wxString &sFileName, bool bLock, int nLockWait = 0)
   {
-    bool bRtn = nwxXmlPersist::LoadFile(sFileName,bLock);
+    bool bRtn = nwxXmlPersist::LoadFile(sFileName,bLock,nLockWait);
     Sort();
     return bRtn;
   }
