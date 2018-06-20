@@ -54,6 +54,7 @@ CGridRFURunBase::CGridRFURunBase(wxWindow *parent,wxWindowID id) :
 void CGridRFURunBase::_Build()  // called from _SetupKit();
 {
   nwxLabelGridBatch x(this);
+  ClearAll();  // nwxGrid.h nwxLabelGrid::ClearAll();
   wxFont fontChannel = GetDefaultCellFont();
   wxFont fontLabel = fontChannel;
   fontChannel.SetWeight(wxFONTWEIGHT_BOLD);
