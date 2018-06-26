@@ -5190,6 +5190,26 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 }
 
 
+double Locus :: CalculateTotalAreaSM () {
+
+	RGDListIterator it (LocusSignalList);
+	DataSignal* nextAllele;
+	double area = 0.0;
+
+	if (mLink->GetLocusVectorSize () == 2)
+		return 0.0;
+
+	while (nextAllele = (DataSignal*) it ()) {
+
+		nextAllele->CalculateTheoreticalArea ();
+		area += nextAllele->TheoreticalArea ();
+	}
+
+	mTotalAlleleArea = area;
+	return area;
+}
+
+
 int Locus :: CorrectCrossChannelAnalysesSM (RGDList& artifacts, bool isNegCntl) {
 
 	// We assume this method will be used for samples.  For ladders, either use a different method or augment

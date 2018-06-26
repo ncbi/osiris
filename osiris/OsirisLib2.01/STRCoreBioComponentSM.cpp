@@ -3477,8 +3477,8 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
-	mMaxLinearPullupCoefficient = maxLinear;
-	mMaxNonlinearPullupCoefficient = maxQuad;
+	mQC.mMaxLinearPullupCoefficient = maxLinear;
+	mQC.mMaxNonlinearPullupCoefficient = maxQuad;
 
 	ReportPullupMatrix (1);
 
@@ -3968,15 +3968,25 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 
 	status = 0;
 	int j;
+	double largestTime = 0.0;
+	double currentLast;
 
 	for (j=1; j<=mNumberOfChannels; j++) {
 
-//		if (j != mLaneStandardChannel) {
+		if (mDataChannels [j]->SetAllApproximateIDs (mLSData) < 0)
+			status = -1;
 
-			if (mDataChannels [j]->SetAllApproximateIDs (mLSData) < 0)
-				status = -1;
-//		}
+		if (j != mLaneStandardChannel) {
+
+			currentLast = mDataChannels [j]->GetLastTime ();
+
+			if (currentLast > largestTime)
+				largestTime = currentLast;
+		}
 	}
+
+	if (largestTime > mQC.mLastILSTime)
+		mQC.mLastILSTime = largestTime;
 
 	if (status < 0) {
 
@@ -4755,14 +4765,61 @@ int STRSampleCoreBioComponent :: SampleQualityTestSM (GenotypesForAMarkerSet* ge
 	else
 		averageHeight = 0.0;
 
+	double maxArea = 0.0;
+	double minArea = 0.0;
+	double maxYLinkedArea = 0.0;
+	double minYLinkedArea = 0.0;
+	double temp;
+	ChannelData* thisChannel;
+
 	for (i=1; i<=mNumberOfChannels; i++) {
 
 		if (i != mLaneStandardChannel) {
 
+			thisChannel = mDataChannels [i];
+
 			if (mDataChannels [i]->FinalTestForPeakSizeAndNumberSM (averageHeight, mIsNegativeControl, mIsPositiveControl, genotypes) < 0)
 				status = -1;
+
+			temp = thisChannel->GetMaxLocusArea ();
+
+			if (temp > maxArea)
+				maxArea = temp;
+
+			temp = thisChannel->GetMinLocusArea ();
+
+			if (minArea == 0.0)
+				minArea = temp;
+
+			else if ((temp > 0.0) && (temp < minArea))
+				minArea = temp;
+
+			temp = thisChannel->GetMaxYLinkedLocusArea ();
+
+			if (temp > maxYLinkedArea)
+				maxYLinkedArea = temp;
+
+			temp = thisChannel->GetMinYLinkedLocusArea ();
+
+			if (minYLinkedArea == 0.0)
+				minYLinkedArea = temp;
+
+			else if ((temp > 0.0) && (temp < minYLinkedArea))
+				minYLinkedArea = temp;
 		}
 	}
+
+	if (minYLinkedArea == 0.0)
+		mQC.mSampleYLinkedLocusTotalAreaRatioMaxToMin = 0.0;
+
+	else
+		mQC.mSampleYLinkedLocusTotalAreaRatioMaxToMin = maxYLinkedArea / minYLinkedArea;
+
+	if (minArea == 0.0)
+		mQC.mSampleLocusTotalAreaRatioMaxToMin = 0.0;
+
+	else
+		mQC.mSampleLocusTotalAreaRatioMaxToMin = maxArea / minArea;
 
 	if (Locus::IsNoYForAMEL ())
 		SetMessageValue (noYForAMEL, true);

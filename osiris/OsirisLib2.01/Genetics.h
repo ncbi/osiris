@@ -287,6 +287,8 @@ public:
 	double GridDistance (double id);
 	double ExtendedDistance (double id);
 
+	bool IsYLinked () { return mLink->isYLinked (); }
+
 	bool TestForProximityArtifact (DataSignal* target, RGDList& externalLeft, RGDList& externalRight, double minTLeft, double maxTLeft, double minTRight, double maxTRight, double threshold);
 	bool TestForProximityArtifact (DataSignal* target, RGDList& externalLeft, RGDList& externalRight, double minTLeft, double maxTLeft, double minTRight, double maxTRight, double thresholdLeft, double thresholdRight);
 	int LocationOfSignal (DataSignal* signal);
@@ -319,6 +321,7 @@ public:
 	double GetLocusSpecificLadderPullupFractionalFilter () const;
 
 	double GetMinimumILSBP () const { return mLink->GetMinimumBPILS (); }
+	double GetTotalArea () const { return mTotalAlleleArea; }
 
 	virtual int CompareTo (const RGPersistent* p) const;
 	virtual unsigned HashNumber (unsigned long Base) const;
@@ -386,7 +389,6 @@ public:
 	Notice* RemoveNotice (const Notice* target);	//$
 	void RetrieveNoticesFromGridArtifactList (ChannelData* laneStandard);	//$
 
-
 	//******************************************************************************************************************************************************************************
 
 	// Smart Message Functions*******************************************************************************
@@ -445,6 +447,7 @@ public:
 	int MeasureInterlocusSignalAttributesSM ();
 
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes, RGDList& artifacts);
+	double CalculateTotalAreaSM ();
 	int CorrectCrossChannelAnalysesSM (RGDList& artifacts, bool isNegCntl);
 	int CleanUpSignalListSM (RGDList& artifacts);
 	int CorrectGridSignalListSM (RGDList& artifacts);
@@ -584,6 +587,8 @@ protected:
 	double mFirstTime;
 	double mLastTime;
 	Locus* mGridLocus;
+
+	double mTotalAlleleArea;
 
 	// Smart Message data************************************************************************************
 	//*******************************************************************************************************

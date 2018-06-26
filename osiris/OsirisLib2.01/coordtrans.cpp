@@ -1335,7 +1335,7 @@ double CSplineTransform :: GetMaxErrorsInBPs (double* timeErrors, double* bpErro
 }
 
 
-int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteristicArray) {
+double CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteristicArray) {
 
 	double* derivs3 = new double [NumberOfCubics];
 	double* derivs4 = new double [NumberOfCubics];
@@ -1359,7 +1359,7 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 
 //	int i;
 
-	cout << "Max Error Original (bps) = " << maxErrorInBP << ".  Max Error From 1st Derivs (bps) = " << maxErrorInBP2 << endl;
+	cout << "Max Error Original (bps) = " << maxErrorInBP << ".  Max Error From 1st Derivs (bps) = " << maxErrorInBP2 << "\n";
 	//cout << "Third derivatives: ";
 
 	//for (i=0; i<NumberOfCubics; i++)
@@ -1389,7 +1389,7 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 	//for (i=0; i<NumberOfCubics; i++)
 	//	cout << " " << bpErrorsFrom1stDerivs [i];
 
-	cout << endl;
+	cout << "\n";
 	delete[] derivs3;
 	delete[] derivs4;
 	delete[] errors;
@@ -1398,7 +1398,7 @@ int CSplineTransform :: OutputHighDerivativesAndErrors (const double* characteri
 	delete[] derivs4From1stDerivs;
 	delete[] errors2;
 	delete[] bpErrorsFrom1stDerivs;
-	return 0;
+	return maxErrorInBP2;
 }
 
 

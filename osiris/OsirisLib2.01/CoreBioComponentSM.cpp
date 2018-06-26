@@ -662,18 +662,20 @@ void CoreBioComponent :: ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text
 	text << "\t\t\t<SampleName>" << xmlwriter::EscAscii (mSampleName, &pResult) << "</SampleName>\n";
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
 	text << "\t\t\t<Type>Ladder</Type>\n";
-	text << "\t\t\t<Info>\n";
-	text << "\t\t\t\t<MaxLinearPullup>0.0</MaxLinearPullup>\n";
-	text << "\t\t\t\t<MaxNonlinearPullup>0.0</MaxNonlinearPullup>\n";
-	int j;
 
-	for (j=1; j<=mNumberOfChannels; j++) {
+	ReportXMLSampleInfoBlock ("\t\t\t", text);
+	//text << "\t\t\t<Info>\n";
+	//text << "\t\t\t\t<MaxLinearPullup>0.0</MaxLinearPullup>\n";
+	//text << "\t\t\t\t<MaxNonlinearPullup>0.0</MaxNonlinearPullup>\n";
+	//int j;
 
-		text << "\t\t\t\t<Channel>\n";
-		text << "\t\t\t\t\t<Number>" << j << "</Number>\n";
-		text << "\t\t\t\t\t<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
-		text << "\t\t\t\t</Channel>\n";
-	}
+	//for (j=1; j<=mNumberOfChannels; j++) {
+
+	//	text << "\t\t\t\t<Channel>\n";
+	//	text << "\t\t\t\t\t<Number>" << j << "</Number>\n";
+	//	text << "\t\t\t\t\t<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
+	//	text << "\t\t\t\t</Channel>\n";
+	//}
 
 	text << "\t\t\t</Info>\n" << PLevel ();
 
@@ -795,9 +797,12 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 	text << "\t\t\t<SampleName>" << xmlwriter::EscAscii (mSampleName, &pResult) << "</SampleName>\n";
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
 	text << "\t\t\t<Type>" << type.GetData () << "</Type>\n";
-	text << "\t\t\t<Info>\n";
-	text << "\t\t\t\t<MaxLinearPullup>" << mMaxLinearPullupCoefficient << "</MaxLinearPullup>\n";
-	text << "\t\t\t\t<MaxNonlinearPullup>" << mMaxNonlinearPullupCoefficient << "</MaxNonlinearPullup>\n";
+
+	ReportXMLSampleInfoBlock ("\t\t\t", text);
+
+	/*text << "\t\t\t<Info>\n";
+	text << "\t\t\t\t<MaxLinearPullup>" << mQC.mMaxLinearPullupCoefficient << "</MaxLinearPullup>\n";
+	text << "\t\t\t\t<MaxNonlinearPullup>" << mQC.mMaxNonlinearPullupCoefficient << "</MaxNonlinearPullup>\n";
 	int j;
 
 	for (j=1; j<=mNumberOfChannels; j++) {
@@ -808,7 +813,7 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 		text << "\t\t\t\t</Channel>\n";
 	}
 
-	text << "\t\t\t</Info>\n" << PLevel ();
+	text << "\t\t\t</Info>\n" << PLevel ();*/
 
 	int trigger = Notice::GetMessageTrigger ();
 //	int channelHighestLevel;
@@ -881,6 +886,45 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 		text << CLevel (1) << "\t\t\t<PositiveControl>" << mPositiveControlName << "</PositiveControl>\n";
 
 	text << CLevel (1) << "\t\t</Sample>\n" << PLevel ();
+}
+
+
+
+
+void CoreBioComponent :: ReportXMLSampleInfoBlock (const RGString& indent, RGTextOutput& text) {
+
+	RGString indent1 = indent + "\t";
+	RGString indent2 = indent + "\t\t";
+	text << indent << "<Info>\n";
+	text << indent1 << "<MaxLinearPullup>" << mQC.mMaxLinearPullupCoefficient << "</MaxLinearPullup>\n";
+	text << indent1 << "<MaxNonlinearPullup>" << mQC.mMaxNonlinearPullupCoefficient << "</MaxNonlinearPullup>\n";
+	text << indent1 << "<MaxBPErrorSampleToLadder>" << mQC.mMaxErrorInBP << "</MaxBPErrorSampleToLadder>\n";
+	text << indent1 << "<WidthOfLastILSPeak>" << mQC.mWidthOfLastILSPeak << "</WidthOfLastILSPeak>\n";
+
+	text << indent1 << "<SampleLocusTotalAreaRatioMaxToMin>" << mQC.mSampleLocusTotalAreaRatioMaxToMin << "</SampleLocusTotalAreaRatioMaxToMin>\n";
+	text << indent1 << "<SampleYLinkedLocusTotalAreaRatioMaxToMin>" << mQC.mSampleYLinkedLocusTotalAreaRatioMaxToMin << "</SampleYLinkedLocusTotalAreaRatioMaxToMin>\n";
+	text << indent1 << "<StartingTemperature>" << mQC.mStartingTemperature << "</StartingTemperature>\n";
+	text << indent1 << "<MaxMinusMinTemperature>" << mQC.mMaxMinusMinTemperature << "</MaxMinusMinTemperature>\n";
+	text << indent1 << "<StartingVoltage>" << mQC.mStartingVoltage << "</StartingVoltage>\n";
+	text << indent1 << "<MaxMinusMinVoltage>" << mQC.mMaxMinusMinVoltage << "</MaxMinusMinVoltage>\n";
+	text << indent1 << "<StartingCurrent>" << mQC.mStartingCurrent << "</StartingCurrent>\n";
+	text << indent1 << "<MaxMinusMinCurrent>" << mQC.mMaxMinusMinCurrent << "</MaxMinusMinCurrent>\n";
+	text << indent1 << "<StartingPower>" << mQC.mStartingPower << "</StartingPower>\n";
+	text << indent1 << "<MaxMinusMinPower>" << mQC.mMaxMinusMinPower << "</MaxMinusMinPower>\n";
+
+	int j;
+
+	for (j=1; j<=mNumberOfChannels; j++) {
+
+		text << indent1 << "<Channel>\n";
+		text << indent2 << "<Number>" << j << "</Number>\n";
+		text << indent2 << "<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
+		text << indent2 << "<ChannelLocusTotalAreaRatioMaxToMin>" << mDataChannels [j]->GetMaxLocusAreaRatio () << "</ChannelLocusTotalAreaRatioMaxToMin>\n";  // Must generate and store and provide accessor for this number for each channel
+		text << indent2 << "<ChannelYLinkedLocusTotalAreaMaxToMin>" << mDataChannels [j]->GetMaxYLinkedLocusAreaRatio () << "</ChannelYLinkedLocusTotalAreaMaxToMin>\n";
+		text << indent1 << "</Channel>\n";
+	}
+
+	text << indent << "</Info>\n" << PLevel ();
 }
 
 
@@ -1296,6 +1340,17 @@ int CoreBioComponent :: AnalyzeLaneStandardChannelSM (RGTextOutput& text, RGText
 
 	if (status < 0)
 		ErrorString << mDataChannels [mLaneStandardChannel]->GetError ();
+
+	else {
+
+		RGDList ilsList = mDataChannels [mLaneStandardChannel]->GetFinalCurveList ();
+		DataSignal* lastILS = (DataSignal*)ilsList.Last ();
+		mQC.mWidthOfLastILSPeak = lastILS->GetWidth ();
+		mQC.mLastILSTime = lastILS->GetMean ();
+		DataSignal* firstILS = (DataSignal*)ilsList.First ();
+		mQC.mFirstILSTime = firstILS->GetMean ();
+		mQC.mNumberOfSamples = mDataChannels [mLaneStandardChannel]->GetNumberOfSamples ();
+	}
 
 	return status;
 }
@@ -3165,7 +3220,7 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	//	Get other fit data from timeMap
 	//
 
-	mTimeMap->OutputHighDerivativesAndErrors (characteristicArray);
+	mQC.mMaxErrorInBP = mTimeMap->OutputHighDerivativesAndErrors (characteristicArray);
 
 	//smTempUseNaturalCubicSplineForTimeTransform useNaturalCubicSpline;
 	//smTempUseChordalDerivApproxHermiteSplinesForTimeTransform useChordalDerivsForHermiteSpline;
@@ -3202,6 +3257,25 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 //	ValidateAndCorrectCrossChannelAnalysesSM ();
 	int status = AssignSampleCharacteristicsToLociSM (grid, mTimeMap);
 	//delete timeMap;	// Added 09/26/2014 to prevent memory leak
+
+	int j;
+	double currentLast;
+	double largestTime = 0.0;
+
+	for (j=1; j<=mNumberOfChannels; j++) {
+
+		if (j != mLaneStandardChannel) {
+
+			currentLast = mDataChannels [j]->GetLastTime ();
+
+			if (currentLast > largestTime)
+				largestTime = currentLast;
+		}
+	}
+
+	if (largestTime > mQC.mLastILSTime)
+		mQC.mLastILSTime = largestTime;
+
 	return status;
 }
 

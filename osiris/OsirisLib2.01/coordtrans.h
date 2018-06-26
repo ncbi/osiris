@@ -137,7 +137,7 @@ public:
 	int GetFourthDerivativesFromSplineOfFirstDerivs (double* fourthDerivs);
 	double GetMaxErrors (double* fourthDerivs, double* errors);	// returns max error in seconds
 	double GetMaxErrorsInBPs (double* timeErrors, double* bpErrors, const double* characteristicArray);	// returns max error in bps
-	int OutputHighDerivativesAndErrors (const double* characteristicArray);
+	double OutputHighDerivativesAndErrors (const double* characteristicArray);
 	double GetMaximumErrorOfInterpolation (const double* characteristicArray);
 
 private:

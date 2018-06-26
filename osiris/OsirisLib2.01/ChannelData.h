@@ -191,6 +191,7 @@ public:
 	double GetRightEndpoint () const;
 	int GetNumberOfSignals () const { return CompleteCurveList.Entries (); }
 	bool HasPrimerPeaks (ChannelData* laneStd);
+	double GetLastTime () const;
 
 	void SetCompleteSignalListSequence ();
 
@@ -207,6 +208,13 @@ public:
 	int CreateAndSubstituteAveragingFilteredSignalForRawData (int nPasses, int halfWidth, double fractionNoiseLevelForLevelChange, double splitTime);
 	int RestoreRawDataAndDeleteFilteredSignal ();
 	bool HasFilteredData () const;
+
+	double GetMaxLocusArea () const { return mMaxLocusArea; }
+	double GetMaxYLinkedLocusArea () const  { return mMaxYLinkedLocusArea; }
+	double GetMinLocusArea () const { return mMinLocusArea; }
+	double GetMinYLinkedLocusArea () const  { return mMinYLinkedLocusArea; }
+	double GetMaxLocusAreaRatio () const { return mMaxLocusAreaRatio; }
+	double GetMaxYLinkedLocusAreaRatio () const  { return mMaxYLinkedLocusRatio; }
 	
 	int GetHighestMessageLevelFromLoci ();
 	Locus* FindLocus (const RGString& locusName);
@@ -582,6 +590,13 @@ protected:
 	CoordinateTransform* mTimeMap;
 	bool* mFilterChangeArray;
 	double mFractionOfChangedFilterPoints;
+
+	double mMaxLocusArea;
+	double mMaxYLinkedLocusArea;
+	double mMinLocusArea;
+	double mMinYLinkedLocusArea;
+	double mMaxLocusAreaRatio;
+	double mMaxYLinkedLocusRatio;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

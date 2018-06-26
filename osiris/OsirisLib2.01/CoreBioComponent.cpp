@@ -159,8 +159,7 @@ bool PullupPair :: IsRawDataPullup () const {
 
 
 CoreBioComponent :: CoreBioComponent () : SmartMessagingObject (), mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), 
-mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (0.0), 
-mMaxNonlinearPullupCoefficient (0.0) {
+mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -168,7 +167,7 @@ mMaxNonlinearPullupCoefficient (0.0) {
 
 CoreBioComponent :: CoreBioComponent (const RGString& name) : SmartMessagingObject (), mName (name), 
 mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (0.0), mMaxNonlinearPullupCoefficient (0.0) {
+mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -177,8 +176,7 @@ mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), 
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component) : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (component.mMaxLinearPullupCoefficient), 
-mMaxNonlinearPullupCoefficient (component.mMaxNonlinearPullupCoefficient) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mQC (component.mQC) {
 
 	InitializeSmartMessages (component);
 }
@@ -187,8 +185,7 @@ mMaxNonlinearPullupCoefficient (component.mMaxNonlinearPullupCoefficient) {
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component, CoordinateTransform* trans)  : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mMaxLinearPullupCoefficient (component.mMaxLinearPullupCoefficient), 
-mMaxNonlinearPullupCoefficient (component.mMaxNonlinearPullupCoefficient) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mQC (component.mQC) {
 
 	mDataChannels = new ChannelData* [mNumberOfChannels + 1];
 	mPullupTestedMatrix = new bool* [mNumberOfChannels + 1];
@@ -328,6 +325,95 @@ void CoreBioComponent :: SetTime (const RGString& time) {
 void CoreBioComponent :: SetTime (const PackedTime& time) {
 
 	mTime = time;
+}
+
+
+int CoreBioComponent :: GetAllAmbientData (SampleData* data) {
+
+	int i;
+	int n;
+	double* ambientArray;
+	int j;
+	double max = 0.0;
+	double min = 0.0;
+	double temp;
+	double startRatio;
+	double endRatio;
+	double doubleStartTime;
+	int startTime;
+	int totalTime = mQC.mNumberOfSamples;
+	double doublelastTime = mQC.mLastILSTime;
+	int lastTime;
+
+	for (i=1; i<=4; i++) {
+
+		n = data->GetNumberOfDataElementsForAmbientChannel (i);
+
+		if (n == 0)
+			continue;
+
+		ambientArray = data->GetDataForAmbientChannel (i);
+
+		if (ambientArray == NULL)
+			continue;
+
+		startRatio = mQC.mFirstILSTime / (double) totalTime;
+		endRatio = mQC.mLastILSTime / (double) totalTime;
+		doubleStartTime = startRatio * (double)n;
+		doublelastTime = endRatio * (double)n;
+		startTime = (int) floor (doubleStartTime);
+		lastTime = (int) ceil (doublelastTime) + 5;
+
+		if (lastTime >= n - 1)
+			lastTime = n - 1;
+
+		max = 0.0;
+		min = 0.0;
+
+		for (j=startTime; j<lastTime; j++) {
+
+			temp = ambientArray [j];
+
+			if (temp > max)
+				max = temp;
+
+			if (min == 0.0)
+				min = temp;
+
+			else if (temp < min)
+				min = temp;
+		}
+
+		switch (i) {
+
+		case 4:
+			mQC.mStartingTemperature = ambientArray [startTime];
+			mQC.mMaxMinusMinTemperature = max - min;
+			break;
+
+		case 1:
+			mQC.mStartingVoltage = ambientArray [startTime];
+			mQC.mMaxMinusMinVoltage = max - min;
+			break;
+
+		case 2:
+			mQC.mStartingCurrent = ambientArray [startTime];
+			mQC.mMaxMinusMinCurrent = max - min;
+			break;
+
+		case 3:
+			mQC.mStartingPower = ambientArray [startTime];
+			mQC.mMaxMinusMinPower = max - min;
+			break;
+
+		default:
+			break;
+		}
+
+		delete[] ambientArray;
+	}
+
+	return 0;
 }
 
 

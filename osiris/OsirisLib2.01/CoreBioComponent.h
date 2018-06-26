@@ -119,6 +119,37 @@ struct PullupPair {
 };
 
 
+struct QCData {
+
+	QCData () : mMaxLinearPullupCoefficient (0.0), mMaxNonlinearPullupCoefficient (0.0), mMaxErrorInBP (0.0), mWidthOfLastILSPeak (0.0), mSampleLocusTotalAreaRatioMaxToMin (0.0), mSampleYLinkedLocusTotalAreaRatioMaxToMin (0.0), mStartingTemperature (0.0), mMaxMinusMinTemperature (0.0), 
+		mStartingVoltage (0.0), mMaxMinusMinVoltage (0.0), mStartingCurrent (0.0), mMaxMinusMinCurrent (0.0), mStartingPower (0.0), mMaxMinusMinPower (0.0), mFirstILSTime (0.0), mLastILSTime (0.0), mNumberOfSamples (0) {}
+
+	QCData (const QCData& data) : mMaxLinearPullupCoefficient (data.mMaxLinearPullupCoefficient), mMaxNonlinearPullupCoefficient (data.mMaxNonlinearPullupCoefficient), mMaxErrorInBP (data.mMaxErrorInBP), mWidthOfLastILSPeak (data.mWidthOfLastILSPeak), 
+		mSampleLocusTotalAreaRatioMaxToMin (data.mSampleLocusTotalAreaRatioMaxToMin), mSampleYLinkedLocusTotalAreaRatioMaxToMin (data.mSampleYLinkedLocusTotalAreaRatioMaxToMin), mStartingTemperature (data.mStartingTemperature), mMaxMinusMinTemperature (data.mMaxMinusMinTemperature), mStartingVoltage (data.mStartingVoltage), 
+		mMaxMinusMinVoltage (data.mStartingVoltage), mStartingCurrent (data.mStartingVoltage), mMaxMinusMinCurrent (data.mStartingVoltage), mStartingPower (data.mStartingVoltage), mMaxMinusMinPower (data.mStartingVoltage), mFirstILSTime (data.mFirstILSTime), mLastILSTime (data.mLastILSTime), 
+		mNumberOfSamples (data.mNumberOfSamples) {}
+	~QCData () {}
+
+	double mMaxLinearPullupCoefficient;
+	double mMaxNonlinearPullupCoefficient;
+	double mMaxErrorInBP;
+	double mWidthOfLastILSPeak;
+	double mSampleLocusTotalAreaRatioMaxToMin;
+	double mSampleYLinkedLocusTotalAreaRatioMaxToMin;
+	double mStartingTemperature;
+	double mMaxMinusMinTemperature;
+	double mStartingVoltage;
+	double mMaxMinusMinVoltage;
+	double mStartingCurrent;
+	double mMaxMinusMinCurrent;
+	double mStartingPower;
+	double mMaxMinusMinPower;
+	double mFirstILSTime;
+	double mLastILSTime;
+	int mNumberOfSamples;
+};
+
+
 
 class CoreBioComponent : public SmartMessagingObject {
 
@@ -154,6 +185,8 @@ public:
 	PackedTime GetSampleTime () const { return mTime; }
 	int GetNumberOfChannels () const { return mNumberOfChannels; }
 
+	int GetAllAmbientData (SampleData* data);
+
 	void SetTableLink (int linkNumber);
 	RGString GetTableLink () const { return mTableLink; }
 
@@ -178,8 +211,8 @@ public:
 	double LinearPullupCoefficient (int i, int j);
 	double QuadraticPullupCoefficient (int i, int j);
 
-	double MaxLinearPullupCoefficient () const { return mMaxLinearPullupCoefficient; }
-	double MaxNonlinearPullupCoefficient () const { return mMaxNonlinearPullupCoefficient; }
+	double MaxLinearPullupCoefficient () const { return mQC.mMaxLinearPullupCoefficient; }
+	double MaxNonlinearPullupCoefficient () const { return mQC.mMaxNonlinearPullupCoefficient; }
 
 	void SetPullupTestedMatrix (int i, int j, bool value);
 	void SetLinearPullupMatrix (int i, int j, double value);
@@ -352,6 +385,7 @@ public:
 
 	void ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);
 	void ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);
+	void ReportXMLSampleInfoBlock (const RGString& indent, RGTextOutput& text);
 
 	bool GetIgnoreNoiseAboveDetectionInSmoothingFlag () const;
 
@@ -519,8 +553,23 @@ protected:
 
 	CSplineTransform* mTimeMap;
 
-	double mMaxLinearPullupCoefficient;
-	double mMaxNonlinearPullupCoefficient;
+	// QC metrics
+
+	QCData mQC;
+
+	//double mMaxLinearPullupCoefficient;
+	//double mMaxNonlinearPullupCoefficient;
+	//double mMaxErrorInBP;
+	//double mWidthOfLastILSPeak;
+	//double mSampleLocusTotalAreaRatioMaxToMin;
+	//double mStartingTemperature;
+	//double mMaxMinusMinTemperature;
+	//double mStartingVoltage;
+	//double mMaxMinusMinVoltage;
+	//double mStartingCurrent;
+	//double mMaxMinusMinCurrent;
+	//double mStartingPower;
+	//double mMaxMinusMinPower;
 
 	// Smart Message Data*****************************************************************************************************************
 	//************************************************************************************************************************************

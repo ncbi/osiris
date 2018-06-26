@@ -478,12 +478,74 @@
 												<xs:sequence>
 													<xs:element name="MaxLinearPullupCoefficient" type="xs:double" minOccurs="0"/>
 													<xs:element name="MaxNonlinearPullupCoefficient" type="xs:double" minOccurs="0"/>
+													<xs:element name="MaxBPErrorSampleToLadder" type="xs:double" default="0.0" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>We must decide which of two estimates to use</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="WidthOfLastILSPeak" type="xs:double" minOccurs="0"/>
+													<xs:element name="SampleLocusTotalAreaRatioMaxToMin" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Omit AMEL, Y-Linked, Y-Indel, Qiagen diagnostic loci</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="SampleYLinkedLocusTotalAreaRatioMaxToMin" type="xs:double">
+														<xs:annotation>
+															<xs:documentation>Omit AMEL, Y-Indel, all 2-allele ladder loci, and non-Y-linked loci</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="StartingTemperature" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In degrees C</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="MaxMinusMinTemperature" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In degrees C</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="StartingVoltage" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In Volts/10</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="MaxMinusMinVoltage" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In Volts/10</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="StartingCurrent" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In milliAmps</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="MaxMinusMinCurrent" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In milliAmps</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="StartingPower" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In milliWatts</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="MaxMinusMinPower" type="xs:double" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>In milliWatts</xs:documentation>
+														</xs:annotation>
+													</xs:element>
 													<xs:sequence maxOccurs="unbounded">
 														<xs:element name="Channel">
 															<xs:complexType>
 																<xs:sequence>
 																	<xs:element name="Number" type="xs:int"/>
 																	<xs:element name="Noise" type="xs:double"/>
+																	<xs:element name="ChannelLocusTotalAreaRatioMaxToMin" type="xs:double">
+																		<xs:annotation>
+																			<xs:documentation>Omit AMEL, Y-Linked, Y-Indel, Qiagen diagnostic loci</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="ChannelYLinkedLocusTotalAreaMaxToMin" type="xs:double"/>
 																</xs:sequence>
 															</xs:complexType>
 														</xs:element>
@@ -669,6 +731,13 @@
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="ExportSpecifications" type="ExportSpecificationsType" minOccurs="0"/>
+				<xs:element name="RunInfo" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="MaxRunTemperatureMinusMin" type="xs:double" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

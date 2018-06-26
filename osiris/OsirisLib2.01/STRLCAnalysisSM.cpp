@@ -1121,6 +1121,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		status = ladderBioComponent->AnalyzeGridSM (*data, GridData);	// after this, stage 2 is complete; skip stage 3;
 
+		if (status >= 0)
+			ladderBioComponent->GetAllAmbientData (data);
+
 		//
 		// End Stage 1 here!!!
 		//
@@ -1409,6 +1412,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			NoticeStr = "";
 			bioComponent->SetMessageValue (sampleFailed, true);
 		}
+
+		else
+			bioComponent->GetAllAmbientData (data);
 
 		//cout << "Preliminary Analysis Complete" << endl;
 
