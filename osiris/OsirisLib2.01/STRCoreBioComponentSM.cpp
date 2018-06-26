@@ -3968,25 +3968,25 @@ int STRLadderCoreBioComponent :: AnalyzeGridSM (RGTextOutput& text, RGTextOutput
 
 	status = 0;
 	int j;
-	double largestTime = 0.0;
-	double currentLast;
+	//double largestTime = 0.0;
+	//double currentLast;
 
 	for (j=1; j<=mNumberOfChannels; j++) {
 
 		if (mDataChannels [j]->SetAllApproximateIDs (mLSData) < 0)
 			status = -1;
 
-		if (j != mLaneStandardChannel) {
+		//if (j != mLaneStandardChannel) {
 
-			currentLast = mDataChannels [j]->GetLastTime ();
+		//	currentLast = mDataChannels [j]->GetLastTime ();
 
-			if (currentLast > largestTime)
-				largestTime = currentLast;
-		}
+		//	if (currentLast > largestTime)
+		//		largestTime = currentLast;
+		//}
 	}
 
-	if (largestTime > mQC.mLastILSTime)
-		mQC.mLastILSTime = largestTime;
+	//if (largestTime > mQC.mLastILSTime)
+	//	mQC.mLastILSTime = largestTime;
 
 	if (status < 0) {
 

@@ -731,13 +731,6 @@
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="ExportSpecifications" type="ExportSpecificationsType" minOccurs="0"/>
-				<xs:element name="RunInfo" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="MaxRunTemperatureMinusMin" type="xs:double" minOccurs="0"/>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

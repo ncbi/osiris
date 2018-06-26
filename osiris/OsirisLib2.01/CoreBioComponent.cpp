@@ -364,6 +364,9 @@ int CoreBioComponent :: GetAllAmbientData (SampleData* data) {
 		startTime = (int) floor (doubleStartTime);
 		lastTime = (int) ceil (doublelastTime) + 5;
 
+		cout << "Ambient start time = " << mQC.mFirstILSTime << " and end time = " << mQC.mLastILSTime << "\n";
+		cout << "Ambient start measurement = " << startTime << " and end measurement = " << lastTime << "\n";
+
 		if (lastTime >= n - 1)
 			lastTime = n - 1;
 

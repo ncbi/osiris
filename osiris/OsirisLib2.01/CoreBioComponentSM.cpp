@@ -3258,23 +3258,23 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	int status = AssignSampleCharacteristicsToLociSM (grid, mTimeMap);
 	//delete timeMap;	// Added 09/26/2014 to prevent memory leak
 
-	int j;
-	double currentLast;
-	double largestTime = 0.0;
+	//int j;
+	//double currentLast;
+	//double largestTime = 0.0;
 
-	for (j=1; j<=mNumberOfChannels; j++) {
+	//for (j=1; j<=mNumberOfChannels; j++) {
 
-		if (j != mLaneStandardChannel) {
+	//	if (j != mLaneStandardChannel) {
 
-			currentLast = mDataChannels [j]->GetLastTime ();
+	//		currentLast = mDataChannels [j]->GetLastTime ();
 
-			if (currentLast > largestTime)
-				largestTime = currentLast;
-		}
-	}
+	//		if (currentLast > largestTime)
+	//			largestTime = currentLast;
+	//	}
+	//}
 
-	if (largestTime > mQC.mLastILSTime)
-		mQC.mLastILSTime = largestTime;
+	//if (largestTime > mQC.mLastILSTime)
+	//	mQC.mLastILSTime = largestTime;
 
 	return status;
 }
