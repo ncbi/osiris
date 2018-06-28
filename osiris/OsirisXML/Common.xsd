@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
+<!-- edited with XMLSpy v2018 rel. 2 (http://www.altova.com) by Altova XMLSpy 2018 Professional XML Editor - Release 2, Installed for 13 users (NCBI/NLM/NIH) -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Douglas Hoffman (private) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:simpleType name="Name">
@@ -75,7 +75,9 @@
 			<xs:element name="FractionOfMaxPeak" type="xs:double" minOccurs="0"/>
 			<xs:element name="PullupFractionalFilter" type="xs:double" minOccurs="0"/>
 			<xs:element name="StutterThreshold" type="xs:double" minOccurs="0"/>
+			<xs:element name="StutterThresholdRight" type="xs:double" minOccurs="0"/>
 			<xs:element name="PlusStutterThreshold" type="xs:double" minOccurs="0"/>
+			<xs:element name="PlusStutterThresholdRight" type="xs:double" minOccurs="0"/>
 			<xs:element name="AdenylationThreshold" type="xs:double" minOccurs="0"/>
 			<xs:element name="HeterozygousImbalanceLimit" type="xs:double" minOccurs="0"/>
 			<xs:element name="MinBoundForHomozygote" type="xs:double" minOccurs="0"/>

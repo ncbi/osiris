@@ -97,7 +97,9 @@ public:
 	virtual RGString GetOffGridMessage () const;
 
 	virtual void SetSampleStutterThreshold (double limit) { mSampleLocusSpecificStutterThreshold = limit; }
+	virtual void SetSampleStutterThresholdRight (double limit);
 	virtual void SetSamplePlusStutterThreshold (double limit) { mSampleLocusSpecificPlusStutterThreshold = limit; }
+	virtual void SetSamplePlusStutterThresholdRight (double limit);
 	virtual void SetSampleAdenylationThreshold (double limit) { mSampleLocusSpecificAdenylationThreshold = limit; }
 	virtual void SetSampleFractionalFilter (double limit) { mSampleLocusSpecificFractionalFilter = limit; }
 	virtual void SetSamplePullupFractionalFilter (double limit) { mSampleLocusSpecificPullupFractionalFilter = limit; }
@@ -110,12 +112,17 @@ public:
 	virtual void SetLadderPullupFractionalFilter (double limit) { mLadderLocusSpecificPullupFractionalFilter = limit; }
 
 	virtual double GetSampleStutterThreshold () const { return mSampleLocusSpecificStutterThreshold; }
+	virtual double GetSampleStutterThresholdRight () const { return mSampleLocusSpecificStutterThresholdRight; }
 	virtual double GetSamplePlusStutterThreshold () const { return mSampleLocusSpecificPlusStutterThreshold; }
+	virtual double GetSamplePlusStutterThresholdRight () const { return mSampleLocusSpecificPlusStutterThresholdRight; }
 	virtual double GetSampleAdenylationThreshold () const { return mSampleLocusSpecificAdenylationThreshold; }
 	virtual double GetSampleFractionalFilter () const { return mSampleLocusSpecificFractionalFilter; }
 	virtual double GetSamplePullupFractionalFilter () const { return mSampleLocusSpecificPullupFractionalFilter; }
 	virtual double GetSampleHeterozygousImbalanceThreshold () const { return mSampleLocusSpecificHeterozygousImbalanceThreshold; }
 	virtual double GetSampleMinBoundForHomozygote () const { return mSampleLocusSpecificMinBoundForHomozygote; }
+
+	virtual double GetSampleStutterThreshold (int bp) const;
+	virtual double GetSamplePlusStutterThreshold (int bp) const;
 
 	virtual double GetLadderStutterThreshold () const { return mLadderLocusSpecificStutterThreshold; }
 	virtual double GetLadderAdenylationThreshold () const { return mLadderLocusSpecificAdenylationThreshold; }
@@ -154,7 +161,9 @@ protected:
 	double UpperBoundGridLSBasePair;
 
 	double mSampleLocusSpecificStutterThreshold;
+	double mSampleLocusSpecificStutterThresholdRight;
 	double mSampleLocusSpecificPlusStutterThreshold;
+	double mSampleLocusSpecificPlusStutterThresholdRight;
 	double mSampleLocusSpecificAdenylationThreshold;
 	double mSampleLocusSpecificFractionalFilter;
 	double mSampleLocusSpecificPullupFractionalFilter;
@@ -165,6 +174,14 @@ protected:
 	double mLadderLocusSpecificAdenylationThreshold;
 	double mLadderLocusSpecificFractionalFilter;
 	double mLadderLocusSpecificPullupFractionalFilter;
+
+	double mStutter0;
+	double mStutterBasePair0;
+	double mStutterSlope;
+
+	double mPlusStutter0;
+	double mPlusStutterBasePair0;
+	double mPlusStutterSlope;
 
 	bool mNoExtension;
 };

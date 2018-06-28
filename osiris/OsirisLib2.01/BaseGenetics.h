@@ -165,7 +165,9 @@ public:
 	virtual bool AllowsNoExtension () const;
 
 	virtual void SetSampleStutterThreshold (double limit) { }
+	virtual void SetSampleStutterThresholdRight (double limit) { }
 	virtual void SetSamplePlusStutterThreshold (double limit) { }
+	virtual void SetSamplePlusStutterThresholdRight (double limit) { }
 	virtual void SetSampleAdenylationThreshold (double limit) { }
 	virtual void SetSampleFractionalFilter (double limit) { }
 	virtual void SetSamplePullupFractionalFilter (double limit) { }
@@ -178,12 +180,17 @@ public:
 	virtual void SetLadderPullupFractionalFilter (double limit) { }
 
 	virtual double GetSampleStutterThreshold () const { return 0.0; }
+	virtual double GetSampleStutterThresholdRight () const { return 0.0; }
 	virtual double GetSamplePlusStutterThreshold () const { return 0.0; }
+	virtual double GetSamplePlusStutterThresholdRight () const { return 0.0; }
 	virtual double GetSampleAdenylationThreshold () const { return 0.0; }
 	virtual double GetSampleFractionalFilter () const { return 0.0; }
 	virtual double GetSamplePullupFractionalFilter () const { return 0.0; }
 	virtual double GetSampleHeterozygousImbalanceThreshold () const { return 0.0; }
 	virtual double GetSampleMinBoundForHomozygote () const { return 0.0; }
+
+	virtual double GetSampleStutterThreshold (int bp) const { return 0.0; }
+	virtual double GetSamplePlusStutterThreshold (int bp) const { return 0.0; }
 
 	virtual double GetLadderStutterThreshold () const { return 0.0; }
 	virtual double GetLadderAdenylationThreshold () const { return 0.0; }

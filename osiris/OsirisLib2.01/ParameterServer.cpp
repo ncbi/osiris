@@ -97,7 +97,9 @@ locusSpecificLimitsStruct :: locusSpecificLimitsStruct () :
 fractionOfMaxPeak (-1.0),
 pullupFractionalFilter (-1.0),
 stutterThreshold (-1.0),
+stutterThresholdRight (-1.0),
 plusStutterThreshold (-1.0),
+plusStutterThresholdRight (-1.0), 
 adenylationThreshold (-1.0),
 heterozygousImbalanceLimit (-1.0),
 minBoundForHomozygote (-1.0) {
@@ -109,7 +111,9 @@ locusSpecificLimitsStruct :: locusSpecificLimitsStruct (const locusSpecificLimit
 fractionOfMaxPeak (limits.fractionOfMaxPeak),
 pullupFractionalFilter (limits.pullupFractionalFilter),
 stutterThreshold (limits.stutterThreshold),
+stutterThresholdRight (limits.stutterThresholdRight), 
 plusStutterThreshold (limits.plusStutterThreshold),
+plusStutterThresholdRight (limits.plusStutterThresholdRight),
 adenylationThreshold (limits.adenylationThreshold),
 heterozygousImbalanceLimit (limits.heterozygousImbalanceLimit),
 minBoundForHomozygote (limits.minBoundForHomozygote) {
@@ -134,8 +138,14 @@ void locusSpecificLimitsStruct :: CopyPositiveThresholdsFrom (const locusSpecifi
 	if (limits.stutterThreshold >= 0.0)
 		stutterThreshold = limits.stutterThreshold;
 
+	if (limits.stutterThresholdRight >= 0.0)
+		stutterThresholdRight = limits.stutterThresholdRight;
+
 	if (limits.plusStutterThreshold >= 0.0)
 		plusStutterThreshold = limits.plusStutterThreshold;
+
+	if (limits.plusStutterThresholdRight >= 0.0)
+		plusStutterThresholdRight = limits.plusStutterThresholdRight;
 
 	if (limits.adenylationThreshold >= 0.0)
 		adenylationThreshold  = limits.adenylationThreshold;
@@ -640,6 +650,10 @@ int ParameterServer :: AddSampleLocusSpecificThreshold (const RGString& locusNam
 	list<locusSpecificLimitsStruct*>::const_iterator c1Iterator;
 	locusSpecificLimitsStruct* nextLink;
 
+	if (locusName == "D21S11") {
+		bool stopHere = true;
+	}
+
 	for (c1Iterator = mSampleLocusSpecificThresholds->begin (); c1Iterator != mSampleLocusSpecificThresholds->end (); c1Iterator++) {
 
 		nextLink = *c1Iterator;
@@ -782,14 +796,24 @@ int ParameterServer :: AddSampleLocusSpecificNonStandardStutterCollection (const
 
 int ParameterServer :: SetSampleLocusSpecificThresholds (Locus* locus, locusSpecificLimitsStruct* limits) {
 
-	if (limits->stutterThreshold >= 0.0)
+	if (limits->stutterThreshold >= 0.0) {
+
 		locus->SetLocusSpecificSampleStutterThreshold (limits->stutterThreshold);
+
+		if (limits->stutterThresholdRight >= limits->stutterThreshold)
+			locus->SetLocusSpecificSampleStutterThresholdRight (limits->stutterThresholdRight);
+	}
 
 	else
 		locus->SetLocusSpecificSampleStutterThreshold (Locus::GetSampleStutterThreshold ());
 
-	if (limits->plusStutterThreshold >= 0.0)
+	if (limits->plusStutterThreshold >= 0.0) {
+
 		locus->SetLocusSpecificSamplePlusStutterThreshold (limits->plusStutterThreshold);
+
+		if (limits->plusStutterThresholdRight >= limits->plusStutterThreshold)
+			locus->SetLocusSpecificSamplePlusStutterThresholdRight (limits->plusStutterThresholdRight);
+	}
 
 	else
 		locus->SetLocusSpecificSamplePlusStutterThreshold (Locus::GetSamplePlusStutterThreshold ());
@@ -1861,7 +1885,9 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 	RGXMLTagSearch locusFractionalFilterSearch ("FractionOfMaxPeak", locusThresholdString);
 	RGXMLTagSearch locusPullupFractionSearch ("PullupFractionalFilter", locusThresholdString);
 	RGXMLTagSearch locusStutterSearch ("StutterThreshold", locusThresholdString);
+	RGXMLTagSearch locusStutterSearchRight ("StutterThresholdRight", locusThresholdString);
 	RGXMLTagSearch locusPlusStutterSearch ("PlusStutterThreshold", locusThresholdString);
+	RGXMLTagSearch locusPlusStutterSearchRight ("PlusStutterThresholdRight", locusThresholdString);
 	RGXMLTagSearch locusAdenylationSearch ("AdenylationThreshold", locusThresholdString);
 	RGXMLTagSearch locusHeterozygousImbalanceSearch ("HeterozygousImbalanceLimit", locusThresholdString);
 	RGXMLTagSearch locusBoundForHomozygoteSearch ("MinBoundForHomozygote", locusThresholdString);
@@ -1970,13 +1996,19 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 		locusFractionalFilterSearch.ResetSearch ();
 		locusPullupFractionSearch.ResetSearch ();
 		locusStutterSearch.ResetSearch ();
+		locusStutterSearchRight.ResetSearch ();
 		locusPlusStutterSearch.ResetSearch ();
+		locusPlusStutterSearchRight.ResetSearch ();
 		locusAdenylationSearch.ResetSearch ();
 		locusHeterozygousImbalanceSearch.ResetSearch ();
 		locusBoundForHomozygoteSearch.ResetSearch ();
 
 		if (!locusNameSearch.FindNextTag (startLocusOffset, endLocusOffset, result))
 			return false;
+
+		if (result == "D21S11") {
+			bool stopHere = true;
+	}
 
 		startLocusOffset = endLocusOffset;
 		limits.Reset ();
@@ -1998,12 +2030,24 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 
 			startLocusOffset = endLocusOffset;
 			limits.stutterThreshold = result.ConvertToDouble ();
+
+			if (locusStutterSearchRight.FindNextTag (startLocusOffset, endLocusOffset, result)) {
+
+				startLocusOffset = endLocusOffset;
+				limits.stutterThresholdRight = result.ConvertToDouble ();
+			}
 		}
 
 		if (locusPlusStutterSearch.FindNextTag (startLocusOffset, endLocusOffset, result)) {
 
 			startLocusOffset = endLocusOffset;
 			limits.plusStutterThreshold = result.ConvertToDouble ();
+
+			if (locusPlusStutterSearchRight.FindNextTag (startLocusOffset, endLocusOffset, result)) {
+
+				startLocusOffset = endLocusOffset;
+				limits.plusStutterThresholdRight = result.ConvertToDouble ();
+			}
 		}
 
 		if (locusAdenylationSearch.FindNextTag (startLocusOffset, endLocusOffset, result)) {

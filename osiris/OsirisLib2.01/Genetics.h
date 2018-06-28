@@ -294,7 +294,9 @@ public:
 	int LocationOfSignal (DataSignal* signal);
 
 	void SetLocusSpecificSampleStutterThreshold (double limit) { if (mLink != NULL) mLink->SetSampleStutterThreshold (limit); }
+	void SetLocusSpecificSampleStutterThresholdRight (double limit) { if (mLink != NULL) mLink->SetSampleStutterThresholdRight (limit); }
 	void SetLocusSpecificSamplePlusStutterThreshold (double limit) { if (mLink != NULL) mLink->SetSamplePlusStutterThreshold (limit); }
+	void SetLocusSpecificSamplePlusStutterThresholdRight (double limit) { if (mLink != NULL) mLink->SetSamplePlusStutterThresholdRight (limit); }
 	void SetLocusSpecificSampleAdenylationThreshold (double limit) { if (mLink != NULL) mLink->SetSampleAdenylationThreshold (limit); }
 	void SetLocusSpecificSampleFractionalFilter (double limit) { if (mLink != NULL) mLink->SetSampleFractionalFilter (limit); }
 	void SetLocusSpecificSamplePullupFractionalFilter (double limit) { if (mLink != NULL) mLink->SetSamplePullupFractionalFilter (limit); }

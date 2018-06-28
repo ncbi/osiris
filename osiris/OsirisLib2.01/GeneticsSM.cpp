@@ -2656,6 +2656,10 @@ int Locus :: AnalyzeSampleLocusSM (ChannelData* lsData, RGDList& artifactList, R
 	msg.WriteEmptyLine ();
 	msg.WriteLocusName (mLink->GetLocusName (), Size);
 
+	if (GetLocusName () == "D21S11") {
+		bool stopHere = true;
+	}
+
 //	TestFractionalFilter (artifactList, signalList, supplementalList);
 	PrecomputeAverages (LocusSignalList);
 	RGDListIterator it (LocusSignalList);

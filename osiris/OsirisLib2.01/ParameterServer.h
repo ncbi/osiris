@@ -124,7 +124,9 @@ struct locusSpecificLimitsStruct {
 	double fractionOfMaxPeak;
 	double pullupFractionalFilter;
 	double stutterThreshold;
+	double stutterThresholdRight;
 	double plusStutterThreshold;
+	double plusStutterThresholdRight;
 	double adenylationThreshold;
 	double heterozygousImbalanceLimit;
 	double minBoundForHomozygote;

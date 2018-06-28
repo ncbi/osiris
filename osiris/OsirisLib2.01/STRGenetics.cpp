@@ -142,7 +142,7 @@ void STRBaseAllele :: SaveAll (RGVOutStream& f) const {
 
 STRBaseLocus :: STRBaseLocus () : BaseLocus (), MinimumBP (-1), MaximumBP (-1), LowerBoundGridLSIndex (-1.0),
 UpperBoundGridLSIndex (-1.0), MinimumGridTime (-1.0), MaximumGridTime (-1.0), CoreRepeatNumber (4),
-LowerBoundGridLSBasePair (-1.0), UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
+LowerBoundGridLSBasePair (-1.0), UpperBoundGridLSBasePair (-1.0), mNoExtension (false), mStutter0 (-1.0), mStutterBasePair0 (-1.0), mStutterSlope (-1.0), mPlusStutter0 (-1.0), mPlusStutterBasePair0 (-1.0), mPlusStutterSlope (-1.0) {
 
 	//mSampleLocusSpecificStutterThreshold = Locus::GetSampleStutterThreshold ();
 	//mSampleLocusSpecificAdenylationThreshold = Locus::GetSampleAdenylationThreshold ();
@@ -155,16 +155,21 @@ LowerBoundGridLSBasePair (-1.0), UpperBoundGridLSBasePair (-1.0), mNoExtension (
 	//mLadderLocusSpecificAdenylationThreshold = Locus::GetGridAdenylationThreshold ();
 	//mLadderLocusSpecificFractionalFilter = Locus::GetGridFractionalFilter ();
 	//mLadderLocusSpecificPullupFractionalFilter = Locus::GetGridPullupFractionalFilter ();
+	//double mStutter0;
+	//double mStutterBasePair0;
+	//double mStutterSlope;
 
 }
 
 
 STRBaseLocus :: STRBaseLocus (const RGString& xmlInput) : BaseLocus (xmlInput), LowerBoundGridLSIndex (-1.0),
 UpperBoundGridLSIndex (-1.0), MinimumGridTime (-1.0), MaximumGridTime (-1.0), LowerBoundGridLSBasePair (-1.0), 
-UpperBoundGridLSBasePair (-1.0), mNoExtension (false) {
+UpperBoundGridLSBasePair (-1.0), mNoExtension (false), mStutter0 (-1.0), mStutterBasePair0 (-1.0), mStutterSlope (-1.0), mPlusStutter0 (-1.0), mPlusStutterBasePair0 (-1.0), mPlusStutterSlope (-1.0) {
 
 	mSampleLocusSpecificStutterThreshold = Locus::GetSampleStutterThreshold ();
+	mSampleLocusSpecificStutterThresholdRight = 0.0;
 	mSampleLocusSpecificPlusStutterThreshold = Locus::GetSamplePlusStutterThreshold ();
+	mSampleLocusSpecificPlusStutterThresholdRight = 0.0;
 	mSampleLocusSpecificAdenylationThreshold = Locus::GetSampleAdenylationThreshold ();
 	mSampleLocusSpecificFractionalFilter = Locus::GetSampleFractionalFilter ();
 	mSampleLocusSpecificPullupFractionalFilter = Locus::GetSamplePullupFractionalFilter ();
@@ -560,6 +565,90 @@ RGString STRBaseLocus :: ReconstructAlleleName (int id, Allele* nearAllele) {
 RGString STRBaseLocus :: GetOffGridMessage () const {
 
 	return "PEAK IS OFF-LADDER...\n";
+}
+
+
+void STRBaseLocus :: SetSampleStutterThresholdRight (double limit) {
+	
+	mSampleLocusSpecificStutterThresholdRight = limit;
+	mStutter0 = mSampleLocusSpecificStutterThreshold;
+	mStutterBasePair0 = mLocusVector [0];
+
+	if ((limit <= 0.0) || (limit <= mStutter0))
+		mStutterSlope = 0.0;
+
+	else {
+
+		double delta = mLocusVector [mLocusSize - 1] - mLocusVector [0];
+
+		if (delta <= 0.0) {
+
+			cout << "Error...base pairs not available.  Delta BP = " << delta << "\n";
+			mStutterSlope = 0.0;
+		}
+
+		else
+			mStutterSlope = (limit - mStutter0) / delta;
+	}
+}
+
+
+void STRBaseLocus :: SetSamplePlusStutterThresholdRight (double limit) {
+	
+	if ((mSampleLocusSpecificPlusStutterThreshold <= 0.0) || (limit <= mSampleLocusSpecificPlusStutterThreshold)) {
+
+		mPlusStutterSlope = -1.0;
+		return;
+	}
+	
+	mSampleLocusSpecificPlusStutterThresholdRight = limit;
+	mPlusStutter0 = mSampleLocusSpecificPlusStutterThreshold;
+	mPlusStutterBasePair0 = mLocusVector [0];
+
+	if ((limit <= 0.0) || (limit <= mPlusStutter0))
+		mPlusStutterSlope = 0.0;
+
+	else {
+
+		double delta = mLocusVector [mLocusSize - 1] - mLocusVector [0];
+
+		if (delta <= 0.0) {
+
+			cout << "Error...base pairs not available for plus stutter.  Delta BP = " << delta << "\n";
+			mPlusStutterSlope = -1.0;
+		}
+
+		else
+			mPlusStutterSlope = (limit - mPlusStutter0) / delta;
+	}
+}
+
+
+double STRBaseLocus :: GetSampleStutterThreshold (int bp) const {
+
+	if (mStutterSlope <= 0.0)
+		return GetSampleStutterThreshold ();
+
+	double temp = mStutter0 + mStutterSlope * ((double)bp - mStutterBasePair0);
+
+	if (temp >= 0.0)
+		return temp;
+
+	return 0.0;
+}
+
+
+double STRBaseLocus :: GetSamplePlusStutterThreshold (int bp) const {
+
+	if (mPlusStutterSlope <= 0.0)
+		return GetSamplePlusStutterThreshold ();
+
+	double temp = mPlusStutter0 + mPlusStutterSlope * ((double)bp - mPlusStutterBasePair0);
+
+	if (temp >= 0.0)
+		return temp;
+
+	return 0.0;
 }
 
 
