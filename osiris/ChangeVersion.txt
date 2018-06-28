@@ -9,11 +9,13 @@
          name as the command line argument.  This will generate osiris_png.h
          which is used for the splash screen.
     vi.  add the Osiris*.png image to source control (git)
-3. in MSVC setup change the name of the .msi file and in properties (Alt+Enter) 
+3. in MSVC Setup project change the name of the .msi file (Right-click Setup, Properties)
+   and in the OTHER properties (Alt+Enter) 
    change the version at the bottom.  When the prompt appears select "Yes"  
    Save all do not build.
 4. in ./Setup run mkun.sh (before building msi, after "Save All" in MSVC)
 5. in MSVC build .msi and install
-6. in ./ZipPerl run makezip.bat, then run mklists.pl to regenerate mklists.bat, run mklists.bat to compare to installation
-7. in ./ZipPerl run copyf.bat (settings will need to be changed outside NCBI)
-8. git commit and push, build on Macintosh
+6. in ./ZipPerl in Windows run makezip.bat or makezip.sh, then run mklists.pl to 
+   regenerate mklists.bat, run mklists.bat to compare to installation
+7. in ./ZipPerl on windows run sign-files.sh (settings will need to be changed outside NCBI)
+8. git commit and push, build on Macintosh using instructions in README
