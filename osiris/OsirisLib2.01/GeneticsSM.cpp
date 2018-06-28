@@ -5674,6 +5674,8 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 			continue;
 
 		bpPrimary = (int) floor (nextSignal->GetBioID () + 0.5);
+		stutterLimit = GetLocusSpecificSampleStutterThreshold (bpPrimary);
+		plusStutterLimit = GetLocusSpecificSamplePlusStutterThreshold (bpPrimary);
 
 		if (nextSignal->GetMessageValue (partialPullup))
 			primaryPeak = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);

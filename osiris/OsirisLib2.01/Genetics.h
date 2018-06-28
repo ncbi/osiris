@@ -322,6 +322,9 @@ public:
 	double GetLocusSpecificLadderFractionalFilter () const;
 	double GetLocusSpecificLadderPullupFractionalFilter () const;
 
+	double GetLocusSpecificSampleStutterThreshold (int bp) { return mLink->GetSampleStutterThreshold (bp); }
+	double GetLocusSpecificSamplePlusStutterThreshold (int bp) { return mLink->GetSamplePlusStutterThreshold (bp); }
+
 	double GetMinimumILSBP () const { return mLink->GetMinimumBPILS (); }
 	double GetTotalArea () const { return mTotalAlleleArea; }
 
