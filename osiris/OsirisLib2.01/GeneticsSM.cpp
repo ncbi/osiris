@@ -5654,6 +5654,7 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
 	smSignalOL offLadder;
+	smIncludeNonStandardStutterInStutterOverlapPreset includeNonStandardStutter;
 
 	bool onLadderInLocus;
 	int bpPrimary;
@@ -5669,6 +5670,8 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 
 	if (rightBp < repeatNumber)
 		rightBp = repeatNumber;
+
+	bool includeNonStandardStutterInOverlap = GetMessageValue (includeNonStandardStutter);
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -5778,27 +5781,55 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 					if (nonStandardFraction > 0.0) {
 
 						threshold = nonStandardFraction * primaryPeak;
-						testSignal->AddToCumulativeStutterThreshold (threshold);
 
-						if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
-							testSignal->SetMessageValue (stutterFound, true);
+						if (includeNonStandardStutterInOverlap) {
 
-						testSignal->AddPrimaryStutterSignalToList (nextSignal, 1);
-						testSignal->AddStutterDisplacement (diff, 1);
+							testSignal->AddToCumulativeStutterThreshold (threshold);
 
-						if (testSignal->IsPossibleInterlocusAllele (-1))
-							testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, 1);
+							if ((peak <= threshold) || (peak <= testSignal->GetCumulativeStutterThreshold ()))
+								testSignal->SetMessageValue (stutterFound, true);
 
-						else if (testSignal->IsPossibleInterlocusAllele (1))
-							testSignal->AddRightPrimaryStutterSignalToList (nextSignal, 1);
+							testSignal->AddPrimaryStutterSignalToList (nextSignal, 1);
+							testSignal->AddStutterDisplacement (diff, 1);
 
-						if (nextSignal->IsPossibleInterlocusAllele (-1))
-							nextSignal->AddStutterSignalToListRight (testSignal);
+							if (testSignal->IsPossibleInterlocusAllele (-1))
+								testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, 1);
 
-						else if (nextSignal->IsPossibleInterlocusAllele (1))
-							nextSignal->AddStutterSignalToListLeft (testSignal);
+							else if (testSignal->IsPossibleInterlocusAllele (1))
+								testSignal->AddRightPrimaryStutterSignalToList (nextSignal, 1);
 
-						nextSignal->AddStutterSignalToList (testSignal);
+							if (nextSignal->IsPossibleInterlocusAllele (-1))
+								nextSignal->AddStutterSignalToListRight (testSignal);
+
+							else if (nextSignal->IsPossibleInterlocusAllele (1))
+								nextSignal->AddStutterSignalToListLeft (testSignal);
+
+							nextSignal->AddStutterSignalToList (testSignal);
+						}
+
+						else {
+
+							if (peak <= threshold) {
+
+								testSignal->SetMessageValue (stutterFound, true);
+								testSignal->AddPrimaryStutterSignalToList (nextSignal, 1);
+								testSignal->AddStutterDisplacement (diff, 1);
+
+								if (testSignal->IsPossibleInterlocusAllele (-1))
+									testSignal->AddLeftPrimaryStutterSignalToList (nextSignal, 1);
+
+								else if (testSignal->IsPossibleInterlocusAllele (1))
+									testSignal->AddRightPrimaryStutterSignalToList (nextSignal, 1);
+
+								if (nextSignal->IsPossibleInterlocusAllele (-1))
+									nextSignal->AddStutterSignalToListRight (testSignal);
+
+								else if (nextSignal->IsPossibleInterlocusAllele (1))
+									nextSignal->AddStutterSignalToListLeft (testSignal);
+
+								nextSignal->AddStutterSignalToList (testSignal);
+							}
+						}
 					}
 				}
 			}

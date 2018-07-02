@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.28</VersionNumber>
-	<BuildTime>06/19/2018 12:25 PM</BuildTime>
+	<VersionNumber>7.29</VersionNumber>
+	<BuildTime>07/02/2018 04:56 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5669,6 +5669,22 @@
 			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smIncludeNonStandardStutterInStutterOverlapPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>                Include Non-Standard Stutter in Stutter Overlap Calculation (Default = Checked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Include Non-Standard Stutter in Stutter Overlap Calculation (Default = Checked)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerStutterCallCriteriaEnd</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -7031,6 +7047,7 @@
 						<Name>smConcaveDownAcceptanceThreshold</Name>
 						<Name>smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset</Name>
 						<Name>smDisplaySigmoidalPeaksPreset</Name>
+						<Name>smIncludeNonStandardStutterInStutterOverlapPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

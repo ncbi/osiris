@@ -256,8 +256,7 @@ smWeakPrimaryInterchannelLink	1143	2659
 smZeroPullupPrimaryInterchannelLink	1144	2660
 smRawDataPrimaryInterchannelLink	1145	2661
 smThreePointPeak	1146	2662
-
-
+smIncludeNonStandardStutterInStutterOverlapPreset	1147	2663
 
 
 

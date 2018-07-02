@@ -1554,6 +1554,12 @@ int smThreePointPeak::sMessageIndex = 0;
 int smThreePointPeak::sMessageScope = 0;
 
 
+RGString smIncludeNonStandardStutterInStutterOverlapPreset::sName = "smIncludeNonStandardStutterInStutterOverlapPreset";
+int smIncludeNonStandardStutterInStutterOverlapPreset::sSubject = smIncludeNonStandardStutterInStutterOverlapPreset::LoadType ();
+int smIncludeNonStandardStutterInStutterOverlapPreset::sMessageIndex = 0;
+int smIncludeNonStandardStutterInStutterOverlapPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1812,6 +1818,7 @@ PERSISTENT_DEFINITION (smWeakPrimaryInterchannelLink, 2659, "smWeakPrimaryInterc
 PERSISTENT_DEFINITION (smZeroPullupPrimaryInterchannelLink, 2660, "smZeroPullupPrimaryInterchannelLink")
 PERSISTENT_DEFINITION (smRawDataPrimaryInterchannelLink, 2661, "smRawDataPrimaryInterchannelLink")
 PERSISTENT_DEFINITION (smThreePointPeak, 2662, "smThreePointPeak")
+PERSISTENT_DEFINITION (smIncludeNonStandardStutterInStutterOverlapPreset, 2663, "smIncludeNonStandardStutterInStutterOverlapPreset")
 
 
 
@@ -17288,6 +17295,66 @@ int smThreePointPeak :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smThreePointPeak* noticeType = new smThreePointPeak;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smIncludeNonStandardStutterInStutterOverlapPreset :: smIncludeNonStandardStutterInStutterOverlapPreset () : SmartNotice () {
+
+}
+
+
+smIncludeNonStandardStutterInStutterOverlapPreset :: smIncludeNonStandardStutterInStutterOverlapPreset (const smIncludeNonStandardStutterInStutterOverlapPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smIncludeNonStandardStutterInStutterOverlapPreset :: ~smIncludeNonStandardStutterInStutterOverlapPreset () {
+
+}
+
+
+int smIncludeNonStandardStutterInStutterOverlapPreset :: GetSubject () const {
+
+	return smIncludeNonStandardStutterInStutterOverlapPreset::sSubject;
+}
+
+
+void smIncludeNonStandardStutterInStutterOverlapPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smIncludeNonStandardStutterInStutterOverlapPreset::sMessageIndex = index;
+	smIncludeNonStandardStutterInStutterOverlapPreset::sMessageScope = scope;
+}
+
+
+int smIncludeNonStandardStutterInStutterOverlapPreset :: GetMessageIndex () const {
+
+	return smIncludeNonStandardStutterInStutterOverlapPreset :: sMessageIndex;
+}
+
+
+int smIncludeNonStandardStutterInStutterOverlapPreset :: GetScope () const {
+
+	return smIncludeNonStandardStutterInStutterOverlapPreset :: sMessageScope;
+}
+
+
+RGString smIncludeNonStandardStutterInStutterOverlapPreset :: GetName () const {
+
+	return smIncludeNonStandardStutterInStutterOverlapPreset :: sName;
+}
+
+
+
+int smIncludeNonStandardStutterInStutterOverlapPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smIncludeNonStandardStutterInStutterOverlapPreset* noticeType = new smIncludeNonStandardStutterInStutterOverlapPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }
