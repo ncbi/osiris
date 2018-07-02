@@ -5622,6 +5622,20 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	double gridTime;
 	double threshold;
 	double nonStandardFraction;
+	bool report = false;
+	bool report2 = false;
+
+	if (GetLocusName () == "D21S11") {
+
+		bool stopHere = true;
+		report = true;
+	}
+
+	else if (GetLocusName () == "D13S317") {
+
+		bool stopHere = true;
+		report2 = true;
+	}
 
 	double stutterLimit = GetLocusSpecificSampleStutterThreshold ();
 	double plusStutterLimit = GetLocusSpecificSamplePlusStutterThreshold ();
@@ -5676,6 +5690,18 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 		bpPrimary = (int) floor (nextSignal->GetBioID () + 0.5);
 		stutterLimit = GetLocusSpecificSampleStutterThreshold (bpPrimary);
 		plusStutterLimit = GetLocusSpecificSamplePlusStutterThreshold (bpPrimary);
+
+		if (report) {
+
+			cout << "For Locus = " << GetLocusName () << ", Stutter Threshold = " << stutterLimit << " for peak at " << bpPrimary << " bps.\n";
+			cout << "For Locus = " << GetLocusName () << ", Plus Stutter Threshold = " << plusStutterLimit << " for peak at " << bpPrimary << " bps.\n";
+		}
+
+		else if (report2) {
+
+			cout << "For Locus = " << GetLocusName () << ", Stutter Threshold = " << stutterLimit << " for peak at " << bpPrimary << " bps.\n";
+			cout << "For Locus = " << GetLocusName () << ", Plus Stutter Threshold = " << plusStutterLimit << " for peak at " << bpPrimary << " bps.\n";
+		}
 
 		if (nextSignal->GetMessageValue (partialPullup))
 			primaryPeak = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
