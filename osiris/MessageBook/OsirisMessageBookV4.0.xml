@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.29</VersionNumber>
-	<BuildTime>07/02/2018 04:56 PM</BuildTime>
+	<VersionNumber>7.30</VersionNumber>
+	<BuildTime>07/06/2018 05:38 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -2581,7 +2581,7 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smRestrictedPriorityPeak</Name>
+			<Name>smNonEditableRestrictedPriorityPeak</Name>
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
@@ -2600,6 +2600,87 @@
 				</RestrictionCriterion>
 			</Restriction>
 			<AllowPeakEdit>0</AllowPeakEdit>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smRestrictedPriorityPeak</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>This Peak Has Restricted Priority</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smSignalIsCtrlPeak</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>NOT smSignalIsCtrlPeak</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smEditableRestrictedPriorityPeak</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>This Peak Has Restricted Priority</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smSignalIsCtrlPeak</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>NOT smSignalIsCtrlPeak</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smBelowMinRFURestrictedPriorityPeak</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>This Peak Has Restricted Priority</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smSignalIsCtrlPeak</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>NOT smSignalIsCtrlPeak</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+			<AllowPeakEdit>0</AllowPeakEdit>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smEditableBelowMinRFURestrictedPriorityPeak</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>This Peak Has Restricted Priority</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smSignalIsCtrlPeak</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>NOT smSignalIsCtrlPeak</Expression>
+				</RestrictionCriterion>
+			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSignalNotACrater</Name>
@@ -6982,6 +7063,72 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
+		<SmartMessage>
+			<Name>smSpacerRestrictedPriorityOptionsBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smRestrictedPriorityOptionsHeader</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Restricted Priority Editing Options:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Restricted Priority Editing Options</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAllowEditingRestrictedPriorityPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Allow Editing Restricted Priority Peaks Above Min RFU (Default = false)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Allow Editing Restricted Priority Peaks Above Min RFU</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAllowEditingPeaksBelowMinRFUPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Allow Editing Peaks Below Min RFU (Default = false; requires above as well)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Allow Editing Peaks Below Min RFU</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
 	</MessageDeclarations>
 	<TestUnitsSampleLevel>
 		<ConditionalTestUnit>
@@ -6999,6 +7146,8 @@
 						<Name>smDontCallPullupPlusOLPreset</Name>
 						<Name>smDoNotCallExcessResidualPreset</Name>
 						<Name>smRequireExcessiveResidualOffLadderPreset</Name>
+						<Name>smAllowEditingRestrictedPriorityPreset</Name>
+						<Name>smAllowEditingPeaksBelowMinRFUPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -7434,6 +7583,10 @@
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smNonEditableRestrictedPriorityPeak = (smRestrictedPriorityPeak AND NOT smBelowMinRFU) AND NOT smAllowEditingRestrictedPriorityPreset</Expression>
+						<Expression>smEditableRestrictedPriorityPeak = (smRestrictedPriorityPeak AND NOT smBelowMinRFU) AND smAllowEditingRestrictedPriorityPreset</Expression>
+						<Expression>smBelowMinRFURestrictedPriorityPeak = (smRestrictedPriorityPeak AND smBelowMinRFU) AND NOT (smAllowEditingRestrictedPriorityPreset AND smAllowEditingPeaksBelowMinRFUPreset)</Expression>
+						<Expression>smEditableBelowMinRFURestrictedPriorityPeak = (smRestrictedPriorityPeak AND smBelowMinRFU) AND (smAllowEditingRestrictedPriorityPreset AND smAllowEditingPeaksBelowMinRFUPreset)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullUp AND NOT smRestrictedPriorityPeak</Expression>
