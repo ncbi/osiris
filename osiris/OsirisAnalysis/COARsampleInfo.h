@@ -137,9 +137,9 @@ public:
   }
   virtual void RegisterAll(bool = false)
   {
-    RegisterDouble(wxS("MaxLinearPullupCoefficient"),
+    RegisterDouble(wxS("MaxLinearPullup"),
       &m_dMaxLinearPullupCoefficient);
-    RegisterDouble(wxS("MaxNonlinearPullupCoefficient"),
+    RegisterDouble(wxS("MaxNonlinearPullup"),
       &m_dMaxNonlinearPullupCoefficient);
     RegisterDouble(wxS("MaxBPErrorSampleToLadder"),
       &m_dMaxBPErrorSampleToLadder);
