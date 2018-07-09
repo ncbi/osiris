@@ -507,6 +507,7 @@
     <ClInclude Include="COARpeak.h" />
     <ClInclude Include="COARreview.h" />
     <ClInclude Include="COARsample.h" />
+    <ClInclude Include="COARsampleInfo.h" />
     <ClInclude Include="COARsampleSort.h" />
     <ClInclude Include="COmittedAlerts.h" />
     <ClInclude Include="ConfigDir.h" />

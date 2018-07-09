@@ -131,6 +131,7 @@ void COARsample::RegisterAll(bool)
   RegisterWxStringNotEmpty("RunStart",&m_sRunStart);
   Register("EnableHistory",&m_EnableHistory);
   RegisterWxString("Type",&m_sType);
+  Register("Info", &m_Info);
   Register("SampleAlerts",&m_alertSample);
   Register("ILSAlerts",&m_alertILS);
   Register("ChannelAlerts",&m_pvChannelAlerts);
