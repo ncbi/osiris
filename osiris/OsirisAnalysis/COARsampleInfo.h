@@ -57,6 +57,7 @@ public:
     COARcopy(m_dChannelLocusTotalAreaRatioMaxToMin);
     COARcopy(m_dChannelYLinkedLocusTotalAreaMaxToMin);
     COARcopy(m_nNumber);
+    return *this;
   }
   virtual void RegisterAll(bool = false)
   {
@@ -122,6 +123,7 @@ public:
     COARcopy(m_dStartingPower);
     COARcopy(m_dMaxMinusMinPower);
     COARcopyVP(COARsampleInfoChannel, m_vpChannel);
+    return *this;
   }
   virtual void Init()
   {
