@@ -37,6 +37,7 @@
 #include "COARnotes.h"
 #include "COARlocus.h"
 #include "COARchannelAlert.h"
+#include "COARsampleInfo.h"
 #include "CLabSettings.h"
 #include "Platform.h"
 class COARchannel;
@@ -875,6 +876,7 @@ private:
   wxString m_sSampleName;
   wxString m_sRunStart;
   wxString m_sType;
+  COARsampleInfo m_Info;
   COARalerts m_alertSample;
   COARalerts m_alertILS;
   TnwxXmlPersistVector<COARchannelAlert> m_pvChannelAlerts;
