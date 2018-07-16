@@ -1006,7 +1006,19 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	double leastBP = set->GetMinimumILSBPSearchRegion ();
 	CoreBioComponent::SetMinBioIDForLadderLoci (leastBP);
-	cout << "Minimum ILS BP for ladder loci = " << leastBP << "\n\n";
+	cout << "Minimum ILS BP for ladder loci = " << leastBP << "\n";
+
+	int leastBPForSamples = CoreBioComponent::GetMinBioIDForArtifacts ();
+	int leastBPInt = (int) floor (leastBP);
+
+	if ((leastBPForSamples > 0) && (leastBPForSamples > leastBPInt)) {
+
+		cout << "Minimum ILS BP for sample artifacts setting = " << leastBPForSamples << " is too high.  Resetting to " << leastBPInt << "\n\n";
+		CoreBioComponent::SetMinBioIDForArtifacts (leastBPInt);
+	}
+
+	else
+		cout << "\n";
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 

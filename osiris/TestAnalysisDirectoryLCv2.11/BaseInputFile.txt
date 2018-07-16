@@ -1,23 +1,18 @@
-InputDirectory = F:/MenagerieForTestingPullup/ChrisHeffordGlobalFiler;
+InputDirectory = C:/Users/goorrob/LuigiKitAnomaly;
 LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config;
-ReportDirectory = F:/Menageries/MenagerieForTestingPullup/ChrisHeffordGlobalFiler;
-MarkerSetName = GlobalFiler;
-LaneStandardName = ABI-LIZ-600-80-TO-460;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+MarkerSetName = PowerPlex Fusion;
+LaneStandardName = Promega-ILS-WEN-500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20150403-150538/V-20150403-150538_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20150403-150538/V-20150403-150538_LabSettings.xml;
+StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20160318-142130/V-20160318-142130_StdSettings.xml;
+LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20160318-142130/V-20160318-142130_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 50.;
-MinLaneStandardRFU = 200.;
-MinLadderRFU = 300.;
-MinInterlocusRFU = 50.;
-MinLadderInterlocusRFU = 300.;
-SampleDetectionThreshold = 35.;
-AnalysisThresholdOverride:1 = 50;
-AnalysisThresholdOverride:2 = 90;
-AnalysisThresholdOverride:3 = 50;
-AnalysisThresholdOverride:4 = 80;
-AnalysisThresholdOverride:5 = 90;
+MinSampleRFU = 250.;
+MinLaneStandardRFU = 1000.;
+MinLadderRFU = 150.;
+MinInterlocusRFU = 250.;
+MinLadderInterlocusRFU = 150.;
+SampleDetectionThreshold = 100.;
 RawDataString = R;
 
 

@@ -2178,16 +2178,31 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 	CurveIterator.Reset ();
 
 	bool isAMEL = mIsAMEL;
+	DataSignal* maxSignal = NULL;
 
 	while (nextSignal = (DataSignal*) CurveIterator ()) {
 
 		peak = nextSignal->Peak ();
 
-		if (peak > MaxPeak)
+		if (peak > MaxPeak) {
+
 			MaxPeak = peak;
+			maxSignal = nextSignal;
+		}
 	}
 
 	mMaxPeak = MaxPeak;
+
+	if (maxSignal == NULL) {
+
+		int nCurves = 0;
+		eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+		eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
+		ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
+
+		SetMessageValue (locusTooFewPeaks, true);
+		status = -1;
+	}
 
 	double fractionalThreshold = 0.0;
 	double pullupFractionalThreshold = 0.0;
@@ -2255,6 +2270,330 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 		const double* idealNormalizedDifferences = mLink->GetDifferenceVector ();
 		correlation = PopulationMarkerSet::VectorDotProductWithDifferences (signalArray, idealNormalizedDifferences, Size-1);
 		delete[] signalArray;
+	}
+
+	else if (Size == 2) {
+
+		double startILS = GetMinimumILSBP ();
+		double endILS = GetMaximumILSBP ();
+		DataSignal* firstHalfLargest = NULL;
+		DataSignal* secondHalfLargest = NULL;
+		double maxFirst = 0.0;
+		double maxSecond = 0.0;
+		const double* differenceArray = mLink->GetUnnormalizedDifferenceVector ();
+		double repeat = differenceArray [0];
+		double ILSTolerance = 0.60;
+		double tightILSTolerance = 0.25;
+		double repeatTolerance = repeat + ILSTolerance;
+		double acceptableRatio = 0.8;
+		FinalIterator.Reset ();
+		double currentILS;
+		double currentPeak;
+		DataSignal* firstAllele = NULL;
+		DataSignal* secondAllele = NULL;
+		TwoAlleleLadderCandidate* currentCandidate = NULL;
+		TwoAlleleLadderCandidate* bestCandidate;
+
+		double maxILS = maxSignal->GetApproximateBioID ();
+		firstHalfLargest = maxSignal;
+
+		while (nextSignal = (DataSignal*) FinalIterator ()) {
+
+			if (nextSignal == maxSignal)
+				continue;
+
+			currentPeak = nextSignal->Peak ();
+
+			if (currentPeak > maxSecond) {
+
+				maxSecond = currentPeak;
+				secondHalfLargest = nextSignal;
+			}
+		}
+
+		if ((firstHalfLargest != NULL) && (secondHalfLargest != NULL)) {
+
+			if (firstHalfLargest->GetApproximateBioID () <= secondHalfLargest->GetApproximateBioID ()) {
+			
+				firstAllele = firstHalfLargest;
+				secondAllele = secondHalfLargest;
+			}
+
+			else {
+
+				firstAllele = secondHalfLargest;
+				secondAllele = firstHalfLargest;
+			}
+
+			currentCandidate = new TwoAlleleLadderCandidate (firstAllele, secondAllele, repeat, ILSTolerance, tightILSTolerance, fractionalThreshold, true, true);
+
+			if (currentCandidate->mWithinTightTolerance) {
+
+				// These are our peaks.  Set up the necessary outputs and return.
+				correlation = 1.0;
+				FinalIterator.Reset ();
+
+				while (nextSignal = (DataSignal*) FinalIterator ()) {
+
+					if (nextSignal == firstAllele)
+						continue;
+
+					if (nextSignal == secondAllele)
+						continue;
+
+					currentILS = nextSignal->GetApproximateBioID ();
+					FinalIterator.RemoveCurrentItem ();
+
+					if (currentILS < currentCandidate->mILS1)
+						toTheLeftList.InsertWithNoReferenceDuplication (nextSignal);
+
+					else if (currentILS > currentCandidate->mILS2)
+						toTheRightList.InsertWithNoReferenceDuplication (nextSignal);
+
+					else
+						stillCriticalList.InsertWithNoReferenceDuplication (nextSignal);
+				}
+
+				delete currentCandidate;
+			}
+
+			else {
+
+				// It's not perfect.  Look for first half peaks within tolerance of the second half largest
+				list<TwoAlleleLadderCandidate*> candidateList;
+				list<TwoAlleleLadderCandidate*> idealCandidateList;
+				list<TwoAlleleLadderCandidate*> acceptableCandidateList;
+				list<TwoAlleleLadderCandidate*>::iterator candidates;
+
+				if (currentCandidate->mWithinTolerance) {
+
+					candidateList.push_back (currentCandidate);
+					acceptableCandidateList.push_back (currentCandidate);
+				}
+
+				else
+					delete currentCandidate;
+
+				RGDListIterator FinalIterator2 (FinalSignalList);
+				DataSignal* testSignal;
+				//double testILS;
+				bool firstLargest;
+				bool secondLargest;
+
+				while (nextSignal = (DataSignal*) FinalIterator ()) {
+
+					while (testSignal = (DataSignal*) FinalIterator ()) {
+
+						firstLargest = (nextSignal == firstHalfLargest);
+						secondLargest = (testSignal == secondHalfLargest);
+
+						if (firstLargest && secondLargest)
+							continue;
+
+						currentCandidate = new TwoAlleleLadderCandidate (nextSignal, testSignal, repeat, ILSTolerance, tightILSTolerance, fractionalThreshold, firstLargest, secondLargest);
+
+						if (currentCandidate->mILS2 <= currentCandidate->mILS2) {
+
+							delete currentCandidate;
+							continue;
+						}
+
+						if (!currentCandidate->mWithinTolerance) {
+
+							delete currentCandidate;
+							continue;
+						}
+
+						candidateList.push_back (currentCandidate);
+
+						if (currentCandidate->mBothPeaksAboveFF && currentCandidate->mWithinTightTolerance)
+							idealCandidateList.push_back (currentCandidate);
+
+						else if (currentCandidate->mBothPeaksAboveFF)
+							acceptableCandidateList.push_back (currentCandidate);
+					}
+				}
+
+				// done listing possible candidates
+
+				if (candidateList.size () == 0) {
+
+					int nCurves = FinalSignalList.Entries ();
+					eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+					eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
+					ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
+
+					SetMessageValue (locusTooFewPeaks, true);
+					status = -1;
+				}
+
+				else {
+
+					if (idealCandidateList.size () > 0) {
+
+						// Test for highest ratio
+
+						bestCandidate = NULL;
+						double bestRatio = 0.0;
+						double testRatio;
+						double height2 = 0.0;
+						double testHeight;
+
+						for (candidates=idealCandidateList.begin(); candidates!=idealCandidateList.end(); candidates++)  {
+
+							currentCandidate = *candidates;
+							testRatio = currentCandidate->mRatio;
+							testHeight = currentCandidate->mHeight2;
+
+							if (bestCandidate == NULL) {
+
+								bestCandidate = currentCandidate;
+								bestRatio = testRatio;
+								height2 = testHeight;
+							}
+
+							else if (testRatio < bestRatio) {
+
+								if (testHeight < height2)
+									continue;
+
+								if (testRatio < bestRatio - 0.2)
+									continue;
+							}
+
+							else {
+
+								if ((bestRatio > testRatio - 0.2) && (height2 > testHeight))
+									continue;
+							}
+
+							bestCandidate = currentCandidate;
+							bestRatio = testRatio;
+							height2 = testHeight;
+						}
+
+						correlation = 1.0;
+						FinalIterator.Reset ();
+						firstAllele = bestCandidate->mAllele1;
+						secondAllele = bestCandidate->mAllele2;
+
+						while (nextSignal = (DataSignal*) FinalIterator ()) {
+
+							if (nextSignal == firstAllele)
+								continue;
+
+							if (nextSignal == secondAllele)
+								continue;
+
+							currentILS = nextSignal->GetApproximateBioID ();
+							FinalIterator.RemoveCurrentItem ();
+
+							if (currentILS < currentCandidate->mILS1)
+								toTheLeftList.InsertWithNoReferenceDuplication (nextSignal);
+
+							else if (currentILS > currentCandidate->mILS2)
+								toTheRightList.InsertWithNoReferenceDuplication (nextSignal);
+
+							else
+								stillCriticalList.InsertWithNoReferenceDuplication (nextSignal);
+						}
+					}
+
+					else if (acceptableCandidateList.size () > 0) {
+
+						// Test for highest ratio?
+
+						bestCandidate = NULL;
+						double bestRatio = 0.0;
+						double testRatio;
+						double height2 = 0.0;
+						double testHeight;
+
+						for (candidates=acceptableCandidateList.begin(); candidates!=acceptableCandidateList.end(); candidates++)  {
+
+							currentCandidate = *candidates;
+							testRatio = currentCandidate->mRatio;
+							testHeight = currentCandidate->mHeight2;
+
+							if (bestCandidate == NULL) {
+
+								bestCandidate = currentCandidate;
+								bestRatio = testRatio;
+								height2 = testHeight;
+							}
+
+							else if (testRatio < bestRatio) {
+
+								if (testHeight < height2)
+									continue;
+
+								if (testRatio < bestRatio - 0.2)
+									continue;
+							}
+
+							else {
+
+								if ((bestRatio > testRatio - 0.2) && (height2 > testHeight))
+									continue;
+							}
+
+							bestCandidate = currentCandidate;
+							bestRatio = testRatio;
+							height2 = testHeight;
+						}
+
+						correlation = 1.0;
+						FinalIterator.Reset ();
+						firstAllele = bestCandidate->mAllele1;
+						secondAllele = bestCandidate->mAllele2;
+
+						while (nextSignal = (DataSignal*) FinalIterator ()) {
+
+							if (nextSignal == firstAllele)
+								continue;
+
+							if (nextSignal == secondAllele)
+								continue;
+
+							currentILS = nextSignal->GetApproximateBioID ();
+							FinalIterator.RemoveCurrentItem ();
+
+							if (currentILS < currentCandidate->mILS1)
+								toTheLeftList.InsertWithNoReferenceDuplication (nextSignal);
+
+							else if (currentILS > currentCandidate->mILS2)
+								toTheRightList.InsertWithNoReferenceDuplication (nextSignal);
+
+							else
+								stillCriticalList.InsertWithNoReferenceDuplication (nextSignal);
+						}
+					}
+
+					else {
+
+						// Call it quits?
+
+						int nCurves = FinalSignalList.Entries ();
+						eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+						eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
+						ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
+
+						SetMessageValue (locusTooFewPeaks, true);
+						status = -1;
+					}
+				}
+
+				idealCandidateList.clear ();
+				acceptableCandidateList.clear ();
+
+				while (!candidateList.empty ()) {
+
+					currentCandidate = candidateList.front ();
+					candidateList.pop_front ();
+					delete currentCandidate;
+				}
+			}
+		}
 	}
 
 	else {
@@ -2655,10 +2994,6 @@ int Locus :: AnalyzeSampleLocusSM (ChannelData* lsData, RGDList& artifactList, R
 	int Size = mLink->GetLocusVectorSize ();
 	msg.WriteEmptyLine ();
 	msg.WriteLocusName (mLink->GetLocusName (), Size);
-
-	if (GetLocusName () == "D21S11") {
-		bool stopHere = true;
-	}
 
 //	TestFractionalFilter (artifactList, signalList, supplementalList);
 	PrecomputeAverages (LocusSignalList);
@@ -5624,18 +5959,6 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	double nonStandardFraction;
 	bool report = false;
 	bool report2 = false;
-
-	if (GetLocusName () == "D21S11") {
-
-		bool stopHere = true;
-		report = true;
-	}
-
-	else if (GetLocusName () == "D13S317") {
-
-		bool stopHere = true;
-		report2 = true;
-	}
 
 	double stutterLimit = GetLocusSpecificSampleStutterThreshold ();
 	double plusStutterLimit = GetLocusSpecificSamplePlusStutterThreshold ();

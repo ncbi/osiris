@@ -130,6 +130,7 @@ public:
 	virtual double GetLadderPullupFractionalFilter () const { return mLadderLocusSpecificPullupFractionalFilter; }
 
 	virtual double GetMinimumBPILS () const { return LowerBoundGridLSBasePair; }
+	virtual double GetMaximumBPILS () const { return UpperBoundGridLSBasePair; }
 
 	virtual int GetCoreNumber () const;
 	virtual bool AllowsNoExtension () const;

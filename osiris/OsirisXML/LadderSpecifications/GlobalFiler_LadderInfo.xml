@@ -446,7 +446,7 @@
         <Channel>2</Channel>
         <NoExtension>true</NoExtension>
         <MinBP>81</MinBP>
-        <MaxBP>85</MaxBP>
+        <MaxBP>86</MaxBP>
         <MinGridLSBasePair>78.5</MinGridLSBasePair>
         <MaxGridLSBasePair>94.0</MaxGridLSBasePair>
         <YLinked>true</YLinked>
@@ -461,7 +461,7 @@
           <Allele>
             <Name>2</Name>
             <CurveNo>2</CurveNo>
-            <BP>85</BP>
+            <BP>86</BP>
             <RelativeHeight>H</RelativeHeight>
           </Allele>
         </LadderAlleles>

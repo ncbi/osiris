@@ -198,6 +198,7 @@ public:
 	virtual double GetLadderPullupFractionalFilter () const { return 0.0; }
 
 	virtual double GetMinimumBPILS () const { return -1.0; }
+	virtual double GetMaximumBPILS () const { return -1.0; }
 
 	virtual int CompareTo (const RGPersistent* p) const;
 	virtual unsigned HashNumber (unsigned long Base) const;

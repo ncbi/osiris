@@ -650,10 +650,6 @@ int ParameterServer :: AddSampleLocusSpecificThreshold (const RGString& locusNam
 	list<locusSpecificLimitsStruct*>::const_iterator c1Iterator;
 	locusSpecificLimitsStruct* nextLink;
 
-	if (locusName == "D21S11") {
-		bool stopHere = true;
-	}
-
 	for (c1Iterator = mSampleLocusSpecificThresholds->begin (); c1Iterator != mSampleLocusSpecificThresholds->end (); c1Iterator++) {
 
 		nextLink = *c1Iterator;
@@ -2005,10 +2001,6 @@ bool ParameterServer :: ReadSampleLabLimits (const RGString& xmlString, RFULimit
 
 		if (!locusNameSearch.FindNextTag (startLocusOffset, endLocusOffset, result))
 			return false;
-
-		if (result == "D21S11") {
-			bool stopHere = true;
-	}
 
 		startLocusOffset = endLocusOffset;
 		limits.Reset ();

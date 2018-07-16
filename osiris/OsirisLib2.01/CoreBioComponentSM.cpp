@@ -1831,7 +1831,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					pairList.push_back (nextPair);
 					nextPair = new PullupPair (nextSignal, true);
 					pairList.push_back (nextPair);
-					cout << "Sample File " << (char*)mFileName.GetData () << " has 2 extra primaries from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
+	//				cout << "Sample File " << (char*)mFileName.GetData () << " has 2 extra primaries from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
 					RGString data;
 					data << pullupChannel << "(3)";
 					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
@@ -1842,7 +1842,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					additionalPairsRequired += 1;
 					nextPair = new PullupPair (nextSignal, true);
 					pairList.push_back (nextPair);
-					cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
+	//				cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
 					RGString data;
 					data << pullupChannel << "(2)";
 					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);

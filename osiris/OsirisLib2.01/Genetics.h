@@ -124,6 +124,30 @@ struct ILSNameIndexes {
 };
 
 
+struct TwoAlleleLadderCandidate {
+
+	TwoAlleleLadderCandidate (DataSignal* one, DataSignal* two, double repeat, double tolerance, double tightTolerance, double ffThreshold, bool firstMax, bool secondMax);
+	~TwoAlleleLadderCandidate () {}
+
+	DataSignal* mAllele1;
+	DataSignal* mAllele2;
+	double mHeight1;
+	double mHeight2;
+	double mILS1;
+	double mILS2;
+	double mDisplacement;
+	bool mWithinTolerance;
+	bool mWithinTightTolerance;
+	bool mBothPeaksAboveFF;
+	bool mOnePeakAboveFF;
+	bool mNeitherPeakAboveFF;
+	double mHeightBalance;
+	double mFirstPeakIsMax;
+	double mSecondPeakIsMax;
+	double mRatio;
+};
+
+
 void SetDifference (RGDList& listA, RGDList& listB, RGDList& AButNotB, RGDList& BButNotA);
 
 
@@ -326,6 +350,7 @@ public:
 	double GetLocusSpecificSamplePlusStutterThreshold (int bp) { return mLink->GetSamplePlusStutterThreshold (bp); }
 
 	double GetMinimumILSBP () const { return mLink->GetMinimumBPILS (); }
+	double GetMaximumILSBP () const { return mLink->GetMaximumBPILS (); }
 	double GetTotalArea () const { return mTotalAlleleArea; }
 
 	virtual int CompareTo (const RGPersistent* p) const;

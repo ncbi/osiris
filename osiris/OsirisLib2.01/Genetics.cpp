@@ -116,6 +116,63 @@ mSetSize (size), mCapMaxHeightIndex (true), mSignalIntervalIsAccurate (accurate)
 }
 
 
+
+TwoAlleleLadderCandidate :: TwoAlleleLadderCandidate (DataSignal* one, DataSignal* two, double repeat, double tolerance, double tightTolerance, double ffThreshold, bool firstMax, bool secondMax) : 
+mAllele1 (one), mAllele2 (two), mFirstPeakIsMax (firstMax), mSecondPeakIsMax (secondMax) {
+
+	mHeight1 = one->Peak ();
+	mHeight2 = two->Peak ();
+	mILS1 = one->GetApproximateBioID ();
+	mILS2 = two->GetApproximateBioID ();
+	mDisplacement = fabs (mILS2 - mILS1 - repeat);
+
+	if (mDisplacement < tolerance)
+		mWithinTolerance = true;
+
+	else
+		mWithinTolerance = false;
+
+	if (mDisplacement < tightTolerance)
+		mWithinTightTolerance = true;
+
+	else
+		mWithinTightTolerance = false;
+
+	bool firstFF = (mHeight1 > ffThreshold);
+	bool secondFF = (mHeight2 > ffThreshold);
+
+	if (firstFF && secondFF) {
+
+		mBothPeaksAboveFF = true;
+		mOnePeakAboveFF = false;
+		mNeitherPeakAboveFF = false;
+	}
+
+	else if (!firstFF && !secondFF) {
+
+		mBothPeaksAboveFF = false;
+		mOnePeakAboveFF = false;
+		mNeitherPeakAboveFF = true;
+	}
+
+	else {
+
+		mBothPeaksAboveFF = false;
+		mOnePeakAboveFF = true;
+		mNeitherPeakAboveFF = false;
+	}
+
+	if ((mHeight1 == 0.0) || (mHeight2 == 0.0))
+		mRatio = 0.0;
+
+	else if (mHeight1 >= mHeight2)
+		mRatio = mHeight2 / mHeight1;
+
+	else
+		mRatio = mHeight1 / mHeight2;
+}
+
+
 void SetDifference (RGDList& listA, RGDList& listB, RGDList& AButNotB, RGDList& BButNotA) {
 
 	RGDListIterator itA (listA);
