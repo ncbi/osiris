@@ -3213,20 +3213,68 @@ void SampledData :: RestrictToMaximum (double MaxValue) {
 
 int SampledData :: FindAndRemoveFixedOffset () {
 
-	double minB;
-	double ave;
+	smNoNegativeDataPreset noNegativeData;
+	double minB = 0.0;
+	double ave = 0.0;
 	double currentAve;
 	double temp;
 	double* CurrentPtr = Measurements + (NumberOfSamples - 1);
 	int MaxTests = 8;
 	double noiseRange = 0.0;
+	bool noNegative = GetMessageValue (noNegativeData);
+	int i;
+
+	if (noNegative) {
+
+		double max = 0.0;
+		minB = *CurrentPtr;
+		double* ptr;
+		double* endPtr = CurrentPtr - 25;
+		mNoiseRange = 0.0;
+		double localMin;
+
+		for (i=1; i<=MaxTests; i++) {
+
+			localMin = *CurrentPtr;
+			max = 0.0;
+
+			for (ptr=CurrentPtr; ptr>endPtr; ptr--) {
+
+				if (*ptr < minB)
+					minB = *ptr;
+				
+				if (*ptr < localMin)
+					localMin = *ptr;
+
+				if (*ptr > max)
+					max = *ptr;
+			}
+
+			noiseRange = max - localMin;			
+			
+			if (noiseRange > mNoiseRange)
+				mNoiseRange = noiseRange;
+
+			CurrentPtr -= 25;
+			endPtr -= 25;
+		}
+
+		endPtr = Measurements + NumberOfSamples;
+		mNoiseRange = 2.0 * mNoiseRange;
+
+		for (CurrentPtr=Measurements; CurrentPtr<endPtr; CurrentPtr++)
+			*CurrentPtr -= minB;
+
+		return 0;
+	}
+
 	minB = fabs (slr->RegressBackwardFrom (CurrentPtr, currentAve, mNoiseRange));
 	CurrentPtr -= 25;
 
 	if (minB < -99999.0)
 		return -1;
 
-	for (int i=1; i<MaxTests; i++) {
+	for (i=1; i<MaxTests; i++) {
 
 		temp = fabs (slr->RegressBackwardFrom (CurrentPtr, ave, noiseRange));
 

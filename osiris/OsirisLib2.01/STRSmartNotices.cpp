@@ -1560,6 +1560,12 @@ int smIncludeNonStandardStutterInStutterOverlapPreset::sMessageIndex = 0;
 int smIncludeNonStandardStutterInStutterOverlapPreset::sMessageScope = 0;
 
 
+RGString smNoNegativeDataPreset::sName = "smNoNegativeDataPreset";
+int smNoNegativeDataPreset::sSubject = smNoNegativeDataPreset::LoadType ();
+int smNoNegativeDataPreset::sMessageIndex = 0;
+int smNoNegativeDataPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1819,6 +1825,7 @@ PERSISTENT_DEFINITION (smZeroPullupPrimaryInterchannelLink, 2660, "smZeroPullupP
 PERSISTENT_DEFINITION (smRawDataPrimaryInterchannelLink, 2661, "smRawDataPrimaryInterchannelLink")
 PERSISTENT_DEFINITION (smThreePointPeak, 2662, "smThreePointPeak")
 PERSISTENT_DEFINITION (smIncludeNonStandardStutterInStutterOverlapPreset, 2663, "smIncludeNonStandardStutterInStutterOverlapPreset")
+PERSISTENT_DEFINITION (smNoNegativeDataPreset, 2664, "smNoNegativeDataPreset")
 
 
 
@@ -17355,6 +17362,66 @@ int smIncludeNonStandardStutterInStutterOverlapPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smIncludeNonStandardStutterInStutterOverlapPreset* noticeType = new smIncludeNonStandardStutterInStutterOverlapPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smNoNegativeDataPreset :: smNoNegativeDataPreset () : SmartNotice () {
+
+}
+
+
+smNoNegativeDataPreset :: smNoNegativeDataPreset (const smNoNegativeDataPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smNoNegativeDataPreset :: ~smNoNegativeDataPreset () {
+
+}
+
+
+int smNoNegativeDataPreset :: GetSubject () const {
+
+	return smNoNegativeDataPreset::sSubject;
+}
+
+
+void smNoNegativeDataPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smNoNegativeDataPreset::sMessageIndex = index;
+	smNoNegativeDataPreset::sMessageScope = scope;
+}
+
+
+int smNoNegativeDataPreset :: GetMessageIndex () const {
+
+	return smNoNegativeDataPreset :: sMessageIndex;
+}
+
+
+int smNoNegativeDataPreset :: GetScope () const {
+
+	return smNoNegativeDataPreset :: sMessageScope;
+}
+
+
+RGString smNoNegativeDataPreset :: GetName () const {
+
+	return smNoNegativeDataPreset :: sName;
+}
+
+
+
+int smNoNegativeDataPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smNoNegativeDataPreset* noticeType = new smNoNegativeDataPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.30</VersionNumber>
-	<BuildTime>07/06/2018 05:38 PM</BuildTime>
+	<VersionNumber>7.31</VersionNumber>
+	<BuildTime>07/19/2018 04:24 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5899,6 +5899,22 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smNoNegativeDataPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Raw Data Has No Negative Values</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Raw Data Has No Negative Values</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smTestRelativeBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -7148,6 +7164,7 @@
 						<Name>smRequireExcessiveResidualOffLadderPreset</Name>
 						<Name>smAllowEditingRestrictedPriorityPreset</Name>
 						<Name>smAllowEditingPeaksBelowMinRFUPreset</Name>
+						<Name>smNoNegativeDataPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

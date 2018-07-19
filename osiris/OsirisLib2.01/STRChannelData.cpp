@@ -5152,6 +5152,7 @@ void STRSampleChannelData :: InitializeChannelSpecificThresholds (int nChannels,
 
 				thisThreshold = ChannelSpecificMinRFU [channel];
 				nextThreshold->mThreshold = thisThreshold;
+				cout << "Channel Specific Sample Detection Threshold for Channel " << channel << " is larger than Min Sample RFU for this channel...Making them equal."  << endl;
 			}
 
 			ChannelSpecificDetectionThresholds [channel] = thisThreshold;
