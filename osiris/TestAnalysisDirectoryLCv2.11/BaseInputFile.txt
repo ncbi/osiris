@@ -1,18 +1,18 @@
-InputDirectory = C:/Users/goorrob/KathyWebbRapidCXRFiles;
+InputDirectory = F:/KBI/NIST_hid_file;
 LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config;
-ReportDirectory = C:/Users/goorrob/Documents/Osiris;
-MarkerSetName = PowerPlex 16;
-LaneStandardName = RapidCXR500Less60;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+MarkerSetName = QiagenInvestigator24plex;
+LaneStandardName = BTO_80_500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20170103-155708/V-20170103-155708_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20170103-155708/V-20170103-155708_LabSettings.xml;
+StandardSettings = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/Volumes/QIAGEN_INVESTIGATOR24PLEX_HID/QIAGEN_INVESTIGATOR24PLEX_HID_StdSettings.xml;
+LabSettings = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/Volumes/QIAGEN_INVESTIGATOR24PLEX_HID/QIAGEN_INVESTIGATOR24PLEX_HID_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 100.;
-MinLaneStandardRFU = 3500.;
-MinLadderRFU = 150.;
-MinInterlocusRFU = 100.;
-MinLadderInterlocusRFU = 150.;
-SampleDetectionThreshold = 100.;
+MinSampleRFU = 250.;
+MinLaneStandardRFU = 500.;
+MinLadderRFU = 200.;
+MinInterlocusRFU = 250.;
+MinLadderInterlocusRFU = 500.;
+SampleDetectionThreshold = 250.;
 RawDataString = R;
 
 

@@ -1020,6 +1020,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	else
 		cout << "\n";
 
+	RGString commentField;
+
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
 		FullPathName = DirectoryName + "/" + LadderFileName;
@@ -1127,6 +1129,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			isFirstLadder = false;
 			ladderBioComponent->ReevaluateNoiseThresholdBasedOnMachineType (ABIModelNumber);
 		}
+
+		commentField = data->GetComment ();
+		ladderBioComponent->SetComments (commentField);
 
 		ignoreNoise = ladderBioComponent->GetIgnoreNoiseAboveDetectionInSmoothingFlag ();
 		SampledData::SetIgnoreNoiseAnalysisAboveDetectionInSmoothing (ignoreNoise);
@@ -1357,6 +1362,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->SetSampleName (data->GetSampleName ());
 		bioComponent->SetFileName (FileName);
 		Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
+
+		commentField = data->GetComment ();
+		bioComponent->SetComments (commentField);
 
 		if (GetMessageValue (useSampleNamesForControlSampleTests))
 			bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());

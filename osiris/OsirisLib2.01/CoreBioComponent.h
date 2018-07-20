@@ -173,6 +173,7 @@ public:
 	void SetTime (const PackedTime& time);
 	void SetProgress (int progress) { Progress = progress; }
 	void ResetBoundsForILSUsingFactor (double factor) { if (mLaneStandard != NULL) mLaneStandard->ResetBoundsUsingFactorToILSHistory (factor); }
+	void SetComments (const RGString& comment) { mComments = comment; }
 
 //	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
@@ -556,6 +557,7 @@ protected:
 	// QC metrics
 
 	QCData mQC;
+	RGString mComments;
 
 	//double mMaxLinearPullupCoefficient;
 	//double mMaxNonlinearPullupCoefficient;

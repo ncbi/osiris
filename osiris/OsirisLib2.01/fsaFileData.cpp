@@ -83,6 +83,17 @@ Boolean fsaFileData :: IsValid () const {
 }
 
 
+const char* fsaFileData :: GetComment () {
+
+	fsaDirEntry* entry = fsaInput->FindDirEntry (CommentsNameTag, CommentsTagID);
+
+	if (entry == NULL)
+		return "";
+
+	return entry->GetDataString ();
+}
+
+
 const char* fsaFileData :: GetInstrumentModelNumber () {
 
 	fsaDirEntry* entry = fsaInput->FindDirEntry (ABIModelNumberTag, ABIModelNumberID);

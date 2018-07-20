@@ -437,6 +437,7 @@
 											</xs:annotation>
 										</xs:element>
 										<xs:element name="SampleName" type="xs:string" minOccurs="0"/>
+										<xs:element name="Comment" type="xs:string" minOccurs="0"/>
 										<xs:element name="RunStart" type="xs:string" minOccurs="0">
 											<xs:annotation>
 												<xs:documentation>Run start date/time from the fsa file - NOTE - djh changed to string because no colon is provided between min and sec</xs:documentation>

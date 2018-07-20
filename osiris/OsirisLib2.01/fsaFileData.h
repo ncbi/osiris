@@ -52,7 +52,9 @@ public:
   {
     return fsaInput;
   }
-	virtual Boolean IsValid () const; 
+	virtual Boolean IsValid () const;
+
+	virtual const char* GetComment ();
 
 	virtual const char* GetInstrumentModelNumber ();
 	virtual const char* GetInstrumentName ();

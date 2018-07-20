@@ -49,6 +49,12 @@ Boolean SampleData :: IsValid () const {
 }
 
 
+const char* SampleData :: GetComment () {
+
+	return "";
+}
+
+
 const char* SampleData :: GetInstrumentModelNumber () {
 
 	return "";

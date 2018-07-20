@@ -105,6 +105,9 @@ const int OffScaleDataID = 1;
 const char* MatrixTag = "MTRX";
 const int MatrixID = 4;
 
+const char* CommentsNameTag = "CMNT";
+const int CommentsTagID = 1;
+
 
 #endif  /*  _FSAFILEDEFS_H_  */
 

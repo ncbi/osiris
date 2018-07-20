@@ -660,6 +660,7 @@ void CoreBioComponent :: ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text
 
 	text << "\t\t\t<Name>" << xmlwriter::EscAscii (SimpleFileName, &pResult) << "</Name>\n";
 	text << "\t\t\t<SampleName>" << xmlwriter::EscAscii (mSampleName, &pResult) << "</SampleName>\n";
+	text << "\t\t\t<Comment>" << xmlwriter::EscAscii (mComments, &pResult) << "</Comment>\n";
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
 	text << "\t\t\t<Type>Ladder</Type>\n";
 
@@ -795,6 +796,7 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 	text << CLevel (1) << "\t\t<Sample>\n";
 	text << "\t\t\t<Name>" << xmlwriter::EscAscii (SimpleFileName, &pResult) << "</Name>\n";
 	text << "\t\t\t<SampleName>" << xmlwriter::EscAscii (mSampleName, &pResult) << "</SampleName>\n";
+	text << "\t\t\t<Comment>" << xmlwriter::EscAscii (mComments, &pResult) << "</Comment>\n";
 	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
 	text << "\t\t\t<Type>" << type.GetData () << "</Type>\n";
 

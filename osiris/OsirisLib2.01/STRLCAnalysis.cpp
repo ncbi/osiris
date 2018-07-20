@@ -478,6 +478,8 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 	if (printGraphics)
 		RGDirectory::MakeDirectory (GraphicsDirectory);
 
+	RGString commentField;
+
 	while (LadderDirectory.GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
 		FullPathName = DirectoryName + "/" + LadderFileName;
@@ -573,6 +575,9 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 			SampleOutput = NULL;
 		}
 
+		commentField = data->GetComment ();
+		ladderBioComponent->SetComments (commentField);
+
 		ladderBioComponent->WriteXMLGraphicData (GraphicsDirectory, LadderFileName, data, 4, PlotString);
 
 		if (status < 0) {
@@ -645,6 +650,9 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 			Notice = "";
 			continue;
 		}
+
+		commentField = data->GetComment ();
+		bioComponent->SetComments (commentField);
 
 		if (printGraphics) {
 
