@@ -5265,6 +5265,9 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 	smDoNotCallStutterPeaksForSingleSourceSamplesPreset doNotCallStutterForSingleSource;
 	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset reportAdenylationWithCallPreset;
 	smIsAcceptedOLAllele acceptedOL;
+	smTestPullupCorrectedHeightsPreset testPullupCorrectHeights;
+
+	bool testCorrectedHeights = GetMessageValue (testPullupCorrectHeights);
 
 	//smSampleSatisfiesPossibleMixtureIDCriteria sampleSatisfiesMixtureCriteria;
 	//smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
@@ -5410,7 +5413,13 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 		// Test for proper homozygote
 		nextSignal = (DataSignal*) LocusSignalList.First ();
-		peak = nextSignal->Peak ();
+
+		if (testCorrectedHeights)
+			peak = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		else
+			peak = nextSignal->Peak ();
+
 		SetMessageValue (locusIsHomozygous, true);
 
 		if ((minBoundForHomozygote > 0.0) && (peak < minBoundForHomozygote)) {
@@ -5425,7 +5434,13 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 	if (N == 2) {
 
 		nextSignal = (DataSignal*) LocusSignalList.First ();
-		peak = nextSignal->Peak ();
+
+		if (testCorrectedHeights)
+			peak = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		else
+			peak = nextSignal->Peak ();
+
 		prevSignal = nextSignal;
 		nextSignal = (DataSignal*) LocusSignalList.Last ();
 		peak2 = nextSignal->Peak ();
@@ -5973,12 +5988,14 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 	smSigmoidalSidePeak sigmoidalSidePeak;
 	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset reportAdenylationWithCallPreset;
 	smIsAcceptedOLAllele acceptedOL;
+	smTestPullupCorrectedHeightsPreset testPullupCorrectHeights;
 
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
 	smSignalOL offLadder;
 	smIncludeNonStandardStutterInStutterOverlapPreset includeNonStandardStutter;
 
+	bool testCorrectedHeights = GetMessageValue (testPullupCorrectHeights);
 	bool onLadderInLocus;
 	int bpPrimary;
 	int bpTest;
@@ -6053,7 +6070,12 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 					continue;
 
 				mean = testSignal->GetMean ();
-				peak = testSignal->Peak ();
+
+				if (testCorrectedHeights)
+					peak = testSignal->Peak () - testSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+				else
+					peak = testSignal->Peak ();
 
 				if (peak >= primaryPeak)
 					continue;
@@ -6174,7 +6196,12 @@ int Locus :: TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* t
 				continue;
 
 			mean = testSignal->GetMean ();
-			peak = testSignal->Peak ();
+
+			if (testCorrectedHeights)
+				peak = testSignal->Peak () - testSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+			else
+				peak = testSignal->Peak ();
 
 			if (peak >= primaryPeak)
 					continue;

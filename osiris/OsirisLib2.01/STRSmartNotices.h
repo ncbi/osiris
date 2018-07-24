@@ -271,6 +271,7 @@ PERSISTENT_PREDECLARATION (smRawDataPrimaryInterchannelLink)
 PERSISTENT_PREDECLARATION (smThreePointPeak)
 PERSISTENT_PREDECLARATION (smIncludeNonStandardStutterInStutterOverlapPreset)
 PERSISTENT_PREDECLARATION (smNoNegativeDataPreset)
+PERSISTENT_PREDECLARATION (smTestPullupCorrectedHeightsPreset)
 
 
 
@@ -7534,6 +7535,34 @@ public:
 	smNoNegativeDataPreset ();
 	smNoNegativeDataPreset (const smNoNegativeDataPreset& note);
 	virtual ~smNoNegativeDataPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smTestPullupCorrectedHeightsPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smTestPullupCorrectedHeightsPreset)
+
+public:
+	smTestPullupCorrectedHeightsPreset ();
+	smTestPullupCorrectedHeightsPreset (const smTestPullupCorrectedHeightsPreset& note);
+	virtual ~smTestPullupCorrectedHeightsPreset ();
 
 	virtual int GetSubject () const;
 

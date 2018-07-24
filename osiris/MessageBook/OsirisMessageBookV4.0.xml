@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.31</VersionNumber>
-	<BuildTime>07/19/2018 04:24 PM</BuildTime>
+	<VersionNumber>7.32</VersionNumber>
+	<BuildTime>07/24/2018 01:37 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5011,6 +5011,22 @@
 			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smTestPullupCorrectedHeightsPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Test Pull-up Corrected Heights for Stutter, Adenylation, Etc (Default:  unchecked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>TEST PULLUP CORRECTED HEIGHTS FOR STUTTER, ETC</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerExcessiveNoiseBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -7178,6 +7194,7 @@
 						<Name>smCallStutterPeaksPreset</Name>
 						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
 						<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
+						<Name>smTestPullupCorrectedHeightsPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>

@@ -934,6 +934,9 @@ int Locus :: InsertSignalExtendedRight (DataSignal* newSignal) {
 
 double Locus :: HasHeightRatioWithExclusiveMaxPeak (DataSignal* target, bool& causesHeightImbalance) {
 
+	smTestPullupCorrectedHeightsPreset testPullupCorrectHeights;
+	bool testCorrectedHeights = GetMessageValue (testPullupCorrectHeights);
+
 	if (LocusSignalList.Entries () <= 1) {
 
 		causesHeightImbalance = false;
@@ -945,7 +948,15 @@ double Locus :: HasHeightRatioWithExclusiveMaxPeak (DataSignal* target, bool& ca
 	double maxPeakExclusive = 0.0;
 //	double heteroLimit = Locus::GetHeterozygousImbalanceLimit ();
 	double heteroLimit = GetLocusSpecificSampleHeterozygousImbalanceThreshold ();
-	double targetPeak = target->Peak ();
+	double targetPeak;
+	targetPeak = target->Peak ();
+
+	if (testCorrectedHeights)
+		targetPeak = target->Peak () - target->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+	else
+		targetPeak = target->Peak ();
+
 	double peak;
 	int n = 0;
 
@@ -957,7 +968,12 @@ double Locus :: HasHeightRatioWithExclusiveMaxPeak (DataSignal* target, bool& ca
 		if ((nextSignal->IsPossibleInterlocusAllele (-1)) && (nextSignal->IsPossibleInterlocusAllele (1)))
 			continue;
 		
-		peak = nextSignal->Peak ();
+		if (testCorrectedHeights)
+			peak = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+		else
+			peak = nextSignal->Peak ();
+
 		n++;
 
 		if (peak > maxPeakExclusive)

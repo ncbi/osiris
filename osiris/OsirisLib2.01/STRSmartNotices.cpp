@@ -1566,6 +1566,12 @@ int smNoNegativeDataPreset::sMessageIndex = 0;
 int smNoNegativeDataPreset::sMessageScope = 0;
 
 
+RGString smTestPullupCorrectedHeightsPreset::sName = "smTestPullupCorrectedHeightsPreset";
+int smTestPullupCorrectedHeightsPreset::sSubject = smTestPullupCorrectedHeightsPreset::LoadType ();
+int smTestPullupCorrectedHeightsPreset::sMessageIndex = 0;
+int smTestPullupCorrectedHeightsPreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1826,6 +1832,7 @@ PERSISTENT_DEFINITION (smRawDataPrimaryInterchannelLink, 2661, "smRawDataPrimary
 PERSISTENT_DEFINITION (smThreePointPeak, 2662, "smThreePointPeak")
 PERSISTENT_DEFINITION (smIncludeNonStandardStutterInStutterOverlapPreset, 2663, "smIncludeNonStandardStutterInStutterOverlapPreset")
 PERSISTENT_DEFINITION (smNoNegativeDataPreset, 2664, "smNoNegativeDataPreset")
+PERSISTENT_DEFINITION (smTestPullupCorrectedHeightsPreset, 2665, "smTestPullupCorrectedHeightsPreset")
 
 
 
@@ -17422,6 +17429,66 @@ int smNoNegativeDataPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smNoNegativeDataPreset* noticeType = new smNoNegativeDataPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smTestPullupCorrectedHeightsPreset :: smTestPullupCorrectedHeightsPreset () : SmartNotice () {
+
+}
+
+
+smTestPullupCorrectedHeightsPreset :: smTestPullupCorrectedHeightsPreset (const smTestPullupCorrectedHeightsPreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smTestPullupCorrectedHeightsPreset :: ~smTestPullupCorrectedHeightsPreset () {
+
+}
+
+
+int smTestPullupCorrectedHeightsPreset :: GetSubject () const {
+
+	return smTestPullupCorrectedHeightsPreset::sSubject;
+}
+
+
+void smTestPullupCorrectedHeightsPreset :: SetIndexAndScope (int index, int scope) const {
+
+	smTestPullupCorrectedHeightsPreset::sMessageIndex = index;
+	smTestPullupCorrectedHeightsPreset::sMessageScope = scope;
+}
+
+
+int smTestPullupCorrectedHeightsPreset :: GetMessageIndex () const {
+
+	return smTestPullupCorrectedHeightsPreset :: sMessageIndex;
+}
+
+
+int smTestPullupCorrectedHeightsPreset :: GetScope () const {
+
+	return smTestPullupCorrectedHeightsPreset :: sMessageScope;
+}
+
+
+RGString smTestPullupCorrectedHeightsPreset :: GetName () const {
+
+	return smTestPullupCorrectedHeightsPreset :: sName;
+}
+
+
+
+int smTestPullupCorrectedHeightsPreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smTestPullupCorrectedHeightsPreset* noticeType = new smTestPullupCorrectedHeightsPreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }
