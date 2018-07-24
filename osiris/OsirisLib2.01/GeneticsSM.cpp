@@ -6625,17 +6625,23 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 				if (prevResidual < nextResidual) {
 
 					it.RemoveCurrentItem ();
-					nextSignal->SetMessageValue (extraneousPeakInAMEL, true);
-	//testing				nextSignal->SetVirtualAlleleName (alleleName);
-	//testing				nextSignal->SetAlleleName ("");
+
+					if (prevAlleleName == "1")
+						nextSignal->SetMessageValue (extraneousPeakInAMEL, true);
+
+					nextSignal->SetVirtualAlleleName (alleleName);
+					nextSignal->SetAlleleName ("");
 				}
 
 				else {
 
 					tempList.Append (prevSignal);
-					prevSignal->SetMessageValue (extraneousPeakInAMEL, true);
-	//testing				prevSignal->SetVirtualAlleleName (prevAlleleName);
-	//testing				prevSignal->SetAlleleName ("");
+
+					if (prevAlleleName == "2")
+						prevSignal->SetMessageValue (extraneousPeakInAMEL, true);
+
+					prevSignal->SetVirtualAlleleName (prevAlleleName);
+					prevSignal->SetAlleleName ("");
 					prevSignal = nextSignal;   // changed so that we test nextSignal also
 					prevAlleleName = alleleName;
 					prevLocation = location;
@@ -6828,13 +6834,23 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				if (prevResidual < nextResidual) {
 
 					it.RemoveCurrentItem ();
-					nextSignal->SetMessageValue (extraneousPeakInAMEL, true);
+
+					if (prevAlleleName == "1")
+						nextSignal->SetMessageValue (extraneousPeakInAMEL, true);
+
+					nextSignal->SetAlleleName ("");
+					nextSignal->SetDoNotCall (true);
 				}
 
 				else {
 
-					tempList.Append (prevSignal);
-					prevSignal->SetMessageValue (extraneousPeakInAMEL, true);
+					SignalsToDeleteFromLocus.Append (prevSignal);
+
+					if (prevAlleleName == "2")
+						prevSignal->SetMessageValue (extraneousPeakInAMEL, true);
+
+					prevSignal->SetAlleleName ("");
+					prevSignal->SetDoNotCall (true);
 					prevSignal = nextSignal;   // changed so that we test nextSignal also
 					prevAlleleName = alleleName;
 					prevLocation = location;
@@ -6930,7 +6946,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
-			else if (nextPeak <= heightFraction * nextPeak) {
+			else if (nextPeak <= heightFraction * prevPeak) {
 
 				nextSignal->SetDoNotCall (true);
 				nextSignal->SetMessageValue (corePeakSharesAlleleBin, true);
@@ -6994,6 +7010,11 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			prevLocation = location;
 			prevAlleleName = alleleName;
 		}
+	}
+
+	while (nextSignal = (DataSignal*) SignalsToDeleteFromLocus.GetFirst ()) {
+
+		LocusSignalList.RemoveReference (nextSignal);
 	}
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {

@@ -1,18 +1,21 @@
-InputDirectory = F:/KBI/NIST_hid_file;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config;
+InputDirectory = C:/Users/goorrob/STRBasePP16Amel;
+LadderDirectory = C:/Program Files (x86)/NCBI/Osiris/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = QiagenInvestigator24plex;
-LaneStandardName = BTO_80_500;
+MarkerSetName = PowerPlex 16;
+LaneStandardName = Promega-ILS-500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/Volumes/QIAGEN_INVESTIGATOR24PLEX_HID/QIAGEN_INVESTIGATOR24PLEX_HID_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/Volumes/QIAGEN_INVESTIGATOR24PLEX_HID/QIAGEN_INVESTIGATOR24PLEX_HID_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 250.;
-MinLaneStandardRFU = 500.;
-MinLadderRFU = 200.;
-MinInterlocusRFU = 250.;
-MinLadderInterlocusRFU = 500.;
-SampleDetectionThreshold = 250.;
+StandardSettings = C:/Program Files (x86)/NCBI/Osiris/Config/Volumes/PP16/PP16_StdSettings.xml;
+LabSettings = C:/Program Files (x86)/NCBI/Osiris/Config/Volumes/PP16/PP16_LabSettings.xml;
+MessageBook = C:/Program Files (x86)/NCBI/Osiris/Config/LadderSpecifications/MessageBook.xml;
+MinSampleRFU = 100;
+MinLaneStandardRFU = 100;
+MinLadderRFU = 150;
+MinInterlocusRFU = 100;
+MinLadderInterlocusRFU = 150;
+SampleDetectionThreshold = 100;
 RawDataString = R;
+;
+
+
 
 
