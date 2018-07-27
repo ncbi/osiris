@@ -751,7 +751,9 @@ bool CLabLocusThreshold::operator ==(const CLabLocusThreshold &x) const
   else LABEQDLOG(m_dPullupFractionFilter,"CLabLocusThreshold.m_dPullupFractionFilter")
   else LABEQDLOG(m_dFractionMaxPeak,"CLabLocusThreshold.m_dFractionMaxPeak")
   else LABEQDLOG(m_dStutter,"CLabLocusThreshold.m_dStutter")
+  else LABEQDLOG(m_dStutterRight,"CLabLocusThreshold.m_dStutterRight")
   else LABEQDLOG(m_dPlusStutter,"CLabLocusThreshold.m_dPlusStutter")
+  else LABEQDLOG(m_dPlusStutterRight,"CLabLocusThreshold.m_dPlusStutterRight")
   else LABEQDLOG(m_dAdenylation,"CLabLocusThreshold.m_dAdenylation")
   else LABEQDLOG(m_dHeterozygousImbalanceLimit,"CLabLocusThreshold.m_dHeterozygousImbalanceLimit")
   else LABEQDLOG(m_dMinBoundForHomozygote,"CLabLocusThreshold.m_dMinBoundForHomozygote")
@@ -782,7 +784,9 @@ bool CLabLocusThreshold::Skip() const
       &m_dFractionMaxPeak,
       &m_dPullupFractionFilter,
       &m_dStutter,
+      &m_dStutterRight,
       &m_dPlusStutter,
+      &m_dPlusStutterRight,
       &m_dAdenylation,
       &m_dHeterozygousImbalanceLimit,
       &m_dMinBoundForHomozygote
@@ -817,7 +821,9 @@ void CLabLocusThreshold::RegisterAll(bool b)
   Register("FractionOfMaxPeak",&g_io, (void *)&m_dFractionMaxPeak);
   Register("PullupFractionalFilter",&g_io, (void *)&m_dPullupFractionFilter);
   Register("StutterThreshold",&g_io, (void *)&m_dStutter);
+  Register("StutterThresholdRight",CLabSettings::GetIOdoubleGt0(), (void *)&m_dStutterRight);
   Register("PlusStutterThreshold",CLabSettings::GetIOdoubleGt0(), (void *)&m_dPlusStutter);
+  Register("PlusStutterThresholdRight",CLabSettings::GetIOdoubleGt0(), (void *)&m_dPlusStutterRight);
   Register("AdenylationThreshold",&g_io, (void *)&m_dAdenylation);
   Register("HeterzygousImbalanceLimit",&g_io, (void *)&m_dHeterozygousImbalanceLimit);
   Register("MinBoundForHomozygote",&g_io, (void *)&m_dMinBoundForHomozygote);

@@ -82,6 +82,7 @@ private:
   void _UpdateView();
 
   wxPanel *m_pPanel;
+  wxWindow *m_pWinFocusOnSelect;
   CLabThresholds *m_pData;
   CGridRFULimits *m_pGridRFU;
   wxCheckBox *m_pAllowOverride;

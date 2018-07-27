@@ -49,7 +49,7 @@ CGridLabThresholds::CGridLabThresholds(
 {
   _CreateGrid(m_nRows,1);
   SetDefaultCellValidator(
-    new nwxGridCellDoubleRangeValidator(0.0,1.0,true));
+    new nwxGridCellDoubleRangeValidator(0.001,1.0,true));
   SetDefaultEditor(new wxGridCellFloatEditor(-1,4));
 
 }
@@ -176,15 +176,19 @@ void CGridLabThresholds::DisableCell(int nRow, int nCol)
 
 
 const wxChar * const CGridLabThresholds::FRACTION_MAX_PEAK =
-  wxS("Fractional filter (0 - 1.0) ");
+  wxS("Fractional filter (0-1) ");
 const wxChar * const CGridLabThresholds::PULLUP_FRACTIONAL_FILTER =
-  wxS("Pullup fractional filter (0 - 1.0) ");
+  wxS("Pullup fractional filter (0-1) ");
 const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD =
-  wxS("Max. stutter threshold (0 - 1.0) ");
+  wxS("Max. stutter left (0-1) ");
+const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD_RIGHT =
+  wxS("Max. stutter right (0-1) ");
 const wxChar * const CGridLabThresholds::PLUS_STUTTER_THRESHOLD =
-  wxS("Max. plus stutter threshold (0 - 1.0) ");
+  wxS("Max. plus stutter left (0-1) ");
+const wxChar * const CGridLabThresholds::PLUS_STUTTER_THRESHOLD_RIGHT =
+  wxS("Max. plus stutter right (0-1) ");
 const wxChar * const CGridLabThresholds::ADENYLATION_THRESHOLD =
-  wxS("Adenylation threshold (0 - 1.0) ");
+  wxS("Max. adenylation (0-1) ");
 
 double CGridLabThresholds::GetCellValueDouble(int nRow, int nCol)
 {
@@ -237,9 +241,11 @@ bool CGridLabThresholdsSample::SetData(CLabThresholds *pData,
     FRACTION_MAX_PEAK,
     PULLUP_FRACTIONAL_FILTER,
     STUTTER_THRESHOLD,
+    STUTTER_THRESHOLD_RIGHT,
     PLUS_STUTTER_THRESHOLD,
+    PLUS_STUTTER_THRESHOLD_RIGHT,
     ADENYLATION_THRESHOLD,
-    wxS("Min. heterozygote balance (0 - 1.0) "),
+    wxS("Min. heterozygote balance (0-1) "),
     wxS("Min. homozygote threshold (RFU) "),
     NULL
   };
@@ -257,29 +263,83 @@ bool CGridLabThresholdsSample::SetData(CLabThresholds *pData,
   return bOK;
 }
 
+bool CGridLabThresholdsSample::_validateLeftRight(
+  int nRowLeft, int nCol, double dLeft, double dRight, const wxString &sType)
+{
+  wxString sError;
+  if(dRight > 0.0)
+  {
+#define BUILD_ERROR(T1,T2) \
+      sError = sType.Left(1).Upper(); \
+      sError.Append(sType.Mid(1)); \
+      sError.Append(T1); \
+      sError.Append(sType); \
+      sError.Append(T2);
+
+    if(dLeft <= 0.0)
+    {
+      BUILD_ERROR(wxS(" right is specified without "), wxS(" left"));
+    }
+    else if(dLeft > dRight)
+    {
+      BUILD_ERROR(wxS(" left should be less than "), wxS(" right"));
+    }
+#undef BUILD_ERROR
+  }
+  bool bRtn = sError.IsEmpty();
+  if(!bRtn)
+  {
+    mainApp::ShowError(sError,this);
+    SetFocus();
+    wxGridEvent ee(GetId(), wxEVT_GRID_SELECT_CELL, this, nRowLeft, nCol);
+    AddPendingEvent(ee);
+    GoToCell(nRowLeft,nCol);
+  }
+  return bRtn;
+}
+
 bool CGridLabThresholdsSample::_GetColumn(int nCol, CLabLocusThreshold *pLocus)
 {
   wxString s;
-  pLocus->Init();
-  pLocus->SetLocusName(GetColLabelValue(nCol));
-  pLocus->SetFractionMaxPeak(
-    GetCellValueDouble(ROW_FRACTION_MAX_PEAK,nCol));
-  pLocus->SetPullupFractionFilter(
-    GetCellValueDouble(ROW_PULLUP_FRACTIONAL_FILTER,nCol));
-  pLocus->SetStutter(
-    GetCellValueDouble(ROW_STUTTER_THRESHOLD,nCol));
-  pLocus->SetPlusStutter(
-    GetCellValueDouble(ROW_PLUS_STUTTER_THRESHOLD,nCol));
-  pLocus->SetAdenylation(
-    GetCellValueDouble(ROW_ADENYLATION_THRESHOLD,nCol));
-  pLocus->SetHeterozygousImbalanceLimit(
-    GetCellValueDouble(ROW_HETEROZYGOUS_IMBALANCE_LIMIT,nCol));
-  pLocus->SetMinBoundForHomozygote(
-    GetCellValueDouble(ROW_MIN_BOUND_HOMOZYGOTE,nCol));
-
-  // need validation code here
-
-  return true;
+  double dLeft,dRight,dLeftPl,dRightPl;
+  bool bRtn = true;
+  dLeft = GetCellValueDouble(ROW_STUTTER_THRESHOLD,nCol);
+  dRight = GetCellValueDouble(ROW_STUTTER_THRESHOLD_RIGHT,nCol);
+  if(!_validateLeftRight(
+    ROW_STUTTER_THRESHOLD, nCol, dLeft, dRight, wxS("stutter")))
+  {
+    bRtn = false;
+  }
+  else
+  {
+    dLeftPl = GetCellValueDouble(ROW_PLUS_STUTTER_THRESHOLD,nCol);
+    dRightPl = GetCellValueDouble(ROW_PLUS_STUTTER_THRESHOLD_RIGHT,nCol);
+    if(!_validateLeftRight(
+      ROW_PLUS_STUTTER_THRESHOLD, nCol, dLeftPl,dRightPl, wxS("plus stutter")))
+    {
+      bRtn = false;
+    }
+    else
+    {
+      pLocus->Init();
+      pLocus->SetLocusName(GetColLabelValue(nCol));
+      pLocus->SetFractionMaxPeak(
+        GetCellValueDouble(ROW_FRACTION_MAX_PEAK,nCol));
+      pLocus->SetPullupFractionFilter(
+        GetCellValueDouble(ROW_PULLUP_FRACTIONAL_FILTER,nCol));
+      pLocus->SetStutter(dLeft);
+      pLocus->SetStutterRight(dRight);
+      pLocus->SetPlusStutter(dLeftPl);
+      pLocus->SetPlusStutterRight(dRightPl);
+      pLocus->SetAdenylation(
+        GetCellValueDouble(ROW_ADENYLATION_THRESHOLD,nCol));
+      pLocus->SetHeterozygousImbalanceLimit(
+        GetCellValueDouble(ROW_HETEROZYGOUS_IMBALANCE_LIMIT,nCol));
+      pLocus->SetMinBoundForHomozygote(
+        GetCellValueDouble(ROW_MIN_BOUND_HOMOZYGOTE,nCol));
+    }
+  }
+  return bRtn;
 }
 void CGridLabThresholdsSample::_SetColumn(
   int nCol, const CLabLocusThreshold &locus)
@@ -290,8 +350,12 @@ void CGridLabThresholdsSample::_SetColumn(
     nCol,locus.GetPullupFractionFilter());
   SetCellValueDouble(ROW_STUTTER_THRESHOLD,
     nCol,locus.GetStutter());
+  SetCellValueDouble(ROW_STUTTER_THRESHOLD_RIGHT,
+    nCol,locus.GetStutterRight());
   SetCellValueDouble(ROW_PLUS_STUTTER_THRESHOLD,
     nCol,locus.GetPlusStutter());
+  SetCellValueDouble(ROW_PLUS_STUTTER_THRESHOLD_RIGHT,
+    nCol,locus.GetPlusStutterRight());
   SetCellValueDouble(ROW_ADENYLATION_THRESHOLD,
     nCol,locus.GetAdenylation());
   SetCellValueDouble(ROW_HETEROZYGOUS_IMBALANCE_LIMIT,
@@ -360,7 +424,9 @@ bool CGridLabThresholdsSample::TransferDataToWindow()
     locus.SetFractionMaxPeak(rfu.GetFractionMaxPeak());
     locus.SetPullupFractionFilter(rfu.GetPullupFractionFilter());
     locus.SetStutter(rfu.GetStutterThreshold());
+    locus.SetStutterRight(-1.0);
     locus.SetPlusStutter(rfu.GetPlusStutterThreshold());
+    locus.SetPlusStutterRight(-1.0);
     locus.SetAdenylation(rfu.GetAdenylationThreshold());
     locus.SetHeterozygousImbalanceLimit(
       m_pData->GetHeterozygousImbalanceLimit());
@@ -381,6 +447,8 @@ bool CGridLabThresholdsSample::TransferDataToWindow()
         _ClearColumn(i);
       }
     }
+    DisableCell(ROW_STUTTER_THRESHOLD_RIGHT, 0);
+    DisableCell(ROW_PLUS_STUTTER_THRESHOLD_RIGHT, 0);
   }
   return bRtn;
 }

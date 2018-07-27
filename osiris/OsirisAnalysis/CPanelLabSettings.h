@@ -79,7 +79,6 @@ public:
   virtual bool TransferDataToWindow();
 
 
-
   bool UpdateAfterSave()
   {
     return m_pGeneral->TransferDataToWindow();

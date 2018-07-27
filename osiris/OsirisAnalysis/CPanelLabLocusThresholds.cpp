@@ -69,6 +69,7 @@ const wxChar CChoiceHomozygote::VALUE_RFU = 'R';
 CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   wxWindow *parent, wxWindowID id) : 
     SUPER_CPanelLabLocusThresholds(parent,id,wxDefaultPosition,wxDefaultSize,wxVSCROLL),
+    m_pWinFocusOnSelect(NULL),
     m_pData(NULL)
 {
   wxArrayString aChoices;
@@ -186,22 +187,42 @@ bool CPanelLabLocusThresholds::TransferDataFromWindow()
     m_pData->SetMinBoundHomozygoteUnit(
       m_pChoiceHomozygoteUnits->GetSelectionByValue());
     m_pData->SetAllowMinRFUoverride(m_pAllowOverride->GetValue());
+    wxWindow *pList[] =
+    {
+      m_pGridRFU,
+      m_pGridSample,
+      m_pGridLadder,
+      m_pGridStutter
+    };
+    m_pWinFocusOnSelect = NULL;
+    const size_t NCOUNT = sizeof(pList) / sizeof(pList[0]);
+    for(size_t i = 0; i < NCOUNT; ++i)
+    {
+      if(!pList[i]->TransferDataFromWindow())
+      {
+        bRtn = false;
+        m_pWinFocusOnSelect = pList[i];
+        i = NCOUNT; //break
+      }
+    }
+#if 0
     if(!m_pGridRFU->TransferDataFromWindow())
     {
       bRtn = false;
     }
-    if(!m_pGridSample->TransferDataFromWindow())
+    else if(!m_pGridSample->TransferDataFromWindow())
     {
       bRtn = false;
     }
-    if(!m_pGridLadder->TransferDataFromWindow())
+    else if(!m_pGridLadder->TransferDataFromWindow())
     {
       bRtn = false;
     }
-    if(!m_pGridStutter->TransferDataFromWindow())
+    else if(!m_pGridStutter->TransferDataFromWindow())
     {
       bRtn = false;
     }
+#endif
   }
 
   return bRtn;
@@ -232,6 +253,11 @@ void CPanelLabLocusThresholds::_UpdateView()
   }
   Layout();
   Refresh();
+  if(m_pWinFocusOnSelect != NULL)
+  {
+    m_pWinFocusOnSelect->SetFocus();
+    m_pWinFocusOnSelect = NULL;
+  }
 }
 
 bool CPanelLabLocusThresholds::Show(bool show)

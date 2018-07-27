@@ -68,7 +68,9 @@ public:
   static const wxChar * const FRACTION_MAX_PEAK;
   static const wxChar * const PULLUP_FRACTIONAL_FILTER;
   static const wxChar * const STUTTER_THRESHOLD;
+  static const wxChar * const STUTTER_THRESHOLD_RIGHT;
   static const wxChar * const PLUS_STUTTER_THRESHOLD;
+  static const wxChar * const PLUS_STUTTER_THRESHOLD_RIGHT;
   static const wxChar * const ADENYLATION_THRESHOLD;
 protected:
   void _CreateGrid(int nRows, int nCols);
@@ -90,6 +92,12 @@ protected:
 
 class CGridLabThresholdsSample : public CGridLabThresholds
 {
+  // OS-887  7/26/2018
+  //  add rows for Stutter Right, Plus Stutter Right
+  //   disable Default for the new rows described above
+  //   for validation, if (plus) stutter right is present, 
+  //      (plus) stutter must be present in the same column 
+  //      and <= stutter right
 public:
   CGridLabThresholdsSample(
     wxWindow *parent, 
@@ -100,6 +108,7 @@ public:
   bool SetData(CLabThresholds *pData, const wxString &sKitName);
 
 private:
+  bool _validateLeftRight(int nRow, int nCol, double dLeft, double dRight, const wxString &sType);
   bool _GetColumn(int nCol, CLabLocusThreshold *pLocus);
   void _SetColumn(int nCol, const CLabLocusThreshold &locus);
   enum
@@ -107,7 +116,9 @@ private:
     ROW_FRACTION_MAX_PEAK = 1,
     ROW_PULLUP_FRACTIONAL_FILTER,
     ROW_STUTTER_THRESHOLD,
+    ROW_STUTTER_THRESHOLD_RIGHT,
     ROW_PLUS_STUTTER_THRESHOLD,
+    ROW_PLUS_STUTTER_THRESHOLD_RIGHT,
     ROW_ADENYLATION_THRESHOLD,
     ROW_HETEROZYGOUS_IMBALANCE_LIMIT,
     ROW_MIN_BOUND_HOMOZYGOTE,
