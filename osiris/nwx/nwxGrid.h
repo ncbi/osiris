@@ -111,11 +111,11 @@ public:
         {
           psError->Empty();
           psError->Alloc(128);
-          *psError = wxS("Value is not within range, [");
+          *psError = wxS("Value is not within range, ");
           psError->Append(nwxString::FormatNumber(m_Lo));
-          psError->Append(", ");
+          psError->Append(" to ");
           psError->Append(nwxString::FormatNumber(m_Hi));
-          psError->Append("]");
+          psError->Append(".");
         }
       }
     }
