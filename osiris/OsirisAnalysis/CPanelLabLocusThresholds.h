@@ -34,6 +34,7 @@
 #include "CGridLabThresholds.h"
 #include "CGridRFULimits.h"
 #include <wx/checkbox.h>
+#include <wx/hyperlink.h>
 
 #include <wx/scrolwin.h>
 typedef wxScrolled<wxPanel> SUPER_CPanelLabLocusThresholds;
@@ -76,6 +77,7 @@ public:
     return b1 && b2 && b3;
   }
   void OnSize(wxSizeEvent &e);
+  void OnHelp(wxHyperlinkEvent &e);
   virtual bool Show(bool show = true);
 
 private:

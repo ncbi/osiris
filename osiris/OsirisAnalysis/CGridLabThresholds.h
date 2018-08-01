@@ -68,10 +68,14 @@ public:
   static const wxChar * const FRACTION_MAX_PEAK;
   static const wxChar * const PULLUP_FRACTIONAL_FILTER;
   static const wxChar * const STUTTER_THRESHOLD;
+  static const wxChar * const STUTTER_THRESHOLD_LEFT;
   static const wxChar * const STUTTER_THRESHOLD_RIGHT;
-  static const wxChar * const PLUS_STUTTER_THRESHOLD;
+  static const wxChar * const PLUS_STUTTER_THRESHOLD_LEFT;
   static const wxChar * const PLUS_STUTTER_THRESHOLD_RIGHT;
   static const wxChar * const ADENYLATION_THRESHOLD;
+  static const wxChar * const STUTTER_THRESHOLD_LEFT_HELP;
+  static const wxChar * const STUTTER_THRESHOLD_LEFT_HELP2;
+  static const wxChar * const STUTTER_THRESHOLD_LEFT_HELP_LINK;
 protected:
   void _CreateGrid(int nRows, int nCols);
   void _ClearColumn(int nCol);

@@ -180,15 +180,23 @@ const wxChar * const CGridLabThresholds::FRACTION_MAX_PEAK =
 const wxChar * const CGridLabThresholds::PULLUP_FRACTIONAL_FILTER =
   wxS("Pullup fractional filter (0-1) ");
 const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD =
-  wxS("Max. stutter left (0-1) ");
+  wxS("Max. stutter (0-1) ");
+const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD_LEFT =
+  wxS("Max. stutter (0-1)* ");
 const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD_RIGHT =
   wxS("Max. stutter right (0-1) ");
-const wxChar * const CGridLabThresholds::PLUS_STUTTER_THRESHOLD =
-  wxS("Max. plus stutter left (0-1) ");
+const wxChar * const CGridLabThresholds::PLUS_STUTTER_THRESHOLD_LEFT =
+  wxS("Max. plus stutter (0-1)* ");
 const wxChar * const CGridLabThresholds::PLUS_STUTTER_THRESHOLD_RIGHT =
   wxS("Max. plus stutter right (0-1) ");
 const wxChar * const CGridLabThresholds::ADENYLATION_THRESHOLD =
   wxS("Max. adenylation (0-1) ");
+const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD_LEFT_HELP =
+  wxS("* Max. stutter threshold at the left ladder allele when used with Max. stutter right for that locus.  See ");
+const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD_LEFT_HELP_LINK =
+  wxS("User's Guide");
+const wxChar * const CGridLabThresholds::STUTTER_THRESHOLD_LEFT_HELP2 =
+  wxS(" for details.");
 
 double CGridLabThresholds::GetCellValueDouble(int nRow, int nCol)
 {
@@ -240,9 +248,9 @@ bool CGridLabThresholdsSample::SetData(CLabThresholds *pData,
   {
     FRACTION_MAX_PEAK,
     PULLUP_FRACTIONAL_FILTER,
-    STUTTER_THRESHOLD,
+    STUTTER_THRESHOLD_LEFT,
     STUTTER_THRESHOLD_RIGHT,
-    PLUS_STUTTER_THRESHOLD,
+    PLUS_STUTTER_THRESHOLD_LEFT,
     PLUS_STUTTER_THRESHOLD_RIGHT,
     ADENYLATION_THRESHOLD,
     wxS("Min. heterozygote balance (0-1) "),
