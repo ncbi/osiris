@@ -128,6 +128,7 @@ void COARsample::RegisterAll(bool)
 {
   RegisterWxString("Name",&m_sName);
   RegisterWxStringNotEmpty("SampleName",&m_sSampleName);
+  RegisterWxStringNotEmpty("Comment",&m_sComment);
   RegisterWxStringNotEmpty("RunStart",&m_sRunStart);
   Register("EnableHistory",&m_EnableHistory);
   RegisterWxString("Type",&m_sType);

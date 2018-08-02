@@ -1017,7 +1017,9 @@ public:
     LABCP(m_dPullupFractionFilter);
     LABCP(m_dFractionMaxPeak);
     LABCP(m_dStutter);
+    LABCP(m_dStutterRight);
     LABCP(m_dPlusStutter);
+    LABCP(m_dPlusStutterRight);
     LABCP(m_dAdenylation);
     LABCP(m_dHeterozygousImbalanceLimit);
     LABCP(m_dMinBoundForHomozygote);
@@ -1042,9 +1044,17 @@ public:
   {
     return m_dStutter;
   }
+  double GetStutterRight() const
+  {
+    return m_dStutterRight;
+  }
   double GetPlusStutter() const
   {
     return m_dPlusStutter;
+  }
+  double GetPlusStutterRight() const
+  {
+    return m_dPlusStutterRight;
   }
   double GetAdenylation() const
   {
@@ -1075,9 +1085,17 @@ public:
   {
     m_dStutter = d;
   }
+  void SetStutterRight(double d)
+  {
+    m_dStutterRight = d;
+  }
   void SetPlusStutter(double d)
   {
     m_dPlusStutter = d;
+  }
+  void SetPlusStutterRight(double d)
+  {
+    m_dPlusStutterRight = d;
   }
   void SetAdenylation(double d)
   {
@@ -1104,7 +1122,9 @@ private:
   double m_dFractionMaxPeak;
   double m_dPullupFractionFilter;
   double m_dStutter;
+  double m_dStutterRight;
   double m_dPlusStutter;
+  double m_dPlusStutterRight;
   double m_dAdenylation;
   double m_dHeterozygousImbalanceLimit;
   double m_dMinBoundForHomozygote;

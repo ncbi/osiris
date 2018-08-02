@@ -32,7 +32,6 @@
 #include <wx/stattext.h>
 #include <wx/sizer.h>
 
-
 //********************************************************************
 //
 //    CChoiceHomozygote
@@ -69,6 +68,7 @@ const wxChar CChoiceHomozygote::VALUE_RFU = 'R';
 CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   wxWindow *parent, wxWindowID id) : 
     SUPER_CPanelLabLocusThresholds(parent,id,wxDefaultPosition,wxDefaultSize,wxVSCROLL),
+    m_pWinFocusOnSelect(NULL),
     m_pData(NULL)
 {
   wxArrayString aChoices;
@@ -92,6 +92,18 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   wxStaticText *psStutterLabel =
     new wxStaticText(PANEL,wxID_ANY,
     "Non-Standard Stutter");
+  wxStaticText *psStutterLabelHelp =
+    new wxStaticText(PANEL,wxID_ANY,
+    CGridLabThresholds::STUTTER_THRESHOLD_LEFT_HELP);
+  wxHyperlinkCtrl *psLinkStutter =
+    new wxHyperlinkCtrl(PANEL, IDhelp,
+      CGridLabThresholds::STUTTER_THRESHOLD_LEFT_HELP_LINK,
+      wxEmptyString, wxDefaultPosition, wxDefaultSize,
+      wxBORDER_NONE | wxHL_ALIGN_LEFT);
+  wxStaticText *psStutterLabelHelp2 =
+    new wxStaticText(PANEL,wxID_ANY,
+    CGridLabThresholds::STUTTER_THRESHOLD_LEFT_HELP2);
+  
   mainApp::SetBoldFont(pTextRFU);
   mainApp::SetBoldFont(psSampleLabel);
   mainApp::SetBoldFont(psLadderLabel);
@@ -110,6 +122,10 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
   
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *pSizerChoice = new wxBoxSizer(wxHORIZONTAL);
+  wxBoxSizer *pSizerStutter = new wxBoxSizer(wxHORIZONTAL);
+  pSizerStutter->Add(psStutterLabelHelp, 0, wxALIGN_CENTRE_VERTICAL);
+  pSizerStutter->Add(psLinkStutter, 0, wxALIGN_CENTRE_VERTICAL);
+  pSizerStutter->Add(psStutterLabelHelp2, 0, wxALIGN_CENTRE_VERTICAL);
   pSizerChoice->Add(psChoice,0,wxALIGN_CENTRE_VERTICAL);
   pSizerChoice->Add(m_pChoiceHomozygoteUnits,
     0,wxLEFT | wxALIGN_CENTRE_VERTICAL, ID_BORDER);
@@ -121,6 +137,7 @@ CPanelLabLocusThresholds::CPanelLabLocusThresholds(
     wxALIGN_LEFT | wxALL, ID_BORDER);
   pSizer->Add(psSampleLabel,0, wxALIGN_LEFT | (wxALL ^ wxBOTTOM), ID_BORDER);
   pSizer->Add(m_pGridSample,0,  /* wxEXPAND | */ (wxALL ^ wxTOP), ID_BORDER);
+  pSizer->Add(pSizerStutter,0,wxALIGN_LEFT | (wxALL ^ wxTOP), ID_BORDER);
   pSizer->Add(pSizerChoice,0,wxALIGN_LEFT | (wxALL ^ wxTOP), ID_BORDER);
   pSizer->AddSpacer(ID_BORDER << 2);
   pSizer->Add(psLadderLabel,0,wxALIGN_LEFT | wxLEFT | wxRIGHT,ID_BORDER);
@@ -186,22 +203,42 @@ bool CPanelLabLocusThresholds::TransferDataFromWindow()
     m_pData->SetMinBoundHomozygoteUnit(
       m_pChoiceHomozygoteUnits->GetSelectionByValue());
     m_pData->SetAllowMinRFUoverride(m_pAllowOverride->GetValue());
+    wxWindow *pList[] =
+    {
+      m_pGridRFU,
+      m_pGridSample,
+      m_pGridLadder,
+      m_pGridStutter
+    };
+    m_pWinFocusOnSelect = NULL;
+    const size_t NCOUNT = sizeof(pList) / sizeof(pList[0]);
+    for(size_t i = 0; i < NCOUNT; ++i)
+    {
+      if(!pList[i]->TransferDataFromWindow())
+      {
+        bRtn = false;
+        m_pWinFocusOnSelect = pList[i];
+        i = NCOUNT; //break
+      }
+    }
+#if 0
     if(!m_pGridRFU->TransferDataFromWindow())
     {
       bRtn = false;
     }
-    if(!m_pGridSample->TransferDataFromWindow())
+    else if(!m_pGridSample->TransferDataFromWindow())
     {
       bRtn = false;
     }
-    if(!m_pGridLadder->TransferDataFromWindow())
+    else if(!m_pGridLadder->TransferDataFromWindow())
     {
       bRtn = false;
     }
-    if(!m_pGridStutter->TransferDataFromWindow())
+    else if(!m_pGridStutter->TransferDataFromWindow())
     {
       bRtn = false;
     }
+#endif
   }
 
   return bRtn;
@@ -210,7 +247,10 @@ void CPanelLabLocusThresholds::OnSize(wxSizeEvent &)
 {
   _UpdateView();
 }
-
+void CPanelLabLocusThresholds::OnHelp(wxHyperlinkEvent &e)
+{
+  mainApp::Get()->OnHelp(e);
+}
   
 void CPanelLabLocusThresholds::_UpdateView()
 {
@@ -232,6 +272,11 @@ void CPanelLabLocusThresholds::_UpdateView()
   }
   Layout();
   Refresh();
+  if(m_pWinFocusOnSelect != NULL)
+  {
+    m_pWinFocusOnSelect->SetFocus();
+    m_pWinFocusOnSelect = NULL;
+  }
 }
 
 bool CPanelLabLocusThresholds::Show(bool show)
@@ -246,4 +291,5 @@ bool CPanelLabLocusThresholds::Show(bool show)
 }
 BEGIN_EVENT_TABLE(CPanelLabLocusThresholds,SUPER_CPanelLabLocusThresholds)
 EVT_SIZE(CPanelLabLocusThresholds::OnSize)
+EVT_HYPERLINK(IDhelp,CPanelLabLocusThresholds::OnHelp)
 END_EVENT_TABLE()

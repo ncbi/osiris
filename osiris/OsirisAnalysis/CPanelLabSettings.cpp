@@ -47,6 +47,7 @@
 #include "CVolumes.h"
 #include "CKitList.h"
 #include <stdlib.h>
+#include "nwx/nwxLog.h"
 
 const wxString CPanelLabSettings::g_sFileNameStrPrompt
   ("File name search criteria");
@@ -123,7 +124,12 @@ bool nwxChoicebook::TransferDataFromWindow()
   {
     if(!GetPage(i)->TransferDataFromWindow())
     {
+#ifdef TMP_DEBUG
+      nwxLog::LogMessageV(wxS("nwxChoicebook::TransferDataFromWindow SetSelection(%d)"),i);
+#endif
+      SetSelection(i);
       bRtn = false;
+      i = n; // break
     }
   }
   return bRtn;
@@ -628,9 +634,31 @@ CPanelLabSettings::CPanelLabSettings(
   SetReadOnly(true);  // read only until data is sent
 }
 
-
 bool CPanelLabSettings::TransferDataFromWindow()
 {
+#if 1
+  bool bRtn = true;
+  if(!IsReadOnly())
+  {
+    size_t n = m_pNotebook->GetPageCount();
+    for(size_t i = 0; i < n; i++)
+    {
+      if(!m_pNotebook->GetPage(i)->TransferDataFromWindow())
+      {
+        if(m_pNotebook->GetSelection() != int(i))
+        {
+#ifdef TMP_DEBUG
+          nwxLog::LogMessageV(wxS("nwxChoicebook::TransferDataFromWindow SetSelection(%d)"),i);
+#endif
+          m_pNotebook->SetSelection(i);
+        }
+        bRtn = false;
+        i = n; // break
+      }
+    }
+  }
+  return bRtn;
+#else
   bool bRtn = true;
   if(!IsReadOnly())
   {
@@ -660,6 +688,7 @@ bool CPanelLabSettings::TransferDataFromWindow()
     }
   }
   return bRtn;
+#endif
 }
 bool CPanelLabSettings::TransferDataToWindow()
 {
@@ -690,7 +719,6 @@ bool CPanelLabSettings::TransferDataToWindow()
   }
   return bRtn;
 }
-
 void CPanelLabSettings::SetReadOnly(bool b)
 {
   if(m_bAlwaysReadOnly) { b = true; }
