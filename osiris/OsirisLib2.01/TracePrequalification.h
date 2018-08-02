@@ -87,8 +87,14 @@ public:
 	static void SetLowHeightThreshold (double height) { lowHeightThreshold = height; }
 	static double GetLowHeightThreshold () { return lowHeightThreshold; }
 
+	static void SetLowHeightModifier (double height) { lowHeightModifier = height; }
+	static double GetLowHeightModifier () { return lowHeightModifier; }
+
 	static void SetLowSlopeThreshold (double slope) { lowSlopeThreshold = slope; }
 	static double GetLowSlopeThreshold () { return lowSlopeThreshold; }
+
+	static void SetLowSlopeModifier (double slope) { lowSlopeModifier = slope; }
+	static double GetLowSlopeModifier () { return lowSlopeModifier; }
 
 	static void SetMinSamplesForSlopeRegression (int samples);
 	static int GetMinSamplesForSlopeRegression () { return minSamplesForSlopeRegression; }
@@ -102,6 +108,9 @@ private:
 
 	static double defaultNoiseThreshold;
 	static int defaultWindowWidth;
+
+	static double lowHeightModifier;
+	static double lowSlopeModifier;
 };
 
 

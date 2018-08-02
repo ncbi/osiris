@@ -1572,6 +1572,18 @@ int smTestPullupCorrectedHeightsPreset::sMessageIndex = 0;
 int smTestPullupCorrectedHeightsPreset::sMessageScope = 0;
 
 
+RGString smTailHeightFittingThresholdFactor::sName = "smTailHeightFittingThresholdFactor";
+int smTailHeightFittingThresholdFactor::sSubject = smTailHeightFittingThresholdFactor::LoadType ();
+int smTailHeightFittingThresholdFactor::sMessageIndex = 0;
+int smTailHeightFittingThresholdFactor::sMessageScope = 0;
+
+
+RGString smTailSlopeFittingThresholdFactor::sName = "smTailSlopeFittingThresholdFactor";
+int smTailSlopeFittingThresholdFactor::sSubject = smTailSlopeFittingThresholdFactor::LoadType ();
+int smTailSlopeFittingThresholdFactor::sMessageIndex = 0;
+int smTailSlopeFittingThresholdFactor::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1833,6 +1845,8 @@ PERSISTENT_DEFINITION (smThreePointPeak, 2662, "smThreePointPeak")
 PERSISTENT_DEFINITION (smIncludeNonStandardStutterInStutterOverlapPreset, 2663, "smIncludeNonStandardStutterInStutterOverlapPreset")
 PERSISTENT_DEFINITION (smNoNegativeDataPreset, 2664, "smNoNegativeDataPreset")
 PERSISTENT_DEFINITION (smTestPullupCorrectedHeightsPreset, 2665, "smTestPullupCorrectedHeightsPreset")
+PERSISTENT_DEFINITION (smTailHeightFittingThresholdFactor, 2666, "smTailHeightFittingThresholdFactor")
+PERSISTENT_DEFINITION (smTailSlopeFittingThresholdFactor, 2667, "smTailSlopeFittingThresholdFactor")
 
 
 
@@ -17489,6 +17503,126 @@ int smTestPullupCorrectedHeightsPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smTestPullupCorrectedHeightsPreset* noticeType = new smTestPullupCorrectedHeightsPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smTailHeightFittingThresholdFactor :: smTailHeightFittingThresholdFactor () : SmartNotice () {
+
+}
+
+
+smTailHeightFittingThresholdFactor :: smTailHeightFittingThresholdFactor (const smTailHeightFittingThresholdFactor& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smTailHeightFittingThresholdFactor :: ~smTailHeightFittingThresholdFactor () {
+
+}
+
+
+int smTailHeightFittingThresholdFactor :: GetSubject () const {
+
+	return smTailHeightFittingThresholdFactor::sSubject;
+}
+
+
+void smTailHeightFittingThresholdFactor :: SetIndexAndScope (int index, int scope) const {
+
+	smTailHeightFittingThresholdFactor::sMessageIndex = index;
+	smTailHeightFittingThresholdFactor::sMessageScope = scope;
+}
+
+
+int smTailHeightFittingThresholdFactor :: GetMessageIndex () const {
+
+	return smTailHeightFittingThresholdFactor :: sMessageIndex;
+}
+
+
+int smTailHeightFittingThresholdFactor :: GetScope () const {
+
+	return smTailHeightFittingThresholdFactor :: sMessageScope;
+}
+
+
+RGString smTailHeightFittingThresholdFactor :: GetName () const {
+
+	return smTailHeightFittingThresholdFactor :: sName;
+}
+
+
+
+int smTailHeightFittingThresholdFactor :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smTailHeightFittingThresholdFactor* noticeType = new smTailHeightFittingThresholdFactor;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smTailSlopeFittingThresholdFactor :: smTailSlopeFittingThresholdFactor () : SmartNotice () {
+
+}
+
+
+smTailSlopeFittingThresholdFactor :: smTailSlopeFittingThresholdFactor (const smTailSlopeFittingThresholdFactor& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smTailSlopeFittingThresholdFactor :: ~smTailSlopeFittingThresholdFactor () {
+
+}
+
+
+int smTailSlopeFittingThresholdFactor :: GetSubject () const {
+
+	return smTailSlopeFittingThresholdFactor::sSubject;
+}
+
+
+void smTailSlopeFittingThresholdFactor :: SetIndexAndScope (int index, int scope) const {
+
+	smTailSlopeFittingThresholdFactor::sMessageIndex = index;
+	smTailSlopeFittingThresholdFactor::sMessageScope = scope;
+}
+
+
+int smTailSlopeFittingThresholdFactor :: GetMessageIndex () const {
+
+	return smTailSlopeFittingThresholdFactor :: sMessageIndex;
+}
+
+
+int smTailSlopeFittingThresholdFactor :: GetScope () const {
+
+	return smTailSlopeFittingThresholdFactor :: sMessageScope;
+}
+
+
+RGString smTailSlopeFittingThresholdFactor :: GetName () const {
+
+	return smTailSlopeFittingThresholdFactor :: sName;
+}
+
+
+
+int smTailSlopeFittingThresholdFactor :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smTailSlopeFittingThresholdFactor* noticeType = new smTailSlopeFittingThresholdFactor;
 	warehouse->AddType (noticeType);
 	return 1;
 }

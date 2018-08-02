@@ -50,6 +50,8 @@ double TracePrequalification::lowSlopeThreshold = 0.1;
 int TracePrequalification::minSamplesForSlopeRegression = 4;
 double TracePrequalification::defaultNoiseThreshold = 400.0;
 int TracePrequalification::defaultWindowWidth = 9;
+double TracePrequalification::lowHeightModifier = 100.0;
+double TracePrequalification::lowSlopeModifier = 100.0;
 
 
 ABSTRACT_DEFINITION (TracePrequalification)
@@ -275,8 +277,8 @@ DataInterval* STRTracePrequalification :: GetNextDataInterval (NoiseInterval*& C
 	double newCenter;
 	double minRFUApproximate = 0.90 * minRFU;
 
-	double localLowHeightThreshold = TracePrequalification::GetLowHeightThreshold ();
-	double localLowSlopeThreshold = TracePrequalification::GetLowSlopeThreshold ();
+	double localLowHeightThreshold = TracePrequalification::GetLowHeightThreshold () * TracePrequalification::GetLowHeightModifier ();
+	double localLowSlopeThreshold = TracePrequalification::GetLowSlopeThreshold () * TracePrequalification::GetLowSlopeModifier ();
 	double maxSlope = 0.0;
 	double currentSlope;
 	double absCurrentSlope;
@@ -837,8 +839,8 @@ DataInterval* STRTracePrequalification :: GetNextDataIntervalWithPrecomputedConv
 	double newCenter;
 	double minRFUApproximate = 0.90 * minRFU;
 
-	double localLowHeightThreshold = TracePrequalification::GetLowHeightThreshold ();
-	double localLowSlopeThreshold = TracePrequalification::GetLowSlopeThreshold ();
+	double localLowHeightThreshold = TracePrequalification::GetLowHeightThreshold () * TracePrequalification::GetLowHeightModifier ();
+	double localLowSlopeThreshold = TracePrequalification::GetLowSlopeThreshold () * TracePrequalification::GetLowSlopeModifier ();
 	double maxSlope = 0.0;
 	double currentSlope;
 	double absCurrentSlope;

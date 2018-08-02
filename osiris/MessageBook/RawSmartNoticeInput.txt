@@ -259,7 +259,8 @@ smThreePointPeak	1146	2662
 smIncludeNonStandardStutterInStutterOverlapPreset	1147	2663
 smNoNegativeDataPreset	1148	2664
 smTestPullupCorrectedHeightsPreset	1149	2665
-
+smTailHeightFittingThresholdFactor	1150	2666
+smTailSlopeFittingThresholdFactor	1151	2667
 
 
 

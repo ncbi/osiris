@@ -272,6 +272,8 @@ PERSISTENT_PREDECLARATION (smThreePointPeak)
 PERSISTENT_PREDECLARATION (smIncludeNonStandardStutterInStutterOverlapPreset)
 PERSISTENT_PREDECLARATION (smNoNegativeDataPreset)
 PERSISTENT_PREDECLARATION (smTestPullupCorrectedHeightsPreset)
+PERSISTENT_PREDECLARATION (smTailHeightFittingThresholdFactor)
+PERSISTENT_PREDECLARATION (smTailSlopeFittingThresholdFactor)
 
 
 
@@ -7563,6 +7565,62 @@ public:
 	smTestPullupCorrectedHeightsPreset ();
 	smTestPullupCorrectedHeightsPreset (const smTestPullupCorrectedHeightsPreset& note);
 	virtual ~smTestPullupCorrectedHeightsPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smTailHeightFittingThresholdFactor : public SmartNotice {
+
+PERSISTENT_DECLARATION (smTailHeightFittingThresholdFactor)
+
+public:
+	smTailHeightFittingThresholdFactor ();
+	smTailHeightFittingThresholdFactor (const smTailHeightFittingThresholdFactor& note);
+	virtual ~smTailHeightFittingThresholdFactor ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smTailSlopeFittingThresholdFactor : public SmartNotice {
+
+PERSISTENT_DECLARATION (smTailSlopeFittingThresholdFactor)
+
+public:
+	smTailSlopeFittingThresholdFactor ();
+	smTailSlopeFittingThresholdFactor (const smTailSlopeFittingThresholdFactor& note);
+	virtual ~smTailSlopeFittingThresholdFactor ();
 
 	virtual int GetSubject () const;
 

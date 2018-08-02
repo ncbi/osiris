@@ -916,6 +916,13 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smLatitudeForILSFit latitudeForILSFit;
 	smUseLadderEndPointILSAlgorithmPreset useLadderEndPointILSAlgorithm;
 	smPlusLatitudeForLadderEndPointILSFit plusLatitudeForLadderEndPointILSFit;
+	smTailHeightFittingThresholdFactor tailFittingHeightModifier;
+	smTailSlopeFittingThresholdFactor tailFittingSlopeModifier;
+
+	double tailHeightModifier = 0.01 * (double) GetThreshold (tailFittingHeightModifier);
+	double tailSlopeModifier = 0.01 * (double) GetThreshold (tailFittingSlopeModifier);
+	TracePrequalification::SetLowHeightModifier (tailHeightModifier);
+	TracePrequalification::SetLowSlopeModifier (tailSlopeModifier);
 
 	smStage1Successful stage1Successful;
 	smStage2Successful stage2Successful;
@@ -926,6 +933,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smDisableStutterFilter disableStutterFilter;
 	smDisableAdenylationFilter disableAdenylationFilter;
 	smCallOnLadderAdenylationPreset callOnLadderAdenylation;
+
+	RGString pullupMatrixFileName = FullPathForReports + "/matrix.txt";
+	RGTextOutput* pullupMatrixFile = NULL;
 
 	if (GetMessageValue (saveLadderILSHistory)) {
 
@@ -1344,6 +1354,19 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "All ladder ILS history collected and bounds reset..." << endl;
 	}
 
+#ifdef _MATRIX_OUTPUT_
+	pullupMatrixFile = new RGTextOutput (pullupMatrixFileName, FALSE);
+
+	if (!pullupMatrixFile->FileIsValid ()) {
+
+		cout << "Could not open Matrix Output File:  " << pullupMatrixFileName << endl;
+		delete pullupMatrixFile;
+		pullupMatrixFile = NULL;
+	}
+
+	CoreBioComponent::SetPullupMatrixFile (pullupMatrixFile);
+#endif
+
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
@@ -1371,21 +1394,6 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		else
 			bioComponent->SetControlIdName (FileName);
-
-		RGString pullupMatrixFileName = FullPathForReports + "/" + FileName + ".matrix.txt";
-		RGTextOutput* pullupMatrixFile = NULL;
-
-#ifdef _MATRIX_OUTPUT_
-		pullupMatrixFile = new RGTextOutput (pullupMatrixFileName, FALSE);
-		CoreBioComponent::SetPullupMatrixFile (pullupMatrixFile);
-
-		if (!pullupMatrixFile->FileIsValid ()) {
-
-			cout << "Could not open Matrix Output File:  " << pullupMatrixFileName << endl;
-			delete pullupMatrixFile;
-			pullupMatrixFile = NULL;
-		}
-#endif
 
 		commSM.SMOStack [1] = (SmartMessagingObject*) bioComponent;
 
@@ -1681,6 +1689,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 finishOutput:
 
 	delete SampleDirectory;
+	delete pullupMatrixFile;
+	pullupMatrixFile = NULL;
 
 	for (i=1; i<=5; i++) {
 

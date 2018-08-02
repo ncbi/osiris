@@ -2182,7 +2182,7 @@ void CoreBioComponent :: ReportPullupMatrix (int pass) {
 
 	int i;
 	int j;
-	*outputFile << "FileName = " << mFileName << " and SampleName = " << mSampleName << "\n";
+	*outputFile << "\nFileName = " << mFileName << " and SampleName = " << mSampleName << "\n";
 	RGString laserState;
 
 	if (pass == 1)
@@ -2197,11 +2197,11 @@ void CoreBioComponent :: ReportPullupMatrix (int pass) {
 			*outputFile << laserState << " " << i << " " << j << " lin " << mLinearPullupMatrix [i][j] << " quad " << mQuadraticPullupMatrix [i][j] << "\n";
 	}
 
-	if (pass == 2) {
+	//if (pass == 2) {
 
-		delete CoreBioComponent::pullUpMatrixFile;
-		CoreBioComponent::pullUpMatrixFile = NULL;
-	}
+	//	delete CoreBioComponent::pullUpMatrixFile;
+	//	CoreBioComponent::pullUpMatrixFile = NULL;
+	//}
 }
 
 

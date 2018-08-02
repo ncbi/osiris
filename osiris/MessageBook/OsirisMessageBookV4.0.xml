@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.32</VersionNumber>
-	<BuildTime>07/24/2018 01:37 PM</BuildTime>
+	<VersionNumber>7.33</VersionNumber>
+	<BuildTime>07/30/2018 04:40 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5430,6 +5430,74 @@
 			<Text>MINIMUM NUMBER OF POINTS CONCAVE DOWN</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
+		</SmartMessage>		
+		<SmartMessage>
+			<Name>smSpacerTailsConditioningMiddle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTailFittingOptionsSubtitle</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>    Tail Fitting Sensitivity Options</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTailHeightFittingThresholdFactor</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>            Percent of Standard Tail Height Threshold (Default = 100%)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENTAGE OF STANDARD TAIL HEIGHT THRESHOLD FOR CURVE FITS</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTailSlopeFittingThresholdFactor</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>            Percent of Standard Tail Slope Threshold (Default = 100%)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENTAGE OF STANDARD TAIL SLOPE THRESHOLD FOR CURVE FITS</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacer1</Name>
@@ -7273,6 +7341,8 @@
 						<Name>smPercentOverrideOfNoiseThresholdForNormalizationPhase</Name>
 						<Name>smPercentOverrideOfNoiseThresholdForFinalPhase</Name>
 						<Name>smILSBPForEndOfPrimerPeaks</Name>
+						<Name>smTailHeightFittingThresholdFactor</Name>
+						<Name>smTailSlopeFittingThresholdFactor</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
