@@ -3899,6 +3899,34 @@ double STRLaneStandardChannelData :: GetMeasurementRatio () const {
 }
 
 
+
+int STRLaneStandardChannelData :: WriteBaselineData (RGTextOutput& text, const RGString& delim, const RGString& indent) {
+
+	int Size = mLaneStandard->GetNumberOfCharacteristics ();
+	int NSamples = mData->GetNumberOfSamples ();
+	const double* actualArray;
+	mLaneStandard->GetCharacteristicArray (actualArray);
+	double* bps = (double*)actualArray;
+	double* bpOfT = CSplineTransform::GetBPAsAFunctionOfTime (Means, bps, Size, NSamples);
+
+	Endl endLine;
+	text << indent << "<baselineStart>" << (int)floor (100.0 * bpOfT [0] + 0.5) << "</baselineStart>" << endLine;
+	
+	int saveSamples = NSamples - 1;
+	int j;
+	text << indent << "<baselinePoints>";
+	
+	for (j=0; j<saveSamples; j++) {
+
+		text << (int)floor (100.0 * bpOfT [j] + 0.5) << delim;
+	}
+
+	text << (int)floor (100.0 * bpOfT [saveSamples] + 0.5);
+	text << "</baselinePoints>" << endLine;
+	return 1;
+}
+
+
 double STRLaneStandardChannelData :: DotProductWithQuadraticFit (RGDList& set, int size, const double* idealValues, const double* idealDifferences, double idealNorm2) {
 
 	QuadraticFit fit;

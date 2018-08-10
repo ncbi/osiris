@@ -140,6 +140,8 @@ public:
 	double OutputHighDerivativesAndErrors (const double* characteristicArray);
 	double GetMaximumErrorOfInterpolation (const double* characteristicArray);
 
+	static double* GetBPAsAFunctionOfTime (double* ilsTimes, double* ilsBP, int numberILSPeaks, int numberOfTimePoints);
+
 private:
 	int NumberOfKnots;
 	int CurrentInterval;

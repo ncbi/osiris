@@ -194,6 +194,7 @@ public:
 
 	virtual double GetMeasurementRatio () const;
 	virtual bool IsControlChannel () const { return true; }
+	virtual int WriteBaselineData (RGTextOutput& text, const RGString& delim, const RGString& indent);
 
 
 	// Obsolete...not used**********************************************************************************************************************

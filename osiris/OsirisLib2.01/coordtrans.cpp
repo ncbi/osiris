@@ -1458,6 +1458,80 @@ double CSplineTransform :: GetMaximumErrorOfInterpolation (const double* charact
 }
 
 
+double* CSplineTransform :: GetBPAsAFunctionOfTime (double* ilsTimes, double* ilsBP, int numberILSPeaks, int numberOfTimePoints) {
+
+	CSplineTransform* timeToBP = new CSplineTransform (ilsTimes, ilsBP, numberILSPeaks);
+
+	if (!timeToBP->IsValid ())
+		return NULL;
+
+	double* array = new double [numberOfTimePoints];
+	double startSequence = ceil (ilsTimes [0]);
+	double endSequence = floor (ilsTimes [numberILSPeaks - 1]);
+	int k = (int) startSequence;
+	int kk = (int) endSequence;
+	array [k] = timeToBP->EvaluateSequenceStart (startSequence, 1.0);
+	k++;
+	double temp;
+
+	// First while loop evaluates spline by interpolation between first and last knot
+
+	while (k <= kk) {
+
+		array [k] = timeToBP->EvaluateSequenceNext ();
+		k++;
+	}
+
+	// second while loop evaluates spline by extrapolation to the right of the spline
+
+	while (k < numberOfTimePoints) {
+
+		array [k] = timeToBP->EvaluateWithExtrapolation ((double) k);
+		k++;
+	}
+
+	// third while loop evaluates spline by extrapolation to the left of the spline, up to a point.
+
+	k = (int) startSequence - 1;
+	double lowBP = ilsBP [0];
+	double testBP = lowBP - 30.0;
+	double halfBP = 0.5 * lowBP;
+
+	if ((testBP <= 0.0) || (testBP > halfBP))
+		testBP = halfBP;
+
+	while (k >= 0) {
+
+		temp = timeToBP->EvaluateWithExtrapolation ((double) k);
+
+		if (temp < testBP)
+			break;
+
+		array [k] = temp;
+		k--;
+	}
+
+	if (k == 0) {
+
+		array [0] = temp;
+	}
+
+	else if (k > 0) {
+
+		double slope = temp / (double)k;
+
+		while (k >= 0) {
+
+			array [k] = (double)k * slope;
+			k--;
+		}
+	}
+
+	delete timeToBP;
+	return array;
+}
+
+
 
 int CSplineTransform :: SearchForInterval (double abscissa) {
 
