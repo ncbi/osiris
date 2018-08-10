@@ -3923,6 +3923,7 @@ int STRLaneStandardChannelData :: WriteBaselineData (RGTextOutput& text, const R
 
 	text << (int)floor (100.0 * bpOfT [saveSamples] + 0.5);
 	text << "</baselinePoints>" << endLine;
+	delete[] bpOfT;
 	return 1;
 }
 
