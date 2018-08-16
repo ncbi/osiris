@@ -6,7 +6,6 @@ libosiris_a_SOURCES = \
 ../ChannelData.cpp \
 ../ChannelDataSM.cpp \
 ../ControlFit.cpp \
-../coordtrans.cpp \
 ../CoreBioComponent.cpp \
 ../CoreBioComponentSM.cpp \
 ../DataInterval.cpp \
