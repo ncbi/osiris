@@ -48,12 +48,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Version;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\OsirisMath;..\Version;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -67,12 +67,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\Version;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\OsirisMath;..\Version;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -89,7 +89,6 @@
     <ClCompile Include="ChannelData.cpp" />
     <ClCompile Include="ChannelDataSM.cpp" />
     <ClCompile Include="ControlFit.cpp" />
-    <ClCompile Include="coordtrans.cpp" />
     <ClCompile Include="CoreBioComponent.cpp" />
     <ClCompile Include="CoreBioComponentSM.cpp" />
     <ClCompile Include="DataInterval.cpp" />
@@ -150,7 +149,6 @@
     <ClInclude Include="BaseGenetics.h" />
     <ClInclude Include="ChannelData.h" />
     <ClInclude Include="ControlFit.h" />
-    <ClInclude Include="coordtrans.h" />
     <ClInclude Include="CoreBioComponent.h" />
     <ClInclude Include="DataInterval.h" />
     <ClInclude Include="DataSignal.h" />
@@ -205,7 +203,6 @@
     <ClInclude Include="xmlwriter.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".#DataSignal.cpp.1.1" />
     <None Include="ReadMe.txt" />
     <None Include="SmartExpressionExpr.l" />
     <None Include="SmartExpressionExpr.y" />
