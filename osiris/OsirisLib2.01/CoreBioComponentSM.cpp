@@ -678,7 +678,7 @@ void CoreBioComponent :: ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text
 	//	text << "\t\t\t\t</Channel>\n";
 	//}
 
-	text << "\t\t\t</Info>\n" << PLevel ();
+	//text << "\t\t\t</Info>\n" << PLevel ();
 
 	int trigger = Notice::GetMessageTrigger ();
 //	int channelHighestLevel;
