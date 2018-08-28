@@ -278,6 +278,16 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   m_pButtonRfu->SetValue(false);
   pSizer->Add(m_pButtonRfu,0,nSizerFlags,ID_BORDER);
 
+  // bps button - show x-axis in ILS BPS OS-917
+  m_pButtonXBPS = new nwxToggleButton(m_pPanel,IDgraphXBPS,"BPS",
+    wxDefaultPosition, wxDefaultSize,
+    wxBU_EXACTFIT
+    );
+  m_pButtonXBPS->SetToolTip("View horizontal axis in ILS base pairs or time." PLOT_TOOLBAR_SHIFT_ALL);
+  m_pButtonXBPS->SetValue(false);
+  pSizer->Add(m_pButtonXBPS,0,nSizerFlags,ID_BORDER);
+
+
   m_pButtonLadderLabels = new nwxToggleButton(
     m_pPanel, IDgraphLadderLabels,"Ladder",
     wxDefaultPosition, wxDefaultSize,
@@ -476,7 +486,10 @@ int CPanelPlotToolbar::ChannelCount()
 }
 
 //  Sync, ILS, RFU
-
+bool CPanelPlotToolbar::XBPSValue()
+{
+  return m_pButtonXBPS->GetValue();
+}
 bool CPanelPlotToolbar::SyncValue()
 {
   return m_pButtonSync->GetValue();
@@ -509,7 +522,10 @@ void CPanelPlotToolbar::ShowLadderLabels(bool b)
 {
   m_pButtonLadderLabels->SetValue(b);
 }
-
+void CPanelPlotToolbar::SetXBPS(bool b)
+{
+  m_pButtonXBPS->SetValue(b);
+}
 
 // labels, artifacts
 

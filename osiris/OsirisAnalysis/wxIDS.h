@@ -74,6 +74,7 @@ enum
   IDmenuPlotDataBaseline,
   IDmenuPlotSync,
   IDmenuPlotILS,
+  IDmenuPlotXBPS,
   IDmenuPlotRFU,
   IDmenuPlotLadderLabels,
   IDmenuPlotLabels_BEGIN,
@@ -386,6 +387,7 @@ enum DATA_TYPE
 #define IDgraphBaseline IDgraphRebuild
 #define IDgraphILS IDgraphRebuild
 #define IDgraphRFU IDgraphRebuild
+#define IDgraphXBPS IDgraphRebuild
 #define IDgraphLadderLabels IDgraphRebuild
 // channel 1 IDgraphRebuild channels must be in order
 // to loop through the numbers if part of enum

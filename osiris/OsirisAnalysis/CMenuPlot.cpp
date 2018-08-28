@@ -245,6 +245,9 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   AppendCheckItem(
     _ID(IDmenuPlotRFU),
     "Show minimum RFU");
+  AppendCheckItem(
+    _ID(IDmenuPlotXBPS),
+    "Show ILS BPS axis");
   m_pMenuItemLabels = AppendSubMenu(m_pMenuLabels,"Labels");
   AppendSubMenu(m_pMenuArtifact,"Artifacts");
   AppendCheckItem(
@@ -392,7 +395,18 @@ bool CMenuPlot::ILSValue()
 {
   return IsChecked(_ID(IDmenuPlotILS));
 }
+bool CMenuPlot::XBPSValue()
+{
+  return IsChecked(_ID(IDmenuPlotXBPS));
+}
 
+void CMenuPlot::SetXBPS(bool b)
+{
+  if(!m_bPreview)
+  {
+    Check(_ID(IDmenuPlotXBPS),b);
+  }
+}
 
 void CMenuPlot::SetSync(bool b)
 {

@@ -121,10 +121,12 @@ public:
   virtual bool MinRfuValue();
   virtual bool LadderLabels();
   virtual bool ILSValue();
+  virtual bool XBPSValue();
   virtual void SetSync(bool b = true);
   virtual void ShowILS(bool b = true);
   virtual void ShowMinRfu(bool b = true);
   virtual void ShowLadderLabels(bool b = true);
+  virtual void SetXBPS(bool b = true);
 
 
   // labels, artifacts
@@ -170,7 +172,7 @@ public:
   {
     m_pPanel->Move(x,y);
   }
-
+  // the following should be a std::map<wxObject *,int>
   bool IsButtonAnalyzed(wxObject *p)
   {
     return (p == (wxObject *) m_pButtonAnalyzed);
@@ -194,6 +196,10 @@ public:
   bool IsButtonLadderLabels(wxObject *p)
   {
     return (p == (wxObject *) m_pButtonLadderLabels);
+  }
+  bool IsButtonXBPS(wxObject *p)
+  {
+    return (p == (wxObject *) m_pButtonXBPS);
   }
   bool IsButtonILS(wxObject *p)
   {
@@ -258,6 +264,7 @@ private:
   nwxToggleButton *m_pButtonRfu;
   nwxToggleButton *m_pButtonLadderLabels;
   nwxToggleButton *m_pButtonILS;
+  nwxToggleButton *m_pButtonXBPS;
   wxButton *m_pButtonDelete;
   wxButton *m_pButtonAppend;
   nwxButtonMenu *m_pButtonLabels;

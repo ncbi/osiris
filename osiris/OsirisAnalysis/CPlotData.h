@@ -30,7 +30,6 @@
 */
 #ifndef __C_PLOT_DATA_H__
 #define __C_PLOT_DATA_H__
-#define BASELINE_START 0
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
 #include "nwx/nwxRound.h"
@@ -529,9 +528,9 @@ public:
     m_pdAnalyzed = NULL;
     m_pdLadder = NULL;
     m_pdBaseline = NULL;
-#if BASELINE_START
-    m_pdBaselineX = NULL;
-#endif
+    m_pdPeakTime = NULL;
+    m_pdPeakBPS = NULL;
+
     m_vnLadderPoints.reserve(POINT_COUNT);
     m_vnAnalyzedPoints.reserve(POINT_COUNT);
     m_vnRawPoints.reserve(POINT_COUNT);
@@ -561,6 +560,10 @@ public:
   {
     return m_vSamplePeak;
   }
+  size_t GetPeakCount()
+  {
+    return m_vSamplePeak.size();
+  }
   const vector<CSamplePeak *> &GetLadderPeaks()
   {
     return m_vLadderPeak;
@@ -573,6 +576,30 @@ public:
   int GetNumber() const
   {
     return m_nr;
+  }
+
+  // OS-917 - get ILS bps and time for each peak
+  //    used in ILS channel for BPS x-axis
+  void CleanupPeakTimeILS()
+  {
+    FREEPTR(m_pdPeakTime);
+    m_pdPeakBPS = NULL;
+  }
+  double *GetPeakTime()
+  {
+    if(m_pdPeakTime == NULL)
+    {
+      _setupPeakTimeBPS();
+    }
+    return m_pdPeakTime;
+  }
+  double *GetPeakBps()
+  {
+    if(m_pdPeakBPS == NULL)
+    {
+      _setupPeakTimeBPS();
+    }
+    return m_pdPeakBPS;
   }
   void FixAmel(int nStart, int nEnd);
   void FixBaseline();
@@ -629,13 +656,11 @@ private:
   }
   void ClearDoubles()
   {
+    CleanupPeakTimeILS();
     FREEPTR(m_pdRaw);
     FREEPTR(m_pdAnalyzed);
     FREEPTR(m_pdLadder);
     FREEPTR(m_pdBaseline);
-#if BASELINE_START
-    FREEPTR(m_pdBaselineX);
-#endif
   }
   static void BuildList(vector<int> &vn, double **p, size_t nPointCount);
   double *GetRaw()
@@ -674,13 +699,7 @@ private:
   {
     return !!m_vnBaselinePoints.size();
   }
-#if BASELINE_START
-  double *GetBaselineX();
-  unsigned int GetBaselineStart() const
-  {
-    return m_nBaselineStart;
-  }
-#endif
+  void _setupPeakTimeBPS();
   double GetMinRfu()
   {
     return m_dMinRfu;
@@ -703,9 +722,8 @@ private:
   double *m_pdAnalyzed;
   double *m_pdLadder;
   double *m_pdBaseline;
-#if BASELINE_START
-  double *m_pdBaselineX;
-#endif
+  double *m_pdPeakTime;
+  double *m_pdPeakBPS;
   TnwxXmlIOPersistVector<CSamplePeak> m_IOpeak;
   TnwxXmlIOPersistVector<CArtifact> m_IOartifact;
 };
@@ -813,7 +831,8 @@ public:
 
   CPlotData() :
     m_IOchannel(true),
-    m_IOlocus(true)
+    m_IOlocus(true),
+    m_pdILS_BPs(NULL)
   {
     m_pdX = NULL;
     m_nStart = 0;
@@ -849,19 +868,21 @@ public:
 
   virtual bool LoadFromNode(wxXmlNode *pNode);
   size_t GetPointCount();
-#if BASELINE_START
-  size_t GetBaselinePointCount(unsigned int nChannel);
-#endif
   bool HasBaseline();
   unsigned int GetChannelCount()
   {
     return (unsigned int)m_vChannels.size();
   }
-#if BASELINE_START
-  double *GetBaselineTimePoints(unsigned int nChannel);
-  unsigned int GetBaselineStart(unsigned int nChannel);
-#endif
   double *GetTimePoints();
+  double *GetILSBpsPoints()
+  {
+    if(m_pdILS_BPs == NULL)
+    {
+      _setupILSBps();
+    }
+    return m_pdILS_BPs;
+  }
+  double TimeToILSBps(double dTime);
 
   double *GetRawPoints(unsigned int nChannel)
   {
@@ -1002,6 +1023,17 @@ public:
     }
     return dRtn;
   }
+  double GetMaxXBPS()
+  {
+    double dRtn = 0;
+    size_t n = GetPointCount();
+    if(n > 0)
+    {
+      _setupILSBps();
+      dRtn = m_pdILS_BPs[n-1];
+    }
+    return dRtn;
+  }
   wxString FindAnalysisFile() const;
   bool GetLocusRange(
     const wxString &sLocusName,
@@ -1013,6 +1045,7 @@ protected:
 private:
   void _FixBaseline();
   void _Cleanup();
+  void _setupILSBps();
   CPlotChannel *FindChannel(unsigned int n);
   CParmOsirisLite m_parm;
   wxString m_sVersion;
@@ -1024,6 +1057,7 @@ private:
   vector<CPlotLocus *> m_vLocus;
   map<unsigned int,CPlotChannel *> m_mapChannels;
       // do not use, except through FindChannel()
+  double *m_pdILS_BPs; // OS-917, plot by BPs
   unsigned int m_nStart;
   unsigned int m_nBegin;
   unsigned int m_nInterval;

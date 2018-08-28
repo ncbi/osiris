@@ -52,6 +52,7 @@
 #include <map>
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
+#include "OsirisMath/coordtrans.h"
 
 const wxString g_TagRawPoints();
 const wxString g_TagAnalyzedPoints();
@@ -111,41 +112,6 @@ void CSamplePeak::FixAmel(int nStart, int nEnd)
     }
   }
 }
-#if BASELINE_START
-/*
-void MINMAX_RFU::Setup(const vector<int> &vn, int nStart_)
-{
-  if((vn.size() > 0) && !IsSetup())
-  {
-    size_t nSize = vn.size();
-    size_t nStart =
-      ((nStart_ < 0) || (nStart_ > (int)nSize))
-      ? 0 : (size_t)nStart_;
-    size_t i;
-    int n;
-    (nStart >= nSize) && (nStart = 0);
-    m_nMinAll = vn.at(0);
-    m_nMaxAll = m_nMinAll;
-    m_nMinFromStart = vn.at(nStart);
-    m_nMaxFromStart =  m_nMinFromStart;
-    for(i = 1; i <= nStart; i++)
-    {
-      n = vn.at(i);
-      (n < m_nMinAll) && (m_nMinAll = n);
-      (n > m_nMaxAll) && (m_nMaxAll = n);
-    }
-    for(i = nStart + 1; i < nSize; i++)
-    {
-      n = vn.at(i);
-      (n < m_nMinAll) && (m_nMinAll = n);
-      (n < m_nMinFromStart) && (m_nMinFromStart = n);
-      (n > m_nMaxAll) && (m_nMaxAll = n);
-      (n > m_nMaxFromStart) && (m_nMaxFromStart = n);
-    }
-  }
-}
-*/
-#endif
 void CPlotChannel::FixBaseline()
 {
   if(m_nBaselineStartObsolete > 0)
@@ -199,6 +165,29 @@ void CPlotChannel::RegisterAll(bool bInConstructor)
   }
 }
 
+void CPlotChannel::_setupPeakTimeBPS()
+{
+  size_t nPEAKS = GetPeakCount();
+  if(nPEAKS && (m_pdPeakTime == NULL))
+  {
+    vector<CSamplePeak *>::iterator itr;
+    size_t n = (nPEAKS << 1) * sizeof(double); // size of two arrays
+    m_pdPeakTime = (double *)malloc(n);
+    m_pdPeakBPS = &m_pdPeakTime[nPEAKS]; // second half of array
+    double *pTime = m_pdPeakTime;
+    double *pBPS = m_pdPeakBPS;
+    for(itr = m_vSamplePeak.begin();
+      itr != m_vSamplePeak.end();
+      ++itr)
+    {
+      *pTime = (*itr)->GetTime();
+      *pBPS = (*itr)->GetMeanBPS();
+      ++pTime;
+      ++pBPS;
+    }
+  }
+}
+
 size_t CPlotChannel::GetPointCount()
 {
   if(!m_nPointCount)
@@ -233,28 +222,6 @@ void CPlotChannel::BuildList(vector<int> &vn, double **p, size_t nPointCount)
     pd++;
   }
 }
-#if BASELINE_START
-double *CPlotChannel::GetBaselineX()
-{
-  size_t nSize = m_vnBaselinePoints.size();
-  if(nSize && (m_pdBaselineX == NULL))
-  {
-    size_t i;
-    unsigned int n = m_nBaselineStart;
-    i = nSize * sizeof(double);
-    m_pdBaselineX = (double *) malloc(i);
-    memset(m_pdBaselineX,0,i);
-    double *pd = m_pdBaselineX;
-    for(i = 0; i < nSize; i++)
-    {
-      (*pd) = double(n);
-      n++;
-      pd++;
-    }
-  }
-  return m_pdBaselineX;
-}
-#endif
 const int CPlotLocus::MARGIN = 10;
 
 void CPlotLocus::RegisterAll(bool bInConstructor)
@@ -283,7 +250,29 @@ void CPlotData::_Cleanup()
   m_nPointCount = 0;
   m_IOchannel.Cleanup();
   m_IOlocus.Cleanup();
+  CSplineTransform::FreeBPAsAFunctionOfTime(m_pdILS_BPs);
+  m_pdILS_BPs = NULL;
 }
+
+void CPlotData::_setupILSBps()
+{
+  if(m_pdILS_BPs == NULL)
+  {
+    CPlotChannel *pChannel = FindChannel(GetILSChannel());
+    if(pChannel != NULL)
+    {
+      double *pdTime = pChannel->GetPeakTime();
+      double *pdBPS = pChannel->GetPeakBps();
+      m_pdILS_BPs = CSplineTransform::GetBPAsAFunctionOfTime(
+        pdTime,
+        pdBPS,
+        (int) pChannel->GetPeakCount(),
+        (int)GetPointCount());
+      pChannel->CleanupPeakTimeILS();
+    }
+  }
+}
+
 void CPlotData::RegisterAll(bool bInConstructor)
 {
   RegisterWxString("Version",&m_sVersion);
@@ -370,36 +359,6 @@ bool CPlotData::HasBaseline()
   }
   return bRtn;
 }
-#if BASELINE_START
-size_t CPlotData::GetBaselinePointCount(unsigned int nChannel)
-{
-  CPlotChannel *pChannel = FindChannel(nChannel);
-  size_t nRtn =
-    (pChannel == NULL)
-    ? 0
-    : pChannel->GetBaselinePointCount();
-  return nRtn;
-}
-double *CPlotData::GetBaselineTimePoints(unsigned int nChannel)
-{
-  CPlotChannel *pChannel = FindChannel(nChannel);
-  double *pdRtn =
-    (pChannel == NULL)
-    ? NULL
-    : pChannel->GetBaselineX();
-  return pdRtn;
-}
-unsigned int CPlotData::GetBaselineStart(unsigned int nChannel)
-{
-  CPlotChannel *pChannel = FindChannel(nChannel);
-  unsigned int nRtn =
-    (pChannel == NULL)
-    ? 0
-    : pChannel->GetBaselineStart();
-  return nRtn;
-}
-#endif
-
 double *CPlotData::GetTimePoints()
 {
   size_t nPoints = GetPointCount();
@@ -422,6 +381,63 @@ double *CPlotData::GetTimePoints()
   return m_pdX;
 }
 
+double CPlotData::TimeToILSBps(double dTime)
+{
+  // interpolate base pairs from time
+  double dTimeNorm = dTime - (double) m_nStart;
+  double dRtn = 0.0;
+  size_t ndx = 0;
+  if(m_nInterval > 1)
+  {
+    dTimeNorm = (dTimeNorm / (double) m_nInterval);
+  }
+  if(dTimeNorm > 0)  
+  {
+    size_t nPointCount = GetPointCount();
+    double *pdTime = GetTimePoints();
+    double *pdBPS = GetILSBpsPoints();
+    ndx = (size_t)floor(dTimeNorm);
+    if(ndx >= nPointCount)
+    {
+      if(nPointCount > 0)
+      {
+        dRtn = pdBPS[nPointCount - 1];
+      }
+    }
+    else
+    {
+      size_t ndxMax = nPointCount - 1;
+      while( (pdTime[ndx] > dTime) && (ndx > 0) )
+      {
+        --ndx;
+      }
+      size_t ndx1 = ndx + 1;
+      while( (ndx1 < nPointCount) && (pdTime[ndx1] < dTime) )
+      {
+        ++ndx1;
+        ++ndx;
+      }
+      if(ndx == ndxMax)
+      {
+        dRtn = pdBPS[ndxMax]; 
+      }
+      else if( (ndx > 0) || (pdTime[ndx] < dTime) )
+      {
+        double &dBPS_0 = pdBPS[ndx];
+        double &dBPS_1 = pdBPS[ndx1];
+        double &dT0 = pdTime[ndx];
+        double &dT1 = pdTime[ndx1];
+        double dSlope = (dBPS_1 - dBPS_0) / (dT1 - dT0);
+        dRtn = dT0 + ((dTime - dT0) * dSlope);
+      }
+      else
+      {
+        dRtn = pdBPS[0];
+      }
+    }
+  }
+  return dRtn;
+}
 CPlotChannel *CPlotData::FindChannel(unsigned int n)
 {
   CPlotChannel *pRtn(NULL);
@@ -526,9 +542,6 @@ bool CPlotData::GetLocusRange(
     int x1;
     int x2;
     int nSize;
-#if BASELINE_START
-    int ndxBaseline = -1;
-#endif
     if(nType & TYPE_ANALYZED)
     {
       ppvn[ndxMax++] = &pCh->m_vnAnalyzedPoints;
@@ -543,9 +556,6 @@ bool CPlotData::GetLocusRange(
     }
     if(nType & TYPE_BASELINE)
     {
-#if BASELINE_START
-      ndxBaseline = ndxMax;
-#endif
       ppvn[ndxMax++] = &pCh->m_vnBaselinePoints;
     }
     *px2 = ppl->GetEndExtended();
@@ -557,14 +567,6 @@ bool CPlotData::GetLocusRange(
       pvn = ppvn[j];
       x1 = *px1;
       x2 = *px2;
-#if BASELINE_START
-      unsigned int nBaselineStart = pCh->GetBaselineStart();
-      if(j == ndxBaseline && nBaselineStart != 0)
-      {
-        x1 -= nBaselineStart;
-        x2 -= nBaselineStart;
-      }
-#endif
       nSize = (int) pvn->size();
       if(x2 >= nSize)
       {
