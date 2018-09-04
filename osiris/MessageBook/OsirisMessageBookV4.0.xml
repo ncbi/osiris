@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.33</VersionNumber>
-	<BuildTime>07/30/2018 04:40 PM</BuildTime>
+	<VersionNumber>7.34</VersionNumber>
+	<BuildTime>09/04/2018 12:43 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -5334,7 +5334,7 @@
 			<CountingDataInfo>
 				<Threshold>50</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                      Percent of Noise Level for Normalization (Default = 50%)</ThresholdDescriptor>
+				<ThresholdDescriptor>                      Percent of Noise Level for Normalization (Default = 10%)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -6073,12 +6073,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Test Proximity to Peaks Only (Default = checked)</ThresholdDescriptor>
+				<ThresholdDescriptor>                        Test Proximity to Peaks (Default = checked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Use Proximity to Peaks Only (Default = checked)</Text>
+			<Text>Test Proximity to Peaks (Default = checked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -6149,12 +6149,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Test Proximity to Both Peaks and Level Changes (Overrides Peaks Only Above) (Default = checked)</ThresholdDescriptor>
+				<ThresholdDescriptor>                        Test Proximity to Both Peaks and Level Changes (Default = checked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Use Proximity Both to Peaks and to Level Changes (Overrides Peaks Only Above) (Default = checked)</Text>
+			<Text>Use Proximity Both to Peaks and to Level Changes (Default = checked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -6580,9 +6580,9 @@
 			<Subject>10</Subject>
 			<SampleType>2</SampleType>
 			<CountingDataInfo>
-				<Threshold>50</Threshold>
+				<Threshold>10</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>        Max % of Tallest Locus Peak To Assign Excessive Residual Displacement (Default = 50)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Max % of Tallest Locus Peak To Assign Excessive Residual Displacement (Default = 10)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
