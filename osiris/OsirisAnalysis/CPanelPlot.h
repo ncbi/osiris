@@ -609,11 +609,11 @@ private:
   }
 
 
-  wxPlotData *FindData(
+  wxPlotData *_FindData(
     DATA_TYPE nType, 
     unsigned int nChannel, 
-    bool bNoise = false, 
-    bool bXBPS = false);
+    bool bNoise, 
+    bool bXBPS);
   void _CleanupLadderPeakSet();
   void _CleanupPeakAny();
   int _GetLadderPeakCount();

@@ -289,7 +289,7 @@ void CPanelPlot::CleanupMinRfuLines()
 //  m_mapMinRfuAll.clear();
 }
 
-wxPlotData *CPanelPlot::FindData(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS)
+wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS)
 {
   wxPlotData *pRtn(NULL);
   int nKey = _SamplePlotKey(nType, nChannel, bNoise, bXBPS);
@@ -366,6 +366,7 @@ wxPlotData *CPanelPlot::FindData(DATA_TYPE nType, unsigned int nChannel, bool bN
         pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
         pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
         pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
+        m_mapPlotData.insert(mapSamplePlots::value_type(nNewKey, pPlotData));
         if(bNoise)
         {
           pRtn = pPlotData;
@@ -1857,6 +1858,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     ShowILSlines();
   }
+  bool bXBPS = m_pMenu->XBPSValue();
   bool bNoise = true;
   for(int zz = 0; zz < 2; zz++)
   {
@@ -1865,7 +1867,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
       nChannel = anChannel[i];
       for(j = 0; j < ndxData; j++)
       {
-        wxPlotData *p(FindData(anData[j],nChannel,bNoise));
+        wxPlotData *p(_FindData(anData[j],nChannel,bNoise,bXBPS));
         if(p != NULL)
         {
           m_pPlotCtrl->AddCurve(*p,false,false);
