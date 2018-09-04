@@ -99,6 +99,7 @@ public:
 	// ************************************************************************************************************************************************
 
 	int AnalyzeIncrementallySM (const RGString& prototypeInputDirectory, const RGString& markerSet, int outputLevel, const RGString& graphicsDirectory, const RGString& commandInputs);
+	int AnalyzeIncrementallySMLF (const RGString& prototypeInputDirectory, const RGString& markerSet, int outputLevel, const RGString& graphicsDirectory, const RGString& commandInputs);
 
 	int GetObjectScope () const { return 6; }
 

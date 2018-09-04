@@ -1795,6 +1795,1034 @@ finishOutput:
 }
 
 
+int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDirectory, const RGString& markerSet, int outputLevel, const RGString& graphicsDirectory, const RGString& commandInputs) {
+
+	cout << "Ladder Free Analysis Function...\n";
+	
+	Boolean print = TRUE;
+	smDefaultsAreOverridden defaultsAreOverridden;
+	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
+
+	ParameterServer* pServer = new ParameterServer;
+	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
+
+	if (gSet == NULL) {
+
+		cout << "Could not retrieve genotype collection set from parameter server.  Exiting..." << endl;
+		return -20;
+	}
+
+	GenotypesForAMarkerSet* pGenotypes = gSet->FindMarkerSetCollection (markerSet);
+
+	if (pGenotypes == NULL) {
+
+		cout << "Could not retrieve genotype collection for marker set name " << markerSet << " from parameter server.  Exiting..." << endl;
+		pGenotypes = new GenotypesForAMarkerSet;
+		//return -20;
+	}
+
+	if (!STRLCAnalysis::OverrideStringIsEmpty ()) {
+
+		SetMessageValue (defaultsAreOverridden, true);
+		AppendDataForSmartMessage (defaultsAreOverridden, STRLCAnalysis::GetOverrideString ());
+	}
+
+	Notice::SetMessageTrigger (outputLevel);
+
+	// These are all input
+	RGString PrototypeInputDirectory (prototypeInputDirectory);
+	mCurrentInputDirectory = prototypeInputDirectory;
+
+	RGString DirectoryName = PrototypeInputDirectory;
+	RGDirectory::MakeDirectory (mParentDirectoryForReports);
+
+	RGString markerSetName (markerSet);
+	RGString AnalysisDateStr;
+	RGString AnalysisTimeStr;
+	RGString GelExpirationDateStr;
+
+	RGString FullPathForReports;
+	RGString OutputDirectoryBase;
+	size_t startPosition = 0;
+	size_t endPosition;
+
+	if (PrototypeInputDirectory.GetLastCharacter () == '/')
+		PrototypeInputDirectory.ExtractAndRemoveLastCharacters (1);
+
+	if (mParentDirectoryForReports.GetLastCharacter () == '/')
+		mParentDirectoryForReports.ExtractAndRemoveLastCharacters (1);
+
+	PrototypeInputDirectory.FindLastSubstring ("/", startPosition, endPosition);
+	size_t nChars = PrototypeInputDirectory.Length () - endPosition - 1;
+	OutputDirectoryBase = PrototypeInputDirectory.ExtractLastCharacters (nChars);
+
+	FullPathForReports = mParentDirectoryForReports + "/" + OutputDirectoryBase;
+
+	RGDirectory::MakeDirectory (FullPathForReports);
+
+	RGString outputSubDirectory = STRLCAnalysis::GetOutputSubDirectory ();
+
+	if (outputSubDirectory.Length () > 0) {
+
+		FullPathForReports += "/" + outputSubDirectory;
+		RGDirectory::MakeDirectory (FullPathForReports);
+	}
+
+	cout << "Starting..." << endl;
+
+	int i;
+
+	DirectoryManager* SampleDirectory;
+	
+	if (!GetMessageValue (useSampleNamesForControlSampleTests))
+		SampleDirectory = new DirectoryManager (DirectoryName);
+
+	else
+		SampleDirectory = new SampleNameDirectoryManager (DirectoryName);
+
+	if (!SampleDirectory->IsValid ()) {
+
+		cout << "Could not find sample directory:  " << DirectoryName << endl;
+		cout << "Closing..." << endl;
+		return -1;
+	}
+
+	else
+		cout << "Sample directory opened successfully" << endl;
+
+	int ChannelNumber = 1;
+	SampleDirectory->Initialize ();
+	int NSampleFiles = SampleDirectory->GetNumberOfFilesInDirectory ();
+	double Progress;
+	int SamplesProcessed = 0;
+
+	TestCharacteristic* testPeak = new STRTestControlCharacteristic ();
+	testPeak->SetTestForNegative (TestCharacteristic::GetGlobalTestForNegative ());
+	RGString LaneNumber;
+	RGString StartDate;
+	RGString StartTime;
+	RGString Extension;
+	int NumFiles = 0;
+	RGString FileNumber;
+//	int NSamples;
+//	int status;
+	RGString CurrentMarkerSet;
+
+	CoreBioComponent* bioComponent;
+//	CoreBioComponent* ladderBioComponent;
+
+	RGString FileName;
+	RGString FullPathName;  // = DirectoryName + "/" + FileName;
+//	int length;
+	fsaFileData* data;
+	pServer->SetDoubleGaussianSigmaRatio (4.0);
+
+	RGString OutputFileName = OutputDirectoryBase;
+	RGString OutputFullPath = FullPathForReports + "/" + OutputFileName + ".tab";
+	RGFile OutputFile (OutputFullPath, "wt");
+	RGString WholeOutputFileName = OutputFileName + "WholeSample.txt";
+	RGString WholeFullPath = FullPathForReports + "/" + WholeOutputFileName;
+
+	RGString SummaryFullPath = FullPathForReports + "/" + OutputFileName + "Summary.tab";
+	RGString SummaryFullPathWithLinks = FullPathForReports + "/" + OutputFileName + "_.txt";
+	RGString XMLSummaryFullPathWithLinks = FullPathForReports + "/" + OutputFileName + ".oar";
+	RGString MsgBookOutputFullPath = FullPathForReports + "/" + OutputFileName + ".msgBook.xml";
+
+	RGString tempSummaryFullPath = FullPathForReports + "/temp" + OutputFileName + "Summary.txt";
+	RGString tempSummaryFullPathWithLinks = FullPathForReports + "/temp" + OutputFileName + ".txt";
+	RGString tempXMLSummaryFullPathWithLinks = FullPathForReports + "/temp" + OutputFileName + "XML.txt";
+
+	RGString debugOutputFullPath = FullPathForReports + "/" + OutputFileName + "Debug.txt";
+
+	RGFile OutputSummary (SummaryFullPath, "wt");
+	RGFile OutputSummaryLinks (SummaryFullPathWithLinks, "wt");
+	RGFile XMLOutputSummaryLinks (XMLSummaryFullPathWithLinks, "wt");
+	RGFile MsgBookOutputFile (MsgBookOutputFullPath, "wt");
+
+	if (MsgBookOutputFile.isValid ()) {
+
+		SmartMessage::WriteMsgBookFile (MsgBookOutputFile);
+		MsgBookOutputFile.Flush ();
+	}
+
+	MsgBookOutputFile.Close ();
+
+	RGString OutputLadderInfo = FullPathForReports + "/LadderInfo.xml";
+	RGTextOutput* LadderInfo = new RGTextOutput (OutputLadderInfo, FALSE);
+
+	if (LadderInfo->FileIsValid ()) {
+
+		*LadderInfo << mCollection->GetGridData ();
+	}
+
+	delete LadderInfo;
+
+	RGFile tempOutputSummary (tempSummaryFullPath, "wt");
+	RGFile tempOutputSummaryLinks (tempSummaryFullPathWithLinks, "wt");
+	RGFile tempXMLOutputSummaryLinks (tempXMLSummaryFullPathWithLinks, "wt");
+
+	RGString ConsoleOutputFileName = OutputFileName + "ConsoleData.txt";
+	RGString WholeConsoleName = FullPathForReports + "/" + ConsoleOutputFileName;
+
+	WorkingFileName = FullPathForReports + "/Working.txt";
+	WorkingFile = new RGFile (WorkingFileName, "wt");
+
+	if (!WorkingFile->isValid ())
+		cout << "Could not open output file:  " << WorkingFileName << endl;
+
+	RGString CInputFileName = FullPathForReports + "/BaseInputFile.txt";
+	RGTextOutput CInputFile (CInputFileName, FALSE);
+	
+	RGTextOutput text (WholeConsoleName, FALSE);
+	OsirisMsg Message (&OutputFile, "\t", 10);
+	Endl endLine;
+
+	RGString nonLaserOffScalePullupFractionName = FullPathForReports + "/PullupFractions.tab";
+	RGTextOutput* nonLaserOffScalePullupFractions = new RGTextOutput (nonLaserOffScalePullupFractionName, FALSE);
+	CoreBioComponent::SetNonLaserOffScalePUCoeffsFile (nonLaserOffScalePullupFractions);
+
+	if (!CInputFile.FileIsValid ()) {
+
+		cout << "Could not open Command Input file:  " << CInputFileName << endl;
+		cout << "Information is reproduced in Details below\n";
+	}
+
+	else {
+
+		CInputFile << commandInputs;
+	}
+
+	if (!OutputFile.isValid ()) {
+
+		cout << "Could not open output file:  " << OutputFullPath << endl;
+		cout << "Ending..." << endl;
+		return -1;
+	}
+
+	if (!text.FileIsValid ()) {
+
+		cout << "Could not open text echo file:  " << WholeConsoleName << endl;
+		cout << "Ending..." << endl;
+		return -2;
+	}
+
+	if (!OutputSummary.isValid ()) {
+
+		cout << "Could not open output summary file:  " << SummaryFullPath << endl;
+		cout << "Ending..." << endl;
+		return -2;
+	}
+
+	if (!OutputSummaryLinks.isValid ()) {
+
+		cout << "Could not open output summary file with embedded links:  " << SummaryFullPathWithLinks << endl;
+		cout << "Ending..." << endl;
+		return -2;
+	}
+
+	if (!XMLOutputSummaryLinks.isValid ()) {
+
+		cout << "Could not open output xml summary file with embedded links:  " << XMLSummaryFullPathWithLinks << endl;
+		cout << "Ending..." << endl;
+		return -2;
+	}
+
+	if (!tempOutputSummary.isValid ()) {
+
+		cout << "Could not open temporary output summary file:  " << tempSummaryFullPath << endl;
+		cout << "Ending..." << endl;
+		return -2;
+	}
+
+	if (!tempOutputSummaryLinks.isValid ()) {
+
+		cout << "Could not open temporary output summary file with embedded links:  " << tempSummaryFullPathWithLinks << endl;
+		cout << "Ending..." << endl;
+		return -2;
+	}
+
+	if (!tempXMLOutputSummaryLinks.isValid ()) {
+
+		cout << "Could not open temporary output xml summary file with embedded links:  " << tempXMLSummaryFullPathWithLinks << endl;
+		cout << "Ending..." << endl;
+		return -2;
+	}
+
+	cout << "Opened output file:  " << OutputFullPath << " and text echo file:  " << WholeConsoleName << endl;
+
+	RGLogBook ExcelText (&OutputFile, outputLevel, FALSE);
+	RGLogBook ExcelSummary (&OutputSummary, outputLevel, FALSE);
+	RGLogBook ExcelLinks (&OutputSummaryLinks, outputLevel, FALSE);
+	RGLogBook XMLExcelLinks (&XMLOutputSummaryLinks, outputLevel, FALSE);
+	RGLogBook tempExcelSummary (&tempOutputSummary, outputLevel, FALSE);
+	RGLogBook tempExcelLinks (&tempOutputSummaryLinks, outputLevel, FALSE);
+	RGLogBook tempXMLExcelLinks (&tempXMLOutputSummaryLinks, outputLevel, FALSE);
+	SmartMessage::CreateDebugFile (debugOutputFullPath);
+	GridDataStruct* GridData = new GridDataStruct (mCollection, markerSetName, testPeak, text, ExcelText, Message, print);
+	SampleDataStruct* SampleData = new SampleDataStruct (mCollection, markerSetName, testPeak, testPeak, text, ExcelText, Message, print);
+	PopulationMarkerSet* set = mCollection->GetNamedPopulationMarkerSet (markerSetName);
+
+	if (set == NULL) {
+
+		cout << "Could not find marker set named:  " << markerSetName << ".  Ending..." << endl;
+		return -10000;
+	}
+
+	RGString lsName = set->GetLaneStandardName ();
+	int ilsChannelNumber = set->GetLaneStandardChannel ();
+	text << "Directory:" << endLine;
+	text << "    " << DirectoryName.GetData() << endLine;
+
+	ExcelText.SetOutputLevel (1);
+	ExcelText << "Directory:" << endLine;
+	ExcelText << "    " << DirectoryName.GetData() << endLine;
+
+	int expectedNumberOfChannels = set->GetNumberOfChannels ();
+	DataSignal::SetNumberOfChannels (expectedNumberOfChannels);
+	Locus::SetNumberOfChannels (expectedNumberOfChannels);
+
+	pServer->Report (text, "");
+	pServer->Report (ExcelText, "");
+	ExcelText.ResetOutputLevel ();
+
+	ExcelSummary.SetOutputLevel (1);
+
+	int minSampleRFU = (int)floor (STRSampleChannelData::GetMinRFU () + 0.5);
+	int minLadderRFU = (int)floor (STRLadderChannelData::GetMinRFU () + 0.5);
+	int minLaneStdRFU = (int)floor (STRLaneStandardChannelData::GetMinRFU () + 0.5);
+	int minInterlocusRFU = (int)floor (STRSampleChannelData::GetMinInterlocusRFU () + 0.5);
+	int minLadderInterlocusRFU = (int)floor (STRLadderChannelData::GetMinInterlocusRFU () + 0.5);
+	int minRFUSampleDetectionRFU = (int)floor (STRSampleChannelData::GetSampleDetectionThreshold () + 0.5);
+
+	ExcelSummary << "OAR 2.0" << endLine;
+	ExcelSummary << "Parameters:" << endLine;
+	ExcelSummary << "Input Directory:  " << DirectoryName.GetData () << endLine;
+	ExcelSummary << "Output Directory:  " << FullPathForReports.GetData () << endLine;
+	ExcelSummary << "Kit Name:  " << markerSet << endLine;
+	ExcelSummary << "Internal Lane Standard:  " << lsName.GetData () << endLine;
+	ExcelSummary << "Minimum RFU:  " << minSampleRFU << "," << minLaneStdRFU << ",";
+	ExcelSummary << minLadderRFU << "," << minInterlocusRFU << endLine;
+	ExcelSummary << "Standard Positive Control Name:  " << pServer->GetStandardPositiveControlName () << endLine << endLine;
+	ExcelSummary.ResetOutputLevel ();
+
+	ExcelLinks.SetOutputLevel (1);
+
+	ExcelLinks << "OAR 2.0" << endLine;
+	ExcelLinks << "Parameters:" << endLine;
+	ExcelLinks << "Input Directory:  " << DirectoryName.GetData () << endLine;
+	ExcelLinks << "Output Directory:  " << FullPathForReports.GetData () << endLine;
+	ExcelLinks << "Kit Name:  " << markerSet << endLine;
+	ExcelLinks << "Internal Lane Standard:  " << lsName.GetData () << endLine;
+	ExcelLinks << "Minimum RFU:  " << minSampleRFU << "," << minLaneStdRFU << ",";
+	ExcelLinks << minLadderRFU << "," << minInterlocusRFU << endLine;
+	ExcelLinks << "Standard Positive Control Name:  " << pServer->GetStandardPositiveControlName () << endLine << endLine;
+	ExcelLinks.ResetOutputLevel ();
+
+	time_t thisTime;
+	time (&thisTime);
+	RGString pResult;
+
+	XMLExcelLinks.SetOutputLevel (1);
+	XMLExcelLinks << "<OsirisAnalysisReport>\n\t<Version>" << OSIRIS_VERSION << "</Version>\n\t";
+	XMLExcelLinks << "<FullVersion>" << OSIRIS_FULLNAME << "</FullVersion>\n\t";
+	XMLExcelLinks << "<MsgBookBuildTime>" << STRLCAnalysis::GetMsgBookBuildTime () << "</MsgBookBuildTime>\n\t<Heading>\n\t\t<FileName>";
+	XMLExcelLinks << xmlwriter::EscAscii (XMLSummaryFullPathWithLinks, &pResult) << "</FileName>\n\t\t";
+	XMLExcelLinks << "<CreationTime>" << (long)thisTime << "</CreationTime>\n\t\t";
+	XMLExcelLinks << "<CommandLine>\n" << mCommandLineString.GetData () << "\t\t</CommandLine>\n\t\t";
+	pServer->WriteSettingsToDotOAR (XMLExcelLinks);
+	XMLExcelLinks << "\t\t<RuntimeSettings>\n";
+	XMLExcelLinks << "\t\t\t<inputDirectory>" << xmlwriter::EscAscii (DirectoryName, &pResult) << "</inputDirectory>\n";
+	XMLExcelLinks << "\t\t\t<outputDirectory>" << xmlwriter::EscAscii (FullPathForReports, &pResult) << "</outputDirectory>\n";
+	XMLExcelLinks << "\t\t\t<kit>" << xmlwriter::EscAscii (markerSet, &pResult) << "</kit>\n";
+	XMLExcelLinks << "\t\t\t<ls>" << xmlwriter::EscAscii (lsName, &pResult) << "</ls>\n";
+	XMLExcelLinks << "\t\t\t<minRFUsample>" << minSampleRFU << "</minRFUsample>\n";
+	XMLExcelLinks << "\t\t\t<minRFUILS>" << minLaneStdRFU << "</minRFUILS>\n";
+	XMLExcelLinks << "\t\t\t<minRFUladder>" << minLadderRFU << "</minRFUladder>\n";
+	XMLExcelLinks << "\t\t\t<minRFUinterlocus>" << minInterlocusRFU << "</minRFUinterlocus>\n";
+	XMLExcelLinks << "\t\t\t<minRFUladderInterlocus>" << minLadderInterlocusRFU << "</minRFUladderInterlocus>\n";
+	XMLExcelLinks << "\t\t\t<minRFUsampleDetection>" << minRFUSampleDetectionRFU << "</minRFUsampleDetection>\n";
+	pResult = pServer->BuildChannelThresholdOverridesForOAR ();
+
+	if (pResult.Length () > 0)
+		XMLExcelLinks << pResult;
+
+	XMLExcelLinks << "\t\t\t<DataAnalyzed>";
+
+	if (CoreBioComponent::GetUseRawData ())
+		XMLExcelLinks << "false</DataAnalyzed>\n";
+
+	else
+		XMLExcelLinks << "true</DataAnalyzed>\n";
+
+	XMLExcelLinks << "\t\t</RuntimeSettings>\n";
+	XMLExcelLinks << "\t\t<MarkerSet>" << xmlwriter::EscAscii (markerSet, &pResult) << "</MarkerSet>\n";
+	XMLExcelLinks << "\t\t<ILSchannelNr>" << ilsChannelNumber << "</ILSchannelNr>\n";
+
+	RGString channelListString;
+	set->BuildChannelAndLocusListForHeader (channelListString);
+	XMLExcelLinks << channelListString;
+
+	//
+	//  Keep going with xml Header!!!
+	//
+
+	XMLExcelLinks << "\t</Heading>\n";   //  Change this when done with header and moving on to Table, etc...!!!!!
+	XMLExcelLinks << "\t<Table>\n";
+	XMLExcelLinks.ResetOutputLevel ();
+
+	RGString TableHeading ("Sample Name\tILS\tChannels");
+	Locus* nextLocus;
+	set->ResetLocusList ();
+
+	while (nextLocus = set->GetNextLocus ())
+		TableHeading << "\t" << nextLocus->GetLocusName () << "-" << nextLocus->GetLocusChannel ();
+
+	TableHeading << "\t+Cntrl";
+	TableHeading << "\n";
+	ExcelSummary.SetOutputLevel (1);
+	ExcelLinks.SetOutputLevel (1);
+	ExcelSummary << TableHeading;
+	ExcelLinks << TableHeading;
+
+	RGString PlotString;
+
+	PlotString << "\t<Version>" << OSIRIS_VERSION << "</Version>\n";
+	PlotString << "\t<FullVersion>" << OSIRIS_FULLNAME << "</FullVersion>\n";
+	PlotString << "\t<MsgBookBuildTime>" << STRLCAnalysis::GetMsgBookBuildTime () << "</MsgBookBuildTime>\n";
+	PlotString << "\t<parameters>\n\t\t<inputDirectory>" << xmlwriter::EscAscii (DirectoryName, &pResult) << "</inputDirectory>\n\t\t<outputDirectory>";
+	PlotString << xmlwriter::EscAscii (FullPathForReports, &pResult) << "</outputDirectory>\n\t\t<kit>";
+	PlotString << xmlwriter::EscAscii (markerSet, &pResult) << "</kit>\n\t\t<ls>";
+	PlotString << lsName << "</ls>\n\t\t<minRFUsample>" << minSampleRFU << "</minRFUsample>\n";
+
+	pResult = pServer->BuildChannelThresholdOverridesForPLT ();
+
+	if (pResult.Length () > 0)
+		PlotString << pResult;
+
+	PlotString << "\t\t<minRFUILS>" << minLaneStdRFU << "</minRFUILS>\n\t\t<minRFUladder>" << minLadderRFU;
+	PlotString << "</minRFUladder>\n\t\t<minRFUinterlocus>" << minInterlocusRFU << "</minRFUinterlocus>\n";
+	PlotString << "\t\t<minRFUladderInterlocus>" << minLadderInterlocusRFU << "</minRFUladderInterlocus>\n";
+	PlotString << "\t\t<minRFUsampleDetection>" << minRFUSampleDetectionRFU << "</minRFUsampleDetection>\n";
+	PlotString << "\t\t<DataAnalyzed>";
+
+	if (CoreBioComponent::GetUseRawData ())
+		PlotString << "false</DataAnalyzed>\n\t\t<StdPosControlName>";
+
+	else
+		PlotString << "true</DataAnalyzed>\n\t\t<StdPosControlName>";
+
+	PlotString << xmlwriter::EscAscii (pServer->GetStandardPositiveControlName (), &pResult) << "</StdPosControlName>\n\t</parameters>\n";
+
+	RGString stringData;
+
+	testPeak->Report (ExcelText, "", "\t");
+
+//	int NChannels;
+
+	Boolean cycled;
+	RGString LadderFileName;
+
+	RGString PersonNum;
+	RGString LineTitle;
+
+	RGString OutputLadderName;
+	RGString OutputSampleName;
+	RGString FullPathOutputLadderName;
+	RGString FullPathOutputSampleName;
+	RGString TempString;
+	int LadderNumber = 1;
+	RGString LadderNumberString;
+	RGDList LadderList;
+	RGString LadderName;
+	PackedTime testTime;
+	bool printGraphics = false;
+
+	cout << "Ready to read ladders..." << endl;
+	cycled = FALSE;
+	RGString NoticeStr;
+	RGTextOutput* SampleOutput;
+	RGString FitDataName;
+//	RGString OsirisGraphics (graphicsDirectory);
+//	bool ladderOK;
+	bool hasPosControl = false;
+	bool hasNegControl = false;
+	bool foundALadder = true;
+	smLadderFailed ladderFailed;
+	smSampleIsLadder sampleIsLadder;
+	smSampleUnanalyzable sampleFailed;
+	smSampleIsPosCtrl sampleIsPosCtrl;
+	smSampleIsNegCtrl sampleIsNegCtrl;
+	smNoPosCtrlFound noPosCtrlFound;
+	smNoNegCtrlFound noNegCtrlFound;
+	smSampleSatisfiesPossibleMixtureIDCriteria sampleSatisfiesMixtureCriteria;
+	smDisableLowLevelFiltersForKnownMixturesPreset disableLowLevelFilters;
+	smSaveLadderILSHistoryPreset saveLadderILSHistory;
+	smLatitudeForILSFit latitudeForILSFit;
+	smUseLadderEndPointILSAlgorithmPreset useLadderEndPointILSAlgorithm;
+	smPlusLatitudeForLadderEndPointILSFit plusLatitudeForLadderEndPointILSFit;
+	smTailHeightFittingThresholdFactor tailFittingHeightModifier;
+	smTailSlopeFittingThresholdFactor tailFittingSlopeModifier;
+
+	double tailHeightModifier = 0.01 * (double) GetThreshold (tailFittingHeightModifier);
+	double tailSlopeModifier = 0.01 * (double) GetThreshold (tailFittingSlopeModifier);
+	TracePrequalification::SetLowHeightModifier (tailHeightModifier);
+	TracePrequalification::SetLowSlopeModifier (tailSlopeModifier);
+
+	smStage1Successful stage1Successful;
+	smStage2Successful stage2Successful;
+	smStage3Successful stage3Successful;
+	smStage4Successful stage4Successful;
+	smStage5Successful stage5Successful;
+
+	smDisableStutterFilter disableStutterFilter;
+	smDisableAdenylationFilter disableAdenylationFilter;
+	smCallOnLadderAdenylationPreset callOnLadderAdenylation;
+
+	RGString pullupMatrixFileName = FullPathForReports + "/matrix.txt";
+	RGTextOutput* pullupMatrixFile = NULL;
+
+	if (GetMessageValue (saveLadderILSHistory)) {
+
+		STRLCAnalysis::SetCollectILSHistory (true);
+		ChannelData::SetUseILSHistory (false);
+
+		int threshold = GetThreshold (latitudeForILSFit);
+
+		if (threshold > 0)
+			ChannelData::SetLatitudeFactorForILSHistory (0.0001 * (double) threshold);
+
+		else
+			ChannelData::SetLatitudeFactorForILSHistory (0.01);
+
+		cout << "Collecting Ladder ILS History with latitude factor = " << 0.0001 * (double) threshold << "\n";
+	}
+
+	else
+		cout << "Not collecting ladder ILS History...\n";
+
+	if (GetMessageValue (useLadderEndPointILSAlgorithm)) {
+
+		ChannelData::SetUseILSLadderEndPointAlgorithm (true);
+		ChannelData::SetLatitudeFactorForLadderILS (0.02);
+		cout << "Using End Point Algorithm for Ladder ILS Analysis...\n";
+		int threshold2 = GetThreshold (plusLatitudeForLadderEndPointILSFit);  // Substitute ladder latitude
+
+		if (threshold2 > 0)
+			ChannelData::SetLatitudeFactorForLadderILS (0.0001 * (double) threshold2); // Substitute ladder latitude
+
+		else
+			ChannelData::SetLatitudeFactorForLadderILS (0.05);  // Substitute ladder latitude
+
+		cout << "Testing Ladder ILS start and end points with latitude factor = " << 0.0001 * (double) threshold2 << "\n";
+	}
+
+	else
+		cout << "Not using End Point Algorithm for Ladder ILS Analysis...\n";
+
+//	bool ignoreNoise;
+
+	RGString GraphicsDirectory = FullPathForReports;
+	RGString idString;
+
+	cout << "Expected dye names:  ";
+
+	for (i=1; i<=expectedNumberOfChannels; i++) {
+
+		if (i > 1)
+			cout << ", ";
+
+		cout << CoreBioComponent::GetDyeName (i).GetData ();
+	}
+
+	cout << "\n\n";
+
+	SmartMessagingComm commSM;
+	commSM.SMOStack [0] = (SmartMessagingObject*) this;
+	int numHigherObjects = 2;
+	bool isFirstLadder = true;
+	RGString ABIModelNumber;
+	int nLadders = 0;
+	ChannelData::SetTestForDualSignal (true);    // 01/24/2017 This is a test because ladders are missing split peaks that should not be missed.  It used to be set to true.
+
+	double leastBP = set->GetMinimumILSBPSearchRegion ();
+	CoreBioComponent::SetMinBioIDForLadderLoci (leastBP);
+	cout << "Minimum ILS BP for ladder loci = " << leastBP << "\n";
+
+	int leastBPForSamples = CoreBioComponent::GetMinBioIDForArtifacts ();
+	int leastBPInt = (int) floor (leastBP);
+
+	if ((leastBPForSamples > 0) && (leastBPForSamples > leastBPInt)) {
+
+		cout << "Minimum ILS BP for sample artifacts setting = " << leastBPForSamples << " is too high.  Resetting to " << leastBPInt << "\n\n";
+		CoreBioComponent::SetMinBioIDForArtifacts (leastBPInt);
+	}
+
+	else
+		cout << "\n";
+
+	RGString commentField;
+
+	ChannelData::SetTestForDualSignal (true);
+	ChannelData::SetUseILSLadderEndPointAlgorithm (false);
+	RGString SampleName;
+	bool sampleOK;
+	bool populatedBaseLocusList = false;
+	bool possibleMixture;
+
+	SampleDirectory->RewindDirectory ();
+	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
+	
+	//if (CollectILSHistory) {
+
+	//	STRLCAnalysis::SetCollectILSHistory (false);
+	//	ChannelData::SetUseILSHistory (true);
+	//	ladderBioComponent = (CoreBioComponent*) LadderList.First ();
+	//	ladderBioComponent->ResetBoundsForILSUsingFactor (ChannelData::GetLatitudeFactorForILSHistory ());
+	//	cout << "All ladder ILS history collected and bounds reset..." << endl;
+	//}
+
+#ifdef _MATRIX_OUTPUT_
+	pullupMatrixFile = new RGTextOutput (pullupMatrixFileName, FALSE);
+
+	if (!pullupMatrixFile->FileIsValid ()) {
+
+		cout << "Could not open Matrix Output File:  " << pullupMatrixFileName << endl;
+		delete pullupMatrixFile;
+		pullupMatrixFile = NULL;
+	}
+
+	CoreBioComponent::SetPullupMatrixFile (pullupMatrixFile);
+#endif
+
+	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
+
+	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
+
+		sampleOK = true;
+		FullPathName = DirectoryName + "/" + FileName;
+
+		if (WorkingFile != NULL) {
+
+			WorkingFile->Write (FullPathName + "\n");
+			WorkingFile->Flush ();
+		}
+
+		data = new fsaFileData (FullPathName);
+		bioComponent = new STRSampleCoreBioComponent (data->GetName ());
+		bioComponent->SetSampleName (data->GetSampleName ());
+		bioComponent->SetFileName (FileName);
+	//	Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
+
+		commentField = data->GetComment ();
+		bioComponent->SetComments (commentField);
+
+		if (GetMessageValue (useSampleNamesForControlSampleTests))
+			bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
+
+		else
+			bioComponent->SetControlIdName (FileName);
+
+		commSM.SMOStack [1] = (SmartMessagingObject*) bioComponent;
+
+		if (bioComponent->PrepareSampleForAnalysisSM (*data, SampleData) < 0) {
+
+			sampleOK = false;
+			NoticeStr = "";
+			NoticeStr << "COULD NOT INITIALIZE AND PREPARE FOR ANALYSIS, FOR FILE:  " << FileName << "\n";
+			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError ();
+			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+			cout << NoticeStr.GetData () << endl;
+			NoticeStr = "";
+			bioComponent->SetMessageValue (sampleFailed, true);
+		}
+
+		//if (sampleOK && !populatedBaseLocusList) {
+
+		//	populatedBaseLocusList = true;
+		//	bioComponent->AppendAllBaseLociToList (mBaseLocusList);
+		//}
+
+		if (sampleOK && printGraphics) {
+
+			FitDataName = GraphicsDirectory + "/Fit" + FileName + ".txt";
+			SampleOutput = new RGTextOutput (FitDataName, FALSE);
+
+			if (SampleOutput->FileIsValid ())
+				bioComponent->WriteRawDataAndFitData (*SampleOutput, data);
+
+			else
+				cout << "Could not write graphics info for file " << FitDataName << ".  Skipping..." << endl;
+
+			delete SampleOutput;
+			SampleOutput = NULL;
+		}
+
+		//if (sampleOK && (bioComponent->PreliminarySampleAnalysisSM (LadderList, SampleData) < 0)) {
+
+		//	sampleOK = false;
+		//	NoticeStr = "";
+		//	NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
+		//	ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+		//	ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+		//	NoticeStr = "";
+		//	bioComponent->SetMessageValue (sampleFailed, true);
+		//}
+
+		//else
+		bioComponent->GetAllAmbientData (data);
+
+		//cout << "Preliminary Analysis Complete" << endl;
+
+		//  do we want to do this next part?  Negative controls certainly make sense.  How about Positive Controls?  Mixtures?
+
+		bioComponent->SetNegativeControlFalseSM ();
+		bioComponent->SetPositiveControlFalseSM ();
+		idString = bioComponent->GetControlIdName ();
+		Locus::SetDisableAdenylationFilter (false);
+		Locus::SetDisableStutterFilter (false);
+		ChannelData::SetDisableAdenylationFilter (false);
+		ChannelData::SetDisableStutterFilter (false);
+		possibleMixture = false;
+	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
+		Locus::SetControlSample (false);
+
+		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+			if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+				hasNegControl = true;;
+				bioComponent->SetNegativeControlTrueSM ();
+				bioComponent->SetMessageValue (sampleIsNegCtrl, true);
+				Locus::SetSingleSourceSample (true);
+				Locus::SetControlSample (true);
+			}
+
+			else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+				hasPosControl = true;
+				bioComponent->SetPositiveControlTrueSM ();
+				bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+				Locus::SetSingleSourceSample (true);
+				Locus::SetControlSample (true);
+			}
+
+			bioComponent->SetPossibleMixtureIDFalseSM ();
+			bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+		}
+
+		//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+
+		//	hasPosControl = true;
+		//	bioComponent->SetPositiveControlTrueSM ();
+		//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+		//	bioComponent->SetPossibleMixtureIDFalseSM ();
+		//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+		//}
+
+		//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+
+				bioComponent->SetPossibleMixtureIDTrueSM ();
+				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
+				possibleMixture = true;
+				Locus::SetSingleSourceSample (false);
+				cout << "Sample is being treated as a mixture\n";
+			}
+
+			else {
+
+				bioComponent->SetPossibleMixtureIDFalseSM ();
+				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+				possibleMixture = false;
+				Locus::SetSingleSourceSample (true);
+				cout << "Sample is being treated as a single source sample\n";
+			}
+		}
+
+		//
+		// End stage 1 for sample
+		//
+
+		bioComponent->SetMessageValue (stage1Successful, true);
+		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
+
+		if (possibleMixture) {
+
+			// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
+
+			Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+			ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+			Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+			ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+		}
+
+		//cout << "Stage 1 complete" << endl;
+
+//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
+//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
+
+		/*if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
+
+			NoticeStr = "";
+			NoticeStr << "COULD NOT ANALYZE LOCI FOR FILE:  " << FileName << "\n";
+			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+			NoticeStr = "";
+		}*/
+
+		//cout << "Sample locus analysis complete" << endl;
+
+		//
+		// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
+		// tests, then the SmartMessages perform the logic and then the code cleans up the results.  We probably have to reorganize
+		// somewhat!!!
+		//
+
+		//if (sampleOK)
+		//	bioComponent->TestFractionalFiltersSM ();	// first tests for stutter and adenylation; then removes peaks below fractional filter(s),  Do this on a channel basis???  If so, need new function
+
+		bioComponent->SetMessageValue (stage2Successful, true);
+		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
+
+		//cout << "Stage 2 complete" << endl;
+
+//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
+//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
+
+		if (sampleOK) {
+			//bioComponent->MakePreliminaryCallsSM (pGenotypes);  Replace with function to place ILS-bps in allele names?????
+		}
+
+		//cout << "Preliminary Calls complete" << endl;
+
+		//cout << "Preliminary calls done" << endl;
+		
+//		if (sampleOK)
+//			bioComponent->ValidateAndCorrectCrossChannelAnalysesSM ();
+
+//		if (sampleOK)	// Resolution now occurs after end of stage 3, below.
+//			bioComponent->ResolveAmbiguousInterlocusSignalsSM ();	// at this point, easily resolved ambiguities already removed
+
+		//if (sampleOK)
+		//	bioComponent->MeasureAllInterlocusSignalAttributesSM ();	// at this point, easily resolved ambiguities already removed
+
+		bioComponent->SetMessageValue (stage3Successful, true);
+		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
+
+		//cout << "Stage 3 complete" << endl;
+
+//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
+//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
+
+		// Now, resolve ambiguities based on calculations from end of stage 3:
+
+		if (sampleOK) {
+
+			//bioComponent->ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();	// Removes ambiguous signals from loci or assigns them and records message
+			bioComponent->FilterSmartNoticesBelowMinBioID ();
+		}
+
+		//if (sampleOK)
+		//	bioComponent->SignalQualityTestSM ();
+
+		bioComponent->SetMessageValue (stage4Successful, true);
+		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
+
+		//cout << "Stage 4 complete" << endl;
+
+		// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
+
+		//if (sampleOK)
+		//	bioComponent->RemoveInterlocusSignalsSM ();
+
+		//	Put residual displacement test here...02/11/2014
+
+//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
+//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
+
+		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
+		bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
+
+		//if (sampleOK)
+		//	bioComponent->SampleQualityTestSM (pGenotypes);   // Have to revamp process quality tests?
+
+		//
+		//  Put peak height accumulation algorithm here (12/16/2016)
+		//
+
+		//if (sampleOK)
+		//	bioComponent->WriteDataToHeightFileSM ();
+
+		//cout << "Sample quality test complete" << endl;
+
+		//if (sampleOK)
+		//	bioComponent->TestPositiveControlSM (pGenotypes);   // How will we do this???
+
+		// Moved this section because it requires setting artifact for signal, which must precede stage 4 and it should only depend on removing extraneous
+		// signals from each locus, which should be done in "SignalQualityTest" above.
+		//if (sampleOK)
+		//	bioComponent->TestPositiveControlSM (pGenotypes);
+
+		bioComponent->OrganizeNoticeObjectsSM ();  // Have to do this here, before last evaluation and adding smart message reporters!!
+
+		bioComponent->SetMessageValue (stage5Successful, true);
+		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+
+		//cout << "Stage 5 complete" << endl;
+
+//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
+
+		if (!sampleOK)
+			bioComponent->LocatePositiveControlName (pGenotypes);
+
+		bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done
+
+		if (bioComponent->SampleIsValid ()) {
+
+			bioComponent->ReportSampleData(ExcelText);
+			bioComponent->WriteXMLGraphicDataSM (GraphicsDirectory, FileName, data, 4, PlotString);
+		}
+
+		bioComponent->PrepareLociForOutput ();
+		bioComponent->ReportSampleTableRow (ExcelSummary);
+		bioComponent->ReportSampleTableRowWithLinks (ExcelLinks);
+		bioComponent->ReportXMLSmartSampleTableRowWithLinks (XMLExcelLinks, tempXMLExcelLinks);
+
+		bioComponent->ReportAllSmartNoticeObjects (tempExcelSummary, "", " ", FALSE);
+		bioComponent->ReportAllSmartNoticeObjects (tempExcelLinks, "", " ", TRUE);
+		//cout << "All data reported" << endl;
+
+		SamplesProcessed++;
+		Progress = 100.0 * (double)SamplesProcessed / (double)NSampleFiles;
+		cout << "Progress = " << Progress << "%." << endl;
+		delete data;
+		delete bioComponent;
+		data = NULL;
+		bioComponent = NULL;
+		//cout << "Clean up time and on to the next" << endl;
+	}
+
+	if (!hasPosControl) {
+
+		SetMessageValue (noPosCtrlFound, true);
+	}
+
+	if (!hasNegControl) {
+
+		SetMessageValue (noNegCtrlFound, true);
+	}
+
+	delete SampleDirectory;
+	delete pullupMatrixFile;
+	pullupMatrixFile = NULL;
+
+	for (i=1; i<=5; i++) {
+
+		EvaluateSmartMessagesForStage (commSM, 1, i);
+		SetTriggersForAllMessages (commSM, 1, i);
+	}
+
+	numHigherObjects = 1;
+
+	//
+	// Add all SmartMessageReporters for file level
+	//
+
+	AddAllSmartMessageReporters (commSM, numHigherObjects);
+
+	ExcelSummary << CLevel (1) << "\n" << PLevel ();
+	ExcelLinks << CLevel (1) << "\n" << PLevel ();
+
+	XMLExcelLinks << CLevel (1) << "\t</Table>\n" << PLevel ();
+	ReportXMLSmartNoticeObjects (XMLExcelLinks, tempXMLExcelLinks, " ");
+	XMLExcelLinks << CLevel (1) << "\t<Messages>\n" << PLevel ();
+
+	tempXMLOutputSummaryLinks.Flush ();
+	tempXMLOutputSummaryLinks.Close ();
+	RGFile tempInputXMLSummaryLinks (tempXMLSummaryFullPathWithLinks, "rt");
+
+	if (!tempInputXMLSummaryLinks.isValid ()) {
+
+		cout << "Could not complete output xml summary; temporary file unavailable..." << endl;
+		return -5;
+	}
+
+	RGString in3;
+	in3.ReadTextFile (tempInputXMLSummaryLinks);
+	XMLExcelLinks << CLevel (1) << in3;
+	XMLExcelLinks << "\t</Messages>\n" << PLevel ();
+	SmartMessagingObject::ReportAllExportSpecifications (XMLExcelLinks);
+
+	// First add directory alerts and then...Merge here to get messages...
+
+	XMLExcelLinks << CLevel (1) << "</OsirisAnalysisReport>" << endLine << PLevel ();
+	SmartMessagingObject::ClearExportSpecifications ();
+
+	tempInputXMLSummaryLinks.Close ();
+	
+	ReportSmartNoticeObjects (ExcelSummary, "", " ", FALSE);
+	ReportSmartNoticeObjects (ExcelLinks, "", " ", TRUE);
+
+	tempOutputSummary.Flush ();
+	tempOutputSummary.Close ();
+	tempOutputSummaryLinks.Flush ();
+	tempOutputSummaryLinks.Close ();
+
+	LadderList.ClearAndDelete ();
+	delete SampleData;
+	delete GridData;
+	delete testPeak;
+
+	RGFile tempInputSummary (tempSummaryFullPath, "rt");
+	RGFile tempInputSummaryLinks (tempSummaryFullPathWithLinks, "rt");
+
+	if (!tempInputSummary.isValid ()) {
+
+		cout << "Could not complete output summary; temporary file unavailable..." << endl;
+		return -5;
+	}
+
+	if (!tempInputSummaryLinks.isValid ()) {
+
+		cout << "Could not complete output summary; temporary file unavailable..." << endl;
+		return -5;
+	}
+	
+	RGString in1;
+	RGString in2;
+
+	in1.ReadTextFile (tempInputSummary);
+	in2.ReadTextFile (tempInputSummaryLinks);
+
+	tempInputSummary.Close ();
+	tempInputSummaryLinks.Close ();
+
+	// delete temporary files
+
+	remove (tempSummaryFullPath.GetData ());
+	remove (tempSummaryFullPathWithLinks.GetData ());
+	remove (tempXMLSummaryFullPathWithLinks.GetData ());
+
+	ExcelSummary.SetOutputLevel (1);
+	ExcelLinks.SetOutputLevel (1);
+
+	ExcelSummary << in1 << "\n";
+	ExcelLinks << in2 << "\n";
+	
+	OutputFile.Flush ();
+	OutputFile.Close ();
+
+	if (!foundALadder)
+		return -20;
+
+	return 0;
+}
+
+
 bool STRLCAnalysis :: EvaluateSmartMessagesForStage (int stage) {
 
 	RGDList temp;

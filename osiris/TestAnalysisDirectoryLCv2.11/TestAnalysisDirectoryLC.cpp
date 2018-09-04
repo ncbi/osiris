@@ -219,6 +219,12 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	CommandInputs << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";\n";
 	CommandInputs << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";\n";
 
+	bool isLadderFree = false;
+	size_t posn = 0;
+
+	if (MarkerSetName.FindSubstringCaseIndependent ("LadderFree", posn))
+		isLadderFree = true;
+
 	inputFile.OutputAnalysisThresholdOverrides (CommandInputs);
 	inputFile.OutputDetectionThresholdOverrides (CommandInputs);
 
@@ -335,8 +341,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	int status = 0;
 
 	try {
+		if (!isLadderFree)
+			status = analysis.AnalyzeIncrementallySM (PrototypeInputDirectory, MarkerSetName, OutputLevel, graphicsDirectory, CommandInputs);
 
-		status = analysis.AnalyzeIncrementallySM (PrototypeInputDirectory, MarkerSetName, OutputLevel, graphicsDirectory, CommandInputs);
+		else
+			status = analysis.AnalyzeIncrementallySMLF (PrototypeInputDirectory, MarkerSetName, OutputLevel, graphicsDirectory, CommandInputs);
 	}
 
 	catch (...) {

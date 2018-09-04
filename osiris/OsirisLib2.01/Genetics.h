@@ -856,6 +856,7 @@ public:
 	int GetLaneStandardChannel () const;
 	int GetNumberOfChannels () const;
 	double GetMinimumILSBPSearchRegion ();
+	int GetNumberOfLoci () const { return LocusList.Entries (); }
 
 	void BuildChannelAndLocusListForHeader (RGString& headerList);
 
