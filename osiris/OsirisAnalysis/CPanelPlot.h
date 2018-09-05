@@ -358,19 +358,16 @@ public:
   }
   bool XBPSValue()
   {
-    return m_pMenu->XBPSValue();
-  }
-  void SetXBPS(bool b = true, bool bUpdate = false)
-  {
-    if(b != XBPSValue())
+    bool bRtn = m_bXBPS;
+    if(IsPreview())
     {
-      m_pMenu->SetXBPS(b);
-      _SyncControllers(m_pMenu);
-      if(bUpdate)
-      {
-        RebuildCurves();
-      }
+      bRtn = m_pMenu->XBPSValue();
     }
+    else if(m_pFramePlot != NULL)
+    {
+      bRtn = m_pFramePlot->XBPSValue();
+    }
+    return bRtn;
   }
   void EnableLabelMenu(bool b = true)
   {
@@ -553,14 +550,10 @@ private:
     memcpy((void *) pRtn, (void *)pd,n);
     return pRtn;
   }
-  bool _IsXAxisBPS()
-  {
-    return ((m_pMenu != NULL) && m_pMenu->XBPSValue());
-  }
   const char *_GetXAxisLabel()
   {
     const char *psRtn =
-      _IsXAxisBPS()
+      XBPSValue()
       ? "BPS (ILS ref.)"
       : "Time (seconds)";
     return psRtn;

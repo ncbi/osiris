@@ -289,6 +289,7 @@ enum
   IDmenuShowHideToolbar,
   IDmenuShowHidePlotScrollbars,  // CFramePlot
   IDmenuShowHideWindowScrollbar, // CFramePlot
+  IDmenuShowXBPS, // CFramePlot
   IDframePlot,
   IDmenuTable,
 

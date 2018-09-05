@@ -197,10 +197,6 @@ public:
   {
     return (p == (wxObject *) m_pButtonLadderLabels);
   }
-  bool IsButtonXBPS(wxObject *p)
-  {
-    return (p == (wxObject *) m_pButtonXBPS);
-  }
   bool IsButtonILS(wxObject *p)
   {
     return (p == (wxObject *) m_pButtonILS);
@@ -264,7 +260,6 @@ private:
   nwxToggleButton *m_pButtonRfu;
   nwxToggleButton *m_pButtonLadderLabels;
   nwxToggleButton *m_pButtonILS;
-  nwxToggleButton *m_pButtonXBPS;
   wxButton *m_pButtonDelete;
   wxButton *m_pButtonAppend;
   nwxButtonMenu *m_pButtonLabels;

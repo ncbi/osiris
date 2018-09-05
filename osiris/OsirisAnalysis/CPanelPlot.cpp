@@ -568,10 +568,6 @@ void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
     {
       nID = IDmenuPlotILS;
     }
-    else if(m_pButtonPanel->IsButtonXBPS(pObj))
-    {
-      nID = IDmenuPlotXBPS;
-    }
     if(nID)
     {
       m_pFramePlot->SyncState(this,nID);
@@ -814,7 +810,7 @@ void CPanelPlot::_BuildPeakLabels(
     const CSamplePeak *pPeak = pp->at(j);
     sLabel = _AlleleLabel(pPeak,anLabelTypes);
     sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
-    bool bBPS = m_pMenu->XBPSValue();
+    bool bBPS = XBPSValue();
     double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
     nwxPointLabel label(
             sLabel,
@@ -977,7 +973,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
             sToolTip = _ArtifactToolTip(pArt,sChannelName);
             const wxString &sArtifactLabel = pArt->GetArtifactLabel();
             const wxString &sPlotLabel = pArtLabels->GetDisplayFromString(sArtifactLabel);
-            bool bBPS = m_pMenu->XBPSValue();
+            bool bBPS = XBPSValue();
             double dX = bBPS ? pArt->GetMeanBPS() : pArt->GetTime();
             nwxPointLabel label(
                   sPlotLabel,
@@ -1071,7 +1067,7 @@ void CPanelPlot::_BuildOARlabels()
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
               ? wxCURSOR_HAND 
               : wxCURSOR_NONE;
-            bool bBPS = m_pMenu->XBPSValue();
+            bool bBPS = XBPSValue();
             double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
             nwxPointLabel label(
                     sLabel,
@@ -1102,7 +1098,7 @@ void CPanelPlot::_BuildOARlabels()
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
               ? wxCURSOR_HAND 
               : wxCURSOR_NONE;
-            bool bBPS = m_pMenu->XBPSValue();
+            bool bBPS = XBPSValue();
             double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
             nwxPointLabel label(
                   sPlotLabel,
@@ -1190,7 +1186,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
           dTime = double((pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1);
           sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
-          bool bBPS = m_pMenu->XBPSValue();
+          bool bBPS = XBPSValue();
           dx =  bBPS ? 
             GetPlotData()->TimeToILSBps(dTime)
             : dTime;
@@ -1747,12 +1743,10 @@ void CPanelPlot::SetPlotSettings()
   bool bBaseline = parm->GetPlotDataBaseline();
   bool bILS = parm->GetPlotShowILS();
   bool bRFU = parm->GetPlotShowRFU();
-  bool bXBPS = parm->GetPlotDataXBPS();
   bool bLadderLabels = parm->GetPlotShowLadderLabels();
   int nArt = (int)parm->GetPlotShowArtifact();
   const vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
   vector<unsigned int>::const_iterator itr;
-  m_bXBPS = bXBPS;
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1767,7 +1761,6 @@ void CPanelPlot::SetPlotSettings()
   m_pMenu->ShowLadderLabels(bLadderLabels);
   m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
-  m_pMenu->SetXBPS(bXBPS);
   _SyncControllers(m_pMenu);
 }
 void CPanelPlot::SetPreviewSettings()
@@ -1812,7 +1805,6 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
-  bool bXBPS = m_pMenu->XBPSValue();
   int nArt = m_pMenu->ArtifactValue();
   vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
@@ -1821,7 +1813,6 @@ void CPanelPlot::UpdateSettingsPlot()
   parm->SetPlotDataLadder(bLadder);
   parm->SetPlotDataRaw(bRaw);
   parm->SetPlotDataBaseline(bBaseline);
-  parm->SetPlotDataXBPS(bXBPS);
   parm->SetPlotShowILS(bILS);
   parm->SetPlotShowRFU(bRFU);
   parm->SetPlotShowLadderLabels(bLadderLabels);
@@ -1837,7 +1828,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
-  bool bXBPS = m_pMenu->XBPSValue();
+  bool bXBPS = XBPSValue();
   int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
   CParmOsirisGlobal parm;
@@ -1903,7 +1894,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     ShowILSlines();
   }
-  bool bXBPS = m_pMenu->XBPSValue();
+  bool bXBPS = XBPSValue();
   bool bNoise = true;
   if(bXBPS != m_bXBPS)
   {
@@ -2255,7 +2246,7 @@ void CPanelPlot::SyncState(CPanelPlot *p, int nID)
       bRebuild = true;
       break;
     case IDmenuPlotXBPS:
-      pMenu->SetXBPS(p->m_pMenu->XBPSValue());
+      pMenu->SetXBPS(p->XBPSValue());
       bRebuild = true;
       break;
     case IDmenuPlotRFU:
