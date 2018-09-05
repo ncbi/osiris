@@ -883,6 +883,7 @@ public:
     return m_pdILS_BPs;
   }
   double TimeToILSBps(double dTime);
+  double ILSBpsToTime(double dBPS);
 
   double *GetRawPoints(unsigned int nChannel)
   {
@@ -1043,6 +1044,7 @@ public:
 protected:
   virtual void RegisterAll(bool b = false);
 private:
+  static double _Interpolate(double dX, const double *pdXlist, const double *pdYlist, size_t nCount);
   void _FixBaseline();
   void _Cleanup();
   void _setupILSBps();

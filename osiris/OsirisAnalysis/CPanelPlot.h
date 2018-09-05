@@ -356,6 +356,22 @@ public:
   {
     return m_pMenu->SyncValue();
   }
+  bool XBPSValue()
+  {
+    return m_pMenu->XBPSValue();
+  }
+  void SetXBPS(bool b = true, bool bUpdate = false)
+  {
+    if(b != XBPSValue())
+    {
+      m_pMenu->SetXBPS(b);
+      _SyncControllers(m_pMenu);
+      if(bUpdate)
+      {
+        RebuildCurves();
+      }
+    }
+  }
   void EnableLabelMenu(bool b = true)
   {
     if(b != m_pMenu->IsLabelMenuEnabled())
@@ -498,6 +514,7 @@ private:
   CMenuPlot *_GetLastMenu();
   CMDIFrame *_GetFrame();
   void _SetArtifactLabel(int nLabel);
+  void _ConvertRectToBPS(wxRect2DDouble *pRect);
 
   void UpdateSettingsPlot();
   void UpdateSettingsPreview();
@@ -654,9 +671,9 @@ private:
   unsigned int m_nILScurveOffset;
   unsigned int m_nNoiseCurves;
   int m_nMenuOffset;
-  bool m_bXBPS;
   bool m_bExternalTimer;
   bool m_bDoTimer;
+  bool m_bXBPS; // used to check if event changed x axis
 
   // BEGIN - keep track of channels with no noise
   std::set<unsigned int> m_setNoNoiseChannel;

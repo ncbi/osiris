@@ -160,7 +160,9 @@ CPanelPlot::CPanelPlot(
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer)
+    m_bExternalTimer(bExternalTimer),
+    m_bDoTimer(false),
+    m_bXBPS(false)
 {
   //  constructor for panel in analysis MDI frame
   _BuildPanel(0,true,NULL);
@@ -195,7 +197,9 @@ CPanelPlot::CPanelPlot(
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer)
+    m_bExternalTimer(bExternalTimer),
+    m_bDoTimer(false),
+    m_bXBPS(false)
 {
   //  constructor for panel in graphic MDI frame
   _BuildPanel(nMenuNumber,bFirst,pMenuHistory);
@@ -386,9 +390,7 @@ void CPanelPlot::OnBtnAppend(wxCommandEvent &)
 {
   if(m_pFramePlot != NULL)
   {
-//    wxRect2DDouble rect = GetViewRect();
     m_pFramePlot->AddPlot(this);
-//    SetViewRect(rect);
   }
 }
 
@@ -812,9 +814,11 @@ void CPanelPlot::_BuildPeakLabels(
     const CSamplePeak *pPeak = pp->at(j);
     sLabel = _AlleleLabel(pPeak,anLabelTypes);
     sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
+    bool bBPS = m_pMenu->XBPSValue();
+    double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
     nwxPointLabel label(
             sLabel,
-            pPeak->GetTime(),
+            dX,
             pPeak->GetRFU(),
             colour,
             sToolTip,
@@ -883,6 +887,11 @@ void CPanelPlot::_AppendLadderPeaks(
     const wxRect2DDouble &rect = GetViewRect();
     double xMin = rect.GetLeft();
     double xMax = rect.GetRight();
+    if(m_bXBPS)
+    {
+      xMin = m_pData->ILSBpsToTime(xMin);
+      xMax = m_pData->ILSBpsToTime(xMax);
+    }
     double dTime;
     vector<CSamplePeak *>::const_iterator itr;
     pps->Reserve(pp->size());
@@ -968,9 +977,11 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
             sToolTip = _ArtifactToolTip(pArt,sChannelName);
             const wxString &sArtifactLabel = pArt->GetArtifactLabel();
             const wxString &sPlotLabel = pArtLabels->GetDisplayFromString(sArtifactLabel);
+            bool bBPS = m_pMenu->XBPSValue();
+            double dX = bBPS ? pArt->GetMeanBPS() : pArt->GetTime();
             nwxPointLabel label(
                   sPlotLabel,
-                  pArt->GetTime(),
+                  dX,
                   pArt->GetRFU(),
                   colourData,
                   sToolTip,
@@ -1060,9 +1071,11 @@ void CPanelPlot::_BuildOARlabels()
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
               ? wxCURSOR_HAND 
               : wxCURSOR_NONE;
+            bool bBPS = m_pMenu->XBPSValue();
+            double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
             nwxPointLabel label(
                     sLabel,
-                    pPeak->GetTime(),
+                    dX,
                     pPeak->GetRFU(),
                     colour,
                     sToolTip,
@@ -1089,9 +1102,11 @@ void CPanelPlot::_BuildOARlabels()
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
               ? wxCURSOR_HAND 
               : wxCURSOR_NONE;
+            bool bBPS = m_pMenu->XBPSValue();
+            double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
             nwxPointLabel label(
                   sPlotLabel,
-                  pPeak->GetTime(),
+                  dX,
                   pPeak->GetRFU(),
                   colour,
                   sToolTip,
@@ -1155,7 +1170,8 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
     if(bLabels)
     {
       wxString sToolTip;
-      int nx;
+      double dTime;
+      double dx;
       unsigned int nChannel;
       const CPlotLocus *pLocus;
       const vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
@@ -1171,12 +1187,16 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
         {
           const wxColour &colour(m_pColors->GetColor(
             m_pData->GetKitName(),ANALYZED_DATA,nChannel));
-          nx = (pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1;
+          dTime = double((pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1);
           sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
+          bool bBPS = m_pMenu->XBPSValue();
+          dx =  bBPS ? 
+            GetPlotData()->TimeToILSBps(dTime)
+            : dTime;
           nwxPointLabel label(
             pLocus->GetName(),
-            (double) nx, 
+            dx, 
             0.0, colour, 
             sToolTip, 
             wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM, 
@@ -1575,6 +1595,14 @@ void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p)
     p->m_height *= dExtend;
   }
 }
+
+void CPanelPlot::_ConvertRectToBPS(wxRect2DDouble *pRect)
+{
+  double dLeft = m_pData->TimeToILSBps(pRect->GetLeft());
+  double dRight = m_pData->TimeToILSBps(pRect->GetRight());
+  pRect->SetLeft(dLeft);
+  pRect->SetRight(dRight);
+}
 wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
 {
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
@@ -1631,10 +1659,21 @@ wxRect2DDouble CPanelPlot::GetZoomLocus(const wxString &sLocus)
   {
     CParmOsirisGlobal parm;
     double dADJUST(parm->GetZoomLocusMargin());
-    double dx = (double) nx1;
+    double dx;
+    double dw;
     double dy = (double) ny1;
     double dh = (double) (ny2 - ny1);
-    double dw = (double) (nx2 - nx1);
+    if(m_bXBPS)
+    {
+      double dx2 = m_pData->TimeToILSBps((double) nx2);
+      dx = m_pData->TimeToILSBps((double) nx1);
+      dw = dx2 - dx;
+    }
+    else
+    {
+      dx = (double) nx1;
+      dw = (double) (nx2 - nx1);
+    }
     if(dADJUST > 0.0)
     {
       if(dADJUST >= 1.0)
@@ -1713,6 +1752,7 @@ void CPanelPlot::SetPlotSettings()
   int nArt = (int)parm->GetPlotShowArtifact();
   const vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
   vector<unsigned int>::const_iterator itr;
+  m_bXBPS = bXBPS;
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1741,9 +1781,11 @@ void CPanelPlot::SetPreviewSettings()
   bool bILS = parm->GetPreviewShowILS();
   bool bRFU = parm->GetPreviewShowRFU();
   bool bLadderLabels = parm->GetPreviewShowLadderLabels();
+  bool bXBPS = parm->GetPreviewXBPS();
   int nArt = (int)parm->GetPreviewShowArtifact();
   int nLabel = parm->GetTableDisplayPeak();
   nLabel = CELL_TO_PLOT(nLabel);
+  m_bXBPS = bXBPS;
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1758,6 +1800,7 @@ void CPanelPlot::SetPreviewSettings()
   m_pMenu->ShowLadderLabels(bLadderLabels);
   m_pMenu->SetLabelType((LABEL_PLOT_TYPE)nLabel,LABEL_NONE);
   m_pMenu->SetArtifactValue(nArt);
+  m_pMenu->SetXBPS(bXBPS);
   _SyncControllers(m_pMenu);
 }
 void CPanelPlot::UpdateSettingsPlot()
@@ -1769,6 +1812,7 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
+  bool bXBPS = m_pMenu->XBPSValue();
   int nArt = m_pMenu->ArtifactValue();
   vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
@@ -1777,7 +1821,7 @@ void CPanelPlot::UpdateSettingsPlot()
   parm->SetPlotDataLadder(bLadder);
   parm->SetPlotDataRaw(bRaw);
   parm->SetPlotDataBaseline(bBaseline);
-  parm->SetPlotDataXBPS(m_bXBPS);
+  parm->SetPlotDataXBPS(bXBPS);
   parm->SetPlotShowILS(bILS);
   parm->SetPlotShowRFU(bRFU);
   parm->SetPlotShowLadderLabels(bLadderLabels);
@@ -1793,6 +1837,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
+  bool bXBPS = m_pMenu->XBPSValue();
   int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
   CParmOsirisGlobal parm;
@@ -1800,7 +1845,7 @@ void CPanelPlot::UpdateSettingsPreview()
   parm->SetPreviewDataLadder(bLadder);
   parm->SetPreviewDataBaseline(bBaseline);
   parm->SetPreviewDataRaw(bRaw);
-  parm->SetPreviewXBPS(m_bXBPS);
+  parm->SetPreviewXBPS(bXBPS);
   parm->SetPreviewShowILS(bILS);
   parm->SetPreviewShowRFU(bRFU);
   parm->SetPreviewShowLadderLabels(bLadderLabels);
@@ -1860,6 +1905,26 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   }
   bool bXBPS = m_pMenu->XBPSValue();
   bool bNoise = true;
+  if(bXBPS != m_bXBPS)
+  {
+    m_bXBPS = bXBPS;
+    // OS-917 - x axis has changed, so readjust rect
+    bIgnoreViewRect = false; // force SetViewRect below
+    double dL;
+    double dR;
+    if(bXBPS)
+    {
+      dL = m_pData->TimeToILSBps(rect.GetLeft());
+      dR = m_pData->TimeToILSBps(rect.GetRight());
+    }
+    else
+    {
+      dL = m_pData->ILSBpsToTime(rect.GetLeft());
+      dR = m_pData->ILSBpsToTime(rect.GetRight());
+    }
+    rect.SetRight(dR);
+    rect.SetLeft(dL);
+  }
   for(int zz = 0; zz < 2; zz++)
   {
     for(i = 0; i < ndxChn; i++)

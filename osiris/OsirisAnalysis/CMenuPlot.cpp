@@ -402,10 +402,7 @@ bool CMenuPlot::XBPSValue()
 
 void CMenuPlot::SetXBPS(bool b)
 {
-  if(!m_bPreview)
-  {
-    Check(_ID(IDmenuPlotXBPS),b);
-  }
+  Check(_ID(IDmenuPlotXBPS),b);
 }
 
 void CMenuPlot::SetSync(bool b)

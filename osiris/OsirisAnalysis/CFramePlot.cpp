@@ -1337,6 +1337,7 @@ void CFramePlot::SetMultiple(CPanelPlot *p, bool bCurrentView)
   size_t nNeeded = m_pData->GetChannelCount() - nSize;
   CPanelPlot *pCheck;
   CIncrementer incr(m_nInSync);
+  bool bXBPS = p->XBPSValue();
   if(nSize > 1)
   {
     for(itr = m_setPlots.begin();
@@ -1361,6 +1362,7 @@ void CFramePlot::SetMultiple(CPanelPlot *p, bool bCurrentView)
     pCheck = *itr;
     pCheck->ShowOneChannel(pCheck->GetPlotNumber() + 1);
     pCheck->RebuildCurves(true);
+    pCheck->SetXBPS(bXBPS);
   }
   if(bCurrentView)
   {
@@ -1376,9 +1378,16 @@ wxRect2DDouble CFramePlot::GetZoomOutRect(bool bAll)
   // begin with a unit rectangle,
   // then expand to include all plots where sync is on
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
+  CParmOsirisGlobal parm;
+  bool bXBPS = parm->GetPlotDataXBPS();
   if(!bAll)
   {
-    rtn.m_x = (double) m_pData->GetBegin();
+    double dx = (double)(m_pData->GetBegin());
+    if(bXBPS)
+    {
+      dx = m_pData->TimeToILSBps(dx);
+    }
+    rtn.m_x = dx;
   }
   for(set<CPanelPlot *>::iterator itr = m_setPlots.begin();
     itr != m_setPlots.end();
@@ -1387,6 +1396,7 @@ wxRect2DDouble CFramePlot::GetZoomOutRect(bool bAll)
     CPanelPlot *pPlot = *itr;
     if(pPlot->SyncValue())
     {
+      pPlot->SetXBPS(bXBPS,true);
       rtn.Union(pPlot->GetZoomOutRect(bAll));
     }
   }
@@ -1462,6 +1472,8 @@ void CFramePlot::SyncThis(CPanelPlot *p)
       pPlot = *itr;
       if( (pPlot != p) && pPlot->SyncValue() )
       {
+        TnwxBatch<CPanelPlot> xxx(p);
+        p->SetXBPS(pPlot->XBPSValue());
         p->SetViewRect(pPlot->GetViewRect());
         break;
       }
@@ -1480,13 +1492,16 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
     wxRect2DDouble r = p->GetViewRect();
     wxRect2DDouble rect;
     CPanelPlot *pPlot;
+    bool bXBPS = p->XBPSValue();
     for(set<CPanelPlot *>::iterator itr = m_setPlots.begin();
       itr != m_setPlots.end();
       ++itr)
     {
       pPlot = *itr;
-      if( (pPlot != p) && pPlot->SyncValue() && (pPlot->GetViewRect() != r) )
+      if( (pPlot != p) && pPlot->SyncValue())
       {
+        TnwxBatch<CPanelPlot> xxx(pPlot);
+        pPlot->SetXBPS(bXBPS);
         pPlot->SetViewRect(r);
         bRtn = true;
       }
@@ -1523,13 +1538,16 @@ void CFramePlot::ZoomAll(const wxRect2DDouble &rect,unsigned int nDelay )
 {
   CPanelPlot *pFirstSync = NULL;
   {
+    CParmOsirisGlobal parm;
+    bool bXBPS = parm->GetPlotDataXBPS();
     TnwxBatchColl< CPanelPlot > BATCH(m_setPlots);
     for(set<CPanelPlot *>::iterator itr = m_setPlots.begin();
         itr != m_setPlots.end();
         ++itr)
     {
+      (*itr)->SetXBPS(bXBPS);
       (*itr)->SetViewRect(rect,false,0);
-      if(!(*itr)->SyncValue()) 
+      if(!(*itr)->SyncValue())
       {
         // not sync'd
         if(nDelay)
