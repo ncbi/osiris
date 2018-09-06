@@ -830,9 +830,9 @@ public:
   static const int TYPE_ALL;
 
   CPlotData() :
+    m_pdILS_BPs(NULL),
     m_IOchannel(true),
-    m_IOlocus(true),
-    m_pdILS_BPs(NULL)
+    m_IOlocus(true)
   {
     m_pdX = NULL;
     m_nStart = 0;
