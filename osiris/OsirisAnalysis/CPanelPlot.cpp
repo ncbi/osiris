@@ -386,6 +386,21 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
   return pRtn;
 }
 
+
+bool CPanelPlot::XBPSValue()
+{
+  bool bRtn = m_bXBPS;
+  if(IsPreview())
+  {
+    bRtn = m_pMenu->XBPSValue();
+  }
+  else if(m_pFramePlot != NULL)
+  {
+    bRtn = m_pFramePlot->XBPSValue();
+  }
+  return bRtn;
+}
+
 void CPanelPlot::OnBtnAppend(wxCommandEvent &)
 {
   if(m_pFramePlot != NULL)
@@ -662,6 +677,10 @@ wxString CPanelPlot::_AlleleLabel(
     case LABEL_PEAK_AREA:
       sLabel = nwxString::FormatNumber(
         pPeak->GetPeakArea());
+      break;
+    case LABEL_ILS_BPS:
+      sLabel = nwxString::FormatNumber(
+        pPeak->GetMeanBPS());
       break;
     default:
       {
@@ -1614,7 +1633,7 @@ wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
   }
   if(!bAll)
   {
-    rtn.m_x = (double) m_pData->GetBegin();
+    rtn.m_x = (double) m_pData->GetStartAfterPrimer(XBPSValue());
     nStart += m_nNoiseCurves;
   }
   for(int i = nStart; i < nCount; i++)
@@ -1936,15 +1955,15 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
     }
     bNoise = false;
   }
+  RebuildLabels();
   if(!bIgnoreViewRect)
   {
     SetViewRect(rect,false,0);
   }
-  RebuildLabels();
-  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
-  {
-    m_pFramePlot->SyncTo(this);
-  }
+//  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
+//  {
+//    m_pFramePlot->SyncTo(this);
+//  }
   Refresh();
 }
 

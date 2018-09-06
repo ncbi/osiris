@@ -356,19 +356,7 @@ public:
   {
     return m_pMenu->SyncValue();
   }
-  bool XBPSValue()
-  {
-    bool bRtn = m_bXBPS;
-    if(IsPreview())
-    {
-      bRtn = m_pMenu->XBPSValue();
-    }
-    else if(m_pFramePlot != NULL)
-    {
-      bRtn = m_pFramePlot->XBPSValue();
-    }
-    return bRtn;
-  }
+  bool XBPSValue();
   void EnableLabelMenu(bool b = true)
   {
     if(b != m_pMenu->IsLabelMenuEnabled())
@@ -560,7 +548,7 @@ private:
   }
   vectorILSlines *_GetILSlines()
   {
-    vectorILSlines *pRtn = _IsXAxisBPS() ? &m_vILS_XBPS : &m_vILS;
+    vectorILSlines *pRtn = XBPSValue() ? &m_vILS_XBPS : &m_vILS;
     if(pRtn->empty())
     {
       BuildILSlines();
@@ -569,7 +557,7 @@ private:
   }
   mapMinRfu *_GetMinRFUlines()
   {
-    mapMinRfu *pRtn = _IsXAxisBPS() ? &m_mapMinRfuAll_XBPS : &m_mapMinRfuAll;
+    mapMinRfu *pRtn = XBPSValue() ? &m_mapMinRfuAll_XBPS : &m_mapMinRfuAll;
     return pRtn;
   }
 

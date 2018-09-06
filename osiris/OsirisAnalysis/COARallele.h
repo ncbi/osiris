@@ -331,6 +331,10 @@ public:
   {
     return FormatDouble(GetPeakArea());
   }
+  wxString FormatILS_BPS(bool bOLgrid = false) const
+  {
+    return COARpeak::FormatAnyBPS(IsOffLadder(), GetMeanBPS(), bOLgrid);
+  }
   wxString FormatFit() const
   {
     return COARpeak::FormatFit(*this);

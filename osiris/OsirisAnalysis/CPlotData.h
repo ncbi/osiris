@@ -996,6 +996,13 @@ public:
   {
     return m_nBegin;
   }
+  double GetStartAfterPrimer(bool bBPS = false)
+  {
+    double dRtn =
+      bBPS ? this->TimeToILSBps((double) m_nBegin)
+      : (double)m_nBegin;
+    return dRtn;
+  }
   void GetChannelNumbers(set<int> *psetn)
   {
     psetn->clear();

@@ -101,6 +101,10 @@ public:
   void SetOARfile(COARfile *pFile);
   void UpdateOARfile(const wxString &sSampleFileName);
   void EditPeak(COARpeakAny *);
+  bool XBPSValue()
+  {
+    return this->m_bXBPS;
+  }
 
   virtual bool Show(bool show = true);
 //  void ShowScrollbars(bool bShow);
@@ -353,6 +357,7 @@ private:
   bool m_bShowToolbar;
   bool m_bShowScrollbars;
   bool m_bFixed;
+  bool m_bXBPS;
 public:
   void OnHistoryUpdate(wxCommandEvent &e);
   void OnExport(wxCommandEvent &e);

@@ -50,6 +50,7 @@ enum
   IDmenuDisplayBPS,
   IDmenuDisplayRFU,
   IDmenuDisplayTime,
+  IDmenuDisplayILS_BPS,
   IDmenuDisplayPeakArea,
   IDmenuDisplay_MAX
 };
