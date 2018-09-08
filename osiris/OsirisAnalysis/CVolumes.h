@@ -111,6 +111,7 @@ public:
   {
     m_bReadOnly = bReadOnly;
   }
+  bool CreatedByNewerVersion();
   bool CheckReload(bool bForceReload = false);
   const wxString &GetLastError() const
   {

@@ -2299,13 +2299,42 @@ void CFrameAnalysis::RepaintAllData(const COARsample *p)
   RepaintData();
 }
 
+bool CFrameAnalysis::_CheckPromptNewer()
+{
+  // check if file was created by newer version of OSIRIS
+  // if not, return TRUE
+  // otherwise
+  bool bRtn = true;
+  if(m_pOARfile->CheckVersion() && m_pOARfile->CreatedByNewerVersion())
+  {
+    wxString sMsg =
+        "This file was created with a newer version of OSIRIS,\n";
+    sMsg.Append(m_pOARfile->GetFullVersion());
+    sMsg.Append(
+        "\nSaving changes may result in a loss of data.\n"
+        "Do you wish to continue?");
+        ;
+    bRtn = mainApp::Confirm(this,sMsg,"Warning",wxNO_DEFAULT);
+    if(bRtn)
+    {
+      m_pOARfile->ClearCheckVersion();
+    }
+  }
+  return bRtn;
+}
 
 bool CFrameAnalysis::SaveFile()
 {
   bool bRtn = false;
   if(m_pOARfile != NULL)
   {
-    if(m_pOARfile->CanSave())
+    bool bCanSaveAs = true;
+    if(!m_pOARfile->CanSave()) {}
+    else if(!_CheckPromptNewer())
+    {
+      bCanSaveAs = false;
+    }
+    else
     {
       {
         wxBusyCursor xxxxx;
@@ -2324,7 +2353,7 @@ bool CFrameAnalysis::SaveFile()
         ShowFileSaveError(m_pOARfile->GetFileName());
       }
     }
-    if(!bRtn)
+    if(bCanSaveAs && !bRtn)
     {
       bRtn = SaveFileAs();
     }
@@ -2362,36 +2391,39 @@ bool CFrameAnalysis::SaveFileAs()
       sFilePath = fn.GetPath();
       sFileName = fn.GetFullName();
     }
-    wxFileDialog dlg(
-      this,"Save File",sFilePath,sFileName,
-      FILE_TYPE_REPORT_SAVE_AS,
-      wxFD_SAVE | wxFD_OVERWRITE_PROMPT  );
-    int n = dlg.ShowModal();
-    SetFocus(); // OS-522, another window get the focus
-                // when this dialog is shown
-    if(n == wxID_OK)
+    if(_CheckPromptNewer())
     {
-      sFileName = dlg.GetPath();
-      CMDIFrame *pFrame = m_pParent->FindWindowByName(sFileName);
-      if( (pFrame != NULL) && (pFrame != (CMDIFrame *)this) )
+      wxFileDialog dlg(
+        this,"Save File",sFilePath,sFileName,
+        FILE_TYPE_REPORT_SAVE_AS,
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT  );
+      int n = dlg.ShowModal();
+      SetFocus(); // OS-522, another window get the focus
+                  // when this dialog is shown
+      if(n == wxID_OK)
       {
-        wxString sError(
-          "A file by this name is already open.\n"
-              "Please close the file before overwriting it.");
-        mainApp::ShowError(sError,this);
-      }
-      else if(_SaveOERFile(sFileName))
-      {
-        bRtn = true;
-        m_pParent->AddToMRU(sFileName);
-        CheckSaveStatus();
-        m_pParent->UpdateHistory(m_pOARfile);
-        m_pMenu->UpdateHistory();
-        SetupTitle();
-      }
-      else
-      {
-        ShowFileSaveError(sFileName);
+        sFileName = dlg.GetPath();
+        CMDIFrame *pFrame = m_pParent->FindWindowByName(sFileName);
+        if( (pFrame != NULL) && (pFrame != (CMDIFrame *)this) )
+        {
+          wxString sError(
+            "A file by this name is already open.\n"
+                "Please close the file before overwriting it.");
+          mainApp::ShowError(sError,this);
+        }
+        else if(_SaveOERFile(sFileName))
+        {
+          bRtn = true;
+          m_pParent->AddToMRU(sFileName);
+          CheckSaveStatus();
+          m_pParent->UpdateHistory(m_pOARfile);
+          m_pMenu->UpdateHistory();
+          SetupTitle();
+        }
+        else
+        {
+          ShowFileSaveError(sFileName);
+        }
       }
     }
   }

@@ -47,6 +47,7 @@
 #include "OsirisVersion.h"
 #include "COmittedAlerts.h"
 #include "OsirisFileTypes.h"
+#include "COsirisVersion.h"
 
 const wxString COARfile::g_sRootOAR("OsirisAnalysisReport");
 const wxString COARfile::g_sLocusName("LocusName");
@@ -1333,8 +1334,24 @@ bool COARfile::LoadFile(const wxString &sFileName)
   }
   return bRtn;
 }
-
-
+void COARfile::_CleanupOsirisVersion() const
+{
+  if(m_pOsirisVersion != NULL)
+  {
+    delete m_pOsirisVersion;
+    m_pOsirisVersion = NULL;
+  }
+}
+bool COARfile::CreatedByNewerVersion() const
+{
+  const COsirisVersion *pVersion = COsirisVersion::GetGlobal();
+  if(m_pOsirisVersion == NULL)
+  {
+    m_pOsirisVersion = new COsirisVersion(m_sVersion);
+  }
+  bool bRtn = (*pVersion) < (*m_pOsirisVersion);
+  return bRtn;
+}
 nwxXmlCMF *COARfile::CreateCMF(COARsample2CMFSpecimen *pMap)
 {
   wxString sUser = wxGetUserId();

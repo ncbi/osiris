@@ -30,6 +30,7 @@
 #include "mainApp.h"
 #include "CVolumes.h"
 #include "ConfigDir.h"
+#include "COsirisVersion.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxKillDir.h"
 #include "nwx/nwxString.h"
@@ -255,29 +256,35 @@ void CVolume::_InitError()
   m_sLastError.Append(GetVolumeName());
   m_sLastError.Append(",\n");  
 }
+bool CVolume::CreatedByNewerVersion()
+{
+  CLabSettings *pLab = GetLabSettings();
+  const wxString &sVer(pLab->GetLabSettingsInfo()->GetVersion());
+  COsirisVersion xLab(sVer);
+  COsirisVersion *pThis = COsirisVersion::GetGlobal();
+  bool bRtn = (xLab > *pThis);
+  return bRtn;
+}
 bool CVolume::Lock()
 {
   bool bRtn = false;
   if(IsReadOnly() || 
-    !wxFileName::IsFileWritable(this->GetLabSettingsFileName()) )
+    !wxFileName::IsFileWritable(GetLabSettingsFileName()) )
   {
     _InitError();
     m_sLastError.Append(
       "cannot be locked because it is read only,\n"
          "and cannot be modified");
   }
-#if 0
-  //  OS-679 - removed because access time is unreliable
-
-  else if((!m_bIgnoreReadLock) && AccessedSince(30))
+  else if(CreatedByNewerVersion())
   {
     _InitError();
+    CLabSettings *pLab = GetLabSettings();
     m_sLastError.Append(
-      
-        "cannot be locked because it in use.\n"
-        "Please try again later.");
+      "cannot be locked because it was created\n"
+      "with a newer version of OSIRIS,\n");
+    m_sLastError.Append(pLab->GetLabSettingsInfo()->GetVersion());
   }
-#endif
   else if(m_lock.Lock(m_sPath))
   {
     CheckReload();

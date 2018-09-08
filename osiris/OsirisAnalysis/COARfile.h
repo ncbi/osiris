@@ -49,6 +49,7 @@ class nwxXmlCMF;
 class nwxXmlCMFSpecimen;
 class CXMLmessageBook;
 class COmittedAlerts;
+class COsirisVersion;
 
 //********************************************** COARsample2CMFSpecimen
 
@@ -83,12 +84,16 @@ public:
     m_dtLastLoad.Set((time_t)0);
     m_bModified = false;
     m_bSetupInputPath = false;
+    m_bCheckVersion = true;
+    m_pOsirisVersion = NULL;
     RegisterAll(true);
   }
   COARfile(const COARfile &x) :
     m_DirReviews(true),
     m_DirAcceptance(false)
   {
+    m_bCheckVersion = true;
+    m_pOsirisVersion = NULL;
     m_pMsgBook = NULL;
     m_bCheckedMsgBook = false;
     RegisterAll(true);
@@ -117,6 +122,7 @@ public:
   virtual ~COARfile() 
   {
     _ClearMessageBook();
+    _CleanupOsirisVersion();
   }
   static wxString FindAnalysisFile(
     const wxString &sDir,const wxString &sSampleName = wxEmptyString);
@@ -353,6 +359,8 @@ public:
   COARsample *GetSampleByName(const wxString &sName);
   void LocalInit()
   {
+    _CleanupOsirisVersion();
+    m_bCheckVersion = true;
     m_dtLastLoad.Set((time_t)0);
     m_pLastSampleDisabled = NULL;
     m_sFileName.Clear();
@@ -498,6 +506,19 @@ public:
       return m_sVersion;
     }
     return m_sFullVersion;
+  }
+  const wxString &GetVersionSimple() const
+  {
+    return m_sVersion;
+  }
+  bool CreatedByNewerVersion() const;
+  bool CheckVersion() const
+  {
+    return m_bCheckVersion;
+  }
+  void ClearCheckVersion() const
+  {
+    m_bCheckVersion = false;
   }
   nwxXmlCMF *CreateCMF(COARsample2CMFSpecimen *pMap = NULL);
   void UpdateVersion();
@@ -734,9 +755,11 @@ private:
   mutable vector<wxString> m_vsLocus; //**
   mutable vector<int> m_vnChannelNr; //**
   mutable const COARsample *m_pLastSampleDisabled; //**
+  mutable COsirisVersion *m_pOsirisVersion;
   bool m_bModified; //**
   bool m_bCheckedMsgBook; //**
   mutable bool m_bSetupInputPath;
+  mutable bool m_bCheckVersion;
 
 private:
   static void _ChopFileExtension(wxString *ps);
@@ -745,6 +768,7 @@ private:
     const vector<wxString> &vs, 
     COmittedAlerts *pOmitted,
     size_t nLen = 32000);
+  void _CleanupOsirisVersion() const;
   void _PostProcessFile();
   void _FormatCommonAlerts(
     COmittedAlerts *pOmitted,
