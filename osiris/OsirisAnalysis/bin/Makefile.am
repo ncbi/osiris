@@ -95,6 +95,7 @@ osiris_SOURCES =  \
 ../COARsampleSort.cpp \
 ../COmittedAlerts.cpp \
 ../COsirisIcon.cpp \
+../COsirisVersion.cpp \
 ../CPageAuto.cpp \
 ../CPageEditSample.cpp \
 ../CPageName.cpp \
