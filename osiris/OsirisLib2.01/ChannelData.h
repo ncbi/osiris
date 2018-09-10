@@ -431,6 +431,7 @@ public:
 	virtual int FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 
 	virtual int AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, CoordinateTransform* timeMap);
+	virtual int AssignSampleCharacteristicsToLociSMLF ();
 
 	virtual int AnalyzeLaneStandardChannelRecursivelySM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual Boolean AssignCharacteristicsToLociSM (ChannelData* lsData);

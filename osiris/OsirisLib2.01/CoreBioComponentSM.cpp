@@ -1331,6 +1331,22 @@ int CoreBioComponent :: AssignSampleCharacteristicsToLociSM (CoreBioComponent* g
 }
 
 
+int CoreBioComponent :: AssignSampleCharacteristicsToLociSMLF () {
+
+	//
+	//  This is sample stage 1
+	//
+
+	for (int i=1; i<=mNumberOfChannels; i++) {
+
+		if (i != mLaneStandardChannel)
+			mDataChannels [i]->AssignSampleCharacteristicsToLociSMLF ();
+	}
+
+	return 0;
+}
+
+
 int CoreBioComponent :: AnalyzeLaneStandardChannelSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	//
@@ -3258,6 +3274,39 @@ int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDa
 	RemoveAllSignalsOutsideLaneStandardSM ();
 //	ValidateAndCorrectCrossChannelAnalysesSM ();
 	int status = AssignSampleCharacteristicsToLociSM (grid, mTimeMap);
+	//delete timeMap;	// Added 09/26/2014 to prevent memory leak
+
+	//int j;
+	//double currentLast;
+	//double largestTime = 0.0;
+
+	//for (j=1; j<=mNumberOfChannels; j++) {
+
+	//	if (j != mLaneStandardChannel) {
+
+	//		currentLast = mDataChannels [j]->GetLastTime ();
+
+	//		if (currentLast > largestTime)
+	//			largestTime = currentLast;
+	//	}
+	//}
+
+	//if (largestTime > mQC.mLastILSTime)
+	//	mQC.mLastILSTime = largestTime;
+
+	return status;
+}
+
+
+int CoreBioComponent :: PreliminarySampleAnalysisSMLF () {
+
+	//
+	//  This is sample stage 1
+	//
+
+	RemoveAllSignalsOutsideLaneStandardSM ();
+//	ValidateAndCorrectCrossChannelAnalysesSM ();
+	int status = AssignSampleCharacteristicsToLociSMLF ();
 	//delete timeMap;	// Added 09/26/2014 to prevent memory leak
 
 	//int j;

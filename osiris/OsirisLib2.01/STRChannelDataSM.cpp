@@ -4104,6 +4104,45 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 }
 
 
+int STRSampleChannelData :: AssignSampleCharacteristicsToLociSMLF () {
+
+	//  Assume sample characteristics are in PreminaryCurveList.
+	//
+	//  Get the one and only "locus".  Then, extract all signals and assign to that locus.
+	//
+
+	//
+	//  This is LF sample stage 1
+	//
+
+	Locus* nextLocus;
+	smBelowMinRFU belowMinRFU;
+
+	//while (nextLocus = (Locus*) it()) {
+
+	//	gridLocus = grid->FindLocus (mChannel, nextLocus->GetLocusName ());
+
+	//	if (gridLocus == NULL)
+	//		return -1;  // this should never happen...it means that the channel has a locus that the grid has never heard of, but have to test...
+
+	//	nextLocus->ExtractSampleSignals (PreliminaryCurveList, gridLocus, timeMap);
+	//}
+
+	//it.Reset ();
+
+	nextLocus = (Locus*) mLocusList.First ();
+
+	if (nextLocus == NULL)
+		return -1;
+
+	// Extract all signals from PreliminaryCurveList and insert into "locus";  assign allele name = ILS BP rounded to nearest tenth
+
+	nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+
+	return 0;
+}
+
+
 int STRSampleChannelData :: AnalyzeSampleLociSM (ChannelData* lsData, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	//

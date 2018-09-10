@@ -405,6 +405,7 @@ public:
 	virtual int FitNonLaneStandardCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int FitNonLaneStandardNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, CoordinateTransform* timeMap);
+	virtual int AssignSampleCharacteristicsToLociSMLF ();
 
 	virtual int AnalyzeLaneStandardChannelSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AssignCharacteristicsToLociSM ();
@@ -453,6 +454,7 @@ public:
 	virtual int FilterSmartNoticesBelowMinBioID ();
 	virtual int RemoveAllSignalsOutsideLaneStandardSM ();
 	virtual int PreliminarySampleAnalysisSM (RGDList& gridList, SampleDataStruct* sampleData);
+	virtual int PreliminarySampleAnalysisSMLF ();
 	virtual int MeasureAllInterlocusSignalAttributesSM ();
 	virtual int ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();
 	virtual int RemoveInterlocusSignalsSM ();

@@ -222,7 +222,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	bool isLadderFree = false;
 	size_t posn = 0;
 
-	if (MarkerSetName.FindSubstringCaseIndependent ("LadderFree", posn))
+	if (MarkerSetName.FindSubstringCaseIndependent ("LaneStandardOnly", posn))
 		isLadderFree = true;
 
 	inputFile.OutputAnalysisThresholdOverrides (CommandInputs);

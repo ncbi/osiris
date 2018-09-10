@@ -1517,6 +1517,12 @@ int ChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, 
 }
 
 
+int ChannelData :: AssignSampleCharacteristicsToLociSMLF () {
+
+	return -1;
+}
+
+
 int ChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	return -1;

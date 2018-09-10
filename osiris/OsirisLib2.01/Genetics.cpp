@@ -1918,6 +1918,42 @@ Boolean Locus :: ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLo
 }
 
 
+Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
+
+	double ilsBP;
+	DataSignal* nextSignal;
+	RGDListIterator it (channelSignalList);
+	LocusSignalList.Clear ();
+	FinalSignalList.Clear ();
+	mSmartList.Clear ();
+	bool haveFoundSignals = false;
+	RGString alleleName;
+	int oldResolution = RGString::GetDoubleResolution ();
+	int IntegerPart;
+	int TenthPart;
+	int TenTimesBP;
+
+	while (nextSignal = (DataSignal*) it()) {
+
+		ilsBP = nextSignal->GetApproximateBioID ();
+		LocusSignalList.Append (nextSignal);
+		mSmartList.Append (nextSignal);
+		nextSignal->SetLocus ((Locus*)this, 0);
+		IntegerPart = (int)floor (ilsBP);
+		TenTimesBP = (int)floor (10.0 * ilsBP + 0.5);
+		TenthPart = TenTimesBP - 10 * IntegerPart;
+		alleleName << IntegerPart << "." << TenthPart;
+		nextSignal->SetAlleleName (alleleName);
+		alleleName = "";
+
+		it.RemoveCurrentItem ();
+		haveFoundSignals = true;
+	}
+
+	return TRUE;
+}
+
+
 Boolean Locus :: ExtractExtendedSampleSignals (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap) {
 
 	double mean;

@@ -2457,19 +2457,19 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 			SampleOutput = NULL;
 		}
 
-		//if (sampleOK && (bioComponent->PreliminarySampleAnalysisSM (LadderList, SampleData) < 0)) {
+		if (sampleOK && (bioComponent->PreliminarySampleAnalysisSMLF () < 0)) {
 
-		//	sampleOK = false;
-		//	NoticeStr = "";
-		//	NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
-		//	ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
-		//	ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-		//	NoticeStr = "";
-		//	bioComponent->SetMessageValue (sampleFailed, true);
-		//}
+			sampleOK = false;
+			NoticeStr = "";
+			NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
+			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+			NoticeStr = "";
+			bioComponent->SetMessageValue (sampleFailed, true);
+		}
 
-		//else
-		bioComponent->GetAllAmbientData (data);
+		else
+			bioComponent->GetAllAmbientData (data);
 
 		//cout << "Preliminary Analysis Complete" << endl;
 
@@ -2561,8 +2561,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		//cout << "Stage 1 complete" << endl;
 
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
+		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
+		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
 
 		/*if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
 
@@ -2589,8 +2589,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		//cout << "Stage 2 complete" << endl;
 
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
+		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
+		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
 
 		if (sampleOK) {
 			//bioComponent->MakePreliminaryCallsSM (pGenotypes);  Replace with function to place ILS-bps in allele names?????
@@ -2614,8 +2614,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		//cout << "Stage 3 complete" << endl;
 
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
+		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
+		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
 
 		// Now, resolve ambiguities based on calculations from end of stage 3:
 
@@ -2640,8 +2640,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		//	Put residual displacement test here...02/11/2014
 
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
+		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
+		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
 
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
 		bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
@@ -2653,8 +2653,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		//  Put peak height accumulation algorithm here (12/16/2016)
 		//
 
-		//if (sampleOK)
-		//	bioComponent->WriteDataToHeightFileSM ();
+		if (sampleOK)
+			bioComponent->WriteDataToHeightFileSM ();
 
 		//cout << "Sample quality test complete" << endl;
 
@@ -2673,11 +2673,11 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		//cout << "Stage 5 complete" << endl;
 
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
+		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
 
-		if (!sampleOK)
-			bioComponent->LocatePositiveControlName (pGenotypes);
+		//if (!sampleOK)
+		//	bioComponent->LocatePositiveControlName (pGenotypes);
 
 		bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done
 
