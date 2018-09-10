@@ -119,9 +119,10 @@ CGridCMF::CGridCMF(
   n = m_vpSample.size();
   if(!n)
   {
-    CreateGrid(1,1);
+    CreateGrid(1,(int)COLUMN_COUNT);
     SetCellValue(0,0,"There are no samples");
     SetReadOnly(0,0,true);
+    SetMinSize(wxSize(21,21));
     AutoSize();
   }
   else
@@ -161,6 +162,7 @@ bool CGridCMF::TransferDataToGrid()
 
     const CLabSettings &lab(m_pFile->GetLabSettings());
     wxString sName;
+    wxString sComment;
     wxString sCat;
     COARsample *pSample;
     const CLabNameStrings *pNameStr;
@@ -173,6 +175,7 @@ bool CGridCMF::TransferDataToGrid()
       // sample name and category
 
       sName = pSample->GetName();
+      sComment = pSample->GetSampleComment();
       pNameStr = lab.GetLabStrings();
       if(pNameStr == NULL)
       {
@@ -192,7 +195,8 @@ bool CGridCMF::TransferDataToGrid()
 
       SetBoolValue((int)i,EXCLUDE,false);
       SetCellValue((int)i,SPECIMEN_TYPE,sCat);
-      SetCellValue((int)i,SAMPLE,pSample->GetName());
+      SetCellValue((int)i,SAMPLE,sName);
+      SetCellValue((int)i,COMMENT,sComment);
       SetTextLength((int)i,SAMPLE,nwxXmlCMFSpecimen::LEN_SPECIMEN_ID);
       SetTextLength((int)i,SOURCE_ID,nwxXmlCMFSpecimen::LEN_SOURCE_ID);
       SetTextLength((int)i,CASE_ID,nwxXmlCMFSpecimen::LEN_CASE_ID);
