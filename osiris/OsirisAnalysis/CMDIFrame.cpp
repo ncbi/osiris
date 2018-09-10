@@ -125,7 +125,7 @@ bool CMDIFrame::Destroy()
 }
 void CMDIFrame::CannotTileError(CMDIFrame *pFrame, bool bRaise)
 {
-  wxChar *ps = NULL;
+  const wxChar *ps = NULL;
   if(wxDynamicCast(pFrame,CFrameSample) != NULL)
   {
     ps = wxS("sample");
