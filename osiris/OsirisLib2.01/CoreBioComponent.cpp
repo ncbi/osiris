@@ -337,13 +337,19 @@ int CoreBioComponent :: GetAllAmbientData (SampleData* data) {
 	double max = 0.0;
 	double min = 0.0;
 	double temp;
-	double startRatio;
-	double endRatio;
-	double doubleStartTime;
 	int startTime;
 	int totalTime = mQC.mNumberOfSamples;
 	double doublelastTime = mQC.mLastILSTime;
 	int lastTime;
+
+	struct ZeroInterval {
+		int start;
+		int end;
+		int length;
+	};
+
+	ZeroInterval* zero;
+	ZeroInterval* lastZero = NULL;
 
 	for (i=1; i<=4; i++) {
 
@@ -354,26 +360,114 @@ int CoreBioComponent :: GetAllAmbientData (SampleData* data) {
 
 		ambientArray = data->GetDataForAmbientChannel (i);
 
-		if (ambientArray == NULL)
+		if (ambientArray == NULL) {
+
+			if (i == 1)
+				break;
+
 			continue;
+		}
 
-		startRatio = mQC.mFirstILSTime / (double) totalTime;
-		endRatio = mQC.mLastILSTime / (double) totalTime;
-		doubleStartTime = startRatio * (double)n;
-		doublelastTime = endRatio * (double)n;
-		startTime = (int) floor (doubleStartTime);
-		lastTime = (int) ceil (doublelastTime) + 5;
+		if (i == 1) {
 
-		cout << "Ambient start time = " << mQC.mFirstILSTime << " and end time = " << mQC.mLastILSTime << "\n";
-		cout << "Ambient start measurement = " << startTime << " and end measurement = " << lastTime << "\n";
+			startTime = 0;
+			int currentEnd = 0;
+			int currentStart = 0;
+			int length;
+			bool withinZeroInterval = false;
+			int lastAmbient = n -4;
+			double maxVoltage = 0.0;
+			int maxLocation;
+			double filterFraction = 0.5;
+
+			for (j=0; j<lastAmbient; j++) {
+
+				if (ambientArray [j] > maxVoltage) {
+
+					maxVoltage = ambientArray [j];
+					maxLocation = j;
+				}
+			}
+
+			double maxTest = filterFraction * maxVoltage;
+
+			for (j=0; j<lastAmbient; j++) {
+
+				// look for zero values to end...ignore intervals for which there are either 2 or 3? zeroes
+
+				if (ambientArray [j] < maxTest) {
+
+					if (withinZeroInterval)
+						currentEnd = j;
+
+					else {
+
+						currentStart = j;
+						currentEnd = j;
+						withinZeroInterval = true;
+					}
+				}
+
+				else {
+
+					if (withinZeroInterval) {
+
+						withinZeroInterval = false;
+						length = currentEnd - currentStart + 1;
+
+						if (length >= 2) {
+
+							zero = new ZeroInterval;
+							zero->start = currentStart;
+							zero->end = currentEnd;
+							zero->length = length;
+							delete lastZero;
+							lastZero = zero;
+						}
+					}
+				}
+			}
+
+			if (lastZero == NULL)
+				startTime = 0;
+
+			else
+				startTime = lastZero->end + 1;
+
+			delete lastZero;
+			int newStart = startTime;
+
+			for (j=startTime; j<lastAmbient; j++) {
+
+				if (ambientArray [j] < 0.97 * maxVoltage)
+					newStart = j;
+
+				else
+					break;
+			}
+
+			startTime = newStart + 1;
+			lastTime = lastAmbient;
+			cout << "Ambient start measurement = " << startTime << " and end measurement = " << lastTime << "\n";
+		}
+
+		//startRatio = mQC.mFirstILSTime / (double) totalTime;
+		//endRatio = mQC.mLastILSTime / (double) totalTime;
+		//doubleStartTime = startRatio * (double)n;
+		//doublelastTime = endRatio * (double)n;
+		//startTime = (int) ceil (doubleStartTime);
+		//lastTime = (int) floor (doublelastTime);
+
+	//	cout << "Ambient start time = " << mQC.mFirstILSTime << " and end time = " << mQC.mLastILSTime << "\n";
+		
 
 		if (lastTime >= n - 1)
 			lastTime = n - 1;
 
 		max = 0.0;
-		min = 0.0;
+		min = ambientArray [startTime];
 
-		for (j=startTime; j<lastTime; j++) {
+		for (j=startTime; j<=lastTime; j++) {
 
 			temp = ambientArray [j];
 
