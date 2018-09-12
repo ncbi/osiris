@@ -102,12 +102,14 @@ public:
   virtual bool LadderValue();
   virtual bool BaselineValue();
   virtual bool BaselineEnabled();
+  virtual bool XBPSValue();
 
   virtual void ShowAnalyzed(bool b = true);
   virtual void ShowRaw(bool b = true);
   virtual void ShowLadder(bool b = true);
   virtual void ShowBaseline(bool b = true);
   virtual void EnableBaseline(bool b = true);
+  virtual void SetXBPS(bool b = true);
 
   // channels
 

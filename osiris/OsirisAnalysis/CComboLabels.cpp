@@ -43,6 +43,7 @@ const wxString CComboLabels::g_sBPS("BPS");
 const wxString CComboLabels::g_sRFU("RFU");
 const wxString CComboLabels::g_sTime("Time");
 const wxString CComboLabels::g_sPeakArea("Peak Area");
+const wxString CComboLabels::g_sILS_BPS("ILS Ref. BPS");
 // default selection for menu
 const int CMenuLabels::g_nDefault(IDmenuDisplayAlleles);
 
@@ -78,6 +79,7 @@ void CComboLabels::GetChoices(
     pas->Add(g_sBPS);
     pas->Add(g_sRFU);
     pas->Add(g_sTime);
+    pas->Add(g_sILS_BPS);
     if(bAllowPeakArea || !bPlot)
     {
       pas->Add(g_sPeakArea);
@@ -94,6 +96,7 @@ void CComboLabels::GetChoices(
     panID->Add(IDmenuDisplayBPS + nBase);
     panID->Add(IDmenuDisplayRFU + nBase);
     panID->Add(IDmenuDisplayTime + nBase);
+    panID->Add(IDmenuDisplayILS_BPS + nBase);
     if(bAllowPeakArea || !bPlot)
     {
       panID->Add(IDmenuDisplayPeakArea + nBase);

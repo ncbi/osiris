@@ -69,6 +69,7 @@ private:
   static const wxString g_sBPS;
   static const wxString g_sRFU;
   static const wxString g_sTime;
+  static const wxString g_sILS_BPS;
   static const wxString g_sPeakArea;
 };
 

@@ -103,16 +103,18 @@ public:
   virtual int ChannelCount() = 0;
   virtual void ShowOneChannel(unsigned int n);
 
-  //  Sync, ILS, RFU
+  //  Sync, ILS, RFU, X Axis
   virtual bool SyncValue() = 0;
   virtual bool MinRfuValue() = 0;
   virtual bool LadderLabels() = 0;
   virtual bool ILSValue() = 0;
+  virtual bool XBPSValue() = 0;
 
   virtual void SetSync(bool b = true) = 0;
   virtual void ShowILS(bool b = true) = 0;
   virtual void ShowMinRfu(bool b = true) = 0;
   virtual void ShowLadderLabels(bool b = true) = 0;
+  virtual void SetXBPS(bool b = true) = 0;
 
   // labels, artifacts
 

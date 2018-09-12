@@ -43,11 +43,12 @@
 #include "CLabSettings.h"
 #include "ConfigDir.h"
 #include "CXSLExportFileType.h"
+#include "COsirisVersion.h"
 #include <wx/utils.h>
 
 // set to true if skipping unit test
-//bool UnitTest::g_HasRun(false);
-bool UnitTest::g_HasRun(true);
+bool UnitTest::g_HasRun(false);
+//bool UnitTest::g_HasRun(true);
 
 void UnitTest::_Run()
 {
@@ -66,6 +67,7 @@ void UnitTest::_Run()
     nwxXmlUnitTest::RunUnitTest();
     nwxKillDir::UnitTest();
     nwxLock::UnitTest();
+    COsirisVersion::UnitTest();
 
     {
       ConfigDir *pDir = mainApp::GetConfig();

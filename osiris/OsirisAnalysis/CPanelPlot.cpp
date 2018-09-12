@@ -160,7 +160,9 @@ CPanelPlot::CPanelPlot(
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer)
+    m_bExternalTimer(bExternalTimer),
+    m_bDoTimer(false),
+    m_bXBPS(false)
 {
   //  constructor for panel in analysis MDI frame
   _BuildPanel(0,true,NULL);
@@ -195,7 +197,9 @@ CPanelPlot::CPanelPlot(
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer)
+    m_bExternalTimer(bExternalTimer),
+    m_bDoTimer(false),
+    m_bXBPS(false)
 {
   //  constructor for panel in graphic MDI frame
   _BuildPanel(nMenuNumber,bFirst,pMenuHistory);
@@ -205,45 +209,6 @@ void CPanelPlot::_BuildPanel(
   CMenuHistory *pMenuHistory)
 {
   _BuildMenu(nMenuNumber);
-  //  initialize
-  double *pdx;
-  double *pdy;
-  unsigned int i;
-
-  size_t nPoints = m_pData->GetPointCount();
-
-  unsigned int nChannelCount = m_pData->GetChannelCount();
-  for(i = 0; i < COUNT_DATA; i++)
-  {
-    m_pmapChannelPlot[i] = NULL;
-    m_pmapChannelPlotNoise[i] = NULL;
-  }
-  // set up data
-
-  pdx = m_pData->GetTimePoints();
-  for(i = 1; i <= nChannelCount; i++)
-  {
-    pdy = m_pData->GetAnalyzedPoints(i);
-    AddData(ANALYZED_DATA,i, (unsigned int)nPoints,pdx,pdy);
-    pdy = m_pData->GetRawPoints(i);
-    AddData(RAW_DATA,i,(unsigned int)nPoints,pdx,pdy);
-    pdy = m_pData->GetLadderPoints(i);
-    AddData(LADDER_DATA,i,(unsigned int)nPoints,pdx,pdy);
-    pdy = m_pData->GetBaselinePoints(i);
-#if BASELINE_START
-    if(pdy != NULL)
-    {
-      double *pdxBaseline = m_pData->GetBaselineTimePoints(i);
-      AddData(
-          BASELINE_DATA,i,
-          (unsigned int) m_pData->GetBaselinePointCount(i),
-          pdxBaseline,pdy, 
-          m_pData->GetBaselineStart(i));
-    }
-#else
-    AddData(BASELINE_DATA,i,(unsigned int)nPoints,pdx,pdy);
-#endif
-  }
 
   // now build it and they will come
   m_pPanel = new wxPanel(this,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
@@ -259,11 +224,6 @@ void CPanelPlot::_BuildPanel(
   m_pPlotCtrl = new CPlotCtrl(m_pPanel,this);
   m_viewRect.SetPlotCtrl(m_pPlotCtrl);
 
-//  if(m_pFramePlot == NULL)
-//  {
-//    m_pPlotCtrl->ShowScrollbars(false);
-//  }
-
   TnwxBatch<CPanelPlot> batch(this); // must be after m_pPlotCtrl is created
 
   m_pPlotCtrl->SetPlotTitleColour(*wxWHITE);
@@ -278,7 +238,7 @@ void CPanelPlot::_BuildPanel(
   m_pSizer->Add(m_pPlotCtrl,1,wxEXPAND);
 
   m_pPlotCtrl->SetDrawSymbols(false);
-  m_pPlotCtrl->SetXAxisLabel("Time (seconds)");
+  m_pPlotCtrl->SetXAxisLabel(_GetXAxisLabel());
   m_pPlotCtrl->SetYAxisLabel("RFU");
   m_pPlotCtrl->SetShowXAxisLabel(true);
   m_pPlotCtrl->SetShowYAxisLabel(true);
@@ -294,25 +254,9 @@ void CPanelPlot::_CleanupLadderPeakSet()
 
 CPanelPlot::~CPanelPlot()
 {
-  mapChannelPlot *pcp;
-  mapChannelPlot::iterator itr;
-  mapChannelPlot **pp = m_pmapChannelPlotNoise;
-  m_pPlotCtrl->DeleteCurve(-1);
-  for(int zz = 0; zz < 2; zz++)
-  {
-    for(int i = 0; i < COUNT_DATA; i++)
-    {
-      pcp = pp[i];
-      if(pcp != NULL)
-      {
-        pp[i] = NULL;
-        mapptr<int,wxPlotData>::cleanup(pcp);
-        delete pcp;
-      }
-    }
-    pp = m_pmapChannelPlot;
-  }
+  mapptr<int,wxPlotData>::cleanup(&m_mapPlotData);
   vectorptr<wxPlotData>::cleanup(&m_vILS);
+  vectorptr<wxPlotData>::cleanup(&m_vILS_XBPS);
   this->_CleanupLadderPeakSet();
   if(m_pTimer != NULL)
   {
@@ -336,122 +280,132 @@ void CPanelPlot::_CleanupPeakAny()
 
 void CPanelPlot::CleanupMinRfuLines()
 {
+/*
   for(mapMinRfu::iterator itr = m_mapMinRfuAll.begin();
     itr != m_mapMinRfuAll.end();
     ++itr)
   {
     delete itr->second;
   }
-  m_mapMinRfuAll.clear();
+*/
+  mapptr<double, wxPlotData>::cleanup(&m_mapMinRfuAll);
+  mapptr<double, wxPlotData>::cleanup(&m_mapMinRfuAll_XBPS);
+//  m_mapMinRfuAll.clear();
 }
 
-void CPanelPlot::AddData(
-  DATA_TYPE nType, unsigned int nChannel, unsigned int nPointCount,
-  double *pdx, double *pdy, unsigned int nStart)
+wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS)
 {
-  if((pdy != NULL) && (pdx != NULL) && (nPointCount > 1))
+  wxPlotData *pRtn(NULL);
+  int nKey = _SamplePlotKey(nType, nChannel, bNoise, bXBPS);
+  mapSamplePlots::iterator itr = m_mapPlotData.find(nKey);
+  if(itr != m_mapPlotData.end())
   {
-    unsigned int nBegin = m_pData->GetBegin();
-    if(!nStart){}
-    else if(nBegin < nStart)
+    pRtn = itr->second;
+  }
+  else if( _IsNoNoiseChannel(nChannel) && bNoise ) {} // done
+  else
+  {
+    // build data
+    double *pdx = bXBPS ? m_pData->GetILSBpsPoints() : m_pData->GetTimePoints();
+    double *pdy = NULL;
+    switch(nType)
     {
-      nBegin = 0;
+    case ANALYZED_DATA:
+      pdy = m_pData->GetAnalyzedPoints(nChannel);
+      break;
+    case RAW_DATA:
+      pdy = m_pData->GetRawPoints(nChannel);
+      break;
+    case LADDER_DATA:
+      pdy = m_pData->GetLadderPoints(nChannel);
+      break;
+    case BASELINE_DATA:
+      pdy = m_pData->GetBaselinePoints(nChannel);
+      break;
     }
-    else
+    if(pdy != NULL)
     {
-      nBegin -= nStart;
-    }
+      unsigned int nBegin = m_pData->GetBegin();
+      size_t nPoints = m_pData->GetPointCount();
+      if( (nBegin + 1) >= nPoints)
+      {
+        nBegin = 0;
+      }
 
-    if((nBegin + 1) >= nPointCount)
-    {
-      nBegin = 0;
-    }
-    mapChannelPlot *pcp = m_pmapChannelPlot[nType];
-    mapChannelPlot *pcpNoise = m_pmapChannelPlotNoise[nType];
-    if(pcpNoise == NULL)
-    {
-      // change 4/4/13, move if(nBegin) inside this 'if' instead of outside if/else
-      if(nBegin)
+      // BEGIN set up pen
+      const CSingleKitColors *pKitColors = m_pColors->GetKitColors(m_pData->GetKitName());
+      const CChannelColors *pCC = NULL;
+      if(pKitColors == NULL)
+      {}
+      else if(nChannel == m_pData->GetILSChannel())
       {
-        pcpNoise = new mapChannelPlot;
-        m_pmapChannelPlotNoise[nType] = pcpNoise;
+        pCC = pKitColors->GetColorChannelFromLS(m_pData->GetParameters().GetLsName());
       }
-    }
-    else
-    {
-      mapChannelPlot::iterator itr = pcpNoise->find(nChannel);
-      if(itr != pcpNoise->end())
+      else
       {
-        delete itr->second;
-        pcpNoise->erase(itr);
+        pCC = pKitColors->GetColorChannel(nChannel);
       }
-    }
-    if(pcp == NULL)
-    {
-      pcp = new mapChannelPlot;
-      m_pmapChannelPlot[nType] = pcp;
-    }
-    else
-    {
-      mapChannelPlot::iterator itr = pcp->find(nChannel);
-      if(itr != pcp->end())
-      {
-        delete itr->second;
-        pcp->erase(itr);
-      }
-    }
+      const wxColour *pColor = (pCC != NULL) ? pCC->GetColorPtr(nType) : wxBLACK;
+      wxGenericPen pen(*pColor);
+      // END set up pen
 
-    wxPlotData *pPlotData = new wxPlotData(&pdx[nBegin],&pdy[nBegin],(int)(nPointCount - nBegin),true);
-    pcp->insert(mapChannelPlot::value_type(nChannel,pPlotData));
-    const CChannelColors *pCC = NULL;
-    const CSingleKitColors *pKitColors = m_pColors->GetKitColors(m_pData->GetKitName());
-    if(pKitColors == NULL)
-    {}
-    else if(nChannel == m_pData->GetILSChannel())
-    {
-      pCC = pKitColors->GetColorChannelFromLS(m_pData->GetParameters().GetLsName());
-    }
-    else
-    {
-      pCC = pKitColors->GetColorChannel(nChannel);
-    }
-    const wxColour *pColor = (pCC != NULL) ? pCC->GetColorPtr(nType) : wxBLACK;
-    wxGenericPen pen(*pColor);
-    pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
-    pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
-    pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
-    if(nBegin)
-    {
-      pPlotData = new wxPlotData(pdx,pdy,nBegin + 1,true);
-      pcpNoise->insert(mapChannelPlot::value_type(nChannel,pPlotData));
+      // create plot data, not including noise
+      int nNewKey = _SamplePlotKey(nType, nChannel, false, bXBPS);
+      wxPlotData *pPlotData = new wxPlotData(
+        &pdx[nBegin], &pdy[nBegin], (int)(nPoints - nBegin), true);
       pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
       pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
       pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
-    }
-  }
-}
-
-wxPlotData *CPanelPlot::FindData(DATA_TYPE nType, unsigned int nChannel, bool bNoise)
-{
-  wxPlotData *pRtn(NULL);
-  mapChannelPlot *pcp = bNoise ? m_pmapChannelPlotNoise[nType] : m_pmapChannelPlot[nType];
-  if(pcp != NULL)
-  {
-    mapChannelPlot::iterator itr = pcp->find(nChannel);
-    if(itr != pcp->end())
-    {
-      pRtn = itr->second;
+      m_mapPlotData.insert(mapSamplePlots::value_type(nNewKey, pPlotData));
+      if(!bNoise)
+      {
+        pRtn = pPlotData;
+      }
+      if(nBegin)
+      {
+        // set up noise if applicable
+        nNewKey = _SamplePlotKey(nType, nChannel, true, bXBPS);
+        pPlotData = new wxPlotData(
+          pdx, pdy, (int)(nBegin + 1), true);
+        pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
+        pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
+        pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
+        m_mapPlotData.insert(mapSamplePlots::value_type(nNewKey, pPlotData));
+        if(bNoise)
+        {
+          pRtn = pPlotData;
+        }
+      }
+      else
+      {
+        // this channel has no noise
+        _SetNoNoiseChannel(nChannel);
+      }
     }
   }
   return pRtn;
 }
+
+
+bool CPanelPlot::XBPSValue()
+{
+  bool bRtn = m_bXBPS;
+  if(IsPreview())
+  {
+    bRtn = m_pMenu->XBPSValue();
+  }
+  else if(m_pFramePlot != NULL)
+  {
+    bRtn = m_pFramePlot->XBPSValue();
+  }
+  return bRtn;
+}
+
 void CPanelPlot::OnBtnAppend(wxCommandEvent &)
 {
   if(m_pFramePlot != NULL)
   {
-//    wxRect2DDouble rect = GetViewRect();
     m_pFramePlot->AddPlot(this);
-//    SetViewRect(rect);
   }
 }
 
@@ -600,7 +554,7 @@ void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
   if( (!nChannelButton) && bShift && bHasToolbar && (m_pFramePlot != NULL) )
   {
     int nID = 0;
-
+    // this should be a std::map<wxObject *,int>
     if(m_pButtonPanel->IsButtonAnalyzed(pObj))
     {
       nID = IDmenuPlotDataAnalyzed;
@@ -657,16 +611,26 @@ void CPanelPlot::BuildILSlines()
       itr != pvILS->end();
       ++itr)
     {
-      dx[0] = (*itr)->GetMeanDouble();
+      dx[0] = (*itr)->GetTime();
       dx[1] = dx[0];
       pdx = Copy2Points(dx);
       pdy = Copy2Points(Y);
       wxPlotData *pPlotData =
         new wxPlotData(pdx,pdy,2,false);
-      m_vILS.push_back(pPlotData);
       pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
       pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
       pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
+      m_vILS.push_back(pPlotData);
+
+      dx[0] = m_pData->TimeToILSBps(dx[1]);
+      dx[1] = dx[0];
+      pdx = Copy2Points(dx);
+      pdy = Copy2Points(Y);
+      pPlotData = new wxPlotData(pdx,pdy,2,false);
+      pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
+      pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
+      pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
+      m_vILS_XBPS.push_back(pPlotData);
     }
   }
 }
@@ -713,6 +677,10 @@ wxString CPanelPlot::_AlleleLabel(
     case LABEL_PEAK_AREA:
       sLabel = nwxString::FormatNumber(
         pPeak->GetPeakArea());
+      break;
+    case LABEL_ILS_BPS:
+      sLabel = nwxString::FormatNumber(
+        pPeak->GetMeanBPS());
       break;
     default:
       {
@@ -861,9 +829,11 @@ void CPanelPlot::_BuildPeakLabels(
     const CSamplePeak *pPeak = pp->at(j);
     sLabel = _AlleleLabel(pPeak,anLabelTypes);
     sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
+    bool bBPS = XBPSValue();
+    double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
     nwxPointLabel label(
             sLabel,
-            pPeak->GetTime(),
+            dX,
             pPeak->GetRFU(),
             colour,
             sToolTip,
@@ -932,6 +902,11 @@ void CPanelPlot::_AppendLadderPeaks(
     const wxRect2DDouble &rect = GetViewRect();
     double xMin = rect.GetLeft();
     double xMax = rect.GetRight();
+    if(m_bXBPS)
+    {
+      xMin = m_pData->ILSBpsToTime(xMin);
+      xMax = m_pData->ILSBpsToTime(xMax);
+    }
     double dTime;
     vector<CSamplePeak *>::const_iterator itr;
     pps->Reserve(pp->size());
@@ -1017,9 +992,11 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
             sToolTip = _ArtifactToolTip(pArt,sChannelName);
             const wxString &sArtifactLabel = pArt->GetArtifactLabel();
             const wxString &sPlotLabel = pArtLabels->GetDisplayFromString(sArtifactLabel);
+            bool bBPS = XBPSValue();
+            double dX = bBPS ? pArt->GetMeanBPS() : pArt->GetTime();
             nwxPointLabel label(
                   sPlotLabel,
-                  pArt->GetTime(),
+                  dX,
                   pArt->GetRFU(),
                   colourData,
                   sToolTip,
@@ -1109,9 +1086,11 @@ void CPanelPlot::_BuildOARlabels()
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
               ? wxCURSOR_HAND 
               : wxCURSOR_NONE;
+            bool bBPS = XBPSValue();
+            double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
             nwxPointLabel label(
                     sLabel,
-                    pPeak->GetTime(),
+                    dX,
                     pPeak->GetRFU(),
                     colour,
                     sToolTip,
@@ -1138,9 +1117,11 @@ void CPanelPlot::_BuildOARlabels()
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
               ? wxCURSOR_HAND 
               : wxCURSOR_NONE;
+            bool bBPS = XBPSValue();
+            double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
             nwxPointLabel label(
                   sPlotLabel,
-                  pPeak->GetTime(),
+                  dX,
                   pPeak->GetRFU(),
                   colour,
                   sToolTip,
@@ -1204,7 +1185,8 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
     if(bLabels)
     {
       wxString sToolTip;
-      int nx;
+      double dTime;
+      double dx;
       unsigned int nChannel;
       const CPlotLocus *pLocus;
       const vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
@@ -1220,12 +1202,16 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
         {
           const wxColour &colour(m_pColors->GetColor(
             m_pData->GetKitName(),ANALYZED_DATA,nChannel));
-          nx = (pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1;
+          dTime = double((pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1);
           sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
+          bool bBPS = XBPSValue();
+          dx =  bBPS ? 
+            GetPlotData()->TimeToILSBps(dTime)
+            : dTime;
           nwxPointLabel label(
             pLocus->GetName(),
-            (double) nx, 
+            dx, 
             0.0, colour, 
             sToolTip, 
             wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM, 
@@ -1515,7 +1501,8 @@ void CPanelPlot::BuildMinRfuLines()
   {
     set<double> setD;
     double d;
-    double X[2] = {0.0, m_pData->GetMaxTime()};
+    double Xt[2] = {0.0, m_pData->GetMaxTime()};
+    double Xbps[2] = {0.0, m_pData->GetMaxXBPS()};
     double Y[2] = {0.0,0.0};
     double *pdx;
     double *pdy;
@@ -1536,11 +1523,14 @@ void CPanelPlot::BuildMinRfuLines()
       d = *itr;
       Y[0] = d;
       Y[1] = d;
-      pdx = Copy2Points(X);
+      pdx = Copy2Points(Xt);
       pdy = Copy2Points(Y);
-      wxPlotData *pPlotData =
-        new wxPlotData(pdx,pdy,2,false);
+      wxPlotData *pPlotData = new wxPlotData(pdx,pdy,2,false);
       m_mapMinRfuAll.insert(mapMinRfu::value_type(d,pPlotData));
+      pdx = Copy2Points(Xbps);
+      pdy = Copy2Points(Y);
+      pPlotData = new wxPlotData(pdx,pdy,2,false);
+      m_mapMinRfuAll_XBPS.insert(mapMinRfu::value_type(d,pPlotData));
     }
   }
 }
@@ -1578,12 +1568,13 @@ void CPanelPlot::ShowMinRfuLines()
   m_setMinRfu.clear();
   wxColour clr = GetMinRfuColour();
   wxGenericPen pen(clr);
+  mapMinRfu *pMinRFU = _GetMinRFUlines();
   for(set<double>::iterator itr = setD.begin();
     itr != setD.end();
     ++itr)
   {
-    itrm = m_mapMinRfuAll.find(*itr);
-    if(itrm != m_mapMinRfuAll.end())
+    itrm = pMinRFU->find(*itr);
+    if(itrm != pMinRFU->end())
     {
       pData = itrm->second;
       pData->SetPen(wxPLOTPEN_NORMAL,pen);
@@ -1619,6 +1610,14 @@ void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p)
     p->m_height *= dExtend;
   }
 }
+
+void CPanelPlot::_ConvertRectToBPS(wxRect2DDouble *pRect)
+{
+  double dLeft = m_pData->TimeToILSBps(pRect->GetLeft());
+  double dRight = m_pData->TimeToILSBps(pRect->GetRight());
+  pRect->SetLeft(dLeft);
+  pRect->SetRight(dRight);
+}
 wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
 {
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
@@ -1634,7 +1633,7 @@ wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
   }
   if(!bAll)
   {
-    rtn.m_x = (double) m_pData->GetBegin();
+    rtn.m_x = (double) m_pData->GetStartAfterPrimer(XBPSValue());
     nStart += m_nNoiseCurves;
   }
   for(int i = nStart; i < nCount; i++)
@@ -1675,10 +1674,21 @@ wxRect2DDouble CPanelPlot::GetZoomLocus(const wxString &sLocus)
   {
     CParmOsirisGlobal parm;
     double dADJUST(parm->GetZoomLocusMargin());
-    double dx = (double) nx1;
+    double dx;
+    double dw;
     double dy = (double) ny1;
     double dh = (double) (ny2 - ny1);
-    double dw = (double) (nx2 - nx1);
+    if(m_bXBPS)
+    {
+      double dx2 = m_pData->TimeToILSBps((double) nx2);
+      dx = m_pData->TimeToILSBps((double) nx1);
+      dw = dx2 - dx;
+    }
+    else
+    {
+      dx = (double) nx1;
+      dw = (double) (nx2 - nx1);
+    }
     if(dADJUST > 0.0)
     {
       if(dADJUST >= 1.0)
@@ -1711,13 +1721,10 @@ wxRect2DDouble CPanelPlot::GetZoomLocus(const wxString &sLocus)
 
 void CPanelPlot::ShowILSlines()
 {
-  if(m_vILS.empty())
-  {
-    BuildILSlines();
-  }
+  vectorILSlines *pvILS = _GetILSlines();
   m_nILScurveOffset = m_pPlotCtrl->GetCurveCount();
-  for(vectorILSlines::iterator itr = m_vILS.begin();
-    itr != m_vILS.end();
+  for(vectorILSlines::iterator itr = pvILS->begin();
+    itr != pvILS->end();
     ++itr)
   {
     wxPlotData *p = *itr;
@@ -1786,9 +1793,11 @@ void CPanelPlot::SetPreviewSettings()
   bool bILS = parm->GetPreviewShowILS();
   bool bRFU = parm->GetPreviewShowRFU();
   bool bLadderLabels = parm->GetPreviewShowLadderLabels();
+  bool bXBPS = parm->GetPreviewXBPS();
   int nArt = (int)parm->GetPreviewShowArtifact();
   int nLabel = parm->GetTableDisplayPeak();
   nLabel = CELL_TO_PLOT(nLabel);
+  m_bXBPS = bXBPS;
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1803,6 +1812,7 @@ void CPanelPlot::SetPreviewSettings()
   m_pMenu->ShowLadderLabels(bLadderLabels);
   m_pMenu->SetLabelType((LABEL_PLOT_TYPE)nLabel,LABEL_NONE);
   m_pMenu->SetArtifactValue(nArt);
+  m_pMenu->SetXBPS(bXBPS);
   _SyncControllers(m_pMenu);
 }
 void CPanelPlot::UpdateSettingsPlot()
@@ -1837,6 +1847,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
+  bool bXBPS = XBPSValue();
   int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
   CParmOsirisGlobal parm;
@@ -1844,6 +1855,7 @@ void CPanelPlot::UpdateSettingsPreview()
   parm->SetPreviewDataLadder(bLadder);
   parm->SetPreviewDataBaseline(bBaseline);
   parm->SetPreviewDataRaw(bRaw);
+  parm->SetPreviewXBPS(bXBPS);
   parm->SetPreviewShowILS(bILS);
   parm->SetPreviewShowRFU(bRFU);
   parm->SetPreviewShowLadderLabels(bLadderLabels);
@@ -1867,6 +1879,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   int j;
   m_nNoiseCurves = 0;
   wxRect2DDouble rect = GetViewRect();
+  m_pPlotCtrl->SetXAxisLabel(_GetXAxisLabel());
   for(n = nChannelCount; n > 0; n--)
   {
     if(m_pMenu->ChannelValue(n))
@@ -1900,7 +1913,28 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     ShowILSlines();
   }
+  bool bXBPS = XBPSValue();
   bool bNoise = true;
+  if(bXBPS != m_bXBPS)
+  {
+    m_bXBPS = bXBPS;
+    // OS-917 - x axis has changed, so readjust rect
+    bIgnoreViewRect = false; // force SetViewRect below
+    double dL;
+    double dR;
+    if(bXBPS)
+    {
+      dL = m_pData->TimeToILSBps(rect.GetLeft());
+      dR = m_pData->TimeToILSBps(rect.GetRight());
+    }
+    else
+    {
+      dL = m_pData->ILSBpsToTime(rect.GetLeft());
+      dR = m_pData->ILSBpsToTime(rect.GetRight());
+    }
+    rect.SetRight(dR);
+    rect.SetLeft(dL);
+  }
   for(int zz = 0; zz < 2; zz++)
   {
     for(i = 0; i < ndxChn; i++)
@@ -1908,7 +1942,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
       nChannel = anChannel[i];
       for(j = 0; j < ndxData; j++)
       {
-        wxPlotData *p(FindData(anData[j],nChannel,bNoise));
+        wxPlotData *p(_FindData(anData[j],nChannel,bNoise,bXBPS));
         if(p != NULL)
         {
           m_pPlotCtrl->AddCurve(*p,false,false);
@@ -1921,15 +1955,15 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
     }
     bNoise = false;
   }
+  RebuildLabels();
   if(!bIgnoreViewRect)
   {
     SetViewRect(rect,false,0);
   }
-  RebuildLabels();
-  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
-  {
-    m_pFramePlot->SyncTo(this);
-  }
+//  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
+//  {
+//    m_pFramePlot->SyncTo(this);
+//  }
   Refresh();
 }
 
@@ -2065,6 +2099,7 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
     case IDmenuPlotDataBaseline:
     case IDmenuPlotILS:
     case IDmenuPlotRFU:
+    case IDmenuPlotXBPS:
     case IDmenuPlotLadderLabels:
       bSendToAll = bShift;
       bRebuild = true;
@@ -2227,6 +2262,10 @@ void CPanelPlot::SyncState(CPanelPlot *p, int nID)
       break;
     case IDmenuPlotILS:
       pMenu->ShowILS(p->m_pMenu->ILSValue());
+      bRebuild = true;
+      break;
+    case IDmenuPlotXBPS:
+      pMenu->SetXBPS(p->XBPSValue());
       bRebuild = true;
       break;
     case IDmenuPlotRFU:

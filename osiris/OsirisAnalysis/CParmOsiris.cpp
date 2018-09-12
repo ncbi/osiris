@@ -131,6 +131,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPreviewShowILS);
   CP(m_bPreviewShowRFU);
   CP(m_bPreviewShowLadderLabels);
+  CP(m_bPreviewXBPS);
   CP(m_nPreviewShowArtifact);
 
   //  plot settings
@@ -139,6 +140,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPlotDataRaw);
   CP(m_bPlotDataLadder);
   CP(m_bPlotDataBaseline);
+  CP(m_bPlotDataXBPS);
   CP(m_bPlotShowILS);
   CP(m_bPlotShowRFU);
   CP(m_bPlotShowLadderLabels);
@@ -236,6 +238,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPreviewShowILS)
   CP(m_bPreviewShowRFU)
   CP(m_bPreviewShowLadderLabels)
+  CP(m_bPreviewXBPS)
   CP(m_nPreviewShowArtifact)
 
   //  plot settings
@@ -244,6 +247,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPlotDataRaw)
   CP(m_bPlotDataLadder)
   CP(m_bPlotDataBaseline)
+  CP(m_bPlotDataXBPS)
   CP(m_bPlotShowILS)
   CP(m_bPlotShowRFU)
   CP(m_bPlotShowLadderLabels)
@@ -350,6 +354,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PreviewShowILS", &m_bPreviewShowILS);
   RegisterBool("PreviewShowRFU", &m_bPreviewShowRFU);
   RegisterBool("PreviewShowLadderLabels", &m_bPreviewShowLadderLabels);
+  RegisterBool("PreviewXBPS", &m_bPreviewXBPS);
   Register("PreviewArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPreviewShowArtifact);
 
   //  plot settings
@@ -358,6 +363,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PlotDataRaw", &m_bPlotDataRaw);
   RegisterBool("PlotDataLadder", &m_bPlotDataLadder);
   RegisterBool("PlotDataBaseline", &m_bPlotDataBaseline);
+  RegisterBool("PlotDataXBPS", &m_bPlotDataXBPS);
   RegisterBool("PlotShowILS", &m_bPlotShowILS);
   RegisterBool("PlotShowRFU", &m_bPlotShowRFU);
   RegisterBool("PlotShowLadderLabels", &m_bPlotShowLadderLabels);
@@ -468,6 +474,7 @@ void CParmOsiris::SetDefaults()
   m_bPreviewShowILS = false;
   m_bPreviewShowRFU = false;
   m_bPreviewShowLadderLabels = false;
+  m_bPreviewXBPS = false;
   m_nPreviewShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
 
   //  plot settings
@@ -476,6 +483,7 @@ void CParmOsiris::SetDefaults()
   m_bPlotDataRaw = false;
   m_bPlotDataLadder = false;
   m_bPlotDataBaseline = false;
+  m_bPlotDataXBPS = false;
   m_bPlotShowILS = false;
   m_bPlotShowRFU = false;
   m_bPlotShowLadderLabels = false;

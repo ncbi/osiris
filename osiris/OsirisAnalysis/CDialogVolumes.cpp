@@ -378,8 +378,8 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
         nwxGrid::ForceRefreshAll(this);
       }
       if(bReadOnly && !m_bReadOnly && 
-          m_pVolumeCurrent->IsLocked() &&
-          !m_pVolumeCurrent->IsReadOnly()
+        (m_pVolumeCurrent->IsLocked() || m_pVolumeCurrent->CreatedByNewerVersion()) 
+          && !m_pVolumeCurrent->IsReadOnly()
           )
       {
         // could not lock volume, try again and show dialog
@@ -594,7 +594,6 @@ void CDialogVolumes::OnAdd(wxCommandEvent &e)
       CDialogVolumeAddNew x(&m_volumes,this);
       if(x.ShowModal() == wxID_OK)
       {
-        wxString sSave;
         m_sSelection = x.GetVolName();
         _UpdateVolumeNames();
       }

@@ -141,6 +141,13 @@ public:
 	double GetMaximumErrorOfInterpolation (const double* characteristicArray);
 
 	static double* GetBPAsAFunctionOfTime (double* ilsTimes, double* ilsBP, int numberILSPeaks, int numberOfTimePoints);
+  static void FreeBPAsAFunctionOfTime(double *dBps)
+  {
+    if(dBps != NULL)
+    {
+      delete [] dBps;
+    }
+  }
 
 private:
 	int NumberOfKnots;

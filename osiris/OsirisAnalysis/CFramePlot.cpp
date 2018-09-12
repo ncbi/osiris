@@ -144,6 +144,7 @@ CFramePlotMenu::CFramePlotMenu()
     CMenuFileGraph::EXPORT_GRAPH,
     CMenuFileGraph::EXPORT_GRAPH_HELP);
   Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBARS);
+  AppendCheckItem(IDmenuShowXBPS, "Show ILS BPS X-axis");
   Append(IDmenuShowHidePlotScrollbars,"Hide Plot Scrollbars");
   AppendCheckItem(IDmenuShowHideWindowScrollbar,"Resizable Plots");
   Append(IDmenuDisplaySample,"&Edit Sample");
@@ -282,6 +283,7 @@ void CFramePlotMenu::CopySettings(CFramePlotMenu &menuFrom, bool bDeep)
   CMenuEdit::CopyState(this,&menuFrom,IDmenuShowHideToolbar);
   CMenuEdit::CopyState(this,&menuFrom,IDmenuShowHidePlotScrollbars);
   CMenuEdit::CopyState(this,&menuFrom,IDmenuShowHideWindowScrollbar);
+  CMenuEdit::CopyState(this,&menuFrom,IDmenuShowXBPS);
 }
 CMenuPlot *CFramePlotMenu::FindMenuPlot(int nID)
 {
@@ -465,7 +467,8 @@ CFramePlot::CFramePlot(
 #endif
     m_bUpdateMenu(false),
     m_bUseExternalTimer(bUseExternalTimer),
-    m_bFixed(true)
+    m_bFixed(true),
+    m_bXBPS(false)
 {
   CBatchPlot BATCH(this);
   m_pPanel = new wxScrolledWindow(this,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxVSCROLL);
@@ -475,10 +478,12 @@ CFramePlot::CFramePlot(
     m_bShowScrollbars = !parm->GetHideGraphicScrollbar();
     m_bFixed = !parm->GetPlotResizable();
     m_nMinHeight = m_bFixed ? -1 : parm->GetPlotMinHeight();
+    m_bXBPS = parm->GetPlotDataXBPS();
   }
   _UpdateToolbarMenuLabel();
   _UpdateScrollbarMenuLabel();
   SetWindowScrollbarMenuLabel();
+  m_pMenu->Check(IDmenuShowXBPS, m_bXBPS);
 
   SetOARfile(pFile);
   COsirisIcon x;
@@ -889,6 +894,19 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     _UpdateScrollbarMenuLabel();
     CParmOsirisGlobal parm;
     parm->SetHideGraphicScrollbar(bWasShown);
+  }
+  else if(nID == IDmenuShowXBPS)
+  {
+    CPointerHold<CPanelPlot> xxp(m_pPlotSyncTo);
+    CIncrementer xxx(m_nInSync);
+    m_bXBPS = m_pMenu->IsChecked(nID);
+    CParmOsirisGlobal parm;
+    parm->SetPlotDataXBPS(m_bXBPS);
+    set<CPanelPlot *>::iterator itr;
+    for(itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
+    {
+      (*itr)->RebuildCurves();
+    }
   }
   else if(nID == IDExportGraphic)
   {
@@ -1376,9 +1394,16 @@ wxRect2DDouble CFramePlot::GetZoomOutRect(bool bAll)
   // begin with a unit rectangle,
   // then expand to include all plots where sync is on
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
+  CParmOsirisGlobal parm;
+  bool bXBPS = parm->GetPlotDataXBPS();
   if(!bAll)
   {
-    rtn.m_x = (double) m_pData->GetBegin();
+    double dx = (double)(m_pData->GetBegin());
+    if(bXBPS)
+    {
+      dx = m_pData->TimeToILSBps(dx);
+    }
+    rtn.m_x = dx;
   }
   for(set<CPanelPlot *>::iterator itr = m_setPlots.begin();
     itr != m_setPlots.end();
@@ -1462,6 +1487,7 @@ void CFramePlot::SyncThis(CPanelPlot *p)
       pPlot = *itr;
       if( (pPlot != p) && pPlot->SyncValue() )
       {
+        TnwxBatch<CPanelPlot> xxx(p);
         p->SetViewRect(pPlot->GetViewRect());
         break;
       }
@@ -1485,8 +1511,9 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
       ++itr)
     {
       pPlot = *itr;
-      if( (pPlot != p) && pPlot->SyncValue() && (pPlot->GetViewRect() != r) )
+      if( (pPlot != p) && pPlot->SyncValue())
       {
+        TnwxBatch<CPanelPlot> xxx(pPlot);
         pPlot->SetViewRect(r);
         bRtn = true;
       }
@@ -1523,13 +1550,14 @@ void CFramePlot::ZoomAll(const wxRect2DDouble &rect,unsigned int nDelay )
 {
   CPanelPlot *pFirstSync = NULL;
   {
+    CParmOsirisGlobal parm;
     TnwxBatchColl< CPanelPlot > BATCH(m_setPlots);
     for(set<CPanelPlot *>::iterator itr = m_setPlots.begin();
         itr != m_setPlots.end();
         ++itr)
     {
       (*itr)->SetViewRect(rect,false,0);
-      if(!(*itr)->SyncValue()) 
+      if(!(*itr)->SyncValue())
       {
         // not sync'd
         if(nDelay)

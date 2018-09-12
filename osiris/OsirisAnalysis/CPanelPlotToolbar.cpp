@@ -476,7 +476,10 @@ int CPanelPlotToolbar::ChannelCount()
 }
 
 //  Sync, ILS, RFU
-
+bool CPanelPlotToolbar::XBPSValue()
+{
+  return false;
+}
 bool CPanelPlotToolbar::SyncValue()
 {
   return m_pButtonSync->GetValue();
@@ -509,7 +512,9 @@ void CPanelPlotToolbar::ShowLadderLabels(bool b)
 {
   m_pButtonLadderLabels->SetValue(b);
 }
-
+void CPanelPlotToolbar::SetXBPS(bool)
+{
+}
 
 // labels, artifacts
 

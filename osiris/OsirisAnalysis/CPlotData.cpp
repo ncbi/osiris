@@ -50,8 +50,11 @@
 #include "COARfile.h"
 #include "nwx/stdb.h"
 #include <map>
+#include <math.h>
 #include "nwx/stde.h"
 #include "nwx/nsstd.h"
+#include "nwx/nwxLog.h"
+#include "OsirisMath/coordtrans.h"
 
 const wxString g_TagRawPoints();
 const wxString g_TagAnalyzedPoints();
@@ -111,41 +114,6 @@ void CSamplePeak::FixAmel(int nStart, int nEnd)
     }
   }
 }
-#if BASELINE_START
-/*
-void MINMAX_RFU::Setup(const vector<int> &vn, int nStart_)
-{
-  if((vn.size() > 0) && !IsSetup())
-  {
-    size_t nSize = vn.size();
-    size_t nStart =
-      ((nStart_ < 0) || (nStart_ > (int)nSize))
-      ? 0 : (size_t)nStart_;
-    size_t i;
-    int n;
-    (nStart >= nSize) && (nStart = 0);
-    m_nMinAll = vn.at(0);
-    m_nMaxAll = m_nMinAll;
-    m_nMinFromStart = vn.at(nStart);
-    m_nMaxFromStart =  m_nMinFromStart;
-    for(i = 1; i <= nStart; i++)
-    {
-      n = vn.at(i);
-      (n < m_nMinAll) && (m_nMinAll = n);
-      (n > m_nMaxAll) && (m_nMaxAll = n);
-    }
-    for(i = nStart + 1; i < nSize; i++)
-    {
-      n = vn.at(i);
-      (n < m_nMinAll) && (m_nMinAll = n);
-      (n < m_nMinFromStart) && (m_nMinFromStart = n);
-      (n > m_nMaxAll) && (m_nMaxAll = n);
-      (n > m_nMaxFromStart) && (m_nMaxFromStart = n);
-    }
-  }
-}
-*/
-#endif
 void CPlotChannel::FixBaseline()
 {
   if(m_nBaselineStartObsolete > 0)
@@ -199,6 +167,29 @@ void CPlotChannel::RegisterAll(bool bInConstructor)
   }
 }
 
+void CPlotChannel::_setupPeakTimeBPS()
+{
+  size_t nPEAKS = GetPeakCount();
+  if(nPEAKS && (m_pdPeakTime == NULL))
+  {
+    vector<CSamplePeak *>::iterator itr;
+    size_t n = (nPEAKS << 1) * sizeof(double); // size of two arrays
+    m_pdPeakTime = (double *)malloc(n);
+    m_pdPeakBPS = &m_pdPeakTime[nPEAKS]; // second half of array
+    double *pTime = m_pdPeakTime;
+    double *pBPS = m_pdPeakBPS;
+    for(itr = m_vSamplePeak.begin();
+      itr != m_vSamplePeak.end();
+      ++itr)
+    {
+      *pTime = (*itr)->GetTime();
+      *pBPS = (*itr)->GetMeanBPS();
+      ++pTime;
+      ++pBPS;
+    }
+  }
+}
+
 size_t CPlotChannel::GetPointCount()
 {
   if(!m_nPointCount)
@@ -233,28 +224,6 @@ void CPlotChannel::BuildList(vector<int> &vn, double **p, size_t nPointCount)
     pd++;
   }
 }
-#if BASELINE_START
-double *CPlotChannel::GetBaselineX()
-{
-  size_t nSize = m_vnBaselinePoints.size();
-  if(nSize && (m_pdBaselineX == NULL))
-  {
-    size_t i;
-    unsigned int n = m_nBaselineStart;
-    i = nSize * sizeof(double);
-    m_pdBaselineX = (double *) malloc(i);
-    memset(m_pdBaselineX,0,i);
-    double *pd = m_pdBaselineX;
-    for(i = 0; i < nSize; i++)
-    {
-      (*pd) = double(n);
-      n++;
-      pd++;
-    }
-  }
-  return m_pdBaselineX;
-}
-#endif
 const int CPlotLocus::MARGIN = 10;
 
 void CPlotLocus::RegisterAll(bool bInConstructor)
@@ -283,7 +252,29 @@ void CPlotData::_Cleanup()
   m_nPointCount = 0;
   m_IOchannel.Cleanup();
   m_IOlocus.Cleanup();
+  CSplineTransform::FreeBPAsAFunctionOfTime(m_pdILS_BPs);
+  m_pdILS_BPs = NULL;
 }
+
+void CPlotData::_setupILSBps()
+{
+  if(m_pdILS_BPs == NULL)
+  {
+    CPlotChannel *pChannel = FindChannel(GetILSChannel());
+    if(pChannel != NULL)
+    {
+      double *pdTime = pChannel->GetPeakTime();
+      double *pdBPS = pChannel->GetPeakBps();
+      m_pdILS_BPs = CSplineTransform::GetBPAsAFunctionOfTime(
+        pdTime,
+        pdBPS,
+        (int) pChannel->GetPeakCount(),
+        (int)GetPointCount());
+      pChannel->CleanupPeakTimeILS();
+    }
+  }
+}
+
 void CPlotData::RegisterAll(bool bInConstructor)
 {
   RegisterWxString("Version",&m_sVersion);
@@ -370,36 +361,6 @@ bool CPlotData::HasBaseline()
   }
   return bRtn;
 }
-#if BASELINE_START
-size_t CPlotData::GetBaselinePointCount(unsigned int nChannel)
-{
-  CPlotChannel *pChannel = FindChannel(nChannel);
-  size_t nRtn =
-    (pChannel == NULL)
-    ? 0
-    : pChannel->GetBaselinePointCount();
-  return nRtn;
-}
-double *CPlotData::GetBaselineTimePoints(unsigned int nChannel)
-{
-  CPlotChannel *pChannel = FindChannel(nChannel);
-  double *pdRtn =
-    (pChannel == NULL)
-    ? NULL
-    : pChannel->GetBaselineX();
-  return pdRtn;
-}
-unsigned int CPlotData::GetBaselineStart(unsigned int nChannel)
-{
-  CPlotChannel *pChannel = FindChannel(nChannel);
-  unsigned int nRtn =
-    (pChannel == NULL)
-    ? 0
-    : pChannel->GetBaselineStart();
-  return nRtn;
-}
-#endif
-
 double *CPlotData::GetTimePoints()
 {
   size_t nPoints = GetPointCount();
@@ -421,7 +382,127 @@ double *CPlotData::GetTimePoints()
   }
   return m_pdX;
 }
+double CPlotData::_Interpolate(
+  double dX,
+  const double *pdXlist,
+  const double *pdYlist,
+  size_t nCount)
+{
+  double dRtn = 0.0;
+  if(nCount == 1)
+  {
+    dRtn = pdYlist[0];
+  }
+  else if(nCount > 1)
+  {
+    double d;
+    int ndxLo = 0;
+    int ndxHi = nCount;
+    int nMid;
+    bool bDone = false;
+    ndxHi--;
+    while(ndxHi >= ndxLo)
+    {
+      nMid = (ndxLo + ndxHi) >> 1;
+      d = dX - pdXlist[nMid];
+      if(d < 0.0)
+      {
+        ndxHi = nMid - 1;
+      }
+      else if(d > 0.0)
+      {
+        ndxLo = nMid + 1;
+      }
+      else
+      {
+        ndxLo = nMid;
+        ndxHi = ndxLo - 1;
+        dRtn = pdYlist[nMid];
+        bDone = true;
+      }
+    }
+    if(!bDone)
+    {
+      if(ndxLo >= (int)nCount)
+      {
+        // x > max(x), extrapolate using last 2 points
+        ndxLo = nCount - 1;
+        ndxHi = ndxLo - 1;
+      }
+      else if(ndxHi < 0)
+      {
+        // x < min(x), extrapolate using first 2 points
+        ndxHi = 0;
+        ndxLo = 1;
+      }
+      else if ((ndxHi + 1) != ndxLo)
+      {
+        wxString sMsg = wxString::Format(
+          "CPlotData::_Interpolate() problems: %d points, x = %g, ndxLo = %d, ndxHi = %d, range (%g, %g) - (%g, %g)",
+          (int) nCount, dX, ndxLo, ndxHi,
+          pdXlist[0], pdYlist[0],
+          pdXlist[nCount - 1], pdYlist[nCount - 1]
+          );
+        nwxLog::LogMessage(sMsg);
+#ifdef TMP_DEBUG
+        wxASSERT_MSG(0,sMsg);
+#endif
+      }
+      // at this point ndxLo > ndxHi
+      double dx0 = pdXlist[ndxHi];
+      double dx1 = pdXlist[ndxLo];
+      double dy0 = pdYlist[ndxHi];
+      double dy1 = pdYlist[ndxLo];
+      double deltaX = (dx1 - dx0);
+      const double MIN_X = 1.0E-5;
+      if( deltaX < MIN_X && deltaX > -MIN_X)
+      {
+        wxString sMsg = wxString::Format(
+          "CPlotData::_Interpolate() delta x = %g",deltaX);
+        nwxLog::LogMessage(sMsg);
+#ifdef TMP_DEBUG
+        wxASSERT_MSG(0,sMsg);
+#endif
+        dRtn = dy0;
+      }
+      else
+      {
+        double deltaXpt = (dX - dx0);
+        if(deltaXpt < MIN_X && deltaXpt > -MIN_X)
+        {
+          dRtn = dy0; // no need to interpolate
+        }
+        else
+        {
+          double dSlope = (dy1 - dy0) / deltaX;
+          dRtn = dy0 + deltaXpt * dSlope;
+        }
+      }
+    }
+  }
+  return dRtn;
+}
 
+
+
+double CPlotData::ILSBpsToTime(double dBPS)
+{
+  // bsearch BPS in list, find corresponding times
+  // and interpolate
+  double *pdTime = GetTimePoints();
+  double *pdBPS = GetILSBpsPoints();
+  size_t nPointCount = GetPointCount();
+  return _Interpolate(dBPS, pdBPS, pdTime, nPointCount);
+}
+
+double CPlotData::TimeToILSBps(double dTime)
+{
+  // interpolate base pairs from time
+  double *pdTime = GetTimePoints();
+  double *pdBPS = GetILSBpsPoints();
+  size_t nPointCount = GetPointCount();
+  return _Interpolate(dTime, pdTime, pdBPS, nPointCount);
+}
 CPlotChannel *CPlotData::FindChannel(unsigned int n)
 {
   CPlotChannel *pRtn(NULL);
@@ -526,9 +607,6 @@ bool CPlotData::GetLocusRange(
     int x1;
     int x2;
     int nSize;
-#if BASELINE_START
-    int ndxBaseline = -1;
-#endif
     if(nType & TYPE_ANALYZED)
     {
       ppvn[ndxMax++] = &pCh->m_vnAnalyzedPoints;
@@ -543,9 +621,6 @@ bool CPlotData::GetLocusRange(
     }
     if(nType & TYPE_BASELINE)
     {
-#if BASELINE_START
-      ndxBaseline = ndxMax;
-#endif
       ppvn[ndxMax++] = &pCh->m_vnBaselinePoints;
     }
     *px2 = ppl->GetEndExtended();
@@ -557,14 +632,6 @@ bool CPlotData::GetLocusRange(
       pvn = ppvn[j];
       x1 = *px1;
       x2 = *px2;
-#if BASELINE_START
-      unsigned int nBaselineStart = pCh->GetBaselineStart();
-      if(j == ndxBaseline && nBaselineStart != 0)
-      {
-        x1 -= nBaselineStart;
-        x2 -= nBaselineStart;
-      }
-#endif
       nSize = (int) pvn->size();
       if(x2 >= nSize)
       {

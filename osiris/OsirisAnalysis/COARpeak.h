@@ -232,16 +232,21 @@ public:
     wxString s = nwxString::FormatNumber(n);
     return s;
   }
-  static wxString FormatBPS(const IOARpeak &x,bool bOLgrid = false)
+  static wxString FormatAnyBPS(bool bOL, double d, bool bOLgrid = false)
   {
-    bool bOL = bOLgrid && x.IsOffLadder();
     const char *fmt = bOLgrid ? "%g" : "%7f";
-    wxString s = nwxString::FormatDouble(x.GetBPS(), fmt);
+    wxString s = nwxString::FormatDouble(d, fmt);
     if(bOL && !s.IsEmpty())
     {
       s.Append(" (OL)");
     }
     return s;
+  }
+  static wxString FormatBPS(const IOARpeak &x,bool bOLgrid = false)
+  {
+    bool bOL = bOLgrid && x.IsOffLadder();
+    double d = x.GetBPS();
+    return FormatAnyBPS(bOL,d,bOLgrid);
   }
   static const wxString &UnFormatOffLadderString(const wxString &s);
   static const wxString &FormatOffLadderString(const wxString &s);

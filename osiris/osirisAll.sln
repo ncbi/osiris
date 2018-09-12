@@ -9,6 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OsirisLib-v2.01", "OsirisLi
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestAnalysisDirectoryLC", "TestAnalysisDirectoryLCv2.11\TestAnalysisDirectoryLC.vcxproj", "{FFDB5DC5-5261-4C62-9AA3-0FEE6546F102}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F} = {A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libxml2", "libxml2-2.7.7\libxml2.vcxproj", "{220DE7A6-15EF-4C3C-8793-2CE4929D4D85}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -71,6 +74,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fsa2xml", "fsa2xml\fsa2xml.
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nwxZip", "nwxZip\nwxZip.vcxproj", "{03F407F8-700B-4376-99E0-47AF70B093C5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OsirisMath", "OsirisMath\OsirisMath.vcxproj", "{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -187,6 +192,12 @@ Global
 		{03F407F8-700B-4376-99E0-47AF70B093C5}.Release|Win32.Build.0 = Release|Win32
 		{03F407F8-700B-4376-99E0-47AF70B093C5}.Release|x64.ActiveCfg = Release|x64
 		{03F407F8-700B-4376-99E0-47AF70B093C5}.Release|x64.Build.0 = Release|x64
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Debug|Win32.Build.0 = Debug|Win32
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Debug|x64.ActiveCfg = Debug|Win32
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Release|Win32.ActiveCfg = Release|Win32
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Release|Win32.Build.0 = Release|Win32
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -127,6 +127,7 @@ my $VARLIST =
   ["m_bPreviewShowILS", "bool"],
   ["m_bPreviewShowRFU", "bool"],
   ["m_bPreviewShowLadderLabels", "bool"],
+  ["m_bPreviewXBPS", "bool"],
   ["m_nPreviewShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioUintViewPlotArtifact"],
 
   ["plot settings"],
@@ -135,6 +136,7 @@ my $VARLIST =
   ["m_bPlotDataRaw", "bool"],
   ["m_bPlotDataLadder", "bool"],
   ["m_bPlotDataBaseline", "bool"],
+  ["m_bPlotDataXBPS", "bool"],
   ["m_bPlotShowILS", "bool"],
   ["m_bPlotShowRFU", "bool"],
   ["m_bPlotShowLadderLabels", "bool"],

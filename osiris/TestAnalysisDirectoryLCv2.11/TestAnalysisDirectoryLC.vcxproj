@@ -48,21 +48,21 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../OsirisLib2.01;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../OsirisLib2.01;..\OsirisMath;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>OsirisLib.lib;Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OsirisLib.lib;OsirisMath.lib;Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)TestAnalysisDirectoryLC.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\BaseClassLib\Tools\Debug;..\OsirisLib2.01\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\BaseClassLib\Tools\Debug;..\OsirisLib2.01\Debug;..\OsirisMath\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)TestAnalysisDirectoryLC.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -75,21 +75,21 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>../OsirisLib2.01;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../OsirisLib2.01;..\OsirisMath;..\BaseClassLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>OsirisLib.lib;Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OsirisLib.lib;OsirisMath.lib;Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)TestAnalysisDirectoryLC.exe</OutputFile>
-      <AdditionalLibraryDirectories>../BaseClassLib/Tools/Release;../OsirisLib2.01/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../BaseClassLib/Tools/Release;../OsirisLib2.01/Release;../OsirisMath/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

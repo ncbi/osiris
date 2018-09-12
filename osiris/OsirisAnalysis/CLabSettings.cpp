@@ -38,6 +38,7 @@
 #include "nwx/nwxString.h"
 #include "nwx/vectorSort.h"
 #include "nwx/nwxXmlCmfList.h"
+#include "OsirisVersion.h"
 
 const wxString CLabSynonym::g_SYNONYM("Synonym");
 
@@ -1619,6 +1620,7 @@ bool CLabSettings::SaveFile(const wxString &sFileName)
   CLabSettingsInfo infoBackup(*pInfo);
   pInfo->UpdateTime();
   pInfo->SetUserID();
+  pInfo->SetVersion(OSIRIS_VERSION);
   bool bRtn = nwxXmlPersist::SaveFile(sFileName);
   if(!bRtn)
   {
@@ -1767,9 +1769,13 @@ void CLabSettings::UnitTest()
       sError.Append("\nCannot save test lab settings file: ");
       sError.Append(sNew2);
     }
-    else if(x != z)
+    else 
     {
-      sError.Append("\nSave and restore of lab settings yielded different results");
+      x.GetLabSettingsInfo()->SetVersion(OSIRIS_VERSION);
+      if(x != z)
+      {
+        sError.Append("\nSave and restore of lab settings yielded different results");
+      }
     }
   }
   wxASSERT_MSG(sError.IsEmpty(),sError);

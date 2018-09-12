@@ -289,6 +289,7 @@ private:
   wxString _GetCellRFU(const wxDateTime *pTime = NULL) const;
   wxString _GetCellTime(const wxDateTime *pTime = NULL) const;
   wxString _GetCellPeakArea(const wxDateTime *pTime = NULL) const;
+  wxString _GetCellILS_BPS(const wxDateTime *pTime = NULL) const;
   int _FindAlleleByID(int nID) const;
 
   wxString m_sLocusName;
