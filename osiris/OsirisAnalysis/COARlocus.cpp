@@ -138,6 +138,24 @@ wxString COARlocus::_GetCellPeakArea(const wxDateTime *pTime) const
   }
   return sRtn;
 }
+wxString COARlocus::_GetCellILS_BPS(const wxDateTime *pTime) const
+{
+  wxString sRtn;
+  wxString s;
+  vector<const COARallele *> va;
+  GetAllelesByTime(&va,pTime);
+  for(vector<const COARallele *>::iterator itr = va.begin();
+    itr != va.end();
+    ++itr)
+  {
+    if(!(*itr)->IsDisabled())
+    {
+      s = (*itr)->FormatILS_BPS(true);
+      COARfile::AppendCellString(&sRtn,s,(*itr)->GetCount());
+    }
+  }
+  return sRtn;
+}
 size_t COARlocus::EnabledAlleleCount() const
 {
   size_t nRtn = 0;
@@ -229,6 +247,9 @@ wxString COARlocus::GetCell(int nLabelType, const wxDateTime *pTime) const
     break;
   case (int)LABEL_CELL_PEAK_AREA:
     sRtn = _GetCellPeakArea(pTime);
+    break;
+  case (int)LABEL_CELL_ILS_BPS:
+    sRtn = _GetCellILS_BPS(pTime);
     break;
   default:
     break;

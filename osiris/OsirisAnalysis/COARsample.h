@@ -248,7 +248,7 @@ public:
     Init();
     COARcopy(m_sName);
     COARcopy(m_sSampleName);
-    COARcopy(m_sComment);
+    COARcopy(m_sSampleComment);
     COARcopy(m_sRunStart);
     COARcopy(m_sType);
     COARcopy(m_alertSample);
@@ -540,6 +540,10 @@ public:
       return GetName();
     }
     return m_sSampleName;
+  }
+  const wxString &GetSampleComment() const
+  {
+    return m_sSampleComment;
   }
   const wxString &GetType() const
   {
@@ -875,7 +879,7 @@ private:
   const COARlocus *_FindLocus(const wxString &sName) const;
   wxString m_sName;
   wxString m_sSampleName;
-  wxString m_sComment;
+  wxString m_sSampleComment;
   wxString m_sRunStart;
   wxString m_sType;
   COARsampleInfo m_Info;

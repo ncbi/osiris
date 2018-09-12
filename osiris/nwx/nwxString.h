@@ -194,6 +194,20 @@ public:
     bool bRtn = (x == '+') || (x == '-');
     return bRtn;
   }
+  static size_t FindNonInt(const wxString &_s)
+  {
+    size_t nLen = _s.Len();
+    size_t n;
+    for (n = 0; (n < nLen) && nwxString::IsNumeric(_s.GetChar(n)); ++n) {}
+    return n;
+  }
+  static size_t FindInt(const wxString &_s)
+  {
+    size_t nLen = _s.Len();
+    size_t n;
+    for (n = 0; (n < nLen) && !nwxString::IsNumeric(_s.GetChar(n)); ++n) {}
+    return n;
+  }
 
   static bool IsNumber(const wxString &s,bool bAllowExp = true);
   static bool IsInteger(const wxString &s, bool bAllowSign = true);

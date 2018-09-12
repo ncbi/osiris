@@ -125,25 +125,25 @@ bool CMDIFrame::Destroy()
 }
 void CMDIFrame::CannotTileError(CMDIFrame *pFrame, bool bRaise)
 {
-  wxChar *ps = NULL;
+  const wxChar *ps = NULL;
   if(wxDynamicCast(pFrame,CFrameSample) != NULL)
   {
-    ps = wxT("sample");
+    ps = wxS("sample");
   }
   else if(wxDynamicCast(pFrame,CFrameAnalysis) != NULL)
   {
-    ps = wxT("table");
+    ps = wxS("table");
   }
   else if(wxDynamicCast(pFrame,CFramePlot) != NULL)
   {
-    ps = wxT("graph");
+    ps = wxS("graph");
   }
   else
   {
-    ps = wxT("this");
+    ps = wxS("this");
   }
   wxString sMessage = wxString::Format(
-     wxT("Cannot resize the %ls window while\nit is utilizing the entire screen"),
+     wxS("Cannot resize the %ls window while\nit is utilizing the entire screen"),
      ps);
   if(bRaise)
   {

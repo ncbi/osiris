@@ -330,6 +330,10 @@ public:
   {
     return m_bPreviewShowLadderLabels;
   }
+  bool GetPreviewXBPS() const
+  {
+    return m_bPreviewXBPS;
+  }
   unsigned int GetPreviewShowArtifact() const
   {
     return m_nPreviewShowArtifact;
@@ -352,6 +356,10 @@ public:
   bool GetPlotDataBaseline() const
   {
     return m_bPlotDataBaseline;
+  }
+  bool GetPlotDataXBPS() const
+  {
+    return m_bPlotDataXBPS;
   }
   bool GetPlotShowILS() const
   {
@@ -714,6 +722,10 @@ public:
   {
     __SET_VALUE(m_bPreviewShowLadderLabels,b);
   }
+  void SetPreviewXBPS(bool b)
+  {
+    __SET_VALUE(m_bPreviewXBPS,b);
+  }
   void SetPreviewShowArtifact(unsigned int n)
   {
     __SET_VALUE(m_nPreviewShowArtifact,n);
@@ -736,6 +748,10 @@ public:
   void SetPlotDataBaseline(bool b)
   {
     __SET_VALUE(m_bPlotDataBaseline,b);
+  }
+  void SetPlotDataXBPS(bool b)
+  {
+    __SET_VALUE(m_bPlotDataXBPS,b);
   }
   void SetPlotShowILS(bool b)
   {
@@ -981,6 +997,7 @@ protected:
   bool m_bPreviewShowILS;
   bool m_bPreviewShowRFU;
   bool m_bPreviewShowLadderLabels;
+  bool m_bPreviewXBPS;
   unsigned int m_nPreviewShowArtifact;
 
   //  plot settings
@@ -989,6 +1006,7 @@ protected:
   bool m_bPlotDataRaw;
   bool m_bPlotDataLadder;
   bool m_bPlotDataBaseline;
+  bool m_bPlotDataXBPS;
   bool m_bPlotShowILS;
   bool m_bPlotShowRFU;
   bool m_bPlotShowLadderLabels;

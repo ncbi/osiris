@@ -43,45 +43,44 @@
 
 #define DECLARE_PERSISTENT_SIZE \
 public: \
-  void OnPersistResize(wxSizeEvent &e); \
-\
+  void OnPersistResize(wxSizeEvent &e);
+
 
 #define DECLARE_PERSISTENT_SIZE_OPTIONAL \
 private: \
   bool m_bPERSIST_SIZE; \
   DECLARE_PERSISTENT_SIZE \
   void SetUsePersistSize(bool b = true) { m_bPERSIST_SIZE = b; } \
-  bool GetUsePersistSize() { return m_bPERSIST_SIZE; } \
-\
+  bool GetUsePersistSize() { return m_bPERSIST_SIZE; }
+
 
 #define DECLARE_PERSISTENT_POSITION \
 public: \
-void OnPersistMove(wxMoveEvent &); \
+void OnPersistMove(wxMoveEvent &);
 
 #define DECLARE_PERSISTENT_POSITION_OPTIONAL \
 private: \
   bool m_bPERSIST_MOVE; \
   DECLARE_PERSISTENT_POSITION \
   void SetUsePersistPosition(bool b = true) { m_bPERSIST_MOVE = b; } \
-  bool GetUsePersistPosition() { return m_bPERSIST_MOVE; } \
-\
+  bool GetUsePersistPosition() { return m_bPERSIST_MOVE; }
 
 #define DECLARE_PERSISTENT_SIZE_POSITION \
   DECLARE_PERSISTENT_SIZE \
-  DECLARE_PERSISTENT_POSITION \
+  DECLARE_PERSISTENT_POSITION
 
 
 #define DECLARE_PERSISTENT_SIZE_POSITION_OPTIONAL \
   DECLARE_PERSISTENT_SIZE_OPTIONAL \
-  DECLARE_PERSISTENT_POSITION_OPTIONAL \
-\
+  DECLARE_PERSISTENT_POSITION_OPTIONAL
+
 
 
 #define INIT_PERSISTENT_SIZE(b) SetUsePersistSize(b);
 #define INIT_PERSISTENT_POSITION(b) SetUsePersistPosition(b);
 #define INIT_PERSISTENT_SIZE_POSITION(b) \
   INIT_PERSISTENT_POSITION(b) \
-  INIT_PERSISTENT_SIZE(b) \
+  INIT_PERSISTENT_SIZE(b)
 
 #define FUNC_ON_RESIZE_NAME(className,check, sName) \
 void className::OnPersistResize(wxSizeEvent &e) \
@@ -91,7 +90,7 @@ void className::OnPersistResize(wxSizeEvent &e) \
       sName, GetSize(), check ); \
   } \
   e.Skip(); \
-} \
+}
 
 
 
@@ -116,7 +115,7 @@ void className::OnPersistMove(wxMoveEvent &e) \
       sName, GetPosition(), check); \
   } \
   e.Skip(); \
-} \
+}
 
 #define FUNC_ON_POSITION(className,check) \
   FUNC_ON_POSITION_NAME(className, check, wxString( #className ))
@@ -132,16 +131,16 @@ void className::OnPersistMove(wxMoveEvent &e) \
 
 #define IMPLEMENT_PERSISTENT_SIZE_POSITION(className) \
   IMPLEMENT_PERSISTENT_SIZE(className) \
-  IMPLEMENT_PERSISTENT_POSITION(className) \
+  IMPLEMENT_PERSISTENT_POSITION(className)
 
 #define IMPLEMENT_PERSISTENT_SIZE_POSITION_NAME(className,sName) \
   IMPLEMENT_PERSISTENT_SIZE_NAME(className,sName) \
-  IMPLEMENT_PERSISTENT_POSITION_NAME(className,sName) \
+  IMPLEMENT_PERSISTENT_POSITION_NAME(className,sName)
 
 
 #define IMPLEMENT_PERSISTENT_SIZE_POSITION_OPTIONAL(className) \
   IMPLEMENT_PERSISTENT_SIZE_OPTIONAL(className) \
-  IMPLEMENT_PERSISTENT_POSITION_OPTIONAL(className) \
+  IMPLEMENT_PERSISTENT_POSITION_OPTIONAL(className)
 
 
 #define GET_PERSISTENT_SIZE(className) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ) )

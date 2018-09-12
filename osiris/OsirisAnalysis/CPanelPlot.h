@@ -64,7 +64,8 @@ class IOARpeak;
 class CSamplePeak;
 class COARpeakAny;
 
-typedef map<int,wxPlotData *> mapChannelPlot;
+typedef map<int,wxPlotData *> mapSamplePlots;
+
 typedef vector<wxPlotData *> vectorILSlines;
 typedef map<double,wxPlotData *> mapMinRfu;
 
@@ -355,6 +356,7 @@ public:
   {
     return m_pMenu->SyncValue();
   }
+  bool XBPSValue();
   void EnableLabelMenu(bool b = true)
   {
     if(b != m_pMenu->IsLabelMenuEnabled())
@@ -497,6 +499,7 @@ private:
   CMenuPlot *_GetLastMenu();
   CMDIFrame *_GetFrame();
   void _SetArtifactLabel(int nLabel);
+  void _ConvertRectToBPS(wxRect2DDouble *pRect);
 
   void UpdateSettingsPlot();
   void UpdateSettingsPreview();
@@ -533,6 +536,28 @@ private:
     size_t n = sizeof(double) << 1;
     double *pRtn = (double *)malloc(n);
     memcpy((void *) pRtn, (void *)pd,n);
+    return pRtn;
+  }
+  const char *_GetXAxisLabel()
+  {
+    const char *psRtn =
+      XBPSValue()
+      ? "BPS (ILS ref.)"
+      : "Time (seconds)";
+    return psRtn;
+  }
+  vectorILSlines *_GetILSlines()
+  {
+    vectorILSlines *pRtn = XBPSValue() ? &m_vILS_XBPS : &m_vILS;
+    if(pRtn->empty())
+    {
+      BuildILSlines();
+    }
+    return pRtn;
+  }
+  mapMinRfu *_GetMinRFUlines()
+  {
+    mapMinRfu *pRtn = XBPSValue() ? &m_mapMinRfuAll_XBPS : &m_mapMinRfuAll;
     return pRtn;
   }
 
@@ -574,16 +599,19 @@ private:
   // delayed view rect update
 
   void _CheckViewRect();
+  static int _SamplePlotKey(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS)
+  {
+    // create a key for mapSamplePlot
+    int nRtn = ( (nChannel & 255) << 8 ) | (nType << 2) | (bNoise ? 2 : 0) | (bXBPS ? 1 : 0);
+    return nRtn;
+  }
 
 
-  void AddData(
+  wxPlotData *_FindData(
     DATA_TYPE nType, 
     unsigned int nChannel, 
-    unsigned int nPointCount, 
-    double *pdX, 
-    double *pdY,
-    unsigned int nStart = 0);
-  wxPlotData *FindData(DATA_TYPE nType, unsigned int nChannel, bool bNoise = false);
+    bool bNoise, 
+    bool bXBPS);
   void _CleanupLadderPeakSet();
   void _CleanupPeakAny();
   int _GetLadderPeakCount();
@@ -595,11 +623,12 @@ private:
 
   set<double> m_setMinRfu;
   mapMinRfu m_mapMinRfuAll;
+  mapMinRfu m_mapMinRfuAll_XBPS;
 
-  mapChannelPlot *m_pmapChannelPlot[COUNT_DATA];
-  mapChannelPlot *m_pmapChannelPlotNoise[COUNT_DATA];
+  mapSamplePlots m_mapPlotData;
   vector<COARpeakAny *> m_vPeakAny;
   vectorILSlines m_vILS;
+  vectorILSlines m_vILS_XBPS;
   CPlotData *m_pData;
   COARfile *m_pOARfile;
   CKitColors *m_pColors;
@@ -625,6 +654,24 @@ private:
   int m_nMenuOffset;
   bool m_bExternalTimer;
   bool m_bDoTimer;
+  bool m_bXBPS; // used to check if event changed x axis
+
+  // BEGIN - keep track of channels with no noise
+  std::set<unsigned int> m_setNoNoiseChannel;
+  bool _IsNoNoiseChannel(unsigned int nChannel)
+  {
+    bool bRtn = (m_setNoNoiseChannel.find(nChannel) != m_setNoNoiseChannel.end());
+    return bRtn;
+  }
+  void _SetNoNoiseChannel(unsigned int nChannel)
+  {
+    if(!_IsNoNoiseChannel(nChannel))
+    {
+      m_setNoNoiseChannel.insert(nChannel);
+    }
+  }
+  // END - keep track of channels with no noise
+
 public:
 //  commented out 7/14/08 kill in 60 days
 //  void OnChannelToggle(wxCommandEvent &);

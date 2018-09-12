@@ -105,9 +105,9 @@
       <AdditionalIncludeDirectories>$(WXHOME)\lib\vc_lib\msw;$(WXHOME)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30ud_adv.lib;wxmsw30ud_html.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;OsirisMath.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30ud_adv.lib;wxmsw30ud_html.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>DebugWindows\OsirisAnalysis.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\OsirisMath\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -197,9 +197,9 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>wxplotctrl.lib;wxthings.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30u_core.lib;wxbase30u.lib;wxmsw30u_adv.lib;wxmsw30u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxplotctrl.lib;wxthings.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;OsirisMath.lib;libxslt.lib;libexslt.lib;libxml2.lib;libiconv.lib;wxmsw30u_core.lib;wxbase30u.lib;wxmsw30u_adv.lib;wxmsw30u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\OsirisMath\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;..\libxml2-2.7.7\$(Configuration);..\libxslt-1.1.26\libxslt\$(Configuration);..\libxslt-1.1.26\libexslt\$(Configuration);..\libiconv-1.13\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
@@ -361,6 +361,7 @@
     <ClCompile Include="COmittedAlerts.cpp" />
     <ClCompile Include="ConfigDir.cpp" />
     <ClCompile Include="COsirisIcon.cpp" />
+    <ClCompile Include="COsirisVersion.cpp" />
     <ClCompile Include="CPageAuto.cpp" />
     <ClCompile Include="CPageEditSample.cpp" />
     <ClCompile Include="CPageName.cpp" />
@@ -512,6 +513,7 @@
     <ClInclude Include="COmittedAlerts.h" />
     <ClInclude Include="ConfigDir.h" />
     <ClInclude Include="COsirisIcon.h" />
+    <ClInclude Include="COsirisVersion.h" />
     <ClInclude Include="CPageAuto.h" />
     <ClInclude Include="CPageEditSample.h" />
     <ClInclude Include="CPageName.h" />

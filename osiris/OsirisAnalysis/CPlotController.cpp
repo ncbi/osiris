@@ -127,12 +127,13 @@ void CPlotController::CopySettings(CPlotController &w)
 
   SetArtifactValue(w.ArtifactValue());
 
-  // sync, ILS, RFU
+  // sync, ILS, RFU, time vs XBPS
 
   SetSync(w.SyncValue());
   ShowILS(w.ILSValue());
   ShowMinRfu(w.MinRfuValue());
   ShowLadderLabels(w.LadderLabels());
+  SetXBPS(w.XBPSValue());
 
   // append, delete
 
@@ -157,6 +158,7 @@ void CPlotController::ResetDefaults()
   ShowILS(false);
   ShowMinRfu(false);
   ShowLadderLabels(false);
+  SetXBPS(false);
 
   SetArtifactValue(CArtifactDisplayList::nArtifactLabelCritical);
   SetLabelType(LABEL_ALLELE);
