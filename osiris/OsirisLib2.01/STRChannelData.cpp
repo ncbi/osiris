@@ -3909,6 +3909,9 @@ int STRLaneStandardChannelData :: WriteBaselineData (RGTextOutput& text, const R
 	double* bps = (double*)actualArray;
 	double* bpOfT = CSplineTransform::GetBPAsAFunctionOfTime (Means, bps, Size, NSamples);
 
+	if (bpOfT == NULL)
+		return -1;
+
 	Endl endLine;
 	text << indent << "<baselineStart>" << (int)floor (100.0 * bpOfT [0] + 0.5) << "</baselineStart>" << endLine;
 	

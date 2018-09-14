@@ -48,13 +48,19 @@ CurrentSequenceCount (-1),
 TotalSequenceCount (-1),
 ErrorFlag (0) {
 
-	list<double>::const_iterator c1Iterator = coord1.begin ();
-	Left = LastAbscissa = LastInSequenceAbscissa = *c1Iterator;
-	c1Iterator = coord1.end ();
-	c1Iterator--;
-	Right = *c1Iterator;
-	list<double>::const_iterator c2Iterator = coord2.begin ();
-	LastValue = LastValueInSequence = *c2Iterator;
+	if ((coord1.size () < 2) || (coord2.size () < 2))
+		ErrorFlag = 1;
+
+	else {
+
+		list<double>::const_iterator c1Iterator = coord1.begin ();
+		Left = LastAbscissa = LastInSequenceAbscissa = *c1Iterator;
+		c1Iterator = coord1.end ();
+		c1Iterator--;
+		Right = *c1Iterator;
+		list<double>::const_iterator c2Iterator = coord2.begin ();
+		LastValue = LastValueInSequence = *c2Iterator;
+	}
 
 	if (coord2.size () != coord1.size ())
 		ErrorFlag = 1;
@@ -66,10 +72,16 @@ CurrentSequenceCount (-1),
 TotalSequenceCount (-1),
 ErrorFlag (0) {
 
-	int size1 = size - 1;
-	Left = LastAbscissa = LastInSequenceAbscissa = coord1 [0];
-	Right = coord1 [size1];
-	LastValue = LastValueInSequence = coord2 [0];
+	if ((coord1 == NULL) || (coord2 == NULL) || (size < 2))
+		ErrorFlag = 1;
+
+	else {
+
+		int size1 = size - 1;
+		Left = LastAbscissa = LastInSequenceAbscissa = coord1 [0];
+		Right = coord1 [size1];
+		LastValue = LastValueInSequence = coord2 [0];
+	}
 }
 
 //
