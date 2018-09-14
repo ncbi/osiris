@@ -4964,10 +4964,13 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 
 //	mLSData->ClearAllPeaksBelowAnalysisThreshold ();
 
-	if (AnalyzeLaneStandardChannelSM (text, ExcelText, msg, print) < 0) {
+	status = AnalyzeLaneStandardChannelSM (text, ExcelText, msg, print);
+
+	if (status < 0) {
 
 		// ErrorString already populated; cannot go on because need a healthy internal lane standard to do anything else
 		SetMessageValue (ilsFailed, true);
+		cout << "ILS failed with status = " << status << "\n";
 		notice = ":  Could not analyze ladder ILS";
 		AppendDataForSmartMessage (ilsFailed, notice);
 		return -2;

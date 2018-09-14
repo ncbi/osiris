@@ -1933,6 +1933,8 @@ Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
 	int TenthPart;
 	int TenTimesBP;
 
+	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+
 	while (nextSignal = (DataSignal*) it()) {
 
 		ilsBP = nextSignal->GetApproximateBioID ();
@@ -1945,6 +1947,7 @@ Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
 		alleleName << IntegerPart << "." << TenthPart;
 		nextSignal->SetAlleleName (alleleName);
 		alleleName = "";
+		nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
 
 		it.RemoveCurrentItem ();
 		haveFoundSignals = true;

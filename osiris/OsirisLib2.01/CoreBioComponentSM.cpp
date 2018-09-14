@@ -2886,7 +2886,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 
 	if (status < 0) {
 
-		notice << "BIOCOMPONENT COULD NOT FIT ALL CHARACTERISTICS.  Skipping...";
+		notice << "BIOCOMPONENT COULD NOT FIT ALL CHARACTERISTICS.  Skipping...Return status = " << status;
 		cout << notice << endl;
 		sampleData->mExcelText.Write (1, notice);
 		sampleData->mText << notice << "\n" << ErrorString << "Skipping...\n";
