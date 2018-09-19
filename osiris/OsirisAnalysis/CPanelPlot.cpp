@@ -34,7 +34,6 @@
 #include "CPanelPlot.h"
 #include "CFramePlot.h"
 #include "CFrameAnalysis.h"
-#include "CPlotData.h"
 #include "COARfile.h"
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
@@ -45,6 +44,9 @@
 #ifdef __WXDEBUG__
 #include "nwx/nwxString.h"
 #endif
+
+DEFINE_EVENT_TYPE(CEventCannotShowBPS)
+
 #define RESIDUAL_THRESHOLD 0.0005
 #define FORMAT_RFU "RFU: %d\n"
 #define FORMAT_CORR_RFU "Corr RFU: %d\n"
@@ -85,7 +87,6 @@ void CPlotCtrl::OnClickXLabel(const nwxPointLabel &x, const wxPoint &)
 }
 void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
 {
-  //  STOP HERE - edit or delete point, or edit artifact
   COARpeakAny *p = (COARpeakAny *)x.GetData();
   #ifdef __WXDEBUG__
   {
@@ -398,6 +399,11 @@ bool CPanelPlot::XBPSValue()
   {
     bRtn = m_pFramePlot->XBPSValue();
   }
+  if(bRtn)
+  {
+    _CheckBPSEvent(true);
+    bRtn = _CanSetBPS();
+  }
   return bRtn;
 }
 
@@ -455,6 +461,12 @@ void CPanelPlot::OnBtnRemove(wxCommandEvent &e)
       m_pFramePlot->RemovePlot(this);
     }
   }
+}
+void CPanelPlot::OnNoBPSPrompt(wxCommandEvent &)
+{
+  wxString s("This sample cannot be displayed\n"
+             "using base pairs for the X-axis");
+  mainApp::ShowAlert(s,this);
 }
 void CPanelPlot::OnBtnDetails(wxCommandEvent &)
 {
@@ -596,7 +608,11 @@ void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
 void CPanelPlot::BuildILSlines()
 {
   unsigned int nChannelILS = m_pData->GetChannelCount();
-  if( (!m_vILS.size()) &&  nChannelILS )
+  const vector<CSamplePeak *> *pvILS =
+    ( (!m_vILS.size()) &&  nChannelILS )
+    ? m_pData->GetSamplePeaks(nChannelILS)
+    : NULL;
+  if(pvILS != NULL)
   {
     double Y[2] = {-60000.0, 60000.0};
     double dx[2] = {0.0,0.0};
@@ -622,15 +638,18 @@ void CPanelPlot::BuildILSlines()
       pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
       m_vILS.push_back(pPlotData);
 
-      dx[0] = m_pData->TimeToILSBps(dx[1]);
-      dx[1] = dx[0];
-      pdx = Copy2Points(dx);
-      pdy = Copy2Points(Y);
-      pPlotData = new wxPlotData(pdx,pdy,2,false);
-      pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
-      pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
-      pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
-      m_vILS_XBPS.push_back(pPlotData);
+      if(!m_pData->CannotSetBPS())
+      {
+        dx[0] = m_pData->TimeToILSBps(dx[1]);
+        dx[1] = dx[0];
+        pdx = Copy2Points(dx);
+        pdy = Copy2Points(Y);
+        pPlotData = new wxPlotData(pdx,pdy,2,false);
+        pPlotData->SetPen(wxPLOTPEN_NORMAL,pen);
+        pPlotData->SetPen(wxPLOTPEN_ACTIVE,pen);
+        pPlotData->SetPen(wxPLOTPEN_SELECTED,pen);
+        m_vILS_XBPS.push_back(pPlotData);
+      }
     }
   }
 }
@@ -1797,7 +1816,8 @@ void CPanelPlot::SetPreviewSettings()
   int nArt = (int)parm->GetPreviewShowArtifact();
   int nLabel = parm->GetTableDisplayPeak();
   nLabel = CELL_TO_PLOT(nLabel);
-  m_bXBPS = bXBPS;
+  _CheckBPSEvent(bXBPS);
+  m_bXBPS = (bXBPS && _CanSetBPS());
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1847,7 +1867,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
-  bool bXBPS = XBPSValue();
+  bool bBPS = m_pMenu->XBPSValue();
   int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
   CParmOsirisGlobal parm;
@@ -1855,7 +1875,7 @@ void CPanelPlot::UpdateSettingsPreview()
   parm->SetPreviewDataLadder(bLadder);
   parm->SetPreviewDataBaseline(bBaseline);
   parm->SetPreviewDataRaw(bRaw);
-  parm->SetPreviewXBPS(bXBPS);
+  parm->SetPreviewXBPS(bBPS);
   parm->SetPreviewShowILS(bILS);
   parm->SetPreviewShowRFU(bRFU);
   parm->SetPreviewShowLadderLabels(bLadderLabels);
@@ -2357,6 +2377,30 @@ void CPanelPlot::OnSize(wxSizeEvent &e)
   e.Skip();
 }
 
+std::set<const wxString> CPanelPlot::g_setNoBpsPrompt;
+wxString CPanelPlot::_GetFileName(CPlotData *p)
+{
+  wxFileName fn(p->GetFilename());
+  wxString s = fn.GetFullName();
+#ifdef __WXMSW__
+  s.MakeLower();
+#endif
+  return s;
+}
+
+
+bool CPanelPlot::_HasFileBeenPrompted(CPlotData *p)
+{
+  wxString s = _GetFileName(p);
+  bool bRtn = g_setNoBpsPrompt.find(s) != g_setNoBpsPrompt.end();
+  return bRtn;
+}
+void CPanelPlot::_SetFileHasBeenPrompted(CPlotData *p)
+{
+  wxString s = _GetFileName(p);
+  g_setNoBpsPrompt.insert(s);
+}
+
 BEGIN_EVENT_TABLE(CPanelPlot,wxSashWindow)
 EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
 EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
@@ -2378,6 +2422,7 @@ EVT_TIMER(IDtimer,CPanelPlot::OnTimerEvent)
 EVT_CONTEXT_MENU(CPanelPlot::OnContextMenu)
 EVT_COMMAND_ENTER(wxID_ANY,CPanelPlot::OnCommandEnter)
 
+EVT_COMMAND(wxID_ANY,CEventCannotShowBPS,CPanelPlot::OnNoBPSPrompt)
 EVT_SIZE(CPanelPlot::OnSize)
 END_EVENT_TABLE()
 

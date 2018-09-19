@@ -478,7 +478,8 @@ CFramePlot::CFramePlot(
     m_bShowScrollbars = !parm->GetHideGraphicScrollbar();
     m_bFixed = !parm->GetPlotResizable();
     m_nMinHeight = m_bFixed ? -1 : parm->GetPlotMinHeight();
-    m_bXBPS = parm->GetPlotDataXBPS();
+    bool bXBPS = parm->GetPlotDataXBPS();
+    SetXBPSValue(bXBPS);
   }
   _UpdateToolbarMenuLabel();
   _UpdateScrollbarMenuLabel();
@@ -899,9 +900,10 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
   {
     CPointerHold<CPanelPlot> xxp(m_pPlotSyncTo);
     CIncrementer xxx(m_nInSync);
-    m_bXBPS = m_pMenu->IsChecked(nID);
+    bool bXBPS = m_pMenu->IsChecked(nID);
     CParmOsirisGlobal parm;
-    parm->SetPlotDataXBPS(m_bXBPS);
+    parm->SetPlotDataXBPS(bXBPS);
+    SetXBPSValue(bXBPS);
     set<CPanelPlot *>::iterator itr;
     for(itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
     {
@@ -1395,7 +1397,8 @@ wxRect2DDouble CFramePlot::GetZoomOutRect(bool bAll)
   // then expand to include all plots where sync is on
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
   CParmOsirisGlobal parm;
-  bool bXBPS = parm->GetPlotDataXBPS();
+  bool bXBPS = parm->GetPlotDataXBPS()
+    ? m_pData->CanSetBPS() : false;
   if(!bAll)
   {
     double dx = (double)(m_pData->GetBegin());
