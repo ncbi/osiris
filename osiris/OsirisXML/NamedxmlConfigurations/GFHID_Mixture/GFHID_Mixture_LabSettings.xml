@@ -2,11 +2,9 @@
 <LabSettings>
   <Info>
     <VolumeName>[GlobalFiler HID Mixture]</VolumeName>
-    <Version>2.11 Beta 14 for Windows</Version>
+    <Version>2.11 for Windows</Version>
     <DataFileType>hid</DataFileType>
     <Notes>This operating procedure is provided with the OSIRIS installation.</Notes>
-    <UserId>rileygr</UserId>
-    <LastUpdate>1537396777</LastUpdate>
   </Info>
   <NameStrings>
     <LadderStrings>
