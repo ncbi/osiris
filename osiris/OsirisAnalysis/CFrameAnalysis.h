@@ -154,10 +154,7 @@ public:
     }
     return bRtn;
   }
-  bool FileError()
-  {
-    return m_bFileError;
-  }
+  virtual bool FileError();
   void RepaintData()
   {
     //

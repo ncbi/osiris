@@ -82,7 +82,11 @@ void CMDIFrame::UpdateLadderLabels() {;}
 void CMDIFrame::UpdateFileMenu() {;}
 
 
-
+bool CMDIFrame::FileError()
+{
+  // virtual function
+  return false;
+}
 wxString CMDIFrame::GetFileName()
 {
   // base class returns empty string
@@ -118,10 +122,13 @@ bool CMDIFrame::SetToolbarMenuLabel(bool bShow, bool bPlural)
 }
 bool CMDIFrame::Destroy()
 {
+  FUNC_ENTER("CMDIFrame::Destroy")
   CIncrementer xxx(m_nFocusRecursive);
   wxBusyCursor xx;
   m_pParent->RemoveWindow(this);
-  return CMDIFrameSuper::Destroy();
+  bool bRtn = CMDIFrameSuper::Destroy();
+  FUNC_EXIT("CMDIFrame::Destroy")
+  return bRtn;
 }
 void CMDIFrame::CannotTileError(CMDIFrame *pFrame, bool bRaise)
 {
@@ -405,25 +412,30 @@ void CMDIFrame::SetTitle(const wxString &title)
 }
 void CMDIFrame::CheckUpdateWindowMenu(long nModCount, const CMDI_LIST *pList)
 {
-  CMenuBar *pMenuBar = wxDynamicCast(GetMenuBar(),CMenuBar);
-  CMenuWindow *pMenu = (pMenuBar == NULL) ? NULL : pMenuBar->GetWindowMenu();
-  if( (pMenu != NULL) && (pMenu->GetModCount() != nModCount) )
+  FUNC_ENTER("CMDIFrame::CheckUpdateWindowMenu")
+  if(!FileError())
   {
-    if(pMenu->IsEmpty())
+    CMenuBar *pMenuBar = wxDynamicCast(GetMenuBar(),CMenuBar);
+    CMenuWindow *pMenu = (pMenuBar == NULL) ? NULL : pMenuBar->GetWindowMenu();
+    if( (pMenu != NULL) && (pMenu->GetModCount() != nModCount) )
     {
-      pMenu->Build(pList,this,nModCount);
-    }
-    else
-    {
+      if(pMenu->IsEmpty())
+      {
+        pMenu->Build(pList,this,nModCount);
+      }
+      else
+      {
 #ifdef __WXDEBUG__
-      mainApp::LogMessageV(wxS("new CMenuWindow for frame: %ls; modCount = %d, replacing %d"),
-                           GetTitle().wc_str(),
-                           nModCount,pMenu->GetModCount());
+        mainApp::LogMessageV(wxS("new CMenuWindow for frame: %ls; modCount = %d, replacing %d"),
+                             GetTitle().wc_str(),
+                             nModCount,pMenu->GetModCount());
 #endif
-      pMenu = new CMenuWindow(pList,this,nModCount);
-      pMenuBar->SetWindowMenu(pMenu);
+        pMenu = new CMenuWindow(pList,this,nModCount);
+        pMenuBar->SetWindowMenu(pMenu);
+      }
     }
   }
+  FUNC_EXIT("CMDIFrame::CheckUpdateWindowMenu")
 }
 #endif
 

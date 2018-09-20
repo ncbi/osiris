@@ -140,6 +140,7 @@ CFrameAnalysis::CFrameAnalysis(
   else
   {
     m_bFileError = true;
+    parent->RemoveWindow(this);
   }
 }
 CFrameAnalysis::CFrameAnalysis(
@@ -177,6 +178,7 @@ CFrameAnalysis::CFrameAnalysis(
 }
 void CFrameAnalysis::_Build()
 {
+  FUNC_ENTER("CFrameAnalysis::_Build()")
   wxColour clrTextNoEdit;
   nwxButtonMenu *pButtonSort(NULL);
   int nDisplayPeak = 0;
@@ -428,10 +430,20 @@ void CFrameAnalysis::_Build()
   }
   COsirisIcon x;
   SetIcon(x);
+  FUNC_EXIT("CFrameAnalysis::_Build()")
 }
 #undef LOCUS_WIDTH
 #undef LOCUS_HEIGHT
 
+bool CFrameAnalysis::FileError()
+{
+#ifdef TMP_DEBUG
+  wxString s("CFrameAnalysis::FileError - ");
+  s.Append(m_bFileError ? "true" : "false");
+  nwxLog::LogMessage(s);
+#endif
+  return m_bFileError;
+}
 
 void CFrameAnalysis::UpdateFileMenu()
 {
@@ -685,6 +697,7 @@ bool CFrameAnalysis::_CheckIfTampered(COARfile *pOAR)
 }
 bool CFrameAnalysis::LoadFile(const wxString &sFileName)
 {
+  FUNC_ENTER("CFrameAnalysis::LoadFile")
   const size_t BUFSIZE = 12;
   char sBuf[BUFSIZE + 1];
   wxFile file(sFileName);
@@ -715,8 +728,12 @@ bool CFrameAnalysis::LoadFile(const wxString &sFileName)
     else if( (nSampleCount = pOAR->GetSampleCount()) < 1 )
     {
       bOK = false;
-      m_pParent->FileEmptyMessage(sFileName);
       m_bFileError = true;
+#ifdef TMP_DEBUG
+      nwxLog::LogMessage("CFrameAnalysis::LoadFile() no samples");
+      FileError();
+#endif
+      m_pParent->FileEmptyMessage(sFileName);
     }
     else if(_CheckIfTampered(pOAR.get()))
     {
@@ -727,6 +744,17 @@ bool CFrameAnalysis::LoadFile(const wxString &sFileName)
       m_pOARfile = pOAR.release();
     }
   }
+#ifdef TMP_DEBUG
+  if(!bOK)
+  {
+    if(m_pOARfile != NULL)
+    {
+      nwxLog::LogMessage("CFrameAnalysis::LoadFile failed, m_pOARfile is not null");
+    }
+    FileError();
+  }
+#endif
+  FUNC_EXIT("CFrameAnalysis::LoadFile")
   return bOK;
 }
 bool CFrameAnalysis::DisplayFile()

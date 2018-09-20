@@ -1131,13 +1131,17 @@ void mainFrame::_CheckAnalysisFile(CFrameAnalysis *pWin)
 {
   if(!pWin->FileError())
   {
+    FUNC_ENTER("mainFrame::_CheckAnalysisFile !pWin->FileError()")
     pWin->Show(true);
     pWin->Refresh();
     AddToMRU(pWin->GetFileName());
+    FUNC_EXIT("mainFrame::_CheckAnalysisFile !pWin->FileError()")
   }
   else
   {
+    FUNC_ENTER("mainFrame::_CheckAnalysisFile pWin->Destroy()")
     pWin->Destroy();
+    FUNC_EXIT("mainFrame::_CheckAnalysisFile pWin->Destroy()")
   }
 }
 void mainFrame::OpenArchiveFile(const wxString &sFileName)
@@ -1251,11 +1255,14 @@ void mainFrame::OpenArchiveFile(const wxString &sFileName)
 }
 void mainFrame::OpenAnalysisFile(const wxString &sFileName)
 {
+  FUNC_ENTER("mainFrame::OpenAnalysisFile filename")
   CFrameAnalysis *pWin(new CFrameAnalysis(this,GetChildSize(),sFileName));
   _CheckAnalysisFile(pWin);
+  FUNC_EXIT("mainFrame::OpenAnalysisFile filename")
 }
 void mainFrame::OpenAnalysisFile(COARfile *pFile)
 {
+  FUNC_ENTER("mainFrame::OpenAnalysisFile *pFile")
   if(pFile->GetSampleCount() < 1)
   {
     FileEmptyMessage(pFile->GetFileName());
@@ -1265,6 +1272,7 @@ void mainFrame::OpenAnalysisFile(COARfile *pFile)
     CFrameAnalysis *pWin(new CFrameAnalysis(this,GetChildSize(),pFile));
     _CheckAnalysisFile(pWin);
   }
+  FUNC_EXIT("mainFrame::OpenAnalysisFile *pFile")
 }
 
 void mainFrame::RemoveFromMRU(const wxString &sFileName)
@@ -1292,6 +1300,7 @@ void mainFrame::FileEmptyMessage(const wxString &sFileName)
 void mainFrame::RemoveWindow(CMDIFrame *p)
 {
   // called from CMDIFrame::Destroy()
+  FUNC_ENTER("mainFrame::RemoveWindow")
   p->StopReceiver();
   m_MDImgr.RemoveWindow(p);
   if(p == m_pLastActive)
@@ -1302,6 +1311,7 @@ void mainFrame::RemoveWindow(CMDIFrame *p)
   {
     ClearStatusText();
   }
+  FUNC_EXIT("mainFrame::RemoveWindow")
 }
 void mainFrame::TileTwoWindows(CMDIFrame *pLeft, CMDIFrame *pRight)
 {

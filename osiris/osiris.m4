@@ -6,7 +6,7 @@ CPPTOP=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Deve
 PLATFORM=`sh ../../osname`
 WXHOME=`sh ../../findwx`
 WXCXX=`${WXHOME}/bin/wx-config --cxxflags`
-WXCXXR="-DwxDEBUG_LEVEL=0 -fno-common -O2 -fno-strict-aliasing -fno-common -D_WCHAR_H_CPLUSPLUS_98_CONFORMANCE_ ${VMIN}"
+WXCXXR="-DTMP_DEBUG -DwxDEBUG_LEVEL=0 -fno-common -O2 -fno-strict-aliasing -fno-common -D_WCHAR_H_CPLUSPLUS_98_CONFORMANCE_ ${VMIN}"
 MACLD="${VMIN}"
 OSIRISCXX="-Wall -Wno-potentially-evaluated-expression -Wno-unknown-pragmas -D${PLATFORM} -I${CPPTOP}/include/libxml2  -I../../wxthings/include -I../../wxplotctrl/include -I.. -I../..  -I../../Version ${WXCXX} ${WXCXXR} ${MACCXX}"
 CXXFLAGS="${OSIRISCXX}"

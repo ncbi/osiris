@@ -240,7 +240,9 @@ bool mainApp::OnInit()
   {
     bHasArgs = true;
   }
+#ifdef __WXDEBUG__
   CSitePath::GetGlobal()->LogTestString();
+#endif
 #endif
   
   m_pFrame->Startup(bHasArgs);
