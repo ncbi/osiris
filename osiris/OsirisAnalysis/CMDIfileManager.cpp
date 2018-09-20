@@ -527,7 +527,6 @@ int CMDIfileManager::_RemoveWindowFromAList(CMDI_LIST *pList,CMDIFrame *p)
   else
   {
     wxString sMsg(wxS("CMDIfileManager::_RemoveWindowFromAList - did not find window"));
-    nwxLog::LogMessage(sMsg);
     wxASSERT_MSG(0,sMsg);
   }
   return nRtn;
