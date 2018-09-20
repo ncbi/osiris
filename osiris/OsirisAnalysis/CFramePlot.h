@@ -103,7 +103,11 @@ public:
   void EditPeak(COARpeakAny *);
   bool XBPSValue()
   {
-    return this->m_bXBPS;
+    return m_bXBPS;
+  }
+  void SetXBPSValue(bool b)
+  {
+    m_bXBPS = b && m_pData->CanSetBPS();
   }
 
   virtual bool Show(bool show = true);

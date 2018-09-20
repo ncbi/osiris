@@ -84,7 +84,14 @@ CPanelPlot *CPanelPlotPreview::SetFileLocus(
     TnwxBatch<CPanelPlot> batch(pRtn);
     CPlotData *pData = pRtn->GetPlotData();
     unsigned int nChannel = pData->GetChannelFromLocus(sLocus);
-    pRtn->ShowOneChannel(nChannel);
+    if(nChannel)
+    {
+      pRtn->ShowOneChannel(nChannel);
+    }
+    else
+    {
+      pRtn->ShowAllChannels(true);
+    }
     pRtn->ResetDefaults();
     pRtn->EnableLabelMenu(true);
     pRtn->SetLabelType(m_pFrameAnalysis->GetPlotLabelType());

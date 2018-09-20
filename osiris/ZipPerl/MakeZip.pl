@@ -105,6 +105,7 @@ sub COPYFILES
     Cofiler
     GF
     GFHID
+    GFHID_Mixture
     GP10
     ID
     IDNO250
@@ -140,6 +141,7 @@ sub COPYFILES
     PPFusion6C
     PPFusion6C_HID
     PPFusion_HID
+    PPFusion_HID_Sole_Source
     PPY
     PPY23
     PPY23_HID
