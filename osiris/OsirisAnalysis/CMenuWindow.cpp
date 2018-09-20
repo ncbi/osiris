@@ -32,11 +32,6 @@
 #include "CMenuWindow.h"
 #ifdef __WINDOW_LIST__
 
-#ifdef TMP_DEBUG
-// define FUNC_ENTER, FUNC_EXIT
-#include "mainApp.h"
-#endif
-
 #include "CMDIfileManager.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CMenuWindow,wxMenu)
@@ -47,7 +42,6 @@ CMenuWindow::~CMenuWindow() {}
 
 void CMenuWindow::Build(const CMDI_LIST *pList,CMDIFrame *pCheck, long nModCount)
 {
-  FUNC_ENTER("CMenuWindow::Build")
   if(GetMenuItemCount())
   {
     wxASSERT_MSG(0,"CMenuWindow::Build - not empty");
@@ -99,7 +93,6 @@ void CMenuWindow::Build(const CMDI_LIST *pList,CMDIFrame *pCheck, long nModCount
       }
     }
   }
-  FUNC_EXIT("CMenuWindow::Build")
 }
 
 
