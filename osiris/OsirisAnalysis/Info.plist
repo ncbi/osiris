@@ -21,13 +21,13 @@
   <key>CFBundleDisplayName</key>
   <string>Osiris</string>
   <key>CFBundleVersion</key>
-  <string>2.11 Beta 15</string>
+  <string>2.11 Beta 16</string>
   <key>CFBundleShortVersionString</key>
-  <string>2.11 Beta 15</string>
+  <string>2.11 Beta 16</string>
   <key>CFBundleGetInfoString</key>
-  <string>OSIRIS version 2.11 Beta 15</string>
+  <string>OSIRIS version 2.11 Beta 16</string>
   <key>CFBundleLongVersionString</key>
-  <string>OSIRIS version 2.11 Beta 15</string>
+  <string>OSIRIS version 2.11 Beta 16</string>
   <key>CFBundleDocumentTypes</key>
   <array>
     <dict>
