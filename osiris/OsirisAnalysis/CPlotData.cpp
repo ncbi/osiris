@@ -169,8 +169,8 @@ void CPlotChannel::RegisterAll(bool bInConstructor)
 
 void CPlotChannel::_setupPeakTimeBPS()
 {
-  size_t nPEAKS = GetPeakCount();
-  if(nPEAKS && (m_pdPeakTime == NULL))
+  size_t nPEAKS = (m_pdPeakTime == NULL) ? GetPeakCount() : 0;
+  if(nPEAKS)
   {
     vector<CSamplePeak *>::iterator itr;
     size_t n = (nPEAKS << 1) * sizeof(double); // size of two arrays
@@ -254,24 +254,27 @@ void CPlotData::_Cleanup()
   m_IOlocus.Cleanup();
   CSplineTransform::FreeBPAsAFunctionOfTime(m_pdILS_BPs);
   m_pdILS_BPs = NULL;
+  m_bCannotSetBPS = false;
 }
 
-void CPlotData::_setupILSBps()
+void CPlotData::__setupILSBps()
 {
-  if(m_pdILS_BPs == NULL)
+  // should be called ONLY by _setupILSBps()
+  CPlotChannel *pChannel = FindChannel(GetILSChannel());
+  double *pdTime = (pChannel == NULL) ? NULL : pChannel->GetPeakTime();
+  if(pdTime == NULL)
   {
-    CPlotChannel *pChannel = FindChannel(GetILSChannel());
-    if(pChannel != NULL)
-    {
-      double *pdTime = pChannel->GetPeakTime();
-      double *pdBPS = pChannel->GetPeakBps();
-      m_pdILS_BPs = CSplineTransform::GetBPAsAFunctionOfTime(
-        pdTime,
-        pdBPS,
-        (int) pChannel->GetPeakCount(),
-        (int)GetPointCount());
-      pChannel->CleanupPeakTimeILS();
-    }
+    m_bCannotSetBPS = true;
+  }
+  else
+  {
+    double *pdBPS = pChannel->GetPeakBps();
+    m_pdILS_BPs = CSplineTransform::GetBPAsAFunctionOfTime(
+      pdTime,
+      pdBPS,
+      (int) pChannel->GetPeakCount(),
+      (int)GetPointCount());
+    pChannel->CleanupPeakTimeILS();
   }
 }
 
@@ -508,9 +511,9 @@ CPlotChannel *CPlotData::FindChannel(unsigned int n)
   CPlotChannel *pRtn(NULL);
   size_t nSize = m_vChannels.size();
   map<unsigned int,CPlotChannel *>::iterator itr;
-  if(m_mapChannels.empty() && (n < nSize))
+  if(m_mapChannels.empty() && (n <= nSize))
   {
-    pRtn = m_vChannels.at(n);
+    pRtn = m_vChannels.at(n-1);
     if(pRtn->m_nr != (int)n)
     {
       CPlotChannel *p;
@@ -680,3 +683,4 @@ wxString CPlotData::FindAnalysisFile() const
   }
   return sRtn;
 }
+
