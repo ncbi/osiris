@@ -114,6 +114,25 @@ int CoreBioComponent :: PreTestSignalsForLaserOffScaleSM () {
 }
 
 
+int CoreBioComponent :: TestAllFractionalFiltersSMLF () {
+
+	//
+	// Ladder Free Stage 1
+
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i == mLaneStandardChannel)
+			continue;
+
+		mDataChannels [i]->ApplyFractionalFiltersSMLF ();
+	}
+
+	return 0;
+}
+
+
 bool CoreBioComponent :: EvaluateSmartMessagesForStage (int stage, bool allMessages, bool signalsOnly) {
 
 	int i;
@@ -3069,6 +3088,12 @@ int CoreBioComponent :: ResolveAmbiguousInterlocusSignalsSM () {
 
 
 int CoreBioComponent :: SampleQualityTestSM (GenotypesForAMarkerSet* genotypes) {
+
+	return -1;
+}
+
+
+int CoreBioComponent :: SampleQualityTestSMLF () {
 
 	return -1;
 }

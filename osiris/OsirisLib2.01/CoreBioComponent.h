@@ -424,6 +424,8 @@ public:
 	virtual int TestSignalsForLaserOffScaleSM ();
 	virtual int PreTestSignalsForLaserOffScaleSM ();
 
+	virtual int TestAllFractionalFiltersSMLF ();
+
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
 
 	void RemovePrimaryLinksAndSecondaryLinksFrom (DataSignal* ds);
@@ -446,6 +448,7 @@ public:
 
 	virtual int ResolveAmbiguousInterlocusSignalsSM ();
 	virtual int SampleQualityTestSM (GenotypesForAMarkerSet* genotypes);
+	virtual int SampleQualityTestSMLF ();
 	virtual int SignalQualityTestSM ();
 	virtual bool IsLabPositiveControl (const RGString& name, GenotypesForAMarkerSet* genotypes);
 	virtual int TestPositiveControlSM (GenotypesForAMarkerSet* genotypes);

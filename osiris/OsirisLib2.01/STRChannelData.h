@@ -419,6 +419,7 @@ public:
 	virtual int TestFractionalFiltersSM ();
 	virtual int TestForInterlocusProximityArtifactsSM ();
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes);
+	virtual int FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl);
 	virtual int TestForMultiSignalsSM ();
 	virtual int TestProximityArtifactsSM ();
 	virtual int TestForAlleleDuplicationSM ();

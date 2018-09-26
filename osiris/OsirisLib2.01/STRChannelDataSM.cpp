@@ -4519,6 +4519,26 @@ int STRSampleChannelData :: FinalTestForPeakSizeAndNumberSM (double averageHeigh
 }
 
 
+int STRSampleChannelData :: FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl) {
+
+	//
+	//  This is sample stage 5
+	//
+
+	RGDListIterator it (mLocusList);
+	Locus* nextLocus;
+	int status = 0;
+
+	while (nextLocus = (Locus*) it ()) {
+
+		if (nextLocus->FinalTestForPeakSizeSMLF (isNegCntl, isPosCntl) < 0)
+			status = -1;
+	}
+
+	return status;
+}
+
+
 int STRSampleChannelData :: TestForMultiSignalsSM () {
 
 	// All signals outside lane standard have already been removed.  Also, all signals definitely assigned to a locus are gone.

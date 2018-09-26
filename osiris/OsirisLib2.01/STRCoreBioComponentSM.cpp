@@ -4847,6 +4847,34 @@ int STRSampleCoreBioComponent :: SampleQualityTestSM (GenotypesForAMarkerSet* ge
 }
 
 
+int STRSampleCoreBioComponent :: SampleQualityTestSMLF () {
+
+	//
+	//  This is ladder free sample stage 5
+	//
+
+	if (Progress < 4)
+		return -1;
+	
+	int status = 0;
+	ChannelData* thisChannel;
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i != mLaneStandardChannel) {
+
+			thisChannel = mDataChannels [i];
+
+			if (mDataChannels [i]->FinalTestForPeakSizeSMLF (mIsNegativeControl, mIsPositiveControl) < 0)
+				status = -1;
+		}
+	}
+
+	return status;
+}
+
+
 int STRSampleCoreBioComponent :: SignalQualityTestSM () {
 
 	//

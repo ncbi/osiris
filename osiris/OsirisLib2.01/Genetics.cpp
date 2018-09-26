@@ -1932,12 +1932,18 @@ Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
 	int IntegerPart;
 	int TenthPart;
 	int TenTimesBP;
+	double minBP = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
+	cout << "Min BP for calling artifacts = " << minBP << "\n";
 
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
 
 	while (nextSignal = (DataSignal*) it()) {
 
 		ilsBP = nextSignal->GetApproximateBioID ();
+
+		if (ilsBP < minBP)
+			continue;
+
 		LocusSignalList.Append (nextSignal);
 		mSmartList.Append (nextSignal);
 		nextSignal->SetLocus ((Locus*)this, 0);

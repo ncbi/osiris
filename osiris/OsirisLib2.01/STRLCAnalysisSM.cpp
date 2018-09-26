@@ -2345,21 +2345,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	int nLadders = 0;
 	ChannelData::SetTestForDualSignal (true);    // 01/24/2017 This is a test because ladders are missing split peaks that should not be missed.  It used to be set to true.
 
-	double leastBP = set->GetMinimumILSBPSearchRegion ();
-	CoreBioComponent::SetMinBioIDForLadderLoci (leastBP);
-	cout << "Minimum ILS BP for ladder loci = " << leastBP << "\n";
+	//double leastBP = set->GetMinimumILSBPSearchRegion ();
+	//CoreBioComponent::SetMinBioIDForLadderLoci (leastBP);
+	//cout << "Minimum ILS BP for ladder loci = " << leastBP << "\n";
 
-	int leastBPForSamples = CoreBioComponent::GetMinBioIDForArtifacts ();
-	int leastBPInt = (int) floor (leastBP);
+	//int leastBPForSamples = CoreBioComponent::GetMinBioIDForArtifacts ();
+	//int leastBPInt = (int) floor (leastBP);
 
-	if ((leastBPForSamples > 0) && (leastBPForSamples > leastBPInt)) {
+	//if ((leastBPForSamples > 0) && (leastBPForSamples > leastBPInt)) {
 
-		cout << "Minimum ILS BP for sample artifacts setting = " << leastBPForSamples << " is too high.  Resetting to " << leastBPInt << "\n\n";
-		CoreBioComponent::SetMinBioIDForArtifacts (leastBPInt);
-	}
+	//	cout << "Minimum ILS BP for sample artifacts setting = " << leastBPForSamples << " is too high.  Resetting to " << leastBPInt << "\n\n";
+	//	CoreBioComponent::SetMinBioIDForArtifacts (leastBPInt);
+	//}
 
-	else
-		cout << "\n";
+	//else
+	//	cout << "\n";
 
 	RGString commentField;
 
@@ -2562,6 +2562,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		//cout << "Stage 1 complete" << endl;
 
+		bioComponent->TestAllFractionalFiltersSMLF ();
+
 		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
 		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
 
@@ -2644,11 +2646,11 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
 		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
 
+		if (sampleOK)
+			bioComponent->SampleQualityTestSMLF ();   // Have to revamp process quality tests?
+
 		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
 		bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
-
-		//if (sampleOK)
-		//	bioComponent->SampleQualityTestSM (pGenotypes);   // Have to revamp process quality tests?
 
 		//
 		//  Put peak height accumulation algorithm here (12/16/2016)

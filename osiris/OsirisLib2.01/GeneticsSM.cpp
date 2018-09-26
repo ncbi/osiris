@@ -3538,7 +3538,7 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 }
 
 
-int Locus :: TestFractionalFiltersSMLF (RGDList& artifactList, RGDList& supplementalList) {
+int Locus :: TestFractionalFiltersSMLF () {
 
 	//
 	//  This is ladder free sample stage 2
@@ -5625,6 +5625,97 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 	SetMessageValue (moreThanThressAlleles, true);
 	return -1;
+}
+
+
+int Locus :: FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl) {
+
+	//
+	//  This is sample stage 5
+	//
+
+	RGString info;
+	DataSignal* nextSignal;
+	double heteroLimit = GetLocusSpecificSampleHeterozygousImbalanceThreshold ();
+	double minBoundForHomozygote = GetLocusSpecificSampleMinBoundForHomozygote ();
+	RGDList alleleList;
+	RGString alleleName;
+	bool criticalArtifactFound = false;
+	int criticalLevel = Notice::GetMessageTrigger ();
+	RGDListIterator it (mSmartList);
+	RGString localAlleleName;
+
+	smCriticalMessagesAtAlleles locusPeaksHaveCriticalMsgs;
+	smThreeOrMoreAlleles triAllele;
+	smMoreThanThreeAlleles moreThanThressAlleles;
+	smNoGenotypeFound noGenotype;
+	smHomozygoteHeightProblem homozygoteProblem;
+	smHeterozygousImbalance heterozygousImbalance;
+	smLocusIsHomozygous locusIsHomozygous;
+	smNumberAllelesBelowExpectation numberOfAllelesBelowExpectation;
+	smAdenylation adenylation;
+	smStutter stutter;
+	smCallStutterPeaksPreset callStutterPreset;
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset doNotCallStutterForSingleSource;
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset reportAdenylationWithCallPreset;
+	smIsAcceptedOLAllele acceptedOL;
+	smTestPullupCorrectedHeightsPreset testPullupCorrectHeights;
+
+	bool testCorrectedHeights = GetMessageValue (testPullupCorrectHeights);
+
+
+	bool callStutter = GetMessageValue (callStutterPreset);
+	bool dontCallStutterThisSample = isNegCntl || isPosCntl;
+	bool isSingleSourceAndDontCallForSingleSource = IsSingleSourceSample && GetMessageValue (doNotCallStutterForSingleSource);
+	bool localDontCallStutter = dontCallStutterThisSample || !callStutter || isSingleSourceAndDontCallForSingleSource;
+
+	int retValue = 0;
+
+	double minBioID = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
+	
+	int nStutter = 0;
+	int nDoNotCall = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID)) {
+
+			it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);	//!!!!!!!!!
+			continue;
+		}
+
+		if (nextSignal->IsDoNotCall ()) {
+
+	//		it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			nDoNotCall++;
+			continue;
+		}
+
+		if (localDontCallStutter && nextSignal->GetMessageValue (stutter)) {
+
+			it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			nStutter++;
+			continue;
+		}
+
+		if (nextSignal->GetMessageValue (adenylation)) {
+
+			bool isAcceptedOL = nextSignal->GetMessageValue (acceptedOL);
+			bool callAdenylationAndAllele = nextSignal->GetMessageValue (reportAdenylationWithCallPreset);
+
+			if (isAcceptedOL && callAdenylationAndAllele && CallOnLadderAdenylation)
+				continue;
+
+			it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			continue;
+		}
+	}
+
+	return 0;
 }
 
 

@@ -425,6 +425,7 @@ public:
 	virtual int SetRawDataFromColorCorrectedArraySM (double* dataArray, int arraySize, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual void ClearAllPeaksBelowAnalysisThreshold ();
 	virtual int RemoveStutterLinksFromNonStutterPeaksSM () { return -1; }
+	virtual int ApplyFractionalFiltersSMLF ();
 
 	virtual int TestFitCriteriaSM (DataSignal* signal);
 	virtual int FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
@@ -439,6 +440,7 @@ public:
 	virtual int AnalyzeSampleLociSM (ChannelData* lsData, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int TestFractionalFiltersSM ();
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes);
+	virtual int FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl) { return -1; }
 	virtual int FinalTestForCriticalLaneStandardNoticesSM ();
 
 	virtual int HierarchicalLaneStandardChannelAnalysisSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
