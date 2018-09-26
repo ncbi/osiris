@@ -4117,27 +4117,26 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSMLF () {
 
 	Locus* nextLocus;
 	smBelowMinRFU belowMinRFU;
+	RGDListIterator it (mLocusList);
 
-	//while (nextLocus = (Locus*) it()) {
+	while (nextLocus = (Locus*) it()) {
 
-	//	gridLocus = grid->FindLocus (mChannel, nextLocus->GetLocusName ());
+		nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+	}
 
-	//	if (gridLocus == NULL)
-	//		return -1;  // this should never happen...it means that the channel has a locus that the grid has never heard of, but have to test...
+	return 0;
+}
 
-	//	nextLocus->ExtractSampleSignals (PreliminaryCurveList, gridLocus, timeMap);
-	//}
 
-	//it.Reset ();
+int STRSampleChannelData :: TestForNearlyDuplicateAllelesSMLF () {
 
-	nextLocus = (Locus*) mLocusList.First ();
+	Locus* nextLocus;
+	RGDListIterator it (mLocusList);
 
-	if (nextLocus == NULL)
-		return -1;
+	while (nextLocus = (Locus*) it ()) {
 
-	// Extract all signals from PreliminaryCurveList and insert into "locus";  assign allele name = ILS BP rounded to nearest tenth
-
-	nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+		nextLocus->TestForNearlyDuplicateAllelesSMLF (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks);
+	}
 
 	return 0;
 }

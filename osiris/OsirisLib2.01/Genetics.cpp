@@ -1929,9 +1929,6 @@ Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
 	bool haveFoundSignals = false;
 	RGString alleleName;
 	int oldResolution = RGString::GetDoubleResolution ();
-	int IntegerPart;
-	int TenthPart;
-	int TenTimesBP;
 	double minBP = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
 	cout << "Min BP for calling artifacts = " << minBP << "\n";
 
@@ -1947,12 +1944,8 @@ Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
 		LocusSignalList.Append (nextSignal);
 		mSmartList.Append (nextSignal);
 		nextSignal->SetLocus ((Locus*)this, 0);
-		IntegerPart = (int)floor (ilsBP);
-		TenTimesBP = (int)floor (10.0 * ilsBP + 0.5);
-		TenthPart = TenTimesBP - 10 * IntegerPart;
-		alleleName << IntegerPart << "." << TenthPart;
+		alleleName = nextSignal->CalculateAlleleNameFromILSBP_LF ();
 		nextSignal->SetAlleleName (alleleName);
-		alleleName = "";
 		nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
 
 		it.RemoveCurrentItem ();
@@ -5409,7 +5402,6 @@ double Locus :: GetLocusSpecificLadderPullupFractionalFilter () const {
 	else
 		return -1.0;
 }
-
 
 
 int Locus :: CompareTo (const RGPersistent* p) const {

@@ -415,6 +415,7 @@ public:
 	virtual int SetRawDataFromColorCorrectedArraySM (double* dataArray, int arraySize, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual int AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, CoordinateTransform* timeMap);
 	virtual int AssignSampleCharacteristicsToLociSMLF ();
+	virtual int TestForNearlyDuplicateAllelesSMLF ();
 	virtual int AnalyzeSampleLociSM (ChannelData* lsData, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int TestFractionalFiltersSM ();
 	virtual int TestForInterlocusProximityArtifactsSM ();

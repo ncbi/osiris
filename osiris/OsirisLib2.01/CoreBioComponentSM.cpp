@@ -1353,13 +1353,31 @@ int CoreBioComponent :: AssignSampleCharacteristicsToLociSM (CoreBioComponent* g
 int CoreBioComponent :: AssignSampleCharacteristicsToLociSMLF () {
 
 	//
-	//  This is sample stage 1
+	//  This is ladder free sample stage 1
 	//
 
 	for (int i=1; i<=mNumberOfChannels; i++) {
 
 		if (i != mLaneStandardChannel)
 			mDataChannels [i]->AssignSampleCharacteristicsToLociSMLF ();
+	}
+
+	return 0;
+}
+
+
+int CoreBioComponent :: TestForNearlyDuplicateAllelesSMLF () {
+
+	//
+	//  This is ladder free sample stage 3
+	//
+
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i != mLaneStandardChannel)
+			mDataChannels [i]->TestForNearlyDuplicateAllelesSMLF ();
 	}
 
 	return 0;

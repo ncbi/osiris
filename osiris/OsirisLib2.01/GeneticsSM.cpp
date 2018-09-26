@@ -7277,6 +7277,7 @@ int Locus :: TestForNearlyDuplicateAllelesSMLF (RGDList& artifacts, RGDList& sig
 
 	double approxBioID;
 	double prevApproxBioID = 0.0;
+	RGString newAlleleName;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -7406,6 +7407,8 @@ int Locus :: TestForNearlyDuplicateAllelesSMLF (RGDList& artifacts, RGDList& sig
 			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
 			currentSignal->CaptureSmartMessages ();
 			currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
+			newAlleleName = currentSignal->CalculateAlleleNameFromILSBP_LF ();
+			currentSignal->SetAlleleName (newAlleleName);
 
 			if (!prevSignal->GetMessageValue (fractionalFilter) || !nextSignal->GetMessageValue (fractionalFilter))
 				currentSignal->SetMessageValue (fractionalFilter, false);

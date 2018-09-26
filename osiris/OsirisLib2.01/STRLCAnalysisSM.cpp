@@ -2596,7 +2596,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
 
 		if (sampleOK) {
-			//bioComponent->MakePreliminaryCallsSM (pGenotypes);  Replace with function to place ILS-bps in allele names?????
+
+			bioComponent->TestForNearlyDuplicateAllelesSMLF ();
 		}
 
 		//cout << "Preliminary Calls complete" << endl;
