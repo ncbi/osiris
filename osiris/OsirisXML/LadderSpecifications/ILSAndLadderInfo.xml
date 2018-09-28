@@ -11,6 +11,7 @@
         <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
         <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
@@ -855,6 +856,14 @@
 	<Set>
 		<KitName>PowerPlex GenePrint24</KitName>
 		<FileName>PPGenePrint24_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_2</KitName>
+		<FileName>LaneStandardOnly_2_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_3</KitName>
+		<FileName>LaneStandardOnly_3_LadderInfo.xml</FileName>
 	</Set>
   </Kits>
 </KitData>

@@ -1874,6 +1874,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	int i;
 
 	DirectoryManager* SampleDirectory;
+	pServer->FlushLadderSynonyms ();
 	
 	if (!GetMessageValue (useSampleNamesForControlSampleTests))
 		SampleDirectory = new DirectoryManager (DirectoryName);
