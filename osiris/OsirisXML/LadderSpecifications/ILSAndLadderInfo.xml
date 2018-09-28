@@ -865,5 +865,13 @@
 		<KitName>LaneStandardOnly_3</KitName>
 		<FileName>LaneStandardOnly_3_LadderInfo.xml</FileName>
 	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_4</KitName>
+		<FileName>LaneStandardOnly_4_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_5</KitName>
+		<FileName>LaneStandardOnly_5_LadderInfo.xml</FileName>
+	</Set>
   </Kits>
 </KitData>
