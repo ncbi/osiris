@@ -31,6 +31,7 @@
 */
 #include "CMenuWindow.h"
 #ifdef __WINDOW_LIST__
+
 #include "CMDIfileManager.h"
 
 IMPLEMENT_ABSTRACT_CLASS(CMenuWindow,wxMenu)
@@ -66,26 +67,29 @@ void CMenuWindow::Build(const CMDI_LIST *pList,CMDIFrame *pCheck, long nModCount
         (itr != pList->end()) && (nID < IDmenuWindow_Frame_END);
         ++itr, ++nID)
     {
-      sLabel = (*itr)->GetTitle();
-      if(nID <= nMaxAccel)
+      if(!(*itr)->FileError())
       {
-        if(nID < nMaxAccel)
+        sLabel = (*itr)->GetTitle();
+        if(nID <= nMaxAccel)
         {
-          sAccel[nAccelLast]++;
+          if(nID < nMaxAccel)
+          {
+            sAccel[nAccelLast]++;
+          }
+          else
+          {
+            sAccel[nAccelLast] = zero;
+          }
+          sLabel.Append(sAccel);
+        }
+        if(*itr == pCheck)
+        {
+          AppendCheckItem(nID,sLabel)->Check();
         }
         else
         {
-          sAccel[nAccelLast] = zero;
+          Append(nID,sLabel);
         }
-        sLabel.Append(sAccel);
-      }
-      if(*itr == pCheck)
-      {
-        AppendCheckItem(nID,sLabel)->Check();
-      }
-      else
-      {
-        Append(nID,sLabel);
       }
     }
   }

@@ -46,15 +46,18 @@
 #include "nwx/nwxBatch.h"
 #include "nwx/nwxShiftSizer.h"
 
+#include "CPlotData.h"
 #include "CPanelPlotToolbar.h"
 #include "CMenuPlot.h"
 #include "nwx/nwxMenuItem.h"
 #include "Platform.h"
 #include "wxIDS.h"
+
+DECLARE_EVENT_TYPE(CEventCannotShowBPS,-1)
+
 class CFrameAnalysis;
 class COARfile;
 class COARsample;
-class CPlotData;
 class CKitColors;
 class CPanelPlot;
 class CMDIFrame;
@@ -531,6 +534,23 @@ private:
     ee.SetEventObject(this);
     GetEventHandler()->AddPendingEvent(ee);
   }
+  void _CheckBPSEvent(bool b = true)
+  {
+    bool bSendEvent = b && 
+      m_pData->CannotSetBPS() &&
+      !_HasFileBeenPrompted();
+    if(bSendEvent)
+    {
+      _SetFileHasBeenPrompted();
+      wxCommandEvent ee(CEventCannotShowBPS,GetId());
+      ee.SetEventObject(this);
+      GetEventHandler()->AddPendingEvent(ee);
+    }
+  }
+  bool _CanSetBPS()
+  {
+    return m_pData->CanSetBPS();
+  }
   static double *Copy2Points(double *pd)
   {
     size_t n = sizeof(double) << 1;
@@ -672,6 +692,19 @@ private:
   }
   // END - keep track of channels with no noise
 
+  static std::set<const wxString> g_setNoBpsPrompt;
+  static bool _HasFileBeenPrompted(CPlotData *p);
+  static void _SetFileHasBeenPrompted(CPlotData *p);
+  static wxString _GetFileName(CPlotData *p);
+  bool _HasFileBeenPrompted()
+  {
+    return _HasFileBeenPrompted(m_pData);
+  }
+  void  _SetFileHasBeenPrompted()
+  {
+    _SetFileHasBeenPrompted(m_pData);
+  }
+
 public:
 //  commented out 7/14/08 kill in 60 days
 //  void OnChannelToggle(wxCommandEvent &);
@@ -697,6 +730,7 @@ public:
   void OnSync(wxCommandEvent &);
   void OnViewChanged(wxPlotCtrlEvent &);
   void OnPointSelected(wxPlotCtrlEvent &);
+  void OnNoBPSPrompt(wxCommandEvent &);
   void OnLabelTypeChanged(wxCommandEvent &);
   void OnTimerEvent(wxTimerEvent &);
   void OnContextMenu(wxContextMenuEvent &e);

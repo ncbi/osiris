@@ -1385,6 +1385,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->SetSampleName (data->GetSampleName ());
 		bioComponent->SetFileName (FileName);
 		Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
+		Locus::SetSingleSourceSample (false);
 
 		commentField = data->GetComment ();
 		bioComponent->SetComments (commentField);

@@ -831,6 +831,7 @@ public:
 
   CPlotData() :
     m_pdILS_BPs(NULL),
+    m_bCannotSetBPS(false),
     m_IOchannel(true),
     m_IOlocus(true)
   {
@@ -1047,14 +1048,29 @@ public:
     const wxString &sLocusName,
     int *px1, int *px2, int *py1, int *py2,
     int nType = TYPE_ANALYZED);
-
+  bool CannotSetBPS()
+  {
+    _setupILSBps();
+    return m_bCannotSetBPS;
+  }
+  bool CanSetBPS()
+  {
+    return !CannotSetBPS();
+  }
 protected:
   virtual void RegisterAll(bool b = false);
 private:
+  void _setupILSBps()
+  {
+    if(!( m_bCannotSetBPS || (m_pdILS_BPs != NULL) ))
+    {
+      __setupILSBps();
+    }
+  }
+  void __setupILSBps();
   static double _Interpolate(double dX, const double *pdXlist, const double *pdYlist, size_t nCount);
   void _FixBaseline();
   void _Cleanup();
-  void _setupILSBps();
   CPlotChannel *FindChannel(unsigned int n);
   CParmOsirisLite m_parm;
   wxString m_sVersion;
@@ -1074,6 +1090,7 @@ private:
   unsigned int m_nILS;
   size_t m_nPointCount;
   double *m_pdX;
+  bool m_bCannotSetBPS;
 
   TnwxXmlIOPersistVector<CPlotChannel> m_IOchannel;
   TnwxXmlIOPersistVector<CPlotLocus> m_IOlocus;
