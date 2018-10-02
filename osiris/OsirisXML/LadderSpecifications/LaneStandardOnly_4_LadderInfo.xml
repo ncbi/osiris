@@ -4,11 +4,10 @@
   <Kits>
     <Set>
       <Name>LaneStandardOnly_4</Name>
+      <LadderFree>true</LadderFree>
       <NChannels>4</NChannels>
       <ILS>
-		<LS>
-			<LSName>ABI-LIZ1200</LSName>
-		</LS>
+		<AllLaneStandards>true</AllLaneStandards>
         <ChannelNo>4</ChannelNo>
       </ILS>
       <FileNameSuffix>LANESTANDARDONLY4</FileNameSuffix>

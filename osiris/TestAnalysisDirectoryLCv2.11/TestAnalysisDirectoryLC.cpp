@@ -122,6 +122,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	CoreBioComponent::SetUseRawData ();
 	RGPArray::ResetDefaultSize (20);
 	RGPArray::ResetDefaultIncrement (20);
+	bool isLadderFree = false;
 
 	//
 	//	OsirisInputFile is always started with a debug value of "false", even for debug runs, because the debugger
@@ -177,6 +178,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	SmartMessage::SetSeverityTrigger (OutputLevel);
 	MessageBookPath = inputFile.GetFinalMessageBookName ();
 
+	if (inputFile.IsLadderFreeAnalysis ())
+		isLadderFree = true;
+
 	STRLCAnalysis::SetOutputSubDirectory (OutputSubDirectory);
 	GenotypesForAMarkerSet::SetPathToStandardControlFile (ConfigDirectory);
 
@@ -188,6 +192,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	CommandInputs << "InputDirectory = " << PrototypeInputDirectory.GetData () << ";\n";
 	CommandInputs << "LadderDirectory = " << LadderInformationDirectory.GetData () << ";\n";
 	CommandInputs << "ReportDirectory = " << ParentDirectoryForReports.GetData () << ";\n";
+
+	if (isLadderFree)
+		CommandInputs << "LadderFree = true;\n";
 
 	if (OutputSubDirectory.Length () > 0)
 		CommandInputs << "OutputSubdirectory = " << OutputSubDirectory.GetData () << ";\n";
@@ -219,7 +226,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	CommandInputs << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";\n";
 	CommandInputs << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";\n";
 
-	bool isLadderFree = false;
 	size_t posn = 0;
 
 	if (MarkerSetName.FindSubstringCaseIndependent ("LaneStandardOnly", posn))
