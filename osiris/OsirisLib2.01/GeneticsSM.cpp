@@ -3538,6 +3538,90 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 }
 
 
+int Locus :: TestFractionalFiltersSMLF () {
+
+	//
+	//  This is ladder free sample stage 2
+	//
+
+	RGDListIterator it (LocusSignalList);
+	DataSignal* nextSignal;
+
+	smCalculatedPurePullup pullUp;
+	smPartialPullupBelowMinRFU pullupBelowMinRFU;
+	smPrimaryInterchannelLink primaryPullup;
+	smHeightBelowFractionalFilter belowFractionalFilter;
+	smHeightBelowPullupFractionalFilter belowPullupFractionalFilter;
+
+	smBelowFractionalFilterLeft	belowFractionalFilterLeft;
+	smBelowFractionalFilterRight belowFractionalFilterRight;
+	smBelowPullupFractionalFilterLeft belowPullupFFLeft;
+	smBelowPullupFractionalFilterRight belowPullupFFRight;
+
+	smTestPullupCorrectedHeightsPreset testCorrectedHeightsPreset;
+
+	double maxPeak = 0.0;
+	double peak;
+	double fractionalThreshold = 0.0;
+	double pullupFractionalThreshold = 0.0;
+	double fractionalFilter = GetLocusSpecificSampleFractionalFilter ();
+	double pullupFractionalFilter = GetLocusSpecificSamplePullupFractionalFilter ();
+	bool peakIsLessThanFractionalThreshold;
+	bool peakIsLessThanPullupFractionalThreshold;
+	bool peakIsPullup;
+	bool testCorrectedHeights = GetMessageValue (testCorrectedHeightsPreset);
+	
+	if ((fractionalFilter > 0.0) || (pullupFractionalFilter > 0.0)) {
+	
+		while (nextSignal = (DataSignal*) it ()) {
+
+			if ((nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (pullupBelowMinRFU)) && !nextSignal->GetMessageValue (primaryPullup))
+				continue;
+
+			peak = nextSignal->Peak ();
+
+			if (testCorrectedHeights)
+				peak -= nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+			if (peak > maxPeak)
+				maxPeak = peak;
+		}
+
+		mMaxPeak = maxPeak;
+
+		if (maxPeak <= 0.0)
+			return 0;
+
+		fractionalThreshold = fractionalFilter * maxPeak;
+		pullupFractionalThreshold = pullupFractionalFilter * maxPeak;
+		it.Reset ();
+
+		while (nextSignal = (DataSignal*) it ()) {
+
+			peak = nextSignal->Peak ();
+
+			if (testCorrectedHeights)
+				peak -= nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+			peakIsLessThanFractionalThreshold = (peak <= fractionalThreshold);
+			peakIsPullup = nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (pullupBelowMinRFU);
+			peakIsLessThanPullupFractionalThreshold = (peakIsPullup && !nextSignal->GetMessageValue (primaryPullup)) && (peak <= pullupFractionalThreshold);
+
+			if (peakIsLessThanFractionalThreshold || peakIsLessThanPullupFractionalThreshold) {
+
+				if (peakIsLessThanFractionalThreshold)
+					nextSignal->SetMessageValue (belowFractionalFilter, true);
+
+				if (peakIsLessThanPullupFractionalThreshold)
+					nextSignal->SetMessageValue (belowPullupFractionalFilter, true);
+			}
+		}
+	}
+
+	return 0;
+}
+
+
 Boolean Locus :: ExtractGridSignalsSM (RGDList& channelSignalList, const LaneStandard* ls, ChannelData* lsData) {
 
 	//
@@ -5544,6 +5628,97 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 }
 
 
+int Locus :: FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl) {
+
+	//
+	//  This is sample stage 5
+	//
+
+	RGString info;
+	DataSignal* nextSignal;
+	double heteroLimit = GetLocusSpecificSampleHeterozygousImbalanceThreshold ();
+	double minBoundForHomozygote = GetLocusSpecificSampleMinBoundForHomozygote ();
+	RGDList alleleList;
+	RGString alleleName;
+	bool criticalArtifactFound = false;
+	int criticalLevel = Notice::GetMessageTrigger ();
+	RGDListIterator it (mSmartList);
+	RGString localAlleleName;
+
+	smCriticalMessagesAtAlleles locusPeaksHaveCriticalMsgs;
+	smThreeOrMoreAlleles triAllele;
+	smMoreThanThreeAlleles moreThanThressAlleles;
+	smNoGenotypeFound noGenotype;
+	smHomozygoteHeightProblem homozygoteProblem;
+	smHeterozygousImbalance heterozygousImbalance;
+	smLocusIsHomozygous locusIsHomozygous;
+	smNumberAllelesBelowExpectation numberOfAllelesBelowExpectation;
+	smAdenylation adenylation;
+	smStutter stutter;
+	smCallStutterPeaksPreset callStutterPreset;
+	smDoNotCallStutterPeaksForSingleSourceSamplesPreset doNotCallStutterForSingleSource;
+	smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset reportAdenylationWithCallPreset;
+	smIsAcceptedOLAllele acceptedOL;
+	smTestPullupCorrectedHeightsPreset testPullupCorrectHeights;
+
+	bool testCorrectedHeights = GetMessageValue (testPullupCorrectHeights);
+
+
+	bool callStutter = GetMessageValue (callStutterPreset);
+	bool dontCallStutterThisSample = isNegCntl || isPosCntl;
+	bool isSingleSourceAndDontCallForSingleSource = IsSingleSourceSample && GetMessageValue (doNotCallStutterForSingleSource);
+	bool localDontCallStutter = dontCallStutterThisSample || !callStutter || isSingleSourceAndDontCallForSingleSource;
+
+	int retValue = 0;
+
+	double minBioID = (double) CoreBioComponent::GetMinBioIDForArtifacts ();
+	
+	int nStutter = 0;
+	int nDoNotCall = 0;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID)) {
+
+			it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);	//!!!!!!!!!
+			continue;
+		}
+
+		if (nextSignal->IsDoNotCall ()) {
+
+	//		it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			nDoNotCall++;
+			continue;
+		}
+
+		if (localDontCallStutter && nextSignal->GetMessageValue (stutter)) {
+
+			it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			nStutter++;
+			continue;
+		}
+
+		if (nextSignal->GetMessageValue (adenylation)) {
+
+			bool isAcceptedOL = nextSignal->GetMessageValue (acceptedOL);
+			bool callAdenylationAndAllele = nextSignal->GetMessageValue (reportAdenylationWithCallPreset);
+
+			if (isAcceptedOL && callAdenylationAndAllele && CallOnLadderAdenylation)
+				continue;
+
+			it.RemoveCurrentItem ();
+			LocusSignalList.RemoveReference (nextSignal);
+			continue;
+		}
+	}
+
+	return 0;
+}
+
+
 double Locus :: CalculateTotalAreaSM () {
 
 	RGDListIterator it (LocusSignalList);
@@ -7036,6 +7211,228 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			prevSignal = nextSignal;
 			prevLocation = location;
 			prevAlleleName = alleleName;
+		}
+	}
+
+	while (nextSignal = (DataSignal*) SignalsToDeleteFromLocus.GetFirst ()) {
+
+		LocusSignalList.RemoveReference (nextSignal);
+	}
+
+	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+
+		// Add new signals to all lists
+	//	signalList.InsertWithNoReferenceDuplication (nextSignal);
+		completeList.InsertWithNoReferenceDuplication (nextSignal);
+		smartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+		LocusSignalList.InsertWithNoReferenceDuplication (nextSignal);
+		mSmartList.InsertWithNoReferenceDuplication (nextSignal);
+		//artifacts.InsertWithNoReferenceDuplication (nextSignal);
+	}
+	
+	return 0;
+}
+
+
+int Locus :: TestForNearlyDuplicateAllelesSMLF (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks) {
+
+		//
+	//  This is Ladder Free sample stage 3
+	//
+
+	RGDListIterator it (LocusSignalList);
+	DataSignal* nextSignal;
+	DataSignal* prevSignal = NULL;
+	DataSignal* followingSignal = NULL;
+	DataSignal* currentSignal;
+	RGString alleleName;
+	RGString prevAlleleName;
+	bool prevSignalWasCrater = false;
+	RGString lName = GetLocusName ();
+	bool foundOLAllele = false;
+	RGDList tempList;
+	RGDList SignalsToDeleteFromAll;
+	RGDList SignalsToDeleteFromLocus;
+
+	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+	smPullUp pullup;
+	smPrimaryInterchannelLink primaryPullup;
+	smCalculatedPurePullup purePullup;
+	smBelowMinRFU belowMinRFU;
+	smCrater crater;
+	smCorePeakSharesAlleleBin corePeakSharesAlleleBin;
+	smHeightBelowFractionalFilter fractionalFilter;
+	smHeightBelowPullupFractionalFilter pullupFractionalFilter;
+	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+
+	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+
+	bool prevBelowMinRFU;
+	bool nextBelowMinRFU;
+
+	it.Reset ();
+
+	prevSignal = NULL;
+
+	double approxBioID;
+	double prevApproxBioID = 0.0;
+	RGString newAlleleName;
+
+	while (nextSignal = (DataSignal*) it ()) {
+
+		// test for consecutive signals with same call:  make it a NoisyPeak (This should be done only for peaks that
+		// are unique to this locus
+
+		approxBioID = nextSignal->GetApproximateBioID ();	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
+		bool isCore = true;
+		bool isAmbiguous = false;
+		bool isUnique = true;
+
+		if ((prevSignal != NULL) && (approxBioID - prevApproxBioID <= 0.5) && isUnique) {
+
+			//if (prevSignal->IsDoNotCall () || nextSignal->IsDoNotCall ()) {	// Let's try not using this to see what happens 02/25/2016*******
+
+			//	prevSignal = nextSignal;   // changed so that we test nextSignal also
+			//	prevAlleleName = alleleName;
+			//	prevLocation = location;
+			//	continue;
+			//}
+
+			double prevPeak = prevSignal->Peak ();
+			double nextPeak = nextSignal->Peak ();
+
+			if (prevSignal->IsPartOfCluster () || nextSignal->IsPartOfCluster ()) {
+
+				//if (report)
+				//	cout << "A signal at mean " << prevSignal->GetMean () << " is part of cluster" << endl;
+
+				prevSignal = nextSignal;
+				prevApproxBioID = approxBioID;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (crater) || nextSignal->GetMessageValue (crater)) {
+
+				prevSignal = nextSignal;
+				prevApproxBioID = approxBioID;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (purePullup)) {
+
+				prevSignal = nextSignal;
+				prevApproxBioID = approxBioID;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (primaryPullup) && !nextSignal->GetMessageValue (primaryPullup)) {
+
+				nextSignal->SetDontLook (true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			else if (nextSignal->GetMessageValue (primaryPullup) && !prevSignal->GetMessageValue (primaryPullup)) {
+
+				prevSignal->SetDontLook (true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevApproxBioID = approxBioID;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (pullup) && !nextSignal->GetMessageValue (pullup)) {
+
+				nextSignal->SetDontLook (true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			else if (nextSignal->GetMessageValue (pullup) && !prevSignal->GetMessageValue (pullup)) {
+
+				prevSignal->SetDontLook (true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevApproxBioID = approxBioID;
+				continue;
+			}
+
+			else if (prevPeak <= heightFraction * nextPeak) {
+
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+				prevSignal = nextSignal;
+				prevApproxBioID = approxBioID;
+				continue;
+			}
+
+			else if (nextPeak <= heightFraction * prevPeak) {
+
+				nextSignal->SetDoNotCall (true);
+				nextSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+				signalList.RemoveReference (nextSignal);
+			}
+
+			else {
+
+				prevBelowMinRFU = prevSignal->GetMessageValue (belowMinRFU);
+				nextBelowMinRFU = nextSignal->GetMessageValue (belowMinRFU);
+
+				if (prevBelowMinRFU && !nextBelowMinRFU) {
+
+					prevSignal = nextSignal;
+					prevApproxBioID = approxBioID;
+					continue;
+				}
+
+				else if (!prevBelowMinRFU && nextBelowMinRFU)
+					continue;
+
+				else if (prevBelowMinRFU && nextBelowMinRFU) {
+
+					prevSignal = nextSignal;
+					prevApproxBioID = approxBioID;
+					continue;
+				}
+			}
+
+			prevSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			nextSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			currentSignal = new NoisyPeak (prevSignal, nextSignal, true);
+			currentSignal->CaptureSmartMessages ();
+			currentSignal->CapturePullupDataFromSM (prevSignal, nextSignal);
+			newAlleleName = currentSignal->CalculateAlleleNameFromILSBP_LF ();
+			currentSignal->SetAlleleName (newAlleleName);
+
+			if (!prevSignal->GetMessageValue (fractionalFilter) || !nextSignal->GetMessageValue (fractionalFilter))
+				currentSignal->SetMessageValue (fractionalFilter, false);
+
+			if (!prevSignal->GetMessageValue (pullupFractionalFilter) || !nextSignal->GetMessageValue (pullupFractionalFilter))
+				currentSignal->SetMessageValue (pullupFractionalFilter, false);
+
+			currentSignal->SetLocus ((Locus*)this, 0);
+
+			currentSignal->SetDontLook (false);
+			currentSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
+			tempList.Append (currentSignal);
+			signalList.RemoveReference (prevSignal);
+			signalList.RemoveReference (nextSignal);
+			smartPeaks.RemoveReference (prevSignal);
+			smartPeaks.RemoveReference (nextSignal);
+			prevApproxBioID = approxBioID;
+			prevSignal = currentSignal;
+		}
+
+		else {
+
+			prevSignal = nextSignal;
+			prevApproxBioID = approxBioID;
 		}
 	}
 

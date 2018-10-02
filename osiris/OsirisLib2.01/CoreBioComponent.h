@@ -406,6 +406,7 @@ public:
 	virtual int FitNonLaneStandardNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, CoordinateTransform* timeMap);
 	virtual int AssignSampleCharacteristicsToLociSMLF ();
+	virtual int TestForNearlyDuplicateAllelesSMLF ();
 
 	virtual int AnalyzeLaneStandardChannelSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AssignCharacteristicsToLociSM ();
@@ -423,6 +424,8 @@ public:
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();
 	virtual int PreTestSignalsForLaserOffScaleSM ();
+
+	virtual int TestAllFractionalFiltersSMLF ();
 
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
 
@@ -446,6 +449,7 @@ public:
 
 	virtual int ResolveAmbiguousInterlocusSignalsSM ();
 	virtual int SampleQualityTestSM (GenotypesForAMarkerSet* genotypes);
+	virtual int SampleQualityTestSMLF ();
 	virtual int SignalQualityTestSM ();
 	virtual bool IsLabPositiveControl (const RGString& name, GenotypesForAMarkerSet* genotypes);
 	virtual int TestPositiveControlSM (GenotypesForAMarkerSet* genotypes);

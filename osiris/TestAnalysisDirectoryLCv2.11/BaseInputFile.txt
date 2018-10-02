@@ -1,18 +1,18 @@
-InputDirectory = F:/Menageries/MenagerieForTestingShoulders/2.9 GF single base pair resolution samples and mixtures/SS samples;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config;
-ReportDirectory = F:/Menageries/MenagerieForTestingShoulders/2.9 GF single base pair resolution samples and mixtures/2.9 GF single base pair resolution samples and mixtures;
-MarkerSetName = GlobalFiler;
-LaneStandardName = ABI-LIZ-600-60-TO-460;
+InputDirectory = C:/Users/goorrob/NIDDK16Files/16 fsa files;
+LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11/Config;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports/NIDDK16Files;
+MarkerSetName = LadderFree_2;
+LaneStandardName = ABI-LIZ1200;
 CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20171201-163851/V-20171201-163851_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20171201-163851/V-20171201-163851_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11-Beta-9/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 40.;
-MinLaneStandardRFU = 200.;
+StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20180829-143211/V-20180829-143211_StdSettings.xml;
+LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20180829-143211/V-20180829-143211_LabSettings.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11/Config/LadderSpecifications/MessageBook.xml;
+MinSampleRFU = 150.;
+MinLaneStandardRFU = 150.;
 MinLadderRFU = 150.;
-MinInterlocusRFU = 40.;
+MinInterlocusRFU = 150.;
 MinLadderInterlocusRFU = 150.;
-SampleDetectionThreshold = 40.;
+SampleDetectionThreshold = 150.;
 RawDataString = R;
 
 

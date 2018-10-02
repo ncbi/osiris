@@ -87,6 +87,7 @@ public:
 
 	bool UseRawData () const { return mUseRawData; }
 	bool UserNamedSettingsFiles () const { return mUserNamedSettingsFiles; }
+	bool IsLadderFreeAnalysis () const { return mIsLadderFreeAnalysis; }
 
 	void ResetInputLines ();
 	RGString* GetNextInputLine ();
@@ -140,6 +141,7 @@ protected:
 
 	bool mUseRawData;
 	bool mUserNamedSettingsFiles;
+	bool mIsLadderFreeAnalysis;
 
 	list<channelThreshold*>* mAnalysisThresholds;
 	list<channelThreshold*>* mDetectionThresholds;

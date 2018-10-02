@@ -19,6 +19,11 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="Name" type="xs:string"/>
+							<xs:element name="LadderFree" type="xs:boolean" default="false" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Is set to true for ILS-only kits; is either false or omitted for all others</xs:documentation>
+								</xs:annotation>
+							</xs:element>
 							<xs:element name="NChannels" type="xs:int"/>
 							<xs:element name="ILS">
 								<xs:complexType>
@@ -52,6 +57,11 @@ before v 2.7 </xs:documentation>
 														</xs:element>
 													</xs:sequence>
 												</xs:complexType>
+											</xs:element>
+											<xs:element name="AllLaneStandards" type="xs:boolean" default="false">
+												<xs:annotation>
+													<xs:documentation>Assumed false except for ILS-only kits; when true, all ILS options should be displayed in analysis dialog</xs:documentation>
+												</xs:annotation>
 											</xs:element>
 										</xs:choice>
 										<xs:element name="ChannelNo" type="xs:int"/>

@@ -50,6 +50,7 @@ public:
 
 	void AddSynonym (const RGString& str);
 	void AddSynonym (const char* str);
+	void FlushSynonymList () { mList.ClearAndDelete (); }
 
 	bool DoesTargetStringEqualASynonym (const RGString& target);
 	bool DoesTargetStringContainASynonym (const RGString& target);

@@ -194,6 +194,7 @@ public:
 	virtual int AnalyzeSampleLociSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int ResolveAmbiguousInterlocusSignalsSM ();
 	virtual int SampleQualityTestSM (GenotypesForAMarkerSet* genotypes);
+	virtual int SampleQualityTestSMLF ();
 	virtual int SignalQualityTestSM ();
 	virtual int RemoveInterlocusSignalsSM ();
 	virtual int FitAllSampleCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);

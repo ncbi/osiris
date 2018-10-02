@@ -250,6 +250,8 @@ public:
 	int GetMaxOLAlleles () const { return mMaxOLAlleles; }
 	int GetMaxExcessiveResiduals () const { return mMaxExcessiveResiduals; }
 
+	void FlushLadderSynonyms () { if (LadderIDs != NULL) LadderIDs->FlushSynonymList (); }
+
 	static void Kill() {
 
 		if(OneAndOnlySelf != NULL) {

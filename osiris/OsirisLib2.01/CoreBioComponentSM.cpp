@@ -114,6 +114,25 @@ int CoreBioComponent :: PreTestSignalsForLaserOffScaleSM () {
 }
 
 
+int CoreBioComponent :: TestAllFractionalFiltersSMLF () {
+
+	//
+	// Ladder Free Stage 1
+
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i == mLaneStandardChannel)
+			continue;
+
+		mDataChannels [i]->ApplyFractionalFiltersSMLF ();
+	}
+
+	return 0;
+}
+
+
 bool CoreBioComponent :: EvaluateSmartMessagesForStage (int stage, bool allMessages, bool signalsOnly) {
 
 	int i;
@@ -1334,13 +1353,31 @@ int CoreBioComponent :: AssignSampleCharacteristicsToLociSM (CoreBioComponent* g
 int CoreBioComponent :: AssignSampleCharacteristicsToLociSMLF () {
 
 	//
-	//  This is sample stage 1
+	//  This is ladder free sample stage 1
 	//
 
 	for (int i=1; i<=mNumberOfChannels; i++) {
 
 		if (i != mLaneStandardChannel)
 			mDataChannels [i]->AssignSampleCharacteristicsToLociSMLF ();
+	}
+
+	return 0;
+}
+
+
+int CoreBioComponent :: TestForNearlyDuplicateAllelesSMLF () {
+
+	//
+	//  This is ladder free sample stage 3
+	//
+
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i != mLaneStandardChannel)
+			mDataChannels [i]->TestForNearlyDuplicateAllelesSMLF ();
 	}
 
 	return 0;
@@ -2886,7 +2923,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 
 	if (status < 0) {
 
-		notice << "BIOCOMPONENT COULD NOT FIT ALL CHARACTERISTICS.  Skipping...";
+		notice << "BIOCOMPONENT COULD NOT FIT ALL CHARACTERISTICS.  Skipping...Return status = " << status;
 		cout << notice << endl;
 		sampleData->mExcelText.Write (1, notice);
 		sampleData->mText << notice << "\n" << ErrorString << "Skipping...\n";
@@ -3069,6 +3106,12 @@ int CoreBioComponent :: ResolveAmbiguousInterlocusSignalsSM () {
 
 
 int CoreBioComponent :: SampleQualityTestSM (GenotypesForAMarkerSet* genotypes) {
+
+	return -1;
+}
+
+
+int CoreBioComponent :: SampleQualityTestSMLF () {
 
 	return -1;
 }

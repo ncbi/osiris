@@ -1112,6 +1112,18 @@ void ChannelData :: ClearAllPeaksBelowAnalysisThreshold () {
 }
 
 
+int ChannelData :: ApplyFractionalFiltersSMLF () {
+
+	Locus* nextLocus;
+	RGDListIterator it (mLocusList);
+
+	while (nextLocus = (Locus*) it ())
+		nextLocus->TestFractionalFiltersSMLF ();
+
+	return 0;
+}
+
+
 int ChannelData :: TestFitCriteriaSM (DataSignal* signal) {
 
 	//

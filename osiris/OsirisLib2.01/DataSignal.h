@@ -678,6 +678,7 @@ public:
 	RGString GetRightStutterRatio () const;
 	double GetCumulativeStutterThreshold () const { return mCumulativeStutterThreshold; }
 
+	RGString CalculateAlleleNameFromILSBP_LF ();
 
 	virtual bool LiesBelowHeightAt (double x, double height);
 	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);

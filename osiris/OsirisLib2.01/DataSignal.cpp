@@ -2499,6 +2499,24 @@ void DataSignal :: RemoveStutterLink (DataSignal* ds) {
 }
 
 
+RGString DataSignal :: CalculateAlleleNameFromILSBP_LF () {
+
+	int IntegerPart = (int)floor (ApproximateBioID);
+	double fraction = ApproximateBioID - (double)IntegerPart;
+	int fractionalPart = (int)floor (10.0 * fraction + 0.5);
+
+	if (fractionalPart >= 10) {
+
+		IntegerPart++;
+		fractionalPart -= 10;
+	}
+
+	RGString alleleName;
+	alleleName << IntegerPart << "." << fractionalPart;
+	return alleleName;
+}
+
+
 bool DataSignal :: LiesBelowHeightAt (double x, double height) {
 
 	if (Value (x) <= height)

@@ -4847,6 +4847,34 @@ int STRSampleCoreBioComponent :: SampleQualityTestSM (GenotypesForAMarkerSet* ge
 }
 
 
+int STRSampleCoreBioComponent :: SampleQualityTestSMLF () {
+
+	//
+	//  This is ladder free sample stage 5
+	//
+
+	if (Progress < 4)
+		return -1;
+	
+	int status = 0;
+	ChannelData* thisChannel;
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i != mLaneStandardChannel) {
+
+			thisChannel = mDataChannels [i];
+
+			if (mDataChannels [i]->FinalTestForPeakSizeSMLF (mIsNegativeControl, mIsPositiveControl) < 0)
+				status = -1;
+		}
+	}
+
+	return status;
+}
+
+
 int STRSampleCoreBioComponent :: SignalQualityTestSM () {
 
 	//
@@ -4964,10 +4992,13 @@ int STRSampleCoreBioComponent :: FitAllSampleCharacteristicsSM (RGTextOutput& te
 
 //	mLSData->ClearAllPeaksBelowAnalysisThreshold ();
 
-	if (AnalyzeLaneStandardChannelSM (text, ExcelText, msg, print) < 0) {
+	status = AnalyzeLaneStandardChannelSM (text, ExcelText, msg, print);
+
+	if (status < 0) {
 
 		// ErrorString already populated; cannot go on because need a healthy internal lane standard to do anything else
 		SetMessageValue (ilsFailed, true);
+		cout << "ILS failed with status = " << status << "\n";
 		notice = ":  Could not analyze ladder ILS";
 		AppendDataForSmartMessage (ilsFailed, notice);
 		return -2;

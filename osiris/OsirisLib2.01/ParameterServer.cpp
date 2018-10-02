@@ -511,6 +511,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		Locus::SetHeterozygousImbalanceLimit (limit);
 		Locus::SetMinBoundForHomozygote (nonRFULimits.minBoundForHomozygote);
 		CoreBioComponent::SetMinBioIDForArtifacts (nonRFULimits.minBPSForArtifacts);
+		cout << "Min BP as read from Lab Settings = " << nonRFULimits.minBPSForArtifacts << "\n";
 
 		//
 		//  Reformat XMLString a little and save into mLabSettingsString

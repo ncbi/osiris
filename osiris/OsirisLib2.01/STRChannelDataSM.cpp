@@ -4117,27 +4117,26 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSMLF () {
 
 	Locus* nextLocus;
 	smBelowMinRFU belowMinRFU;
+	RGDListIterator it (mLocusList);
 
-	//while (nextLocus = (Locus*) it()) {
+	while (nextLocus = (Locus*) it()) {
 
-	//	gridLocus = grid->FindLocus (mChannel, nextLocus->GetLocusName ());
+		nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+	}
 
-	//	if (gridLocus == NULL)
-	//		return -1;  // this should never happen...it means that the channel has a locus that the grid has never heard of, but have to test...
+	return 0;
+}
 
-	//	nextLocus->ExtractSampleSignals (PreliminaryCurveList, gridLocus, timeMap);
-	//}
 
-	//it.Reset ();
+int STRSampleChannelData :: TestForNearlyDuplicateAllelesSMLF () {
 
-	nextLocus = (Locus*) mLocusList.First ();
+	Locus* nextLocus;
+	RGDListIterator it (mLocusList);
 
-	if (nextLocus == NULL)
-		return -1;
+	while (nextLocus = (Locus*) it ()) {
 
-	// Extract all signals from PreliminaryCurveList and insert into "locus";  assign allele name = ILS BP rounded to nearest tenth
-
-	nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+		nextLocus->TestForNearlyDuplicateAllelesSMLF (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks);
+	}
 
 	return 0;
 }
@@ -4515,6 +4514,26 @@ int STRSampleChannelData :: FinalTestForPeakSizeAndNumberSM (double averageHeigh
 	mMinYLinkedLocusArea = minYLinkedArea;
 	mMaxLocusAreaRatio = ratioMaxToMin;
 	mMaxYLinkedLocusRatio = yLinkedRatioMaxToMin;
+	return status;
+}
+
+
+int STRSampleChannelData :: FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl) {
+
+	//
+	//  This is sample stage 5
+	//
+
+	RGDListIterator it (mLocusList);
+	Locus* nextLocus;
+	int status = 0;
+
+	while (nextLocus = (Locus*) it ()) {
+
+		if (nextLocus->FinalTestForPeakSizeSMLF (isNegCntl, isPosCntl) < 0)
+			status = -1;
+	}
+
 	return status;
 }
 
