@@ -9220,7 +9220,8 @@ Boolean PopulationMarkerSet :: BuildLocusList (const RGString& xmlString) {
 			validity = FALSE;
 			ErrorString << baseLocus->GetError ();
 			ErrorString << "Could not parse base locus input for Marker Set named " << mLink->GetMarkerSetName () << "\n";
-//			cout << "Base locus invalid...name:  " << baseLocus->GetLocusName () << endl;
+			//cout << "Base locus invalid...name:  " << baseLocus->GetLocusName () << endl;
+			//cout << (char*)ErrorString.GetData () << endl;
 		}
 
 		locus = new Locus (baseLocus, LocusString);
@@ -9230,8 +9231,12 @@ Boolean PopulationMarkerSet :: BuildLocusList (const RGString& xmlString) {
 			validity = FALSE;
 			ErrorString << locus->GetErrorString ();
 			ErrorString << "Could not parse locus input for Marker Set named " << mLink->GetMarkerSetName () << "\n";
-//			cout << ErrorString << "    Name:  " << locus->GetLocusName () << endl;
+			//cout << ErrorString << "    Name:  " << locus->GetLocusName () << endl;
+			//cout << (char*)ErrorString.GetData () << endl;
 		}
+
+		if (!validity)
+			cout << (char*)LocusString.GetData () << endl;
 
 		LocusListByName.Insert (locus);
 		LocusList.Append (locus);
