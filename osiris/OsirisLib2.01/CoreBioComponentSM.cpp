@@ -1653,6 +1653,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			rawDataPullups.Append (nextSignal);
 			pairList.push_back (nextPair);
 
+			if ((primaryChannel == 2) && (pullupChannel == 4)) {
+
+				cout << "Raw height for primary at " << nextSignal->GetMean () << " is " << rawHeight << "\n";
+			}
+
 			if (currentPeak < minHeight)
 				minHeight = currentPeak;
 
@@ -1660,35 +1665,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				maxHeight = currentPeak;
 
 			numerator = fabs (rawHeight);
-
-			//if (numerator > 3.0) {
-
-			//	currentRatio = numerator / currentPeak;
-
-			//	if (currentRatio < minRatio)
-			//		minRatio = currentRatio;
-
-			//	if (currentRatio > maxRatio)
-			//		maxRatio = currentRatio;
-
-			//	if (minPullupHeight == 0.0)
-			//		minPullupHeight = numerator;
-
-			//	else if (numerator < minPullupHeight)
-			//		minPullupHeight = numerator;
-
-			//	if (minRatio < 1.0)
-			//		minRatioLessThan1 = true;
-
-			//	if (maxRatio > 0.0)
-			//		maxRatioLargerThan0 = true;
-
-			//}
-
-			//RGString data;
-			//data << pullupChannel;
-			//nextSignal->SetMessageValue (rawDataPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
-			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
 
 			if (rawHeight < 0.0) {
 
@@ -1701,6 +1677,43 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				nPos++;
 			}
+		}
+	}
+
+	RGDListIterator itRaw (rawDataPullups);
+
+	while (nextSignal = (DataSignal*) itRaw ()) {
+
+		TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight);  // Find a way to avoid calling this twice.
+
+		if (currentPeak >= 0.9 * maxHeight) {
+
+			additionalPairsRequired += 2;
+			nextPair = new PullupPair (nextSignal, rawHeight);
+			pairList.push_back (nextPair);
+			nextPair = new PullupPair (nextSignal, rawHeight);
+			pairList.push_back (nextPair);
+			RGString data;
+			data << pullupChannel << "(3)";
+			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+		}
+
+		else if (currentPeak >= minHeight) {
+
+			additionalPairsRequired += 1;
+			nextPair = new PullupPair (nextSignal, rawHeight);
+			pairList.push_back (nextPair);
+//				cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
+			RGString data;
+			data << pullupChannel << "(2)";
+			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+		}
+
+		else {
+
+			RGString data;
+			data << pullupChannel << "(1)";
+			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
 		}
 	}
 
@@ -1826,7 +1839,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				pairList.push_back (nextPair);
 				nextSignal->SetMessageValue (zeroPullupPrimary, true);
 
-				if (currentPeak >= maxHeight) {
+				if (currentPeak >= 0.9 * maxHeight) {
 
 					additionalPairsRequired += 2;
 					nextPair = new PullupPair (nextSignal, true);
@@ -1924,7 +1937,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		while (nextSignal = (DataSignal*) rawDataPullups.GetFirst ()) {
 
 			nextSignal->SetMessageValue (rawDataPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
-			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+	//		nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);  // already done?
 		}
 		
 //		double correctedHeight;
