@@ -186,7 +186,11 @@ void CDialogCMF::_ComputeSize()
   // to accommodate a horizontal scrollbar
   // by adding height of one row
   int nRowH = m_pGrid->GetRowSize(0);
+#ifdef __WXMAC__
+  int nH = szGridV.GetHeight() + nRowH + nRowH;
+#else
   int nH = szGridV.GetHeight() + nRowH;
+#endif
   szGridV.SetHeight(nH);
   // OS-920 - end
   sz -= szGrid;
