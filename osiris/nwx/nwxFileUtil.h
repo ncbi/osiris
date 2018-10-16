@@ -120,27 +120,6 @@ public:
   {
     return DO_NOT_SELECT_FILE;
   }
-#if 0
-  // written but not tested, used wxCopyFile instead
-  static int CopyFile(
-    const wxString &sFrom, const wxString &sTo,
-    bool bOverwrite = false,
-    wxString *psError = NULL);
-  enum
-  {
-    COPY_OK = 0,
-    INPUT_FILE_MISSING,
-    OUTPUT_FILE_EXISTS,
-    INPUT_OPEN_ERROR,
-    OUTPUT_OPEN_ERROR,
-    READ_ERROR,
-    WRITE_ERROR
-  } COPY_RETURN_CODE;
-  static wxString CopyErrorMessage(
-    int nRtn,
-    const wxString &sFrom, 
-    const wxString &sTo);
-#endif
 private:
   static std::vector<wxString> g_asSysPath;
   static std::vector<wxString> g_asPath;

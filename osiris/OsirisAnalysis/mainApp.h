@@ -51,6 +51,25 @@ class wxDateTime;
 class wxWindow;
 class mainFrame;
 
+#ifdef TMP_DEBUG
+
+#include "nwx/nwxLog.h"
+
+#define DEBUG_LOG_MESSAGE2(s1,s2) \
+  { wxString sMsg(s1); sMsg.Append(s2); nwxLog::LogMessage(sMsg);}
+
+
+#define FUNC_ENTER(s) DEBUG_LOG_MESSAGE2("ENTER ", s)
+#define FUNC_EXIT(s) DEBUG_LOG_MESSAGE2("EXIT ", s)
+
+#else
+
+#define FUNC_ENTER(s)
+#define FUNC_EXIT(s)
+#define DEBUG_LOG_MESSAGE2(s1,s2)
+
+#endif
+
 class mainApp : public wxApp, public IXml2ErrorReceiver
 {
 public:

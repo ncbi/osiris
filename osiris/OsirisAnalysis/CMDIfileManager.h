@@ -101,7 +101,10 @@ public:
   }
   void CheckUpdateWindowMenu(CMDIFrame *p)
   {
-    p->CheckUpdateWindowMenu(m_nModCount,&m_listCreateOrder);
+    if(FindWindow(p))
+    {
+      p->CheckUpdateWindowMenu(m_nModCount,&m_listCreateOrder);
+    }
   }
 #endif
 

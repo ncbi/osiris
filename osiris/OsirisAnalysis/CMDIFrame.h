@@ -90,6 +90,7 @@ public:
     const wxString &sFileName, 
     const wxString &sFileName2 = wxEmptyString);
   virtual void UpdateStatusBar();
+  virtual bool FileError();
 
   bool PopupMenu_(wxMenu* menu, const wxPoint& pos = wxDefaultPosition);
   bool PopupMenu_(wxMenu* menu, int x, int y);

@@ -1131,8 +1131,7 @@ bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double half
 		endPt = mData->GetNumberOfSamples () - 1;
 
 	int i;
-	double max = 0.0;
-	double min = 0.0;
+	
 	int minTime = startPt;
 	int maxTime = startPt;
 	double minDistanceFromCenter = center - minTime;
@@ -1145,16 +1144,18 @@ bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double half
 		return false;
 
 	double nPoints = (double) (displacement + 1);
-	double average = 0.0;
+	double max = mData->Value (startPt);
+	double min = mData->Value (startPt);
+	//double average = 0.0;
 
-	for (i=startPt; i<=endPt; i++)
-		average += mData->Value (i);
+	//for (i=startPt; i<=endPt; i++)
+	//	average += mData->Value (i);
 
-	average = average / nPoints;
+	//average = average / nPoints;
 
-	for (i=startPt; i<=endPt; i++) {
+	for (i=startPt+1; i<=endPt; i++) {
 
-		temp = mData->Value (i) - average;
+		temp = mData->Value (i);
 		//aTemp = fabs (temp);
 
 		if (temp == 0.0)
@@ -1196,8 +1197,13 @@ bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double half
 	}
 
 	double noiseRange = fractionNoiseRange * mData->GetNoiseRange ();
+	bool maxMinusMinBelowNoise = (fabs (max- min) <= noiseRange);
+
+	if (maxMinusMinBelowNoise)
+		return false;
+
 	bool maxAboveThreshold = (max >= noiseRange);
-	bool minAboveThreshold = (fabs (min) >= noiseRange);
+	bool minAboveThreshold = (-min >= noiseRange);
 	bool maxAboveZero = (max > 0.0);
 	bool minBelowZero = (min < 0.0);
 	double sigmoidPosition;
@@ -1205,6 +1211,24 @@ bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double half
 
 	if (!maxAboveZero && !minBelowZero)
 		return false;
+
+	if (maxAboveZero && !minBelowZero) {
+
+		// This is a positive max
+
+		value = max;
+		return true;
+	}
+	
+	if (!maxAboveZero && minBelowZero) {
+
+		// This is a negative min
+
+		value = min;
+		return true;
+	}
+
+	// The remaining case is that max > 0 and min < 0
 
 	if (maxAboveThreshold && minAboveThreshold) {
 

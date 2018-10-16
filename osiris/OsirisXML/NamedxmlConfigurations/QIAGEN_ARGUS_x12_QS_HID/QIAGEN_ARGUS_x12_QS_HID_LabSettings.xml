@@ -151,7 +151,7 @@
     <LabMarkerSetCollection>
       <MarkerSetName>QiagenArgusX12_QS</MarkerSetName>
       <LadderFileName>Q_InvestigatorArgusX12_QS_LadderInfo.xml</LadderFileName>
-      <ILS>BTO-500</ILS>
+      <ILS>BTO_60_500</ILS>
       <UserOverrideILS>true</UserOverrideILS>
     </LabMarkerSetCollection>
   </LabMarkerSetSpecifications>

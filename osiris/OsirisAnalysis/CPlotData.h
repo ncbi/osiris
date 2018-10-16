@@ -831,9 +831,9 @@ public:
 
   CPlotData() :
     m_pdILS_BPs(NULL),
+    m_bCannotSetBPS(false),
     m_IOchannel(true),
-    m_IOlocus(true),
-    m_bCannotSetBPS(false)
+    m_IOlocus(true)
   {
     m_pdX = NULL;
     m_nStart = 0;

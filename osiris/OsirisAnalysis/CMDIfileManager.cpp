@@ -435,6 +435,7 @@ void CMDIfileManager::InsertWindow(CMDIFrame *pWin, COARfile *pFile)
 
 void CMDIfileManager::RemoveWindow(CMDIFrame *pWin)
 {
+  FUNC_ENTER("CMDIfileManager::RemoveWindow")
   CMDI_WF::iterator itr = m_mapWindowFile.find(pWin);
   if(_IteratorOK(itr))
   {
@@ -443,6 +444,7 @@ void CMDIfileManager::RemoveWindow(CMDIFrame *pWin)
     _RemoveWindowFromLists(pWin);
 #endif
   }
+  FUNC_EXIT("CMDIfileManager::RemoveWindow")
 }
 
 COARfile *CMDIfileManager::FindOARfile(const wxString &sName)
@@ -524,7 +526,8 @@ int CMDIfileManager::_RemoveWindowFromAList(CMDI_LIST *pList,CMDIFrame *p)
   }
   else
   {
-    wxASSERT_MSG(0,"CMDIfileManager::_RemoveWindowFromAList - did not find window");
+    wxString sMsg(wxS("CMDIfileManager::_RemoveWindowFromAList - did not find window"));
+    wxASSERT_MSG(0,sMsg);
   }
   return nRtn;
 }
