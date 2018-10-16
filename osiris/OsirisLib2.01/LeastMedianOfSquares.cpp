@@ -172,7 +172,7 @@ bool LeastMedianOfSquares :: ElementIsOutlier (int i) const {
 
 LeastMedianOfSquares1D :: LeastMedianOfSquares1D (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y) {
 
-	if (n <= 2)
+	if (n <= 3)
 		mIsOK = false;
 }
 
@@ -180,7 +180,7 @@ LeastMedianOfSquares1D :: LeastMedianOfSquares1D (int n, double* x, double* y) :
 
 LeastMedianOfSquares1D :: LeastMedianOfSquares1D (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares (xValues, yValues) {
 
-	if (mSize <= 2)
+	if (mSize <= 3)
 		mIsOK = false;
 }
 
@@ -274,7 +274,7 @@ double LeastMedianOfSquares1D :: CalculateLMS () {
 
 LeastMedianOfSquares2DExhaustive :: LeastMedianOfSquares2DExhaustive (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mLines (NULL), mSortedLines (NULL) {
 
-	if (n <= 3) {
+	if (n <= 4) {
 
 		mIsOK = false;
 		return;
@@ -293,7 +293,7 @@ LeastMedianOfSquares2DExhaustive :: LeastMedianOfSquares2DExhaustive (int n, dou
 
 LeastMedianOfSquares2DExhaustive :: LeastMedianOfSquares2DExhaustive (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares (xValues, yValues) {
 
-	if (mSize <= 3) {
+	if (mSize <= 4) {
 
 		mIsOK = false;
 		return;
@@ -628,7 +628,7 @@ void LeastMedianOfSquares2DExhaustive :: DeleteVertexMatrix (IntersectionPoint**
 
 LeastSquaresQuadraticModel :: LeastSquaresQuadraticModel (int n, double* x, double* y) : mIsOK (true), mSize (n), mXvalues (NULL), mYvalues (NULL), mX2values (NULL) {
 
-	if (n < 3) {
+	if (n < 4) {
 
 		mIsOK = false;
 		return;
@@ -654,7 +654,7 @@ LeastSquaresQuadraticModel :: LeastSquaresQuadraticModel (const list<double>& xV
 
 	mSize = xValues.size ();
 
-	if ((mSize != yValues.size ()) || (mSize < 3)) {
+	if ((mSize != yValues.size ()) || (mSize < 4)) {
 
 		mIsOK = false;
 		return;
