@@ -81,6 +81,7 @@ public:
 	void SetFirstCoreAllele (const RGString& first) { mFirstCoreAllele = first; }
 	void SetFirstCoreLocusBP (int bp) { mFirstCoreLocusBP = bp; }
 	void SetMerged () { mIsMerged = true; }
+	void ResetCoreRepeat (int n) { mCoreRepeat = n; }
 
 	RGString GetFirstExtendedAllele () const { return mFirstExtendedAllele; }
 	RGString GetLastExtendedAllele () const { return mLastExtendedAllele; }
@@ -93,6 +94,7 @@ public:
 	bool GetMerged () const { return mIsMerged; }
 	int GetChannel () const { return mChannel; }
 	bool IsQualityLocus () const { return mIsQualityLocus; }
+	bool HasTwoAlleles () const { return mAlleleList.size () == 2; }
 
 	void SetMinMaxLocusBP (int min, int max) { mMinLocusBP = min; mMaxLocusBP = max; }
 	void SetMinMaxSearchILSBP (double min, double max);

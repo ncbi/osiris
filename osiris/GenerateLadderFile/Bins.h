@@ -36,6 +36,7 @@ protected:
 	RGStringArray mLocusLineStrings;
 	RGStringArray mLocusLineFieldString;
 	int mNumberOfLoci;
+	RGString mDelineation;
 };
 
 #endif  /*  _BINS_H_   */

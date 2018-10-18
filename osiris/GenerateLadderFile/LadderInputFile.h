@@ -100,6 +100,22 @@ public:
 	RGString* GetNextInputLine ();
 	bool LocusNeedsRelativeHeightInfo (const RGString& locus);
 
+	static void SetNumberOfPanelsLinesSkipped (int n) { PanelsNumberOfLinesSkipped = n; }
+	static void SetColorColumn (int n) { ColorColumn = n; }
+	static void SetRepeatSizeColumn (int n) { RepeatSizeColumn = n; }
+	static void SetAlleleListColumn (int n) { AlleleListColumn = n; }
+	static void SetAlleleListDelineation (const RGString& s) { AlleleListDelineation = s; }
+	static void SetColumnDelineation (const RGString& s) { ColumnDelineation = s; }
+	static void SetBinsDelineation (const RGString& s) { BinsDelineation = s; }
+
+	static int GetNumberOfPanelsLinesSkipped () { return PanelsNumberOfLinesSkipped; }
+	static int GetColorColumn () { return ColorColumn; }
+	static int GetRepeatSizeColumn () { return RepeatSizeColumn; }
+	static int GetAlleleListColumn () { return AlleleListColumn; }
+	static RGString GetAlleleListDelineation () { return AlleleListDelineation; }
+	static RGString GetColumnDelineation () { return ColumnDelineation; }
+	static RGString GetBinsDelineation () { return BinsDelineation; }
+
 protected:
 	bool mDebug;
 	RGFile* mInputFile;
@@ -156,6 +172,14 @@ protected:
 	void RemoveLeadingAndTrailingBlanks (RGString& string);
 	void SetEmbeddedSlashesToForward (RGString& string);
 	RGString SplitUsingColon (const RGString& target, RGString& right);  // returns what's on left of colon, and empty if no colon
+
+	static int PanelsNumberOfLinesSkipped;
+	static int ColorColumn;
+	static int RepeatSizeColumn;
+	static int AlleleListColumn;
+	static RGString AlleleListDelineation;
+	static RGString ColumnDelineation;
+	static RGString BinsDelineation;
 };
 
 

@@ -28,6 +28,13 @@ protected:
 	RGStringTokenizer* mAlleleTokenizer;
 	RGString mLineString;
 	RGString mAlleleString;
+
+	int PanelsNumberOfLinesSkipped;
+	int ColorColumn;
+	int RepeatSizeColumn;
+	int AlleleListColumn;
+	RGString AlleleListDelineation;
+	RGString ColumnDelineation;
 };
 
 

@@ -402,6 +402,12 @@ int Ladder :: MergeLocusIntoLadder (const Locus* locus) {
 		return -1;
 	}
 
+	if (matchingLocus->HasTwoAlleles ()) {
+
+		int n = (int) floor (locus->GetMaxSearchILSBP () - locus->GetMinSearchILSBP () + 0.5);
+		matchingLocus->ResetCoreRepeat (n);
+	}
+
 	matchingLocus->SetFirstCoreLocusBP (locus->GetFirstCoreLocusBP ());
 	matchingLocus->SetFirstExtendedAllele (locus->GetFirstExtendedAllele ());
 	matchingLocus->SetLastExtendedAllele (locus->GetLastExtendedAllele ());
