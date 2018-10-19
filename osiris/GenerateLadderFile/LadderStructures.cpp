@@ -201,6 +201,16 @@ void Locus :: SetMinMaxSearchILSBP (double min, double max) {
 		mOriginalMaxSearchILSBP = max;
 	}
 }
+
+
+void Locus :: ResetMinAndMaxBPFromAlleleList () {
+
+	Allele* nextAllele;
+	nextAllele = mAlleleList.front ();
+	mMinLocusBP = nextAllele->GetBP ();
+	nextAllele = mAlleleList.back ();
+	mMaxLocusBP = nextAllele->GetBP ();
+}
 	
 
 bool Locus :: isEqual (Locus* locus) {
@@ -231,6 +241,9 @@ void Locus :: OutputTo (RGTextOutput& xmlFile) {
 	xmlFile << blank6 << "<Locus>\n";
 	xmlFile << blank8 << "<Name>" << mName.GetData () << "</Name>\n";
 	xmlFile << blank8 << "<Channel>" << mChannel << "</Channel>\n";
+
+	if (HasTwoAlleles ())
+		ResetMinAndMaxBPFromAlleleList ();
 
 	if (mDoNotExtend)
 		xmlFile << blank8 << "<NoExtension>true</NoExtension>\n";
@@ -406,6 +419,7 @@ int Ladder :: MergeLocusIntoLadder (const Locus* locus) {
 
 		int n = (int) floor (locus->GetMaxSearchILSBP () - locus->GetMinSearchILSBP () + 0.5);
 		matchingLocus->ResetCoreRepeat (n);
+		matchingLocus->ResetMinAndMaxBPFromAlleleList ();
 	}
 
 	matchingLocus->SetFirstCoreLocusBP (locus->GetFirstCoreLocusBP ());
@@ -706,7 +720,7 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 		endPos = 0;
 		currentLocusString.FindAndReplaceNextSubstring (blank8PlusSearchRegions, locusInsert, endPos);
 
-		newLadderString << "\t\t\t<Locus>" << currentLocusString << "</Locus>\n";
+		newLadderString << blank6 << "<Locus>" << currentLocusString << "</Locus>\n";
 		delete newLocusString;
 	}
 

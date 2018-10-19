@@ -795,7 +795,13 @@ int LadderInputFile :: AssignStringAppend () {
 	else if (mStringLeft == "BinsDelineation") {
 
 		mStringRight.FindAndReplaceAllSubstrings (" ", "");
-		LadderInputFile::SetBinsDelineation (mStringRight);
+
+		if (mStringRight == "tab")
+			LadderInputFile::SetBinsDelineation ("\t");
+
+		else
+			LadderInputFile::SetBinsDelineation (mStringRight);
+
 		status = 0;
 	}
 

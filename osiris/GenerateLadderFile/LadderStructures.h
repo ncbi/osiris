@@ -102,6 +102,8 @@ public:
 	void SetMaxSearhILSBP (double max) { mMaxSearchILSBP = max; }
 	void SetRelativeHeightInfo (bool rh) { mNeedsRelativeHeightInfo = rh; }
 	void SetQualityLocus (bool b) { mIsQualityLocus = b; }
+	void ResetMaxLocusBP (int n) { mMaxLocusBP = n; }
+	void ResetMinAndMaxBPFromAlleleList ();
 
 	void SetDoNotExtend () { mDoNotExtend = true; }
 
