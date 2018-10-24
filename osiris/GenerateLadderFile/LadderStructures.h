@@ -118,8 +118,8 @@ public:
 	static void SetGenerateILSFamilies (bool s) { GenerateILSFamilies = s; }
 	static bool GetGenerateILSFamilies () { return GenerateILSFamilies; }
 
-	static void SetILSName (const RGString& name) { ILSName = name; }
-	static RGString GetILSName () { return ILSName; }
+	static void SetILSFamilyName (const RGString& name) { ILSFamilyName = name; }
+	static RGString GetILSFamilyName () { return ILSFamilyName; }
 
 protected:
 	RGString mName;
@@ -145,7 +145,7 @@ protected:
 	bool mIsQualityLocus;
 
 	static bool GenerateILSFamilies;
-	static RGString ILSName;
+	static RGString ILSFamilyName;
 };
 
 
@@ -175,7 +175,7 @@ public:
 	void OutputILSFamilyListTo (RGTextOutput& xmlFile);
 	void OutputChannelMapTo (RGTextOutput& xmlFile, LadderInputFile& inputFile);
 
-	int AmendLadderData (LadderInputFile* inFile, RGString& oldLadderString);
+	int AmendLadderData (LadderInputFile& inFile, RGString& oldLadderString);
 
 	int GetNumberOfLoci () const;
 

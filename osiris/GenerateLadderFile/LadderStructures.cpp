@@ -6,7 +6,7 @@
 #include "LadderStructures.h"
 
 bool Locus :: GenerateILSFamilies = false;
-RGString Locus :: ILSName;
+RGString Locus :: ILSFamilyName;
 
 
 int CopyVolumeFile (const RGString& inputFileName, const RGString& outputFileName) {
@@ -255,7 +255,7 @@ void Locus :: OutputTo (RGTextOutput& xmlFile) {
 
 		xmlFile << blank8 << "<SearchRegions>\n";
 		xmlFile << blank10 << "<Region>\n";
-		xmlFile << blank12 << "<ILSName>" << GetILSName () << "</ILSName>\n";
+		xmlFile << blank12 << "<ILSName>" << GetILSFamilyName () << "</ILSName>\n";
 		xmlFile << blank12 << "<MinGrid>" << 0.01 * floor (100.0 * mMinSearchILSBP + 0.5) << "</MinGrid>\n";
 		xmlFile << blank12 << "<MaxGrid>" << 0.01 * floor (100.0 * mMaxSearchILSBP + 0.5) << "</MaxGrid>\n";
 		xmlFile << blank10 << "</Region>\n";
@@ -594,10 +594,8 @@ void Ladder :: OutputILSFamilyListTo (RGTextOutput& xmlFile) {
 	RGString blank10 = "          ";
 
 	RGDListIterator it (mILSList);
-	RGString* nextName;
-
-	while (nextName = (RGString*) it ())
-		xmlFile << blank10 << "<ILSName>" << nextName->GetData () << "</ILSName>\n";
+	RGString nextName = Locus::GetILSFamilyName ();
+	xmlFile << blank10 << "<ILSName>" << nextName.GetData () << "</ILSName>\n";
 }
 
 
@@ -624,7 +622,7 @@ void Ladder :: OutputChannelMapTo (RGTextOutput& xmlFile, LadderInputFile& input
 }
 
 
-int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderString) {
+int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderString) {
 
 	RGString newLadderString;
 
@@ -643,11 +641,11 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 	RGString blank10 = "          ";
 	RGString blank12 = "            ";
 
-	RGString* ilsName = (RGString*)inFile->GetILSNameList ().First ();
+	RGString ilsName = Locus::GetILSFamilyName ();
 	endPos = 0;
 	oldLadderString.FindNextSubstring (0, "      <Locus>", endPos);
 	RGString insertBase;
-	insertBase << blank10 << "<ILSName>" << ilsName->GetData () << "</ILSName>\n";
+	insertBase << blank10 << "<ILSName>" << ilsName.GetData () << "</ILSName>\n";
 	insertBase << blank8 << "</LSBases>";
 	RGString leadString = oldLadderString.ExtractSubstring (0, endPos - 1);
 	//cout << "Lead string = \n" << leadString.GetData () << endl;
@@ -712,7 +710,7 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 		maxSearch = nextLocus->GetMaxSearchILSBP () + repeatNumber -1;
 
 		locusInsert << blank10 << "<Region>\n";
-		locusInsert << blank12 << "<ILSName>" << ilsName->GetData () << "</ILSName>\n";
+		locusInsert << blank12 << "<ILSName>" << ilsName.GetData () << "</ILSName>\n";
 		locusInsert << blank12 << "<MinGrid>" << 0.01 * floor (100.0 * minSearch + 0.5) << "</MinGrid>\n";
 		locusInsert << blank12 << "<MaxGrid>" << 0.01 * floor (100.0 * maxSearch + 0.5) << "</MaxGrid>\n";
 		locusInsert << blank10 << "</Region>\n";
@@ -728,7 +726,7 @@ int Ladder :: AmendLadderData (LadderInputFile* inFile, RGString& oldLadderStrin
 	newLadderString << blank2 << "</Kits>\n";
 	newLadderString << "</KitData>\n";
 
-	RGString ladderPath = inFile->GetOutputConfigDirectoryPath () + "/" + inFile->GetLadderFileName ();
+	RGString ladderPath = inFile.GetOutputConfigDirectoryPath () + "/" + inFile.GetLadderFileName ();
 	RGTextOutput ladderOutput (ladderPath, FALSE);
 
 	if (!ladderOutput.FileIsValid ()) {

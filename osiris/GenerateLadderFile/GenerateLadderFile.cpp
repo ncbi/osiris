@@ -58,6 +58,7 @@
 #include <string>
 #include <math.h>
 #include <list>
+#include <iostream>
 
 using namespace std;
 
@@ -74,24 +75,20 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 #endif
 	int select;
-	char selectChar;
-	cout << "Enter 0 to create new ladder file; enter 1 to augment existing file" << endl;
-	cin >> select;
+	LadderInputFile inputFile (debugMode);
+	select = inputFile.ReadFirstLine ();
 
-	if (select != 0) {
+	if (select < 0) {
 
-		cout << "You have chosen to augment an existing ladder.  Is this correct? (Y/N)" << endl;
-		cin >> selectChar;
+		cout << "Input error.  Ending..." << endl;
+		return -5;
+	}
 
-		if ((selectChar == 'N') || (selectChar == 'n')) {
+	if (select == 1) {
 
-			cout << "Exiting..." << endl;
-			return -51;
-		}
-
-		cout << "Continuing..." << endl;
+		cout << "You have chosen to augment an existing ladder." << endl;
 		LadderInputFile* inFileAppend = new LadderInputFile (debugMode);
-		int inStatus = inFileAppend->ReadAllInputsAppend ("LadderInputFileAppend.txt");
+		int inStatus = inputFile.ReadAllInputsAppend ("LadderInputFileAppend.txt");
 
 		if (inStatus != 0) {
 
@@ -99,7 +96,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			return -1;
 		}
 
-		inStatus = inFileAppend->AssembleInputsAppend ();
+		inStatus = inputFile.AssembleInputsAppend ();
 
 		if (inStatus != 0) {
 
@@ -110,16 +107,16 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		cout << "File input succeeded.  Continuing..." << endl << endl;
 
 		// create full path names to open files.  First, echo data:
-		RGString* ILSName = (RGString*)inFileAppend->GetILSNameList ().First ();
-		cout << "Ladder Directory = " << inFileAppend->GetLadderDirectory ().GetData () << endl;
-		cout << "Bins file name = " << inFileAppend->GetBinsFileName ().GetData () << endl;
-		cout << "Output Config Path = " << inFileAppend->GetOutputConfigDirectoryPath ().GetData () << endl;
-		cout << "Ladder file name = " << inFileAppend->GetLadderFileName ().GetData () << endl;
-		cout << "ILS name = " << ILSName->GetData () << endl;
+		RGString ILSName = Locus::GetILSFamilyName ();
+		cout << "Ladder Directory = " << inputFile.GetLadderDirectory ().GetData () << endl;
+		cout << "Bins file name = " << inputFile.GetBinsFileName ().GetData () << endl;
+		cout << "Output Config Path = " << inputFile.GetOutputConfigDirectoryPath ().GetData () << endl;
+		cout << "Ladder file name = " << inputFile.GetLadderFileName ().GetData () << endl;
+		cout << "ILS name = " << ILSName.GetData () << endl;
 
 		RGString oldLadderString;
 		RGString newLadderString;
-		RGString ladderPath = inFileAppend->GetOutputConfigDirectoryPath () + "/" + inFileAppend->GetLadderFileName ();
+		RGString ladderPath = inputFile.GetOutputConfigDirectoryPath () + "/" + inputFile.GetLadderFileName ();
 		RGFile* oldLadderFile = new RGFile (ladderPath, "rt");
 
 		if (!oldLadderFile->isValid ()) {
@@ -131,7 +128,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		oldLadderString.ReadTextFile (*oldLadderFile);
 		delete oldLadderFile;
 
-		RGString binsFullPath = inFileAppend->GetLadderDirectory () + "/" + inFileAppend->GetBinsFileName ();
+		RGString binsFullPath = inputFile.GetLadderDirectory () + "/" + inputFile.GetBinsFileName ();
+
 		Bins* binsAppend = new Bins (binsFullPath);
 
 		if (!binsAppend->IsValid ()) {
@@ -149,11 +147,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			return -25;
 		}
 
-		inStatus = binsLadderAppend->AmendLadderData (inFileAppend, oldLadderString);
+		inStatus = binsLadderAppend->AmendLadderData (inputFile, oldLadderString);
 		return inStatus;
 	}
-
-	LadderInputFile inputFile (debugMode);
 
 	int inputStatus = inputFile.ReadAllInputs ("LadderInputFile.txt");
 //	inputFile.OutputAllData ();
@@ -278,6 +274,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	RGDList ilsList = inputFile.GetILSNameList ();
 	RGString* ilsName;
 	RGDListIterator ilsIt (ilsList);
+
 
 	while (ilsName = (RGString*) ilsIt ()) {
 

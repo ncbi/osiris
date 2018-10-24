@@ -52,6 +52,7 @@ public:
 	int ReadAllInputs ();  // reads stdin
 	int ReadAllInputsAppend ();  // reads stdin
 	int ReadLine ();
+	int ReadFirstLine ();
 	int AssignString ();
 	int AssignStringAppend ();
 	void OutputAllData ();
@@ -156,6 +157,8 @@ protected:
 	RGDList mMaxExpectedAllelesOverrides;
 	RGDList mMinExpectedAllelesOverrides;
 	RGDList mQualityLoci;
+
+	RGString mILSFamilyName;
 
 	RGDList mDoNotExtends;
 

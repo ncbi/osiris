@@ -1,8 +1,9 @@
-LadderFileName = Q_Investigator24plex_LadderInfo.xml;
+LadderOperation = Amend;
+LadderFileName = Q_Investigator24plex_LadderInfo.test.xml;
 LadderDirectory = C:\Users\goorrob\Desktop\Qiagen24PlexConfigFiles\StandardBinsAndPanels;
 BinsFileName = Investigator24plexBins.txt;
 OutputConfigPath = C:\Users\goorrob\Desktop\Qiagen24PlexConfigFiles;
-ILSName = RAPID-CXR-600;
+ILSFamilyName = RAPID-CXR-600;
 BinsDelineation = tab;
 ;
 
