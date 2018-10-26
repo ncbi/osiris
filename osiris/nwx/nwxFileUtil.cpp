@@ -317,22 +317,20 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
     bool bFallback = true;
     const wchar_t *ARGV[4];
 #ifdef __EXE_NAME__
-    wxPathList apList;
-    apList.AddEnvList(wxT("PATH"));
-    wxString sPathName = apList.FindAbsoluteValidPath(__EXE_NAME__);
+  wxString sPathName = PathFind(__EXE_NAME__,true,false);
     if(DO_NOT_SELECT_FILE) {}
     else if(sPathName.IsEmpty()) {}
     else if(!wxFileName::IsFileExecutable(sPathName)) {}
     else
     {
       bFallback = false;
-      wxString sCommand = __EXE_NAME__; 
+//      wxString sCommand = __EXE_NAME__; 
       // windows has a problem in that 
       // wxFileExists("c:\Windows\system32\explorer.exe")
       // returns true even though that is not the correct path
       // as a work around, omit the path
       size_t ndx = 0;
-      ARGV[ndx++] = sCommand.wx_str();
+      ARGV[ndx++] = sPathName.wx_str();
 #ifdef __WXMAC__
       ARGV[ndx++] = wxT("-R");
 #endif
@@ -373,6 +371,50 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
   }
   return bRtn;
 }
+wxString nwxFileUtil::_getFileOpenExe()
+{
+  wxString sPathName = PathFind(__EXE_NAME__,true,false);
+  if(sPathName.IsEmpty()) {}
+  else if(!wxFileName::IsFileExecutable(sPathName))
+  {
+    sPathName.Empty();
+  }
+  return sPathName;       
+}
+int nwxFileUtil::OpenFileFromOS(const wxString &sFileName)
+{
+  // STOP HERE
+  int nRtn = 0;
+  wxString sEXE = _getFileOpenExe();
+  bool b = sEXE.IsEmpty() ? false :
+    ( wxFileName::IsFileReadable(sFileName) 
+      || wxFileName::IsDirReadable(sFileName)
+    );
+  if(!b)
+  {
+    nRtn = -2;
+  }
+  else
+  {
+    const wchar_t *ARGV[3];
+    ARGV[0] = sEXE.wx_str();
+    ARGV[1] = sFileName.wx_str();
+    ARGV[2] = NULL;
+    nRtn = (int) wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
+    if(nRtn)
+    {
+      wxString sMsg = "Exec: '";
+      sMsg.Append(sEXE);
+      sMsg.Append(" ");
+      sMsg.Append(sFileName);
+      sMsg.Append("' -- returned: " );
+      sMsg.Append(nwxString::FormatNumber((int) nRtn));
+      nwxLog::LogMessage(sMsg);
+    }
+  }
+  return nRtn;
+}
+
 wxString nwxFileUtil::ForwardSlash(const wxString &sPath)
 {
   wxString sRtn(sPath);
@@ -603,6 +645,10 @@ void nwxFileUtil::_setupPaths()
     const char *ps = getenv("SystemRoot");
     if(ps == NULL)
     {
+      ps = getenv("windir");
+    }
+    if(ps == NULL)
+    {
       nwxLog::LogMessage(wxS("Cannot find window SystemRoot in environment"));
     }
     else
@@ -614,12 +660,12 @@ void nwxFileUtil::_setupPaths()
         EndWithSeparator(&sPath);
         wxString sSysPath(sPath);
         sSysPath.Append("System32\\"); 
+        g_asSysPath.push_back(sPath);
         DIR_NOT_EXIST(sSysPath)
         else
         {
           g_asSysPath.push_back(sSysPath);
         }
-        g_asSysPath.push_back(sPath);
       }
     }
 #else
@@ -734,7 +780,7 @@ wxFSVolumeKind nwxFileUtil::GetMSWDriveType(const wxString &sPath)
     wxString s = GetMSWDriveLetter(sPath);
     if(!s.IsEmpty())
     {
-      //   STOP HERE not getting fs type on F Drive
+      //   not getting fs type on F Drive
       if(!g_bInitVolumes)
       {
         _initVolumes();

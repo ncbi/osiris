@@ -1,6 +1,7 @@
 #!/usr/bin/bash
-
-DEST="/f/Profiles/OsirisDist"
+# bash script for MinGW (using package with git-bash)
+# copies file to $DEST which will need to updated for local site
+DEST="//panfs/pan1/osiris/Profiles/OsirisDist"
 SIGNSCRIPT=~/Documents/digisign/sign-file.sh
 
 function CHECKRC()
