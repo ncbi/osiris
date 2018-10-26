@@ -379,7 +379,7 @@ wxString nwxFileUtil::_getFileOpenExe()
   {
     sPathName.Empty();
   }
-  return sPathName;       
+  return sPathName;
 }
 int nwxFileUtil::OpenFileFromOS(const wxString &sFileName)
 {
