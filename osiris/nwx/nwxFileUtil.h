@@ -86,6 +86,7 @@ public:
   static wxString GetRealPath(const wxString &sPath);
   static wxString PathFind(const wxString &sExeFile, bool bCheckSys = true, bool bCheckPath = true);
   static bool ShowFileFolder(const wxString &sFileName, bool bCheckDir = true);
+  static int OpenFileFromOS(const wxString &sFileName);
   static wxString BaseName(const wxString &sDir);
   static wxString GetExistingParent(const wxString &s);
   static bool ExistingParentWritable(const wxString &s);
@@ -129,6 +130,8 @@ private:
     const wxString &sExeFile, const std::vector<wxString> &asPath);
   static bool _ShowFolder(const wxString &sFileName);
   static void _setupPaths();
+  static wxString _getFileOpenExe();
+                 // explorer.exe for Windows, open for Mac OS X
 #ifdef __WXMSW__
   static void _initVolumes();
   static bool g_bInitVolumes;

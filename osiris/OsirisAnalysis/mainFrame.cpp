@@ -956,7 +956,14 @@ void mainFrame::OnHelp(wxCommandEvent &)
     {
       bError = false;
     }
-    else
+#ifdef __WXMSW__
+    else if(nwxFileUtil::OpenFileFromOS(sPath) < -1)
+      // for windows, if < 1 then explorer.exe not found
+      // explorer.exe seems to always return 1
+#else
+    else if(nwxFileUtil::OpenFileFromOS(sPath) != 0)
+      // for mac, open return 0 if no problem found
+#endif
     {
       // command failed, try a file URL
       wxString sURL = "file:///";
