@@ -30,6 +30,7 @@
 #ifndef __WX_XSL_OBJECT_H__
 #define __WX_XSL_OBJECT_H__
 
+#include <wx/object.h>
 #include "wxXml2/wxXml2Object.h"
 #include "libxslt/transform.h"
 
@@ -60,7 +61,7 @@ private:
   void _cleanupXsl();
   static int g_nXslClass;
   static xsltStylesheetPtr g_pSheetParam;
-  DECLARE_ABSTRACT_CLASS(wxXslObject)
+  //DECLARE_ABSTRACT_CLASS(wxXml2Object);
 };
 
 

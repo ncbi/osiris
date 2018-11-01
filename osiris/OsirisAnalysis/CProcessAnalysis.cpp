@@ -122,10 +122,10 @@ CProcessAnalysis::CProcessAnalysis(
 
   if(pParm->GetTimeStampSubDir())
   {
-    const wxString &s = pDirEntry->GetTimeStamp();
-    if(!s.IsEmpty())
+    const wxString &s1 = pDirEntry->GetTimeStamp();
+    if(!s1.IsEmpty())
     {
-      APPEND_LINE("OutputSubdirectory",s);
+      APPEND_LINE("OutputSubdirectory",s1);
     }
     else
     {

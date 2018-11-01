@@ -20,7 +20,7 @@ my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
 
 my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
-my $PATH7Z = "7z";  ## if 7z.exe is not in the path, set the full DOS path here
+my $PATH7Z = 'c:\\Progra~1\\7-Zip\\7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
 
 
 sub MKDIR
@@ -208,11 +208,13 @@ sub GetVCDir
     ($ok == 0) && ($DRIVE = $sDrive) && last;
   }
   $DRIVE || die("Cannot find mingw or cygwin c drive");
-  my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC"; 
+  #my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC"; 
+  my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio/2017/Professional/VC/Redist/MSVC/14.14.26405/x86/Microsoft.VC141.CRT";
   system("test -d \"$p\"") && die("Cannot find MS Visual Studio (${p})");
-  my $DLLPATH= "${p}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
-  system("test -d \"$DLLPATH\"") && die("Cannot find MS runtime");
-  $DLLPATH;
+  $p;
+#  my $DLLPATH= "${p}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
+#  system("test -d \"$DLLPATH\"") && die("Cannot find MS runtime");
+#  $DLLPATH;
 }
 
 sub CopyWin
@@ -234,8 +236,7 @@ sub CopyWin
   if ($COPYDLL)
   {
     my $DLLPATH = &GetVCDir();
-    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}") && die();
-    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}") && die();
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/\"*.dll ${dest}") && die();
   }
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");

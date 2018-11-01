@@ -370,7 +370,10 @@ bool CVolumes::CheckReload(bool bForce)
   {
     MapVolume::iterator itr;
     CVolume *pVol;
-    bool bReloadAll = false;
+    // warning of the following hides previous
+    // removal will change logic, so commenting out
+    // 10/30/2018
+    //bool bReloadAll = false;
     for(itr = m_mapVol.begin();
       (!bReloadAll) && (itr != m_mapVol.end());
       ++itr)

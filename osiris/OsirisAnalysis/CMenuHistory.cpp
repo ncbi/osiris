@@ -295,7 +295,6 @@ void CMenuHistory::_Setup()
   wxString sLabel("Current");
   const set<wxDateTime> *pHistory(m_pFile->GetHistory());
   set<wxDateTime>::const_reverse_iterator itr = pHistory->rbegin();
-  const size_t MAXHIST = 7;
   size_t nSize = pHistory->size();
   int nID = IDmenuHistory;
   wxMenuItem *pItem;

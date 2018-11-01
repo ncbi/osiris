@@ -499,8 +499,6 @@ void  CGridAllelePosCtrl::SetGridReadOnly(bool bReadOnly)
   else
   {
     wxString sName;
-    int nRows = GetNumberRows();
-    int nRow;
     bool bFoundEmpty = false;
     for(nRow = 1; nRow < nRows; ++nRow)
     {

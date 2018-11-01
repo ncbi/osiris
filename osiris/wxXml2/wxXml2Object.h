@@ -50,8 +50,6 @@
 #include <map>
 #include <vector>
 
-using namespace std;
-
 class IXml2ErrorReceiver
 {
 public:
@@ -90,8 +88,7 @@ private:
   void _init();
   void _cleanup();
   static int g_nCount;
-  static map<IXml2ErrorReceiver *,int> g_mapReceivers;
-
+  static std::map<IXml2ErrorReceiver *,int> g_mapReceivers;
   DECLARE_ABSTRACT_CLASS(wxXml2Object)
 };
 
@@ -122,12 +119,12 @@ public:
   {
     m_as.push_back(s);
   }
-  const vector<wxString> &GetErrors() const
+  const std::vector<wxString> &GetErrors() const
   {
     return m_as;
   }
 private:
-  vector<wxString> m_as;
+  std::vector<wxString> m_as;
   wxXml2ReceiverHolder m_Hold;
 };
 

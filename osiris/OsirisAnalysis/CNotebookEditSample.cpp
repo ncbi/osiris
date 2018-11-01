@@ -505,7 +505,7 @@ void CNotebookEditSample::SelectLocus(const wxString &sLocus)
   {
     size_t i = SA_WINDOW_COUNT;
     size_t BIG = 100000;
-    for(std::vector<const wxString>::iterator itr = m_asLocus.begin();
+    for(std::vector<wxString>::iterator itr = m_asLocus.begin();
       (itr != m_asLocus.end()) && (i < BIG);
       ++itr)
     {

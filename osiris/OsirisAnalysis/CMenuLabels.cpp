@@ -121,7 +121,7 @@ CMenuLabels::CMenuLabels(MENU_LABEL_TYPE nType, int nPlotNrOrOffset) :
     {
       AppendSeparator();
       CComboLabelsName::GetChoices(&asChoices,&m_anChoicesName,IDmenuDisplayNameBASE);
-      size_t nSize = asChoices.GetCount();
+      nSize = asChoices.GetCount();
       for(i = 0; i < nSize; i++)
       {
         AppendRadioItem(m_anChoicesName.Item(i),asChoices.Item(i));

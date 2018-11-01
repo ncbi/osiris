@@ -1058,9 +1058,9 @@ bool CSitePath::_runScript(const wxArrayString &as, bool bElevate)
     ARGV[2] = m_sVBscript.utf8_str();
     if(bElevate)
     {
-      const wxString &sTmp = mainApp::GetConfig()->GetConfigPath();
+      const wxString &sTmp1 = mainApp::GetConfig()->GetConfigPath();
       ARGV[3] = "-r";
-      ARGV[4] = sTmp.utf8_str();
+      ARGV[4] = sTmp1.utf8_str();
       ndx = 5;
     }
     for(size_t i = 0; i < nSize; ++i)

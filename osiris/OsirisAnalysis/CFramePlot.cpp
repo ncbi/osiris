@@ -1273,8 +1273,8 @@ void CFramePlot::_RebuildMenu()
       ? NULL : (CPanelPlot *)(pItem->GetWindow());
     if(pCheck != NULL)
     {
-      wxMenuItem *pItem = pCheck->GetMenuItem(m_pMenu);
-      m_pMenu->AddPlot(pItem);
+      wxMenuItem *pItem2 = pCheck->GetMenuItem(m_pMenu);
+      m_pMenu->AddPlot(pItem2);
     }
   }
 }
@@ -1516,7 +1516,7 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
       pPlot = *itr;
       if( (pPlot != p) && pPlot->SyncValue())
       {
-        TnwxBatch<CPanelPlot> xxx(pPlot);
+        TnwxBatch<CPanelPlot> xxx2(pPlot);
         pPlot->SetViewRect(r);
         bRtn = true;
       }

@@ -13,6 +13,7 @@
 #define __WX_THINGDEF_H__
 
 #include "wx/defs.h"
+#include "wx/wx.h"
 
 // ----------------------------------------------------------------------------
 // DLLIMPEXP macros

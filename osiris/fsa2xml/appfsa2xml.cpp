@@ -24,7 +24,7 @@ using namespace std;
 static void Pause()
 {
 	char s[128];
-	gets(s);
+	gets_s(s,sizeof(s)-1);
 }
 int _tmain(int argc, _TCHAR* argv[])
 {

@@ -1,0 +1,95 @@
+OSIRIS for Windows version 2.12
+
+OSIRIS for Microsoft Windows is compiled using Microsoft Visual Studio 2017, Version 15.7.5 at the time this was written
+
+It requires wxWidgets 3.0.4 and three other external libraries previously included with the source code.  
+It is recommended that these be compiled as opposed to downloading binary runtime libraries.
+
+libiconv 1.15  windows build https://github.com/kiyolee/libiconv-win-build/tree/v1.15 (download zip file)
+               home page https://www.gnu.org/software/libiconv/
+libxml2 2.98   ftp://xmlsoft.org/libxml2/ -- ftp://xmlsoft.org/libxml2/libxml2-2.9.8-rc1.tar.gz
+libxslt 1.1.33 ftp://xmlsoft.org/libxml2/ -- ftp://xmlsoft.org/libxml2/libxslt-1.1.33-rc1.tar.gz
+
+Unpack all of the above in the same parent directory.  When compiling OSIRIS, the visual studio
+projects will look for all of them in the same location.
+
+Set the environment variable EXTLIB to the parent directory of the above unpacked distributions.  This will be 
+used by the OSIRIS projects to find libraries and include files.  To set an environment variable, open the
+Windows control panel (search from start menu) and in the search box in the upper right, type "environment"
+Click on link labeled "Edit environment variables for your account" and add the EXTLIB variable to the full path
+of the directory containing libiconv-win-build-1.15, libxml2-2.9.8, and libxslt-1.1.33
+
+
+libiconv - From the distribution, load libiconv-win-build-1.15\build-VS2017\libiconv.sln into Visual Studio 
+  Right click on the "Solution 'libiconv'" and select "Retarget solution"
+  Select a Windows SDK Version.  At the time of this writing, the only available version was 10.0.17134.0
+  In the "Solution Explorer" window right-click on "libiconv-static" and select "Properties"
+  For "Configuration" select "All Configurations"
+  Under "Configuration Properties" select
+    C/C++ then "All Options"
+	On the right, look for "Whole Program Optimization" and set it to "No"
+	
+	
+  build the projects in the "static" folder for Release/Win32 and optionally Debug
+    The library is in libiconv-win-build-1.15\build-VS2017\Release
+	and if built for Debug, also libiconv-win-build-1.15\build-VS2017\Debug
+
+To build libxml2 and libxslt, open the "Developer command prompt for VS 2017" 
+(Search for it in the start menu) Then change directory to the osiris directory
+containing this file.
+	
+libxml2 - The top level directory of osiris distribution contains a batch file, BuildLibxml2.bat.  
+That will build libxml2, provided that iconv has been built successfully.  
+The batch file does the following:
+
+1. in the iconv directory libiconv-win-build-1.15\build-VS2017\Release it copies
+    libiconv-static.lib to iconv.lib, the name expected by libxml2
+2. in the libxml2-2.9.8\win32 directory, it runs configure as follows
+    cscript configure.js static=yes ^
+	prefix=%EXTLIB%\include=%EXTLIB%\libiconv-win-build-1.15\include ^
+	lib=%EXTLIB%\libiconv-win-build-1.15\build-VS2017\Release ^
+	static=yes ftp=no http=no zlib=no lzma=no
+
+3. still in the libxml2-2.9.8\win32 directory, it runs
+    nmake /f Makefile.msvc
+
+Note: libxml2-2.9.8\win32 contains Readme.txt
+	
+libxslt - The top level directory of osiris distribution contains a batch file, BuildLibxslt.bat
+That will build libxslt, provided that iconv and libxml2 have been built successfully.
+The batch file does the following:
+	
+1. in the libxslt-1.1.33\win32 directory, it runs configure as follows:
+    cscript configure.js static=yes prefix=%EXTLIB% ^
+	include=%EXTLIB%\libxml2-2.9.8\include;%EXTLIB%\libiconv-win-build-1.15\include ^
+	lib=%EXTLIB%\libxml2-2.9.8\win32\bin.msvc;%EXTLIB%\libiconv-win-build-1.15\build-VS2017\Release ^
+	static=yes zlib=no
+
+2. still in the libxslt-1.1.33\win32 directory, it runs
+    nmake /f Makefile.msvc
+
+
+Note: for the batch files to work, the batch files must be on the same drive as the libraries being 
+built and %EXTLIB% must contain a drive letter.  This will not work with UNC paths.
+
+Once the libraries are built, the environment variablt, EXTLIB, can reference a UNC path.
+
+----------------------------------------------------------------------------------------------------------
+
+Build wxWidgets
+
+Download wxWidgets version 3.0.4 from http://www.wxwidgets.org/downloads/
+It is recommended that either the .zip or .7z distributions are used.
+Once it is unpacked, look for the subdirectoy, build\msw and load wx_vc12.sln
+into visual studio, and build the entire solution for "Release" and "Win32"
+
+In the environment, set WXHOME to the top level directory of wxWidgets.  Unlike
+the libraries described above, this environment variable should be the wxWidgets directory
+as opposed to its parent directory.
+
+
+
+----------------------------------------------------------------------------------------------------------
+Once all the above libraries are built and the environment is set for EXTLIB and WXHOME, load the file
+osirisAll.sln into Visual Studio and build the Solution for "Release/Win32"
+

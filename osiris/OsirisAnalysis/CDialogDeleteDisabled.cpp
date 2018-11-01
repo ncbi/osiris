@@ -37,13 +37,13 @@
 CDialogDeleteDisabled::~CDialogDeleteDisabled() {}
 
 CDialogDeleteDisabled::CDialogDeleteDisabled(
-  wxWindow *parent, const std::vector<const wxString> &vsNames, bool bAllowUserOverride) :
+  wxWindow *parent, const std::vector<wxString> &vsNames, bool bAllowUserOverride) :
     wxDialog(parent,wxID_ANY,wxT("Delete samples..."),
         wxDefaultPosition,wxDefaultSize,
         mainApp::DIALOG_STYLE),
     m_pPanelUser(NULL)
 {
-  std::vector<const wxString>::const_iterator itr;
+  std::vector<wxString>::const_iterator itr;
   wxString sPlural;
   if(vsNames.size() > 1)
   {

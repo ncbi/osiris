@@ -621,8 +621,6 @@ void CPanelPlot::BuildILSlines()
     wxGenericPen pen(
       m_pColors->GetColor(
         m_pData->GetKitName(),LADDER_DATA,nChannelILS));
-    const vector<CSamplePeak *> *pvILS =
-      m_pData->GetSamplePeaks(nChannelILS);
     for(vector<CSamplePeak *>::const_iterator itr = pvILS->begin();
       itr != pvILS->end();
       ++itr)
@@ -2377,7 +2375,7 @@ void CPanelPlot::OnSize(wxSizeEvent &e)
   e.Skip();
 }
 
-std::set<const wxString> CPanelPlot::g_setNoBpsPrompt;
+std::set<wxString> CPanelPlot::g_setNoBpsPrompt;
 wxString CPanelPlot::_GetFileName(CPlotData *p)
 {
   wxFileName fn(p->GetFilename());

@@ -1567,7 +1567,7 @@ void CFrameAnalysis::_OnDeleteDisabled()
   if(m_pOARfile->GetDisabledSamples(&vps,false))
   {
     int nLabelTypeName = m_pComboName->GetSelection();
-    std::vector<const wxString> vsNames;
+    std::vector<wxString> vsNames;
     std::vector<const COARsample *>::const_iterator itr;
     vsNames.reserve(vps.size());
     if(nLabelTypeName == IDmenuDisplayNameSample)
@@ -1592,7 +1592,6 @@ void CFrameAnalysis::_OnDeleteDisabled()
     {
       wxString sPath;
       CMDIFrame *pFrame;
-      std::vector<const COARsample *>::iterator itr;
       for(itr = vps.begin();
         itr != vps.end();
         ++itr)
@@ -1870,7 +1869,6 @@ void CFrameAnalysis::_UpdatePreview()
     else
     {
       wxString s;
-      int nRow;
       int nCol = _GetPreviewColumn();
       if(nCol == ILS_COLUMN)
       {
@@ -3341,7 +3339,7 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
     sTitle.Alloc(sExportType.Len() + 12);
     sTitle = "Export ";
     sTitle.Append(sExportType);
-    bool bOK = false;
+    bOK = false;
     bool bCancel = false;
     wxFileDialog dlg(
       this,sTitle,fnDefaultFile.GetPath(),fnDefaultFile.GetFullName(),
@@ -3355,8 +3353,8 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
         this,pExport,fn.GetFullPath(),sFile, &bCancel);
       if(bOK)
       {
-        wxFileName fn(sFile);
-        parm->SetLastExportDirectory(fn.GetPath());
+        wxFileName fn1(sFile);
+        parm->SetLastExportDirectory(fn1.GetPath());
       }
       else if(!bCancel)
       {
@@ -3437,7 +3435,7 @@ void CFrameAnalysis::OnArchiveCreate(wxCommandEvent &)
         {
           //  save archive here
           wxString sFile = dlg.GetPath();
-          bool bOK = false;
+          bOK = false;
           {
             wxBusyCursor x;
             bOK = orz.WriteArchive(sFile,bIncludeInput);

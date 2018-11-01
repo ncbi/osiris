@@ -369,7 +369,6 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
 void CPersistKitList::UnitTest()
 {
   CPersistKitList kitList;
-  wxString sError;
   if(!kitList.Load())
   {
     wxString sError("CPersistKitList::Load() failed\n");

@@ -171,7 +171,7 @@ size_t COARlocus::EnabledAlleleCount() const
   return nRtn;
 }
 
-void COARlocus::GetAllelesByTime(vector<const COARallele *> *pva, const wxDateTime *pTime) const
+void COARlocus::GetAllelesByTime(vector<const COARallele *> *_pva, const wxDateTime *pTime) const
 {
   set<COARallele *,COARalleleLessByTime> setA;
   set<COARallele *,COARalleleLessByTime>::iterator itrSet;
@@ -216,13 +216,13 @@ void COARlocus::GetAllelesByTime(vector<const COARallele *> *pva, const wxDateTi
       }
     }
   }
-  pva->clear();
-  pva->reserve(setA.size());
+  _pva->clear();
+  _pva->reserve(setA.size());
   for(itrSet = setA.begin();
       itrSet != setA.end();
       ++itrSet)
   {
-    pva->push_back(*itrSet);
+    _pva->push_back(*itrSet);
   }
 }
 

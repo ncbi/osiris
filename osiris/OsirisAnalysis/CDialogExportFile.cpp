@@ -744,8 +744,8 @@ void CDialogExportFile::_OnBrowse(wxCommandEvent &e)
       wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if(dlg.ShowModal() == wxID_OK)
     {
-      wxString sFile = dlg.GetPath();
-      pTextCtrl->SetValue(sFile);
+      wxString sFile1 = dlg.GetPath();
+      pTextCtrl->SetValue(sFile1);
     }
   }
 }

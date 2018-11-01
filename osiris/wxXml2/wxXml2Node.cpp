@@ -446,7 +446,7 @@ bool wxXml2Node::InsertChild(wxXml2Node *child, wxXml2Node *before)
     else
     {
       wxXml2Node *pNext = before->m_pNext;
-      xmlNodePtr ptr = xmlAddNextSibling(
+      ptr = xmlAddNextSibling(
         before->m_pNode,child->m_pNode);
       if (ptr == NULL)
       {
