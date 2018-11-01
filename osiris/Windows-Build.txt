@@ -36,17 +36,18 @@ libiconv - From the distribution, load libiconv-win-build-1.15\build-VS2017\libi
 
 To build libxml2 and libxslt, open the "Developer command prompt for VS 2017" 
 (Search for it in the start menu) Then change directory to the osiris directory
-containing this file.
+containing this file (Windows-Build.txt)
 	
 libxml2 - The top level directory of osiris distribution contains a batch file, BuildLibxml2.bat.  
-That will build libxml2, provided that iconv has been built successfully.  
+That will build libxml2, provided that iconv has been built successfully and EXTLIB has been set in
+the environment.  
 The batch file does the following:
 
 1. in the iconv directory libiconv-win-build-1.15\build-VS2017\Release it copies
     libiconv-static.lib to iconv.lib, the name expected by libxml2
 2. in the libxml2-2.9.8\win32 directory, it runs configure as follows
     cscript configure.js static=yes ^
-	prefix=%EXTLIB%\include=%EXTLIB%\libiconv-win-build-1.15\include ^
+	prefix=%EXTLIB% include=%EXTLIB%\libiconv-win-build-1.15\include ^
 	lib=%EXTLIB%\libiconv-win-build-1.15\build-VS2017\Release ^
 	static=yes ftp=no http=no zlib=no lzma=no
 
@@ -56,7 +57,8 @@ The batch file does the following:
 Note: libxml2-2.9.8\win32 contains Readme.txt
 	
 libxslt - The top level directory of osiris distribution contains a batch file, BuildLibxslt.bat
-That will build libxslt, provided that iconv and libxml2 have been built successfully.
+That will build libxslt, provided that iconv and libxml2 have been built successfully and EXTLIB
+has been set in the environment.
 The batch file does the following:
 	
 1. in the libxslt-1.1.33\win32 directory, it runs configure as follows:
