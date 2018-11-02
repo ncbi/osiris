@@ -930,6 +930,7 @@ void mainFrame::CheckActiveFrame()
 
 void mainFrame::OnHelp(wxCommandEvent &)
 {
+  wxString sError;
   wxString sPath = mainApp::GetConfig()->GetExePath();
   bool bError = true;
   sPath.Append("OsirisHelp.pdf");
@@ -944,15 +945,61 @@ void mainFrame::OnHelp(wxCommandEvent &)
     if(pft != NULL)
     {
       sCmd = pft->GetOpenCommand(sPath);
+#ifdef TMP_DEBUG
+      sError = "Help command: ";
+      sError.Append(sCmd);
+      mainApp::LogMessage(sError);
+      sError.Empty();
+#endif
     }
     if(sCmd.Len() && (::wxExecute(sCmd,wxEXEC_ASYNC,NULL) != 0))
     {
       bError = false;
     }
+#ifdef __WXMSW__
+    else if(nwxFileUtil::OpenFileFromOS(sPath) < -1)
+      // for windows, if < 1 then explorer.exe not found
+      // explorer.exe seems to always return 1
+#else
+    else if(nwxFileUtil::OpenFileFromOS(sPath) != 0)
+      // for mac, open return 0 if no problem found
+#endif
+    {
+      // command failed, try a file URL
+      wxString sURL = "file:///";
+      sURL.Append(sPath);
+      if(wxLaunchDefaultBrowser(sURL,0))
+      {
+        bError = false;
+#ifdef TMP_DEBUG
+        sError = "Help URL: ";
+        sError.Append(sURL);
+        mainApp::LogMessage(sError);
+        sError.Empty();
+#endif
+      }
+      else
+      {
+        sError.Empty();
+        if(!sCmd.IsEmpty())
+        {
+          sError = "Cannot run command for help,\n";
+          sError.Append(sCmd);
+          sError.Append("\n\n");
+        }
+        sError.Append("Cannot launch URL for help file,\n");
+        sError.Append(sURL);
+      }
+    }
+  }
+  else
+  {
+    sError = "Cannot find help file, ";
+    sError.Append(sPath);
   }
   if(bError)
   {
-    ErrorMessage("Cannot find help file");
+    ErrorMessage(sError);
   }
 }
 void mainFrame::OnCheckForUpdates(wxCommandEvent &)
