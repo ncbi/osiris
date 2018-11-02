@@ -342,6 +342,12 @@ int CoreBioComponent :: GetAllAmbientData (SampleData* data) {
 	double doublelastTime = mQC.mLastILSTime;
 	int lastTime;
 
+	mQC.mRunDate = data->GetRunStartDate ();
+	mQC.mRunTime = data->GetRunStartTime ();
+	mQC.mCapillaryNumber = data->GetCapillaryNumber ();
+	mQC.mInjectionSeconds = data->GetInjectionSeconds ();
+	mQC.mInjectionVoltage = data->GetInjectionVoltage ();
+
 	struct ZeroInterval {
 		int start;
 		int end;

@@ -76,6 +76,12 @@ const int CollectionStartTimeID = 3;
 const char* LaneTag = "LANE";
 const int LaneID = 1;
 
+const char* InjectionVoltageTag = "InVt";
+const int InjectionVoltageID = 1;
+
+const char* InjectionSecondsTag = "InSc";
+const int InjectionSecondsID = 1;
+
 const char* SampleNameTag = "SMPL";
 const int SampleNameIDBase = 0;
 

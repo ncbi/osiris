@@ -78,6 +78,8 @@ public:
 	virtual RGString GetCollectionStartTime ();
 
 	virtual const char* GetCapillaryNumber ();
+	virtual const int GetInjectionSeconds ();
+	virtual const int GetInjectionVoltage ();
 
 	virtual long GetDataOffset ();
 	virtual const short* GetRawDataForChannel (int channel);

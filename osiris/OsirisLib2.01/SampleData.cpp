@@ -157,6 +157,18 @@ const char* SampleData :: GetCapillaryNumber () {
 }
 
 
+const int SampleData :: GetInjectionSeconds () {
+
+	return 0;
+}
+
+
+const int SampleData :: GetInjectionVoltage () {
+
+	return 0;
+}
+
+
 long SampleData :: GetDataOffset () {
 
 	return -1;
