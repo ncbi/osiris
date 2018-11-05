@@ -30,11 +30,11 @@
 */
 #include "mainApp.h"
 #include "CKitList.h"
+#include "CILSLadderInfo.h"
 #include "nwx/nwxString.h"
 #include "nwx/vectorptr.h"
 #include "nwx/mapptr.h"
 #include "ConfigDir.h"
-#include "CILSLadderInfo.h"
 #include <memory>
 
 bool CLocusNameChannel::operator <(const CLocusNameChannel &x) const
@@ -115,6 +115,8 @@ void CPersistKitList::Clear()
   m_pLastKitLS = NULL;
   m_pLastKit_ILS = NULL;
   m_pLastKitChannelMap = NULL;
+  m_setLadderFree.clear();  // v2.12
+  m_setAll_ILS.clear();
 }
 
 
@@ -253,6 +255,16 @@ void CPersistKitList::SortILS()
     pILS->Sort();
   }
 }
+void CPersistKitList::_CHECK_BOOL(wxXmlNode *pNode, std::set<wxString> *pSet)
+{
+  bool b;
+  m_XmlBool.LoadFromNode(pNode, &b);
+  if (b)
+  {
+    pSet->insert(m_sLastKit);
+  }
+}
+
 bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
 {
   bool bRtn = true;
@@ -308,6 +320,14 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
       }
       m_pLastKit_ILS->Add(s);
     }
+  }
+  else if (!sNodeName.Cmp("LadderFree") && !m_sLastKit.IsEmpty())
+  {
+    _CHECK_BOOL(pNode, &m_setLadderFree);
+  }
+  else if (!sNodeName.Cmp("AllLaneStandards") && !m_sLastKit.IsEmpty())
+  {
+    _CHECK_BOOL(pNode, &m_setAll_ILS);
   }
   else if( !sNodeName.Cmp("ChannelNo") && !m_sLastKit.IsEmpty() )
   {
@@ -365,6 +385,15 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
   }
   return bRtn;
 }
+const wxArrayString *CPersistKitList::_GetAll_ILSarray() const
+{
+  if (m_asAll_ILS.IsEmpty())
+  {
+    m_pILS->BuildAll_ILSarray(&m_asAll_ILS);
+  }
+  return &m_asAll_ILS;
+}
+
 #ifdef __WXDEBUG__
 void CPersistKitList::UnitTest()
 {

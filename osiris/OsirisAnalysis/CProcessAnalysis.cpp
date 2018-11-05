@@ -37,6 +37,7 @@
 #include "CDirList.h"
 #include "CParmOsiris.h"
 #include "CVolumes.h"
+#include "CKitList.h"
 #include "nwx/nwxFileUtil.h"
 #ifdef __WXMSW__
 #define strdup _strdup
@@ -70,6 +71,7 @@ CProcessAnalysis::CProcessAnalysis(
   wxString s;
   const CParmOsiris *pParm = pDirEntry->GetParmOsiris();
   const ConfigDir *pDir = mainApp::GetConfig();
+  CPersistKitList *pKitList = mainApp::GetKitList();
   
   sStdin.Alloc(4096);
   APPEND_LINE("InputDirectory",pParm->GetInputDirectory());      //  1
@@ -82,6 +84,10 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_INT("MinLaneStandardRFU",pParm->GetMinRFU_ILS());       //  8
   APPEND_INT("MinLadderRFU",pParm->GetMinRFU_Ladder());          //  9
   APPEND_INT("MinInterlocusRFU",pParm->GetMinRFU_Interlocus());  // 10
+  if (pKitList->IsLadderFree(pParm->GetKitName()))
+  {
+    APPEND_LINE("LadderFree", "true");
+  }
 
   // channel data
 

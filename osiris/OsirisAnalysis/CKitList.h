@@ -53,9 +53,7 @@
 #include "nwx/nwxXmlPersistCollections.h"
 #include "nwx/CIncrementer.h"
 #include "nwx/nsstd.h"
-
 class CILSLadderInfo;
-
 //  new for 2.7 CKitChannelMap, CKitChannel
 //  CKitChannelMap stores <FsaChannelMap>
 //  CKitChannel stores <FsaChannelMap><Channel>
@@ -224,12 +222,15 @@ public:
     Register("LS",this);
     Register("LSName",this);
     Register("ChannelNo",this);
-    Register("Locus",this);
+    Register("Locus", this);
     // new for v 2.7
-    Register("ILS",this);
-    Register("LSBases",this);
-    Register("ILSName",this);
-    Register("FsaChannelMap",this);
+    Register("ILS", this);
+    Register("LSBases", this);
+    Register("ILSName", this);
+    Register("FsaChannelMap", this);
+    // new for 2.12
+    Register("LadderFree", this);
+    Register("AllLaneStandards", this);
   }
   virtual ~CPersistKitList();
 
@@ -239,15 +240,24 @@ public:
 
   void SortILS();
   virtual bool LoadFromNode(wxXmlNode *pNode);
-
+  const wxArrayString *_GetAll_ILSarray() const;
+  const wxArrayString *GetLsArray(const wxString &sKit) const
+  {
+    const wxArrayString *pRtn = NULL;
+    if (!IsAll_ILS(sKit))
+    {
+      LScitr itr = m_mLS.find(sKit);
+      pRtn = (itr == m_mLS.end()) ? NULL : itr->second;
+    }
+    else
+    {
+      pRtn = _GetAll_ILSarray();
+    }
+    return pRtn;
+  }
   const wxArrayString &GetArray() const
   {
     return m_as;
-  }
-  const wxArrayString *GetLsArray(const wxString &sKit) const
-  {
-    LScitr itr = m_mLS.find(sKit);
-    return (itr == m_mLS.end()) ? NULL : itr->second;
   }
   const wxArrayString *GetIlsArray(const wxString &sKit) const
   {
@@ -305,8 +315,16 @@ public:
     const std::map<unsigned int, CKitChannel *> *pRtn = (pMap != NULL) ? pMap->Get() : NULL;
     return pRtn;
   }
-
-
+  bool IsLadderFree(const wxString &sKit) const
+  {
+    bool b = m_setLadderFree.find(sKit) != m_setLadderFree.end();
+    return b;
+  }
+  bool IsAll_ILS(const wxString &sKit) const
+  {
+    bool b = m_setAll_ILS.find(sKit) != m_setAll_ILS.end();
+    return b;
+  }
   void Clear();
 
   virtual void Init(void *p)
@@ -365,15 +383,20 @@ private:
     m_sErrorMsg = "Cannot load ladder information.";
   }
   void _HACK_27(const CILSLadderInfo *pILS);
+  void _CHECK_BOOL(wxXmlNode *pNode, std::set<wxString> *pSet);
   wxArrayString m_as;
   wxString m_sLastKit;
   std::map<wxString, wxArrayString *> m_mLS;
   std::map<wxString, wxArrayString *> m_mILS; // 2.7 ils family
   std::map<wxString, int> m_msChannelCount;
   nwxXmlIOwxString m_XmlString;
+  nwxXmlIObool m_XmlBool;
   wxString m_sErrorMsg;
   std::map< wxString, CLocusNameList * > m_mapKitLocus;
   std::map< wxString, CKitChannelMap *> m_mapKitChannels;
+  std::set<wxString> m_setLadderFree;
+  std::set<wxString> m_setAll_ILS;
+  mutable wxArrayString m_asAll_ILS;
 
   CILSLadderInfo *m_pILS;
   CLocusNameList *m_pLastKitLocus;
