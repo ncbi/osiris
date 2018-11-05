@@ -122,12 +122,12 @@ struct PullupPair {
 struct QCData {
 
 	QCData () : mMaxLinearPullupCoefficient (0.0), mMaxNonlinearPullupCoefficient (0.0), mMaxErrorInBP (0.0), mWidthOfLastILSPeak (0.0), mSampleLocusTotalAreaRatioMaxToMin (0.0), mSampleYLinkedLocusTotalAreaRatioMaxToMin (0.0), mStartingTemperature (0.0), mMaxMinusMinTemperature (0.0), 
-		mStartingVoltage (0.0), mMaxMinusMinVoltage (0.0), mStartingCurrent (0.0), mMaxMinusMinCurrent (0.0), mStartingPower (0.0), mMaxMinusMinPower (0.0), mFirstILSTime (0.0), mLastILSTime (0.0), mNumberOfSamples (0) {}
+		mStartingVoltage (0.0), mMaxMinusMinVoltage (0.0), mStartingCurrent (0.0), mMaxMinusMinCurrent (0.0), mStartingPower (0.0), mMaxMinusMinPower (0.0), mFirstILSTime (0.0), mLastILSTime (0.0), mNumberOfSamples (0), mInjectionSeconds (0), mInjectionVoltage (0) {}
 
 	QCData (const QCData& data) : mMaxLinearPullupCoefficient (data.mMaxLinearPullupCoefficient), mMaxNonlinearPullupCoefficient (data.mMaxNonlinearPullupCoefficient), mMaxErrorInBP (data.mMaxErrorInBP), mWidthOfLastILSPeak (data.mWidthOfLastILSPeak), 
 		mSampleLocusTotalAreaRatioMaxToMin (data.mSampleLocusTotalAreaRatioMaxToMin), mSampleYLinkedLocusTotalAreaRatioMaxToMin (data.mSampleYLinkedLocusTotalAreaRatioMaxToMin), mStartingTemperature (data.mStartingTemperature), mMaxMinusMinTemperature (data.mMaxMinusMinTemperature), mStartingVoltage (data.mStartingVoltage), 
 		mMaxMinusMinVoltage (data.mStartingVoltage), mStartingCurrent (data.mStartingVoltage), mMaxMinusMinCurrent (data.mStartingVoltage), mStartingPower (data.mStartingVoltage), mMaxMinusMinPower (data.mStartingVoltage), mFirstILSTime (data.mFirstILSTime), mLastILSTime (data.mLastILSTime), 
-		mNumberOfSamples (data.mNumberOfSamples) {}
+		mNumberOfSamples (data.mNumberOfSamples), mRunDate (data.mRunDate), mRunTime (data.mRunTime), mCapillaryNumber (data.mCapillaryNumber), mInjectionSeconds (data.mInjectionSeconds), mInjectionVoltage (data.mInjectionVoltage) {}
 	~QCData () {}
 
 	double mMaxLinearPullupCoefficient;
@@ -147,6 +147,11 @@ struct QCData {
 	double mFirstILSTime;
 	double mLastILSTime;
 	int mNumberOfSamples;
+	RGString mRunDate;
+	RGString mRunTime;
+	RGString mCapillaryNumber;
+	int mInjectionSeconds;
+	int mInjectionVoltage;
 };
 
 

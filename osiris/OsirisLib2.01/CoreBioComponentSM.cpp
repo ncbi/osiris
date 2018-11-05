@@ -933,6 +933,12 @@ void CoreBioComponent :: ReportXMLSampleInfoBlock (const RGString& indent, RGTex
 	text << indent1 << "<StartingPower>" << mQC.mStartingPower << "</StartingPower>\n";
 	text << indent1 << "<MaxMinusMinPower>" << mQC.mMaxMinusMinPower << "</MaxMinusMinPower>\n";
 
+	text << indent1 << "<RunDate>" << mQC.mRunDate << "</RunDate>\n";
+	text << indent1 << "<RunTime>" << mQC.mRunTime << "</RunTime>\n";
+	text << indent1 << "<CapillaryNumber>" << mQC.mCapillaryNumber << "</CapillaryNumber>\n";
+	text << indent1 << "<InjectionSeconds>" << mQC.mInjectionSeconds << "</InjectionSeconds>\n";
+	text << indent1 << "<InjectionVoltage>" << mQC.mInjectionVoltage << "</InjectionVoltage>\n";
+
 	int j;
 
 	for (j=1; j<=mNumberOfChannels; j++) {

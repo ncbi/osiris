@@ -122,6 +122,12 @@ public:
     COARcopy(m_dMaxMinusMinCurrent);
     COARcopy(m_dStartingPower);
     COARcopy(m_dMaxMinusMinPower);
+    COARcopy(m_sRunDate);
+    COARcopy(m_sRunTime);
+    COARcopy(m_sCapillaryNumber);
+    COARcopy(m_sInjectionSeconds);
+    COARcopy(m_sInjectionVoltage);
+
     COARcopyVP(COARsampleInfoChannel, m_vpChannel);
     return *this;
   }
@@ -165,6 +171,11 @@ public:
       &m_dStartingPower);
     RegisterDouble(wxS("MaxMinusMinPower"),
       &m_dMaxMinusMinPower);
+    RegisterWxStringNotEmpty(wxS("RunDate"), &m_sRunDate);
+    RegisterWxStringNotEmpty(wxS("RunTime"), &m_sRunTime);
+    RegisterWxStringNotEmpty(wxS("CapillaryNumber"), &m_sCapillaryNumber);
+    RegisterWxStringNotEmpty(wxS("InjectionSeconds"), &m_sInjectionSeconds);
+    RegisterWxStringNotEmpty(wxS("InjectionVoltage"), &m_sInjectionVoltage);
     Register(wxS("Channel"), &m_ioChannel, (void *) &m_vpChannel);
   }
 private:
@@ -174,6 +185,15 @@ private:
   }
   TnwxXmlIOPersistVector<COARsampleInfoChannel> m_ioChannel;
   std::vector<COARsampleInfoChannel *> m_vpChannel;
+
+  // OS-993, add the following 5 variables
+  wxString m_sRunDate;
+  wxString m_sRunTime;
+  wxString m_sCapillaryNumber;
+  wxString m_sInjectionSeconds;
+  wxString m_sInjectionVoltage;
+
+
   double m_dMaxLinearPullupCoefficient;
   double m_dMaxNonlinearPullupCoefficient;
   double m_dMaxBPErrorSampleToLadder;

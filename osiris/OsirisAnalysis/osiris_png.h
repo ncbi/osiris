@@ -24,7 +24,7 @@
 * ===========================================================================
 *
 *  FileName: osiris_png.h
-*  Created:  12-Oct-2018
+*  Created:  05-Nov-2018
 *  This file was created with the perl script, f2d.pl,
 *  using the file, osiris2.12.png, for input
 *  The script was written by Douglas Hoffman

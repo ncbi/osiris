@@ -507,6 +507,40 @@ const char* fsaFileData :: GetCapillaryNumber () {
 }
 
 
+const int fsaFileData :: GetInjectionSeconds () {
+
+	const INT32* data;
+	fsaDirEntry* entry = fsaInput->FindDirEntry (InjectionSecondsTag, InjectionSecondsID);
+
+	if (entry == NULL)
+		return 0;
+
+	data = entry->GetDataINT32 ();
+
+	if (data == NULL)
+		return 0;
+
+	return *data;
+}
+
+
+const int fsaFileData :: GetInjectionVoltage () {
+
+	const INT32* data;
+	fsaDirEntry* entry = fsaInput->FindDirEntry (InjectionVoltageTag, InjectionVoltageID);
+
+	if (entry == NULL)
+		return 0;
+
+	data = entry->GetDataINT32 ();
+
+	if (data == NULL)
+		return 0;
+
+	return *data;
+}
+
+
 long fsaFileData :: GetDataOffset () {
 
 	RGString data;
