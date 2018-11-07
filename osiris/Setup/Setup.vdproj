@@ -267,6 +267,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_181FC16BB3CB44419FD34C53E6F16E12"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1870A5FCDB854375B1C186A22F89E0B9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -465,6 +471,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_34D83B6E596C45EBA288B8DE2C28FB0E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_35C86465BC7B47FFAF22673EF83252C7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -472,6 +484,12 @@
         "Entry"
         {
         "MsmKey" = "8:_373510053ED54AE382C968EA528173BF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_37B946A49BC14EE2988DE57012B67CE5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -508,6 +526,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3BADC67FCD4349C8A2D0AB991BFB04C2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3BBEB22BE08940369AA2C95586DDB36B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -579,6 +603,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3EE27AA5C6304A35A5EFB20CE1E79CF9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3F511D256E5348A2A4034647FCD9FC0B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -634,6 +664,12 @@
         "Entry"
         {
         "MsmKey" = "8:_43520222611F42D7B4566D01D3B6D53B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_43C9AA8A0BE2486FABAEEE937D3402BB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -928,6 +964,12 @@
         "Entry"
         {
         "MsmKey" = "8:_68B342A7AC854965BB4042AE38AC93E2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_68EEE6134F194E08B1914AF86C513BCF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1263,12 +1305,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8C23ACAD6526423A94112F5FBBF06104"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_8D3C043F1D6B4551AB3254137459A674"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1461,12 +1497,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A489312E47E549CA98C2A99C16636033"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A5062D46AB454D3FA442CE65D839348C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1510,6 +1540,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A92F1B53980141E7A79CDC3200D7EC14"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A9440818AED74B168E60F9CCE67D165B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1749,6 +1785,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BF32628F25B84C21B4946A44B02DB7C4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C064BA80120641038EB062E2CB3D1A38"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1876,6 +1918,12 @@
         "Entry"
         {
         "MsmKey" = "8:_CE3AEB5455E2435B88DCCC9AB9266C44"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CE6E70BBA07F48E5938297FC39880C46"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2304,7 +2352,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.12-Beta-1.msi"
+        "OutputFilename" = "8:Release\\Osiris-2.12-Beta-3.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -3186,6 +3234,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_181FC16BB3CB44419FD34C53E6F16E12"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\LaneStandardOnly_3_LadderInfo.xml"
+            "TargetName" = "8:LaneStandardOnly_3_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1870A5FCDB854375B1C186A22F89E0B9"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NFX1\\NFX1_StdSettings.xml"
@@ -3846,6 +3914,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_34D83B6E596C45EBA288B8DE2C28FB0E"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.14.26405\\x86\\Microsoft.VC141.CRT\\msvcp140.dll"
+            "TargetName" = "8:msvcp140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_35C86465BC7B47FFAF22673EF83252C7"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID\\GFHID_StdSettings.xml"
@@ -3872,6 +3960,26 @@
             "TargetName" = "8:PPY_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_3FA29B2E6C504E7D9B0781528A84D5DE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_37B946A49BC14EE2988DE57012B67CE5"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\LaneStandardOnly_2_LadderInfo.xml"
+            "TargetName" = "8:LaneStandardOnly_2_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3992,6 +4100,26 @@
             "TargetName" = "8:PPESI17_HID_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_3ECD197C226A4718950798C6E1C81DD7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3BBEB22BE08940369AA2C95586DDB36B"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.14.26405\\x86\\Microsoft.VC141.CRT\\vccorlib140.dll"
+            "TargetName" = "8:vccorlib140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4226,6 +4354,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3EE27AA5C6304A35A5EFB20CE1E79CF9"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.14.26405\\x86\\Microsoft.VC141.CRT\\vcruntime140.dll"
+            "TargetName" = "8:vcruntime140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3F511D256E5348A2A4034647FCD9FC0B"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\PowerPlex_ESX17_LadderInfo.xml"
@@ -4410,6 +4558,26 @@
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\IdentifilerPlus_LadderInfo.xml"
             "TargetName" = "8:IdentifilerPlus_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_43C9AA8A0BE2486FABAEEE937D3402BB"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\LaneStandardOnly_4_LadderInfo.xml"
+            "TargetName" = "8:LaneStandardOnly_4_LadderInfo.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
@@ -5392,6 +5560,26 @@
             "TargetName" = "8:extractArtifacts.xsl"
             "Tag" = "8:"
             "Folder" = "8:_CABCA89BC3984DC1A0B6894645D5BB7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68EEE6134F194E08B1914AF86C513BCF"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.14.26405\\x86\\Microsoft.VC141.CRT\\msvcp140_2.dll"
+            "TargetName" = "8:msvcp140_2.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6506,26 +6694,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8C23ACAD6526423A94112F5FBBF06104"
-            {
-            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\redist\\x86\\Microsoft.VC100.CRT\\msvcr100.dll"
-            "TargetName" = "8:msvcr100.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8D3C043F1D6B4551AB3254137459A674"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GF\\GF_StdSettings.xml"
@@ -7166,26 +7334,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A489312E47E549CA98C2A99C16636033"
-            {
-            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\redist\\x86\\Microsoft.VC100.CRT\\msvcp100.dll"
-            "TargetName" = "8:msvcp100.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A5062D46AB454D3FA442CE65D839348C"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\Identifiler_Artifacts\\_sample_with_probem_laddr_D2_FGA_F04_C2(01-0801).fsa"
@@ -7332,6 +7480,26 @@
             "TargetName" = "8:A01_LADDER_Run_3100_1465_027_2002-12-31_418_01.fsa"
             "Tag" = "8:"
             "Folder" = "8:_29A20AC60A714F1FB99FA56689F3CDD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A9440818AED74B168E60F9CCE67D165B"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.14.26405\\x86\\Microsoft.VC141.CRT\\msvcp140_1.dll"
+            "TargetName" = "8:msvcp140_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8126,6 +8294,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BF32628F25B84C21B4946A44B02DB7C4"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\LaneStandardOnly_5_LadderInfo.xml"
+            "TargetName" = "8:LaneStandardOnly_5_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C064BA80120641038EB062E2CB3D1A38"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\NIDDKFragileX1_LadderInfo.xml"
@@ -8552,6 +8740,26 @@
             "TargetName" = "8:iPLEXSTR_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_0B3DBDF1941C4FE09B63AE93C618225B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CE6E70BBA07F48E5938297FC39880C46"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.14.26405\\x86\\Microsoft.VC141.CRT\\concrt140.dll"
+            "TargetName" = "8:concrt140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -10862,15 +11070,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{D5C4277B-5E79-48F9-915F-B7FECADCE0C3}"
-        "PackageCode" = "8:{E06A84B2-50CE-4F74-9D0B-AA705C526749}"
+        "ProductCode" = "8:{92427B08-37C3-4213-B673-054BBCE39A3E}"
+        "PackageCode" = "8:{EB446CAE-5FF6-4271-89E0-37003AB0B7E3}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.12.0001"
+        "ProductVersion" = "8:2.12.0003"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

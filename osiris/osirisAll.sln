@@ -44,6 +44,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nwxZip", "nwxZip\nwxZip.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OsirisMath", "OsirisMath\OsirisMath.vcxproj", "{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{02FAFEA3-6281-4180-A28C-BD5AA765151B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -128,6 +130,14 @@ Global
 		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Release|Win32.ActiveCfg = Release|Win32
 		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Release|Win32.Build.0 = Release|Win32
 		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}.Release|x64.ActiveCfg = Release|Win32
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Debug|Win32.ActiveCfg = Debug
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Debug|Win32.Build.0 = Debug
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Debug|x64.ActiveCfg = Debug
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Debug|x64.Build.0 = Debug
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Release|Win32.ActiveCfg = Release
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Release|Win32.Build.0 = Release
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Release|x64.ActiveCfg = Release
+		{02FAFEA3-6281-4180-A28C-BD5AA765151B}.Release|x64.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
