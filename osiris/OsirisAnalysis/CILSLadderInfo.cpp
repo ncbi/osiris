@@ -123,9 +123,13 @@ void CILSLadderInfo::BuildAll_ILSarray(wxArrayString *ps) const
 {
   std::map<const wxString, const wxString &>::const_iterator itr;
   ps->Empty();
-  ps->Alloc(m_mapDisplayToName.size());
-  for (itr = m_mapDisplayToName.begin();
-    itr != m_mapDisplayToName.end();
+  if (!m_mapNameToDisplay.size())
+  {
+    _BuildNameToDisplay();
+  }
+  ps->Alloc(m_mapNameToDisplay.size());
+  for (itr = m_mapNameToDisplay.begin();
+    itr != m_mapNameToDisplay.end();
     ++itr)
   {
     ps->Add(itr->first);
