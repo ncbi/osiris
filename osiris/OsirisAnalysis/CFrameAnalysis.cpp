@@ -1913,8 +1913,9 @@ void CFrameAnalysis::_UpdatePreview()
       else if(_IsLocusColumn(nCol))
       {
         s = _GetLocusFromColumn(nCol);
+        int nColFB = IsLadderFree() ? _GetChannelFromColumn(nCol) : 0;
         m_pPanelPlotPreview->SetFileLocus(
-          sFileName,s,false);
+          sFileName,s,false, (unsigned int)nColFB);
 
       }
       else // if( (nCol < 0) || _IsControlColumn(nCol) )
@@ -2000,6 +2001,22 @@ wxString CFrameAnalysis::_GetLocusFromColumn(int nCol)
     }
   }
   return sLocus;
+}
+int CFrameAnalysis::_GetChannelFromColumn(int nCol)
+{
+  int nRtn = 0;
+  if (_XmlFile())
+  {
+    if (nCol < 0)
+    {
+      nCol = m_pGrid->GetGridCursorCol();
+    }
+    if (_IsLocusColumn(nCol))
+    {
+      nRtn = m_pOARfile->GetChannelNr(nCol - FIRST_LOCUS_COLUMN);
+    }
+  }
+  return nRtn;
 }
 wxString CFrameAnalysis::_GetGraphicFileName(int nRow,bool bMessage)
 {

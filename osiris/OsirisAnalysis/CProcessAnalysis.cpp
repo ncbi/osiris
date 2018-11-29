@@ -86,6 +86,10 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_INT("MinInterlocusRFU",pParm->GetMinRFU_Interlocus());  // 10
   if (pKitList->IsLadderFree(pParm->GetKitName()))
   {
+    // IF this is no longer needed in the future, 
+    // the function
+    //     bool COARfile::IsLadderFree()
+    // will need to be rewritten
     APPEND_LINE("LadderFree", "true");
   }
 

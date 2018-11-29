@@ -118,7 +118,10 @@ public:
   {
     return m_pPanelPlotPreview;
   }
-
+  bool IsLadderFree()
+  {
+    return m_pOARfile == NULL ? false : m_pOARfile->IsLadderFree();
+  }
   const wxDateTime *GetSelectedTime()
   {    
     const wxDateTime *pRtn = 
@@ -219,6 +222,7 @@ private:
   void _ShowPreview();
   wxString _GetGraphicFileName(int nRow = -1,bool bMessage = false);
   wxString _GetLocusFromColumn(int nCol = -1);
+  int _GetChannelFromColumn(int nCol = -1);
   bool _SaveOERFile(const wxString &sFileName);
   void _Build();
   bool _IsCellEdited(int nRow,int nCol);
