@@ -66,8 +66,7 @@ public:
   CPanelPlot *SetFileLocus(
     const wxString &sFileName,
     const wxString &sLocus,
-    bool bReload = false,
-    unsigned int nChannelFallback = 0);
+    bool bReload = false);
 
   CPanelPlot *SetFileChannels(
     const wxString &sFileName,

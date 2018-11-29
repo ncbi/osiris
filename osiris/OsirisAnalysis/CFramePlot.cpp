@@ -534,6 +534,12 @@ void CFramePlot::ReInitialize(const wxString &sLocus, bool bSingle)
     if(!sLocus.IsEmpty())
     {
       nChannel = m_pData->GetChannelFromLocus(sLocus);
+      if( (!nChannel) && (m_pOARfile != NULL) )
+      {
+        // OS-966, plt file may not have locus to channel nr
+        // especially if it is a no-ladder analysis
+        nChannel = m_pOARfile->GetChannelNrFromLocus(sLocus);
+      }
     }
     if(nChannel > 0)
     {
@@ -552,7 +558,14 @@ void CFramePlot::ReInitialize(const wxString &sLocus, bool bSingle)
     ZoomToLocus(sLocus,0);
     if( (m_nState == FP_VARIABLE_MANY_PLOTS) && (!sLocus.IsEmpty()) )
     {
-      nScroll = m_pData->GetChannelFromLocus(sLocus) - 1;
+      nChannel = m_pData->GetChannelFromLocus(sLocus);
+      if( (!nChannel) && (m_pOARfile != NULL) )
+      {
+        // OS-966 - for ladder free, the .plt file may not have channel 
+        // number from locus
+        nChannel = m_pOARfile->GetChannelNrFromLocus(sLocus);
+      }
+      nScroll = int(nChannel) - 1;
     }
   }
   SetFocusPlot(nScroll);

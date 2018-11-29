@@ -1913,9 +1913,7 @@ void CFrameAnalysis::_UpdatePreview()
       else if(_IsLocusColumn(nCol))
       {
         s = _GetLocusFromColumn(nCol);
-        int nColFB = IsLadderFree() ? _GetChannelFromColumn(nCol) : 0;
-        m_pPanelPlotPreview->SetFileLocus(
-          sFileName,s,false, (unsigned int)nColFB);
+        m_pPanelPlotPreview->SetFileLocus(sFileName,s,false);
 
       }
       else // if( (nCol < 0) || _IsControlColumn(nCol) )

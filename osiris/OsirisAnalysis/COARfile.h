@@ -341,6 +341,18 @@ public:
     _BuildLocusMap();
     return (n < m_vnChannelNr.size()) ? m_vnChannelNr.at(n) : 0;
   }
+  unsigned int GetChannelNrFromLocus(const wxString &sLocus) const
+  {
+    // OS-966, plt file may not be able to get channel number 
+    //  from locus
+    unsigned int nRtn = 0;
+    const COARchannel *pChan = GetChannelFromLocus(sLocus);
+    if (pChan != NULL)
+    {
+      nRtn = (unsigned int)pChan->GetChannelNr();
+    }
+    return nRtn;
+  }
   size_t GetChannelCount() const
   {
     return m_heading.GetChannelCount();

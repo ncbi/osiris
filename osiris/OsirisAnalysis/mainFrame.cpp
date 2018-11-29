@@ -466,6 +466,12 @@ CFramePlot *mainFrame::OpenGraphicFile(
     wxSize sz = GetChildSize();
     bool bShiftKeyDown = nwxKeyState::Shift();
     unsigned int nChannel = pData->GetChannelFromLocus(sLocus);
+    if ((!nChannel) && (pFile != NULL))
+    {
+      // OS-966 if ladder free, the channel number cannot be obtained 
+      // from the plot file so the .oar/.oer is searched
+      nChannel = pFile->GetChannelNrFromLocus(sLocus);
+    }
     pPlot = new CFramePlot(this,sz,pData.release(),pFile,mainApp::GetKitColors(),bShiftKeyDown,nChannel);
     // call ZoomOut or ZoomToLocus AFTER Show as a workaround for a bug in wxPlotCtrl
     // otherwise we would put it in the CFramePlot constructor

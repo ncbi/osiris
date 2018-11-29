@@ -76,7 +76,7 @@ CPanelPlotPreview::~CPanelPlotPreview()
 }
 
 CPanelPlot *CPanelPlotPreview::SetFileLocus(
-  const wxString &sFileName, const wxString &sLocus, bool bReload, unsigned int nChannelFallback)
+  const wxString &sFileName, const wxString &sLocus, bool bReload)
 {
   CPanelPlot *pRtn = _Setup(sFileName,bReload);
   if(pRtn != NULL)
@@ -84,9 +84,9 @@ CPanelPlot *CPanelPlotPreview::SetFileLocus(
     TnwxBatch<CPanelPlot> batch(pRtn);
     CPlotData *pData = pRtn->GetPlotData();
     unsigned int nChannel = pData->GetChannelFromLocus(sLocus);
-    if (!nChannel)
+    if( (!nChannel) && (m_pOARfile != NULL) )
     {
-      nChannel = nChannelFallback;
+      nChannel = m_pOARfile->GetChannelNrFromLocus(sLocus);
     }
     if(nChannel)
     {
