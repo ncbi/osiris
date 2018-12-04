@@ -4431,102 +4431,111 @@ int STRSampleChannelData :: FinalTestForPeakSizeAndNumberSM (double averageHeigh
 
 	// Make member variables out of these quantities with accessors
 	double minYLinkedArea = 0.0;
-	double maxYLinkedArea = 0.0;
-	double minTotalArea = 0.0;
-	double maxTotalArea = 0.0;
-	double currentArea;
-	double ratioMaxToMin = 0.0;
-	double yLinkedRatioMaxToMin = 0.0;
+double maxYLinkedArea = 0.0;
+double minTotalArea = 0.0;
+double maxTotalArea = 0.0;
+double currentArea;
+double ratioMaxToMin = 0.0;
+double yLinkedRatioMaxToMin = 0.0;
 
-	while (nextLocus = (Locus*) it ()) {
+while (nextLocus = (Locus*)it()) {
 
-		if (nextLocus->FinalTestForPeakSizeAndNumberSM (averageHeight, isNegCntl, isPosCntl, pGenotypes, ArtifactList) < 0)
-			status = -1;
+	if (nextLocus->FinalTestForPeakSizeAndNumberSM(averageHeight, isNegCntl, isPosCntl, pGenotypes, ArtifactList) < 0)
+		status = -1;
+
+	else {
+
+		currentArea = nextLocus->CalculateTotalAreaSM();
+
+		if (nextLocus->IsYLinked()) {
+
+			if (currentArea > maxYLinkedArea)
+				maxYLinkedArea = currentArea;
+
+			if (minYLinkedArea == 0.0)
+				minYLinkedArea = currentArea;
+
+			else if ((currentArea > 0.0) && (currentArea < minYLinkedArea))
+				minYLinkedArea = currentArea;
+		}
 
 		else {
 
-			currentArea = nextLocus->CalculateTotalAreaSM ();
+			if (currentArea > maxTotalArea)
+				maxTotalArea = currentArea;
 
-			if (nextLocus->IsYLinked ()) {
+			if (minTotalArea == 0.0)
+				minTotalArea = currentArea;
 
-				if (currentArea > maxYLinkedArea)
-					maxYLinkedArea = currentArea;
-
-				if (minYLinkedArea == 0.0)
-					minYLinkedArea = currentArea;
-
-				else if ((currentArea > 0.0) && (currentArea < minYLinkedArea))
-					minYLinkedArea = currentArea;
-			}
-
-			else {
-
-				if (currentArea > maxTotalArea)
-					maxTotalArea = currentArea;
-
-				if (minTotalArea == 0.0)
-					minTotalArea = currentArea;
-
-				else if ((currentArea > 0.0) && (currentArea < minTotalArea))
-					minTotalArea = currentArea;
-			}
+			else if ((currentArea > 0.0) && (currentArea < minTotalArea))
+				minTotalArea = currentArea;
 		}
 	}
+}
 
-	if (minYLinkedArea == 0.0)
-		yLinkedRatioMaxToMin = 0.0;
+if (minYLinkedArea == 0.0)
+yLinkedRatioMaxToMin = 0.0;
 
-	else
-		yLinkedRatioMaxToMin = maxYLinkedArea / minYLinkedArea;
+else
+yLinkedRatioMaxToMin = maxYLinkedArea / minYLinkedArea;
 
-	if (minTotalArea == 0.0)
-		ratioMaxToMin = 0.0;
+if (minTotalArea == 0.0)
+ratioMaxToMin = 0.0;
 
-	else
-		ratioMaxToMin = maxTotalArea / minTotalArea;
+else
+ratioMaxToMin = maxTotalArea / minTotalArea;
 
-	//if (isNegCntl) {
+//if (isNegCntl) {
 
-	//	it.Reset ();
+//	it.Reset ();
 
-	//	while (nextLocus = (Locus*) it ()) {
+//	while (nextLocus = (Locus*) it ()) {
 
-	//		if (nextLocus->GetMessageValue (unexpectedPeaksInLocus)) {
+//		if (nextLocus->GetMessageValue (unexpectedPeaksInLocus)) {
 
-	//			SetMessageValue (unexpectedPeaksInChannel, true);
-	//			break;
-	//		}
-	//	}
-	//}
+//			SetMessageValue (unexpectedPeaksInChannel, true);
+//			break;
+//		}
+//	}
+//}
 
-	/*
-	double mMaxLocusArea;
-	double mMaxYLinkedLocusArea;
-	double mMinLocusArea;
-	double mMinYLinkedLocusArea;
-	double mMaxLocusAreaRatio;
-	double mMaxYLinkedLocusRatio;
-	*/
+/*
+double mMaxLocusArea;
+double mMaxYLinkedLocusArea;
+double mMinLocusArea;
+double mMinYLinkedLocusArea;
+double mMaxLocusAreaRatio;
+double mMaxYLinkedLocusRatio;
+*/
 
-	mMaxLocusArea = maxTotalArea;
-	mMinLocusArea = minTotalArea;
-	mMaxYLinkedLocusArea = maxYLinkedArea;
-	mMinYLinkedLocusArea = minYLinkedArea;
-	mMaxLocusAreaRatio = ratioMaxToMin;
-	mMaxYLinkedLocusRatio = yLinkedRatioMaxToMin;
-	return status;
+mMaxLocusArea = maxTotalArea;
+mMinLocusArea = minTotalArea;
+mMaxYLinkedLocusArea = maxYLinkedArea;
+mMinYLinkedLocusArea = minYLinkedArea;
+mMaxLocusAreaRatio = ratioMaxToMin;
+mMaxYLinkedLocusRatio = yLinkedRatioMaxToMin;
+return status;
 }
 
 
-int STRSampleChannelData :: FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl) {
+int STRSampleChannelData::FinalTestForPeakSizeSMLF(Boolean isNegCntl, Boolean isPosCntl) {
 
 	//
 	//  This is sample stage 5
 	//
 
-	RGDListIterator it (mLocusList);
+	RGDListIterator it(mLocusList);
+	RGDListIterator itTotal(CompleteCurveList);
 	Locus* nextLocus;
+	DataSignal* nextSignal;
 	int status = 0;
+	int minBioID = CoreBioComponent::GetMinBioIDForArtifacts();
+
+	while (nextSignal = (DataSignal*) itTotal ()) {
+
+		if (nextSignal->GetApproximateBioID() < minBioID)
+			nextSignal->SetDontLook (true);
+	}
 
 	while (nextLocus = (Locus*) it ()) {
 

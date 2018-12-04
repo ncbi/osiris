@@ -3262,6 +3262,30 @@ int CoreBioComponent :: RemoveAllSignalsOutsideLaneStandardSM () {
 }
 
 
+int CoreBioComponent::RemoveAllSignalsOutsideLaneStandardSMLF() {
+
+	//
+	//  This is ladder and sample stage 1
+	//
+
+	int i;
+
+	double dLeft = mDataChannels[mLaneStandardChannel]->GetFirstAnalyzedMean();
+	double dRight = mDataChannels[mLaneStandardChannel]->GetLastAnalyzedMean();
+	double dFirstChar = mLaneStandard->GetMinimumCharacteristic();
+	double dLastChar = mLaneStandard->GetMaximumCharacteristic();
+	ChannelData::SetAveSecondsPerBP((dRight - dLeft) / (dLastChar - dFirstChar));
+
+	for (i = 1; i <= mNumberOfChannels; i++) {
+
+		//		if (i != mLaneStandardChannel)
+		mDataChannels[i]->RemoveSignalsOutsideLaneStandardSM(mLSData);
+	}
+
+	return 0;
+}
+
+
 int CoreBioComponent :: PreliminarySampleAnalysisSM (RGDList& gridList, SampleDataStruct* sampleData) {
 
 	//

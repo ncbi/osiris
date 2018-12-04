@@ -5681,6 +5681,7 @@ int Locus :: FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl) {
 		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID)) {
 
 			it.RemoveCurrentItem ();
+			nextSignal->SetDontLook(true);
 			LocusSignalList.RemoveReference (nextSignal);	//!!!!!!!!!
 			continue;
 		}

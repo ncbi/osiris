@@ -2459,6 +2459,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 			SampleOutput = NULL;
 		}
 
+		bioComponent->RemoveAllSignalsOutsideLaneStandardSMLF ();
+
 		if (sampleOK && (bioComponent->PreliminarySampleAnalysisSMLF () < 0)) {
 
 			sampleOK = false;
@@ -2562,7 +2564,6 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		}
 
 		//cout << "Stage 1 complete" << endl;
-
 		bioComponent->TestAllFractionalFiltersSMLF ();
 
 		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);

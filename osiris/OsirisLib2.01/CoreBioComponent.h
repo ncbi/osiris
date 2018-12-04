@@ -462,6 +462,7 @@ public:
 	virtual int GridQualityTestSMPart2 (SmartMessagingComm& comm, int numHigherObjects);
 	virtual int FilterSmartNoticesBelowMinBioID ();
 	virtual int RemoveAllSignalsOutsideLaneStandardSM ();
+	virtual int RemoveAllSignalsOutsideLaneStandardSMLF();
 	virtual int PreliminarySampleAnalysisSM (RGDList& gridList, SampleDataStruct* sampleData);
 	virtual int PreliminarySampleAnalysisSMLF ();
 	virtual int MeasureAllInterlocusSignalAttributesSM ();

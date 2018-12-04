@@ -463,6 +463,7 @@ public:
 	virtual int MeasureInterlocusSignalAttributesSM ();
 	virtual int ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();
 	virtual int RemoveSignalsOutsideLaneStandardSM (ChannelData* laneStandard);
+	virtual int RemoveSignalsOutsideLaneStandardSMLF (ChannelData* laneStandard);
 
 	virtual bool FindLimitsOnPrimaryPullupPeaks ();	// returns true if it made a change in the channel
 	virtual bool ValidateAndCorrectCrossChannelAnalysisSM ();	// returns true if it made a change in the channel
