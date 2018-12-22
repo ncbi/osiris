@@ -1680,6 +1680,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double dualPeakBPTolerance = 0.20;
 
 	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	CoreBioComponent::minPrimaryPullupThreshold = 3.0;  //****This is new on 12/21/2018 to test the new algorithm for estimating the value for each channel pair
 	PreTestSignalsForLaserOffScaleSM ();
 
 	ParameterServer* pServer = new ParameterServer;

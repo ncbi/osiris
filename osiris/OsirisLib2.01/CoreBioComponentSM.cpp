@@ -1516,6 +1516,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
 	double minPullupHeight = 0.0;
 	double rawHeight;
+	double detectionThreshold = mDataChannels[pullupChannel]->GetDetectionThreshold ();
+	bool atLeastOnePositivePullupAboveDetection = false;
 
 	noiseLevelForSecondaryChannel = 0.01 * percentNoiseLevel * noiseLevelForSecondaryChannel;
 
@@ -1600,8 +1602,13 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		else if (secondarySignal->IsSigmoidalPeak ())
 			nSigmoids++;
 
-		else
+		else {
+
 			nPos++;
+
+			if (secondarySignal->Peak () >= detectionThreshold)
+				atLeastOnePositivePullupAboveDetection = true;
+		}
 
 		pairList.push_back (nextPair);
 		currentPeak = primarySignal->Peak ();
@@ -1669,6 +1676,22 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
 		SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
 		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
+		return true;
+	}
+
+	if (!atLeastOnePositivePullupAboveDetection && (nSigmoids == 0)) {
+
+		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
+		SetLinearPullupMatrix(primaryChannel, pullupChannel, 0.0);
+		SetQuadraticPullupMatrix(primaryChannel, pullupChannel, 0.0);
+
+		while (!pairList.empty()) {
+
+			nextPair = pairList.front();
+			delete nextPair;
+			pairList.pop_front();
+		}
+
 		return true;
 	}
 
@@ -1934,24 +1957,12 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	double outlierThreshold;
 	double leastMedianValue;
+	double estimatedMinHeight;
+	double pullupChannelNoise = mDataChannels [pullupChannel]->GetNoiseRange ();
 
-	//while (nextSignal = (DataSignal*) rawDataPullups.GetFirst ()) {
+	int estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
-	//	RGString data;
-	//	data << pullupChannel;
-	//	nextSignal->SetMessageValue (rawDataPrimary, true);
-	//	nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
-	//}
-
-	//while (nextSignal = (DataSignal*) occludedDataPrimaries.GetFirst ()) {
-
-	//	nextSignal->SetMessageValue (weakPrimaryPullup, true);
-	//	RGString data;
-	//	data << pullupChannel;
-	//	nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
-	//}
-
-	// add additionalPairsRequired and numberOfOriginalPairedPeaks to calling sequence below so least median of squares can use the info.
+	// Do we need to do anything with the result:  estimatedMinPrimary?
 
 	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold);
 	list<PullupPair*>::iterator pairIt;
@@ -2291,6 +2302,201 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	}
 
 	return answer;
+}
+
+
+int CoreBioComponent :: EstimateMinimumPrimaryPullupHeightSM (int primaryChannel, int pullupChannel, double& estimatedMinHeight, list<PullupPair*>& pairList, double pullupChannelNoise) {
+
+	//
+	//  Phase 1 for samples only.  Part of pull-up algorithm.  Returns -1 if insufficient information; returns 0 if the pattern is 0 pull-up and returns 1 if sufficient info to restrict primary pull-up height.
+	//
+
+	PullupPair* nextPair;
+	DataSignal* pullupPeak;
+	DataSignal* primaryPeak;
+	double primaryHeight;
+	double topFiveHeights [5];
+	double topFiveRatios [5];
+	int i;
+
+	if (pairList.size() < 4) {
+
+		estimatedMinHeight = 0.0;
+		return -1;
+	}
+
+	PullupPair** topFivePairs = new PullupPair* [5];
+	std::list<PullupPair*>::iterator pairIt;
+
+	for (i = 0; i < 5; i++) {
+
+		topFivePairs [i] = NULL;
+		topFiveHeights [i] = 0.0;
+		topFiveRatios [i] = 0.0;
+	}
+
+	for (pairIt = pairList.begin(); pairIt != pairList.end(); pairIt++) {
+
+		nextPair = *pairIt;
+		primaryPeak = nextPair->mPrimary;
+
+		if (primaryPeak == NULL)
+			continue;
+
+		primaryHeight = primaryPeak->Peak ();
+
+		if (primaryHeight >= topFiveHeights [0]) {
+
+			for (i=4; i>=1; i--) {
+
+				topFiveHeights [i] = topFiveHeights [i - 1];
+				topFivePairs [i] = topFivePairs [i - 1];
+			}
+
+			topFiveHeights [0] = primaryHeight;
+			topFivePairs [0] = nextPair;
+		}
+
+		else if (primaryHeight >= topFiveHeights [1]) {
+
+			for (i=4; i>=2; i--) {
+
+				topFiveHeights [i] = topFiveHeights [i - 1];
+				topFivePairs [i] = topFivePairs [i - 1];
+			}
+
+			topFiveHeights [1] = primaryHeight;
+			topFivePairs [1] = nextPair;
+		}
+
+		else if (primaryHeight >= topFiveHeights [2]) {
+
+			for (i=4; i>=3; i--) {
+
+				topFiveHeights [i] = topFiveHeights [i - 1];
+				topFivePairs [i] = topFivePairs [i - 1];
+			}
+
+			topFiveHeights [2] = primaryHeight;
+			topFivePairs [2] = nextPair;
+		}
+
+		else if (primaryHeight >= topFiveHeights [3]) {
+
+			topFiveHeights [4] = topFiveHeights [3];
+			topFivePairs [4] = topFivePairs [3];
+
+			topFiveHeights [3] = primaryHeight;
+			topFivePairs [3] = nextPair;
+		}
+
+		else if (primaryHeight >= topFiveHeights [4]) {
+
+			topFiveHeights [4] = primaryHeight;
+			topFivePairs [4] = nextPair;
+		}
+	}
+
+	int nPeaks = 0;
+
+	for (i=0; i<5; i++) {
+
+		if (topFivePairs [i] != NULL)
+			nPeaks++;
+
+		else
+			break;
+	}
+
+	if (nPeaks < 4) {
+
+		estimatedMinHeight = 0.0;
+		delete[] topFivePairs;
+		return -1;
+	}
+
+	// Now calculate median ratio for these 4 or 5 peaks
+
+	list<double> ratioList;
+	double temp;
+	double ratios [5];
+
+	for (i=0; i<nPeaks; i++) {
+
+		temp = topFivePairs [i]->mPullupHeight / topFiveHeights [i];
+		ratioList.push_back (temp);
+	}
+
+	ratioList.sort ();
+	int nRanges = nPeaks - 2;
+
+	for (i=0; i<nPeaks; i++) {
+
+		ratios [i] = ratioList.front ();
+		ratioList.pop_front ();
+	}
+
+	double minRange = 1.1;
+	double nextRange;
+	int bestRangeIndex = 0;;
+
+	for (i=0; i<nRanges; i++) {
+
+		nextRange = ratios [i+2] - ratios [i];
+
+		if (nextRange < minRange) {
+
+			minRange = nextRange;
+			bestRangeIndex = i;
+		}
+	}
+
+	double medianRatio = 0.5 * (ratios [bestRangeIndex] + ratios [bestRangeIndex + 2]);
+	double absMedianRatio = abs (medianRatio);
+	list<PullupPair*> tempPairs;
+
+	if (absMedianRatio > 0.0) {
+
+		// Calculate estimated minimum height and remove all pairs and solos from pairList with primary lower than that height
+		// Then delete topFivePairs and return 1
+
+		estimatedMinHeight = pullupChannelNoise / absMedianRatio;
+
+		while (!pairList.empty ()) {
+
+			nextPair = pairList.front ();
+			pairList.pop_front ();
+			primaryHeight = nextPair->mPrimaryHeight;
+
+			if (primaryHeight < estimatedMinHeight) {
+
+				delete nextPair;
+				continue;
+			}
+
+			tempPairs.push_back (nextPair);
+		}
+
+		while (!tempPairs.empty ()) {
+
+			nextPair = tempPairs.front ();
+			tempPairs.pop_front ();
+			pairList.push_back (nextPair);
+		}
+
+		delete[] topFivePairs;
+		return 1;
+	}
+
+	else {
+
+		// There is no pullup.  This happens when 3+ of the top 5 peaks have no pullup, so set estimated minimum height to 0.0, delete topFivePairs and return 0
+		estimatedMinHeight = 0.0;
+		delete[] topFivePairs;
+		return 0;
+	}
+
+	return 0;
 }
 
 
