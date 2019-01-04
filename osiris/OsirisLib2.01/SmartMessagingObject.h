@@ -88,6 +88,8 @@ public:
 	void AppendDataForSmartMessage (const SmartNotice& notice, double value);
 	void AppendDataForSmartMessage (int scope, int index, int value, const RGString& text);
 
+	bool SmartMessageHasData (const SmartNotice& notice) const;
+
 	virtual void ClearSmartNoticeObjects ();
 
 	int NumberOfSmartNoticeObjects () const { return mSmartMessageReporters->Entries (); }

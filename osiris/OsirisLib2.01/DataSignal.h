@@ -678,6 +678,15 @@ public:
 	RGString GetRightStutterRatio () const;
 	double GetCumulativeStutterThreshold () const { return mCumulativeStutterThreshold; }
 
+	void SetTempDataForOccludedPrimary (const RGString& str) { mTempDataForOccudedPrimary = str; }
+	RGString GetTempDataForOccludedPrimary () const { return mTempDataForOccudedPrimary; }
+
+	void SetTempDataForPrimaryNoPullup (const RGString& str) { mTempDataForPrimaryNoPullup = str; }
+	RGString GetTempDataForPrimaryNoPullup () const { return mTempDataForPrimaryNoPullup; }
+
+	void SetTempDataForPrimaryRawDataPullup (const RGString& str) { mTempDataForPrimaryRawDataPullup = str; }
+	RGString GetTempDataForPrimaryRawDataPullup () const { return mTempDataForPrimaryRawDataPullup; }
+
 	RGString CalculateAlleleNameFromILSBP_LF ();
 
 	virtual bool LiesBelowHeightAt (double x, double height);
@@ -999,6 +1008,10 @@ protected:
 	DataInterval* mThisDataSegment;
 	bool* mWeakPullupVector;
 	list<int> mWeakPullupChannels;
+
+	RGString mTempDataForOccudedPrimary;
+	RGString mTempDataForPrimaryNoPullup;
+	RGString mTempDataForPrimaryRawDataPullup;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;
