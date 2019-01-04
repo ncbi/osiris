@@ -1588,11 +1588,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		if (secondarySignal->IsNegativePeak ()) {
 
-			if (secondarySignal->GetCurveFit () < 0.999) {
+			//if (secondarySignal->GetCurveFit () < 0.999) {
 
-				delete nextPair;
-				continue;
-			}
+			//	delete nextPair;
+			//	continue;
+			//}
 
 			hasNegativePullup = true;
 			negativePairs.push_back (nextPair);
@@ -1679,6 +1679,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		return true;
 	}
 
+	smPrimaryInterchannelLink primaryLink;
+
 	if (!atLeastOnePositivePullupAboveDetection && (nSigmoids == 0)) {
 
 		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
@@ -1688,8 +1690,41 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		while (!pairList.empty()) {
 
 			nextPair = pairList.front();
+
+			primarySignal = nextPair->mPrimary;
+			secondarySignal = nextPair->mPullup;
+
+			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+
+			if (iChannelPrimary == NULL)
+				continue; // error
+
+			primarySignal->RemoveProbablePullup (secondarySignal);
+			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+			secondarySignal->SetPrimarySignalFromChannel (pullupChannel, NULL, mNumberOfChannels);
+
+			if (iChannelPrimary->IsEmpty ()) {
+
+				primarySignal->SetInterchannelLink (NULL);
+				primarySignal->SetMessageValue (primaryLink, false);
+			//	channelRemoval.insert (iChannel);
+			}
+
 			delete nextPair;
 			pairList.pop_front();
+		}
+
+		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
+
+			nextLink = *it;
+			primarySignal = nextLink->GetPrimarySignal ();
+			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+			
+			if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
+
+				mInterchannelLinkageList.remove (nextLink);
+				delete nextLink;
+			}
 		}
 
 		return true;
@@ -1963,6 +1998,67 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	int estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
 	// Do we need to do anything with the result:  estimatedMinPrimary?
+
+	if ((estimatedMinPrimary <= 0) || (estimatedMinHeight == 0.0)) {
+
+		// There is no pullup, so cleanup and return
+		smPullUp pullup;
+
+		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
+		SetLinearPullupMatrix(primaryChannel, pullupChannel, 0.0);
+		SetQuadraticPullupMatrix(primaryChannel, pullupChannel, 0.0);
+
+		while (!pairList.empty()) {
+
+			nextPair = pairList.front();
+
+			primarySignal = nextPair->mPrimary;
+			secondarySignal = nextPair->mPullup;
+
+			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+
+			//if (iChannelPrimary == NULL)
+			//	continue; // error
+
+			delete nextPair;
+			pairList.pop_front();
+
+			if (secondarySignal == NULL)
+				continue;
+				
+			primarySignal->RemoveProbablePullup (secondarySignal);
+			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+				secondarySignal->SetMessageValue (pullup, false);
+				secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+			}
+
+			if (iChannelPrimary->IsEmpty ()) {
+
+				primarySignal->SetInterchannelLink (NULL);
+				primarySignal->SetMessageValue (primaryLink, false);
+				//	channelRemoval.insert (iChannel);
+			}
+		}
+
+		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
+
+			nextLink = *it;
+			primarySignal = nextLink->GetPrimarySignal ();
+			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+
+			if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
+
+				mInterchannelLinkageList.remove (nextLink);
+				delete nextLink;
+			}
+		}
+
+		return true;
+	}
 
 	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold);
 	list<PullupPair*>::iterator pairIt;
@@ -2312,7 +2408,7 @@ int CoreBioComponent :: EstimateMinimumPrimaryPullupHeightSM (int primaryChannel
 	//
 
 	PullupPair* nextPair;
-	DataSignal* pullupPeak;
+//	DataSignal* pullupPeak;
 	DataSignal* primaryPeak;
 	double primaryHeight;
 	double topFiveHeights [5];
