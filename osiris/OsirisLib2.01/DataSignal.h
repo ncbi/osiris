@@ -673,9 +673,9 @@ public:
 	int GetNumberOfPrimaryStutterSignals () const { return mStutterPrimaryList.Entries (); }
 	int GetNumberOfLeftPrimaryStutterSignals () const { return mLeftStutterPrimaryList.Entries (); }
 	int GetNumberOfRightPrimaryStutterSignals () const { return mRightStutterPrimaryList.Entries (); }
-	RGString GetStutterRatio () const;
-	RGString GetLeftStutterRatio () const;
-	RGString GetRightStutterRatio () const;
+	//RGString GetStutterRatio () const;
+	//RGString GetLeftStutterRatio () const;
+	//RGString GetRightStutterRatio () const;
 	double GetCumulativeStutterThreshold () const { return mCumulativeStutterThreshold; }
 
 	void SetTempDataForOccludedPrimary (const RGString& str) { mTempDataForOccudedPrimary = str; }

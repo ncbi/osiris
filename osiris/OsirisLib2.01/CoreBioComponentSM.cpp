@@ -1732,8 +1732,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	// Add in raw data only pullup here
 
-	RGDList rawDataPullups;  // add raw data primary pullup peaks here so can test later to see if a peak falls in this category
+	RGDList rawDataPullupPrimaries;  // add raw data primary pullup peaks here so can test later to see if a peak falls in this category
 	RGDList occludedDataPrimaries;  // add primary peaks whose potential pullups are occluded by a nearby peak, but not near enough to cause actual pullup
+	RGDList noPullupPrimaries;  // add non-primary peaks which are not occluded, have no paired pullup and have no raw data pullup
 
 	// Perform additional tests to see if hasNegativePullup accurately reflects reality... (10/16/2016)
 	RGDListIterator channelIterator (*primaryChannelPeaks);
@@ -1767,13 +1768,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight)) {  // Modify min primary and min ratio based on these...
 
 			nextPair = new PullupPair (nextSignal, rawHeight);
-			rawDataPullups.Append (nextSignal);
+			rawDataPullupPrimaries.Append (nextSignal);
 			pairList.push_back (nextPair);
-
-			if ((primaryChannel == 2) && (pullupChannel == 4)) {
-
-				cout << "Raw height for primary at " << nextSignal->GetMean () << " is " << rawHeight << "\n";
-			}
 
 			if (currentPeak < minHeight)
 				minHeight = currentPeak;
@@ -1797,7 +1793,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		}
 	}
 
-	RGDListIterator itRaw (rawDataPullups);
+	RGDListIterator itRaw (rawDataPullupPrimaries);
 
 	while (nextSignal = (DataSignal*) itRaw ()) {
 
@@ -1812,7 +1808,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			pairList.push_back (nextPair);
 			RGString data;
 			data << pullupChannel << "(3)";
-			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			nextSignal->SetTempDataForPrimaryRawDataPullup (data);
 		}
 
 		else if (currentPeak >= minHeight) {
@@ -1823,14 +1820,16 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 //				cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
 			RGString data;
 			data << pullupChannel << "(2)";
-			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			nextSignal->SetTempDataForPrimaryRawDataPullup (data);
 		}
 
 		else {
 
 			RGString data;
 			data << pullupChannel << "(1)";
-			nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			nextSignal->SetTempDataForPrimaryRawDataPullup (data);
 		}
 	}
 
@@ -1932,7 +1931,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			if (nextSignal->GetMessageValue (sidePeak))
 				continue;
 
-			if (rawDataPullups.ContainsReference (nextSignal))
+			if (rawDataPullupPrimaries.ContainsReference (nextSignal))
 				continue;
 
 			if (occludedDataPrimaries.ContainsReference (nextSignal))
@@ -1955,6 +1954,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				nextPair = new PullupPair (nextSignal);
 				pairList.push_back (nextPair);
 				nextSignal->SetMessageValue (zeroPullupPrimary, true);
+				noPullupPrimaries.Append (nextSignal);
 
 				if (currentPeak >= 0.9 * maxHeight) {
 
@@ -1966,7 +1966,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	//				cout << "Sample File " << (char*)mFileName.GetData () << " has 2 extra primaries from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
 					RGString data;
 					data << pullupChannel << "(3)";
-					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+					//nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+					nextSignal->SetTempDataForPrimaryNoPullup (data);
 				}
 
 				else if (currentPeak >= minHeight) {
@@ -1977,14 +1978,16 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	//				cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
 					RGString data;
 					data << pullupChannel << "(2)";
-					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+					//nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+					nextSignal->SetTempDataForPrimaryNoPullup (data);
 				}
 
 				else {
 
 					RGString data;
 					data << pullupChannel << "(1)";
-					nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+					//nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+					nextSignal->SetTempDataForPrimaryNoPullup (data);
 				}
 			}
 		}
@@ -1994,8 +1997,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double leastMedianValue;
 	double estimatedMinHeight;
 	double pullupChannelNoise = mDataChannels [pullupChannel]->GetNoiseRange ();
+	int estimatedMinPrimary;
 
-	int estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
+	estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
 	// Do we need to do anything with the result:  estimatedMinPrimary?
 
@@ -2004,9 +2008,37 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		// There is no pullup, so cleanup and return
 		smPullUp pullup;
 
-		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
-		SetLinearPullupMatrix(primaryChannel, pullupChannel, 0.0);
-		SetQuadraticPullupMatrix(primaryChannel, pullupChannel, 0.0);
+		SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
+		SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
+		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
+		RGString data;
+		occludedDataPrimaries.Clear ();
+
+		while (primarySignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
+
+			if (primarySignal->Peak () >= 0.8 * maxHeight) {
+
+				data = primarySignal->GetTempDataForPrimaryNoPullup ();
+				primarySignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+				primarySignal->SetTempDataForPrimaryNoPullup ("");
+			}
+
+			else {
+
+				primarySignal->SetTempDataForPrimaryNoPullup ("");
+
+				if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
+					nextSignal->SetMessageValue (zeroPullupPrimary, false);
+			}
+		}
+
+		while (primarySignal = (DataSignal*)rawDataPullupPrimaries.GetFirst ()) {
+
+			primarySignal->SetTempDataForPrimaryRawDataPullup ("");
+
+			if (!nextSignal->SmartMessageHasData (rawDataPrimary))
+				nextSignal->SetMessageValue (rawDataPrimary, false);
+		}
 
 		while (!pairList.empty()) {
 
@@ -2029,6 +2061,34 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			primarySignal->RemoveProbablePullup (secondarySignal);
 			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+			//data = primarySignal->GetTempDataForPrimaryRawDataPullup ();
+
+			//if (data.Length () > 0) {
+
+			//	nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			//	nextSignal->SetTempDataForPrimaryRawDataPullup ("");
+			//}
+
+			//else {
+
+			//	if (!nextSignal->SmartMessageHasData (rawDataPrimary))
+			//		nextSignal->SetMessageValue (rawDataPrimary, false);
+			//}
+
+			//data = primarySignal->GetTempDataForPrimaryNoPullup ();
+
+			//if (data.Length () > 0) {
+
+			//	nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+			//	nextSignal->SetTempDataForPrimaryNoPullup ("");
+			//}
+
+			//else {
+
+			//	if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
+			//		nextSignal->SetMessageValue (zeroPullupPrimary, false);
+			//}
 
 			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
 
@@ -2096,14 +2156,49 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		while (nextSignal = (DataSignal*) occludedDataPrimaries.GetFirst ()) {
 
-			nextSignal->SetMessageValue (weakPrimaryPullup, true);  // call message here and add data even if no pullup found to expose the pattern, whatever it is
-			nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+			if (nextSignal->Peak () >= estimatedMinHeight) {
+
+				nextSignal->SetMessageValue (weakPrimaryPullup, true);  // call message here and add data even if no pullup found to expose the pattern, whatever it is
+				nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+			}
 		}
 
-		while (nextSignal = (DataSignal*) rawDataPullups.GetFirst ()) {
+		while (nextSignal = (DataSignal*)rawDataPullupPrimaries.GetFirst ()) {
 
-			nextSignal->SetMessageValue (rawDataPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
-	//		nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);  // already done?
+			if (nextSignal->Peak () >= estimatedMinHeight) {
+
+				data = nextSignal->GetTempDataForPrimaryRawDataPullup ();
+				nextSignal->SetMessageValue (rawDataPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
+				nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);  // already done?  No. Don't think so...
+				nextSignal->SetTempDataForPrimaryRawDataPullup ("");
+			}
+
+			else {
+
+				nextSignal->SetTempDataForPrimaryRawDataPullup ("");
+
+				if (!nextSignal->SmartMessageHasData (rawDataPrimary))
+					nextSignal->SetMessageValue (rawDataPrimary, false);
+			}
+		}
+
+		while (nextSignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
+
+			if (nextSignal->Peak () >= estimatedMinHeight) {
+
+				data = nextSignal->GetTempDataForPrimaryNoPullup ();
+				nextSignal->SetMessageValue (zeroPullupPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
+				nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);  // already done?  No. Don't think so...
+				nextSignal->SetTempDataForPrimaryNoPullup ("");
+			}
+
+			else {
+
+				nextSignal->SetTempDataForPrimaryNoPullup ("");
+
+				if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
+					nextSignal->SetMessageValue (zeroPullupPrimary, false);
+			}
 		}
 		
 //		double correctedHeight;
@@ -2341,8 +2436,10 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		// Test widths of primaries and secondaries...there is insufficient data to detect a pattern
 
-		rawDataPullups.Clear ();
+		// Modify these possibly to report primary peaks that are above thresheld*****
+		rawDataPullupPrimaries.Clear ();
 		occludedDataPrimaries.Clear ();
+		noPullupPrimaries.Clear ();
 
 		for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
 
