@@ -1,18 +1,18 @@
-InputDirectory = C:/Users/goorrob/NIDDK16Files/16 fsa files;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11/Config;
-ReportDirectory = C:/Users/goorrob/SmartOsirisReports/NIDDK16Files;
-MarkerSetName = LadderFree_2;
-LaneStandardName = ABI-LIZ1200;
+InputDirectory = F:/CordisPlus/LaddersAndSamples;
+LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-3/Config;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+MarkerSetName = COrDIS Plus;
+LaneStandardName = S450_80_450;
 CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20180829-143211/V-20180829-143211_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20180829-143211/V-20180829-143211_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.11/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 150.;
+StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20181208-142042/V-20181208-142042_StdSettings.xml;
+LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20181208-142042/V-20181208-142042_LabSettings.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-3/Config/LadderSpecifications/MessageBook.xml;
+MinSampleRFU = 75.;
 MinLaneStandardRFU = 150.;
-MinLadderRFU = 150.;
-MinInterlocusRFU = 150.;
-MinLadderInterlocusRFU = 150.;
-SampleDetectionThreshold = 150.;
+MinLadderRFU = 1000.;
+MinInterlocusRFU = 75.;
+MinLadderInterlocusRFU = 1000.;
+SampleDetectionThreshold = 75.;
 RawDataString = R;
 
 

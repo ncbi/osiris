@@ -1316,7 +1316,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double numberOfSamples = (double)mData->GetNumberOfSamples ();
 	int position = 0;
 
-	while (nextSignal = (DataSignal*) it ()) {
+	while (nextSignal = (DataSignal*) itt ()) {
 
 		lineFit = mData->TestConstantCharacteristicRetry (nextSignal, constantHeight, leftEndPoint, rightEndPoint);
 
@@ -1333,7 +1333,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		double mean = nextSignal->GetMean ();
 		position++;
 
-		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (height <= 0.0) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable ()) {
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (abs (height) == numeric_limits<double>::infinity()) || (height <= 0.0) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable ()) {
 
 			if (mean >= numberOfSamples)
 				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << " with left limit = " << nextSignal->LeftEndPoint () << " and right limit = " << nextSignal->RightEndPoint () << " with type " << nextSignal->GetSignalType () << "\n";
