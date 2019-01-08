@@ -325,6 +325,31 @@ bool CVolume::ReleaseLock()
   m_bIgnoreReadLock = false;
   return bRtn;
 }
+//****** static functions used by CVolumes, CSiteKitNoLadder and CSiteKit (in the future)
+//  CVolume::HasAllFiles - check if a directory contains all files in a list and 
+//     they are readable
+//  CVolume::GetPathPrefix - Get the full path and prefix for file names
+//     in a directory such that their name begins with the directory name
+//     followed by _
+//     for example, if the path is /usr/lib/foo/bar, the prefix
+//     will be /usr/lib/foo/bar/bar_ for the files used in the directory
+bool CVolume::HasAllFiles(const wxString &sDirName, const wxChar *ppList[])
+{
+  wxString sPrefix = CVolume::GetPathPrefix(sDirName);
+  wxString sFile;
+  bool bRtn = true;
+  for (const wxChar **pp = ppList; ((*pp) != NULL) && bRtn; ++pp)
+  {
+    sFile = sPrefix;
+    sFile.Append(*pp);
+    if (!wxFileName::IsFileReadable(sFile))
+    {
+      bRtn = false;
+    }
+  }
+  return bRtn;
+}
+
 wxString CVolume::GetPathPrefix(const wxString &_sDir)
 {
   wxString sDir(_sDir);
@@ -628,24 +653,6 @@ bool CVolumes::_RemoveFiles(const wxString &sDirName)
       {
         bRtn = false;
       }
-    }
-  }
-  return bRtn;
-}
-
-
-bool CVolumes::_HasFiles(const wxString &sDirName)
-{
-  wxString sPrefix = CVolume::GetPathPrefix(sDirName);
-  wxString sFile;
-  bool bRtn = true;
-  for(const wxChar **pp = g_psNames;((*pp) != NULL) && bRtn; ++pp)
-  {
-    sFile = sPrefix;
-    sFile.Append(*pp);
-    if(!wxFileName::IsFileReadable(sFile))
-    {
-      bRtn = false;
     }
   }
   return bRtn;

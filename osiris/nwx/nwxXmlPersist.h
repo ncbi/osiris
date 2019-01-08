@@ -1197,6 +1197,7 @@ public:
     return bRtn;
   }
   virtual bool CheckFileModification(bool bReload = false);
+  virtual bool FileExists();
   bool UpdateLock()
   {
     bool bRtn = false;
@@ -1289,6 +1290,13 @@ public:
   {
     return g_sRootNode;
   }
+  bool LastFileExists() const
+  {
+    bool b = m_sLastFileName.IsEmpty() ? false
+      : wxFileExists(m_sLastFileName);
+    return b;
+  }
+
   const wxString &GetLastFileName() const
   {
     return m_sLastFileName;

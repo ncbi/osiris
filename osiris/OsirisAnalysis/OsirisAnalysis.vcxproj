@@ -274,6 +274,7 @@
     <ClCompile Include="CArchiveCollection.cpp" />
     <ClCompile Include="CArtifactLabels.cpp" />
     <ClCompile Include="CArtifactLabelsUser.cpp" />
+    <ClCompile Include="CButtons.cpp" />
     <ClCompile Include="CComboLabels.cpp" />
     <ClCompile Include="CDialogAbout.cpp" />
     <ClCompile Include="CDialogAnalysis.cpp" />
@@ -299,6 +300,7 @@
     <ClCompile Include="CDialogPromptNewerFile.cpp" />
     <ClCompile Include="CDialogReallyQuit.cpp" />
     <ClCompile Include="CDialogShowLabSettings.cpp" />
+    <ClCompile Include="CDialogSiteKitNoLadder.cpp" />
     <ClCompile Include="CDialogSitePath.cpp" />
     <ClCompile Include="CDialogToggleEnabled.cpp" />
     <ClCompile Include="CDialogVolumes.cpp" />
@@ -398,6 +400,7 @@
     <ClCompile Include="CPlotData.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
+    <ClCompile Include="CSiteKitNoLadder.cpp" />
     <ClCompile Include="CSitePath.cpp" />
     <ClCompile Include="CSiteSettings.cpp" />
     <ClCompile Include="CSplitterCellHistory.cpp" />
@@ -407,6 +410,7 @@
     <ClCompile Include="CXSLExportFileType.cpp" />
     <ClCompile Include="mainApp.cpp" />
     <ClCompile Include="mainFrame.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -419,6 +423,7 @@
     <ClInclude Include="CArtifactLabels.h" />
     <ClInclude Include="CArtifactLabelsUser.h" />
     <ClInclude Include="CButtonGraph.h" />
+    <ClInclude Include="CButtons.h" />
     <ClInclude Include="CButtonSample.h" />
     <ClInclude Include="CComboLabels.h" />
     <ClInclude Include="CDialogAbout.h" />
@@ -445,6 +450,7 @@
     <ClInclude Include="CDialogPromptNewerFile.h" />
     <ClInclude Include="CDialogReallyQuit.h" />
     <ClInclude Include="CDialogShowLabSettings.h" />
+    <ClInclude Include="CDialogSiteKitNoLadder.h" />
     <ClInclude Include="CDialogSitePath.h" />
     <ClInclude Include="CDialogToggleEnabled.h" />
     <ClInclude Include="CDialogVolumes.h" />
@@ -551,6 +557,7 @@
     <ClInclude Include="CPlotData.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
+    <ClInclude Include="CSiteKitNoLadder.h" />
     <ClInclude Include="CSitePath.h" />
     <ClInclude Include="CSiteSettings.h" />
     <ClInclude Include="CSplitterCellHistory.h" />

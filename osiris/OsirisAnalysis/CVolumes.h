@@ -149,6 +149,7 @@ public:
   }
 
   static wxString GetPathPrefix(const wxString &sDir);
+  static bool HasAllFiles(const wxString &sDir, const wxChar *ppList[]);
 private:
   void _InitError();
   wxString _GetFilePath(const wxChar *pFileName) const;
@@ -283,7 +284,10 @@ private:
 
   void _SetModified();
   bool _RemoveFiles(const wxString &sDir);
-  bool _HasFiles(const wxString &dirname);
+  bool _HasFiles(const wxString &dirname)
+  {
+    return CVolume::HasAllFiles(dirname, g_psNames);
+  }
   void _Cleanup();
   void _LoadDir(const wxString &dirname);
   void _SetupKitVolumes();
