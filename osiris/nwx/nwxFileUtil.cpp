@@ -503,7 +503,6 @@ bool nwxFileUtil::MkDir(
 #endif
     )
 {
-  //   STOP HERE need to support bInheritMode
   bool bRtn = false;
   if(wxDir::Exists(sDir))
   {

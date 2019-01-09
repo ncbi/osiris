@@ -124,10 +124,10 @@ public:
 protected:
   virtual void RegisterAll(bool = false)
   {
-    RegisterInt(wxS("ChannelDisplay"), &m_nChannelDisplay);
-    RegisterInt(wxS("ChannelFromFile"), &m_nChannelFromFile);
-    RegisterWxString(wxS("DyeName"), &m_sDyeName);
+    RegisterInt(wxS("KitChannelNumber"), &m_nChannelDisplay);
+    RegisterInt(wxS("fsaChannelNumber"), &m_nChannelFromFile);
     RegisterWxString(wxS("Color"), &m_sColor);
+    RegisterWxString(wxS("DyeName"), &m_sDyeName);
   }
 private:
   wxString m_sDyeName;
@@ -185,15 +185,19 @@ public:
     }
     return m_sFileName;
   }
+  void SetFileName(const wxString &s)
+  {
+    if (m_sFileName != s)
+    {
+      Unlock();
+      m_sFileName = s;
+    }
+  }
   CSiteKitNoLadder &operator = (const CSiteKitNoLadder &x)
   {
     const wxString &sThisFile = GetFileName();
     const wxString &sXfile = x.GetFileName();
-    if (sXfile != sThisFile)
-    {
-      Unlock();
-      m_sFileName = sXfile;
-    }
+    SetFileName(x.GetFileName());
     SK_COPY(m_sKitName);
     SK_COPY(m_sOSIRIS_Version);
     SK_COPY(m_dLastMod);
@@ -251,6 +255,8 @@ public:
     bool bRtn = sFileName.IsEmpty() ? false : SaveFile(sFileName);
     return bRtn;
   }
+  bool SaveAll();
+  bool WriteAll();
   static bool IsChannelListComplete(const std::map<int, CSiteKitChannelDetails *> *pmap)
   {
     int nCount = (int)pmap->size();
@@ -336,7 +342,7 @@ public:
     }
     return bRtn;
   }
-  bool IsLocked()
+  bool IsLocked() const
   {
     return (m_pLock == NULL) ? false : m_pLock->IsLocked();
   }
@@ -442,6 +448,8 @@ public:
     // (Remove, Create, Update)
     return m_sLastMessage;
   }
+  static wxString GetKitPath(bool bEndWithSeparator = false);
+  static bool CanCreateKit();
 private:
   typedef std::map<wxString, CSiteKitNoLadder *, nwxStringLessFileName> FILE_TO_KIT;
   typedef mapptr<wxString, CSiteKitNoLadder, nwxStringLessFileName> pFILE_TO_KIT;
@@ -454,6 +462,10 @@ private:
   void _clearErrorCount()
   {
     m_nErrorCount = 0;
+  }
+  void _clearKitNames()
+  {
+    m_mapKitName.clear();
   }
   void _incrementErrorCount()
   {
