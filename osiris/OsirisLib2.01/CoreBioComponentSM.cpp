@@ -50,6 +50,7 @@
 #include "STRSmartNotices.h"
 #include "TracePrequalification.h"
 #include "DirectoryManager.h"
+#include "LeastMedianOfSquares.h"
 
 
 // Smart Message Functions**************************************************************************************************************
@@ -1521,6 +1522,12 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	noiseLevelForSecondaryChannel = 0.01 * percentNoiseLevel * noiseLevelForSecondaryChannel;
 
+	if (testLaserOffScale)
+		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);
+
+	else
+		LeastMedianOfSquares::SetMinimumNumberOfSamples (4);
+
 	// Modify code below to account for pullup corrections to secondary peaks that are also primary, and maybe to primary peaks?
 
 	//cout << "Chosen (time, primary, pullup) pairs:  ";
@@ -1718,6 +1725,10 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 			nextLink = *it;
 			primarySignal = nextLink->GetPrimarySignal ();
+
+			if (primarySignal->GetChannel () != primaryChannel)
+				continue;
+
 			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
 			
 			if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
@@ -1963,7 +1974,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					pairList.push_back (nextPair);
 					nextPair = new PullupPair (nextSignal, true);
 					pairList.push_back (nextPair);
-	//				cout << "Sample File " << (char*)mFileName.GetData () << " has 2 extra primaries from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
 					RGString data;
 					data << pullupChannel << "(3)";
 					//nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
@@ -1998,126 +2008,124 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double estimatedMinHeight;
 	double pullupChannelNoise = mDataChannels [pullupChannel]->GetNoiseRange ();
 	int estimatedMinPrimary;
+	InterchannelLinkage* iChannelPrimary;
 
-	estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
+	if (!testLaserOffScale) {
 
-	// Do we need to do anything with the result:  estimatedMinPrimary?
+		estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
-	if ((estimatedMinPrimary <= 0) || (estimatedMinHeight == 0.0)) {
+		// Do we need to do anything with the result:  estimatedMinPrimary?  Yes. I think so...
 
-		// There is no pullup, so cleanup and return
-		smPullUp pullup;
+		if (estimatedMinPrimary == 5) {
 
-		SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
-		SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
-		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
-		RGString data;
-		occludedDataPrimaries.Clear ();
+			// There is no pullup, so cleanup and return
 
-		while (primarySignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
+			SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
+			SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
+			SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
+			RGString data;
+			occludedDataPrimaries.Clear ();
 
-			if (primarySignal->Peak () >= 0.8 * maxHeight) {
+			while (primarySignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
 
-				data = primarySignal->GetTempDataForPrimaryNoPullup ();
-				primarySignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
-				primarySignal->SetTempDataForPrimaryNoPullup ("");
+				if (primarySignal->Peak () >= 0.9 * maxHeight) {
+
+					data = primarySignal->GetTempDataForPrimaryNoPullup ();
+					primarySignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+					primarySignal->SetTempDataForPrimaryNoPullup ("");
+				}
+
+				else {
+
+					primarySignal->SetTempDataForPrimaryNoPullup ("");
+
+					if (!primarySignal->SmartMessageHasData (zeroPullupPrimary))
+						primarySignal->SetMessageValue (zeroPullupPrimary, false);
+				}
 			}
 
-			else {
+			while (primarySignal = (DataSignal*)rawDataPullupPrimaries.GetFirst ()) {
 
-				primarySignal->SetTempDataForPrimaryNoPullup ("");
+				primarySignal->SetTempDataForPrimaryRawDataPullup ("");
 
-				if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
-					nextSignal->SetMessageValue (zeroPullupPrimary, false);
+				if (!primarySignal->SmartMessageHasData (rawDataPrimary))
+					primarySignal->SetMessageValue (rawDataPrimary, false);
 			}
+
+			while (!pairList.empty()) {
+
+				nextPair = pairList.front();
+
+				primarySignal = nextPair->mPrimary;
+				secondarySignal = nextPair->mPullup;
+
+				iChannelPrimary = primarySignal->GetInterchannelLink ();
+
+				delete nextPair;
+				pairList.pop_front();
+
+				if (secondarySignal == NULL)
+					continue;
+
+				primarySignal->RemoveProbablePullup (secondarySignal);
+
+				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+					secondarySignal->SetMessageValue (pullup, false);
+					secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+				}
+
+				if (iChannelPrimary == NULL)
+					continue; // error??
+
+				iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+				if (iChannelPrimary->IsEmpty ()) {
+
+					primarySignal->SetInterchannelLink (NULL);
+					primarySignal->SetMessageValue (primaryLink, false);
+				}
+			}
+
+			for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
+
+				nextLink = *it;
+				primarySignal = nextLink->GetPrimarySignal ();
+
+				if (primarySignal->GetChannel () != primaryChannel)
+					continue;
+
+				InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+
+				if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
+
+					mInterchannelLinkageList.remove (nextLink);
+					delete nextLink;
+				}
+			}
+
+			return true;
 		}
 
-		while (primarySignal = (DataSignal*)rawDataPullupPrimaries.GetFirst ()) {
+		else if (estimatedMinPrimary == -1) {
+			
+			// Insufficient data for pattern
+			// Remove peaks from primary list that are below user specified height and proceed to LMS
+			// Make a function for this based on passing pairList and the three peak lists, plus height to test for, plus primary channel and pullup channel.
 
-			primarySignal->SetTempDataForPrimaryRawDataPullup ("");
-
-			if (!nextSignal->SmartMessageHasData (rawDataPrimary))
-				nextSignal->SetMessageValue (rawDataPrimary, false);
+			FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, primaryThreshold, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
 		}
 
-		while (!pairList.empty()) {
+		else if (estimatedMinPrimary == 0) {
 
-			nextPair = pairList.front();
+			// We have data for minimum height
+			// Remove primaries that are less than calculated value along with artifact calls
+			// Continue to LMS
 
-			primarySignal = nextPair->mPrimary;
-			secondarySignal = nextPair->mPullup;
-
-			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
-
-			//if (iChannelPrimary == NULL)
-			//	continue; // error
-
-			delete nextPair;
-			pairList.pop_front();
-
-			if (secondarySignal == NULL)
-				continue;
-				
-			primarySignal->RemoveProbablePullup (secondarySignal);
-			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
-			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
-
-			//data = primarySignal->GetTempDataForPrimaryRawDataPullup ();
-
-			//if (data.Length () > 0) {
-
-			//	nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
-			//	nextSignal->SetTempDataForPrimaryRawDataPullup ("");
-			//}
-
-			//else {
-
-			//	if (!nextSignal->SmartMessageHasData (rawDataPrimary))
-			//		nextSignal->SetMessageValue (rawDataPrimary, false);
-			//}
-
-			//data = primarySignal->GetTempDataForPrimaryNoPullup ();
-
-			//if (data.Length () > 0) {
-
-			//	nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
-			//	nextSignal->SetTempDataForPrimaryNoPullup ("");
-			//}
-
-			//else {
-
-			//	if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
-			//		nextSignal->SetMessageValue (zeroPullupPrimary, false);
-			//}
-
-			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
-
-				secondarySignal->SetMessageValue (pullup, false);
-				secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
-			}
-
-			if (iChannelPrimary->IsEmpty ()) {
-
-				primarySignal->SetInterchannelLink (NULL);
-				primarySignal->SetMessageValue (primaryLink, false);
-				//	channelRemoval.insert (iChannel);
-			}
+			FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
 		}
-
-		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
-
-			nextLink = *it;
-			primarySignal = nextLink->GetPrimarySignal ();
-			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
-
-			if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
-
-				mInterchannelLinkageList.remove (nextLink);
-				delete nextLink;
-			}
-		}
-
-		return true;
 	}
 
 	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold);
@@ -2137,6 +2145,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double ratio;
 	list<InterchannelLinkage*> emptyLinks;
 	RGDList testedPullups;
+	RGString data;
 
 	if (answer) {
 
@@ -2151,7 +2160,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 //		bool belowMinRFU;
 		mLeastMedianValue [primaryChannel][pullupChannel] = leastMedianValue;
 		mOutlierThreshold [primaryChannel][pullupChannel] = outlierThreshold;
-		RGString data;
+		
 		data << pullupChannel;
 
 		while (nextSignal = (DataSignal*) occludedDataPrimaries.GetFirst ()) {
@@ -2201,11 +2210,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			}
 		}
 		
-//		double correctedHeight;
 		list<DataSignal*> removePrimaryList;
 		
-		//cout << "Least squares fit gives (linear, quadratic) coefficients:  (" << linearPart << ", " << quadraticPart << ")" << endl;
-
 		if ((linearPart == 0.0) && (quadraticPart == 0.0)) {  // There is a pattern and it is that there is no pullup
 
 			// remove all cross channel links except those for which pullup is sufficiently narrow
@@ -2316,108 +2322,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				}
 			}
 
-			//while (!weakPullupPeaks.empty ()) {
-
-			//	primarySignal = weakPullupPeaks.front ();
-			//	weakPullupPeaks.pop_front ();
-			//	primarySignal->SetMessageValue (weakPrimaryPullup, true);
-			//	primarySignal->AppendDataForSmartMessage (weakPrimaryPullup, pullupChannel);
-			//}
-
-			//for (linkIt=mInterchannelLinkageList.begin (); linkIt!=mInterchannelLinkageList.end (); linkIt++) {
-
-			//	nextLink = *linkIt;
-			//	primarySignal = nextLink->GetPrimarySignal ();
-
-			//	if (primarySignal->GetChannel () != primaryChannel)
-			//		continue;
-
-			//	if (primarySignal->GetMessageValue (laserOffScale) != testLaserOffScale)
-			//		continue;
-
-			//	secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
-
-			//	if (secondarySignal == NULL)
-			//		continue;
-
-			//	//if (testedPullups.ContainsReference (secondarySignal))
-			//	//	continue;
-
-			//	if (secondarySignal->GetMessageValue (purePullup))
-			//		continue;
-
-			//	if (DataSignal::IsNegativeOrSigmoid (secondarySignal))
-			//		continue;
-
-			//	secondaryNarrow = (secondarySignal->GetStandardDeviation () < 0.5* primarySignal->GetStandardDeviation ())  && !secondarySignal->IgnoreWidthTest ();
-			//	secondaryNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
-			//	//correctedHeight = secondarySignal->TroughHeight () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
-			//	correctedHeight = secondarySignal->Peak () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
-			//	belowMinRFU = (correctedHeight < analysisThreshold);
-
-			//	if (secondaryNarrow || secondaryNarrow2) {
-
-			//		// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
-
-			//		secondarySignal->SetMessageValue (purePullup, true);
-			//		secondarySignal->SetMessageValue (pullup, false);
-			//		secondarySignal->SetMessageValue (partialPullupBelowMin, false);
-			//		ratio = 100.0 * (secondarySignal->Peak () / primarySignal->Peak ());
-			//		secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
-			//		secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
-			//		secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
-
-			//		if (!testLaserOffScale)
-			//			cout << "Half width test triggered for other peak in sample name = " << (char*)mName.GetData () << " in channel " << pullupChannel << " at time " << secondarySignal->GetMean () << "\n";
-
-			//		if (secondarySignal->HasCrossChannelSignalLink ()) {
-
-			//			// remove link; this is not a primary peak
-			//			removePrimaryList.push_back (secondarySignal);
-			//		}
-			//	}
-
-			//	else if (belowMinRFU) {
-
-			//		// This is a partial pullup with correction less than minRFU.  Assign appropriate message.
-
-			//		secondarySignal->SetMessageValue (partialPullupBelowMin, true);
-			//		secondarySignal->SetMessageValue (pullup, false);
-
-			//		ratio = 100.0 * (secondarySignal->Peak () / primarySignal->Peak ());
-			//		secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
-			//		double p = primarySignal->Peak ();
-			//		ratio = 100.0 * (linearPart + quadraticPart * p);
-			//		secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
-			//		secondarySignal->SetPullupFromChannel (primaryChannel, 0.01 * ratio * p, mNumberOfChannels);
-			//		secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
-
-			//		// eliminate this and place it at end because a further analysis may undo...??
-			//		//if (secondarySignal->HasCrossChannelSignalLink ()) {
-
-			//		//	// remove link; this is not a primary peak
-			//		//	removePrimaryList.push_back (secondarySignal);
-			//		//}
-			//	}
-
-			//	else {
-
-			//		// This is both an outlier and correction is above minRFU; test if correection below primary pullup threshold if it has a cross channel signal link;
-			//		// if so, remove link
-
-			//		secondarySignal->SetMessageValue (partialPullupBelowMin, false);
-			//		secondarySignal->SetMessageValue (purePullup, false);
-			//		secondarySignal->SetMessageValue (pullup, true);
-
-			//		// Save for later, after all channels are done
-			//		//if (secondarySignal->HasCrossChannelSignalLink () && (correctedHeight < pullupThreshold)) {
-
-			//		//	// This is not a primary.  As above, remove links...
-			//		//	removePrimaryList.push_back (secondarySignal);
-			//		//}
-			//	}
-			//}
-
 			// for other outliers, the jury is still out until all channel contributions are tallied
 			removePrimaryList.unique ();
 			testedPullups.Clear ();
@@ -2436,10 +2340,54 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 		// Test widths of primaries and secondaries...there is insufficient data to detect a pattern
 
-		// Modify these possibly to report primary peaks that are above thresheld*****
-		rawDataPullupPrimaries.Clear ();
-		occludedDataPrimaries.Clear ();
-		noPullupPrimaries.Clear ();
+		data << pullupChannel;
+
+		while (nextSignal = (DataSignal*)occludedDataPrimaries.GetFirst ()) {
+
+			if (nextSignal->Peak () >= estimatedMinHeight) {
+
+				nextSignal->SetMessageValue (weakPrimaryPullup, true);  // call message here and add data even if no pullup found to expose the pattern, whatever it is
+				nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+			}
+		}
+
+		while (nextSignal = (DataSignal*)rawDataPullupPrimaries.GetFirst ()) {
+
+			if (nextSignal->Peak () >= estimatedMinHeight) {
+
+				data = nextSignal->GetTempDataForPrimaryRawDataPullup ();
+				nextSignal->SetMessageValue (rawDataPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
+				nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);  // already done?  No. Don't think so...
+				nextSignal->SetTempDataForPrimaryRawDataPullup ("");
+			}
+
+			else {
+
+				nextSignal->SetTempDataForPrimaryRawDataPullup ("");
+
+				if (!nextSignal->SmartMessageHasData (rawDataPrimary))
+					nextSignal->SetMessageValue (rawDataPrimary, false);
+			}
+		}
+
+		while (nextSignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
+
+			if (nextSignal->Peak () >= estimatedMinHeight) {
+
+				data = nextSignal->GetTempDataForPrimaryNoPullup ();
+				nextSignal->SetMessageValue (zeroPullupPrimary, true);	// call message here and add data even if no pullup found to expose the pattern, whatever it is
+				nextSignal->AppendDataForSmartMessage (zeroPullupPrimary, data);  // already done?  No. Don't think so...
+				nextSignal->SetTempDataForPrimaryNoPullup ("");
+			}
+
+			else {
+
+				nextSignal->SetTempDataForPrimaryNoPullup ("");
+
+				if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
+					nextSignal->SetMessageValue (zeroPullupPrimary, false);
+			}
+		}
 
 		for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
 
@@ -2655,30 +2603,30 @@ int CoreBioComponent :: EstimateMinimumPrimaryPullupHeightSM (int primaryChannel
 
 		estimatedMinHeight = pullupChannelNoise / absMedianRatio;
 
-		while (!pairList.empty ()) {
+		//while (!pairList.empty ()) {
 
-			nextPair = pairList.front ();
-			pairList.pop_front ();
-			primaryHeight = nextPair->mPrimaryHeight;
+		//	nextPair = pairList.front ();
+		//	pairList.pop_front ();
+		//	primaryHeight = nextPair->mPrimaryHeight;
 
-			if (primaryHeight < estimatedMinHeight) {
+		//	if (primaryHeight < estimatedMinHeight) {
 
-				delete nextPair;
-				continue;
-			}
+		//		delete nextPair;
+		//		continue;
+		//	}
 
-			tempPairs.push_back (nextPair);
-		}
+		//	tempPairs.push_back (nextPair);
+		//}
 
-		while (!tempPairs.empty ()) {
+		//while (!tempPairs.empty ()) {
 
-			nextPair = tempPairs.front ();
-			tempPairs.pop_front ();
-			pairList.push_back (nextPair);
-		}
+		//	nextPair = tempPairs.front ();
+		//	tempPairs.pop_front ();
+		//	pairList.push_back (nextPair);
+		//}
 
 		delete[] topFivePairs;
-		return 1;
+		return 0;
 	}
 
 	else {
@@ -2686,7 +2634,154 @@ int CoreBioComponent :: EstimateMinimumPrimaryPullupHeightSM (int primaryChannel
 		// There is no pullup.  This happens when 3+ of the top 5 peaks have no pullup, so set estimated minimum height to 0.0, delete topFivePairs and return 0
 		estimatedMinHeight = 0.0;
 		delete[] topFivePairs;
-		return 0;
+		return 5;
+	}
+
+	return 0;
+}
+
+
+int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (int primaryChannel, int pullupChannel, double primaryThreshold, list<PullupPair*>& pairList, RGDList& noPullupPrimaries, RGDList& rawDataPullupPrimaries, RGDList& occludedPrimaries) {
+
+	list<PullupPair*> tempPairs;
+	list<InterchannelLinkage*>::iterator it;
+	double primaryHeight;
+	PullupPair* nextPair;
+	InterchannelLinkage* nextLink;
+	InterchannelLinkage* iChannelPrimary;
+	DataSignal* primarySignal;
+	DataSignal* secondarySignal;
+	RGString data;
+
+	smPullUp pullup;
+	smPrimaryInterchannelLink primaryLink;
+	smWeakPrimaryInterchannelLink weakPrimaryPullup;
+	smZeroPullupPrimaryInterchannelLink zeroPullupPrimary;
+	smRawDataPrimaryInterchannelLink rawDataPrimary;
+
+	while (!pairList.empty ()) {
+
+		nextPair = pairList.front ();
+		pairList.pop_front ();
+		primaryHeight = nextPair->mPrimaryHeight;
+
+		if (primaryHeight < primaryThreshold) {
+
+			secondarySignal = nextPair->mPullup;
+			primarySignal = nextPair->mPrimary;
+
+			if (secondarySignal != NULL) {
+
+				// test for removing all pullup info
+
+				iChannelPrimary = primarySignal->GetInterchannelLink ();
+				primarySignal->RemoveProbablePullup (secondarySignal);
+
+				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+					secondarySignal->SetMessageValue (pullup, false);
+					secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+				}
+
+				if (iChannelPrimary == NULL)
+					continue; // error??
+
+				iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+				if (iChannelPrimary->IsEmpty ()) {
+
+					primarySignal->SetInterchannelLink (NULL);
+					primarySignal->SetMessageValue (primaryLink, false);
+				}
+			}
+
+			delete nextPair;
+			continue;
+		}
+
+		tempPairs.push_back (nextPair);
+	}
+
+	while (!tempPairs.empty ()) {
+
+		nextPair = tempPairs.front ();
+		tempPairs.pop_front ();
+		pairList.push_back (nextPair);
+	}
+
+	// Now remove artifacts from primaries with no Osiris pull-up
+
+	while (primarySignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
+
+		if (primarySignal->Peak () >= primaryThreshold) {
+
+			data = primarySignal->GetTempDataForPrimaryNoPullup ();
+			primarySignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
+			primarySignal->SetTempDataForPrimaryNoPullup ("");
+		}
+
+		else {
+
+			primarySignal->SetTempDataForPrimaryNoPullup ("");
+
+			if (!primarySignal->SmartMessageHasData (zeroPullupPrimary))
+				primarySignal->SetMessageValue (zeroPullupPrimary, false);
+		}
+	}
+
+	while (primarySignal = (DataSignal*)rawDataPullupPrimaries.GetFirst ()) {
+
+		if (primarySignal->Peak () >= primaryThreshold) {
+
+			data = primarySignal->GetTempDataForPrimaryRawDataPullup ();
+			primarySignal->AppendDataForSmartMessage (rawDataPrimary, data);
+			primarySignal->SetTempDataForPrimaryRawDataPullup ("");
+		}
+
+		else {
+
+			primarySignal->SetTempDataForPrimaryRawDataPullup ("");
+
+			if (!primarySignal->SmartMessageHasData (rawDataPrimary))
+				primarySignal->SetMessageValue (rawDataPrimary, false);
+		}
+	}
+
+	while (primarySignal = (DataSignal*)occludedPrimaries.GetFirst ()) {
+
+		if (primarySignal->Peak () >= primaryThreshold) {
+
+			data = primarySignal->GetTempDataForOccludedPrimary ();
+			primarySignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+			primarySignal->SetTempDataForOccludedPrimary ("");
+		}
+
+		else {
+
+			primarySignal->SetTempDataForOccludedPrimary ("");
+
+			if (!primarySignal->SmartMessageHasData (weakPrimaryPullup))
+				primarySignal->SetMessageValue (weakPrimaryPullup, false);
+		}
+	}
+
+	for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
+
+		nextLink = *it;
+		primarySignal = nextLink->GetPrimarySignal ();
+
+		if (primarySignal->GetChannel () != primaryChannel)
+			continue;
+
+		InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+
+		if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
+
+			mInterchannelLinkageList.remove (nextLink);
+			delete nextLink;
+		}
 	}
 
 	return 0;
