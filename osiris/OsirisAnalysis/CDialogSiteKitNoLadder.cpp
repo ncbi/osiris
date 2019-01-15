@@ -427,7 +427,7 @@ void CDialogSiteKitNoLadder::OnRemove(wxCommandEvent &e)
     // button should be disabled
     sMsg = "Marker set, ";
     sMsg.Append(sKitName);
-    sMsg.Append(", is not locked and cannot be removed.")
+    sMsg.Append(", is not locked and cannot be removed.");
   }
   else if(!m_KitLadder.UnLock())
   {

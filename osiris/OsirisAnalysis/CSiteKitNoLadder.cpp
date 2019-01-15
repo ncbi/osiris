@@ -1,16 +1,111 @@
-#define __C_SITE_KIT_NO_LADDER_CPP__
-#include <memory>
-#include <wx/arrstr.h>
+
 #include "CSiteKitNoLadder.h"
+
 #include "nwx/nwxLog.h"
 #include "nwx/nwxFileUtil.h"
+
 #include "CVolumes.h" // for CVolume::GetPathPrefix
 #include "CSitePath.h"
+#include "MakeLadderFree.h"
+#include "MakeLadderFreeLabSettings.h"
+#include <memory>
+
+#include <wx/arrstr.h>
+#include <wx/mstream.h>
+
+#include "wxXml2/wxXml2Document.h"
+#include "wxXsl/wxXslSheet.h"
+
+const wxString CSiteKitNoLadder::g_sROOT_NODE(wxS("SiteKitNoLadder"));
+
+
 nwxIMPLEMENT_GLOBAL_OBJECT(CSiteKitNoLadderCollection)
 
 #define LAB_SETTINGS_FILE wxS("LabSettings.xml")
 #define LADDER_INFO_FILE wxS("LadderInfo.xml")
 #define SETUP_FILE wxS("Setup_NL.xml")
+
+
+bool CSiteKitNoLadder::WriteAll()
+{
+  bool bRtn = true;
+  const wxString &sLastFile = GetLastFileName();
+  wxString sFilePath;
+  if (!sLastFile.IsEmpty())
+  {
+    sFilePath = sLastFile;
+  }
+  else
+  {
+    // new kit, make new directory
+    const wxString &sKitName(GetKitName());
+    wxString sDirName = nwxFileUtil::TextToFileName(sKitName);
+    wxString sKitPath = CSiteKitNoLadderCollection::GetKitPath(true);
+    sKitPath.Append(sDirName);
+    wxString sPrefix = nwxFileUtil::FindNewDirName(sKitPath);
+    wxFileName fn(sPrefix);
+    sDirName = fn.GetFullName();
+    if (nwxFileUtil::MkDir(sPrefix, true))
+    {
+      nwxFileUtil::EndWithSeparator(&sPrefix);
+      sPrefix.Append(sDirName);
+      sPrefix.Append("_");
+      sFilePath = sPrefix;
+      sFilePath.Append(SETUP_FILE);
+    }
+    else
+    {
+      bRtn = false;
+    }
+  }
+  if (!bRtn)
+  {
+  }
+  else if (!SaveFile(sFilePath))
+  {
+      bRtn = false;
+  }
+  else
+  {
+    wxXml2Document doc(sFilePath);
+    if (!doc.IsOk())
+    {
+    }
+    else if (!_transform(&doc, LAB_SETTINGS_FILE, MakeLadderFreeLabSettings, sizeof(MakeLadderFreeLabSettings)))
+    {
+    }
+    else if (!_transform(&doc, LADDER_INFO_FILE, MakeLadderFree, sizeof(MakeLadderFree)))
+    {
+    }
+    else
+    {
+      bRtn = true;
+    }
+  }
+  return bRtn;
+}
+
+bool CSiteKitNoLadder::_transform(wxXml2Document *pDoc, const wxChar *psFileNameSuffix, const unsigned char *pXsl, size_t nLength)
+{
+  wxMemoryInputStream strm(pXsl, nLength);
+  wxXslSheet sheet(strm);
+  bool bRtn = sheet.IsOK();
+  if (bRtn)
+  {
+    wxFileName fnFile(GetFileName());
+    wxString sPath(fnFile.GetPath());
+    wxFileName fnPath(sPath);
+    wxString sDirName(fnPath.GetFullName());
+    sheet.SetParm(wxString("dirName"), sDirName);
+    wxString sOutputFile(sPath);
+    nwxFileUtil::EndWithSeparator(&sOutputFile);
+    sPath.Append(sDirName);
+    sPath.Append("_");
+    sPath.Append(psFileNameSuffix);
+    bRtn = sheet.TransformToFile(sPath, pDoc);
+  }
+  return bRtn;
+}
 
 const wxChar *CSiteKitNoLadderCollection::g_psNames[] =
 {
@@ -61,7 +156,7 @@ wxDirTraverseResult CSiteKitNoLadderCollection::OnDir(const wxString &dirname)
     }
     else
     {
-      m_mapKitName.clear();
+      _clearKitNames();
       m_mapFileNameKit.insert(
           FILE_TO_KIT::value_type(sFileName, m_ptr.release()));
     }
@@ -73,11 +168,39 @@ wxDirTraverseResult CSiteKitNoLadderCollection::OnFile(const wxString &)
   return wxDIR_CONTINUE;
 }
 
+wxString CSiteKitNoLadderCollection::GetKitPath(bool bEndWithSeparator)
+{
+  // this will eventually be in CSiteKit when created
+  CSitePath *pSitePath = CSitePath::GetGlobal();
+  wxString sPath = pSitePath->GetRealSitePath();
+  nwxFileUtil::EndWithSeparator(&sPath);
+  if (bEndWithSeparator)
+  {
+    nwxFileUtil::EndWithSeparator(&sPath);
+  }
+  sPath.Append(g_sKITSdir);
+  return sPath;
+}
+
+bool CSiteKitNoLadderCollection::CanCreateKit()
+{
+  wxString sPath = GetKitPath();
+  bool bRtn = false;
+  if (wxDirExists(sPath))
+  {
+    bRtn = wxFileName::IsDirWritable(sPath);
+  }
+  else
+  {
+    bRtn = nwxFileUtil::MkDir(sPath);
+  }
+  return bRtn;
+}
 
 void CSiteKitNoLadderCollection::_cleanup()
 {
   _clearErrorCount();
-  m_mapKitName.clear();
+  _clearKitNames();
   pFILE_TO_KIT::cleanup(&m_mapFileNameKit);
 }
 
@@ -93,10 +216,7 @@ bool CSiteKitNoLadderCollection::Load(bool bForce)
     _checkReload();
   }
   // GET PATH and Traverse
-  CSitePath *pSitePath = CSitePath::GetGlobal();
-  wxString sPath = pSitePath->GetRealSitePath();
-  nwxFileUtil::EndWithSeparator(&sPath);
-  sPath.Append(g_sKITSdir);
+  wxString sPath = GetKitPath();
   if(wxFileName::DirExists(sPath))
   {
     wxDir dirKits(sPath);
@@ -172,7 +292,7 @@ bool CSiteKitNoLadderCollection::_checkReload()
   if (bChange)
   {
     // something changed somewhere, if GetNames() is called, rebuild
-    m_mapKitName.clear();
+    _clearKitNames();
   }
   return (nBeginErrorCount == GetErrorCount());
 }
@@ -245,14 +365,34 @@ wxString CSiteKitNoLadderCollection::GetTopDirectory(bool bAppendSeparator)
   }
   return sPath;
 }
-bool CSiteKitNoLadderCollection::CreateKit(const CSiteKitNoLadder &kit)
+bool CSiteKitNoLadderCollection::CreateKit(CSiteKitNoLadder &kit)
 {
+  bool bRtn = kit.WriteAll();
+  if (bRtn)
+  {
+    bRtn = Load(false);
+  }
   return false;
 }
 
-bool CSiteKitNoLadderCollection::UpdateKit(const CSiteKitNoLadder &kit)
+bool CSiteKitNoLadderCollection::UpdateKit(CSiteKitNoLadder &kit)
 {
-  return false;
+  bool bRtn = false;
+  if (kit.IsLocked())
+  {
+    FILE_TO_KIT::iterator itr = m_mapFileNameKit.find(kit.GetKey());
+    if (itr != m_mapFileNameKit.end())
+    {
+      CSiteKitNoLadder *pKit = itr->second;
+      if (pKit->GetKitName() != kit.GetKitName())
+      {
+        _clearKitNames();
+      }
+      (*pKit) = kit;
+      bRtn = pKit->WriteAll();
+    }
+  }
+  return bRtn;
 }
 
 size_t CSiteKitNoLadderCollection::GetNames(
@@ -277,7 +417,3 @@ size_t CSiteKitNoLadderCollection::GetNames(
   }
   return pasNames->GetCount();
 }
-
-
-
-

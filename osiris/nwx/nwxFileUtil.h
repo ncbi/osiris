@@ -121,6 +121,8 @@ public:
   {
     return DO_NOT_SELECT_FILE;
   }
+  static wxString TextToFileName(const wxString &sName, size_t MAXLEN = wxNOT_FOUND);
+  static wxString FindNewDirName(const wxString &sFullPath);
 private:
   static std::vector<wxString> g_asSysPath;
   static std::vector<wxString> g_asPath;

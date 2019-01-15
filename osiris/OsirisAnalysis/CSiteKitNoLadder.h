@@ -17,8 +17,8 @@
 #define SK_COPY(z)  z = x.z
 #define SK_EQ(z) z == x.z
 
+class wxXml2Document;
 class wxArrayString;
-
 //************************************************** class CSiteKitChannelDetails
 
 class CSiteKitChannelDetails : public nwxXmlPersist
@@ -195,8 +195,6 @@ public:
   }
   CSiteKitNoLadder &operator = (const CSiteKitNoLadder &x)
   {
-    const wxString &sThisFile = GetFileName();
-    const wxString &sXfile = x.GetFileName();
     SetFileName(x.GetFileName());
     SK_COPY(m_sKitName);
     SK_COPY(m_sOSIRIS_Version);
@@ -255,7 +253,6 @@ public:
     bool bRtn = sFileName.IsEmpty() ? false : SaveFile(sFileName);
     return bRtn;
   }
-  bool SaveAll();
   bool WriteAll();
   static bool IsChannelListComplete(const std::map<int, CSiteKitChannelDetails *> *pmap)
   {
@@ -386,6 +383,8 @@ protected:
     Register(wxS("Channels"), &m_mapChannelInfo);
   }
 private:
+  void _getFilePrefix(wxString *ps);
+  bool _transform(wxXml2Document *pDoc, const wxChar *psFileName, const unsigned char *pXsl, size_t nLength);
   void _initLocal()
   {
     m_sFileName.Empty();
@@ -425,8 +424,8 @@ public:
   size_t GetNames(wxArrayString *pasNames, bool bWithSite = false);
   bool Load(bool bForce = false);
   bool RemoveKit(const CSiteKitNoLadder &);
-  bool CreateKit(const CSiteKitNoLadder &);
-  bool UpdateKit(const CSiteKitNoLadder &);
+  bool CreateKit(CSiteKitNoLadder &);
+  bool UpdateKit(CSiteKitNoLadder &);
 
   int GetErrorCount()
   {
@@ -488,10 +487,5 @@ private:
 #undef SK_EQ
 #undef SK_COPY
 
-#ifdef __C_SITE_KIT_NO_LADDER_CPP__
-
-const wxString CSiteKitNoLadder::g_sROOT_NODE(wxS("SiteKitNoLadder"));
-
-#endif
 
 #endif
