@@ -1491,6 +1491,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	DataSignal* secondarySignal;
 	DataSignal* nextSignal;
 	list<PullupPair*> pairList;
+	list<InterchannelLinkage*> tempLinkageList;
 	PullupPair* nextPair;
 	double minHeight = 0.0;
 	double maxHeight = 0.0;
@@ -1511,6 +1512,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double minRFUForSecondaryChannel = 0.5 * (mDataChannels [pullupChannel]->GetDetectionThreshold () + mDataChannels [pullupChannel]->GetMinimumHeight ());
 	double noiseLevelForSecondaryChannel = mDataChannels [pullupChannel]->GetNoiseRange ();
 	double percentNoiseLevel = 100.0;
+	RGDList pullupFromAnotherChannel;
+	RGDList ignore;
 
 	bool minRatioLessThan1 = false;
 	bool maxRatioLargerThan0 = false;
@@ -1551,25 +1554,46 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if (primarySignal->GetChannel () != primaryChannel)
 			continue;
 
-		if (primarySignal->GetMessageValue (sidePeak))
-			continue;
+		if (primarySignal->GetMessageValue (sidePeak)) {
 
-		if (primarySignal->GetMessageValue (purePullup))
+			pullupFromAnotherChannel.Append (primarySignal);
 			continue;
+		}
 
-		if (primarySignal->IsNoisySidePeak ())
-			continue;
+		if (primarySignal->GetMessageValue (purePullup)) {
 
-		if (primarySignal->IsDoNotCall ())
+			pullupFromAnotherChannel.Append (primarySignal);
 			continue;
+		}
 
-		if (primarySignal->DontLook ())
+		if (primarySignal->IsNoisySidePeak ()) {
+
+			ignore.Append (primarySignal);
 			continue;
+		}
+
+		if (primarySignal->IsDoNotCall ()) {
+
+			ignore.Append (primarySignal);
+			continue;
+		}
+
+		if (primarySignal->DontLook ()) {
+
+			ignore.Append (primarySignal);
+			continue;
+		}
 
 		secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
 		if (secondarySignal == NULL)
 			continue;
+
+		if (primarySignal->Peak () <= secondarySignal->Peak ()) {
+
+			pullupFromAnotherChannel.Append (primarySignal);
+			continue;
+		}
 
 		if (primarySignal->GetMessageValue (pullup)) {
 
@@ -1577,6 +1601,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			// create pair and add to local list to use later or clear
 			//
 
+			pullupFromAnotherChannel.Append (primarySignal);
 			continue;
 		}
 
@@ -1693,6 +1718,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
 		SetLinearPullupMatrix(primaryChannel, pullupChannel, 0.0);
 		SetQuadraticPullupMatrix(primaryChannel, pullupChannel, 0.0);
+		ignore.Clear ();
+		pullupFromAnotherChannel.Clear ();
 
 		while (!pairList.empty()) {
 
@@ -1730,12 +1757,38 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				continue;
 
 			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
-			
-			if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
+			secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
-				mInterchannelLinkageList.remove (nextLink);
-				delete nextLink;
+			if (secondarySignal != NULL) {
+
+				primarySignal->RemoveProbablePullup (secondarySignal);
+				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+					secondarySignal->SetMessageValue (pullup, false);
+				}
+
+				if (iChannelPrimary != NULL) {
+
+					iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+					if (iChannelPrimary->IsEmpty ()) {
+
+						primarySignal->SetMessageValue (primaryLink, false);
+						tempLinkageList.push_back (nextLink);
+						//iChannelPrimary = NULL;
+					}
+				}
 			}
+		}
+
+		while (!tempLinkageList.empty ()) {
+
+			nextLink = tempLinkageList.front ();
+			tempLinkageList.pop_front ();
+			mInterchannelLinkageList.remove (nextLink);
+			delete nextLink;
 		}
 
 		return true;
@@ -1758,11 +1811,23 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		if (nextSignal->GetMessageValue (laserOffScale) != testLaserOffScale)
 				continue;
 
+		if (ignore.ContainsReference (nextSignal))
+			continue;
+
+		if (pullupFromAnotherChannel.ContainsReference (nextSignal))
+			continue;
+
 		if (nextSignal->GetMessageValue (pullup))   // we leave this in because if the "primary" is also a pullup, we can't know if a cross channel effect is due to this peak
 			continue;
 
 		if (nextSignal->GetMessageValue (sidePeak))
 			continue;
+
+		if (nextSignal->IsNegativePeak ()) {
+
+			ignore.Append (nextSignal);
+			continue;
+		}
 
 		currentPeak = nextSignal->Peak ();
 
@@ -1777,6 +1842,17 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		}
 
 		else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight)) {  // Modify min primary and min ratio based on these...
+
+			if (currentPeak <= abs (rawHeight)) {
+
+				if (rawHeight > 0.0)
+					pullupFromAnotherChannel.Append (nextSignal);
+
+				else
+					ignore.Append (nextSignal);
+
+				continue;
+			}
 
 			nextPair = new PullupPair (nextSignal, rawHeight);
 			rawDataPullupPrimaries.Append (nextSignal);
@@ -1948,6 +2024,12 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			if (occludedDataPrimaries.ContainsReference (nextSignal))
 				continue;
 
+			if (pullupFromAnotherChannel.ContainsReference (nextSignal))
+				continue;
+
+			if (ignore.ContainsReference (nextSignal))
+				continue;
+
 			//if (nextSignal->Peak () < primaryThreshold)
 			//	continue;
 
@@ -2012,6 +2094,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	if (!testLaserOffScale) {
 
+		if ((primaryChannel == 6) && (pullupChannel == 3))
+			bool stopHere = true;
+
 		estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
 		// Do we need to do anything with the result:  estimatedMinPrimary?  Yes. I think so...
@@ -2024,7 +2109,7 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
 			SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
 			RGString data;
-			occludedDataPrimaries.Clear ();
+			occludedDataPrimaries.Clear ();  // Maybe don't do this...
 
 			while (primarySignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
 
@@ -2098,12 +2183,38 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					continue;
 
 				InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+				secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
-				if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
+				if (secondarySignal != NULL) {
 
-					mInterchannelLinkageList.remove (nextLink);
-					delete nextLink;
+					primarySignal->RemoveProbablePullup (secondarySignal);
+					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+					if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+						secondarySignal->SetMessageValue (pullup, false);
+					}
+
+					if (iChannelPrimary != NULL) {
+
+						iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+						if (iChannelPrimary->IsEmpty ()) {
+
+							primarySignal->SetMessageValue (primaryLink, false);
+							tempLinkageList.push_back (nextLink);
+							//iChannelPrimary = NULL;
+						}
+					}
 				}
+			}
+
+			while (!tempLinkageList.empty ()) {
+
+				nextLink = tempLinkageList.front ();
+				tempLinkageList.pop_front ();
+				mInterchannelLinkageList.remove (nextLink);
+				delete nextLink;
 			}
 
 			return true;
@@ -2127,6 +2238,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
 		}
 	}
+
+	ignore.Clear ();
+	pullupFromAnotherChannel.Clear ();
 
 	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold);
 	list<PullupPair*>::iterator pairIt;
@@ -2645,6 +2759,7 @@ int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (in
 
 	list<PullupPair*> tempPairs;
 	list<InterchannelLinkage*>::iterator it;
+	list<InterchannelLinkage*> tempLinkageList;
 	double primaryHeight;
 	PullupPair* nextPair;
 	InterchannelLinkage* nextLink;
@@ -2779,9 +2894,18 @@ int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (in
 
 		if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
 
-			mInterchannelLinkageList.remove (nextLink);
-			delete nextLink;
+			tempLinkageList.push_back (nextLink);
+			//mInterchannelLinkageList.remove (nextLink);
+			//delete nextLink;
 		}
+	}
+
+	while (!tempLinkageList.empty ()) {
+
+		nextLink = tempLinkageList.front ();
+		tempLinkageList.pop_front ();
+		mInterchannelLinkageList.remove (nextLink);
+		delete nextLink;
 	}
 
 	return 0;
