@@ -1680,6 +1680,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double dualPeakBPTolerance = 0.20;
 
 	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	double maxSigmoidalPositive = (double)GetThreshold (primaryPullupThreshold);
 	CoreBioComponent::minPrimaryPullupThreshold = 3.0;  //****This is new on 12/21/2018 to test the new algorithm for estimating the value for each channel pair
 	PreTestSignalsForLaserOffScaleSM ();
 
@@ -1956,7 +1957,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					if (posPeak > 3.0 * negPeak)
 						break;
 
-					if (posPeak >= CoreBioComponent::minPrimaryPullupThreshold)
+					if (posPeak >= maxSigmoidalPositive)
 						break;
 
 					testSignal = new SimpleSigmoidSignal (prevSignal, nextSignal);
@@ -3210,39 +3211,42 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	//*******September 19, 2016
 
-	double pullupThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	//*******January 23, 2019...this is a good idea, but this implementation doesn't do what it claims.  It needs to be rethought, especially in light
+	// of new changes so that there is not a fixed primary pullup threshold anymore.
 
-	for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
+	//double pullupThreshold = CoreBioComponent::minPrimaryPullupThreshold;
 
-		iChannel = *tempIt;
-		primeSignal = iChannel->GetPrimarySignal ();
-		i = primeSignal->GetChannel ();
-		double analysisThreshold = mDataChannels [i]->GetMinimumHeight ();
-		double primaryPeak = primeSignal->Peak ();
+	//for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
 
-		if ((primaryPeak < pullupThreshold) || (primaryPeak < analysisThreshold)) {
+	//	iChannel = *tempIt;
+	//	primeSignal = iChannel->GetPrimarySignal ();
+	//	i = primeSignal->GetChannel ();
+	//	double analysisThreshold = mDataChannels [i]->GetMinimumHeight ();
+	//	double primaryPeak = primeSignal->Peak ();
 
-			iChannel->ResetSecondaryIterator ();
+	//	if ((primaryPeak < pullupThreshold) || (primaryPeak < analysisThreshold)) {
 
-			while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
+	//		iChannel->ResetSecondaryIterator ();
 
-				iChannel->RemoveDataSignalFromSecondaryList (fixPullupPeak);		
-				fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+	//		while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
 
-				if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels)) {
+	//			iChannel->RemoveDataSignalFromSecondaryList (fixPullupPeak);		
+	//			fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
 
-					fixPullupPeak->SetMessageValue (pullup, false);
-					fixPullupPeak->SetMessageValue (purePullup, false);
-					fixPullupPeak->SetMessageValue (partialPullupBelowMin, false);
-				}				
-			}
+	//			if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels)) {
 
-			channelRemoval.insert (iChannel);
-			primeSignal->SetMessageValue (primaryLink, false);
-			primeSignal->SetInterchannelLink (NULL);
-		}
+	//				fixPullupPeak->SetMessageValue (pullup, false);
+	//				fixPullupPeak->SetMessageValue (purePullup, false);
+	//				fixPullupPeak->SetMessageValue (partialPullupBelowMin, false);
+	//			}				
+	//		}
 
-	}
+	//		channelRemoval.insert (iChannel);
+	//		primeSignal->SetMessageValue (primaryLink, false);
+	//		primeSignal->SetInterchannelLink (NULL);
+	//	}
+
+	//}
 
 	while (!postCraterList.empty ()) {
 
@@ -3314,12 +3318,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 	}
 
-	for (rChannelIt=channelRemoval.begin (); rChannelIt!=channelRemoval.end(); rChannelIt++) {
+	//  See above January 23, 2019
 
-		iChannel = *rChannelIt;
-		mInterchannelLinkageList.remove (iChannel);
-		delete iChannel;
-	}
+	//for (rChannelIt=channelRemoval.begin (); rChannelIt!=channelRemoval.end(); rChannelIt++) {
+
+	//	iChannel = *rChannelIt;
+	//	mInterchannelLinkageList.remove (iChannel);
+	//	delete iChannel;
+	//}
 
 	//
 	// Next, with pull-up peaks remaining, associate associated primary pull-up data

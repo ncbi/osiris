@@ -1309,6 +1309,8 @@ void DataSignal :: RemoveAllCrossChannelSignalLinks () {
 
 	mCrossChannelSignalLinks.Clear ();
 	mPrimaryCrossChannelLink = NULL;
+//	delete mInterchannelLink;
+	mInterchannelLink = NULL;
 }
 
 
@@ -1484,6 +1486,7 @@ RGString DataSignal :: CreateUncertainPullupString () {
 			result << ", ";
 
 		result << channel;
+		i++;
 	}
 
 	return result;
@@ -12823,14 +12826,14 @@ double NoisyPeak :: GetPrimaryPullupDisplacementThreshold () {
 	if ((mNext == NULL) || (mPrevious == NULL))
 		return 2.0;
 
-	return mSigma;
+	return 0.5 * GetWidth ();
 }
 
 
 
 double NoisyPeak :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
 
-	return nSigmas * mSigma;
+	return 0.5 * nSigmas * GetWidth ();
 }
 
 

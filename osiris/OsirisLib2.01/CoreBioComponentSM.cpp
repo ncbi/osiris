@@ -1514,6 +1514,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double percentNoiseLevel = 100.0;
 	RGDList pullupFromAnotherChannel;
 	RGDList ignore;
+	double maxLaserInScalePeak = 0.0;
+	bool testNonLaserOffScale = !testLaserOffScale;
 
 	bool minRatioLessThan1 = false;
 	bool maxRatioLargerThan0 = false;
@@ -1522,6 +1524,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	double rawHeight;
 	double detectionThreshold = mDataChannels[pullupChannel]->GetDetectionThreshold ();
 	bool atLeastOnePositivePullupAboveDetection = false;
+
+	RGDListIterator channelIterator (*primaryChannelPeaks);
 
 	noiseLevelForSecondaryChannel = 0.01 * percentNoiseLevel * noiseLevelForSecondaryChannel;
 
@@ -1548,10 +1552,20 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		nextLink = *it;
 		primarySignal = nextLink->GetPrimarySignal ();
 
-		if (primarySignal->GetMessageValue (laserOffScale) != testLaserOffScale)
+		if (primarySignal->GetChannel () != primaryChannel)
 			continue;
 
-		if (primarySignal->GetChannel () != primaryChannel)
+		bool peakIsLaserOffScale = primarySignal->GetMessageValue (laserOffScale);
+
+		if (testNonLaserOffScale && !peakIsLaserOffScale) {
+
+			currentPeak = primarySignal->Peak ();
+
+			if (currentPeak > maxLaserInScalePeak)
+				maxLaserInScalePeak = currentPeak;
+		}
+
+		if (peakIsLaserOffScale != testLaserOffScale)
 			continue;
 
 		if (primarySignal->GetMessageValue (sidePeak)) {
@@ -1702,6 +1716,27 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 		maxRatioLargerThan0 = true;
 	}
 
+	if (testNonLaserOffScale) {
+
+		while (nextSignal = (DataSignal*)channelIterator ()) {
+
+			// Look for raw data primary pullups, classify if positive or negative, form new PullupPair and add to lists
+
+			if (nextSignal->GetChannel () != primaryChannel)
+				continue;
+
+			if (nextSignal->GetMessageValue (laserOffScale) != false)
+				continue;
+
+			currentPeak = nextSignal->Peak ();
+
+			if (currentPeak > maxLaserInScalePeak)
+				maxLaserInScalePeak = currentPeak;
+		}
+
+		mDataChannels [primaryChannel]->SetMaxInScalePeak (maxLaserInScalePeak);
+	}
+
 	if (pairList.empty ()) {
 
 		//cout << "There are no pullup peaks..." << endl;
@@ -1712,6 +1747,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	}
 
 	smPrimaryInterchannelLink primaryLink;
+
+	if (!atLeastOnePositivePullupAboveDetection)
+		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);
 
 	if (!atLeastOnePositivePullupAboveDetection && (nSigmoids == 0)) {
 
@@ -1730,8 +1768,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
 
-			if (iChannelPrimary == NULL)
+			if (iChannelPrimary == NULL) {
+
+				primarySignal->SetMessageValue (primaryLink, false);
 				continue; // error
+			}
 
 			primarySignal->RemoveProbablePullup (secondarySignal);
 			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
@@ -1741,11 +1782,20 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 				primarySignal->SetInterchannelLink (NULL);
 				primarySignal->SetMessageValue (primaryLink, false);
-			//	channelRemoval.insert (iChannel);
+				//delete iChannelPrimary;
+				tempLinkageList.push_back (iChannelPrimary);
 			}
 
 			delete nextPair;
 			pairList.pop_front();
+		}
+
+		while (!tempLinkageList.empty ()) {
+
+			nextLink = tempLinkageList.front ();
+			tempLinkageList.pop_front ();
+			mInterchannelLinkageList.remove (nextLink);
+			delete nextLink;
 		}
 
 		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
@@ -1754,6 +1804,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			primarySignal = nextLink->GetPrimarySignal ();
 
 			if (primarySignal->GetChannel () != primaryChannel)
+				continue;
+
+			if (primarySignal->GetMessageValue (laserOffScale) != testLaserOffScale)
 				continue;
 
 			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
@@ -1777,9 +1830,14 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 						primarySignal->SetMessageValue (primaryLink, false);
 						tempLinkageList.push_back (nextLink);
+						//delete iChannelPrimary;
 						//iChannelPrimary = NULL;
+						primarySignal->SetInterchannelLink (NULL);
 					}
 				}
+
+				else
+					primarySignal->SetMessageValue (primaryLink, false);
 			}
 		}
 
@@ -1801,7 +1859,8 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	RGDList noPullupPrimaries;  // add non-primary peaks which are not occluded, have no paired pullup and have no raw data pullup
 
 	// Perform additional tests to see if hasNegativePullup accurately reflects reality... (10/16/2016)
-	RGDListIterator channelIterator (*primaryChannelPeaks);
+	
+	channelIterator.Reset ();
 	smRawDataPrimaryInterchannelLink rawDataPrimary;
 
 	while (nextSignal = (DataSignal*) channelIterator ()) {
@@ -2094,9 +2153,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 	if (!testLaserOffScale) {
 
-		if ((primaryChannel == 6) && (pullupChannel == 3))
-			bool stopHere = true;
-
 		estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
 		// Do we need to do anything with the result:  estimatedMinPrimary?  Yes. I think so...
@@ -2162,8 +2218,11 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 					secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
 				}
 
-				if (iChannelPrimary == NULL)
+				if (iChannelPrimary == NULL) {
+
+					primarySignal->SetMessageValue (primaryLink, false);
 					continue; // error??
+				}
 
 				iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
 
@@ -2171,7 +2230,17 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 					primarySignal->SetInterchannelLink (NULL);
 					primarySignal->SetMessageValue (primaryLink, false);
+					//delete iChannelPrimary;
+					tempLinkageList.push_back (iChannelPrimary);
 				}
+			}
+
+			while (!tempLinkageList.empty ()) {
+
+				nextLink = tempLinkageList.front ();
+				tempLinkageList.pop_front ();
+				mInterchannelLinkageList.remove (nextLink);
+				delete nextLink;
 			}
 
 			for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
@@ -2180,6 +2249,9 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 				primarySignal = nextLink->GetPrimarySignal ();
 
 				if (primarySignal->GetChannel () != primaryChannel)
+					continue;
+
+				if (primarySignal->GetMessageValue (laserOffScale) != testLaserOffScale)
 					continue;
 
 				InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
@@ -2203,9 +2275,14 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 
 							primarySignal->SetMessageValue (primaryLink, false);
 							tempLinkageList.push_back (nextLink);
+							//delete iChannelPrimary;
 							//iChannelPrimary = NULL;
+							primarySignal->SetInterchannelLink (NULL);
 						}
 					}
+
+					else
+						primarySignal->SetMessageValue (primaryLink, false);
 				}
 			}
 
@@ -2236,6 +2313,131 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			// Continue to LMS
 
 			FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
+		}
+	}
+
+	else { // this is laser off scale test; get laser in scale max peak height
+
+		maxLaserInScalePeak = mDataChannels [primaryChannel]->GetMaxInScalePeak ();
+		list<PullupPair*> tempPairList;
+
+		while (!pairList.empty()) {
+
+			nextPair = pairList.front();
+
+			primarySignal = nextPair->mPrimary;
+			secondarySignal = nextPair->mPullup;
+
+			iChannelPrimary = primarySignal->GetInterchannelLink ();
+			pairList.pop_front();
+
+			if (primarySignal->Peak () > maxLaserInScalePeak) {
+
+				tempPairList.push_back (nextPair);
+				continue;
+			}
+
+			delete nextPair;
+
+			if (secondarySignal == NULL)
+				continue;
+
+			primarySignal->RemoveProbablePullup (secondarySignal);
+
+			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+				secondarySignal->SetMessageValue (pullup, false);
+				secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+			}
+
+			if (iChannelPrimary == NULL) {
+
+				primarySignal->SetMessageValue (primaryLink, false);
+				continue; // error??
+			}
+
+			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+			if (iChannelPrimary->IsEmpty ()) {
+
+				primarySignal->SetInterchannelLink (NULL);
+				primarySignal->SetMessageValue (primaryLink, false);
+				//delete iChannelPrimary;
+				tempLinkageList.push_back (iChannelPrimary);
+			}
+		}
+
+		while (!tempLinkageList.empty ()) {
+
+			nextLink = tempLinkageList.front ();
+			tempLinkageList.pop_front ();
+			mInterchannelLinkageList.remove (nextLink);
+			delete nextLink;
+		}
+
+		while (!tempPairList.empty ()) {
+
+			nextPair = tempPairList.front ();
+			tempPairList.pop_front ();
+			pairList.push_back (nextPair);
+		}
+
+		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
+
+			nextLink = *it;
+			primarySignal = nextLink->GetPrimarySignal ();
+
+			if (primarySignal->GetChannel () != primaryChannel)
+				continue;
+
+			if (primarySignal->GetMessageValue (laserOffScale) != true)
+				continue;
+
+			if (primarySignal->Peak () > maxLaserInScalePeak) {
+
+				continue;
+			}
+
+			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+			secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
+
+			if (secondarySignal != NULL) {
+
+				primarySignal->RemoveProbablePullup (secondarySignal);
+				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+					secondarySignal->SetMessageValue (pullup, false);
+				}
+
+				if (iChannelPrimary != NULL) {
+
+					iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+					if (iChannelPrimary->IsEmpty ()) {
+
+						primarySignal->SetMessageValue (primaryLink, false);
+						tempLinkageList.push_back (nextLink);
+						//delete iChannelPrimary;
+						//iChannelPrimary = NULL;
+						primarySignal->SetInterchannelLink (NULL);
+					}
+				}
+
+				else
+					primarySignal->SetMessageValue (primaryLink, false);
+			}
+		}
+
+		while (!tempLinkageList.empty ()) {
+
+			nextLink = tempLinkageList.front ();
+			tempLinkageList.pop_front ();
+			mInterchannelLinkageList.remove (nextLink);
+			delete nextLink;
 		}
 	}
 
@@ -2892,7 +3094,7 @@ int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (in
 
 		InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
 
-		if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink))) {
+		if ((iChannelPrimary == NULL) || (!primarySignal->GetMessageValue (primaryLink)) || (iChannelPrimary->IsEmpty ())) {
 
 			tempLinkageList.push_back (nextLink);
 			//mInterchannelLinkageList.remove (nextLink);

@@ -1451,8 +1451,8 @@ public:
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const;
 	virtual bool IsUnimodal () const;
 	virtual double GetPullupToleranceInBP (double noise) const;
-	virtual double GetPrimaryPullupDisplacementThreshold () { return 3.0 * StandardDeviation; }
-	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return nSigmas * StandardDeviation; }
+	virtual double GetPrimaryPullupDisplacementThreshold () { return 0.5 * GetWidth (); }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.5 * nSigmas * GetWidth (); }
 
 	virtual DataSignal* FindNextCharacteristicFromRight (const DataSignal& Signature, 
 		double& fit, RGDList& previous);
@@ -1544,8 +1544,8 @@ public:
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual double GetPullupToleranceInBP (double noise) const;
-	virtual double GetPrimaryPullupDisplacementThreshold () { return 3.0 * StandardDeviation; }
-	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return nSigmas * StandardDeviation; }
+	virtual double GetPrimaryPullupDisplacementThreshold () { return 0.5 * GetWidth (); }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.5 * nSigmas * GetWidth (); }
 
 	static double GetSigmaWidth () { return SigmaWidth; }
 	static void SetSigmaWidth (double width) { SigmaWidth = width; }

@@ -4720,8 +4720,12 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 			// Later, consider adding one of nextSignal's flanking peaks...need iChannel function to perform test, assuming
 			// that primary Signal may be gone.  Then recalculate primary signal
 
-			if (iChannel->IsEmpty ())
+			if (iChannel->IsEmpty ()) {
+
 				iChannel->RemoveAllSM ();
+				delete iChannel;
+				nextSignal->SetInterchannelLink (NULL);
+			}
 
 			else
 				iChannel->RecalculatePrimarySignalSM ();

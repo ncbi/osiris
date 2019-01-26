@@ -876,7 +876,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 
 			if (mIsPossiblePullup) {
 
-				uncertain << "(Uncertain Channels: ";
+				uncertain << "(Uncertain Channel(s): ";
 				channelList = CreateUncertainPullupString ();
 				uncertain << channelList;
 				uncertain << ") ";
@@ -906,7 +906,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 
 			if (mIsPossiblePullup) {
 
-				uncertain << "(Uncertain Channels: ";
+				uncertain << "(Uncertain Channel(s): ";
 				channelList = CreateUncertainPullupString ();
 				uncertain << channelList;
 				uncertain << ") ";
@@ -2207,7 +2207,7 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold () {
 	if ((mNext == NULL) || (mPrevious == NULL))
 		return 2.0;
 
-	return 0.5 * fabs (mNext->GetMean () - mPrevious->GetMean ());
+	return 0.5 * GetWidth ();   //0.5 * fabs (mNext->GetMean () - mPrevious->GetMean ());
 }
 
 
@@ -2216,7 +2216,7 @@ double CraterSignal :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
 	if ((mNext == NULL) || (mPrevious == NULL))
 		return 2.0;
 
-	return nSigmas * mSigma;
+	return 0.5 * nSigmas * GetWidth ();
 }
 
 
