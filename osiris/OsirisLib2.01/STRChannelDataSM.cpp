@@ -1622,7 +1622,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1772,7 +1772,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 	msg.StartLine (1, "Fits", TRUE);
 	msg.StartLine (2, "2AryContent", TRUE);
 	msg.StartLine (3, "Means", TRUE);
-	msg.StartLine (4, "Sigmas", TRUE);
+	msg.StartLine (4, "Widths", TRUE);
 	msg.StartLine (5, "Peaks", TRUE);
 
 	for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -1962,7 +1962,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 
 		while (nextNextSignal = (DataSignal*) CurveIterator ()) {
 
-			if (nextNextSignal->GetMean () <= nextSignal->GetMean () + shoulderProximity * (nextNextSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ())) {
+			if (nextNextSignal->GetMean () <= nextSignal->GetMean () + 0.5 * shoulderProximity * (nextNextSignal->GetWidth () + nextSignal->GetWidth ())) {
 
 				if (nextSignal->Peak () <= shoulderThresholdFraction * nextNextSignal->Peak ()) {
 
@@ -2390,7 +2390,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		if (thisPeak > finalMaxPeak)
 			finalMaxPeak = thisPeak;
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -2597,7 +2597,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {

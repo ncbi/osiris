@@ -2089,7 +2089,7 @@ bool DataSignal :: PeakCannotBePurePullup (DataSignal* pullup, DataSignal* prima
 	if (pullup->GetMessageValue (controlPeak))
 		return true;
 
-	if (pullup->GetStandardDeviation () >= primary->GetStandardDeviation ())
+	if (pullup->GetWidth () >= primary->GetWidth ())
 		return true;
 
 	if (DataSignal::IsNegativeOrSigmoid (pullup))
@@ -2246,8 +2246,8 @@ bool CraterSignal :: TestForIntersectionWithPrimary (DataSignal* primary) {
 	if ((mPrevious == NULL) || (mNext == NULL))
 		return false;
 
-	double sigma1 = mPrevious->GetStandardDeviation ();
-	double sigma2 = mNext->GetStandardDeviation ();
+	double sigma1 = 0.5 * mPrevious->GetWidth ();
+	double sigma2 = 0.5 * mNext->GetWidth ();
 	double mu1 = mPrevious->GetMean ();
 	double mu2 = mNext->GetMean ();
 	double peakTest1 = 0.25 * mPrevious->Peak ();

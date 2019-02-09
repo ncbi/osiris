@@ -1653,7 +1653,7 @@ int Locus :: AnalyzeGridLocus (RGDList& artifactList, RGDList& originalList, RGD
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1687,7 +1687,7 @@ int Locus :: AnalyzeGridLocus (RGDList& artifactList, RGDList& originalList, RGD
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -3123,7 +3123,7 @@ int Locus :: TestSampleNeighbors (RGDList& previousList, DataSignal* testSignal,
 
 int Locus :: TestSampleAverages (ChannelData* lsData, DataSignal* testSignal, Boolean testRatio) {
 
-	double Width = testSignal->GetStandardDeviation ();
+	double Width = testSignal->GetWidth ();
 	double peak = testSignal->Peak ();
 	double mean = testSignal->GetMean ();
 	Notice* newNotice;

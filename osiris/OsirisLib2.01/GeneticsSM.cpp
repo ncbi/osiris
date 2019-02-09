@@ -1004,7 +1004,7 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1041,7 +1041,7 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -1521,7 +1521,7 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1550,7 +1550,7 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -2045,7 +2045,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -2075,7 +2075,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -2916,7 +2916,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -2946,7 +2946,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -4294,7 +4294,7 @@ int Locus :: TestNeighborsSM (DataSignal* previous, DataSignal* testSignal, Data
 
 	// We assume that this is a ladder test...AnalyzeGridLocus is the only method that calls this routine
 
-	double Width = testSignal->GetStandardDeviation ();
+	double Width = 0.5 * testSignal->GetWidth ();
 	double peak = testSignal->Peak ();
 	Boolean NotAcceptable = FALSE;
 	Boolean Marginal = FALSE;
@@ -4698,7 +4698,7 @@ int Locus :: TestSampleAveragesSM (ChannelData* lsData, DataSignal* testSignal, 
 	//  This is sample stage 2
 	//
 
-	double Width = testSignal->GetStandardDeviation ();
+	double Width = testSignal->GetWidth ();
 	double peak = testSignal->Peak ();
 	double mean = testSignal->GetMean ();
 	RGString info;
