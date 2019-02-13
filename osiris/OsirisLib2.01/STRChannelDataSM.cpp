@@ -4913,6 +4913,10 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 	smCrater crater;
 	smPeakSharesAlleleBinLeft sharesBinLeft;
 	smPeakSharesAlleleBinRight sharesBinRight;
+	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU pullupBelowMinRFU;
+	smCraterSidePeak craterSidePeak;
+	smSigmoidalSidePeak sigmoidalSidePeak;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -4933,6 +4937,30 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 			}
 
 			if (prevSignal->GetMessageValue (crater) || nextSignal->GetMessageValue (crater)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (nextSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (pullupBelowMinRFU)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (purePullup) || prevSignal->GetMessageValue (pullupBelowMinRFU)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (nextSignal->GetMessageValue (craterSidePeak) || nextSignal->GetMessageValue (sigmoidalSidePeak)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (craterSidePeak) || prevSignal->GetMessageValue (sigmoidalSidePeak)) {
 
 				prevSignal = nextSignal;
 				continue;

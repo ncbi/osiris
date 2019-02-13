@@ -7004,6 +7004,9 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smHeightBelowFractionalFilter fractionalFilter;
 	smHeightBelowPullupFractionalFilter pullupFractionalFilter;
 	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+	smCraterSidePeak craterSidePeak;
+	smSigmoidalSidePeak sigmoidalSidePeak;
+	smPartialPullupBelowMinRFU pullupBelowMinRFU;
 
 	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
 
@@ -7097,6 +7100,30 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			}
 
 			if (prevSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (purePullup)) {
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (pullupBelowMinRFU) || nextSignal->GetMessageValue (pullupBelowMinRFU)) {
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (nextSignal->GetMessageValue (craterSidePeak) || nextSignal->GetMessageValue (sigmoidalSidePeak)) {
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (craterSidePeak) || prevSignal->GetMessageValue (sigmoidalSidePeak)) {
 
 				prevSignal = nextSignal;
 				prevAlleleName = alleleName;

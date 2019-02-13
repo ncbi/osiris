@@ -47,6 +47,7 @@
 #include "DirectoryManager.h"
 #include "rgtarray.h"
 #include <set>
+#include <iostream>
 
 using namespace::std;
 
@@ -1753,7 +1754,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			else {
 
-				if ((!DataSignal::IsNegativeOrSigmoid (testSignal)) && (!testSignal->GetMessageValue (laserOffScale)) && (testSignal->Peak () > maxNonLaserOffScalePeak [i]))
+				if (CoreBioComponent::SignalIsWithinAnalysisRegion (testSignal, first) && (!DataSignal::IsNegativeOrSigmoid (testSignal)) && (!testSignal->GetMessageValue (laserOffScale)) && (testSignal->Peak () > maxNonLaserOffScalePeak [i]))
 					maxNonLaserOffScalePeak [i] = testSignal->Peak ();
 
 				if (testSignal2 == NULL) {
@@ -2170,6 +2171,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList ignoreSidePeaks;
 	double rightLimitPlus;
 	double leftLimitPlus;
+	double channelMaxNonLaserOffScaleHeight;
+	bool laserStatus;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2181,16 +2184,24 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			continue;
 
 		primaryHeight = nextSignal->Peak ();
+		primaryChannel = nextSignal->GetChannel ();
 
 		if ((primaryHeight < primaryThreshold) || (nextSignal->IsNegativePeak ()))
 			continue;
+
+		if (nextSignal->GetMessageValue (laserOffScale)) {
+
+			channelMaxNonLaserOffScaleHeight = maxNonLaserOffScalePeak [primaryChannel];
+
+			if (primaryHeight < channelMaxNonLaserOffScaleHeight)
+				continue;
+		}
 
 		// nextSignal could be primary
 
 		Pos.ResetTo (it);
 		Neg.ResetTo (it);
-		primeSignal = nextSignal;
-		primaryChannel = nextSignal->GetChannel ();
+		primeSignal = nextSignal;	
 		primaryWidth = 0.5 * nextSignal->GetWidth ();
 		primaryTolerance = nextSignal->GetPrimaryPullupDisplacementThreshold (nSigmasForPullup);
 		primaryMean = nextSignal->GetMean ();
@@ -2200,6 +2211,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		leftLimitPlus = primaryMean - 5.0 * primaryTolerance;
 		probablePullupPeaks.Clear ();
 		weakPullupPeaks.Clear ();
+		laserStatus = primeSignal->GetMessageValue (laserOffScale);
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
@@ -2219,6 +2231,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
+
+			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
+				continue;
 
 			if (nextSignal2->IsNegativePeak ()) {
 
@@ -2251,6 +2266,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
+
+			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
+				continue;
 
 			if (nextSignal2->IsNegativePeak ()) {
 
@@ -2414,21 +2432,21 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			probablePullupPeaks.Clear ();
 		}
 
-		else if (primeSignal->GetMessageValue (laserOffScale)) {
-
-			if (primeSignal->Peak () < maxNonLaserOffScalePeak [primeSignal->GetChannel ()]) {
-
-				probablePullupPeaks.Clear ();
-				primeSignal->SetMessageValue (primaryLink, false);
-			}
-		}
-
 		else {
 
-			// Set up STRInterChannelLinkage and add to linkage list; this has to be modified to allow more than one pullUp linkage
+			if (primeSignal->GetMessageValue (laserOffScale)) {
 
-			if ((primeSignal->GetChannel () == 5) && (primeSignal->GetMean () < 5106.5) && (primeSignal->GetMean () > 5105.5))
-				bool stopHere = true;
+				double localMax = maxNonLaserOffScalePeak [primeSignal->GetChannel ()];
+
+				if (primeSignal->Peak () < localMax) {
+
+					probablePullupPeaks.Clear ();
+					primeSignal->SetMessageValue (primaryLink, false);
+					continue;
+				}
+			}
+
+			// Set up STRInterChannelLinkage and add to linkage list; this has to be modified to allow more than one pullUp linkage
 
 			iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 			mInterchannelLinkageList.push_back (iChannel);
@@ -2682,12 +2700,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		nextChannel = mDataChannels [i];
 		nextMultiPeakList = TempCraterPeakList [i];
 		minRFU = nextChannel->GetMinimumHeight ();
-		bool preStop = (i == 4);
 
 		while (nextSignal = (DataSignal*) nextMultiPeakList->GetFirst()) {
-
-			if (preStop && (nextSignal->GetMean () > 5104.8) && (nextSignal->GetMean () < 5105.1))
-				bool stopHere = true;
 
 			testSignal = nextSignal->GetPreviousLinkedSignal ();
 			testSignal2 = nextSignal->GetNextLinkedSignal (); 
@@ -2827,9 +2841,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					testSignal->SetMessageValue (poorPeakMorphologyOrResolution, true);
 					testSignal2->SetMessageValue (poorPeakMorphologyOrResolution, true);
 					noisySignal->SetMessageValue (pullup, true);
-
-					if ((noisySignal->GetChannel () == 4) && (noisySignal->GetMean () > 5104.8) && (noisySignal->GetMean () < 5105.1))
-						bool stopHere = true;
 
 					//if (nextSignal->GetMessageValue (pullup)) {
 

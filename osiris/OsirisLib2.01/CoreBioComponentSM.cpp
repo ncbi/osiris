@@ -1546,11 +1546,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 	linearPart = quadraticPart = 0.0;
 //	int nPossibleNegative;
 	list<PullupPair*> negativePairs;
-	bool preStop = false;
-	bool stopHere = false;
-
-	if ((primaryChannel == 5) && (pullupChannel == 4) && testLaserOffScale)
-		preStop = true;
 
 	for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
 
@@ -1602,9 +1597,6 @@ bool CoreBioComponent :: CollectDataAndComputeCrossChannelEffectForChannelsSM (i
 			ignore.Append (primarySignal);
 			continue;
 		}
-
-		if (preStop && (primarySignal->GetMean () > 5105.5) && (primarySignal->GetMean () < 5106.5))
-			stopHere = true;
 
 		secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
