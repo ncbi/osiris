@@ -1781,10 +1781,70 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 	bool addedRatio = false;
 	double totalNegative = 0.0;
 	double totalPositive = 0.0;
+	double totalPure = 0.0;
+	double totalPartial = 0.0;
 	double correctedHeight;
 	double peakCorrectedForNegative;
+	double pullupHeight;
 
-	if (isPurePullup || isSigmoidal) {
+	if (isPurePullup) {
+
+		double secondaryHeight = Peak ();
+		double halfSecondaryHeight = 0.5 * secondaryHeight;
+
+		for (i=1; i<=numberOfChannels; i++) {
+
+			primarySignal = HasPrimarySignalFromChannel (i);
+
+			if (primarySignal != NULL) {
+
+				correctedHeight = GetPullupFromChannel (i);
+
+				if (GetIsPurePullupFromChannel (i))
+					totalPure += correctedHeight;
+
+				else
+					totalPartial += correctedHeight;
+			}
+		}
+
+		if (totalPartial > halfSecondaryHeight)
+			totalPartial = halfSecondaryHeight;
+
+		correctedHeight = secondaryHeight - totalPartial;
+
+		if (totalPure > 0.0) {
+
+			double alpha = correctedHeight / totalPure;
+
+			for (i=1; i<=numberOfChannels; i++) {
+
+				if (GetIsPurePullupFromChannel (i)) {
+
+					primarySignal = HasPrimarySignalFromChannel (i);
+					pullupHeight = alpha * GetPullupFromChannel (i);
+					SetPullupFromChannel (i, pullupHeight, numberOfChannels);
+
+					if (primarySignal != NULL) {
+
+						SetPullupRatio (i, pullupHeight / primarySignal->Peak (), numberOfChannels);
+						addedRatio = true;
+					}
+
+					else {
+						// this can't happen!?
+						addedRatio = false;
+					}
+				}
+			}
+		}
+
+		else {  // totalPure is <= 0.0 so, now what?  Revert to previous algorithm
+
+		}
+	}
+
+	else if (isSigmoidal) {
 
 		for (i=1; i<=numberOfChannels; i++) {
 
@@ -1841,7 +1901,7 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 					if (correctedHeight < 0.0) {
 
 						primaryHeight = primarySignal->Peak ();
-						ratio = -100.0 * (correctedHeight / totalNegative) * (1.0 / primaryHeight);
+						ratio = -(correctedHeight / totalNegative) * (1.0 / primaryHeight);
 						SetPullupRatio (i, ratio, numberOfChannels);
 						SetPullupFromChannel (i, -(correctedHeight / totalNegative), DataSignal::NumberOfChannels);
 						addedRatio = true;
@@ -1865,7 +1925,7 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 					if (correctedHeight < 0.0) {
 
 						primaryHeight = primarySignal->Peak ();
-						ratio = 100.0 * (correctedHeight / primaryHeight);
+						ratio = (correctedHeight / primaryHeight);
 						SetPullupRatio (i, ratio, numberOfChannels);
 						addedRatio = true;
 					}
@@ -1890,7 +1950,7 @@ bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 					if (correctedHeight > 0.0) {
 
 						primaryHeight = primarySignal->Peak ();
-						ratio = 100.0 * (correctedHeight / totalPositive) * (peakCorrectedForNegative / primaryHeight);
+						ratio = (correctedHeight / totalPositive) * (peakCorrectedForNegative / primaryHeight);
 						SetPullupRatio (i, ratio, numberOfChannels);
 						//mPullupCorrectionArray [i] = (correctedHeight / totalPositive) * peakCorrectedForNegative;
 						SetPullupFromChannel (i, (correctedHeight / totalPositive) * peakCorrectedForNegative, DataSignal::NumberOfChannels);

@@ -125,6 +125,10 @@ using namespace std;
 
 struct SampleDataInfo {
 
+	SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, double spacing, double abscissaLeft);
+	SampleDataInfo (const DataSignal& ds, int indL, int indC, int indR, int N);
+	~SampleDataInfo ();
+
 	const double* DataLeft;
 	const double* DataCenter;
 	const double* DataRight;
@@ -134,11 +138,6 @@ struct SampleDataInfo {
 	int NumberOfSamples;
 	double Spacing;
 	double AbscissaLeft;
-
-	SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, 
-		double spacing, double abscissaLeft);
-	SampleDataInfo (const DataSignal& ds, int indL, int indC, int indR, int N);
-	~SampleDataInfo ();
 
 	double GetMaxInInterval (int left, int right);
 };
@@ -322,7 +321,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -340,7 +339,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -499,6 +498,9 @@ public:
 	double GetPullupFromChannel (int i) const;
 	double GetTotalPullupFromOtherChannels (int numberOfChannels) const;
 	void SetPullupFromChannel (int i, double value, int numberOfChannels);
+
+	void SetIsPurePullupFromChannel (int i, bool value, int numberOfChannels);
+	bool GetIsPurePullupFromChannel (int i);
 
 	DataSignal* HasPrimarySignalFromChannel (int i) const;
 	void SetPrimarySignalFromChannel (int i, DataSignal* ds, int numberOfChannels);
@@ -1008,6 +1010,7 @@ protected:
 	DataInterval* mThisDataSegment;
 	bool* mWeakPullupVector;
 	list<int> mWeakPullupChannels;
+	bool* mIsPurePullup;
 
 	RGString mTempDataForOccudedPrimary;
 	RGString mTempDataForPrimaryNoPullup;
