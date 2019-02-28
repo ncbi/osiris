@@ -216,6 +216,8 @@ public:
 	bool PullupTestedMatrix (int i, int j);
 	double LinearPullupCoefficient (int i, int j);
 	double QuadraticPullupCoefficient (int i, int j);
+	double LinearInScalePullupCoefficient (int i, int j);
+	double QuadraticInScalePullupCoefficient (int i, int j);
 
 	double MaxLinearPullupCoefficient () const { return mQC.mMaxLinearPullupCoefficient; }
 	double MaxNonlinearPullupCoefficient () const { return mQC.mMaxNonlinearPullupCoefficient; }
@@ -427,6 +429,8 @@ public:
 	virtual bool NegatePullupForChannelsSM (int primaryChannel, int pullupChannel, list<PullupPair*>& pairList, bool testLaserOffScale);
 	virtual DataSignal** CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals);
 	virtual bool AcknowledgePullupPeaksWhenThereIsNoPatternSM (int primaryChannel, int secondaryChannel, bool testLaserOffScale);
+	virtual bool RemovePrimaryLinksForChannelsSM (int primaryChannel, int pullupChannel, bool testLaserOffScale, RGDList& peakList);
+	virtual bool ScavengePullupFromOtherChannelListLaserInScale ();
 
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();
@@ -565,6 +569,9 @@ protected:
 	double** mQuadraticPullupMatrix;
 	double** mLeastMedianValue;
 	double** mOutlierThreshold;
+	double** mLinearInScalePullupMatrix;
+	double** mQuadraticInScalePullupMatrix;
+	double** mMinimumInScalePrimaryPeak;
 
 	CSplineTransform* mTimeMap;
 
@@ -592,6 +599,7 @@ protected:
 
 
 	RGDList mChannelList;
+	RGDList mPullupFromAnotherChannel;
 
 	//************************************************************************************************************************************
 	//************************************************************************************************************************************

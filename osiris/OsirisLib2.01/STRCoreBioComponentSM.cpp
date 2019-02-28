@@ -3538,6 +3538,9 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 			if (temp > maxQuad)
 				maxQuad = temp;
+
+			mLinearInScalePullupMatrix [i] [j] = mLinearPullupMatrix [i] [j];
+			mQuadraticInScalePullupMatrix [i] [j] = mQuadraticPullupMatrix [i] [j];
 		}
 	}
 

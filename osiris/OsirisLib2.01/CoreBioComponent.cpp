@@ -159,7 +159,8 @@ bool PullupPair :: IsRawDataPullup () const {
 
 
 CoreBioComponent :: CoreBioComponent () : SmartMessagingObject (), mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), 
-mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
+mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), 
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -167,7 +168,8 @@ mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatri
 
 CoreBioComponent :: CoreBioComponent (const RGString& name) : SmartMessagingObject (), mName (name), 
 mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL) {
+mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -176,7 +178,8 @@ mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), 
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component) : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mQC (component.mQC) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC) {
 
 	InitializeSmartMessages (component);
 }
@@ -185,12 +188,16 @@ mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinear
 CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component, CoordinateTransform* trans)  : SmartMessagingObject ((SmartMessagingObject&) component),
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
-mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), mTimeMap (NULL), mQC (component.mQC) {
+mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC) {
 
 	mDataChannels = new ChannelData* [mNumberOfChannels + 1];
 	mPullupTestedMatrix = new bool* [mNumberOfChannels + 1];
 	mLinearPullupMatrix = new double* [mNumberOfChannels + 1];
 	mQuadraticPullupMatrix = new double* [mNumberOfChannels + 1];
+	mLinearInScalePullupMatrix = new double* [mNumberOfChannels + 1];
+	mQuadraticInScalePullupMatrix = new double* [mNumberOfChannels + 1];
+	mMinimumInScalePrimaryPeak = new double* [mNumberOfChannels + 1];
 	mLeastMedianValue = new double* [mNumberOfChannels + 1];
 	mOutlierThreshold = new double* [mNumberOfChannels + 1];
 	int j;
@@ -200,6 +207,9 @@ mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinear
 		mPullupTestedMatrix [i] = new bool [mNumberOfChannels + 1];
 		mLinearPullupMatrix [i] = new double [mNumberOfChannels + 1];
 		mQuadraticPullupMatrix [i] = new double [mNumberOfChannels + 1];
+		mLinearInScalePullupMatrix [i] = new double [mNumberOfChannels + 1];
+		mQuadraticInScalePullupMatrix [i] = new double [mNumberOfChannels + 1];
+		mMinimumInScalePrimaryPeak [i] = new double [mNumberOfChannels + 1];
 		mLeastMedianValue [i] = new double [mNumberOfChannels + 1];
 		mOutlierThreshold [i] = new double [mNumberOfChannels + 1];
 
@@ -208,6 +218,9 @@ mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinear
 			mPullupTestedMatrix [i][j] = false;
 			mLinearPullupMatrix [i][j] = 0.0;
 			mQuadraticPullupMatrix [i][j] = 0.0;
+			mLinearInScalePullupMatrix [i][j] = 0.0;
+			mQuadraticInScalePullupMatrix [i][j] = 0.0;
+			mMinimumInScalePrimaryPeak [i] [j] = 0.0;
 			mLeastMedianValue [i][j] = 0.0;
 			mOutlierThreshold [i][j] = 0.0;
 		}
@@ -234,7 +247,7 @@ CoreBioComponent :: ~CoreBioComponent () {
 	if (mDataChannels != NULL) {
 
 		for (i=1; i<=mNumberOfChannels; i++)
-			delete mDataChannels [i];
+			delete[] mDataChannels [i];
 
 		delete[] mDataChannels;
 	}
@@ -242,7 +255,7 @@ CoreBioComponent :: ~CoreBioComponent () {
 	if (mPullupTestedMatrix != NULL) {
 
 		for (i=1; i<=mNumberOfChannels; i++)
-			delete mPullupTestedMatrix [i];
+			delete[] mPullupTestedMatrix [i];
 
 		delete[] mPullupTestedMatrix;
 	}
@@ -250,7 +263,7 @@ CoreBioComponent :: ~CoreBioComponent () {
 	if (mLinearPullupMatrix != NULL) {
 
 		for (i=1; i<=mNumberOfChannels; i++)
-			delete mLinearPullupMatrix [i];
+			delete[] mLinearPullupMatrix [i];
 
 		delete[] mLinearPullupMatrix;
 	}
@@ -258,15 +271,39 @@ CoreBioComponent :: ~CoreBioComponent () {
 	if (mQuadraticPullupMatrix != NULL) {
 
 		for (i=1; i<=mNumberOfChannels; i++)
-			delete mQuadraticPullupMatrix [i];
+			delete[] mQuadraticPullupMatrix [i];
 
 		delete[] mQuadraticPullupMatrix;
+	}
+
+	if (mLinearInScalePullupMatrix != NULL) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			delete[] mLinearInScalePullupMatrix [i];
+
+		delete[] mLinearInScalePullupMatrix;
+	}
+
+	if (mQuadraticInScalePullupMatrix != NULL) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			delete[] mQuadraticInScalePullupMatrix [i];
+
+		delete[] mQuadraticInScalePullupMatrix;
+	}
+
+	if (mMinimumInScalePrimaryPeak != NULL) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			delete[] mMinimumInScalePrimaryPeak [i];
+
+		delete[] mMinimumInScalePrimaryPeak;
 	}
 
 	if (mLeastMedianValue != NULL) {
 
 		for (i=1; i<=mNumberOfChannels; i++)
-			delete mLeastMedianValue [i];
+			delete[] mLeastMedianValue [i];
 
 		delete[] mLeastMedianValue;
 	}
@@ -274,7 +311,7 @@ CoreBioComponent :: ~CoreBioComponent () {
 	if (mOutlierThreshold != NULL) {
 
 		for (i=1; i<=mNumberOfChannels; i++)
-			delete mOutlierThreshold [i];
+			delete[] mOutlierThreshold [i];
 
 		delete[] mOutlierThreshold;
 	}
@@ -1356,6 +1393,25 @@ double CoreBioComponent :: QuadraticPullupCoefficient (int i, int j) {
 		return 0.0;
 
 	return mQuadraticPullupMatrix [i][j];
+}
+
+
+double CoreBioComponent::LinearInScalePullupCoefficient (int i, int j) {
+
+	if (mLinearInScalePullupMatrix == NULL)
+		return 0.0;
+
+	return mLinearInScalePullupMatrix [i] [j];
+}
+
+
+
+double CoreBioComponent::QuadraticInScalePullupCoefficient (int i, int j) {
+
+	if (mQuadraticInScalePullupMatrix == NULL)
+		return 0.0;
+
+	return mQuadraticInScalePullupMatrix [i] [j];
 }
 
 
