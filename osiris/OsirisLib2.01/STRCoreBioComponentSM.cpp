@@ -3378,18 +3378,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	it.Reset ();
 
 	size_t position = 0;
-	bool foundSample = false;
 	double testMean;
-
-	if (mSampleName.FindSubstring ("Ref_7", position))
-		foundSample = true;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
 		testMean = nextSignal->GetMean ();
-
-		if (foundSample && (nextSignal->GetChannel () == 2) && (testMean < 4199.4) && (testMean > 4199.3))
-			bool StopHere = true;
 
 		nextSignal->SetPullupMessageDataSM (mNumberOfChannels);
 		nextSignal->AssociateDataWithPullMessageSM (mNumberOfChannels);

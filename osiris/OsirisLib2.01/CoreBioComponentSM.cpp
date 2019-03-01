@@ -1552,7 +1552,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	int nNegatives = 0;
 	int nSigmoids = 0;
 	size_t pos = 0;
-	bool stopHere = mSampleName.FindSubstring ("Ref_7", pos);
 	int nPos = 0;
 	//double factor;
 	linearPart = quadraticPart = 0.0;
@@ -2109,8 +2108,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	if (!testLaserOffScale) {
 
 		size_t position = 0;
-		if ((primaryChannel == 3) && (pullupChannel == 1) && !testLaserOffScale && mSampleName.FindSubstring ("Ref_7", position))
-			bool stopHere = true;
 
 		estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
@@ -2409,9 +2406,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	list<PullupPair*>::iterator pairIt;
 	list<InterchannelLinkage*>::iterator linkIt;
 	size_t position = 0;
-
-	if ((primaryChannel == 4) && (pullupChannel == 2) && !testLaserOffScale && mSampleName.FindSubstring ("Ref_7", position))
-		bool stopHere = true;
 
 	// check for all pullup peaks being outliers, vs all non-outliers from 0-peaks
 	// what to do if answer = false?
