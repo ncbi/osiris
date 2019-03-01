@@ -431,6 +431,7 @@ public:
 	virtual bool AcknowledgePullupPeaksWhenThereIsNoPatternSM (int primaryChannel, int secondaryChannel, bool testLaserOffScale);
 	virtual bool RemovePrimaryLinksForChannelsSM (int primaryChannel, int pullupChannel, bool testLaserOffScale, RGDList& peakList);
 	virtual bool ScavengePullupFromOtherChannelListLaserInScale ();
+	virtual bool ScavengePullupFromOtherChannelListLaserOffScale ();
 
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();

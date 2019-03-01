@@ -3551,6 +3551,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 	// Record all non-laser off-scale coefficients *****12/21/2016
 	Endl endLine;
+	ScavengePullupFromOtherChannelListLaserInScale ();
 
 	if ((NonLaserOffScalePUCoefficients != NULL) && (NonLaserOffScalePUCoefficients->FileIsValid ())) {
 
@@ -3679,6 +3680,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
+	ScavengePullupFromOtherChannelListLaserOffScale ();
 	ReportPullupMatrix (2);
 
 	// compute all pullup ratios, etc. and insert into smart data...is this necessary?  We should already have stored pullup values from each other channel

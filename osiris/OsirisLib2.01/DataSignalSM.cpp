@@ -2057,6 +2057,34 @@ bool DataSignal :: HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfCha
 }
 
 
+double DataSignal::GetPullupCorrectionFromPrimariesWithNoPullupSM (int numberOfChannels) {
+
+	DataSignal* nextSignal;
+	int i;
+	double totalCorrection = 0.0;
+	smPullUp pullup;
+	smCalculatedPurePullup purePullup;
+
+	for (i=1; i<=numberOfChannels; i++) {
+
+		nextSignal = HasPrimarySignalFromChannel (i);
+
+		if (nextSignal == NULL)
+			continue;
+
+		if (nextSignal->GetMessageValue (pullup))
+			continue;
+
+		if (nextSignal->GetMessageValue (purePullup))
+			continue;
+
+		totalCorrection += GetPullupFromChannel (i);
+	}
+
+	return totalCorrection;
+}
+
+
 RGString DataSignal :: GetDataForNoticeSM (SmartNotice& sn) {
 
 	RGString str;

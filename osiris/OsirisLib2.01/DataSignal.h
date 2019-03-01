@@ -887,6 +887,7 @@ public:
 	bool SetPullupMessageDataSM (int numberOfChannels);
 	bool SetPrimaryPullupMessageDataSM (int numberOfChannels);
 	bool HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfChannels);
+	virtual double GetPullupCorrectionFromPrimariesWithNoPullupSM (int numberOfChannels);
 
 	RGString GetDataForNoticeSM (SmartNotice& sn);
 	void CapturePullupCorrections (DataSignal* ds);
