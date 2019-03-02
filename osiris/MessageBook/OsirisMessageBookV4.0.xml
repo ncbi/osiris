@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.35</VersionNumber>
-	<BuildTime>11/07/2018 06:44 PM</BuildTime>
+	<VersionNumber>7.36</VersionNumber>
+	<BuildTime>03/01/2019 07:49 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -4927,6 +4927,22 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSelectUserSpecifiedMinRFUForPrimaryPeakPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>        Specify Min RFU (below) for a Peak to be Considered Primary Pull-up (checked) vs Osiris Calculates Min RFU (unchecked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>SPECIFY MIN RFU FOR PEAK TO BE PRIMARY PULLUP</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smMinPrimaryPullupThreshold</Name>
 			<MessageType>count</MessageType>
 			<Description>Min RFU for a peak to be considered as a primary pull-up</Description>
@@ -4935,7 +4951,7 @@
 			<CountingDataInfo>
 				<Threshold>500</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Min RFU for a peak to be considered as a peak that causes pull-up (primary pull-up) (Default = 500)</ThresholdDescriptor>
+				<ThresholdDescriptor>                Min RFU for a peak to be considered to cause pull-up (primary pull-up)(requires above checked)(Default = 500)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -7328,6 +7344,7 @@
 						<Name>smSelectAveragingInPlaceFilterPreset</Name>
 						<Name>smAveragingInPlaceFilterWindowWidth</Name>
 						<Name>smMinPrimaryPullupThreshold</Name>
+						<Name>smSelectUserSpecifiedMinRFUForPrimaryPeakPreset</Name>
 						<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 						<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
 						<Name>smDisableFractionalFilterPreset</Name>
