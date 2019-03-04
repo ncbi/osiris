@@ -1515,6 +1515,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	smPrimaryInterchannelLink primaryPullup;
 	smWeakPrimaryInterchannelLink weakPrimaryPullup;
 	smZeroPullupPrimaryInterchannelLink zeroPullupPrimary;
+	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset selectUserSpecifiedMinPrimary;
 	double currentRatio;
 	double minRatio = 1.0;
 	double maxRatio = 0.0;
@@ -2105,7 +2106,14 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	InterchannelLinkage* iChannelPrimary;
 	ignore.Clear ();   //  Does this belong here???????
 
-	if (!testLaserOffScale) {
+	if (GetMessageValue (selectUserSpecifiedMinPrimary)) {
+
+		estimatedMinHeight = CoreBioComponent::minPrimaryPullupThreshold;
+		FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
+		mMinimumInScalePrimaryPeak [primaryChannel] [pullupChannel] = estimatedMinHeight;
+	}
+
+	else if (!testLaserOffScale) {
 
 		size_t position = 0;
 

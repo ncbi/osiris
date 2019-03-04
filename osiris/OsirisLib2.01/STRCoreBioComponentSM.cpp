@@ -1678,13 +1678,18 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	smLaserOffScale laserOffScale;
 	smPartOfDualSignal dualPeak;
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset selectUserSpecifiedMinPrimary;
 
 	bool testForPeaksTooCloseTogether = true;
 	double dualPeakBPTolerance = 0.20;
 
-	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	if (GetMessageValue (selectUserSpecifiedMinPrimary))
+		CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	
+	else
+		CoreBioComponent::minPrimaryPullupThreshold = 3.0;  //****This is new on 12/21/2018 to test the new algorithm for estimating the value for each channel pair
+
 	double maxSigmoidalPositive = (double)GetThreshold (primaryPullupThreshold);
-	CoreBioComponent::minPrimaryPullupThreshold = 3.0;  //****This is new on 12/21/2018 to test the new algorithm for estimating the value for each channel pair
 	PreTestSignalsForLaserOffScaleSM ();
 
 	ParameterServer* pServer = new ParameterServer;
