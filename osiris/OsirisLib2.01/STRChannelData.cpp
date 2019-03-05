@@ -3902,7 +3902,7 @@ double STRLaneStandardChannelData :: GetMeasurementRatio () const {
 
 int STRLaneStandardChannelData :: WriteBaselineData (RGTextOutput& text, const RGString& delim, const RGString& indent) {
 
-	int Size = mLaneStandard->GetNumberOfCharacteristics ();
+	/*int Size = mLaneStandard->GetNumberOfCharacteristics ();
 	int NSamples = mData->GetNumberOfSamples ();
 	const double* actualArray;
 	mLaneStandard->GetCharacteristicArray (actualArray);
@@ -3926,7 +3926,7 @@ int STRLaneStandardChannelData :: WriteBaselineData (RGTextOutput& text, const R
 
 	text << (int)floor (100.0 * bpOfT [saveSamples] + 0.5);
 	text << "</baselinePoints>" << endLine;
-	delete[] bpOfT;
+	delete[] bpOfT;*/
 	return 1;
 }
 
