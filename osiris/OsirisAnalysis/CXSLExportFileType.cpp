@@ -914,7 +914,7 @@ void CExportFiles::_SetupFileName()
   }
 }
 
-bool CExportFiles::FileExists()
+bool CExportFiles::_FileExists()
 {
   if(g_sFileName.IsEmpty())
   {
@@ -934,7 +934,7 @@ bool CExportFiles::FileExists()
 bool CExportFiles::SaveExportFile()
 {
   bool bRtn = true;
-  if(!FileExists())
+  if(!_FileExists())
   {
     wxFileName fn(g_sFileName);
     wxString sDir = fn.GetPath();
@@ -962,7 +962,7 @@ bool CExportFiles::SaveExportFile()
 bool CExportFiles::CreateFileIfNotExists()
 {
   // return true if the file exists upon exit
-  bool bRtn = FileExists();
+  bool bRtn = _FileExists();
   if(!bRtn)
   {
     bRtn = SaveExportFile();
@@ -1000,7 +1000,7 @@ bool CExportFiles::LoadExportFile()
   //  although it can be ignored here
   bool bRtn = false;
   _SetupFileName();
-  if(!FileExists())
+  if(!_FileExists())
   {
     Init();
     bRtn = true;
