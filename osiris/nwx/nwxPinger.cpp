@@ -243,7 +243,7 @@ bool nwxPinger::_setup(
     else
     {
       sScript.Append("pinger.sh");
-      if (!wxFileName::FileExist(sScript))
+      if (!wxFileName::FileExists(sScript))
       {
         nwxLog::LogMessage("Cannot find pinger.sh, OSIRIS will not send usage");
         bRtn = false;
