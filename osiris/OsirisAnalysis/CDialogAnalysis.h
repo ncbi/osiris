@@ -168,9 +168,6 @@ public:
     m_anChannelDetection = an;
   }
   
-//  STOP HERE - need setters and 
-//  END CGridRFURun Get/Set
-
   bool LabSettingsOK()
   {
     return m_bLabSettingsOK;

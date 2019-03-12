@@ -37,6 +37,7 @@
 #include "wxXml2/wxXml2Object.h"
 #include "wxIDS.h"
 
+class nwxPinger;
 class ConfigDir;
 class CPersistKitList;
 class CILSLadderInfo;
@@ -157,6 +158,13 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static bool ConfirmModificationsLost(wxWindow *parent);
   static bool SetupSiteSettings();
   static ConfigDir *GetConfig();
+  static nwxPinger *GetPinger();
+  static void Ping(const wxString &sName, const wxString &sValue);
+  static void Ping2(const wxString &sName, const wxString &sValue,
+    const wxString &sName2, const wxString &sValue2);
+  static void Ping3(const wxString &sName, const wxString &sValue,
+    const wxString &sName2, const wxString &sValue2,
+    const wxString &sName3, const wxString &sValue3);
   static nwxXmlMRU *GetMRU();
   static nwxXmlCmfList *GetCMFlist();
   static nwxXmlWindowSizes *GetWindowSizes();
@@ -173,6 +181,11 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
     const wxDateTime *pTime = NULL);
   static wxWindow *GetTopLevelParent(wxWindow *p);
   static void LAYOUT_HACK(wxWindow *p);
+  static int NewWindowNumber()
+  {
+    g_nWindowCounter++;
+    return g_nWindowCounter;
+  }
   
   static const wxString EMPTY_STRING;
   static const int DIALOG_STYLE;
@@ -189,7 +202,9 @@ private:
   static const wxString g_sACTIVE;
   static const wxString g_sINACTIVE;
 #endif
+  void _cleanupPinger();
   void _Cleanup();
+  static void _setupPinger();
   static void _LogMessage(const wxString &sMsg);
   static void _LogMessageFile(const wxString &sMsg, time_t t);
   static void _CloseMessageStream();
@@ -202,8 +217,10 @@ private:
   static CKitColors *m_pKitColors;
   static CArtifactLabels *m_pArtifactLabels;
   static wxFile *m_pFout;
+  static nwxPinger *g_pPinger;
   static int g_count;
   static int g_nMaxLogLevel;
+  static int g_nWindowCounter;
   static bool g_bSuppressMessages;
   static mainApp *g_pThis;
 
@@ -232,6 +249,14 @@ public:
     mainApp::SuppressMessages(m_bSave);
   }
 };
+
+// pinger types
+
+#define PING_WINDOW_NUMBER "windowNr"
+#define PING_WINDOW_OPEN "windowOpen"
+#define PING_WINDOW_CLOSE "windowClose"
+#define PING_EVENT "event"
+#define PING_ERROR "error"
 
 
 #endif

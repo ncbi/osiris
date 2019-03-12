@@ -249,6 +249,7 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
+  &SYSTEM("${CP} ${src}/nwx/pinger.vbs ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
   my $zipFile = "${dest}-Windows.exe";
@@ -398,6 +399,7 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Info.plist ${CONTENTS}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/PkgInfo ${CONTENTS}");
 
+  &SYSTEM("${CP} ${src}/nwx/pinger.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");

@@ -165,6 +165,7 @@
     <ClCompile Include="nwxLock.cpp" />
     <ClCompile Include="nwxLockFile.cpp" />
     <ClCompile Include="nwxLog.cpp" />
+    <ClCompile Include="nwxPinger.cpp" />
     <ClCompile Include="nwxPlotCtrl.cpp" />
     <ClCompile Include="nwxPlotDrawerLabel.cpp" />
     <ClCompile Include="nwxPlotDrawerShade.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="nwxMenuItem.h" />
     <ClInclude Include="nwxNameValuePair.h" />
     <ClInclude Include="nwxNumberValidator.h" />
+    <ClInclude Include="nwxPinger.h" />
     <ClInclude Include="nwxPlotCtrl.h" />
     <ClInclude Include="nwxPlotDrawerLabel.h" />
     <ClInclude Include="nwxPlotDrawerShade.h" />

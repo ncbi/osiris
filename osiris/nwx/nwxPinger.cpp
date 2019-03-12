@@ -1,0 +1,312 @@
+/*
+* ===========================================================================
+*
+*                            PUBLIC DOMAIN NOTICE
+*               National Center for Biotechnology Information
+*
+*  This software/database is a "United States Government Work" under the
+*  terms of the United States Copyright Act.  It was written as part of
+*  the author's official duties as a United States Government employee and
+*  thus cannot be copyrighted.  This software/database is freely available
+*  to the public for use. The National Library of Medicine and the U.S.
+*  Government have not placed any restriction on its use or reproduction.
+*
+*  Although all reasonable efforts have been taken to ensure the accuracy
+*  and reliability of the software and data, the NLM and the U.S.
+*  Government do not and cannot warrant the performance or results that
+*  may be obtained by using this software or data. The NLM and the U.S.
+*  Government disclaim all warranties, express or implied, including
+*  warranties of performance, merchantability or fitness for any particular
+*  purpose.
+*
+*  Please cite the author in any work or product based on this material.
+*
+* ===========================================================================
+*
+*
+*  FileName: nwxPinger.cpp
+*  Author:   Douglas Hoffman
+*  Date:  2/15/2019
+*  send event info back to ncbi via https://www.ncbi.nlm.nih.gov/stat
+*/
+#include "nwx/nwxPinger.h"
+#include "wx/file.h"
+#include "wx/filename.h"
+#include "wx/stdpaths.h"
+#include "nwx/nwxProcess.h"
+#include "nwx/nwxFileUtil.h"
+#include "nwx/nwxLog.h"
+#include "nwx/nwxTimerReceiver.h"
+
+#ifdef __WXMSW__
+#include <process.h>
+#define getpid _getpid
+#endif
+
+
+#ifdef __WXMSW__
+#define __EOL "\r\n"
+#else
+#define __EOL "\n"
+#endif
+
+class _nwxPingerProcess : public nwxProcess, nwxTimerReceiver
+{
+public:
+  _nwxPingerProcess(char **argv, wxFile *pFileLog) :
+    nwxProcess(NULL, wxID_ANY, argv),
+    m_pFileLog(pFileLog),
+    m_nTimer(0)
+  {
+    ProcessIO();
+  }
+  virtual ~_nwxPingerProcess()
+  {}
+  virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream);
+  virtual void OnTimer(wxTimerEvent &);
+  void CheckIO()
+  {
+    ProcessIO();
+    m_nTimer = 0;
+  }
+private:
+  wxFile * m_pFileLog;
+  int m_nTimer;
+};
+
+void _nwxPingerProcess::OnTimer(wxTimerEvent &e)
+{
+  m_nTimer += e.GetInterval();
+  if (m_nTimer >= 5000)
+  {
+    CheckIO();
+  }
+}
+void _nwxPingerProcess::ProcessLine(const char *p, size_t nLen, bool bErrStream)
+{
+  wxString s = bErrStream ? "usage stats ERROR: " : "usage stats: ";
+  wxString sLine(p, nLen);
+  s.Append(sLine);
+  nwxLog::LogMessage(s);
+  if((m_pFileLog != NULL) && m_pFileLog->IsOpened())
+  {
+    s.Append(__EOL);
+    if (!m_pFileLog->Write(s))
+    {
+      nwxLog::LogMessage("ERROR: could not write to usage stats log file");
+      m_pFileLog = NULL;
+    }
+  }
+}
+size_t nwxPingerSet::AppendList(std::vector<wxString> *pvs, bool bIncludeEolGo) const
+{
+  wxString s;
+  pvs->reserve(pvs->size() + m_mapPairs.size() + (bIncludeEolGo ? 1 : 0));
+  std::multimap<wxString, wxString>::const_iterator itr;
+  for (itr = m_mapPairs.begin();
+    itr != m_mapPairs.end();
+    ++itr)
+  {
+    s = itr->first;
+    s.Append("=");
+    s.Append(itr->second);
+    if (bIncludeEolGo) { s.Append(__EOL); }
+    pvs->push_back(s);
+  }
+  if (bIncludeEolGo)
+  {
+    s = "go" __EOL;
+    pvs->push_back(s);
+  }
+  return pvs->size();
+}
+
+bool nwxPingerSet::Send(nwxPinger *pPinger)
+{
+  bool bRtn = (pPinger == NULL) ? false : pPinger->Ping(*this);
+  Init();
+  return bRtn;
+}
+
+nwxPinger::nwxPinger(
+  const wxString &sAppName,
+  const wxString &sAppVersion,
+  const nwxPingerSet *pSetDefaults,
+  wxFile *pLogFile,
+  bool bLog) :
+  m_process(NULL),
+  m_pLogFile(pLogFile),
+  m_bLog(bLog),
+  m_bSetup(false),
+  m_bInDestructor(false)
+{
+  _setup(pSetDefaults, sAppName, sAppVersion);
+}
+nwxPinger::nwxPinger() : m_process(NULL),
+m_pLogFile(NULL),
+m_bLog(false),
+m_bSetup(false),
+m_bInDestructor(false)
+{}
+
+
+nwxPinger::~nwxPinger()
+{
+  m_bInDestructor = true;
+  if (_checkProcess())
+  {
+//    m_process->GetOutputStream()->Close();
+    wxString sQuit = "q" __EOL;
+    m_process->WriteToProcess(sQuit);
+    for (int i = 0; (i < 10) && _checkProcess(); ++i)
+    {
+      // max 10 loops, give it one second to stop
+      wxMilliSleep(100);
+    }
+    if (_checkProcess())
+    {
+      m_process->Cancel();
+      delete(m_process);
+    }
+  }
+}
+bool nwxPinger::_checkProcess()
+{
+  bool bRtn = false;
+  if (m_process == NULL)
+  {}
+  else if (m_process->IsRunning())
+  {
+    m_process->CheckIO();
+    bRtn = true;
+  }
+  else
+  {
+    if (!m_bInDestructor)
+    {
+      // process exited unexpectedly, log message
+      int n = m_process->GetExitStatus();
+      wxString s("pinger exited, return = ");
+      s.Append(nwxString::FormatNumber(n));
+      nwxLog::LogMessage(s);
+    }
+    delete m_process;
+    m_process = NULL;
+  }
+  return bRtn;
+}
+
+bool nwxPinger::_setup(
+  const nwxPingerSet *pSetDefaults,
+  const wxString &sAppName,
+  const wxString &sAppVersion)
+{
+  std::vector<wxString> vsArgs;
+  wxStandardPathsBase &sp(wxStandardPaths::Get());
+  wxFileName fn(sp.GetExecutablePath());
+  wxString sScript;
+  wxString sInterpreter;
+  bool bRtn = true;
+  if (pSetDefaults != NULL)
+  {
+    pSetDefaults->GetList(&vsArgs, false);
+  }
+  sScript = fn.GetPath(wxPATH_GET_SEPARATOR | wxPATH_GET_VOLUME);
+  nwxFileUtil::EndWithSeparator(&sScript);
+
+#ifdef __WXMSW__
+  // ms windows, check for cscript.exe pinger.vbs
+  sInterpreter = nwxFileUtil::PathFind(wxS("cscript.exe"), true, false);
+  if (sInterpreter.IsEmpty())
+  {
+    nwxLog::LogMessage("Cannot find cscript.exe, OSIRIS will not send usage");
+    bRtn = false;
+  }
+  else
+  {
+    sScript.Append("pinger.vbs");
+    if (!wxFileName::FileExists(sScript))
+    {
+      nwxLog::LogMessage("Cannot find pinger.vbs, OSIRIS will not send usage");
+      bRtn = false;
+    }
+  }
+#else
+  {
+    // mac, check for /bin/bash pinger.sh
+    sInterpreter = wxS("/bin/bash");
+    if (!wxFileName::IsFileExecutable(sInterpreter))
+    {
+      bRtn = false;
+      nwxLog::LogMessage("Cannot find /bin/bash, OSIRIS will not send usage");
+    }
+    else
+    {
+      sScript.Append("pinger.sh");
+      if (!wxFileName::FileExist(sScript))
+      {
+        nwxLog::LogMessage("Cannot find pinger.sh, OSIRIS will not send usage");
+        bRtn = false;
+      }
+    }
+
+  }
+#endif
+  if(bRtn)
+  {
+    wxString sPID = nwxString::FormatNumber(getpid());
+    const size_t NARG(126);
+    const char *ARGV[NARG + 2];
+    size_t n = 0;
+    ARGV[n++] = sInterpreter.utf8_str();
+#ifdef __WXMSW__
+    ARGV[n++] = "//NoLogo";
+#endif
+    ARGV[n++] = sScript.utf8_str();
+
+    if (!sAppName.IsEmpty())
+    {
+      ARGV[n++] = "-a";
+      ARGV[n++] = sAppName.utf8_str();
+    }
+    if (!sAppVersion.IsEmpty())
+    {
+      ARGV[n++] = "-v";
+      ARGV[n++] = sAppVersion.utf8_str();
+    }
+    ARGV[n++] = "-p";
+    ARGV[n++] = sPID.utf8_str();
+    if (vsArgs.size())
+    {
+      std::vector<wxString>::const_iterator itr;
+      for (itr = vsArgs.begin();
+        (itr != vsArgs.end()) && (n < NARG);
+        ++itr)
+      {
+        if ((*itr).Len())
+        {
+          ARGV[n++] = "-s";
+          ARGV[n++] = (*itr).utf8_str();
+        }
+      }
+    }
+    ARGV[n] = NULL;
+    m_process = new _nwxPingerProcess((char **)ARGV, m_pLogFile);
+  }
+  m_bSetup = true;
+  return bRtn;
+}
+
+bool nwxPinger::Ping(const nwxPingerSet &set)
+{
+  if (_checkProcess())
+  {
+    std::vector<wxString> vs;
+    set.GetList(&vs, true);
+    if (vs.size())
+    {
+      m_process->WriteToProcess(vs);
+    }
+  }
+  return _checkProcess();
+}

@@ -387,7 +387,7 @@ void CFramePlotMenu::UpdateLabels()
 }
 
 //**************************************************** CFramePlot
-
+#define PING_WINDOW_TYPE "FramePlot"
 
 void CFramePlot::_SetupTitle()
 {
@@ -419,6 +419,7 @@ void CFramePlot::_SetupTitle()
 
 CFramePlot::~CFramePlot()
 {
+  mainApp::Ping2(PING_WINDOW_CLOSE, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   _CleanupMenuHistoryPopup();
   _CleanupMenuPopup();
   delete m_pData;
@@ -471,6 +472,10 @@ CFramePlot::CFramePlot(
     m_bXBPS(false)
 {
   CBatchPlot BATCH(this);
+  mainApp::Ping3(PING_WINDOW_OPEN, PING_WINDOW_TYPE,
+    PING_WINDOW_NUMBER, GetFrameNumber(),
+    "NoOAR", (pFile == NULL) ? "true" : "false"
+    );
   m_pPanel = new wxScrolledWindow(this,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxVSCROLL);
   {
     CParmOsirisGlobal parm;

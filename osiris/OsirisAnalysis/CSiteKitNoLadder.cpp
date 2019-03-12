@@ -17,7 +17,7 @@
 #include "wxXsl/wxXslSheet.h"
 
 const wxString CSiteKitNoLadder::g_sROOT_NODE(wxS("SiteKitNoLadder"));
-
+const wxString CSiteKitNoLadder::g_sNAME_SITE_INDICATOR(wxS(" (Site)"));
 
 nwxIMPLEMENT_GLOBAL_OBJECT(CSiteKitNoLadderCollection)
 

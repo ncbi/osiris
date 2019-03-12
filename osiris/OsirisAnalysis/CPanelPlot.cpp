@@ -735,7 +735,6 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
 
   FORMAT_CONDITION(FORMAT_CORR_RFU,nwxRound::Round(dRFU - dCorr),dCorr != 0.0);
   sToolTip += wxString::Format(FORMAT_TIME,pPeak->GetTime());
-  // STOP HERE width after time
   FORMAT_CONDITION(FORMAT_PEAK_AREA,dPeakArea,dPeakArea > 0.0);
   FORMAT_CONDITION(FORMAT_WIDTH,dWidth,  dWidth > 0.0);
   FORMAT_CONDITION(FORMAT_ILS_REF,dBPS,dBPS > 1.0);

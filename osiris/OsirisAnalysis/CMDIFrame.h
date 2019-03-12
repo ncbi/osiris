@@ -150,9 +150,15 @@ protected:
   {
     m_bAutoReload = b;
   }
+  const wxString &GetFrameNumber()
+  {
+    // used to identify window in nwxPinger
+    return m_sFrameNumber;
+  }
   void _Kill();
 private:
   set<wxMenu *> m_setMenus;
+  wxString m_sFrameNumber;
   bool m_bNoPromptReload;
   bool m_bAutoReload;
   void _NotifyParent();

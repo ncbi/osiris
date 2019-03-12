@@ -124,6 +124,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <Profile>false</Profile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -274,7 +275,6 @@
     <ClCompile Include="CArchiveCollection.cpp" />
     <ClCompile Include="CArtifactLabels.cpp" />
     <ClCompile Include="CArtifactLabelsUser.cpp" />
-    <ClCompile Include="CButtons.cpp" />
     <ClCompile Include="CComboLabels.cpp" />
     <ClCompile Include="CDialogAbout.cpp" />
     <ClCompile Include="CDialogAnalysis.cpp" />
@@ -300,7 +300,6 @@
     <ClCompile Include="CDialogPromptNewerFile.cpp" />
     <ClCompile Include="CDialogReallyQuit.cpp" />
     <ClCompile Include="CDialogShowLabSettings.cpp" />
-    <ClCompile Include="CDialogSiteKitNoLadder.cpp" />
     <ClCompile Include="CDialogSitePath.cpp" />
     <ClCompile Include="CDialogToggleEnabled.cpp" />
     <ClCompile Include="CDialogVolumes.cpp" />
@@ -423,7 +422,6 @@
     <ClInclude Include="CArtifactLabels.h" />
     <ClInclude Include="CArtifactLabelsUser.h" />
     <ClInclude Include="CButtonGraph.h" />
-    <ClInclude Include="CButtons.h" />
     <ClInclude Include="CButtonSample.h" />
     <ClInclude Include="CComboLabels.h" />
     <ClInclude Include="CDialogAbout.h" />
@@ -553,6 +551,7 @@
     <ClInclude Include="CPanelUserID.h" />
     <ClInclude Include="CParmGridAttributes.h" />
     <ClInclude Include="CParmOsiris.h" />
+    <ClInclude Include="CPinger.h" />
     <ClInclude Include="CPlotController.h" />
     <ClInclude Include="CPlotData.h" />
     <ClInclude Include="CProcessAnalysis.h" />

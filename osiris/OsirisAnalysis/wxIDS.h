@@ -246,7 +246,7 @@ enum
   IDmenuDisableMultiple,
   IDmenuDeleteDisabled,
   IDmenuDisplayGraph,
-  IDmenuDisplaySample, // Temporary sample window trigger STOP HERE
+  IDmenuDisplaySample,
 
   IDmenuTogglePreview,
   IDmenuReAnalyze,

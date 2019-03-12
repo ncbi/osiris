@@ -97,6 +97,7 @@ public:
   }
 private:
   void OnEndProcess(wxProcessEvent &e);
+  void _PingOnOpen(const char *psType);
   bool _FileNeedsAttention(CDirEntry *pEntry);
   void _RunAutoExport(CDirEntry *pEntry);
   void _BuildWindow(const wxString &sTitle, const wxSize &sz);

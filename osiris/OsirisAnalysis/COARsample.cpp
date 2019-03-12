@@ -696,7 +696,7 @@ bool COARsample::SetPeaksByLocusName(
           // in another locus
           _CheckForSingleAllele((*itr)->GetID(), pcha, sLocus);
           //  6/9/16 need to make this more efficient 
-          //  using GetPeaksByID -- STOP HERE 
+          //  using GetPeaksByID
         }
       }
     }

@@ -418,7 +418,7 @@ void CPageName::OnBrowseXSL(wxCommandEvent &)
         bDone = true;
         if(_ExtractParameters(s))
         {
-          m_pExportEdit->SetXSLFile(s);  // STOP HERE
+          m_pExportEdit->SetXSLFile(s);
           _TransferToWindow();
         }
         else

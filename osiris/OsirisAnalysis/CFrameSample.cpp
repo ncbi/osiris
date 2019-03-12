@@ -48,7 +48,7 @@
 
 IMPLEMENT_ABSTRACT_CLASS(CFrameSample,CMDIFrame)
 
-
+#define PING_WINDOW_TYPE "FrameSample"
 #define LINE_SPACER "\n    "
 
 #ifdef __WXMSW__
@@ -78,8 +78,8 @@ CFrameSample::CFrameSample(
 
     //,m_bFirstShow(true)
 {
-    wxString s = wxPanelNameStr;
-
+  wxString s = wxPanelNameStr;
+  mainApp::Ping2(PING_WINDOW_OPEN, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   SetupTitle(true);
   wxPanel *pPanel = new wxPanel(this);
   m_pNoteBook = new CNotebookEditSample(m_pOARfile,m_pSample,pPanel,wxID_ANY,NULL);
@@ -117,7 +117,10 @@ CFrameSample::CFrameSample(
   COsirisIcon x;
   SetIcon(x);
 }
-CFrameSample::~CFrameSample() {}
+CFrameSample::~CFrameSample() 
+{
+  mainApp::Ping2(PING_WINDOW_CLOSE, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
+}
 
 void CFrameSample::SelectLocus(const wxString &sLocus)
 {

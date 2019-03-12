@@ -50,11 +50,13 @@
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxXmlCMF.h"
 #include "nwx/nwxUtil.h"
+#include "nwx/nwxPinger.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
+#include "Version/OsirisVersion.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -74,6 +76,7 @@ const int mainApp::RFU_MIN_ENTER = 5;
 
 int mainApp::g_count = 0;
 int mainApp::g_nMaxLogLevel = 1000;
+int mainApp::g_nWindowCounter = 0;
 bool mainApp::g_bSuppressMessages = false;
 ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
@@ -82,9 +85,18 @@ nwxXmlWindowSizes *mainApp::m_pWindowSize = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
 CKitColors *mainApp::m_pKitColors = NULL;
 CArtifactLabels *mainApp::m_pArtifactLabels = NULL;
+nwxPinger *mainApp::g_pPinger = NULL;
 mainApp *mainApp::g_pThis = NULL;
-
 wxFile *mainApp::m_pFout = NULL;
+
+void mainApp::_cleanupPinger()
+{
+  if ((g_pPinger != NULL) && (g_count <= 1))
+  {
+    delete g_pPinger;
+    g_pPinger = NULL;
+  }
+}
 
 void mainApp::_Cleanup()
 {
@@ -125,6 +137,7 @@ void mainApp::_Cleanup()
       delete m_pKitList;
       m_pKitList = NULL;
     }
+    _cleanupPinger();
   }
 }
 mainApp::~mainApp()
@@ -142,6 +155,50 @@ ConfigDir *mainApp::GetConfig()
   }
   return m_pConfig;
 }
+
+nwxPinger *mainApp::GetPinger()
+{
+  return g_pPinger;
+}
+
+void mainApp::Ping(const wxString &sName, const wxString &sValue)
+{
+  nwxPinger *p(GetPinger());
+  if (p != NULL)
+  {
+    nwxPingerSet pset(p);
+    pset.Set(sName, sValue);
+  }
+  // destructor will send the event
+}
+void mainApp::Ping2(const wxString &sName1, const wxString &sValue1,
+  const wxString &sName2, const wxString &sValue2)
+{
+  nwxPinger *p(GetPinger());
+  if (p != NULL)
+  {
+    nwxPingerSet pset(p);
+    pset.Set(sName1, sValue1);
+    pset.Set(sName2, sValue2);
+  }
+  // destructor will send the event
+}
+void mainApp::Ping3(const wxString &sName1, const wxString &sValue1,
+  const wxString &sName2, const wxString &sValue2,
+  const wxString &sName3, const wxString &sValue3)
+{
+  nwxPinger *p(GetPinger());
+  if (p != NULL)
+  {
+    nwxPingerSet pset(p);
+    pset.Set(sName1, sValue1);
+    pset.Set(sName2, sValue2);
+    pset.Set(sName3, sValue3);
+  }
+  // destructor will send the event
+}
+
+
 nwxXmlMRU *mainApp::GetMRU()
 {
   if(g_count && (m_pMRU == NULL))
@@ -230,6 +287,7 @@ bool mainApp::OnInit()
   GetWindowSizes();
   // set up log file if Debug directory exists
   _OpenMessageStream();
+  _setupPinger();
 
   // set up window
 
@@ -313,6 +371,19 @@ void mainApp::_MacOpenFiles()
   }
 }
 #endif
+
+void mainApp::_setupPinger()
+{
+  wxString sPath = mainApp::GetConfig()->GetSitePath();
+  nwxFileUtil::EndWithSeparator(&sPath);
+  sPath.Append("NoUsage.txt");
+  if (!wxFileName::FileExists(sPath))
+  {
+    wxString sAppName("osirisapp");
+    wxString sAppVer(OSIRIS_VERS_BASE);
+    g_pPinger = new nwxPinger(sAppName, sAppVer, NULL, m_pFout, false);
+  }
+}
 
 void mainApp::_OpenMessageStream()
 {
@@ -569,6 +640,7 @@ void mainApp::OnQuit(wxCommandEvent &e)
   if(bSkip)
   {
     bSkip = m_pFrame->Close();
+    _cleanupPinger();
   }
 #else
   if(bSkip)

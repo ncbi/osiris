@@ -193,29 +193,8 @@ CProcessAnalysis::CProcessAnalysis(
   char *argv[] = { m_psExe, NULL  };
   m_dProgress = 0.0;
   Run(argv);
-  wxOutputStream *pOut = GetOutputStream();
-  wxASSERT_MSG(pOut != NULL,"Cannot get output stream for process");
   mainApp::LogMessage(sStdin);
-  if(pOut != NULL)
-  {
-    const char *pChar = sStdin.ToUTF8();
-    size_t nLen = sStdin.Len();
-    size_t n;
-    while(nLen > 0)
-    {
-      n = pOut->Write((void *)pChar,nLen).LastWrite();
-      if(n)
-      {
-        pChar += n;
-        nLen -= n;
-      }
-      else
-      {
-        nLen = 0;
-        Cancel();
-      }
-    }
-  }
+  WriteToProcess(sStdin);
 }
 
 CProcessAnalysis::~CProcessAnalysis() 

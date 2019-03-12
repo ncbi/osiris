@@ -97,6 +97,7 @@
 DEFINE_EVENT_TYPE(CEventRepaint)
 DEFINE_EVENT_TYPE(CEventRestoreScroll)
 
+#define PING_WINDOW_TYPE "FrameAnalysis"
 
 #define LINE_SPACER "\n    "
 
@@ -110,6 +111,7 @@ CFrameAnalysis::~CFrameAnalysis()
 {
   _SetPreviewMenu(NULL);
   _CleanupCMF();
+  mainApp::Ping2(PING_WINDOW_CLOSE, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
 }
 
 CFrameAnalysis::CFrameAnalysis(
@@ -185,6 +187,7 @@ void CFrameAnalysis::_Build()
   int nDisplayName;
   bool bShowPreview = false;
 
+  mainApp::Ping2(PING_WINDOW_OPEN, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   m_pParent->InsertWindow(this,m_pOARfile);
   m_pButtonEdit = NULL;
   m_pComboCellType = NULL;
@@ -2386,6 +2389,8 @@ bool CFrameAnalysis::SaveFile()
           CheckSaveStatus();
           m_pParent->UpdateHistory(m_pOARfile);
           SetupTitle();
+          mainApp::Ping2(PING_WINDOW_NUMBER, GetFrameNumber(),
+            PING_EVENT, "SaveFile");
         }
         // destroy wxBusyCursor here by enclosing in {}
       }
@@ -2397,6 +2402,11 @@ bool CFrameAnalysis::SaveFile()
     if(bCanSaveAs && !bRtn)
     {
       bRtn = SaveFileAs();
+    }
+    if (!bRtn)
+    {
+      mainApp::Ping3(PING_WINDOW_NUMBER, GetFrameNumber(),
+        PING_EVENT, "SaveFile", PING_ERROR, "1");
     }
   }
   return bRtn;
@@ -2421,7 +2431,8 @@ bool CFrameAnalysis::SaveFileAs()
     wxString sOldName = m_pOARfile->GetFileName();
     wxString sFileName = sOldName;
     wxString sFilePath;
-    if(m_pOARfile->IsOAR())
+    bool bOAR = m_pOARfile->IsOAR();
+    if(bOAR)
     {
       // change .oar file to a .oer file
       sFileName = nwxFileUtil::SetupFileName(sFileName,EXT_REPORT_EDITED);
@@ -2460,10 +2471,14 @@ bool CFrameAnalysis::SaveFileAs()
           m_pParent->UpdateHistory(m_pOARfile);
           m_pMenu->UpdateHistory();
           SetupTitle();
+          mainApp::Ping3(PING_WINDOW_NUMBER, GetFrameNumber(),
+            PING_EVENT, "SaveFileAs", "from", bOAR ? "FromOAR" : "FromOER");
         }
         else
         {
           ShowFileSaveError(sFileName);
+          mainApp::Ping3(PING_WINDOW_NUMBER, GetFrameNumber(),
+            PING_EVENT, "SaveFileAs", PING_ERROR, "1");
         }
       }
     }

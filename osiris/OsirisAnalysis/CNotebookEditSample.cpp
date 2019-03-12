@@ -144,7 +144,6 @@ CNotebookEditSample::CNotebookEditSample(
 //  vnExpand.reserve(nChannelCount);
   for(k = 1; k <= nChannelCount; ++k)
   {
-    // STOP HERE pChanel->GetChannelName() returns nothing
     pCC = pSingleKit->GetColorChannel(k);
     pColour = pCC->GetColorAnalyzedPtr();
     wxString sDyeName = pCC->GetDyeName();
@@ -453,7 +452,6 @@ void CNotebookEditSample::OnChanging(wxBookCtrlEvent &e)
 }
 void CNotebookEditSample::RepaintData()
 {
-  // STOP HERE - need to implement
   TransferDataToWindow();
 }
 

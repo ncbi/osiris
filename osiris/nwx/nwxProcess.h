@@ -35,7 +35,8 @@
 #include <wx/stream.h>
 #include <wx/string.h>
 #include <wx/process.h>
-
+#include <wx/process.h>
+#include <vector>
 
 class nwxProcess : public wxProcess
 {
@@ -63,6 +64,13 @@ public:
   virtual ~nwxProcess();
   virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream) = 0;
   virtual void OnTerminate(int nPID,int nExitCode);
+  size_t WriteToProcess(const char *buffer, size_t size);
+  size_t WriteToProcess(const wxString &s)
+  {
+    const char *p = s.utf8_str();
+    return WriteToProcess(p, strlen(p));
+  }
+  size_t WriteToProcess(const std::vector<wxString> &vs);
   bool Run(char **argv, int nExeFlags = wxEXEC_ASYNC);
   bool Run(wchar_t **argv, int nExeFlags = wxEXEC_ASYNC);
   void Pause(bool bPause = true)
@@ -90,7 +98,7 @@ public:
   {
     return m_bKilled;
   }
-  void Wait();
+  //void Wait();
   size_t ProcessIO(size_t nLimit = 0x7fffffff);
   bool IsErrorOpened() const;
 private:
