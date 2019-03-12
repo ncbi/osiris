@@ -38,17 +38,18 @@ function FIND()
 function SETUP()
 {
   URL="https://www.ncbi.nlm.nih.gov/stat"
+  PID=$$
   APP_VER="v0"
   APP_NAME="ncbi pinger"
   BASE_QUERY=""
   STARTTIME=$(date '+%s')
-  SESSION=$(date '+%y%m%d.%H%M%S.')$$
+  SESSION_TIME=$(date '+%y%m%d.%H%M%S.')
   NSCURL=$(FIND nscurl)
   CCURL=$(FIND curl)
   SWVERS=$(FIND sw_vers)
   
   if test -x "${SWVERS}" ; then
-    eval $(sw_vers | sed -e 's/:\s*/="/' -e 's/$/"/')
+    eval $( "${SWVERS}" | sed -e 's/:\s*/="/' -e 's/$/"/')
   fi
   ProductName=${ProductName:-Mac OS X}
   ProductVersion=${ProductVersion:-unknown}
@@ -130,7 +131,7 @@ function MAIN()
 {
 SETUP
 
-while getopts ":v:a:s:" opt ; do
+while getopts ":v:a:s:p:" opt ; do
   case $opt in
     a)
         APP_NAME="${OPTARG}"
@@ -146,6 +147,9 @@ while getopts ":v:a:s:" opt ; do
     s)
         BASE_QUERY=$(ADD_PAIR "${BASE_QUERY}" "${OPTARG}")
         ;;
+    p)
+        PID="${OPTARG}"
+        ;;
     *)
        ECHO2 "${opt}: invalid parameter"
        ;;
@@ -153,7 +157,7 @@ while getopts ":v:a:s:" opt ; do
 done
 
 USER_AGENT="${APP_NAME} ${APP_VER} for ${OSVERSION}"
-BASE_QUERY=$(ADD_PAIR "${BASE_QUERY}" "session=${SESSION}")
+BASE_QUERY=$(ADD_PAIR "${BASE_QUERY}" "session=${SESSION_TIME}${PID}")
 BASE_QUERY=$(ADD_PAIR "${BASE_QUERY}" "os=${OSVERSION}")
 
 PING "${BASE_QUERY}"
@@ -162,6 +166,8 @@ while read x; do
   if test "$x" = "go"; then
     PING "$Q"
     Q="${BASE_QUERY}"
+  elif test "$x" = "q"; then
+    break
   else
     Q=$(ADD_PAIR "${Q}" "$x")
   fi
