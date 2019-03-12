@@ -49,7 +49,7 @@ function SETUP()
   SWVERS=$(FIND sw_vers)
   
   if test -x "${SWVERS}" ; then
-    eval $( "${SWVERS}" | sed -e 's/:\s*/="/' -e 's/$/"/')
+    eval $( "${SWVERS}" | sed -e 's/:[	 ]*/="/' -e 's/$/"/')
   fi
   ProductName=${ProductName:-Mac OS X}
   ProductVersion=${ProductVersion:-unknown}
@@ -63,7 +63,7 @@ function SETUP()
       HTTPSEnable=""
       HTTPSPort=""
       HTTPSProxy=""
-      eval $("${SCUTIL}" --proxy | grep "HTTPS.*:" | sed -e 's/^ *//' -e 's/\s*:\s*/="/' -e 's/$/"/')
+      eval $("${SCUTIL}" --proxy | grep "HTTPS.*:" | sed -e 's/^ *//' -e 's/[ 	]*:[ 	]*/="/' -e 's/$/"/')
       if test "${HTTPSEnable}" = "1" -a "${HTTPSPort}" != "" -a "${HTTPSProxy}" != ""; then
         export https_proxy="http://${HTTPSProxy}:${HTTPSPort}/"
         export http_proxy="${https_proxy}"
@@ -103,7 +103,7 @@ function rawurlencode()
 function ADD_PAIR()
 {
   local BASE="$1"
-  local PAIR=$(rawurlencode "$2" | sed 's/%3d/=/i')
+  local PAIR=$(rawurlencode "$2" | sed 's/%3[Dd]/=/')
   # decode first equal sign
   if test "$PAIR" = ""; then
     true
