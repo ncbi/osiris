@@ -58,6 +58,9 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   pMenuTools->Append(IDexport,"Export File Settings\tAlt+E");
   pMenuTools->Append(IDeditColours,"Edit Grid Colors\tAlt+C");
   pMenuTools->Append(IDartifactLabels,"Edit Artifact Labels\tCtrl+Alt+A");
+  wxMenuItem *pItem = pMenuTools->AppendCheckItem(
+    IDpinger, "Allow Usage Reporting");
+  pItem->Check(mainApp::PingerEnabled());
   if(_okToAccessSiteSettings())
   {
     pMenuTools->Append(IDsiteSettings,"Access site settings...");

@@ -96,6 +96,7 @@ DECLARE_CMD_HANDLER(OnOpen)
 DECLARE_CMD_HANDLER(OnRecentFiles)
 DECLARE_CMD_HANDLER(OnLabSettings)
 DECLARE_CMD_HANDLER(OnArtifactLabels)
+DECLARE_CMD_HANDLER(OnPinger)
 DECLARE_CMD_HANDLER(OnExportSettings)
 DECLARE_CMD_HANDLER(OnEditGridColours)
 DECLARE_CMD_HANDLER(OnShowLog)
@@ -155,6 +156,9 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   {
     return Confirm(parent,sPrompt,"Confirm");
   }
+  static bool PingerEnabled();
+  static bool SetPingerEnabled(bool bEnable);
+  static wxString _pingerFile();
   static bool ConfirmModificationsLost(wxWindow *parent);
   static bool SetupSiteSettings();
   static ConfigDir *GetConfig();
@@ -202,8 +206,8 @@ private:
   static const wxString g_sACTIVE;
   static const wxString g_sINACTIVE;
 #endif
-  void _cleanupPinger();
   void _Cleanup();
+  static void _cleanupPinger();
   static void _setupPinger();
   static void _LogMessage(const wxString &sMsg);
   static void _LogMessageFile(const wxString &sMsg, time_t t);

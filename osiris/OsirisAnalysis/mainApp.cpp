@@ -30,6 +30,7 @@
 */
 #include "mainApp.h"
 #include "mainFrame.h"
+#include <wx/filefn.h> 
 #include <wx/dialog.h>
 #include <wx/bitmap.h>
 #include <wx/splash.h>
@@ -91,7 +92,7 @@ wxFile *mainApp::m_pFout = NULL;
 
 void mainApp::_cleanupPinger()
 {
-  if ((g_pPinger != NULL) && (g_count <= 1))
+  if (g_pPinger != NULL)
   {
     delete g_pPinger;
     g_pPinger = NULL;
@@ -374,15 +375,63 @@ void mainApp::_MacOpenFiles()
 
 void mainApp::_setupPinger()
 {
-  wxString sPath = mainApp::GetConfig()->GetSitePath();
-  nwxFileUtil::EndWithSeparator(&sPath);
-  sPath.Append("NoUsage.txt");
-  if (!wxFileName::FileExists(sPath))
+  if (PingerEnabled() && (g_pPinger == NULL))
   {
     wxString sAppName("osirisapp");
     wxString sAppVer(OSIRIS_VERS_BASE);
     g_pPinger = new nwxPinger(sAppName, sAppVer, NULL, m_pFout, false);
   }
+}
+
+wxString mainApp::_pingerFile()
+{
+  wxString sPath = mainApp::GetConfig()->GetSitePath();
+  nwxFileUtil::EndWithSeparator(&sPath);
+  sPath.Append("nousage.txt");
+  return sPath;
+}
+bool mainApp::PingerEnabled()
+{
+  return !wxFileName::FileExists(_pingerFile());
+}
+
+bool mainApp::SetPingerEnabled(bool bEnable)
+{
+  // set the usage stats 'pinger' as enabled or
+  // disabled.  If successful, return true else false
+  // It is disabled if the file "nousage.txt" exists
+  // in the site folder.
+  // The user must have access privileges
+  // in order to change this setting
+  bool bIsEnabled = PingerEnabled();
+  bool bRtn = true;
+  if (bEnable != bIsEnabled)
+  {
+    wxString sPath(_pingerFile());
+    if (!bEnable)
+    {
+      wxFile sFile(sPath, wxFile::write);
+      bRtn = sFile.IsOpened();
+      sFile.Close();
+      if (bRtn)
+      {
+#ifndef __WXMSW__
+        nwxFileUtil::SetFilePermissionFromDir(sFileName);
+#endif
+        mainApp::_cleanupPinger();
+      }
+    }
+    else
+    {
+      bRtn = wxRemoveFile(sPath);
+      if (bRtn)
+      {
+        mainApp::_setupPinger();
+        mainApp::Ping("event", "PingerEnabled");
+      }
+    }
+  }
+  return bRtn;
 }
 
 void mainApp::_OpenMessageStream()
@@ -668,6 +717,7 @@ DEFINE_CMD_HANDLER(OnOpen)
 DEFINE_CMD_HANDLER(OnRecentFiles)
 DEFINE_CMD_HANDLER(OnLabSettings)
 DEFINE_CMD_HANDLER(OnArtifactLabels)
+DEFINE_CMD_HANDLER(OnPinger)
 DEFINE_CMD_HANDLER(OnExportSettings)
 DEFINE_CMD_HANDLER(OnEditGridColours)
 DEFINE_CMD_HANDLER(OnShowLog)
@@ -699,6 +749,7 @@ EVT_MENU(wxID_EXIT,   mainApp::OnQuit)
 EVT_MENU(IDlistMRU,   mainApp::OnRecentFiles)
 EVT_MENU(IDlab,       mainApp::OnLabSettings)
 EVT_MENU(IDartifactLabels, mainApp::OnArtifactLabels)
+EVT_MENU(IDpinger,    mainApp::OnPinger)
 EVT_MENU(IDexport,    mainApp::OnExportSettings)
 EVT_MENU(IDeditColours, mainApp::OnEditGridColours)
 EVT_MENU(IDlog,       mainApp::OnShowLog)

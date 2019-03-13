@@ -137,6 +137,7 @@ public:
   void OnShowSiteSettings(wxCommandEvent &);
   bool SetupSiteSettings();
   void OnArtifactLabels(wxCommandEvent &);
+  void OnPinger(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);
   void OnTimer(wxTimerEvent &);

@@ -843,7 +843,30 @@ void mainFrame::OnShowSiteSettings(wxCommandEvent &)
   }
 }
 
-
+void mainFrame::OnPinger(wxCommandEvent &e)
+{
+  if (!mainApp::SetPingerEnabled(e.IsChecked()))
+  {
+    mainApp::ShowError(
+      wxT("Cannot change this setting\npossibly due to access privileges"),
+      DialogParent());
+#ifdef __WXMAC__
+    wxMenuBar *pMenu = wxMenuBar::MacGetCommonMenuBar();
+#else
+    wxMenuBar *pMenu = GetMenuBar();
+    // linux TBD if ever implemented.
+#endif
+    wxMenuItem *pItem = (pMenu == NULL) ? NULL : pMenu->FindItem(IDpinger);
+    if (pItem == NULL)
+    {
+      nwxLog::LogMessage("Cannot find usage statistics menu item");
+    }
+    else
+    {
+      pItem->Check(mainApp::PingerEnabled());
+    }
+  }
+}
 void mainFrame::OnArtifactLabels(wxCommandEvent &)
 {
   {

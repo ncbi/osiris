@@ -103,6 +103,8 @@ sub COPYFILES
   for my $sdir (qw/
     CANNABIS
     Cofiler
+    CORDIS_PLUS
+    CORDIS_PLUS_HID
     GF
     GFHID
     GFHID_Mixture

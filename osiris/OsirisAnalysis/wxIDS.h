@@ -150,6 +150,7 @@ enum
   IDpreview,
   IDlab,
   IDartifactLabels,
+  IDpinger,
   IDexport,
   IDsiteSettings,
   IDsiteShow,
