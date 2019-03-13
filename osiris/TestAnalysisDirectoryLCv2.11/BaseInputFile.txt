@@ -1,18 +1,25 @@
-InputDirectory = F:/CordisPlus/LaddersAndSamples;
+InputDirectory = F:/DFSC/GhostPeak_03122019/MK_3500A_2019-02-22_Sample_24SEC_1.2KV;
 LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-3/Config;
-ReportDirectory = F:/CordisPlusTestRuns/NormalizationAveInPlaceFilter;
-OutputSubdirectory = 20190214_151309;
-MarkerSetName = COrDIS Plus;
-LaneStandardName = S450_60_450;
+ReportDirectory = F:/DFSC/GhostPeak_03122019;
+MarkerSetName = GlobalFiler;
+LaneStandardName = ABI-LIZ-600-60-TO-460;
 CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20181208-142042/V-20181208-142042_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20181208-142042/V-20181208-142042_LabSettings.xml;
+StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20171211-084702/V-20171211-084702_StdSettings.xml;
+LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20171211-084702/V-20171211-084702_LabSettings.xml;
 MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-3/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 75.;
-MinLaneStandardRFU = 150.;
-MinLadderRFU = 1000.;
-MinInterlocusRFU = 75.;
-MinLadderInterlocusRFU = 1000.;
-SampleDetectionThreshold = 75.;
+MinSampleRFU = 50.;
+MinLaneStandardRFU = 500.;
+MinLadderRFU = 300.;
+MinInterlocusRFU = 50.;
+MinLadderInterlocusRFU = 300.;
+SampleDetectionThreshold = 35.;
+AnalysisThresholdOverride:1 = 50;
+AnalysisThresholdOverride:2 = 90;
+AnalysisThresholdOverride:3 = 50;
+AnalysisThresholdOverride:4 = 80;
+AnalysisThresholdOverride:5 = 89;
 RawDataString = R;
 ;
+
+
+

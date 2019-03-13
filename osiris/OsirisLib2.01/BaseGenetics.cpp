@@ -330,7 +330,7 @@ void BaseLocus :: SetNonStandardStutterArray (const locusSpecificNonStandardStut
 
 		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
+		if ((pThreshold != NULL) && (!pThreshold->IsNullElement ()))
 			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
 	}
 
@@ -340,7 +340,7 @@ void BaseLocus :: SetNonStandardStutterArray (const locusSpecificNonStandardStut
 
 		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
+		if ((pThreshold != NULL) && (!pThreshold->IsNullElement ()))
 			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
 	}
 }

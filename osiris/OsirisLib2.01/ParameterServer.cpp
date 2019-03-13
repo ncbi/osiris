@@ -175,7 +175,7 @@ locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct (
 
 		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
+		if ((pThreshold != NULL) && (!pThreshold->IsNullElement ()))
 			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
 	}
 
@@ -185,7 +185,7 @@ locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct (
 
 		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
+		if ((pThreshold != NULL) && (!pThreshold->IsNullElement ()))
 			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
 	}
 }
