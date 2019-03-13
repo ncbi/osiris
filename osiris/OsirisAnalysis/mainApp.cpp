@@ -416,7 +416,7 @@ bool mainApp::SetPingerEnabled(bool bEnable)
       if (bRtn)
       {
 #ifndef __WXMSW__
-        nwxFileUtil::SetFilePermissionFromDir(sFileName);
+        nwxFileUtil::SetFilePermissionFromDir(sPath);
 #endif
         mainApp::_cleanupPinger();
       }
