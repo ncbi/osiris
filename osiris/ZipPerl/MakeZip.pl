@@ -216,7 +216,7 @@ sub GetVCDir
   }
   $DRIVE || die("Cannot find mingw or cygwin c drive");
   #my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC"; 
-  my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio/2017/Professional/VC/Redist/MSVC/14.14.26405/x86/Microsoft.VC141.CRT";
+  my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio/2017/Professional/VC/Redist/MSVC/14.16.27012/x86/Microsoft.VC141.CRT";
   system("test -d \"$p\"") && die("Cannot find MS Visual Studio (${p})");
   $p;
 #  my $DLLPATH= "${p}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
