@@ -419,7 +419,7 @@ void CFramePlot::_SetupTitle()
 
 CFramePlot::~CFramePlot()
 {
-  mainApp::Ping2(PING_WINDOW_CLOSE, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
+  mainApp::Ping2(PING_EVENT, PING_WINDOW_CLOSE PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   _CleanupMenuHistoryPopup();
   _CleanupMenuPopup();
   delete m_pData;
@@ -472,7 +472,7 @@ CFramePlot::CFramePlot(
     m_bXBPS(false)
 {
   CBatchPlot BATCH(this);
-  mainApp::Ping3(PING_WINDOW_OPEN, PING_WINDOW_TYPE,
+  mainApp::Ping3(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE,
     PING_WINDOW_NUMBER, GetFrameNumber(),
     "NoOAR", (pFile == NULL) ? "true" : "false"
     );

@@ -288,7 +288,6 @@ bool mainApp::OnInit()
   GetWindowSizes();
   // set up log file if Debug directory exists
   _OpenMessageStream();
-  _setupPinger();
 
   // set up window
 
@@ -355,6 +354,7 @@ bool mainApp::OnInit()
     _MacOpenFiles();
   }
 #endif
+  _setupPinger();
   return true;
 }
 #ifdef __WXMAC__
@@ -375,11 +375,17 @@ void mainApp::_MacOpenFiles()
 
 void mainApp::_setupPinger()
 {
-  if (PingerEnabled() && (g_pPinger == NULL))
+  if (!PingerEnabled()) {} // not enabled, return
+  else if ((g_pPinger != NULL) && g_pPinger->IsRunning()) {} // already running, return
+  else
   {
+    if (g_pPinger != NULL)
+    {
+      _cleanupPinger();
+    }
     wxString sAppName("osirisapp");
     wxString sAppVer(OSIRIS_VERS_BASE);
-    g_pPinger = new nwxPinger(sAppName, sAppVer, NULL, m_pFout, false);
+    g_pPinger = new nwxPinger(g_pThis->m_pFrame, IDpingerProcess, sAppName, sAppVer, NULL, m_pFout, false);
   }
 }
 
@@ -427,7 +433,7 @@ bool mainApp::SetPingerEnabled(bool bEnable)
       if (bRtn)
       {
         mainApp::_setupPinger();
-        mainApp::Ping("event", "PingerEnabled");
+        mainApp::Ping(PING_EVENT, "PingerEnabled");
       }
     }
   }
@@ -685,21 +691,20 @@ void mainApp::OnQuit(wxCommandEvent &e)
   bool bSkip;
   wxBusyCursor xxx;
   bSkip = m_pFrame->DoClose();
-#if mainFrameIsWindow
   if(bSkip)
   {
-    bSkip = m_pFrame->Close();
+    mainApp::Ping(PING_EVENT, "user-exit");
     _cleanupPinger();
-  }
+#if mainFrameIsWindow
+    bSkip = m_pFrame->Close();
+    m_pFrame->Destroy();
 #else
-  if(bSkip)
-  {
     m_pFrame->DeletePendingEvents();
     delete m_pFrame;
     m_pFrame = NULL;
     _Cleanup();
-  }
 #endif
+  }
   e.Skip(bSkip);
   _LogMessageFile(wxT("mainApp::OnQuit"),0);
 }
@@ -767,11 +772,6 @@ EVT_MENU(IDcheckForUpdates, mainApp::OnCheckForUpdates)
 EVT_MENU(IDhelpContactUs, mainApp::OnContactUs)
 EVT_MENU(IDExportGraphic, mainApp::OnMenu)
 EVT_MENU(IDMaxLadderLabels, mainApp::OnMaxLadderLabels)
-
-//EVT_MENU(wxID_SAVEAS, mainApp::OnSave) // commented out 9/16/16b
-//EVT_MENU(wxID_SAVE, mainApp::OnSave)
-
-
 #ifdef __WINDOW_LIST__
 #ifdef __WXMAC__
 EVT_MENU_RANGE(IDmenuWindow_Minimize,IDmenuWindow_Frame_END,mainApp::OnWindowMenu)

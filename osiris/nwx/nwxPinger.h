@@ -32,6 +32,7 @@
 #ifndef __NWX_PINGER_H__
 #define __NWX_PINGER_H__
 
+#include <wx/window.h>
 #include <wx/string.h>
 #include "nwx/stdb.h"
 #include <map>
@@ -42,6 +43,7 @@
 class _nwxPingerProcess;
 class wxFile;
 class nwxPinger;
+class wxEvtHandler;
 
 class nwxPingerSet
 {
@@ -110,6 +112,8 @@ class nwxPinger
 {
 public:
   nwxPinger(
+    wxEvtHandler *parent,
+    int id,
     const wxString &sAppName,
     const wxString &sAppVersion,
     const nwxPingerSet *pSetDefaults = NULL,
@@ -123,12 +127,15 @@ public:
   );
   nwxPinger();
   virtual ~nwxPinger();
+  void Exit();
   bool Ping(const nwxPingerSet &set);
   bool IsRunning()
   {
     return _checkProcess();
   }
   bool Setup(
+    wxEvtHandler *parent,
+    int id,
     const nwxPingerSet *pSetDefaults = NULL,
     const wxString &sAppName = wxEmptyString,
     const wxString &sAppVersion = wxEmptyString,
@@ -140,12 +147,14 @@ public:
     {
       m_pLogFile = pLogFile;
       m_bLog = bLog;
-      rtn = _setup(pSetDefaults, sAppName, sAppVersion);
+      rtn = _setup(parent, id, pSetDefaults, sAppName, sAppVersion);
     }
     return rtn;
   }
 private:
   bool _setup(
+    wxEvtHandler *parent,
+    int id,
     const nwxPingerSet *pSetDefaults = NULL,
     const wxString &sAppName = wxEmptyString,
     const wxString &sAppVersion = wxEmptyString);

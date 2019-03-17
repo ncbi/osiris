@@ -142,7 +142,8 @@ enum
 enum
 {
   _junk = wxID_HIGHEST,
-  IDprocess,
+  IDprocess,   // analysis
+  IDpingerProcess, //pinger
   IDanalyze,
   IDopenPlot,
   IDopenBatch,

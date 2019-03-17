@@ -53,15 +53,19 @@
 class _nwxPingerProcess : public nwxProcess, nwxTimerReceiver
 {
 public:
-  _nwxPingerProcess(char **argv, wxFile *pFileLog) :
-    nwxProcess(NULL, wxID_ANY, argv),
-    m_pFileLog(pFileLog),
-    m_nTimer(0)
+  _nwxPingerProcess(wxEvtHandler *parent, int id, char **argv, wxFile *pFileLog) :
+    nwxProcess(parent, id, argv),
+    m_pFileLog(pFileLog)
+    ,m_nTimer(0)
   {
     ProcessIO();
   }
   virtual ~_nwxPingerProcess()
-  {}
+  {
+    return;
+  }
+  virtual void OnTerminate(int nPID, int nExitCode);
+
   virtual void ProcessLine(const char *p, size_t nLen, bool bErrStream);
   virtual void OnTimer(wxTimerEvent &);
   void CheckIO()
@@ -73,7 +77,6 @@ private:
   wxFile * m_pFileLog;
   int m_nTimer;
 };
-
 void _nwxPingerProcess::OnTimer(wxTimerEvent &e)
 {
   m_nTimer += e.GetInterval();
@@ -82,6 +85,15 @@ void _nwxPingerProcess::OnTimer(wxTimerEvent &e)
     CheckIO();
   }
 }
+void _nwxPingerProcess::OnTerminate(int nPID, int nStatus)
+{
+  // the problem, if nwxPinger 'delete's the process, it crashes
+  //  if it doesn't delete it there is a memory leak
+  // calling wxProcess::OnTerminate() seems to fix this (Windows)
+  nwxProcess::OnTerminate(nPID, nStatus);
+  wxProcess::OnTerminate(nPID, nStatus);
+}
+
 void _nwxPingerProcess::ProcessLine(const char *p, size_t nLen, bool bErrStream)
 {
   wxString s = bErrStream ? "usage stats ERROR: " : "usage stats: ";
@@ -129,6 +141,8 @@ bool nwxPingerSet::Send(nwxPinger *pPinger)
 }
 
 nwxPinger::nwxPinger(
+  wxEvtHandler *parent,
+  int id,
   const wxString &sAppName,
   const wxString &sAppVersion,
   const nwxPingerSet *pSetDefaults,
@@ -140,7 +154,7 @@ nwxPinger::nwxPinger(
   m_bSetup(false),
   m_bInDestructor(false)
 {
-  _setup(pSetDefaults, sAppName, sAppVersion);
+  _setup(parent, id, pSetDefaults, sAppName, sAppVersion);
 }
 nwxPinger::nwxPinger() : m_process(NULL),
 m_pLogFile(NULL),
@@ -166,7 +180,8 @@ nwxPinger::~nwxPinger()
     if (_checkProcess())
     {
       m_process->Cancel();
-      delete(m_process);
+//      delete m_process; // do not delete
+      m_process = NULL;
     }
   }
 }
@@ -190,13 +205,15 @@ bool nwxPinger::_checkProcess()
       s.Append(nwxString::FormatNumber(n));
       nwxLog::LogMessage(s);
     }
-    delete m_process;
-    m_process = NULL;
+//    delete m_process;
+    m_process = NULL; // do not delete
   }
   return bRtn;
 }
 
 bool nwxPinger::_setup(
+  wxEvtHandler *parent,
+  int id,
   const nwxPingerSet *pSetDefaults,
   const wxString &sAppName,
   const wxString &sAppVersion)
@@ -291,7 +308,7 @@ bool nwxPinger::_setup(
       }
     }
     ARGV[n] = NULL;
-    m_process = new _nwxPingerProcess((char **)ARGV, m_pLogFile);
+    m_process = new _nwxPingerProcess(parent, id, (char **)ARGV, m_pLogFile);
   }
   m_bSetup = true;
   return bRtn;

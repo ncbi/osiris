@@ -35,7 +35,6 @@
 #include <wx/stream.h>
 #include <wx/string.h>
 #include <wx/process.h>
-#include <wx/process.h>
 #include <vector>
 
 class nwxProcess : public wxProcess

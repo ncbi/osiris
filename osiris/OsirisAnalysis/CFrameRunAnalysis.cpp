@@ -82,10 +82,9 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_nNext(0)
 {
   // called from mainFrame::ReAnalyzeSamples
-  _PingOnOpen("ReAnalyzeSamples");
   wxString sTitle = "Running Analysis";
   m_DirList.SetParmOsirisAndTraverse(m_parmOsiris,m_volume.GetDataFileType());
-  _BuildWindow(sTitle,sz);
+  _BuildWindow(sTitle,sz, "ReAnalyzeSamples");
 }
 CFrameRunAnalysis::CFrameRunAnalysis(
     CFrameRunAnalysis *pPrev, 
@@ -116,7 +115,6 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_nNext(0)
 {
   // called from mainFrame::ReAnalyze
-  _PingOnOpen("ReAnalyzeBatch");
   wxString sTitle = "Running Analysis";
   CDirList &DirListPrev(pPrev->m_DirList);
   wxString sOldOutputDir(DirListPrev.GetDirOutput());
@@ -151,7 +149,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
       }
     }
   }
-  _BuildWindow(sTitle,pPrev->GetSize());
+  _BuildWindow(sTitle,pPrev->GetSize(), "ReAnalyzeBatch");
 }
 
 CFrameRunAnalysis::CFrameRunAnalysis(
@@ -182,7 +180,6 @@ CFrameRunAnalysis::CFrameRunAnalysis(
 {
   // called from mainFrame::OpenBatchFile
   wxString sTitle;
-  _PingOnOpen("OpenBatchFile");
   if(m_DirList.LoadFile(sFileName))
   {
     sTitle = mainApp::FormatWindowTitle(WINDOW_TYPE,m_DirList.GetBaseFileName());
@@ -207,10 +204,10 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   }
   else
   {
-    mainApp::Ping2(PING_WINDOW_OPEN, "failed", PING_WINDOW_NUMBER, GetFrameNumber());
+    mainApp::Ping2(PING_EVENT, PING_WINDOW_OPEN "failed-" PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
     sTitle = "ERROR";
   }
-  _BuildWindow(sTitle,sz);
+  _BuildWindow(sTitle,sz, "OpenBatchFile");
 }
 
 CFrameRunAnalysis::CFrameRunAnalysis(
@@ -242,11 +239,9 @@ CFrameRunAnalysis::CFrameRunAnalysis(
 {
   // called from mainFrame::OnAnalyze
   wxString sTitle;
-  sTitle = "Running Analysis";
-  _PingOnOpen("NewAnalysis");
   m_DirList.SetParmOsirisAndTraverse(m_parmOsiris,CDirList::FILE_ANY);
   //m_DirList.Traverse();
-  _BuildWindow(sTitle,sz);
+  _BuildWindow(sTitle,sz, "NewAnalysis");
 }
 
 wxString CFrameRunAnalysis::GetFileName()
@@ -259,9 +254,11 @@ int CFrameRunAnalysis::GetType()
   return FRAME_RUN;
 }
 
-void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
+void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz, const char *psType)
 {
-  mainApp::Ping2(PING_WINDOW_OPEN, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
+  mainApp::Ping3(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE,
+    PING_WINDOW_NUMBER, GetFrameNumber(),
+    "WindowType", psType);
   wxString sLabelElapsed("n/a");
   wxPanel *pPanel(new wxPanel(this));
   {
@@ -367,16 +364,10 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
 
 CFrameRunAnalysis::~CFrameRunAnalysis()
 {
-  mainApp::Ping2(PING_WINDOW_CLOSE, PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
+  mainApp::Ping2(PING_EVENT, PING_WINDOW_CLOSE PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   Cleanup();
 }
 
-void CFrameRunAnalysis::_PingOnOpen(const char *psType)
-{
-  mainApp::Ping3(PING_WINDOW_OPEN, PING_WINDOW_TYPE,
-    PING_WINDOW_NUMBER, GetFrameNumber(),
-    "WindowType", psType);
-}
 void CFrameRunAnalysis::UpdateOutputText()
 {
   if( m_pButtonDetails->GetValue())

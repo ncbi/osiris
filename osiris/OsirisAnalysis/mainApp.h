@@ -34,6 +34,7 @@
 #include <wx/app.h>
 #include <wx/string.h>
 #include <wx/arrstr.h>
+#include <wx/process.h>
 #include "wxXml2/wxXml2Object.h"
 #include "wxIDS.h"
 
@@ -83,7 +84,6 @@ public:
   virtual ~mainApp();
   virtual bool OnInit();
   void OnQuit(wxCommandEvent &e);
-
   // cmd line override
 #ifndef __WXMAC__
   virtual void  OnInitCmdLine (wxCmdLineParser &parser);
@@ -112,7 +112,6 @@ DECLARE_CMD_HANDLER(OnCheckForUpdates)
 DECLARE_CMD_HANDLER(OnContactUs)
 DECLARE_CMD_HANDLER(OnMenu)
 DECLARE_CMD_HANDLER(OnMaxLadderLabels)
-//DECLARE_CMD_HANDLER(OnSave) // commented out 9/16/16
 
   void OnActivate(wxActivateEvent &e);
 
@@ -208,6 +207,7 @@ private:
 #endif
   void _Cleanup();
   static void _cleanupPinger();
+  static void _exitPinger();
   static void _setupPinger();
   static void _LogMessage(const wxString &sMsg);
   static void _LogMessageFile(const wxString &sMsg, time_t t);
@@ -257,8 +257,8 @@ public:
 // pinger types
 
 #define PING_WINDOW_NUMBER "windowNr"
-#define PING_WINDOW_OPEN "windowOpen"
-#define PING_WINDOW_CLOSE "windowClose"
+#define PING_WINDOW_OPEN "windowOpen-"
+#define PING_WINDOW_CLOSE "windowClose-"
 #define PING_EVENT "event"
 #define PING_ERROR "error"
 

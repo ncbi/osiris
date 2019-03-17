@@ -97,10 +97,9 @@ public:
   }
 private:
   void OnEndProcess(wxProcessEvent &e);
-  void _PingOnOpen(const char *psType);
   bool _FileNeedsAttention(CDirEntry *pEntry);
   void _RunAutoExport(CDirEntry *pEntry);
-  void _BuildWindow(const wxString &sTitle, const wxSize &sz);
+  void _BuildWindow(const wxString &sTitle, const wxSize &sz, const char *psWindowType);
   void _Run();
   void DoCancel(bool bCancelAll);
   void Cleanup();

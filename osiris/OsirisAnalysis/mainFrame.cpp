@@ -340,6 +340,11 @@ mainFrame::~mainFrame()
     m_pDialogColour->Destroy();
   }
 #endif
+  nwxLog::StopLogging();
+  // StopLogging()
+  //  if logging occurs after closing
+  //  each log message will be a popup
+  m_pDialogErrorLog->Close();
   m_pDialogErrorLog->Destroy();
 }
 bool mainFrame::Startup(bool bHasArgs)
@@ -693,7 +698,11 @@ void mainFrame::PlaceFrame(CMDIFrame *pWin)
 #if mainFrameIsWindow
 void mainFrame::OnClose(wxCloseEvent &e)
 {
-  if(DoClose()) e.Skip();
+  if (DoClose())
+  {
+    m_pDialogErrorLog->Close();
+    e.Skip();
+  }
 }
 #endif
 
@@ -905,6 +914,7 @@ void mainFrame::OnExportSettings(wxCommandEvent &)
     m_MDImgr.UpdateFileMenu();
   }
 }
+
 #if DRAG_DROP_FILES
 void mainFrame::_CheckDragDropQueue()
 {
