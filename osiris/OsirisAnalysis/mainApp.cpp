@@ -385,7 +385,7 @@ void mainApp::_setupPinger()
     }
     wxString sAppName("osirisapp");
     wxString sAppVer(OSIRIS_VERS_BASE);
-    g_pPinger = new nwxPinger(g_pThis->m_pFrame, IDpingerProcess, sAppName, sAppVer, NULL, m_pFout, false);
+    g_pPinger = new nwxPinger(g_pThis->m_pFrame, IDpingerProcess, sAppName, sAppVer, NULL, m_pFout);
   }
 }
 

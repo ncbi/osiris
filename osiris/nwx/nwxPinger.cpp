@@ -53,10 +53,11 @@
 class _nwxPingerProcess : public nwxProcess, nwxTimerReceiver
 {
 public:
-  _nwxPingerProcess(wxEvtHandler *parent, int id, char **argv, wxFile *pFileLog) :
+  _nwxPingerProcess(wxEvtHandler *parent, int id, char **argv, wxFile *pFileLog, bool bLog) :
     nwxProcess(parent, id, argv),
     m_pFileLog(pFileLog)
     ,m_nTimer(0)
+    ,m_bLog(bLog)
   {
     ProcessIO();
   }
@@ -76,6 +77,7 @@ public:
 private:
   wxFile * m_pFileLog;
   int m_nTimer;
+  bool m_bLog;
 };
 void _nwxPingerProcess::OnTimer(wxTimerEvent &e)
 {
@@ -99,7 +101,11 @@ void _nwxPingerProcess::ProcessLine(const char *p, size_t nLen, bool bErrStream)
   wxString s = bErrStream ? "usage stats ERROR: " : "usage stats: ";
   wxString sLine(p, nLen);
   s.Append(sLine);
-  nwxLog::LogMessage(s);
+  nwxString::Trim(&s);
+  if (m_bLog)
+  {
+    nwxLog::LogMessage(s);
+  }
   if((m_pFileLog != NULL) && m_pFileLog->IsOpened())
   {
     s.Append(__EOL);
@@ -308,7 +314,7 @@ bool nwxPinger::_setup(
       }
     }
     ARGV[n] = NULL;
-    m_process = new _nwxPingerProcess(parent, id, (char **)ARGV, m_pLogFile);
+    m_process = new _nwxPingerProcess(parent, id, (char **)ARGV, m_pLogFile, m_bLog);
   }
   m_bSetup = true;
   return bRtn;
