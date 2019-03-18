@@ -122,6 +122,7 @@ function PING()
   T=$(date '+%s')
   E=$(expr $T - $STARTTIME)
   Q=$(ADD_PAIR "$1" "elapse=${E}")
+  "$CURL" $ARGS -A "${USER_AGENT}" -D - -o /dev/null "${URL}?${Q}"
   echo "$CURL" $ARGS -A "${USER_AGENT}" -D - -o /dev/null "${URL}?${Q}"
   CHECKRC $? "${CURL} failed"
 }
