@@ -111,6 +111,7 @@ private:
 class nwxPinger
 {
 public:
+  friend class _nwxPingerProcess;
   nwxPinger(
     wxEvtHandler *parent,
     int id,
@@ -159,11 +160,18 @@ private:
     const wxString &sAppName = wxEmptyString,
     const wxString &sAppVersion = wxEmptyString);
   bool _checkProcess();
+  void _processExit(int n)
+  {
+    _logExit(n);
+    m_process = NULL;
+  }
+  void _logExit(int n);
   _nwxPingerProcess *m_process;
   wxFile *m_pLogFile;
   bool m_bLog;
   bool m_bSetup;
   bool m_bInDestructor;
+  bool m_bLoggedExit;
 };
 
 

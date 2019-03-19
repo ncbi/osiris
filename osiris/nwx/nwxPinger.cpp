@@ -53,8 +53,9 @@
 class _nwxPingerProcess : public nwxProcess, nwxTimerReceiver
 {
 public:
-  _nwxPingerProcess(wxEvtHandler *parent, int id, char **argv, wxFile *pFileLog, bool bLog) :
+  _nwxPingerProcess(nwxPinger *pOwner, wxEvtHandler *parent, int id, char **argv, wxFile *pFileLog, bool bLog) :
     nwxProcess(parent, id, argv),
+    m_pOwner(pOwner),
     m_pFileLog(pFileLog)
     ,m_nTimer(0)
     ,m_bLog(bLog)
@@ -63,7 +64,14 @@ public:
   }
   virtual ~_nwxPingerProcess()
   {
-    return;
+    if (m_pOwner != NULL)
+    {
+      m_pOwner->_processExit(GetExitStatus());
+    }
+  }
+  void DetachOwner()
+  {
+    m_pOwner = NULL;
   }
   virtual void OnTerminate(int nPID, int nExitCode);
 
@@ -75,6 +83,7 @@ public:
     m_nTimer = 0;
   }
 private:
+  nwxPinger *m_pOwner;
   wxFile * m_pFileLog;
   int m_nTimer;
   bool m_bLog;
@@ -158,7 +167,8 @@ nwxPinger::nwxPinger(
   m_pLogFile(pLogFile),
   m_bLog(bLog),
   m_bSetup(false),
-  m_bInDestructor(false)
+  m_bInDestructor(false),
+  m_bLoggedExit(false)
 {
   _setup(parent, id, pSetDefaults, sAppName, sAppVersion);
 }
@@ -166,31 +176,48 @@ nwxPinger::nwxPinger() : m_process(NULL),
 m_pLogFile(NULL),
 m_bLog(false),
 m_bSetup(false),
-m_bInDestructor(false)
+m_bInDestructor(false),
+m_bLoggedExit(false)
 {}
 
 
 nwxPinger::~nwxPinger()
 {
   m_bInDestructor = true;
-  if (_checkProcess())
+  if (m_process != NULL)
   {
-//    m_process->GetOutputStream()->Close();
-    wxString sQuit = "q" __EOL;
-    m_process->WriteToProcess(sQuit);
-    for (int i = 0; (i < 10) && _checkProcess(); ++i)
-    {
-      // max 10 loops, give it one second to stop
-      wxMilliSleep(100);
-    }
+    m_process->DetachOwner();
     if (_checkProcess())
     {
-      m_process->Cancel();
-//      delete m_process; // do not delete
-      m_process = NULL;
+      wxString sQuit = "q" __EOL;
+      m_process->WriteToProcess(sQuit);
+      for (int i = 0; (i < 10) && _checkProcess(); ++i)
+      {
+        // max 10 loops, give it one second to stop
+        wxMilliSleep(100);
+      }
+      if (_checkProcess())
+      {
+        m_process->Cancel();
+        //      delete m_process; // do not delete
+        m_process = NULL;
+      }
     }
   }
 }
+
+void nwxPinger::_logExit(int n)
+{
+  if (!(m_bInDestructor || m_bLoggedExit))
+  {
+    // process exited unexpectedly, log message
+    m_bLoggedExit = true;
+    wxString s("Usage statistics process exited unexpectedly, return = ");
+    s.Append(nwxString::FormatNumber(n));
+    nwxLog::LogMessage(s);
+  }
+}
+
 bool nwxPinger::_checkProcess()
 {
   bool bRtn = false;
@@ -203,14 +230,7 @@ bool nwxPinger::_checkProcess()
   }
   else
   {
-    if (!m_bInDestructor)
-    {
-      // process exited unexpectedly, log message
-      int n = m_process->GetExitStatus();
-      wxString s("pinger exited, return = ");
-      s.Append(nwxString::FormatNumber(n));
-      nwxLog::LogMessage(s);
-    }
+    _logExit(m_process->GetExitStatus());
 //    delete m_process;
     m_process = NULL; // do not delete
   }
@@ -314,7 +334,7 @@ bool nwxPinger::_setup(
       }
     }
     ARGV[n] = NULL;
-    m_process = new _nwxPingerProcess(parent, id, (char **)ARGV, m_pLogFile, m_bLog);
+    m_process = new _nwxPingerProcess(this, parent, id, (char **)ARGV, m_pLogFile, m_bLog);
   }
   m_bSetup = true;
   return bRtn;

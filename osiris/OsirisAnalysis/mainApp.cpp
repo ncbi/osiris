@@ -159,6 +159,10 @@ ConfigDir *mainApp::GetConfig()
 
 nwxPinger *mainApp::GetPinger()
 {
+  if ((g_pPinger != NULL) && !g_pPinger->IsRunning())
+  {
+    _cleanupPinger();
+  }
   return g_pPinger;
 }
 
