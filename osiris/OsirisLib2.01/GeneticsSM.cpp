@@ -5462,13 +5462,14 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 		TestAmelogeninSM ();
 
 	int N = LocusSignalList.Entries ();
+	int Max = mLink->GetMaxExpectedAlleles ();
 
-	if (LocusSignalList.Entries () <= mLink->GetMaxExpectedAlleles ())
+	if (LocusSignalList.Entries () <= Max)
 		SetMessageValue (triAllele, false);
 
 	if (N == 0) {
 
-		if (!isNegCntl) {
+		if (!isNegCntl && (Max != 0)) {
 
 			SetMessageValue (noGenotype, true);
 			return -1;
@@ -5482,6 +5483,12 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 		if (mLink->isQualityLocus ())
 			return 0;
 
+		return -1;
+	}
+
+	if (Max == 0) {
+
+		SetMessageValue (triAllele, true);
 		return -1;
 	}
 

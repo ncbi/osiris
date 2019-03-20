@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.36</VersionNumber>
-	<BuildTime>03/01/2019 07:49 PM</BuildTime>
+	<VersionNumber>7.37</VersionNumber>
+	<BuildTime>03/20/2019 06:09 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -4933,7 +4933,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Specify Min RFU (below) for a Peak to be Considered Primary Pull-up (checked) vs Osiris Calculates Min RFU (unchecked)</ThresholdDescriptor>
+				<ThresholdDescriptor>        Primary Pull-up Threshold: Computed (unchecked); Specified Below (checked)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -4951,7 +4951,7 @@
 			<CountingDataInfo>
 				<Threshold>500</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Min RFU for a peak to be considered to cause pull-up (primary pull-up)(requires above checked)(Default = 500)</ThresholdDescriptor>
+				<ThresholdDescriptor>                Min RFU for a peak to cause pull-up (primary pull-up) (Default = 500) (requires above checked)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
