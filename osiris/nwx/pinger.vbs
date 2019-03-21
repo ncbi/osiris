@@ -139,10 +139,11 @@ Sub MAIN
   sBASE_QUERY = ADD_PAIR(sBASE_QUERY, "session=" + GETSESSION(tStart, sPID))
   
   '  now do the pinging
-  Dim sQuery, sLine, xHttp, tNow, nRtn, bDone
+  Dim sQuery, sLine, xHttp, tNow, nRtn, bDone, crash
   ' Msxml2.XMLHTTP.6.0 uses system proxy
   Set xHttp = CreateObject("Msxml2.XMLHTTP.6.0")
   sQuery = sBASE_QUERY
+  crash = 1
   nRtn = PING(xHttp, sURL, sQuery, tStart)
   do while nRtn = 200 and Not WScript.StdIn.AtEndOfStream
     sLine = Wscript.StdIn.Readline
@@ -151,6 +152,8 @@ Sub MAIN
       sQuery = sBASE_QUERY
     ElseIf sLine = "q" Then
       exit do
+      '  if calling program sends 'q' (quit) then it did not crash
+      crash = 0
     else
       sQuery = ADD_PAIR(sQuery, sLine)
     End If
@@ -158,6 +161,10 @@ Sub MAIN
   If nRtn = 200 Then
     sQuery = sBASE_QUERY
     sQuery = ADD_PAIR(sBASE_QUERY, "done=1")
+    If crash = 1 Then
+      ' calling program did not send 'q' to quit
+      sQuery = ADD_PAIR(sBASE_QUERY, "crash=1")
+    End If
     nRtn = PING(xHTTP, sURL, sQuery, tStart)
   End If
   

@@ -163,17 +163,24 @@ BASE_QUERY=$(ADD_PAIR "${BASE_QUERY}" "os=${OSVERSION}")
 
 PING "${BASE_QUERY}"
 Q="${BASE_QUERY}"
+CRASH=1
 while read x; do
   if test "$x" = "go"; then
     PING "$Q"
     Q="${BASE_QUERY}"
   elif test "$x" = "q"; then
+    # calling progam sent "q" to quit
+    # therefore didn't crash
+    CRASH=0
     break
   else
     Q=$(ADD_PAIR "${Q}" "$x")
   fi
 done
-
+if test "$CRASH" = "1"; then
+  # calling program did not send "1" to quit
+  Q=$(ADD_PAIR "${BASE_QUERY}" "crash=1")
+fi
 Q=$(ADD_PAIR "${BASE_QUERY}" "done=1")
 PING "$Q"
 
