@@ -179,9 +179,9 @@ while read x; do
 done
 if test "$CRASH" = "1"; then
   # calling program did not send "1" to quit
-  Q=$(ADD_PAIR "${BASE_QUERY}" "crash=1")
+  Q=$(ADD_PAIR "${Q}" "crash=1")
 fi
-Q=$(ADD_PAIR "${BASE_QUERY}" "done=1")
+Q=$(ADD_PAIR "${Q}" "done=1")
 PING "$Q"
 
 }
