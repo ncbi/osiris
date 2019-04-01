@@ -238,7 +238,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_nNext(0)
 {
   // called from mainFrame::OnAnalyze
-  wxString sTitle;
+  wxString sTitle("New Analysis");
   m_DirList.SetParmOsirisAndTraverse(m_parmOsiris,CDirList::FILE_ANY);
   //m_DirList.Traverse();
   _BuildWindow(sTitle,sz, "NewAnalysis");
