@@ -41,6 +41,8 @@
 
 using namespace std;
 
+int LeastMedianOfSquares::MinimumNumberOfSamples = 4;
+
 
 DualPoint :: DualPoint (const DualPoint& pt) {
 
@@ -274,7 +276,7 @@ double LeastMedianOfSquares1D :: CalculateLMS () {
 
 LeastMedianOfSquares2DExhaustive :: LeastMedianOfSquares2DExhaustive (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mLines (NULL), mSortedLines (NULL) {
 
-	if (n <= 4) {
+	if (n < MinimumNumberOfSamples) {
 
 		mIsOK = false;
 		return;
@@ -293,7 +295,7 @@ LeastMedianOfSquares2DExhaustive :: LeastMedianOfSquares2DExhaustive (int n, dou
 
 LeastMedianOfSquares2DExhaustive :: LeastMedianOfSquares2DExhaustive (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares (xValues, yValues) {
 
-	if (mSize <= 4) {
+	if (mSize < MinimumNumberOfSamples) {
 
 		mIsOK = false;
 		return;
@@ -628,7 +630,7 @@ void LeastMedianOfSquares2DExhaustive :: DeleteVertexMatrix (IntersectionPoint**
 
 LeastSquaresQuadraticModel :: LeastSquaresQuadraticModel (int n, double* x, double* y) : mIsOK (true), mSize (n), mXvalues (NULL), mYvalues (NULL), mX2values (NULL) {
 
-	if (n < 4) {
+	if (n < LeastMedianOfSquares::GetMinimumNumberOfSamples ()) {
 
 		mIsOK = false;
 		return;
@@ -653,8 +655,9 @@ LeastSquaresQuadraticModel :: LeastSquaresQuadraticModel (int n, double* x, doub
 LeastSquaresQuadraticModel :: LeastSquaresQuadraticModel (const list<double>& xValues, const list<double>& yValues) : mIsOK (true), mXvalues (NULL), mYvalues (NULL), mX2values (NULL) {
 
 	mSize = xValues.size ();
+	int minSamples = LeastMedianOfSquares::GetMinimumNumberOfSamples ();
 
-	if ((mSize != yValues.size ()) || (mSize < 4)) {
+	if ((mSize != yValues.size ()) || (mSize < minSamples)) {
 
 		mIsOK = false;
 		return;
@@ -712,7 +715,7 @@ bool LeastSquaresQuadraticModel :: TestXValuesForIndependence () {
 			maxIndex = i;
 		}
 
-		if (temp < min) {
+		else if (temp <= min) {
 
 			min = temp;
 			minIndex = i;

@@ -657,7 +657,6 @@ void RGString :: Convert (int i, unsigned long base) {
 void RGString :: ConvertWithMin (double d, double min, int maxNumberDecimals) {
 
 	int i;
-	int temp;
 	char pResult [30];
 	RGString format = "%.";
 	format << maxNumberDecimals << "f";

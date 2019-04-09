@@ -47,7 +47,9 @@
 #include "DirectoryManager.h"
 #include "rgtarray.h"
 #include <set>
+#include <iostream>
 
+using namespace::std;
 
 // Smart Message related*********************************************************************************************************************************
 
@@ -975,7 +977,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 
 					double width = mLSData->GetWidthAtTime (0.5 * (prevSignal->GetMean () + nextSignal->GetMean ()));
 
-					if (prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation () > 1.9 * width)
+					if (prevSignal->GetWidth () + nextSignal->GetWidth () > 1.9 * width)
 						continue;
 
 					//cout << "New crater on channel " << prevSignal->GetChannel () << " at time " << 0.5 * (nextSignal->GetMean () + prevSignal->GetMean ());
@@ -1655,6 +1657,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList** TempList = new RGDList* [mNumberOfChannels + 1];
 	RGDList** TempMultiPeakList = new RGDList* [mNumberOfChannels + 1];
 	RGDList** TempCraterPeakList = new RGDList* [mNumberOfChannels + 1];
+	double* maxNonLaserOffScalePeak = new double [mNumberOfChannels + 1];
 	DataSignal* prevSignal;
 	ChannelData* nextChannel;
 	RGDList* nextList;
@@ -1675,11 +1678,18 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	smLaserOffScale laserOffScale;
 	smPartOfDualSignal dualPeak;
 	smPoorPeakMorphologyOrResolution poorPeakMorphologyOrResolution;
+	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset selectUserSpecifiedMinPrimary;
 
 	bool testForPeaksTooCloseTogether = true;
 	double dualPeakBPTolerance = 0.20;
 
-	CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	if (GetMessageValue (selectUserSpecifiedMinPrimary))
+		CoreBioComponent::minPrimaryPullupThreshold = (double) GetThreshold (primaryPullupThreshold);
+	
+	else
+		CoreBioComponent::minPrimaryPullupThreshold = 3.0;  //****This is new on 12/21/2018 to test the new algorithm for estimating the value for each channel pair
+
+	double maxSigmoidalPositive = (double)GetThreshold (primaryPullupThreshold);
 	PreTestSignalsForLaserOffScaleSM ();
 
 	ParameterServer* pServer = new ParameterServer;
@@ -1702,6 +1712,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		TempMultiPeakList [i] = new RGDList;
 		TempCraterPeakList [i] = new RGDList;
 		noiseLevels [i] = mDataChannels [i]->GetNoiseRange ();
+		maxNonLaserOffScalePeak [i] = 0.0;
 	}
 
 	for (i=1; i<=mNumberOfChannels; i++)
@@ -1747,6 +1758,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			}
 
 			else {
+
+				if (CoreBioComponent::SignalIsWithinAnalysisRegion (testSignal, first) && (!DataSignal::IsNegativeOrSigmoid (testSignal)) && (!testSignal->GetMessageValue (laserOffScale)) && (testSignal->Peak () > maxNonLaserOffScalePeak [i]))
+					maxNonLaserOffScalePeak [i] = testSignal->Peak ();
 
 				if (testSignal2 == NULL) {
 
@@ -1862,19 +1876,27 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					if (prevSignal->IsNegativePeak ())
 						continue;
 
-					if ((prevSignal->Peak () < 0.7 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.7 * prevSignal->Peak ()))
+					// Now test to make sure this isn't two separate peaks, which would result in an exceptionally wide crater
+
+					if (nextSignal->GetApproximateBioID () - prevSignal->GetApproximateBioID () > 1.0) // The two peaks are more than 1 bp apart, so, too wide
 						break;
 
 					if (prevSignal->GetMessageValue (isControlPeak) || nextSignal->GetMessageValue (isControlPeak))
 						break;
 
-					double sideMean = 0.5 * (prevSignal->GetMean () + nextSignal->GetMean ());
+					double halfWidth = 0.5 * mLSData->GetWidthAtTime (prevSignal->GetMean ());
+					bool widthPrev = (prevSignal->GetWidth () > halfWidth);
+					halfWidth = 0.5 * mLSData->GetWidthAtTime (nextSignal->GetMean ());
+					bool widthNext = (nextSignal->GetWidth () > halfWidth);
 
-					// Now test to make sure this isn't two separate peaks, which would result in an exceptionally wide crater
+					if ((prevSignal->Peak () < 0.7 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.7 * prevSignal->Peak ())) {
+						
+						if (widthPrev || widthNext)
+							break;
+					}
+
+					
 					// Use CoreBioComponent::TestForOffScale (double time) to test for laser off-scale as part of decision
-
-					if (nextSignal->GetApproximateBioID () - prevSignal->GetApproximateBioID () > 1.0) // The two peaks are more than 1 bp apart, so, too wide
-						break;
 
 					//double width = mLSData->GetWidthAtTime (0.5 * (prevSignal->GetMean () + nextSignal->GetMean ()));
 					//double estimatedSigma = 0.5 * ((nextSignal->GetMean () - prevSignal->GetMean ()) + prevSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ()); // We might want to scale by height to be more accurate
@@ -1893,7 +1915,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					testSignal = new CraterSignal (prevSignal, nextSignal);
 					testSignal->SetChannel (i);
 
-					double width = testSignal->GetStandardDeviation ();
+					double width = testSignal->GetWidth ();
 					double mean = testSignal->GetMean ();
 					double targetWidth = mLSData->GetWidthAtTime (mean);
 					double tooWide = 2.0 * targetWidth;
@@ -1903,7 +1925,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 						mean = prevSignal->GetMean ();
 						double tooNarrow = 0.5 *mLSData->GetWidthAtTime (mean);
 
-						if (prevSignal->GetStandardDeviation () > tooNarrow) {
+						if (prevSignal->GetWidth () > tooNarrow) {
 
 							delete testSignal;
 							break;
@@ -1912,7 +1934,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 						mean = nextSignal->GetMean ();
 						tooNarrow = 0.5 * mLSData->GetWidthAtTime (mean);
 
-						if (nextSignal->GetStandardDeviation () > tooNarrow) {
+						if (nextSignal->GetWidth () > tooNarrow) {
 
 							delete testSignal;
 							break;
@@ -1955,7 +1977,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					if (posPeak > 3.0 * negPeak)
 						break;
 
-					if (posPeak >= CoreBioComponent::minPrimaryPullupThreshold)
+					if (posPeak >= maxSigmoidalPositive)
 						break;
 
 					testSignal = new SimpleSigmoidSignal (prevSignal, nextSignal);
@@ -2154,6 +2176,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList ignoreSidePeaks;
 	double rightLimitPlus;
 	double leftLimitPlus;
+	double channelMaxNonLaserOffScaleHeight;
+	bool laserStatus;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2165,16 +2189,24 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			continue;
 
 		primaryHeight = nextSignal->Peak ();
+		primaryChannel = nextSignal->GetChannel ();
 
 		if ((primaryHeight < primaryThreshold) || (nextSignal->IsNegativePeak ()))
 			continue;
+
+		if (nextSignal->GetMessageValue (laserOffScale)) {
+
+			channelMaxNonLaserOffScaleHeight = maxNonLaserOffScalePeak [primaryChannel];
+
+			if (primaryHeight < channelMaxNonLaserOffScaleHeight)
+				continue;
+		}
 
 		// nextSignal could be primary
 
 		Pos.ResetTo (it);
 		Neg.ResetTo (it);
-		primeSignal = nextSignal;
-		primaryChannel = nextSignal->GetChannel ();
+		primeSignal = nextSignal;	
 		primaryWidth = 0.5 * nextSignal->GetWidth ();
 		primaryTolerance = nextSignal->GetPrimaryPullupDisplacementThreshold (nSigmasForPullup);
 		primaryMean = nextSignal->GetMean ();
@@ -2184,6 +2216,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		leftLimitPlus = primaryMean - 5.0 * primaryTolerance;
 		probablePullupPeaks.Clear ();
 		weakPullupPeaks.Clear ();
+		laserStatus = primeSignal->GetMessageValue (laserOffScale);
 
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
@@ -2203,6 +2236,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
+
+			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
+				continue;
 
 			if (nextSignal2->IsNegativePeak ()) {
 
@@ -2235,6 +2271,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
+
+			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
+				continue;
 
 			if (nextSignal2->IsNegativePeak ()) {
 
@@ -2399,6 +2438,18 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 
 		else {
+
+			if (primeSignal->GetMessageValue (laserOffScale)) {
+
+				double localMax = maxNonLaserOffScalePeak [primeSignal->GetChannel ()];
+
+				if (primeSignal->Peak () < localMax) {
+
+					probablePullupPeaks.Clear ();
+					primeSignal->SetMessageValue (primaryLink, false);
+					continue;
+				}
+			}
 
 			// Set up STRInterChannelLinkage and add to linkage list; this has to be modified to allow more than one pullUp linkage
 
@@ -2781,7 +2832,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				bool sidePeaksAreDualSignals = (testSignal->GetMessageValue (dualPeak) && testSignal2->GetMessageValue (dualPeak));
 				bool sidePeakIsPrimary = ((testSignal->GetInterchannelLink () != NULL) || (testSignal2->GetInterchannelLink () != NULL));
 
-				if (testForPeaksTooCloseTogether && sidePeaksTooClose && sidePeaksAreDualSignals && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary) {
+				if (testForPeaksTooCloseTogether && (sidePeaksTooClose || sidePeaksAreDualSignals) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary) {
 
 					// Either only one side peak is pullup or both are and from same channel, plus, peaks are close and are dual signals, and test is enabled, and neither side peak is primary pullup...whew!
 					// We wouldn't be here if nextSignal were either a primary peak or a pullup, so, don't have to worry about cross channel effects on nextSignal.
@@ -3209,39 +3260,42 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	//*******September 19, 2016
 
-	double pullupThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	//*******January 23, 2019...this is a good idea, but this implementation doesn't do what it claims.  It needs to be rethought, especially in light
+	// of new changes so that there is not a fixed primary pullup threshold anymore.
 
-	for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
+	//double pullupThreshold = CoreBioComponent::minPrimaryPullupThreshold;
 
-		iChannel = *tempIt;
-		primeSignal = iChannel->GetPrimarySignal ();
-		i = primeSignal->GetChannel ();
-		double analysisThreshold = mDataChannels [i]->GetMinimumHeight ();
-		double primaryPeak = primeSignal->Peak ();
+	//for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
 
-		if ((primaryPeak < pullupThreshold) || (primaryPeak < analysisThreshold)) {
+	//	iChannel = *tempIt;
+	//	primeSignal = iChannel->GetPrimarySignal ();
+	//	i = primeSignal->GetChannel ();
+	//	double analysisThreshold = mDataChannels [i]->GetMinimumHeight ();
+	//	double primaryPeak = primeSignal->Peak ();
 
-			iChannel->ResetSecondaryIterator ();
+	//	if ((primaryPeak < pullupThreshold) || (primaryPeak < analysisThreshold)) {
 
-			while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
+	//		iChannel->ResetSecondaryIterator ();
 
-				iChannel->RemoveDataSignalFromSecondaryList (fixPullupPeak);		
-				fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+	//		while (fixPullupPeak = iChannel->GetNextSecondarySignal ()) {
 
-				if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels)) {
+	//			iChannel->RemoveDataSignalFromSecondaryList (fixPullupPeak);		
+	//			fixPullupPeak->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
 
-					fixPullupPeak->SetMessageValue (pullup, false);
-					fixPullupPeak->SetMessageValue (purePullup, false);
-					fixPullupPeak->SetMessageValue (partialPullupBelowMin, false);
-				}				
-			}
+	//			if (!fixPullupPeak->HasAnyPrimarySignals (mNumberOfChannels)) {
 
-			channelRemoval.insert (iChannel);
-			primeSignal->SetMessageValue (primaryLink, false);
-			primeSignal->SetInterchannelLink (NULL);
-		}
+	//				fixPullupPeak->SetMessageValue (pullup, false);
+	//				fixPullupPeak->SetMessageValue (purePullup, false);
+	//				fixPullupPeak->SetMessageValue (partialPullupBelowMin, false);
+	//			}				
+	//		}
 
-	}
+	//		channelRemoval.insert (iChannel);
+	//		primeSignal->SetMessageValue (primaryLink, false);
+	//		primeSignal->SetInterchannelLink (NULL);
+	//	}
+
+	//}
 
 	while (!postCraterList.empty ()) {
 
@@ -3313,12 +3367,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 	}
 
-	for (rChannelIt=channelRemoval.begin (); rChannelIt!=channelRemoval.end(); rChannelIt++) {
+	//  See above January 23, 2019
 
-		iChannel = *rChannelIt;
-		mInterchannelLinkageList.remove (iChannel);
-		delete iChannel;
-	}
+	//for (rChannelIt=channelRemoval.begin (); rChannelIt!=channelRemoval.end(); rChannelIt++) {
+
+	//	iChannel = *rChannelIt;
+	//	mInterchannelLinkageList.remove (iChannel);
+	//	delete iChannel;
+	//}
 
 	//
 	// Next, with pull-up peaks remaining, associate associated primary pull-up data
@@ -3326,7 +3382,12 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	it.Reset ();
 
+	size_t position = 0;
+	double testMean;
+
 	while (nextSignal = (DataSignal*) it ()) {
+
+		testMean = nextSignal->GetMean ();
 
 		nextSignal->SetPullupMessageDataSM (mNumberOfChannels);
 		nextSignal->AssociateDataWithPullMessageSM (mNumberOfChannels);
@@ -3346,6 +3407,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	delete[] noiseLevels;
 	delete[] means;
 	delete[] isDone;
+	delete[] maxNonLaserOffScalePeak;
 
 	//TestSignalsForLaserOffScaleSM ();	// Added 09/09/2014 because AnalyzeCrossChannel... called in two places and want to make sure laser off scale tested no matter what
 
@@ -3474,6 +3536,9 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 			if (temp > maxQuad)
 				maxQuad = temp;
+
+			mLinearInScalePullupMatrix [i] [j] = mLinearPullupMatrix [i] [j];
+			mQuadraticInScalePullupMatrix [i] [j] = mQuadraticPullupMatrix [i] [j];
 		}
 	}
 
@@ -3484,6 +3549,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 
 	// Record all non-laser off-scale coefficients *****12/21/2016
 	Endl endLine;
+	ScavengePullupFromOtherChannelListLaserInScale ();
 
 	if ((NonLaserOffScalePUCoefficients != NULL) && (NonLaserOffScalePUCoefficients->FileIsValid ())) {
 
@@ -3612,6 +3678,7 @@ int STRCoreBioComponent :: UseChannelPatternsToAssessCrossChannelWithNegativePea
 		}
 	}
 
+	ScavengePullupFromOtherChannelListLaserOffScale ();
 	ReportPullupMatrix (2);
 
 	// compute all pullup ratios, etc. and insert into smart data...is this necessary?  We should already have stored pullup values from each other channel

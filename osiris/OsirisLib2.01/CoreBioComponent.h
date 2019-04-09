@@ -216,6 +216,8 @@ public:
 	bool PullupTestedMatrix (int i, int j);
 	double LinearPullupCoefficient (int i, int j);
 	double QuadraticPullupCoefficient (int i, int j);
+	double LinearInScalePullupCoefficient (int i, int j);
+	double QuadraticInScalePullupCoefficient (int i, int j);
 
 	double MaxLinearPullupCoefficient () const { return mQC.mMaxLinearPullupCoefficient; }
 	double MaxNonlinearPullupCoefficient () const { return mQC.mMaxNonlinearPullupCoefficient; }
@@ -422,9 +424,14 @@ public:
 	virtual int AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
 	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList*** notPrimaryLists);
 	virtual bool CollectDataAndComputeCrossChannelEffectForChannelsSM (int primaryChannel, int pullupChannel, RGDList* primaryChannelPeaks, double& linearPart, double& quadraticPart, bool testLaserOffScale, bool testNegativePUOnly);
+	virtual int EstimateMinimumPrimaryPullupHeightSM (int primaryChannel, int pullupChannel, double& estimatedMinHeight, list<PullupPair*>& pairList, double pullupChannelNoise);
+	virtual int FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (int primaryChannel, int pullupChannel, double primaryThreshold, list<PullupPair*>& pairList, RGDList& noPullupPrimaries, RGDList& rawDataPullupPrimaries, RGDList& occludedPrimaries);
 	virtual bool NegatePullupForChannelsSM (int primaryChannel, int pullupChannel, list<PullupPair*>& pairList, bool testLaserOffScale);
 	virtual DataSignal** CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals);
 	virtual bool AcknowledgePullupPeaksWhenThereIsNoPatternSM (int primaryChannel, int secondaryChannel, bool testLaserOffScale);
+	virtual bool RemovePrimaryLinksForChannelsSM (int primaryChannel, int pullupChannel, bool testLaserOffScale, RGDList& peakList);
+	virtual bool ScavengePullupFromOtherChannelListLaserInScale ();
+	virtual bool ScavengePullupFromOtherChannelListLaserOffScale ();
 
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();
@@ -563,6 +570,9 @@ protected:
 	double** mQuadraticPullupMatrix;
 	double** mLeastMedianValue;
 	double** mOutlierThreshold;
+	double** mLinearInScalePullupMatrix;
+	double** mQuadraticInScalePullupMatrix;
+	double** mMinimumInScalePrimaryPeak;
 
 	CSplineTransform* mTimeMap;
 
@@ -590,6 +600,7 @@ protected:
 
 
 	RGDList mChannelList;
+	RGDList mPullupFromAnotherChannel;
 
 	//************************************************************************************************************************************
 	//************************************************************************************************************************************

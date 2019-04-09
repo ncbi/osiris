@@ -193,6 +193,9 @@ public:
 	bool HasPrimerPeaks (ChannelData* laneStd);
 	double GetLastTime () const;
 
+	void SetMaxInScalePeak (double d) { mMaxLaserInScalePeak = d; }
+	double GetMaxInScalePeak () const { return mMaxLaserInScalePeak; }
+
 	void SetCompleteSignalListSequence ();
 
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
@@ -602,6 +605,8 @@ protected:
 	double mMinYLinkedLocusArea;
 	double mMaxLocusAreaRatio;
 	double mMaxYLinkedLocusRatio;
+
+	double mMaxLaserInScalePeak;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

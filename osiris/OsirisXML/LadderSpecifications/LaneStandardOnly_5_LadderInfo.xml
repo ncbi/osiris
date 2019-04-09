@@ -34,13 +34,13 @@
         </Channel>
         <Channel>
           <KitChannelNumber>4</KitChannelNumber>
-          <fsaChannelNumber>4</fsaChannelNumber>
+          <fsaChannelNumber>5</fsaChannelNumber>
           <Color>RED</Color>
           <DyeName>PET</DyeName>
         </Channel>
         <Channel>
           <KitChannelNumber>5</KitChannelNumber>
-          <fsaChannelNumber>5</fsaChannelNumber>
+          <fsaChannelNumber>4</fsaChannelNumber>
           <Color>ORANGE</Color>
           <DyeName>LIZ</DyeName>
         </Channel>

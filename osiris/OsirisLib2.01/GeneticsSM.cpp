@@ -1004,7 +1004,7 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1041,7 +1041,7 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -1521,7 +1521,7 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1550,7 +1550,7 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -2045,7 +2045,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -2075,7 +2075,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -2916,7 +2916,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -2946,7 +2946,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -3415,7 +3415,7 @@ int Locus :: TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplement
 
 	int location;
 //	PullUpFound pullupNotice;
-	smCalculatedPurePullup pullUp;
+	smPullUp pullUp;
 	smCalculatedPurePullup purePullup;
 	smPrimaryInterchannelLink primaryPullup;
 	smHeightBelowFractionalFilter belowFractionalFilter;
@@ -3547,7 +3547,8 @@ int Locus :: TestFractionalFiltersSMLF () {
 	RGDListIterator it (LocusSignalList);
 	DataSignal* nextSignal;
 
-	smCalculatedPurePullup pullUp;
+	smPullUp pullUp;
+	smCalculatedPurePullup purePullup;
 	smPartialPullupBelowMinRFU pullupBelowMinRFU;
 	smPrimaryInterchannelLink primaryPullup;
 	smHeightBelowFractionalFilter belowFractionalFilter;
@@ -3575,7 +3576,7 @@ int Locus :: TestFractionalFiltersSMLF () {
 	
 		while (nextSignal = (DataSignal*) it ()) {
 
-			if ((nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (pullupBelowMinRFU)) && !nextSignal->GetMessageValue (primaryPullup))
+			if ((nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (pullupBelowMinRFU)) && !nextSignal->GetMessageValue (primaryPullup))
 				continue;
 
 			peak = nextSignal->Peak ();
@@ -3604,7 +3605,7 @@ int Locus :: TestFractionalFiltersSMLF () {
 				peak -= nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
 
 			peakIsLessThanFractionalThreshold = (peak <= fractionalThreshold);
-			peakIsPullup = nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (pullupBelowMinRFU);
+			peakIsPullup = nextSignal->GetMessageValue (pullUp) || nextSignal->GetMessageValue (pullupBelowMinRFU) || nextSignal->GetMessageValue (purePullup);
 			peakIsLessThanPullupFractionalThreshold = (peakIsPullup && !nextSignal->GetMessageValue (primaryPullup)) && (peak <= pullupFractionalThreshold);
 
 			if (peakIsLessThanFractionalThreshold || peakIsLessThanPullupFractionalThreshold) {
@@ -4294,7 +4295,7 @@ int Locus :: TestNeighborsSM (DataSignal* previous, DataSignal* testSignal, Data
 
 	// We assume that this is a ladder test...AnalyzeGridLocus is the only method that calls this routine
 
-	double Width = testSignal->GetStandardDeviation ();
+	double Width = 0.5 * testSignal->GetWidth ();
 	double peak = testSignal->Peak ();
 	Boolean NotAcceptable = FALSE;
 	Boolean Marginal = FALSE;
@@ -4698,7 +4699,7 @@ int Locus :: TestSampleAveragesSM (ChannelData* lsData, DataSignal* testSignal, 
 	//  This is sample stage 2
 	//
 
-	double Width = testSignal->GetStandardDeviation ();
+	double Width = testSignal->GetWidth ();
 	double peak = testSignal->Peak ();
 	double mean = testSignal->GetMean ();
 	RGString info;
@@ -5461,13 +5462,14 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 		TestAmelogeninSM ();
 
 	int N = LocusSignalList.Entries ();
+	int Max = mLink->GetMaxExpectedAlleles ();
 
-	if (LocusSignalList.Entries () <= mLink->GetMaxExpectedAlleles ())
+	if (LocusSignalList.Entries () <= Max)
 		SetMessageValue (triAllele, false);
 
 	if (N == 0) {
 
-		if (!isNegCntl) {
+		if (!isNegCntl && (Max != 0)) {
 
 			SetMessageValue (noGenotype, true);
 			return -1;
@@ -5481,6 +5483,12 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 		if (mLink->isQualityLocus ())
 			return 0;
 
+		return -1;
+	}
+
+	if (Max == 0) {
+
+		SetMessageValue (triAllele, true);
 		return -1;
 	}
 
@@ -6782,8 +6790,12 @@ int Locus :: TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGD
 			// Later, consider adding one of nextSignal's flanking peaks...need iChannel function to perform test, assuming
 			// that primary Signal may be gone.  Then recalculate primary signal
 
-			if (iChannel->IsEmpty ())
+			if (iChannel->IsEmpty ()) {
+
 				iChannel->RemoveAllSM ();	//??????????????????????????????????????????????????????????????????
+				delete iChannel;
+				nextSignal->SetInterchannelLink (NULL);
+			}
 
 			else
 				iChannel->RecalculatePrimarySignalSM ();	//????????????????????????????????????????????????????????????????????????
@@ -7000,6 +7012,9 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smHeightBelowFractionalFilter fractionalFilter;
 	smHeightBelowPullupFractionalFilter pullupFractionalFilter;
 	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+	smCraterSidePeak craterSidePeak;
+	smSigmoidalSidePeak sigmoidalSidePeak;
+	smPartialPullupBelowMinRFU pullupBelowMinRFU;
 
 	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
 
@@ -7093,6 +7108,30 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			}
 
 			if (prevSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (purePullup)) {
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (pullupBelowMinRFU) || nextSignal->GetMessageValue (pullupBelowMinRFU)) {
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (nextSignal->GetMessageValue (craterSidePeak) || nextSignal->GetMessageValue (sigmoidalSidePeak)) {
+
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (craterSidePeak) || prevSignal->GetMessageValue (sigmoidalSidePeak)) {
 
 				prevSignal = nextSignal;
 				prevAlleleName = alleleName;

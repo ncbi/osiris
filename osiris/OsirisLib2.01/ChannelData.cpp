@@ -435,7 +435,7 @@ double NormalizationInterval :: ComputeSubIntervalAverage (int startPt, int endP
 ChannelData :: ChannelData () : SmartMessagingObject (), mChannel (-1), mData (NULL), mBackupData (NULL),
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
 Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (-1), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0),
-mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinkedLocusArea (0.0), mMaxLocusAreaRatio (0.0), mMaxYLinkedLocusRatio (0.0) {
+mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinkedLocusArea (0.0), mMaxLocusAreaRatio (0.0), mMaxYLinkedLocusRatio (0.0), mMaxLaserInScalePeak (0.0) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -445,7 +445,7 @@ mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinke
 ChannelData :: ChannelData (int channel) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
 Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0),
-mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinkedLocusArea (0.0), mMaxLocusAreaRatio (0.0), mMaxYLinkedLocusRatio (0.0) {
+mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinkedLocusArea (0.0), mMaxLocusAreaRatio (0.0), mMaxYLinkedLocusRatio (0.0), mMaxLaserInScalePeak (0.0) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -455,7 +455,7 @@ mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinke
 ChannelData :: ChannelData (int channel, LaneStandard* inputLS) : SmartMessagingObject (), mChannel (channel), mData (NULL), mBackupData (NULL), 
 mTestPeak (NULL), Valid (FALSE), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (0), SetSize (0), MaxCorrelationIndex (0), 
 Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (inputLS), mDeleteLoci (false), mFsaChannel (channel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0),
-mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinkedLocusArea (0.0), mMaxLocusAreaRatio (0.0), mMaxYLinkedLocusRatio (0.0) {
+mMaxLocusArea (0.0), mMaxYLinkedLocusArea (0.0), mMinLocusArea (0.0), mMinYLinkedLocusArea (0.0), mMaxLocusAreaRatio (0.0), mMaxYLinkedLocusRatio (0.0), mMaxLaserInScalePeak (0.0) {
 
 	InitializeSmartMessages ();
 	//mNegativeCurveList.ClearAndDelete ();
@@ -466,7 +466,8 @@ ChannelData :: ChannelData (const ChannelData& cd) : SmartMessagingObject ((Smar
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), 
 mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0),
-mMaxLocusArea (cd.mMaxLocusArea), mMaxYLinkedLocusArea (cd.mMaxYLinkedLocusArea), mMinLocusArea (cd.mMinLocusArea), mMinYLinkedLocusArea (cd.mMinYLinkedLocusArea), mMaxLocusAreaRatio (cd.mMaxLocusAreaRatio), mMaxYLinkedLocusRatio (cd.mMaxYLinkedLocusRatio) {
+mMaxLocusArea (cd.mMaxLocusArea), mMaxYLinkedLocusArea (cd.mMaxYLinkedLocusArea), mMinLocusArea (cd.mMinLocusArea), mMinYLinkedLocusArea (cd.mMinYLinkedLocusArea), mMaxLocusAreaRatio (cd.mMaxLocusAreaRatio), mMaxYLinkedLocusRatio (cd.mMaxYLinkedLocusRatio),
+mMaxLaserInScalePeak (cd.mMaxLaserInScalePeak) {
 
 	mData = (DataSignal*)cd.mData->Copy ();
 	mLocusList = cd.mLocusList;
@@ -480,7 +481,8 @@ ChannelData :: ChannelData (const ChannelData& cd, CoordinateTransform* trans) :
 Valid (cd.Valid), mTestPeak (cd.mTestPeak), PreliminaryIterator (PreliminaryCurveList), CompleteIterator (CompleteCurveList), NegativeCurveIterator (mNegativeCurveList), NumberOfAcceptedCurves (cd.NumberOfAcceptedCurves),
 SetSize (cd.SetSize), MaxCorrelationIndex (cd.MaxCorrelationIndex), 
 Means (NULL), Sigmas (NULL), Fits (NULL), Peaks (NULL), SecondaryContent (NULL), mLaneStandard (NULL), mDeleteLoci (true), mFsaChannel (cd.mFsaChannel), mBaseLine (NULL), mBaselineStart (-1), mTimeMap (NULL), mFilterChangeArray (NULL), mFractionOfChangedFilterPoints (1.0),
-mMaxLocusArea (cd.mMaxLocusArea), mMaxYLinkedLocusArea (cd.mMaxYLinkedLocusArea), mMinLocusArea (cd.mMinLocusArea), mMinYLinkedLocusArea (cd.mMinYLinkedLocusArea), mMaxLocusAreaRatio (cd.mMaxLocusAreaRatio), mMaxYLinkedLocusRatio (cd.mMaxYLinkedLocusRatio) {
+mMaxLocusArea (cd.mMaxLocusArea), mMaxYLinkedLocusArea (cd.mMaxYLinkedLocusArea), mMinLocusArea (cd.mMinLocusArea), mMinYLinkedLocusArea (cd.mMinYLinkedLocusArea), mMaxLocusAreaRatio (cd.mMaxLocusAreaRatio), mMaxYLinkedLocusRatio (cd.mMaxYLinkedLocusRatio),
+mMaxLaserInScalePeak (cd.mMaxLaserInScalePeak) {
 
 	mData = NULL;
 	RGDList tempLocusList = cd.mLocusList;
