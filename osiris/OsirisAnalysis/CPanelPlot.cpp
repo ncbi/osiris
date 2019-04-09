@@ -757,9 +757,7 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
       {
         sToolTip += wxString::Format(FORMAT_ALLELE_BPS, nBPS);
         dBPSresid -= (double)nBPS;
-        FORMAT_CONDITION(FORMAT_RESIDUAL,dBPSresid,
-          dBPSresid > RESIDUAL_THRESHOLD || 
-              dBPSresid < -RESIDUAL_THRESHOLD);
+        sToolTip += wxString::Format(FORMAT_RESIDUAL,dBPSresid);
       }
     }
   }
@@ -804,9 +802,7 @@ wxString CPanelPlot::_AlleleToolTip(
 
   //  The 'if' may be temporary
   
-  FORMAT_CONDITION(FORMAT_RESIDUAL,  dBPSresid,
-    dBPSresid > RESIDUAL_THRESHOLD || 
-      dBPSresid < -RESIDUAL_THRESHOLD);
+  sToolTip += wxString::Format(FORMAT_RESIDUAL,dBPSresid);
   sToolTip += wxString::Format(
       FORMAT_RFU,
     nwxRound::Round(dRFU));
