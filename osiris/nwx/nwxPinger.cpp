@@ -168,7 +168,8 @@ nwxPinger::nwxPinger(
   m_bLog(bLog),
   m_bSetup(false),
   m_bInDestructor(false),
-  m_bLoggedExit(false)
+  m_bLoggedExit(false),
+  m_bClosedByUser(false)
 {
   _setup(parent, id, pSetDefaults, sAppName, sAppVersion);
 }
@@ -177,7 +178,8 @@ m_pLogFile(NULL),
 m_bLog(false),
 m_bSetup(false),
 m_bInDestructor(false),
-m_bLoggedExit(false)
+m_bLoggedExit(false),
+m_bClosedByUser(false)
 {}
 
 
@@ -189,8 +191,12 @@ nwxPinger::~nwxPinger()
     m_process->DetachOwner();
     if (_checkProcess())
     {
-      wxString sQuit = "q" __EOL;
-      m_process->WriteToProcess(sQuit);
+      if (m_bClosedByUser)
+      {
+        wxString sQuit = "q" __EOL;
+        m_process->WriteToProcess(sQuit);
+      }
+      m_process->CloseOutput();
       for (int i = 0; (i < 10) && _checkProcess(); ++i)
       {
         // max 10 loops, give it one second to stop

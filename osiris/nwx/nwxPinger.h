@@ -119,11 +119,11 @@ public:
     const wxString &sAppVersion,
     const nwxPingerSet *pSetDefaults = NULL,
     wxFile *pLogFile = NULL,
-    bool bLog = 
+    bool bLog =
 #if defined(TMP_DEBUG) || defined(__WXDEBUG__)
-      true
+    true
 #else
-      false
+    false
 #endif
   );
   nwxPinger();
@@ -152,6 +152,13 @@ public:
     }
     return rtn;
   }
+  void SetClosedByUser(bool b)
+  {
+    m_bClosedByUser = b;
+    // if m_bClosedByUser is true when calling destructor
+    //  a "q" is send to the process indicating a graceful quit
+    //  otherwise a "crash" ping is set
+  }
 private:
   bool _setup(
     wxEvtHandler *parent,
@@ -172,6 +179,7 @@ private:
   bool m_bSetup;
   bool m_bInDestructor;
   bool m_bLoggedExit;
+  bool m_bClosedByUser;
 };
 
 

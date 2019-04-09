@@ -90,10 +90,17 @@ nwxPinger *mainApp::g_pPinger = NULL;
 mainApp *mainApp::g_pThis = NULL;
 wxFile *mainApp::m_pFout = NULL;
 
-void mainApp::_cleanupPinger()
+void mainApp::_cleanupPinger(bool bByUser)
 {
   if (g_pPinger != NULL)
   {
+    if (bByUser)
+    {
+      g_pPinger->SetClosedByUser(true);
+      // alerts the process that this was closed by the user
+      // if OSIRIS crashes, this will not be sent and a "crash"
+      // ping will be logged
+    }
     delete g_pPinger;
     g_pPinger = NULL;
   }
@@ -428,7 +435,7 @@ bool mainApp::SetPingerEnabled(bool bEnable)
 #ifndef __WXMSW__
         nwxFileUtil::SetFilePermissionFromDir(sPath);
 #endif
-        mainApp::_cleanupPinger();
+        mainApp::_cleanupPinger(true);
       }
     }
     else
@@ -698,7 +705,7 @@ void mainApp::OnQuit(wxCommandEvent &e)
   if(bSkip)
   {
     mainApp::Ping(PING_EVENT, "user-exit");
-    _cleanupPinger();
+    _cleanupPinger(true);
 #if mainFrameIsWindow
     bSkip = m_pFrame->Close();
     m_pFrame->Destroy();

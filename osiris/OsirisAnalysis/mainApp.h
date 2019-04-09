@@ -206,7 +206,7 @@ private:
   static const wxString g_sINACTIVE;
 #endif
   void _Cleanup();
-  static void _cleanupPinger();
+  static void _cleanupPinger(bool bByUser = false);
   static void _exitPinger();
   static void _setupPinger();
   static void _LogMessage(const wxString &sMsg);
