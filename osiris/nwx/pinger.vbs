@@ -144,16 +144,17 @@ Sub MAIN
   Set xHttp = CreateObject("Msxml2.XMLHTTP.6.0")
   sQuery = sBASE_QUERY
   crash = 1
+  quit = 0
   nRtn = PING(xHttp, sURL, sQuery, tStart)
-  do while nRtn = 200 and Not WScript.StdIn.AtEndOfStream
+  do while nRtn = 200 and Not WScript.StdIn.AtEndOfStream and quit = 0
     sLine = Wscript.StdIn.Readline
     If sLine = "go" Then
       nRtn = PING(xHttp, sURL, sQuery, tStart)
       sQuery = sBASE_QUERY
     ElseIf sLine = "q" Then
-      exit do
-      '  if calling program sends 'q' (quit) then it did not crash
+      quit = 1
       crash = 0
+      '  if calling program sends 'q' (quit) then it did not crash
     else
       sQuery = ADD_PAIR(sQuery, sLine)
     End If

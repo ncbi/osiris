@@ -289,6 +289,15 @@ bool CDialogCMF::_SaveFile(const wxString &sFileName)
 {
   wxBusyCursor xxx;
   bool bRtn = m_pCMF->SaveFile(sFileName);
+  if (bRtn)
+  {
+    mainApp::Ping(PING_EVENT, "CMF-save");
+  }
+  else
+  {
+    mainApp::Ping2(PING_EVENT, "CMF-save", "failed", "1");
+  }
+
   return bRtn;
 }
 bool CDialogCMF::TransferDataFromWindow()

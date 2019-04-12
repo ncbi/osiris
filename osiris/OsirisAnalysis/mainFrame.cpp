@@ -1030,6 +1030,10 @@ void mainFrame::OnHelp(wxCommandEvent &)
         sError.Append(sURL);
       }
     }
+    else
+    {
+      bError = false;
+    }
   }
   else
   {
@@ -1039,6 +1043,11 @@ void mainFrame::OnHelp(wxCommandEvent &)
   if(bError)
   {
     ErrorMessage(sError);
+    mainApp::Ping2(PING_EVENT, "help", "failed", "1");
+  }
+  else
+  {
+    mainApp::Ping(PING_EVENT, "help");
   }
 }
 void mainFrame::OnCheckForUpdates(wxCommandEvent &)
@@ -1437,6 +1446,7 @@ void mainFrame::ErrorMessage(const wxString &sMessage)
 }
 void mainFrame::OnShowLog(wxCommandEvent &)
 {
+  mainApp::Ping(PING_EVENT, "message-log");
   m_pDialogErrorLog->Show(true);
   m_pDialogErrorLog->Raise();
 }
@@ -1847,6 +1857,7 @@ void mainFrame::OnMenuClose(wxMenuEvent &e)
 #if DRAG_DROP_FILES
 void mainFrame::OnDropFiles(wxCommandEvent &)
 {
+  mainApp::Ping(PING_EVENT, "drag-drop-files");
   OpenFiles(m_pDropTarget->GetFiles());
 }
 #endif

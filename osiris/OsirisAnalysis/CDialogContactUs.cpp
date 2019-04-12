@@ -29,6 +29,7 @@
 *
 */
 #include "CDialogContactUs.h"
+#include "mainApp.h"
 #include <wx/hyperlink.h>
 #include <wx/stattext.h>
 #include <wx/sizer.h>
@@ -57,4 +58,5 @@ CDialogContactUs::CDialogContactUs(wxWindow *parent) :
   SetSizer(pSizerAll);
   Layout();
   Fit();
+  mainApp::Ping(PING_EVENT, "contact-us");
 }
