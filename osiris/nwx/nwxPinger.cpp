@@ -196,7 +196,11 @@ nwxPinger::~nwxPinger()
         wxString sQuit = "q" __EOL;
         m_process->WriteToProcess(sQuit);
       }
-      m_process->CloseOutput();
+      else
+      {
+        // cause process to quit
+        m_process->CloseOutput();
+      }
       for (int i = 0; (i < 10) && _checkProcess(); ++i)
       {
         // max 10 loops, give it one second to stop
