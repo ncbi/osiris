@@ -10,7 +10,7 @@
          which is used for the splash screen.
     vi.  add the Osiris*.png image to source control (git)
 3. in MSVC Setup project change the name of the .msi file (Right-click Setup, Properties)
-   and in the OTHER properties (Alt+Enter) 
+   and in the OTHER properties (F4) 
    change the version at the bottom.  When the prompt appears select "Yes"  
    Save all do not build.
 4. in ./Setup run mkun.sh (before building msi, after "Save All" in MSVC)
