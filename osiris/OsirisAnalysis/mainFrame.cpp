@@ -700,7 +700,7 @@ void mainFrame::OnClose(wxCloseEvent &e)
 {
   if (DoClose())
   {
-    m_pDialogErrorLog->Close();
+    mainApp::PingExit();
     e.Skip();
   }
 }

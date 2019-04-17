@@ -168,6 +168,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static void Ping3(const wxString &sName, const wxString &sValue,
     const wxString &sName2, const wxString &sValue2,
     const wxString &sName3, const wxString &sValue3);
+  static void PingExit();
   static nwxXmlMRU *GetMRU();
   static nwxXmlCmfList *GetCMFlist();
   static nwxXmlWindowSizes *GetWindowSizes();
