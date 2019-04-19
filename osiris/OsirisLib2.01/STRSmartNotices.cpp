@@ -1590,6 +1590,12 @@ int smSelectUserSpecifiedMinRFUForPrimaryPeakPreset::sMessageIndex = 0;
 int smSelectUserSpecifiedMinRFUForPrimaryPeakPreset::sMessageScope = 0;
 
 
+RGString smRedundantPeak::sName = "smRedundantPeak";
+int smRedundantPeak::sSubject = smRedundantPeak::LoadType ();
+int smRedundantPeak::sMessageIndex = 0;
+int smRedundantPeak::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1854,6 +1860,7 @@ PERSISTENT_DEFINITION (smTestPullupCorrectedHeightsPreset, 2665, "smTestPullupCo
 PERSISTENT_DEFINITION (smTailHeightFittingThresholdFactor, 2666, "smTailHeightFittingThresholdFactor")
 PERSISTENT_DEFINITION (smTailSlopeFittingThresholdFactor, 2667, "smTailSlopeFittingThresholdFactor")
 PERSISTENT_DEFINITION (smSelectUserSpecifiedMinRFUForPrimaryPeakPreset, 2668, "smSelectUserSpecifiedMinRFUForPrimaryPeakPreset")
+PERSISTENT_DEFINITION (smRedundantPeak, 2669, "smRedundantPeak")
 
 
 
@@ -17690,6 +17697,66 @@ int smSelectUserSpecifiedMinRFUForPrimaryPeakPreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset* noticeType = new smSelectUserSpecifiedMinRFUForPrimaryPeakPreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smRedundantPeak :: smRedundantPeak () : SmartNotice () {
+
+}
+
+
+smRedundantPeak :: smRedundantPeak (const smRedundantPeak& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smRedundantPeak :: ~smRedundantPeak () {
+
+}
+
+
+int smRedundantPeak :: GetSubject () const {
+
+	return smRedundantPeak::sSubject;
+}
+
+
+void smRedundantPeak :: SetIndexAndScope (int index, int scope) const {
+
+	smRedundantPeak::sMessageIndex = index;
+	smRedundantPeak::sMessageScope = scope;
+}
+
+
+int smRedundantPeak :: GetMessageIndex () const {
+
+	return smRedundantPeak :: sMessageIndex;
+}
+
+
+int smRedundantPeak :: GetScope () const {
+
+	return smRedundantPeak :: sMessageScope;
+}
+
+
+RGString smRedundantPeak :: GetName () const {
+
+	return smRedundantPeak :: sName;
+}
+
+
+
+int smRedundantPeak :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smRedundantPeak* noticeType = new smRedundantPeak;
 	warehouse->AddType (noticeType);
 	return 1;
 }

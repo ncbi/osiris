@@ -7015,6 +7015,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smCraterSidePeak craterSidePeak;
 	smSigmoidalSidePeak sigmoidalSidePeak;
 	smPartialPullupBelowMinRFU pullupBelowMinRFU;
+	smRedundantPeak redundantPeak;
 
 	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
 
@@ -7028,6 +7029,9 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	double prevResidual;
 	double nextResidual;
 	int prevLocation = 0;
+
+	bool prevBelowNext;
+	bool nextBelowPrev;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -7139,17 +7143,20 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
-			if (prevSignal->GetMessageValue (primaryPullup) && !nextSignal->GetMessageValue (primaryPullup)) {
+			prevBelowNext = (prevPeak <= heightFraction * nextPeak);
+			nextBelowPrev = (nextPeak <= heightFraction * prevPeak);
 
-				nextSignal->SetDontLook (true);
+			if (prevSignal->GetMessageValue (primaryPullup) && !nextSignal->GetMessageValue (primaryPullup)  && !prevBelowNext) {
+
 				nextSignal->SetDoNotCall (true);
+				nextSignal->SetMessageValue (redundantPeak, true);
 				signalList.RemoveReference (nextSignal);
 				continue;
 			}
 
-			else if (nextSignal->GetMessageValue (primaryPullup) && !prevSignal->GetMessageValue (primaryPullup)) {
+			else if (nextSignal->GetMessageValue (primaryPullup) && !prevSignal->GetMessageValue (primaryPullup) && !nextBelowPrev) {
 
-				prevSignal->SetDontLook (true);
+				prevSignal->SetMessageValue (redundantPeak, true);
 				prevSignal->SetDoNotCall (true);
 				signalList.RemoveReference (prevSignal);
 				prevSignal = nextSignal;
@@ -7160,7 +7167,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 
 			if (prevSignal->GetMessageValue (pullup) && !nextSignal->GetMessageValue (pullup)) {
 
-				nextSignal->SetDontLook (true);
+				nextSignal->SetMessageValue (redundantPeak, true);
 				nextSignal->SetDoNotCall (true);
 				signalList.RemoveReference (nextSignal);
 				continue;
@@ -7168,7 +7175,7 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 
 			else if (nextSignal->GetMessageValue (pullup) && !prevSignal->GetMessageValue (pullup)) {
 
-				prevSignal->SetDontLook (true);
+				prevSignal->SetMessageValue (redundantPeak, true);
 				prevSignal->SetDoNotCall (true);
 				signalList.RemoveReference (prevSignal);
 				prevSignal = nextSignal;
@@ -7177,11 +7184,17 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
-			else if (prevPeak <= heightFraction * nextPeak) {
+			else if (prevBelowNext) {
 
 				prevSignal->SetDoNotCall (true);
 				signalList.RemoveReference (prevSignal);
-				prevSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+
+				if (prevLocation == 0)
+					prevSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+
+				else
+					prevSignal->SetMessageValue (redundantPeak, true);
+
 				prevSignal = nextSignal;
 				prevAlleleName = alleleName;
 				prevLocation = location;
@@ -7191,7 +7204,13 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 			else if (nextPeak <= heightFraction * prevPeak) {
 
 				nextSignal->SetDoNotCall (true);
-				nextSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+
+				if (location == 0)
+					nextSignal->SetMessageValue (corePeakSharesAlleleBin, true);
+
+				else
+					nextSignal->SetMessageValue (redundantPeak, true);
+
 				signalList.RemoveReference (nextSignal);
 			}
 
