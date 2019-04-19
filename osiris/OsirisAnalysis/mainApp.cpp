@@ -209,6 +209,11 @@ void mainApp::Ping3(const wxString &sName1, const wxString &sValue1,
   }
   // destructor will send the event
 }
+void mainApp::PingExit()
+{
+  mainApp::Ping(PING_EVENT, "user-exit");
+  _cleanupPinger(true);
+}
 
 
 nwxXmlMRU *mainApp::GetMRU()
@@ -704,8 +709,7 @@ void mainApp::OnQuit(wxCommandEvent &e)
   bSkip = m_pFrame->DoClose();
   if(bSkip)
   {
-    mainApp::Ping(PING_EVENT, "user-exit");
-    _cleanupPinger(true);
+    mainApp::PingExit();
 #if mainFrameIsWindow
     bSkip = m_pFrame->Close();
     m_pFrame->Destroy();
