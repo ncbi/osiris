@@ -1,25 +1,18 @@
-InputDirectory = F:/DFSC/GhostPeak_03122019/MK_3500A_2019-02-22_Sample_24SEC_1.2KV;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-3/Config;
-ReportDirectory = F:/DFSC/GhostPeak_03122019;
-MarkerSetName = GlobalFiler;
-LaneStandardName = ABI-LIZ-600-60-TO-460;
+InputDirectory = C:/Users/goorrob/PP16TestLOSPrimary;
+LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-7/Osiris-2.12-Beta-7/Config;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
+MarkerSetName = PowerPlex 16;
+LaneStandardName = Promega-ILS-500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20171211-084702/V-20171211-084702_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20171211-084702/V-20171211-084702_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-3/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 50.;
-MinLaneStandardRFU = 500.;
-MinLadderRFU = 300.;
-MinInterlocusRFU = 50.;
-MinLadderInterlocusRFU = 300.;
-SampleDetectionThreshold = 35.;
-AnalysisThresholdOverride:1 = 50;
-AnalysisThresholdOverride:2 = 90;
-AnalysisThresholdOverride:3 = 50;
-AnalysisThresholdOverride:4 = 80;
-AnalysisThresholdOverride:5 = 89;
+StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20190327-124439/V-20190327-124439_StdSettings.xml;
+LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20190327-124439/V-20190327-124439_LabSettings.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-7/Osiris-2.12-Beta-7/Config/LadderSpecifications/MessageBook.xml;
+MinSampleRFU = 100.;
+MinLaneStandardRFU = 100.;
+MinLadderRFU = 250.;
+MinInterlocusRFU = 100.;
+MinLadderInterlocusRFU = 250.;
+SampleDetectionThreshold = 100.;
 RawDataString = R;
-;
-
 
 

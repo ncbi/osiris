@@ -2176,7 +2176,6 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList ignoreSidePeaks;
 	double rightLimitPlus;
 	double leftLimitPlus;
-	double channelMaxNonLaserOffScaleHeight;
 	bool laserStatus;
 
 	while (nextSignal = (DataSignal*) it ()) {
@@ -2194,13 +2193,13 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		if ((primaryHeight < primaryThreshold) || (nextSignal->IsNegativePeak ()))
 			continue;
 
-		if (nextSignal->GetMessageValue (laserOffScale)) {
+		//if (nextSignal->GetMessageValue (laserOffScale)) {
 
-			channelMaxNonLaserOffScaleHeight = maxNonLaserOffScalePeak [primaryChannel];
+		//	channelMaxNonLaserOffScaleHeight = maxNonLaserOffScalePeak [primaryChannel];
 
-			if (primaryHeight < channelMaxNonLaserOffScaleHeight)
-				continue;
-		}
+		//	if (primaryHeight < channelMaxNonLaserOffScaleHeight)
+		//		continue;
+		//}
 
 		// nextSignal could be primary
 
@@ -2237,14 +2236,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
 
-			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
-				continue;
-
 			if (nextSignal2->IsNegativePeak ()) {
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
 				continue;
 			}
+
+			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
+				continue;
 
 			if (nextSignal2->Peak () < primaryHeight) {
 
@@ -2272,14 +2271,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			if (nextSignal2->GetChannel () == primaryChannel)
 				continue;  //  oops. same channel
 
-			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
-				continue;
-
 			if (nextSignal2->IsNegativePeak ()) {
 
 				probablePullupPeaks.Append (nextSignal2);  // height doesn't matter; negative peaks have to come from pull-up
 				continue;
 			}
+
+			if (nextSignal2->GetMessageValue (laserOffScale) != laserStatus)
+				continue;
 
 			if (nextSignal2->Peak () < primaryHeight) {
 
@@ -2439,17 +2438,17 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		else {
 
-			if (primeSignal->GetMessageValue (laserOffScale)) {
+			//if (primeSignal->GetMessageValue (laserOffScale)) {
 
-				double localMax = maxNonLaserOffScalePeak [primeSignal->GetChannel ()];
+			//	double localMax = maxNonLaserOffScalePeak [primeSignal->GetChannel ()];
 
-				if (primeSignal->Peak () < localMax) {
+			//	if (primeSignal->Peak () < localMax) {
 
-					probablePullupPeaks.Clear ();
-					primeSignal->SetMessageValue (primaryLink, false);
-					continue;
-				}
-			}
+			//		probablePullupPeaks.Clear ();
+			//		primeSignal->SetMessageValue (primaryLink, false);
+			//		continue;
+			//	}
+			//}
 
 			// Set up STRInterChannelLinkage and add to linkage list; this has to be modified to allow more than one pullUp linkage
 

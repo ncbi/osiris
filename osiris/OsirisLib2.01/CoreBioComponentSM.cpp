@@ -2281,130 +2281,130 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		}
 	}
 
-	else { // this is laser off scale test; get laser in scale max peak height
+	//else { // this is laser off scale test; get laser in scale max peak height
 
-		maxLaserInScalePeak = mDataChannels [primaryChannel]->GetMaxInScalePeak ();
-		list<PullupPair*> tempPairList;
+	//	maxLaserInScalePeak = mDataChannels [primaryChannel]->GetMaxInScalePeak ();
+	//	list<PullupPair*> tempPairList;
 
-		while (!pairList.empty()) {
+	//	while (!pairList.empty()) {
 
-			nextPair = pairList.front();
+	//		nextPair = pairList.front();
 
-			primarySignal = nextPair->mPrimary;
-			secondarySignal = nextPair->mPullup;
+	//		primarySignal = nextPair->mPrimary;
+	//		secondarySignal = nextPair->mPullup;
 
-			iChannelPrimary = primarySignal->GetInterchannelLink ();
-			pairList.pop_front();
+	//		iChannelPrimary = primarySignal->GetInterchannelLink ();
+	//		pairList.pop_front();
 
-			if (primarySignal->Peak () > maxLaserInScalePeak) {
+	//		if (primarySignal->Peak () > maxLaserInScalePeak) {
 
-				tempPairList.push_back (nextPair);
-				continue;
-			}
+	//			tempPairList.push_back (nextPair);
+	//			continue;
+	//		}
 
-			delete nextPair;
+	//		delete nextPair;
 
-			if (secondarySignal == NULL)
-				continue;
+	//		if (secondarySignal == NULL)
+	//			continue;
 
-			primarySignal->RemoveProbablePullup (secondarySignal);
+	//		primarySignal->RemoveProbablePullup (secondarySignal);
 
-			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+	//		secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
 
-			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+	//		if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
 
-				secondarySignal->SetMessageValue (pullup, false);
-				secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
-			}
+	//			secondarySignal->SetMessageValue (pullup, false);
+	//			secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+	//		}
 
-			if (iChannelPrimary == NULL) {
+	//		if (iChannelPrimary == NULL) {
 
-				primarySignal->SetMessageValue (primaryLink, false);
-				continue; // error??
-			}
+	//			primarySignal->SetMessageValue (primaryLink, false);
+	//			continue; // error??
+	//		}
 
-			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+	//		iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
 
-			if (iChannelPrimary->IsEmpty ()) {
+	//		if (iChannelPrimary->IsEmpty ()) {
 
-				primarySignal->SetInterchannelLink (NULL);
-				primarySignal->SetMessageValue (primaryLink, false);
-				//delete iChannelPrimary;
-				tempLinkageList.push_back (iChannelPrimary);
-			}
-		}
+	//			primarySignal->SetInterchannelLink (NULL);
+	//			primarySignal->SetMessageValue (primaryLink, false);
+	//			//delete iChannelPrimary;
+	//			tempLinkageList.push_back (iChannelPrimary);
+	//		}
+	//	}
 
-		while (!tempLinkageList.empty ()) {
+	//	while (!tempLinkageList.empty ()) {
 
-			nextLink = tempLinkageList.front ();
-			tempLinkageList.pop_front ();
-			mInterchannelLinkageList.remove (nextLink);
-			delete nextLink;
-		}
+	//		nextLink = tempLinkageList.front ();
+	//		tempLinkageList.pop_front ();
+	//		mInterchannelLinkageList.remove (nextLink);
+	//		delete nextLink;
+	//	}
 
-		while (!tempPairList.empty ()) {
+	//	while (!tempPairList.empty ()) {
 
-			nextPair = tempPairList.front ();
-			tempPairList.pop_front ();
-			pairList.push_back (nextPair);
-		}
+	//		nextPair = tempPairList.front ();
+	//		tempPairList.pop_front ();
+	//		pairList.push_back (nextPair);
+	//	}
 
-		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
+	//	for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
 
-			nextLink = *it;
-			primarySignal = nextLink->GetPrimarySignal ();
+	//		nextLink = *it;
+	//		primarySignal = nextLink->GetPrimarySignal ();
 
-			if (primarySignal->GetChannel () != primaryChannel)
-				continue;
+	//		if (primarySignal->GetChannel () != primaryChannel)
+	//			continue;
 
-			if (primarySignal->GetMessageValue (laserOffScale) != true)
-				continue;
+	//		if (primarySignal->GetMessageValue (laserOffScale) != true)
+	//			continue;
 
-			if (primarySignal->Peak () > maxLaserInScalePeak) {
+	//		if (primarySignal->Peak () > maxLaserInScalePeak) {
 
-				continue;
-			}
+	//			continue;
+	//		}
 
-			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
-			secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
+	//		InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+	//		secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
-			if (secondarySignal != NULL) {
+	//		if (secondarySignal != NULL) {
 
-				primarySignal->RemoveProbablePullup (secondarySignal);
-				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+	//			primarySignal->RemoveProbablePullup (secondarySignal);
+	//			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
 
-				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+	//			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
 
-					secondarySignal->SetMessageValue (pullup, false);
-				}
+	//				secondarySignal->SetMessageValue (pullup, false);
+	//			}
 
-				if (iChannelPrimary != NULL) {
+	//			if (iChannelPrimary != NULL) {
 
-					iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+	//				iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
 
-					if (iChannelPrimary->IsEmpty ()) {
+	//				if (iChannelPrimary->IsEmpty ()) {
 
-						primarySignal->SetMessageValue (primaryLink, false);
-						tempLinkageList.push_back (nextLink);
-						//delete iChannelPrimary;
-						//iChannelPrimary = NULL;
-						primarySignal->SetInterchannelLink (NULL);
-					}
-				}
+	//					primarySignal->SetMessageValue (primaryLink, false);
+	//					tempLinkageList.push_back (nextLink);
+	//					//delete iChannelPrimary;
+	//					//iChannelPrimary = NULL;
+	//					primarySignal->SetInterchannelLink (NULL);
+	//				}
+	//			}
 
-				else
-					primarySignal->SetMessageValue (primaryLink, false);
-			}
-		}
+	//			else
+	//				primarySignal->SetMessageValue (primaryLink, false);
+	//		}
+	//	}
 
-		while (!tempLinkageList.empty ()) {
+	//	while (!tempLinkageList.empty ()) {
 
-			nextLink = tempLinkageList.front ();
-			tempLinkageList.pop_front ();
-			mInterchannelLinkageList.remove (nextLink);
-			delete nextLink;
-		}
-	}
+	//		nextLink = tempLinkageList.front ();
+	//		tempLinkageList.pop_front ();
+	//		mInterchannelLinkageList.remove (nextLink);
+	//		delete nextLink;
+	//	}
+	//}
 
 	ignore.Clear ();
 //	RemovePrimaryLinksForChannelsSM (primaryChannel, pullupChannel, testLaserOffScale, ignore);
@@ -2577,7 +2577,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 					//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
 					double primaryHeight = primarySignal->Peak ();
 					ratio = (linearPart + quadraticPart * primaryHeight);
-					pullupPeak->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+					pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
 					double pullupLevel = ratio * primaryHeight;
 					pullupPeak->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
 					pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
@@ -2704,7 +2704,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				double pullupLevel = ratio * primaryHeight;
 
 				//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
-				pullupPeak->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+				pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
 				pullupPeak->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
 				pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 
@@ -3373,7 +3373,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 			double pullupLevel = ratio * p;
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			secondarySignal->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);  // Fix this and next line to reflect contributions from primary peaks on other channels
-			secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+			secondarySignal->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
 			secondarySignal->SetMessageValue (pullup, false);   // need this?  if purePullup = true, than ordinary pullup should already be false
 			secondarySignal->SetMessageValue (purePullup, true);
 			secondarySignal->SetMessageValue (partialPullupBelowMinRFU, false);
@@ -3386,7 +3386,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			secondarySignal->SetPullupFromChannel (primaryChannel, h, mNumberOfChannels);  // Fix this and next line to reflect contributions from primary peaks on other channels
-			secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+			secondarySignal->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
 			secondarySignal->SetMessageValue (pullup, false);   // need this?  if purePullup = true, than ordinary pullup should already be false
 			secondarySignal->SetMessageValue (purePullup, false);
 			secondarySignal->SetMessageValue (partialPullupBelowMinRFU, true);
@@ -3397,7 +3397,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 			secondarySignal->SetIsPossiblePullup (true);
 			secondarySignal->AddUncertainPullupChannel (primaryChannel);
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
-			//secondarySignal->SetPullupRatio (primaryChannel, secondarySignal->Peak () / primarySignal->Peak (), mNumberOfChannels);
+			//secondarySignal->SetPullupRatio (primaryChannel, 100.0 * secondarySignal->Peak () / primarySignal->Peak (), mNumberOfChannels);
 			//secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
 		}
 
@@ -3407,7 +3407,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 			ratio = (linearPart + p * quadraticPart);
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			secondarySignal->SetPullupFromChannel (primaryChannel, ratio * p, mNumberOfChannels);  // Fix this and next line to reflect contributions from primary peaks on other channels
-			secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+			secondarySignal->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
 			secondarySignal->SetMessageValue (pullup, true);   // need this?  if purePullup = true, than ordinary pullup should already be false
 			secondarySignal->SetMessageValue (purePullup, false);
 			secondarySignal->SetMessageValue (partialPullupBelowMinRFU, false);
@@ -3620,7 +3620,7 @@ bool CoreBioComponent::ScavengePullupFromOtherChannelListLaserInScale () {
 
 					double ratio = linearPullupCoefficient + primaryHeight * quadraticPullupCoefficient;
 					double correction = primaryHeight * ratio;
-					secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+					secondarySignal->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
 					secondarySignal->SetPullupFromChannel (primaryChannel, correction, mNumberOfChannels);
 				}
 			}
@@ -3762,7 +3762,7 @@ bool CoreBioComponent::ScavengePullupFromOtherChannelListLaserOffScale () {
 						ratio = linearInScalePullupCoefficient + primaryHeight * quadraticInScalePullupCoefficient;
 
 					correction = primaryHeight * ratio;
-					secondarySignal->SetPullupRatio (primaryChannel, ratio, mNumberOfChannels);
+					secondarySignal->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
 					secondarySignal->SetPullupFromChannel (primaryChannel, correction, mNumberOfChannels);
 				}
 			}
