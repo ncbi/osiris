@@ -1481,7 +1481,7 @@ void CoreBioComponent :: CalculatePullupCorrection (int i, int j, list<PullupPai
 			pullupPeak->SetPullupFromChannel (i, value, mNumberOfChannels);
 			//ratio = 0.01 * floor (10000.0 * (value / pp) + 0.5);
 			ratio = (linear + pp * quad);
-			pullupPeak->SetPullupRatio (i, ratio, mNumberOfChannels);
+			pullupPeak->SetPullupRatio (i, 100.0 * ratio, mNumberOfChannels);
 			pullupPeak->SetPrimarySignalFromChannel (i, primaryPeak, mNumberOfChannels);
 		}
 	}

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.37</VersionNumber>
-	<BuildTime>03/20/2019 06:09 PM</BuildTime>
+	<VersionNumber>7.38</VersionNumber>
+	<BuildTime>04/19/2019 04:44 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -2609,6 +2609,26 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>This Peak Has Restricted Priority</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smSignalIsCtrlPeak</Expression>
+			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>NOT smSignalIsCtrlPeak</Expression>
+				</RestrictionCriterion>
+			</Restriction>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smRedundantPeak</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Redundant Peak</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -7613,6 +7633,7 @@
 						<Name>smCorePeakSharesAlleleBin</Name>
 						<Name>smPeakSharesAlleleBinLeft</Name>
 						<Name>smPeakSharesAlleleBinRight</Name>
+						<Name>smRedundantPeak</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS AND NOT smIsQualityLocus</Expression>
@@ -7703,7 +7724,7 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR smRedundantPeak OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smNonEditableRestrictedPriorityPeak = (smRestrictedPriorityPeak AND NOT smBelowMinRFU) AND NOT smAllowEditingRestrictedPriorityPreset</Expression>
 						<Expression>smEditableRestrictedPriorityPeak = (smRestrictedPriorityPeak AND NOT smBelowMinRFU) AND smAllowEditingRestrictedPriorityPreset</Expression>
 						<Expression>smBelowMinRFURestrictedPriorityPeak = (smRestrictedPriorityPeak AND smBelowMinRFU) AND NOT (smAllowEditingRestrictedPriorityPreset AND smAllowEditingPeaksBelowMinRFUPreset)</Expression>
