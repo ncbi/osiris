@@ -7165,7 +7165,21 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
-			if (prevSignal->GetMessageValue (pullup) && !nextSignal->GetMessageValue (pullup)) {
+			double prevCorrected = prevSignal->Peak () - prevSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+			double nextCorrected = nextSignal->Peak () - nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
+
+			if (prevCorrected < 0.8 * nextCorrected) {
+
+				prevSignal->SetMessageValue (redundantPeak, true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (nextCorrected < 0.8 * prevCorrected) {
 
 				nextSignal->SetMessageValue (redundantPeak, true);
 				nextSignal->SetDoNotCall (true);
@@ -7173,7 +7187,34 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 				continue;
 			}
 
-			else if (nextSignal->GetMessageValue (pullup) && !prevSignal->GetMessageValue (pullup)) {
+			if (prevBelowNext && (nextResidual < prevResidual)) {
+
+				prevSignal->SetMessageValue (redundantPeak, true);
+				prevSignal->SetDoNotCall (true);
+				signalList.RemoveReference (prevSignal);
+				prevSignal = nextSignal;
+				prevAlleleName = alleleName;
+				prevLocation = location;
+				continue;
+			}
+
+			if (nextBelowPrev && (prevResidual < nextResidual)) {
+
+				nextSignal->SetMessageValue (redundantPeak, true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			if (!prevSignal->GetMessageValue (pullup) && nextSignal->GetMessageValue (pullup)) {
+
+				nextSignal->SetMessageValue (redundantPeak, true);
+				nextSignal->SetDoNotCall (true);
+				signalList.RemoveReference (nextSignal);
+				continue;
+			}
+
+			else if (!nextSignal->GetMessageValue (pullup) && prevSignal->GetMessageValue (pullup)) {
 
 				prevSignal->SetMessageValue (redundantPeak, true);
 				prevSignal->SetDoNotCall (true);

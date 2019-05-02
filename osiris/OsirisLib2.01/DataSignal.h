@@ -321,7 +321,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -339,7 +339,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -385,6 +385,9 @@ public:
 
 	void SetMayBeUnacceptable (bool r) { mMayBeUnacceptable = r; }
 	bool MayBeUnacceptable () const { return mMayBeUnacceptable; }
+
+	void SetCouldBePullup (bool r) { mCouldBePullup = r; }
+	bool GetCouldBePullup () { return mCouldBePullup; }
 
 	void SetAcceptedOffGrid (bool r) { mAcceptedOffGrid = r; }
 	bool IsAcceptedOffGrid () const { return mAcceptedOffGrid; }
@@ -1016,6 +1019,7 @@ protected:
 	RGString mTempDataForOccudedPrimary;
 	RGString mTempDataForPrimaryNoPullup;
 	RGString mTempDataForPrimaryRawDataPullup;
+	bool mCouldBePullup;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;

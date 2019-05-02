@@ -1895,6 +1895,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 							break;
 					}
 
+					if (prevSignal->GetMessageValue (laserOffScale) != nextSignal->GetMessageValue (laserOffScale))
+						break;
 					
 					// Use CoreBioComponent::TestForOffScale (double time) to test for laser off-scale as part of decision
 
@@ -2430,8 +2432,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			probableIt.Reset ();
 			primeSignal->SetMessageValue (spike, true);
 
-			while (testSignal = (DataSignal*) probableIt ())
+			while (testSignal = (DataSignal*)probableIt ()) {
+
 				testSignal->SetMessageValue (spike, true);
+				testSignal->SetCouldBePullup (true);
+			}
 
 			probablePullupPeaks.Clear ();
 		}
@@ -2469,6 +2474,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					iChannel->AddDataSignal (testSignal);
 					primeSignal->AddCrossChannelSignalLink (testSignal);
 					testSignal->SetMessageValue (pullup, true);
+					testSignal->SetCouldBePullup (true);
 					testSignal->SetPrimarySignalFromChannel (primaryChannel, primeSignal, mNumberOfChannels);
 					mNumberOfPullups++;  // fix this...we need to count pull-up peaks, not pull-up pairs...already have counting message which will be accurate and don't do anything with this anyway
 				}
