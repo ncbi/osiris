@@ -2281,130 +2281,152 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		}
 	}
 
-	//else { // this is laser off scale test; get laser in scale max peak height
+	else { // this is laser off scale test; get laser in scale max peak height
 
-	//	maxLaserInScalePeak = mDataChannels [primaryChannel]->GetMaxInScalePeak ();
-	//	list<PullupPair*> tempPairList;
+		maxLaserInScalePeak = mDataChannels [primaryChannel]->GetMaxInScalePeak ();
+		list<PullupPair*> tempPairList;
 
-	//	while (!pairList.empty()) {
+		while (!pairList.empty()) {
 
-	//		nextPair = pairList.front();
+			nextPair = pairList.front();
 
-	//		primarySignal = nextPair->mPrimary;
-	//		secondarySignal = nextPair->mPullup;
+			primarySignal = nextPair->mPrimary;
+			secondarySignal = nextPair->mPullup;
 
-	//		iChannelPrimary = primarySignal->GetInterchannelLink ();
-	//		pairList.pop_front();
+			iChannelPrimary = primarySignal->GetInterchannelLink ();
+			pairList.pop_front();
 
-	//		if (primarySignal->Peak () > maxLaserInScalePeak) {
+			if (primarySignal->Peak () > maxLaserInScalePeak) {
 
-	//			tempPairList.push_back (nextPair);
-	//			continue;
-	//		}
+				tempPairList.push_back (nextPair);
+				continue;
+			}
 
-	//		delete nextPair;
+			if (!primarySignal->GetCouldBePullup ()) {
 
-	//		if (secondarySignal == NULL)
-	//			continue;
+				tempPairList.push_back (nextPair);
+				continue;
+			}
 
-	//		primarySignal->RemoveProbablePullup (secondarySignal);
+			if (mDataChannels [primaryChannel]->GetMaxAbsoluteRawDataInInterval (primarySignal->GetMean (), 3.0) > maxLaserInScalePeak) {
 
-	//		secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+				tempPairList.push_back (nextPair);
+				continue;
+			}
 
-	//		if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+			delete nextPair;
 
-	//			secondarySignal->SetMessageValue (pullup, false);
-	//			secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
-	//		}
+			if (secondarySignal == NULL)
+				continue;
 
-	//		if (iChannelPrimary == NULL) {
+			primarySignal->RemoveProbablePullup (secondarySignal);
 
-	//			primarySignal->SetMessageValue (primaryLink, false);
-	//			continue; // error??
-	//		}
+			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
 
-	//		iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
 
-	//		if (iChannelPrimary->IsEmpty ()) {
+				secondarySignal->SetMessageValue (pullup, false);
+				secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+			}
 
-	//			primarySignal->SetInterchannelLink (NULL);
-	//			primarySignal->SetMessageValue (primaryLink, false);
-	//			//delete iChannelPrimary;
-	//			tempLinkageList.push_back (iChannelPrimary);
-	//		}
-	//	}
+			if (iChannelPrimary == NULL) {
 
-	//	while (!tempLinkageList.empty ()) {
+				primarySignal->SetMessageValue (primaryLink, false);
+				continue; // error??
+			}
 
-	//		nextLink = tempLinkageList.front ();
-	//		tempLinkageList.pop_front ();
-	//		mInterchannelLinkageList.remove (nextLink);
-	//		delete nextLink;
-	//	}
+			iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
 
-	//	while (!tempPairList.empty ()) {
+			if (iChannelPrimary->IsEmpty ()) {
 
-	//		nextPair = tempPairList.front ();
-	//		tempPairList.pop_front ();
-	//		pairList.push_back (nextPair);
-	//	}
+				primarySignal->SetInterchannelLink (NULL);
+				primarySignal->SetMessageValue (primaryLink, false);
+				//delete iChannelPrimary;
+				tempLinkageList.push_back (iChannelPrimary);
+			}
+		}
 
-	//	for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
+		while (!tempLinkageList.empty ()) {
 
-	//		nextLink = *it;
-	//		primarySignal = nextLink->GetPrimarySignal ();
+			nextLink = tempLinkageList.front ();
+			tempLinkageList.pop_front ();
+			mInterchannelLinkageList.remove (nextLink);
+			delete nextLink;
+		}
 
-	//		if (primarySignal->GetChannel () != primaryChannel)
-	//			continue;
+		while (!tempPairList.empty ()) {
 
-	//		if (primarySignal->GetMessageValue (laserOffScale) != true)
-	//			continue;
+			nextPair = tempPairList.front ();
+			tempPairList.pop_front ();
+			pairList.push_back (nextPair);
+		}
 
-	//		if (primarySignal->Peak () > maxLaserInScalePeak) {
+		for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
 
-	//			continue;
-	//		}
+			nextLink = *it;
+			primarySignal = nextLink->GetPrimarySignal ();
 
-	//		InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
-	//		secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
+			if (primarySignal->GetChannel () != primaryChannel)
+				continue;
 
-	//		if (secondarySignal != NULL) {
+			if (primarySignal->GetMessageValue (laserOffScale) != true)
+				continue;
 
-	//			primarySignal->RemoveProbablePullup (secondarySignal);
-	//			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+			if (primarySignal->Peak () > maxLaserInScalePeak) {
 
-	//			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+				continue;
+			}
 
-	//				secondarySignal->SetMessageValue (pullup, false);
-	//			}
+			if (!primarySignal->GetCouldBePullup ()) {
 
-	//			if (iChannelPrimary != NULL) {
+				continue;
+			}
 
-	//				iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+			if (mDataChannels [primaryChannel]->GetMaxAbsoluteRawDataInInterval (primarySignal->GetMean (), 3.0) > maxLaserInScalePeak) {
 
-	//				if (iChannelPrimary->IsEmpty ()) {
+				continue;
+			}
 
-	//					primarySignal->SetMessageValue (primaryLink, false);
-	//					tempLinkageList.push_back (nextLink);
-	//					//delete iChannelPrimary;
-	//					//iChannelPrimary = NULL;
-	//					primarySignal->SetInterchannelLink (NULL);
-	//				}
-	//			}
+			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+			secondarySignal = nextLink->GetSecondarySignalOnChannel (pullupChannel);
 
-	//			else
-	//				primarySignal->SetMessageValue (primaryLink, false);
-	//		}
-	//	}
+			if (secondarySignal != NULL) {
 
-	//	while (!tempLinkageList.empty ()) {
+				primarySignal->RemoveProbablePullup (secondarySignal);
+				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
 
-	//		nextLink = tempLinkageList.front ();
-	//		tempLinkageList.pop_front ();
-	//		mInterchannelLinkageList.remove (nextLink);
-	//		delete nextLink;
-	//	}
-	//}
+				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+					secondarySignal->SetMessageValue (pullup, false);
+				}
+
+				if (iChannelPrimary != NULL) {
+
+					iChannelPrimary->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+					if (iChannelPrimary->IsEmpty ()) {
+
+						primarySignal->SetMessageValue (primaryLink, false);
+						tempLinkageList.push_back (nextLink);
+						//delete iChannelPrimary;
+						//iChannelPrimary = NULL;
+						primarySignal->SetInterchannelLink (NULL);
+					}
+				}
+
+				else
+					primarySignal->SetMessageValue (primaryLink, false);
+			}
+		}
+
+		while (!tempLinkageList.empty ()) {
+
+			nextLink = tempLinkageList.front ();
+			tempLinkageList.pop_front ();
+			mInterchannelLinkageList.remove (nextLink);
+			delete nextLink;
+		}
+	}
 
 	ignore.Clear ();
 //	RemovePrimaryLinksForChannelsSM (primaryChannel, pullupChannel, testLaserOffScale, ignore);
