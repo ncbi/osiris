@@ -148,8 +148,11 @@ my $VARLIST =
 
   ["XSLT saved parameter info"],
 
-  ["m_sLastXSLInputFileDir","wxString"]
+  ["m_sLastXSLInputFileDir","wxString"],
 
+  # misc
+  
+  ["m_bPrivacySeen", "bool"]
 
 ];
 

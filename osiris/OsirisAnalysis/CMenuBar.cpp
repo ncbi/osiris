@@ -68,6 +68,7 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   pMenuTools->Append(IDsiteShow,"Show site settings folder...");
   pMenuTools->Append(IDlog,"Message Log");
   pMenuHelp->Append(IDhelp,"&Documentation\tF1");
+  pMenuHelp->Append(IDprivacy, "&Privacy Notice...");
   pMenuHelp->Append(IDhelpContactUs,"&Contact Us...");
   pMenuHelp->Append(IDcheckForUpdates,"Check f&or Updates...");
   pMenuHelp->Append(wxID_ABOUT,"&About Osiris...");

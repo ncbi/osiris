@@ -1375,16 +1375,18 @@ double DataSignal :: GetPullupFromChannel (int i) const {
 
 double DataSignal :: GetTotalPullupFromOtherChannels (int numberOfChannels) const {
 
-	if (mPullupCorrectionArray == NULL)
-		return 0.0;
+	return GetTotalPullupFromOtherChannelsSM (numberOfChannels);
 
-	int i;
-	double total = 0.0;
+	//if (mPullupCorrectionArray == NULL)
+	//	return 0.0;
 
-	for (i=1; i<=numberOfChannels; i++)
-		total += GetPullupFromChannel (i);
+	//int i;
+	//double total = 0.0;
 
-	return total;
+	//for (i=1; i<=numberOfChannels; i++)
+	//	total += GetPullupFromChannel (i);
+
+	//return total;
 }
 
 
