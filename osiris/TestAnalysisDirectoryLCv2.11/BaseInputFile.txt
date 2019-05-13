@@ -1,18 +1,18 @@
-InputDirectory = C:/Users/goorrob/Mix05IDPullupIssue;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-9/Config;
+InputDirectory = C:/Users/goorrob/PullupTests/TestF01;
+LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-11/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = Identifiler;
-LaneStandardName = ABI-LIZ450;
+MarkerSetName = PowerPlex 16;
+LaneStandardName = Promega-ILS-500;
 CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20190429-153302/V-20190429-153302_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20190429-153302/V-20190429-153302_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-9/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 150.;
-MinLaneStandardRFU = 150.;
-MinLadderRFU = 150.;
-MinInterlocusRFU = 150.;
-MinLadderInterlocusRFU = 150.;
-SampleDetectionThreshold = 150.;
+StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20110414-162944/V-20110414-162944_StdSettings.xml;
+LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20110414-162944/V-20110414-162944_LabSettings.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12-Beta-11/Config/LadderSpecifications/MessageBook.xml;
+MinSampleRFU = 100.;
+MinLaneStandardRFU = 50.;
+MinLadderRFU = 100.;
+MinInterlocusRFU = 100.;
+MinLadderInterlocusRFU = 100.;
+SampleDetectionThreshold = 100.;
 RawDataString = R;
 
 
