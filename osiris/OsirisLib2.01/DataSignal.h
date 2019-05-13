@@ -861,6 +861,8 @@ public:
 	void SetAllowPeakEdit (bool allow) { mAllowPeakEdit = allow; }
 	void CapturePullupDataFromSM (DataSignal* prevSignal, DataSignal* nextSignal);
 
+	double GetTotalPullupFromOtherChannelsSM (int numberOfChannels) const;
+
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual RGString GetDebugIDIndent () const;
 

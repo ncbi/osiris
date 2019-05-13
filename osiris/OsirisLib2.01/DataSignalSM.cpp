@@ -796,6 +796,38 @@ void DataSignal :: CapturePullupDataFromSM (DataSignal* prevSignal, DataSignal* 
 }
 
 
+double DataSignal::GetTotalPullupFromOtherChannelsSM (int numberOfChannels) const {
+
+	smCalculatedPurePullup purePullup;
+	smPullUp partialPullup;
+	smPartialPullupBelowMinRFU partialPullupBelowMinRFU;
+
+	if (mPullupCorrectionArray == NULL)
+		return 0.0;
+
+	if (GetMessageValue (purePullup))
+		return Peak ();
+
+	bool isPullup = GetMessageValue (partialPullup) || GetMessageValue (partialPullupBelowMinRFU);
+
+	if (!isPullup)
+		return 0.0;
+
+	int i;
+	double total = 0.0;
+
+	for (i=1; i<=numberOfChannels; i++)
+		total += GetPullupFromChannel (i);
+
+	double p = Peak ();
+
+	if (total >= p)
+		return p;
+
+	return total;
+}
+
+
 void DataSignal :: OutputDebugID (SmartMessagingComm& comm, int numHigherObjects) {
 
 	int higherObjectIndex = numHigherObjects - 2;
@@ -832,10 +864,10 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
 
-	for (i=1; i<=nChannels; i++) {
+	if (IsNegativePeak ())
+		return;
 
-		if (IsNegativePeak ())
-			continue;
+	for (i=1; i<=nChannels; i++) {
 
 		primary = HasPrimarySignalFromChannel (i);
 
@@ -1759,270 +1791,272 @@ bool DataSignal :: IsPullupFromChannelsOtherThan (int primaryChannel, int number
 
 bool DataSignal :: SetPullupMessageDataSM (int numberOfChannels) {
 
-	if (!HasAnyPrimarySignals (numberOfChannels))
-		return false;
+	//if (!HasAnyPrimarySignals (numberOfChannels))
+	//	return false;
 
-	smPullUp pullup;
-	smCalculatedPurePullup purePullup;
-	smPartialPullupBelowMinRFU partialPullupBelowMin;
-	smSigmoidalPullup sigmoid;
+	//smPullUp pullup;
+	//smCalculatedPurePullup purePullup;
+	//smPartialPullupBelowMinRFU partialPullupBelowMin;
+	//smSigmoidalPullup sigmoid;
 
-	bool isPullup = GetMessageValue (pullup);
-	bool isPurePullup = GetMessageValue (purePullup);
-	bool isSigmoidal = GetMessageValue (sigmoid);
-	bool isPartialBelowMin = GetMessageValue (partialPullupBelowMin);
-	bool noPositiveCorrection = true;
-	bool noPositiveAndSigmoid;
-	int i;
-	DataSignal* primarySignal;
-	double primaryHeight;
-	double ratio;
-	int myChannel = GetChannel ();
-	bool addedRatio = false;
-	double totalNegative = 0.0;
-	double totalPositive = 0.0;
-	double totalPure = 0.0;
-	double totalPartial = 0.0;
-	double totalPurePrimaryHeights = 0.0;
-	double correctedHeight;
-	double peakCorrectedForNegative;
-	double pullupHeight;
-	bool atLeastOnePureIsNegative = false;
+	//bool isPullup = GetMessageValue (pullup);
+	//bool isPurePullup = GetMessageValue (purePullup);
+	//bool isSigmoidal = GetMessageValue (sigmoid);
+	//bool isPartialBelowMin = GetMessageValue (partialPullupBelowMin);
+	//bool noPositiveCorrection = true;
+	//bool noPositiveAndSigmoid;
+	//int i;
+	//DataSignal* primarySignal;
+	//double primaryHeight;
+	//double ratio;
+	//int myChannel = GetChannel ();
+	//bool addedRatio = false;
+	//double totalNegative = 0.0;
+	//double totalPositive = 0.0;
+	//double totalPure = 0.0;
+	//double totalPartial = 0.0;
+	//double totalPurePrimaryHeights = 0.0;
+	//double correctedHeight;
+	//double peakCorrectedForNegative;
+	//double pullupHeight;
+	//bool atLeastOnePureIsNegative = false;
 
-	if (isPurePullup) {
+	//if (isPurePullup) {
 
-		double secondaryHeight = Peak ();
-		double halfSecondaryHeight = 0.5 * secondaryHeight;
+	//	double secondaryHeight = Peak ();
+	//	double halfSecondaryHeight = 0.5 * secondaryHeight;
 
-		for (i=1; i<=numberOfChannels; i++) {
+	//	for (i=1; i<=numberOfChannels; i++) {
 
-			primarySignal = HasPrimarySignalFromChannel (i);
+	//		primarySignal = HasPrimarySignalFromChannel (i);
 
-			if (primarySignal != NULL) {
+	//		if (primarySignal != NULL) {
 
-				correctedHeight = GetPullupFromChannel (i);
+	//			correctedHeight = GetPullupFromChannel (i);
 
-				if (GetIsPurePullupFromChannel (i)) {
+	//			if (GetIsPurePullupFromChannel (i)) {
 
-					if (correctedHeight <= 0.0)
-						atLeastOnePureIsNegative = true;
+	//				if (correctedHeight <= 0.0)
+	//					atLeastOnePureIsNegative = true;
 
-					totalPure += correctedHeight;
-					totalPurePrimaryHeights += primarySignal->Peak ();
-				}
+	//				totalPure += correctedHeight;
+	//				totalPurePrimaryHeights += primarySignal->Peak ();
+	//			}
 
-				else
-					totalPartial += correctedHeight;
-			}
-		}
+	//			else
+	//				totalPartial += correctedHeight;
+	//		}
+	//	}
 
-		if (totalPartial > halfSecondaryHeight)
-			totalPartial = halfSecondaryHeight;
+	//	if (totalPartial > halfSecondaryHeight)
+	//		totalPartial = halfSecondaryHeight;
 
-		correctedHeight = secondaryHeight - totalPartial;
+	//	correctedHeight = secondaryHeight - totalPartial;
 
-		if (atLeastOnePureIsNegative) {
+	//	if (atLeastOnePureIsNegative) {
 
-			for (i=1; i<=numberOfChannels; i++) {
+	//		for (i=1; i<=numberOfChannels; i++) {
 
-				if (GetIsPurePullupFromChannel (i)) {
+	//			if (GetIsPurePullupFromChannel (i)) {
 
-					primarySignal = HasPrimarySignalFromChannel (i);
-					pullupHeight = correctedHeight * primarySignal->Peak () / totalPurePrimaryHeights;
-					SetPullupFromChannel (i, pullupHeight, numberOfChannels);
+	//				primarySignal = HasPrimarySignalFromChannel (i);
+	//				pullupHeight = correctedHeight * primarySignal->Peak () / totalPurePrimaryHeights;
+	//				SetPullupFromChannel (i, pullupHeight, numberOfChannels);
 
-					if (primarySignal != NULL) {
+	//				if (primarySignal != NULL) {
 
-						SetPullupRatio (i, 100.0 * pullupHeight / primarySignal->Peak (), numberOfChannels);
-						addedRatio = true;
-					}
+	//					SetPullupRatio (i, 100.0 * pullupHeight / primarySignal->Peak (), numberOfChannels);
+	//					addedRatio = true;
+	//				}
 
-					else {
-						// this can't happen!?
-						addedRatio = false;
-					}
-				}
-			}
-		}
+	//				else {
+	//					// this can't happen!?
+	//					addedRatio = false;
+	//				}
+	//			}
+	//		}
+	//	}
 
-		else if (totalPure > 0.0) {
+	//	else if (totalPure > 0.0) {
 
-			double alpha = correctedHeight / totalPure;
+	//		double alpha = correctedHeight / totalPure;
 
-			for (i=1; i<=numberOfChannels; i++) {
+	//		for (i=1; i<=numberOfChannels; i++) {
 
-				if (GetIsPurePullupFromChannel (i)) {
+	//			if (GetIsPurePullupFromChannel (i)) {
 
-					primarySignal = HasPrimarySignalFromChannel (i);
-					pullupHeight = alpha * GetPullupFromChannel (i);
-					SetPullupFromChannel (i, pullupHeight, numberOfChannels);
+	//				primarySignal = HasPrimarySignalFromChannel (i);
+	//				pullupHeight = alpha * GetPullupFromChannel (i);
+	//				SetPullupFromChannel (i, pullupHeight, numberOfChannels);
 
-					if (primarySignal != NULL) {
+	//				if (primarySignal != NULL) {
 
-						SetPullupRatio (i, 100.0 * pullupHeight / primarySignal->Peak (), numberOfChannels);
-						addedRatio = true;
-					}
+	//					SetPullupRatio (i, 100.0 * pullupHeight / primarySignal->Peak (), numberOfChannels);
+	//					addedRatio = true;
+	//				}
 
-					else {
-						// this can't happen!?
-						addedRatio = false;
-					}
-				}
-			}
-		}
+	//				else {
+	//					// this can't happen!?
+	//					addedRatio = false;
+	//				}
+	//			}
+	//		}
+	//	}
 
-		//else {  // totalPure is <= 0.0 so, now what?  Revert to previous algorithm
+	//	//else {  // totalPure is <= 0.0 so, now what?  Revert to previous algorithm
 
-		//}
-	}
+	//	//}
+	//}
 
-	else if (isSigmoidal) {
+	//else if (isSigmoidal) {
 
-		for (i=1; i<=numberOfChannels; i++) {
+	//	for (i=1; i<=numberOfChannels; i++) {
 
-			primarySignal = HasPrimarySignalFromChannel (i);
+	//		primarySignal = HasPrimarySignalFromChannel (i);
 
-			if (primarySignal != NULL) {
+	//		if (primarySignal != NULL) {
 
-				correctedHeight = GetPullupFromChannel (i);
+	//			correctedHeight = GetPullupFromChannel (i);
 
-				if (correctedHeight > 0.0) {
+	//			if (correctedHeight > 0.0) {
 
-					noPositiveCorrection = false;
-					break;
-				}
-			}
-		}
+	//				noPositiveCorrection = false;
+	//				break;
+	//			}
+	//		}
+	//	}
 
-		noPositiveAndSigmoid = noPositiveCorrection && isSigmoidal;
+	//	noPositiveAndSigmoid = noPositiveCorrection && isSigmoidal;
 
-		for (i=1; i<=numberOfChannels; i++) {
+	//	for (i=1; i<=numberOfChannels; i++) {
 
-			primarySignal = HasPrimarySignalFromChannel (i);
+	//		primarySignal = HasPrimarySignalFromChannel (i);
 
-			if (primarySignal != NULL) {
+	//		if (primarySignal != NULL) {
 
-				correctedHeight = GetPullupFromChannel (i);
+	//			correctedHeight = GetPullupFromChannel (i);
 
-				if (correctedHeight > 0.0) {
+	//			if (correctedHeight > 0.0) {
 
-					totalPositive += correctedHeight;
-					continue;
-				}
+	//				totalPositive += correctedHeight;
+	//				continue;
+	//			}
 
-				else if (correctedHeight < 0.0) {
+	//			else if (correctedHeight < 0.0) {
 
-					totalNegative += correctedHeight;
-				}
+	//				totalNegative += correctedHeight;
+	//			}
 
-				//else
-				//	cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
-			}
-		}
+	//			//else
+	//			//	cout << "Corrected height = 0 for pure pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+	//		}
+	//	}
 
-		if (noPositiveAndSigmoid && (totalNegative != 0.0)) {
+	//	if (noPositiveAndSigmoid && (totalNegative != 0.0)) {
 
-			for (i=1; i<=numberOfChannels; i++) {
+	//		for (i=1; i<=numberOfChannels; i++) {
 
-				primarySignal = HasPrimarySignalFromChannel (i);
+	//			primarySignal = HasPrimarySignalFromChannel (i);
 
-				if (primarySignal != NULL) {
+	//			if (primarySignal != NULL) {
 
-					correctedHeight = GetPullupFromChannel (i);
+	//				correctedHeight = GetPullupFromChannel (i);
 
-					if (correctedHeight < 0.0) {
+	//				if (correctedHeight < 0.0) {
 
-						primaryHeight = primarySignal->Peak ();
-						ratio = -100.0 * (correctedHeight / totalNegative) * (1.0 / primaryHeight);
-						SetPullupRatio (i, ratio, numberOfChannels);
-						SetPullupFromChannel (i, -(correctedHeight / totalNegative), DataSignal::NumberOfChannels);
-						addedRatio = true;
-					}
-				}
-			}
+	//					primaryHeight = primarySignal->Peak ();
+	//					ratio = -100.0 * (correctedHeight / totalNegative) * (1.0 / primaryHeight);
+	//					SetPullupRatio (i, ratio, numberOfChannels);
+	//					SetPullupFromChannel (i, -(correctedHeight / totalNegative), DataSignal::NumberOfChannels);
+	//					addedRatio = true;
+	//				}
+	//			}
+	//		}
 
-			return addedRatio;
-		}
+	//		return addedRatio;
+	//	}
 
-		else {
+	//	else {
 
-			for (i=1; i<=numberOfChannels; i++) {
+	//		for (i=1; i<=numberOfChannels; i++) {
 
-				primarySignal = HasPrimarySignalFromChannel (i);
+	//			primarySignal = HasPrimarySignalFromChannel (i);
 
-				if (primarySignal != NULL) {
+	//			if (primarySignal != NULL) {
 
-					correctedHeight = GetPullupFromChannel (i);
+	//				correctedHeight = GetPullupFromChannel (i);
 
-					if (correctedHeight < 0.0) {
+	//				if (correctedHeight < 0.0) {
 
-						primaryHeight = primarySignal->Peak ();
-						ratio = 100.0 * (correctedHeight / primaryHeight);
-						SetPullupRatio (i, ratio, numberOfChannels);
-						addedRatio = true;
-					}
-				}
-			}
-		}
+	//					primaryHeight = primarySignal->Peak ();
+	//					ratio = 100.0 * (correctedHeight / primaryHeight);
+	//					SetPullupRatio (i, ratio, numberOfChannels);
+	//					addedRatio = true;
+	//				}
+	//			}
+	//		}
+	//	}
 
-		peakCorrectedForNegative = Peak () - totalNegative;
-		
-		// Now do positive
+	//	peakCorrectedForNegative = Peak () - totalNegative;
+	//	
+	//	// Now do positive
 
-		if (totalPositive > 0.0) {
+	//	if (totalPositive > 0.0) {
 
-			for (i=1; i<=numberOfChannels; i++) {
+	//		for (i=1; i<=numberOfChannels; i++) {
 
-				primarySignal = HasPrimarySignalFromChannel (i);
+	//			primarySignal = HasPrimarySignalFromChannel (i);
 
-				if (primarySignal != NULL) {
+	//			if (primarySignal != NULL) {
 
-					correctedHeight = GetPullupFromChannel (i);
+	//				correctedHeight = GetPullupFromChannel (i);
 
-					if (correctedHeight > 0.0) {
+	//				if (correctedHeight > 0.0) {
 
-						primaryHeight = primarySignal->Peak ();
-						ratio = 100.0 * (correctedHeight / totalPositive) * (peakCorrectedForNegative / primaryHeight);
-						SetPullupRatio (i, ratio, numberOfChannels);
-						//mPullupCorrectionArray [i] = (correctedHeight / totalPositive) * peakCorrectedForNegative;
-						SetPullupFromChannel (i, (correctedHeight / totalPositive) * peakCorrectedForNegative, DataSignal::NumberOfChannels);
-						addedRatio = true;
-					}
-				}
-			}
-		}
-	}
+	//					primaryHeight = primarySignal->Peak ();
+	//					ratio = 100.0 * (correctedHeight / totalPositive) * (peakCorrectedForNegative / primaryHeight);
+	//					SetPullupRatio (i, ratio, numberOfChannels);
+	//					//mPullupCorrectionArray [i] = (correctedHeight / totalPositive) * peakCorrectedForNegative;
+	//					SetPullupFromChannel (i, (correctedHeight / totalPositive) * peakCorrectedForNegative, DataSignal::NumberOfChannels);
+	//					addedRatio = true;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
-	else if (isPullup || isPartialBelowMin) {
+	//else if (isPullup || isPartialBelowMin) {
 
-		for (i=1; i<=numberOfChannels; i++) {
+	//	for (i=1; i<=numberOfChannels; i++) {
 
-			if (i == myChannel)
-				continue;
+	//		if (i == myChannel)
+	//			continue;
 
-			primarySignal = HasPrimarySignalFromChannel (i);
+	//		primarySignal = HasPrimarySignalFromChannel (i);
 
-			if (primarySignal == NULL)
-				continue;
+	//		if (primarySignal == NULL)
+	//			continue;
 
-			if (PullupChannelIsUncertain (i))
-				continue;
+	//		if (PullupChannelIsUncertain (i))
+	//			continue;
 
-			if (GetPullupFromChannel (i) != 0.0) {
+	//		if (GetPullupFromChannel (i) != 0.0) {
 
-				primaryHeight = primarySignal->Peak ();  // Use corrected value?
-	//			ratio = 0.01 * floor (10000.0 * (GetPullupFromChannel (i) / primaryHeight) + 0.5);  // this is a percent
-				ratio = 100.0 * (GetPullupFromChannel (i) / primaryHeight);
-				SetPullupRatio (i, ratio, numberOfChannels);
-				addedRatio = true;
-			}
+	//			primaryHeight = primarySignal->Peak ();  // Use corrected value?
+	////			ratio = 0.01 * floor (10000.0 * (GetPullupFromChannel (i) / primaryHeight) + 0.5);  // this is a percent
+	//			ratio = 100.0 * (GetPullupFromChannel (i) / primaryHeight);
+	//			SetPullupRatio (i, ratio, numberOfChannels);
+	//			addedRatio = true;
+	//		}
 
-			//else
-			//	cout << "Corrected height = 0 for partial pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
-		}
-	}
+	//		//else
+	//		//	cout << "Corrected height = 0 for partial pullup peak on channel " << GetChannel () << " at time " << GetMean () << endl;
+	//	}
+	//}
 
-	return addedRatio;
+	//return addedRatio;
+
+	return true;
 }
 
 

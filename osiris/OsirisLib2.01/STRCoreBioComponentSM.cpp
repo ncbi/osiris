@@ -2195,6 +2195,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		if ((primaryHeight < primaryThreshold) || (nextSignal->IsNegativePeak ()))
 			continue;
 
+		if (primaryHeight < mDataChannels [nextSignal->GetChannel ()]->GetMinimumHeight ())
+			continue;
+
 		//if (nextSignal->GetMessageValue (laserOffScale)) {
 
 		//	channelMaxNonLaserOffScaleHeight = maxNonLaserOffScalePeak [primaryChannel];
@@ -2883,7 +2886,12 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 					// Remove (?) testSignal and testSignal2 from PreliminaryCurveList for appropriate channel and add noisySignal to same list and to CompleteList
 					nextChannel->InsertIntoCompleteCurveList (noisySignal);
-					nextChannel->InsertIntoPreliminaryCurveList (noisySignal);
+
+					double detectionLimit = nextChannel->GetDetectionThreshold ();
+
+					if (noisySignal->Peak () >= detectionLimit)
+						nextChannel->InsertIntoPreliminaryCurveList (noisySignal);
+
 					OverallList.InsertWithNoReferenceDuplication (noisySignal);
 					nextChannel->RemovePreliminaryCurveReference (testSignal);
 					nextChannel->RemovePreliminaryCurveReference (testSignal2);
