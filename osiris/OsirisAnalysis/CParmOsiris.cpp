@@ -153,6 +153,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   //  XSLT saved parameter info
 
   CP(m_sLastXSLInputFileDir);
+  CP(m_bPrivacySeen);
 
 
   // end generated copy
@@ -260,6 +261,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   //  XSLT saved parameter info
 
   CP(m_sLastXSLInputFileDir)
+  CP(m_bPrivacySeen)
 
 
   // end generated compare
@@ -376,6 +378,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   //  XSLT saved parameter info
 
   RegisterWxString("LastXSLInputFileDir", &m_sLastXSLInputFileDir);
+  RegisterBool("PrivacySeen", &m_bPrivacySeen);
 
 
   // end generated register
@@ -497,6 +500,7 @@ void CParmOsiris::SetDefaults()
   //  XSLT saved parameter info
 
   m_sLastXSLInputFileDir.Empty();
+  m_bPrivacySeen = false;
 
 
   // end generated defaults

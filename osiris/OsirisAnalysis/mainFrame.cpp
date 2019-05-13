@@ -359,6 +359,17 @@ bool mainFrame::Startup(bool bHasArgs)
   nwxFileUtil::SetDoNotSelectFile(parm->GetShowFileLocationDir());
   if(bRtn && !bHasArgs)
   {
+    if (!parm->GetPrivacySeen())
+    {
+      wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED, IDprivacy);
+      this->OnPrivacy(e);
+//#ifdef __WXMSW__
+//      GetEventHandler()->AddPendingEvent(e);
+//#else
+//      AddPendingEvent(e);
+//#endif
+
+    }
     if(parm->GetStartupMRU())
     {
       // send event to start up with the MRU window
@@ -1108,6 +1119,12 @@ void mainFrame::OnWindowMenu(wxCommandEvent &e)
 void mainFrame::OnAbout(wxCommandEvent &)
 {
   CDialogAbout x(DialogParent());
+  x.ShowModal();
+}
+void mainFrame::OnPrivacy(wxCommandEvent &)
+{
+  CParmOsiris::GetGlobal()->SetPrivacySeen(true);
+  CDialogPrivacy x(DialogParent());
   x.ShowModal();
 }
 void mainFrame::OnContactUs(wxCommandEvent &)

@@ -142,6 +142,7 @@ public:
   void OnEditGridColours(wxCommandEvent &);
   void OnTimer(wxTimerEvent &);
   void OnAbout(wxCommandEvent &);
+  void OnPrivacy(wxCommandEvent &);
   void OnCheckForUpdates(wxCommandEvent &);
   void OnHelp(wxCommandEvent &);
   void OnContactUs(wxCommandEvent &);

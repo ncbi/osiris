@@ -193,6 +193,7 @@ enum
   IDhelpContactUs,
   IDcheckForUpdates,
   IDhelp,
+  IDprivacy,
 
   // graphics window
   //  removed many button IDs and replaced with #define below
