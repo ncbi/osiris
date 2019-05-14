@@ -42,15 +42,13 @@
 
 // OS-1160 add privacy information
 
-#define TEXT_USERS_GUIDE "OSIRIS User's Guide"
-
 #define TEXT_PRIVACY \
 "OSIRIS is a desktop tool working on your computer with your own data.  " \
 "Your sample profile data is processed on your computer and is not sent over the internet.\n\n" \
 "For quality monitoring, OSIRIS sends some information about usage statistics back to NCBI.  " \
 "This information is limited to use of the tool, without any sample, " \
 "profile or batch data that would reveal the context of your analysis.\n\n" \
-"For more details and instructions on opting out, see Privacy Information section of the " TEXT_USERS_GUIDE "."
+"For more details and instructions on opting out, see the Privacy Information section of the OSIRIS User's Guide."
 
 const wxString CDialogAbout::g_sReadMe(
 "This software is a \"United States Government Work\" under terms "
@@ -141,13 +139,30 @@ CDialogPrivacy::CDialogPrivacy(wxWindow *parent) :
     wxString(TEXT_PRIVACY), wxDefaultPosition, wxSize(200, -1),
     wxTE_READONLY | wxTE_MULTILINE | wxTE_WORDWRAP));
   pSizer->Add(pReadMe, 1, wxEXPAND | wxALL, ID_BORDER);
-  pSizer->Add(CreateButtonSizer(wxOK), 0, wxBOTTOM | wxALIGN_CENTER, ID_BORDER);
+  wxSizer *pOKsizer = CreateButtonSizer(wxOK);
+  wxButton *pButtonUserGuide = new wxButton(this, IDhelp, "User's Guide");
+  wxBoxSizer *pSizerUserGuide = new wxBoxSizer(wxHORIZONTAL);
+  pSizerUserGuide->AddStretchSpacer(10);
+  pSizerUserGuide->Add(pButtonUserGuide, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT);
+  wxBoxSizer *pSizerBottom = new wxBoxSizer(wxHORIZONTAL);
+  pSizerBottom->AddStretchSpacer(1);
+  pSizerBottom->Add(pOKsizer, 0, wxALIGN_CENTER | wxALIGN_CENTER_VERTICAL);
+  pSizerBottom->Add(pSizerUserGuide, 1, wxEXPAND, 0);
+
+  pSizer->Add(pSizerBottom, 0, (wxALL ^ wxTOP) | wxEXPAND, ID_BORDER);
   SetSizer(pSizer);
   Layout();
   Centre();
 }
+
+void CDialogPrivacy::OnHelp(wxCommandEvent &e)
+{
+  mainApp::Get()->OnHelp(e);
+}
+
 IMPLEMENT_PERSISTENT_SIZE(CDialogPrivacy)
 
 BEGIN_EVENT_TABLE(CDialogPrivacy, wxDialog)
 EVT_PERSISTENT_SIZE(CDialogPrivacy)
+EVT_BUTTON(IDhelp, CDialogPrivacy::OnHelp)
 END_EVENT_TABLE()

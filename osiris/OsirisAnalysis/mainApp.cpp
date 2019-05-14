@@ -440,6 +440,7 @@ bool mainApp::SetPingerEnabled(bool bEnable)
 #ifndef __WXMSW__
         nwxFileUtil::SetFilePermissionFromDir(sPath);
 #endif
+        mainApp::Ping(PING_EVENT, "PingerDisabled");
         mainApp::_cleanupPinger(true);
       }
     }
@@ -709,11 +710,13 @@ void mainApp::OnQuit(wxCommandEvent &e)
   bSkip = m_pFrame->DoClose();
   if(bSkip)
   {
-    mainApp::PingExit();
 #if mainFrameIsWindow
+    m_pFrame->Hide();
+    mainApp::PingExit();
     bSkip = m_pFrame->Close();
     m_pFrame->Destroy();
 #else
+    mainApp::PingExit();
     m_pFrame->DeletePendingEvents();
     delete m_pFrame;
     m_pFrame = NULL;

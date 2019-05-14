@@ -59,6 +59,7 @@ class CDialogPrivacy : public wxDialog
 {
 public:
   CDialogPrivacy(wxWindow *parent);
+  void OnHelp(wxCommandEvent &);
   DECLARE_ABSTRACT_CLASS(CDialogPrivacy)
   DECLARE_PERSISTENT_SIZE
   DECLARE_EVENT_TABLE()
