@@ -4,6 +4,7 @@
 #
 use strict 'vars';
 use GetVersion;
+use File::Path qw(remove_tree);
 #
 #  this script builds the Osiris for Windows zip distribution
 #  or the macintosh tar.gz distribution
@@ -268,9 +269,9 @@ sub CheckSignMac()
   {
     return undef;
   }
-  if(! -d $PATH)
+  if(! (-d $PATH || -f $PATH))
   {
-    print STDERR "Application path, ${PATH}, is not a directory",$NOSIGN;
+    print STDERR "Application path, ${PATH}, is not found",$NOSIGN;
     return undef;
   }
   if(!length($SIG))
@@ -312,12 +313,26 @@ sub SignAppMac()
 }
 sub SignAppMacFiles()
 {
+
+  sub _signOneFile
+  {
+    my ($SIG,$line) = @_;
+    my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
+    print "\nSigning ${line}\n${cmd}\n";
+    my $n = system($cmd);
+    $n && print("FAILED to sign ${line}");
+    $n;
+  }
   my $PATH=shift;
   my $SIG=$ENV{SIGNATURE};
   my $rtn = undef;
   if(!&CheckSignMac($PATH,$SIG))
   {}
-  elsif(!open(FIN,"find \"${PATH}\"|"))
+  elsif(-f $PATH && ! -d $PATH)
+  {
+    $rtn = !&_signOneFile($SIG,$PATH);
+  }
+  elsif(!open(FIN,"find \"${PATH}\" -type f -print|"))
   {
     print "Cannot run find command on ${PATH}";
   }
@@ -328,9 +343,8 @@ sub SignAppMacFiles()
     while($line = <FIN>)
     {
       chomp $line;
-      my $SIG=$ENV{SIGNATURE};
-      my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
-      $nRtn = system($cmd);
+      (-f $line) &&
+        ($nRtn = &_signOneFile($SIG,$line));
       last if $nRtn;
     }
     close FIN;
@@ -348,10 +362,8 @@ sub CopyMac
   length($dir) && (chdir($dir) || die("Cannot chdir ${dir}"));
 
   my $TOP = $MAC_TOP_DIR;
-  if (! -d $TOP)
-  {
-    &MKDIR($TOP);
-  }
+  ((-d $TOP) ? remove_tree($TOP) : 1) || die("Cannot rmdir ${TOP}");
+  &MKDIR($TOP);
   my $SYSTEM_FOLDER_NAME = "System Applications Folder";
   my $USER_FOLDER_NAME = "User Applications Folder";
 
@@ -421,14 +433,16 @@ sub CopyMac
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   &COPYFILES($src,$DEST,$TOP);
-  for my $folder
-    (
-     $APPDIR,
-     $APP_SYS_FOLDER,
-     $APP_USER_FOLDER
-    )
+  for my $x (glob("{$TOP}/*"))
   {
-    &SignAppMac($folder) || last;
+    if($x =~ m/\.app$/i)
+    {
+      &SignAppMac($x);
+    }
+    else
+    {
+      &SignAppMacFiles($x);
+    }
   }
   system("./makedmg.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"") ||
     system("./maketar.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"");
