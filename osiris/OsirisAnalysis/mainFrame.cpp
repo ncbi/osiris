@@ -1075,7 +1075,7 @@ void mainFrame::OnCheckForUpdates(wxCommandEvent &)
 {
   wxString sVersion = OSIRIS_VERS;
   wxString sURL(
-    "https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/version.cgi?OS="
+    "https://www.ncbi.nlm.nih.gov/osiris/version/?OS="
     OSIRIS_OS "&V=");
   wxString sTime;
   wxDateTime t;
