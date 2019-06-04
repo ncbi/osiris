@@ -402,7 +402,6 @@
     <ClCompile Include="CPlotData.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
-    <ClCompile Include="CSiteKitNoLadder.cpp" />
     <ClCompile Include="CSitePath.cpp" />
     <ClCompile Include="CSiteSettings.cpp" />
     <ClCompile Include="CSplitterCellHistory.cpp" />
@@ -450,7 +449,6 @@
     <ClInclude Include="CDialogPromptNewerFile.h" />
     <ClInclude Include="CDialogReallyQuit.h" />
     <ClInclude Include="CDialogShowLabSettings.h" />
-    <ClInclude Include="CDialogSiteKitNoLadder.h" />
     <ClInclude Include="CDialogSitePath.h" />
     <ClInclude Include="CDialogToggleEnabled.h" />
     <ClInclude Include="CDialogVolumes.h" />
@@ -558,7 +556,6 @@
     <ClInclude Include="CPlotData.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
-    <ClInclude Include="CSiteKitNoLadder.h" />
     <ClInclude Include="CSitePath.h" />
     <ClInclude Include="CSiteSettings.h" />
     <ClInclude Include="CSplitterCellHistory.h" />
