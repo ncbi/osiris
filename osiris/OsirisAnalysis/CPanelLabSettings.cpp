@@ -906,13 +906,9 @@ void CPanelLabSettings::OnPageChange(wxNotebookEvent &)
   }
   if(nPage == m_nLocusThresholds)
   {
-    //  STOP HERE
-    //  the method to obtain dye name
-    //  will be changed when the ILS family wxChoice is implemented
     if(UpdateILSDyeName())
     {
       Layout();
-//      Fit();
     }
   }
   m_pbBack->Enable(bBack);

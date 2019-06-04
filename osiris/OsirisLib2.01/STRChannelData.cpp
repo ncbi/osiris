@@ -1631,7 +1631,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		if (thisPeak > finalMaxPeak)
 			finalMaxPeak = thisPeak;
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1818,7 +1818,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 	msg.StartLine (1, "Fits", TRUE);
 	msg.StartLine (2, "2AryContent", TRUE);
 	msg.StartLine (3, "Means", TRUE);
-	msg.StartLine (4, "Sigmas", TRUE);
+	msg.StartLine (4, "Widths", TRUE);
 	msg.StartLine (5, "Peaks", TRUE);
 
 	for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -2416,7 +2416,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannel (RGTextOutput& text
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -2481,7 +2481,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannel (RGTextOutput& text
 	msg.StartLine (1, "Fits", TRUE);
 	msg.StartLine (2, "2AryContent", TRUE);
 	msg.StartLine (3, "Means", TRUE);
-	msg.StartLine (4, "Sigmas", TRUE);
+	msg.StartLine (4, "Widths", TRUE);
 	msg.StartLine (5, "Peaks", TRUE);
 
 	for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -3237,7 +3237,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursively (RGTextO
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -3296,7 +3296,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursively (RGTextO
 	msg.StartLine (1, "Fits", TRUE);
 	msg.StartLine (2, "2AryContent", TRUE);
 	msg.StartLine (3, "Means", TRUE);
-	msg.StartLine (4, "Sigmas", TRUE);
+	msg.StartLine (4, "Widths", TRUE);
 	msg.StartLine (5, "Peaks", TRUE);
 
 	for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -3902,7 +3902,7 @@ double STRLaneStandardChannelData :: GetMeasurementRatio () const {
 
 int STRLaneStandardChannelData :: WriteBaselineData (RGTextOutput& text, const RGString& delim, const RGString& indent) {
 
-	int Size = mLaneStandard->GetNumberOfCharacteristics ();
+	/*int Size = mLaneStandard->GetNumberOfCharacteristics ();
 	int NSamples = mData->GetNumberOfSamples ();
 	const double* actualArray;
 	mLaneStandard->GetCharacteristicArray (actualArray);
@@ -3926,7 +3926,7 @@ int STRLaneStandardChannelData :: WriteBaselineData (RGTextOutput& text, const R
 
 	text << (int)floor (100.0 * bpOfT [saveSamples] + 0.5);
 	text << "</baselinePoints>" << endLine;
-	delete[] bpOfT;
+	delete[] bpOfT;*/
 	return 1;
 }
 

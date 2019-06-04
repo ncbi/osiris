@@ -41,6 +41,14 @@
 using namespace std;
 
 
+int LadderInputFile::PanelsNumberOfLinesSkipped = 4;
+int LadderInputFile::ColorColumn = 2;
+int LadderInputFile::RepeatSizeColumn = 6;
+int LadderInputFile::AlleleListColumn = 8;
+RGString LadderInputFile::AlleleListDelineation = ",";
+RGString LadderInputFile::ColumnDelineation = "\t";
+RGString LadderInputFile::BinsDelineation = "\t";
+
 
 
 LadderInputFile :: LadderInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mNumberOfDyes (0), mYLinkedDefault (false),
@@ -353,6 +361,33 @@ int LadderInputFile :: ReadLine () {
 }
 
 
+int LadderInputFile :: ReadFirstLine () {
+
+	int status = ReadLine ();
+
+	if (status != 0) {
+
+		cout << "***ERROR***  Incorrect first line." << endl;
+		return -1;
+	}
+
+	if (mStringLeft != "LadderOperation") {
+
+		cout << "***ERROR***  First line must begin with 'LadderOperation = '" << endl;
+		return -2;
+	}
+
+	if (mStringRight == "New")
+		return 0;
+
+	if (mStringRight == "Amend")
+		return 1;
+
+	cout << "***ERROR***  First liine must end with either 'New' or 'Amend'." << endl;
+	return -2;
+}
+
+
 int LadderInputFile :: AssignString () {
 
 	int status = -1;
@@ -487,7 +522,16 @@ int LadderInputFile :: AssignString () {
 		newString = new RGString (mStringRight);
 		
 		mILSNames.Append (newString);
-		Locus::SetILSName (mStringRight);
+//		Locus::SetILSName (mStringRight);  // ????  Nope...this is for ILS families only
+		status = 0;
+	}
+
+	else if (mStringLeft == "ILSFamilyName") {
+
+		mILSFamilyName = mStringRight;
+		Locus::SetILSFamilyName (mStringRight);  // Yes!  For ILS families
+		newString = new RGString(mStringRight);
+		mILSNames.Append(newString);
 		status = 0;
 	}
 
@@ -547,7 +591,7 @@ int LadderInputFile :: AssignString () {
 	else if (mStringLeft == "StdControl") {
 
 		if ((mStringRight == "DNA007") || (mStringRight == "9947A") || (mStringRight == "9948") ||
-			(mStringRight == "K562") || (mStringRight == "2800M")) {
+			(mStringRight == "K562") || (mStringRight == "2800M") || (mStringRight == "MK1")) {
 
 				mStandardPositiveControlName = mStringRight;
 				status = 0;
@@ -621,6 +665,76 @@ int LadderInputFile :: AssignString () {
 		status = 0;
 	}
 
+	else if (mStringLeft == "NumberOfPanelsLinesSkipped") {
+
+		int n = mStringRight.ConvertToInteger ();
+		LadderInputFile::SetNumberOfPanelsLinesSkipped (n);
+		status = 0;
+	}
+
+	else if (mStringLeft == "ColorColumn") {
+
+		int n = mStringRight.ConvertToInteger ();
+		LadderInputFile::SetColorColumn (n);
+		status = 0;
+	}
+
+	else if (mStringLeft == "RepeatSizeColumn") {
+
+		int n = mStringRight.ConvertToInteger ();
+		LadderInputFile::SetRepeatSizeColumn (n);
+		status = 0;
+	}
+
+	else if (mStringLeft == "AlleleListColumn") {
+
+		int n = mStringRight.ConvertToInteger ();
+		LadderInputFile::SetAlleleListColumn (n);
+		status = 0;
+	}
+
+	else if (mStringLeft == "AlleleListDelineation") {
+
+		mStringRight.FindAndReplaceAllSubstrings (" ", "");
+
+		if (mStringRight == "tab")
+			LadderInputFile::SetAlleleListDelineation ("\t");
+
+		else
+			LadderInputFile::SetAlleleListDelineation (mStringRight);
+
+		//cout << "Allele List Delineation = " << (char*)mStringRight.GetData () << endl;
+		status = 0;
+	}
+
+	else if (mStringLeft == "ColumnDelineation") {
+
+		mStringRight.FindAndReplaceAllSubstrings (" ", "");
+
+		if (mStringRight == "tab")
+			LadderInputFile::SetColumnDelineation ("\t");
+
+		else
+			LadderInputFile::SetColumnDelineation (mStringRight);
+
+		//cout << "Column Delineation = " << (char*)mStringRight.GetData () << endl;
+		status = 0;
+	}
+
+	else if (mStringLeft == "BinsDelineation") {
+
+		mStringRight.FindAndReplaceAllSubstrings (" ", "");
+
+		if (mStringRight == "tab")
+			LadderInputFile::SetBinsDelineation ("\t");
+
+		else
+			LadderInputFile::SetBinsDelineation (mStringRight);
+		
+		//cout << "Bins line Delineation = " << (char*)mStringRight.GetData () << endl;
+		status = 0;
+	}
+
 	else {
 
 		// parse mStringLeft looking for Dye #
@@ -676,7 +790,7 @@ int LadderInputFile :: AssignString () {
 int LadderInputFile :: AssignStringAppend () {
 
 	int status = -1;
-	RGString* newString;
+//	RGString* newString;
 
 	if (mStringLeft == "LadderFileName") {
 
@@ -706,11 +820,23 @@ int LadderInputFile :: AssignStringAppend () {
 		status = 0;
 	}
 
-	else if (mStringLeft == "ILSName") {
+	else if (mStringLeft == "ILSFamilyName") {
 
-		newString = new RGString (mStringRight);
-		
-		mILSNames.Append (newString);
+		mILSFamilyName = mStringRight;
+		Locus::SetILSFamilyName (mStringRight);
+		status = 0;
+	}
+
+	else if (mStringLeft == "BinsDelineation") {
+
+		mStringRight.FindAndReplaceAllSubstrings (" ", "");
+
+		if (mStringRight == "tab")
+			LadderInputFile::SetBinsDelineation ("\t");
+
+		else
+			LadderInputFile::SetBinsDelineation (mStringRight);
+
 		status = 0;
 	}
 
@@ -824,6 +950,12 @@ int LadderInputFile :: AssembleInputs () {
 		status = -1;
 	}
 
+	if ((mVersion.ConvertToDouble () > 2.69) && (mILSFamilyName.Length () == 0)) {
+
+		cout << "No ILS Family Name specified for Version 2.7" << endl;
+		status = -1;
+	}
+
 	if ((mILSNames.Entries () > 1) && mGenerateILSFamilies) {
 
 		cout << "More than one ILS family name specified" << endl;
@@ -862,17 +994,17 @@ int LadderInputFile :: AssembleInputsAppend () {
 		status = -1;
 	}
 
-	if (mILSNames.Entries () == 0) {
+	if (mILSFamilyName.Length () == 0) {
 
-		cout << "No ILS names specified" << endl;
+		cout << "No ILS family name specified" << endl;
 		status = -1;
 	}
 
-	if ((mILSNames.Entries () > 1) && mGenerateILSFamilies) {
+	//if ((mILSNames.Entries () > 1) && mGenerateILSFamilies) {
 
-		cout << "More than one ILS family name specified" << endl;
-		status = -1;
-	}
+	//	cout << "More than one ILS family name specified" << endl;
+	//	status = -1;
+	//}
 
 	return status;
 }

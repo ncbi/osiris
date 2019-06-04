@@ -21,6 +21,16 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 
@@ -142,7 +152,8 @@ enum
 enum
 {
   _junk = wxID_HIGHEST,
-  IDprocess,
+  IDprocess,   // analysis
+  IDpingerProcess, //pinger
   IDanalyze,
   IDopenPlot,
   IDopenBatch,
@@ -150,6 +161,7 @@ enum
   IDpreview,
   IDlab,
   IDartifactLabels,
+  IDpinger,
   IDexport,
   IDsiteSettings,
   IDsiteShow,
@@ -191,6 +203,7 @@ enum
   IDhelpContactUs,
   IDcheckForUpdates,
   IDhelp,
+  IDprivacy,
 
   // graphics window
   //  removed many button IDs and replaced with #define below
@@ -246,7 +259,7 @@ enum
   IDmenuDisableMultiple,
   IDmenuDeleteDisabled,
   IDmenuDisplayGraph,
-  IDmenuDisplaySample, // Temporary sample window trigger STOP HERE
+  IDmenuDisplaySample,
 
   IDmenuTogglePreview,
   IDmenuReAnalyze,

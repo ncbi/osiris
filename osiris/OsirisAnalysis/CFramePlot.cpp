@@ -21,6 +21,16 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 *
@@ -387,7 +397,7 @@ void CFramePlotMenu::UpdateLabels()
 }
 
 //**************************************************** CFramePlot
-
+#define PING_WINDOW_TYPE "FramePlot"
 
 void CFramePlot::_SetupTitle()
 {
@@ -419,6 +429,7 @@ void CFramePlot::_SetupTitle()
 
 CFramePlot::~CFramePlot()
 {
+  mainApp::Ping2(PING_EVENT, PING_WINDOW_CLOSE PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   _CleanupMenuHistoryPopup();
   _CleanupMenuPopup();
   delete m_pData;
@@ -471,6 +482,10 @@ CFramePlot::CFramePlot(
     m_bXBPS(false)
 {
   CBatchPlot BATCH(this);
+  mainApp::Ping3(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE,
+    PING_WINDOW_NUMBER, GetFrameNumber(),
+    "NoOAR", (pFile == NULL) ? "true" : "false"
+    );
   m_pPanel = new wxScrolledWindow(this,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxVSCROLL);
   {
     CParmOsirisGlobal parm;
@@ -534,6 +549,12 @@ void CFramePlot::ReInitialize(const wxString &sLocus, bool bSingle)
     if(!sLocus.IsEmpty())
     {
       nChannel = m_pData->GetChannelFromLocus(sLocus);
+      if( (!nChannel) && (m_pOARfile != NULL) )
+      {
+        // OS-966, plt file may not have locus to channel nr
+        // especially if it is a no-ladder analysis
+        nChannel = m_pOARfile->GetChannelNrFromLocus(sLocus);
+      }
     }
     if(nChannel > 0)
     {
@@ -552,7 +573,14 @@ void CFramePlot::ReInitialize(const wxString &sLocus, bool bSingle)
     ZoomToLocus(sLocus,0);
     if( (m_nState == FP_VARIABLE_MANY_PLOTS) && (!sLocus.IsEmpty()) )
     {
-      nScroll = m_pData->GetChannelFromLocus(sLocus) - 1;
+      nChannel = m_pData->GetChannelFromLocus(sLocus);
+      if( (!nChannel) && (m_pOARfile != NULL) )
+      {
+        // OS-966 - for ladder free, the .plt file may not have channel 
+        // number from locus
+        nChannel = m_pOARfile->GetChannelNrFromLocus(sLocus);
+      }
+      nScroll = int(nChannel) - 1;
     }
   }
   SetFocusPlot(nScroll);
@@ -1273,8 +1301,8 @@ void CFramePlot::_RebuildMenu()
       ? NULL : (CPanelPlot *)(pItem->GetWindow());
     if(pCheck != NULL)
     {
-      wxMenuItem *pItem = pCheck->GetMenuItem(m_pMenu);
-      m_pMenu->AddPlot(pItem);
+      wxMenuItem *pItem2 = pCheck->GetMenuItem(m_pMenu);
+      m_pMenu->AddPlot(pItem2);
     }
   }
 }
@@ -1516,7 +1544,7 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
       pPlot = *itr;
       if( (pPlot != p) && pPlot->SyncValue())
       {
-        TnwxBatch<CPanelPlot> xxx(pPlot);
+        TnwxBatch<CPanelPlot> xxx2(pPlot);
         pPlot->SetViewRect(r);
         bRtn = true;
       }

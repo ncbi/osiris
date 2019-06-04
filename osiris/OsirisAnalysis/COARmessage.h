@@ -356,8 +356,8 @@ public:
     const COARmessage *pRtn(GetMessage(n));
     if(pTime != NULL)
     {
-      int n = pRtn->GetMessageNumber();
-      pRtn = GetMessageByNumber(n,pTime);
+      int nn = pRtn->GetMessageNumber();
+      pRtn = GetMessageByNumber(nn,pTime);
     }
     return pRtn;
   }

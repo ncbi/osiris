@@ -84,6 +84,10 @@ CPanelPlot *CPanelPlotPreview::SetFileLocus(
     TnwxBatch<CPanelPlot> batch(pRtn);
     CPlotData *pData = pRtn->GetPlotData();
     unsigned int nChannel = pData->GetChannelFromLocus(sLocus);
+    if( (!nChannel) && (m_pOARfile != NULL) )
+    {
+      nChannel = m_pOARfile->GetChannelNrFromLocus(sLocus);
+    }
     if(nChannel)
     {
       pRtn->ShowOneChannel(nChannel);

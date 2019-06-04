@@ -216,6 +216,8 @@ public:
 	bool PullupTestedMatrix (int i, int j);
 	double LinearPullupCoefficient (int i, int j);
 	double QuadraticPullupCoefficient (int i, int j);
+	double LinearInScalePullupCoefficient (int i, int j);
+	double QuadraticInScalePullupCoefficient (int i, int j);
 
 	double MaxLinearPullupCoefficient () const { return mQC.mMaxLinearPullupCoefficient; }
 	double MaxNonlinearPullupCoefficient () const { return mQC.mMaxNonlinearPullupCoefficient; }
@@ -410,6 +412,8 @@ public:
 	virtual int FitNonLaneStandardCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int FitNonLaneStandardNegativeCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, CoordinateTransform* timeMap);
+	virtual int AssignSampleCharacteristicsToLociSMLF ();
+	virtual int TestForNearlyDuplicateAllelesSMLF ();
 
 	virtual int AnalyzeLaneStandardChannelSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int AssignCharacteristicsToLociSM ();
@@ -420,13 +424,20 @@ public:
 	virtual int AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksSM ();
 	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList*** notPrimaryLists);
 	virtual bool CollectDataAndComputeCrossChannelEffectForChannelsSM (int primaryChannel, int pullupChannel, RGDList* primaryChannelPeaks, double& linearPart, double& quadraticPart, bool testLaserOffScale, bool testNegativePUOnly);
+	virtual int EstimateMinimumPrimaryPullupHeightSM (int primaryChannel, int pullupChannel, double& estimatedMinHeight, list<PullupPair*>& pairList, double pullupChannelNoise);
+	virtual int FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (int primaryChannel, int pullupChannel, double primaryThreshold, list<PullupPair*>& pairList, RGDList& noPullupPrimaries, RGDList& rawDataPullupPrimaries, RGDList& occludedPrimaries);
 	virtual bool NegatePullupForChannelsSM (int primaryChannel, int pullupChannel, list<PullupPair*>& pairList, bool testLaserOffScale);
 	virtual DataSignal** CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals);
 	virtual bool AcknowledgePullupPeaksWhenThereIsNoPatternSM (int primaryChannel, int secondaryChannel, bool testLaserOffScale);
+	virtual bool RemovePrimaryLinksForChannelsSM (int primaryChannel, int pullupChannel, bool testLaserOffScale, RGDList& peakList);
+	virtual bool ScavengePullupFromOtherChannelListLaserInScale ();
+	virtual bool ScavengePullupFromOtherChannelListLaserOffScale ();
 
 	virtual int OrganizeNoticeObjectsSM ();
 	virtual int TestSignalsForLaserOffScaleSM ();
 	virtual int PreTestSignalsForLaserOffScaleSM ();
+
+	virtual int TestAllFractionalFiltersSMLF ();
 
 	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
 
@@ -450,6 +461,7 @@ public:
 
 	virtual int ResolveAmbiguousInterlocusSignalsSM ();
 	virtual int SampleQualityTestSM (GenotypesForAMarkerSet* genotypes);
+	virtual int SampleQualityTestSMLF ();
 	virtual int SignalQualityTestSM ();
 	virtual bool IsLabPositiveControl (const RGString& name, GenotypesForAMarkerSet* genotypes);
 	virtual int TestPositiveControlSM (GenotypesForAMarkerSet* genotypes);
@@ -457,7 +469,9 @@ public:
 	virtual int GridQualityTestSMPart2 (SmartMessagingComm& comm, int numHigherObjects);
 	virtual int FilterSmartNoticesBelowMinBioID ();
 	virtual int RemoveAllSignalsOutsideLaneStandardSM ();
+	virtual int RemoveAllSignalsOutsideLaneStandardSMLF();
 	virtual int PreliminarySampleAnalysisSM (RGDList& gridList, SampleDataStruct* sampleData);
+	virtual int PreliminarySampleAnalysisSMLF ();
 	virtual int MeasureAllInterlocusSignalAttributesSM ();
 	virtual int ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();
 	virtual int RemoveInterlocusSignalsSM ();
@@ -556,6 +570,9 @@ protected:
 	double** mQuadraticPullupMatrix;
 	double** mLeastMedianValue;
 	double** mOutlierThreshold;
+	double** mLinearInScalePullupMatrix;
+	double** mQuadraticInScalePullupMatrix;
+	double** mMinimumInScalePrimaryPeak;
 
 	CSplineTransform* mTimeMap;
 
@@ -583,6 +600,7 @@ protected:
 
 
 	RGDList mChannelList;
+	RGDList mPullupFromAnotherChannel;
 
 	//************************************************************************************************************************************
 	//************************************************************************************************************************************

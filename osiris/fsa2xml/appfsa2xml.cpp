@@ -23,8 +23,8 @@ using namespace std;
 
 static void Pause()
 {
-	char s[128];
-	gets(s);
+	char s[2048];
+  fgets(s, sizeof(s) - 1, stdin);
 }
 int _tmain(int argc, _TCHAR* argv[])
 {

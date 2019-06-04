@@ -4,6 +4,7 @@
 #
 use strict 'vars';
 use GetVersion;
+use File::Path qw(remove_tree);
 #
 #  this script builds the Osiris for Windows zip distribution
 #  or the macintosh tar.gz distribution
@@ -20,7 +21,7 @@ my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
 
 my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
-my $PATH7Z = "7z";  ## if 7z.exe is not in the path, set the full DOS path here
+my $PATH7Z = 'c:\\Progra~1\\7-Zip\\7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
 
 
 sub MKDIR
@@ -103,6 +104,8 @@ sub COPYFILES
   for my $sdir (qw/
     CANNABIS
     Cofiler
+    CORDIS_PLUS
+    CORDIS_PLUS_HID
     GF
     GFHID
     GFHID_Mixture
@@ -209,11 +212,13 @@ sub GetVCDir
     ($ok == 0) && ($DRIVE = $sDrive) && last;
   }
   $DRIVE || die("Cannot find mingw or cygwin c drive");
-  my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC"; 
+  #my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio 10.0/VC"; 
+  my $p = "${DRIVE}/Program Files (x86)/Microsoft Visual Studio/2017/Professional/VC/Redist/MSVC/14.16.27012/x86/Microsoft.VC141.CRT";
   system("test -d \"$p\"") && die("Cannot find MS Visual Studio (${p})");
-  my $DLLPATH= "${p}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
-  system("test -d \"$DLLPATH\"") && die("Cannot find MS runtime");
-  $DLLPATH;
+  $p;
+#  my $DLLPATH= "${p}/redist/${PLAT}/Microsoft.VC100.CRT";  ## cygwin
+#  system("test -d \"$DLLPATH\"") && die("Cannot find MS runtime");
+#  $DLLPATH;
 }
 
 sub CopyWin
@@ -235,8 +240,7 @@ sub CopyWin
   if ($COPYDLL)
   {
     my $DLLPATH = &GetVCDir();
-    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcp100.dll\" ${dest}") && die();
-    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/msvcr100.dll\" ${dest}") && die();
+    &SYSTEM("cp -uv --preserve=mode,timestamps \"${DLLPATH}/\"*.dll ${dest}") && die();
   }
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
@@ -244,6 +248,7 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
+  &SYSTEM("${CP} ${src}/nwx/pinger.vbs ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
   my $zipFile = "${dest}-Windows.exe";
@@ -264,9 +269,9 @@ sub CheckSignMac()
   {
     return undef;
   }
-  if(! -d $PATH)
+  if(! (-d $PATH || -f $PATH))
   {
-    print STDERR "Application path, ${PATH}, is not a directory",$NOSIGN;
+    print STDERR "Application path, ${PATH}, is not found",$NOSIGN;
     return undef;
   }
   if(!length($SIG))
@@ -308,12 +313,26 @@ sub SignAppMac()
 }
 sub SignAppMacFiles()
 {
+
+  sub _signOneFile
+  {
+    my ($SIG,$line) = @_;
+    my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
+    print "\nSigning ${line}\n${cmd}\n";
+    my $n = system($cmd);
+    $n && print("FAILED to sign ${line}");
+    $n;
+  }
   my $PATH=shift;
   my $SIG=$ENV{SIGNATURE};
   my $rtn = undef;
   if(!&CheckSignMac($PATH,$SIG))
   {}
-  elsif(!open(FIN,"find \"${PATH}\"|"))
+  elsif(-f $PATH && ! -d $PATH)
+  {
+    $rtn = !&_signOneFile($SIG,$PATH);
+  }
+  elsif(!open(FIN,"find \"${PATH}\" -type f -print|"))
   {
     print "Cannot run find command on ${PATH}";
   }
@@ -324,9 +343,8 @@ sub SignAppMacFiles()
     while($line = <FIN>)
     {
       chomp $line;
-      my $SIG=$ENV{SIGNATURE};
-      my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
-      $nRtn = system($cmd);
+      (-f $line) &&
+        ($nRtn = &_signOneFile($SIG,$line));
       last if $nRtn;
     }
     close FIN;
@@ -344,10 +362,8 @@ sub CopyMac
   length($dir) && (chdir($dir) || die("Cannot chdir ${dir}"));
 
   my $TOP = $MAC_TOP_DIR;
-  if (! -d $TOP)
-  {
-    &MKDIR($TOP);
-  }
+  ((-d $TOP) ? remove_tree($TOP) : 1) || die("Cannot rmdir ${TOP}");
+  &MKDIR($TOP);
   my $SYSTEM_FOLDER_NAME = "System Applications Folder";
   my $USER_FOLDER_NAME = "User Applications Folder";
 
@@ -393,6 +409,7 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Info.plist ${CONTENTS}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/PkgInfo ${CONTENTS}");
 
+  &SYSTEM("${CP} ${src}/nwx/pinger.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
@@ -416,14 +433,16 @@ sub CopyMac
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   &COPYFILES($src,$DEST,$TOP);
-  for my $folder
-    (
-     $APPDIR,
-     $APP_SYS_FOLDER,
-     $APP_USER_FOLDER
-    )
+  for my $x (glob("{$TOP}/*"))
   {
-    &SignAppMac($folder) || last;
+    if($x =~ m/\.app$/i)
+    {
+      &SignAppMac($x);
+    }
+    else
+    {
+      &SignAppMacFiles($x);
+    }
   }
   system("./makedmg.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"") ||
     system("./maketar.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"");

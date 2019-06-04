@@ -107,7 +107,7 @@ CPanelSampleAlertNotebook::CPanelSampleAlertNotebook(
 
   if(bShowOne)
   {
-    for(int i = 0; i < SA_WINDOW_COUNT; bTabs[i++] = false) {}
+    for(i = 0; i < SA_WINDOW_COUNT; bTabs[i++] = false) {}
     switch(nSelect)
     {
     case SA_NDX_DIR:
@@ -136,7 +136,7 @@ CPanelSampleAlertNotebook::CPanelSampleAlertNotebook(
   else
   {
     bool bEnabled = pSample->IsEnabled();
-    for(int i = 0; i < SA_WINDOW_COUNT; bTabs[i++] = bEnabled) {}
+    for(i = 0; i < SA_WINDOW_COUNT; bTabs[i++] = bEnabled) {}
     bTabs[SA_NDX_DIR] = true;
   }
 

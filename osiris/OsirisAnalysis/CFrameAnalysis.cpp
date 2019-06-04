@@ -21,6 +21,16 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 
@@ -97,6 +107,7 @@
 DEFINE_EVENT_TYPE(CEventRepaint)
 DEFINE_EVENT_TYPE(CEventRestoreScroll)
 
+#define PING_WINDOW_TYPE "FrameAnalysis"
 
 #define LINE_SPACER "\n    "
 
@@ -110,6 +121,7 @@ CFrameAnalysis::~CFrameAnalysis()
 {
   _SetPreviewMenu(NULL);
   _CleanupCMF();
+  mainApp::Ping2(PING_EVENT, PING_WINDOW_CLOSE PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
 }
 
 CFrameAnalysis::CFrameAnalysis(
@@ -185,6 +197,7 @@ void CFrameAnalysis::_Build()
   int nDisplayName;
   bool bShowPreview = false;
 
+  mainApp::Ping2(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   m_pParent->InsertWindow(this,m_pOARfile);
   m_pButtonEdit = NULL;
   m_pComboCellType = NULL;
@@ -1567,7 +1580,7 @@ void CFrameAnalysis::_OnDeleteDisabled()
   if(m_pOARfile->GetDisabledSamples(&vps,false))
   {
     int nLabelTypeName = m_pComboName->GetSelection();
-    std::vector<const wxString> vsNames;
+    std::vector<wxString> vsNames;
     std::vector<const COARsample *>::const_iterator itr;
     vsNames.reserve(vps.size());
     if(nLabelTypeName == IDmenuDisplayNameSample)
@@ -1592,7 +1605,6 @@ void CFrameAnalysis::_OnDeleteDisabled()
     {
       wxString sPath;
       CMDIFrame *pFrame;
-      std::vector<const COARsample *>::iterator itr;
       for(itr = vps.begin();
         itr != vps.end();
         ++itr)
@@ -1870,7 +1882,6 @@ void CFrameAnalysis::_UpdatePreview()
     else
     {
       wxString s;
-      int nRow;
       int nCol = _GetPreviewColumn();
       if(nCol == ILS_COLUMN)
       {
@@ -1915,8 +1926,7 @@ void CFrameAnalysis::_UpdatePreview()
       else if(_IsLocusColumn(nCol))
       {
         s = _GetLocusFromColumn(nCol);
-        m_pPanelPlotPreview->SetFileLocus(
-          sFileName,s,false);
+        m_pPanelPlotPreview->SetFileLocus(sFileName,s,false);
 
       }
       else // if( (nCol < 0) || _IsControlColumn(nCol) )
@@ -2002,6 +2012,22 @@ wxString CFrameAnalysis::_GetLocusFromColumn(int nCol)
     }
   }
   return sLocus;
+}
+int CFrameAnalysis::_GetChannelFromColumn(int nCol)
+{
+  int nRtn = 0;
+  if (_XmlFile())
+  {
+    if (nCol < 0)
+    {
+      nCol = m_pGrid->GetGridCursorCol();
+    }
+    if (_IsLocusColumn(nCol))
+    {
+      nRtn = m_pOARfile->GetChannelNr(nCol - FIRST_LOCUS_COLUMN);
+    }
+  }
+  return nRtn;
 }
 wxString CFrameAnalysis::_GetGraphicFileName(int nRow,bool bMessage)
 {
@@ -2373,6 +2399,8 @@ bool CFrameAnalysis::SaveFile()
           CheckSaveStatus();
           m_pParent->UpdateHistory(m_pOARfile);
           SetupTitle();
+          mainApp::Ping2(PING_EVENT, "SaveFile",
+            PING_WINDOW_NUMBER, GetFrameNumber());
         }
         // destroy wxBusyCursor here by enclosing in {}
       }
@@ -2384,6 +2412,11 @@ bool CFrameAnalysis::SaveFile()
     if(bCanSaveAs && !bRtn)
     {
       bRtn = SaveFileAs();
+    }
+    if (!bRtn)
+    {
+      mainApp::Ping3(PING_EVENT, "SaveFile", PING_ERROR, "1",
+        PING_WINDOW_NUMBER, GetFrameNumber());
     }
   }
   return bRtn;
@@ -2408,7 +2441,8 @@ bool CFrameAnalysis::SaveFileAs()
     wxString sOldName = m_pOARfile->GetFileName();
     wxString sFileName = sOldName;
     wxString sFilePath;
-    if(m_pOARfile->IsOAR())
+    bool bOAR = m_pOARfile->IsOAR();
+    if(bOAR)
     {
       // change .oar file to a .oer file
       sFileName = nwxFileUtil::SetupFileName(sFileName,EXT_REPORT_EDITED);
@@ -2447,10 +2481,16 @@ bool CFrameAnalysis::SaveFileAs()
           m_pParent->UpdateHistory(m_pOARfile);
           m_pMenu->UpdateHistory();
           SetupTitle();
+          mainApp::Ping3(PING_EVENT, "SaveFileAs",
+            PING_WINDOW_NUMBER, GetFrameNumber(),
+            "from", bOAR ? "FromOAR" : "FromOER");
         }
         else
         {
           ShowFileSaveError(sFileName);
+          mainApp::Ping3(PING_EVENT, "SaveFileAs",
+            PING_WINDOW_NUMBER, GetFrameNumber(),
+            PING_ERROR, "1");
         }
       }
     }
@@ -3341,7 +3381,7 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
     sTitle.Alloc(sExportType.Len() + 12);
     sTitle = "Export ";
     sTitle.Append(sExportType);
-    bool bOK = false;
+    bOK = false;
     bool bCancel = false;
     wxFileDialog dlg(
       this,sTitle,fnDefaultFile.GetPath(),fnDefaultFile.GetFullName(),
@@ -3355,8 +3395,8 @@ void CFrameAnalysis::OnUserExport(wxCommandEvent &e)
         this,pExport,fn.GetFullPath(),sFile, &bCancel);
       if(bOK)
       {
-        wxFileName fn(sFile);
-        parm->SetLastExportDirectory(fn.GetPath());
+        wxFileName fn1(sFile);
+        parm->SetLastExportDirectory(fn1.GetPath());
       }
       else if(!bCancel)
       {
@@ -3437,7 +3477,7 @@ void CFrameAnalysis::OnArchiveCreate(wxCommandEvent &)
         {
           //  save archive here
           wxString sFile = dlg.GetPath();
-          bool bOK = false;
+          bOK = false;
           {
             wxBusyCursor x;
             bOK = orz.WriteArchive(sFile,bIncludeInput);

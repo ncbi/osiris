@@ -400,6 +400,10 @@ public:
   {
     return m_sLastXSLInputFileDir;
   }
+  bool GetPrivacySeen() const
+  {
+    return m_bPrivacySeen;
+  }
 
 
   // end generated Get
@@ -792,6 +796,10 @@ public:
   {
     __SET_VALUE(m_sLastXSLInputFileDir,s);
   }
+  void SetPrivacySeen(bool b)
+  {
+    __SET_VALUE(m_bPrivacySeen,b);
+  }
 
 
   // end set
@@ -1019,6 +1027,7 @@ protected:
   //  XSLT saved parameter info
 
   wxString m_sLastXSLInputFileDir;
+  bool m_bPrivacySeen;
 
 
   // end generated variables

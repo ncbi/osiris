@@ -11,6 +11,7 @@
         <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
         <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
@@ -706,6 +707,45 @@
         <AltSpacing>y = 0.032506118144x4 - 0.386981298385x3 + 0.585520326155x2 + 0.769056224485x + 0.000002331201</AltSpacing>
       </LaneStandard>
     </ILS>
+    <ILS>
+		<ILSName>S450</ILSName>
+		<DyeName>ORANGE</DyeName>
+		<LaneStandard>
+			<Name>S450_60_450</Name>
+			<DisplayName>60-450</DisplayName>
+			<Characteristics>60 70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>S450_70_450</Name>
+			<DisplayName>70-450</DisplayName>
+			<Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>S450_80_450</Name>
+			<DisplayName>80-450</DisplayName>
+			<Characteristics>80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>S450_80_400</Name>
+			<DisplayName>80-400</DisplayName>
+			<Characteristics>80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+		<LaneStandard>
+			<Name>S450_70_400</Name>
+			<DisplayName>70-400</DisplayName>
+			<Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400</Characteristics>
+			<CorrelationAcceptanceThreshold>0.98</CorrelationAcceptanceThreshold>
+			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
+		</LaneStandard>
+	</ILS>
   </LaneStandards>
   <Kits>
     <Set>

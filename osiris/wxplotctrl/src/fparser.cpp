@@ -73,7 +73,7 @@ double logoneplusx(double x)
                         (0.1811136267967+y*0.16948212488))))));
     }
 }
-
+#ifdef NO_ASINH
 double asinh(double x)
 {
     if (fabs(x) > 1.0E10)
@@ -106,6 +106,7 @@ double atanh(double x)
     }
 }
 
+#endif
 #endif
 
 

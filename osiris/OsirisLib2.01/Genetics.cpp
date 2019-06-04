@@ -1653,7 +1653,7 @@ int Locus :: AnalyzeGridLocus (RGDList& artifactList, RGDList& originalList, RGD
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1687,7 +1687,7 @@ int Locus :: AnalyzeGridLocus (RGDList& artifactList, RGDList& originalList, RGD
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -1912,6 +1912,44 @@ Boolean Locus :: ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLo
 
 		else if (haveFoundSignals)
 			break;
+	}
+
+	return TRUE;
+}
+
+
+Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
+
+	double ilsBP;
+	DataSignal* nextSignal;
+	RGDListIterator it (channelSignalList);
+	LocusSignalList.Clear ();
+	FinalSignalList.Clear ();
+	mSmartList.Clear ();
+	bool haveFoundSignals = false;
+	RGString alleleName;
+	int oldResolution = RGString::GetDoubleResolution ();
+	double minBP = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
+	cout << "Min BP for calling artifacts = " << minBP << "\n";
+
+	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+
+	while (nextSignal = (DataSignal*) it()) {
+
+		ilsBP = nextSignal->GetApproximateBioID ();
+
+		if (ilsBP < minBP)
+			continue;
+
+		LocusSignalList.Append (nextSignal);
+		mSmartList.Append (nextSignal);
+		nextSignal->SetLocus ((Locus*)this, 0);
+		alleleName = nextSignal->CalculateAlleleNameFromILSBP_LF ();
+		nextSignal->SetAlleleName (alleleName);
+		nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
+
+		it.RemoveCurrentItem ();
+		haveFoundSignals = true;
 	}
 
 	return TRUE;
@@ -3085,7 +3123,7 @@ int Locus :: TestSampleNeighbors (RGDList& previousList, DataSignal* testSignal,
 
 int Locus :: TestSampleAverages (ChannelData* lsData, DataSignal* testSignal, Boolean testRatio) {
 
-	double Width = testSignal->GetStandardDeviation ();
+	double Width = testSignal->GetWidth ();
 	double peak = testSignal->Peak ();
 	double mean = testSignal->GetMean ();
 	Notice* newNotice;
@@ -5364,7 +5402,6 @@ double Locus :: GetLocusSpecificLadderPullupFractionalFilter () const {
 	else
 		return -1.0;
 }
-
 
 
 int Locus :: CompareTo (const RGPersistent* p) const {
@@ -9183,7 +9220,8 @@ Boolean PopulationMarkerSet :: BuildLocusList (const RGString& xmlString) {
 			validity = FALSE;
 			ErrorString << baseLocus->GetError ();
 			ErrorString << "Could not parse base locus input for Marker Set named " << mLink->GetMarkerSetName () << "\n";
-//			cout << "Base locus invalid...name:  " << baseLocus->GetLocusName () << endl;
+			//cout << "Base locus invalid...name:  " << baseLocus->GetLocusName () << endl;
+			//cout << (char*)ErrorString.GetData () << endl;
 		}
 
 		locus = new Locus (baseLocus, LocusString);
@@ -9193,8 +9231,12 @@ Boolean PopulationMarkerSet :: BuildLocusList (const RGString& xmlString) {
 			validity = FALSE;
 			ErrorString << locus->GetErrorString ();
 			ErrorString << "Could not parse locus input for Marker Set named " << mLink->GetMarkerSetName () << "\n";
-//			cout << ErrorString << "    Name:  " << locus->GetLocusName () << endl;
+			//cout << ErrorString << "    Name:  " << locus->GetLocusName () << endl;
+			//cout << (char*)ErrorString.GetData () << endl;
 		}
+
+		if (!validity)
+			cout << (char*)LocusString.GetData () << endl;
 
 		LocusListByName.Insert (locus);
 		LocusList.Append (locus);

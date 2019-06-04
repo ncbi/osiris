@@ -163,7 +163,6 @@ wxString CDialogExportSetup::GetSearchDir(
 wxString CDialogExportSetup::PromptSearchDir(
   wxWindow *parent, const wxString &s1, const wxString &s2)
 {
-//  CParmOsirisGlobal parm;  STOP HERE
   wxString sSearch = GetSearchDir(true,s1,s2);
   wxString sRtn;
   wxDirDialog dlg(

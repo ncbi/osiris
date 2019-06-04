@@ -69,6 +69,13 @@ public:
 
 class COARfile : public nwxXmlPersist
 {
+private:
+  typedef enum
+  {
+    LADDER_FREE_NOT_SET = -1,
+    LADDER_FREE_FALSE = 0,
+    LADDER_FREE_TRUE = 1
+  } LADDER_FREE_STATUS;
 public:
   COARfile() : 
     m_DirReviews(true),
@@ -86,6 +93,7 @@ public:
     m_bSetupInputPath = false;
     m_bCheckVersion = true;
     m_pOsirisVersion = NULL;
+    m_nLadderFree = LADDER_FREE_NOT_SET;
     RegisterAll(true);
   }
   COARfile(const COARfile &x) :
@@ -253,6 +261,7 @@ public:
   size_t GetDisabledSamples(
     std::vector<const COARsample *> *pv, 
     bool bIncludeNonSamples = true) const;
+  bool IsLadderFree() const;
   void SetLastSampleDisabled(const COARsample *pSample) const
   {
     m_pLastSampleDisabled = pSample;
@@ -330,7 +339,19 @@ public:
   int GetChannelNr(size_t n) const
   {
     _BuildLocusMap();
-    return m_vnChannelNr.at(n);
+    return (n < m_vnChannelNr.size()) ? m_vnChannelNr.at(n) : 0;
+  }
+  unsigned int GetChannelNrFromLocus(const wxString &sLocus) const
+  {
+    // OS-966, plt file may not be able to get channel number 
+    //  from locus
+    unsigned int nRtn = 0;
+    const COARchannel *pChan = GetChannelFromLocus(sLocus);
+    if (pChan != NULL)
+    {
+      nRtn = (unsigned int)pChan->GetChannelNr();
+    }
+    return nRtn;
   }
   size_t GetChannelCount() const
   {
@@ -368,6 +389,7 @@ public:
     m_mapInputPath.clear();
     m_sInputType.Empty();
     m_bSetupInputPath = false;
+    m_nLadderFree = LADDER_FREE_NOT_SET;
     _ClearLocusInfo();
     _ClearMessageBook();
   }
@@ -756,6 +778,7 @@ private:
   mutable vector<int> m_vnChannelNr; //**
   mutable const COARsample *m_pLastSampleDisabled; //**
   mutable COsirisVersion *m_pOsirisVersion;
+  mutable LADDER_FREE_STATUS m_nLadderFree;
   bool m_bModified; //**
   bool m_bCheckedMsgBook; //**
   mutable bool m_bSetupInputPath;

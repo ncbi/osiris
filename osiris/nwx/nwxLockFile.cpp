@@ -213,6 +213,7 @@ time_t nwxLockFile::GetAge(const wxString &sLockFileName, time_t tNow)
   }
   return tRtn;
 }
+#if 0
 time_t nwxLockFile::AccessAge(const wxString &sFileName, time_t tNow)
 {
   if(!tNow)
@@ -237,6 +238,7 @@ time_t nwxLockFile::AccessAge(const wxString &sFileName, time_t tNow)
   }
   return tRtn;
 }
+#endif
 bool nwxLockFile::HasLock(const wxString &sFileName)
 {
   wxString sFileLockName = GetLockFileName(sFileName);

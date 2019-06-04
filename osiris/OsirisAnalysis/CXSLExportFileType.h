@@ -1020,7 +1020,6 @@ public:
   bool LoadExportFile();
   bool SaveExportFile();
   bool LockExportFile(int nWait = 0);
-  static bool FileExists();
   static const wxString &GetFileName()
   {
     return g_sFileName;
@@ -1101,6 +1100,7 @@ private:
       CExportFiles::CleanupGlobal();
     }
   };
+  static bool _FileExists();
   static void _SetupFileName();
   int m_nBatch;
   static wxString g_sFileName;

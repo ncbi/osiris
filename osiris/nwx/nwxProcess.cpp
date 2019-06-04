@@ -23,7 +23,6 @@
 *
 * ===========================================================================
 *
-
 *  FileName: nwxProcess.cpp
 *  Author:   Douglas Hoffman
 *  Date:  3/8/2018 moved from ../OsirisAnalysis/CProcess.cpp
@@ -112,6 +111,45 @@ void nwxProcess::Cancel()
   }
 }
 
+size_t nwxProcess::WriteToProcess(const char *pBuffer, size_t _nLen)
+{
+  wxOutputStream *pOut = GetOutputStream();
+  wxASSERT_MSG(pOut != NULL, "Cannot get output stream for process");
+  size_t nRtn = 0;
+  if (pOut != NULL)
+  {
+    const char *pChar = pBuffer;
+    size_t nLen = _nLen;
+    size_t n;
+    while (nLen > 0)
+    {
+      n = pOut->Write((void *)pChar, nLen).LastWrite();
+      if(n)
+      {
+        nRtn += n;
+        pChar += n;
+        nLen -= n;
+      }
+      else if (!pOut->IsOk())
+      {
+        nLen = 0;
+        Cancel();
+      }
+    }
+  }
+  return nRtn;
+}
+
+size_t nwxProcess::WriteToProcess(const std::vector<wxString> &vs)
+{
+  std::vector<wxString>::const_iterator itr;
+  size_t nRtn = 0;
+  for (itr = vs.begin(); itr != vs.end(); ++itr)
+  {
+    nRtn += WriteToProcess(*itr);
+  }
+  return nRtn;
+}
 
 void nwxProcess::OnTerminate(int nPID,int nStatus)
 {
@@ -129,6 +167,8 @@ void nwxProcess::OnTerminate(int nPID,int nStatus)
     m_nPID = 0;
   }
 }
+
+
 
 size_t nwxProcess::ProcessIO(size_t nLimit)
 {

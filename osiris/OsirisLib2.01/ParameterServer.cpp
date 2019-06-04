@@ -175,7 +175,7 @@ locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct (
 
 		pThreshold = (RGPDouble*) limits.mNegativeNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
+		if ((pThreshold != NULL) && (!pThreshold->IsNullElement ()))
 			SetNonStandardStutterThreshold (-i, pThreshold->GetDouble ());
 	}
 
@@ -185,7 +185,7 @@ locusSpecificNonStandardStutterStruct :: locusSpecificNonStandardStutterStruct (
 
 		pThreshold = (RGPDouble*) limits.mPositiveNonStandardStutter.GetElementAt (i);
 
-		if (pThreshold != NULL)
+		if ((pThreshold != NULL) && (!pThreshold->IsNullElement ()))
 			SetNonStandardStutterThreshold (i, pThreshold->GetDouble ());
 	}
 }
@@ -511,6 +511,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		Locus::SetHeterozygousImbalanceLimit (limit);
 		Locus::SetMinBoundForHomozygote (nonRFULimits.minBoundForHomozygote);
 		CoreBioComponent::SetMinBioIDForArtifacts (nonRFULimits.minBPSForArtifacts);
+		cout << "Min BP as read from Lab Settings = " << nonRFULimits.minBPSForArtifacts << "\n";
 
 		//
 		//  Reformat XMLString a little and save into mLabSettingsString

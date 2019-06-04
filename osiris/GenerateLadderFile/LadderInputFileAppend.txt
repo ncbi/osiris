@@ -1,7 +1,9 @@
-LadderFileName = PPGenePrint24_LadderInfo.xml;
-LadderDirectory = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\GenePrint24ConfigFiles\WenPop7V2Bins;
-BinsFileName = GenePrint_24_POP7_Bins_v1.0.txt;
-OutputConfigPath = C:\Users\goorrob\Documents\GitHub\osiris\OsirisXML\LadderSpecifications;
-ILSName = PROMEGA-ILS-WEN-Pop7-V2-500;
+LadderOperation = Amend;
+LadderFileName = Q_Investigator24plex_LadderInfo.test.xml;
+LadderDirectory = C:\Users\goorrob\Desktop\Qiagen24PlexConfigFiles\StandardBinsAndPanels;
+BinsFileName = Investigator24plexBins.txt;
+OutputConfigPath = C:\Users\goorrob\Desktop\Qiagen24PlexConfigFiles;
+ILSFamilyName = RAPID-CXR-600;
+BinsDelineation = tab;
 ;
 

@@ -28,7 +28,7 @@
 *
 */
 #include "CILSLadderInfo.h"
-
+#include <wx/arrstr.h>
 
 CILSLadderInfo::CILSLadderInfo(bool bLoad) : 
   nwxXmlPersist(true),
@@ -117,4 +117,21 @@ const wxString &CILSLadderInfo::FindLSname
   const wxString &sRtn = (itr == m_mapDisplayToName.end())
     ? mainApp::EMPTY_STRING : itr->second;
   return sRtn;
+}
+
+void CILSLadderInfo::BuildAll_ILSarray(wxArrayString *ps) const
+{
+  std::map<const wxString, const wxString &>::const_iterator itr;
+  ps->Empty();
+  if (!m_mapNameToDisplay.size())
+  {
+    _BuildNameToDisplay();
+  }
+  ps->Alloc(m_mapNameToDisplay.size());
+  for (itr = m_mapNameToDisplay.begin();
+    itr != m_mapNameToDisplay.end();
+    ++itr)
+  {
+    ps->Add(itr->first);
+  }
 }

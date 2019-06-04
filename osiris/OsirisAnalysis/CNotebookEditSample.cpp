@@ -144,7 +144,6 @@ CNotebookEditSample::CNotebookEditSample(
 //  vnExpand.reserve(nChannelCount);
   for(k = 1; k <= nChannelCount; ++k)
   {
-    // STOP HERE pChanel->GetChannelName() returns nothing
     pCC = pSingleKit->GetColorChannel(k);
     pColour = pCC->GetColorAnalyzedPtr();
     wxString sDyeName = pCC->GetDyeName();
@@ -453,7 +452,6 @@ void CNotebookEditSample::OnChanging(wxBookCtrlEvent &e)
 }
 void CNotebookEditSample::RepaintData()
 {
-  // STOP HERE - need to implement
   TransferDataToWindow();
 }
 
@@ -505,7 +503,7 @@ void CNotebookEditSample::SelectLocus(const wxString &sLocus)
   {
     size_t i = SA_WINDOW_COUNT;
     size_t BIG = 100000;
-    for(std::vector<const wxString>::iterator itr = m_asLocus.begin();
+    for(std::vector<wxString>::iterator itr = m_asLocus.begin();
       (itr != m_asLocus.end()) && (i < BIG);
       ++itr)
     {

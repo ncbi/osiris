@@ -32,7 +32,7 @@
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
 #include "ConfigDir.h"
-
+class wxArrayString;
 // v2.7 CILSfamily and CILSname.  Load ILS 'family' names with LS names
 class CILSname : public nwxXmlPersist
 {
@@ -311,6 +311,7 @@ public:
   }
   const wxString &FindDisplayName(const wxString &sLSname) const;
   const wxString &FindLSname(const wxString &sDisplayName) const;
+  void BuildAll_ILSarray(wxArrayString *ps) const;
 
 #ifdef __WXDEBUG__
   virtual bool LoadFromNode(wxXmlNode *p, void *pObj)

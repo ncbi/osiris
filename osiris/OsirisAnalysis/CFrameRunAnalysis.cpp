@@ -21,6 +21,16 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 *  FileName: CFrameRunAnalysis.cpp
@@ -49,8 +59,8 @@
 #include "NeedsAttnOAR.h"
 #include "CMenuBar.h"
 
-
 #define WINDOW_TYPE wxT("Analysis")
+#define PING_WINDOW_TYPE "FrameRunAnalysis"
 
 CFrameRunAnalysis::CFrameRunAnalysis(
     mainFrame *parent, 
@@ -81,9 +91,10 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_bOK(false),
   m_nNext(0)
 {
+  // called from mainFrame::ReAnalyzeSamples
   wxString sTitle = "Running Analysis";
   m_DirList.SetParmOsirisAndTraverse(m_parmOsiris,m_volume.GetDataFileType());
-  _BuildWindow(sTitle,sz);
+  _BuildWindow(sTitle,sz, "ReAnalyzeSamples");
 }
 CFrameRunAnalysis::CFrameRunAnalysis(
     CFrameRunAnalysis *pPrev, 
@@ -113,6 +124,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_bOK(false),
   m_nNext(0)
 {
+  // called from mainFrame::ReAnalyze
   wxString sTitle = "Running Analysis";
   CDirList &DirListPrev(pPrev->m_DirList);
   wxString sOldOutputDir(DirListPrev.GetDirOutput());
@@ -147,7 +159,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
       }
     }
   }
-  _BuildWindow(sTitle,pPrev->GetSize());
+  _BuildWindow(sTitle,pPrev->GetSize(), "ReAnalyzeBatch");
 }
 
 CFrameRunAnalysis::CFrameRunAnalysis(
@@ -176,6 +188,7 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_bOK(false),
   m_nNext(0)
 {
+  // called from mainFrame::OpenBatchFile
   wxString sTitle;
   if(m_DirList.LoadFile(sFileName))
   {
@@ -201,9 +214,10 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   }
   else
   {
+    mainApp::Ping2(PING_EVENT, PING_WINDOW_OPEN "failed-" PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
     sTitle = "ERROR";
   }
-  _BuildWindow(sTitle,sz);
+  _BuildWindow(sTitle,sz, "OpenBatchFile");
 }
 
 CFrameRunAnalysis::CFrameRunAnalysis(
@@ -233,11 +247,11 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_bOK(false),
   m_nNext(0)
 {
-  wxString sTitle;
-  sTitle = "Running Analysis";
+  // called from mainFrame::OnAnalyze
+  wxString sTitle("New Analysis");
   m_DirList.SetParmOsirisAndTraverse(m_parmOsiris,CDirList::FILE_ANY);
   //m_DirList.Traverse();
-  _BuildWindow(sTitle,sz);
+  _BuildWindow(sTitle,sz, "NewAnalysis");
 }
 
 wxString CFrameRunAnalysis::GetFileName()
@@ -250,8 +264,11 @@ int CFrameRunAnalysis::GetType()
   return FRAME_RUN;
 }
 
-void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
+void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz, const char *psType)
 {
+  mainApp::Ping3(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE,
+    PING_WINDOW_NUMBER, GetFrameNumber(),
+    "WindowType", psType);
   wxString sLabelElapsed("n/a");
   wxPanel *pPanel(new wxPanel(this));
   {
@@ -357,6 +374,7 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz)
 
 CFrameRunAnalysis::~CFrameRunAnalysis()
 {
+  mainApp::Ping2(PING_EVENT, PING_WINDOW_CLOSE PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
   Cleanup();
 }
 
@@ -565,12 +583,14 @@ void CFrameRunAnalysis::OnTimer(wxTimerEvent &)
       }
       CDirEntry *pEntry = m_pAnalysis->GetDirEntry();
       long ndx = pEntry->GetIndex();
+      int nExit = m_pAnalysis->GetExitStatus();
       CDirEntryStatus nStatus =
-        m_pAnalysis->GetExitStatus()
+        nExit
         ? DIRENTRY_ERROR
         : DIRENTRY_DONE;
       wxString sStatus;
       bool bOpenOne = false;
+      mainApp::Ping2(PING_EVENT, "AnalysisDone", "return", nwxString::FormatNumber(nExit));
       if(pEntry->GetStatus() == DIRENTRY_RUNNING)
       {
         // process ended and the user did NOT cancel;
@@ -873,6 +893,7 @@ void CFrameRunAnalysis::DoCancel(bool bCancelAll)
       int n = d.ShowModal();
       bCancel = (n == wxID_YES || n == wxID_OK);
     }
+    mainApp::Ping2(PING_EVENT, "AnalysisCancel", "all", bCancelAll ? "yes" : "no");
     if(bCancel)
     {
       long nCount = (long) m_pListDir->GetItemCount();
@@ -928,7 +949,8 @@ void CFrameRunAnalysis::_Run()
       parm.SetOutputDirectory(sOutputDir);
       pDirEntry->SetParmOsiris(parm);
       pDirEntry->SetStartTime();
-        m_pAnalysis = new CProcessAnalysis(pDirEntry,&m_volume,this,IDprocess);
+      mainApp::Ping2(PING_EVENT, "Analysis", "kit", m_volume.GetKitName());
+      m_pAnalysis = new CProcessAnalysis(pDirEntry,&m_volume,this,IDprocess);
       bRunning = m_pAnalysis->IsRunning();
       pDirEntry->SetStatus(
         bRunning ? DIRENTRY_RUNNING : DIRENTRY_ERROR);
@@ -939,6 +961,7 @@ void CFrameRunAnalysis::_Run()
     }
     else
     {
+      mainApp::Ping2(PING_EVENT, "AnalysisError", PING_ERROR, "CannotCreateOutputDir");
       pDirEntry->SetStatus(DIRENTRY_ERROR);
       pDirEntry->AppendRunOutput("Cannot create output directory:\n  ");
       pDirEntry->AppendRunOutput(sOutputDir);

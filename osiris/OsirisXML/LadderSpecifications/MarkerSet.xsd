@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2015 rel. 3 sp1 (x64) (http://www.altova.com) by XMLSpy 2015 Professional Ed. Release 3, Installed for 13 users (with SMP from 2015-04-16 to 2016-04-16) (NIH) -->
+<!-- edited with XMLSpy v2018 rel. 2 (http://www.altova.com) by Altova XMLSpy 2018 Professional XML Editor - Release 2, Installed for 13 users (NCBI/NLM/NIH) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="KitData">
 		<xs:complexType>
@@ -19,6 +19,11 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="Name" type="xs:string"/>
+							<xs:element name="LadderFree" type="xs:boolean" default="false" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Is set to true for ILS-only kits; is either false or omitted for all others</xs:documentation>
+								</xs:annotation>
+							</xs:element>
 							<xs:element name="NChannels" type="xs:int"/>
 							<xs:element name="ILS">
 								<xs:complexType>
@@ -53,6 +58,11 @@ before v 2.7 </xs:documentation>
 													</xs:sequence>
 												</xs:complexType>
 											</xs:element>
+											<xs:element name="AllLaneStandards" type="xs:boolean" default="false">
+												<xs:annotation>
+													<xs:documentation>Assumed false except for ILS-only kits; when true, all ILS options should be displayed in analysis dialog</xs:documentation>
+												</xs:annotation>
+											</xs:element>
 										</xs:choice>
 										<xs:element name="ChannelNo" type="xs:int"/>
 									</xs:sequence>
@@ -79,7 +89,7 @@ before v 2.7 </xs:documentation>
 							</xs:element>
 							<xs:element name="AllOLAllelesAccepted" type="xs:boolean" default="false" minOccurs="0"/>
 							<xs:sequence>
-								<xs:element name="Locus" maxOccurs="unbounded">
+								<xs:element name="Locus" minOccurs="0" maxOccurs="unbounded">
 									<xs:complexType>
 										<xs:sequence>
 											<xs:element name="Name" type="xs:string"/>

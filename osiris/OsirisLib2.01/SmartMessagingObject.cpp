@@ -347,6 +347,30 @@ void SmartMessagingObject :: AppendDataForSmartMessage (int scope, int index, in
 }
 
 
+bool SmartMessagingObject::SmartMessageHasData (const SmartNotice& notice) const {
+
+	if (notice.GetScope () == GetObjectScope ()) {
+
+		int index = notice.GetMessageIndex ();
+		int scope = notice.GetScope ();
+		SmartMessageData target (index);
+		SmartMessageData* smd = (SmartMessageData*)mMessageDataTable->Find (&target);
+
+		if (smd == NULL) {
+
+			return false;
+		}
+
+		else {
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
 void SmartMessagingObject :: ClearSmartNoticeObjects () {
 
 	mSmartMessageReporters->ClearAndDelete ();

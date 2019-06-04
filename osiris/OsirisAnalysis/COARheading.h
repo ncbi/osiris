@@ -220,6 +220,10 @@ public:
   {
     return m_sMarkerSet;
   }
+  const std::vector<wxString> &GetCommandLine() const
+  {
+    return m_vsCommandLine.GetVector();
+  }
 private:
   wxString m_sFileName;
   wxString m_sNewFileName;

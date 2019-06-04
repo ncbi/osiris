@@ -21,6 +21,16 @@
 *                                                                          
 *  Please cite the author in any work or product based on this material.   
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 *  FileName: CMenuBar.cpp
@@ -58,6 +68,9 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   pMenuTools->Append(IDexport,"Export File Settings\tAlt+E");
   pMenuTools->Append(IDeditColours,"Edit Grid Colors\tAlt+C");
   pMenuTools->Append(IDartifactLabels,"Edit Artifact Labels\tCtrl+Alt+A");
+  wxMenuItem *pItem = pMenuTools->AppendCheckItem(
+    IDpinger, "Allow Usage Reporting");
+  pItem->Check(mainApp::PingerEnabled());
   if(_okToAccessSiteSettings())
   {
     pMenuTools->Append(IDsiteSettings,"Access site settings...");
@@ -65,6 +78,7 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
   pMenuTools->Append(IDsiteShow,"Show site settings folder...");
   pMenuTools->Append(IDlog,"Message Log");
   pMenuHelp->Append(IDhelp,"&Documentation\tF1");
+  pMenuHelp->Append(IDprivacy, "&Privacy Notice...");
   pMenuHelp->Append(IDhelpContactUs,"&Contact Us...");
   pMenuHelp->Append(IDcheckForUpdates,"Check f&or Updates...");
   pMenuHelp->Append(wxID_ABOUT,"&About Osiris...");

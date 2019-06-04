@@ -41,7 +41,7 @@ using namespace std;
 
 OsirisInputFile :: OsirisInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mCriticalOutputLevel (15), mMinSampleRFU (0.0),
 mMinLadderRFU (0.0), mMinLaneStandardRFU (0.0), mMinInterlocusRFU (0.0), mMinLadderInterlocusRFU (0.0), mSampleDetectionThreshold (-1.0), 
-mUseRawData (true), mUserNamedSettingsFiles (true) {
+mUseRawData (true), mUserNamedSettingsFiles (true), mIsLadderFreeAnalysis (false) {
 
 	mInputLinesIterator = new RGDListIterator (mInputLines);
 	mAnalysisThresholds = new list<channelThreshold*>;
@@ -314,6 +314,14 @@ int OsirisInputFile :: AssignString () {
 
 		SetEmbeddedSlashesToForward (mStringRight);
 		mInputDirectory = mStringRight;
+		status = 0;
+	}
+
+	else if (mStringLeft == "LadderFree") {
+
+		if (mStringRight == "true")
+			mIsLadderFreeAnalysis = true;
+
 		status = 0;
 	}
 

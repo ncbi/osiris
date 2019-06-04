@@ -62,7 +62,7 @@ public:
   bool HasLock(const wxString &sFileName);
   void UpdateAll();
   static bool LockFileExists(const wxString &sFileName);
-  time_t AccessAge(const wxString &sFileName, time_t tNow = 0);
+  //time_t AccessAge(const wxString &sFileName, time_t tNow = 0);
   time_t GetAge(const wxString &sLockFileName, time_t tNow = 0);
   static const time_t TIMEOUT; // age of a lock file in seconds before it can be considered abandoned
 private:

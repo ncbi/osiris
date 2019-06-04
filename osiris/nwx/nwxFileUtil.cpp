@@ -203,6 +203,65 @@ bool nwxFileUtil::_ShowFolder(const wxString &sFolderName)
   return bRtn;
 }
 
+wxString nwxFileUtil::TextToFileName(const wxString &sName, size_t MAXLEN)
+{
+  // create a reasonable dir or file name
+  //  from a user specified name
+  //  for example, if a user creates a new kit
+  //  or OP, take the given name, replace 
+  //  undesirable characters with underscores
+  //  and return the result.  This result can be 
+  //  used for a file name
+  //
+  //  example: name = "ISIT: my name (simple/easy)"
+  //  retrun:  "ISIT_my_name_simple_easy"
+  const wxString sOK(wxS("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz01234567890.-+"));
+  const wxChar SPACE(L' ');
+  size_t nLen = sName.Len();
+  size_t i;
+  wxString sDirName;
+  wxChar prev = SPACE;
+  wxChar c;
+  for (i = 0; i < nLen; ++i)
+  {
+    c = sName.GetChar(i);
+    if (sOK.Find(c) != wxNOT_FOUND)
+    {
+      sDirName.Append(c);
+      prev = c;
+    }
+    else if (prev != SPACE)
+    {
+      sDirName.Append(SPACE);
+      prev = SPACE;
+    }
+  }
+  nwxString::Trim(&sDirName);
+  sDirName.Replace(" ", "_");
+  if ( (MAXLEN != wxNOT_FOUND) && (sDirName.Length() > size_t(MAXLEN)) )
+  {
+    sDirName.Truncate(MAXLEN);
+  }
+  return sDirName;
+}
+wxString nwxFileUtil::FindNewDirName(const wxString &sPath)
+{
+  // given a desired directory name
+  // if it doesn't exist, return it
+  // otherwise find a similar name
+  // that doesn't exist
+  wxString sRtn = sPath;
+  int n = 0;
+  while (wxFileExists(sRtn) || wxDirExists(sRtn))
+  {
+    ++n;
+    sRtn = sPath;
+    sRtn.Append("_");
+    sRtn.Append(nwxString::FormatNumber(n));
+  }
+  return sRtn;
+}
+
 #ifndef __WXMSW__
 
 // OS-662
@@ -503,7 +562,6 @@ bool nwxFileUtil::MkDir(
 #endif
     )
 {
-  //   STOP HERE need to support bInheritMode
   bool bRtn = false;
   if(wxDir::Exists(sDir))
   {

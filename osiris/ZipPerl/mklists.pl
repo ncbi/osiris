@@ -2,10 +2,10 @@
 use lib '.';
 use strict 'vars';
 use GetVersion;
-my $INSTALLDIR = 'C:\Apps\User_Installs\Osiris';
-my $UNIXINSTALL = "/Apps/User_Installs/Osiris";
-my $DIR_CUT = '.*User_Installs.Osiris.';
 my $sDir = &GetVersion::GetDirectory();
+my $INSTALLDIR = "C:\\Apps\\User_Installs\\{$sDir}";
+my $UNIXINSTALL = "/Apps/User_Installs/${sDir}";
+my $DIR_CUT = '.*User_Installs.Osiris.';
 if(! -d $sDir) 
 {
   die "Cannot find directory ${sDir}";
@@ -29,9 +29,7 @@ sub dump
 
 my $sOUTBAT = <<EOF;
 \@echo off
-dir /b/s "C:\\Apps\\User_Installs\\Osiris" | grep -v "site.." | sed "s/${DIR_CUT}//" > install.txt
-dir /b/s "${sDir}" | sed "s/.*ZipPerl.//" | sed 's/${sDir}.//' > zip.txt
-bash diff.sh install.txt zip.txt
+bash mklists.sh
 EOF
 
 

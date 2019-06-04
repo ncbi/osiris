@@ -37,7 +37,7 @@
 #include "wxXml2/wxXml2Ptr.h"
 
 int wxXml2Object::g_nCount(0);
-map<IXml2ErrorReceiver *,int> wxXml2Object::g_mapReceivers;
+std::map<IXml2ErrorReceiver *,int> wxXml2Object::g_mapReceivers;
 
 IMPLEMENT_ABSTRACT_CLASS(wxXml2Object,wxObject)
 
@@ -105,7 +105,7 @@ void wxXml2Object::SendError(const wxString &_s)
   s.Trim(false);
   if(!s.IsEmpty())
   {
-    map<IXml2ErrorReceiver *,int>::iterator itr;
+    std::map<IXml2ErrorReceiver *,int>::iterator itr;
     for(itr = g_mapReceivers.begin(); itr != g_mapReceivers.end(); ++itr)
     {
       itr->first->ReceiveXml2Error(s);
@@ -116,19 +116,19 @@ void wxXml2Object::SendError(const wxString &_s)
 
 void wxXml2Object::AddReceiver(IXml2ErrorReceiver *p)
 {
-  map<IXml2ErrorReceiver *,int>::iterator itr = g_mapReceivers.find(p);
+  std::map<IXml2ErrorReceiver *,int>::iterator itr = g_mapReceivers.find(p);
   if(itr != g_mapReceivers.end())
   {
     itr->second++;
   }
   else
   {
-    g_mapReceivers.insert(map<IXml2ErrorReceiver *,int>::value_type(p,1));
+    g_mapReceivers.insert(std::map<IXml2ErrorReceiver *,int>::value_type(p,1));
   }
 }
 void wxXml2Object::RemoveReceiver(IXml2ErrorReceiver *p)
 {
-  map<IXml2ErrorReceiver *,int>::iterator itr = g_mapReceivers.find(p);
+  std::map<IXml2ErrorReceiver *,int>::iterator itr = g_mapReceivers.find(p);
   if(itr != g_mapReceivers.end())
   {
     itr->second--;

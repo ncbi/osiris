@@ -21,6 +21,16 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 
@@ -30,6 +40,7 @@
 */
 #include "mainApp.h"
 #include "mainFrame.h"
+#include <wx/filefn.h> 
 #include <wx/dialog.h>
 #include <wx/bitmap.h>
 #include <wx/splash.h>
@@ -50,11 +61,13 @@
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxXmlCMF.h"
 #include "nwx/nwxUtil.h"
+#include "nwx/nwxPinger.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
+#include "Version/OsirisVersion.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -74,6 +87,7 @@ const int mainApp::RFU_MIN_ENTER = 5;
 
 int mainApp::g_count = 0;
 int mainApp::g_nMaxLogLevel = 1000;
+int mainApp::g_nWindowCounter = 0;
 bool mainApp::g_bSuppressMessages = false;
 ConfigDir *mainApp::m_pConfig = NULL;
 nwxXmlMRU *mainApp::m_pMRU = NULL;
@@ -82,9 +96,25 @@ nwxXmlWindowSizes *mainApp::m_pWindowSize = NULL;
 CPersistKitList *mainApp::m_pKitList = NULL;
 CKitColors *mainApp::m_pKitColors = NULL;
 CArtifactLabels *mainApp::m_pArtifactLabels = NULL;
+nwxPinger *mainApp::g_pPinger = NULL;
 mainApp *mainApp::g_pThis = NULL;
-
 wxFile *mainApp::m_pFout = NULL;
+
+void mainApp::_cleanupPinger(bool bByUser)
+{
+  if (g_pPinger != NULL)
+  {
+    if (bByUser)
+    {
+      g_pPinger->SetClosedByUser(true);
+      // alerts the process that this was closed by the user
+      // if OSIRIS crashes, this will not be sent and a "crash"
+      // ping will be logged
+    }
+    delete g_pPinger;
+    g_pPinger = NULL;
+  }
+}
 
 void mainApp::_Cleanup()
 {
@@ -125,6 +155,7 @@ void mainApp::_Cleanup()
       delete m_pKitList;
       m_pKitList = NULL;
     }
+    _cleanupPinger();
   }
 }
 mainApp::~mainApp()
@@ -142,6 +173,59 @@ ConfigDir *mainApp::GetConfig()
   }
   return m_pConfig;
 }
+
+nwxPinger *mainApp::GetPinger()
+{
+  if ((g_pPinger != NULL) && !g_pPinger->IsRunning())
+  {
+    _cleanupPinger();
+  }
+  return g_pPinger;
+}
+
+void mainApp::Ping(const wxString &sName, const wxString &sValue)
+{
+  nwxPinger *p(GetPinger());
+  if (p != NULL)
+  {
+    nwxPingerSet pset(p);
+    pset.Set(sName, sValue);
+  }
+  // destructor will send the event
+}
+void mainApp::Ping2(const wxString &sName1, const wxString &sValue1,
+  const wxString &sName2, const wxString &sValue2)
+{
+  nwxPinger *p(GetPinger());
+  if (p != NULL)
+  {
+    nwxPingerSet pset(p);
+    pset.Set(sName1, sValue1);
+    pset.Set(sName2, sValue2);
+  }
+  // destructor will send the event
+}
+void mainApp::Ping3(const wxString &sName1, const wxString &sValue1,
+  const wxString &sName2, const wxString &sValue2,
+  const wxString &sName3, const wxString &sValue3)
+{
+  nwxPinger *p(GetPinger());
+  if (p != NULL)
+  {
+    nwxPingerSet pset(p);
+    pset.Set(sName1, sValue1);
+    pset.Set(sName2, sValue2);
+    pset.Set(sName3, sValue3);
+  }
+  // destructor will send the event
+}
+void mainApp::PingExit()
+{
+  mainApp::Ping(PING_EVENT, "user-exit");
+  _cleanupPinger(true);
+}
+
+
 nwxXmlMRU *mainApp::GetMRU()
 {
   if(g_count && (m_pMRU == NULL))
@@ -296,6 +380,7 @@ bool mainApp::OnInit()
     _MacOpenFiles();
   }
 #endif
+  _setupPinger();
   return true;
 }
 #ifdef __WXMAC__
@@ -313,6 +398,74 @@ void mainApp::_MacOpenFiles()
   }
 }
 #endif
+
+void mainApp::_setupPinger()
+{
+  if (!PingerEnabled()) {} // not enabled, return
+  else if ((g_pPinger != NULL) && g_pPinger->IsRunning()) {} // already running, return
+  else
+  {
+    if (g_pPinger != NULL)
+    {
+      _cleanupPinger();
+    }
+    wxString sAppName("osirisapp");
+    wxString sAppVer(OSIRIS_VERS_BASE);
+    g_pPinger = new nwxPinger(g_pThis->m_pFrame, IDpingerProcess, sAppName, sAppVer, NULL, m_pFout);
+  }
+}
+
+wxString mainApp::_pingerFile()
+{
+  wxString sPath = mainApp::GetConfig()->GetSitePath();
+  nwxFileUtil::EndWithSeparator(&sPath);
+  sPath.Append("nousage.txt");
+  return sPath;
+}
+bool mainApp::PingerEnabled()
+{
+  return !wxFileName::FileExists(_pingerFile());
+}
+
+bool mainApp::SetPingerEnabled(bool bEnable)
+{
+  // set the usage stats 'pinger' as enabled or
+  // disabled.  If successful, return true else false
+  // It is disabled if the file "nousage.txt" exists
+  // in the site folder.
+  // The user must have access privileges
+  // in order to change this setting
+  bool bIsEnabled = PingerEnabled();
+  bool bRtn = true;
+  if (bEnable != bIsEnabled)
+  {
+    wxString sPath(_pingerFile());
+    if (!bEnable)
+    {
+      wxFile sFile(sPath, wxFile::write);
+      bRtn = sFile.IsOpened();
+      sFile.Close();
+      if (bRtn)
+      {
+#ifndef __WXMSW__
+        nwxFileUtil::SetFilePermissionFromDir(sPath);
+#endif
+        mainApp::Ping(PING_EVENT, "PingerDisabled");
+        mainApp::_cleanupPinger(true);
+      }
+    }
+    else
+    {
+      bRtn = wxRemoveFile(sPath);
+      if (bRtn)
+      {
+        mainApp::_setupPinger();
+        mainApp::Ping(PING_EVENT, "PingerEnabled");
+      }
+    }
+  }
+  return bRtn;
+}
 
 void mainApp::_OpenMessageStream()
 {
@@ -565,20 +718,21 @@ void mainApp::OnQuit(wxCommandEvent &e)
   bool bSkip;
   wxBusyCursor xxx;
   bSkip = m_pFrame->DoClose();
+  if(bSkip)
+  {
 #if mainFrameIsWindow
-  if(bSkip)
-  {
+    m_pFrame->Hide();
+    mainApp::PingExit();
     bSkip = m_pFrame->Close();
-  }
+    m_pFrame->Destroy();
 #else
-  if(bSkip)
-  {
+    mainApp::PingExit();
     m_pFrame->DeletePendingEvents();
     delete m_pFrame;
     m_pFrame = NULL;
     _Cleanup();
-  }
 #endif
+  }
   e.Skip(bSkip);
   _LogMessageFile(wxT("mainApp::OnQuit"),0);
 }
@@ -596,6 +750,7 @@ DEFINE_CMD_HANDLER(OnOpen)
 DEFINE_CMD_HANDLER(OnRecentFiles)
 DEFINE_CMD_HANDLER(OnLabSettings)
 DEFINE_CMD_HANDLER(OnArtifactLabels)
+DEFINE_CMD_HANDLER(OnPinger)
 DEFINE_CMD_HANDLER(OnExportSettings)
 DEFINE_CMD_HANDLER(OnEditGridColours)
 DEFINE_CMD_HANDLER(OnShowLog)
@@ -607,6 +762,7 @@ DEFINE_CMD_HANDLER(OnOpenBatch)
 DEFINE_CMD_HANDLER(OnOpenArchive)
 DEFINE_CMD_HANDLER(OnHelp)
 DEFINE_CMD_HANDLER(OnAbout)
+DEFINE_CMD_HANDLER(OnPrivacy)
 DEFINE_CMD_HANDLER(OnCheckForUpdates)
 DEFINE_CMD_HANDLER(OnContactUs)
 DEFINE_CMD_HANDLER(OnMenu)
@@ -627,6 +783,7 @@ EVT_MENU(wxID_EXIT,   mainApp::OnQuit)
 EVT_MENU(IDlistMRU,   mainApp::OnRecentFiles)
 EVT_MENU(IDlab,       mainApp::OnLabSettings)
 EVT_MENU(IDartifactLabels, mainApp::OnArtifactLabels)
+EVT_MENU(IDpinger,    mainApp::OnPinger)
 EVT_MENU(IDexport,    mainApp::OnExportSettings)
 EVT_MENU(IDeditColours, mainApp::OnEditGridColours)
 EVT_MENU(IDlog,       mainApp::OnShowLog)
@@ -640,15 +797,11 @@ EVT_MENU(IDopenPlot,  mainApp::OnOpenPlot)
 EVT_MENU(IDopenBatch, mainApp::OnOpenBatch)
 EVT_MENU(IDhelp,      mainApp::OnHelp)
 EVT_MENU(wxID_ABOUT, mainApp::OnAbout)
+EVT_MENU(IDprivacy, mainApp::OnPrivacy)
 EVT_MENU(IDcheckForUpdates, mainApp::OnCheckForUpdates)
 EVT_MENU(IDhelpContactUs, mainApp::OnContactUs)
 EVT_MENU(IDExportGraphic, mainApp::OnMenu)
 EVT_MENU(IDMaxLadderLabels, mainApp::OnMaxLadderLabels)
-
-//EVT_MENU(wxID_SAVEAS, mainApp::OnSave) // commented out 9/16/16b
-//EVT_MENU(wxID_SAVE, mainApp::OnSave)
-
-
 #ifdef __WINDOW_LIST__
 #ifdef __WXMAC__
 EVT_MENU_RANGE(IDmenuWindow_Minimize,IDmenuWindow_Frame_END,mainApp::OnWindowMenu)

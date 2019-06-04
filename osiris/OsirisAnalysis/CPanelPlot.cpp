@@ -621,8 +621,6 @@ void CPanelPlot::BuildILSlines()
     wxGenericPen pen(
       m_pColors->GetColor(
         m_pData->GetKitName(),LADDER_DATA,nChannelILS));
-    const vector<CSamplePeak *> *pvILS =
-      m_pData->GetSamplePeaks(nChannelILS);
     for(vector<CSamplePeak *>::const_iterator itr = pvILS->begin();
       itr != pvILS->end();
       ++itr)
@@ -737,7 +735,6 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
 
   FORMAT_CONDITION(FORMAT_CORR_RFU,nwxRound::Round(dRFU - dCorr),dCorr != 0.0);
   sToolTip += wxString::Format(FORMAT_TIME,pPeak->GetTime());
-  // STOP HERE width after time
   FORMAT_CONDITION(FORMAT_PEAK_AREA,dPeakArea,dPeakArea > 0.0);
   FORMAT_CONDITION(FORMAT_WIDTH,dWidth,  dWidth > 0.0);
   FORMAT_CONDITION(FORMAT_ILS_REF,dBPS,dBPS > 1.0);
@@ -760,9 +757,7 @@ wxString CPanelPlot::_ArtifactToolTip(const IOARpeak *pPeak, const wxString &sCh
       {
         sToolTip += wxString::Format(FORMAT_ALLELE_BPS, nBPS);
         dBPSresid -= (double)nBPS;
-        FORMAT_CONDITION(FORMAT_RESIDUAL,dBPSresid,
-          dBPSresid > RESIDUAL_THRESHOLD || 
-              dBPSresid < -RESIDUAL_THRESHOLD);
+        sToolTip += wxString::Format(FORMAT_RESIDUAL,dBPSresid);
       }
     }
   }
@@ -807,9 +802,7 @@ wxString CPanelPlot::_AlleleToolTip(
 
   //  The 'if' may be temporary
   
-  FORMAT_CONDITION(FORMAT_RESIDUAL,  dBPSresid,
-    dBPSresid > RESIDUAL_THRESHOLD || 
-      dBPSresid < -RESIDUAL_THRESHOLD);
+  sToolTip += wxString::Format(FORMAT_RESIDUAL,dBPSresid);
   sToolTip += wxString::Format(
       FORMAT_RFU,
     nwxRound::Round(dRFU));
@@ -2377,7 +2370,7 @@ void CPanelPlot::OnSize(wxSizeEvent &e)
   e.Skip();
 }
 
-std::set<const wxString> CPanelPlot::g_setNoBpsPrompt;
+std::set<wxString> CPanelPlot::g_setNoBpsPrompt;
 wxString CPanelPlot::_GetFileName(CPlotData *p)
 {
   wxFileName fn(p->GetFilename());

@@ -1622,7 +1622,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		Fits [i] = nextSignal->GetCurveFit ();
 		Peaks [i] = nextSignal->Peak ();
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -1772,7 +1772,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 	msg.StartLine (1, "Fits", TRUE);
 	msg.StartLine (2, "2AryContent", TRUE);
 	msg.StartLine (3, "Means", TRUE);
-	msg.StartLine (4, "Sigmas", TRUE);
+	msg.StartLine (4, "Widths", TRUE);
 	msg.StartLine (5, "Peaks", TRUE);
 
 	for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -1962,7 +1962,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 
 		while (nextNextSignal = (DataSignal*) CurveIterator ()) {
 
-			if (nextNextSignal->GetMean () <= nextSignal->GetMean () + shoulderProximity * (nextNextSignal->GetStandardDeviation () + nextSignal->GetStandardDeviation ())) {
+			if (nextNextSignal->GetMean () <= nextSignal->GetMean () + 0.5 * shoulderProximity * (nextNextSignal->GetWidth () + nextSignal->GetWidth ())) {
 
 				if (nextSignal->Peak () <= shoulderThresholdFraction * nextNextSignal->Peak ()) {
 
@@ -2390,7 +2390,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		if (thisPeak > finalMaxPeak)
 			finalMaxPeak = thisPeak;
 
-		Sigmas [i] = nextSignal->GetStandardDeviation ();
+		Sigmas [i] = nextSignal->GetWidth ();
 		Means [i] = nextSignal->GetMean ();
 		TwoMass = nextSignal->GetScale (2);
 		OneMass = nextSignal->GetScale (1);
@@ -2597,7 +2597,7 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		msg.StartLine (1, "Fits", TRUE);
 		msg.StartLine (2, "2AryContent", TRUE);
 		msg.StartLine (3, "Means", TRUE);
-		msg.StartLine (4, "Sigmas", TRUE);
+		msg.StartLine (4, "Widths", TRUE);
 		msg.StartLine (5, "Peaks", TRUE);
 
 		for (int j=0; j<NumberOfAcceptedCurves; j++) {
@@ -3038,7 +3038,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 		double mean = nextSignal->GetMean ();
 		position++;
 
-		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples)) {
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (abs (height) == numeric_limits<double>::infinity()) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples)) {
 
 			if (mean >= numberOfSamples)
 				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << "\n";
@@ -3302,6 +3302,34 @@ int STRLaneStandardChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput&
 
 	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
 	//cout << "Eliminating neg peaks that are too close (2)" << endl;
+
+	RGDList outOfOrderList;
+	RGDListIterator itt (mNegativeCurveList);
+	int position = 0;
+	double numberOfSamples = (double)mData->GetNumberOfSamples();
+
+	while (nextSignal = (DataSignal*) itt()) {
+
+		double sigma = nextSignal->GetStandardDeviation();
+		double height = nextSignal->Peak();
+		double mean = nextSignal->GetMean();
+		position++;
+
+		if (ISNAN(sigma) || ISNAN(height) || (sigma == numeric_limits<double>::infinity()) || (abs(height) == numeric_limits<double>::infinity()) || (height <= 0.0) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable()) {
+
+			if (mean >= numberOfSamples)
+				cout << "Found a bad negative peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << " with left limit = " << nextSignal->LeftEndPoint() << " and right limit = " << nextSignal->RightEndPoint() << " with type " << nextSignal->GetSignalType() << "\n";
+
+			outOfOrderList.Append(nextSignal);
+			continue;
+		}
+	}
+
+	while (nextSignal = (DataSignal*)outOfOrderList.GetFirst()) {
+
+		mNegativeCurveList.RemoveReference(nextSignal);
+		delete nextSignal;
+	}
 
 	//
 	//	Do we really want to do this???
@@ -4104,6 +4132,44 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponen
 }
 
 
+int STRSampleChannelData :: AssignSampleCharacteristicsToLociSMLF () {
+
+	//  Assume sample characteristics are in PreminaryCurveList.
+	//
+	//  Get the one and only "locus".  Then, extract all signals and assign to that locus.
+	//
+
+	//
+	//  This is LF sample stage 1
+	//
+
+	Locus* nextLocus;
+	smBelowMinRFU belowMinRFU;
+	RGDListIterator it (mLocusList);
+
+	while (nextLocus = (Locus*) it()) {
+
+		nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+	}
+
+	return 0;
+}
+
+
+int STRSampleChannelData :: TestForNearlyDuplicateAllelesSMLF () {
+
+	Locus* nextLocus;
+	RGDListIterator it (mLocusList);
+
+	while (nextLocus = (Locus*) it ()) {
+
+		nextLocus->TestForNearlyDuplicateAllelesSMLF (ArtifactList, PreliminaryCurveList, CompleteCurveList, SmartPeaks);
+	}
+
+	return 0;
+}
+
+
 int STRSampleChannelData :: AnalyzeSampleLociSM (ChannelData* lsData, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	//
@@ -4393,89 +4459,118 @@ int STRSampleChannelData :: FinalTestForPeakSizeAndNumberSM (double averageHeigh
 
 	// Make member variables out of these quantities with accessors
 	double minYLinkedArea = 0.0;
-	double maxYLinkedArea = 0.0;
-	double minTotalArea = 0.0;
-	double maxTotalArea = 0.0;
-	double currentArea;
-	double ratioMaxToMin = 0.0;
-	double yLinkedRatioMaxToMin = 0.0;
+double maxYLinkedArea = 0.0;
+double minTotalArea = 0.0;
+double maxTotalArea = 0.0;
+double currentArea;
+double ratioMaxToMin = 0.0;
+double yLinkedRatioMaxToMin = 0.0;
 
-	while (nextLocus = (Locus*) it ()) {
+while (nextLocus = (Locus*)it()) {
 
-		if (nextLocus->FinalTestForPeakSizeAndNumberSM (averageHeight, isNegCntl, isPosCntl, pGenotypes, ArtifactList) < 0)
-			status = -1;
+	if (nextLocus->FinalTestForPeakSizeAndNumberSM(averageHeight, isNegCntl, isPosCntl, pGenotypes, ArtifactList) < 0)
+		status = -1;
+
+	else {
+
+		currentArea = nextLocus->CalculateTotalAreaSM();
+
+		if (nextLocus->IsYLinked()) {
+
+			if (currentArea > maxYLinkedArea)
+				maxYLinkedArea = currentArea;
+
+			if (minYLinkedArea == 0.0)
+				minYLinkedArea = currentArea;
+
+			else if ((currentArea > 0.0) && (currentArea < minYLinkedArea))
+				minYLinkedArea = currentArea;
+		}
 
 		else {
 
-			currentArea = nextLocus->CalculateTotalAreaSM ();
+			if (currentArea > maxTotalArea)
+				maxTotalArea = currentArea;
 
-			if (nextLocus->IsYLinked ()) {
+			if (minTotalArea == 0.0)
+				minTotalArea = currentArea;
 
-				if (currentArea > maxYLinkedArea)
-					maxYLinkedArea = currentArea;
-
-				if (minYLinkedArea == 0.0)
-					minYLinkedArea = currentArea;
-
-				else if ((currentArea > 0.0) && (currentArea < minYLinkedArea))
-					minYLinkedArea = currentArea;
-			}
-
-			else {
-
-				if (currentArea > maxTotalArea)
-					maxTotalArea = currentArea;
-
-				if (minTotalArea == 0.0)
-					minTotalArea = currentArea;
-
-				else if ((currentArea > 0.0) && (currentArea < minTotalArea))
-					minTotalArea = currentArea;
-			}
+			else if ((currentArea > 0.0) && (currentArea < minTotalArea))
+				minTotalArea = currentArea;
 		}
 	}
+}
 
-	if (minYLinkedArea == 0.0)
-		yLinkedRatioMaxToMin = 0.0;
+if (minYLinkedArea == 0.0)
+yLinkedRatioMaxToMin = 0.0;
 
-	else
-		yLinkedRatioMaxToMin = maxYLinkedArea / minYLinkedArea;
+else
+yLinkedRatioMaxToMin = maxYLinkedArea / minYLinkedArea;
 
-	if (minTotalArea == 0.0)
-		ratioMaxToMin = 0.0;
+if (minTotalArea == 0.0)
+ratioMaxToMin = 0.0;
 
-	else
-		ratioMaxToMin = maxTotalArea / minTotalArea;
+else
+ratioMaxToMin = maxTotalArea / minTotalArea;
 
-	//if (isNegCntl) {
+//if (isNegCntl) {
 
-	//	it.Reset ();
+//	it.Reset ();
 
-	//	while (nextLocus = (Locus*) it ()) {
+//	while (nextLocus = (Locus*) it ()) {
 
-	//		if (nextLocus->GetMessageValue (unexpectedPeaksInLocus)) {
+//		if (nextLocus->GetMessageValue (unexpectedPeaksInLocus)) {
 
-	//			SetMessageValue (unexpectedPeaksInChannel, true);
-	//			break;
-	//		}
-	//	}
-	//}
+//			SetMessageValue (unexpectedPeaksInChannel, true);
+//			break;
+//		}
+//	}
+//}
 
-	/*
-	double mMaxLocusArea;
-	double mMaxYLinkedLocusArea;
-	double mMinLocusArea;
-	double mMinYLinkedLocusArea;
-	double mMaxLocusAreaRatio;
-	double mMaxYLinkedLocusRatio;
-	*/
+/*
+double mMaxLocusArea;
+double mMaxYLinkedLocusArea;
+double mMinLocusArea;
+double mMinYLinkedLocusArea;
+double mMaxLocusAreaRatio;
+double mMaxYLinkedLocusRatio;
+*/
 
-	mMaxLocusArea = maxTotalArea;
-	mMinLocusArea = minTotalArea;
-	mMaxYLinkedLocusArea = maxYLinkedArea;
-	mMinYLinkedLocusArea = minYLinkedArea;
-	mMaxLocusAreaRatio = ratioMaxToMin;
-	mMaxYLinkedLocusRatio = yLinkedRatioMaxToMin;
+mMaxLocusArea = maxTotalArea;
+mMinLocusArea = minTotalArea;
+mMaxYLinkedLocusArea = maxYLinkedArea;
+mMinYLinkedLocusArea = minYLinkedArea;
+mMaxLocusAreaRatio = ratioMaxToMin;
+mMaxYLinkedLocusRatio = yLinkedRatioMaxToMin;
+return status;
+}
+
+
+int STRSampleChannelData::FinalTestForPeakSizeSMLF(Boolean isNegCntl, Boolean isPosCntl) {
+
+	//
+	//  This is sample stage 5
+	//
+
+	RGDListIterator it(mLocusList);
+	RGDListIterator itTotal(CompleteCurveList);
+	Locus* nextLocus;
+	DataSignal* nextSignal;
+	int status = 0;
+	int minBioID = CoreBioComponent::GetMinBioIDForArtifacts();
+
+	while (nextSignal = (DataSignal*) itTotal ()) {
+
+		if (nextSignal->GetApproximateBioID() < minBioID)
+			nextSignal->SetDontLook (true);
+	}
+
+	while (nextLocus = (Locus*) it ()) {
+
+		if (nextLocus->FinalTestForPeakSizeSMLF (isNegCntl, isPosCntl) < 0)
+			status = -1;
+	}
+
 	return status;
 }
 
@@ -4625,8 +4720,12 @@ int STRSampleChannelData :: TestForMultiSignalsSM () {
 			// Later, consider adding one of nextSignal's flanking peaks...need iChannel function to perform test, assuming
 			// that primary Signal may be gone.  Then recalculate primary signal
 
-			if (iChannel->IsEmpty ())
+			if (iChannel->IsEmpty ()) {
+
 				iChannel->RemoveAllSM ();
+				delete iChannel;
+				nextSignal->SetInterchannelLink (NULL);
+			}
 
 			else
 				iChannel->RecalculatePrimarySignalSM ();
@@ -4814,6 +4913,10 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 	smCrater crater;
 	smPeakSharesAlleleBinLeft sharesBinLeft;
 	smPeakSharesAlleleBinRight sharesBinRight;
+	smCalculatedPurePullup purePullup;
+	smPartialPullupBelowMinRFU pullupBelowMinRFU;
+	smCraterSidePeak craterSidePeak;
+	smSigmoidalSidePeak sigmoidalSidePeak;
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -4834,6 +4937,30 @@ int STRSampleChannelData :: TestForAlleleDuplicationSM () {
 			}
 
 			if (prevSignal->GetMessageValue (crater) || nextSignal->GetMessageValue (crater)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (nextSignal->GetMessageValue (purePullup) || nextSignal->GetMessageValue (pullupBelowMinRFU)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (purePullup) || prevSignal->GetMessageValue (pullupBelowMinRFU)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (nextSignal->GetMessageValue (craterSidePeak) || nextSignal->GetMessageValue (sigmoidalSidePeak)) {
+
+				prevSignal = nextSignal;
+				continue;
+			}
+
+			if (prevSignal->GetMessageValue (craterSidePeak) || prevSignal->GetMessageValue (sigmoidalSidePeak)) {
 
 				prevSignal = nextSignal;
 				continue;
@@ -5493,6 +5620,34 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 
 	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
 	//cout << "Eliminating neg peaks that are too close (2)" << endl;
+
+	RGDList outOfOrderList;
+	RGDListIterator itt(mNegativeCurveList);
+	int position = 0;
+	double numberOfSamples = (double)mData->GetNumberOfSamples();
+
+	while (nextSignal = (DataSignal*)itt()) {
+
+		double sigma = nextSignal->GetStandardDeviation();
+		double height = nextSignal->Peak();
+		double mean = nextSignal->GetMean();
+		position++;
+
+		if (ISNAN(sigma) || ISNAN(height) || (sigma == numeric_limits<double>::infinity()) || (abs(height) == numeric_limits<double>::infinity()) || (height <= 0.0) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable()) {
+
+			if (mean >= numberOfSamples)
+				cout << "Found a bad negative peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << " with left limit = " << nextSignal->LeftEndPoint() << " and right limit = " << nextSignal->RightEndPoint() << " with type " << nextSignal->GetSignalType() << "\n";
+
+			outOfOrderList.Append(nextSignal);
+			continue;
+		}
+	}
+
+	while (nextSignal = (DataSignal*)outOfOrderList.GetFirst()) {
+
+		mNegativeCurveList.RemoveReference(nextSignal);
+		delete nextSignal;
+	}
 
 	//
 	//	Do we really want to do this???
@@ -6675,7 +6830,7 @@ bool STRSampleChannelData :: FindNextFitDataIntervalBelowThreshold (double thres
 }
 
 
-void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int intervalRight, list<double>& times, list<double>& values, DataSignal* fitData) {
+void STRSampleChannelData::AppendKnotDataToLists(int intervalLeft, int intervalRight, list<double>& times, list<double>& values, DataSignal* fitData) {
 
 	//
 	// Sample phase 1
@@ -6700,14 +6855,15 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 	smPrePrimerPercentOfNoiseRangeToBeConsideredPeak prePrimerPercentOfNoiseRangeForPeak;
 	smMaxPercentLevelChangeToUseLevelChangeProximity percentOfMeasurementsWithLevelChangeToUseProximity;
 
-	bool proximityToPeaks = GetMessageValue (useProximityToPeaksOnly);
-	bool proximityToLevelChange = GetMessageValue (useProximityToBothPeaksAndLevelChange);
-	int distanceFromPeak = GetThreshold (distanceFromPeakThreshold);
-	int distanceFromLevelChange = GetThreshold (distanceFromLevelChangeForKnot);
-	double postPrimerFractionNoiseRange = 0.01 * (double) GetThreshold (postPrimerPercentOfNoiseRangeForPeak);
-	double prePrimerFractionNoiseRange = 0.01 * (double) GetThreshold (prePrimerPercentOfNoiseRangeForPeak);
-	double fractionMeasurements = 0.01 * (double) GetThreshold (percentOfMeasurementsWithLevelChangeToUseProximity);
+	bool proximityToPeaks = GetMessageValue(useProximityToPeaksOnly);
+	bool proximityToLevelChange = GetMessageValue(useProximityToBothPeaksAndLevelChange);
+	int distanceFromPeak = GetThreshold(distanceFromPeakThreshold);
+	int distanceFromLevelChange = GetThreshold(distanceFromLevelChangeForKnot);
+	double postPrimerFractionNoiseRange = 0.01 * (double)GetThreshold(postPrimerPercentOfNoiseRangeForPeak);
+	double prePrimerFractionNoiseRange = 0.01 * (double)GetThreshold(prePrimerPercentOfNoiseRangeForPeak);
+	double fractionMeasurements = 0.01 * (double)GetThreshold(percentOfMeasurementsWithLevelChangeToUseProximity);
 	double splitTime = NormalizationSplitTime;
+	int numberOfMeasurements1 = mData->GetNumberOfSamples() - 1;
 
 	double currentFractionNoiseRange;
 
@@ -6716,7 +6872,10 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 		center = (intervalRight + intervalLeft) / 2;
 		left = center - 7;
 		right = center + 7;
-		time = (double) center;
+		time = (double)center;
+
+		if ((left < 0) || (right > numberOfMeasurements1))
+			return;
 
 		if (center <= splitTime)
 			currentFractionNoiseRange = prePrimerFractionNoiseRange;
@@ -6724,30 +6883,33 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 		else
 			currentFractionNoiseRange = postPrimerFractionNoiseRange;
 
-		if (TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, center, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements))
+		if (TestForRawDataPeakDuringNormalization(proximityToPeaks, proximityToLevelChange, center, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements))
 			return;
 
-		value = BaselineAverage (left, right, fitData, 15.0);
-		times.push_back (time);
-		values.push_back (value);
+		value = BaselineAverage(left, right, fitData, 15.0);
+		times.push_back(time);
+		values.push_back(value);
 		return;
 	}
 
 	left = intervalLeft;
 	right = intervalLeft + 14;
-	time = (double) (intervalLeft + 7);
+	time = (double)(intervalLeft + 7);
 
-	if (intervalLeft + 7 <= splitTime)
-		currentFractionNoiseRange = prePrimerFractionNoiseRange;
+	if ((left >= 0) && (right <= numberOfMeasurements1)) {
 
-	else
-		currentFractionNoiseRange = postPrimerFractionNoiseRange;
+		if (intervalLeft + 7 <= splitTime)
+			currentFractionNoiseRange = prePrimerFractionNoiseRange;
 
-	if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, intervalLeft + 7, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements)) {
-	
-		value = BaselineAverage (left, right, fitData, 15.0);
-		times.push_back (time);
-		values.push_back (value);
+		else
+			currentFractionNoiseRange = postPrimerFractionNoiseRange;
+
+		if (!TestForRawDataPeakDuringNormalization(proximityToPeaks, proximityToLevelChange, intervalLeft + 7, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements)) {
+
+			value = BaselineAverage(left, right, fitData, 15.0);
+			times.push_back(time);
+			values.push_back(value);
+		}
 	}
 
 	if (length > 75) {
@@ -6761,6 +6923,12 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 			center += segLength;
 			left = center - 7;
 			right = center + 7;
+
+			if (left < 0)
+				continue;
+
+			if (right > numberOfMeasurements1)
+				break;
 
 			if (center <= splitTime)
 				currentFractionNoiseRange = prePrimerFractionNoiseRange;
@@ -6790,23 +6958,30 @@ void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int interv
 	left = intervalRight - 14;
 	time = (double) (left + 7);
 
-	if (left + 7 <= splitTime)
-		currentFractionNoiseRange = prePrimerFractionNoiseRange;
+	if ((left >= 0) && (right <= numberOfMeasurements1)) {
 
-	else
-		currentFractionNoiseRange = postPrimerFractionNoiseRange;
+		if (left + 7 <= splitTime)
+			currentFractionNoiseRange = prePrimerFractionNoiseRange;
 
-	if (!TestForRawDataPeakDuringNormalization (proximityToPeaks, proximityToLevelChange, left + 7, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements)) {
-	
-		value = BaselineAverage (left, right, fitData, 15.0);
-		times.push_back (time);
-		values.push_back (value);
+		else
+			currentFractionNoiseRange = postPrimerFractionNoiseRange;
+
+		if (!TestForRawDataPeakDuringNormalization(proximityToPeaks, proximityToLevelChange, left + 7, distanceFromPeak, distanceFromLevelChange, currentFractionNoiseRange, fractionMeasurements)) {
+
+			value = BaselineAverage(left, right, fitData, 15.0);
+			times.push_back(time);
+			values.push_back(value);
+		}
 	}
 }
 
 
 void STRSampleChannelData :: AppendKnotDataToLists (int intervalLeft, int intervalRight, list<double>& times, list<double>& values, list<bool>& firsts, list<bool>& lasts, DataSignal* fitData) {
 
+	//
+	//  Not currently in use (12/12/2018)
+	//
+	
 	int length = intervalRight - intervalLeft + 1;
 	int center;
 	int left;
@@ -6891,6 +7066,7 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 	int nSeg;
 	int segLength;
 	bool hasFirstKnot = false;
+	int numberOfMeasurements1 = mData->GetNumberOfSamples() - 1;
 //	double lastTime;
 
 	//if (times.empty ())
@@ -6906,21 +7082,31 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 			center = (intervalRight + intervalLeft) / 2;
 			left = center - 12;
 			right = center + 2;
-			value = BaselineAverage (left, right, rawData, 15.0);
-			time = (double) (center - 5);
-			times.push_back (time);
-			values.push_back (value);
-			firsts.push_back (true);
-			lasts.push_back (false);
+
+			if ((left >= 0) && (right <= numberOfMeasurements1)) {
+
+				value = BaselineAverage(left, right, rawData, 15.0);
+				time = (double)(center - 5);
+				times.push_back(time);
+				values.push_back(value);
+				firsts.push_back(true);
+				lasts.push_back(false);
+			}
+
+			
 
 			left = center - 2;
 			right = center + 12;
-			value = BaselineAverage (left, right, rawData, 15.0);
-			time = (double) (center + 5);
-			times.push_back (time);
-			values.push_back (value);
-			firsts.push_back (false);
-			lasts.push_back (true);
+
+			if ((left >= 0) && (right <= numberOfMeasurements1)) {
+
+				value = BaselineAverage(left, right, rawData, 15.0);
+				time = (double)(center + 5);
+				times.push_back(time);
+				values.push_back(value);
+				firsts.push_back(false);
+				lasts.push_back(true);
+			}
 		}
 
 		return;
@@ -6933,23 +7119,32 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 
 		time = (double) (intervalLeft + 15);
 		right = intervalLeft + 30;
-		value = BaselineAverage (left, right, rawData, 31.0);
-		times.push_back (time);
-		values.push_back (value);
-		firsts.push_back (true);
-		lasts.push_back (false);
-		hasFirstKnot = true;
+
+		if ((left >= 0) && (right <= numberOfMeasurements1)) {
+
+			value = BaselineAverage(left, right, rawData, 31.0);
+			times.push_back(time);
+			values.push_back(value);
+			firsts.push_back(true);
+			lasts.push_back(false);
+			hasFirstKnot = true;
+		}
 
 		if (length <= 150) {
 
 			time = (double) (intervalRight - 15);
 			right = intervalRight;
 			left = intervalRight - 30;
-			value = BaselineAverage (left, right, rawData, 31.0);
-			times.push_back (time);
-			values.push_back (value);
-			firsts.push_back (false);
-			lasts.push_back (false);
+
+			if ((left >= 0) && (right <= numberOfMeasurements1)) {
+
+				value = BaselineAverage(left, right, rawData, 31.0);
+				times.push_back(time);
+				values.push_back(value);
+				firsts.push_back(false);
+				lasts.push_back(false);
+			}
+
 			return;
 		}
 	}
@@ -6958,12 +7153,16 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 
 		time = (double) (intervalLeft + 15);		// 02/03/2014:  This body of code can cause baseline to go awry under some conditions...
 		right = intervalLeft + 30;
-		value = BaselineAverage (left, right, rawData, 31.0);
-		times.push_back (time);
-		values.push_back (value);
-		firsts.push_back (true);
-		lasts.push_back (false);
-		hasFirstKnot = true;
+
+		if ((left >= 0) && (right <= numberOfMeasurements1)) {
+
+			value = BaselineAverage(left, right, rawData, 31.0);
+			times.push_back(time);
+			values.push_back(value);
+			firsts.push_back(true);
+			lasts.push_back(false);
+			hasFirstKnot = true;
+		}
 	}
 
 	if (length > 150) {
@@ -6973,12 +7172,16 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 
 		left = intervalLeft;
 		right = intervalLeft + 50;
-		time = (double) (left + 25);
-		value = BaselineAverage (left, right, rawData, 51.0);
-		times.push_back (time);
-		values.push_back (value);
-		firsts.push_back (true);
-		lasts.push_back (false);
+
+		if ((left >= 0) && (right <= numberOfMeasurements1)) {
+
+			time = (double)(left + 25);
+			value = BaselineAverage(left, right, rawData, 51.0);
+			times.push_back(time);
+			values.push_back(value);
+			firsts.push_back(true);
+			lasts.push_back(false);
+		}
 			
 		center = left;
 
@@ -6987,6 +7190,13 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 			center += segLength;
 			left = center - 25;
 			right = center + 25;
+
+			if (left < 0)
+				continue;
+
+			if (right > numberOfMeasurements1)
+				break;
+
 			value = BaselineAverage (left, right, rawData, 51.0);
 			time = (double) center;
 
@@ -7012,19 +7222,23 @@ void STRSampleChannelData :: AppendKnotDataWithEditingToLists (int intervalLeft,
 
 	right = intervalRight;
 	left = intervalRight - 50;
-	time = (double) (left + 25);
-	value = BaselineAverage (left, right, rawData, 51.0);
 
-	times.push_back (time);
-	values.push_back (value);
+	if ((left >= 0) && (right <= numberOfMeasurements1)) {
 
-	if (hasFirstKnot)
-		firsts.push_back (false);
+		time = (double)(left + 25);
+		value = BaselineAverage(left, right, rawData, 51.0);
 
-	else
-		firsts.push_back (true);
+		times.push_back(time);
+		values.push_back(value);
 
-	lasts.push_back (true);
+		if (hasFirstKnot)
+			firsts.push_back(false);
+
+		else
+			firsts.push_back(true);
+
+		lasts.push_back(true);
+	}
 }
 
 

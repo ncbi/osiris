@@ -98,17 +98,31 @@ private:
 class nwxLock
 {
 public:
+  enum
+  {
+    LOCK_ALREADY_LOCKED  = 1,
+    LOCK_NO_WRITE_PERM,
+    LOCK_NO_DIR,
+    LOCK_NO_CREATE,
+    LOCK_CANNOT_RELEASE,
+    LOCK_CANNOT_UPDATE
+  };
   nwxLock();
   nwxLock(const wxString &sDir,
       const wxString &sFileName = nwxLock_FILE,
       unsigned int nTimeout = nwxLock_TIMEOUT);
   virtual ~nwxLock();
 
+  int GetLastError()
+  {
+    return m_nLastError;
+  }
   bool IsOK()
   {
     return m_bDirExists;
   }
 
+  wxString GetLastErrorString(const wxString &sPrefix);
   wxString GetLockUser();
   static wxString GetLockUser(
       const wxString &sDir,
@@ -119,11 +133,7 @@ public:
   {
     return m_bHaveLock;
   }
-  bool Touch() // periodically update mod time to prevent timeout
-  {
-    bool bRtn = m_bHaveLock && m_fnFullPath.Touch();
-    return bRtn;
-  }
+  bool Touch(); // periodically update mod time to prevent timeout
   bool IsLockFile(const wxString &sDir, 
     const wxString &sFileName = nwxLock_FILE);
   bool Lock(const wxString &sDir, 
@@ -144,15 +154,23 @@ public:
   static void UnitTest();
 #endif
 private:
+  void _initLastError()
+  {
+    m_nLastError = 0;
+    m_sLastError.Empty();
+  }
+  void _setupLastError();
   unsigned long _GetAge();
   bool _CheckAge()
   {
     unsigned long n = _GetAge();
     return (n >= m_nTimeout);
   }
-
+  // 1/31/2018 - need failure to lock reason
+  wxString m_sLastError;
   wxFileName m_fnFullPath;
   unsigned long m_nTimeout;
+  int m_nLastError;
   bool m_bHaveLock;
   bool m_bDirExists;
 };

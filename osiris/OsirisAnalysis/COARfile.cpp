@@ -1573,6 +1573,44 @@ size_t COARfile::GetDisabledSamplesByIndex(std::vector<size_t> *pvNdx) const
   }
   return nRtn;
 }
+
+bool COARfile::IsLadderFree() const
+{
+  // OS-966 need to know if .oar/.oer file is ladder free
+  // when displaying preview because if so, the .plt
+  // file will not have locus/channel info
+  bool bRtn = false;
+  if (m_nLadderFree != LADDER_FREE_NOT_SET)
+  {
+    bRtn = (m_nLadderFree == LADDER_FREE_TRUE);
+  }
+  else
+  {
+    // set up m_nLadderFree
+
+    wxString s;
+    const wxString sSpace(" ");
+    const wxString sEmpty(wxEmptyString);
+    const wxString sSearch("ladderfree=true;");
+    const std::vector<wxString> &vsLines = this->m_heading.GetCommandLine();
+    for (std::vector<wxString>::const_iterator itr = vsLines.begin();
+      itr != vsLines.end();
+      ++itr)
+    {
+      s = (*itr);
+      s.Replace(sSpace, sEmpty, true);
+      s.MakeLower();
+      if (s == sSearch)
+      {
+        bRtn = true;
+        break;
+      }
+    }
+    m_nLadderFree = bRtn ? LADDER_FREE_TRUE : LADDER_FREE_FALSE;
+  }
+  return bRtn;
+}
+
 size_t COARfile::DeleteDisabledSamples(const wxString &sUserID)
 {
   std::vector<size_t> vnKill;

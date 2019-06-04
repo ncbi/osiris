@@ -274,6 +274,8 @@ PERSISTENT_PREDECLARATION (smNoNegativeDataPreset)
 PERSISTENT_PREDECLARATION (smTestPullupCorrectedHeightsPreset)
 PERSISTENT_PREDECLARATION (smTailHeightFittingThresholdFactor)
 PERSISTENT_PREDECLARATION (smTailSlopeFittingThresholdFactor)
+PERSISTENT_PREDECLARATION (smSelectUserSpecifiedMinRFUForPrimaryPeakPreset)
+PERSISTENT_PREDECLARATION (smRedundantPeak)
 
 
 
@@ -7621,6 +7623,62 @@ public:
 	smTailSlopeFittingThresholdFactor ();
 	smTailSlopeFittingThresholdFactor (const smTailSlopeFittingThresholdFactor& note);
 	virtual ~smTailSlopeFittingThresholdFactor ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSelectUserSpecifiedMinRFUForPrimaryPeakPreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSelectUserSpecifiedMinRFUForPrimaryPeakPreset)
+
+public:
+	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset ();
+	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset (const smSelectUserSpecifiedMinRFUForPrimaryPeakPreset& note);
+	virtual ~smSelectUserSpecifiedMinRFUForPrimaryPeakPreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smRedundantPeak : public SmartNotice {
+
+PERSISTENT_DECLARATION (smRedundantPeak)
+
+public:
+	smRedundantPeak ();
+	smRedundantPeak (const smRedundantPeak& note);
+	virtual ~smRedundantPeak ();
 
 	virtual int GetSubject () const;
 

@@ -286,6 +286,7 @@ public:
 	int TestForAcceptedTriAllele (Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes);
 
 	virtual Boolean ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
+	virtual Boolean ExtractSampleSignalsLF (RGDList& channelSignalList);
 //	virtual Boolean ExtractExtendedLadderSampleSignals (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
 	virtual bool ComputeExtendedLocusTimes (CoreBioComponent* grid, CoordinateTransform* inverseTransform, int channelNumber, CoreBioComponent* associatedGrid);
 
@@ -459,6 +460,7 @@ public:
 	virtual int TestResidualDisplacement ();
 
 	virtual int TestFractionalFiltersSM (RGDList& artifactList, RGDList& supplementalList);
+	virtual int TestFractionalFiltersSMLF ();
 
 	virtual Boolean ExtractGridSignalsSM (RGDList& channelSignalList, const LaneStandard* ls, ChannelData* lsData);
 	virtual int TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, ChannelData* laneStd);
@@ -477,6 +479,7 @@ public:
 	int MeasureInterlocusSignalAttributesSM ();
 
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes, RGDList& artifacts);
+	virtual int FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl);
 	double CalculateTotalAreaSM ();
 	int CorrectCrossChannelAnalysesSM (RGDList& artifacts, bool isNegCntl);
 	int CleanUpSignalListSM (RGDList& artifacts);
@@ -488,6 +491,7 @@ public:
 	int TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
 	int TestForMultiSignalsSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
 	int TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks, GenotypesForAMarkerSet* pGenotypes);
+	int TestForNearlyDuplicateAllelesSMLF (RGDList& artifacts, RGDList& signalList, RGDList& completeList, RGDList& smartPeaks);
 	void RetrieveSmartNoticesFromGridArtifactList (ChannelData* laneStandard);
 
 	void TestAllelesAgainstOverloadThresholdSM ();
@@ -856,6 +860,7 @@ public:
 	int GetLaneStandardChannel () const;
 	int GetNumberOfChannels () const;
 	double GetMinimumILSBPSearchRegion ();
+	int GetNumberOfLoci () const { return LocusList.Entries (); }
 
 	void BuildChannelAndLocusListForHeader (RGString& headerList);
 

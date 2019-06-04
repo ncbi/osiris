@@ -200,7 +200,6 @@ void CDialogEditPeak::_BuildAllele()
   pSizerLeft->Add(pRadio,0,wxALL ^ wxTOP, ID_BORDER);
   m_vpRadioAllele.push_back(pRadio);
 
-  // STOP HERE OFF LADDER WIDGET
   //  Off Ladder Radio buttons
   m_pCheckBoxLadderAccept = new wxCheckBox(this,m_ID_OFF_LADDER_ACCEPTED, wxT("Accept Off Ladder"));
   pSizerLeft->Add(m_pCheckBoxLadderAccept,0,wxALL,ID_BORDER);

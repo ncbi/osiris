@@ -33,11 +33,11 @@
 // of an array of transform values based on an initial value, a spacing and either a number of evaluations or a final value.
 //
 
-#include "rgdefs.h"
-#include "coordtrans.h"
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
+#include "rgdefs.h"
+#include "coordtrans.h"
 
 using namespace std;
 

@@ -213,6 +213,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_11F873EA542F401988FAC5B756F4524C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_13FF951E3ABE46CF97B0F2488E45236F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -328,6 +334,12 @@
         "Entry"
         {
         "MsmKey" = "8:_1EDD610FF1E640C0834D4E31744D0A7C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2169E9E4203F4DA69006E247FAFAFC86"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -465,6 +477,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_34D83B6E596C45EBA288B8DE2C28FB0E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_35C86465BC7B47FFAF22673EF83252C7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -508,6 +526,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3BADC67FCD4349C8A2D0AB991BFB04C2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3BBEB22BE08940369AA2C95586DDB36B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -574,6 +598,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3DFFEBDE98274DAA844F1B0FCF414026"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3EE27AA5C6304A35A5EFB20CE1E79CF9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -652,6 +682,12 @@
         "Entry"
         {
         "MsmKey" = "8:_45CEE9F137574A2EB681614DAD972DC6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_46E4AAF1CBD94949A2C7A063092A1FEA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -789,6 +825,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_550401314436476EAD46E1276A0DFA98"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_55AB17C73BB94661BB6020D1A3F8B256"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -856,6 +898,12 @@
         "Entry"
         {
         "MsmKey" = "8:_5E9E5A55242647C4B956A59DB8AD27D0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5EAEFE32B7704C52A5F951C1627B0963"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -933,6 +981,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_68EEE6134F194E08B1914AF86C513BCF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_698EFEF5190C45CF83A6790205EE6A9C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -970,6 +1024,12 @@
         "Entry"
         {
         "MsmKey" = "8:_6DB23B64DF6D4DA0AA9651CFE9A26E8B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E21B04C88B843DAB463E15C55DC6A61"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1263,12 +1323,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8C23ACAD6526423A94112F5FBBF06104"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_8D3C043F1D6B4551AB3254137459A674"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1300,6 +1354,12 @@
         "Entry"
         {
         "MsmKey" = "8:_915373D515FC4F39B981E9DC5A9C601B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_91561B91C70148F2AEAD5CBCFE9F31C2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1371,6 +1431,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9887A30C7F004A1782492772DDEBAFF5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_98F82173BE504FE58D4BBB5691F31276"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1402,6 +1468,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9CB3CCA3D00F4484804D07D5DCC890B1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9D07ED0B248744FC874B96F7F7C3D68F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1461,12 +1533,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A489312E47E549CA98C2A99C16636033"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A5062D46AB454D3FA442CE65D839348C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1510,6 +1576,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A92F1B53980141E7A79CDC3200D7EC14"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A9440818AED74B168E60F9CCE67D165B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1660,6 +1732,12 @@
         "Entry"
         {
         "MsmKey" = "8:_B69553FE297648E4AFA819E9AB27DF59"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8B9ADAF684D4AEAB9F50BF21CFA0320"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1876,6 +1954,12 @@
         "Entry"
         {
         "MsmKey" = "8:_CE3AEB5455E2435B88DCCC9AB9266C44"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CE6E70BBA07F48E5938297FC39880C46"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2229,6 +2313,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F8B2B4F13CFE4829811D5983056F3779"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F9D8FD21FD18460891CD16D59B5AA1DA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2310,7 +2400,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-Setup-2.11.1.msi"
+        "OutputFilename" = "8:Release\\Osiris-2.12.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -3012,6 +3102,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_11F873EA542F401988FAC5B756F4524C"
+            {
+            "SourcePath" = "8:..\\nwx\\pinger.vbs"
+            "TargetName" = "8:pinger.vbs"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_13FF951E3ABE46CF97B0F2488E45236F"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPFusion6C_HID\\PPFusion6C_HID_MessageBookV4.0.xml"
@@ -3398,6 +3508,26 @@
             "TargetName" = "8:QIAGEN_INVESTIGATOR24PLEX_HID_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_63FF35A40A1F4EB188B3F6CC4E2CA0F3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2169E9E4203F4DA69006E247FAFAFC86"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS_HID\\CORDIS_PLUS_HID_access.txt"
+            "TargetName" = "8:CORDIS_PLUS_HID_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_0CD9DC7B3C35462589356F0A6FA2CD57"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3852,6 +3982,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_34D83B6E596C45EBA288B8DE2C28FB0E"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.16.27012\\x86\\Microsoft.VC141.CRT\\msvcp140.dll"
+            "TargetName" = "8:msvcp140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_35C86465BC7B47FFAF22673EF83252C7"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID\\GFHID_StdSettings.xml"
@@ -3998,6 +4148,26 @@
             "TargetName" = "8:PPESI17_HID_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_3ECD197C226A4718950798C6E1C81DD7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3BBEB22BE08940369AA2C95586DDB36B"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.16.27012\\x86\\Microsoft.VC141.CRT\\vccorlib140.dll"
+            "TargetName" = "8:vccorlib140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4218,6 +4388,26 @@
             "TargetName" = "8:IDplusNO250_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_CF4865933136417CB5CE30C4AA5C69FC"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3EE27AA5C6304A35A5EFB20CE1E79CF9"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.16.27012\\x86\\Microsoft.VC141.CRT\\vcruntime140.dll"
+            "TargetName" = "8:vcruntime140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4478,6 +4668,26 @@
             "TargetName" = "8:PP12_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_0330BE14093849FC902EFEAB83B7442F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_46E4AAF1CBD94949A2C7A063092A1FEA"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.12.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.12.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4932,6 +5142,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_550401314436476EAD46E1276A0DFA98"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS\\CORDIS_PLUS_LabSettings.xml"
+            "TargetName" = "8:CORDIS_PLUS_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_76881CB4DA1246AFB133656163503618"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_55AB17C73BB94661BB6020D1A3F8B256"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\Identifiler_Artifacts\\_stutter_in_D3_D16_A03_TT50.fsa"
@@ -5158,6 +5388,26 @@
             "TargetName" = "8:iPLEXSTRLIZ500less250_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_33CCA340F59949B4A67936272BB68704"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5EAEFE32B7704C52A5F951C1627B0963"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS_HID\\CORDIS_PLUS_HID_MessageBookV4.0.xml"
+            "TargetName" = "8:CORDIS_PLUS_HID_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_0CD9DC7B3C35462589356F0A6FA2CD57"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5412,6 +5662,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68EEE6134F194E08B1914AF86C513BCF"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.16.27012\\x86\\Microsoft.VC141.CRT\\msvcp140_2.dll"
+            "TargetName" = "8:msvcp140_2.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_698EFEF5190C45CF83A6790205EE6A9C"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PP21\\PP21_StdSettings.xml"
@@ -5538,6 +5808,26 @@
             "TargetName" = "8:SEfilerPlus_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_BDDDE3F18BFC484FB4C42B101601E38C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E21B04C88B843DAB463E15C55DC6A61"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS\\CORDIS_PLUS_StdSettings.xml"
+            "TargetName" = "8:CORDIS_PLUS_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_76881CB4DA1246AFB133656163503618"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6512,26 +6802,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8C23ACAD6526423A94112F5FBBF06104"
-            {
-            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\redist\\x86\\Microsoft.VC100.CRT\\msvcr100.dll"
-            "TargetName" = "8:msvcr100.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8D3C043F1D6B4551AB3254137459A674"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GF\\GF_StdSettings.xml"
@@ -6636,6 +6906,26 @@
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\ILSAndLadderInfo.xml"
             "TargetName" = "8:ILSAndLadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_91561B91C70148F2AEAD5CBCFE9F31C2"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\COrDISPlus_LadderInfo.xml"
+            "TargetName" = "8:COrDISPlus_LadderInfo.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
@@ -6872,6 +7162,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9887A30C7F004A1782492772DDEBAFF5"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS_HID\\CORDIS_PLUS_HID_LabSettings.xml"
+            "TargetName" = "8:CORDIS_PLUS_HID_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_0CD9DC7B3C35462589356F0A6FA2CD57"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_98F82173BE504FE58D4BBB5691F31276"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\STRbaseIF\\Identifiler LADDER.fsa"
@@ -6978,6 +7288,26 @@
             "TargetName" = "8:QIAGEN_ARGUS_x12_QS_HID_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB683411A462421FA2D9F92136A0208D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9D07ED0B248744FC874B96F7F7C3D68F"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS\\CORDIS_PLUS_MessageBookV4.0.xml"
+            "TargetName" = "8:CORDIS_PLUS_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_76881CB4DA1246AFB133656163503618"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7172,26 +7502,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A489312E47E549CA98C2A99C16636033"
-            {
-            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\redist\\x86\\Microsoft.VC100.CRT\\msvcp100.dll"
-            "TargetName" = "8:msvcp100.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A5062D46AB454D3FA442CE65D839348C"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\Identifiler_Artifacts\\_sample_with_probem_laddr_D2_FGA_F04_C2(01-0801).fsa"
@@ -7338,6 +7648,26 @@
             "TargetName" = "8:A01_LADDER_Run_3100_1465_027_2002-12-31_418_01.fsa"
             "Tag" = "8:"
             "Folder" = "8:_29A20AC60A714F1FB99FA56689F3CDD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A9440818AED74B168E60F9CCE67D165B"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.16.27012\\x86\\Microsoft.VC141.CRT\\msvcp140_1.dll"
+            "TargetName" = "8:msvcp140_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7838,6 +8168,26 @@
             "TargetName" = "8:PP21_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_480B8C61F7684BB684C9763ABB9D6425"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B8B9ADAF684D4AEAB9F50BF21CFA0320"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS_HID\\CORDIS_PLUS_HID_StdSettings.xml"
+            "TargetName" = "8:CORDIS_PLUS_HID_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_0CD9DC7B3C35462589356F0A6FA2CD57"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8558,6 +8908,26 @@
             "TargetName" = "8:iPLEXSTR_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_0B3DBDF1941C4FE09B63AE93C618225B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CE6E70BBA07F48E5938297FC39880C46"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Redist\\MSVC\\14.16.27012\\x86\\Microsoft.VC141.CRT\\concrt140.dll"
+            "TargetName" = "8:concrt140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -9732,6 +10102,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F8B2B4F13CFE4829811D5983056F3779"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS\\CORDIS_PLUS_access.txt"
+            "TargetName" = "8:CORDIS_PLUS_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_76881CB4DA1246AFB133656163503618"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F9D8FD21FD18460891CD16D59B5AA1DA"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPFusion6C\\PPFusion6C_StdSettings.xml"
@@ -10250,6 +10640,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_0CD9DC7B3C35462589356F0A6FA2CD57"
+                                    {
+                                    "Name" = "8:CORDIS_PLUS_HID"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_56F929BEA4F84D33B208ACAA9A47C929"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_105824460557476A984B31D87D0171DB"
                                     {
                                     "Name" = "8:GF"
@@ -10543,6 +10944,17 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_A01EF42101574D619D39A1CCB0913FC6"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_76881CB4DA1246AFB133656163503618"
+                                    {
+                                    "Name" = "8:CORDIS_PLUS"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_F1919A4E222049BB863451094857B4EB"
                                         "Folders"
                                         {
                                         }
@@ -10888,15 +11300,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{5381F328-2B6B-4080-9C48-590758458E87}"
-        "PackageCode" = "8:{62AFA3A8-50C2-4664-B330-4E9D0CBE5484}"
+        "ProductCode" = "8:{28491093-80D1-4D57-AB8F-5491FF9F9C23}"
+        "PackageCode" = "8:{D2E51FA2-D08C-46F7-9822-E4259EBE3781}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.11.1003"
+        "ProductVersion" = "8:2.12.0016"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

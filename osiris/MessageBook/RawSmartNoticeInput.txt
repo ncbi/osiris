@@ -261,6 +261,8 @@ smNoNegativeDataPreset	1148	2664
 smTestPullupCorrectedHeightsPreset	1149	2665
 smTailHeightFittingThresholdFactor	1150	2666
 smTailSlopeFittingThresholdFactor	1151	2667
+smSelectUserSpecifiedMinRFUForPrimaryPeakPreset	1152	2668
+smRedundantPeak	1153	2669
 
 
 

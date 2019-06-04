@@ -309,10 +309,10 @@ bool CPanelLabGeneral::TransferDataToWindow()
       m_pRadioAnalyzed->SetValue(bDataAnalyzed);
 
       wxRadioButton *pRadio;
-      wxString sValue = m_pInfo->GetDataFileType();
       size_t nLEN = m_vpRadioFileType.size();
       bool bFound = false;
       bool b;
+      sValue = m_pInfo->GetDataFileType();
       if(sValue.Len())
       {
         for(size_t n = 0; n < nLEN; n++)

@@ -23,6 +23,7 @@ protected:
 */
 
 
+
 Panels :: Panels (const RGString& panelFileName) : mPanelFileName (panelFileName), mFoundFirstLine (false), mAtEndOfFile (false), mValid (true),
 mLineTokenizer (NULL), mAlleleTokenizer (NULL) {
 
@@ -37,11 +38,18 @@ mLineTokenizer (NULL), mAlleleTokenizer (NULL) {
 		return;
 	}
 
+	PanelsNumberOfLinesSkipped = LadderInputFile::GetNumberOfPanelsLinesSkipped ();
+	ColorColumn = LadderInputFile::GetColorColumn () - 1;
+	RepeatSizeColumn = LadderInputFile::GetRepeatSizeColumn () - 1;
+	AlleleListColumn = LadderInputFile::GetAlleleListColumn () - 1;
+	AlleleListDelineation = LadderInputFile::GetAlleleListDelineation ();
+	ColumnDelineation = LadderInputFile::GetColumnDelineation ();
+
 	mLineTokenizer = new RGStringTokenizer (mLineString);
 	mAlleleTokenizer = new RGStringTokenizer (mAlleleString);
-	mLineTokenizer->AddDelimiter ("\t");
+	mLineTokenizer->AddDelimiter (ColumnDelineation);
 	mLineTokenizer->AddRemoveItem ('\"');
-	mAlleleTokenizer->AddDelimiter (",");
+	mAlleleTokenizer->AddDelimiter (AlleleListDelineation);
 	mAlleleTokenizer->AddRemoveItem (' ');
 	mAlleleTokenizer->AddRemoveItem ('\"');
 }
@@ -68,7 +76,15 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 	RGStringArray alleleArrayDelimiters (250);
 	RGString* testString;
 	RGString* foundString;
-	size_t position;
+//	size_t position;
+
+	if (!mFoundFirstLine) {
+
+		int i;
+
+		for (i=1; i<=PanelsNumberOfLinesSkipped; i++)
+			status = mPanelInputFile->ReadLine (line);
+	}
 
 	if (!mFoundFirstLine) {
 
@@ -84,7 +100,7 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 
 			mLineString = line;
 
-			if (mLineString.FindSubstring ("Version", position))
+			/*if (mLineString.FindSubstring ("Version", position))
 				continue;
 
 			else if (mLineString.FindSubstring ("Kit type", position))
@@ -94,19 +110,18 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 				continue; 
 
 			else if (mLineString.FindSubstring ("Panel", position))
-				continue; 
+				continue; */
 
 			mLineTokenizer->ResetTokenizer ();
 			lineArrayTokens.ResetArray ();
 			lineArrayDelimiters.ResetArray ();
 			mLineTokenizer->Split (lineArrayTokens, lineArrayDelimiters);
 
-			//if (lineArrayTokens.Length () < 7) {
+			if (lineArrayTokens.Length () < 7) {
 
-			//	lineArrayTokens.ResetArray ();
-			//	lineArrayDelimiters.ResetArray ();
-			//	continue;
-			//}
+				mAtEndOfFile = true;
+				return NULL;
+			}
 
 			mFoundFirstLine = true;
 			break;
@@ -139,7 +154,7 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 
 	RGString locusName = lineArrayTokens [0];
 	//cout << "Panels locus name = " << locusName.GetData () << endl;
-	RGString color = lineArrayTokens [1];
+	RGString color = lineArrayTokens [ColorColumn];
 	//color.ToUpper ();
 	int length = lineArrayTokens.Length ();
 
@@ -148,8 +163,8 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 	if (lineArrayTokens [length - 1].Length () == 0)
 		length--;
 
-	int coreRepeat = lineArrayTokens [length - 3].ConvertToInteger ();
-	mAlleleString = lineArrayTokens [length - 1];
+	int coreRepeat = lineArrayTokens [RepeatSizeColumn].ConvertToInteger ();
+	mAlleleString = lineArrayTokens [AlleleListColumn];
 	
 	int channel = inputFile.GetChannelForColorName (color);
 	Allele* newAllele;
@@ -179,18 +194,32 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 	if (alleleArrayTokens [aLength - 1].Length () == 0)
 		aLength--;
 
+
 	int i;
 	
 	int curveNo = 5;
 	int bp = 0;
 	//cout << "Allele values:  ";
 
-	for (i=0; i<aLength; i++) {
+	if (aLength == 2) {
 
-		curveNo += 5;
-		newAllele = new Allele (alleleArrayTokens [i], curveNo, bp);
-		//cout << alleleArrayTokens [i].GetData () << ";";
-		newLocus->AddAllele (newAllele);
+			curveNo += 5;
+			newAllele = new Allele ("1", curveNo, bp);
+			newLocus->AddAllele (newAllele);
+			curveNo += 5;
+			newAllele = new Allele ("2", curveNo, bp);
+			newLocus->AddAllele (newAllele);
+	}
+
+	else {
+
+		for (i=0; i<aLength; i++) {
+
+			curveNo += 5;
+			newAllele = new Allele (alleleArrayTokens [i], curveNo, bp);
+			//cout << alleleArrayTokens [i].GetData () << ";";
+			newLocus->AddAllele (newAllele);
+		}
 	}
 
 	//  Test for YLinked status

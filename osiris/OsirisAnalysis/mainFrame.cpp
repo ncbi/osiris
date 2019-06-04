@@ -21,6 +21,16 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 
@@ -340,6 +350,11 @@ mainFrame::~mainFrame()
     m_pDialogColour->Destroy();
   }
 #endif
+  nwxLog::StopLogging();
+  // StopLogging()
+  //  if logging occurs after closing
+  //  each log message will be a popup
+  m_pDialogErrorLog->Close();
   m_pDialogErrorLog->Destroy();
 }
 bool mainFrame::Startup(bool bHasArgs)
@@ -354,6 +369,17 @@ bool mainFrame::Startup(bool bHasArgs)
   nwxFileUtil::SetDoNotSelectFile(parm->GetShowFileLocationDir());
   if(bRtn && !bHasArgs)
   {
+    if (!parm->GetPrivacySeen())
+    {
+      wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED, IDprivacy);
+      this->OnPrivacy(e);
+//#ifdef __WXMSW__
+//      GetEventHandler()->AddPendingEvent(e);
+//#else
+//      AddPendingEvent(e);
+//#endif
+
+    }
     if(parm->GetStartupMRU())
     {
       // send event to start up with the MRU window
@@ -466,6 +492,12 @@ CFramePlot *mainFrame::OpenGraphicFile(
     wxSize sz = GetChildSize();
     bool bShiftKeyDown = nwxKeyState::Shift();
     unsigned int nChannel = pData->GetChannelFromLocus(sLocus);
+    if ((!nChannel) && (pFile != NULL))
+    {
+      // OS-966 if ladder free, the channel number cannot be obtained 
+      // from the plot file so the .oar/.oer is searched
+      nChannel = pFile->GetChannelNrFromLocus(sLocus);
+    }
     pPlot = new CFramePlot(this,sz,pData.release(),pFile,mainApp::GetKitColors(),bShiftKeyDown,nChannel);
     // call ZoomOut or ZoomToLocus AFTER Show as a workaround for a bug in wxPlotCtrl
     // otherwise we would put it in the CFramePlot constructor
@@ -687,7 +719,11 @@ void mainFrame::PlaceFrame(CMDIFrame *pWin)
 #if mainFrameIsWindow
 void mainFrame::OnClose(wxCloseEvent &e)
 {
-  if(DoClose()) e.Skip();
+  if (DoClose())
+  {
+    mainApp::PingExit();
+    e.Skip();
+  }
 }
 #endif
 
@@ -837,7 +873,30 @@ void mainFrame::OnShowSiteSettings(wxCommandEvent &)
   }
 }
 
-
+void mainFrame::OnPinger(wxCommandEvent &e)
+{
+  if (!mainApp::SetPingerEnabled(e.IsChecked()))
+  {
+    mainApp::ShowError(
+      wxT("Cannot change this setting\npossibly due to access privileges"),
+      DialogParent());
+#ifdef __WXMAC__
+    wxMenuBar *pMenu = wxMenuBar::MacGetCommonMenuBar();
+#else
+    wxMenuBar *pMenu = GetMenuBar();
+    // linux TBD if ever implemented.
+#endif
+    wxMenuItem *pItem = (pMenu == NULL) ? NULL : pMenu->FindItem(IDpinger);
+    if (pItem == NULL)
+    {
+      nwxLog::LogMessage("Cannot find usage statistics menu item");
+    }
+    else
+    {
+      pItem->Check(mainApp::PingerEnabled());
+    }
+  }
+}
 void mainFrame::OnArtifactLabels(wxCommandEvent &)
 {
   {
@@ -876,6 +935,7 @@ void mainFrame::OnExportSettings(wxCommandEvent &)
     m_MDImgr.UpdateFileMenu();
   }
 }
+
 #if DRAG_DROP_FILES
 void mainFrame::_CheckDragDropQueue()
 {
@@ -991,6 +1051,10 @@ void mainFrame::OnHelp(wxCommandEvent &)
         sError.Append(sURL);
       }
     }
+    else
+    {
+      bError = false;
+    }
   }
   else
   {
@@ -1000,13 +1064,18 @@ void mainFrame::OnHelp(wxCommandEvent &)
   if(bError)
   {
     ErrorMessage(sError);
+    mainApp::Ping2(PING_EVENT, "help", "failed", "1");
+  }
+  else
+  {
+    mainApp::Ping(PING_EVENT, "help");
   }
 }
 void mainFrame::OnCheckForUpdates(wxCommandEvent &)
 {
   wxString sVersion = OSIRIS_VERS;
   wxString sURL(
-    "https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/version.cgi?OS="
+    "https://www.ncbi.nlm.nih.gov/osiris/version/?OS="
     OSIRIS_OS "&V=");
   wxString sTime;
   wxDateTime t;
@@ -1060,6 +1129,12 @@ void mainFrame::OnWindowMenu(wxCommandEvent &e)
 void mainFrame::OnAbout(wxCommandEvent &)
 {
   CDialogAbout x(DialogParent());
+  x.ShowModal();
+}
+void mainFrame::OnPrivacy(wxCommandEvent &)
+{
+  CParmOsiris::GetGlobal()->SetPrivacySeen(true);
+  CDialogPrivacy x(DialogParent());
   x.ShowModal();
 }
 void mainFrame::OnContactUs(wxCommandEvent &)
@@ -1398,6 +1473,7 @@ void mainFrame::ErrorMessage(const wxString &sMessage)
 }
 void mainFrame::OnShowLog(wxCommandEvent &)
 {
+  mainApp::Ping(PING_EVENT, "message-log");
   m_pDialogErrorLog->Show(true);
   m_pDialogErrorLog->Raise();
 }
@@ -1808,6 +1884,7 @@ void mainFrame::OnMenuClose(wxMenuEvent &e)
 #if DRAG_DROP_FILES
 void mainFrame::OnDropFiles(wxCommandEvent &)
 {
+  mainApp::Ping(PING_EVENT, "drag-drop-files");
   OpenFiles(m_pDropTarget->GetFiles());
 }
 #endif

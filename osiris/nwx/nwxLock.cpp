@@ -25,6 +25,9 @@
 *
 *  FileName: nwxLock.cpp
 *  Author:   Douglas Hoffman
+*   1/31/2018 - need failure to lock reason
+*     adding m_sLastError - string explaining last error
+*            m_nLastError - error number from class enumeration
 *
 */
 #include "nwx/nwxLock.h"
@@ -229,10 +232,8 @@ bool nwxLock::Lock(const wxString &sDir,const wxString &sFileName)
     if(!IsLockFile(sDir,sFileName))
     {
       ReleaseLock();
-      if(!m_bHaveLock)
-      {
-        m_fnFullPath.Assign(sDir,sFileName);
-      }
+      m_bHaveLock = false;
+      m_fnFullPath.Assign(sDir,sFileName);
     }
     if(!m_bHaveLock)
     {
@@ -244,7 +245,27 @@ bool nwxLock::Lock(const wxString &sDir,const wxString &sFileName)
 
 bool nwxLock::Lock()
 {
-  if(!(m_bHaveLock || IsLocked()))
+  //  need to determine reason if cannot lock
+  //   and update m_sLastError and m_nLastError
+  //   the latter is an integer set to a value from 
+  //   nwxLock enum
+  //  12/31/2018
+  _initLastError();
+  if (m_bHaveLock)
+  {} // done
+  else if (IsLocked())
+  {
+    m_nLastError = LOCK_ALREADY_LOCKED;
+  }
+  else if (!( m_fnFullPath.IsOk() && m_fnFullPath.DirExists() ))
+  {
+    m_nLastError = LOCK_NO_DIR;
+  }
+  else if (!m_fnFullPath.IsDirWritable())
+  {
+    m_nLastError = LOCK_NO_WRITE_PERM;
+  }
+  else
   {
     wxFile fh;
     wxString sPath = m_fnFullPath.GetFullPath();
@@ -257,13 +278,19 @@ bool nwxLock::Lock()
       if(!m_bHaveLock)
       {
         ::wxRemoveFile(sPath);
+        m_nLastError = LOCK_NO_CREATE;
       }
+    }
+    else
+    {
+      m_nLastError = LOCK_NO_CREATE;
     }
   }
   return m_bHaveLock;
 }
 bool nwxLock::ReleaseLock()
 {
+  _initLastError();
   if(m_bHaveLock)
   {
     wxString sPath = m_fnFullPath.GetFullPath();
@@ -272,10 +299,87 @@ bool nwxLock::ReleaseLock()
     {
       m_bHaveLock = false;
     }
+    else
+    {
+      m_nLastError = LOCK_CANNOT_RELEASE;
+    }
   }
   return !m_bHaveLock;
 }
+wxString nwxLock::GetLastErrorString(const wxString &sPrefix)
+{
+  wxString sRtn;
+  if (m_nLastError)
+  {
+    if (m_sLastError.IsEmpty())
+    {
+      _setupLastError();
+    }
+    if (!sPrefix.IsEmpty())
+    {
+      sRtn = sPrefix;
+      sRtn.Append(" ");
+    }
+    sRtn.Append(m_sLastError);
+  }
+  return sRtn;
+}
 
+void nwxLock::_setupLastError()
+{
+  switch (m_nLastError)
+  {
+  case 0:
+  case LOCK_ALREADY_LOCKED:
+  {
+    wxString sUser = GetLockUser();
+    if (sUser.IsEmpty())
+    {
+      m_sLastError = "is already locked.";
+    }
+    else
+    {
+      m_sLastError = "is already locked by ";
+      m_sLastError.Append(sUser);
+    }
+  }
+    break;
+  case LOCK_NO_WRITE_PERM:
+    m_sLastError = "cannot be locked because it is read only,\n"
+      "and cannot be modified.";
+    break;
+  case LOCK_NO_DIR:
+    m_sLastError = "cannot be locked because the directory does not exist.";
+    break;
+  case LOCK_NO_CREATE:
+    m_sLastError = "cannot be locked because the lock file cannot be created.";
+    break;
+  case LOCK_CANNOT_RELEASE:
+    // should not happen
+    m_sLastError = "cannot be unlocked.  \nAttempt to release lock failed.";
+    break;
+  case LOCK_CANNOT_UPDATE:
+    // should not happen
+    m_sLastError = "cannot be updated.  \nAttempt to update failed and this may time out.";
+    break;
+  }
+}
+bool nwxLock::Touch()
+{
+  _initLastError();
+  bool bRtn = false;
+  if (!m_bHaveLock)
+  {}
+  else if (!m_fnFullPath.Touch())
+  {
+    m_nLastError = LOCK_CANNOT_UPDATE;
+  }
+  else
+  {
+    bRtn = true;
+  }
+  return bRtn;
+}
 bool nwxLock::CheckTimeout()
 {
   //  the instance that has the lock should call this

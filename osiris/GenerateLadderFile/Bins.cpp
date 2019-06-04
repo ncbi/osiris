@@ -15,6 +15,7 @@ using namespace std;
 Bins :: Bins (const RGString& binsFileName) : mBinsFileName (binsFileName), mIsValid (true), mNumberOfLoci (0) {
 
 	mBinsInputFile = new RGFile (binsFileName, "rt");
+	mDelineation = LadderInputFile::GetBinsDelineation ();
 
 	if (!mBinsInputFile->isValid ())
 		mIsValid = false;
@@ -54,6 +55,8 @@ int Bins :: SplitFileIntoLocusStrings () {
 	fileSplit.AddDelimiter ("Marker Name");
 	RGStringArray delimiters;
 
+
+
 	mLocusStrings.ResetArray ();
 	fileSplit.Split (mLocusStrings, delimiters);
 	mNumberOfLoci = mLocusStrings.Length () - 1;  // subtract off header info
@@ -85,7 +88,7 @@ void Bins :: SplitLocusLine (RGString& lineString) {
 
 	mLocusLineFieldString.ResetArray ();
 	RGStringTokenizer lineSplit (lineString);
-	lineSplit.AddDelimiter ('\t');
+	lineSplit.AddDelimiter (mDelineation);
 	RGStringArray delimiters;
 
 	lineSplit.Split (mLocusLineFieldString, delimiters);

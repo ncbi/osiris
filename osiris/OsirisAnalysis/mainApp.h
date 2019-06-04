@@ -21,6 +21,16 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 
@@ -34,9 +44,11 @@
 #include <wx/app.h>
 #include <wx/string.h>
 #include <wx/arrstr.h>
+#include <wx/process.h>
 #include "wxXml2/wxXml2Object.h"
 #include "wxIDS.h"
 
+class nwxPinger;
 class ConfigDir;
 class CPersistKitList;
 class CILSLadderInfo;
@@ -82,7 +94,6 @@ public:
   virtual ~mainApp();
   virtual bool OnInit();
   void OnQuit(wxCommandEvent &e);
-
   // cmd line override
 #ifndef __WXMAC__
   virtual void  OnInitCmdLine (wxCmdLineParser &parser);
@@ -95,6 +106,7 @@ DECLARE_CMD_HANDLER(OnOpen)
 DECLARE_CMD_HANDLER(OnRecentFiles)
 DECLARE_CMD_HANDLER(OnLabSettings)
 DECLARE_CMD_HANDLER(OnArtifactLabels)
+DECLARE_CMD_HANDLER(OnPinger)
 DECLARE_CMD_HANDLER(OnExportSettings)
 DECLARE_CMD_HANDLER(OnEditGridColours)
 DECLARE_CMD_HANDLER(OnShowLog)
@@ -106,11 +118,11 @@ DECLARE_CMD_HANDLER(OnOpenArchive)
 DECLARE_CMD_HANDLER(OnOpenBatch)
 DECLARE_CMD_HANDLER(OnHelp)
 DECLARE_CMD_HANDLER(OnAbout)
+DECLARE_CMD_HANDLER(OnPrivacy)
 DECLARE_CMD_HANDLER(OnCheckForUpdates)
 DECLARE_CMD_HANDLER(OnContactUs)
 DECLARE_CMD_HANDLER(OnMenu)
 DECLARE_CMD_HANDLER(OnMaxLadderLabels)
-//DECLARE_CMD_HANDLER(OnSave) // commented out 9/16/16
 
   void OnActivate(wxActivateEvent &e);
 
@@ -154,9 +166,20 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   {
     return Confirm(parent,sPrompt,"Confirm");
   }
+  static bool PingerEnabled();
+  static bool SetPingerEnabled(bool bEnable);
+  static wxString _pingerFile();
   static bool ConfirmModificationsLost(wxWindow *parent);
   static bool SetupSiteSettings();
   static ConfigDir *GetConfig();
+  static nwxPinger *GetPinger();
+  static void Ping(const wxString &sName, const wxString &sValue);
+  static void Ping2(const wxString &sName, const wxString &sValue,
+    const wxString &sName2, const wxString &sValue2);
+  static void Ping3(const wxString &sName, const wxString &sValue,
+    const wxString &sName2, const wxString &sValue2,
+    const wxString &sName3, const wxString &sValue3);
+  static void PingExit();
   static nwxXmlMRU *GetMRU();
   static nwxXmlCmfList *GetCMFlist();
   static nwxXmlWindowSizes *GetWindowSizes();
@@ -173,6 +196,11 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
     const wxDateTime *pTime = NULL);
   static wxWindow *GetTopLevelParent(wxWindow *p);
   static void LAYOUT_HACK(wxWindow *p);
+  static int NewWindowNumber()
+  {
+    g_nWindowCounter++;
+    return g_nWindowCounter;
+  }
   
   static const wxString EMPTY_STRING;
   static const int DIALOG_STYLE;
@@ -190,6 +218,9 @@ private:
   static const wxString g_sINACTIVE;
 #endif
   void _Cleanup();
+  static void _cleanupPinger(bool bByUser = false);
+  static void _exitPinger();
+  static void _setupPinger();
   static void _LogMessage(const wxString &sMsg);
   static void _LogMessageFile(const wxString &sMsg, time_t t);
   static void _CloseMessageStream();
@@ -202,8 +233,10 @@ private:
   static CKitColors *m_pKitColors;
   static CArtifactLabels *m_pArtifactLabels;
   static wxFile *m_pFout;
+  static nwxPinger *g_pPinger;
   static int g_count;
   static int g_nMaxLogLevel;
+  static int g_nWindowCounter;
   static bool g_bSuppressMessages;
   static mainApp *g_pThis;
 
@@ -232,6 +265,14 @@ public:
     mainApp::SuppressMessages(m_bSave);
   }
 };
+
+// pinger types
+
+#define PING_WINDOW_NUMBER "windowNr"
+#define PING_WINDOW_OPEN "windowOpen-"
+#define PING_WINDOW_CLOSE "windowClose-"
+#define PING_EVENT "event"
+#define PING_ERROR "error"
 
 
 #endif

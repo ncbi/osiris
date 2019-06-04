@@ -370,6 +370,10 @@ public:
   {
     SetColCount(this,nCols);
   }
+  void SetRowColCount(int nRows, int nCols)
+  {
+    SetRowColCount(this, nRows, nCols);
+  }
   void SetMessageGrid(const wxString &s)
   {
     SetMessageGrid(this,s);

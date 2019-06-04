@@ -21,6 +21,16 @@
 *                                                                          
 *  Please cite the author in any work or product based on this material.   
 *
+*  OSIRIS is a desktop tool working on your computer with your own data.
+*  Your sample profile data is processed on your computer and is not sent
+*  over the internet.
+*
+*  For quality monitoring, OSIRIS sends some information about usage
+*  statistics  back to NCBI.  This information is limited to use of the
+*  tool, without any sample, profile or batch data that would reveal the
+*  context of your analysis.  For more details and instructions on opting
+*  out, see the Privacy Information section of the OSIRIS User's Guide.
+*
 * ===========================================================================
 *
 *  FileName: CDialogCMF.cpp
@@ -182,6 +192,17 @@ void CDialogCMF::_ComputeSize()
   //wxSize szScreen = wxGetDisplaySize();
   int nMaxW = szScreen.GetWidth() - 40;
   int nMaxH = szScreen.GetHeight() - 100 - MENU_BAR_ALLOWANCE;
+  // OS-920 increase height of table
+  // to accommodate a horizontal scrollbar
+  // by adding height of one row
+  int nRowH = m_pGrid->GetRowSize(0);
+#ifdef __WXMAC__
+  int nH = szGridV.GetHeight() + nRowH + nRowH;
+#else
+  int nH = szGridV.GetHeight() + nRowH;
+#endif
+  szGridV.SetHeight(nH);
+  // OS-920 - end
   sz -= szGrid;
   sz += szGridV;
   sz.SetHeight(sz.GetHeight() + 40);
@@ -278,6 +299,15 @@ bool CDialogCMF::_SaveFile(const wxString &sFileName)
 {
   wxBusyCursor xxx;
   bool bRtn = m_pCMF->SaveFile(sFileName);
+  if (bRtn)
+  {
+    mainApp::Ping(PING_EVENT, "CMF-save");
+  }
+  else
+  {
+    mainApp::Ping2(PING_EVENT, "CMF-save", "failed", "1");
+  }
+
   return bRtn;
 }
 bool CDialogCMF::TransferDataFromWindow()

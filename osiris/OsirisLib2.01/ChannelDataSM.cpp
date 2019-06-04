@@ -1112,6 +1112,18 @@ void ChannelData :: ClearAllPeaksBelowAnalysisThreshold () {
 }
 
 
+int ChannelData :: ApplyFractionalFiltersSMLF () {
+
+	Locus* nextLocus;
+	RGDListIterator it (mLocusList);
+
+	while (nextLocus = (Locus*) it ())
+		nextLocus->TestFractionalFiltersSMLF ();
+
+	return 0;
+}
+
+
 int ChannelData :: TestFitCriteriaSM (DataSignal* signal) {
 
 	//
@@ -1304,7 +1316,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double numberOfSamples = (double)mData->GetNumberOfSamples ();
 	int position = 0;
 
-	while (nextSignal = (DataSignal*) it ()) {
+	while (nextSignal = (DataSignal*) itt ()) {
 
 		lineFit = mData->TestConstantCharacteristicRetry (nextSignal, constantHeight, leftEndPoint, rightEndPoint);
 
@@ -1321,7 +1333,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		double mean = nextSignal->GetMean ();
 		position++;
 
-		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (height == numeric_limits<double>::infinity()) || (height <= 0.0) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable ()) {
+		if (ISNAN (sigma) || ISNAN (height) || (sigma == numeric_limits<double>::infinity()) || (abs (height) == numeric_limits<double>::infinity()) || (height <= 0.0) || (sigma < 0.0) || (mean >= numberOfSamples) || (sigma > 0.05 * (double)numberOfSamples) || nextSignal->MayBeUnacceptable ()) {
 
 			if (mean >= numberOfSamples)
 				cout << "Found a bad peak on channel " << mChannel << ":  mean = " << mean << ", height = " << height << ", and sigma = " << sigma << " in position " << position << " with left limit = " << nextSignal->LeftEndPoint () << " and right limit = " << nextSignal->RightEndPoint () << " with type " << nextSignal->GetSignalType () << "\n";
@@ -1512,6 +1524,12 @@ int ChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text, RGTextOu
 
 
 int ChannelData :: AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, CoordinateTransform* timeMap) {
+
+	return -1;
+}
+
+
+int ChannelData :: AssignSampleCharacteristicsToLociSMLF () {
 
 	return -1;
 }
@@ -2244,6 +2262,76 @@ int ChannelData :: RemoveSignalsOutsideLaneStandardSM (ChannelData* laneStandard
 	}
 
 	AnalyzeDynamicBaselineSM ((int) left, reportMinTime);
+
+	return 0;
+}
+
+
+int ChannelData::RemoveSignalsOutsideLaneStandardSMLF (ChannelData* laneStandard) {
+
+	//
+	//  This is ladder and sample stage 1
+	//
+
+	//	This function removes peaks to left of ILS or specified minimum BioID (ILS) for reporting artifacts.  The purpose is to minimize
+	// the effects of the primer peaks on the reported artifacts and alleles of a sample.
+
+	RGDListIterator it(PreliminaryCurveList);
+	DataSignal* nextSignal;
+	double left = laneStandard->GetFirstAnalyzedMean();
+	double right = laneStandard->GetLastAnalyzedMean();
+	double mean;
+	smPeakOutsideILS peakOutsideILS;
+	smPeakToRightOfILS peakToRightOfILS;
+	smTestRelativeBaselinePreset testRelativeBaselinePreset;
+	double reportMin = (double)CoreBioComponent::GetMinBioIDForArtifacts();
+	double reportMinTime;
+
+	// if..else clause below modified 03/13/2015
+	if (reportMin > 0.0)
+		reportMinTime = laneStandard->GetTimeForSpecifiedID(reportMin);
+
+	else
+		reportMinTime = -1.0;
+
+	TestForRaisedBaselineAndExcessiveNoiseSM(left, reportMinTime);
+
+	while (nextSignal = (DataSignal*)it())
+		nextSignal->TestSignalGroupsWithinILS(left, right, reportMin);	// This doesn't do anything as of 03/13/2015
+
+	it.Reset();
+
+	while (nextSignal = (DataSignal*)it()) {
+
+		mean = nextSignal->GetMean();
+
+		if (!CoreBioComponent::SignalIsWithinAnalysisRegion(nextSignal, left)) {	// modified 03/13/2015
+
+			it.RemoveCurrentItem();
+			nextSignal->AddNoticeToList(OutputLevelManager::PeakOutsideLaneStandard, "", "Signal lies outside internal lane standard interval");
+			nextSignal->SetMessageValue(peakOutsideILS, true);
+			continue;
+		}
+
+		else if (mean < reportMinTime) {	// added 03/13/2015
+
+			//nextSignal->AddNoticeToList(OutputLevelManager::PeakOutsideLaneStandard, "", "Signal lies outside internal lane standard interval");
+			//nextSignal->SetMessageValue(peakOutsideILS, true);
+			it.RemoveCurrentItem();
+			continue;
+		}
+
+		if (mean > right) {
+
+			nextSignal->AddNoticeToList(OutputLevelManager::PeakOutsideLaneStandard, "", "Signal lies to right of internal lane standard interval");
+			nextSignal->SetMessageValue(peakToRightOfILS, true);
+		}
+
+		if (!nextSignal->DontLook())
+			SmartPeaks.Append(nextSignal);
+	}
+
+	AnalyzeDynamicBaselineSM((int)left, reportMinTime);
 
 	return 0;
 }

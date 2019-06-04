@@ -372,10 +372,10 @@ PERSISTENT_DEFINITION (NoisyPeak, _NOISYPEAK_, "NoisyPeak")
 PERSISTENT_DEFINITION (SpikeSignal, _SPIKESIGNAL_, "SpikeSignal")
 
 
-SampleDataInfo :: SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, 
-double spacing, double abscissaLeft) :
-DataLeft (segL), DataCenter (segC), DataRight (segR), IndexLeft (indL), IndexCenter (indC), IndexRight (indR), NumberOfSamples (N),
-Spacing (spacing), AbscissaLeft (abscissaLeft) {}
+SampleDataInfo :: SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, double spacing, double abscissaLeft) :
+	DataLeft (segL), DataCenter (segC), DataRight (segR), IndexLeft (indL), IndexCenter (indC), IndexRight (indR), NumberOfSamples (N), Spacing (spacing), AbscissaLeft (abscissaLeft) {
+
+}
 
 
 SampleDataInfo :: SampleDataInfo (const DataSignal& ds, int indL, int indC, int indR, int N) :
@@ -1111,7 +1111,7 @@ DataSignal :: DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMe
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
 		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL) {
+		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -1139,7 +1139,7 @@ mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRigh
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
 mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL) {
+mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -1177,6 +1177,7 @@ DataSignal :: ~DataSignal () {
 
 	delete mThisDataSegment;
 	delete[] mWeakPullupVector;
+	delete[] mIsPurePullup;
 }
 
 
@@ -1309,6 +1310,8 @@ void DataSignal :: RemoveAllCrossChannelSignalLinks () {
 
 	mCrossChannelSignalLinks.Clear ();
 	mPrimaryCrossChannelLink = NULL;
+//	delete mInterchannelLink;
+	mInterchannelLink = NULL;
 }
 
 
@@ -1372,16 +1375,18 @@ double DataSignal :: GetPullupFromChannel (int i) const {
 
 double DataSignal :: GetTotalPullupFromOtherChannels (int numberOfChannels) const {
 
-	if (mPullupCorrectionArray == NULL)
-		return 0.0;
+	return GetTotalPullupFromOtherChannelsSM (numberOfChannels);
 
-	int i;
-	double total = 0.0;
+	//if (mPullupCorrectionArray == NULL)
+	//	return 0.0;
 
-	for (i=1; i<=numberOfChannels; i++)
-		total += GetPullupFromChannel (i);
+	//int i;
+	//double total = 0.0;
 
-	return total;
+	//for (i=1; i<=numberOfChannels; i++)
+	//	total += GetPullupFromChannel (i);
+
+	//return total;
 }
 
 
@@ -1397,6 +1402,32 @@ void DataSignal :: SetPullupFromChannel (int i, double value, int numberOfChanne
 	}
 
 	mPullupCorrectionArray [i] = value;
+}
+
+
+void DataSignal::SetIsPurePullupFromChannel (int i, bool value, int numberOfChannels) {
+
+	int j;
+
+	if (mIsPurePullup == NULL) {
+
+		mIsPurePullup = new bool [numberOfChannels + 1];
+
+		for (j=1; j<=numberOfChannels; j++)
+			mIsPurePullup [j] = false;
+	}
+
+	mIsPurePullup [i] = value;
+}
+
+
+
+bool DataSignal::GetIsPurePullupFromChannel (int i) {
+
+	if (mIsPurePullup == NULL)
+		return false;
+
+	return mIsPurePullup [i];
 }
 
 
@@ -1484,6 +1515,7 @@ RGString DataSignal :: CreateUncertainPullupString () {
 			result << ", ";
 
 		result << channel;
+		i++;
 	}
 
 	return result;
@@ -2496,6 +2528,24 @@ void DataSignal :: RemoveStutterLink (DataSignal* ds) {
 	mHasStutterLeftList.RemoveReference (ds);
 	mHasStutterRightList.RemoveReference (ds);
 
+}
+
+
+RGString DataSignal :: CalculateAlleleNameFromILSBP_LF () {
+
+	int IntegerPart = (int)floor (ApproximateBioID);
+	double fraction = ApproximateBioID - (double)IntegerPart;
+	int fractionalPart = (int)floor (10.0 * fraction + 0.5);
+
+	if (fractionalPart >= 10) {
+
+		IntegerPart++;
+		fractionalPart -= 10;
+	}
+
+	RGString alleleName;
+	alleleName << IntegerPart << "." << fractionalPart;
+	return alleleName;
 }
 
 
@@ -3545,13 +3595,29 @@ DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfW
 	FirstTime = true;
 	int timeSplit = (int) floor (splitTime);
 
+	int upperLimit;
+	int lowerLimit;
+	double sum;
+
 	divisor = (double) (2 * halfWidth + 1);
+	lowerLimit = 0;
+
+	for (i=0; i<startPt; i++) {
+
+		upperLimit = i + halfWidth;	
+		sum = 0.0;
+
+		for (j=lowerLimit; j<=upperLimit; j++)
+			sum += Measurements[j];
+
+		smoothedData[i] = sum / divisor;
+	}
 
 	for (i=startPt; i<=endPt; i++) {
 
-		double sum = 0.0;
-		int upperLimit = i + halfWidth;
-		int lowerLimit = i - halfWidth;
+		sum = 0.0;
+		upperLimit = i + halfWidth;
+		lowerLimit = i - halfWidth;
 
 		if (FirstTime) {
 
@@ -3569,6 +3635,19 @@ DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfW
 			previous = previous - Measurements [lowerLimit - 1] + Measurements [upperLimit]; //previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
 			smoothedData [i] = previous / divisor;
 		}
+	}
+
+	upperLimit = NumberOfSamples - 1;
+
+	for (i=endPt+1; i<NumberOfSamples; i++) {
+
+		sum = 0.0;
+		lowerLimit = i - halfWidth;
+		
+		for (j=lowerLimit; j<=upperLimit; j++)
+			sum += Measurements[j];
+
+		smoothedData[i] = sum / divisor;
 	}
 
 	k = 0;
@@ -12776,14 +12855,14 @@ double NoisyPeak :: GetPrimaryPullupDisplacementThreshold () {
 	if ((mNext == NULL) || (mPrevious == NULL))
 		return 2.0;
 
-	return mSigma;
+	return 0.5 * GetWidth ();
 }
 
 
 
 double NoisyPeak :: GetPrimaryPullupDisplacementThreshold (double nSigmas) {
 
-	return nSigmas * mSigma;
+	return 0.5 * nSigmas * GetWidth ();
 }
 
 

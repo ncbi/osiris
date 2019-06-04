@@ -264,6 +264,14 @@ void nwxXmlPersist::_SetFileName(const wxString &sFileName)
     m_dtFileModTime.Set((time_t)0);
   }
 }
+bool nwxXmlPersist::FileExists()
+{
+  // if file was loaded, check if the file still exists
+  // b/c of possibility that file was removed from another process
+  const wxString &s(GetLastFileName());
+  bool bRtn = s.IsEmpty() ? false : wxFileName::FileExists(s);
+  return bRtn;
+}
 bool nwxXmlPersist::CheckFileModification(bool bReload)
 {
   bool bRtn = false;

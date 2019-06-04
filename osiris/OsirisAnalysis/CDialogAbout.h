@@ -34,6 +34,7 @@
 #include <wx/panel.h>
 #include <wx/dialog.h>
 #include <wx/bitmap.h>
+#include "nwx/PersistentSize.h"
 
 class CPanelAbout : public wxPanel
 {
@@ -47,6 +48,21 @@ public:
   CDialogAbout(wxWindow *parent);
 private:
   static const wxString g_sReadMe;
+  DECLARE_ABSTRACT_CLASS(CDialogAbout)
+  DECLARE_PERSISTENT_SIZE
+  DECLARE_EVENT_TABLE()
+};
+
+//OS-1160 privacy dialog
+
+class CDialogPrivacy : public wxDialog
+{
+public:
+  CDialogPrivacy(wxWindow *parent);
+  void OnHelp(wxCommandEvent &);
+  DECLARE_ABSTRACT_CLASS(CDialogPrivacy)
+  DECLARE_PERSISTENT_SIZE
+  DECLARE_EVENT_TABLE()
 };
 
 

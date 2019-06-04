@@ -47,7 +47,10 @@ public:
   }
   static void LogMessage(const wxString &sMsg)
   {
-    wxLogMessage("%s",sMsg.utf8_str());
+    if (!STOPPED)
+    {
+      wxLogMessage("%s", sMsg.utf8_str());
+    }
     if(g_CALLBACK != NULL)
     {
       time_t t;
@@ -59,10 +62,10 @@ public:
   {
     time_t t;
     time(&t);
-    wxLog::OnLog(wxLOG_Message,sMsg,t);
-    if(g_CALLBACK != NULL)
+    wxLog::OnLog(wxLOG_Message, sMsg, t);
+    if (g_CALLBACK != NULL)
     {
-      (*g_CALLBACK)(sMsg,t);
+      (*g_CALLBACK)(sMsg, t);
     }
   }
   static void LogMessageV(const wxChar *psFormat,...)
@@ -73,9 +76,22 @@ public:
     va_end(ap);
     LogMessage(s);
   }
+  static void StopLogging()
+  {
+    STOPPED = true;
+  }
+  static void StartLogging()
+  {
+    STOPPED = false;
+  }
+  static bool IsStopped()
+  {
+    return STOPPED;
+  }
 private:
   nwxLog() {} // prevent instantiation
   static logCALLBACK g_CALLBACK;
+  static bool STOPPED;
 };
 
 

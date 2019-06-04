@@ -102,7 +102,6 @@ public:
      const wxString &sTimeStamp) :
       m_parmOsiris(CParmOsiris::NO_INIT)
   {
-    // STOP HERE - setup time stamp
     _Init();
     SetInputDir(sInput);
     m_sTimeStamp = sTimeStamp;

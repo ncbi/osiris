@@ -125,6 +125,10 @@ using namespace std;
 
 struct SampleDataInfo {
 
+	SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, double spacing, double abscissaLeft);
+	SampleDataInfo (const DataSignal& ds, int indL, int indC, int indR, int N);
+	~SampleDataInfo ();
+
 	const double* DataLeft;
 	const double* DataCenter;
 	const double* DataRight;
@@ -134,11 +138,6 @@ struct SampleDataInfo {
 	int NumberOfSamples;
 	double Spacing;
 	double AbscissaLeft;
-
-	SampleDataInfo (const double* segL, const double* segC, const double* segR, int indL, int indC, int indR, int N, 
-		double spacing, double abscissaLeft);
-	SampleDataInfo (const DataSignal& ds, int indL, int indC, int indR, int N);
-	~SampleDataInfo ();
 
 	double GetMaxInInterval (int left, int right);
 };
@@ -322,7 +321,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -340,7 +339,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -386,6 +385,9 @@ public:
 
 	void SetMayBeUnacceptable (bool r) { mMayBeUnacceptable = r; }
 	bool MayBeUnacceptable () const { return mMayBeUnacceptable; }
+
+	void SetCouldBePullup (bool r) { mCouldBePullup = r; }
+	bool GetCouldBePullup () { return mCouldBePullup; }
 
 	void SetAcceptedOffGrid (bool r) { mAcceptedOffGrid = r; }
 	bool IsAcceptedOffGrid () const { return mAcceptedOffGrid; }
@@ -499,6 +501,9 @@ public:
 	double GetPullupFromChannel (int i) const;
 	double GetTotalPullupFromOtherChannels (int numberOfChannels) const;
 	void SetPullupFromChannel (int i, double value, int numberOfChannels);
+
+	void SetIsPurePullupFromChannel (int i, bool value, int numberOfChannels);
+	bool GetIsPurePullupFromChannel (int i);
 
 	DataSignal* HasPrimarySignalFromChannel (int i) const;
 	void SetPrimarySignalFromChannel (int i, DataSignal* ds, int numberOfChannels);
@@ -673,11 +678,21 @@ public:
 	int GetNumberOfPrimaryStutterSignals () const { return mStutterPrimaryList.Entries (); }
 	int GetNumberOfLeftPrimaryStutterSignals () const { return mLeftStutterPrimaryList.Entries (); }
 	int GetNumberOfRightPrimaryStutterSignals () const { return mRightStutterPrimaryList.Entries (); }
-	RGString GetStutterRatio () const;
-	RGString GetLeftStutterRatio () const;
-	RGString GetRightStutterRatio () const;
+	//RGString GetStutterRatio () const;
+	//RGString GetLeftStutterRatio () const;
+	//RGString GetRightStutterRatio () const;
 	double GetCumulativeStutterThreshold () const { return mCumulativeStutterThreshold; }
 
+	void SetTempDataForOccludedPrimary (const RGString& str) { mTempDataForOccudedPrimary = str; }
+	RGString GetTempDataForOccludedPrimary () const { return mTempDataForOccudedPrimary; }
+
+	void SetTempDataForPrimaryNoPullup (const RGString& str) { mTempDataForPrimaryNoPullup = str; }
+	RGString GetTempDataForPrimaryNoPullup () const { return mTempDataForPrimaryNoPullup; }
+
+	void SetTempDataForPrimaryRawDataPullup (const RGString& str) { mTempDataForPrimaryRawDataPullup = str; }
+	RGString GetTempDataForPrimaryRawDataPullup () const { return mTempDataForPrimaryRawDataPullup; }
+
+	RGString CalculateAlleleNameFromILSBP_LF ();
 
 	virtual bool LiesBelowHeightAt (double x, double height);
 	virtual bool TestForIntersectionWithPrimary (DataSignal* primary);
@@ -846,6 +861,8 @@ public:
 	void SetAllowPeakEdit (bool allow) { mAllowPeakEdit = allow; }
 	void CapturePullupDataFromSM (DataSignal* prevSignal, DataSignal* nextSignal);
 
+	double GetTotalPullupFromOtherChannelsSM (int numberOfChannels) const;
+
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual RGString GetDebugIDIndent () const;
 
@@ -875,6 +892,7 @@ public:
 	bool SetPullupMessageDataSM (int numberOfChannels);
 	bool SetPrimaryPullupMessageDataSM (int numberOfChannels);
 	bool HasPullupFromSameChannelAsSM (DataSignal* ds, int numberOfChannels);
+	virtual double GetPullupCorrectionFromPrimariesWithNoPullupSM (int numberOfChannels);
 
 	RGString GetDataForNoticeSM (SmartNotice& sn);
 	void CapturePullupCorrections (DataSignal* ds);
@@ -998,6 +1016,12 @@ protected:
 	DataInterval* mThisDataSegment;
 	bool* mWeakPullupVector;
 	list<int> mWeakPullupChannels;
+	bool* mIsPurePullup;
+
+	RGString mTempDataForOccudedPrimary;
+	RGString mTempDataForPrimaryNoPullup;
+	RGString mTempDataForPrimaryRawDataPullup;
+	bool mCouldBePullup;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;
@@ -1437,8 +1461,8 @@ public:
 	virtual void ComputeTails (double& tailLeft, double& tailRight) const;
 	virtual bool IsUnimodal () const;
 	virtual double GetPullupToleranceInBP (double noise) const;
-	virtual double GetPrimaryPullupDisplacementThreshold () { return 3.0 * StandardDeviation; }
-	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return nSigmas * StandardDeviation; }
+	virtual double GetPrimaryPullupDisplacementThreshold () { return 0.5 * GetWidth (); }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.5 * nSigmas * GetWidth (); }
 
 	virtual DataSignal* FindNextCharacteristicFromRight (const DataSignal& Signature, 
 		double& fit, RGDList& previous);
@@ -1530,8 +1554,8 @@ public:
 
 	virtual void OutputDebugID (SmartMessagingComm& comm, int numHigherObjects);
 	virtual double GetPullupToleranceInBP (double noise) const;
-	virtual double GetPrimaryPullupDisplacementThreshold () { return 3.0 * StandardDeviation; }
-	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return nSigmas * StandardDeviation; }
+	virtual double GetPrimaryPullupDisplacementThreshold () { return 0.5 * GetWidth (); }
+	virtual double GetPrimaryPullupDisplacementThreshold (double nSigmas) { return 0.5 * nSigmas * GetWidth (); }
 
 	static double GetSigmaWidth () { return SigmaWidth; }
 	static void SetSigmaWidth (double width) { SigmaWidth = width; }

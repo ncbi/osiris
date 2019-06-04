@@ -37,6 +37,7 @@
 #include "CDirList.h"
 #include "CParmOsiris.h"
 #include "CVolumes.h"
+#include "CKitList.h"
 #include "nwx/nwxFileUtil.h"
 #ifdef __WXMSW__
 #define strdup _strdup
@@ -70,6 +71,7 @@ CProcessAnalysis::CProcessAnalysis(
   wxString s;
   const CParmOsiris *pParm = pDirEntry->GetParmOsiris();
   const ConfigDir *pDir = mainApp::GetConfig();
+  CPersistKitList *pKitList = mainApp::GetKitList();
   
   sStdin.Alloc(4096);
   APPEND_LINE("InputDirectory",pParm->GetInputDirectory());      //  1
@@ -82,6 +84,14 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_INT("MinLaneStandardRFU",pParm->GetMinRFU_ILS());       //  8
   APPEND_INT("MinLadderRFU",pParm->GetMinRFU_Ladder());          //  9
   APPEND_INT("MinInterlocusRFU",pParm->GetMinRFU_Interlocus());  // 10
+  if (pKitList->IsLadderFree(pParm->GetKitName()))
+  {
+    // IF this is no longer needed in the future, 
+    // the function
+    //     bool COARfile::IsLadderFree()
+    // will need to be rewritten
+    APPEND_LINE("LadderFree", "true");
+  }
 
   // channel data
 
@@ -122,10 +132,10 @@ CProcessAnalysis::CProcessAnalysis(
 
   if(pParm->GetTimeStampSubDir())
   {
-    const wxString &s = pDirEntry->GetTimeStamp();
-    if(!s.IsEmpty())
+    const wxString &s1 = pDirEntry->GetTimeStamp();
+    if(!s1.IsEmpty())
     {
-      APPEND_LINE("OutputSubdirectory",s);
+      APPEND_LINE("OutputSubdirectory",s1);
     }
     else
     {
@@ -183,29 +193,8 @@ CProcessAnalysis::CProcessAnalysis(
   char *argv[] = { m_psExe, NULL  };
   m_dProgress = 0.0;
   Run(argv);
-  wxOutputStream *pOut = GetOutputStream();
-  wxASSERT_MSG(pOut != NULL,"Cannot get output stream for process");
   mainApp::LogMessage(sStdin);
-  if(pOut != NULL)
-  {
-    const char *pChar = sStdin.ToUTF8();
-    size_t nLen = sStdin.Len();
-    size_t n;
-    while(nLen > 0)
-    {
-      n = pOut->Write((void *)pChar,nLen).LastWrite();
-      if(n)
-      {
-        pChar += n;
-        nLen -= n;
-      }
-      else
-      {
-        nLen = 0;
-        Cancel();
-      }
-    }
-  }
+  WriteToProcess(sStdin);
 }
 
 CProcessAnalysis::~CProcessAnalysis() 

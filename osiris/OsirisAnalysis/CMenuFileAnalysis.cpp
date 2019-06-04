@@ -52,14 +52,6 @@ CMenuFileAnalysis::CMenuFileAnalysis() :
   Insert(nInsert++,IDArchiveCreate,ARCHIVE_CREATE);
   Insert(nInsert++,wxID_SAVE);
   Insert(nInsert++,wxID_SAVEAS);
-  // STOP HERE - add entries for archives
-//  IDArchiveCreate;
-//  IDArchiveExtract
-//   static const wxString ARCHIVE_CREATE;
-//   static const wxString ARCHIVE_EXTRACT;
-
-
-
   Insert(nInsert++,
     IDExportCMF,EXPORT_CMF,EXPORT_CMF_HELP);
 }

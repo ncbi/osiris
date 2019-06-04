@@ -414,10 +414,13 @@ public:
 	virtual int SetRawDataSM (SampleData& fileData, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual int SetRawDataFromColorCorrectedArraySM (double* dataArray, int arraySize, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
 	virtual int AssignSampleCharacteristicsToLociSM (CoreBioComponent* grid, CoordinateTransform* timeMap);
+	virtual int AssignSampleCharacteristicsToLociSMLF ();
+	virtual int TestForNearlyDuplicateAllelesSMLF ();
 	virtual int AnalyzeSampleLociSM (ChannelData* lsData, RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print = TRUE);
 	virtual int TestFractionalFiltersSM ();
 	virtual int TestForInterlocusProximityArtifactsSM ();
 	virtual int FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes);
+	virtual int FinalTestForPeakSizeSMLF (Boolean isNegCntl, Boolean isPosCntl);
 	virtual int TestForMultiSignalsSM ();
 	virtual int TestProximityArtifactsSM ();
 	virtual int TestForAlleleDuplicationSM ();

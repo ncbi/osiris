@@ -42,7 +42,7 @@ class CDialogDeleteDisabled: public wxDialog
 public:
   CDialogDeleteDisabled(
     wxWindow *parent,
-    const std::vector<const wxString> &vsNames,
+    const std::vector<wxString> &vsNames,
     bool bAllowUserOverride);
   virtual ~CDialogDeleteDisabled();
   const wxString &GetUserID();

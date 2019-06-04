@@ -81,6 +81,7 @@ public:
 	void SetFirstCoreAllele (const RGString& first) { mFirstCoreAllele = first; }
 	void SetFirstCoreLocusBP (int bp) { mFirstCoreLocusBP = bp; }
 	void SetMerged () { mIsMerged = true; }
+	void ResetCoreRepeat (int n) { mCoreRepeat = n; }
 
 	RGString GetFirstExtendedAllele () const { return mFirstExtendedAllele; }
 	RGString GetLastExtendedAllele () const { return mLastExtendedAllele; }
@@ -93,6 +94,7 @@ public:
 	bool GetMerged () const { return mIsMerged; }
 	int GetChannel () const { return mChannel; }
 	bool IsQualityLocus () const { return mIsQualityLocus; }
+	bool HasTwoAlleles () const { return mAlleleList.size () == 2; }
 
 	void SetMinMaxLocusBP (int min, int max) { mMinLocusBP = min; mMaxLocusBP = max; }
 	void SetMinMaxSearchILSBP (double min, double max);
@@ -100,6 +102,8 @@ public:
 	void SetMaxSearhILSBP (double max) { mMaxSearchILSBP = max; }
 	void SetRelativeHeightInfo (bool rh) { mNeedsRelativeHeightInfo = rh; }
 	void SetQualityLocus (bool b) { mIsQualityLocus = b; }
+	void ResetMaxLocusBP (int n) { mMaxLocusBP = n; }
+	void ResetMinAndMaxBPFromAlleleList ();
 
 	void SetDoNotExtend () { mDoNotExtend = true; }
 
@@ -114,8 +118,8 @@ public:
 	static void SetGenerateILSFamilies (bool s) { GenerateILSFamilies = s; }
 	static bool GetGenerateILSFamilies () { return GenerateILSFamilies; }
 
-	static void SetILSName (const RGString& name) { ILSName = name; }
-	static RGString GetILSName () { return ILSName; }
+	static void SetILSFamilyName (const RGString& name) { ILSFamilyName = name; }
+	static RGString GetILSFamilyName () { return ILSFamilyName; }
 
 protected:
 	RGString mName;
@@ -141,7 +145,7 @@ protected:
 	bool mIsQualityLocus;
 
 	static bool GenerateILSFamilies;
-	static RGString ILSName;
+	static RGString ILSFamilyName;
 };
 
 
@@ -171,7 +175,7 @@ public:
 	void OutputILSFamilyListTo (RGTextOutput& xmlFile);
 	void OutputChannelMapTo (RGTextOutput& xmlFile, LadderInputFile& inputFile);
 
-	int AmendLadderData (LadderInputFile* inFile, RGString& oldLadderString);
+	int AmendLadderData (LadderInputFile& inFile, RGString& oldLadderString);
 
 	int GetNumberOfLoci () const;
 

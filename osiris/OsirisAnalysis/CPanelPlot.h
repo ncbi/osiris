@@ -692,7 +692,7 @@ private:
   }
   // END - keep track of channels with no noise
 
-  static std::set<const wxString> g_setNoBpsPrompt;
+  static std::set<wxString> g_setNoBpsPrompt;
   static bool _HasFileBeenPrompted(CPlotData *p);
   static void _SetFileHasBeenPrompted(CPlotData *p);
   static wxString _GetFileName(CPlotData *p);

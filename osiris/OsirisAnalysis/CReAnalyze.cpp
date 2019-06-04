@@ -161,8 +161,8 @@ bool CReAnalyze::_FindSamples(COARfile *pFile)
   else
   {
     wxString sEXT(pFile->GetFileExt(false));
-    wxString sInputDir = m_pParms->GetInputDirectory();
     wxString sNotFound;
+    sInputDir = m_pParms->GetInputDirectory();
     vector<const COARsample *>::iterator itr;
     int nMissing = 0;
     

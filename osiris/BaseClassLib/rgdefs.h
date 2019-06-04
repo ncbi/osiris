@@ -135,9 +135,12 @@ typedef __int64 INT64;
 typedef int64_t INT64;
 #endif
 
-#ifdef _WIN32
-#define snprintf _snprintf
-#endif
+// the following 3 lines were commented out because
+//  of an error in VS 2017
+//  Doug Hoffman, 10/30/2018
+//#ifdef _WIN32
+//#define snprintf _snprintf
+//#endif
 
 #ifdef _WIN32
 #define gcvt _gcvt

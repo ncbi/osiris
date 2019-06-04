@@ -131,6 +131,9 @@ public:
 	double GetMedianSquaredForLMS () const { return mMedianResidual; }
 	double GetOutlierThreshold () { return mOutlierThreshold; }
 
+	static void SetMinimumNumberOfSamples (int n) { MinimumNumberOfSamples = n; }
+	static int GetMinimumNumberOfSamples () { return MinimumNumberOfSamples; }
+
 protected:
 	bool mIsOK;
 	int mSize;
@@ -141,6 +144,8 @@ protected:
 	double mLeastMedianValue;
 	double mMedianResidual;
 	double mOutlierThreshold;
+
+	static int MinimumNumberOfSamples;
 };
 
 

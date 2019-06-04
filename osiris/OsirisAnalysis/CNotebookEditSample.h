@@ -226,7 +226,7 @@ private:
 
   /* wxString _GetReviewAcceptance(int n, const wxDateTime *pdt = NULL);
   */
-  std::vector<const wxString> m_asLocus;
+  std::vector<wxString> m_asLocus;
   typedef std::vector<CPageEditSample *> CPanelList;
   typedef std::vector<CPageEditSample *>::iterator CPanelListIterator;
   CPanelList m_vpPanels;

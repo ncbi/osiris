@@ -252,7 +252,6 @@ void CGridCMF::UpdateEmptyLoci()
         // setup locus names
 
       size_t nChannelCount = m_pFile->GetChannelCount();
-      size_t nLocusCount;
       const COARchannel *pChannel;
 
       m_vsLocus.reserve(24);

@@ -44,7 +44,6 @@
 #include "nwx/nsstd.h"
 #include "paramsXsl.h"
 
-IMPLEMENT_ABSTRACT_CLASS(wxXslObject,wxXml2Object)
 
 extern "C"
 {
@@ -168,3 +167,4 @@ xsltStylesheetPtr wxXslObject::GetSheetParam()
   }
   return g_pSheetParam;
 }
+//IMPLEMENT_ABSTRACT_CLASS(wxXslObject, wxXml2Object);

@@ -34,6 +34,7 @@
 #include "wxIDS.h"
 #include "nwx/CIncrementer.h"
 #include "nwx/nwxXmlWindowSizes.h"
+#include "nwx/nwxString.h"
 #include "Platform.h"
 #include "CMenuWindow.h"
 #include "CFrameAnalysis.h"
@@ -41,6 +42,7 @@
 #include "CFramePlot.h"
 
 DEFINE_EVENT_TYPE(CEventKillWindow)
+
 
 CMDIFrame::~CMDIFrame()
 {
@@ -59,6 +61,7 @@ CMDIFrame::CMDIFrame(
       , size, style),
       m_pParent(parent)
 {
+  m_sFrameNumber = nwxString::FormatNumber(mainApp::NewWindowNumber());
   m_nFocusRecursive = 0;
   m_bNoPromptReload = false;
   m_bAutoReload = false;

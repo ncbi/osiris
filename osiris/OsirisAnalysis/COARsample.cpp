@@ -492,8 +492,8 @@ COARartifact *COARsample::GetArtifactByID(int nID) const
     if(itr == m_mapIDchannel.end()) {}
     else if( _GetArtifactsByChannel(&vArt,itr->second,wxEmptyString,NULL,nID))
     {
-      vector<const COARartifact *>::iterator itr = vArt.begin();
-      pRtn = new COARartifact(*(*itr));
+      vector<const COARartifact *>::iterator itra = vArt.begin();
+      pRtn = new COARartifact(*(*itra));
       if(vArt.size() > 1)
       {
         wxString s = nwxString::FormatNumber((int)vArt.size());
@@ -696,7 +696,7 @@ bool COARsample::SetPeaksByLocusName(
           // in another locus
           _CheckForSingleAllele((*itr)->GetID(), pcha, sLocus);
           //  6/9/16 need to make this more efficient 
-          //  using GetPeaksByID -- STOP HERE 
+          //  using GetPeaksByID
         }
       }
     }

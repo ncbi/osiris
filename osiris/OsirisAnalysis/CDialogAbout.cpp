@@ -40,6 +40,16 @@
 #include "wxIDS.h"
 #include "OsirisVersion.h"
 
+// OS-1160 add privacy information
+
+#define TEXT_PRIVACY \
+"OSIRIS is a desktop tool working on your computer with your own data.  " \
+"Your sample profile data is processed on your computer and is not sent over the internet.\n\n" \
+"For quality monitoring, OSIRIS sends some information about usage statistics back to NCBI.  " \
+"This information is limited to use of the tool, without any sample, " \
+"profile or batch data that would reveal the context of your analysis.\n\n" \
+"For more details and instructions on opting out, see the Privacy Information section of the OSIRIS User's Guide."
+
 const wxString CDialogAbout::g_sReadMe(
 "This software is a \"United States Government Work\" under terms "
 "of the United States Copyright Act.  It was written as part of the "
@@ -55,8 +65,8 @@ const wxString CDialogAbout::g_sReadMe(
 "all warranties as to performance, merchantability or fitness for "
 "any particular purpose. In any work or product derived from this "
 "material, proper attribution to the authors as the source of the "
-"software would be appreciated.");
-
+"software would be appreciated.\n\n" TEXT_PRIVACY
+);
 
 
 CPanelAbout::CPanelAbout(wxWindow *parent) : 
@@ -78,9 +88,13 @@ CPanelAbout::CPanelAbout(wxWindow *parent) :
   Fit();
 }
 
+IMPLEMENT_ABSTRACT_CLASS(CDialogAbout, wxDialog)
+
+
 CDialogAbout::CDialogAbout(wxWindow *parent) : 
   wxDialog(parent,wxID_ANY, "About OSIRIS " OSIRIS_VERSION "...",
-    wxDefaultPosition, wxDefaultSize,
+    wxDefaultPosition, 
+    GET_PERSISTENT_SIZE(CDialogAbout),
 //    wxDEFAULT_DIALOG_STYLE)
     mainApp::DIALOG_STYLE)
 {
@@ -103,3 +117,52 @@ CDialogAbout::CDialogAbout(wxWindow *parent) :
   Fit();
   Centre();
 }
+IMPLEMENT_PERSISTENT_SIZE(CDialogAbout)
+
+BEGIN_EVENT_TABLE(CDialogAbout, wxDialog)
+EVT_PERSISTENT_SIZE(CDialogAbout)
+END_EVENT_TABLE()
+
+// OS-1160
+
+IMPLEMENT_ABSTRACT_CLASS(CDialogPrivacy, wxDialog)
+
+
+CDialogPrivacy::CDialogPrivacy(wxWindow *parent) :
+  wxDialog(parent, wxID_ANY, "OSIRIS Privacy",
+    wxDefaultPosition, 
+    GET_PERSISTENT_SIZE_DEFAULT(CDialogPrivacy, wxSize(500,250)),
+    mainApp::DIALOG_STYLE)
+{
+  wxBoxSizer *pSizer(new wxBoxSizer(wxVERTICAL));
+  wxTextCtrl *pReadMe(new wxTextCtrl(this, wxID_ANY,
+    wxString(TEXT_PRIVACY), wxDefaultPosition, wxSize(200, -1),
+    wxTE_READONLY | wxTE_MULTILINE | wxTE_WORDWRAP));
+  pSizer->Add(pReadMe, 1, wxEXPAND | wxALL, ID_BORDER);
+  wxSizer *pOKsizer = CreateButtonSizer(wxOK);
+  wxButton *pButtonUserGuide = new wxButton(this, IDhelp, "User's Guide");
+  wxBoxSizer *pSizerUserGuide = new wxBoxSizer(wxHORIZONTAL);
+  pSizerUserGuide->AddStretchSpacer(10);
+  pSizerUserGuide->Add(pButtonUserGuide, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT);
+  wxBoxSizer *pSizerBottom = new wxBoxSizer(wxHORIZONTAL);
+  pSizerBottom->AddStretchSpacer(1);
+  pSizerBottom->Add(pOKsizer, 0, wxALIGN_CENTER | wxALIGN_CENTER_VERTICAL);
+  pSizerBottom->Add(pSizerUserGuide, 1, wxEXPAND, 0);
+
+  pSizer->Add(pSizerBottom, 0, (wxALL ^ wxTOP) | wxEXPAND, ID_BORDER);
+  SetSizer(pSizer);
+  Layout();
+  Centre();
+}
+
+void CDialogPrivacy::OnHelp(wxCommandEvent &e)
+{
+  mainApp::Get()->OnHelp(e);
+}
+
+IMPLEMENT_PERSISTENT_SIZE(CDialogPrivacy)
+
+BEGIN_EVENT_TABLE(CDialogPrivacy, wxDialog)
+EVT_PERSISTENT_SIZE(CDialogPrivacy)
+EVT_BUTTON(IDhelp, CDialogPrivacy::OnHelp)
+END_EVENT_TABLE()

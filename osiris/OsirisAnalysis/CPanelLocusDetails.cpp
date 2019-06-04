@@ -341,15 +341,13 @@ void CPanelLocusDetails::UpdateFile(
     wxString sErr;
     if(pLocus == NULL)
     {
-      wxString sErr(
-        "CPanelLocusDetails::UpdateFile cannot find locus");
+      sErr = "CPanelLocusDetails::UpdateFile cannot find locus";
       wxASSERT_MSG(0,sErr);
       mainApp::LogMessage(sErr);
     }
     else if(!m_pGridLocusPeaks->TransferDataToSample(pSample))
     {
-      wxString sErr(
-       "CPanelLocusDetails::UpdateFile Cannot Transfer Grid Data");
+      sErr = "CPanelLocusDetails::UpdateFile Cannot Transfer Grid Data";
       wxASSERT_MSG(0,sErr);
       mainApp::LogMessage(sErr);
     }
@@ -366,8 +364,8 @@ void CPanelLocusDetails::UpdateFile(
         CAppendReviewLocus x(pLocus);
         if(!m_pPanelUser->AddReview(&x,false))
         {
-          wxString sErr(
-            "CPanelLocusDetails::UpdateFile - Cannot add review");
+          sErr =
+            "CPanelLocusDetails::UpdateFile - Cannot add review";
           wxASSERT_MSG(0,sErr);
           mainApp::LogMessage(sErr);
         }
