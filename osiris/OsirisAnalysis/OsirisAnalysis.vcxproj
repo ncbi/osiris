@@ -412,7 +412,6 @@
     <ClCompile Include="CXSLExportFileType.cpp" />
     <ClCompile Include="mainApp.cpp" />
     <ClCompile Include="mainFrame.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
