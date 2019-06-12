@@ -247,7 +247,7 @@ CoreBioComponent :: ~CoreBioComponent () {
 	if (mDataChannels != NULL) {
 
 		for (i=1; i<=mNumberOfChannels; i++)
-			delete[] mDataChannels [i];
+			delete mDataChannels [i];
 
 		delete[] mDataChannels;
 	}

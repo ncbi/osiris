@@ -70,25 +70,32 @@ void CMenuWindow::Build(const CMDI_LIST *pList,CMDIFrame *pCheck, long nModCount
       if(!(*itr)->FileError())
       {
         sLabel = (*itr)->GetTitle();
-        if(nID <= nMaxAccel)
+        if(sLabel.IsEmpty())
         {
-          if(nID < nMaxAccel)
-          {
-            sAccel[nAccelLast]++;
-          }
-          else
-          {
-            sAccel[nAccelLast] = zero;
-          }
-          sLabel.Append(sAccel);
-        }
-        if(*itr == pCheck)
-        {
-          AppendCheckItem(nID,sLabel)->Check();
+          --nID;
         }
         else
         {
-          Append(nID,sLabel);
+          if(nID <= nMaxAccel)
+          {
+            if(nID < nMaxAccel)
+            {
+              sAccel[nAccelLast]++;
+            }
+            else
+            {
+              sAccel[nAccelLast] = zero;
+            }
+            sLabel.Append(sAccel);
+          }
+          if(*itr == pCheck)
+          {
+            AppendCheckItem(nID,sLabel)->Check();
+          }
+          else
+          {
+            Append(nID,sLabel);
+          }
         }
       }
     }
