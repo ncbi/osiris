@@ -1045,11 +1045,14 @@ public:
   double GetMaxXBPS()
   {
     double dRtn = 0;
-    size_t n = GetPointCount();
+    size_t n = m_bCannotSetBPS ? 0 : GetPointCount();
     if(n > 0)
     {
       _setupILSBps();
-      dRtn = m_pdILS_BPs[n-1];
+      if (!m_bCannotSetBPS)
+      {
+        dRtn = m_pdILS_BPs[n - 1];
+      }
     }
     return dRtn;
   }
