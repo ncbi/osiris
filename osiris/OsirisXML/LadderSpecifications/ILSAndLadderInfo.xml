@@ -896,5 +896,14 @@
 		<KitName>PowerPlex GenePrint24</KitName>
 		<FileName>PPGenePrint24_LadderInfo.xml</FileName>
 	</Set>
+	<Set>
+		<KitName>COrDIS Plus</KitName>
+		<FileName>COrDISPlus_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>COrDIS Plus HID</KitName>
+		<FileName>COrDISPlus_LadderInfo.xml</FileName>
+	</Set>
+  
   </Kits>
 </KitData>

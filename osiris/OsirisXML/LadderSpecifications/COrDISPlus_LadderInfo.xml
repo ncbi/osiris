@@ -19,31 +19,31 @@
           <KitChannelNumber>1</KitChannelNumber>
           <fsaChannelNumber>1</fsaChannelNumber>
           <Color>BLUE</Color>
-          <DyeName>BLUE</DyeName>
+          <DyeName>>5-FAM</DyeName>
         </Channel>
         <Channel>
           <KitChannelNumber>2</KitChannelNumber>
           <fsaChannelNumber>2</fsaChannelNumber>
           <Color>GREEN</Color>
-          <DyeName>GREEN</DyeName>
+          <DyeName>JOE</DyeName>
         </Channel>
         <Channel>
           <KitChannelNumber>3</KitChannelNumber>
           <fsaChannelNumber>3</fsaChannelNumber>
           <Color>YELLOW</Color>
-          <DyeName>YELLOW</DyeName>
+          <DyeName>NED</DyeName>
         </Channel>
         <Channel>
           <KitChannelNumber>4</KitChannelNumber>
           <fsaChannelNumber>4</fsaChannelNumber>
           <Color>RED</Color>
-          <DyeName>RED</DyeName>
+          <DyeName>ROX</DyeName>
         </Channel>
         <Channel>
           <KitChannelNumber>5</KitChannelNumber>
           <fsaChannelNumber>5</fsaChannelNumber>
           <Color>ORANGE</Color>
-          <DyeName>ORANGE</DyeName>
+          <DyeName>LIZ</DyeName>
         </Channel>
       </FsaChannelMap>
       <Locus>
