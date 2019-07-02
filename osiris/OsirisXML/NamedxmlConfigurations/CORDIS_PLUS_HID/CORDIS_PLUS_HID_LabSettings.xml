@@ -151,7 +151,7 @@
     <LabMarkerSetCollection>
       <MarkerSetName>COrDIS Plus</MarkerSetName>
       <LadderFileName>COrDISPlus_LadderInfo.xml</LadderFileName>
-      <ILS>S450</ILS>
+      <ILS>S450_60_450</ILS>
       <UserOverrideILS>true</UserOverrideILS>
     </LabMarkerSetCollection>
   </LabMarkerSetSpecifications>

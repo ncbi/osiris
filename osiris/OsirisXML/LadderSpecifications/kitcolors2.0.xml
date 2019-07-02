@@ -7,6 +7,8 @@
 		<Name>FL</Name>
 		<Name>FAM</Name>
 		<Name>FL-6C</Name>
+		<Name>Blue</Name>
+		<Name>BLUE</Name>
 	  </Names>
       <analyzed>RGB(0,0,144)</analyzed>
       <raw>RGB(113,113,153)</raw>
@@ -18,6 +20,8 @@
 		  <Name>JOE</Name>
 		  <Name>VIC</Name>
 		  <Name>JOE-6C</Name>
+		  <Name>Green</Name>
+		  <Name>GREEN</Name>
 	  </Names>
       <analyzed>RGB(0,144,0)</analyzed>
       <raw>RGB(118,150,118)</raw>
@@ -31,6 +35,8 @@
 		  <Name>TMR-ET</Name>
 		  <Name>TAMRA</Name>
 		  <Name>TMR-6C</Name>
+		  <Name>Yellow</Name>
+		  <Name>YELLOW</Name>
 	  </Names>
        <analyzed>RGB(125,125,35)</analyzed>
       <raw>RGB(131,131,100)</raw>
@@ -45,6 +51,8 @@
 		  <Name>CXR-ET</Name>
 		  <Name>CXR-6C</Name>
 		  <Name>TAZ</Name>
+		  <Name>Red</Name>
+		  <Name>RED</Name>
 	  </Names>
       <analyzed>RGB(144,0,0)</analyzed>
       <raw>RGB(144,96,96)</raw>
@@ -60,6 +68,8 @@
 		  <Name>WEN</Name>
 		  <Name>BTO</Name>
       <Name>DY632</Name>
+		  <Name>Orange</Name>
+		  <Name>ORANGE</Name>
 	  </Names>
       <analyzed>RGB(180,90,0)</analyzed>
       <raw>RGB(144,96,48)</raw>
@@ -71,6 +81,8 @@
 		  <Name>SID</Name>
 		  <Name>TOM-6C</Name>
 		  <Name>TOM</Name>
+		  <Name>Purple</Name>
+		  <Name>PURPLE</Name>
 	  </Names>
       <analyzed>RGB(144,0,144)</analyzed>
       <raw>RGB(144,96,144)</raw>
