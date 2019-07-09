@@ -901,9 +901,20 @@
 		<FileName>COrDISPlus_LadderInfo.xml</FileName>
 	</Set>
 	<Set>
-		<KitName>COrDIS Plus HID</KitName>
-		<FileName>COrDISPlus_LadderInfo.xml</FileName>
+		<KitName>LaneStandardOnly_2</KitName>
+		<FileName>LaneStandardOnly_2_LadderInfo.xml</FileName>
 	</Set>
-  
+	<Set>
+		<KitName>LaneStandardOnly_3</KitName>
+		<FileName>LaneStandardOnly_3_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_4</KitName>
+		<FileName>LaneStandardOnly_4_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_5</KitName>
+		<FileName>LaneStandardOnly_5_LadderInfo.xml</FileName>
+	</Set>
   </Kits>
 </KitData>
