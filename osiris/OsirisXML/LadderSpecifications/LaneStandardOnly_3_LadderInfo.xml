@@ -18,19 +18,19 @@
           <KitChannelNumber>1</KitChannelNumber>
           <fsaChannelNumber>1</fsaChannelNumber>
           <Color>BLUE</Color>
-          <DyeName>6-FAM</DyeName>
+          <DyeName>BLUE</DyeName>
         </Channel>
         <Channel>
           <KitChannelNumber>2</KitChannelNumber>
           <fsaChannelNumber>2</fsaChannelNumber>
           <Color>GREEN</Color>
-          <DyeName>VIC</DyeName>
+          <DyeName>GREEN</DyeName>
         </Channel>
         <Channel>
           <KitChannelNumber>3</KitChannelNumber>
           <fsaChannelNumber>4</fsaChannelNumber>
           <Color>ORANGE</Color>
-          <DyeName>LIZ</DyeName>
+          <DyeName>ORANGE</DyeName>
         </Channel>
       </FsaChannelMap>
       <Locus>
