@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.38</VersionNumber>
-	<BuildTime>04/19/2019 04:44 PM</BuildTime>
+	<VersionNumber>7.40</VersionNumber>
+	<BuildTime>07/15/2019 02:45 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -4825,6 +4825,134 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSpacerChannelRemappingForLadderFreeBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smChannelRemappingForLadderFreeOverrideDefault</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Override Default Channel Map For Ladder Independent Analysis (Ignored for standard analyses with ladders):</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel1</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 1:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 1</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel2</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>2</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 2:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 2</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel3</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>3</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 3 (if # channels at least 3):</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 3</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel4</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>4</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 4 (if # channels at least 4):</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 4</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel5</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>5</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 5 (if # channels = 5):</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 5</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerRaisedBaselineBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -7389,6 +7517,12 @@
 						<Name>smLatitudeForILSFit</Name>
 						<Name>smUseLadderEndPointILSAlgorithmPreset</Name>
 						<Name>smPlusLatitudeForLadderEndPointILSFit</Name>
+						<Name>smChannelRemappingForLadderFreeOverrideDefault</Name>
+						<Name>smFsaChannelForOsirisChannel1</Name>
+						<Name>smFsaChannelForOsirisChannel2</Name>
+						<Name>smFsaChannelForOsirisChannel3</Name>
+						<Name>smFsaChannelForOsirisChannel4</Name>
+						<Name>smFsaChannelForOsirisChannel5</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
