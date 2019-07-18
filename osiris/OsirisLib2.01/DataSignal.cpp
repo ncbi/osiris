@@ -3544,14 +3544,27 @@ DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfW
 	int k;
 	FirstTime = true;
 	int timeSplit = (int) floor (splitTime);
+	int upperLimit;
+	int lowerLimit;
 
 	divisor = (double) (2 * halfWidth + 1);
+
+	for (i=0; i<startPt; i++) {
+
+		upperLimit = i + halfWidth;
+		double sum = 0.0;
+
+		for (j=0; j<=upperLimit; j++)
+			sum += Measurements [j];
+
+		smoothedData [i] = sum / divisor;
+	}
 
 	for (i=startPt; i<=endPt; i++) {
 
 		double sum = 0.0;
-		int upperLimit = i + halfWidth;
-		int lowerLimit = i - halfWidth;
+		upperLimit = i + halfWidth;
+		lowerLimit = i - halfWidth;
 
 		if (FirstTime) {
 
@@ -3569,6 +3582,17 @@ DataSignal* SampledData :: CreateAveragingFilteredSignal (int nPasses, int halfW
 			previous = previous - Measurements [lowerLimit - 1] + Measurements [upperLimit]; //previous - mData->Value (lowerLimit - 1) + mData->Value (upperLimit);
 			smoothedData [i] = previous / divisor;
 		}
+	}
+
+	for (i=endPt+1; i<NumberOfSamples; i++) {
+
+		lowerLimit = i - halfWidth;
+		double sum = 0.0;
+
+		for (j=lowerLimit; j<NumberOfSamples; j++)
+			sum += Measurements [j];
+
+		smoothedData [i] = sum / divisor;
 	}
 
 	k = 0;
