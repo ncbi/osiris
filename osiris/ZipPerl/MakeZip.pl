@@ -437,7 +437,7 @@ if( $home =~ m|^/Users| )
 {
   &CopyMac;
 }
-elsif( ($uname =~ m/cygwin/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
+elsif( ($uname =~ m/mingw/i) || ($uname =~ m/cygwin/i) || ($uname =~ m/cygwin/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
 {
   &CopyWin;
 }
