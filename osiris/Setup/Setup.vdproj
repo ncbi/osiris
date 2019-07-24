@@ -333,6 +333,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_209A49D8394943A1A9DCE0722E5748FA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_22A7925A50E7491CB567E8FDF860CBE7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3398,6 +3404,26 @@
             "TargetName" = "8:QIAGEN_INVESTIGATOR24PLEX_HID_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_63FF35A40A1F4EB188B3F6CC4E2CA0F3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_209A49D8394943A1A9DCE0722E5748FA"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.11.2.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.11.2.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
