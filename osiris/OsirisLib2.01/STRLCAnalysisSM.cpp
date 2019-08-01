@@ -2396,6 +2396,69 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	CoreBioComponent::SetPullupMatrixFile (pullupMatrixFile);
 #endif
 
+	//  Test for channel remapping and remap if positive
+
+	smChannelRemappingForLadderFreeOverrideDefault remapChannels;
+	smFsaChannelForOsirisChannel1 newChannel1Map;
+	smFsaChannelForOsirisChannel2 newChannel2Map;
+	smFsaChannelForOsirisChannel3 newChannel3Map;
+	smFsaChannelForOsirisChannel4 newChannel4Map;
+	smFsaChannelForOsirisChannel5 newChannel5Map;
+
+	if (GetMessageValue (remapChannels)) {
+
+		int* newMap = new int [expectedNumberOfChannels];
+		newMap [0] = 0;
+		int j;
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			switch (j) {
+
+			case 1:
+				newMap [j] = GetThreshold (newChannel1Map);
+				break;
+
+			case 2:
+				newMap [j] = GetThreshold (newChannel2Map);
+				break;
+
+			case 3:
+				newMap [j] = GetThreshold (newChannel3Map);
+				break;
+
+			case 4:
+				newMap [j] = GetThreshold (newChannel4Map);
+				break;
+
+			case 5:
+				newMap [j] = GetThreshold (newChannel5Map);
+				break;
+
+			default:
+				newMap [0] = 0;
+			}
+		}
+
+		const int* currentMap = set->GetChannelMap ();
+		cout << "\n";
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			cout << "Old fsa channel for Osiris channel " << j << " = " << currentMap [j] << "\n";
+		}
+
+		set->ResetChannelMap (newMap);
+		delete[] newMap;
+		currentMap = set->GetChannelMap ();
+		cout << "\n";
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			cout << "New fsa channel for Osiris channel " << j << " = " << currentMap [j] << "\n";
+		}
+	}
+
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {

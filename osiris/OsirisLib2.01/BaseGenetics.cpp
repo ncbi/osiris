@@ -735,6 +735,15 @@ BasePopulationMarkerSet :: ~BasePopulationMarkerSet () {
 }
 
 
+void BasePopulationMarkerSet::ResetChannelMap (const int* newMap) {
+
+	int i;
+
+	for (i=1; i<=NChannels; i++)
+		mChannelMap [i] = newMap [i];
+}
+
+
 Boolean BasePopulationMarkerSet :: RepresentsMarkerSet (const RGString& markerSet) const {
 
 	RGString inputSet (markerSet);

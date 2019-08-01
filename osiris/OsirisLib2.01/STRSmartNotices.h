@@ -276,6 +276,12 @@ PERSISTENT_PREDECLARATION (smTailHeightFittingThresholdFactor)
 PERSISTENT_PREDECLARATION (smTailSlopeFittingThresholdFactor)
 PERSISTENT_PREDECLARATION (smSelectUserSpecifiedMinRFUForPrimaryPeakPreset)
 PERSISTENT_PREDECLARATION (smRedundantPeak)
+PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel1)
+PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel2)
+PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel3)
+PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel4)
+PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel5)
+PERSISTENT_PREDECLARATION (smChannelRemappingForLadderFreeOverrideDefault)
 
 
 
@@ -7679,6 +7685,174 @@ public:
 	smRedundantPeak ();
 	smRedundantPeak (const smRedundantPeak& note);
 	virtual ~smRedundantPeak ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smFsaChannelForOsirisChannel1 : public SmartNotice {
+
+PERSISTENT_DECLARATION (smFsaChannelForOsirisChannel1)
+
+public:
+	smFsaChannelForOsirisChannel1 ();
+	smFsaChannelForOsirisChannel1 (const smFsaChannelForOsirisChannel1& note);
+	virtual ~smFsaChannelForOsirisChannel1 ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smFsaChannelForOsirisChannel2 : public SmartNotice {
+
+PERSISTENT_DECLARATION (smFsaChannelForOsirisChannel2)
+
+public:
+	smFsaChannelForOsirisChannel2 ();
+	smFsaChannelForOsirisChannel2 (const smFsaChannelForOsirisChannel2& note);
+	virtual ~smFsaChannelForOsirisChannel2 ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smFsaChannelForOsirisChannel3 : public SmartNotice {
+
+PERSISTENT_DECLARATION (smFsaChannelForOsirisChannel3)
+
+public:
+	smFsaChannelForOsirisChannel3 ();
+	smFsaChannelForOsirisChannel3 (const smFsaChannelForOsirisChannel3& note);
+	virtual ~smFsaChannelForOsirisChannel3 ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smFsaChannelForOsirisChannel4 : public SmartNotice {
+
+PERSISTENT_DECLARATION (smFsaChannelForOsirisChannel4)
+
+public:
+	smFsaChannelForOsirisChannel4 ();
+	smFsaChannelForOsirisChannel4 (const smFsaChannelForOsirisChannel4& note);
+	virtual ~smFsaChannelForOsirisChannel4 ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smFsaChannelForOsirisChannel5 : public SmartNotice {
+
+PERSISTENT_DECLARATION (smFsaChannelForOsirisChannel5)
+
+public:
+	smFsaChannelForOsirisChannel5 ();
+	smFsaChannelForOsirisChannel5 (const smFsaChannelForOsirisChannel5& note);
+	virtual ~smFsaChannelForOsirisChannel5 ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smChannelRemappingForLadderFreeOverrideDefault : public SmartNotice {
+
+PERSISTENT_DECLARATION (smChannelRemappingForLadderFreeOverrideDefault)
+
+public:
+	smChannelRemappingForLadderFreeOverrideDefault ();
+	smChannelRemappingForLadderFreeOverrideDefault (const smChannelRemappingForLadderFreeOverrideDefault& note);
+	virtual ~smChannelRemappingForLadderFreeOverrideDefault ();
 
 	virtual int GetSubject () const;
 

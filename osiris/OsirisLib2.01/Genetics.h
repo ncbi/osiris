@@ -873,6 +873,7 @@ public:
 	LaneStandard* GetLaneStandard () { return mLaneStandard; }
 	RGString GetLaneStandardName () const { return mLink->GetLaneStandardName (); }
 	const int* GetChannelMap () const { return mLink->GetChannelMap (); }
+	void ResetChannelMap (const int* newChannelMapping) { mLink->ResetChannelMap (newChannelMapping); }
 
 	RGString GetFileNameSuffix () const { return mLink->GetFileNameSuffix (); }
 	RGString GetGenotypeSuffix () const { return mLink->GetGenotypeSuffix (); }
