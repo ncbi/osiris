@@ -298,6 +298,7 @@ public:
 	RGString GetGenotypeSuffix () const { return GenotypeSuffix; }
 	RGString GetDirectorySearchString () const { return DirectorySearchString; }
 	const int* GetChannelMap () const { return mChannelMap; }
+	void ResetChannelMap (const int* newMap);
 
 	void SetMarkerSetName (const RGString& name) { MarkerSetName = name; LCMarkerSetName = name; 
 					LCMarkerSetName.ToLower (); }

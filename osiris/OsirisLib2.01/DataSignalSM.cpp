@@ -869,6 +869,9 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 
 	for (i=1; i<=nChannels; i++) {
 
+		if (i == GetChannel ())
+			continue;
+
 		primary = HasPrimarySignalFromChannel (i);
 
 		if (primary != NULL) {

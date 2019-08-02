@@ -263,6 +263,12 @@ smTailHeightFittingThresholdFactor	1150	2666
 smTailSlopeFittingThresholdFactor	1151	2667
 smSelectUserSpecifiedMinRFUForPrimaryPeakPreset	1152	2668
 smRedundantPeak	1153	2669
+smFsaChannelForOsirisChannel1	1154	2670
+smFsaChannelForOsirisChannel2	1155	2671
+smFsaChannelForOsirisChannel3	1156	2672
+smFsaChannelForOsirisChannel4	1157	2673
+smFsaChannelForOsirisChannel5	1158	2674
+smChannelRemappingForLadderFreeOverrideDefault	1159	2675
 
 
 
