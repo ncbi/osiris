@@ -2407,7 +2407,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 	if (GetMessageValue (remapChannels)) {
 
-		int* newMap = new int [expectedNumberOfChannels];
+		int* newMap = new int [expectedNumberOfChannels + 1];
 		newMap [0] = 0;
 		int j;
 
