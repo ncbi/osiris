@@ -3282,6 +3282,7 @@ int SampledData :: FindAndRemoveFixedOffset () {
 		double* endPtr = CurrentPtr - 25;
 		mNoiseRange = 0.0;
 		double localMin;
+		double minSlope = fabs (slr->RegressBackwardFrom (CurrentPtr, currentAve, mNoiseRange));
 
 		for (i=1; i<=MaxTests; i++) {
 
@@ -3292,7 +3293,7 @@ int SampledData :: FindAndRemoveFixedOffset () {
 
 				if (*ptr < minB)
 					minB = *ptr;
-				
+
 				if (*ptr < localMin)
 					localMin = *ptr;
 
@@ -3300,17 +3301,25 @@ int SampledData :: FindAndRemoveFixedOffset () {
 					max = *ptr;
 			}
 
-			noiseRange = max - localMin;			
-			
-			if (noiseRange > mNoiseRange)
+			//noiseRange = max - localMin;			
+			//
+			//if (noiseRange > mNoiseRange)
+			//	mNoiseRange = noiseRange;
+
+			temp = fabs (slr->RegressBackwardFrom (CurrentPtr, ave, noiseRange));
+
+			if (temp < minSlope) {
+
+				minSlope = temp;
 				mNoiseRange = noiseRange;
+			}
 
 			CurrentPtr -= 25;
 			endPtr -= 25;
 		}
 
 		endPtr = Measurements + NumberOfSamples;
-		mNoiseRange = 2.0 * mNoiseRange;
+		//mNoiseRange = 2.0 * mNoiseRange;  // This results in noise ranges that are way too large for the case when there are no negative values...08/20/2019
 
 		for (CurrentPtr=Measurements; CurrentPtr<endPtr; CurrentPtr++)
 			*CurrentPtr -= minB;
