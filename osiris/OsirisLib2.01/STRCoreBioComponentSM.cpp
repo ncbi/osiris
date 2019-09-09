@@ -1642,7 +1642,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	DataSignal* primeSignal;
 	double mTimeTolerance = 0.0375;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
-	double mWidthToleranceForSpike = 1.1;  // Width must be less than this width to qualify as a spike
+	double mWidthToleranceForSpike = 2.1;  // Width must be less than this width to qualify as a spike
 	double nSigmaForCraters = 2.0;  //2.0;
 	RGString info;
 	DataSignal* testSignal;
@@ -1892,6 +1892,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					if ((prevSignal->Peak () < 0.7 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.7 * prevSignal->Peak ())) {
 						
 						if (widthPrev || widthNext)
+							break;
+					}
+
+					if ((prevSignal->Peak () < 0.5 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.5 * prevSignal->Peak ())) {
+
 							break;
 					}
 
@@ -2435,13 +2440,25 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			probableIt.Reset ();
 			primeSignal->SetMessageValue (spike, true);
 
-			while (testSignal = (DataSignal*)probableIt ()) {
+			DataSignal** pullupArray = CollectAndSortPullupPeaksSM (primeSignal, probablePullupPeaks);
+			int kk;
 
-				testSignal->SetMessageValue (spike, true);
-				testSignal->SetCouldBePullup (true);
+			for (kk=1; kk<=mNumberOfChannels; kk++) {
+
+				testSignal = pullupArray [kk];
+
+				if (testSignal != NULL) {
+
+					if (testSignal->GetWidth () < mWidthToleranceForSpike) {
+
+						testSignal->SetMessageValue (spike, true);
+						testSignal->SetCouldBePullup (true);
+					}
+				}
 			}
 
 			probablePullupPeaks.Clear ();
+			delete[] pullupArray;
 		}
 
 		else {
@@ -2463,7 +2480,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 			mInterchannelLinkageList.push_back (iChannel);
 			iChannel->SetPrimaryDataSignal (primeSignal);
-			
+
 			DataSignal** pullupArray = CollectAndSortPullupPeaksSM (primeSignal, probablePullupPeaks);
 			primeSignal->AddProbablePullups (probablePullupPeaks);
 			int kk;
@@ -3011,7 +3028,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		finalCraterList.pop_front ();
 		postCraterList.push_back (nextSignal);
 
-		nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+		/*nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
 
 		if ((nextSignal2 != NULL) && (nextSignal2->GetMessageValue (pullup))) {
 
@@ -3109,7 +3126,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					channelRemoval.insert (iChannel);
 				}
 			}
-		}
+		}*/
 	}
 
 	list<InterchannelLinkage*>::iterator tempIt;
@@ -4371,8 +4388,11 @@ int STRLadderCoreBioComponent :: AnalyzeCrossChannelSM () {
 
 					if (testSignal != NULL) {
 
-						testSignal->SetMessageValue (spike, true);
-						testSignal->AddNoticeToList (1, "", "Suspected spike");
+						if (testSignal->GetWidth () < mWidthToleranceForSpike) {
+
+							testSignal->SetMessageValue (spike, true);
+							testSignal->AddNoticeToList (1, "", "Suspected spike");
+						}
 					}
 				}
 			}

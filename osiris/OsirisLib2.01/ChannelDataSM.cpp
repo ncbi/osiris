@@ -1165,6 +1165,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double detectionRFU = GetDetectionThreshold ();
 	double endAnalysis = (double)mData->GetNumberOfSamples ();
 	mData->SetChannel (mChannel);
+	double maxWidthToBeCalledASpike = 1.1;
 
 	//
 	//  Calculate appropriate detectionRFU based on settings and curve fit phase
@@ -1491,7 +1492,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetStandardDeviation () < 0.14) {
+		if (nextSignal->GetWidth () < maxWidthToBeCalledASpike) {
 
 			CompleteCurveList.RemoveReference (nextSignal);
 			it.RemoveCurrentItem ();

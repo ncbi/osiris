@@ -2591,7 +2591,7 @@ bool DataSignal :: TestForIntersectionWithPrimary (DataSignal* primary) {
 		if (primary->LiesBelowHeightAt (testMinus, heightMinus))
 			return true;
 
-		if (i > 5)
+		if (i > 0)  // This was changed from i > 5 on 09/05/2019.  5 is definitely too large, especially since it is almost certainly below the noise level...
 			break;
 	}
 

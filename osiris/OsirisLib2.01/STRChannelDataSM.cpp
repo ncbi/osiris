@@ -3141,6 +3141,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 	RGDList tempList;
 	prevSignal = (DataSignal*)PreliminaryCurveList.GetFirst ();
 	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
+	double maxWidthToBeCalledASpike = 1.1;
 
 	while (nextSignal = (DataSignal*) PreliminaryCurveList.GetFirst ()) {
 
@@ -3188,7 +3189,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetStandardDeviation () < 0.14) {
+		if (nextSignal->GetWidth () < maxWidthToBeCalledASpike) {
 
 			CompleteCurveList.RemoveReference (nextSignal);
 			it.RemoveCurrentItem ();
