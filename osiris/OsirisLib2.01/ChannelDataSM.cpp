@@ -1165,7 +1165,8 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double detectionRFU = GetDetectionThreshold ();
 	double endAnalysis = (double)mData->GetNumberOfSamples ();
 	mData->SetChannel (mChannel);
-	double maxWidthToBeCalledASpike = 1.1;
+	double maxWidthToBeCalledASpike = 2.1;
+	smSpike spike;
 
 	//
 	//  Calculate appropriate detectionRFU based on settings and curve fit phase
@@ -1492,7 +1493,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetWidth () < maxWidthToBeCalledASpike) {
+		if (nextSignal->GetWidth () < 1.1) {
 
 			CompleteCurveList.RemoveReference (nextSignal);
 			it.RemoveCurrentItem ();
@@ -1506,7 +1507,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	}
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
-		
+
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}

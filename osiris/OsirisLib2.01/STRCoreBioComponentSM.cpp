@@ -85,7 +85,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 	double calculatedNormalWidth;
 	double mTimeTolerance = 0.95;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
-	double mWidthToleranceForSpike = 1.0;  // Width must be less than this width to qualify as a spike
+	double mWidthToleranceForSpike = 2.1;  // Width must be less than this width to qualify as a spike
 	double nSigmaForCraters = 2.0;		//Test...01/08/2014
 	RGString info;
 	DataSignal* testSignal;
@@ -721,7 +721,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	double calculatedNormalWidth;
 	double mTimeTolerance = 0.0375;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
-	double mWidthToleranceForSpike = 1.0;  // Width must be less than this width to qualify as a spike
+	double mWidthToleranceForSpike = 2.1;  // Width must be less than this width to qualify as a spike
 	double nSigmaForCraters = 2.0;
 	RGString info;
 	DataSignal* testSignal;
@@ -1304,7 +1304,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 		}
 
 		minPeak = maxPeak = primeSignal->Peak ();
-		minWidth = maxWidth = primeSignal->GetStandardDeviation ();
+		minWidth = maxWidth = primeSignal->GetWidth ();
 		double peak;
 		probableIt.Reset ();
 
@@ -3418,6 +3418,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	while (nextSignal = (DataSignal*) it ()) {
 
 		testMean = nextSignal->GetMean ();
+
+		if (nextSignal->GetWidth () > mWidthToleranceForSpike)
+			nextSignal->SetMessageValue (spike, false);
 
 		nextSignal->SetPullupMessageDataSM (mNumberOfChannels);
 		nextSignal->AssociateDataWithPullMessageSM (mNumberOfChannels);

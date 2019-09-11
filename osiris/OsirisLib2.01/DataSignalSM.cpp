@@ -1053,6 +1053,11 @@ void DataSignal :: CaptureSmartMessages (const DataSignal* signal) {
 			SetMessageValue (scope, i, true);
 	}
 
+	smSpike spike;
+
+	if (GetWidth () > 2.1)
+		SetMessageValue (spike, false);
+
 	//smPullUp pullup;
 
 	//if (signal->GetMessageValue (pullup)) {
