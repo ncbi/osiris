@@ -300,7 +300,7 @@ public:
   }
   void SetFixedValue(const wxString &s)
   {
-    m_sCheckedValue = s;
+    m_sFixedValue = s;
   }
   const wxString &GetCheckedValue() const
   {
@@ -312,7 +312,7 @@ public:
   }
   const wxString &GetFixedValue() const
   {
-    return m_sCheckedValue;
+    return m_sFixedValue;
   }
   const wxString &GetCheckboxValue(bool bChecked) const
   {
@@ -474,15 +474,48 @@ private:
   private:
     wxString *m_psType;
   };
+  class IOfixedType : public nwxXmlIOwxString
+  {
+  public:
+    IOfixedType() : nwxXmlIOwxString(true), m_psType(NULL)
+    {};
+
+    virtual bool Skip(void *p)
+    {
+      const wxString *ps = (const wxString *)p;
+      bool bRtn = false;
+      if (ps->IsEmpty())
+      {
+        bRtn = true;
+      }
+      else if (m_psType == NULL)
+      {
+        // bRtn = false; // already set
+      }
+      else
+      {
+        bRtn = !CXSLParam::IsFixedType(*m_psType);
+      }
+      return bRtn;
+    }
+    void SetType(wxString *psType)
+    {
+      m_psType = psType;
+    }
+  private:
+    wxString *m_psType;
+  };
   IOminMax m_ioMin;
   IOminMax m_ioMax;
   IOcheckBoxValue m_ioCheck;
   IOinputFileType m_ioInFile;
+  IOfixedType m_ioFixed;
   wxString m_sName;
   wxString m_sDescription;
   wxString m_sType;
   wxString m_sCheckedValue;
   wxString m_sUncheckedValue;
+  wxString m_sFixedValue;
   // input file type
   wxString m_sInFileAllowOverride;
   wxString m_sInFileRequired;

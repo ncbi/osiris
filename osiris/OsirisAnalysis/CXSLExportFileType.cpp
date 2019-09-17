@@ -66,6 +66,7 @@ CXSLParam &CXSLParam::operator = (const CXSLParam &x)
   COPY(m_sDescription);
   COPY(m_sType);
   COPY(m_sCheckedValue);
+  COPY(m_sFixedValue);
   COPY(m_sUncheckedValue);
   COPY(m_dMin);
   COPY(m_dMax);
@@ -106,7 +107,7 @@ bool CXSLParam::operator == (const CXSLParam &x) const
     )
   {
   }
-  else if (IsFixedType() && NOTEQ(m_sCheckedValue))
+  else if (IsFixedType() && NOTEQ(m_sFixedValue))
   {
   }
   else if(IsInputFileType() && (
@@ -183,6 +184,7 @@ void CXSLParam::RegisterAll(bool)
   Register("max",&m_ioMax,(void *)&m_dMax);
   Register("checked-value",&m_ioCheck,(void *) &m_sCheckedValue);
   Register("unchecked-value",&m_ioCheck,(void *) &m_sUncheckedValue);
+  Register("fixed-value", &m_ioFixed, (void *)&m_sFixedValue);
   Register("inputFileDefaultDir",&m_ioInFile,&m_sInFileDefaultDirectory);
   Register("inputFileRequired",&m_ioInFile,&m_sInFileRequired);
   Register("inputFileAllowOverride",&m_ioInFile,&m_sInFileAllowOverride);
