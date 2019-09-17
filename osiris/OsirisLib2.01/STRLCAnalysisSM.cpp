@@ -2438,6 +2438,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 			default:
 				newMap [0] = 0;
 			}
+
+			if ((j != 0) && ((newMap [j] < 1) || (newMap [j] > 8))) {
+
+				cout << "Remap index for Osiris " << j << "th channel = " << newMap [j] << " is out of range.  Resetting to " << j << ".\n";
+				newMap [j] = j;
+			}
 		}
 
 		const int* currentMap = set->GetChannelMap ();
@@ -2457,6 +2463,20 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 			cout << "New fsa channel for Osiris channel " << j << " = " << currentMap [j] << "\n";
 		}
+	}
+
+	else {
+
+		cout << "\n";
+		const int* currentMap = set->GetChannelMap ();
+		int j;
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			cout << "Default fsa channel for Osiris channel " << j << " = " << currentMap [j] << "\n";
+		}
+
+		cout << "\n";
 	}
 
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
