@@ -843,7 +843,7 @@ bool CPageParameters::_TransferCurrentParam()
       break;
     case CXSLParam::FIXED:
       {
-        s = m_pCheckedValue->GetValue();
+        s = m_pFixedValue->GetValue();
         nwxString::Trim(&s);
         m_pParamCurrent->SetFixedValue(s);
       }
