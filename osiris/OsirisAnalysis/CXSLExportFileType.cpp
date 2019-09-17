@@ -90,20 +90,25 @@ void CXSLParam::Update(const CXSLParam &x)
 bool CXSLParam::operator == (const CXSLParam &x) const
 {
   bool bRtn = false;
-  if(NOTEQ(m_sName)) {}
-  else if(NOTEQ(m_sDescription)) {}
-  else if(NOTEQ(m_sType)) {}
-  else if(IsNumericType() && (
-      NOTEQ(m_bHasMin) || 
-      NOTEQ(m_bHasMax) ||
-      (m_bHasMin && NOTEQ(m_dMin)) ||
-      (m_bHasMax && NOTEQ(m_dMax))
+  if (NOTEQ(m_sName)) {}
+  else if (NOTEQ(m_sDescription)) {}
+  else if (NOTEQ(m_sType)) {}
+  else if (IsNumericType() && (
+    NOTEQ(m_bHasMin) ||
+    NOTEQ(m_bHasMax) ||
+    (m_bHasMin && NOTEQ(m_dMin)) ||
+    (m_bHasMax && NOTEQ(m_dMax))
     ))
-  {}
-  else if(IsCheckboxType() &&
-    ( NOTEQ(m_sCheckedValue) || NOTEQ(m_sUncheckedValue) )
+  {
+  }
+  else if (IsCheckboxType() &&
+    (NOTEQ(m_sCheckedValue) || NOTEQ(m_sUncheckedValue))
     )
-  {}
+  {
+  }
+  else if (IsFixedType() && NOTEQ(m_sCheckedValue))
+  {
+  }
   else if(IsInputFileType() && (
      NOTEQ(m_sInFileDefaultDirectory) ||
      NOTEQ(GetInFileAllowOverride()) ||
