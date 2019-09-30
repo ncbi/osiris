@@ -60,7 +60,7 @@ checkrc $?
 setupConfigure
 
 ../configure ${CF} \
-  --with-macosx-version-min=10.9 \
+  --with-macosx-version-min=10.12 \
   --with-cocoa \
   --disable-shared \
   --disable-compat28 \
