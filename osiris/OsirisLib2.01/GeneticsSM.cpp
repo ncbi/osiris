@@ -7048,10 +7048,10 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 
 		if ((prevSignal != NULL) && (!alleleName.IsEmpty ()) && (prevAlleleName == alleleName) && isUnique) {
 
-			if (mIsAMEL) {
+			nextResidual = fabs (nextSignal->GetBioIDResidual (-location));	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
+			prevResidual = fabs (prevSignal->GetBioIDResidual (-prevLocation));	// location is relative to locus; must reverse to make relative to prevSignal (03/26/2012)
 
-				nextResidual = fabs (nextSignal->GetBioIDResidual (-location));	// location is relative to locus; must reverse to make relative to nextSignal (03/26/2012)
-				prevResidual = fabs (prevSignal->GetBioIDResidual (-prevLocation));	// location is relative to locus; must reverse to make relative to prevSignal (03/26/2012)
+			if (mIsAMEL) {
 
 				if (prevResidual < nextResidual) {
 
