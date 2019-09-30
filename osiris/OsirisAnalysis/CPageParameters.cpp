@@ -92,6 +92,8 @@ CPageParameters::CPageParameters(
   m_pCheckedValue(NULL),
   m_pLabelUnchecked(NULL),
   m_pUncheckedValue(NULL),
+  m_pLabelFixed(NULL),
+  m_pFixedValue(NULL),
   m_pLabelLocation(NULL),
   m_pLabelExt(NULL),
   m_pComboLocation(NULL),
@@ -469,6 +471,31 @@ void CPageParameters::_SetupTypeInputFile(bool bChanged)
     m_pParamCurrent->GetInFileRequired());
 }
 
+void CPageParameters::_SetupTypeFixed(bool bChanged)
+{
+  if (bChanged)
+  {
+    if (m_pLabelFixed == NULL)
+    {
+      m_pLabelFixed= new wxStaticText(
+        this, wxID_ANY, "Parameter value");
+      m_pFixedValue = _CreateTextCtrl(
+        this, wxID_ANY);
+    }
+    else
+    {
+      m_pLabelFixed->Show(true);
+      m_pFixedValue->Show(true);
+    }
+    m_pSizerType->Add(
+      m_pLabelFixed, 0,
+      wxALIGN_LEFT);
+    m_pSizerType->Add(
+      m_pFixedValue, 0,
+      wxEXPAND);
+  }
+  m_pFixedValue->SetValue(m_pParamCurrent->GetFixedValue());
+}
 void CPageParameters::_SetupTypeCheckbox(bool bChanged)
 {
   if(bChanged)
@@ -548,6 +575,8 @@ void CPageParameters::_HideAllType()
     m_pCheckedValue,
     m_pLabelUnchecked,
     m_pUncheckedValue,
+    m_pLabelFixed,
+    m_pFixedValue,
     m_pLabelLocation,
     m_pLabelExt,
     m_pComboLocation,
@@ -582,6 +611,9 @@ void CPageParameters::_SetupType(bool bChanged)
     break;
   case CXSLParam::CHECKBOX:
     _SetupTypeCheckbox(bChanged);
+    break;
+  case CXSLParam::FIXED:
+    _SetupTypeFixed(bChanged);
     break;
   case CXSLParam::INPUT_FILE:
     _SetupTypeInputFile(bChanged);
@@ -807,6 +839,13 @@ bool CPageParameters::_TransferCurrentParam()
           m_pParamCurrent->SetCheckedValue(s);
           m_pParamCurrent->SetUncheckedValue(s2);
         }
+      }
+      break;
+    case CXSLParam::FIXED:
+      {
+        s = m_pFixedValue->GetValue();
+        nwxString::Trim(&s);
+        m_pParamCurrent->SetFixedValue(s);
       }
       break;
     case CXSLParam::INPUT_FILE:

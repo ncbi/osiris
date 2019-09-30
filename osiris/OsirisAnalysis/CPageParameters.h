@@ -89,6 +89,8 @@ private:
   wxStaticText *m_pLabelUnchecked;
   wxTextCtrl *m_pUncheckedValue;
 
+  wxStaticText *m_pLabelFixed;
+  wxTextCtrl *m_pFixedValue;
   // input file name type
 
   wxStaticText *m_pLabelLocation;
@@ -129,6 +131,7 @@ private:
   void _SetupTypeNumber(bool bChanged, bool bInteger);
   void _SetupTypeEmpty(bool bChanged);
   void _SetupTypeCheckbox(bool bChanged);
+  void _SetupTypeFixed(bool bChanged);
   void _SetupTypeInputFile(bool bChanged);
   bool _TransferCurrentParam();
 

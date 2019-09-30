@@ -48,23 +48,24 @@ class CXSLParam : public nwxXmlPersist
 
 public:
 
-typedef enum 
-{
-  TEXT = 0,
-  INTEGER,
-  DECIMAL,
-  CHOICE,
-  CHOICE_TEXT,
-  CHECKBOX,
-  INPUT_FILE,
-  IGNORE_PARAM,
-  COUNT
-} CXSLParamType;
+  typedef enum
+  {
+    TEXT = 0,
+    INTEGER,
+    DECIMAL,
+    CHOICE,
+    CHOICE_TEXT,
+    CHECKBOX,
+    FIXED,
+    INPUT_FILE,
+    IGNORE_PARAM,
+    COUNT
+  } CXSLParamType;
 
-// the following list is used for 
-// display when selecting a data type for a parameter
-// and the offset for each must correspond to the enum
-// above
+  // the following list is used for 
+  // display when selecting a data type for a parameter
+  // and the offset for each must correspond to the enum
+  // above
 
 #define CXSL_PARAM_IGNORE wxS("ignore")
 
@@ -76,6 +77,7 @@ typedef enum
   wxS("choice"), \
   wxS("choice/text"), \
   wxS("checkbox"), \
+  wxS("fixed"), \
   wxS("input file name"), \
   CXSL_PARAM_IGNORE \
 }
@@ -155,7 +157,7 @@ typedef enum
 
   bool IsChoiceType() const
   {
-    return 
+    return
       (m_sType == g_TYPES[CHOICE]) ||
       (m_sType == g_TYPES[CHOICE_TEXT]);
   }
@@ -172,6 +174,14 @@ typedef enum
   bool IsCheckboxType() const
   {
     return IsCheckboxType(m_sType);
+  }
+  static bool IsFixedType(const wxString &sType)
+  {
+    return sType == g_TYPES[FIXED];
+  }
+  bool IsFixedType() const
+  {
+    return IsFixedType(m_sType);
   }
   static bool IsInputFileType(const wxString &sType)
   {
@@ -288,6 +298,10 @@ typedef enum
   {
     m_sUncheckedValue = s;
   }
+  void SetFixedValue(const wxString &s)
+  {
+    m_sFixedValue = s;
+  }
   const wxString &GetCheckedValue() const
   {
     return m_sCheckedValue;
@@ -295,6 +309,10 @@ typedef enum
   const wxString &GetUncheckedValue() const
   {
     return m_sUncheckedValue;
+  }
+  const wxString &GetFixedValue() const
+  {
+    return m_sFixedValue;
   }
   const wxString &GetCheckboxValue(bool bChecked) const
   {
@@ -456,15 +474,48 @@ private:
   private:
     wxString *m_psType;
   };
+  class IOfixedType : public nwxXmlIOwxString
+  {
+  public:
+    IOfixedType() : nwxXmlIOwxString(true), m_psType(NULL)
+    {};
+
+    virtual bool Skip(void *p)
+    {
+      const wxString *ps = (const wxString *)p;
+      bool bRtn = false;
+      if (ps->IsEmpty())
+      {
+        bRtn = true;
+      }
+      else if (m_psType == NULL)
+      {
+        // bRtn = false; // already set
+      }
+      else
+      {
+        bRtn = !CXSLParam::IsFixedType(*m_psType);
+      }
+      return bRtn;
+    }
+    void SetType(wxString *psType)
+    {
+      m_psType = psType;
+    }
+  private:
+    wxString *m_psType;
+  };
   IOminMax m_ioMin;
   IOminMax m_ioMax;
   IOcheckBoxValue m_ioCheck;
   IOinputFileType m_ioInFile;
+  IOfixedType m_ioFixed;
   wxString m_sName;
   wxString m_sDescription;
   wxString m_sType;
   wxString m_sCheckedValue;
   wxString m_sUncheckedValue;
+  wxString m_sFixedValue;
   // input file type
   wxString m_sInFileAllowOverride;
   wxString m_sInFileRequired;
