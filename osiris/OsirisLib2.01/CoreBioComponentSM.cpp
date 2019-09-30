@@ -1718,6 +1718,9 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		}
 	}
 
+	if (!testLaserOffScale && (primaryChannel == 3) && (pullupChannel == 4))
+		bool stopHere = true;
+
 	int additionalPairsRequired = 0;
 
 	if (minRatio < 1.0) {
@@ -1956,9 +1959,14 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	RGDListIterator itRaw (rawDataPullupPrimaries);
 
+	if (!testLaserOffScale && (primaryChannel == 3) && (pullupChannel == 4))
+		bool stopHere = true;
+
 	while (nextSignal = (DataSignal*) itRaw ()) {
 
 		TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight);  // Find a way to avoid calling this twice.
+
+		currentPeak = nextSignal->Peak ();
 
 		if (currentPeak >= 0.9 * maxHeight) {
 
@@ -1998,10 +2006,12 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	//minRatioLessThan1 = false;   // Consider removing this and the next line...
 	//minRatio = 1.1;
-	int numberOfOriginalPairedPeaks = pairList.size ();
-	//list<DataSignal*> weakPullupPeaks;
 
+	int numberOfOriginalPairedPeaks = pairList.size ();
+
+	//list<DataSignal*> weakPullupPeaks;
 	//if (!hasNegativePullup && !testLaserOffScale) {  // Do we really want to skip this step if there is negative pullup???  I think not
+
 	if (!testLaserOffScale) {
 
 		// recruit additional peaks from channel list that may be tall enough to be primary pullup but are not included
