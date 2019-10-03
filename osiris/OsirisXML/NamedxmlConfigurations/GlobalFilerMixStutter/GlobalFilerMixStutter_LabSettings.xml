@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LabSettings>
   <Info>
-    <VolumeName>[GlobalFiler HID Mixture]</VolumeName>
-    <Version>2.11 for Windows</Version>
+    <VolumeName>[GlobalFiler HID Mixture Stutter And Allele]</VolumeName>
+    <Version>2.13 Beta 4 for Windows</Version>
     <DataFileType>hid</DataFileType>
-    <Notes>This operating procedure is provided with the OSIRIS installation.</Notes>
+    <UserId>goorrob</UserId>
+    <LastUpdate>1570137872</LastUpdate>
   </Info>
   <NameStrings>
     <LadderStrings>
@@ -93,12 +94,28 @@
         <MsgThreshold>1</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
+        <MsgName>smCallStutterPeaksPreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
         <MsgName>smConcaveDownAcceptanceThreshold</MsgName>
         <MsgThreshold>2</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smConstrainPullupPatternAnalysisPreset</MsgName>
         <MsgThreshold>0</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smDisableFractionalFilterPreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smDisableLowLevelFiltersForKnownMixturesPreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smDisablePullupFractionalFilterPreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smDoNotReportHeterozygousImbalanceIfMixturePreset</MsgName>
