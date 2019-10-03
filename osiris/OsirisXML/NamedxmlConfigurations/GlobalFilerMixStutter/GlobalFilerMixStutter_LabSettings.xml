@@ -31,6 +31,9 @@
       <Synonym>blank</Synonym>
       <Synonym>ext-</Synonym>
     </NegativeControlStrings>
+    <SingleSourceStrings>
+      <Synonym>***ThisStringCausesTheDefaultSampleTypeToBeAMixture***</Synonym>
+    </SingleSourceStrings>
     <StandardControlName>DNA007</StandardControlName>
     <UseSampleName>false</UseSampleName>
   </NameStrings>
