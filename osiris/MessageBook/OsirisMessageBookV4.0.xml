@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.42</VersionNumber>
-	<BuildTime>10/02/2019 05:55 PM</BuildTime>
+	<VersionNumber>7.44</VersionNumber>
+	<BuildTime>10/07/2019 05:22 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -6775,6 +6775,22 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smMakeMixturesDefaultSampleTypePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Make Mixtures Default Sample Type (checked)(unchecked for Single Source)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Make Mixtures Default Sample Type (checked)(unchecked for Single Source)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -7523,6 +7539,7 @@
 						<Name>smFsaChannelForOsirisChannel3</Name>
 						<Name>smFsaChannelForOsirisChannel4</Name>
 						<Name>smFsaChannelForOsirisChannel5</Name>
+						<Name>smMakeMixturesDefaultSampleTypePreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>

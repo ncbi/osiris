@@ -31,9 +31,6 @@
       <Synonym>blank</Synonym>
       <Synonym>ext-</Synonym>
     </NegativeControlStrings>
-    <SingleSourceStrings>
-      <Synonym>***ThisStringCausesTheDefaultSampleTypeToBeAMixture***</Synonym>
-    </SingleSourceStrings>
     <StandardControlName>DNA007</StandardControlName>
     <UseSampleName>false</UseSampleName>
   </NameStrings>
@@ -275,6 +272,10 @@
       <MessageThreshold>
         <MsgName>smUseSampleNamesForControlSampleTestsPreset</MsgName>
         <MsgThreshold>0</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smMakeMixturesDefaultSampleTypePreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
       </MessageThreshold>
     </SmartMessageThresholds>
   </Thresholds>

@@ -241,7 +241,7 @@ public:
 	bool NegControlDoesTargetStringContainASynonymCaseIndep (const RGString& target);
 
 	bool DoesTargetStringEqualMixtureCriteriaCaseIndep (const RGString& target);
-	bool DoesTargetStringContainMixtureCriteriaCaseIndep (const RGString& target);
+	bool DoesTargetStringContainMixtureCriteriaCaseIndep (const RGString& target, bool defaultSampleType);
 
 	int GetMaxPullups () const { return mMaxPullups; }
 	int GetMaxStutter () const { return mMaxStutter; }

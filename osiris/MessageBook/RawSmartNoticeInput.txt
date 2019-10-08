@@ -269,6 +269,7 @@ smFsaChannelForOsirisChannel3	1156	2672
 smFsaChannelForOsirisChannel4	1157	2673
 smFsaChannelForOsirisChannel5	1158	2674
 smChannelRemappingForLadderFreeOverrideDefault	1159	2675
+smMakeMixturesDefaultSampleTypePreset	1160	2676
 
 
 

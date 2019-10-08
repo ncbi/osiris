@@ -1458,6 +1458,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
 		Locus::SetControlSample (false);
 
+		smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+		bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
+
 		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
 
 			if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
@@ -1495,7 +1498,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
 
 				bioComponent->SetPossibleMixtureIDTrueSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
@@ -2573,6 +2576,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
 		Locus::SetControlSample (false);
 
+		smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+		bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
+
 		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
 
 			if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
@@ -2610,7 +2616,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
 
 				bioComponent->SetPossibleMixtureIDTrueSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
