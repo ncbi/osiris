@@ -296,6 +296,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	Boolean print = TRUE;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
+	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
+
 	//double yLMS [8] = {579, 117, 103, 323, 276, 750, 689, 2070 };
 	//double xLMS [8] = {8381, 7726, 7866, 8191, 7167, 9522, 9427, 11068.0};
 	//double yLMS [9] = {159, 20, 1, 15, -1, 5, 2, -2, 20 };
@@ -1495,7 +1498,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
 
 				bioComponent->SetPossibleMixtureIDTrueSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
@@ -1803,6 +1806,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	Boolean print = TRUE;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
+	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
 
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
@@ -2610,7 +2615,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
 
 				bioComponent->SetPossibleMixtureIDTrueSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
