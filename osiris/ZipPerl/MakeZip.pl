@@ -108,7 +108,8 @@ sub COPYFILES
     CORDIS_PLUS_HID
     GF
     GFHID
-    GFHID_Mixture
+    GlobalFilerMixNoStutter
+    GlobalFilerMixStutter
     GP10
     ID
     IDNO250
