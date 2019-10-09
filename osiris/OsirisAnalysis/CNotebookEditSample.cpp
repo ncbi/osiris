@@ -32,6 +32,7 @@
 #include "CNotebookEditSample.h"
 #include <wx/stattext.h>
 #include <wx/sizer.h>
+#include <wx/treectrl.h>
 #include "wxIDS.h"
 #include "nwx/nsstd.h"
 #include "nwx/nwxString.h"
