@@ -1683,10 +1683,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		else if (currentPeak < minHeight)
 			minHeight = currentPeak;
 
-		if (maxHeight == 0.0)
-			maxHeight = currentPeak;
-
-		else if (currentPeak > maxHeight)
+		if (currentPeak > maxHeight)
 			maxHeight = currentPeak;
 
 		numerator = secondarySignal->Peak ();
@@ -1720,6 +1717,9 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				minPullupHeight = numerator;
 		}
 	}
+
+	if (!testLaserOffScale && (primaryChannel == 3) && (pullupChannel == 4))
+		bool stopHere = true;
 
 	int additionalPairsRequired = 0;
 
@@ -1959,9 +1959,14 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	RGDListIterator itRaw (rawDataPullupPrimaries);
 
+	if (!testLaserOffScale && (primaryChannel == 3) && (pullupChannel == 4))
+		bool stopHere = true;
+
 	while (nextSignal = (DataSignal*) itRaw ()) {
 
 		TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight);  // Find a way to avoid calling this twice.
+
+		currentPeak = nextSignal->Peak ();
 
 		if (currentPeak >= 0.9 * maxHeight) {
 
@@ -2001,10 +2006,12 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	//minRatioLessThan1 = false;   // Consider removing this and the next line...
 	//minRatio = 1.1;
-	int numberOfOriginalPairedPeaks = pairList.size ();
-	//list<DataSignal*> weakPullupPeaks;
 
+	int numberOfOriginalPairedPeaks = pairList.size ();
+
+	//list<DataSignal*> weakPullupPeaks;
 	//if (!hasNegativePullup && !testLaserOffScale) {  // Do we really want to skip this step if there is negative pullup???  I think not
+
 	if (!testLaserOffScale) {
 
 		// recruit additional peaks from channel list that may be tall enough to be primary pullup but are not included
@@ -2062,7 +2069,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				nextSignal->SetMessageValue (zeroPullupPrimary, true);
 				noPullupPrimaries.Append (nextSignal);
 
-				if (currentPeak >= 0.9 * maxHeight) {
+				if (currentPeak >= 0.9 * maxLaserInScalePeak) {
 
 					additionalPairsRequired += 2;
 					nextPair = new PullupPair (nextSignal, true);
@@ -2129,32 +2136,53 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
 			SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
 			RGString data;
-			occludedDataPrimaries.Clear ();  // Maybe don't do this...
+			//occludedDataPrimaries.Clear ();  // Maybe don't do this...
 
 			while (primarySignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
 
-				if (primarySignal->Peak () >= 0.9 * maxHeight) {
+				if (primarySignal->Peak () >= 0.50 * maxLaserInScalePeak) {
 
 					data = primarySignal->GetTempDataForPrimaryNoPullup ();
+					primarySignal->SetMessageValue (zeroPullupPrimary, true);
 					primarySignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
 					primarySignal->SetTempDataForPrimaryNoPullup ("");
 				}
 
 				else {
 
+					primarySignal->SetMessageValue (zeroPullupPrimary, false);
 					primarySignal->SetTempDataForPrimaryNoPullup ("");
-
-					if (!primarySignal->SmartMessageHasData (zeroPullupPrimary))
-						primarySignal->SetMessageValue (zeroPullupPrimary, false);
 				}
 			}
 
 			while (primarySignal = (DataSignal*)rawDataPullupPrimaries.GetFirst ()) {
 
-				primarySignal->SetTempDataForPrimaryRawDataPullup ("");
+				data = primarySignal->GetTempDataForPrimaryRawDataPullup ();
 
-				if (!primarySignal->SmartMessageHasData (rawDataPrimary))
+				if (data.Length () == 0) {
+
 					primarySignal->SetMessageValue (rawDataPrimary, false);
+				}
+
+				else {
+
+					primarySignal->SetMessageValue (rawDataPrimary, true);
+					primarySignal->AppendDataForSmartMessage (rawDataPrimary, data);
+				}
+
+				primarySignal->SetTempDataForPrimaryRawDataPullup ("");
+			}
+
+			data = "";
+			data << pullupChannel;
+
+			while (primarySignal = (DataSignal*)occludedDataPrimaries.GetFirst ()) {
+
+				if (primarySignal->Peak () >= 0.50 * maxLaserInScalePeak) {
+
+					primarySignal->SetMessageValue (weakPrimaryPullup, true);  // call message here and add data even if no pullup found to expose the pattern, whatever it is
+					primarySignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
+				}
 			}
 
 			while (!pairList.empty()) {
@@ -2464,6 +2492,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		mLeastMedianValue [primaryChannel][pullupChannel] = leastMedianValue;
 		mOutlierThreshold [primaryChannel][pullupChannel] = outlierThreshold;
 		
+		data = "";
 		data << pullupChannel;
 
 		while (nextSignal = (DataSignal*) occludedDataPrimaries.GetFirst ()) {
@@ -2507,9 +2536,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			else {
 
 				nextSignal->SetTempDataForPrimaryNoPullup ("");
-
-				if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
-					nextSignal->SetMessageValue (zeroPullupPrimary, false);
+				nextSignal->SetMessageValue (zeroPullupPrimary, false);					
 			}
 		}
 		
@@ -2647,6 +2674,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 		// Test widths of primaries and secondaries...there is insufficient data to detect a pattern
 
+		data = "";
 		data << pullupChannel;
 
 		while (nextSignal = (DataSignal*)occludedDataPrimaries.GetFirst ()) {
@@ -2690,9 +2718,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			else {
 
 				nextSignal->SetTempDataForPrimaryNoPullup ("");
-
-				if (!nextSignal->SmartMessageHasData (zeroPullupPrimary))
-					nextSignal->SetMessageValue (zeroPullupPrimary, false);
+				nextSignal->SetMessageValue (zeroPullupPrimary, false);
 			}
 		}
 
@@ -3046,20 +3072,19 @@ int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (in
 	// Now remove artifacts from primaries with no Osiris pull-up
 
 	while (primarySignal = (DataSignal*)noPullupPrimaries.GetFirst ()) {
-
+		
 		if (primarySignal->Peak () >= primaryThreshold) {
 
 			data = primarySignal->GetTempDataForPrimaryNoPullup ();
+			primarySignal->SetMessageValue (zeroPullupPrimary, true);
 			primarySignal->AppendDataForSmartMessage (zeroPullupPrimary, data);
 			primarySignal->SetTempDataForPrimaryNoPullup ("");
 		}
 
 		else {
 
+			primarySignal->SetMessageValue (zeroPullupPrimary, false);
 			primarySignal->SetTempDataForPrimaryNoPullup ("");
-
-			if (!primarySignal->SmartMessageHasData (zeroPullupPrimary))
-				primarySignal->SetMessageValue (zeroPullupPrimary, false);
 		}
 	}
 
@@ -3068,6 +3093,7 @@ int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (in
 		if (primarySignal->Peak () >= primaryThreshold) {
 
 			data = primarySignal->GetTempDataForPrimaryRawDataPullup ();
+			primarySignal->SetMessageValue (rawDataPrimary, true);
 			primarySignal->AppendDataForSmartMessage (rawDataPrimary, data);
 			primarySignal->SetTempDataForPrimaryRawDataPullup ("");
 		}
@@ -3075,17 +3101,18 @@ int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (in
 		else {
 
 			primarySignal->SetTempDataForPrimaryRawDataPullup ("");
-
-			if (!primarySignal->SmartMessageHasData (rawDataPrimary))
-				primarySignal->SetMessageValue (rawDataPrimary, false);
+			primarySignal->SetMessageValue (rawDataPrimary, false);
 		}
 	}
+
+	data = "";
+	data << pullupChannel;
 
 	while (primarySignal = (DataSignal*)occludedPrimaries.GetFirst ()) {
 
 		if (primarySignal->Peak () >= primaryThreshold) {
 
-			data = primarySignal->GetTempDataForOccludedPrimary ();
+			primarySignal->SetMessageValue (weakPrimaryPullup, true);
 			primarySignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
 			primarySignal->SetTempDataForOccludedPrimary ("");
 		}
@@ -3093,9 +3120,7 @@ int CoreBioComponent::FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (in
 		else {
 
 			primarySignal->SetTempDataForOccludedPrimary ("");
-
-			if (!primarySignal->SmartMessageHasData (weakPrimaryPullup))
-				primarySignal->SetMessageValue (weakPrimaryPullup, false);
+			primarySignal->SetMessageValue (weakPrimaryPullup, false);
 		}
 	}
 

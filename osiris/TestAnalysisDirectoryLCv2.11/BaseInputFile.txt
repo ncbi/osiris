@@ -1,18 +1,18 @@
-InputDirectory = C:/Users/goorrob/pullupNoiseBug;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-1/Config;
+InputDirectory = C:/Users/goorrob/BUTest;
+LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-4/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = Identifiler;
-LaneStandardName = ABI-LIZ450;
+MarkerSetName = IdentifilerPlus;
+LaneStandardName = ABI-LIZ-600-80-TO-400;
 CriticalOutputLevel = 15;
-StandardSettings = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-1/Config/Volumes/ID/ID_StdSettings.xml;
-LabSettings = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-1/Config/Volumes/ID/ID_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-1/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 150.;
-MinLaneStandardRFU = 150.;
-MinLadderRFU = 150.;
-MinInterlocusRFU = 150.;
-MinLadderInterlocusRFU = 150.;
-SampleDetectionThreshold = 150.;
+StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20151030-152622/V-20151030-152622_StdSettings.xml;
+LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20151030-152622/V-20151030-152622_LabSettings.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-4/Config/LadderSpecifications/MessageBook.xml;
+MinSampleRFU = 5.;
+MinLaneStandardRFU = 75.;
+MinLadderRFU = 75.;
+MinInterlocusRFU = 5.;
+MinLadderInterlocusRFU = 75.;
+SampleDetectionThreshold = 5.;
 RawDataString = R;
 
 

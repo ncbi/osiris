@@ -2555,21 +2555,37 @@ bool ParameterServer :: DoesTargetStringEqualMixtureCriteriaCaseIndep (const RGS
 }
 
 
-bool ParameterServer :: DoesTargetStringContainMixtureCriteriaCaseIndep (const RGString& target) {
+bool ParameterServer :: DoesTargetStringContainMixtureCriteriaCaseIndep (const RGString& target, bool defaultSampleType) {
 
-	if (mSingleSourceSampleIDs->IsEmpty () && mMixtureIDs->IsEmpty ())
-		return false;
+	// defaultSampleType = false implies single source; true imples mixture
+	// return true imples sample is mixture; false imples sample is single source
 
-	if (!mSingleSourceSampleIDs->IsEmpty ()) {
+	// we don't get here if sample is positive or negative control in which case sample is single source
+
+	if (defaultSampleType) {
+
+		// mixture is default
+
+		if (mSingleSourceSampleIDs->IsEmpty ()) // must be a mixture
+			return true;
 
 		if (mSingleSourceSampleIDs->DoesTargetStringContainASynonymCaseIndep (target))
-			return false;
+			return false;  // single source string is contained in single source list, so this is not a mixture
 
-		return true;	// We can do this because we don't get here if sample is positive or negative control
+		// not single source so, mixture by default
+
+		return true;	
 	}
 
+	// single source is default
+
+	if (mMixtureIDs->IsEmpty ())  // must be single source
+		return false;
+
 	if (mMixtureIDs->DoesTargetStringContainASynonymCaseIndep (target))
-		return true;
+		return true;  // mixture string is contained in mixture list, so this is not single source
+
+	// not a mixture so single source by default
 
 	return false;
 }

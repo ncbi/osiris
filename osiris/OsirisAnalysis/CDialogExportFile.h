@@ -149,6 +149,7 @@ private:
 
   map<wxString,wxString> m_mapParamValues;
     // passed to CXSLExportFileType::TransformToFile()
+  map<wxString, wxString> m_mapFixedValues;
 
   map<wxWindow *, const CXSLParam *> m_mapFileParam;
   map<const CXSLParam *,wxWindow *> m_mapParamWindow;

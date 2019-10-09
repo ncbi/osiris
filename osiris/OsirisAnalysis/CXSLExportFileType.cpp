@@ -66,6 +66,7 @@ CXSLParam &CXSLParam::operator = (const CXSLParam &x)
   COPY(m_sDescription);
   COPY(m_sType);
   COPY(m_sCheckedValue);
+  COPY(m_sFixedValue);
   COPY(m_sUncheckedValue);
   COPY(m_dMin);
   COPY(m_dMax);
@@ -90,20 +91,25 @@ void CXSLParam::Update(const CXSLParam &x)
 bool CXSLParam::operator == (const CXSLParam &x) const
 {
   bool bRtn = false;
-  if(NOTEQ(m_sName)) {}
-  else if(NOTEQ(m_sDescription)) {}
-  else if(NOTEQ(m_sType)) {}
-  else if(IsNumericType() && (
-      NOTEQ(m_bHasMin) || 
-      NOTEQ(m_bHasMax) ||
-      (m_bHasMin && NOTEQ(m_dMin)) ||
-      (m_bHasMax && NOTEQ(m_dMax))
+  if (NOTEQ(m_sName)) {}
+  else if (NOTEQ(m_sDescription)) {}
+  else if (NOTEQ(m_sType)) {}
+  else if (IsNumericType() && (
+    NOTEQ(m_bHasMin) ||
+    NOTEQ(m_bHasMax) ||
+    (m_bHasMin && NOTEQ(m_dMin)) ||
+    (m_bHasMax && NOTEQ(m_dMax))
     ))
-  {}
-  else if(IsCheckboxType() &&
-    ( NOTEQ(m_sCheckedValue) || NOTEQ(m_sUncheckedValue) )
+  {
+  }
+  else if (IsCheckboxType() &&
+    (NOTEQ(m_sCheckedValue) || NOTEQ(m_sUncheckedValue))
     )
-  {}
+  {
+  }
+  else if (IsFixedType() && NOTEQ(m_sFixedValue))
+  {
+  }
   else if(IsInputFileType() && (
      NOTEQ(m_sInFileDefaultDirectory) ||
      NOTEQ(GetInFileAllowOverride()) ||
@@ -178,6 +184,7 @@ void CXSLParam::RegisterAll(bool)
   Register("max",&m_ioMax,(void *)&m_dMax);
   Register("checked-value",&m_ioCheck,(void *) &m_sCheckedValue);
   Register("unchecked-value",&m_ioCheck,(void *) &m_sUncheckedValue);
+  Register("fixed-value", &m_ioFixed, (void *)&m_sFixedValue);
   Register("inputFileDefaultDir",&m_ioInFile,&m_sInFileDefaultDirectory);
   Register("inputFileRequired",&m_ioInFile,&m_sInFileRequired);
   Register("inputFileAllowOverride",&m_ioInFile,&m_sInFileAllowOverride);

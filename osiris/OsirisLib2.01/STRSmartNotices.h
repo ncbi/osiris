@@ -282,6 +282,7 @@ PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel3)
 PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel4)
 PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel5)
 PERSISTENT_PREDECLARATION (smChannelRemappingForLadderFreeOverrideDefault)
+PERSISTENT_PREDECLARATION (smMakeMixturesDefaultSampleTypePreset)
 
 
 
@@ -7853,6 +7854,34 @@ public:
 	smChannelRemappingForLadderFreeOverrideDefault ();
 	smChannelRemappingForLadderFreeOverrideDefault (const smChannelRemappingForLadderFreeOverrideDefault& note);
 	virtual ~smChannelRemappingForLadderFreeOverrideDefault ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smMakeMixturesDefaultSampleTypePreset : public SmartNotice {
+
+PERSISTENT_DECLARATION (smMakeMixturesDefaultSampleTypePreset)
+
+public:
+	smMakeMixturesDefaultSampleTypePreset ();
+	smMakeMixturesDefaultSampleTypePreset (const smMakeMixturesDefaultSampleTypePreset& note);
+	virtual ~smMakeMixturesDefaultSampleTypePreset ();
 
 	virtual int GetSubject () const;
 

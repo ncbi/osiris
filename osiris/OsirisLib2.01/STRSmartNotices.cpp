@@ -1632,6 +1632,12 @@ int smChannelRemappingForLadderFreeOverrideDefault::sMessageIndex = 0;
 int smChannelRemappingForLadderFreeOverrideDefault::sMessageScope = 0;
 
 
+RGString smMakeMixturesDefaultSampleTypePreset::sName = "smMakeMixturesDefaultSampleTypePreset";
+int smMakeMixturesDefaultSampleTypePreset::sSubject = smMakeMixturesDefaultSampleTypePreset::LoadType ();
+int smMakeMixturesDefaultSampleTypePreset::sMessageIndex = 0;
+int smMakeMixturesDefaultSampleTypePreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1903,6 +1909,7 @@ PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel3, 2672, "smFsaChannelForOsir
 PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel4, 2673, "smFsaChannelForOsirisChannel4")
 PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel5, 2674, "smFsaChannelForOsirisChannel5")
 PERSISTENT_DEFINITION (smChannelRemappingForLadderFreeOverrideDefault, 2675, "smChannelRemappingForLadderFreeOverrideDefault")
+PERSISTENT_DEFINITION (smMakeMixturesDefaultSampleTypePreset, 2676, "smMakeMixturesDefaultSampleTypePreset")
 
 
 
@@ -18159,6 +18166,66 @@ int smChannelRemappingForLadderFreeOverrideDefault :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smChannelRemappingForLadderFreeOverrideDefault* noticeType = new smChannelRemappingForLadderFreeOverrideDefault;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMakeMixturesDefaultSampleTypePreset :: smMakeMixturesDefaultSampleTypePreset () : SmartNotice () {
+
+}
+
+
+smMakeMixturesDefaultSampleTypePreset :: smMakeMixturesDefaultSampleTypePreset (const smMakeMixturesDefaultSampleTypePreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMakeMixturesDefaultSampleTypePreset :: ~smMakeMixturesDefaultSampleTypePreset () {
+
+}
+
+
+int smMakeMixturesDefaultSampleTypePreset :: GetSubject () const {
+
+	return smMakeMixturesDefaultSampleTypePreset::sSubject;
+}
+
+
+void smMakeMixturesDefaultSampleTypePreset :: SetIndexAndScope (int index, int scope) const {
+
+	smMakeMixturesDefaultSampleTypePreset::sMessageIndex = index;
+	smMakeMixturesDefaultSampleTypePreset::sMessageScope = scope;
+}
+
+
+int smMakeMixturesDefaultSampleTypePreset :: GetMessageIndex () const {
+
+	return smMakeMixturesDefaultSampleTypePreset :: sMessageIndex;
+}
+
+
+int smMakeMixturesDefaultSampleTypePreset :: GetScope () const {
+
+	return smMakeMixturesDefaultSampleTypePreset :: sMessageScope;
+}
+
+
+RGString smMakeMixturesDefaultSampleTypePreset :: GetName () const {
+
+	return smMakeMixturesDefaultSampleTypePreset :: sName;
+}
+
+
+
+int smMakeMixturesDefaultSampleTypePreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMakeMixturesDefaultSampleTypePreset* noticeType = new smMakeMixturesDefaultSampleTypePreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }
