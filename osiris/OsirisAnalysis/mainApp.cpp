@@ -754,9 +754,9 @@ void mainApp::OnQuit(wxCommandEvent &e)
   {
 #if mainFrameIsWindow
     m_pFrame->Hide();
-    mainApp::PingExit();
     bSkip = m_pFrame->Close();
     m_pFrame->Destroy();
+    mainApp::PingExit();
 #else
     mainApp::PingExit();
     m_pFrame->DeletePendingEvents();
