@@ -370,6 +370,7 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz, c
   }
   SetMenuBar(new CMenuBar(true,true));
   UpdateButtonState();
+  RE_RENDER;
 }
 
 CFrameRunAnalysis::~CFrameRunAnalysis()

@@ -387,9 +387,9 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
         wxCommandEvent ee(wxEVT_COMMAND_BUTTON_CLICKED,IDlock);
         GetEventHandler()->AddPendingEvent(ee);
       }
-      mainApp::LAYOUT_HACK(this);
     }
   }
+  RE_RENDER;
   return bRtn;
 }
 bool CDialogVolumes::_CurrentVolumeModified()

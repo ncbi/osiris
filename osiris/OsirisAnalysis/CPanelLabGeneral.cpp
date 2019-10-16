@@ -331,6 +331,7 @@ bool CPanelLabGeneral::TransferDataToWindow()
         m_vpRadioFileType.at(0)->SetValue(true);
       }
     }
+    RE_RENDER;
   }
   m_bTransferred = bRtn;
   return bRtn;  
