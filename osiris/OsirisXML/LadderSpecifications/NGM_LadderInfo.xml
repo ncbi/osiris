@@ -405,7 +405,7 @@
         <Channel>2</Channel>
         <MinBP>118</MinBP>
         <MaxBP>175</MaxBP>
-        <MinGridLSBasePair>122.0</MinGridLSBasePair>
+        <MinGridLSBasePair>120.0</MinGridLSBasePair>
         <MaxGridLSBasePair>172.0</MaxGridLSBasePair>
         <LadderAlleles>
           <Allele>
