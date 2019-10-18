@@ -331,7 +331,7 @@ bool CPanelLabGeneral::TransferDataToWindow()
         m_vpRadioFileType.at(0)->SetValue(true);
       }
     }
-    RE_RENDER;
+    RE_RENDER; // OS-803, real fix to replace mainApp::LAYOUT_HACK
   }
   m_bTransferred = bRtn;
   return bRtn;  
