@@ -123,9 +123,9 @@ CFrameSample::CFrameSample(
 
   SetSizer(pSizer);
   TransferDataToWindow();
-  Layout();  // layout before transferring data
   COsirisIcon x;
   SetIcon(x);
+  RE_RENDER;
 }
 CFrameSample::~CFrameSample() 
 {

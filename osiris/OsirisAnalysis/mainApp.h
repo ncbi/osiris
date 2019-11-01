@@ -45,6 +45,7 @@
 #include <wx/string.h>
 #include <wx/arrstr.h>
 #include <wx/process.h>
+#include <wx/window.h>
 #include "wxXml2/wxXml2Object.h"
 #include "wxIDS.h"
 
@@ -62,6 +63,7 @@ class wxFile;
 class wxDateTime;
 class wxWindow;
 class mainFrame;
+
 
 #ifdef TMP_DEBUG
 
@@ -195,7 +197,11 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
     const CParmOsiris *pParm = NULL,
     const wxDateTime *pTime = NULL);
   static wxWindow *GetTopLevelParent(wxWindow *p);
-  static void LAYOUT_HACK(wxWindow *p);
+  static void LAYOUT_HACK(wxWindow *p)
+  {
+    ReRender(p);
+  }
+  static void ReRender(wxWindow *p);
   static int NewWindowNumber()
   {
     g_nWindowCounter++;
@@ -274,5 +280,6 @@ public:
 #define PING_EVENT "event"
 #define PING_ERROR "error"
 
+#define RE_RENDER mainApp::ReRender(this)
 
 #endif

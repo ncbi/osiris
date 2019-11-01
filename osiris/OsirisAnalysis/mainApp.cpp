@@ -657,6 +657,37 @@ wxWindow *mainApp::GetTopLevelParent(wxWindow *p)
 {
   return nwxUtil::GetTopLevelParent(p);
 }
+void mainApp::ReRender(wxWindow *p)
+{
+  wxClassInfo *pClass(CLASSINFO(wxTopLevelWindow));
+  bool bTop = p->IsKindOf(pClass);
+  wxSizer *pSizer = bTop ? p->GetSizer() : NULL;
+  if (pSizer != NULL)
+  {
+    pSizer->Layout();
+  }
+  else if (bTop)
+  {
+    // loop through each child
+    wxWindowList &lw = p->GetChildren();
+    if (lw.GetCount() == 1)
+    {
+      p->Layout();
+    }
+    for (wxWindowListNode *pw = lw.GetFirst(); pw != NULL; pw = pw->GetNext())
+    {
+      ReRender(pw->GetData());
+    }
+  }
+  else
+  {
+    p->Layout();
+  }
+  p->Refresh();
+  p->Update();
+}
+
+#if 0
 void mainApp::LAYOUT_HACK(wxWindow *p)
 {
   // sometimes a window will 'layout' or cleanup
@@ -680,6 +711,7 @@ void mainApp::LAYOUT_HACK(wxWindow *p)
     }
   }
 }
+#endif
 
 #ifndef __WXMAC__
 void mainApp::OnInitCmdLine (wxCmdLineParser &parser) 
@@ -722,9 +754,9 @@ void mainApp::OnQuit(wxCommandEvent &e)
   {
 #if mainFrameIsWindow
     m_pFrame->Hide();
-    mainApp::PingExit();
     bSkip = m_pFrame->Close();
     m_pFrame->Destroy();
+    mainApp::PingExit();
 #else
     mainApp::PingExit();
     m_pFrame->DeletePendingEvents();

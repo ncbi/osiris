@@ -12323,7 +12323,14 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 
 	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
 	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
-	mHeight = 1.0;
+
+	if (next->IsNegativePeak ())
+		mHeight = P1;
+
+	else
+		mHeight = P2;
+
+	//mHeight = 1.0;
 
 	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
 	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();
@@ -12380,7 +12387,14 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 
 	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
 	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
-	mHeight = 1.0;
+
+	if (next->IsNegativePeak ())
+		mHeight = P1;
+
+	else
+		mHeight = P2;
+
+	//mHeight = 1.0;
 
 	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
 	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();

@@ -1201,7 +1201,7 @@ void mainFrame::OpenFile(
     }
     pFrame->RaiseWindow();
     pFrame->Show();
-    pFrame->Layout();
+    mainApp::ReRender(pFrame);
   }
   else if(!wxFileName::IsFileReadable(sFileName))
   {

@@ -178,6 +178,9 @@ bool CMDIFrame::Show(bool show)
   {
     Raise();
     _NotifyParent();
+#ifdef __WXMAC__
+      RE_RENDER;
+#endif
     //SendSizeEvent(/*wxSEND_EVENT_POST*/);
     // SendSizeEvent: had a problem with CFrameSample
     // allele tables had a 'bad spot' near the bottom

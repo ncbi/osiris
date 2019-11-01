@@ -532,6 +532,7 @@ CFramePlot::CFramePlot(
   wxBoxSizer *pSizerAll = new wxBoxSizer(wxVERTICAL);
   pSizerAll->Add(m_pPanel,1,wxEXPAND);
   SetSizer(pSizerAll);
+  RE_RENDER;
 }
 
 
