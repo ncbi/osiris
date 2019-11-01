@@ -1,4 +1,4 @@
-MIN_VERSION=10.9
+MIN_VERSION=10.12
 ARCH=""
 PLATFORM=`sh ../../osname`
 MACCXX="-mmacosx-version-min=${MIN_VERSION}"

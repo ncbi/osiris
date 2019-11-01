@@ -2,12 +2,18 @@
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
 <plist version="0.9">
 <dict>
+	<key>NSPrincipalClass</key>
+	<string>wxNSApplication</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleIdentifier</key>
   <string>gov.NCBI.Osiris</string>
   <key>CFBundleDevelopmentRegion</key>
   <string>English</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+	</array>
   <key>CFBundleExecutable</key>
   <string>osiris</string>
   <key>CFBundleIconFile</key>
@@ -17,9 +23,7 @@
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleSignature</key>
-  <string>OSRS</string>
-  <key>CFBundleDisplayName</key>
-  <string>Osiris</string>
+  <string>????</string>
   <key>CFBundleVersion</key>
   <string>2.12.2 Beta</string>
   <key>CFBundleShortVersionString</key>
@@ -90,7 +94,7 @@
        <key>CFBundleTypeName</key>
       <string>OSIRIS Analysis Archive</string>
       <key>CFBundleTypeIconFile</key>
-      <string>wxmac</string>
+      <string>wxmac.ocns</string>
       <key>CFBundleTypeRole</key>
       <string>Viewer</string>
     </dict>
@@ -114,7 +118,7 @@
   <key>NSHumanReadableCopyright</key>
   <string>forecsics@ncbi.nlm.nih.gov</string>
   <key>LSRequiresCarbon</key>
-    <true/>
+  <true/>
   <key>CSResourcesFileMapped</key>
   <true/>
 </dict>
