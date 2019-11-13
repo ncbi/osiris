@@ -1663,15 +1663,15 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			nNegatives++;
 		}
 
-		else if (secondarySignal->IsSigmoidalPeak ())
-			nSigmoids++;
-
 		else {
 
 			nPos++;
 
 			if (secondarySignal->Peak () >= detectionThreshold)
 				atLeastOnePositivePullupAboveDetection = true;
+
+			if (secondarySignal->IsSigmoidalPeak ())
+				nSigmoids++;
 		}
 
 		pairList.push_back (nextPair);
@@ -3242,14 +3242,14 @@ DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primar
 
 			//  Experiment with commenting out the next few lines...sigmoids and craters are not special...04/01/2017...no fooling!
 
-			//if (nextSignal->IsSigmoidalPeak ()) {
-			//	
-			//	pullupArray [currentChannel] = nextSignal;
-			//	continue;
-			//}
+			if (nextSignal->IsSigmoidalPeak ()) {
+				
+				pullupArray [currentChannel] = nextSignal;
+				continue;
+			}
 
-			//else if (currentSignal->IsSigmoidalPeak ())
-			//	continue;
+			else if (currentSignal->IsSigmoidalPeak ())
+				continue;
 
 			if (nextMean == primaryMean) {
 
