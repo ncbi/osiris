@@ -25,13 +25,13 @@
   <key>CFBundleSignature</key>
   <string>????</string>
   <key>CFBundleVersion</key>
-  <string>2.12.2 Beta</string>
+  <string>2.12.2 Beta 7</string>
   <key>CFBundleShortVersionString</key>
-  <string>2.12.2 Beta</string>
+  <string>2.12.2 Beta 7</string>
   <key>CFBundleGetInfoString</key>
-  <string>OSIRIS version 2.12.2 Beta</string>
+  <string>OSIRIS version 2.12.2 Beta 7</string>
   <key>CFBundleLongVersionString</key>
-  <string>OSIRIS version 2.12.2 Beta</string>
+  <string>OSIRIS version 2.12.2 Beta 7</string>
   <key>CFBundleDocumentTypes</key>
   <array>
     <dict>
