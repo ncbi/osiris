@@ -173,23 +173,14 @@ bool CMDIFrame::CheckCannotTile(CMDIFrame *pFrame, bool bRaise)
 
 bool CMDIFrame::Show(bool show)
 {
-#ifdef __WXMAC__
-#if 0
-  //  hack for window not showing up
-  if(!IsShown())
-  {
-    Iconize(true);
-  }
-#endif
-#endif
   bool bRtn = CMDIFrameSuper::Show(show);
   if(show)
   {
+    Raise();
     _NotifyParent();
 #ifdef __WXMAC__
       RE_RENDER;
 #endif
-    Raise();
     //SendSizeEvent(/*wxSEND_EVENT_POST*/);
     // SendSizeEvent: had a problem with CFrameSample
     // allele tables had a 'bad spot' near the bottom
@@ -256,31 +247,17 @@ void CMDIFrame::OnActivate(wxActivateEvent &e)
 {
   if(!e.GetActive())
   {
-#ifdef TMP_DEBUG
-    mainApp::LogMessage(wxS("CMDIFrame::OnActivate() not active"));
-#endif
     m_pParent->KillActiveFrame(this);
     OnActivateCB(e);
   }
   else if(!m_nFocusRecursive)
   {
-    
     CIncrementer xxx(m_nFocusRecursive);
-#ifdef TMP_DEBUG
-    mainApp::LogMessage(wxS("CMDIFrame::OnActivate()"));
-#endif
     m_pParent->SetActiveFrame(this);
     CheckFileModification();
     OnActivateCB(e);
-    Raise();
   }
-#ifdef TMP_DEBUG
-  else
-  {
-    mainApp::LogMessage(wxS("CMDIFrame::OnActivate() recursive"));
-  }
-#endif
-  e.Skip(true);
+  e.Skip();
 }
 void CMDIFrame::OnFocusSet(wxFocusEvent &e)
 {
