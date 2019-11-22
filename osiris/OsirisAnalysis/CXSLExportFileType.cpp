@@ -420,7 +420,7 @@ void CXSLExportFileType::Update(const CXSLExportFileType &x)
     pParam = m_mapParam.Find(itr->first);
     if(pParam == NULL)
     {
-      m_mapParam.Insert(itr->second);
+      m_mapParam.Insert(new CXSLParam(*(itr->second)));
     }
     else
     {
