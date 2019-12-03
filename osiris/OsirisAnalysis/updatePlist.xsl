@@ -5,6 +5,9 @@
   <xsl:param name="version" select="''"/>
   <xsl:output method="xml" omit-xml-declaration="yes"/>
   <xsl:variable name="sVersion" select="normalize-space($version)"/>
+
+  <xsl:variable name="sShortVersion"
+    select="substring-before(concat(translate($sVersion,'BETA','beta'), ' beta'),' beta')"/>
   <xsl:template match="string[preceding-sibling::*[1]/text() = 'CFBundleVersion' or preceding-sibling::*[1]/text() = 'CFBundleShortVersionString']" priority="20">
     <xsl:message>
       <xsl:text>short version found: </xsl:text>
@@ -12,7 +15,7 @@
     </xsl:message>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:value-of select="$sVersion"/>
+      <xsl:value-of select="$sShortVersion"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="string[starts-with(string(.),'OSIRIS version')]" priority="20">

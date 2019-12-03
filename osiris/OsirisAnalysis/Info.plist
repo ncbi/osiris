@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<plist version="1.0">
 <dict>
-	<key>NSPrincipalClass</key>
-	<string>wxNSApplication</string>
+  <key>NSPrincipalClass</key>
+  <string>NSApplication</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleIdentifier</key>
   <string>gov.NCBI.Osiris</string>
   <key>CFBundleDevelopmentRegion</key>
   <string>English</string>
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>en</string>
-	</array>
   <key>CFBundleExecutable</key>
   <string>osiris</string>
   <key>CFBundleIconFile</key>
@@ -23,11 +19,13 @@
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleSignature</key>
-  <string>????</string>
+  <string>OSRS</string>
+  <key>CFBundleDisplayName</key>
+  <string>Osiris</string>
   <key>CFBundleVersion</key>
-  <string>2.12.2 Beta 7</string>
+  <string>2.12.2</string>
   <key>CFBundleShortVersionString</key>
-  <string>2.12.2 Beta 7</string>
+  <string>2.12.2</string>
   <key>CFBundleGetInfoString</key>
   <string>OSIRIS version 2.12.2 Beta 7</string>
   <key>CFBundleLongVersionString</key>
@@ -94,7 +92,7 @@
        <key>CFBundleTypeName</key>
       <string>OSIRIS Analysis Archive</string>
       <key>CFBundleTypeIconFile</key>
-      <string>wxmac.ocns</string>
+      <string>wxmac</string>
       <key>CFBundleTypeRole</key>
       <string>Viewer</string>
     </dict>
@@ -118,7 +116,7 @@
   <key>NSHumanReadableCopyright</key>
   <string>forecsics@ncbi.nlm.nih.gov</string>
   <key>LSRequiresCarbon</key>
-  <true/>
+    <true/>
   <key>CSResourcesFileMapped</key>
   <true/>
 </dict>
