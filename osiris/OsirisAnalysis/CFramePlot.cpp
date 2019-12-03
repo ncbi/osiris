@@ -2046,10 +2046,7 @@ bool CFramePlot::Show(bool show)
 void CFramePlot::OnSize(wxSizeEvent &e)
 {
   _SendSizeAction();
-  if(&e != NULL)
-  {
-    e.Skip(true);
-  }
+  e.Skip(true);
 }
 
 wxBitmap *CFramePlot::CreateBitmap(

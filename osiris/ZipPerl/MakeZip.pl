@@ -414,8 +414,7 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/nwx/pinger.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
-  &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osirisAnalysis ${DEST}");
-  &SYSTEM("${CP} ${src}/OSstarter/bin/osiris ${DEST}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
   &SYSTEM("${CP} ${src}/fsa2xml/bin/fsa2xml ${DEST}");
 

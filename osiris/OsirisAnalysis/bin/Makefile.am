@@ -1,6 +1,6 @@
-bin_PROGRAMS = osirisAnalysis
+bin_PROGRAMS = osiris
 AUTOMAKE_OPTIONS = subdir-objects
-osirisAnalysis_SOURCES =  \
+osiris_SOURCES =  \
 ../CArchiveCollection.cpp \
 ../CArtifactLabels.cpp \
 ../CArtifactLabelsUser.cpp \

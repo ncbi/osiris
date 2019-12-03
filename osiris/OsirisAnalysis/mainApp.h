@@ -46,6 +46,7 @@
 #include <wx/arrstr.h>
 #include <wx/process.h>
 #include <wx/window.h>
+#include <wx/timer.h>
 #include "wxXml2/wxXml2Object.h"
 #include "wxIDS.h"
 
@@ -90,8 +91,9 @@ public:
   mainApp()
   {
     g_count++;
+    m_pTimer = NULL;
     m_pFrame = NULL;
-    wxXml2Object::AddReceiver(this);
+    m_nTimerCount = 0;
   }
   virtual ~mainApp();
   virtual bool OnInit();
@@ -100,7 +102,17 @@ public:
 #ifndef __WXMAC__
   virtual void  OnInitCmdLine (wxCmdLineParser &parser);
 #endif
-  // event handlers
+  // event handlers'
+  void SetupTimer()
+  {
+    if(m_pTimer == NULL)
+    {
+      m_nTimerCount = 0;
+      m_pTimer = new wxTimer(this,(int)IDtimer);
+      m_pTimer->Start(250,false);
+    }
+  }
+  void OnTimer(wxTimerEvent &);
 
 #define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);
 
@@ -141,6 +153,16 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   {
     return g_pThis;
   }
+  bool InitializeApp()
+  {
+    bool bRtn = false;
+    if(m_pFrame == NULL)
+    {
+      bRtn = true;
+      _InitializeApp();
+    }
+    return bRtn;
+  }
   static bool SuppressMessages(bool b)
   {
     bool bRtn = g_bSuppressMessages;
@@ -151,6 +173,15 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   {
     return g_bSuppressMessages;
   }
+  static void StopTimer()
+  {
+    wxTimer *p = (g_pThis != NULL) ? g_pThis->m_pTimer : NULL;
+    if(p != NULL)
+    {
+      p->Stop();
+    }
+  }
+
   static void ShowError(const wxString &sMsg,wxWindow *parent);
   static void ShowAlert(const wxString &sMsg,wxWindow *parent);
   static void LogMessage(const wxString &sMsg, int nLevel = 0)
@@ -219,10 +250,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   // minimum number to be entered for an RFU value
 
 private:
-#ifdef __WXDEBUG__
-  static const wxString g_sACTIVE;
-  static const wxString g_sINACTIVE;
-#endif
+  void _InitializeApp();
   void _Cleanup();
   static void _cleanupPinger(bool bByUser = false);
   static void _exitPinger();
@@ -246,8 +274,11 @@ private:
   static bool g_bSuppressMessages;
   static mainApp *g_pThis;
 
+  wxTimer *m_pTimer;
   mainFrame *m_pFrame;
+  int m_nTimerCount;
 #ifdef __WXMAC__
+  wxFrame *m_pInvisibleFrame;
   wxArrayString m_asFiles;
 public:
   virtual void MacOpenFile(const wxString &sFileName);
