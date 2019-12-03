@@ -415,7 +415,11 @@ void CNotebookEditSample::InitiateRepaintData()
 }
 void CNotebookEditSample::OnChanged(wxBookCtrlEvent &e)
 {
-//  GetParent()->Refresh();
+  wxWindow *pPage = m_pNotebook->GetCurrentPage();
+  if(pPage != NULL)
+  {
+    mainApp::ReRender(pPage);
+  }
   _UpdateMenu();
   e.Skip();
 }
@@ -450,10 +454,13 @@ void CNotebookEditSample::OnChanging(wxBookCtrlEvent &e)
     }
   }
 }
+/*
 void CNotebookEditSample::RepaintData()
 {
   TransferDataToWindow();
 }
+*/
+
 
 void CNotebookEditSample::OnTimer(wxTimerEvent &)
 {
