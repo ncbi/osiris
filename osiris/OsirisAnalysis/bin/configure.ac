@@ -1,4 +1,4 @@
-AC_INIT([osirisanalysis],2.5)
+AC_INIT([osiris],2.5)
 AC_CONFIG_SRCDIR(../mainApp.cpp)
 AM_INIT_AUTOMAKE
 AC_PROG_CXX
