@@ -2556,11 +2556,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-<<<<<<< HEAD
-        "OutputFilename" = "8:Release\\Osiris-2.13-Beta-6.msi"
-=======
-        "OutputFilename" = "8:Release\\Osiris-2.12.2-beta.msi"
->>>>>>> Version-2.12.2-beta
+        "OutputFilename" = "8:Release\\Osiris-2.13-Beta-7.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -12035,24 +12031,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-<<<<<<< HEAD
         "ProductCode" = "8:{78F102EE-B8D8-418E-ACFD-9A8484543DED}"
         "PackageCode" = "8:{C7C888FF-E563-4FBC-8B74-6C49CB148611}"
-=======
-        "ProductCode" = "8:{AD5B16C2-5D91-40FB-B963-944F9434EE0C}"
-        "PackageCode" = "8:{2D9EF720-A13D-4DFF-9E65-488501150410}"
->>>>>>> Version-2.12.2-beta
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-<<<<<<< HEAD
         "ProductVersion" = "8:2.13.0006"
-=======
-        "ProductVersion" = "8:2.12.0018"
->>>>>>> Version-2.12.2-beta
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

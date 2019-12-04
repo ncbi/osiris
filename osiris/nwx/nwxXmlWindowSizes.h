@@ -56,6 +56,7 @@ public:
       m_pos(pos)
   {
     RegisterAll(true);
+    _fixSize();
   }
   nwxWindowSize() :
       m_size(wxDefaultSize),
@@ -73,12 +74,15 @@ public:
     m_sName = x.GetName();
     m_size = x.GetSize();
     m_pos = x.GetPos();
+    _fixSize();
   }
   nwxWindowSize & operator = (const nwxWindowSize &x)
   {
     CopyFrom(x);
     return *this;
   }
+  virtual bool LoadFromNode(wxXmlNode *, void *pObj);
+  virtual bool LoadFromNode(wxXmlNode *);
   const wxString &GetName() const
   {
     return m_sName;
@@ -100,7 +104,11 @@ public:
   bool SetSize(const wxSize &x)
   {
     bool bRtn = (x != m_size);
-    if(bRtn) { m_size = x; }
+    if(bRtn) 
+    {
+      m_size = x;
+      _fixSize();
+    }
     return bRtn;
   }
   virtual void RegisterAll(bool = false)
@@ -112,6 +120,14 @@ public:
     RegisterIntPositive(wxT("y"),&m_pos.y);
   }
 private:
+  void _fixSize()
+  {
+    if(m_size.GetHeight() < 20 ||
+       m_size.GetWidth() < 20)
+    {
+      m_size = wxDefaultSize;
+    }
+  }
   wxString m_sName;
   wxSize m_size;
   wxPoint m_pos;

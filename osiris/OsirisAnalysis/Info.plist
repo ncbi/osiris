@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<plist version="1.0">
 <dict>
+  <key>NSPrincipalClass</key>
+  <string>NSApplication</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleIdentifier</key>
@@ -21,23 +23,13 @@
   <key>CFBundleDisplayName</key>
   <string>Osiris</string>
   <key>CFBundleVersion</key>
-<<<<<<< HEAD
-  <string>2.13 Beta 6</string>
+  <string>2.13</string>
   <key>CFBundleShortVersionString</key>
-  <string>2.13 Beta 6</string>
+  <string>2.13</string>
   <key>CFBundleGetInfoString</key>
-  <string>OSIRIS version 2.13 Beta 6</string>
+  <string>OSIRIS version 2.13 Beta 7</string>
   <key>CFBundleLongVersionString</key>
-  <string>OSIRIS version 2.13 Beta 6</string>
-=======
-  <string>2.12.2 Beta</string>
-  <key>CFBundleShortVersionString</key>
-  <string>2.12.2 Beta</string>
-  <key>CFBundleGetInfoString</key>
-  <string>OSIRIS version 2.12.2 Beta</string>
-  <key>CFBundleLongVersionString</key>
-  <string>OSIRIS version 2.12.2 Beta</string>
->>>>>>> Version-2.12.2-beta
+  <string>OSIRIS version 2.13 Beta 7</string>
   <key>CFBundleDocumentTypes</key>
   <array>
     <dict>

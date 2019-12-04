@@ -199,7 +199,8 @@ bool CDialogArtifactLabels::TransferDataToWindow()
         NULL);
     }
     SetReadOnly(bReadOnly);
-    OnListSelect(*((wxCommandEvent*)NULL));
+    wxCommandEvent e;
+    OnListSelect(e);
   }
   return bRtn;
 }
