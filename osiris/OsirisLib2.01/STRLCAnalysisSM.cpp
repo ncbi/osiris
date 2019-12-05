@@ -636,6 +636,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	//CoreBioComponent::SetHeightFile (heightText);
 
+	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+
+	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	Locus::SetImbalanceThresholdForNoisyPeak (heightFraction);
+	cout << "Imbalance threshold for noisy peak = " << Locus::GetImbalanceThresholdForNoisyPeak () << "\n";
+
 	RGString nonLaserOffScalePullupFractionName = FullPathForReports + "/PullupFractions.tab";
 	RGTextOutput* nonLaserOffScalePullupFractions = new RGTextOutput (nonLaserOffScalePullupFractionName, FALSE);
 	CoreBioComponent::SetNonLaserOffScalePUCoeffsFile (nonLaserOffScalePullupFractions);
@@ -1807,7 +1813,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
 	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
 	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
+
+	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	Locus::SetImbalanceThresholdForNoisyPeak (heightFraction);
+	cout << "Imbalance threshold for noisy peak = " << Locus::GetImbalanceThresholdForNoisyPeak () << "\n";
 
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();

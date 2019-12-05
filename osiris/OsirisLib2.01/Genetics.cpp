@@ -85,6 +85,7 @@ double Locus::GridPullupFractionalFilter = -1.0;
 bool Locus::ExpectRFUUnitsForHomozygoteBound = true;
 double Locus::MaxResidualForAlleleCalls = -1.0;
 double Locus::AlleleOverloadThreshold = -1.0;
+double Locus::ImbalanceThresholdForNoisyPeak = 0.5;
 bool* Locus::InitialMatrix = NULL;
 bool Locus::NoYForAMEL = false;
 bool Locus::DisableStutterFilter = false;
@@ -5132,7 +5133,7 @@ void Locus :: ReportXMLSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput
 
 		totalCorrection = nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-		if (totalCorrection != 0.0)
+//		if (totalCorrection != 0.0)
 			text << "\t\t\t\t\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
 
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
