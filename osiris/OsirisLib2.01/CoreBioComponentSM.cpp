@@ -1906,6 +1906,9 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			continue;
 		}
 
+		if (nextSignal->Peak () < primaryMinRFU)
+			continue;
+
 		currentPeak = nextSignal->Peak ();
 
 		if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
@@ -2058,11 +2061,12 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			bool aboveMinHeight = (currentPeak >= minHeight);
 			bool aboveThreshold = (currentPeak > threshold);
 			bool aboveMinPullup = (minRatio * currentPeak >= minPullupThreshold);
+			bool aboveMinRFU = (currentPeak > primaryMinRFU);
 
 			// the minimum ratio is more likely to be representative of the true pullup (if any) and the noise level on the pullup channel is a better reflection of the likelihood of being able
 			// to have found a peak in the pullup position.
 
-			if (aboveMinHeight || (aboveThreshold && aboveMinPullup && minRatioLessThan1)) {
+			if ((aboveMinHeight || (aboveThreshold && aboveMinPullup && minRatioLessThan1)) && aboveMinRFU) {
 
 				nextPair = new PullupPair (nextSignal);
 				pairList.push_back (nextPair);

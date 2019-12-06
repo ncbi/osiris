@@ -589,6 +589,7 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 
 //		if (totalCorrection != 0.0)
 			text << "\t\t\t\t\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+			text << "\t\t\t\t\t<PullupCorrectedHeight>" << (int)floor (nextSignal->Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>\n";
 
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";

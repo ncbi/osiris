@@ -49,7 +49,7 @@
 #include <set>
 #include <iostream>
 
-using namespace::std;
+using namespace std;
 
 // Smart Message related*********************************************************************************************************************************
 
