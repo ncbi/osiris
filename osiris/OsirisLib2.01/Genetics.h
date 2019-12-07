@@ -566,6 +566,9 @@ public:
 	static void SetSingleSourceSample (bool d) { IsSingleSourceSample = d; }
 	static void SetControlSample (bool d) { IsControlSample = d; }
 
+	static void SetImbalanceThresholdForNoisyPeak (double threshold) { ImbalanceThresholdForNoisyPeak = threshold; }
+	static double GetImbalanceThresholdForNoisyPeak () { return ImbalanceThresholdForNoisyPeak; }
+
 protected:
 	BaseLocus* mLink;
 	RGHashTable AlleleListByName;   // items of type Allele*
@@ -659,6 +662,7 @@ protected:
 
 	static double MaxResidualForAlleleCalls;
 	static double AlleleOverloadThreshold;
+	static double ImbalanceThresholdForNoisyPeak;
 	static bool* InitialMatrix;
 	static bool NoYForAMEL;
 	static bool DisableStutterFilter;

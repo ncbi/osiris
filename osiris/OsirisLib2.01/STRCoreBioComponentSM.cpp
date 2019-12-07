@@ -49,7 +49,7 @@
 #include <set>
 #include <iostream>
 
-using namespace::std;
+using namespace std;
 
 // Smart Message related*********************************************************************************************************************************
 
@@ -2725,6 +2725,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	InterchannelLinkage* secondaryChannel2;
 	list<DataSignal*> finalCraterList;
 
+	bool nextSignalIsPullup;
+	bool nextSignalIsOffScale;
+	double heightImbalanceThreshold = Locus::GetImbalanceThresholdForNoisyPeak ();
+
 	for (i=1; i<= mNumberOfChannels; i++) {
 
 		nextChannel = mDataChannels [i];
@@ -2748,7 +2752,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				sidePeaksHaveSamePrimaryChannel = testSignal->HasPullupFromSameChannelAsSM (testSignal2, mNumberOfChannels);
 			}
 
-			if ((nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel)) {
+			nextSignalIsPullup = nextSignal->GetMessageValue (pullup);
+			nextSignalIsOffScale = nextSignal->GetMessageValue (laserOffScale);
+
+			if ((nextSignal->HasCrossChannelSignalLink () || nextSignalIsPullup) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && (nextSignalIsPullup || nextSignalIsOffScale)) {
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
@@ -2851,13 +2858,16 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				secondaryChannel2 = testSignal2->GetInterchannelLink ();
 				OverallList.RemoveReference (nextSignal);
 				iChannel = nextSignal->GetInterchannelLink ();
+				double heightLeft = testSignal->Peak ();
+				double heightRight = testSignal2->Peak ();
 
 				bool sidePeaksTooClose = (fabs (testSignal2->GetApproximateBioID () - testSignal->GetApproximateBioID ()) < dualPeakBPTolerance);
 				bool atLeastOneSidePeakIsPullup = (testSignal->GetMessageValue (pullup) || testSignal2->GetMessageValue (pullup));
 				bool sidePeaksAreDualSignals = (testSignal->GetMessageValue (dualPeak) && testSignal2->GetMessageValue (dualPeak));
 				bool sidePeakIsPrimary = ((testSignal->GetInterchannelLink () != NULL) || (testSignal2->GetInterchannelLink () != NULL));
+				bool notTooImbalanced = (heightRight > heightImbalanceThreshold * heightLeft) && (heightLeft > heightImbalanceThreshold * heightRight);
 
-				if (testForPeaksTooCloseTogether && (sidePeaksTooClose || sidePeaksAreDualSignals) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary) {
+				if (testForPeaksTooCloseTogether && (sidePeaksTooClose || sidePeaksAreDualSignals) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary && notTooImbalanced) {
 
 					// Either only one side peak is pullup or both are and from same channel, plus, peaks are close and are dual signals, and test is enabled, and neither side peak is primary pullup...whew!
 					// We wouldn't be here if nextSignal were either a primary peak or a pullup, so, don't have to worry about cross channel effects on nextSignal.

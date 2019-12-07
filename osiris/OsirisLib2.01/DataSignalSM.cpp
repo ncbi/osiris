@@ -1119,8 +1119,9 @@ void DataSignal :: WriteSmartPeakInfoToXML (RGTextOutput& text, const RGString& 
 
 			totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-			if (totalCorrection != 0.0)
-				text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+	//		if (totalCorrection != 0.0)
+				text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
+				text << indent << "\t<PullupCorrectedHeight>" << (int)floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
 
 			text << indent << "\t<BPS>" << GetBioID () << "</BPS>" << endLine;
 //			text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
@@ -1176,8 +1177,9 @@ void DataSignal :: WriteSmartArtifactInfoToXML (RGTextOutput& text, const RGStri
 
 				totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-				if (totalCorrection != 0.0)
-					text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+	//			if (totalCorrection != 0.0)
+					text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
+					text << indent << "\t<PullupCorrectedHeight>" << (int)floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
 
 //				text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 				text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
@@ -1290,8 +1292,9 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 
 		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-		if (totalCorrection != 0.0)
+	//	if (totalCorrection != 0.0)
 			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
+			text << indent << "\t<PullupCorrectedHeight>" << (int)floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
 
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;

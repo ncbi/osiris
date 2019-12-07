@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.44</VersionNumber>
-	<BuildTime>10/07/2019 05:22 PM</BuildTime>
+	<VersionNumber>7.45</VersionNumber>
+	<BuildTime>12/04/2019 04:11 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -691,7 +691,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT smHeightBelowFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Primary Pullup</Text>
 			<TextForData> into channel(s): </TextForData>
@@ -7341,7 +7341,7 @@
 			</ReportCriterion>
 			<Text>Minimum Imbalance Ratio to Create Noisy Peak</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacerRestrictedPriorityOptionsBegin</Name>
@@ -7441,7 +7441,6 @@
 						<Name>smMaxILSBPForExtendedLocus</Name>
 						<Name>smCallStutterPeaksPreset</Name>
 						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
-						<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
 						<Name>smTestPullupCorrectedHeightsPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
@@ -7540,6 +7539,7 @@
 						<Name>smFsaChannelForOsirisChannel4</Name>
 						<Name>smFsaChannelForOsirisChannel5</Name>
 						<Name>smMakeMixturesDefaultSampleTypePreset</Name>
+						<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
