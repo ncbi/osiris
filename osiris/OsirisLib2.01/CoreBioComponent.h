@@ -476,6 +476,8 @@ public:
 	virtual int ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();
 	virtual int RemoveInterlocusSignalsSM ();
 
+	virtual int GetMinimumILSBPForLoci () { return 0; }
+
 	virtual int WriteXMLGraphicDataSM (const RGString& graphicDirectory, const RGString& localFileName, SampleData* data, int analysisStage, const RGString& intro);
 	virtual int WriteSmartPeakInfoToXMLForChannel (int channel, RGTextOutput& text, const RGString& indent, const RGString& tagName);
 	virtual int WriteSmartArtifactInfoToXMLForChannel (int channel, RGTextOutput& text, const RGString& indent);

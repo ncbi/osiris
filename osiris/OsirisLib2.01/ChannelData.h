@@ -249,6 +249,8 @@ public:
 	virtual double GetMeasurementRatio () const;
 	virtual void AppendAllBaseLoci (RGDList& locusList);
 
+	virtual double GetLeastILSBPForLadderLoci () { return 0.0; }
+
 	void ResetPreliminaryIterator () { PreliminaryIterator.Reset (); }
 	DataSignal* GetNextPreliminaryCurve () { return (DataSignal*) PreliminaryIterator (); }
 	DataSignal* RemovePreliminaryCurveReference (DataSignal* target) { return (DataSignal*) PreliminaryCurveList.RemoveReference (target); }

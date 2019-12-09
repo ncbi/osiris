@@ -2719,6 +2719,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 
 					nextSignal = (DataSignal*) FinalSignalList.First ();
 					mFirstTime = nextSignal->GetMean ();
+					mFirstILSBP = nextSignal->GetApproximateBioID ();
 					nextSignal = (DataSignal*) FinalSignalList.Last ();
 					mLastTime = nextSignal->GetMean ();
 
@@ -2908,6 +2909,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 
 	nextSignal = (DataSignal*) FinalSignalList.First ();
 	mFirstTime = nextSignal->GetMean ();
+	mFirstILSBP = nextSignal->GetApproximateBioID ();
 	nextSignal = (DataSignal*) FinalSignalList.Last ();
 	mLastTime = nextSignal->GetMean ();
 
@@ -3129,6 +3131,8 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 	smSignalOL offLadder;
 	smIsAcceptedOLAllele acceptedOL;
 
+	double minBioID = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		prevSignal = nextSignal->GetPreviousLinkedSignal ();
@@ -3145,6 +3149,12 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 	}
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+
+		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID)) {
+
+			tempList.RemoveReference (nextSignal);
+			continue;
+		}
 
 		location = TestSignalPositionRelativeToLocus (nextSignal);
 
@@ -5380,6 +5390,8 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 			it.RemoveCurrentItem ();
 			LocusSignalList.RemoveReference (nextSignal);	//!!!!!!!!!
+			nextSignal->SetDoNotCall (true);
+			nextSignal->SetDontLook (true);
 			continue;
 		}
 

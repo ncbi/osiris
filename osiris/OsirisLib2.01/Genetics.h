@@ -486,6 +486,8 @@ public:
 	int CorrectGridSignalListSM (RGDList& artifacts);
 	int CleanUpGridSignalListSM (RGDList& artifacts);
 
+	double GetFirstILSBP () { return mFirstILSBP; }
+
 	int TestProximityArtifactsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
 	int TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* timeMap);
 	int TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
@@ -626,6 +628,7 @@ protected:
 	Locus* mGridLocus;
 
 	double mTotalAlleleArea;
+	double mFirstILSBP;
 
 	// Smart Message data************************************************************************************
 	//*******************************************************************************************************

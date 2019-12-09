@@ -1029,6 +1029,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	int leastBPForSamples = CoreBioComponent::GetMinBioIDForArtifacts ();
 	int leastBPInt = (int) floor (leastBP);
+	int oldLeastBPForSamples = leastBPForSamples;
+	double minLadderILSBP = 0.0;
+	bool testedLadderMinILSBP = false;
 
 	if ((leastBPForSamples > 0) && (leastBPForSamples > leastBPInt)) {
 
@@ -1299,12 +1302,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				ladderBioComponent->AddILSToHistory ();
 				cout << "Ladder ILS added to history..." << endl;
 			}
+
+			//  Find minILSBP for ladder locus and save
+
+			int temp = ladderBioComponent->GetMinimumILSBPForLoci ();
+
+			if (temp < oldLeastBPForSamples)
+				oldLeastBPForSamples = temp;
 		}
 	}
 
 	cout << "Processed all ladders.  Number of ladders = " << LadderList.Entries () << endl;
 	ChannelData::SetTestForDualSignal (true);
 	ChannelData::SetUseILSLadderEndPointAlgorithm (false);
+	CoreBioComponent::SetMinBioIDForArtifacts (oldLeastBPForSamples);
+	cout << "Minimum ILS BP for reporting alleles and artifacts = " << oldLeastBPForSamples << "\n";
 	RGString SampleName;
 	bool sampleOK;
 	bool populatedBaseLocusList = false;

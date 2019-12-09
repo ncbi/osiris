@@ -139,6 +139,8 @@ public:
 	virtual int GridQualityTest ();	//incomplete
 	virtual int WriteXMLGraphicData (const RGString& graphicDirectory, const RGString& localFileName, SampleData* data, int analysisStage, const RGString& intro);	//$
 
+	virtual int GetMinimumILSBPForLoci ();
+
 	//******************************************************************************************************************************************
 	//******************************************************************************************************************************************
 
