@@ -2,7 +2,7 @@
 <LabSettings>
   <Info>
     <VolumeName>[PowerPlex Fusion HID Sole Source]</VolumeName>
-    <Version>2.11 for Windows</Version>
+    <Version>2.13 for Windows</Version>
     <DataFileType>hid</DataFileType>
     <Notes>This operating procedure is provided with the OSIRIS installation.</Notes>
   </Info>
@@ -54,10 +54,10 @@
       <MinimumRFU>150</MinimumRFU>
       <MaximumRFU>-1</MaximumRFU>
       <MinDetectionRFU>75</MinDetectionRFU>
-      <FractionOfMaxPeak>-1</FractionOfMaxPeak>
+      <FractionOfMaxPeak>0.15</FractionOfMaxPeak>
       <PullupFractionalFilter>-1</PullupFractionalFilter>
       <StutterThreshold>0.15</StutterThreshold>
-      <PlusStutterThreshold>0.02</PlusStutterThreshold>
+      <PlusStutterThreshold>0.06</PlusStutterThreshold>
       <AdenylationThreshold>0.3</AdenylationThreshold>
     </SampleRFUTests>
     <HeterozygousImbalanceLimit>0.5</HeterozygousImbalanceLimit>
@@ -65,7 +65,7 @@
     <MinBoundHomozygoteUnit>R</MinBoundHomozygoteUnit>
     <MaxNumberOfPullupsPerSample>2</MaxNumberOfPullupsPerSample>
     <MaxResidualForAlleleCall>0.35</MaxResidualForAlleleCall>
-    <MinBPSForArtifacts>60</MinBPSForArtifacts>
+    <MinBPSForArtifacts>70</MinBPSForArtifacts>
     <AlleleRFUOverloadThreshold>10000</AlleleRFUOverloadThreshold>
     <AllowMinRFUOverride>true</AllowMinRFUOverride>
     <SmartMessageThresholds>
@@ -83,11 +83,19 @@
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smCallOnLadderAdenylationPreset</MsgName>
-        <MsgThreshold>1</MsgThreshold>
+        <MsgThreshold>0</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smConcaveDownAcceptanceThreshold</MsgName>
+        <MsgThreshold>4</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smConstrainPullupPatternAnalysisPreset</MsgName>
         <MsgThreshold>0</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smDistanceFromPeakThreshold</MsgName>
+        <MsgThreshold>1</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smExtendLociEdgeToEdgePreset</MsgName>
@@ -104,6 +112,10 @@
       <MessageThreshold>
         <MsgName>smMakeExcessiveResidualDisplacementCriticalPreset</MsgName>
         <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smNoiseFactorForShoulderAcceptanceThreshold</MsgName>
+        <MsgThreshold>200</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smNormalizeRawDataRelativeToBaselinePreset</MsgName>
@@ -158,6 +170,18 @@
         <MsgThreshold>-1</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
+        <MsgName>smPostPrimerPercentOfNoiseRangeToBeConsideredPeak</MsgName>
+        <MsgThreshold>75</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smPrePrimerPercentOfNoiseRangeForLevelChange</MsgName>
+        <MsgThreshold>160</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smPrePrimerPercentOfNoiseRangeToBeConsideredPeak</MsgName>
+        <MsgThreshold>160</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
         <MsgName>smRecommendReworkIfLaserOffScalePreset</MsgName>
         <MsgThreshold>0</MsgThreshold>
       </MessageThreshold>
@@ -182,8 +206,16 @@
         <MsgThreshold>1</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
-        <MsgName>smTestBaselineKnotsHeading</MsgName>
+        <MsgName>smSelectAveragingInPlaceFilterPreset</MsgName>
         <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smSelectTriplePassVsSinglePassFilterPreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smTestBaselineKnotsHeading</MsgName>
+        <MsgThreshold>0</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smTestExcessiveNoiseAboveOrBelowAnalysisThreshold</MsgName>
@@ -216,6 +248,14 @@
       <MessageThreshold>
         <MsgName>smUseMaxSecondDerivativesForSampleToLadderFit</MsgName>
         <MsgThreshold>0</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smUseProximityBothToPeaksAndLevelChangePreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smUseProximityToPeaksOnlyPreset</MsgName>
+        <MsgThreshold>1</MsgThreshold>
       </MessageThreshold>
       <MessageThreshold>
         <MsgName>smUseSampleNamesForControlSampleTestsPreset</MsgName>
