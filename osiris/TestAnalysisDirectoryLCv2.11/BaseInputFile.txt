@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-InputDirectory = C:/Users/goorrob/BUTest;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-4/Config;
-ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-MarkerSetName = IdentifilerPlus;
-LaneStandardName = ABI-LIZ-600-80-TO-400;
-CriticalOutputLevel = 15;
-StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20151030-152622/V-20151030-152622_StdSettings.xml;
-LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20151030-152622/V-20151030-152622_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-4/Config/LadderSpecifications/MessageBook.xml;
-MinSampleRFU = 5.;
-MinLaneStandardRFU = 75.;
-MinLadderRFU = 75.;
-MinInterlocusRFU = 5.;
-MinLadderInterlocusRFU = 75.;
-SampleDetectionThreshold = 5.;
-=======
 InputDirectory = C:/Users/goorrob/Desktop/KeithPullupIssue/Pullup_testing_20191022-080202/input;
 LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.12.1/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
@@ -40,7 +23,6 @@ DetectionThresholdOverride:2 = 30;
 DetectionThresholdOverride:3 = 20;
 DetectionThresholdOverride:4 = 30;
 DetectionThresholdOverride:5 = 30;
->>>>>>> Version-2.12.2-beta
 RawDataString = R;
 
 
