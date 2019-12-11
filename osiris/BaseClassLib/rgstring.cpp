@@ -48,19 +48,20 @@ PERSISTENT_DEFINITION(RGString, _RGSTRING_, "xs:string")
 
 
 RGString :: RGString () : RGPersistent (), StringLength (0) {
-
+  WData = NULL;
 	Data = new RGStringData;
 }
 
 
 RGString :: RGString (const char* str) : RGPersistent () {
-
+  WData = NULL;
 	Data = new RGStringData (str);
 	StringLength = strlen (str);
 }
 
 RGString ::RGString (const char * str, size_t size) : RGPersistent() 
 {
+  WData = NULL;
   Data = new RGStringData(str);
   Truncate(size);
 }
@@ -68,29 +69,62 @@ RGString ::RGString (const char * str, size_t size) : RGPersistent()
 
 
 RGString :: RGString (const RGString& str) : RGPersistent (str), StringLength (str.StringLength) {
-
+  WData = NULL;
 	Data = (str.Data)->MakeCopy ();
 }
 
 
 RGString :: RGString (const RGSimpleString& str) : RGPersistent (), StringLength (str.StringLength) {
-
+  WData = NULL;
 	Data = (str.Data)->MakeCopy ();
 }
 
 
 
 RGString :: RGString (size_t size) : RGPersistent (), StringLength (0) {
-
+  WData = NULL;
 	Data = new RGStringData (size);
 }
 
 
 
-RGString :: ~RGString () {
+RGString :: ~RGString() {
 
-	delete Data;
+  delete Data;
+  if (WData != NULL)
+  {
+    delete[] WData;
+  }
 }
+
+#ifdef _WINDOWS
+const wchar_t* RGString::GetWData() const
+{
+  if (WData != NULL)
+  {
+    delete[] WData;
+  }
+  size_t nLen = StringLength + 1;
+  const size_t N1 = size_t(-1);
+  WData = new wchar_t[nLen];
+  // https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/mbstowcs-mbstowcs-l?view=vs-2019
+  size_t n = mbstowcs(WData, Data->GetData(), nLen);
+  if ((n == size_t(-1)) || (n == nLen))
+  {
+    const char *ps = Data->GetData();
+    wchar_t *pw = WData;
+    while (*ps)
+    {
+      *pw = wchar_t(*ps);
+      pw++;
+      ps++;
+    }
+    *pw = wchar_t(0);
+  }
+  return WData;
+}
+
+#endif
 
 
 void RGString :: ResizeLength (size_t size) {
