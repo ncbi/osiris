@@ -39,14 +39,54 @@
 
 using namespace std;
 
-
-//struct dirent {
-    
-//	char d_name[NAME_MAX + 1];   /*!< file name (null-terminated) */
-//};
-
 #ifdef WIN32
+static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSrc)
+{
 
+// convert from LPWIN32_FIND_DATAW to LPWIN32_FIND_DATAA
+//  if these structures change, this code will need to be updated
+//  they are currently found in minwinbase.h at the time 
+//  this comment was created is 
+//  C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um\minwinbase.h
+//  see also:
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataa
+
+//  the following fields do not apply to windows
+//  DWORD dwFileType;
+//  DWORD dwCreatorType;
+//  WORD  wFinderFlags;
+
+  // https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/wcstombs-s-wcstombs-s-l?view=vs-2019
+
+  size_t nReturnValue;
+#define COPY_ITEM(x) pDest->x = pSrc->x
+  COPY_ITEM(dwFileAttributes);
+  COPY_ITEM(ftCreationTime);
+  COPY_ITEM(ftLastAccessTime);
+  COPY_ITEM(ftLastWriteTime);
+  COPY_ITEM(nFileSizeHigh);
+  COPY_ITEM(nFileSizeLow);
+  COPY_ITEM(dwReserved0);
+  COPY_ITEM(dwReserved1);
+#undef COPY_ITEM
+  errno_t nRtn = wcstombs_s(
+    &nReturnValue,
+    pDest->cFileName,
+    sizeof(pDest->cFileName),
+    pSrc->cFileName,
+    sizeof(pDest->cFileName) - 1);
+  if (!nRtn)
+  {
+    nRtn = wcstombs_s(
+      &nReturnValue,
+      pDest->cAlternateFileName,
+      sizeof(pDest->cAlternateFileName),
+      pSrc->cAlternateFileName,
+      sizeof(pDest->cAlternateFileName) - 1);
+  }
+  return !nRtn;
+}
 
 static HANDLE findfile_directory(char const *name, LPWIN32_FIND_DATA data) {
 
@@ -64,8 +104,17 @@ static HANDLE findfile_directory(char const *name, LPWIN32_FIND_DATA data) {
     {
         lstrcatA(search_spec, "*.*");
     }
-
-    return FindFirstFileA(search_spec, data);
+    RGString wsearch(search_spec);
+    WIN32_FIND_DATAW wdata;
+    HANDLE rtn = FindFirstFileW(wsearch.GetWData(), &wdata);
+    if (rtn == INVALID_HANDLE_VALUE)
+    {}
+    else if(!FIND_DATA_FROM_WIDE(data, &wdata))
+    {
+      FindClose(rtn);
+      rtn = INVALID_HANDLE_VALUE;
+    }
+    return rtn;
 }
 
 
@@ -85,7 +134,7 @@ RGDirectory :: RGDirectory (const RGString& fullName) : direct (NULL) {
 
     // Must be a valid name 
 	if( (fullName.Length () == 0) ||
-		(dwAttr = GetFileAttributes(fullName.GetData ())) == INVALID_FILE_ATTRIBUTES) {
+		(dwAttr = GetFileAttributesW(fullName.GetWData ())) == INVALID_FILE_ATTRIBUTES) {
 
         errno = ENOENT;
     }
@@ -107,13 +156,12 @@ RGDirectory :: RGDirectory (const RGString& fullName) : direct (NULL) {
         }
 
         else {
-
-			direct->hFind = findfile_directory (fullName.GetData (), &direct->find_data);
+          direct->hFind = findfile_directory (fullName.GetData (), &direct->find_data);
 
             if (direct->hFind == INVALID_HANDLE_VALUE) {
 
                 //free(directory);
-				delete direct;
+                delete direct;
                 direct = NULL;
             }
 
@@ -145,7 +193,7 @@ RGDirectory :: RGDirectory (const char* fullName) : direct (NULL) {
 
     // Must be a valid name 
 	if( !fullName || !(*fullName) ||
-        (dwAttr = GetFileAttributes(fullName)) == INVALID_FILE_ATTRIBUTES) {
+        (dwAttr = GetFileAttributesW(RGString(fullName).GetWData())) == INVALID_FILE_ATTRIBUTES) {
 
         errno = ENOENT;
     }
@@ -254,7 +302,7 @@ Boolean RGDirectory :: ReadNextDirectory (RGString& Name) {
 
 Boolean RGDirectory :: FileIsDirectory (const RGString& Name) {
 
-	unsigned long Attributes = GetFileAttributes (Name.GetData ());
+	unsigned long Attributes = GetFileAttributesW (Name.GetWData ());
 
 	if (Attributes & FILE_ATTRIBUTE_DIRECTORY)
 		return TRUE;
@@ -345,7 +393,7 @@ Boolean RGDirectory :: MoveDirectory (const RGString& oldName, const RGString& s
 
 //			FinalName = newName;
 			cout << "Attempting to move " << oldName.GetData () << " to " << newName.GetData () << endl;
-			return MoveFile (oldName.GetData (), newName.GetData ());
+			return MoveFileW (oldName.GetWData (), newName.GetWData ());
 		}
 
 		i++;
@@ -364,7 +412,7 @@ Boolean RGDirectory :: MoveDirectory (const RGString& oldName, const RGString& n
 
 Boolean RGDirectory :: FileOrDirectoryExists (const RGString& fullPathName) {
 
-	DWORD dwAttr = GetFileAttributes (fullPathName);
+	DWORD dwAttr = GetFileAttributesW (fullPathName.GetWData());
 
 	if (dwAttr == INVALID_FILE_ATTRIBUTES)
 		return FALSE;

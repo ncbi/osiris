@@ -116,6 +116,11 @@ public:
   Boolean good () {return (isValid () && !Error() && !Eof());}
 
 protected:
+#ifdef  _WINDOWS
+  static FILE *_Fopen(const char *psFileName, const char *pMode);
+#else
+#define _Fopen fopen
+#endif
   char* FileName;
   FILE* FilePtr;
   char* Mode;
