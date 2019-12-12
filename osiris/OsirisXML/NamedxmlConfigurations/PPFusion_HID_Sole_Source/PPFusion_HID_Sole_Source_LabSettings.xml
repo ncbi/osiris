@@ -261,6 +261,10 @@
         <MsgName>smUseSampleNamesForControlSampleTestsPreset</MsgName>
         <MsgThreshold>0</MsgThreshold>
       </MessageThreshold>
+      <MessageThreshold>
+        <MsgName>smILSBPForEndOfPrimerPeaks</MsgName>
+        <MsgThreshold>82</MsgThreshold>
+      </MessageThreshold>
     </SmartMessageThresholds>
   </Thresholds>
   <LabMarkerSetSpecifications>
