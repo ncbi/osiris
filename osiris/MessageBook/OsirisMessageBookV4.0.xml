@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.45</VersionNumber>
-	<BuildTime>12/04/2019 04:11 PM</BuildTime>
+	<VersionNumber>7.46</VersionNumber>
+	<BuildTime>12/13/2019 03:51 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -6781,12 +6781,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Make Mixtures Default Sample Type (checked)(unchecked for Single Source)</ThresholdDescriptor>
+				<ThresholdDescriptor>Make Default Sample Type Possible Mixture (checked)(unchecked for Single Source)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Make Mixtures Default Sample Type (checked)(unchecked for Single Source)</Text>
+			<Text>Make Default Sample Type Possible Mixture (checked)(unchecked for Single Source)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>6</Scope>
 		</SmartMessage>
@@ -6797,12 +6797,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Disable Low Level Height Filters For Known Mixtures</ThresholdDescriptor>
+				<ThresholdDescriptor>Disable Low Level Height Filters For Possible Mixtures</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Disable Low Level Height Filters For Known Mixtures</Text>
+			<Text>Disable Low Level Height Filters For Possible Mixtures</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
