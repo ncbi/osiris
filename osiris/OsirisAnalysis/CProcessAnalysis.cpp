@@ -221,7 +221,6 @@ void CProcessAnalysis::ProcessLine(
   }
   else
   {
-    wxString s(p,nLen);
     m_pDirEntry->AppendRunOutput(wxString::FromUTF8(p,nLen));
   }
 }
