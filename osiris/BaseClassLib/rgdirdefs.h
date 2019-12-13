@@ -55,7 +55,8 @@ struct dirent {
 struct dirent_dir {
 
     char            directory[_MAX_DIR + 1];    
-    WIN32_FIND_DATA find_data;                  // The Win32 FindFile data. 
+    WIN32_FIND_DATAA find_data;                  // The Win32 FindFile data. 
+    WIN32_FIND_DATAW find_dataw;                  // The Win32 FindFile data. wide char
     HANDLE          hFind;                      // The Win32 FindFile handle. 
     struct dirent   dirent;                     // The handle's entry.
 };

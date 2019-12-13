@@ -62,6 +62,7 @@ public:
 	static Boolean MoveDirectory (const RGString& oldName, const RGString& newName);
 #endif
 	static Boolean FileOrDirectoryExists (const RGString& fullPathName);
+  static Boolean FileOrDirectoryExists (const wchar_t *fullPathName);
 
 protected:
 	DIR* direct;

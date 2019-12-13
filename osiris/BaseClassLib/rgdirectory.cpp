@@ -101,10 +101,9 @@ static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSr
 
 using namespace std;
 
-static HANDLE findfile_directory(char const *name, LPWIN32_FIND_DATA data) {
+static HANDLE findfile_directory(char const *name, DIR *pDir) {
 
     char    search_spec[_MAX_PATH +1];
-
     // Simply add the *.*, ensuring the path separator is
     // included.
     //
@@ -118,11 +117,10 @@ static HANDLE findfile_directory(char const *name, LPWIN32_FIND_DATA data) {
         lstrcatA(search_spec, "*.*");
     }
     RGString wsearch(search_spec);
-    WIN32_FIND_DATAW wdata;
-    HANDLE rtn = FindFirstFileW(wsearch.GetWData(), &wdata);
+    HANDLE rtn = FindFirstFileW(wsearch.GetWData(), &pDir->find_dataw);
     if (rtn == INVALID_HANDLE_VALUE)
     {}
-    else if(!FIND_DATA_FROM_WIDE(data, &wdata))
+    else if(!FIND_DATA_FROM_WIDE(&pDir->find_data, &pDir->find_dataw))
     {
       FindClose(rtn);
       rtn = INVALID_HANDLE_VALUE;
@@ -169,7 +167,7 @@ RGDirectory :: RGDirectory (const RGString& fullName) : direct (NULL) {
         }
 
         else {
-          direct->hFind = findfile_directory (fullName.GetData (), &direct->find_data);
+          direct->hFind = findfile_directory (fullName.GetData (), direct);
 
             if (direct->hFind == INVALID_HANDLE_VALUE) {
 
@@ -229,7 +227,7 @@ RGDirectory :: RGDirectory (const char* fullName) : direct (NULL) {
 
         else {
 
-			direct->hFind = findfile_directory (fullName, &direct->find_data);
+			direct->hFind = findfile_directory (fullName, direct);
 
             if (direct->hFind == INVALID_HANDLE_VALUE) {
 
@@ -297,7 +295,7 @@ Boolean RGDirectory :: ReadNextDirectory (RGString& Name) {
 
         // Attempt the next match.
 
-        if (!FindNextFileA(direct->hFind, &direct->find_data)) {
+        if (!FindNextFileW(direct->hFind, &direct->find_dataw)) {
 
             // Exhausted all matches, so close and null the
             // handle.
@@ -333,7 +331,7 @@ void RGDirectory :: RewindDirectory () {
         FindClose(direct->hFind);
     }
 
-    direct->hFind = findfile_directory(direct->directory, &direct->find_data);
+    direct->hFind = findfile_directory(direct->directory, direct);
 
     if (direct->hFind != INVALID_HANDLE_VALUE) {
 
@@ -370,28 +368,20 @@ Boolean RGDirectory :: MakeDirectory (const RGString& fullName) {
 		return FALSE;
 
     // Must not already exist 
-	
-	if (FileOrDirectoryExists (fullName)) {
+  const wchar_t *pwName = fullName.GetWData();
+	if (FileOrDirectoryExists (pwName)) {
 
 		cout << "File or directory " << fullName << " already exists" << endl;
 		return FALSE;
 	}
 
-	return CreateDirectory (fullName, NULL);
+	return CreateDirectoryW(pwName, NULL);
 }
 
 
 Boolean RGDirectory :: MakeDirectory (const char* fullName) {
 
-	if (!fullName || !(*fullName))
-		return FALSE;
-
-    // Must not already exist 
-
-	if (FileOrDirectoryExists (fullName))
-		return FALSE;
-
-	return CreateDirectory (fullName, NULL);
+  return (!fullName || !(*fullName)) ? false : MakeDirectory(RGString(fullName));
 }
 
 
@@ -419,29 +409,20 @@ Boolean RGDirectory :: MoveDirectory (const RGString& oldName, const RGString& s
 
 Boolean RGDirectory :: MoveDirectory (const RGString& oldName, const RGString& newName) {
 
-	return MoveFile (oldName, newName);
+	return MoveFileW (oldName.GetWData(), newName.GetWData());
 }
 
 
-Boolean RGDirectory :: FileOrDirectoryExists (const RGString& fullPathName) {
 
-	DWORD dwAttr = GetFileAttributesW (fullPathName.GetWData());
+Boolean RGDirectory::FileOrDirectoryExists(const wchar_t *fullPathName) {
 
-	if (dwAttr == INVALID_FILE_ATTRIBUTES)
-		return FALSE;
-
-/*	WIN32_FIND_DATA FindFileData;
-	HANDLE hFind = FindFirstFile (fullPathName, &FindFileData);
-
-	if (hFind == INVALID_HANDLE_VALUE)
-		return FALSE;
-
-	FindClose (hFind);
-	cout << "File exists:  " << fullPathName << endl;
-	return TRUE;*/
-	return TRUE;
+  DWORD dwAttr = GetFileAttributesW(fullPathName);
+  return !(dwAttr == INVALID_FILE_ATTRIBUTES);
 }
 
+Boolean RGDirectory::FileOrDirectoryExists(const RGString& fullPathName) {
+  return FileOrDirectoryExists(fullPathName.GetWData());
+}
 
 #else
 
