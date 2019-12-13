@@ -82,6 +82,9 @@
 #ifdef __WXMAC__
 #include "CSitePath.h"
 #endif
+#ifdef _DEBUG
+#include "UnitTest.h"
+#endif
 
 const wxString mainApp::EMPTY_STRING(wxEmptyString);
 const int mainApp::DIALOG_STYLE =

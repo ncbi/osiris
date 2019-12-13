@@ -37,9 +37,11 @@
 #include "stdio.h"
 #include <iostream>
 
-using namespace std;
 
 #ifdef WIN32
+
+#include <stringapiset.h>
+
 static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSrc)
 {
 
@@ -57,9 +59,6 @@ static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSr
 //  DWORD dwCreatorType;
 //  WORD  wFinderFlags;
 
-  // https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/wcstombs-s-wcstombs-s-l?view=vs-2019
-
-  size_t nReturnValue;
 #define COPY_ITEM(x) pDest->x = pSrc->x
   COPY_ITEM(dwFileAttributes);
   COPY_ITEM(ftCreationTime);
@@ -70,23 +69,37 @@ static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSr
   COPY_ITEM(dwReserved0);
   COPY_ITEM(dwReserved1);
 #undef COPY_ITEM
-  errno_t nRtn = wcstombs_s(
-    &nReturnValue,
-    pDest->cFileName,
-    sizeof(pDest->cFileName),
-    pSrc->cFileName,
-    sizeof(pDest->cFileName) - 1);
-  if (!nRtn)
+
+  int n;
+  const int cbMultiByte = sizeof(pDest->cFileName) / sizeof(pDest->cFileName[0]);
+  n = WideCharToMultiByte(
+    CP_UTF8,                    // UINT CodePage
+    WC_ERR_INVALID_CHARS,       // DWORD dwFlags
+    pSrc->cFileName,            // lpWideCharStr
+    -1,                         // int ccWideChar
+    pDest->cFileName,           // lpMultiByteStr
+    cbMultiByte,                // int cbMultiByte
+    NULL, NULL);                // lpDefaultChar, lpUsedDefaultChar
+
+  if (n)
   {
-    nRtn = wcstombs_s(
-      &nReturnValue,
-      pDest->cAlternateFileName,
-      sizeof(pDest->cAlternateFileName),
-      pSrc->cAlternateFileName,
-      sizeof(pDest->cAlternateFileName) - 1);
+
+    // https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-widechartomultibyte
+
+    const int cbMultiByteA = sizeof(pDest->cAlternateFileName) / sizeof(pDest->cAlternateFileName[0]);
+    n = WideCharToMultiByte(
+      CP_UTF8,                    // UINT CodePage
+      WC_ERR_INVALID_CHARS,       // DWORD dwFlags
+      pSrc->cAlternateFileName,   // lpWideCharStr
+      -1,                         // int ccWideChar
+      pDest->cAlternateFileName,  // lpMultiByteStr
+      cbMultiByteA,               // int cbMultiByte
+      NULL, NULL);                // lpDefaultChar, lpUsedDefaultChar
   }
-  return !nRtn;
+  return !!n;
 }
+
+using namespace std;
 
 static HANDLE findfile_directory(char const *name, LPWIN32_FIND_DATA data) {
 

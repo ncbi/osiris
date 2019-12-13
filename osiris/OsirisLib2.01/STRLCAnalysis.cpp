@@ -133,7 +133,7 @@ STRLCAnalysis :: ~STRLCAnalysis () {
 	NewNoticeList.ClearAndDelete ();
 	mBaseLocusList.Clear ();
 
-	if (WorkingFile != NULL) {
+	if ((WorkingFile != NULL) && WorkingFile->isValid()) {
 
 		WorkingFile->Write (":end:\n");
 		WorkingFile->Flush ();

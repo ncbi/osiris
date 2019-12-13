@@ -33,12 +33,15 @@
 
 #include <math.h>
 #include <stdlib.h>
+#ifdef WIN32
+#include <Windows.h>
+#include <stringapiset.h>
+#endif
 
 #include "rgstring.h"
 #include "rgfile.h"
 #include "rgvstream.h"
 #include "rgsimplestring.h"
-
 
 int RGString::DoubleResolution = 10;
 
@@ -46,22 +49,27 @@ int RGString::DoubleResolution = 10;
 
 PERSISTENT_DEFINITION(RGString, _RGSTRING_, "xs:string")
 
+#ifdef WIN32
+#define INITWD WData = NULL; LenWData = 0;
+#else
+#define INITWD
+#endif
 
 RGString :: RGString () : RGPersistent (), StringLength (0) {
-  WData = NULL;
+  INITWD;
 	Data = new RGStringData;
 }
 
 
 RGString :: RGString (const char* str) : RGPersistent () {
-  WData = NULL;
+  INITWD;
 	Data = new RGStringData (str);
 	StringLength = strlen (str);
 }
 
 RGString ::RGString (const char * str, size_t size) : RGPersistent() 
 {
-  WData = NULL;
+  INITWD;
   Data = new RGStringData(str);
   Truncate(size);
 }
@@ -69,20 +77,20 @@ RGString ::RGString (const char * str, size_t size) : RGPersistent()
 
 
 RGString :: RGString (const RGString& str) : RGPersistent (str), StringLength (str.StringLength) {
-  WData = NULL;
+  INITWD;
 	Data = (str.Data)->MakeCopy ();
 }
 
 
 RGString :: RGString (const RGSimpleString& str) : RGPersistent (), StringLength (str.StringLength) {
-  WData = NULL;
+  INITWD;
 	Data = (str.Data)->MakeCopy ();
 }
 
 
 
 RGString :: RGString (size_t size) : RGPersistent (), StringLength (0) {
-  WData = NULL;
+  INITWD;
 	Data = new RGStringData (size);
 }
 
@@ -97,19 +105,29 @@ RGString :: ~RGString() {
   }
 }
 
-#ifdef _WINDOWS
+#ifdef WIN32
+void RGString::_AllocWData(size_t nLen) const
+{
+  if (nLen > LenWData)
+  {
+    if (WData != NULL)
+    {
+      delete[] WData;
+    }
+    WData = new wchar_t[nLen];
+    LenWData = nLen;
+  }
+}
 const wchar_t* RGString::GetWData() const
 {
-  if (WData != NULL)
-  {
-    delete[] WData;
-  }
   size_t nLen = StringLength + 1;
-  const size_t N1 = size_t(-1);
-  WData = new wchar_t[nLen];
-  // https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/mbstowcs-mbstowcs-l?view=vs-2019
-  size_t n = mbstowcs(WData, Data->GetData(), nLen);
-  if ((n == size_t(-1)) || (n == nLen))
+  _AllocWData(nLen);
+
+  // https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-multibytetowidechar
+
+  int n = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, Data->GetData(), -1, WData, nLen);
+
+  if (!n)
   {
     const char *ps = Data->GetData();
     wchar_t *pw = WData;

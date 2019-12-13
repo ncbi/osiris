@@ -199,6 +199,8 @@ protected:
 	RGStringData* Data;
 #ifdef _WINDOWS
   mutable wchar_t *WData;
+  mutable size_t LenWData;
+  void _AllocWData(size_t nLen) const;
 #endif
 	size_t StringLength;
 
