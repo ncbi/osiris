@@ -335,27 +335,33 @@ bool nwxPinger::_setup(
     nwxWCharBuffer wcAppName(sAppName);
     nwxWCharBuffer wcAppVersion(sAppVersion);
     nwxWCharBuffer wcPID(sPID);
+    nwxWCharBuffer wcArga(L"-a");
+    nwxWCharBuffer wcArgv(L"-v");
+    nwxWCharBuffer wcArgp(L"-p");
+    nwxWCharBuffer wcArgs;
     size_t n = 0;
     ARGV[n++] = wcExe;
 #ifdef __WXMSW__
-    ARGV[n++] = L"/NOLOGO";
+    nwxWCharBuffer wcNoLogo(L"/NOLOGO");
+    ARGV[n++] = wcNoLogo.Get();
 #endif
     ARGV[n++] = wcScript;
 
     if (!sAppName.IsEmpty())
     {
-      ARGV[n++] = L"-a";
+      ARGV[n++] = wcArga;
       ARGV[n++] = wcAppName;
     }
     if (!sAppVersion.IsEmpty())
     {
-      ARGV[n++] = L"-v";
+      ARGV[n++] = wcArgv;
       ARGV[n++] = wcAppVersion;
     }
-    ARGV[n++] = L"-p";
+    ARGV[n++] = wcArgp;
     ARGV[n++] = wcPID;
     if (vwcArgs.size())
     {
+      wcArgs.Set(L"-s");
       std::vector<nwxWCharBuffer>::iterator itr;
       wchar_t *p;
       for (itr = vwcArgs.begin();
@@ -365,7 +371,7 @@ bool nwxPinger::_setup(
         p = (*itr).Get();
         if (p[0])
         {
-          ARGV[n++] = L"-s";
+          ARGV[n++] = wcArgs;
           ARGV[n++] = p;
         }
       }

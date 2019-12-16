@@ -33,7 +33,7 @@
 */
 
 #include "nwx/nwxUserInfo.h"
-#include "nwxWCharBuffer.h"
+#include "nwx/nwxWCharBuffer.h"
 nwxIMPLEMENT_GLOBAL_OBJECT(nwxUserInfo)
 
 #ifdef __WXMAC__
@@ -186,12 +186,12 @@ void nwxUserInfo::_setupGroupNames()
     else
     {
       CProcessGroups proc(&m_asGroupNames);
-      nwxWCharBuffer sExe(sWhoAmI);
+      nwxWCharBuffer sExe(sWhoAmI), arg1(L"/GROUPS"), arg2(L"/FO"), arg3(L"LIST");
       wchar_t *argv[5];
       argv[0] = sExe.Get();
-      argv[1] = L"/GROUPS";
-      argv[2] = L"/FO";
-      argv[3] = L"LIST";
+      argv[1] = arg1.Get();
+      argv[2] = arg2.Get();
+      argv[3] = arg3.Get();
       argv[4] = NULL;
       proc.Run(argv, wxEXEC_SYNC);
       proc.ProcessIO();

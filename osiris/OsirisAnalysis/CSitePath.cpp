@@ -1057,15 +1057,17 @@ bool CSitePath::_runScript(const wxArrayString &as, bool bElevate)
     nwxWCharBuffer wcCScript(m_sCScript);
     nwxWCharBuffer wcVBscript(m_sVBscript);
     nwxWCharBuffer wcConfigPath;
+    nwxWCharBuffer wcNologo(L"/NOLOGO");
+    nwxWCharBuffer wcArgvr(L"-r");
     std::vector<nwxWCharBuffer> vwc;
 
     ARGV[0] = wcCScript.Get();
-    ARGV[1] = L"/NOLOGO";
+    ARGV[1] = wcNologo.Get();
     ARGV[2] = wcVBscript.Get();
     if(bElevate)
     {
       wcConfigPath.Set(mainApp::GetConfig()->GetConfigPath());
-      ARGV[3] = L"-r";
+      ARGV[3] = wcArgvr.Get();
       ARGV[4] = wcConfigPath.Get();
       ndx = 5;
     }
