@@ -47,6 +47,7 @@
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxLog.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/vectorptr.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -63,7 +64,7 @@
 class _nwxPingerProcess : public nwxProcess, nwxTimerReceiver
 {
 public:
-  _nwxPingerProcess(nwxPinger *pOwner, wxEvtHandler *parent, int id, char **argv, wxFile *pFileLog, bool bLog) :
+  _nwxPingerProcess(nwxPinger *pOwner, wxEvtHandler *parent, int id, wchar_t **argv, wxFile *pFileLog, bool bLog) :
     nwxProcess(parent, id, argv),
     m_pOwner(pOwner),
     m_pFileLog(pFileLog)
@@ -264,15 +265,24 @@ bool nwxPinger::_setup(
   const wxString &sAppName,
   const wxString &sAppVersion)
 {
-  std::vector<wxString> vsArgs;
   wxStandardPathsBase &sp(wxStandardPaths::Get());
+  std::vector<nwxWCharBuffer> vwcArgs;
   wxFileName fn(sp.GetExecutablePath());
   wxString sScript;
   wxString sInterpreter;
   bool bRtn = true;
   if (pSetDefaults != NULL)
   {
+    std::vector<wxString> vsArgs;
+    nwxWCharBuffer wcBuffer(1024);
     pSetDefaults->GetList(&vsArgs, false);
+    for (std::vector<wxString>::iterator itr = vsArgs.begin();
+      itr != vsArgs.end();
+      ++itr)
+    {
+      wcBuffer.Set(*itr);
+      vwcArgs.push_back(wcBuffer);
+    }
   }
   sScript = fn.GetPath(wxPATH_GET_SEPARATOR | wxPATH_GET_VOLUME);
   nwxFileUtil::EndWithSeparator(&sScript);
@@ -319,42 +329,49 @@ bool nwxPinger::_setup(
   {
     wxString sPID = nwxString::FormatNumber(getpid());
     const size_t NARG(126);
-    const char *ARGV[NARG + 2];
+    wchar_t *ARGV[NARG + 2];
+    nwxWCharBuffer wcExe(sInterpreter);
+    nwxWCharBuffer wcScript(sScript);
+    nwxWCharBuffer wcAppName(sAppName);
+    nwxWCharBuffer wcAppVersion(sAppVersion);
+    nwxWCharBuffer wcPID(sPID);
     size_t n = 0;
-    ARGV[n++] = sInterpreter.utf8_str();
+    ARGV[n++] = wcExe;
 #ifdef __WXMSW__
-    ARGV[n++] = "//NoLogo";
+    ARGV[n++] = L"//NoLogo";
 #endif
-    ARGV[n++] = sScript.utf8_str();
+    ARGV[n++] = wcScript;
 
     if (!sAppName.IsEmpty())
     {
-      ARGV[n++] = "-a";
-      ARGV[n++] = sAppName.utf8_str();
+      ARGV[n++] = L"-a";
+      ARGV[n++] = wcAppName;
     }
     if (!sAppVersion.IsEmpty())
     {
-      ARGV[n++] = "-v";
-      ARGV[n++] = sAppVersion.utf8_str();
+      ARGV[n++] = L"-v";
+      ARGV[n++] = wcAppVersion;
     }
-    ARGV[n++] = "-p";
-    ARGV[n++] = sPID.utf8_str();
-    if (vsArgs.size())
+    ARGV[n++] = L"-p";
+    ARGV[n++] = wcPID;
+    if (vwcArgs.size())
     {
-      std::vector<wxString>::const_iterator itr;
-      for (itr = vsArgs.begin();
-        (itr != vsArgs.end()) && (n < NARG);
+      std::vector<nwxWCharBuffer>::iterator itr;
+      wchar_t *p;
+      for (itr = vwcArgs.begin();
+        (itr != vwcArgs.end()) && (n < NARG);
         ++itr)
       {
-        if ((*itr).Len())
+        p = (*itr).Get();
+        if (p[0])
         {
-          ARGV[n++] = "-s";
-          ARGV[n++] = (*itr).utf8_str();
+          ARGV[n++] = L"-s";
+          ARGV[n++] = p;
         }
       }
     }
     ARGV[n] = NULL;
-    m_process = new _nwxPingerProcess(this, parent, id, (char **)ARGV, m_pLogFile, m_bLog);
+    m_process = new _nwxPingerProcess(this, parent, id, (wchar_t **)ARGV, m_pLogFile, m_bLog);
   }
   m_bSetup = true;
   return bRtn;

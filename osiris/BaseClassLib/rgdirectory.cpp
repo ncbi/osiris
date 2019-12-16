@@ -81,7 +81,11 @@ static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSr
     cbMultiByte,                // int cbMultiByte
     NULL, NULL);                // lpDefaultChar, lpUsedDefaultChar
 
-  if (n)
+  if (!n)
+  {
+    cout << "Conversion of file name to UTF-8 failed" << endl;
+  }
+  else
   {
 
     // https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-widechartomultibyte
@@ -95,11 +99,39 @@ static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSr
       pDest->cAlternateFileName,  // lpMultiByteStr
       cbMultiByteA,               // int cbMultiByte
       NULL, NULL);                // lpDefaultChar, lpUsedDefaultChar
+    if (!n)
+    {
+      cout << "Conversion of alternate file name to UTF-8 failed" << endl;
+    }
   }
   return !!n;
 }
 
 using namespace std;
+
+static bool findNextFile(DIR *pDir)
+{
+  bool bRtn = true;
+  if (!FindNextFileW(pDir->hFind, &pDir->find_dataw)) {
+
+    // Exhausted all matches, so close and null the
+    // handle.
+
+    bRtn = false;
+  }
+  else if (!FIND_DATA_FROM_WIDE(&pDir->find_data, &pDir->find_dataw))
+  {
+    bRtn = false;
+    pDir->find_data.cAlternateFileName[0] = 0;
+    pDir->find_data.cFileName[0] = 0;
+  }
+  if (!bRtn)
+  {
+    FindClose(pDir->hFind);
+    pDir->hFind = INVALID_HANDLE_VALUE;
+  }
+  return bRtn;
+}
 
 static HANDLE findfile_directory(char const *name, DIR *pDir) {
 
@@ -294,16 +326,7 @@ Boolean RGDirectory :: ReadNextDirectory (RGString& Name) {
         lstrcpyA (direct->dirent.d_name, direct->find_data.cFileName);
 
         // Attempt the next match.
-
-        if (!FindNextFileW(direct->hFind, &direct->find_dataw)) {
-
-            // Exhausted all matches, so close and null the
-            // handle.
-            
-            FindClose(direct->hFind);
-            direct->hFind = INVALID_HANDLE_VALUE;
-        }
-
+        findNextFile(direct);
         Name = (direct->dirent).d_name;
     }
 
