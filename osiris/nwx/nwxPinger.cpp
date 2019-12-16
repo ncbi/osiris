@@ -338,7 +338,7 @@ bool nwxPinger::_setup(
     size_t n = 0;
     ARGV[n++] = wcExe;
 #ifdef __WXMSW__
-    ARGV[n++] = L"//NoLogo";
+    ARGV[n++] = L"/NOLOGO";
 #endif
     ARGV[n++] = wcScript;
 
