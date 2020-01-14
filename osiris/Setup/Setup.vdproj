@@ -75,6 +75,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_04F45762186C49F4A081DDBFA667837C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_05547F23AD384ACEA824955C30B1ECD2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2634,6 +2640,26 @@
             "TargetName" = "8:MIX05case2_victim.fsa"
             "Tag" = "8:"
             "Folder" = "8:_B5893B0844DE4669826F88DFA367AB08"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04F45762186C49F4A081DDBFA667837C"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.12.2.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.12.2.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
