@@ -841,7 +841,9 @@ void CFrameRunAnalysis::OnActivate(wxListEvent &e)
   long nItem = e.GetIndex();
   CDirEntry *pEntry = m_DirList.At((size_t) nItem);
   CDirEntryStatus nStatus = pEntry->GetStatus();
-  if(CDirEntry::CanViewStatus(nStatus))
+  wxString sOutputFile = pEntry->GetOutputFile();
+  m_DirList.AdjustFileName(&sOutputFile);
+  if(CDirEntry::CanViewStatus(nStatus) && wxFileName::FileExists(sOutputFile))
   {
 #ifdef __WXMAC__
     // there is a problem with the mac where when the user double
@@ -853,8 +855,6 @@ void CFrameRunAnalysis::OnActivate(wxListEvent &e)
     m_pListDir->SelectOne(nItem);
     GetEventHandler()->AddPendingEvent(ee);
 #else
-    wxString sOutputFile = pEntry->GetOutputFile();
-    m_DirList.AdjustFileName(&sOutputFile);
     m_pParent->OpenFileCheckNewer(sOutputFile);
 #endif
   }

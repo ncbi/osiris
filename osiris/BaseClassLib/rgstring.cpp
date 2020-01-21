@@ -33,12 +33,15 @@
 
 #include <math.h>
 #include <stdlib.h>
+#ifdef _WINDOWS
+#include <Windows.h>
+#include <stringapiset.h>
+#endif
 
 #include "rgstring.h"
 #include "rgfile.h"
 #include "rgvstream.h"
 #include "rgsimplestring.h"
-
 
 int RGString::DoubleResolution = 10;
 
@@ -46,21 +49,27 @@ int RGString::DoubleResolution = 10;
 
 PERSISTENT_DEFINITION(RGString, _RGSTRING_, "xs:string")
 
+#ifdef _WINDOWS
+#define INITWD WData = NULL; LenWData = 0;
+#else
+#define INITWD
+#endif
 
 RGString :: RGString () : RGPersistent (), StringLength (0) {
-
+  INITWD;
 	Data = new RGStringData;
 }
 
 
 RGString :: RGString (const char* str) : RGPersistent () {
-
+  INITWD;
 	Data = new RGStringData (str);
 	StringLength = strlen (str);
 }
 
 RGString ::RGString (const char * str, size_t size) : RGPersistent() 
 {
+  INITWD;
   Data = new RGStringData(str);
   Truncate(size);
 }
@@ -68,29 +77,74 @@ RGString ::RGString (const char * str, size_t size) : RGPersistent()
 
 
 RGString :: RGString (const RGString& str) : RGPersistent (str), StringLength (str.StringLength) {
-
+  INITWD;
 	Data = (str.Data)->MakeCopy ();
 }
 
 
 RGString :: RGString (const RGSimpleString& str) : RGPersistent (), StringLength (str.StringLength) {
-
+  INITWD;
 	Data = (str.Data)->MakeCopy ();
 }
 
 
 
 RGString :: RGString (size_t size) : RGPersistent (), StringLength (0) {
-
+  INITWD;
 	Data = new RGStringData (size);
 }
 
 
 
-RGString :: ~RGString () {
+RGString :: ~RGString() {
 
-	delete Data;
+  delete Data;
+#ifdef _WINDOWS
+  if (WData != NULL)
+  {
+    delete[] WData;
+  }
+#endif
 }
+
+#ifdef _WINDOWS
+void RGString::_AllocWData(size_t nLen) const
+{
+  if (nLen > LenWData)
+  {
+    if (WData != NULL)
+    {
+      delete[] WData;
+    }
+    WData = new wchar_t[nLen];
+    LenWData = nLen;
+  }
+}
+const wchar_t* RGString::GetWData() const
+{
+  size_t nLen = StringLength + 1;
+  _AllocWData(nLen);
+
+  // https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-multibytetowidechar
+
+  int n = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, Data->GetData(), -1, WData, nLen);
+
+  if (!n)
+  {
+    const char *ps = Data->GetData();
+    wchar_t *pw = WData;
+    while (*ps)
+    {
+      *pw = wchar_t(*ps);
+      pw++;
+      ps++;
+    }
+    *pw = wchar_t(0);
+  }
+  return WData;
+}
+
+#endif
 
 
 void RGString :: ResizeLength (size_t size) {

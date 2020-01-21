@@ -42,6 +42,7 @@
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxUserInfo.h"
 #include "nwx/nwxProcess.h"
+#include "nwx/nwxWCharBuffer.h"
 #include "mainApp.h"
 #include "ConfigDir.h"
 
@@ -1048,33 +1049,55 @@ bool CSitePath::_runScript(const wxArrayString &as, bool bElevate)
   }
   else
   {
+    const size_t MAX_ARG = 24;
     nwxProcessSimple proc(NULL);
-    const char *ARGV[24];
-    wxString sTmp;
+    wchar_t *ARGV[MAX_ARG + 1];
     size_t ndx = 3;
     size_t nSize = as.GetCount();
-    ARGV[0] = m_sCScript.utf8_str();
-    ARGV[1] = "/NOLOGO";
-    ARGV[2] = m_sVBscript.utf8_str();
+    nwxWCharBuffer wcCScript(m_sCScript);
+    nwxWCharBuffer wcVBscript(m_sVBscript);
+    nwxWCharBuffer wcConfigPath;
+    nwxWCharBuffer wcNologo(L"/NOLOGO");
+    nwxWCharBuffer wcArgvr(L"-r");
+    std::vector<nwxWCharBuffer> vwc;
+
+    ARGV[0] = wcCScript.Get();
+    ARGV[1] = wcNologo.Get();
+    ARGV[2] = wcVBscript.Get();
     if(bElevate)
     {
-      const wxString &sTmp1 = mainApp::GetConfig()->GetConfigPath();
-      ARGV[3] = "-r";
-      ARGV[4] = sTmp1.utf8_str();
+      wcConfigPath.Set(mainApp::GetConfig()->GetConfigPath());
+      ARGV[3] = wcArgvr.Get();
+      ARGV[4] = wcConfigPath.Get();
       ndx = 5;
     }
-    for(size_t i = 0; i < nSize; ++i)
+    if (nSize)
     {
-      ARGV[ndx++] = as.Item(i).utf8_str();
+      if (nSize > (MAX_ARG - ndx))
+      {
+        nSize = (MAX_ARG - ndx);
+        nwxLog::LogMessage(wxString::Format(
+          wxString(L"Number of command line parameters, %d, exceeds maximum allowd, %d"),
+          (int)as.GetCount(), (int)nSize));
+      }
+      nwxWCharBuffer wcTmp(1024);
+      std::vector<nwxWCharBuffer>::reverse_iterator itr;
+      vwc.reserve(nSize);
+      for (size_t i = 0; i < nSize; ++i)
+      {
+        wcTmp.Set(as.Item(i));
+        vwc.push_back(wcTmp);  // creates copy
+        ARGV[ndx++] = vwc.rbegin()->Get();
+      }
     }
     ARGV[ndx] = NULL;
 
-    proc.Run((char **)ARGV,wxEXEC_SYNC);
+    proc.Run(ARGV,wxEXEC_SYNC);
     int nRtn = proc.GetExitStatus();
     bRtn = !nRtn;
     if(!bRtn)
     {
-      const wxString &sMsg = proc.BuildLog(ARGV);
+      const wxString &sMsg = proc.BuildLog((const wchar_t **)ARGV);
       nwxLog::LogMessage(sMsg);
     }
   }

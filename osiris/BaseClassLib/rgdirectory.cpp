@@ -37,21 +37,105 @@
 #include "stdio.h"
 #include <iostream>
 
+
+#ifdef _WINDOWS
+
+#include <stringapiset.h>
+
+static bool FIND_DATA_FROM_WIDE(LPWIN32_FIND_DATAA pDest, LPWIN32_FIND_DATAW pSrc)
+{
+
+// convert from LPWIN32_FIND_DATAW to LPWIN32_FIND_DATAA
+//  if these structures change, this code will need to be updated
+//  they are currently found in minwinbase.h at the time 
+//  this comment was created is 
+//  C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um\minwinbase.h
+//  see also:
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataw
+// https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataa
+
+//  the following fields do not apply to windows
+//  DWORD dwFileType;
+//  DWORD dwCreatorType;
+//  WORD  wFinderFlags;
+
+#define COPY_ITEM(x) pDest->x = pSrc->x
+  COPY_ITEM(dwFileAttributes);
+  COPY_ITEM(ftCreationTime);
+  COPY_ITEM(ftLastAccessTime);
+  COPY_ITEM(ftLastWriteTime);
+  COPY_ITEM(nFileSizeHigh);
+  COPY_ITEM(nFileSizeLow);
+  COPY_ITEM(dwReserved0);
+  COPY_ITEM(dwReserved1);
+#undef COPY_ITEM
+
+  int n;
+  const int cbMultiByte = sizeof(pDest->cFileName) / sizeof(pDest->cFileName[0]);
+  n = WideCharToMultiByte(
+    CP_UTF8,                    // UINT CodePage
+    WC_ERR_INVALID_CHARS,       // DWORD dwFlags
+    pSrc->cFileName,            // lpWideCharStr
+    -1,                         // int ccWideChar
+    pDest->cFileName,           // lpMultiByteStr
+    cbMultiByte,                // int cbMultiByte
+    NULL, NULL);                // lpDefaultChar, lpUsedDefaultChar
+
+  if (!n)
+  {
+    cout << "Conversion of file name to UTF-8 failed" << endl;
+  }
+  else
+  {
+
+    // https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-widechartomultibyte
+
+    const int cbMultiByteA = sizeof(pDest->cAlternateFileName) / sizeof(pDest->cAlternateFileName[0]);
+    n = WideCharToMultiByte(
+      CP_UTF8,                    // UINT CodePage
+      WC_ERR_INVALID_CHARS,       // DWORD dwFlags
+      pSrc->cAlternateFileName,   // lpWideCharStr
+      -1,                         // int ccWideChar
+      pDest->cAlternateFileName,  // lpMultiByteStr
+      cbMultiByteA,               // int cbMultiByte
+      NULL, NULL);                // lpDefaultChar, lpUsedDefaultChar
+    if (!n)
+    {
+      cout << "Conversion of alternate file name to UTF-8 failed" << endl;
+    }
+  }
+  return !!n;
+}
+
 using namespace std;
 
+static bool findNextFile(DIR *pDir)
+{
+  bool bRtn = true;
+  if (!FindNextFileW(pDir->hFind, &pDir->find_dataw)) {
 
-//struct dirent {
-    
-//	char d_name[NAME_MAX + 1];   /*!< file name (null-terminated) */
-//};
+    // Exhausted all matches, so close and null the
+    // handle.
 
-#ifdef WIN32
+    bRtn = false;
+  }
+  else if (!FIND_DATA_FROM_WIDE(&pDir->find_data, &pDir->find_dataw))
+  {
+    bRtn = false;
+    pDir->find_data.cAlternateFileName[0] = 0;
+    pDir->find_data.cFileName[0] = 0;
+  }
+  if (!bRtn)
+  {
+    FindClose(pDir->hFind);
+    pDir->hFind = INVALID_HANDLE_VALUE;
+  }
+  return bRtn;
+}
 
-
-static HANDLE findfile_directory(char const *name, LPWIN32_FIND_DATA data) {
+static HANDLE findfile_directory(char const *name, DIR *pDir) {
 
     char    search_spec[_MAX_PATH +1];
-
     // Simply add the *.*, ensuring the path separator is
     // included.
     //
@@ -64,8 +148,16 @@ static HANDLE findfile_directory(char const *name, LPWIN32_FIND_DATA data) {
     {
         lstrcatA(search_spec, "*.*");
     }
-
-    return FindFirstFileA(search_spec, data);
+    RGString wsearch(search_spec);
+    HANDLE rtn = FindFirstFileW(wsearch.GetWData(), &pDir->find_dataw);
+    if (rtn == INVALID_HANDLE_VALUE)
+    {}
+    else if(!FIND_DATA_FROM_WIDE(&pDir->find_data, &pDir->find_dataw))
+    {
+      FindClose(rtn);
+      rtn = INVALID_HANDLE_VALUE;
+    }
+    return rtn;
 }
 
 
@@ -85,7 +177,7 @@ RGDirectory :: RGDirectory (const RGString& fullName) : direct (NULL) {
 
     // Must be a valid name 
 	if( (fullName.Length () == 0) ||
-		(dwAttr = GetFileAttributes(fullName.GetData ())) == INVALID_FILE_ATTRIBUTES) {
+		(dwAttr = GetFileAttributesW(fullName.GetWData ())) == INVALID_FILE_ATTRIBUTES) {
 
         errno = ENOENT;
     }
@@ -107,13 +199,12 @@ RGDirectory :: RGDirectory (const RGString& fullName) : direct (NULL) {
         }
 
         else {
-
-			direct->hFind = findfile_directory (fullName.GetData (), &direct->find_data);
+          direct->hFind = findfile_directory (fullName.GetData (), direct);
 
             if (direct->hFind == INVALID_HANDLE_VALUE) {
 
                 //free(directory);
-				delete direct;
+                delete direct;
                 direct = NULL;
             }
 
@@ -145,7 +236,7 @@ RGDirectory :: RGDirectory (const char* fullName) : direct (NULL) {
 
     // Must be a valid name 
 	if( !fullName || !(*fullName) ||
-        (dwAttr = GetFileAttributes(fullName)) == INVALID_FILE_ATTRIBUTES) {
+        (dwAttr = GetFileAttributesW(RGString(fullName).GetWData())) == INVALID_FILE_ATTRIBUTES) {
 
         errno = ENOENT;
     }
@@ -168,7 +259,7 @@ RGDirectory :: RGDirectory (const char* fullName) : direct (NULL) {
 
         else {
 
-			direct->hFind = findfile_directory (fullName, &direct->find_data);
+			direct->hFind = findfile_directory (fullName, direct);
 
             if (direct->hFind == INVALID_HANDLE_VALUE) {
 
@@ -235,16 +326,7 @@ Boolean RGDirectory :: ReadNextDirectory (RGString& Name) {
         lstrcpyA (direct->dirent.d_name, direct->find_data.cFileName);
 
         // Attempt the next match.
-
-        if (!FindNextFileA(direct->hFind, &direct->find_data)) {
-
-            // Exhausted all matches, so close and null the
-            // handle.
-            
-            FindClose(direct->hFind);
-            direct->hFind = INVALID_HANDLE_VALUE;
-        }
-
+        findNextFile(direct);
         Name = (direct->dirent).d_name;
     }
 
@@ -254,7 +336,7 @@ Boolean RGDirectory :: ReadNextDirectory (RGString& Name) {
 
 Boolean RGDirectory :: FileIsDirectory (const RGString& Name) {
 
-	unsigned long Attributes = GetFileAttributes (Name.GetData ());
+	unsigned long Attributes = GetFileAttributesW (Name.GetWData ());
 
 	if (Attributes & FILE_ATTRIBUTE_DIRECTORY)
 		return TRUE;
@@ -272,7 +354,7 @@ void RGDirectory :: RewindDirectory () {
         FindClose(direct->hFind);
     }
 
-    direct->hFind = findfile_directory(direct->directory, &direct->find_data);
+    direct->hFind = findfile_directory(direct->directory, direct);
 
     if (direct->hFind != INVALID_HANDLE_VALUE) {
 
@@ -309,28 +391,20 @@ Boolean RGDirectory :: MakeDirectory (const RGString& fullName) {
 		return FALSE;
 
     // Must not already exist 
-	
-	if (FileOrDirectoryExists (fullName)) {
+  const wchar_t *pwName = fullName.GetWData();
+	if (FileOrDirectoryExists (pwName)) {
 
 		cout << "File or directory " << fullName << " already exists" << endl;
 		return FALSE;
 	}
 
-	return CreateDirectory (fullName, NULL);
+	return CreateDirectoryW(pwName, NULL);
 }
 
 
 Boolean RGDirectory :: MakeDirectory (const char* fullName) {
 
-	if (!fullName || !(*fullName))
-		return FALSE;
-
-    // Must not already exist 
-
-	if (FileOrDirectoryExists (fullName))
-		return FALSE;
-
-	return CreateDirectory (fullName, NULL);
+  return (!fullName || !(*fullName)) ? false : MakeDirectory(RGString(fullName));
 }
 
 
@@ -345,7 +419,7 @@ Boolean RGDirectory :: MoveDirectory (const RGString& oldName, const RGString& s
 
 //			FinalName = newName;
 			cout << "Attempting to move " << oldName.GetData () << " to " << newName.GetData () << endl;
-			return MoveFile (oldName.GetData (), newName.GetData ());
+			return MoveFileW (oldName.GetWData (), newName.GetWData ());
 		}
 
 		i++;
@@ -358,29 +432,20 @@ Boolean RGDirectory :: MoveDirectory (const RGString& oldName, const RGString& s
 
 Boolean RGDirectory :: MoveDirectory (const RGString& oldName, const RGString& newName) {
 
-	return MoveFile (oldName, newName);
+	return MoveFileW (oldName.GetWData(), newName.GetWData());
 }
 
 
-Boolean RGDirectory :: FileOrDirectoryExists (const RGString& fullPathName) {
 
-	DWORD dwAttr = GetFileAttributes (fullPathName);
+Boolean RGDirectory::FileOrDirectoryExists(const wchar_t *fullPathName) {
 
-	if (dwAttr == INVALID_FILE_ATTRIBUTES)
-		return FALSE;
-
-/*	WIN32_FIND_DATA FindFileData;
-	HANDLE hFind = FindFirstFile (fullPathName, &FindFileData);
-
-	if (hFind == INVALID_HANDLE_VALUE)
-		return FALSE;
-
-	FindClose (hFind);
-	cout << "File exists:  " << fullPathName << endl;
-	return TRUE;*/
-	return TRUE;
+  DWORD dwAttr = GetFileAttributesW(fullPathName);
+  return !(dwAttr == INVALID_FILE_ATTRIBUTES);
 }
 
+Boolean RGDirectory::FileOrDirectoryExists(const RGString& fullPathName) {
+  return FileOrDirectoryExists(fullPathName.GetWData());
+}
 
 #else
 

@@ -60,7 +60,6 @@ public:
   wxString GetOutput();
 
 private:
-  char *m_psExe;
   double m_dProgress;
   CDirEntry *m_pDirEntry;
 };

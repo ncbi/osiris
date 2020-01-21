@@ -49,6 +49,7 @@
 #include <vector>
 #include "nwx/stde.h"
 #include "nwx/nwxString.h"
+#include "nwx/nwxWCharBuffer.h"
 
 class _nwxPingerProcess;
 class wxFile;
@@ -138,7 +139,6 @@ public:
   );
   nwxPinger();
   virtual ~nwxPinger();
-  void Exit();
   bool Ping(const nwxPingerSet &set);
   bool IsRunning()
   {

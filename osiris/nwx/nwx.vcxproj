@@ -191,6 +191,7 @@
     <ClInclude Include="CArrowImages.h" />
     <ClInclude Include="CIncrementer.h" />
     <ClInclude Include="CPointerHold.h" />
+    <ClInclude Include="nwxWCharBuffer.h" />
     <ClInclude Include="mapptr.h" />
     <ClInclude Include="nsstd.h" />
     <ClInclude Include="nwxArrayInt.h" />
