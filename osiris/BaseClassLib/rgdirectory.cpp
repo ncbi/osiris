@@ -38,7 +38,7 @@
 #include <iostream>
 
 
-#ifdef WIN32
+#ifdef _WINDOWS
 
 #include <stringapiset.h>
 

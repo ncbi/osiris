@@ -33,7 +33,7 @@
 
 #include <math.h>
 #include <stdlib.h>
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <Windows.h>
 #include <stringapiset.h>
 #endif
@@ -49,7 +49,7 @@ int RGString::DoubleResolution = 10;
 
 PERSISTENT_DEFINITION(RGString, _RGSTRING_, "xs:string")
 
-#ifdef WIN32
+#ifdef _WINDOWS
 #define INITWD WData = NULL; LenWData = 0;
 #else
 #define INITWD
@@ -105,7 +105,7 @@ RGString :: ~RGString() {
   }
 }
 
-#ifdef WIN32
+#ifdef _WINDOWS
 void RGString::_AllocWData(size_t nLen) const
 {
   if (nLen > LenWData)
