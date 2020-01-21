@@ -52,9 +52,9 @@
     <SampleRFUTests>
       <MinimumRFU>150</MinimumRFU>
       <MaximumRFU>-1</MaximumRFU>
-      <FractionOfMaxPeak>0.2</FractionOfMaxPeak>
-      <PullupFractionalFilter>0.2</PullupFractionalFilter>
-      <StutterThreshold>0.15</StutterThreshold>
+      <FractionOfMaxPeak>-1</FractionOfMaxPeak>
+      <PullupFractionalFilter>-1</PullupFractionalFilter>
+      <StutterThreshold>-1</StutterThreshold>
       <PlusStutterThreshold>-1</PlusStutterThreshold>
       <AdenylationThreshold>0.3</AdenylationThreshold>
     </SampleRFUTests>
@@ -142,6 +142,10 @@
       </MessageThreshold>
       <MessageThreshold>
 		  <MsgName>smTestForExcessiveNoisePreset</MsgName>
+		  <MsgThreshold>1</MsgThreshold>
+      </MessageThreshold>
+      <MessageThreshold>
+		  <MsgName>smAllowEditingRestrictedPriorityPreset</MsgName>
 		  <MsgThreshold>1</MsgThreshold>
       </MessageThreshold>
     </SmartMessageThresholds>
