@@ -99,10 +99,12 @@ RGString :: RGString (size_t size) : RGPersistent (), StringLength (0) {
 RGString :: ~RGString() {
 
   delete Data;
+#ifdef _WINDOWS
   if (WData != NULL)
   {
     delete[] WData;
   }
+#endif
 }
 
 #ifdef WIN32
