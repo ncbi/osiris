@@ -107,6 +107,19 @@ public:
     return nRtn;
   }
 
+  static bool All8bit(const wxChar *p)
+  {
+    bool bRtn = true;
+    for (; *p; ++p)
+    {
+      if (*p > 255)
+      {
+        bRtn = false;
+        break;
+      }
+    }
+    return bRtn;
+  }
   static int FindNoCase(
     const wxString &str,
     const wxString &subStr);

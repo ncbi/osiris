@@ -45,8 +45,8 @@ private:
   void Setup(const wxString &sPrompt, const wxChar *ButtonText[4]);
   void OnShowFiles(wxCommandEvent &);
   void OnClick(wxCommandEvent &);
-  void SetupURL(const wxFileName &fn);
-  wxString m_sDirURL;
+  void SetupFileToShow(const wxFileName &fn);
+  wxString m_sFileToShow;
   DECLARE_EVENT_TABLE()
 };
 

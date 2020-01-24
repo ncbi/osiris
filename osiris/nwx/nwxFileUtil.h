@@ -96,6 +96,12 @@ public:
   static bool UpDir(wxString *psDir, int n = 1);
   static bool MkDir(const wxString &sDir, bool bInheritMode = false);
   static size_t GetAllFilesNoCase(const wxString &sDirName, wxArrayString *pasFile, const wxString &sFileSpec, int flags = wxDIR_DEFAULT);
+  static void FixURL(wxString *psURL)
+  {
+    psURL->Replace(wxS("%"), wxS("%25"));
+    psURL->Replace(wxS(" "), wxS("%20"));
+    psURL->Replace(wxS("+"), wxS("%2b"));
+  }
   static bool IsNewer(const wxString &sFileName, time_t t)
   {
     bool bRtn = !t;

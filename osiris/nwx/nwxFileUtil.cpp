@@ -196,10 +196,13 @@ bool nwxFileUtil::_ShowFolder(const wxString &sFolderName)
   wxString sURL("file:///");
   sURL.Append(sFolderName);
   wxBusyCursor x;
-  sURL.Replace(wxS("%"),wxS("%25"));
-  sURL.Replace(wxS(" "),wxS("%20"));
-  sURL.Replace(wxS("+"),wxS("%2b"));
-  bool bRtn = wxLaunchDefaultBrowser(sURL);
+  FixURL(&sURL);
+  bool bRtn = true;
+#ifdef __WXMSW__
+  // conversion to UTF8 might work
+  bRtn = nwxString::All8bit(sURL);
+#endif
+  if (bRtn) { bRtn = wxLaunchDefaultBrowser(sURL); }
   return bRtn;
 }
 
@@ -365,29 +368,27 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
 {
   wxFileName fn(sFileName);
   bool bRtn = false;
-  if(bCheckDir && wxDir::Exists(sFileName))
-  {
-    bRtn = _ShowFolder(fn.GetFullPath());
-  }
-  else if(wxFileName::IsFileReadable(sFileName)
-          || wxFileName::IsDirReadable(sFileName))
+  bool bDir = wxDir::Exists(sFileName);
+
+  if (bDir || wxFileName::IsFileReadable(sFileName)
+    || wxFileName::IsDirReadable(sFileName))
   {
     bRtn = true;
     bool bFallback = true;
     const wchar_t *ARGV[4];
 #ifdef __EXE_NAME__
-  wxString sPathName = PathFind(__EXE_NAME__,true,false);
-    if(DO_NOT_SELECT_FILE) {}
-    else if(sPathName.IsEmpty()) {}
-    else if(!wxFileName::IsFileExecutable(sPathName)) {}
+    wxString sPathName = PathFind(__EXE_NAME__, true, false);
+    if (DO_NOT_SELECT_FILE) {}
+    else if (sPathName.IsEmpty()) {}
+    else if (!wxFileName::IsFileExecutable(sPathName)) {}
     else
     {
       bFallback = false;
-//      wxString sCommand = __EXE_NAME__; 
-      // windows has a problem in that 
-      // wxFileExists("c:\Windows\system32\explorer.exe")
-      // returns true even though that is not the correct path
-      // as a work around, omit the path
+      //      wxString sCommand = __EXE_NAME__; 
+            // windows has a problem in that 
+            // wxFileExists("c:\Windows\system32\explorer.exe")
+            // returns true even though that is not the correct path
+            // as a work around, omit the path
       size_t ndx = 0;
       ARGV[ndx++] = sPathName.wx_str();
 #ifdef __WXMAC__
@@ -398,11 +399,14 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
       // will work if there is a space in the file name
       // if there is no space, concatenation of the two parameters
       // works fine.
-      ARGV[ndx++] = wxT("/select,");
+      if (!(bDir && bCheckDir))
+      {
+        ARGV[ndx++] = wxT("/select,");
+      }
 #endif
       ARGV[ndx++] = sFileName.wx_str();
       ARGV[ndx++] = NULL;
-      long nRtn = wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
+      long nRtn = wxExecute((wchar_t **)ARGV, wxEXEC_SYNC);
 #ifdef __WXMSW__
       bFallback = (nRtn < 0) || (nRtn > 1);
 #else
@@ -412,14 +416,14 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
       wxString sLog = wxT("Show file: ");
       sLog += sFileName;
       sLog += "; return code = ";
-      sLog = nwxString::FormatNumber((int) nRtn);
+      sLog += nwxString::FormatNumber((int)nRtn);
       nwxLog::LogMessage(sLog);
 #endif
     }
 #endif // defined(__EXE_NAME__)
-    if(bFallback)
+    if (bFallback)
     {
-      bRtn = _ShowFolder(fn.GetPath());
+      bRtn = _ShowFolder(bDir ? fn.GetFullPath() : fn.GetPath());
     }
   }
   else

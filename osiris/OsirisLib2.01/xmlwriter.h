@@ -31,7 +31,10 @@ public:
 	void AddComment(const RGString& sComment);
 
 	static RGString& EscAscii 
-    (const RGString& s, RGString* pResult,bool bEscLow = false);
+    (const RGString& s, RGString* pResult,bool bEscLow = false, bool bAnsi = false);
+  // if bAnsi is false, the string is assumed to be UTF-8
+  // if 8 bit characters are found and it is not valid UTF-8
+  // it will be processed as ANSI
 
 private:
 	//  djh1
@@ -41,6 +44,7 @@ private:
 	// which call EscAscii on 
 	// the string arguments
 	//
+  static int _DecodeUTF8(const char *ps, int *pnBytes);
 	void _CreateChild(const RGString& sTag, const RGString& sValue);
 	void _CreateTag(const RGString& sTag);
 	void _AddAttributes(const RGString& sAttrName, const RGString& sAttrvalue);

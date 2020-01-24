@@ -45,34 +45,6 @@
 #include "CGridRFUParam.h"
 #include "nwx/nwxFileUtil.h"
 
-#if 0
-#define LINK_PREFIX wxS("file:///")
-#ifdef __WXMSW__
-#define LINK_PREFIX_LEN 8
-#else
-#define LINK_PREFIX_LEN 7
-#endif
-
-wxString CDialogParameters::CreateFileURL(const wxString &sFile,bool bForce)
-{
-  wxString sLink;
-  wxString s(sFile);
-
-  if(bForce || wxDirExists(s) || wxFileExists(s))
-  {
-    sLink.Alloc(sFile.Len() + LINK_PREFIX_LEN + 4);
-    sLink = LINK_PREFIX;
-#ifndef __WXMSW__
-    while(s.StartsWith(wxS("/")))
-    {
-      s = s.Mid(1);
-    }
-#endif
-    sLink.Append(s);
-  }
-  return sLink;
-}
-#endif
 
 wxWindow *CDialogParameters::CreateLabSettingsLink(const wxString &sLabel)
 {

@@ -77,7 +77,7 @@ bool wxXslSheet::Load()
   m_dtFile.Set((time_t)0);
   if(!m_sURL.IsEmpty())
   {
-    wxXml2Document docSheet(m_sURL.c_str());
+    wxXml2Document docSheet(m_sURL);
     xmlDocPtr pDocSheet = docSheet.AcquireDocPtr();
     wxFileName fn(m_sURL);
     if(fn.FileExists())
@@ -146,7 +146,7 @@ bool wxXslSheet::CheckReload()
     if(dt != m_dtFile)
     {
       wxString s(m_sURL);
-      Load(s.c_str());
+      Load(s);
       bRtn = true;
     }
   }
@@ -210,7 +210,7 @@ bool wxXslSheet::TransformToFile(
   else
   {
     int n = xsltSaveResultToFilename(
-      sFileName.c_str(),
+      sFileName.utf8_str(),
       pDoc,
       m_pSheet,
       0);
@@ -306,7 +306,7 @@ const wxChar *wxXslParams::GetParm(const wxString &sName) const
   const wxChar *psRtn = NULL;
   if(itr != m_mapParms.end())
   {
-    psRtn = itr->second.c_str();
+    psRtn = itr->second;
   }
   return psRtn;
 }
@@ -327,9 +327,9 @@ const char **wxXslParams::GetParms()
     // size * 2 is the number of names and values
     //  add 1 for the NULL terminator
     //
-    size_t nSize = 
-      ( (((m_mapParms.size() << 1) + 1) + 7) & (~7) )
-      * sizeof(const char *);
+    size_t nCount =
+      ((((m_mapParms.size() << 1) + 1) + 7) & (~7));
+    size_t nSize = nCount * sizeof(const char *);
     if(m_ppParms == NULL)
     {
       m_ppParms = (const char **)malloc(nSize);
@@ -351,11 +351,12 @@ const char **wxXslParams::GetParms()
       map<wxString, wxString>::iterator itr;
       for(itr = m_mapParms.begin(); itr != m_mapParms.end(); ++itr)
       {
-        *ppPtr++ = itr->first.c_str();
-        *ppPtr++ = itr->second.c_str();
+        *ppPtr++ = itr->first.utf8_str();
+        *ppPtr++ = itr->second.utf8_str();
       }
       *ppPtr = NULL;
     }
+    wxASSERT_MSG((ppPtr - m_ppParms) <= (int)nCount, "Arrary overrun");
   }
   return m_ppParms;
 }
