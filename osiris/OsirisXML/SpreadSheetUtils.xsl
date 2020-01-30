@@ -56,7 +56,7 @@
   <xsl:param name="p27Fit" select="0"/>
   <xsl:param name="p28Residual" select="0"/>
 
-  <xsl:param name="p30Style" select="$StyleLineByLocus"/>
+  <xsl:param name="p30Style" select="'One Locus Per Row'"/>
   <xsl:param name="p35Collate" select="1"/>
 
   <xsl:param name="p40ShowChannelNr" select="1"/>
@@ -1723,7 +1723,7 @@
           <xsl:with-param name="area" select="$p25Area"/>
           <xsl:with-param name="time" select="$p20Time"/>
           <xsl:with-param name="fit" select="$p27Fit"/>
-          <xsl:with-param name="residual" select="$p28residual"/>
+          <xsl:with-param name="residual" select="$p28Residual"/>
 
         </xsl:call-template>
       </xsl:otherwise>

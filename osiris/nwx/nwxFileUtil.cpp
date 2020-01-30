@@ -364,7 +364,7 @@ bool nwxFileUtil::SetFilePermissionFromDir(
 #define __EXE_NAME__ wxT("explorer.exe")
 #endif
 
-bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
+bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bSelectDir)
 {
   wxFileName fn(sFileName);
   bool bRtn = false;
@@ -391,19 +391,19 @@ bool nwxFileUtil::ShowFileFolder(const wxString &sFileName, bool bCheckDir)
             // as a work around, omit the path
       size_t ndx = 0;
       ARGV[ndx++] = sPathName.wx_str();
+      if ((!bDir) || bSelectDir)
+      {
 #ifdef __WXMAC__
-      ARGV[ndx++] = wxT("-R");
+        ARGV[ndx++] = wxT("-R");
 #endif
 #ifdef __WXMSW__
-      // OS-746, setting /select, and the filename as two paramters
-      // will work if there is a space in the file name
-      // if there is no space, concatenation of the two parameters
-      // works fine.
-      if (!(bDir && bCheckDir))
-      {
+        // OS-746, setting /select, and the filename as two paramters
+        // will work if there is a space in the file name
+        // if there is no space, concatenation of the two parameters
+        // works fine.
         ARGV[ndx++] = wxT("/select,");
-      }
 #endif
+      }
       ARGV[ndx++] = sFileName.wx_str();
       ARGV[ndx++] = NULL;
       long nRtn = wxExecute((wchar_t **)ARGV, wxEXEC_SYNC);

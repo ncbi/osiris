@@ -85,7 +85,7 @@ public:
   static wxString ForwardSlash(const wxString &s);
   static wxString GetRealPath(const wxString &sPath);
   static wxString PathFind(const wxString &sExeFile, bool bCheckSys = true, bool bCheckPath = true);
-  static bool ShowFileFolder(const wxString &sFileName, bool bCheckDir = true);
+  static bool ShowFileFolder(const wxString &sFileName, bool bSelectDir = false);
   static int OpenFileFromOS(const wxString &sFileName);
   static wxString BaseName(const wxString &sDir);
   static wxString GetExistingParent(const wxString &s);
