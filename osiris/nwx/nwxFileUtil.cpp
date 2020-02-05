@@ -558,6 +558,48 @@ bool nwxFileUtil::UpDir(wxString *psDir, int n)
   return bRtn;
 }
 
+int nwxFileUtil::CopyFiles(const wxString &sFrom, const wxString &sTo, const wxString &sFilter, bool bOverwrite)
+{
+  int nRtn = -99999;
+  wxDir dirFrom(sFrom);
+  if (dirFrom.IsOpened() && 
+      dirFrom.HasFiles(sFilter) &&
+      nwxFileUtil::MkDir(sTo, true) &&
+      wxFileName::IsDirWritable(sTo))
+  {
+    wxString sFileName, sToFileName, sToPath(sTo);
+    nwxFileUtil::EndWithSeparator(&sToPath);
+    bool bError = false;
+    nRtn = 0;
+    bool b;
+    for (b = dirFrom.GetFirst(&sFileName, sFilter); b; b = dirFrom.GetNext(&sFileName))
+    {
+      wxFileName fn(sFrom, sFileName);
+      if (!fn.IsDir())
+      {
+        sToFileName = sToPath;
+        sToFileName.Append(fn.GetFullName());
+        if (!(bOverwrite || !wxFileName::FileExists(sToFileName)))
+        { // skipping
+        }
+        else if (wxCopyFile(fn.GetFullPath(), sToFileName, bOverwrite))
+        {
+          ++nRtn;
+        }
+        else
+        {
+          bError = 1;
+        }
+      }
+    }
+    if (bError)
+    {
+      nRtn = -nRtn;
+    }
+  }
+  return nRtn;
+}
+
 bool nwxFileUtil::MkDir(
     const wxString &sDir, 
     bool

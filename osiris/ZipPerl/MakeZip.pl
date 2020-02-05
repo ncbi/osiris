@@ -82,20 +82,17 @@ sub COPYFILES
   my $src = shift;
   my $dest = shift;
   my $destTest = shift;
-  my $destXSL = '';
   if($destTest)
   {
-    $destXSL = "${destTest}/OsirisXSL";
     &MKDIR($destTest);
-    &MKDIR($destXSL);
   }
   else
   {
     $destTest = $dest;
-    $destXSL = "${dest}/Config"
   }
-
+  my $destXSL = "${dest}/ExportFiles"
   &MKDIR("${dest}");
+  &MKDIR($destXSL)
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");

@@ -73,6 +73,7 @@ public:
   }
   CExportFiles *GetGlobal();
 private:
+  void _CheckCopyOsirisXSL();
   void _SaveParms()
   {
     // save some parameters before opening CDialogExportSetup
@@ -105,6 +106,7 @@ private:
   bool m_bShowingList;
   bool m_bModified;
   bool m_bNoShow;
+  bool m_bCheckedCopyXsl;
 
   DECLARE_EVENT_TABLE()
 };

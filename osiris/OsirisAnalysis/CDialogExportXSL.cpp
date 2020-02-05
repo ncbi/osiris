@@ -31,6 +31,7 @@
 #include "CDialogExportXSL.h"
 #include "CXSLExportFileType.h"
 #include "CParmOsiris.h"
+#include "ConfigDir.h"
 #include "wxIDS.h"
 #include <wx/listbox.h>
 #include <wx/stattext.h>
@@ -90,7 +91,8 @@ CDialogExportXSL::CDialogExportXSL(wxWindow *parent) :
   m_bFirstTransfer(true),
   m_bShowingList(false),
   m_bModified(false),
-  m_bNoShow(false)
+  m_bNoShow(false),
+  m_bCheckedCopyXsl(false)
 {
 
   wxButton *pButtonNew;
@@ -247,6 +249,22 @@ bool CDialogExportXSL::ShowLockProblem(CExportFiles *pXSL, bool bPrompt)
   return bRtn;
 }
 
+void CDialogExportXSL::_CheckCopyOsirisXSL()
+{
+  if (!m_bCheckedCopyXsl)
+  {
+    ConfigDir *pDir = mainApp::GetConfig();
+    wxString sDest = pDir->GetSitePath();
+    wxString sFrom = pDir->GetExePath();
+    nwxFileUtil::EndWithSeparator(&sDest);
+    sDest.Append(wxS("ExportFiles"));
+    nwxFileUtil::EndWithSeparator(&sFrom);
+    sFrom.Append(wxS("ExportFiles"));
+    nwxFileUtil::CopyFiles(sFrom, sDest, wxS("*.xsl"));
+    m_bCheckedCopyXsl = true;
+  }
+}
+
 void CDialogExportXSL::OnNew(wxCommandEvent &)
 {
   CExportFiles *pXSL = GetGlobal();
@@ -267,6 +285,7 @@ void CDialogExportXSL::OnNew(wxCommandEvent &)
   {
     CIncrementer x(m_nLock);
     _SaveParms();
+    _CheckCopyOsirisXSL();
     CDialogExportSetup dlg(this,pXSL);
     if(dlg.Run())
     {

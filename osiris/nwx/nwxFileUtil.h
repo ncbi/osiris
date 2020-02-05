@@ -95,6 +95,7 @@ public:
   static void EndWithSeparator(wxString *psDir);
   static bool UpDir(wxString *psDir, int n = 1);
   static bool MkDir(const wxString &sDir, bool bInheritMode = false);
+  static int CopyFiles(const wxString &sFrom, const wxString &sTo, const wxString &sFilter = wxEmptyString, bool bOverwrite = false);
   static size_t GetAllFilesNoCase(const wxString &sDirName, wxArrayString *pasFile, const wxString &sFileSpec, int flags = wxDIR_DEFAULT);
   static void FixURL(wxString *psURL)
   {
