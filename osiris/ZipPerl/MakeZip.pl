@@ -90,7 +90,7 @@ sub COPYFILES
   {
     $destTest = $dest;
   }
-  my $destXSL = "${dest}/ExportFiles"
+  my $destXSL = "${dest}/ExportFiles";
   &MKDIR("${dest}");
   &MKDIR($destXSL)
   &MKDIR("${dest}/Config");
