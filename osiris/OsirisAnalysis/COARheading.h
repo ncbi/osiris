@@ -224,6 +224,25 @@ public:
   {
     return m_vsCommandLine.GetVector();
   }
+  bool IsNoLadder() const
+  {
+    const std::vector<wxString> &varg = GetCommandLine();
+    bool bRtn = false;
+    for (std::vector<wxString>::const_iterator itr = varg.begin();
+          itr != varg.end();
+          ++itr)
+    {
+      wxString s(*itr);
+      s.Replace(wxS(" "), wxS(""), true);
+      s.MakeLower();
+      if(s.Find(wxS("ladderfree=true")) != wxNOT_FOUND)
+      {
+        bRtn = true;
+        break;
+      }
+    }
+    return bRtn;
+  }
 private:
   wxString m_sFileName;
   wxString m_sNewFileName;
