@@ -400,6 +400,7 @@
     <ClCompile Include="CParmOsiris.cpp" />
     <ClCompile Include="CPlotController.cpp" />
     <ClCompile Include="CPlotData.cpp" />
+    <ClCompile Include="CPrintOutPlot.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
     <ClCompile Include="CSitePath.cpp" />
@@ -554,6 +555,7 @@
     <ClInclude Include="CPinger.h" />
     <ClInclude Include="CPlotController.h" />
     <ClInclude Include="CPlotData.h" />
+    <ClInclude Include="CPrintOutPlot.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
     <ClInclude Include="CSitePath.h" />

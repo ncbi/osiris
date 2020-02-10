@@ -199,6 +199,10 @@ enum
   IDlistMRU,
   IDArchiveExtract,
 
+  // printing
+  IDpageSetup,
+  IDprintPreview,
+
   IDhelpAbout,
   IDhelpContactUs,
   IDcheckForUpdates,

@@ -39,11 +39,11 @@ CMenuFileBase::CMenuFileBase(bool bClose)
   Append(IDanalyze,"&New Analysis...\tCtrl+N");
   Append(wxID_OPEN);
   Append(IDArchiveExtract,ARCHIVE_EXTRACT);
-  m_nInsertPoint =  GetMenuItemCount();
 #ifndef __WXMAC__
-  Append(IDopenPlot,"O&pen Plot File...\tCtrl+P");
+  Append(IDopenPlot,"Open Plot File...");
   Append(IDopenBatch,"Open &Batch File...\tCtrl+B");
 #endif
+  m_nInsertPoint = GetMenuItemCount();
   Append(IDlistMRU,"Recent Files...\tCtrl+R");
   if(bClose) Append(wxID_CLOSE ,"&Close\tCtrl+W");
   AppendSeparator();

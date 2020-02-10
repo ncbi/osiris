@@ -67,6 +67,7 @@
 #include "CParmOsiris.h"
 #include "CPanelHistoryMenu.h"
 #include "CNotebookEditSample.h"
+#include "CPrintOutPlot.h"
 
 #if FP_SCROLL_EVENT
 DEFINE_EVENT_TYPE(wxEVT_SCROLL_PLOT)
@@ -947,6 +948,14 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     {
       _CleanupExportDialog();
     }
+  }
+  else if (nID == IDprintPreview)
+  {
+    CPrintOutPlot::DoPrintPreview(this);
+  }
+  else if (nID == IDpageSetup)
+  {
+    CPrintOutPlot::DoPageSetup(this);
   }
   else
   {
@@ -2203,6 +2212,10 @@ void CFramePlot::OnActivateCB(wxActivateEvent &e)
     }
   }
 }
+void CFramePlot::OnPrint(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPrint(this);
+}
 
 IMPLEMENT_PERSISTENT_SIZE(CFramePlot)
 IMPLEMENT_ABSTRACT_CLASS(CFramePlot,CMDIFrame)
@@ -2219,6 +2232,7 @@ EVT_BUTTON(IDgraphTable, CFramePlot::OnTableButton)
 EVT_BUTTON(IDmenuDisplaySample, CFramePlot::OnTableButton)
 EVT_SASH_DRAGGED(wxID_ANY,CFramePlot::OnSashDragged)
 EVT_SIZE(CFramePlot::OnSize)
+EVT_MENU(wxID_PRINT, CFramePlot::OnPrint)
 EVT_COMMAND(IDframePlot,wxEVT_SIZE_DELAY_PLOT,CFramePlot::OnSizeAction)
 #if FP_SCROLL_EVENT
 EVT_COMMAND(IDframePlot,wxEVT_SCROLL_PLOT,CFramePlot::OnScrollPlot)

@@ -73,6 +73,7 @@
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
 #include "Version/OsirisVersion.h"
+#include "CPrintOutPlot.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -168,6 +169,7 @@ void mainApp::_Cleanup()
       delete m_pTimer;
       m_pTimer = NULL;
     }
+    CPrintOutPlot::StaticCleanup();
     _cleanupPinger();
   }
 }
