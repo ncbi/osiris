@@ -1,4 +1,4 @@
-InputDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-4/TestAnalysis/Identifiler/Identifiler_Artifacts;
+﻿InputDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-4/TestAnalysis/Identifiler/Identifiler_Artifacts;
 LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13-Beta-4/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
 LadderFree = true;
@@ -16,5 +16,4 @@ MinInterlocusRFU = 150.;
 MinLadderInterlocusRFU = 150.;
 SampleDetectionThreshold = 150.;
 RawDataString = R;
-
-
+;

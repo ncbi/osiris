@@ -123,12 +123,22 @@ public:
   }
   void RestoreScrollPosition()
   {
-    Scroll(m_nXScroll,m_nYScroll);
     int nRow = GetGridCursorRow();
     int nCol = GetGridCursorCol();
-    if(nRow >= 0 && nCol >= 0 && !IsVisible(nRow,nCol,true))
+    if ( (nCol >= 0)  && (nCol < 3) &&
+      ((m_nXScroll | m_nYScroll | nRow) == 0) )
     {
-      MakeCellVisible(nRow,nCol);
+      // found a problem when creating the grid
+      // when this condition is true, IsVisible() returned false
+      Scroll(0, 0);
+    }
+    else
+    {
+      Scroll(m_nXScroll, m_nYScroll);
+      if (nRow >= 0 && nCol >= 0 && !IsVisible(nRow, nCol, true))
+      {
+        MakeCellVisible(nRow, nCol);
+      }
     }
   }
 

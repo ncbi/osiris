@@ -105,7 +105,7 @@ static void _extStrReplace(
     itr++;
     sTo = (*itr);
     s.Replace(sFrom,sTo,true);
-    pObj = xmlXPathNewCString(s.c_str());
+    pObj = xmlXPathNewCString(s.utf8_str());
     valuePush(ctxt,pObj);
   }
 }

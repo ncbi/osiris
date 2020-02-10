@@ -181,7 +181,7 @@ size_t nwxProcess::ProcessIO(size_t nLimit)
       if(m_sBuffer.Len())
       {
         m_sBuffer += "\n";
-        ProcessLine(m_sBuffer.utf8_str(),m_sBuffer.Len(),false);
+        _ProcessLine(m_sBuffer,false);
         m_sBuffer.Empty();
       }
       bInputClosed = true;
@@ -198,7 +198,7 @@ size_t nwxProcess::ProcessIO(size_t nLimit)
       if(m_sBufferError.Len())
       {
         m_sBufferError += "\n";
-        ProcessLine(m_sBufferError.utf8_str(),m_sBufferError.Len(),true);
+        _ProcessLine(m_sBufferError,true);
         m_sBufferError.Empty();
       }
       if(bInputClosed && m_bRunning)
@@ -239,7 +239,6 @@ size_t nwxProcess::ProcessIO(
   bool bErrStream)
 {
   size_t nRtn = 0;
-  size_t nLen;
   char *pBuffer;
   char *pEnd;
   const int BUFFER_SIZE = 512;
@@ -256,17 +255,13 @@ size_t nwxProcess::ProcessIO(
           pEnd != NULL;
           pEnd = strchr(pBuffer,EOL))
       {
-        *pEnd = 0;
-        sLine.Append(pBuffer);
-        sLine.Append(wxChar(EOL));
-        *pEnd = EOL; // restore
-        nLen = sLine.Len();
-        ProcessLine(sLine.utf8_str(), nLen, bErrStream);
+        sLine.Append(wxString::FromUTF8(pBuffer, (pEnd - pBuffer) + 1));
+        _ProcessLine(sLine, bErrStream);
         sLine.Empty();
         pBuffer = pEnd;
         pBuffer++;
       }
-      sLine += pBuffer;
+      sLine += wxString::FromUTF8(pBuffer);
     }
   }
   return nRtn;

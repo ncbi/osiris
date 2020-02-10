@@ -179,9 +179,47 @@ void xmlwriter::_AddComment(const RGString& sComment)
 //	fprintf(fp,"<!--%s-->",sComment.c_str());
 }
 
+int xmlwriter::_DecodeUTF8(const char *ps, int *pnBytes)
+{
+  unsigned int nChar = *(unsigned char *)ps;
+  unsigned int nFlag = 0x80;
+  int nLen = 0;
+  int nRtn = 0;
+  while (nFlag & nChar)
+  {
+    nFlag >>= 1;
+    nLen++;
+  }
+  if (nLen > 1 && nLen < 8)
+  {
+    // get remaining bits from first byte
+    nRtn = int(nChar & (nFlag - 1));
+    for (int i = 1; i < nLen; i++)
+    {
+      ps++;
+      nChar = *(unsigned char *)ps;
+      if ((nChar & 0xc0) != 0x80)
+      {
+        // invalid utf-8 top 2 bits should be 1,0
+        nRtn = 0;
+        break;
+      }
+      else
+      {
+        // append bottom 6 bits
+        nRtn = (nRtn << 6) + int(nChar & 0x3f);
+      }
+    }
+    if ((nRtn) && (pnBytes != NULL))
+    {
+      *pnBytes = nLen;
+    }
+  }
+  return nRtn;
+}
 
 RGString& xmlwriter::EscAscii(
-  const RGString& s, RGString *pResult, bool bEscLow)
+  const RGString& s, RGString *pResult, bool bEscLow, bool bAnsi)
 {
 	char stmp[2] = {0,0};
   const int NTEMP = 2047;
@@ -221,12 +259,26 @@ RGString& xmlwriter::EscAscii(
 			break;
 
 		default:
-      if( ((*psIn) & 0x80) ||
+      if( (bAnsi   && ((*psIn) & 0x80)) ||
           (bEscLow && ((*psIn) < 0x20))
         )
       {
-        sprintf(psDest,"&#%d;",((int)(*psIn)) & 255);
-        while(*psDest) {psDest++;}
+        psDest += sprintf(psDest,"&#%d;",((int)(*psIn)) & 255);
+      }
+      else if ((*psIn) & 0x80)
+      {
+        int len;
+        int n = _DecodeUTF8(psIn, &len);
+        if (n > 0)
+        {
+          psIn += (len - 1);
+          psDest += sprintf(psDest, "&#%d;", n);
+        }
+        else
+        {
+          // could not decode UTF8, so fallback to ansi
+          return EscAscii(s, pResult, bEscLow, true);
+        }
       }
       else
       {

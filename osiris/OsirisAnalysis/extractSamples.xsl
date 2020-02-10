@@ -49,6 +49,43 @@
 
   <xsl:variable name="delim" select="','"/>
 
+  <xsl:template name="OsirisExport">
+    <export>
+    <name>Selected samples</name>
+    <file-extension>oer</file-extension>
+    <extension-override>false</extension-override>
+    <default-location>*A</default-location>
+    <xsl-params>
+      <param>
+        <name>names</name>
+        <description>Enter part or whole names of samples to export separated by commas</description>
+        <type>text</type>
+      </param>
+      <param>
+        <name>p1IncludeControls</name>
+        <description>Include positive and negative controls</description>
+        <type>checkbox</type>
+        <checked-value>1</checked-value>
+        <unchecked-value>9</unchecked-value>
+      </param>
+      <param>
+        <name>p2IncludeLadders</name>
+        <description>Include ladder files</description>
+        <type>checkbox</type>
+        <checked-value>1</checked-value>
+        <unchecked-value>9</unchecked-value>
+      </param>
+      <param>
+        <name>p3IncludeDisabled</name>
+        <description>Include disabled samples</description>
+        <type>checkbox</type>
+        <checked-value>1</checked-value>
+        <unchecked-value>9</unchecked-value>
+      </param>
+    </xsl-params>
+    </export>
+  </xsl:template>
+
   <xsl:template name="trim">
     <xsl:param name="str"/>
     <xsl:variable name="len" select="string-length($str)"/>

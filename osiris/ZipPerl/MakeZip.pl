@@ -82,20 +82,17 @@ sub COPYFILES
   my $src = shift;
   my $dest = shift;
   my $destTest = shift;
-  my $destXSL = '';
   if($destTest)
   {
-    $destXSL = "${destTest}/OsirisXSL";
     &MKDIR($destTest);
-    &MKDIR($destXSL);
   }
   else
   {
     $destTest = $dest;
-    $destXSL = "${dest}/Config"
   }
-
+  my $destXSL = "${dest}/ExportFiles";
   &MKDIR("${dest}");
+  &MKDIR($destXSL)
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");
@@ -185,6 +182,12 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisAnalysis/tab.xsl ${destXSL}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/extractSamples.xsl ${destXSL}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/extractArtifacts.xsl ${destXSL}");
+
+  &SYSTEM("${CP} ${src}/OsirisXML/SampleLadderData.xsl ${destXSL}");
+  &SYSTEM("${CP} ${src}/OsirisXML/SpreadSheetTemplate.xsl ${destXSL}");
+  &SYSTEM("${CP} ${src}/OsirisXML/SpreadSheetUtils.xsl ${destXSL}");
+  &SYSTEM("${CP} ${src}/OsirisXML/util.xsl ${destXSL}");
+
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");

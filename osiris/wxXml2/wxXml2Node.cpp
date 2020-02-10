@@ -334,8 +334,7 @@ wxString wxXml2Node::GetContent() const
   if( (nType == wxXML_TEXT_NODE) || 
       (nType == wxXML_CDATA_SECTION_NODE) )
   {
-    const char *pc = (const char *)(m_pNode->content);
-    sRtn = pc;
+    sRtn = WX_CAST(m_pNode->content);
   }
   return sRtn;
 }
@@ -344,8 +343,7 @@ wxString wxXml2Node::GetName() const
   wxString sRtn;
   if(GetType() == wxXML_ELEMENT_NODE)
   {
-    const char *p = (const char *)m_pNode->name;
-    sRtn = p;
+    sRtn = WX_CAST(m_pNode->name);
   }
   return sRtn;
 }

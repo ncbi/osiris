@@ -87,6 +87,9 @@ public:
 
 	operator const char*() const { return Data->GetData(); }  // make inline
 	const char* GetData () const { return Data->GetData(); }
+#ifdef _WINDOWS
+  const wchar_t* GetWData() const;
+#endif
 
 	RGString& operator=(const char*);
 	RGString& operator=(const RGString&);
@@ -194,6 +197,11 @@ public:
 protected:
 
 	RGStringData* Data;
+#ifdef _WINDOWS
+  mutable wchar_t *WData;
+  mutable size_t LenWData;
+  void _AllocWData(size_t nLen) const;
+#endif
 	size_t StringLength;
 
 	void ResetData ();

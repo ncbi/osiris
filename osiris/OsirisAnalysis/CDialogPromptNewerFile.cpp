@@ -35,7 +35,7 @@
 #include <wx/stattext.h>
 #include <wx/button.h>
 #include <wx/sizer.h>
-
+#include "nwx/nwxFileUtil.h"
 #define AFTER_FILE_NAMES(s,sNewFile) \
   s.Append("contains a newer file,\n  "); \
   s.Append(sNewFile); \
@@ -59,7 +59,7 @@ CDialogPromptNewerFile::CDialogPromptNewerFile(
     wxS("Do not open any of the above files"),
     wxS("View folder before deciding")
   };
-  SetupURL(fnNew);
+  SetupFileToShow(fnNew);
 
   sPrompt = "The folder containing the selected files:\n";
   for(SET_FILE_NAMES::const_iterator itr = setFileNames.begin(); itr != setFileNames.end(); ++itr)
@@ -91,7 +91,7 @@ CDialogPromptNewerFile::CDialogPromptNewerFile(
 		wxS("Do not open either file"),    // cancel
 		wxS("View folder before deciding") // view
   };
-  SetupURL(fn2);
+  SetupFileToShow(fn2);
   sPrompt.Alloc(1024);
   sPrompt = "The folder containing the selected file,\n  ";
   sPrompt.Append(fn1.GetFullName());
@@ -121,6 +121,10 @@ void CDialogPromptNewerFile::Setup(const wxString &sPrompt, const wxChar *Button
       new wxStaticText(this,wxID_ANY,ButtonText[i]),
       1,nFlagLabel);
   }
+  if (m_sFileToShow.IsEmpty())
+  {
+    pButtons[3]->Disable();
+  }
   pSizerAll->Add(pPrompt,0,wxALL | wxALIGN_CENTRE_HORIZONTAL | wxALIGN_CENTRE_VERTICAL,ID_BORDER);
   pSizerAll->AddStretchSpacer(1);
   pSizerAll->Add(pSizerButtons,0,
@@ -131,17 +135,24 @@ void CDialogPromptNewerFile::Setup(const wxString &sPrompt, const wxChar *Button
   CentreOnParent();
 }
 
-void CDialogPromptNewerFile::SetupURL(const wxFileName &fn)
+void CDialogPromptNewerFile::SetupFileToShow(const wxFileName &fn)
 {
-  const wxString sDir = fn.GetPath();
-  m_sDirURL.Alloc(sDir.Len() + 8);
-  m_sDirURL = "file:///";
-  m_sDirURL.Append(sDir);
+  if (fn.Exists())
+  {
+    m_sFileToShow = fn.GetFullPath();
+  }
+  else
+  {
+    m_sFileToShow.Empty();
+  }
 }
 
 void CDialogPromptNewerFile::OnShowFiles(wxCommandEvent &)
 {
-  wxLaunchDefaultBrowser(m_sDirURL,0);
+  if (!m_sFileToShow.IsEmpty())
+  {
+    nwxFileUtil::ShowFileFolder(m_sFileToShow, false);
+  }
 }
 void CDialogPromptNewerFile::OnClick(wxCommandEvent &e)
 {

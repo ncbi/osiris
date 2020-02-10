@@ -999,8 +999,10 @@ void mainFrame::OnHelp(wxCommandEvent &)
     {
       // command failed, try a file URL
       wxString sURL = "file:///";
+      sURL.Replace(" ", "%20");
       sURL.Append(sPath);
-      if(wxLaunchDefaultBrowser(sURL,0))
+      nwxFileUtil::FixURL(&sURL);
+      if(nwxString::All8bit(sURL) && wxLaunchDefaultBrowser(sURL,0))
       {
         bError = false;
 #ifdef TMP_DEBUG

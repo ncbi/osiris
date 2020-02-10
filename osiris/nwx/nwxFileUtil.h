@@ -85,7 +85,7 @@ public:
   static wxString ForwardSlash(const wxString &s);
   static wxString GetRealPath(const wxString &sPath);
   static wxString PathFind(const wxString &sExeFile, bool bCheckSys = true, bool bCheckPath = true);
-  static bool ShowFileFolder(const wxString &sFileName, bool bCheckDir = true);
+  static bool ShowFileFolder(const wxString &sFileName, bool bSelectDir = false);
   static int OpenFileFromOS(const wxString &sFileName);
   static wxString BaseName(const wxString &sDir);
   static wxString GetExistingParent(const wxString &s);
@@ -95,7 +95,14 @@ public:
   static void EndWithSeparator(wxString *psDir);
   static bool UpDir(wxString *psDir, int n = 1);
   static bool MkDir(const wxString &sDir, bool bInheritMode = false);
+  static int CopyFiles(const wxString &sFrom, const wxString &sTo, const wxString &sFilter = wxEmptyString, bool bOverwrite = false);
   static size_t GetAllFilesNoCase(const wxString &sDirName, wxArrayString *pasFile, const wxString &sFileSpec, int flags = wxDIR_DEFAULT);
+  static void FixURL(wxString *psURL)
+  {
+    psURL->Replace(wxS("%"), wxS("%25"));
+    psURL->Replace(wxS(" "), wxS("%20"));
+    psURL->Replace(wxS("+"), wxS("%2b"));
+  }
   static bool IsNewer(const wxString &sFileName, time_t t)
   {
     bool bRtn = !t;

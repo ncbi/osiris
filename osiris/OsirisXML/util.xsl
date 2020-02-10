@@ -47,6 +47,16 @@
   <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
   <xsl:variable name="allowDebugXML" select="0"/>
 
+  <func:function name="os:lower">
+    <xsl:param name="s"/>
+    <func:result select="translate($s,$UPPER,$lower)"/>
+  </func:function>
+
+  <func:function name="os:upper">
+    <xsl:param name="s"/>
+    <func:result select="translate($s,$lower,$UPPER)"/>
+  </func:function>
+
   <func:function name="os:InList">
     <xsl:param name="nodes"/>
     <xsl:param name="str"/>
@@ -62,6 +72,49 @@
     </xsl:variable>
     <func:result select="boolean(number($rtn))"/>
   </func:function>
+
+  <func:function name="os:IsAmel">
+    <xsl:param name="LocusName"/>
+    <xsl:variable name="LocusLC">
+      <xsl:value-of
+        select="translate(string($LocusName),$UPPER,$lower)"/>
+      <xsl:text>....</xsl:text>
+    </xsl:variable>
+    <xsl:variable name="rtn"
+      select="substring($LocusLC,1,4) = 'amel'"/>
+    <func:result select="$rtn"/>
+  </func:function>
+
+  <func:function name="os:DisplayAllele2">
+    <xsl:param name="AlleleName"/>
+    <xsl:param name="isAmel"/>
+    <xsl:variable name="rtn">
+      <xsl:choose>
+        <xsl:when test="not($isAmel)">
+          <xsl:value-of select="$AlleleName"/>
+        </xsl:when>
+        <xsl:when test="$AlleleName = '1'">
+          <xsl:text>X</xsl:text>
+        </xsl:when>
+        <xsl:when test="$AlleleName = '2'">
+          <xsl:text>Y</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$AlleleName"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <func:result select="$rtn"/>
+  </func:function>
+
+
+  <func:function name="os:DisplayAllele">
+    <xsl:param name="AlleleName"/>
+    <xsl:param name="LocusName"/>
+    <func:result
+      select="os:DisplayAllele2($AlleleName, os:IsAmel($LocusName))"/>
+  </func:function>
+
 
   <func:function name="os:isNaN">
     <xsl:param name="n"/>
@@ -169,6 +222,39 @@
     <func:result select="$rtn"/>
   </func:function>
 
+  <xsl:template name="IsEnabled">
+    <xsl:param name="sample"/>
+    <xsl:choose>
+      <xsl:when test="$sample/EnableHistory">
+        <xsl:for-each select="$sample/EnableHistory/Enable">
+          <xsl:sort select="Time" data-type="number" order="descending"/>
+          <xsl:choose>
+            <xsl:when test="position() != 1"/>
+            <xsl:when test="string(Enabled) = 'false'">
+              <xsl:value-of select="0"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="1"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="1"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <func:function name="os:IsEnabled">
+    <xsl:param name="sample"/>
+    <xsl:variable name="rtn">
+      <xsl:call-template name="IsEnabled">
+        <xsl:with-param name="sample" select="$sample"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <func:result select="boolean(number($rtn))"/>
+  </func:function>
+
   <xsl:template name="str-replace">
     <xsl:param name="str"/>
     <xsl:param name="kill"/>
@@ -217,7 +303,7 @@
     <xsl:variable name="qq">
       <xsl:text>"</xsl:text>
     </xsl:variable>
-    <xsl:variable name="s1" 
+    <xsl:variable name="s1"
       select="concat('file:///',str:encode-uri($str,'UTF-8'))"/>
     <xsl:variable name="s2"
       select="os:str-replace($s1,$q,'%27')"/>
@@ -536,7 +622,7 @@
     </xsl:variable>
     <xsl:variable name="file3">
       <xsl:text>\\server\top\second/third/fourth/file.txt</xsl:text>
-      
+
     </xsl:variable>
     <xsl:variable name="path1" select="os:Path($file1)"/>
     <xsl:variable name="path2" select="os:Path($file2)"/>
@@ -544,6 +630,15 @@
     <xsl:value-of select="concat($file1,' - ',$path1,'&#10;')"/>
     <xsl:value-of select="concat($file2,' - ',$path2,'&#10;')"/>
     <xsl:value-of select="concat($file3,' - ',$path3,'&#10;')"/>
+    <xsl:text>Amel 1: </xsl:text>
+    <xsl:value-of select="os:DisplayAllele(1,'amelogenin')"/>
+    <xsl:text>&#10;Amel 2: </xsl:text>
+    <xsl:value-of select="os:DisplayAllele(2,'AMELOGENIN')"/>
+    <xsl:text>&#10;Amel 3: </xsl:text>
+    <xsl:value-of select="os:DisplayAllele(3,'amelogenin')"/>
+    <xsl:text>&#10;D6 1: </xsl:text>
+    <xsl:value-of select="os:DisplayAllele(1,'D6S1234')"/>
+    <xsl:text>&#10;</xsl:text>
   </xsl:template>
 
 

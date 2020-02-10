@@ -448,6 +448,7 @@ void CFrameAnalysis::_Build()
 #undef LOCUS_WIDTH
 #undef LOCUS_HEIGHT
 
+
 bool CFrameAnalysis::FileError()
 {
 #ifdef TMP_DEBUG

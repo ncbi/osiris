@@ -55,9 +55,6 @@ public:
 private:
   wxWindow *CreateLabSettingsLink(const wxString &sLabel);
   wxWindow *CreateHyperlink(int nID,const wxString &sDir, bool bForce = false);
-#if 0
-  static wxString CreateFileURL(const wxString &s, bool bForce = false);
-#endif
   wxString m_sFileName;
   CLabSettings *m_pLabSettings;
   const CXMLmessageBook *m_pMsgBook;

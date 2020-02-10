@@ -393,6 +393,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2631E6BE54254C82BE8DE6C96C00D7F0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_26A0D08DBA4B479EBB3174C521A8F791"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -999,6 +1005,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_64DCB3722A5C489983DAA2FDCDE02A9C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6509BC9959F04AE89CEE8D1C954C8A46"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1318,6 +1330,12 @@
         "Entry"
         {
         "MsmKey" = "8:_83680A9D22EB4049B7CC9D1F9955C6A4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8470BCA936E74FAC982F6B9B345B4195"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2331,6 +2349,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EC5F65FBA95B4F92B79763FA4B553045"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_ECC72BAA2DCE4F9EBBC54CABA750EDAC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2556,7 +2580,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-2.13-Beta-8.msi"
+        "OutputFilename" = "8:Release\\Osiris-2.13-Beta-12.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -3844,6 +3868,26 @@
             "TargetName" = "8:NETBIO_FLEXPLEX_HID_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_405C515E542547A9848B214F97A44D1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2631E6BE54254C82BE8DE6C96C00D7F0"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\util.xsl"
+            "TargetName" = "8:util.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5878,6 +5922,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_64DCB3722A5C489983DAA2FDCDE02A9C"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\SpreadSheetUtils.xsl"
+            "TargetName" = "8:SpreadSheetUtils.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6509BC9959F04AE89CEE8D1C954C8A46"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NGM\\NGM_access.txt"
@@ -6003,7 +6067,7 @@
             "SourcePath" = "8:..\\OsirisAnalysis\\extractArtifacts.xsl"
             "TargetName" = "8:extractArtifacts.xsl"
             "Tag" = "8:"
-            "Folder" = "8:_CABCA89BC3984DC1A0B6894645D5BB7E"
+            "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6944,6 +7008,26 @@
             "TargetName" = "8:PowerPlex21_LadderInfo.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8470BCA936E74FAC982F6B9B345B4195"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\SpreadSheetTemplate.xsl"
+            "TargetName" = "8:SpreadSheetTemplate.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8903,7 +8987,7 @@
             "SourcePath" = "8:..\\OsirisAnalysis\\tab.xsl"
             "TargetName" = "8:tab.xsl"
             "Tag" = "8:"
-            "Folder" = "8:_CABCA89BC3984DC1A0B6894645D5BB7E"
+            "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -10318,6 +10402,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EC5F65FBA95B4F92B79763FA4B553045"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\SampleLadderData.xsl"
+            "TargetName" = "8:SampleLadderData.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ECC72BAA2DCE4F9EBBC54CABA750EDAC"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\GlobalFilerHID\\GF_7_FTA_G01_07.hid"
@@ -10423,7 +10527,7 @@
             "SourcePath" = "8:..\\OsirisAnalysis\\extractSamples.xsl"
             "TargetName" = "8:extractSamples.xsl"
             "Tag" = "8:"
-            "Folder" = "8:_CABCA89BC3984DC1A0B6894645D5BB7E"
+            "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11232,6 +11336,17 @@
                             }
                         }
                     }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_A422D835AEAF40F68366ABF5AE05BC12"
+                    {
+                    "Name" = "8:ExportFiles"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_83698FA525464C7AA9B92B14DD34AF33"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_CABCA89BC3984DC1A0B6894645D5BB7E"
                     {
                     "Name" = "8:Config"
@@ -12031,15 +12146,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{DCC978DA-027F-4AE8-95B2-82399013D6C6}"
-        "PackageCode" = "8:{C4996743-F89C-425A-8C50-C70E9A35AB48}"
+        "ProductCode" = "8:{117151F1-B918-4656-9FD7-90DCB51FAC5D}"
+        "PackageCode" = "8:{2148974C-9360-4172-909F-3BAF355B94C6}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.13.0008"
+        "ProductVersion" = "8:2.13.0012"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

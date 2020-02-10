@@ -229,6 +229,7 @@ enum
   IDnext,
   IDlock,
   IDvolume,
+  IDfolder,
 
 
   // Export PNG file

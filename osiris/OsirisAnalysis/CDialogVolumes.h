@@ -86,6 +86,7 @@ private:
   void OnAdd(wxCommandEvent &e);
   void OnRemove(wxCommandEvent &e);
   void OnRename(wxCommandEvent &e);
+  void OnShowFolder(wxCommandEvent &e);
   void OnChangeVolume(wxCommandEvent &e);
   void OnGridEditStart(wxGridEvent &);
   void OnGridEditEnd(wxGridEvent &);
@@ -101,6 +102,7 @@ private:
   wxButton *m_pButtonAdd;
   wxButton *m_pButtonRemove;
   wxButton *m_pButtonRename;
+  wxButton *m_pButtonFolder;
   wxGrid *m_pGridObject;
   bool m_bGridEditorShown;
   bool m_bReadOnly;

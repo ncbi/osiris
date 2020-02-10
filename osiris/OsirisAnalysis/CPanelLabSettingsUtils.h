@@ -128,6 +128,24 @@ public:
       sItemName,LABEL_RENAME,wxS("Rename selected "),
       bReadOnly,pSizer);
   }
+  static wxButton *CreateFolderButton(
+    wxWindow *parent,
+    bool bReadOnly = false,
+    wxSizer *pSizer = NULL)
+  {
+    return _CreateButton(
+      parent, wxWindowID(IDfolder),
+      wxS(" "), L"\U0001F4C1",
+#if defined(__WXMSW__)
+      wxS("Show location in Windows Explorer"),
+#elif defined(__WXMAC__)
+      wxS("Show location in Finder"),
+#else
+      wxS("Show location"),
+#endif
+      bReadOnly, pSizer);
+  }
+
 };
 
 
@@ -150,7 +168,7 @@ public:
     m_bReadOnly = false;
   }
   void SetCaption(const wxString &sCaption);
-  void SetupButtons(const wxString &sItemName = wxEmptyString, bool bRename = false);
+  //void SetupButtons(const wxString &sItemName = wxEmptyString, bool bRename = false);
   virtual bool TransferDataFromWindow();
   virtual bool TransferDataToWindow();
   virtual void SetReadOnly(bool b = true);
