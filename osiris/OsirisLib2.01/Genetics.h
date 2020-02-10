@@ -286,7 +286,7 @@ public:
 	int TestForAcceptedTriAllele (Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes);
 
 	virtual Boolean ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
-	virtual Boolean ExtractSampleSignalsLF (RGDList& channelSignalList);
+	virtual Boolean ExtractSampleSignalsLF (RGDList& channelSignalList, RGDList& artifactList);
 //	virtual Boolean ExtractExtendedLadderSampleSignals (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
 	virtual bool ComputeExtendedLocusTimes (CoreBioComponent* grid, CoordinateTransform* inverseTransform, int channelNumber, CoreBioComponent* associatedGrid);
 
