@@ -1718,9 +1718,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		}
 	}
 
-	if (!testLaserOffScale && (primaryChannel == 3) && (pullupChannel == 4))
-		bool stopHere = true;
-
 	int additionalPairsRequired = 0;
 
 	if (minRatio < 1.0) {
@@ -1961,9 +1958,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	}
 
 	RGDListIterator itRaw (rawDataPullupPrimaries);
-
-	if (!testLaserOffScale && (primaryChannel == 3) && (pullupChannel == 4))
-		bool stopHere = true;
 
 	while (nextSignal = (DataSignal*) itRaw ()) {
 

@@ -1919,7 +1919,7 @@ Boolean Locus :: ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLo
 }
 
 
-Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
+Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList, RGDList& artifactList) {
 
 	double ilsBP;
 	DataSignal* nextSignal;
@@ -1950,6 +1950,7 @@ Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
 		nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
 
 		it.RemoveCurrentItem ();
+		artifactList.RemoveReference (nextSignal);
 		haveFoundSignals = true;
 	}
 
