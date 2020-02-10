@@ -4150,7 +4150,7 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSMLF () {
 
 	while (nextLocus = (Locus*) it()) {
 
-		nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+		nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList, ArtifactList);
 	}
 
 	return 0;

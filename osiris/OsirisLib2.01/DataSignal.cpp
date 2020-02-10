@@ -1111,7 +1111,7 @@ DataSignal :: DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMe
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
 		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup) {
+		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup), mHasReportedArtifacts (ds.mHasReportedArtifacts) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -1139,7 +1139,7 @@ mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRigh
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
 mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup) {
+mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup), mHasReportedArtifacts (ds.mHasReportedArtifacts) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);

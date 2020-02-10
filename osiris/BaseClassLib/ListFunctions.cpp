@@ -138,3 +138,73 @@ void MergeAndSaveListAWithListB (RGDList& listA, RGDList& listB) {
 }
 
 
+void MergeListAIntoListBByReference (RGDList& listA, RGDList& listB) {
+
+	// To use this method, both listA and listB must already be sorted in increasing order.
+	// This function empties listA into listB
+
+	RGPersistent* p;
+	RGPersistent* q;
+
+	RGDList temp;
+	q = listB.GetFirst ();
+	p = listA.GetFirst ();
+
+	while (true) {
+
+		if ((q == NULL) && (p == NULL))
+			break;
+
+		if (q == NULL) {
+
+			temp.InsertWithNoReferenceDuplication (p);
+			p = listA.GetFirst ();
+		}
+
+		else if (p == NULL) {
+
+			temp.InsertWithNoReferenceDuplication (q);
+			q = listB.GetFirst ();
+		}
+
+		else if (p == q) {
+
+			temp.InsertWithNoReferenceDuplication (q);
+			p = listA.GetFirst ();
+			q = listB.GetFirst ();
+		}
+
+		else if (p->CompareTo (q) <= 0) {
+
+			temp.InsertWithNoReferenceDuplication (p);
+			p = listA.GetFirst ();
+		}
+
+		else {
+
+			temp.InsertWithNoReferenceDuplication (q);
+			q = listB.GetFirst ();
+		}
+	}
+
+	while (p = temp.GetFirst ())
+		listB.Append (p);
+}
+
+
+void RemoveReferenceDuplicates (RGDList& list) {
+
+	RGPersistent* q;
+	RGPersistent* p;
+	RGDList temp;
+
+	while (q = list.GetLast ()) {
+
+		p = temp.InsertWithNoReferenceDuplication (q);
+	}
+
+	while (q = temp.GetFirst ())
+		list.Append (q);
+}
+
+

@@ -321,7 +321,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false), mHasReportedArtifacts (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -339,7 +339,7 @@ public:
 	mLocus (NULL), mMaxMessageLevel (1), mDoNotCall (false), mReportersAdded (false), mAllowPeakEdit (true), mCannotBePrimaryPullup (false), mMayBeUnacceptable (false),
 	mHasRaisedBaseline (false), mBaseline (0.0), mIsNegativePeak (false), mPullupTolerance (halfPullupTolerance), mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), 
 	mPrimaryPullupInChannel (NULL), mPartOfCluster (false), mIsPossiblePullup (false), mIsNoisySidePeak (false), mNextSignal (NULL), mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (false),
-	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false) {
+	mThisDataSegment (NULL), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (false), mHasReportedArtifacts (false) {
 
 		DataSignal::signalID++;
 		mSignalID = DataSignal::signalID;
@@ -1022,6 +1022,7 @@ protected:
 	RGString mTempDataForPrimaryNoPullup;
 	RGString mTempDataForPrimaryRawDataPullup;
 	bool mCouldBePullup;
+	bool mHasReportedArtifacts;
 
 	static double SignalSpacing;
 	static Boolean DebugFlag;

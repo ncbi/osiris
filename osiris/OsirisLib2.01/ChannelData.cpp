@@ -3044,7 +3044,7 @@ int ChannelData :: RemoveInterlocusSignals (bool isNegCntl, double left, double 
 				AddNoticeToList (newNotice);
 		}
 
-		MergeListAIntoListB (PreliminaryCurveList, ArtifactList);
+		MergeListAIntoListBByReference (PreliminaryCurveList, ArtifactList);
 		return 0;
 	}
 
@@ -3128,7 +3128,7 @@ int ChannelData :: RemoveInterlocusSignals (bool isNegCntl, double left, double 
 
 				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
 				finishedLastSignal = true;
-				MergeListAIntoListB (PreliminaryCurveList, ArtifactList);
+				MergeListAIntoListBByReference (PreliminaryCurveList, ArtifactList);
 				break;
 			}
 
@@ -3225,7 +3225,7 @@ int ChannelData :: RemoveInterlocusSignals (bool isNegCntl, double left, double 
 
 			ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
 			finishedLastSignal = true;
-			MergeListAIntoListB (PreliminaryCurveList, ArtifactList);
+			MergeListAIntoListBByReference (PreliminaryCurveList, ArtifactList);
 			break;
 		}
 

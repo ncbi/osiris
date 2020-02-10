@@ -1275,6 +1275,11 @@ void DataSignal :: WriteSmartTableArtifactInfoToXML (RGTextOutput& text, RGTextO
 	smAcceptedOLLeft acceptedOLLeft;
 	smAcceptedOLRight acceptedOLRight;
 
+	if (mHasReportedArtifacts)
+		return;
+
+	mHasReportedArtifacts = true;
+
 	int reportedMessageLevel = GetHighestMessageLevelWithRestrictionSM ();
 	//bool hasThreeLoci;
 	//bool needLocus0;

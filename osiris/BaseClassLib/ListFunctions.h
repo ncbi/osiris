@@ -43,6 +43,10 @@
 void MergeListAIntoListB (RGDList& listA, RGDList& listB);
 	// This function merges listA into listB without emptying listA
 void MergeAndSaveListAWithListB (RGDList& listA, RGDList& listB);
+	// This function empties listA and merges by reference, with no duplication into listB
+void MergeListAIntoListBByReference (RGDList& listA, RGDList& listB);
+	// This function removes reference duplicates
+void RemoveReferenceDuplicates (RGDList& list);
 
 
 #endif  /*  _LISTFUNCTIONS_H_  */
