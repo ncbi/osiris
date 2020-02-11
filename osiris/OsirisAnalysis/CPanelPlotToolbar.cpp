@@ -293,6 +293,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   //
   m_pMenuLabels = new CMenuLabels(CMenuLabels::MENU_TYPE_PLOT,nMenuNumber);
   m_pButtonLabels = new nwxButtonMenu(m_pMenuLabels,m_pPanel,wxID_ANY,wxS("Peak Labels"));
+  m_pButtonLabels->SetToolTip("Select information to display in peak labels");
   pSizer->Add(m_pButtonLabels,0,nSizerFlags,ID_BORDER);
   m_vShiftWindows.push_back(m_pButtonLabels);
 

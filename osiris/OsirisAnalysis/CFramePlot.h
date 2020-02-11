@@ -366,6 +366,8 @@ public:
   void OnHistoryUpdate(wxCommandEvent &e);
   void OnExport(wxCommandEvent &e);
   void OnPrint(wxCommandEvent &e);
+  void OnPrintPreview(wxCommandEvent &e);
+  void OnPageSetup(wxCommandEvent &e);
   void OnClose(wxCloseEvent &e);
   void OnContextMenu(wxContextMenuEvent &e);
   void OnHistoryButton(wxCommandEvent &e);

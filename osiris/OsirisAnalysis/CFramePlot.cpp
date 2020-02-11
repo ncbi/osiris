@@ -949,14 +949,6 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
       _CleanupExportDialog();
     }
   }
-  else if (nID == IDprintPreview)
-  {
-    CPrintOutPlot::DoPrintPreview(this);
-  }
-  else if (nID == IDpageSetup)
-  {
-    CPrintOutPlot::DoPageSetup(this);
-  }
   else
   {
     int nPlot = ID_GET_PLOT_NUMBER(nID);
@@ -2216,6 +2208,14 @@ void CFramePlot::OnPrint(wxCommandEvent &)
 {
   CPrintOutPlot::DoPrint(this);
 }
+void CFramePlot::OnPrintPreview(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPrintPreview(this);
+}
+void CFramePlot::OnPageSetup(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPageSetup(this);
+}
 
 IMPLEMENT_PERSISTENT_SIZE(CFramePlot)
 IMPLEMENT_ABSTRACT_CLASS(CFramePlot,CMDIFrame)
@@ -2233,6 +2233,8 @@ EVT_BUTTON(IDmenuDisplaySample, CFramePlot::OnTableButton)
 EVT_SASH_DRAGGED(wxID_ANY,CFramePlot::OnSashDragged)
 EVT_SIZE(CFramePlot::OnSize)
 EVT_MENU(wxID_PRINT, CFramePlot::OnPrint)
+EVT_MENU(IDprintPreview, CFramePlot::OnPrintPreview)
+EVT_MENU(IDpageSetup, CFramePlot::OnPageSetup)
 EVT_COMMAND(IDframePlot,wxEVT_SIZE_DELAY_PLOT,CFramePlot::OnSizeAction)
 #if FP_SCROLL_EVENT
 EVT_COMMAND(IDframePlot,wxEVT_SCROLL_PLOT,CFramePlot::OnScrollPlot)

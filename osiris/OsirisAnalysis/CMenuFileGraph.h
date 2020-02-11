@@ -38,12 +38,14 @@ class CMenuFileGraph : public CMenuFileBase
 public:
   CMenuFileGraph() : CMenuFileBase()
   {
+    // insert in reverse order
     Insert(m_nInsertPoint,
            IDExportGraphic,EXPORT_GRAPH,EXPORT_GRAPH_HELP);
     InsertSeparator(m_nInsertPoint);
     Insert(m_nInsertPoint, IDprintPreview, wxT("Print Pre&view..."));
     Insert(m_nInsertPoint, IDpageSetup, wxT("Page Set&up..."));
     Insert(m_nInsertPoint, wxID_PRINT);
+    InsertSeparator(m_nInsertPoint);
   }
   virtual ~CMenuFileGraph();
   static const wxString EXPORT_GRAPH;
