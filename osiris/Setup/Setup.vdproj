@@ -753,6 +753,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_484C38664A0D4816A9D950B196D3C2B5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4860CD409EF744C18020886DC8C32BD5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2476,6 +2482,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F787BB8D5E5E4166A1B9CC9308C8C786"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F7DFBABC29684914A75CE02C985BEA1C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -5066,6 +5078,26 @@
             {
             "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.12.pdf"
             "TargetName" = "8:OSIRIS_Release_Notes_v2.12.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_484C38664A0D4816A9D950B196D3C2B5"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.13.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.13.pdf"
             "Tag" = "8:"
             "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
@@ -10828,6 +10860,26 @@
             "TargetName" = "8:PP16_HID_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_E119F0D4D43D46EDA81919E04B337215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F7DFBABC29684914A75CE02C985BEA1C"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.12.2.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.12.2.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
