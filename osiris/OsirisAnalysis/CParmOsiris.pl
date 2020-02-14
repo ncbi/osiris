@@ -156,6 +156,7 @@ my $VARLIST =
   ["m_nPrintPlotPaperWidth", "int", "-1"],
   ["m_nPrintPlotPaperHeight", "int", "-1"],
   ["m_bPrintPlotLandscape", "bool"],
+  ["m_nPrintPreviewZoom", "int", "-1"],
 
   ["XSLT saved parameter info"],
 

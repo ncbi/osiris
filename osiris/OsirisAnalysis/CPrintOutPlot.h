@@ -52,9 +52,11 @@ class CPrintPlotPreview : public wxPreviewFrame
 {
 public:
   CPrintPlotPreview(wxPrintPreview *pPreview, wxWindow *pParent, 
-    const wxString &sTitle);
+    const wxString &sTitle, bool bPageButtons = false);
   virtual ~CPrintPlotPreview() {}
+  virtual void CreateControlBar();
 private:
+  bool m_bPageButtons;
   DECLARE_PERSISTENT_SIZE_POSITION
   DECLARE_ABSTRACT_CLASS(CPrintPlotPreview)
   DECLARE_EVENT_TABLE()
@@ -64,16 +66,22 @@ private:
 class CPrintOutPlot : public wxPrintout
 {
 public:
-  CPrintOutPlot(CFramePlot *pFrame, const wxString &title = wxT("OSIRIS Plot")) :
-    wxPrintout(title),
-    m_pFramePlot(pFrame)
-  {}
+  CPrintOutPlot(CFramePlot *pFrame, bool bPreview = false) :
+    wxPrintout(wxT("OSIRIS Plot")),
+    m_pFramePlot(pFrame),
+    MAX_PPI(bPreview ? -1 : 600)
+  {
+  }
   virtual ~CPrintOutPlot();
   virtual bool OnPrintPage(int page);
   virtual bool HasPage(int page);
   virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 
   static wxPrintData *GetPrintData();
+  static void SetPrintData(wxPrintData &d)
+  {
+    *GetPrintData() = d;
+  }
   static wxPageSetupDialogData *GetPageSetupData();
   static void UpdatePageSetup();
   static void UpdatePageSetupData(wxPrintData *pPrintData = NULL, wxPageSetupDialogData *pSetupData = NULL);
@@ -95,6 +103,7 @@ public:
   static void DoPrint(CFramePlot *pPlot);
 private:
   CFramePlot *m_pFramePlot;
+  int MAX_PPI;
   static wxPrintData *g_printData;
   static wxPageSetupDialogData* g_pageSetupData;
 

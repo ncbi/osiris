@@ -428,6 +428,10 @@ public:
   {
     return m_bPrintPlotLandscape;
   }
+  int GetPrintPreviewZoom() const
+  {
+    return m_nPrintPreviewZoom;
+  }
 
   //  XSLT saved parameter info
 
@@ -859,6 +863,10 @@ public:
   {
     __SET_VALUE(m_bPrintPlotLandscape,b);
   }
+  void SetPrintPreviewZoom(int n)
+  {
+    __SET_VALUE(m_nPrintPreviewZoom,n);
+  }
 
   //  XSLT saved parameter info
 
@@ -1104,6 +1112,7 @@ protected:
   int m_nPrintPlotPaperWidth;
   int m_nPrintPlotPaperHeight;
   bool m_bPrintPlotLandscape;
+  int m_nPrintPreviewZoom;
 
   //  XSLT saved parameter info
 

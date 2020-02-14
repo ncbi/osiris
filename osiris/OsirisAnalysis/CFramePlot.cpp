@@ -68,6 +68,7 @@
 #include "CPanelHistoryMenu.h"
 #include "CNotebookEditSample.h"
 #include "CPrintOutPlot.h"
+#include "CGridAnalysisDisplay.h"
 
 #if FP_SCROLL_EVENT
 DEFINE_EVENT_TYPE(wxEVT_SCROLL_PLOT)
@@ -2062,7 +2063,7 @@ wxBitmap *CFramePlot::CreateBitmap(
   // initialize bitmap to white -- probably not necessary
 
   dc.SetBackground(*wxWHITE_BRUSH);
-  dc.SetBackgroundMode(wxSOLID);
+  dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
   dc.Clear();
 
   // set up title
@@ -2203,6 +2204,15 @@ void CFramePlot::OnActivateCB(wxActivateEvent &e)
       }
     }
   }
+}
+wxString CFramePlot::GetPrintTitle()
+{
+  wxString sFileName = m_pData->GetFilename();
+  COARsample *pSample =
+    (m_pOARfile != NULL && (CGridAnalysisDisplay::GetDisplayType() > 0))
+    ? m_pOARfile->GetSampleByName(sFileName)
+    : NULL;
+  return (pSample == NULL) ? sFileName  : pSample->GetSampleName();
 }
 void CFramePlot::OnPrint(wxCommandEvent &)
 {

@@ -420,6 +420,7 @@ void mainApp::_InitializeApp()
   m_pFrame->Startup(bHasArgs);
   const wxChar *psFormat(wxS("argv[%d] = %ls"));
   LogMessageV(psFormat,0,argv[0].wc_str());
+  LogMessageV(wxT("cwd: %ls"), wxGetCwd().wc_str());
   for(int i = 1; i < argc; ++i)
   {
     LogMessageV(psFormat,i,argv[i].wc_str());

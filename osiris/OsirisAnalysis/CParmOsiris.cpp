@@ -160,6 +160,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_nPrintPlotPaperWidth);
   CP(m_nPrintPlotPaperHeight);
   CP(m_bPrintPlotLandscape);
+  CP(m_nPrintPreviewZoom);
 
   //  XSLT saved parameter info
 
@@ -279,6 +280,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintPlotPaperWidth)
   CP(m_nPrintPlotPaperHeight)
   CP(m_bPrintPlotLandscape)
+  CP(m_nPrintPreviewZoom)
 
   //  XSLT saved parameter info
 
@@ -407,6 +409,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterInt("PrintPlotPaperWidth", &m_nPrintPlotPaperWidth);
   RegisterInt("PrintPlotPaperHeight", &m_nPrintPlotPaperHeight);
   RegisterBool("PrintPlotLandscape", &m_bPrintPlotLandscape);
+  RegisterInt("PrintPreviewZoom", &m_nPrintPreviewZoom);
 
   //  XSLT saved parameter info
 
@@ -540,6 +543,7 @@ void CParmOsiris::SetDefaults()
   m_nPrintPlotPaperWidth = -1;
   m_nPrintPlotPaperHeight = -1;
   m_bPrintPlotLandscape = false;
+  m_nPrintPreviewZoom = -1;
 
   //  XSLT saved parameter info
 

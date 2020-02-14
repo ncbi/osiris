@@ -47,6 +47,45 @@
 
 // static data and functions
 
+class CPrintPreview : public wxPrintPreview
+{
+public:
+  CPrintPreview(wxPrintout *printout, wxPrintout *printoutForPrinting = NULL, wxPrintDialogData *data = NULL) :
+    wxPrintPreview(printout, printoutForPrinting, data)
+  {
+    _SetDefaultZoom();
+  }
+  CPrintPreview(wxPrintout *printout, wxPrintout *printoutForPrinting, wxPrintData *data) :
+    wxPrintPreview(printout, printoutForPrinting, data)
+  {
+    _SetDefaultZoom();
+  }
+  virtual ~CPrintPreview() {}
+  virtual bool Print(bool interactive)
+  {
+    bool bRtn = wxPrintPreview::Print(interactive);
+    wxChar *psStatus = bRtn ? wxT("OK") : wxT("NOT_OK");
+    mainApp::Ping3(PING_EVENT, wxT("Print"), wxT("Status"), psStatus, wxT("FromPreview"), wxT("1"));
+    return bRtn;
+  }
+  virtual void SetZoom(int n)
+  {
+    CParmOsirisGlobal parm;
+    parm->SetPrintPreviewZoom(n);
+    wxPrintPreview::SetZoom(n);
+  }
+private:
+  void _SetDefaultZoom()
+  {
+    CParmOsirisGlobal parm;
+    int n = parm->GetPrintPreviewZoom();
+    if (n > 10)
+    {
+      wxPrintPreview::SetZoom(n);
+    }
+  }
+};
+
 wxPrintData *CPrintOutPlot::g_printData = NULL;
 wxPageSetupDialogData* CPrintOutPlot::g_pageSetupData = NULL;
 
@@ -154,8 +193,8 @@ void CPrintOutPlot::DoPrintPreview(CFramePlot *pPlot)
   // using the wxWidgets printing sample program
   wxPrintDialogData printDialogData(*GetPrintData());
   wxPrintPreview *preview =
-    new wxPrintPreview(
-      new CPrintOutPlot(pPlot), 
+    new CPrintPreview(
+      new CPrintOutPlot(pPlot, true),
       new CPrintOutPlot(pPlot),
       &printDialogData);
   wxChar *psStatus = NULL;
@@ -193,8 +232,28 @@ void CPrintOutPlot::DoPageSetup(CFramePlot *pPlot)
 }
 void CPrintOutPlot::DoPrint(CFramePlot *pPlot)
 {
-  // EMPTY
+  wxPrintDialogData printDialogData(*GetPrintData());
 
+  wxPrinter printer(&printDialogData);
+  CPrintOutPlot printout(pPlot);
+  wxString sStatus(wxT("OK"));
+  if (printer.Print(pPlot, &printout, true /*prompt*/))
+  {
+    // OK
+    SetPrintData(printer.GetPrintDialogData().GetPrintData());
+  }
+  else if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
+  {
+    // error
+    mainApp::LogMessage(wxT("Printer error"));
+    sStatus = wxT("ERROR");
+  }
+  else
+  {
+    // printout canceled
+    sStatus = wxT("CANCEL");
+  }
+  mainApp::Ping2(PING_EVENT, wxT("Print"), wxT("Status"), sStatus); 
 }
 
 // end static functions - begin virtual wxPrintout functions
@@ -204,7 +263,6 @@ CPrintOutPlot::~CPrintOutPlot() { ; }
 bool CPrintOutPlot::OnPrintPage(int page)
 {
   bool bRtn = true;
-  const int MAX_PPI = 600;
   if (page == 1)
   {
     double dPPIscale = 1.0, dScalePixel = 1.0;
@@ -214,7 +272,7 @@ bool CPrintOutPlot::OnPrintPage(int page)
       SCALE_X,
       SCALE_Y
     } nScale = SCALE_NONE;
-    int nPPIx, nPPIy, nPageX, nPageY, nMinPPI, nUsePPI, nX, nY;
+    int nPPIx, nPPIy, nMinPPI, nUsePPI, nX, nY;
     bool bFit = true;
     GetPPIPrinter(&nPPIx, &nPPIy);
     if (nPPIx == nPPIy)
@@ -233,15 +291,24 @@ bool CPrintOutPlot::OnPrintPage(int page)
       nScale = SCALE_X;
       dScalePixel = double(nPPIy) / double(nPPIx);
     }
-
-    GetPageSizePixels(&nPageX, &nPageY);
-    wxRect rectPx = GetPaperRectPixels();
     wxRect rectFit = GetLogicalPageMarginsRect(*GetPageSetupData());
+    if (MAX_PPI < 20)
+    {
+      // this is print preview, get PPI for screen
+      int nx, ny;
+      GetPPIScreen(&nx, &ny);
+      MAX_PPI = (nx < ny) ? nx : ny;
+      if (MAX_PPI < 72)
+      {
+        MAX_PPI = 72;
+      }
+    }
+
     if (nMinPPI > MAX_PPI)
     {
       bFit = true;
       nUsePPI = MAX_PPI;
-      dPPIscale = 600.0 / float(nMinPPI);
+      dPPIscale = MAX_PPI / float(nMinPPI);
       nX = int(rectFit.GetWidth() * dPPIscale);
       nY = int(rectFit.GetHeight() * dPPIscale);
     }
@@ -269,9 +336,9 @@ bool CPrintOutPlot::OnPrintPage(int page)
       FitThisSizeToPageMargins(wxSize(nX, nY), *GetPageSetupData());
     }
 
-    std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(nX, nY, nUsePPI));
+    std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(nX, nY, nUsePPI, m_pFramePlot->GetPrintTitle()));
     wxDC *pdc = GetDC();
-    pdc->DrawBitmap(*px, wxPoint(rectFit.GetLeft(), rectFit.GetTop()));
+    pdc->DrawBitmap(*px, wxPoint(0,0));
   }
   else
   {
@@ -292,13 +359,27 @@ void CPrintOutPlot::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, in
 // CPrintPlotPreview
 
 CPrintPlotPreview::CPrintPlotPreview(wxPrintPreview *pPrev, wxWindow *parent,
-  const wxString &title) :
+  const wxString &title, bool bPageButtons) :
     wxPreviewFrame(pPrev, parent, title,
-      GET_PERSISTENT_POSITION(CDialogMRU),
-      GET_PERSISTENT_SIZE_DEFAULT(CPrintPlotPreview, wxSize(600,800)))
+      GET_PERSISTENT_POSITION(CPrintPlotPreview),
+      GET_PERSISTENT_SIZE_DEFAULT(CPrintPlotPreview, wxSize(600,800))),
+  m_bPageButtons(bPageButtons)
 {
   InitializeWithModality(wxPreviewFrame_AppModal);
 }
+void CPrintPlotPreview::CreateControlBar()
+{
+  // copied from wxWidgets prntbase.cpp and modified
+  // to change buttons
+  // and should be checked when updating version of wx
+  long buttons = m_bPageButtons ? wxPREVIEW_DEFAULT : wxPREVIEW_ZOOM;
+  if (m_printPreview->GetPrintoutForPrinting())
+    buttons |= wxPREVIEW_PRINT;
+
+  m_controlBar = new wxPreviewControlBar(m_printPreview, buttons, this);
+  m_controlBar->CreateButtons();
+}
+
 IMPLEMENT_ABSTRACT_CLASS(CPrintPlotPreview, wxPreviewFrame)
 IMPLEMENT_PERSISTENT_SIZE_POSITION(CPrintPlotPreview)
 BEGIN_EVENT_TABLE(CPrintPlotPreview, wxPreviewFrame)
