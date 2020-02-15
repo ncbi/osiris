@@ -443,6 +443,10 @@ public:
   wxString FormatMessages(const vector<int> &vn, int indent = 0, const wxDateTime *pTime = NULL) const;
   int CountMessages(const vector<int> &vn, const wxDateTime *pTime = NULL) const;
 
+  bool IsNoLoadder() const
+  {
+    return m_heading.IsNoLadder();
+  }
   bool HasDirectoryMessages() const
   {
     return m_DirAlerts.HasAlerts();

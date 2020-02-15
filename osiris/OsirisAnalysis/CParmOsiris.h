@@ -394,6 +394,45 @@ public:
     return m_nPlotMaxLadderLabels;
   }
 
+  //  plot printout -- margins are in millimeters
+
+  unsigned int GetPrintPlotMarginTop() const
+  {
+    return m_nPrintPlotMarginTop;
+  }
+  unsigned int GetPrintPlotMarginBottom() const
+  {
+    return m_nPrintPlotMarginBottom;
+  }
+  unsigned int GetPrintPlotMarginLeft() const
+  {
+    return m_nPrintPlotMarginLeft;
+  }
+  unsigned int GetPrintPlotMarginRight() const
+  {
+    return m_nPrintPlotMarginRight;
+  }
+  int GetPrintPlotPaperType() const
+  {
+    return m_nPrintPlotPaperType;
+  }
+  int GetPrintPlotPaperWidth() const
+  {
+    return m_nPrintPlotPaperWidth;
+  }
+  int GetPrintPlotPaperHeight() const
+  {
+    return m_nPrintPlotPaperHeight;
+  }
+  bool GetPrintPlotLandscape() const
+  {
+    return m_bPrintPlotLandscape;
+  }
+  int GetPrintPreviewZoom() const
+  {
+    return m_nPrintPreviewZoom;
+  }
+
   //  XSLT saved parameter info
 
   const wxString &GetLastXSLInputFileDir() const
@@ -790,6 +829,45 @@ public:
     __SET_VALUE(m_nPlotMaxLadderLabels,n);
   }
 
+  //  plot printout -- margins are in millimeters
+
+  void SetPrintPlotMarginTop(unsigned int n)
+  {
+    __SET_VALUE(m_nPrintPlotMarginTop,n);
+  }
+  void SetPrintPlotMarginBottom(unsigned int n)
+  {
+    __SET_VALUE(m_nPrintPlotMarginBottom,n);
+  }
+  void SetPrintPlotMarginLeft(unsigned int n)
+  {
+    __SET_VALUE(m_nPrintPlotMarginLeft,n);
+  }
+  void SetPrintPlotMarginRight(unsigned int n)
+  {
+    __SET_VALUE(m_nPrintPlotMarginRight,n);
+  }
+  void SetPrintPlotPaperType(int n)
+  {
+    __SET_VALUE(m_nPrintPlotPaperType,n);
+  }
+  void SetPrintPlotPaperWidth(int n)
+  {
+    __SET_VALUE(m_nPrintPlotPaperWidth,n);
+  }
+  void SetPrintPlotPaperHeight(int n)
+  {
+    __SET_VALUE(m_nPrintPlotPaperHeight,n);
+  }
+  void SetPrintPlotLandscape(bool b)
+  {
+    __SET_VALUE(m_bPrintPlotLandscape,b);
+  }
+  void SetPrintPreviewZoom(int n)
+  {
+    __SET_VALUE(m_nPrintPreviewZoom,n);
+  }
+
   //  XSLT saved parameter info
 
   void SetLastXSLInputFileDir(const wxString &s)
@@ -1023,6 +1101,18 @@ protected:
   unsigned int m_nPlotShowArtifact;
   vector<unsigned int> m_anPlotDisplayPeak;
   int m_nPlotMaxLadderLabels;
+
+  //  plot printout -- margins are in millimeters
+
+  unsigned int m_nPrintPlotMarginTop;
+  unsigned int m_nPrintPlotMarginBottom;
+  unsigned int m_nPrintPlotMarginLeft;
+  unsigned int m_nPrintPlotMarginRight;
+  int m_nPrintPlotPaperType;
+  int m_nPrintPlotPaperWidth;
+  int m_nPrintPlotPaperHeight;
+  bool m_bPrintPlotLandscape;
+  int m_nPrintPreviewZoom;
 
   //  XSLT saved parameter info
 

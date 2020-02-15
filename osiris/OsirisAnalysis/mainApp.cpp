@@ -73,6 +73,7 @@
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
 #include "Version/OsirisVersion.h"
+#include "CPrintOutPlot.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -168,6 +169,7 @@ void mainApp::_Cleanup()
       delete m_pTimer;
       m_pTimer = NULL;
     }
+    CPrintOutPlot::StaticCleanup();
     _cleanupPinger();
   }
 }
@@ -418,6 +420,7 @@ void mainApp::_InitializeApp()
   m_pFrame->Startup(bHasArgs);
   const wxChar *psFormat(wxS("argv[%d] = %ls"));
   LogMessageV(psFormat,0,argv[0].wc_str());
+  LogMessageV(wxT("cwd: %ls"), wxGetCwd().wc_str());
   for(int i = 1; i < argc; ++i)
   {
     LogMessageV(psFormat,i,argv[i].wc_str());

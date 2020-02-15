@@ -3500,7 +3500,14 @@ void CFrameAnalysis::OnArchiveCreate(wxCommandEvent &)
 }
 void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
 {
-  ExportCMF();
+  if ((m_pOARfile != NULL) && !m_pOARfile->IsNoLoadder())
+  {
+    ExportCMF();
+  }
+  else
+  {
+    mainApp::ShowAlert(wxS("This data cannot be used to create a CMF file"), this);
+  }
 }
 
 IMPLEMENT_PERSISTENT_SIZE(CFrameAnalysis)

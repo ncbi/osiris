@@ -67,6 +67,8 @@
 #include "CParmOsiris.h"
 #include "CPanelHistoryMenu.h"
 #include "CNotebookEditSample.h"
+#include "CPrintOutPlot.h"
+#include "CGridAnalysisDisplay.h"
 
 #if FP_SCROLL_EVENT
 DEFINE_EVENT_TYPE(wxEVT_SCROLL_PLOT)
@@ -2061,7 +2063,7 @@ wxBitmap *CFramePlot::CreateBitmap(
   // initialize bitmap to white -- probably not necessary
 
   dc.SetBackground(*wxWHITE_BRUSH);
-  dc.SetBackgroundMode(wxSOLID);
+  dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
   dc.Clear();
 
   // set up title
@@ -2203,6 +2205,27 @@ void CFramePlot::OnActivateCB(wxActivateEvent &e)
     }
   }
 }
+wxString CFramePlot::GetPrintTitle()
+{
+  wxString sFileName = m_pData->GetFilename();
+  COARsample *pSample =
+    (m_pOARfile != NULL && (CGridAnalysisDisplay::GetDisplayType() > 0))
+    ? m_pOARfile->GetSampleByName(sFileName)
+    : NULL;
+  return (pSample == NULL) ? sFileName  : pSample->GetSampleName();
+}
+void CFramePlot::OnPrint(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPrint(this);
+}
+void CFramePlot::OnPrintPreview(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPrintPreview(this);
+}
+void CFramePlot::OnPageSetup(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPageSetup(this);
+}
 
 IMPLEMENT_PERSISTENT_SIZE(CFramePlot)
 IMPLEMENT_ABSTRACT_CLASS(CFramePlot,CMDIFrame)
@@ -2219,6 +2242,9 @@ EVT_BUTTON(IDgraphTable, CFramePlot::OnTableButton)
 EVT_BUTTON(IDmenuDisplaySample, CFramePlot::OnTableButton)
 EVT_SASH_DRAGGED(wxID_ANY,CFramePlot::OnSashDragged)
 EVT_SIZE(CFramePlot::OnSize)
+EVT_MENU(wxID_PRINT, CFramePlot::OnPrint)
+EVT_MENU(IDprintPreview, CFramePlot::OnPrintPreview)
+EVT_MENU(IDpageSetup, CFramePlot::OnPageSetup)
 EVT_COMMAND(IDframePlot,wxEVT_SIZE_DELAY_PLOT,CFramePlot::OnSizeAction)
 #if FP_SCROLL_EVENT
 EVT_COMMAND(IDframePlot,wxEVT_SCROLL_PLOT,CFramePlot::OnScrollPlot)

@@ -150,6 +150,18 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_anPlotDisplayPeak);
   CP(m_nPlotMaxLadderLabels);
 
+  //  plot printout -- margins are in millimeters
+
+  CP(m_nPrintPlotMarginTop);
+  CP(m_nPrintPlotMarginBottom);
+  CP(m_nPrintPlotMarginLeft);
+  CP(m_nPrintPlotMarginRight);
+  CP(m_nPrintPlotPaperType);
+  CP(m_nPrintPlotPaperWidth);
+  CP(m_nPrintPlotPaperHeight);
+  CP(m_bPrintPlotLandscape);
+  CP(m_nPrintPreviewZoom);
+
   //  XSLT saved parameter info
 
   CP(m_sLastXSLInputFileDir);
@@ -257,6 +269,18 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPlotShowArtifact)
   CP(m_anPlotDisplayPeak)
   CP(m_nPlotMaxLadderLabels)
+
+  //  plot printout -- margins are in millimeters
+
+  CP(m_nPrintPlotMarginTop)
+  CP(m_nPrintPlotMarginBottom)
+  CP(m_nPrintPlotMarginLeft)
+  CP(m_nPrintPlotMarginRight)
+  CP(m_nPrintPlotPaperType)
+  CP(m_nPrintPlotPaperWidth)
+  CP(m_nPrintPlotPaperHeight)
+  CP(m_bPrintPlotLandscape)
+  CP(m_nPrintPreviewZoom)
 
   //  XSLT saved parameter info
 
@@ -374,6 +398,18 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   Register("PlotShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPlotShowArtifact);
   RegisterUintVector("PlotDisplayPeak", &m_anPlotDisplayPeak);
   Register("MaxLadderLabels",&m_ioInt_1,(void *) &m_nPlotMaxLadderLabels);
+
+  //  plot printout -- margins are in millimeters
+
+  RegisterUint("PrintPlotMarginTop", &m_nPrintPlotMarginTop);
+  RegisterUint("PrintPlotMarginBottom", &m_nPrintPlotMarginBottom);
+  RegisterUint("PrintPlotMarginLeft", &m_nPrintPlotMarginLeft);
+  RegisterUint("PrintPlotMarginRight", &m_nPrintPlotMarginRight);
+  RegisterInt("PrintPlotPaperType", &m_nPrintPlotPaperType);
+  RegisterInt("PrintPlotPaperWidth", &m_nPrintPlotPaperWidth);
+  RegisterInt("PrintPlotPaperHeight", &m_nPrintPlotPaperHeight);
+  RegisterBool("PrintPlotLandscape", &m_bPrintPlotLandscape);
+  RegisterInt("PrintPreviewZoom", &m_nPrintPreviewZoom);
 
   //  XSLT saved parameter info
 
@@ -496,6 +532,18 @@ void CParmOsiris::SetDefaults()
   m_anPlotDisplayPeak.clear();
   m_anPlotDisplayPeak.push_back(1);
   m_nPlotMaxLadderLabels = -1;
+
+  //  plot printout -- margins are in millimeters
+
+  m_nPrintPlotMarginTop = 25;
+  m_nPrintPlotMarginBottom = 25;
+  m_nPrintPlotMarginLeft = 25;
+  m_nPrintPlotMarginRight = 25;
+  m_nPrintPlotPaperType = -1;
+  m_nPrintPlotPaperWidth = -1;
+  m_nPrintPlotPaperHeight = -1;
+  m_bPrintPlotLandscape = false;
+  m_nPrintPreviewZoom = -1;
 
   //  XSLT saved parameter info
 

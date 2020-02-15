@@ -67,7 +67,7 @@
   <xsl:param name="p65IncludeLadder" select="0"/>
   <xsl:param name="p70IncludeDisabled" select="0"/>
 
-  <xsl:param name="pTest" select="0"/>
+  <xsl:variable name="pTest" select="0"/>
   <xsl:template name="OsirisExport">
       <export>
       <name>Spreadsheet</name>

@@ -146,6 +146,18 @@ my $VARLIST =
   ["m_anPlotDisplayPeak", "vector<unsigned int>","1"],
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
 
+  ["plot printout -- margins are in millimeters"],
+
+  ["m_nPrintPlotMarginTop", "unsigned int", "25"],
+  ["m_nPrintPlotMarginBottom", "unsigned int", "25"],
+  ["m_nPrintPlotMarginLeft", "unsigned int", "25"],
+  ["m_nPrintPlotMarginRight", "unsigned int", "25"],
+  ["m_nPrintPlotPaperType", "int", "-1"],
+  ["m_nPrintPlotPaperWidth", "int", "-1"],
+  ["m_nPrintPlotPaperHeight", "int", "-1"],
+  ["m_bPrintPlotLandscape", "bool"],
+  ["m_nPrintPreviewZoom", "int", "-1"],
+
   ["XSLT saved parameter info"],
 
   ["m_sLastXSLInputFileDir","wxString"],
@@ -275,6 +287,7 @@ sub GenerateRegister
   "bool true" => "RegisterBoolTrue",
   "bool" => "RegisterBool",
   "int" => "RegisterInt",
+  "unsigned int" => "RegisterUint",
   "double" => "RegisterDouble",
   "wxString" => "RegisterWxString",
   "vector<int>" => "RegisterIntVector",
