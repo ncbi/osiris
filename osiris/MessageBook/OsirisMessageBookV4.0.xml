@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.46</VersionNumber>
-	<BuildTime>12/13/2019 03:51 PM</BuildTime>
+	<VersionNumber>7.47</VersionNumber>
+	<BuildTime>02/14/2020 06:36 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1402,9 +1402,9 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>LOCUS CONTAINS TOO FEW PEAKS</Text>
-			<TextForData> with </TextForData>
-			<SeparatorText> peaks out of </SeparatorText>
+			<Text>INSUFFICIENTLY MANY PEAKS WITHIN EXPECTED PARAMETERS IN LOCUS, </Text>
+			<TextForData>EXPECTING </TextForData>
+			<ClosingText> PEAKS</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
