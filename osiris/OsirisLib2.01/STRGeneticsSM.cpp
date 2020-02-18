@@ -142,6 +142,7 @@ Boolean STRBaseLocus :: ExtractGridSignalsSM (RGDList& channelSignalList, const 
 
 		Msg << "Locus named " << LocusName << " could not find the required number of unanalyzed peaks in range\n";
 		locus->SetMessageValue (locusHasTooFewPeaks, true);
+		locus->AppendDataForSmartMessage (locusHasTooFewPeaks, mLocusSize);
 		return FALSE;
 	}
 

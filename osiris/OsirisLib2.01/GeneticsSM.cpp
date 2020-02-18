@@ -725,11 +725,12 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 	if ((Size > 0) && (FinalSignalList.Entries () < Size)) {
 
 		int nCurves = FinalSignalList.Entries ();
-		eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+		eString << Size << " peaks required for Locus..." << "\n";
 		eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
 		ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
 
 		SetMessageValue (locusTooFewPeaks, true);
+		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 		status = -1;
 	}
 
@@ -844,7 +845,7 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 						SetMessageValue (locusTooFewPeaks, true);
 						//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 	//					info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-						AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+						//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 						AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 						overFlow.Clear ();
@@ -977,7 +978,7 @@ int Locus :: AnalyzeGridLocusSM (RGDList& artifactList, RGDList& originalList, R
 		SetMessageValue (locusTooFewPeaks, true);
 		//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 		//info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-		AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+		//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 		while (nextSignal = (DataSignal*) CurveIterator ())
@@ -1179,11 +1180,12 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 	if ((Size > 0) && (FinalSignalList.Entries () < Size)) {
 
 		int nCurves = FinalSignalList.Entries ();
-		eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+		eString << Size << " peaks required for Locus..." << "\n";
 		eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
 		ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
 
 		SetMessageValue (locusTooFewPeaks, true);
+		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 		status = -1;
 	}
 
@@ -1298,7 +1300,7 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 						SetMessageValue (locusTooFewPeaks, true);
 						//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 	//					info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-						AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+						//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 						AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 						overFlow.Clear ();
@@ -1494,7 +1496,7 @@ int Locus :: AnalyzeGridLocusAndApplyThresholdsSM (RGDList& artifactList, RGDLis
 		SetMessageValue (locusTooFewPeaks, true);
 		//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 		//info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-		AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+		//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 		while (nextSignal = (DataSignal*) CurveIterator ())
@@ -1701,11 +1703,12 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 	if ((Size > 0) && (FinalSignalList.Entries () < Size)) {
 
 		int nCurves = FinalSignalList.Entries ();
-		eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+		eString <<  Size << " peaks required for Locus..." << "\n";
 		eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
 		ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
 
 		SetMessageValue (locusTooFewPeaks, true);
+		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 		status = -1;
 	}
 
@@ -1820,7 +1823,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 						SetMessageValue (locusTooFewPeaks, true);
 						//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 	//					info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-						AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+						//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 						AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 						overFlow.Clear ();
@@ -2022,7 +2025,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapSM (RGDList& artifactList, RGDLis
 		SetMessageValue (locusTooFewPeaks, true);
 		//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 		//info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-		AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+		//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 		while (nextSignal = (DataSignal*) CurveIterator ())
@@ -2197,11 +2200,12 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 	if (maxSignal == NULL) {
 
 		int nCurves = 0;
-		eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+		eString << Size << " peaks required for Locus..." << "\n";
 		eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
 		ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
 
 		SetMessageValue (locusTooFewPeaks, true);
+		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 		status = -1;
 	}
 
@@ -2245,11 +2249,12 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 	if ((Size > 0) && (FinalSignalList.Entries () < Size)) {
 
 		int nCurves = FinalSignalList.Entries ();
-		eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+		eString << Size << " peaks required for Locus..." << "\n";
 		eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
 		ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
 
 		SetMessageValue (locusTooFewPeaks, true);
+		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 		status = -1;
 	}
 
@@ -2420,11 +2425,12 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 				if (candidateList.size () == 0) {
 
 					int nCurves = FinalSignalList.Entries ();
-					eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+					eString << Size << " peaks required for Locus..." << "\n";
 					eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
 					ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
 
 					SetMessageValue (locusTooFewPeaks, true);
+					AppendDataForSmartMessage (locusTooFewPeaks, Size);
 					status = -1;
 				}
 
@@ -2575,11 +2581,12 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 						// Call it quits?
 
 						int nCurves = FinalSignalList.Entries ();
-						eString << nCurves << " available out of " << Size << " required for Locus..." << "\n";
+						eString << Size << " peaks required for Locus..." << "\n";
 						eString << "LOCUS NAMED " << mLink->GetLocusName () << " DOES NOT MEET EXPECTATIONS\n";
 						ExcelText.Write (OutputLevelManager::LocusGridQuality, eString);
 
 						SetMessageValue (locusTooFewPeaks, true);
+						AppendDataForSmartMessage (locusTooFewPeaks, Size);
 						status = -1;
 					}
 				}
@@ -2688,7 +2695,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 						SetMessageValue (locusTooFewPeaks, true);
 						//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 	//					info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-						AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+						//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 						AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 						overFlow.Clear ();
@@ -2889,7 +2896,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 		SetMessageValue (locusTooFewPeaks, true);
 		//info = " with ";  //*******************************************************************************add as begin text to SmartMessage
 		//info << FinalSignalList.Entries () << " peaks out of " << Size;  //**********************************add as separator to SmartMessage
-		AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
+		//AppendDataForSmartMessage (locusTooFewPeaks, FinalSignalList.Entries ());
 		AppendDataForSmartMessage (locusTooFewPeaks, Size);
 
 		while (nextSignal = (DataSignal*) CurveIterator ())
