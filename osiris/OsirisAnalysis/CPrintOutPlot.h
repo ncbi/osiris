@@ -96,7 +96,9 @@ public:
   }
   static void DoPrintPreview(CFramePlot *pPlot);
   static void DoPageSetup(CFramePlot *pPlot);
+#ifdef __WXMAC__
   static void DoPageMargins(CFramePlot *pPlot);
+#endif
   static void DoPrint(CFramePlot *pPlot);
 private:
   CFramePlot *m_pFramePlot;
