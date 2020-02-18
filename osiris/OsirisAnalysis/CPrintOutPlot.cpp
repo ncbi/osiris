@@ -300,9 +300,12 @@ bool CPrintOutPlot::OnPrintPage(int page)
       SCALE_X,
       SCALE_Y
     } nScale = SCALE_NONE;
+    wxDC *pdc = GetDC();
+    wxSize szPPI = pdc->GetPPI();
     int nPPIx, nPPIy, nMinPPI, nUsePPI, nX, nY;
     bool bFit = true;
-    GetPPIPrinter(&nPPIx, &nPPIy);
+    nPPIx = szPPI.GetWidth();
+    nPPIy = szPPI.GetHeight();
     if (nPPIx == nPPIy)
     {
       nMinPPI = nPPIx;
@@ -320,15 +323,15 @@ bool CPrintOutPlot::OnPrintPage(int page)
       dScalePixel = double(nPPIy) / double(nPPIx);
     }
     wxRect rectFit = GetLogicalPageMarginsRect(*GetPageSetupData());
-    if (MAX_PPI < 20)
+    if (MAX_PPI < 1)
     {
       // this is print preview, get PPI for screen
       int nx, ny;
       GetPPIScreen(&nx, &ny);
       MAX_PPI = (nx < ny) ? nx : ny;
-      if (MAX_PPI < 72)
+      if (MAX_PPI < 36)
       {
-        MAX_PPI = 72;
+        MAX_PPI = 36;
       }
     }
 
@@ -364,8 +367,8 @@ bool CPrintOutPlot::OnPrintPage(int page)
       FitThisSizeToPageMargins(wxSize(nX, nY), *GetPageSetupData());
     }
 
-    std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(nX, nY, nUsePPI, m_pFramePlot->GetPrintTitle()));
-    wxDC *pdc = GetDC();
+    std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(
+        nX, nY, nUsePPI, m_pFramePlot->GetPrintTitle()));
     pdc->DrawBitmap(*px, wxPoint(0,0));
   }
   else
