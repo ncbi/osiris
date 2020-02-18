@@ -344,6 +344,15 @@ bool CPrintOutPlot::OnPrintPage(int page)
       pdc->GetLogicalScale(&dx, &dy);
       mainApp::LogMessageV(wxT("wxDC logical scale (x, y)=(%g, %g)"),
         dx, dy);
+      pdc->GetUserScale(&dx, &dy);
+      mainApp::LogMessageV(wxT("wxDC user scale (x, y)=(%g, %g)"),
+        dx, dy);
+      pdc->GetSize(&nx, &ny);
+      mainApp::LogMessageV(wxT("wxDC size (x, y)=(%d, %d)"),
+        nx, ny);
+      wxSize sz = pdc->GetPPI();
+      mainApp::LogMessageV(wxT("wxDC PPI (x, y)=(%d, %d)"),
+                           sz.GetWidth(), sz.GetHeight());      
     }
 
     if (nMinPPI > MAX_PPI)
