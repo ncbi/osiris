@@ -39,7 +39,12 @@
 *
 */
 #include <memory>
+
+#ifdef __WXMAC__
+#include <wx/osx/printdlg.h>
+#endif
 #include <wx/printdlg.h>
+
 #include "CPrintOutPlot.h"
 #include "mainApp.h"
 #include "CFramePlot.h"
@@ -64,7 +69,7 @@ public:
   virtual bool Print(bool interactive)
   {
     bool bRtn = wxPrintPreview::Print(interactive);
-    wxChar *psStatus = bRtn ? wxT("OK") : wxT("NOT_OK");
+    const wxChar *psStatus = bRtn ? wxT("OK") : wxT("NOT_OK");
     mainApp::Ping3(PING_EVENT, wxT("Print"), wxT("Status"), psStatus, wxT("FromPreview"), wxT("1"));
     return bRtn;
   }
@@ -197,23 +202,23 @@ void CPrintOutPlot::DoPrintPreview(CFramePlot *pPlot)
       new CPrintOutPlot(pPlot, true),
       new CPrintOutPlot(pPlot),
       &printDialogData);
-  wxChar *psStatus = NULL;
+  wxString sStatus;
   if (!preview->IsOk())
   {
     delete preview;
     mainApp::ShowError(
       wxT("There was a problem with print preview.\nPlease check your printer setup."),
       pPlot);
-    psStatus = wxT("error");
+    sStatus = wxT("ERROR");
   }
   else
   {
-    psStatus = wxT("ok");
+    sStatus = wxT("OK");
     CPrintPlotPreview *frame =
       new CPrintPlotPreview(preview, pPlot, wxT("Print Preview"));
     frame->Show();
   }
-  mainApp::Ping2(PING_EVENT, wxT("PrintPreview"), wxT("Status"), psStatus);
+  mainApp::Ping2(PING_EVENT, wxT("PrintPreview"), wxT("Status"), sStatus);
 }
 void CPrintOutPlot::DoPageSetup(CFramePlot *pPlot)
 {
@@ -230,17 +235,40 @@ void CPrintOutPlot::DoPageSetup(CFramePlot *pPlot)
 
   mainApp::Ping(PING_EVENT, wxT("PrintPageSetup"));
 }
+
+#ifdef __WXMAC__
+void CPrintOutPlot::DoPageMargins(CFramePlot *pPlot)
+{
+  wxPageSetupDialogData *pSetupData = GetPageSetupData();
+  wxPrintData *pPrintData = GetPrintData();
+  *pSetupData = *pPrintData;
+
+  wxMacPageMarginsDialog pageMarginsDialog(pPlot, g_pageSetupData);
+  pageMarginsDialog.ShowModal();
+
+  UpdatePageSetupData(
+    &pageMarginsDialog.GetPageSetupDialogData().GetPrintData(),
+    &pageMarginsDialog.GetPageSetupDialogData()
+  );
+}
+#endif
+
+
 void CPrintOutPlot::DoPrint(CFramePlot *pPlot)
 {
   wxPrintDialogData printDialogData(*GetPrintData());
 
   wxPrinter printer(&printDialogData);
   CPrintOutPlot printout(pPlot);
-  wxString sStatus(wxT("OK"));
+  wxString sStatus;
   if (printer.Print(pPlot, &printout, true /*prompt*/))
   {
     // OK
-    SetPrintData(printer.GetPrintDialogData().GetPrintData());
+    UpdatePageSetupData(
+      &(printer.GetPrintDialogData().GetPrintData()),
+      NULL
+      );
+    sStatus = wxT("OK");
   }
   else if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
   {
@@ -272,9 +300,12 @@ bool CPrintOutPlot::OnPrintPage(int page)
       SCALE_X,
       SCALE_Y
     } nScale = SCALE_NONE;
+    wxDC *pdc = GetDC();
+    wxSize szPPI = pdc->GetPPI();
     int nPPIx, nPPIy, nMinPPI, nUsePPI, nX, nY;
     bool bFit = true;
-    GetPPIPrinter(&nPPIx, &nPPIy);
+    nPPIx = szPPI.GetWidth();
+    nPPIy = szPPI.GetHeight();
     if (nPPIx == nPPIy)
     {
       nMinPPI = nPPIx;
@@ -292,15 +323,15 @@ bool CPrintOutPlot::OnPrintPage(int page)
       dScalePixel = double(nPPIy) / double(nPPIx);
     }
     wxRect rectFit = GetLogicalPageMarginsRect(*GetPageSetupData());
-    if (MAX_PPI < 20)
+    if (MAX_PPI < 1)
     {
       // this is print preview, get PPI for screen
       int nx, ny;
       GetPPIScreen(&nx, &ny);
       MAX_PPI = (nx < ny) ? nx : ny;
-      if (MAX_PPI < 72)
+      if (MAX_PPI < 36)
       {
-        MAX_PPI = 72;
+        MAX_PPI = 36;
       }
     }
 
@@ -336,8 +367,8 @@ bool CPrintOutPlot::OnPrintPage(int page)
       FitThisSizeToPageMargins(wxSize(nX, nY), *GetPageSetupData());
     }
 
-    std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(nX, nY, nUsePPI, m_pFramePlot->GetPrintTitle()));
-    wxDC *pdc = GetDC();
+    std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(
+        nX, nY, nUsePPI, m_pFramePlot->GetPrintTitle()));
     pdc->DrawBitmap(*px, wxPoint(0,0));
   }
   else

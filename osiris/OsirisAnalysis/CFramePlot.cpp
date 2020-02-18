@@ -2222,6 +2222,12 @@ void CFramePlot::OnPrintPreview(wxCommandEvent &)
 {
   CPrintOutPlot::DoPrintPreview(this);
 }
+#ifdef __WXMAC__
+void CFramePlot::OnPageMargins(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPageMargins(this);
+}
+#endif
 void CFramePlot::OnPageSetup(wxCommandEvent &)
 {
   CPrintOutPlot::DoPageSetup(this);
@@ -2244,6 +2250,9 @@ EVT_SASH_DRAGGED(wxID_ANY,CFramePlot::OnSashDragged)
 EVT_SIZE(CFramePlot::OnSize)
 EVT_MENU(wxID_PRINT, CFramePlot::OnPrint)
 EVT_MENU(IDprintPreview, CFramePlot::OnPrintPreview)
+#ifdef __WXMAC__
+EVT_MENU(IDpageMargins, CFramePlot::OnPageMargins)
+#endif
 EVT_MENU(IDpageSetup, CFramePlot::OnPageSetup)
 EVT_COMMAND(IDframePlot,wxEVT_SIZE_DELAY_PLOT,CFramePlot::OnSizeAction)
 #if FP_SCROLL_EVENT

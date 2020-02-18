@@ -43,6 +43,9 @@ public:
            IDExportGraphic,EXPORT_GRAPH,EXPORT_GRAPH_HELP);
     InsertSeparator(m_nInsertPoint);
     Insert(m_nInsertPoint, IDprintPreview, wxT("Print Pre&view..."));
+#ifdef __WXMAC__
+    Insert(m_nInsertPoint, IDpageMargins, wxT("Page Margins..."));
+#endif
     Insert(m_nInsertPoint, IDpageSetup, wxT("Page Set&up..."));
     Insert(m_nInsertPoint, wxID_PRINT);
     InsertSeparator(m_nInsertPoint);

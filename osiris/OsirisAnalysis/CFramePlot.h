@@ -368,6 +368,9 @@ public:
   wxString GetPrintTitle();
   void OnPrint(wxCommandEvent &e);
   void OnPrintPreview(wxCommandEvent &e);
+#ifdef __WXMAC__
+  void OnPageMargins(wxCommandEvent &e);
+#endif
   void OnPageSetup(wxCommandEvent &e);
   void OnClose(wxCloseEvent &e);
   void OnContextMenu(wxContextMenuEvent &e);
