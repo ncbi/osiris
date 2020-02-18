@@ -322,15 +322,15 @@ bool CPrintOutPlot::OnPrintPage(int page)
       dScalePixel = double(nPPIy) / double(nPPIx);
     }
     wxRect rectFit = GetLogicalPageMarginsRect(*GetPageSetupData());
-    if (MAX_PPI < 20)
+    if (MAX_PPI < 1)
     {
       // this is print preview, get PPI for screen
       int nx, ny;
       GetPPIScreen(&nx, &ny);
       MAX_PPI = (nx < ny) ? nx : ny;
-      if (MAX_PPI < 72)
+      if (MAX_PPI < 36)
       {
-        MAX_PPI = 72;
+        MAX_PPI = 36;
       }
       mainApp::LogMessageV(
         wxT("MAX_PPI = %d; printer PPI (x, y)=(%d, %d); screen PPI (x, y)=(%d, %d)"), 
@@ -339,6 +339,11 @@ bool CPrintOutPlot::OnPrintPage(int page)
         wxT("rectFix(x, y, w, h) = (%d, %d, %d, %d)"),
         rectFit.GetX(), rectFit.GetY(),
         rectFit.GetWidth(), rectFit.GetHeight());
+      wxDC *pdc = GetDC();
+      double dx, dy;
+      pdc->GetLogicalScale(&dx, &dy);
+      mainApp::LogMessageV(wxT("wxDC logical scale (x, y)=(%g, %g)"),
+        dx, dy);
     }
 
     if (nMinPPI > MAX_PPI)
