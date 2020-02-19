@@ -196,7 +196,6 @@ void CPrintOutPlot::UpdatePageSetupData(wxPrintData *pPrintData, wxPageSetupDial
 void CPrintOutPlot::DoPrintPreview(CFramePlot *pPlot)
 {
   // using the wxWidgets printing sample program
-  mainApp::LogMessage(wxT("CPrintOutPlot::DoPrintPreview"));
   wxPrintDialogData printDialogData(*GetPrintData());
   wxPrintPreview *preview =
     new CPrintPreview(
@@ -292,7 +291,6 @@ CPrintOutPlot::~CPrintOutPlot() { ; }
 bool CPrintOutPlot::OnPrintPage(int page)
 {
   bool bRtn = true;
-  mainApp::LogMessage(wxT("CPrintOutPlot::OnPrintPage"));
   if (page == 1)
   {
     double dPPIscale = 1.0, dScalePixel = 1.0;
@@ -335,6 +333,7 @@ bool CPrintOutPlot::OnPrintPage(int page)
       {
         MAX_PPI = 36;
       }
+#ifdef TMP_DEBUG
       mainApp::LogMessageV(
         wxT("MAX_PPI = %d; printer PPI (x, y)=(%d, %d); screen PPI (x, y)=(%d, %d)"), 
         MAX_PPI, nPPIx, nPPIy, nx, ny);
@@ -352,9 +351,9 @@ bool CPrintOutPlot::OnPrintPage(int page)
       pdc->GetSize(&nx, &ny);
       mainApp::LogMessageV(wxT("wxDC size (x, y)=(%d, %d)"),
         nx, ny);
-      wxSize sz = pdc->GetPPI();
       mainApp::LogMessageV(wxT("wxDC PPI (x, y)=(%d, %d)"),
-                           sz.GetWidth(), sz.GetHeight());      
+        nPPIx, nPPIy);
+#endif
     }
 
     if (nMinPPI > MAX_PPI)
