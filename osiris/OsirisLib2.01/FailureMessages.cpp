@@ -52,17 +52,9 @@ void MainMessages:: InputFileUnreadable (const RGString& fileName) {
 
 void MainMessages :: InputStringFormatError () {
 
-	RGString* nextMessage;
 	Header ();
 	cout << "Parsing input file terminated prematurely due to format error in string:";
-
-	while (mMessages.Entries () > 0) {
-
-		nextMessage = (RGString*)mMessages.GetFirst ();
-		cout << "\n" << XML (*nextMessage);
-		delete nextMessage;
-	}
-
+	OutputAllMessages ();	
 	Tail ();
 }
 
@@ -77,17 +69,9 @@ void MainMessages :: PrematureFileEnd () {
 
 void MainMessages::IncompleteSetOfInputs () {
 
-	RGString* nextMessage;
 	Header ();
 	cout << "Base input file:  incomplete set of inputs or could not open Lab Settings.";
-
-	while (mMessages.Entries () > 0) {
-
-		nextMessage = (RGString*)mMessages.GetFirst ();
-		cout << "\n" << XML (*nextMessage);
-		delete nextMessage;
-	}
-
+	OutputAllMessages ();
 	Tail ();
 }
 
@@ -98,6 +82,7 @@ void MainMessages::CouldNotOpenFile (const RGString& fileType) {
 
 	Header ();
 	cout << "Could not open " << XML (fileType) << " file.";
+	OutputAllMessages ();
 	Tail ();
 }
 
@@ -124,17 +109,9 @@ void MainMessages::OutputFileCouldNotBeCreated (const RGString& fullPathName) {
 // Analysis failure
 void MainMessages::CouldNotInitialize () {
 
-	RGString* nextMessage;
 	Header ();
 	cout << "Could not initialize:";
-
-	while (mMessages.Entries () > 0) {
-
-		nextMessage = (RGString*)mMessages.GetFirst ();
-		cout << "\n" << XML (*nextMessage);
-		delete nextMessage;
-	}
-
+	OutputAllMessages ();	
 	Tail ();
 }
 
@@ -142,17 +119,9 @@ void MainMessages::CouldNotInitialize () {
 
 void MainMessages::LadderBasedAnalysisFailed () {
 
-	RGString* nextMessage;
 	Header ();
 	cout << "Ladder-based Analysis Failed:";
-
-	while (mMessages.Entries () > 0) {
-
-		nextMessage = (RGString*)mMessages.GetFirst ();
-		cout << "\n" << XML (*nextMessage);
-		delete nextMessage;
-	}
-
+	OutputAllMessages ();
 	Tail ();
 }
 
@@ -160,17 +129,9 @@ void MainMessages::LadderBasedAnalysisFailed () {
 
 void MainMessages::FragmentAnalysisFailed () {
 
-	RGString* nextMessage;
 	Header ();
 	cout << "Fragment Analysis Failed:";
-
-	while (mMessages.Entries () > 0) {
-
-		nextMessage = (RGString*)mMessages.GetFirst ();
-		cout << "\n" << XML (*nextMessage);
-		delete nextMessage;
-	}
-
+	OutputAllMessages ();
 	Tail ();
 }
 
@@ -209,5 +170,18 @@ RGString MainMessages::XML (const RGString& input) {
 
 	RGString pResult;
 	return xmlwriter::EscAscii (input, &pResult);
+}
+
+
+void MainMessages::OutputAllMessages () {
+
+	RGString* nextMessage;
+
+	while (mMessages.Entries () > 0) {
+
+		nextMessage = (RGString*)mMessages.GetFirst ();
+		cout << "\n" << XML (*nextMessage);
+		delete nextMessage;
+	}
 }
 

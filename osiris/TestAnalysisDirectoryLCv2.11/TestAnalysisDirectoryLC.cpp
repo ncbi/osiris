@@ -269,6 +269,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (minLaneStandardRFU < minPeak)
 		minPeak = minLaneStandardRFU;
 
+	STRLCAnalysis::mFailureMessage->DeleteAllMessages ();
+
 	// This all assumes that reading the lab settings file below does not change the minRFU values...which was true as of 07/29/2009!!
 
 	DataSignal::SetMinimumHeight (minPeak);
@@ -285,12 +287,16 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!stdSettingsFile.isValid ()) {
 
 		cout << "Could not open standard settings file " << stdSettingsFileName << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage (stdSettingsFileName);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Standard Settings");
 		return -17;
 	}
 
 	if (!labSettingsFile.isValid ()) {
 
 		cout << "Could not open laboratory settings file " << labSettingsFileName << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage (labSettingsFileName);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Lab Settings");
 		return -17;
 	}
 
@@ -304,6 +310,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!pServer->isValid ()) {
 
 		cout << "Could not interpret standard input settings file " << (char*)stdSettingsFileName.GetData () << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->FileInvalid ("Standard Settings");
 		return -100;
 	}
 
@@ -315,6 +322,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!pServer->AddGenotypeCollection (labXML, true)) {
 
 		cout << "Could not interpret laboratory input settings file " << (char*)labSettingsFileName.GetData () << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->FileInvalid ("Lab Settings");
 		return -100;
 	}
 

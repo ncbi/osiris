@@ -75,6 +75,7 @@ protected:
 	void Header ();
 	void Tail ();
 	RGString XML (const RGString& input);
+	void OutputAllMessages ();
 };
 
 

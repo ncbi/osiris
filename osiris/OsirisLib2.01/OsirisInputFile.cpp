@@ -638,8 +638,7 @@ int OsirisInputFile :: AssembleInputs () {
 
 	if (mSampleDetectionThreshold < 0.0) {
 
-		msg = "Sample Detection Threshold is unspecified.  Using Min Sample RFU...";
-		STRLCAnalysis::mFailureMessage->AddMessage (msg);
+		cout << "Sample Detection Threshold is unspecified.  Using Min Sample RFU..." << endl;
 		mSampleDetectionThreshold = mMinSampleRFU;
 	}
 
