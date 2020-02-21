@@ -34,6 +34,7 @@
 
 #include "OsirisInputFile.h"
 #include "rgtokenizer.h"
+#include "STRLCAnalysis.h"
 #include <iostream>
 
 using namespace std;
@@ -95,7 +96,8 @@ int OsirisInputFile :: ReadAllInputs (const RGString& inputFileName) {
 
 		if (!mInputFile->isValid ()) {
 
-			cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
+			//cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
+			STRLCAnalysis::mFailureMessage->InputFileUnreadable (inputFileName);
 			delete mInputFile;
 			mInputFile = NULL;
 			return -1;
@@ -140,6 +142,7 @@ int OsirisInputFile :: ReadAllInputs () {
 		else {
 
 			cout << "Parsing input file terminated prematurely..." << endl;
+			STRLCAnalysis::mFailureMessage->InputStringFormatError ();
 			returnStatus = -1;
 			break;
 		}
@@ -164,6 +167,7 @@ int OsirisInputFile :: ReadLine () {
 	bool leftOfEquals = true;
 	RGString* nextLine;
 	RGString thisLine;
+	RGString msg;
 
 	if (mDebug && (mInputFile != NULL)) {
 
@@ -195,13 +199,15 @@ int OsirisInputFile :: ReadLine () {
 
 		if (!temp.FindNextSubstring (0, "=", equalsPosition)) {
 
-			cout << "Found no equal sign in line:  " << temp.GetData () << endl;
+			msg = "Found no equal sign in line:  " + temp;
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			return -1;
 		}
 
 		if ((equalsPosition == 0) || (equalsPosition == temp.Length () - 2)) {
 
-			cout << "Found equal sign too close to end in line:  " << temp.GetData () << endl;
+			msg = "Found equal sign too close to end in line:  " + temp;
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			return -1;
 		}
 
@@ -221,7 +227,8 @@ int OsirisInputFile :: ReadLine () {
 
 		if (mStringRight.Length () == 0) {
 
-			cout << "Found no semi-colon in line:  " << temp.GetData () << endl;
+			msg = "Found no semi-colon in line:  " + temp;
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			return -1;
 		}
 
@@ -286,7 +293,8 @@ int OsirisInputFile :: ReadLine () {
 
 	if (leftOfEquals) {
 
-		cout << "Found no equal sign in line:  " << thisLine.GetData () << endl;
+		msg = "Found no equal sign in line:  " + thisLine;
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		return -1;
 	}
 
@@ -524,8 +532,12 @@ int OsirisInputFile :: AssignString () {
 	if (status == 0)
 		mOutputString += mStringLeft + " = " + mStringRight + "\n";
 
-	else
-		cout << "Problem with assign string:  " << mStringLeft.GetData () << " = " << mStringRight.GetData () << endl;
+	else {
+
+		RGString msg = "Problem with assign string:  " + mStringLeft + " = " + mStringRight;
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
+		STRLCAnalysis::mFailureMessage->InputStringFormatError ();
+	}
 
 	return status;
 }
@@ -545,76 +557,89 @@ int OsirisInputFile :: AssembleInputs () {
 	int status = 0;
 	RGString labSettings1;
 	RGString labSettings2;
+	RGString msg;
 	
 	if (mInputDirectory.Length () == 0) {
 
-		cout << "Input directory is unspecified." << endl;
+		msg = "Input directory is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mLadderDirectory.Length () == 0) {
 
-		cout << "Ladder information directory is unspecified." << endl;
+		msg = "Ladder information directory is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mReportDirectory.Length () == 0) {
 
-		cout << "Report directory is unspecified." << endl;
+		msg = "Report directory is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMarkerSetName.Length () == 0) {
 
-		cout << "Marker set name is unspecified." << endl;
+		msg = "Marker set name is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mLaneStandardName.Length () == 0) {
 
-		cout << "Lane standard name is unspecified." << endl;
+		msg =  "Lane standard name is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mFinalMessageBookName.Length () == 0) {
 
-		cout << "Message Book file is unspecified." << endl;
+		msg = "Message Book file is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mFinalLabSettingsName.Length () == 0) {
 
-		cout << "Lab Settings file is unspecified." << endl;
+		msg = "Lab Settings file is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mFinalStdSettingsName.Length () == 0) {
 
-		cout << "Standard Settings file is unspecified." << endl;
+		msg = "Standard Settings file is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMinSampleRFU == 0.0) {
 
-		cout << "Min sample RFU is unspecified." << endl;
+		msg = "Min sample RFU is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMinLadderRFU == 0.0) {
 
-		cout << "Min ladder RFU is unspecified." << endl;
+		msg = "Min ladder RFU is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMinLaneStandardRFU == 0.0) {
 
-		cout << "Min lane standard RFU is unspecified." << endl;
+		msg = "Min lane standard RFU is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mSampleDetectionThreshold < 0.0) {
 
-		cout << "Sample Detection Threshold is unspecified.  Using Min Sample RFU..." << endl;
+		msg = "Sample Detection Threshold is unspecified.  Using Min Sample RFU...";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		mSampleDetectionThreshold = mMinSampleRFU;
 	}
 
@@ -634,13 +659,15 @@ int OsirisInputFile :: AssembleInputs () {
 
 		if (mFullPathToMessageBook.Length () == 0) {
 
-			cout << "Message book path unspecified." << endl;
+			msg = "Message book path unspecified.";
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			status = -1;
 		}
 
 		if (mFullPathToLabAndStdSettings.Length () == 0) {
 
-			cout << "Lab settings path and standard settings path unspecified." << endl;
+			msg = "Lab settings path and standard settings path unspecified.";
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			status = -1;
 		}
 
@@ -659,7 +686,8 @@ int OsirisInputFile :: AssembleInputs () {
 
 				if (fp == NULL) {
 
-					cout << "Cannot locate appropriate lab settings file, either " << labSettings1.GetData () << " or " << labSettings2.GetData () << endl;
+					msg << "Cannot locate appropriate lab settings file: neither " << labSettings1.GetData () << " nor " << labSettings2.GetData ();
+					STRLCAnalysis::mFailureMessage->AddMessage (msg);
 					status = -1;
 				}
 

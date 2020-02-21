@@ -147,7 +147,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (inputStatus != 0) {
 
-		cout << "File input failed.  Terminating..." << endl;
+		//cout << "File input failed.  Terminating..." << endl;
+		
 		return -1;
 	}
 
@@ -155,7 +156,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (inputStatus != 0) {
 
-		cout << "File input incomplete.  Terminating..." << endl;
+		//cout << "File input incomplete.  Terminating..." << endl;
+		STRLCAnalysis::mFailureMessage->IncompleteSetOfInputs ();
 		return -1;
 	}
 
