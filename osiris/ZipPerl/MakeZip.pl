@@ -82,20 +82,17 @@ sub COPYFILES
   my $src = shift;
   my $dest = shift;
   my $destTest = shift;
-  my $destXSL = '';
   if($destTest)
   {
-    $destXSL = "${destTest}/OsirisXSL";
     &MKDIR($destTest);
-    &MKDIR($destXSL);
   }
   else
   {
     $destTest = $dest;
-    $destXSL = "${dest}/Config"
   }
-
+  my $destXSL = "${dest}/ExportFiles";
   &MKDIR("${dest}");
+  &MKDIR($destXSL)
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");
@@ -108,7 +105,8 @@ sub COPYFILES
     CORDIS_PLUS_HID
     GF
     GFHID
-    GFHID_Mixture
+    GlobalFilerMixNoStutter
+    GlobalFilerMixStutter
     GP10
     ID
     IDNO250
@@ -124,6 +122,10 @@ sub COPYFILES
     NFX1
     NGM
     NGMSElect
+    LANESTANDARDONLY2
+    LANESTANDARDONLY3
+    LANESTANDARDONLY4
+    LANESTANDARDONLY5
     POWERPLEXS5
     PP12
     PP16
@@ -180,6 +182,12 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisAnalysis/tab.xsl ${destXSL}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/extractSamples.xsl ${destXSL}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/extractArtifacts.xsl ${destXSL}");
+
+  &SYSTEM("${CP} ${src}/OsirisXML/SampleLadderData.xsl ${destXSL}");
+  &SYSTEM("${CP} ${src}/OsirisXML/SpreadSheetTemplate.xsl ${destXSL}");
+  &SYSTEM("${CP} ${src}/OsirisXML/SpreadSheetUtils.xsl ${destXSL}");
+  &SYSTEM("${CP} ${src}/OsirisXML/util.xsl ${destXSL}");
+
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");
@@ -201,8 +209,11 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.3.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.1.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.2.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.1.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.2.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.pdf ${dest}");
 }
 sub GetVCDir
 {

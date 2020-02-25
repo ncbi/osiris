@@ -85,6 +85,7 @@ double Locus::GridPullupFractionalFilter = -1.0;
 bool Locus::ExpectRFUUnitsForHomozygoteBound = true;
 double Locus::MaxResidualForAlleleCalls = -1.0;
 double Locus::AlleleOverloadThreshold = -1.0;
+double Locus::ImbalanceThresholdForNoisyPeak = 0.5;
 bool* Locus::InitialMatrix = NULL;
 bool Locus::NoYForAMEL = false;
 bool Locus::DisableStutterFilter = false;
@@ -325,7 +326,7 @@ void Allele :: Write (RGFile& textOutput, const RGString& indent) {
 Locus :: Locus () : SmartMessagingObject (), mLink (NULL), Linked (FALSE), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (0.0), MinimumSampleTime (0.0), mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0),
 mTimeForOneIDUnitRight (0.0), mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0),
-mMaxPeak (0.0), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (0.0) {
+mMaxPeak (0.0), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (0.0), mFirstILSBP (0.0) {
 
 	mLink = new BaseLocus ();
 	AlleleIterator = new RGDListIterator (AlleleList);
@@ -337,7 +338,7 @@ Locus :: Locus (BaseLocus* link, const RGString& xmlString) : SmartMessagingObje
 mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), MaximumSampleTime (0.0), MinimumSampleTime (0.0), 
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
 mNumberOfCraters (0), mIsOK (false), mIsAMEL (false), mMinExtendedLocusTime (-1.0), mMaxExtendedLocusTime (-1.0), mMaxPeak (0.0), mLargestPeak (NULL), 
-mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (0.0) {
+mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (0.0), mFirstILSBP (0.0) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 	Valid = BuildAlleleLists (xmlString);
@@ -353,7 +354,7 @@ Locus :: Locus (const Locus& locus) : SmartMessagingObject ((SmartMessagingObjec
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), 
 mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), mIsAMEL (locus.mIsAMEL), mMinExtendedLocusTime (locus.mMinExtendedLocusTime), 
-mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (locus.mTotalAlleleArea) {
+mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (locus.mTotalAlleleArea), mFirstILSBP (0.0) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 
@@ -389,7 +390,7 @@ mMaxExtendedLocusTime (locus.mMaxExtendedLocusTime), mMaxPeak (locus.mMaxPeak), 
 Locus :: Locus (const Locus& locus, CoordinateTransform* trans) : SmartMessagingObject ((SmartMessagingObject&)locus), mSampleAnalysisMap (NULL), mSampleTimeFromBPMap (NULL), 
 MaximumSampleTime (locus.MaximumSampleTime), MinimumSampleTime (locus.MinimumSampleTime),
 mMinTimeForSample (0.0), mMaxTimeForSample (0.0), mTimeForOneIDUnitLeft (0.0), mTimeForOneIDUnitRight (0.0), mNumberOfCraters (locus.mNumberOfCraters), mIsOK (locus.mIsOK), 
-mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (locus.mTotalAlleleArea) {
+mIsAMEL (locus.mIsAMEL), mMaxPeak (locus.mMaxPeak), mLargestPeak (NULL), mFirstTime (0.0), mLastTime (0.0), mGridLocus (NULL), mTotalAlleleArea (locus.mTotalAlleleArea), mFirstILSBP (0.0) {
 
 	AlleleIterator = new RGDListIterator (AlleleList);
 
@@ -1918,7 +1919,7 @@ Boolean Locus :: ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLo
 }
 
 
-Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
+Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList, RGDList& artifactList) {
 
 	double ilsBP;
 	DataSignal* nextSignal;
@@ -1949,6 +1950,7 @@ Boolean Locus :: ExtractSampleSignalsLF (RGDList& channelSignalList) {
 		nextSignal->SetMessageValue (peakInCoreLadderLocus, true);
 
 		it.RemoveCurrentItem ();
+		artifactList.RemoveReference (nextSignal);
 		haveFoundSignals = true;
 	}
 
@@ -5132,8 +5134,9 @@ void Locus :: ReportXMLSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput
 
 		totalCorrection = nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-		if (totalCorrection != 0.0)
+//		if (totalCorrection != 0.0)
 			text << "\t\t\t\t\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+			text << "\t\t\t\t\t<PullupCorrectedHeight>" << (int)floor (nextSignal->Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>\n";
 
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";

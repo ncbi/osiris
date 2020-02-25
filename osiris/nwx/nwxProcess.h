@@ -101,6 +101,11 @@ public:
   size_t ProcessIO(size_t nLimit = 0x7fffffff);
   bool IsErrorOpened() const;
 private:
+  void _ProcessLine(const wxString &s, bool bErr)
+  {
+    const char *p = s.utf8_str();
+    ProcessLine(p, strlen(p), bErr);
+  }
   bool _runInit();
   bool _runSetup(int nExeFlags);
   size_t ProcessIO(wxInputStream *pIn, wxString &sLine, bool bErrStream);

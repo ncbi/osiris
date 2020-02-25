@@ -49,7 +49,7 @@
 #include <set>
 #include <iostream>
 
-using namespace::std;
+using namespace std;
 
 // Smart Message related*********************************************************************************************************************************
 
@@ -85,7 +85,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelSM () {
 	double calculatedNormalWidth;
 	double mTimeTolerance = 0.95;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
-	double mWidthToleranceForSpike = 1.0;  // Width must be less than this width to qualify as a spike
+	double mWidthToleranceForSpike = 2.1;  // Width must be less than this width to qualify as a spike
 	double nSigmaForCraters = 2.0;		//Test...01/08/2014
 	RGString info;
 	DataSignal* testSignal;
@@ -721,7 +721,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 	double calculatedNormalWidth;
 	double mTimeTolerance = 0.0375;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
-	double mWidthToleranceForSpike = 1.0;  // Width must be less than this width to qualify as a spike
+	double mWidthToleranceForSpike = 2.1;  // Width must be less than this width to qualify as a spike
 	double nSigmaForCraters = 2.0;
 	RGString info;
 	DataSignal* testSignal;
@@ -1304,7 +1304,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelWithNegativePeaksSM () {
 		}
 
 		minPeak = maxPeak = primeSignal->Peak ();
-		minWidth = maxWidth = primeSignal->GetStandardDeviation ();
+		minWidth = maxWidth = primeSignal->GetWidth ();
 		double peak;
 		probableIt.Reset ();
 
@@ -1642,7 +1642,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	DataSignal* primeSignal;
 	double mTimeTolerance = 0.0375;
 	double mWidthMatchFraction = 0.1;  // Double it to get width fractional tolerance, currently 20%
-	double mWidthToleranceForSpike = 1.1;  // Width must be less than this width to qualify as a spike
+	double mWidthToleranceForSpike = 2.1;  // Width must be less than this width to qualify as a spike
 	double nSigmaForCraters = 2.0;  //2.0;
 	RGString info;
 	DataSignal* testSignal;
@@ -1892,6 +1892,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					if ((prevSignal->Peak () < 0.7 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.7 * prevSignal->Peak ())) {
 						
 						if (widthPrev || widthNext)
+							break;
+					}
+
+					if ((prevSignal->Peak () < 0.5 * nextSignal->Peak ()) || (nextSignal->Peak () < 0.5 * prevSignal->Peak ())) {
+
 							break;
 					}
 
@@ -2435,13 +2440,25 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			probableIt.Reset ();
 			primeSignal->SetMessageValue (spike, true);
 
-			while (testSignal = (DataSignal*)probableIt ()) {
+			DataSignal** pullupArray = CollectAndSortPullupPeaksSM (primeSignal, probablePullupPeaks);
+			int kk;
 
-				testSignal->SetMessageValue (spike, true);
-				testSignal->SetCouldBePullup (true);
+			for (kk=1; kk<=mNumberOfChannels; kk++) {
+
+				testSignal = pullupArray [kk];
+
+				if (testSignal != NULL) {
+
+					if (testSignal->GetWidth () < mWidthToleranceForSpike) {
+
+						testSignal->SetMessageValue (spike, true);
+						testSignal->SetCouldBePullup (true);
+					}
+				}
 			}
 
 			probablePullupPeaks.Clear ();
+			delete[] pullupArray;
 		}
 
 		else {
@@ -2463,7 +2480,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			iChannel = new STRInterchannelLinkage (mNumberOfChannels);
 			mInterchannelLinkageList.push_back (iChannel);
 			iChannel->SetPrimaryDataSignal (primeSignal);
-			
+
 			DataSignal** pullupArray = CollectAndSortPullupPeaksSM (primeSignal, probablePullupPeaks);
 			primeSignal->AddProbablePullups (probablePullupPeaks);
 			int kk;
@@ -2708,6 +2725,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	InterchannelLinkage* secondaryChannel2;
 	list<DataSignal*> finalCraterList;
 
+	bool nextSignalIsPullup;
+	bool nextSignalIsOffScale;
+	double heightImbalanceThreshold = Locus::GetImbalanceThresholdForNoisyPeak ();
+
 	for (i=1; i<= mNumberOfChannels; i++) {
 
 		nextChannel = mDataChannels [i];
@@ -2731,7 +2752,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				sidePeaksHaveSamePrimaryChannel = testSignal->HasPullupFromSameChannelAsSM (testSignal2, mNumberOfChannels);
 			}
 
-			if ((nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel)) {
+			nextSignalIsPullup = nextSignal->GetMessageValue (pullup);
+			nextSignalIsOffScale = nextSignal->GetMessageValue (laserOffScale);
+
+			if ((nextSignal->HasCrossChannelSignalLink () || nextSignalIsPullup) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && (nextSignalIsPullup || nextSignalIsOffScale)) {
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
@@ -2834,13 +2858,16 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				secondaryChannel2 = testSignal2->GetInterchannelLink ();
 				OverallList.RemoveReference (nextSignal);
 				iChannel = nextSignal->GetInterchannelLink ();
+				double heightLeft = testSignal->Peak ();
+				double heightRight = testSignal2->Peak ();
 
 				bool sidePeaksTooClose = (fabs (testSignal2->GetApproximateBioID () - testSignal->GetApproximateBioID ()) < dualPeakBPTolerance);
 				bool atLeastOneSidePeakIsPullup = (testSignal->GetMessageValue (pullup) || testSignal2->GetMessageValue (pullup));
 				bool sidePeaksAreDualSignals = (testSignal->GetMessageValue (dualPeak) && testSignal2->GetMessageValue (dualPeak));
 				bool sidePeakIsPrimary = ((testSignal->GetInterchannelLink () != NULL) || (testSignal2->GetInterchannelLink () != NULL));
+				bool notTooImbalanced = (heightRight > heightImbalanceThreshold * heightLeft) && (heightLeft > heightImbalanceThreshold * heightRight);
 
-				if (testForPeaksTooCloseTogether && (sidePeaksTooClose || sidePeaksAreDualSignals) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary) {
+				if (testForPeaksTooCloseTogether && (sidePeaksTooClose || sidePeaksAreDualSignals) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary && notTooImbalanced) {
 
 					// Either only one side peak is pullup or both are and from same channel, plus, peaks are close and are dual signals, and test is enabled, and neither side peak is primary pullup...whew!
 					// We wouldn't be here if nextSignal were either a primary peak or a pullup, so, don't have to worry about cross channel effects on nextSignal.
@@ -3011,7 +3038,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		finalCraterList.pop_front ();
 		postCraterList.push_back (nextSignal);
 
-		nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
+		/*nextSignal2 = nextSignal->GetPreviousLinkedSignal ();
 
 		if ((nextSignal2 != NULL) && (nextSignal2->GetMessageValue (pullup))) {
 
@@ -3109,7 +3136,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 					channelRemoval.insert (iChannel);
 				}
 			}
-		}
+		}*/
 	}
 
 	list<InterchannelLinkage*>::iterator tempIt;
@@ -3401,6 +3428,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	while (nextSignal = (DataSignal*) it ()) {
 
 		testMean = nextSignal->GetMean ();
+
+		if (nextSignal->GetWidth () > mWidthToleranceForSpike)
+			nextSignal->SetMessageValue (spike, false);
 
 		nextSignal->SetPullupMessageDataSM (mNumberOfChannels);
 		nextSignal->AssociateDataWithPullMessageSM (mNumberOfChannels);
@@ -4371,8 +4401,11 @@ int STRLadderCoreBioComponent :: AnalyzeCrossChannelSM () {
 
 					if (testSignal != NULL) {
 
-						testSignal->SetMessageValue (spike, true);
-						testSignal->AddNoticeToList (1, "", "Suspected spike");
+						if (testSignal->GetWidth () < mWidthToleranceForSpike) {
+
+							testSignal->SetMessageValue (spike, true);
+							testSignal->AddNoticeToList (1, "", "Suspected spike");
+						}
 					}
 				}
 			}

@@ -587,8 +587,9 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 
 		totalCorrection = nextSignal->GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-		if (totalCorrection != 0.0)
+//		if (totalCorrection != 0.0)
 			text << "\t\t\t\t\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+			text << "\t\t\t\t\t<PullupCorrectedHeight>" << (int)floor (nextSignal->Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>\n";
 
 		text << "\t\t\t\t\t<meanbps>" << nextSignal->GetApproximateBioID () << "</meanbps>\n";
 		text << "\t\t\t\t\t<PeakArea>" << nextSignal->TheoreticalArea () << "</PeakArea>\n";
@@ -2718,6 +2719,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 
 					nextSignal = (DataSignal*) FinalSignalList.First ();
 					mFirstTime = nextSignal->GetMean ();
+					mFirstILSBP = nextSignal->GetApproximateBioID ();
 					nextSignal = (DataSignal*) FinalSignalList.Last ();
 					mLastTime = nextSignal->GetMean ();
 
@@ -2907,6 +2909,7 @@ int Locus :: AnalyzeGridLocusAndAllowForOverlapUsingBPsSM (RGDList& artifactList
 
 	nextSignal = (DataSignal*) FinalSignalList.First ();
 	mFirstTime = nextSignal->GetMean ();
+	mFirstILSBP = nextSignal->GetApproximateBioID ();
 	nextSignal = (DataSignal*) FinalSignalList.Last ();
 	mLastTime = nextSignal->GetMean ();
 
@@ -3128,6 +3131,8 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 	smSignalOL offLadder;
 	smIsAcceptedOLAllele acceptedOL;
 
+	double minBioID = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
+
 	while (nextSignal = (DataSignal*) it ()) {
 
 		prevSignal = nextSignal->GetPreviousLinkedSignal ();
@@ -3144,6 +3149,12 @@ int Locus :: CallAllelesSM (bool isNegCntl, GenotypesForAMarkerSet* pGenotypes, 
 	}
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+
+		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID)) {
+
+			tempList.RemoveReference (nextSignal);
+			continue;
+		}
 
 		location = TestSignalPositionRelativeToLocus (nextSignal);
 
@@ -5379,6 +5390,8 @@ int Locus :: FinalTestForPeakSizeAndNumberSM (double averageHeight, Boolean isNe
 
 			it.RemoveCurrentItem ();
 			LocusSignalList.RemoveReference (nextSignal);	//!!!!!!!!!
+			nextSignal->SetDoNotCall (true);
+			nextSignal->SetDontLook (true);
 			continue;
 		}
 
@@ -7011,13 +7024,14 @@ int Locus :: TestForDuplicateAllelesSM (RGDList& artifacts, RGDList& signalList,
 	smCorePeakSharesAlleleBin corePeakSharesAlleleBin;
 	smHeightBelowFractionalFilter fractionalFilter;
 	smHeightBelowPullupFractionalFilter pullupFractionalFilter;
-	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+	//smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
 	smCraterSidePeak craterSidePeak;
 	smSigmoidalSidePeak sigmoidalSidePeak;
 	smPartialPullupBelowMinRFU pullupBelowMinRFU;
 	smRedundantPeak redundantPeak;
 
-	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	//double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	double heightFraction = Locus::GetImbalanceThresholdForNoisyPeak ();
 
 	bool prevBelowMinRFU;
 	bool nextBelowMinRFU;
@@ -7364,9 +7378,10 @@ int Locus :: TestForNearlyDuplicateAllelesSMLF (RGDList& artifacts, RGDList& sig
 	smCorePeakSharesAlleleBin corePeakSharesAlleleBin;
 	smHeightBelowFractionalFilter fractionalFilter;
 	smHeightBelowPullupFractionalFilter pullupFractionalFilter;
-	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+	//smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
 
-	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	//double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	double heightFraction = Locus::GetImbalanceThresholdForNoisyPeak ();
 
 	bool prevBelowMinRFU;
 	bool nextBelowMinRFU;

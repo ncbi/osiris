@@ -150,7 +150,6 @@ public:
   void OnPinger(wxCommandEvent &);
   void OnExportSettings(wxCommandEvent &);
   void OnEditGridColours(wxCommandEvent &);
-  void OnTimer(wxTimerEvent &);
   void OnAbout(wxCommandEvent &);
   void OnPrivacy(wxCommandEvent &);
   void OnCheckForUpdates(wxCommandEvent &);
@@ -309,6 +308,10 @@ public:
   static const wxPoint &mainFramePos();
 #endif
 
+#if DRAG_DROP_FILES
+  void CheckDragDropQueue();
+#endif
+
 private:
 #ifdef __WXDEBUG__
   void _LogActiveFrame();
@@ -345,9 +348,6 @@ private:
     COARfile *pFile = NULL);
   bool OpenBatchFile(const wxString &sFileName);
   void OpenFileDialog(OSIRIS_FILE_TYPE);
-#if DRAG_DROP_FILES
-  void _CheckDragDropQueue();
-#endif
 
   wxSize GetChildSize(int nPct = 90);
 #if mainFrameIsWindow
@@ -378,14 +378,6 @@ private:
     }
     return m_pAllLoci;
   }
-  void SetupTimer()
-  {
-    if(m_pTimer == NULL)
-    {
-      m_pTimer = new wxTimer(this,(int)IDtimer);
-      m_pTimer->Start(250,false);
-    }
-  }
   CFrameAnalysis *GetAnalysisFrame();
   wxXslObject XXX;
     // presence of this object 
@@ -397,7 +389,6 @@ private:
 //  CDialogVolumes *m_pVolumes;
 //  CDialogAnalysis *m_pDlgAnalysis;
   nwxDialogLog *m_pDialogErrorLog;
-  wxTimer *m_pTimer;
   CDialogEditGridColours *m_pColourEditDialog;
 #if HAS_CUSTOM_COLORS
   wxColourDialog *m_pDialogColour;
@@ -406,7 +397,6 @@ private:
   CFileDropTarget *m_pDropTarget;
 #endif
   CAllLoci *m_pAllLoci;
-  int m_nTimerCount;
   CMDIFrame *m_pLastActive; // should be set in SetActiveFrame() only so a breakpoint can be set
 #if DRAG_DROP_FILES
   list<wxString> m_lsDragDropQueue;

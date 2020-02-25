@@ -1596,6 +1596,48 @@ int smRedundantPeak::sMessageIndex = 0;
 int smRedundantPeak::sMessageScope = 0;
 
 
+RGString smFsaChannelForOsirisChannel1::sName = "smFsaChannelForOsirisChannel1";
+int smFsaChannelForOsirisChannel1::sSubject = smFsaChannelForOsirisChannel1::LoadType ();
+int smFsaChannelForOsirisChannel1::sMessageIndex = 0;
+int smFsaChannelForOsirisChannel1::sMessageScope = 0;
+
+
+RGString smFsaChannelForOsirisChannel2::sName = "smFsaChannelForOsirisChannel2";
+int smFsaChannelForOsirisChannel2::sSubject = smFsaChannelForOsirisChannel2::LoadType ();
+int smFsaChannelForOsirisChannel2::sMessageIndex = 0;
+int smFsaChannelForOsirisChannel2::sMessageScope = 0;
+
+
+RGString smFsaChannelForOsirisChannel3::sName = "smFsaChannelForOsirisChannel3";
+int smFsaChannelForOsirisChannel3::sSubject = smFsaChannelForOsirisChannel3::LoadType ();
+int smFsaChannelForOsirisChannel3::sMessageIndex = 0;
+int smFsaChannelForOsirisChannel3::sMessageScope = 0;
+
+
+RGString smFsaChannelForOsirisChannel4::sName = "smFsaChannelForOsirisChannel4";
+int smFsaChannelForOsirisChannel4::sSubject = smFsaChannelForOsirisChannel4::LoadType ();
+int smFsaChannelForOsirisChannel4::sMessageIndex = 0;
+int smFsaChannelForOsirisChannel4::sMessageScope = 0;
+
+
+RGString smFsaChannelForOsirisChannel5::sName = "smFsaChannelForOsirisChannel5";
+int smFsaChannelForOsirisChannel5::sSubject = smFsaChannelForOsirisChannel5::LoadType ();
+int smFsaChannelForOsirisChannel5::sMessageIndex = 0;
+int smFsaChannelForOsirisChannel5::sMessageScope = 0;
+
+
+RGString smChannelRemappingForLadderFreeOverrideDefault::sName = "smChannelRemappingForLadderFreeOverrideDefault";
+int smChannelRemappingForLadderFreeOverrideDefault::sSubject = smChannelRemappingForLadderFreeOverrideDefault::LoadType ();
+int smChannelRemappingForLadderFreeOverrideDefault::sMessageIndex = 0;
+int smChannelRemappingForLadderFreeOverrideDefault::sMessageScope = 0;
+
+
+RGString smMakeMixturesDefaultSampleTypePreset::sName = "smMakeMixturesDefaultSampleTypePreset";
+int smMakeMixturesDefaultSampleTypePreset::sSubject = smMakeMixturesDefaultSampleTypePreset::LoadType ();
+int smMakeMixturesDefaultSampleTypePreset::sMessageIndex = 0;
+int smMakeMixturesDefaultSampleTypePreset::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1861,6 +1903,13 @@ PERSISTENT_DEFINITION (smTailHeightFittingThresholdFactor, 2666, "smTailHeightFi
 PERSISTENT_DEFINITION (smTailSlopeFittingThresholdFactor, 2667, "smTailSlopeFittingThresholdFactor")
 PERSISTENT_DEFINITION (smSelectUserSpecifiedMinRFUForPrimaryPeakPreset, 2668, "smSelectUserSpecifiedMinRFUForPrimaryPeakPreset")
 PERSISTENT_DEFINITION (smRedundantPeak, 2669, "smRedundantPeak")
+PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel1, 2670, "smFsaChannelForOsirisChannel1")
+PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel2, 2671, "smFsaChannelForOsirisChannel2")
+PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel3, 2672, "smFsaChannelForOsirisChannel3")
+PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel4, 2673, "smFsaChannelForOsirisChannel4")
+PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel5, 2674, "smFsaChannelForOsirisChannel5")
+PERSISTENT_DEFINITION (smChannelRemappingForLadderFreeOverrideDefault, 2675, "smChannelRemappingForLadderFreeOverrideDefault")
+PERSISTENT_DEFINITION (smMakeMixturesDefaultSampleTypePreset, 2676, "smMakeMixturesDefaultSampleTypePreset")
 
 
 
@@ -17757,6 +17806,426 @@ int smRedundantPeak :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smRedundantPeak* noticeType = new smRedundantPeak;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smFsaChannelForOsirisChannel1 :: smFsaChannelForOsirisChannel1 () : SmartNotice () {
+
+}
+
+
+smFsaChannelForOsirisChannel1 :: smFsaChannelForOsirisChannel1 (const smFsaChannelForOsirisChannel1& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smFsaChannelForOsirisChannel1 :: ~smFsaChannelForOsirisChannel1 () {
+
+}
+
+
+int smFsaChannelForOsirisChannel1 :: GetSubject () const {
+
+	return smFsaChannelForOsirisChannel1::sSubject;
+}
+
+
+void smFsaChannelForOsirisChannel1 :: SetIndexAndScope (int index, int scope) const {
+
+	smFsaChannelForOsirisChannel1::sMessageIndex = index;
+	smFsaChannelForOsirisChannel1::sMessageScope = scope;
+}
+
+
+int smFsaChannelForOsirisChannel1 :: GetMessageIndex () const {
+
+	return smFsaChannelForOsirisChannel1 :: sMessageIndex;
+}
+
+
+int smFsaChannelForOsirisChannel1 :: GetScope () const {
+
+	return smFsaChannelForOsirisChannel1 :: sMessageScope;
+}
+
+
+RGString smFsaChannelForOsirisChannel1 :: GetName () const {
+
+	return smFsaChannelForOsirisChannel1 :: sName;
+}
+
+
+
+int smFsaChannelForOsirisChannel1 :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smFsaChannelForOsirisChannel1* noticeType = new smFsaChannelForOsirisChannel1;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smFsaChannelForOsirisChannel2 :: smFsaChannelForOsirisChannel2 () : SmartNotice () {
+
+}
+
+
+smFsaChannelForOsirisChannel2 :: smFsaChannelForOsirisChannel2 (const smFsaChannelForOsirisChannel2& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smFsaChannelForOsirisChannel2 :: ~smFsaChannelForOsirisChannel2 () {
+
+}
+
+
+int smFsaChannelForOsirisChannel2 :: GetSubject () const {
+
+	return smFsaChannelForOsirisChannel2::sSubject;
+}
+
+
+void smFsaChannelForOsirisChannel2 :: SetIndexAndScope (int index, int scope) const {
+
+	smFsaChannelForOsirisChannel2::sMessageIndex = index;
+	smFsaChannelForOsirisChannel2::sMessageScope = scope;
+}
+
+
+int smFsaChannelForOsirisChannel2 :: GetMessageIndex () const {
+
+	return smFsaChannelForOsirisChannel2 :: sMessageIndex;
+}
+
+
+int smFsaChannelForOsirisChannel2 :: GetScope () const {
+
+	return smFsaChannelForOsirisChannel2 :: sMessageScope;
+}
+
+
+RGString smFsaChannelForOsirisChannel2 :: GetName () const {
+
+	return smFsaChannelForOsirisChannel2 :: sName;
+}
+
+
+
+int smFsaChannelForOsirisChannel2 :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smFsaChannelForOsirisChannel2* noticeType = new smFsaChannelForOsirisChannel2;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smFsaChannelForOsirisChannel3 :: smFsaChannelForOsirisChannel3 () : SmartNotice () {
+
+}
+
+
+smFsaChannelForOsirisChannel3 :: smFsaChannelForOsirisChannel3 (const smFsaChannelForOsirisChannel3& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smFsaChannelForOsirisChannel3 :: ~smFsaChannelForOsirisChannel3 () {
+
+}
+
+
+int smFsaChannelForOsirisChannel3 :: GetSubject () const {
+
+	return smFsaChannelForOsirisChannel3::sSubject;
+}
+
+
+void smFsaChannelForOsirisChannel3 :: SetIndexAndScope (int index, int scope) const {
+
+	smFsaChannelForOsirisChannel3::sMessageIndex = index;
+	smFsaChannelForOsirisChannel3::sMessageScope = scope;
+}
+
+
+int smFsaChannelForOsirisChannel3 :: GetMessageIndex () const {
+
+	return smFsaChannelForOsirisChannel3 :: sMessageIndex;
+}
+
+
+int smFsaChannelForOsirisChannel3 :: GetScope () const {
+
+	return smFsaChannelForOsirisChannel3 :: sMessageScope;
+}
+
+
+RGString smFsaChannelForOsirisChannel3 :: GetName () const {
+
+	return smFsaChannelForOsirisChannel3 :: sName;
+}
+
+
+
+int smFsaChannelForOsirisChannel3 :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smFsaChannelForOsirisChannel3* noticeType = new smFsaChannelForOsirisChannel3;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smFsaChannelForOsirisChannel4 :: smFsaChannelForOsirisChannel4 () : SmartNotice () {
+
+}
+
+
+smFsaChannelForOsirisChannel4 :: smFsaChannelForOsirisChannel4 (const smFsaChannelForOsirisChannel4& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smFsaChannelForOsirisChannel4 :: ~smFsaChannelForOsirisChannel4 () {
+
+}
+
+
+int smFsaChannelForOsirisChannel4 :: GetSubject () const {
+
+	return smFsaChannelForOsirisChannel4::sSubject;
+}
+
+
+void smFsaChannelForOsirisChannel4 :: SetIndexAndScope (int index, int scope) const {
+
+	smFsaChannelForOsirisChannel4::sMessageIndex = index;
+	smFsaChannelForOsirisChannel4::sMessageScope = scope;
+}
+
+
+int smFsaChannelForOsirisChannel4 :: GetMessageIndex () const {
+
+	return smFsaChannelForOsirisChannel4 :: sMessageIndex;
+}
+
+
+int smFsaChannelForOsirisChannel4 :: GetScope () const {
+
+	return smFsaChannelForOsirisChannel4 :: sMessageScope;
+}
+
+
+RGString smFsaChannelForOsirisChannel4 :: GetName () const {
+
+	return smFsaChannelForOsirisChannel4 :: sName;
+}
+
+
+
+int smFsaChannelForOsirisChannel4 :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smFsaChannelForOsirisChannel4* noticeType = new smFsaChannelForOsirisChannel4;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smFsaChannelForOsirisChannel5 :: smFsaChannelForOsirisChannel5 () : SmartNotice () {
+
+}
+
+
+smFsaChannelForOsirisChannel5 :: smFsaChannelForOsirisChannel5 (const smFsaChannelForOsirisChannel5& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smFsaChannelForOsirisChannel5 :: ~smFsaChannelForOsirisChannel5 () {
+
+}
+
+
+int smFsaChannelForOsirisChannel5 :: GetSubject () const {
+
+	return smFsaChannelForOsirisChannel5::sSubject;
+}
+
+
+void smFsaChannelForOsirisChannel5 :: SetIndexAndScope (int index, int scope) const {
+
+	smFsaChannelForOsirisChannel5::sMessageIndex = index;
+	smFsaChannelForOsirisChannel5::sMessageScope = scope;
+}
+
+
+int smFsaChannelForOsirisChannel5 :: GetMessageIndex () const {
+
+	return smFsaChannelForOsirisChannel5 :: sMessageIndex;
+}
+
+
+int smFsaChannelForOsirisChannel5 :: GetScope () const {
+
+	return smFsaChannelForOsirisChannel5 :: sMessageScope;
+}
+
+
+RGString smFsaChannelForOsirisChannel5 :: GetName () const {
+
+	return smFsaChannelForOsirisChannel5 :: sName;
+}
+
+
+
+int smFsaChannelForOsirisChannel5 :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smFsaChannelForOsirisChannel5* noticeType = new smFsaChannelForOsirisChannel5;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smChannelRemappingForLadderFreeOverrideDefault :: smChannelRemappingForLadderFreeOverrideDefault () : SmartNotice () {
+
+}
+
+
+smChannelRemappingForLadderFreeOverrideDefault :: smChannelRemappingForLadderFreeOverrideDefault (const smChannelRemappingForLadderFreeOverrideDefault& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smChannelRemappingForLadderFreeOverrideDefault :: ~smChannelRemappingForLadderFreeOverrideDefault () {
+
+}
+
+
+int smChannelRemappingForLadderFreeOverrideDefault :: GetSubject () const {
+
+	return smChannelRemappingForLadderFreeOverrideDefault::sSubject;
+}
+
+
+void smChannelRemappingForLadderFreeOverrideDefault :: SetIndexAndScope (int index, int scope) const {
+
+	smChannelRemappingForLadderFreeOverrideDefault::sMessageIndex = index;
+	smChannelRemappingForLadderFreeOverrideDefault::sMessageScope = scope;
+}
+
+
+int smChannelRemappingForLadderFreeOverrideDefault :: GetMessageIndex () const {
+
+	return smChannelRemappingForLadderFreeOverrideDefault :: sMessageIndex;
+}
+
+
+int smChannelRemappingForLadderFreeOverrideDefault :: GetScope () const {
+
+	return smChannelRemappingForLadderFreeOverrideDefault :: sMessageScope;
+}
+
+
+RGString smChannelRemappingForLadderFreeOverrideDefault :: GetName () const {
+
+	return smChannelRemappingForLadderFreeOverrideDefault :: sName;
+}
+
+
+
+int smChannelRemappingForLadderFreeOverrideDefault :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smChannelRemappingForLadderFreeOverrideDefault* noticeType = new smChannelRemappingForLadderFreeOverrideDefault;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smMakeMixturesDefaultSampleTypePreset :: smMakeMixturesDefaultSampleTypePreset () : SmartNotice () {
+
+}
+
+
+smMakeMixturesDefaultSampleTypePreset :: smMakeMixturesDefaultSampleTypePreset (const smMakeMixturesDefaultSampleTypePreset& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smMakeMixturesDefaultSampleTypePreset :: ~smMakeMixturesDefaultSampleTypePreset () {
+
+}
+
+
+int smMakeMixturesDefaultSampleTypePreset :: GetSubject () const {
+
+	return smMakeMixturesDefaultSampleTypePreset::sSubject;
+}
+
+
+void smMakeMixturesDefaultSampleTypePreset :: SetIndexAndScope (int index, int scope) const {
+
+	smMakeMixturesDefaultSampleTypePreset::sMessageIndex = index;
+	smMakeMixturesDefaultSampleTypePreset::sMessageScope = scope;
+}
+
+
+int smMakeMixturesDefaultSampleTypePreset :: GetMessageIndex () const {
+
+	return smMakeMixturesDefaultSampleTypePreset :: sMessageIndex;
+}
+
+
+int smMakeMixturesDefaultSampleTypePreset :: GetScope () const {
+
+	return smMakeMixturesDefaultSampleTypePreset :: sMessageScope;
+}
+
+
+RGString smMakeMixturesDefaultSampleTypePreset :: GetName () const {
+
+	return smMakeMixturesDefaultSampleTypePreset :: sName;
+}
+
+
+
+int smMakeMixturesDefaultSampleTypePreset :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smMakeMixturesDefaultSampleTypePreset* noticeType = new smMakeMixturesDefaultSampleTypePreset;
 	warehouse->AddType (noticeType);
 	return 1;
 }

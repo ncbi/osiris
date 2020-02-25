@@ -105,6 +105,8 @@ wxButton *nwxChoiceButtons::_CreateButton(
 //
 //    nwxChoicebook
 //
+#if 0
+// can't find references so commenting out 2/5/2020
 void nwxChoicebook::SetupButtons(const wxString &sItemName, bool bRename)
 {
   wxSizer *pBookSizer = GetControlSizer();
@@ -116,6 +118,7 @@ void nwxChoicebook::SetupButtons(const wxString &sItemName, bool bRename)
     m_pButtonRename = CreateRenameButton(sItemName,pBookSizer);
   }
 }
+#endif
 bool nwxChoicebook::TransferDataFromWindow()
 {
   size_t n = GetPageCount();

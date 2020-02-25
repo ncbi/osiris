@@ -418,7 +418,6 @@ void CFrameAnalysis::_Build()
   //m_pMenu->SetControlsOnTop(bControlAtTop);
 
 
-  Layout();
   DisplayFile();
   if(bShowPreview)
   {
@@ -443,10 +442,12 @@ void CFrameAnalysis::_Build()
   }
   COsirisIcon x;
   SetIcon(x);
+  RE_RENDER;
   FUNC_EXIT("CFrameAnalysis::_Build()")
 }
 #undef LOCUS_WIDTH
 #undef LOCUS_HEIGHT
+
 
 bool CFrameAnalysis::FileError()
 {
@@ -1066,11 +1067,11 @@ bool CFrameAnalysis::TransferDataToWindow()
   m_pButtonParms->Enable(false);
   _DestroyStatusPanel();
   _DestroyLocusPanel();
-  _LayoutAll();
   if(!bError)
   {
     CheckSelection(true);
   }
+  _LayoutAll();
   return !bError;
 }
 
@@ -3499,7 +3500,14 @@ void CFrameAnalysis::OnArchiveCreate(wxCommandEvent &)
 }
 void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
 {
-  ExportCMF();
+  if ((m_pOARfile != NULL) && !m_pOARfile->IsNoLoadder())
+  {
+    ExportCMF();
+  }
+  else
+  {
+    mainApp::ShowAlert(wxS("This data cannot be used to create a CMF file"), this);
+  }
 }
 
 IMPLEMENT_PERSISTENT_SIZE(CFrameAnalysis)

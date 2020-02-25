@@ -39,16 +39,13 @@
 #include "CVolumes.h"
 #include "CKitList.h"
 #include "nwx/nwxFileUtil.h"
-#ifdef __WXMSW__
-#define strdup _strdup
-#endif
+#include "nwx/nwxWCharBuffer.h"
 
 CProcessAnalysis::CProcessAnalysis(
   CDirEntry *pDirEntry, 
   const CVolume *pVolume,
   wxEvtHandler *parent, int nID) :
     nwxProcess(parent,nID),
-    m_psExe(NULL),
     m_pDirEntry(pDirEntry)
 {
 #define END_LINE sStdin.Append(";\n")
@@ -188,9 +185,8 @@ CProcessAnalysis::CProcessAnalysis(
 #else
   s += "TestAnalysisDirectoryLC";
 #endif
-  m_psExe = strdup(s.utf8_str());
-
-  char *argv[] = { m_psExe, NULL  };
+  nwxWCharBuffer exe(s);
+  wchar_t *argv[] = { exe.Get(), NULL  };
   m_dProgress = 0.0;
   Run(argv);
   mainApp::LogMessage(sStdin);
@@ -198,13 +194,7 @@ CProcessAnalysis::CProcessAnalysis(
 }
 
 CProcessAnalysis::~CProcessAnalysis() 
-{
-  if(m_psExe != NULL)
-  {
-    free((void *)m_psExe);
-    m_psExe = NULL;
-  }
-}
+{}
 
 void CProcessAnalysis::ProcessLine(
   const char *p,size_t nLen, bool)
@@ -221,8 +211,7 @@ void CProcessAnalysis::ProcessLine(
   }
   else
   {
-    wxString s(p,nLen);
-    m_pDirEntry->AppendRunOutput(s);
+    m_pDirEntry->AppendRunOutput(wxString::FromUTF8(p,nLen));
   }
 }
 

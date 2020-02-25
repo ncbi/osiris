@@ -532,6 +532,7 @@ CFramePlot::CFramePlot(
   wxBoxSizer *pSizerAll = new wxBoxSizer(wxVERTICAL);
   pSizerAll->Add(m_pPanel,1,wxEXPAND);
   SetSizer(pSizerAll);
+  RE_RENDER;
 }
 
 
@@ -2045,10 +2046,7 @@ bool CFramePlot::Show(bool show)
 void CFramePlot::OnSize(wxSizeEvent &e)
 {
   _SendSizeAction();
-  if(&e != NULL)
-  {
-    e.Skip(true);
-  }
+  e.Skip(true);
 }
 
 wxBitmap *CFramePlot::CreateBitmap(

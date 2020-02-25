@@ -286,7 +286,7 @@ public:
 	int TestForAcceptedTriAllele (Boolean isNegCntl, Boolean isPosCntl, GenotypesForAMarkerSet* pGenotypes);
 
 	virtual Boolean ExtractSampleSignals (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
-	virtual Boolean ExtractSampleSignalsLF (RGDList& channelSignalList);
+	virtual Boolean ExtractSampleSignalsLF (RGDList& channelSignalList, RGDList& artifactList);
 //	virtual Boolean ExtractExtendedLadderSampleSignals (RGDList& channelSignalList, Locus* gridLocus, CoordinateTransform* timeMap);
 	virtual bool ComputeExtendedLocusTimes (CoreBioComponent* grid, CoordinateTransform* inverseTransform, int channelNumber, CoreBioComponent* associatedGrid);
 
@@ -486,6 +486,8 @@ public:
 	int CorrectGridSignalListSM (RGDList& artifacts);
 	int CleanUpGridSignalListSM (RGDList& artifacts);
 
+	double GetFirstILSBP () { return mFirstILSBP; }
+
 	int TestProximityArtifactsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
 	int TestProximityArtifactsUsingLocusBasePairsSM (CoordinateTransform* timeMap);
 	int TestProximityArtifactsUsingLocusBasePairsSM (RGDList& artifacts, RGDList& type1List, RGDList& type2List);
@@ -566,6 +568,9 @@ public:
 	static void SetSingleSourceSample (bool d) { IsSingleSourceSample = d; }
 	static void SetControlSample (bool d) { IsControlSample = d; }
 
+	static void SetImbalanceThresholdForNoisyPeak (double threshold) { ImbalanceThresholdForNoisyPeak = threshold; }
+	static double GetImbalanceThresholdForNoisyPeak () { return ImbalanceThresholdForNoisyPeak; }
+
 protected:
 	BaseLocus* mLink;
 	RGHashTable AlleleListByName;   // items of type Allele*
@@ -623,6 +628,7 @@ protected:
 	Locus* mGridLocus;
 
 	double mTotalAlleleArea;
+	double mFirstILSBP;
 
 	// Smart Message data************************************************************************************
 	//*******************************************************************************************************
@@ -659,6 +665,7 @@ protected:
 
 	static double MaxResidualForAlleleCalls;
 	static double AlleleOverloadThreshold;
+	static double ImbalanceThresholdForNoisyPeak;
 	static bool* InitialMatrix;
 	static bool NoYForAMEL;
 	static bool DisableStutterFilter;
@@ -873,6 +880,7 @@ public:
 	LaneStandard* GetLaneStandard () { return mLaneStandard; }
 	RGString GetLaneStandardName () const { return mLink->GetLaneStandardName (); }
 	const int* GetChannelMap () const { return mLink->GetChannelMap (); }
+	void ResetChannelMap (const int* newChannelMapping) { mLink->ResetChannelMap (newChannelMapping); }
 
 	RGString GetFileNameSuffix () const { return mLink->GetFileNameSuffix (); }
 	RGString GetGenotypeSuffix () const { return mLink->GetGenotypeSuffix (); }

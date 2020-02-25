@@ -280,12 +280,14 @@ CDialogVolumes::CDialogVolumes(
       m_pButtonAdd = nwxChoiceButtons::CreateAddButton(this,VOLUME_STRING,false,pSizerTop);
       m_pButtonRemove = nwxChoiceButtons::CreateRemoveButton(this,VOLUME_STRING,false,pSizerTop);
       m_pButtonRename = nwxChoiceButtons::CreateRenameButton(this,VOLUME_STRING,false,pSizerTop);
+      m_pButtonFolder = nwxChoiceButtons::CreateFolderButton(this, false, pSizerTop);
     }
     else
     {
       m_pButtonAdd = NULL;
       m_pButtonRemove = NULL;
       m_pButtonRename = NULL;
+      m_pButtonFolder = NULL;
     }
 
     wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
@@ -387,9 +389,9 @@ bool CDialogVolumes::_SetVolume(/*bool bFit*/)
         wxCommandEvent ee(wxEVT_COMMAND_BUTTON_CLICKED,IDlock);
         GetEventHandler()->AddPendingEvent(ee);
       }
-      mainApp::LAYOUT_HACK(this);
     }
   }
+  RE_RENDER;
   return bRtn;
 }
 bool CDialogVolumes::_CurrentVolumeModified()
@@ -631,6 +633,22 @@ void CDialogVolumes::OnRemove(wxCommandEvent &e)
     }    
   }
 }
+void CDialogVolumes::OnShowFolder(wxCommandEvent &)
+{
+  wxFileName fn(m_pVolumeCurrent->GetLabSettingsFileName());
+  if (fn.Exists())
+  {
+    nwxFileUtil::ShowFileFolder(fn.GetPath(), true);
+  }
+  else
+  {
+    wxString s(wxS("Cannot find folder for this selection"));
+    mainApp::ShowAlert(s, this);
+    s.Append("\n");
+    s.Append(fn.GetFullPath());
+    mainApp::LogMessage(s);
+  }
+}
 void CDialogVolumes::OnRename(wxCommandEvent &e)
 {
   bool bButton = (e.GetEventObject() == (wxObject *)m_pButtonRename);
@@ -725,6 +743,7 @@ EVT_BUTTON(wxID_APPLY,CDialogVolumes::OnApply)
 EVT_BUTTON(IDadd,CDialogVolumes::OnAdd)
 EVT_BUTTON(IDremove,CDialogVolumes::OnRemove)
 EVT_BUTTON(IDrename,CDialogVolumes::OnRename)
+EVT_BUTTON(IDfolder, CDialogVolumes::OnShowFolder)
 EVT_CHOICE(IDvolume,CDialogVolumes::OnChangeVolume)
 EVT_GRID_CMD_EDITOR_SHOWN(wxID_ANY, CDialogVolumes::OnGridEditStart) 
 EVT_GRID_CMD_EDITOR_HIDDEN(wxID_ANY, CDialogVolumes::OnGridEditEnd) 

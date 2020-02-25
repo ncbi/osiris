@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.38</VersionNumber>
-	<BuildTime>04/19/2019 04:44 PM</BuildTime>
+	<VersionNumber>7.46</VersionNumber>
+	<BuildTime>12/13/2019 03:51 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -691,7 +691,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT smHeightBelowFractionalFilter</Expression>
 			</ReportCriterion>
 			<Text>Primary Pullup</Text>
 			<TextForData> into channel(s): </TextForData>
@@ -706,7 +706,7 @@
 			<ReportCriterion>
 				<Expression>smViewHighDetailMessages</Expression>
 			</ReportCriterion>
-			<Text>Primary Pullup, Possibly Occluded</Text>
+			<Text>Primary Pullup, Possibly Masked</Text>
 			<TextForData> into channel(s): </TextForData>
 			<SeparatorText>, </SeparatorText>
 			<ReportLevel>20</ReportLevel>
@@ -4825,6 +4825,134 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smSpacerChannelRemappingForLadderFreeBegin</Name>
+			<MessageType>count</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>-1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>     </ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smChannelRemappingForLadderFreeOverrideDefault</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Override Default Channel Map For Fragment Analysis (Ignored for standard analyses with ladders):</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>     </Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel1</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>1</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 1:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 1</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel2</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>2</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 2:</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 2</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel3</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>3</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 3 (if # channels at least 3):</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 3</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel4</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>4</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 4 (if # channels at least 4):</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 4</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFsaChannelForOsirisChannel5</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>5</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 5 (if # channels = 5):</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 5</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerRaisedBaselineBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -6647,18 +6775,34 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smMakeMixturesDefaultSampleTypePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Make Default Sample Type Possible Mixture (checked)(unchecked for Single Source)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Make Default Sample Type Possible Mixture (checked)(unchecked for Single Source)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Disable Low Level Height Filters For Known Mixtures</ThresholdDescriptor>
+				<ThresholdDescriptor>Disable Low Level Height Filters For Possible Mixtures</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Disable Low Level Height Filters For Known Mixtures</Text>
+			<Text>Disable Low Level Height Filters For Possible Mixtures</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -7197,7 +7341,7 @@
 			</ReportCriterion>
 			<Text>Minimum Imbalance Ratio to Create Noisy Peak</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
+			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSpacerRestrictedPriorityOptionsBegin</Name>
@@ -7297,7 +7441,6 @@
 						<Name>smMaxILSBPForExtendedLocus</Name>
 						<Name>smCallStutterPeaksPreset</Name>
 						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
-						<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
 						<Name>smTestPullupCorrectedHeightsPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
@@ -7389,6 +7532,14 @@
 						<Name>smLatitudeForILSFit</Name>
 						<Name>smUseLadderEndPointILSAlgorithmPreset</Name>
 						<Name>smPlusLatitudeForLadderEndPointILSFit</Name>
+						<Name>smChannelRemappingForLadderFreeOverrideDefault</Name>
+						<Name>smFsaChannelForOsirisChannel1</Name>
+						<Name>smFsaChannelForOsirisChannel2</Name>
+						<Name>smFsaChannelForOsirisChannel3</Name>
+						<Name>smFsaChannelForOsirisChannel4</Name>
+						<Name>smFsaChannelForOsirisChannel5</Name>
+						<Name>smMakeMixturesDefaultSampleTypePreset</Name>
+						<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>

@@ -4141,6 +4141,24 @@ double STRLadderChannelData :: GetDetectionThreshold () const {
 }
 
 
+double STRLadderChannelData::GetLeastILSBPForLadderLoci () {
+
+	// Ladder Phase 5
+	// Returns least ILS BP for Ladder Loci in channel
+
+	Locus* nextLocus;
+	double leastBP;
+
+	nextLocus = (Locus*) mLocusList.First ();
+
+	if (nextLocus == NULL)
+		return 0.0;
+
+	leastBP = nextLocus->GetFirstILSBP ();
+	return leastBP;
+}
+
+
 STRSampleChannelData :: STRSampleChannelData () : STRChannelData () {
 
 }

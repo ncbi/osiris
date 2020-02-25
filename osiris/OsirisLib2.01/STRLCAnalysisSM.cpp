@@ -296,6 +296,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	Boolean print = TRUE;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
+	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
+
 	//double yLMS [8] = {579, 117, 103, 323, 276, 750, 689, 2070 };
 	//double xLMS [8] = {8381, 7726, 7866, 8191, 7167, 9522, 9427, 11068.0};
 	//double yLMS [9] = {159, 20, 1, 15, -1, 5, 2, -2, 20 };
@@ -632,6 +635,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	//}
 
 	//CoreBioComponent::SetHeightFile (heightText);
+
+	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+
+	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	Locus::SetImbalanceThresholdForNoisyPeak (heightFraction);
+	cout << "Imbalance threshold for noisy peak = " << Locus::GetImbalanceThresholdForNoisyPeak () << "\n";
 
 	RGString nonLaserOffScalePullupFractionName = FullPathForReports + "/PullupFractions.tab";
 	RGTextOutput* nonLaserOffScalePullupFractions = new RGTextOutput (nonLaserOffScalePullupFractionName, FALSE);
@@ -1020,6 +1029,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	int leastBPForSamples = CoreBioComponent::GetMinBioIDForArtifacts ();
 	int leastBPInt = (int) floor (leastBP);
+	int oldLeastBPForSamples = leastBPForSamples;
+	double minLadderILSBP = 0.0;
+	bool testedLadderMinILSBP = false;
 
 	if ((leastBPForSamples > 0) && (leastBPForSamples > leastBPInt)) {
 
@@ -1290,12 +1302,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				ladderBioComponent->AddILSToHistory ();
 				cout << "Ladder ILS added to history..." << endl;
 			}
+
+			//  Find minILSBP for ladder locus and save
+
+			int temp = ladderBioComponent->GetMinimumILSBPForLoci ();
+
+			if (temp < oldLeastBPForSamples)
+				oldLeastBPForSamples = temp;
 		}
 	}
 
 	cout << "Processed all ladders.  Number of ladders = " << LadderList.Entries () << endl;
 	ChannelData::SetTestForDualSignal (true);
 	ChannelData::SetUseILSLadderEndPointAlgorithm (false);
+	CoreBioComponent::SetMinBioIDForArtifacts (oldLeastBPForSamples);
+	cout << "Minimum ILS BP for reporting alleles and artifacts = " << oldLeastBPForSamples << "\n";
 	RGString SampleName;
 	bool sampleOK;
 	bool populatedBaseLocusList = false;
@@ -1495,7 +1516,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
 
 				bioComponent->SetPossibleMixtureIDTrueSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
@@ -1803,6 +1824,13 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	Boolean print = TRUE;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
+	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
+
+	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
+	Locus::SetImbalanceThresholdForNoisyPeak (heightFraction);
+	cout << "Imbalance threshold for noisy peak = " << Locus::GetImbalanceThresholdForNoisyPeak () << "\n";
 
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
@@ -2396,6 +2424,89 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	CoreBioComponent::SetPullupMatrixFile (pullupMatrixFile);
 #endif
 
+	//  Test for channel remapping and remap if positive
+
+	smChannelRemappingForLadderFreeOverrideDefault remapChannels;
+	smFsaChannelForOsirisChannel1 newChannel1Map;
+	smFsaChannelForOsirisChannel2 newChannel2Map;
+	smFsaChannelForOsirisChannel3 newChannel3Map;
+	smFsaChannelForOsirisChannel4 newChannel4Map;
+	smFsaChannelForOsirisChannel5 newChannel5Map;
+
+	if (GetMessageValue (remapChannels)) {
+
+		int* newMap = new int [expectedNumberOfChannels + 1];
+		newMap [0] = 0;
+		int j;
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			switch (j) {
+
+			case 1:
+				newMap [j] = GetThreshold (newChannel1Map);
+				break;
+
+			case 2:
+				newMap [j] = GetThreshold (newChannel2Map);
+				break;
+
+			case 3:
+				newMap [j] = GetThreshold (newChannel3Map);
+				break;
+
+			case 4:
+				newMap [j] = GetThreshold (newChannel4Map);
+				break;
+
+			case 5:
+				newMap [j] = GetThreshold (newChannel5Map);
+				break;
+
+			default:
+				newMap [0] = 0;
+			}
+
+			if ((j != 0) && ((newMap [j] < 1) || (newMap [j] > 8))) {
+
+				cout << "Remap index for Osiris " << j << "th channel = " << newMap [j] << " is out of range.  Resetting to " << j << ".\n";
+				newMap [j] = j;
+			}
+		}
+
+		const int* currentMap = set->GetChannelMap ();
+		cout << "\n";
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			cout << "Old fsa channel for Osiris channel " << j << " = " << currentMap [j] << "\n";
+		}
+
+		set->ResetChannelMap (newMap);
+		delete[] newMap;
+		currentMap = set->GetChannelMap ();
+		cout << "\n";
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			cout << "New fsa channel for Osiris channel " << j << " = " << currentMap [j] << "\n";
+		}
+	}
+
+	else {
+
+		cout << "\n";
+		const int* currentMap = set->GetChannelMap ();
+		int j;
+
+		for (j=1; j<=expectedNumberOfChannels; j++) {
+
+			cout << "Default fsa channel for Osiris channel " << j << " = " << currentMap [j] << "\n";
+		}
+
+		cout << "\n";
+	}
+
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
@@ -2527,7 +2638,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString)) {
+			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
 
 				bioComponent->SetPossibleMixtureIDTrueSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);

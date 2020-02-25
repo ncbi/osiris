@@ -12,9 +12,9 @@
         </LSBases>
         <ChannelNo>5</ChannelNo>
       </ILS>
-      <FileNameSuffix>PPGenePrint10</FileNameSuffix>
-      <GenotypeSuffix>PPGenePrint10</GenotypeSuffix>
-      <DirectorySearchString>PPGenePrint10</DirectorySearchString>
+      <FileNameSuffix>PPGenePrint24</FileNameSuffix>
+      <GenotypeSuffix>PPGenePrint24</GenotypeSuffix>
+      <DirectorySearchString>PPGenePrint24</DirectorySearchString>
       <FsaChannelMap>
         <Channel>
           <KitChannelNumber>1</KitChannelNumber>
@@ -1153,60 +1153,71 @@
             <Name>3</Name>
             <CurveNo>10</CurveNo>
             <BP>65</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>4</Name>
             <CurveNo>15</CurveNo>
             <BP>69</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>5</Name>
             <CurveNo>20</CurveNo>
             <BP>73</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>6</Name>
             <CurveNo>25</CurveNo>
             <BP>77</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>7</Name>
             <CurveNo>30</CurveNo>
             <BP>81</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>8</Name>
             <CurveNo>35</CurveNo>
             <BP>85</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>9</Name>
             <CurveNo>40</CurveNo>
             <BP>89</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>9.3</Name>
             <CurveNo>45</CurveNo>
             <BP>92</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>10</Name>
             <CurveNo>50</CurveNo>
             <BP>93</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>11</Name>
             <CurveNo>55</CurveNo>
             <BP>97</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>13.3</Name>
             <CurveNo>60</CurveNo>
             <BP>108</BP>
+            <RelativeHeight>H</RelativeHeight>
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+	  <Locus>
         <Name>vWA</Name>
         <Channel>3</Channel>
         <MinBP>126</MinBP>

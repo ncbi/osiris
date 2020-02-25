@@ -3141,6 +3141,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 	RGDList tempList;
 	prevSignal = (DataSignal*)PreliminaryCurveList.GetFirst ();
 	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
+	double maxWidthToBeCalledASpike = 1.1;
 
 	while (nextSignal = (DataSignal*) PreliminaryCurveList.GetFirst ()) {
 
@@ -3188,7 +3189,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetStandardDeviation () < 0.14) {
+		if (nextSignal->GetWidth () < maxWidthToBeCalledASpike) {
 
 			CompleteCurveList.RemoveReference (nextSignal);
 			it.RemoveCurrentItem ();
@@ -4149,7 +4150,7 @@ int STRSampleChannelData :: AssignSampleCharacteristicsToLociSMLF () {
 
 	while (nextLocus = (Locus*) it()) {
 
-		nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList);
+		nextLocus->ExtractSampleSignalsLF (PreliminaryCurveList, ArtifactList);
 	}
 
 	return 0;
@@ -5545,8 +5546,11 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 		}
 	}
 
-	if (minAcceptableFit > minFit)
+	if (minAcceptableFit < minFit)  // This was ">" which may make the min fit too large
 		minFit = minAcceptableFit;
+
+	if (absoluteMinFit < minFit)  // Added 10/25/2019, as was change of inequality above.
+		minFit = absoluteMinFit;
 
 	if (CoreBioComponent::GetGaussianSignature ())
 		signature = new NormalizedGaussian (0.0, ParametricCurve::GetSigmaForSignature ());
@@ -5589,7 +5593,7 @@ int STRSampleChannelData :: FitAllNegativeCharacteristicsSM (RGTextOutput& text,
 		//double mean = nextSignal->GetMean ();
 		lineFit = negativePeaks->TestConstantCharacteristicRetry (constantHeight, leftEndPoint, rightEndPoint);
 
-		if (lineFit > minFitForArtifactTest) {
+		if ((lineFit > minFitForArtifactTest) && (lineFit > fit)) {   // Added 10/25/2019 to be closer to positive peak criterion
 
 			delete nextSignal;
 			continue;

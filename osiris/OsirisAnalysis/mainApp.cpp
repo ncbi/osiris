@@ -40,7 +40,7 @@
 */
 #include "mainApp.h"
 #include "mainFrame.h"
-#include <wx/filefn.h> 
+#include <wx/filefn.h>
 #include <wx/dialog.h>
 #include <wx/bitmap.h>
 #include <wx/splash.h>
@@ -49,6 +49,10 @@
 #include <wx/file.h>
 #include <wx/datetime.h>
 #include <wx/cmdline.h>
+#ifdef __WXMAC__
+#include <wx/stattext.h>
+#include <wx/colour.h>
+#endif
 #include "CDialogAbout.h"
 #include "CParmOsiris.h"
 #include "CImageAbout.h"
@@ -62,6 +66,7 @@
 #include "nwx/nwxXmlCMF.h"
 #include "nwx/nwxUtil.h"
 #include "nwx/nwxPinger.h"
+#include "nwx/nwxTimerReceiver.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
@@ -76,6 +81,9 @@
 
 #ifdef __WXMAC__
 #include "CSitePath.h"
+#endif
+#ifdef _DEBUG
+#include "UnitTest.h"
 #endif
 
 const wxString mainApp::EMPTY_STRING(wxEmptyString);
@@ -154,6 +162,11 @@ void mainApp::_Cleanup()
     {
       delete m_pKitList;
       m_pKitList = NULL;
+    }
+    if(m_pTimer != NULL)
+    {
+      delete m_pTimer;
+      m_pTimer = NULL;
     }
     _cleanupPinger();
   }
@@ -292,12 +305,84 @@ void mainApp::SetupCMFlist()
   nwxXmlCMF::SetCmfList(mainApp::GetCMFlist());
 }
 
+//  class for frame created on mac in order to
+//  show the app correctly on OS X 10.14 and later
+//
+//  on the mac mainApp::OnInit() MUST create a window
+//  and not do much else or the windowing system 
+//  will not work properly in that windows will not
+//  appear and control+TAB will not activate this program
+//
+//  the code in _InitializeApp() was removed
+//  from mainApp::OnInit because of the window
+//  problems.  On the mac it is delayed
+//
+#ifdef __WXMAC__
+
+class CFakeFrame : public wxFrame, public nwxTimerReceiver
+{
+
+public:
+  CFakeFrame() :
+    wxFrame(NULL, wxID_ANY, "",
+            wxDefaultPosition,
+            wxDefaultSize,
+            0),
+    m_nTick(0)
+  {
+    wxStaticText *pText = new wxStaticText(
+      this,wxID_ANY,"Initializing OSIRIS...",
+      wxDefaultPosition, wxDefaultSize,
+      wxALIGN_CENTRE_HORIZONTAL);
+    wxBoxSizer *pSizer = new wxBoxSizer(wxHORIZONTAL);
+    pText->SetBackgroundColour(*wxWHITE);
+    SetBackgroundColour(*wxWHITE);
+    pSizer->Add(pText, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER | wxALL, 12);
+    SetSizer(pSizer);
+    pSizer->Layout();
+    pSizer->Fit(this);
+    Center();
+    
+  }
+  virtual ~CFakeFrame()
+  {}
+  virtual void OnTimer(wxTimerEvent &);
+private:
+  int m_nTick;
+};
+
+
+void CFakeFrame::OnTimer(wxTimerEvent &e)
+{
+  m_nTick++;
+  if(m_nTick == 2)
+  {
+    mainApp::Get()->InitializeApp();
+    Destroy();
+  }
+}
+
+
+#endif
+
 bool mainApp::OnInit()
 {
   if(g_pThis != NULL) return false;
 	if(!wxApp::OnInit()) return false;
+  SetupTimer();
 
   g_pThis = this;
+#ifdef __WXMAC__
+  m_pInvisibleFrame = new CFakeFrame;
+  m_pInvisibleFrame->Show(true);
+#else
+  _InitializeApp();
+#endif
+  return true;
+}
+
+void mainApp::_InitializeApp()
+{
   // Set up splash screen
 #ifndef _DEBUG
   wxBitmap bitmap;
@@ -310,6 +395,7 @@ bool mainApp::OnInit()
     wxYield();
   }
 #endif
+  wxXml2Object::AddReceiver(this);
   GetConfig();
   GetWindowSizes();
   // set up log file if Debug directory exists
@@ -328,7 +414,7 @@ bool mainApp::OnInit()
   CSitePath::GetGlobal()->LogTestString();
 #endif
 #endif
-  
+
   m_pFrame->Startup(bHasArgs);
   const wxChar *psFormat(wxS("argv[%d] = %ls"));
   LogMessageV(psFormat,0,argv[0].wc_str());
@@ -370,7 +456,7 @@ bool mainApp::OnInit()
 
 #ifdef __WXDEBUG__
 
-    
+
   m_pConfig->Log();
 
 #endif
@@ -381,7 +467,7 @@ bool mainApp::OnInit()
   }
 #endif
   _setupPinger();
-  return true;
+
 }
 #ifdef __WXMAC__
 void mainApp::MacOpenFile(const wxString &sFileName)
@@ -510,7 +596,7 @@ void mainApp::ShowAlert(const wxString &sMsg, wxWindow *parent)
     wxMessageDialog dlgmsg(
       parent,sMsg,"Alert",wxOK | wxICON_EXCLAMATION);
     dlgmsg.ShowModal();
-  } 
+  }
 }
 void mainApp::SetBoldFont(wxWindow *pWindow)
 {
@@ -657,6 +743,37 @@ wxWindow *mainApp::GetTopLevelParent(wxWindow *p)
 {
   return nwxUtil::GetTopLevelParent(p);
 }
+void mainApp::ReRender(wxWindow *p)
+{
+  wxClassInfo *pClass(CLASSINFO(wxTopLevelWindow));
+  bool bTop = p->IsKindOf(pClass);
+  wxSizer *pSizer = bTop ? p->GetSizer() : NULL;
+  if (pSizer != NULL)
+  {
+    pSizer->Layout();
+  }
+  else if (bTop)
+  {
+    // loop through each child
+    wxWindowList &lw = p->GetChildren();
+    if (lw.GetCount() == 1)
+    {
+      p->Layout();
+    }
+    for (wxWindowListNode *pw = lw.GetFirst(); pw != NULL; pw = pw->GetNext())
+    {
+      ReRender(pw->GetData());
+    }
+  }
+  else
+  {
+    p->Layout();
+  }
+  p->Refresh();
+  p->Update();
+}
+
+#if 0
 void mainApp::LAYOUT_HACK(wxWindow *p)
 {
   // sometimes a window will 'layout' or cleanup
@@ -680,13 +797,14 @@ void mainApp::LAYOUT_HACK(wxWindow *p)
     }
   }
 }
+#endif
 
 #ifndef __WXMAC__
-void mainApp::OnInitCmdLine (wxCmdLineParser &parser) 
+void mainApp::OnInitCmdLine (wxCmdLineParser &parser)
 {
   static const wxCmdLineEntryDesc cmdLineDesc[] =
-  {    
-    { wxCMD_LINE_PARAM,  NULL, NULL, "input-file", 
+  {
+    { wxCMD_LINE_PARAM,  NULL, NULL, "input-file",
       wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE | wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION,  "verbose" ,"verbose",NULL,
       wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
@@ -697,20 +815,25 @@ void mainApp::OnInitCmdLine (wxCmdLineParser &parser)
 }
 #endif
 
-#ifdef __WXDEBUG__
-const wxString mainApp::g_sACTIVE(wxT("mainApp::OnActivate: active"));
-const wxString mainApp::g_sINACTIVE(wxT("mainApp::OnActivate: inactive"));
-#endif
-
-void mainApp::OnActivate(wxActivateEvent &e)
+void mainApp::OnTimer(wxTimerEvent &e)
 {
-#ifdef __WXDEBUG__
-    bool b = IsActive();
-    const wxString *ps =
-      b ? &g_sACTIVE : &g_sINACTIVE;
-    mainApp::LogMessage(*ps);
+  if(!m_nTimerCount)
+  {
+    CIncrementer incr(m_nTimerCount);
+#ifdef _DEBUG
+    UnitTest::Run();
 #endif
-    e.Skip();
+    nwxTimerReceiver::DispatchTimer(e);
+    if(m_pFrame != NULL)
+    {
+#if CHECK_FRAME_ON_TIMER && !defined(__NO_MDI__)
+    m_pFrame->CheckActiveFrame();
+#endif
+#if DRAG_DROP_FILES
+      m_pFrame->CheckDragDropQueue();
+#endif
+    }
+  }
 }
 
 void mainApp::OnQuit(wxCommandEvent &e)
@@ -722,9 +845,9 @@ void mainApp::OnQuit(wxCommandEvent &e)
   {
 #if mainFrameIsWindow
     m_pFrame->Hide();
-    mainApp::PingExit();
     bSkip = m_pFrame->Close();
     m_pFrame->Destroy();
+    mainApp::PingExit();
 #else
     mainApp::PingExit();
     m_pFrame->DeletePendingEvents();
@@ -809,5 +932,5 @@ EVT_MENU_RANGE(IDmenuWindow_Minimize,IDmenuWindow_Frame_END,mainApp::OnWindowMen
 EVT_MENU_RANGE(IDmenuWindowFrame,IDmenuWindow_Frame_END,mainApp::OnWindowMenu)
 #endif
 #endif
-EVT_ACTIVATE_APP(mainApp::OnActivate)
+EVT_TIMER(IDtimer, mainApp::OnTimer)
 END_EVENT_TABLE()

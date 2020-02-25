@@ -34,6 +34,7 @@
 #include "rgfile.h"
 #ifdef _WINDOWS
 #include <io.h>
+#include "rgstring.h"
 #else
 #include <sys/stat.h>
 #endif
@@ -78,17 +79,17 @@ RGFile :: RGFile(const char* name, const char* mode) :
 #endif
 
   if (mode)
-    FilePtr = fopen (name, mode);
+    FilePtr = _Fopen (name, mode);
   
   else {
 
     mode = UpdateMode;   // Default mode
-    FilePtr = fopen (name, mode);	// Open existing file for update
+    FilePtr = _Fopen (name, mode);	// Open existing file for update
 
 	if (FilePtr == NULL) {			// File does not exist...create it
 
 		mode = NewMode;
-		FilePtr = fopen (name, mode);	// Open new file
+		FilePtr = _Fopen (name, mode);	// Open new file
     }
   }
 
@@ -129,7 +130,7 @@ Boolean RGFile :: Exists() {
 
 Boolean RGFile :: Exists (const char* name) {
 
-  FILE* fp = fopen (name, UpdateMode);
+  FILE* fp = _Fopen (name, UpdateMode);
 
   if (fp) {
     
@@ -284,7 +285,7 @@ Boolean RGFile :: Erase() {
 //	  return FALSE;
 
   delete FilePtr;
-  FilePtr = fopen (FileName, NewMode);
+  FilePtr = _Fopen (FileName, NewMode);
 
   if (FilePtr == NULL)
 	  return FALSE;
@@ -370,3 +371,14 @@ RGFile& operator>>(RGFile& f, unsigned short*& x) {
 	f.Read (*x);
 	return f;
 }
+#ifdef _WINDOWS
+
+FILE *RGFile::_Fopen(const char * psName, const char * psMode)
+{
+  RGString sName(psName);
+  RGString sMode(psMode);
+  FILE *pRtn = _wfopen(sName.GetWData(), sMode.GetWData());
+  return pRtn;
+}
+
+#endif

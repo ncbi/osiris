@@ -433,7 +433,7 @@
         <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
         <RelativeHeights>M M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
         <Name>Promega-ILS-WEN-80-500</Name>
@@ -441,7 +441,7 @@
         <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
         <RelativeHeights>M H H H M M H M M M H M M M H M M M H</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-        <CorrelationAutoAcceptanceThreshold>0.999</CorrelationAutoAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
         <Name>Promega-ILS-WEN-100-225</Name>
@@ -901,9 +901,20 @@
 		<FileName>COrDISPlus_LadderInfo.xml</FileName>
 	</Set>
 	<Set>
-		<KitName>COrDIS Plus HID</KitName>
-		<FileName>COrDISPlus_LadderInfo.xml</FileName>
+		<KitName>LaneStandardOnly_2</KitName>
+		<FileName>LaneStandardOnly_2_LadderInfo.xml</FileName>
 	</Set>
-  
+	<Set>
+		<KitName>LaneStandardOnly_3</KitName>
+		<FileName>LaneStandardOnly_3_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_4</KitName>
+		<FileName>LaneStandardOnly_4_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>LaneStandardOnly_5</KitName>
+		<FileName>LaneStandardOnly_5_LadderInfo.xml</FileName>
+	</Set>
   </Kits>
 </KitData>

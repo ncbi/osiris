@@ -144,64 +144,9 @@ public:
   }
   void UpdateDirPage();
   void CheckDirPage();
-  /*
-  virtual bool SetDateTime(const wxDateTime *pTime);
-  virtual const wxDateTime *GetDateTime()
-  {
-    return m_HistTime.GetDateTime();
-  }
-
-  CPanelSampleAlertDetails **GetSplitterWindows()
-  {
-    return &m_pSplitter[0];
-  }
-  CPanelSampleAlertDetails *GetSplitterWindow(int n)
-  {
-    return m_pSplitter[n];
-  }
-  const COARmessages &GetDirMessages()
-  {
-    return m_MsgDir;
-  }
-  const COARmessages &GetSampleMessages()
-  {
-    return m_MsgSample;
-  }
-  const COARmessages &GetILSMessages()
-  {
-    return m_MsgILS;
-  }
-  const COARmessages &GetChannelMessages()
-  {
-    return m_MsgChannel;
-  }
-  wxString GetNewSampleNotes()
-  {
-    return _GetNewNotes(SA_NDX_SAMPLE);
-  }
-  wxString GetNewILSNotes()
-  {
-    return _GetNewNotes(SA_NDX_ILS);
-  }
-  wxString GetNewChannelNotes()
-  {
-    return _GetNewNotes(SA_NDX_CHANNEL);
-  }
-  wxString GetNewDirNotes()
-  {
-    return _GetNewNotes(SA_NDX_DIR);
-  }
-
-  bool IsAlertsModified(int n);
-
-  bool IsIndexUsed(int n)
-  {
-    return (m_pSplitter[n] != NULL);
-  }
-  */
   const wxString &GetCurrentLocus(bool bPending = false);
   const wxString &GetUserID();
-  void RepaintData();
+  // void RepaintData();
   void InitiateRepaintData();
 private:
   void _SetSelection(size_t n)

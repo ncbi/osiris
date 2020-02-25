@@ -1711,6 +1711,41 @@ int STRLadderCoreBioComponent :: WriteXMLGraphicData (const RGString& graphicDir
 }
 
 
+int STRLadderCoreBioComponent::GetMinimumILSBPForLoci () {
+
+	//  This function returns the least ILS BP of any locus in the ladder
+	//  Phase 5 for ladders only
+
+	int i;
+	bool firstChannel = true;
+	double leastBP = 0.0;
+	double temp;
+	int leastBPInt = 0;
+
+	for (i=1; i<=mNumberOfChannels; i++) {
+
+		if (i != mLaneStandardChannel) {
+
+			temp = mDataChannels [i]->GetLeastILSBPForLadderLoci ();
+
+			if (firstChannel) {
+
+				leastBP = temp;
+				firstChannel = false;
+			}
+
+			else {
+
+				if (temp < leastBP)
+					leastBP = temp;
+			}
+		}
+	}
+
+	return ((int)floor (leastBP) - 1);
+}
+
+
 CoreBioComponent* STRLadderCoreBioComponent :: CreateNewTransformedBioComponent (const CoreBioComponent& bc, CoordinateTransform* trans) {
 
 	return new STRLadderCoreBioComponent ((const STRLadderCoreBioComponent&) bc, trans);

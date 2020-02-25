@@ -96,6 +96,7 @@ bool ChannelData :: EvaluateSmartMessagesForStage (SmartMessagingComm& comm, int
 	bool isInterlocus;
 	bool isInCoreLadderLocus;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+	double minILSBP = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
 
 	if (evaluateNonSignals) {
 
@@ -109,6 +110,9 @@ bool ChannelData :: EvaluateSmartMessagesForStage (SmartMessagingComm& comm, int
 		DataSignal* nextSignal;
 
 		while (nextSignal = (DataSignal*) it2 ()) {
+
+			if (nextSignal->GetApproximateBioID () < minILSBP)
+				continue;
 
 			isInCoreLadderLocus = nextSignal->GetMessageValue (peakInCoreLadderLocus);
 			isAmbiguous = (nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1)) ||
@@ -232,6 +236,7 @@ bool ChannelData :: EvaluateSmartMessagesAndTriggersForStage (SmartMessagingComm
 	bool evaluateSignals = allMessages || signalsOnly;
 	comm.SMOStack [numHigherObjects] = (SmartMessagingObject*) this;
 	int topNum = numHigherObjects + 1;
+	double minBioID = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
 
 	bool isAmbiguous;
 	bool isInterlocus;
@@ -248,6 +253,9 @@ bool ChannelData :: EvaluateSmartMessagesAndTriggersForStage (SmartMessagingComm
 
 		while (nextSignal = (DataSignal*) it2 ()) {
 
+			if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID))
+				continue;
+
 			isAmbiguous = nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1);
 			isInterlocus = (!nextSignal->IsPossibleInterlocusAllele (-1)) && (!nextSignal->IsPossibleInterlocusAllele (1));
 			isInCoreLadderLocus = nextSignal->GetMessageValue (peakInCoreLadderLocus);
@@ -263,6 +271,9 @@ bool ChannelData :: EvaluateSmartMessagesAndTriggersForStage (SmartMessagingComm
 			nextLocus->SetTriggersForAllMessages (comm, topNum, stage, false, true);
 
 		while (nextSignal = (DataSignal*) it2 ()) {
+
+			if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID))
+				continue;
 
 			isAmbiguous = nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1);
 			isInterlocus = (!nextSignal->IsPossibleInterlocusAllele (-1)) && (!nextSignal->IsPossibleInterlocusAllele (1));
@@ -528,6 +539,7 @@ int ChannelData :: AddAllSmartMessageReportersForSignals (SmartMessagingComm& co
 	DataSignal* nextSignal;
 	smPeakOutsideILS peakOutsideILS;
 	smPeakInCoreLadderLocus peakInCoreLadderLocus;
+	double minBioID = (double)CoreBioComponent::GetMinBioIDForArtifacts ();
 
 	bool isAmbiguous;
 	bool isInCoreLadderLocus;
@@ -545,6 +557,9 @@ int ChannelData :: AddAllSmartMessageReportersForSignals (SmartMessagingComm& co
 	while (nextSignal = (DataSignal*) signals ()) {
 
 		//if (!nextSignal->GetMessageValue (peakOutsideILS)) {
+
+		if ((minBioID > 0.0) && (nextSignal->GetApproximateBioID () < minBioID))
+			continue;
 
 			isAmbiguous = nextSignal->IsPossibleInterlocusAllele (-1) && nextSignal->IsPossibleInterlocusAllele (1);
 			isInterlocus = (!nextSignal->IsPossibleInterlocusAllele (-1)) && (!nextSignal->IsPossibleInterlocusAllele (1));
@@ -1165,6 +1180,8 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double detectionRFU = GetDetectionThreshold ();
 	double endAnalysis = (double)mData->GetNumberOfSamples ();
 	mData->SetChannel (mChannel);
+	double maxWidthToBeCalledASpike = 2.1;
+	smSpike spike;
 
 	//
 	//  Calculate appropriate detectionRFU based on settings and curve fit phase
@@ -1491,7 +1508,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 	while (nextSignal = (DataSignal*) it ()) {
 
-		if (nextSignal->GetStandardDeviation () < 0.14) {
+		if (nextSignal->GetWidth () < 1.1) {
 
 			CompleteCurveList.RemoveReference (nextSignal);
 			it.RemoveCurrentItem ();
@@ -1505,7 +1522,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	}
 
 	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
-		
+
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
@@ -2241,6 +2258,7 @@ int ChannelData :: RemoveSignalsOutsideLaneStandardSM (ChannelData* laneStandard
 			it.RemoveCurrentItem ();
 			nextSignal->AddNoticeToList (OutputLevelManager::PeakOutsideLaneStandard, "", "Signal lies outside internal lane standard interval");
 			nextSignal->SetMessageValue (peakOutsideILS, true);
+			nextSignal->SetDontLook (true);
 			continue;
 		}
 

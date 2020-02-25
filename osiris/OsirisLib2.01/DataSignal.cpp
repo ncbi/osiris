@@ -1111,7 +1111,7 @@ DataSignal :: DataSignal (const DataSignal& ds) : SmartMessagingObject ((SmartMe
 		mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 		mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), 
 		mPrimaryRatios (NULL), mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup) {
+		mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup), mHasReportedArtifacts (ds.mHasReportedArtifacts) {
 
 		NoticeList = ds.NoticeList;
 		NewNoticeList = ds.NewNoticeList;
@@ -1139,7 +1139,7 @@ mAlleleName (ds.mAlleleName), mIsOffGridLeft (ds.mIsOffGridLeft), mIsOffGridRigh
 mMaxMessageLevel (ds.mMaxMessageLevel), mDoNotCall (ds.mDoNotCall), mReportersAdded (false), mAllowPeakEdit (ds.mAllowPeakEdit), mCannotBePrimaryPullup (ds.mCannotBePrimaryPullup), 
 mMayBeUnacceptable (ds.mMayBeUnacceptable), mHasRaisedBaseline (ds.mHasRaisedBaseline), mBaseline (ds.mBaseline), mIsNegativePeak (ds.mIsNegativePeak), mPullupTolerance (ds.mPullupTolerance), mPrimaryRatios (NULL), 
 mPullupCorrectionArray (NULL), mPrimaryPullupInChannel (NULL), mPartOfCluster (ds.mPartOfCluster), mIsPossiblePullup (ds.mIsPossiblePullup), mIsNoisySidePeak (ds.mIsNoisySidePeak), mNextSignal (NULL), 
-mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup) {
+mPreviousSignal (NULL), mCumulativeStutterThreshold (0.0), mIsShoulderSignal (ds.IsShoulderSignal ()), mWeakPullupVector (NULL), mIsPurePullup (NULL), mCouldBePullup (ds.mCouldBePullup), mHasReportedArtifacts (ds.mHasReportedArtifacts) {
 
 	Left = trans->EvaluateWithExtrapolation (ds.Left);
 	Right = trans->EvaluateWithExtrapolation (ds.Right);
@@ -2591,7 +2591,7 @@ bool DataSignal :: TestForIntersectionWithPrimary (DataSignal* primary) {
 		if (primary->LiesBelowHeightAt (testMinus, heightMinus))
 			return true;
 
-		if (i > 5)
+		if (i > 0)  // This was changed from i > 5 on 09/05/2019.  5 is definitely too large, especially since it is almost certainly below the noise level...
 			break;
 	}
 
@@ -2680,8 +2680,9 @@ void DataSignal :: WritePeakInfoToXML (RGTextOutput& text, const RGString& inden
 
 			totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-			if (totalCorrection != 0.0)
-				text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+	//		if (totalCorrection != 0.0)
+				text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
+				text << indent << "\t<PullupCorrectedHeight>" << (int)floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
 
 			text << indent << "\t<BPS>" << GetBioID () << "</BPS>" << endLine;
 	//		text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
@@ -2750,8 +2751,9 @@ void DataSignal :: WriteArtifactInfoToXML (RGTextOutput& text, const RGString& i
 
 		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-		if (totalCorrection != 0.0)
-			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>\n";
+	//	if (totalCorrection != 0.0)
+			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
+			text << indent << "\t<PullupCorrectedHeight>" << (int)floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
 
 //		text << indent << "\t<" << locationTag << ">" << (int) floor (GetApproximateBioID () + 0.5) << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
@@ -2866,8 +2868,9 @@ void DataSignal :: WriteTableArtifactInfoToXML (RGTextOutput& text, RGTextOutput
 
 		totalCorrection = GetTotalPullupFromOtherChannels (NumberOfChannels);
 
-		if (totalCorrection != 0.0)
+	//	if (totalCorrection != 0.0)
 			text << indent << "\t<PullupHeightCorrection>" << totalCorrection << "</PullupHeightCorrection>" << endLine;
+			text << indent << "\t<PullupCorrectedHeight>" << (int)floor (Peak () - totalCorrection + 0.5) << "</PullupCorrectedHeight>" << endLine;
 
 		text << indent << "\t<" << locationTag << ">" << GetApproximateBioID () << "</" << locationTag << ">" << endLine;
 		text << indent << "\t<PeakArea>" << TheoreticalArea () << "</PeakArea>" << endLine;
@@ -3282,6 +3285,7 @@ int SampledData :: FindAndRemoveFixedOffset () {
 		double* endPtr = CurrentPtr - 25;
 		mNoiseRange = 0.0;
 		double localMin;
+		double minSlope = fabs (slr->RegressBackwardFrom (CurrentPtr, currentAve, mNoiseRange));
 
 		for (i=1; i<=MaxTests; i++) {
 
@@ -3292,7 +3296,7 @@ int SampledData :: FindAndRemoveFixedOffset () {
 
 				if (*ptr < minB)
 					minB = *ptr;
-				
+
 				if (*ptr < localMin)
 					localMin = *ptr;
 
@@ -3300,17 +3304,25 @@ int SampledData :: FindAndRemoveFixedOffset () {
 					max = *ptr;
 			}
 
-			noiseRange = max - localMin;			
-			
-			if (noiseRange > mNoiseRange)
+			//noiseRange = max - localMin;			
+			//
+			//if (noiseRange > mNoiseRange)
+			//	mNoiseRange = noiseRange;
+
+			temp = fabs (slr->RegressBackwardFrom (CurrentPtr, ave, noiseRange));
+
+			if (temp < minSlope) {
+
+				minSlope = temp;
 				mNoiseRange = noiseRange;
+			}
 
 			CurrentPtr -= 25;
 			endPtr -= 25;
 		}
 
 		endPtr = Measurements + NumberOfSamples;
-		mNoiseRange = 2.0 * mNoiseRange;
+		//mNoiseRange = 2.0 * mNoiseRange;  // This results in noise ranges that are way too large for the case when there are no negative values...08/20/2019
 
 		for (CurrentPtr=Measurements; CurrentPtr<endPtr; CurrentPtr++)
 			*CurrentPtr -= minB;
@@ -12314,7 +12326,14 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next) 
 
 	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
 	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
-	mHeight = 1.0;
+
+	if (next->IsNegativePeak ())
+		mHeight = P1;
+
+	else
+		mHeight = P2;
+
+	//mHeight = 1.0;
 
 	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
 	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();
@@ -12371,7 +12390,14 @@ SimpleSigmoidSignal :: SimpleSigmoidSignal (DataSignal* prev, DataSignal* next, 
 
 	mMean = lambda * prev->GetMean () + lambda1 * next->GetMean ();
 	mSigma = lambda * prev->GetStandardDeviation () + lambda1 * next->GetStandardDeviation ();
-	mHeight = 1.0;
+
+	if (next->IsNegativePeak ())
+		mHeight = P1;
+
+	else
+		mHeight = P2;
+
+	//mHeight = 1.0;
 
 	ApproximateBioID = lambda1 * next->GetApproximateBioID () + lambda * prev->GetApproximateBioID ();
 	mApproxBioIDPrime = lambda1 * next->GetApproxBioIDPrime () + lambda * prev->GetApproxBioIDPrime ();

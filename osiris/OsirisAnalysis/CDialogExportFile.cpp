@@ -197,6 +197,13 @@ void CDialogExportFile::_AddParameter(
   case CXSLParam::CHECKBOX:
     nWinType = CHECK_BOX;
     break;
+  case CXSLParam::FIXED:
+    m_mapFixedValues.insert(
+        map<wxString, wxString>::value_type(
+          pParam->GetName(),
+          pParam->GetFixedValue()));
+    nWinType = NADA;
+    break;
   case CXSLParam::IGNORE_PARAM:
   default:
     nWinType = NADA;
@@ -383,6 +390,7 @@ bool CDialogExportFile::TransferDataFromWindow()
   bool bSkip = true;
 
   m_mapParamValues.clear();
+  m_mapParamValues = m_mapFixedValues;
   for(itr = mapParam.begin(); itr != mapParam.end(); ++itr)
   {
     sError1.Empty();

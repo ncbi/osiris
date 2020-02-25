@@ -307,6 +307,7 @@ public:
 	virtual double GetDetectionThreshold () const;
 
 	virtual bool IsControlChannel () const { return true; }
+	virtual double GetLeastILSBPForLadderLoci ();
 
 
 	// Legacy Message functions*****************************************************************************************************************

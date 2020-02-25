@@ -35,6 +35,20 @@ const wxString nwxXmlWindowSizes::g_sROOT(wxT("sizes"));
 
 #define INTERVAL_WAIT_TIME 10000
 
+bool nwxWindowSize::LoadFromNode(wxXmlNode *p, void *pObj)
+{
+  bool bRtn = nwxXmlPersist::LoadFromNode(p, pObj);
+  _fixSize();
+  return bRtn;
+}
+bool nwxWindowSize::LoadFromNode(wxXmlNode *p)
+{
+  bool bRtn = nwxXmlPersist::LoadFromNode(p);
+  _fixSize();
+  return bRtn;
+}
+
+
 nwxXmlWindowSizes::nwxXmlWindowSizes(const wxString &sPath) :
   m_interval(INTERVAL_WAIT_TIME,-1),
   m_sPath(sPath),

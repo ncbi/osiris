@@ -156,7 +156,8 @@ CPanelLabNameStrings::CPanelLabNameStrings(
   m_pSizer->Add(m_pTextStdCtrlName,0,wxEXPAND | (wxALL ^ wxTOP),ID_BORDER);
   SetSizer(m_pSizer);
 
-  OnChangeCombo(*( (wxChoicebookEvent *) NULL ));
+  wxChoicebookEvent e;
+  OnChangeCombo(e);
 }
 
 

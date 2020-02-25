@@ -68,7 +68,6 @@
 #include "nwx/nwxFileUtil.h"
 #include "nwxZip/nwxZipInput.h"
 #include "nwx/nwxLog.h"
-#include "nwx/nwxTimerReceiver.h"
 
 #include "CPlotData.h"
 #include "CMenuBar.h"
@@ -271,7 +270,6 @@ mainFrame::mainFrame() :
 //    m_pVolumes(NULL),
 //    m_pDlgAnalysis(NULL),
     m_pDialogErrorLog(NULL),
-    m_pTimer(NULL),
     m_pColourEditDialog(NULL),
 #if HAS_CUSTOM_COLORS
     m_pDialogColour(NULL),
@@ -280,7 +278,6 @@ mainFrame::mainFrame() :
     m_pDropTarget(NULL),
 #endif
     m_pAllLoci(NULL),
-    m_nTimerCount(0),
     m_pLastActive(INIT_LAST_ACTIVE)
 #ifdef MANUALLY_PLACE_FRAMES
     ,m_nFrameSpace(-1)
@@ -290,7 +287,6 @@ mainFrame::mainFrame() :
 #ifndef __NO_MDI__
   CreateStatusBar(1);
 #endif
-  SetupTimer();
   COsirisIcon x;
 #if mainFrameIsWindow
   SetIcon(x);
@@ -331,10 +327,6 @@ mainFrame::~mainFrame()
   if(m_pDialogOpen != NULL)
   {
     m_pDialogOpen->Destroy();
-  }
-  if(m_pTimer != NULL)
-  {
-    delete m_pTimer;
   }
   if(m_pAllLoci != NULL)
   {
@@ -673,11 +665,11 @@ bool mainFrame::DoClose()
     }
     if(bDone)
     {
+#if mainFrameIsWindow
+      Hide();
+#endif
       m_bDoCloseCalled = true;
-      if(m_pTimer != NULL)
-      {
-        m_pTimer->Stop();
-      }
+      mainApp::StopTimer();
     }
   }
   return bDone;
@@ -937,7 +929,7 @@ void mainFrame::OnExportSettings(wxCommandEvent &)
 }
 
 #if DRAG_DROP_FILES
-void mainFrame::_CheckDragDropQueue()
+void mainFrame::CheckDragDropQueue()
 {
   list<wxString>::iterator itr = m_lsDragDropQueue.begin();
   if(itr != m_lsDragDropQueue.end())
@@ -949,26 +941,6 @@ void mainFrame::_CheckDragDropQueue()
 }
 #endif
 
-void mainFrame::OnTimer(wxTimerEvent &e)
-{
-  if(!m_nTimerCount)
-  {
-    CIncrementer incr(m_nTimerCount);
-#ifdef _DEBUG
-    UnitTest::Run();
-#endif
-    nwxTimerReceiver::DispatchTimer(e);
-#if CHECK_FRAME_ON_TIMER && !defined(__NO_MDI__)
-    CheckActiveFrame();
-#endif
-#if DRAG_DROP_FILES
-    if(!m_lsDragDropQueue.empty())
-    {
-      _CheckDragDropQueue();
-    }
-#endif
-  }
-}
 
 #ifndef __NO_MDI__
 void mainFrame::CheckActiveFrame()
@@ -1027,8 +999,10 @@ void mainFrame::OnHelp(wxCommandEvent &)
     {
       // command failed, try a file URL
       wxString sURL = "file:///";
+      sURL.Replace(" ", "%20");
       sURL.Append(sPath);
-      if(wxLaunchDefaultBrowser(sURL,0))
+      nwxFileUtil::FixURL(&sURL);
+      if(nwxString::All8bit(sURL) && wxLaunchDefaultBrowser(sURL,0))
       {
         bError = false;
 #ifdef TMP_DEBUG
@@ -1201,7 +1175,7 @@ void mainFrame::OpenFile(
     }
     pFrame->RaiseWindow();
     pFrame->Show();
-    pFrame->Layout();
+    mainApp::ReRender(pFrame);
   }
   else if(!wxFileName::IsFileReadable(sFileName))
   {
@@ -1916,7 +1890,6 @@ BEGIN_EVENT_TABLE(mainFrame,mainFrameSuper)
 EVT_CLOSE(mainFrame::OnClose)
 #endif
 
-EVT_TIMER(IDtimer, mainFrame::OnTimer)
 
 #if DRAG_DROP_FILES
 EVT_COMMAND(wxID_ANY,CEventDragDropDelay, mainFrame::OnDropFiles)

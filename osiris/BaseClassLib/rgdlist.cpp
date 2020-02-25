@@ -639,8 +639,6 @@ RGPersistent* RGDList :: InsertWithNoDuplication (RGPersistent* target) {
 
 	else {
 
-		NewLink = new PersistentLink;
-		NewLink->Item = target;
 		PreviousLink = FirstLink;
 		NextLink = FirstLink->Next;
 
@@ -650,6 +648,8 @@ RGPersistent* RGDList :: InsertWithNoDuplication (RGPersistent* target) {
 
 			if (compare < 0) {  // insert here
 
+				NewLink = new PersistentLink;
+				NewLink->Item = target;
 				PreviousLink->Next = NewLink;
 				NextLink->Previous = NewLink;
 				NewLink->Previous = PreviousLink;
@@ -708,8 +708,6 @@ RGPersistent* RGDList :: InsertWithNoReferenceDuplication (RGPersistent* target)
 
 	else {
 
-		NewLink = new PersistentLink;
-		NewLink->Item = target;
 		PreviousLink = FirstLink;
 		NextLink = FirstLink->Next;
 
@@ -722,6 +720,8 @@ RGPersistent* RGDList :: InsertWithNoReferenceDuplication (RGPersistent* target)
 
 			else if (compare <= 0) {  // insert here
 
+				NewLink = new PersistentLink;
+				NewLink->Item = target;
 				PreviousLink->Next = NewLink;
 				NextLink->Previous = NewLink;
 				NewLink->Previous = PreviousLink;
