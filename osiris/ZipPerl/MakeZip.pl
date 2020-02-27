@@ -356,7 +356,7 @@ sub CopyMac
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   &SYSTEM("strip ${DEST}/fsa2xml");
   &COPYFILES($src,$DEST,$TOP);
-  my $XDISP = $ENV{DISP};
+  my $XDISP = $ENV{DISPLAY};
   my $bSign = ($XDISP =~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/);
   $bSign || (print STDOUT "Cannot determine if this is the Macintosh console,\napplication will not be signed.\n");
 
