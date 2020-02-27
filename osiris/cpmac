@@ -7,5 +7,4 @@ fi
 echo OSIRISTGZ=${OSIRISTGZ}
 cd ZipPerl || exit 1
 perl MakeZip.pl "$@" || exit 1
-perl SignMac.pl
 
