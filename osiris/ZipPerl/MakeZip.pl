@@ -92,7 +92,7 @@ sub COPYFILES
   }
   my $destXSL = "${dest}/ExportFiles";
   &MKDIR("${dest}");
-  &MKDIR($destXSL)
+  &MKDIR($destXSL);
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");
@@ -273,98 +273,7 @@ sub CopyWin
   }
 }
 
-sub CheckSignMac()
-{
-  my $PATH=shift;
-  my $SIG = shift;
-  my $NOSIGN = "\nApplication will not be signed.";
-  if(length($ENV{NOSIGN}))
-  {
-    return undef;
-  }
-  if(! (-d $PATH || -f $PATH))
-  {
-    print STDERR "Application path, ${PATH}, is not found",$NOSIGN;
-    return undef;
-  }
-  if(!length($SIG))
-  {
-    print STDERR "Cannot find environment variable, SIGNATURE",$NOSIGN;
-    return undef;
-  }
-  my $XDISP=$ENV{DISPLAY};
-  if(!length($XDISP))
-  {
-    print STDERR "Cannot find environment variable, DISPLAY,\n",
-                 "and cannot determine if this is the mac console.",$NOSIGN;
-    return undef;
-  }
-  if($XDISP !~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/)
-  {
-    print STDERR "Environment variable, DISPLAY=${XDISP}\n",
-                 "and cannot determine if this is the mac console.",$NOSIGN;
-    return undef;
-  }
-  return 1;
-}
 
-sub SignAppMac()
-{
-  my $PATH=shift;
-  my $SIG=$ENV{SIGNATURE};
-  my $rtn = undef;
-  if(&CheckSignMac($PATH,$SIG))
-  {
-    my $cmd = "codesign -f --deep -s \"${SIG}\" \"${PATH}\"";
-    print "\n\n\nSigning ${PATH}:\n${cmd}\n";
-    my $nRtn = system($cmd);
-    my $s = $nRtn ? " not" : "";
-    print "\nApplication was${s} signed\n\n\n";
-    $rtn = !$nRtn
-  }
-  return $rtn;
-}
-sub SignAppMacFiles()
-{
-
-  sub _signOneFile
-  {
-    my ($SIG,$line) = @_;
-    my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
-    print "\nSigning ${line}\n${cmd}\n";
-    my $n = system($cmd);
-    $n && print("FAILED to sign ${line}");
-    $n;
-  }
-  my $PATH=shift;
-  my $SIG=$ENV{SIGNATURE};
-  my $rtn = undef;
-  if(!&CheckSignMac($PATH,$SIG))
-  {}
-  elsif(-f $PATH && ! -d $PATH)
-  {
-    $rtn = !&_signOneFile($SIG,$PATH);
-  }
-  elsif(!open(FIN,"find \"${PATH}\" -type f -print|"))
-  {
-    print "Cannot run find command on ${PATH}";
-  }
-  else
-  {
-    my $line;
-    my $nRtn = 1;
-    while($line = <FIN>)
-    {
-      chomp $line;
-      (-f $line) &&
-        ($nRtn = &_signOneFile($SIG,$line));
-      last if $nRtn;
-    }
-    close FIN;
-    $rtn = !$nRtn;
-  }
-  return $rtn;
-}
 
 sub CopyMac
 {
@@ -445,21 +354,16 @@ sub CopyMac
   #
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
+  &SYSTEM("strip ${DEST}/fsa2xml");
   &COPYFILES($src,$DEST,$TOP);
-  for my $x (glob("{$TOP}/*"))
-  {
-    if($x =~ m/\.app$/i)
-    {
-      &SignAppMac($x);
-    }
-    else
-    {
-      &SignAppMacFiles($x);
-    }
-  }
-  system("./makedmg.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"") ||
-    system("./maketar.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"");
+  my $XDISP = $ENV{DISPLAY};
+  my $bSign = ($XDISP =~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/);
+  $bSign || (print STDOUT "Cannot determine if this is the Macintosh console,\napplication will not be signed.\n");
 
+  ( ($bSign && system("perl SignMac.pl")) ||
+    system("bash ./makedmg.sh \"${TOP}\" \"${VERSION}\"") ||
+    system("bash ./maketar.sh \"${TOP}\" \"${VERSION}\"")) &&
+      die("error encountered");
 }
 
 my $home = $ENV{"HOME"};
