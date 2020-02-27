@@ -308,63 +308,6 @@ sub CheckSignMac()
   return 1;
 }
 
-sub SignAppMac()
-{
-  my $PATH=shift;
-  my $SIG=$ENV{SIGNATURE};
-  my $rtn = undef;
-  if(&CheckSignMac($PATH,$SIG))
-  {
-    my $cmd = "codesign -f --deep -s \"${SIG}\" \"${PATH}\"";
-    print "\n\n\nSigning ${PATH}:\n${cmd}\n";
-    my $nRtn = system($cmd);
-    my $s = $nRtn ? " not" : "";
-    print "\nApplication was${s} signed\n\n\n";
-    $rtn = !$nRtn
-  }
-  return $rtn;
-}
-sub SignAppMacFiles()
-{
-
-  sub _signOneFile
-  {
-    my ($SIG,$line) = @_;
-    my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
-    print "\nSigning ${line}\n${cmd}\n";
-    my $n = system($cmd);
-    $n && print("FAILED to sign ${line}");
-    $n;
-  }
-  my $PATH=shift;
-  my $SIG=$ENV{SIGNATURE};
-  my $rtn = undef;
-  if(!&CheckSignMac($PATH,$SIG))
-  {}
-  elsif(-f $PATH && ! -d $PATH)
-  {
-    $rtn = !&_signOneFile($SIG,$PATH);
-  }
-  elsif(!open(FIN,"find \"${PATH}\" -type f -print|"))
-  {
-    print "Cannot run find command on ${PATH}";
-  }
-  else
-  {
-    my $line;
-    my $nRtn = 1;
-    while($line = <FIN>)
-    {
-      chomp $line;
-      (-f $line) &&
-        ($nRtn = &_signOneFile($SIG,$line));
-      last if $nRtn;
-    }
-    close FIN;
-    $rtn = !$nRtn;
-  }
-  return $rtn;
-}
 
 sub CopyMac
 {
@@ -446,19 +389,6 @@ sub CopyMac
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   &COPYFILES($src,$DEST,$TOP);
-  for my $x (glob("{$TOP}/*"))
-  {
-    if($x =~ m/\.app$/i)
-    {
-      &SignAppMac($x);
-    }
-    else
-    {
-      &SignAppMacFiles($x);
-    }
-  }
-  system("./makedmg.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"") ||
-    system("./maketar.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"");
 
 }
 
