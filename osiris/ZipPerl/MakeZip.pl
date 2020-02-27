@@ -92,7 +92,7 @@ sub COPYFILES
   }
   my $destXSL = "${dest}/ExportFiles";
   &MKDIR("${dest}");
-  &MKDIR($destXSL)
+  &MKDIR($destXSL);
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");
@@ -273,40 +273,6 @@ sub CopyWin
   }
 }
 
-sub CheckSignMac()
-{
-  my $PATH=shift;
-  my $SIG = shift;
-  my $NOSIGN = "\nApplication will not be signed.";
-  if(length($ENV{NOSIGN}))
-  {
-    return undef;
-  }
-  if(! (-d $PATH || -f $PATH))
-  {
-    print STDERR "Application path, ${PATH}, is not found",$NOSIGN;
-    return undef;
-  }
-  if(!length($SIG))
-  {
-    print STDERR "Cannot find environment variable, SIGNATURE",$NOSIGN;
-    return undef;
-  }
-  my $XDISP=$ENV{DISPLAY};
-  if(!length($XDISP))
-  {
-    print STDERR "Cannot find environment variable, DISPLAY,\n",
-                 "and cannot determine if this is the mac console.",$NOSIGN;
-    return undef;
-  }
-  if($XDISP !~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/)
-  {
-    print STDERR "Environment variable, DISPLAY=${XDISP}\n",
-                 "and cannot determine if this is the mac console.",$NOSIGN;
-    return undef;
-  }
-  return 1;
-}
 
 
 sub CopyMac
@@ -388,8 +354,16 @@ sub CopyMac
   #
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
+  &SYSTEM("strip ${DEST}/fsa2xml");
   &COPYFILES($src,$DEST,$TOP);
+  my $XDISP = $ENV{DISP};
+  my $bSign = ($XDISP =~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/);
+  $bSign || (print STDOUT "Cannot determine if this is the Macintosh console,\napplication will not be signed.\n");
 
+  ( ($bSign && system("perl SignMac.pl")) ||
+    system("bash ./makedmg.sh \"${TOP}\" \"${VERSION}\"") ||
+    system("bash ./maketar.sh \"${TOP}\" \"${VERSION}\"")) &&
+      die("error encountered");
 }
 
 my $home = $ENV{"HOME"};
