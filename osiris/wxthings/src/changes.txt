@@ -1,0 +1,137 @@
+===============================================================
+< block.cpp > [original]
+===============================================================
+< bmpcombo.cpp > [original]
+===============================================================
+< dropdown.cpp > [original]
+===============================================================
+< filebrws.cpp > [original]
+2008,2009c2008,2009
+<             if (0 != rename((const char*)srcFilePath.utf8_str(),
+<                             (const char*)dstFilePath.utf8_str()))
+---
+>             if (0 != rename((const char*)wxConvUTF8.cWX2MB(srcFilePath.c_str()),
+>                             (const char*)wxConvUTF8.cWX2MB(dstFilePath.c_str())))
+===============================================================
+< genergdi.cpp > [original]
+238c238
+< //    return wxString::Format(format.c_str(), m_r, m_g, m_b, m_a);
+---
+>     return wxString::Format(format.c_str(), m_r, m_g, m_b, m_a);
+243c243
+< //    if (4 == wxSscanf(str, format.c_str(), &r, &g, &b, &a))
+---
+>     if (4 == wxSscanf(str, format.c_str(), &r, &g, &b, &a))
+265c265
+<                         wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND)
+---
+>                         int cap = wxCAP_ROUND, int join = wxJOIN_ROUND)
+287,288c287,288
+<     wxPenCap m_cap;
+<     wxPenJoin m_join;
+---
+>     int m_cap;
+>     int m_join;
+317c317
+<                           wxPenCap cap, wxPenJoin join )
+---
+>                           int cap, int join )
+324c324
+<                           wxPenCap cap, wxPenJoin join )
+---
+>                           int cap, int join )
+370c370
+< void wxGenericPen::SetCap( wxPenCap capStyle )
+---
+> void wxGenericPen::SetCap( int capStyle )
+375c375
+< void wxGenericPen::SetJoin( wxPenJoin joinStyle )
+---
+> void wxGenericPen::SetJoin( int joinStyle )
+419,420c419,420
+<     pen.SetCap((M_GPENDATA->m_cap));
+<     pen.SetJoin((M_GPENDATA->m_join));
+---
+>     pen.SetCap(M_GPENDATA->m_cap);
+>     pen.SetJoin(M_GPENDATA->m_join);
+447c447
+< wxPenCap wxGenericPen::GetCap() const
+---
+> int wxGenericPen::GetCap() const
+452c452
+< wxPenJoin wxGenericPen::GetJoin() const
+---
+> int wxGenericPen::GetJoin() const
+504c504
+< //    str.Printf(wxT("%s,%d,%d,%d,%d,%d"), m_colour.WriteString().c_str(),
+---
+>     str.Printf(wxT("%s,%d,%d,%d,%d,%d"), m_colour.WriteString().c_str(),
+704c704
+<            (M_GBRUSHDATA->m_stipple.GetRefData() == bData->m_stipple.GetRefData()); // added GetRefData() djh, 2/26/08
+---
+>            (M_GBRUSHDATA->m_stipple == bData->m_stipple);
+===============================================================
+< geometry.cpp > [original]
+===============================================================
+< menubtn.cpp > [original]
+84c84
+<             if (GetRect().Contains(p) || labelBut->GetRect().Contains(p))
+---
+>             if (GetRect().Inside(p) || labelBut->GetRect().Inside(p))
+128c128
+<             if (GetRect().Contains(p) || dropBut->GetRect().Contains(p))
+---
+>             if (GetRect().Inside(p) || dropBut->GetRect().Inside(p))
+===============================================================
+< optvalue.cpp > [original]
+===============================================================
+< range.cpp > [original]
+===============================================================
+< spinctld.cpp > [original]
+191c191
+<     SetInitialSize(wxSize(width, height));
+---
+>     SetBestSize(wxSize(width, height));
+204c204
+<         m_textCtrl->SetValue(wxString::Format(m_textFormat, initial));
+---
+>         m_textCtrl->SetValue(wxString::Format(m_textFormat.c_str(), initial));
+342c342
+<         case WXK_PAGEUP :  // pg-up
+---
+>         case WXK_PRIOR :  // pg-up
+349c349
+<         case WXK_PAGEDOWN :  // pg-down
+---
+>         case WXK_NEXT :  // pg-down
+401c401
+<     wxString str(wxString::Format(m_textFormat, value));
+---
+>     wxString str(wxString::Format(m_textFormat.c_str(), value));
+517c517
+<     if ( wxstr.Printf(format, 123456.123456) > 0 )
+---
+>     if ( wxstr.Printf(format.c_str(), 123456.123456) > 0 )
+===============================================================
+< toggle.cpp > [original]
+85c85
+<     SetInitialSize(GetSize());
+---
+>     SetBestSize(GetSize());
+156c156
+<         if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
+---
+>         if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
+191c191
+<         if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
+---
+>         if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
+375c375
+< //    dc.BeginDrawing();
+---
+>     dc.BeginDrawing();
+455c455
+< //    dc.EndDrawing();
+---
+>     dc.EndDrawing();
+===============================================================

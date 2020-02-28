@@ -1,0 +1,63 @@
+===============================================================
+< block.h > [original]
+===============================================================
+< bmpcombo.h > [original]
+===============================================================
+< dropdown.h > [original]
+===============================================================
+< filebrws.h > [original]
+===============================================================
+< genergdi.h > [original]
+18d17
+< #include <wx/bitmap.h>
+155c154
+<                   wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND ) : wxObject()
+---
+>                   int cap = wxCAP_ROUND, int join = wxJOIN_ROUND ) : wxObject()
+158c157
+<                   wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND ) : wxObject()
+---
+>                   int cap = wxCAP_ROUND, int join = wxJOIN_ROUND ) : wxObject()
+173c172
+<                 wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
+---
+>                 int cap = wxCAP_ROUND, int join = wxJOIN_ROUND );
+175c174
+<                 wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
+---
+>                 int cap = wxCAP_ROUND, int join = wxJOIN_ROUND );
+185,186c184,185
+<     void SetCap( wxPenCap capStyle );
+<     void SetJoin( wxPenJoin joinStyle );
+---
+>     void SetCap( int capStyle );
+>     void SetJoin( int joinStyle );
+199,200c198,199
+<     wxPenCap GetCap() const;
+<     wxPenJoin GetJoin() const;
+---
+>     int GetCap() const;
+>     int GetJoin() const;
+===============================================================
+< geometry.h > [original]
+===============================================================
+< medsort.h > [original]
+===============================================================
+< menubtn.h > [original]
+===============================================================
+< optvalue.h > [original]
+===============================================================
+< range.h > [original]
+===============================================================
+< spinctld.h > [original]
+===============================================================
+< thingdef.h > [original]
+7c7
+< // RCS-ID:      $Id: thingdef.h,v 1.1 2009/04/21 19:04:53 hoffman Exp $
+---
+> // RCS-ID:      $Id: thingdef.h,v 1.2 2006/03/21 05:33:19 jrl1 Exp $
+16d15
+< #include "wx/wx.h"
+===============================================================
+< toggle.h > [original]
+===============================================================
