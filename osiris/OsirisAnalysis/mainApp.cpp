@@ -824,7 +824,7 @@ void mainApp::OnTimer(wxTimerEvent &e)
   {
     CIncrementer incr(m_nTimerCount);
 #ifdef _DEBUG
-    UnitTest::Run();
+//    UnitTest::Run();
 #endif
     nwxTimerReceiver::DispatchTimer(e);
     if(m_pFrame != NULL)

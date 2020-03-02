@@ -628,6 +628,10 @@ void nwxPlotCtrl::OnViewChanged(wxPlotCtrlEvent &e)
   e.Skip();
 }
 
+bool nwxPlotCtrl::RenderScrollbars()
+{
+  return RenderingToWindow() && AreScrollbarsShown();
+}
 void nwxPlotCtrl::OnClickXLabel(const nwxPointLabel &, const wxPoint &) {;}
 void nwxPlotCtrl::OnClickLabel(const nwxPointLabel &, const wxPoint &) {;}
 

@@ -69,6 +69,7 @@ public:
     m_PositionMouse(-1,-1),
     m_pTimer(NULL),
     m_nDisableToolTip(0),
+    m_bNotRenderingToWindow(false),
     m_bClear(false),
     m_bStopTimer(false),
     m_nTimeHere(0),
@@ -91,6 +92,7 @@ public:
       m_PositionMouse(0,0),
       m_pTimer(NULL),
       m_nDisableToolTip(0),
+      m_bNotRenderingToWindow(false),
       m_bClear(false),
       m_bStopTimer(false),
       m_nTimeHere(0),
@@ -182,7 +184,15 @@ public:
       (m_xAxisScrollbar->IsShown());
     return b;
   }
-
+  virtual bool RenderScrollbars();
+  bool RenderingToWindow()
+  {
+    return !m_bNotRenderingToWindow;
+  }
+  void SetRenderingToWindow(bool b)
+  {
+    m_bNotRenderingToWindow = !b;
+  }
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
   virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
   void SetupToolTip();
@@ -279,6 +289,7 @@ private:
   wxPoint m_PositionMouse;
   wxTimer *m_pTimer;
   int m_nDisableToolTip;
+  bool m_bNotRenderingToWindow;
   bool m_bClear;
   bool m_bStopTimer;
   unsigned int m_nTimeHere;

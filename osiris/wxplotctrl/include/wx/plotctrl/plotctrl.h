@@ -758,6 +758,7 @@ public:
     virtual void DrawXAxis( wxDC *dc, bool refresh );
     virtual void DrawYAxis( wxDC *dc, bool refresh );
 
+    virtual bool RenderScrollbars();
     // Draw the plot axes and plotctrl on this wxDC for printing, sort of WYSIWYG
     //   the plot is drawn to fit inside the boundingRect (i.e. the margins)
     //

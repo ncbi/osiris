@@ -926,6 +926,8 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     _UpdateScrollbarMenuLabel();
     CParmOsirisGlobal parm;
     parm->SetHideGraphicScrollbar(bWasShown);
+    RE_RENDER;
+    _SendSizeAction(1);
   }
   else if(nID == IDmenuShowXBPS)
   {
@@ -2167,7 +2169,10 @@ wxBitmap *CFramePlot::CreateBitmap(
       nY = (int)pPlot->GetPlotNumber();
       rect.SetY((nY * nPlotHeight) + nTitleOffset);
       pPlotCtrl = pPlot->GetPlotCtrl();
+      bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
+      pPlotCtrl->SetRenderingToWindow(false);
       pPlotCtrl->DrawEntirePlot(&dc,rect,dDPI);
+      pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
     }
 #endif
   }

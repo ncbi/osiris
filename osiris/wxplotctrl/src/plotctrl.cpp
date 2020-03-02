@@ -2287,6 +2287,11 @@ void wxPlotCtrl::OnSize( wxSizeEvent& )
     DoSize();
 }
 
+bool wxPlotCtrl::RenderScrollbars()
+{
+  return true;
+}
+
 void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 {
     if (!m_yAxisScrollbar) return; // we're not created yet
@@ -2309,7 +2314,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     // wait until we have a normal size
     if ((size.x < 2) || (size.y < 2)) return;
 
-    int sb_width = m_yAxisScrollbar->GetSize().GetWidth();
+    int sb_width = RenderScrollbars() ? m_yAxisScrollbar->GetSize().GetWidth() : 0;
 
     m_clientRect = wxRect(0, 0, size.x-sb_width, size.y-sb_width);
 
@@ -2348,9 +2353,11 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     // scrollbar to right and bottom
     if (set_window_sizes)
     {
-        m_yAxisScrollbar->SetSize(m_clientRect.width, 0, sb_width, m_clientRect.height );
-        m_xAxisScrollbar->SetSize(0, m_clientRect.height, m_clientRect.width, sb_width );
-
+        if (sb_width)
+        {
+          m_yAxisScrollbar->SetSize(m_clientRect.width, 0, sb_width, m_clientRect.height );
+          m_xAxisScrollbar->SetSize(0, m_clientRect.height, m_clientRect.width, sb_width );
+        }
         m_yAxis->Show(GetShowYAxis());
         m_xAxis->Show(GetShowXAxis());
         if (GetShowYAxis()) m_yAxis->SetSize(m_yAxisRect);
@@ -2846,11 +2853,11 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
 
     // DJH 2/19/09 -- more old values
 
-    double oldCurveDrawerScale;
-    double oldDataCurveDrawerScale;
-    double oldMarkerDrawerScale;
+    double oldCurveDrawerScale = 0.0;
+    double oldDataCurveDrawerScale = 0.0;
+    double oldMarkerDrawerScale = 0.0;
 
-    if(dpi >= 100.0)
+    if(dpi >= 200.0)
     {
       oldCurveDrawerScale = m_curveDrawer->GetPenScale();
       oldDataCurveDrawerScale = m_dataCurveDrawer->GetPenScale();
