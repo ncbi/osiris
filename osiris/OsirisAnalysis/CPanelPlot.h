@@ -32,8 +32,17 @@
 #ifndef __C_PANEL_PLOT_H__
 #define __C_PANEL_PLOT_H__
 
+#ifdef __WXMAC__
+
+#define PANEL_PLOT_TYPE wxSashLayoutWindow
 #include <wx/laywin.h>
-//#include <wx/sashwin.h>
+
+#else
+#define PANEL_PLOT_TYPE wxSashWindow
+#include <wx/sashwin.h>
+
+#endif
+
 #include <wx/sizer.h>
 #include "nwx/stdb.h"
 #include "nwx/CIncrementer.h"
@@ -86,8 +95,7 @@ private:
 
 
 class CPanelPlot : 
-    public wxSashLayoutWindow,
-  //  public wxSashWindow, 
+    public PANEL_PLOT_TYPE,
     public InwxShiftReceiver
 {
 private:

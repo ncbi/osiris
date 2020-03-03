@@ -143,7 +143,7 @@ CPanelPlot::CPanelPlot(
   COARfile *pFile, 
   CKitColors *pColors, 
   bool bExternalTimer) : 
-      wxSashLayoutWindow(parent,wxID_ANY,
+      PANEL_PLOT_TYPE(parent,wxID_ANY,
       wxDefaultPosition, wxDefaultSize, 0),
     m_pData(pData),
     m_pOARfile(pFile),
@@ -180,7 +180,7 @@ CPanelPlot::CPanelPlot(
   bool bFirst,
   int nPlotNumber,
   bool bExternalTimer) :
-    wxSashLayoutWindow(pFrame->GetPanel(),wxID_ANY,
+      PANEL_PLOT_TYPE(pFrame->GetPanel(),wxID_ANY,
       wxDefaultPosition,wxDefaultSize,wxSW_3DSASH),
     m_pData(pData),
     m_pOARfile(pFile),
@@ -2397,7 +2397,7 @@ void CPanelPlot::_SetFileHasBeenPrompted(CPlotData *p)
   g_setNoBpsPrompt.insert(s);
 }
 
-BEGIN_EVENT_TABLE(CPanelPlot, wxSashLayoutWindow)
+BEGIN_EVENT_TABLE(CPanelPlot, PANEL_PLOT_TYPE)
 EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
 EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
 
