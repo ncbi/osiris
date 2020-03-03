@@ -32,7 +32,7 @@
 #ifndef __C_PANEL_PLOT_H__
 #define __C_PANEL_PLOT_H__
 
-#ifdef __WXMAC__
+#if 0
 
 #define PANEL_PLOT_TYPE wxSashLayoutWindow
 #include <wx/laywin.h>
