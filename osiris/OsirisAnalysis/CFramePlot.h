@@ -249,6 +249,7 @@ private:
   void _RebuildLabels(bool bForce = true);
   void _RebuildCurves()
   {
+    CBatchPlot X(this);
     for (set<CPanelPlot *>::iterator itr = m_setPlots.begin();
           itr != m_setPlots.end();
           ++itr)

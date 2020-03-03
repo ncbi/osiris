@@ -946,7 +946,8 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     _UpdateScrollbarMenuLabel();
     CParmOsirisGlobal parm;
     parm->SetHideGraphicScrollbar(bWasShown);
-    RebuildAll();
+    //RebuildAll();
+    _RebuildCurves();
   }
   else if(nID == IDmenuShowXBPS)
   {
