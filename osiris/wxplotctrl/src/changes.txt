@@ -76,7 +76,24 @@
 <     // DJH 9/3/15 changed parameter from int to wxStockCursor
 ---
 > void wxPlotCtrl::SetAreaMouseCursor(int cursorid)
-2574,2579c2569
+2290,2294d2284
+< bool wxPlotCtrl::RenderScrollbars()
+< {
+<   return true;
+< }
+< 
+2317c2307
+<     int sb_width = RenderScrollbars() ? m_yAxisScrollbar->GetSize().GetWidth() : 0;
+---
+>     int sb_width = m_yAxisScrollbar->GetSize().GetWidth();
+2356,2357d2345
+<         if (sb_width)
+<         {
+2360c2348
+<         }
+---
+> 
+2581,2586c2569
 <     wxRasterOperationMode logical_fn = dc->GetLogicalFunction();
 < #ifdef __WXMAC__
 <     dc->SetLogicalFunction( wxXOR );
@@ -85,31 +102,31 @@
 < #else
 ---
 >     int logical_fn = dc->GetLogicalFunction();
-2583c2573
+2590c2573
 < #endif
 ---
 > 
-2627c2617
+2634c2617
 <     wxRasterOperationMode logical_fn = dc->GetLogicalFunction();
 ---
 >     int logical_fn = dc->GetLogicalFunction();
-2759,2760c2749
+2766,2767c2749
 <     // DJH 2/19/09 change width to m_area_border_width
 <     dc->SetPen( wxPen(GetGridColour(), m_area_border_width, wxSOLID) ); 
 ---
 >     dc->SetPen( wxPen(GetGridColour(), 1, wxSOLID) );
-2831c2820
+2838c2820
 < void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi, bool bAutoCalcTicks )
 ---
 > void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi )
-2847,2864d2835
+2854,2871d2835
 <     // DJH 2/19/09 -- more old values
 < 
-<     double oldCurveDrawerScale;
-<     double oldDataCurveDrawerScale;
-<     double oldMarkerDrawerScale;
+<     double oldCurveDrawerScale = 0.0;
+<     double oldDataCurveDrawerScale = 0.0;
+<     double oldMarkerDrawerScale = 0.0;
 < 
-<     if(dpi >= 100.0)
+<     if(dpi >= 200.0)
 <     {
 <       oldCurveDrawerScale = m_curveDrawer->GetPenScale();
 <       oldDataCurveDrawerScale = m_dataCurveDrawer->GetPenScale();
@@ -121,14 +138,14 @@
 < 
 <     // END DJH 2/19/09 -- more old values
 < 
-2904,2909d2874
+2911,2916d2874
 <     //
 <     //  DJH - 2/24/2009  added parameter to determine whether AutoCalcTicks()
 <     //    should be called because the exported plots looked bad
 <     //
 <     if(bAutoCalcTicks) { AutoCalcTicks(); }
 < 
-2914,2918c2879
+2921,2925c2879
 < //    wxPrintf(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale);
 < //    DJH 09/03/2015 - wxPrintf is deprecated
 <     puts(
@@ -136,19 +153,19 @@
 <       );
 ---
 >     wxPrintf(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale);
-2945,2949d2905
+2952,2956d2905
 < 
 < #if 0
 <     //  DJH 2/19/2009 - removed red rectangles, 
 <     //  what was the original author thinking
 < 
-2953c2909
+2960c2909
 < #endif
 ---
 > 
-2961d2916
+2968d2916
 < 
-2969,2979d2923
+2976,2986d2923
 <     // DJH 2/19/09 restore more old values
 < 
 <     if(dpi >= 100.0)
@@ -160,34 +177,34 @@
 < 
 <     // END DJH 2/19/09 restore more old values
 < 
-3096c3040
+3103c3040
 <     label.Printf( m_xAxisTickFormat.wc_str(), start);
 ---
 >     label.Printf( m_xAxisTickFormat.c_str(), start);
-3113c3057
+3120c3057
 <     label.Printf( m_yAxisTickFormat.wc_str(), start);
 ---
 >     label.Printf( m_yAxisTickFormat.c_str(), start);
-3142c3086
+3149c3086
 <             m_xAxisTickLabels.Add(wxString::Format(m_xAxisTickFormat, current));
 ---
 >             m_xAxisTickLabels.Add(wxString::Format(m_xAxisTickFormat.c_str(), current));
-3164c3108
+3171c3108
 <             m_yAxisTickLabels.Add(wxString::Format(m_yAxisTickFormat, current));
 ---
 >             m_yAxisTickLabels.Add(wxString::Format(m_yAxisTickFormat.c_str(), current));
-3286a3231
+3293a3231
 > 
-3388c3333
+3395c3333
 <             if (!m_areaClientRect.Contains(event.GetPosition()))
 ---
 >             if (!m_areaClientRect.Inside(event.GetPosition()))
-3534,3537d3478
+3541,3544d3478
 < 
 <   // 5/19/2010 - DJH - modified calls to send an event 
 <   //             when changing the axes from a keystroke
 < 
-3576,3581c3517,3522
+3583,3588c3517,3522
 <         case WXK_LEFT  : SetOrigin(m_viewRect.GetLeft() - m_viewRect.m_width/10.0, m_viewRect.GetTop(),true); return;
 <         case WXK_RIGHT : SetOrigin(m_viewRect.GetLeft() + m_viewRect.m_width/10.0, m_viewRect.GetTop(),true); return;
 <         case WXK_UP    : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() + m_viewRect.m_height/10.0,true); return;
@@ -201,7 +218,7 @@
 >         case WXK_DOWN  : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() - m_viewRect.m_height/10.0); return;
 >         case WXK_PRIOR : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() + m_viewRect.m_height/2.0); return;
 >         case WXK_NEXT  : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() - m_viewRect.m_height/2.0); return;
-3635,3643c3576,3584
+3642,3650c3576,3584
 <         case wxT('a'): SetZoom( wxPoint2DDouble(m_zoom.m_x/1.5, m_zoom.m_y    ), true, true ); return;
 <         case wxT('d'): SetZoom( wxPoint2DDouble(m_zoom.m_x*1.5, m_zoom.m_y    ), true, true ); return;
 <         case wxT('w'): SetZoom( wxPoint2DDouble(m_zoom.m_x,     m_zoom.m_y*1.5), true, true ); return;

@@ -32,7 +32,8 @@
 #ifndef __C_PANEL_PLOT_H__
 #define __C_PANEL_PLOT_H__
 
-#include <wx/sashwin.h>
+#include <wx/laywin.h>
+//#include <wx/sashwin.h>
 #include <wx/sizer.h>
 #include "nwx/stdb.h"
 #include "nwx/CIncrementer.h"
@@ -84,7 +85,10 @@ private:
 };
 
 
-class CPanelPlot : public wxSashWindow, public InwxShiftReceiver
+class CPanelPlot : 
+    public wxSashLayoutWindow,
+  //  public wxSashWindow, 
+    public InwxShiftReceiver
 {
 private:
   class CLadderPeakSet
@@ -435,6 +439,10 @@ public:
   {
     m_pPlotCtrl->EndBatch();
     m_nBatchCount--;
+  }
+  bool InBatch()
+  {
+    return (m_nBatchCount > 0);
   }
   void MakeCurveVisible(int n = -1)
   {

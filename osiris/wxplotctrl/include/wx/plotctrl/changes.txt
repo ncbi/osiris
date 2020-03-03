@@ -21,13 +21,15 @@
 <     // DJH 9/3/15 changed parameter from int to wxStockCursor
 ---
 >     void SetAreaMouseCursor(int cursorid);
-763,765c758
+761d755
+<     virtual bool RenderScrollbars();
+764,766c758
 <     //
 <     //  DJH 2/29/2009 - added bAutoCalcTicks = false
 <     void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false );
 ---
 >     void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72 );
-970,971c963
+971,972c963
 <     void SetPlotWinMouseCursor(wxStockCursor cursorid);
 <     // DJH 9/3/15 changed parameter from int to wxStockCursor
 ---

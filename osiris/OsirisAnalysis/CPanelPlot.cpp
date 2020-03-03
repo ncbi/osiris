@@ -143,7 +143,7 @@ CPanelPlot::CPanelPlot(
   COARfile *pFile, 
   CKitColors *pColors, 
   bool bExternalTimer) : 
-    wxSashWindow(parent,wxID_ANY,
+      wxSashLayoutWindow(parent,wxID_ANY,
       wxDefaultPosition, wxDefaultSize, 0),
     m_pData(pData),
     m_pOARfile(pFile),
@@ -180,7 +180,7 @@ CPanelPlot::CPanelPlot(
   bool bFirst,
   int nPlotNumber,
   bool bExternalTimer) :
-    wxSashWindow(pFrame->GetPanel(),wxID_ANY,
+    wxSashLayoutWindow(pFrame->GetPanel(),wxID_ANY,
       wxDefaultPosition,wxDefaultSize,wxSW_3DSASH),
     m_pData(pData),
     m_pOARfile(pFile),
@@ -1313,7 +1313,10 @@ void CPanelPlot::_OnTimer(wxTimerEvent &e)
   {
     m_pShiftSizer->OnTimer(e);
   }
-  m_viewRect.Check();
+  if (!InBatch())
+  {
+    m_viewRect.Check();
+  }
 
   // workaround a bug with the 'zoom' cursor
   // if you hold the shift key down and press "Reset Axes" the 
@@ -1971,7 +1974,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   RebuildLabels();
   if(!bIgnoreViewRect)
   {
-    SetViewRect(rect,false,0);
+    SetViewRect(rect, false, 1);
   }
 //  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
 //  {
@@ -2045,9 +2048,9 @@ void CPanelPlot::CopySettings(CPanelPlot &w)
   TnwxBatch<CPanelPlot> y(&w);
   _SyncControllers(w.m_pMenu);
   wxRect2DDouble rect = w.GetViewRect();
-  SetViewRect(rect,false,0);
   SyncToolbar(&w);
   RebuildCurves();
+  SetViewRect(rect, false, 1);
 }
 bool CPanelPlot::MenuEvent(wxCommandEvent &e)
 {
@@ -2394,7 +2397,7 @@ void CPanelPlot::_SetFileHasBeenPrompted(CPlotData *p)
   g_setNoBpsPrompt.insert(s);
 }
 
-BEGIN_EVENT_TABLE(CPanelPlot,wxSashWindow)
+BEGIN_EVENT_TABLE(CPanelPlot, wxSashLayoutWindow)
 EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
 EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
 

@@ -773,7 +773,6 @@ void mainApp::ReRender(wxWindow *p)
     p->Layout();
   }
   p->Refresh();
-  p->Update();
 }
 
 #if 0

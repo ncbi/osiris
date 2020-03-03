@@ -247,6 +247,15 @@ private:
   void _FindOARfile(
     int nType = CDialogPlotMessageFind::MSG_TYPE_HISTORY);
   void _RebuildLabels(bool bForce = true);
+  void _RebuildCurves()
+  {
+    for (set<CPanelPlot *>::iterator itr = m_setPlots.begin();
+          itr != m_setPlots.end();
+          ++itr)
+    {
+      (*itr)->RebuildCurves();
+    }
+  }
   void _SetupHistoryMenu();
   void _SetupTitle();
   void _RebuildMenu();

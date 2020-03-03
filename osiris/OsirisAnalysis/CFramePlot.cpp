@@ -69,6 +69,7 @@
 #include "CNotebookEditSample.h"
 #include "CPrintOutPlot.h"
 #include "CGridAnalysisDisplay.h"
+#include "nwx/vectorptr.h"
 
 #if FP_SCROLL_EVENT
 DEFINE_EVENT_TYPE(wxEVT_SCROLL_PLOT)
@@ -661,21 +662,23 @@ void CFramePlot::RebuildAll()
   CBatchPlot BATCH(this);
   m_pPanel->Show(false);
   _UpdateMenu();
-  map<unsigned int,CPanelPlot *> mapNrPlot;
+  map<unsigned int, CPanelPlot *> mapNrPlot;
+  typedef std::map<CPanelPlot *, wxRect2DDouble> SAVE_RECT;
+  SAVE_RECT mapRect;
   set<CPanelPlot *>::iterator itr;
-  map<unsigned int,CPanelPlot *>::iterator itrm;
+  map<unsigned int, CPanelPlot *>::iterator itrm;
   bool bEnableAppend = false;
   bool bEnableDelete = false;
   unsigned int nChannelCount = m_pData->GetChannelCount();
   unsigned int nMapSize;
 
-  for(itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
+  for (itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
   {
-    if(mapNrPlot.size() < nChannelCount)
+    if (mapNrPlot.size() < nChannelCount)
     {
       mapNrPlot.insert(
-        map<unsigned int,CPanelPlot *>::value_type(
-        (*itr)->GetPlotNumber(),*itr) );
+        map<unsigned int, CPanelPlot *>::value_type(
+        (*itr)->GetPlotNumber(), *itr));
     }
     else
     {
@@ -687,7 +690,7 @@ void CFramePlot::RebuildAll()
 
   // kill all hidden plots
 
-  for(itr = m_setPlotsHidden.begin();
+  for (itr = m_setPlotsHidden.begin();
     itr != m_setPlotsHidden.end();
     ++itr)
   {
@@ -701,20 +704,37 @@ void CFramePlot::RebuildAll()
   bEnableAppend = nMapSize < nChannelCount;
   bEnableDelete = nMapSize > 1;
 
-  for(itrm = mapNrPlot.begin();
+  CPanelPlot *pplot = NULL;
+  CPanelPlot *pold = NULL;
+
+  vectorptr< TnwxBatch<CPanelPlot> > listBatch;
+  listBatch.reserve(mapNrPlot.size());
+
+  for (itrm = mapNrPlot.begin();
     itrm != mapNrPlot.end();
     ++itrm)
   {
-    CPanelPlot *pplot = GetPanelPlot(false,itrm->first);
-    CPanelPlot *pold = itrm->second;
+    pplot = GetPanelPlot(false, itrm->first);
+    listBatch.push_back(new TnwxBatch<CPanelPlot>(pplot));
+    pold = itrm->second;
     pplot->CopySettings(*pold);
+    // save view rect because it gets corrupted somewhere
+    mapRect.insert(SAVE_RECT::value_type(pplot, pplot->GetViewRect()));
     pplot->EnableAppend(bEnableAppend);
     pplot->EnableDelete(bEnableDelete);
     pold->Destroy();
-    m_pSizer->Add(pplot,1,wxEXPAND);
+    m_pSizer->Add(pplot, 1, wxEXPAND);
   }
   _SetupTitle();
   _UpdateViewState(true);
+  // restore view rects saved above
+  for (SAVE_RECT::iterator itrr = mapRect.begin();
+    itrr != mapRect.end();
+    ++itrr)
+  {
+    pplot = itrr->first;
+    pplot->SetViewRect(itrr->second, false, 1);
+  }
 }
 void CFramePlot::SetOARfile(COARfile *pFile)
 {
@@ -926,8 +946,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     _UpdateScrollbarMenuLabel();
     CParmOsirisGlobal parm;
     parm->SetHideGraphicScrollbar(bWasShown);
-    RE_RENDER;
-    _SendSizeAction(1);
+    RebuildAll();
   }
   else if(nID == IDmenuShowXBPS)
   {
@@ -937,11 +956,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     CParmOsirisGlobal parm;
     parm->SetPlotDataXBPS(bXBPS);
     SetXBPSValue(bXBPS);
-    set<CPanelPlot *>::iterator itr;
-    for(itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
-    {
-      (*itr)->RebuildCurves();
-    }
+    _RebuildCurves();
   }
   else if(nID == IDExportGraphic)
   {
@@ -1282,7 +1297,7 @@ void CFramePlot::AddPlot(CPanelPlot *pPreceed, bool bUpdateView)
       m_pSizer->Insert(nr,p,1,wxEXPAND);
       UpdatePlotNumbers();
     }
-    pPreceed->SetViewRect(rect);
+    pPreceed->SetViewRect(rect, false, 1);
     p->CopySettings(*pPreceed);
     if(bUpdateView)
     {
@@ -1759,7 +1774,8 @@ void CFramePlot::_UpdateViewState(bool bForce)
   }
   else
   {
-    CFramePlotState nState = 
+    bool bReRender = false;
+    CFramePlotState nState =
       m_bFixed 
       ? FP_FIXED
       : ( 
@@ -1781,6 +1797,7 @@ void CFramePlot::_UpdateViewState(bool bForce)
       {
         m_pPanel->SetScrollRate(0,SCROLL_UNITS);
       }
+      bReRender = true;
     }
     if(m_nState == FP_VARIABLE_MANY_PLOTS)
     {
@@ -1788,6 +1805,10 @@ void CFramePlot::_UpdateViewState(bool bForce)
       _UpdateVirtualWidth();
     }
     m_nDelayViewState = 0;
+    if (bReRender)
+    {
+      mainApp::ReRender(m_pPanel);
+    }
   }
 }
 void CFramePlot::_UpdateVirtualWidth()
