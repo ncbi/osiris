@@ -232,6 +232,8 @@ SmartMessagingObject (), mCollection (NULL), mParentDirectoryForReports (parentD
 
 		cout << mCollection->GetErrorString ().GetData () << endl;
 		cout << "Ladder info file is invalid.  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage (mCollection->GetErrorString ());
+		STRLCAnalysis::mFailureMessage->LadderInfoInvalid ();
 		return;
 	}
 

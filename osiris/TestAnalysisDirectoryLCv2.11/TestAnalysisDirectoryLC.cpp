@@ -244,7 +244,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (useRawData) {
 
 		CoreBioComponent::SetUseRawData ();
-		CommandInputs << "RawDataString = R;\n\n\n";
+		CommandInputs << "RawDataString = R;\n";
+		CommandInputs << ";\n\n";   // This line is essential as the last line in the command input has to be ';'.
 		cout << CommandInputs.GetData ();
 		cout << "Use raw data...\n";
 	}
@@ -252,7 +253,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	else {
 
 		CoreBioComponent::DontUseRawData ();
-		CommandInputs << "RawDataString = A;\n\n\n";
+		CommandInputs << "RawDataString = A;\n";
+		CommandInputs << ";\n\n";   // This line is essential as the last line in the command input has to be ';'.
 		cout << CommandInputs.GetData ();
 		cout << "Don't use raw data...\n";
 	}
@@ -287,7 +289,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!stdSettingsFile.isValid ()) {
 
 		cout << "Could not open standard settings file " << stdSettingsFileName << ".  Exiting..." << endl;
-		STRLCAnalysis::mFailureMessage->AddMessage (stdSettingsFileName);
+		STRLCAnalysis::mFailureMessage->AddMessage ("Full path name = " + stdSettingsFileName + ".");
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Standard Settings");
 		return -17;
 	}
@@ -295,7 +297,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!labSettingsFile.isValid ()) {
 
 		cout << "Could not open laboratory settings file " << labSettingsFileName << ".  Exiting..." << endl;
-		STRLCAnalysis::mFailureMessage->AddMessage (labSettingsFileName);
+		STRLCAnalysis::mFailureMessage->AddMessage ("Full path name = " + labSettingsFileName + ".");
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Lab Settings");
 		return -17;
 	}
@@ -310,6 +312,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!pServer->isValid ()) {
 
 		cout << "Could not interpret standard input settings file " << (char*)stdSettingsFileName.GetData () << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("Could not interpret standard input settings file " + stdSettingsFileName + ".  Exiting...");
 		STRLCAnalysis::mFailureMessage->FileInvalid ("Standard Settings");
 		return -100;
 	}

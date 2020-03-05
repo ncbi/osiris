@@ -40,7 +40,7 @@
 using namespace std;
 
 
-OsirisInputFile :: OsirisInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mCriticalOutputLevel (15), mMinSampleRFU (0.0),
+OsirisInputFile :: OsirisInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mFinalStdSettingsName (), mCriticalOutputLevel (15), mMinSampleRFU (0.0),
 mMinLadderRFU (0.0), mMinLaneStandardRFU (0.0), mMinInterlocusRFU (0.0), mMinLadderInterlocusRFU (0.0), mSampleDetectionThreshold (-1.0), 
 mUseRawData (true), mUserNamedSettingsFiles (true), mIsLadderFreeAnalysis (false) {
 
@@ -174,6 +174,7 @@ int OsirisInputFile :: ReadLine () {
 		// input is coming from file...
 
 		temp.ReadTextLine (*mInputFile);
+		RemoveUTF8Header (temp);
 		mCumulativeStringWithNewLines += temp + "\n";
 		mCumulativeStringWithoutNewLines += temp;
 		nextLine = new RGString (temp);
@@ -279,9 +280,12 @@ int OsirisInputFile :: ReadLine () {
 			mStringRight.Append (T);
 	}
 
+	RemoveUTF8Header (thisLine);
 	nextLine = new RGString (thisLine);
 	mInputLines.Append (nextLine);
-
+	RemoveUTF8Header (mStringLeft);
+	RemoveUTF8Header (mCumulativeStringWithNewLines);
+	RemoveUTF8Header (mCumulativeStringWithoutNewLines);
 	RemoveLeadingAndTrailingBlanks (mStringLeft);
 	RemoveLeadingAndTrailingBlanks (mStringRight);
 
@@ -705,7 +709,53 @@ int OsirisInputFile :: AssembleInputs () {
 		}
 	}
 
-	return 0;
+	return status;
+}
+
+
+void OsirisInputFile::RemoveUTF8Header (RGString& inputString) {
+
+	int L = inputString.Length ();
+	
+	if (inputString.Length () < 3)
+		return;
+
+
+
+	RGString temp;
+
+	if ((int)inputString.GetCharacter (0) != 0xffffffef)
+		return;
+
+	if ((int)inputString.GetCharacter (1) != 0xffffffbb)
+		return;
+
+	if ((int)inputString.GetCharacter (2) != 0xffffffbf)
+		return;
+
+	//if (inputString.GetCharacter (3) != '5')
+	//	return;
+
+	//if (inputString.GetCharacter (4) != '2')
+	//	return;
+
+	//if (inputString.GetCharacter (5) != '7')
+	//	return;
+
+	//if (inputString.GetCharacter (6) != '9')
+	//	return;
+
+	//if (inputString.GetCharacter (7) != ';')
+	//	return;
+
+	if (L == 3) {
+
+		inputString = "";
+		return;
+	}
+
+	temp = inputString.ExtractAndRemoveSubstring (3, L);
+	inputString = temp;
 }
 
 

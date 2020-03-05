@@ -136,6 +136,70 @@ void MainMessages::FragmentAnalysisFailed () {
 }
 
 
+// MessageBook functions
+
+void MainMessages::MessageBookIsEmpty () {
+
+	Header ();
+	cout << "MessageBook is empty.  Terminating...";
+	OutputAllMessages ();
+	Tail ();
+}
+
+void MainMessages::CouldNotIdentifyMessageType () {
+
+	Header ();
+	cout << "Could not identify message type for the following:";
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::CouldNotFind (const RGString& msg) {
+
+	Header ();
+	cout << "Could not find " << msg << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::GenericMessageBook (const RGString& msg) {
+
+	Header ();
+	cout << msg << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::CouldNotCompile () {
+
+	Header ();
+	cout << "Could not compile MessageBook.  Errors in:  " << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::CouldNotInitializeMessageBook () {
+
+	Header ();
+	cout << "Could not initialize MessageBook due to following message names:  " << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::LadderInfoInvalid () {
+
+}
+
+
+void MainMessages::LocusSpecificThresholdsInvalid () {
+
+}
+
 
 // Message functions
 

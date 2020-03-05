@@ -64,6 +64,18 @@ public:
 	void LadderBasedAnalysisFailed ();
 	void FragmentAnalysisFailed ();
 
+// MessageBook failures
+	void MessageBookIsEmpty ();
+	void CouldNotIdentifyMessageType ();
+	void CouldNotFind (const RGString& msg);
+	void GenericMessageBook (const RGString& msg);
+	void CouldNotCompile ();
+	void CouldNotInitializeMessageBook ();
+
+// Ladder issues
+	void LadderInfoInvalid ();
+	void LocusSpecificThresholdsInvalid ();
+
 // Message functions
 
 	void AddMessage (const RGString& message);
