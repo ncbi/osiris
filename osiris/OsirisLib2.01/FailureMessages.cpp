@@ -201,6 +201,33 @@ void MainMessages::LocusSpecificThresholdsInvalid () {
 }
 
 
+void MainMessages::NoLadderDataFound () {
+
+	Header ();
+	cout << "No ladder files found.  Check input directory and check ladder id strings in Lab Settings...Terminating" << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::NoLaddersAnalyzedSuccessfully () {
+
+	Header ();
+	cout << "No ladder files analyzed successfully.  See graphical output.\nSuggest check ladder and ILS minimum RFU. Also suggest checking that all ladder alleles were found...Terminating" << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::LadderSpecificationMismatch (const RGString& msg) {
+
+	Header ();
+	cout << (char*)msg.GetData () << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
 // Message functions
 
 void MainMessages::AddMessage (const RGString& message) {

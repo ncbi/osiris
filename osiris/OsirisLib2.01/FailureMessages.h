@@ -76,6 +76,11 @@ public:
 	void LadderInfoInvalid ();
 	void LocusSpecificThresholdsInvalid ();
 
+// Ladder Analysis Issues
+	void NoLadderDataFound ();
+	void NoLaddersAnalyzedSuccessfully ();
+	void LadderSpecificationMismatch (const RGString& msg);
+
 // Message functions
 
 	void AddMessage (const RGString& message);
