@@ -5,6 +5,7 @@
 	<projects>
 		<project>BaseClassLib</project>
 		<project>OsirisLib2.01</project>
+		<project>OsirisMath</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
