@@ -1410,7 +1410,7 @@ int CoreBioComponent :: AnalyzeLaneStandardChannelSM (RGTextOutput& text, RGText
 	status =  mDataChannels [mLaneStandardChannel]->HierarchicalLaneStandardChannelAnalysisSM (text, ExcelText, msg, print);
 
 	if (status < 0)
-		ErrorString << mDataChannels [mLaneStandardChannel]->GetError ();
+		ErrorString << "Could not analyze lane standard:  " << mDataChannels [mLaneStandardChannel]->GetError ();
 
 	else {
 

@@ -1,7 +1,6 @@
 ﻿InputDirectory = C:/Users/goorrob/BUTest;
 LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-OutputSubdirectory = 20200228_140951;
 MarkerSetName = IdentifilerPlus;
 LaneStandardName = ABI-LIZ-600-80-TO-400;
 CriticalOutputLevel = 15;
@@ -10,7 +9,7 @@ LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20151030-152622/V-20151030-1
 StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20151030-152622/V-20151030-152622_StdSettings.xml;
 MinSampleRFU = 5.;
 MinLaneStandardRFU = 75.;
-MinLadderRFU = 75.;
+MinLadderRFU = 460.;
 MinInterlocusRFU = 5.;
 MinLadderInterlocusRFU = 75.;
 SampleDetectionThreshold = 5.;

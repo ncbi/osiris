@@ -172,6 +172,7 @@ mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), 
 mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL) {
 
 	InitializeSmartMessages ();
+	ErrorString << "File named:  name...\n";
 }
 
 
