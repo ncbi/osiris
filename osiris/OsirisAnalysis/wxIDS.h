@@ -200,6 +200,9 @@ enum
   IDArchiveExtract,
 
   // printing
+#ifdef __WXMAC__
+  IDpageMargins,
+#endif
   IDpageSetup,
   IDprintPreview,
 

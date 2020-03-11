@@ -78,10 +78,6 @@ public:
   virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 
   static wxPrintData *GetPrintData();
-  static void SetPrintData(wxPrintData &d)
-  {
-    *GetPrintData() = d;
-  }
   static wxPageSetupDialogData *GetPageSetupData();
   static void UpdatePageSetup();
   static void UpdatePageSetupData(wxPrintData *pPrintData = NULL, wxPageSetupDialogData *pSetupData = NULL);
@@ -100,6 +96,9 @@ public:
   }
   static void DoPrintPreview(CFramePlot *pPlot);
   static void DoPageSetup(CFramePlot *pPlot);
+#ifdef __WXMAC__
+  static void DoPageMargins(CFramePlot *pPlot);
+#endif
   static void DoPrint(CFramePlot *pPlot);
 private:
   CFramePlot *m_pFramePlot;
