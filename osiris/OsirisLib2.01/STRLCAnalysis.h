@@ -40,6 +40,7 @@
 #include "Notice.h"
 #include "rgpersist.h"
 #include "SmartMessagingObject.h"
+#include "FailureMessages.h"
 
 #include <string>
 #include <math.h>
@@ -66,6 +67,8 @@ public:
 	STRLCAnalysis (const RGString& ladderInformationDirectory, const RGString& markerSetName, const RGString& parentDirectoryForReports, const RGString& messageBookPath, bool isSmartMsgAnalysis);  // Smart message constructor2
 	STRLCAnalysis (const RGString& ladderInformationDirectory, const RGString& markerSetName, const RGString& parentDirectoryForReports, const RGString& messageBookPath, bool isSmartMsgAnalysis, bool isFileInput);  // Smart message constructor3
 	virtual ~STRLCAnalysis ();
+
+	static MainMessages* mFailureMessage;
 
 	// Non-message functions***************************************************************************************************************************
 	// ************************************************************************************************************************************************
