@@ -41,6 +41,7 @@
 #include "Genetics.h"
 #include "Expression.h"
 #include "SmartMessage.h"
+#include "STRLCAnalysis.h"
 
 #include <iostream>
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.47</VersionNumber>
-	<BuildTime>02/14/2020 06:36 PM</BuildTime>
+	<VersionNumber>7.48</VersionNumber>
+	<BuildTime>03/06/2020 02:19 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -865,7 +865,7 @@
 			<Subject>20</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>(smNoGenotypeFound AND NOT smNoYLinkedAlleleExpected) OR smHomozygoteHeightProblem OR  (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous) OR (smSampleIsNegCtrl AND smTestForPeaksBelowMinRFUForNegCtrlPreset)</Expression>
+				<Expression>(smNoGenotypeFound AND NOT smNoYLinkedAlleleExpected) OR smReportedHomozygoteHeightProblem OR  (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous) OR (smSampleIsNegCtrl AND smTestForPeaksBelowMinRFUForNegCtrlPreset)</Expression>
 			</ReportCriterion>
 			<Text>LOCUS HAS PEAKS BETWEEN DETECTION AND ANALYSIS THRESHOLDS</Text>
 			<TextForData> AT ALLELE LOCATION(S):  </TextForData>
@@ -3013,7 +3013,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smSampleIsPosCtrl AND smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset)</Expression>
 			</ReportCriterion>
 			<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
 			<ReportLevel>1</ReportLevel>
@@ -3030,6 +3030,17 @@
 					</TextLoc>
 				</Protocol>
 			</ExportProtocolList>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smReportedHomozygoteHeightProblem</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPullUpAtAllele</Name>
@@ -6113,6 +6124,22 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Do Not Report Homozygote Too Low If Sample Is Positive Control</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Do Not Report Homozygote Too Low If Sample Is Positive Control</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacer2</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -7442,6 +7469,7 @@
 						<Name>smCallStutterPeaksPreset</Name>
 						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
 						<Name>smTestPullupCorrectedHeightsPreset</Name>
+						<Name>smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -7975,12 +8003,13 @@
 						<Name>smOLAlleles</Name>
 					</TriggeredMessages>
 					<Evaluations>
+						<Expression>smReportedHomozygoteHeightProblem = smHomozygoteHeightProblem AND (NOT smSampleIsPosCtrl OR NOT smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset)</Expression>
 						<Expression>smNoYLinkedAlleleExpected = (smNoYForAMEL AND smSampleHasAMELLocus) AND smLocusIsYLinked</Expression>
 						<Expression>smLocusContainsPullUpWithHeteroImbalance = smHeterozygousImbalance AND smLocusAlleleHasPullup</Expression>
-						<Expression>smLocusUnderAmped = ((smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smHomozygoteHeightProblem))) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected</Expression>
+						<Expression>smLocusUnderAmped = ((smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smReportedHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smReportedHomozygoteHeightProblem))) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected</Expression>
 					</Evaluations>
 					<Triggers>
-						<TriggerExpression>smHomozygoteHeightProblem (NOT smSampleIsNegCtrl): smSampleHasHomozygoteWithHeightProblem</TriggerExpression>
+						<TriggerExpression>smReportedHomozygoteHeightProblem (NOT smSampleIsNegCtrl): smSampleHasHomozygoteWithHeightProblem</TriggerExpression>
 						<TriggerExpression>smLocusIsHomozygous (NOT smSampleIsNegCtrl AND NOT smLocusIsYLinked): smTotalNumberOfHomozygousLoci</TriggerExpression>
 						<TriggerExpression>smThreeOrMoreAlleles (smFlagMixedSamplesPreset OR smDoNotReportHeterozygousImbalanceIfMixturePreset): smTotalNumberOfTriallelicLoci, smNoLociWithThreeOrMoreAlleles</TriggerExpression>
 						<TriggerExpression>smNoGenotypeFound (NOT smSampleIsLadder AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected): smLocusDropout</TriggerExpression>

@@ -232,6 +232,8 @@ SmartMessagingObject (), mCollection (NULL), mParentDirectoryForReports (parentD
 
 		cout << mCollection->GetErrorString ().GetData () << endl;
 		cout << "Ladder info file is invalid.  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage (mCollection->GetErrorString ());
+		STRLCAnalysis::mFailureMessage->LadderInfoInvalid ();
 		return;
 	}
 
@@ -294,6 +296,7 @@ SmartMessagingObject (), mCollection (NULL), mParentDirectoryForReports (parentD
 int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirectory, const RGString& markerSet, int outputLevel, const RGString& graphicsDirectory, const RGString& commandInputs) {
 
 	Boolean print = TRUE;
+	RGString errorMsg;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
 	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
@@ -1064,6 +1067,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		if (!data->IsValid ()) {
 
 			NoticeStr << "Oops, " << LadderFileName.GetData () << " is not valid...Skipping";
+			STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in ladder named " + LadderFileName + "...Skipping");
 			cout << NoticeStr << endl;
 			NoticeStr << "\n";
 			ExcelText.Write (1, NoticeStr);
@@ -1109,6 +1113,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 			ExcelText << "MARKERSET MISMATCH...EXPECTING " << expectedNumberOfChannels << " CHANNELS AND FILE CONTAINS " << NChannels << " CHANNELS" << endLine;
 			ExcelText << "ENDING..." << endLine;
+
+			errorMsg << "Markerset mismatch...expecting " << expectedNumberOfChannels << " channels and ladder file contains " << NChannels << " channels for ladder named " << FullPathName << " ...Terminating";
+			STRLCAnalysis::mFailureMessage->LadderSpecificationMismatch (errorMsg);
 
 			XMLExcelLinks << CLevel (1) << "\t\t<Sample>\n\t\t\t<Name>Marker Set Mismatch</Name>\n\t\t\t<Type></Type>\n\t\t</Sample>\n" << PLevel ();
 			XMLExcelLinks << CLevel (1) << "\t</Table>\n" << PLevel ();
@@ -1322,14 +1329,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	bool populatedBaseLocusList = false;
 	bool possibleMixture;
 
+	if (nLadders == 0) {
+
+		NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO LADDER FOUND IN DIRECTORY...ENDING";
+		STRLCAnalysis::mFailureMessage->NoLadderDataFound ();
+		cout << NoticeStr << endl;
+		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
+		text << NoticeStr << "\n";
+		foundALadder = false;
+		return -42;
+	}
+
 	if (LadderList.Entries () == 0) {
-
-		if (nLadders == 0)
-			NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO LADDER FOUND IN DIRECTORY...ENDING";
 		
-		else
-			NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO SATISFACTORY LADDER FOUND...ENDING";
-
+		STRLCAnalysis::mFailureMessage->NoLaddersAnalyzedSuccessfully ();
+		NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO SATISFACTORY LADDER FOUND...ENDING";
 		cout << NoticeStr << endl;
 		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
 		text << NoticeStr << "\n";

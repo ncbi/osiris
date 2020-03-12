@@ -559,6 +559,7 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 	if (!sampleLevelSearch.FindNextTag (startIndex, endIndex, unitString)) {
 
 		cout << "Could not find 'TestUnitsSampleLevel' tag.  Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFind ("'TestUnitsSampleLevel' tag.  Ending...");
 		return -10;
 	}
 
@@ -580,6 +581,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 		if (!stageSearch.FindNextTag (stageLevelStart, stageLevelEnd, numericString)) {
 
 			cout << "Could not locate stage in conditional test unit for sample level.  Last stage was " << currentStage << ".  Ending..." << endl;
+			RGString stageString;
+			stageString << currentStage;
+			STRLCAnalysis::mFailureMessage->CouldNotFind ("stage in conditional test unit for sample level.  Last stage was " + stageString + ".  Ending...");
 			return -52;
 		}
 
@@ -588,7 +592,10 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 
 		if (!stageDynamicsSearch.FindNextTag (stageLevelStart, stageLevelEnd, stageString)) {
 
+			RGString stageString;
+			stageString << currentStage;
 			cout << "Could not locate stage dynamics string for stage " << currentStage << ".  Ending..." << endl;
+			STRLCAnalysis::mFailureMessage->CouldNotFind ("stage dynamics string for stage" + stageString + ".  Ending...");
 			return -53;
 		}
 
@@ -609,6 +616,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 
 			if (!scopeInDynamicsSearch.FindNextTag (scopeLevelStart, scopeLevelEnd, numericString)) {
 
+				RGString msg;
+				msg << currentStage << ". Last scope was " << scope << ".  Ending...";
+				STRLCAnalysis::mFailureMessage->CouldNotFind ("scope in scope dynamics field for stage " + msg);
 				cout << "Could not find scope in scope dynamics field for stage " << currentStage << ".  Last scope was " << scope << ".  Ending..." << endl;
 				return -54;
 			}
@@ -631,12 +641,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find measured message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << nameString.GetData () << " for scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind ("measured message named " + msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for measured message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for measured message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -662,12 +678,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find triggered message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "triggered message named " << nameString.GetData () << " for scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for triggered message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for triggered message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -691,6 +713,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (!expressionString.FindSubstring ("=", equalsLocation)) {
 
 						cout << "Could not find '=' in expression for stage = " << currentStage << " and scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "'=' in expression for stage = " << currentStage << " and scope = " << scope << ".Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -56;
 					}
 
@@ -704,12 +729,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find evaluated message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "evaluated message named " << nameString.GetData () << " for scope = " << scope << ".Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for evaluated message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for evaluated message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -734,6 +765,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (!triggerString.FindSubstring (":", equalsLocation)) {
 
 						cout << "Could not find ':' in trigger expression for stage = " << currentStage << " and scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "':' in trigger expression for stage = " << currentStage << " and scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -56;
 					}
 
@@ -759,12 +793,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find triggering message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "triggering message named " << nameString.GetData () << " for scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for triggering message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for triggering message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -779,6 +819,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (foundMap == NULL) {
 
 						cout << "Could not find triggering message named " << nameString.GetData () << " for scope = " << scope << " in this scope and stage list.  Ending..." << endl;
+						RGString msg;
+						msg << "triggering message named " << nameString.GetData () << " for scope = " << scope << " in this scope and stage list.  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -56;
 					}
 				}
@@ -791,6 +834,7 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 	if (!directoryLevelSearch.FindNextTag (startIndex, endIndex, unitString)) {
 
 		cout << "Could not find 'TestUnitsDirectoryLevel' tag.  Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFind ("'TestUnitsDirectoryLevel' tag.  Ending...");
 		return -10;
 	}
 
@@ -810,6 +854,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 		if (!stageSearch.FindNextTag (stageLevelStart, stageLevelEnd, numericString)) {
 
 			cout << "Could not locate stage in conditional test unit for sample level.  Last stage was " << currentStage << ".  Ending..." << endl;
+			RGString msg;
+			msg << "stage in conditional test unit for sample level.  Last stage was " << currentStage << ".  Ending...";
+			STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 			return -52;
 		}
 
@@ -819,6 +866,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 		if (!stageDynamicsSearch.FindNextTag (stageLevelStart, stageLevelEnd, stageString)) {
 
 			cout << "Could not locate stage dynamics string for stage " << currentStage << ".  Ending..." << endl;
+			RGString msg;
+			msg << "stage dynamics string for stage " << currentStage << ".  Ending...";
+			STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 			return -53;
 		}
 
@@ -840,6 +890,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 			if (!scopeInDynamicsSearch.FindNextTag (scopeLevelStart, scopeLevelEnd, numericString)) {
 
 				cout << "Could not find scope in scope dynamics field for stage " << currentStage << ".  Last scope was " << scope << ".  Ending..." << endl;
+				RGString msg;
+				msg << "scope in scope dynamics field for stage " << currentStage << ".  Last scope was " << scope << ".  Ending...";
+				STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 				return -54;
 			}
 
@@ -861,12 +914,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find measured message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "measured message named " << nameString.GetData () << " for scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for measured message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for measured message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -892,12 +951,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find triggered message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "measured triggered named " << nameString.GetData () << " for scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for triggered message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for triggered message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -921,6 +986,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (!expressionString.FindSubstring ("=", equalsLocation)) {
 
 						cout << "Could not find '=' in expression for stage = " << currentStage << " and scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "'=' in expression for stage = " << currentStage << " and scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -56;
 					}
 
@@ -934,12 +1002,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find evaluated message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "evaluated named " << nameString.GetData () << " for scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for evaluated message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for evaluated message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -1000,6 +1074,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (!triggerString.FindSubstring (":", equalsLocation)) {
 
 						cout << "Could not find ':' in trigger expression for stage = " << currentStage << " and scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "':' in trigger expression for stage = " << currentStage << " and scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -56;
 					}
 
@@ -1025,12 +1102,18 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (nextSM == NULL) {
 
 						cout << "Could not find triggering message named " << nameString.GetData () << " for scope = " << scope << ".  Ending..." << endl;
+						RGString msg;
+						msg << "triggering message named " << nameString.GetData () << " for scope = " << scope << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -55;
 					}
 
 					if (nextSM->GetScope () != scope) {
 
 						cout << "Scope mismatch for triggering message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending..." << endl;
+						RGString msg;
+						msg << "Scope mismatch for triggering message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
+						STRLCAnalysis::mFailureMessage->GenericMessageBook (msg);
 						return -55;
 					}
 
@@ -1045,6 +1128,9 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 					if (foundMap == NULL) {
 
 						cout << "Could not find triggering message named " << nameString.GetData () << " for scope = " << scope << " in this scope and stage list.  Ending..." << endl;
+						RGString msg;
+						msg << "triggering message named " << nameString.GetData () << " for scope = " << scope << " in this scope and stage list.  Ending...";
+						STRLCAnalysis::mFailureMessage->CouldNotFind (msg);
 						return -56;
 					}
 				}
@@ -1272,6 +1358,7 @@ int SmartMessage :: LoadAllMessagesV4 (const RGString& inputString, SmartMessage
 	if (!declarationsSearch.FindNextTag (startIndex, endIndex, declarationString)) {
 
 		cout << "There are no smart message declarations.  MessageBook is empty!" << endl;
+		STRLCAnalysis::mFailureMessage->MessageBookIsEmpty ();
 		return -1;
 	}
 
@@ -1290,8 +1377,11 @@ int SmartMessage :: LoadAllMessagesV4 (const RGString& inputString, SmartMessage
 			status = -1;
 	}
 
-	if (status < 0)
+	if (status < 0) {
+
+		STRLCAnalysis::mFailureMessage->CouldNotIdentifyMessageType ();
 		return status;
+	}
 
 	return AssembleMessagesV4 (overallString, startIndex, prototype);  // change to AssembleMessagesV4
 }
@@ -1308,8 +1398,11 @@ int SmartMessage :: CompileAllMessages () {
 
 		result = nextMessage->CompileAll ();
 
-		if (!result)
+		if (!result) {
+
+			STRLCAnalysis::mFailureMessage->CouldNotCompile ();
 			status = -1;
+		}
 	}
 
 	return status;
@@ -1330,6 +1423,9 @@ int SmartMessage :: InitializeAllMessages () {
 		if (result < 0)
 			status = -1;
 	}
+
+	if (status < 0)
+		STRLCAnalysis::mFailureMessage->CouldNotInitializeMessageBook ();
 
 	return status;
 }
@@ -1553,7 +1649,9 @@ int SmartMessage :: LoadAndActivateAllMessages (const RGString& messageFullPathF
 
 	if (!inputFile.isValid ()) {
 
-		cout << "Could not open smart messagebook file:  " << messageFullPathFileName.GetData () << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Name = " + messageFullPathFileName + ".");
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("MessageBook");
+		cout << "Could not open messagebook file:  " << messageFullPathFileName.GetData () << endl;
 		return -1;
 	}
 

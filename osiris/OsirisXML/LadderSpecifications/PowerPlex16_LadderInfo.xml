@@ -6,6 +6,7 @@
       <Name>PowerPlex 16</Name>
       <NChannels>4</NChannels>
       <LS>
+		<LSName>Promega-ILS-400</LSName>
         <LSName>Promega-ILS-475</LSName>
         <LSName>Promega-ILS-600</LSName>
         <LSName>Promega-ILS-550</LSName>
