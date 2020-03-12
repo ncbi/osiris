@@ -1,5 +1,13 @@
 bin_PROGRAMS = osiris
 AUTOMAKE_OPTIONS = subdir-objects
+osiris_DEPENDENCIES = \
+../../OsirisMath/lib/libOsirisMath.a \
+../../nwxZip/lib/libnwxZip.a \
+../../nwx/lib/libnwx.a \
+../../wxXml2/lib/libwxXml2.a \
+../../wxXsl/lib/libwxXsl.a \
+../../wxthings/lib/libwxthings.a \
+../../wxplotctrl/lib/libwxplotctrl.a 
 osiris_SOURCES =  \
 ../CArchiveCollection.cpp \
 ../CArtifactLabels.cpp \
