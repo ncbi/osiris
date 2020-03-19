@@ -671,13 +671,21 @@ void wxPlotCtrl::DrawPlotCtrl( wxDC *dc )
 
     if (draw_xlabel || draw_ylabel)
     {
+        wxRect r(0, 0, 1, 1);
+        dc->GetClippingBox(r);
         dc->SetFont(GetAxisLabelFont());
         dc->SetTextForeground(GetAxisLabelColour());
-
+        dc->DestroyClippingRegion();
         if (draw_xlabel)
             dc->DrawText(m_xLabel, m_xLabelRect.x, m_xLabelRect.y);
         if (draw_ylabel)
             dc->DrawRotatedText(m_yLabel, m_yLabelRect.x, m_yLabelRect.y + m_yLabelRect.height, 90);
+#if 0
+        if (r != wxRect(0, 0, 1, 1))
+        {
+          dc->SetClippingRegion(r);
+        }
+#endif
     }
 
 #ifdef DRAW_BORDERS
@@ -2287,11 +2295,6 @@ void wxPlotCtrl::OnSize( wxSizeEvent& )
     DoSize();
 }
 
-bool wxPlotCtrl::RenderScrollbars()
-{
-  return true;
-}
-
 void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 {
     if (!m_yAxisScrollbar) return; // we're not created yet
@@ -2314,7 +2317,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     // wait until we have a normal size
     if ((size.x < 2) || (size.y < 2)) return;
 
-    int sb_width = RenderScrollbars() ? m_yAxisScrollbar->GetSize().GetWidth() : 0;
+    int sb_width = m_yAxisScrollbar->GetSize().GetWidth();
 
     m_clientRect = wxRect(0, 0, size.x-sb_width, size.y-sb_width);
 
@@ -2353,11 +2356,9 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     // scrollbar to right and bottom
     if (set_window_sizes)
     {
-        if (sb_width)
-        {
-          m_yAxisScrollbar->SetSize(m_clientRect.width, 0, sb_width, m_clientRect.height );
-          m_xAxisScrollbar->SetSize(0, m_clientRect.height, m_clientRect.width, sb_width );
-        }
+        m_yAxisScrollbar->SetSize(m_clientRect.width, 0, sb_width, m_clientRect.height );
+        m_xAxisScrollbar->SetSize(0, m_clientRect.height, m_clientRect.width, sb_width );
+
         m_yAxis->Show(GetShowYAxis());
         m_xAxis->Show(GetShowXAxis());
         if (GetShowYAxis()) m_yAxis->SetSize(m_yAxisRect);
@@ -2840,8 +2841,9 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     wxCHECK_RET(dc, wxT("invalid dc"));
     wxCHECK_RET(dpi > 0, wxT("Invalid dpi for plot drawing"));
 
+    bool bPrinting = (dpi >= 150);
     //set font scale so 1pt = 1pixel at 72dpi
-    double fontScale = (double)dpi / 72.0;
+    double fontScale = (double)dpi / (bPrinting ? 96.0 : 72.0);
     //one pixel wide line equals (m_pen_print_width) millimeters wide
     double penScale = (double)m_pen_print_width * dpi / 25.4;
 
@@ -2857,7 +2859,7 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     double oldDataCurveDrawerScale = 0.0;
     double oldMarkerDrawerScale = 0.0;
 
-    if(dpi >= 200.0)
+    if(bPrinting)
     {
       oldCurveDrawerScale = m_curveDrawer->GetPenScale();
       oldDataCurveDrawerScale = m_dataCurveDrawer->GetPenScale();
@@ -2975,7 +2977,7 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
 
     // DJH 2/19/09 restore more old values
 
-    if(dpi >= 100.0)
+    if(bPrinting)
     {
       m_curveDrawer->SetPenScale(oldCurveDrawerScale);
       m_dataCurveDrawer->SetPenScale(oldDataCurveDrawerScale);
