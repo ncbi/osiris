@@ -15,6 +15,7 @@ libosiris_a_SOURCES = \
 ../Evaluate.cpp \
 ../Expression.cpp \
 ../ExpressionParserUX.cpp \
+../FailureMessages.cpp \
 ../fsa2XML.cpp \
 ../fsaDirEntry.cpp \
 ../fsaFile.cpp \
