@@ -586,9 +586,15 @@ void wxPlotDrawerYAxis::Draw(wxDC *dc, bool refresh)
     wxString label;
     // double current = ceil(m_viewRect.GetTop() / m_yAxisTick_step) * m_yAxisTick_step;
     int i, count = m_tickLabels.GetCount();
+    wxCoord nx, ny, nd, nl, nXpos;
+    int nWidth = dcRect.GetWidth();
     for (i=0; i<count; i++)
     {
-        dc->DrawText( m_tickLabels[i], 2, m_tickPositions[i] );
+        dc->GetTextExtent(m_tickLabels[i], &nx, &ny, &nd, &nl);
+        nx++;
+        nx += nl;
+        nXpos = (nx > nWidth) ? 0 : (nWidth - nx);
+        dc->DrawText( m_tickLabels[i], nXpos, m_tickPositions[i] );
 
 //        if (!IsFinite(current, wxT("axis label is not finite")))
 //            break;

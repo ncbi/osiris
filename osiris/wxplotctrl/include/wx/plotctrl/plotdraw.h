@@ -99,7 +99,7 @@ public:
     wxPlotDrawerAxisBase(wxPlotCtrl* owner);
 
     virtual void Draw(wxDC *dc, bool refresh) = 0;
-
+    const wxFont &GetTickFont() { return m_tickFont; }
     void SetTickFont( const wxFont& font ) { m_tickFont = font; }
     void SetLabelFont( const wxFont& font ) { m_labelFont = font; }
 
