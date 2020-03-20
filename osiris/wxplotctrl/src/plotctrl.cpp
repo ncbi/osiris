@@ -705,14 +705,14 @@ void wxPlotCtrl::DrawPlotCtrl( wxDC *dc )
 #endif
     }
 
-//#ifdef DRAW_BORDERS
+#ifdef DRAW_BORDERS
     // Test code for sizing to show the extent of the axes
     dc->SetBrush( *wxTRANSPARENT_BRUSH );
     dc->SetPen( wxPen(GetBorderColour(), 1, wxSOLID) );
     dc->DrawRectangle(m_titleRect);
     dc->DrawRectangle(m_xLabelRect);
     dc->DrawRectangle(m_yLabelRect);
-//#endif // DRAW_BORDERS
+#endif // DRAW_BORDERS
 }
 
 void wxPlotCtrl::SetPlotWinMouseCursor(wxStockCursor cursorid)
@@ -1036,7 +1036,7 @@ void wxPlotCtrl::SetAxisFont( const wxFont &font )
 #if 0
     // 3/9/2020 removed because this is called from ::DrawWholePlot which will explicitly call DoSize
     DoSize();
-    Redraw(wxPLOTCTRL_REDRAW_XAXIS|wxPLOTCTRL_REDRAW_YAXIS);
+    Redraw(wxPLOTCTRL_REDRAW_XAXIS | wxPLOTCTRL_REDRAW_YAXIS);
 #endif
 }
 void wxPlotCtrl::SetAxisColour( const wxColour &colour )
@@ -2972,8 +2972,7 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     PRINT_WXRECT(wxT("Area plot"), m_areaRect);
     PRINT_WXRECT(wxT("Xaxis plot"), m_xAxisRect);
     PRINT_WXRECT(wxT("Yaxis plot"), m_yAxisRect);
-    PRINT_WXRECT(wxT("Xaxis label"), m_xLabelRect);
-    PRINT_WXRECT(wxT("Yaxis label"), m_yLabelRect);
+
     //draw all components to the provided dc
     dc->SetDeviceOrigin(long(boundingRect.x+m_xAxisRect.GetLeft()),
                         long(boundingRect.y+m_xAxisRect.GetTop()));
