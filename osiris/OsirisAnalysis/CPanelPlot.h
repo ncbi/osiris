@@ -767,6 +767,7 @@ public:
   void OnBtnRemove(wxCommandEvent &);
   void OnBtnDetails(wxCommandEvent &);
   void OnSync(wxCommandEvent &);
+  void OnViewChanging(wxPlotCtrlEvent &);
   void OnViewChanged(wxPlotCtrlEvent &);
   void OnPointSelected(wxPlotCtrlEvent &);
   void OnNoBPSPrompt(wxCommandEvent &);

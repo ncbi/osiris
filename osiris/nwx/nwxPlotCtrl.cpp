@@ -93,21 +93,21 @@ void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
     rClip.x += nOffset;
     rClip.height -= nOffset;
     rClip.width -= nOffset2;
-    pdc->GetClippingBox(&nX,&nY,&nW,&nH);
-    pdc->SetClippingRegion(rClip);
   }
 
   // clipping region
-  pdc->SetClippingRegion(rClip);
-  m_Labels.Draw(pdc,true);
-  if(nOffset > 0)
+  pdc->GetClippingBox(&nX, &nY, &nW, &nH);
+  bool bClipped = !!(nX | nY | nW | nH);
+  if (bClipped)
   {
     pdc->DestroyClippingRegion();
-    if(nW > 0 && nH > 0)
-    {
+  }
+  pdc->SetClippingRegion(rClip);
+  m_Labels.Draw(pdc,true);
+  pdc->DestroyClippingRegion();
+  if(bClipped)
+  {
       pdc->SetClippingRegion(nX,nY,nW,nH);
-      // this isn't necessarily the original clipping region
-    }
   }
 
 //  wxWindowDC wdc(this);

@@ -204,7 +204,9 @@ IMPLEMENT_ABSTRACT_CLASS(wxPlotCtrlEvent, wxNotifyEvent)
 
 wxPlotCtrlEvent::wxPlotCtrlEvent(wxEventType commandType, wxWindowID id, wxPlotCtrl *window)
                 :wxNotifyEvent(commandType, id), m_curve(NULL), m_curve_index(-1),
-                 m_curve_dataindex(-1), m_mouse_func(wxPLOTCTRL_MOUSE_NOTHING), m_x(0), m_y(0)
+                 m_curve_dataindex(-1), m_mouse_func(wxPLOTCTRL_MOUSE_NOTHING),
+                 m_x(0.0), m_y(0.0),
+                 m_width(0.0), m_height(0.0)
 {
     SetEventObject( (wxObject*)window );
 }
@@ -520,7 +522,7 @@ void wxPlotCtrl::Init()
 
     m_axisFontSize.x    = 6;
     m_axisFontSize.y    = 12;
-    m_y_axis_text_width = 60;
+    ResetYAxisTextWidth();
     m_area_border_width = 1;
     m_border            = 4;
     m_min_exponential   = 1000;
@@ -534,7 +536,19 @@ void wxPlotCtrl::Init()
     m_area_mouse_cursorid = wxCURSOR_CROSS;
 
     m_mouse_cursorid = wxCURSOR_ARROW;
+    m_nYAxisDigits = 0;
 }
+
+const wxChar * const wxPlotCtrl::YAxisExtentString = wxT("555555555555"); // MUST BE LENGTH OF MAX_Y_DEFAULT_DIGITS
+int wxPlotCtrl::g_nYAxisDefaultDigits = 9;
+const int wxPlotCtrl::MIN_Y_DEFAULT_DIGITS = 1;
+const int wxPlotCtrl::MAX_Y_DEFAULT_DIGITS = 12;
+const wxChar * wxPlotCtrl::_GetYAxisExtentStr() const
+{
+  int nOffset = MAX_Y_DEFAULT_DIGITS - GetYAxisDigits();
+  return YAxisExtentString + nOffset;
+}
+
 
 bool wxPlotCtrl::Create( wxWindow *parent, wxWindowID win_id,
                          const wxPoint &pos, const wxSize &size,
@@ -574,6 +588,7 @@ bool wxPlotCtrl::Create( wxWindow *parent, wxWindowID win_id,
     m_markerDrawer    = new wxPlotDrawerMarker(this);
 
     wxFont axisFont(GetFont());
+    ResetYAxisTextWidth();
     GetTextExtent(wxT("5"), &m_axisFontSize.x, &m_axisFontSize.y, NULL, NULL, &axisFont);
     if ((m_axisFontSize.x < 2) || (m_axisFontSize.y < 2)) // don't want to divide by 0
     {
@@ -671,8 +686,10 @@ void wxPlotCtrl::DrawPlotCtrl( wxDC *dc )
 
     if (draw_xlabel || draw_ylabel)
     {
+#if 0
         wxRect r(0, 0, 1, 1);
         dc->GetClippingBox(r);
+#endif
         dc->SetFont(GetAxisLabelFont());
         dc->SetTextForeground(GetAxisLabelColour());
         dc->DestroyClippingRegion();
@@ -980,6 +997,7 @@ wxColour wxPlotCtrl::GetAxisColour() const
     return m_xAxisDrawer->m_tickColour.GetColour(); // FIXME
 }
 
+
 void wxPlotCtrl::SetAxisFont( const wxFont &font )
 {
     wxCHECK_RET(font.Ok(), wxT("invalid font"));
@@ -993,8 +1011,7 @@ void wxPlotCtrl::SetAxisFont( const wxFont &font )
     m_axisFontSize.x = x+leading;
     m_axisFontSize.y = y+decent;
 
-    GetTextExtent(wxT("-5.5e+555"), &x, &y, &decent, &leading, &font);
-    m_y_axis_text_width = x + leading;
+    ResetYAxisTextWidth();
 
     //m_axisFontSize.x = m_xAxis->GetCharWidth();
     //m_axisFontSize.y = m_xAxis->GetCharHeight();
@@ -1203,7 +1220,7 @@ bool wxPlotCtrl::AddCurve( wxPlotCurve *curve, bool select, bool send_event )
     m_batch_count--;
 
     if (m_fit_on_new_curve)
-        SetZoom( -1, -1, 0, 0, true );
+        SetZoom( -1, -1, 0, 0, send_event );
     else
         Redraw(wxPLOTCTRL_REDRAW_PLOT);
 
@@ -2068,6 +2085,7 @@ bool wxPlotCtrl::SetZoom( double zoom_x, double zoom_y,
     if ((m_viewRect.m_y != origin_y) || (m_zoom.m_y != zoom_y))
         y_changed = true;
 
+    bool bOK = true;
     if (x_changed || y_changed)
     {
         if (send_event)
@@ -2075,16 +2093,20 @@ bool wxPlotCtrl::SetZoom( double zoom_x, double zoom_y,
             wxPlotCtrlEvent event( wxEVT_PLOTCTRL_VIEW_CHANGING, GetId(), this);
             event.SetCurve(m_activeCurve, m_active_index);
             event.SetPosition(origin_x, origin_y);
-            if (!DoSendEvent(event)) return false;
+            event.SetSize(view_width, view_height);
+            bOK = DoSendEvent(event);
         }
 
-        m_zoom.m_x = zoom_x;
-        m_zoom.m_y = zoom_y;
+        if(bOK)
+        {
+          m_zoom.m_x = zoom_x;
+          m_zoom.m_y = zoom_y;
 
-        m_viewRect.m_x = origin_x;
-        m_viewRect.m_y = origin_y;
-        m_viewRect.m_width  = view_width;
-        m_viewRect.m_height = view_height;
+          m_viewRect.m_x = origin_x;
+          m_viewRect.m_y = origin_y;
+          m_viewRect.m_width  = view_width;
+          m_viewRect.m_height = view_height;
+        }
     }
 
     // redraw even if unchanged since we expect that it should be different
@@ -2102,7 +2124,7 @@ bool wxPlotCtrl::SetZoom( double zoom_x, double zoom_y,
         (void)DoSendEvent( event );
     }
 
-    return true;
+    return bOK;
 }
 
 void wxPlotCtrl::SetFixAspectRatio(bool fix, double ratio)
@@ -2297,9 +2319,26 @@ void wxPlotCtrl::OnSize( wxSizeEvent& )
     DoSize();
 }
 
+bool wxPlotCtrl::RenderScrollbars()
+{
+  return true;
+}
+
+int wxPlotCtrl::_GetYAxisTextWidth()
+{
+  if ( (!m_y_axis_text_width) && (m_yAxisDrawer != NULL) )
+  {
+    int x, y, d, leading;
+    const wxFont &font(m_yAxisDrawer->GetTickFont());
+    GetTextExtent(_GetYAxisExtentStr(), &x, &y, &d, &leading, &font);
+    m_y_axis_text_width = x + leading;
+  }
+  return m_y_axis_text_width;
+}
+
 void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 {
-    if (!m_yAxisScrollbar) return; // we're not created yet
+    if (!m_area) return; // we're not created yet
 
     m_redraw_type = wxPLOTCTRL_REDRAW_BLOCKER;  // block OnPaints until done
 
@@ -2319,7 +2358,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     // wait until we have a normal size
     if ((size.x < 2) || (size.y < 2)) return;
 
-    int sb_width = m_yAxisScrollbar->GetSize().GetWidth();
+    int sb_width = RenderScrollbars() ? m_yAxisScrollbar->GetSize().GetWidth() : 0;
 
     m_clientRect = wxRect(0, 0, size.x-sb_width, size.y-sb_width);
 
@@ -2334,7 +2373,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     // use the area_border between top of y-axis and area as bottom border of title
     if (m_show_title) titleRect.height -= m_border;
 
-    int yaxis_width  = GetShowYAxis() ? m_y_axis_text_width : 1;
+    int yaxis_width  = GetShowYAxis() ? _GetYAxisTextWidth() : 1;
     int xaxis_height = GetShowXAxis() ? m_axisFontSize.y    : area_border;
 
     int area_width  = m_clientRect.width  - yLabelRect.GetRight() - yaxis_width - 2*area_border;
@@ -2358,9 +2397,11 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     // scrollbar to right and bottom
     if (set_window_sizes)
     {
-        m_yAxisScrollbar->SetSize(m_clientRect.width, 0, sb_width, m_clientRect.height );
-        m_xAxisScrollbar->SetSize(0, m_clientRect.height, m_clientRect.width, sb_width );
-
+        if (sb_width)
+        {
+          m_yAxisScrollbar->SetSize(m_clientRect.width, 0, sb_width, m_clientRect.height);
+          m_xAxisScrollbar->SetSize(0, m_clientRect.height, m_clientRect.width, sb_width);
+        }
         m_yAxis->Show(GetShowYAxis());
         m_xAxis->Show(GetShowXAxis());
         if (GetShowYAxis()) m_yAxis->SetSize(m_yAxisRect);
@@ -3136,6 +3177,30 @@ void wxPlotCtrl::CorrectYAxisTicks()
     }
 }
 
+wxString wxPlotCtrl::_FormatTickLabel(const wxString &sFormat, double d)
+{
+  wxString sRtn = wxString::Format(sFormat, d == 0.0 ? 0.0 : d); // avoid -0 on plot
+  // now check for -0
+  const wxChar *p = sRtn;
+  if(*p == wxT('-'))
+  {
+    bool bFix = true;
+    wxChar c0('0'), c9('9');
+    for(++p; bFix && *p; ++p)
+    {
+      if ((*p) > c0 && (*p) <= c9)
+      {
+        bFix = false;
+      }
+    }
+    if (bFix)
+    {
+      sRtn.Remove(0);
+    }
+  }
+  return sRtn;
+}
+
 void wxPlotCtrl::CalcXAxisTickPositions()
 {
     double current = ceil(m_viewRect.GetLeft() / m_xAxisTick_step) * m_xAxisTick_step;
@@ -3151,7 +3216,7 @@ void wxPlotCtrl::CalcXAxisTickPositions()
         if ((x >= -1) && (x < windowWidth+2))
         {
             m_xAxisTicks.Add(x);
-            m_xAxisTickLabels.Add(wxString::Format(m_xAxisTickFormat, current));
+            m_xAxisTickLabels.Add(_FormatTickLabel(m_xAxisTickFormat, current));
         }
 
         current += m_xAxisTick_step;
@@ -3173,7 +3238,7 @@ void wxPlotCtrl::CalcYAxisTickPositions()
         if ((y >= -1) && (y < windowWidth+2))
         {
             m_yAxisTicks.Add(y);
-            m_yAxisTickLabels.Add(wxString::Format(m_yAxisTickFormat, current));
+            m_yAxisTickLabels.Add(_FormatTickLabel(m_yAxisTickFormat, current));
         }
 
         current += m_yAxisTick_step;

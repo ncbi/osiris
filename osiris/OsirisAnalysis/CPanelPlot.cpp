@@ -1368,6 +1368,13 @@ void CPanelPlot::OnPointSelected(wxPlotCtrlEvent &)
 
   }
 }
+void CPanelPlot::OnViewChanging(wxPlotCtrlEvent &e)
+{
+  if (e.GetHeight() < 5.0 || e.GetWidth() < 5.0)
+  {
+    e.Veto();
+  }
+}
 
 void CPanelPlot::OnViewChanged(wxPlotCtrlEvent &e)
 {
@@ -2410,6 +2417,7 @@ EVT_BUTTON(IDgraphMultiple, CPanelPlot::OnBtnMultiple)
 EVT_BUTTON(IDgraphRemove, CPanelPlot::OnBtnRemove)
 EVT_BUTTON(IDbuttonDetails, CPanelPlot::OnBtnDetails)
 EVT_PLOTCTRL_VIEW_CHANGED(wxID_ANY, CPanelPlot::OnViewChanged)
+EVT_PLOTCTRL_VIEW_CHANGING(wxID_ANY, CPanelPlot::OnViewChanging)
 
 EVT_PLOTCTRL_POINT_DOUBLECLICKED(wxID_ANY,CPanelPlot::OnPointSelected)
 EVT_PLOTCTRL_POINT_CLICKED(wxID_ANY,CPanelPlot::OnPointSelected)

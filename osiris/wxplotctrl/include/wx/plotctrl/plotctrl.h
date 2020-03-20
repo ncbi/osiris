@@ -661,6 +661,53 @@ public:
     bool GetShowPlotTitle() const { return m_show_title; }
     void SetShowPlotTitle( bool show ) { m_show_title = show; DoSize(); }
 
+    // Get/Set YAxis Width in # of digits
+    void ResetYAxisTextWidth()
+    {
+      // when changing the default width, this
+      // needs to be called in order to 
+      m_y_axis_text_width = 0;
+    }
+    static int GetYAxisDefaultDigits()
+    {
+      return g_nYAxisDefaultDigits;
+    }
+    static bool SetYAxisDefaultDigits(int n)
+    {
+      bool bOK = !((n > MAX_Y_DEFAULT_DIGITS) || (n < MIN_Y_DEFAULT_DIGITS));
+      if (bOK)
+      {
+        g_nYAxisDefaultDigits = n;
+      }
+      return bOK;
+    }
+    int GetYAxisDigits() const
+    {
+      return m_nYAxisDigits > 0 ? m_nYAxisDigits : GetYAxisDefaultDigits();
+    }
+    void SetYAxisDigits(int n)
+    {
+      if (n > MAX_Y_DEFAULT_DIGITS)
+      {
+        n = MAX_Y_DEFAULT_DIGITS;
+      }
+      else if (n > 0 && n < MIN_Y_DEFAULT_DIGITS)
+      {
+        n = MIN_Y_DEFAULT_DIGITS;
+      }
+      else if (n < 0)
+      {
+        n = 0;
+      }
+      int nPrev = GetYAxisDefaultDigits();
+      m_nYAxisDigits = n;
+      if (nPrev != n)
+      {
+        ResetYAxisTextWidth();
+      }
+    }
+
+
     // Show a key with the function/data names, pos is %width and %height (0-100)
     const wxString& GetKeyString() const { return m_keyString; }
     bool GetShowKey() const { return m_show_key; }
@@ -971,6 +1018,15 @@ protected:
     void SetPlotWinMouseCursor(wxStockCursor cursorid);
     // DJH 9/3/15 changed parameter from int to wxStockCursor
     int m_mouse_cursorid;
+    static const wxChar * const YAxisExtentString;
+    static int g_nYAxisDefaultDigits;
+    static const int MAX_Y_DEFAULT_DIGITS;
+    static const int MIN_Y_DEFAULT_DIGITS;
+    int m_nYAxisDigits;
+    const wxChar *_GetYAxisExtentStr() const;
+
+    int _GetYAxisTextWidth();
+    static wxString _FormatTickLabel(const wxString &sFormat, double d);
 
 private:
     void Init();
@@ -989,15 +1045,22 @@ public:
                     wxWindowID id = wxID_ANY,
                     wxPlotCtrl *window = NULL);
 
-    wxPlotCtrlEvent(const wxPlotCtrlEvent &event) : wxNotifyEvent(event),
-        m_curve(event.m_curve), m_curve_index(event.m_curve_index),
-        m_curve_dataindex(event.m_curve_dataindex),
-        m_mouse_func(event.m_mouse_func), m_x(event.m_x), m_y(event.m_y) {}
-
+    wxPlotCtrlEvent(const wxPlotCtrlEvent &event) : wxNotifyEvent(event)
+    {
+      CopyFrom(event, true);
+    }
+    wxPlotCtrlEvent &operator=(const wxPlotCtrlEvent &e)
+    {
+      CopyFrom(e, false);
+      return *this;
+    }
     // position of the mouse cursor, double click, single point selection or 1st selected point
     double GetX() const { return m_x; }
     double GetY() const { return m_y; }
+    double GetWidth() const { return m_width; }
+    double GetHeight() const { return m_height; }
     void SetPosition( double x, double y ) { m_x = x; m_y = y; }
+    void SetSize(double w, double h) { m_width = w; m_height = h; }
 
     int GetCurveDataIndex() const { return m_curve_dataindex; }
     void SetCurveDataIndex(int data_index) { m_curve_dataindex = data_index; }
@@ -1020,12 +1083,28 @@ public:
 
 protected:
     virtual wxEvent *Clone() const { return new wxPlotCtrlEvent(*this); }
-
+    virtual void CopyFrom(const wxPlotCtrlEvent &event, bool bCopyWindow = false)
+    {
+#define __TMP_COPY(x) x = event.x
+      __TMP_COPY(m_curve);
+      __TMP_COPY(m_curve_index);
+      __TMP_COPY(m_curve_dataindex);
+      __TMP_COPY(m_mouse_func);
+      __TMP_COPY(m_x);
+      __TMP_COPY(m_y);
+      __TMP_COPY(m_width);
+      __TMP_COPY(m_height);
+#undef __TMP_COPY
+      if (bCopyWindow)
+      {
+        SetEventObject(event.GetEventObject());
+      }
+    }
     wxPlotCurve *m_curve;
     int m_curve_index;
     int m_curve_dataindex;
     int m_mouse_func;
-    double m_x, m_y;
+    double m_x, m_y, m_width, m_height;
 
 private:
     DECLARE_ABSTRACT_CLASS(wxPlotCtrlEvent);

@@ -111,7 +111,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;OsirisMath.lib;libxml2_a.lib;libiconv-static.lib;libxslt_a.lib;libexslt_a.lib;wxmsw30ud_adv.lib;wxmsw30ud_html.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>DebugWindows 💩\OsirisAnalysis.exe</OutputFile>
+      <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
       <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\OsirisMath\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;$(EXTLIB)\libiconv-win-build-1.15\build-VS2017\$(Configuration);$(EXTLIB)\libxml2-2.9.8\win32\bin.msvc;$(EXTLIB)\libxslt-1.1.33\win32\bin.msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
