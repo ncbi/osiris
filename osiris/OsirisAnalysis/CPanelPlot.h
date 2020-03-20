@@ -32,7 +32,17 @@
 #ifndef __C_PANEL_PLOT_H__
 #define __C_PANEL_PLOT_H__
 
+#if 0
+
+#define PANEL_PLOT_TYPE wxSashLayoutWindow
+#include <wx/laywin.h>
+
+#else
+#define PANEL_PLOT_TYPE wxSashWindow
 #include <wx/sashwin.h>
+
+#endif
+
 #include <wx/sizer.h>
 #include "nwx/stdb.h"
 #include "nwx/CIncrementer.h"
@@ -84,7 +94,9 @@ private:
 };
 
 
-class CPanelPlot : public wxSashWindow, public InwxShiftReceiver
+class CPanelPlot : 
+    public PANEL_PLOT_TYPE,
+    public InwxShiftReceiver
 {
 private:
   class CLadderPeakSet
@@ -163,14 +175,16 @@ private:
     //
   public:
     DelayedViewRect() :
+        m_pBatch(NULL),
         m_rect(0.0,0.0,1.0,1.0),
         m_pPlot(NULL),
         m_nDelay(0),
         m_bSendEvent(false)
     {}
     virtual ~DelayedViewRect()
-    {}
-
+    {
+      _CleanupBatch();
+    }
     const wxRect2DDouble &GetViewRect()
     {
       return m_rect;
@@ -191,6 +205,7 @@ private:
     }
     void SetPlotCtrl(CPlotCtrl *p)
     {
+      _CleanupBatch();
       m_pPlot = p;
     }
     void Setup(const wxRect2DDouble &rect, bool bSendEvent = false, unsigned int nDelay = 1)
@@ -200,6 +215,7 @@ private:
       if(nDelay >= m_nDelay)
       {
         m_nDelay = nDelay;
+        _SetupBatch();
       }
       if(!m_nDelay)
       {
@@ -218,14 +234,33 @@ private:
       return m_nDelay;
     }
   private:
+    void _CleanupBatch()
+    {
+      if (m_pBatch != NULL)
+      {
+        delete m_pBatch;
+        m_pBatch = NULL;
+      }
+    }
+    void _SetupBatch(bool bCheckDelay = true)
+    {
+      if(bCheckDelay && !m_nDelay)
+      { }
+      else if (m_pBatch == NULL && m_pPlot != NULL)
+      {
+        m_pBatch = new TnwxBatch<CPlotCtrl>(m_pPlot);
+      }
+    }
     void _DoIt()
     {
       if(m_pPlot != NULL)
       {
         m_pPlot->SetViewRect(m_rect, m_bSendEvent);
         m_nDelay = 0;
+        _CleanupBatch();
       }
     }
+    TnwxBatch<CPlotCtrl> *m_pBatch;
     wxRect2DDouble m_rect;
     CPlotCtrl *m_pPlot;
     unsigned int m_nDelay;
@@ -435,6 +470,10 @@ public:
   {
     m_pPlotCtrl->EndBatch();
     m_nBatchCount--;
+  }
+  bool InBatch()
+  {
+    return (m_nBatchCount > 0);
   }
   void MakeCurveVisible(int n = -1)
   {
@@ -728,6 +767,7 @@ public:
   void OnBtnRemove(wxCommandEvent &);
   void OnBtnDetails(wxCommandEvent &);
   void OnSync(wxCommandEvent &);
+  void OnViewChanging(wxPlotCtrlEvent &);
   void OnViewChanged(wxPlotCtrlEvent &);
   void OnPointSelected(wxPlotCtrlEvent &);
   void OnNoBPSPrompt(wxCommandEvent &);
