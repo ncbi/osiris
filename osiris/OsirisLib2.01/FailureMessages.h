@@ -75,6 +75,13 @@ public:
 // Ladder issues
 	void LadderInfoInvalid ();
 	void LocusSpecificThresholdsInvalid ();
+	void CouldNotFindNamedMarkerSet (const RGString& name);
+	void CouldNotFindLocusToSetThreshold ();
+
+// Initialization issues
+	void CouldNotRetrieveGenotypeCollection ();
+	void CouldNotRetrieveGenotype (const RGString& name);
+	void CouldNotFindSampleDirectory (const RGString& path);
 
 // Ladder Analysis Issues
 	void NoLadderDataFound ();

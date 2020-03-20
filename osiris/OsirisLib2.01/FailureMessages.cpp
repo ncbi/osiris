@@ -201,6 +201,47 @@ void MainMessages::LocusSpecificThresholdsInvalid () {
 }
 
 
+void MainMessages::CouldNotFindNamedMarkerSet (const RGString& name) {
+
+	Header ();
+	cout << "Could not find marker set named:  " << name << ".  Terminating..." << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::CouldNotFindLocusToSetThreshold () {
+
+	Header ();
+	cout << "During initialization of locus-specific thresholds, could not find one or more loci.  Check for OSIRIS-accepted spelling.  Terminating..." << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::CouldNotRetrieveGenotypeCollection () {
+
+	Header ();
+	cout << "Could not retrieve genotype collection set.  Terminating..." << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::CouldNotRetrieveGenotype (const RGString& name) {
+
+	Header ();
+	cout << "Could not retrieve genotype named:  " << name << ".  Terminating..." << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
+void MainMessages::CouldNotFindSampleDirectory (const RGString& path) {
+
+}
+
+
 void MainMessages::NoLadderDataFound () {
 
 	Header ();

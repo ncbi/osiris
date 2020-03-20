@@ -1373,8 +1373,11 @@ int SmartMessage :: LoadAllMessagesV4 (const RGString& inputString, SmartMessage
 		OverAllMessageTable->Append (nextMsg);
 //		OverAllMessageList.Append (nextMsg);
 
-		if (!nextMsg->IsValid ())
+		if (!nextMsg->IsValid ()) {
+
+			STRLCAnalysis::mFailureMessage->AddMessage ("Could not validate message named:  " + msgString);
 			status = -1;
+		}
 	}
 
 	if (status < 0) {
