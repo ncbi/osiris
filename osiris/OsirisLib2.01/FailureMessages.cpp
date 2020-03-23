@@ -191,6 +191,15 @@ void MainMessages::CouldNotInitializeMessageBook () {
 }
 
 
+void MainMessages::CouldNotLoadMessageBook () {
+
+	Header ();
+	cout << "Could not load MessageBook due to following:  " << endl;
+	OutputAllMessages ();
+	Tail ();
+}
+
+
 void MainMessages::LadderInfoInvalid () {
 
 }

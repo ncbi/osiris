@@ -71,6 +71,7 @@ public:
 	void GenericMessageBook (const RGString& msg);
 	void CouldNotCompile ();
 	void CouldNotInitializeMessageBook ();
+	void CouldNotLoadMessageBook ();
 
 // Ladder issues
 	void LadderInfoInvalid ();
