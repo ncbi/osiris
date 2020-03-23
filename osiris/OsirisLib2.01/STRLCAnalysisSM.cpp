@@ -1870,6 +1870,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	if (gSet == NULL) {
 
 		cout << "Could not retrieve genotype collection set from parameter server.  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotypeCollection ();
 		return -20;
 	}
 
@@ -1879,7 +1880,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not retrieve genotype collection for marker set name " << markerSet << " from parameter server.  Exiting..." << endl;
 		pGenotypes = new GenotypesForAMarkerSet;
-		//return -20;
+		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotype (markerSet);
+		return -20;
 	}
 
 	if (!STRLCAnalysis::OverrideStringIsEmpty ()) {
@@ -1946,6 +1948,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not find sample directory:  " << DirectoryName << endl;
 		cout << "Closing..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFindSampleDirectory (DirectoryName);
 		return -1;
 	}
 
@@ -2058,6 +2061,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output file:  " << OutputFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + OutputFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output File");
 		return -1;
 	}
 
@@ -2065,6 +2070,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open text echo file:  " << WholeConsoleName << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + WholeConsoleName);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Text Echo File");
 		return -2;
 	}
 
@@ -2072,6 +2079,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output summary file:  " << SummaryFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + SummaryFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File");
 		return -2;
 	}
 
@@ -2079,6 +2088,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output summary file with embedded links:  " << SummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + SummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File With Embedded Links");
 		return -2;
 	}
 
@@ -2086,6 +2097,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output xml summary file with embedded links:  " << XMLSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + XMLSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output XML Summary File With Embedded Links");
 		return -2;
 	}
 
@@ -2093,6 +2106,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open temporary output summary file:  " << tempSummaryFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempSummaryFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output Summary File");
 		return -2;
 	}
 
@@ -2100,6 +2115,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open temporary output summary file with embedded links:  " << tempSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output Summary File With Embedded Links");
 		return -2;
 	}
 
@@ -2107,6 +2124,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open temporary output xml summary file with embedded links:  " << tempXMLSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempXMLSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output XML Summary File With Embedded Links");
 		return -2;
 	}
 
@@ -2127,6 +2146,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	if (set == NULL) {
 
 		cout << "Could not find marker set named:  " << markerSetName << ".  Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (markerSetName);
 		return -10000;
 	}
 
