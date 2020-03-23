@@ -309,6 +309,7 @@ mainFrame::mainFrame() :
       // attempt to create it
       // if it fails due to permission
       // siltently move on
+  wxPlotCtrl::SetYAxisDefaultDigits(6);
   ++g_mainFrameCount;
 }
 

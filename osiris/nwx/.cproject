@@ -1,76 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?><cproject>
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
-		<cconfiguration id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504">
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504" moduleId="org.eclipse.cdt.core.settings" name="Release1">
-				<externalSettings>
-					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/nwx"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/nwx/Debug"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/nwx/Release1"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/nwx/Debug1"/>
-					</externalSetting>
-				</externalSettings>
-				<extensions>
-					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
-				</extensions>
-			</storageModule>
-			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="a" artifactName="nwx" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504" name="Release1" parent="cdt.managedbuild.config.macosx.lib.debug" postbuildStep="ranlib libnwx.a">
-					<folderInfo id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504." name="/" resourcePath="">
-						<toolChain id="cdt.managedbuild.toolchain.gnu.macosx.lib.debug.1178413084" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.lib.debug">
-							<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.lib.debug.1274894069" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.lib.debug"/>
-							<builder buildPath="${workspace_loc:/nwx/Debug}" id="cdt.managedbuild.target.gnu.builder.macosx.lib.debug.2017722035" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.macosx.lib.debug"/>
-							<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.base.528968160" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.base"/>
-							<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.base.1619307796" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.base"/>
-							<tool command="as" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="cdt.managedbuild.tool.gnu.assembler.macosx.lib.debug.827994844" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.lib.debug">
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1267958966" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.toolmacosx.lib.debug.gnu.archiver.25403183" name="GCC Archiver" superClass="cdt.managedbuild.toolmacosx.lib.debug.gnu.archiver"/>
-							<tool commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.lib.debug.323156844" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.lib.debug">
-								<option id="gnu.cpp.compiler.macosx.lib.debug.option.optimization.level.1984032179" name="Optimization Level" superClass="gnu.cpp.compiler.macosx.lib.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.macosx.lib.debug.option.debugging.level.126728658" name="Debug Level" superClass="gnu.cpp.compiler.macosx.lib.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.preprocessor.def.460147527" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="Darwin"/>
-								</option>
-								<option id="gnu.cpp.compiler.option.include.paths.1853527694" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value=".."/>
-									<listOptionValue builtIn="false" value="../.."/>
-									<listOptionValue builtIn="false" value="../../wxthings/include"/>
-									<listOptionValue builtIn="false" value="../../wxXml2"/>
-									<listOptionValue builtIn="false" value="../../wxplotctrl/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/libxml2"/>
-								</option>
-								<option id="gnu.cpp.compiler.option.other.other.1526312028" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c ${WXCXXREL} ${MACCXX}" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.optimization.flags.1868547954" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.debugging.other.1460470465" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" value="" valueType="string"/>
-								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1735805271" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.compiler.macosx.lib.debug.433311487" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.lib.debug">
-								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.lib.debug.option.optimization.level.1088138689" name="Optimization Level" superClass="gnu.c.compiler.macosx.lib.debug.option.optimization.level" valueType="enumerated"/>
-								<option id="gnu.c.compiler.macosx.lib.debug.option.debugging.level.590808189" name="Debug Level" superClass="gnu.c.compiler.macosx.lib.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.261000095" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
-							</tool>
-						</toolChain>
-					</folderInfo>
-					<sourceEntries>
-						<entry excluding="nwxListMRU_.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-					</sourceEntries>
-				</configuration>
-			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
-			<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
-			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
-			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
-		</cconfiguration>
 		<cconfiguration id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504.750376674">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504.750376674" moduleId="org.eclipse.cdt.core.settings" name="Debug1">
 				<macros>
-					<stringMacro name="LIBTOP" type="VALUE_TEXT" value="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include"/>
+					<stringMacro name="LIBTOP" type="VALUE_TEXT" value="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"/>
 					<stringMacro name="WXHOME" type="VALUE_TEXT" value="/Users/hoffman/local/wxDebug"/>
 				</macros>
 				<externalSettings>
@@ -79,6 +13,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/nwx/Debug"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/nwx/Release1"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/nwx/Debug1"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="nwx" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
 				<extensions>
@@ -90,7 +25,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="a" artifactName="nwx" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504.750376674" name="Debug1" parent="cdt.managedbuild.config.macosx.lib.debug" postbuildStep="ranlib libnwx.a">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504.750376674" name="Debug1" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.macosx.lib.debug" postbuildStep="ranlib libnwx.a">
 					<folderInfo id="cdt.managedbuild.config.macosx.lib.debug.959516082.879481504.750376674." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.macosx.lib.debug.1057461770" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.lib.debug">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.lib.debug.868122226" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.lib.debug"/>
@@ -102,9 +37,9 @@
 							</tool>
 							<tool id="cdt.managedbuild.toolmacosx.lib.debug.gnu.archiver.734423584" name="GCC Archiver" superClass="cdt.managedbuild.toolmacosx.lib.debug.gnu.archiver"/>
 							<tool commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.lib.debug.1061416360" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.lib.debug">
-								<option id="gnu.cpp.compiler.macosx.lib.debug.option.optimization.level.286250547" name="Optimization Level" superClass="gnu.cpp.compiler.macosx.lib.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.macosx.lib.debug.option.debugging.level.1398067577" name="Debug Level" superClass="gnu.cpp.compiler.macosx.lib.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.preprocessor.def.315867753" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+								<option id="gnu.cpp.compiler.macosx.lib.debug.option.optimization.level.286250547" name="Optimization Level" superClass="gnu.cpp.compiler.macosx.lib.debug.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.macosx.lib.debug.option.debugging.level.1398067577" name="Debug Level" superClass="gnu.cpp.compiler.macosx.lib.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.315867753" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__WXMAC__"/>
 									<listOptionValue builtIn="false" value="__WXOSX__"/>
 									<listOptionValue builtIn="false" value="__WXOSX_COCOA__"/>
@@ -113,7 +48,7 @@
 									<listOptionValue builtIn="false" value="_DEBUG"/>
 									<listOptionValue builtIn="false" value="__WXDEBUG__"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.include.paths.1408771201" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1408771201" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value=".."/>
 									<listOptionValue builtIn="false" value="../.."/>
 									<listOptionValue builtIn="false" value="../../wxthings/include"/>
@@ -124,15 +59,15 @@
 									<listOptionValue builtIn="false" value="${WXHOME}/lib/wx/include/osx_cocoa-unicode-static-3.0"/>
 									<listOptionValue builtIn="false" value="${WXHOME}/include/wx-3.0"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.340887701" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -mmacosx-version-min=10.8 -Wno-deprecated-writable-strings -Wno-unknown-pragmas" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.optimization.flags.1048823225" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.debugging.other.1602904801" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" value="-ggdb" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.dialect.std.1711395054" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.other.other.340887701" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -stdlib=libc++ -fmessage-length=0 -mmacosx-version-min=10.12 -Wno-deprecated-writable-strings -Wno-unknown-pragmas" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.1048823225" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" useByScannerDiscovery="false" value="" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.debugging.other.1602904801" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" useByScannerDiscovery="false" value="-ggdb" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.1711395054" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.142479468" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.macosx.lib.debug.1557220559" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.lib.debug">
-								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.lib.debug.option.optimization.level.59746302" name="Optimization Level" superClass="gnu.c.compiler.macosx.lib.debug.option.optimization.level" valueType="enumerated"/>
-								<option id="gnu.c.compiler.macosx.lib.debug.option.debugging.level.1939463487" name="Debug Level" superClass="gnu.c.compiler.macosx.lib.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.lib.debug.option.optimization.level.59746302" name="Optimization Level" superClass="gnu.c.compiler.macosx.lib.debug.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option id="gnu.c.compiler.macosx.lib.debug.option.debugging.level.1939463487" name="Debug Level" superClass="gnu.c.compiler.macosx.lib.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1318892617" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 						</toolChain>

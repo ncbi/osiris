@@ -58,6 +58,10 @@ if test -r $ERRFILE; then
   rm -f $ERRFILE
   checkRC $? "cannot remove $ERRFILE"
 fi
-BUILD > make.txt 2>&1
+rm -f make.txt
+if test "$1" == "-c"; then
+  make clean > make.txt 2>&1
+fi
+BUILD >> make.txt 2>&1
 test ! -r $ERRFILE
 exit $?

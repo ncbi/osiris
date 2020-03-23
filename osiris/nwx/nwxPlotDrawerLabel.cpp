@@ -366,10 +366,10 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   wxBrush brushSave = pdc->GetBrush();
   wxPen penSave = pdc->GetPen();
   wxFont fontSave = pdc->GetFont();
-  wxCoord nClipX;
-  wxCoord nClipY;
-  wxCoord nClipW;
-  wxCoord nClipH;
+  wxCoord nClipX = 0;
+  wxCoord nClipY = 0;
+  wxCoord nClipW = 0;
+  wxCoord nClipH = 0;
   // if there are multiple clipping regions, this could be a problem
   pdc->GetClippingBox(&nClipX,&nClipY,&nClipW,&nClipH);
   if(nClipW)

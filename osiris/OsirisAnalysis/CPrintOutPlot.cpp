@@ -333,6 +333,27 @@ bool CPrintOutPlot::OnPrintPage(int page)
       {
         MAX_PPI = 36;
       }
+#ifdef TMP_DEBUG
+      mainApp::LogMessageV(
+        wxT("MAX_PPI = %d; printer PPI (x, y)=(%d, %d); screen PPI (x, y)=(%d, %d)"), 
+        MAX_PPI, nPPIx, nPPIy, nx, ny);
+      mainApp::LogMessageV(
+        wxT("rectFix(x, y, w, h) = (%d, %d, %d, %d)"),
+        rectFit.GetX(), rectFit.GetY(),
+        rectFit.GetWidth(), rectFit.GetHeight());
+      double dx, dy;
+      pdc->GetLogicalScale(&dx, &dy);
+      mainApp::LogMessageV(wxT("wxDC logical scale (x, y)=(%g, %g)"),
+        dx, dy);
+      pdc->GetUserScale(&dx, &dy);
+      mainApp::LogMessageV(wxT("wxDC user scale (x, y)=(%g, %g)"),
+        dx, dy);
+      pdc->GetSize(&nx, &ny);
+      mainApp::LogMessageV(wxT("wxDC size (x, y)=(%d, %d)"),
+        nx, ny);
+      mainApp::LogMessageV(wxT("wxDC PPI (x, y)=(%d, %d)"),
+        nPPIx, nPPIy);
+#endif
     }
 
     if (nMinPPI > MAX_PPI)

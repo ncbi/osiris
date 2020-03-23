@@ -773,7 +773,6 @@ void mainApp::ReRender(wxWindow *p)
     p->Layout();
   }
   p->Refresh();
-  p->Update();
 }
 
 #if 0
@@ -824,7 +823,7 @@ void mainApp::OnTimer(wxTimerEvent &e)
   {
     CIncrementer incr(m_nTimerCount);
 #ifdef _DEBUG
-    UnitTest::Run();
+//    UnitTest::Run();
 #endif
     nwxTimerReceiver::DispatchTimer(e);
     if(m_pFrame != NULL)
