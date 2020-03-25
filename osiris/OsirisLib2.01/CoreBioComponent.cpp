@@ -69,6 +69,8 @@ RGString* CoreBioComponent::DyeNames = NULL;
 RGTextOutput* CoreBioComponent::HeightFile = NULL;
 RGTextOutput* CoreBioComponent::NonLaserOffScalePUCoefficients = NULL;
 RGTextOutput* CoreBioComponent::pullUpMatrixFile = NULL;
+int CoreBioComponent::CurrentAnalysisStage = 1;
+bool CoreBioComponent::CrashMode = false;
 
 
 

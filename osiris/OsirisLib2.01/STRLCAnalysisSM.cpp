@@ -1424,6 +1424,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
 
+		CoreBioComponent::ResetCrashMode (false);
+		CoreBioComponent::SetCurrentStage (1);
 		sampleOK = true;
 		FullPathName = DirectoryName + "/" + FileName;
 
@@ -1443,274 +1445,298 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		commentField = data->GetComment ();
 		bioComponent->SetComments (commentField);
 
-		if (GetMessageValue (useSampleNamesForControlSampleTests))
-			bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
+		try {  //#######
 
-		else
-			bioComponent->SetControlIdName (FileName);
-
-		commSM.SMOStack [1] = (SmartMessagingObject*) bioComponent;
-
-		if (bioComponent->PrepareSampleForAnalysisSM (*data, SampleData) < 0) {
-
-			sampleOK = false;
-			NoticeStr = "";
-			NoticeStr << "COULD NOT INITIALIZE AND PREPARE FOR ANALYSIS, FOR FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError ();
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			cout << NoticeStr.GetData () << endl;
-			NoticeStr = "";
-			bioComponent->SetMessageValue (sampleFailed, true);
-		}
-
-		if (sampleOK && !populatedBaseLocusList) {
-
-			populatedBaseLocusList = true;
-			bioComponent->AppendAllBaseLociToList (mBaseLocusList);
-		}
-
-		if (sampleOK && printGraphics) {
-
-			FitDataName = GraphicsDirectory + "/Fit" + FileName + ".txt";
-			SampleOutput = new RGTextOutput (FitDataName, FALSE);
-
-			if (SampleOutput->FileIsValid ())
-				bioComponent->WriteRawDataAndFitData (*SampleOutput, data);
+			if (GetMessageValue (useSampleNamesForControlSampleTests))
+				bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
 
 			else
-				cout << "Could not write graphics info for file " << FitDataName << ".  Skipping..." << endl;
+				bioComponent->SetControlIdName (FileName);
 
-			delete SampleOutput;
-			SampleOutput = NULL;
-		}
+			commSM.SMOStack [1] = (SmartMessagingObject*)bioComponent;
 
-		if (sampleOK && (bioComponent->PreliminarySampleAnalysisSM (LadderList, SampleData) < 0)) {
+			if (bioComponent->PrepareSampleForAnalysisSM (*data, SampleData) < 0) {
 
-			sampleOK = false;
-			NoticeStr = "";
-			NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			NoticeStr = "";
-			bioComponent->SetMessageValue (sampleFailed, true);
-		}
-
-		else
-			bioComponent->GetAllAmbientData (data);
-
-		//cout << "Preliminary Analysis Complete" << endl;
-
-		bioComponent->SetNegativeControlFalseSM ();
-		bioComponent->SetPositiveControlFalseSM ();
-		idString = bioComponent->GetControlIdName ();
-		Locus::SetDisableAdenylationFilter (false);
-		Locus::SetDisableStutterFilter (false);
-		ChannelData::SetDisableAdenylationFilter (false);
-		ChannelData::SetDisableStutterFilter (false);
-		possibleMixture = false;
-	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
-		Locus::SetControlSample (false);
-
-		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
-
-			if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
-
-				hasNegControl = true;;
-				bioComponent->SetNegativeControlTrueSM ();
-				bioComponent->SetMessageValue (sampleIsNegCtrl, true);
-				Locus::SetSingleSourceSample (true);
-				Locus::SetControlSample (true);
+				sampleOK = false;
+				NoticeStr = "";
+				NoticeStr << "COULD NOT INITIALIZE AND PREPARE FOR ANALYSIS, FOR FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError ();
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				cout << NoticeStr.GetData () << endl;
+				NoticeStr = "";
+				bioComponent->SetMessageValue (sampleFailed, true);
 			}
 
-			else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+			if (sampleOK && !populatedBaseLocusList) {
 
-				hasPosControl = true;
-				bioComponent->SetPositiveControlTrueSM ();
-				bioComponent->SetMessageValue (sampleIsPosCtrl, true);
-				Locus::SetSingleSourceSample (true);
-				Locus::SetControlSample (true);
+				populatedBaseLocusList = true;
+				bioComponent->AppendAllBaseLociToList (mBaseLocusList);
 			}
 
-			bioComponent->SetPossibleMixtureIDFalseSM ();
-			bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
-		}
+			if (sampleOK && printGraphics) {
 
-		//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+				FitDataName = GraphicsDirectory + "/Fit" + FileName + ".txt";
+				SampleOutput = new RGTextOutput (FitDataName, FALSE);
 
-		//	hasPosControl = true;
-		//	bioComponent->SetPositiveControlTrueSM ();
-		//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
-		//	bioComponent->SetPossibleMixtureIDFalseSM ();
-		//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
-		//}
+				if (SampleOutput->FileIsValid ())
+					bioComponent->WriteRawDataAndFitData (*SampleOutput, data);
 
-		//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+				else
+					cout << "Could not write graphics info for file " << FitDataName << ".  Skipping..." << endl;
 
-		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
-
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
-
-				bioComponent->SetPossibleMixtureIDTrueSM ();
-				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
-				possibleMixture = true;
-				Locus::SetSingleSourceSample (false);
-				cout << "Sample is being treated as a mixture\n";
+				delete SampleOutput;
+				SampleOutput = NULL;
 			}
 
-			else {
+			if (sampleOK && (bioComponent->PreliminarySampleAnalysisSM (LadderList, SampleData) < 0)) {
+
+				sampleOK = false;
+				NoticeStr = "";
+				NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				NoticeStr = "";
+				bioComponent->SetMessageValue (sampleFailed, true);
+			}
+
+			else
+				bioComponent->GetAllAmbientData (data);
+
+			//cout << "Preliminary Analysis Complete" << endl;
+
+			bioComponent->SetNegativeControlFalseSM ();
+			bioComponent->SetPositiveControlFalseSM ();
+			idString = bioComponent->GetControlIdName ();
+			Locus::SetDisableAdenylationFilter (false);
+			Locus::SetDisableStutterFilter (false);
+			ChannelData::SetDisableAdenylationFilter (false);
+			ChannelData::SetDisableStutterFilter (false);
+			possibleMixture = false;
+			//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
+			Locus::SetControlSample (false);
+
+			if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+				if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+					hasNegControl = true;;
+					bioComponent->SetNegativeControlTrueSM ();
+					bioComponent->SetMessageValue (sampleIsNegCtrl, true);
+					Locus::SetSingleSourceSample (true);
+					Locus::SetControlSample (true);
+				}
+
+				else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+					hasPosControl = true;
+					bioComponent->SetPositiveControlTrueSM ();
+					bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+					Locus::SetSingleSourceSample (true);
+					Locus::SetControlSample (true);
+				}
 
 				bioComponent->SetPossibleMixtureIDFalseSM ();
 				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
-				possibleMixture = false;
-				Locus::SetSingleSourceSample (true);
-				cout << "Sample is being treated as a single source sample\n";
 			}
+
+			//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+
+			//	hasPosControl = true;
+			//	bioComponent->SetPositiveControlTrueSM ();
+			//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+			//	bioComponent->SetPossibleMixtureIDFalseSM ();
+			//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+			//}
+
+			//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+			else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+				if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
+
+					bioComponent->SetPossibleMixtureIDTrueSM ();
+					bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
+					possibleMixture = true;
+					Locus::SetSingleSourceSample (false);
+					cout << "Sample is being treated as a mixture\n";
+				}
+
+				else {
+
+					bioComponent->SetPossibleMixtureIDFalseSM ();
+					bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+					possibleMixture = false;
+					Locus::SetSingleSourceSample (true);
+					cout << "Sample is being treated as a single source sample\n";
+				}
+			}
+
+			//
+			// End stage 1 for sample
+			//
+
+			bioComponent->SetMessageValue (stage1Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
+			CoreBioComponent::SetCurrentStage (2);
+
+			if (possibleMixture) {
+
+				// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
+
+				Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+				ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+				Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+				ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+			}
+
+			//cout << "Stage 1 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
+
+			if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
+
+				NoticeStr = "";
+				NoticeStr << "COULD NOT ANALYZE LOCI FOR FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				NoticeStr = "";
+			}
+
+			//cout << "Sample locus analysis complete" << endl;
+
+			//
+			// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
+			// tests, then the SmartMessages perform the logic and then the code cleans up the results.  We probably have to reorganize
+			// somewhat!!!
+			//
+
+			if (sampleOK)
+				bioComponent->TestFractionalFiltersSM ();	// first tests for stutter and adenylation; then removes peaks below fractional filter(s)
+
+			bioComponent->SetMessageValue (stage2Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
+			CoreBioComponent::SetCurrentStage (3);
+
+			//cout << "Stage 2 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
+
+			if (sampleOK)
+				bioComponent->MakePreliminaryCallsSM (pGenotypes);
+
+			//cout << "Preliminary Calls complete" << endl;
+
+			//cout << "Preliminary calls done" << endl;
+
+	//		if (sampleOK)
+	//			bioComponent->ValidateAndCorrectCrossChannelAnalysesSM ();
+
+	//		if (sampleOK)	// Resolution now occurs after end of stage 3, below.
+	//			bioComponent->ResolveAmbiguousInterlocusSignalsSM ();	// at this point, easily resolved ambiguities already removed
+
+			if (sampleOK)
+				bioComponent->MeasureAllInterlocusSignalAttributesSM ();	// at this point, easily resolved ambiguities already removed
+
+			bioComponent->SetMessageValue (stage3Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
+			CoreBioComponent::SetCurrentStage (4);
+
+			//cout << "Stage 3 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
+
+			// Now, resolve ambiguities based on calculations from end of stage 3:
+
+			if (sampleOK) {
+
+				bioComponent->ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();	// Removes ambiguous signals from loci or assigns them and records message
+				bioComponent->FilterSmartNoticesBelowMinBioID ();
+			}
+
+			if (sampleOK)
+				bioComponent->SignalQualityTestSM ();
+
+			bioComponent->SetMessageValue (stage4Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
+			CoreBioComponent::SetCurrentStage (5);
+
+			//cout << "Stage 4 complete" << endl;
+
+			// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
+
+			if (sampleOK)
+				bioComponent->RemoveInterlocusSignalsSM ();
+
+			//	Put residual displacement test here...02/11/2014
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
+
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
+			bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
+
+			if (sampleOK)
+				bioComponent->SampleQualityTestSM (pGenotypes);
+
+			//
+			//  Put peak height accumulation algorithm here (12/16/2016)
+			//
+
+			//if (sampleOK)
+			//	bioComponent->WriteDataToHeightFileSM ();
+
+			//cout << "Sample quality test complete" << endl;
+
+			if (sampleOK)
+				bioComponent->TestPositiveControlSM (pGenotypes);
+
+			// Moved this section because it requires setting artifact for signal, which must precede stage 4 and it should only depend on removing extraneous
+			// signals from each locus, which should be done in "SignalQualityTest" above.
+			//if (sampleOK)
+			//	bioComponent->TestPositiveControlSM (pGenotypes);
+
+			bioComponent->OrganizeNoticeObjectsSM ();  // Have to do this here, before last evaluation and adding smart message reporters!!
+
+			bioComponent->SetMessageValue (stage5Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+
+			//cout << "Stage 5 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
+
+			if (!sampleOK)
+				bioComponent->LocatePositiveControlName (pGenotypes);
 		}
 
-		//
-		// End stage 1 for sample
-		//
+		catch (...) {
 
-		bioComponent->SetMessageValue (stage1Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
-
-		if (possibleMixture) {
-
-			// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
-
-			Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
-			ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
-			Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
-			ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+			delete bioComponent;
+			CoreBioComponent::ResetCrashMode (true);
+			bioComponent = new STRSampleCoreBioComponent (data->GetName ());
+			bioComponent->SetSampleName (data->GetSampleName ());
+			bioComponent->SetFileName (FileName);
+			bioComponent->SetMessageValue (stage1Successful, true);
+			bioComponent->SetMessageValue (stage2Successful, true);
+			bioComponent->SetMessageValue (stage3Successful, true);
+			bioComponent->SetMessageValue (stage4Successful, true);
+			// Add message for crash and set up trigger for directory level message; include current stage for crash data
+			// Then evaluate and set triggers for all messages for stage 4
+			bioComponent->SetMessageValue (stage5Successful, true);
 		}
-
-		//cout << "Stage 1 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
-
-		if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
-
-			NoticeStr = "";
-			NoticeStr << "COULD NOT ANALYZE LOCI FOR FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			NoticeStr = "";
-		}
-
-		//cout << "Sample locus analysis complete" << endl;
-
-		//
-		// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
-		// tests, then the SmartMessages perform the logic and then the code cleans up the results.  We probably have to reorganize
-		// somewhat!!!
-		//
-
-		if (sampleOK)
-			bioComponent->TestFractionalFiltersSM ();	// first tests for stutter and adenylation; then removes peaks below fractional filter(s)
-
-		bioComponent->SetMessageValue (stage2Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
-
-		//cout << "Stage 2 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
-
-		if (sampleOK) 
-			bioComponent->MakePreliminaryCallsSM (pGenotypes);
-
-		//cout << "Preliminary Calls complete" << endl;
-
-		//cout << "Preliminary calls done" << endl;
-		
-//		if (sampleOK)
-//			bioComponent->ValidateAndCorrectCrossChannelAnalysesSM ();
-
-//		if (sampleOK)	// Resolution now occurs after end of stage 3, below.
-//			bioComponent->ResolveAmbiguousInterlocusSignalsSM ();	// at this point, easily resolved ambiguities already removed
-
-		if (sampleOK)
-			bioComponent->MeasureAllInterlocusSignalAttributesSM ();	// at this point, easily resolved ambiguities already removed
-
-		bioComponent->SetMessageValue (stage3Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
-
-		//cout << "Stage 3 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
-
-		// Now, resolve ambiguities based on calculations from end of stage 3:
-
-		if (sampleOK) {
-
-			bioComponent->ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();	// Removes ambiguous signals from loci or assigns them and records message
-			bioComponent->FilterSmartNoticesBelowMinBioID ();
-		}
-
-		if (sampleOK)
-			bioComponent->SignalQualityTestSM ();
-
-		bioComponent->SetMessageValue (stage4Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
-
-		//cout << "Stage 4 complete" << endl;
-
-		// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
-
-		if (sampleOK)
-			bioComponent->RemoveInterlocusSignalsSM ();
-
-		//	Put residual displacement test here...02/11/2014
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
-
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
-		bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
-
-		if (sampleOK)
-			bioComponent->SampleQualityTestSM (pGenotypes);
-
-		//
-		//  Put peak height accumulation algorithm here (12/16/2016)
-		//
-
-		//if (sampleOK)
-		//	bioComponent->WriteDataToHeightFileSM ();
-
-		//cout << "Sample quality test complete" << endl;
-
-		if (sampleOK)
-			bioComponent->TestPositiveControlSM (pGenotypes);
-
-		// Moved this section because it requires setting artifact for signal, which must precede stage 4 and it should only depend on removing extraneous
-		// signals from each locus, which should be done in "SignalQualityTest" above.
-		//if (sampleOK)
-		//	bioComponent->TestPositiveControlSM (pGenotypes);
-
-		bioComponent->OrganizeNoticeObjectsSM ();  // Have to do this here, before last evaluation and adding smart message reporters!!
-
-		bioComponent->SetMessageValue (stage5Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
-
-		//cout << "Stage 5 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
-
-		if (!sampleOK)
-			bioComponent->LocatePositiveControlName (pGenotypes);
 
 		bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done
 
-		if (bioComponent->SampleIsValid ()) {
+		if (bioComponent->SampleIsValid () && !CoreBioComponent::GetCrashMode ()) {
 
 			bioComponent->ReportSampleData(ExcelText);
 			bioComponent->WriteXMLGraphicDataSM (GraphicsDirectory, FileName, data, 4, PlotString);
 		}
-
+		
+		// Modify functions below to restrict scope if crash mode = true
 		bioComponent->PrepareLociForOutput ();
 		bioComponent->ReportSampleTableRow (ExcelSummary);
 		bioComponent->ReportSampleTableRowWithLinks (ExcelLinks);

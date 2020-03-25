@@ -158,7 +158,7 @@ struct QCData {
 
 class CoreBioComponent : public SmartMessagingObject {
 
-ABSTRACT_DECLARATION (CoreBioComponent)
+	ABSTRACT_DECLARATION (CoreBioComponent)
 
 public:
 	CoreBioComponent ();
@@ -180,7 +180,7 @@ public:
 	void ResetBoundsForILSUsingFactor (double factor) { if (mLaneStandard != NULL) mLaneStandard->ResetBoundsUsingFactorToILSHistory (factor); }
 	void SetComments (const RGString& comment) { mComments = comment; }
 
-//	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
+	//	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
 
 	RGString GetError () const { return ErrorString; }
@@ -333,7 +333,7 @@ public:
 	virtual int ResolveAmbiguousInterlocusSignals ();	//$
 	virtual int SampleQualityTest (GenotypesForAMarkerSet* genotypes);	//$
 	virtual int TestPositiveControl (GenotypesForAMarkerSet* genotypes);	//$
-	
+
 	virtual int GridQualityTest ();	//$
 	virtual int FilterNoticesBelowMinBioID ();	//$
 	virtual int RemoveAllSignalsOutsideLaneStandard ();	//$
@@ -343,7 +343,7 @@ public:
 	virtual int WritePeakInfoToXMLForChannel (int channel, RGTextOutput& text, const RGString& indent, const RGString& tagName);	//$
 	virtual int WriteArtifactInfoToXMLForChannel (int channel, RGTextOutput& text, const RGString& indent);	//$
 
-	
+
 
 	//******************************************************************************************************************************************
 	//******************************************************************************************************************************************
@@ -439,7 +439,7 @@ public:
 
 	virtual int TestAllFractionalFiltersSMLF ();
 
-	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
+	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) { ; }
 
 	void RemovePrimaryLinksAndSecondaryLinksFrom (DataSignal* ds);
 	virtual bool ValidateAndCorrectCrossChannelAnalysesSM ();
@@ -531,6 +531,11 @@ public:
 	static void SetHeightFile (RGTextOutput* hf) { HeightFile = hf; }
 	static void SetNonLaserOffScalePUCoeffsFile (RGTextOutput* puf) { NonLaserOffScalePUCoefficients = puf; }
 	static void SetPullupMatrixFile (RGTextOutput* pumf) { pullUpMatrixFile = pumf; }
+	static void SetCurrentStage (int s) { CurrentAnalysisStage = s; }
+	static void ResetCrashMode (bool m) { CrashMode = m; }
+
+	static int GetCurrentStage () { return CurrentAnalysisStage; }
+	static bool GetCrashMode () { return CrashMode; }
 
 	//************************************************************************************************************************************
 
@@ -624,6 +629,8 @@ protected:
 	static RGTextOutput* HeightFile;
 	static RGTextOutput* NonLaserOffScalePUCoefficients;
 	static RGTextOutput* pullUpMatrixFile;
+	static int CurrentAnalysisStage;
+	static bool CrashMode;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();
