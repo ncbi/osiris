@@ -993,6 +993,9 @@ Boolean CoreBioComponent :: ReportAllNoticeObjects (RGTextOutput& text, const RG
 
 Boolean CoreBioComponent :: PrepareLociForOutput () {
 
+	if (CrashMode)
+		return FALSE;
+
 	RGString locusName;
 	Locus* nextLocus;
 	Locus* myLocus;
@@ -1652,7 +1655,7 @@ void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 	RGString locusName;
 	Locus* nextLocus;
 	Locus* myLocus;
-	mMarkerSet->ResetLocusList ();
+	
 	bool reportedChannel = false;
 	int severity;
 
@@ -1660,6 +1663,15 @@ void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 
 	text.SetOutputLevel (1);
 	text << GetSampleName () << "\t";
+
+	if (CrashMode) {
+
+		text << "\n";
+		text.ResetOutputLevel ();
+		return;
+	}
+
+	mMarkerSet->ResetLocusList ();
 
 	if ((mLSData->GetHighestMessageLevel () > 0) && 
 		(mLSData->GetHighestMessageLevel () <= Notice::GetMessageTrigger()))
@@ -1713,7 +1725,7 @@ void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 	RGString locusName;
 	Locus* nextLocus;
 	Locus* myLocus;
-	mMarkerSet->ResetLocusList ();
+	
 	int link;
 	RGString LinkString;
 	int trigger = Notice::GetMessageTrigger ();
@@ -1735,7 +1747,15 @@ void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 	else
 		text << GetSampleName () << "\t";
 
+	if (CrashMode) {
+
+		text << "\n";
+		text.ResetOutputLevel ();
+		return;
+	}
+
 	highest = mLSData->GetHighestMessageLevel ();
+	mMarkerSet->ResetLocusList ();
 
 	if ((highest > 0) && (highest <= trigger)) {
 

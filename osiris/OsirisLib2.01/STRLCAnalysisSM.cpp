@@ -297,6 +297,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
 	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+	smSampleAnalysisTruncatedPrematurely analysisTruncatedPrematurely;
+	smSamplesTerminatedPrematurely samplesTerminatedPrematurely;
 	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
 
 	//double yLMS [8] = {579, 117, 103, 323, 276, 750, 689, 2070 };
@@ -410,6 +412,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	//	cout << "..." << endl;
 	//}
 
+	RGString localFileName;
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
 
@@ -1422,11 +1425,16 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
+	int nSamplesSoFar = 0;
+	CoreBioComponent* testSample = NULL;
+
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
 
 		CoreBioComponent::ResetCrashMode (false);
 		CoreBioComponent::SetCurrentStage (1);
 		sampleOK = true;
+		nSamplesSoFar++;
+		localFileName = FileName;
 		FullPathName = DirectoryName + "/" + FileName;
 
 		if (WorkingFile != NULL) {
@@ -1575,6 +1583,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			// End stage 1 for sample
 			//
 
+			if ((nSamplesSoFar == 3) || (nSamplesSoFar == 5)) {
+
+				cout << "This should cause a crash!" << endl;
+				throw 42;
+			}
+
 			bioComponent->SetMessageValue (stage1Successful, true);
 			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
 			CoreBioComponent::SetCurrentStage (2);
@@ -1714,8 +1728,24 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		catch (...) {
 
-			delete bioComponent;
+			cout << "********We crashed on sample:  " << data->GetName () << "." << endl;
+			//delete bioComponent;
 			CoreBioComponent::ResetCrashMode (true);
+			//bioComponent = new STRSampleCoreBioComponent (data->GetName ());
+			//bioComponent->SetSampleName (data->GetSampleName ());
+			//bioComponent->SetFileName (FileName);
+			//bioComponent->SetMessageValue (stage1Successful, true);
+			//bioComponent->SetMessageValue (stage2Successful, true);
+			//bioComponent->SetMessageValue (stage3Successful, true);
+			//bioComponent->SetMessageValue (stage4Successful, true);
+			//bioComponent->SetMessageValue (stage5Successful, true);
+			// Add message for crash and set up trigger for directory level message; include current stage for crash data
+			// Then evaluate and set triggers for all messages for stage 5
+		}
+
+		if (CoreBioComponent::GetCrashMode ()) {
+
+			delete bioComponent;
 			bioComponent = new STRSampleCoreBioComponent (data->GetName ());
 			bioComponent->SetSampleName (data->GetSampleName ());
 			bioComponent->SetFileName (FileName);
@@ -1723,9 +1753,31 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			bioComponent->SetMessageValue (stage2Successful, true);
 			bioComponent->SetMessageValue (stage3Successful, true);
 			bioComponent->SetMessageValue (stage4Successful, true);
-			// Add message for crash and set up trigger for directory level message; include current stage for crash data
-			// Then evaluate and set triggers for all messages for stage 4
+			bioComponent->SetMessageValue (analysisTruncatedPrematurely, true);
+			bioComponent->AppendDataForSmartMessage (analysisTruncatedPrematurely, CoreBioComponent::GetCurrentStage ());
 			bioComponent->SetMessageValue (stage5Successful, true);
+			SetMessageValue (samplesTerminatedPrematurely, true);
+			AppendDataForSmartMessage (samplesTerminatedPrematurely, localFileName);
+			cout << "Crash phase 1" << endl;
+			bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done
+			// Add message for crash and set up trigger for directory level message; include current stage for crash data
+			// Then evaluate and set triggers for all messages for stage 5
+			cout << "Crash phase 2" << endl;
+			bioComponent->ReportSampleTableRow (ExcelSummary);
+			cout << "Crash phase 3" << endl;
+			bioComponent->ReportSampleTableRowWithLinks (ExcelLinks);
+			cout << "Crash phase 4" << endl;
+			bioComponent->ReportXMLSmartSampleTableRowWithLinks (XMLExcelLinks, tempXMLExcelLinks);
+			cout << "Crash phase 5" << endl;
+
+			bioComponent->ReportAllSmartNoticeObjects (tempExcelSummary, "", " ", FALSE);
+			cout << "Crash phase 6" << endl;
+			bioComponent->ReportAllSmartNoticeObjects (tempExcelLinks, "", " ", TRUE);
+			cout << "Crash phase 7" << endl;
+			bioComponent = NULL;
+			delete data;
+			data = NULL;
+			continue;
 		}
 
 		bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done

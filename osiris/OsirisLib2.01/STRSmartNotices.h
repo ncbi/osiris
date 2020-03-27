@@ -283,6 +283,8 @@ PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel4)
 PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel5)
 PERSISTENT_PREDECLARATION (smChannelRemappingForLadderFreeOverrideDefault)
 PERSISTENT_PREDECLARATION (smMakeMixturesDefaultSampleTypePreset)
+PERSISTENT_PREDECLARATION (smSampleAnalysisTruncatedPrematurely)
+PERSISTENT_PREDECLARATION (smSamplesTerminatedPrematurely)
 
 
 
@@ -7882,6 +7884,62 @@ public:
 	smMakeMixturesDefaultSampleTypePreset ();
 	smMakeMixturesDefaultSampleTypePreset (const smMakeMixturesDefaultSampleTypePreset& note);
 	virtual ~smMakeMixturesDefaultSampleTypePreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSampleAnalysisTruncatedPrematurely : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSampleAnalysisTruncatedPrematurely)
+
+public:
+	smSampleAnalysisTruncatedPrematurely ();
+	smSampleAnalysisTruncatedPrematurely (const smSampleAnalysisTruncatedPrematurely& note);
+	virtual ~smSampleAnalysisTruncatedPrematurely ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSamplesTerminatedPrematurely : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSamplesTerminatedPrematurely)
+
+public:
+	smSamplesTerminatedPrematurely ();
+	smSamplesTerminatedPrematurely (const smSamplesTerminatedPrematurely& note);
+	virtual ~smSamplesTerminatedPrematurely ();
 
 	virtual int GetSubject () const;
 

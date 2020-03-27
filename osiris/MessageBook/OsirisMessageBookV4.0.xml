@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.48</VersionNumber>
-	<BuildTime>03/06/2020 02:19 PM</BuildTime>
+	<VersionNumber>7.50</VersionNumber>
+	<BuildTime>03/27/2020 06:2=15 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1156,6 +1156,20 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>2</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSamplesTerminatedPrematurely</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE SAMPLES TERMINATED PREMATURELY.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.  CONTACT THE OSIRIS TEAM WITH THIS MESSAGE</ClosingText>
+			<ReportLevel>1</ReportLevel>
 			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -4498,6 +4512,18 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>SAMPLE COULD NOT BE ANALYZED</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSampleAnalysisTruncatedPrematurely</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>SAMPLE ANALYSIS TRUNCATED PREMATURELY IN STAGE </Text>
+			<ClosingText>.  CONTACT OSIRIS TEAM</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -8034,6 +8060,7 @@
 						<Name>smSampleUnanalyzable</Name>
 						<Name>smNamedPosCtrlNotFound</Name>
 						<Name>smNoYForAMEL</Name>
+						<Name>smSampleAnalysisTruncatedPrematurely</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfHomozygousLoci</Name>
@@ -8115,6 +8142,7 @@
 						<Name>smReampAllMore</Name>
 						<Name>smReinjectAll</Name>
 						<Name>smDirectoryPlaceHolder</Name>
+						<Name>smSamplesTerminatedPrematurely</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfSamples</Name>

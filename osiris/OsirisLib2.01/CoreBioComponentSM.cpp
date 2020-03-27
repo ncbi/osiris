@@ -287,6 +287,9 @@ Boolean CoreBioComponent :: ReportAllSmartNoticeObjects (RGTextOutput& text, con
 	int severity;	
 	Boolean reportedNotices = ReportSmartNoticeObjects (text, indent, delim, reportLink);
 
+	if (CrashMode)
+		return TRUE;
+
 	if (!reportedNotices) {
 
 		severity = GetLocusAndChannelHighestMessageLevel ();
@@ -493,8 +496,11 @@ int CoreBioComponent :: AddAllSmartMessageReporters (SmartMessagingComm& comm, i
 	bool mirror;
 	bool displayExport;
 
-	for (i=1; i<=mNumberOfChannels; i++)
-		mDataChannels [i]->AddAllSmartMessageReporters (comm, numHigherObjects);
+	if (!CrashMode) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			mDataChannels [i]->AddAllSmartMessageReporters (comm, numHigherObjects);
+	}
 
 	for (i=0; i<size; i++) {
 
@@ -783,7 +789,10 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 
 	RGString type;
 
-	if (mIsNegativeControl)
+	if (CrashMode)
+		type = "Unknown";
+
+	else if (mIsNegativeControl)
 		type = "-Control";
 
 	else if (mIsPositiveControl)
@@ -864,6 +873,12 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 //		text << CLevel (1) << "\t\t\t</SampleAlerts>\n" << PLevel ();
 	}
 
+	if (CrashMode) {
+
+		text << CLevel (1) << "\t\t</Sample>\n" << PLevel ();
+		return;
+	}
+
 	mDataChannels [mLaneStandardChannel]->ReportXMLILSSmartNoticeObjects (text, tempText, " ");
 	int i;
 
@@ -942,14 +957,17 @@ void CoreBioComponent :: ReportXMLSampleInfoBlock (const RGString& indent, RGTex
 
 	int j;
 
-	for (j=1; j<=mNumberOfChannels; j++) {
+	if (!CrashMode) {
 
-		text << indent1 << "<Channel>\n";
-		text << indent2 << "<Number>" << j << "</Number>\n";
-		text << indent2 << "<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
-		text << indent2 << "<ChannelLocusTotalAreaRatioMaxToMin>" << mDataChannels [j]->GetMaxLocusAreaRatio () << "</ChannelLocusTotalAreaRatioMaxToMin>\n";  // Must generate and store and provide accessor for this number for each channel
-		text << indent2 << "<ChannelYLinkedLocusTotalAreaMaxToMin>" << mDataChannels [j]->GetMaxYLinkedLocusAreaRatio () << "</ChannelYLinkedLocusTotalAreaMaxToMin>\n";
-		text << indent1 << "</Channel>\n";
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			text << indent1 << "<Channel>\n";
+			text << indent2 << "<Number>" << j << "</Number>\n";
+			text << indent2 << "<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
+			text << indent2 << "<ChannelLocusTotalAreaRatioMaxToMin>" << mDataChannels [j]->GetMaxLocusAreaRatio () << "</ChannelLocusTotalAreaRatioMaxToMin>\n";  // Must generate and store and provide accessor for this number for each channel
+			text << indent2 << "<ChannelYLinkedLocusTotalAreaMaxToMin>" << mDataChannels [j]->GetMaxYLinkedLocusAreaRatio () << "</ChannelYLinkedLocusTotalAreaMaxToMin>\n";
+			text << indent1 << "</Channel>\n";
+		}
 	}
 
 	text << indent << "</Info>\n" << PLevel ();

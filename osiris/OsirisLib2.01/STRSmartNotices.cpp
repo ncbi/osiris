@@ -1638,6 +1638,18 @@ int smMakeMixturesDefaultSampleTypePreset::sMessageIndex = 0;
 int smMakeMixturesDefaultSampleTypePreset::sMessageScope = 0;
 
 
+RGString smSampleAnalysisTruncatedPrematurely::sName = "smSampleAnalysisTruncatedPrematurely";
+int smSampleAnalysisTruncatedPrematurely::sSubject = smSampleAnalysisTruncatedPrematurely::LoadType ();
+int smSampleAnalysisTruncatedPrematurely::sMessageIndex = 0;
+int smSampleAnalysisTruncatedPrematurely::sMessageScope = 0;
+
+
+RGString smSamplesTerminatedPrematurely::sName = "smSamplesTerminatedPrematurely";
+int smSamplesTerminatedPrematurely::sSubject = smSamplesTerminatedPrematurely::LoadType ();
+int smSamplesTerminatedPrematurely::sMessageIndex = 0;
+int smSamplesTerminatedPrematurely::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1910,6 +1922,8 @@ PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel4, 2673, "smFsaChannelForOsir
 PERSISTENT_DEFINITION (smFsaChannelForOsirisChannel5, 2674, "smFsaChannelForOsirisChannel5")
 PERSISTENT_DEFINITION (smChannelRemappingForLadderFreeOverrideDefault, 2675, "smChannelRemappingForLadderFreeOverrideDefault")
 PERSISTENT_DEFINITION (smMakeMixturesDefaultSampleTypePreset, 2676, "smMakeMixturesDefaultSampleTypePreset")
+PERSISTENT_DEFINITION (smSampleAnalysisTruncatedPrematurely, 2677, "smSampleAnalysisTruncatedPrematurely")
+PERSISTENT_DEFINITION (smSamplesTerminatedPrematurely, 2678, "smSamplesTerminatedPrematurely")
 
 
 
@@ -18226,6 +18240,126 @@ int smMakeMixturesDefaultSampleTypePreset :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smMakeMixturesDefaultSampleTypePreset* noticeType = new smMakeMixturesDefaultSampleTypePreset;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSampleAnalysisTruncatedPrematurely :: smSampleAnalysisTruncatedPrematurely () : SmartNotice () {
+
+}
+
+
+smSampleAnalysisTruncatedPrematurely :: smSampleAnalysisTruncatedPrematurely (const smSampleAnalysisTruncatedPrematurely& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSampleAnalysisTruncatedPrematurely :: ~smSampleAnalysisTruncatedPrematurely () {
+
+}
+
+
+int smSampleAnalysisTruncatedPrematurely :: GetSubject () const {
+
+	return smSampleAnalysisTruncatedPrematurely::sSubject;
+}
+
+
+void smSampleAnalysisTruncatedPrematurely :: SetIndexAndScope (int index, int scope) const {
+
+	smSampleAnalysisTruncatedPrematurely::sMessageIndex = index;
+	smSampleAnalysisTruncatedPrematurely::sMessageScope = scope;
+}
+
+
+int smSampleAnalysisTruncatedPrematurely :: GetMessageIndex () const {
+
+	return smSampleAnalysisTruncatedPrematurely :: sMessageIndex;
+}
+
+
+int smSampleAnalysisTruncatedPrematurely :: GetScope () const {
+
+	return smSampleAnalysisTruncatedPrematurely :: sMessageScope;
+}
+
+
+RGString smSampleAnalysisTruncatedPrematurely :: GetName () const {
+
+	return smSampleAnalysisTruncatedPrematurely :: sName;
+}
+
+
+
+int smSampleAnalysisTruncatedPrematurely :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSampleAnalysisTruncatedPrematurely* noticeType = new smSampleAnalysisTruncatedPrematurely;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSamplesTerminatedPrematurely :: smSamplesTerminatedPrematurely () : SmartNotice () {
+
+}
+
+
+smSamplesTerminatedPrematurely :: smSamplesTerminatedPrematurely (const smSamplesTerminatedPrematurely& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSamplesTerminatedPrematurely :: ~smSamplesTerminatedPrematurely () {
+
+}
+
+
+int smSamplesTerminatedPrematurely :: GetSubject () const {
+
+	return smSamplesTerminatedPrematurely::sSubject;
+}
+
+
+void smSamplesTerminatedPrematurely :: SetIndexAndScope (int index, int scope) const {
+
+	smSamplesTerminatedPrematurely::sMessageIndex = index;
+	smSamplesTerminatedPrematurely::sMessageScope = scope;
+}
+
+
+int smSamplesTerminatedPrematurely :: GetMessageIndex () const {
+
+	return smSamplesTerminatedPrematurely :: sMessageIndex;
+}
+
+
+int smSamplesTerminatedPrematurely :: GetScope () const {
+
+	return smSamplesTerminatedPrematurely :: sMessageScope;
+}
+
+
+RGString smSamplesTerminatedPrematurely :: GetName () const {
+
+	return smSamplesTerminatedPrematurely :: sName;
+}
+
+
+
+int smSamplesTerminatedPrematurely :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSamplesTerminatedPrematurely* noticeType = new smSamplesTerminatedPrematurely;
 	warehouse->AddType (noticeType);
 	return 1;
 }
