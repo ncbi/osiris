@@ -219,6 +219,7 @@ extern FILE *yyin, *yyout;
 
 #ifndef _WINDOWS
 #ifndef CYGWIN_NT
+#ifndef Linux
 static void fcloseall()
 {
   if(yyin != (FILE *)0)
@@ -232,6 +233,7 @@ static void fcloseall()
     yyout = (FILE *)0;
   }
 }
+#endif
 #endif
 #endif
 
