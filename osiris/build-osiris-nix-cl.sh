@@ -16,12 +16,13 @@ function RESTORE()
 }
 
 cd $(dirname "$0")
+SETUP_LINUX
+
 for x in BaseClassLib/lib OsirisMath/lib OsirisLib2.01/lib TestAnalysisDirectoryLCv2.11/bin fsa2xml/bin; do
 (cd $x ; pwd ; aclocal; autoconf; automake -a)
 done
 (cd OsirisLib2.01 ; sh blex.sh clean all )
 
-SETUP_LINUX
 aclocal
 autoconf
 automake -a

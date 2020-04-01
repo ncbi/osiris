@@ -1,4 +1,5 @@
-AC_INIT(TestAnalysisDirectoryLCv2.11/TestAnalysisDirectoryLC.cpp)
-AM_INIT_AUTOMAKE([TestAnalysisDirectoryLCv2.11/TestAnalysisDirectoryLC.cpp/bin/TestAnalysisDirectoryLC], 2.14)
+AC_INIT([x],[2.14])
+AC_CONFIG_SRCDIR([TestAnalysisDirectoryLCv2.11/TestAnalysisDirectoryLC.cpp])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SUBDIRS(BaseClassLib/lib OsirisLib2.01/lib OsirisMath/lib TestAnalysisDirectoryLCv2.11/bin fsa2xml/bin)
 AC_OUTPUT(Makefile)
