@@ -158,7 +158,7 @@ struct QCData {
 
 class CoreBioComponent : public SmartMessagingObject {
 
-ABSTRACT_DECLARATION (CoreBioComponent)
+	ABSTRACT_DECLARATION (CoreBioComponent)
 
 public:
 	CoreBioComponent ();
@@ -180,7 +180,7 @@ public:
 	void ResetBoundsForILSUsingFactor (double factor) { if (mLaneStandard != NULL) mLaneStandard->ResetBoundsUsingFactorToILSHistory (factor); }
 	void SetComments (const RGString& comment) { mComments = comment; }
 
-//	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
+	//	int GetHighestSeverityLevel () const { return mHighestSeverityLevel; }
 	int GetHighestMessageLevel () const { return mHighestMessageLevel; }
 
 	RGString GetError () const { return ErrorString; }
@@ -230,7 +230,9 @@ public:
 	bool TestMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth, double fractionNoiseRange, double& value) const;
 
 	void ReportSampleTableRow (RGTextOutput& text);
+	void ReportSampleTableRowCrashMode (RGTextOutput& text);
 	void ReportSampleTableRowWithLinks (RGTextOutput& text);
+	void ReportSampleTableRowWithLinksCrashMode (RGTextOutput& text);
 	void ReportGridTableRow (RGTextOutput& text);
 	void ReportGridTableRowWithLinks (RGTextOutput& text);
 
@@ -333,7 +335,7 @@ public:
 	virtual int ResolveAmbiguousInterlocusSignals ();	//$
 	virtual int SampleQualityTest (GenotypesForAMarkerSet* genotypes);	//$
 	virtual int TestPositiveControl (GenotypesForAMarkerSet* genotypes);	//$
-	
+
 	virtual int GridQualityTest ();	//$
 	virtual int FilterNoticesBelowMinBioID ();	//$
 	virtual int RemoveAllSignalsOutsideLaneStandard ();	//$
@@ -343,7 +345,7 @@ public:
 	virtual int WritePeakInfoToXMLForChannel (int channel, RGTextOutput& text, const RGString& indent, const RGString& tagName);	//$
 	virtual int WriteArtifactInfoToXMLForChannel (int channel, RGTextOutput& text, const RGString& indent);	//$
 
-	
+
 
 	//******************************************************************************************************************************************
 	//******************************************************************************************************************************************
@@ -371,12 +373,14 @@ public:
 
 	Boolean ReportSmartNoticeObjects (RGTextOutput& text, const RGString& indent, const RGString& delim, Boolean reportLinks = FALSE);
 	Boolean ReportAllSmartNoticeObjects (RGTextOutput& text, const RGString& indent, const RGString& delim, Boolean reportLink = FALSE);
+	Boolean ReportAllSmartNoticeObjectsCrashMode (RGTextOutput& text, const RGString& indent, const RGString& delim, Boolean reportLink);
 	bool ReportXMLSmartNoticeObjects (RGTextOutput& text, RGTextOutput& tempText, const RGString& delim);
 
 	virtual int AddAllSmartMessageReporters ();
 	virtual int AddAllSmartMessageReportersForSignals ();
 
 	virtual int AddAllSmartMessageReporters (SmartMessagingComm& comm, int numHigherObjects);
+	virtual int AddAllSmartMessageReportersCrashMode (SmartMessagingComm& comm, int numHigherObjects);
 	virtual int AddAllSmartMessageReportersForSignals (SmartMessagingComm& comm, int numHigherObjects);
 
 	void SetNegativeControlTrueSM ();
@@ -393,6 +397,7 @@ public:
 
 	void ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);
 	void ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);
+	void ReportXMLSmartSampleTableRowWithLinksCrashMode (RGTextOutput& text, RGTextOutput& tempText);
 	void ReportXMLSampleInfoBlock (const RGString& indent, RGTextOutput& text);
 
 	bool GetIgnoreNoiseAboveDetectionInSmoothingFlag () const;
@@ -439,7 +444,7 @@ public:
 
 	virtual int TestAllFractionalFiltersSMLF ();
 
-	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) {;}
+	virtual void ReevaluateNoiseThresholdBasedOnMachineType (const RGString& machine) { ; }
 
 	void RemovePrimaryLinksAndSecondaryLinksFrom (DataSignal* ds);
 	virtual bool ValidateAndCorrectCrossChannelAnalysesSM ();
@@ -531,6 +536,24 @@ public:
 	static void SetHeightFile (RGTextOutput* hf) { HeightFile = hf; }
 	static void SetNonLaserOffScalePUCoeffsFile (RGTextOutput* puf) { NonLaserOffScalePUCoefficients = puf; }
 	static void SetPullupMatrixFile (RGTextOutput* pumf) { pullUpMatrixFile = pumf; }
+	static void SetCurrentStage (int s) { CurrentAnalysisStage = s; }
+	static void ResetCrashMode (bool m) { CrashMode = m; }
+
+	static int GetCurrentStage () { return CurrentAnalysisStage; }
+	static bool GetCrashMode () { return CrashMode; }
+	static void AddOneToCrashCount () { CrashCount++; }
+
+	static void ResetNoDataChannels () { NoDataChannels.clear (); }
+	static void AddChannel (int c) { NoDataChannels.push_back (c); }
+	static int GetNextNoDataChannel ();
+
+	static void ResetCrashCode () { CrashCode = 0; }
+	static int GetCrashCode () {
+		return CrashCode;
+	}
+	static void SetCrashCode (int i) {
+		CrashCode = i;
+	}
 
 	//************************************************************************************************************************************
 
@@ -624,6 +647,11 @@ protected:
 	static RGTextOutput* HeightFile;
 	static RGTextOutput* NonLaserOffScalePUCoefficients;
 	static RGTextOutput* pullUpMatrixFile;
+	static int CurrentAnalysisStage;
+	static bool CrashMode;
+	static int CrashCount;
+	static list<int> NoDataChannels;
+	static int CrashCode;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();

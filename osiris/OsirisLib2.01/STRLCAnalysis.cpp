@@ -65,6 +65,7 @@ RGString STRLCAnalysis::OverrideString;
 RGString STRLCAnalysis::OutputSubDirectory;
 RGString STRLCAnalysis::MsgBookBuildTime;
 bool STRLCAnalysis::CollectILSHistory = false;
+bool STRLCAnalysis::DirectoryCrashMode = false;
 MainMessages* STRLCAnalysis::mFailureMessage = new MainMessages;
 
 
