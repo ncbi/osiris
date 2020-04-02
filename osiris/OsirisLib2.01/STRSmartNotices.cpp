@@ -1650,6 +1650,30 @@ int smSamplesTerminatedPrematurely::sMessageIndex = 0;
 int smSamplesTerminatedPrematurely::sMessageScope = 0;
 
 
+RGString smSamplesHadNoDataForChannels::sName = "smSamplesHadNoDataForChannels";
+int smSamplesHadNoDataForChannels::sSubject = smSamplesHadNoDataForChannels::LoadType ();
+int smSamplesHadNoDataForChannels::sMessageIndex = 0;
+int smSamplesHadNoDataForChannels::sMessageScope = 0;
+
+
+RGString smSampleMissingDataForChannels::sName = "smSampleMissingDataForChannels";
+int smSampleMissingDataForChannels::sSubject = smSampleMissingDataForChannels::LoadType ();
+int smSampleMissingDataForChannels::sMessageIndex = 0;
+int smSampleMissingDataForChannels::sMessageScope = 0;
+
+
+RGString smSamplesAreNotValidInputFiles::sName = "smSamplesAreNotValidInputFiles";
+int smSamplesAreNotValidInputFiles::sSubject = smSamplesAreNotValidInputFiles::LoadType ();
+int smSamplesAreNotValidInputFiles::sMessageIndex = 0;
+int smSamplesAreNotValidInputFiles::sMessageScope = 0;
+
+
+RGString smSampleIsNotValidInputFile::sName = "smSampleIsNotValidInputFile";
+int smSampleIsNotValidInputFile::sSubject = smSampleIsNotValidInputFile::LoadType ();
+int smSampleIsNotValidInputFile::sMessageIndex = 0;
+int smSampleIsNotValidInputFile::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1924,6 +1948,10 @@ PERSISTENT_DEFINITION (smChannelRemappingForLadderFreeOverrideDefault, 2675, "sm
 PERSISTENT_DEFINITION (smMakeMixturesDefaultSampleTypePreset, 2676, "smMakeMixturesDefaultSampleTypePreset")
 PERSISTENT_DEFINITION (smSampleAnalysisTruncatedPrematurely, 2677, "smSampleAnalysisTruncatedPrematurely")
 PERSISTENT_DEFINITION (smSamplesTerminatedPrematurely, 2678, "smSamplesTerminatedPrematurely")
+PERSISTENT_DEFINITION (smSamplesHadNoDataForChannels, 2679, "smSamplesHadNoDataForChannels")
+PERSISTENT_DEFINITION (smSampleMissingDataForChannels, 2680, "smSampleMissingDataForChannels")
+PERSISTENT_DEFINITION (smSamplesAreNotValidInputFiles, 2681, "smSamplesAreNotValidInputFiles")
+PERSISTENT_DEFINITION (smSampleIsNotValidInputFile, 2682, "smSampleIsNotValidInputFile")
 
 
 
@@ -18360,6 +18388,246 @@ int smSamplesTerminatedPrematurely :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smSamplesTerminatedPrematurely* noticeType = new smSamplesTerminatedPrematurely;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSamplesHadNoDataForChannels :: smSamplesHadNoDataForChannels () : SmartNotice () {
+
+}
+
+
+smSamplesHadNoDataForChannels :: smSamplesHadNoDataForChannels (const smSamplesHadNoDataForChannels& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSamplesHadNoDataForChannels :: ~smSamplesHadNoDataForChannels () {
+
+}
+
+
+int smSamplesHadNoDataForChannels :: GetSubject () const {
+
+	return smSamplesHadNoDataForChannels::sSubject;
+}
+
+
+void smSamplesHadNoDataForChannels :: SetIndexAndScope (int index, int scope) const {
+
+	smSamplesHadNoDataForChannels::sMessageIndex = index;
+	smSamplesHadNoDataForChannels::sMessageScope = scope;
+}
+
+
+int smSamplesHadNoDataForChannels :: GetMessageIndex () const {
+
+	return smSamplesHadNoDataForChannels :: sMessageIndex;
+}
+
+
+int smSamplesHadNoDataForChannels :: GetScope () const {
+
+	return smSamplesHadNoDataForChannels :: sMessageScope;
+}
+
+
+RGString smSamplesHadNoDataForChannels :: GetName () const {
+
+	return smSamplesHadNoDataForChannels :: sName;
+}
+
+
+
+int smSamplesHadNoDataForChannels :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSamplesHadNoDataForChannels* noticeType = new smSamplesHadNoDataForChannels;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSampleMissingDataForChannels :: smSampleMissingDataForChannels () : SmartNotice () {
+
+}
+
+
+smSampleMissingDataForChannels :: smSampleMissingDataForChannels (const smSampleMissingDataForChannels& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSampleMissingDataForChannels :: ~smSampleMissingDataForChannels () {
+
+}
+
+
+int smSampleMissingDataForChannels :: GetSubject () const {
+
+	return smSampleMissingDataForChannels::sSubject;
+}
+
+
+void smSampleMissingDataForChannels :: SetIndexAndScope (int index, int scope) const {
+
+	smSampleMissingDataForChannels::sMessageIndex = index;
+	smSampleMissingDataForChannels::sMessageScope = scope;
+}
+
+
+int smSampleMissingDataForChannels :: GetMessageIndex () const {
+
+	return smSampleMissingDataForChannels :: sMessageIndex;
+}
+
+
+int smSampleMissingDataForChannels :: GetScope () const {
+
+	return smSampleMissingDataForChannels :: sMessageScope;
+}
+
+
+RGString smSampleMissingDataForChannels :: GetName () const {
+
+	return smSampleMissingDataForChannels :: sName;
+}
+
+
+
+int smSampleMissingDataForChannels :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSampleMissingDataForChannels* noticeType = new smSampleMissingDataForChannels;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSamplesAreNotValidInputFiles :: smSamplesAreNotValidInputFiles () : SmartNotice () {
+
+}
+
+
+smSamplesAreNotValidInputFiles :: smSamplesAreNotValidInputFiles (const smSamplesAreNotValidInputFiles& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSamplesAreNotValidInputFiles :: ~smSamplesAreNotValidInputFiles () {
+
+}
+
+
+int smSamplesAreNotValidInputFiles :: GetSubject () const {
+
+	return smSamplesAreNotValidInputFiles::sSubject;
+}
+
+
+void smSamplesAreNotValidInputFiles :: SetIndexAndScope (int index, int scope) const {
+
+	smSamplesAreNotValidInputFiles::sMessageIndex = index;
+	smSamplesAreNotValidInputFiles::sMessageScope = scope;
+}
+
+
+int smSamplesAreNotValidInputFiles :: GetMessageIndex () const {
+
+	return smSamplesAreNotValidInputFiles :: sMessageIndex;
+}
+
+
+int smSamplesAreNotValidInputFiles :: GetScope () const {
+
+	return smSamplesAreNotValidInputFiles :: sMessageScope;
+}
+
+
+RGString smSamplesAreNotValidInputFiles :: GetName () const {
+
+	return smSamplesAreNotValidInputFiles :: sName;
+}
+
+
+
+int smSamplesAreNotValidInputFiles :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSamplesAreNotValidInputFiles* noticeType = new smSamplesAreNotValidInputFiles;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smSampleIsNotValidInputFile :: smSampleIsNotValidInputFile () : SmartNotice () {
+
+}
+
+
+smSampleIsNotValidInputFile :: smSampleIsNotValidInputFile (const smSampleIsNotValidInputFile& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smSampleIsNotValidInputFile :: ~smSampleIsNotValidInputFile () {
+
+}
+
+
+int smSampleIsNotValidInputFile :: GetSubject () const {
+
+	return smSampleIsNotValidInputFile::sSubject;
+}
+
+
+void smSampleIsNotValidInputFile :: SetIndexAndScope (int index, int scope) const {
+
+	smSampleIsNotValidInputFile::sMessageIndex = index;
+	smSampleIsNotValidInputFile::sMessageScope = scope;
+}
+
+
+int smSampleIsNotValidInputFile :: GetMessageIndex () const {
+
+	return smSampleIsNotValidInputFile :: sMessageIndex;
+}
+
+
+int smSampleIsNotValidInputFile :: GetScope () const {
+
+	return smSampleIsNotValidInputFile :: sMessageScope;
+}
+
+
+RGString smSampleIsNotValidInputFile :: GetName () const {
+
+	return smSampleIsNotValidInputFile :: sName;
+}
+
+
+
+int smSampleIsNotValidInputFile :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smSampleIsNotValidInputFile* noticeType = new smSampleIsNotValidInputFile;
 	warehouse->AddType (noticeType);
 	return 1;
 }

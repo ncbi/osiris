@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.50</VersionNumber>
-	<BuildTime>03/27/2020 06:2=15 PM</BuildTime>
+	<VersionNumber>7.54</VersionNumber>
+	<BuildTime>04/01/2020 06:18 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1169,6 +1169,34 @@
 			<TextForData>:  </TextForData>
 			<SeparatorText>; </SeparatorText>
 			<ClosingText>.  CONTACT THE OSIRIS TEAM WITH THIS MESSAGE</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSamplesHadNoDataForChannels</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE SAMPLES HAD NO DATA FOR CHANNELS AND WERE TERMINATED.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.  CHECK FOR APPROPRIATE MARKER SET.</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSamplesAreNotValidInputFiles</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE SAMPLES DO NOT HAVE THE CORRECT FSA/HID FORMAT OR MAY BE CORRUPTED.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<Scope>6</Scope>
 		</SmartMessage>
@@ -4524,6 +4552,30 @@
 			</ReportCriterion>
 			<Text>SAMPLE ANALYSIS TRUNCATED PREMATURELY IN STAGE </Text>
 			<ClosingText>.  CONTACT OSIRIS TEAM</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSampleMissingDataForChannels</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>SAMPLE HAD NO DATA FOR ONE OR MORE CHANNELS NUMBERED:  </Text>
+			<SeparatorText>, </SeparatorText>
+			<ClosingText>.  CHECK FOR APPROPRIATE MARKER SET.</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSampleIsNotValidInputFile</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>SAMPLE DOES NOT HAVE THE CORRECT FSA/HID FORMAT OR MAY BE CORRUPTED.</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -8061,6 +8113,8 @@
 						<Name>smNamedPosCtrlNotFound</Name>
 						<Name>smNoYForAMEL</Name>
 						<Name>smSampleAnalysisTruncatedPrematurely</Name>
+						<Name>smSampleMissingDataForChannels</Name>
+						<Name>smSampleIsNotValidInputFile</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfHomozygousLoci</Name>
@@ -8143,6 +8197,8 @@
 						<Name>smReinjectAll</Name>
 						<Name>smDirectoryPlaceHolder</Name>
 						<Name>smSamplesTerminatedPrematurely</Name>
+						<Name>smSamplesHadNoDataForChannels</Name>
+						<Name>smSamplesAreNotValidInputFiles</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfSamples</Name>

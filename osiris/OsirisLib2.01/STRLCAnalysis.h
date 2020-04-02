@@ -139,6 +139,13 @@ public:
 	static RGString GetOutputSubDirectory () { return OutputSubDirectory; }
 	static void SetCollectILSHistory (bool s) { CollectILSHistory = s; }
 
+	static void ResetDirectoryCrashMode (bool m) {
+		DirectoryCrashMode = m;
+	}
+	static bool GetDirectoryCrashMode () {
+		return DirectoryCrashMode;
+	}
+
 protected:
 	PopulationCollection* mCollection;
 	RGString mParentDirectoryForReports;
@@ -176,6 +183,7 @@ protected:
 	static RGString OutputSubDirectory;
 	static RGString MsgBookBuildTime;
 	static bool CollectILSHistory;
+	static bool DirectoryCrashMode;
 };
 
 

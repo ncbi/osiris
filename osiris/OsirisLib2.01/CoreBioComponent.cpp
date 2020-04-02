@@ -49,6 +49,7 @@
 #include "STRSmartNotices.h"
 #include "DirectoryManager.h"
 #include "LeastMedianOfSquares.h"
+#include "STRLCAnalysis.h"
 
 
 Boolean CoreBioComponent::SearchByName = TRUE;
@@ -71,6 +72,9 @@ RGTextOutput* CoreBioComponent::NonLaserOffScalePUCoefficients = NULL;
 RGTextOutput* CoreBioComponent::pullUpMatrixFile = NULL;
 int CoreBioComponent::CurrentAnalysisStage = 1;
 bool CoreBioComponent::CrashMode = false;
+int CoreBioComponent::CrashCount = 0;
+list<int> CoreBioComponent::NoDataChannels;
+int CoreBioComponent::CrashCode = 0;
 
 
 
@@ -1664,7 +1668,7 @@ void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 	text.SetOutputLevel (1);
 	text << GetSampleName () << "\t";
 
-	if (CrashMode) {
+	if (STRLCAnalysis::GetDirectoryCrashMode ()) {
 
 		text << "\n";
 		text.ResetOutputLevel ();
@@ -1720,6 +1724,21 @@ void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 }
 
 
+void CoreBioComponent::ReportSampleTableRowCrashMode (RGTextOutput& text) {
+
+	RGString locusName;
+	bool reportedChannel = false;
+
+	//  First output sample name, then ILS
+
+	text.SetOutputLevel (1);
+	text << GetSampleName () << "\t";
+	text << "\n";
+	text.ResetOutputLevel ();
+
+}
+
+
 void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 
 	RGString locusName;
@@ -1746,13 +1765,6 @@ void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 
 	else
 		text << GetSampleName () << "\t";
-
-	if (CrashMode) {
-
-		text << "\n";
-		text.ResetOutputLevel ();
-		return;
-	}
 
 	highest = mLSData->GetHighestMessageLevel ();
 	mMarkerSet->ResetLocusList ();
@@ -1817,6 +1829,32 @@ void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 	}
 
 	text << "\t" << mPositiveControlName;
+	text << "\n";
+	text.ResetOutputLevel ();
+}
+
+
+void CoreBioComponent::ReportSampleTableRowWithLinksCrashMode (RGTextOutput& text) {
+
+	int link;
+	RGString LinkString;
+	int trigger = Notice::GetMessageTrigger ();
+	bool reportedChannel = false;
+
+	//  First output sample name, then ILS
+
+	text.SetOutputLevel (1);
+
+	if ((mHighestSeverityLevel > 0) && (mHighestSeverityLevel <= trigger)) {
+
+		link = Notice::GetNextLinkNumber ();
+		SetTableLink (link);
+		text << mTableLink << GetSampleName () << "\t";
+	}
+
+	else
+		text << GetSampleName () << "\t";
+
 	text << "\n";
 	text.ResetOutputLevel ();
 }
@@ -3269,6 +3307,17 @@ bool CoreBioComponent :: TestForOffScale (double time) {
 	}
 
 	return (lowOffScale || highOffScale || low1OffScale || high1OffScale);
+}
+
+
+int CoreBioComponent::GetNextNoDataChannel () {
+
+	if (NoDataChannels.empty ())
+		return -1;
+
+	int top = NoDataChannels.front ();
+	NoDataChannels.pop_front ();
+	return top;
 }
 
 

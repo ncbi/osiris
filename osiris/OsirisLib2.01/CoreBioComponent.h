@@ -230,7 +230,9 @@ public:
 	bool TestMaxAbsoluteRawDataInInterval (int channel, double center, double halfWidth, double fractionNoiseRange, double& value) const;
 
 	void ReportSampleTableRow (RGTextOutput& text);
+	void ReportSampleTableRowCrashMode (RGTextOutput& text);
 	void ReportSampleTableRowWithLinks (RGTextOutput& text);
+	void ReportSampleTableRowWithLinksCrashMode (RGTextOutput& text);
 	void ReportGridTableRow (RGTextOutput& text);
 	void ReportGridTableRowWithLinks (RGTextOutput& text);
 
@@ -371,12 +373,14 @@ public:
 
 	Boolean ReportSmartNoticeObjects (RGTextOutput& text, const RGString& indent, const RGString& delim, Boolean reportLinks = FALSE);
 	Boolean ReportAllSmartNoticeObjects (RGTextOutput& text, const RGString& indent, const RGString& delim, Boolean reportLink = FALSE);
+	Boolean ReportAllSmartNoticeObjectsCrashMode (RGTextOutput& text, const RGString& indent, const RGString& delim, Boolean reportLink);
 	bool ReportXMLSmartNoticeObjects (RGTextOutput& text, RGTextOutput& tempText, const RGString& delim);
 
 	virtual int AddAllSmartMessageReporters ();
 	virtual int AddAllSmartMessageReportersForSignals ();
 
 	virtual int AddAllSmartMessageReporters (SmartMessagingComm& comm, int numHigherObjects);
+	virtual int AddAllSmartMessageReportersCrashMode (SmartMessagingComm& comm, int numHigherObjects);
 	virtual int AddAllSmartMessageReportersForSignals (SmartMessagingComm& comm, int numHigherObjects);
 
 	void SetNegativeControlTrueSM ();
@@ -393,6 +397,7 @@ public:
 
 	void ReportXMLSmartGridTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);
 	void ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextOutput& tempText);
+	void ReportXMLSmartSampleTableRowWithLinksCrashMode (RGTextOutput& text, RGTextOutput& tempText);
 	void ReportXMLSampleInfoBlock (const RGString& indent, RGTextOutput& text);
 
 	bool GetIgnoreNoiseAboveDetectionInSmoothingFlag () const;
@@ -536,6 +541,19 @@ public:
 
 	static int GetCurrentStage () { return CurrentAnalysisStage; }
 	static bool GetCrashMode () { return CrashMode; }
+	static void AddOneToCrashCount () { CrashCount++; }
+
+	static void ResetNoDataChannels () { NoDataChannels.clear (); }
+	static void AddChannel (int c) { NoDataChannels.push_back (c); }
+	static int GetNextNoDataChannel ();
+
+	static void ResetCrashCode () { CrashCode = 0; }
+	static int GetCrashCode () {
+		return CrashCode;
+	}
+	static void SetCrashCode (int i) {
+		CrashCode = i;
+	}
 
 	//************************************************************************************************************************************
 
@@ -631,6 +649,9 @@ protected:
 	static RGTextOutput* pullUpMatrixFile;
 	static int CurrentAnalysisStage;
 	static bool CrashMode;
+	static int CrashCount;
+	static list<int> NoDataChannels;
+	static int CrashCode;
 
 	static int InitializeOffScaleData (SampleData& sd);
 	static void ReleaseOffScaleData ();

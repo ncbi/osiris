@@ -285,6 +285,10 @@ PERSISTENT_PREDECLARATION (smChannelRemappingForLadderFreeOverrideDefault)
 PERSISTENT_PREDECLARATION (smMakeMixturesDefaultSampleTypePreset)
 PERSISTENT_PREDECLARATION (smSampleAnalysisTruncatedPrematurely)
 PERSISTENT_PREDECLARATION (smSamplesTerminatedPrematurely)
+PERSISTENT_PREDECLARATION (smSamplesHadNoDataForChannels)
+PERSISTENT_PREDECLARATION (smSampleMissingDataForChannels)
+PERSISTENT_PREDECLARATION (smSamplesAreNotValidInputFiles)
+PERSISTENT_PREDECLARATION (smSampleIsNotValidInputFile)
 
 
 
@@ -7940,6 +7944,118 @@ public:
 	smSamplesTerminatedPrematurely ();
 	smSamplesTerminatedPrematurely (const smSamplesTerminatedPrematurely& note);
 	virtual ~smSamplesTerminatedPrematurely ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSamplesHadNoDataForChannels : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSamplesHadNoDataForChannels)
+
+public:
+	smSamplesHadNoDataForChannels ();
+	smSamplesHadNoDataForChannels (const smSamplesHadNoDataForChannels& note);
+	virtual ~smSamplesHadNoDataForChannels ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSampleMissingDataForChannels : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSampleMissingDataForChannels)
+
+public:
+	smSampleMissingDataForChannels ();
+	smSampleMissingDataForChannels (const smSampleMissingDataForChannels& note);
+	virtual ~smSampleMissingDataForChannels ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSamplesAreNotValidInputFiles : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSamplesAreNotValidInputFiles)
+
+public:
+	smSamplesAreNotValidInputFiles ();
+	smSamplesAreNotValidInputFiles (const smSamplesAreNotValidInputFiles& note);
+	virtual ~smSamplesAreNotValidInputFiles ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSampleIsNotValidInputFile : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSampleIsNotValidInputFile)
+
+public:
+	smSampleIsNotValidInputFile ();
+	smSampleIsNotValidInputFile (const smSampleIsNotValidInputFile& note);
+	virtual ~smSampleIsNotValidInputFile ();
 
 	virtual int GetSubject () const;
 
