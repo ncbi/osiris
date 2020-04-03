@@ -2879,14 +2879,14 @@ wxRect ScaleRect(const wxRect& rect, double x_scale, double y_scale)
                    int(rect.width*x_scale+0.5), int(rect.height*y_scale+0.5) );
 }
 
-void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi, bool bAutoCalcTicks )
+void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi, bool bAutoCalcTicks, bool bForcePrintFont )
 {
     wxCHECK_RET(dc, wxT("invalid dc"));
     wxCHECK_RET(dpi > 0, wxT("Invalid dpi for plot drawing"));
 
-    bool bPrinting = (dpi >= 150);
+    bool bPrinting = bForcePrintFont || (dpi >= 150);
     //set font scale so 1pt = 1pixel at 72dpi
-    double fontScale = (double)dpi / (bPrinting ? 96.0 : 72.0);
+    double fontScale = (double)dpi / (bPrinting ? 144.0 : 72.0);
     //one pixel wide line equals (m_pen_print_width) millimeters wide
     double penScale = (double)m_pen_print_width * dpi / 25.4;
 
@@ -3031,7 +3031,8 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
 
     //update to window instead of printer
     UpdateWindowSize();
-    Redraw(wxPLOTCTRL_REDRAW_WHOLEPLOT); // recalc ticks for this window
+    // 4/2/2020 disabling Redraw
+    // Redraw(wxPLOTCTRL_REDRAW_WHOLEPLOT); // recalc ticks for this window
 }
 
 // ----------------------------------------------------------------------------

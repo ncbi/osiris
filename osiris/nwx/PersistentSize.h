@@ -146,6 +146,7 @@ void className::OnPersistMove(wxMoveEvent &e) \
 #define GET_PERSISTENT_SIZE(className) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ) )
 #define GET_PERSISTENT_SIZE_DEFAULT(className, szDefault) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ), szDefault)
 #define GET_PERSISTENT_POSITION(className) nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ) )
+#define GET_PERSISTENT_POSITION_DEFAULT(className, ptDefault) nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ), true, ptDefault )
 
 #define GET_PERSISTENT_POSITION_SIZE(className) \
   GET_PERSISTENT_POSITION(className), \

@@ -810,7 +810,7 @@ public:
     //   the plot is drawn to fit inside the boundingRect (i.e. the margins)
     //
     //  DJH 2/29/2009 - added bAutoCalcTicks = false
-    void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false );
+    void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false, bool bForcePrintFont = false );
 
     // ------------------------------------------------------------------------
     // Axis tick calculations

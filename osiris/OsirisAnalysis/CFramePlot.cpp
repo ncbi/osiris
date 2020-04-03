@@ -2076,7 +2076,7 @@ void CFramePlot::OnSize(wxSizeEvent &e)
 }
 
 wxBitmap *CFramePlot::CreateBitmap(
-  int nWidth, int nHeight, int nDPI, const wxString &sTitle)
+  int nWidth, int nHeight, int nDPI, const wxString &sTitle, bool bForcePrintFont)
 {
   wxBitmap *pBitmap = new wxBitmap(nWidth,nHeight,32);
   wxMemoryDC dc(*pBitmap);
@@ -2096,8 +2096,10 @@ wxBitmap *CFramePlot::CreateBitmap(
   {
     wxSize szTitle;
     wxFont fn = (*m_setPlots.begin())->GetPlotCtrl()->GetAxisFont();
-    double dSize = double(fn.GetPointSize() * nDPI) * (1.0/36.0);
+    // double dSize = double(fn.GetPointSize() * nDPI) * (1.0/36.0);
     // scale font by multplying by DPi and dividing by 72, then double
+    // 4/1/2020 - change font scale to 1.25
+    double dSize = fn.GetPointSize() * nDPI  * (1.25 / 72.0);
     int nMaxX = (nWidth * 9) / 10;
     int nMaxY = nHeight / 10;
     double dResize = 1.0;
@@ -2178,7 +2180,7 @@ wxBitmap *CFramePlot::CreateBitmap(
       pPlot = *itr;
       nY = (int)pPlot->GetPlotNumber();
       pPlotCtrl = pPlot->GetPlotCtrl();
-      pPlotCtrl->DrawEntirePlot(&dcTmp,rect,dDPI);
+      pPlotCtrl->DrawEntirePlot(&dcTmp,rect,dDPI, bForcePrintFont);
       int nYdest = (nY * nPlotHeight)  + nTitleOffset;
       dc.Blit(0,nYdest,nWidth,nPlotHeight,&dcTmp,0,0);
     }
@@ -2193,7 +2195,7 @@ wxBitmap *CFramePlot::CreateBitmap(
       pPlotCtrl = pPlot->GetPlotCtrl();
       bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
       pPlotCtrl->SetRenderingToWindow(false);
-      pPlotCtrl->DrawEntirePlot(&dc,rect,dDPI);
+      pPlotCtrl->DrawEntirePlot(&dc,rect,dDPI, bForcePrintFont);
       pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
     }
 #endif

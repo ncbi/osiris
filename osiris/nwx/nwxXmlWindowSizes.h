@@ -306,11 +306,11 @@ public:
       g_pXWS->SaveWindowPos(s,pt);
     }
   }
-  static const wxPoint &GetWindowPosGlobal(const wxString &s, bool bImplemented = true)
+  static const wxPoint &GetWindowPosGlobal(const wxString &s, bool bImplemented = true, const wxPoint &ptDefault = wxDefaultPosition)
   {
     if((!bImplemented) || (g_pXWS == NULL))
     {
-      return wxDefaultPosition;
+      return ptDefault;
     }
     return g_pXWS->GetWindowPos(s);
   }
