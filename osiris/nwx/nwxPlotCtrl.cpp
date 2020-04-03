@@ -257,7 +257,7 @@ void nwxPlotCtrl::_LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel)
   nwxLog::LogMessage(s);
 }
 #endif
-void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi)
+void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi, bool bForcePrintFont)
 {
   TnwxBatch<nwxPlotCtrl> XXXX(this);
   int nX ;
@@ -266,7 +266,7 @@ void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi)
   n = m_Labels.GetMinY();
   m_XLabels.SetDPIoffset(dpi);
   m_Labels.SetMinYDPI(dpi);
-  DrawWholePlot(dc,rect,dpi,true);
+  DrawWholePlot(dc,rect,dpi,true, bForcePrintFont);
   m_XLabels.SetOffset(nX);
   m_Labels.SetMinY(n);
 }

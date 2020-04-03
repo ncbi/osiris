@@ -194,7 +194,8 @@ public:
   }
   wxBitmap *CreateBitmap(
     int nWidth, int nHeight, int nDPI, 
-    const wxString &sTitle = wxEmptyString);
+    const wxString &sTitle = wxEmptyString,
+    bool bForcePrintFont = false);
   const wxDateTime *GetSelectedTime()
   {
     const wxDateTime *pRtn = 

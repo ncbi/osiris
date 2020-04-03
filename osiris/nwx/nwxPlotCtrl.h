@@ -222,7 +222,7 @@ public:
   virtual void DrawAreaWindow( wxDC *dc, const wxRect& rect );
   virtual void DrawPlotCtrl( wxDC *dc );
   virtual void ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event );
-  void DrawEntirePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72 );
+  void DrawEntirePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bForcePrintFont = false);
   //wxString GetToolTipText(const wxPoint &pos);
 
 #if __TOOLTIP_TO_FRAME__
