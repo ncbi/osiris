@@ -263,7 +263,7 @@ void MainMessages::NoLadderDataFound () {
 void MainMessages::NoLaddersAnalyzedSuccessfully () {
 
 	Header ();
-	cout << "No ladder files analyzed successfully.  See graphical output.\nSuggest check ladder and ILS minimum RFU. Also suggest checking that all ladder alleles were found...Terminating" << endl;
+	cout << "No ladder files analyzed successfully.  See graphical output.\nSuggest check ladder and ILS minimum RFU. Also suggest checking that all ladder alleles were found and that correct kit analyzed...Terminating" << endl;
 	OutputAllMessages ();
 	Tail ();
 }
