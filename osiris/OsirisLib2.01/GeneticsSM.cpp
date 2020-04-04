@@ -51,6 +51,7 @@
 #include "SmartNotice.h"
 #include "STRSmartNotices.h"
 #include "xmlwriter.h"
+#include "STRChannelData.h"
 
 #include <iostream>
 #include <vector>
@@ -4790,6 +4791,13 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	smExtendLociEdgeToEdgePreset extendLociEdgeToEdgePreset;
 	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset allowCoreLocusOverlapsPreset;
 	smMaxILSBPForExtendedLocus maxILSBPForExtendedLocusThreshold;
+	smPeakHeightAboveMax peakHeightAboveMax;
+
+	double maxSamplePeakHeight = STRSampleChannelData::GetMaxRFU ();
+	bool testMaxRFU = false;
+
+	if (maxSamplePeakHeight > 0.0)
+		testMaxRFU = true;
 
 	mGridLocus = gridLocus;
 	bool extendLociEdgeToEdge = false; 
@@ -4845,6 +4853,9 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 			gridTime = timeMap->EvaluateWithExtrapolation (mean);
 
 			if (gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location)) {
+
+				if (testMaxRFU && !nextSignal->IsNegativePeak () && (nextSignal->Peak () >= maxSamplePeakHeight))
+					nextSignal->SetMessageValue (peakHeightAboveMax, true);
 
 				LocusSignalList.Append (nextSignal);
 				mSmartList.Append (nextSignal);
