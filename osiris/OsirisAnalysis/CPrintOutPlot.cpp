@@ -389,7 +389,7 @@ bool CPrintOutPlot::OnPrintPage(int page)
     }
 
     std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(
-        nX, nY, nUsePPI, m_pFramePlot->GetPrintTitle()));
+        nX, nY, nUsePPI, m_pFramePlot->GetPrintTitle(), true));
     pdc->DrawBitmap(*px, wxPoint(0,0));
   }
   else
