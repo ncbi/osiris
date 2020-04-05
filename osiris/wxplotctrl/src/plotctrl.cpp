@@ -2995,13 +2995,16 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     dc->SetPen(*wxRED_PEN);
     dc->SetDeviceOrigin(boundingRect.x, boundingRect.y);
 
-#if 0
+#if 1
     //  DJH 2/19/2009 - removed red rectangles, 
     //  what was the original author thinking
 
     dc->DrawRectangle(m_xAxisRect);
     dc->DrawRectangle(m_yAxisRect);
     dc->DrawRectangle(m_areaRect);
+    dc->DrawRectangle(wxRect(m_xLabelRect).Inflate(m_border));
+    dc->DrawRectangle(wxRect(m_yLabelRect).Inflate(m_border));
+    if(m_show_title) dc->DrawRectangle(wxRect(m_titleRect).Inflate(m_border));
 #endif
 
 
