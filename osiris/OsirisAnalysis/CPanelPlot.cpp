@@ -77,7 +77,10 @@ DEFINE_EVENT_TYPE(CEventCannotShowBPS)
 
 CPlotCtrl::CPlotCtrl(
   wxWindow *parent, CPanelPlot *pPlot, wxWindowID id) 
-    : nwxPlotCtrl(parent,id) , m_pPlot(pPlot) {}
+    : nwxPlotCtrl(parent,id) , m_pPlot(pPlot) 
+{
+  SetPlotTitleFont(GetAxisLabelFont());
+}
 
 void CPlotCtrl::OnClickXLabel(const nwxPointLabel &x, const wxPoint &)
 {

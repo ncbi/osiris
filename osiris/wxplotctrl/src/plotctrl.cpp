@@ -2923,8 +2923,10 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
 
     //resize border and border pen
     m_area_border_width = RINT(m_area_border_width * penScale);
-    m_border = RINT(m_border * penScale);
-
+    if (dpi > 72.0)
+    {
+      m_border = RINT(dpi * (1.0 / 36.0));  // 2 pixels for 72 dpi, otherwise proportional
+    }
     //resize the curve cursor
     m_cursorMarker.SetSize(wxSize(int(old_cursor_size * penScale), int(old_cursor_size * penScale)));
 
@@ -2995,7 +2997,7 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     dc->SetPen(*wxRED_PEN);
     dc->SetDeviceOrigin(boundingRect.x, boundingRect.y);
 
-#if 1
+#if 0
     //  DJH 2/19/2009 - removed red rectangles, 
     //  what was the original author thinking
 
