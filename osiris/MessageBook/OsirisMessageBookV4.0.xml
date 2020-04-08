@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.57</VersionNumber>
-	<BuildTime>04/08/2020 05:36 PM</BuildTime>
+	<VersionNumber>7.58</VersionNumber>
+	<BuildTime>04/08/2020 06:49 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -994,7 +994,7 @@
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Peak Height Above Threshold for Unconditional Validity</Text>
+			<Text>Peak Above Min. threshold for homozygote to have no allele dropout</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -6249,7 +6249,7 @@
 			<CountingDataInfo>
 				<Threshold>1500</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>Minimum height for which homozygote considered valid (Default = 2000 RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>Min. threshold for homozygote to have no allele dropout (Default = 2000 RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
