@@ -1674,6 +1674,18 @@ int smSampleIsNotValidInputFile::sMessageIndex = 0;
 int smSampleIsNotValidInputFile::sMessageScope = 0;
 
 
+RGString smHeightToConsiderTrueHomozygote::sName = "smHeightToConsiderTrueHomozygote";
+int smHeightToConsiderTrueHomozygote::sSubject = smHeightToConsiderTrueHomozygote::LoadType ();
+int smHeightToConsiderTrueHomozygote::sMessageIndex = 0;
+int smHeightToConsiderTrueHomozygote::sMessageScope = 0;
+
+
+RGString smPeakHeightAboveHomozygoteTrustThreshold::sName = "smPeakHeightAboveHomozygoteTrustThreshold";
+int smPeakHeightAboveHomozygoteTrustThreshold::sSubject = smPeakHeightAboveHomozygoteTrustThreshold::LoadType ();
+int smPeakHeightAboveHomozygoteTrustThreshold::sMessageIndex = 0;
+int smPeakHeightAboveHomozygoteTrustThreshold::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1952,6 +1964,8 @@ PERSISTENT_DEFINITION (smSamplesHadNoDataForChannels, 2679, "smSamplesHadNoDataF
 PERSISTENT_DEFINITION (smSampleMissingDataForChannels, 2680, "smSampleMissingDataForChannels")
 PERSISTENT_DEFINITION (smSamplesAreNotValidInputFiles, 2681, "smSamplesAreNotValidInputFiles")
 PERSISTENT_DEFINITION (smSampleIsNotValidInputFile, 2682, "smSampleIsNotValidInputFile")
+PERSISTENT_DEFINITION (smHeightToConsiderTrueHomozygote, 2683, "smHeightToConsiderTrueHomozygote")
+PERSISTENT_DEFINITION (smPeakHeightAboveHomozygoteTrustThreshold, 2684, "smPeakHeightAboveHomozygoteTrustThreshold")
 
 
 
@@ -18628,6 +18642,126 @@ int smSampleIsNotValidInputFile :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smSampleIsNotValidInputFile* noticeType = new smSampleIsNotValidInputFile;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smHeightToConsiderTrueHomozygote :: smHeightToConsiderTrueHomozygote () : SmartNotice () {
+
+}
+
+
+smHeightToConsiderTrueHomozygote :: smHeightToConsiderTrueHomozygote (const smHeightToConsiderTrueHomozygote& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smHeightToConsiderTrueHomozygote :: ~smHeightToConsiderTrueHomozygote () {
+
+}
+
+
+int smHeightToConsiderTrueHomozygote :: GetSubject () const {
+
+	return smHeightToConsiderTrueHomozygote::sSubject;
+}
+
+
+void smHeightToConsiderTrueHomozygote :: SetIndexAndScope (int index, int scope) const {
+
+	smHeightToConsiderTrueHomozygote::sMessageIndex = index;
+	smHeightToConsiderTrueHomozygote::sMessageScope = scope;
+}
+
+
+int smHeightToConsiderTrueHomozygote :: GetMessageIndex () const {
+
+	return smHeightToConsiderTrueHomozygote :: sMessageIndex;
+}
+
+
+int smHeightToConsiderTrueHomozygote :: GetScope () const {
+
+	return smHeightToConsiderTrueHomozygote :: sMessageScope;
+}
+
+
+RGString smHeightToConsiderTrueHomozygote :: GetName () const {
+
+	return smHeightToConsiderTrueHomozygote :: sName;
+}
+
+
+
+int smHeightToConsiderTrueHomozygote :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smHeightToConsiderTrueHomozygote* noticeType = new smHeightToConsiderTrueHomozygote;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPeakHeightAboveHomozygoteTrustThreshold :: smPeakHeightAboveHomozygoteTrustThreshold () : SmartNotice () {
+
+}
+
+
+smPeakHeightAboveHomozygoteTrustThreshold :: smPeakHeightAboveHomozygoteTrustThreshold (const smPeakHeightAboveHomozygoteTrustThreshold& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPeakHeightAboveHomozygoteTrustThreshold :: ~smPeakHeightAboveHomozygoteTrustThreshold () {
+
+}
+
+
+int smPeakHeightAboveHomozygoteTrustThreshold :: GetSubject () const {
+
+	return smPeakHeightAboveHomozygoteTrustThreshold::sSubject;
+}
+
+
+void smPeakHeightAboveHomozygoteTrustThreshold :: SetIndexAndScope (int index, int scope) const {
+
+	smPeakHeightAboveHomozygoteTrustThreshold::sMessageIndex = index;
+	smPeakHeightAboveHomozygoteTrustThreshold::sMessageScope = scope;
+}
+
+
+int smPeakHeightAboveHomozygoteTrustThreshold :: GetMessageIndex () const {
+
+	return smPeakHeightAboveHomozygoteTrustThreshold :: sMessageIndex;
+}
+
+
+int smPeakHeightAboveHomozygoteTrustThreshold :: GetScope () const {
+
+	return smPeakHeightAboveHomozygoteTrustThreshold :: sMessageScope;
+}
+
+
+RGString smPeakHeightAboveHomozygoteTrustThreshold :: GetName () const {
+
+	return smPeakHeightAboveHomozygoteTrustThreshold :: sName;
+}
+
+
+
+int smPeakHeightAboveHomozygoteTrustThreshold :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPeakHeightAboveHomozygoteTrustThreshold* noticeType = new smPeakHeightAboveHomozygoteTrustThreshold;
 	warehouse->AddType (noticeType);
 	return 1;
 }

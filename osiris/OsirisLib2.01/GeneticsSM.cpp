@@ -4792,12 +4792,19 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 	smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset allowCoreLocusOverlapsPreset;
 	smMaxILSBPForExtendedLocus maxILSBPForExtendedLocusThreshold;
 	smPeakHeightAboveMax peakHeightAboveMax;
+	smPeakHeightAboveHomozygoteTrustThreshold peakHeightAboveHomozygoteTrustThreshold;
+	smHeightToConsiderTrueHomozygote heightToConsiderTrueHomozygote;
 
+	double trueHomozygoteHeight = (double)GetThreshold (heightToConsiderTrueHomozygote);
 	double maxSamplePeakHeight = STRSampleChannelData::GetMaxRFU ();
 	bool testMaxRFU = false;
+	bool testHomozygoteHeight = false;
 
 	if (maxSamplePeakHeight > 0.0)
 		testMaxRFU = true;
+
+	if (trueHomozygoteHeight > 0.0)
+		testHomozygoteHeight = true;
 
 	mGridLocus = gridLocus;
 	bool extendLociEdgeToEdge = false; 
@@ -4853,9 +4860,6 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 			gridTime = timeMap->EvaluateWithExtrapolation (mean);
 
 			if (gridLocus->IsTimeWithinExtendedLocusSample (gridTime, location)) {
-
-				if (testMaxRFU && !nextSignal->IsNegativePeak () && (nextSignal->Peak () >= maxSamplePeakHeight))
-					nextSignal->SetMessageValue (peakHeightAboveMax, true);
 
 				LocusSignalList.Append (nextSignal);
 				mSmartList.Append (nextSignal);
@@ -5126,6 +5130,17 @@ Boolean Locus :: ExtractExtendedSampleSignalsSM (RGDList& channelSignalList, Loc
 			else if (haveFoundSignals)
 				break;
 		}
+	}
+
+	RGDListIterator signalList (LocusSignalList);
+
+	while (nextSignal = (DataSignal*)signalList ()) {
+
+		if (testMaxRFU && !nextSignal->IsNegativePeak () && (nextSignal->Peak () >= maxSamplePeakHeight))
+			nextSignal->SetMessageValue (peakHeightAboveMax, true);
+
+		if (testHomozygoteHeight && !nextSignal->IsNegativePeak () && (nextSignal->Peak () >= trueHomozygoteHeight))
+			nextSignal->SetMessageValue (peakHeightAboveHomozygoteTrustThreshold, true);
 	}
 
 	nextSignal = (DataSignal*) LocusSignalList.First ();
