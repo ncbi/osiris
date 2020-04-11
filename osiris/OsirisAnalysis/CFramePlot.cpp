@@ -2144,15 +2144,28 @@ wxBitmap *CFramePlot::CreateBitmap(
     nXoffset >>= 1;
     dc.DrawText(sTitle,nXoffset,nTitleHalf);
   }
+  
+  // draw X-Axis Label
 
-  nPlotHeight = (nHeight - nTitleOffset) / (int) m_setPlots.size();
+  double dDPI = (double)nDPI;
+  wxRect rect(0, 0, nWidth, nHeight >> 2);
+  wxBitmap bitmapXLabel(nWidth, rect.GetHeight(), 32);
+  wxMemoryDC dcXLabel(bitmapXLabel);
+  nwxPlotCtrl *pPlotCtrl = (*(m_setPlots.begin()))->GetPlotCtrl();
+  bool bX = (pPlotCtrl->GetShowXAxisLabel() && 
+    !pPlotCtrl->GetXAxisLabel().IsEmpty());
+
+  int nXLabelHeight = bX
+    ? pPlotCtrl->DrawXAxisLabel(&dcXLabel, rect, dDPI, bForcePrintFont)
+    : 0;
+  nPlotHeight = (nHeight - nTitleOffset - nXLabelHeight) / (int)m_setPlots.size();
+
   if(nPlotHeight >= 20)
   {
     set<CPanelPlot *>::iterator itr;
-    wxRect rect(0,0,nWidth,nPlotHeight);
-    double dDPI = (double) nDPI;
+    //wxRect rect(0,0,nWidth,nPlotHeight);
+    rect.SetHeight(nPlotHeight);
     CPanelPlot *pPlot;
-    nwxPlotCtrl *pPlotCtrl;
     int nY;
 
     // there is a axis sync bug, so here is the work around
@@ -2180,10 +2193,13 @@ wxBitmap *CFramePlot::CreateBitmap(
       pPlot = *itr;
       nY = (int)pPlot->GetPlotNumber();
       pPlotCtrl = pPlot->GetPlotCtrl();
+      if (bX) { pPlotCtrl->SetShowXAxisLabel(false); }
       pPlotCtrl->DrawEntirePlot(&dcTmp,rect,dDPI, bForcePrintFont);
+      if (bX) { pPlotCtrl->SetShowXAxisLabel(true); }
       int nYdest = (nY * nPlotHeight)  + nTitleOffset;
       dc.Blit(0,nYdest,nWidth,nPlotHeight,&dcTmp,0,0);
     }
+    yDest += nPlotHeight;
 #else
     for(itr = m_setPlots.begin();
       itr != m_setPlots.end();
@@ -2193,12 +2209,21 @@ wxBitmap *CFramePlot::CreateBitmap(
       nY = (int)pPlot->GetPlotNumber();
       rect.SetY((nY * nPlotHeight) + nTitleOffset);
       pPlotCtrl = pPlot->GetPlotCtrl();
+      bX = pPlotCtrl->GetShowXAxisLabel();
+      if (bX) { pPlotCtrl->SetShowXAxisLabel(false); }
       bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
       pPlotCtrl->SetRenderingToWindow(false);
       pPlotCtrl->DrawEntirePlot(&dc,rect,dDPI, bForcePrintFont);
       pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
+      if (bX) { pPlotCtrl->SetShowXAxisLabel(true); }
     }
 #endif
+    if (bX)
+    {
+      nY = (nPlotHeight * (int)m_setPlots.size()) + nTitleOffset;
+      dc.SetDeviceOrigin(0, 0);
+      dc.Blit(0, nY, nWidth, nXLabelHeight, &dcXLabel, 0, 0);
+    }
   }
   return pBitmap;
 }

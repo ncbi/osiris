@@ -266,6 +266,8 @@ private:
 //
 //-----------------------------------------------------------------------------
 
+class wxPlotCtrlBackup;
+
 class WXDLLIMPEXP_PLOTCTRL wxPlotCtrl : public wxWindow
 {
 public:
@@ -810,6 +812,7 @@ public:
     //   the plot is drawn to fit inside the boundingRect (i.e. the margins)
     //
     //  DJH 2/29/2009 - added bAutoCalcTicks = false
+    int DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont);
     void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false, bool bForcePrintFont = false );
 
     // ------------------------------------------------------------------------
@@ -907,6 +910,8 @@ public:
     void SetCaptureWindow( wxWindow *win );
     wxWindow *GetCaptureWindow() const { return m_winCapture; }
 
+    void BackupSettings(wxPlotCtrlBackup *pBackup);
+    void RestoreSettings(wxPlotCtrlBackup *pBackup);
 protected:
     void OnSize( wxSizeEvent& event );
 
@@ -1029,6 +1034,11 @@ protected:
     static wxString _FormatTickLabel(const wxString &sFormat, double d);
 
 private:
+    void _DrawInit(
+      const wxRect &boundingRect,
+      double dpi,
+      bool bForcePrintFont,
+      const wxPlotCtrlBackup &plotBackup);
     void Init();
     DECLARE_ABSTRACT_CLASS(wxPlotCtrl)
     DECLARE_EVENT_TABLE()

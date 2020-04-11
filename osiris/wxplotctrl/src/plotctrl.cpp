@@ -430,6 +430,53 @@ void wxPlotCtrlAxis::CreateBitmap()
 }
 
 //-----------------------------------------------------------------------------
+// wxPlotCtrlBackup
+//-----------------------------------------------------------------------------
+
+class wxPlotCtrlBackup
+{
+public:
+  wxPlotCtrlBackup(wxPlotCtrl *pPlot) :
+    m_pPlot(pPlot)
+  {
+    pPlot->BackupSettings(this);
+  }
+  virtual ~wxPlotCtrlBackup()
+  {
+    Restore();
+  }
+  void Restore()
+  {
+    // might want to restore before destroying
+    if (m_pPlot != NULL)
+    {
+      m_pPlot->RestoreSettings(this);
+      m_pPlot = NULL;
+    }
+  }
+  wxFont oldAxisFont;
+  wxFont oldAxisLabelFont;
+  wxFont oldPlotTitleFont;
+  wxFont oldKeyFont;
+
+  wxColour oldGridColour;
+  wxPoint2DDouble old_zoom;
+  wxRect2DDouble  old_view;
+  wxRect old_areaClientRect;
+
+  double oldCurveDrawerScale;
+  double oldDataCurveDrawerScale;
+  double oldMarkerDrawerScale;
+
+  int old_area_border_width;
+  int old_border;
+  int old_cursor_size;
+
+  wxPlotCtrl *m_pPlot;
+};
+
+
+//-----------------------------------------------------------------------------
 // wxPlotCtrl
 //-----------------------------------------------------------------------------
 IMPLEMENT_ABSTRACT_CLASS(wxPlotCtrl, wxWindow )
@@ -2879,81 +2926,134 @@ wxRect ScaleRect(const wxRect& rect, double x_scale, double y_scale)
                    int(rect.width*x_scale+0.5), int(rect.height*y_scale+0.5) );
 }
 
+void wxPlotCtrl::BackupSettings(wxPlotCtrlBackup *pBackup)
+{
+  pBackup->oldAxisFont = GetAxisFont();
+  pBackup->oldAxisLabelFont = GetAxisLabelFont();
+  pBackup->oldPlotTitleFont = GetPlotTitleFont();
+  pBackup->oldKeyFont = GetKeyFont();
+
+  pBackup->oldCurveDrawerScale = m_curveDrawer->GetPenScale();
+  pBackup->oldDataCurveDrawerScale = m_dataCurveDrawer->GetPenScale();
+  pBackup->oldMarkerDrawerScale = m_markerDrawer->GetPenScale();
+
+  pBackup->old_area_border_width = m_area_border_width;
+  pBackup->old_border = m_border;
+  pBackup->old_cursor_size = m_cursorMarker.GetSize().x;
+
+  pBackup->old_zoom = m_zoom;
+  pBackup->old_view = m_viewRect;
+  pBackup->old_areaClientRect = m_areaClientRect;
+  pBackup->oldGridColour = GetGridColour();
+
+}
+void wxPlotCtrl::RestoreSettings(wxPlotCtrlBackup *pBackup)
+{
+  //restore old values
+
+  SetAxisFont(pBackup->oldAxisFont);
+  SetAxisLabelFont(pBackup->oldAxisLabelFont);
+  SetPlotTitleFont(pBackup->oldPlotTitleFont);
+  SetKeyFont(pBackup->oldKeyFont);
+
+  m_curveDrawer->SetPenScale(pBackup->oldCurveDrawerScale);
+  m_dataCurveDrawer->SetPenScale(pBackup->oldDataCurveDrawerScale);
+  m_markerDrawer->SetPenScale(pBackup->oldMarkerDrawerScale);
+
+  m_area_border_width = pBackup->old_area_border_width;
+  m_border = pBackup->old_border;
+  m_cursorMarker.SetSize(wxSize(pBackup->old_cursor_size, pBackup->old_cursor_size));
+
+  m_zoom = pBackup->old_zoom;
+  m_viewRect = pBackup->old_view;
+  m_areaClientRect = pBackup->old_areaClientRect;
+
+  SetGridColour(pBackup->oldGridColour);
+}
+void wxPlotCtrl::_DrawInit(
+  const wxRect &boundingRect,
+  double dpi,
+  bool bForcePrintFont,
+  const wxPlotCtrlBackup &plotBackup)
+{
+  bool bPrinting = bForcePrintFont || (dpi >= 150);
+  //set font scale so 1pt = 1pixel at 72dpi
+  double fontScale = (double)dpi / (bPrinting ? 144.0 : 72.0);
+  //one pixel wide line equals (m_pen_print_width) millimeters wide
+  double penScale = (double)m_pen_print_width * dpi / 25.4;
+
+
+  if (bPrinting)
+  {
+    m_curveDrawer->SetPenScale(fontScale);
+    m_dataCurveDrawer->SetPenScale(fontScale);
+    m_markerDrawer->SetPenScale(fontScale);
+  }
+
+  //resize border and border pen
+  m_area_border_width = RINT(m_area_border_width * penScale);
+  if (dpi > 72.0)
+  {
+    m_border = RINT(dpi * (1.0 / 36.0));  // 2 pixels for 72 dpi, otherwise proportional
+  }
+  //resize the curve cursor
+  int sz = int(plotBackup.old_cursor_size * penScale);
+  m_cursorMarker.SetSize(wxSize(sz, sz));
+
+  //resize the fonts
+  wxFont axisFont = GetAxisFont();
+  axisFont.SetPointSize(wxMax(2, RINT(axisFont.GetPointSize() * fontScale)));
+  SetAxisFont(axisFont);
+
+  wxFont axisLabelFont = GetAxisLabelFont();
+  axisLabelFont.SetPointSize(wxMax(2, RINT(axisLabelFont.GetPointSize() * fontScale)));
+  SetAxisLabelFont(axisLabelFont);
+
+  wxFont plotTitleFont = GetPlotTitleFont();
+  plotTitleFont.SetPointSize(wxMax(2, RINT(plotTitleFont.GetPointSize() * fontScale)));
+  SetPlotTitleFont(plotTitleFont);
+
+  wxFont keyFont = GetKeyFont();
+  keyFont.SetPointSize(wxMax(2, RINT(keyFont.GetPointSize() * fontScale)));
+  SetKeyFont(keyFont);
+
+  //reload the original zoom and view rect in case it was changed by any of the font changes
+  m_zoom = plotBackup.old_zoom;
+  m_viewRect = plotBackup.old_view;
+
+  //resize all window component rects to the bounding rect
+  DoSize(boundingRect, false);
+
+#ifdef __WXDEBUG__
+  puts(
+    wxString::Format(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale).ToUTF8()
+  );
+#endif
+}
+int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont)
+{
+  wxCHECK_MSG(dc, 0, wxT("invalid dc"));
+  wxCHECK_MSG(dpi > 0, 0, wxT("Invalid dpi for plot drawing"));
+  wxPlotCtrlBackup plotBackup(this);
+  _DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+
+  dc->SetBrush(wxBrush(GetBackgroundColour(), wxSOLID));
+  dc->SetPen(*wxTRANSPARENT_PEN);
+  dc->DrawRectangle(boundingRect);
+
+  dc->SetFont(GetAxisLabelFont());
+  dc->SetTextForeground(GetAxisLabelColour());
+  dc->DestroyClippingRegion();
+  dc->DrawText(m_xLabel, m_xLabelRect.x, 0);
+  int nRtn = m_xLabelRect.GetHeight() + m_border;
+  return nRtn;
+}
 void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi, bool bAutoCalcTicks, bool bForcePrintFont )
 {
     wxCHECK_RET(dc, wxT("invalid dc"));
     wxCHECK_RET(dpi > 0, wxT("Invalid dpi for plot drawing"));
-
-    bool bPrinting = bForcePrintFont || (dpi >= 150);
-    //set font scale so 1pt = 1pixel at 72dpi
-    double fontScale = (double)dpi / (bPrinting ? 144.0 : 72.0);
-    //one pixel wide line equals (m_pen_print_width) millimeters wide
-    double penScale = (double)m_pen_print_width * dpi / 25.4;
-
-    //save old values
-    wxFont oldAxisFont      = GetAxisFont();
-    wxFont oldAxisLabelFont = GetAxisLabelFont();
-    wxFont oldPlotTitleFont = GetPlotTitleFont();
-    wxFont oldKeyFont       = GetKeyFont();
-
-    // DJH 2/19/09 -- more old values
-
-    double oldCurveDrawerScale = 0.0;
-    double oldDataCurveDrawerScale = 0.0;
-    double oldMarkerDrawerScale = 0.0;
-
-    if(bPrinting)
-    {
-      oldCurveDrawerScale = m_curveDrawer->GetPenScale();
-      oldDataCurveDrawerScale = m_dataCurveDrawer->GetPenScale();
-      oldMarkerDrawerScale = m_markerDrawer->GetPenScale();
-      m_curveDrawer->SetPenScale(fontScale);
-      m_dataCurveDrawer->SetPenScale(fontScale);
-      m_markerDrawer->SetPenScale(fontScale);
-    }
-
-    // END DJH 2/19/09 -- more old values
-
-    int old_area_border_width = m_area_border_width;
-    int old_border = m_border;
-    int old_cursor_size = m_cursorMarker.GetSize().x;
-    wxPoint2DDouble old_zoom = m_zoom;
-    wxRect2DDouble  old_view = m_viewRect;
-    wxRect old_areaClientRect = m_areaClientRect;
-
-    //resize border and border pen
-    m_area_border_width = RINT(m_area_border_width * penScale);
-    if (dpi > 72.0)
-    {
-      m_border = RINT(dpi * (1.0 / 36.0));  // 2 pixels for 72 dpi, otherwise proportional
-    }
-    //resize the curve cursor
-    m_cursorMarker.SetSize(wxSize(int(old_cursor_size * penScale), int(old_cursor_size * penScale)));
-
-    //resize the fonts
-    wxFont axisFont = GetAxisFont();
-    axisFont.SetPointSize( wxMax(2, RINT(axisFont.GetPointSize() * fontScale)) );
-    SetAxisFont( axisFont );
-
-    wxFont axisLabelFont = GetAxisLabelFont();
-    axisLabelFont.SetPointSize( wxMax(2, RINT(axisLabelFont.GetPointSize() * fontScale)) );
-    SetAxisLabelFont( axisLabelFont );
-
-    wxFont plotTitleFont = GetPlotTitleFont();
-    plotTitleFont.SetPointSize( wxMax(2, RINT(plotTitleFont.GetPointSize() * fontScale)) );
-    SetPlotTitleFont( plotTitleFont );
-
-    wxFont keyFont = GetKeyFont();
-    keyFont.SetPointSize( wxMax(2, RINT(keyFont.GetPointSize() * fontScale)) );
-    SetKeyFont( keyFont );
-
-    //reload the original zoom and view rect in case it was changed by any of the font changes
-    m_zoom     = old_zoom;
-    m_viewRect = old_view;
-
-    //resize all window component rects to the bounding rect
-    DoSize( boundingRect, false );
-    //AutoCalcTicks();  // don't reset ticks since it might not be WYSIWYG
+    wxPlotCtrlBackup plotBackup(this);
+    _DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
 
     //
     //  DJH - 2/24/2009  added parameter to determine whether AutoCalcTicks()
@@ -2962,18 +3062,16 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     if(bAutoCalcTicks) { AutoCalcTicks(); }
 
     //reload the original zoom and view rect in case it was changed by any of the font changes
-    m_zoom = wxPoint2DDouble(old_zoom.m_x * double(m_areaClientRect.width)/old_areaClientRect.width,
-                             old_zoom.m_y * double(m_areaClientRect.height)/old_areaClientRect.height);
+    m_zoom = wxPoint2DDouble(
+      plotBackup.old_zoom.m_x * double(m_areaClientRect.width)/ plotBackup.old_areaClientRect.width,
+      plotBackup.old_zoom.m_y * double(m_areaClientRect.height)/ plotBackup.old_areaClientRect.height);
 
-//    wxPrintf(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale);
-//    DJH 09/03/2015 - wxPrintf is deprecated
-    puts(
-      wxString::Format(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale).ToUTF8()
-      );
+#ifdef __WXDEBUG__
     PRINT_WXRECT(wxT("Whole plot"), boundingRect);
     PRINT_WXRECT(wxT("Area plot"), m_areaRect);
     PRINT_WXRECT(wxT("Xaxis plot"), m_xAxisRect);
     PRINT_WXRECT(wxT("Yaxis plot"), m_yAxisRect);
+#endif
 
     //draw all components to the provided dc
     dc->SetDeviceOrigin(long(boundingRect.x+m_xAxisRect.GetLeft()),
@@ -3009,30 +3107,6 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     if(m_show_title) dc->DrawRectangle(wxRect(m_titleRect).Inflate(m_border));
 #endif
 
-
-    //restore old values
-    m_area_border_width = old_area_border_width;
-    m_border = old_border;
-    m_cursorMarker.SetSize(wxSize(old_cursor_size, old_cursor_size));
-
-
-    SetAxisFont( oldAxisFont );
-    SetAxisLabelFont( oldAxisLabelFont );
-    SetPlotTitleFont( oldPlotTitleFont );
-    SetKeyFont( oldKeyFont );
-    m_zoom     = old_zoom;
-    m_viewRect = old_view;
-
-    // DJH 2/19/09 restore more old values
-
-    if(bPrinting)
-    {
-      m_curveDrawer->SetPenScale(oldCurveDrawerScale);
-      m_dataCurveDrawer->SetPenScale(oldDataCurveDrawerScale);
-      m_markerDrawer->SetPenScale(oldMarkerDrawerScale);
-    }
-
-    // END DJH 2/19/09 restore more old values
 
     //update to window instead of printer
     UpdateWindowSize();
