@@ -1375,7 +1375,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
 		text << NoticeStr << "\n";
 		foundALadder = false;
-		goto finishOutput;
+	//	goto finishOutput;
 	}
 
 	else {
@@ -1403,6 +1403,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			*nonLaserOffScalePullupFractions << endLine;
 		}
 	}
+
+	if (!foundALadder)
+		goto finishOutput;
 
 	SampleDirectory->RewindDirectory ();
 	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
