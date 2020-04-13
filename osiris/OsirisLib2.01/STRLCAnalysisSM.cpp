@@ -1404,8 +1404,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		}
 	}
 
-	if (!foundALadder)
-		goto finishOutput;
+	if (foundALadder) {
+//		goto finishOutput;
 
 	SampleDirectory->RewindDirectory ();
 	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
@@ -1874,8 +1874,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		SetMessageValue (noNegCtrlFound, true);
 	}
-
-finishOutput:
+  }
+//finishOutput:
 
 	delete SampleDirectory;
 	delete pullupMatrixFile;
