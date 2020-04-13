@@ -2199,7 +2199,6 @@ wxBitmap *CFramePlot::CreateBitmap(
       int nYdest = (nY * nPlotHeight)  + nTitleOffset;
       dc.Blit(0,nYdest,nWidth,nPlotHeight,&dcTmp,0,0);
     }
-    yDest += nPlotHeight;
 #else
     for(itr = m_setPlots.begin();
       itr != m_setPlots.end();
