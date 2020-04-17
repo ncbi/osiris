@@ -2,7 +2,7 @@
 <LabSettings>
   <Info>
     <VolumeName>[PowerPlex Fusion HID Sole Source]</VolumeName>
-    <Version>2.13 for Windows</Version>
+    <Version>2.13</Version>
     <DataFileType>hid</DataFileType>
     <Notes>This operating procedure is provided with the OSIRIS installation.</Notes>
   </Info>
