@@ -16,11 +16,11 @@ using namespace std;
 int _tmain(int argc, _TCHAR* argv[]) {
 
 	RGString FullPath ("..");
-	RGString InputFileDirectory ("Documentation/StandardPositiveControlList.txt");
-	RGString OutputFileDirectory ("OsirisXML/LadderSpecifications/StandardPositiveControls.xml");
+	RGString InputFileDirectory ("StandardPositiveControlList.txt");
+	RGString OutputFileDirectory ("StandardPositiveControls.xml");
 
-	RGString fullPathName = FullPath + "/" + InputFileDirectory;
-	RGString fullOutputPathName = FullPath + "/" + OutputFileDirectory;
+	RGString fullPathName = InputFileDirectory;
+	RGString fullOutputPathName = OutputFileDirectory;
 	RGFile inputList (fullPathName, "rt");
 	RGTextOutput outputList (fullOutputPathName, FALSE);
 	char oneLine [1000];

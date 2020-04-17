@@ -7,8 +7,8 @@
       <NChannels>5</NChannels>
       <LS>
         <LSName>ABI-LIZ-600-60-TO-460</LSName>
-        <LSName>BV-70-500</LSName>
-        <LSName>BV-80-500</LSName>
+        <LSName>BV-70-475</LSName>
+        <LSName>BV-70-450</LSName>
         <ChannelNo>5</ChannelNo>
       </LS>
       <FileNameSuffix>SElect</FileNameSuffix>

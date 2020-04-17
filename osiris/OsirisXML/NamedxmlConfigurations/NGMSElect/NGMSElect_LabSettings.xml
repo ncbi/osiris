@@ -3,7 +3,7 @@
 <LabSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="..\LabSettingsV4.xsd">
 	<Info>
 		<VolumeName>[NGMSElect]</VolumeName>
-		<Version>4</Version>
+		<Version>2.4</Version>
 		<Notes>This operating procedure is provided with the OSIRIS installation.</Notes>
 	</Info>
   <NameStrings>
@@ -152,11 +152,11 @@
       <ILS>ABI-LIZ-600-60-TO-460</ILS>
       <UserOverrideILS>true</UserOverrideILS>
       <OffLadderAlleles>
-							<Locus>
-								<Name>SE33</Name>
-								<Allele>21.1</Allele>
-							</Locus>
-						</OffLadderAlleles>
+		<Locus>
+			<Name>SE33</Name>
+			<Allele>21.1</Allele>
+		</Locus>
+	  </OffLadderAlleles>
     </LabMarkerSetCollection>
   </LabMarkerSetSpecifications>
   <ReviewAcceptanceCounts>
