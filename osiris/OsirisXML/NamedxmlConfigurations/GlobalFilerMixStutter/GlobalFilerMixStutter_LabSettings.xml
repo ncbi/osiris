@@ -2,10 +2,9 @@
 <LabSettings>
   <Info>
     <VolumeName>[GlobalFiler HID Mixture Stutter And Allele]</VolumeName>
-    <Version>2.13 Beta 4 for Windows</Version>
+    <Version>2</Version>
     <DataFileType>hid</DataFileType>
-    <UserId>goorrob</UserId>
-    <LastUpdate>1570137872</LastUpdate>
+    <Notes>This operating procedure is provided with the OSIRIS installation.</Notes>
   </Info>
   <NameStrings>
     <LadderStrings>

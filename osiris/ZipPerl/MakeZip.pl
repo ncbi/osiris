@@ -315,7 +315,7 @@ sub SignAppMac()
   my $rtn = undef;
   if(&CheckSignMac($PATH,$SIG))
   {
-    my $cmd = "codesign -f --deep -s \"${SIG}\" \"${PATH}\"";
+    my $cmd = "codesign -f --options runtime --deep -s \"${SIG}\" \"${PATH}\"";
     print "\n\n\nSigning ${PATH}:\n${cmd}\n";
     my $nRtn = system($cmd);
     my $s = $nRtn ? " not" : "";
@@ -330,7 +330,7 @@ sub SignAppMacFiles()
   sub _signOneFile
   {
     my ($SIG,$line) = @_;
-    my $cmd = "codesign -f -s \"${SIG}\" \"${line}\"";
+    my $cmd = "codesign -f --options runtime -s \"${SIG}\" \"${line}\"";
     print "\nSigning ${line}\n${cmd}\n";
     my $n = system($cmd);
     $n && print("FAILED to sign ${line}");
