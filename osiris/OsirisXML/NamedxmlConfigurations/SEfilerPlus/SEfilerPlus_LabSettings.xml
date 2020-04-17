@@ -3,7 +3,7 @@
 <LabSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="..\LabSettingsV4.xsd">
 	<Info>
 		<VolumeName>[SEfilerPlus]</VolumeName>
-		<Version>4</Version>
+		<Version>2.4</Version>
 		<Notes>This operating procedure is provided with the OSIRIS installation.</Notes>
 	</Info>
   <NameStrings>
