@@ -47,6 +47,7 @@
 #include "rgindexedlabel.h"
 #include "OutputLevelManager.h"
 #include "SpecialLinearRegression.h"
+#include "LeastMedianOfSquares.h"
 #include "coordtrans.h"
 #include "Genetics.h"
 #include "SmartMessage.h"
@@ -3330,15 +3331,25 @@ int SampledData :: FindAndRemoveFixedOffset () {
 		return 0;
 	}
 
+	double* slopeArray = new double [MaxTests];
+	double* heightArray = new double [MaxTests];
+	double* ones = new double [MaxTests];
+
 	minB = fabs (slr->RegressBackwardFrom (CurrentPtr, currentAve, mNoiseRange));
+	slopeArray [0] = minB;
+	heightArray [0] = currentAve;
+	ones [0] = 1.0;
 	CurrentPtr -= 25;
 
-	if (minB < -99999.0)
-		return -1;
+//	if (minB < -99999.0)
+//		return -1;
 
 	for (i=1; i<MaxTests; i++) {
 
 		temp = fabs (slr->RegressBackwardFrom (CurrentPtr, ave, noiseRange));
+		slopeArray [i] = temp;
+		heightArray [i] = ave;
+		ones [i] = 1.0;
 
 		if (temp < minB) {
 
@@ -3352,11 +3363,74 @@ int SampledData :: FindAndRemoveFixedOffset () {
 		CurrentPtr -= 25;
 	}
 
+	// Perform least median of squares on heights and eliminate outliers.  Then, from remaining, choose least absolute slope and retrieve corresponding height.  Then,
+	// choose between that height and minB, as calculated above.
+
+	LeastMedianOfSquares* lms = new LeastMedianOfSquares1D (MaxTests, ones, heightArray);
+	double minLMSHeight;
+	double minLMSSlope;
+	int minSlopeIndex;
+	bool firstTimeThrough = true;
+
+	if (lms->DataIsOK ()) {
+
+		temp = lms->CalculateLMS ();
+
+		for (i=0; i<MaxTests; i++) {
+
+			if (lms->ElementIsOutlier (i))
+				continue;
+
+			if (firstTimeThrough) {
+
+				firstTimeThrough = false;
+				minLMSSlope = fabs (slopeArray [i]);
+				minSlopeIndex = i;
+			}
+
+			else {
+
+				temp = fabs (slopeArray [i]);
+
+				if (temp < minLMSSlope) {
+
+					minLMSSlope = temp;
+					minSlopeIndex = i;
+				}
+			}
+		}
+
+		minLMSHeight = heightArray [minSlopeIndex];
+
+		if (currentAve == minLMSHeight)
+			cout << "Default fixed offset algorithm equivalent to LMS\n";
+
+		else if (fabs (currentAve) < fabs (minLMSHeight))
+			cout << "Default fixed offset = " << currentAve << " while LMS offset = " << minLMSHeight << ".  Using default offset\n";
+
+		else {
+
+			cout << "Default fixed offset = " << currentAve << " while LMS offset = " << minLMSHeight << ".Using LMS offset\n";
+			currentAve = minLMSHeight;
+		}
+	}
+
+	else {
+
+		cout << "Least mean square analysis of fixed offset failed.  Reverting to default algorithm\n";
+		minLMSHeight = currentAve;
+	}
+
 //	cout << "Minimum b = " << minB << endl;
 	double* endPtr = Measurements + NumberOfSamples;
 
 	for (CurrentPtr=Measurements; CurrentPtr<endPtr; CurrentPtr++)
 		*CurrentPtr -= currentAve;
+
+	delete[] slopeArray;
+	delete[] heightArray;
+	delete[] ones;
+	delete lms;
 
 	return 0;
 }
