@@ -495,7 +495,7 @@ wxPlotDrawerAxisBase::wxPlotDrawerAxisBase(wxPlotCtrl* owner)
 //-----------------------------------------------------------------------------
 IMPLEMENT_ABSTRACT_CLASS(wxPlotDrawerArea, wxPlotDrawerBase)
 
-void wxPlotDrawerArea::Draw(wxDC *dc, bool refresh)
+void wxPlotDrawerArea::Draw(wxDC *, bool)
 {
 }
 
@@ -538,15 +538,36 @@ void wxPlotDrawerXAxis::Draw(wxDC *dc, bool refresh)
     int y_pos = (GetDCRect().height - y)/2 + 2; // FIXME I want to center this
     // double current = ceil(m_viewRect.GetLeft() / m_xAxisTick_step) * m_xAxisTick_step;
     int i, count = m_tickPositions.GetCount();
+    int nLast2 = count - 2;
+    int leftMost = 0;
+    int nFullWidth = dc->GetSize().GetWidth();
+    int nx;
+    bool bShow = true;
     for (i=0; i<count; i++)
     {
-        dc->DrawText(m_tickLabels[i], m_tickPositions[i], y_pos);
-
-//        if (!IsFinite(current, wxT("axis label is not finite")))
-//            break;
-//        label.Printf( m_xAxisTickFormat.c_str(), current );
-//        dc->DrawText(label, m_xAxisTicks[i], y_pos);
-//        current += m_xAxisTick_step;
+        nx = m_tickPositions[i];
+        const wxString &sLabel = m_tickLabels.Item(i);
+        if (i >= nLast2)
+        {
+          wxSize sz = dc->GetTextExtent(sLabel);
+          if (i == nLast2)
+          {
+            // second to last label, get rightmost positino
+            // in case the last needs to shift left
+            leftMost = nx + sz.GetWidth() + (x << 1);
+          }
+          else if( (nx + sz.GetWidth() + (x >> 1)) > nFullWidth )
+          {
+            // last label will be clipped, shift left
+            //  if shifting left overlaps previous, skip it
+            nx = nFullWidth - sz.GetWidth() - (x >> 1);
+            bShow = (nx >= leftMost);
+          }
+        }
+        if (bShow)
+        {
+          dc->DrawText(sLabel, nx, y_pos);
+        }
     }
 
 #ifdef DRAW_BORDERS
