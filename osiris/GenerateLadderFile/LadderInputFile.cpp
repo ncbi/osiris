@@ -531,7 +531,7 @@ int LadderInputFile :: AssignString () {
 		mILSFamilyName = mStringRight;
 		Locus::SetILSFamilyName (mStringRight);  // Yes!  For ILS families
 		newString = new RGString(mStringRight);
-		mILSNames.Append(newString);
+//		mILSNames.Append(newString);
 		status = 0;
 	}
 
@@ -591,7 +591,7 @@ int LadderInputFile :: AssignString () {
 	else if (mStringLeft == "StdControl") {
 
 		if ((mStringRight == "DNA007") || (mStringRight == "9947A") || (mStringRight == "9948") ||
-			(mStringRight == "K562") || (mStringRight == "2800M") || (mStringRight == "MK1")) {
+			(mStringRight == "K562") || (mStringRight == "2800M") || (mStringRight == "MK1") || (mStringRight == "M308")) {
 
 				mStandardPositiveControlName = mStringRight;
 				status = 0;

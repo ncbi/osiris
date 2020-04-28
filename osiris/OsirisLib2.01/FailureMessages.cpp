@@ -42,6 +42,9 @@
 using namespace std;
 
 
+int MainMessages::PingValue = 0;
+
+
 void MainMessages:: InputFileUnreadable (const RGString& fileName) {
 
 	Header ();

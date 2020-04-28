@@ -48,6 +48,13 @@ public:
 		mMessages.ClearAndDelete ();
 	}
 
+	static void ResetPingValue (int p) { PingValue = p; }
+
+	void SetPingValue (int p) { MainMessages::ResetPingValue (p); }
+
+	void WriteAndResetCurrentPingValue () {
+		cout << "<Ping>" << MainMessages::PingValue << "</Ping>\n";}
+
 // Parameter input file/standard in failure
 	void InputFileUnreadable (const RGString& fileName);
 	void InputStringFormatError ();
@@ -101,6 +108,8 @@ protected:
 	void Tail ();
 	RGString XML (const RGString& input);
 	void OutputAllMessages ();
+
+	static int PingValue;
 };
 
 

@@ -563,6 +563,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 		cout << msg << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (40);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -10;
 	}
 
@@ -589,6 +591,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 			stageString << currentStage;
 			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+			STRLCAnalysis::mFailureMessage->SetPingValue (50);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			return -52;
 		}
 
@@ -603,6 +607,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 			cout << msg << endl;
 			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+			STRLCAnalysis::mFailureMessage->SetPingValue (60);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			return -53;
 		}
 
@@ -626,6 +632,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 				msg << "Could not find scope in scope dynamics field for stage " << currentStage << ". Last scope was " << scope << ".  Ending...";
 				STRLCAnalysis::mFailureMessage->AddMessage (msg);
 				STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+				STRLCAnalysis::mFailureMessage->SetPingValue (70);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 				cout << "Could not find scope in scope dynamics field for stage " << currentStage << ".  Last scope was " << scope << ".  Ending..." << endl;
 				return -54;
 			}
@@ -651,6 +659,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						msg << "Could not find measured message named " << nameString.GetData () << " for scope = " << scope << ".  Ending...";
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (80);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -660,6 +670,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						msg << "Scope mismatch for measured message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (90);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -688,6 +700,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (100);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -698,6 +712,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						msg << "Scope mismatch for triggered message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (110);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -724,6 +740,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (120);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -56;
 					}
 
@@ -740,6 +758,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (130);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -749,6 +769,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						msg << "Scope mismatch for evaluated message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (140);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -776,6 +798,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (150);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -56;
 					}
 
@@ -804,6 +828,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (160);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -813,6 +839,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						msg << "Scope mismatch for triggering message named " << nameString.GetData () << " for scopes = " << scope << " and " << nextSM->GetScope () << ".  Ending...";
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (170);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -830,6 +858,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (180);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -56;
 					}
 				}
@@ -845,6 +875,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 		cout << msg << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (190);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -10;
 	}
 
@@ -867,6 +899,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 			cout << msg << endl;
 			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+			STRLCAnalysis::mFailureMessage->SetPingValue (200);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			return -52;
 		}
 
@@ -879,6 +913,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 			cout << msg << endl;
 			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+			STRLCAnalysis::mFailureMessage->SetPingValue (210);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			return -53;
 		}
 
@@ -903,6 +939,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 				cout << msg << endl;
 				STRLCAnalysis::mFailureMessage->AddMessage (msg);
 				STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+				STRLCAnalysis::mFailureMessage->SetPingValue (220);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 				return -54;
 			}
 
@@ -927,6 +965,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (80);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -936,6 +976,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (90);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -964,6 +1006,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (100);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -973,6 +1017,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (110);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -999,6 +1045,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (120);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -56;
 					}
 
@@ -1015,6 +1063,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (130);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -1024,6 +1074,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (140);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -1087,6 +1139,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (150);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -56;
 					}
 
@@ -1115,6 +1169,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (160);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -1124,6 +1180,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (170);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -55;
 					}
 
@@ -1141,6 +1199,8 @@ int SmartMessage :: ImportMessageDynamicDataV4 (const RGString& inputString, siz
 						cout << msg << endl;
 						STRLCAnalysis::mFailureMessage->AddMessage (msg);
 						STRLCAnalysis::mFailureMessage->CouldNotLoadMessageBook ();
+						STRLCAnalysis::mFailureMessage->SetPingValue (160);
+						STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 						return -56;
 					}
 				}
@@ -1369,6 +1429,8 @@ int SmartMessage :: LoadAllMessagesV4 (const RGString& inputString, SmartMessage
 
 		cout << "There are no smart message declarations.  MessageBook is empty!" << endl;
 		STRLCAnalysis::mFailureMessage->MessageBookIsEmpty ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (230);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -1393,6 +1455,8 @@ int SmartMessage :: LoadAllMessagesV4 (const RGString& inputString, SmartMessage
 	if (status < 0) {
 
 		STRLCAnalysis::mFailureMessage->CouldNotIdentifyMessageType ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (240);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return status;
 	}
 
@@ -1414,6 +1478,8 @@ int SmartMessage :: CompileAllMessages () {
 		if (!result) {
 
 			STRLCAnalysis::mFailureMessage->CouldNotCompile ();
+			STRLCAnalysis::mFailureMessage->SetPingValue (250);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			status = -1;
 		}
 	}
@@ -1437,8 +1503,12 @@ int SmartMessage :: InitializeAllMessages () {
 			status = -1;
 	}
 
-	if (status < 0)
+	if (status < 0) {
+
 		STRLCAnalysis::mFailureMessage->CouldNotInitializeMessageBook ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (260);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+	}
 
 	return status;
 }
@@ -1664,6 +1734,8 @@ int SmartMessage :: LoadAndActivateAllMessages (const RGString& messageFullPathF
 
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Name = " + messageFullPathFileName + ".");
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("MessageBook");
+		STRLCAnalysis::mFailureMessage->SetPingValue (270);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		cout << "Could not open messagebook file:  " << messageFullPathFileName.GetData () << endl;
 		return -1;
 	}

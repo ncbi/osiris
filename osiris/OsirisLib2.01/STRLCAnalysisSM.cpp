@@ -426,6 +426,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not retrieve genotype collection set from parameter server.  Exiting..." << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotypeCollection ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (280);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -20;
 	}
 
@@ -436,6 +438,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Could not retrieve genotype collection for marker set name " << markerSet << " from parameter server.  Exiting..." << endl;
 		pGenotypes = new GenotypesForAMarkerSet;
 		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotype (markerSet);
+		STRLCAnalysis::mFailureMessage->SetPingValue (290);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -20;
 		//return -20;
 	}
@@ -532,6 +536,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Could not find sample directory:  " << DirectoryName << endl;
 		cout << "Closing..." << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotFindSampleDirectory (DirectoryName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (300);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -676,6 +682,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + OutputFullPath);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (310);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -685,6 +693,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + WholeConsoleName);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Text Echo File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (320);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -694,6 +704,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + SummaryFullPath);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (330);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -703,6 +715,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + SummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (340);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -712,6 +726,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + XMLSummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("XML Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (350);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -721,6 +737,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + tempSummaryFullPath);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (360);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -730,6 +748,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + tempSummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Summary File with Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (370);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -739,6 +759,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + tempXMLSummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("XML Temporary Summary File with Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (380);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -760,6 +782,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not find marker set named:  " << markerSetName << ".  Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (markerSetName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (390);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -10000;
 	}
 
@@ -1143,6 +1167,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 			errorMsg << "Markerset mismatch...expecting " << expectedNumberOfChannels << " channels and ladder file contains " << NChannels << " channels for ladder named " << FullPathName << " ...Terminating";
 			STRLCAnalysis::mFailureMessage->LadderSpecificationMismatch (errorMsg);
+			STRLCAnalysis::mFailureMessage->SetPingValue (400);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 
 			XMLExcelLinks << CLevel (1) << "\t\t<Sample>\n\t\t\t<Name>Marker Set Mismatch</Name>\n\t\t\t<Type></Type>\n\t\t</Sample>\n" << PLevel ();
 			XMLExcelLinks << CLevel (1) << "\t</Table>\n" << PLevel ();
@@ -1360,6 +1386,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO LADDER FOUND IN DIRECTORY...ENDING";
 		STRLCAnalysis::mFailureMessage->NoLadderDataFound ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (410);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		cout << NoticeStr << endl;
 		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
 		text << NoticeStr << "\n";
@@ -1370,6 +1398,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	if (LadderList.Entries () == 0) {
 		
 		STRLCAnalysis::mFailureMessage->NoLaddersAnalyzedSuccessfully ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (420);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO SATISFACTORY LADDER FOUND...ENDING";
 		cout << NoticeStr << endl;
 		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
@@ -1747,6 +1777,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				CrashResponse = 0;
 				cout << "********Sample " << data->GetName () << " has one or more channels with no data" << endl;
 				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (590);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			}
 
 			else if (cc == 37) {
@@ -1754,12 +1786,16 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				CrashResponse = 1;
 				cout << "********Sample " << data->GetName () << " is not a valid fsa/hid file" << endl;
 				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (600);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			}
 
 			else {
 
 				cout << "********We crashed on sample:  " << data->GetName () << "." << endl;
 				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (610);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			}
 
 			CoreBioComponent::ResetCrashMode (true);
@@ -2022,6 +2058,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Could not retrieve genotype collection for marker set name " << markerSet << " from parameter server.  Exiting..." << endl;
 		pGenotypes = new GenotypesForAMarkerSet;
 		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotype (markerSet);
+		STRLCAnalysis::mFailureMessage->SetPingValue (430);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -20;
 	}
 
@@ -2090,6 +2128,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Could not find sample directory:  " << DirectoryName << endl;
 		cout << "Closing..." << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotFindSampleDirectory (DirectoryName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (440);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -2204,6 +2244,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + OutputFullPath);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (450);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -2213,6 +2255,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + WholeConsoleName);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Text Echo File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (460);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2222,6 +2266,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + SummaryFullPath);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (470);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2231,6 +2277,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + SummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (480);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2240,6 +2288,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + XMLSummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output XML Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (490);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2249,6 +2299,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempSummaryFullPath);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (500);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2258,6 +2310,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempSummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (510);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2267,6 +2321,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		cout << "Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempXMLSummaryFullPathWithLinks);
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output XML Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (520);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2288,6 +2344,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not find marker set named:  " << markerSetName << ".  Ending..." << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (markerSetName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (530);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -10000;
 	}
 
@@ -3024,6 +3082,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 				CrashResponse = 0;
 				cout << "********Sample " << data->GetName () << " has one or more channels with no data" << endl;
 				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (620);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 				DirectoryCrashMode = true;
 			}
 
@@ -3032,6 +3092,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 				CrashResponse = 1;
 				cout << "********Sample " << data->GetName () << " is not a valid fsa/hid file" << endl;
 				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (630);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 				DirectoryCrashMode = true;
 			}
 
@@ -3039,6 +3101,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 				cout << "********We crashed on sample:  " << data->GetName () << "." << endl;
 				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (640);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 				DirectoryCrashMode = true;
 			}
 

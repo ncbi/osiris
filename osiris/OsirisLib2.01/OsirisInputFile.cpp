@@ -98,6 +98,8 @@ int OsirisInputFile :: ReadAllInputs (const RGString& inputFileName) {
 
 			//cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
 			STRLCAnalysis::mFailureMessage->InputFileUnreadable (inputFileName);
+			STRLCAnalysis::mFailureMessage->SetPingValue (10);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			delete mInputFile;
 			mInputFile = NULL;
 			return -1;
@@ -143,6 +145,8 @@ int OsirisInputFile :: ReadAllInputs () {
 
 			cout << "Parsing input file terminated prematurely..." << endl;
 			STRLCAnalysis::mFailureMessage->InputStringFormatError ();
+			STRLCAnalysis::mFailureMessage->SetPingValue (20);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			returnStatus = -1;
 			break;
 		}
@@ -541,6 +545,8 @@ int OsirisInputFile :: AssignString () {
 		RGString msg = "Problem with assign string:  " + mStringLeft + " = " + mStringRight;
 		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		STRLCAnalysis::mFailureMessage->InputStringFormatError ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (20);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 	}
 
 	return status;

@@ -158,6 +158,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		//cout << "File input incomplete.  Terminating..." << endl;
 		STRLCAnalysis::mFailureMessage->IncompleteSetOfInputs ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (540);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -291,6 +293,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		cout << "Could not open standard settings file " << stdSettingsFileName << ".  Exiting..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("Full path name = " + stdSettingsFileName + ".");
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Standard Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (550);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -17;
 	}
 
@@ -299,6 +303,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		cout << "Could not open laboratory settings file " << labSettingsFileName << ".  Exiting..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("Full path name = " + labSettingsFileName + ".");
 		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Lab Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (560);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -17;
 	}
 
@@ -314,6 +320,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		cout << "Could not interpret standard input settings file " << (char*)stdSettingsFileName.GetData () << ".  Exiting..." << endl;
 		STRLCAnalysis::mFailureMessage->AddMessage ("Could not interpret standard input settings file " + stdSettingsFileName + ".  Exiting...");
 		STRLCAnalysis::mFailureMessage->FileInvalid ("Standard Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (570);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -100;
 	}
 
@@ -326,6 +334,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		cout << "Could not interpret laboratory input settings file " << (char*)labSettingsFileName.GetData () << ".  Exiting..." << endl;
 		STRLCAnalysis::mFailureMessage->FileInvalid ("Lab Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (580);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -100;
 	}
 
@@ -371,6 +381,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	catch (...) {
+		STRLCAnalysis::mFailureMessage->SetPingValue (650);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		status = -1170;
 	}
 
