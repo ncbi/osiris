@@ -61,5 +61,5 @@ libosiris_a_SOURCES = \
 ../SynonymList.cpp \
 ../TestCharacteristic.cpp \
 ../TracePrequalification.cpp \
-../xmlwriter.cpp \
+../xmlwriter.cpp
 
