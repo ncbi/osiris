@@ -356,7 +356,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
 {
   SET_LABEL::iterator itr;
   wxRect rect;
-  wxPoint ptArea = m_owner->GetPlotArea()->GetPosition();
+  wxPoint ptArea = m_owner->GetAreaRect().GetPosition();
   int nx;
   int ny;
   int hl;

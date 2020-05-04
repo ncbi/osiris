@@ -466,6 +466,7 @@ CFramePlot::CFramePlot(
     m_TimeLastRebuild(NULL),
     m_nState(FP_NO_STATE),
     m_pPlotSyncTo(NULL),
+    m_pPlotForBitmap(NULL),
 #if DELAY_PLOT_AREA_SYNC
     m_pPlotSyncThisTo(NULL),
 #endif
@@ -2075,6 +2076,9 @@ void CFramePlot::OnSize(wxSizeEvent &e)
   e.Skip(true);
 }
 
+
+#if 0
+
 wxBitmap *CFramePlot::CreateBitmap(
   int nWidth, int nHeight, int nDPI, const wxString &sTitle, bool bForcePrintFont)
 {
@@ -2226,6 +2230,92 @@ wxBitmap *CFramePlot::CreateBitmap(
   }
   return pBitmap;
 }
+
+#endif
+
+void CFramePlot::_SetupBitmapPlot()
+{
+  // called from CFramePlot::_GetBitmapPlot()
+
+  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0, true);
+  m_pPlotForBitmap->SetRenderingToWindow(false);
+  m_pPlotForBitmap->SetSync(false);
+  m_pPlotForBitmap->Show(false);
+  m_pPlotForBitmap->BeginBatch();
+}
+
+wxBitmap *CFramePlot::CreateBitmap(
+  int nWidth, int nHeight, int nDPI, const wxString &sTitle, bool bForcePrintFont)
+{
+  wxSize sz(nWidth, nHeight);
+  wxRect rect(sz);
+  double dDPI = (double)nDPI;
+  wxBitmap *pBitmap = new wxBitmap(sz, 32);
+  wxMemoryDC dc(*pBitmap);
+  CPanelPlot *pPanelPlot = _GetBitmapPlot();
+
+  // initialize bitmap to white -- probably not necessary
+
+  dc.SetBackground(*wxWHITE_BRUSH);
+  dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+  dc.Clear();
+
+  int nXLabelHeight = pPanelPlot->DrawXAxisLabelToDC(
+    &dc, rect, dDPI, bForcePrintFont);
+  int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(&dc, sTitle, nWidth, nHeight, dDPI);
+
+  int nPlotAreaHeight = nHeight - nXLabelHeight - nTitleOffset;
+  int nPlotCount = (int)m_setPlots.size();
+  if (!nPlotCount)
+  {
+    nPlotCount = 1;
+  }
+  int nPlotHeight = nPlotAreaHeight / nPlotCount;
+  int nRoundingOffset = nPlotAreaHeight - (nPlotHeight * nPlotCount);
+  nTitleOffset += nRoundingOffset;
+
+  if (nPlotHeight >= 20)
+  {
+    wxRect rectPlot(0, 0, nWidth, nPlotHeight);
+    set<CPanelPlot *>::iterator itr;
+    CPanelPlot *pPlot;
+    wxBitmap *pBitmapPlot = new wxBitmap(nWidth, nPlotHeight, 32);
+    std::unique_ptr<wxBitmap> pHoldBitmap(pBitmapPlot);
+    wxMemoryDC dcPlot(*pBitmapPlot);
+    int nY;
+
+#if 1
+    // there is a axis sync bug, so here is the work around
+    for (itr = m_setPlots.begin();
+      itr != m_setPlots.end();
+      ++itr)
+    {
+      pPlot = *itr;
+      if (pPlot->SyncValue())
+      {
+        SyncTo(pPlot);
+        break;
+      }
+    }
+#endif
+    for (itr = m_setPlots.begin();
+      itr != m_setPlots.end();
+      ++itr)
+    {
+      dcPlot.SetBackground(*wxWHITE_BRUSH);
+      dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+      dcPlot.Clear();
+      pPlot = *itr;
+      pPanelPlot->CopySettings(*pPlot, 0);
+      pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
+      nY = ((int)pPlot->GetPlotNumber() * nPlotHeight) + nTitleOffset;
+      dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
+    }
+  }
+  return pBitmap;
+}
+
+
 #if HAS_STATUS_BAR
 void CFramePlot::UpdateStatusBar()
 {

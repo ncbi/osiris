@@ -527,6 +527,7 @@ void wxPlotCtrl::Init()
     m_fit_on_new_curve        = true;
     m_show_xAxis              = true;
     m_show_yAxis              = true;
+    m_do_size_on_end_batch    = false;
 
     m_zoom = wxPoint2DDouble( 1.0, 1.0 );
     m_history_views_index = -1;
@@ -986,6 +987,10 @@ void wxPlotCtrl::EndBatch(bool force_refresh)
         m_batch_count--;
         if ( (m_batch_count <= 0) && force_refresh )
         {
+            if (m_do_size_on_end_batch)
+            {
+              DoSize();
+            }
             Redraw(wxPLOTCTRL_REDRAW_WHOLEPLOT);
             AdjustScrollBars();
         }
@@ -1168,7 +1173,7 @@ void wxPlotCtrl::SetXAxisLabel(const wxString &label)
 
     m_xLabel = label;
     Refresh();
-    DoSize();
+    _DoSize();
 }
 
 void wxPlotCtrl::SetYAxisLabel(const wxString &label)
@@ -1184,7 +1189,7 @@ void wxPlotCtrl::SetYAxisLabel(const wxString &label)
     m_yLabel = label;
 
     Refresh();
-    DoSize();
+    _DoSize();
 }
 
 void wxPlotCtrl::SetPlotTitle(const wxString &title)
@@ -1200,7 +1205,7 @@ void wxPlotCtrl::SetPlotTitle(const wxString &title)
     m_title = title;
 
     Refresh();
-    DoSize();
+    _DoSize();
 }
 
 wxPoint wxPlotCtrl::GetKeyPosition() const
@@ -2383,10 +2388,11 @@ int wxPlotCtrl::_GetYAxisTextWidth()
   return m_y_axis_text_width;
 }
 
+
 void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 {
     if (!m_area) return; // we're not created yet
-
+    m_do_size_on_end_batch = false;
     m_redraw_type = wxPLOTCTRL_REDRAW_BLOCKER;  // block OnPaints until done
 
     wxSize size;
@@ -2433,7 +2439,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 
     m_xAxisRect = wxRect(m_yAxisRect.GetRight(),
                          m_yAxisRect.GetBottom() - area_border + 1,
-                         area_width + 2*area_border,
+                         area_width + area_border,
                          xaxis_height);
 
     m_areaRect = wxRect(m_yAxisRect.GetRight() + area_border,
@@ -2485,13 +2491,15 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 
     m_zoom.m_x = zoom_x;
     m_zoom.m_y = zoom_y;
+    if (!GetBatchCount())
+    {
+      wxPlotCtrlEvent event( wxEVT_PLOTCTRL_VIEW_CHANGED, GetId(), this);
+      event.SetCurve(m_activeCurve, m_active_index);
+      (void)DoSendEvent( event );
 
-    wxPlotCtrlEvent event( wxEVT_PLOTCTRL_VIEW_CHANGED, GetId(), this);
-    event.SetCurve(m_activeCurve, m_active_index);
-    (void)DoSendEvent( event );
-
-    m_redraw_type = 0;
-    Redraw(wxPLOTCTRL_REDRAW_WHOLEPLOT);
+      m_redraw_type = 0;
+      Redraw(wxPLOTCTRL_REDRAW_WHOLEPLOT);
+    }
 }
 
 void wxPlotCtrl::CalcBoundingPlotRect()
@@ -3030,23 +3038,48 @@ void wxPlotCtrl::_DrawInit(
   );
 #endif
 }
-int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont)
+int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont, bool bBottom)
 {
   wxCHECK_MSG(dc, 0, wxT("invalid dc"));
   wxCHECK_MSG(dpi > 0, 0, wxT("Invalid dpi for plot drawing"));
   wxPlotCtrlBackup plotBackup(this);
   _DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  int nHeight = m_border;
 
-  dc->SetBrush(wxBrush(GetBackgroundColour(), wxSOLID));
-  dc->SetPen(*wxTRANSPARENT_PEN);
-  dc->DrawRectangle(boundingRect);
-
-  dc->SetFont(GetAxisLabelFont());
-  dc->SetTextForeground(GetAxisLabelColour());
-  dc->DestroyClippingRegion();
-  dc->DrawText(m_xLabel, m_xLabelRect.x, 0);
-  int nRtn = m_xLabelRect.GetHeight() + m_border;
-  return nRtn;
+  if (GetShowXAxisLabel() && !m_xLabelRect.IsEmpty())
+  {
+    wxRect clearRect;
+    int nY = 0;
+    if (bBottom)
+    {
+      wxSize sz = dc->GetTextExtent(m_xLabel);
+      int nRectHeight = boundingRect.GetHeight();
+      nHeight += sz.GetHeight();
+      if (nHeight > nRectHeight)
+      {
+        nY = 0;
+        nHeight = nRectHeight;
+      }
+      else
+      {
+        nY = nRectHeight - nHeight;
+      }
+      clearRect = wxRect(0, nY, boundingRect.GetWidth(), nHeight);
+    }
+    else
+    {
+      nHeight += m_xLabelRect.GetHeight();
+      clearRect = boundingRect;
+    }
+    dc->SetBrush(wxBrush(GetBackgroundColour(), wxSOLID));
+    dc->SetPen(*wxTRANSPARENT_PEN);
+    dc->SetFont(GetAxisLabelFont());
+    dc->SetTextForeground(GetAxisLabelColour());
+    dc->DestroyClippingRegion();
+    dc->DrawRectangle(boundingRect);
+    dc->DrawText(m_xLabel, m_xLabelRect.x, nY);
+  }
+  return nHeight;
 }
 void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi, bool bAutoCalcTicks, bool bForcePrintFont )
 {

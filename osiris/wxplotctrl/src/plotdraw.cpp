@@ -552,7 +552,7 @@ void wxPlotDrawerXAxis::Draw(wxDC *dc, bool refresh)
           wxSize sz = dc->GetTextExtent(sLabel);
           if (i == nLast2)
           {
-            // second to last label, get rightmost positino
+            // second to last label, get rightmost position
             // in case the last needs to shift left
             leftMost = nx + sz.GetWidth() + (x << 1);
           }

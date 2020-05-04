@@ -642,8 +642,8 @@ public:
     // ------------------------------------------------------------------------
 
     // Get/Set showing x and/or y axes
-    void SetShowXAxis(bool show) { m_show_xAxis = show; DoSize(); }
-    void SetShowYAxis(bool show) { m_show_yAxis = show; DoSize(); }
+    void SetShowXAxis(bool show) { m_show_xAxis = show; _DoSize(); }
+    void SetShowYAxis(bool show) { m_show_yAxis = show; _DoSize(); }
     bool GetShowXAxis() { return m_show_xAxis; }
     bool GetShowYAxis() { return m_show_yAxis; }
 
@@ -654,14 +654,14 @@ public:
     void SetYAxisLabel(const wxString &label);
     bool GetShowXAxisLabel() const { return m_show_xlabel; }
     bool GetShowYAxisLabel() const { return m_show_ylabel; }
-    void SetShowXAxisLabel( bool show ) { m_show_xlabel = show; DoSize(); }
-    void SetShowYAxisLabel( bool show ) { m_show_ylabel = show; DoSize(); }
+    void SetShowXAxisLabel( bool show ) { m_show_xlabel = show; _DoSize(); }
+    void SetShowYAxisLabel( bool show ) { m_show_ylabel = show; _DoSize(); }
 
     // Get/Set and show/hide the title
     const wxString& GetPlotTitle() const { return m_title; }
     void SetPlotTitle(const wxString &title);
     bool GetShowPlotTitle() const { return m_show_title; }
-    void SetShowPlotTitle( bool show ) { m_show_title = show; DoSize(); }
+    void SetShowPlotTitle( bool show ) { m_show_title = show; _DoSize(); }
 
     // Get/Set YAxis Width in # of digits
     void ResetYAxisTextWidth()
@@ -708,7 +708,10 @@ public:
         ResetYAxisTextWidth();
       }
     }
-
+    const wxRect &GetAreaRect() const
+    {
+      return m_areaRect;
+    }
 
     // Show a key with the function/data names, pos is %width and %height (0-100)
     const wxString& GetKeyString() const { return m_keyString; }
@@ -812,7 +815,7 @@ public:
     //   the plot is drawn to fit inside the boundingRect (i.e. the margins)
     //
     //  DJH 2/29/2009 - added bAutoCalcTicks = false
-    int DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont);
+    int DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont, bool bBottom = false);
     void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false, bool bForcePrintFont = false );
 
     // ------------------------------------------------------------------------
@@ -954,6 +957,7 @@ protected:
     bool m_fit_on_new_curve;
     bool m_show_xAxis;
     bool m_show_yAxis;
+    bool m_do_size_on_end_batch;
 
     // rects of the positions of each window - remember for DrawPlotCtrl
     wxRect m_xAxisRect, m_yAxisRect, m_areaRect, m_clientRect;
@@ -1040,6 +1044,17 @@ private:
       bool bForcePrintFont,
       const wxPlotCtrlBackup &plotBackup);
     void Init();
+    void _DoSize()
+    {
+      if (GetBatchCount())
+      {
+        m_do_size_on_end_batch = true;
+      }
+      else
+      {
+        DoSize();
+      }
+    }
     DECLARE_ABSTRACT_CLASS(wxPlotCtrl)
     DECLARE_EVENT_TABLE()
 };
