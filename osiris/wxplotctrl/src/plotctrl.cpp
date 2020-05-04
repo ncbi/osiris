@@ -985,14 +985,18 @@ void wxPlotCtrl::EndBatch(bool force_refresh)
     if ( m_batch_count > 0 )
     {
         m_batch_count--;
-        if ( (m_batch_count <= 0) && force_refresh )
+        if (m_batch_count <= 0)
         {
             if (m_do_size_on_end_batch)
             {
               DoSize();
+              force_refresh = true;
             }
-            Redraw(wxPLOTCTRL_REDRAW_WHOLEPLOT);
-            AdjustScrollBars();
+            if(force_refresh)
+            {
+              Redraw(wxPLOTCTRL_REDRAW_WHOLEPLOT);
+              AdjustScrollBars();
+            }
         }
     }
 }
@@ -2368,7 +2372,7 @@ void wxPlotCtrl::SetAreaMouseCursor(wxStockCursor cursorid)
 
 void wxPlotCtrl::OnSize( wxSizeEvent& )
 {
-    DoSize();
+    _DoSize();
 }
 
 bool wxPlotCtrl::RenderScrollbars()

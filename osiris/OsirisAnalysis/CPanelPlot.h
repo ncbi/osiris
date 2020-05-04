@@ -300,6 +300,7 @@ public:
     bool bExternalTimer = false);
   virtual ~CPanelPlot();
 
+  void SendPlotSizeEvent();
   bool IsPreview()
   {
     return (m_pFrameAnalysis != NULL);

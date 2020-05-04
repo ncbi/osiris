@@ -204,6 +204,7 @@ CPanelPlot::CPanelPlot(
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
     m_bExternalTimer(bExternalTimer),
+    m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false)
 {
@@ -251,8 +252,19 @@ void CPanelPlot::_BuildPanel(
   m_pPlotCtrl->SetMinExpValue(99999);
   m_pPanel->SetSizer(m_pSizer);
   m_pPanel->Layout();
+#ifdef __WXMAC__
+  SendPlotSizeEvent();
+#endif
 }
 
+void CPanelPlot::SendPlotSizeEvent()
+{
+  if(m_pFramePlot != NULL && HasToolbar())
+  {
+    wxSizeEvent e(m_pPlotCtrl->GetSize());
+    m_pPlotCtrl->GetEventHandler()->AddPendingEvent(e);
+  }
+}
 void CPanelPlot::_CleanupLadderPeakSet()
 {
   vectorptr<CLadderPeakSet>::cleanup(&m_vpLadderPeakSet);
@@ -327,6 +339,8 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
       break;
     case BASELINE_DATA:
       pdy = m_pData->GetBaselinePoints(nChannel);
+      break;
+    case COUNT_DATA:
       break;
     }
     if(pdy != NULL)
@@ -1362,19 +1376,18 @@ void CPanelPlot::OnTimerEvent(wxTimerEvent &e)
 }
 void CPanelPlot::OnPointSelected(wxPlotCtrlEvent &)
 {
-  if(m_bExternalTimer)
-  {
-    m_bDoTimer = true;
-  }
-  else
+  if(!m_bExternalTimer)
   {
     if(m_pTimer == NULL)
     {
       m_pTimer = new wxTimer(this,IDtimer);
     }
-    m_pTimer->Start(50,true);
-
+    if(!m_pTimer->IsRunning())
+    {
+      m_pTimer->Start(50,true);
+    }
   }
+  m_bDoTimer = true;
 }
 void CPanelPlot::OnViewChanging(wxPlotCtrlEvent &e)
 {
@@ -1995,7 +2008,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
 //  {
 //    m_pFramePlot->SyncTo(this);
 //  }
-  Refresh();
+  RE_RENDER;
 }
 
 
@@ -2429,22 +2442,6 @@ void CPanelPlot::DrawPlotToDC(
     {
       pPlotCtrl->SetShowXAxisLabel(bShowXAxis);
     }
-#if 0
-    // on a mac, drawing a bitmap in part of a DC has problem
-    // the workaround is to create a bitmap at the size of the rectangle
-    // and copy
-
-    wxSize sz(rect.GetWidth(), rect.GetHeight());
-    wxRect rectPlot(sz);
-    wxBitmap BitmapTmp(sz,32);
-    wxMemoryDC dcTmp(BitmapTmp);
-    dcTmp.SetBackground(*wxWHITE_BRUSH);
-    dcTmp.Clear();
-    dcTmp.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
-    pPlotCtrl->DrawEntirePlot(&dcTmp, rect, dDPI, bForcePrintFont);
-    pDC->Blit(rect.GetLeft(), rect.GetTop(), rect.GetWidth(), rect.GetHeight(), 
-      &dcTmp, 0, 0);
-#else
     bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
     pPlotCtrl->SetRenderingToWindow(false);
     pDC->SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
@@ -2453,7 +2450,6 @@ void CPanelPlot::DrawPlotToDC(
     pDC->DrawRectangle(rect);
     pPlotCtrl->DrawEntirePlot(pDC, rect, dDPI, bForcePrintFont);
     pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
-#endif
     if (bFlipXAxis)
     {
       pPlotCtrl->SetShowXAxisLabel(!bShowXAxis);
