@@ -906,6 +906,8 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 
 //		cout << "Parameter server could not find population marker set named:  " << mMarkerSetName.GetData () << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (*mMarkerSetName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (30);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -966,8 +968,12 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 		}
 	}
 
-	if (status < 0)
+	if (status < 0) {
+
 		STRLCAnalysis::mFailureMessage->CouldNotFindLocusToSetThreshold ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (30);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+	}
 
 	return status;
 }
