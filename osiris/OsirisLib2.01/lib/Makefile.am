@@ -13,6 +13,7 @@ libosiris_a_SOURCES = \
 ../DataSignalSM.cpp \
 ../DirectoryManager.cpp \
 ../Evaluate.cpp \
+../ExportFile.cpp \
 ../Expression.cpp \
 ../ExpressionParserUX.cpp \
 ../FailureMessages.cpp \
@@ -60,4 +61,5 @@ libosiris_a_SOURCES = \
 ../SynonymList.cpp \
 ../TestCharacteristic.cpp \
 ../TracePrequalification.cpp \
-../xmlwriter.cpp
+../xmlwriter.cpp \
+
