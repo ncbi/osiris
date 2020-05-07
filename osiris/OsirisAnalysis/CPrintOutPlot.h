@@ -47,6 +47,7 @@
 #include "nwx/PersistentSize.h"
 
 class CFramePlot;
+class wxDC;
 
 class CPrintPlotPreview : public wxPreviewFrame
 {
@@ -96,16 +97,17 @@ public:
 #ifdef __WXMAC__
   static void DoPageMargins(CFramePlot *pPlot);
 #endif
-private:
+protected:
   static wxPageSetupDialogData *GetPageSetupData();
   static void UpdatePageSetup();
   static wxPrintData *GetPrintData();
   static void UpdatePageSetupData(wxPrintData *pPrintData = NULL, wxPageSetupDialogData *pSetupData = NULL);
 
-  CFramePlot *m_pFramePlot;
   int MAX_PPI;
   static wxPrintData *g_printData;
   static wxPageSetupDialogData* g_pageSetupData;
+private:
+  CFramePlot *m_pFramePlot;
 
 };
 
