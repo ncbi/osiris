@@ -77,10 +77,6 @@ public:
   virtual bool HasPage(int page);
   virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 
-  static wxPrintData *GetPrintData();
-  static wxPageSetupDialogData *GetPageSetupData();
-  static void UpdatePageSetup();
-  static void UpdatePageSetupData(wxPrintData *pPrintData = NULL, wxPageSetupDialogData *pSetupData = NULL);
   static void StaticCleanup()
   {
     if (g_pageSetupData != NULL)
@@ -96,11 +92,16 @@ public:
   }
   static void DoPrintPreview(CFramePlot *pPlot);
   static void DoPageSetup(CFramePlot *pPlot);
+  static void DoPrint(CFramePlot *pPlot);
 #ifdef __WXMAC__
   static void DoPageMargins(CFramePlot *pPlot);
 #endif
-  static void DoPrint(CFramePlot *pPlot);
 private:
+  static wxPageSetupDialogData *GetPageSetupData();
+  static void UpdatePageSetup();
+  static wxPrintData *GetPrintData();
+  static void UpdatePageSetupData(wxPrintData *pPrintData = NULL, wxPageSetupDialogData *pSetupData = NULL);
+
   CFramePlot *m_pFramePlot;
   int MAX_PPI;
   static wxPrintData *g_printData;
