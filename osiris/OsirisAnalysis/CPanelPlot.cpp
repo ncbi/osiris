@@ -2444,6 +2444,7 @@ void CPanelPlot::DrawPlotToDC(
     }
     bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
     pPlotCtrl->SetRenderingToWindow(false);
+    pDC->DestroyClippingRegion();
     pDC->SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
     pDC->SetPen(*wxWHITE_PEN);
     pDC->SetBrush(*wxWHITE_BRUSH);

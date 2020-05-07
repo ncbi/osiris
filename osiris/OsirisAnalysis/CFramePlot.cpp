@@ -2279,8 +2279,8 @@ wxBitmap *CFramePlot::CreateBitmap(
     wxRect rectPlot(0, 0, nWidth, nPlotHeight);
     set<CPanelPlot *>::iterator itr;
     CPanelPlot *pPlot;
-    wxBitmap *pBitmapPlot = new wxBitmap(nWidth, nPlotHeight, 32);
-    std::unique_ptr<wxBitmap> pHoldBitmap(pBitmapPlot);
+    std::unique_ptr<wxBitmap> pBitmapPlot
+      (new wxBitmap(nWidth, nPlotHeight, 32));
     wxMemoryDC dcPlot(*pBitmapPlot);
     int nY;
 
@@ -2304,6 +2304,7 @@ wxBitmap *CFramePlot::CreateBitmap(
     {
       dcPlot.SetBackground(*wxWHITE_BRUSH);
       dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+      dcPlot.DestroyClippingRegion();
       dcPlot.Clear();
       pPlot = *itr;
       pPanelPlot->CopySettings(*pPlot, 0);
