@@ -116,6 +116,7 @@
     <ClCompile Include="IndividualGenotype.cpp" />
     <ClCompile Include="LadderData.cpp" />
     <ClCompile Include="LeastMedianOfSquares.cpp" />
+    <ClCompile Include="ModPairs.cpp" />
     <ClCompile Include="Notice.cpp" />
     <ClCompile Include="OsirisInputFile.cpp" />
     <ClCompile Include="OsirisMsg.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="LadderData.h" />
     <ClInclude Include="..\BaseClassLib\Malloc.h" />
     <ClInclude Include="LeastMedianOfSquares.h" />
+    <ClInclude Include="ModPairs.h" />
     <ClInclude Include="Notice.h" />
     <ClInclude Include="Notices.h" />
     <ClInclude Include="OsirisInputFile.h" />
