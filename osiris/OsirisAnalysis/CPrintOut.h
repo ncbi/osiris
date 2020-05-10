@@ -119,7 +119,7 @@ public:
   }
   static void DoPageSetup(wxWindow *pParent);
 #ifdef __WXMAC__
-  static void DoPageMargins(CFramePlot *pPlot);
+  static void DoPageMargins(wxWindow *parent);
 #endif
 protected:
   static void _DoPrint(CPrintOut *pPrintout, const wxString &sPingType);

@@ -231,13 +231,13 @@ void CPrintOut::DoPageSetup(wxWindow *pParent)
 }
 
 #ifdef __WXMAC__
-void CPrintOut::DoPageMargins(CFramePlot *pPlot)
+void CPrintOut::DoPageMargins(wxWindow *parent)
 {
   wxPageSetupDialogData *pSetupData = GetPageSetupData();
   wxPrintData *pPrintData = GetPrintData();
   *pSetupData = *pPrintData;
 
-  wxMacPageMarginsDialog pageMarginsDialog(pPlot, g_pageSetupData);
+  wxMacPageMarginsDialog pageMarginsDialog(parent, g_pageSetupData);
   pageMarginsDialog.ShowModal();
 
   UpdatePageSetupData(
