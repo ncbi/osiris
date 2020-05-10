@@ -3519,8 +3519,8 @@ size_t CFrameAnalysis::GetSamplesByRow(std::vector<const COARsample *> *pSamples
 {
   bool bNoDisabled = !(FLAGS & INCLUDE_DISABLED);
   bool bNoLadder = !(FLAGS & INCLUDE_LADDER);
-  bool bNoPositiveCtrl = !(FLAGS && INCLUDE_POS_CTRL);
-  bool bNoNegativeCtrl = !(FLAGS && INCLUDE_NEG_CTRL);
+  bool bNoPositiveCtrl = !(FLAGS & INCLUDE_POS_CTRL);
+  bool bNoNegativeCtrl = !(FLAGS & INCLUDE_NEG_CTRL);
   const vector<COARsample *> *pAllSamples = m_SampleSort.GetSamples();
   const COARsample *pSample;
   const wxDateTime *pTime = GetSelectedTime();
