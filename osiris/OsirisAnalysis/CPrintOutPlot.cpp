@@ -73,7 +73,7 @@ void CPrintOutPlot::DoPrint(CFramePlot *pFrame)
 
 CPrintOutPlot::~CPrintOutPlot() { ; }
 
-wxWindow *CPrintOutPlot::GetParent()
+wxFrame *CPrintOutPlot::GetParent()
 {
   return m_pFramePlot;
 }

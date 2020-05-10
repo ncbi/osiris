@@ -57,7 +57,7 @@ public:
   {}
 
   virtual ~CPrintOutPlot();
-  virtual wxWindow *GetParent();
+  virtual wxFrame *GetParent();
   virtual bool OnPrintPage(int page);
   virtual bool HasPage(int page);
   virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);

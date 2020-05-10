@@ -53,7 +53,7 @@
 
 // CPrintPreviewFrame
 
-CPrintPreviewFrame::CPrintPreviewFrame(wxPrintPreview *pPrev, wxWindow *parent,
+CPrintPreviewFrame::CPrintPreviewFrame(wxPrintPreview *pPrev, wxFrame *parent,
   const wxString &title, bool bPageButtons) :
   wxPreviewFrame(pPrev, parent, title,
     GET_PERSISTENT_POSITION(CPrintPreviewFrame),
@@ -214,7 +214,7 @@ void CPrintOut::UpdatePageSetupData(wxPrintData *pPrintData, wxPageSetupDialogDa
   }
 }
 
-void CPrintOut::DoPageSetup(wxWindow *pParent)
+void CPrintOut::DoPageSetup(wxFrame *pParent)
 {
   wxPageSetupDialogData *pSetupData = GetPageSetupData();
   wxPrintData *pPrintData = GetPrintData();
@@ -231,7 +231,7 @@ void CPrintOut::DoPageSetup(wxWindow *pParent)
 }
 
 #ifdef __WXMAC__
-void CPrintOut::DoPageMargins(wxWindow *parent)
+void CPrintOut::DoPageMargins(wxFrame *parent)
 {
   wxPageSetupDialogData *pSetupData = GetPageSetupData();
   wxPrintData *pPrintData = GetPrintData();

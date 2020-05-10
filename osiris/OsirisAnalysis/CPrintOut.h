@@ -51,7 +51,7 @@
 class CPrintPreviewFrame : public wxPreviewFrame
 {
 public:
-  CPrintPreviewFrame(wxPrintPreview *pPreview, wxWindow *pParent,
+  CPrintPreviewFrame(wxPrintPreview *pPreview, wxFrame *pParent,
     const wxString &sTitle, bool bPageButtons = false);
   virtual ~CPrintPreviewFrame() {}
   virtual void CreateControlBar();
@@ -99,7 +99,7 @@ public:
   {}
 
   virtual ~CPrintOut();
-  virtual wxWindow *GetParent() = 0;
+  virtual wxFrame *GetParent() = 0;
   bool IsPrintPreview()
   {
     // should check wxPrinout::IsPreview
@@ -118,9 +118,9 @@ public:
       g_printData = NULL;
     }
   }
-  static void DoPageSetup(wxWindow *pParent);
+  static void DoPageSetup(wxFrame *pParent);
 #ifdef __WXMAC__
-  static void DoPageMargins(wxWindow *parent);
+  static void DoPageMargins(wxFrame *parent);
 #endif
 protected:
   static void _DoPrint(CPrintOut *pPrintout, const wxString &sPingType);
@@ -154,7 +154,7 @@ private:
       m_logicalPage(0, 0, 0, 0), m_ppi(-1, -1)
     {}
     _resInput(const wxSize &ppi, const wxRect &page) :
-      m_ppi(ppi), m_logicalPage(page)
+      m_logicalPage(page), m_ppi(ppi)
     {}
     virtual ~_resInput() {}
     bool operator ==(const _resInput &x)

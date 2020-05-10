@@ -57,7 +57,7 @@ class CPrintOutAnalysis : public CPrintOut
 public:
   CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview = false);
   virtual ~CPrintOutAnalysis() {}
-  virtual wxWindow *GetParent();
+  virtual wxFrame *GetParent();
   virtual bool OnPrintPage(int page);
   virtual bool HasPage(int page);
   virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);

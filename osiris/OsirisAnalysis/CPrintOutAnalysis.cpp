@@ -58,7 +58,7 @@ CPrintOutAnalysis::CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview) :
   m_pFrameAnalysis->GetSamplesByRow(&m_vSamples);
 }
 
-wxWindow *CPrintOutAnalysis::GetParent()
+wxFrame *CPrintOutAnalysis::GetParent()
 {
   return m_pFrameAnalysis;
 }
