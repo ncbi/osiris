@@ -100,8 +100,9 @@ public:
 
   virtual ~CPrintOut();
   virtual wxWindow *GetParent() = 0;
-  bool IsPreview()
+  bool IsPrintPreview()
   {
+    // should check wxPrinout::IsPreview
     return m_bPreview;
   }
   static void StaticCleanup()

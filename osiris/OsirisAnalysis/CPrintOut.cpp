@@ -359,7 +359,7 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
       nScale = SCALE_X;
       dScalePixel = double(nPPIy) / double(nPPIx);
     }
-    if (IsPreview())
+    if (IsPrintPreview())
     {
       int nx, ny;
       GetPPIScreen(&nx, &ny);
