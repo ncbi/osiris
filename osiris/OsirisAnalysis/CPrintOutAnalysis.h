@@ -33,39 +33,41 @@
 *
 * ===========================================================================
 *
-*
-*  FileName: CPrintOutPlot.cpp
+*  FileName: CPrintOutAnalysis.h
 *  Author:   Douglas Hoffman
 *
-*  Implementation for wxPrintout for printing an OSIRIS plot
+*  Print all samples from Analysis Window
 *
 */
-#ifndef __C_PRINTOUT_PLOT__
-#define __C_PRINTOUT_PLOT__
+#ifndef __C_PRINT_OUT_ANALYSIS_H__
+#define __C_PRINT_OUT_ANALYSIS_H__
 
+#include "nwx/stdb.h"
+#include <vector>
+#include "nwx/stde.h"
 #include "CPrintOut.h"
 
-class CFramePlot;
+class COARSample;
+class COARfile;
+class CFrameAnalysis;
 class wxDC;
 
-class CPrintOutPlot : public CPrintOut
+class CPrintOutAnalysis : public CPrintOut
 {
 public:
-  CPrintOutPlot(CFramePlot *pFrame, bool bPreview = false) :
-    CPrintOut(bPreview),
-    m_pFramePlot(pFrame)
-  {}
-
-  virtual ~CPrintOutPlot();
+  CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview = false);
+  virtual ~CPrintOutAnalysis() {}
   virtual wxWindow *GetParent();
   virtual bool OnPrintPage(int page);
   virtual bool HasPage(int page);
   virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 
-  static void DoPrintPreview(CFramePlot *pPlot);
-  static void DoPrint(CFramePlot *pPlot);
+  static void DoPrintPreview(CFrameAnalysis *pFrame);
 private:
-  CFramePlot *m_pFramePlot;
+  CFrameAnalysis *m_pFrameAnalysis;
+  std::vector<const COARsample *> m_vSamples;
+  COARfile *m_pFile;
 };
+
 
 #endif

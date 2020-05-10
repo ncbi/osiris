@@ -62,7 +62,7 @@ bool CArchiveCollection::SetFile(const COARfile *pFile)
     for (i = 0; i < nSampleCount; ++i)
     {
       pSample = m_pFile->GetSample(i);
-      sFile = m_pFile->FindPlotFile(pSample);
+      sFile = pSample->GetPlotFileName();
       if(sFile.IsEmpty())
       {
         m_asOutputMissing.insert(pSample->GetName());

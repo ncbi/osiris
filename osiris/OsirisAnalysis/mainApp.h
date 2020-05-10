@@ -303,6 +303,16 @@ public:
   }
 };
 
+class CWindowPointer
+{
+public:
+  CWindowPointer(wxWindow *p) : m_p(p) {}
+  ~CWindowPointer() { if(m_p != NULL) m_p->Destroy(); }
+  void Release() { m_p = NULL; }
+private:
+  wxWindow *m_p;
+};
+
 // pinger types
 
 #define PING_WINDOW_NUMBER "windowNr"

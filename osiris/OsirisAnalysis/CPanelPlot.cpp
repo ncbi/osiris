@@ -2537,9 +2537,6 @@ wxBitmap *CPanelPlot::CreateAllChannelBitmap(
   dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
   dc.Clear();
 
-  // set up title
-  nTitleOffset = DrawPlotTitleToDC(&dc, sTitle, nWidth, nHeight, dDPI);
-
   // draw X-Axis Label at the bottom
 
   nwxPlotCtrl *pPlotCtrl = GetPlotCtrl();
@@ -2548,7 +2545,8 @@ wxBitmap *CPanelPlot::CreateAllChannelBitmap(
   int nXLabelHeight = DrawXAxisLabelToDC(
         &dc, wxRect(wxSize(nWidth, nHeight)), 
       dDPI, bForcePrintFont); // if no label, then the margin is returned
-
+  // set up title
+  nTitleOffset = DrawPlotTitleToDC(&dc, sTitle, nWidth, nHeight, dDPI);
   // get channels
   std::set<int> setChannels;
   m_pData->GetChannelNumbers(&setChannels);
@@ -2562,20 +2560,33 @@ wxBitmap *CPanelPlot::CreateAllChannelBitmap(
           // due to height rounding, the x-axis may be too low on screen images
           // by up to n-1 pixels where n is the number of channels
           // on a high res bitmap it is not significant
-    wxRect rect(0, nY, nWidth, nPlotHeight);
+    wxRect rect(0, 0, nWidth, nPlotHeight);
 
     // first show all channels to compute zoom
-    ShowAllChannels(false);
+    std::unique_ptr<wxBitmap> pBitmapPlot
+      (new wxBitmap(nWidth, nPlotHeight, 32));
+    wxMemoryDC dcPlot(*pBitmapPlot);
+    ShowAllChannels(true);
+    RebuildCurves(true);
     ZoomOut(false, 0);
+    wxRect2DDouble wxRectZoom = GetViewRect();
 
     for (std::set<int>::iterator itr = setChannels.begin();
       itr != setChannels.end();
       ++itr)
     {
       ShowOneChannel(*itr);
-      DrawPlotToDC(&dc, rect, dDPI, false, bForcePrintFont);
+      RebuildCurves(true);
+      SetViewRect(wxRectZoom);
+
+      dcPlot.SetBackground(*wxWHITE_BRUSH);
+      dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+      dcPlot.DestroyClippingRegion();
+      dcPlot.Clear();
+
+      DrawPlotToDC(&dcPlot, rect, dDPI, false, bForcePrintFont);
+      dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
       nY += nPlotHeight;
-      rect.SetTop(nY);
     }
   }
   pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
