@@ -3620,6 +3620,7 @@ EVT_MENU(wxID_PRINT, CFrameAnalysis::OnPrintPreview)
 #ifdef __WXMAC__
 EVT_MENU(IDpageMargins, CFrameAnalysis::OnPageMargins)
 #endif
+EVT_MENU(IDpageSetup, CFrameAnalysis::OnPageSetup)
 
 
 END_EVENT_TABLE()

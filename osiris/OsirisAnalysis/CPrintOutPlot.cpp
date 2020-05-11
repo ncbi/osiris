@@ -90,7 +90,8 @@ bool CPrintOutPlot::OnPrintPage(int page)
       m_resOutput.m_nHeight,
       m_resOutput.m_DPI,
       m_pFramePlot->GetPrintTitle(), true));
-    pdc->DrawBitmap(*px, wxPoint(0,0));
+    wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
+    pdc->DrawBitmap(*px, r.GetLeftTop());
   }
   else
   {

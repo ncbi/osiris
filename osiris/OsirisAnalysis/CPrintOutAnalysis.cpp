@@ -85,7 +85,8 @@ bool CPrintOutAnalysis::OnPrintPage(int page)
       m_resOutput.m_DPI,
       sTitle , true);
     std::unique_ptr<wxBitmap> px(pBitmap);
-    pdc->DrawBitmap(*pBitmap, wxPoint(0, 0));
+    wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
+    pdc->DrawBitmap(*pBitmap, r.GetLeftTop());
   }
   else
   {
