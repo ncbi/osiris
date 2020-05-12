@@ -75,11 +75,13 @@ class SampleModList {
 
 public:
 	SampleModList (const RGString& name, int nChannels);
+	SampleModList (int nChannels);
 	~SampleModList ();
 
 	void AddModPair (int channel, const ModPair* mp);
 	void BeingUsedForSample (const RGString& name);
 	ChannelModPairs* GetModPairsForChannel (int channelNumber);
+	RGString GetName () const { return mSampleName; }
 
 	//Need read sample list function
 	RGString ReadSampleModList (const RGString& sampleString);
@@ -103,6 +105,7 @@ public:
 	SampleModList* GetSampleModList (const RGString& name);
 	//Need read overall list function
 	RGString ReadNextSampleData (const RGString& sampleData, RGString& sampleName);
+	void ReadOverallModList (const RGString& sampleData);
 
 protected:
 	list<SampleModList*> mSampleList;

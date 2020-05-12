@@ -82,6 +82,14 @@ void ModPair::SetModRegion (bool* modArray, int size) {
 
 ChannelModPairs::~ChannelModPairs () {
 
+	ModPair* next;
+
+	while (!mChannelPairs.empty ()) {
+
+		next = mChannelPairs.front ();
+		mChannelPairs.pop_front ();
+		delete next;
+	}
 }
 
 
@@ -111,7 +119,212 @@ bool ChannelModPairs::ReadModPair (const RGString& inString) {
 
 	ModPair* mp = new ModPair ();
 	bool result = mp->ReadModPair (inString);
+	mChannelPairs.push_back (mp);
 	return result;
 }
 
+
+SampleModList::SampleModList (const RGString& name, int nChannels) : mSampleName (name), mWasUsed (false), mChannels (nChannels) {
+
+	mChannelPairs = new ChannelModPairs* [nChannels + 1];
+	int i;
+
+	for (i=1; i<=nChannels; i++)
+		mChannelPairs [i] = new ChannelModPairs (nChannels);
+}
+
+
+SampleModList::SampleModList (int nChannels) : mWasUsed (false), mChannels (nChannels) {
+
+	mChannelPairs = new ChannelModPairs* [nChannels + 1];
+	int i;
+
+	for (i=1; i<=nChannels; i++)
+		mChannelPairs [i] = new ChannelModPairs (nChannels);
+}
+
+
+
+SampleModList::~SampleModList () {
+
+	int i;
+	ChannelModPairs* cmp;
+
+	for (i=1; i<=mChannels; i++) {
+
+		cmp = mChannelPairs [i];
+		delete cmp;
+	}
+
+	delete[] mChannelPairs;
+}
+
+
+
+void SampleModList::AddModPair (int channel, const ModPair* mp) {
+
+	mChannelPairs [channel]->AddModPair (mp);
+}
+
+
+
+void SampleModList::BeingUsedForSample (const RGString& name) {
+
+	if (mWasUsed) {
+
+		cout << "<*****>Duplicate mod pairs use:  Mod pairs used for " << mUsedBySampleName << " now being used by " << name << "</*****>\n";
+		cout << "<Ping>651</Ping" << endl;
+	}
+
+	mUsedBySampleName = name;
+	mWasUsed = true;
+}
+
+
+
+ChannelModPairs* SampleModList::GetModPairsForChannel (int channelNumber) {
+
+	return mChannelPairs [channelNumber];
+}
+
+
+
+
+//Need read sample list function
+RGString SampleModList::ReadSampleModList (const RGString& sampleString) {
+
+	RGString XMLString = sampleString;
+	RGString ignoreString;
+	RGString channelString;
+	RGString name;
+	RGXMLTagSearch nameSearch ("Name", XMLString);
+	RGXMLTagSearch ignoreSearch ("Ignore", XMLString);
+	RGXMLTagSearch channelSearch ("Channel", ignoreString);
+	size_t startIndex = 0;
+	size_t endIndex;
+	size_t endIgnore;
+	int channel;
+
+	if (!nameSearch.FindNextTag (startIndex, endIndex, name)) {
+
+		return "";
+	}
+
+	mSampleName = name;
+	startIndex = endIndex + 1;
+
+	while (true) {
+
+		if (!ignoreSearch.FindNextTag (startIndex, endIndex, ignoreString)) {
+
+			return "";
+		}
+		
+		startIndex = endIndex + 1;
+		channelSearch.ResetSearch ();
+
+		if (!channelSearch.FindNextTag (0, endIgnore, channelString)) {
+
+			//Error output!!!  no channel number
+			return "";
+		}
+
+		else {
+
+			channel = channelString.ConvertToInteger ();
+			mChannelPairs [channel]->ReadModPair (ignoreString);
+		}
+	}
+
+	return name;
+}
+
+
+
+OverallModList::OverallModList (int nChannels) : mChannels (nChannels) {
+
+}
+
+
+
+OverallModList::~OverallModList () {
+
+	SampleModList* next;
+
+	while (!mSampleList.empty ()) {
+
+		next = mSampleList.front ();
+		mSampleList.pop_front ();
+		delete next;
+	}
+}
+
+void OverallModList::AddSampleModList (const RGString& name) {
+
+	list<SampleModList*>::iterator it;
+	SampleModList* next;
+	RGString currentName;
+
+	for (it=mSampleList.begin (); it!=mSampleList.end (); it++) {
+
+		next = *it;
+		currentName = next->GetName ();
+
+		if (name == currentName)
+			return;
+	}
+
+	next = new SampleModList (name, mChannels);
+}
+
+
+
+SampleModList* OverallModList::GetSampleModList (const RGString& name) {
+
+	list<SampleModList*>::iterator it;
+	SampleModList* next;
+	RGString currentName;
+
+	for (it=mSampleList.begin (); it!=mSampleList.end (); it++) {
+
+		next = *it;
+		currentName = next->GetName ();
+
+		if (name == currentName)
+			return next;
+	}
+
+	return NULL;
+}
+
+
+
+//Need read overall list function
+RGString OverallModList::ReadNextSampleData (const RGString& sampleData, RGString& sampleName) {
+
+	SampleModList* next = new SampleModList (mChannels);
+	sampleName = next->ReadSampleModList (sampleData);
+	return sampleName;
+}
+
+
+
+void OverallModList::ReadOverallModList (const RGString& sampleData) {
+
+	RGString XMLString = sampleData;
+	RGString sampleString;
+	RGString sampleName;
+	RGXMLTagSearch sampleSearch ("Sample", XMLString);
+	size_t startIndex = 0;
+	size_t endIndex;
+
+	while (sampleSearch.FindNextTag (startIndex, endIndex, sampleString)) {
+
+		startIndex = endIndex + 1;
+		ReadNextSampleData (sampleString, sampleName);
+
+		if (sampleName == "")
+			cout << "Could not find sample name in mods data..." << endl;
+	}
+}
 
