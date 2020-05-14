@@ -32,16 +32,41 @@
 
 #include "nwx/stdb.h"
 #include <set>
+#include <map>
+#include <vector>
 #include "nwx/nsstd.h"
 #include "nwx/stde.h"
 #include <wx/timer.h>
 
+class nwxTimerTask
+{
+  // a task associated with a nwxTimerReceiver instance
+  // that can be delayed and either run once or frequently
+  // subclass must implement Run() which returns true
+  // when this task is finished and can be deleted
+public:
+  nwxTimerTask() { ; }
+  virtual ~nwxTimerTask() { ; }
+  virtual bool Run(wxTimerEvent &e) = 0; // return true when done
+  virtual bool IsReady(wxTimerEvent &) 
+  {
+    // virtual - return true when ready to call Run()
+    return true; 
+  }
+};
+
 class nwxTimerReceiver
 {
 public:
+  typedef std::multimap<nwxTimerReceiver *, nwxTimerTask *> TASK_SET;
+  typedef TASK_SET::iterator TASK_ITERATOR;
+  typedef std::pair<TASK_ITERATOR, TASK_ITERATOR> TASK_RANGE;
+
   nwxTimerReceiver();
   virtual ~nwxTimerReceiver();
   virtual void OnTimer(wxTimerEvent &) = 0;
+  bool AddTask(nwxTimerTask *pTask);
+  void DispatchTasks(wxTimerEvent &e);
   void StopReceiver()
   {
     UnRegisterTimerReceiver(this);
@@ -49,32 +74,26 @@ public:
   static void DispatchTimer(wxTimerEvent &e)
   {
     set<nwxTimerReceiver *>::iterator itr;
-    for(itr = g_Receivers.begin();
+    for (itr = g_Receivers.begin();
       itr != g_Receivers.end();
       ++itr)
     {
       (*itr)->OnTimer(e);
+      (*itr)->DispatchTasks(e);
     }
   }
 
 private:
+
   // static functions
 
   static void RegisterTimerReceiver(nwxTimerReceiver *p)
   {
     g_Receivers.insert(p);
   }
-  static void UnRegisterTimerReceiver(nwxTimerReceiver *p)
-  {
-    set<nwxTimerReceiver *>::iterator itr = 
-      g_Receivers.find(p);
-    if(itr != g_Receivers.end())
-    {
-      g_Receivers.erase(itr);
-    }
-  }
+  static void UnRegisterTimerReceiver(nwxTimerReceiver *p);
   static set<nwxTimerReceiver *> g_Receivers;
-
+  static TASK_SET g_Tasks;
 };
 
 class nwxTimerInterval
@@ -148,5 +167,48 @@ private:
   int m_nIntervalMS;
   int m_nWaiting;
 };
+
+class nwxTimerTaskMs : public nwxTimerTask
+{
+  // nwxTimerTask where approximate milliseconds can be set
+public:
+  nwxTimerTaskMs(int nIntervalMs) : nwxTimerTask(), m_interval(nIntervalMs)
+  {}
+  virtual ~nwxTimerTaskMs() {}
+  virtual bool IsReady(wxTimerEvent &e)
+  {
+    bool r = m_interval.CheckTimer(e);
+    return r;
+  }
+private:
+  nwxTimerInterval m_interval;
+};
+
+class nwxTimerTaskCount : public nwxTimerTask
+{
+  // nwxTimerTask that counts timer ticks
+public:
+  nwxTimerTaskCount(unsigned int nTicks = 2) :
+    nwxTimerTask(), 
+    m_nCount(nTicks),
+    m_nInterval(nTicks)
+  {}
+  virtual ~nwxTimerTaskCount() {}
+  virtual bool IsReady(wxTimerEvent &)
+  {
+    m_nCount--;
+    bool bRtn = false;
+    if (!m_nCount)
+    {
+      m_nCount = m_nInterval;
+      bRtn = true;
+    }
+    return bRtn;
+  }
+private:
+  unsigned int m_nCount;
+  unsigned int m_nInterval;
+};
+
 
 #endif

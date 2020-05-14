@@ -1639,13 +1639,13 @@ void CPanelPlot::ExpandRect(wxRect2DDouble *p,double dBy)
   p->m_x -= d;
   p->m_width += (d + d);
 }
-void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p)
+void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p, int nLabelHeight)
 {
   double dExtend = 1.0;
   wxRect rect = m_pPlotCtrl->GetPlotAreaRect();
   vector<unsigned int> an;
   size_t nLabelRow = this->GetLabelTypes(&an);
-  int LABEL_HEIGHT = this->GetLabelHeightPixels();
+  int LABEL_HEIGHT = (nLabelHeight > 0) ? nLabelHeight : this->GetLabelHeightPixels();
   int nLabelPixels = nLabelRow * LABEL_HEIGHT;
   if(rect.height > nLabelPixels)
   {
@@ -1661,7 +1661,7 @@ void CPanelPlot::_ConvertRectToBPS(wxRect2DDouble *pRect)
   pRect->SetLeft(dLeft);
   pRect->SetRight(dRight);
 }
-wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
+wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll, int nLabelHeight)
 {
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
   int nStart = 0;
@@ -1684,7 +1684,7 @@ wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
     rtn.Union(m_pPlotCtrl->GetCurve(i)->GetBoundingRect());
   }
   ExpandRect(&rtn);
-  ExtendLabelHeight(&rtn);
+  ExtendLabelHeight(&rtn, nLabelHeight);
   return rtn;
 }
 void CPanelPlot::ZoomToLocus(const wxString &sLocus, unsigned int nDelay)
@@ -2568,7 +2568,7 @@ wxBitmap *CPanelPlot::CreateAllChannelBitmap(
     wxMemoryDC dcPlot(*pBitmapPlot);
     ShowAllChannels(true);
     RebuildCurves(true);
-    ZoomOut(false, 0);
+    ZoomOut(false, 0, nXLabelHeight);
     wxRect2DDouble wxRectZoom = GetViewRect();
 
     for (std::set<int>::iterator itr = setChannels.begin();

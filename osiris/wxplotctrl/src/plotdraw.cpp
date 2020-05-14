@@ -540,7 +540,7 @@ void wxPlotDrawerXAxis::Draw(wxDC *dc, bool refresh)
     int i, count = m_tickPositions.GetCount();
     int nLast2 = count - 2;
     int leftMost = 0;
-    int nFullWidth = dc->GetSize().GetWidth();
+    int nFullWidth = dcRect.GetWidth();
     int nx;
     bool bShow = true;
     for (i=0; i<count; i++)

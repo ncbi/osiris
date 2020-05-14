@@ -496,8 +496,8 @@ CFramePlot *mainFrame::OpenGraphicFile(
     // otherwise we would put it in the CFramePlot constructor
     if((nChannel > 0) && !sLocus.IsEmpty())
     {
-      pPlot->ZoomToLocus(sLocus,2);
       pPlot->Show(true);
+      pPlot->ZoomToLocus(sLocus, 2);
       if(!bShiftKeyDown)
       {
         pPlot->SetFocusPlot(nChannel - 1);
@@ -506,8 +506,8 @@ CFramePlot *mainFrame::OpenGraphicFile(
     }
     else
     {
-      pPlot->ZoomOut(false,2);
       pPlot->Show(true);
+      pPlot->ZoomOut(false, 2);
     }
     AddToMRU(sFileName);
   }

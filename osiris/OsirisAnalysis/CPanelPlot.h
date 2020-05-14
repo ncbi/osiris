@@ -393,7 +393,7 @@ public:
   }
   void SyncState(CPanelPlot *p, int nID);
   void RebuildCurves(bool bIgnoreViewRect = false);
-  wxRect2DDouble GetZoomOutRect(bool bAll = false);
+  wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0);
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
   void EditPeak(COARpeakAny *pPeak);
   wxRect2DDouble GetZoomLocus(const wxString &sLocus);
@@ -507,9 +507,9 @@ public:
     }
   }
 
-  void ZoomOut(bool bAll = false, unsigned int nDelay = 0)
+  void ZoomOut(bool bAll = false, unsigned int nDelay = 0, int nLabelHeight = 0)
   {
-    SetViewRect(GetZoomOutRect(bAll),false,nDelay);
+    SetViewRect(GetZoomOutRect(bAll, nLabelHeight),false,nDelay);
   }
   void BeginBatch()
   {
@@ -611,7 +611,8 @@ private:
   static void ExpandRect(wxRect2DDouble *p, double dBy = 0.05); 
   // expand height and width by  (1 + dBy + dBy)  
   // for 5% in each direction or 10% total,  dBy = 0.05
-  void ExtendLabelHeight(wxRect2DDouble *p);  // expand height to accommodate 8px labels
+  void ExtendLabelHeight(wxRect2DDouble *p, int nLabelHeight = 0);  
+      // expand height to accommodate labels
   int GetLabelHeightPixels()
   {
     return 16;

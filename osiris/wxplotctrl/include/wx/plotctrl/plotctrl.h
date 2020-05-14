@@ -257,6 +257,8 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
+
+
 //-----------------------------------------------------------------------------
 // wxPlotCtrl - window to display wxPlotCurves, public interface
 //
@@ -916,7 +918,12 @@ public:
     void BackupSettings(wxPlotCtrlBackup *pBackup);
     void RestoreSettings(wxPlotCtrlBackup *pBackup);
 protected:
-    void OnSize( wxSizeEvent& event );
+  void DrawInit(
+    const wxRect &boundingRect,
+    double dpi,
+    bool bForcePrintFont,
+    const wxPlotCtrlBackup &plotBackup);
+  void OnSize( wxSizeEvent& event );
 
     wxArrayPlotCurve  m_curves;         // all the curves
     wxPlotCurve*      m_activeCurve;    // currently active curve
@@ -1038,11 +1045,6 @@ protected:
     static wxString _FormatTickLabel(const wxString &sFormat, double d);
 
 private:
-    void _DrawInit(
-      const wxRect &boundingRect,
-      double dpi,
-      bool bForcePrintFont,
-      const wxPlotCtrlBackup &plotBackup);
     void Init();
     void _DoSize()
     {
@@ -1058,6 +1060,58 @@ private:
     DECLARE_ABSTRACT_CLASS(wxPlotCtrl)
     DECLARE_EVENT_TABLE()
 };
+
+//-----------------------------------------------------------------------------
+// wxPlotCtrlBackup
+//
+// notes:
+//    back up plot paraeters when creating a bitmap
+//
+//-----------------------------------------------------------------------------
+
+
+class wxPlotCtrlBackup
+{
+public:
+  wxPlotCtrlBackup(wxPlotCtrl *pPlot) :
+    m_pPlot(pPlot)
+  {
+    pPlot->BackupSettings(this);
+  }
+  virtual ~wxPlotCtrlBackup()
+  {
+    Restore();
+  }
+  void Restore()
+  {
+    // might want to restore before destroying
+    if (m_pPlot != NULL)
+    {
+      m_pPlot->RestoreSettings(this);
+      m_pPlot = NULL;
+    }
+  }
+  wxFont oldAxisFont;
+  wxFont oldAxisLabelFont;
+  wxFont oldPlotTitleFont;
+  wxFont oldKeyFont;
+
+  wxColour oldGridColour;
+  wxPoint2DDouble old_zoom;
+  wxRect2DDouble  old_view;
+  wxRect old_areaClientRect;
+
+  double oldCurveDrawerScale;
+  double oldDataCurveDrawerScale;
+  double oldMarkerDrawerScale;
+
+  int old_area_border_width;
+  int old_border;
+  int old_cursor_size;
+
+  wxPlotCtrl *m_pPlot;
+};
+
 
 //-----------------------------------------------------------------------------
 // wxPlotCtrlEvent

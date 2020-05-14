@@ -1576,19 +1576,81 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
   return bRtn;
 }
 
+
+class DelayZoomToLocus : public nwxTimerTaskCount
+{
+public:
+  // delay a call to CFramePlot::ZoomToLocus() by 'nDelay' timer intervals
+  // nwxTimerTaskCount is in ../nwx/nwxTimerReceiver.h, cpp
+  DelayZoomToLocus(CFramePlot *pPlot, const wxString &sLocus, unsigned int nDelay) :
+    nwxTimerTaskCount(nDelay),
+    m_sLocus(sLocus),
+    m_pFrame(pPlot)
+  {}
+  virtual ~DelayZoomToLocus() {}
+  virtual bool Run(wxTimerEvent &)
+  {
+    bool b = m_pFrame->IsShown();
+    if (b)
+    {
+      m_pFrame->ZoomToLocus(m_sLocus, 0);
+    }
+    return b;
+  }
+private:
+  const wxString m_sLocus;
+  CFramePlot *m_pFrame;
+};
+
+class DelayZoomOut : public nwxTimerTaskCount
+{
+public:
+  // delay a call to CFramePlot::ZoomOut() by 'nDelay' timer intervals
+  // nwxTimerTaskCount is in ../nwx/nwxTimerReceiver.h, cpp
+  DelayZoomOut(CFramePlot *pPlot, bool bAll, unsigned int nDelay) :
+    nwxTimerTaskCount(nDelay),
+    m_pFrame(pPlot),
+    m_bAll(bAll)
+  {}
+  virtual ~DelayZoomOut() {}
+  virtual bool Run(wxTimerEvent &)
+  {
+    bool b = m_pFrame->IsShown();
+    if (b)
+    {
+      m_pFrame->ZoomOut(m_bAll, 0);
+    }
+    return b;
+  }
+private:
+  CFramePlot *m_pFrame;
+  bool m_bAll;
+};
+
 void CFramePlot::ZoomOut(bool bAll,unsigned int nDelay )
 {
-  wxRect2DDouble r = GetZoomOutRect(bAll);
-  ZoomAll(r,nDelay);
+  if (nDelay)
+  {
+    AddTask(new DelayZoomOut(this, bAll, nDelay));
+  }
+  else
+  {
+    wxRect2DDouble r = GetZoomOutRect(bAll);
+    ZoomAll(r, nDelay);
+  }
 }
 
 void CFramePlot::ZoomToLocus(const wxString &sLocus,unsigned int nDelay )
 {
-  if(!m_setPlots.size()) {} // do nothing
+  if (nDelay)
+  {
+    AddTask(new DelayZoomToLocus(this, sLocus, nDelay));
+  }
+  else if(!m_setPlots.size()) {} // do nothing
   else if(sLocus.IsEmpty())
   {
     // no locus specified
-    ZoomOut(false,0);
+    ZoomOut(false, nDelay);
   }
   else
   {

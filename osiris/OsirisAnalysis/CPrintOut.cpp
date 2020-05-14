@@ -319,7 +319,15 @@ void CPrintOut::_DoPrintPreview(
 
 // end static functions
 
-CPrintOut::~CPrintOut() { ; }
+CPrintOut::~CPrintOut() 
+{
+#ifdef TMP_DEBUG
+  if (m_nSetupPageCount > 1)
+  {
+    mainApp::LogMessageV(wxT("**** CPrintOut setup count = %d"), m_nSetupPageCount);
+  }
+#endif
+}
 
 void CPrintOut::_setupPageBitmap(wxDC *pdc)
 {
@@ -327,6 +335,7 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
   if (res != m_resInput)
   {
     // compute everything
+    m_nSetupPageCount++;
     wxSize szPPI = res.m_ppi;
     wxRect rectFit = res.m_logicalPage;
     double dPPIscale = 1.0, dScalePixel = 1.0;

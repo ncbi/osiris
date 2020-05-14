@@ -95,6 +95,9 @@ class CPrintOut : public wxPrintout
 public:
   CPrintOut(bool bPreview = false) :
     wxPrintout(wxT("OSIRIS Plot")),
+#ifdef TMP_DEBUG
+    m_nSetupPageCount(0),
+#endif
     m_bPreview(bPreview)
   {}
 
@@ -190,6 +193,9 @@ protected:
   };
 
   _resOutput m_resOutput;
+#ifdef TMP_DEBUG
+  int m_nSetupPageCount;
+#endif
   bool m_bPreview;
 };
 

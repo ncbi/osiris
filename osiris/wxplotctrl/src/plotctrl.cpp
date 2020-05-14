@@ -429,52 +429,6 @@ void wxPlotCtrlAxis::CreateBitmap()
     mdc.SelectObject( wxNullBitmap );
 }
 
-//-----------------------------------------------------------------------------
-// wxPlotCtrlBackup
-//-----------------------------------------------------------------------------
-
-class wxPlotCtrlBackup
-{
-public:
-  wxPlotCtrlBackup(wxPlotCtrl *pPlot) :
-    m_pPlot(pPlot)
-  {
-    pPlot->BackupSettings(this);
-  }
-  virtual ~wxPlotCtrlBackup()
-  {
-    Restore();
-  }
-  void Restore()
-  {
-    // might want to restore before destroying
-    if (m_pPlot != NULL)
-    {
-      m_pPlot->RestoreSettings(this);
-      m_pPlot = NULL;
-    }
-  }
-  wxFont oldAxisFont;
-  wxFont oldAxisLabelFont;
-  wxFont oldPlotTitleFont;
-  wxFont oldKeyFont;
-
-  wxColour oldGridColour;
-  wxPoint2DDouble old_zoom;
-  wxRect2DDouble  old_view;
-  wxRect old_areaClientRect;
-
-  double oldCurveDrawerScale;
-  double oldDataCurveDrawerScale;
-  double oldMarkerDrawerScale;
-
-  int old_area_border_width;
-  int old_border;
-  int old_cursor_size;
-
-  wxPlotCtrl *m_pPlot;
-};
-
 
 //-----------------------------------------------------------------------------
 // wxPlotCtrl
@@ -2420,21 +2374,27 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     m_clientRect = wxRect(0, 0, size.x-sb_width, size.y-sb_width);
 
     // title and label positions, add padding here
-    wxRect titleRect  = m_show_title  ? wxRect(m_titleRect).Inflate(m_border)  : wxRect(0,0,1,1);
-    wxRect xLabelRect = m_show_xlabel ? wxRect(m_xLabelRect).Inflate(m_border) : wxRect(0,0,1,1);
-    wxRect yLabelRect = m_show_ylabel ? wxRect(m_yLabelRect).Inflate(m_border) : wxRect(0,0,1,1);
+    wxRect titleRect  = m_show_title  
+      ? wxRect(m_titleRect).Inflate(m_border)
+      : wxRect(0,0,boundingRect.GetWidth(),m_border);
+    if (m_show_title) titleRect.height -= m_border;
+    wxRect xLabelRect = m_show_xlabel
+      ? wxRect(m_xLabelRect).Inflate(m_border)
+      : wxRect(0,0, boundingRect.GetWidth(),m_border);
+    wxRect yLabelRect = m_show_ylabel
+      ? wxRect(m_yLabelRect).Inflate(m_border)
+      : wxRect(0,0, m_border, boundingRect.GetHeight());
 
     // this is the border around the area, it lets you see about 1 digit extra on axis
     int area_border = m_axisFontSize.y/2;
 
     // use the area_border between top of y-axis and area as bottom border of title
-    if (m_show_title) titleRect.height -= m_border;
 
     int yaxis_width  = GetShowYAxis() ? _GetYAxisTextWidth() : 1;
-    int xaxis_height = GetShowXAxis() ? m_axisFontSize.y    : area_border;
+    int xaxis_height = GetShowXAxis() ? m_axisFontSize.y    : 1;
 
-    int area_width  = m_clientRect.width  - yLabelRect.GetRight() - yaxis_width - 2*area_border;
-    int area_height = m_clientRect.height - titleRect.GetBottom() - xaxis_height - xLabelRect.height - area_border;
+    int area_width  = m_clientRect.width  - yLabelRect.GetRight() - yaxis_width - (m_border << 1);
+    int area_height = m_clientRect.height - titleRect.GetBottom() - xaxis_height - xLabelRect.height - m_border;
 
     m_yAxisRect = wxRect(yLabelRect.GetRight(),
                          titleRect.GetBottom(),
@@ -2442,12 +2402,12 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
                          area_height + 2*area_border);
 
     m_xAxisRect = wxRect(m_yAxisRect.GetRight(),
-                         m_yAxisRect.GetBottom() - area_border + 1,
-                         area_width + area_border,
+                         m_yAxisRect.GetTop() + area_height + m_border,
+                         area_width + m_border,
                          xaxis_height);
 
-    m_areaRect = wxRect(m_yAxisRect.GetRight() + area_border,
-                        m_yAxisRect.GetTop() + area_border,
+    m_areaRect = wxRect(m_yAxisRect.GetRight() + m_border,
+                        m_yAxisRect.GetTop() + m_border,
                         area_width,
                         area_height);
 
@@ -2636,7 +2596,8 @@ void wxPlotCtrl::DrawAreaWindow( wxDC *dc, const wxRect &rect )
     DrawTickMarks( dc, refreshRect );
     DrawMarkers( dc, refreshRect );
 
-    dc->DestroyClippingRegion();
+    // in printouts, the curve sometimes escapes the rectangle
+    //dc->DestroyClippingRegion();
 
     int i;
     wxPlotCurve *curve;
@@ -2982,12 +2943,18 @@ void wxPlotCtrl::RestoreSettings(wxPlotCtrlBackup *pBackup)
 
   SetGridColour(pBackup->oldGridColour);
 }
-void wxPlotCtrl::_DrawInit(
+void wxPlotCtrl::DrawInit(
   const wxRect &boundingRect,
   double dpi,
   bool bForcePrintFont,
   const wxPlotCtrlBackup &plotBackup)
 {
+
+  int nHold_CursorSize = m_cursorMarker.GetSize().x;
+  wxPoint2DDouble ptHold_zoom = m_zoom;
+  wxRect2DDouble rectHold_view = m_viewRect;
+  wxRect rectHold_client = m_areaClientRect;
+
   bool bPrinting = bForcePrintFont || (dpi >= 150);
   //set font scale so 1pt = 1pixel at 72dpi
   double fontScale = (double)dpi / (bPrinting ? 144.0 : 72.0);
@@ -3009,7 +2976,7 @@ void wxPlotCtrl::_DrawInit(
     m_border = RINT(dpi * (1.0 / 36.0));  // 2 pixels for 72 dpi, otherwise proportional
   }
   //resize the curve cursor
-  int sz = int(plotBackup.old_cursor_size * penScale);
+  int sz = int(nHold_CursorSize * penScale);
   m_cursorMarker.SetSize(wxSize(sz, sz));
 
   //resize the fonts
@@ -3030,11 +2997,17 @@ void wxPlotCtrl::_DrawInit(
   SetKeyFont(keyFont);
 
   //reload the original zoom and view rect in case it was changed by any of the font changes
-  m_zoom = plotBackup.old_zoom;
-  m_viewRect = plotBackup.old_view;
+  m_zoom = ptHold_zoom;
+  m_viewRect = rectHold_view;
 
   //resize all window component rects to the bounding rect
   DoSize(boundingRect, false);
+
+  //reload the original zoom and view rect in case it was changed by any of the font changes
+  //  mvoed from wxPlotCtrl::DrawWholePlot
+  m_zoom = wxPoint2DDouble(
+    ptHold_zoom.m_x * double(m_areaClientRect.width) / rectHold_client.width,
+    plotBackup.old_zoom.m_y * double(m_areaClientRect.height) / rectHold_client.height);
 
 #ifdef __WXDEBUG__
   puts(
@@ -3047,7 +3020,7 @@ int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi,
   wxCHECK_MSG(dc, 0, wxT("invalid dc"));
   wxCHECK_MSG(dpi > 0, 0, wxT("Invalid dpi for plot drawing"));
   wxPlotCtrlBackup plotBackup(this);
-  _DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
   int nHeight = m_border;
   if (GetShowXAxisLabel() && !m_xLabelRect.IsEmpty())
   {
@@ -3093,7 +3066,7 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     wxCHECK_RET(dc, wxT("invalid dc"));
     wxCHECK_RET(dpi > 0, wxT("Invalid dpi for plot drawing"));
     wxPlotCtrlBackup plotBackup(this);
-    _DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+    DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
 
     //
     //  DJH - 2/24/2009  added parameter to determine whether AutoCalcTicks()
@@ -3101,10 +3074,6 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     //
     if(bAutoCalcTicks) { AutoCalcTicks(); }
 
-    //reload the original zoom and view rect in case it was changed by any of the font changes
-    m_zoom = wxPoint2DDouble(
-      plotBackup.old_zoom.m_x * double(m_areaClientRect.width)/ plotBackup.old_areaClientRect.width,
-      plotBackup.old_zoom.m_y * double(m_areaClientRect.height)/ plotBackup.old_areaClientRect.height);
 
 #ifdef TMP_DEBUG
     PRINT_WXRECT(wxT("Whole plot"), boundingRect);
@@ -3131,19 +3100,19 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     dc->SetDeviceOrigin(boundingRect.x, boundingRect.y);
     DrawPlotCtrl(dc);
 
+#if 0
+    //  DJH 2/19/2009 - removed red rectangles, used for debugging
+
+    dc->SetDeviceOrigin(boundingRect.x, boundingRect.y);
     dc->SetBrush(*wxTRANSPARENT_BRUSH);
     dc->SetPen(*wxRED_PEN);
-    dc->SetDeviceOrigin(boundingRect.x, boundingRect.y);
-
-#if 0
-    //  DJH 2/19/2009 - removed red rectangles, 
-    //  what was the original author thinking
-
     dc->DrawRectangle(m_xAxisRect);
     dc->DrawRectangle(m_yAxisRect);
     dc->DrawRectangle(m_areaRect);
-    dc->DrawRectangle(wxRect(m_xLabelRect).Inflate(m_border));
-    dc->DrawRectangle(wxRect(m_yLabelRect).Inflate(m_border));
+    wxRect xLabelRect = m_show_xlabel ? wxRect(m_xLabelRect).Inflate(m_border) : wxRect(0, 0, 1, 1);
+    wxRect yLabelRect = m_show_ylabel ? wxRect(m_yLabelRect).Inflate(m_border) : wxRect(0, 0, 1, 1);
+    dc->DrawRectangle(xLabelRect);
+    dc->DrawRectangle(yLabelRect);
     if(m_show_title) dc->DrawRectangle(wxRect(m_titleRect).Inflate(m_border));
 #endif
 
