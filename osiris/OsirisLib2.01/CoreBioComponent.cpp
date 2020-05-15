@@ -50,6 +50,7 @@
 #include "DirectoryManager.h"
 #include "LeastMedianOfSquares.h"
 #include "STRLCAnalysis.h"
+#include "ModPairs.h"
 
 
 Boolean CoreBioComponent::SearchByName = TRUE;
@@ -166,7 +167,7 @@ bool PullupPair :: IsRawDataPullup () const {
 
 CoreBioComponent :: CoreBioComponent () : SmartMessagingObject (), mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), 
 mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), 
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mSampleMods (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -175,7 +176,7 @@ mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimu
 CoreBioComponent :: CoreBioComponent (const RGString& name) : SmartMessagingObject (), mName (name), 
 mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), mLSData (NULL), mLaneStandard (NULL), 
 mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mSampleMods (NULL) {
 
 	InitializeSmartMessages ();
 	ErrorString << "File named:  name...\n";
@@ -186,7 +187,7 @@ CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component) : Smart
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
 mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC), mSampleMods (NULL) {
 
 	InitializeSmartMessages (component);
 }
@@ -196,7 +197,7 @@ CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component, Coordin
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
 mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC), mSampleMods (NULL) {
 
 	mDataChannels = new ChannelData* [mNumberOfChannels + 1];
 	mPullupTestedMatrix = new bool* [mNumberOfChannels + 1];
@@ -1986,6 +1987,15 @@ void CoreBioComponent :: ReportGridTableRowWithLinks (RGTextOutput& text) {
 	text << "\t" << mPositiveControlName;
 	text << "\n";
 	text.ResetOutputLevel ();
+}
+
+
+void CoreBioComponent::InitializeAllSampleModifications () {
+
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		mDataChannels [i]->InitializeModsData (mSampleMods);
 }
 
 

@@ -56,6 +56,7 @@ class RGString;
 class IndividualGenotype;
 class SmartMessageReporter;
 class NormalizationInterval;
+class SampleModList;
 
 
 class RaisedBaseLineData {
@@ -497,6 +498,9 @@ public:
 	virtual int TestSignalsForRaisedBaseline (double left, double report);
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);
 
+	virtual void InitializeModsData (SampleModList* sml);
+	virtual bool TestPeakAgainstModsData (const DataSignal* ds) const;
+
 	virtual void InitializeMessageData ();
 
 	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
@@ -609,6 +613,7 @@ protected:
 	double mMaxYLinkedLocusRatio;
 
 	double mMaxLaserInScalePeak;
+	bool* mModsData;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

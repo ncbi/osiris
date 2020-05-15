@@ -1210,6 +1210,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double minRFU2 = 0.9 * minRFU;
 	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
 	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+	smPeakIgnored peakIgnored;
 
 	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
@@ -1308,7 +1309,14 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 		else if (nextSignal->Peak () > 0.0) {  // nextSignal is acceptable for now, so add it to the CurveList
 
-			PreliminaryCurveList.Prepend (nextSignal);
+			if (!IsNormalizationPass && TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+			}
+
+			else
+				PreliminaryCurveList.Prepend (nextSignal);
+
 			CompleteCurveList.Prepend (nextSignal);
 //			i++;
 		}
@@ -1362,7 +1370,14 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	
 	while (nextSignal = (DataSignal*) outOfOrderList.GetFirst ()) {
 
-		PreliminaryCurveList.RemoveReference (nextSignal);
+		if (!IsNormalizationPass && TestPeakAgainstModsData (nextSignal)) {
+			//set artifact
+			nextSignal->SetMessageValue (peakIgnored, true);
+		}
+
+		else
+			PreliminaryCurveList.Prepend (nextSignal);
+
 		CompleteCurveList.RemoveReference (nextSignal);
 		delete nextSignal;
 	}
@@ -1433,7 +1448,14 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Insert (nextSignal);
+			if (!IsNormalizationPass && TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+			}
+
+			else
+				PreliminaryCurveList.Prepend (nextSignal);
+
 			CompleteCurveList.Insert (nextSignal);
 		}
 	}

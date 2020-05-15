@@ -284,13 +284,14 @@ SampleModList* OverallModList::GetSampleModList (const RGString& name) {
 	list<SampleModList*>::iterator it;
 	SampleModList* next;
 	RGString currentName;
+	size_t pos = 0;
 
 	for (it=mSampleList.begin (); it!=mSampleList.end (); it++) {
 
 		next = *it;
 		currentName = next->GetName ();
 
-		if (name == currentName)
+		if (name.FindSubstringCaseIndependent (currentName, pos))
 			return next;
 	}
 

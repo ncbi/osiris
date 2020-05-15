@@ -2914,6 +2914,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 	double minRFU2 = 0.9 * minRFU;
 	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
 	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+	smPeakIgnored peakIgnored;
 
 	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
@@ -3005,7 +3006,14 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 		else if (nextSignal->Peak () > 0.0) {  // nextSignal is acceptable for now, so add it to the CurveList
 
-			PreliminaryCurveList.Prepend (nextSignal);
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+			}
+
+			else
+				PreliminaryCurveList.Prepend (nextSignal);
+
 			CompleteCurveList.Prepend (nextSignal);
 //			i++;
 		}
@@ -3115,7 +3123,14 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Insert (nextSignal);
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+			}
+
+			else
+				PreliminaryCurveList.Prepend (nextSignal);
+
 			CompleteCurveList.Insert (nextSignal);
 		}
 	}
