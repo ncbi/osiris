@@ -1161,14 +1161,14 @@ int ChannelData :: TestFitCriteriaSM (DataSignal* signal) {
 }
 
 
-int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
+int ChannelData::FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& ExcelText, OsirisMsg& msg, Boolean print) {
 
 	// This code should be moved to STRChannelData...it's not generic enough for ChannelData
 
 	//
 	//  This is sample stage 1
 	//
-	
+
 	STRTracePrequalification trace;
 	DataSignal* nextSignal;
 	double fit;
@@ -1309,16 +1309,9 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 		else if (nextSignal->Peak () > 0.0) {  // nextSignal is acceptable for now, so add it to the CurveList
 
-			if (!IsNormalizationPass && TestPeakAgainstModsData (nextSignal)) {
-				//set artifact
-				nextSignal->SetMessageValue (peakIgnored, true);
-			}
-
-			else
-				PreliminaryCurveList.Prepend (nextSignal);
-
+			PreliminaryCurveList.Prepend (nextSignal);
 			CompleteCurveList.Prepend (nextSignal);
-//			i++;
+			//			i++;
 		}
 
 		else
@@ -1341,7 +1334,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	double numberOfSamples = (double)mData->GetNumberOfSamples ();
 	int position = 0;
 
-	while (nextSignal = (DataSignal*) itt ()) {
+	while (nextSignal = (DataSignal*)itt ()) {
 
 		lineFit = mData->TestConstantCharacteristicRetry (nextSignal, constantHeight, leftEndPoint, rightEndPoint);
 
@@ -1367,17 +1360,10 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			continue;
 		}
 	}
-	
-	while (nextSignal = (DataSignal*) outOfOrderList.GetFirst ()) {
 
-		if (!IsNormalizationPass && TestPeakAgainstModsData (nextSignal)) {
-			//set artifact
-			nextSignal->SetMessageValue (peakIgnored, true);
-		}
+	while (nextSignal = (DataSignal*)outOfOrderList.GetFirst ()) {
 
-		else
-			PreliminaryCurveList.Prepend (nextSignal);
-
+		PreliminaryCurveList.Prepend (nextSignal);
 		CompleteCurveList.RemoveReference (nextSignal);
 		delete nextSignal;
 	}
@@ -1393,7 +1379,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 		DataSignal::SetNumberOfIntervalsForConcaveDownAlgorithm (GetThreshold (concaveDownAcceptanceThreshold));
 
-		while (nextSignal = (DataSignal*) itt ()) {
+		while (nextSignal = (DataSignal*)itt ()) {
 
 			it ();
 
@@ -1414,8 +1400,8 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 			if (shoulderSignal != NULL) {
 
-				int left = (int) floor (shoulderSignal->LeftEndPoint () + 0.5);
-				int right = (int) floor (shoulderSignal->RightEndPoint () + 0.5);
+				int left = (int)floor (shoulderSignal->LeftEndPoint () + 0.5);
+				int right = (int)floor (shoulderSignal->RightEndPoint () + 0.5);
 				double mean = shoulderSignal->GetMean ();
 
 				lineFit = mData->InnerProductWithConstantFunction (left, right, constantHeight);
@@ -1446,25 +1432,18 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 			previousSignal = nextSignal;
 		}
 
-		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
+		while (nextSignal = (DataSignal*)shoulderSignals.GetFirst ()) {
 
-			if (!IsNormalizationPass && TestPeakAgainstModsData (nextSignal)) {
-				//set artifact
-				nextSignal->SetMessageValue (peakIgnored, true);
-			}
-
-			else
-				PreliminaryCurveList.Prepend (nextSignal);
-
+			PreliminaryCurveList.Prepend (nextSignal);
 			CompleteCurveList.Insert (nextSignal);
 		}
 	}
 
 	it.Reset ();
 
-	while (nextSignal = (DataSignal*) it ()) {
+	while (nextSignal = (DataSignal*)it ()) {
 
-//		TestResult = mTestPeak->TestSM (nextSignal, minRFU, maxRFU);
+		//		TestResult = mTestPeak->TestSM (nextSignal, minRFU, maxRFU);
 		TestResult = mTestPeak->TestSM (nextSignal, detectionRFU, minRFU, maxRFU);
 
 		if (TestResult < 0) {
@@ -1473,7 +1452,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 			if (TestResult != -20) {
 
-//				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				//				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
 				nextSignal->ClearSmartNoticeObjects ();
 			}
 		}
@@ -1484,7 +1463,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	prevSignal = (DataSignal*)PreliminaryCurveList.GetFirst ();
 	double minDistance = ChannelData::GetMinimumDistanceBetweenPeaks ();
 
-	while (nextSignal = (DataSignal*) PreliminaryCurveList.GetFirst ()) {
+	while (nextSignal = (DataSignal*)PreliminaryCurveList.GetFirst ()) {
 
 		if (prevSignal != NULL) {
 
@@ -1497,7 +1476,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 
 					// keep prevSignal and "lose" nextSignal
 					CompleteCurveList.RemoveReference (nextSignal);
-		//			ArtifactList.RemoveReference (nextSignal);
+					//			ArtifactList.RemoveReference (nextSignal);
 					delete nextSignal;
 					continue;
 				}
@@ -1505,7 +1484,7 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 				else {
 
 					CompleteCurveList.RemoveReference (prevSignal);
-		//			ArtifactList.RemoveReference (prevSignal);
+					//			ArtifactList.RemoveReference (prevSignal);
 					delete prevSignal;
 					prevSignal = nextSignal;
 					continue;
@@ -1523,12 +1502,12 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 	if (prevSignal != NULL)
 		tempList.Append (prevSignal);
 
-	while (nextSignal = (DataSignal*) tempList.GetFirst ())
+	while (nextSignal = (DataSignal*)tempList.GetFirst ())
 		PreliminaryCurveList.Append (nextSignal);
 
 	it.Reset ();
 
-	while (nextSignal = (DataSignal*) it ()) {
+	while (nextSignal = (DataSignal*)it ()) {
 
 		if (nextSignal->GetWidth () < 1.1) {
 
@@ -1543,11 +1522,31 @@ int ChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Ex
 		}
 	}
 
-	while (nextSignal = (DataSignal*) tempList.GetFirst ()) {
+	while (nextSignal = (DataSignal*)tempList.GetFirst ()) {
 
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
+
+	bool modsTest = (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());
+
+	if (modsTest) {
+
+		cout << "Performing mods tests on all peaks for channel " << mChannel << "...\n";
+		it.Reset ();
+
+		while (nextSignal = (DataSignal*)it ()) {
+
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+				it.RemoveCurrentItem ();
+				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+			}
+		}
+	}
+
 
 	delete signature;
 //	ProjectNeighboringSignalsAndTest (1.0, 1.0);

@@ -47,6 +47,9 @@ public:
 	~ModPair () {}
 	bool ReadModPair (const RGString& inString);
 	void SetModRegion (bool* modArray, int size);
+	void PrintPair () {
+		cout << "Low = " << mLow << " and High = " << mHigh << "\n";
+	}
 
 protected:
 	int mLow;
@@ -64,6 +67,7 @@ public:
 	void AddModPair (const ModPair* mp);
 	void SetModRegions (bool* modArray, int size);
 	bool ReadModPair (const RGString& inString);
+	void PrintList ();
 
 protected:
 	list<ModPair*> mChannelPairs;
@@ -85,6 +89,7 @@ public:
 
 	//Need read sample list function
 	RGString ReadSampleModList (const RGString& sampleString);
+	void PrintList ();
 
 protected:
 	RGString mSampleName;
@@ -106,6 +111,7 @@ public:
 	//Need read overall list function
 	RGString ReadNextSampleData (const RGString& sampleData, RGString& sampleName);
 	void ReadOverallModList (const RGString& sampleData);
+	void PrintList ();
 
 protected:
 	list<SampleModList*> mSampleList;

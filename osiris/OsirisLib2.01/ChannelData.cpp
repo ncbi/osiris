@@ -3714,7 +3714,10 @@ void ChannelData :: ReportGridLocusRowWithLinks (RGTextOutput& text) {
 
 void ChannelData::InitializeModsData (SampleModList* sml) {
 
-	int N = GetNumberOfSamples ();
+	if (mData == NULL)
+		return;
+
+	int N = mData->GetNumberOfSamples ();
 	mModsData = new bool [N];
 	int i;
 
@@ -3727,6 +3730,7 @@ void ChannelData::InitializeModsData (SampleModList* sml) {
 
 		if (cmp != NULL) {
 
+			cout << "Setting mod regions for channel " << mChannel << " for number of samples = " << N << "\n";
 			cmp->SetModRegions (mModsData, N);
 		}
 	}
@@ -3735,12 +3739,32 @@ void ChannelData::InitializeModsData (SampleModList* sml) {
 
 bool ChannelData::TestPeakAgainstModsData (const DataSignal* ds) const {
 
-	if (mModsData == NULL)
+	if (mModsData == NULL) {
+
+		cout << "Mods data is null\n";
 		return false;
+	}
 
 	double mean = ds->GetMean ();
 	int low = (int)floor (mean);
 	int high = (int)ceil (mean);
+
+	if ((mean < 1143.0) && (mean > 1142.0)) {
+
+		cout << "Peak with mean = " << mean << " has low = " << low << " and high = " << high;
+
+		if (mModsData [low])
+			cout << " with low index true";
+
+		else
+			cout << " with low index false";
+
+		if (mModsData [high])
+			cout << " and high index true\n";
+
+		else
+			cout << " and high index false\n";
+	}
 
 	if (!mModsData [low] && !mModsData [high])
 		return false;

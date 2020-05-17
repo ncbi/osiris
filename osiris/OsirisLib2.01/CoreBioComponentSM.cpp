@@ -1295,6 +1295,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		mDataChannels [i]->SetFsaChannel (fsaChannelMap [i]);
 	}
 
+//	InitializeAllSampleModifications ();
 	mLSData = mDataChannels [mLaneStandardChannel];
 	mLSData->SetMessageValue (channelIsILS, true);
 	mMarkerSet->ResetLocusList ();

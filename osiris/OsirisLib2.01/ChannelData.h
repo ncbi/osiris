@@ -424,6 +424,7 @@ public:
 	virtual void ChannelIsPositiveControlSM (bool isPosControl);
 	virtual void ChannelIsNegativeControlSM (bool isNegControl);
 	virtual void MakeNonCoreLadderArtifactsNoncritical () {}
+	virtual bool ChannelIsILS () const { return false; }
 
 	virtual void MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, GenotypesForAMarkerSet* pGenotypes);
 	virtual int SetDataSM (SampleData& fileData, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);

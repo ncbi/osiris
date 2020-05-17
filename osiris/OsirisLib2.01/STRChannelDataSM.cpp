@@ -3006,14 +3006,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 		else if (nextSignal->Peak () > 0.0) {  // nextSignal is acceptable for now, so add it to the CurveList
 
-			if (TestPeakAgainstModsData (nextSignal)) {
-				//set artifact
-				nextSignal->SetMessageValue (peakIgnored, true);
-			}
-
-			else
-				PreliminaryCurveList.Prepend (nextSignal);
-
+			PreliminaryCurveList.Prepend (nextSignal);
 			CompleteCurveList.Prepend (nextSignal);
 //			i++;
 		}
@@ -3123,14 +3116,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			if (TestPeakAgainstModsData (nextSignal)) {
-				//set artifact
-				nextSignal->SetMessageValue (peakIgnored, true);
-			}
-
-			else
-				PreliminaryCurveList.Prepend (nextSignal);
-
+			PreliminaryCurveList.Prepend (nextSignal);
 			CompleteCurveList.Insert (nextSignal);
 		}
 	}
@@ -3221,6 +3207,25 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 		
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	bool modsTest = (ChannelIsILS () || !IsNormalizationPass);
+
+	if (modsTest) {
+
+		cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+		it.Reset ();
+
+		while (nextSignal = (DataSignal*)it ()) {
+
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+				it.RemoveCurrentItem ();
+				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+			}
+		}
 	}
 
 	delete signature;
@@ -3488,6 +3493,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 	double minRFU2 = 0.9 * minRFU;
 	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
 	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+	smPeakIgnored peakIgnored;
 
 	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
@@ -3782,6 +3788,29 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	bool modsTest = (ChannelIsILS () || !IsNormalizationPass);
+
+	if (modsTest) {
+
+		it.Reset ();
+
+		while (nextSignal = (DataSignal*) it ()) {
+
+			cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+				tempList.Append (nextSignal);
+				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+			}
+		}
+
+		while (nextSignal = (DataSignal*)tempList.GetFirst ())
+			PreliminaryCurveList.RemoveReference (nextSignal);
 	}
 
 	delete signature;

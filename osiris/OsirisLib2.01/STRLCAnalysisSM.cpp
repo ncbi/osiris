@@ -1109,6 +1109,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		modsFileString.ReadTextFile (modsFile);
 		oml = new OverallModList (expectedNumberOfChannels);
 		oml->ReadOverallModList (modsFileString);
+		cout << "Read mods file containing:  \n";
+		cout << modsFileString << endl;
+		oml->PrintList ();
 	}
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
@@ -1122,6 +1125,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		else
 			sml = NULL;
+
+		if (sml != NULL) {
+
+			cout << "Found mods file for ladder named " << LadderFileName << endl;
+			sml->PrintList ();
+		}
 
 		if (WorkingFile != NULL) {
 
@@ -1222,6 +1231,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		ladderBioComponent = new STRLadderCoreBioComponent (data->GetName ());
 		ladderBioComponent->SetSampleName (data->GetSampleName ());
 		ladderBioComponent->SetFileName (LadderFileName);
+		ladderBioComponent->SetSampleModifications (sml);
 		commSM.SMOStack [1] = (SmartMessagingObject*) ladderBioComponent;
 		ladderBioComponent->SetMessageValue (sampleIsLadder, true);
 
