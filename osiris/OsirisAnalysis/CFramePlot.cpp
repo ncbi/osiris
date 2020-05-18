@@ -2155,6 +2155,7 @@ wxBitmap *CFramePlot::CreateBitmap(
 {
   wxSize sz(nWidth, nHeight);
   wxRect rect(sz);
+  double dLabelExtension;
   double dDPI = (double)nDPI;
   wxBitmap *pBitmap = new wxBitmap(sz, 32);
   wxMemoryDC dc(*pBitmap);
@@ -2169,6 +2170,7 @@ wxBitmap *CFramePlot::CreateBitmap(
   int nXLabelHeight = pPanelPlot->DrawXAxisLabelToDC(
     &dc, rect, dDPI, bForcePrintFont);
   int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(&dc, sTitle, nWidth, nHeight, dDPI);
+  int nLabelHeight = pPanelPlot->GetPlotCtrl()->GetTextHeight(wxT("-123456789.0"), &dc, rect, dDPI, bForcePrintFont);
 
   int nPlotAreaHeight = nHeight - nXLabelHeight - nTitleOffset;
   int nPlotCount = (int)m_setPlots.size();
@@ -2213,7 +2215,9 @@ wxBitmap *CFramePlot::CreateBitmap(
       dcPlot.DestroyClippingRegion();
       dcPlot.Clear();
       pPlot = *itr;
+      dLabelExtension = pPlot->GetLabelHeightExtension();
       pPanelPlot->CopySettings(*pPlot, 0);
+      pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
       pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
       nY = ((int)pPlot->GetPlotNumber() * nPlotHeight) + nTitleOffset;
       dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);

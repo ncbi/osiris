@@ -682,11 +682,12 @@ void CPanelPlot::SetOARfile(COARfile *pFile)
 }
 
 wxString CPanelPlot::_AlleleLabel(
-  const IOARpeak *pPeak, vector<unsigned int> &anLabelTypes)
+  const IOARpeak *pPeak, vector<unsigned int> &anLabelTypes, bool bILS)
 {
   wxString sLabel;
   wxString sRtn;
   unsigned int nType;
+  bool bAlleleDone = false;
   vector<unsigned int>::iterator itr;
   for(itr = anLabelTypes.begin(); itr != anLabelTypes.end(); ++itr)
   {
@@ -694,14 +695,28 @@ wxString CPanelPlot::_AlleleLabel(
     switch(nType)
     {
     case LABEL_ALLELE:
-      sLabel = COARpeak::FormatAlleleName(
-        *pPeak,
-        COARlocus::IsAmel(pPeak->GetLocusName()),
-        true);
+      if (!bAlleleDone)
+      {
+        sLabel = COARpeak::FormatAlleleName(
+          *pPeak,
+          COARlocus::IsAmel(pPeak->GetLocusName()),
+          true);
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     case LABEL_BPS:
-      sLabel = nwxString::FormatNumber(
-        nwxRound::Round(pPeak->GetBPS()) );
+      if (!bAlleleDone)
+      {
+        sLabel = nwxString::FormatNumber(
+          nwxRound::Round(pPeak->GetBPS()));
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     case LABEL_RFU:
       sLabel = nwxString::FormatNumber(
@@ -715,8 +730,15 @@ wxString CPanelPlot::_AlleleLabel(
         pPeak->GetPeakArea());
       break;
     case LABEL_ILS_BPS:
-      sLabel = nwxString::FormatNumber(
-        pPeak->GetMeanBPS());
+      if (!bAlleleDone)
+      {
+        sLabel = nwxString::FormatNumber(
+          pPeak->GetMeanBPS());
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     default:
       {
@@ -733,6 +755,7 @@ wxString CPanelPlot::_AlleleLabel(
         sRtn.Append(wchar_t('\n'));
       }
       sRtn.Append(sLabel);
+      sLabel.Empty();
     }
   }
   return sRtn;;
@@ -855,10 +878,11 @@ void CPanelPlot::_BuildPeakLabels(
     ? 0
     : pp->size();
   size_t j;
+  bool bILS = (nChannel == m_pData->GetILSChannel());
   for(j = 0; j < n; j++)
   {
     const CSamplePeak *pPeak = pp->at(j);
-    sLabel = _AlleleLabel(pPeak,anLabelTypes);
+    sLabel = _AlleleLabel(pPeak,anLabelTypes, bILS);
     sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
     bool bBPS = XBPSValue();
     double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
@@ -1084,6 +1108,7 @@ void CPanelPlot::_BuildOARlabels()
       nChannel <= nChannelCount;
       nChannel++)
     {
+      bool bILS = m_pData->GetILSChannel() == nChannel;
       if( !m_pMenu->ChannelValue(nChannel) ) {;}
       else if ( (pChannel = m_pOARfile->GetChannelByNr(nChannel)) == NULL )
       {
@@ -1111,7 +1136,7 @@ void CPanelPlot::_BuildOARlabels()
           m_vPeakAny.push_back(pPeak); // hold in array, delete later
           if(bLabels && pPeak->IsAllele())
           {
-            sLabel = _AlleleLabel(pPeak,anLabelTypes);
+            sLabel = _AlleleLabel(pPeak,anLabelTypes, bILS);
             sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
             wxStockCursor cur =
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
@@ -1639,17 +1664,39 @@ void CPanelPlot::ExpandRect(wxRect2DDouble *p,double dBy)
   p->m_x -= d;
   p->m_width += (d + d);
 }
-void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p, int nLabelHeight)
+void CPanelPlot::AdjustLabelHeightExtension(double dCurrentExtension, const wxRect &rect, int nLabelHeight)
+{
+  // when creating a bitmap, the height adjustment for the label height may need
+  // to be adjusted, after copying settings from a window plot
+  m_pPlotCtrl->DoSize(rect, false); 
+  double dNeededExtension = GetLabelHeightExtension(nLabelHeight);
+  if (dNeededExtension > dCurrentExtension)
+  {
+    wxRect2DDouble r = GetViewRect();
+    double d = (dNeededExtension / dCurrentExtension);
+    r.m_height *= d;
+    SetViewRect(r, false, 0);
+  }
+}
+double CPanelPlot::GetLabelHeightExtension(int nLabelHeight)
 {
   double dExtend = 1.0;
   wxRect rect = m_pPlotCtrl->GetPlotAreaRect();
   vector<unsigned int> an;
-  size_t nLabelRow = this->GetLabelTypes(&an);
+  size_t nLabelRow = GetLabelTypes(&an);
   int LABEL_HEIGHT = (nLabelHeight > 0) ? nLabelHeight : this->GetLabelHeightPixels();
   int nLabelPixels = nLabelRow * LABEL_HEIGHT;
-  if(rect.height > nLabelPixels)
+  if (rect.height > nLabelPixels)
   {
     dExtend = double(rect.height) / double(rect.height - nLabelPixels);
+  }
+  return dExtend;
+}
+void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p, int nLabelHeight)
+{
+  double dExtend = GetLabelHeightExtension(nLabelHeight);
+  if(dExtend > 1.0)
+  {
     p->m_height *= dExtend;
   }
 }
@@ -2552,15 +2599,16 @@ wxBitmap *CPanelPlot::CreateAllChannelBitmap(
   m_pData->GetChannelNumbers(&setChannels);
   int nPlotAreaHeight = nHeight - nTitleOffset - nXLabelHeight;
   int nPlotHeight = (nHeight - nTitleOffset - nXLabelHeight) / (int)setChannels.size();
-  int nRounding = nPlotAreaHeight - (nPlotHeight * (int)setChannels.size());
 
   if (nPlotHeight >= 20)
   {
+    
+    wxRect rect(0, 0, nWidth, nPlotHeight);
+    int nRounding = nPlotAreaHeight - (nPlotHeight * (int)setChannels.size());
     int nY = nTitleOffset + nRounding;
           // due to height rounding, the x-axis may be too low on screen images
           // by up to n-1 pixels where n is the number of channels
           // on a high res bitmap it is not significant
-    wxRect rect(0, 0, nWidth, nPlotHeight);
 
     // first show all channels to compute zoom
     std::unique_ptr<wxBitmap> pBitmapPlot
@@ -2568,9 +2616,11 @@ wxBitmap *CPanelPlot::CreateAllChannelBitmap(
     wxMemoryDC dcPlot(*pBitmapPlot);
     ShowAllChannels(true);
     RebuildCurves(true);
+    m_pPlotCtrl->DoSize(rect, false); 
+    // DoSize - set wxPlotCtrl::m_areaRect so that ZoomOut will leave room for labels
     ZoomOut(false, 0, nXLabelHeight);
-    wxRect2DDouble wxRectZoom = GetViewRect();
-
+    wxRect2DDouble wxRectZoom = m_viewRect.GetViewRect();
+    TnwxBatch<CPlotCtrl> batch(this->m_pPlotCtrl);
     for (std::set<int>::iterator itr = setChannels.begin();
       itr != setChannels.end();
       ++itr)

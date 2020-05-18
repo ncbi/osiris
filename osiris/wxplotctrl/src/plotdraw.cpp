@@ -535,7 +535,8 @@ void wxPlotDrawerXAxis::Draw(wxDC *dc, bool refresh)
     // center the text in the window
     int x, y;
     dc->GetTextExtent(wxT("5"), &x, &y);
-    int y_pos = (GetDCRect().height - y)/2 + 2; // FIXME I want to center this
+    //int y_pos = (GetDCRect().height - y)/2 + 2; // FIXME I want to center this
+    int y_pos = 2; // testing
     // double current = ceil(m_viewRect.GetLeft() / m_xAxisTick_step) * m_xAxisTick_step;
     int i, count = m_tickPositions.GetCount();
     int nLast2 = count - 2;

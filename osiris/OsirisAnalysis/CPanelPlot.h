@@ -563,6 +563,8 @@ public:
   virtual void ShiftRight(bool bShiftKey);
   virtual bool CanShiftLeft();
   virtual bool CanShiftRight();
+  double GetLabelHeightExtension(int nLabelHeight = 0);
+  void AdjustLabelHeightExtension(double dCurrentExtension, const wxRect &rect, int nLabelHeight = 0);
 
   void ResetDefaults()
   {
@@ -700,7 +702,7 @@ private:
     vector<unsigned int> &anLabel);
 
   void _BuildPLTlabels(bool bArtifactOnly = false, unsigned int nChannel = 0);
-  wxString _AlleleLabel(const IOARpeak *pPeak, vector<unsigned int> &anLabel);
+  wxString _AlleleLabel(const IOARpeak *pPeak, vector<unsigned int> &anLabel, bool bILS);
   wxString _ArtifactToolTip(
     const IOARpeak *pPeak, const wxString &sChannelName);
   wxString _AlleleToolTip(

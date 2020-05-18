@@ -366,6 +366,8 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   wxBrush brushSave = pdc->GetBrush();
   wxPen penSave = pdc->GetPen();
   wxFont fontSave = pdc->GetFont();
+  wxFont fontUse = m_owner->GetAxisFont();
+  fontUse.MakeBold();
   wxCoord nClipX = 0;
   wxCoord nClipY = 0;
   wxCoord nClipW = 0;
@@ -390,7 +392,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     pdc->SetPen(*wxWHITE_PEN);
     pdc->DrawRectangle(clearRect);
   }
-  pdc->SetFont(m_owner->GetAxisFont());
+  pdc->SetFont(fontUse);
   pdc->SetTextBackground(wxColour(255,255,255,wxALPHA_OPAQUE));
 
   size_t nSize(m_setLabels.size());

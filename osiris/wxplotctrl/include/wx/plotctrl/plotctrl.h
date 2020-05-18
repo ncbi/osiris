@@ -819,6 +819,7 @@ public:
     //  DJH 2/29/2009 - added bAutoCalcTicks = false
     int DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont, bool bBottom = false);
     void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false, bool bForcePrintFont = false );
+    int GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundingRect, double dpi, bool bForecePrintFont);
 
     // ------------------------------------------------------------------------
     // Axis tick calculations
@@ -917,12 +918,12 @@ public:
 
     void BackupSettings(wxPlotCtrlBackup *pBackup);
     void RestoreSettings(wxPlotCtrlBackup *pBackup);
-protected:
   void DrawInit(
     const wxRect &boundingRect,
     double dpi,
     bool bForcePrintFont,
     const wxPlotCtrlBackup &plotBackup);
+protected:
   void OnSize( wxSizeEvent& event );
 
     wxArrayPlotCurve  m_curves;         // all the curves

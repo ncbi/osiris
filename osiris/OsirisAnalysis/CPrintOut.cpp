@@ -335,7 +335,9 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
   if (res != m_resInput)
   {
     // compute everything
+#ifdef TMP_DEBUG
     m_nSetupPageCount++;
+#endif
     wxSize szPPI = res.m_ppi;
     wxRect rectFit = res.m_logicalPage;
     double dPPIscale = 1.0, dScalePixel = 1.0;

@@ -56,10 +56,10 @@ public:
   virtual ~CPanelLabSettings();
   static const wxSize g_SIZE_NUMBER;
   static const wxSize g_SIZE_MULTILINE_TEXT;
-  static const wxSize g_SIZE_FRAME;
   static const wxString g_sFileNameStrPrompt;
   static const wxString g_sSampleNameStrPrompt;
 
+  static const wxSize &GetDefaultFrameSize();
   static const wxString &NameStrPrompt(bool bSample)
   {
     return (bSample ? g_sSampleNameStrPrompt : g_sFileNameStrPrompt);
@@ -102,6 +102,7 @@ public:
   }
 
 private:
+  static wxSize g_SIZE_FRAME;
   wxString _GetILSDyeName();
   CLabSettings *m_pData;
   const CXMLmessageBook *m_pMessageBook;

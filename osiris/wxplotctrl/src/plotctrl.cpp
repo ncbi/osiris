@@ -3015,6 +3015,16 @@ void wxPlotCtrl::DrawInit(
   );
 #endif
 }
+int wxPlotCtrl::GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont)
+{
+  // get the height of string s if rendered to the dc using the AxisLabelFont
+  wxPlotCtrlBackup plotBackup(this);
+  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  wxCoord xExtent = 0, yExtent, descExtent, leadExtent;
+  dc->SetFont(GetAxisFont());
+  dc->GetTextExtent(s, &xExtent, &yExtent, &descExtent, &leadExtent);
+  return(yExtent + descExtent + leadExtent);
+}
 int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont, bool bBottom)
 {
   wxCHECK_MSG(dc, 0, wxT("invalid dc"));
