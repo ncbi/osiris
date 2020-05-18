@@ -48,6 +48,13 @@
 #include <wx/print.h>
 #include "nwx/PersistentSize.h"
 
+#undef ADJUST_ZOOM
+#ifdef __WXMAC__
+#define ADJUST_ZOOM 1
+#else
+#define ADJUST_ZOOM 0
+#endif
+
 class CPrintPreviewFrame : public wxPreviewFrame
 {
 public:
@@ -68,30 +75,23 @@ class CPrintPreview : public wxPrintPreview
 public:
   CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting = NULL, wxPrintDialogData *data = NULL) :
     wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType),
-    m_nZoom(0)
+    m_sPrintType(sPrintType)
   {
     _SetDefaultZoom();
   }
   CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting, wxPrintData *data) :
     wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType),
-    m_nZoom(0)
+    m_sPrintType(sPrintType)
   {
     _SetDefaultZoom();
   }
   virtual ~CPrintPreview() {}
   virtual bool Print(bool interactive);
   virtual void SetZoom(int n);
-  int GetZoom()
-  {
-    return m_nZoom;
-  }
 
 private:
   const wxString m_sPrintType;
   void _SetDefaultZoom();
-  int m_nZoom;
 };
 
 

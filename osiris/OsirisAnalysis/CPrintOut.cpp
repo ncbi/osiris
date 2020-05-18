@@ -93,7 +93,6 @@ void CPrintPreview::SetZoom(int n)
 {
   CParmOsirisGlobal parm;
   parm->SetPrintPreviewZoom(n);
-  m_nZoom = n;
   wxPrintPreview::SetZoom(n);
 }
 
@@ -103,7 +102,6 @@ void CPrintPreview::_SetDefaultZoom()
   int n = parm->GetPrintPreviewZoom();
   if (n >= 10)
   {
-    m_nZoom = n;
     wxPrintPreview::SetZoom(n);
   }
 }
@@ -331,12 +329,6 @@ CPrintOut::~CPrintOut()
 #endif
 }
 
-#undef ADJUST_ZOOM
-#ifdef __WXMAC__
-#define ADJUST_ZOOM 1
-#else
-#define ADJUST_ZOOM 0
-#endif
 
 void CPrintOut::_setupPageBitmap(wxDC *pdc)
 {
