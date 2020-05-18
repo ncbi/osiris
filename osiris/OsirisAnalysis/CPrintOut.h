@@ -68,23 +68,30 @@ class CPrintPreview : public wxPrintPreview
 public:
   CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting = NULL, wxPrintDialogData *data = NULL) :
     wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType)
+    m_sPrintType(sPrintType),
+    m_nZoom(0)
   {
     _SetDefaultZoom();
   }
   CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting, wxPrintData *data) :
     wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType)
+    m_sPrintType(sPrintType),
+    m_nZoom(0)
   {
     _SetDefaultZoom();
   }
   virtual ~CPrintPreview() {}
   virtual bool Print(bool interactive);
   virtual void SetZoom(int n);
+  int GetZoom()
+  {
+    return m_nZoom;
+  }
 
 private:
   const wxString m_sPrintType;
   void _SetDefaultZoom();
+  int m_nZoom;
 };
 
 

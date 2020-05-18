@@ -93,6 +93,7 @@ void CPrintPreview::SetZoom(int n)
 {
   CParmOsirisGlobal parm;
   parm->SetPrintPreviewZoom(n);
+  m_nZoom = n;
   wxPrintPreview::SetZoom(n);
 }
 
@@ -100,8 +101,9 @@ void CPrintPreview::_SetDefaultZoom()
 {
   CParmOsirisGlobal parm;
   int n = parm->GetPrintPreviewZoom();
-  if (n > 10)
+  if (n >= 10)
   {
+    m_nZoom = n;
     wxPrintPreview::SetZoom(n);
   }
 }
@@ -329,6 +331,13 @@ CPrintOut::~CPrintOut()
 #endif
 }
 
+#undef ADJUST_ZOOM
+#ifdef __WXMAC__
+#define ADJUST_ZOOM 1
+#else
+#define ADJUST_ZOOM 0
+#endif
+
 void CPrintOut::_setupPageBitmap(wxDC *pdc)
 {
   _resInput res(pdc->GetPPI(), GetLogicalPageMarginsRect(*GetPageSetupData()));
@@ -342,6 +351,9 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     wxRect rectFit = res.m_logicalPage;
     double dPPIscale = 1.0, dScalePixel = 1.0;
     int nMaxPPI = MAX_PPI;
+#if ADJUST_ZOOM
+    int nZoom = 100;
+#endif
     enum
     {
       SCALE_NONE,
@@ -370,9 +382,14 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
       nScale = SCALE_X;
       dScalePixel = double(nPPIy) / double(nPPIx);
     }
-    if (IsPrintPreview())
+    if (IsPreview())
     {
       int nx, ny;
+#if ADJUST_ZOOM
+      CPrintPreview *pp = (CPrintPreview *)GetPreview();
+      nZoom = pp->GetZoom();
+#endif
+
       GetPPIScreen(&nx, &ny);
       nMaxPPI = (nx < ny) ? nx : ny;
       if (nMaxPPI < 48)
@@ -431,6 +448,15 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     }
     m_resOutput.m_bFit = bFit;
     m_resOutput.m_DPI = nUsePPI;
+
+#if ADJUST_ZOOM
+    if (nZoom != 100)
+    {
+      double dMult = 100.0 / nZoom;
+      nX = int(nX * dMult);
+      nY = int(nY * dMult);
+    }
+#endif
     m_resOutput.m_nWidth = nX;
     m_resOutput.m_nHeight = nY;
   }
