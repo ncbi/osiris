@@ -48,13 +48,6 @@
 #include <wx/print.h>
 #include "nwx/PersistentSize.h"
 
-#undef ADJUST_ZOOM
-#ifdef __WXMAC__
-#define ADJUST_ZOOM 1
-#else
-#define ADJUST_ZOOM 0
-#endif
-
 class CPrintPreviewFrame : public wxPreviewFrame
 {
 public:
