@@ -1363,7 +1363,7 @@ int ChannelData::FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Exce
 
 	while (nextSignal = (DataSignal*)outOfOrderList.GetFirst ()) {
 
-		PreliminaryCurveList.Prepend (nextSignal);
+		PreliminaryCurveList.RemoveReference (nextSignal); // ****Changed 'prepend' to 'removereference'  05/19/2020*******
 		CompleteCurveList.RemoveReference (nextSignal);
 		delete nextSignal;
 	}
