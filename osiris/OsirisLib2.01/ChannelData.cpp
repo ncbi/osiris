@@ -3736,7 +3736,7 @@ void ChannelData::InitializeModsData (SampleModList* sml) {
 
 		if (cmp != NULL) {
 
-			cout << "Setting mod regions for channel " << mChannel << " for number of samples = " << N << "\n";
+		//	cout << "Setting mod regions for channel " << mChannel << " for number of samples = " << N << "\n";
 			cmp->SetModRegions (mModsData, N);
 		}
 	}

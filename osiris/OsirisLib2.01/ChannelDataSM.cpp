@@ -1528,12 +1528,16 @@ int ChannelData::FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Exce
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
-	bool modsTest = (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());
+	//  Currently set to test ILS channels and ladder channels only.
+
+	bool modsTest = (ChannelIsILS () || IsControlChannel ());   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool sampleModified;
 
 	if (modsTest) {
 
-		cout << "Performing mods tests on all peaks for channel " << mChannel << "...\n";
+	//	cout << "Performing mods tests on all peaks for channel " << mChannel << "...\n";
 		it.Reset ();
+		sampleModified = false;
 
 		while (nextSignal = (DataSignal*)it ()) {
 
@@ -1542,9 +1546,13 @@ int ChannelData::FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Exce
 				nextSignal->SetMessageValue (peakIgnored, true);
 				it.RemoveCurrentItem ();
 				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
-				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+	//			cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+				sampleModified = true;
 			}
 		}
+
+		if (sampleModified)
+			cout << "<Ping>652</Ping>\n";
 	}
 
 

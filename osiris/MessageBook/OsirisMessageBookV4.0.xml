@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.58</VersionNumber>
-	<BuildTime>04/08/2020 06:49 PM</BuildTime>
+	<VersionNumber>7.60</VersionNumber>
+	<BuildTime>05/19/2020 02:40 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -418,6 +418,17 @@
 					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPeakIgnored</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Peak Ignored Through User Pre-Editing</Text>
+			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -7725,6 +7736,7 @@
 						<Name>smNegativePeak</Name>
 						<Name>smILSShoulderPeak</Name>
 						<Name>smLaserOffScale</Name>
+						<Name>smPeakIgnored</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smCountThisSignal = true</Expression>

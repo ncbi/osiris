@@ -3219,12 +3219,16 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
-	bool modsTest = (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());
+	//  Currently set to test ILS channels and ladder channels only.
+
+	bool modsTest = (ChannelIsILS () || IsControlChannel ());   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool sampleModified;
 
 	if (modsTest) {
 
-		cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+	//	cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
 		it.Reset ();
+		sampleModified = false;
 
 		while (nextSignal = (DataSignal*)it ()) {
 
@@ -3233,9 +3237,13 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 				nextSignal->SetMessageValue (peakIgnored, true);
 				it.RemoveCurrentItem ();
 				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
-				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+				sampleModified = true;
+	//			cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
 			}
 		}
+
+		if (sampleModified)
+			cout << "<Ping>652</Ping>\n";
 	}
 
 	delete signature;
@@ -3800,12 +3808,16 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
-	bool modsTest = (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());
+	//  Currently set to test ILS channels and ladder channels only.
+
+	bool modsTest = (ChannelIsILS () || IsControlChannel ());   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool sampleModified;
 
 	if (modsTest) {
 
 		it.Reset ();
-		cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+	//	cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+		sampleModified = false;
 
 		while (nextSignal = (DataSignal*) it ()) {
 
@@ -3814,9 +3826,13 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 				nextSignal->SetMessageValue (peakIgnored, true);
 				it.RemoveCurrentItem ();
 				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
-				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+	//			cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+				sampleModified = true;
 			}
 		}
+
+		if (sampleModified)
+			cout << "<Ping>652</Ping>\n";
 	}
 
 	delete signature;

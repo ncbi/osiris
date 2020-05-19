@@ -114,7 +114,7 @@ void ChannelModPairs::SetModRegions (bool* modArray, int size) {
 		i++;
 	}
 
-	cout << "Set mods for " << i << " regions\n";
+	//cout << "Set mods for " << i << " regions\n";
 }
 
 
@@ -350,13 +350,13 @@ void OverallModList::ReadOverallModList (const RGString& sampleData) {
 	size_t startIndex = 0;
 	size_t endIndex;
 
-	cout << "Searching sample data:\n";
-	cout << XMLString << endl;
+	//cout << "Searching sample data:\n";
+	//cout << XMLString << endl;
 
 	while (sampleSearch.FindNextTag (startIndex, endIndex, sampleString)) {
 
-		cout << "Sample String:\n";
-		cout << sampleString << endl;
+		//cout << "Sample String:\n";
+		//cout << sampleString << endl;
 		startIndex = endIndex + 1;
 		ReadNextSampleData (sampleString, sampleName);
 
