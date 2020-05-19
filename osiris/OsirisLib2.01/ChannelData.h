@@ -570,6 +570,7 @@ protected:
 	RGDList SmartPeaks;
 	RGDList BleedThroughCandidateList;
 	RGDList SupplementalArtifacts;
+	RGDList mIgnorePeaks;
 	RGDListIterator PreliminaryIterator;
 	RGDListIterator CompleteIterator;
 	RGDList mNegativeCurveList;

@@ -1674,6 +1674,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		}
 	}
 
+	while (nextSignal = (DataSignal*)mIgnorePeaks.GetFirst ()) {
+
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
 	QuadraticFit fit (Means, NumberOfAcceptedCurves);
 	fit.Regress (Sigmas, QFit);
 
@@ -2449,6 +2454,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		}
 	}
 
+	while (nextSignal = (DataSignal*)mIgnorePeaks.GetFirst ()) {
+
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
 	QuadraticFit fit (Means, NumberOfAcceptedCurves);
 	fit.Regress (Sigmas, QFit);
 
@@ -3209,7 +3219,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
-	bool modsTest = (ChannelIsILS () || !IsNormalizationPass);
+	bool modsTest = (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());
 
 	if (modsTest) {
 
@@ -3222,7 +3232,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 				//set artifact
 				nextSignal->SetMessageValue (peakIgnored, true);
 				it.RemoveCurrentItem ();
-				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
 				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
 			}
 		}
@@ -3790,27 +3800,23 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
-	bool modsTest = (ChannelIsILS () || !IsNormalizationPass);
+	bool modsTest = (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());
 
 	if (modsTest) {
 
 		it.Reset ();
+		cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
 
 		while (nextSignal = (DataSignal*) it ()) {
-
-			cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
 
 			if (TestPeakAgainstModsData (nextSignal)) {
 				//set artifact
 				nextSignal->SetMessageValue (peakIgnored, true);
-				tempList.Append (nextSignal);
-				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				it.RemoveCurrentItem ();
+				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
 				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
 			}
 		}
-
-		while (nextSignal = (DataSignal*)tempList.GetFirst ())
-			PreliminaryCurveList.RemoveReference (nextSignal);
 	}
 
 	delete signature;

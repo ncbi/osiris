@@ -1541,7 +1541,7 @@ int ChannelData::FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Exce
 				//set artifact
 				nextSignal->SetMessageValue (peakIgnored, true);
 				it.RemoveCurrentItem ();
-				ArtifactList.InsertWithNoReferenceDuplication (nextSignal);
+				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
 				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
 			}
 		}

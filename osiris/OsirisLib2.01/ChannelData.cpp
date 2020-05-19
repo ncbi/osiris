@@ -524,6 +524,7 @@ ChannelData :: ~ChannelData () {
 	ArtifactList.Clear ();
 	SmartPeaks.Clear ();
 	BleedThroughCandidateList.Clear ();
+	mIgnorePeaks.Clear ();
 	PreliminaryCurveList.Clear ();
 	SupplementalArtifacts.Clear ();
 	NewNoticeList.ClearAndDelete ();
@@ -1716,6 +1717,11 @@ int ChannelData :: SetAllApproximateIDs (ChannelData* laneStd) {
 		nextSignal->SetApproximateBioID (bp);
 		nextSignal->SetApproxBioIDPrime (yPrime);
 		nextSignal->CalculateTheoreticalArea ();
+	}
+
+	while (nextSignal = (DataSignal*)mIgnorePeaks.GetFirst ()) {
+
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
 	//if (mNegativeCurveList.IsEmpty ())
