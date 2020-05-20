@@ -3723,6 +3723,9 @@ void ChannelData::InitializeModsData (SampleModList* sml) {
 	if (mData == NULL)
 		return;
 
+	//if (sml == NULL)
+	//	return;
+
 	int N = mData->GetNumberOfSamples ();
 	mModsData = new bool [N];
 	int i;
@@ -3747,7 +3750,7 @@ bool ChannelData::TestPeakAgainstModsData (const DataSignal* ds) const {
 
 	if (mModsData == NULL) {
 
-		cout << "Mods data is null\n";
+		//cout << "Mods data is null\n";
 		return false;
 	}
 
