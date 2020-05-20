@@ -2051,11 +2051,10 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     SetViewRect(rect, false, 1);
   }
-//  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
-//  {
-//    m_pFramePlot->SyncTo(this);
-//  }
-  RE_RENDER;
+  else
+  {
+    RE_RENDER;
+  }
 }
 
 

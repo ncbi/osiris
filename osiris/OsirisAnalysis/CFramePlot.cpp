@@ -1567,7 +1567,7 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
       if( (pPlot != p) && pPlot->SyncValue())
       {
         TnwxBatch<CPanelPlot> xxx2(pPlot);
-        pPlot->SetViewRect(r);
+        pPlot->SetViewRect(r, false, 0);
         bRtn = true;
       }
     }

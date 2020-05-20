@@ -2126,6 +2126,7 @@ bool wxPlotCtrl::SetZoom( double zoom_x, double zoom_y,
     if (!m_batch_count)
         AdjustScrollBars();
 
+#if 0
     if (send_event && (x_changed || y_changed))
     {
         wxPlotCtrlEvent event( wxEVT_PLOTCTRL_VIEW_CHANGED, GetId(), this);
@@ -2133,7 +2134,7 @@ bool wxPlotCtrl::SetZoom( double zoom_x, double zoom_y,
         event.SetPosition(origin_x, origin_y);
         (void)DoSendEvent( event );
     }
-
+#endif
     return bOK;
 }
 
