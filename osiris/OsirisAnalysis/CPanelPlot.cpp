@@ -1420,6 +1420,10 @@ void CPanelPlot::OnViewChanging(wxPlotCtrlEvent &e)
   {
     e.Veto();
   }
+  else
+  {
+    e.Skip();
+  }
 }
 
 void CPanelPlot::OnViewChanged(wxPlotCtrlEvent &e)

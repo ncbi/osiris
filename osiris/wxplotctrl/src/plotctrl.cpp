@@ -643,12 +643,13 @@ wxPlotCtrl::~wxPlotCtrl()
     delete m_markerDrawer;
 }
 
-void wxPlotCtrl::OnPaint( wxPaintEvent &WXUNUSED(event) )
+void wxPlotCtrl::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
     wxPaintDC dc(this);
 
     DrawActiveBitmap(&dc);
     DrawPlotCtrl(&dc);
+    RefreshOnEndBatch();
 }
 
 void wxPlotCtrl::DrawActiveBitmap( wxDC* dc )
@@ -941,7 +942,7 @@ void wxPlotCtrl::EndBatch(bool force_refresh)
         m_batch_count--;
         if (m_batch_count <= 0)
         {
-            if (m_do_size_on_end_batch)
+          if (m_do_size_on_end_batch)
             {
               DoSize();
               force_refresh = true;
@@ -2126,7 +2127,7 @@ bool wxPlotCtrl::SetZoom( double zoom_x, double zoom_y,
     if (!m_batch_count)
         AdjustScrollBars();
 
-#if 0
+
     if (send_event && (x_changed || y_changed))
     {
         wxPlotCtrlEvent event( wxEVT_PLOTCTRL_VIEW_CHANGED, GetId(), this);
@@ -2134,7 +2135,6 @@ bool wxPlotCtrl::SetZoom( double zoom_x, double zoom_y,
         event.SetPosition(origin_x, origin_y);
         (void)DoSendEvent( event );
     }
-#endif
     return bOK;
 }
 

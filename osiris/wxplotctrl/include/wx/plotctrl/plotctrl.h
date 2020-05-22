@@ -923,6 +923,13 @@ public:
     double dpi,
     bool bForcePrintFont,
     const wxPlotCtrlBackup &plotBackup);
+  void RefreshOnEndBatch()
+  {
+    if (GetBatchCount() && IsShown())
+    {
+      m_do_size_on_end_batch = true;
+    }
+  }
 protected:
   void OnSize( wxSizeEvent& event );
 
