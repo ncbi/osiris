@@ -1111,7 +1111,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		oml->ReadOverallModList (modsFileString);
 		//cout << "Read mods file containing:  \n";
 		//cout << modsFileString << endl;
-		//oml->PrintList ();
+		oml->PrintList ();
 	}
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
@@ -2813,7 +2813,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		oml->ReadOverallModList (modsFileString);
 		//cout << "Read mods file containing:  \n";
 		//cout << modsFileString << endl;
-		//oml->PrintList ();
+		oml->PrintList ();
 	}
 
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
@@ -2852,7 +2852,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		commentField = data->GetComment ();
 		bioComponent->SetComments (commentField);
 
-		bioComponent->SetSampleModifications (sml);
+	//	bioComponent->SetSampleModifications (sml);
 
 		try { //##########
 

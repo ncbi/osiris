@@ -1434,7 +1434,7 @@ int ChannelData::FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Exce
 
 		while (nextSignal = (DataSignal*)shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Prepend (nextSignal);
+			PreliminaryCurveList.Insert (nextSignal);
 			CompleteCurveList.Insert (nextSignal);
 		}
 	}
@@ -1528,32 +1528,32 @@ int ChannelData::FitAllCharacteristicsSM (RGTextOutput& text, RGTextOutput& Exce
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
-	//  Currently set to test ILS channels and ladder channels only.
+	//  Currently set to test ILS channels and ladder channels only, and this is a sample channel, so we don't need this here
 
-	bool modsTest = (ChannelIsILS () || IsControlChannel ());   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
-	bool sampleModified;
+	////bool modsTest = ((mModsData != NULL) && (ChannelIsILS () || IsControlChannel ()));   // ((mModsData != NULL) && (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ()));  This would include samples
+	////bool sampleModified;
 
-	if (modsTest) {
+	////if (modsTest) {
 
-	//	cout << "Performing mods tests on all peaks for channel " << mChannel << "...\n";
-		it.Reset ();
-		sampleModified = false;
+	//////	cout << "Performing mods tests on all peaks for channel " << mChannel << "...\n";
+	////	it.Reset ();
+	////	sampleModified = false;
 
-		while (nextSignal = (DataSignal*)it ()) {
+	////	while (nextSignal = (DataSignal*)it ()) {
 
-			if (TestPeakAgainstModsData (nextSignal)) {
-				//set artifact
-				nextSignal->SetMessageValue (peakIgnored, true);
-				it.RemoveCurrentItem ();
-				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
-	//			cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
-				sampleModified = true;
-			}
-		}
+	////		if (TestPeakAgainstModsData (nextSignal)) {
+	////			//set artifact
+	////			nextSignal->SetMessageValue (peakIgnored, true);
+	////			it.RemoveCurrentItem ();
+	////			mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
+	////			cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+	////			sampleModified = true;
+	////		}
+	////	}
 
-		if (sampleModified)
-			cout << "<Ping>652</Ping>\n";
-	}
+	////	if (sampleModified)
+	////		cout << "<Ping>652</Ping>\n";
+	////}
 
 
 	delete signature;

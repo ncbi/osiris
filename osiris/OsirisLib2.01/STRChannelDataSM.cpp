@@ -3221,7 +3221,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 	//  Currently set to test ILS channels and ladder channels only.
 
-	bool modsTest = (ChannelIsILS () || IsControlChannel ());   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool modsTest = ((mModsData != NULL) && (ChannelIsILS () || IsControlChannel ()));   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
 	bool sampleModified;
 
 	if (modsTest) {
@@ -3238,7 +3238,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 				it.RemoveCurrentItem ();
 				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
 				sampleModified = true;
-	//			cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
 			}
 		}
 
@@ -3810,7 +3810,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 
 	//  Currently set to test ILS channels and ladder channels only.
 
-	bool modsTest = (ChannelIsILS () || IsControlChannel ());   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool modsTest = ((mModsData != NULL) && (ChannelIsILS () || IsControlChannel ()));   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
 	bool sampleModified;
 
 	if (modsTest) {
@@ -3826,7 +3826,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 				nextSignal->SetMessageValue (peakIgnored, true);
 				it.RemoveCurrentItem ();
 				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
-	//			cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
 				sampleModified = true;
 			}
 		}

@@ -3723,8 +3723,8 @@ void ChannelData::InitializeModsData (SampleModList* sml) {
 	if (mData == NULL)
 		return;
 
-	//if (sml == NULL)
-	//	return;
+	if (sml == NULL)
+		return;
 
 	int N = mData->GetNumberOfSamples ();
 	mModsData = new bool [N];
