@@ -40,6 +40,8 @@
 */
 #include <memory>
 
+#undef ADJUST_ZOOM
+
 #ifdef __WXMAC__
 #include <wx/osx/printdlg.h>
 #define ADJUST_ZOOM 1
@@ -358,6 +360,21 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     m_resInput = res;
     nPPIx = szPPI.GetWidth();
     nPPIy = szPPI.GetHeight();
+
+#if ADJUST_ZOOM
+    CPrintPreview *pp = (CPrintPreview *)GetPreview();
+    int nZoom = pp->GetZoom();
+    if(nZoom != 100)
+    {
+      double dMult = double(nZoom) * 0.01;
+      nPPIx = int(nPPIx * dMult);
+      nPPIy = int(nPPIy * dMult);
+    }
+#ifdef TMP_DEBUG
+    mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
+#endif
+#endif
+
     if (nPPIx == nPPIy)
     {
       nMinPPI = nPPIx;
@@ -442,23 +459,6 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
   bool bAdjust = m_resOutput.m_bFit;
   int nWidth = m_resOutput.m_nWidth;
   int nHeight = m_resOutput.m_nHeight;
-#if ADJUST_ZOOM
-  if (IsPreview())
-  {
-    CPrintPreview *pp = (CPrintPreview *)GetPreview();
-    int nZoom = pp->GetZoom();
-#ifdef TMP_DEBUG
-    mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
-#endif
-    if (nZoom != 100)
-    {
-      double dMult = 100.0 / nZoom;
-      nWidth = int(nWidth * dMult);
-      nHeight = int(nHeight * dMult);
-      bAdjust = true;
-    }
-  }
-#endif
   if (bAdjust)
   {
     FitThisSizeToPageMargins(wxSize(nWidth, nHeight), *GetPageSetupData());
