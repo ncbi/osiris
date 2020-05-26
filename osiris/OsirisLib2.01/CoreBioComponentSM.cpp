@@ -52,6 +52,7 @@
 #include "DirectoryManager.h"
 #include "LeastMedianOfSquares.h"
 #include "STRLCAnalysis.h"
+#include "ModPairs.h"
 
 
 // Smart Message Functions**************************************************************************************************************
@@ -1294,6 +1295,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		mDataChannels [i]->SetFsaChannel (fsaChannelMap [i]);
 	}
 
+//	InitializeAllSampleModifications ();
 	mLSData = mDataChannels [mLaneStandardChannel];
 	mLSData->SetMessageValue (channelIsILS, true);
 	mMarkerSet->ResetLocusList ();
@@ -4174,6 +4176,8 @@ int CoreBioComponent :: AnalyzeGridSM (SampleData& fileData, GridDataStruct* gri
 		return -2;
 	}
 
+	InitializeAllSampleModifications ();
+
 	if (CoreBioComponent::UseRawData)
 		FindAndRemoveFixedOffsets ();
 
@@ -4259,6 +4263,7 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 	}
 
 	CoreBioComponent::InitializeOffScaleData (fileData);
+	InitializeAllSampleModifications ();
 	Progress = 2;
 
 	if (CoreBioComponent::UseRawData) {

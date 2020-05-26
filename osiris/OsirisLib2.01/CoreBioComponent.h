@@ -62,6 +62,7 @@ class GenotypeSpecs;
 class GenotypesForAMarkerSet;
 class SmartMessage;
 class SmartNotice;
+class SampleModList;
 
 #define _USENOISEINPULLUPANALYSIS_
 
@@ -236,6 +237,8 @@ public:
 	void ReportGridTableRow (RGTextOutput& text);
 	void ReportGridTableRowWithLinks (RGTextOutput& text);
 
+	void InitializeAllSampleModifications ();
+
 	virtual bool SampleIsValid () const;
 
 	virtual void AppendAllBaseLociToList (RGDList& locusList);
@@ -388,6 +391,8 @@ public:
 
 	void SetPositiveControlTrueSM ();
 	void SetPositiveControlFalseSM ();
+
+	void SetSampleModifications (SampleModList* sml) { mSampleMods = sml; }
 
 	void SetPossibleMixtureIDTrueSM () { mSatisfiesPossibleMixtureCriteria = true; }
 	void SetPossibleMixtureIDFalseSM () { mSatisfiesPossibleMixtureCriteria = false; }
@@ -605,6 +610,7 @@ protected:
 
 	QCData mQC;
 	RGString mComments;
+	SampleModList* mSampleMods;
 
 	//double mMaxLinearPullupCoefficient;
 	//double mMaxNonlinearPullupCoefficient;

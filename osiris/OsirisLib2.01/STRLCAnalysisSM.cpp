@@ -62,6 +62,7 @@
 #include "TracePrequalification.h"
 #include "LeastMedianOfSquares.h"
 #include "STRLCAnalysis.h"
+#include "ModPairs.h"
 #include <list>
 #include <iostream>
 #include <time.h>
@@ -1097,12 +1098,39 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "\n";
 
 	RGString commentField;
+	RGString modsFileString;
+	RGString modsFileName = PrototypeInputDirectory + "/batch-mods.txt";
+	RGFile modsFile (modsFileName, "rt");
+	OverallModList* oml = NULL;
+	SampleModList* sml = NULL;
+
+	if (modsFile.isValid ()) {
+
+		modsFileString.ReadTextFile (modsFile);
+		oml = new OverallModList (expectedNumberOfChannels);
+		oml->ReadOverallModList (modsFileString);
+		//cout << "Read mods file containing:  \n";
+		//cout << modsFileString << endl;
+		oml->PrintList ();
+	}
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
 		FullPathName = DirectoryName + "/" + LadderFileName;
 		cout << "Found ladder name " << (char*)FullPathName.GetData () << endl;
 		nLadders++;
+
+		if (oml != NULL)
+			sml = oml->GetSampleModList (LadderFileName);
+
+		else
+			sml = NULL;
+
+		if (sml != NULL) {
+
+			cout << "Found mods file for ladder named " << LadderFileName << endl;
+			sml->PrintList ();
+		}
 
 		if (WorkingFile != NULL) {
 
@@ -1203,6 +1231,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		ladderBioComponent = new STRLadderCoreBioComponent (data->GetName ());
 		ladderBioComponent->SetSampleName (data->GetSampleName ());
 		ladderBioComponent->SetFileName (LadderFileName);
+		ladderBioComponent->SetSampleModifications (sml);
 		commSM.SMOStack [1] = (SmartMessagingObject*) ladderBioComponent;
 		ladderBioComponent->SetMessageValue (sampleIsLadder, true);
 
@@ -1474,6 +1503,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		CoreBioComponent::ResetNoDataChannels ();
 		CoreBioComponent::ResetCrashCode ();
 
+		if (oml != NULL)
+			sml = oml->GetSampleModList (FileName);
+
+		else
+			sml = NULL;
+
 		CrashResponse = 10;
 		sampleOK = true;
 		localFileName = FileName;
@@ -1491,6 +1526,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		bioComponent->SetFileName (FileName);
 		Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
 		Locus::SetSingleSourceSample (false);
+
+		bioComponent->SetSampleModifications (sml);
 
 		commentField = data->GetComment ();
 		bioComponent->SetComments (commentField);
@@ -2763,6 +2800,22 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 	int CrashResponse = 10;
 
+	RGString modsFileString;
+	RGString modsFileName = PrototypeInputDirectory + "/batch-mods.txt";
+	RGFile modsFile (modsFileName, "rt");
+	OverallModList* oml = NULL;
+	SampleModList* sml = NULL;
+
+	if (modsFile.isValid ()) {
+
+		modsFileString.ReadTextFile (modsFile);
+		oml = new OverallModList (expectedNumberOfChannels);
+		oml->ReadOverallModList (modsFileString);
+		//cout << "Read mods file containing:  \n";
+		//cout << modsFileString << endl;
+		oml->PrintList ();
+	}
+
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
 
 		CoreBioComponent::ResetCrashMode (false);
@@ -2770,6 +2823,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		CoreBioComponent::AddOneToCrashCount ();
 		CoreBioComponent::ResetNoDataChannels ();
 		CoreBioComponent::ResetCrashCode ();
+
+		if (oml != NULL)
+			sml = oml->GetSampleModList (FileName);
+
+		else
+			sml = NULL;
 
 		CrashResponse = 10;
 		sampleOK = true;
@@ -2792,6 +2851,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		commentField = data->GetComment ();
 		bioComponent->SetComments (commentField);
+
+	//	bioComponent->SetSampleModifications (sml);
 
 		try { //##########
 

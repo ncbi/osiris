@@ -291,6 +291,7 @@ PERSISTENT_PREDECLARATION (smSamplesAreNotValidInputFiles)
 PERSISTENT_PREDECLARATION (smSampleIsNotValidInputFile)
 PERSISTENT_PREDECLARATION (smHeightToConsiderTrueHomozygote)
 PERSISTENT_PREDECLARATION (smPeakHeightAboveHomozygoteTrustThreshold)
+PERSISTENT_PREDECLARATION (smPeakIgnored)
 
 
 
@@ -8114,6 +8115,34 @@ public:
 	smPeakHeightAboveHomozygoteTrustThreshold ();
 	smPeakHeightAboveHomozygoteTrustThreshold (const smPeakHeightAboveHomozygoteTrustThreshold& note);
 	virtual ~smPeakHeightAboveHomozygoteTrustThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPeakIgnored : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPeakIgnored)
+
+public:
+	smPeakIgnored ();
+	smPeakIgnored (const smPeakIgnored& note);
+	virtual ~smPeakIgnored ();
 
 	virtual int GetSubject () const;
 

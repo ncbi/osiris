@@ -1686,6 +1686,12 @@ int smPeakHeightAboveHomozygoteTrustThreshold::sMessageIndex = 0;
 int smPeakHeightAboveHomozygoteTrustThreshold::sMessageScope = 0;
 
 
+RGString smPeakIgnored::sName = "smPeakIgnored";
+int smPeakIgnored::sSubject = smPeakIgnored::LoadType ();
+int smPeakIgnored::sMessageIndex = 0;
+int smPeakIgnored::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1966,6 +1972,7 @@ PERSISTENT_DEFINITION (smSamplesAreNotValidInputFiles, 2681, "smSamplesAreNotVal
 PERSISTENT_DEFINITION (smSampleIsNotValidInputFile, 2682, "smSampleIsNotValidInputFile")
 PERSISTENT_DEFINITION (smHeightToConsiderTrueHomozygote, 2683, "smHeightToConsiderTrueHomozygote")
 PERSISTENT_DEFINITION (smPeakHeightAboveHomozygoteTrustThreshold, 2684, "smPeakHeightAboveHomozygoteTrustThreshold")
+PERSISTENT_DEFINITION (smPeakIgnored, 2685, "smPeakIgnored")
 
 
 
@@ -18762,6 +18769,66 @@ int smPeakHeightAboveHomozygoteTrustThreshold :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPeakHeightAboveHomozygoteTrustThreshold* noticeType = new smPeakHeightAboveHomozygoteTrustThreshold;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smPeakIgnored :: smPeakIgnored () : SmartNotice () {
+
+}
+
+
+smPeakIgnored :: smPeakIgnored (const smPeakIgnored& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smPeakIgnored :: ~smPeakIgnored () {
+
+}
+
+
+int smPeakIgnored :: GetSubject () const {
+
+	return smPeakIgnored::sSubject;
+}
+
+
+void smPeakIgnored :: SetIndexAndScope (int index, int scope) const {
+
+	smPeakIgnored::sMessageIndex = index;
+	smPeakIgnored::sMessageScope = scope;
+}
+
+
+int smPeakIgnored :: GetMessageIndex () const {
+
+	return smPeakIgnored :: sMessageIndex;
+}
+
+
+int smPeakIgnored :: GetScope () const {
+
+	return smPeakIgnored :: sMessageScope;
+}
+
+
+RGString smPeakIgnored :: GetName () const {
+
+	return smPeakIgnored :: sName;
+}
+
+
+
+int smPeakIgnored :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smPeakIgnored* noticeType = new smPeakIgnored;
 	warehouse->AddType (noticeType);
 	return 1;
 }

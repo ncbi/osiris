@@ -1674,6 +1674,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		}
 	}
 
+	while (nextSignal = (DataSignal*)mIgnorePeaks.GetFirst ()) {
+
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
 	QuadraticFit fit (Means, NumberOfAcceptedCurves);
 	fit.Regress (Sigmas, QFit);
 
@@ -2449,6 +2454,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		}
 	}
 
+	while (nextSignal = (DataSignal*)mIgnorePeaks.GetFirst ()) {
+
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
 	QuadraticFit fit (Means, NumberOfAcceptedCurves);
 	fit.Regress (Sigmas, QFit);
 
@@ -2914,6 +2924,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 	double minRFU2 = 0.9 * minRFU;
 	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
 	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+	smPeakIgnored peakIgnored;
 
 	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
@@ -3115,7 +3126,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Insert (nextSignal);
+			PreliminaryCurveList.Prepend (nextSignal);
 			CompleteCurveList.Insert (nextSignal);
 		}
 	}
@@ -3206,6 +3217,33 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 		
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	//  Currently set to test ILS channels and ladder channels only.
+
+	bool modsTest = ((mModsData != NULL) && (ChannelIsILS () || IsControlChannel ()));   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool sampleModified;
+
+	if (modsTest) {
+
+	//	cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+		it.Reset ();
+		sampleModified = false;
+
+		while (nextSignal = (DataSignal*)it ()) {
+
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+				it.RemoveCurrentItem ();
+				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
+				sampleModified = true;
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+			}
+		}
+
+		if (sampleModified)
+			cout << "<Ping>652</Ping>\n";
 	}
 
 	delete signature;
@@ -3473,6 +3511,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 	double minRFU2 = 0.9 * minRFU;
 	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
 	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+	smPeakIgnored peakIgnored;
 
 	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
@@ -3767,6 +3806,33 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	//  Currently set to test ILS channels and ladder channels only.
+
+	bool modsTest = ((mModsData != NULL) && (ChannelIsILS () || IsControlChannel ()));   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool sampleModified;
+
+	if (modsTest) {
+
+		it.Reset ();
+	//	cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+		sampleModified = false;
+
+		while (nextSignal = (DataSignal*) it ()) {
+
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+				it.RemoveCurrentItem ();
+				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+				sampleModified = true;
+			}
+		}
+
+		if (sampleModified)
+			cout << "<Ping>652</Ping>\n";
 	}
 
 	delete signature;
