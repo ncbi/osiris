@@ -20,6 +20,7 @@
 		  <Name>JOE</Name>
 		  <Name>VIC</Name>
 		  <Name>JOE-6C</Name>
+		  <Name>5-HEX</Name>
 		  <Name>Green</Name>
 		  <Name>GREEN</Name>
 	  </Names>
@@ -35,6 +36,7 @@
 		  <Name>TMR-ET</Name>
 		  <Name>TAMRA</Name>
 		  <Name>TMR-6C</Name>
+		  <Name>L552</Name>
 		  <Name>Yellow</Name>
 		  <Name>YELLOW</Name>
 	  </Names>
@@ -51,6 +53,7 @@
 		  <Name>CXR-ET</Name>
 		  <Name>CXR-6C</Name>
 		  <Name>TAZ</Name>
+		  <Name>LR600</Name>
 		  <Name>Red</Name>
 		  <Name>RED</Name>
 	  </Names>
@@ -67,7 +70,8 @@
 		  <Name>WEN-6C</Name>
 		  <Name>WEN</Name>
 		  <Name>BTO</Name>
-      <Name>DY632</Name>
+		  <Name>DY632</Name>
+		  <Name>AF-633</Name>
 		  <Name>Orange</Name>
 		  <Name>ORANGE</Name>
 	  </Names>
@@ -81,6 +85,7 @@
 		  <Name>SID</Name>
 		  <Name>TOM-6C</Name>
 		  <Name>TOM</Name>
+		  <Name>TET-592</Name>
 		  <Name>Purple</Name>
 		  <Name>PURPLE</Name>
 	  </Names>

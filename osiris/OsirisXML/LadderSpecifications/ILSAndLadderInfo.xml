@@ -38,6 +38,22 @@
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-ROX100-500</Name>
+        <DisplayName>100-500</DisplayName>
+        <Characteristics>100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-ROX100-400</Name>
+        <DisplayName>100-400</DisplayName>
+        <Characteristics>100 139 150 160 200 250 300 340 350 400</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
     </ILS>
     <ILS>
       <ILSName>ABI-LIZ-500</ILSName>
@@ -746,6 +762,66 @@
 			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 	</ILS>
+	<ILS>
+      <ILSName>QD550</ILSName>
+      <DyeName>AF-633</DyeName>
+      <LaneStandard>
+        <Name>QD-70-550</Name>
+        <DisplayName>70-550</DisplayName>
+        <Characteristics>70 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-80-550</Name>
+        <DisplayName>80-550</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-100-550</Name>
+        <DisplayName>100-550</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-100-525</Name>
+        <DisplayName>100-525</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-100-500</Name>
+        <DisplayName>100-500</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-80-500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-70-500</Name>
+        <DisplayName>70-500</DisplayName>
+        <Characteristics>70 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
   </LaneStandards>
   <Kits>
     <Set>
@@ -915,6 +991,10 @@
 	<Set>
 		<KitName>LaneStandardOnly_5</KitName>
 		<FileName>LaneStandardOnly_5_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>Microreader Y Prime</KitName>
+		<FileName>MicroreaderYPrime_LadderInfo.xml</FileName>
 	</Set>
   </Kits>
 </KitData>
