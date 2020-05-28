@@ -1,0 +1,207 @@
+Version	GMID-X v 1.2			
+Chemistry Kit	MRY Prime Kits_v1.1			
+BinSet Name	MRY Prime Bins_v1.1			
+Panel Name	MRY Prime_v1.1			
+Marker Name	DYS393			
+7	94.54	0.5	0.5	virtual
+8	98.58	0.5	0.5	virtual
+9	102.3	0.5	0.5		
+16	130.79	0.5	0.5	
+17	137.69	0.5	0.5	virtual
+18	141.58	0.5	0.5	virtual
+Marker Name	DYS570			
+11	152.3	0.5	0.5	virtual
+12	156.3	0.5	0.5	virtual
+13	160.3	0.5	0.5	virtual
+14	164.3	0.5	0.5	virtual
+15	168.3	0.5	0.5	
+19	184.7	0.5	0.5	
+19.3	187.7	0.5	0.5	virtual
+20	188.7	0.5	0.5	virtual
+21	192.7	0.5	0.5	virtual
+22	196.7	0.5	0.5	virtual
+23	200.7	0.5	0.5	virtual
+24	204.7	0.5	0.5	virtual
+25	208.7	0.5	0.5	virtual
+Marker Name	DYS19			
+9	220.2	0.5	0.5	
+20	264.35	0.5	0.5	
+Marker Name	DYS392			
+5	275.2	0.5	0.5	virtual
+6	278.2	0.5	0.5	virtual
+7	281.2	0.5	0.5		
+17	311.2	0.4	0.4	
+18	314.2	0.5	0.5	virtual
+19	317.2	0.5	0.5	virtual
+20	320.2	0.5	0.5	virtual
+Marker Name	DYS549			
+9	338.18	0.5	0.5	virtual
+10	342.18	0.5	0.5	virtual
+11	346.18	0.5	0.5	virtual
+12	350.1	0.5	0.5	
+13	359.18	0.5	0.5	
+14	363.18	0.5	0.5	
+15	362.2	0.5	0.5	
+16	366.18	0.5	0.5	virtual
+17	370.18	0.5	0.5	virtual
+Marker Name	Y-GATA-H4			
+8	385.24	0.5	0.5	virtual
+9	389.2	0.5	0.5		
+13	405.3	0.5	0.5	
+14	409.24	0.5	0.5	virtual
+14.1	410.24	0.4	0.5	virtual
+15	413.24	0.5	0.5	virtual
+16	417.24	0.5	0.5	virtual
+17	421.24	0.5	0.5	virtual
+18	425.24	0.5	0.5	virtual
+Marker Name	DYS460			
+6	77.7	0.5	0.5	
+14	110.7	0.5	0.5	
+Marker Name	DYS458			
+13	128.4	0.5	0.5	virtual
+14	132.4	0.5	0.5
+22	162.8	0.5	0.5	
+22.2	164.8	0.5	0.5	virtual
+23	166.8	0.5	0.5	virtual
+Marker Name	DYS481			
+17	185.5	0.5	0.5	virtual
+18	188.5	0.5	0.5	virtual
+19	191.5	0.5	0.5	
+27	215.5	0.5	0.5	
+27.1	216.5	0.4	0.5	virtual
+28	218.5	0.5	0.5	virtual
+29	221.5	0.5	0.5	virtual
+30	224.5	0.5	0.5	virtual
+31	227.5	0.5	0.5	virtual
+32	230.5	0.5	0.5	virtual
+Marker Name	DYS635			
+16	243.12	0.5	0.5	virtual
+17	247.12	0.5	0.5		
+27	288.0	0.5	0.5	
+28	292.0	0.5	0.5	virtual
+Marker Name	DYS448			
+15	316.8	0.5	0.5	virtual
+15.2	318.8	0.5	0.5	virtual
+16	320.8	0.5	0.5	virtual
+16.2	322.8	0.5	0.5	virtual
+17	324.8	0.5	0.5	
+24	366.85	0.5	0.5	
+Marker Name	DYS533			
+7	378.55	0.5	0.5	virtual
+8	382.55	0.5	0.5	virtual
+9	386.55	0.5	0.5		
+13	402.8	0.5	0.5	
+14	406.8	0.5	0.5	virtual
+15	410.8	0.5	0.5	virtual
+Marker Name	DYS456			
+11	79.3	0.5	0.5	virtual
+12	83.3	0.5	0.5	virtual
+13	87.3	0.5	0.5	
+18	107.8	0.5	0.5	
+18.3	110.8	0.5	0.4	virtual
+19	111.8	0.5	0.5	virtual
+20	115.8	0.5	0.5	virtual
+21	119.8	0.5	0.5	virtual
+22	123.8	0.5	0.5	virtual
+23	127.8	0.5	0.5	virtual
+Marker Name	DYS389I			
+10	143.7	0.5	0.5	
+15	163.15	0.5	0.5	
+16	167.15	0.5	0.5	virtual
+17	171.15	0.5	0.5	virtual
+Marker Name	DYS390			
+16	190.4	0.5	0.5	virtual
+17	194.4	0.5	0.5		
+27	234.5	0.5	0.5	
+28	238.5	0.5	0.5	virtual
+29	242.5	0.5	0.5	virtual
+Marker Name	DYS389II			
+24	251.25	0.5	0.5		
+34	292.1	0.5	0.5	
+35	296.1	0.5	0.5	virtual
+Marker Name	DYS518			
+32	311.7	0.5	0.5	virtual
+33	315.7	0.5	0.5		
+42	350.55	0.5	0.5	
+43	354.55	0.5	0.5	virtual
+44	358.55	0.5	0.5	virtual
+45	362.55	0.5	0.5	virtual
+46	366.55	0.5	0.5	virtual
+47	370.55	0.5	0.5	virtual
+48	374.55	0.5	0.5	virtual
+49	378.55	0.5	0.5	virtual
+50	382.55	0.5	0.5	virtual
+Marker Name	DYS391			
+5	78.7	0.5	0.5	virtual
+6	82.7	0.5	0.5	
+13	111.3	0.5	0.5	
+14	115.3	0.5	0.5	virtual
+15	119.3	0.5	0.5	virtual
+16	123.3	0.5	0.5	virtual
+Marker Name	DYS439			
+7	136.75	0.5	0.5	virtual
+8	140.75	0.5	0.5	virtual
+9	144.75	0.5	0.5	
+15	168.45	0.5	0.5	
+16	172.45	0.5	0.5	virtual
+17	176.45	0.5	0.5	virtual
+Marker Name	DYS437			
+11	187.9	0.5	0.5	virtual
+12	191.9	0.5	0.5	virtual
+12.1	195.9	0.4	0.5	virtual
+13	199.9	0.5	0.5	
+17	215.85	0.5	0.5	
+18	219.85	0.5	0.5	virtual
+19	223.85	0.5	0.5	virtual
+Marker Name	DYS385 a/b			
+7	235.4	0.5	0.5	
+24	304.65	0.5	0.5	
+25	308.65	0.5	0.5	virtual
+26	312.65	0.5	0.5	virtual
+27	316.65	0.5	0.5	virtual
+28	320.65	0.5	0.5	virtual
+Marker Name	DYS643			
+6	338.35	0.5	0.5	virtual
+7	345.35	0.5	0.5	virtual
+8	350.35	0.5	0.5	
+14	381.4	0.5	0.5	
+15	386.4	0.5	0.5	virtual
+16	391.4	0.5	0.5	virtual
+Marker Name	DYS438			
+7	87.1	0.5	0.5	virtual
+8	92.1	0.5	0.5	virtual
+8.2	94.1	0.5	0.5	virtual
+9	97.1	0.5	0.5	
+14	122.8	0.5	0.5	
+14.1	123.8	0.5	0.5	virtual
+15	127.8	0.5	0.5	virtual
+16	132.8	0.5	0.5	virtual
+Marker Name	DYS576			
+12	164.6	0.5	0.5	virtual
+13	168.6	0.5	0.5	virtual
+14	172.6	0.5	0.5	
+21	200.35	0.5	0.5	
+22	204.35	0.5	0.5	virtual
+23	208.35	0.5	0.5	virtual
+Marker Name	DYF387S1			
+31	223.65	0.5	0.5	virtual
+32	227.65	0.5	0.5	virtual
+33	231.65	0.5	0.5	
+42	267	0.5	0.5	
+43	271	0.5	0.5	virtual
+44	275	0.5	0.5	virtual
+45	279	0.5	0.5	virtual
+Marker Name	DYS627			
+11	289	0.5	0.5	virtual
+12	293	0.5	0.5	virtual
+13	297	0.5	0.5	virtual
+14	301	0.5	0.5	virtual
+15	305	0.5	0.5	virtual
+16	309	0.5	0.5	
+25	343.55	0.5	0.5	
+25.2	347.55	0.5	0.5	virtual
+26	351.55	0.5	0.5	virtual
+Marker Name	DYS449			
+24	364.2	0.5	0.5		
+35	409.15	0.5	0.5	
+36	411.15	0.5	0.5	virtual
