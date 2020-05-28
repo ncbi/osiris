@@ -421,6 +421,7 @@ void COARfile::_ChopFileExtension(wxString *ps)
 }
 wxString COARfile::FindPlotFile(const COARsample *pSample) const
 {
+  // more efficient if called by COARsample::GetPlotFileName()
   wxString sRtn;
   if(pSample != NULL)
   {

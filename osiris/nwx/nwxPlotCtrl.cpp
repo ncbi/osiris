@@ -37,15 +37,10 @@
 
 IMPLEMENT_CLASS(nwxPlotCtrl, wxPlotCtrl )
 
-const int nwxPlotCtrl::TIMER_ELAPSE(200);
 const unsigned int nwxPlotCtrl::TIMER_COUNT(3);
 
 nwxPlotCtrl::~nwxPlotCtrl()
 {
-  if(m_pTimer != NULL)
-  {
-    delete m_pTimer;
-  }
   if(m_pToolTip != NULL)
   {
     delete m_pToolTip;
@@ -115,11 +110,20 @@ void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
 //  m_Xshade.Draw(pdc,true);
 
 }
+
 void nwxPlotCtrl::DrawPlotCtrl(wxDC *dc)
 {
-//  ClearSelectedRanges(-1, true);
   wxPlotCtrl::DrawPlotCtrl(dc);
-  m_XLabels.Draw(dc,true);
+  if (GetBatchCount() && RenderingToWindow())
+  {
+    // there is a problem with wxPlotCtrl::m_areaRect
+    // so the XLabels will be drawn upon EndBatch()
+    RefreshOnEndBatch();
+  }
+  else
+  {
+    m_XLabels.Draw(dc, true);
+  }
 }
 
 bool nwxPlotCtrl::_OnMouseDown(wxMouseEvent &e)
@@ -292,9 +296,11 @@ void nwxPlotCtrl::_Init()
 
 }
 
-void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
+void nwxPlotCtrl::OnTimer(wxTimerEvent &)
 {
-  if(m_bClear || m_nDisableToolTip)
+  if (m_bStopTimer)
+  {}  // do nothing
+  else if(m_bClear || m_nDisableToolTip)
   {
     _ClearToolTip();
     m_bClear = false;
@@ -311,10 +317,6 @@ void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
       //StopTimer();
       m_nTimeHere = 0;
     }
-  }
-  if(m_bStopTimer)
-  {
-    m_pTimer->Stop();
   }
 }
 #if __TOOLTIP_TO_FRAME__
@@ -662,7 +664,6 @@ void nwxPlotCtrl::SendContextMenuEvent(wxMouseEvent &e)
 
 BEGIN_EVENT_TABLE(nwxPlotCtrl,wxPlotCtrl)
 
-EVT_TIMER(wxID_ANY,nwxPlotCtrl::nwxOnTimer)
 EVT_PLOTCTRL_VIEW_CHANGED(wxID_ANY, nwxPlotCtrl::OnViewChanged)
 EVT_MOUSE_EVENTS     ( nwxPlotCtrl::nwxOnMouse )
 END_EVENT_TABLE()

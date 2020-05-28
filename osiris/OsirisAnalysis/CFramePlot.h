@@ -334,7 +334,15 @@ private:
   CDialogExportPlot *_GetExportDialog();
   bool _CheckAnalysisFile(COARfile *pFile);
   void _CleanupExportDialog();
-  void ShowToolbars(bool bShow = true);
+  void _SetupBitmapPlot();
+  CPanelPlot *_GetBitmapPlot()
+  {
+    if (m_pPlotForBitmap == NULL)
+    {
+      _SetupBitmapPlot();
+    }
+    return m_pPlotForBitmap;
+  }
   void UpdatePlotNumbers();
   CPanelPlot *GetPanelPlot(bool bDraw = true, unsigned int nr = 0);
   wxScrolledWindow *m_pPanel;
@@ -353,6 +361,7 @@ private:
   CHistoryTime m_TimeLastRebuild;
   CFramePlotState m_nState;
   CPanelPlot *m_pPlotSyncTo;
+  CPanelPlot *m_pPlotForBitmap;
 #if DELAY_PLOT_AREA_SYNC
   CPanelPlot *m_pPlotSyncThisTo;
 #endif

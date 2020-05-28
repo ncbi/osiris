@@ -76,6 +76,7 @@ class wxTimer;
 class IOARpeak;
 class CSamplePeak;
 class COARpeakAny;
+class wxBitmap;
 
 typedef map<int,wxPlotData *> mapSamplePlots;
 
@@ -94,17 +95,17 @@ private:
 };
 
 
-class CPanelPlot : 
-    public PANEL_PLOT_TYPE,
-    public InwxShiftReceiver
+class CPanelPlot :
+  public PANEL_PLOT_TYPE,
+  public InwxShiftReceiver
 {
 private:
   class CLadderPeakSet
   {
   public:
     CLadderPeakSet(
-      const wxColour &colour, 
-      const wxString &sChannelName, 
+      const wxColour &colour,
+      const wxString &sChannelName,
       unsigned int nChannel) :
       m_colour(colour),
       m_sChannelName(sChannelName),
@@ -175,11 +176,11 @@ private:
     //
   public:
     DelayedViewRect() :
-        m_pBatch(NULL),
-        m_rect(0.0,0.0,1.0,1.0),
-        m_pPlot(NULL),
-        m_nDelay(0),
-        m_bSendEvent(false)
+      m_pBatch(NULL),
+      m_rect(0.0, 0.0, 1.0, 1.0),
+      m_pPlot(NULL),
+      m_nDelay(0),
+      m_bSendEvent(false)
     {}
     virtual ~DelayedViewRect()
     {
@@ -189,14 +190,19 @@ private:
     {
       return m_rect;
     }
-    void Check()
+    void Check(bool bForce = false)
     {
-      switch(m_nDelay)
+      if (bForce)
+      {
+        m_nDelay = 1;
+      }
+      switch (m_nDelay)
       {
       case 0:
         break;
       case 1:
         _DoIt();
+        m_nDelay = 0;
         break;
       default:
         m_nDelay--;
@@ -207,24 +213,25 @@ private:
     {
       _CleanupBatch();
       m_pPlot = p;
+      m_rect = p->GetViewRect();
     }
     void Setup(const wxRect2DDouble &rect, bool bSendEvent = false, unsigned int nDelay = 1)
     {
       m_rect = rect;
       m_bSendEvent = bSendEvent;
-      if(nDelay >= m_nDelay)
+      if (nDelay >= m_nDelay)
       {
         m_nDelay = nDelay;
         _SetupBatch();
       }
-      if(!m_nDelay)
+      if (!m_nDelay)
       {
         _DoIt();
       }
     }
     void Update()
     {
-      if( (!m_nDelay) && (m_pPlot != NULL) )
+      if ((!m_nDelay) && (m_pPlot != NULL))
       {
         m_rect = m_pPlot->GetViewRect();
       }
@@ -244,8 +251,9 @@ private:
     }
     void _SetupBatch(bool bCheckDelay = true)
     {
-      if(bCheckDelay && !m_nDelay)
-      { }
+      if (bCheckDelay && !m_nDelay)
+      {
+      }
       else if (m_pBatch == NULL && m_pPlot != NULL)
       {
         m_pBatch = new TnwxBatch<CPlotCtrl>(m_pPlot);
@@ -253,7 +261,7 @@ private:
     }
     void _DoIt()
     {
-      if(m_pPlot != NULL)
+      if (m_pPlot != NULL)
       {
         m_pPlot->SetViewRect(m_rect, m_bSendEvent);
         m_nDelay = 0;
@@ -272,26 +280,27 @@ public:
   static const int ALLELE_SORT;
   static const int ARTIFACT_SORT;
   CPanelPlot(
-    CFramePlot *parent, 
+    CFramePlot *parent,
     CPlotData *pData,
     COARfile *pFile,
     CMenuHistory *pMenuHistory,
     CKitColors *pColors,
     int nMenuNumber,
-    bool bDraw = true, 
+    bool bDraw = true,
     int nPlotNumber = 0,
     bool bExternalTimer = false);
 
   // constructor for CFrameAnalysis - MDI with grid and plot preview
   CPanelPlot(
     wxWindow *parent,
-    CFrameAnalysis *pFrame, 
+    CFrameAnalysis *pFrame,
     CPlotData *pData,
     COARfile *pFile,
     CKitColors *pColors,
     bool bExternalTimer = false);
   virtual ~CPanelPlot();
 
+  void SendPlotSizeEvent();
   bool IsPreview()
   {
     return (m_pFrameAnalysis != NULL);
@@ -300,6 +309,39 @@ public:
   {
     return (m_pButtonPanel != NULL);
   }
+  int DrawPlotTitleToDC(
+    wxDC *pDC, const wxString &sTitle,
+    int nWidth, int nHeight, double dDPI);
+
+  int DrawXAxisLabelToDC(wxDC *pDC, const wxRect &rectBitmap, double dDPI, bool bForcePrintFont)
+  {
+    return GetPlotCtrl()->DrawXAxisLabel(pDC, rectBitmap, dDPI, bForcePrintFont, true);
+  }
+  void SetRenderingToWindow(bool b)
+  {
+    GetPlotCtrl()->SetRenderingToWindow(b);
+    if (b && !m_bIgnoreTimer)
+    {
+      m_viewRect.Check(true);
+    }
+    m_bIgnoreTimer = !b;
+  }
+  bool GetRenderingToWindow()
+  {
+    return GetPlotCtrl()->RenderingToWindow();
+  }
+
+  wxBitmap *CreateAllChannelBitmap(
+    int nWidth, int nHeight, int nDPI,
+    const wxString &sTitle = wxEmptyString,
+    bool bForcePrintFont = false);
+
+  void DrawPlotToDC(
+    wxDC *pDC,
+    const wxRect &rect,
+    double dDPI,
+    bool bShowXAxis = true,
+    bool bForcePrintFont = false);
   COARsample *GetSample();
   bool CanShowPeakArea();
   void SetSashAndMinHeight(bool bShowSash, int nHeight);
@@ -351,7 +393,7 @@ public:
   }
   void SyncState(CPanelPlot *p, int nID);
   void RebuildCurves(bool bIgnoreViewRect = false);
-  wxRect2DDouble GetZoomOutRect(bool bAll = false);
+  wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0);
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
   void EditPeak(COARpeakAny *pPeak);
   wxRect2DDouble GetZoomLocus(const wxString &sLocus);
@@ -381,7 +423,7 @@ public:
   {
     return m_pMenu->GetPlotTypes();
   }
-  void CopySettings(CPanelPlot &w);
+  void CopySettings(CPanelPlot &w, int nDelay = 1);
   void SetPlotNumber(unsigned int i)
   {
     m_nPlotNr = i;
@@ -393,6 +435,10 @@ public:
   bool SyncValue()
   {
     return m_pMenu->SyncValue();
+  }
+  void SetSync(bool b)
+  {
+    m_pMenu->SetSync(b);
   }
   bool XBPSValue();
   void EnableLabelMenu(bool b = true)
@@ -446,7 +492,7 @@ public:
   const wxRect2DDouble &GetViewRect()
   {
     const wxRect2DDouble &r = m_viewRect.GetViewRect();
-    if(r.m_width < 1.0001)
+    if(m_bIgnoreTimer || r.m_width < 1.0001 || !m_pPlotCtrl->RenderingToWindow())
     {
       return m_pPlotCtrl->GetViewRect();
     }
@@ -454,12 +500,16 @@ public:
   }
   void SetViewRect(const wxRect2DDouble &r, bool bSendEvent = false, unsigned int nDelay = 0)
   {
-    m_viewRect.Setup(r,bSendEvent, nDelay);
+    m_viewRect.Setup(r, bSendEvent, m_bIgnoreTimer ? 0 : nDelay);
+    if (m_bIgnoreTimer && m_viewRect.GetDelay())
+    {
+      m_viewRect.Check(true);
+    }
   }
 
-  void ZoomOut(bool bAll = false, unsigned int nDelay = 0)
+  void ZoomOut(bool bAll = false, unsigned int nDelay = 0, int nLabelHeight = 0)
   {
-    SetViewRect(GetZoomOutRect(bAll),false,nDelay);
+    SetViewRect(GetZoomOutRect(bAll, nLabelHeight),false,nDelay);
   }
   void BeginBatch()
   {
@@ -513,6 +563,8 @@ public:
   virtual void ShiftRight(bool bShiftKey);
   virtual bool CanShiftLeft();
   virtual bool CanShiftRight();
+  double GetLabelHeightExtension(int nLabelHeight = 0);
+  void AdjustLabelHeightExtension(double dCurrentExtension, const wxRect &rect, int nLabelHeight = 0);
 
   void ResetDefaults()
   {
@@ -561,7 +613,8 @@ private:
   static void ExpandRect(wxRect2DDouble *p, double dBy = 0.05); 
   // expand height and width by  (1 + dBy + dBy)  
   // for 5% in each direction or 10% total,  dBy = 0.05
-  void ExtendLabelHeight(wxRect2DDouble *p);  // expand height to accommodate 8px labels
+  void ExtendLabelHeight(wxRect2DDouble *p, int nLabelHeight = 0);  
+      // expand height to accommodate labels
   int GetLabelHeightPixels()
   {
     return 16;
@@ -649,7 +702,7 @@ private:
     vector<unsigned int> &anLabel);
 
   void _BuildPLTlabels(bool bArtifactOnly = false, unsigned int nChannel = 0);
-  wxString _AlleleLabel(const IOARpeak *pPeak, vector<unsigned int> &anLabel);
+  wxString _AlleleLabel(const IOARpeak *pPeak, vector<unsigned int> &anLabel, bool bILS);
   wxString _ArtifactToolTip(
     const IOARpeak *pPeak, const wxString &sChannelName);
   wxString _AlleleToolTip(
@@ -712,6 +765,7 @@ private:
   unsigned int m_nNoiseCurves;
   int m_nMenuOffset;
   bool m_bExternalTimer;
+  bool m_bIgnoreTimer;
   bool m_bDoTimer;
   bool m_bXBPS; // used to check if event changed x axis
 

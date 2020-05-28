@@ -897,6 +897,14 @@ const COARlocus *COARsample::_FindLocus(const wxString &sName) const
   if(itr != m_spLocus.end()) { pRtn = *itr; }
   return pRtn;
 }
+const wxString &COARsample::GetPlotFileName() const
+{
+  if (m_sPlotFileName.IsEmpty() || !wxFileName::IsFileReadable(m_sPlotFileName))
+  {
+    m_sPlotFileName = m_pFile->FindPlotFile(this);
+  }
+  return m_sPlotFileName;
+}
 
 void COARsample::PostProcessFile(COARfile *pFile)
 {

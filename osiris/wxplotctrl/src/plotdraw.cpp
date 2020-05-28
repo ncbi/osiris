@@ -535,12 +535,13 @@ void wxPlotDrawerXAxis::Draw(wxDC *dc, bool refresh)
     // center the text in the window
     int x, y;
     dc->GetTextExtent(wxT("5"), &x, &y);
-    int y_pos = (GetDCRect().height - y)/2 + 2; // FIXME I want to center this
+    //int y_pos = (GetDCRect().height - y)/2 + 2; // FIXME I want to center this
+    int y_pos = 2; // testing
     // double current = ceil(m_viewRect.GetLeft() / m_xAxisTick_step) * m_xAxisTick_step;
     int i, count = m_tickPositions.GetCount();
     int nLast2 = count - 2;
     int leftMost = 0;
-    int nFullWidth = dc->GetSize().GetWidth();
+    int nFullWidth = dcRect.GetWidth();
     int nx;
     bool bShow = true;
     for (i=0; i<count; i++)
@@ -552,7 +553,7 @@ void wxPlotDrawerXAxis::Draw(wxDC *dc, bool refresh)
           wxSize sz = dc->GetTextExtent(sLabel);
           if (i == nLast2)
           {
-            // second to last label, get rightmost positino
+            // second to last label, get rightmost position
             // in case the last needs to shift left
             leftMost = nx + sz.GetWidth() + (x << 1);
           }

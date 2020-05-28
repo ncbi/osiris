@@ -30,6 +30,7 @@
 */
 #include "mainApp.h"
 #include <wx/tglbtn.h>
+#include <wx/bitmap.h>
 #include "nwx/nwxKeyState.h"
 #include "CPanelPlot.h"
 #include "CFramePlot.h"
@@ -165,6 +166,7 @@ CPanelPlot::CPanelPlot(
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
     m_bExternalTimer(bExternalTimer),
+    m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false)
 {
@@ -202,6 +204,7 @@ CPanelPlot::CPanelPlot(
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
     m_bExternalTimer(bExternalTimer),
+    m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false)
 {
@@ -217,7 +220,7 @@ void CPanelPlot::_BuildPanel(
   // now build it and they will come
   m_pPanel = new wxPanel(this,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
 
-  if(m_pFramePlot != NULL)
+  if(m_pFramePlot != NULL && pMenuHistory != NULL)
   {
     m_pButtonPanel = new CPanelPlotToolbar(m_pPanel,m_pData,m_pColors,pMenuHistory,nMenuNumber, bFirst);
     m_pButtonPanel->CopySettings(*m_pMenu);
@@ -249,8 +252,19 @@ void CPanelPlot::_BuildPanel(
   m_pPlotCtrl->SetMinExpValue(99999);
   m_pPanel->SetSizer(m_pSizer);
   m_pPanel->Layout();
+#ifdef __WXMAC__
+  SendPlotSizeEvent();
+#endif
 }
 
+void CPanelPlot::SendPlotSizeEvent()
+{
+  if(m_pFramePlot != NULL && HasToolbar())
+  {
+    wxSizeEvent e(m_pPlotCtrl->GetSize());
+    m_pPlotCtrl->GetEventHandler()->AddPendingEvent(e);
+  }
+}
 void CPanelPlot::_CleanupLadderPeakSet()
 {
   vectorptr<CLadderPeakSet>::cleanup(&m_vpLadderPeakSet);
@@ -325,6 +339,8 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
       break;
     case BASELINE_DATA:
       pdy = m_pData->GetBaselinePoints(nChannel);
+      break;
+    case COUNT_DATA:
       break;
     }
     if(pdy != NULL)
@@ -666,11 +682,12 @@ void CPanelPlot::SetOARfile(COARfile *pFile)
 }
 
 wxString CPanelPlot::_AlleleLabel(
-  const IOARpeak *pPeak, vector<unsigned int> &anLabelTypes)
+  const IOARpeak *pPeak, vector<unsigned int> &anLabelTypes, bool bILS)
 {
   wxString sLabel;
   wxString sRtn;
   unsigned int nType;
+  bool bAlleleDone = false;
   vector<unsigned int>::iterator itr;
   for(itr = anLabelTypes.begin(); itr != anLabelTypes.end(); ++itr)
   {
@@ -678,14 +695,28 @@ wxString CPanelPlot::_AlleleLabel(
     switch(nType)
     {
     case LABEL_ALLELE:
-      sLabel = COARpeak::FormatAlleleName(
-        *pPeak,
-        COARlocus::IsAmel(pPeak->GetLocusName()),
-        true);
+      if (!bAlleleDone)
+      {
+        sLabel = COARpeak::FormatAlleleName(
+          *pPeak,
+          COARlocus::IsAmel(pPeak->GetLocusName()),
+          true);
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     case LABEL_BPS:
-      sLabel = nwxString::FormatNumber(
-        nwxRound::Round(pPeak->GetBPS()) );
+      if (!bAlleleDone)
+      {
+        sLabel = nwxString::FormatNumber(
+          nwxRound::Round(pPeak->GetBPS()));
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     case LABEL_RFU:
       sLabel = nwxString::FormatNumber(
@@ -699,8 +730,15 @@ wxString CPanelPlot::_AlleleLabel(
         pPeak->GetPeakArea());
       break;
     case LABEL_ILS_BPS:
-      sLabel = nwxString::FormatNumber(
-        pPeak->GetMeanBPS());
+      if (!bAlleleDone)
+      {
+        sLabel = nwxString::FormatNumber(
+          pPeak->GetMeanBPS());
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     default:
       {
@@ -717,6 +755,7 @@ wxString CPanelPlot::_AlleleLabel(
         sRtn.Append(wchar_t('\n'));
       }
       sRtn.Append(sLabel);
+      sLabel.Empty();
     }
   }
   return sRtn;;
@@ -839,10 +878,11 @@ void CPanelPlot::_BuildPeakLabels(
     ? 0
     : pp->size();
   size_t j;
+  bool bILS = (nChannel == m_pData->GetILSChannel());
   for(j = 0; j < n; j++)
   {
     const CSamplePeak *pPeak = pp->at(j);
-    sLabel = _AlleleLabel(pPeak,anLabelTypes);
+    sLabel = _AlleleLabel(pPeak,anLabelTypes, bILS);
     sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
     bool bBPS = XBPSValue();
     double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
@@ -1068,6 +1108,7 @@ void CPanelPlot::_BuildOARlabels()
       nChannel <= nChannelCount;
       nChannel++)
     {
+      bool bILS = m_pData->GetILSChannel() == nChannel;
       if( !m_pMenu->ChannelValue(nChannel) ) {;}
       else if ( (pChannel = m_pOARfile->GetChannelByNr(nChannel)) == NULL )
       {
@@ -1095,7 +1136,7 @@ void CPanelPlot::_BuildOARlabels()
           m_vPeakAny.push_back(pPeak); // hold in array, delete later
           if(bLabels && pPeak->IsAllele())
           {
-            sLabel = _AlleleLabel(pPeak,anLabelTypes);
+            sLabel = _AlleleLabel(pPeak,anLabelTypes, bILS);
             sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
             wxStockCursor cur =
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
@@ -1341,7 +1382,7 @@ void CPanelPlot::_OnTimer(wxTimerEvent &e)
 
 void CPanelPlot::OnTimer(wxTimerEvent &e)
 {
-  if(m_bExternalTimer)
+  if(m_bExternalTimer && !m_bIgnoreTimer)
   {
     _OnTimer(e);
   }
@@ -1353,29 +1394,35 @@ void CPanelPlot::OnTimerEvent(wxTimerEvent &e)
     delete m_pTimer;
     m_pTimer = NULL;
   }
-  _OnTimer(e);
+  if (!m_bIgnoreTimer)
+  {
+    _OnTimer(e);
+  }
 }
 void CPanelPlot::OnPointSelected(wxPlotCtrlEvent &)
 {
-  if(m_bExternalTimer)
-  {
-    m_bDoTimer = true;
-  }
-  else
+  if(!m_bExternalTimer)
   {
     if(m_pTimer == NULL)
     {
       m_pTimer = new wxTimer(this,IDtimer);
     }
-    m_pTimer->Start(50,true);
-
+    if(!m_pTimer->IsRunning())
+    {
+      m_pTimer->Start(50,true);
+    }
   }
+  m_bDoTimer = true;
 }
 void CPanelPlot::OnViewChanging(wxPlotCtrlEvent &e)
 {
   if (e.GetHeight() < 5.0 || e.GetWidth() < 5.0)
   {
     e.Veto();
+  }
+  else
+  {
+    e.Skip();
   }
 }
 
@@ -1621,17 +1668,39 @@ void CPanelPlot::ExpandRect(wxRect2DDouble *p,double dBy)
   p->m_x -= d;
   p->m_width += (d + d);
 }
-void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p)
+void CPanelPlot::AdjustLabelHeightExtension(double dCurrentExtension, const wxRect &rect, int nLabelHeight)
+{
+  // when creating a bitmap, the height adjustment for the label height may need
+  // to be adjusted, after copying settings from a window plot
+  m_pPlotCtrl->DoSize(rect, false); 
+  double dNeededExtension = GetLabelHeightExtension(nLabelHeight);
+  if (dNeededExtension > dCurrentExtension)
+  {
+    wxRect2DDouble r = GetViewRect();
+    double d = (dNeededExtension / dCurrentExtension);
+    r.m_height *= d;
+    SetViewRect(r, false, 0);
+  }
+}
+double CPanelPlot::GetLabelHeightExtension(int nLabelHeight)
 {
   double dExtend = 1.0;
   wxRect rect = m_pPlotCtrl->GetPlotAreaRect();
   vector<unsigned int> an;
-  size_t nLabelRow = this->GetLabelTypes(&an);
-  int LABEL_HEIGHT = this->GetLabelHeightPixels();
+  size_t nLabelRow = GetLabelTypes(&an);
+  int LABEL_HEIGHT = (nLabelHeight > 0) ? nLabelHeight : this->GetLabelHeightPixels();
   int nLabelPixels = nLabelRow * LABEL_HEIGHT;
-  if(rect.height > nLabelPixels)
+  if (rect.height > nLabelPixels)
   {
     dExtend = double(rect.height) / double(rect.height - nLabelPixels);
+  }
+  return dExtend;
+}
+void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p, int nLabelHeight)
+{
+  double dExtend = GetLabelHeightExtension(nLabelHeight);
+  if(dExtend > 1.0)
+  {
     p->m_height *= dExtend;
   }
 }
@@ -1643,7 +1712,7 @@ void CPanelPlot::_ConvertRectToBPS(wxRect2DDouble *pRect)
   pRect->SetLeft(dLeft);
   pRect->SetRight(dRight);
 }
-wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
+wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll, int nLabelHeight)
 {
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
   int nStart = 0;
@@ -1666,7 +1735,7 @@ wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
     rtn.Union(m_pPlotCtrl->GetCurve(i)->GetBoundingRect());
   }
   ExpandRect(&rtn);
-  ExtendLabelHeight(&rtn);
+  ExtendLabelHeight(&rtn, nLabelHeight);
   return rtn;
 }
 void CPanelPlot::ZoomToLocus(const wxString &sLocus, unsigned int nDelay)
@@ -1772,7 +1841,7 @@ void CPanelPlot::SetupLabelMenus()
 {
   bool b = CanShowPeakArea();
   m_pMenu->EnablePeakAreaLabel(b);
-  if(m_pButtonPanel != NULL)
+  if(HasToolbar())
   {
     m_pButtonPanel->EnablePeakAreaLabel(b);
   }
@@ -1986,11 +2055,10 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     SetViewRect(rect, false, 1);
   }
-//  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
-//  {
-//    m_pFramePlot->SyncTo(this);
-//  }
-  Refresh();
+  else
+  {
+    RE_RENDER;
+  }
 }
 
 
@@ -2052,15 +2120,15 @@ void CPanelPlot::ShowToolbar(bool bShow)
     }
   }
 }
-void CPanelPlot::CopySettings(CPanelPlot &w)
+void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay)
 {
   TnwxBatch<CPanelPlot> x(this);
   TnwxBatch<CPanelPlot> y(&w);
   _SyncControllers(w.m_pMenu);
   wxRect2DDouble rect = w.GetViewRect();
   SyncToolbar(&w);
-  RebuildCurves();
-  SetViewRect(rect, false, 1);
+  RebuildCurves(true);
+  SetViewRect(rect, false, nDelay);
 }
 bool CPanelPlot::MenuEvent(wxCommandEvent &e)
 {
@@ -2406,6 +2474,179 @@ void CPanelPlot::_SetFileHasBeenPrompted(CPlotData *p)
   wxString s = _GetFileName(p);
   g_setNoBpsPrompt.insert(s);
 }
+
+
+void CPanelPlot::DrawPlotToDC(
+  wxDC *pDC, const wxRect &rect, 
+  double dDPI, bool bShowXAxis, bool bForcePrintFont)
+{
+  // initialize rectangle to white -- probably not necessary
+
+  if (rect.GetHeight() >= 20)
+  {
+    nwxPlotCtrl *pPlotCtrl = GetPlotCtrl();
+    bool bFlipXAxis = (!pPlotCtrl->GetXAxisLabel().IsEmpty()) &&
+      (pPlotCtrl->GetShowXAxisLabel() != bShowXAxis);
+
+    if (bFlipXAxis)
+    {
+      pPlotCtrl->SetShowXAxisLabel(bShowXAxis);
+    }
+    bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
+    pPlotCtrl->SetRenderingToWindow(false);
+    pDC->DestroyClippingRegion();
+    pDC->SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+    pDC->SetPen(*wxWHITE_PEN);
+    pDC->SetBrush(*wxWHITE_BRUSH);
+    pDC->DrawRectangle(rect);
+    pPlotCtrl->DrawEntirePlot(pDC, rect, dDPI, bForcePrintFont);
+    pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
+    if (bFlipXAxis)
+    {
+      pPlotCtrl->SetShowXAxisLabel(!bShowXAxis);
+    }
+  }
+}
+
+
+int CPanelPlot::DrawPlotTitleToDC(
+  wxDC *pDC, const wxString &sTitle,
+  int nWidth, int nHeight, double dDPI)
+{
+  // draw plot title to the top of a bitmap and return the height in pixels
+  // wxDC - dc for the entire graphic
+  // sTitle - plot title string
+  // nWidth - width of the entire graphic (all plots, etc)
+  // nHeight - height of the entire graphic
+  // dDPI - pixels per inch
+  
+  int nTitleHeight = 0;
+  int nBorder = RINT(dDPI * (1.0 / 36.0));
+  if (nBorder < 2) { nBorder = 2; }
+  if (!sTitle.IsEmpty())
+  {
+    wxSize szTitle;
+    wxFont fn = GetPlotCtrl()->GetAxisFont();
+    // was - double dSize = double(fn.GetPointSize() * nDPI) * (1.0/36.0);
+    // scale font by multplying by DPi and dividing by 72, then double
+    // 4/1/2020 - change font scale to 1.25
+    double dSize = fn.GetPointSize() * dDPI  * (1.25 / 72.0);
+    int nMaxX = (nWidth * 9) / 10;
+    int nMaxY = nHeight / 10;
+    double dResize = 1.0;
+    bool bResize = false;
+    fn.SetPointSize(nwxRound::Round(dSize));
+    //fn.SetWeight(wxFONTWEIGHT_BOLD);  // comment out, kinda ugly
+
+    pDC->SetFont(fn);
+    pDC->SetTextForeground(*wxBLACK);
+    pDC->SetTextBackground(*wxWHITE);
+    szTitle = pDC->GetTextExtent(sTitle);
+    if (szTitle.GetWidth() > nMaxX)
+    {
+      dResize = (double)nMaxX / (double)szTitle.GetWidth();
+      bResize = true;
+    }
+    if (szTitle.GetHeight() > nMaxY)
+    {
+      double d = (double)nMaxY / (double)szTitle.GetHeight();
+      if (d < dResize)
+      {
+        dResize = d;
+      }
+      bResize = true;
+    }
+    if (bResize)
+    {
+      int nPt = (int)floor(dSize * dResize);
+      if (nPt < 4) { nPt = 4; }
+      fn.SetPointSize(nPt);
+      pDC->SetFont(fn);
+      szTitle = pDC->GetTextExtent(sTitle);
+    }
+    nTitleHeight = szTitle.GetHeight();
+    int nXoffset = (nWidth - szTitle.GetWidth() + 1) >> 1;
+    pDC->DrawText(sTitle, nXoffset, nBorder);
+  }
+  return nBorder + nTitleHeight;
+}
+
+wxBitmap *CPanelPlot::CreateAllChannelBitmap(
+  int nWidth, int nHeight, int nDPI,
+  const wxString &sTitle,
+  bool bForcePrintFont)
+{
+  double dDPI = (double)nDPI;
+  wxBitmap *pBitmap = new wxBitmap(nWidth, nHeight, 32);
+  wxMemoryDC dc(*pBitmap);
+  int nTitleOffset = 0;
+
+  // initialize bitmap to white -- probably not necessary
+
+  dc.SetBackground(*wxWHITE_BRUSH);
+  dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+  dc.Clear();
+
+  // draw X-Axis Label at the bottom
+
+  nwxPlotCtrl *pPlotCtrl = GetPlotCtrl();
+  bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
+  pPlotCtrl->SetRenderingToWindow(false);
+  int nXLabelHeight = DrawXAxisLabelToDC(
+        &dc, wxRect(wxSize(nWidth, nHeight)), 
+      dDPI, bForcePrintFont); // if no label, then the margin is returned
+  // set up title
+  nTitleOffset = DrawPlotTitleToDC(&dc, sTitle, nWidth, nHeight, dDPI);
+  // get channels
+  std::set<int> setChannels;
+  m_pData->GetChannelNumbers(&setChannels);
+  int nPlotAreaHeight = nHeight - nTitleOffset - nXLabelHeight;
+  int nPlotHeight = (nHeight - nTitleOffset - nXLabelHeight) / (int)setChannels.size();
+
+  if (nPlotHeight >= 20)
+  {
+    
+    wxRect rect(0, 0, nWidth, nPlotHeight);
+    int nRounding = nPlotAreaHeight - (nPlotHeight * (int)setChannels.size());
+    int nY = nTitleOffset + nRounding;
+          // due to height rounding, the x-axis may be too low on screen images
+          // by up to n-1 pixels where n is the number of channels
+          // on a high res bitmap it is not significant
+
+    // first show all channels to compute zoom
+    std::unique_ptr<wxBitmap> pBitmapPlot
+      (new wxBitmap(nWidth, nPlotHeight, 32));
+    wxMemoryDC dcPlot(*pBitmapPlot);
+    ShowAllChannels(true);
+    RebuildCurves(true);
+    m_pPlotCtrl->DoSize(rect, false); 
+    // DoSize - set wxPlotCtrl::m_areaRect so that ZoomOut will leave room for labels
+    ZoomOut(false, 0, nXLabelHeight);
+    wxRect2DDouble wxRectZoom = m_viewRect.GetViewRect();
+    TnwxBatch<CPlotCtrl> batch(this->m_pPlotCtrl);
+    for (std::set<int>::iterator itr = setChannels.begin();
+      itr != setChannels.end();
+      ++itr)
+    {
+      ShowOneChannel(*itr);
+      RebuildCurves(true);
+      SetViewRect(wxRectZoom);
+
+      dcPlot.SetBackground(*wxWHITE_BRUSH);
+      dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+      dcPlot.DestroyClippingRegion();
+      dcPlot.Clear();
+
+      DrawPlotToDC(&dcPlot, rect, dDPI, false, bForcePrintFont);
+      dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
+      nY += nPlotHeight;
+    }
+  }
+  pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
+  return pBitmap;
+}
+
+
 
 BEGIN_EVENT_TABLE(CPanelPlot, PANEL_PLOT_TYPE)
 EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)

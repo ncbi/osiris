@@ -466,6 +466,7 @@ CFramePlot::CFramePlot(
     m_TimeLastRebuild(NULL),
     m_nState(FP_NO_STATE),
     m_pPlotSyncTo(NULL),
+    m_pPlotForBitmap(NULL),
 #if DELAY_PLOT_AREA_SYNC
     m_pPlotSyncThisTo(NULL),
 #endif
@@ -1566,7 +1567,7 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
       if( (pPlot != p) && pPlot->SyncValue())
       {
         TnwxBatch<CPanelPlot> xxx2(pPlot);
-        pPlot->SetViewRect(r);
+        pPlot->SetViewRect(r, false, 0);
         bRtn = true;
       }
     }
@@ -1575,19 +1576,81 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
   return bRtn;
 }
 
+
+class DelayZoomToLocus : public nwxTimerTaskCount
+{
+public:
+  // delay a call to CFramePlot::ZoomToLocus() by 'nDelay' timer intervals
+  // nwxTimerTaskCount is in ../nwx/nwxTimerReceiver.h, cpp
+  DelayZoomToLocus(CFramePlot *pPlot, const wxString &sLocus, unsigned int nDelay) :
+    nwxTimerTaskCount(nDelay),
+    m_sLocus(sLocus),
+    m_pFrame(pPlot)
+  {}
+  virtual ~DelayZoomToLocus() {}
+  virtual bool Run(wxTimerEvent &)
+  {
+    bool b = m_pFrame->IsShown();
+    if (b)
+    {
+      m_pFrame->ZoomToLocus(m_sLocus, 0);
+    }
+    return b;
+  }
+private:
+  const wxString m_sLocus;
+  CFramePlot *m_pFrame;
+};
+
+class DelayZoomOut : public nwxTimerTaskCount
+{
+public:
+  // delay a call to CFramePlot::ZoomOut() by 'nDelay' timer intervals
+  // nwxTimerTaskCount is in ../nwx/nwxTimerReceiver.h, cpp
+  DelayZoomOut(CFramePlot *pPlot, bool bAll, unsigned int nDelay) :
+    nwxTimerTaskCount(nDelay),
+    m_pFrame(pPlot),
+    m_bAll(bAll)
+  {}
+  virtual ~DelayZoomOut() {}
+  virtual bool Run(wxTimerEvent &)
+  {
+    bool b = m_pFrame->IsShown();
+    if (b)
+    {
+      m_pFrame->ZoomOut(m_bAll, 0);
+    }
+    return b;
+  }
+private:
+  CFramePlot *m_pFrame;
+  bool m_bAll;
+};
+
 void CFramePlot::ZoomOut(bool bAll,unsigned int nDelay )
 {
-  wxRect2DDouble r = GetZoomOutRect(bAll);
-  ZoomAll(r,nDelay);
+  if (nDelay)
+  {
+    AddTask(new DelayZoomOut(this, bAll, nDelay));
+  }
+  else
+  {
+    wxRect2DDouble r = GetZoomOutRect(bAll);
+    ZoomAll(r, nDelay);
+  }
 }
 
 void CFramePlot::ZoomToLocus(const wxString &sLocus,unsigned int nDelay )
 {
-  if(!m_setPlots.size()) {} // do nothing
+  if (nDelay)
+  {
+    AddTask(new DelayZoomToLocus(this, sLocus, nDelay));
+  }
+  else if(!m_setPlots.size()) {} // do nothing
   else if(sLocus.IsEmpty())
   {
     // no locus specified
-    ZoomOut(false,0);
+    ZoomOut(false, nDelay);
   }
   else
   {
@@ -2075,14 +2138,28 @@ void CFramePlot::OnSize(wxSizeEvent &e)
   e.Skip(true);
 }
 
+
+void CFramePlot::_SetupBitmapPlot()
+{
+  // called from CFramePlot::_GetBitmapPlot()
+
+  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0, true);
+  m_pPlotForBitmap->SetRenderingToWindow(false);
+  m_pPlotForBitmap->SetSync(false);
+  m_pPlotForBitmap->Show(false);
+  m_pPlotForBitmap->BeginBatch();
+}
+
 wxBitmap *CFramePlot::CreateBitmap(
   int nWidth, int nHeight, int nDPI, const wxString &sTitle, bool bForcePrintFont)
 {
-  wxBitmap *pBitmap = new wxBitmap(nWidth,nHeight,32);
+  wxSize sz(nWidth, nHeight);
+  wxRect rect(sz);
+  double dLabelExtension;
+  double dDPI = (double)nDPI;
+  wxBitmap *pBitmap = new wxBitmap(sz, 32);
   wxMemoryDC dc(*pBitmap);
-  int nTitleOffset = 0;
-  int nPlotHeight;
-
+  CPanelPlot *pPanelPlot = _GetBitmapPlot();
 
   // initialize bitmap to white -- probably not necessary
 
@@ -2090,142 +2167,66 @@ wxBitmap *CFramePlot::CreateBitmap(
   dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
   dc.Clear();
 
-  // set up title
+  int nXLabelHeight = pPanelPlot->DrawXAxisLabelToDC(
+    &dc, rect, dDPI, bForcePrintFont);
+  int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(&dc, sTitle, nWidth, nHeight, dDPI);
+  int nLabelHeight = pPanelPlot->GetPlotCtrl()->GetTextHeight(wxT("-123456789.0"), &dc, rect, dDPI, bForcePrintFont);
 
-  if( (!sTitle.IsEmpty()) && (!m_setPlots.empty()) )
+  int nPlotAreaHeight = nHeight - nXLabelHeight - nTitleOffset;
+  int nPlotCount = (int)m_setPlots.size();
+  if (!nPlotCount)
   {
-    wxSize szTitle;
-    wxFont fn = (*m_setPlots.begin())->GetPlotCtrl()->GetAxisFont();
-    // double dSize = double(fn.GetPointSize() * nDPI) * (1.0/36.0);
-    // scale font by multplying by DPi and dividing by 72, then double
-    // 4/1/2020 - change font scale to 1.25
-    double dSize = fn.GetPointSize() * nDPI  * (1.25 / 72.0);
-    int nMaxX = (nWidth * 9) / 10;
-    int nMaxY = nHeight / 10;
-    double dResize = 1.0;
-    bool bResize = true;
-    fn.SetPointSize(nwxRound::Round(dSize));
-    //fn.SetWeight(wxFONTWEIGHT_BOLD);  // comment out, kinda ugly
-
-    dc.SetFont(fn);
-    dc.SetTextForeground(*wxBLACK);
-    dc.SetTextBackground(*wxWHITE);
-    szTitle = dc.GetTextExtent(sTitle);
-    if(szTitle.GetWidth() > nMaxX)
-    {
-      dResize = (double)nMaxX / (double)szTitle.GetWidth();
-      bResize = true;
-    }
-    if(szTitle.GetHeight() > nMaxY)
-    {
-      double d = (double) nMaxY / (double) szTitle.GetHeight();
-      if(d < dResize)
-      {
-        dResize = d;
-      }
-      bResize = true;
-    }
-    if(bResize)
-    {
-      int nPt = (int)floor(dSize * dResize);
-      if(nPt < 4) { nPt = 4;}
-      fn.SetPointSize(nPt);
-      dc.SetFont(fn);
-      szTitle = dc.GetTextExtent(sTitle);
-    }
-    nTitleOffset = szTitle.GetHeight();
-    int nTitleHalf = nTitleOffset >> 1;
-    nTitleOffset += nTitleHalf;
-    int nXoffset = nWidth - szTitle.GetWidth();
-    if(nXoffset < 0)
-    {
-      nXoffset = 0;
-    }
-    nXoffset >>= 1;
-    dc.DrawText(sTitle,nXoffset,nTitleHalf);
+    nPlotCount = 1;
   }
-  
-  // draw X-Axis Label
+  int nPlotHeight = nPlotAreaHeight / nPlotCount;
+  int nRoundingOffset = nPlotAreaHeight - (nPlotHeight * nPlotCount);
+  nTitleOffset += nRoundingOffset;
 
-  double dDPI = (double)nDPI;
-  wxRect rect(0, 0, nWidth, nHeight >> 2);
-  wxBitmap bitmapXLabel(nWidth, rect.GetHeight(), 32);
-  wxMemoryDC dcXLabel(bitmapXLabel);
-  nwxPlotCtrl *pPlotCtrl = (*(m_setPlots.begin()))->GetPlotCtrl();
-  bool bX = (pPlotCtrl->GetShowXAxisLabel() && 
-    !pPlotCtrl->GetXAxisLabel().IsEmpty());
-
-  int nXLabelHeight = bX
-    ? pPlotCtrl->DrawXAxisLabel(&dcXLabel, rect, dDPI, bForcePrintFont)
-    : 0;
-  nPlotHeight = (nHeight - nTitleOffset - nXLabelHeight) / (int)m_setPlots.size();
-
-  if(nPlotHeight >= 20)
+  if (nPlotHeight >= 20)
   {
+    wxRect rectPlot(0, 0, nWidth, nPlotHeight);
     set<CPanelPlot *>::iterator itr;
-    //wxRect rect(0,0,nWidth,nPlotHeight);
-    rect.SetHeight(nPlotHeight);
     CPanelPlot *pPlot;
+    std::unique_ptr<wxBitmap> pBitmapPlot
+      (new wxBitmap(nWidth, nPlotHeight, 32));
+    wxMemoryDC dcPlot(*pBitmapPlot);
     int nY;
 
+#if 1
     // there is a axis sync bug, so here is the work around
-    for(itr = m_setPlots.begin();
+    for (itr = m_setPlots.begin();
       itr != m_setPlots.end();
       ++itr)
     {
       pPlot = *itr;
-      if(pPlot->SyncValue())
+      if (pPlot->SyncValue())
       {
         SyncTo(pPlot);
         break;
       }
     }
-#ifdef __WXMAC__
-    for(itr = m_setPlots.begin();
-      itr != m_setPlots.end();
-      ++itr)
-    {
-      // create separate bitmap/dc for each plot and do a Blit to copy to main bitmap/dc
-      wxBitmap BitmapTmp(nWidth,nPlotHeight,32);
-      wxMemoryDC dcTmp(BitmapTmp);
-      dcTmp.SetBackground(*wxWHITE_BRUSH);
-      dcTmp.Clear();
-      pPlot = *itr;
-      nY = (int)pPlot->GetPlotNumber();
-      pPlotCtrl = pPlot->GetPlotCtrl();
-      if (bX) { pPlotCtrl->SetShowXAxisLabel(false); }
-      pPlotCtrl->DrawEntirePlot(&dcTmp,rect,dDPI, bForcePrintFont);
-      if (bX) { pPlotCtrl->SetShowXAxisLabel(true); }
-      int nYdest = (nY * nPlotHeight)  + nTitleOffset;
-      dc.Blit(0,nYdest,nWidth,nPlotHeight,&dcTmp,0,0);
-    }
-#else
-    for(itr = m_setPlots.begin();
-      itr != m_setPlots.end();
-      ++itr)
-    {
-      pPlot = *itr;
-      nY = (int)pPlot->GetPlotNumber();
-      rect.SetY((nY * nPlotHeight) + nTitleOffset);
-      pPlotCtrl = pPlot->GetPlotCtrl();
-      bX = pPlotCtrl->GetShowXAxisLabel();
-      if (bX) { pPlotCtrl->SetShowXAxisLabel(false); }
-      bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
-      pPlotCtrl->SetRenderingToWindow(false);
-      pPlotCtrl->DrawEntirePlot(&dc,rect,dDPI, bForcePrintFont);
-      pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
-      if (bX) { pPlotCtrl->SetShowXAxisLabel(true); }
-    }
 #endif
-    if (bX)
+    for (itr = m_setPlots.begin();
+      itr != m_setPlots.end();
+      ++itr)
     {
-      nY = (nPlotHeight * (int)m_setPlots.size()) + nTitleOffset;
-      dc.SetDeviceOrigin(0, 0);
-      dc.Blit(0, nY, nWidth, nXLabelHeight, &dcXLabel, 0, 0);
+      dcPlot.SetBackground(*wxWHITE_BRUSH);
+      dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+      dcPlot.DestroyClippingRegion();
+      dcPlot.Clear();
+      pPlot = *itr;
+      dLabelExtension = pPlot->GetLabelHeightExtension();
+      pPanelPlot->CopySettings(*pPlot, 0);
+      pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
+      pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
+      nY = ((int)pPlot->GetPlotNumber() * nPlotHeight) + nTitleOffset;
+      dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
     }
   }
   return pBitmap;
 }
+
+
 #if HAS_STATUS_BAR
 void CFramePlot::UpdateStatusBar()
 {

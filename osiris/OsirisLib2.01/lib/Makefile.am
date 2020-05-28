@@ -13,6 +13,7 @@ libosiris_a_SOURCES = \
 ../DataSignalSM.cpp \
 ../DirectoryManager.cpp \
 ../Evaluate.cpp \
+../ExportFile.cpp \
 ../Expression.cpp \
 ../ExpressionParserUX.cpp \
 ../FailureMessages.cpp \
@@ -29,6 +30,7 @@ libosiris_a_SOURCES = \
 ../IndividualGenotype.cpp \
 ../LadderData.cpp \
 ../LeastMedianOfSquares.cpp \
+../ModPairs.cpp \
 ../Notice.cpp \
 ../OsirisInputFile.cpp \
 ../OsirisMsg.cpp \
@@ -61,3 +63,4 @@ libosiris_a_SOURCES = \
 ../TestCharacteristic.cpp \
 ../TracePrequalification.cpp \
 ../xmlwriter.cpp
+
