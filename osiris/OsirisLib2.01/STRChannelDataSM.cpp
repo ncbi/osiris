@@ -1117,11 +1117,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are no expected peaks for the ILS.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 
 		cout << ErrorString << endl;
-		cout << "There are " << PreliminaryCurveList.Entries () << " curves needed out of " << Size << endl;
+		cout << "There are insufficiently many peaks within expected parameters.  Number expected = " << Size << endl;
 		return -50;
 	}
 
@@ -1133,10 +1133,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, "0");
+//		AppendDataForSmartMessage (tooFewPeaks, "0");
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are no peaks available in the ILS" << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Number expected = " << Size << endl;
 		return -50;
 	}
 
@@ -1148,10 +1148,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+	//	AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << PreliminaryCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Number expected = " << Size << endl;
 		return -50;
 	}
 
@@ -1530,11 +1530,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 				ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 
 			SetMessageValue (tooFewPeaks, true);
-			AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+//			AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
 			AppendDataForSmartMessage (tooFewPeaks, Size);
 
-			cout << "After recursive search, there are " << FinalCurveList.Entries () << " curves needed out of " << Size << endl;
-			cout << "Original number = " << origNumberOfPeaks << " and after classifying by height, " << TotalCandidates << endl;
+			cout << "After recursive search, there are too few peaks within expected parameters.  Number of peaks expected = " << Size << endl;
 
 			status = -1;
 			correlation = 0.0;
@@ -1585,8 +1584,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are no peaks within expected parameters.\n";
 
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, "0");
+//		AppendDataForSmartMessage (tooFewPeaks, "0");
 		AppendDataForSmartMessage (tooFewPeaks, Size);
+
+		cout << "There are too few peaks within expected parameters for ILS.  Number of expected peaks = " << Size << "\n";
 
 		while (nextSignal = (DataSignal*) CompleteIterator ())
 			nextSignal->ReportNotices (ExcelText, "\t\t", "\t");
@@ -1889,11 +1890,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are no expected peaks for the ILS.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 
 		cout << ErrorString << endl;
-		cout << "There are " << PreliminaryCurveList.Entries () << " curves needed out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters for ILS.  Expected number of peaks = " << Size << endl;
 		return -50;
 	}
 
@@ -1905,10 +1906,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << PreliminaryCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Expected number of peaks = " << Size << endl;
 
 		if (PreliminaryCurveList.Entries () == 0)
 			return -50;
@@ -2076,10 +2077,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << FinalCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Expected number of peaks = " << Size << endl;
 
 		if (FinalCurveList.Entries () == 0)
 			return -50;
@@ -2204,10 +2205,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << FinalCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Expected number of peaks = " << Size << endl;
 
 		if (FinalCurveList.Entries () == 0)
 			return -50;
