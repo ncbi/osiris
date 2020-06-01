@@ -394,6 +394,53 @@ public:
     return m_nPlotMaxLadderLabels;
   }
 
+  //  plot print settings for analysis printout
+
+  bool GetPrintDataAnalyzed() const
+  {
+    return m_bPrintDataAnalyzed;
+  }
+  bool GetPrintDataRaw() const
+  {
+    return m_bPrintDataRaw;
+  }
+  bool GetPrintDataLadder() const
+  {
+    return m_bPrintDataLadder;
+  }
+  bool GetPrintDataBaseline() const
+  {
+    return m_bPrintDataBaseline;
+  }
+  bool GetPrintDataXBPS() const
+  {
+    return m_bPrintDataXBPS;
+  }
+  bool GetPrintShowILS() const
+  {
+    return m_bPrintShowILS;
+  }
+  bool GetPrintShowRFU() const
+  {
+    return m_bPrintShowRFU;
+  }
+  bool GetPrintShowLadderLabels() const
+  {
+    return m_bPrintShowLadderLabels;
+  }
+  unsigned int GetPrintShowArtifact() const
+  {
+    return m_nPrintShowArtifact;
+  }
+  const vector<unsigned int> &GetPrintDisplayPeak() const
+  {
+    return m_anPrintDisplayPeak;
+  }
+  int GetPrintZoomPrimerPeak() const
+  {
+    return m_nPrintZoomPrimerPeak;
+  }
+
   //  plot printout -- margins are in millimeters
 
   unsigned int GetPrintPlotMarginTop() const
@@ -829,6 +876,53 @@ public:
     __SET_VALUE(m_nPlotMaxLadderLabels,n);
   }
 
+  //  plot print settings for analysis printout
+
+  void SetPrintDataAnalyzed(bool b)
+  {
+    __SET_VALUE(m_bPrintDataAnalyzed,b);
+  }
+  void SetPrintDataRaw(bool b)
+  {
+    __SET_VALUE(m_bPrintDataRaw,b);
+  }
+  void SetPrintDataLadder(bool b)
+  {
+    __SET_VALUE(m_bPrintDataLadder,b);
+  }
+  void SetPrintDataBaseline(bool b)
+  {
+    __SET_VALUE(m_bPrintDataBaseline,b);
+  }
+  void SetPrintDataXBPS(bool b)
+  {
+    __SET_VALUE(m_bPrintDataXBPS,b);
+  }
+  void SetPrintShowILS(bool b)
+  {
+    __SET_VALUE(m_bPrintShowILS,b);
+  }
+  void SetPrintShowRFU(bool b)
+  {
+    __SET_VALUE(m_bPrintShowRFU,b);
+  }
+  void SetPrintShowLadderLabels(bool b)
+  {
+    __SET_VALUE(m_bPrintShowLadderLabels,b);
+  }
+  void SetPrintShowArtifact(unsigned int n)
+  {
+    __SET_VALUE(m_nPrintShowArtifact,n);
+  }
+  void SetPrintDisplayPeak(const vector<unsigned int> &an)
+  {
+    __SET_VALUE(m_anPrintDisplayPeak,an);
+  }
+  void SetPrintZoomPrimerPeak(int n)
+  {
+    __SET_VALUE(m_nPrintZoomPrimerPeak,n);
+  }
+
   //  plot printout -- margins are in millimeters
 
   void SetPrintPlotMarginTop(unsigned int n)
@@ -1101,6 +1195,20 @@ protected:
   unsigned int m_nPlotShowArtifact;
   vector<unsigned int> m_anPlotDisplayPeak;
   int m_nPlotMaxLadderLabels;
+
+  //  plot print settings for analysis printout
+
+  bool m_bPrintDataAnalyzed;
+  bool m_bPrintDataRaw;
+  bool m_bPrintDataLadder;
+  bool m_bPrintDataBaseline;
+  bool m_bPrintDataXBPS;
+  bool m_bPrintShowILS;
+  bool m_bPrintShowRFU;
+  bool m_bPrintShowLadderLabels;
+  unsigned int m_nPrintShowArtifact;
+  vector<unsigned int> m_anPrintDisplayPeak;
+  int m_nPrintZoomPrimerPeak;
 
   //  plot printout -- margins are in millimeters
 

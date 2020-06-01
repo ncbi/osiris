@@ -55,6 +55,7 @@ public:
     const wxString &sTitle, bool bPageButtons = false);
   virtual ~CPrintPreviewFrame() {}
   virtual void CreateControlBar();
+  void OnSettings(wxCommandEvent &);
 private:
   bool m_bPageButtons;
   DECLARE_PERSISTENT_SIZE_POSITION

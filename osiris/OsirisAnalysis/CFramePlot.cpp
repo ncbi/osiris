@@ -1492,7 +1492,7 @@ CPanelPlot *CFramePlot::GetPanelPlot(bool bFirst, unsigned int nr)
   {
     int nMenu = (int)m_vpPlotsByMenuNumber.size();
     CMenuHistory *pMenuHist = _GetMenuHistoryPopup();
-    pRtn = new CPanelPlot(this,m_pData,m_pOARfile,pMenuHist,m_pColors,nMenu,bFirst,nr,true);
+    pRtn = new CPanelPlot(this, m_pData, m_pOARfile, pMenuHist, m_pColors, nMenu, bFirst, nr); // , true);  // EXT TIMER
     m_vpPlotsByMenuNumber.push_back(pRtn);
     if(bFirst)
     {
@@ -2143,7 +2143,7 @@ void CFramePlot::_SetupBitmapPlot()
 {
   // called from CFramePlot::_GetBitmapPlot()
 
-  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0, true);
+  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0);   // EXT TIMER , true);
   m_pPlotForBitmap->SetRenderingToWindow(false);
   m_pPlotForBitmap->SetSync(false);
   m_pPlotForBitmap->Show(false);

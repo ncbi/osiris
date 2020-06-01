@@ -146,6 +146,20 @@ my $VARLIST =
   ["m_anPlotDisplayPeak", "vector<unsigned int>","1"],
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
 
+  ["plot print settings for analysis printout"],
+
+  ["m_bPrintDataAnalyzed", "bool true"],
+  ["m_bPrintDataRaw", "bool"],
+  ["m_bPrintDataLadder", "bool"],
+  ["m_bPrintDataBaseline", "bool"],
+  ["m_bPrintDataXBPS", "bool"],
+  ["m_bPrintShowILS", "bool"],
+  ["m_bPrintShowRFU", "bool"],
+  ["m_bPrintShowLadderLabels", "bool"],
+  ["m_nPrintShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
+  ["m_anPrintDisplayPeak", "vector<unsigned int>","1"],
+  ["m_nPrintZoomPrimerPeak", "int", "0"],
+
   ["plot printout -- margins are in millimeters"],
 
   ["m_nPrintPlotMarginTop", "unsigned int", "25"],

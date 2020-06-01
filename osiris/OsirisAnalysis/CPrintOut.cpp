@@ -78,11 +78,25 @@ void CPrintPreviewFrame::CreateControlBar()
 
   m_controlBar = new wxPreviewControlBar(m_printPreview, buttons, this);
   m_controlBar->CreateButtons();
+  if (m_bPageButtons)
+  {
+    wxSizer *pSizer = m_controlBar->GetSizer();
+    wxButton *pButtonSettings = new wxButton(m_controlBar, IDprintSettings, wxT("Settings..."));
+    pSizer->Insert(
+      pSizer->GetItemCount() - 1,
+      pButtonSettings,
+      wxSizerFlags().Border(wxTOP | wxBOTTOM | wxRIGHT).Center());
+  }
+}
+void CPrintPreviewFrame::OnSettings(wxCommandEvent &)
+{
+  mainApp::ShowAlert(wxT("Printer Settings"), this);
 }
 
 IMPLEMENT_ABSTRACT_CLASS(CPrintPreviewFrame, wxPreviewFrame)
 IMPLEMENT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
 BEGIN_EVENT_TABLE(CPrintPreviewFrame, wxPreviewFrame)
+EVT_BUTTON(IDprintSettings, CPrintPreviewFrame::OnSettings)
 EVT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
 END_EVENT_TABLE()
 

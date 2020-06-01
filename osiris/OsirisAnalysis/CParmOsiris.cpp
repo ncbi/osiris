@@ -150,6 +150,20 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_anPlotDisplayPeak);
   CP(m_nPlotMaxLadderLabels);
 
+  //  plot print settings for analysis printout
+
+  CP(m_bPrintDataAnalyzed);
+  CP(m_bPrintDataRaw);
+  CP(m_bPrintDataLadder);
+  CP(m_bPrintDataBaseline);
+  CP(m_bPrintDataXBPS);
+  CP(m_bPrintShowILS);
+  CP(m_bPrintShowRFU);
+  CP(m_bPrintShowLadderLabels);
+  CP(m_nPrintShowArtifact);
+  CP(m_anPrintDisplayPeak);
+  CP(m_nPrintZoomPrimerPeak);
+
   //  plot printout -- margins are in millimeters
 
   CP(m_nPrintPlotMarginTop);
@@ -269,6 +283,20 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPlotShowArtifact)
   CP(m_anPlotDisplayPeak)
   CP(m_nPlotMaxLadderLabels)
+
+  //  plot print settings for analysis printout
+
+  CP(m_bPrintDataAnalyzed)
+  CP(m_bPrintDataRaw)
+  CP(m_bPrintDataLadder)
+  CP(m_bPrintDataBaseline)
+  CP(m_bPrintDataXBPS)
+  CP(m_bPrintShowILS)
+  CP(m_bPrintShowRFU)
+  CP(m_bPrintShowLadderLabels)
+  CP(m_nPrintShowArtifact)
+  CP(m_anPrintDisplayPeak)
+  CP(m_nPrintZoomPrimerPeak)
 
   //  plot printout -- margins are in millimeters
 
@@ -398,6 +426,20 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   Register("PlotShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPlotShowArtifact);
   RegisterUintVector("PlotDisplayPeak", &m_anPlotDisplayPeak);
   Register("MaxLadderLabels",&m_ioInt_1,(void *) &m_nPlotMaxLadderLabels);
+
+  //  plot print settings for analysis printout
+
+  RegisterBoolTrue("PrintDataAnalyzed", &m_bPrintDataAnalyzed);
+  RegisterBool("PrintDataRaw", &m_bPrintDataRaw);
+  RegisterBool("PrintDataLadder", &m_bPrintDataLadder);
+  RegisterBool("PrintDataBaseline", &m_bPrintDataBaseline);
+  RegisterBool("PrintDataXBPS", &m_bPrintDataXBPS);
+  RegisterBool("PrintShowILS", &m_bPrintShowILS);
+  RegisterBool("PrintShowRFU", &m_bPrintShowRFU);
+  RegisterBool("PrintShowLadderLabels", &m_bPrintShowLadderLabels);
+  Register("PrintShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPrintShowArtifact);
+  RegisterUintVector("PrintDisplayPeak", &m_anPrintDisplayPeak);
+  RegisterInt("PrintZoomPrimerPeak", &m_nPrintZoomPrimerPeak);
 
   //  plot printout -- margins are in millimeters
 
@@ -532,6 +574,21 @@ void CParmOsiris::SetDefaults()
   m_anPlotDisplayPeak.clear();
   m_anPlotDisplayPeak.push_back(1);
   m_nPlotMaxLadderLabels = -1;
+
+  //  plot print settings for analysis printout
+
+  m_bPrintDataAnalyzed = true;
+  m_bPrintDataRaw = false;
+  m_bPrintDataLadder = false;
+  m_bPrintDataBaseline = false;
+  m_bPrintDataXBPS = false;
+  m_bPrintShowILS = false;
+  m_bPrintShowRFU = false;
+  m_bPrintShowLadderLabels = false;
+  m_nPrintShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
+  m_anPrintDisplayPeak.clear();
+  m_anPrintDisplayPeak.push_back(1);
+  m_nPrintZoomPrimerPeak = 0;
 
   //  plot printout -- margins are in millimeters
 

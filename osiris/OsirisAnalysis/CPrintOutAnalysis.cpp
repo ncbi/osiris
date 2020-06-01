@@ -75,7 +75,7 @@ bool CPrintOutAnalysis::OnPrintPage(int page)
   _setupPageBitmap(pdc);
   if( (!sPlotFile.IsEmpty()) && plotData.LoadFile(sPlotFile) )
   {
-    CPanelPlot *panel = new CPanelPlot(m_pFrameAnalysis, m_pFrameAnalysis, &plotData, m_pFile, mainApp::GetKitColors(), true);
+    CPanelPlot *panel = new CPanelPlot(m_pFrameAnalysis, m_pFrameAnalysis, &plotData, m_pFile, mainApp::GetKitColors()); // EXT TIMER , true);
     CWindowPointer pw(panel);
     panel->Show(false);
     panel->SetRenderingToWindow(false);
@@ -87,6 +87,7 @@ bool CPrintOutAnalysis::OnPrintPage(int page)
     std::unique_ptr<wxBitmap> px(pBitmap);
     wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
     pdc->DrawBitmap(*pBitmap, r.GetLeftTop());
+    panel->Destroy();
   }
   else
   {

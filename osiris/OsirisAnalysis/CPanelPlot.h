@@ -55,6 +55,7 @@
 #include "nwx/nwxPlotCtrl.h"
 #include "nwx/nwxBatch.h"
 #include "nwx/nwxShiftSizer.h"
+#include "nwx/nwxTimerReceiver.h"
 
 #include "CPlotData.h"
 #include "CPanelPlotToolbar.h"
@@ -97,7 +98,8 @@ private:
 
 class CPanelPlot :
   public PANEL_PLOT_TYPE,
-  public InwxShiftReceiver
+  public InwxShiftReceiver,
+  public nwxTimerReceiver
 {
 private:
   class CLadderPeakSet
@@ -279,6 +281,12 @@ public:
   // constructor for CFramePlot - MDI window with plots
   static const int ALLELE_SORT;
   static const int ARTIFACT_SORT;
+  enum
+  {
+    ZOOM_PRIMER_PEAK_NONE = 0,
+    ZOOM_PRIMER_PEAK_X = 1,
+    ZOOM_PRIMER_PEAK_XY = 3
+  };
   CPanelPlot(
     CFramePlot *parent,
     CPlotData *pData,
@@ -287,8 +295,9 @@ public:
     CKitColors *pColors,
     int nMenuNumber,
     bool bDraw = true,
-    int nPlotNumber = 0,
-    bool bExternalTimer = false);
+    int nPlotNumber = 0
+    //,bool bExternalTimer = false  // EXT TIMER
+   );
 
   // constructor for CFrameAnalysis - MDI with grid and plot preview
   CPanelPlot(
@@ -296,8 +305,9 @@ public:
     CFrameAnalysis *pFrame,
     CPlotData *pData,
     COARfile *pFile,
-    CKitColors *pColors,
-    bool bExternalTimer = false);
+    CKitColors *pColors
+    //,bool bExternalTimer = false   // EXT TIMER
+    );
   virtual ~CPanelPlot();
 
   void SendPlotSizeEvent();
@@ -392,8 +402,13 @@ public:
     }
   }
   void SyncState(CPanelPlot *p, int nID);
-  void RebuildCurves(bool bIgnoreViewRect = false);
-  wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0);
+  void RebuildCurves(bool bIgnoreViewRect = false); 
+  wxRect2DDouble GetZoomOutRect(int nPrimerPeaks, int nLabelHeight = 0);
+  wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0)
+  {
+    return GetZoomOutRect(
+      (bAll ? ZOOM_PRIMER_PEAK_XY : ZOOM_PRIMER_PEAK_NONE), nLabelHeight);
+  }
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
   void EditPeak(COARpeakAny *pPeak);
   wxRect2DDouble GetZoomLocus(const wxString &sLocus);
@@ -589,6 +604,7 @@ private:
   void SetupLabelMenus();
   void SetPlotSettings();
   void SetPreviewSettings();
+  void SetPrintSettings();
   void _SyncControllers(CPlotController *pSyncTo);
   CMenuPlot *_GetLastMenu();
   CMDIFrame *_GetFrame();
@@ -756,7 +772,7 @@ private:
 
   CFramePlot *m_pFramePlot;
   CFrameAnalysis *m_pFrameAnalysis;
-  wxTimer *m_pTimer;
+  //wxTimer *m_pTimer;  // EXT TIMER
   auto_ptr<nwxMenuItem> m_pMenuItem;
 
   unsigned int m_nPlotNr;
@@ -764,7 +780,7 @@ private:
   unsigned int m_nILScurveOffset;
   unsigned int m_nNoiseCurves;
   int m_nMenuOffset;
-  bool m_bExternalTimer;
+  //bool m_bExternalTimer;  // EXT TIMER
   bool m_bIgnoreTimer;
   bool m_bDoTimer;
   bool m_bXBPS; // used to check if event changed x axis
@@ -826,7 +842,7 @@ public:
   void OnPointSelected(wxPlotCtrlEvent &);
   void OnNoBPSPrompt(wxCommandEvent &);
   void OnLabelTypeChanged(wxCommandEvent &);
-  void OnTimerEvent(wxTimerEvent &);
+  //void OnTimerEvent(wxTimerEvent &); // EXT TIMER
   void OnContextMenu(wxContextMenuEvent &e);
   void OnSize(wxSizeEvent &e);
   void OnSizeAction(wxCommandEvent &e);

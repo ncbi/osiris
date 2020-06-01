@@ -145,8 +145,9 @@ CPanelPlot::CPanelPlot(
   CFrameAnalysis *pFrame, 
   CPlotData *pData, 
   COARfile *pFile, 
-  CKitColors *pColors, 
-  bool bExternalTimer) : 
+  CKitColors *pColors 
+  //,bool bExternalTimer // EXT TIMER
+  ) : 
       PANEL_PLOT_TYPE(parent,wxID_ANY,
       wxDefaultPosition, wxDefaultSize, 0),
     m_pData(pData),
@@ -159,13 +160,13 @@ CPanelPlot::CPanelPlot(
     m_pShiftSizer(NULL),
     m_pFramePlot(NULL),
     m_pFrameAnalysis(pFrame),
-    m_pTimer(NULL),
+    //m_pTimer(NULL),  // EXT TIMER
     m_pMenuItem(NULL),
     m_nPlotNr(0),
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer),
+    //m_bExternalTimer(bExternalTimer),// EXT TIMER
     m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false)
@@ -183,8 +184,9 @@ CPanelPlot::CPanelPlot(
   CKitColors *pColors,
   int nMenuNumber,
   bool bFirst,
-  int nPlotNumber,
-  bool bExternalTimer) :
+  int nPlotNumber
+  //,bool bExternalTimer  // EXT TIMER
+  ) :
       PANEL_PLOT_TYPE(pFrame->GetPanel(),wxID_ANY,
       wxDefaultPosition,wxDefaultSize,wxSW_3DSASH),
     m_pData(pData),
@@ -197,13 +199,13 @@ CPanelPlot::CPanelPlot(
     m_pShiftSizer(NULL),
     m_pFramePlot(pFrame),
     m_pFrameAnalysis(NULL),
-    m_pTimer(NULL),
+    //m_pTimer(NULL),  // EXT TIMER
     m_pMenuItem(NULL),
     m_nPlotNr(nPlotNumber),
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer),
+    //m_bExternalTimer(bExternalTimer),// EXT TIMER
     m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false)
@@ -225,7 +227,7 @@ void CPanelPlot::_BuildPanel(
     m_pButtonPanel = new CPanelPlotToolbar(m_pPanel,m_pData,m_pColors,pMenuHistory,nMenuNumber, bFirst);
     m_pButtonPanel->CopySettings(*m_pMenu);
     m_pShiftSizer = new nwxShiftSizer(
-      m_pButtonPanel,this,ID_BORDER,250,true);
+      m_pButtonPanel, this, ID_BORDER); // , 250); // , true); // EXT TIMERs
   }
 
   m_pPlotCtrl = new CPlotCtrl(m_pPanel,this);
@@ -276,11 +278,14 @@ CPanelPlot::~CPanelPlot()
   vectorptr<wxPlotData>::cleanup(&m_vILS);
   vectorptr<wxPlotData>::cleanup(&m_vILS_XBPS);
   this->_CleanupLadderPeakSet();
+  /*
+    // EXT TIMER
   if(m_pTimer != NULL)
   {
     delete m_pTimer;
     m_pTimer = NULL;
   }
+  */
   CleanupMinRfuLines();
 
   if(m_pMenuItem.get() == NULL)
@@ -1336,6 +1341,9 @@ const wxDateTime *CPanelPlot::GetSelectedTime()
   }
   return pRtn;
 }
+
+/*
+// EXT TIMER
 void CPanelPlot::SetExternalTimer(bool b)
 {
   m_bExternalTimer = b;
@@ -1345,18 +1353,22 @@ void CPanelPlot::SetExternalTimer(bool b)
     m_pTimer = NULL;
   }
 }
+*/
 
-void CPanelPlot::_OnTimer(wxTimerEvent &e)
+void CPanelPlot::_OnTimer(wxTimerEvent &)
 {
   if(m_bDoTimer)
   {
     m_bDoTimer = false;
     RebuildCurves();
   }
+  /*
+  // EXT TIMER
   if( (m_pShiftSizer != NULL) && m_pShiftSizer->UseExternalTimer() )
   {
     m_pShiftSizer->OnTimer(e);
   }
+  */
   if (!InBatch())
   {
     m_viewRect.Check();
@@ -1382,11 +1394,14 @@ void CPanelPlot::_OnTimer(wxTimerEvent &e)
 
 void CPanelPlot::OnTimer(wxTimerEvent &e)
 {
-  if(m_bExternalTimer && !m_bIgnoreTimer)
+  //if(m_bExternalTimer && !m_bIgnoreTimer) // EXT TIMER
+  if(!m_bIgnoreTimer)
   {
     _OnTimer(e);
   }
 }
+/*
+// EXT TIMER
 void CPanelPlot::OnTimerEvent(wxTimerEvent &e)
 {
   if(m_bExternalTimer && (m_pTimer != NULL))
@@ -1399,8 +1414,11 @@ void CPanelPlot::OnTimerEvent(wxTimerEvent &e)
     _OnTimer(e);
   }
 }
+*/
 void CPanelPlot::OnPointSelected(wxPlotCtrlEvent &)
 {
+  /*
+  // EXT TIMER
   if(!m_bExternalTimer)
   {
     if(m_pTimer == NULL)
@@ -1412,6 +1430,7 @@ void CPanelPlot::OnPointSelected(wxPlotCtrlEvent &)
       m_pTimer->Start(50,true);
     }
   }
+  */
   m_bDoTimer = true;
 }
 void CPanelPlot::OnViewChanging(wxPlotCtrlEvent &e)
@@ -1712,7 +1731,7 @@ void CPanelPlot::_ConvertRectToBPS(wxRect2DDouble *pRect)
   pRect->SetLeft(dLeft);
   pRect->SetRight(dRight);
 }
-wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll, int nLabelHeight)
+wxRect2DDouble CPanelPlot::GetZoomOutRect(int nPrimerPeaks, int nLabelHeight)
 {
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
   int nStart = 0;
@@ -1725,9 +1744,12 @@ wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll, int nLabelHeight)
   {
     nStart += (int)m_vILS.size() ;
   }
-  if(!bAll)
+  if(nPrimerPeaks != ZOOM_PRIMER_PEAK_XY)
   {
-    rtn.m_x = (double) m_pData->GetStartAfterPrimer(XBPSValue());
+    if (nPrimerPeaks == ZOOM_PRIMER_PEAK_NONE)
+    {
+      rtn.m_x = (double)m_pData->GetStartAfterPrimer(XBPSValue());
+    }
     nStart += m_nNoiseCurves;
   }
   for(int i = nStart; i < nCount; i++)
@@ -1876,6 +1898,42 @@ void CPanelPlot::SetPlotSettings()
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
 }
+
+void CPanelPlot::SetPrintSettings()
+{
+
+  // OS-1391 print settings
+
+  CParmOsirisGlobal parm;
+  bool bPeak = CanShowPeakArea();
+  bool bAnalyzed = parm->GetPrintDataAnalyzed();
+  bool bRaw = parm->GetPrintDataRaw();
+  bool bLadder = parm->GetPrintDataLadder();
+  bool bBaseline = parm->GetPrintDataBaseline();
+  bool bILS = parm->GetPrintShowILS();
+  bool bRFU = parm->GetPrintShowRFU();
+  bool bLadderLabels = parm->GetPrintShowLadderLabels();
+  int nArt = (int)parm->GetPrintShowArtifact();
+  const vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
+  vector<unsigned int>::const_iterator itr;
+  if (!(bRaw || bLadder || bAnalyzed))
+  {
+    bAnalyzed = true; // must show at least one
+  }
+  m_pMenu->EnablePeakAreaLabel(bPeak);
+  m_pMenu->ShowAnalyzed(bAnalyzed);
+  m_pMenu->ShowRaw(bRaw);
+  m_pMenu->ShowLadder(bLadder);
+  m_pMenu->ShowBaseline(bBaseline);
+  m_pMenu->ShowILS(bILS);
+  m_pMenu->ShowMinRfu(bRFU);
+  m_pMenu->ShowLadderLabels(bLadderLabels);
+  m_pMenu->SetLabelTypes(anLabelsChecked);
+  m_pMenu->SetArtifactValue(nArt);
+  _SyncControllers(m_pMenu);
+}
+
+
 void CPanelPlot::SetPreviewSettings()
 {
   CParmOsirisGlobal parm;
@@ -2666,7 +2724,7 @@ EVT_PLOTCTRL_VIEW_CHANGING(wxID_ANY, CPanelPlot::OnViewChanging)
 EVT_PLOTCTRL_POINT_DOUBLECLICKED(wxID_ANY,CPanelPlot::OnPointSelected)
 EVT_PLOTCTRL_POINT_CLICKED(wxID_ANY,CPanelPlot::OnPointSelected)
 
-EVT_TIMER(IDtimer,CPanelPlot::OnTimerEvent)
+//EVT_TIMER(IDtimer,CPanelPlot::OnTimerEvent)// EXT TIMER
 EVT_CONTEXT_MENU(CPanelPlot::OnContextMenu)
 EVT_COMMAND_ENTER(wxID_ANY,CPanelPlot::OnCommandEnter)
 

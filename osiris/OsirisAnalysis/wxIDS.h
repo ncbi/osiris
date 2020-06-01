@@ -205,6 +205,7 @@ enum
 #endif
   IDpageSetup,
   IDprintPreview,
+  IDprintSettings,
 
   IDhelpAbout,
   IDhelpContactUs,
