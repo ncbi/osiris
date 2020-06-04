@@ -408,37 +408,149 @@ public:
   {
     return m_bPrintDataLadder;
   }
+  bool GetPrintShowLadderLabels() const
+  {
+    return m_bPrintShowLadderLabels;
+  }
   bool GetPrintDataBaseline() const
   {
     return m_bPrintDataBaseline;
   }
-  bool GetPrintDataXBPS() const
+  bool GetPrintShowILSlines() const
   {
-    return m_bPrintDataXBPS;
-  }
-  bool GetPrintShowILS() const
-  {
-    return m_bPrintShowILS;
+    return m_bPrintShowILSlines;
   }
   bool GetPrintShowRFU() const
   {
     return m_bPrintShowRFU;
   }
-  bool GetPrintShowLadderLabels() const
+  bool GetPrintDataXBPS() const
   {
-    return m_bPrintShowLadderLabels;
+    return m_bPrintDataXBPS;
+  }
+  int GetPrintScaleX() const
+  {
+    return m_nPrintScaleX;
+  }
+  double GetPrintScaleXmin() const
+  {
+    return m_dPrintScaleXmin;
+  }
+  double GetPrintScaleXmax() const
+  {
+    return m_sPrintScaleXmax;
+  }
+  int GetPrintScaleY() const
+  {
+    return m_nPrintScaleY;
+  }
+  double GetPrintScaleYmin() const
+  {
+    return m_dPrintScaleYmin;
+  }
+  double GetPrintScaleYmax() const
+  {
+    return m_sPrintScaleYmax;
+  }
+  int GetPrintScaleYnegCtrl() const
+  {
+    return m_nPrintScaleYnegCtrl;
+  }
+  bool GetPrintLabelsAllele() const
+  {
+    return m_bPrintLabelsAllele;
+  }
+  bool GetPrintLabelsBPS() const
+  {
+    return m_bPrintLabelsBPS;
+  }
+  bool GetPrintLabelsRFU() const
+  {
+    return m_bPrintLabelsRFU;
+  }
+  bool GetPrintLabelsTime() const
+  {
+    return m_bPrintLabelsTime;
+  }
+  bool GetPrintLabelsILSBPS() const
+  {
+    return m_bPrintLabelsILSBPS;
+  }
+  bool GetPrintLabelsPeakArea() const
+  {
+    return m_bPrintLabelsPeakArea;
   }
   unsigned int GetPrintShowArtifact() const
   {
     return m_nPrintShowArtifact;
   }
-  const vector<unsigned int> &GetPrintDisplayPeak() const
+  int GetPrintTitle() const
   {
-    return m_anPrintDisplayPeak;
+    return m_bPrintTitle;
   }
-  int GetPrintZoomPrimerPeak() const
+  const wxString &GetPrintTitleNotes() const
   {
-    return m_nPrintZoomPrimerPeak;
+    return m_sPrintTitleNotes;
+  }
+  int GetPrintChannelsPerPage() const
+  {
+    return m_nPrintChannelsPerPage;
+  }
+  int GetPrintChannelsPerPageLadder() const
+  {
+    return m_nPrintChannelsPerPageLadder;
+  }
+  int GetPrintChannelsPerPageNegCtrl() const
+  {
+    return m_nPrintChannelsPerPageNegCtrl;
+  }
+  bool GetPrintOmitILSchannel() const
+  {
+    return m_bPrintOmitILSchannel;
+  }
+  bool GetPrintSamplesLadders() const
+  {
+    return m_bPrintSamplesLadders;
+  }
+  bool GetPrintSamplesPosCtrl() const
+  {
+    return m_bPrintSamplesPosCtrl;
+  }
+  bool GetPrintSamplesNegCtel() const
+  {
+    return m_bPrintSamplesNegCtel;
+  }
+  bool GetPrintSamplesDisabled() const
+  {
+    return m_bPrintSamplesDisabled;
+  }
+  int GetPrintColorRed() const
+  {
+    return m_bPrintColorRed;
+  }
+  int GetPrintColorGreen() const
+  {
+    return m_bPrintColorGreen;
+  }
+  int GetPrintColorBlue() const
+  {
+    return m_bPrintColorBlue;
+  }
+  int GetPrintColorYellow() const
+  {
+    return m_bPrintColorYellow;
+  }
+  int GetPrintColorOrange() const
+  {
+    return m_bPrintColorOrange;
+  }
+  int GetPrintColorPurple() const
+  {
+    return m_bPrintColorPurple;
+  }
+  int GetPrintColorGray() const
+  {
+    return m_bPrintColorGray;
   }
 
   //  plot printout -- margins are in millimeters
@@ -890,37 +1002,149 @@ public:
   {
     __SET_VALUE(m_bPrintDataLadder,b);
   }
+  void SetPrintShowLadderLabels(bool b)
+  {
+    __SET_VALUE(m_bPrintShowLadderLabels,b);
+  }
   void SetPrintDataBaseline(bool b)
   {
     __SET_VALUE(m_bPrintDataBaseline,b);
   }
-  void SetPrintDataXBPS(bool b)
+  void SetPrintShowILSlines(bool b)
   {
-    __SET_VALUE(m_bPrintDataXBPS,b);
-  }
-  void SetPrintShowILS(bool b)
-  {
-    __SET_VALUE(m_bPrintShowILS,b);
+    __SET_VALUE(m_bPrintShowILSlines,b);
   }
   void SetPrintShowRFU(bool b)
   {
     __SET_VALUE(m_bPrintShowRFU,b);
   }
-  void SetPrintShowLadderLabels(bool b)
+  void SetPrintDataXBPS(bool b)
   {
-    __SET_VALUE(m_bPrintShowLadderLabels,b);
+    __SET_VALUE(m_bPrintDataXBPS,b);
+  }
+  void SetPrintScaleX(int n)
+  {
+    __SET_VALUE(m_nPrintScaleX,n);
+  }
+  void SetPrintScaleXmin(double d)
+  {
+    __SET_VALUE(m_dPrintScaleXmin,d);
+  }
+  void SetPrintScaleXmax(double d)
+  {
+    __SET_VALUE(m_sPrintScaleXmax,d);
+  }
+  void SetPrintScaleY(int n)
+  {
+    __SET_VALUE(m_nPrintScaleY,n);
+  }
+  void SetPrintScaleYmin(double d)
+  {
+    __SET_VALUE(m_dPrintScaleYmin,d);
+  }
+  void SetPrintScaleYmax(double d)
+  {
+    __SET_VALUE(m_sPrintScaleYmax,d);
+  }
+  void SetPrintScaleYnegCtrl(int n)
+  {
+    __SET_VALUE(m_nPrintScaleYnegCtrl,n);
+  }
+  void SetPrintLabelsAllele(bool b)
+  {
+    __SET_VALUE(m_bPrintLabelsAllele,b);
+  }
+  void SetPrintLabelsBPS(bool b)
+  {
+    __SET_VALUE(m_bPrintLabelsBPS,b);
+  }
+  void SetPrintLabelsRFU(bool b)
+  {
+    __SET_VALUE(m_bPrintLabelsRFU,b);
+  }
+  void SetPrintLabelsTime(bool b)
+  {
+    __SET_VALUE(m_bPrintLabelsTime,b);
+  }
+  void SetPrintLabelsILSBPS(bool b)
+  {
+    __SET_VALUE(m_bPrintLabelsILSBPS,b);
+  }
+  void SetPrintLabelsPeakArea(bool b)
+  {
+    __SET_VALUE(m_bPrintLabelsPeakArea,b);
   }
   void SetPrintShowArtifact(unsigned int n)
   {
     __SET_VALUE(m_nPrintShowArtifact,n);
   }
-  void SetPrintDisplayPeak(const vector<unsigned int> &an)
+  void SetPrintTitle(int n)
   {
-    __SET_VALUE(m_anPrintDisplayPeak,an);
+    __SET_VALUE(m_bPrintTitle,n);
   }
-  void SetPrintZoomPrimerPeak(int n)
+  void SetPrintTitleNotes(const wxString &s)
   {
-    __SET_VALUE(m_nPrintZoomPrimerPeak,n);
+    __SET_VALUE(m_sPrintTitleNotes,s);
+  }
+  void SetPrintChannelsPerPage(int n)
+  {
+    __SET_VALUE(m_nPrintChannelsPerPage,n);
+  }
+  void SetPrintChannelsPerPageLadder(int n)
+  {
+    __SET_VALUE(m_nPrintChannelsPerPageLadder,n);
+  }
+  void SetPrintChannelsPerPageNegCtrl(int n)
+  {
+    __SET_VALUE(m_nPrintChannelsPerPageNegCtrl,n);
+  }
+  void SetPrintOmitILSchannel(bool b)
+  {
+    __SET_VALUE(m_bPrintOmitILSchannel,b);
+  }
+  void SetPrintSamplesLadders(bool b)
+  {
+    __SET_VALUE(m_bPrintSamplesLadders,b);
+  }
+  void SetPrintSamplesPosCtrl(bool b)
+  {
+    __SET_VALUE(m_bPrintSamplesPosCtrl,b);
+  }
+  void SetPrintSamplesNegCtel(bool b)
+  {
+    __SET_VALUE(m_bPrintSamplesNegCtel,b);
+  }
+  void SetPrintSamplesDisabled(bool b)
+  {
+    __SET_VALUE(m_bPrintSamplesDisabled,b);
+  }
+  void SetPrintColorRed(int n)
+  {
+    __SET_VALUE(m_bPrintColorRed,n);
+  }
+  void SetPrintColorGreen(int n)
+  {
+    __SET_VALUE(m_bPrintColorGreen,n);
+  }
+  void SetPrintColorBlue(int n)
+  {
+    __SET_VALUE(m_bPrintColorBlue,n);
+  }
+  void SetPrintColorYellow(int n)
+  {
+    __SET_VALUE(m_bPrintColorYellow,n);
+  }
+  void SetPrintColorOrange(int n)
+  {
+    __SET_VALUE(m_bPrintColorOrange,n);
+  }
+  void SetPrintColorPurple(int n)
+  {
+    __SET_VALUE(m_bPrintColorPurple,n);
+  }
+  void SetPrintColorGray(int n)
+  {
+    __SET_VALUE(m_bPrintColorGray,n);
   }
 
   //  plot printout -- margins are in millimeters
@@ -1201,14 +1425,42 @@ protected:
   bool m_bPrintDataAnalyzed;
   bool m_bPrintDataRaw;
   bool m_bPrintDataLadder;
-  bool m_bPrintDataBaseline;
-  bool m_bPrintDataXBPS;
-  bool m_bPrintShowILS;
-  bool m_bPrintShowRFU;
   bool m_bPrintShowLadderLabels;
+  bool m_bPrintDataBaseline;
+  bool m_bPrintShowILSlines;
+  bool m_bPrintShowRFU;
+  bool m_bPrintDataXBPS;
+  int m_nPrintScaleX;
+  double m_dPrintScaleXmin;
+  double m_sPrintScaleXmax;
+  int m_nPrintScaleY;
+  double m_dPrintScaleYmin;
+  double m_sPrintScaleYmax;
+  int m_nPrintScaleYnegCtrl;
+  bool m_bPrintLabelsAllele;
+  bool m_bPrintLabelsBPS;
+  bool m_bPrintLabelsRFU;
+  bool m_bPrintLabelsTime;
+  bool m_bPrintLabelsILSBPS;
+  bool m_bPrintLabelsPeakArea;
   unsigned int m_nPrintShowArtifact;
-  vector<unsigned int> m_anPrintDisplayPeak;
-  int m_nPrintZoomPrimerPeak;
+  int m_bPrintTitle;
+  wxString m_sPrintTitleNotes;
+  int m_nPrintChannelsPerPage;
+  int m_nPrintChannelsPerPageLadder;
+  int m_nPrintChannelsPerPageNegCtrl;
+  bool m_bPrintOmitILSchannel;
+  bool m_bPrintSamplesLadders;
+  bool m_bPrintSamplesPosCtrl;
+  bool m_bPrintSamplesNegCtel;
+  bool m_bPrintSamplesDisabled;
+  int m_bPrintColorRed;
+  int m_bPrintColorGreen;
+  int m_bPrintColorBlue;
+  int m_bPrintColorYellow;
+  int m_bPrintColorOrange;
+  int m_bPrintColorPurple;
+  int m_bPrintColorGray;
 
   //  plot printout -- margins are in millimeters
 

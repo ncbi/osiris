@@ -147,18 +147,71 @@ my $VARLIST =
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
 
   ["plot print settings for analysis printout"],
+  
+  # peaks
 
   ["m_bPrintDataAnalyzed", "bool true"],
   ["m_bPrintDataRaw", "bool"],
   ["m_bPrintDataLadder", "bool"],
-  ["m_bPrintDataBaseline", "bool"],
-  ["m_bPrintDataXBPS", "bool"],
-  ["m_bPrintShowILS", "bool"],
-  ["m_bPrintShowRFU", "bool"],
   ["m_bPrintShowLadderLabels", "bool"],
+  ["m_bPrintDataBaseline", "bool"],
+  
+  ["m_bPrintShowILSlines", "bool"],
+  ["m_bPrintShowRFU", "bool"],
+
+  # X-Axis
+  ["m_bPrintDataXBPS", "bool"],
+  # true - ILS BPS, false - time
+
+  
+  ["m_nPrintScaleX", "int", "0"],
+  # 0 - scale w/o primer peak, 1 - scale to 0, 2 - scale to 0 neg control, 3 - specify
+  ["m_dPrintScaleXmin", "double", "0.0"],
+  ["m_sPrintScaleXmax", "double", "20000.0"],
+
+  ["m_nPrintScaleY", "int", "0"],
+  # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
+  ["m_dPrintScaleYmin", "double", "0.0"],
+  ["m_sPrintScaleYmax", "double", "20000.0"],
+  ["m_nPrintScaleYnegCtrl", "int","0"],
+  # 0 - scale to peaks, 1 - include min RFU, 2 - scale to ILS
+
+  # allele labels
+  ["m_bPrintLabelsAllele", "bool true"],
+  ["m_bPrintLabelsBPS", "bool"],
+  ["m_bPrintLabelsRFU", "bool"],
+  ["m_bPrintLabelsTime", "bool"],
+  ["m_bPrintLabelsILSBPS", "bool"],
+  ["m_bPrintLabelsPeakArea", "bool"],
+  
+  # Artifact labels
   ["m_nPrintShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
-  ["m_anPrintDisplayPeak", "vector<unsigned int>","1"],
-  ["m_nPrintZoomPrimerPeak", "int", "0"],
+
+  # Page Heading
+  ["m_bPrintTitle", "int", "0"],
+  # 0 - File name; 1 - Sample Name
+  ["m_sPrintTitleNotes", "wxString"],
+  
+  # Channels per page
+  ["m_nPrintChannelsPerPage", "int", "8"],
+  ["m_nPrintChannelsPerPageLadder", "int", "8"],
+  ["m_nPrintChannelsPerPageNegCtrl", "int", "8"],
+  ["m_bPrintOmitILSchannel", "bool"],
+  
+  # Samples
+  ["m_bPrintSamplesLadders", "bool true"],
+  ["m_bPrintSamplesPosCtrl", "bool true"],
+  ["m_bPrintSamplesNegCtel", "bool true"],
+  ["m_bPrintSamplesDisabled", "bool"],
+
+  # colors
+  ["m_bPrintColorRed","int","100"],
+  ["m_bPrintColorGreen","int","100"],
+  ["m_bPrintColorBlue","int","100"],
+  ["m_bPrintColorYellow","int","100"],
+  ["m_bPrintColorOrange","int","100"],
+  ["m_bPrintColorPurple","int","100"],
+  ["m_bPrintColorGray","int","100"],
 
   ["plot printout -- margins are in millimeters"],
 

@@ -155,14 +155,42 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPrintDataAnalyzed);
   CP(m_bPrintDataRaw);
   CP(m_bPrintDataLadder);
-  CP(m_bPrintDataBaseline);
-  CP(m_bPrintDataXBPS);
-  CP(m_bPrintShowILS);
-  CP(m_bPrintShowRFU);
   CP(m_bPrintShowLadderLabels);
+  CP(m_bPrintDataBaseline);
+  CP(m_bPrintShowILSlines);
+  CP(m_bPrintShowRFU);
+  CP(m_bPrintDataXBPS);
+  CP(m_nPrintScaleX);
+  CP(m_dPrintScaleXmin);
+  CP(m_sPrintScaleXmax);
+  CP(m_nPrintScaleY);
+  CP(m_dPrintScaleYmin);
+  CP(m_sPrintScaleYmax);
+  CP(m_nPrintScaleYnegCtrl);
+  CP(m_bPrintLabelsAllele);
+  CP(m_bPrintLabelsBPS);
+  CP(m_bPrintLabelsRFU);
+  CP(m_bPrintLabelsTime);
+  CP(m_bPrintLabelsILSBPS);
+  CP(m_bPrintLabelsPeakArea);
   CP(m_nPrintShowArtifact);
-  CP(m_anPrintDisplayPeak);
-  CP(m_nPrintZoomPrimerPeak);
+  CP(m_bPrintTitle);
+  CP(m_sPrintTitleNotes);
+  CP(m_nPrintChannelsPerPage);
+  CP(m_nPrintChannelsPerPageLadder);
+  CP(m_nPrintChannelsPerPageNegCtrl);
+  CP(m_bPrintOmitILSchannel);
+  CP(m_bPrintSamplesLadders);
+  CP(m_bPrintSamplesPosCtrl);
+  CP(m_bPrintSamplesNegCtel);
+  CP(m_bPrintSamplesDisabled);
+  CP(m_bPrintColorRed);
+  CP(m_bPrintColorGreen);
+  CP(m_bPrintColorBlue);
+  CP(m_bPrintColorYellow);
+  CP(m_bPrintColorOrange);
+  CP(m_bPrintColorPurple);
+  CP(m_bPrintColorGray);
 
   //  plot printout -- margins are in millimeters
 
@@ -289,14 +317,42 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPrintDataAnalyzed)
   CP(m_bPrintDataRaw)
   CP(m_bPrintDataLadder)
-  CP(m_bPrintDataBaseline)
-  CP(m_bPrintDataXBPS)
-  CP(m_bPrintShowILS)
-  CP(m_bPrintShowRFU)
   CP(m_bPrintShowLadderLabels)
+  CP(m_bPrintDataBaseline)
+  CP(m_bPrintShowILSlines)
+  CP(m_bPrintShowRFU)
+  CP(m_bPrintDataXBPS)
+  CP(m_nPrintScaleX)
+  CP(m_dPrintScaleXmin)
+  CP(m_sPrintScaleXmax)
+  CP(m_nPrintScaleY)
+  CP(m_dPrintScaleYmin)
+  CP(m_sPrintScaleYmax)
+  CP(m_nPrintScaleYnegCtrl)
+  CP(m_bPrintLabelsAllele)
+  CP(m_bPrintLabelsBPS)
+  CP(m_bPrintLabelsRFU)
+  CP(m_bPrintLabelsTime)
+  CP(m_bPrintLabelsILSBPS)
+  CP(m_bPrintLabelsPeakArea)
   CP(m_nPrintShowArtifact)
-  CP(m_anPrintDisplayPeak)
-  CP(m_nPrintZoomPrimerPeak)
+  CP(m_bPrintTitle)
+  CP(m_sPrintTitleNotes)
+  CP(m_nPrintChannelsPerPage)
+  CP(m_nPrintChannelsPerPageLadder)
+  CP(m_nPrintChannelsPerPageNegCtrl)
+  CP(m_bPrintOmitILSchannel)
+  CP(m_bPrintSamplesLadders)
+  CP(m_bPrintSamplesPosCtrl)
+  CP(m_bPrintSamplesNegCtel)
+  CP(m_bPrintSamplesDisabled)
+  CP(m_bPrintColorRed)
+  CP(m_bPrintColorGreen)
+  CP(m_bPrintColorBlue)
+  CP(m_bPrintColorYellow)
+  CP(m_bPrintColorOrange)
+  CP(m_bPrintColorPurple)
+  CP(m_bPrintColorGray)
 
   //  plot printout -- margins are in millimeters
 
@@ -432,14 +488,42 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBoolTrue("PrintDataAnalyzed", &m_bPrintDataAnalyzed);
   RegisterBool("PrintDataRaw", &m_bPrintDataRaw);
   RegisterBool("PrintDataLadder", &m_bPrintDataLadder);
-  RegisterBool("PrintDataBaseline", &m_bPrintDataBaseline);
-  RegisterBool("PrintDataXBPS", &m_bPrintDataXBPS);
-  RegisterBool("PrintShowILS", &m_bPrintShowILS);
-  RegisterBool("PrintShowRFU", &m_bPrintShowRFU);
   RegisterBool("PrintShowLadderLabels", &m_bPrintShowLadderLabels);
+  RegisterBool("PrintDataBaseline", &m_bPrintDataBaseline);
+  RegisterBool("PrintShowILSlines", &m_bPrintShowILSlines);
+  RegisterBool("PrintShowRFU", &m_bPrintShowRFU);
+  RegisterBool("PrintDataXBPS", &m_bPrintDataXBPS);
+  RegisterInt("PrintScaleX", &m_nPrintScaleX);
+  RegisterDouble("PrintScaleXmin", &m_dPrintScaleXmin);
+  RegisterDouble("PrintScaleXmax", &m_sPrintScaleXmax);
+  RegisterInt("PrintScaleY", &m_nPrintScaleY);
+  RegisterDouble("PrintScaleYmin", &m_dPrintScaleYmin);
+  RegisterDouble("PrintScaleYmax", &m_sPrintScaleYmax);
+  RegisterInt("PrintScaleYnegCtrl", &m_nPrintScaleYnegCtrl);
+  RegisterBoolTrue("PrintLabelsAllele", &m_bPrintLabelsAllele);
+  RegisterBool("PrintLabelsBPS", &m_bPrintLabelsBPS);
+  RegisterBool("PrintLabelsRFU", &m_bPrintLabelsRFU);
+  RegisterBool("PrintLabelsTime", &m_bPrintLabelsTime);
+  RegisterBool("PrintLabelsILSBPS", &m_bPrintLabelsILSBPS);
+  RegisterBool("PrintLabelsPeakArea", &m_bPrintLabelsPeakArea);
   Register("PrintShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPrintShowArtifact);
-  RegisterUintVector("PrintDisplayPeak", &m_anPrintDisplayPeak);
-  RegisterInt("PrintZoomPrimerPeak", &m_nPrintZoomPrimerPeak);
+  RegisterInt("PrintTitle", &m_bPrintTitle);
+  RegisterWxString("PrintTitleNotes", &m_sPrintTitleNotes);
+  RegisterInt("PrintChannelsPerPage", &m_nPrintChannelsPerPage);
+  RegisterInt("PrintChannelsPerPageLadder", &m_nPrintChannelsPerPageLadder);
+  RegisterInt("PrintChannelsPerPageNegCtrl", &m_nPrintChannelsPerPageNegCtrl);
+  RegisterBool("PrintOmitILSchannel", &m_bPrintOmitILSchannel);
+  RegisterBoolTrue("PrintSamplesLadders", &m_bPrintSamplesLadders);
+  RegisterBoolTrue("PrintSamplesPosCtrl", &m_bPrintSamplesPosCtrl);
+  RegisterBoolTrue("PrintSamplesNegCtel", &m_bPrintSamplesNegCtel);
+  RegisterBool("PrintSamplesDisabled", &m_bPrintSamplesDisabled);
+  RegisterInt("PrintColorRed", &m_bPrintColorRed);
+  RegisterInt("PrintColorGreen", &m_bPrintColorGreen);
+  RegisterInt("PrintColorBlue", &m_bPrintColorBlue);
+  RegisterInt("PrintColorYellow", &m_bPrintColorYellow);
+  RegisterInt("PrintColorOrange", &m_bPrintColorOrange);
+  RegisterInt("PrintColorPurple", &m_bPrintColorPurple);
+  RegisterInt("PrintColorGray", &m_bPrintColorGray);
 
   //  plot printout -- margins are in millimeters
 
@@ -580,15 +664,42 @@ void CParmOsiris::SetDefaults()
   m_bPrintDataAnalyzed = true;
   m_bPrintDataRaw = false;
   m_bPrintDataLadder = false;
-  m_bPrintDataBaseline = false;
-  m_bPrintDataXBPS = false;
-  m_bPrintShowILS = false;
-  m_bPrintShowRFU = false;
   m_bPrintShowLadderLabels = false;
+  m_bPrintDataBaseline = false;
+  m_bPrintShowILSlines = false;
+  m_bPrintShowRFU = false;
+  m_bPrintDataXBPS = false;
+  m_nPrintScaleX = 0;
+  m_dPrintScaleXmin = 0.0;
+  m_sPrintScaleXmax = 20000.0;
+  m_nPrintScaleY = 0;
+  m_dPrintScaleYmin = 0.0;
+  m_sPrintScaleYmax = 20000.0;
+  m_nPrintScaleYnegCtrl = 0;
+  m_bPrintLabelsAllele = true;
+  m_bPrintLabelsBPS = false;
+  m_bPrintLabelsRFU = false;
+  m_bPrintLabelsTime = false;
+  m_bPrintLabelsILSBPS = false;
+  m_bPrintLabelsPeakArea = false;
   m_nPrintShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
-  m_anPrintDisplayPeak.clear();
-  m_anPrintDisplayPeak.push_back(1);
-  m_nPrintZoomPrimerPeak = 0;
+  m_bPrintTitle = 0;
+  m_sPrintTitleNotes.Empty();
+  m_nPrintChannelsPerPage = 8;
+  m_nPrintChannelsPerPageLadder = 8;
+  m_nPrintChannelsPerPageNegCtrl = 8;
+  m_bPrintOmitILSchannel = false;
+  m_bPrintSamplesLadders = true;
+  m_bPrintSamplesPosCtrl = true;
+  m_bPrintSamplesNegCtel = true;
+  m_bPrintSamplesDisabled = false;
+  m_bPrintColorRed = 100;
+  m_bPrintColorGreen = 100;
+  m_bPrintColorBlue = 100;
+  m_bPrintColorYellow = 100;
+  m_bPrintColorOrange = 100;
+  m_bPrintColorPurple = 100;
+  m_bPrintColorGray = 100;
 
   //  plot printout -- margins are in millimeters
 
