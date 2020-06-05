@@ -152,7 +152,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	int inputStatus = inputFile.ReadAllInputs ("LadderInputFile.txt");
-//	inputFile.OutputAllData ();
+	//	inputFile.OutputAllData ();
 
 	if (inputStatus != 0) {
 
@@ -171,6 +171,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		return -1;
 	}
 
+	RGString acceptedOLAlleles = inputFile.GetAcceptedOLAlleles ();
 	cout << "File input succeeded.  Continuing..." << endl << endl;
 
 	int nDyes = inputFile.GetNumberOfDyes ();
@@ -219,7 +220,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	RGString firstILS;
 	bool first = true;
 
-	while (nextString = (RGString*) nameIt ()) {
+	while (nextString = (RGString*)nameIt ()) {
 
 		if (first) {
 
@@ -239,7 +240,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	Ladder* panelsLadder = new Ladder (inputFile.GetKitName ());
 	panelsLadder->SetNumberOfChannels (nDyes);
-	
+
 	Locus* newLocus;
 	int status = 0;
 	RGDList doNotExtend = inputFile.DoNotExtends ();
@@ -276,7 +277,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	RGDListIterator ilsIt (ilsList);
 
 
-	while (ilsName = (RGString*) ilsIt ()) {
+	while (ilsName = (RGString*)ilsIt ()) {
 
 		panelsLadder->AddILS (*ilsName);
 	}
@@ -352,12 +353,23 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	//  Now do lab settings
-	
+
 	labSettingsFileString.FindAndReplaceAllSubstrings ("$VolumeName$", inputFile.GetKitName ());
 	labSettingsFileString.FindAndReplaceAllSubstrings ("$StdCtrl$", inputFile.GetStandardPositiveControlName ());
 	labSettingsFileString.FindAndReplaceAllSubstrings ("$KitName$", inputFile.GetKitName ());
 	labSettingsFileString.FindAndReplaceAllSubstrings ("$LadderFileName$", inputFile.GetLadderFileName ());
 	labSettingsFileString.FindAndReplaceAllSubstrings ("$PrimaryILS$", firstILS);
+	RGString insert;
+	RGString OLPlaceholder = "<!--AcceptOLs-->";
+
+	if (acceptedOLAlleles.Length () != 0) {
+
+		insert = "<OffLadderAlleles>\n";
+		insert << acceptedOLAlleles;
+		insert << "      </OffLadderAlleles>";
+		labSettingsFileString.FindAndReplaceAllSubstrings (OLPlaceholder, insert);
+	}
+
 	labSettingsOutputFile << labSettingsFileString;
 
 	RGString hidPrefix;
@@ -398,6 +410,12 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		hidLabSettingsFileString.FindAndReplaceAllSubstrings ("$KitName$", inputFile.GetKitName ());
 		hidLabSettingsFileString.FindAndReplaceAllSubstrings ("$LadderFileName$", inputFile.GetLadderFileName ());
 		hidLabSettingsFileString.FindAndReplaceAllSubstrings ("$PrimaryILS$", firstILS);
+
+		if (insert.Length () != 0) {
+
+			hidLabSettingsFileString.FindAndReplaceAllSubstrings (OLPlaceholder, insert);
+		}
+
 		hidLabSettingsOutputFile << hidLabSettingsFileString;
 	}
 
