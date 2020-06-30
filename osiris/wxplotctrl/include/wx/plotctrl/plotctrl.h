@@ -639,6 +639,17 @@ public:
     void     SetKeyFont( const wxFont &font );
     void     SetKeyColour( const wxColour & colour );
 
+    static bool IsPrintingDPI(double dDPI)
+    {
+      return (dDPI >= 150);
+    }
+    static double GetFontScale(double dDPI, bool bForcePrinting)
+    {
+      bool b = bForcePrinting || IsPrintingDPI(dDPI);
+      double dScale = dDPI / (b ? 144.0 : 72.0);
+      return dScale;
+    }
+
     // ------------------------------------------------------------------------
     // Title, axis labels, and key values and visibility
     // ------------------------------------------------------------------------
@@ -818,6 +829,7 @@ public:
     //
     //  DJH 2/29/2009 - added bAutoCalcTicks = false
     int DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont, bool bBottom = false);
+    wxSize GetXAxisLabelSize(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont);
     void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false, bool bForcePrintFont = false );
     int GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundingRect, double dpi, bool bForecePrintFont);
 

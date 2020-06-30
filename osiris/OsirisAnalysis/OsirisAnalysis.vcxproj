@@ -300,6 +300,7 @@
     <ClCompile Include="CDialogMRU.cpp" />
     <ClCompile Include="CDialogParameters.cpp" />
     <ClCompile Include="CDialogPlotMessage.cpp" />
+    <ClCompile Include="CDialogPrintSettings.cpp" />
     <ClCompile Include="CDialogPromptNewerFile.cpp" />
     <ClCompile Include="CDialogReallyQuit.cpp" />
     <ClCompile Include="CDialogShowLabSettings.cpp" />
@@ -403,6 +404,7 @@
     <ClCompile Include="CPrintOut.cpp" />
     <ClCompile Include="CPrintOutAnalysis.cpp" />
     <ClCompile Include="CPrintOutPlot.cpp" />
+    <ClCompile Include="CPrintPreview.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
     <ClCompile Include="CSitePath.cpp" />
@@ -449,6 +451,7 @@
     <ClInclude Include="CDialogMRU.h" />
     <ClInclude Include="CDialogParameters.h" />
     <ClInclude Include="CDialogPlotMessage.h" />
+    <ClInclude Include="CDialogPrintSettings.h" />
     <ClInclude Include="CDialogPromptNewerFile.h" />
     <ClInclude Include="CDialogReallyQuit.h" />
     <ClInclude Include="CDialogShowLabSettings.h" />
@@ -560,6 +563,7 @@
     <ClInclude Include="CPrintOut.h" />
     <ClInclude Include="CPrintOutAnalysis.h" />
     <ClInclude Include="CPrintOutPlot.h" />
+    <ClInclude Include="CPrintPreview.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
     <ClInclude Include="CSitePath.h" />
@@ -570,6 +574,7 @@
     <ClInclude Include="CXMLmessageBook.h" />
     <ClInclude Include="CXSLExportFileType.h" />
     <ClInclude Include="extractCXSLExportFile.h" />
+    <ClInclude Include="CPrintParameters.h" />
     <ClInclude Include="IArtifactGroup.h" />
     <ClInclude Include="ISetDateTime.h" />
     <ClInclude Include="LABEL_TYPES.h" />

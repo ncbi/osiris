@@ -148,7 +148,7 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     wxFont fontSave = pdc->GetFont();
     pdc->SetFont(m_owner->GetAxisFont());
 
-    pdc->SetTextBackground(wxColour(255,255,255,wxALPHA_TRANSPARENT));
+    pdc->SetTextBackground(wxColour(255, 255, 255, wxALPHA_TRANSPARENT));
     m_vRect.clear();
     m_vRect.reserve(nSize);
     m_vpLabel.clear();
@@ -301,17 +301,17 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       nX = rrect.GetX();
       nY = rrect.GetY();
       int nStyle = pLabel->GetStyle();
+      if (nStyle & nwxPointLabel::STYLE_BOX)
+      {
+        pdc->SetBrush(*wxTRANSPARENT_BRUSH);
+        pdc->DrawRectangle(rrect);
+      }
       pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY);
       if(nStyle & nwxPointLabel::STYLE_DISABLED)
       {
         wxPoint pt1(nX,nY);
         wxPoint pt2(nX + rrect.GetWidth(),nY + rrect.GetHeight());
         pdc->DrawLine(pt1,pt2);
-      }
-      if(nStyle & nwxPointLabel::STYLE_BOX)
-      {
-        pdc->SetBrush(*wxTRANSPARENT_BRUSH);
-        pdc->DrawRectangle(rrect);
       }
     }
     pdc->SetTextForeground(cFG);

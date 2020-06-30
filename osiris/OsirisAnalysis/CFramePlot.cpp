@@ -2169,7 +2169,8 @@ wxBitmap *CFramePlot::CreateBitmap(
 
   int nXLabelHeight = pPanelPlot->DrawXAxisLabelToDC(
     &dc, rect, dDPI, bForcePrintFont);
-  int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(&dc, sTitle, nWidth, nHeight, dDPI);
+  int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(
+    &dc, sTitle, wxEmptyString, nWidth, nHeight, dDPI, bForcePrintFont);
   int nLabelHeight = pPanelPlot->GetPlotCtrl()->GetTextHeight(wxT("-123456789.0"), &dc, rect, dDPI, bForcePrintFont);
 
   int nPlotAreaHeight = nHeight - nXLabelHeight - nTitleOffset;

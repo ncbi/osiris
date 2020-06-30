@@ -2956,12 +2956,11 @@ void wxPlotCtrl::DrawInit(
   wxRect2DDouble rectHold_view = m_viewRect;
   wxRect rectHold_client = m_areaClientRect;
 
-  bool bPrinting = bForcePrintFont || (dpi >= 150);
+  bool bPrinting = bForcePrintFont || IsPrintingDPI(dpi);
   //set font scale so 1pt = 1pixel at 72dpi
-  double fontScale = (double)dpi / (bPrinting ? 144.0 : 72.0);
+  double fontScale = GetFontScale(dpi, bPrinting);
   //one pixel wide line equals (m_pen_print_width) millimeters wide
   double penScale = (double)m_pen_print_width * dpi / 25.4;
-
 
   if (bPrinting)
   {
@@ -3025,6 +3024,21 @@ int wxPlotCtrl::GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundin
   dc->SetFont(GetAxisFont());
   dc->GetTextExtent(s, &xExtent, &yExtent, &descExtent, &leadExtent);
   return(yExtent + descExtent + leadExtent);
+}
+wxSize wxPlotCtrl::GetXAxisLabelSize(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont)
+{
+  wxPlotCtrlBackup plotBackup(this);
+  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  int nHeight = m_border;
+  wxCoord xExtent = 0;
+  if (GetShowXAxisLabel() && !m_xLabelRect.IsEmpty())
+  {
+    wxCoord yExtent, descExtent, leadExtent;
+    dc->SetFont(GetAxisLabelFont());
+    dc->GetTextExtent(m_xLabel, &xExtent, &yExtent, &descExtent, &leadExtent);
+    nHeight += (yExtent + descExtent + leadExtent);
+  }
+  return wxSize(xExtent, nHeight);
 }
 int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont, bool bBottom)
 {

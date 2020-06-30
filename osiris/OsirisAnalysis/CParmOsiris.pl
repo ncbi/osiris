@@ -128,7 +128,7 @@ my $VARLIST =
   ["m_bPreviewShowRFU", "bool"],
   ["m_bPreviewShowLadderLabels", "bool"],
   ["m_bPreviewXBPS", "bool"],
-  ["m_nPreviewShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioUintViewPlotArtifact"],
+  ["m_nPreviewShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioIntViewPlotArtifact"],
 
   ["plot settings"],
 
@@ -142,7 +142,7 @@ my $VARLIST =
   ["m_bPlotShowLadderLabels", "bool"],
   ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
-  ["m_nPlotShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
+  ["m_nPlotShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
   ["m_anPlotDisplayPeak", "vector<unsigned int>","1"],
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
 
@@ -150,58 +150,53 @@ my $VARLIST =
   
   # peaks
 
-  ["m_bPrintDataAnalyzed", "bool true"],
-  ["m_bPrintDataRaw", "bool"],
-  ["m_bPrintDataLadder", "bool"],
-  ["m_bPrintShowLadderLabels", "bool"],
-  ["m_bPrintDataBaseline", "bool"],
+  ["m_bPrintCurveAnalyzed", "bool true"],
+  ["m_bPrintCurveRaw", "bool"],
+  ["m_bPrintCurveLadder", "bool"],
+  ["m_bPrintCurveLadderLabels", "bool"],
+  ["m_bPrintCurveBaseline", "bool"],
   
-  ["m_bPrintShowILSlines", "bool"],
-  ["m_bPrintShowRFU", "bool"],
+  ["m_bPrintCurveILSvertical", "bool"],
+  ["m_bPrintCurveMinRFU", "bool"],
 
   # X-Axis
-  ["m_bPrintDataXBPS", "bool"],
+  ["m_bPrintXaxisILSBPS", "bool"],
   # true - ILS BPS, false - time
 
   
-  ["m_nPrintScaleX", "int", "0"],
+  ["m_nPrintXscale", "int", "0"],
   # 0 - scale w/o primer peak, 1 - scale to 0, 2 - scale to 0 neg control, 3 - specify
-  ["m_dPrintScaleXmin", "double", "0.0"],
-  ["m_sPrintScaleXmax", "double", "20000.0"],
+  ["m_nPrintXscaleMin", "int", "0"],
+  ["m_nPrintXscaleMax", "int", "20000"],
 
-  ["m_nPrintScaleY", "int", "0"],
+  ["m_nPrintYscale", "int", "0"],
   # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
-  ["m_dPrintScaleYmin", "double", "0.0"],
-  ["m_sPrintScaleYmax", "double", "20000.0"],
-  ["m_nPrintScaleYnegCtrl", "int","0"],
+  ["m_nPrintYscaleMin", "int", "0"],
+  ["m_nPrintYscaleMax", "int", "20000"],
+  ["m_nPrintYcaleNegCtrl", "int","0"],
   # 0 - scale to peaks, 1 - include min RFU, 2 - scale to ILS
 
   # allele labels
-  ["m_bPrintLabelsAllele", "bool true"],
-  ["m_bPrintLabelsBPS", "bool"],
-  ["m_bPrintLabelsRFU", "bool"],
-  ["m_bPrintLabelsTime", "bool"],
-  ["m_bPrintLabelsILSBPS", "bool"],
-  ["m_bPrintLabelsPeakArea", "bool"],
+  ["m_anPrintLabelsPeak", "vector<unsigned int>","1"],
   
   # Artifact labels
-  ["m_nPrintShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
+  ["m_nPrintArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
 
   # Page Heading
-  ["m_bPrintTitle", "int", "0"],
+  ["m_bPrintHeading", "int", "0"],
   # 0 - File name; 1 - Sample Name
-  ["m_sPrintTitleNotes", "wxString"],
+  ["m_sPrintHeadingNotes", "wxString"],
   
   # Channels per page
-  ["m_nPrintChannelsPerPage", "int", "8"],
-  ["m_nPrintChannelsPerPageLadder", "int", "8"],
-  ["m_nPrintChannelsPerPageNegCtrl", "int", "8"],
-  ["m_bPrintOmitILSchannel", "bool"],
+  ["m_nPrintChannelsSamples", "int", "8"],
+  ["m_nPrintChannelsLadders", "int", "8"],
+  ["m_nPrintChannelsNegCtrl", "int", "8"],
+  ["m_bPrintChannelsOmitILS", "bool"],
   
   # Samples
   ["m_bPrintSamplesLadders", "bool true"],
   ["m_bPrintSamplesPosCtrl", "bool true"],
-  ["m_bPrintSamplesNegCtel", "bool true"],
+  ["m_bPrintSamplesNegCtrl", "bool true"],
   ["m_bPrintSamplesDisabled", "bool"],
 
   # colors
@@ -850,7 +845,7 @@ ${sVars}
   bool m_bAutoSave;
   nwxXmlIOwxString m_ioBatchFormat;
   nwxXmlIOwxString m_ioDefaultSample;
-  nwxXmlIOuint m_ioUintViewPlotArtifact;
+  nwxXmlIOint m_ioIntViewPlotArtifact;
   nwxXmlIOuint m_ioUint1;
   nwxXmlIOint m_ioInt_1; // default to -1
 public:
@@ -962,6 +957,7 @@ EOF
 #include "CParmOsiris.h"
 #include "CLabSettings.h"
 #include "CVolumes.h"
+#include "wxIDS.h"
 #include "nwx/nwxFileUtil.h"
 #include <wx/filename.h>
 #include <wx/utils.h>
@@ -1035,7 +1031,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
     m_ioDefaultSample.SetDefault(
       CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY);
     m_ioBatchFormat.SetDefault(DEFAULT_BATCH_FORMAT);
-    m_ioUintViewPlotArtifact.SetDefault(15);
+    m_ioIntViewPlotArtifact.SetDefault(ARTIFACT_CRITICAL);
     m_ioUint1.SetDefault(1);
     m_ioInt_1.SetDefault(-1);
   }

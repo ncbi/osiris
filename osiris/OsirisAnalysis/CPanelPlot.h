@@ -95,7 +95,6 @@ private:
   CPanelPlot *m_pPlot;
 };
 
-
 class CPanelPlot :
   public PANEL_PLOT_TYPE,
   public InwxShiftReceiver,
@@ -281,6 +280,7 @@ public:
   // constructor for CFramePlot - MDI window with plots
   static const int ALLELE_SORT;
   static const int ARTIFACT_SORT;
+  static const int MENU_NUMBER_ANALYSIS_PRINT;
   enum
   {
     ZOOM_PRIMER_PEAK_NONE = 0,
@@ -308,12 +308,28 @@ public:
     CKitColors *pColors
     //,bool bExternalTimer = false   // EXT TIMER
     );
+
+  // constructor for Analysis Printout, called from CPrintOutAnalysis
+  CPanelPlot(
+    CFrameAnalysis *pFrame,
+    CPlotData *pData,
+    COARfile *pFile
+  );
   virtual ~CPanelPlot();
 
   void SendPlotSizeEvent();
   bool IsPreview()
   {
-    return (m_pFrameAnalysis != NULL);
+    // NOTE: this returns true for an Analysis printout
+    return (m_pFrameAnalysis != NULL) && !m_bPrintAnalysis;
+  }
+  bool IsPrintAnalysis()
+  {
+    return m_bPrintAnalysis;
+  }
+  bool IsPlotFrame()
+  {
+    return m_pFramePlot != NULL;
   }
   bool HasToolbar()
   {
@@ -321,7 +337,9 @@ public:
   }
   int DrawPlotTitleToDC(
     wxDC *pDC, const wxString &sTitle,
-    int nWidth, int nHeight, double dDPI);
+    const wxString &sTitleDetails,
+    int nWidth, int nHeight, double dDPI,
+    bool bForcePrintFont);
 
   int DrawXAxisLabelToDC(wxDC *pDC, const wxRect &rectBitmap, double dDPI, bool bForcePrintFont)
   {
@@ -334,6 +352,10 @@ public:
     {
       m_viewRect.Check(true);
     }
+    if (!b)
+    {
+      Show(false);
+    }
     m_bIgnoreTimer = !b;
   }
   bool GetRenderingToWindow()
@@ -341,9 +363,10 @@ public:
     return GetPlotCtrl()->RenderingToWindow();
   }
 
-  wxBitmap *CreateAllChannelBitmap(
+  wxBitmap *CreateMultiChannelBitmap(
     int nWidth, int nHeight, int nDPI,
-    const wxString &sTitle = wxEmptyString,
+    int nStartChannel,
+    int nPageNr,
     bool bForcePrintFont = false);
 
   void DrawPlotToDC(
@@ -403,7 +426,7 @@ public:
   }
   void SyncState(CPanelPlot *p, int nID);
   void RebuildCurves(bool bIgnoreViewRect = false); 
-  wxRect2DDouble GetZoomOutRect(int nPrimerPeaks, int nLabelHeight = 0);
+  wxRect2DDouble GetZoomOutRect(int nPrimerPeaks, int nLabelHeight = 0, double dMinRFU = -1.0);
   wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0)
   {
     return GetZoomOutRect(
@@ -553,11 +576,12 @@ public:
     m_pPlotCtrl->SetFocus();
   }
   const wxDateTime *GetSelectedTime();
-  void SetExternalTimer(bool b = true);
+  //void SetExternalTimer(bool b = true);
   void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
   void RebuildLabels(bool bRedraw = false);
   void UpdateLadderLabels();
+  void SetPrintSettings();
   void SetHistoryMenu(CMenuHistory *pMenu)
   {
     if(HasToolbar())
@@ -583,13 +607,13 @@ public:
 
   void ResetDefaults()
   {
-    if(IsPreview())
+    if(IsPlotFrame())
     {
-      SetPreviewSettings();
+      SetPlotSettings();
     }
     else
     {
-      SetPlotSettings();
+      SetPreviewSettings();
     }
 
 //    if(HasToolbar())
@@ -598,13 +622,37 @@ public:
 //    }
 //    m_pMenu->ResetDefaults();
   }
+  static void CheckRange(int *pn1, int *pn2, int nMinRange = 100)
+  {
+    // check axis range and correct if needed
+    int &n1(*pn1); // readability
+    int &n2(*pn2);
+    if (n1 > n2)
+    {
+      int t = n1;
+      n1 = n2;
+      n2 = t;
+    }
+    int nDiff = n2 - n1;
+    if (nDiff < nMinRange)
+    {
+      n1 -= ((nMinRange - nDiff) >> 1);
+      n2 = n1 + nMinRange;
+    }
+  }
 private:
+  static void _SetYUserRange(wxRect2DDouble *pRect);  // Y
+  static void _SetXUserRange(wxRect2DDouble *pRect);  // X
   static wxColour COLOUR_RFU;
 
+  const wxString &_TitleStrings(wxString *ps, int nPage);
+  bool _BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pRectZoom);
+  void _BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel);
+  int _BitmapPrimerZoom(int nXScale, bool bNegCtrl);
+  int _GetPlotsPerPage();
   void SetupLabelMenus();
   void SetPlotSettings();
   void SetPreviewSettings();
-  void SetPrintSettings();
   void _SyncControllers(CPlotController *pSyncTo);
   CMenuPlot *_GetLastMenu();
   CMDIFrame *_GetFrame();
@@ -615,13 +663,13 @@ private:
   void UpdateSettingsPreview();
   void UpdateSettings()
   {
-    if(IsPreview())
-    {
-      UpdateSettingsPreview();
-    }
-    else
+    if(IsPlotFrame())
     {
       UpdateSettingsPlot();
+    }
+    else if(IsPreview())
+    {
+      UpdateSettingsPreview();
     }
   }
   void UpdateGridLabels(int nLabelType = -1);
@@ -784,6 +832,7 @@ private:
   bool m_bIgnoreTimer;
   bool m_bDoTimer;
   bool m_bXBPS; // used to check if event changed x axis
+  bool m_bPrintAnalysis;
 
   // BEGIN - keep track of channels with no noise
   std::set<unsigned int> m_setNoNoiseChannel;

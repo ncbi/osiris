@@ -334,7 +334,7 @@ public:
   {
     return m_bPreviewXBPS;
   }
-  unsigned int GetPreviewShowArtifact() const
+  int GetPreviewShowArtifact() const
   {
     return m_nPreviewShowArtifact;
   }
@@ -381,7 +381,7 @@ public:
   {
     return m_nPlotMinHeight;
   }
-  unsigned int GetPlotShowArtifact() const
+  int GetPlotShowArtifact() const
   {
     return m_nPlotShowArtifact;
   }
@@ -396,117 +396,97 @@ public:
 
   //  plot print settings for analysis printout
 
-  bool GetPrintDataAnalyzed() const
+  bool GetPrintCurveAnalyzed() const
   {
-    return m_bPrintDataAnalyzed;
+    return m_bPrintCurveAnalyzed;
   }
-  bool GetPrintDataRaw() const
+  bool GetPrintCurveRaw() const
   {
-    return m_bPrintDataRaw;
+    return m_bPrintCurveRaw;
   }
-  bool GetPrintDataLadder() const
+  bool GetPrintCurveLadder() const
   {
-    return m_bPrintDataLadder;
+    return m_bPrintCurveLadder;
   }
-  bool GetPrintShowLadderLabels() const
+  bool GetPrintCurveLadderLabels() const
   {
-    return m_bPrintShowLadderLabels;
+    return m_bPrintCurveLadderLabels;
   }
-  bool GetPrintDataBaseline() const
+  bool GetPrintCurveBaseline() const
   {
-    return m_bPrintDataBaseline;
+    return m_bPrintCurveBaseline;
   }
-  bool GetPrintShowILSlines() const
+  bool GetPrintCurveILSvertical() const
   {
-    return m_bPrintShowILSlines;
+    return m_bPrintCurveILSvertical;
   }
-  bool GetPrintShowRFU() const
+  bool GetPrintCurveMinRFU() const
   {
-    return m_bPrintShowRFU;
+    return m_bPrintCurveMinRFU;
   }
-  bool GetPrintDataXBPS() const
+  bool GetPrintXaxisILSBPS() const
   {
-    return m_bPrintDataXBPS;
+    return m_bPrintXaxisILSBPS;
   }
-  int GetPrintScaleX() const
+  int GetPrintXscale() const
   {
-    return m_nPrintScaleX;
+    return m_nPrintXscale;
   }
-  double GetPrintScaleXmin() const
+  int GetPrintXscaleMin() const
   {
-    return m_dPrintScaleXmin;
+    return m_nPrintXscaleMin;
   }
-  double GetPrintScaleXmax() const
+  int GetPrintXscaleMax() const
   {
-    return m_sPrintScaleXmax;
+    return m_nPrintXscaleMax;
   }
-  int GetPrintScaleY() const
+  int GetPrintYscale() const
   {
-    return m_nPrintScaleY;
+    return m_nPrintYscale;
   }
-  double GetPrintScaleYmin() const
+  int GetPrintYscaleMin() const
   {
-    return m_dPrintScaleYmin;
+    return m_nPrintYscaleMin;
   }
-  double GetPrintScaleYmax() const
+  int GetPrintYscaleMax() const
   {
-    return m_sPrintScaleYmax;
+    return m_nPrintYscaleMax;
   }
-  int GetPrintScaleYnegCtrl() const
+  int GetPrintYcaleNegCtrl() const
   {
-    return m_nPrintScaleYnegCtrl;
+    return m_nPrintYcaleNegCtrl;
   }
-  bool GetPrintLabelsAllele() const
+  const vector<unsigned int> &GetPrintLabelsPeak() const
   {
-    return m_bPrintLabelsAllele;
+    return m_anPrintLabelsPeak;
   }
-  bool GetPrintLabelsBPS() const
+  int GetPrintArtifact() const
   {
-    return m_bPrintLabelsBPS;
+    return m_nPrintArtifact;
   }
-  bool GetPrintLabelsRFU() const
+  int GetPrintHeading() const
   {
-    return m_bPrintLabelsRFU;
+    return m_bPrintHeading;
   }
-  bool GetPrintLabelsTime() const
+  const wxString &GetPrintHeadingNotes() const
   {
-    return m_bPrintLabelsTime;
+    return m_sPrintHeadingNotes;
   }
-  bool GetPrintLabelsILSBPS() const
+  int GetPrintChannelsSamples() const
   {
-    return m_bPrintLabelsILSBPS;
+    return m_nPrintChannelsSamples;
   }
-  bool GetPrintLabelsPeakArea() const
+  int GetPrintChannelsLadders() const
   {
-    return m_bPrintLabelsPeakArea;
+    return m_nPrintChannelsLadders;
   }
-  unsigned int GetPrintShowArtifact() const
+  int GetPrintChannelsNegCtrl() const
   {
-    return m_nPrintShowArtifact;
+    return m_nPrintChannelsNegCtrl;
   }
-  int GetPrintTitle() const
+  bool GetPrintChannelsOmitILS() const
   {
-    return m_bPrintTitle;
-  }
-  const wxString &GetPrintTitleNotes() const
-  {
-    return m_sPrintTitleNotes;
-  }
-  int GetPrintChannelsPerPage() const
-  {
-    return m_nPrintChannelsPerPage;
-  }
-  int GetPrintChannelsPerPageLadder() const
-  {
-    return m_nPrintChannelsPerPageLadder;
-  }
-  int GetPrintChannelsPerPageNegCtrl() const
-  {
-    return m_nPrintChannelsPerPageNegCtrl;
-  }
-  bool GetPrintOmitILSchannel() const
-  {
-    return m_bPrintOmitILSchannel;
+    return m_bPrintChannelsOmitILS;
   }
   bool GetPrintSamplesLadders() const
   {
@@ -516,9 +496,9 @@ public:
   {
     return m_bPrintSamplesPosCtrl;
   }
-  bool GetPrintSamplesNegCtel() const
+  bool GetPrintSamplesNegCtrl() const
   {
-    return m_bPrintSamplesNegCtel;
+    return m_bPrintSamplesNegCtrl;
   }
   bool GetPrintSamplesDisabled() const
   {
@@ -928,7 +908,7 @@ public:
   {
     __SET_VALUE(m_bPreviewXBPS,b);
   }
-  void SetPreviewShowArtifact(unsigned int n)
+  void SetPreviewShowArtifact(int n)
   {
     __SET_VALUE(m_nPreviewShowArtifact,n);
   }
@@ -975,7 +955,7 @@ public:
   {
     __SET_VALUE(m_nPlotMinHeight,n);
   }
-  void SetPlotShowArtifact(unsigned int n)
+  void SetPlotShowArtifact(int n)
   {
     __SET_VALUE(m_nPlotShowArtifact,n);
   }
@@ -990,117 +970,97 @@ public:
 
   //  plot print settings for analysis printout
 
-  void SetPrintDataAnalyzed(bool b)
+  void SetPrintCurveAnalyzed(bool b)
   {
-    __SET_VALUE(m_bPrintDataAnalyzed,b);
+    __SET_VALUE(m_bPrintCurveAnalyzed,b);
   }
-  void SetPrintDataRaw(bool b)
+  void SetPrintCurveRaw(bool b)
   {
-    __SET_VALUE(m_bPrintDataRaw,b);
+    __SET_VALUE(m_bPrintCurveRaw,b);
   }
-  void SetPrintDataLadder(bool b)
+  void SetPrintCurveLadder(bool b)
   {
-    __SET_VALUE(m_bPrintDataLadder,b);
+    __SET_VALUE(m_bPrintCurveLadder,b);
   }
-  void SetPrintShowLadderLabels(bool b)
+  void SetPrintCurveLadderLabels(bool b)
   {
-    __SET_VALUE(m_bPrintShowLadderLabels,b);
+    __SET_VALUE(m_bPrintCurveLadderLabels,b);
   }
-  void SetPrintDataBaseline(bool b)
+  void SetPrintCurveBaseline(bool b)
   {
-    __SET_VALUE(m_bPrintDataBaseline,b);
+    __SET_VALUE(m_bPrintCurveBaseline,b);
   }
-  void SetPrintShowILSlines(bool b)
+  void SetPrintCurveILSvertical(bool b)
   {
-    __SET_VALUE(m_bPrintShowILSlines,b);
+    __SET_VALUE(m_bPrintCurveILSvertical,b);
   }
-  void SetPrintShowRFU(bool b)
+  void SetPrintCurveMinRFU(bool b)
   {
-    __SET_VALUE(m_bPrintShowRFU,b);
+    __SET_VALUE(m_bPrintCurveMinRFU,b);
   }
-  void SetPrintDataXBPS(bool b)
+  void SetPrintXaxisILSBPS(bool b)
   {
-    __SET_VALUE(m_bPrintDataXBPS,b);
+    __SET_VALUE(m_bPrintXaxisILSBPS,b);
   }
-  void SetPrintScaleX(int n)
+  void SetPrintXscale(int n)
   {
-    __SET_VALUE(m_nPrintScaleX,n);
+    __SET_VALUE(m_nPrintXscale,n);
   }
-  void SetPrintScaleXmin(double d)
+  void SetPrintXscaleMin(int n)
   {
-    __SET_VALUE(m_dPrintScaleXmin,d);
+    __SET_VALUE(m_nPrintXscaleMin,n);
   }
-  void SetPrintScaleXmax(double d)
+  void SetPrintXscaleMax(int n)
   {
-    __SET_VALUE(m_sPrintScaleXmax,d);
+    __SET_VALUE(m_nPrintXscaleMax,n);
   }
-  void SetPrintScaleY(int n)
+  void SetPrintYscale(int n)
   {
-    __SET_VALUE(m_nPrintScaleY,n);
+    __SET_VALUE(m_nPrintYscale,n);
   }
-  void SetPrintScaleYmin(double d)
+  void SetPrintYscaleMin(int n)
   {
-    __SET_VALUE(m_dPrintScaleYmin,d);
+    __SET_VALUE(m_nPrintYscaleMin,n);
   }
-  void SetPrintScaleYmax(double d)
+  void SetPrintYscaleMax(int n)
   {
-    __SET_VALUE(m_sPrintScaleYmax,d);
+    __SET_VALUE(m_nPrintYscaleMax,n);
   }
-  void SetPrintScaleYnegCtrl(int n)
+  void SetPrintYcaleNegCtrl(int n)
   {
-    __SET_VALUE(m_nPrintScaleYnegCtrl,n);
+    __SET_VALUE(m_nPrintYcaleNegCtrl,n);
   }
-  void SetPrintLabelsAllele(bool b)
+  void SetPrintLabelsPeak(const vector<unsigned int> &an)
   {
-    __SET_VALUE(m_bPrintLabelsAllele,b);
+    __SET_VALUE(m_anPrintLabelsPeak,an);
   }
-  void SetPrintLabelsBPS(bool b)
+  void SetPrintArtifact(int n)
   {
-    __SET_VALUE(m_bPrintLabelsBPS,b);
+    __SET_VALUE(m_nPrintArtifact,n);
   }
-  void SetPrintLabelsRFU(bool b)
+  void SetPrintHeading(int n)
   {
-    __SET_VALUE(m_bPrintLabelsRFU,b);
+    __SET_VALUE(m_bPrintHeading,n);
   }
-  void SetPrintLabelsTime(bool b)
+  void SetPrintHeadingNotes(const wxString &s)
   {
-    __SET_VALUE(m_bPrintLabelsTime,b);
+    __SET_VALUE(m_sPrintHeadingNotes,s);
   }
-  void SetPrintLabelsILSBPS(bool b)
+  void SetPrintChannelsSamples(int n)
   {
-    __SET_VALUE(m_bPrintLabelsILSBPS,b);
+    __SET_VALUE(m_nPrintChannelsSamples,n);
   }
-  void SetPrintLabelsPeakArea(bool b)
+  void SetPrintChannelsLadders(int n)
   {
-    __SET_VALUE(m_bPrintLabelsPeakArea,b);
+    __SET_VALUE(m_nPrintChannelsLadders,n);
   }
-  void SetPrintShowArtifact(unsigned int n)
+  void SetPrintChannelsNegCtrl(int n)
   {
-    __SET_VALUE(m_nPrintShowArtifact,n);
+    __SET_VALUE(m_nPrintChannelsNegCtrl,n);
   }
-  void SetPrintTitle(int n)
+  void SetPrintChannelsOmitILS(bool b)
   {
-    __SET_VALUE(m_bPrintTitle,n);
-  }
-  void SetPrintTitleNotes(const wxString &s)
-  {
-    __SET_VALUE(m_sPrintTitleNotes,s);
-  }
-  void SetPrintChannelsPerPage(int n)
-  {
-    __SET_VALUE(m_nPrintChannelsPerPage,n);
-  }
-  void SetPrintChannelsPerPageLadder(int n)
-  {
-    __SET_VALUE(m_nPrintChannelsPerPageLadder,n);
-  }
-  void SetPrintChannelsPerPageNegCtrl(int n)
-  {
-    __SET_VALUE(m_nPrintChannelsPerPageNegCtrl,n);
-  }
-  void SetPrintOmitILSchannel(bool b)
-  {
-    __SET_VALUE(m_bPrintOmitILSchannel,b);
+    __SET_VALUE(m_bPrintChannelsOmitILS,b);
   }
   void SetPrintSamplesLadders(bool b)
   {
@@ -1110,9 +1070,9 @@ public:
   {
     __SET_VALUE(m_bPrintSamplesPosCtrl,b);
   }
-  void SetPrintSamplesNegCtel(bool b)
+  void SetPrintSamplesNegCtrl(bool b)
   {
-    __SET_VALUE(m_bPrintSamplesNegCtel,b);
+    __SET_VALUE(m_bPrintSamplesNegCtrl,b);
   }
   void SetPrintSamplesDisabled(bool b)
   {
@@ -1402,7 +1362,7 @@ protected:
   bool m_bPreviewShowRFU;
   bool m_bPreviewShowLadderLabels;
   bool m_bPreviewXBPS;
-  unsigned int m_nPreviewShowArtifact;
+  int m_nPreviewShowArtifact;
 
   //  plot settings
 
@@ -1416,43 +1376,38 @@ protected:
   bool m_bPlotShowLadderLabels;
   bool m_bPlotResizable;
   int m_nPlotMinHeight;
-  unsigned int m_nPlotShowArtifact;
+  int m_nPlotShowArtifact;
   vector<unsigned int> m_anPlotDisplayPeak;
   int m_nPlotMaxLadderLabels;
 
   //  plot print settings for analysis printout
 
-  bool m_bPrintDataAnalyzed;
-  bool m_bPrintDataRaw;
-  bool m_bPrintDataLadder;
-  bool m_bPrintShowLadderLabels;
-  bool m_bPrintDataBaseline;
-  bool m_bPrintShowILSlines;
-  bool m_bPrintShowRFU;
-  bool m_bPrintDataXBPS;
-  int m_nPrintScaleX;
-  double m_dPrintScaleXmin;
-  double m_sPrintScaleXmax;
-  int m_nPrintScaleY;
-  double m_dPrintScaleYmin;
-  double m_sPrintScaleYmax;
-  int m_nPrintScaleYnegCtrl;
-  bool m_bPrintLabelsAllele;
-  bool m_bPrintLabelsBPS;
-  bool m_bPrintLabelsRFU;
-  bool m_bPrintLabelsTime;
-  bool m_bPrintLabelsILSBPS;
-  bool m_bPrintLabelsPeakArea;
-  unsigned int m_nPrintShowArtifact;
-  int m_bPrintTitle;
-  wxString m_sPrintTitleNotes;
-  int m_nPrintChannelsPerPage;
-  int m_nPrintChannelsPerPageLadder;
-  int m_nPrintChannelsPerPageNegCtrl;
-  bool m_bPrintOmitILSchannel;
+  bool m_bPrintCurveAnalyzed;
+  bool m_bPrintCurveRaw;
+  bool m_bPrintCurveLadder;
+  bool m_bPrintCurveLadderLabels;
+  bool m_bPrintCurveBaseline;
+  bool m_bPrintCurveILSvertical;
+  bool m_bPrintCurveMinRFU;
+  bool m_bPrintXaxisILSBPS;
+  int m_nPrintXscale;
+  int m_nPrintXscaleMin;
+  int m_nPrintXscaleMax;
+  int m_nPrintYscale;
+  int m_nPrintYscaleMin;
+  int m_nPrintYscaleMax;
+  int m_nPrintYcaleNegCtrl;
+  vector<unsigned int> m_anPrintLabelsPeak;
+  int m_nPrintArtifact;
+  int m_bPrintHeading;
+  wxString m_sPrintHeadingNotes;
+  int m_nPrintChannelsSamples;
+  int m_nPrintChannelsLadders;
+  int m_nPrintChannelsNegCtrl;
+  bool m_bPrintChannelsOmitILS;
   bool m_bPrintSamplesLadders;
   bool m_bPrintSamplesPosCtrl;
-  bool m_bPrintSamplesNegCtel;
+  bool m_bPrintSamplesNegCtrl;
   bool m_bPrintSamplesDisabled;
   int m_bPrintColorRed;
   int m_bPrintColorGreen;
@@ -1486,7 +1441,7 @@ protected:
   bool m_bAutoSave;
   nwxXmlIOwxString m_ioBatchFormat;
   nwxXmlIOwxString m_ioDefaultSample;
-  nwxXmlIOuint m_ioUintViewPlotArtifact;
+  nwxXmlIOint m_ioIntViewPlotArtifact;
   nwxXmlIOuint m_ioUint1;
   nwxXmlIOint m_ioInt_1; // default to -1
 public:

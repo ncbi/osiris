@@ -46,48 +46,10 @@
 #define __C_PRINTOUT_H__
 
 #include <wx/print.h>
-#include "nwx/PersistentSize.h"
 
-class CPrintPreviewFrame : public wxPreviewFrame
-{
-public:
-  CPrintPreviewFrame(wxPrintPreview *pPreview, wxFrame *pParent,
-    const wxString &sTitle, bool bPageButtons = false);
-  virtual ~CPrintPreviewFrame() {}
-  virtual void CreateControlBar();
-  void OnSettings(wxCommandEvent &);
-private:
-  bool m_bPageButtons;
-  DECLARE_PERSISTENT_SIZE_POSITION
-  DECLARE_ABSTRACT_CLASS(CPrintPreviewFramePlot)
-  DECLARE_EVENT_TABLE()
-};
-
-
-class CPrintPreview : public wxPrintPreview
-{
-public:
-  CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting = NULL, wxPrintDialogData *data = NULL) :
-    wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType)
-  {
-    _SetDefaultZoom();
-  }
-  CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting, wxPrintData *data) :
-    wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType)
-  {
-    _SetDefaultZoom();
-  }
-  virtual ~CPrintPreview() {}
-  virtual bool Print(bool interactive);
-  virtual void SetZoom(int n);
-
-private:
-  const wxString m_sPrintType;
-  void _SetDefaultZoom();
-};
-
+class CDialogPrintSettings;
+class CFrameAnalysis;
+class CFramePlot;
 
 class wxDC;
 
@@ -104,6 +66,14 @@ public:
 
   virtual ~CPrintOut();
   virtual wxFrame *GetParent() = 0;
+  virtual int GetMinPage();
+  virtual int GetMaxPage();
+  virtual void RebuildPages()
+  {
+    // this is called from CPrintPreviewFrame::UpdateSettings()
+    // after changing settings because the number of plots
+    // per page might change the total number of pages
+  }
   bool IsPrintPreview()
   {
     // should check wxPrinout::IsPreview
@@ -122,6 +92,7 @@ public:
       g_printData = NULL;
     }
   }
+
   static void DoPageSetup(wxFrame *pParent);
 #ifdef __WXMAC__
   static void DoPageMargins(wxFrame *parent);
@@ -198,6 +169,7 @@ protected:
   int m_nSetupPageCount;
 #endif
   bool m_bPreview;
+  DECLARE_ABSTRACT_CLASS(CPrintOut)
 };
 
 #endif

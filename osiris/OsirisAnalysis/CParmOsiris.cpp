@@ -32,6 +32,7 @@
 #include "CParmOsiris.h"
 #include "CLabSettings.h"
 #include "CVolumes.h"
+#include "wxIDS.h"
 #include "nwx/nwxFileUtil.h"
 #include <wx/filename.h>
 #include <wx/utils.h>
@@ -152,37 +153,32 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
 
   //  plot print settings for analysis printout
 
-  CP(m_bPrintDataAnalyzed);
-  CP(m_bPrintDataRaw);
-  CP(m_bPrintDataLadder);
-  CP(m_bPrintShowLadderLabels);
-  CP(m_bPrintDataBaseline);
-  CP(m_bPrintShowILSlines);
-  CP(m_bPrintShowRFU);
-  CP(m_bPrintDataXBPS);
-  CP(m_nPrintScaleX);
-  CP(m_dPrintScaleXmin);
-  CP(m_sPrintScaleXmax);
-  CP(m_nPrintScaleY);
-  CP(m_dPrintScaleYmin);
-  CP(m_sPrintScaleYmax);
-  CP(m_nPrintScaleYnegCtrl);
-  CP(m_bPrintLabelsAllele);
-  CP(m_bPrintLabelsBPS);
-  CP(m_bPrintLabelsRFU);
-  CP(m_bPrintLabelsTime);
-  CP(m_bPrintLabelsILSBPS);
-  CP(m_bPrintLabelsPeakArea);
-  CP(m_nPrintShowArtifact);
-  CP(m_bPrintTitle);
-  CP(m_sPrintTitleNotes);
-  CP(m_nPrintChannelsPerPage);
-  CP(m_nPrintChannelsPerPageLadder);
-  CP(m_nPrintChannelsPerPageNegCtrl);
-  CP(m_bPrintOmitILSchannel);
+  CP(m_bPrintCurveAnalyzed);
+  CP(m_bPrintCurveRaw);
+  CP(m_bPrintCurveLadder);
+  CP(m_bPrintCurveLadderLabels);
+  CP(m_bPrintCurveBaseline);
+  CP(m_bPrintCurveILSvertical);
+  CP(m_bPrintCurveMinRFU);
+  CP(m_bPrintXaxisILSBPS);
+  CP(m_nPrintXscale);
+  CP(m_nPrintXscaleMin);
+  CP(m_nPrintXscaleMax);
+  CP(m_nPrintYscale);
+  CP(m_nPrintYscaleMin);
+  CP(m_nPrintYscaleMax);
+  CP(m_nPrintYcaleNegCtrl);
+  CP(m_anPrintLabelsPeak);
+  CP(m_nPrintArtifact);
+  CP(m_bPrintHeading);
+  CP(m_sPrintHeadingNotes);
+  CP(m_nPrintChannelsSamples);
+  CP(m_nPrintChannelsLadders);
+  CP(m_nPrintChannelsNegCtrl);
+  CP(m_bPrintChannelsOmitILS);
   CP(m_bPrintSamplesLadders);
   CP(m_bPrintSamplesPosCtrl);
-  CP(m_bPrintSamplesNegCtel);
+  CP(m_bPrintSamplesNegCtrl);
   CP(m_bPrintSamplesDisabled);
   CP(m_bPrintColorRed);
   CP(m_bPrintColorGreen);
@@ -314,37 +310,32 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 
   //  plot print settings for analysis printout
 
-  CP(m_bPrintDataAnalyzed)
-  CP(m_bPrintDataRaw)
-  CP(m_bPrintDataLadder)
-  CP(m_bPrintShowLadderLabels)
-  CP(m_bPrintDataBaseline)
-  CP(m_bPrintShowILSlines)
-  CP(m_bPrintShowRFU)
-  CP(m_bPrintDataXBPS)
-  CP(m_nPrintScaleX)
-  CP(m_dPrintScaleXmin)
-  CP(m_sPrintScaleXmax)
-  CP(m_nPrintScaleY)
-  CP(m_dPrintScaleYmin)
-  CP(m_sPrintScaleYmax)
-  CP(m_nPrintScaleYnegCtrl)
-  CP(m_bPrintLabelsAllele)
-  CP(m_bPrintLabelsBPS)
-  CP(m_bPrintLabelsRFU)
-  CP(m_bPrintLabelsTime)
-  CP(m_bPrintLabelsILSBPS)
-  CP(m_bPrintLabelsPeakArea)
-  CP(m_nPrintShowArtifact)
-  CP(m_bPrintTitle)
-  CP(m_sPrintTitleNotes)
-  CP(m_nPrintChannelsPerPage)
-  CP(m_nPrintChannelsPerPageLadder)
-  CP(m_nPrintChannelsPerPageNegCtrl)
-  CP(m_bPrintOmitILSchannel)
+  CP(m_bPrintCurveAnalyzed)
+  CP(m_bPrintCurveRaw)
+  CP(m_bPrintCurveLadder)
+  CP(m_bPrintCurveLadderLabels)
+  CP(m_bPrintCurveBaseline)
+  CP(m_bPrintCurveILSvertical)
+  CP(m_bPrintCurveMinRFU)
+  CP(m_bPrintXaxisILSBPS)
+  CP(m_nPrintXscale)
+  CP(m_nPrintXscaleMin)
+  CP(m_nPrintXscaleMax)
+  CP(m_nPrintYscale)
+  CP(m_nPrintYscaleMin)
+  CP(m_nPrintYscaleMax)
+  CP(m_nPrintYcaleNegCtrl)
+  CP(m_anPrintLabelsPeak)
+  CP(m_nPrintArtifact)
+  CP(m_bPrintHeading)
+  CP(m_sPrintHeadingNotes)
+  CP(m_nPrintChannelsSamples)
+  CP(m_nPrintChannelsLadders)
+  CP(m_nPrintChannelsNegCtrl)
+  CP(m_bPrintChannelsOmitILS)
   CP(m_bPrintSamplesLadders)
   CP(m_bPrintSamplesPosCtrl)
-  CP(m_bPrintSamplesNegCtel)
+  CP(m_bPrintSamplesNegCtrl)
   CP(m_bPrintSamplesDisabled)
   CP(m_bPrintColorRed)
   CP(m_bPrintColorGreen)
@@ -391,7 +382,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
     m_ioDefaultSample.SetDefault(
       CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY);
     m_ioBatchFormat.SetDefault(DEFAULT_BATCH_FORMAT);
-    m_ioUintViewPlotArtifact.SetDefault(15);
+    m_ioIntViewPlotArtifact.SetDefault(ARTIFACT_CRITICAL);
     m_ioUint1.SetDefault(1);
     m_ioInt_1.SetDefault(-1);
   }
@@ -465,7 +456,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PreviewShowRFU", &m_bPreviewShowRFU);
   RegisterBool("PreviewShowLadderLabels", &m_bPreviewShowLadderLabels);
   RegisterBool("PreviewXBPS", &m_bPreviewXBPS);
-  Register("PreviewArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPreviewShowArtifact);
+  Register("PreviewArtifact",&m_ioIntViewPlotArtifact,(void *) &m_nPreviewShowArtifact);
 
   //  plot settings
 
@@ -479,43 +470,38 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PlotShowLadderLabels", &m_bPlotShowLadderLabels);
   RegisterBoolTrue("PlotResizable", &m_bPlotResizable);
   Register("PlotMinHeight",&m_ioInt_1,(void *) &m_nPlotMinHeight);
-  Register("PlotShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPlotShowArtifact);
+  Register("PlotShowArtifact",&m_ioIntViewPlotArtifact,(void *) &m_nPlotShowArtifact);
   RegisterUintVector("PlotDisplayPeak", &m_anPlotDisplayPeak);
   Register("MaxLadderLabels",&m_ioInt_1,(void *) &m_nPlotMaxLadderLabels);
 
   //  plot print settings for analysis printout
 
-  RegisterBoolTrue("PrintDataAnalyzed", &m_bPrintDataAnalyzed);
-  RegisterBool("PrintDataRaw", &m_bPrintDataRaw);
-  RegisterBool("PrintDataLadder", &m_bPrintDataLadder);
-  RegisterBool("PrintShowLadderLabels", &m_bPrintShowLadderLabels);
-  RegisterBool("PrintDataBaseline", &m_bPrintDataBaseline);
-  RegisterBool("PrintShowILSlines", &m_bPrintShowILSlines);
-  RegisterBool("PrintShowRFU", &m_bPrintShowRFU);
-  RegisterBool("PrintDataXBPS", &m_bPrintDataXBPS);
-  RegisterInt("PrintScaleX", &m_nPrintScaleX);
-  RegisterDouble("PrintScaleXmin", &m_dPrintScaleXmin);
-  RegisterDouble("PrintScaleXmax", &m_sPrintScaleXmax);
-  RegisterInt("PrintScaleY", &m_nPrintScaleY);
-  RegisterDouble("PrintScaleYmin", &m_dPrintScaleYmin);
-  RegisterDouble("PrintScaleYmax", &m_sPrintScaleYmax);
-  RegisterInt("PrintScaleYnegCtrl", &m_nPrintScaleYnegCtrl);
-  RegisterBoolTrue("PrintLabelsAllele", &m_bPrintLabelsAllele);
-  RegisterBool("PrintLabelsBPS", &m_bPrintLabelsBPS);
-  RegisterBool("PrintLabelsRFU", &m_bPrintLabelsRFU);
-  RegisterBool("PrintLabelsTime", &m_bPrintLabelsTime);
-  RegisterBool("PrintLabelsILSBPS", &m_bPrintLabelsILSBPS);
-  RegisterBool("PrintLabelsPeakArea", &m_bPrintLabelsPeakArea);
-  Register("PrintShowArtifact",&m_ioUintViewPlotArtifact,(void *) &m_nPrintShowArtifact);
-  RegisterInt("PrintTitle", &m_bPrintTitle);
-  RegisterWxString("PrintTitleNotes", &m_sPrintTitleNotes);
-  RegisterInt("PrintChannelsPerPage", &m_nPrintChannelsPerPage);
-  RegisterInt("PrintChannelsPerPageLadder", &m_nPrintChannelsPerPageLadder);
-  RegisterInt("PrintChannelsPerPageNegCtrl", &m_nPrintChannelsPerPageNegCtrl);
-  RegisterBool("PrintOmitILSchannel", &m_bPrintOmitILSchannel);
+  RegisterBoolTrue("PrintCurveAnalyzed", &m_bPrintCurveAnalyzed);
+  RegisterBool("PrintCurveRaw", &m_bPrintCurveRaw);
+  RegisterBool("PrintCurveLadder", &m_bPrintCurveLadder);
+  RegisterBool("PrintCurveLadderLabels", &m_bPrintCurveLadderLabels);
+  RegisterBool("PrintCurveBaseline", &m_bPrintCurveBaseline);
+  RegisterBool("PrintCurveILSvertical", &m_bPrintCurveILSvertical);
+  RegisterBool("PrintCurveMinRFU", &m_bPrintCurveMinRFU);
+  RegisterBool("PrintXaxisILSBPS", &m_bPrintXaxisILSBPS);
+  RegisterInt("PrintXscale", &m_nPrintXscale);
+  RegisterInt("PrintXscaleMin", &m_nPrintXscaleMin);
+  RegisterInt("PrintXscaleMax", &m_nPrintXscaleMax);
+  RegisterInt("PrintYscale", &m_nPrintYscale);
+  RegisterInt("PrintYscaleMin", &m_nPrintYscaleMin);
+  RegisterInt("PrintYscaleMax", &m_nPrintYscaleMax);
+  RegisterInt("PrintYcaleNegCtrl", &m_nPrintYcaleNegCtrl);
+  RegisterUintVector("PrintLabelsPeak", &m_anPrintLabelsPeak);
+  Register("PrintArtifact",&m_ioIntViewPlotArtifact,(void *) &m_nPrintArtifact);
+  RegisterInt("PrintHeading", &m_bPrintHeading);
+  RegisterWxString("PrintHeadingNotes", &m_sPrintHeadingNotes);
+  RegisterInt("PrintChannelsSamples", &m_nPrintChannelsSamples);
+  RegisterInt("PrintChannelsLadders", &m_nPrintChannelsLadders);
+  RegisterInt("PrintChannelsNegCtrl", &m_nPrintChannelsNegCtrl);
+  RegisterBool("PrintChannelsOmitILS", &m_bPrintChannelsOmitILS);
   RegisterBoolTrue("PrintSamplesLadders", &m_bPrintSamplesLadders);
   RegisterBoolTrue("PrintSamplesPosCtrl", &m_bPrintSamplesPosCtrl);
-  RegisterBoolTrue("PrintSamplesNegCtel", &m_bPrintSamplesNegCtel);
+  RegisterBoolTrue("PrintSamplesNegCtrl", &m_bPrintSamplesNegCtrl);
   RegisterBool("PrintSamplesDisabled", &m_bPrintSamplesDisabled);
   RegisterInt("PrintColorRed", &m_bPrintColorRed);
   RegisterInt("PrintColorGreen", &m_bPrintColorGreen);
@@ -640,7 +626,7 @@ void CParmOsiris::SetDefaults()
   m_bPreviewShowRFU = false;
   m_bPreviewShowLadderLabels = false;
   m_bPreviewXBPS = false;
-  m_nPreviewShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
+  m_nPreviewShowArtifact = m_ioIntViewPlotArtifact.GetDefault();
 
   //  plot settings
 
@@ -654,44 +640,40 @@ void CParmOsiris::SetDefaults()
   m_bPlotShowLadderLabels = false;
   m_bPlotResizable = true;
   m_nPlotMinHeight = -1;
-  m_nPlotShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
+  m_nPlotShowArtifact = m_ioIntViewPlotArtifact.GetDefault();
   m_anPlotDisplayPeak.clear();
   m_anPlotDisplayPeak.push_back(1);
   m_nPlotMaxLadderLabels = -1;
 
   //  plot print settings for analysis printout
 
-  m_bPrintDataAnalyzed = true;
-  m_bPrintDataRaw = false;
-  m_bPrintDataLadder = false;
-  m_bPrintShowLadderLabels = false;
-  m_bPrintDataBaseline = false;
-  m_bPrintShowILSlines = false;
-  m_bPrintShowRFU = false;
-  m_bPrintDataXBPS = false;
-  m_nPrintScaleX = 0;
-  m_dPrintScaleXmin = 0.0;
-  m_sPrintScaleXmax = 20000.0;
-  m_nPrintScaleY = 0;
-  m_dPrintScaleYmin = 0.0;
-  m_sPrintScaleYmax = 20000.0;
-  m_nPrintScaleYnegCtrl = 0;
-  m_bPrintLabelsAllele = true;
-  m_bPrintLabelsBPS = false;
-  m_bPrintLabelsRFU = false;
-  m_bPrintLabelsTime = false;
-  m_bPrintLabelsILSBPS = false;
-  m_bPrintLabelsPeakArea = false;
-  m_nPrintShowArtifact = m_ioUintViewPlotArtifact.GetDefault();
-  m_bPrintTitle = 0;
-  m_sPrintTitleNotes.Empty();
-  m_nPrintChannelsPerPage = 8;
-  m_nPrintChannelsPerPageLadder = 8;
-  m_nPrintChannelsPerPageNegCtrl = 8;
-  m_bPrintOmitILSchannel = false;
+  m_bPrintCurveAnalyzed = true;
+  m_bPrintCurveRaw = false;
+  m_bPrintCurveLadder = false;
+  m_bPrintCurveLadderLabels = false;
+  m_bPrintCurveBaseline = false;
+  m_bPrintCurveILSvertical = false;
+  m_bPrintCurveMinRFU = false;
+  m_bPrintXaxisILSBPS = false;
+  m_nPrintXscale = 0;
+  m_nPrintXscaleMin = 0;
+  m_nPrintXscaleMax = 20000;
+  m_nPrintYscale = 0;
+  m_nPrintYscaleMin = 0;
+  m_nPrintYscaleMax = 20000;
+  m_nPrintYcaleNegCtrl = 0;
+  m_anPrintLabelsPeak.clear();
+  m_anPrintLabelsPeak.push_back(1);
+  m_nPrintArtifact = m_ioIntViewPlotArtifact.GetDefault();
+  m_bPrintHeading = 0;
+  m_sPrintHeadingNotes.Empty();
+  m_nPrintChannelsSamples = 8;
+  m_nPrintChannelsLadders = 8;
+  m_nPrintChannelsNegCtrl = 8;
+  m_bPrintChannelsOmitILS = false;
   m_bPrintSamplesLadders = true;
   m_bPrintSamplesPosCtrl = true;
-  m_bPrintSamplesNegCtel = true;
+  m_bPrintSamplesNegCtrl = true;
   m_bPrintSamplesDisabled = false;
   m_bPrintColorRed = 100;
   m_bPrintColorGreen = 100;

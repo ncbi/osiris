@@ -61,11 +61,11 @@ public:
   virtual bool OnPrintPage(int page);
   virtual bool HasPage(int page);
   virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
-
   static void DoPrintPreview(CFramePlot *pPlot);
   static void DoPrint(CFramePlot *pPlot);
 private:
   CFramePlot *m_pFramePlot;
+  DECLARE_ABSTRACT_CLASS(CPrintOutPlot)
 };
 
 #endif

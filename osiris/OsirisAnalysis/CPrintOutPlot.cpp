@@ -109,3 +109,4 @@ void CPrintOutPlot::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, in
   *minPage = *maxPage = *selPageFrom = *selPageTo = 1;
 }
 
+IMPLEMENT_ABSTRACT_CLASS(CPrintOutPlot, CPrintOut)
