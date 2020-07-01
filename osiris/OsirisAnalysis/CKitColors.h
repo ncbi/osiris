@@ -145,6 +145,7 @@ public:
   const wxColor &GetColorFromLS(
     const wxString &sKitName, DATA_TYPE n, const wxString &sLSname) const;
   const wxColour &GetColorByDye(const wxString &sDyeName, DATA_TYPE n = ANALYZED_DATA) const;
+  const wxColour &GetColorByName(const wxString &sName, DATA_TYPE n = ANALYZED_DATA) const;
 
   const CSingleKitColors *GetKitColors(
     const wxString &sKitName) const;

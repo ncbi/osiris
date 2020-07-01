@@ -56,8 +56,8 @@ class wxDC;
 class CPrintOut : public wxPrintout
 {
 public:
-  CPrintOut(bool bPreview = false) :
-    wxPrintout(wxT("OSIRIS Plot")),
+  CPrintOut(bool bPreview = false, const wxString &sTitle = wxT("OSIRIS Plot")) :
+    wxPrintout(sTitle),
 #ifdef TMP_DEBUG
     m_nSetupPageCount(0),
 #endif

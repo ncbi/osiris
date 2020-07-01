@@ -215,6 +215,7 @@ enum
   IDprintPagePrev,
   IDprintPageNext,
   IDprintZoom,
+  IDprintColors,
   IDprintPrint,
 
   IDhelpAbout,

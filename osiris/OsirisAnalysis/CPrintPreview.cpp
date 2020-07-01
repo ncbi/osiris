@@ -52,6 +52,7 @@
 #include "CFrameAnalysis.h"
 #include "CParmOsiris.h"
 #include "CDialogPrintSettings.h"
+#include "CDialogPrintColor.h"
 #include "nwx/nwxString.h"
 
 // CPrintPreviewFrame
@@ -82,6 +83,17 @@ void CPrintPreviewFrame::CreateControlBar()
   // and should be checked when updating version of wx
   m_controlBar = new CPreviewControlBar(this, wxDynamicCast(m_printPreview, CPrintPreview));
   m_controlBar->CreateButtons();
+}
+void CPrintPreviewFrame::_OnColors(wxCommandEvent &)
+{
+  CDialogPrintColor dlg(this);
+  if (dlg.ShowModal() == wxID_OK)
+  {
+    CPreviewControlBar *pController = _GetControlBar();
+    int nPage = pController->GetPage();
+    m_pPreview->SetCurrentPage(0); // show blank page in order to refresh current page
+    m_pPreview->SetCurrentPage(nPage);
+  }
 }
 void CPrintPreviewFrame::_OnSettings(wxCommandEvent &)
 {
@@ -135,14 +147,15 @@ void CPrintPreviewFrame::UpdateSettings()
     // force a page refresh by printing page 0 (blank)
     // followed by returning to current page
     m_pPreview->SetCurrentPage(0);
-    m_pPreview->SetCurrentPage(nPageAfter);
   }
+  m_pPreview->SetCurrentPage(nPageAfter);
 }
 
 IMPLEMENT_ABSTRACT_CLASS(CPrintPreviewFrame, wxPreviewFrame)
 IMPLEMENT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
 BEGIN_EVENT_TABLE(CPrintPreviewFrame, wxPreviewFrame)
 EVT_BUTTON(IDprintSettings, CPrintPreviewFrame::_OnSettings)
+EVT_BUTTON(IDprintColors, CPrintPreviewFrame::_OnColors)
 EVT_BUTTON(IDprintPrint, CPrintPreviewFrame::_OnPrint)
 EVT_CHOICE(IDprintZoom, CPrintPreviewFrame::_OnZoom)
 EVT_TEXT(IDprintPageText, CPrintPreviewFrame::_OnPageChange)
@@ -185,6 +198,7 @@ void CPrintPreview::_SetDefaultZoom()
 // CPreviewControlBar
 
 #define S_SETTINGS wxT("Settings...")
+#define S_COLORS wxT("Colors...")
 #define S_PRINT wxT("Print...")
 #define S_PAGE wxT("Page:")
 #define S_PAGE_COUNT \
@@ -283,14 +297,21 @@ void CPreviewControlBar::CreateButtons()
   wxSizer *pSizer = this->GetSizer();
   wxSizerFlags flags(0);
   flags.Border(wxALL).Center();
-  pButton = new wxButton(this, IDprintSettings, S_SETTINGS);
-  int nSpacer = wxSizerFlags::GetDefaultBorder();
-  int nPOS = 0; // sizer insert position
 
+  pButton = new wxButton(this, IDprintColors, S_COLORS);
   pSizer->Insert(
     pSizer->GetItemCount() - 1,
     pButton,
     flags);
+
+  pButton = new wxButton(this, IDprintSettings, S_SETTINGS);
+  pSizer->Insert(
+    pSizer->GetItemCount() - 1,
+    pButton,
+    flags);
+
+  int nSpacer = wxSizerFlags::GetDefaultBorder();
+  int nPOS = 0; // sizer insert position
 
   wxFont fnt = pButton->GetFont();
   fnt.MakeBold();

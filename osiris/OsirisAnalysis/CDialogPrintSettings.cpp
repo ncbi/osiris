@@ -59,6 +59,7 @@
 #include "CFrameAnalysis.h"
 #include "CPrintPreview.h"
 #include "CPanelPlot.h"
+#include "nwx/nwxTextCtrl.h"
 
 // widget labels
 
@@ -165,13 +166,16 @@ CDialogPrintSettings::~CDialogPrintSettings()
 const int CDialogPrintSettings::NO_RADIO_INT = -32768;
 
 wxTextCtrl *CDialogPrintSettings::_CreateNumericTextCtrl(
-  wxWindow *parent, const wxSize &sz, int nMin, int nMax, int nInit, int nID)
+  wxWindow *parent, int nMin, int nMax, int nInit, int nID)
 {
+  return new nwxTextCtrlInteger(parent, nID, nMin, nMax, nInit, 6, 0L);
+  /*
   wxIntegerValidator<int> val(NULL, wxNUM_VAL_ZERO_AS_BLANK);
   val.SetRange(nMin, nMax);
   wxTextCtrl *pRtn = new wxTextCtrl(parent, nID, nwxString::FormatNumber(nInit), wxDefaultPosition, sz, 0, val);
   pRtn->SetMaxLength(6);
   return pRtn;
+  */
 }
 
 
@@ -239,7 +243,7 @@ wxRadioButton *CDialogPrintSettings::_CreateRadioButton(
 void CDialogPrintSettings::_Build()
 {
   // curves
-  wxSize szText = GetTextExtent("99999999");
+  wxSize szText = GetTextExtent("99999999");  
   szText.SetHeight(-1);
 
   m_pCheckCurveAnalyzed = new wxCheckBox(this, wxID_ANY, wxT(S_ANALYZED));
@@ -308,8 +312,8 @@ void CDialogPrintSettings::_Build()
   m_pRadioXscaleIncludePrimerNegCtrl = _CreateRadioButton(wxT(S_NEG_CTRL_PRIMER_PEAKS), PRINT_X_SCALE_CTRL_PRIMER_PEAK, false, IDprintXscaleSpecify);
   m_pRadioXscaleSpecify = _CreateRadioButton(wxT(S_SPECIFY), PRINT_X_SCALE_USER, false, IDprintXscaleSpecify);
   m_nGroupXscale = _GetCurrentGroup();
-  m_pTextXscaleMin = _CreateNumericTextCtrl(this, szText, -999, 99999, 0);
-  m_pTextXscaleMax = _CreateNumericTextCtrl(this, szText, -999, 99999, 12000);
+  m_pTextXscaleMin = _CreateNumericTextCtrl(this, -999, 99999, 0);
+  m_pTextXscaleMax = _CreateNumericTextCtrl(this, -999, 99999, 12000);
 
   // scale Y-Axis
 
@@ -318,8 +322,8 @@ void CDialogPrintSettings::_Build()
   m_pRadioYscaleSpecify = _CreateRadioButton(wxT(S_SPECIFY), PRINT_Y_SCALE_USER, false, IDprintYscaleSpecify);
   m_nGroupYscale = _GetCurrentGroup();
 
-  m_pTextYscaleMin = _CreateNumericTextCtrl(this, szText, -50000, 50000, -100);
-  m_pTextYscaleMax = _CreateNumericTextCtrl(this, szText, -50000, 50000, 32000);
+  m_pTextYscaleMin = _CreateNumericTextCtrl(this, -50000, 50000, -100);
+  m_pTextYscaleMax = _CreateNumericTextCtrl(this, -50000, 50000, 32000);
 
   m_pRadioYscaleNegCtrlData = _CreateRadioButton(wxT(S_SCALE_NEG_CTRL_PEAK), PRINT_Y_SCALE_NEG_PEAKS, true);
   m_pRadioYscaleNegCtrlRFU = _CreateRadioButton(wxT(S_SCALE_NEG_CTRL_RFU), PRINT_Y_SCALE_NEG_INCLUDE_RFU);

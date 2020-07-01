@@ -310,7 +310,7 @@ const wxString nwxXmlPersist::g_sSQLvalue(
 
 void nwxXmlContainer::Init()
 {
-  if(!m_nInitRecursion)
+  if( (!m_nInitRecursion) && (!m_bNoInit) )
   {
     CIncrementer incr(m_nInitRecursion);
     PERSIST *pP;

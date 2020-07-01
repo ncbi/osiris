@@ -200,13 +200,13 @@ my $VARLIST =
   ["m_bPrintSamplesDisabled", "bool"],
 
   # colors
-  ["m_bPrintColorRed","int","100"],
-  ["m_bPrintColorGreen","int","100"],
-  ["m_bPrintColorBlue","int","100"],
-  ["m_bPrintColorYellow","int","100"],
-  ["m_bPrintColorOrange","int","100"],
-  ["m_bPrintColorPurple","int","100"],
-  ["m_bPrintColorGray","int","100"],
+  ["m_nPrintColorRed","int","100"],
+  ["m_nPrintColorGreen","int","100"],
+  ["m_nPrintColorBlue","int","100"],
+  ["m_nPrintColorYellow","int","100"],
+  ["m_nPrintColorOrange","int","100"],
+  ["m_nPrintColorPurple","int","100"],
+  ["m_nPrintColorGray","int","100"],
 
   ["plot printout -- margins are in millimeters"],
 
@@ -968,6 +968,8 @@ const wxString CParmOsiris::NO_INIT(wxS(":"));
 
 void CParmOsiris::_Init()
 {
+  SetNoInit(true);
+  SetDefaults();
   if(m_sFileName.IsEmpty())
   {
     m_sFileName = mainApp::GetConfig()->GetConfigPath();
@@ -976,7 +978,9 @@ void CParmOsiris::_Init()
   m_bModified = false;
   m_bAutoSave = false;
   RegisterAll(true);
-  if(!(  wxFileName::FileExists(m_sFileName) && Load()  ))
+  if(!wxFileName::FileExists(m_sFileName))
+  {}
+  else if(!Load())
   {
     SetDefaults();
   }

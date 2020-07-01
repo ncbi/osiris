@@ -70,7 +70,7 @@ public:
 private:
   static const int NO_RADIO_INT;
   static wxTextCtrl *_CreateNumericTextCtrl(
-    wxWindow *parent, const wxSize &sz, int nMin, int nMax, int nInit, int nID = wxID_ANY);
+    wxWindow *parent, int nMin, int nMax, int nInit, int nID = wxID_ANY);
   void _EnableXScaleUser(bool b);
   void _EnableYScaleUser(bool b);
   void _SetupXScaleUser();

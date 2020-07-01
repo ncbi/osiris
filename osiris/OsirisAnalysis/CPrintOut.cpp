@@ -337,6 +337,7 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     }
     else if (nPPIx < nPPIy)
     {
+      // pixels are not square, adjust resolution
       nMinPPI = nPPIx;
       nScale = SCALE_Y;
       dScalePixel = double(nPPIx) / double(nPPIy);

@@ -43,6 +43,8 @@ const wxString CParmOsiris::NO_INIT(wxS(":"));
 
 void CParmOsiris::_Init()
 {
+  SetNoInit(true);
+  SetDefaults();
   if(m_sFileName.IsEmpty())
   {
     m_sFileName = mainApp::GetConfig()->GetConfigPath();
@@ -51,7 +53,9 @@ void CParmOsiris::_Init()
   m_bModified = false;
   m_bAutoSave = false;
   RegisterAll(true);
-  if(!(  wxFileName::FileExists(m_sFileName) && Load()  ))
+  if(!wxFileName::FileExists(m_sFileName))
+  {}
+  else if(!Load())
   {
     SetDefaults();
   }
@@ -180,13 +184,13 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPrintSamplesPosCtrl);
   CP(m_bPrintSamplesNegCtrl);
   CP(m_bPrintSamplesDisabled);
-  CP(m_bPrintColorRed);
-  CP(m_bPrintColorGreen);
-  CP(m_bPrintColorBlue);
-  CP(m_bPrintColorYellow);
-  CP(m_bPrintColorOrange);
-  CP(m_bPrintColorPurple);
-  CP(m_bPrintColorGray);
+  CP(m_nPrintColorRed);
+  CP(m_nPrintColorGreen);
+  CP(m_nPrintColorBlue);
+  CP(m_nPrintColorYellow);
+  CP(m_nPrintColorOrange);
+  CP(m_nPrintColorPurple);
+  CP(m_nPrintColorGray);
 
   //  plot printout -- margins are in millimeters
 
@@ -337,13 +341,13 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPrintSamplesPosCtrl)
   CP(m_bPrintSamplesNegCtrl)
   CP(m_bPrintSamplesDisabled)
-  CP(m_bPrintColorRed)
-  CP(m_bPrintColorGreen)
-  CP(m_bPrintColorBlue)
-  CP(m_bPrintColorYellow)
-  CP(m_bPrintColorOrange)
-  CP(m_bPrintColorPurple)
-  CP(m_bPrintColorGray)
+  CP(m_nPrintColorRed)
+  CP(m_nPrintColorGreen)
+  CP(m_nPrintColorBlue)
+  CP(m_nPrintColorYellow)
+  CP(m_nPrintColorOrange)
+  CP(m_nPrintColorPurple)
+  CP(m_nPrintColorGray)
 
   //  plot printout -- margins are in millimeters
 
@@ -503,13 +507,13 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBoolTrue("PrintSamplesPosCtrl", &m_bPrintSamplesPosCtrl);
   RegisterBoolTrue("PrintSamplesNegCtrl", &m_bPrintSamplesNegCtrl);
   RegisterBool("PrintSamplesDisabled", &m_bPrintSamplesDisabled);
-  RegisterInt("PrintColorRed", &m_bPrintColorRed);
-  RegisterInt("PrintColorGreen", &m_bPrintColorGreen);
-  RegisterInt("PrintColorBlue", &m_bPrintColorBlue);
-  RegisterInt("PrintColorYellow", &m_bPrintColorYellow);
-  RegisterInt("PrintColorOrange", &m_bPrintColorOrange);
-  RegisterInt("PrintColorPurple", &m_bPrintColorPurple);
-  RegisterInt("PrintColorGray", &m_bPrintColorGray);
+  RegisterInt("PrintColorRed", &m_nPrintColorRed);
+  RegisterInt("PrintColorGreen", &m_nPrintColorGreen);
+  RegisterInt("PrintColorBlue", &m_nPrintColorBlue);
+  RegisterInt("PrintColorYellow", &m_nPrintColorYellow);
+  RegisterInt("PrintColorOrange", &m_nPrintColorOrange);
+  RegisterInt("PrintColorPurple", &m_nPrintColorPurple);
+  RegisterInt("PrintColorGray", &m_nPrintColorGray);
 
   //  plot printout -- margins are in millimeters
 
@@ -675,13 +679,13 @@ void CParmOsiris::SetDefaults()
   m_bPrintSamplesPosCtrl = true;
   m_bPrintSamplesNegCtrl = true;
   m_bPrintSamplesDisabled = false;
-  m_bPrintColorRed = 100;
-  m_bPrintColorGreen = 100;
-  m_bPrintColorBlue = 100;
-  m_bPrintColorYellow = 100;
-  m_bPrintColorOrange = 100;
-  m_bPrintColorPurple = 100;
-  m_bPrintColorGray = 100;
+  m_nPrintColorRed = 100;
+  m_nPrintColorGreen = 100;
+  m_nPrintColorBlue = 100;
+  m_nPrintColorYellow = 100;
+  m_nPrintColorOrange = 100;
+  m_nPrintColorPurple = 100;
+  m_nPrintColorGray = 100;
 
   //  plot printout -- margins are in millimeters
 

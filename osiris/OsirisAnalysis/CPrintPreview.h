@@ -148,6 +148,7 @@ private:
     return wxDynamicCast(m_controlBar, CPreviewControlBar);
   }
   void _OnSettings(wxCommandEvent &);
+  void _OnColors(wxCommandEvent &);
   void _OnZoom(wxCommandEvent &);
   void _OnPageChange(wxCommandEvent &);
   void _OnPrint(wxCommandEvent &);

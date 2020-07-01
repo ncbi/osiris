@@ -64,6 +64,19 @@ public:
 
   virtual ~CParmOsiris();
 
+  virtual void Init()
+  {
+    nwxXmlPersist::Init();
+    SetDefaults();
+  }
+  virtual void Init(void *p)
+  {
+    if(p == (void *)this)
+    {
+      this->Init();
+    }
+  }
+
   const wxString &GetFileName() const
   {
     return m_sFileName;
@@ -506,31 +519,31 @@ public:
   }
   int GetPrintColorRed() const
   {
-    return m_bPrintColorRed;
+    return m_nPrintColorRed;
   }
   int GetPrintColorGreen() const
   {
-    return m_bPrintColorGreen;
+    return m_nPrintColorGreen;
   }
   int GetPrintColorBlue() const
   {
-    return m_bPrintColorBlue;
+    return m_nPrintColorBlue;
   }
   int GetPrintColorYellow() const
   {
-    return m_bPrintColorYellow;
+    return m_nPrintColorYellow;
   }
   int GetPrintColorOrange() const
   {
-    return m_bPrintColorOrange;
+    return m_nPrintColorOrange;
   }
   int GetPrintColorPurple() const
   {
-    return m_bPrintColorPurple;
+    return m_nPrintColorPurple;
   }
   int GetPrintColorGray() const
   {
-    return m_bPrintColorGray;
+    return m_nPrintColorGray;
   }
 
   //  plot printout -- margins are in millimeters
@@ -1080,31 +1093,31 @@ public:
   }
   void SetPrintColorRed(int n)
   {
-    __SET_VALUE(m_bPrintColorRed,n);
+    __SET_VALUE(m_nPrintColorRed,n);
   }
   void SetPrintColorGreen(int n)
   {
-    __SET_VALUE(m_bPrintColorGreen,n);
+    __SET_VALUE(m_nPrintColorGreen,n);
   }
   void SetPrintColorBlue(int n)
   {
-    __SET_VALUE(m_bPrintColorBlue,n);
+    __SET_VALUE(m_nPrintColorBlue,n);
   }
   void SetPrintColorYellow(int n)
   {
-    __SET_VALUE(m_bPrintColorYellow,n);
+    __SET_VALUE(m_nPrintColorYellow,n);
   }
   void SetPrintColorOrange(int n)
   {
-    __SET_VALUE(m_bPrintColorOrange,n);
+    __SET_VALUE(m_nPrintColorOrange,n);
   }
   void SetPrintColorPurple(int n)
   {
-    __SET_VALUE(m_bPrintColorPurple,n);
+    __SET_VALUE(m_nPrintColorPurple,n);
   }
   void SetPrintColorGray(int n)
   {
-    __SET_VALUE(m_bPrintColorGray,n);
+    __SET_VALUE(m_nPrintColorGray,n);
   }
 
   //  plot printout -- margins are in millimeters
@@ -1409,13 +1422,13 @@ protected:
   bool m_bPrintSamplesPosCtrl;
   bool m_bPrintSamplesNegCtrl;
   bool m_bPrintSamplesDisabled;
-  int m_bPrintColorRed;
-  int m_bPrintColorGreen;
-  int m_bPrintColorBlue;
-  int m_bPrintColorYellow;
-  int m_bPrintColorOrange;
-  int m_bPrintColorPurple;
-  int m_bPrintColorGray;
+  int m_nPrintColorRed;
+  int m_nPrintColorGreen;
+  int m_nPrintColorBlue;
+  int m_nPrintColorYellow;
+  int m_nPrintColorOrange;
+  int m_nPrintColorPurple;
+  int m_nPrintColorGray;
 
   //  plot printout -- margins are in millimeters
 

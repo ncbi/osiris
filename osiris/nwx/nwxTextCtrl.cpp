@@ -27,9 +27,12 @@
 *  Author:   Douglas Hoffman
 *
 */
+#include <wx/valnum.h>
 #include "nwx/nwxTextCtrl.h"
+#include "nwx/nwxString.h"
 
 IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrl,wxTextCtrl)
+IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrlInteger, nwxTextCtrl)
 BEGIN_EVENT_TABLE(nwxTextCtrl,wxTextCtrl)
 EVT_SET_FOCUS(nwxTextCtrl::OnSetFocus)
 END_EVENT_TABLE()
@@ -43,4 +46,67 @@ void nwxTextCtrl::OnSetFocus(wxFocusEvent &e)
   // force beginning of text to be visible
   SetInsertionPoint(0);
   e.Skip();
+}
+
+class nwxIntegerValidator : public wxIntegerValidator<int>
+{
+public:
+  nwxIntegerValidator(int nMin, int nMax):
+    wxIntegerValidator<int>(NULL, wxNUM_VAL_ZERO_AS_BLANK)
+  {
+    SetRange(nMin, nMax);
+  }
+  virtual ~nwxIntegerValidator() {}
+};
+
+int nwxTextCtrlInteger::g_nWidth10 = -1;
+wxWindow *nwxTextCtrlInteger::g_pParent = NULL;
+
+wxSize nwxTextCtrlInteger::_ComputeSize(int nDigits, wxWindow *parent)
+{
+  if (g_nWidth10 < 0 || parent != g_pParent)
+  {
+    g_pParent = parent;
+    wxSize sz = g_pParent->GetTextExtent(wxT("9999999999"));
+    g_nWidth10 = sz.GetWidth();
+  }
+  int nW = (nDigits > 0) ? (((nDigits + 2) * g_nWidth10) + 9) / 10 : -1;
+  return wxSize(nW, -1);
+}
+
+nwxTextCtrlInteger::nwxTextCtrlInteger(
+  wxWindow *parent,
+  wxWindowID id,
+  int nMin,
+  int nMax,
+  int nValue,
+  int nDigits,
+  long style) :
+  nwxTextCtrl(parent, id,
+    wxEmptyString, wxDefaultPosition, _ComputeSize(nDigits, parent),
+    style, nwxIntegerValidator(nMin, nMax))
+{
+  if (nValue >= nMin && nValue <= nMax)
+  {
+    SetValue(nwxString::FormatNumber(nValue));
+  }
+  SetDigits(nDigits);
+}
+void nwxTextCtrlInteger::SetDigits(int n)
+{
+  if (n > 0)
+  {
+    SetSize(_ComputeSize(n, GetParent()));
+  }
+}
+
+int nwxTextCtrlInteger::GetIntValue(int nEmptyValue)
+{
+  int nRtn = nEmptyValue;
+  wxString s = GetValue();
+  if (!s.IsEmpty())
+  {
+    nRtn = atoi(s.utf8_str());
+  }
+  return nRtn;
 }

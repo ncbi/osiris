@@ -300,6 +300,7 @@
     <ClCompile Include="CDialogMRU.cpp" />
     <ClCompile Include="CDialogParameters.cpp" />
     <ClCompile Include="CDialogPlotMessage.cpp" />
+    <ClCompile Include="CDialogPrintColor.cpp" />
     <ClCompile Include="CDialogPrintSettings.cpp" />
     <ClCompile Include="CDialogPromptNewerFile.cpp" />
     <ClCompile Include="CDialogReallyQuit.cpp" />
@@ -404,6 +405,7 @@
     <ClCompile Include="CPrintOut.cpp" />
     <ClCompile Include="CPrintOutAnalysis.cpp" />
     <ClCompile Include="CPrintOutPlot.cpp" />
+    <ClCompile Include="CPrintOutTestPattern.cpp" />
     <ClCompile Include="CPrintPreview.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
@@ -451,6 +453,7 @@
     <ClInclude Include="CDialogMRU.h" />
     <ClInclude Include="CDialogParameters.h" />
     <ClInclude Include="CDialogPlotMessage.h" />
+    <ClInclude Include="CDialogPrintColor.h" />
     <ClInclude Include="CDialogPrintSettings.h" />
     <ClInclude Include="CDialogPromptNewerFile.h" />
     <ClInclude Include="CDialogReallyQuit.h" />
@@ -557,12 +560,12 @@
     <ClInclude Include="CPanelUserID.h" />
     <ClInclude Include="CParmGridAttributes.h" />
     <ClInclude Include="CParmOsiris.h" />
-    <ClInclude Include="CPinger.h" />
     <ClInclude Include="CPlotController.h" />
     <ClInclude Include="CPlotData.h" />
     <ClInclude Include="CPrintOut.h" />
     <ClInclude Include="CPrintOutAnalysis.h" />
     <ClInclude Include="CPrintOutPlot.h" />
+    <ClInclude Include="CPrintOutTestPattern.h" />
     <ClInclude Include="CPrintPreview.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
