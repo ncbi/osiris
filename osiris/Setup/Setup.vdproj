@@ -1551,6 +1551,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_969579BE97CF4D0C9BD0F7771D6DB4E0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_969ECB8976164C3296511CC1C5C9074B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1600,6 +1606,12 @@
         "Entry"
         {
         "MsmKey" = "8:_990D41D45248485E95CAD601F87F5916"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9A8B5142343A415EA019EEA7CD73816F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2194,6 +2206,18 @@
         "Entry"
         {
         "MsmKey" = "8:_D11C9074468C4565BAAF7A42208D2BA8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D1752DB152AE474E87F33C4FEC67430E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D1CEF30A92F74A6E90F2C60FC7CF0F1B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -7814,6 +7838,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_969579BE97CF4D0C9BD0F7771D6DB4E0"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_MessageBookV4.0.xml"
+            "TargetName" = "8:GFHID_Mixture_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_969ECB8976164C3296511CC1C5C9074B"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX_HID\\NETBIO_FLEXPLEX_HID_MessageBookV4.0.xml"
@@ -7980,6 +8024,26 @@
             "TargetName" = "8:PPF_4_FTA_D06_04.hid"
             "Tag" = "8:"
             "Folder" = "8:_F3FFC32CF4C14F7380DFB3A48313C394"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9A8B5142343A415EA019EEA7CD73816F"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_LabSettings.xml"
+            "TargetName" = "8:GFHID_Mixture_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -9960,6 +10024,46 @@
             "TargetName" = "8:G12_BLANK_Run_3100_1465_027_2002-08-27_99_14.fsa"
             "Tag" = "8:"
             "Folder" = "8:_29A20AC60A714F1FB99FA56689F3CDD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D1752DB152AE474E87F33C4FEC67430E"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_StdSettings.xml"
+            "TargetName" = "8:GFHID_Mixture_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D1CEF30A92F74A6E90F2C60FC7CF0F1B"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_access.txt"
+            "TargetName" = "8:GFHID_Mixture_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -12322,6 +12426,17 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_BB243C15E805436787C00E2AA015EEB0"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C9CB432F539E447C951B2206F71DABAA"
+                                    {
+                                    "Name" = "8:GFHID_Mixture"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_8C71A51C9A8E4AD3910B1D12D55D09F2"
                                         "Folders"
                                         {
                                         }
