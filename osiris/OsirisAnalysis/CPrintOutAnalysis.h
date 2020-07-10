@@ -61,8 +61,6 @@ public:
   virtual wxFrame *GetParent();
   virtual int GetMaxPage();
   virtual bool OnPrintPage(int page);
-  virtual bool HasPage(int page);
-  virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 
   static void DoPrintPreview(CFrameAnalysis *pFrame);
 

@@ -272,3 +272,8 @@ const wxColour &CKitColors::GetColorByName(const wxString &sName, DATA_TYPE n) c
     (pDye != NULL) ? pDye->GetColor(n) : g_BLACK;
   return Rtn;
 }
+
+const wxString &CKitColors::GetColorName(const wxColour &c) const
+{
+  return m_pKitColors2->GetColorName(c);
+}

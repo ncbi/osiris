@@ -64,19 +64,6 @@ public:
 
   virtual ~CParmOsiris();
 
-  virtual void Init()
-  {
-    nwxXmlPersist::Init();
-    SetDefaults();
-  }
-  virtual void Init(void *p)
-  {
-    if(p == (void *)this)
-    {
-      this->Init();
-    }
-  }
-
   const wxString &GetFileName() const
   {
     return m_sFileName;
@@ -623,6 +610,7 @@ public:
     }
     return sRtn;
   }
+  int GetPrintColorByName(const wxString &sName) const;
   static const wxString NO_INIT;
   // end static/global stuff
 

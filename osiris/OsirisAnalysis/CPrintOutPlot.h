@@ -59,10 +59,9 @@ public:
   virtual ~CPrintOutPlot();
   virtual wxFrame *GetParent();
   virtual bool OnPrintPage(int page);
-  virtual bool HasPage(int page);
-  virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
+  virtual int GetMaxPage();
   static void DoPrintPreview(CFramePlot *pPlot);
-  static void DoPrint(CFramePlot *pPlot);
+  int GetPlotsPerPage();
 private:
   CFramePlot *m_pFramePlot;
   DECLARE_ABSTRACT_CLASS(CPrintOutPlot)

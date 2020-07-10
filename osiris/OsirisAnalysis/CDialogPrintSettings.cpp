@@ -114,8 +114,14 @@
 #define S_TO " to "
 #define S_RANGE_SECONDS "seconds"
 #define S_RANGE_BPS "bps"
-
+#define S_PLOTS_PER_PAGE "Plots per page"
+#define S_TEXT_WIDTH "99999999"
 #define LABEL(s) new wxStaticText(this, wxID_ANY, wxT(s))
+
+#define LABEL_ARGS_TOP 0, wxALIGN_LEFT | wxBOTTOM, ID_BORDER
+#define LABEL_ARGS 0, wxALIGN_LEFT | wxBOTTOM | wxTOP, ID_BORDER
+#define ITEM_ARGS 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, ID_BORDER
+#define ITEM_ARGS_EXPAND 0, wxLEFT | wxBOTTOM | wxEXPAND, ID_BORDER
 
 // CDialogPrintSettingsOmit - declaration
 
@@ -243,7 +249,7 @@ wxRadioButton *CDialogPrintSettings::_CreateRadioButton(
 void CDialogPrintSettings::_Build()
 {
   // curves
-  wxSize szText = GetTextExtent("99999999");  
+  wxSize szText = GetTextExtent(wxT(S_TEXT_WIDTH));
   szText.SetHeight(-1);
 
   m_pCheckCurveAnalyzed = new wxCheckBox(this, wxID_ANY, wxT(S_ANALYZED));
@@ -331,11 +337,6 @@ void CDialogPrintSettings::_Build()
   m_nGroupYscaleNegCtrl = _GetCurrentGroup();
 
   // build the panel
-
-#define LABEL_ARGS_TOP 0, wxALIGN_LEFT | wxBOTTOM, ID_BORDER
-#define LABEL_ARGS 0, wxALIGN_LEFT | wxBOTTOM | wxTOP, ID_BORDER
-#define ITEM_ARGS 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, ID_BORDER
-#define ITEM_ARGS_EXPAND 0, wxLEFT | wxBOTTOM | wxEXPAND, ID_BORDER
 
   wxBoxSizer *pSizerLeft = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *pSizerRight = new wxBoxSizer(wxVERTICAL);
@@ -569,60 +570,59 @@ void CDialogPrintSettings::_SetupYScaleUser()
 
 bool CDialogPrintSettings::TransferDataToWindow()
 {
-  CParmOsirisGlobal pParm;
-  m_pCheckCurveAnalyzed->SetValue(pParm->GetPrintCurveAnalyzed());
-  m_pCheckCurveLadder->SetValue(pParm->GetPrintCurveLadder());;
-  m_pCheckCurveLadderLabels->SetValue(pParm->GetPrintCurveLadderLabels());
-  m_pCheckCurveBaseline->SetValue(pParm->GetPrintCurveBaseline());
-  m_pCheckCurveRaw->SetValue(pParm->GetPrintCurveRaw());
-  m_pCheckCurveILSvertical->SetValue(pParm->GetPrintCurveILSvertical());
-  m_pCheckCurveMinRFU->SetValue(pParm->GetPrintCurveMinRFU());
+  m_pCheckCurveAnalyzed->SetValue(m_pParms->GetPrintCurveAnalyzed());
+  m_pCheckCurveLadder->SetValue(m_pParms->GetPrintCurveLadder());;
+  m_pCheckCurveLadderLabels->SetValue(m_pParms->GetPrintCurveLadderLabels());
+  m_pCheckCurveBaseline->SetValue(m_pParms->GetPrintCurveBaseline());
+  m_pCheckCurveRaw->SetValue(m_pParms->GetPrintCurveRaw());
+  m_pCheckCurveILSvertical->SetValue(m_pParms->GetPrintCurveILSvertical());
+  m_pCheckCurveMinRFU->SetValue(m_pParms->GetPrintCurveMinRFU());
 
   // samples
-  m_pCheckSampleLadders->SetValue(pParm->GetPrintSamplesLadders());
-  m_pCheckSamplePosCtrl->SetValue(pParm->GetPrintSamplesPosCtrl());
-  m_pCheckSampleNegCtrl->SetValue(pParm->GetPrintSamplesNegCtrl());
-  m_pCheckSampleDisabled->SetValue(pParm->GetPrintSamplesDisabled());
+  m_pCheckSampleLadders->SetValue(m_pParms->GetPrintSamplesLadders());
+  m_pCheckSamplePosCtrl->SetValue(m_pParms->GetPrintSamplesPosCtrl());
+  m_pCheckSampleNegCtrl->SetValue(m_pParms->GetPrintSamplesNegCtrl());
+  m_pCheckSampleDisabled->SetValue(m_pParms->GetPrintSamplesDisabled());
   //m_pButtonSampleOmit;
 
   // peak labels
 
-  _SetLabelSelection(pParm->GetPrintLabelsPeak());
+  _SetLabelSelection(m_pParms->GetPrintLabelsPeak());
 
   // artifact labels
-  _SetRadioValue(m_nGroupArtifact, pParm->GetPrintArtifact());
+  _SetRadioValue(m_nGroupArtifact, m_pParms->GetPrintArtifact());
 
   // page heading
-  _SetRadioValue(m_nGroupHeading, pParm->GetPrintHeading());
-  m_pTextHeadingNotes->SetValue(pParm->GetPrintHeadingNotes());
+  _SetRadioValue(m_nGroupHeading, m_pParms->GetPrintHeading());
+  m_pTextHeadingNotes->SetValue(m_pParms->GetPrintHeadingNotes());
 
   // channels per page
-  m_pTextChannelsSamples->SetValue(pParm->GetPrintChannelsSamples());
-  m_pTextChannelsLadders->SetValue(pParm->GetPrintChannelsLadders());
-  m_pTextChannelsNegCtrl->SetValue(pParm->GetPrintChannelsNegCtrl());
-  m_pCheckChannelsOmitILS->SetValue(pParm->GetPrintChannelsOmitILS());
+  m_pTextChannelsSamples->SetValue(m_pParms->GetPrintChannelsSamples());
+  m_pTextChannelsLadders->SetValue(m_pParms->GetPrintChannelsLadders());
+  m_pTextChannelsNegCtrl->SetValue(m_pParms->GetPrintChannelsNegCtrl());
+  m_pCheckChannelsOmitILS->SetValue(m_pParms->GetPrintChannelsOmitILS());
 
   // X Axis
-  _SetRadioValue(m_nGroupXaxisUnits, pParm->GetPrintXaxisILSBPS() ? PRINT_X_BPS : PRINT_X_TIME);
+  _SetRadioValue(m_nGroupXaxisUnits, m_pParms->GetPrintXaxisILSBPS() ? PRINT_X_BPS : PRINT_X_TIME);
 
   // X Axis Scale Primer
 
-  int nTemp = pParm->GetPrintXscale();
+  int nTemp = m_pParms->GetPrintXscale();
   _SetRadioValue(m_nGroupXscale, nTemp);
-  m_nXscaleMin = pParm->GetPrintXscaleMin();
-  m_nXscaleMax = pParm->GetPrintXscaleMax();
+  m_nXscaleMin = m_pParms->GetPrintXscaleMin();
+  m_nXscaleMax = m_pParms->GetPrintXscaleMax();
   _EnableXScaleUser(nTemp == PRINT_X_SCALE_USER);
 
   // Y Axis Scale
 
-  nTemp = pParm->GetPrintYscale();
+  nTemp = m_pParms->GetPrintYscale();
   _SetRadioValue(m_nGroupYscale, nTemp);
-  m_nYscaleMin = pParm->GetPrintYscaleMin();
-  m_nYscaleMax = pParm->GetPrintYscaleMax();
+  m_nYscaleMin = m_pParms->GetPrintYscaleMin();
+  m_nYscaleMax = m_pParms->GetPrintYscaleMax();
   _EnableYScaleUser(nTemp == PRINT_Y_SCALE_USER);
 
   // negative control Y Axis scale
-  _SetRadioValue(m_nGroupYscaleNegCtrl, pParm->GetPrintYcaleNegCtrl());
+  _SetRadioValue(m_nGroupYscaleNegCtrl, m_pParms->GetPrintYcaleNegCtrl());
 
   // context sensitive settings
   _SetupLadderLabels();
@@ -632,72 +632,71 @@ bool CDialogPrintSettings::TransferDataToWindow()
 
 bool CDialogPrintSettings::TransferDataFromWindow()
 {
-  CParmOsirisGlobal pParm;
   int nValue = 0;
   CPrintOutAnalysis::SetOmittedSamples(m_setSamplesOmitDialog);
 
   // curve check boxes
-  pParm->SetPrintCurveAnalyzed(m_pCheckCurveAnalyzed->GetValue());
-  pParm->SetPrintCurveRaw(m_pCheckCurveRaw->GetValue());
-  pParm->SetPrintCurveLadder(m_pCheckCurveLadder->GetValue());
-  pParm->SetPrintCurveLadderLabels(m_pCheckCurveLadderLabels->GetValue());
-  pParm->SetPrintCurveBaseline(m_pCheckCurveBaseline->GetValue());
-  pParm->SetPrintCurveILSvertical(m_pCheckCurveILSvertical->GetValue());
-  pParm->SetPrintCurveMinRFU(m_pCheckCurveMinRFU->GetValue());
+  m_pParms->SetPrintCurveAnalyzed(m_pCheckCurveAnalyzed->GetValue());
+  m_pParms->SetPrintCurveRaw(m_pCheckCurveRaw->GetValue());
+  m_pParms->SetPrintCurveLadder(m_pCheckCurveLadder->GetValue());
+  m_pParms->SetPrintCurveLadderLabels(m_pCheckCurveLadderLabels->GetValue());
+  m_pParms->SetPrintCurveBaseline(m_pCheckCurveBaseline->GetValue());
+  m_pParms->SetPrintCurveILSvertical(m_pCheckCurveILSvertical->GetValue());
+  m_pParms->SetPrintCurveMinRFU(m_pCheckCurveMinRFU->GetValue());
 
   //samples
-  pParm->SetPrintSamplesLadders(m_pCheckSampleLadders->GetValue());
-  pParm->SetPrintSamplesPosCtrl(m_pCheckSamplePosCtrl->GetValue());
-  pParm->SetPrintSamplesNegCtrl(m_pCheckSampleNegCtrl->GetValue());
-  pParm->SetPrintSamplesDisabled(m_pCheckSampleDisabled->GetValue());
+  m_pParms->SetPrintSamplesLadders(m_pCheckSampleLadders->GetValue());
+  m_pParms->SetPrintSamplesPosCtrl(m_pCheckSamplePosCtrl->GetValue());
+  m_pParms->SetPrintSamplesNegCtrl(m_pCheckSampleNegCtrl->GetValue());
+  m_pParms->SetPrintSamplesDisabled(m_pCheckSampleDisabled->GetValue());
 
   // peak labels
   std::vector<unsigned int> an;
   _GetLabelSelection(&an);
-  pParm->SetPrintLabelsPeak(an);
+  m_pParms->SetPrintLabelsPeak(an);
 
   // artifact labels
-  pParm->SetPrintArtifact(_GetRadioValue(m_nGroupArtifact));
+  m_pParms->SetPrintArtifact(_GetRadioValue(m_nGroupArtifact));
 
   // page heading
-  pParm->SetPrintHeading(_GetRadioValue(m_nGroupHeading));
-  pParm->SetPrintHeadingNotes(m_pTextHeadingNotes->GetValue());
+  m_pParms->SetPrintHeading(_GetRadioValue(m_nGroupHeading));
+  m_pParms->SetPrintHeadingNotes(m_pTextHeadingNotes->GetValue());
 
   // channels per page
-  pParm->SetPrintChannelsSamples(m_pTextChannelsSamples->GetValue());
-  pParm->SetPrintChannelsLadders(m_pTextChannelsLadders->GetValue());
-  pParm->SetPrintChannelsNegCtrl(m_pTextChannelsNegCtrl->GetValue());
-  pParm->SetPrintChannelsOmitILS(m_pCheckChannelsOmitILS->GetValue());
+  m_pParms->SetPrintChannelsSamples(m_pTextChannelsSamples->GetValue());
+  m_pParms->SetPrintChannelsLadders(m_pTextChannelsLadders->GetValue());
+  m_pParms->SetPrintChannelsNegCtrl(m_pTextChannelsNegCtrl->GetValue());
+  m_pParms->SetPrintChannelsOmitILS(m_pCheckChannelsOmitILS->GetValue());
 
   // X Axis
-  pParm->SetPrintXaxisILSBPS(m_pRadioXaxisILSBPS->GetValue());
+  m_pParms->SetPrintXaxisILSBPS(m_pRadioXaxisILSBPS->GetValue());
 
   // X Axis Scale Primer
   nValue = _GetRadioValue(m_nGroupXscale);
-  pParm->SetPrintXscale(nValue);
+  m_pParms->SetPrintXscale(nValue);
   if (nValue == PRINT_X_SCALE_USER)
   {
     _SaveTextIntValue(m_pTextXscaleMin, &m_nXscaleMin);
     _SaveTextIntValue(m_pTextXscaleMax, &m_nXscaleMax);
     CPanelPlot::CheckRange(&m_nXscaleMin, &m_nXscaleMax);
-    pParm->SetPrintXscaleMin(m_nXscaleMin);
-    pParm->SetPrintXscaleMax(m_nXscaleMax);
+    m_pParms->SetPrintXscaleMin(m_nXscaleMin);
+    m_pParms->SetPrintXscaleMax(m_nXscaleMax);
   }
 
   // Y-Axis scale
   nValue = _GetRadioValue(m_nGroupYscale);
-  pParm->SetPrintYscale(nValue);
+  m_pParms->SetPrintYscale(nValue);
   if(nValue == PRINT_Y_SCALE_USER)
   {
     _SaveTextIntValue(m_pTextYscaleMin, &m_nYscaleMin);
     _SaveTextIntValue(m_pTextYscaleMax, &m_nYscaleMax);
     CPanelPlot::CheckRange(&m_nYscaleMin, &m_nYscaleMax);
-    pParm->SetPrintYscaleMin(m_nYscaleMin);
-    pParm->SetPrintYscaleMax(m_nYscaleMax);
+    m_pParms->SetPrintYscaleMin(m_nYscaleMin);
+    m_pParms->SetPrintYscaleMax(m_nYscaleMax);
   }
 
   // negative control Y Axis scale
-  pParm->SetPrintYcaleNegCtrl(_GetRadioValue(m_nGroupYscaleNegCtrl));
+  m_pParms->SetPrintYcaleNegCtrl(_GetRadioValue(m_nGroupYscaleNegCtrl));
   return true;
 }
 
@@ -945,7 +944,6 @@ void CDialogPrintSettingsOmit::_OnInvertLink(wxHyperlinkEvent &)
   }
 }
 
-
 IMPLEMENT_PERSISTENT_SIZE_POSITION(CDialogPrintSettingsOmit)
 
 BEGIN_EVENT_TABLE(CDialogPrintSettingsOmit, wxDialog)
@@ -955,4 +953,168 @@ EVT_PERSISTENT_SIZE_POSITION(CDialogPrintSettingsOmit)
 END_EVENT_TABLE()
 
 
+// CDialogPrintSettingsSample - print settings for a single sample
+//   when printing from plot window
+
+int CDialogPrintSettingsSample::GetPlotsPerPage(int nSampleType)
+{
+  int nSamplesPerPage = CHANNEL_MAX;
+  CParmOsirisGlobal pParms;
+  switch (nSampleType)
+  {
+  case SAMPLE_LADDER:
+    nSamplesPerPage = pParms->GetPrintChannelsLadders();
+    break;
+  case SAMPLE_NEGATIVE_CONTROL:
+    nSamplesPerPage = pParms->GetPrintChannelsNegCtrl();
+    break;
+  case SAMPLE_REGULAR:
+  default:
+    nSamplesPerPage = pParms->GetPrintChannelsSamples();
+  }
+  return nSamplesPerPage;
+}
+int CDialogPrintSettingsSample::GetSampleType(const COARsample *pSample)
+{
+  int nRtn = SAMPLE_REGULAR;
+  if (pSample->IsLadderType())
+  {
+    nRtn = SAMPLE_LADDER;
+  }
+  else if (pSample->IsNegControl())
+  {
+    nRtn = SAMPLE_NEGATIVE_CONTROL;
+  }
+  return nRtn;
+}
+
+CDialogPrintSettingsSample::CDialogPrintSettingsSample(
+  CPrintPreviewFrame *parent, const COARsample *pSample) :
+  wxDialog(parent, wxID_ANY, wxT(S_WINDOW_TITLE),
+    GET_PERSISTENT_POSITION(CDialogPrintSettingsSample),
+    wxDefaultSize,
+    wxDEFAULT_DIALOG_STYLE),
+  m_pParent(parent)
+{
+  m_nSampleType = GetSampleType(pSample);
+  switch (m_nSampleType)
+  {
+  case SAMPLE_LADDER:
+    m_psPlotsPerPageLabel = wxT(S_LADDERS);
+    break;
+  case SAMPLE_NEGATIVE_CONTROL:
+    m_psPlotsPerPageLabel = wxT(S_NEG_CTRL);
+    break;
+  case SAMPLE_REGULAR:
+  default:
+    m_psPlotsPerPageLabel = wxT(S_SAMPLES);
+  }
+  mainApp::Ping(PING_EVENT, wxT("PrintSettingsSampleCreate"));
+  _Build();
+}
+void CDialogPrintSettingsSample::_Build()
+{
+  wxString sLabelCount(wxT(S_PLOTS_PER_PAGE));
+  wxSize szText = GetTextExtent(wxT(S_TEXT_WIDTH));
+  wxBoxSizer *pSizerItems = new wxBoxSizer(wxVERTICAL);
+  wxBoxSizer *pSizerPlotsPerPage = new wxBoxSizer(wxHORIZONTAL);
+  wxStaticText *pText;
+  szText.SetHeight(-1);
+
+  m_pRadioHeadingFile = new wxRadioButton(this, wxID_ANY, wxT(S_FILE_NAME), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+  m_pRadioHeadingSample = new wxRadioButton(this, wxID_ANY, wxT(S_SAMPLE_NAME));
+  m_pTextHeadingNotes = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, szText);
+  m_pTextPlotsPerPage = new  wxSpinCtrl(this, wxID_ANY, wxEmptyString,
+    wxDefaultPosition, szText, wxSP_ARROW_KEYS, 1, CHANNEL_MAX, CHANNEL_MAX);
+
+  // Page Heading
+  pText = LABEL(S_SECTION_PAGE_HEADING);
+  wxFont fontLabelBold(pText->GetFont());
+  fontLabelBold.MakeBold();
+  pText->SetFont(fontLabelBold);
+  pSizerItems->Add(pText, LABEL_ARGS_TOP);
+  pSizerItems->Add(LABEL(S_PAGE_TITLE), ITEM_ARGS);
+  pSizerItems->Add(m_pRadioHeadingFile, ITEM_ARGS);
+  pSizerItems->Add(m_pRadioHeadingSample, ITEM_ARGS);
+  pSizerItems->Add(LABEL(S_PAGE_NOTES), ITEM_ARGS);
+  pSizerItems->Add(m_pTextHeadingNotes, ITEM_ARGS_EXPAND);
+  pText = LABEL(S_PLOTS_PER_PAGE);
+  pText->SetFont(fontLabelBold);
+  pSizerItems->Add(pText, LABEL_ARGS_TOP);
+
+  pSizerPlotsPerPage->Add(m_pTextPlotsPerPage, 0, wxALIGN_CENTER_VERTICAL, 0);
+  pSizerPlotsPerPage->Add(
+    new wxStaticText(this, wxID_ANY, m_psPlotsPerPageLabel),
+    0, wxALIGN_CENTER_VERTICAL | wxLEFT, ID_BORDER);
+  pSizerItems->Add(pSizerPlotsPerPage, ITEM_ARGS);
+
+  wxBoxSizer *pSizerFull = new wxBoxSizer(wxVERTICAL);
+  pSizerFull->Add(pSizerItems, 0, (wxALL ^ wxBOTTOM) | wxALIGN_CENTER, ID_BORDER << 1);
+  pSizerFull->Add(CreateButtonSizer(wxOK | wxCANCEL | wxAPPLY), 0, wxALL | wxALIGN_RIGHT, ID_BORDER << 1);
+  SetSizer(pSizerFull);
+  Layout();
+  Fit();
+}
+
+CDialogPrintSettingsSample::~CDialogPrintSettingsSample() {}
+bool CDialogPrintSettingsSample::TransferDataToWindow()
+{
+  int nPlotsPerPage = GetPlotsPerPage(m_nSampleType);
+  m_pTextPlotsPerPage->SetValue(nPlotsPerPage);
+  if (m_pParms->GetPrintHeading() == PRINT_TITLE_FILE_NAME)
+  {
+    m_pRadioHeadingFile->SetValue(true);
+  }
+  else
+  {
+    m_pRadioHeadingSample->SetValue(true);
+  }
+  m_pTextHeadingNotes->SetValue(m_pParms->GetPrintHeadingNotes());
+  return true;
+}
+bool CDialogPrintSettingsSample::TransferDataFromWindow()
+{
+  int n = m_pTextPlotsPerPage->GetValue();
+  switch (m_nSampleType)
+  {
+  case SAMPLE_LADDER:
+    m_pParms->SetPrintChannelsLadders(n);
+    break;
+  case SAMPLE_NEGATIVE_CONTROL:
+    m_pParms->SetPrintChannelsNegCtrl(n);
+    break;
+  case SAMPLE_REGULAR:
+  default:
+    m_pParms->SetPrintChannelsSamples(n);
+  }
+  n = m_pRadioHeadingFile->GetValue() ? PRINT_TITLE_FILE_NAME : PRINT_TITLE_SAMPLE_NAME;
+  m_pParms->SetPrintHeading(n);
+  m_pParms->SetPrintHeadingNotes(m_pTextHeadingNotes->GetValue());
+  return true;
+}
+void CDialogPrintSettingsSample::_Apply()
+{
+  TransferDataFromWindow();
+  m_pParent->UpdateSettings();
+}
+void CDialogPrintSettingsSample::_OnOK(wxCommandEvent &)
+{
+  mainApp::Ping(PING_EVENT, wxT("PrintSettingsSampleOK"));
+  _Apply();
+  Close();
+}
+void CDialogPrintSettingsSample::_OnApply(wxCommandEvent &)
+{
+  mainApp::Ping(PING_EVENT, wxT("PrintSettingsSampleAPPLY"));
+  _Apply();
+}
+
+
+IMPLEMENT_PERSISTENT_POSITION(CDialogPrintSettingsSample)
+
+BEGIN_EVENT_TABLE(CDialogPrintSettingsSample, wxDialog)
+EVT_BUTTON(wxID_APPLY, CDialogPrintSettingsSample::_OnApply)
+EVT_BUTTON(wxID_OK, CDialogPrintSettingsSample::_OnOK)
+EVT_PERSISTENT_POSITION(CDialogPrintSettingsSample)
+END_EVENT_TABLE()
 

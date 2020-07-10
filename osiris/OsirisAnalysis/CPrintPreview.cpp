@@ -97,21 +97,27 @@ void CPrintPreviewFrame::_OnColors(wxCommandEvent &)
 }
 void CPrintPreviewFrame::_OnSettings(wxCommandEvent &)
 {
-  if (m_pFrameAnalysis == NULL)
+  if (m_pDialogSettings == NULL)
   {
-    mainApp::ShowAlert("This feature has not been implemented", this);
-  }
-  else if (m_pDialogSettings == NULL)
-  {
-    m_pDialogSettings = new CDialogPrintSettings(this, m_pFrameAnalysis);
+    if (m_pFrameAnalysis != NULL)
+    {
+      m_pDialogSettings = new CDialogPrintSettings(this, m_pFrameAnalysis);
+      mainApp::Ping(PING_EVENT, wxT("PrintSettingsCreate"));
+    }
+    else
+    {
+      m_pDialogSettings = new CDialogPrintSettingsSample(this, m_pFramePlot->GetSample());
+      mainApp::Ping(PING_EVENT, wxT("PrintSettingsSampleCreate"));
+    }
     m_pDialogSettings->Show();
-    mainApp::Ping(PING_EVENT, wxT("PrintSettingsCreate"));
   }
   else if (!m_pDialogSettings->IsShown())
   {
     m_pDialogSettings->TransferDataToWindow();
     m_pDialogSettings->Show();
-    mainApp::Ping(PING_EVENT, wxT("PrintSettingsShow"));
+    const wxChar *p = (m_pFrameAnalysis != NULL)
+      ? wxT("PrintSettingsShow") : wxT("PrintSettingsSampleShow");
+    mainApp::Ping(PING_EVENT, p);
   }
   if (m_pDialogSettings != NULL)
   {
@@ -175,7 +181,7 @@ bool CPrintPreview::Print(bool interactive)
 {
   bool bRtn = wxPrintPreview::Print(interactive);
   const wxChar *psStatus = bRtn ? wxT("OK") : wxT("NOT_OK");
-  mainApp::Ping3(PING_EVENT, m_sPrintType, wxT("Status"), psStatus, wxT("FromPreview"), wxT("1"));
+  mainApp::Ping2(PING_EVENT, m_sPrintType, wxT("Status"), psStatus);
   return bRtn;
 }
 void CPrintPreview::SetZoom(int n)
@@ -372,7 +378,9 @@ void CPreviewControlBar::SetPageCount(int n)
   if (nPage > m_nPageCount)
   {
     SetPage(m_nPageCount);
+    nPage = m_nPageCount;
   }
+  _UpdatePageButtons(nPage);
   wxIntegerValidator<int> *pVal
       ((wxIntegerValidator<int> *) m_pTextPage->GetValidator());
   pVal->SetMax(m_nPageCount);

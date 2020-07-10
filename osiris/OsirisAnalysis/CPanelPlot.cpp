@@ -169,7 +169,8 @@ CPanelPlot::CPanelPlot(
   m_bIgnoreTimer(false),
   m_bDoTimer(false),
   m_bXBPS(false),
-  m_bPrintAnalysis(true)
+  m_bPrintAnalysis(true),
+  m_bPrinting(true)
 {
   _BuildPanel(MENU_NUMBER_ANALYSIS_PRINT, true, NULL);
   SetRenderingToWindow(false);
@@ -206,7 +207,8 @@ CPanelPlot::CPanelPlot(
     m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false),
-    m_bPrintAnalysis(false)
+    m_bPrintAnalysis(false),
+    m_bPrinting(false)
 {
   //  constructor for panel in analysis MDI frame
   _BuildPanel(0,true,NULL);
@@ -396,20 +398,8 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
       }
 
       // BEGIN set up pen
-      const CSingleKitColors *pKitColors = m_pColors->GetKitColors(m_pData->GetKitName());
-      const CChannelColors *pCC = NULL;
-      if(pKitColors == NULL)
-      {}
-      else if(nChannel == m_pData->GetILSChannel())
-      {
-        pCC = pKitColors->GetColorChannelFromLS(m_pData->GetParameters().GetLsName());
-      }
-      else
-      {
-        pCC = pKitColors->GetColorChannel(nChannel);
-      }
-      const wxColour *pColor = (pCC != NULL) ? pCC->GetColorPtr(nType) : wxBLACK;
-      wxGenericPen pen(*pColor);
+      // OS-1435 if printing
+      wxGenericPen pen(_GetColour(nType, nChannel));
       // END set up pen
 
       // create plot data, not including noise
@@ -670,7 +660,7 @@ void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
 void CPanelPlot::BuildILSlines()
 {
   unsigned int nChannelILS = m_pData->GetChannelCount();
-  const vector<CSamplePeak *> *pvILS =
+  const std::vector<CSamplePeak *> *pvILS =
     ( (!m_vILS.size()) &&  nChannelILS )
     ? m_pData->GetSamplePeaks(nChannelILS)
     : NULL;
@@ -680,10 +670,8 @@ void CPanelPlot::BuildILSlines()
     double dx[2] = {0.0,0.0};
     double *pdx;
     double *pdy;
-    wxGenericPen pen(
-      m_pColors->GetColor(
-        m_pData->GetKitName(),LADDER_DATA,nChannelILS));
-    for(vector<CSamplePeak *>::const_iterator itr = pvILS->begin();
+    wxGenericPen pen(_GetColour(LADDER_DATA, nChannelILS));
+    for(std::vector<CSamplePeak *>::const_iterator itr = pvILS->begin();
       itr != pvILS->end();
       ++itr)
     {
@@ -725,13 +713,13 @@ void CPanelPlot::SetOARfile(COARfile *pFile)
 }
 
 wxString CPanelPlot::_AlleleLabel(
-  const IOARpeak *pPeak, vector<unsigned int> &anLabelTypes, bool bILS)
+  const IOARpeak *pPeak, std::vector<unsigned int> &anLabelTypes, bool bILS)
 {
   wxString sLabel;
   wxString sRtn;
   unsigned int nType;
   bool bAlleleDone = false;
-  vector<unsigned int>::iterator itr;
+  std::vector<unsigned int>::iterator itr;
   for(itr = anLabelTypes.begin(); itr != anLabelTypes.end(); ++itr)
   {
     nType = *itr;
@@ -908,11 +896,11 @@ wxString CPanelPlot::_AlleleToolTip(
 }
 
 void CPanelPlot::_BuildPeakLabels(
-  const vector<CSamplePeak *> *pp,
+  const std::vector<CSamplePeak *> *pp,
   const wxColour &colour,
   const wxString &sChannelName,
   unsigned int nChannel,
-  vector<unsigned int> &anLabelTypes)
+  std::vector<unsigned int> &anLabelTypes)
 {
   wxString sLabel;
   wxString sToolTip;
@@ -945,7 +933,7 @@ void CPanelPlot::_BuildPeakLabels(
 int CPanelPlot::_GetLadderPeakCount()
 {
   int nRtn = 0;
-  vector<CLadderPeakSet *>::iterator itr;
+  std::vector<CLadderPeakSet *>::iterator itr;
   for(itr = m_vpLadderPeakSet.begin();
     itr != m_vpLadderPeakSet.end();
     ++itr)
@@ -956,14 +944,14 @@ int CPanelPlot::_GetLadderPeakCount()
 }
 
 void CPanelPlot::_BuildLadderPeakLabels(
-  vector<unsigned int> &anLabelTypes)
+  std::vector<unsigned int> &anLabelTypes)
 {
   CParmOsirisGlobal parm;
   int nMax = parm->GetMaxLadderLabels();
   if( (nMax < 1) ||
       (_GetLadderPeakCount() <= nMax) )
   {
-    vector<CLadderPeakSet *>::iterator itr;
+    std::vector<CLadderPeakSet *>::iterator itr;
     for(itr = m_vpLadderPeakSet.begin();
       itr != m_vpLadderPeakSet.end();
       ++itr)
@@ -985,15 +973,11 @@ void CPanelPlot::_AppendLadderPeaks(
     unsigned int nChannel,
     const wxString &sChannelName)
 {
-  const wxColour &colour(m_pColors->GetColor(
-    m_pData->GetKitName(),
-    //LADDER_DATA,
-    ANALYZED_DATA,
-    nChannel));
+  const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
   CLadderPeakSet *pps =
     new CLadderPeakSet(colour,sChannelName,nChannel);
   m_vpLadderPeakSet.push_back(pps);
-  const vector<CSamplePeak *> *pp =
+  const std::vector<CSamplePeak *> *pp =
       m_pData->GetLadderPeaks(nChannel);
   if( (pp != NULL) && (pp->size() > 0) )
   {
@@ -1006,7 +990,7 @@ void CPanelPlot::_AppendLadderPeaks(
       xMax = m_pData->ILSBpsToTime(xMax);
     }
     double dTime;
-    vector<CSamplePeak *>::const_iterator itr;
+    std::vector<CSamplePeak *>::const_iterator itr;
     pps->Reserve(pp->size());
     for(itr = pp->begin(); itr != pp->end(); ++itr)
     {
@@ -1021,7 +1005,7 @@ void CPanelPlot::_AppendLadderPeaks(
 
 void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
 {
-  vector<unsigned int> anLabelTypes;
+  std::vector<unsigned int> anLabelTypes;
   m_pMenu->GetLabelTypes(&anLabelTypes);
   bool bLabels = (!bArtifactOnly) && !anLabelTypes.empty();
   bool bLadder = bLabels && m_pMenu->LadderLabels();
@@ -1043,8 +1027,8 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
     size_t j;
     unsigned int nChannelStart = 1;
     unsigned int nChannelEnd = m_pData->GetChannelCount();
-    const vector<CSamplePeak *> *pp;
-    const vector<CArtifact *> *pa;
+    const std::vector<CSamplePeak *> *pp;
+    const std::vector<CArtifact *> *pa;
     const CChannelColors *pChannelColor;
     CArtifactLabels *pArtLabels = mainApp::GetArtifactLabels();
     if(_nChannel)
@@ -1057,8 +1041,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
     {
       if(m_pMenu->ChannelValue(nChannel))
       {
-        const wxColour &colourData(m_pColors->GetColor(
-          m_pData->GetKitName(),ANALYZED_DATA,nChannel));
+        const wxColour &colourData(_GetColour(ANALYZED_DATA, nChannel));
 
         pp = bLabels
           ? m_pData->GetSamplePeaks(nChannel)
@@ -1115,12 +1098,13 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
 
 void CPanelPlot::_BuildOARlabels()
 {
-  vector<unsigned int> anLabelTypes;
+  std::vector<unsigned int> anLabelTypes;
   bool bLabels = !!m_pMenu->GetLabelTypes(&anLabelTypes);
   bool bLadderLabels = bLabels && m_pMenu->LadderLabels()
     && m_pMenu->LadderValue();
   int nArtifact = m_pMenu->ArtifactValue();
   bool bArtifact = (nArtifact > CArtifactDisplayList::nArtifactLabelNone);
+  // OS-1435
   const CSingleKitColors *pKitColors(m_pColors->GetKitColors(m_pData->GetKitName()));
   bool bPlot =
     (bLabels || bArtifact) &&
@@ -1131,7 +1115,7 @@ void CPanelPlot::_BuildOARlabels()
   if(pSample == NULL) {;} // do nothing
   else if(pSample->IsLadderType())
   {
-    _BuildPLTlabels();
+    _BuildPLTlabels(false, 0);
   }
   else
   {
@@ -1170,8 +1154,7 @@ void CPanelPlot::_BuildOARlabels()
           (pChannelColor == NULL)
           ? wxString::Format("%d",nChannel)
           : pChannelColor->GetDyeName();
-        const wxColour &colour(m_pColors->GetColor(
-          m_pData->GetKitName(),ANALYZED_DATA,nChannel));
+        const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
         n = (pPeaks.get() == NULL) ? 0 : pPeaks->size();
         for(j = 0; j < n; j++)
         {
@@ -1247,7 +1230,7 @@ void CPanelPlot::_BuildOARlabels()
     if(bArtifact && !bOARHasArtifacts)
     {
       // older version of OAR file
-      _BuildPLTlabels(true);
+      _BuildPLTlabels(true,0);
     }
   }
 }
@@ -1259,15 +1242,33 @@ void CPanelPlot::UpdateLadderLabels()
     )
   {
     LabelTypeChanged();
-    //RebuildLabels(true);
-    //Refresh();
   }
+}
+const wxColour &CPanelPlot::_GetColour(DATA_TYPE n, unsigned int nChannel)
+{
+  int ndx = (nChannel << 8) | (n << 1) | (_IsPrinting() ? 1 : 0);
+  mapColor::iterator itr = m_mapColors.find(ndx);
+  if (itr == m_mapColors.end())
+  {
+    const wxColour &c = m_pColors->GetColor(m_pData->GetKitName(), n, nChannel);
+    wxColour cColor(c);
+    if (_IsPrinting())
+    {
+      CParmOsiris *pParm = CParmOsiris::GetGlobal();
+      const wxString &sColour = m_pColors->GetColorName(c);
+      int nPct = sColour.IsEmpty() ? 100 : pParm->GetPrintColorByName(sColour);
+      _SETUP_PRINT_COLOR(c, nPct, &cColor);
+    }
+    m_mapColors.insert(mapColor::value_type(ndx, cColor));
+    itr = m_mapColors.find(ndx);
+  }
+  return itr->second;
 }
 void CPanelPlot::RebuildLabels(bool bRedraw)
 {
   m_pPlotCtrl->RemoveAllLabels();
   _CleanupPeakAny();
-  vector<unsigned int> an;
+  std::vector<unsigned int> an;
   bool bLabels = !!m_pMenu->GetLabelTypes(&an);
   int nArtifact = m_pMenu->ArtifactValue();
   bool bArtifact = (nArtifact > CArtifactDisplayList::nArtifactLabelNone);
@@ -1279,7 +1280,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
     }
     else
     {
-      _BuildPLTlabels();
+      _BuildPLTlabels(false, 0);
     }
     if(bLabels)
     {
@@ -1288,8 +1289,8 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
       double dx;
       unsigned int nChannel;
       const CPlotLocus *pLocus;
-      const vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
-      vector<CPlotLocus *>::const_iterator itr;
+      const std::vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
+      std::vector<CPlotLocus *>::const_iterator itr;
 
       for(itr = pvLocus->begin();
         itr != pvLocus->end();
@@ -1299,8 +1300,8 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
         nChannel = pLocus->GetChannel();
         if( m_pMenu->ChannelValue(nChannel) )
         {
-          const wxColour &colour(m_pColors->GetColor(
-            m_pData->GetKitName(),ANALYZED_DATA,nChannel));
+          // OS-1435
+          const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
           dTime = double((pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1);
           sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
@@ -1530,7 +1531,7 @@ void CPanelPlot::LabelTypeChanged()
   if(m_pPlotCtrl != NULL)
   {
     TnwxBatch<CPanelPlot> batch(this);
-    RebuildLabels();
+    RebuildLabels(false);
     Refresh();
   }
 }
@@ -1628,7 +1629,7 @@ void CPanelPlot::BuildMinRfuLines()
 {
   if(!m_mapMinRfuAll.size())
   {
-    set<double> setD;
+    std::set<double> setD;
     double d;
     double Xt[2] = {0.0, m_pData->GetMaxTime()};
     double Xbps[2] = {0.0, m_pData->GetMaxXBPS()};
@@ -1645,7 +1646,7 @@ void CPanelPlot::BuildMinRfuLines()
         setD.insert(d);
       }
     }
-    for(set<double>::iterator itr = setD.begin();
+    for(std::set<double>::iterator itr = setD.begin();
       itr != setD.end();
       ++itr)
     {
@@ -1668,7 +1669,7 @@ wxColour CPanelPlot::GetMinRfuColour()
 {
   return COLOUR_RFU;
 }
-void CPanelPlot::BuildRfuSet(set<double> *psetD)
+void CPanelPlot::BuildRfuSet(std::set<double> *psetD)
 {
   double d;
   psetD->clear();
@@ -1688,7 +1689,7 @@ void CPanelPlot::BuildRfuSet(set<double> *psetD)
 }
 void CPanelPlot::ShowMinRfuLines()
 {
-  set<double> setD;
+  std::set<double> setD;
   mapMinRfu::iterator itrm;
   wxPlotData *pData;
 
@@ -1698,7 +1699,7 @@ void CPanelPlot::ShowMinRfuLines()
   wxColour clr = GetMinRfuColour();
   wxGenericPen pen(clr);
   mapMinRfu *pMinRFU = _GetMinRFUlines();
-  for(set<double>::iterator itr = setD.begin();
+  for(std::set<double>::iterator itr = setD.begin();
     itr != setD.end();
     ++itr)
   {
@@ -1743,7 +1744,7 @@ double CPanelPlot::GetLabelHeightExtension(int nLabelHeight)
 {
   double dExtend = 1.0;
   wxRect rect = m_pPlotCtrl->GetPlotAreaRect();
-  vector<unsigned int> an;
+  std::vector<unsigned int> an;
   size_t nLabelRow = GetLabelTypes(&an);
   int LABEL_HEIGHT = (nLabelHeight > 0) ? nLabelHeight : this->GetLabelHeightPixels();
   int nLabelPixels = nLabelRow * LABEL_HEIGHT;
@@ -1899,9 +1900,9 @@ void CPanelPlot::ShowILSlines()
 
 void CPanelPlot::ShowAllChannels(bool bShow)
 {
-  set<int> setCh;
+  std::set<int> setCh;
   m_pData->GetChannelNumbers(&setCh);
-  for(set<int>::iterator itr = setCh.begin();
+  for(std::set<int>::iterator itr = setCh.begin();
     itr != setCh.end();
     ++itr)
   {
@@ -1929,8 +1930,8 @@ void CPanelPlot::SetPlotSettings()
   bool bRFU = parm->GetPlotShowRFU();
   bool bLadderLabels = parm->GetPlotShowLadderLabels();
   int nArt = (int)parm->GetPlotShowArtifact();
-  const vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
-  vector<unsigned int>::const_iterator itr;
+  const std::vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
+  std::vector<unsigned int>::const_iterator itr;
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1963,7 +1964,7 @@ void CPanelPlot::SetPrintSettings()
   bool bRFU = parm->GetPrintCurveMinRFU();
   bool bLadderLabels = parm->GetPrintCurveLadderLabels();
   int nArt = (int)parm->GetPrintArtifact();
-  const vector<unsigned int> &anLabelsChecked = parm->GetPrintLabelsPeak();
+  const std::vector<unsigned int> &anLabelsChecked = parm->GetPrintLabelsPeak();
   m_bXBPS = _CanSetBPS() && parm->GetPrintXaxisILSBPS();
   if (!(bRaw || bLadder || bAnalyzed))
   {
@@ -2028,7 +2029,7 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
   int nArt = m_pMenu->ArtifactValue();
-  vector<unsigned int> anLabels;
+  std::vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
   m_pMenu->GetLabelTypes(&anLabels);
   parm->SetPlotDataAnalyzed(bAnalyzed);
@@ -2069,6 +2070,39 @@ void CPanelPlot::UpdateSettingsPreview()
   }
   parm->SetPreviewShowArtifact((unsigned int)nArt);
 }
+wxColour &CPanelPlot::_SETUP_PRINT_COLOR(const wxColour &color, int nPct, wxColour *pColor)
+{
+  if (nPct > 0 && nPct < 100)
+  {
+    wxUint32 cR = ((color.Red() * nPct) / 100) & 255;
+    wxUint32 cG = ((color.Green() * nPct) / 100) & 255;
+    wxUint32 cB = ((color.Blue() * nPct) / 100) & 255;
+    pColor->SetRGB(cR | (cG << 8) | (cB << 16));
+  }
+  else if (nPct == 0)
+  {
+    pColor->SetRGB(0);
+  }
+  else
+  {
+    *pColor = color;
+  }
+  return *pColor;
+}
+void CPanelPlot::_SetupGridColor()
+{
+  const wxColour &gridColor = nwxPlotCtrl::GridColor();
+  if (!_IsPrinting())
+  {
+    m_pPlotCtrl->SetGridColour(gridColor);
+  }
+  else
+  {
+    int n = CParmOsiris::GetGlobal()->GetPrintColorGray();
+    wxColour c;
+    m_pPlotCtrl->SetGridColour(_SETUP_PRINT_COLOR(gridColor, n, &c));
+  }
+}
 void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
 {
   unsigned int n;
@@ -2083,6 +2117,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   m_nNoiseCurves = 0;
   wxRect2DDouble rect = GetViewRect();
   m_pPlotCtrl->SetXAxisLabel(_GetXAxisLabel());
+  _SetupGridColor();
   for(n = nChannelCount; n > 0; n--)
   {
     if(m_pMenu->ChannelValue(n))
@@ -2158,13 +2193,13 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
     }
     bNoise = false;
   }
-  RebuildLabels();
   if(!bIgnoreViewRect)
   {
     SetViewRect(rect, false, 1);
   }
   else
   {
+    RebuildLabels(false);
     RE_RENDER;
   }
 }
@@ -2241,13 +2276,14 @@ void CPanelPlot::ShowToolbar(bool bShow)
     }
   }
 }
-void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay)
+void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay, bool bPrinting)
 {
   TnwxBatch<CPanelPlot> x(this);
   TnwxBatch<CPanelPlot> y(&w);
   _SyncControllers(w.m_pMenu);
   wxRect2DDouble rect = w.GetViewRect();
   SyncToolbar(&w);
+  _SetPrinting(bPrinting);
   RebuildCurves(true);
   SetViewRect(rect, false, nDelay);
 }
@@ -2649,7 +2685,7 @@ int CPanelPlot::DrawPlotTitleToDC(
   int nPtSize = 0;
   int nBorder = RINT(dDPI * (1.0 / 36.0));
   int nMaxX = (nWidth * 9) / 10;
-  int nMaxY = nHeight / 10;
+  int nMaxY = nHeight >> 2;
   if (nBorder < 2) { nBorder = 2; }
 #ifdef __WXDEBUG__
   wxRect rectTitle(wxDefaultPosition, wxDefaultSize);
@@ -2914,14 +2950,14 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
   //  and the sample
 
   CParmOsirisGlobal pParm;
-  const COARsample *pSample = GetSample();
+  wxString sTitle;
   wxString sTitleInfo;
+  _SetPrinting(bForcePrintFont);
   if (bForcePrintFont)
   {
-    _TitleStrings(&sTitleInfo, nPageNr);
+    TitleStrings(&sTitleInfo, nPageNr);
   }
-  wxString sTitle = (pParm->GetPrintHeading() == PRINT_TITLE_SAMPLE_NAME)
-    ? pSample->GetSampleName() : pSample->GetName();
+  SampleTitle(&sTitle);
   double dDPI = (double)nDPI;
 
   wxBitmap *pBitmap = new wxBitmap(nWidth, nHeight, 32);
@@ -2939,7 +2975,7 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
   nwxPlotCtrl *pPlotCtrl = GetPlotCtrl();
   bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
   pPlotCtrl->SetRenderingToWindow(false);
-  int nXLabelHeight = GetPlotCtrl()->GetXAxisLabelSize(&dc, wxRect(wxSize(nWidth, nHeight)), dDPI, bForcePrintFont).GetHeight();
+  int nXLabelHeight = GetXAxisLabelHeight(&dc, wxRect(wxSize(nWidth, nHeight)), dDPI, bForcePrintFont);
   
   // set up title
   nTitleOffset = DrawPlotTitleToDC(&dc, sTitle, sTitleInfo, nWidth, nHeight, dDPI, bForcePrintFont);
@@ -3121,7 +3157,15 @@ CPanelPlot *CPanelPlotToolbarSaveState::RestoreState(bool bRemove)
 
 // CPrintInfo
 
-const wxString &CPanelPlot::_TitleStrings(wxString *ps, int nPageNr)
+const wxString &CPanelPlot::SampleTitle(wxString *ps)
+{
+  CParmOsirisGlobal pParm;
+  COARsample *pSample = GetSample();
+  *ps = (pParm->GetPrintHeading() == PRINT_TITLE_SAMPLE_NAME)
+    ? pSample->GetSampleName() : pSample->GetName();
+  return *ps;
+}
+const wxString &CPanelPlot::TitleStrings(wxString *ps, int nPageNr)
 {
   CParmOsiris *pParm = CParmOsiris::GetGlobal();
   const COARfile *pFile = GetSample()->GetFile();

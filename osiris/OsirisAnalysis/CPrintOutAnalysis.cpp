@@ -266,26 +266,6 @@ bool CPrintOutAnalysis::_OnPrintPage(int page)
   }
   return true;
 }
-bool CPrintOutAnalysis::HasPage(int page)
-{
-  return (page <= GetMaxPage()) && (page > 0);
-}
-void CPrintOutAnalysis::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
-{
-  // TEST to see if it is responsible for printing selected pages.
-#if 0
-  wxPrintout::GetPageInfo(minPage, maxPage, selPageFrom, selPageTo);
-#else
-  *minPage = GetMinPage();
-  *selPageFrom = 1;
-  // page count for print preview may change upon changing settings
-  // so maxPage is a high number.  For actual printing
-  // the status window reports the number of pages being printed
-  // so it needs to be accurate
-  *maxPage = m_bPreview ? 32768 : GetMaxPage();
-  *selPageTo = *maxPage;
-#endif
-}
 
 void CPrintOutAnalysis::DoPrintPreview(CFrameAnalysis *pFrame)
 {

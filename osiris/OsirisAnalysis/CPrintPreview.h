@@ -153,7 +153,7 @@ private:
   void _OnPageChange(wxCommandEvent &);
   void _OnPrint(wxCommandEvent &);
   CPrintPreview *m_pPreview;
-  CDialogPrintSettings *m_pDialogSettings;
+  wxDialog *m_pDialogSettings;
   CFrameAnalysis *m_pFrameAnalysis;
   CFramePlot *m_pFramePlot;
   bool m_bPageButtons;

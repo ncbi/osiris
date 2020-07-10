@@ -49,6 +49,8 @@
 #include <map>
 #include "nwx/stde.h"
 #include "nwx/PersistentSize.h"
+#include "CParmOsiris.h"
+
 class wxCheckBox;
 class wxRadioButton;
 class wxTextCtrl;
@@ -59,6 +61,47 @@ class COARfile;
 class COARsample;
 class wxStaticText;
 class wxSpinCtrl;
+
+class CDialogPrintSettingsSample : public wxDialog
+{
+public:
+  CDialogPrintSettingsSample(CPrintPreviewFrame *parent, const COARsample *pSample);
+  virtual ~CDialogPrintSettingsSample();
+  virtual bool TransferDataFromWindow();
+  virtual bool TransferDataToWindow();
+
+  static int GetSampleType(const COARsample *pSample);
+  static int GetPlotsPerPage(int nSampleType);
+  static int GetPlotsPerPage(const COARsample *pSample)
+  {
+    return GetPlotsPerPage(GetSampleType(pSample));
+  }
+
+private:
+  void _Build();
+
+  typedef enum
+  {
+    SAMPLE_REGULAR,
+    SAMPLE_LADDER,
+    SAMPLE_NEGATIVE_CONTROL
+  } SAMPLE_TYPE;
+  CParmOsirisGlobal m_pParms;
+  int m_nSampleType;
+  const wxChar *m_psPlotsPerPageLabel;
+  wxSpinCtrl *m_pTextPlotsPerPage;
+  wxTextCtrl *m_pTextHeadingNotes;
+  wxRadioButton *m_pRadioHeadingFile;
+  wxRadioButton *m_pRadioHeadingSample;
+  CPrintPreviewFrame *m_pParent;
+
+  void _OnApply(wxCommandEvent &);
+  void _OnOK(wxCommandEvent &);
+  void _Apply();
+
+  DECLARE_PERSISTENT_POSITION
+  DECLARE_EVENT_TABLE()
+};
 
 class CDialogPrintSettings : public wxDialog
 {
@@ -105,6 +148,7 @@ private:
   void _OnOK(wxCommandEvent &);
   void _Apply();
 
+  CParmOsirisGlobal m_pParms;
   int m_nRadioGroup;
   COARfile *m_pFile;
   CFrameAnalysis *m_pFrameAnalysis;

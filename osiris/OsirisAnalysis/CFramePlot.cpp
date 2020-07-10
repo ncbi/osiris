@@ -458,6 +458,7 @@ CFramePlot::CFramePlot(
     m_pDialogPlot(NULL),
     m_pData(pData),
     m_pOARfile(NULL),
+    m_pSample(NULL),
     m_pColors(pColors),
     m_pMenu(new CFramePlotMenu),
     m_pMenuHistory(NULL),
@@ -1724,11 +1725,12 @@ void CFramePlot::EditPeak(COARpeakAny *pPeak)
 {
   if(m_pOARfile == NULL)
   {
-    wxCommandEvent e;
-    e.SetId(-1);
-    OnTableButton(e);
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT);
     if(m_pOARfile != NULL)
     {
+      wxCommandEvent e;
+      e.SetId(-1);
+      OnTableButton(e);
       RaiseWindow();
     }
   }
@@ -1737,11 +1739,18 @@ void CFramePlot::EditPeak(COARpeakAny *pPeak)
     CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
     if(pFrame != NULL)
     {
-      COARsample *pSample =
-        m_pOARfile->GetSampleByName(m_pData->GetFilename());
-      pFrame->EditPeak(pPeak,pSample,this);
+      pFrame->EditPeak(pPeak,GetSample(),this);
     }
   }
+}
+
+COARsample *CFramePlot::GetSample()
+{
+  if ((m_pOARfile != NULL) && (m_pSample == NULL))
+  {
+    m_pSample = m_pOARfile->GetSampleByName(m_pData->GetFilename());
+  }
+  return m_pSample;
 }
 
 void CFramePlot::OnHistoryButton(wxCommandEvent &e)
@@ -2151,78 +2160,108 @@ void CFramePlot::_SetupBitmapPlot()
 }
 
 wxBitmap *CFramePlot::CreateBitmap(
-  int nWidth, int nHeight, int nDPI, const wxString &sTitle, bool bForcePrintFont)
+  int nWidth, int nHeight, int nDPI, 
+  const wxString &sTitlePNG, // used only for export PNG, should be empty for printing
+  int nPlotsPerPage, // this and following parameters are used for printing
+  int nPageNr,
+  bool bForcePrintFont)
 {
   wxSize sz(nWidth, nHeight);
-  wxRect rect(sz);
-  double dLabelExtension;
-  double dDPI = (double)nDPI;
   wxBitmap *pBitmap = new wxBitmap(sz, 32);
   wxMemoryDC dc(*pBitmap);
-  CPanelPlot *pPanelPlot = _GetBitmapPlot();
-
   // initialize bitmap to white -- probably not necessary
-
   dc.SetBackground(*wxWHITE_BRUSH);
   dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
   dc.Clear();
-
-  int nXLabelHeight = pPanelPlot->DrawXAxisLabelToDC(
-    &dc, rect, dDPI, bForcePrintFont);
-  int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(
-    &dc, sTitle, wxEmptyString, nWidth, nHeight, dDPI, bForcePrintFont);
-  int nLabelHeight = pPanelPlot->GetPlotCtrl()->GetTextHeight(wxT("-123456789.0"), &dc, rect, dDPI, bForcePrintFont);
-
-  int nPlotAreaHeight = nHeight - nXLabelHeight - nTitleOffset;
-  int nPlotCount = (int)m_setPlots.size();
-  if (!nPlotCount)
+  if(nPageNr > 0)
   {
-    nPlotCount = 1;
-  }
-  int nPlotHeight = nPlotAreaHeight / nPlotCount;
-  int nRoundingOffset = nPlotAreaHeight - (nPlotHeight * nPlotCount);
-  nTitleOffset += nRoundingOffset;
+    wxRect rect(sz);
+    double dLabelExtension;
+    double dDPI = (double)nDPI;
+    int nPage = nPageNr - 1;
+    int nPlotCount = (int)m_setPlots.size();
+    if (nPlotsPerPage > nPlotCount)
+    {
+      nPlotsPerPage = nPlotCount;
+    }
+    int nSkip = nPage * nPlotsPerPage;
+    int nPlotsOnThisPage = nPlotCount - nSkip;
+    if (nPlotsOnThisPage > nPlotsPerPage)
+    {
+      nPlotsOnThisPage = nPlotsPerPage;
+    }
+    wxString sTitle(sTitlePNG);
+    wxString sTitleInfo;
+    CPanelPlot *pPanelPlot = _GetBitmapPlot();
 
-  if (nPlotHeight >= 20)
-  {
-    wxRect rectPlot(0, 0, nWidth, nPlotHeight);
-    set<CPanelPlot *>::iterator itr;
-    CPanelPlot *pPlot;
-    std::unique_ptr<wxBitmap> pBitmapPlot
+    if (bForcePrintFont && sTitlePNG.IsEmpty())
+    {
+      pPanelPlot->TitleStrings(&sTitleInfo, nPageNr);
+      pPanelPlot->SampleTitle(&sTitle);
+    }
+    int nXLabelHeight = pPanelPlot->GetXAxisLabelHeight(&dc, rect, dDPI, bForcePrintFont);
+    int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(
+      &dc, sTitle, sTitleInfo, nWidth, nHeight, dDPI, bForcePrintFont);
+
+    int nLabelHeight = pPanelPlot->GetPlotCtrl()->GetTextHeight(wxT("-123456789.0"), &dc, rect, dDPI, bForcePrintFont);
+
+    int nPlotAreaHeight = nHeight - nXLabelHeight - nTitleOffset;
+    int nPlotHeight = nPlotAreaHeight / nPlotsPerPage;
+    int nRoundingOffset = nPlotAreaHeight - (nPlotHeight * nPlotsPerPage);
+    nTitleOffset += nRoundingOffset;
+
+    if (nPlotHeight >= 20)
+    {
+      wxRect rectPlot(0, 0, nWidth, nPlotHeight);
+      set<CPanelPlot *>::iterator itr;
+      CPanelPlot *pPlot;
+      CPanelPlot *vpPlots[CHANNEL_MAX];
+      memset((void *)vpPlots, 0, sizeof(vpPlots));
+      std::unique_ptr<wxBitmap> pBitmapPlot
       (new wxBitmap(nWidth, nPlotHeight, 32));
-    wxMemoryDC dcPlot(*pBitmapPlot);
-    int nY;
+      wxMemoryDC dcPlot(*pBitmapPlot);
+      int nY;
+      unsigned int nr;
+      bool bSyncDone = false;
 
 #if 1
-    // there is a axis sync bug, so here is the work around
-    for (itr = m_setPlots.begin();
-      itr != m_setPlots.end();
-      ++itr)
-    {
-      pPlot = *itr;
-      if (pPlot->SyncValue())
+      // there is a axis sync bug, so here is the work around
+      // added - put plots in vpPlots array in plot number order
+      for (itr = m_setPlots.begin();
+        itr != m_setPlots.end();
+        ++itr)
       {
-        SyncTo(pPlot);
-        break;
+        pPlot = *itr;
+        nr = pPlot->GetPlotNumber();
+        vpPlots[nr] = pPlot;
+        if ((!bSyncDone) && pPlot->SyncValue())
+        {
+          SyncTo(pPlot);
+          bSyncDone = true;
+        }
+      }
+#endif
+      int nPlotsToRender = nPlotsOnThisPage;
+      int nLast = nSkip + nPlotsToRender;
+      nY = nTitleOffset;
+      for (int n = nSkip; n < nLast; ++n)
+      {
+        pPlot = vpPlots[n];
+        dcPlot.SetBackground(*wxWHITE_BRUSH);
+        dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+        dcPlot.DestroyClippingRegion();
+        dcPlot.Clear();
+        dLabelExtension = pPlot->GetLabelHeightExtension();
+        pPanelPlot->CopySettings(*pPlot, 0, bForcePrintFont);
+        pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
+        pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
+        dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
+        nY += nPlotHeight;
       }
     }
-#endif
-    for (itr = m_setPlots.begin();
-      itr != m_setPlots.end();
-      ++itr)
-    {
-      dcPlot.SetBackground(*wxWHITE_BRUSH);
-      dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
-      dcPlot.DestroyClippingRegion();
-      dcPlot.Clear();
-      pPlot = *itr;
-      dLabelExtension = pPlot->GetLabelHeightExtension();
-      pPanelPlot->CopySettings(*pPlot, 0);
-      pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
-      pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
-      nY = ((int)pPlot->GetPlotNumber() * nPlotHeight) + nTitleOffset;
-      dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
-    }
+    int nHeightCut = (nPlotsPerPage - nPlotsOnThisPage) * nPlotHeight;
+    rect.SetHeight(rect.GetHeight() - nHeightCut);
+    pPanelPlot->DrawXAxisLabelToDC(&dc, rect, dDPI, bForcePrintFont);
   }
   return pBitmap;
 }
@@ -2269,13 +2308,16 @@ wxString CFramePlot::GetPrintTitle()
     : NULL;
   return (pSample == NULL) ? sFileName  : pSample->GetSampleName();
 }
-void CFramePlot::OnPrint(wxCommandEvent &)
-{
-  CPrintOutPlot::DoPrint(this);
-}
 void CFramePlot::OnPrintPreview(wxCommandEvent &)
 {
-  CPrintOutPlot::DoPrintPreview(this);
+  if (m_pOARfile == NULL)
+  {
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_PRINT);
+  }
+  if (m_pOARfile != NULL)
+  {
+    CPrintOutPlot::DoPrintPreview(this);
+  }
 }
 #ifdef __WXMAC__
 void CFramePlot::OnPageMargins(wxCommandEvent &)
@@ -2303,8 +2345,7 @@ EVT_BUTTON(IDgraphTable, CFramePlot::OnTableButton)
 EVT_BUTTON(IDmenuDisplaySample, CFramePlot::OnTableButton)
 EVT_SASH_DRAGGED(wxID_ANY,CFramePlot::OnSashDragged)
 EVT_SIZE(CFramePlot::OnSize)
-EVT_MENU(wxID_PRINT, CFramePlot::OnPrint)
-EVT_MENU(IDprintPreview, CFramePlot::OnPrintPreview)
+EVT_MENU(wxID_PRINT, CFramePlot::OnPrintPreview)
 #ifdef __WXMAC__
 EVT_MENU(IDpageMargins, CFramePlot::OnPageMargins)
 #endif

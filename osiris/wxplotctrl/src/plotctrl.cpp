@@ -2829,7 +2829,11 @@ void wxPlotCtrl::DrawTickMarks( wxDC *dc, const wxRect& rect )
 {
     wxRect clientRect(GetPlotAreaRect());
     // DJH 2/19/09 change width to m_area_border_width
-    dc->SetPen( wxPen(GetGridColour(), m_area_border_width, wxSOLID) ); 
+    // DJH 7/7/20 change width to 1/2 m_area_border_width rounded
+    dc->SetPen( 
+      wxPen(GetGridColour(), 
+      (m_area_border_width + 1) >> 1, 
+      wxSOLID) ); 
 
     int xtick_length = GetDrawGrid() ? clientRect.height : 10;
     int ytick_length = GetDrawGrid() ? clientRect.width  : 10;

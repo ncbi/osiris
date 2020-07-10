@@ -37,6 +37,7 @@
 
 #include "nwx/nwxXmlPersistCollections.h"
 #include "wxIDS.h"
+#include "nwx/nwxString.h"
 
 class CKitColorDye : public nwxXmlPersist
 {
@@ -146,6 +147,19 @@ public:
     const CKitColorDye *pRtn = (itr != m_mapDyeColors.end()) ? itr->second : NULL;
     return pRtn;
   }
+  const wxString &GetColorName(const wxColour &c) const
+  {
+    if (m_mapColorNames.empty())
+    {
+      _SetupColorNames();
+    }
+    std::map<wxString, wxString>::const_iterator itr = m_mapColorNames.find(c.GetAsString());
+    if (itr == m_mapColorNames.end())
+    {
+      return nwxString::EMPTY;
+    }
+    return itr->second;
+  }
 protected:
   virtual void RegisterAll(bool = false)
   {
@@ -153,8 +167,10 @@ protected:
   }
 private:
   void _SetupDyeColors() const;
+  void _SetupColorNames() const;
   bool Load();
   std::map<wxString,CKitColorDye *> m_mapKitColors;
+  mutable std::map<wxString, wxString> m_mapColorNames;
   mutable std::map<wxString,const CKitColorDye *> m_mapDyeColors;
   TnwxXmlIOPersistMap<wxString,CKitColorDye> m_io;
 };

@@ -27,6 +27,8 @@
 *  FileName: CPanelPlot.h
 *  Author:   Douglas Hoffman
 *
+*  OS-1435 7/7/20 add m_bPrinting and GetColor()
+*     to accommodate the dark print option
 */
 
 #ifndef __C_PANEL_PLOT_H__
@@ -79,10 +81,11 @@ class CSamplePeak;
 class COARpeakAny;
 class wxBitmap;
 
-typedef map<int,wxPlotData *> mapSamplePlots;
+typedef std::map<int,wxPlotData *> mapSamplePlots;
 
-typedef vector<wxPlotData *> vectorILSlines;
-typedef map<double,wxPlotData *> mapMinRfu;
+typedef std::vector<wxPlotData *> vectorILSlines;
+typedef std::map<double,wxPlotData *> mapMinRfu;
+typedef std::map<int, wxColour> mapColor;
 
 class CPlotCtrl : public nwxPlotCtrl
 {
@@ -132,7 +135,7 @@ private:
     {
       m_vpPeaks.push_back(p);
     }
-    const vector<CSamplePeak *> *GetPeaks() const
+    const std::vector<CSamplePeak *> *GetPeaks() const
     {
       return &m_vpPeaks;
     }
@@ -158,7 +161,7 @@ private:
     }
 
   private:
-    vector<CSamplePeak *> m_vpPeaks;
+    std::vector<CSamplePeak *> m_vpPeaks;
     wxColour m_colour;
     wxString m_sChannelName;
     unsigned int m_nChannel;
@@ -345,6 +348,10 @@ public:
   {
     return GetPlotCtrl()->DrawXAxisLabel(pDC, rectBitmap, dDPI, bForcePrintFont, true);
   }
+  int GetXAxisLabelHeight(wxDC *pDC, const wxRect &rectBitmap, double dDPI, bool bForcePrintFont)
+  {
+    return GetPlotCtrl()->GetXAxisLabelSize(pDC, rectBitmap, dDPI, bForcePrintFont).GetHeight();
+  }
   void SetRenderingToWindow(bool b)
   {
     GetPlotCtrl()->SetRenderingToWindow(b);
@@ -397,7 +404,7 @@ public:
     return (int)m_pMenu->LabelType();
   }
 #endif
-  size_t GetLabelTypes(vector<unsigned int> *pan)
+  size_t GetLabelTypes(std::vector<unsigned int> *pan)
   {
     return m_pMenu->GetLabelTypes(pan);
   }
@@ -461,7 +468,7 @@ public:
   {
     return m_pMenu->GetPlotTypes();
   }
-  void CopySettings(CPanelPlot &w, int nDelay = 1);
+  void CopySettings(CPanelPlot &w, int nDelay = 1, bool bPrinting = false);
   void SetPlotNumber(unsigned int i)
   {
     m_nPlotNr = i;
@@ -640,12 +647,14 @@ public:
       n2 = n1 + nMinRange;
     }
   }
+  const wxString &CPanelPlot::SampleTitle(wxString *ps);
+  const wxString &TitleStrings(wxString *ps, int nPage);
 private:
+  const wxColour &_GetColour(DATA_TYPE n, unsigned int nChannel);
   static void _SetYUserRange(wxRect2DDouble *pRect);  // Y
   static void _SetXUserRange(wxRect2DDouble *pRect);  // X
   static wxColour COLOUR_RFU;
 
-  const wxString &_TitleStrings(wxString *ps, int nPage);
   bool _BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pRectZoom);
   void _BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel);
   int _BitmapPrimerZoom(int nXScale, bool bNegCtrl);
@@ -746,7 +755,7 @@ private:
   void ShowILSlines();
   void BuildMinRfuLines();
   void CleanupMinRfuLines();
-  void BuildRfuSet(set<double> *psetD);
+  void BuildRfuSet(std::set<double> *psetD);
   void ShowMinRfuLines();
 
   //  labels
@@ -755,18 +764,27 @@ private:
     unsigned int nChannel,
     const wxString &sChannelName);
 
+  void _SetPrinting(bool b = true)
+  {
+    m_bPrinting = b;
+  }
+  bool _IsPrinting()
+  {
+    return m_bPrinting;
+  }
   void _BuildOARlabels();
   void _BuildPeakLabels(
-    const vector<CSamplePeak *> *pp,
+    const std::vector<CSamplePeak *> *pp,
     const wxColour &colour,
     const wxString &sChannelName,
     unsigned int nChannel,
-    vector<unsigned int> &anLabel);
+    std::vector<unsigned int> &anLabel);
   void _BuildLadderPeakLabels(
-    vector<unsigned int> &anLabel);
-
+    std::vector<unsigned int> &anLabel);
+  static wxColour &_SETUP_PRINT_COLOR(const wxColour &color, int nPct, wxColour *pColor);
+  void _SetupGridColor();
   void _BuildPLTlabels(bool bArtifactOnly = false, unsigned int nChannel = 0);
-  wxString _AlleleLabel(const IOARpeak *pPeak, vector<unsigned int> &anLabel, bool bILS);
+  wxString _AlleleLabel(const IOARpeak *pPeak, std::vector<unsigned int> &anLabel, bool bILS);
   wxString _ArtifactToolTip(
     const IOARpeak *pPeak, const wxString &sChannelName);
   wxString _AlleleToolTip(
@@ -774,11 +792,11 @@ private:
 
   // delayed view rect update
 
-  void _CheckViewRect();
-  static int _SamplePlotKey(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS)
+  // void _CheckViewRect();
+  static int _SamplePlotKey(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS, bool bPrinting = false)
   {
     // create a key for mapSamplePlot
-    int nRtn = ( (nChannel & 255) << 8 ) | (nType << 2) | (bNoise ? 2 : 0) | (bXBPS ? 1 : 0);
+    int nRtn = ( (nChannel & 255) << 8 ) | (nType << 3) | (bPrinting ? 4 : 0) | (bNoise ? 2 : 0) | (bXBPS ? 1 : 0);
     return nRtn;
   }
 
@@ -794,15 +812,15 @@ private:
   //void _CleanupMenu(); // remove m_pMenuItem from its menu and delete
   void _BuildMenu(int nPlotNr);
 
-  vector<CLadderPeakSet *> m_vpLadderPeakSet;
+  std::vector<CLadderPeakSet *> m_vpLadderPeakSet;
   DelayedViewRect m_viewRect;
 
-  set<double> m_setMinRfu;
+  std::set<double> m_setMinRfu;
   mapMinRfu m_mapMinRfuAll;
   mapMinRfu m_mapMinRfuAll_XBPS;
 
   mapSamplePlots m_mapPlotData;
-  vector<COARpeakAny *> m_vPeakAny;
+  std::vector<COARpeakAny *> m_vPeakAny;
   vectorILSlines m_vILS;
   vectorILSlines m_vILS_XBPS;
   CPlotData *m_pData;
@@ -833,9 +851,11 @@ private:
   bool m_bDoTimer;
   bool m_bXBPS; // used to check if event changed x axis
   bool m_bPrintAnalysis;
+  bool m_bPrinting;
 
   // BEGIN - keep track of channels with no noise
   std::set<unsigned int> m_setNoNoiseChannel;
+  mapColor m_mapColors;
   bool _IsNoNoiseChannel(unsigned int nChannel)
   {
     bool bRtn = (m_setNoNoiseChannel.find(nChannel) != m_setNoNoiseChannel.end());

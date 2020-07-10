@@ -68,6 +68,8 @@ public:
   virtual wxFrame *GetParent() = 0;
   virtual int GetMinPage();
   virtual int GetMaxPage();
+  virtual bool HasPage(int page);
+  virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
   virtual void RebuildPages()
   {
     // this is called from CPrintPreviewFrame::UpdateSettings()

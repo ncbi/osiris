@@ -679,6 +679,7 @@ ${sGets}
     }
     return sRtn;
   }
+  int GetPrintColorByName(const wxString &sName) const;
   static const wxString NO_INIT;
   // end static/global stuff
 
@@ -1094,6 +1095,26 @@ bool CParmOsiris::Save()
     m_bModified = false;
   }
   return bRtn;
+}
+
+int CParmOsiris::GetPrintColorByName(const wxString &sName) const
+{
+  // return the printing color intensity (1-100) for printing
+  // color specified by sName
+  wxString s(sName);
+  s.MakeUpper();
+  int nRtn = 100; // if color not found, default is 100%
+  
+ #define _CHECK(name, fnc)  if(s == wxT(name)) nRtn = fnc()  
+  _CHECK("RED", GetPrintColorRed);
+  else _CHECK("GREEN", GetPrintColorGreen);
+  else _CHECK("BLUE", GetPrintColorBlue);
+  else _CHECK("YELLOW", GetPrintColorYellow);
+  else _CHECK("ORANGE", GetPrintColorOrange);
+  else _CHECK("PURPLE", GetPrintColorPurple);
+#undef _CHECK
+
+  return nRtn;
 }
 
 ${sStringCPP}

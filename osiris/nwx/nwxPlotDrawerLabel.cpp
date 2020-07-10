@@ -125,7 +125,33 @@ bool nwxPointLabel::operator < (const nwxPointLabel &x) const
   }
   return bRtn;
 }
-
+void nwxPlotDrawerLabel::DrawSemiTransparentRectangle(wxDC *pdc, const wxRect &r)
+{
+  int nXmin = r.GetLeft();
+  int nYmin = r.GetTop();
+  int nXmax = nXmin + r.GetWidth();
+  int nYmax = nYmin + r.GetHeight();
+  int nx, ny;
+  wxColour c;
+  wxColour cNew;
+  wxPen pen(*wxBLACK, 1, wxPENSTYLE_SOLID);
+  wxPen penBackup = pdc->GetPen();
+  for (nx = nXmin; nx < nXmax; ++nx)
+  {
+    for (ny = nYmin; ny < nYmax; ++ny)
+    {
+      pdc->GetPixel(nx, ny, &c);
+      cNew.Set(
+        (c.Red() >> 1) | 128,
+        (c.Green() >> 1) | 128,
+        (c.Blue() >> 1) | 128);
+      pen.SetColour(cNew);
+      pdc->SetPen(pen);
+      pdc->DrawPoint(nx, ny);
+    }
+  }
+  pdc->SetPen(penBackup);
+}
 void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
 {
   size_t nSize = m_setLabels.size();
@@ -134,8 +160,10 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     SET_LABEL::iterator itr;
     vector<bool> vbCanMoveUp;
     wxRect rect;
-    const int PAD_X = 2;
+    const int PAD_Y = m_nMinY;
+    const int PAD_X = 2 * (m_nMinY > 0 ? m_nMinY : 1);
     const int DELTA_WIDTH = PAD_X + PAD_X;
+    const int DELTA_HEIGHT = PAD_Y + PAD_Y;
     int nx;
     int ny;
     int hl;
@@ -146,7 +174,9 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     wxBrush brushSave = pdc->GetBrush();
     wxPen penSave = pdc->GetPen();
     wxFont fontSave = pdc->GetFont();
-    pdc->SetFont(m_owner->GetAxisFont());
+    wxFont fontUse(m_owner->GetAxisFont());
+    fontUse.MakeBold();
+    pdc->SetFont(fontUse);
 
     pdc->SetTextBackground(wxColour(255, 255, 255, wxALPHA_TRANSPARENT));
     m_vRect.clear();
@@ -165,6 +195,7 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       pdc->GetMultiLineTextExtent(
         label.GetLabel(),&rect.width,&rect.height,&hl);
       rect.width += DELTA_WIDTH;
+      rect.height += DELTA_HEIGHT;
       if(nAlign & wxALIGN_CENTER)
       {
         nx -= (rect.width >> 1);
@@ -290,6 +321,10 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       }
     }
     wxPen pen(*wxBLACK_PEN);
+    if (m_nMinY > 0)
+    {
+      pen.SetWidth(m_nMinY);
+    }
     pdc->SetBrush(*wxWHITE_BRUSH);
     for(i = 0; i < nSize; i++)
     {
@@ -301,12 +336,13 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       nX = rrect.GetX();
       nY = rrect.GetY();
       int nStyle = pLabel->GetStyle();
+      DrawSemiTransparentRectangle(pdc, rrect);
       if (nStyle & nwxPointLabel::STYLE_BOX)
       {
         pdc->SetBrush(*wxTRANSPARENT_BRUSH);
         pdc->DrawRectangle(rrect);
       }
-      pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY);
+      pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY + PAD_Y);
       if(nStyle & nwxPointLabel::STYLE_DISABLED)
       {
         wxPoint pt1(nX,nY);

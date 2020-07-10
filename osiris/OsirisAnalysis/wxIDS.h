@@ -205,7 +205,6 @@ enum
   IDpageMargins,
 #endif
   IDpageSetup,
-  IDprintPreview,
 
   // print preview control bar
   IDprintSettings,

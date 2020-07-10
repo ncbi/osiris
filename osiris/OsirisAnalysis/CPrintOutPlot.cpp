@@ -47,6 +47,7 @@
 
 #include "CPrintOutPlot.h"
 #include "CFramePlot.h"
+#include "CDialogPrintSettings.h"
 #include "mainApp.h"
 
 #define _PING_PRINT wxT("PrintPlot")
@@ -63,12 +64,6 @@ void CPrintOutPlot::DoPrintPreview(CFramePlot *pFrame)
     _PING_PRINT);
 }
 
-void CPrintOutPlot::DoPrint(CFramePlot *pFrame)
-{
-  CPrintOutPlot printout(pFrame);
-  _DoPrint(&printout, wxT("PrintPlot"));
-}
-
 // end static functions - begin virtual wxPrintout functions
 
 CPrintOutPlot::~CPrintOutPlot() { ; }
@@ -78,10 +73,21 @@ wxFrame *CPrintOutPlot::GetParent()
   return m_pFramePlot;
 }
 
+int CPrintOutPlot::GetPlotsPerPage()
+{
+  return CDialogPrintSettingsSample::GetPlotsPerPage(m_pFramePlot->GetSample());
+}
+int CPrintOutPlot::GetMaxPage()
+{
+  int nPlots = (int)m_pFramePlot->GetPlotCount();
+  int nPlotsPerPage = GetPlotsPerPage();
+  int nRtn = (nPlots + nPlotsPerPage - 1) / nPlotsPerPage;
+  return nRtn;
+}
 bool CPrintOutPlot::OnPrintPage(int page)
 {
   bool bRtn = true;
-  if (page == 1)
+  if (HasPage(page))
   {
     wxDC *pdc = GetDC();
     _setupPageBitmap(pdc);
@@ -89,7 +95,10 @@ bool CPrintOutPlot::OnPrintPage(int page)
       m_resOutput.m_nWidth,
       m_resOutput.m_nHeight,
       m_resOutput.m_DPI,
-      m_pFramePlot->GetPrintTitle(), true));
+      wxEmptyString,
+      GetPlotsPerPage(),
+      page,
+      true));
     wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
     pdc->DrawBitmap(*px, r.GetLeftTop());
   }
@@ -99,14 +108,6 @@ bool CPrintOutPlot::OnPrintPage(int page)
     mainApp::LogMessageV(wxT("Invalid page number %d"), page);
   }
   return bRtn;
-}
-bool CPrintOutPlot::HasPage(int page)
-{
-  return (page == 1);
-}
-void CPrintOutPlot::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
-{
-  *minPage = *maxPage = *selPageFrom = *selPageTo = 1;
 }
 
 IMPLEMENT_ABSTRACT_CLASS(CPrintOutPlot, CPrintOut)
