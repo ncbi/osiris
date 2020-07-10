@@ -647,7 +647,7 @@ public:
       n2 = n1 + nMinRange;
     }
   }
-  const wxString &CPanelPlot::SampleTitle(wxString *ps);
+  const wxString &SampleTitle(wxString *ps);
   const wxString &TitleStrings(wxString *ps, int nPage);
 private:
   const wxColour &_GetColour(DATA_TYPE n, unsigned int nChannel);
