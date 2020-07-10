@@ -55,7 +55,6 @@ sub TESTFILES
   my ($file,$dir) = @_;
   my $rtn = 0;
   ## return 1 if a file in ${dir} is newer than $file
-
   if(!(-r $file))
   {
     $rtn = 1;
@@ -99,71 +98,74 @@ sub COPYFILES
   &MKDIR("${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} -R ${src}/docs/TestAnalysis ${destTest}");
   for my $sdir (qw/
-    CANNABIS
-    Cofiler
-    CORDIS_PLUS
-    CORDIS_PLUS_HID
-    GF
-    GFHID
-    GlobalFilerMixNoStutter
-    GlobalFilerMixStutter
-    GP10
-    ID
-    IDNO250
-    IDNO250_HID
-    IDplus
-    IDplusNO250
-    ID_HID
-    iPLEXSTR
-    iPLEXSTRLIZ500less250
-    MINIFILER
-    NETBIO_FLEXPLEX
-    NETBIO_FLEXPLEX_HID
-    NFX1
-    NGM
-    NGMSElect
-    LANESTANDARDONLY2
-    LANESTANDARDONLY3
-    LANESTANDARDONLY4
-    LANESTANDARDONLY5
-    POWERPLEXS5
-    PP12
-    PP16
-    PP16_HID
-    PP18D
-    PP18D_HID
-    PP21
-    PP21_HID
-    PPESI16
-    PPESI16_HID
-    PPESI17
-    PPESI17_HID
-    PPESX16
-    PPESX16_HID
-    PPESX17
-    PPESX17_HID
-    PPFusion
-    PPFusion6C
-    PPFusion6C_HID
-    PPFusion_HID
-    PPFusion_HID_Sole_Source
-    PPY
-    PPY23
-    PPY23_HID
-    PPGenePrint24
-    PPGenePrint24_HID
-    Profiler
-    QIAGEN_ARGUS_x12
-    QIAGEN_ARGUS_x12_HID
-    QIAGEN_ARGUS_x12_QS
-    QIAGEN_ARGUS_x12_QS_HID
-    QIAGEN_INVESTIGATOR24PLEX
-    QIAGEN_INVESTIGATOR24PLEX_HID
-    SEfilerPlus
-    SGMPlus
-    Yfiler
-    YFILERPLUS
-    YFILERPLUS_HID
+      CANNABIS
+      Cofiler
+      CORDIS_PLUS
+      CORDIS_PLUS_HID
+      GF
+      GFHID
+      GFHID_Mixture
+      GlobalFilerMixNoStutter
+      GlobalFilerMixStutter
+      GP10
+      ID
+      IDNO250
+      IDNO250_HID
+      IDplus
+      IDplusNO250
+      ID_HID
+      iPLEXSTR
+      iPLEXSTRLIZ500less250
+      LANESTANDARDONLY2
+      LANESTANDARDONLY3
+      LANESTANDARDONLY4
+      LANESTANDARDONLY5
+      MICROREADER_Y_PRIME
+      MICROREADER_Y_PRIME_HID
+      MINIFILER
+      NETBIO_FLEXPLEX
+      NETBIO_FLEXPLEX_HID
+      NFX1
+      NGM
+      NGMSElect
+      POWERPLEXS5
+      PP12
+      PP16
+      PP16_HID
+      PP18D
+      PP18D_HID
+      PP21
+      PP21_HID
+      PPESI16
+      PPESI16_HID
+      PPESI17
+      PPESI17_HID
+      PPESX16
+      PPESX16_HID
+      PPESX17
+      PPESX17_HID
+      PPFusion
+      PPFusion6C
+      PPFusion6C_HID
+      PPFusion_HID
+      PPFusion_HID_Sole_Source
+      PPGenePrint24
+      PPGenePrint24_HID
+      PPY
+      PPY23
+      PPY23_HID
+      Profiler
+      QIAGEN_ARGUS_x12
+      QIAGEN_ARGUS_x12_HID
+      QIAGEN_ARGUS_x12_QS
+      QIAGEN_ARGUS_x12_QS_HID
+      QIAGEN_INVESTIGATOR24PLEX
+      QIAGEN_INVESTIGATOR24PLEX_HID
+      SEfilerPlus
+      SGMPlus
+      Yfiler
+      YFILERPLUS
+      YFILERPLUS_HID
   /)
   {
     my $dest1 = "${dest}/Config/Volumes/${sdir}";
