@@ -65,7 +65,7 @@ public:
   {}
 
   virtual ~CPrintOut();
-  virtual wxFrame *GetParent() = 0;
+  virtual wxWindow *GetParent() = 0;
   virtual int GetMinPage();
   virtual int GetMaxPage();
   virtual bool HasPage(int page);
@@ -102,8 +102,10 @@ public:
 protected:
   static void _DoPrint(CPrintOut *pPrintout, const wxString &sPingType);
   static void _DoPrintPreview(
-    CPrintOut *pPreview, CPrintOut *pPrint, 
-    const wxString &sPingPreview, const wxString &sPingPrint,
+    CPrintOut *pPreview, CPrintOut *pPrint,
+    const wxString &sTitle,
+    const wxString &sPingPreview,
+    const wxString &sPingPrint,
     bool bPageButtons = false);
   static wxPageSetupDialogData *GetPageSetupData();
   static void UpdatePageSetup();
@@ -121,7 +123,7 @@ protected:
 private:
   //  _resInput input parametes used to compute DPI and size of bitmap
   //  _resOutput size and DPI of bitmap to be created
-  //  purpose: when creating a multipage printout, this is needed 
+  //  purpose: when creating a multipage printout, this is needed
   //    for each page and if the input doesn't change, the output
   //    does not need to be recomputed
   class _resInput

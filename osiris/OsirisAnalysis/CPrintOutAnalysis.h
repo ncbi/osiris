@@ -58,7 +58,7 @@ class CPrintOutAnalysis : public CPrintOut
 public:
   CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview = false);
   virtual ~CPrintOutAnalysis();
-  virtual wxFrame *GetParent();
+  virtual wxWindow *GetParent();
   virtual int GetMaxPage();
   virtual bool OnPrintPage(int page);
 
@@ -97,7 +97,7 @@ private:
   class CPrintPage
   {
   public:
-    CPrintPage() : 
+    CPrintPage() :
       pSample(NULL),
       nFirstChannel(0),
       nChannels(0),
@@ -113,7 +113,7 @@ private:
       n1 = nFirstChannel;
       nChannels = nC;
       nChannelPerPage = nPg;
-         
+
     }
     CPrintPage(const CPrintPage &x)
     {

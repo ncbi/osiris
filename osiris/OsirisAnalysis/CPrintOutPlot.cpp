@@ -60,6 +60,7 @@ void CPrintOutPlot::DoPrintPreview(CFramePlot *pFrame)
   _DoPrintPreview(
     new CPrintOutPlot(pFrame, true),
     new CPrintOutPlot(pFrame),
+    wxT("Print Preview - Plot"),
     _PING_PRINT_PREVIEW,
     _PING_PRINT);
 }
@@ -68,7 +69,7 @@ void CPrintOutPlot::DoPrintPreview(CFramePlot *pFrame)
 
 CPrintOutPlot::~CPrintOutPlot() { ; }
 
-wxFrame *CPrintOutPlot::GetParent()
+wxWindow *CPrintOutPlot::GetParent()
 {
   return m_pFramePlot;
 }

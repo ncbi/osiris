@@ -49,7 +49,7 @@ CDialogPrintColor::CDialogPrintColor(wxWindow *parent) :
     wxDEFAULT_DIALOG_STYLE)
 {
 #define TEXT0 "Instructions:"
-#define TEXT1 "To adjust colors for your printer, print the " 
+#define TEXT1 "To adjust colors for your printer, print the "
 #define TEXT1_LINK "test pattern"
 #define TEXT2 "and for each color, select the desired brightness, (0-100)"
 
@@ -97,7 +97,7 @@ CDialogPrintColor::CDialogPrintColor(wxWindow *parent) :
   },
   ColorRowGray = { "Gray", &pTextGray, pParm->GetPrintColorGray() },
   *pColorRow;
-  
+
   for (pColorRow = &COLOR_DATA[0];
     pColorRow->pLabel != NULL;
     ++pColorRow)
@@ -176,7 +176,7 @@ void CDialogPrintColor::_ColorRow(
 }
 void CDialogPrintColor::_PrintTestPage()
 {
-  CPrintOutTestPattern::Print();
+  CPrintOutTestPattern::Print(this);
 }
 void CDialogPrintColor::_OnPrintLink(wxHyperlinkEvent &)
 {

@@ -52,7 +52,7 @@ const int nwxPointLabel::STYLE_DISABLED = 2;
 
 bool nwxPointLabel::operator == (const nwxPointLabel &x) const
 {
-  return 
+  return
     (m_nLabelStyle == x.m_nLabelStyle) &&
     (m_pData == x.m_pData) &&
     (m_dy == x.m_dy) &&
@@ -129,28 +129,38 @@ void nwxPlotDrawerLabel::DrawSemiTransparentRectangle(wxDC *pdc, const wxRect &r
 {
   int nXmin = r.GetLeft();
   int nYmin = r.GetTop();
-  int nXmax = nXmin + r.GetWidth();
-  int nYmax = nYmin + r.GetHeight();
+  int nWidth = r.GetWidth();
+  int nHeight = r.GetHeight();
   int nx, ny;
   wxColour c;
   wxColour cNew;
   wxPen pen(*wxBLACK, 1, wxPENSTYLE_SOLID);
-  wxPen penBackup = pdc->GetPen();
-  for (nx = nXmin; nx < nXmax; ++nx)
+  wxBitmap bitmap(nWidth, nHeight);
+  wxMemoryDC dc(bitmap);
+  dc.Blit(0,0,nWidth,nHeight,pdc, nXmin, nYmin,wxCOPY);
+#ifdef __WXMAC__
+  wxImage img = bitmap.ConvertToImage();
+#endif
+
+  for (nx = 0; nx < nWidth; ++nx)
   {
-    for (ny = nYmin; ny < nYmax; ++ny)
+    for (ny = 0; ny < nHeight; ++ny)
     {
-      pdc->GetPixel(nx, ny, &c);
+#ifdef __WXMAC__
+	c.Set(img.GetRed(nx,ny), img.GetGreen(nx,ny), img.GetBlue(nx,ny));
+#else
+	dc.GetPixel(nx, ny, &c);
+#endif
       cNew.Set(
         (c.Red() >> 1) | 128,
         (c.Green() >> 1) | 128,
         (c.Blue() >> 1) | 128);
       pen.SetColour(cNew);
-      pdc->SetPen(pen);
-      pdc->DrawPoint(nx, ny);
+      dc.SetPen(pen);
+      dc.DrawPoint(nx, ny);
     }
   }
-  pdc->SetPen(penBackup);
+  pdc->Blit(nXmin, nYmin, nWidth, nHeight, &dc, 0, 0);
 }
 void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
 {
@@ -220,8 +230,6 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       rect.SetY(ny);
       m_vpLabel.push_back(&label);
       m_vRect.push_back(rect);
-  //    pdc->SetTextForeground(label.GetColour());
-  //    pdc->DrawText(label.GetLabel(),nx,ny);
     }
 
     // now move items if they overlap

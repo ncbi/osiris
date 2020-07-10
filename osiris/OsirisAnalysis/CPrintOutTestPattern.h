@@ -50,9 +50,9 @@
 class CPrintOutTestPattern : public CPrintOut
 {
 public:
-  static void Print()
+  static void Print(wxWindow *parent)
   {
-    CPrintOutTestPattern printout(false);
+    CPrintOutTestPattern printout(parent, false);
     _DoPrint(&printout, wxT("PrintTestPattern"));
   }
   virtual bool HasPage(int page)
@@ -60,7 +60,7 @@ public:
     return (page == 1);
   }
   virtual int GetMaxPage() { return 1; }
-  virtual wxFrame *GetParent()
+  virtual wxWindow *GetParent()
   {
     return m_pParent;
   }
@@ -88,7 +88,7 @@ private:
     return((m_pBitmap != NULL) && (m_bPortrait == bPortrait));
   }
   // constructor accessed from static void PrintTestPattern()
-  CPrintOutTestPattern(wxFrame *parent, bool bPreview = false) :
+  CPrintOutTestPattern(wxWindow *parent, bool bPreview = false) :
     CPrintOut(bPreview, wxT("OSIRIS Print Test Pattern")),
     m_pParent(parent),
     m_pBitmap(NULL),
@@ -99,7 +99,7 @@ private:
     _CleanupBitmap();
   }
   wxBitmap *_SetupBitmap(bool bPortrait);
-  wxFrame *m_pParent;
+  wxWindow *m_pParent;
   wxBitmap *m_pBitmap;
   bool m_bPortrait;
 };

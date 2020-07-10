@@ -142,7 +142,6 @@ private:
   std::vector<const COARsample *> *m_pSamples;
   std::set<const COARsample *> *m_pSamplesOmit;
   wxCheckListBox *m_pListBox;
-  bool m_bShowFileName;
   DECLARE_PERSISTENT_SIZE_POSITION
   DECLARE_EVENT_TABLE()
 };
@@ -154,12 +153,12 @@ CDialogPrintSettings::CDialogPrintSettings(
       CPrintPreviewFrame *parent,
       CFrameAnalysis *pFrame) :
   wxDialog(parent, wxID_ANY, wxT(S_WINDOW_TITLE),
-    GET_PERSISTENT_POSITION(CDialogPrintSettings), 
+    GET_PERSISTENT_POSITION(CDialogPrintSettings),
     wxDefaultSize,
     wxDEFAULT_DIALOG_STYLE),
+  m_pFile(pFrame->GetOARfile()),
   m_pFrameAnalysis(pFrame),
-  m_pParent(parent),
-  m_pFile(pFrame->GetOARfile())
+  m_pParent(parent)
 {
   m_nRadioGroup = -1;
   mainApp::Ping(PING_EVENT, wxT("PrintSettingsCreate"));
@@ -285,7 +284,7 @@ void CDialogPrintSettings::_Build()
   m_pRadioArtifactAll = _CreateRadioButton(wxT(S_ALL), PRINT_LABEL_ARTIFACT_ALL);
   m_pRadioArtifactCritical = _CreateRadioButton(wxT(S_CRITICAL), PRINT_LABEL_ARTIFACT_CRITICAL);
   m_nGroupArtifact = _GetCurrentGroup();
-  
+
 
   // page heading
 
@@ -373,7 +372,7 @@ void CDialogPrintSettings::_Build()
   m_pTextOmitCount = LABEL("          ");
   pSizerTemp->Add(m_pButtonSampleOmit, 0,
     wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT, 0);
-  pSizerTemp->Add(m_pTextOmitCount, 0, 
+  pSizerTemp->Add(m_pTextOmitCount, 0,
     wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxLEFT | wxRIGHT, ID_BORDER);
   pSizerItems->Add(pSizerTemp, ITEM_ARGS);
 
@@ -407,7 +406,7 @@ void CDialogPrintSettings::_Build()
 
   // Begin right column
   pSizerItems = pSizerRight;
-    
+
   // Page Heading
   pText = LABEL(S_SECTION_PAGE_HEADING);
   pText->SetFont(fontLabelBold);
@@ -442,7 +441,7 @@ void CDialogPrintSettings::_Build()
   pSizerTemp->AddSpacer(ID_BORDER);
   m_pLabelXscaleUnits = LABEL(S_RANGE_SECONDS);
   pSizerTemp->Add(m_pLabelXscaleUnits, 0, wxALIGN_CENTER_VERTICAL);
-    
+
   pText = LABEL(S_SECTION_SCALE_X_AXIS);
   pText->SetFont(fontLabelBold);
   pSizerItems->Add(pText, LABEL_ARGS);
@@ -483,7 +482,7 @@ void CDialogPrintSettings::_Build()
   wxBoxSizer *pSizerPanel = new wxBoxSizer(wxHORIZONTAL);
   pSizerPanel->Add(pSizerLeft, 0, wxALIGN_TOP | wxLEFT | wxRIGHT | wxTOP, ID_BORDER << 1);
   pSizerPanel->Add(pSizerRight, 0, wxALIGN_TOP | wxLEFT | wxRIGHT | wxTOP, ID_BORDER << 1);
- 
+
   pSizerFull->Add(pSizerPanel, 1, wxEXPAND, 0);
   pSizerFull->Add(CreateButtonSizer(wxOK | wxCANCEL | wxAPPLY), 0, wxALL | wxALIGN_RIGHT, ID_BORDER << 1);
   SetSizer(pSizerFull);
@@ -708,7 +707,7 @@ void CDialogPrintSettings::_OnButtonOmit(wxCommandEvent &)
   {
     wxCheckBox *pCheckBox;
     int nType;
-  } 
+  }
   TYPES[] =
   {
     {m_pCheckSampleDisabled, CFrameAnalysis::INCLUDE_DISABLED},
@@ -857,7 +856,6 @@ CDialogPrintSettingsOmit::CDialogPrintSettingsOmit(
     GET_PERSISTENT_SIZE(CDialogPrintSettingsOmit), mainApp::DIALOG_STYLE)
   , m_pSamples(pSamples)
   , m_pSamplesOmit(pSamplesOmit)
-  , m_bShowFileName(bShowFileName)
 {
   wxArrayString asChoices;
   asChoices.Alloc(pSamples->size());

@@ -261,6 +261,7 @@ void CPrintOut::_DoPrint(CPrintOut *pPrintout, const wxString &sPingType)
 void CPrintOut::_DoPrintPreview(
   CPrintOut *pPreview,
   CPrintOut *pPrint,
+  const wxString &sTitle,
   const wxString &sPingPreview,
   const wxString &sPingPrint,
   bool bPageButtons)
@@ -286,7 +287,7 @@ void CPrintOut::_DoPrintPreview(
   {
     sStatus = wxT("OK");
     pFrame =
-      new CPrintPreviewFrame(preview, pPreview->GetParent(), sPingPreview, bPageButtons);
+      new CPrintPreviewFrame(preview, pPreview->GetParent(), sTitle, bPageButtons);
   }
   mainApp::Ping2(PING_EVENT, sPingPreview, wxT("Status"), sStatus);
   if (pFrame != NULL)
@@ -301,7 +302,7 @@ void CPrintOut::_DoPrintPreview(
 
 // end static functions
 
-CPrintOut::~CPrintOut() 
+CPrintOut::~CPrintOut()
 {
 #ifdef TMP_DEBUG
   if (m_nSetupPageCount > 1)
@@ -339,17 +340,20 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     nPPIy = szPPI.GetHeight();
 
 #if ADJUST_ZOOM
-    CPrintPreview *pp = (CPrintPreview *)GetPreview();
-    int nZoom = pp->GetZoom();
-    if(nZoom != 100)
+    CPrintPreview *pp = IsPrintPreview() ? (CPrintPreview *)GetPreview() : NULL;
+    if(pp != NULL)
     {
-      double dMult = double(nZoom) * 0.01;
-      nPPIx = int(nPPIx * dMult);
-      nPPIy = int(nPPIy * dMult);
-    }
+      int nZoom = pp->GetZoom();
+      if(nZoom != 100)
+      {
+	double dMult = double(nZoom) * 0.01;
+	nPPIx = int(nPPIx * dMult);
+	nPPIy = int(nPPIy * dMult);
+      }
 #ifdef TMP_DEBUG
-    mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
+      mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
 #endif
+    }
 #endif
 
     if (nPPIx == nPPIy)

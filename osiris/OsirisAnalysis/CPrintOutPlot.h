@@ -57,7 +57,7 @@ public:
   {}
 
   virtual ~CPrintOutPlot();
-  virtual wxFrame *GetParent();
+  virtual wxWindow *GetParent();
   virtual bool OnPrintPage(int page);
   virtual int GetMaxPage();
   static void DoPrintPreview(CFramePlot *pPlot);

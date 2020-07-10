@@ -139,7 +139,7 @@ void CPrintOutAnalysis::_DoSetupSampleList()
   }
   int nChannelLadder =
     (nFlag & CFrameAnalysis::INCLUDE_LADDER)
-    ? pParm->GetPrintChannelsLadders() 
+    ? pParm->GetPrintChannelsLadders()
     : nChannelSample;
   int nChannelNegCtrl =
     (nFlag & CFrameAnalysis::INCLUDE_NEG_CTRL)
@@ -181,11 +181,11 @@ void CPrintOutAnalysis::_DoSetupSampleList()
       m_vPages.push_back(x);
       nFirstChannel += nPageChannels;
     }
-#undef myMIN       
+#undef myMIN
   }
 }
 
-wxFrame *CPrintOutAnalysis::GetParent()
+wxWindow *CPrintOutAnalysis::GetParent()
 {
   return m_pFrameAnalysis;
 }
@@ -273,6 +273,7 @@ void CPrintOutAnalysis::DoPrintPreview(CFrameAnalysis *pFrame)
   _DoPrintPreview(
     new CPrintOutAnalysis(pFrame, true),
     new CPrintOutAnalysis(pFrame),
+    wxT("Print Preview - Analysis"),
     _PING_PRINT_PREVIEW,
     _PING_PRINT,
     true

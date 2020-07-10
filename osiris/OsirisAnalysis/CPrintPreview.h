@@ -61,7 +61,7 @@ class CPreviewControlBar : public wxPreviewControlBar
 {
   // display and control print preview
   // this handles page button events for pages
-  // and updated the page number but other events must be handled by the 
+  // and updated the page number but other events must be handled by the
   // containing CPrintPreviewFrame
   //
   //  events are
@@ -121,7 +121,6 @@ private:
 
   static wxArrayString g_asZoomChoices;
   static const int g_anZoomChoices[5];
-  CPrintPreview *m_pPrintPreview;
   wxTextCtrl *m_pTextPage;
   wxStaticText *m_pTextPageCount;
   wxChoice *m_pListZoom;
@@ -137,7 +136,7 @@ private:
 class CPrintPreviewFrame : public wxPreviewFrame
 {
 public:
-  CPrintPreviewFrame(CPrintPreview *pPreview, wxFrame *pParent,
+  CPrintPreviewFrame(CPrintPreview *pPreview, wxWindow *pParent,
     const wxString &sTitle, bool bPageButtons = false);
   virtual ~CPrintPreviewFrame() {}
   virtual void CreateControlBar();
@@ -156,7 +155,6 @@ private:
   wxDialog *m_pDialogSettings;
   CFrameAnalysis *m_pFrameAnalysis;
   CFramePlot *m_pFramePlot;
-  bool m_bPageButtons;
   DECLARE_PERSISTENT_SIZE_POSITION
   DECLARE_ABSTRACT_CLASS(CPrintPreviewFramePlot)
   DECLARE_EVENT_TABLE()
@@ -181,7 +179,7 @@ public:
   virtual ~CPrintPreview() {}
   virtual bool Print(bool interactive);
   virtual void SetZoom(int n);
-  virtual int GetMaxPage();
+  virtual int GetMaxPage() const;
 
 private:
   const wxString m_sPrintType;

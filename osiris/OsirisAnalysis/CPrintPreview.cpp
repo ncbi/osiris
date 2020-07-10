@@ -57,14 +57,13 @@
 
 // CPrintPreviewFrame
 
-CPrintPreviewFrame::CPrintPreviewFrame(CPrintPreview *pPrev, wxFrame *parent,
+CPrintPreviewFrame::CPrintPreviewFrame(CPrintPreview *pPrev, wxWindow *parent,
   const wxString &title, bool bPageButtons) :
   wxPreviewFrame(pPrev, parent, title,
     GET_PERSISTENT_POSITION(CPrintPreviewFrame),
     GET_PERSISTENT_SIZE_DEFAULT(CPrintPreviewFrame, wxSize(600, 800))),
   m_pPreview(pPrev),
-  m_pDialogSettings(NULL),
-  m_bPageButtons(bPageButtons)
+  m_pDialogSettings(NULL)
 {
   m_pFrameAnalysis = wxDynamicCast(parent, CFrameAnalysis);
   m_pFramePlot = wxDynamicCast(parent, CFramePlot);
@@ -169,7 +168,7 @@ EVT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
 END_EVENT_TABLE()
 
 
-int CPrintPreview::GetMaxPage()
+int CPrintPreview::GetMaxPage() const
 {
   CPrintOut *p = wxDynamicCast(GetPrintout(), CPrintOut);
   int nRtn = (p == NULL) ? wxPrintPreview::GetMaxPage() : p->GetMaxPage();
@@ -256,7 +255,6 @@ int CPreviewControlBar::_GetZoomIndex(int nPct)
 CPreviewControlBar::CPreviewControlBar(
   CPrintPreviewFrame *parent, CPrintPreview *preview) :
     wxPreviewControlBar(preview, 0, parent),
-    m_pPrintPreview(preview),
     m_pTextPage(NULL),
     m_pTextPageCount(NULL),
     m_pListZoom(NULL),
@@ -288,7 +286,7 @@ void CPreviewControlBar::CreateButtons()
 #define TRIANGLE_LEFT 9664
 #define TRIANGLE_RIGHT 9654
 
-  // UTF-8 printer character.  Since wchar_t can be UTF-16 or 32 bits, 
+  // UTF-8 printer character.  Since wchar_t can be UTF-16 or 32 bits,
   // use UTF-8 for compatibility
   // source: https://www.fileformat.info/info/unicode/char/1f5b6/index.htm
   //const unsigned char PRINTER_UTF_8[] = { 0xF0, 0x9F, 0x96, 0xB6, 0 };
