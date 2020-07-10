@@ -175,10 +175,12 @@ private:
   wxMenu *m_pMenuChannels;
   CMenuArtifact *m_pMenuArtifact;
   CMenuLabels *m_pMenuLabels;
+  bool m_bXBPS;
 #if 0
   LABEL_PLOT_TYPE m_nLastType;
 #endif
   bool m_bPreview;
+  bool m_bPrintAnalysis;
 #if 0
   bool m_bUsedDefault;
 #endif

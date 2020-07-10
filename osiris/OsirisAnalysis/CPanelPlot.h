@@ -27,6 +27,8 @@
 *  FileName: CPanelPlot.h
 *  Author:   Douglas Hoffman
 *
+*  OS-1435 7/7/20 add m_bPrinting and GetColor()
+*     to accommodate the dark print option
 */
 
 #ifndef __C_PANEL_PLOT_H__
@@ -55,6 +57,7 @@
 #include "nwx/nwxPlotCtrl.h"
 #include "nwx/nwxBatch.h"
 #include "nwx/nwxShiftSizer.h"
+#include "nwx/nwxTimerReceiver.h"
 
 #include "CPlotData.h"
 #include "CPanelPlotToolbar.h"
@@ -78,10 +81,11 @@ class CSamplePeak;
 class COARpeakAny;
 class wxBitmap;
 
-typedef map<int,wxPlotData *> mapSamplePlots;
+typedef std::map<int,wxPlotData *> mapSamplePlots;
 
-typedef vector<wxPlotData *> vectorILSlines;
-typedef map<double,wxPlotData *> mapMinRfu;
+typedef std::vector<wxPlotData *> vectorILSlines;
+typedef std::map<double,wxPlotData *> mapMinRfu;
+typedef std::map<int, wxColour> mapColor;
 
 class CPlotCtrl : public nwxPlotCtrl
 {
@@ -94,10 +98,10 @@ private:
   CPanelPlot *m_pPlot;
 };
 
-
 class CPanelPlot :
   public PANEL_PLOT_TYPE,
-  public InwxShiftReceiver
+  public InwxShiftReceiver,
+  public nwxTimerReceiver
 {
 private:
   class CLadderPeakSet
@@ -131,7 +135,7 @@ private:
     {
       m_vpPeaks.push_back(p);
     }
-    const vector<CSamplePeak *> *GetPeaks() const
+    const std::vector<CSamplePeak *> *GetPeaks() const
     {
       return &m_vpPeaks;
     }
@@ -157,7 +161,7 @@ private:
     }
 
   private:
-    vector<CSamplePeak *> m_vpPeaks;
+    std::vector<CSamplePeak *> m_vpPeaks;
     wxColour m_colour;
     wxString m_sChannelName;
     unsigned int m_nChannel;
@@ -279,6 +283,13 @@ public:
   // constructor for CFramePlot - MDI window with plots
   static const int ALLELE_SORT;
   static const int ARTIFACT_SORT;
+  static const int MENU_NUMBER_ANALYSIS_PRINT;
+  enum
+  {
+    ZOOM_PRIMER_PEAK_NONE = 0,
+    ZOOM_PRIMER_PEAK_X = 1,
+    ZOOM_PRIMER_PEAK_XY = 3
+  };
   CPanelPlot(
     CFramePlot *parent,
     CPlotData *pData,
@@ -287,8 +298,9 @@ public:
     CKitColors *pColors,
     int nMenuNumber,
     bool bDraw = true,
-    int nPlotNumber = 0,
-    bool bExternalTimer = false);
+    int nPlotNumber = 0
+    //,bool bExternalTimer = false  // EXT TIMER
+   );
 
   // constructor for CFrameAnalysis - MDI with grid and plot preview
   CPanelPlot(
@@ -296,14 +308,31 @@ public:
     CFrameAnalysis *pFrame,
     CPlotData *pData,
     COARfile *pFile,
-    CKitColors *pColors,
-    bool bExternalTimer = false);
+    CKitColors *pColors
+    //,bool bExternalTimer = false   // EXT TIMER
+    );
+
+  // constructor for Analysis Printout, called from CPrintOutAnalysis
+  CPanelPlot(
+    CFrameAnalysis *pFrame,
+    CPlotData *pData,
+    COARfile *pFile
+  );
   virtual ~CPanelPlot();
 
   void SendPlotSizeEvent();
   bool IsPreview()
   {
-    return (m_pFrameAnalysis != NULL);
+    // NOTE: this returns true for an Analysis printout
+    return (m_pFrameAnalysis != NULL) && !m_bPrintAnalysis;
+  }
+  bool IsPrintAnalysis()
+  {
+    return m_bPrintAnalysis;
+  }
+  bool IsPlotFrame()
+  {
+    return m_pFramePlot != NULL;
   }
   bool HasToolbar()
   {
@@ -311,11 +340,17 @@ public:
   }
   int DrawPlotTitleToDC(
     wxDC *pDC, const wxString &sTitle,
-    int nWidth, int nHeight, double dDPI);
+    const wxString &sTitleDetails,
+    int nWidth, int nHeight, double dDPI,
+    bool bForcePrintFont);
 
   int DrawXAxisLabelToDC(wxDC *pDC, const wxRect &rectBitmap, double dDPI, bool bForcePrintFont)
   {
     return GetPlotCtrl()->DrawXAxisLabel(pDC, rectBitmap, dDPI, bForcePrintFont, true);
+  }
+  int GetXAxisLabelHeight(wxDC *pDC, const wxRect &rectBitmap, double dDPI, bool bForcePrintFont)
+  {
+    return GetPlotCtrl()->GetXAxisLabelSize(pDC, rectBitmap, dDPI, bForcePrintFont).GetHeight();
   }
   void SetRenderingToWindow(bool b)
   {
@@ -324,6 +359,10 @@ public:
     {
       m_viewRect.Check(true);
     }
+    if (!b)
+    {
+      Show(false);
+    }
     m_bIgnoreTimer = !b;
   }
   bool GetRenderingToWindow()
@@ -331,9 +370,10 @@ public:
     return GetPlotCtrl()->RenderingToWindow();
   }
 
-  wxBitmap *CreateAllChannelBitmap(
+  wxBitmap *CreateMultiChannelBitmap(
     int nWidth, int nHeight, int nDPI,
-    const wxString &sTitle = wxEmptyString,
+    int nStartChannel,
+    int nPageNr,
     bool bForcePrintFont = false);
 
   void DrawPlotToDC(
@@ -364,7 +404,7 @@ public:
     return (int)m_pMenu->LabelType();
   }
 #endif
-  size_t GetLabelTypes(vector<unsigned int> *pan)
+  size_t GetLabelTypes(std::vector<unsigned int> *pan)
   {
     return m_pMenu->GetLabelTypes(pan);
   }
@@ -392,8 +432,13 @@ public:
     }
   }
   void SyncState(CPanelPlot *p, int nID);
-  void RebuildCurves(bool bIgnoreViewRect = false);
-  wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0);
+  void RebuildCurves(bool bIgnoreViewRect = false); 
+  wxRect2DDouble GetZoomOutRect(int nPrimerPeaks, int nLabelHeight = 0, double dMinRFU = -1.0);
+  wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0)
+  {
+    return GetZoomOutRect(
+      (bAll ? ZOOM_PRIMER_PEAK_XY : ZOOM_PRIMER_PEAK_NONE), nLabelHeight);
+  }
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
   void EditPeak(COARpeakAny *pPeak);
   wxRect2DDouble GetZoomLocus(const wxString &sLocus);
@@ -423,7 +468,7 @@ public:
   {
     return m_pMenu->GetPlotTypes();
   }
-  void CopySettings(CPanelPlot &w, int nDelay = 1);
+  void CopySettings(CPanelPlot &w, int nDelay = 1, bool bPrinting = false);
   void SetPlotNumber(unsigned int i)
   {
     m_nPlotNr = i;
@@ -538,11 +583,12 @@ public:
     m_pPlotCtrl->SetFocus();
   }
   const wxDateTime *GetSelectedTime();
-  void SetExternalTimer(bool b = true);
+  //void SetExternalTimer(bool b = true);
   void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
   void RebuildLabels(bool bRedraw = false);
   void UpdateLadderLabels();
+  void SetPrintSettings();
   void SetHistoryMenu(CMenuHistory *pMenu)
   {
     if(HasToolbar())
@@ -568,13 +614,13 @@ public:
 
   void ResetDefaults()
   {
-    if(IsPreview())
+    if(IsPlotFrame())
     {
-      SetPreviewSettings();
+      SetPlotSettings();
     }
     else
     {
-      SetPlotSettings();
+      SetPreviewSettings();
     }
 
 //    if(HasToolbar())
@@ -583,9 +629,36 @@ public:
 //    }
 //    m_pMenu->ResetDefaults();
   }
+  static void CheckRange(int *pn1, int *pn2, int nMinRange = 100)
+  {
+    // check axis range and correct if needed
+    int &n1(*pn1); // readability
+    int &n2(*pn2);
+    if (n1 > n2)
+    {
+      int t = n1;
+      n1 = n2;
+      n2 = t;
+    }
+    int nDiff = n2 - n1;
+    if (nDiff < nMinRange)
+    {
+      n1 -= ((nMinRange - nDiff) >> 1);
+      n2 = n1 + nMinRange;
+    }
+  }
+  const wxString &CPanelPlot::SampleTitle(wxString *ps);
+  const wxString &TitleStrings(wxString *ps, int nPage);
 private:
+  const wxColour &_GetColour(DATA_TYPE n, unsigned int nChannel);
+  static void _SetYUserRange(wxRect2DDouble *pRect);  // Y
+  static void _SetXUserRange(wxRect2DDouble *pRect);  // X
   static wxColour COLOUR_RFU;
 
+  bool _BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pRectZoom);
+  void _BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel);
+  int _BitmapPrimerZoom(int nXScale, bool bNegCtrl);
+  int _GetPlotsPerPage();
   void SetupLabelMenus();
   void SetPlotSettings();
   void SetPreviewSettings();
@@ -599,13 +672,13 @@ private:
   void UpdateSettingsPreview();
   void UpdateSettings()
   {
-    if(IsPreview())
-    {
-      UpdateSettingsPreview();
-    }
-    else
+    if(IsPlotFrame())
     {
       UpdateSettingsPlot();
+    }
+    else if(IsPreview())
+    {
+      UpdateSettingsPreview();
     }
   }
   void UpdateGridLabels(int nLabelType = -1);
@@ -682,7 +755,7 @@ private:
   void ShowILSlines();
   void BuildMinRfuLines();
   void CleanupMinRfuLines();
-  void BuildRfuSet(set<double> *psetD);
+  void BuildRfuSet(std::set<double> *psetD);
   void ShowMinRfuLines();
 
   //  labels
@@ -691,18 +764,27 @@ private:
     unsigned int nChannel,
     const wxString &sChannelName);
 
+  void _SetPrinting(bool b = true)
+  {
+    m_bPrinting = b;
+  }
+  bool _IsPrinting()
+  {
+    return m_bPrinting;
+  }
   void _BuildOARlabels();
   void _BuildPeakLabels(
-    const vector<CSamplePeak *> *pp,
+    const std::vector<CSamplePeak *> *pp,
     const wxColour &colour,
     const wxString &sChannelName,
     unsigned int nChannel,
-    vector<unsigned int> &anLabel);
+    std::vector<unsigned int> &anLabel);
   void _BuildLadderPeakLabels(
-    vector<unsigned int> &anLabel);
-
+    std::vector<unsigned int> &anLabel);
+  static wxColour &_SETUP_PRINT_COLOR(const wxColour &color, int nPct, wxColour *pColor);
+  void _SetupGridColor();
   void _BuildPLTlabels(bool bArtifactOnly = false, unsigned int nChannel = 0);
-  wxString _AlleleLabel(const IOARpeak *pPeak, vector<unsigned int> &anLabel, bool bILS);
+  wxString _AlleleLabel(const IOARpeak *pPeak, std::vector<unsigned int> &anLabel, bool bILS);
   wxString _ArtifactToolTip(
     const IOARpeak *pPeak, const wxString &sChannelName);
   wxString _AlleleToolTip(
@@ -710,11 +792,11 @@ private:
 
   // delayed view rect update
 
-  void _CheckViewRect();
-  static int _SamplePlotKey(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS)
+  // void _CheckViewRect();
+  static int _SamplePlotKey(DATA_TYPE nType, unsigned int nChannel, bool bNoise, bool bXBPS, bool bPrinting = false)
   {
     // create a key for mapSamplePlot
-    int nRtn = ( (nChannel & 255) << 8 ) | (nType << 2) | (bNoise ? 2 : 0) | (bXBPS ? 1 : 0);
+    int nRtn = ( (nChannel & 255) << 8 ) | (nType << 3) | (bPrinting ? 4 : 0) | (bNoise ? 2 : 0) | (bXBPS ? 1 : 0);
     return nRtn;
   }
 
@@ -730,15 +812,15 @@ private:
   //void _CleanupMenu(); // remove m_pMenuItem from its menu and delete
   void _BuildMenu(int nPlotNr);
 
-  vector<CLadderPeakSet *> m_vpLadderPeakSet;
+  std::vector<CLadderPeakSet *> m_vpLadderPeakSet;
   DelayedViewRect m_viewRect;
 
-  set<double> m_setMinRfu;
+  std::set<double> m_setMinRfu;
   mapMinRfu m_mapMinRfuAll;
   mapMinRfu m_mapMinRfuAll_XBPS;
 
   mapSamplePlots m_mapPlotData;
-  vector<COARpeakAny *> m_vPeakAny;
+  std::vector<COARpeakAny *> m_vPeakAny;
   vectorILSlines m_vILS;
   vectorILSlines m_vILS_XBPS;
   CPlotData *m_pData;
@@ -756,7 +838,7 @@ private:
 
   CFramePlot *m_pFramePlot;
   CFrameAnalysis *m_pFrameAnalysis;
-  wxTimer *m_pTimer;
+  //wxTimer *m_pTimer;  // EXT TIMER
   auto_ptr<nwxMenuItem> m_pMenuItem;
 
   unsigned int m_nPlotNr;
@@ -764,13 +846,16 @@ private:
   unsigned int m_nILScurveOffset;
   unsigned int m_nNoiseCurves;
   int m_nMenuOffset;
-  bool m_bExternalTimer;
+  //bool m_bExternalTimer;  // EXT TIMER
   bool m_bIgnoreTimer;
   bool m_bDoTimer;
   bool m_bXBPS; // used to check if event changed x axis
+  bool m_bPrintAnalysis;
+  bool m_bPrinting;
 
   // BEGIN - keep track of channels with no noise
   std::set<unsigned int> m_setNoNoiseChannel;
+  mapColor m_mapColors;
   bool _IsNoNoiseChannel(unsigned int nChannel)
   {
     bool bRtn = (m_setNoNoiseChannel.find(nChannel) != m_setNoNoiseChannel.end());
@@ -826,7 +911,7 @@ public:
   void OnPointSelected(wxPlotCtrlEvent &);
   void OnNoBPSPrompt(wxCommandEvent &);
   void OnLabelTypeChanged(wxCommandEvent &);
-  void OnTimerEvent(wxTimerEvent &);
+  //void OnTimerEvent(wxTimerEvent &); // EXT TIMER
   void OnContextMenu(wxContextMenuEvent &e);
   void OnSize(wxSizeEvent &e);
   void OnSizeAction(wxCommandEvent &e);

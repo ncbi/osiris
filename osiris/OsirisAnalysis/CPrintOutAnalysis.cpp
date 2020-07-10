@@ -44,18 +44,145 @@
 #include "COARfile.h"
 #include "CPlotData.h"
 #include "CPanelPlot.h"
-//#include <wx/bitmap.h>
+#include "CParmOsiris.h"
+#include "CDialogPrintSettings.h"
 #include <memory>
 
 #define _PING_PRINT wxT("PrintAnalysis")
 #define _PING_PRINT_PREVIEW wxT("PrintPreviewAnalysis")
+
+std::set<const COARsample*> CPrintOutAnalysis::g_setSamplesOmitApplied;
+std::set<CPrintOutAnalysis *> CPrintOutAnalysis::g_setAll; // all instances of this class
+
 
 CPrintOutAnalysis::CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview) :
   CPrintOut(bPreview),
   m_pFrameAnalysis(pFrame)
 {
   m_pFile = m_pFrameAnalysis->GetOARfile();
-  m_pFrameAnalysis->GetSamplesByRow(&m_vSamples);
+  g_setAll.insert(this);
+}
+CPrintOutAnalysis::~CPrintOutAnalysis()
+{
+  g_setAll.erase(this);
+  if (g_setAll.empty())
+  {
+    g_setSamplesOmitApplied.clear();
+  }
+}
+
+int CPrintOutAnalysis::GetMaxPage()
+{
+  _SetupSampleList();
+  return (int)GetPages().size();
+}
+
+void CPrintOutAnalysis::_DoSetupSampleList()
+{
+  CParmOsirisGlobal pParm;
+
+  // set up flag before gettings list from analysis window
+  struct INCLUDE_TYPE
+  {
+    bool bType;
+    int nFLag;
+  } TYPES[] =
+  {
+    {pParm->GetPrintSamplesLadders(), CFrameAnalysis::INCLUDE_LADDER},
+    {pParm->GetPrintSamplesDisabled(), CFrameAnalysis::INCLUDE_DISABLED},
+    {pParm->GetPrintSamplesNegCtrl(), CFrameAnalysis::INCLUDE_NEG_CTRL},
+    {pParm->GetPrintSamplesPosCtrl(), CFrameAnalysis::INCLUDE_POS_CTRL}
+  };
+  size_t SIZE_TYPE = sizeof(TYPES) / sizeof(TYPES[0]);
+  int nFlag = 0;
+  for (size_t i = 0; i < SIZE_TYPE; ++i)
+  {
+    if (TYPES[i].bType)
+    {
+      nFlag |= TYPES[i].nFLag;
+    }
+  }
+  std::vector<const COARsample *> vTemp;
+  std::vector<const COARsample *>::iterator itr;
+  m_pFrameAnalysis->GetSamplesByRow(&vTemp, nFlag);
+
+  // copy list without omitted samples
+  std::vector<const COARsample *> vSamples;
+  size_t nSizeOmit = g_setSamplesOmitApplied.size();
+  size_t nSizeList = vTemp.size();
+  if (!nSizeOmit)
+  {
+    // nothing is omitted
+    vSamples = vTemp;
+  }
+  else
+  {
+    // copy without omitted samples
+    vSamples.reserve((nSizeList > nSizeOmit) ? (nSizeList - nSizeOmit) : nSizeList);
+    for (itr = vTemp.begin(); itr != vTemp.end(); ++itr)
+    {
+      if(SampleIncluded(*itr))
+      {
+        vSamples.push_back(*itr);
+      }
+    }
+  }
+  // compute page count and info
+
+  int nChannels = (int)m_pFile->GetChannelCount() + int(!pParm->GetPrintChannelsOmitILS());
+  int nChannelSample = pParm->GetPrintChannelsSamples();
+  int nTotalChannels;
+  int nFirstChannel;
+  if ( (!nChannelSample) || (nChannelSample > nChannels) )
+  {
+    nChannelSample = nChannels;
+  }
+  int nChannelLadder =
+    (nFlag & CFrameAnalysis::INCLUDE_LADDER)
+    ? pParm->GetPrintChannelsLadders() 
+    : nChannelSample;
+  int nChannelNegCtrl =
+    (nFlag & CFrameAnalysis::INCLUDE_NEG_CTRL)
+    ? pParm->GetPrintChannelsNegCtrl()
+    : nChannelSample;
+  int nPageChannels = nChannelSample;
+  const COARsample *pSample;
+  if (nChannelLadder > nChannels) nChannelLadder = nChannels;
+  if (nChannelNegCtrl > nChannels) nChannelNegCtrl = nChannels;
+  bool bAllSame = (nChannelSample == nChannelLadder) &&
+    (nChannelSample == nChannelNegCtrl);
+  m_vPages.empty();
+  m_vPages.reserve(((nChannelSample + nChannels - 1) / nChannelSample) * vSamples.size());
+  for (itr = vSamples.begin(); itr != vSamples.end(); ++itr)
+  {
+    pSample = *itr;
+    // figure out channels per page
+    if (bAllSame) {} // no check needed
+    else if (pSample->IsLadderType())
+    {
+      nPageChannels = nChannelLadder;
+    }
+    else if (pSample->IsNegControl())
+    {
+      nPageChannels = nChannelNegCtrl;
+    }
+    else
+    {
+      nPageChannels = nChannelSample;
+    }
+    nFirstChannel = 1;
+    nTotalChannels = nChannels;
+#define myMIN(a,b) (a < b) ? a : b
+    for (nTotalChannels = nChannels; nTotalChannels > 0; nTotalChannels -= nPageChannels)
+    {
+      CPrintPage x(pSample, nFirstChannel,
+        myMIN(nTotalChannels, nPageChannels),
+        nPageChannels);
+      m_vPages.push_back(x);
+      nFirstChannel += nPageChannels;
+    }
+#undef myMIN       
+  }
 }
 
 wxFrame *CPrintOutAnalysis::GetParent()
@@ -64,26 +191,43 @@ wxFrame *CPrintOutAnalysis::GetParent()
 }
 bool CPrintOutAnalysis::OnPrintPage(int page)
 {
-  const COARsample *pSample = m_vSamples.at(page - 1);
+  bool bRtn = true;
+  if (page > 0)
+  {
+
+    bRtn = GetPages().size() ? _OnPrintPage(page) : false;
+  }
+  else
+  {
+    // in preview, 0 is a blank page
+    bRtn = IsPreview();
+  }
+  return bRtn;
+}
+bool CPrintOutAnalysis::_OnPrintPage(int page)
+{
+  const CPrintPage &printPage(GetPages().at(page - 1));
+  const COARsample *pSample(printPage.pSample);
   const wxString sPlotFile = pSample->GetPlotFileName();
   CPlotData plotData;
-  wxString sTitle =
-    (m_pFrameAnalysis->GetSampleNameLabelType() == IDmenuDisplayNameSample)
-    ? pSample->GetSampleName()
-    : pSample->GetName();
   wxDC *pdc = GetDC();
   _setupPageBitmap(pdc);
   if( (!sPlotFile.IsEmpty()) && plotData.LoadFile(sPlotFile) )
   {
-    CPanelPlot *panel = new CPanelPlot(m_pFrameAnalysis, m_pFrameAnalysis, &plotData, m_pFile, mainApp::GetKitColors(), true);
+    CPanelPlot *panel = new CPanelPlot(
+      m_pFrameAnalysis,
+      &plotData, m_pFile);
     CWindowPointer pw(panel);
     panel->Show(false);
     panel->SetRenderingToWindow(false);
-    wxBitmap *pBitmap = panel->CreateAllChannelBitmap(
+    panel->SetPrintSettings();
+    wxBitmap *pBitmap = panel->CreateMultiChannelBitmap(
       m_resOutput.m_nWidth,
       m_resOutput.m_nHeight,
       m_resOutput.m_DPI,
-      sTitle , true);
+      printPage.nFirstChannel,
+      page,
+      true);
     std::unique_ptr<wxBitmap> px(pBitmap);
     wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
     pdc->DrawBitmap(*pBitmap, r.GetLeftTop());
@@ -92,6 +236,10 @@ bool CPrintOutAnalysis::OnPrintPage(int page)
   {
     // could not open plt file, show a message
 
+    wxString sTitle =
+      (m_pFrameAnalysis->GetSampleNameLabelType() == IDmenuDisplayNameSample)
+      ? pSample->GetSampleName()
+      : pSample->GetName();
     int nPointSize = 48;
     wxFont font(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
       wxFONTWEIGHT_BOLD, false);
@@ -118,19 +266,6 @@ bool CPrintOutAnalysis::OnPrintPage(int page)
   }
   return true;
 }
-bool CPrintOutAnalysis::HasPage(int page)
-{
-  return (page >= 0) && (page <= (int) m_vSamples.size());
-}
-void CPrintOutAnalysis::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
-{
-  // TEST to see if it is responsible for printing selected pages.
-  *minPage = 1;
-  *selPageFrom = 1;
-  *maxPage = m_vSamples.size();
-  *selPageTo = *maxPage;
-}
-
 
 void CPrintOutAnalysis::DoPrintPreview(CFrameAnalysis *pFrame)
 {
@@ -143,3 +278,4 @@ void CPrintOutAnalysis::DoPrintPreview(CFrameAnalysis *pFrame)
     true
   );
 }
+IMPLEMENT_ABSTRACT_CLASS(CPrintOutAnalysis, CPrintOut)

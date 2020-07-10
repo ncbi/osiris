@@ -42,15 +42,10 @@ public:
   {
     return m_nInsertPoint;
   }
-  int InsertPrintItems(int nPos, bool bPreview = false)
+  int InsertPrintItems(int nPos)
   {
     int nRtn = 4; // number of insertions
     InsertSeparator(nPos);
-    if (bPreview)
-    {
-      Insert(nPos, IDprintPreview, wxT("Print Pre&view..."));
-      nRtn++;
-    }
 #ifdef __WXMAC__
     Insert(m_nInsertPoint, IDpageMargins, wxT("Page Margins..."));
     nRtn++;

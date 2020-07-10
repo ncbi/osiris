@@ -47,7 +47,7 @@ public:
   virtual bool Enable(bool enable = true);
   void OnBegin(wxMouseEvent &e);
   void OnEnd(wxMouseEvent &e);
-  void OnTimer(wxTimerEvent &e);
+  //void OnTimer(wxTimerEvent &e); // EXT TIMER
 private:
   wxBitmap m_bitmapEnabled;
   wxBitmap m_bitmapDisabled;
@@ -128,53 +128,62 @@ void nwxArrowBitmap::OnEnd(wxMouseEvent &)
     m_pSizer->EndShift();
   }
 }
+/*
+ // EXT TIMER
 void nwxArrowBitmap::OnTimer(wxTimerEvent &e)
 {
   m_pSizer->OnTimer(e);
 }
-
+*/
 BEGIN_EVENT_TABLE(nwxArrowBitmap,wxStaticBitmap)
 EVT_LEFT_DOWN(nwxArrowBitmap::OnBegin)
 EVT_LEFT_UP(nwxArrowBitmap::OnEnd)
 EVT_LEAVE_WINDOW(nwxArrowBitmap::OnEnd)
-EVT_TIMER(wxID_ANY,nwxArrowBitmap::OnTimer)
+//EVT_TIMER(wxID_ANY,nwxArrowBitmap::OnTimer) // EXT TIMER
 END_EVENT_TABLE()
 
 
 //**************************************************** nwxShiftSizer
 nwxShiftSizer::~nwxShiftSizer()
 {
+  // EXT TIMER
+  /*
   if(m_pTimer != NULL)
   {
     delete m_pTimer;
     m_pTimer = NULL;
   }
+  */
 }
 
 nwxShiftSizer::nwxShiftSizer(
   wxScrolledWindow *pPeerWindow, 
   InwxShiftReceiver *pReceiver, 
   int nBorder,
-  int nWaitInterval,
-  bool bUseExternalTimer) : 
+  int nWaitInterval
+  //,bool bUseExternalTimer // EXT TIMER
+  ) : 
     wxBoxSizer(wxHORIZONTAL),
     m_pReceiver(pReceiver),
-    m_pTimer(NULL),
+    //m_pTimer(NULL), // EXT TIMER
     m_pPeerWindow(pPeerWindow),
     m_pCurrent(NULL),
     m_nTotalInterval(0),
     m_nWaitInterval(nWaitInterval),
     m_nBorder(nBorder),
-    m_bUseExternalTimer(bUseExternalTimer)
+    m_bIgnoreTimer(false)
+    //,m_bUseExternalTimer(bUseExternalTimer) // EXT TIMER
 {
   wxWindow *parent = pPeerWindow->GetParent();
   m_pButtonLeft = new nwxArrowBitmap(parent,this,true);
   m_pButtonRight = new nwxArrowBitmap(parent,this,false);
   _SetupLayout();
+  /*
   if(!m_bUseExternalTimer)
   {
-    m_pTimer = new wxTimer(m_pButtonLeft,wxID_ANY);
+    //m_pTimer = new wxTimer(m_pButtonLeft,wxID_ANY);
   }
+  */
   _UpdateButtons();
 }
 void nwxShiftSizer::_SetupLayout(bool bShow)
@@ -198,25 +207,31 @@ void nwxShiftSizer::_SetupLayout(bool bShow)
 void nwxShiftSizer::BeginShift(wxStaticBitmap *p)
 {
   m_pCurrent = p;
-  if(_DoShift() && (m_pTimer != NULL))
+  //if(_DoShift() && (m_pTimer != NULL)) // EXT TIMER
+  if(_DoShift())
   {
-    m_pTimer->Start(m_nWaitInterval);
+    m_bIgnoreTimer = false;
+  //    m_pTimer->Start(m_nWaitInterval); // EXT TIMER
   }
 }
 void nwxShiftSizer::EndShift()
 {
   m_pCurrent = NULL;
   m_nTotalInterval = 0;
+  m_bIgnoreTimer = true;
+  /*
+  // EXT TIMER
   if((m_pTimer != NULL) && m_pTimer->IsRunning())
   {
     m_pTimer->Stop();
   }
+  */
   _UpdateButtons();
 }
 
 void nwxShiftSizer::OnTimer(wxTimerEvent &e)
 {
-  if(m_pCurrent != NULL)
+  if( (m_pCurrent != NULL) && (!m_bIgnoreTimer) )
   {
     m_nTotalInterval += e.GetInterval();
     if(m_nTotalInterval >= m_nWaitInterval)

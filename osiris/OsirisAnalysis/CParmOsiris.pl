@@ -128,7 +128,7 @@ my $VARLIST =
   ["m_bPreviewShowRFU", "bool"],
   ["m_bPreviewShowLadderLabels", "bool"],
   ["m_bPreviewXBPS", "bool"],
-  ["m_nPreviewShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioUintViewPlotArtifact"],
+  ["m_nPreviewShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioIntViewPlotArtifact"],
 
   ["plot settings"],
 
@@ -142,9 +142,71 @@ my $VARLIST =
   ["m_bPlotShowLadderLabels", "bool"],
   ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
-  ["m_nPlotShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
+  ["m_nPlotShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
   ["m_anPlotDisplayPeak", "vector<unsigned int>","1"],
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
+
+  ["plot print settings for analysis printout"],
+  
+  # peaks
+
+  ["m_bPrintCurveAnalyzed", "bool true"],
+  ["m_bPrintCurveRaw", "bool"],
+  ["m_bPrintCurveLadder", "bool"],
+  ["m_bPrintCurveLadderLabels", "bool"],
+  ["m_bPrintCurveBaseline", "bool"],
+  
+  ["m_bPrintCurveILSvertical", "bool"],
+  ["m_bPrintCurveMinRFU", "bool"],
+
+  # X-Axis
+  ["m_bPrintXaxisILSBPS", "bool"],
+  # true - ILS BPS, false - time
+
+  
+  ["m_nPrintXscale", "int", "0"],
+  # 0 - scale w/o primer peak, 1 - scale to 0, 2 - scale to 0 neg control, 3 - specify
+  ["m_nPrintXscaleMin", "int", "0"],
+  ["m_nPrintXscaleMax", "int", "20000"],
+
+  ["m_nPrintYscale", "int", "0"],
+  # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
+  ["m_nPrintYscaleMin", "int", "0"],
+  ["m_nPrintYscaleMax", "int", "20000"],
+  ["m_nPrintYcaleNegCtrl", "int","0"],
+  # 0 - scale to peaks, 1 - include min RFU, 2 - scale to ILS
+
+  # allele labels
+  ["m_anPrintLabelsPeak", "vector<unsigned int>","1"],
+  
+  # Artifact labels
+  ["m_nPrintArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
+
+  # Page Heading
+  ["m_bPrintHeading", "int", "0"],
+  # 0 - File name; 1 - Sample Name
+  ["m_sPrintHeadingNotes", "wxString"],
+  
+  # Channels per page
+  ["m_nPrintChannelsSamples", "int", "8"],
+  ["m_nPrintChannelsLadders", "int", "8"],
+  ["m_nPrintChannelsNegCtrl", "int", "8"],
+  ["m_bPrintChannelsOmitILS", "bool"],
+  
+  # Samples
+  ["m_bPrintSamplesLadders", "bool true"],
+  ["m_bPrintSamplesPosCtrl", "bool true"],
+  ["m_bPrintSamplesNegCtrl", "bool true"],
+  ["m_bPrintSamplesDisabled", "bool"],
+
+  # colors
+  ["m_nPrintColorRed","int","100"],
+  ["m_nPrintColorGreen","int","100"],
+  ["m_nPrintColorBlue","int","100"],
+  ["m_nPrintColorYellow","int","100"],
+  ["m_nPrintColorOrange","int","100"],
+  ["m_nPrintColorPurple","int","100"],
+  ["m_nPrintColorGray","int","100"],
 
   ["plot printout -- margins are in millimeters"],
 
@@ -617,6 +679,7 @@ ${sGets}
     }
     return sRtn;
   }
+  int GetPrintColorByName(const wxString &sName) const;
   static const wxString NO_INIT;
   // end static/global stuff
 
@@ -783,7 +846,7 @@ ${sVars}
   bool m_bAutoSave;
   nwxXmlIOwxString m_ioBatchFormat;
   nwxXmlIOwxString m_ioDefaultSample;
-  nwxXmlIOuint m_ioUintViewPlotArtifact;
+  nwxXmlIOint m_ioIntViewPlotArtifact;
   nwxXmlIOuint m_ioUint1;
   nwxXmlIOint m_ioInt_1; // default to -1
 public:
@@ -895,6 +958,7 @@ EOF
 #include "CParmOsiris.h"
 #include "CLabSettings.h"
 #include "CVolumes.h"
+#include "wxIDS.h"
 #include "nwx/nwxFileUtil.h"
 #include <wx/filename.h>
 #include <wx/utils.h>
@@ -905,6 +969,8 @@ const wxString CParmOsiris::NO_INIT(wxS(":"));
 
 void CParmOsiris::_Init()
 {
+  SetNoInit(true);
+  SetDefaults();
   if(m_sFileName.IsEmpty())
   {
     m_sFileName = mainApp::GetConfig()->GetConfigPath();
@@ -913,7 +979,9 @@ void CParmOsiris::_Init()
   m_bModified = false;
   m_bAutoSave = false;
   RegisterAll(true);
-  if(!(  wxFileName::FileExists(m_sFileName) && Load()  ))
+  if(!wxFileName::FileExists(m_sFileName))
+  {}
+  else if(!Load())
   {
     SetDefaults();
   }
@@ -968,7 +1036,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
     m_ioDefaultSample.SetDefault(
       CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY);
     m_ioBatchFormat.SetDefault(DEFAULT_BATCH_FORMAT);
-    m_ioUintViewPlotArtifact.SetDefault(15);
+    m_ioIntViewPlotArtifact.SetDefault(ARTIFACT_CRITICAL);
     m_ioUint1.SetDefault(1);
     m_ioInt_1.SetDefault(-1);
   }
@@ -1027,6 +1095,26 @@ bool CParmOsiris::Save()
     m_bModified = false;
   }
   return bRtn;
+}
+
+int CParmOsiris::GetPrintColorByName(const wxString &sName) const
+{
+  // return the printing color intensity (1-100) for printing
+  // color specified by sName
+  wxString s(sName);
+  s.MakeUpper();
+  int nRtn = 100; // if color not found, default is 100%
+  
+ #define _CHECK(name, fnc)  if(s == wxT(name)) nRtn = fnc()  
+  _CHECK("RED", GetPrintColorRed);
+  else _CHECK("GREEN", GetPrintColorGreen);
+  else _CHECK("BLUE", GetPrintColorBlue);
+  else _CHECK("YELLOW", GetPrintColorYellow);
+  else _CHECK("ORANGE", GetPrintColorOrange);
+  else _CHECK("PURPLE", GetPrintColorPurple);
+#undef _CHECK
+
+  return nRtn;
 }
 
 ${sStringCPP}

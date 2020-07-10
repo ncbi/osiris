@@ -23,29 +23,48 @@
 *
 * ===========================================================================
 *
-*  FileName: CMenuFileGraph.h
+*
+*  FileName: CDialogPrintColor.h
 *  Author:   Douglas Hoffman
 *
 */
-#ifndef __C_MENU_FILE_GRAPH_H__
-#define __C_MENU_FILE_GRAPH_H__
+#ifndef __C_DIALOG_PRINT_COLOR_H__
+#define __C_DIALOG_PRINT_COLOR_H__
 
-#include "CMenuFileBase.h"
-#include "wxIDS.h"
+#include <wx/dialog.h>
+#include <wx/colour.h>
+#include <wx/hyperlink.h>
+#include "nwx/PersistentSize.h"
 
-class CMenuFileGraph : public CMenuFileBase
+class nwxTextCtrlInteger;
+class wxSizer;
+
+class CDialogPrintColor : public wxDialog
 {
 public:
-  CMenuFileGraph() : CMenuFileBase()
-  {
-    // insert in reverse order
-    Insert(m_nInsertPoint,
-           IDExportGraphic,EXPORT_GRAPH,EXPORT_GRAPH_HELP);
-    InsertPrintItems(m_nInsertPoint);
-  }
-  virtual ~CMenuFileGraph();
-  static const wxString EXPORT_GRAPH;
-  static const wxString EXPORT_GRAPH_HELP;
+  CDialogPrintColor(wxWindow *parent);
+  virtual ~CDialogPrintColor();
+  virtual bool TransferDataFromWindow();
+  virtual bool TransferDataToWindow();
+private:
+  void _PrintTestPage();
+  void _OnPrintLink(wxHyperlinkEvent &);
+  void _OnPrintButton(wxCommandEvent &);
+  void _ColorRow(
+    wxSizer *pSizer, 
+    const wxString &sLabel,
+    int nValue,
+    const wxColour &color,
+    nwxTextCtrlInteger **ppCtrl);
+  nwxTextCtrlInteger *pTextRed;
+  nwxTextCtrlInteger *pTextGreen;
+  nwxTextCtrlInteger *pTextBlue;
+  nwxTextCtrlInteger *pTextOrange;
+  nwxTextCtrlInteger *pTextYellow;
+  nwxTextCtrlInteger *pTextPurple;
+  nwxTextCtrlInteger *pTextGray;
+  DECLARE_PERSISTENT_POSITION
+  DECLARE_EVENT_TABLE()
 };
 
 #endif

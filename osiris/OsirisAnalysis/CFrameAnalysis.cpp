@@ -799,10 +799,13 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
   if(!m_nNoTimer)
   {
     CheckSelection();
+    /*
+    // EXT TIMER
     if(m_pPanelPlotPreview != NULL)
     {
       m_pPanelPlotPreview->OnTimer(e);
     }
+    */
     if(m_pMenuBar != NULL)
     {
       m_pMenuBar->OnTimer(e);
@@ -1811,7 +1814,7 @@ void CFrameAnalysis::_ShowPreview()
         m_pSplitterTop,
         m_pOARfile,
         mainApp::GetKitColors(),
-        true,
+        //true,  // EXT TIMER
         6);
     }
 

@@ -80,3 +80,23 @@ void CKitColors2::_SetupDyeColors() const
     mainApp::LogMessage(sMessage);
   }
 }
+
+void CKitColors2::_SetupColorNames() const
+{
+  std::map<wxString, CKitColorDye *>::const_iterator itr;
+  std::pair<wxString, wxString> _value;
+  const CKitColorDye *pColorDye;
+  for (itr = m_mapKitColors.begin(); itr != m_mapKitColors.end(); ++itr)
+  {
+    wxString sName = itr->first;
+    sName.MakeUpper();
+    _value.second = sName;
+    pColorDye = itr->second;
+    _value.first = pColorDye->GetColorAnalyzed().GetAsString(wxC2S_CSS_SYNTAX);
+    m_mapColorNames.insert(_value);
+    _value.first = pColorDye->GetColorRaw().GetAsString(wxC2S_CSS_SYNTAX);
+    m_mapColorNames.insert(_value);
+    _value.first = pColorDye->GetColorLadder().GetAsString(wxC2S_CSS_SYNTAX);
+    m_mapColorNames.insert(_value);
+  }
+}

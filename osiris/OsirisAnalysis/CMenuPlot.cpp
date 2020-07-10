@@ -105,6 +105,7 @@ CMenuPlot::CMenuPlot(
 #if 0
     m_nLastType(LABEL_NONE),
 #endif
+    m_bXBPS(false),
     m_bPreview(true)
 #if 0
     ,m_bUsedDefault(false)
@@ -115,20 +116,21 @@ CMenuPlot::CMenuPlot(
 }
 
 CMenuPlot::CMenuPlot(
-  int nOffset, CPlotData *pData, CKitColors *pColors) 
-    : wxMenu("",0),
-    m_nOffset(nOffset),
-    m_nChannelCount(0),
-    m_pKitColors(pColors),
-    m_pData(pData),
-    m_pMenuData(NULL),
-    m_pMenuChannels(NULL),
-    m_pMenuArtifact(NULL),
-    m_pMenuLabels(NULL),
+  int nOffset, CPlotData *pData, CKitColors *pColors)
+  : wxMenu("", 0),
+  m_nOffset(nOffset),
+  m_nChannelCount(0),
+  m_pKitColors(pColors),
+  m_pData(pData),
+  m_pMenuData(NULL),
+  m_pMenuChannels(NULL),
+  m_pMenuArtifact(NULL),
+  m_pMenuLabels(NULL),
 #if 0
-    m_nLastType(LABEL_NONE),
+  m_nLastType(LABEL_NONE),
 #endif
-    m_bPreview(false)
+  m_bXBPS(false),
+  m_bPreview(false)
 #if 0
     ,m_bUsedDefault(false)
 #endif
@@ -401,7 +403,7 @@ bool CMenuPlot::ILSValue()
 }
 bool CMenuPlot::XBPSValue()
 {
-  return m_bPreview && IsChecked(_ID(IDmenuPlotXBPS));
+  return m_bPreview ? IsChecked(_ID(IDmenuPlotXBPS)) : m_bXBPS;
 }
 
 void CMenuPlot::SetXBPS(bool b)
@@ -409,6 +411,10 @@ void CMenuPlot::SetXBPS(bool b)
   if(m_bPreview)
   {
     Check(_ID(IDmenuPlotXBPS),b);
+  }
+  else
+  {
+    m_bXBPS = b;
   }
 }
 

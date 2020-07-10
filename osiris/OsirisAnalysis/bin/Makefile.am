@@ -34,6 +34,8 @@ osiris_SOURCES =  \
 ../CDialogMaxLadderLabel.cpp \
 ../CDialogParameters.cpp \
 ../CDialogPlotMessage.cpp \
+../CDialogPrintColor.cpp \
+../CDialogPrintSettings.cpp \
 ../CDialogPromptNewerFile.cpp \
 ../CDialogReallyQuit.cpp \
 ../CDialogShowLabSettings.cpp \
@@ -136,6 +138,8 @@ osiris_SOURCES =  \
 ../CPrintOut.cpp \
 ../CPrintOutAnalysis.cpp \
 ../CPrintOutPlot.cpp \
+../CPrintOutTestPattern.cpp \
+../CPrintPreview.cpp \
 ../CProcessAnalysis.cpp \
 ../CReAnalyze.cpp \
 ../CSitePath.cpp \

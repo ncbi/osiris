@@ -1,3 +1,6 @@
+#ifndef __C_PRINT_OUT_TEST_PATTERN_H__
+#define __C_PRINT_OUT_TEST_PATTERN_H__
+
 /*
 * ===========================================================================
 *
@@ -34,80 +37,71 @@
 * ===========================================================================
 *
 *
-*  FileName: CPrintOutPlot.cpp
+*  FileName: CPrintOutTestPattern.h
 *  Author:   Douglas Hoffman
 *
+*  Implementation for wxPrintout for printing an OSIRIS test pattern
+*  used for adjusting colors on a printout
+*
 */
-#include <memory>
 
-#ifdef __WXMAC__
-#include <wx/osx/printdlg.h>
+#include "CPrintOut.h"
+
+class CPrintOutTestPattern : public CPrintOut
+{
+public:
+  static void Print()
+  {
+    CPrintOutTestPattern printout(false);
+    _DoPrint(&printout, wxT("PrintTestPattern"));
+  }
+  virtual bool HasPage(int page)
+  {
+    return (page == 1);
+  }
+  virtual int GetMaxPage() { return 1; }
+  virtual wxFrame *GetParent()
+  {
+    return m_pParent;
+  }
+
+  virtual bool OnPrintPage(int page);
+  virtual void GetPageInfo(
+    int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
+  {
+    *minPage = 1;
+    *maxPage = 1;
+    *selPageFrom = 1;
+    *selPageTo = 1;
+  }
+private:
+  void _CleanupBitmap()
+  {
+    if (m_pBitmap != NULL)
+    {
+      delete m_pBitmap;
+      m_pBitmap = NULL;
+    }
+  }
+  bool _IsBitmapReady(bool bPortrait)
+  {
+    return((m_pBitmap != NULL) && (m_bPortrait == bPortrait));
+  }
+  // constructor accessed from static void PrintTestPattern()
+  CPrintOutTestPattern(wxFrame *parent, bool bPreview = false) :
+    CPrintOut(bPreview, wxT("OSIRIS Print Test Pattern")),
+    m_pParent(parent),
+    m_pBitmap(NULL),
+    m_bPortrait(true)
+  {}
+  virtual ~CPrintOutTestPattern()
+  {
+    _CleanupBitmap();
+  }
+  wxBitmap *_SetupBitmap(bool bPortrait);
+  wxFrame *m_pParent;
+  wxBitmap *m_pBitmap;
+  bool m_bPortrait;
+};
+
 #endif
-#include <wx/printdlg.h>
-
-#include "CPrintOutPlot.h"
-#include "CFramePlot.h"
-#include "CDialogPrintSettings.h"
-#include "mainApp.h"
-
-#define _PING_PRINT wxT("PrintPlot")
-#define _PING_PRINT_PREVIEW wxT("PrintPreviewPlot")
-
-
-void CPrintOutPlot::DoPrintPreview(CFramePlot *pFrame)
-{
-  // using the wxWidgets printing sample program
-  _DoPrintPreview(
-    new CPrintOutPlot(pFrame, true),
-    new CPrintOutPlot(pFrame),
-    _PING_PRINT_PREVIEW,
-    _PING_PRINT);
-}
-
-// end static functions - begin virtual wxPrintout functions
-
-CPrintOutPlot::~CPrintOutPlot() { ; }
-
-wxFrame *CPrintOutPlot::GetParent()
-{
-  return m_pFramePlot;
-}
-
-int CPrintOutPlot::GetPlotsPerPage()
-{
-  return CDialogPrintSettingsSample::GetPlotsPerPage(m_pFramePlot->GetSample());
-}
-int CPrintOutPlot::GetMaxPage()
-{
-  int nPlots = (int)m_pFramePlot->GetPlotCount();
-  int nPlotsPerPage = GetPlotsPerPage();
-  int nRtn = (nPlots + nPlotsPerPage - 1) / nPlotsPerPage;
-  return nRtn;
-}
-bool CPrintOutPlot::OnPrintPage(int page)
-{
-  bool bRtn = true;
-  if (HasPage(page))
-  {
-    wxDC *pdc = GetDC();
-    _setupPageBitmap(pdc);
-    std::unique_ptr<wxBitmap> px(m_pFramePlot->CreateBitmap(
-      m_resOutput.m_nWidth,
-      m_resOutput.m_nHeight,
-      m_resOutput.m_DPI,
-      wxEmptyString,
-      GetPlotsPerPage(),
-      page,
-      true));
-    wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
-    pdc->DrawBitmap(*px, r.GetLeftTop());
-  }
-  else
-  {
-    bRtn = false;
-    mainApp::LogMessageV(wxT("Invalid page number %d"), page);
-  }
-  return bRtn;
-}
-
-IMPLEMENT_ABSTRACT_CLASS(CPrintOutPlot, CPrintOut)

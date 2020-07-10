@@ -58,7 +58,7 @@ public:
     wxWindow *parent, 
     COARfile *pFile,
     CKitColors *pColors,
-    bool bExternalTimer = false,
+    //bool bExternalTimer = false,// EXT TIMER
     size_t nMaxCount = 6
     );
   virtual ~CPanelPlotPreview();
@@ -84,7 +84,7 @@ public:
   void SetFileMissing();
   bool MenuEvent(wxCommandEvent &e);
   void SetMaxCount(size_t nMaxCount);
-  void OnTimer(wxTimerEvent &e);
+  //void OnTimer(wxTimerEvent &e); // EXT TIMER
   CMenuPlot *GetMenuPlot();
   wxMenu *GetMenu();
   int GetPeakLabelType();
@@ -108,7 +108,7 @@ private:
   CFrameAnalysis *m_pFrameAnalysis;
   COARfile *m_pOARfile;
   CKitColors *m_pColors;
-  bool m_bExternalTimer;
+  //bool m_bExternalTimer;// EXT TIMER
   bool m_bLogged; // set to true if there is a problem with a timer event
 };
 

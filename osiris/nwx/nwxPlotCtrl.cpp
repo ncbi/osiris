@@ -284,10 +284,13 @@ void nwxPlotCtrl::ProcessMousePosition(const wxPoint &pt)
     StartTimer();
   }
 }
+
+const wxColour nwxPlotCtrl::g_ColorGrid(232, 232, 232);
+
 void nwxPlotCtrl::_Init()
 {
   SetSelectionType(wxPLOTCTRL_SELECT_NONE);
-  SetGridColour(wxColour(232,232,232));
+  SetGridColour(g_ColorGrid);
   //    SetAreaMouseMarker(wxPLOTCTRL_MARKER_NONE);
 
   m_bmActiveBackup = m_activeBitmap;
