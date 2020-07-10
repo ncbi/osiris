@@ -30,6 +30,7 @@ KitDataChannelOverride:5 = 6;
 KitDataChannelOverride:6 = 5;
 ILSChannel = 6;
 StdControl = M308;
+AcceptedOL:DYS481 = 22;
 VolumeDirectoryName = MICROREADER_Y_PRIME;
 DefaultVolumePath = C:\Users\goorrob\Documents\GitHub\osiris\GenerateLadderFile\MicroreaderYPrime\;
 AlleleListColumn = 9;

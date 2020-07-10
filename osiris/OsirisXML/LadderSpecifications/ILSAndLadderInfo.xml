@@ -10,8 +10,7 @@
         <DisplayName>75-500</DisplayName>
         <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
         <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-        
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>       
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
@@ -822,6 +821,42 @@
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
     </ILS>
+   	<ILS>
+      <ILSName>Asuragen ROX 1000</ILSName>
+      <DyeName>ROX</DyeName>
+      <LaneStandard>
+        <Name>Asuragen-ROX1000</Name>
+        <DisplayName>79-1007</DisplayName>
+        <Characteristics>79 90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902 1007</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Asuragen-ROX90-1007</Name>
+        <DisplayName>90-1007</DisplayName>
+        <Characteristics>90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902 1007</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Asuragen-ROX90-902</Name>
+        <DisplayName>90-902</DisplayName>
+        <Characteristics>90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Asuragen-ROX79-902</Name>
+        <DisplayName>75-350</DisplayName>
+        <Characteristics>79 90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>    
   </LaneStandards>
   <Kits>
     <Set>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.61</VersionNumber>
-	<BuildTime>05/29/2020 06:27 PM</BuildTime>
+	<VersionNumber>6.26</VersionNumber>
+	<BuildTime>04 16 2014 06:47PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -48,17 +48,6 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>LOCUS IS AMEL</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smIsQualityLocus</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>LOCUS IS QUALITY TYPE</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
@@ -177,7 +166,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smChannelIsILS OR smSampleIsLadder)</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>CHANNEL HAS RAISED BASELINE</Text>
 			<TextForData>:  With Height </TextForData>
@@ -219,7 +208,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smChannelIsILS OR smSampleIsLadder)</Expression>
+				<Expression>NOT smChannelIsILS</Expression>
 			</ReportCriterion>
 			<Text>CHANNEL HAS EXCESSIVE NOISE:  PEAKS MAY BE UNREPORTED</Text>
 			<ReportLevel>1</ReportLevel>
@@ -344,67 +333,7 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smCorePeakSharesAlleleBin</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Shares Allele Bin in Core Locus</Text>
-			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smMakeSharedBinArtifactsCriticalPreset</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPeakSharesAlleleBinLeft</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Shares Allele Bin in Locus to the Left</Text>
-			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smMakeSharedBinArtifactsCriticalPreset AND NOT smPeakInCoreLadderLocus</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smPeakInCoreLadderLocus</Expression>
-			</CallCriterion>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPeakSharesAlleleBinRight</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Shares Allele Bin in Locus to the Right</Text>
-			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smMakeSharedBinArtifactsCriticalPreset AND NOT smPeakInCoreLadderLocus</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smPeakInCoreLadderLocus</Expression>
-			</CallCriterion>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smLaserOffScale</Name>
+			<Name>smLaserOffScalePullupOrCraterNotPrimary</Name>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
@@ -412,33 +341,27 @@
 			</ReportCriterion>
 			<Text>Laser Off Scale</Text>
 			<ReportLevel>1</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>20</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>smMakeLaserOffScaleNonCriticalPreset</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smPeakIgnored</Name>
+			<Name>smLaserOffScalePrimary</Name>
 			<Subject>1</Subject>
-			<SampleType>3</SampleType>
+			<SampleType>2</SampleType>
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>Peak Ignored Through User Pre-Editing</Text>
+			<Text>Laser Off Scale:  Probably Primary Pull-up</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smLaserOffScaleForTrigger</Name>
+			<Name>smLaserOffScaleNoInterchannelLink</Name>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>Laser Off Scale</Text>
+			<Text>Laser Off Scale:  No Pull-up Identified</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -596,48 +519,24 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smPrimaryInterchannelLink OR smNotInterchannelLink)</Expression>
 			</ReportCriterion>
-			<Text>Partial Pullup</Text>
-			<TextForData> from Primary Channel </TextForData>
+			<Text>Pull-up</Text>
 			<ReportLevel>1</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>20</AlternateReportLevel>
 				<AlternateReportCriterion>
-					<Expression>smPullUpAtControlPeak OR smInterlocusPullUp OR smSignalIsCtrlPeak OR (smSignalIsAllele AND smMakePullupAtAlleleNonCriticalPreset)</Expression>
+					<Expression>smPullUpAtAllele OR smPullUpAtControlPeak OR smInterlocusPullUp OR smSignalIsCtrlPeak OR smSignalIsAllele</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>1</Expression>
-			</CallCriterion>
-		</SmartMessage>		
-		<SmartMessage>
-			<Name>smNegativePeak</Name>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Negative Peak</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>1</Expression>
-				</RestrictionCriterion>
-			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smExcessiveResidualDisplacement</Name>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>(smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution) AND (NOT smRequireExcessiveResidualOffLadderPreset OR (smRequireExcessiveResidualOffLadderPreset AND smAlleleOL))</Expression>
+				<Expression>smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR  smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak:  Excessive Residual Displacement</Text>
 			<ReportLevel>20</ReportLevel>
@@ -649,7 +548,7 @@
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT ((smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution) AND (NOT smRequireExcessiveResidualOffLadderPreset OR (smRequireExcessiveResidualOffLadderPreset AND smAlleleOL)))</Expression>
+				<Expression>NOT (smCurveFitFailed OR smCurveFitMarginal OR smSpike OR smBlob OR smPoorPeakMorphology OR smPoorPeakMorphologyOrResolution)</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
@@ -663,10 +562,16 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Left:  Excessive Residual Displacement Left</Text>
 			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -674,78 +579,26 @@
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Unlikely Allele Peak Right:  Excessive Residual Displacement Right</Text>
 			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smMakeExcessiveResidualDisplacementCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
-		</SmartMessage>	
-		<SmartMessage>
-			<Name>smLadderPeakOutsideCoreLadder</Name>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Peak Outside Core Ladder</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>true</Expression>
-				</RestrictionCriterion>
-			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPrimaryInterchannelLink</Name>
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smHeightBelowFractionalFilter</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Primary Pullup</Text>
-			<TextForData> into channel(s): </TextForData>
-			<SeparatorText>, </SeparatorText>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smWeakPrimaryInterchannelLink</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>smViewHighDetailMessages</Expression>
-			</ReportCriterion>
-			<Text>Primary Pullup, Possibly Masked</Text>
-			<TextForData> into channel(s): </TextForData>
-			<SeparatorText>, </SeparatorText>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smRawDataPrimaryInterchannelLink</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>smViewHighDetailMessages</Expression>
-			</ReportCriterion>
-			<Text>Possible Primary Pullup Based on Raw Data</Text>
-			<TextForData> into channel(s): </TextForData>
-			<SeparatorText>, </SeparatorText>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smZeroPullupPrimaryInterchannelLink</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>smViewHighDetailMessages</Expression>
-			</ReportCriterion>
-			<Text>Non-Primary Pullup With Zero Associated Pullup</Text>
-			<TextForData> into channel(s): </TextForData>
-			<SeparatorText>, </SeparatorText>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -771,7 +624,8 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>ILS CONTAINS TOO FEW PEAKS</Text>
-			<TextForData>. NUMBER EXPECTED = </TextForData>
+			<TextForData> with </TextForData>
+			<SeparatorText> peaks out of </SeparatorText>
 			<ReportLevel>1</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -802,7 +656,7 @@
 			<Subject>20</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smSignalIsCtrlPeak</Expression>
+				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Peak Outside ILS Range</Text>
 			<ReportLevel>20</ReportLevel>
@@ -875,7 +729,7 @@
 			<Subject>20</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>((smNoGenotypeFound AND NOT smNoYLinkedAlleleExpected) OR smReportedHomozygoteHeightProblem OR  (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous) OR (smSampleIsNegCtrl AND smTestForPeaksBelowMinRFUForNegCtrlPreset)) AND NOT (smLocusIsHomozygous AND smPeaksAboveHomozygoteValidityThreshold)</Expression>
+				<Expression>(smNoGenotypeFound AND NOT smNoYLinkedAlleleExpected) OR smHomozygoteHeightProblem OR  (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous) OR (smSampleIsNegCtrl AND smTestForPeaksBelowMinRFUForNegCtrlPreset)</Expression>
 			</ReportCriterion>
 			<Text>LOCUS HAS PEAKS BETWEEN DETECTION AND ANALYSIS THRESHOLDS</Text>
 			<TextForData> AT ALLELE LOCATION(S):  </TextForData>
@@ -930,7 +784,7 @@
 			<Subject>20</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT smPeakOutsideILS</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Unexpected Peak in ILS</Text>
 			<TextForData> at location </TextForData>
@@ -986,7 +840,7 @@
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPeakHeightAboveMax</Name>
-			<Description>Set during in stage 1</Description>
+			<Description>Set during lane standard analysis in stage 1</Description>
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
@@ -994,18 +848,6 @@
 			</ReportCriterion>
 			<Text>Peak Height Above Maximum Threshold</Text>
 			<ReportLevel>1</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPeakHeightAboveHomozygoteTrustThreshold</Name>
-			<Description>Set in stage 1</Description>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Peak Above Min. threshold for homozygote to have no allele dropout</Text>
-			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -1034,17 +876,6 @@
 					</TextLoc>
 				</Protocol>
 			</ExportProtocolList>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPeaksAboveHomozygoteValidityThreshold</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>ONE OR MORE PEAKS ABOVE HOMOZYGOTE VALIDITY THRESHOLD</Text>
-			<ReportLevel>1</ReportLevel>
-			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smCannotSeparateILSPrimerPeaks</Name>
@@ -1192,48 +1023,6 @@
 			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smSamplesTerminatedPrematurely</Name>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>ONE OR MORE SAMPLES TERMINATED PREMATURELY.  FILE NAME(S)</Text>
-			<TextForData>:  </TextForData>
-			<SeparatorText>; </SeparatorText>
-			<ClosingText>.  CONTACT THE OSIRIS TEAM WITH THIS MESSAGE</ClosingText>
-			<ReportLevel>1</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSamplesHadNoDataForChannels</Name>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>ONE OR MORE SAMPLES HAD NO DATA FOR CHANNELS AND WERE TERMINATED.  FILE NAME(S)</Text>
-			<TextForData>:  </TextForData>
-			<SeparatorText>; </SeparatorText>
-			<ClosingText>.  CHECK FOR APPROPRIATE MARKER SET.</ClosingText>
-			<ReportLevel>1</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSamplesAreNotValidInputFiles</Name>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>ONE OR MORE SAMPLES DO NOT HAVE THE CORRECT FSA/HID FORMAT OR MAY BE CORRUPTED.  FILE NAME(S)</Text>
-			<TextForData>:  </TextForData>
-			<SeparatorText>; </SeparatorText>
-			<ClosingText>.</ClosingText>
-			<ReportLevel>1</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smTotalNumberOfSamplesExcludingNegativeControls</Name>
 			<MessageType>count</MessageType>
 			<Subject>10</Subject>
@@ -1317,65 +1106,22 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smPartOfDualSignal</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>smViewHighDetailMessages</Expression>
-			</ReportCriterion>
-			<Text>Part of Dual Signal</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smThreePointPeak</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>smViewHighDetailMessages</Expression>
-			</ReportCriterion>
-			<Text>3-Point Peak</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smDoNotCall</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Do Not Call</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>1</Expression>
-				</RestrictionCriterion>
-			</Restriction>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smStutter</Name>
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT smDisableStutterFilter</Expression>
 			</ReportCriterion>
 			<Text>Stutter</Text>
-			<TextForData> with displacement(s):  </TextForData>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>1</Expression>
+				<Expression>smDisableStutterFilter</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
 				<RestrictionCriterion>
-					<Expression>1</Expression>
+					<Expression>NOT smDisableStutterFilter</Expression>
 				</RestrictionCriterion>
 			</Restriction>
 		</SmartMessage>
@@ -1427,19 +1173,24 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT (smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset AND smIsAcceptedOLAllele) AND NOT smUnassignedInterlocusPeak))</Expression>
+				<Expression>NOT smBelowMinRFU AND NOT smDisableAdenylationFilter</Expression>
 			</ReportCriterion>
 			<Text>Adenylation</Text>
-			<TextForData> with ratio </TextForData>
 			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smCallOnLadderAdenylationPreset AND NOT smSignalOL AND NOT smSampleIsLadder AND NOT smDisableAdenylationFilter</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>1</Expression>
+				<Expression>(smCallOnLadderAdenylationPreset AND NOT smSignalOL) OR smDisableAdenylationFilter</Expression>
 			</CallCriterion>
 			<Restriction>
 				<RestrictionLevel>20</RestrictionLevel>
 				<RestrictionCriterion>
-					<Expression>NOT ((smCallOnLadderAdenylationPreset AND NOT smSignalOL) OR smDisableAdenylationFilter)</Expression>
+					<Expression>NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL) AND NOT smDisableAdenylationFilter</Expression>
 				</RestrictionCriterion>
 			</Restriction>
 		</SmartMessage>
@@ -1449,7 +1200,7 @@
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smBelowMinRFU OR smAdenylation OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))</Expression>
+				<Expression>NOT smBelowMinRFU AND NOT smAdenylation AND NOT smDisableAdenylationFilter</Expression>
 			</ReportCriterion>
 			<Text>Baseline Relative Adenylation</Text>
 			<ReportLevel>1</ReportLevel>
@@ -1477,9 +1228,9 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>INSUFFICIENTLY MANY PEAKS WITHIN EXPECTED PARAMETERS IN LOCUS, </Text>
-			<TextForData>EXPECTING </TextForData>
-			<ClosingText> PEAKS</ClosingText>
+			<Text>LOCUS CONTAINS TOO FEW PEAKS</Text>
+			<TextForData> with </TextForData>
+			<SeparatorText> peaks out of </SeparatorText>
 			<ReportLevel>1</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
@@ -1525,9 +1276,12 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>Low Signal to Noise in Peak</Text>
+			<Text>Crater or Poor Morphology: Possible Critical Adenylation</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPoorLocusMorphology</Name>
@@ -1592,6 +1346,21 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smBaselineRelativeFractionalFilter</Name>
+			<Description>For test within a locus or an ILS</Description>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>NOT smExtendedFractionalFilter AND NOT smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter</Expression>
+			</ReportCriterion>
+			<Text>Baseline Relative Signal Height Below Minimum Fractional Filter Height</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smExtendedFractionalFilter</Name>
 			<Description>For test within a locus or loci</Description>
 			<Subject>15</Subject>
@@ -1623,6 +1392,9 @@
 			<Text>Signal Height Below Minimum Fractional Filter Height for Locus on Left</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smFFRight</Name>
@@ -1635,6 +1407,9 @@
 			<Text>Signal Height Below Minimum Fractional Filter Height for Locus on Right</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smHeightBelowPullupFractionalFilter</Name>
@@ -1647,6 +1422,21 @@
 			<Text>Signal Height Below Minimum Pullup Fractional Filter Height</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smBaselineRelativePullupFractionalFilter</Name>
+			<Description>For test within locus or an ILS</Description>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>NOT smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
+			</ReportCriterion>
+			<Text>Baseline Relative Signal Height Below Minimum Pullup Fractional Filter Height</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>smDisablePullupFractionalFilter</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPartOfExtendedLocusLeft</Name>
@@ -1785,48 +1575,6 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smCalculatedPurePullup</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Pullup</Text>
-			<TextForData> from Primary Channel </TextForData>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smPullUpAtControlPeak OR smSignalIsCtrlPeak</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>1</Expression>
-				</RestrictionCriterion>
-			</Restriction>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPartialPullupBelowMinRFU</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Partial Pullup Corrected Below MinRFU</Text>
-			<TextForData> from Primary Channel </TextForData>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smPullUpAtControlPeak OR smSignalIsCtrlPeak</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>1</Expression>
-				</RestrictionCriterion>
-			</Restriction>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smPurePullup</Name>
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
@@ -1867,28 +1615,6 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Signal Would Cause Heterozygous Imbalance in Locus to Right</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSignalIsIntegralMultipleOfRepeatLeft</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Signal Is Integral Multiple of Repeat in Locus to Left</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSignalIsIntegralMultipleOfRepeatRight</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Signal Is Integral Multiple of Repeat in Locus to Right</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
@@ -2224,6 +1950,12 @@
 			<CallCriterion>
 				<Expression>0</Expression>
 			</CallCriterion>
+			<Restriction>
+				<RestrictionLevel>20</RestrictionLevel>
+				<RestrictionCriterion>
+					<Expression>1</Expression>
+				</RestrictionCriterion>
+			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smInterlocusPullUpWithPoorFit</Name>
@@ -2303,36 +2035,6 @@
 			<Scope>1</Scope>
 			<CallCriterion>
 				<Expression>0</Expression>
-			</CallCriterion>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAmbiguousCoreVsExtendedLeft</Name>
-			<Description>Peak lies in an extended locus region to the left and one core locus (OL) and is above fractional filter height for both</Description>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Ambiguous Extended Left and Core Locus Allele (Assigned to Core)</Text>
-			<ReportLevel>1</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>1</Expression>
-			</CallCriterion>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAmbiguousCoreVsExtendedRight</Name>
-			<Description>Peak lies in an extended locus region to the right and one core locus (OL) and is above fractional filter height for both</Description>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Ambiguous Extended Right and Core Locus Allele (Assigned to Core)</Text>
-			<ReportLevel>1</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>1</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -2549,18 +2251,6 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smIsAcceptedOLAllele</Name>
-			<Description>Valid interlocus allele that is on user list</Description>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Accepted OL Ladder Allele</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smAcceptedInterlocusLeft</Name>
 			<Description>Valid interlocus allele that is on user list</Description>
 			<Subject>15</Subject>
@@ -2656,91 +2346,10 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smNonEditableRestrictedPriorityPeak</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>This Peak Has Restricted Priority</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smSignalIsCtrlPeak</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>NOT smSignalIsCtrlPeak</Expression>
-				</RestrictionCriterion>
-			</Restriction>
-			<AllowPeakEdit>0</AllowPeakEdit>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smRestrictedPriorityPeak</Name>
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>This Peak Has Restricted Priority</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smSignalIsCtrlPeak</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>NOT smSignalIsCtrlPeak</Expression>
-				</RestrictionCriterion>
-			</Restriction>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smRedundantPeak</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Redundant Peak</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smSignalIsCtrlPeak</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>NOT smSignalIsCtrlPeak</Expression>
-				</RestrictionCriterion>
-			</Restriction>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smEditableRestrictedPriorityPeak</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>This Peak Has Restricted Priority</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smSignalIsCtrlPeak</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>NOT smSignalIsCtrlPeak</Expression>
-				</RestrictionCriterion>
-			</Restriction>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smBelowMinRFURestrictedPriorityPeak</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>This Peak Has Restricted Priority</Text>
@@ -2756,26 +2365,6 @@
 				</RestrictionCriterion>
 			</Restriction>
 			<AllowPeakEdit>0</AllowPeakEdit>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smEditableBelowMinRFURestrictedPriorityPeak</Name>
-			<Subject>15</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>This Peak Has Restricted Priority</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>smSignalIsCtrlPeak</Expression>
-			</CallCriterion>
-			<Restriction>
-				<RestrictionLevel>20</RestrictionLevel>
-				<RestrictionCriterion>
-					<Expression>NOT smSignalIsCtrlPeak</Expression>
-				</RestrictionCriterion>
-			</Restriction>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSignalNotACrater</Name>
@@ -2821,20 +2410,6 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>Possible Sigmoidal Pull-up</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-			<CallCriterion>
-				<Expression>0</Expression>
-			</CallCriterion>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSigmoidalSidePeak</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>Possible Sigmoidal Side Peak</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
@@ -3088,7 +2663,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT (smSampleIsPosCtrl AND smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset)</Expression>
+				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
 			<ReportLevel>1</ReportLevel>
@@ -3107,25 +2682,20 @@
 			</ExportProtocolList>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smReportedHomozygoteHeightProblem</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smPullUpAtAllele</Name>
 			<Subject>20</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
+				<Expression>NOT (smPeakIsNotAnAllele OR smNotInterchannelLink)</Expression>
 			</ReportCriterion>
-			<Text>Possible Partial Pullup Coincides With Allele</Text>
+			<Text>Possible Pull-up Coincides With Allele</Text>
 			<ReportLevel>20</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>1</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>NOT smMakePullupAtAlleleNonCriticalPreset</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -3136,8 +2706,10 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>POSITIVE CONTROL LOCUS NOT FOUND IN SET</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>, </SeparatorText>
 			<ReportLevel>1</ReportLevel>
-			<Scope>2</Scope>
+			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPosCtrlLociNotFound</Name>
@@ -3155,7 +2727,7 @@
 			<Subject>15</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>0</Expression>
+				<Expression>smDoNotCallExcessResidualPreset</Expression>
 			</ReportCriterion>
 			<Text>Base Pair Residual Exceeds Threshold Prevents Call</Text>
 			<TextForData> (</TextForData>
@@ -3195,6 +2767,20 @@
 			<Text>PRELIMINARY LOCUS DROPOUT</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Pullup with Excess Residual in Multi-allele</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smLocusContainsPeaksWithExcessiveResiduals</Name>
@@ -3404,6 +2990,20 @@
 			</ExportProtocolList>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smPeakIsNotAnAllele</Name>
+			<Subject>15</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Peak Is Not An Allele</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>0</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSampleHasHomozygoteWithHeightProblem</Name>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
@@ -3457,19 +3057,19 @@
 			<Subject>5</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline AND smLaserOffScalePullupOrCraterNotPrimary) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
 			</ReportCriterion>
 			<Text>Signal is Possible Off-Ladder Allele</Text>
 			<ReportLevel>20</ReportLevel>
 			<AlternateReport>
 				<AlternateReportLevel>1</AlternateReportLevel>
 				<AlternateReportCriterion>
-					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
+					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline AND smLaserOffScalePullupOrCraterNotPrimary) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline AND smLaserOffScalePullupOrCraterNotPrimary) OR (smDontCallPullupPlusOLPreset AND smPurePullup) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -3502,7 +3102,7 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>LOCUS IS HOMOZYGOUS</Text>
-			<ReportLevel>1</ReportLevel>
+			<ReportLevel>20</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -4473,17 +4073,6 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smILSShoulderPeak</Name>
-			<Subject>15</Subject>
-			<SampleType>3</SampleType>
-			<ReportCriterion>
-				<Expression>smILSReportShoulderArtifactPreset</Expression>
-			</ReportCriterion>
-			<Text>ILS Shoulder Peak</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smLadderFailed</Name>
 			<Subject>1</Subject>
 			<SampleType>1</SampleType>
@@ -4511,7 +4100,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>smEnableLadderFitThresholdTestPreset AND NOT smSampleIsPosCtrl AND NOT smSampleIsNegCtrl</Expression>
+				<Expression>smEnableLadderFitThresholdTestPreset</Expression>
 			</ReportCriterion>
 			<Text>BEST SAMPLE TO LADDER FIT DOES NOT MEET EXPECTATIONS:  CONFIRM SIZING.  METRIC VALUE OF </Text>
 			<ClosingText> EXCEEDS THRESHOLD</ClosingText>
@@ -4573,42 +4162,6 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>SAMPLE COULD NOT BE ANALYZED</Text>
-			<ReportLevel>1</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSampleAnalysisTruncatedPrematurely</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>SAMPLE ANALYSIS TRUNCATED PREMATURELY IN STAGE </Text>
-			<ClosingText>.  CONTACT OSIRIS TEAM</ClosingText>
-			<ReportLevel>1</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSampleMissingDataForChannels</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>SAMPLE HAD NO DATA FOR ONE OR MORE CHANNELS NUMBERED:  </Text>
-			<SeparatorText>, </SeparatorText>
-			<ClosingText>.  CHECK FOR APPROPRIATE MARKER SET.</ClosingText>
-			<ReportLevel>1</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSampleIsNotValidInputFile</Name>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<ReportCriterion>
-				<Expression>1</Expression>
-			</ReportCriterion>
-			<Text>SAMPLE DOES NOT HAVE THE CORRECT FSA/HID FORMAT OR MAY BE CORRUPTED.</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -4695,7 +4248,7 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>1</ReportLevel>
-			<Scope>6</Scope>
+			<Scope>5</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smLocusSummaryPercentCraters</Name>
@@ -4715,7 +4268,7 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>1</ReportLevel>
-			<Scope>6</Scope>
+			<Scope>5</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smAlleleAboveOverloadLimit</Name>
@@ -4931,184 +4484,6 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smViewHighDetailMessages</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>View High Detail Messages (default normal detail = unchecked; high level = checked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>View High Detail Messages (default normal detail = unchecked; high level = checked)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerChannelRemappingForLadderFreeBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smChannelRemappingForLadderFreeOverrideDefault</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Override Default Channel Map For Fragment Analysis (Ignored for standard analyses with ladders):</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smFsaChannelForOsirisChannel1</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 1:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 1</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smFsaChannelForOsirisChannel2</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>2</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 2:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 2</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smFsaChannelForOsirisChannel3</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>3</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 3 (if # channels at least 3):</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 3</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smFsaChannelForOsirisChannel4</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>4</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 4 (if # channels at least 4):</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 4</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smFsaChannelForOsirisChannel5</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>5</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        FSA Channel for OSIRIS Channel 5 (if # channels = 5):</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>FSA CHANNEL FOR OSIRIS CHANNEL 5</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerRaisedBaselineBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerRaisedBaselineTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Raised Baseline Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smSampleChannelRaisedBaselineThreshold</Name>
 			<MessageType>count</MessageType>
 			<Subject>10</Subject>
@@ -5116,7 +4491,7 @@
 			<CountingDataInfo>
 				<Threshold>250</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Raised Baseline Threshold for Samples (RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>Raised Baseline Threshold for Samples (RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5135,7 +4510,7 @@
 			<CountingDataInfo>
 				<Threshold>250</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Raised Baseline Threshold for Sample ILS Channels (RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>Raised Baseline Threshold for Sample ILS Channels (RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5147,695 +4522,6 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smSpacerCrossChannelBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>    </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerCrossChannelTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Cross Channel Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTestForColorCorrectionMatrixPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Attempt to Apply Embedded Color Correction Matrix</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>ATTEMPT TO APPLY EMBEDDED COLOR CORRECTION MATRIX</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSelectUserSpecifiedMinRFUForPrimaryPeakPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Primary Pull-up Threshold: Computed (unchecked); Specified Below (checked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>SPECIFY MIN RFU FOR PEAK TO BE PRIMARY PULLUP</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMinPrimaryPullupThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Min RFU for a peak to be considered as a primary pull-up</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>500</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Min RFU for a peak to cause pull-up (primary pull-up) (Default = 500) (requires above checked)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>MIN RFU FOR A PEAK TO BE CONSIDERED AS A PRIMARY PULL-UP (DEFAULT = 500)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMakePullupAtAlleleNonCriticalPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Make Pull-up At Allele Artifact Non-Critical</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>MAKE PULL-UP AT ALLELE ARTIFACT NON-CRITICAL</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Make Laser Off-Scale Artifacts Non-Critical</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>MAKE LASER OFF-SCALE ARTIFACTS NON-CRITICAL</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smConstrainPullupPatternAnalysisPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Constrain Pull-up Pattern Analysis (Default: checked - Functions like Version 2.9.1)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>CONSTRAIN PULLUP PATTERN ANALYSIS</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smDisplaySigmoidalPeaksPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Display Sigmoidal Peaks (Default:  unchecked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>DISPLAY SIGMOIDAL PEAKS</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTestPullupCorrectedHeightsPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Test Pull-up Corrected Heights for Stutter, Adenylation, Etc (Default:  unchecked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>TEST PULLUP CORRECTED HEIGHTS FOR STUTTER, ETC</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerExcessiveNoiseBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>    </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTestForExcessiveNoisePreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Enable Test for Excessive Noise</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>ENABLE TEST FOR EXCESSIVE NOISE</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTestExcessiveNoiseAboveOrBelowAnalysisThreshold</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>       Test for Excessive Noise Above Analysis Threshold (checked) or below (unchecked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>TEST FOR EXCESSIVE NOISE ABOVE OR BELOW ANALYSIS THRESHOLD</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerExcessiveNoiseEnd</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>    </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smFlagMixedSamplesPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>Flag Mixed Samples And Triallelic Loci</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>FLAG MIXED SAMPLES AND TRIALLELIC LOCI</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerRewordOptionsBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerReworkOptionsTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Rework Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAmpMoreOnLowHomozygotePreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Recommend Amp More On Low Homozygote</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>RECOMMEND AMP MORE ON LOW HOMOZYGOTE</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSelectReampRegVersusReinjectPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Select Reamp Regular (checked) Versus Reinject (unchecked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>SELECT REAMP REGULAR (CHECKED) VERSUS REINJECT (UNCHECKED)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smRecommendReworkIfLaserOffScalePreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Recommend Rework if Laser Off Scale Found</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>RECOMMEND REWORK IF LASER OFF SCALE FOUND</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerCurveFitOptionsBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerCurveFitOptionsTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Curve Fit Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smCurveFitOptionsSensitivitySubtitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>    Peak Fit Sensitivity (based on 4 raw data properties: Area, Height, Min-to-Max Height and Noise Level):</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smCurveFitOptionsAreaSubtitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Area Threshold:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPercentOfStandardNoiseThreshold</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Require Area &gt; Percent of Standard Area Threshold (Default = 100%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>PERCENTAGE OF STANDARD NOISE THRESHOLD FOR PEAK IDENTIFICATION (DEFAULT = 100)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smCurveFitOptionsHeightSubtitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Height Threshold:  Require Min-to-Max Height &gt; Noise Level ... (Default)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Or, require Height &gt; Detection Threshold (overrides Default height threshold)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>IGNORE NOISE ANALYSIS IN SMOOTHING WHEN ABOVE DETECTION THRESHOLD</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smOverrideNoiseLevelPercentsInSmoothing</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Or, require Height &gt; Percent of Noise Level (overrides Default and Detection Threshold)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>PERCENT OF MEASURED NOISE FOR NORMALIZATION PHASE OF CURVE FITTING</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPercentOverrideOfNoiseThresholdForNormalizationPhase</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>50</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                      Percent of Noise Level for Normalization (Default = 10%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>PERCENT OF MEASURED NOISE FOR FINAL PHASE OF CURVE FITTING</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPercentOverrideOfNoiseThresholdForFinalPhase</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>75</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                      Percent of Noise Level for final Curve Fitting (Default = 75%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>PERCENT OF MEASURED NOISE FOR FINAL PHASE OF CURVE FITTING</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerCurveFitOptionsMiddle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smApplyEnhancedShoulderFittingAlgorithmPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>    Apply Enhanced Shoulder-Fitting Algorithm</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>APPLY ENHANCED SHOULDER-FITTING ALGORITHM</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smNoiseFactorForShoulderAcceptanceThreshold</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>            Percent of Standard Noise Threshold For Shoulder Acceptance (Default = 100%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>PERCENTAGE OF STANDARD NOISE TRESHOLD FOR SHOULDER ACCEPTANCE</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smConcaveDownAcceptanceThreshold</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>3</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>            Minimum Number of Points Concave Down (Default = 3)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>MINIMUM NUMBER OF POINTS CONCAVE DOWN</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>		
-		<SmartMessage>
-			<Name>smSpacerTailsConditioningMiddle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTailFittingOptionsSubtitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>    Tail Fitting Sensitivity Options</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTailHeightFittingThresholdFactor</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>            Percent of Standard Tail Height Threshold (Default = 100%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>PERCENTAGE OF STANDARD TAIL HEIGHT THRESHOLD FOR CURVE FITS</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTailSlopeFittingThresholdFactor</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>            Percent of Standard Tail Slope Threshold (Default = 100%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>PERCENTAGE OF STANDARD TAIL SLOPE THRESHOLD FOR CURVE FITS</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacer1</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerNegControlOptions</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Negative Control Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTestForPrimerPeaksInNegControl</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Test for Primer Dimer Peaks in Negative Controls</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>TEST FOR PRIMER DIMER PEAKS IN NEGATIVE CONTROL</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smMinimumHeightForPrimerPeaks</Name>
 			<MessageType>count</MessageType>
 			<Subject>10</Subject>
@@ -5843,7 +4529,7 @@
 			<CountingDataInfo>
 				<Threshold>2000</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Minimum Height for Primer Dimer Peaks (RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>Minimum Height for Primer Dimer Peaks (RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5862,7 +4548,7 @@
 			<CountingDataInfo>
 				<Threshold>2</Threshold>
 				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Minimum Number of Peaks per Channel in Primer Dimer for Negative Control</ThresholdDescriptor>
+				<ThresholdDescriptor>Minimum Number of Peaks per Channel in Primer Dimer for Negative Control</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5874,13 +4560,132 @@
 			<DisplayExportInfo>false</DisplayExportInfo>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smPercentOfStandardNoiseThreshold</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>100</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Percentage Of Standard Noise Threshold For Peak Identification (Default = 100)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>PERCENTAGE OF STANDARD NOISE THRESHOLD FOR PEAK IDENTIFICATION (DEFAULT = 100)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLadderFitThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Max 2nd derivative time 10 to the 6th for time transform</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>175</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Ladder Fit Threshold for Accurate Sizing (Default = 175, 0 is ideal fit)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>LADDER FIT THRESHOLD FOR ACCURATE SIZING (DEFAULT = 175, 0 IS IDEAL FIT)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smBaselineEstimationThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Level below which fit peak values are considered to be 0 for raw baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>10</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>Baseline Estimation Threshold (In RFU; 1+; Default larger than 5 RFU)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>BASELINE ESTIMATION THRESHOLD (IN RFU; 1+; DEFAULT LARGER THAN 5 RFU)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFilterWindowWidthForBaselineEstimation</Name>
+			<MessageType>count</MessageType>
+			<Description>Number of samples in moving window filter for baseline estimation</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>15</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>Filter Window Width for Baseline Estimation (Default = 15)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMinPrimaryPullupThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Min RFU for a peak to be considered as a primary pull-up</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>500</Threshold>
+				<Comparison>Greater</Comparison>
+				<ThresholdDescriptor>Min RFU for a peak to be considered as a primary pull-up (Default = 500)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MIN RFU FOR A PEAK TO BE CONSIDERED AS A PRIMARY PULL-UP (DEFAULT = 500)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smResidualDisplacementThreshold</Name>
+			<MessageType>count</MessageType>
+			<Description>Residual Displacement Threshold (% bp) For Peak To Be Considered valid Allele</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>17</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>Max % BP For Residual Displacement Test (Default = 17% BP)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAX % BP FOR RESIDUAL DISPLACEMENT TEST (DEFAULT = 17% BP)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smTestForPeaksBelowMinRFUForNegCtrlPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Test for Presence of Sub-Analytic Peaks in Negative Controls</ThresholdDescriptor>
+				<ThresholdDescriptor>Test for Presence of Sub-Analytic Peaks in Negative Controls</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5890,21 +4695,164 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smSpacer4</Name>
-			<MessageType>count</MessageType>
+			<Name>smTestExcessiveNoiseAboveOrBelowAnalysisThreshold</Name>
+			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Test for Excessive Noise Above Analysis Threshold (checked) or below (unchecked)</ThresholdDescriptor>
+			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>     </Text>
+			<Text>TEST FOR EXCESSIVE NOISE ABOVE OR BELOW ANALYSIS THRESHOLD</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTestForExcessiveNoisePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Enable Test for Excessive Noise</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>ENABLE TEST FOR EXCESSIVE NOISE</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smMakePullupAtAlleleNonCriticalPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Make Pull-up At Allele Artifact Non-Critical</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>MAKE PULL-UP AT ALLELE ARTIFACT NON-CRITICAL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smFlagMixedSamplesPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Flag Mixed Samples And Triallelic Loci</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>FLAG MIXED SAMPLES AND TRIALLELIC LOCI</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smAmpMoreOnLowHomozygotePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Recommend Amp More On Low Homozygote</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>RECOMMEND AMP MORE ON LOW HOMOZYGOTE</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSelectReampRegVersusReinjectPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Select Reamp Regular (checked) Versus Reinject (unchecked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>SELECT REAMP REGULAR (CHECKED) VERSUS REINJECT (UNCHECKED)</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smRecommendReworkIfLaserOffScalePreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Recommend Rework if Laser Off Scale Found</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>RECOMMEND REWORK IF LASER OFF SCALE FOUND</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTestForColorCorrectionMatrixPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Attempt to Apply Embedded Color Correction Matrix</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>ATTEMPT TO APPLY EMBEDDED COLOR CORRECTION MATRIX</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Ignore noise analysis in smoothing when above detection threshold</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>IGNORE NOISE ANALYZE IN SMOOTHING WHEN ABOVE DETECTION THRESHOLD</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smTestForPrimerPeaksInNegControl</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>Test for Primer Dimer Peaks in Negative Controls</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>TEST FOR PRIMER DIMER PEAKS IN NEGATIVE CONTROL</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset</Name>
@@ -5939,47 +4887,13 @@
 			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smSpacerCallCriteriaBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerCallCriteriaTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Call Criteria:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smCraterPlusRaisedBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Do Not Call OL Crater If Laser In Scale and Raised Baseline</ThresholdDescriptor>
+				<ThresholdDescriptor>Do Not Call OL Crater If Laser In Scale and Raised Baseline</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -5995,14 +4909,14 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Do Not Call OL Allele If Pull-up</ThresholdDescriptor>
+				<ThresholdDescriptor>Do Not Call OL Allele If Pull-up</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Do Not Call OL Allele If Pull-up</Text>
 			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
+			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smDontCallAnyOLsIfTooManyPreset</Name>
@@ -6011,161 +4925,12 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Do Not Call OL Alleles If Excessive Number of OL's</ThresholdDescriptor>
+				<ThresholdDescriptor>Do Not Call OL Alleles If Excessive Number of OL's</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Do Not Call OL Alleles If Excessive Number of OL's</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smDoNotCallExcessResidualPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Do Not Call Alleles With Excess Residual</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Do Not Call Alleles With Excess Residual</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerStutterCallCriteriaBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerStutterCallCriteriaTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Stutter Call Criteria...For Peaks Identified as Stutter:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smCallStutterPeaksPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Checked:  Call Allele and Stutter Artifact; Unchecked:  Call Artifact But Not Allele</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Call Peaks That Are Identified as Stutter</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerStutterCallCriteriaSubTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                If Previous is Checked, for Samples Identified as Single Source:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Checked:  Call Artifact but Not Allele; Unchecked:  Call Allele and Artifact</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Do Not Call Stutter Peaks For Single Source Samples</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smIncludeNonStandardStutterInStutterOverlapPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                Include Non-Standard Stutter in Stutter Overlap Calculation (Default = Checked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Include Non-Standard Stutter in Stutter Overlap Calculation (Default = Checked)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerStutterCallCriteriaEnd</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerAdenylationCallCriteriaTitle</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>        Adenylation Call Criteria:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -6176,7 +4941,7 @@
 			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Call Peaks That Are Identified as Adenylation If On-Ladder</ThresholdDescriptor>
+				<ThresholdDescriptor>Call Peaks That Are Identified as Adenylation If On-Ladder</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -6186,35 +4951,18 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
+			<Name>smDoNotCallExcessResidualPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
-			<SampleType>2</SampleType>
+			<SampleType>3</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Call Peaks And Show Artifact for Accepted On Ladder Adenylation</ThresholdDescriptor>
+				<ThresholdDescriptor>Do Not Call Alleles With Excess Residual</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Call Peaks And Show Artifact for Accepted On Ladder Adenylation</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerCallCriteriaEnd</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
+			<Text>Do Not Call Alleles With Excess Residual</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -6235,99 +4983,13 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Do Not Report Homozygote Too Low If Sample Is Positive Control</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Do Not Report Homozygote Too Low If Sample Is Positive Control</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>	
-		<SmartMessage>
-			<Name>smHeightToConsiderTrueHomozygote</Name>
-			<MessageType>count</MessageType>
-			<Description>Height for which lone allele considered unconditionally valid homozygote</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>1500</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>Min. threshold for homozygote to have no allele dropout (Default = 2000 RFU)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Height for which lone peak considered valid homozygote</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>	
-		<SmartMessage>
-			<Name>smSpacer2</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smBaselineHeading</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Baseline Analysis Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smNoNegativeDataPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Raw Data Has No Negative Values</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Raw Data Has No Negative Values</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smTestRelativeBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Test Adjusted Signal Heights Relative To Baseline (Overridden by below)</ThresholdDescriptor>
+				<ThresholdDescriptor>Test Adjusted Signal Heights Relative To Baseline (Overridden by below)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -6343,7 +5005,7 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Normalize Raw Data Relative To Baseline (Overrides above)</ThresholdDescriptor>
+				<ThresholdDescriptor>Normalize Raw Data Relative To Baseline (Overrides above)</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -6353,246 +5015,18 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smTestBaselineKnotsHeading</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Test Baseline Estimation Points And Reject If Too Close to Peak or Level Change</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Test Baseline Estimation Knots And Reject If Too Close to Peak or to Level Change</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smILSBPForEndOfPrimerPeaks</Name>
-			<MessageType>count</MessageType>
-			<Description>ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>80</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                        ILS BP Dividing High Noise from Low Noise Intervals (Default = 80 bp)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Estimated ILS BP by Which Primer Peaks Have Ended (Default = 80 bp)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smUseProximityToPeaksOnlyPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Test Proximity to Peaks (Default = checked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Test Proximity to Peaks (Default = checked)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smDistanceFromPeakThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Number of measurements from peak to remove baseline estimation knot</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>5</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Time Interval from Peak to Remove Estimated Point (Default = 5 Measurements)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Distance from Peak to Remove Knot (Default = 5 Measurements)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPrePrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
-			<MessageType>count</MessageType>
-			<Description>Pre-Primer minimum RFU displacement as percent of noise range to be considered a peak</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>160</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                High Noise Interval: Peak Height &gt; (Percent of Noise Range) (Default = 160%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Pre-Primer Peaks: Height &gt; (Noise Range) x (Percent) (Default = 160%)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPostPrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
-			<MessageType>count</MessageType>
-			<Description>Post-Primer minimum RFU displacement as percent of noise range to be considered a peak</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Low Noise Interval: Peak Height &gt; (Percent of Noise Range) (Default = 100%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Post-Primer Peaks: Height &gt; (Noise Range) x (Percent) (Default = 100%)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smUseProximityBothToPeaksAndLevelChangePreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Test Proximity to Both Peaks and Level Changes (Default = checked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Use Proximity Both to Peaks and to Level Changes (Default = checked)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smDistanceFromLevelChange</Name>
-			<MessageType>count</MessageType>
-			<Description>Number of measurements from level change to remove baseline estimation knot</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>5</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Time Interval from Level Change to Remove Estimated Point (Default = 5 Measurements)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Distance from Level Change to Remove Knot (Default = 5 Measurements)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPrePrimerPercentOfNoiseRangeForLevelChange</Name>
-			<MessageType>count</MessageType>
-			<Description>Pre-primer peak percent of measured noise range for lower bound to be considered as level change</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>160</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                High Noise Interval: Level Change &gt; (Percent of Noise Range) (Default = 160%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Pre-Primer Levels: Change &gt; (Noise Range) x (Percent) (Default = 160%)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPostPrimerPercentOfNoiseRangeForLevelChange</Name>
-			<MessageType>count</MessageType>
-			<Description>Post-Primer Percent of measured noise range for displacement to be considered as level change</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>75</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Low Noise Interval: Level Change &gt; (Percent of Noise Range) (Default = 75%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Post-Primer Levels: Change &gt; (Noise Range) x (Percent) (Default = 75%)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMaxPercentLevelChangeToUseLevelChangeProximity</Name>
-			<MessageType>count</MessageType>
-			<Description>Max percent of total measurements that can be level changed to all use of level change proximity</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>22</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Ignore Test if (# of Level Changes) &gt; (Percent of Total Time) (Default = 22%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Test: 100 x (Level Changes)/(Total Measurements) &lt; Percent (Default = 22%)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smBaselineEstimationThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Level below which fit peak values are considered to be 0 for raw baseline estimation</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>1</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Baseline Estimation Threshold (In RFU; Must Be Positive; Default = 1 RFU)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>BASELINE ESTIMATION THRESHOLD (IN RFU; 1+; DEFAULT 1 RFU)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smIgnoreNegativeRelativeBaselinePreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Ignore Effects of Negative Relative Baseline (Default = Unchecked)</ThresholdDescriptor>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Ignore Effects of Negative Relative Baseline</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Ignore Effects of Negative Relative Baseline (Default = Unchecked)</Text>
+			<Text>Ignore Effects of Negative Relative Baseline</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -6603,154 +5037,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                Enable Raw Data Filter For Baseline Normalization Estimation</ThresholdDescriptor>
+				<ThresholdDescriptor>        Enable Raw Data Filter For Baseline Normalization Estimation</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Enable Raw Data Filter For Baseline Normalization Estimation</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSelectTriplePassVsSinglePassFilterPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                        Select Triple Pass Filter (Checked)(Preferred) Or Single Pass Filter (Unchecked)     </ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Select Triple Low Pass (Checked)(Preferred) Or Single Low Pass (Unchecked)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smTriplePassFilterWindowWidth</Name>
-			<MessageType>count</MessageType>
-			<Description>Number of samples in triple pass moving window filter for baseline estimation</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>7</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Triple Pass Filter Window Width for Baseline Estimation (Default = 7)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>TRIPLE PASS FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSinglePassFilterWindowWidth</Name>
-			<MessageType>count</MessageType>
-			<Description>Number of samples in single pass moving window filter for baseline estimation</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>15</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Single Pass Filter Window Width for Baseline Estimation (Default = 15)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>SINGLE PASS FILTER WINDOW WIDTH FOR BASELINE ESTIMATION (DEFAULT = 15)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSelectAveragingInPlaceFilterPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>                        Select Averaging In Place Filter (Preferred; Overrides Above; Default = Checked)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Select Averaging In Place Filter (Preferred)(Overrides Above)(Default = Checked)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAveragingInPlaceFilterWindowWidth</Name>
-			<MessageType>count</MessageType>
-			<Description>Half number of samples in averaging in place filter for baseline estimation</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>10</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                                Averaging In Place Filter Window Half Width (Default = 10)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Averaging In Place Filter Window Half Width (Default = 10)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacer3</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smLadderSelectionCriterionHeader</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Ladder Selection Criteria (Based on Sample-to-Ladder Time Transform):</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Ladder Selection Criterion</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Select Most Linear Time Transform (Checked) Or Lowest Error Time Transform (Unchecked)        </ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Select Most Linear Time Transform (Checked) Or Least Time Transform Error (Unchecked)</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -6761,69 +5053,12 @@
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Enable Ladder Fit Threshold Test For Accurate Sizing</ThresholdDescriptor>
+				<ThresholdDescriptor>Enable Ladder Fit Threshold Test</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>Enable Ladder Fit Threshold Test</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smLadderFitThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Max 2nd derivative time 10 to the 6th for time transform</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>175</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Most Linear Time Transform Threshold (Default = 175, 0 is ideal fit)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>MOST LINEAR THRESHOLD FOR ACCURATE SIZING (DEFAULT = 175, 0 IS IDEAL FIT)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smLadderFitThresholdUsingMinError</Name>
-			<MessageType>count</MessageType>
-			<Description>Min Error in % BP</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>35</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>                Least Time Transform Error Threshold (Default = 35%, 0 is ideal fit)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>LEAST TRANSFORM THRESHOLD FOR ACCURATE SIZING (DEFAULT = 35%, 0 IS IDEAL FIT)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerERDBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -6844,42 +5079,6 @@
 			<Scope>3</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smResidualDisplacementThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Residual Displacement Threshold (% bp) For Peak To Be Considered valid Allele</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>20</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>        Max % BP For Residual Displacement Test (Default = 17% BP)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>MAX % BP FOR RESIDUAL DISPLACEMENT TEST (DEFAULT = 17% BP)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smRequireExcessiveResidualOffLadderPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Require Excessive Residual Displacement Peaks Be Off-Ladder</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Require Excessive Residual Displacement Peaks Be Off-Ladder</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -6896,71 +5095,18 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smResidualDisplacementFractionalLimit</Name>
-			<MessageType>count</MessageType>
-			<Description>Fraction of Max Peak in Locus Below Which Residual Displacement Can Be Assigned</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>10</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>        Max % of Tallest Locus Peak To Assign Excessive Residual Displacement (Default = 10)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>MAX % OF TALLEST LOCUS PEAK TO ASSIGN EXCESSIVE RESIDUAL DISPLACEMENT</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-			<Editable>false</Editable>
-			<DisplayExportInfo>false</DisplayExportInfo>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerERDEnd</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMakeMixturesDefaultSampleTypePreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Make Default Sample Type Possible Mixture (checked)(unchecked for Single Source)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Make Default Sample Type Possible Mixture (checked)(unchecked for Single Source)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<PresetDataInfo>
 				<Threshold>0</Threshold>
-				<ThresholdDescriptor>Disable Low Level Height Filters For Possible Mixtures</ThresholdDescriptor>
+				<ThresholdDescriptor>Disable Low Level Height Filters For Known Mixtures</ThresholdDescriptor>
 			</PresetDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
 			</ReportCriterion>
-			<Text>Disable Low Level Height Filters For Possible Mixtures</Text>
+			<Text>Disable Low Level Height Filters For Known Mixtures</Text>
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -7028,545 +5174,6 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerDisableFiltersEnd</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smILSAnalysisHeader</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Internal Lane Standard Analysis Criteria:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Internal Lane Standard Analsis Criteria</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smILSFilterLeftShoulderPeaksPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Filter Left Shoulder Peaks</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Filter Left Shoulder Peaks</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smILSShoulderPeakProximityThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Max distance from primary peak in std. dev's</Description>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>5</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Proximity to Primary Peak (Number of Std. Devs.)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Proximity to Primary Peak (Number of Std. Devs.)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smILSShoulderFilterPercentThreshold</Name>
-			<MessageType>count</MessageType>
-			<Description>Max percent of primary peak height</Description>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>33</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Filter Percent of Primary Peak Height</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Filter Percent of Primary Peak Height</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smILSReportShoulderArtifactPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>                Report (Non-critical) Shoulder Artifacts</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Report (Non-critical) Shoulder Artifacts</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smScaleILSPrimerSearchPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Scale ILS Primer Peak Search Based on Last ILS Peaks</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Scale ILS Primer Search</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smNumberOfLastILSPeaksInScale</Name>
-			<MessageType>count</MessageType>
-			<Description>Number of right end peaks of ILS to use in scale</Description>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>4</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Number of End Peaks to Use in Scaling</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Number of End Peaks to Use in Scaling</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPercentLastILSPeaksInScaling</Name>
-			<MessageType>count</MessageType>
-			<Description>Percent of least of last ILS Peaks to Use as Threshold</Description>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>75</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Percent of Least of Last ILS Peaks to Use as Scale</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Percent of Least of Last ILS Peaks to Use as Scale</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSaveLadderILSHistoryPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Save Ladder ILS History To Aid Sample Analyses</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Save Ladder ILS History</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smLatitudeForILSFit</Name>
-			<MessageType>count</MessageType>
-			<Description>Latitude For ILS Fit (100ths of percent of overall interval)</Description>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Latitude For ILS Fit (100ths of percent of overall interval)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Latitude For ILS Fit (100ths of percent of overall interval)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smUseLadderEndPointILSAlgorithmPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Use Ladder ILS End Point Algorithm</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Save Ladder ILS History</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smPlusLatitudeForLadderEndPointILSFit</Name>
-			<MessageType>count</MessageType>
-			<Description>Latitude For ILS Fit (100ths of percent of overall interval)</Description>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>100</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>                Latitude For Ladder End Point ILS Fit (100ths of percent of overall interval)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Latitude For ILS Fit (100ths of percent of overall interval)</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Suppress Critical Level Artifacts for ILS Control Peaks</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Suppress Critical Level Artifacts for ILS Control Peaks</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerInternalLaneStandardShouldersEnd</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>4</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smLadderArtifactLevelHeader</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Reduce Ladder Artifacts:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Internal Lane Standard Analsis Criteria</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Make Ladder Artifacts Left of Core Ladder Non-critical</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Make Ladder Artifacts Left of Core Ladder Non-critical</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Make Ladder Artifacts Right of Core Ladder Non-critical</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Make Ladder Artifacts Right of Core Ladder Non-critical</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Suppress Critical Peak Level Artifacts for Ladder Alleles</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Suppress Critical Peak Level Artifacts for Ladder Alleles</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerExtendedLocusOptionsBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smExtendedLocusOptionsHeader</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Extended Locus Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Extended Locus Options</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smExtendLociEdgeToEdgePreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Extend Loci To Neighboring Locus</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Extend Loci To Neighboring Locus</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Allow Specified Core Locus Overlaps To Override Above</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Allow Specified Core Locus Overlaps To Override Above</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMaxILSBPForExtendedLocus</Name>
-			<MessageType>count</MessageType>
-			<Description>Max ILS BP for Extended Locus</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>600</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>        Max ILS-BP For Extended Locus</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Max ILS-BP For Extended Locus</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		
-		<SmartMessage>
-			<Name>smSpacerNoisyPeakOptionsBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smNoisyPeakOptionsHeader</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Noisy Peak Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Noisy Peak Options</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>2</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>1</Threshold>
-				<ThresholdDescriptor>        Make Shared Bin Artifacts Critical</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Make Shared Bin Artifacts Critical</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
-			<MessageType>count</MessageType>
-			<Description>Minimum ratio to create noisy peak</Description>
-			<Subject>10</Subject>
-			<SampleType>2</SampleType>
-			<CountingDataInfo>
-				<Threshold>70</Threshold>
-				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>        Minimum Imbalance Ratio to Create Noisy Peak (%)</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Minimum Imbalance Ratio to Create Noisy Peak</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smSpacerRestrictedPriorityOptionsBegin</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>     </ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>     </Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>3</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smRestrictedPriorityOptionsHeader</Name>
-			<MessageType>count</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>-1</Threshold>
-				<Comparison>Greater</Comparison>
-				<ThresholdDescriptor>Restricted Priority Editing Options:</ThresholdDescriptor>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Restricted Priority Editing Options</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAllowEditingRestrictedPriorityPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Allow Editing Restricted Priority Peaks Above Min RFU (Default = false)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Allow Editing Restricted Priority Peaks Above Min RFU</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smAllowEditingPeaksBelowMinRFUPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>2</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Allow Editing Peaks Below Min RFU (Default = false; requires above as well)</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Allow Editing Peaks Below Min RFU</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
 	</MessageDeclarations>
 	<TestUnitsSampleLevel>
 		<ConditionalTestUnit>
@@ -7577,31 +5184,12 @@
 					<Scope>1</Scope>
 					<MeasuredMessages>
 						<Name>smMakePullupAtAlleleNonCriticalPreset</Name>
-						<Name>smILSReportShoulderArtifactPreset</Name>
-						<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
-						<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
-						<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
-						<Name>smDontCallPullupPlusOLPreset</Name>
-						<Name>smDoNotCallExcessResidualPreset</Name>
-						<Name>smRequireExcessiveResidualOffLadderPreset</Name>
-						<Name>smAllowEditingRestrictedPriorityPreset</Name>
-						<Name>smAllowEditingPeaksBelowMinRFUPreset</Name>
-						<Name>smNoNegativeDataPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
 					<Scope>2</Scope>
 					<MeasuredMessages>
 						<Name>smResidualDisplacementThreshold</Name>
-						<Name>smResidualDisplacementFractionalLimit</Name>
-						<Name>smExtendLociEdgeToEdgePreset</Name>
-						<Name>smAllowCoreLocusOverlapsToOverrideEdgeToEdgePreset</Name>
-						<Name>smMaxILSBPForExtendedLocus</Name>
-						<Name>smCallStutterPeaksPreset</Name>
-						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
-						<Name>smTestPullupCorrectedHeightsPreset</Name>
-						<Name>smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset</Name>
-						<Name>smHeightToConsiderTrueHomozygote</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -7611,39 +5199,14 @@
 						<Name>smTestForExcessiveNoisePreset</Name>
 						<Name>smTestForPrimerPeaksInNegControl</Name>
 						<Name>smTestRelativeBaselinePreset</Name>
-						<Name>smUseProximityToPeaksOnlyPreset</Name>
-						<Name>smDistanceFromPeakThreshold</Name>
-						<Name>smPrePrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
-						<Name>smPostPrimerPercentOfNoiseRangeToBeConsideredPeak</Name>
-						<Name>smUseProximityBothToPeaksAndLevelChangePreset</Name>
-						<Name>smDistanceFromLevelChange</Name>
-						<Name>smPrePrimerPercentOfNoiseRangeForLevelChange</Name>
-						<Name>smPostPrimerPercentOfNoiseRangeForLevelChange</Name>
-						<Name>smMaxPercentLevelChangeToUseLevelChangeProximity</Name>
 						<Name>smIgnoreNegativeRelativeBaselinePreset</Name>
 						<Name>smBaselineEstimationThreshold</Name>
 						<Name>smResidualDisplacementTestPreset</Name>
-						<Name>smILSFilterLeftShoulderPeaksPreset</Name>
-						<Name>smILSShoulderPeakProximityThreshold</Name>
-						<Name>smILSShoulderFilterPercentThreshold</Name>
-						<Name>smMakeLadderArtifactsLeftOfCoreLadderNonCriticalPreset</Name>
-						<Name>smMakeLadderArtifactsRightOfCoreLadderNonCriticalPreset</Name>
-						<Name>smSuppressCriticalPeakLevelArtifactsForLadderAllelesPreset</Name>
-						<Name>smScaleILSPrimerSearchPreset</Name>
-						<Name>smNumberOfLastILSPeaksInScale</Name>
-						<Name>smPercentLastILSPeaksInScaling</Name>
-						<Name>smApplyEnhancedShoulderFittingAlgorithmPreset</Name>
-						<Name>smNoiseFactorForShoulderAcceptanceThreshold</Name>
-						<Name>smConcaveDownAcceptanceThreshold</Name>
-						<Name>smSuppressCriticalPeakLevelArtifactsForILSPeaksPreset</Name>
-						<Name>smDisplaySigmoidalPeaksPreset</Name>
-						<Name>smIncludeNonStandardStutterInStutterOverlapPreset</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
 					<Scope>4</Scope>
 					<MeasuredMessages>
-						<Name>smViewHighDetailMessages</Name>
 						<Name>smTestForPeaksBelowMinRFUForNegCtrlPreset</Name>
 						<Name>smFlagMixedSamplesPreset</Name>
 						<Name>smAmpMoreOnLowHomozygotePreset</Name>
@@ -7653,53 +5216,24 @@
 						<Name>smIgnoreNoiseAnalysisAboveDetectionThresholdInSmoothing</Name>
 						<Name>smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset</Name>
 						<Name>smCraterPlusRaisedBaselinePreset</Name>
+						<Name>smDontCallPullupPlusOLPreset</Name>
 						<Name>smDontCallAnyOLsIfTooManyPreset</Name>
+						<Name>smCallOnLadderAdenylationPreset</Name>
+						<Name>smDoNotCallExcessResidualPreset</Name>
 						<Name>smDoNotReportHeterozygousImbalanceIfMixturePreset</Name>
 						<Name>smNormalizeRawDataRelativeToBaselinePreset</Name>
 						<Name>smPercentOfStandardNoiseThreshold</Name>
 						<Name>smEnableLadderFitThresholdTestPreset</Name>
 						<Name>smLadderFitThreshold</Name>
-						<Name>smLadderFitThresholdUsingMinError</Name>
 						<Name>smEnableRawDataFilterForNormalizationPreset</Name>
-						<Name>smSelectTriplePassVsSinglePassFilterPreset</Name>
-						<Name>smTriplePassFilterWindowWidth</Name>
-						<Name>smSinglePassFilterWindowWidth</Name>
-						<Name>smSelectAveragingInPlaceFilterPreset</Name>
-						<Name>smAveragingInPlaceFilterWindowWidth</Name>
+						<Name>smFilterWindowWidthForBaselineEstimation</Name>
 						<Name>smMinPrimaryPullupThreshold</Name>
-						<Name>smSelectUserSpecifiedMinRFUForPrimaryPeakPreset</Name>
 						<Name>smMakeExcessiveResidualDisplacementCriticalPreset</Name>
 						<Name>smDisableLowLevelFiltersForKnownMixturesPreset</Name>
 						<Name>smDisableFractionalFilterPreset</Name>
 						<Name>smDisablePullupFractionalFilterPreset</Name>
 						<Name>smDisableStutterFilterPreset</Name>
 						<Name>smDisableAdenylationFilterPreset</Name>
-						<Name>smUseMaxSecondDerivativesForSampleToLadderFit</Name>
-						<Name>smCallOnLadderAdenylationPreset</Name>
-						<Name>smConstrainPullupPatternAnalysisPreset</Name>
-						<Name>smOverrideNoiseLevelPercentsInSmoothing</Name>
-						<Name>smPercentOverrideOfNoiseThresholdForNormalizationPhase</Name>
-						<Name>smPercentOverrideOfNoiseThresholdForFinalPhase</Name>
-						<Name>smILSBPForEndOfPrimerPeaks</Name>
-						<Name>smTailHeightFittingThresholdFactor</Name>
-						<Name>smTailSlopeFittingThresholdFactor</Name>
-					</MeasuredMessages>
-				</ScopeDynamics>
-				<ScopeDynamics>
-					<Scope>6</Scope>
-					<MeasuredMessages>
-						<Name>smSaveLadderILSHistoryPreset</Name>
-						<Name>smLatitudeForILSFit</Name>
-						<Name>smUseLadderEndPointILSAlgorithmPreset</Name>
-						<Name>smPlusLatitudeForLadderEndPointILSFit</Name>
-						<Name>smChannelRemappingForLadderFreeOverrideDefault</Name>
-						<Name>smFsaChannelForOsirisChannel1</Name>
-						<Name>smFsaChannelForOsirisChannel2</Name>
-						<Name>smFsaChannelForOsirisChannel3</Name>
-						<Name>smFsaChannelForOsirisChannel4</Name>
-						<Name>smFsaChannelForOsirisChannel5</Name>
-						<Name>smMakeMixturesDefaultSampleTypePreset</Name>
-						<Name>smMinImbalanceThresholdForCreatingNoisyPeak</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 			</StageDynamics>
@@ -7715,14 +5249,11 @@
 						<Name>smSpike</Name>
 						<Name>smBlob</Name>
 						<Name>smPullUp</Name>
-						<Name>smCalculatedPurePullup</Name>
-						<Name>smPartialPullupBelowMinRFU</Name>
 						<Name>smPeakOutsideILS</Name>
 						<Name>smBelowMinRFU</Name>
 						<Name>smBaselineRelativeBelowMinRFU</Name>
 						<Name>smUnexpectedILSPeak</Name>
 						<Name>smPeakHeightAboveMax</Name>
-						<Name>smPeakHeightAboveHomozygoteTrustThreshold</Name>
 						<Name>smOsirisBelowMinRFUButRawDataAbove</Name>
 						<Name>smRawDataBelowMinRFUButOsirisAbove</Name>
 						<Name>smOsirisAboveMaxRFUButRawDataBelow</Name>
@@ -7730,12 +5261,6 @@
 						<Name>smPeakInCoreLadderLocus</Name>
 						<Name>smPeakToRightOfILS</Name>
 						<Name>smILSPeakMayBeIncorrect</Name>
-						<Name>smPartOfDualSignal</Name>
-						<Name>smThreePointPeak</Name>
-						<Name>smNegativePeak</Name>
-						<Name>smILSShoulderPeak</Name>
-						<Name>smLaserOffScale</Name>
-						<Name>smPeakIgnored</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smCountThisSignal = true</Expression>
@@ -7743,7 +5268,6 @@
 					<Triggers>
 						<TriggerExpression>smSpike (NOT smBelowMinRFU): smNumberOfSpikesInSample</TriggerExpression>
 						<TriggerExpression>smPeakHeightAboveMax: smPeaksAboveMax</TriggerExpression>
-						<TriggerExpression>smPeakHeightAboveHomozygoteTrustThreshold: smPeaksAboveHomozygoteValidityThreshold</TriggerExpression>
 						<TriggerExpression>smCountThisSignal (NOT smBelowMinRFU): smTotalNumberOfSignals</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
@@ -7755,11 +5279,9 @@
 						<Name>smLocusIsPosControl</Name>
 						<Name>smNPeaksForLocusUnavailable</Name>
 						<Name>smAssociatedLadderLocusIsCritical</Name>
-						<Name>smIsQualityLocus</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smPeaksAboveMax</Name>
-						<Name>smPeaksAboveHomozygoteValidityThreshold</Name>
 					</TriggeredMessages>
 					<Evaluations>
 						<Expression>smThisIsALocus = 1</Expression>
@@ -7797,8 +5319,8 @@
 					<Triggers>
 						<TriggerExpression>smFSAChannelUnreadable: smFSAUnreadable</TriggerExpression>
 						<TriggerExpression>smILSSpacingIsMarginal: smSampleHasMarginalILS</TriggerExpression>
-						<TriggerExpression>smChannelHasRaisedBaseline (NOT (smChannelIsILS OR smSampleIsLadder)): smSampleHasRaisedBaseline</TriggerExpression>
-						<TriggerExpression>smChannelHasExcessiveNoise (NOT (smChannelIsILS OR smSampleIsLadder)): smSampleHasExcessiveNoise</TriggerExpression>
+						<TriggerExpression>smChannelHasRaisedBaseline: smSampleHasRaisedBaseline</TriggerExpression>
+						<TriggerExpression>smChannelHasExcessiveNoise: smSampleHasExcessiveNoise</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -7858,14 +5380,15 @@
 						<Name>smUnexpectedLadderLocusPeak</Name>
 						<Name>smPoorPeakMorphology</Name>
 						<Name>smHeightBelowFractionalFilter</Name>
+						<Name>smBaselineRelativeFractionalFilter</Name>
 						<Name>smHeightBelowPullupFractionalFilter</Name>
+						<Name>smBaselineRelativePullupFractionalFilter</Name>
 						<Name>smPartOfExtendedLocusLeft</Name>
 						<Name>smPartOfExtendedLocusRight</Name>
 						<Name>smBelowFractionalFilterLeft</Name>
 						<Name>smBelowFractionalFilterRight</Name>
 						<Name>smBelowPullupFractionalFilterLeft</Name>
 						<Name>smBelowPullupFractionalFilterRight</Name>
-						<Name>smLadderPeakOutsideCoreLadder</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smInferredFFLeft = smPartOfExtendedLocusLeft AND smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter</Expression>
@@ -7874,7 +5397,7 @@
 						<Expression>smInferredPullupFFRight = smPartOfExtendedLocusRight AND smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter</Expression>
 						<Expression>smFFLeft = ((smBelowFractionalFilterLeft AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterLeft AND NOT smDisablePullupFractionalFilter) OR smInferredFFLeft OR smInferredPullupFFLeft)</Expression>
 						<Expression>smFFRight = ((smBelowFractionalFilterRight AND NOT smDisableFractionalFilter) OR (smBelowPullupFractionalFilterRight AND NOT smDisablePullupFractionalFilter) OR smInferredFFRight OR smInferredPullupFFRight)</Expression>
-						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter AND NOT smPeakInCoreLadderLocus</Expression>
+						<Expression>smExtendedFractionalFilter = ((NOT smPartOfExtendedLocusRight AND smFFLeft) OR (NOT smPartOfExtendedLocusLeft AND smFFRight) OR (smFFLeft AND smFFRight)) AND NOT smDisableFractionalFilter</Expression>
 						<Expression>smUnassignedInterlocusPeak = NOT (smPeakInCoreLadderLocus OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSampleIsLadder OR smSignalIsCtrlPeak OR smUnexpectedILSPeak OR smChannelIsILS)</Expression>
 					</Evaluations>
 				</ScopeDynamics>
@@ -7904,19 +5427,13 @@
 						<Name>smStutter</Name>
 						<Name>smBaselineRelativeStutter</Name>
 						<Name>smAdenylation</Name>
-						<Name>smSignalOL</Name>
-						<Name>smIsAcceptedOLAllele</Name>
 						<Name>smBaselineRelativeAdenylation</Name>
 						<Name>smNotInterchannelLink</Name>
 						<Name>smAmbiguousInterlocusCrater</Name>
 						<Name>smAmbiguousInterlocusWithPoorMorphology</Name>
 						<Name>smPrimaryInterchannelLink</Name>
-						<Name>smWeakPrimaryInterchannelLink</Name>
-						<Name>smRawDataPrimaryInterchannelLink</Name>
-						<Name>smZeroPullupPrimaryInterchannelLink</Name>
 						<Name>smCrater</Name>
 						<Name>smSigmoidalPullup</Name>
-						<Name>smSigmoidalSidePeak</Name>
 						<Name>smCraterSidePeak</Name>
 						<Name>smSignalNotACrater</Name>
 						<Name>smSignalNotACraterSidePeak</Name>
@@ -7926,8 +5443,6 @@
 						<Name>smPossibleExtraLocusAllele</Name>
 						<Name>smWouldCauseHeterozygousImbalanceLeft</Name>
 						<Name>smWouldCauseHeterozygousImbalanceRight</Name>
-						<Name>smSignalIsIntegralMultipleOfRepeatLeft</Name>
-						<Name>smSignalIsIntegralMultipleOfRepeatRight</Name>
 						<Name>smSignalOffGridLeft</Name>
 						<Name>smSignalOffGridRight</Name>
 						<Name>sm0UnambiguousPeaksLeft</Name>
@@ -7942,49 +5457,51 @@
 						<Name>sm1AmbiguousPeakRight</Name>
 						<Name>sm2PlusAmbiguousPeaksLeft</Name>
 						<Name>sm2PlusAmbiguousPeaksRight</Name>
+						<Name>smLaserOffScalePullupOrCraterNotPrimary</Name>
+						<Name>smLaserOffScalePrimary</Name>
+						<Name>smLaserOffScaleNoInterchannelLink</Name>
 						<Name>smExcessiveResidualDisplacement</Name>
 						<Name>smExcessiveResidualDisplacementLeft</Name>
 						<Name>smExcessiveResidualDisplacementRight</Name>
-						<Name>smCorePeakSharesAlleleBin</Name>
-						<Name>smPeakSharesAlleleBinLeft</Name>
-						<Name>smPeakSharesAlleleBinRight</Name>
-						<Name>smRedundantPeak</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS AND NOT smIsQualityLocus</Expression>
+						<Expression>smUnexpectedPeakInNegativeControl = smSampleIsNegCtrl AND NOT smChannelIsILS</Expression>
 						<Expression>smPurePullup = smPullUp AND NOT smPrimaryInterchannelLink AND NOT smNotInterchannelLink</Expression>
-						<Expression>smTemp1Left = sm0UnambiguousPeaksLeft AND NOT sm0UnambiguousPeaksRight</Expression>
-						<Expression>smTemp1Right = sm0UnambiguousPeaksRight AND NOT sm0UnambiguousPeaksLeft</Expression>
-						<Expression>smTemp2Left = (smAcceptedOLLeft AND NOT smAcceptedOLRight) AND NOT smTemp1Right</Expression>
-						<Expression>smTemp2Right = (smAcceptedOLRight AND NOT smAcceptedOLLeft) AND NOT smTemp1Left</Expression>
-						<Expression>smTemp3Left = (smFFRight AND NOT smFFLeft) AND NOT (smTemp1Right OR smTemp2Right)</Expression>
-						<Expression>smTemp3Right = (smFFLeft AND NOT smFFRight) AND NOT (smTemp1Left OR smTemp2Left)</Expression>
-						<Expression>smTemp5Left = (smExcessiveResidualDisplacementRight AND NOT smExcessiveResidualDisplacementLeft) AND NOT (smTemp1Right OR smTemp2Right OR smTemp3Right)</Expression>
-						<Expression>smTemp5Right = (smExcessiveResidualDisplacementLeft AND NOT smExcessiveResidualDisplacementRight) AND NOT (smTemp1Left OR smTemp2Left OR smTemp3Left)</Expression>
-						<Expression>smTemp6Left = (sm1UnambiguousPeakLeft AND sm2PlusUnambiguousPeaksRight) AND NOT (smTemp1Right OR smTemp2Right OR smTemp3Right OR smTemp5Right)</Expression>
-						<Expression>smTemp6Right = (sm1UnambiguousPeakRight AND sm2PlusUnambiguousPeaksLeft) AND NOT (smTemp1Left OR smTemp2Left OR smTemp3Left OR smTemp5Left)</Expression>
-						<Expression>smTemp7Left = smTemp1Left OR ((smTemp2Left OR smTemp3Left OR smTemp5Left OR smTemp6Left OR smSignalIsIntegralMultipleOfRepeatLeft) AND NOT smFFLeft)</Expression>
-						<Expression>smTemp7Right = smTemp1Right OR ((smTemp2Right OR smTemp3Right OR smTemp5Right OR smTemp6Right OR smSignalIsIntegralMultipleOfRepeatRight) AND NOT smFFRight)</Expression>
-						<Expression>smCouldBelongToLocusLeft = (smTemp7Left AND smPartOfExtendedLocusLeft) AND NOT smTemp7Right AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
-						<Expression>smCouldBelongToLocusRight = (smTemp7Right AND smPartOfExtendedLocusRight) AND NOT smTemp7Left AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)</Expression>
-						<Expression>smPullUpAtControlPeak = smSignalIsCtrlPeak AND smPullUp</Expression>
-						<Expression>smInterlocusPullUp = (NOT (smPeakInCoreLadderLocus OR smSampleIsLadder OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSignalIsCtrlPeak OR smChannelIsILS)) AND (smPullUp OR smCalculatedPurePullup)</Expression>
+						<Expression>smTemp1Left = sm0UnambiguousPeaksRight AND smSignalOffGridRight</Expression>
+						<Expression>smTemp2Left = sm1UnambiguousPeakLeft AND sm2PlusUnambiguousPeaksRight</Expression>
+						<Expression>smTemp3Left = sm1UnambiguousPeakLeft AND NOT smSignalOffGridLeft AND smTemp1Left</Expression>
+						<Expression>smTemp5Left = sm0UnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight</Expression>
+						<Expression>smTemp6Left = sm0UnambiguousPeaksLeft AND sm1AmbiguousPeakLeft AND sm1UnambiguousPeakRight</Expression>
+						<Expression>smTemp7Left = sm0UnambiguousPeaksLeft AND sm2PlusAmbiguousPeaksRight AND NOT smSignalOffGridLeft AND smTemp1Left</Expression>
+						<Expression>smTemp9Left = sm2PlusUnambiguousPeaksLeft AND sm2PlusUnambiguousPeaksRight AND smSignalOffGridRight AND NOT smPurePullup AND NOT smSignalOffGridLeft</Expression>
+						<Expression>smTemp1Right = sm0UnambiguousPeaksLeft AND smSignalOffGridLeft</Expression>
+						<Expression>smTemp2Right = sm1UnambiguousPeakRight AND sm2PlusUnambiguousPeaksLeft</Expression>
+						<Expression>smTemp3Right = sm1UnambiguousPeakRight AND NOT smSignalOffGridRight AND smTemp1Right</Expression>
+						<Expression>smTemp5Right = sm0UnambiguousPeaksRight AND sm2PlusUnambiguousPeaksLeft</Expression>
+						<Expression>smTemp6Right = sm0UnambiguousPeaksRight AND sm1AmbiguousPeakRight AND sm1UnambiguousPeakLeft</Expression>
+						<Expression>smTemp7Right = sm0UnambiguousPeaksRight AND sm2PlusAmbiguousPeaksLeft AND NOT smSignalOffGridRight AND smTemp1Right</Expression>
+						<Expression>smTemp9Right = sm2PlusUnambiguousPeaksRight AND sm2PlusUnambiguousPeaksLeft AND smSignalOffGridLeft AND NOT smPurePullup AND NOT smSignalOffGridRight</Expression>
+						<Expression>smCouldBelongToLocusLeft = (smTemp2Left OR smTemp3Left OR smTemp5Left OR smTemp6Left OR smTemp7Left OR smTemp9Left) AND NOT smPeakInCoreLadderLocus</Expression>
+						<Expression>smCouldBelongToLocusRight = (smTemp2Right OR smTemp3Right OR smTemp5Right OR smTemp6Right OR smTemp7Right OR smTemp9Right) AND NOT smPeakInCoreLadderLocus</Expression>
+						<Expression>smPullUpAtControlPeak = smSignalIsCtrlPeak AND smPurePullup</Expression>
+						<Expression>smInterlocusPullUp = (NOT (smPeakInCoreLadderLocus OR smSampleIsLadder OR smPartOfExtendedLocusLeft OR smPartOfExtendedLocusRight OR smSignalIsCtrlPeak OR smChannelIsILS)) AND smPurePullup</Expression>
 						<Expression>smInterlocusPullUpWithPoorFit = smInterlocusPullUp AND (smPoorPeakMorphology OR smCurveFitMarginal OR smCurveFitFailed)</Expression>
-						<Expression>smPullupAtExtraneousILSPeak = smChannelIsILS AND smPullUp AND smUnexpectedILSPeak</Expression>
-						<Expression>smPossibleValidInterlocusLeft = smCouldBelongToLocusLeft</Expression>
+						<Expression>smPullupAtExtraneousILSPeak = smChannelIsILS AND smPurePullup AND smUnexpectedILSPeak</Expression>
+						<Expression>smPossibleValidInterlocusLeft = smPartOfExtendedLocusLeft AND NOT (smFFLeft OR smInterlocusPullUp)</Expression>
 						<Expression>smPossibleValidInterlocusRight = smPartOfExtendedLocusRight AND NOT (smFFRight OR smInterlocusPullUp)</Expression>
-						<Expression>smValidOLInterlocusLeft = smCouldBelongToLocusLeft</Expression>
-						<Expression>smValidOLInterlocusRight = smCouldBelongToLocusRight</Expression>
+						<Expression>smAmbiguousInterlocus = smPossibleValidInterlocusLeft AND smPossibleValidInterlocusRight</Expression>
+						<Expression>smValidOLInterlocusLeft = smPossibleValidInterlocusLeft AND NOT smAcceptedOLLeft</Expression>
+						<Expression>smValidOLInterlocusRight = smPossibleValidInterlocusRight AND NOT smAcceptedOLRight</Expression>
 						<Expression>smAcceptedInterlocusLeft = smPossibleValidInterlocusLeft AND smAcceptedOLLeft</Expression>
 						<Expression>smAcceptedInterlocusRight = smPossibleValidInterlocusRight AND smAcceptedOLRight</Expression>
-						<Expression>smLaserOffScaleForTrigger = smLaserOffScale</Expression>
-						<Expression>smDoNotCall = (smAdenylation AND (NOT smCallOnLadderAdenylationPreset OR smSignalOL))</Expression>
 					</Evaluations>
 					<Triggers>
 						<TriggerExpression>smStutter (NOT smBelowMinRFU AND NOT smDisableStutterFilter): smNumberOfStuttersInSample</TriggerExpression>
-						<TriggerExpression>smAdenylation (NOT (smBelowMinRFU OR smDisableAdenylationFilter OR (smCallOnLadderAdenylationPreset AND NOT smSignalOL))): smNumberOfAdenylationsInSample</TriggerExpression>
+						<TriggerExpression>smAdenylation (NOT smBelowMinRFU AND NOT smDisableAdenylationFilter): smNumberOfAdenylationsInSample</TriggerExpression>
 						<TriggerExpression>smUnexpectedPeakInNegativeControl ((NOT smPeakToRightOfILS) AND (NOT smBelowMinRFU OR (smBelowMinRFU AND smTestForPeaksBelowMinRFUForNegCtrlPreset))): smUnexpectedNoOfPeaks, smUnexpectedNoOfPeaksInChannel, smNegCtrlFailed</TriggerExpression>
-						<TriggerExpression>smLaserOffScaleForTrigger (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak AND NOT smMakeLaserOffScaleNonCriticalPreset): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
+						<TriggerExpression>smLaserOffScalePrimary (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
+						<TriggerExpression>smLaserOffScaleNoInterchannelLink (NOT smCraterSidePeak AND NOT smSignalNotACraterSidePeak): smLocusHasPeaksWithLaserSaturation, smSomePeaksHaveLaserOffScale</TriggerExpression>
+						<TriggerExpression>smAmbiguousInterlocus: smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -8029,6 +5546,7 @@
 				<ScopeDynamics>
 					<Scope>1</Scope>
 					<MeasuredMessages>
+						<Name>smSignalOL</Name>
 						<Name>smSignalIsAllele</Name>
 						<Name>smBPResidualTooLarge</Name>
 						<Name>smExtraLadderAllele</Name>
@@ -8039,28 +5557,23 @@
 						<Name>smBaselineRelativeBelowMinInterlocusRFU</Name>
 					</MeasuredMessages>
 					<Evaluations>
-						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR smRedundantPeak OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL)) OR smPullupAtExtraneousILSPeak OR smLadderPeakOutsideCoreLadder) AND NOT ((smSampleIsNegCtrl AND NOT smChannelIsILS) OR smSignalIsCtrlPeak)</Expression>
-						<Expression>smNonEditableRestrictedPriorityPeak = (smRestrictedPriorityPeak AND NOT smBelowMinRFU) AND NOT smAllowEditingRestrictedPriorityPreset</Expression>
-						<Expression>smEditableRestrictedPriorityPeak = (smRestrictedPriorityPeak AND NOT smBelowMinRFU) AND smAllowEditingRestrictedPriorityPreset</Expression>
-						<Expression>smBelowMinRFURestrictedPriorityPeak = (smRestrictedPriorityPeak AND smBelowMinRFU) AND NOT (smAllowEditingRestrictedPriorityPreset AND smAllowEditingPeaksBelowMinRFUPreset)</Expression>
-						<Expression>smEditableBelowMinRFURestrictedPriorityPeak = (smRestrictedPriorityPeak AND smBelowMinRFU) AND (smAllowEditingRestrictedPriorityPreset AND smAllowEditingPeaksBelowMinRFUPreset)</Expression>
+						<Expression>smRestrictedPriorityPeak = (smHeightBelowInterlocusMinRFU OR smBelowMinRFU OR (smStutter AND NOT smDisableStutterFilter) OR ((smAdenylation AND NOT smDisableAdenylationFilter) AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smHeightBelowFractionalFilter AND NOT smDisableFractionalFilter) OR (smHeightBelowPullupFractionalFilter AND NOT smDisablePullupFractionalFilter) OR smInterlocusPullUp OR (smExtendedFractionalFilter AND NOT smDisableFractionalFilter) OR smPullupAtExtraneousILSPeak) AND NOT (smSampleIsNegCtrl OR smSignalIsCtrlPeak)</Expression>
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
-						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullUp AND NOT smRestrictedPriorityPeak</Expression>
-						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT (smRestrictedPriorityPeak OR smSampleIsPosCtrl)</Expression>
-						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
+						<Expression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele = smPurePullup AND smPreliminaryLocusHas2OrMoreAlleles AND smBPResidualTooLarge AND NOT smRestrictedPriorityPeak</Expression>
+						<Expression>smPeakIsNotAnAllele = smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Expression>
+						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPurePullup AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak</Expression>
+						<Expression>smAlleleHasExcessiveResidual = smBPResidualTooLarge AND smSignalIsAllele AND NOT smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele</Expression>
+						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak</Expression>
+						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smPeakIsNotAnAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
-						<Expression>smPurePullupLateStage = smPurePullup OR smCalculatedPurePullup OR smPartialPullupBelowMinRFU</Expression>
-						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter AND NOT (smCallOnLadderAdenylationPreset AND NOT smSignalOL)) OR (smPullUp AND NOT smNotInterchannelLink) OR smCalculatedPurePullup OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
-						<Expression>smAmbiguousInterlocus = NOT (smCouldBelongToLocusLeft AND smCouldBelongToLocusRight) AND NOT smChannelIsILS AND NOT smSampleIsLadder AND NOT (smPeakInCoreLadderLocus AND NOT smSignalOL) AND (smPartOfExtendedLocusLeft AND smPartOfExtendedLocusRight) AND NOT smPossibleAmbiguousInterlocusAssignedToLocus</Expression>
-						<Expression>smAmbiguousCoreVsExtendedLeft = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusLeft</Expression>
-						<Expression>smAmbiguousCoreVsExtendedRight = NOT smChannelIsILS AND NOT smSampleIsLadder AND (smPeakInCoreLadderLocus AND smSignalOL) AND smPartOfExtendedLocusRight</Expression>
-						<Expression>smAlleleHasExcessiveResidual = (smBPResidualTooLarge AND smSignalIsAllele) AND NOT smAmbiguousInterlocus</Expression>
+						<Expression>smPurePullupLateStage = smPurePullup</Expression>
+						<Expression>smNotAKnownArtifact = NOT ((smStutter AND NOT smDisableStutterFilter) OR (smAdenylation AND NOT smDisableAdenylationFilter) OR (smPullUp AND NOT smNotInterchannelLink) OR smSpike OR (((smHeightBelowFractionalFilter OR smExtendedFractionalFilter)) AND NOT smDisableFractionalFilter AND smIncludeFractionalFilterAmongKnownArtifactsToEvaluateSubAnalyticPeaksPreset))</Expression>
 					</Evaluations>
 					<Triggers>
-						<TriggerExpression>smAmbiguousInterlocus (NOT (smRestrictedPriorityPeak OR smCalculatedPurePullup OR smExcessiveResidualDisplacement OR (smExcessiveResidualDisplacementLeft AND smExcessiveResidualDisplacementRight))): smAmbiguousExtendedLocusChannelPeaks</TriggerExpression>
 						<TriggerExpression>smTrueCrater (NOT smRestrictedPriorityPeak): smNumberOfCratersInSample</TriggerExpression>
 						<TriggerExpression>smTrueCrater (smActuallyAnAllele): smLocusContainsCrater</TriggerExpression>
+						<TriggerExpression>smSignalIsPullupAndPoorMorphologyOrResidualInMultiAllele: smUnexpectedPeaksInSampleLocus</TriggerExpression>
 						<TriggerExpression>smExtraneousAMELPeak (NOT smRestrictedPriorityPeak): smAMELHasExtraneousPeaks</TriggerExpression>
 						<TriggerExpression>smAlleleHasExcessiveResidual (NOT smRestrictedPriorityPeak): smLocusContainsPeaksWithExcessiveResiduals, smNumberOfExcessiveResidualsInSample</TriggerExpression>
 						<TriggerExpression>smAlleleOL: smOLAlleles, smNumberOfOffLadderAllelesInSample</TriggerExpression>
@@ -8132,27 +5645,24 @@
 						<Name>smInterlocusPeaksToRight</Name>
 						<Name>smInterlocusPeaksToLeft</Name>
 						<Name>smLocusIsYLinked</Name>
-						<Name>smPosCtrlLocusNotFound</Name>
-						<Name>smUnexpectedPeaksInSampleLocus</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smOLAlleles</Name>
+						<Name>smUnexpectedPeaksInSampleLocus</Name>
 					</TriggeredMessages>
 					<Evaluations>
-						<Expression>smReportedHomozygoteHeightProblem = smHomozygoteHeightProblem AND (NOT smSampleIsPosCtrl OR NOT smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset)</Expression>
 						<Expression>smNoYLinkedAlleleExpected = (smNoYForAMEL AND smSampleHasAMELLocus) AND smLocusIsYLinked</Expression>
 						<Expression>smLocusContainsPullUpWithHeteroImbalance = smHeterozygousImbalance AND smLocusAlleleHasPullup</Expression>
-						<Expression>smLocusUnderAmped = ((smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smReportedHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smReportedHomozygoteHeightProblem))) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected AND NOT (smLocusIsHomozygous AND smPeaksAboveHomozygoteValidityThreshold)</Expression>
+						<Expression>smLocusUnderAmped = ((smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smHomozygoteHeightProblem))) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected</Expression>
 					</Evaluations>
 					<Triggers>
-						<TriggerExpression>smReportedHomozygoteHeightProblem (NOT smSampleIsNegCtrl): smSampleHasHomozygoteWithHeightProblem</TriggerExpression>
+						<TriggerExpression>smHomozygoteHeightProblem (NOT smSampleIsNegCtrl): smSampleHasHomozygoteWithHeightProblem</TriggerExpression>
 						<TriggerExpression>smLocusIsHomozygous (NOT smSampleIsNegCtrl AND NOT smLocusIsYLinked): smTotalNumberOfHomozygousLoci</TriggerExpression>
 						<TriggerExpression>smThreeOrMoreAlleles (smFlagMixedSamplesPreset OR smDoNotReportHeterozygousImbalanceIfMixturePreset): smTotalNumberOfTriallelicLoci, smNoLociWithThreeOrMoreAlleles</TriggerExpression>
 						<TriggerExpression>smNoGenotypeFound (NOT smSampleIsLadder AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected): smLocusDropout</TriggerExpression>
-						<TriggerExpression>smLocusUnderAmped (NOT (smLocusIsHomozygous AND smPeaksAboveHomozygoteValidityThreshold)): smAtLeastOneLocusUnderAmped</TriggerExpression>
+						<TriggerExpression>smLocusUnderAmped: smAtLeastOneLocusUnderAmped</TriggerExpression>
 						<TriggerExpression>smMoreThanThreeAlleles (smFlagMixedSamplesPreset OR smDoNotReportHeterozygousImbalanceIfMixturePreset): smLociWithMoreThanThreeAlleles, smNoLociWithThreeOrMoreAlleles</TriggerExpression>
 						<TriggerExpression>smLocusIsYLinked (NOT smNoGenotypeFound): smSomeYLinkedLociHaveAlleles</TriggerExpression>
-						<TriggerExpression>smPosCtrlLocusNotFound: smPosCtrlLociNotFound</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -8160,7 +5670,11 @@
 					<MeasuredMessages>
 						<Name>smCriticalMessagesAtILS</Name>
 						<Name>smChannelPeaksHaveCriticalArtifacts</Name>
+						<Name>smPosCtrlLocusNotFound</Name>
 					</MeasuredMessages>
+					<Triggers>
+						<TriggerExpression>smPosCtrlLocusNotFound: smPosCtrlLociNotFound</TriggerExpression>
+					</Triggers>
 				</ScopeDynamics>
 				<ScopeDynamics>
 					<Scope>4</Scope>
@@ -8170,9 +5684,6 @@
 						<Name>smSampleUnanalyzable</Name>
 						<Name>smNamedPosCtrlNotFound</Name>
 						<Name>smNoYForAMEL</Name>
-						<Name>smSampleAnalysisTruncatedPrematurely</Name>
-						<Name>smSampleMissingDataForChannels</Name>
-						<Name>smSampleIsNotValidInputFile</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfHomozygousLoci</Name>
@@ -8233,7 +5744,7 @@
 			<Stage>1</Stage>
 			<StageDynamics>
 				<ScopeDynamics>
-					<Scope>6</Scope>
+					<Scope>5</Scope>
 					<TriggeredMessages>
 						<Name>smLocusSummaryNumberOfCraters</Name>
 					</TriggeredMessages>
@@ -8254,9 +5765,6 @@
 						<Name>smReampAllMore</Name>
 						<Name>smReinjectAll</Name>
 						<Name>smDirectoryPlaceHolder</Name>
-						<Name>smSamplesTerminatedPrematurely</Name>
-						<Name>smSamplesHadNoDataForChannels</Name>
-						<Name>smSamplesAreNotValidInputFiles</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfSamples</Name>
@@ -8274,7 +5782,7 @@
 			<Stage>2</Stage>
 			<StageDynamics>
 				<ScopeDynamics>
-					<Scope>6</Scope>
+					<Scope>5</Scope>
 					<Evaluations>
 						<Expression>smLocusSummaryPercentCraters = smLocusSummaryNumberOfCraters / smTotalNumberOfSamplesExcludingNegativeControls</Expression>
 					</Evaluations>

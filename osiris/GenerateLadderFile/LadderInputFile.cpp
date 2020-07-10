@@ -402,6 +402,7 @@ int LadderInputFile :: AssignString () {
 	RGIndexedLabel* nextIndexedLabel;
 	size_t position;
 	RGString channelString;
+	RGString locusOLString;
 	int i;
 	double dVersion;
 
@@ -575,6 +576,26 @@ int LadderInputFile :: AssignString () {
 			mChannelMap [channel] = mStringRight.ConvertToInteger ();
 			status = 0;
 		}
+	}
+
+	else if (mStringLeft.FindSubstring ("AcceptedOL", position)) {
+
+		temp = SplitUsingColon (mStringLeft, locusOLString);
+
+		if (temp.Length () == 0)
+			cout << "This shouldn't happen, but here goes... couldn't find OL locus string" << endl;
+
+		else {
+
+			//  locusOLString is the locus for the OL allele and mStringRight is the OL allele name
+			mAcceptedOLAlleles << "        <Locus>\n";
+			mAcceptedOLAlleles << "          <Name>" << locusOLString << "</Name>\n";
+			mAcceptedOLAlleles << "          <Allele>" << mStringRight << "</Allele>\n";
+			mAcceptedOLAlleles << "        </Locus>\n";
+			cout << "Found accepted OL Allele Specification:  " << locusOLString << " = " << mStringRight << "\n";
+			status = 0;
+		}
+
 	}
 
 	else if (mStringLeft == "HID") {
