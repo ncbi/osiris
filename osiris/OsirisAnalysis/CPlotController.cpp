@@ -37,9 +37,9 @@
 
 
 
-const int CArtifactDisplayList::nArtifactLabelAll = 20;
-const int CArtifactDisplayList::nArtifactLabelNone = -1;
-const int CArtifactDisplayList::nArtifactLabelCritical = MIN_CRITICAL_ARTIFACT;
+const int CArtifactDisplayList::nArtifactLabelAll = ARTIFACT_ALL;
+const int CArtifactDisplayList::nArtifactLabelNone = ARTIFACT_NONE;
+const int CArtifactDisplayList::nArtifactLabelCritical = ARTIFACT_CRITICAL;
 
 const int CArtifactDisplayList::DEFAULT_NDX = 2;
     // array index of 'critical' in the arrays

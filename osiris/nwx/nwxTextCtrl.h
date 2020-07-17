@@ -60,5 +60,26 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
+class nwxTextCtrlInteger : public nwxTextCtrl
+{
+public:
+  nwxTextCtrlInteger(
+    wxWindow *parent,
+    wxWindowID id,
+    int nMin,
+    int nMax,
+    int nValue = 0x7fffffff,
+    int nDigits = 5,
+    long style = 0L);
+  virtual ~nwxTextCtrlInteger() {}
+  void SetDigits(int n);
+  int GetIntValue(int nEmptyValue = 0);
+private:
+  static wxSize _ComputeSize(int nDigits, wxWindow *parent);
+  static int g_nWidth10;
+  static wxWindow *g_pParent;
+  DECLARE_ABSTRACT_CLASS(nwxTextCtrlInteger);
+};
+
 
 #endif

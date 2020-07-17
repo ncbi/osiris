@@ -44,6 +44,7 @@
 
 #include "nwx/stdb.h"
 #include <vector>
+#include <set>
 #include "nwx/stde.h"
 #include "CPrintOut.h"
 
@@ -56,17 +57,108 @@ class CPrintOutAnalysis : public CPrintOut
 {
 public:
   CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview = false);
-  virtual ~CPrintOutAnalysis() {}
-  virtual wxFrame *GetParent();
+  virtual ~CPrintOutAnalysis();
+  virtual wxWindow *GetParent();
+  virtual int GetMaxPage();
   virtual bool OnPrintPage(int page);
-  virtual bool HasPage(int page);
-  virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 
   static void DoPrintPreview(CFrameAnalysis *pFrame);
+
+  static const std::set<const COARsample *> &GetExcludedSamples()
+  {
+    // everything else will be in OsrisParms
+    return g_setSamplesOmitApplied;
+  }
+  static bool SampleIncluded(const COARsample *p)
+  {
+    return(g_setSamplesOmitApplied.find(p) == g_setSamplesOmitApplied.end());
+  }
+  static void InvalidateAll()
+  {
+    std::set<CPrintOutAnalysis *>::iterator itr;
+    for (itr = g_setAll.begin(); itr != g_setAll.end(); ++itr)
+    {
+      (*itr)->InvalidateSamples();
+    }
+  }
+  virtual void RebuildPages()
+  {
+    InvalidateAll();
+  }
+  static void SetOmittedSamples(const std::set<const COARsample*> &setOmit)
+  {
+    g_setSamplesOmitApplied = setOmit;
+    InvalidateAll();
+  }
+
 private:
+  static std::set<CPrintOutAnalysis *> g_setAll; // all instances of this class
+  static std::set<const COARsample*> g_setSamplesOmitApplied;
+  class CPrintPage
+  {
+  public:
+    CPrintPage() :
+      pSample(NULL),
+      nFirstChannel(0),
+      nChannels(0),
+      nChannelPerPage(0)
+    {}
+    CPrintPage(const COARsample *p, int n1, int nC, int nPg) :
+      pSample(p),
+      nFirstChannel(n1),
+      nChannels(nC),
+      nChannelPerPage(nPg)
+    {
+      pSample = p;
+      n1 = nFirstChannel;
+      nChannels = nC;
+      nChannelPerPage = nPg;
+
+    }
+    CPrintPage(const CPrintPage &x)
+    {
+      (*this) = x;
+    }
+    CPrintPage &operator = (const CPrintPage &x)
+    {
+      pSample = x.pSample;
+      nFirstChannel = x.nFirstChannel;
+      nChannels = x.nChannels;
+      nChannelPerPage = x.nChannelPerPage;
+      return *this;
+    }
+    const COARsample *pSample;
+    int nFirstChannel;
+    int nChannels;
+    int nChannelPerPage; // used for plot size
+  };
+  bool _OnPrintPage(int page);
   CFrameAnalysis *m_pFrameAnalysis;
-  std::vector<const COARsample *> m_vSamples;
   COARfile *m_pFile;
+
+  // m_vPages contains information for each page.
+  // it should be modified only in _DoSetupSampleList() or InvalidateSamples()
+  // and should be directly accessed only from GetPages() or _SetupSampleList()
+  std::vector<CPrintPage> m_vPages;
+  void _DoSetupSampleList();
+  void _SetupSampleList()
+  {
+    if (m_vPages.empty())
+    {
+      _DoSetupSampleList();
+    }
+  }
+  const std::vector<CPrintPage> &GetPages()
+  {
+    _SetupSampleList();
+    return m_vPages;
+  }
+public:
+  void InvalidateSamples()
+  {
+    m_vPages.clear();
+  }
+  DECLARE_ABSTRACT_CLASS(CPrintOutAnalysis)
 };
 
 

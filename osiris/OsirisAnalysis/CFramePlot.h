@@ -134,7 +134,8 @@ public:
   }
 #endif
   void SyncState(CPanelPlot *p, int nID);
-  void SetUseExternalTimer(bool b = true);
+  //void SetUseExternalTimer(bool b = true);
+  COARsample *GetSample();
   bool SetScrollbarMenuLabel(bool bShow);
   bool SetWindowScrollbarMenuLabel();
   void RebuildAll();
@@ -194,7 +195,9 @@ public:
   }
   wxBitmap *CreateBitmap(
     int nWidth, int nHeight, int nDPI, 
-    const wxString &sTitle = wxEmptyString,
+    const wxString &sTitle, // used only for export PNG, should be empty for printing
+    int nPlotsPerPage = CHANNEL_MAX, // this and following parameters are used for printing
+    int nPageNr = 1,
     bool bForcePrintFont = false);
   const wxDateTime *GetSelectedTime()
   {
@@ -353,6 +356,7 @@ private:
   vector<CPanelPlot *> m_vpPlotsByMenuNumber;
   CPlotData *m_pData;
   COARfile *m_pOARfile;
+  COARsample *m_pSample;
   CKitColors *m_pColors;
   CFramePlotMenu *m_pMenu;
   CMenuHistory *m_pMenuHistory;
@@ -386,7 +390,6 @@ public:
   void OnHistoryUpdate(wxCommandEvent &e);
   void OnExport(wxCommandEvent &e);
   wxString GetPrintTitle();
-  void OnPrint(wxCommandEvent &e);
   void OnPrintPreview(wxCommandEvent &e);
 #ifdef __WXMAC__
   void OnPageMargins(wxCommandEvent &e);

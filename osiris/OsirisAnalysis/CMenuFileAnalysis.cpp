@@ -54,7 +54,7 @@ CMenuFileAnalysis::CMenuFileAnalysis() :
   Insert(nInsert++,wxID_SAVEAS);
   Insert(nInsert++,
     IDExportCMF,EXPORT_CMF,EXPORT_CMF_HELP);
-  InsertPrintItems(nInsert, false);
+  InsertPrintItems(nInsert);
 }
 
 CMenuFileAnalysis::~CMenuFileAnalysis()

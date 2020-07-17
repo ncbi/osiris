@@ -49,7 +49,7 @@ CPanelPlotPreview::CPanelPlotPreview(
   wxWindow *parent, 
   COARfile *pFile,
   CKitColors *pColors,
-  bool bExternalTimer,
+  //bool bExternalTimer,// EXT TIMER
   size_t nMaxCount)
 : wxPanel(parent),
   m_nMaxCount(1),
@@ -58,7 +58,7 @@ CPanelPlotPreview::CPanelPlotPreview(
   m_pFrameAnalysis(pFrame),
   m_pOARfile(pFile),
   m_pColors(pColors),
-  m_bExternalTimer(bExternalTimer),
+ // m_bExternalTimer(bExternalTimer),// EXT TIMER
   m_bLogged(true)
 {
   SetBackgroundColour(*wxWHITE);
@@ -233,6 +233,9 @@ bool CPanelPlotPreview::MenuEvent(wxCommandEvent &e)
   }
   return bRtn;
 }
+/*
+ // EXT TIMER
+
 void CPanelPlotPreview::OnTimer(wxTimerEvent &e)
 {
   CPanelPlot *pPlot = _FindCurrent();
@@ -241,7 +244,7 @@ void CPanelPlotPreview::OnTimer(wxTimerEvent &e)
     pPlot->OnTimer(e);
   }
 }
-
+*/
 CMenuPlot *CPanelPlotPreview::GetMenuPlot()
 {
   CMenuPlot *pMenu(NULL);
@@ -338,8 +341,9 @@ CPanelPlot *CPanelPlotPreview::_Create(const wxString &sFileName)
         m_pFrameAnalysis,
         pData.release(),
         m_pOARfile,
-        m_pColors,
-        m_bExternalTimer);
+        m_pColors
+        //,m_bExternalTimer// EXT TIMER
+      );
       m_listPlots.push_front(pRtn);
       _Cleanup(m_nMaxCount);
     }

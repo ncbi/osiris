@@ -21,50 +21,50 @@
 *
 *  Please cite the author in any work or product based on this material.
 *
-*  OSIRIS is a desktop tool working on your computer with your own data.
-*  Your sample profile data is processed on your computer and is not sent
-*  over the internet.
-*
-*  For quality monitoring, OSIRIS sends some information about usage
-*  statistics  back to NCBI.  This information is limited to use of the
-*  tool, without any sample, profile or batch data that would reveal the
-*  context of your analysis.  For more details and instructions on opting
-*  out, see the Privacy Information section of the OSIRIS User's Guide.
-*
 * ===========================================================================
 *
 *
-*  FileName: CPrintOutPlot.cpp
+*  FileName: CDialogPrintColor.h
 *  Author:   Douglas Hoffman
 *
-*  Implementation for wxPrintout for printing an OSIRIS plot
-*
 */
-#ifndef __C_PRINTOUT_PLOT__
-#define __C_PRINTOUT_PLOT__
+#ifndef __C_DIALOG_PRINT_COLOR_H__
+#define __C_DIALOG_PRINT_COLOR_H__
 
-#include "CPrintOut.h"
+#include <wx/dialog.h>
+#include <wx/colour.h>
+#include <wx/hyperlink.h>
+#include "nwx/PersistentSize.h"
 
-class CFramePlot;
-class wxDC;
+class nwxTextCtrlInteger;
+class wxSizer;
 
-class CPrintOutPlot : public CPrintOut
+class CDialogPrintColor : public wxDialog
 {
 public:
-  CPrintOutPlot(CFramePlot *pFrame, bool bPreview = false) :
-    CPrintOut(bPreview),
-    m_pFramePlot(pFrame)
-  {}
-
-  virtual ~CPrintOutPlot();
-  virtual wxWindow *GetParent();
-  virtual bool OnPrintPage(int page);
-  virtual int GetMaxPage();
-  static void DoPrintPreview(CFramePlot *pPlot);
-  int GetPlotsPerPage();
+  CDialogPrintColor(wxWindow *parent);
+  virtual ~CDialogPrintColor();
+  virtual bool TransferDataFromWindow();
+  virtual bool TransferDataToWindow();
 private:
-  CFramePlot *m_pFramePlot;
-  DECLARE_ABSTRACT_CLASS(CPrintOutPlot)
+  void _PrintTestPage();
+  void _OnPrintLink(wxHyperlinkEvent &);
+  void _OnPrintButton(wxCommandEvent &);
+  void _ColorRow(
+    wxSizer *pSizer, 
+    const wxString &sLabel,
+    int nValue,
+    const wxColour &color,
+    nwxTextCtrlInteger **ppCtrl);
+  nwxTextCtrlInteger *pTextRed;
+  nwxTextCtrlInteger *pTextGreen;
+  nwxTextCtrlInteger *pTextBlue;
+  nwxTextCtrlInteger *pTextOrange;
+  nwxTextCtrlInteger *pTextYellow;
+  nwxTextCtrlInteger *pTextPurple;
+  nwxTextCtrlInteger *pTextGray;
+  DECLARE_PERSISTENT_POSITION
+  DECLARE_EVENT_TABLE()
 };
 
 #endif

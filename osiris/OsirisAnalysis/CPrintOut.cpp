@@ -49,72 +49,20 @@
 #define ADJUST_ZOOM 0
 #endif
 #include <wx/printdlg.h>
+#include <wx/dc.h>
 
 #include "CPrintOut.h"
+#include "CPrintPreview.h"
 #include "mainApp.h"
 #include "CFramePlot.h"
+#include "CFrameAnalysis.h"
 #include "CParmOsiris.h"
-
-
-// CPrintPreviewFrame
-
-CPrintPreviewFrame::CPrintPreviewFrame(wxPrintPreview *pPrev, wxFrame *parent,
-  const wxString &title, bool bPageButtons) :
-  wxPreviewFrame(pPrev, parent, title,
-    GET_PERSISTENT_POSITION(CPrintPreviewFrame),
-    GET_PERSISTENT_SIZE_DEFAULT(CPrintPreviewFrame, wxSize(600, 800))),
-  m_bPageButtons(bPageButtons)
-{
-  InitializeWithModality(wxPreviewFrame_AppModal);
-}
-void CPrintPreviewFrame::CreateControlBar()
-{
-  // copied from wxWidgets prntbase.cpp and modified
-  // to change buttons
-  // and should be checked when updating version of wx
-  long buttons = m_bPageButtons ? wxPREVIEW_DEFAULT : wxPREVIEW_ZOOM;
-  if (m_printPreview->GetPrintoutForPrinting())
-    buttons |= wxPREVIEW_PRINT;
-
-  m_controlBar = new wxPreviewControlBar(m_printPreview, buttons, this);
-  m_controlBar->CreateButtons();
-}
-
-IMPLEMENT_ABSTRACT_CLASS(CPrintPreviewFrame, wxPreviewFrame)
-IMPLEMENT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
-BEGIN_EVENT_TABLE(CPrintPreviewFrame, wxPreviewFrame)
-EVT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
-END_EVENT_TABLE()
-
-
-bool CPrintPreview::Print(bool interactive)
-{
-  bool bRtn = wxPrintPreview::Print(interactive);
-  const wxChar *psStatus = bRtn ? wxT("OK") : wxT("NOT_OK");
-  mainApp::Ping3(PING_EVENT, m_sPrintType, wxT("Status"), psStatus, wxT("FromPreview"), wxT("1"));
-  return bRtn;
-}
-void CPrintPreview::SetZoom(int n)
-{
-  CParmOsirisGlobal parm;
-  parm->SetPrintPreviewZoom(n);
-  wxPrintPreview::SetZoom(n);
-}
-
-void CPrintPreview::_SetDefaultZoom()
-{
-  CParmOsirisGlobal parm;
-  int n = parm->GetPrintPreviewZoom();
-  if (n >= 10)
-  {
-    wxPrintPreview::SetZoom(n);
-  }
-}
+#include "CDialogPrintSettings.h"
+#include "wxIDS.h"
 
 
 
 // static data and functions
-
 
 wxPrintData *CPrintOut::g_printData = NULL;
 wxPageSetupDialogData* CPrintOut::g_pageSetupData = NULL;
@@ -124,7 +72,7 @@ wxPrintData *CPrintOut::GetPrintData()
 {
   if (g_printData == NULL)
   {
-    CParmOsiris *pParm = CParmOsiris::GetGlobal();
+    CParmOsirisGlobal pParm;
     g_printData = new wxPrintData();
     g_printData->SetOrientation(
       pParm->GetPrintPlotLandscape() ? wxLANDSCAPE : wxPORTRAIT
@@ -149,12 +97,41 @@ wxPrintData *CPrintOut::GetPrintData()
   }
   return g_printData;
 }
-  
+int CPrintOut::GetMinPage()
+{
+  return m_bPreview ? 0 : 1;
+}
+int CPrintOut::GetMaxPage()
+{
+  return 1;
+}
+bool CPrintOut::HasPage(int page)
+{
+  return (page <= GetMaxPage()) && (page >= GetMinPage());
+}
+
+void CPrintOut::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
+{
+  // TEST to see if it is responsible for printing selected pages.
+#if 0
+  wxPrintout::GetPageInfo(minPage, maxPage, selPageFrom, selPageTo);
+#else
+  *minPage = GetMinPage();
+  *selPageFrom = 1;
+  // page count for print preview may change upon changing settings
+  // so maxPage is a high number.  For actual printing
+  // the status window reports the number of pages being printed
+  // so it needs to be accurate
+  *maxPage = m_bPreview ? 32768 : GetMaxPage();
+  *selPageTo = *maxPage;
+#endif
+}
+
 wxPageSetupDialogData *CPrintOut::GetPageSetupData()
 {
   if(g_pageSetupData == NULL)
   {
-    CParmOsiris *pParm = CParmOsiris::GetGlobal();
+    CParmOsirisGlobal pParm;
     g_pageSetupData = new wxPageSetupDialogData(*GetPrintData());
     // set saved margins, to do save/retrieve paper ID or sice
     g_pageSetupData->SetMarginTopLeft(
@@ -284,12 +261,13 @@ void CPrintOut::_DoPrint(CPrintOut *pPrintout, const wxString &sPingType)
 void CPrintOut::_DoPrintPreview(
   CPrintOut *pPreview,
   CPrintOut *pPrint,
+  const wxString &sTitle,
   const wxString &sPingPreview,
   const wxString &sPingPrint,
   bool bPageButtons)
 {
   wxPrintDialogData printDialogData(*GetPrintData());
-  wxPrintPreview *preview =
+  CPrintPreview *preview =
     new CPrintPreview(
       sPingPrint,
       pPreview,
@@ -309,7 +287,7 @@ void CPrintOut::_DoPrintPreview(
   {
     sStatus = wxT("OK");
     pFrame =
-      new CPrintPreviewFrame(preview, pPreview->GetParent(), sPingPreview, bPageButtons);
+      new CPrintPreviewFrame(preview, pPreview->GetParent(), sTitle, bPageButtons);
   }
   mainApp::Ping2(PING_EVENT, sPingPreview, wxT("Status"), sStatus);
   if (pFrame != NULL)
@@ -324,7 +302,7 @@ void CPrintOut::_DoPrintPreview(
 
 // end static functions
 
-CPrintOut::~CPrintOut() 
+CPrintOut::~CPrintOut()
 {
 #ifdef TMP_DEBUG
   if (m_nSetupPageCount > 1)
@@ -362,17 +340,20 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     nPPIy = szPPI.GetHeight();
 
 #if ADJUST_ZOOM
-    CPrintPreview *pp = (CPrintPreview *)GetPreview();
-    int nZoom = pp->GetZoom();
-    if(nZoom != 100)
+    CPrintPreview *pp = IsPrintPreview() ? (CPrintPreview *)GetPreview() : NULL;
+    if(pp != NULL)
     {
-      double dMult = double(nZoom) * 0.01;
-      nPPIx = int(nPPIx * dMult);
-      nPPIy = int(nPPIy * dMult);
-    }
+      int nZoom = pp->GetZoom();
+      if(nZoom != 100)
+      {
+	double dMult = double(nZoom) * 0.01;
+	nPPIx = int(nPPIx * dMult);
+	nPPIy = int(nPPIy * dMult);
+      }
 #ifdef TMP_DEBUG
-    mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
+      mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
 #endif
+    }
 #endif
 
     if (nPPIx == nPPIy)
@@ -381,6 +362,7 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     }
     else if (nPPIx < nPPIy)
     {
+      // pixels are not square, adjust resolution
       nMinPPI = nPPIx;
       nScale = SCALE_Y;
       dScalePixel = double(nPPIx) / double(nPPIy);
@@ -464,3 +446,5 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     FitThisSizeToPageMargins(wxSize(nWidth, nHeight), *GetPageSetupData());
   }
 }
+
+IMPLEMENT_ABSTRACT_CLASS(CPrintOut, wxPrintout)

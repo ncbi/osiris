@@ -261,6 +261,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_14D87FA67AE94818B431B2C1D26A1DC8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_154ED3653A284AEA9D0DD2EE7A23FFF0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -394,6 +400,12 @@
         "Entry"
         {
         "MsmKey" = "8:_2631E6BE54254C82BE8DE6C96C00D7F0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2692C52385BC42F794B68403DADD4DB5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -741,6 +753,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_45C611F5FBF945EF82AB3DFF849611DD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_45CEE9F137574A2EB681614DAD972DC6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -927,6 +945,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_577D4A9CAF9D4E3E9E4CCB377863D240"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_57F2D3C384FD42688820E719E1226A60"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -993,7 +1017,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_619C374CB3C0435C97B0D87CC2694AE9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_634A62B4F3374E3D9F9CB5B5C40FE324"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_64066F687DD74201B27612A2465E1682"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1515,6 +1551,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_969579BE97CF4D0C9BD0F7771D6DB4E0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_969ECB8976164C3296511CC1C5C9074B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1569,6 +1611,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9A8B5142343A415EA019EEA7CD73816F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9AC96F48C2F14F78B4DE68B583FE1219"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1612,6 +1660,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9E3A4230C2B942119C1C31C11A2E6488"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9F9A002220BF41C3A67CBDB0B30BD6CA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1977,6 +2031,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C19A65ABA74E4C848D079FC26091B4FF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C1D1F671C53A4893A6A1A00A04288ADB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2127,6 +2187,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CFF7C48BCAC9428E81D2BEA23729C7F4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D025C0319C2D4D2290FCCDDE04ACF761"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2140,6 +2206,18 @@
         "Entry"
         {
         "MsmKey" = "8:_D11C9074468C4565BAAF7A42208D2BA8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D1752DB152AE474E87F33C4FEC67430E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D1CEF30A92F74A6E90F2C60FC7CF0F1B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2598,7 +2676,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-2.14-Beta-9.msi"
+        "OutputFilename" = "8:Release\\Osiris-2.14-Beta-11.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -3460,6 +3538,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_14D87FA67AE94818B431B2C1D26A1DC8"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME_HID\\MICROREADER_Y_PRIME_HID_MessageBookV4.0.xml"
+            "TargetName" = "8:MICROREADER_Y_PRIME_HID_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_5A311831B2C94A0788A570409F80AD2E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_154ED3653A284AEA9D0DD2EE7A23FFF0"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\QIAGEN_ARGUS_x12\\QIAGEN_ARGUS_x12_StdSettings.xml"
@@ -3906,6 +4004,26 @@
             "TargetName" = "8:util.xsl"
             "Tag" = "8:"
             "Folder" = "8:_A422D835AEAF40F68366ABF5AE05BC12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2692C52385BC42F794B68403DADD4DB5"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME_HID\\MICROREADER_Y_PRIME_HID_LabSettings.xml"
+            "TargetName" = "8:MICROREADER_Y_PRIME_HID_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_5A311831B2C94A0788A570409F80AD2E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5060,6 +5178,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_45C611F5FBF945EF82AB3DFF849611DD"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME_HID\\MICROREADER_Y_PRIME_HID_access.txt"
+            "TargetName" = "8:MICROREADER_Y_PRIME_HID_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_5A311831B2C94A0788A570409F80AD2E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_45CEE9F137574A2EB681614DAD972DC6"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PP12\\PP12_access.txt"
@@ -5680,6 +5818,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_577D4A9CAF9D4E3E9E4CCB377863D240"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\MicroreaderYPrime_LadderInfo.xml"
+            "TargetName" = "8:MicroreaderYPrime_LadderInfo.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_57F2D3C384FD42688820E719E1226A60"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPGenePrint24\\PPGenePrint24_LabSettings.xml"
@@ -5900,12 +6058,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_619C374CB3C0435C97B0D87CC2694AE9"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME\\MICROREADER_Y_PRIME_StdSettings.xml"
+            "TargetName" = "8:MICROREADER_Y_PRIME_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_3784FF157FB749BEB2D2DCB8C73C0FFE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_634A62B4F3374E3D9F9CB5B5C40FE324"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\PPFusion6C_HID\\PPFusion6C_HID_access.txt"
             "TargetName" = "8:PPFusion6C_HID_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_AC11C97CEBBC4409A007E191B6C3956E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_64066F687DD74201B27612A2465E1682"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME_HID\\MICROREADER_Y_PRIME_HID_StdSettings.xml"
+            "TargetName" = "8:MICROREADER_Y_PRIME_HID_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_5A311831B2C94A0788A570409F80AD2E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7640,6 +7838,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_969579BE97CF4D0C9BD0F7771D6DB4E0"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_MessageBookV4.0.xml"
+            "TargetName" = "8:GFHID_Mixture_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_969ECB8976164C3296511CC1C5C9074B"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NETBIO_FLEXPLEX_HID\\NETBIO_FLEXPLEX_HID_MessageBookV4.0.xml"
@@ -7820,6 +8038,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9A8B5142343A415EA019EEA7CD73816F"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_LabSettings.xml"
+            "TargetName" = "8:GFHID_Mixture_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9AC96F48C2F14F78B4DE68B583FE1219"
             {
             "SourcePath" = "8:..\\docs\\TestAnalysis\\Identifiler\\Identifiler_Artifacts\\_Positive_Control.fsa"
@@ -7966,6 +8204,26 @@
             "TargetName" = "8:GlobalFilerMixStutter_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_2C4986AF4547486AA42E05D14B2F6C98"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9F9A002220BF41C3A67CBDB0B30BD6CA"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME\\MICROREADER_Y_PRIME_LabSettings.xml"
+            "TargetName" = "8:MICROREADER_Y_PRIME_LabSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_3784FF157FB749BEB2D2DCB8C73C0FFE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -9180,6 +9438,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C19A65ABA74E4C848D079FC26091B4FF"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME\\MICROREADER_Y_PRIME_access.txt"
+            "TargetName" = "8:MICROREADER_Y_PRIME_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_3784FF157FB749BEB2D2DCB8C73C0FFE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C1D1F671C53A4893A6A1A00A04288ADB"
             {
             "SourcePath" = "8:..\\docs\\OsirisHelp.pdf"
@@ -9680,6 +9958,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CFF7C48BCAC9428E81D2BEA23729C7F4"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\MICROREADER_Y_PRIME\\MICROREADER_Y_PRIME_MessageBookV4.0.xml"
+            "TargetName" = "8:MICROREADER_Y_PRIME_MessageBookV4.0.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_3784FF157FB749BEB2D2DCB8C73C0FFE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D025C0319C2D4D2290FCCDDE04ACF761"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\NGMSElect\\NGMSElect_LabSettings.xml"
@@ -9726,6 +10024,46 @@
             "TargetName" = "8:G12_BLANK_Run_3100_1465_027_2002-08-27_99_14.fsa"
             "Tag" = "8:"
             "Folder" = "8:_29A20AC60A714F1FB99FA56689F3CDD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D1752DB152AE474E87F33C4FEC67430E"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_StdSettings.xml"
+            "TargetName" = "8:GFHID_Mixture_StdSettings.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D1CEF30A92F74A6E90F2C60FC7CF0F1B"
+            {
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\GFHID_Mixture\\GFHID_Mixture_access.txt"
+            "TargetName" = "8:GFHID_Mixture_access.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_C9CB432F539E447C951B2206F71DABAA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -11652,6 +11990,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3784FF157FB749BEB2D2DCB8C73C0FFE"
+                                    {
+                                    "Name" = "8:MICROREADER_Y_PRIME"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_102FC78A25AE4A2D991EB43DBF2A78B7"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_3ECD197C226A4718950798C6E1C81DD7"
                                     {
                                     "Name" = "8:PPESI17_HID"
@@ -11802,6 +12151,17 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_55FA22CD8BF749C398DAB68351D83E41"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_5A311831B2C94A0788A570409F80AD2E"
+                                    {
+                                    "Name" = "8:MICROREADER_Y_PRIME_HID"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_ED7CFBF6465E47699E7AF4BF568D34B4"
                                         "Folders"
                                         {
                                         }
@@ -12070,6 +12430,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C9CB432F539E447C951B2206F71DABAA"
+                                    {
+                                    "Name" = "8:GFHID_Mixture"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_8C71A51C9A8E4AD3910B1D12D55D09F2"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_CF4865933136417CB5CE30C4AA5C69FC"
                                     {
                                     "Name" = "8:IDplusNO250"
@@ -12224,15 +12595,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{94585DB4-D939-45EA-9201-15F2013A495A}"
-        "PackageCode" = "8:{807BFA14-B7CC-432D-BA5D-330D71B19F01}"
+        "ProductCode" = "8:{3AD3F9E6-58C8-4CAC-9901-66B13C0B33FB}"
+        "PackageCode" = "8:{03E09C4F-4B21-4236-907C-0A6715421F41}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.14.0009"
+        "ProductVersion" = "8:2.14.0011"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

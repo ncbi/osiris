@@ -184,6 +184,10 @@ public:
   {
     m_bNotRenderingToWindow = !b;
   }
+  static const wxColor &GridColor()
+  {
+    return g_ColorGrid;
+  }
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
   virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
   void SetupToolTip();
@@ -243,6 +247,7 @@ private:
   wxWindow *_FindFrameParent();
 
 private:
+  static const wxColor g_ColorGrid;
   static const unsigned int TIMER_COUNT;
   void _SetupCursor(const nwxPointLabel *pLabel);
   void _ClearToolTip();

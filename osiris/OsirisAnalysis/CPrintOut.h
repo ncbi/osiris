@@ -46,55 +46,18 @@
 #define __C_PRINTOUT_H__
 
 #include <wx/print.h>
-#include "nwx/PersistentSize.h"
 
-class CPrintPreviewFrame : public wxPreviewFrame
-{
-public:
-  CPrintPreviewFrame(wxPrintPreview *pPreview, wxFrame *pParent,
-    const wxString &sTitle, bool bPageButtons = false);
-  virtual ~CPrintPreviewFrame() {}
-  virtual void CreateControlBar();
-private:
-  bool m_bPageButtons;
-  DECLARE_PERSISTENT_SIZE_POSITION
-  DECLARE_ABSTRACT_CLASS(CPrintPreviewFramePlot)
-  DECLARE_EVENT_TABLE()
-};
-
-
-class CPrintPreview : public wxPrintPreview
-{
-public:
-  CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting = NULL, wxPrintDialogData *data = NULL) :
-    wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType)
-  {
-    _SetDefaultZoom();
-  }
-  CPrintPreview(const wxString &sPrintType, wxPrintout *printout, wxPrintout *printoutForPrinting, wxPrintData *data) :
-    wxPrintPreview(printout, printoutForPrinting, data),
-    m_sPrintType(sPrintType)
-  {
-    _SetDefaultZoom();
-  }
-  virtual ~CPrintPreview() {}
-  virtual bool Print(bool interactive);
-  virtual void SetZoom(int n);
-
-private:
-  const wxString m_sPrintType;
-  void _SetDefaultZoom();
-};
-
+class CDialogPrintSettings;
+class CFrameAnalysis;
+class CFramePlot;
 
 class wxDC;
 
 class CPrintOut : public wxPrintout
 {
 public:
-  CPrintOut(bool bPreview = false) :
-    wxPrintout(wxT("OSIRIS Plot")),
+  CPrintOut(bool bPreview = false, const wxString &sTitle = wxT("OSIRIS Plot")) :
+    wxPrintout(sTitle),
 #ifdef TMP_DEBUG
     m_nSetupPageCount(0),
 #endif
@@ -102,7 +65,17 @@ public:
   {}
 
   virtual ~CPrintOut();
-  virtual wxFrame *GetParent() = 0;
+  virtual wxWindow *GetParent() = 0;
+  virtual int GetMinPage();
+  virtual int GetMaxPage();
+  virtual bool HasPage(int page);
+  virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
+  virtual void RebuildPages()
+  {
+    // this is called from CPrintPreviewFrame::UpdateSettings()
+    // after changing settings because the number of plots
+    // per page might change the total number of pages
+  }
   bool IsPrintPreview()
   {
     // should check wxPrinout::IsPreview
@@ -121,6 +94,7 @@ public:
       g_printData = NULL;
     }
   }
+
   static void DoPageSetup(wxFrame *pParent);
 #ifdef __WXMAC__
   static void DoPageMargins(wxFrame *parent);
@@ -128,8 +102,10 @@ public:
 protected:
   static void _DoPrint(CPrintOut *pPrintout, const wxString &sPingType);
   static void _DoPrintPreview(
-    CPrintOut *pPreview, CPrintOut *pPrint, 
-    const wxString &sPingPreview, const wxString &sPingPrint,
+    CPrintOut *pPreview, CPrintOut *pPrint,
+    const wxString &sTitle,
+    const wxString &sPingPreview,
+    const wxString &sPingPrint,
     bool bPageButtons = false);
   static wxPageSetupDialogData *GetPageSetupData();
   static void UpdatePageSetup();
@@ -147,7 +123,7 @@ protected:
 private:
   //  _resInput input parametes used to compute DPI and size of bitmap
   //  _resOutput size and DPI of bitmap to be created
-  //  purpose: when creating a multipage printout, this is needed 
+  //  purpose: when creating a multipage printout, this is needed
   //    for each page and if the input doesn't change, the output
   //    does not need to be recomputed
   class _resInput
@@ -197,6 +173,7 @@ protected:
   int m_nSetupPageCount;
 #endif
   bool m_bPreview;
+  DECLARE_ABSTRACT_CLASS(CPrintOut)
 };
 
 #endif
