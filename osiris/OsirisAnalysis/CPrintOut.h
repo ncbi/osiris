@@ -105,8 +105,7 @@ protected:
     CPrintOut *pPreview, CPrintOut *pPrint,
     const wxString &sTitle,
     const wxString &sPingPreview,
-    const wxString &sPingPrint,
-    bool bPageButtons = false);
+    const wxString &sPingPrint);
   static wxPageSetupDialogData *GetPageSetupData();
   static void UpdatePageSetup();
   static wxPrintData *GetPrintData();

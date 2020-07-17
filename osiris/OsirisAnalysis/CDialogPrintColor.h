@@ -51,18 +51,19 @@ private:
   void _OnPrintLink(wxHyperlinkEvent &);
   void _OnPrintButton(wxCommandEvent &);
   void _ColorRow(
+    wxPanel *pPanel,
     wxSizer *pSizer, 
     const wxString &sLabel,
     int nValue,
     const wxColour &color,
     nwxTextCtrlInteger **ppCtrl);
-  nwxTextCtrlInteger *pTextRed;
-  nwxTextCtrlInteger *pTextGreen;
-  nwxTextCtrlInteger *pTextBlue;
-  nwxTextCtrlInteger *pTextOrange;
-  nwxTextCtrlInteger *pTextYellow;
-  nwxTextCtrlInteger *pTextPurple;
-  nwxTextCtrlInteger *pTextGray;
+  nwxTextCtrlInteger *m_pTextRed;
+  nwxTextCtrlInteger *m_pTextGreen;
+  nwxTextCtrlInteger *m_pTextBlue;
+  nwxTextCtrlInteger *m_pTextOrange;
+  nwxTextCtrlInteger *m_pTextYellow;
+  nwxTextCtrlInteger *m_pTextPurple;
+  nwxTextCtrlInteger *m_pTextGray;
   DECLARE_PERSISTENT_POSITION
   DECLARE_EVENT_TABLE()
 };

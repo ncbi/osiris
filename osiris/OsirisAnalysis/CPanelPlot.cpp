@@ -248,7 +248,8 @@ CPanelPlot::CPanelPlot(
     m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false),
-    m_bPrintAnalysis(false)
+    m_bPrintAnalysis(false),
+    m_bPrinting(false)
 {
   //  constructor for panel in graphic MDI frame
   _BuildPanel(nMenuNumber,bFirst,pMenuHistory);
@@ -925,7 +926,7 @@ void CPanelPlot::_BuildPeakLabels(
             sToolTip,
             wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
             ALLELE_SORT,
-            nwxPointLabel::STYLE_BOX);
+            nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT);
     m_pPlotCtrl->AddLabel(label);
   }
 }
@@ -1082,7 +1083,8 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
                   colourData,
                   sToolTip,
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
-                  ARTIFACT_SORT + pArt->GetCriticalLevel());
+                  ARTIFACT_SORT + pArt->GetCriticalLevel(),
+                  nwxPointLabel::STYLE_BLACK_TEXT);
             m_pPlotCtrl->AddLabel(label);
           }
         }
@@ -1178,7 +1180,7 @@ void CPanelPlot::_BuildOARlabels()
                     sToolTip,
                     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                     ALLELE_SORT,
-                    nwxPointLabel::STYLE_BOX,
+                    nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT,
                     cur,
                     pPeak);
             m_pPlotCtrl->AddLabel(label);
@@ -1209,7 +1211,7 @@ void CPanelPlot::_BuildOARlabels()
                   sToolTip,
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                   ARTIFACT_SORT + pPeak->GetCriticalLevel(),
-                  0,
+                  nwxPointLabel::STYLE_BLACK_TEXT,
                   cur,
                   pPeak);
             m_pPlotCtrl->AddLabel(label);
@@ -1246,13 +1248,13 @@ void CPanelPlot::UpdateLadderLabels()
 }
 const wxColour &CPanelPlot::_GetColour(DATA_TYPE n, unsigned int nChannel)
 {
-  int ndx = (nChannel << 8) | (n << 1) | (_IsPrinting() ? 1 : 0);
+  int ndx = (nChannel << 8) | (n << 1) | (IsPrinting() ? 1 : 0);
   mapColor::iterator itr = m_mapColors.find(ndx);
   if (itr == m_mapColors.end())
   {
     const wxColour &c = m_pColors->GetColor(m_pData->GetKitName(), n, nChannel);
     wxColour cColor(c);
-    if (_IsPrinting())
+    if (IsPrinting())
     {
       CParmOsiris *pParm = CParmOsiris::GetGlobal();
       const wxString &sColour = m_pColors->GetColorName(c);
@@ -2092,7 +2094,7 @@ wxColour &CPanelPlot::_SETUP_PRINT_COLOR(const wxColour &color, int nPct, wxColo
 void CPanelPlot::_SetupGridColor()
 {
   const wxColour &gridColor = nwxPlotCtrl::GridColor();
-  if (!_IsPrinting())
+  if (!IsPrinting())
   {
     m_pPlotCtrl->SetGridColour(gridColor);
   }
@@ -2276,14 +2278,13 @@ void CPanelPlot::ShowToolbar(bool bShow)
     }
   }
 }
-void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay, bool bPrinting)
+void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay)
 {
   TnwxBatch<CPanelPlot> x(this);
   TnwxBatch<CPanelPlot> y(&w);
   _SyncControllers(w.m_pMenu);
   wxRect2DDouble rect = w.GetViewRect();
   SyncToolbar(&w);
-  _SetPrinting(bPrinting);
   RebuildCurves(true);
   SetViewRect(rect, false, nDelay);
 }
@@ -2952,7 +2953,7 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
   CParmOsirisGlobal pParm;
   wxString sTitle;
   wxString sTitleInfo;
-  _SetPrinting(bForcePrintFont);
+  SetPrinting(bForcePrintFont);
   if (bForcePrintFont)
   {
     TitleStrings(&sTitleInfo, nPageNr);

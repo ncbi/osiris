@@ -504,6 +504,13 @@ void mainApp::_setupPinger()
   }
 }
 
+void mainApp::Raise()
+{
+#if mainFrameIsWindow
+  Get()->m_pFrame->Raise();
+#endif
+}
+
 wxString mainApp::_pingerFile()
 {
   wxString sPath = mainApp::GetConfig()->GetSitePath();

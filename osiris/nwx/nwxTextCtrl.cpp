@@ -32,9 +32,13 @@
 #include "nwx/nwxString.h"
 
 IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrl,wxTextCtrl)
-IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrlInteger, nwxTextCtrl)
+IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrlInteger, wxTextCtrl)
 BEGIN_EVENT_TABLE(nwxTextCtrl,wxTextCtrl)
 EVT_SET_FOCUS(nwxTextCtrl::OnSetFocus)
+END_EVENT_TABLE()
+
+BEGIN_EVENT_TABLE(nwxTextCtrlInteger, wxTextCtrl)
+EVT_SET_FOCUS(nwxTextCtrlInteger::OnSetFocus)
 END_EVENT_TABLE()
 
 
@@ -82,7 +86,7 @@ nwxTextCtrlInteger::nwxTextCtrlInteger(
   int nValue,
   int nDigits,
   long style) :
-  nwxTextCtrl(parent, id,
+  wxTextCtrl(parent, id,
     wxEmptyString, wxDefaultPosition, _ComputeSize(nDigits, parent),
     style, nwxIntegerValidator(nMin, nMax))
 {
@@ -109,4 +113,9 @@ int nwxTextCtrlInteger::GetIntValue(int nEmptyValue)
     nRtn = atoi(s.utf8_str());
   }
   return nRtn;
+}
+void nwxTextCtrlInteger::OnSetFocus(wxFocusEvent &e)
+{
+  SelectAll();
+  e.Skip();
 }

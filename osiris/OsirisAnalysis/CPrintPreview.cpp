@@ -58,7 +58,7 @@
 // CPrintPreviewFrame
 
 CPrintPreviewFrame::CPrintPreviewFrame(CPrintPreview *pPrev, wxWindow *parent,
-  const wxString &title, bool bPageButtons) :
+  const wxString &title) :
   wxPreviewFrame(pPrev, parent, title,
     GET_PERSISTENT_POSITION(CPrintPreviewFrame),
     GET_PERSISTENT_SIZE_DEFAULT(CPrintPreviewFrame, wxSize(600, 800))),
@@ -92,6 +92,10 @@ void CPrintPreviewFrame::_OnColors(wxCommandEvent &)
     int nPage = pController->GetPage();
     m_pPreview->SetCurrentPage(0); // show blank page in order to refresh current page
     m_pPreview->SetCurrentPage(nPage);
+    if (m_pFramePlot != NULL)
+    {
+      m_pFramePlot->InvalidatePrintColors();
+    }
   }
 }
 void CPrintPreviewFrame::_OnSettings(wxCommandEvent &)
@@ -140,6 +144,16 @@ void CPrintPreviewFrame::_OnPrint(wxCommandEvent &)
   // Closing this window takes care of this issue
   Close();
 }
+void CPrintPreviewFrame::_OnClose(wxCloseEvent &e)
+{
+  wxWindow *win = GetParent();
+  if (win != NULL)
+  {
+    mainApp::Raise();
+    win->Raise();
+  }
+  e.Skip();
+}
 void CPrintPreviewFrame::UpdateSettings()
 {
   wxDynamicCast(m_pPreview->GetPrintout(), CPrintOut)->RebuildPages();
@@ -164,6 +178,7 @@ EVT_BUTTON(IDprintColors, CPrintPreviewFrame::_OnColors)
 EVT_BUTTON(IDprintPrint, CPrintPreviewFrame::_OnPrint)
 EVT_CHOICE(IDprintZoom, CPrintPreviewFrame::_OnZoom)
 EVT_TEXT(IDprintPageText, CPrintPreviewFrame::_OnPageChange)
+EVT_CLOSE(CPrintPreviewFrame::_OnClose)
 EVT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
 END_EVENT_TABLE()
 

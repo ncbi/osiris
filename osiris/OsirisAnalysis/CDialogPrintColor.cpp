@@ -46,7 +46,7 @@ CDialogPrintColor::CDialogPrintColor(wxWindow *parent) :
   wxDialog(parent, wxID_ANY, wxT("Adjust Print Colors"),
     GET_PERSISTENT_POSITION(CDialogPrintColor),
     wxDefaultSize,
-    wxDEFAULT_DIALOG_STYLE)
+    wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
 {
 #define TEXT0 "Instructions:"
 #define TEXT1 "To adjust colors for your printer, print the "
@@ -63,22 +63,23 @@ CDialogPrintColor::CDialogPrintColor(wxWindow *parent) :
   wxBoxSizer *pSizerText = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *pSizerLink = new wxBoxSizer(wxHORIZONTAL);
   wxStaticText *pText;
-  pText = new wxStaticText(this, wxID_ANY, TEXT0);
+  wxPanel *pPanel = new wxPanel(this);
+  pText = new wxStaticText(pPanel, wxID_ANY, TEXT0);
   wxFont fontBold = pText->GetFont();
   fontBold.MakeBold();
   pText->SetFont(fontBold);
   pSizerText->Add(pText, flagText);
-  pText = new wxStaticText(this, wxID_ANY, TEXT1);
+  pText = new wxStaticText(pPanel, wxID_ANY, TEXT1);
   pSizerLink->Add(pText, flagText);
-  wxHyperlinkCtrl *pLink = new wxHyperlinkCtrl(this, wxID_ANY, TEXT1_LINK, wxEmptyString);
+  wxHyperlinkCtrl *pLink = new wxHyperlinkCtrl(pPanel, wxID_ANY, TEXT1_LINK, wxEmptyString);
   pSizerLink->Add(pLink, flagText);
   pSizerLink->AddStretchSpacer(1);
   pSizerText->Add(pSizerLink, flagText);
-  pText = new wxStaticText(this, wxID_ANY, TEXT2);
+  pText = new wxStaticText(pPanel, wxID_ANY, TEXT2);
   pSizerText->Add(pText, flagText);
 
   // BEGIN build controls
-  wxFlexGridSizer *pSizerControls = new wxFlexGridSizer(2,wxSize(2,2));
+  wxFlexGridSizer *pSizerControls = new wxFlexGridSizer(2,wxSize(2,4));
   struct
   {
     const char *pLabel;
@@ -87,42 +88,52 @@ CDialogPrintColor::CDialogPrintColor(wxWindow *parent) :
   }
   COLOR_DATA[] =
   {
-    {"Blue", &pTextBlue, pParm->GetPrintColorBlue()},
-    {"Green", &pTextGreen, pParm->GetPrintColorGreen()},
-    {"Yellow", &pTextYellow, pParm->GetPrintColorYellow()},
-    {"Red", &pTextRed, pParm->GetPrintColorRed()},
-    {"Orange", &pTextOrange, pParm->GetPrintColorOrange()},
-    {"Purple", &pTextPurple, pParm->GetPrintColorPurple()},
+    {"Blue", &m_pTextBlue, pParm->GetPrintColorBlue()},
+    {"Green", &m_pTextGreen, pParm->GetPrintColorGreen()},
+    {"Yellow", &m_pTextYellow, pParm->GetPrintColorYellow()},
+    {"Red", &m_pTextRed, pParm->GetPrintColorRed()},
+    {"Orange", &m_pTextOrange, pParm->GetPrintColorOrange()},
+    {"Purple", &m_pTextPurple, pParm->GetPrintColorPurple()},
     {NULL, NULL, 0},
   },
-  ColorRowGray = { "Gray", &pTextGray, pParm->GetPrintColorGray() },
+  ColorRowGray = { "Gray", &m_pTextGray, pParm->GetPrintColorGray() },
   *pColorRow;
 
+  wxWindow *pPrev = pLink;
   for (pColorRow = &COLOR_DATA[0];
     pColorRow->pLabel != NULL;
     ++pColorRow)
   {
     wxString sColor(pColorRow->pLabel);
     _ColorRow(
+      pPanel,
       pSizerControls,
       sColor,
       pColorRow->nValue,
       pKitColors->GetColorByName(sColor),
       pColorRow->ppText);
+    (*pColorRow->ppText)->MoveAfterInTabOrder(pPrev);
+    pPrev = *pColorRow->ppText;
   }
-  _ColorRow(pSizerControls, ColorRowGray.pLabel, ColorRowGray.nValue, nwxPlotCtrl::GridColor(), ColorRowGray.ppText);
+  _ColorRow(pPanel, pSizerControls, 
+    ColorRowGray.pLabel, ColorRowGray.nValue, 
+    nwxPlotCtrl::GridColor(), ColorRowGray.ppText);
+  (*ColorRowGray.ppText)->MoveAfterInTabOrder(pPrev);
   // END build controls
 
   // build button bar
-  wxSizer *pSizerButtons = CreateButtonSizer(wxOK | wxCANCEL);
   wxButton *pButtonPrint = new wxButton(this, IDprintPrint, wxT("Print Test Page..."));
+  wxSizer *pSizerButtons = CreateButtonSizer(wxOK | wxCANCEL);
   pSizerButtons->InsertStretchSpacer(0, 1);
   pSizerButtons->Insert(0, pButtonPrint, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 0);
 
   // build window sizer
   wxSizer *pSizerAll = new wxBoxSizer(wxVERTICAL);
-  pSizerAll->Add(pSizerText, 0, wxTOP | wxLEFT | wxRIGHT | wxALIGN_LEFT, ID_BORDER);
-  pSizerAll->Add(pSizerControls, 0, wxTOP | wxLEFT | wxRIGHT | wxALIGN_CENTER, ID_BORDER);
+  wxSizer *pSizerPanel = new wxBoxSizer(wxVERTICAL);
+  pSizerPanel->Add(pSizerText, 0, wxTOP | wxLEFT | wxRIGHT | wxALIGN_LEFT, ID_BORDER);
+  pSizerPanel->Add(pSizerControls, 0, wxTOP | wxLEFT | wxRIGHT | wxALIGN_CENTER, ID_BORDER);
+  pPanel->SetSizer(pSizerPanel);
+  pSizerAll->Add(pPanel, 0, wxEXPAND, 0);
   pSizerAll->Add(pSizerButtons, 0, wxALL | wxEXPAND, ID_BORDER);
   SetSizer(pSizerAll);
   Layout();
@@ -130,31 +141,34 @@ CDialogPrintColor::CDialogPrintColor(wxWindow *parent) :
 }
 bool CDialogPrintColor::TransferDataToWindow()
 {
+  m_pTextBlue->SetFocus();
+  m_pTextBlue->SelectAll();
   return true;
 }
 bool CDialogPrintColor::TransferDataFromWindow()
 {
   CParmOsirisGlobal pParm;
-  pParm->SetPrintColorRed(pTextRed->GetIntValue());
-  pParm->SetPrintColorGreen(pTextGreen->GetIntValue());
-  pParm->SetPrintColorBlue(pTextBlue->GetIntValue());
-  pParm->SetPrintColorOrange(pTextOrange->GetIntValue());
-  pParm->SetPrintColorYellow(pTextYellow->GetIntValue());
-  pParm->SetPrintColorPurple(pTextPurple->GetIntValue());
-  pParm->SetPrintColorGray(pTextGray->GetIntValue());
+  pParm->SetPrintColorRed(m_pTextRed->GetIntValue());
+  pParm->SetPrintColorGreen(m_pTextGreen->GetIntValue());
+  pParm->SetPrintColorBlue(m_pTextBlue->GetIntValue());
+  pParm->SetPrintColorOrange(m_pTextOrange->GetIntValue());
+  pParm->SetPrintColorYellow(m_pTextYellow->GetIntValue());
+  pParm->SetPrintColorPurple(m_pTextPurple->GetIntValue());
+  pParm->SetPrintColorGray(m_pTextGray->GetIntValue());
   return true;
 }
 
 
 
 void CDialogPrintColor::_ColorRow(
+  wxPanel *pTopPanel,
   wxSizer *pSizer,
   const wxString &sLabel,
   int nValue,
   const wxColour &color,
   nwxTextCtrlInteger **ppCtrl)
 {
-  wxPanel *pPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
+  wxPanel *pPanel = new wxPanel(pTopPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
   wxStaticText *pText = new wxStaticText(pPanel, wxID_ANY, sLabel);
   wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -170,7 +184,7 @@ void CDialogPrintColor::_ColorRow(
     // average of RGB < 128
     pText->SetForegroundColour(*wxWHITE);
   }
-  *ppCtrl = new nwxTextCtrlInteger(this, wxID_ANY, 0, 100, nValue, 3);
+  *ppCtrl = new nwxTextCtrlInteger(pTopPanel, wxID_ANY, 0, 100, nValue, 3);
   pSizer->Add(pPanel, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 0);
   pSizer->Add(*ppCtrl, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 0);
 }
@@ -186,7 +200,6 @@ void CDialogPrintColor::_OnPrintButton(wxCommandEvent &)
 {
   _PrintTestPage();
 }
-
 
 IMPLEMENT_PERSISTENT_POSITION(CDialogPrintColor)
 BEGIN_EVENT_TABLE(CDialogPrintColor, wxDialog)

@@ -2192,7 +2192,7 @@ wxBitmap *CFramePlot::CreateBitmap(
     }
     wxString sTitle(sTitlePNG);
     wxString sTitleInfo;
-    CPanelPlot *pPanelPlot = _GetBitmapPlot();
+    CPanelPlot *pPanelPlot = _GetBitmapPlot(bForcePrintFont);
 
     if (bForcePrintFont && sTitlePNG.IsEmpty())
     {

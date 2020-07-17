@@ -60,7 +60,7 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-class nwxTextCtrlInteger : public nwxTextCtrl
+class nwxTextCtrlInteger : public wxTextCtrl
 {
 public:
   nwxTextCtrlInteger(
@@ -75,10 +75,12 @@ public:
   void SetDigits(int n);
   int GetIntValue(int nEmptyValue = 0);
 private:
+  void OnSetFocus(wxFocusEvent &e);
   static wxSize _ComputeSize(int nDigits, wxWindow *parent);
   static int g_nWidth10;
   static wxWindow *g_pParent;
   DECLARE_ABSTRACT_CLASS(nwxTextCtrlInteger);
+  DECLARE_EVENT_TABLE()
 };
 
 

@@ -275,8 +275,7 @@ void CPrintOutAnalysis::DoPrintPreview(CFrameAnalysis *pFrame)
     new CPrintOutAnalysis(pFrame),
     wxT("Print Preview - Analysis"),
     _PING_PRINT_PREVIEW,
-    _PING_PRINT,
-    true
+    _PING_PRINT
   );
 }
 IMPLEMENT_ABSTRACT_CLASS(CPrintOutAnalysis, CPrintOut)

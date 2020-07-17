@@ -263,8 +263,7 @@ void CPrintOut::_DoPrintPreview(
   CPrintOut *pPrint,
   const wxString &sTitle,
   const wxString &sPingPreview,
-  const wxString &sPingPrint,
-  bool bPageButtons)
+  const wxString &sPingPrint)
 {
   wxPrintDialogData printDialogData(*GetPrintData());
   CPrintPreview *preview =
@@ -287,7 +286,7 @@ void CPrintOut::_DoPrintPreview(
   {
     sStatus = wxT("OK");
     pFrame =
-      new CPrintPreviewFrame(preview, pPreview->GetParent(), sTitle, bPageButtons);
+      new CPrintPreviewFrame(preview, pPreview->GetParent(), sTitle);
   }
   mainApp::Ping2(PING_EVENT, sPingPreview, wxT("Status"), sStatus);
   if (pFrame != NULL)

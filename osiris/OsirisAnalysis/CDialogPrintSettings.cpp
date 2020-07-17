@@ -155,7 +155,7 @@ CDialogPrintSettings::CDialogPrintSettings(
   wxDialog(parent, wxID_ANY, wxT(S_WINDOW_TITLE),
     GET_PERSISTENT_POSITION(CDialogPrintSettings),
     wxDefaultSize,
-    wxDEFAULT_DIALOG_STYLE),
+    wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP),
   m_pFile(pFrame->GetOARfile()),
   m_pFrameAnalysis(pFrame),
   m_pParent(parent)
