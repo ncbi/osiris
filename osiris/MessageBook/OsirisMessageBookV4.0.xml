@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.61</VersionNumber>
-	<BuildTime>05/29/2020 06:27 PM</BuildTime>
+	<VersionNumber>7.63</VersionNumber>
+	<BuildTime>07/13/2020 10:51 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -3457,19 +3457,13 @@
 			<Subject>5</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</ReportCriterion>
 			<Text>Signal is Possible Off-Ladder Allele</Text>
-			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
+			<ReportLevel>1</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -5989,22 +5983,6 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smDontCallPullupPlusOLPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Do Not Call OL Allele If Pull-up</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Do Not Call OL Allele If Pull-up</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smDontCallAnyOLsIfTooManyPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -7581,7 +7559,6 @@
 						<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
 						<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
 						<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
-						<Name>smDontCallPullupPlusOLPreset</Name>
 						<Name>smDoNotCallExcessResidualPreset</Name>
 						<Name>smRequireExcessiveResidualOffLadderPreset</Name>
 						<Name>smAllowEditingRestrictedPriorityPreset</Name>
