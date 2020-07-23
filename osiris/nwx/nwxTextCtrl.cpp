@@ -56,7 +56,7 @@ class nwxIntegerValidator : public wxIntegerValidator<int>
 {
 public:
   nwxIntegerValidator(int nMin, int nMax):
-    wxIntegerValidator<int>(NULL, wxNUM_VAL_ZERO_AS_BLANK)
+    wxIntegerValidator<int>(NULL, 0)
   {
     SetRange(nMin, nMax);
   }
