@@ -230,6 +230,7 @@ bool CPrintOutAnalysis::_OnPrintPage(int page)
       true);
     std::unique_ptr<wxBitmap> px(pBitmap);
     wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
+	pdc->DestroyClippingRegion();
     pdc->DrawBitmap(*pBitmap, r.GetLeftTop());
   }
   else

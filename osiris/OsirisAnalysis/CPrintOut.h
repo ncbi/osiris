@@ -58,8 +58,8 @@ class CPrintOut : public wxPrintout
 public:
   CPrintOut(bool bPreview = false, const wxString &sTitle = wxT("OSIRIS Plot")) :
     wxPrintout(sTitle),
-#ifdef TMP_DEBUG
-    m_nSetupPageCount(0),
+#ifdef TMP_DEBUG	  
+	m_nLoggedPrinterResolution(0),
 #endif
     m_bPreview(bPreview)
   {}
@@ -166,11 +166,10 @@ protected:
     int m_DPI;
     bool m_bFit;
   };
-
-  _resOutput m_resOutput;
 #ifdef TMP_DEBUG
-  int m_nSetupPageCount;
+  int m_nLoggedPrinterResolution;
 #endif
+  _resOutput m_resOutput;
   bool m_bPreview;
   DECLARE_ABSTRACT_CLASS(CPrintOut)
 };

@@ -663,8 +663,8 @@ void CParmOsiris::SetDefaults()
   m_nPrintXscaleMin = 0;
   m_nPrintXscaleMax = 20000;
   m_nPrintYscale = 0;
-  m_nPrintYscaleMin = 0;
-  m_nPrintYscaleMax = 20000;
+  m_nPrintYscaleMin = -200;
+  m_nPrintYscaleMax = 6000;
   m_nPrintYcaleNegCtrl = 0;
   m_anPrintLabelsPeak.clear();
   m_anPrintLabelsPeak.push_back(1);

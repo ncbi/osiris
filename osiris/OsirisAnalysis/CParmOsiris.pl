@@ -171,8 +171,8 @@ my $VARLIST =
 
   ["m_nPrintYscale", "int", "0"],
   # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
-  ["m_nPrintYscaleMin", "int", "0"],
-  ["m_nPrintYscaleMax", "int", "20000"],
+  ["m_nPrintYscaleMin", "int", "-200"],
+  ["m_nPrintYscaleMax", "int", "6000"],
   ["m_nPrintYcaleNegCtrl", "int","0"],
   # 0 - scale to peaks, 1 - include min RFU, 2 - scale to ILS
 
