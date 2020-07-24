@@ -204,12 +204,64 @@ bool CPrintOutAnalysis::OnPrintPage(int page)
   }
   return bRtn;
 }
+
+wxBitmap *CPrintOutAnalysis::_GetErrorBitmap(const COARsample *pSample)
+{
+  // apparently the wxMemoryDC needs to be destroyed
+  // before using the wxBitmap - FML
+  wxBitmap *pBitmap = new wxBitmap(m_resOutput.m_nWidth, m_resOutput.m_nHeight, 32);
+  wxMemoryDC dcTmp(*pBitmap);
+  wxString sTitle =
+    (m_pFrameAnalysis->GetSampleNameLabelType() == IDmenuDisplayNameSample)
+    ? pSample->GetSampleName()
+    : pSample->GetName();
+  wxString sMsg(wxT("Cannot find plot file for\n"));
+  sMsg.Append(sTitle);
+  int nFontSize = m_resOutput.m_DPI >> 3; // 96 dpi, 12 pt, otherwise proportional
+  wxFont font(nFontSize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+    wxFONTWEIGHT_BOLD, false);
+  dcTmp.SetTextForeground(*wxBLACK);
+  dcTmp.SetBackground(*wxWHITE_BRUSH);
+  dcTmp.SetTextBackground(*wxWHITE);
+  dcTmp.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+  dcTmp.DestroyClippingRegion();
+  dcTmp.Clear();
+  dcTmp.SetFont(font);
+  wxSize sz = dcTmp.GetMultiLineTextExtent(sMsg);
+  wxSize szDC = dcTmp.GetSize();
+  if (sz.GetWidth() > szDC.GetWidth())
+  {
+    int nPointSize = font.GetPointSize();
+    font.SetPointSize(int(double(nPointSize * szDC.GetWidth()) / sz.GetWidth()));
+    sz = dcTmp.GetTextExtent(sMsg);
+    dcTmp.SetFont(font);
+  }
+  wxPoint pt(
+    (szDC.GetWidth() - sz.GetWidth()) >> 1,
+    (szDC.GetHeight() - sz.GetHeight()) >> 1);
+  if (pt.x < 0) { pt.x = 0; }
+  if (pt.y < 0) { pt.y = 0; }
+  dcTmp.DrawText(sMsg, pt);
+  mainApp::LogMessage(sMsg);
+#ifdef __WXDEBUG__
+  wxRect rDebug(pt, sz);
+  dcTmp.SetBrush(*wxTRANSPARENT_BRUSH);
+  dcTmp.SetPen(*wxBLACK_PEN);
+  dcTmp.DrawRectangle(rDebug);
+#endif
+  if (!dcTmp.IsOk())
+  {
+    mainApp::LogMessage(wxT("Error in wxDC for error page"));
+  }
+  return pBitmap;
+}
 bool CPrintOutAnalysis::_OnPrintPage(int page)
 {
   const CPrintPage &printPage(GetPages().at(page - 1));
   const COARsample *pSample(printPage.pSample);
   const wxString sPlotFile = pSample->GetPlotFileName();
   CPlotData plotData;
+  wxBitmap *pBitmap(NULL);
   wxDC *pdc = GetDC();
   _setupPageBitmap(pdc);
   if( (!sPlotFile.IsEmpty()) && plotData.LoadFile(sPlotFile) )
@@ -221,50 +273,23 @@ bool CPrintOutAnalysis::_OnPrintPage(int page)
     panel->Show(false);
     panel->SetRenderingToWindow(false);
     panel->SetPrintSettings();
-    wxBitmap *pBitmap = panel->CreateMultiChannelBitmap(
+    pBitmap = panel->CreateMultiChannelBitmap(
       m_resOutput.m_nWidth,
       m_resOutput.m_nHeight,
       m_resOutput.m_DPI,
       printPage.nFirstChannel,
       page,
       true);
-    std::unique_ptr<wxBitmap> px(pBitmap);
-    wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
-	pdc->DestroyClippingRegion();
-    pdc->DrawBitmap(*pBitmap, r.GetLeftTop());
   }
   else
   {
     // could not open plt file, show a message
-
-    wxString sTitle =
-      (m_pFrameAnalysis->GetSampleNameLabelType() == IDmenuDisplayNameSample)
-      ? pSample->GetSampleName()
-      : pSample->GetName();
-    int nPointSize = 48;
-    wxFont font(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
-      wxFONTWEIGHT_BOLD, false);
-    pdc->SetBackground(*wxWHITE_BRUSH);
-    pdc->Clear();
-    wxString sMsg(wxT("Cannot find plot file for "));
-    sMsg.Append(sTitle);
-    pdc->SetFont(font);
-    wxSize sz = pdc->GetTextExtent(sTitle);
-    wxSize szDC = pdc->GetSize();
-    if (sz.GetWidth() > szDC.GetWidth())
-    {
-      font.SetPointSize(int(double(nPointSize * szDC.GetWidth()) / sz.GetWidth()));
-      sz = pdc->GetTextExtent(sTitle);
-      pdc->SetFont(font);
-    }
-    wxPoint pt(
-      (szDC.GetWidth() - sz.GetWidth()) >> 1,
-      (szDC.GetHeight() - sz.GetHeight()) >> 1);
-    if (pt.x < 0) { pt.x = 0; }
-    if (pt.y < 0) { pt.y = 0; }
-    pdc->DrawText(sMsg, pt);
-    mainApp::LogMessage(sMsg);
+    pBitmap = _GetErrorBitmap(pSample);
   }
+  std::unique_ptr<wxBitmap> px(pBitmap);
+  wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
+  pdc->DestroyClippingRegion();
+  pdc->DrawBitmap(*pBitmap, r.GetLeftTop());
   return true;
 }
 

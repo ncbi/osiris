@@ -2775,7 +2775,7 @@ int CPanelPlot::DrawPlotTitleToDC(
     pDC->SetClippingRegion(wxPoint(0, nBorder), wxSize(nWidth, nMaxY));
     if (szDetails.GetWidth())
     {
-      wxPoint pos(nWidth - szDetails.GetWidth(), nBorder);
+      wxPoint pos(nWidth - szDetails.GetWidth() - 1, nBorder);
       pDC->SetFont(fnDetails);
       pDC->DrawText(sTitleDetails, pos);
 #ifdef __WXDEBUG__
@@ -2830,11 +2830,20 @@ int CPanelPlot::_GetPlotsPerPage()
   }
   return nPlotsPerPage;
 }
-void CPanelPlot::_SetXUserRange(wxRect2DDouble *pRect)
+void CPanelPlot::_SetXUserRange(wxRect2DDouble *pRect, bool bXBPS)
 {
   CParmOsirisGlobal pParm;
-  int n0 = pParm->GetPrintXscaleMin();
-  int n1 = pParm->GetPrintXscaleMax();
+  int n0, n1;
+  if (bXBPS)
+  {
+    n0 = pParm->GetPrintXscaleMinBPS();
+    n1 = pParm->GetPrintXscaleMaxBPS();
+  }
+  else
+  {
+    n0 = pParm->GetPrintXscaleMin();
+    n1 = pParm->GetPrintXscaleMax();
+  }
   CheckRange(&n0, &n1);
   pRect->SetLeft(double(n0));
   pRect->SetRight(double(n1));
@@ -2887,8 +2896,17 @@ bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
   if (nYScale == PRINT_Y_SCALE_USER && nXScale == PRINT_X_SCALE_USER)
   {
     // this will probably never happen
+    bool bXBPS = pParm->GetPrintXaxisILSBPS();
+    bool bXProblem =  bXBPS &&  GetPlotData()->CannotSetBPS();
     bRtn = true;
-    _SetXUserRange(&rectZoom);
+    if (!bXProblem)
+    {
+      _SetXUserRange(&rectZoom, bXBPS);
+    }
+    else
+    {
+      rectZoom = GetZoomOutRect(ZOOM_PRIMER_PEAK_X, nXlabelHeight);
+    }
     _SetYUserRange(&rectZoom);
     SetViewRect(rectZoom, false, 0);
   }
@@ -2897,7 +2915,14 @@ bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
        (nYScale == PRINT_Y_SCALE_USER) )
   {
     bRtn = true;
-    int nPrimerZoom = _BitmapPrimerZoom(nXScale, bNegCtrl);
+    bool bXBPS = pParm->GetPrintXaxisILSBPS();
+    bool bXProblem = bXBPS && 
+      GetPlotData()->CannotSetBPS() &&
+      (nXScale == PRINT_X_SCALE_USER);
+    int nPrimerZoom = 
+      bXProblem 
+      ? ZOOM_PRIMER_PEAK_X 
+      : _BitmapPrimerZoom(nXScale, bNegCtrl);
     ShowAllChannels(true);
     RebuildCurves(true);
     if (pSample->IsLadderType())
@@ -2905,9 +2930,9 @@ bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
       nXlabelHeight <<= 2; // guessing, need 4x space
     }
     rectZoom = GetZoomOutRect(nPrimerZoom, nXlabelHeight);
-    if (nXScale == PRINT_X_SCALE_USER)
+    if (nXScale == PRINT_X_SCALE_USER && !bXProblem)
     {
-      _SetXUserRange(&rectZoom);
+      _SetXUserRange(&rectZoom, bXBPS);
     }
     else if (nYScale == PRINT_Y_SCALE_USER)
     {
@@ -2924,7 +2949,12 @@ void CPanelPlot::_BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel)
   CParmOsirisGlobal pParm;
   int nXScale = pParm->GetPrintXscale();
   bool bNegCtrl = GetSample()->IsNegControl();
-  int nPrimerZoom = _BitmapPrimerZoom(nXScale, bNegCtrl);
+  bool bXBPS = pParm->GetPrintXaxisILSBPS();
+  bool bXProblem = bXBPS && GetPlotData()->CannotSetBPS() &&
+    (nXScale == PRINT_X_SCALE_USER);
+  int nPrimerZoom = bXProblem
+    ? ZOOM_PRIMER_PEAK_X
+    : _BitmapPrimerZoom(nXScale, bNegCtrl);
   int nNegCtrlYScale = bNegCtrl
     ? pParm->GetPrintYcaleNegCtrl()
     : -1;
@@ -2932,9 +2962,9 @@ void CPanelPlot::_BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel)
     ? m_pData->GetMinRfu(nChannel)
     : -1.0;
   wxRect2DDouble rectZoom = GetZoomOutRect(nPrimerZoom, nXlabelHeight, dMinRFU);
-  if (nXScale == PRINT_X_SCALE_USER)
+  if (nXScale == PRINT_X_SCALE_USER && !bXProblem)
   {
-    _SetXUserRange(&rectZoom);
+    _SetXUserRange(&rectZoom, pParm->GetPrintXaxisILSBPS());
   }
   SetViewRect(rectZoom, false, 0);
 }

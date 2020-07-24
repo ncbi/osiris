@@ -88,13 +88,21 @@ nwxTextCtrlInteger::nwxTextCtrlInteger(
   long style) :
   wxTextCtrl(parent, id,
     wxEmptyString, wxDefaultPosition, _ComputeSize(nDigits, parent),
-    style, nwxIntegerValidator(nMin, nMax))
+    style, nwxIntegerValidator(nMin, nMax)),
+  m_nMin(nMin),
+  m_nMax(nMax)
 {
-  if (nValue >= nMin && nValue <= nMax)
-  {
-    SetValue(nwxString::FormatNumber(nValue));
-  }
+  SetIntValue(nValue);
   SetDigits(nDigits);
+}
+void nwxTextCtrlInteger::SetIntValue(int nValue)
+{
+  wxString s;
+  if (nValue >= m_nMin && nValue <= m_nMax)
+  {
+    s = nwxString::FormatNumber(nValue);
+  }
+  SetValue(s);
 }
 void nwxTextCtrlInteger::SetDigits(int n)
 {
