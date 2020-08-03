@@ -314,7 +314,8 @@ CPrintOut::~CPrintOut()
 
 void CPrintOut::_setupPageBitmap(wxDC *pdc)
 {
-  _resInput res(pdc->GetPPI(), GetLogicalPageMarginsRect(*GetPageSetupData()));
+  wxRect rectPage(GetLogicalPageMarginsRect(*GetPageSetupData()));
+  _resInput res(pdc->GetPPI(), rectPage);
   if (res != m_resInput)
   {
     // compute everything

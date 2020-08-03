@@ -2199,11 +2199,8 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     SetViewRect(rect, false, 1);
   }
-  else
-  {
-    RebuildLabels(false);
-    RE_RENDER;
-  }
+  RebuildLabels(false);
+  RE_RENDER;
 }
 
 
