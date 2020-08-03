@@ -21,7 +21,8 @@ my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
 
 my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
-my $PATH7Z = 'c:\\Progra~1\\7-Zip\\7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
+#my $PATH7Z = 'c:\\Progra~1\\7-Zip\\7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
+my $PATH7Z = '7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
 
 
 sub MKDIR
@@ -376,7 +377,7 @@ if( $home =~ m|^/Users| )
 {
   &CopyMac;
 }
-elsif( ($uname =~ m/cygwin/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
+elsif( ($uname =~ m/cygwin/i) || ($uname =~ m/mingw/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
 {
   &CopyWin;
 }
