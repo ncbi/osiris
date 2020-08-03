@@ -313,8 +313,7 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
     wxRect rectPixels(GetPaperRectPixels());
     FitThisSizeToPaper(rectPixels.GetSize());
   }
-	wxRect rectPage(GetLogicalPageMarginsRect(*GetPageSetupData()));
-
+  wxRect rectPage(GetLogicalPageMarginsRect(*GetPageSetupData()));
   _resInput res(pdc->GetPPI(), rectPage);
   if (res != m_resInput)
   {
