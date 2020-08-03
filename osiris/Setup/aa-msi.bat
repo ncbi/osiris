@@ -1,2 +1,3 @@
 @echo off
-start msiexec /a %1
+msiexec /a %1
+
