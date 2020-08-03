@@ -52,6 +52,7 @@ class COARSample;
 class COARfile;
 class CFrameAnalysis;
 class wxDC;
+class wxBitmap;
 
 class CPrintOutAnalysis : public CPrintOut
 {
@@ -133,6 +134,7 @@ private:
     int nChannelPerPage; // used for plot size
   };
   bool _OnPrintPage(int page);
+  wxBitmap *_GetErrorBitmap(const COARsample *pSample);
   CFrameAnalysis *m_pFrameAnalysis;
   COARfile *m_pFile;
 

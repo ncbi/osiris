@@ -168,11 +168,13 @@ my $VARLIST =
   # 0 - scale w/o primer peak, 1 - scale to 0, 2 - scale to 0 neg control, 3 - specify
   ["m_nPrintXscaleMin", "int", "0"],
   ["m_nPrintXscaleMax", "int", "20000"],
+  ["m_nPrintXscaleMinBPS", "int", "0"],
+  ["m_nPrintXscaleMaxBPS", "int", "600"],
 
   ["m_nPrintYscale", "int", "0"],
   # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
-  ["m_nPrintYscaleMin", "int", "0"],
-  ["m_nPrintYscaleMax", "int", "20000"],
+  ["m_nPrintYscaleMin", "int", "-200"],
+  ["m_nPrintYscaleMax", "int", "6000"],
   ["m_nPrintYcaleNegCtrl", "int","0"],
   # 0 - scale to peaks, 1 - include min RFU, 2 - scale to ILS
 

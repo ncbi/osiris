@@ -74,8 +74,11 @@ public:
   virtual ~nwxTextCtrlInteger() {}
   void SetDigits(int n);
   int GetIntValue(int nEmptyValue = 0);
+  void SetIntValue(int n);
 private:
   void OnSetFocus(wxFocusEvent &e);
+  int m_nMin;
+  int m_nMax;
   static wxSize _ComputeSize(int nDigits, wxWindow *parent);
   static int g_nWidth10;
   static wxWindow *g_pParent;

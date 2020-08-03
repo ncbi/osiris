@@ -673,7 +673,7 @@ public:
 private:
   const wxColour &_GetColour(DATA_TYPE n, unsigned int nChannel);
   static void _SetYUserRange(wxRect2DDouble *pRect);  // Y
-  static void _SetXUserRange(wxRect2DDouble *pRect);  // X
+  static void _SetXUserRange(wxRect2DDouble *pRect, bool bXBPS);  // X
   static wxColour COLOUR_RFU;
 
   bool _BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pRectZoom);

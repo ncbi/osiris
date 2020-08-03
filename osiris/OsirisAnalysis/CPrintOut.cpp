@@ -303,12 +303,6 @@ void CPrintOut::_DoPrintPreview(
 
 CPrintOut::~CPrintOut()
 {
-#ifdef TMP_DEBUG
-  if (m_nSetupPageCount > 1)
-  {
-    mainApp::LogMessageV(wxT("**** CPrintOut setup count = %d"), m_nSetupPageCount);
-  }
-#endif
 }
 
 
@@ -319,9 +313,6 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
   if (res != m_resInput)
   {
     // compute everything
-#ifdef TMP_DEBUG
-    m_nSetupPageCount++;
-#endif
     wxSize szPPI = res.m_ppi;
     wxRect rectFit = res.m_logicalPage;
     double dPPIscale = 1.0, dScalePixel = 1.0;
@@ -350,9 +341,6 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
 	nPPIx = int(nPPIx * dMult);
 	nPPIy = int(nPPIy * dMult);
       }
-#ifdef TMP_DEBUG
-      mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
-#endif
     }
 #endif
 
@@ -383,28 +371,24 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
       {
         nMaxPPI = 48;
       }
-#ifdef TMP_DEBUG
-      mainApp::LogMessageV(
-        wxT("nMaxPPI = %d; printer PPI (x, y)=(%d, %d); screen PPI (x, y)=(%d, %d)"),
-        nMaxPPI, nPPIx, nPPIy, nx, ny);
-      mainApp::LogMessageV(
-        wxT("rectFix(x, y, w, h) = (%d, %d, %d, %d)"),
-        rectFit.GetX(), rectFit.GetY(),
-        rectFit.GetWidth(), rectFit.GetHeight());
-      double dx, dy;
-      pdc->GetLogicalScale(&dx, &dy);
-      mainApp::LogMessageV(wxT("wxDC logical scale (x, y)=(%g, %g)"),
-        dx, dy);
-      pdc->GetUserScale(&dx, &dy);
-      mainApp::LogMessageV(wxT("wxDC user scale (x, y)=(%g, %g)"),
-        dx, dy);
-      pdc->GetSize(&nx, &ny);
-      mainApp::LogMessageV(wxT("wxDC size (x, y)=(%d, %d)"),
-        nx, ny);
-      mainApp::LogMessageV(wxT("wxDC PPI (x, y)=(%d, %d)"),
-        nPPIx, nPPIy);
-#endif
     }
+#ifdef TMP_DEBUG
+	else
+	{
+		if (!m_nLoggedPrinterResolution)
+		{
+			wxString sLOG = wxString::Format(
+				wxT("Printer resolution %d x %d, size %d x %d"),
+				szPPI.GetX(),
+				szPPI.GetY(),
+				rectPage.GetWidth(),
+				rectPage.GetHeight()
+			);
+			mainApp::LogMessage(sLOG);
+			m_nLoggedPrinterResolution = 1;
+		}
+	}
+#endif
 
     if (nMinPPI > nMaxPPI)
     {

@@ -101,6 +101,7 @@ bool CPrintOutPlot::OnPrintPage(int page)
       page,
       true));
     wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
+    pdc->DestroyClippingRegion();
     pdc->DrawBitmap(*px, r.GetLeftTop());
   }
   else
