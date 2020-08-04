@@ -697,10 +697,10 @@ void CParmOsiris::SetDefaults()
 
   //  plot printout -- margins are in millimeters
 
-  m_nPrintPlotMarginTop = 25;
-  m_nPrintPlotMarginBottom = 25;
-  m_nPrintPlotMarginLeft = 25;
-  m_nPrintPlotMarginRight = 25;
+  m_nPrintPlotMarginTop = 12;
+  m_nPrintPlotMarginBottom = 12;
+  m_nPrintPlotMarginLeft = 12;
+  m_nPrintPlotMarginRight = 12;
   m_nPrintPlotPaperType = -1;
   m_nPrintPlotPaperWidth = -1;
   m_nPrintPlotPaperHeight = -1;

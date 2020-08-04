@@ -212,10 +212,10 @@ my $VARLIST =
 
   ["plot printout -- margins are in millimeters"],
 
-  ["m_nPrintPlotMarginTop", "unsigned int", "25"],
-  ["m_nPrintPlotMarginBottom", "unsigned int", "25"],
-  ["m_nPrintPlotMarginLeft", "unsigned int", "25"],
-  ["m_nPrintPlotMarginRight", "unsigned int", "25"],
+  ["m_nPrintPlotMarginTop", "unsigned int", "12"],
+  ["m_nPrintPlotMarginBottom", "unsigned int", "12"],
+  ["m_nPrintPlotMarginLeft", "unsigned int", "12"],
+  ["m_nPrintPlotMarginRight", "unsigned int", "12"],
   ["m_nPrintPlotPaperType", "int", "-1"],
   ["m_nPrintPlotPaperWidth", "int", "-1"],
   ["m_nPrintPlotPaperHeight", "int", "-1"],
