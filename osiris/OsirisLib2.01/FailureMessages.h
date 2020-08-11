@@ -65,6 +65,7 @@ public:
 	void CouldNotOpenFile (const RGString& fileType);
 	void FileInvalid (const RGString& fileType);
 	void OutputFileCouldNotBeCreated (const RGString& fullPathName);
+	void FsaHidFileInvalid (const RGString& fileName);
 
 // Analysis failure
 	void CouldNotInitialize ();
@@ -106,6 +107,7 @@ protected:
 
 	void Header ();
 	void Tail ();
+	void ContinueTail ();
 	RGString XML (const RGString& input);
 	void OutputAllMessages ();
 

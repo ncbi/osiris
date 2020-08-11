@@ -146,6 +146,9 @@ public:
 		return DirectoryCrashMode;
 	}
 
+	static void AddInvalidFile (const RGString& name);
+	static bool FileNameIsInInvalidList (const RGString& name);
+
 protected:
 	PopulationCollection* mCollection;
 	RGString mParentDirectoryForReports;
@@ -184,6 +187,7 @@ protected:
 	static RGString MsgBookBuildTime;
 	static bool CollectILSHistory;
 	static bool DirectoryCrashMode;
+	static RGDList InvalidFilesByName;
 };
 
 

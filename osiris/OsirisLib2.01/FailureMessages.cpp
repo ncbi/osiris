@@ -108,6 +108,14 @@ void MainMessages::OutputFileCouldNotBeCreated (const RGString& fullPathName) {
 }
 
 
+void MainMessages::FsaHidFileInvalid (const RGString& fileName) {
+
+	Header ();
+	cout << "fsa-hid sample or ladder file named " << XML (fileName) << " was invalid...Skipping.";
+	ContinueTail ();
+}
+
+
 
 // Analysis failure
 void MainMessages::CouldNotInitialize () {
@@ -275,9 +283,8 @@ void MainMessages::NoLaddersAnalyzedSuccessfully () {
 void MainMessages::LadderSpecificationMismatch (const RGString& msg) {
 
 	Header ();
-	cout << (char*)msg.GetData () << endl;
-	OutputAllMessages ();
-	Tail ();
+	cout << (char*)msg.GetData ();
+	ContinueTail ();
 }
 
 
@@ -307,6 +314,12 @@ void MainMessages::Header () {
 void MainMessages::Tail () {
 
 	cout << "  Terminating...</*****>" << endl;
+}
+
+
+void MainMessages::ContinueTail () {
+
+	cout << "</*****>" << endl;
 }
 
 
