@@ -59,8 +59,9 @@
 #include "CParmOsiris.h"
 #include "CDialogPrintSettings.h"
 #include "wxIDS.h"
-
-
+#ifdef TMP_DEBUG
+#include "nwx/nwxStaticBitmap.h"
+#endif
 
 // static data and functions
 
@@ -342,9 +343,9 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
       int nZoom = pp->GetZoom();
       if(nZoom != 100)
       {
-	double dMult = double(nZoom) * 0.01;
-	nPPIx = int(nPPIx * dMult);
-	nPPIy = int(nPPIy * dMult);
+  double dMult = double(nZoom) * 0.01;
+  nPPIx = int(nPPIx * dMult);
+  nPPIy = int(nPPIy * dMult);
       }
     }
 #endif
@@ -378,21 +379,21 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
       }
     }
 #ifdef TMP_DEBUG
-	else
-	{
-		if (!m_nLoggedPrinterResolution)
-		{
-			wxString sLOG = wxString::Format(
-				wxT("Printer resolution %d x %d, size %d x %d"),
-				szPPI.GetX(),
-				szPPI.GetY(),
-				rectPage.GetWidth(),
-				rectPage.GetHeight()
-			);
-			mainApp::LogMessage(sLOG);
-			m_nLoggedPrinterResolution = 1;
-		}
-	}
+    else
+    {
+      if (!m_nLoggedPrinterResolution)
+      {
+        wxString sLOG = wxString::Format(
+          wxT("Printer resolution %d x %d, size %d x %d"),
+          szPPI.GetX(),
+          szPPI.GetY(),
+          rectPage.GetWidth(),
+          rectPage.GetHeight()
+        );
+        mainApp::LogMessage(sLOG);
+        m_nLoggedPrinterResolution++;
+      }
+    }
 #endif
 
     if (nMinPPI > nMaxPPI)
@@ -432,8 +433,41 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
   int nHeight = m_resOutput.m_nHeight;
   if (bAdjust)
   {
+#ifdef TMP_DEBUG
+    wxString sLOG = wxString::Format(
+      wxT("Bitmap size size %d x %d"),
+      nWidth, nHeight);
+    mainApp::LogMessage(sLOG);
+#endif
     FitThisSizeToPageMargins(wxSize(nWidth, nHeight), *GetPageSetupData());
   }
 }
+
+#ifdef TMP_DEBUG
+void CPrintOut::DebugBitmap(wxBitmap *pBitmap, int nPage)
+{
+  if (m_sBitmapPath.IsEmpty())
+  {
+    m_sBitmapPath = mainApp::GetConfig()->GetConfigPath();
+    m_sBitmapPath.Append(wxT("Debug"));
+    nwxStaticBitmap::AddPngHandler();
+  }
+  if (wxFileName::IsDirWritable(m_sBitmapPath))
+  {
+    wxString sFile = m_sBitmapPath;
+    nwxFileUtil::EndWithSeparator(&sFile);
+
+    sFile.Append(wxString::Format(wxT("%s_%lx_%d.png"),
+      IsPreview() ? "S" : "P",  // screen (preview) or printout
+      (int)this, nPage));
+    if (!pBitmap->ConvertToImage().SaveFile(sFile, wxBITMAP_TYPE_PNG))
+    {
+      wxString s(wxT("Cannot save file: "));
+      s.Append(sFile);
+      mainApp::LogMessage(s);
+    }
+  }
+}
+#endif
 
 IMPLEMENT_ABSTRACT_CLASS(CPrintOut, wxPrintout)
