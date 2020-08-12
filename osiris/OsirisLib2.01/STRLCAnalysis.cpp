@@ -66,6 +66,7 @@ RGString STRLCAnalysis::OutputSubDirectory;
 RGString STRLCAnalysis::MsgBookBuildTime;
 bool STRLCAnalysis::CollectILSHistory = false;
 bool STRLCAnalysis::DirectoryCrashMode = false;
+RGDList STRLCAnalysis::InvalidFilesByName;
 MainMessages* STRLCAnalysis::mFailureMessage = new MainMessages;
 
 
@@ -1337,9 +1338,8 @@ int STRLCAnalysis :: AnalyzeIncrementally (const RGString& prototypeInputDirecto
 
 		if (!data->IsValid ()) {
 
-			NoticeStr << "Oops, " << LadderFileName.GetData () << " is not valid...Skipping";
+			NoticeStr << "\n" << LadderFileName.GetData () << " is not valid...Skipping\n";
 			cout << NoticeStr << endl;
-			NoticeStr << "\n";
 			ExcelText.Write (1, NoticeStr);
 			text << NoticeStr;
 			delete data;

@@ -35,6 +35,7 @@
 
 #include "STRLCAnalysis.h"
 #include "fsaFileData.h"
+#include "SampleData.h"
 #include "DataSignal.h"
 #include "RGTextOutput.h"
 #include "rgdirectory.h"
@@ -305,6 +306,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	smSampleMissingDataForChannels sampleMissingDataForChannels;
 	smSamplesAreNotValidInputFiles samplesNotValidInputFiles;
 	smSampleIsNotValidInputFile sampleNotValidInputFile;
+	smLaddersFromWrongMarkerSet markerSetMismatch;
+	
 
 	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
 
@@ -531,6 +534,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	else
 		SampleDirectory = new SampleNameDirectoryManager (DirectoryName);
+
+	SampleDirectory->SetAnalysisDirectory ((STRLCAnalysis*)this);
 
 	if (!SampleDirectory->IsValid ()) {
 
@@ -1145,12 +1150,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		if (!data->IsValid ()) {
 
-			NoticeStr << "Oops, " << LadderFileName.GetData () << " is not valid...Skipping";
-			STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in ladder named " + LadderFileName + "...Skipping");
-			cout << NoticeStr << endl;
-			NoticeStr << "\n";
-			ExcelText.Write (1, NoticeStr);
-			text << NoticeStr;
+			if (!FileNameIsInInvalidList (LadderFileName)) {
+
+				AddInvalidFile (LadderFileName);
+				NoticeStr << "\n" << LadderFileName.GetData () << " is not valid...Skipping\n";
+				//STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in ladder named " + LadderFileName + "...Skipping");
+				STRLCAnalysis::mFailureMessage->FsaHidFileInvalid (LadderFileName);
+				//cout << NoticeStr << endl;
+				ExcelText.Write (1, NoticeStr);
+				text << NoticeStr;
+				STRLCAnalysis::mFailureMessage->SetPingValue (630);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+				SetMessageValue (samplesNotValidInputFiles, true);
+				AppendDataForSmartMessage (samplesNotValidInputFiles, LadderFileName);
+			}
+
 			delete data;
 			continue;
 		}
@@ -1182,7 +1196,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		text << "Dye set name:  " << stringData << endLine;
 		ExcelText << "Dye set name:  " << stringData << endLine;
 
-		if (expectedNumberOfChannels > NChannels) {
+		if (expectedNumberOfChannels != NChannels) {
 
 			cout << "MARKERSET MISMATCH...EXPECTING " << expectedNumberOfChannels << " CHANNELS AND FILE CONTAINS " << NChannels << " CHANNELS" << endl;
 			cout << "ENDING..." << endl;
@@ -1193,15 +1207,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			ExcelText << "MARKERSET MISMATCH...EXPECTING " << expectedNumberOfChannels << " CHANNELS AND FILE CONTAINS " << NChannels << " CHANNELS" << endLine;
 			ExcelText << "ENDING..." << endLine;
 
-			errorMsg << "Markerset mismatch...expecting " << expectedNumberOfChannels << " channels and ladder file contains " << NChannels << " channels for ladder named " << FullPathName << " ...Terminating";
+			errorMsg << "Markerset mismatch...expecting " << expectedNumberOfChannels << " channels and ladder file contains " << NChannels << " channels for ladder named " << FullPathName << "...Skipping.";
 			STRLCAnalysis::mFailureMessage->LadderSpecificationMismatch (errorMsg);
 			STRLCAnalysis::mFailureMessage->SetPingValue (400);
 			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 
-			XMLExcelLinks << CLevel (1) << "\t\t<Sample>\n\t\t\t<Name>Marker Set Mismatch</Name>\n\t\t\t<Type></Type>\n\t\t</Sample>\n" << PLevel ();
-			XMLExcelLinks << CLevel (1) << "\t</Table>\n" << PLevel ();
-			XMLExcelLinks << CLevel (1) << "</OsirisAnalysisReport>" << endLine << PLevel ();
-			return -150;
+			SetMessageValue (markerSetMismatch, true);
+			AppendDataForSmartMessage (markerSetMismatch, LadderFileName);
+
+
+			//XMLExcelLinks << CLevel (1) << "\t\t<Sample>\n\t\t\t<Name>Marker Set Mismatch</Name>\n\t\t\t<Type></Type>\n\t\t</Sample>\n" << PLevel ();
+			//XMLExcelLinks << CLevel (1) << "\t</Table>\n" << PLevel ();
+			//XMLExcelLinks << CLevel (1) << "</OsirisAnalysisReport>" << endLine << PLevel ();
+			//return -150;
+			delete data;
+			continue;
 		}
 
 		for (i=1; i<=expectedNumberOfChannels; i++) {
@@ -1520,25 +1540,41 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			WorkingFile->Flush ();
 		}
 
-		data = new fsaFileData (FullPathName);
-		bioComponent = new STRSampleCoreBioComponent (data->GetName ());
-		bioComponent->SetSampleName (data->GetSampleName ());
-		bioComponent->SetFileName (FileName);
-		Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
-		Locus::SetSingleSourceSample (false);
-
-		bioComponent->SetSampleModifications (sml);
-
-		commentField = data->GetComment ();
-		bioComponent->SetComments (commentField);
-
 		try {  //#######
+
+			data = new fsaFileData (FullPathName);
 
 			if (!data->IsValid ()) {
 
-				CoreBioComponent::SetCrashCode (37);
-				throw 37;
+				if (!FileNameIsInInvalidList (FileName)) {
+
+					AddInvalidFile (FileName);
+					NoticeStr << "\n" << FileName.GetData () << " is not valid...Skipping\n";
+					//STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in sample named " + FileName + "...Skipping");
+					STRLCAnalysis::mFailureMessage->FsaHidFileInvalid (FileName);
+					//cout << NoticeStr << endl;
+					ExcelText.Write (1, NoticeStr);
+					text << NoticeStr;
+					STRLCAnalysis::mFailureMessage->SetPingValue (630);
+					STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+					SetMessageValue (samplesNotValidInputFiles, true);
+					AppendDataForSmartMessage (samplesNotValidInputFiles, FileName);
+				}
+
+				delete data;
+				continue;
 			}
+
+			bioComponent = new STRSampleCoreBioComponent (data->GetName ());
+			bioComponent->SetSampleName (data->GetSampleName ());
+			bioComponent->SetFileName (FileName);
+			Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
+			Locus::SetSingleSourceSample (false);
+
+			bioComponent->SetSampleModifications (sml);
+
+			commentField = data->GetComment ();
+			bioComponent->SetComments (commentField);
 
 			if (GetMessageValue (useSampleNamesForControlSampleTests))
 				bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
@@ -1821,7 +1857,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			else if (cc == 37) {
 
 				CrashResponse = 1;
-				cout << "********Sample " << data->GetName () << " is not a valid fsa/hid file" << endl;
+				cout << "********Sample " << FileName << " is not a valid fsa/hid file" << endl;
 				CoreBioComponent::ResetCrashMode (true);
 				STRLCAnalysis::mFailureMessage->SetPingValue (600);
 				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
@@ -1842,7 +1878,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 			delete bioComponent;
 			bioComponent = new STRSampleCoreBioComponent (data->GetName ());
-			bioComponent->SetSampleName (data->GetSampleName ());
+			//bioComponent->SetSampleName (data->GetSampleName ());
+			bioComponent->SetSampleName (FileName);
 			bioComponent->SetFileName (FileName);
 			commSM.SMOStack [1] = (SmartMessagingObject*)bioComponent;
 			bioComponent->SetMessageValue (stage1Successful, true);
@@ -2173,6 +2210,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	else
 		cout << "Sample directory opened successfully" << endl;
 
+	SampleDirectory->SetAnalysisDirectory ((STRLCAnalysis*)this);
 	int ChannelNumber = 1;
 	SampleDirectory->Initialize ();
 	int NSampleFiles = SampleDirectory->GetNumberOfFilesInDirectory ();
@@ -2858,8 +2896,24 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 			if (!data->IsValid ()) {
 
-				CoreBioComponent::SetCrashCode (37);
-				throw 37;
+				if (!FileNameIsInInvalidList (FileName)) {
+
+					AddInvalidFile (FileName);
+					NoticeStr << "\n" << FileName.GetData () << " is not valid...Skipping\n";
+					//STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in sample named " + FileName + "...Skipping");
+					STRLCAnalysis::mFailureMessage->FsaHidFileInvalid (FileName);
+					//cout << NoticeStr << endl;
+					ExcelText.Write (1, NoticeStr);
+					text << NoticeStr;
+					STRLCAnalysis::mFailureMessage->SetPingValue (630);
+					STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+					SetMessageValue (samplesNotValidInputFiles, true);
+					AppendDataForSmartMessage (samplesNotValidInputFiles, FileName);
+				}
+
+				delete data;
+				continue;
+
 			}
 
 			if (GetMessageValue (useSampleNamesForControlSampleTests))
@@ -3151,7 +3205,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 			else if (cc == 37) {
 
 				CrashResponse = 1;
-				cout << "********Sample " << data->GetName () << " is not a valid fsa/hid file" << endl;
+				cout << "********Sample " << FileName << " is not a valid fsa/hid file" << endl;
 				CoreBioComponent::ResetCrashMode (true);
 				STRLCAnalysis::mFailureMessage->SetPingValue (630);
 				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
@@ -3174,8 +3228,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		if (DirectoryCrashMode) {
 
 			delete bioComponent;
-			bioComponent = new STRSampleCoreBioComponent (data->GetName ());
-			bioComponent->SetSampleName (data->GetSampleName ());
+			bioComponent = new STRSampleCoreBioComponent (FileName);
+			bioComponent->SetSampleName (FileName);
 			bioComponent->SetFileName (FileName);
 			commSM.SMOStack [1] = (SmartMessagingObject*)bioComponent;
 			bioComponent->SetMessageValue (stage1Successful, true);
@@ -3880,5 +3934,33 @@ void STRLCAnalysis :: PreInitializeSmartMessages () {
 	mMessageArray = NULL;
 	mMessageDataTable = NULL;
 	mSmartMessageReporters = NULL;
+}
+
+
+void STRLCAnalysis::AddInvalidFile (const RGString& name) {
+
+	RGString* newName = new RGString (name);
+	
+	if (!InvalidFilesByName.Contains (newName))
+		InvalidFilesByName.Append (newName);
+
+	else
+		delete newName;
+}
+
+
+bool STRLCAnalysis::FileNameIsInInvalidList (const RGString& name) {
+
+	RGString* newName = new RGString (name);
+	bool answer;
+
+	if (InvalidFilesByName.Contains (newName))
+		answer = true;
+
+	else
+		answer = false;
+
+	delete newName;
+	return answer;
 }
 

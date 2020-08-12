@@ -1692,6 +1692,12 @@ int smPeakIgnored::sMessageIndex = 0;
 int smPeakIgnored::sMessageScope = 0;
 
 
+RGString smLaddersFromWrongMarkerSet::sName = "smLaddersFromWrongMarkerSet";
+int smLaddersFromWrongMarkerSet::sSubject = smLaddersFromWrongMarkerSet::LoadType ();
+int smLaddersFromWrongMarkerSet::sMessageIndex = 0;
+int smLaddersFromWrongMarkerSet::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1973,6 +1979,7 @@ PERSISTENT_DEFINITION (smSampleIsNotValidInputFile, 2682, "smSampleIsNotValidInp
 PERSISTENT_DEFINITION (smHeightToConsiderTrueHomozygote, 2683, "smHeightToConsiderTrueHomozygote")
 PERSISTENT_DEFINITION (smPeakHeightAboveHomozygoteTrustThreshold, 2684, "smPeakHeightAboveHomozygoteTrustThreshold")
 PERSISTENT_DEFINITION (smPeakIgnored, 2685, "smPeakIgnored")
+PERSISTENT_DEFINITION (smLaddersFromWrongMarkerSet, 2686, "smLaddersFromWrongMarkerSet")
 
 
 
@@ -18829,6 +18836,66 @@ int smPeakIgnored :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smPeakIgnored* noticeType = new smPeakIgnored;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smLaddersFromWrongMarkerSet :: smLaddersFromWrongMarkerSet () : SmartNotice () {
+
+}
+
+
+smLaddersFromWrongMarkerSet :: smLaddersFromWrongMarkerSet (const smLaddersFromWrongMarkerSet& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smLaddersFromWrongMarkerSet :: ~smLaddersFromWrongMarkerSet () {
+
+}
+
+
+int smLaddersFromWrongMarkerSet :: GetSubject () const {
+
+	return smLaddersFromWrongMarkerSet::sSubject;
+}
+
+
+void smLaddersFromWrongMarkerSet :: SetIndexAndScope (int index, int scope) const {
+
+	smLaddersFromWrongMarkerSet::sMessageIndex = index;
+	smLaddersFromWrongMarkerSet::sMessageScope = scope;
+}
+
+
+int smLaddersFromWrongMarkerSet :: GetMessageIndex () const {
+
+	return smLaddersFromWrongMarkerSet :: sMessageIndex;
+}
+
+
+int smLaddersFromWrongMarkerSet :: GetScope () const {
+
+	return smLaddersFromWrongMarkerSet :: sMessageScope;
+}
+
+
+RGString smLaddersFromWrongMarkerSet :: GetName () const {
+
+	return smLaddersFromWrongMarkerSet :: sName;
+}
+
+
+
+int smLaddersFromWrongMarkerSet :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smLaddersFromWrongMarkerSet* noticeType = new smLaddersFromWrongMarkerSet;
 	warehouse->AddType (noticeType);
 	return 1;
 }

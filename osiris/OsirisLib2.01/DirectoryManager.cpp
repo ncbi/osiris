@@ -33,7 +33,12 @@
 
 #include "DirectoryManager.h"
 #include "ParameterServer.h"
+#include "STRLCAnalysis.h"
 #include "fsaFileData.h"
+#include "SmartMessage.h"
+#include "SmartNotice.h"
+#include "STRSmartMessage.h"
+#include "STRSmartNotices.h"
 
 
 Boolean DirectoryManager::Cycle = TRUE;
@@ -43,7 +48,7 @@ RGString DirectoryManager::DataFileTypeWithDot = ".fsa";
 
 
 DirectoryManager :: DirectoryManager (const RGString& name) : DirectoryName (name), Valid (TRUE),
-mReadAllPosControls (FALSE), mReadAllNegControls (FALSE), mReadAllSamples (FALSE) {
+mReadAllPosControls (FALSE), mReadAllNegControls (FALSE), mReadAllSamples (FALSE), mAnalysisDirectory (NULL) {
 
 	Directory = new RGDirectory (name);
 
@@ -355,18 +360,34 @@ bool SampleNameDirectoryManager :: Initialize () {
 	RGString sampleName;
 	RGString* nextFileName;
 	RGString NoticeStr;
+	smSamplesAreNotValidInputFiles samplesNotValidInputFiles;
 
 	while (Directory->ReadNextDirectory (fileName)) {
 
 		if (!TestForExtension (fileName))
 			continue;
 
+		if (STRLCAnalysis::FileNameIsInInvalidList (fileName)) {
+
+			continue;
+		}
+
 		data = new fsaFileData (DirectoryName + "/" + fileName);
 
 		if (!data->IsValid ()) {
+			
+			STRLCAnalysis::AddInvalidFile (fileName);
 
-			NoticeStr << "Oops, " << fileName << " is not valid...Skipping";
-			cout << NoticeStr << endl;
+			//NoticeStr << "\n" << fileName.GetData () << " is not valid...Skipping\n";
+			//STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in file named " + fileName + "...Skipping");
+			STRLCAnalysis::mFailureMessage->FsaHidFileInvalid (fileName);
+			//cout << NoticeStr << endl;
+			//ExcelText.Write (1, NoticeStr);
+			//text << NoticeStr;
+			STRLCAnalysis::mFailureMessage->SetPingValue (630);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+			mAnalysisDirectory->SetMessageValue (samplesNotValidInputFiles, true);
+			mAnalysisDirectory->AppendDataForSmartMessage (samplesNotValidInputFiles, fileName);
 			delete data;
 			continue;
 		}

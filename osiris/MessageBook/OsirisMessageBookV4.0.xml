@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.63</VersionNumber>
-	<BuildTime>07/13/2020 10:51 PM</BuildTime>
+	<VersionNumber>7.64</VersionNumber>
+	<BuildTime>08/11/2020 5:51 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1227,6 +1227,20 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>ONE OR MORE SAMPLES DO NOT HAVE THE CORRECT FSA/HID FORMAT OR MAY BE CORRUPTED.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLaddersFromWrongMarkerSet</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE LADDERS ARE NOT FROM THE SPECIFIED MARKER SET.  FILE NAME(S)</Text>
 			<TextForData>:  </TextForData>
 			<SeparatorText>; </SeparatorText>
 			<ClosingText>.</ClosingText>
@@ -8234,6 +8248,7 @@
 						<Name>smSamplesTerminatedPrematurely</Name>
 						<Name>smSamplesHadNoDataForChannels</Name>
 						<Name>smSamplesAreNotValidInputFiles</Name>
+						<Name>smLaddersFromWrongMarkerSet</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfSamples</Name>
