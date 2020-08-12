@@ -290,6 +290,9 @@ bool CPrintOutAnalysis::_OnPrintPage(int page)
   wxRect r = GetLogicalPageMarginsRect(*GetPageSetupData());
   pdc->DestroyClippingRegion();
   pdc->DrawBitmap(*pBitmap, r.GetLeftTop());
+#ifdef TMP_DEBUG
+  DebugBitmap(pBitmap, page);
+#endif
   return true;
 }
 
