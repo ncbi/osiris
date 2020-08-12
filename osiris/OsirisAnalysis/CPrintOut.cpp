@@ -459,7 +459,7 @@ void CPrintOut::DebugBitmap(wxBitmap *pBitmap, int nPage)
 
     sFile.Append(wxString::Format(wxT("%s_%lx_%d.png"),
       IsPreview() ? "S" : "P",  // screen (preview) or printout
-      (int)this, nPage));
+      (long) this, nPage));
     if (!pBitmap->ConvertToImage().SaveFile(sFile, wxBITMAP_TYPE_PNG))
     {
       wxString s(wxT("Cannot save file: "));
