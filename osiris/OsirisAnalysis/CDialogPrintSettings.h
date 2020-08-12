@@ -54,6 +54,7 @@
 class wxCheckBox;
 class wxRadioButton;
 class wxTextCtrl;
+class nwxTextCtrlInteger;
 class wxButton;
 class CFrameAnalysis;
 class CPrintPreviewFrame;
@@ -112,9 +113,10 @@ public:
   virtual bool TransferDataToWindow();
 private:
   static const int NO_RADIO_INT;
-  static wxTextCtrl *_CreateNumericTextCtrl(
+  static nwxTextCtrlInteger *_CreateNumericTextCtrl(
     wxWindow *parent, int nMin, int nMax, int nInit, int nID = wxID_ANY);
   void _EnableXScaleUser(bool b);
+  void _SetXScaleUserValues();
   void _EnableYScaleUser(bool b);
   void _SetupXScaleUser();
   void _SetupYScaleUser();
@@ -212,12 +214,14 @@ private:
   wxRadioButton *m_pRadioXscaleIncludePrimer;
   wxRadioButton *m_pRadioXscaleIncludePrimerNegCtrl;
   wxRadioButton *m_pRadioXscaleSpecify;
-  wxTextCtrl *m_pTextXscaleMin;
-  wxTextCtrl *m_pTextXscaleMax;
+  nwxTextCtrlInteger *m_pTextXscaleMin;
+  nwxTextCtrlInteger *m_pTextXscaleMax;
   wxStaticText *m_pLabelXscaleUnits;
   wxStaticText *m_pLabelXscaleUnitsTo;
   int m_nXscaleMin;
   int m_nXscaleMax;
+  int m_nXscaleMinBPS;
+  int m_nXscaleMaxBPS;
 
   // Y Axis Scale
 
@@ -225,8 +229,8 @@ private:
   wxRadioButton *m_pRadioYscaleChannel;
   wxRadioButton *m_pRadioYscaleSample;
   wxRadioButton *m_pRadioYscaleSpecify;
-  wxTextCtrl *m_pTextYscaleMin;
-  wxTextCtrl *m_pTextYscaleMax;
+  nwxTextCtrlInteger *m_pTextYscaleMin;
+  nwxTextCtrlInteger *m_pTextYscaleMax;
   wxStaticText *m_pLabelYscaleTo;
   wxStaticText *m_pLabelYRFU;
   int m_nYscaleMin;

@@ -123,6 +123,9 @@
 #define ITEM_ARGS 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, ID_BORDER
 #define ITEM_ARGS_EXPAND 0, wxLEFT | wxBOTTOM | wxEXPAND, ID_BORDER
 
+
+#define __OUT_OF_RANGE 0x7fffffff
+
 // CDialogPrintSettingsOmit - declaration
 
 class CDialogPrintSettingsOmit : public wxDialog
@@ -155,7 +158,7 @@ CDialogPrintSettings::CDialogPrintSettings(
   wxDialog(parent, wxID_ANY, wxT(S_WINDOW_TITLE),
     GET_PERSISTENT_POSITION(CDialogPrintSettings),
     wxDefaultSize,
-    wxDEFAULT_DIALOG_STYLE),
+    wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP),
   m_pFile(pFrame->GetOARfile()),
   m_pFrameAnalysis(pFrame),
   m_pParent(parent)
@@ -170,17 +173,13 @@ CDialogPrintSettings::~CDialogPrintSettings()
 
 const int CDialogPrintSettings::NO_RADIO_INT = -32768;
 
-wxTextCtrl *CDialogPrintSettings::_CreateNumericTextCtrl(
+nwxTextCtrlInteger *CDialogPrintSettings::_CreateNumericTextCtrl(
   wxWindow *parent, int nMin, int nMax, int nInit, int nID)
 {
-  return new nwxTextCtrlInteger(parent, nID, nMin, nMax, nInit, 6, 0L);
-  /*
-  wxIntegerValidator<int> val(NULL, wxNUM_VAL_ZERO_AS_BLANK);
-  val.SetRange(nMin, nMax);
-  wxTextCtrl *pRtn = new wxTextCtrl(parent, nID, nwxString::FormatNumber(nInit), wxDefaultPosition, sz, 0, val);
-  pRtn->SetMaxLength(6);
+  nwxTextCtrlInteger *pRtn = new 
+    nwxTextCtrlInteger(parent, nID, nMin, nMax, nInit, 6, 0L);
+  pRtn->Enable(false);
   return pRtn;
-  */
 }
 
 
@@ -317,8 +316,10 @@ void CDialogPrintSettings::_Build()
   m_pRadioXscaleIncludePrimerNegCtrl = _CreateRadioButton(wxT(S_NEG_CTRL_PRIMER_PEAKS), PRINT_X_SCALE_CTRL_PRIMER_PEAK, false, IDprintXscaleSpecify);
   m_pRadioXscaleSpecify = _CreateRadioButton(wxT(S_SPECIFY), PRINT_X_SCALE_USER, false, IDprintXscaleSpecify);
   m_nGroupXscale = _GetCurrentGroup();
-  m_pTextXscaleMin = _CreateNumericTextCtrl(this, -999, 99999, 0);
-  m_pTextXscaleMax = _CreateNumericTextCtrl(this, -999, 99999, 12000);
+  m_pTextXscaleMin = _CreateNumericTextCtrl(this, -999, 99999, __OUT_OF_RANGE);
+  m_pTextXscaleMax = _CreateNumericTextCtrl(this, -999, 99999, __OUT_OF_RANGE);
+  m_pTextXscaleMin->Enable(false);
+  m_pTextXscaleMax->Enable(false);
 
   // scale Y-Axis
 
@@ -327,9 +328,10 @@ void CDialogPrintSettings::_Build()
   m_pRadioYscaleSpecify = _CreateRadioButton(wxT(S_SPECIFY), PRINT_Y_SCALE_USER, false, IDprintYscaleSpecify);
   m_nGroupYscale = _GetCurrentGroup();
 
-  m_pTextYscaleMin = _CreateNumericTextCtrl(this, -50000, 50000, -100);
-  m_pTextYscaleMax = _CreateNumericTextCtrl(this, -50000, 50000, 32000);
-
+  m_pTextYscaleMin = _CreateNumericTextCtrl(this, -50000, 50000, __OUT_OF_RANGE);
+  m_pTextYscaleMax = _CreateNumericTextCtrl(this, -50000, 50000, __OUT_OF_RANGE);
+  m_pTextYscaleMin->Enable(false);
+  m_pTextYscaleMax->Enable(false);
   m_pRadioYscaleNegCtrlData = _CreateRadioButton(wxT(S_SCALE_NEG_CTRL_PEAK), PRINT_Y_SCALE_NEG_PEAKS, true);
   m_pRadioYscaleNegCtrlRFU = _CreateRadioButton(wxT(S_SCALE_NEG_CTRL_RFU), PRINT_Y_SCALE_NEG_INCLUDE_RFU);
   m_pRadioYscaleNegCtrlILS = _CreateRadioButton(wxT(S_SCALE_NEG_CTRL_ILS), PRINT_Y_SCALE_NEG_ILS);
@@ -500,40 +502,55 @@ void CDialogPrintSettings::_SaveTextIntValue(wxTextCtrl *pText, int *pn, bool bO
     }
   }
 }
+
+void CDialogPrintSettings::_SetXScaleUserValues()
+{
+  bool bEnabled = m_pTextXscaleMin->IsEnabled();
+  int n1 = __OUT_OF_RANGE, n2 = __OUT_OF_RANGE;
+  if (!bEnabled)
+  {
+  }
+  else if (m_pRadioXaxisILSBPS->GetValue())
+  {
+    n1 = m_nXscaleMinBPS;
+    n2 = m_nXscaleMaxBPS;
+  }
+  else
+  {
+    n1 = m_nXscaleMin;
+    n2 = m_nXscaleMax;
+  }
+  m_pTextXscaleMin->SetIntValue(n1);
+  m_pTextXscaleMax->SetIntValue(n2);
+}
 void CDialogPrintSettings::_EnableXScaleUser(bool bEnable)
 {
   if (m_pTextXscaleMin->IsEnabled() != bEnable)
   {
-    wxString s1, s2;
-    if (bEnable)
-    {
-      s1 = nwxString::FormatNumber(m_nXscaleMin);
-      s2 = nwxString::FormatNumber(m_nXscaleMax);
-    }
-    else
-    {
-      _SaveTextIntValue(m_pTextXscaleMin, &m_nXscaleMin);
-      _SaveTextIntValue(m_pTextXscaleMax, &m_nXscaleMax);
-    }
-    m_pTextXscaleMin->SetValue(s1);
-    m_pTextXscaleMax->SetValue(s2);
-
     m_pTextXscaleMin->Enable(bEnable);
     m_pTextXscaleMax->Enable(bEnable);
     m_pLabelXscaleUnits->Enable(bEnable);
     m_pLabelXscaleUnitsTo->Enable(bEnable);
+    _SetXScaleUserValues();
   }
 }
 void CDialogPrintSettings::_SetupLadderLabels()
 {
   m_pCheckCurveLadderLabels->Enable(m_pCheckCurveLadder->GetValue());
 }
-
 void CDialogPrintSettings::_SetupXScaleUserUnits()
 {
   const char *ps;
-  ps = m_pRadioXaxisTime->GetValue() ? S_RANGE_SECONDS : S_RANGE_BPS;
-  m_pLabelXscaleUnits->SetLabel(ps);
+  bool bTime = m_pRadioXaxisTime->GetValue();
+  ps =  bTime ? S_RANGE_SECONDS : S_RANGE_BPS;
+  if (m_pLabelXscaleUnits->GetLabel() != ps)
+  {
+    m_pLabelXscaleUnits->SetLabel(ps);
+    if (m_pRadioXscaleSpecify->GetValue())
+    {
+      _SetXScaleUserValues();
+    }
+  }
 }
 void CDialogPrintSettings::_EnableYScaleUser(bool bEnable)
 {
@@ -602,7 +619,8 @@ bool CDialogPrintSettings::TransferDataToWindow()
   m_pCheckChannelsOmitILS->SetValue(m_pParms->GetPrintChannelsOmitILS());
 
   // X Axis
-  _SetRadioValue(m_nGroupXaxisUnits, m_pParms->GetPrintXaxisILSBPS() ? PRINT_X_BPS : PRINT_X_TIME);
+  bool bXBPS = m_pParms->GetPrintXaxisILSBPS();
+  _SetRadioValue(m_nGroupXaxisUnits, bXBPS ? PRINT_X_BPS : PRINT_X_TIME);
 
   // X Axis Scale Primer
 
@@ -610,6 +628,8 @@ bool CDialogPrintSettings::TransferDataToWindow()
   _SetRadioValue(m_nGroupXscale, nTemp);
   m_nXscaleMin = m_pParms->GetPrintXscaleMin();
   m_nXscaleMax = m_pParms->GetPrintXscaleMax();
+  m_nXscaleMinBPS = m_pParms->GetPrintXscaleMinBPS();
+  m_nXscaleMaxBPS = m_pParms->GetPrintXscaleMaxBPS();
   _EnableXScaleUser(nTemp == PRINT_X_SCALE_USER);
 
   // Y Axis Scale
@@ -668,12 +688,25 @@ bool CDialogPrintSettings::TransferDataFromWindow()
   m_pParms->SetPrintChannelsOmitILS(m_pCheckChannelsOmitILS->GetValue());
 
   // X Axis
-  m_pParms->SetPrintXaxisILSBPS(m_pRadioXaxisILSBPS->GetValue());
+  bool bXBPS = m_pRadioXaxisILSBPS->GetValue();
+  m_pParms->SetPrintXaxisILSBPS(bXBPS);
 
   // X Axis Scale Primer
   nValue = _GetRadioValue(m_nGroupXscale);
   m_pParms->SetPrintXscale(nValue);
-  if (nValue == PRINT_X_SCALE_USER)
+  if (nValue != PRINT_X_SCALE_USER)
+  {
+  }
+  else if (bXBPS)
+  {
+    _SaveTextIntValue(m_pTextXscaleMin, &m_nXscaleMinBPS);
+    _SaveTextIntValue(m_pTextXscaleMax, &m_nXscaleMaxBPS);
+    CPanelPlot::CheckRange(&m_nXscaleMinBPS, &m_nXscaleMaxBPS);
+    m_pParms->SetPrintXscaleMinBPS(m_nXscaleMinBPS);
+    m_pParms->SetPrintXscaleMaxBPS(m_nXscaleMaxBPS);
+
+  }
+  else
   {
     _SaveTextIntValue(m_pTextXscaleMin, &m_nXscaleMin);
     _SaveTextIntValue(m_pTextXscaleMax, &m_nXscaleMax);

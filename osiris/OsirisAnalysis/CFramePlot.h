@@ -113,7 +113,16 @@ public:
   virtual bool Show(bool show = true);
 //  void ShowScrollbars(bool bShow);
 //  void ShowToolbars(bool bShow);
-
+  void InvalidatePrintColors()
+  {
+    if (m_pPlotForBitmap == NULL)
+    {
+    }
+    else if (m_pPlotForBitmap->IsPrinting())
+    {
+      m_pPlotForBitmap->InvalidateColors();
+    }
+  }
   void ReInitialize(const wxString &sLocus, bool bSingle);
   void AddPlot(CPanelPlot *pPreceed, bool bUpdate = true);
   void RemovePlot(CPanelPlot *pRemove, bool bRefresh = true);
@@ -338,12 +347,13 @@ private:
   bool _CheckAnalysisFile(COARfile *pFile);
   void _CleanupExportDialog();
   void _SetupBitmapPlot();
-  CPanelPlot *_GetBitmapPlot()
+  CPanelPlot *_GetBitmapPlot(bool bPrinting)
   {
     if (m_pPlotForBitmap == NULL)
     {
       _SetupBitmapPlot();
     }
+    m_pPlotForBitmap->SetPrinting(bPrinting);
     return m_pPlotForBitmap;
   }
   void UpdatePlotNumbers();

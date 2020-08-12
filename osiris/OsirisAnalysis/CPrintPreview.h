@@ -137,7 +137,7 @@ class CPrintPreviewFrame : public wxPreviewFrame
 {
 public:
   CPrintPreviewFrame(CPrintPreview *pPreview, wxWindow *pParent,
-    const wxString &sTitle, bool bPageButtons = false);
+    const wxString &sTitle);
   virtual ~CPrintPreviewFrame() {}
   virtual void CreateControlBar();
   void UpdateSettings();
@@ -146,6 +146,7 @@ private:
   {
     return wxDynamicCast(m_controlBar, CPreviewControlBar);
   }
+  void _OnClose(wxCloseEvent &);
   void _OnSettings(wxCommandEvent &);
   void _OnColors(wxCommandEvent &);
   void _OnZoom(wxCommandEvent &);

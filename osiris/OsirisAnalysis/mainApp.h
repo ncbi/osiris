@@ -112,6 +112,7 @@ public:
       m_pTimer->Start(250,false);
     }
   }
+  static void Raise(); // for mdi app raise the mdi window, otherwise do nothing
   void OnTimer(wxTimerEvent &);
 
 #define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);

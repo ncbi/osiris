@@ -32,9 +32,13 @@
 #include "nwx/nwxString.h"
 
 IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrl,wxTextCtrl)
-IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrlInteger, nwxTextCtrl)
+IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrlInteger, wxTextCtrl)
 BEGIN_EVENT_TABLE(nwxTextCtrl,wxTextCtrl)
 EVT_SET_FOCUS(nwxTextCtrl::OnSetFocus)
+END_EVENT_TABLE()
+
+BEGIN_EVENT_TABLE(nwxTextCtrlInteger, wxTextCtrl)
+EVT_SET_FOCUS(nwxTextCtrlInteger::OnSetFocus)
 END_EVENT_TABLE()
 
 
@@ -52,7 +56,7 @@ class nwxIntegerValidator : public wxIntegerValidator<int>
 {
 public:
   nwxIntegerValidator(int nMin, int nMax):
-    wxIntegerValidator<int>(NULL, wxNUM_VAL_ZERO_AS_BLANK)
+    wxIntegerValidator<int>(NULL, 0)
   {
     SetRange(nMin, nMax);
   }
@@ -82,15 +86,23 @@ nwxTextCtrlInteger::nwxTextCtrlInteger(
   int nValue,
   int nDigits,
   long style) :
-  nwxTextCtrl(parent, id,
+  wxTextCtrl(parent, id,
     wxEmptyString, wxDefaultPosition, _ComputeSize(nDigits, parent),
-    style, nwxIntegerValidator(nMin, nMax))
+    style, nwxIntegerValidator(nMin, nMax)),
+  m_nMin(nMin),
+  m_nMax(nMax)
 {
-  if (nValue >= nMin && nValue <= nMax)
-  {
-    SetValue(nwxString::FormatNumber(nValue));
-  }
+  SetIntValue(nValue);
   SetDigits(nDigits);
+}
+void nwxTextCtrlInteger::SetIntValue(int nValue)
+{
+  wxString s;
+  if (nValue >= m_nMin && nValue <= m_nMax)
+  {
+    s = nwxString::FormatNumber(nValue);
+  }
+  SetValue(s);
 }
 void nwxTextCtrlInteger::SetDigits(int n)
 {
@@ -109,4 +121,9 @@ int nwxTextCtrlInteger::GetIntValue(int nEmptyValue)
     nRtn = atoi(s.utf8_str());
   }
   return nRtn;
+}
+void nwxTextCtrlInteger::OnSetFocus(wxFocusEvent &e)
+{
+  SelectAll();
+  e.Skip();
 }

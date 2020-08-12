@@ -320,6 +320,10 @@ public:
   );
   virtual ~CPanelPlot();
 
+  void InvalidateColors()
+  {
+    m_mapColors.clear();
+  }
   void SendPlotSizeEvent();
   bool IsPreview()
   {
@@ -468,7 +472,12 @@ public:
   {
     return m_pMenu->GetPlotTypes();
   }
-  void CopySettings(CPanelPlot &w, int nDelay = 1, bool bPrinting = false);
+  void CopySettings(CPanelPlot &w, int nDelay = 1);
+  void CopySettings(CPanelPlot &w, int nDelay, bool bPrinting)
+  {
+    CopySettings(w, nDelay);
+    SetPrinting(bPrinting);
+  }
   void SetPlotNumber(unsigned int i)
   {
     m_nPlotNr = i;
@@ -612,6 +621,18 @@ public:
   double GetLabelHeightExtension(int nLabelHeight = 0);
   void AdjustLabelHeightExtension(double dCurrentExtension, const wxRect &rect, int nLabelHeight = 0);
 
+  void SetPrinting(bool b = true)
+  {
+    if (b != m_bPrinting)
+    {
+      m_bPrinting = b;
+      InvalidateColors();
+    }
+  }
+  bool IsPrinting()
+  {
+    return m_bPrinting;
+  }
   void ResetDefaults()
   {
     if(IsPlotFrame())
@@ -652,7 +673,7 @@ public:
 private:
   const wxColour &_GetColour(DATA_TYPE n, unsigned int nChannel);
   static void _SetYUserRange(wxRect2DDouble *pRect);  // Y
-  static void _SetXUserRange(wxRect2DDouble *pRect);  // X
+  static void _SetXUserRange(wxRect2DDouble *pRect, bool bXBPS);  // X
   static wxColour COLOUR_RFU;
 
   bool _BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pRectZoom);
@@ -764,14 +785,6 @@ private:
     unsigned int nChannel,
     const wxString &sChannelName);
 
-  void _SetPrinting(bool b = true)
-  {
-    m_bPrinting = b;
-  }
-  bool _IsPrinting()
-  {
-    return m_bPrinting;
-  }
   void _BuildOARlabels();
   void _BuildPeakLabels(
     const std::vector<CSamplePeak *> *pp,

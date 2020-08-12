@@ -168,6 +168,8 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_nPrintXscale);
   CP(m_nPrintXscaleMin);
   CP(m_nPrintXscaleMax);
+  CP(m_nPrintXscaleMinBPS);
+  CP(m_nPrintXscaleMaxBPS);
   CP(m_nPrintYscale);
   CP(m_nPrintYscaleMin);
   CP(m_nPrintYscaleMax);
@@ -325,6 +327,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintXscale)
   CP(m_nPrintXscaleMin)
   CP(m_nPrintXscaleMax)
+  CP(m_nPrintXscaleMinBPS)
+  CP(m_nPrintXscaleMaxBPS)
   CP(m_nPrintYscale)
   CP(m_nPrintYscaleMin)
   CP(m_nPrintYscaleMax)
@@ -491,6 +495,8 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterInt("PrintXscale", &m_nPrintXscale);
   RegisterInt("PrintXscaleMin", &m_nPrintXscaleMin);
   RegisterInt("PrintXscaleMax", &m_nPrintXscaleMax);
+  RegisterInt("PrintXscaleMinBPS", &m_nPrintXscaleMinBPS);
+  RegisterInt("PrintXscaleMaxBPS", &m_nPrintXscaleMaxBPS);
   RegisterInt("PrintYscale", &m_nPrintYscale);
   RegisterInt("PrintYscaleMin", &m_nPrintYscaleMin);
   RegisterInt("PrintYscaleMax", &m_nPrintYscaleMax);
@@ -662,9 +668,11 @@ void CParmOsiris::SetDefaults()
   m_nPrintXscale = 0;
   m_nPrintXscaleMin = 0;
   m_nPrintXscaleMax = 20000;
+  m_nPrintXscaleMinBPS = 0;
+  m_nPrintXscaleMaxBPS = 600;
   m_nPrintYscale = 0;
-  m_nPrintYscaleMin = 0;
-  m_nPrintYscaleMax = 20000;
+  m_nPrintYscaleMin = -200;
+  m_nPrintYscaleMax = 6000;
   m_nPrintYcaleNegCtrl = 0;
   m_anPrintLabelsPeak.clear();
   m_anPrintLabelsPeak.push_back(1);
@@ -689,10 +697,10 @@ void CParmOsiris::SetDefaults()
 
   //  plot printout -- margins are in millimeters
 
-  m_nPrintPlotMarginTop = 25;
-  m_nPrintPlotMarginBottom = 25;
-  m_nPrintPlotMarginLeft = 25;
-  m_nPrintPlotMarginRight = 25;
+  m_nPrintPlotMarginTop = 12;
+  m_nPrintPlotMarginBottom = 12;
+  m_nPrintPlotMarginLeft = 12;
+  m_nPrintPlotMarginRight = 12;
   m_nPrintPlotPaperType = -1;
   m_nPrintPlotPaperWidth = -1;
   m_nPrintPlotPaperHeight = -1;

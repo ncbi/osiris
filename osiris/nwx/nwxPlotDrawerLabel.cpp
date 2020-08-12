@@ -49,6 +49,7 @@ const int nwxPointLabel::ALIGN_DEFAULT = (wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BO
 //  bitwise flags
 const int nwxPointLabel::STYLE_BOX = 1;
 const int nwxPointLabel::STYLE_DISABLED = 2;
+const int nwxPointLabel::STYLE_BLACK_TEXT = 4;
 
 bool nwxPointLabel::operator == (const nwxPointLabel &x) const
 {
@@ -151,10 +152,20 @@ void nwxPlotDrawerLabel::DrawSemiTransparentRectangle(wxDC *pdc, const wxRect &r
 #else
 	dc.GetPixel(nx, ny, &c);
 #endif
+
+#if 1
+      // 50-50
       cNew.Set(
         (c.Red() >> 1) | 128,
         (c.Green() >> 1) | 128,
         (c.Blue() >> 1) | 128);
+#else
+      // 25-75
+      cNew.Set(
+        (c.Red() >> 2) | 192,
+        (c.Green() >> 2) | 192,
+        (c.Blue() >> 2) | 192);
+#endif
       pen.SetColour(cNew);
       dc.SetPen(pen);
       dc.DrawPoint(nx, ny);
@@ -338,7 +349,7 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     {
       const nwxPointLabel *pLabel = m_vpLabel.at(i);
       const wxRect &rrect(m_vRect.at(i));
-      pdc->SetTextForeground(pLabel->GetColour());
+      pdc->SetTextForeground(pLabel->GetTextColour());
       pen.SetColour(pLabel->GetColour());
       pdc->SetPen(pen);
       nX = rrect.GetX();
@@ -480,7 +491,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
       nx += ptArea.x;
       rect.SetX(nx);
       rect.SetY(ny);
-      pdc->SetTextForeground(label.GetColour());
+      pdc->SetTextForeground(label.GetTextColour());
       pdc->DrawRectangle(rect);
       pdc->DrawText(label.GetLabel(),nx,ny);
       rect.x -= ptArea.x;  // set to plot area coordinates

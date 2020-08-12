@@ -58,14 +58,17 @@ class CPrintOut : public wxPrintout
 public:
   CPrintOut(bool bPreview = false, const wxString &sTitle = wxT("OSIRIS Plot")) :
     wxPrintout(sTitle),
-#ifdef TMP_DEBUG
-    m_nSetupPageCount(0),
+#ifdef TMP_DEBUG	  
+	m_nLoggedPrinterResolution(0),
 #endif
     m_bPreview(bPreview)
   {}
 
   virtual ~CPrintOut();
   virtual wxWindow *GetParent() = 0;
+#ifdef TMP_DEBUG
+  void DebugBitmap(wxBitmap *, int nPage);
+#endif
   virtual int GetMinPage();
   virtual int GetMaxPage();
   virtual bool HasPage(int page);
@@ -105,8 +108,7 @@ protected:
     CPrintOut *pPreview, CPrintOut *pPrint,
     const wxString &sTitle,
     const wxString &sPingPreview,
-    const wxString &sPingPrint,
-    bool bPageButtons = false);
+    const wxString &sPingPrint);
   static wxPageSetupDialogData *GetPageSetupData();
   static void UpdatePageSetup();
   static wxPrintData *GetPrintData();
@@ -167,11 +169,11 @@ protected:
     int m_DPI;
     bool m_bFit;
   };
-
-  _resOutput m_resOutput;
 #ifdef TMP_DEBUG
-  int m_nSetupPageCount;
+  int m_nLoggedPrinterResolution;
+  wxString m_sBitmapPath;
 #endif
+  _resOutput m_resOutput;
   bool m_bPreview;
   DECLARE_ABSTRACT_CLASS(CPrintOut)
 };

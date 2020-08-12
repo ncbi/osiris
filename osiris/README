@@ -4,7 +4,7 @@
 #  -- problems, contact us at forensics@ncbi.nlm.nih.gov
 #
 #
-# wxWidgets 3.0.4 is required
+# wxWidgets 3.0.5 is required
 # For more information, see http://www.wxwidgets.org
 #
 # This shell script is for building the macintosh version
@@ -44,10 +44,10 @@
 #
 # wxWidgets:
 #
-#  OSIRIS uses wxWidgets v 3.0.4
+#  OSIRIS uses wxWidgets v 3.0.5
 #  Download wxWidgets at http://wxwidgets.org/downloads/ and select either 
 #  the ZIP or 7z download.
-#  Create a new folder, (for example wxWidgets-3.0.4) and unpack the 
+#  Create a new folder, (for example wxWidgets-3.0.5) and unpack the 
 #  contents of the zip file there.
 #  Set the environment variable WXHOME to the full path of this folder.  
 #  This is done in Control Panel, search for "environment"
@@ -120,30 +120,30 @@
 # If gcc is not installed, you will receive a message indicating that, 
 # otherwise it will display version information.
 #
-# Build wxWidgets 3.0.4 - Go to http://www.wxwidgets.org/downloads/
+# Build wxWidgets 3.0.5 - Go to http://www.wxwidgets.org/downloads/
 # and download the source code from the link showing: 
 #    "Source for Linux, OS X,etc."
 # Unpack the download to a new directory, for example
 # from the directory containing the download, run the following:
-#   tar xvf wxWidgets-3.0.4.tar.bz2
+#   tar xvf wxWidgets-3.0.5.tar.bz2
 # This will unpack the source code into a directory named 
-#   wxWidgets-3.0.4
+#   wxWidgets-3.0.5
 # change to that directory and create a new directory, build-cocoa
 #
-#  cd wxWidgets-3.0.4
+#  cd wxWidgets-3.0.5
 #  mkdir build-cocoa
 #
 # there is a shell script file in this osiris distribution, in 
 # the folder buildwx-osx, named config.sh
-# copy that file to wxWidgets-3.0.4/build-cocoa
+# copy that file to wxWidgets-3.0.5/build-cocoa
 #
 # if the osiris directory and wxWidgets have the same parent directory, the
 # following commands should work from the wxWidgets directory
 #
-#  cp ../../osiris/build-osx/config.sh ./build-cocoa/config.sh
+#  cp ../../osiris/buildwx-osx/config.sh ./build-cocoa/config.sh
 # 
-# change directory to wxWidgets-3.0.4/build-cocoa and run the script
-#   cd wxWidgets-3.0.4/build-cocoa
+# change directory to wxWidgets-3.0.5/build-cocoa and run the script
+#   cd wxWidgets-3.0.5/build-cocoa
 #   sh config.sh
 #
 # when finished, the output will be in a file, build_log.txt
@@ -187,7 +187,7 @@
 #
 # If there are no errors, you are done. Using the
 # Macintosh user interface, open your "Home" folder
-# in Finder, then Applications, and run Osiris.app
+# in Finder, then Applications - Osiris-Installer, and run Osiris-*.app
 #
 #
 cd `dirname $0`

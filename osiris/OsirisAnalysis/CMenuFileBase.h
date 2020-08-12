@@ -46,12 +46,12 @@ public:
   {
     int nRtn = 4; // number of insertions
     InsertSeparator(nPos);
+    Insert(nPos, wxID_PRINT);
 #ifdef __WXMAC__
-    Insert(m_nInsertPoint, IDpageMargins, wxT("Page Margins..."));
+    Insert(nPos, IDpageMargins, wxT("Page Margins..."));
     nRtn++;
 #endif
     Insert(nPos, IDpageSetup, wxT("Page Set&up..."));
-    Insert(nPos, wxID_PRINT);
     InsertSeparator(nPos);
     return nRtn;
   }

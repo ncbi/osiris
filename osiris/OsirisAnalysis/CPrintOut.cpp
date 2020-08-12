@@ -59,8 +59,9 @@
 #include "CParmOsiris.h"
 #include "CDialogPrintSettings.h"
 #include "wxIDS.h"
-
-
+#ifdef TMP_DEBUG
+#include "nwx/nwxStaticBitmap.h"
+#endif
 
 // static data and functions
 
@@ -263,8 +264,7 @@ void CPrintOut::_DoPrintPreview(
   CPrintOut *pPrint,
   const wxString &sTitle,
   const wxString &sPingPreview,
-  const wxString &sPingPrint,
-  bool bPageButtons)
+  const wxString &sPingPrint)
 {
   wxPrintDialogData printDialogData(*GetPrintData());
   CPrintPreview *preview =
@@ -287,7 +287,7 @@ void CPrintOut::_DoPrintPreview(
   {
     sStatus = wxT("OK");
     pFrame =
-      new CPrintPreviewFrame(preview, pPreview->GetParent(), sTitle, bPageButtons);
+      new CPrintPreviewFrame(preview, pPreview->GetParent(), sTitle);
   }
   mainApp::Ping2(PING_EVENT, sPingPreview, wxT("Status"), sStatus);
   if (pFrame != NULL)
@@ -304,24 +304,21 @@ void CPrintOut::_DoPrintPreview(
 
 CPrintOut::~CPrintOut()
 {
-#ifdef TMP_DEBUG
-  if (m_nSetupPageCount > 1)
-  {
-    mainApp::LogMessageV(wxT("**** CPrintOut setup count = %d"), m_nSetupPageCount);
-  }
-#endif
 }
 
 
 void CPrintOut::_setupPageBitmap(wxDC *pdc)
 {
-  _resInput res(pdc->GetPPI(), GetLogicalPageMarginsRect(*GetPageSetupData()));
+  if (!IsPreview())
+  {
+    wxRect rectPixels(GetPaperRectPixels());
+    FitThisSizeToPaper(rectPixels.GetSize());
+  }
+  wxRect rectPage(GetLogicalPageMarginsRect(*GetPageSetupData()));
+  _resInput res(pdc->GetPPI(), rectPage);
   if (res != m_resInput)
   {
     // compute everything
-#ifdef TMP_DEBUG
-    m_nSetupPageCount++;
-#endif
     wxSize szPPI = res.m_ppi;
     wxRect rectFit = res.m_logicalPage;
     double dPPIscale = 1.0, dScalePixel = 1.0;
@@ -346,13 +343,10 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
       int nZoom = pp->GetZoom();
       if(nZoom != 100)
       {
-	double dMult = double(nZoom) * 0.01;
-	nPPIx = int(nPPIx * dMult);
-	nPPIy = int(nPPIy * dMult);
+  double dMult = double(nZoom) * 0.01;
+  nPPIx = int(nPPIx * dMult);
+  nPPIy = int(nPPIy * dMult);
       }
-#ifdef TMP_DEBUG
-      mainApp::LogMessageV(wxT("preview zoom = %d"), nZoom);
-#endif
     }
 #endif
 
@@ -383,28 +377,24 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
       {
         nMaxPPI = 48;
       }
-#ifdef TMP_DEBUG
-      mainApp::LogMessageV(
-        wxT("nMaxPPI = %d; printer PPI (x, y)=(%d, %d); screen PPI (x, y)=(%d, %d)"),
-        nMaxPPI, nPPIx, nPPIy, nx, ny);
-      mainApp::LogMessageV(
-        wxT("rectFix(x, y, w, h) = (%d, %d, %d, %d)"),
-        rectFit.GetX(), rectFit.GetY(),
-        rectFit.GetWidth(), rectFit.GetHeight());
-      double dx, dy;
-      pdc->GetLogicalScale(&dx, &dy);
-      mainApp::LogMessageV(wxT("wxDC logical scale (x, y)=(%g, %g)"),
-        dx, dy);
-      pdc->GetUserScale(&dx, &dy);
-      mainApp::LogMessageV(wxT("wxDC user scale (x, y)=(%g, %g)"),
-        dx, dy);
-      pdc->GetSize(&nx, &ny);
-      mainApp::LogMessageV(wxT("wxDC size (x, y)=(%d, %d)"),
-        nx, ny);
-      mainApp::LogMessageV(wxT("wxDC PPI (x, y)=(%d, %d)"),
-        nPPIx, nPPIy);
-#endif
     }
+#ifdef TMP_DEBUG
+    else
+    {
+      if (!m_nLoggedPrinterResolution)
+      {
+        wxString sLOG = wxString::Format(
+          wxT("Printer resolution %d x %d, size %d x %d"),
+          szPPI.GetX(),
+          szPPI.GetY(),
+          rectPage.GetWidth(),
+          rectPage.GetHeight()
+        );
+        mainApp::LogMessage(sLOG);
+        m_nLoggedPrinterResolution++;
+      }
+    }
+#endif
 
     if (nMinPPI > nMaxPPI)
     {
@@ -443,8 +433,41 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
   int nHeight = m_resOutput.m_nHeight;
   if (bAdjust)
   {
+#ifdef TMP_DEBUG
+    wxString sLOG = wxString::Format(
+      wxT("Bitmap size size %d x %d"),
+      nWidth, nHeight);
+    mainApp::LogMessage(sLOG);
+#endif
     FitThisSizeToPageMargins(wxSize(nWidth, nHeight), *GetPageSetupData());
   }
 }
+
+#ifdef TMP_DEBUG
+void CPrintOut::DebugBitmap(wxBitmap *pBitmap, int nPage)
+{
+  if (m_sBitmapPath.IsEmpty())
+  {
+    m_sBitmapPath = mainApp::GetConfig()->GetConfigPath();
+    m_sBitmapPath.Append(wxT("Debug"));
+    nwxStaticBitmap::AddPngHandler();
+  }
+  if (wxFileName::IsDirWritable(m_sBitmapPath))
+  {
+    wxString sFile = m_sBitmapPath;
+    nwxFileUtil::EndWithSeparator(&sFile);
+
+    sFile.Append(wxString::Format(wxT("%s_%lx_%d.png"),
+      IsPreview() ? "S" : "P",  // screen (preview) or printout
+      (long) this, nPage));
+    if (!pBitmap->ConvertToImage().SaveFile(sFile, wxBITMAP_TYPE_PNG))
+    {
+      wxString s(wxT("Cannot save file: "));
+      s.Append(sFile);
+      mainApp::LogMessage(s);
+    }
+  }
+}
+#endif
 
 IMPLEMENT_ABSTRACT_CLASS(CPrintOut, wxPrintout)

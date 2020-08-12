@@ -248,7 +248,8 @@ CPanelPlot::CPanelPlot(
     m_bIgnoreTimer(false),
     m_bDoTimer(false),
     m_bXBPS(false),
-    m_bPrintAnalysis(false)
+    m_bPrintAnalysis(false),
+    m_bPrinting(false)
 {
   //  constructor for panel in graphic MDI frame
   _BuildPanel(nMenuNumber,bFirst,pMenuHistory);
@@ -925,7 +926,7 @@ void CPanelPlot::_BuildPeakLabels(
             sToolTip,
             wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
             ALLELE_SORT,
-            nwxPointLabel::STYLE_BOX);
+            nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT);
     m_pPlotCtrl->AddLabel(label);
   }
 }
@@ -1082,7 +1083,8 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
                   colourData,
                   sToolTip,
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
-                  ARTIFACT_SORT + pArt->GetCriticalLevel());
+                  ARTIFACT_SORT + pArt->GetCriticalLevel(),
+                  nwxPointLabel::STYLE_BLACK_TEXT);
             m_pPlotCtrl->AddLabel(label);
           }
         }
@@ -1178,7 +1180,7 @@ void CPanelPlot::_BuildOARlabels()
                     sToolTip,
                     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                     ALLELE_SORT,
-                    nwxPointLabel::STYLE_BOX,
+                    nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT,
                     cur,
                     pPeak);
             m_pPlotCtrl->AddLabel(label);
@@ -1209,7 +1211,7 @@ void CPanelPlot::_BuildOARlabels()
                   sToolTip,
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                   ARTIFACT_SORT + pPeak->GetCriticalLevel(),
-                  0,
+                  nwxPointLabel::STYLE_BLACK_TEXT,
                   cur,
                   pPeak);
             m_pPlotCtrl->AddLabel(label);
@@ -1246,13 +1248,13 @@ void CPanelPlot::UpdateLadderLabels()
 }
 const wxColour &CPanelPlot::_GetColour(DATA_TYPE n, unsigned int nChannel)
 {
-  int ndx = (nChannel << 8) | (n << 1) | (_IsPrinting() ? 1 : 0);
+  int ndx = (nChannel << 8) | (n << 1) | (IsPrinting() ? 1 : 0);
   mapColor::iterator itr = m_mapColors.find(ndx);
   if (itr == m_mapColors.end())
   {
     const wxColour &c = m_pColors->GetColor(m_pData->GetKitName(), n, nChannel);
     wxColour cColor(c);
-    if (_IsPrinting())
+    if (IsPrinting())
     {
       CParmOsiris *pParm = CParmOsiris::GetGlobal();
       const wxString &sColour = m_pColors->GetColorName(c);
@@ -2092,7 +2094,7 @@ wxColour &CPanelPlot::_SETUP_PRINT_COLOR(const wxColour &color, int nPct, wxColo
 void CPanelPlot::_SetupGridColor()
 {
   const wxColour &gridColor = nwxPlotCtrl::GridColor();
-  if (!_IsPrinting())
+  if (!IsPrinting())
   {
     m_pPlotCtrl->SetGridColour(gridColor);
   }
@@ -2197,11 +2199,8 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     SetViewRect(rect, false, 1);
   }
-  else
-  {
-    RebuildLabels(false);
-    RE_RENDER;
-  }
+  RebuildLabels(false);
+  RE_RENDER;
 }
 
 
@@ -2276,14 +2275,13 @@ void CPanelPlot::ShowToolbar(bool bShow)
     }
   }
 }
-void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay, bool bPrinting)
+void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay)
 {
   TnwxBatch<CPanelPlot> x(this);
   TnwxBatch<CPanelPlot> y(&w);
   _SyncControllers(w.m_pMenu);
   wxRect2DDouble rect = w.GetViewRect();
   SyncToolbar(&w);
-  _SetPrinting(bPrinting);
   RebuildCurves(true);
   SetViewRect(rect, false, nDelay);
 }
@@ -2774,7 +2772,7 @@ int CPanelPlot::DrawPlotTitleToDC(
     pDC->SetClippingRegion(wxPoint(0, nBorder), wxSize(nWidth, nMaxY));
     if (szDetails.GetWidth())
     {
-      wxPoint pos(nWidth - szDetails.GetWidth(), nBorder);
+      wxPoint pos(nWidth - szDetails.GetWidth() - 1, nBorder);
       pDC->SetFont(fnDetails);
       pDC->DrawText(sTitleDetails, pos);
 #ifdef __WXDEBUG__
@@ -2829,11 +2827,20 @@ int CPanelPlot::_GetPlotsPerPage()
   }
   return nPlotsPerPage;
 }
-void CPanelPlot::_SetXUserRange(wxRect2DDouble *pRect)
+void CPanelPlot::_SetXUserRange(wxRect2DDouble *pRect, bool bXBPS)
 {
   CParmOsirisGlobal pParm;
-  int n0 = pParm->GetPrintXscaleMin();
-  int n1 = pParm->GetPrintXscaleMax();
+  int n0, n1;
+  if (bXBPS)
+  {
+    n0 = pParm->GetPrintXscaleMinBPS();
+    n1 = pParm->GetPrintXscaleMaxBPS();
+  }
+  else
+  {
+    n0 = pParm->GetPrintXscaleMin();
+    n1 = pParm->GetPrintXscaleMax();
+  }
   CheckRange(&n0, &n1);
   pRect->SetLeft(double(n0));
   pRect->SetRight(double(n1));
@@ -2886,8 +2893,17 @@ bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
   if (nYScale == PRINT_Y_SCALE_USER && nXScale == PRINT_X_SCALE_USER)
   {
     // this will probably never happen
+    bool bXBPS = pParm->GetPrintXaxisILSBPS();
+    bool bXProblem =  bXBPS &&  GetPlotData()->CannotSetBPS();
     bRtn = true;
-    _SetXUserRange(&rectZoom);
+    if (!bXProblem)
+    {
+      _SetXUserRange(&rectZoom, bXBPS);
+    }
+    else
+    {
+      rectZoom = GetZoomOutRect(ZOOM_PRIMER_PEAK_X, nXlabelHeight);
+    }
     _SetYUserRange(&rectZoom);
     SetViewRect(rectZoom, false, 0);
   }
@@ -2896,7 +2912,14 @@ bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
        (nYScale == PRINT_Y_SCALE_USER) )
   {
     bRtn = true;
-    int nPrimerZoom = _BitmapPrimerZoom(nXScale, bNegCtrl);
+    bool bXBPS = pParm->GetPrintXaxisILSBPS();
+    bool bXProblem = bXBPS && 
+      GetPlotData()->CannotSetBPS() &&
+      (nXScale == PRINT_X_SCALE_USER);
+    int nPrimerZoom = 
+      bXProblem 
+      ? ZOOM_PRIMER_PEAK_X 
+      : _BitmapPrimerZoom(nXScale, bNegCtrl);
     ShowAllChannels(true);
     RebuildCurves(true);
     if (pSample->IsLadderType())
@@ -2904,9 +2927,9 @@ bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
       nXlabelHeight <<= 2; // guessing, need 4x space
     }
     rectZoom = GetZoomOutRect(nPrimerZoom, nXlabelHeight);
-    if (nXScale == PRINT_X_SCALE_USER)
+    if (nXScale == PRINT_X_SCALE_USER && !bXProblem)
     {
-      _SetXUserRange(&rectZoom);
+      _SetXUserRange(&rectZoom, bXBPS);
     }
     else if (nYScale == PRINT_Y_SCALE_USER)
     {
@@ -2923,7 +2946,12 @@ void CPanelPlot::_BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel)
   CParmOsirisGlobal pParm;
   int nXScale = pParm->GetPrintXscale();
   bool bNegCtrl = GetSample()->IsNegControl();
-  int nPrimerZoom = _BitmapPrimerZoom(nXScale, bNegCtrl);
+  bool bXBPS = pParm->GetPrintXaxisILSBPS();
+  bool bXProblem = bXBPS && GetPlotData()->CannotSetBPS() &&
+    (nXScale == PRINT_X_SCALE_USER);
+  int nPrimerZoom = bXProblem
+    ? ZOOM_PRIMER_PEAK_X
+    : _BitmapPrimerZoom(nXScale, bNegCtrl);
   int nNegCtrlYScale = bNegCtrl
     ? pParm->GetPrintYcaleNegCtrl()
     : -1;
@@ -2931,9 +2959,9 @@ void CPanelPlot::_BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel)
     ? m_pData->GetMinRfu(nChannel)
     : -1.0;
   wxRect2DDouble rectZoom = GetZoomOutRect(nPrimerZoom, nXlabelHeight, dMinRFU);
-  if (nXScale == PRINT_X_SCALE_USER)
+  if (nXScale == PRINT_X_SCALE_USER && !bXProblem)
   {
-    _SetXUserRange(&rectZoom);
+    _SetXUserRange(&rectZoom, pParm->GetPrintXaxisILSBPS());
   }
   SetViewRect(rectZoom, false, 0);
 }
@@ -2952,7 +2980,7 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
   CParmOsirisGlobal pParm;
   wxString sTitle;
   wxString sTitleInfo;
-  _SetPrinting(bForcePrintFont);
+  SetPrinting(bForcePrintFont);
   if (bForcePrintFont)
   {
     TitleStrings(&sTitleInfo, nPageNr);
