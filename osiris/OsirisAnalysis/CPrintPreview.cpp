@@ -61,7 +61,7 @@ CPrintPreviewFrame::CPrintPreviewFrame(CPrintPreview *pPrev, wxWindow *parent,
   const wxString &title) :
   wxPreviewFrame(pPrev, parent, title,
     GET_PERSISTENT_POSITION(CPrintPreviewFrame),
-    GET_PERSISTENT_SIZE_DEFAULT(CPrintPreviewFrame, wxSize(600, 800))),
+    GET_PERSISTENT_SIZE_DEFAULT(CPrintPreviewFrame, wxSize(900, 800))),
   m_pPreview(pPrev),
   m_pDialogSettings(NULL)
 {
