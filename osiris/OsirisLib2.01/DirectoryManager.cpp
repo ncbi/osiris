@@ -387,7 +387,7 @@ bool SampleNameDirectoryManager :: Initialize () {
 			STRLCAnalysis::mFailureMessage->SetPingValue (630);
 			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			mAnalysisDirectory->SetMessageValue (samplesNotValidInputFiles, true);
-			mAnalysisDirectory->AppendDataForSmartMessage (samplesNotValidInputFiles, fileName);
+			mAnalysisDirectory->AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (fileName));
 			delete data;
 			continue;
 		}

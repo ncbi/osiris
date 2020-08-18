@@ -265,7 +265,7 @@ void MainMessages::CouldNotFindSampleDirectory (const RGString& path) {
 void MainMessages::NoLadderDataFound () {
 
 	Header ();
-	cout << "No ladder files found.  Check input directory and check ladder id strings in Lab Settings...Terminating" << endl;
+	cout << "No ladder files found.  Check input directory for files with specified .fsa/.hid extension; check ladder id strings in Lab Settings; and check that appropriate choice between file name/sample name has been selected...Terminating" << endl;
 	OutputAllMessages ();
 	Tail ();
 }

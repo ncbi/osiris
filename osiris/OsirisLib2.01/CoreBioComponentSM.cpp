@@ -1218,7 +1218,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		ErrorString = "*******COULD NOT FIND MARKER SET NAMED ";
 		ErrorString << markerSetName << " IN POPULATION COLLECTION********\n";
 		SetMessageValue (noNamedMarkerSet, true);
-		AppendDataForSmartMessage (noNamedMarkerSet, markerSetName);
+		AppendDataForSmartMessage (noNamedMarkerSet, MainMessages::XML (markerSetName));
 		return -1;
 	}
 
@@ -1231,7 +1231,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		ErrorString << markerSetName << "\n";
 		cout << "Could not find named internal lane standard associated with marker set named " << (char*)markerSetName.GetData () << endl;
 		SetMessageValue (noNamedILS, true);
-		AppendDataForSmartMessage (noNamedILS, markerSetName);
+		AppendDataForSmartMessage (noNamedILS, MainMessages::XML (markerSetName));
 		return -1;
 	}
 
@@ -4575,7 +4575,7 @@ int CoreBioComponent :: TestPositiveControlSM (GenotypesForAMarkerSet* genotypes
 			SetMessageValue (posCtrlNotFound, true);
 
 			if (mPositiveControlName.Length () > 0)
-				AppendDataForSmartMessage (posCtrlNotFound, mPositiveControlName);
+				AppendDataForSmartMessage (posCtrlNotFound, MainMessages::XML (mPositiveControlName));
 
 			return -1;
 		}

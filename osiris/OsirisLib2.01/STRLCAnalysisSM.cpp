@@ -1162,7 +1162,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				STRLCAnalysis::mFailureMessage->SetPingValue (630);
 				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 				SetMessageValue (samplesNotValidInputFiles, true);
-				AppendDataForSmartMessage (samplesNotValidInputFiles, LadderFileName);
+				AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (LadderFileName));
 			}
 
 			delete data;
@@ -1213,7 +1213,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 
 			SetMessageValue (markerSetMismatch, true);
-			AppendDataForSmartMessage (markerSetMismatch, LadderFileName);
+			AppendDataForSmartMessage (markerSetMismatch, MainMessages::XML (LadderFileName));
 
 
 			//XMLExcelLinks << CLevel (1) << "\t\t<Sample>\n\t\t\t<Name>Marker Set Mismatch</Name>\n\t\t\t<Type></Type>\n\t\t</Sample>\n" << PLevel ();
@@ -1334,7 +1334,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			ladderOK = false;
 			RGString ladderName = "-- " + ladderBioComponent->GetSampleName ();
 			ladderBioComponent->SetMessageValue (ladderFailed, true);
-			ladderBioComponent->AppendDataForSmartMessage (ladderFailed, ladderName);
+			ladderBioComponent->AppendDataForSmartMessage (ladderFailed, MainMessages::XML (ladderName));
 		}
 
 		ladderBioComponent->SetMessageValue (stage3Successful, true);
@@ -1454,7 +1454,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
 		text << NoticeStr << "\n";
 		foundALadder = false;
-	//	goto finishOutput;
+		goto finishOutput;
 	}
 
 	else {
@@ -1558,7 +1558,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 					STRLCAnalysis::mFailureMessage->SetPingValue (630);
 					STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 					SetMessageValue (samplesNotValidInputFiles, true);
-					AppendDataForSmartMessage (samplesNotValidInputFiles, FileName);
+					AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (FileName));
 				}
 
 				delete data;
@@ -1905,7 +1905,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 				bioComponent->SetMessageValue (stage5Successful, true);
 				SetMessageValue (samplesHadNoDataForChannels, true);
-				AppendDataForSmartMessage (samplesHadNoDataForChannels, localFileName);
+				AppendDataForSmartMessage (samplesHadNoDataForChannels, MainMessages::XML (localFileName));
 				break;
 
 			case 1:
@@ -1920,7 +1920,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 				bioComponent->AppendDataForSmartMessage (analysisTruncatedPrematurely, CoreBioComponent::GetCurrentStage ());
 				bioComponent->SetMessageValue (stage5Successful, true);
 				SetMessageValue (samplesTerminatedPrematurely, true);
-				AppendDataForSmartMessage (samplesTerminatedPrematurely, localFileName);
+				AppendDataForSmartMessage (samplesTerminatedPrematurely, MainMessages::XML (localFileName));
 			}
 			
 			CoreBioComponent::ResetCrashMode (true);
@@ -1985,7 +1985,8 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		SetMessageValue (noNegCtrlFound, true);
 	}
   }
-//finishOutput:
+
+finishOutput:
 
 	delete SampleDirectory;
 	delete pullupMatrixFile;
@@ -2908,7 +2909,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 					STRLCAnalysis::mFailureMessage->SetPingValue (630);
 					STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 					SetMessageValue (samplesNotValidInputFiles, true);
-					AppendDataForSmartMessage (samplesNotValidInputFiles, FileName);
+					AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (FileName));
 				}
 
 				delete data;
@@ -3255,14 +3256,14 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 				bioComponent->SetMessageValue (stage5Successful, true);
 				SetMessageValue (samplesHadNoDataForChannels, true);
-				AppendDataForSmartMessage (samplesHadNoDataForChannels, localFileName);
+				AppendDataForSmartMessage (samplesHadNoDataForChannels, MainMessages::XML (localFileName));
 				break;
 
 			case 1:
 				bioComponent->SetMessageValue (sampleNotValidInputFile, true);
 				bioComponent->SetMessageValue (stage5Successful, true);
 				SetMessageValue (samplesNotValidInputFiles, true);
-				AppendDataForSmartMessage (samplesNotValidInputFiles, localFileName);
+				AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (localFileName));
 				break;
 
 			default:
@@ -3270,7 +3271,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 				bioComponent->AppendDataForSmartMessage (analysisTruncatedPrematurely, CoreBioComponent::GetCurrentStage ());
 				bioComponent->SetMessageValue (stage5Successful, true);
 				SetMessageValue (samplesTerminatedPrematurely, true);
-				AppendDataForSmartMessage (samplesTerminatedPrematurely, localFileName);
+				AppendDataForSmartMessage (samplesTerminatedPrematurely, MainMessages::XML (localFileName));
 				break;
 			}
 

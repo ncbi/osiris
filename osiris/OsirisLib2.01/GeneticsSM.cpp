@@ -52,6 +52,7 @@
 #include "STRSmartNotices.h"
 #include "xmlwriter.h"
 #include "STRChannelData.h"
+#include "FailureMessages.h"
 
 #include <iostream>
 #include <vector>
@@ -3812,7 +3813,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 
 							isExtraLocusAllele = true;
 							nextSignal->SetMessageValue (unreportedOL, true);
-							nextSignal->AppendDataForSmartMessage (unreportedOL, GetLocusName ());
+							nextSignal->AppendDataForSmartMessage (unreportedOL, MainMessages::XML (GetLocusName ()));
 						}
 
 						continue;
@@ -3906,7 +3907,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 
 							isExtraLocusAllele = true;
 							nextSignal->SetMessageValue (unreportedOL, true);
-							nextSignal->AppendDataForSmartMessage (unreportedOL, GetLocusName ());
+							nextSignal->AppendDataForSmartMessage (unreportedOL, MainMessages::XML (GetLocusName ()));
 						}
 
 						continue;
@@ -3948,7 +3949,7 @@ int Locus :: TestInterlocusSignalsSM (RGDList& signalSet, RGDList& artifacts, Ch
 
 							isExtraLocusAllele = true;
 							nextSignal->SetMessageValue (unreportedOL, true);
-							nextSignal->AppendDataForSmartMessage (unreportedOL, GetLocusName ());
+							nextSignal->AppendDataForSmartMessage (unreportedOL, MainMessages::XML (GetLocusName ()));
 						}
 
 						continue;
@@ -4297,7 +4298,7 @@ int Locus :: TestPositiveControlSM (IndividualLocus* locus, RGDList& artifacts) 
 		data << "; ";
 	}
 
-	AppendDataForSmartMessage (posCtrlLocusMismatch, data);
+	AppendDataForSmartMessage (posCtrlLocusMismatch, MainMessages::XML (data));
 	alleleSet.ClearAndDelete ();
 	return -1;
 }

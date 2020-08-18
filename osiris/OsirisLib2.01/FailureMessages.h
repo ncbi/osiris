@@ -102,13 +102,14 @@ public:
 	void AddMessage (const RGString& message);
 	void DeleteAllMessages ();
 
+	static RGString XML (const RGString& input);
+
 protected:
 	RGDList mMessages;
 
 	void Header ();
 	void Tail ();
 	void ContinueTail ();
-	RGString XML (const RGString& input);
 	void OutputAllMessages ();
 
 	static int PingValue;
