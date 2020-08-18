@@ -1024,7 +1024,7 @@ CDialogPrintSettingsSample::CDialogPrintSettingsSample(
   wxDialog(parent, wxID_ANY, wxT(S_WINDOW_TITLE),
     GET_PERSISTENT_POSITION(CDialogPrintSettingsSample),
     wxDefaultSize,
-    wxDEFAULT_DIALOG_STYLE),
+    wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP),
   m_pParent(parent)
 {
   m_nSampleType = GetSampleType(pSample);
