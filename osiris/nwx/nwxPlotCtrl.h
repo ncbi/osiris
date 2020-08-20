@@ -128,6 +128,14 @@ public:
   {
     m_XLabels.AddLabel(x);
   }
+  bool GetDrawXLabelBoxes()
+  {
+    return m_XLabels.GetDrawBoxes();
+  }
+  void SetDrawXLabelBoxes(bool b)
+  {
+    m_XLabels.SetDrawBoxes(b);
+  }
   void AddXShade(const nwxPlotShade &x)
   {
     m_Xshade.AddArea(x);

@@ -431,6 +431,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   wxCoord nClipY = 0;
   wxCoord nClipW = 0;
   wxCoord nClipH = 0;
+  bool bDrawBoxes = GetDrawBoxes();
   // if there are multiple clipping regions, this could be a problem
   pdc->GetClippingBox(&nClipX,&nClipY,&nClipW,&nClipH);
   if(nClipW)
@@ -454,7 +455,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   }
   pdc->SetFont(fontUse);
   pdc->SetTextBackground(*wxWHITE);
-  pdc->SetBackgroundMode(wxBRUSHSTYLE_SOLID);
+  pdc->SetBackgroundMode(bDrawBoxes ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT);
 
   size_t nSize(m_setLabels.size());
   m_vRect.clear();
@@ -462,13 +463,11 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   m_vpLabel.reserve(nSize);
   m_vRect.reserve(nSize);
 
-#ifdef TMP_DEBUG
   wxBrush brushRect(*wxWHITE_BRUSH);
   wxPen penRect(*wxWHITE_PEN);
   penRect.SetStyle(wxPENSTYLE_SOLID);
   penRect.SetWidth(1);
   brushRect.SetStyle(wxBRUSHSTYLE_SOLID);
-#endif
 
   for(itr = m_setLabels.begin();
     itr != m_setLabels.end();
@@ -504,12 +503,9 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     {
       ny -= (rect.height + m_nOffset);
     }
-    if(nx > -rect.width)
+    if((nx1 < rectArea.GetWidth()) && (nx2 > 0))
     {
-      if (rect.GetRight() > rectArea.GetRight())
-      {
-        nx -= (rect.GetRight() - rectArea.GetRight());
-      }
+      // we have some overlap
       if(nx < 0) { nx = 0; }
       if(ny < 0) { ny = 0; }
       nx += ptArea.x;
@@ -517,14 +513,17 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
       nx2 += ptArea.x;
       rect.SetX(nx);
       rect.SetY(ny);
-      pdc->SetTextForeground(label.GetTextColour());
-#ifdef TMP_DEBUG
-      const wxColour &colourBG(label.GetBackgroundColour());
-      if (colourBG != *wxWHITE)
+      if (rect.GetRight() > rectArea.GetRight())
       {
+        // text goes past the right side of the graph
+        nx -= (rect.GetRight() - rectArea.GetRight());
+        rect.SetX(nx);
+      }
+      if (bDrawBoxes)
+      {
+        const wxColour &colourBG(label.GetBackgroundColour());
         nBorder = (rect.height > 8) ? ((rect.height + 4) >> 3) : 1;
         nx1b = nx1 - nBorder;
-        if (nx1b < 0) { nx1b = 0; }
         nx2b = nx2 + nBorder;
         if (nx2b > nx1b)
         {
@@ -538,13 +537,10 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
           brushRect.SetColour(colourBG);
           pdc->SetBrush(brushRect);
           pdc->DrawRectangle(rectBox);
-          brushRect.SetColour(*wxWHITE);
         }
       }
-#else
-      pdc->DrawRectangle(rect);
-#endif
-      pdc->DrawText(label.GetLabel(),nx,ny);
+      pdc->SetTextForeground(label.GetTextColour());
+      pdc->DrawText(label.GetLabel(), nx, ny);
       rect.x -= ptArea.x;  // set to plot area coordinates
       rect.y -= ptArea.y;
       m_vpLabel.push_back(&label);

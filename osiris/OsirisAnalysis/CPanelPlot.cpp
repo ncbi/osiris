@@ -1311,6 +1311,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
       const CPlotLocus *pLocus;
       const std::vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
       std::vector<CPlotLocus *>::const_iterator itr;
+      std::set<unsigned int> setChannel;
 
       for(itr = pvLocus->begin();
         itr != pvLocus->end();
@@ -1320,6 +1321,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
         nChannel = pLocus->GetChannel();
         if( m_pMenu->ChannelValue(nChannel) )
         {
+          setChannel.insert(nChannel); // OS-1423
           // OS-1435
           const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
           dx1 = double(pLocus->GetStart());
@@ -1344,6 +1346,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
           m_pPlotCtrl->AddXLabel(label);
         }
       }
+      m_pPlotCtrl->SetDrawXLabelBoxes(setChannel.size() == 1);
     }
   }
   if(bRedraw)
