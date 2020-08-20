@@ -365,6 +365,14 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
   if(itr != m_mapPlotData.end())
   {
     pRtn = itr->second;
+    if (IsPrinting())
+    {
+      // when printing, colors may not be up to date
+      wxGenericPen pen(_GetColour(nType, nChannel));
+      pRtn->SetPen(wxPLOTPEN_NORMAL, pen);
+      pRtn->SetPen(wxPLOTPEN_ACTIVE, pen);
+      pRtn->SetPen(wxPLOTPEN_SELECTED, pen);
+    }
   }
   else if( _IsNoNoiseChannel(nChannel) && bNoise ) {} // done
   else
@@ -1266,6 +1274,16 @@ const wxColour &CPanelPlot::_GetColour(DATA_TYPE n, unsigned int nChannel)
   }
   return itr->second;
 }
+
+// 7/8 white + 1/8 color or 12.5%
+#define PASTEL_E125(n) \
+  (unsigned char)(((int(n) + 1785) >> 3) & 255) 
+  // (color + 7*white) / 8
+
+#define PASTEL_125(c) \
+  wxColour( PASTEL_E125(c.Red()), \
+  PASTEL_E125(c.Green()), PASTEL_E125(c.Blue()) )
+
 void CPanelPlot::RebuildLabels(bool bRedraw)
 {
   m_pPlotCtrl->RemoveAllLabels();
@@ -1287,8 +1305,8 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
     if(bLabels)
     {
       wxString sToolTip;
-      double dTime;
-      double dx;
+      double dx1;
+      double dx2;
       unsigned int nChannel;
       const CPlotLocus *pLocus;
       const std::vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
@@ -1304,17 +1322,21 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
         {
           // OS-1435
           const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
-          dTime = double((pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1);
+          dx1 = double(pLocus->GetStart());
+          dx2 = double(pLocus->GetEnd());
           sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
-          bool bBPS = XBPSValue();
-          dx =  bBPS ? 
-            GetPlotData()->TimeToILSBps(dTime)
-            : dTime;
+          if (XBPSValue())
+          {
+            CPlotData *p(GetPlotData());
+            dx1 = p->TimeToILSBps(dx1);
+            dx2 = p->TimeToILSBps(dx2);
+          }
           nwxPointLabel label(
             pLocus->GetName(),
-            dx, 
-            0.0, colour, 
+            dx1, 
+            dx2,
+            0.0, colour, PASTEL_125(colour),
             sToolTip, 
             wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM, 
             1000 - nChannel,0,wxCURSOR_HAND);
