@@ -70,6 +70,16 @@ void nwxPlotCtrl::ShowScrollbars(bool b)
     }
   }
 }
+void nwxPlotCtrl::DrawVerticalBars(wxDC *dc, const wxRect& rect)
+{
+
+}
+
+void nwxPlotCtrl::DrawTickMarks(wxDC *dc, const wxRect& rect)
+{
+  wxPlotCtrl::DrawTickMarks(dc, rect);
+  // OS-1432 - vertical bars
+}
 
 void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
 {

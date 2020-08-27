@@ -220,8 +220,9 @@ public:
 
   void OnViewChanged(wxPlotCtrlEvent &e);
   void nwxOnMouse(wxMouseEvent &event);
+  void DrawVerticalBars(wxDC *dc, const wxRect &rect);
   virtual void OnTimer(wxTimerEvent &e);
-
+  virtual void DrawTickMarks(wxDC *dc, const wxRect& rect);
   virtual void DrawAreaWindow( wxDC *dc, const wxRect& rect );
   virtual void DrawPlotCtrl( wxDC *dc );
   virtual void ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event );
