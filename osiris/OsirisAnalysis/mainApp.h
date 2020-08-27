@@ -64,7 +64,7 @@ class wxFile;
 class wxDateTime;
 class wxWindow;
 class mainFrame;
-
+class wxBitmap;
 
 #ifdef TMP_DEBUG
 
@@ -182,6 +182,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
       p->Stop();
     }
   }
+  static void DumpBitmap(wxBitmap *pBitmap, const wxString &sFileName);
 
   static void ShowError(const wxString &sMsg,wxWindow *parent);
   static void ShowAlert(const wxString &sMsg,wxWindow *parent);

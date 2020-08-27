@@ -48,6 +48,7 @@
 #include "nwx/nwxString.h"
 #endif
 
+
 DEFINE_EVENT_TYPE(CEventCannotShowBPS)
 
 #define RESIDUAL_THRESHOLD 0.0005
@@ -3101,6 +3102,10 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
         dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
         nY += nPlotHeight;
         nPlotsRendered++;
+#ifdef TMP_DEBUG
+        mainApp::DumpBitmap(pBitmapPlot.get(),
+          wxString::Format(wxT("analysis_chnl_%lx_%d.png"), (long) this, (*itr)));
+#endif
       }
     }
     int nHeightCut = (nPlotsPerPage - nPlotsOnThisPage) * nPlotHeight;

@@ -491,10 +491,12 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     {
       nx -= rect.width;
     }
+#if 0
     if (nx < nx1)
     {
       nx = nx1;
     }
+#endif
     if(nAlign & wxALIGN_CENTER_VERTICAL)
     {
       ny -= (rect.height >> 1);
@@ -505,6 +507,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     }
     if((nx1 < rectArea.GetWidth()) && (nx2 > 0))
     {
+      bool bRedrawOutline = false;
       // we have some overlap
       if(nx < 0) { nx = 0; }
       if(ny < 0) { ny = 0; }
@@ -537,10 +540,17 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
           brushRect.SetColour(colourBG);
           pdc->SetBrush(brushRect);
           pdc->DrawRectangle(rectBox);
+          bRedrawOutline = (nx < rectBox.GetLeft()) ||
+            ((nx + rect.GetWidth()) >= rectBox.GetRight());
         }
       }
       pdc->SetTextForeground(label.GetTextColour());
       pdc->DrawText(label.GetLabel(), nx, ny);
+      if (bRedrawOutline)
+      {
+        pdc->SetBrush(*wxTRANSPARENT_BRUSH);
+        pdc->DrawRectangle(rectBox);
+      }
       rect.x -= ptArea.x;  // set to plot area coordinates
       rect.y -= ptArea.y;
       m_vpLabel.push_back(&label);

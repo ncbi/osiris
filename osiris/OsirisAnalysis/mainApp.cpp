@@ -67,6 +67,7 @@
 #include "nwx/nwxUtil.h"
 #include "nwx/nwxPinger.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/nwxStaticBitmap.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
@@ -590,6 +591,22 @@ void mainApp::_OpenMessageStream()
   }
 }
 
+void mainApp::DumpBitmap(wxBitmap *pBitmap, const wxString &sFileName)
+{
+  wxString sPath = mainApp::GetConfig()->GetDebugConfigPath(true);
+  if (!sPath.IsEmpty())
+  {
+    sPath.Append(sFileName);
+    sPath = nwxFileUtil::FindNewFileName(sPath);
+    nwxStaticBitmap::AddPngHandler();
+    if (!pBitmap->ConvertToImage().SaveFile(sPath, wxBITMAP_TYPE_PNG))
+    {
+      wxString s(wxT("Cannot save file: "));
+      s.Append(sPath);
+      mainApp::LogMessage(s);
+    }
+  }
+}
 void mainApp::ShowError(const wxString &sMsg, wxWindow *parent)
 {
   if(!MessagesSuppressed())

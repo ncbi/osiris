@@ -933,8 +933,7 @@ public:
   void DrawInit(
     const wxRect &boundingRect,
     double dpi,
-    bool bForcePrintFont,
-    const wxPlotCtrlBackup &plotBackup);
+    bool bForcePrintFont);
   void RefreshOnEndBatch()
   {
     if (GetBatchCount() && IsShown())

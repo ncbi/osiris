@@ -2255,6 +2255,9 @@ wxBitmap *CFramePlot::CreateBitmap(
         pPanelPlot->CopySettings(*pPlot, 0, bForcePrintFont);
         pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
         pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
+#ifdef TMP_DEBUG
+        mainApp::DumpBitmap(pBitmapPlot.get(), wxString::Format(wxT("plot_schnl_%d"), n));
+#endif
         dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
         nY += nPlotHeight;
       }
