@@ -88,6 +88,7 @@ enum
   IDmenuPlotXBPS,
   IDmenuPlotRFU,
   IDmenuPlotLadderLabels,
+  IDmenuPlotLadderBars,
   IDmenuPlotLabels_BEGIN,
 
   // display menu items for CFramePlot menus

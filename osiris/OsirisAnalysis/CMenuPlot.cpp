@@ -259,6 +259,9 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   AppendCheckItem(
     _ID(IDmenuPlotLadderLabels),
     "Show ladder labels");
+  AppendCheckItem(
+    _ID(IDmenuPlotLadderBars),
+    "Show ladder locations");
   if(!m_bPreview)
   {
     Append(_ID(IDmenuPlotResetAxes),
@@ -396,6 +399,10 @@ bool CMenuPlot::LadderLabels()
 {
   return IsChecked(_ID(IDmenuPlotLadderLabels));
 }   
+bool CMenuPlot::LadderBars()
+{
+  return IsChecked(_ID(IDmenuPlotLadderBars));
+}
 
 bool CMenuPlot::ILSValue()
 {
@@ -436,6 +443,10 @@ void CMenuPlot::ShowMinRfu(bool b)
 void CMenuPlot::ShowLadderLabels(bool b)
 {
   Check(_ID(IDmenuPlotLadderLabels),b);
+}
+void CMenuPlot::ShowLadderBars(bool b)
+{
+  Check(_ID(IDmenuPlotLadderBars), b);
 }
 //  labels, artifacts
 

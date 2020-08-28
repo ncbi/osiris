@@ -121,12 +121,14 @@ public:
   virtual bool SyncValue();
   virtual bool MinRfuValue();
   virtual bool LadderLabels();
+  virtual bool LadderBars();
   virtual bool ILSValue();
 
   virtual void SetSync(bool b = true);
   virtual void ShowILS(bool b = true);
   virtual void ShowMinRfu(bool b = true);
   virtual void ShowLadderLabels(bool b = true);
+  virtual void ShowLadderBars(bool b = true);
 
   // labels, artifacts
 #if 0

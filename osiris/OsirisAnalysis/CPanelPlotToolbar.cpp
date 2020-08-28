@@ -91,7 +91,8 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   CMenuHistory *pMenu,
   int nMenuNumber,
   bool bFirst)
-    : wxScrolledWindow(parent,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxHSCROLL)
+    : wxScrolledWindow(parent,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxHSCROLL),
+      m_bLadderBars(false)
 {
   wxSize MARGIN(2,0);
   wxButton *pBtn;
@@ -489,6 +490,10 @@ bool CPanelPlotToolbar::MinRfuValue()
 {
   return m_pButtonRfu->GetValue();
 }
+bool CPanelPlotToolbar::LadderBars()
+{
+  return m_bLadderBars;
+}
 bool CPanelPlotToolbar::LadderLabels()
 {
   return m_pButtonLadderLabels->GetValue();
@@ -508,6 +513,10 @@ void CPanelPlotToolbar::ShowILS(bool b)
 void CPanelPlotToolbar::ShowMinRfu(bool b)
 {
   m_pButtonRfu->SetValue(b);
+}
+void CPanelPlotToolbar::ShowLadderBars(bool b)
+{
+  m_bLadderBars = b;
 }
 void CPanelPlotToolbar::ShowLadderLabels(bool b)
 {

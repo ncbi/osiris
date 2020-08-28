@@ -1957,6 +1957,7 @@ void CPanelPlot::SetPlotSettings()
   bool bILS = parm->GetPlotShowILS();
   bool bRFU = parm->GetPlotShowRFU();
   bool bLadderLabels = parm->GetPlotShowLadderLabels();
+  bool bLadderBars = parm->GetPlotShowLadderBars();
   int nArt = (int)parm->GetPlotShowArtifact();
   const std::vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
   std::vector<unsigned int>::const_iterator itr;
@@ -1972,6 +1973,7 @@ void CPanelPlot::SetPlotSettings()
   m_pMenu->ShowILS(bILS);
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
+  m_pMenu->ShowLadderBars(bLadderBars);
   m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
@@ -1991,6 +1993,7 @@ void CPanelPlot::SetPrintSettings()
   bool bILS = parm->GetPrintCurveILSvertical();
   bool bRFU = parm->GetPrintCurveMinRFU();
   bool bLadderLabels = parm->GetPrintCurveLadderLabels();
+  bool bLadderBars = parm->GetPrintCurveLadderBars();
   int nArt = (int)parm->GetPrintArtifact();
   const std::vector<unsigned int> &anLabelsChecked = parm->GetPrintLabelsPeak();
   m_bXBPS = _CanSetBPS() && parm->GetPrintXaxisILSBPS();
@@ -2007,6 +2010,7 @@ void CPanelPlot::SetPrintSettings()
   m_pMenu->ShowILS(bILS);
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
+  m_pMenu->ShowLadderBars(bLadderBars);
   m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
@@ -2024,6 +2028,7 @@ void CPanelPlot::SetPreviewSettings()
   bool bILS = parm->GetPreviewShowILS();
   bool bRFU = parm->GetPreviewShowRFU();
   bool bLadderLabels = parm->GetPreviewShowLadderLabels();
+  bool bLadderBars = parm->GetPreviewShowLadderBars();
   bool bXBPS = parm->GetPreviewXBPS();
   int nArt = (int)parm->GetPreviewShowArtifact();
   int nLabel = parm->GetTableDisplayPeak();
@@ -2042,6 +2047,7 @@ void CPanelPlot::SetPreviewSettings()
   m_pMenu->ShowILS(bILS);
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
+  m_pMenu->ShowLadderBars(bLadderBars);
   m_pMenu->SetLabelType((LABEL_PLOT_TYPE)nLabel,LABEL_NONE);
   m_pMenu->SetArtifactValue(nArt);
   m_pMenu->SetXBPS(bXBPS);
@@ -2056,6 +2062,7 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
+  bool bLadderBars = m_pMenu->LadderBars();
   int nArt = m_pMenu->ArtifactValue();
   std::vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
@@ -2067,6 +2074,7 @@ void CPanelPlot::UpdateSettingsPlot()
   parm->SetPlotShowILS(bILS);
   parm->SetPlotShowRFU(bRFU);
   parm->SetPlotShowLadderLabels(bLadderLabels);
+  parm->SetPlotShowLadderBars(bLadderBars);
   parm->SetPlotDisplayPeak(anLabels);
   parm->SetPlotShowArtifact((unsigned int)nArt);
 }
@@ -2079,6 +2087,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
+  bool bLadderBars = m_pMenu->LadderBars();
   bool bBPS = m_pMenu->XBPSValue();
   int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
@@ -2091,6 +2100,7 @@ void CPanelPlot::UpdateSettingsPreview()
   parm->SetPreviewShowILS(bILS);
   parm->SetPreviewShowRFU(bRFU);
   parm->SetPreviewShowLadderLabels(bLadderLabels);
+  parm->SetPreviewShowLadderBars(bLadderBars);
   if(nLabel != LABEL_NONE) // should always be true
   {
     int nPeak = PLOT_TO_CELL(nLabel);
@@ -2376,6 +2386,7 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
     case IDmenuPlotRFU:
     case IDmenuPlotXBPS:
     case IDmenuPlotLadderLabels:
+    case IDmenuPlotLadderBars:
       bSendToAll = bShift;
       bRebuild = true;
       m_pMenu->SetStateFromEvent(e);
@@ -2549,6 +2560,10 @@ void CPanelPlot::SyncState(CPanelPlot *p, int nID)
       break;
     case IDmenuPlotLadderLabels:
       pMenu->ShowLadderLabels(p->m_pMenu->LadderLabels());
+      bRebuild = true;
+      break;
+    case IDmenuPlotLadderBars:
+      pMenu->ShowLadderBars(p->m_pMenu->LadderBars());
       bRebuild = true;
       break;
     case IDmenuPlotSync:

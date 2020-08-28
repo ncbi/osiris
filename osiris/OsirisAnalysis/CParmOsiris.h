@@ -326,6 +326,10 @@ public:
   {
     return m_bPreviewShowRFU;
   }
+  bool GetPreviewShowLadderBars() const
+  {
+    return m_bPreviewShowLadderBars;
+  }
   bool GetPreviewShowLadderLabels() const
   {
     return m_bPreviewShowLadderLabels;
@@ -373,6 +377,10 @@ public:
   {
     return m_bPlotShowLadderLabels;
   }
+  bool GetPlotShowLadderBars() const
+  {
+    return m_bPlotShowLadderBars;
+  }
   bool GetPlotResizable() const
   {
     return m_bPlotResizable;
@@ -411,6 +419,10 @@ public:
   bool GetPrintCurveLadderLabels() const
   {
     return m_bPrintCurveLadderLabels;
+  }
+  bool GetPrintCurveLadderBars() const
+  {
+    return m_bPrintCurveLadderBars;
   }
   bool GetPrintCurveBaseline() const
   {
@@ -909,6 +921,10 @@ public:
   {
     __SET_VALUE(m_bPreviewShowRFU,b);
   }
+  void SetPreviewShowLadderBars(bool b)
+  {
+    __SET_VALUE(m_bPreviewShowLadderBars,b);
+  }
   void SetPreviewShowLadderLabels(bool b)
   {
     __SET_VALUE(m_bPreviewShowLadderLabels,b);
@@ -956,6 +972,10 @@ public:
   {
     __SET_VALUE(m_bPlotShowLadderLabels,b);
   }
+  void SetPlotShowLadderBars(bool b)
+  {
+    __SET_VALUE(m_bPlotShowLadderBars,b);
+  }
   void SetPlotResizable(bool b)
   {
     __SET_VALUE(m_bPlotResizable,b);
@@ -994,6 +1014,10 @@ public:
   void SetPrintCurveLadderLabels(bool b)
   {
     __SET_VALUE(m_bPrintCurveLadderLabels,b);
+  }
+  void SetPrintCurveLadderBars(bool b)
+  {
+    __SET_VALUE(m_bPrintCurveLadderBars,b);
   }
   void SetPrintCurveBaseline(bool b)
   {
@@ -1377,6 +1401,7 @@ protected:
   bool m_bPreviewDataBaseline;
   bool m_bPreviewShowILS;
   bool m_bPreviewShowRFU;
+  bool m_bPreviewShowLadderBars;
   bool m_bPreviewShowLadderLabels;
   bool m_bPreviewXBPS;
   int m_nPreviewShowArtifact;
@@ -1391,6 +1416,7 @@ protected:
   bool m_bPlotShowILS;
   bool m_bPlotShowRFU;
   bool m_bPlotShowLadderLabels;
+  bool m_bPlotShowLadderBars;
   bool m_bPlotResizable;
   int m_nPlotMinHeight;
   int m_nPlotShowArtifact;
@@ -1403,6 +1429,7 @@ protected:
   bool m_bPrintCurveRaw;
   bool m_bPrintCurveLadder;
   bool m_bPrintCurveLadderLabels;
+  bool m_bPrintCurveLadderBars;
   bool m_bPrintCurveBaseline;
   bool m_bPrintCurveILSvertical;
   bool m_bPrintCurveMinRFU;
