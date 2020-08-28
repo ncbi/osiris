@@ -1111,14 +1111,10 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 				maxFit = fit;
 		}
 
-		else if (DataSignal::IsNegativeOrSigmoid (pullUp)) {
+		//else if (pullUp->IsNegativePeak ()) {
 
-			if (nNegatives > 0)
-				yValues [i] = newPair->mPullupHeight = - pullUp->TroughHeight ();
-
-			else
-				yValues [i] = newPair->mPullupHeight = pullUp->TroughHeight ();
-		}
+		//		yValues [i] = newPair->mPullupHeight = - pullUp->TroughHeight ();
+		//}
 
 		else
 			yValues [i] = newPair->mPullupHeight = pullUp->TroughHeight ();
@@ -1126,7 +1122,8 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		i++;
 	}
 
-	totalForNegativeAnalysis = nNegatives + nSigmoids;
+	totalForNegativeAnalysis = nNegatives;
+	//totalForNegativeAnalysis = nNegatives + nSigmoids;
 
 	// if nNegatives at least 0, use a different algorithm that does not mix + and - pullup
 
@@ -1533,7 +1530,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 			i++;
 		}
 
-		else if (DataSignal::IsNegativeOrSigmoid (pair->mPullup)) {
+		else if ((pair->mPullup)->IsNegativePeak ()) {
 
 			newPair = pairArray [i] = new PullupPair (*pair);	
 			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
