@@ -298,8 +298,8 @@ public:
     CKitColors *pColors,
     int nMenuNumber,
     bool bDraw = true,
-    int nPlotNumber = 0
-    //,bool bExternalTimer = false  // EXT TIMER
+    int nPlotNumber = 0,
+    bool bPrinting = false
    );
 
   // constructor for CFrameAnalysis - MDI with grid and plot preview

@@ -223,8 +223,8 @@ CPanelPlot::CPanelPlot(
   CKitColors *pColors,
   int nMenuNumber,
   bool bFirst,
-  int nPlotNumber
-  //,bool bExternalTimer  // EXT TIMER
+  int nPlotNumber,
+  bool bPrinting
   ) :
       PANEL_PLOT_TYPE(pFrame->GetPanel(),wxID_ANY,
       wxDefaultPosition,wxDefaultSize,wxSW_3DSASH),
@@ -249,7 +249,7 @@ CPanelPlot::CPanelPlot(
     m_bDoTimer(false),
     m_bXBPS(false),
     m_bPrintAnalysis(false),
-    m_bPrinting(false)
+    m_bPrinting(bPrinting)
 {
   //  constructor for panel in graphic MDI frame
   _BuildPanel(nMenuNumber,bFirst,pMenuHistory);
@@ -263,7 +263,7 @@ void CPanelPlot::_BuildPanel(
   // now build it and they will come
   m_pPanel = new wxPanel(this,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
 
-  if(m_pFramePlot != NULL && pMenuHistory != NULL)
+  if(m_pFramePlot != NULL && !IsPrinting())
   {
     m_pButtonPanel = new CPanelPlotToolbar(m_pPanel,m_pData,m_pColors,pMenuHistory,nMenuNumber, bFirst);
     m_pButtonPanel->CopySettings(*m_pMenu);

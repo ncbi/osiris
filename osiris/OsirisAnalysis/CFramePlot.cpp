@@ -2151,8 +2151,11 @@ void CFramePlot::OnSize(wxSizeEvent &e)
 void CFramePlot::_SetupBitmapPlot()
 {
   // called from CFramePlot::_GetBitmapPlot()
-
-  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0);   // EXT TIMER , true);
+  if (m_pPlotForBitmap != NULL)
+  {
+    m_pPlotForBitmap->Destroy();
+  }
+  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0, true);   // EXT TIMER , true);
   m_pPlotForBitmap->SetRenderingToWindow(false);
   m_pPlotForBitmap->SetSync(false);
   m_pPlotForBitmap->Show(false);

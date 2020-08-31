@@ -115,6 +115,7 @@ private:
   void _OnButtonNext(wxCommandEvent &);
   void _OnButtonLast(wxCommandEvent &);
   void _OnTextCtrlPageChange(wxCommandEvent &);
+  void _OnChildFocus(wxChildFocusEvent&);
 
   static void _SetupZoomChoices();
   static int _GetZoomIndex(int nPct);
@@ -128,6 +129,7 @@ private:
   wxButton *m_pButtonPrev;
   wxButton *m_pButtonNext;
   wxButton *m_pButtonLast;
+  wxWindow *m_pLastFocus;
   int m_nPageCount;
   DECLARE_ABSTRACT_CLASS(CPreviewControlBar)
   DECLARE_EVENT_TABLE()
@@ -141,6 +143,7 @@ public:
   virtual ~CPrintPreviewFrame() {}
   virtual void CreateControlBar();
   void UpdateSettings();
+  void UpdatePage();
 private:
   CPreviewControlBar *_GetControlBar()
   {
