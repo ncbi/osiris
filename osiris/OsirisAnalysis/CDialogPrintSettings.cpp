@@ -80,6 +80,7 @@
 #define S_RAW "Raw"
 #define S_LADDERS "Ladders"
 #define S_LADDER_LABELS "Ladder labels"
+#define S_LADDER_BINS "Ladder bins"
 #define S_BASELINE "Baseline"
 #define S_ILS_LINES "ILS vertical lines"
 #define S_MIN_RFU_THRESHOLD "Minimum RFU threshold"
@@ -254,6 +255,7 @@ void CDialogPrintSettings::_Build()
   m_pCheckCurveRaw = new wxCheckBox(this, wxID_ANY, wxT(S_RAW));
   m_pCheckCurveLadder = new wxCheckBox(this, IDprintCurveLadders, wxT(S_LADDERS));
   m_pCheckCurveLadderLabels = new wxCheckBox(this, wxID_ANY, wxT(S_LADDER_LABELS));
+  m_pCheckCurveLadderBins = new wxCheckBox(this, wxID_ANY, wxT(S_LADDER_BINS));
   m_pCheckCurveBaseline = new wxCheckBox(this, wxID_ANY, wxT(S_BASELINE));
   m_pCheckCurveILSvertical = new wxCheckBox(this, wxID_ANY, wxT(S_ILS_LINES));
   m_pCheckCurveMinRFU = new wxCheckBox(this, wxID_ANY, wxT(S_MIN_RFU_THRESHOLD));
@@ -358,6 +360,7 @@ void CDialogPrintSettings::_Build()
   pSizerTemp->AddSpacer(ID_BORDER << 1);
   pSizerTemp->Add(m_pCheckCurveLadderLabels, 0, 0, 0);
   pSizerItems->Add(pSizerTemp, ITEM_ARGS);
+  pSizerItems->Add(m_pCheckCurveLadderBins, ITEM_ARGS);
   pSizerItems->Add(m_pCheckCurveBaseline, ITEM_ARGS);
   pSizerItems->Add(m_pCheckCurveILSvertical, ITEM_ARGS);
   pSizerItems->Add(m_pCheckCurveMinRFU, ITEM_ARGS);
@@ -546,10 +549,10 @@ void CDialogPrintSettings::_SetupXScaleUserUnits()
   if (m_pLabelXscaleUnits->GetLabel() != ps)
   {
     m_pLabelXscaleUnits->SetLabel(ps);
-    if (m_pRadioXscaleSpecify->GetValue())
-    {
-      _SetXScaleUserValues();
-    }
+  }
+  if (m_pRadioXscaleSpecify->GetValue())
+  {
+    _SetXScaleUserValues();
   }
 }
 void CDialogPrintSettings::_EnableYScaleUser(bool bEnable)
@@ -589,6 +592,7 @@ bool CDialogPrintSettings::TransferDataToWindow()
   m_pCheckCurveAnalyzed->SetValue(m_pParms->GetPrintCurveAnalyzed());
   m_pCheckCurveLadder->SetValue(m_pParms->GetPrintCurveLadder());;
   m_pCheckCurveLadderLabels->SetValue(m_pParms->GetPrintCurveLadderLabels());
+  m_pCheckCurveLadderBins->SetValue(m_pParms->GetPrintCurveRaw());
   m_pCheckCurveBaseline->SetValue(m_pParms->GetPrintCurveBaseline());
   m_pCheckCurveRaw->SetValue(m_pParms->GetPrintCurveRaw());
   m_pCheckCurveILSvertical->SetValue(m_pParms->GetPrintCurveILSvertical());
@@ -659,6 +663,7 @@ bool CDialogPrintSettings::TransferDataFromWindow()
   m_pParms->SetPrintCurveRaw(m_pCheckCurveRaw->GetValue());
   m_pParms->SetPrintCurveLadder(m_pCheckCurveLadder->GetValue());
   m_pParms->SetPrintCurveLadderLabels(m_pCheckCurveLadderLabels->GetValue());
+  m_pParms->SetPrintCurveLadderBins(m_pCheckCurveLadderBins->GetValue());
   m_pParms->SetPrintCurveBaseline(m_pCheckCurveBaseline->GetValue());
   m_pParms->SetPrintCurveILSvertical(m_pCheckCurveILSvertical->GetValue());
   m_pParms->SetPrintCurveMinRFU(m_pCheckCurveMinRFU->GetValue());

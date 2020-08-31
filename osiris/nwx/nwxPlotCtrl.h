@@ -52,11 +52,66 @@
 #include "nwx/nwxPlotDrawerLabel.h"
 #include "nwx/nwxPlotDrawerShade.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/stdb.h"
+#include <set>
+#include "nwx/stde.h"
 
 #define __TOOLTIP_TO_FRAME__ 0
 //  tried to set the tooltip parent to the frame
 //  but it created more problmes than it solved
 //  set to 1 if attempted again in the future
+
+class nwxPlotBin
+{
+public:
+  nwxPlotBin(double x0, double x1, const wxColour &colour) :
+    m_dX0(x0),
+    m_dX1(x1),
+    m_colour(colour)
+  {}
+  nwxPlotBin(const nwxPlotBin &x) :
+    m_dX0(x.GetMin()),
+    m_dX1(x.GetMax()),
+    m_colour(x.GetColour())
+  {}
+  virtual ~nwxPlotBin() {}
+  double GetMin() const
+  {
+    return m_dX0;
+  }
+  double GetMax() const
+  {
+    return m_dX1;
+  }
+  const wxColour &GetColour() const
+  {
+    return m_colour;
+  }
+  bool operator < (const nwxPlotBin &b2) const
+  {
+    return (GetMin() < b2.GetMin()) ||
+      ((GetMin() == b2.GetMin()) &&
+      (GetMax() < b2.GetMax()));
+  }
+private:
+  double m_dX0, m_dX1;
+  wxColour m_colour;
+};
+class nwxPlotBinLess
+{
+public:
+  nwxPlotBinLess() {}
+  bool operator()(const nwxPlotBin &x1, const nwxPlotBin &x2) const
+  {
+    return x1 < x2;
+  }
+  bool operator()(const nwxPlotBin *x1, const nwxPlotBin *x2) const
+  {
+    return (*x1) < (*x2);
+  }
+};
+typedef std::multiset<nwxPlotBin, nwxPlotBinLess> nwxPlotBinSet;
+
 
 class WXDLLIMPEXP_PLOTCTRL nwxPlotCtrl : public wxPlotCtrl, nwxTimerReceiver
 {
@@ -76,6 +131,8 @@ public:
     m_pToolTip(NULL),
     m_pToolText(NULL),
     m_pLastXLabel(NULL),
+    m_pLastLabel(NULL),
+    m_pSetBins(NULL),
     m_pToolTipParent(NULL)
   { }
   nwxPlotCtrl( wxWindow *parent, wxWindowID win_id = wxID_ANY,
@@ -96,7 +153,10 @@ public:
       m_bStopTimer(false),
       m_nTimeHere(0),
       m_pToolTip(NULL),
+      m_pToolText(NULL),
       m_pLastXLabel(NULL),
+      m_pLastLabel(NULL),
+      m_pSetBins(NULL),
       m_pToolTipParent(NULL)
       {
         _Init();
@@ -220,14 +280,22 @@ public:
 
   void OnViewChanged(wxPlotCtrlEvent &e);
   void nwxOnMouse(wxMouseEvent &event);
-  void DrawVerticalBars(wxDC *dc, const wxRect &rect);
+  void DrawBins(wxDC *dc);
+  void SetBins(const nwxPlotBinSet *pSetBins)
+  {
+    m_pSetBins = pSetBins;
+  }
+  void ClearBins()
+  {
+    m_pSetBins = NULL;
+  }
   virtual void OnTimer(wxTimerEvent &e);
   virtual void DrawTickMarks(wxDC *dc, const wxRect& rect);
   virtual void DrawAreaWindow( wxDC *dc, const wxRect& rect );
   virtual void DrawPlotCtrl( wxDC *dc );
   virtual void ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event );
   void DrawEntirePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bForcePrintFont = false);
-  void DrawXLabels(wxDC *pDC);
+  //void DrawXLabels(wxDC *pDC);
   //wxString GetToolTipText(const wxPoint &pos);
 
 #if __TOOLTIP_TO_FRAME__
@@ -301,6 +369,7 @@ private:
   wxStaticText *m_pToolText;
   const nwxPointLabel *m_pLastXLabel;
   const nwxPointLabel *m_pLastLabel;
+  const nwxPlotBinSet *m_pSetBins;
   wxWindow *m_pToolTipParent;
   wxCursor m_cursorDefault;
   wxCursor m_cursorAreaDefault;

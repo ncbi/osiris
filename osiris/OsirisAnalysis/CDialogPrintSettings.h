@@ -161,6 +161,7 @@ private:
   wxCheckBox *m_pCheckCurveRaw;
   wxCheckBox *m_pCheckCurveLadder;
   wxCheckBox *m_pCheckCurveLadderLabels;
+  wxCheckBox *m_pCheckCurveLadderBins;
   wxCheckBox *m_pCheckCurveBaseline;
   wxCheckBox *m_pCheckCurveILSvertical;
   wxCheckBox *m_pCheckCurveMinRFU;

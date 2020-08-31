@@ -313,13 +313,19 @@ void CPanelPlot::_CleanupLadderPeakSet()
 {
   vectorptr<CLadderPeakSet>::cleanup(&m_vpLadderPeakSet);
 }
+void CPanelPlot::_CleanupBins()
+{
+  vectorptr<nwxPlotBinSet>::cleanup(&m_vpBinsByChannel);
+}
 
 CPanelPlot::~CPanelPlot()
 {
+  m_pPlotCtrl->ClearBins(); // kill pointer in m_vpBinsByChannel that will be deleted
   mapptr<int,wxPlotData>::cleanup(&m_mapPlotData);
   vectorptr<wxPlotData>::cleanup(&m_vILS);
   vectorptr<wxPlotData>::cleanup(&m_vILS_XBPS);
-  this->_CleanupLadderPeakSet();
+  _CleanupBins();
+  _CleanupLadderPeakSet();
   /*
     // EXT TIMER
   if(m_pTimer != NULL)
@@ -652,6 +658,10 @@ void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
     else if(m_pButtonPanel->IsButtonLadderLabels(pObj))
     {
       nID = IDmenuPlotLadderLabels;
+    }
+    else if (m_pButtonPanel->IsButtonBins(pObj))
+    {
+      nID = IDmenuPlotLadderBins;
     }
     else if(m_pButtonPanel->IsButtonILS(pObj))
     {
@@ -1957,7 +1967,7 @@ void CPanelPlot::SetPlotSettings()
   bool bILS = parm->GetPlotShowILS();
   bool bRFU = parm->GetPlotShowRFU();
   bool bLadderLabels = parm->GetPlotShowLadderLabels();
-  bool bLadderBars = parm->GetPlotShowLadderBars();
+  bool bLadderBins = parm->GetPlotShowLadderBins();
   int nArt = (int)parm->GetPlotShowArtifact();
   const std::vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
   std::vector<unsigned int>::const_iterator itr;
@@ -1973,7 +1983,7 @@ void CPanelPlot::SetPlotSettings()
   m_pMenu->ShowILS(bILS);
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
-  m_pMenu->ShowLadderBars(bLadderBars);
+  m_pMenu->ShowLadderBins(bLadderBins);
   m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
@@ -1993,7 +2003,7 @@ void CPanelPlot::SetPrintSettings()
   bool bILS = parm->GetPrintCurveILSvertical();
   bool bRFU = parm->GetPrintCurveMinRFU();
   bool bLadderLabels = parm->GetPrintCurveLadderLabels();
-  bool bLadderBars = parm->GetPrintCurveLadderBars();
+  bool bLadderBins = parm->GetPrintCurveLadderBins();
   int nArt = (int)parm->GetPrintArtifact();
   const std::vector<unsigned int> &anLabelsChecked = parm->GetPrintLabelsPeak();
   m_bXBPS = _CanSetBPS() && parm->GetPrintXaxisILSBPS();
@@ -2010,7 +2020,7 @@ void CPanelPlot::SetPrintSettings()
   m_pMenu->ShowILS(bILS);
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
-  m_pMenu->ShowLadderBars(bLadderBars);
+  m_pMenu->ShowLadderBins(bLadderBins);
   m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
@@ -2028,7 +2038,7 @@ void CPanelPlot::SetPreviewSettings()
   bool bILS = parm->GetPreviewShowILS();
   bool bRFU = parm->GetPreviewShowRFU();
   bool bLadderLabels = parm->GetPreviewShowLadderLabels();
-  bool bLadderBars = parm->GetPreviewShowLadderBars();
+  bool bLadderBins = parm->GetPreviewShowLadderBins();
   bool bXBPS = parm->GetPreviewXBPS();
   int nArt = (int)parm->GetPreviewShowArtifact();
   int nLabel = parm->GetTableDisplayPeak();
@@ -2047,7 +2057,7 @@ void CPanelPlot::SetPreviewSettings()
   m_pMenu->ShowILS(bILS);
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
-  m_pMenu->ShowLadderBars(bLadderBars);
+  m_pMenu->ShowLadderBins(bLadderBins);
   m_pMenu->SetLabelType((LABEL_PLOT_TYPE)nLabel,LABEL_NONE);
   m_pMenu->SetArtifactValue(nArt);
   m_pMenu->SetXBPS(bXBPS);
@@ -2062,7 +2072,7 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
-  bool bLadderBars = m_pMenu->LadderBars();
+  bool bLadderBins = m_pMenu->LadderBins();
   int nArt = m_pMenu->ArtifactValue();
   std::vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
@@ -2074,7 +2084,7 @@ void CPanelPlot::UpdateSettingsPlot()
   parm->SetPlotShowILS(bILS);
   parm->SetPlotShowRFU(bRFU);
   parm->SetPlotShowLadderLabels(bLadderLabels);
-  parm->SetPlotShowLadderBars(bLadderBars);
+  parm->SetPlotShowLadderBins(bLadderBins);
   parm->SetPlotDisplayPeak(anLabels);
   parm->SetPlotShowArtifact((unsigned int)nArt);
 }
@@ -2087,7 +2097,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bILS = m_pMenu->ILSValue();
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
-  bool bLadderBars = m_pMenu->LadderBars();
+  bool bLadderBins = m_pMenu->LadderBins();
   bool bBPS = m_pMenu->XBPSValue();
   int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
@@ -2100,7 +2110,7 @@ void CPanelPlot::UpdateSettingsPreview()
   parm->SetPreviewShowILS(bILS);
   parm->SetPreviewShowRFU(bRFU);
   parm->SetPreviewShowLadderLabels(bLadderLabels);
-  parm->SetPreviewShowLadderBars(bLadderBars);
+  parm->SetPreviewShowLadderBins(bLadderBins);
   if(nLabel != LABEL_NONE) // should always be true
   {
     int nPeak = PLOT_TO_CELL(nLabel);
@@ -2235,10 +2245,93 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   {
     SetViewRect(rect, false, 1);
   }
+  RebuildBins();
   RebuildLabels(false);
   RE_RENDER;
 }
 
+void CPanelPlot::RebuildBins()
+{
+  m_pPlotCtrl->ClearBins();
+  if (m_pMenu->LadderBins() && m_pData->CanSetBPS() && (m_pOARfile != NULL))
+  {
+    unsigned int nChannelFound = 0;
+    // make sure we have one channel
+    unsigned int nChannelStart = 1;
+    unsigned int nILS = m_pData->GetILSChannel();
+    unsigned int nChannelEnd = m_pData->GetChannelCount();
+    for (unsigned int n = nChannelStart; n <= nChannelEnd; ++n)
+    {
+      if (n == nILS) {} // skip ils
+      else if (!m_pMenu->ChannelValue(n)) {} // not selected
+      else if (nChannelFound)
+      {
+          // we have more than one channel, don't show bins
+          nChannelFound = 0;  // kill it
+          break; // exit loop
+      }
+      else
+      {
+          // first channel found
+          nChannelFound = n;
+      }
+    }
+    if (nChannelFound)
+    {
+      nwxPlotBinSet *pSet = _GetBinsByChannel(nChannelFound);
+      m_pPlotCtrl->SetBins(pSet);
+    }
+  }
+}
+
+nwxPlotBinSet *CPanelPlot::_GetBinsByChannel(unsigned int nChannel)
+{
+  nwxPlotBinSet *pSet(NULL);
+  unsigned int n1 = nChannel + 1;
+  while (m_vpBinsByChannel.size() < n1)
+  {
+    m_vpBinsByChannel.push_back(NULL);
+  }
+  pSet = m_vpBinsByChannel.at(nChannel);
+  if (pSet == NULL)
+  {
+    pSet = new nwxPlotBinSet();
+    m_vpBinsByChannel[nChannel] = pSet;
+    const std::vector<CSamplePeak *> *pp = m_pData->GetLadderPeaks(nChannel);
+    const wxColour &colour = _GetColour(ANALYZED_DATA, nChannel);
+    wxColour colourBin(PASTEL_125(colour));
+    if ((pp != NULL) && pp->size())
+    {
+      double dResidual = m_pOARfile->GetLabSettings().GetThresholds()->GetMaxResidualForAlleleCall();
+      double d0, d1;
+      if (dResidual > 0.5)
+      {
+        dResidual = 0.5;
+      }
+      else if (dResidual < 0.0)
+      {
+        dResidual = 0.0;
+      }
+      bool bXBPS = XBPSValue();
+      for (std::vector<CSamplePeak *>::const_iterator itr = pp->begin();
+        itr != pp->end();
+        ++itr)
+      {
+        d0 = (*itr)->GetMeanBPS();
+        d1 = d0 + dResidual;
+        d0 -= dResidual;
+        if (!bXBPS)
+        {
+          d0 = m_pData->ILSBpsToTime(d0);
+          d1 = m_pData->ILSBpsToTime(d1);
+
+        }
+        pSet->insert(nwxPlotBin(d0, d1, colourBin));
+      }
+    }
+  }
+  return pSet;
+}
 
 wxMenuItem *CPanelPlot::GetMenuItem(wxMenu *p)
 {
@@ -2386,7 +2479,7 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
     case IDmenuPlotRFU:
     case IDmenuPlotXBPS:
     case IDmenuPlotLadderLabels:
-    case IDmenuPlotLadderBars:
+    case IDmenuPlotLadderBins:
       bSendToAll = bShift;
       bRebuild = true;
       m_pMenu->SetStateFromEvent(e);
@@ -2562,8 +2655,8 @@ void CPanelPlot::SyncState(CPanelPlot *p, int nID)
       pMenu->ShowLadderLabels(p->m_pMenu->LadderLabels());
       bRebuild = true;
       break;
-    case IDmenuPlotLadderBars:
-      pMenu->ShowLadderBars(p->m_pMenu->LadderBars());
+    case IDmenuPlotLadderBins:
+      pMenu->ShowLadderBins(p->m_pMenu->LadderBins());
       bRebuild = true;
       break;
     case IDmenuPlotSync:

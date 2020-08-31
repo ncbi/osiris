@@ -135,7 +135,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPreviewDataBaseline);
   CP(m_bPreviewShowILS);
   CP(m_bPreviewShowRFU);
-  CP(m_bPreviewShowLadderBars);
+  CP(m_bPreviewShowLadderBins);
   CP(m_bPreviewShowLadderLabels);
   CP(m_bPreviewXBPS);
   CP(m_nPreviewShowArtifact);
@@ -150,7 +150,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPlotShowILS);
   CP(m_bPlotShowRFU);
   CP(m_bPlotShowLadderLabels);
-  CP(m_bPlotShowLadderBars);
+  CP(m_bPlotShowLadderBins);
   CP(m_bPlotResizable);
   CP(m_nPlotMinHeight);
   CP(m_nPlotShowArtifact);
@@ -163,7 +163,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPrintCurveRaw);
   CP(m_bPrintCurveLadder);
   CP(m_bPrintCurveLadderLabels);
-  CP(m_bPrintCurveLadderBars);
+  CP(m_bPrintCurveLadderBins);
   CP(m_bPrintCurveBaseline);
   CP(m_bPrintCurveILSvertical);
   CP(m_bPrintCurveMinRFU);
@@ -297,7 +297,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPreviewDataBaseline)
   CP(m_bPreviewShowILS)
   CP(m_bPreviewShowRFU)
-  CP(m_bPreviewShowLadderBars)
+  CP(m_bPreviewShowLadderBins)
   CP(m_bPreviewShowLadderLabels)
   CP(m_bPreviewXBPS)
   CP(m_nPreviewShowArtifact)
@@ -312,7 +312,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPlotShowILS)
   CP(m_bPlotShowRFU)
   CP(m_bPlotShowLadderLabels)
-  CP(m_bPlotShowLadderBars)
+  CP(m_bPlotShowLadderBins)
   CP(m_bPlotResizable)
   CP(m_nPlotMinHeight)
   CP(m_nPlotShowArtifact)
@@ -325,7 +325,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPrintCurveRaw)
   CP(m_bPrintCurveLadder)
   CP(m_bPrintCurveLadderLabels)
-  CP(m_bPrintCurveLadderBars)
+  CP(m_bPrintCurveLadderBins)
   CP(m_bPrintCurveBaseline)
   CP(m_bPrintCurveILSvertical)
   CP(m_bPrintCurveMinRFU)
@@ -468,7 +468,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PreviewDataBaseline", &m_bPreviewDataBaseline);
   RegisterBool("PreviewShowILS", &m_bPreviewShowILS);
   RegisterBool("PreviewShowRFU", &m_bPreviewShowRFU);
-  RegisterBool("PreviewShowLadderBars", &m_bPreviewShowLadderBars);
+  RegisterBool("PreviewShowLadderBins", &m_bPreviewShowLadderBins);
   RegisterBool("PreviewShowLadderLabels", &m_bPreviewShowLadderLabels);
   RegisterBool("PreviewXBPS", &m_bPreviewXBPS);
   Register("PreviewArtifact",&m_ioIntViewPlotArtifact,(void *) &m_nPreviewShowArtifact);
@@ -483,7 +483,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PlotShowILS", &m_bPlotShowILS);
   RegisterBool("PlotShowRFU", &m_bPlotShowRFU);
   RegisterBool("PlotShowLadderLabels", &m_bPlotShowLadderLabels);
-  RegisterBool("PlotShowLadderBars", &m_bPlotShowLadderBars);
+  RegisterBool("PlotShowLadderBins", &m_bPlotShowLadderBins);
   RegisterBoolTrue("PlotResizable", &m_bPlotResizable);
   Register("PlotMinHeight",&m_ioInt_1,(void *) &m_nPlotMinHeight);
   Register("PlotShowArtifact",&m_ioIntViewPlotArtifact,(void *) &m_nPlotShowArtifact);
@@ -496,7 +496,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PrintCurveRaw", &m_bPrintCurveRaw);
   RegisterBool("PrintCurveLadder", &m_bPrintCurveLadder);
   RegisterBool("PrintCurveLadderLabels", &m_bPrintCurveLadderLabels);
-  RegisterBool("PrintCurveLadderBars", &m_bPrintCurveLadderBars);
+  RegisterBool("PrintCurveLadderBins", &m_bPrintCurveLadderBins);
   RegisterBool("PrintCurveBaseline", &m_bPrintCurveBaseline);
   RegisterBool("PrintCurveILSvertical", &m_bPrintCurveILSvertical);
   RegisterBool("PrintCurveMinRFU", &m_bPrintCurveMinRFU);
@@ -643,7 +643,7 @@ void CParmOsiris::SetDefaults()
   m_bPreviewDataBaseline = false;
   m_bPreviewShowILS = false;
   m_bPreviewShowRFU = false;
-  m_bPreviewShowLadderBars = false;
+  m_bPreviewShowLadderBins = false;
   m_bPreviewShowLadderLabels = false;
   m_bPreviewXBPS = false;
   m_nPreviewShowArtifact = m_ioIntViewPlotArtifact.GetDefault();
@@ -658,7 +658,7 @@ void CParmOsiris::SetDefaults()
   m_bPlotShowILS = false;
   m_bPlotShowRFU = false;
   m_bPlotShowLadderLabels = false;
-  m_bPlotShowLadderBars = false;
+  m_bPlotShowLadderBins = false;
   m_bPlotResizable = true;
   m_nPlotMinHeight = -1;
   m_nPlotShowArtifact = m_ioIntViewPlotArtifact.GetDefault();
@@ -672,7 +672,7 @@ void CParmOsiris::SetDefaults()
   m_bPrintCurveRaw = false;
   m_bPrintCurveLadder = false;
   m_bPrintCurveLadderLabels = false;
-  m_bPrintCurveLadderBars = false;
+  m_bPrintCurveLadderBins = false;
   m_bPrintCurveBaseline = false;
   m_bPrintCurveILSvertical = false;
   m_bPrintCurveMinRFU = false;

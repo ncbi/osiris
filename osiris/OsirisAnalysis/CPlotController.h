@@ -107,7 +107,7 @@ public:
   virtual bool SyncValue() = 0;
   virtual bool MinRfuValue() = 0;
   virtual bool LadderLabels() = 0;
-  virtual bool LadderBars() = 0;
+  virtual bool LadderBins() = 0;
   virtual bool ILSValue() = 0;
   virtual bool XBPSValue() = 0;
 
@@ -115,7 +115,7 @@ public:
   virtual void ShowILS(bool b = true) = 0;
   virtual void ShowMinRfu(bool b = true) = 0;
   virtual void ShowLadderLabels(bool b = true) = 0;
-  virtual void ShowLadderBars(bool b = true) = 0;
+  virtual void ShowLadderBins(bool b = true) = 0;
   virtual void SetXBPS(bool b = true) = 0;
 
   // labels, artifacts

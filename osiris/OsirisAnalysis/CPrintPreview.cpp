@@ -134,9 +134,13 @@ void CPrintPreviewFrame::_OnZoom(wxCommandEvent &)
 {
   m_pPreview->SetZoom(_GetControlBar()->GetZoom());
 }
-void CPrintPreviewFrame::_OnPageChange(wxCommandEvent &)
+void CPrintPreviewFrame::UpdatePage()
 {
   m_pPreview->SetCurrentPage(_GetControlBar()->GetPage());
+}
+void CPrintPreviewFrame::_OnPageChange(wxCommandEvent &)
+{
+  UpdatePage();
 }
 void CPrintPreviewFrame::_OnPrint(wxCommandEvent &)
 {
@@ -180,7 +184,7 @@ EVT_BUTTON(IDprintSettings, CPrintPreviewFrame::_OnSettings)
 EVT_BUTTON(IDprintColors, CPrintPreviewFrame::_OnColors)
 EVT_BUTTON(IDprintPrint, CPrintPreviewFrame::_OnPrint)
 EVT_CHOICE(IDprintZoom, CPrintPreviewFrame::_OnZoom)
-EVT_TEXT(IDprintPageText, CPrintPreviewFrame::_OnPageChange)
+EVT_TEXT_ENTER(IDprintPageText, CPrintPreviewFrame::_OnPageChange)
 EVT_CLOSE(CPrintPreviewFrame::_OnClose)
 EVT_PERSISTENT_SIZE_POSITION(CPrintPreviewFrame)
 END_EVENT_TABLE()
@@ -280,6 +284,7 @@ CPreviewControlBar::CPreviewControlBar(
     m_pButtonPrev(NULL),
     m_pButtonNext(NULL),
     m_pButtonLast(NULL),
+    m_pLastFocus(NULL),
     m_nPageCount(preview->GetMaxPage())
 {
   _SetupZoomChoices();
@@ -359,7 +364,7 @@ void CPreviewControlBar::CreateButtons()
   wxSize sz = pText->GetTextExtent(wxT("99999"));
   sz.SetHeight(-1);
   m_pTextPage = new wxTextCtrl(this, IDprintPageText, wxT("1"),
-    wxDefaultPosition, sz, wxTE_RIGHT, val);
+    wxDefaultPosition, sz, wxTE_RIGHT | wxTE_PROCESS_ENTER, val);
   pSizer->Insert(nPOS++, m_pTextPage, flags);
 
   m_pButtonNext = _CreateButton(IDprintPageNext, asButtonNext, S_TT_NEXT, fnt);
@@ -468,6 +473,20 @@ void CPreviewControlBar::_OnTextCtrlPageChange(wxCommandEvent &e)
   SetPage(GetPage()); // update next/prev button state
   e.Skip();  // send to calling window
 }
+void CPreviewControlBar::_OnChildFocus(wxChildFocusEvent &)
+{
+  wxWindow *p = FindFocus();
+  if ((m_pLastFocus == m_pTextPage) && (p != m_pTextPage))
+  {
+    SetPage(GetPage());
+    CPrintPreviewFrame *pParent = wxDynamicCast(GetParent(), CPrintPreviewFrame);
+    if (pParent != NULL)
+    {
+      pParent->UpdatePage();
+    }
+  }
+  m_pLastFocus = p;
+}
 
 IMPLEMENT_ABSTRACT_CLASS(CPreviewControlBar, wxPreviewControlBar)
 BEGIN_EVENT_TABLE(CPreviewControlBar, wxPreviewControlBar)
@@ -475,5 +494,6 @@ EVT_BUTTON(IDprintPageFirst, CPreviewControlBar::_OnButtonFirst)
 EVT_BUTTON(IDprintPageLast, CPreviewControlBar::_OnButtonLast)
 EVT_BUTTON(IDprintPageNext, CPreviewControlBar::_OnButtonNext)
 EVT_BUTTON(IDprintPagePrev, CPreviewControlBar::_OnButtonPrev)
-EVT_TEXT(IDprintPageText, CPreviewControlBar::_OnTextCtrlPageChange)
+EVT_TEXT_ENTER(IDprintPageText, CPreviewControlBar::_OnTextCtrlPageChange)
+EVT_CHILD_FOCUS(CPreviewControlBar::_OnChildFocus)
 END_EVENT_TABLE()

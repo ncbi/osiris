@@ -88,7 +88,7 @@ enum
   IDmenuPlotXBPS,
   IDmenuPlotRFU,
   IDmenuPlotLadderLabels,
-  IDmenuPlotLadderBars,
+  IDmenuPlotLadderBins,
   IDmenuPlotLabels_BEGIN,
 
   // display menu items for CFramePlot menus
@@ -430,6 +430,7 @@ enum DATA_TYPE
 #define IDgraphRFU IDgraphRebuild
 #define IDgraphXBPS IDgraphRebuild
 #define IDgraphLadderLabels IDgraphRebuild
+#define IDgraphLadderBins IDgraphRebuild
 // channel 1 IDgraphRebuild channels must be in order
 // to loop through the numbers if part of enum
 #define IDgraphCH1 IDgraphRebuild
