@@ -298,7 +298,8 @@ public:
     CKitColors *pColors,
     int nMenuNumber,
     bool bDraw = true,
-    int nPlotNumber = 0
+    int nPlotNumber = 0,
+    bool bPrinting = false
     //,bool bExternalTimer = false  // EXT TIMER
    );
 
