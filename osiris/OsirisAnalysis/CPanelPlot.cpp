@@ -365,6 +365,14 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
   if(itr != m_mapPlotData.end())
   {
     pRtn = itr->second;
+    if (IsPrinting())
+    {
+      // when printing, colors may not be up to date
+      wxGenericPen pen(_GetColour(nType, nChannel));
+      pRtn->SetPen(wxPLOTPEN_NORMAL, pen);
+      pRtn->SetPen(wxPLOTPEN_ACTIVE, pen);
+      pRtn->SetPen(wxPLOTPEN_SELECTED, pen);
+    }
   }
   else if( _IsNoNoiseChannel(nChannel) && bNoise ) {} // done
   else
