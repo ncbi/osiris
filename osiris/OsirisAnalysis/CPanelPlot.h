@@ -912,6 +912,7 @@ public:
 //  void HideCurve(DATA_TYPE nType, unsigned int nChannel);
 
   void OnRebuildCurves(wxCommandEvent &);
+  void OnAlleleBins(wxCommandEvent &);
 
   void OnZoomOut(wxCommandEvent &);
 //  void OnBtnLabel(wxCommandEvent &);

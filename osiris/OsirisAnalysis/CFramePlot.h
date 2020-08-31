@@ -123,6 +123,7 @@ public:
       m_pPlotForBitmap->InvalidateColors();
     }
   }
+  bool FindOARforBins();
   void ReInitialize(const wxString &sLocus, bool bSingle);
   void AddPlot(CPanelPlot *pPreceed, bool bUpdate = true);
   void RemovePlot(CPanelPlot *pRemove, bool bRefresh = true);

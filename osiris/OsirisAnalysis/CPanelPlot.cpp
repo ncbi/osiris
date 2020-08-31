@@ -613,6 +613,18 @@ void CPanelPlot::OnZoomOut(wxCommandEvent &e)
   }
   Refresh();
 }
+void CPanelPlot::OnAlleleBins(wxCommandEvent &e)
+{
+  wxToggleButton *pButton = wxDynamicCast(e.GetEventObject(), wxToggleButton);
+  if ((pButton != NULL) && pButton->GetValue() && !m_pFramePlot->FindOARforBins())
+  {
+    pButton->SetValue(false);
+  }
+  else
+  {
+    OnRebuildCurves(e);
+  }
+}
 void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
 {
   bool bShift = nwxKeyState::Shift();
@@ -3233,6 +3245,7 @@ EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
 EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
 
 EVT_TOGGLEBUTTON(IDgraphRebuild, CPanelPlot::OnRebuildCurves)
+EVT_TOGGLEBUTTON(IDgraphLadderBins, CPanelPlot::OnAlleleBins)
 
 EVT_TOGGLEBUTTON(IDgraphSyncAxes, CPanelPlot::OnSync)
 EVT_BUTTON(IDgraphZoomOut, CPanelPlot::OnZoomOut)

@@ -1095,6 +1095,16 @@ void CFramePlot::_FindOARfile(int nType)
     }
   }
 }
+
+bool CFramePlot::FindOARforBins()
+{
+  if (m_pOARfile == NULL)
+  {
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_BINS);
+  }
+  return (m_pOARfile != NULL);
+}
+
 bool CFramePlot::_CheckAnalysisFile(COARfile *pFile)
 {
   wxString sError;
