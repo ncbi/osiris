@@ -1497,6 +1497,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8E8D563C697B461D8FF1F1B2A537E240"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_915373D515FC4F39B981E9DC5A9C601B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -7658,6 +7664,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8E8D563C697B461D8FF1F1B2A537E240"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.9.1.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.9.1.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_915373D515FC4F39B981E9DC5A9C601B"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\ILSAndLadderInfo.xml"
@@ -12596,7 +12622,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
         "ProductCode" = "8:{7F494FC7-AF49-452A-BBFB-7075BE149551}"
-        "PackageCode" = "8:{D6256496-A3F2-4563-8360-D639B84D3550}"
+        "PackageCode" = "8:{EB319AB4-77FC-4C9B-BA4A-F3DA2BB09EBE}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

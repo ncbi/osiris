@@ -234,7 +234,10 @@ BEGIN_EVENT_TABLE(wxPlotCtrlArea, wxWindow)
     EVT_CHAR            ( wxPlotCtrlArea::OnChar )
     EVT_KEY_DOWN        ( wxPlotCtrlArea::OnKeyDown )
     EVT_KEY_UP          ( wxPlotCtrlArea::OnKeyUp )
-END_EVENT_TABLE()
+#ifdef __WXMSW__
+  EVT_MOUSE_CAPTURE_LOST(wxPlotCtrlArea::OnMouseCaptureLost)
+#endif
+  END_EVENT_TABLE()
 
 bool wxPlotCtrlArea::Create( wxWindow *parent, wxWindowID win_id )
 {
@@ -343,7 +346,10 @@ BEGIN_EVENT_TABLE(wxPlotCtrlAxis, wxWindow)
     EVT_PAINT           ( wxPlotCtrlAxis::OnPaint )
     EVT_MOUSE_EVENTS    ( wxPlotCtrlAxis::OnMouse )
     EVT_CHAR            ( wxPlotCtrlAxis::OnChar )
-END_EVENT_TABLE()
+#ifdef __WXMSW__
+  EVT_MOUSE_CAPTURE_LOST(wxPlotCtrlAxis::OnMouseCaptureLost)
+#endif
+  END_EVENT_TABLE()
 
 bool wxPlotCtrlAxis::Create( wxWindow *parent, wxWindowID win_id, wxPlotCtrlAxis_Type style )
 {
@@ -446,6 +452,9 @@ BEGIN_EVENT_TABLE(wxPlotCtrl, wxWindow )
     EVT_TIMER            ( wxID_ANY, wxPlotCtrl::OnTimer )
 
     EVT_TEXT_ENTER       ( wxID_ANY, wxPlotCtrl::OnTextEnter)
+#ifdef __WXMSW__
+    EVT_MOUSE_CAPTURE_LOST( wxPlotCtrl::OnMouseCaptureLost )
+#endif
 END_EVENT_TABLE()
 
 void wxPlotCtrl::Init()
@@ -3365,7 +3374,31 @@ void wxPlotCtrl::CalcYAxisTickPositions()
 // ----------------------------------------------------------------------------
 // Event processing
 // ----------------------------------------------------------------------------
+#ifdef __WXMSW__
+// OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+void wxPlotCtrl::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  // if the user right clicks before
+  if (GetCaptureWindow() != NULL)
+  {
+    wxWindow *pWin = wxDynamicCast(event.GetEventObject(), wxWindow);
+    if (pWin != NULL)
+    {
+      wxMouseEvent e(wxEVT_LEFT_UP);
+      pWin->GetEventHandler()->AddPendingEvent(e);
+    }
+  }
+}
 
+void wxPlotCtrlArea::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  m_owner->OnMouseCaptureLost(event);
+}
+void wxPlotCtrlAxis::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  m_owner->OnMouseCaptureLost(event);
+}
+#endif
 void wxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event )
 {
     wxPoint& m_mousePt   = m_area->m_mousePt;
