@@ -3365,7 +3365,31 @@ void wxPlotCtrl::CalcYAxisTickPositions()
 // ----------------------------------------------------------------------------
 // Event processing
 // ----------------------------------------------------------------------------
+#ifdef __WXMSW__
+// OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+void wxPlotCtrl::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  // if the user right clicks before
+  if (GetCaptureWindow() != NULL)
+  {
+    wxWindow *pWin = wxDynamicCast(event.GetEventObject(), wxWindow);
+    if (pWin != NULL)
+    {
+      wxMouseEvent e(wxEVT_LEFT_UP);
+      pWin->GetEventHandler()->AddPendingEvent(e);
+    }
+  }
+}
 
+void wxPlotCtrlArea::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  m_owner->OnMouseCaptureLost(event);
+}
+void wxPlotCtrlAxis::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  m_owner->OnMouseCaptureLost(event);
+}
+#endif
 void wxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event )
 {
     wxPoint& m_mousePt   = m_area->m_mousePt;
