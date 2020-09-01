@@ -491,10 +491,12 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     {
       nx -= rect.width;
     }
+#if 0
     if (nx < nx1)
     {
       nx = nx1;
     }
+#endif
     if(nAlign & wxALIGN_CENTER_VERTICAL)
     {
       ny -= (rect.height >> 1);

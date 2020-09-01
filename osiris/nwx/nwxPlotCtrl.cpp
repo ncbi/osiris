@@ -70,6 +70,59 @@ void nwxPlotCtrl::ShowScrollbars(bool b)
     }
   }
 }
+void nwxPlotCtrl::DrawBins(wxDC *dc)
+{
+  if ((m_pSetBins != NULL) && m_pSetBins->size())
+  {
+    nwxPlotBinSet::const_iterator itr;
+    wxRect clientRect(GetPlotAreaRect());
+    wxRect rect(0, clientRect.GetTop(), 1, clientRect.GetHeight());
+    wxColour colour(*wxWHITE);
+    int nx1, nx2;
+    double dx1, dx2;
+    wxBrush brush(*wxWHITE_BRUSH);
+#define USE_GRID_COLOR
+#ifdef USE_GRID_COLOR
+    brush.SetColour(GetGridColour());
+    dc->SetBrush(brush);
+#endif
+    dc->SetPen(*wxTRANSPARENT_PEN);
+    for (itr = m_pSetBins->begin(); itr != m_pSetBins->end(); ++itr)
+    {
+      dx1 = (*itr).GetMin();
+      dx2 = (*itr).GetMax();
+      if (dx1 < m_viewRect.GetRight() && dx2 > m_viewRect.GetLeft())
+      {
+        nx1 = GetClientCoordFromPlotX(dx1);
+        nx2 = GetClientCoordFromPlotX(dx2);
+        nx1 = wxMax(nx1, clientRect.GetLeft());
+        nx2 = wxMin(nx2, clientRect.GetRight());
+        if (nx1 < nx2)
+        {
+#ifndef USE_GRID_COLOR
+          const wxColour &c((*itr).GetColour());
+          if (c != colour)
+          {
+            colour = c;
+            brush.SetColour(c);
+            dc->SetBrush(brush);
+          }
+#endif
+          rect.SetLeft(nx1);
+          rect.SetWidth(nx2 - nx1);
+          dc->DrawRectangle(rect);
+        }
+      }        
+    }
+  }
+}
+
+void nwxPlotCtrl::DrawTickMarks(wxDC *dc, const wxRect& rect)
+{
+  DrawBins(dc);
+  // OS-1432 - vertical bars
+  wxPlotCtrl::DrawTickMarks(dc, rect);
+}
 
 void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
 {

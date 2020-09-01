@@ -1095,6 +1095,16 @@ void CFramePlot::_FindOARfile(int nType)
     }
   }
 }
+
+bool CFramePlot::FindOARforBins()
+{
+  if (m_pOARfile == NULL)
+  {
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_BINS);
+  }
+  return (m_pOARfile != NULL);
+}
+
 bool CFramePlot::_CheckAnalysisFile(COARfile *pFile)
 {
   wxString sError;
@@ -2151,8 +2161,11 @@ void CFramePlot::OnSize(wxSizeEvent &e)
 void CFramePlot::_SetupBitmapPlot()
 {
   // called from CFramePlot::_GetBitmapPlot()
-
-  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0);   // EXT TIMER , true);
+  if (m_pPlotForBitmap != NULL)
+  {
+    m_pPlotForBitmap->Destroy();
+  }
+  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0, true);   // EXT TIMER , true);
   m_pPlotForBitmap->SetRenderingToWindow(false);
   m_pPlotForBitmap->SetSync(false);
   m_pPlotForBitmap->Show(false);
@@ -2255,6 +2268,9 @@ wxBitmap *CFramePlot::CreateBitmap(
         pPanelPlot->CopySettings(*pPlot, 0, bForcePrintFont);
         pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
         pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
+#ifdef TMP_DEBUG
+        mainApp::DumpBitmap(pBitmapPlot.get(), wxString::Format(wxT("plot_schnl_%d"), n));
+#endif
         dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
         nY += nPlotHeight;
       }

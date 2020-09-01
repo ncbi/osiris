@@ -278,8 +278,19 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   m_pButtonRfu->SetValue(false);
   pSizer->Add(m_pButtonRfu,0,nSizerFlags,ID_BORDER);
 
+  // Allele Bins button
+  m_pButtonBins = new nwxToggleButton(
+    m_pPanel, IDgraphLadderBins, "Bins",
+    wxDefaultPosition, wxDefaultSize,
+    wxBU_EXACTFIT);
+  m_pButtonBins->SetToolTip(
+    "View or hide ladder allele bins."
+    PLOT_TOOLBAR_SHIFT_ALL);
+  m_pButtonBins->SetValue(false);
+  pSizer->Add(m_pButtonBins, 0, nSizerFlags, ID_BORDER);
+
   m_pButtonLadderLabels = new nwxToggleButton(
-    m_pPanel, IDgraphLadderLabels,"Ladder",
+    m_pPanel, IDgraphLadderBins,"Ladder",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   m_pButtonLadderLabels->SetToolTip(
@@ -489,6 +500,10 @@ bool CPanelPlotToolbar::MinRfuValue()
 {
   return m_pButtonRfu->GetValue();
 }
+bool CPanelPlotToolbar::LadderBins()
+{
+  return m_pButtonBins->GetValue();
+}
 bool CPanelPlotToolbar::LadderLabels()
 {
   return m_pButtonLadderLabels->GetValue();
@@ -508,6 +523,10 @@ void CPanelPlotToolbar::ShowILS(bool b)
 void CPanelPlotToolbar::ShowMinRfu(bool b)
 {
   m_pButtonRfu->SetValue(b);
+}
+void CPanelPlotToolbar::ShowLadderBins(bool b)
+{
+  m_pButtonBins->SetValue(b);
 }
 void CPanelPlotToolbar::ShowLadderLabels(bool b)
 {

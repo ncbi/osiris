@@ -120,12 +120,14 @@ public:
   virtual bool SyncValue();
   virtual bool MinRfuValue();
   virtual bool LadderLabels();
+  virtual bool LadderBins();
   virtual bool ILSValue();
   virtual bool XBPSValue();
   virtual void SetSync(bool b = true);
   virtual void ShowILS(bool b = true);
   virtual void ShowMinRfu(bool b = true);
   virtual void ShowLadderLabels(bool b = true);
+  virtual void ShowLadderBins(bool b = true);
   virtual void SetXBPS(bool b = true);
 
 
@@ -201,6 +203,10 @@ public:
   {
     return (p == (wxObject *) m_pButtonILS);
   }
+  bool IsButtonBins(wxObject *p)
+  {
+    return (p == (wxObject *)m_pButtonBins);
+  }
   bool IsButtonSync(wxObject *p)
   {
     return (p == (wxObject *) m_pButtonSync);
@@ -256,6 +262,7 @@ private:
   nwxToggleButton *m_pButtonAnalyzed;
   nwxToggleButton *m_pButtonRaw;
   nwxToggleButton *m_pButtonLadder;
+  nwxToggleButton *m_pButtonBins;
   nwxToggleButton *m_pButtonBaseline;
   nwxToggleButton *m_pButtonRfu;
   nwxToggleButton *m_pButtonLadderLabels;

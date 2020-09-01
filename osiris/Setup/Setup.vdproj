@@ -1497,6 +1497,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8E8D563C697B461D8FF1F1B2A537E240"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_915373D515FC4F39B981E9DC5A9C601B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2676,7 +2682,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-2.14-Beta-15.msi"
+        "OutputFilename" = "8:Release\\Osiris-2.15-Beta-2.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -2800,7 +2806,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_003DFA760A8A4C17A5AE8EC57F87745E"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_access.txt"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_access.txt"
             "TargetName" = "8:LANESTANDARDONLY4_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_4E7E6511CABF45DBA93027B2668B9AFA"
@@ -3380,7 +3386,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_110A31F881C24030BF0E5DB847BAFE9A"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_LabSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_LabSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY3_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_1358BCDF42664717B078BD6BF755D9CE"
@@ -3900,7 +3906,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2063D5C0E3BA4656A66DA3D068AC97F1"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_StdSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_StdSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY2_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_D2C92344622A4CBFAC10819A609FF77B"
@@ -4120,7 +4126,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_299B34FF67AD43AAAC8E4651A5264A2F"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_MessageBookV4.0.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_MessageBookV4.0.xml"
             "TargetName" = "8:LANESTANDARDONLY3_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_1358BCDF42664717B078BD6BF755D9CE"
@@ -4480,7 +4486,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_36E2C03A3CEA4CB9995E948737B6781A"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_StdSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_StdSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY4_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_4E7E6511CABF45DBA93027B2668B9AFA"
@@ -4960,7 +4966,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_407EDD7B96F94B0BB5CD869076162CC0"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_StdSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_StdSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY5_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_A1CCA38D4AC94861988670C1CB651E02"
@@ -5540,7 +5546,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_509E4B3F1BFA4D6CABECC3CE73054D6C"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_StdSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_StdSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY3_StdSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_1358BCDF42664717B078BD6BF755D9CE"
@@ -6820,7 +6826,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_764E915BDB5F44728CF7CA84382FDF5C"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_LabSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_LabSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY2_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_D2C92344622A4CBFAC10819A609FF77B"
@@ -7400,7 +7406,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8685FB77037F47FCB66E4769D3B48FBD"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_access.txt"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_access.txt"
             "TargetName" = "8:LANESTANDARDONLY5_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_A1CCA38D4AC94861988670C1CB651E02"
@@ -7658,6 +7664,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8E8D563C697B461D8FF1F1B2A537E240"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.9.1.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.9.1.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_915373D515FC4F39B981E9DC5A9C601B"
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\ILSAndLadderInfo.xml"
@@ -7700,7 +7726,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9176165FE4FB4F90BE6397B9367E34D4"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_LabSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_LabSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY5_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_A1CCA38D4AC94861988670C1CB651E02"
@@ -9120,7 +9146,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B6D22131743C4892A571C8085C418427"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_access.txt"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY3\\LANESTANDARDONLY3_access.txt"
             "TargetName" = "8:LANESTANDARDONLY3_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_1358BCDF42664717B078BD6BF755D9CE"
@@ -9740,7 +9766,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CA6BC414C8174C99953231593F7C7D2B"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_MessageBookV4.0.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_MessageBookV4.0.xml"
             "TargetName" = "8:LANESTANDARDONLY2_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_D2C92344622A4CBFAC10819A609FF77B"
@@ -10320,7 +10346,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9333EB0F7AB46AF9DE6384B758CBB26"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_MessageBookV4.0.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY5\\LANESTANDARDONLY5_MessageBookV4.0.xml"
             "TargetName" = "8:LANESTANDARDONLY5_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_A1CCA38D4AC94861988670C1CB651E02"
@@ -10720,7 +10746,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E68286F3D7CA4ACC99D3C174B80486F4"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_access.txt"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY2\\LANESTANDARDONLY2_access.txt"
             "TargetName" = "8:LANESTANDARDONLY2_access.txt"
             "Tag" = "8:"
             "Folder" = "8:_D2C92344622A4CBFAC10819A609FF77B"
@@ -11000,7 +11026,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F3D341DD134E4C20A6BC289F8FC0C4B1"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_LabSettings.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_LabSettings.xml"
             "TargetName" = "8:LANESTANDARDONLY4_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_4E7E6511CABF45DBA93027B2668B9AFA"
@@ -11160,7 +11186,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F6A1D9D1F73C48FD992DFCFF1799E231"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\My Documents\\GitHub\\osiris\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_MessageBookV4.0.xml"
+            "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\LANESTANDARDONLY4\\LANESTANDARDONLY4_MessageBookV4.0.xml"
             "TargetName" = "8:LANESTANDARDONLY4_MessageBookV4.0.xml"
             "Tag" = "8:"
             "Folder" = "8:_4E7E6511CABF45DBA93027B2668B9AFA"
@@ -12595,15 +12621,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{5F007465-7B05-418C-AB4E-74A43A0FC8B2}"
-        "PackageCode" = "8:{82120A1A-7A1A-4470-B802-FBAF860D93F6}"
+        "ProductCode" = "8:{7F494FC7-AF49-452A-BBFB-7075BE149551}"
+        "PackageCode" = "8:{EB319AB4-77FC-4C9B-BA4A-F3DA2BB09EBE}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.14.0015"
+        "ProductVersion" = "8:2.15.0002"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

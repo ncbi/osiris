@@ -234,7 +234,10 @@ BEGIN_EVENT_TABLE(wxPlotCtrlArea, wxWindow)
     EVT_CHAR            ( wxPlotCtrlArea::OnChar )
     EVT_KEY_DOWN        ( wxPlotCtrlArea::OnKeyDown )
     EVT_KEY_UP          ( wxPlotCtrlArea::OnKeyUp )
-END_EVENT_TABLE()
+#ifdef __WXMSW__
+  EVT_MOUSE_CAPTURE_LOST(wxPlotCtrlArea::OnMouseCaptureLost)
+#endif
+  END_EVENT_TABLE()
 
 bool wxPlotCtrlArea::Create( wxWindow *parent, wxWindowID win_id )
 {
@@ -343,7 +346,10 @@ BEGIN_EVENT_TABLE(wxPlotCtrlAxis, wxWindow)
     EVT_PAINT           ( wxPlotCtrlAxis::OnPaint )
     EVT_MOUSE_EVENTS    ( wxPlotCtrlAxis::OnMouse )
     EVT_CHAR            ( wxPlotCtrlAxis::OnChar )
-END_EVENT_TABLE()
+#ifdef __WXMSW__
+  EVT_MOUSE_CAPTURE_LOST(wxPlotCtrlAxis::OnMouseCaptureLost)
+#endif
+  END_EVENT_TABLE()
 
 bool wxPlotCtrlAxis::Create( wxWindow *parent, wxWindowID win_id, wxPlotCtrlAxis_Type style )
 {
@@ -446,6 +452,9 @@ BEGIN_EVENT_TABLE(wxPlotCtrl, wxWindow )
     EVT_TIMER            ( wxID_ANY, wxPlotCtrl::OnTimer )
 
     EVT_TEXT_ENTER       ( wxID_ANY, wxPlotCtrl::OnTextEnter)
+#ifdef __WXMSW__
+    EVT_MOUSE_CAPTURE_LOST( wxPlotCtrl::OnMouseCaptureLost )
+#endif
 END_EVENT_TABLE()
 
 void wxPlotCtrl::Init()
@@ -2375,6 +2384,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     m_clientRect = wxRect(0, 0, size.x-sb_width, size.y-sb_width);
 
     // title and label positions, add padding here
+    m_titleRect.y = m_border; // 
     wxRect titleRect  = m_show_title  
       ? wxRect(m_titleRect).Inflate(m_border)
       : wxRect(0,0,boundingRect.GetWidth(),m_border);
@@ -2433,7 +2443,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 
     m_titleRect.x = m_areaRect.x + ( m_areaRect.width - m_titleRect.GetWidth() ) / 2;
     //m_titleRect.x = m_clientRect.width/2-m_titleRect.GetWidth()/2; center on whole plot
-    m_titleRect.y = m_border;
+    // m_titleRect.y = m_border;  removed and set above because it was inconsistent
 
     m_xLabelRect.x = m_areaRect.x + m_areaRect.width/2 - m_xLabelRect.width/2;
     m_xLabelRect.y = m_xAxisRect.GetBottom() + m_border;
@@ -2951,8 +2961,7 @@ void wxPlotCtrl::RestoreSettings(wxPlotCtrlBackup *pBackup)
 void wxPlotCtrl::DrawInit(
   const wxRect &boundingRect,
   double dpi,
-  bool bForcePrintFont,
-  const wxPlotCtrlBackup &plotBackup)
+  bool bForcePrintFont)
 {
 
   int nHold_CursorSize = m_cursorMarker.GetSize().x;
@@ -3011,7 +3020,7 @@ void wxPlotCtrl::DrawInit(
   //  mvoed from wxPlotCtrl::DrawWholePlot
   m_zoom = wxPoint2DDouble(
     ptHold_zoom.m_x * double(m_areaClientRect.width) / rectHold_client.width,
-    plotBackup.old_zoom.m_y * double(m_areaClientRect.height) / rectHold_client.height);
+    ptHold_zoom.m_y * double(m_areaClientRect.height) / rectHold_client.height);
 
 #ifdef __WXDEBUG__
   puts(
@@ -3023,7 +3032,7 @@ int wxPlotCtrl::GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundin
 {
   // get the height of string s if rendered to the dc using the AxisLabelFont
   wxPlotCtrlBackup plotBackup(this);
-  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  DrawInit(boundingRect, dpi, bForcePrintFont);
   wxCoord xExtent = 0, yExtent, descExtent, leadExtent;
   dc->SetFont(GetAxisFont());
   dc->GetTextExtent(s, &xExtent, &yExtent, &descExtent, &leadExtent);
@@ -3032,7 +3041,7 @@ int wxPlotCtrl::GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundin
 wxSize wxPlotCtrl::GetXAxisLabelSize(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont)
 {
   wxPlotCtrlBackup plotBackup(this);
-  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  DrawInit(boundingRect, dpi, bForcePrintFont);
   int nHeight = m_border;
   wxCoord xExtent = 0;
   if (GetShowXAxisLabel() && !m_xLabelRect.IsEmpty())
@@ -3049,7 +3058,7 @@ int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi,
   wxCHECK_MSG(dc, 0, wxT("invalid dc"));
   wxCHECK_MSG(dpi > 0, 0, wxT("Invalid dpi for plot drawing"));
   wxPlotCtrlBackup plotBackup(this);
-  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  DrawInit(boundingRect, dpi, bForcePrintFont);
   int nHeight = m_border;
   if (GetShowXAxisLabel() && !m_xLabelRect.IsEmpty())
   {
@@ -3095,7 +3104,7 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     wxCHECK_RET(dc, wxT("invalid dc"));
     wxCHECK_RET(dpi > 0, wxT("Invalid dpi for plot drawing"));
     wxPlotCtrlBackup plotBackup(this);
-    DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+    DrawInit(boundingRect, dpi, bForcePrintFont);
 
     //
     //  DJH - 2/24/2009  added parameter to determine whether AutoCalcTicks()
@@ -3365,7 +3374,31 @@ void wxPlotCtrl::CalcYAxisTickPositions()
 // ----------------------------------------------------------------------------
 // Event processing
 // ----------------------------------------------------------------------------
+#ifdef __WXMSW__
+// OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+void wxPlotCtrl::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  // if the user right clicks before
+  if (GetCaptureWindow() != NULL)
+  {
+    wxWindow *pWin = wxDynamicCast(event.GetEventObject(), wxWindow);
+    if (pWin != NULL)
+    {
+      wxMouseEvent e(wxEVT_LEFT_UP);
+      pWin->GetEventHandler()->AddPendingEvent(e);
+    }
+  }
+}
 
+void wxPlotCtrlArea::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  m_owner->OnMouseCaptureLost(event);
+}
+void wxPlotCtrlAxis::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+  m_owner->OnMouseCaptureLost(event);
+}
+#endif
 void wxPlotCtrl::ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event )
 {
     wxPoint& m_mousePt   = m_area->m_mousePt;

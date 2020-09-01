@@ -126,6 +126,7 @@ my $VARLIST =
   ["m_bPreviewDataBaseline", "bool"],
   ["m_bPreviewShowILS", "bool"],
   ["m_bPreviewShowRFU", "bool"],
+  ["m_bPreviewShowLadderBins", "bool"],
   ["m_bPreviewShowLadderLabels", "bool"],
   ["m_bPreviewXBPS", "bool"],
   ["m_nPreviewShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioIntViewPlotArtifact"],
@@ -140,6 +141,7 @@ my $VARLIST =
   ["m_bPlotShowILS", "bool"],
   ["m_bPlotShowRFU", "bool"],
   ["m_bPlotShowLadderLabels", "bool"],
+  ["m_bPlotShowLadderBins", "bool"],
   ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
   ["m_nPlotShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
@@ -154,6 +156,7 @@ my $VARLIST =
   ["m_bPrintCurveRaw", "bool"],
   ["m_bPrintCurveLadder", "bool"],
   ["m_bPrintCurveLadderLabels", "bool"],
+  ["m_bPrintCurveLadderBins", "bool"],
   ["m_bPrintCurveBaseline", "bool"],
   
   ["m_bPrintCurveILSvertical", "bool"],

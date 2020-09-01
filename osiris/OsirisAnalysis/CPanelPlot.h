@@ -298,7 +298,8 @@ public:
     CKitColors *pColors,
     int nMenuNumber,
     bool bDraw = true,
-    int nPlotNumber = 0
+    int nPlotNumber = 0,
+    bool bPrinting = false
     //,bool bExternalTimer = false  // EXT TIMER
    );
 
@@ -323,6 +324,7 @@ public:
   void InvalidateColors()
   {
     m_mapColors.clear();
+    _CleanupBins();
   }
   void SendPlotSizeEvent();
   bool IsPreview()
@@ -595,6 +597,7 @@ public:
   //void SetExternalTimer(bool b = true);
   void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
+  void RebuildBins();
   void RebuildLabels(bool bRedraw = false);
   void UpdateLadderLabels();
   void SetPrintSettings();
@@ -819,9 +822,11 @@ private:
     unsigned int nChannel, 
     bool bNoise, 
     bool bXBPS);
+  void _CleanupBins();
   void _CleanupLadderPeakSet();
   void _CleanupPeakAny();
   int _GetLadderPeakCount();
+  nwxPlotBinSet *_GetBinsByChannel(unsigned int n);
   //void _CleanupMenu(); // remove m_pMenuItem from its menu and delete
   void _BuildMenu(int nPlotNr);
 
@@ -834,6 +839,7 @@ private:
 
   mapSamplePlots m_mapPlotData;
   std::vector<COARpeakAny *> m_vPeakAny;
+  std::vector<nwxPlotBinSet *> m_vpBinsByChannel;
   vectorILSlines m_vILS;
   vectorILSlines m_vILS_XBPS;
   CPlotData *m_pData;
@@ -906,6 +912,7 @@ public:
 //  void HideCurve(DATA_TYPE nType, unsigned int nChannel);
 
   void OnRebuildCurves(wxCommandEvent &);
+  void OnAlleleBins(wxCommandEvent &);
 
   void OnZoomOut(wxCommandEvent &);
 //  void OnBtnLabel(wxCommandEvent &);

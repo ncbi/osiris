@@ -205,6 +205,10 @@ public:
     void OnChar( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );
     void OnKeyUp( wxKeyEvent &event );
+#ifdef __WXMSW__
+    // OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+#endif
 
     wxRect   m_mouseRect; // mouse drag rectangle, or 0,0,0,0 when not dragging
     wxPoint  m_mousePt;   // last mouse position
@@ -245,6 +249,10 @@ public:
     void OnPaint( wxPaintEvent &event );
     void OnMouse( wxMouseEvent &event );
     void OnChar( wxKeyEvent &event );
+#ifdef __WXMSW__
+    // OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+#endif
 
     wxPoint m_mousePt;  // last mouse position
     wxPlotCtrlAxis_Type m_style;
@@ -774,7 +782,10 @@ public:
     void OnIdle( wxIdleEvent &event );
     void OnMouse( wxMouseEvent &event );
     void OnTextEnter( wxCommandEvent &event );
-
+#ifdef __WXMSW__
+    // OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+#endif
     // ------------------------------------------------------------------------
     // Drawing functions
     // ------------------------------------------------------------------------
@@ -933,8 +944,7 @@ public:
   void DrawInit(
     const wxRect &boundingRect,
     double dpi,
-    bool bForcePrintFont,
-    const wxPlotCtrlBackup &plotBackup);
+    bool bForcePrintFont);
   void RefreshOnEndBatch()
   {
     if (GetBatchCount() && IsShown())

@@ -68,6 +68,7 @@ public:
   virtual wxWindow *GetParent() = 0;
 #ifdef TMP_DEBUG
   void DebugBitmap(wxBitmap *, int nPage);
+  static void DumpBitmap(wxBitmap *, const wxString &sFileName);
 #endif
   virtual int GetMinPage();
   virtual int GetMaxPage();
@@ -171,7 +172,6 @@ protected:
   };
 #ifdef TMP_DEBUG
   int m_nLoggedPrinterResolution;
-  wxString m_sBitmapPath;
 #endif
   _resOutput m_resOutput;
   bool m_bPreview;

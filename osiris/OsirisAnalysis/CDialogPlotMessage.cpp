@@ -54,6 +54,12 @@ const wxString CDialogPlotMessageFind::MSG_EDIT(
 "search for an associated OSIRIS Analysis File now?"
 );
 
+const wxString CDialogPlotMessageFind::MSG_BINS(
+  "This plot was not initiated from an analysis window and ladder" PLF
+  "allele bin data are not available.  Do you wish to search for an" PLF
+  "associated OSIRIS Analysis File now?"
+);
+
 const wxString CDialogPlotMessageFind::MSG_TABLE(
 "This plot was not initiated from an analysis window and therefore" PLF
 "the data are not yet available.  Do you wish to search for an" PLF
