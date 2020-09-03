@@ -361,6 +361,7 @@ private:
     }
     return nCol;
   }
+  void _OnResize(wxSizeEvent &e);
   void _UpdateMenu();
   void _UpdateHistoryMenu(int nRow, int nCol,bool bEnabled = true);
   void _UpdateHistoryMenu(bool bEnabled)
@@ -451,6 +452,7 @@ private:
   int m_nLastRowSelect;
   int m_nEntireRowSelected;
   int m_nNoTimer;
+  int m_nFileNameLabelTimer;
   bool m_bFileError;
 
 
