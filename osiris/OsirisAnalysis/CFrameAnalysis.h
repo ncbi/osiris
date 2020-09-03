@@ -330,11 +330,7 @@ private:
   {
     return _IsChannelColumn(m_nLastColSelect);
   }
-  void SetFileNameLabel(const wxString &sFileName)
-  {
-    m_pLabelFile->SetValue(sFileName);
-    m_pLabelFile->SetInsertionPointEnd();
-  }
+  void SetFileNameLabel(const wxString &sFileName);
   static int _ColToType(int nCol)
   {
     int nType = -1;

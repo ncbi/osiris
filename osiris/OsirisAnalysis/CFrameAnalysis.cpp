@@ -966,6 +966,14 @@ void CFrameAnalysis::_LayoutAll()
     m_pPanelInfo->Layout();
   }
 }
+void CFrameAnalysis::SetFileNameLabel(const wxString &sFileName)
+{
+  m_pLabelFile->SetValue(*wxEmptyString);
+  if (!sFileName.IsEmpty())
+  {
+    m_pLabelFile->SetValue(sFileName);
+  }
+}
 
 void CFrameAnalysis::SetFileNameLabel(COARsample *pSample)
 {
@@ -1073,11 +1081,11 @@ bool CFrameAnalysis::TransferDataToWindow()
   m_pButtonParms->Enable(false);
   _DestroyStatusPanel();
   _DestroyLocusPanel();
-  if(!bError)
+  _LayoutAll();
+  if (!bError)
   {
     CheckSelection(true);
   }
-  _LayoutAll();
   return !bError;
 }
 
