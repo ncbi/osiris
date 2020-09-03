@@ -126,6 +126,7 @@ my $VARLIST =
   ["m_bPreviewDataBaseline", "bool"],
   ["m_bPreviewShowILS", "bool"],
   ["m_bPreviewShowRFU", "bool"],
+  ["m_bPreviewShowDisabledAlleles", "bool"],
   ["m_bPreviewShowLadderBins", "bool"],
   ["m_bPreviewShowLadderLabels", "bool"],
   ["m_bPreviewXBPS", "bool"],
@@ -141,6 +142,7 @@ my $VARLIST =
   ["m_bPlotShowILS", "bool"],
   ["m_bPlotShowRFU", "bool"],
   ["m_bPlotShowLadderLabels", "bool"],
+  ["m_bPlotShowDisabledAlleles", "bool"],
   ["m_bPlotShowLadderBins", "bool"],
   ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
@@ -157,6 +159,7 @@ my $VARLIST =
   ["m_bPrintCurveLadder", "bool"],
   ["m_bPrintCurveLadderLabels", "bool"],
   ["m_bPrintCurveLadderBins", "bool"],
+  ["m_bPrintCurveDisabledAlleles", "bool"],
   ["m_bPrintCurveBaseline", "bool"],
   
   ["m_bPrintCurveILSvertical", "bool"],

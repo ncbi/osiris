@@ -182,6 +182,7 @@ private:
   wxCheckBox *m_pCheckLabelTime;
   wxCheckBox *m_pCheckLabelILSBPS;
   wxCheckBox *m_pCheckLabelPeakArea;
+  wxCheckBox *m_pCheckLabelIncludeDisabled;
 
   // artifact labels
 

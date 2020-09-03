@@ -289,8 +289,19 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   m_pButtonBins->SetValue(false);
   pSizer->Add(m_pButtonBins, 0, nSizerFlags, ID_BORDER);
 
+  m_pButtonDisabledAlleles = new nwxToggleButton(
+    m_pPanel, IDgraphDisabledAlleles, "Disabled",
+    wxDefaultPosition, wxDefaultSize,
+    wxBU_EXACTFIT);
+  m_pButtonDisabledAlleles->SetToolTip(
+    "View or hide disabled alleles."
+    PLOT_TOOLBAR_SHIFT_ALL);
+  m_pButtonDisabledAlleles->SetValue(false);
+  pSizer->Add(m_pButtonDisabledAlleles, 0, nSizerFlags, ID_BORDER);
+
+
   m_pButtonLadderLabels = new nwxToggleButton(
-    m_pPanel, IDgraphLadderBins,"Ladder",
+    m_pPanel, IDgraphLadderLabels,"Ladder",
     wxDefaultPosition, wxDefaultSize,
     wxBU_EXACTFIT);
   m_pButtonLadderLabels->SetToolTip(
@@ -504,6 +515,10 @@ bool CPanelPlotToolbar::LadderBins()
 {
   return m_pButtonBins->GetValue();
 }
+bool CPanelPlotToolbar::DisabledAlleles()
+{
+  return m_pButtonDisabledAlleles->GetValue();
+}
 bool CPanelPlotToolbar::LadderLabels()
 {
   return m_pButtonLadderLabels->GetValue();
@@ -527,6 +542,10 @@ void CPanelPlotToolbar::ShowMinRfu(bool b)
 void CPanelPlotToolbar::ShowLadderBins(bool b)
 {
   m_pButtonBins->SetValue(b);
+}
+void CPanelPlotToolbar::ShowDisabledAlleles(bool b)
+{
+  m_pButtonDisabledAlleles->SetValue(b);
 }
 void CPanelPlotToolbar::ShowLadderLabels(bool b)
 {
@@ -723,4 +742,36 @@ bool CPanelPlotToolbar::CanShiftRight()
     bRtn = (xSize + xPos) < xVirt;
   }
   return bRtn;
+}
+int CPanelPlotToolbar::ButtonToMenuID(wxObject *p)
+{
+  if (!m_mapButtonToMenuID.size())
+  {
+    struct
+    {
+      wxObject *p;
+      int n;
+    } 
+    LIST[] =
+    {
+      {m_pButtonAnalyzed, IDmenuPlotDataAnalyzed},
+      {m_pButtonRaw, IDmenuPlotDataRaw },
+      {m_pButtonBaseline, IDmenuPlotDataBaseline},
+      {m_pButtonLadder, IDmenuPlotDataLadder},
+      {m_pButtonRfu, IDmenuPlotRFU},
+      {m_pButtonLadderLabels, IDmenuPlotLadderLabels},
+      {m_pButtonBins, IDmenuPlotLadderBins},
+      {m_pButtonDisabledAlleles, IDmenuPlotDisabledAlleles},
+      {m_pButtonILS,IDmenuPlotILS}
+    }, *pLIST;
+    size_t nSize = sizeof(LIST) / sizeof(LIST[0]);
+    pLIST = LIST;
+    for (size_t n = 0; n < nSize; ++n)
+    {
+      m_mapButtonToMenuID.insert(BTN_TO_MENU_ID::value_type(pLIST->p, pLIST->n));
+      pLIST++;
+    }
+  }
+  BTN_TO_MENU_ID::iterator itr = m_mapButtonToMenuID.find(p);
+  return (itr == m_mapButtonToMenuID.end()) ? 0 : itr->second;
 }

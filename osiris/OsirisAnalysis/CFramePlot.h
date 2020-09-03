@@ -99,6 +99,10 @@ public:
   virtual wxString GetFileName();
   virtual void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
+  bool HasOARfile()
+  {
+    return (m_pOARfile != NULL);
+  }
   void UpdateOARfile(const wxString &sSampleFileName);
   void EditPeak(COARpeakAny *);
   bool XBPSValue()
@@ -123,7 +127,7 @@ public:
       m_pPlotForBitmap->InvalidateColors();
     }
   }
-  bool FindOARforBins();
+  bool FindOARforType(int nType);
   void ReInitialize(const wxString &sLocus, bool bSingle);
   void AddPlot(CPanelPlot *pPreceed, bool bUpdate = true);
   void RemovePlot(CPanelPlot *pRemove, bool bRefresh = true);
@@ -222,6 +226,16 @@ public:
   virtual void CheckFileModification();
   void SyncToolbars(CPanelPlot *p);
   void SetFocusPlot(int n);
+  void RebuildCurves()
+  {
+    CBatchPlot X(this);
+    for (set<CPanelPlot *>::iterator itr = m_setPlots.begin();
+      itr != m_setPlots.end();
+      ++itr)
+    {
+      (*itr)->RebuildCurves();
+    }
+  }
 #if FP_SCROLL_EVENT
   void SendScrollPlotEvent(int nPlot = 0, int nDelay = 2)
   {
@@ -259,18 +273,9 @@ private:
     _SetFixed(!m_bFixed);
   }
   void _FindOARfile(
-    int nType = CDialogPlotMessageFind::MSG_TYPE_HISTORY);
+    int nType, 
+    bool bOpenTable = false);
   void _RebuildLabels(bool bForce = true);
-  void _RebuildCurves()
-  {
-    CBatchPlot X(this);
-    for (set<CPanelPlot *>::iterator itr = m_setPlots.begin();
-          itr != m_setPlots.end();
-          ++itr)
-    {
-      (*itr)->RebuildCurves();
-    }
-  }
   void _SetupHistoryMenu();
   void _SetupTitle();
   void _RebuildMenu();

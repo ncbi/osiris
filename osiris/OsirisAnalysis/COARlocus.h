@@ -131,6 +131,7 @@ public:
     return bRtn;
   }
   void GetAllelesByTime(vector<const COARallele *> *pva, const wxDateTime *pTime) const;
+  void GetOriginalAlleleIDs(std::set<int> *psetIDs) const; 
   int GetChannelNr() const;
   const wxString &GetName() const
   {

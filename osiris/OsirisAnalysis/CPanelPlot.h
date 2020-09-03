@@ -901,6 +901,7 @@ private:
   {
     _SetFileHasBeenPrompted(m_pData);
   }
+  void _RebuildCurves(wxCommandEvent &w, bool bShift);
 
 public:
 //  commented out 7/14/08 kill in 60 days
@@ -912,7 +913,7 @@ public:
 //  void HideCurve(DATA_TYPE nType, unsigned int nChannel);
 
   void OnRebuildCurves(wxCommandEvent &);
-  void OnAlleleBins(wxCommandEvent &);
+  void OnRebuildWithOAR(wxCommandEvent &);
 
   void OnZoomOut(wxCommandEvent &);
 //  void OnBtnLabel(wxCommandEvent &);

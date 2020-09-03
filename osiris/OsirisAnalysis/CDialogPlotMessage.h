@@ -47,7 +47,8 @@ public:
     MSG_TYPE_EDIT,
     MSG_TYPE_TABLE,
     MSG_TYPE_PRINT,
-    MSG_TYPE_BINS
+    MSG_TYPE_BINS,
+    MSG_TYPE_DISABLED_ALLELES
   };
   static const wxString &GetMessage(int nType)
   {
@@ -66,9 +67,15 @@ public:
     case MSG_TYPE_BINS:
       psRtn = &MSG_BINS;
       break;
+    case MSG_TYPE_DISABLED_ALLELES:
+      psRtn = &MSG_DISABLED_ALLELES;
+      break;
     case MSG_TYPE_EDIT:
-    default:
       psRtn = &MSG_EDIT;
+      break;
+    default:
+      psRtn = &MSG_FALLBACK;
+      break;
     }
     return *psRtn;
   }
@@ -82,11 +89,13 @@ public:
         wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION)
   {;}
 private:
+  static const wxString MSG_FALLBACK;
   static const wxString MSG_EDIT;
   static const wxString MSG_HISTORY;
   static const wxString MSG_TABLE;
   static const wxString MSG_PRINT;
   static const wxString MSG_BINS;
+  static const wxString MSG_DISABLED_ALLELES;
 
 };
 

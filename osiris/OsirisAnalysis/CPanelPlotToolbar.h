@@ -121,6 +121,7 @@ public:
   virtual bool MinRfuValue();
   virtual bool LadderLabels();
   virtual bool LadderBins();
+  virtual bool DisabledAlleles();
   virtual bool ILSValue();
   virtual bool XBPSValue();
   virtual void SetSync(bool b = true);
@@ -128,6 +129,7 @@ public:
   virtual void ShowMinRfu(bool b = true);
   virtual void ShowLadderLabels(bool b = true);
   virtual void ShowLadderBins(bool b = true);
+  virtual void ShowDisabledAlleles(bool b = true);
   virtual void SetXBPS(bool b = true);
 
 
@@ -175,6 +177,7 @@ public:
     m_pPanel->Move(x,y);
   }
   // the following should be a std::map<wxObject *,int>
+  int ButtonToMenuID(wxObject *p);
   bool IsButtonAnalyzed(wxObject *p)
   {
     return (p == (wxObject *) m_pButtonAnalyzed);
@@ -206,6 +209,10 @@ public:
   bool IsButtonBins(wxObject *p)
   {
     return (p == (wxObject *)m_pButtonBins);
+  }
+  bool IsButtonDisabledAlleles(wxObject *p)
+  {
+    return (p == (wxObject *)m_pButtonDisabledAlleles);
   }
   bool IsButtonSync(wxObject *p)
   {
@@ -263,6 +270,7 @@ private:
   nwxToggleButton *m_pButtonRaw;
   nwxToggleButton *m_pButtonLadder;
   nwxToggleButton *m_pButtonBins;
+  nwxToggleButton *m_pButtonDisabledAlleles;
   nwxToggleButton *m_pButtonBaseline;
   nwxToggleButton *m_pButtonRfu;
   nwxToggleButton *m_pButtonLadderLabels;
@@ -274,6 +282,8 @@ private:
   CMenuLabels *m_pMenuLabels;
   wxPanel *m_pPanel;
   vector<wxWindow *> m_vShiftWindows;
+  typedef std::map<wxObject *, int> BTN_TO_MENU_ID;
+  BTN_TO_MENU_ID m_mapButtonToMenuID;
   int m_nChannelCount;
 };
 

@@ -122,6 +122,7 @@ public:
   virtual bool MinRfuValue();
   virtual bool LadderLabels();
   virtual bool LadderBins();
+  virtual bool DisabledAlleles();
   virtual bool ILSValue();
 
   virtual void SetSync(bool b = true);
@@ -129,6 +130,7 @@ public:
   virtual void ShowMinRfu(bool b = true);
   virtual void ShowLadderLabels(bool b = true);
   virtual void ShowLadderBins(bool b = true);
+  virtual void ShowDisabledAlleles(bool b = true);
 
   // labels, artifacts
 #if 0

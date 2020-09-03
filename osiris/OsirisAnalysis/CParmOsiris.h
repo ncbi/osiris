@@ -326,6 +326,10 @@ public:
   {
     return m_bPreviewShowRFU;
   }
+  bool GetPreviewShowDisabledAlleles() const
+  {
+    return m_bPreviewShowDisabledAlleles;
+  }
   bool GetPreviewShowLadderBins() const
   {
     return m_bPreviewShowLadderBins;
@@ -377,6 +381,10 @@ public:
   {
     return m_bPlotShowLadderLabels;
   }
+  bool GetPlotShowDisabledAlleles() const
+  {
+    return m_bPlotShowDisabledAlleles;
+  }
   bool GetPlotShowLadderBins() const
   {
     return m_bPlotShowLadderBins;
@@ -423,6 +431,10 @@ public:
   bool GetPrintCurveLadderBins() const
   {
     return m_bPrintCurveLadderBins;
+  }
+  bool GetPrintCurveDisabledAlleles() const
+  {
+    return m_bPrintCurveDisabledAlleles;
   }
   bool GetPrintCurveBaseline() const
   {
@@ -921,6 +933,10 @@ public:
   {
     __SET_VALUE(m_bPreviewShowRFU,b);
   }
+  void SetPreviewShowDisabledAlleles(bool b)
+  {
+    __SET_VALUE(m_bPreviewShowDisabledAlleles,b);
+  }
   void SetPreviewShowLadderBins(bool b)
   {
     __SET_VALUE(m_bPreviewShowLadderBins,b);
@@ -972,6 +988,10 @@ public:
   {
     __SET_VALUE(m_bPlotShowLadderLabels,b);
   }
+  void SetPlotShowDisabledAlleles(bool b)
+  {
+    __SET_VALUE(m_bPlotShowDisabledAlleles,b);
+  }
   void SetPlotShowLadderBins(bool b)
   {
     __SET_VALUE(m_bPlotShowLadderBins,b);
@@ -1018,6 +1038,10 @@ public:
   void SetPrintCurveLadderBins(bool b)
   {
     __SET_VALUE(m_bPrintCurveLadderBins,b);
+  }
+  void SetPrintCurveDisabledAlleles(bool b)
+  {
+    __SET_VALUE(m_bPrintCurveDisabledAlleles,b);
   }
   void SetPrintCurveBaseline(bool b)
   {
@@ -1401,6 +1425,7 @@ protected:
   bool m_bPreviewDataBaseline;
   bool m_bPreviewShowILS;
   bool m_bPreviewShowRFU;
+  bool m_bPreviewShowDisabledAlleles;
   bool m_bPreviewShowLadderBins;
   bool m_bPreviewShowLadderLabels;
   bool m_bPreviewXBPS;
@@ -1416,6 +1441,7 @@ protected:
   bool m_bPlotShowILS;
   bool m_bPlotShowRFU;
   bool m_bPlotShowLadderLabels;
+  bool m_bPlotShowDisabledAlleles;
   bool m_bPlotShowLadderBins;
   bool m_bPlotResizable;
   int m_nPlotMinHeight;
@@ -1430,6 +1456,7 @@ protected:
   bool m_bPrintCurveLadder;
   bool m_bPrintCurveLadderLabels;
   bool m_bPrintCurveLadderBins;
+  bool m_bPrintCurveDisabledAlleles;
   bool m_bPrintCurveBaseline;
   bool m_bPrintCurveILSvertical;
   bool m_bPrintCurveMinRFU;

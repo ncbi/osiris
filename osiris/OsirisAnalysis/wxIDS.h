@@ -89,6 +89,7 @@ enum
   IDmenuPlotRFU,
   IDmenuPlotLadderLabels,
   IDmenuPlotLadderBins,
+  IDmenuPlotDisabledAlleles,
   IDmenuPlotLabels_BEGIN,
 
   // display menu items for CFramePlot menus
@@ -228,6 +229,7 @@ enum
   //  removed many button IDs and replaced with #define below
   IDgraphRebuild,
   IDgraphLadderBins,
+  IDgraphDisabledAlleles,
 
   IDgraphZoomOut,
   IDgraphSyncAxes,
@@ -431,6 +433,8 @@ enum DATA_TYPE
 #define IDgraphRFU IDgraphRebuild
 #define IDgraphXBPS IDgraphRebuild
 #define IDgraphLadderLabels IDgraphRebuild
+
+
 
 // channel 1 IDgraphRebuild channels must be in order
 // to loop through the numbers if part of enum

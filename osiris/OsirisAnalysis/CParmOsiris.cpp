@@ -135,6 +135,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPreviewDataBaseline);
   CP(m_bPreviewShowILS);
   CP(m_bPreviewShowRFU);
+  CP(m_bPreviewShowDisabledAlleles);
   CP(m_bPreviewShowLadderBins);
   CP(m_bPreviewShowLadderLabels);
   CP(m_bPreviewXBPS);
@@ -150,6 +151,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPlotShowILS);
   CP(m_bPlotShowRFU);
   CP(m_bPlotShowLadderLabels);
+  CP(m_bPlotShowDisabledAlleles);
   CP(m_bPlotShowLadderBins);
   CP(m_bPlotResizable);
   CP(m_nPlotMinHeight);
@@ -164,6 +166,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPrintCurveLadder);
   CP(m_bPrintCurveLadderLabels);
   CP(m_bPrintCurveLadderBins);
+  CP(m_bPrintCurveDisabledAlleles);
   CP(m_bPrintCurveBaseline);
   CP(m_bPrintCurveILSvertical);
   CP(m_bPrintCurveMinRFU);
@@ -297,6 +300,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPreviewDataBaseline)
   CP(m_bPreviewShowILS)
   CP(m_bPreviewShowRFU)
+  CP(m_bPreviewShowDisabledAlleles)
   CP(m_bPreviewShowLadderBins)
   CP(m_bPreviewShowLadderLabels)
   CP(m_bPreviewXBPS)
@@ -312,6 +316,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPlotShowILS)
   CP(m_bPlotShowRFU)
   CP(m_bPlotShowLadderLabels)
+  CP(m_bPlotShowDisabledAlleles)
   CP(m_bPlotShowLadderBins)
   CP(m_bPlotResizable)
   CP(m_nPlotMinHeight)
@@ -326,6 +331,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPrintCurveLadder)
   CP(m_bPrintCurveLadderLabels)
   CP(m_bPrintCurveLadderBins)
+  CP(m_bPrintCurveDisabledAlleles)
   CP(m_bPrintCurveBaseline)
   CP(m_bPrintCurveILSvertical)
   CP(m_bPrintCurveMinRFU)
@@ -468,6 +474,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PreviewDataBaseline", &m_bPreviewDataBaseline);
   RegisterBool("PreviewShowILS", &m_bPreviewShowILS);
   RegisterBool("PreviewShowRFU", &m_bPreviewShowRFU);
+  RegisterBool("PreviewShowDisabledAlleles", &m_bPreviewShowDisabledAlleles);
   RegisterBool("PreviewShowLadderBins", &m_bPreviewShowLadderBins);
   RegisterBool("PreviewShowLadderLabels", &m_bPreviewShowLadderLabels);
   RegisterBool("PreviewXBPS", &m_bPreviewXBPS);
@@ -483,6 +490,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PlotShowILS", &m_bPlotShowILS);
   RegisterBool("PlotShowRFU", &m_bPlotShowRFU);
   RegisterBool("PlotShowLadderLabels", &m_bPlotShowLadderLabels);
+  RegisterBool("PlotShowDisabledAlleles", &m_bPlotShowDisabledAlleles);
   RegisterBool("PlotShowLadderBins", &m_bPlotShowLadderBins);
   RegisterBoolTrue("PlotResizable", &m_bPlotResizable);
   Register("PlotMinHeight",&m_ioInt_1,(void *) &m_nPlotMinHeight);
@@ -497,6 +505,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PrintCurveLadder", &m_bPrintCurveLadder);
   RegisterBool("PrintCurveLadderLabels", &m_bPrintCurveLadderLabels);
   RegisterBool("PrintCurveLadderBins", &m_bPrintCurveLadderBins);
+  RegisterBool("PrintCurveDisabledAlleles", &m_bPrintCurveDisabledAlleles);
   RegisterBool("PrintCurveBaseline", &m_bPrintCurveBaseline);
   RegisterBool("PrintCurveILSvertical", &m_bPrintCurveILSvertical);
   RegisterBool("PrintCurveMinRFU", &m_bPrintCurveMinRFU);
@@ -643,6 +652,7 @@ void CParmOsiris::SetDefaults()
   m_bPreviewDataBaseline = false;
   m_bPreviewShowILS = false;
   m_bPreviewShowRFU = false;
+  m_bPreviewShowDisabledAlleles = false;
   m_bPreviewShowLadderBins = false;
   m_bPreviewShowLadderLabels = false;
   m_bPreviewXBPS = false;
@@ -658,6 +668,7 @@ void CParmOsiris::SetDefaults()
   m_bPlotShowILS = false;
   m_bPlotShowRFU = false;
   m_bPlotShowLadderLabels = false;
+  m_bPlotShowDisabledAlleles = false;
   m_bPlotShowLadderBins = false;
   m_bPlotResizable = true;
   m_nPlotMinHeight = -1;
@@ -673,6 +684,7 @@ void CParmOsiris::SetDefaults()
   m_bPrintCurveLadder = false;
   m_bPrintCurveLadderLabels = false;
   m_bPrintCurveLadderBins = false;
+  m_bPrintCurveDisabledAlleles = false;
   m_bPrintCurveBaseline = false;
   m_bPrintCurveILSvertical = false;
   m_bPrintCurveMinRFU = false;

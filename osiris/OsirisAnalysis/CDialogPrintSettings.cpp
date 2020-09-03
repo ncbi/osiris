@@ -94,6 +94,7 @@
 #define S_TIME "Time"
 #define S_ILS_REF_BPS "ILS reference base pairs"
 #define S_PEAK_AREA "Peak area"
+#define S_INCLUDE_DISABLED "Include disabled Alleles"
 #define S_ALL "All"
 #define S_NONE "None"
 #define S_CRITICAL "Critical"
@@ -278,6 +279,10 @@ void CDialogPrintSettings::_Build()
   m_pCheckLabelTime = new wxCheckBox(this, wxID_ANY, wxT(S_TIME));
   m_pCheckLabelILSBPS = new wxCheckBox(this, wxID_ANY, wxT(S_ILS_REF_BPS));
   m_pCheckLabelPeakArea = new wxCheckBox(this, wxID_ANY, wxT(S_PEAK_AREA));
+  m_pCheckLabelIncludeDisabled = new wxCheckBox(this, wxID_ANY, wxT(S_INCLUDE_DISABLED));
+  wxFont f(m_pCheckLabelIncludeDisabled->GetFont());
+  f.MakeItalic();
+  m_pCheckLabelIncludeDisabled->SetFont(f);
 
   // Artifact Labels
 
@@ -391,6 +396,7 @@ void CDialogPrintSettings::_Build()
   pSizerItems->Add(m_pCheckLabelTime, ITEM_ARGS);
   pSizerItems->Add(m_pCheckLabelILSBPS, ITEM_ARGS);
   pSizerItems->Add(m_pCheckLabelPeakArea, ITEM_ARGS);
+  pSizerItems->Add(m_pCheckLabelIncludeDisabled, ITEM_ARGS);
 
 
   // Artifact Labels
@@ -608,6 +614,7 @@ bool CDialogPrintSettings::TransferDataToWindow()
   // peak labels
 
   _SetLabelSelection(m_pParms->GetPrintLabelsPeak());
+  m_pCheckLabelIncludeDisabled->SetValue(m_pParms->GetPrintCurveDisabledAlleles());
 
   // artifact labels
   _SetRadioValue(m_nGroupArtifact, m_pParms->GetPrintArtifact());
@@ -678,6 +685,7 @@ bool CDialogPrintSettings::TransferDataFromWindow()
   std::vector<unsigned int> an;
   _GetLabelSelection(&an);
   m_pParms->SetPrintLabelsPeak(an);
+  m_pParms->SetPrintCurveDisabledAlleles(m_pCheckLabelIncludeDisabled->GetValue());
 
   // artifact labels
   m_pParms->SetPrintArtifact(_GetRadioValue(m_nGroupArtifact));

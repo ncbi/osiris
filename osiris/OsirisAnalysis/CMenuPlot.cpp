@@ -262,6 +262,9 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   AppendCheckItem(
     _ID(IDmenuPlotLadderBins),
     "Show allele bins");
+  AppendCheckItem(
+    _ID(IDmenuPlotDisabledAlleles),
+    "Show disabled alleles");
   if(!m_bPreview)
   {
     Append(_ID(IDmenuPlotResetAxes),
@@ -398,7 +401,11 @@ bool CMenuPlot::MinRfuValue()
 bool CMenuPlot::LadderLabels()
 {
   return IsChecked(_ID(IDmenuPlotLadderLabels));
-}   
+}
+bool CMenuPlot::DisabledAlleles()
+{
+  return IsChecked(_ID(IDmenuPlotDisabledAlleles));
+}
 bool CMenuPlot::LadderBins()
 {
   return IsChecked(_ID(IDmenuPlotLadderBins));
@@ -447,6 +454,10 @@ void CMenuPlot::ShowLadderLabels(bool b)
 void CMenuPlot::ShowLadderBins(bool b)
 {
   Check(_ID(IDmenuPlotLadderBins), b);
+}
+void CMenuPlot::ShowDisabledAlleles(bool b)
+{
+  Check(_ID(IDmenuPlotDisabledAlleles), b);
 }
 //  labels, artifacts
 

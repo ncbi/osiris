@@ -44,6 +44,7 @@
 #include "nwx/nwxPlotDrawerLabel.h"
 #include "nwx/nwxPlotShade.h"
 #include "wx/plotctrl/plotctrl.h"
+#include "nwx/nwxColorUtil.h"
 
 const int nwxPointLabel::ALIGN_DEFAULT = (wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM);
 //  bitwise flags
@@ -191,6 +192,7 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     int nAlign;
     wxColour cBG = pdc->GetTextBackground();
     wxColour cFG = pdc->GetTextForeground();
+    wxColour cText(*wxBLACK);
 
     wxBrush brushSave = pdc->GetBrush();
     wxPen penSave = pdc->GetPen();
@@ -349,7 +351,6 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     {
       const nwxPointLabel *pLabel = m_vpLabel.at(i);
       const wxRect &rrect(m_vRect.at(i));
-      pdc->SetTextForeground(pLabel->GetTextColour());
       pen.SetColour(pLabel->GetColour());
       pdc->SetPen(pen);
       nX = rrect.GetX();
@@ -361,11 +362,21 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
         pdc->SetBrush(*wxTRANSPARENT_BRUSH);
         pdc->DrawRectangle(rrect);
       }
+      cText = pLabel->GetTextColour();
+      if (nStyle & nwxPointLabel::STYLE_DISABLED)
+      {
+        nwxColorUtil::Brighten(&cText);
+      }
+      pdc->SetTextForeground(cText);
       pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY + PAD_Y);
       if(nStyle & nwxPointLabel::STYLE_DISABLED)
       {
-        wxPoint pt1(nX,nY);
-        wxPoint pt2(nX + rrect.GetWidth(),nY + rrect.GetHeight());
+        wxPoint pt1(rrect.GetLeft(), rrect.GetBottom());
+        wxPoint pt2(rrect.GetRight(), rrect.GetTop());
+        wxPen pen2x(pen);
+        int nWidth = pen2x.GetWidth();
+        pen2x.SetWidth(nWidth << 1);
+        pdc->SetPen(pen2x);
         pdc->DrawLine(pt1,pt2);
       }
     }

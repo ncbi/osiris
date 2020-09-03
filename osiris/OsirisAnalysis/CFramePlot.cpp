@@ -896,7 +896,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     }
     else
     {
-      _FindOARfile();
+      _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_HISTORY, true);
     }
 
   }
@@ -949,7 +949,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     CParmOsirisGlobal parm;
     parm->SetHideGraphicScrollbar(bWasShown);
     //RebuildAll();
-    _RebuildCurves();
+    RebuildCurves();
   }
   else if(nID == IDmenuShowXBPS)
   {
@@ -959,7 +959,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     CParmOsirisGlobal parm;
     parm->SetPlotDataXBPS(bXBPS);
     SetXBPSValue(bXBPS);
-    _RebuildCurves();
+    RebuildCurves();
   }
   else if(nID == IDExportGraphic)
   {
@@ -1002,7 +1002,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
   return bRtn;
 }
 
-void CFramePlot::_FindOARfile(int nType)
+void CFramePlot::_FindOARfile(int nType, bool bOpenTable)
 {
   CDialogPlotMessageFind dlg(this,nType);
   int n = dlg.ShowModal();
@@ -1015,6 +1015,7 @@ void CFramePlot::_FindOARfile(int nType)
     bool bNotFound = sFile.IsEmpty();
     bool bDone = false;
     bool bNew = false;
+    bool bShowTable = false;
     COARfile *pFile(NULL);
     if(bNotFound)
     {
@@ -1077,6 +1078,10 @@ void CFramePlot::_FindOARfile(int nType)
               delete pFile;
               pFile = NULL;
             }
+            else
+            {
+              bShowTable = bOpenTable;
+            }
           }
           else
           {
@@ -1092,15 +1097,23 @@ void CFramePlot::_FindOARfile(int nType)
     if(pFile != NULL)
     {
       SetOARfile(pFile);
+      if (bShowTable)
+      {
+        wxCommandEvent e;
+        e.SetId(-1);
+        OnTableButton(e);
+        Raise();
+      }
+      RebuildCurves();
     }
   }
 }
 
-bool CFramePlot::FindOARforBins()
+bool CFramePlot::FindOARforType(int nType)
 {
   if (m_pOARfile == NULL)
   {
-    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_BINS);
+    _FindOARfile(nType, true);
   }
   return (m_pOARfile != NULL);
 }
@@ -1735,14 +1748,7 @@ void CFramePlot::EditPeak(COARpeakAny *pPeak)
 {
   if(m_pOARfile == NULL)
   {
-    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT);
-    if(m_pOARfile != NULL)
-    {
-      wxCommandEvent e;
-      e.SetId(-1);
-      OnTableButton(e);
-      RaiseWindow();
-    }
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT, true);
   }
   if(m_pOARfile != NULL && pPeak != NULL)
   {
@@ -1773,7 +1779,7 @@ void CFramePlot::OnHistoryButton(wxCommandEvent &e)
   {
     CPanelPlot *p = *m_setPlots.begin();
     CPanelPlotToolbarSaveState xxx(p);
-    _FindOARfile();
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_HISTORY, true);
     xxx.RestoreState(true);
     SyncToolbars(p);
   }
@@ -1785,9 +1791,10 @@ void CFramePlot::OnTableButton(wxCommandEvent &e)
   if(m_pOARfile == NULL)
   {
     _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_TABLE);
-    if(m_pOARfile == NULL)
-    {}
-    else if(e.GetId() > 0)
+    if (m_pOARfile == NULL)
+    {
+    }
+    else if (e.GetId() > 0)
     {
       // if this is a menu event,change to button
       // because processing is faster
@@ -2328,7 +2335,7 @@ void CFramePlot::OnPrintPreview(wxCommandEvent &)
 {
   if (m_pOARfile == NULL)
   {
-    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_PRINT);
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_PRINT, true);
   }
   if (m_pOARfile != NULL)
   {

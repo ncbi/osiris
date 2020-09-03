@@ -80,8 +80,8 @@ DEFINE_EVENT_TYPE(CEventCannotShowBPS)
   { sAllele.Append(OFF_LADDER_ACCEPTED); }
 
 CPlotCtrl::CPlotCtrl(
-  wxWindow *parent, CPanelPlot *pPlot, wxWindowID id) 
-    : nwxPlotCtrl(parent,id) , m_pPlot(pPlot) 
+  wxWindow *parent, CPanelPlot *pPlot, wxWindowID id)
+    : nwxPlotCtrl(parent,id) , m_pPlot(pPlot)
 {
   SetPlotTitleFont(GetAxisLabelFont());
 }
@@ -98,7 +98,7 @@ void CPlotCtrl::OnClickLabel(const nwxPointLabel &x, const wxPoint &)
   #ifdef __WXDEBUG__
   {
     wxString s;
-    if(p == NULL) 
+    if(p == NULL)
     {
       s = wxT("OnClickLabel - no peak info");
     }
@@ -180,12 +180,12 @@ CPanelPlot::CPanelPlot(
 
 CPanelPlot::CPanelPlot(
   wxWindow *parent,
-  CFrameAnalysis *pFrame, 
-  CPlotData *pData, 
-  COARfile *pFile, 
-  CKitColors *pColors 
+  CFrameAnalysis *pFrame,
+  CPlotData *pData,
+  COARfile *pFile,
+  CKitColors *pColors
   //,bool bExternalTimer // EXT TIMER
-  ) : 
+  ) :
       PANEL_PLOT_TYPE(parent,wxID_ANY,
       wxDefaultPosition, wxDefaultSize, 0),
     m_pData(pData),
@@ -257,7 +257,7 @@ CPanelPlot::CPanelPlot(
   _BuildPanel(nMenuNumber,bFirst,pMenuHistory);
 }
 void CPanelPlot::_BuildPanel(
-  int nMenuNumber,bool bFirst, 
+  int nMenuNumber,bool bFirst,
   CMenuHistory *pMenuHistory)
 {
   _BuildMenu(nMenuNumber);
@@ -539,9 +539,9 @@ void CPanelPlot::OnNoBPSPrompt(wxCommandEvent &)
 }
 void CPanelPlot::OnBtnDetails(wxCommandEvent &)
 {
-  CMDIFrame *pParent = 
-    (m_pFramePlot != NULL) 
-    ? (CMDIFrame *) m_pFramePlot 
+  CMDIFrame *pParent =
+    (m_pFramePlot != NULL)
+    ? (CMDIFrame *) m_pFramePlot
     : (CMDIFrame *) m_pFrameAnalysis;
 
 
@@ -613,21 +613,51 @@ void CPanelPlot::OnZoomOut(wxCommandEvent &e)
   }
   Refresh();
 }
-void CPanelPlot::OnAlleleBins(wxCommandEvent &e)
+
+void CPanelPlot::OnRebuildWithOAR(wxCommandEvent &e)
 {
-  wxToggleButton *pButton = wxDynamicCast(e.GetEventObject(), wxToggleButton);
-  if ((pButton != NULL) && pButton->GetValue() && !m_pFramePlot->FindOARforBins())
+  bool bSelected = false;
+  bool bDone = false;
+  // need to get shift state immediately, before checking for OAR file
+  bool bShift = nwxKeyState::Shift();
+  if (m_pFramePlot != NULL)
   {
-    pButton->SetValue(false);
+    wxToggleButton *pButton = wxDynamicCast(e.GetEventObject(), wxToggleButton);
+    bSelected = (pButton != NULL) && pButton->GetValue();
+    if (bSelected)
+    {
+      int nID = e.GetId();
+      int nType = -1;
+      switch (nID)
+      {
+      case IDgraphDisabledAlleles:
+        nType = CDialogPlotMessageFind::MSG_TYPE_DISABLED_ALLELES;
+        break;
+      case IDgraphLadderBins:
+        nType = CDialogPlotMessageFind::MSG_TYPE_BINS;
+        break;
+      default:
+        break;
+      }
+      if (!m_pFramePlot->FindOARforType(nType))
+      {
+        // still no oar file, revert selection
+        bDone = true;
+        pButton->SetValue(false);
+      }
+    }
   }
-  else
+  if(!bDone)
   {
-    OnRebuildCurves(e);
+    _RebuildCurves(e, bShift);
   }
 }
 void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
 {
-  bool bShift = nwxKeyState::Shift();
+  _RebuildCurves(e, nwxKeyState::Shift());
+}
+void CPanelPlot::_RebuildCurves(wxCommandEvent &e, bool bShift)
+{
   bool bHasToolbar = HasToolbar();
   wxObject *pObj = bShift ? e.GetEventObject() : NULL;
   unsigned int nChannelButton = 0;
@@ -646,41 +676,8 @@ void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
   RebuildCurves();
   if( (!nChannelButton) && bShift && bHasToolbar && (m_pFramePlot != NULL) )
   {
-    int nID = 0;
-    // this should be a std::map<wxObject *,int>
-    if(m_pButtonPanel->IsButtonAnalyzed(pObj))
-    {
-      nID = IDmenuPlotDataAnalyzed;
-    }
-    else if(m_pButtonPanel->IsButtonRaw(pObj))
-    {
-      nID = IDmenuPlotDataRaw;
-    }
-    else if(m_pButtonPanel->IsButtonBaseline(pObj))
-    {
-      nID = IDmenuPlotDataBaseline;
-    }
-    else if(m_pButtonPanel->IsButtonLadder(pObj))
-    {
-      nID = IDmenuPlotDataLadder;
-    }
-    else if(m_pButtonPanel->IsButtonRfu(pObj))
-    {
-      nID = IDmenuPlotRFU;
-    }
-    else if(m_pButtonPanel->IsButtonLadderLabels(pObj))
-    {
-      nID = IDmenuPlotLadderLabels;
-    }
-    else if (m_pButtonPanel->IsButtonBins(pObj))
-    {
-      nID = IDmenuPlotLadderBins;
-    }
-    else if(m_pButtonPanel->IsButtonILS(pObj))
-    {
-      nID = IDmenuPlotILS;
-    }
-    if(nID)
+    int nID = m_pButtonPanel->ButtonToMenuID(pObj);
+    if(nID > 0)
     {
       m_pFramePlot->SyncState(this,nID);
     }
@@ -888,8 +885,11 @@ wxString CPanelPlot::_AlleleToolTip(
   wxString sAllele =
     COARpeak::FormatAlleleName(*pPeak,bAmel,false);
   APPEND_OFF_LADDER(pPeak,sAllele);
-
-  sToolTip = wxString::Format(
+  if ( (!pPeak->IsAllele()) || pPeak->IsDisabled() )
+  {
+    sToolTip = wxT("DISABLED\n");
+  }
+  sToolTip += wxString::Format(
       FORMAT_CHANNEL,
       sChannelName.wc_str());
   FORMAT_CONDITION(FORMAT_LOCUS,sLocus.wc_str(),!sLocus.IsEmpty());
@@ -907,7 +907,7 @@ wxString CPanelPlot::_AlleleToolTip(
     );
 
   //  The 'if' may be temporary
-  
+
   sToolTip += wxString::Format(FORMAT_RESIDUAL,dBPSresid);
   sToolTip += wxString::Format(
       FORMAT_RFU,
@@ -937,7 +937,7 @@ void CPanelPlot::_BuildPeakLabels(
 {
   wxString sLabel;
   wxString sToolTip;
-  size_t n = 
+  size_t n =
     (anLabelTypes.empty() || (pp == NULL))
     ? 0
     : pp->size();
@@ -1041,16 +1041,17 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
   std::vector<unsigned int> anLabelTypes;
   m_pMenu->GetLabelTypes(&anLabelTypes);
   bool bLabels = (!bArtifactOnly) && !anLabelTypes.empty();
-  bool bLadder = bLabels && m_pMenu->LadderLabels();
+  bool bLadderLabels = bLabels && m_pMenu->LadderLabels()
+    && m_pMenu->LadderValue();
   int nArtifact = m_pMenu->ArtifactValue();
   bool bArtifact = (nArtifact > CArtifactDisplayList::nArtifactLabelNone);
   const CSingleKitColors *pKitColors(m_pColors->GetKitColors(m_pData->GetKitName()));
   _CleanupLadderPeakSet();
 
-  if( ( (bLabels || bArtifact) && 
+  if( ( (bLabels || bArtifact) &&
         (m_pMenu->AnalyzedValue() || m_pMenu->RawValue())
       ) ||
-      bLadder  
+      bLadderLabels
     )
   {
     wxString sLocus;
@@ -1091,7 +1092,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
           (pChannelColor == NULL)
           ? wxString::Format("%d",nChannel)
           : pChannelColor->GetDyeName();
-        if(bLadder)
+        if(bLadderLabels)
         {
           _AppendLadderPeaks(nChannel,sChannelName);
         }
@@ -1122,7 +1123,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
         }
       }
     }
-    if(bLadder)
+    if(bLadderLabels)
     {
       _BuildLadderPeakLabels(anLabelTypes);
       _CleanupLadderPeakSet();
@@ -1177,7 +1178,17 @@ void CPanelPlot::_BuildOARlabels()
       }
       else
       {
-        auto_ptr< vectorptr<COARpeakAny> > pPeaks(
+        std::set<int> setAlleleIDs;
+        bool bShowDisabled = m_pMenu->DisabledAlleles();
+        if (bShowDisabled)
+        {
+          // if not showing disabled alleles
+          // this set will be empty and the IDs
+          // won't be found
+          pSample->GetOriginalAlleleIDs(&setAlleleIDs);
+        }
+        std::set<int>::iterator ALLELE_NOT_FOUND = setAlleleIDs.end();
+        std::unique_ptr< vectorptr<COARpeakAny> > pPeaks(
           pSample->GetPeaksByChannel(
             pChannel,GetSelectedTime(),false));
         const CChannelColors *pChannelColor(
@@ -1194,16 +1205,24 @@ void CPanelPlot::_BuildOARlabels()
         {
           COARpeakAny *pPeak = pPeaks.get()->at(j);
           m_vPeakAny.push_back(pPeak); // hold in array, delete later
-          if(bLabels && pPeak->IsAllele())
+          if (bLabels &&
+                (pPeak->IsAllele() ||
+                  (setAlleleIDs.find(pPeak->GetID()) != ALLELE_NOT_FOUND)
+                )
+             )
           {
             sLabel = _AlleleLabel(pPeak,anLabelTypes, bILS);
             sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
             wxStockCursor cur =
-              (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
-              ? wxCURSOR_HAND 
+              (pSample != NULL) && pSample->IsPeakEditable(pPeak)
+              ? wxCURSOR_HAND
               : wxCURSOR_NONE;
             bool bBPS = XBPSValue();
             double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
+            int nStyle =
+              nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT |
+              (pPeak->IsAllele() ? 0 : nwxPointLabel::STYLE_DISABLED);
+            // if editable and not an allele then it is a disabled allele
             nwxPointLabel label(
                     sLabel,
                     dX,
@@ -1212,7 +1231,7 @@ void CPanelPlot::_BuildOARlabels()
                     sToolTip,
                     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                     ALLELE_SORT,
-                    nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT,
+                    nStyle,
                     cur,
                     pPeak);
             m_pPlotCtrl->AddLabel(label);
@@ -1224,14 +1243,14 @@ void CPanelPlot::_BuildOARlabels()
           {
             const wxString &sArtifactLabel = pPeak->GetArtifactLabel();
             const wxString &sArtifactUserDisplay = pPeak->GetArtifactUserDisplay();
-            const wxString &sPlotLabel = 
+            const wxString &sPlotLabel =
               sArtifactUserDisplay.IsEmpty()
               ? pArtLabels->GetDisplayFromString(sArtifactLabel)
               : sArtifactUserDisplay;
             sToolTip = _ArtifactToolTip(pPeak,sChannelName);
             wxStockCursor cur =
-              (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
-              ? wxCURSOR_HAND 
+              (pSample != NULL) && pSample->IsPeakEditable(pPeak)
+              ? wxCURSOR_HAND
               : wxCURSOR_NONE;
             bool bBPS = XBPSValue();
             double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
@@ -1301,7 +1320,7 @@ const wxColour &CPanelPlot::_GetColour(DATA_TYPE n, unsigned int nChannel)
 
 // 7/8 white + 1/8 color or 12.5%
 #define PASTEL_E125(n) \
-  (unsigned char)(((int(n) + 1785) >> 3) & 255) 
+  (unsigned char)(((int(n) + 1785) >> 3) & 255)
   // (color + 7*white) / 8
 
 #define PASTEL_125(c) \
@@ -1360,11 +1379,11 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
           }
           nwxPointLabel label(
             pLocus->GetName(),
-            dx1, 
+            dx1,
             dx2,
             0.0, colour, PASTEL_125(colour),
-            sToolTip, 
-            wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM, 
+            sToolTip,
+            wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
             1000 - nChannel,0,wxCURSOR_HAND);
           label.SetToolTip(sToolTip);
           m_pPlotCtrl->AddXLabel(label);
@@ -1405,14 +1424,14 @@ void CPanelPlot::ShiftRight(bool bShiftKey)
 }
 bool CPanelPlot::CanShiftLeft()
 {
-  return 
-    HasToolbar() 
+  return
+    HasToolbar()
     ? m_pButtonPanel->CanShiftLeft()
     : false;
 }
 bool CPanelPlot::CanShiftRight()
 {
-  return 
+  return
     HasToolbar()
     ? m_pButtonPanel->CanShiftRight()
     : false;
@@ -1465,7 +1484,7 @@ void CPanelPlot::_OnTimer(wxTimerEvent &)
   }
 
   // workaround a bug with the 'zoom' cursor
-  // if you hold the shift key down and press "Reset Axes" the 
+  // if you hold the shift key down and press "Reset Axes" the
   // cursor is changed to a magnifying glass.
   //  Due to problems using the 'other' mouse functions, just
   //  keep it as zoom.
@@ -1542,9 +1561,9 @@ void CPanelPlot::OnViewChanged(wxPlotCtrlEvent &e)
   {
     bRefresh = false;
   }
-  else if( 
-      SyncValue() && 
-      (m_pPlotCtrl != NULL) && 
+  else if(
+      SyncValue() &&
+      (m_pPlotCtrl != NULL) &&
       (m_pFramePlot != NULL) &&
       (m_pFramePlot->GetPlotCount() > 1)
       )
@@ -1781,7 +1800,7 @@ void CPanelPlot::AdjustLabelHeightExtension(double dCurrentExtension, const wxRe
 {
   // when creating a bitmap, the height adjustment for the label height may need
   // to be adjusted, after copying settings from a window plot
-  m_pPlotCtrl->DoSize(rect, false); 
+  m_pPlotCtrl->DoSize(rect, false);
   double dNeededExtension = GetLabelHeightExtension(nLabelHeight);
   if (dNeededExtension > dCurrentExtension)
   {
@@ -1981,6 +2000,7 @@ void CPanelPlot::SetPlotSettings()
   bool bRFU = parm->GetPlotShowRFU();
   bool bLadderLabels = parm->GetPlotShowLadderLabels();
   bool bLadderBins = parm->GetPlotShowLadderBins();
+  bool bDisabledAlleles = parm->GetPlotShowDisabledAlleles();
   int nArt = (int)parm->GetPlotShowArtifact();
   const std::vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
   std::vector<unsigned int>::const_iterator itr;
@@ -1997,6 +2017,7 @@ void CPanelPlot::SetPlotSettings()
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
   m_pMenu->ShowLadderBins(bLadderBins);
+  m_pMenu->ShowDisabledAlleles(bDisabledAlleles);
   m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
@@ -2017,6 +2038,7 @@ void CPanelPlot::SetPrintSettings()
   bool bRFU = parm->GetPrintCurveMinRFU();
   bool bLadderLabels = parm->GetPrintCurveLadderLabels();
   bool bLadderBins = parm->GetPrintCurveLadderBins();
+  bool bDisabledAlleles = parm->GetPrintCurveDisabledAlleles();
   int nArt = (int)parm->GetPrintArtifact();
   const std::vector<unsigned int> &anLabelsChecked = parm->GetPrintLabelsPeak();
   m_bXBPS = _CanSetBPS() && parm->GetPrintXaxisILSBPS();
@@ -2034,6 +2056,7 @@ void CPanelPlot::SetPrintSettings()
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
   m_pMenu->ShowLadderBins(bLadderBins);
+  m_pMenu->ShowDisabledAlleles(bDisabledAlleles);
   m_pMenu->SetLabelTypes(anLabelsChecked);
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
@@ -2052,6 +2075,7 @@ void CPanelPlot::SetPreviewSettings()
   bool bRFU = parm->GetPreviewShowRFU();
   bool bLadderLabels = parm->GetPreviewShowLadderLabels();
   bool bLadderBins = parm->GetPreviewShowLadderBins();
+  bool bDisabledAlleles = parm->GetPreviewShowDisabledAlleles();
   bool bXBPS = parm->GetPreviewXBPS();
   int nArt = (int)parm->GetPreviewShowArtifact();
   int nLabel = parm->GetTableDisplayPeak();
@@ -2071,6 +2095,7 @@ void CPanelPlot::SetPreviewSettings()
   m_pMenu->ShowMinRfu(bRFU);
   m_pMenu->ShowLadderLabels(bLadderLabels);
   m_pMenu->ShowLadderBins(bLadderBins);
+  m_pMenu->ShowDisabledAlleles(bDisabledAlleles);
   m_pMenu->SetLabelType((LABEL_PLOT_TYPE)nLabel,LABEL_NONE);
   m_pMenu->SetArtifactValue(nArt);
   m_pMenu->SetXBPS(bXBPS);
@@ -2086,6 +2111,7 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
   bool bLadderBins = m_pMenu->LadderBins();
+  bool bDisabledAlleles = m_pMenu->DisabledAlleles();
   int nArt = m_pMenu->ArtifactValue();
   std::vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
@@ -2098,6 +2124,7 @@ void CPanelPlot::UpdateSettingsPlot()
   parm->SetPlotShowRFU(bRFU);
   parm->SetPlotShowLadderLabels(bLadderLabels);
   parm->SetPlotShowLadderBins(bLadderBins);
+  parm->SetPlotShowDisabledAlleles(bDisabledAlleles);
   parm->SetPlotDisplayPeak(anLabels);
   parm->SetPlotShowArtifact((unsigned int)nArt);
 }
@@ -2111,6 +2138,7 @@ void CPanelPlot::UpdateSettingsPreview()
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
   bool bLadderBins = m_pMenu->LadderBins();
+  bool bDisabledAlleles = m_pMenu->DisabledAlleles();
   bool bBPS = m_pMenu->XBPSValue();
   int nLabel = m_pMenu->GetLabelType();
   int nArt = m_pMenu->ArtifactValue();
@@ -2124,6 +2152,7 @@ void CPanelPlot::UpdateSettingsPreview()
   parm->SetPreviewShowRFU(bRFU);
   parm->SetPreviewShowLadderLabels(bLadderLabels);
   parm->SetPreviewShowLadderBins(bLadderBins);
+  parm->SetPreviewShowDisabledAlleles(bDisabledAlleles);
   if(nLabel != LABEL_NONE) // should always be true
   {
     int nPeak = PLOT_TO_CELL(nLabel);
@@ -2310,7 +2339,10 @@ nwxPlotBinSet *CPanelPlot::_GetBinsByChannel(unsigned int nChannel)
   {
     pSet = new nwxPlotBinSet();
     m_vpBinsByChannel[nChannel] = pSet;
-    const std::vector<CSamplePeak *> *pp = m_pData->GetLadderPeaks(nChannel);
+    const std::vector<CSamplePeak *> *pp = 
+      GetSample()->IsLadderType()
+      ? m_pData->GetSamplePeaks(nChannel)
+      : m_pData->GetLadderPeaks(nChannel);
     const wxColour &colour = _GetColour(ANALYZED_DATA, nChannel);
     wxColour colourBin(PASTEL_125(colour));
     if ((pp != NULL) && pp->size())
@@ -2446,6 +2478,7 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
   bool bShift = (m_pFramePlot != NULL) && nwxKeyState::Shift();
   bool bSendToAll = false;
   bool bSync = true;
+  bool bNeedOAR = false;
   if( !ID_PLOT_IS_PLOT(nID) )
   {
     wxString s;
@@ -2484,6 +2517,38 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
   {
     switch(nID)
     {
+    case IDmenuPlotLadderBins:
+      bNeedOAR = e.IsChecked() && 
+        (m_pFramePlot != NULL) && (!m_pFramePlot->HasOARfile());
+      if (bNeedOAR &&
+        !m_pFramePlot->FindOARforType(CDialogPlotMessageFind::MSG_TYPE_BINS))
+      {
+        // reset selection if no OAR file available
+        m_pMenu->ShowLadderBins(false);
+      }
+      else
+      {
+        bRebuild = true;
+        bSendToAll = bShift;
+        m_pMenu->SetStateFromEvent(e);
+      }
+      break;
+    case IDmenuPlotDisabledAlleles:
+      bNeedOAR = e.IsChecked() &&
+        (m_pFramePlot != NULL) && (!m_pFramePlot->HasOARfile());
+      if (bNeedOAR &&
+        !m_pFramePlot->FindOARforType(CDialogPlotMessageFind::MSG_TYPE_DISABLED_ALLELES))
+      {
+        // reset selection if no OAR file available
+        m_pMenu->ShowDisabledAlleles(false);
+      }
+      else
+      {
+        bLabels = true;
+        bSendToAll = bShift;
+        m_pMenu->SetStateFromEvent(e);
+      }
+      break;
     case IDmenuPlotDataAnalyzed:
     case IDmenuPlotDataRaw:
     case IDmenuPlotDataLadder:
@@ -2492,7 +2557,6 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
     case IDmenuPlotRFU:
     case IDmenuPlotXBPS:
     case IDmenuPlotLadderLabels:
-    case IDmenuPlotLadderBins:
       bSendToAll = bShift;
       bRebuild = true;
       m_pMenu->SetStateFromEvent(e);
@@ -2579,7 +2643,7 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
 
 CMDIFrame *CPanelPlot::_GetFrame()
 {
-  CMDIFrame *pRtn = 
+  CMDIFrame *pRtn =
     (m_pFramePlot == NULL)
     ? (CMDIFrame *)m_pFrameAnalysis
     : (CMDIFrame *)m_pFramePlot;
@@ -2588,7 +2652,7 @@ CMDIFrame *CPanelPlot::_GetFrame()
 CMenuPlot *CPanelPlot::_GetLastMenu()
 {
   wxMenu *pLast = _GetFrame()->GetLastMenuShown();
-  CMenuPlot *pMenu = 
+  CMenuPlot *pMenu =
     ( (pLast == (wxMenu *)m_pMenuPopup) && (pLast != NULL) )
     ? m_pMenuPopup
     : m_pMenu;
@@ -2616,7 +2680,7 @@ void CPanelPlot::_SyncControllers(CPlotController *pSyncTo)
 void CPanelPlot::SyncState(CPanelPlot *p, int nID)
 {
   //
-  //  copy the state of a particular 
+  //  copy the state of a particular
   //  setting to be identical to CPanelPlot *p
   //
   bool bRebuild = false;
@@ -2670,6 +2734,10 @@ void CPanelPlot::SyncState(CPanelPlot *p, int nID)
       break;
     case IDmenuPlotLadderBins:
       pMenu->ShowLadderBins(p->m_pMenu->LadderBins());
+      bRebuild = true;
+      break;
+    case IDmenuPlotDisabledAlleles:
+      pMenu->ShowDisabledAlleles(p->m_pMenu->DisabledAlleles());
       bRebuild = true;
       break;
     case IDmenuPlotSync:
@@ -2779,7 +2847,7 @@ void CPanelPlot::_SetFileHasBeenPrompted(CPlotData *p)
 
 
 void CPanelPlot::DrawPlotToDC(
-  wxDC *pDC, const wxRect &rect, 
+  wxDC *pDC, const wxRect &rect,
   double dDPI, bool bShowXAxis, bool bForcePrintFont)
 {
   // initialize rectangle to white -- probably not necessary
@@ -2911,8 +2979,8 @@ int CPanelPlot::DrawPlotTitleToDC(
       szTitle = pDC->GetTextExtent(sTitle);
     }
     nTitleHeight = szTitle.GetHeight();
-    int nXoffset = 
-      szDetails.GetWidth() 
+    int nXoffset =
+      szDetails.GetWidth()
       ? 0
       : (nWidth - szTitle.GetWidth() + 1) >> 1;
     pDC->DestroyClippingRegion();
@@ -3020,7 +3088,7 @@ int CPanelPlot::_BitmapPrimerZoom(int nXScale, bool bNegCtrl)
 
 bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
 {
-  // if all plots in a sample will have the same view, 
+  // if all plots in a sample will have the same view,
   // set it here, copy the view rect to pViewRect
   // and return true
 
@@ -3060,12 +3128,12 @@ bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
   {
     bRtn = true;
     bool bXBPS = pParm->GetPrintXaxisILSBPS();
-    bool bXProblem = bXBPS && 
+    bool bXProblem = bXBPS &&
       GetPlotData()->CannotSetBPS() &&
       (nXScale == PRINT_X_SCALE_USER);
-    int nPrimerZoom = 
-      bXProblem 
-      ? ZOOM_PRIMER_PEAK_X 
+    int nPrimerZoom =
+      bXProblem
+      ? ZOOM_PRIMER_PEAK_X
       : _BitmapPrimerZoom(nXScale, bNegCtrl);
     ShowAllChannels(true);
     RebuildCurves(true);
@@ -3151,7 +3219,7 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
   bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
   pPlotCtrl->SetRenderingToWindow(false);
   int nXLabelHeight = GetXAxisLabelHeight(&dc, wxRect(wxSize(nWidth, nHeight)), dDPI, bForcePrintFont);
-  
+
   // set up title
   nTitleOffset = DrawPlotTitleToDC(&dc, sTitle, sTitleInfo, nWidth, nHeight, dDPI, bForcePrintFont);
   // get channels
@@ -3171,7 +3239,7 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
 
   if (nPlotHeight >= 20)
   {
-    
+
     wxRect rect(0, 0, nWidth, nPlotHeight);
     int nRounding = nPlotAreaHeight - (nPlotHeight * nPlotsPerPage);
     int nY = nTitleOffset + nRounding;
@@ -3245,7 +3313,8 @@ EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
 EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
 
 EVT_TOGGLEBUTTON(IDgraphRebuild, CPanelPlot::OnRebuildCurves)
-EVT_TOGGLEBUTTON(IDgraphLadderBins, CPanelPlot::OnAlleleBins)
+EVT_TOGGLEBUTTON(IDgraphLadderBins, CPanelPlot::OnRebuildWithOAR)
+EVT_TOGGLEBUTTON(IDgraphDisabledAlleles, CPanelPlot::OnRebuildWithOAR)
 
 EVT_TOGGLEBUTTON(IDgraphSyncAxes, CPanelPlot::OnSync)
 EVT_BUTTON(IDgraphZoomOut, CPanelPlot::OnZoomOut)
