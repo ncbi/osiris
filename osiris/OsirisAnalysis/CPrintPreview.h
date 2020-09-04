@@ -107,6 +107,7 @@ public:
     }
     return bRtn;
   }
+  void UpdatePage();
 private:
   wxButton *_CreateButton(int nID, const wxString &sLabel, const wxString &sToolTip, const wxFont &f);
   void _UpdatePageButtons(int n = -1);
