@@ -435,6 +435,7 @@ void CPreviewControlBar::SetPage(int n)
   if (n != GetPage())
   {
     m_pTextPage->SetValue(nwxString::FormatNumber(n)); // sends change event
+    UpdatePage();
   }
   _UpdatePageButtons(n);
 }
@@ -470,7 +471,7 @@ void CPreviewControlBar::_OnButtonLast(wxCommandEvent &)
 }
 void CPreviewControlBar::_OnTextCtrlPageChange(wxCommandEvent &e)
 {
-  SetPage(GetPage()); // update next/prev button state
+  UpdatePage();
   e.Skip();  // send to calling window
 }
 void CPreviewControlBar::_OnChildFocus(wxChildFocusEvent &)
@@ -478,15 +479,19 @@ void CPreviewControlBar::_OnChildFocus(wxChildFocusEvent &)
   wxWindow *p = FindFocus();
   if ((m_pLastFocus == m_pTextPage) && (p != m_pTextPage))
   {
-    SetPage(GetPage());
-    CPrintPreviewFrame *pParent = wxDynamicCast(GetParent(), CPrintPreviewFrame);
-    if (pParent != NULL)
-    {
-      pParent->UpdatePage();
-    }
+    UpdatePage();
   }
   m_pLastFocus = p;
 }
+void CPreviewControlBar::UpdatePage()
+{
+  CPrintPreviewFrame *pParent = wxDynamicCast(GetParent(), CPrintPreviewFrame);
+  if (pParent != NULL)
+  {
+    pParent->UpdatePage();
+  }
+}
+
 
 IMPLEMENT_ABSTRACT_CLASS(CPreviewControlBar, wxPreviewControlBar)
 BEGIN_EVENT_TABLE(CPreviewControlBar, wxPreviewControlBar)
