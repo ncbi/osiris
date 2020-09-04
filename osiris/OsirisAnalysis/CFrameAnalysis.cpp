@@ -815,8 +815,11 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
     if (m_nFileNameLabelTimer)
     {
       // m_nFileNameLabelTimer is set in SetFileNameLabel
+      // and when resizing the window
       // to delay setting insertion point to the end
-      // in case the window is resized
+      // to show the end of the file path
+      //  On the Macintosh, the beginning of the string
+      //  is shown anyway
       m_nFileNameLabelTimer--;
       if (!m_nFileNameLabelTimer)
       {
@@ -981,10 +984,24 @@ void CFrameAnalysis::_LayoutAll()
 }
 void CFrameAnalysis::SetFileNameLabel(const wxString &sFileName)
 {
-  m_pLabelFile->SetValue(sFileName);
-  // delay right justification to make sure
-  // text box is not resized afterward
-  m_nFileNameLabelTimer = 2;
+  wxString sCurrent = m_pLabelFile->GetValue();
+  if(sCurrent != sFileName)
+  {
+    m_pLabelFile->SetValue(sFileName);
+    if(sFileName.Len())
+    {
+      // delay right justification to make sure
+      // text box is not resized afterward, 
+      // needed when creating the window and resizing
+      // works in Windows, not Mac
+      m_nFileNameLabelTimer = 2;
+      //
+      // the right justification doesn't work on the Mac
+      // so retrieve file name and use as tooltip
+      wxFileName fn(sFileName);
+      m_pLabelFile->SetToolTip(fn.GetFullName());
+    }
+  }
 }
 
 void CFrameAnalysis::SetFileNameLabel(COARsample *pSample)
@@ -3581,7 +3598,7 @@ void CFrameAnalysis::OnPrintPreview(wxCommandEvent &)
 void CFrameAnalysis::_OnResize(wxSizeEvent &e)
 {
   CALL_PERSIST_RESIZE(e);
-  m_nFileNameLabelTimer = 4;
+  m_nFileNameLabelTimer = 2;
   m_pLabelFile->SetInsertionPoint(0);
 }
 
