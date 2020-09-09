@@ -152,6 +152,7 @@ CFrameAnalysis::CFrameAnalysis(
   m_pDlgAnalysis(NULL),
   m_pCMF(NULL),
   m_nNoTimer(0),
+  m_nFileNameLabelTimer(0),
   m_bFileError(false)
 {
   if(LoadFile(sFileName))
@@ -184,6 +185,7 @@ CFrameAnalysis::CFrameAnalysis(
   m_pDlgAnalysis(NULL),
   m_pCMF(NULL),
   m_nNoTimer(0),
+  m_nFileNameLabelTimer(0),
   m_bFileError(false)
 {
   if(pFile->GetSampleCount() < 1)
@@ -810,6 +812,20 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
     {
       m_pMenuBar->OnTimer(e);
     }
+    if (m_nFileNameLabelTimer)
+    {
+      // m_nFileNameLabelTimer is set in SetFileNameLabel
+      // and when resizing the window
+      // to delay setting insertion point to the end
+      // to show the end of the file path
+      //  On the Macintosh, the beginning of the string
+      //  is shown anyway
+      m_nFileNameLabelTimer--;
+      if (!m_nFileNameLabelTimer)
+      {
+        m_pLabelFile->SetInsertionPoint(m_pLabelFile->GetValue().Len());
+      }
+    }
   }
 }
 void CFrameAnalysis::CheckSelectionXML(bool bForceUpdate)
@@ -966,6 +982,27 @@ void CFrameAnalysis::_LayoutAll()
     m_pPanelInfo->Layout();
   }
 }
+void CFrameAnalysis::SetFileNameLabel(const wxString &sFileName)
+{
+  wxString sCurrent = m_pLabelFile->GetValue();
+  if(sCurrent != sFileName)
+  {
+    m_pLabelFile->SetValue(sFileName);
+    if(sFileName.Len())
+    {
+      // delay right justification to make sure
+      // text box is not resized afterward, 
+      // needed when creating the window and resizing
+      // works in Windows, not Mac
+      m_nFileNameLabelTimer = 2;
+      //
+      // the right justification doesn't work on the Mac
+      // so retrieve file name and use as tooltip
+      wxFileName fn(sFileName);
+      m_pLabelFile->SetToolTip(fn.GetFullName());
+    }
+  }
+}
 
 void CFrameAnalysis::SetFileNameLabel(COARsample *pSample)
 {
@@ -1073,11 +1110,11 @@ bool CFrameAnalysis::TransferDataToWindow()
   m_pButtonParms->Enable(false);
   _DestroyStatusPanel();
   _DestroyLocusPanel();
-  if(!bError)
+  _LayoutAll();
+  if (!bError)
   {
     CheckSelection(true);
   }
-  _LayoutAll();
   return !bError;
 }
 
@@ -3558,6 +3595,13 @@ void CFrameAnalysis::OnPrintPreview(wxCommandEvent &)
 
   //CPrintOutAnalysis::DoPrintPreview(this);
 }
+void CFrameAnalysis::_OnResize(wxSizeEvent &e)
+{
+  CALL_PERSIST_RESIZE(e);
+  m_nFileNameLabelTimer = 2;
+  m_pLabelFile->SetInsertionPoint(0);
+}
+
 #ifdef __WXMAC__
 void CFrameAnalysis::OnPageMargins(wxCommandEvent &)
 {
@@ -3577,7 +3621,7 @@ IMPLEMENT_PERSISTENT_SIZE(CFrameAnalysis)
 IMPLEMENT_ABSTRACT_CLASS(CFrameAnalysis,CMDIFrame)
 
 BEGIN_EVENT_TABLE(CFrameAnalysis,CMDIFrame)
-EVT_PERSISTENT_SIZE(CFrameAnalysis)
+EVT_SIZE(CFrameAnalysis::_OnResize)
 
 EVT_CONTEXT_MENU(CFrameAnalysis::OnContextMenu)
 EVT_COMMAND(IDhistoryButton,CEventHistory,CFrameAnalysis::OnHistoryUpdate)

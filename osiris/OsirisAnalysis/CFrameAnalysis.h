@@ -330,11 +330,7 @@ private:
   {
     return _IsChannelColumn(m_nLastColSelect);
   }
-  void SetFileNameLabel(const wxString &sFileName)
-  {
-    m_pLabelFile->SetValue(sFileName);
-    m_pLabelFile->SetInsertionPointEnd();
-  }
+  void SetFileNameLabel(const wxString &sFileName);
   static int _ColToType(int nCol)
   {
     int nType = -1;
@@ -365,6 +361,7 @@ private:
     }
     return nCol;
   }
+  void _OnResize(wxSizeEvent &e);
   void _UpdateMenu();
   void _UpdateHistoryMenu(int nRow, int nCol,bool bEnabled = true);
   void _UpdateHistoryMenu(bool bEnabled)
@@ -455,6 +452,7 @@ private:
   int m_nLastRowSelect;
   int m_nEntireRowSelected;
   int m_nNoTimer;
+  int m_nFileNameLabelTimer;
   bool m_bFileError;
 
 
