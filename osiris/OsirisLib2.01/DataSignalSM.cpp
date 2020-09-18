@@ -852,6 +852,7 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	smPullUp pullup;
 	smCalculatedPurePullup purePullup;
 	smPartialPullupBelowMinRFU partialPullupBelowMin; 
+	smUncertainPullUp uncertainPullup;
 	DataSignal* primary;
 	RGString uncertain;
 	RGString narrow;
@@ -860,6 +861,8 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 	RGString data2;
 	RGString temp;
 	RGString pResult;
+	RGString dataPure;
+	int nPure = 0;
 
 	if (!HasAnyPrimarySignals (nChannels))
 		return;
@@ -883,73 +886,106 @@ void DataSignal :: AssociateDataWithPullMessageSM (int nChannels) {
 				continue;
 			}
 
-			if (n == 0)
-				n = 1;
-
-			else
-				data << "; ";
-
 			if (mPrimaryRatios == NULL)
 				cout << "Primary signal is set but not ratio for signal on channel " << GetChannel () << " at time " << GetMean () << endl;
 
 			temp.ConvertWithMin (GetPullupRatio (i), 0.01, 2);
-			data << i << " with Ratio " << xmlwriter::EscAscii (temp, &pResult);
+
+			if (GetIsPurePullupFromChannel (i)) {
+
+				if (nPure == 0)
+					nPure = 1;
+
+				else
+					dataPure << "; ";
+
+				dataPure << i << " with Ratio " << xmlwriter::EscAscii (temp, &pResult);
+			}
+
+			else {
+
+				if (n == 0)
+					n = 1;
+
+				else
+					data << "; ";
+
+				data << i << " with Ratio " << xmlwriter::EscAscii (temp, &pResult);
+			}
 		}
 	}
 
 	if (n > 0)
 		data << "%";
 
-	if (n + k > 0) {
+	if (nPure > 0)
+		dataPure << "%";
+
+	if (nPure + n + k > 0) {
 
 		bool isPullup = GetMessageValue (pullup);
 		bool isPurePullup = GetMessageValue (purePullup);
 		bool isPartialPullupBelowMin = GetMessageValue (partialPullupBelowMin);
+		bool isUncertainPullup = mIsPossiblePullup;
 		data2 = data;
+
+		if (isUncertainPullup) {
+
+			channelList = CreateUncertainPullupString ();
+			SetMessageValue (uncertainPullup, true);
+			AppendDataForSmartMessage (uncertainPullup, channelList);
+		}
 
 		if (isPullup) {
 
-			if (mIsPossiblePullup) {
+			//if (mIsPossiblePullup) {
 
-				uncertain << "(Uncertain Channel(s): ";
-				channelList = CreateUncertainPullupString ();
-				uncertain << channelList;
-				uncertain << ") ";
-				data = uncertain + data;
-				//AppendDataForSmartMessage (pullup, uncertain);
-			}
+			//	uncertain << "(Uncertain Channel(s): ";
+			//	channelList = CreateUncertainPullupString ();
+			//	uncertain << channelList;
+			//	uncertain << ") ";
+			//	data = uncertain + data;
+			//	//AppendDataForSmartMessage (pullup, uncertain);
+			//}
+			if (data.Length () > 0)
+				AppendDataForSmartMessage (pullup, data);
 
-			AppendDataForSmartMessage (pullup, data);
+			else
+				SetMessageValue (pullup, false);
 		}
 
 		if (isPurePullup) {
 
-			if (mIsPossiblePullup) {
+			//if (mIsPossiblePullup) {
 
-				narrow << "(Narrow Channels: ";
-				channelList = CreateUncertainPullupString ();
-				narrow << channelList;
-				narrow << ") ";
-				data2 = narrow + data2;
-				//AppendDataForSmartMessage (pullup, uncertain);
-			}
+			//	narrow << "(Narrow Channels: ";
+			//	channelList = CreateUncertainPullupString ();
+			//	narrow << channelList;
+			//	narrow << ") ";
+			//	data2 = narrow + data2;
+			//	//AppendDataForSmartMessage (pullup, uncertain);
+			//}
 
-			AppendDataForSmartMessage (purePullup, data2);
+			AppendDataForSmartMessage (purePullup, dataPure);
 		}
 
 		if (isPartialPullupBelowMin) {
 
-			if (mIsPossiblePullup) {
+			//if (mIsPossiblePullup) {
 
-				uncertain << "(Uncertain Channel(s): ";
-				channelList = CreateUncertainPullupString ();
-				uncertain << channelList;
-				uncertain << ") ";
-				data = uncertain + data;
-				//AppendDataForSmartMessage (pullup, uncertain);
-			}
+			//	uncertain << "(Uncertain Channel(s): ";
+			//	channelList = CreateUncertainPullupString ();
+			//	uncertain << channelList;
+			//	uncertain << ") ";
+			//	data = uncertain + data;
+			//	//AppendDataForSmartMessage (pullup, uncertain);
+			//}
 
-			AppendDataForSmartMessage (partialPullupBelowMin, data);
+			if (data.Length () > 0)
+				AppendDataForSmartMessage (partialPullupBelowMin, data);
+
+			else
+				SetMessageValue (partialPullupBelowMin, false);
 		}
 	}
 }

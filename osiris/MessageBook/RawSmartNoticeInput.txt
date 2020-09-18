@@ -280,6 +280,7 @@ smHeightToConsiderTrueHomozygote	1167	2683
 smPeakHeightAboveHomozygoteTrustThreshold	1168	2684
 smPeakIgnored	1169	2685
 smLaddersFromWrongMarkerSet	1170	2686
+smUncertainPullUp	1171	2687
 
 
 
