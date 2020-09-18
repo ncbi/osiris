@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.64</VersionNumber>
-	<BuildTime>08/11/2020 5:51 PM</BuildTime>
+	<VersionNumber>7.65</VersionNumber>
+	<BuildTime>09/17/2020 6:30 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -605,6 +605,27 @@
 				<AlternateReportLevel>20</AlternateReportLevel>
 				<AlternateReportCriterion>
 					<Expression>smPullUpAtControlPeak OR smInterlocusPullUp OR smSignalIsCtrlPeak OR (smSignalIsAllele AND smMakePullupAtAlleleNonCriticalPreset)</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>1</Expression>
+			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smUncertainPullUp</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Partial Pullup (Uncertain)</Text>
+			<TextForData> from Primary Channel </TextForData>
+			<ReportLevel>1</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smPullUpAtControlPeak OR smSignalIsCtrlPeak OR smCalculatedPurePullup OR smPartialPullupBelowMinRFU</Expression>
 				</AlternateReportCriterion>
 			</AlternateReport>
 			<Scope>1</Scope>
@@ -6251,7 +6272,7 @@
 			<CountingDataInfo>
 				<Threshold>1500</Threshold>
 				<Comparison>Less</Comparison>
-				<ThresholdDescriptor>Min. threshold for homozygote to have no allele dropout (Default = 2000 RFU)</ThresholdDescriptor>
+				<ThresholdDescriptor>Min. threshold for homozygote to have no allele dropout (Default = 1500 RFU)</ThresholdDescriptor>
 			</CountingDataInfo>
 			<ReportCriterion>
 				<Expression>0</Expression>
@@ -7706,6 +7727,7 @@
 						<Name>smSpike</Name>
 						<Name>smBlob</Name>
 						<Name>smPullUp</Name>
+						<Name>smUncertainPullUp</Name>
 						<Name>smCalculatedPurePullup</Name>
 						<Name>smPartialPullupBelowMinRFU</Name>
 						<Name>smPeakOutsideILS</Name>
