@@ -293,6 +293,7 @@ PERSISTENT_PREDECLARATION (smHeightToConsiderTrueHomozygote)
 PERSISTENT_PREDECLARATION (smPeakHeightAboveHomozygoteTrustThreshold)
 PERSISTENT_PREDECLARATION (smPeakIgnored)
 PERSISTENT_PREDECLARATION (smLaddersFromWrongMarkerSet)
+PERSISTENT_PREDECLARATION (smUncertainPullUp)
 
 
 
@@ -8172,6 +8173,34 @@ public:
 	smLaddersFromWrongMarkerSet ();
 	smLaddersFromWrongMarkerSet (const smLaddersFromWrongMarkerSet& note);
 	virtual ~smLaddersFromWrongMarkerSet ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUncertainPullUp : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUncertainPullUp)
+
+public:
+	smUncertainPullUp ();
+	smUncertainPullUp (const smUncertainPullUp& note);
+	virtual ~smUncertainPullUp ();
 
 	virtual int GetSubject () const;
 

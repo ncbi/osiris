@@ -1698,6 +1698,12 @@ int smLaddersFromWrongMarkerSet::sMessageIndex = 0;
 int smLaddersFromWrongMarkerSet::sMessageScope = 0;
 
 
+RGString smUncertainPullUp::sName = "smUncertainPullUp";
+int smUncertainPullUp::sSubject = smUncertainPullUp::LoadType ();
+int smUncertainPullUp::sMessageIndex = 0;
+int smUncertainPullUp::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1980,6 +1986,7 @@ PERSISTENT_DEFINITION (smHeightToConsiderTrueHomozygote, 2683, "smHeightToConsid
 PERSISTENT_DEFINITION (smPeakHeightAboveHomozygoteTrustThreshold, 2684, "smPeakHeightAboveHomozygoteTrustThreshold")
 PERSISTENT_DEFINITION (smPeakIgnored, 2685, "smPeakIgnored")
 PERSISTENT_DEFINITION (smLaddersFromWrongMarkerSet, 2686, "smLaddersFromWrongMarkerSet")
+PERSISTENT_DEFINITION (smUncertainPullUp, 2687, "smUncertainPullUp")
 
 
 
@@ -18896,6 +18903,66 @@ int smLaddersFromWrongMarkerSet :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smLaddersFromWrongMarkerSet* noticeType = new smLaddersFromWrongMarkerSet;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smUncertainPullUp :: smUncertainPullUp () : SmartNotice () {
+
+}
+
+
+smUncertainPullUp :: smUncertainPullUp (const smUncertainPullUp& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smUncertainPullUp :: ~smUncertainPullUp () {
+
+}
+
+
+int smUncertainPullUp :: GetSubject () const {
+
+	return smUncertainPullUp::sSubject;
+}
+
+
+void smUncertainPullUp :: SetIndexAndScope (int index, int scope) const {
+
+	smUncertainPullUp::sMessageIndex = index;
+	smUncertainPullUp::sMessageScope = scope;
+}
+
+
+int smUncertainPullUp :: GetMessageIndex () const {
+
+	return smUncertainPullUp :: sMessageIndex;
+}
+
+
+int smUncertainPullUp :: GetScope () const {
+
+	return smUncertainPullUp :: sMessageScope;
+}
+
+
+RGString smUncertainPullUp :: GetName () const {
+
+	return smUncertainPullUp :: sName;
+}
+
+
+
+int smUncertainPullUp :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smUncertainPullUp* noticeType = new smUncertainPullUp;
 	warehouse->AddType (noticeType);
 	return 1;
 }
