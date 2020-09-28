@@ -189,6 +189,30 @@
     <ILS>
       <ILSName>ABI-LIZ-600</ILSName>
       <DyeName>LIZ</DyeName>
+	  <LaneStandard>
+        <Name>ABI-LIZ-600-60-TO-600</Name>
+        <DisplayName>60-600</DisplayName>
+        <Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600</Characteristics>
+        <RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M H M M H MH M MH M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>		  
+      <LaneStandard>
+        <Name>ABI-LIZ-600-60-TO-500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500</Characteristics>
+        <RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-600-100-TO-600</Name>
+        <DisplayName>100-600</DisplayName>
+        <Characteristics>100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600</Characteristics>
+        <RelativeHeights>M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M H M M H MH M MH M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
       <LaneStandard>
         <Name>ABI-LIZ-600-60-TO-460</Name>
         <DisplayName>60-460</DisplayName>
