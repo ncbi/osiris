@@ -300,10 +300,6 @@ public:
     bool bDraw = true,
     int nPlotNumber = 0,
     bool bPrinting = false
-<<<<<<< HEAD
-=======
-    //,bool bExternalTimer = false  // EXT TIMER
->>>>>>> 7251fc8eac2653b2c362faa6b9e721b21efd569b
    );
 
   // constructor for CFrameAnalysis - MDI with grid and plot preview
