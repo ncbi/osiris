@@ -235,7 +235,7 @@ BEGIN_EVENT_TABLE(wxPlotCtrlArea, wxWindow)
     EVT_KEY_DOWN        ( wxPlotCtrlArea::OnKeyDown )
     EVT_KEY_UP          ( wxPlotCtrlArea::OnKeyUp )
 #ifdef __WXMSW__
-  EVT_MOUSE_CAPTURE_LOST(wxPlotCtrlArea::OnMouseCaptureLost)
+    EVT_MOUSE_CAPTURE_LOST(wxPlotCtrlArea::OnMouseCaptureLost)
 #endif
   END_EVENT_TABLE()
 
@@ -450,12 +450,11 @@ BEGIN_EVENT_TABLE(wxPlotCtrl, wxWindow )
     EVT_IDLE             ( wxPlotCtrl::OnIdle )
     EVT_MOUSE_EVENTS     ( wxPlotCtrl::OnMouse )
     EVT_TIMER            ( wxID_ANY, wxPlotCtrl::OnTimer )
-
     EVT_TEXT_ENTER       ( wxID_ANY, wxPlotCtrl::OnTextEnter)
 #ifdef __WXMSW__
     EVT_MOUSE_CAPTURE_LOST( wxPlotCtrl::OnMouseCaptureLost )
 #endif
-END_EVENT_TABLE()
+    END_EVENT_TABLE()
 
 void wxPlotCtrl::Init()
 {

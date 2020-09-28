@@ -226,7 +226,6 @@ CPanelPlot::CPanelPlot(
   bool bFirst,
   int nPlotNumber,
   bool bPrinting
-  //,bool bExternalTimer  // EXT TIMER
   ) :
       PANEL_PLOT_TYPE(pFrame->GetPanel(),wxID_ANY,
       wxDefaultPosition,wxDefaultSize,wxSW_3DSASH),

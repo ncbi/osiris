@@ -209,7 +209,6 @@ public:
     // OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
     void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
 #endif
-
     wxRect   m_mouseRect; // mouse drag rectangle, or 0,0,0,0 when not dragging
     wxPoint  m_mousePt;   // last mouse position
     wxBitmap m_bitmap;
