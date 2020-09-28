@@ -1724,7 +1724,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		mDataChannels [i]->ResetNegativeCurveIterator ();
 	}
 
-	// Now copy from mDataChannels PreliminaryCurveList to TempList (while finding maxSignalPeak??)
+	// Now copy from mDataChannels CompleteCurveList and from Negative Curve List peaks that are within analysis region to channel specific TempList (while finding max non-LO signal peak: maxNonLaserOffScalePeak)
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -1811,7 +1811,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 	}
 
-	//cout << "Done merging positive and negative curves into TempList's" << endl;
+	//  Done merging positive and negative curves into TempList's
 
 	RGDListIterator* tempIterator;
 	RGDList newTempList;
@@ -1824,7 +1824,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	int nextSignalIndex;
 
 	//
-	//	Create new channel specific lists of multi-peaks and merge into TempLists****
+	//	Create new channel specific lists of multi-peaks (Craters and sigmoids) and merge into TempLists****
 	//
 
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -2042,7 +2042,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	}
 
 	//
-	//	Each TempList contains all CompleteList peaks and all NegativeCurvePeaks and all potential multipeaks.  Later, look for interchannel links and then remove crater/simplesigmoid code below
+	//	Each TempList contains all CompleteList peaks and all NegativeCurvePeaks and all potential multipeaks.  Later, look for interchannel links and then remove crater/simplesigmoid code below.
+	//  Now, merge all channel lists into a single list, OverAllList, ordered by peak time (or mean).  Peaks that are potential pull-up/primary pull-up will appear consecutively in OverAllList.
 	//
 
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -2094,6 +2095,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			}
 		}
 	}
+
+	// OverAllList contains all peaks, including positive and negative, and merged in order of increasing mean value.
 
 	RGDListIterator it (OverallList);
 	RGDListIterator Pos (OverallList);
@@ -2170,7 +2173,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList signalsToRemove;
 	RGDListIterator probableIt (probablePullupPeaks);
 	RGDListIterator sameChannelIterator (peaksInSameChannel);
-	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;  // This parameter should only be used to restrict primary pull-ups if specified by user.  See smSelectUserSpecifiedMinRFUForPrimaryPeakPreset
 	cout << "Primary Threshold = " << primaryThreshold << " RFU" << endl;
 	double nSigmasForPullup = 1.0;
 	int primaryChannel;
@@ -2184,6 +2187,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double rightLimitPlus;
 	double leftLimitPlus;
 	bool laserStatus;
+	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset useSpecifiedMinRFUForPrimary;
+	bool userSpecifiedMinRFUForPrimary = GetMessageValue (useSpecifiedMinRFUForPrimary);
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2197,8 +2202,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		primaryHeight = nextSignal->Peak ();
 		primaryChannel = nextSignal->GetChannel ();
 
-		if ((primaryHeight < primaryThreshold) || (nextSignal->IsNegativePeak ()))
+		//  *****!!!! 09/28/2020 This tests that the primary height is above the user-specified minimum primary threshold, but only if directed by user specification.
+		//  The default value of userSpecifiedMinRFUForPrimary is false.  In either case, if the signal is negative, skip it.
+
+		if ((userSpecifiedMinRFUForPrimary && (primaryHeight < primaryThreshold)) || (nextSignal->IsNegativePeak ()))
 			continue;
+
+		//  *****!!!! The next test involves the minRFU among minSampleRFU, minLadderRFU and minILSRFU.  The minimum height is the least of these.  
+		//  Essentially, Osiris will not consider that a primary pull-up could be below this min height.  I think this may be an error as well!????
 
 		if (primaryHeight < mDataChannels [nextSignal->GetChannel ()]->GetMinimumHeight ())
 			continue;
@@ -3264,7 +3275,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 						linkButNotToJ = false;
 				}
 
-				if ((CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, first)) && (nextSignal->Peak () >= primaryThreshold) && (noCrossChannelLink || (!noCrossChannelLink && linkButNotToJ))) {
+				bool considerPossiblePrimaryBasedOnHeight = !userSpecifiedMinRFUForPrimary || (userSpecifiedMinRFUForPrimary && (nextSignal->Peak () >= primaryThreshold));
+
+				//  Allow a peak to be considered as a valid non-primary if it within the analysis region and has no cross channel link with this channel...and if it is tall enough if
+				// the user has specified a minimum RFU for primary peaks AND this peak is tall enough, OR (the default action), the user has not specified that a minimun height for primaries be
+				// used.  The latter is the default.  And in the latter case, OSIRIS computes the minimum primary RFU based on a number for factors, including the pull-up percentages for the tallest peaks
+				// in the primary channel and the static noise level in the pull-up channel.
+
+				if ((CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, first)) && considerPossiblePrimaryBasedOnHeight && (noCrossChannelLink || (!noCrossChannelLink && linkButNotToJ))) {
 
 					notPrimaryLists [i][j]->Append (nextSignal);
 				}
