@@ -78,8 +78,8 @@ CPanelLocusDetails::CPanelLocusDetails(
 //    m_LocusEdit(*pLocus), // init replaced by _InitData()
 //    m_MsgEdit(*pMessages),
     m_pPanelUser(NULL),
-    m_pSample(pSample),
     m_pLocus(pLocus),
+    m_pSample(pSample),
     m_pMsgs(pMessages),
     m_bReadOnly(bReadOnly),
     m_bReadOnlyMayChange(bReadOnlyMayChange)

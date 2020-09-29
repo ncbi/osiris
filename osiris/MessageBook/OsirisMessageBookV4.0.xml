@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.46</VersionNumber>
-	<BuildTime>12/13/2019 03:51 PM</BuildTime>
+	<VersionNumber>7.65</VersionNumber>
+	<BuildTime>09/17/2020 6:30 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -421,6 +421,17 @@
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smPeakIgnored</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Peak Ignored Through User Pre-Editing</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smLaserOffScaleForTrigger</Name>
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
@@ -600,6 +611,27 @@
 			<CallCriterion>
 				<Expression>1</Expression>
 			</CallCriterion>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smUncertainPullUp</Name>
+			<Subject>1</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>Partial Pullup (Uncertain)</Text>
+			<TextForData> from Primary Channel </TextForData>
+			<ReportLevel>1</ReportLevel>
+			<AlternateReport>
+				<AlternateReportLevel>20</AlternateReportLevel>
+				<AlternateReportCriterion>
+					<Expression>smPullUpAtControlPeak OR smSignalIsCtrlPeak OR smCalculatedPurePullup OR smPartialPullupBelowMinRFU</Expression>
+				</AlternateReportCriterion>
+			</AlternateReport>
+			<Scope>1</Scope>
+			<CallCriterion>
+				<Expression>1</Expression>
+			</CallCriterion>
 		</SmartMessage>		
 		<SmartMessage>
 			<Name>smNegativePeak</Name>
@@ -760,8 +792,7 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>ILS CONTAINS TOO FEW PEAKS</Text>
-			<TextForData> with </TextForData>
-			<SeparatorText> peaks out of </SeparatorText>
+			<TextForData>. NUMBER EXPECTED = </TextForData>
 			<ReportLevel>1</ReportLevel>
 			<Scope>3</Scope>
 		</SmartMessage>
@@ -865,7 +896,7 @@
 			<Subject>20</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>(smNoGenotypeFound AND NOT smNoYLinkedAlleleExpected) OR smHomozygoteHeightProblem OR  (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous) OR (smSampleIsNegCtrl AND smTestForPeaksBelowMinRFUForNegCtrlPreset)</Expression>
+				<Expression>((smNoGenotypeFound AND NOT smNoYLinkedAlleleExpected) OR smReportedHomozygoteHeightProblem OR  (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous) OR (smSampleIsNegCtrl AND smTestForPeaksBelowMinRFUForNegCtrlPreset)) AND NOT (smLocusIsHomozygous AND smPeaksAboveHomozygoteValidityThreshold)</Expression>
 			</ReportCriterion>
 			<Text>LOCUS HAS PEAKS BETWEEN DETECTION AND ANALYSIS THRESHOLDS</Text>
 			<TextForData> AT ALLELE LOCATION(S):  </TextForData>
@@ -976,7 +1007,7 @@
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPeakHeightAboveMax</Name>
-			<Description>Set during lane standard analysis in stage 1</Description>
+			<Description>Set during in stage 1</Description>
 			<Subject>15</Subject>
 			<SampleType>3</SampleType>
 			<ReportCriterion>
@@ -984,6 +1015,18 @@
 			</ReportCriterion>
 			<Text>Peak Height Above Maximum Threshold</Text>
 			<ReportLevel>1</ReportLevel>
+			<Scope>1</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPeakHeightAboveHomozygoteTrustThreshold</Name>
+			<Description>Set in stage 1</Description>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Peak Above Min. threshold for homozygote to have no allele dropout</Text>
+			<ReportLevel>20</ReportLevel>
 			<Scope>1</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -1012,6 +1055,17 @@
 					</TextLoc>
 				</Protocol>
 			</ExportProtocolList>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smPeaksAboveHomozygoteValidityThreshold</Name>
+			<Subject>15</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE PEAKS ABOVE HOMOZYGOTE VALIDITY THRESHOLD</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smCannotSeparateILSPrimerPeaks</Name>
@@ -1156,6 +1210,62 @@
 			<SeparatorText> (MAX = </SeparatorText>
 			<ClosingText>)</ClosingText>
 			<ReportLevel>2</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSamplesTerminatedPrematurely</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE SAMPLES TERMINATED PREMATURELY.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.  CONTACT THE OSIRIS TEAM WITH THIS MESSAGE</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSamplesHadNoDataForChannels</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE SAMPLES HAD NO DATA FOR CHANNELS AND WERE TERMINATED.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.  CHECK FOR APPROPRIATE MARKER SET.</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSamplesAreNotValidInputFiles</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE SAMPLES DO NOT HAVE THE CORRECT FSA/HID FORMAT OR MAY BE CORRUPTED.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>6</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smLaddersFromWrongMarkerSet</Name>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>ONE OR MORE LADDERS ARE NOT FROM THE SPECIFIED MARKER SET.  FILE NAME(S)</Text>
+			<TextForData>:  </TextForData>
+			<SeparatorText>; </SeparatorText>
+			<ClosingText>.</ClosingText>
+			<ReportLevel>1</ReportLevel>
 			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -1402,9 +1512,9 @@
 			<ReportCriterion>
 				<Expression>1</Expression>
 			</ReportCriterion>
-			<Text>LOCUS CONTAINS TOO FEW PEAKS</Text>
-			<TextForData> with </TextForData>
-			<SeparatorText> peaks out of </SeparatorText>
+			<Text>INSUFFICIENTLY MANY PEAKS WITHIN EXPECTED PARAMETERS IN LOCUS, </Text>
+			<TextForData>EXPECTING </TextForData>
+			<ClosingText> PEAKS</ClosingText>
 			<ReportLevel>1</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
@@ -3013,7 +3123,7 @@
 			<Subject>1</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>1</Expression>
+				<Expression>NOT (smSampleIsPosCtrl AND smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset)</Expression>
 			</ReportCriterion>
 			<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
 			<ReportLevel>1</ReportLevel>
@@ -3030,6 +3140,17 @@
 					</TextLoc>
 				</Protocol>
 			</ExportProtocolList>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smReportedHomozygoteHeightProblem</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>SINGLE PEAK DETECTED; HEIGHT INAPPROPRIATE FOR HOMOZYGOTE</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smPullUpAtAllele</Name>
@@ -3371,19 +3492,13 @@
 			<Subject>5</Subject>
 			<SampleType>2</SampleType>
 			<ReportCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</ReportCriterion>
 			<Text>Signal is Possible Off-Ladder Allele</Text>
-			<ReportLevel>20</ReportLevel>
-			<AlternateReport>
-				<AlternateReportLevel>1</AlternateReportLevel>
-				<AlternateReportCriterion>
-					<Expression>(smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample)</Expression>
-				</AlternateReportCriterion>
-			</AlternateReport>
+			<ReportLevel>1</ReportLevel>
 			<Scope>1</Scope>
 			<CallCriterion>
-				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallPullupPlusOLPreset AND smPullUp) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
+				<Expression>NOT ((smCraterPlusRaisedBaselinePreset AND smTrueCrater AND smChannelHasRaisedBaseline) OR (smDontCallAnyOLsIfTooManyPreset AND smNumberOfOffLadderAllelesInSample))</Expression>
 			</CallCriterion>
 		</SmartMessage>
 		<SmartMessage>
@@ -3416,7 +3531,7 @@
 				<Expression>0</Expression>
 			</ReportCriterion>
 			<Text>LOCUS IS HOMOZYGOUS</Text>
-			<ReportLevel>20</ReportLevel>
+			<ReportLevel>1</ReportLevel>
 			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
@@ -4487,6 +4602,42 @@
 				<Expression>1</Expression>
 			</ReportCriterion>
 			<Text>SAMPLE COULD NOT BE ANALYZED</Text>
+			<ReportLevel>1</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSampleAnalysisTruncatedPrematurely</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>SAMPLE ANALYSIS TRUNCATED PREMATURELY IN STAGE </Text>
+			<ClosingText>.  CONTACT OSIRIS TEAM</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSampleMissingDataForChannels</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>SAMPLE HAD NO DATA FOR ONE OR MORE CHANNELS NUMBERED:  </Text>
+			<SeparatorText>, </SeparatorText>
+			<ClosingText>.  CHECK FOR APPROPRIATE MARKER SET.</ClosingText>
+			<ReportLevel>1</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
+			<Name>smSampleIsNotValidInputFile</Name>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<ReportCriterion>
+				<Expression>1</Expression>
+			</ReportCriterion>
+			<Text>SAMPLE DOES NOT HAVE THE CORRECT FSA/HID FORMAT OR MAY BE CORRUPTED.</Text>
 			<ReportLevel>1</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
@@ -5867,22 +6018,6 @@
 			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
-			<Name>smDontCallPullupPlusOLPreset</Name>
-			<MessageType>preset</MessageType>
-			<Subject>1</Subject>
-			<SampleType>3</SampleType>
-			<PresetDataInfo>
-				<Threshold>0</Threshold>
-				<ThresholdDescriptor>        Do Not Call OL Allele If Pull-up</ThresholdDescriptor>
-			</PresetDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Do Not Call OL Allele If Pull-up</Text>
-			<ReportLevel>20</ReportLevel>
-			<Scope>1</Scope>
-		</SmartMessage>
-		<SmartMessage>
 			<Name>smDontCallAnyOLsIfTooManyPreset</Name>
 			<MessageType>preset</MessageType>
 			<Subject>1</Subject>
@@ -6112,6 +6247,42 @@
 			<ReportLevel>20</ReportLevel>
 			<Scope>4</Scope>
 		</SmartMessage>
+		<SmartMessage>
+			<Name>smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset</Name>
+			<MessageType>preset</MessageType>
+			<Subject>1</Subject>
+			<SampleType>2</SampleType>
+			<PresetDataInfo>
+				<Threshold>0</Threshold>
+				<ThresholdDescriptor>Do Not Report Homozygote Too Low If Sample Is Positive Control</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Do Not Report Homozygote Too Low If Sample Is Positive Control</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+		</SmartMessage>	
+		<SmartMessage>
+			<Name>smHeightToConsiderTrueHomozygote</Name>
+			<MessageType>count</MessageType>
+			<Description>Height for which lone allele considered unconditionally valid homozygote</Description>
+			<Subject>10</Subject>
+			<SampleType>2</SampleType>
+			<CountingDataInfo>
+				<Threshold>1500</Threshold>
+				<Comparison>Less</Comparison>
+				<ThresholdDescriptor>Min. threshold for homozygote to have no allele dropout (Default = 1500 RFU)</ThresholdDescriptor>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Height for which lone peak considered valid homozygote</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>2</Scope>
+			<Editable>false</Editable>
+			<DisplayExportInfo>false</DisplayExportInfo>
+		</SmartMessage>	
 		<SmartMessage>
 			<Name>smSpacer2</Name>
 			<MessageType>count</MessageType>
@@ -7423,7 +7594,6 @@
 						<Name>smMakeLaserOffScaleNonCriticalPreset</Name>
 						<Name>smCallAdenylationPeaksWithArtifactForAcceptedOnladderPeaksPreset</Name>
 						<Name>smMakeSharedBinArtifactsCriticalPreset</Name>
-						<Name>smDontCallPullupPlusOLPreset</Name>
 						<Name>smDoNotCallExcessResidualPreset</Name>
 						<Name>smRequireExcessiveResidualOffLadderPreset</Name>
 						<Name>smAllowEditingRestrictedPriorityPreset</Name>
@@ -7442,6 +7612,8 @@
 						<Name>smCallStutterPeaksPreset</Name>
 						<Name>smDoNotCallStutterPeaksForSingleSourceSamplesPreset</Name>
 						<Name>smTestPullupCorrectedHeightsPreset</Name>
+						<Name>smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset</Name>
+						<Name>smHeightToConsiderTrueHomozygote</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
@@ -7555,6 +7727,7 @@
 						<Name>smSpike</Name>
 						<Name>smBlob</Name>
 						<Name>smPullUp</Name>
+						<Name>smUncertainPullUp</Name>
 						<Name>smCalculatedPurePullup</Name>
 						<Name>smPartialPullupBelowMinRFU</Name>
 						<Name>smPeakOutsideILS</Name>
@@ -7562,6 +7735,7 @@
 						<Name>smBaselineRelativeBelowMinRFU</Name>
 						<Name>smUnexpectedILSPeak</Name>
 						<Name>smPeakHeightAboveMax</Name>
+						<Name>smPeakHeightAboveHomozygoteTrustThreshold</Name>
 						<Name>smOsirisBelowMinRFUButRawDataAbove</Name>
 						<Name>smRawDataBelowMinRFUButOsirisAbove</Name>
 						<Name>smOsirisAboveMaxRFUButRawDataBelow</Name>
@@ -7574,6 +7748,7 @@
 						<Name>smNegativePeak</Name>
 						<Name>smILSShoulderPeak</Name>
 						<Name>smLaserOffScale</Name>
+						<Name>smPeakIgnored</Name>
 					</MeasuredMessages>
 					<Evaluations>
 						<Expression>smCountThisSignal = true</Expression>
@@ -7581,6 +7756,7 @@
 					<Triggers>
 						<TriggerExpression>smSpike (NOT smBelowMinRFU): smNumberOfSpikesInSample</TriggerExpression>
 						<TriggerExpression>smPeakHeightAboveMax: smPeaksAboveMax</TriggerExpression>
+						<TriggerExpression>smPeakHeightAboveHomozygoteTrustThreshold: smPeaksAboveHomozygoteValidityThreshold</TriggerExpression>
 						<TriggerExpression>smCountThisSignal (NOT smBelowMinRFU): smTotalNumberOfSignals</TriggerExpression>
 					</Triggers>
 				</ScopeDynamics>
@@ -7596,6 +7772,7 @@
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smPeaksAboveMax</Name>
+						<Name>smPeaksAboveHomozygoteValidityThreshold</Name>
 					</TriggeredMessages>
 					<Evaluations>
 						<Expression>smThisIsALocus = 1</Expression>
@@ -7883,7 +8060,7 @@
 						<Expression>smTrueCrater = smCrater AND NOT smSignalNotACrater</Expression>
 						<Expression>smTrueCraterSidePeak = smCraterSidePeak AND NOT smSignalNotACraterSidePeak</Expression>
 						<Expression>smPullUpAtAllele = smSignalIsAllele AND smPullUp AND NOT smRestrictedPriorityPeak</Expression>
-						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT smRestrictedPriorityPeak</Expression>
+						<Expression>smAlleleOL = smSignalOL AND smSignalIsAllele AND NOT (smRestrictedPriorityPeak OR smSampleIsPosCtrl)</Expression>
 						<Expression>smActuallyAnAllele = smSignalIsAllele AND NOT smRestrictedPriorityPeak AND NOT smSampleIsLadder AND NOT smChannelIsILS AND NOT smUnassignedInterlocusPeak</Expression>
 						<Expression>smCoreAlleleIsOL = smActuallyAnAllele AND smAlleleOL AND smPeakInCoreLadderLocus</Expression>
 						<Expression>smPurePullupLateStage = smPurePullup OR smCalculatedPurePullup OR smPartialPullupBelowMinRFU</Expression>
@@ -7975,16 +8152,17 @@
 						<Name>smOLAlleles</Name>
 					</TriggeredMessages>
 					<Evaluations>
+						<Expression>smReportedHomozygoteHeightProblem = smHomozygoteHeightProblem AND (NOT smSampleIsPosCtrl OR NOT smDoNotReportHomozygoteHeightProblemForPositiveControlsPreset)</Expression>
 						<Expression>smNoYLinkedAlleleExpected = (smNoYForAMEL AND smSampleHasAMELLocus) AND smLocusIsYLinked</Expression>
 						<Expression>smLocusContainsPullUpWithHeteroImbalance = smHeterozygousImbalance AND smLocusAlleleHasPullup</Expression>
-						<Expression>smLocusUnderAmped = ((smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smHomozygoteHeightProblem))) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected</Expression>
+						<Expression>smLocusUnderAmped = ((smLocusHasPeaksBetweenDetectionAndAnalysisThresholds AND (smNoGenotypeFound OR smReportedHomozygoteHeightProblem OR (smLocusHasPeaksBelowMinRFUThatAreNotKnownArtifacts AND smLocusIsHomozygous))) OR (smAmpMoreOnLowHomozygotePreset AND (smNoGenotypeFound OR smReportedHomozygoteHeightProblem))) AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected AND NOT (smLocusIsHomozygous AND smPeaksAboveHomozygoteValidityThreshold)</Expression>
 					</Evaluations>
 					<Triggers>
-						<TriggerExpression>smHomozygoteHeightProblem (NOT smSampleIsNegCtrl): smSampleHasHomozygoteWithHeightProblem</TriggerExpression>
+						<TriggerExpression>smReportedHomozygoteHeightProblem (NOT smSampleIsNegCtrl): smSampleHasHomozygoteWithHeightProblem</TriggerExpression>
 						<TriggerExpression>smLocusIsHomozygous (NOT smSampleIsNegCtrl AND NOT smLocusIsYLinked): smTotalNumberOfHomozygousLoci</TriggerExpression>
 						<TriggerExpression>smThreeOrMoreAlleles (smFlagMixedSamplesPreset OR smDoNotReportHeterozygousImbalanceIfMixturePreset): smTotalNumberOfTriallelicLoci, smNoLociWithThreeOrMoreAlleles</TriggerExpression>
 						<TriggerExpression>smNoGenotypeFound (NOT smSampleIsLadder AND NOT smSampleIsNegCtrl AND NOT smNoYLinkedAlleleExpected): smLocusDropout</TriggerExpression>
-						<TriggerExpression>smLocusUnderAmped: smAtLeastOneLocusUnderAmped</TriggerExpression>
+						<TriggerExpression>smLocusUnderAmped (NOT (smLocusIsHomozygous AND smPeaksAboveHomozygoteValidityThreshold)): smAtLeastOneLocusUnderAmped</TriggerExpression>
 						<TriggerExpression>smMoreThanThreeAlleles (smFlagMixedSamplesPreset OR smDoNotReportHeterozygousImbalanceIfMixturePreset): smLociWithMoreThanThreeAlleles, smNoLociWithThreeOrMoreAlleles</TriggerExpression>
 						<TriggerExpression>smLocusIsYLinked (NOT smNoGenotypeFound): smSomeYLinkedLociHaveAlleles</TriggerExpression>
 						<TriggerExpression>smPosCtrlLocusNotFound: smPosCtrlLociNotFound</TriggerExpression>
@@ -8005,6 +8183,9 @@
 						<Name>smSampleUnanalyzable</Name>
 						<Name>smNamedPosCtrlNotFound</Name>
 						<Name>smNoYForAMEL</Name>
+						<Name>smSampleAnalysisTruncatedPrematurely</Name>
+						<Name>smSampleMissingDataForChannels</Name>
+						<Name>smSampleIsNotValidInputFile</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfHomozygousLoci</Name>
@@ -8086,6 +8267,10 @@
 						<Name>smReampAllMore</Name>
 						<Name>smReinjectAll</Name>
 						<Name>smDirectoryPlaceHolder</Name>
+						<Name>smSamplesTerminatedPrematurely</Name>
+						<Name>smSamplesHadNoDataForChannels</Name>
+						<Name>smSamplesAreNotValidInputFiles</Name>
+						<Name>smLaddersFromWrongMarkerSet</Name>
 					</MeasuredMessages>
 					<TriggeredMessages>
 						<Name>smTotalNumberOfSamples</Name>

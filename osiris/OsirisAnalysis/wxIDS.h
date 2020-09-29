@@ -181,6 +181,7 @@ enum
   IDhyperlinkStatus_END = IDhyperlinkStatus + 50,
   IDbuttonSelectAll,
   IDbuttonClear,
+  IDbuttonInvert,
   IDbuttonCancel,
   IDbuttonCancelAll,
   IDbuttonReAnalyze,
@@ -198,6 +199,23 @@ enum
 
   IDlistMRU,
   IDArchiveExtract,
+
+  // printing
+#ifdef __WXMAC__
+  IDpageMargins,
+#endif
+  IDpageSetup,
+
+  // print preview control bar
+  IDprintSettings,
+  IDprintPageText,
+  IDprintPageFirst,
+  IDprintPageLast,
+  IDprintPagePrev,
+  IDprintPageNext,
+  IDprintZoom,
+  IDprintColors,
+  IDprintPrint,
 
   IDhelpAbout,
   IDhelpContactUs,
@@ -342,6 +360,12 @@ enum
   IDSampleAccept,
   IDSampleApprove,
 
+  // Print Setup
+  IDprintCurveLadders,
+  IDprintSampleOmit,
+  IDprintXaxisILSBPS,
+  IDprintXscaleSpecify,
+  IDprintYscaleSpecify,
   IDmenu_END,
 
   //  END menus in CFrameAnalysis
@@ -425,11 +449,16 @@ enum DATA_TYPE
 
 #define CHANNEL_MAX 8
 
+#define ARTIFACT_CRITICAL 15
+#define ARTIFACT_NONE -1
+#define ARTIFACT_ALL 20
+
+
+// legacy
 #define MIN_CRITICAL_ARTIFACT 15
 
 #define SIZE_EDIT_LOCUS 800,600
 #define SIZE_EDIT_ALERTS 640,480
 #define SIZE_LOCUS_HISTORY 920,690
-
 
 #endif

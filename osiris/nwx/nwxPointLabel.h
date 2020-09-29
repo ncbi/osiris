@@ -40,6 +40,7 @@ public:
   static const int ALIGN_DEFAULT;
   static const int STYLE_BOX;
   static const int STYLE_DISABLED;
+  static const int STYLE_BLACK_TEXT;
   nwxPointLabel()
     : m_color(0,0,0), 
       m_dx(0.0), 
@@ -116,6 +117,12 @@ public:
   {
     return m_color;
   }
+  const wxColour &GetTextColour() const
+  {
+    return HasStyle(nwxPointLabel::STYLE_BLACK_TEXT)
+      ? *wxBLACK
+      : m_color;
+  }
   double GetX() const
   {
     return m_dx;
@@ -143,6 +150,10 @@ public:
   int GetStyle() const
   {
     return m_nLabelStyle;
+  }
+  bool HasStyle(int n) const
+  {
+    return !!(m_nLabelStyle & n);
   }
 
   // Set functions
@@ -178,6 +189,14 @@ public:
   void SetData(void *p)
   {
     m_pData = p;
+  }
+  void AddStyle(int b)
+  {
+    m_nLabelStyle |= b;
+  }
+  void RemoveStyle(int b)
+  {
+    m_nLabelStyle &= ~b;
   }
   void SetStyle(int b)
   {

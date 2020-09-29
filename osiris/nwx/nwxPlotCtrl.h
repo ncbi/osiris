@@ -27,7 +27,8 @@
 *  FileName: nwxPlotCtrl.h
 *  Author:   Douglas Hoffman
 *
-*   need to remove m_pTimer and inherit nwxTimerReceiver 5/27/16
+*   need to remove m_pTimer and inherit nwxTimerReceiver 5/27/16, 
+*   done 5/21/2020
 *
 */
 #ifndef __NWX_PLOT_CTRL_H__
@@ -36,7 +37,6 @@
 #include <wx/dc.h>
 #include <wx/stattext.h>
 #include <wx/colour.h>
-#include <wx/timer.h>
 #include <wx/tooltip.h>
 #include <wx/scrolbar.h>
 #include <wx/panel.h>
@@ -51,13 +51,14 @@
 
 #include "nwx/nwxPlotDrawerLabel.h"
 #include "nwx/nwxPlotDrawerShade.h"
+#include "nwx/nwxTimerReceiver.h"
 
 #define __TOOLTIP_TO_FRAME__ 0
 //  tried to set the tooltip parent to the frame
 //  but it created more problmes than it solved
 //  set to 1 if attempted again in the future
 
-class WXDLLIMPEXP_PLOTCTRL nwxPlotCtrl : public wxPlotCtrl
+class WXDLLIMPEXP_PLOTCTRL nwxPlotCtrl : public wxPlotCtrl, nwxTimerReceiver
 {
 public:
   nwxPlotCtrl() : wxPlotCtrl(),
@@ -67,8 +68,8 @@ public:
     m_fontLabel(8,wxFONTFAMILY_DEFAULT,
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
     m_PositionMouse(-1,-1),
-    m_pTimer(NULL),
     m_nDisableToolTip(0),
+    m_bNotRenderingToWindow(false),
     m_bClear(false),
     m_bStopTimer(false),
     m_nTimeHere(0),
@@ -89,8 +90,8 @@ public:
       m_fontLabel(8,wxFONTFAMILY_DEFAULT,
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
       m_PositionMouse(0,0),
-      m_pTimer(NULL),
       m_nDisableToolTip(0),
+      m_bNotRenderingToWindow(false),
       m_bClear(false),
       m_bStopTimer(false),
       m_nTimeHere(0),
@@ -155,19 +156,11 @@ public:
   }
   bool IsTimerRunning()
   {
-    return (m_pTimer != NULL) && m_pTimer->IsRunning();
+    return !m_bStopTimer;
   }
   void StartTimer()
   {
     m_bStopTimer = false;
-    if(m_pTimer == NULL)
-    {
-      m_pTimer = new wxTimer(this,wxID_ANY);
-    }
-    if(!m_pTimer->IsRunning())
-    {
-      m_pTimer->Start(TIMER_ELAPSE, false);
-    }
   }
   void StopTimer()
   {
@@ -182,7 +175,19 @@ public:
       (m_xAxisScrollbar->IsShown());
     return b;
   }
-
+  virtual bool RenderScrollbars();
+  bool RenderingToWindow()
+  {
+    return !m_bNotRenderingToWindow;
+  }
+  void SetRenderingToWindow(bool b)
+  {
+    m_bNotRenderingToWindow = !b;
+  }
+  static const wxColor &GridColor()
+  {
+    return g_ColorGrid;
+  }
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
   virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
   void SetupToolTip();
@@ -207,12 +212,13 @@ public:
 
   void OnViewChanged(wxPlotCtrlEvent &e);
   void nwxOnMouse(wxMouseEvent &event);
-  void nwxOnTimer(wxTimerEvent &e);
+  virtual void OnTimer(wxTimerEvent &e);
 
   virtual void DrawAreaWindow( wxDC *dc, const wxRect& rect );
   virtual void DrawPlotCtrl( wxDC *dc );
   virtual void ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event );
-  void DrawEntirePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72 );
+  void DrawEntirePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bForcePrintFont = false);
+  void DrawXLabels(wxDC *pDC);
   //wxString GetToolTipText(const wxPoint &pos);
 
 #if __TOOLTIP_TO_FRAME__
@@ -241,7 +247,7 @@ private:
   wxWindow *_FindFrameParent();
 
 private:
-  static const int TIMER_ELAPSE;
+  static const wxColor g_ColorGrid;
   static const unsigned int TIMER_COUNT;
   void _SetupCursor(const nwxPointLabel *pLabel);
   void _ClearToolTip();
@@ -277,8 +283,8 @@ private:
   nwxPlotDrawerXShade m_Xshade;
   wxFont m_fontLabel;
   wxPoint m_PositionMouse;
-  wxTimer *m_pTimer;
   int m_nDisableToolTip;
+  bool m_bNotRenderingToWindow;
   bool m_bClear;
   bool m_bStopTimer;
   unsigned int m_nTimeHere;

@@ -32,6 +32,7 @@
 
 
 set<nwxTimerReceiver *> nwxTimerReceiver::g_Receivers;
+nwxTimerReceiver::TASK_SET nwxTimerReceiver::g_Tasks;
 
 nwxTimerReceiver::nwxTimerReceiver()
 {
@@ -41,4 +42,72 @@ nwxTimerReceiver::nwxTimerReceiver()
 nwxTimerReceiver::~nwxTimerReceiver()
 {
   UnRegisterTimerReceiver(this);
+}
+
+void nwxTimerReceiver::UnRegisterTimerReceiver(nwxTimerReceiver *p)
+{
+  set<nwxTimerReceiver *>::iterator itrR =
+    g_Receivers.find(p);
+  if (itrR != g_Receivers.end())
+  {
+    g_Receivers.erase(itrR);
+  }
+  TASK_RANGE task_range = g_Tasks.equal_range(p);
+  bool bFound = false;
+  for (TASK_ITERATOR itr = task_range.first;
+    itr != task_range.second;
+    ++itr)
+  {
+    bFound = true;
+    delete itr->second;
+  }
+  if (bFound)
+  {
+    g_Tasks.erase(task_range.first, task_range.second);
+  }
+}
+
+bool nwxTimerReceiver::AddTask(nwxTimerTask *pTask)
+{
+  bool bRtn = (g_Receivers.find(this) != g_Receivers.end());
+  if(bRtn)
+  {
+    g_Tasks.insert(TASK_SET::value_type(this, pTask));
+  }
+  else
+  {
+    delete pTask;
+  }
+  return bRtn;
+}
+
+
+void nwxTimerReceiver::DispatchTasks(wxTimerEvent &e)
+{
+  TASK_RANGE task_range = g_Tasks.equal_range(this);
+  std::vector<TASK_ITERATOR> kill_list;
+  std::vector<TASK_ITERATOR>::reverse_iterator itrKill;
+  TASK_ITERATOR itr;
+  nwxTimerTask *pTask;
+  for (itr = task_range.first;
+    itr != task_range.second;
+    ++itr)
+  {
+    pTask = itr->second;
+    if (pTask->IsReady(e) ? pTask->Run(e) : false)
+    {
+      // if Run() returns true, this task is done
+      //  add to kill list and delete in the next loop
+      kill_list.push_back(itr);
+    }
+  }
+  for (itrKill = kill_list.rbegin();
+      itrKill != kill_list.rend();
+      ++itrKill)
+  {
+    itr = *itrKill;
+    pTask = itr->second;
+    delete pTask;
+    g_Tasks.erase(itr);
+  }
 }

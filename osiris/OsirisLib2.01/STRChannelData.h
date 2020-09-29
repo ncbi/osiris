@@ -180,6 +180,7 @@ public:
 	virtual double GetSecondaryContentAtTime (double t) const;
 	virtual double GetTimeForSpecifiedID (double id);
 	virtual CoordinateTransform* GetIDMap ();
+	virtual bool ChannelIsILS () const { return true; }
 
 	virtual bool AddILSToHistoryList ();
 	virtual ILSCandidate* TestILSStartAndEndSignals (DataSignal* startSignal, DataSignal* endSignal);

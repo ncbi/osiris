@@ -402,6 +402,7 @@ int LadderInputFile :: AssignString () {
 	RGIndexedLabel* nextIndexedLabel;
 	size_t position;
 	RGString channelString;
+	RGString locusOLString;
 	int i;
 	double dVersion;
 
@@ -531,7 +532,7 @@ int LadderInputFile :: AssignString () {
 		mILSFamilyName = mStringRight;
 		Locus::SetILSFamilyName (mStringRight);  // Yes!  For ILS families
 		newString = new RGString(mStringRight);
-		mILSNames.Append(newString);
+//		mILSNames.Append(newString);
 		status = 0;
 	}
 
@@ -577,6 +578,26 @@ int LadderInputFile :: AssignString () {
 		}
 	}
 
+	else if (mStringLeft.FindSubstring ("AcceptedOL", position)) {
+
+		temp = SplitUsingColon (mStringLeft, locusOLString);
+
+		if (temp.Length () == 0)
+			cout << "This shouldn't happen, but here goes... couldn't find OL locus string" << endl;
+
+		else {
+
+			//  locusOLString is the locus for the OL allele and mStringRight is the OL allele name
+			mAcceptedOLAlleles << "        <Locus>\n";
+			mAcceptedOLAlleles << "          <Name>" << locusOLString << "</Name>\n";
+			mAcceptedOLAlleles << "          <Allele>" << mStringRight << "</Allele>\n";
+			mAcceptedOLAlleles << "        </Locus>\n";
+			cout << "Found accepted OL Allele Specification:  " << locusOLString << " = " << mStringRight << "\n";
+			status = 0;
+		}
+
+	}
+
 	else if (mStringLeft == "HID") {
 
 		if (mStringRight == "true")
@@ -591,7 +612,7 @@ int LadderInputFile :: AssignString () {
 	else if (mStringLeft == "StdControl") {
 
 		if ((mStringRight == "DNA007") || (mStringRight == "9947A") || (mStringRight == "9948") ||
-			(mStringRight == "K562") || (mStringRight == "2800M") || (mStringRight == "MK1")) {
+			(mStringRight == "K562") || (mStringRight == "2800M") || (mStringRight == "MK1") || (mStringRight == "M308")) {
 
 				mStandardPositiveControlName = mStringRight;
 				status = 0;

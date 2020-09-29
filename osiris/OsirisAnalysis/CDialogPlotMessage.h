@@ -45,7 +45,8 @@ public:
   {
     MSG_TYPE_HISTORY,
     MSG_TYPE_EDIT,
-    MSG_TYPE_TABLE
+    MSG_TYPE_TABLE,
+    MSG_TYPE_PRINT
   };
   static const wxString &GetMessage(int nType)
   {
@@ -57,6 +58,9 @@ public:
       break;
     case MSG_TYPE_TABLE:
       psRtn = &MSG_TABLE;
+      break;
+    case MSG_TYPE_PRINT:
+      psRtn = &MSG_PRINT;
       break;
     case MSG_TYPE_EDIT:
     default:
@@ -77,6 +81,8 @@ private:
   static const wxString MSG_EDIT;
   static const wxString MSG_HISTORY;
   static const wxString MSG_TABLE;
+  static const wxString MSG_PRINT;
+
 };
 
 

@@ -50,6 +50,7 @@
 #include "nwx/nwxRound.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxDialogBitmap.h"
+#include "nwx/PersistentSize.h"
 #include "OsirisFileTypes.h"
 #include "CFramePlot.h"
 
@@ -501,6 +502,34 @@ void CDialogExportPlot::OnButtonBrowse(wxCommandEvent &)
     m_pTextFileName->ChangeValue(sFileName);
   }
 }
+
+
+class CDialogExportPlotPreview : public nwxDialogBitmap
+{
+public:
+  CDialogExportPlotPreview(
+    wxBitmap *pBitmap,
+    wxWindow *parent,
+    const wxPoint &pos,
+    const wxSize &sz) :
+    nwxDialogBitmap(
+      pBitmap, parent, wxID_ANY, "Preview Image",
+      GET_PERSISTENT_POSITION_DEFAULT(CDialogExportPlotPreview, pos),
+      GET_PERSISTENT_SIZE_DEFAULT(CDialogExportPlotPreview, sz), 
+      mainApp::DIALOG_STYLE | wxMAXIMIZE_BOX)
+  {}
+  virtual ~CDialogExportPlotPreview() {}
+  DECLARE_PERSISTENT_SIZE_POSITION
+  DECLARE_EVENT_TABLE()
+};
+
+IMPLEMENT_PERSISTENT_SIZE_POSITION(CDialogExportPlotPreview)
+
+BEGIN_EVENT_TABLE(CDialogExportPlotPreview, nwxDialogBitmap)
+EVT_PERSISTENT_SIZE_POSITION(CDialogExportPlotPreview)
+END_EVENT_TABLE()
+
+
 void CDialogExportPlot::OnButtonPreview(wxCommandEvent &)
 {
   if(Validate())
@@ -523,9 +552,8 @@ void CDialogExportPlot::OnButtonPreview(wxCommandEvent &)
       sz.SetWidth(sz.GetWidth() - nx - nx);
       sz.SetHeight(sz.GetHeight() - ny - ny);
 
-      nwxDialogBitmap dlg(
-        m_pBitmap,this,wxID_ANY,"Preview Image",
-        pt,sz,mainApp::DIALOG_STYLE | wxMAXIMIZE_BOX);
+      CDialogExportPlotPreview dlg(
+        m_pBitmap,this,pt,sz);
       dlg.SetFitToWindow();
       dlg.ShowModal();
     }

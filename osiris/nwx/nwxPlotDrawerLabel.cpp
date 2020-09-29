@@ -49,10 +49,11 @@ const int nwxPointLabel::ALIGN_DEFAULT = (wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BO
 //  bitwise flags
 const int nwxPointLabel::STYLE_BOX = 1;
 const int nwxPointLabel::STYLE_DISABLED = 2;
+const int nwxPointLabel::STYLE_BLACK_TEXT = 4;
 
 bool nwxPointLabel::operator == (const nwxPointLabel &x) const
 {
-  return 
+  return
     (m_nLabelStyle == x.m_nLabelStyle) &&
     (m_pData == x.m_pData) &&
     (m_dy == x.m_dy) &&
@@ -125,7 +126,53 @@ bool nwxPointLabel::operator < (const nwxPointLabel &x) const
   }
   return bRtn;
 }
+void nwxPlotDrawerLabel::DrawSemiTransparentRectangle(wxDC *pdc, const wxRect &r)
+{
+  int nXmin = r.GetLeft();
+  int nYmin = r.GetTop();
+  int nWidth = r.GetWidth();
+  int nHeight = r.GetHeight();
+  int nx, ny;
+  wxColour c;
+  wxColour cNew;
+  wxPen pen(*wxBLACK, 1, wxPENSTYLE_SOLID);
+  wxBitmap bitmap(nWidth, nHeight);
+  wxMemoryDC dc(bitmap);
+  dc.Blit(0,0,nWidth,nHeight,pdc, nXmin, nYmin,wxCOPY);
+#ifdef __WXMAC__
+  wxImage img = bitmap.ConvertToImage();
+#endif
 
+  for (nx = 0; nx < nWidth; ++nx)
+  {
+    for (ny = 0; ny < nHeight; ++ny)
+    {
+#ifdef __WXMAC__
+	c.Set(img.GetRed(nx,ny), img.GetGreen(nx,ny), img.GetBlue(nx,ny));
+#else
+	dc.GetPixel(nx, ny, &c);
+#endif
+
+#if 1
+      // 50-50
+      cNew.Set(
+        (c.Red() >> 1) | 128,
+        (c.Green() >> 1) | 128,
+        (c.Blue() >> 1) | 128);
+#else
+      // 25-75
+      cNew.Set(
+        (c.Red() >> 2) | 192,
+        (c.Green() >> 2) | 192,
+        (c.Blue() >> 2) | 192);
+#endif
+      pen.SetColour(cNew);
+      dc.SetPen(pen);
+      dc.DrawPoint(nx, ny);
+    }
+  }
+  pdc->Blit(nXmin, nYmin, nWidth, nHeight, &dc, 0, 0);
+}
 void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
 {
   size_t nSize = m_setLabels.size();
@@ -134,8 +181,10 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     SET_LABEL::iterator itr;
     vector<bool> vbCanMoveUp;
     wxRect rect;
-    const int PAD_X = 2;
+    const int PAD_Y = m_nMinY;
+    const int PAD_X = 2 * (m_nMinY > 0 ? m_nMinY : 1);
     const int DELTA_WIDTH = PAD_X + PAD_X;
+    const int DELTA_HEIGHT = PAD_Y + PAD_Y;
     int nx;
     int ny;
     int hl;
@@ -146,9 +195,11 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     wxBrush brushSave = pdc->GetBrush();
     wxPen penSave = pdc->GetPen();
     wxFont fontSave = pdc->GetFont();
-    pdc->SetFont(m_owner->GetAxisFont());
+    wxFont fontUse(m_owner->GetAxisFont());
+    fontUse.MakeBold();
+    pdc->SetFont(fontUse);
 
-    pdc->SetTextBackground(wxColour(255,255,255,wxALPHA_TRANSPARENT));
+    pdc->SetTextBackground(wxColour(255, 255, 255, wxALPHA_TRANSPARENT));
     m_vRect.clear();
     m_vRect.reserve(nSize);
     m_vpLabel.clear();
@@ -165,6 +216,7 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       pdc->GetMultiLineTextExtent(
         label.GetLabel(),&rect.width,&rect.height,&hl);
       rect.width += DELTA_WIDTH;
+      rect.height += DELTA_HEIGHT;
       if(nAlign & wxALIGN_CENTER)
       {
         nx -= (rect.width >> 1);
@@ -189,8 +241,6 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       rect.SetY(ny);
       m_vpLabel.push_back(&label);
       m_vRect.push_back(rect);
-  //    pdc->SetTextForeground(label.GetColour());
-  //    pdc->DrawText(label.GetLabel(),nx,ny);
     }
 
     // now move items if they overlap
@@ -290,28 +340,33 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
       }
     }
     wxPen pen(*wxBLACK_PEN);
+    if (m_nMinY > 0)
+    {
+      pen.SetWidth(m_nMinY);
+    }
     pdc->SetBrush(*wxWHITE_BRUSH);
     for(i = 0; i < nSize; i++)
     {
       const nwxPointLabel *pLabel = m_vpLabel.at(i);
       const wxRect &rrect(m_vRect.at(i));
-      pdc->SetTextForeground(pLabel->GetColour());
+      pdc->SetTextForeground(pLabel->GetTextColour());
       pen.SetColour(pLabel->GetColour());
       pdc->SetPen(pen);
       nX = rrect.GetX();
       nY = rrect.GetY();
       int nStyle = pLabel->GetStyle();
-      pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY);
+      DrawSemiTransparentRectangle(pdc, rrect);
+      if (nStyle & nwxPointLabel::STYLE_BOX)
+      {
+        pdc->SetBrush(*wxTRANSPARENT_BRUSH);
+        pdc->DrawRectangle(rrect);
+      }
+      pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY + PAD_Y);
       if(nStyle & nwxPointLabel::STYLE_DISABLED)
       {
         wxPoint pt1(nX,nY);
         wxPoint pt2(nX + rrect.GetWidth(),nY + rrect.GetHeight());
         pdc->DrawLine(pt1,pt2);
-      }
-      if(nStyle & nwxPointLabel::STYLE_BOX)
-      {
-        pdc->SetBrush(*wxTRANSPARENT_BRUSH);
-        pdc->DrawRectangle(rrect);
       }
     }
     pdc->SetTextForeground(cFG);
@@ -356,7 +411,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
 {
   SET_LABEL::iterator itr;
   wxRect rect;
-  wxPoint ptArea = m_owner->GetPlotArea()->GetPosition();
+  wxPoint ptArea = m_owner->GetAreaRect().GetPosition();
   int nx;
   int ny;
   int hl;
@@ -366,10 +421,12 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   wxBrush brushSave = pdc->GetBrush();
   wxPen penSave = pdc->GetPen();
   wxFont fontSave = pdc->GetFont();
-  wxCoord nClipX;
-  wxCoord nClipY;
-  wxCoord nClipW;
-  wxCoord nClipH;
+  wxFont fontUse = m_owner->GetAxisFont();
+  fontUse.MakeBold();
+  wxCoord nClipX = 0;
+  wxCoord nClipY = 0;
+  wxCoord nClipW = 0;
+  wxCoord nClipH = 0;
   // if there are multiple clipping regions, this could be a problem
   pdc->GetClippingBox(&nClipX,&nClipY,&nClipW,&nClipH);
   if(nClipW)
@@ -390,7 +447,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     pdc->SetPen(*wxWHITE_PEN);
     pdc->DrawRectangle(clearRect);
   }
-  pdc->SetFont(m_owner->GetAxisFont());
+  pdc->SetFont(fontUse);
   pdc->SetTextBackground(wxColour(255,255,255,wxALPHA_OPAQUE));
 
   size_t nSize(m_setLabels.size());
@@ -434,7 +491,7 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
       nx += ptArea.x;
       rect.SetX(nx);
       rect.SetY(ny);
-      pdc->SetTextForeground(label.GetColour());
+      pdc->SetTextForeground(label.GetTextColour());
       pdc->DrawRectangle(rect);
       pdc->DrawText(label.GetLabel(),nx,ny);
       rect.x -= ptArea.x;  // set to plot area coordinates

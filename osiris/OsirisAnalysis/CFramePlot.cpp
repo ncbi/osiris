@@ -67,6 +67,9 @@
 #include "CParmOsiris.h"
 #include "CPanelHistoryMenu.h"
 #include "CNotebookEditSample.h"
+#include "CPrintOutPlot.h"
+#include "CGridAnalysisDisplay.h"
+#include "nwx/vectorptr.h"
 
 #if FP_SCROLL_EVENT
 DEFINE_EVENT_TYPE(wxEVT_SCROLL_PLOT)
@@ -455,6 +458,7 @@ CFramePlot::CFramePlot(
     m_pDialogPlot(NULL),
     m_pData(pData),
     m_pOARfile(NULL),
+    m_pSample(NULL),
     m_pColors(pColors),
     m_pMenu(new CFramePlotMenu),
     m_pMenuHistory(NULL),
@@ -463,6 +467,7 @@ CFramePlot::CFramePlot(
     m_TimeLastRebuild(NULL),
     m_nState(FP_NO_STATE),
     m_pPlotSyncTo(NULL),
+    m_pPlotForBitmap(NULL),
 #if DELAY_PLOT_AREA_SYNC
     m_pPlotSyncThisTo(NULL),
 #endif
@@ -659,21 +664,23 @@ void CFramePlot::RebuildAll()
   CBatchPlot BATCH(this);
   m_pPanel->Show(false);
   _UpdateMenu();
-  map<unsigned int,CPanelPlot *> mapNrPlot;
+  map<unsigned int, CPanelPlot *> mapNrPlot;
+  typedef std::map<CPanelPlot *, wxRect2DDouble> SAVE_RECT;
+  SAVE_RECT mapRect;
   set<CPanelPlot *>::iterator itr;
-  map<unsigned int,CPanelPlot *>::iterator itrm;
+  map<unsigned int, CPanelPlot *>::iterator itrm;
   bool bEnableAppend = false;
   bool bEnableDelete = false;
   unsigned int nChannelCount = m_pData->GetChannelCount();
   unsigned int nMapSize;
 
-  for(itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
+  for (itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
   {
-    if(mapNrPlot.size() < nChannelCount)
+    if (mapNrPlot.size() < nChannelCount)
     {
       mapNrPlot.insert(
-        map<unsigned int,CPanelPlot *>::value_type(
-        (*itr)->GetPlotNumber(),*itr) );
+        map<unsigned int, CPanelPlot *>::value_type(
+        (*itr)->GetPlotNumber(), *itr));
     }
     else
     {
@@ -685,7 +692,7 @@ void CFramePlot::RebuildAll()
 
   // kill all hidden plots
 
-  for(itr = m_setPlotsHidden.begin();
+  for (itr = m_setPlotsHidden.begin();
     itr != m_setPlotsHidden.end();
     ++itr)
   {
@@ -699,20 +706,37 @@ void CFramePlot::RebuildAll()
   bEnableAppend = nMapSize < nChannelCount;
   bEnableDelete = nMapSize > 1;
 
-  for(itrm = mapNrPlot.begin();
+  CPanelPlot *pplot = NULL;
+  CPanelPlot *pold = NULL;
+
+  vectorptr< TnwxBatch<CPanelPlot> > listBatch;
+  listBatch.reserve(mapNrPlot.size());
+
+  for (itrm = mapNrPlot.begin();
     itrm != mapNrPlot.end();
     ++itrm)
   {
-    CPanelPlot *pplot = GetPanelPlot(false,itrm->first);
-    CPanelPlot *pold = itrm->second;
+    pplot = GetPanelPlot(false, itrm->first);
+    listBatch.push_back(new TnwxBatch<CPanelPlot>(pplot));
+    pold = itrm->second;
     pplot->CopySettings(*pold);
+    // save view rect because it gets corrupted somewhere
+    mapRect.insert(SAVE_RECT::value_type(pplot, pplot->GetViewRect()));
     pplot->EnableAppend(bEnableAppend);
     pplot->EnableDelete(bEnableDelete);
     pold->Destroy();
-    m_pSizer->Add(pplot,1,wxEXPAND);
+    m_pSizer->Add(pplot, 1, wxEXPAND);
   }
   _SetupTitle();
   _UpdateViewState(true);
+  // restore view rects saved above
+  for (SAVE_RECT::iterator itrr = mapRect.begin();
+    itrr != mapRect.end();
+    ++itrr)
+  {
+    pplot = itrr->first;
+    pplot->SetViewRect(itrr->second, false, 1);
+  }
 }
 void CFramePlot::SetOARfile(COARfile *pFile)
 {
@@ -924,6 +948,8 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     _UpdateScrollbarMenuLabel();
     CParmOsirisGlobal parm;
     parm->SetHideGraphicScrollbar(bWasShown);
+    //RebuildAll();
+    _RebuildCurves();
   }
   else if(nID == IDmenuShowXBPS)
   {
@@ -933,11 +959,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     CParmOsirisGlobal parm;
     parm->SetPlotDataXBPS(bXBPS);
     SetXBPSValue(bXBPS);
-    set<CPanelPlot *>::iterator itr;
-    for(itr = m_setPlots.begin(); itr != m_setPlots.end(); ++itr)
-    {
-      (*itr)->RebuildCurves();
-    }
+    _RebuildCurves();
   }
   else if(nID == IDExportGraphic)
   {
@@ -1278,7 +1300,7 @@ void CFramePlot::AddPlot(CPanelPlot *pPreceed, bool bUpdateView)
       m_pSizer->Insert(nr,p,1,wxEXPAND);
       UpdatePlotNumbers();
     }
-    pPreceed->SetViewRect(rect);
+    pPreceed->SetViewRect(rect, false, 1);
     p->CopySettings(*pPreceed);
     if(bUpdateView)
     {
@@ -1471,7 +1493,7 @@ CPanelPlot *CFramePlot::GetPanelPlot(bool bFirst, unsigned int nr)
   {
     int nMenu = (int)m_vpPlotsByMenuNumber.size();
     CMenuHistory *pMenuHist = _GetMenuHistoryPopup();
-    pRtn = new CPanelPlot(this,m_pData,m_pOARfile,pMenuHist,m_pColors,nMenu,bFirst,nr,true);
+    pRtn = new CPanelPlot(this, m_pData, m_pOARfile, pMenuHist, m_pColors, nMenu, bFirst, nr); // , true);  // EXT TIMER
     m_vpPlotsByMenuNumber.push_back(pRtn);
     if(bFirst)
     {
@@ -1546,7 +1568,7 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
       if( (pPlot != p) && pPlot->SyncValue())
       {
         TnwxBatch<CPanelPlot> xxx2(pPlot);
-        pPlot->SetViewRect(r);
+        pPlot->SetViewRect(r, false, 0);
         bRtn = true;
       }
     }
@@ -1555,19 +1577,81 @@ bool CFramePlot::_SyncTo(CPanelPlot *p)
   return bRtn;
 }
 
+
+class DelayZoomToLocus : public nwxTimerTaskCount
+{
+public:
+  // delay a call to CFramePlot::ZoomToLocus() by 'nDelay' timer intervals
+  // nwxTimerTaskCount is in ../nwx/nwxTimerReceiver.h, cpp
+  DelayZoomToLocus(CFramePlot *pPlot, const wxString &sLocus, unsigned int nDelay) :
+    nwxTimerTaskCount(nDelay),
+    m_sLocus(sLocus),
+    m_pFrame(pPlot)
+  {}
+  virtual ~DelayZoomToLocus() {}
+  virtual bool Run(wxTimerEvent &)
+  {
+    bool b = m_pFrame->IsShown();
+    if (b)
+    {
+      m_pFrame->ZoomToLocus(m_sLocus, 0);
+    }
+    return b;
+  }
+private:
+  const wxString m_sLocus;
+  CFramePlot *m_pFrame;
+};
+
+class DelayZoomOut : public nwxTimerTaskCount
+{
+public:
+  // delay a call to CFramePlot::ZoomOut() by 'nDelay' timer intervals
+  // nwxTimerTaskCount is in ../nwx/nwxTimerReceiver.h, cpp
+  DelayZoomOut(CFramePlot *pPlot, bool bAll, unsigned int nDelay) :
+    nwxTimerTaskCount(nDelay),
+    m_pFrame(pPlot),
+    m_bAll(bAll)
+  {}
+  virtual ~DelayZoomOut() {}
+  virtual bool Run(wxTimerEvent &)
+  {
+    bool b = m_pFrame->IsShown();
+    if (b)
+    {
+      m_pFrame->ZoomOut(m_bAll, 0);
+    }
+    return b;
+  }
+private:
+  CFramePlot *m_pFrame;
+  bool m_bAll;
+};
+
 void CFramePlot::ZoomOut(bool bAll,unsigned int nDelay )
 {
-  wxRect2DDouble r = GetZoomOutRect(bAll);
-  ZoomAll(r,nDelay);
+  if (nDelay)
+  {
+    AddTask(new DelayZoomOut(this, bAll, nDelay));
+  }
+  else
+  {
+    wxRect2DDouble r = GetZoomOutRect(bAll);
+    ZoomAll(r, nDelay);
+  }
 }
 
 void CFramePlot::ZoomToLocus(const wxString &sLocus,unsigned int nDelay )
 {
-  if(!m_setPlots.size()) {} // do nothing
+  if (nDelay)
+  {
+    AddTask(new DelayZoomToLocus(this, sLocus, nDelay));
+  }
+  else if(!m_setPlots.size()) {} // do nothing
   else if(sLocus.IsEmpty())
   {
     // no locus specified
-    ZoomOut(false,0);
+    ZoomOut(false, nDelay);
   }
   else
   {
@@ -1641,11 +1725,12 @@ void CFramePlot::EditPeak(COARpeakAny *pPeak)
 {
   if(m_pOARfile == NULL)
   {
-    wxCommandEvent e;
-    e.SetId(-1);
-    OnTableButton(e);
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT);
     if(m_pOARfile != NULL)
     {
+      wxCommandEvent e;
+      e.SetId(-1);
+      OnTableButton(e);
       RaiseWindow();
     }
   }
@@ -1654,11 +1739,18 @@ void CFramePlot::EditPeak(COARpeakAny *pPeak)
     CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
     if(pFrame != NULL)
     {
-      COARsample *pSample =
-        m_pOARfile->GetSampleByName(m_pData->GetFilename());
-      pFrame->EditPeak(pPeak,pSample,this);
+      pFrame->EditPeak(pPeak,GetSample(),this);
     }
   }
+}
+
+COARsample *CFramePlot::GetSample()
+{
+  if ((m_pOARfile != NULL) && (m_pSample == NULL))
+  {
+    m_pSample = m_pOARfile->GetSampleByName(m_pData->GetFilename());
+  }
+  return m_pSample;
 }
 
 void CFramePlot::OnHistoryButton(wxCommandEvent &e)
@@ -1755,7 +1847,8 @@ void CFramePlot::_UpdateViewState(bool bForce)
   }
   else
   {
-    CFramePlotState nState = 
+    bool bReRender = false;
+    CFramePlotState nState =
       m_bFixed 
       ? FP_FIXED
       : ( 
@@ -1777,6 +1870,7 @@ void CFramePlot::_UpdateViewState(bool bForce)
       {
         m_pPanel->SetScrollRate(0,SCROLL_UNITS);
       }
+      bReRender = true;
     }
     if(m_nState == FP_VARIABLE_MANY_PLOTS)
     {
@@ -1784,6 +1878,10 @@ void CFramePlot::_UpdateViewState(bool bForce)
       _UpdateVirtualWidth();
     }
     m_nDelayViewState = 0;
+    if (bReRender)
+    {
+      mainApp::ReRender(m_pPanel);
+    }
   }
 }
 void CFramePlot::_UpdateVirtualWidth()
@@ -2049,128 +2147,129 @@ void CFramePlot::OnSize(wxSizeEvent &e)
   e.Skip(true);
 }
 
-wxBitmap *CFramePlot::CreateBitmap(
-  int nWidth, int nHeight, int nDPI, const wxString &sTitle)
+
+void CFramePlot::_SetupBitmapPlot()
 {
-  wxBitmap *pBitmap = new wxBitmap(nWidth,nHeight,32);
-  wxMemoryDC dc(*pBitmap);
-  int nTitleOffset = 0;
-  int nPlotHeight;
-
-
-  // initialize bitmap to white -- probably not necessary
-
-  dc.SetBackground(*wxWHITE_BRUSH);
-  dc.SetBackgroundMode(wxSOLID);
-  dc.Clear();
-
-  // set up title
-
-  if( (!sTitle.IsEmpty()) && (!m_setPlots.empty()) )
+  // called from CFramePlot::_GetBitmapPlot()
+  if (m_pPlotForBitmap != NULL)
   {
-    wxSize szTitle;
-    wxFont fn = (*m_setPlots.begin())->GetPlotCtrl()->GetAxisFont();
-    double dSize = double(fn.GetPointSize() * nDPI) * (1.0/36.0);
-    // scale font by multplying by DPi and dividing by 72, then double
-    int nMaxX = (nWidth * 9) / 10;
-    int nMaxY = nHeight / 10;
-    double dResize = 1.0;
-    bool bResize = true;
-    fn.SetPointSize(nwxRound::Round(dSize));
-    //fn.SetWeight(wxFONTWEIGHT_BOLD);  // comment out, kinda ugly
-
-    dc.SetFont(fn);
-    dc.SetTextForeground(*wxBLACK);
-    dc.SetTextBackground(*wxWHITE);
-    szTitle = dc.GetTextExtent(sTitle);
-    if(szTitle.GetWidth() > nMaxX)
-    {
-      dResize = (double)nMaxX / (double)szTitle.GetWidth();
-      bResize = true;
-    }
-    if(szTitle.GetHeight() > nMaxY)
-    {
-      double d = (double) nMaxY / (double) szTitle.GetHeight();
-      if(d < dResize)
-      {
-        dResize = d;
-      }
-      bResize = true;
-    }
-    if(bResize)
-    {
-      int nPt = (int)floor(dSize * dResize);
-      if(nPt < 4) { nPt = 4;}
-      fn.SetPointSize(nPt);
-      dc.SetFont(fn);
-      szTitle = dc.GetTextExtent(sTitle);
-    }
-    nTitleOffset = szTitle.GetHeight();
-    int nTitleHalf = nTitleOffset >> 1;
-    nTitleOffset += nTitleHalf;
-    int nXoffset = nWidth - szTitle.GetWidth();
-    if(nXoffset < 0)
-    {
-      nXoffset = 0;
-    }
-    nXoffset >>= 1;
-    dc.DrawText(sTitle,nXoffset,nTitleHalf);
+    m_pPlotForBitmap->Destroy();
   }
+  m_pPlotForBitmap = new CPanelPlot(this, m_pData, m_pOARfile, NULL, m_pColors, 0, false, 0, true);   // EXT TIMER , true);
+  m_pPlotForBitmap->SetRenderingToWindow(false);
+  m_pPlotForBitmap->SetSync(false);
+  m_pPlotForBitmap->Show(false);
+  m_pPlotForBitmap->BeginBatch();
+}
 
-  nPlotHeight = (nHeight - nTitleOffset) / (int) m_setPlots.size();
-  if(nPlotHeight >= 20)
+wxBitmap *CFramePlot::CreateBitmap(
+  int nWidth, int nHeight, int nDPI, 
+  const wxString &sTitlePNG, // used only for export PNG, should be empty for printing
+  int nPlotsPerPage, // this and following parameters are used for printing
+  int nPageNr,
+  bool bForcePrintFont)
+{
+  wxSize sz(nWidth, nHeight);
+  wxBitmap *pBitmap = new wxBitmap(sz, 32);
+  wxMemoryDC dc(*pBitmap);
+  // initialize bitmap to white -- probably not necessary
+  dc.SetBackground(*wxWHITE_BRUSH);
+  dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+  dc.Clear();
+  if(nPageNr > 0)
   {
-    set<CPanelPlot *>::iterator itr;
-    wxRect rect(0,0,nWidth,nPlotHeight);
-    double dDPI = (double) nDPI;
-    CPanelPlot *pPlot;
-    nwxPlotCtrl *pPlotCtrl;
-    int nY;
-
-    // there is a axis sync bug, so here is the work around
-    for(itr = m_setPlots.begin();
-      itr != m_setPlots.end();
-      ++itr)
+    wxRect rect(sz);
+    double dLabelExtension;
+    double dDPI = (double)nDPI;
+    int nPage = nPageNr - 1;
+    int nPlotCount = (int)m_setPlots.size();
+    if (nPlotsPerPage > nPlotCount)
     {
-      pPlot = *itr;
-      if(pPlot->SyncValue())
+      nPlotsPerPage = nPlotCount;
+    }
+    int nSkip = nPage * nPlotsPerPage;
+    int nPlotsOnThisPage = nPlotCount - nSkip;
+    if (nPlotsOnThisPage > nPlotsPerPage)
+    {
+      nPlotsOnThisPage = nPlotsPerPage;
+    }
+    wxString sTitle(sTitlePNG);
+    wxString sTitleInfo;
+    CPanelPlot *pPanelPlot = _GetBitmapPlot(bForcePrintFont);
+
+    if (bForcePrintFont && sTitlePNG.IsEmpty())
+    {
+      pPanelPlot->TitleStrings(&sTitleInfo, nPageNr);
+      pPanelPlot->SampleTitle(&sTitle);
+    }
+    int nXLabelHeight = pPanelPlot->GetXAxisLabelHeight(&dc, rect, dDPI, bForcePrintFont);
+    int nTitleOffset = pPanelPlot->DrawPlotTitleToDC(
+      &dc, sTitle, sTitleInfo, nWidth, nHeight, dDPI, bForcePrintFont);
+
+    int nLabelHeight = pPanelPlot->GetPlotCtrl()->GetTextHeight(wxT("-123456789.0"), &dc, rect, dDPI, bForcePrintFont);
+
+    int nPlotAreaHeight = nHeight - nXLabelHeight - nTitleOffset;
+    int nPlotHeight = nPlotAreaHeight / nPlotsPerPage;
+    int nRoundingOffset = nPlotAreaHeight - (nPlotHeight * nPlotsPerPage);
+    nTitleOffset += nRoundingOffset;
+
+    if (nPlotHeight >= 20)
+    {
+      wxRect rectPlot(0, 0, nWidth, nPlotHeight);
+      set<CPanelPlot *>::iterator itr;
+      CPanelPlot *pPlot;
+      CPanelPlot *vpPlots[CHANNEL_MAX];
+      memset((void *)vpPlots, 0, sizeof(vpPlots));
+      std::unique_ptr<wxBitmap> pBitmapPlot
+      (new wxBitmap(nWidth, nPlotHeight, 32));
+      wxMemoryDC dcPlot(*pBitmapPlot);
+      int nY;
+      unsigned int nr;
+      bool bSyncDone = false;
+
+#if 1
+      // there is a axis sync bug, so here is the work around
+      // added - put plots in vpPlots array in plot number order
+      for (itr = m_setPlots.begin();
+        itr != m_setPlots.end();
+        ++itr)
       {
-        SyncTo(pPlot);
-        break;
+        pPlot = *itr;
+        nr = pPlot->GetPlotNumber();
+        vpPlots[nr] = pPlot;
+        if ((!bSyncDone) && pPlot->SyncValue())
+        {
+          SyncTo(pPlot);
+          bSyncDone = true;
+        }
+      }
+#endif
+      int nPlotsToRender = nPlotsOnThisPage;
+      int nLast = nSkip + nPlotsToRender;
+      nY = nTitleOffset;
+      for (int n = nSkip; n < nLast; ++n)
+      {
+        pPlot = vpPlots[n];
+        dcPlot.SetBackground(*wxWHITE_BRUSH);
+        dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+        dcPlot.DestroyClippingRegion();
+        dcPlot.Clear();
+        dLabelExtension = pPlot->GetLabelHeightExtension();
+        pPanelPlot->CopySettings(*pPlot, 0, bForcePrintFont);
+        pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
+        pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
+        dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
+        nY += nPlotHeight;
       }
     }
-#ifdef __WXMAC__
-    for(itr = m_setPlots.begin();
-      itr != m_setPlots.end();
-      ++itr)
-    {
-      // create separate bitmap/dc for each plot and do a Blit to copy to main bitmap/dc
-      wxBitmap BitmapTmp(nWidth,nPlotHeight,32);
-      wxMemoryDC dcTmp(BitmapTmp);
-      dcTmp.SetBackground(*wxWHITE_BRUSH);
-      dcTmp.Clear();
-      pPlot = *itr;
-      nY = (int)pPlot->GetPlotNumber();
-      pPlotCtrl = pPlot->GetPlotCtrl();
-      pPlotCtrl->DrawEntirePlot(&dcTmp,rect,dDPI);
-      int nYdest = (nY * nPlotHeight)  + nTitleOffset;
-      dc.Blit(0,nYdest,nWidth,nPlotHeight,&dcTmp,0,0);
-    }
-#else
-    for(itr = m_setPlots.begin();
-      itr != m_setPlots.end();
-      ++itr)
-    {
-      pPlot = *itr;
-      nY = (int)pPlot->GetPlotNumber();
-      rect.SetY((nY * nPlotHeight) + nTitleOffset);
-      pPlotCtrl = pPlot->GetPlotCtrl();
-      pPlotCtrl->DrawEntirePlot(&dc,rect,dDPI);
-    }
-#endif
+    int nHeightCut = (nPlotsPerPage - nPlotsOnThisPage) * nPlotHeight;
+    rect.SetHeight(rect.GetHeight() - nHeightCut);
+    pPanelPlot->DrawXAxisLabelToDC(&dc, rect, dDPI, bForcePrintFont);
   }
   return pBitmap;
 }
+
+
 #if HAS_STATUS_BAR
 void CFramePlot::UpdateStatusBar()
 {
@@ -2203,6 +2302,36 @@ void CFramePlot::OnActivateCB(wxActivateEvent &e)
     }
   }
 }
+wxString CFramePlot::GetPrintTitle()
+{
+  wxString sFileName = m_pData->GetFilename();
+  COARsample *pSample =
+    (m_pOARfile != NULL && (CGridAnalysisDisplay::GetDisplayType() > 0))
+    ? m_pOARfile->GetSampleByName(sFileName)
+    : NULL;
+  return (pSample == NULL) ? sFileName  : pSample->GetSampleName();
+}
+void CFramePlot::OnPrintPreview(wxCommandEvent &)
+{
+  if (m_pOARfile == NULL)
+  {
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_PRINT);
+  }
+  if (m_pOARfile != NULL)
+  {
+    CPrintOutPlot::DoPrintPreview(this);
+  }
+}
+#ifdef __WXMAC__
+void CFramePlot::OnPageMargins(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPageMargins(this);
+}
+#endif
+void CFramePlot::OnPageSetup(wxCommandEvent &)
+{
+  CPrintOutPlot::DoPageSetup(this);
+}
 
 IMPLEMENT_PERSISTENT_SIZE(CFramePlot)
 IMPLEMENT_ABSTRACT_CLASS(CFramePlot,CMDIFrame)
@@ -2219,6 +2348,11 @@ EVT_BUTTON(IDgraphTable, CFramePlot::OnTableButton)
 EVT_BUTTON(IDmenuDisplaySample, CFramePlot::OnTableButton)
 EVT_SASH_DRAGGED(wxID_ANY,CFramePlot::OnSashDragged)
 EVT_SIZE(CFramePlot::OnSize)
+EVT_MENU(wxID_PRINT, CFramePlot::OnPrintPreview)
+#ifdef __WXMAC__
+EVT_MENU(IDpageMargins, CFramePlot::OnPageMargins)
+#endif
+EVT_MENU(IDpageSetup, CFramePlot::OnPageSetup)
 EVT_COMMAND(IDframePlot,wxEVT_SIZE_DELAY_PLOT,CFramePlot::OnSizeAction)
 #if FP_SCROLL_EVENT
 EVT_COMMAND(IDframePlot,wxEVT_SCROLL_PLOT,CFramePlot::OnScrollPlot)

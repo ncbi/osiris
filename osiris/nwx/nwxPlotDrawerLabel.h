@@ -95,7 +95,7 @@ public:
 
   wxString GetToolTipText(const wxPoint &pos);
   const nwxPointLabel *FindLabel(const wxPoint &pos, wxRect *pRect = NULL);
-
+  static void DrawSemiTransparentRectangle(wxDC *pdc, const wxRect &r);
 
 protected:
   SET_LABEL m_setLabels;

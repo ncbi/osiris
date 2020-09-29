@@ -1,5 +1,13 @@
 bin_PROGRAMS = osiris
 AUTOMAKE_OPTIONS = subdir-objects
+osiris_DEPENDENCIES = \
+../../OsirisMath/lib/libOsirisMath.a \
+../../nwxZip/lib/libnwxZip.a \
+../../nwx/lib/libnwx.a \
+../../wxXml2/lib/libwxXml2.a \
+../../wxXsl/lib/libwxXsl.a \
+../../wxthings/lib/libwxthings.a \
+../../wxplotctrl/lib/libwxplotctrl.a 
 osiris_SOURCES =  \
 ../CArchiveCollection.cpp \
 ../CArtifactLabels.cpp \
@@ -26,6 +34,8 @@ osiris_SOURCES =  \
 ../CDialogMaxLadderLabel.cpp \
 ../CDialogParameters.cpp \
 ../CDialogPlotMessage.cpp \
+../CDialogPrintColor.cpp \
+../CDialogPrintSettings.cpp \
 ../CDialogPromptNewerFile.cpp \
 ../CDialogReallyQuit.cpp \
 ../CDialogShowLabSettings.cpp \
@@ -125,6 +135,11 @@ osiris_SOURCES =  \
 ../CParmOsiris.cpp \
 ../CPlotController.cpp \
 ../CPlotData.cpp \
+../CPrintOut.cpp \
+../CPrintOutAnalysis.cpp \
+../CPrintOutPlot.cpp \
+../CPrintOutTestPattern.cpp \
+../CPrintPreview.cpp \
 ../CProcessAnalysis.cpp \
 ../CReAnalyze.cpp \
 ../CSitePath.cpp \

@@ -73,6 +73,7 @@
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
 #include "Version/OsirisVersion.h"
+#include "CPrintOutPlot.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -168,6 +169,7 @@ void mainApp::_Cleanup()
       delete m_pTimer;
       m_pTimer = NULL;
     }
+    CPrintOutPlot::StaticCleanup();
     _cleanupPinger();
   }
 }
@@ -418,6 +420,7 @@ void mainApp::_InitializeApp()
   m_pFrame->Startup(bHasArgs);
   const wxChar *psFormat(wxS("argv[%d] = %ls"));
   LogMessageV(psFormat,0,argv[0].wc_str());
+  LogMessageV(wxT("cwd: %ls"), wxGetCwd().wc_str());
   for(int i = 1; i < argc; ++i)
   {
     LogMessageV(psFormat,i,argv[i].wc_str());
@@ -499,6 +502,13 @@ void mainApp::_setupPinger()
     wxString sAppVer(OSIRIS_VERS_BASE);
     g_pPinger = new nwxPinger(g_pThis->m_pFrame, IDpingerProcess, sAppName, sAppVer, NULL, m_pFout);
   }
+}
+
+void mainApp::Raise()
+{
+#if mainFrameIsWindow
+  Get()->m_pFrame->Raise();
+#endif
 }
 
 wxString mainApp::_pingerFile()
@@ -770,7 +780,6 @@ void mainApp::ReRender(wxWindow *p)
     p->Layout();
   }
   p->Refresh();
-  p->Update();
 }
 
 #if 0
@@ -821,7 +830,7 @@ void mainApp::OnTimer(wxTimerEvent &e)
   {
     CIncrementer incr(m_nTimerCount);
 #ifdef _DEBUG
-    UnitTest::Run();
+//    UnitTest::Run();
 #endif
     nwxTimerReceiver::DispatchTimer(e);
     if(m_pFrame != NULL)

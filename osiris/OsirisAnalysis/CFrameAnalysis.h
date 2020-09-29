@@ -96,6 +96,16 @@ public:
   static const int ILS_COLUMN;
   static const int CHANNEL_ALERT_COLUMN;
   static const int STATUS_COLUMN;
+
+  // flags for retrieving all samples
+  static const int INCLUDE_ALL;
+  static const int INCLUDE_DISABLED;
+  static const int INCLUDE_LADDER;
+  static const int INCLUDE_POS_CTRL;
+  static const int INCLUDE_NEG_CTRL;
+  static const int INCLUDE_UNUSED_BITS;
+  static const int INCLUDE_DEFAULT;
+
   CFrameAnalysis(mainFrame *parent, 
     wxSize sz, const wxString &sFileName);
   CFrameAnalysis(mainFrame *parent, 
@@ -114,6 +124,8 @@ public:
   void SetLabelType(int n);
   LABEL_PLOT_TYPE GetPlotLabelType();
   wxWindow *GetInfoPanel();
+
+  size_t GetSamplesByRow(std::vector<const COARsample *> *pSamples, int FLAGS = CFrameAnalysis::INCLUDE_DEFAULT);
   CPanelPlotPreview *GetGraphPanel()
   {
     return m_pPanelPlotPreview;
@@ -193,15 +205,36 @@ public:
   void DoAcceptSample(int nReviewType,COARsample *pSample);
   void DoReviewLocus(COARsample *pSample, COARlocus *pLocus);
   void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus);
-#if 0
-  void DoEditLocus(COARsample *pSample, 
-    COARlocus *pLocus, 
-    wxWindow *pParent = NULL);
-#endif
   bool CheckIfHistoryOK();
   void CheckSaveStatus();
   void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
   void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID = -1);
+  int GetSampleNameLabelType()
+  {
+    // return IDmenuDisplayNameSample to displaying sample name
+    //        IDmenuDisplayNameFile to display file name
+    return m_pComboName->GetSelection();
+  }
+  void RemoveSample(COARsample *pSample, CFrameSample *pf)
+  {
+    MapSampleFrame::iterator itr = m_mapSamples.find(pSample);
+    if (itr != m_mapSamples.end() &&
+      itr->first == pSample &&
+      itr->second == pf)
+    {
+      m_mapSamples.erase(itr);
+    }
+#ifdef __WXDEBUG__
+    else
+    {
+      wxASSERT_MSG(0, wxT("Problem in CFrameAnalysis::RemoveSample"));
+    }
+#endif
+  }
+  COARfile *GetOARfile()
+  {
+    return m_pOARfile;
+  }
 private:
   CXSLExportFileType *GetFileTypeByID(int nID);
 
@@ -238,10 +271,6 @@ private:
   void _OnEnableSample();
   void _OnReAnalyze();
   void _OnDeleteDisabled();
-#if 0
-  void _OnEditLocus(COARsample *pSample, int nCol);
-  void _OnEditAlerts(COARsample *pSample, int nCol);
-#endif
   int _GetPreviewColumn();
   void _UpdatePreview();
   void _SetupLocusPanel(COARsample *pSample, int nChannel, const wxString &sLocusName);
@@ -336,16 +365,6 @@ private:
     }
     return nCol;
   }
-#if 0
-  void _CleanupMenus()
-  {
-    if(m_pMenu != NULL)
-    {
-      delete m_pMenu;
-      m_pMenu = NULL;
-    }
-  }
-#endif
   void _UpdateMenu();
   void _UpdateHistoryMenu(int nRow, int nCol,bool bEnabled = true);
   void _UpdateHistoryMenu(bool bEnabled)
@@ -384,6 +403,10 @@ private:
     COARsample *pSample = m_SampleSort.GetSample((size_t) nRow);
     return pSample;
   }
+  size_t _SampleCount()
+  {
+    return m_SampleSort.GetSamples()->size();
+  }
   void _AddSample(const COARsample *ps,CFrameSample *pf)
   {
     m_mapSamples.insert(
@@ -391,24 +414,7 @@ private:
   }
   bool _DestroySamples();
   bool _CheckSamples();
-public:
-  void RemoveSample(COARsample *pSample,CFrameSample *pf)
-  {
-    MapSampleFrame::iterator itr = m_mapSamples.find(pSample);
-    if(itr != m_mapSamples.end() &&
-       itr->first == pSample && 
-       itr->second == pf)
-    {
-      m_mapSamples.erase(itr);
-    }
-#ifdef __WXDEBUG__
-    else
-    {
-      wxASSERT_MSG(0,wxT("Problem in CFrameAnalysis::RemoveSample"));
-    }
-#endif
-  }
-private:
+
 
   COARfile *m_pOARfile;
   CMenuAnalysis *m_pMenu;
@@ -482,12 +488,6 @@ private:
     {
       return m_pOARfile->GetParameters();
     }
-#if 0
-    else if(_TextFile())
-    {
-      return m_pFile->GetParameters();
-    }
-#endif
     else
     {
       const CParmOsiris *p(NULL);
@@ -529,6 +529,12 @@ public:
   void OnExportCMF(wxCommandEvent &);
   void OnArchiveCreate(wxCommandEvent &);
   void OnUserExport(wxCommandEvent &);
+  void OnPrintPreview(wxCommandEvent &e);
+#ifdef __WXMAC__
+  void OnPageMargins(wxCommandEvent &e);
+#endif
+  void OnPageSetup(wxCommandEvent &e);
+
   DECLARE_PERSISTENT_SIZE  
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CFrameAnalysis)

@@ -112,6 +112,7 @@ public:
       m_pTimer->Start(250,false);
     }
   }
+  static void Raise(); // for mdi app raise the mdi window, otherwise do nothing
   void OnTimer(wxTimerEvent &);
 
 #define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);
@@ -301,6 +302,16 @@ public:
   {
     mainApp::SuppressMessages(m_bSave);
   }
+};
+
+class CWindowPointer
+{
+public:
+  CWindowPointer(wxWindow *p) : m_p(p) {}
+  ~CWindowPointer() { if(m_p != NULL) m_p->Destroy(); }
+  void Release() { m_p = NULL; }
+private:
+  wxWindow *m_p;
 };
 
 // pinger types

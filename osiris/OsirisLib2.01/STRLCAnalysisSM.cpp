@@ -35,6 +35,7 @@
 
 #include "STRLCAnalysis.h"
 #include "fsaFileData.h"
+#include "SampleData.h"
 #include "DataSignal.h"
 #include "RGTextOutput.h"
 #include "rgdirectory.h"
@@ -61,6 +62,8 @@
 #include "OsirisVersion.h"
 #include "TracePrequalification.h"
 #include "LeastMedianOfSquares.h"
+#include "STRLCAnalysis.h"
+#include "ModPairs.h"
 #include <list>
 #include <iostream>
 #include <time.h>
@@ -232,6 +235,8 @@ SmartMessagingObject (), mCollection (NULL), mParentDirectoryForReports (parentD
 
 		cout << mCollection->GetErrorString ().GetData () << endl;
 		cout << "Ladder info file is invalid.  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage (mCollection->GetErrorString ());
+		STRLCAnalysis::mFailureMessage->LadderInfoInvalid ();
 		return;
 	}
 
@@ -245,16 +250,13 @@ SmartMessagingObject (), mCollection (NULL), mParentDirectoryForReports (parentD
 		status = server->SetAllLocusSpecificThresholds (mCollection);
 		STRLCAnalysis::CreateAllInitializationMatrices ();
 
-		if (status < 0)
-			cout << "Locus specific thresholds may not be set properly...either named marker set collection not found or one or more loci not found." << endl;
-
-		else
+		if (status >= 0)
 			cout << "Locus specific thresholds set successfully." << endl;
 
 		delete server;
 
-		if (!ans)
-			return;
+		//if (!ans)   // ans is always true, so not needed
+			//return;
 	}
 
 	else {
@@ -294,9 +296,19 @@ SmartMessagingObject (), mCollection (NULL), mParentDirectoryForReports (parentD
 int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirectory, const RGString& markerSet, int outputLevel, const RGString& graphicsDirectory, const RGString& commandInputs) {
 
 	Boolean print = TRUE;
+	RGString errorMsg;
 	smDefaultsAreOverridden defaultsAreOverridden;
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
 	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
+	smSampleAnalysisTruncatedPrematurely analysisTruncatedPrematurely;
+	smSamplesTerminatedPrematurely samplesTerminatedPrematurely;
+	smSamplesHadNoDataForChannels samplesHadNoDataForChannels;
+	smSampleMissingDataForChannels sampleMissingDataForChannels;
+	smSamplesAreNotValidInputFiles samplesNotValidInputFiles;
+	smSampleIsNotValidInputFile sampleNotValidInputFile;
+	smLaddersFromWrongMarkerSet markerSetMismatch;
+	
+
 	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
 
 	//double yLMS [8] = {579, 117, 103, 323, 276, 750, 689, 2070 };
@@ -410,12 +422,16 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	//	cout << "..." << endl;
 	//}
 
+	RGString localFileName;
 	ParameterServer* pServer = new ParameterServer;
 	GenotypeSet* gSet = pServer->GetGenotypeCollection ();
 
 	if (gSet == NULL) {
 
 		cout << "Could not retrieve genotype collection set from parameter server.  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotypeCollection ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (280);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -20;
 	}
 
@@ -425,6 +441,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not retrieve genotype collection for marker set name " << markerSet << " from parameter server.  Exiting..." << endl;
 		pGenotypes = new GenotypesForAMarkerSet;
+		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotype (markerSet);
+		STRLCAnalysis::mFailureMessage->SetPingValue (290);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+		return -20;
 		//return -20;
 	}
 
@@ -515,10 +535,15 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	else
 		SampleDirectory = new SampleNameDirectoryManager (DirectoryName);
 
+	SampleDirectory->SetAnalysisDirectory ((STRLCAnalysis*)this);
+
 	if (!SampleDirectory->IsValid ()) {
 
 		cout << "Could not find sample directory:  " << DirectoryName << endl;
 		cout << "Closing..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFindSampleDirectory (DirectoryName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (300);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -661,6 +686,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open output file:  " << OutputFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + OutputFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (310);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -668,6 +697,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open text echo file:  " << WholeConsoleName << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + WholeConsoleName);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Text Echo File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (320);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -675,6 +708,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open output summary file:  " << SummaryFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + SummaryFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (330);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -682,6 +719,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open output summary file with embedded links:  " << SummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + SummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (340);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -689,6 +730,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open output xml summary file with embedded links:  " << XMLSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + XMLSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("XML Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (350);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -696,6 +741,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open temporary output summary file:  " << tempSummaryFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + tempSummaryFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (360);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -703,6 +752,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open temporary output summary file with embedded links:  " << tempSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + tempSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Summary File with Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (370);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -710,6 +763,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		cout << "Could not open temporary output xml summary file with embedded links:  " << tempXMLSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File path:  " + tempXMLSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("XML Temporary Summary File with Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (380);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -730,6 +787,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	if (set == NULL) {
 
 		cout << "Could not find marker set named:  " << markerSetName << ".  Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (markerSetName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (390);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -10000;
 	}
 
@@ -1043,12 +1103,39 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		cout << "\n";
 
 	RGString commentField;
+	RGString modsFileString;
+	RGString modsFileName = PrototypeInputDirectory + "/batch-mods.txt";
+	RGFile modsFile (modsFileName, "rt");
+	OverallModList* oml = NULL;
+	SampleModList* sml = NULL;
+
+	if (modsFile.isValid ()) {
+
+		modsFileString.ReadTextFile (modsFile);
+		oml = new OverallModList (expectedNumberOfChannels);
+		oml->ReadOverallModList (modsFileString);
+		//cout << "Read mods file containing:  \n";
+		//cout << modsFileString << endl;
+		oml->PrintList ();
+	}
 
 	while (SampleDirectory->GetNextLadderFile (LadderFileName, cycled) && !cycled) {
 
 		FullPathName = DirectoryName + "/" + LadderFileName;
 		cout << "Found ladder name " << (char*)FullPathName.GetData () << endl;
 		nLadders++;
+
+		if (oml != NULL)
+			sml = oml->GetSampleModList (LadderFileName);
+
+		else
+			sml = NULL;
+
+		if (sml != NULL) {
+
+			cout << "Found mods file for ladder named " << LadderFileName << endl;
+			sml->PrintList ();
+		}
 
 		if (WorkingFile != NULL) {
 
@@ -1063,11 +1150,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		if (!data->IsValid ()) {
 
-			NoticeStr << "Oops, " << LadderFileName.GetData () << " is not valid...Skipping";
-			cout << NoticeStr << endl;
-			NoticeStr << "\n";
-			ExcelText.Write (1, NoticeStr);
-			text << NoticeStr;
+			if (!FileNameIsInInvalidList (LadderFileName)) {
+
+				AddInvalidFile (LadderFileName);
+				NoticeStr << "\n" << LadderFileName.GetData () << " is not valid...Skipping\n";
+				//STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in ladder named " + LadderFileName + "...Skipping");
+				STRLCAnalysis::mFailureMessage->FsaHidFileInvalid (LadderFileName);
+				//cout << NoticeStr << endl;
+				ExcelText.Write (1, NoticeStr);
+				text << NoticeStr;
+				STRLCAnalysis::mFailureMessage->SetPingValue (630);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+				SetMessageValue (samplesNotValidInputFiles, true);
+				AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (LadderFileName));
+			}
+
 			delete data;
 			continue;
 		}
@@ -1099,7 +1196,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		text << "Dye set name:  " << stringData << endLine;
 		ExcelText << "Dye set name:  " << stringData << endLine;
 
-		if (expectedNumberOfChannels > NChannels) {
+		if (expectedNumberOfChannels != NChannels) {
 
 			cout << "MARKERSET MISMATCH...EXPECTING " << expectedNumberOfChannels << " CHANNELS AND FILE CONTAINS " << NChannels << " CHANNELS" << endl;
 			cout << "ENDING..." << endl;
@@ -1110,10 +1207,21 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			ExcelText << "MARKERSET MISMATCH...EXPECTING " << expectedNumberOfChannels << " CHANNELS AND FILE CONTAINS " << NChannels << " CHANNELS" << endLine;
 			ExcelText << "ENDING..." << endLine;
 
-			XMLExcelLinks << CLevel (1) << "\t\t<Sample>\n\t\t\t<Name>Marker Set Mismatch</Name>\n\t\t\t<Type></Type>\n\t\t</Sample>\n" << PLevel ();
-			XMLExcelLinks << CLevel (1) << "\t</Table>\n" << PLevel ();
-			XMLExcelLinks << CLevel (1) << "</OsirisAnalysisReport>" << endLine << PLevel ();
-			return -150;
+			errorMsg << "Markerset mismatch...expecting " << expectedNumberOfChannels << " channels and ladder file contains " << NChannels << " channels for ladder named " << FullPathName << "...Skipping.";
+			STRLCAnalysis::mFailureMessage->LadderSpecificationMismatch (errorMsg);
+			STRLCAnalysis::mFailureMessage->SetPingValue (400);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+
+			SetMessageValue (markerSetMismatch, true);
+			AppendDataForSmartMessage (markerSetMismatch, MainMessages::XML (LadderFileName));
+
+
+			//XMLExcelLinks << CLevel (1) << "\t\t<Sample>\n\t\t\t<Name>Marker Set Mismatch</Name>\n\t\t\t<Type></Type>\n\t\t</Sample>\n" << PLevel ();
+			//XMLExcelLinks << CLevel (1) << "\t</Table>\n" << PLevel ();
+			//XMLExcelLinks << CLevel (1) << "</OsirisAnalysisReport>" << endLine << PLevel ();
+			//return -150;
+			delete data;
+			continue;
 		}
 
 		for (i=1; i<=expectedNumberOfChannels; i++) {
@@ -1143,6 +1251,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		ladderBioComponent = new STRLadderCoreBioComponent (data->GetName ());
 		ladderBioComponent->SetSampleName (data->GetSampleName ());
 		ladderBioComponent->SetFileName (LadderFileName);
+		ladderBioComponent->SetSampleModifications (sml);
 		commSM.SMOStack [1] = (SmartMessagingObject*) ladderBioComponent;
 		ladderBioComponent->SetMessageValue (sampleIsLadder, true);
 
@@ -1225,7 +1334,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			ladderOK = false;
 			RGString ladderName = "-- " + ladderBioComponent->GetSampleName ();
 			ladderBioComponent->SetMessageValue (ladderFailed, true);
-			ladderBioComponent->AppendDataForSmartMessage (ladderFailed, ladderName);
+			ladderBioComponent->AppendDataForSmartMessage (ladderFailed, MainMessages::XML (ladderName));
 		}
 
 		ladderBioComponent->SetMessageValue (stage3Successful, true);
@@ -1322,14 +1431,25 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 	bool populatedBaseLocusList = false;
 	bool possibleMixture;
 
+	if (nLadders == 0) {
+
+		NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO LADDER FOUND IN DIRECTORY...ENDING";
+		STRLCAnalysis::mFailureMessage->NoLadderDataFound ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (410);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+		cout << NoticeStr << endl;
+		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
+		text << NoticeStr << "\n";
+		foundALadder = false;
+		return -42;
+	}
+
 	if (LadderList.Entries () == 0) {
-
-		if (nLadders == 0)
-			NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO LADDER FOUND IN DIRECTORY...ENDING";
 		
-		else
-			NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO SATISFACTORY LADDER FOUND...ENDING";
-
+		STRLCAnalysis::mFailureMessage->NoLaddersAnalyzedSuccessfully ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (420);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+		NoticeStr << "PROJECT DID NOT MEET EXPECTATIONS...NO SATISFACTORY LADDER FOUND...ENDING";
 		cout << NoticeStr << endl;
 		ExcelText << CLevel (1) << NoticeStr << "\n" << PLevel ();
 		text << NoticeStr << "\n";
@@ -1363,6 +1483,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 		}
 	}
 
+	if (foundALadder) {
+//		goto finishOutput;
+
 	SampleDirectory->RewindDirectory ();
 	pServer->AddLabPositiveControlsToControlStrings (pGenotypes);
 	
@@ -1390,9 +1513,25 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
+	int CrashResponse = 10;
+
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
 
+		CoreBioComponent::ResetCrashMode (false);
+		CoreBioComponent::SetCurrentStage (1);
+		CoreBioComponent::AddOneToCrashCount ();
+		CoreBioComponent::ResetNoDataChannels ();
+		CoreBioComponent::ResetCrashCode ();
+
+		if (oml != NULL)
+			sml = oml->GetSampleModList (FileName);
+
+		else
+			sml = NULL;
+
+		CrashResponse = 10;
 		sampleOK = true;
+		localFileName = FileName;
 		FullPathName = DirectoryName + "/" + FileName;
 
 		if (WorkingFile != NULL) {
@@ -1401,284 +1540,422 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 			WorkingFile->Flush ();
 		}
 
-		data = new fsaFileData (FullPathName);
-		bioComponent = new STRSampleCoreBioComponent (data->GetName ());
-		bioComponent->SetSampleName (data->GetSampleName ());
-		bioComponent->SetFileName (FileName);
-		Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
-		Locus::SetSingleSourceSample (false);
+		try {  //#######
 
-		commentField = data->GetComment ();
-		bioComponent->SetComments (commentField);
+			data = new fsaFileData (FullPathName);
 
-		if (GetMessageValue (useSampleNamesForControlSampleTests))
-			bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
+			if (!data->IsValid ()) {
 
-		else
-			bioComponent->SetControlIdName (FileName);
+				if (!FileNameIsInInvalidList (FileName)) {
 
-		commSM.SMOStack [1] = (SmartMessagingObject*) bioComponent;
+					AddInvalidFile (FileName);
+					NoticeStr << "\n" << FileName.GetData () << " is not valid...Skipping\n";
+					//STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in sample named " + FileName + "...Skipping");
+					STRLCAnalysis::mFailureMessage->FsaHidFileInvalid (FileName);
+					//cout << NoticeStr << endl;
+					ExcelText.Write (1, NoticeStr);
+					text << NoticeStr;
+					STRLCAnalysis::mFailureMessage->SetPingValue (630);
+					STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+					SetMessageValue (samplesNotValidInputFiles, true);
+					AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (FileName));
+				}
 
-		if (bioComponent->PrepareSampleForAnalysisSM (*data, SampleData) < 0) {
+				delete data;
+				continue;
+			}
 
-			sampleOK = false;
-			NoticeStr = "";
-			NoticeStr << "COULD NOT INITIALIZE AND PREPARE FOR ANALYSIS, FOR FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError ();
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			cout << NoticeStr.GetData () << endl;
-			NoticeStr = "";
-			bioComponent->SetMessageValue (sampleFailed, true);
-		}
+			bioComponent = new STRSampleCoreBioComponent (data->GetName ());
+			bioComponent->SetSampleName (data->GetSampleName ());
+			bioComponent->SetFileName (FileName);
+			Locus::SetCallOnLadderAdenylation (bioComponent->GetMessageValue (callOnLadderAdenylation));
+			Locus::SetSingleSourceSample (false);
 
-		if (sampleOK && !populatedBaseLocusList) {
+			bioComponent->SetSampleModifications (sml);
 
-			populatedBaseLocusList = true;
-			bioComponent->AppendAllBaseLociToList (mBaseLocusList);
-		}
+			commentField = data->GetComment ();
+			bioComponent->SetComments (commentField);
 
-		if (sampleOK && printGraphics) {
-
-			FitDataName = GraphicsDirectory + "/Fit" + FileName + ".txt";
-			SampleOutput = new RGTextOutput (FitDataName, FALSE);
-
-			if (SampleOutput->FileIsValid ())
-				bioComponent->WriteRawDataAndFitData (*SampleOutput, data);
+			if (GetMessageValue (useSampleNamesForControlSampleTests))
+				bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
 
 			else
-				cout << "Could not write graphics info for file " << FitDataName << ".  Skipping..." << endl;
+				bioComponent->SetControlIdName (FileName);
 
-			delete SampleOutput;
-			SampleOutput = NULL;
-		}
+			commSM.SMOStack [1] = (SmartMessagingObject*)bioComponent;
 
-		if (sampleOK && (bioComponent->PreliminarySampleAnalysisSM (LadderList, SampleData) < 0)) {
+			if (bioComponent->PrepareSampleForAnalysisSM (*data, SampleData) < 0) {
 
-			sampleOK = false;
-			NoticeStr = "";
-			NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			NoticeStr = "";
-			bioComponent->SetMessageValue (sampleFailed, true);
-		}
-
-		else
-			bioComponent->GetAllAmbientData (data);
-
-		//cout << "Preliminary Analysis Complete" << endl;
-
-		bioComponent->SetNegativeControlFalseSM ();
-		bioComponent->SetPositiveControlFalseSM ();
-		idString = bioComponent->GetControlIdName ();
-		Locus::SetDisableAdenylationFilter (false);
-		Locus::SetDisableStutterFilter (false);
-		ChannelData::SetDisableAdenylationFilter (false);
-		ChannelData::SetDisableStutterFilter (false);
-		possibleMixture = false;
-	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
-		Locus::SetControlSample (false);
-
-		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
-
-			if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
-
-				hasNegControl = true;;
-				bioComponent->SetNegativeControlTrueSM ();
-				bioComponent->SetMessageValue (sampleIsNegCtrl, true);
-				Locus::SetSingleSourceSample (true);
-				Locus::SetControlSample (true);
+				sampleOK = false;
+				NoticeStr = "";
+				NoticeStr << "COULD NOT INITIALIZE AND PREPARE FOR ANALYSIS, FOR FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError ();
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				cout << NoticeStr.GetData () << endl;
+				NoticeStr = "";
+				bioComponent->SetMessageValue (sampleFailed, true);
 			}
 
-			else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+			if (sampleOK && !populatedBaseLocusList) {
 
-				hasPosControl = true;
-				bioComponent->SetPositiveControlTrueSM ();
-				bioComponent->SetMessageValue (sampleIsPosCtrl, true);
-				Locus::SetSingleSourceSample (true);
-				Locus::SetControlSample (true);
+				populatedBaseLocusList = true;
+				bioComponent->AppendAllBaseLociToList (mBaseLocusList);
 			}
 
-			bioComponent->SetPossibleMixtureIDFalseSM ();
-			bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+			if (sampleOK && printGraphics) {
+
+				FitDataName = GraphicsDirectory + "/Fit" + FileName + ".txt";
+				SampleOutput = new RGTextOutput (FitDataName, FALSE);
+
+				if (SampleOutput->FileIsValid ())
+					bioComponent->WriteRawDataAndFitData (*SampleOutput, data);
+
+				else
+					cout << "Could not write graphics info for file " << FitDataName << ".  Skipping..." << endl;
+
+				delete SampleOutput;
+				SampleOutput = NULL;
+			}
+
+			if (sampleOK && (bioComponent->PreliminarySampleAnalysisSM (LadderList, SampleData) < 0)) {
+
+				sampleOK = false;
+				NoticeStr = "";
+				NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				NoticeStr = "";
+				bioComponent->SetMessageValue (sampleFailed, true);
+			}
+
+			else
+				bioComponent->GetAllAmbientData (data);
+
+			//cout << "Preliminary Analysis Complete" << endl;
+
+			bioComponent->SetNegativeControlFalseSM ();
+			bioComponent->SetPositiveControlFalseSM ();
+			idString = bioComponent->GetControlIdName ();
+			Locus::SetDisableAdenylationFilter (false);
+			Locus::SetDisableStutterFilter (false);
+			ChannelData::SetDisableAdenylationFilter (false);
+			ChannelData::SetDisableStutterFilter (false);
+			possibleMixture = false;
+			//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
+			Locus::SetControlSample (false);
+
+			if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+				if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+					hasNegControl = true;;
+					bioComponent->SetNegativeControlTrueSM ();
+					bioComponent->SetMessageValue (sampleIsNegCtrl, true);
+					Locus::SetSingleSourceSample (true);
+					Locus::SetControlSample (true);
+				}
+
+				else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+					hasPosControl = true;
+					bioComponent->SetPositiveControlTrueSM ();
+					bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+					Locus::SetSingleSourceSample (true);
+					Locus::SetControlSample (true);
+				}
+
+				bioComponent->SetPossibleMixtureIDFalseSM ();
+				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+			}
+
+			//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+
+			//	hasPosControl = true;
+			//	bioComponent->SetPositiveControlTrueSM ();
+			//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+			//	bioComponent->SetPossibleMixtureIDFalseSM ();
+			//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+			//}
+
+			//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+			else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+				if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
+
+					bioComponent->SetPossibleMixtureIDTrueSM ();
+					bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
+					possibleMixture = true;
+					Locus::SetSingleSourceSample (false);
+					cout << "Sample is being treated as a mixture\n";
+				}
+
+				else {
+
+					bioComponent->SetPossibleMixtureIDFalseSM ();
+					bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+					possibleMixture = false;
+					Locus::SetSingleSourceSample (true);
+					cout << "Sample is being treated as a single source sample\n";
+				}
+			}
+
+			//
+			// End stage 1 for sample
+			//
+
+			bioComponent->SetMessageValue (stage1Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
+			CoreBioComponent::SetCurrentStage (2);
+
+			if (possibleMixture) {
+
+				// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
+
+				Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+				ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+				Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+				ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+			}
+
+			//cout << "Stage 1 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
+
+			if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
+
+				NoticeStr = "";
+				NoticeStr << "COULD NOT ANALYZE LOCI FOR FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				NoticeStr = "";
+			}
+
+			//cout << "Sample locus analysis complete" << endl;
+
+			//
+			// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
+			// tests, then the SmartMessages perform the logic and then the code cleans up the results.  We probably have to reorganize
+			// somewhat!!!
+			//
+
+			if (sampleOK)
+				bioComponent->TestFractionalFiltersSM ();	// first tests for stutter and adenylation; then removes peaks below fractional filter(s)
+
+			bioComponent->SetMessageValue (stage2Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
+			CoreBioComponent::SetCurrentStage (3);
+
+			//cout << "Stage 2 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
+
+			if (sampleOK)
+				bioComponent->MakePreliminaryCallsSM (pGenotypes);
+
+			//cout << "Preliminary Calls complete" << endl;
+
+			//cout << "Preliminary calls done" << endl;
+
+	//		if (sampleOK)
+	//			bioComponent->ValidateAndCorrectCrossChannelAnalysesSM ();
+
+	//		if (sampleOK)	// Resolution now occurs after end of stage 3, below.
+	//			bioComponent->ResolveAmbiguousInterlocusSignalsSM ();	// at this point, easily resolved ambiguities already removed
+
+			if (sampleOK)
+				bioComponent->MeasureAllInterlocusSignalAttributesSM ();	// at this point, easily resolved ambiguities already removed
+
+			bioComponent->SetMessageValue (stage3Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
+			CoreBioComponent::SetCurrentStage (4);
+
+			//cout << "Stage 3 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
+
+			// Now, resolve ambiguities based on calculations from end of stage 3:
+
+			if (sampleOK) {
+
+				bioComponent->ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();	// Removes ambiguous signals from loci or assigns them and records message
+				bioComponent->FilterSmartNoticesBelowMinBioID ();
+			}
+
+			if (sampleOK)
+				bioComponent->SignalQualityTestSM ();
+
+			bioComponent->SetMessageValue (stage4Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
+			CoreBioComponent::SetCurrentStage (5);
+
+			//cout << "Stage 4 complete" << endl;
+
+			// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
+
+			if (sampleOK)
+				bioComponent->RemoveInterlocusSignalsSM ();
+
+			//	Put residual displacement test here...02/11/2014
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
+
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
+			bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
+
+			if (sampleOK)
+				bioComponent->SampleQualityTestSM (pGenotypes);
+
+			//
+			//  Put peak height accumulation algorithm here (12/16/2016)
+			//
+
+			//if (sampleOK)
+			//	bioComponent->WriteDataToHeightFileSM ();
+
+			//cout << "Sample quality test complete" << endl;
+
+			if (sampleOK)
+				bioComponent->TestPositiveControlSM (pGenotypes);
+
+			// Moved this section because it requires setting artifact for signal, which must precede stage 4 and it should only depend on removing extraneous
+			// signals from each locus, which should be done in "SignalQualityTest" above.
+			//if (sampleOK)
+			//	bioComponent->TestPositiveControlSM (pGenotypes);
+
+			bioComponent->OrganizeNoticeObjectsSM ();  // Have to do this here, before last evaluation and adding smart message reporters!!
+
+			bioComponent->SetMessageValue (stage5Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+
+			//cout << "Stage 5 complete" << endl;
+
+	//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+	//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
+
+			if (!sampleOK)
+				bioComponent->LocatePositiveControlName (pGenotypes);
 		}
 
-		//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+		catch (...) {
 
-		//	hasPosControl = true;
-		//	bioComponent->SetPositiveControlTrueSM ();
-		//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
-		//	bioComponent->SetPossibleMixtureIDFalseSM ();
-		//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
-		//}
+			int cc = CoreBioComponent::GetCrashCode ();
 
-		//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+			if (cc == 42) {
 
-		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+				CrashResponse = 0;
+				cout << "********Sample " << data->GetName () << " has one or more channels with no data" << endl;
+				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (590);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+			}
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
+			else if (cc == 37) {
 
-				bioComponent->SetPossibleMixtureIDTrueSM ();
-				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
-				possibleMixture = true;
-				Locus::SetSingleSourceSample (false);
-				cout << "Sample is being treated as a mixture\n";
+				CrashResponse = 1;
+				cout << "********Sample " << FileName << " is not a valid fsa/hid file" << endl;
+				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (600);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			}
 
 			else {
 
-				bioComponent->SetPossibleMixtureIDFalseSM ();
-				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
-				possibleMixture = false;
-				Locus::SetSingleSourceSample (true);
-				cout << "Sample is being treated as a single source sample\n";
+				cout << "********We crashed on sample:  " << data->GetName () << "." << endl;
+				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (610);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			}
+
+			CoreBioComponent::ResetCrashMode (true);
 		}
 
-		//
-		// End stage 1 for sample
-		//
+		if (CoreBioComponent::GetCrashMode ()) {
 
-		bioComponent->SetMessageValue (stage1Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
+			delete bioComponent;
+			bioComponent = new STRSampleCoreBioComponent (data->GetName ());
+			//bioComponent->SetSampleName (data->GetSampleName ());
+			bioComponent->SetSampleName (FileName);
+			bioComponent->SetFileName (FileName);
+			commSM.SMOStack [1] = (SmartMessagingObject*)bioComponent;
+			bioComponent->SetMessageValue (stage1Successful, true);
+			bioComponent->SetMessageValue (stage2Successful, true);
+			bioComponent->SetMessageValue (stage3Successful, true);
+			bioComponent->SetMessageValue (stage4Successful, true);
 
-		if (possibleMixture) {
+			switch (CrashResponse) {
 
-			// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
+			case 0:
+				bioComponent->SetMessageValue (sampleMissingDataForChannels, true);
+				int c;
 
-			Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
-			ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
-			Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
-			ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+				while (true) {
+					
+					c = CoreBioComponent::GetNextNoDataChannel ();
+
+					if (c < 0)
+						break;
+
+					bioComponent->AppendDataForSmartMessage (sampleMissingDataForChannels, c);
+				}
+
+				bioComponent->SetMessageValue (stage5Successful, true);
+				SetMessageValue (samplesHadNoDataForChannels, true);
+				AppendDataForSmartMessage (samplesHadNoDataForChannels, MainMessages::XML (localFileName));
+				break;
+
+			case 1:
+				bioComponent->SetMessageValue (sampleNotValidInputFile, true);
+				bioComponent->SetMessageValue (stage5Successful, true);
+				SetMessageValue (samplesNotValidInputFiles, true);
+				AppendDataForSmartMessage (samplesNotValidInputFiles, localFileName);
+				break;
+
+			default:
+				bioComponent->SetMessageValue (analysisTruncatedPrematurely, true);
+				bioComponent->AppendDataForSmartMessage (analysisTruncatedPrematurely, CoreBioComponent::GetCurrentStage ());
+				bioComponent->SetMessageValue (stage5Successful, true);
+				SetMessageValue (samplesTerminatedPrematurely, true);
+				AppendDataForSmartMessage (samplesTerminatedPrematurely, MainMessages::XML (localFileName));
+			}
+			
+			CoreBioComponent::ResetCrashMode (true);
+			cout << "Crash phase 1" << endl;
+			bioComponent->AddAllSmartMessageReportersCrashMode (commSM, numHigherObjects);	// These do not include signals...already done
+			// Add message for crash and set up trigger for directory level message; include current stage for crash data
+			// Then evaluate and set triggers for all messages for stage 5
+			cout << "Crash phase 2" << endl;
+			bioComponent->ReportSampleTableRowCrashMode (ExcelSummary);
+			cout << "Crash phase 3" << endl;
+			bioComponent->ReportSampleTableRowWithLinksCrashMode (ExcelLinks);
+			cout << "Crash phase 4" << endl;
+			bioComponent->ReportXMLSmartSampleTableRowWithLinksCrashMode (XMLExcelLinks, tempXMLExcelLinks);
+			cout << "Crash phase 5" << endl;
+
+			bioComponent->ReportAllSmartNoticeObjectsCrashMode (tempExcelSummary, "", " ", FALSE);
+			cout << "Crash phase 6" << endl;
+			bioComponent->ReportAllSmartNoticeObjectsCrashMode (tempExcelLinks, "", " ", TRUE);
+			cout << "Crash phase 7" << endl;
+			delete bioComponent;
+			bioComponent = NULL;
+			delete data;
+			data = NULL;
+			continue;
 		}
-
-		//cout << "Stage 1 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
-
-		if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
-
-			NoticeStr = "";
-			NoticeStr << "COULD NOT ANALYZE LOCI FOR FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			NoticeStr = "";
-		}
-
-		//cout << "Sample locus analysis complete" << endl;
-
-		//
-		// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
-		// tests, then the SmartMessages perform the logic and then the code cleans up the results.  We probably have to reorganize
-		// somewhat!!!
-		//
-
-		if (sampleOK)
-			bioComponent->TestFractionalFiltersSM ();	// first tests for stutter and adenylation; then removes peaks below fractional filter(s)
-
-		bioComponent->SetMessageValue (stage2Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
-
-		//cout << "Stage 2 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
-
-		if (sampleOK) 
-			bioComponent->MakePreliminaryCallsSM (pGenotypes);
-
-		//cout << "Preliminary Calls complete" << endl;
-
-		//cout << "Preliminary calls done" << endl;
-		
-//		if (sampleOK)
-//			bioComponent->ValidateAndCorrectCrossChannelAnalysesSM ();
-
-//		if (sampleOK)	// Resolution now occurs after end of stage 3, below.
-//			bioComponent->ResolveAmbiguousInterlocusSignalsSM ();	// at this point, easily resolved ambiguities already removed
-
-		if (sampleOK)
-			bioComponent->MeasureAllInterlocusSignalAttributesSM ();	// at this point, easily resolved ambiguities already removed
-
-		bioComponent->SetMessageValue (stage3Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
-
-		//cout << "Stage 3 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
-
-		// Now, resolve ambiguities based on calculations from end of stage 3:
-
-		if (sampleOK) {
-
-			bioComponent->ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();	// Removes ambiguous signals from loci or assigns them and records message
-			bioComponent->FilterSmartNoticesBelowMinBioID ();
-		}
-
-		if (sampleOK)
-			bioComponent->SignalQualityTestSM ();
-
-		bioComponent->SetMessageValue (stage4Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
-
-		//cout << "Stage 4 complete" << endl;
-
-		// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
-
-		if (sampleOK)
-			bioComponent->RemoveInterlocusSignalsSM ();
-
-		//	Put residual displacement test here...02/11/2014
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
-
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
-		bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
-
-		if (sampleOK)
-			bioComponent->SampleQualityTestSM (pGenotypes);
-
-		//
-		//  Put peak height accumulation algorithm here (12/16/2016)
-		//
-
-		//if (sampleOK)
-		//	bioComponent->WriteDataToHeightFileSM ();
-
-		//cout << "Sample quality test complete" << endl;
-
-		if (sampleOK)
-			bioComponent->TestPositiveControlSM (pGenotypes);
-
-		// Moved this section because it requires setting artifact for signal, which must precede stage 4 and it should only depend on removing extraneous
-		// signals from each locus, which should be done in "SignalQualityTest" above.
-		//if (sampleOK)
-		//	bioComponent->TestPositiveControlSM (pGenotypes);
-
-		bioComponent->OrganizeNoticeObjectsSM ();  // Have to do this here, before last evaluation and adding smart message reporters!!
-
-		bioComponent->SetMessageValue (stage5Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
-
-		//cout << "Stage 5 complete" << endl;
-
-//		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
-//		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
-
-		if (!sampleOK)
-			bioComponent->LocatePositiveControlName (pGenotypes);
 
 		bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done
 
-		if (bioComponent->SampleIsValid ()) {
+		if (bioComponent->SampleIsValid () && !CoreBioComponent::GetCrashMode ()) {
 
 			bioComponent->ReportSampleData(ExcelText);
 			bioComponent->WriteXMLGraphicDataSM (GraphicsDirectory, FileName, data, 4, PlotString);
 		}
-
+		
+		// Modify functions below to restrict scope if crash mode = true
 		bioComponent->PrepareLociForOutput ();
 		bioComponent->ReportSampleTableRow (ExcelSummary);
 		bioComponent->ReportSampleTableRowWithLinks (ExcelLinks);
@@ -1707,6 +1984,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySM (const RGString& prototypeInputDirec
 
 		SetMessageValue (noNegCtrlFound, true);
 	}
+  }
 
 finishOutput:
 
@@ -1826,6 +2104,12 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	smUseSampleNamesForControlSampleTestsPreset useSampleNamesForControlSampleTests;
 	smMakeMixturesDefaultSampleTypePreset makeMixturesDefaultTypePreset;
 	smMinImbalanceThresholdForCreatingNoisyPeak noiseImbalanceThreshold;
+	smSampleAnalysisTruncatedPrematurely analysisTruncatedPrematurely;
+	smSamplesTerminatedPrematurely samplesTerminatedPrematurely;
+	smSamplesHadNoDataForChannels samplesHadNoDataForChannels;
+	smSampleMissingDataForChannels sampleMissingDataForChannels;
+	smSamplesAreNotValidInputFiles samplesNotValidInputFiles;
+	smSampleIsNotValidInputFile sampleNotValidInputFile;
 	bool makeMixturesDefaultType = GetMessageValue (makeMixturesDefaultTypePreset);
 
 	double heightFraction = 0.01 * (double)GetThreshold (noiseImbalanceThreshold);
@@ -1838,6 +2122,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	if (gSet == NULL) {
 
 		cout << "Could not retrieve genotype collection set from parameter server.  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotypeCollection ();
 		return -20;
 	}
 
@@ -1847,7 +2132,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not retrieve genotype collection for marker set name " << markerSet << " from parameter server.  Exiting..." << endl;
 		pGenotypes = new GenotypesForAMarkerSet;
-		//return -20;
+		STRLCAnalysis::mFailureMessage->CouldNotRetrieveGenotype (markerSet);
+		STRLCAnalysis::mFailureMessage->SetPingValue (430);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+		return -20;
 	}
 
 	if (!STRLCAnalysis::OverrideStringIsEmpty ()) {
@@ -1914,12 +2202,16 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not find sample directory:  " << DirectoryName << endl;
 		cout << "Closing..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFindSampleDirectory (DirectoryName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (440);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
 	else
 		cout << "Sample directory opened successfully" << endl;
 
+	SampleDirectory->SetAnalysisDirectory ((STRLCAnalysis*)this);
 	int ChannelNumber = 1;
 	SampleDirectory->Initialize ();
 	int NSampleFiles = SampleDirectory->GetNumberOfFilesInDirectory ();
@@ -2026,6 +2318,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output file:  " << OutputFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + OutputFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (450);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -2033,6 +2329,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open text echo file:  " << WholeConsoleName << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + WholeConsoleName);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Text Echo File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (460);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2040,6 +2340,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output summary file:  " << SummaryFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + SummaryFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (470);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2047,6 +2351,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output summary file with embedded links:  " << SummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + SummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (480);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2054,6 +2362,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open output xml summary file with embedded links:  " << XMLSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + XMLSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Output XML Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (490);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2061,6 +2373,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open temporary output summary file:  " << tempSummaryFullPath << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempSummaryFullPath);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output Summary File");
+		STRLCAnalysis::mFailureMessage->SetPingValue (500);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2068,6 +2384,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open temporary output summary file with embedded links:  " << tempSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (510);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2075,6 +2395,10 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 		cout << "Could not open temporary output xml summary file with embedded links:  " << tempXMLSummaryFullPathWithLinks << endl;
 		cout << "Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("File Path:  " + tempXMLSummaryFullPathWithLinks);
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Temporary Output XML Summary File With Embedded Links");
+		STRLCAnalysis::mFailureMessage->SetPingValue (520);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -2;
 	}
 
@@ -2095,6 +2419,9 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	if (set == NULL) {
 
 		cout << "Could not find marker set named:  " << markerSetName << ".  Ending..." << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (markerSetName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (530);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -10000;
 	}
 
@@ -2391,6 +2718,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	//	cout << "\n";
 
 	RGString commentField;
+	RGString localFileName;
 
 	ChannelData::SetTestForDualSignal (true);
 	ChannelData::SetUseILSLadderEndPointAlgorithm (false);
@@ -2509,10 +2837,44 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 
 	// Modify below functions to accumlate partial work, as possible, in spite of "errors", and report
 
+	int CrashResponse = 10;
+
+	RGString modsFileString;
+	RGString modsFileName = PrototypeInputDirectory + "/batch-mods.txt";
+	RGFile modsFile (modsFileName, "rt");
+	OverallModList* oml = NULL;
+	SampleModList* sml = NULL;
+
+	if (modsFile.isValid ()) {
+
+		modsFileString.ReadTextFile (modsFile);
+		oml = new OverallModList (expectedNumberOfChannels);
+		oml->ReadOverallModList (modsFileString);
+		//cout << "Read mods file containing:  \n";
+		//cout << modsFileString << endl;
+		oml->PrintList ();
+	}
+
 	while (SampleDirectory->GetNextOrderedSampleFile (FileName)) {
 
+		CoreBioComponent::ResetCrashMode (false);
+		CoreBioComponent::SetCurrentStage (1);
+		CoreBioComponent::AddOneToCrashCount ();
+		CoreBioComponent::ResetNoDataChannels ();
+		CoreBioComponent::ResetCrashCode ();
+
+		if (oml != NULL)
+			sml = oml->GetSampleModList (FileName);
+
+		else
+			sml = NULL;
+
+		CrashResponse = 10;
+		sampleOK = true;
+		localFileName = FileName;
 		sampleOK = true;
 		FullPathName = DirectoryName + "/" + FileName;
+		DirectoryCrashMode = false;
 
 		if (WorkingFile != NULL) {
 
@@ -2529,276 +2891,416 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 		commentField = data->GetComment ();
 		bioComponent->SetComments (commentField);
 
-		if (GetMessageValue (useSampleNamesForControlSampleTests))
-			bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
+	//	bioComponent->SetSampleModifications (sml);
 
-		else
-			bioComponent->SetControlIdName (FileName);
+		try { //##########
 
-		commSM.SMOStack [1] = (SmartMessagingObject*) bioComponent;
+			if (!data->IsValid ()) {
 
-		if (bioComponent->PrepareSampleForAnalysisSM (*data, SampleData) < 0) {
+				if (!FileNameIsInInvalidList (FileName)) {
 
-			sampleOK = false;
-			NoticeStr = "";
-			NoticeStr << "COULD NOT INITIALIZE AND PREPARE FOR ANALYSIS, FOR FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError ();
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			cout << NoticeStr.GetData () << endl;
-			NoticeStr = "";
-			bioComponent->SetMessageValue (sampleFailed, true);
-		}
+					AddInvalidFile (FileName);
+					NoticeStr << "\n" << FileName.GetData () << " is not valid...Skipping\n";
+					//STRLCAnalysis::mFailureMessage->AddMessage ("Data is not valid in sample named " + FileName + "...Skipping");
+					STRLCAnalysis::mFailureMessage->FsaHidFileInvalid (FileName);
+					//cout << NoticeStr << endl;
+					ExcelText.Write (1, NoticeStr);
+					text << NoticeStr;
+					STRLCAnalysis::mFailureMessage->SetPingValue (630);
+					STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+					SetMessageValue (samplesNotValidInputFiles, true);
+					AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (FileName));
+				}
 
-		//if (sampleOK && !populatedBaseLocusList) {
+				delete data;
+				continue;
 
-		//	populatedBaseLocusList = true;
-		//	bioComponent->AppendAllBaseLociToList (mBaseLocusList);
-		//}
+			}
 
-		if (sampleOK && printGraphics) {
-
-			FitDataName = GraphicsDirectory + "/Fit" + FileName + ".txt";
-			SampleOutput = new RGTextOutput (FitDataName, FALSE);
-
-			if (SampleOutput->FileIsValid ())
-				bioComponent->WriteRawDataAndFitData (*SampleOutput, data);
+			if (GetMessageValue (useSampleNamesForControlSampleTests))
+				bioComponent->SetControlIdName (bioComponent->GetDataSampleName ());
 
 			else
-				cout << "Could not write graphics info for file " << FitDataName << ".  Skipping..." << endl;
+				bioComponent->SetControlIdName (FileName);
 
-			delete SampleOutput;
-			SampleOutput = NULL;
-		}
+			commSM.SMOStack [1] = (SmartMessagingObject*) bioComponent;
 
-		bioComponent->RemoveAllSignalsOutsideLaneStandardSMLF ();
+			if (bioComponent->PrepareSampleForAnalysisSM (*data, SampleData) < 0) {
 
-		if (sampleOK && (bioComponent->PreliminarySampleAnalysisSMLF () < 0)) {
-
-			sampleOK = false;
-			NoticeStr = "";
-			NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			NoticeStr = "";
-			bioComponent->SetMessageValue (sampleFailed, true);
-		}
-
-		else
-			bioComponent->GetAllAmbientData (data);
-
-		//cout << "Preliminary Analysis Complete" << endl;
-
-		//  do we want to do this next part?  Negative controls certainly make sense.  How about Positive Controls?  Mixtures?
-
-		bioComponent->SetNegativeControlFalseSM ();
-		bioComponent->SetPositiveControlFalseSM ();
-		idString = bioComponent->GetControlIdName ();
-		Locus::SetDisableAdenylationFilter (false);
-		Locus::SetDisableStutterFilter (false);
-		ChannelData::SetDisableAdenylationFilter (false);
-		ChannelData::SetDisableStutterFilter (false);
-		possibleMixture = false;
-	//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
-		Locus::SetControlSample (false);
-
-		if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
-
-			if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
-
-				hasNegControl = true;;
-				bioComponent->SetNegativeControlTrueSM ();
-				bioComponent->SetMessageValue (sampleIsNegCtrl, true);
-				Locus::SetSingleSourceSample (true);
-				Locus::SetControlSample (true);
+				sampleOK = false;
+				NoticeStr = "";
+				NoticeStr << "COULD NOT INITIALIZE AND PREPARE FOR ANALYSIS, FOR FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError ();
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				cout << NoticeStr.GetData () << endl;
+				NoticeStr = "";
+				bioComponent->SetMessageValue (sampleFailed, true);
 			}
 
-			else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+			//if (sampleOK && !populatedBaseLocusList) {
 
-				hasPosControl = true;
-				bioComponent->SetPositiveControlTrueSM ();
-				bioComponent->SetMessageValue (sampleIsPosCtrl, true);
-				Locus::SetSingleSourceSample (true);
-				Locus::SetControlSample (true);
+			//	populatedBaseLocusList = true;
+			//	bioComponent->AppendAllBaseLociToList (mBaseLocusList);
+			//}
+
+			if (sampleOK && printGraphics) {
+
+				FitDataName = GraphicsDirectory + "/Fit" + FileName + ".txt";
+				SampleOutput = new RGTextOutput (FitDataName, FALSE);
+
+				if (SampleOutput->FileIsValid ())
+					bioComponent->WriteRawDataAndFitData (*SampleOutput, data);
+
+				else
+					cout << "Could not write graphics info for file " << FitDataName << ".  Skipping..." << endl;
+
+				delete SampleOutput;
+				SampleOutput = NULL;
 			}
 
-			bioComponent->SetPossibleMixtureIDFalseSM ();
-			bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+			bioComponent->RemoveAllSignalsOutsideLaneStandardSMLF ();
+
+			if (sampleOK && (bioComponent->PreliminarySampleAnalysisSMLF () < 0)) {
+
+				sampleOK = false;
+				NoticeStr = "";
+				NoticeStr << "COULD NOT PERFORM PRELIMINARY ANALYSIS, FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				NoticeStr = "";
+				bioComponent->SetMessageValue (sampleFailed, true);
+			}
+
+			else
+				bioComponent->GetAllAmbientData (data);
+
+			//cout << "Preliminary Analysis Complete" << endl;
+
+			//  do we want to do this next part?  Negative controls certainly make sense.  How about Positive Controls?  Mixtures?
+
+			bioComponent->SetNegativeControlFalseSM ();
+			bioComponent->SetPositiveControlFalseSM ();
+			idString = bioComponent->GetControlIdName ();
+			Locus::SetDisableAdenylationFilter (false);
+			Locus::SetDisableStutterFilter (false);
+			ChannelData::SetDisableAdenylationFilter (false);
+			ChannelData::SetDisableStutterFilter (false);
+			possibleMixture = false;
+		//	cout << "ID String = " << (char*) idString.GetData () << " for file name " << (char*) FileName.GetData () << endl;
+			Locus::SetControlSample (false);
+
+			if (sampleOK && pServer->ControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+				if (pServer->NegControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+					hasNegControl = true;;
+					bioComponent->SetNegativeControlTrueSM ();
+					bioComponent->SetMessageValue (sampleIsNegCtrl, true);
+					Locus::SetSingleSourceSample (true);
+					Locus::SetControlSample (true);
+				}
+
+				else if (pServer->PosControlDoesTargetStringContainASynonymCaseIndep (idString)) {
+
+					hasPosControl = true;
+					bioComponent->SetPositiveControlTrueSM ();
+					bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+					Locus::SetSingleSourceSample (true);
+					Locus::SetControlSample (true);
+				}
+
+				bioComponent->SetPossibleMixtureIDFalseSM ();
+				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+			}
+
+			//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+
+			//	hasPosControl = true;
+			//	bioComponent->SetPositiveControlTrueSM ();
+			//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
+			//	bioComponent->SetPossibleMixtureIDFalseSM ();
+			//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+			//}
+
+			//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+			else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+
+				if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
+
+					bioComponent->SetPossibleMixtureIDTrueSM ();
+					bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
+					possibleMixture = true;
+					Locus::SetSingleSourceSample (false);
+					cout << "Sample is being treated as a mixture\n";
+				}
+
+				else {
+
+					bioComponent->SetPossibleMixtureIDFalseSM ();
+					bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
+					possibleMixture = false;
+					Locus::SetSingleSourceSample (true);
+					cout << "Sample is being treated as a single source sample\n";
+				}
+			}
+
+			//
+			// End stage 1 for sample
+			//
+
+			bioComponent->SetMessageValue (stage1Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
+
+			if (possibleMixture) {
+
+				// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
+
+				Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+				ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
+				Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+				ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+			}
+
+			//cout << "Stage 1 complete" << endl;
+			bioComponent->TestAllFractionalFiltersSMLF ();
+
+			bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
+			bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
+
+			/*if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
+
+				NoticeStr = "";
+				NoticeStr << "COULD NOT ANALYZE LOCI FOR FILE:  " << FileName << "\n";
+				ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
+				ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
+				NoticeStr = "";
+			}*/
+
+			//cout << "Sample locus analysis complete" << endl;
+
+			//
+			// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
+			// tests, then the SmartMessages perform the logic and then the code cleans up the results.  We probably have to reorganize
+			// somewhat!!!
+			//
+
+			//if (sampleOK)
+			//	bioComponent->TestFractionalFiltersSM ();	// first tests for stutter and adenylation; then removes peaks below fractional filter(s),  Do this on a channel basis???  If so, need new function
+
+			bioComponent->SetMessageValue (stage2Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
+
+			//cout << "Stage 2 complete" << endl;
+
+			bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
+			bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
+
+			if (sampleOK) {
+
+				bioComponent->TestForNearlyDuplicateAllelesSMLF ();
+			}
+
+			//cout << "Preliminary Calls complete" << endl;
+
+			//cout << "Preliminary calls done" << endl;
+		
+	//		if (sampleOK)
+	//			bioComponent->ValidateAndCorrectCrossChannelAnalysesSM ();
+
+	//		if (sampleOK)	// Resolution now occurs after end of stage 3, below.
+	//			bioComponent->ResolveAmbiguousInterlocusSignalsSM ();	// at this point, easily resolved ambiguities already removed
+
+			//if (sampleOK)
+			//	bioComponent->MeasureAllInterlocusSignalAttributesSM ();	// at this point, easily resolved ambiguities already removed
+
+			bioComponent->SetMessageValue (stage3Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
+
+			//cout << "Stage 3 complete" << endl;
+
+			bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
+			bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
+
+			// Now, resolve ambiguities based on calculations from end of stage 3:
+
+			if (sampleOK) {
+
+				//bioComponent->ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();	// Removes ambiguous signals from loci or assigns them and records message
+				bioComponent->FilterSmartNoticesBelowMinBioID ();
+			}
+
+			//if (sampleOK)
+			//	bioComponent->SignalQualityTestSM ();
+
+			bioComponent->SetMessageValue (stage4Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
+
+			//cout << "Stage 4 complete" << endl;
+
+			// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
+
+			//if (sampleOK)
+			//	bioComponent->RemoveInterlocusSignalsSM ();
+
+			//	Put residual displacement test here...02/11/2014
+
+			bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
+			bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
+
+			if (sampleOK)
+				bioComponent->SampleQualityTestSMLF ();   // Have to revamp process quality tests?
+
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
+			bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
+
+			//
+			//  Put peak height accumulation algorithm here (12/16/2016)
+			//
+
+			if (sampleOK)
+				bioComponent->WriteDataToHeightFileSM ();
+
+			//cout << "Sample quality test complete" << endl;
+
+			//if (sampleOK)
+			//	bioComponent->TestPositiveControlSM (pGenotypes);   // How will we do this???
+
+			// Moved this section because it requires setting artifact for signal, which must precede stage 4 and it should only depend on removing extraneous
+			// signals from each locus, which should be done in "SignalQualityTest" above.
+			//if (sampleOK)
+			//	bioComponent->TestPositiveControlSM (pGenotypes);
+
+			bioComponent->OrganizeNoticeObjectsSM ();  // Have to do this here, before last evaluation and adding smart message reporters!!
+
+			bioComponent->SetMessageValue (stage5Successful, true);
+			bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+
+			//cout << "Stage 5 complete" << endl;
+
+			bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
+			bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
+
+			//if (!sampleOK)
+			//	bioComponent->LocatePositiveControlName (pGenotypes);
+
+			bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done
+
 		}
 
-		//else if (bioComponent->IsLabPositiveControl (idString, pGenotypes)) {
+		catch (...) {
 
-		//	hasPosControl = true;
-		//	bioComponent->SetPositiveControlTrueSM ();
-		//	bioComponent->SetMessageValue (sampleIsPosCtrl, true);
-		//	bioComponent->SetPossibleMixtureIDFalseSM ();
-		//	bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
-		//}
+			DirectoryCrashMode = true;
+			int cc = CoreBioComponent::GetCrashCode ();
 
-		//else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+			if (cc == 42) {
 
-		else if (sampleOK && bioComponent->GetMessageValue (disableLowLevelFilters)) {
+				CrashResponse = 0;
+				cout << "********Sample " << data->GetName () << " has one or more channels with no data" << endl;
+				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (620);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+				DirectoryCrashMode = true;
+			}
 
-			if (pServer->DoesTargetStringContainMixtureCriteriaCaseIndep (idString, makeMixturesDefaultType)) {
+			else if (cc == 37) {
 
-				bioComponent->SetPossibleMixtureIDTrueSM ();
-				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, true);
-				possibleMixture = true;
-				Locus::SetSingleSourceSample (false);
-				cout << "Sample is being treated as a mixture\n";
+				CrashResponse = 1;
+				cout << "********Sample " << FileName << " is not a valid fsa/hid file" << endl;
+				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (630);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+				DirectoryCrashMode = true;
 			}
 
 			else {
 
-				bioComponent->SetPossibleMixtureIDFalseSM ();
-				bioComponent->SetMessageValue (sampleSatisfiesMixtureCriteria, false);
-				possibleMixture = false;
-				Locus::SetSingleSourceSample (true);
-				cout << "Sample is being treated as a single source sample\n";
+				cout << "********We crashed on sample:  " << data->GetName () << "." << endl;
+				CoreBioComponent::ResetCrashMode (true);
+				STRLCAnalysis::mFailureMessage->SetPingValue (640);
+				STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+				DirectoryCrashMode = true;
 			}
+
+			CoreBioComponent::ResetCrashMode (true);
+			DirectoryCrashMode = true;
 		}
 
-		//
-		// End stage 1 for sample
-		//
+		if (DirectoryCrashMode) {
 
-		bioComponent->SetMessageValue (stage1Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 1, true, false);
+			delete bioComponent;
+			bioComponent = new STRSampleCoreBioComponent (FileName);
+			bioComponent->SetSampleName (FileName);
+			bioComponent->SetFileName (FileName);
+			commSM.SMOStack [1] = (SmartMessagingObject*)bioComponent;
+			bioComponent->SetMessageValue (stage1Successful, true);
+			bioComponent->SetMessageValue (stage2Successful, true);
+			bioComponent->SetMessageValue (stage3Successful, true);
+			bioComponent->SetMessageValue (stage4Successful, true);
 
-		if (possibleMixture) {
+			switch (CrashResponse) {
 
-			// Have to wait until stage 1 complete to evaluate disable stutter and adenylation messages below
+			case 0:
+				bioComponent->SetMessageValue (sampleMissingDataForChannels, true);
+				int c;
 
-			Locus::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
-			ChannelData::SetDisableAdenylationFilter (bioComponent->GetMessageValue (disableAdenylationFilter));
-			Locus::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
-			ChannelData::SetDisableStutterFilter (bioComponent->GetMessageValue (disableStutterFilter));
+				while (true) {
+
+					c = CoreBioComponent::GetNextNoDataChannel ();
+
+					if (c < 0)
+						break;
+
+					bioComponent->AppendDataForSmartMessage (sampleMissingDataForChannels, c);
+				}
+
+				bioComponent->SetMessageValue (stage5Successful, true);
+				SetMessageValue (samplesHadNoDataForChannels, true);
+				AppendDataForSmartMessage (samplesHadNoDataForChannels, MainMessages::XML (localFileName));
+				break;
+
+			case 1:
+				bioComponent->SetMessageValue (sampleNotValidInputFile, true);
+				bioComponent->SetMessageValue (stage5Successful, true);
+				SetMessageValue (samplesNotValidInputFiles, true);
+				AppendDataForSmartMessage (samplesNotValidInputFiles, MainMessages::XML (localFileName));
+				break;
+
+			default:
+				bioComponent->SetMessageValue (analysisTruncatedPrematurely, true);
+				bioComponent->AppendDataForSmartMessage (analysisTruncatedPrematurely, CoreBioComponent::GetCurrentStage ());
+				bioComponent->SetMessageValue (stage5Successful, true);
+				SetMessageValue (samplesTerminatedPrematurely, true);
+				AppendDataForSmartMessage (samplesTerminatedPrematurely, MainMessages::XML (localFileName));
+				break;
+			}
+
+			CoreBioComponent::ResetCrashMode (true);
+			DirectoryCrashMode = true;
+			cout << "Crash phase 1" << endl;
+			bioComponent->AddAllSmartMessageReportersCrashMode (commSM, numHigherObjects);	// These do not include signals...already done
+			// Add message for crash and set up trigger for directory level message; include current stage for crash data
+			// Then evaluate and set triggers for all messages for stage 5
+			cout << "Crash phase 2" << endl;
+			bioComponent->ReportSampleTableRowCrashMode (ExcelSummary);
+			cout << "Crash phase 3" << endl;
+			bioComponent->ReportSampleTableRowWithLinksCrashMode (ExcelLinks);
+			cout << "Crash phase 4" << endl;
+			bioComponent->ReportXMLSmartSampleTableRowWithLinksCrashMode (XMLExcelLinks, tempXMLExcelLinks);
+			cout << "Crash phase 5" << endl;
+
+			bioComponent->ReportAllSmartNoticeObjectsCrashMode (tempExcelSummary, "", " ", FALSE);
+			cout << "Crash phase 6" << endl;
+			bioComponent->ReportAllSmartNoticeObjectsCrashMode (tempExcelLinks, "", " ", TRUE);
+			cout << "Crash phase 7" << endl;
+			delete bioComponent;
+			bioComponent = NULL;
+			delete data;
+			data = NULL;
+			continue;
 		}
 
-		//cout << "Stage 1 complete" << endl;
-		bioComponent->TestAllFractionalFiltersSMLF ();
-
-		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 1, true, false);
-		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 1, true, false);
-
-		/*if (sampleOK && (bioComponent->AnalyzeSampleLociSM (text, ExcelText, Message, TRUE) < 0)) {
-
-			NoticeStr = "";
-			NoticeStr << "COULD NOT ANALYZE LOCI FOR FILE:  " << FileName << "\n";
-			ExcelText << CLevel (1) << NoticeStr << bioComponent->GetError () << "\n";
-			ExcelText << "COULD NOT ANALYZE FSA FILE:  " << FullPathName << ".  Skipping..." << "\n" << PLevel ();
-			NoticeStr = "";
-		}*/
-
-		//cout << "Sample locus analysis complete" << endl;
-
-		//
-		// Question:  do we put the SmartMessage activation before or after relevant code.  The intent was that the code performs
-		// tests, then the SmartMessages perform the logic and then the code cleans up the results.  We probably have to reorganize
-		// somewhat!!!
-		//
-
-		//if (sampleOK)
-		//	bioComponent->TestFractionalFiltersSM ();	// first tests for stutter and adenylation; then removes peaks below fractional filter(s),  Do this on a channel basis???  If so, need new function
-
-		bioComponent->SetMessageValue (stage2Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 2, true, false);
-
-		//cout << "Stage 2 complete" << endl;
-
-		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 2, true, false);
-		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 2, true, false);
-
-		if (sampleOK) {
-
-			bioComponent->TestForNearlyDuplicateAllelesSMLF ();
-		}
-
-		//cout << "Preliminary Calls complete" << endl;
-
-		//cout << "Preliminary calls done" << endl;
-		
-//		if (sampleOK)
-//			bioComponent->ValidateAndCorrectCrossChannelAnalysesSM ();
-
-//		if (sampleOK)	// Resolution now occurs after end of stage 3, below.
-//			bioComponent->ResolveAmbiguousInterlocusSignalsSM ();	// at this point, easily resolved ambiguities already removed
-
-		//if (sampleOK)
-		//	bioComponent->MeasureAllInterlocusSignalAttributesSM ();	// at this point, easily resolved ambiguities already removed
-
-		bioComponent->SetMessageValue (stage3Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 3, true, false);
-
-		//cout << "Stage 3 complete" << endl;
-
-		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 3, true, false);
-		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 3, true, false);
-
-		// Now, resolve ambiguities based on calculations from end of stage 3:
-
-		if (sampleOK) {
-
-			//bioComponent->ResolveAmbiguousInterlocusSignalsUsingSmartMessageDataSM ();	// Removes ambiguous signals from loci or assigns them and records message
-			bioComponent->FilterSmartNoticesBelowMinBioID ();
-		}
-
-		//if (sampleOK)
-		//	bioComponent->SignalQualityTestSM ();
-
-		bioComponent->SetMessageValue (stage4Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 4, true, false);
-
-		//cout << "Stage 4 complete" << endl;
-
-		// The following records, at the locus level, interlocus peaks to right and left for purposes of reporting
-
-		//if (sampleOK)
-		//	bioComponent->RemoveInterlocusSignalsSM ();
-
-		//	Put residual displacement test here...02/11/2014
-
-		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 4, true, false);
-		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 4, true, false);
-
-		if (sampleOK)
-			bioComponent->SampleQualityTestSMLF ();   // Have to revamp process quality tests?
-
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, true);
-		bioComponent->AddAllSmartMessageReportersForSignals (commSM, numHigherObjects);	// still in wrong place???
-
-		//
-		//  Put peak height accumulation algorithm here (12/16/2016)
-		//
-
-		if (sampleOK)
-			bioComponent->WriteDataToHeightFileSM ();
-
-		//cout << "Sample quality test complete" << endl;
-
-		//if (sampleOK)
-		//	bioComponent->TestPositiveControlSM (pGenotypes);   // How will we do this???
-
-		// Moved this section because it requires setting artifact for signal, which must precede stage 4 and it should only depend on removing extraneous
-		// signals from each locus, which should be done in "SignalQualityTest" above.
-		//if (sampleOK)
-		//	bioComponent->TestPositiveControlSM (pGenotypes);
-
-		bioComponent->OrganizeNoticeObjectsSM ();  // Have to do this here, before last evaluation and adding smart message reporters!!
-
-		bioComponent->SetMessageValue (stage5Successful, true);
-		bioComponent->EvaluateSmartMessagesAndTriggersForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
-
-		//cout << "Stage 5 complete" << endl;
-
-		bioComponent->EvaluateSmartMessagesForStage (commSM, numHigherObjects, 5, false, false);	// These do not include signals...already done
-		bioComponent->SetTriggersForAllMessages (commSM, numHigherObjects, 5, false, false);
-
-		//if (!sampleOK)
-		//	bioComponent->LocatePositiveControlName (pGenotypes);
-
-		bioComponent->AddAllSmartMessageReporters (commSM, numHigherObjects);	// These do not include signals...already done
-
-		if (bioComponent->SampleIsValid ()) {
+		if (bioComponent->SampleIsValid () && !DirectoryCrashMode) {
 
 			bioComponent->ReportSampleData(ExcelText);
 			bioComponent->WriteXMLGraphicDataSM (GraphicsDirectory, FileName, data, 4, PlotString);
@@ -3433,5 +3935,33 @@ void STRLCAnalysis :: PreInitializeSmartMessages () {
 	mMessageArray = NULL;
 	mMessageDataTable = NULL;
 	mSmartMessageReporters = NULL;
+}
+
+
+void STRLCAnalysis::AddInvalidFile (const RGString& name) {
+
+	RGString* newName = new RGString (name);
+	
+	if (!InvalidFilesByName.Contains (newName))
+		InvalidFilesByName.Append (newName);
+
+	else
+		delete newName;
+}
+
+
+bool STRLCAnalysis::FileNameIsInInvalidList (const RGString& name) {
+
+	RGString* newName = new RGString (name);
+	bool answer;
+
+	if (InvalidFilesByName.Contains (newName))
+		answer = true;
+
+	else
+		answer = false;
+
+	delete newName;
+	return answer;
 }
 

@@ -55,6 +55,12 @@ const char* SampleData :: GetComment () {
 }
 
 
+const char* SampleData::GetSampleName () const {
+
+	return "";
+}
+
+
 const char* SampleData :: GetInstrumentModelNumber () {
 
 	return "";

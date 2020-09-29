@@ -21,7 +21,8 @@ my $VERSION = &GetVersion::Get();
 my $CP = "cp -vup ";
 
 my $COPYDLL = 1; ## set to 0 if using MS Visual C++ Express
-my $PATH7Z = 'c:\\Progra~1\\7-Zip\\7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
+#my $PATH7Z = 'c:\\Progra~1\\7-Zip\\7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
+my $PATH7Z = '7z.exe';  ## if 7z.exe is not in the path, set the full DOS path here
 
 
 sub MKDIR
@@ -55,7 +56,6 @@ sub TESTFILES
   my ($file,$dir) = @_;
   my $rtn = 0;
   ## return 1 if a file in ${dir} is newer than $file
-
   if(!(-r $file))
   {
     $rtn = 1;
@@ -92,78 +92,81 @@ sub COPYFILES
   }
   my $destXSL = "${dest}/ExportFiles";
   &MKDIR("${dest}");
-  &MKDIR($destXSL)
+  &MKDIR($destXSL);
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");
   &MKDIR("${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} -R ${src}/docs/TestAnalysis ${destTest}");
   for my $sdir (qw/
-    CANNABIS
-    Cofiler
-    CORDIS_PLUS
-    CORDIS_PLUS_HID
-    GF
-    GFHID
-    GlobalFilerMixNoStutter
-    GlobalFilerMixStutter
-    GP10
-    ID
-    IDNO250
-    IDNO250_HID
-    IDplus
-    IDplusNO250
-    ID_HID
-    iPLEXSTR
-    iPLEXSTRLIZ500less250
-    MINIFILER
-    NETBIO_FLEXPLEX
-    NETBIO_FLEXPLEX_HID
-    NFX1
-    NGM
-    NGMSElect
-    LANESTANDARDONLY2
-    LANESTANDARDONLY3
-    LANESTANDARDONLY4
-    LANESTANDARDONLY5
-    POWERPLEXS5
-    PP12
-    PP16
-    PP16_HID
-    PP18D
-    PP18D_HID
-    PP21
-    PP21_HID
-    PPESI16
-    PPESI16_HID
-    PPESI17
-    PPESI17_HID
-    PPESX16
-    PPESX16_HID
-    PPESX17
-    PPESX17_HID
-    PPFusion
-    PPFusion6C
-    PPFusion6C_HID
-    PPFusion_HID
-    PPFusion_HID_Sole_Source
-    PPY
-    PPY23
-    PPY23_HID
-    PPGenePrint24
-    PPGenePrint24_HID
-    Profiler
-    QIAGEN_ARGUS_x12
-    QIAGEN_ARGUS_x12_HID
-    QIAGEN_ARGUS_x12_QS
-    QIAGEN_ARGUS_x12_QS_HID
-    QIAGEN_INVESTIGATOR24PLEX
-    QIAGEN_INVESTIGATOR24PLEX_HID
-    SEfilerPlus
-    SGMPlus
-    Yfiler
-    YFILERPLUS
-    YFILERPLUS_HID
+      CANNABIS
+      Cofiler
+      CORDIS_PLUS
+      CORDIS_PLUS_HID
+      GF
+      GFHID
+      GFHID_Mixture
+      GlobalFilerMixNoStutter
+      GlobalFilerMixStutter
+      GP10
+      ID
+      IDNO250
+      IDNO250_HID
+      IDplus
+      IDplusNO250
+      ID_HID
+      iPLEXSTR
+      iPLEXSTRLIZ500less250
+      LANESTANDARDONLY2
+      LANESTANDARDONLY3
+      LANESTANDARDONLY4
+      LANESTANDARDONLY5
+      MICROREADER_Y_PRIME
+      MICROREADER_Y_PRIME_HID
+      MINIFILER
+      NETBIO_FLEXPLEX
+      NETBIO_FLEXPLEX_HID
+      NFX1
+      NGM
+      NGMSElect
+      POWERPLEXS5
+      PP12
+      PP16
+      PP16_HID
+      PP18D
+      PP18D_HID
+      PP21
+      PP21_HID
+      PPESI16
+      PPESI16_HID
+      PPESI17
+      PPESI17_HID
+      PPESX16
+      PPESX16_HID
+      PPESX17
+      PPESX17_HID
+      PPFusion
+      PPFusion6C
+      PPFusion6C_HID
+      PPFusion_HID
+      PPFusion_HID_Sole_Source
+      PPGenePrint24
+      PPGenePrint24_HID
+      PPY
+      PPY23
+      PPY23_HID
+      Profiler
+      QIAGEN_ARGUS_x12
+      QIAGEN_ARGUS_x12_HID
+      QIAGEN_ARGUS_x12_QS
+      QIAGEN_ARGUS_x12_QS_HID
+      QIAGEN_INVESTIGATOR24PLEX
+      QIAGEN_INVESTIGATOR24PLEX_HID
+      SEfilerPlus
+      SGMPlus
+      Yfiler
+      YFILERPLUS
+      YFILERPLUS_HID
   /)
   {
     my $dest1 = "${dest}/Config/Volumes/${sdir}";
@@ -204,6 +207,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.7.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.8_2.9.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.9.1.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.2.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.3.pdf ${dest}");
@@ -214,6 +218,8 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.1.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.2.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.1.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.14.pdf ${dest}");
 }
 sub GetVCDir
 {
@@ -273,98 +279,7 @@ sub CopyWin
   }
 }
 
-sub CheckSignMac()
-{
-  my $PATH=shift;
-  my $SIG = shift;
-  my $NOSIGN = "\nApplication will not be signed.";
-  if(length($ENV{NOSIGN}))
-  {
-    return undef;
-  }
-  if(! (-d $PATH || -f $PATH))
-  {
-    print STDERR "Application path, ${PATH}, is not found",$NOSIGN;
-    return undef;
-  }
-  if(!length($SIG))
-  {
-    print STDERR "Cannot find environment variable, SIGNATURE",$NOSIGN;
-    return undef;
-  }
-  my $XDISP=$ENV{DISPLAY};
-  if(!length($XDISP))
-  {
-    print STDERR "Cannot find environment variable, DISPLAY,\n",
-                 "and cannot determine if this is the mac console.",$NOSIGN;
-    return undef;
-  }
-  if($XDISP !~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/)
-  {
-    print STDERR "Environment variable, DISPLAY=${XDISP}\n",
-                 "and cannot determine if this is the mac console.",$NOSIGN;
-    return undef;
-  }
-  return 1;
-}
 
-sub SignAppMac()
-{
-  my $PATH=shift;
-  my $SIG=$ENV{SIGNATURE};
-  my $rtn = undef;
-  if(&CheckSignMac($PATH,$SIG))
-  {
-    my $cmd = "codesign -f --options runtime --deep -s \"${SIG}\" \"${PATH}\"";
-    print "\n\n\nSigning ${PATH}:\n${cmd}\n";
-    my $nRtn = system($cmd);
-    my $s = $nRtn ? " not" : "";
-    print "\nApplication was${s} signed\n\n\n";
-    $rtn = !$nRtn
-  }
-  return $rtn;
-}
-sub SignAppMacFiles()
-{
-
-  sub _signOneFile
-  {
-    my ($SIG,$line) = @_;
-    my $cmd = "codesign -f --options runtime -s \"${SIG}\" \"${line}\"";
-    print "\nSigning ${line}\n${cmd}\n";
-    my $n = system($cmd);
-    $n && print("FAILED to sign ${line}");
-    $n;
-  }
-  my $PATH=shift;
-  my $SIG=$ENV{SIGNATURE};
-  my $rtn = undef;
-  if(!&CheckSignMac($PATH,$SIG))
-  {}
-  elsif(-f $PATH && ! -d $PATH)
-  {
-    $rtn = !&_signOneFile($SIG,$PATH);
-  }
-  elsif(!open(FIN,"find \"${PATH}\" -type f -print|"))
-  {
-    print "Cannot run find command on ${PATH}";
-  }
-  else
-  {
-    my $line;
-    my $nRtn = 1;
-    while($line = <FIN>)
-    {
-      chomp $line;
-      (-f $line) &&
-        ($nRtn = &_signOneFile($SIG,$line));
-      last if $nRtn;
-    }
-    close FIN;
-    $rtn = !$nRtn;
-  }
-  return $rtn;
-}
 
 sub CopyMac
 {
@@ -445,21 +360,16 @@ sub CopyMac
   #
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
+  &SYSTEM("strip ${DEST}/fsa2xml");
   &COPYFILES($src,$DEST,$TOP);
-  for my $x (glob("{$TOP}/*"))
-  {
-    if($x =~ m/\.app$/i)
-    {
-      &SignAppMac($x);
-    }
-    else
-    {
-      &SignAppMacFiles($x);
-    }
-  }
-  system("./makedmg.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"") ||
-    system("./maketar.sh \"${MAC_TOP_DIR}\" \"${VERSION}\"");
+  my $XDISP = $ENV{DISPLAY};
+  my $bSign = ($XDISP =~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/);
+  $bSign || (print STDOUT "Cannot determine if this is the Macintosh console,\napplication will not be signed.\n");
 
+  ( ($bSign && system("perl SignMac.pl")) ||
+    system("bash ./makedmg.sh \"${TOP}\" \"${VERSION}\"") ||
+    system("bash ./maketar.sh \"${TOP}\" \"${VERSION}\"")) &&
+      die("error encountered");
 }
 
 my $home = $ENV{"HOME"};
@@ -469,7 +379,7 @@ if( $home =~ m|^/Users| )
 {
   &CopyMac;
 }
-elsif( ($uname =~ m/cygwin/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
+elsif( ($uname =~ m/cygwin/i) || ($uname =~ m/mingw/i) || ($uname =~ m/msys/i) || (!length($home)) || ($home =~ m|^.:|) || (substr($home,0,2) eq "\\\\") )
 {
   &CopyWin;
 }

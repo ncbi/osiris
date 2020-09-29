@@ -1,0 +1,1 @@
+SUBDIRS =  OsirisMath/lib  BaseClassLib/lib OsirisLib2.01/lib TestAnalysisDirectoryLCv2.11/bin fsa2xml/bin

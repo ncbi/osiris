@@ -72,11 +72,11 @@ bool COARpeak::GetCountBool(const IOARpeak &x)
 
 void COARpeak::SetIsCritical(IOARpeak *p, bool bCritical)
 {
-  p->SetCriticalLevel(bCritical ? 1 : ARTIFACT_NOT_CRITICAL);
+  p->SetCriticalLevel(bCritical ? 1 : ARTIFACT_NOT_CRITICAL); // COARpeak.h
 }
 bool COARpeak::IsCritical(int nLevel)
 {
-  return (nLevel > 0) && (nLevel <= MIN_CRITICAL_ARTIFACT);  // in wxIDS.h
+  return (nLevel > 0) && (nLevel <= ARTIFACT_CRITICAL);  // in wxIDS.h
 }
 
 void COARpeak::Set(const IOARpeak &x)

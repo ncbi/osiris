@@ -92,6 +92,7 @@
 #include "CGridLocusPeaks.h"
 #include "CPanelStatus.h"
 #include "CFrameSample.h"
+#include "CPrintOutAnalysis.h"
 #include "nwx/stdb.h"
 #include <memory>
 #include <vector>
@@ -115,6 +116,14 @@ const int CFrameAnalysis::STATUS_COLUMN = 0;
 const int CFrameAnalysis::ILS_COLUMN = 1;
 const int CFrameAnalysis::CHANNEL_ALERT_COLUMN = 2;
 const int CFrameAnalysis::FIRST_LOCUS_COLUMN = 3;
+
+const int CFrameAnalysis::INCLUDE_ALL = 0x7fffffff;  // 31 bits
+const int CFrameAnalysis::INCLUDE_DISABLED = 1;
+const int CFrameAnalysis::INCLUDE_LADDER = 2;
+const int CFrameAnalysis::INCLUDE_POS_CTRL = 4;
+const int CFrameAnalysis::INCLUDE_NEG_CTRL = 8;
+const int CFrameAnalysis::INCLUDE_UNUSED_BITS = CFrameAnalysis::INCLUDE_ALL ^ ((CFrameAnalysis::INCLUDE_NEG_CTRL << 1) - 1); // max bit from above
+const int CFrameAnalysis::INCLUDE_DEFAULT = CFrameAnalysis::INCLUDE_ALL - CFrameAnalysis::INCLUDE_DISABLED;
 
 
 CFrameAnalysis::~CFrameAnalysis()
@@ -790,16 +799,13 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
   if(!m_nNoTimer)
   {
     CheckSelection();
-#if 0
-    if(m_pDlgAnalysis != NULL)
-    {
-      m_pDlgAnalysis->OnTimer(e);
-    }
-#endif
+    /*
+    // EXT TIMER
     if(m_pPanelPlotPreview != NULL)
     {
       m_pPanelPlotPreview->OnTimer(e);
     }
+    */
     if(m_pMenuBar != NULL)
     {
       m_pMenuBar->OnTimer(e);
@@ -1615,7 +1621,8 @@ void CFrameAnalysis::_OnDeleteDisabled()
         {
           pFrame->Close(false);
         }
-        sPath = m_pOARfile->FindPlotFile(*itr);
+
+        sPath = (*itr)->GetPlotFileName();
         pFrame = sPath.IsEmpty() ? NULL : m_pParent->FindWindowByName(sPath);
         if(pFrame != NULL)
         {
@@ -1807,7 +1814,7 @@ void CFrameAnalysis::_ShowPreview()
         m_pSplitterTop,
         m_pOARfile,
         mainApp::GetKitColors(),
-        true,
+        //true,  // EXT TIMER
         6);
     }
 
@@ -2041,7 +2048,7 @@ wxString CFrameAnalysis::_GetGraphicFileName(int nRow,bool bMessage)
     }
     if(nRow >= 0)
     {
-      sFile = m_pOARfile->FindPlotFile(m_SampleSort.GetSample((size_t)nRow));
+      sFile = m_SampleSort.GetSample((size_t)nRow)->GetPlotFileName();
       if(sFile.IsEmpty())
       {
         if(bMessage)
@@ -3510,6 +3517,62 @@ void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
   }
 }
 
+
+size_t CFrameAnalysis::GetSamplesByRow(std::vector<const COARsample *> *pSamples, int FLAGS)
+{
+  bool bNoDisabled = !(FLAGS & INCLUDE_DISABLED);
+  bool bNoLadder = !(FLAGS & INCLUDE_LADDER);
+  bool bNoPositiveCtrl = !(FLAGS & INCLUDE_POS_CTRL);
+  bool bNoNegativeCtrl = !(FLAGS & INCLUDE_NEG_CTRL);
+  const vector<COARsample *> *pAllSamples = m_SampleSort.GetSamples();
+  const COARsample *pSample;
+  const wxDateTime *pTime = GetSelectedTime();
+  pSamples->clear();
+  pSamples->reserve(pAllSamples->size());
+  vector<COARsample *>::const_iterator itr;
+  for (itr = pAllSamples->begin(); itr != pAllSamples->end(); ++itr)
+  {
+    pSample = *itr;
+    if (bNoDisabled && pSample->IsDisabled(pTime));
+    else if (bNoLadder && pSample->IsLadderType());
+    else if (bNoPositiveCtrl && pSample->IsPosControl());
+    else if (bNoNegativeCtrl && pSample->IsNegControl());
+    else
+    {
+      pSamples->push_back(pSample);
+    }
+  }
+  return pSamples->size();
+}
+
+void CFrameAnalysis::OnPrintPreview(wxCommandEvent &)
+{
+  CPrintOutAnalysis::DoPrintPreview(this);
+/*
+  int nLabelName = m_pComboName->GetSelection();
+  (nTypeName == IDmenuDisplayNameSample)
+    ? pSample->GetSampleName()
+    : pSample->GetName();
+
+*/
+
+  //CPrintOutAnalysis::DoPrintPreview(this);
+}
+#ifdef __WXMAC__
+void CFrameAnalysis::OnPageMargins(wxCommandEvent &)
+{
+  CPrintOut::DoPageMargins(this);
+}
+#endif
+void CFrameAnalysis::OnPageSetup(wxCommandEvent &)
+{
+  CPrintOut::DoPageSetup(this);
+}
+
+
+
+
+
 IMPLEMENT_PERSISTENT_SIZE(CFrameAnalysis)
 IMPLEMENT_ABSTRACT_CLASS(CFrameAnalysis,CMDIFrame)
 
@@ -3548,11 +3611,20 @@ EVT_KILL_FOCUS(CFrameAnalysis::OnFocusKill)
 
 EVT_COMMAND(wxID_ANY, CEventRepaint,CFrameAnalysis::_OnRepaint)
 EVT_COMMAND(wxID_ANY, CEventRestoreScroll,CFrameAnalysis::_OnRestoreScroll)
+EVT_COMMAND(wxID_ANY, CEventRestoreScroll,CFrameAnalysis::_OnRestoreScroll)
 
 EVT_MENU(wxID_SAVEAS, CFrameAnalysis::OnSave)
 EVT_MENU(wxID_SAVE, CFrameAnalysis::OnSave)
 
 
 EVT_CLOSE(CFrameAnalysis::OnClose)
+
+EVT_MENU(wxID_PRINT, CFrameAnalysis::OnPrintPreview)
+#ifdef __WXMAC__
+EVT_MENU(IDpageMargins, CFrameAnalysis::OnPageMargins)
+#endif
+EVT_MENU(IDpageSetup, CFrameAnalysis::OnPageSetup)
+
+
 END_EVENT_TABLE()
 

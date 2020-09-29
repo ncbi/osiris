@@ -51,6 +51,8 @@
 #include "TracePrequalification.h"
 #include "DirectoryManager.h"
 #include "LeastMedianOfSquares.h"
+#include "STRLCAnalysis.h"
+#include "ModPairs.h"
 
 
 // Smart Message Functions**************************************************************************************************************
@@ -287,6 +289,9 @@ Boolean CoreBioComponent :: ReportAllSmartNoticeObjects (RGTextOutput& text, con
 	int severity;	
 	Boolean reportedNotices = ReportSmartNoticeObjects (text, indent, delim, reportLink);
 
+	if (STRLCAnalysis::GetDirectoryCrashMode ())
+		return TRUE;
+
 	if (!reportedNotices) {
 
 		severity = GetLocusAndChannelHighestMessageLevel ();
@@ -313,6 +318,14 @@ Boolean CoreBioComponent :: ReportAllSmartNoticeObjects (RGTextOutput& text, con
 		if (i != mLaneStandardChannel)
 			mDataChannels[i]->ReportAllSmartNoticeObjects (text, indent2, delim, reportLink);
 	}
+
+	return TRUE;
+}
+
+
+Boolean CoreBioComponent::ReportAllSmartNoticeObjectsCrashMode (RGTextOutput& text, const RGString& indent, const RGString& delim, Boolean reportLink) {
+
+	Boolean reportedNotices = ReportSmartNoticeObjects (text, indent, delim, reportLink);
 
 	return TRUE;
 }
@@ -493,8 +506,11 @@ int CoreBioComponent :: AddAllSmartMessageReporters (SmartMessagingComm& comm, i
 	bool mirror;
 	bool displayExport;
 
-	for (i=1; i<=mNumberOfChannels; i++)
-		mDataChannels [i]->AddAllSmartMessageReporters (comm, numHigherObjects);
+	if (!STRLCAnalysis::GetDirectoryCrashMode ()) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			mDataChannels [i]->AddAllSmartMessageReporters (comm, numHigherObjects);
+	}
 
 	for (i=0; i<size; i++) {
 
@@ -545,6 +561,85 @@ int CoreBioComponent :: AddAllSmartMessageReporters (SmartMessagingComm& comm, i
 
 		if (hasExportProtocolInfo) {
 			
+			newMsg->SetExportProtocolInformation (nextSmartMsg->GetExportProtocolList ());
+			SmartMessagingObject::InsertExportSpecificationsIntoTable (nextSmartMsg);
+		}
+
+		newMsg->ComputeViabilityOfExportInfo ();
+		nMsgs = AddSmartMessageReporter (newMsg);
+	}
+
+	MergeAllSmartMessageReporters ();
+	return nMsgs;
+}
+
+
+int CoreBioComponent::AddAllSmartMessageReportersCrashMode (SmartMessagingComm& comm, int numHigherObjects) {
+
+	int k = GetObjectScope ();
+	int size = SmartMessage::GetSizeOfArrayForScope (k);
+	int i;
+	int nMsgs = 0;
+	SmartMessageReporter* newMsg;
+	SmartMessage* nextSmartMsg;
+	SmartMessageData target;
+	SmartMessageData* smd;
+	bool editable;
+	bool enabled;
+	bool hasExportProtocolInfo;
+	bool report;
+	bool mirror;
+	bool displayExport;
+
+	for (i=0; i<size; i++) {
+
+		nextSmartMsg = SmartMessage::GetSmartMessageForScopeAndElement (k, i);
+		editable = nextSmartMsg->IsEditable ();
+		hasExportProtocolInfo = nextSmartMsg->HasExportProtocolInfo ();
+
+		if (!mMessageArray [i]) {
+
+			enabled = false;
+
+			if (!editable)
+				continue;
+
+			if (!hasExportProtocolInfo)
+				continue;
+		}
+
+		else
+			enabled = true;
+
+		report = nextSmartMsg->EvaluateReportContingent (comm, numHigherObjects);
+		mirror = nextSmartMsg->UseDefaultExportDisplayMode ();
+
+		if (mirror)
+			displayExport = report;
+
+		else
+			displayExport = nextSmartMsg->DisplayExportInfo ();
+
+		if (!report && !displayExport)
+			continue;
+
+		target.SetIndex (i);
+		smd = (SmartMessageData*)mMessageDataTable->Find (&target);
+		newMsg = new SmartMessageReporter;
+		newMsg->SetSmartMessage (nextSmartMsg);
+
+		if (smd != NULL)
+			newMsg->SetData (smd);
+
+		newMsg->SetPriorityLevel (nextSmartMsg->EvaluateReportLevel (comm, numHigherObjects));
+		newMsg->SetRestrictionLevel (nextSmartMsg->EvaluateRestrictionLevel (comm, numHigherObjects));
+		newMsg->SetEditable (editable);
+		newMsg->SetEnabled (enabled);
+		newMsg->SetDisplayExportInfo (displayExport);
+		newMsg->SetDisplayOsirisInfo (report);
+
+		if (hasExportProtocolInfo) {
+
 			newMsg->SetExportProtocolInformation (nextSmartMsg->GetExportProtocolList ());
 			SmartMessagingObject::InsertExportSpecificationsIntoTable (nextSmartMsg);
 		}
@@ -783,7 +878,10 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 
 	RGString type;
 
-	if (mIsNegativeControl)
+	if (STRLCAnalysis::GetDirectoryCrashMode ())
+		type = "Unknown";
+
+	else if (mIsNegativeControl)
 		type = "-Control";
 
 	else if (mIsPositiveControl)
@@ -864,6 +962,12 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 //		text << CLevel (1) << "\t\t\t</SampleAlerts>\n" << PLevel ();
 	}
 
+	if (STRLCAnalysis::GetDirectoryCrashMode ()) {
+
+		text << CLevel (1) << "\t\t</Sample>\n" << PLevel ();
+		return;
+	}
+
 	mDataChannels [mLaneStandardChannel]->ReportXMLILSSmartNoticeObjects (text, tempText, " ");
 	int i;
 
@@ -912,6 +1016,87 @@ void CoreBioComponent :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& te
 
 
 
+void CoreBioComponent::ReportXMLSmartSampleTableRowWithLinksCrashMode (RGTextOutput& text, RGTextOutput& tempText) {
+
+	RGString type;
+
+	type = "Unknown";
+	RGString pResult;
+
+	RGString SimpleFileName (mName);
+	size_t startPos = 0;
+	size_t endPos;
+	size_t length = SimpleFileName.Length ();
+
+	if (SimpleFileName.FindLastSubstringCaseIndependent (DirectoryManager::GetDataFileType (), startPos, endPos)) {
+
+		if (endPos == length - 1)
+			SimpleFileName.ExtractAndRemoveLastCharacters (4);
+	}
+
+	SimpleFileName.FindAndReplaceAllSubstrings ("\\", "/");
+	startPos = endPos = 0;
+
+	if (SimpleFileName.FindLastSubstring ("/", startPos, endPos)) {
+
+		SimpleFileName.ExtractAndRemoveSubstring (0, startPos);
+	}
+
+	text << CLevel (1) << "\t\t<Sample>\n";
+	text << "\t\t\t<Name>" << xmlwriter::EscAscii (SimpleFileName, &pResult) << "</Name>\n";
+	text << "\t\t\t<SampleName>" << xmlwriter::EscAscii (mSampleName, &pResult) << "</SampleName>\n";
+	text << "\t\t\t<Comment>" << xmlwriter::EscAscii (mComments, &pResult) << "</Comment>\n";
+	text << "\t\t\t<RunStart>" << mRunStart.GetData () << "</RunStart>\n";
+	text << "\t\t\t<Type>" << type.GetData () << "</Type>\n";
+
+	ReportXMLSampleInfoBlock ("\t\t\t", text);
+
+	/*text << "\t\t\t<Info>\n";
+	text << "\t\t\t\t<MaxLinearPullup>" << mQC.mMaxLinearPullupCoefficient << "</MaxLinearPullup>\n";
+	text << "\t\t\t\t<MaxNonlinearPullup>" << mQC.mMaxNonlinearPullupCoefficient << "</MaxNonlinearPullup>\n";
+	int j;
+
+	for (j=1; j<=mNumberOfChannels; j++) {
+
+		text << "\t\t\t\t<Channel>\n";
+		text << "\t\t\t\t\t<Number>" << j << "</Number>\n";
+		text << "\t\t\t\t\t<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
+		text << "\t\t\t\t</Channel>\n";
+	}
+
+	text << "\t\t\t</Info>\n" << PLevel ();*/
+
+	int trigger = Notice::GetMessageTrigger ();
+	//	int channelHighestLevel;
+	//	bool channelAlerts = false;
+	int cbcHighestMsgLevel = GetHighestMessageLevelWithRestrictionSM ();
+	RGDListIterator it (*mSmartMessageReporters);
+	SmartMessageReporter* nextNotice;
+	bool includesExportInfo = false;
+
+	while (nextNotice = (SmartMessageReporter*)it ()) {
+
+		if (nextNotice->HasViableExportInfo ()) {
+
+			includesExportInfo = true;
+			break;
+		}
+	}
+
+	if (((cbcHighestMsgLevel > 0) && (cbcHighestMsgLevel <= trigger)) || includesExportInfo) {
+
+		//		text << CLevel (1) << "\t\t\t<SampleAlerts>\n" << PLevel ();
+
+				// get message numbers and report
+		ReportXMLSmartNoticeObjects (text, tempText, " ");
+
+		//		text << CLevel (1) << "\t\t\t</SampleAlerts>\n" << PLevel ();
+	}
+
+	text << CLevel (1) << "\t\t</Sample>\n" << PLevel ();
+}
+
+
 
 void CoreBioComponent :: ReportXMLSampleInfoBlock (const RGString& indent, RGTextOutput& text) {
 
@@ -942,14 +1127,17 @@ void CoreBioComponent :: ReportXMLSampleInfoBlock (const RGString& indent, RGTex
 
 	int j;
 
-	for (j=1; j<=mNumberOfChannels; j++) {
+	if (!CrashMode) {
 
-		text << indent1 << "<Channel>\n";
-		text << indent2 << "<Number>" << j << "</Number>\n";
-		text << indent2 << "<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
-		text << indent2 << "<ChannelLocusTotalAreaRatioMaxToMin>" << mDataChannels [j]->GetMaxLocusAreaRatio () << "</ChannelLocusTotalAreaRatioMaxToMin>\n";  // Must generate and store and provide accessor for this number for each channel
-		text << indent2 << "<ChannelYLinkedLocusTotalAreaMaxToMin>" << mDataChannels [j]->GetMaxYLinkedLocusAreaRatio () << "</ChannelYLinkedLocusTotalAreaMaxToMin>\n";
-		text << indent1 << "</Channel>\n";
+		for (j=1; j<=mNumberOfChannels; j++) {
+
+			text << indent1 << "<Channel>\n";
+			text << indent2 << "<Number>" << j << "</Number>\n";
+			text << indent2 << "<Noise>" << mDataChannels [j]->GetNoiseRange () << "</Noise>\n";
+			text << indent2 << "<ChannelLocusTotalAreaRatioMaxToMin>" << mDataChannels [j]->GetMaxLocusAreaRatio () << "</ChannelLocusTotalAreaRatioMaxToMin>\n";  // Must generate and store and provide accessor for this number for each channel
+			text << indent2 << "<ChannelYLinkedLocusTotalAreaMaxToMin>" << mDataChannels [j]->GetMaxYLinkedLocusAreaRatio () << "</ChannelYLinkedLocusTotalAreaMaxToMin>\n";
+			text << indent1 << "</Channel>\n";
+		}
 	}
 
 	text << indent << "</Info>\n" << PLevel ();
@@ -1030,7 +1218,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		ErrorString = "*******COULD NOT FIND MARKER SET NAMED ";
 		ErrorString << markerSetName << " IN POPULATION COLLECTION********\n";
 		SetMessageValue (noNamedMarkerSet, true);
-		AppendDataForSmartMessage (noNamedMarkerSet, markerSetName);
+		AppendDataForSmartMessage (noNamedMarkerSet, MainMessages::XML (markerSetName));
 		return -1;
 	}
 
@@ -1043,7 +1231,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		ErrorString << markerSetName << "\n";
 		cout << "Could not find named internal lane standard associated with marker set named " << (char*)markerSetName.GetData () << endl;
 		SetMessageValue (noNamedILS, true);
-		AppendDataForSmartMessage (noNamedILS, markerSetName);
+		AppendDataForSmartMessage (noNamedILS, MainMessages::XML (markerSetName));
 		return -1;
 	}
 
@@ -1107,6 +1295,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		mDataChannels [i]->SetFsaChannel (fsaChannelMap [i]);
 	}
 
+//	InitializeAllSampleModifications ();
 	mLSData = mDataChannels [mLaneStandardChannel];
 	mLSData->SetMessageValue (channelIsILS, true);
 	mMarkerSet->ResetLocusList ();
@@ -1137,6 +1326,7 @@ int CoreBioComponent :: SetAllDataSM (SampleData& fileData, TestCharacteristic* 
 		if (mDataChannels [i]->SetDataSM (fileData, testControlPeak, testSamplePeak) < 0) {
 
 			ErrorString << mDataChannels [i]->GetError ();
+			NoDataChannels.push_back (i);
 			status = -1;
 		}
 	}
@@ -1162,6 +1352,7 @@ int CoreBioComponent :: SetAllRawDataSM (SampleData& fileData, TestCharacteristi
 		if (mDataChannels [i]->SetRawDataSM (fileData, testControlPeak, testSamplePeak) < 0) {
 
 			ErrorString << mDataChannels [i]->GetError ();
+			NoDataChannels.push_back (i);
 			status = -1;
 		}
 	}
@@ -1216,6 +1407,7 @@ int CoreBioComponent :: SetAllRawDataWithMatrixSM (SampleData& fileData, TestCha
 
 			mDataChannels [i]->SetRawDataFromColorCorrectedArraySM (NULL, numDataPoints, testControlPeak, testSamplePeak);
 			ErrorString << mDataChannels [i]->GetError ();
+			NoDataChannels.push_back (i);
 			status = -1;
 		}
 	}
@@ -1410,7 +1602,7 @@ int CoreBioComponent :: AnalyzeLaneStandardChannelSM (RGTextOutput& text, RGText
 	status =  mDataChannels [mLaneStandardChannel]->HierarchicalLaneStandardChannelAnalysisSM (text, ExcelText, msg, print);
 
 	if (status < 0)
-		ErrorString << mDataChannels [mLaneStandardChannel]->GetError ();
+		ErrorString << "Could not analyze lane standard:  " << mDataChannels [mLaneStandardChannel]->GetError ();
 
 	else {
 
@@ -3984,6 +4176,8 @@ int CoreBioComponent :: AnalyzeGridSM (SampleData& fileData, GridDataStruct* gri
 		return -2;
 	}
 
+	InitializeAllSampleModifications ();
+
 	if (CoreBioComponent::UseRawData)
 		FindAndRemoveFixedOffsets ();
 
@@ -4063,10 +4257,13 @@ int CoreBioComponent :: PrepareSampleForAnalysisSM (SampleData& fileData, Sample
 		cout << notice << endl;
 		sampleData->mExcelText << CLevel (1) << notice << "\n" << ErrorString << "Skipping...\n" << PLevel ();
 		sampleData->mText << notice << "\n" << ErrorString << "Skipping...\n";
+		SetCrashCode (42);
+		throw 42;
 		return -2;
 	}
 
 	CoreBioComponent::InitializeOffScaleData (fileData);
+	InitializeAllSampleModifications ();
 	Progress = 2;
 
 	if (CoreBioComponent::UseRawData) {
@@ -4378,7 +4575,7 @@ int CoreBioComponent :: TestPositiveControlSM (GenotypesForAMarkerSet* genotypes
 			SetMessageValue (posCtrlNotFound, true);
 
 			if (mPositiveControlName.Length () > 0)
-				AppendDataForSmartMessage (posCtrlNotFound, mPositiveControlName);
+				AppendDataForSmartMessage (posCtrlNotFound, MainMessages::XML (mPositiveControlName));
 
 			return -1;
 		}

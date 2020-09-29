@@ -60,6 +60,11 @@ const wxString CDialogPlotMessageFind::MSG_TABLE(
 "associated OSIRIS Analysis File now?"
 );
 
+const wxString CDialogPlotMessageFind::MSG_PRINT(
+  "This plot was not initiated from an analysis window and therefore" PLF
+  "not all data needed for printing are available.  Do you wish" PLF
+  "to search for an associated OSIRIS Analysis File now?"
+);
 
 CDialogPlotMessage::CDialogPlotMessage(wxWindow *parent, const wxString &sFileName) 
   : wxDialog(parent,wxID_ANY,wxString("Please Note..."))

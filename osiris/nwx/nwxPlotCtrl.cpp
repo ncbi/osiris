@@ -37,15 +37,10 @@
 
 IMPLEMENT_CLASS(nwxPlotCtrl, wxPlotCtrl )
 
-const int nwxPlotCtrl::TIMER_ELAPSE(200);
 const unsigned int nwxPlotCtrl::TIMER_COUNT(3);
 
 nwxPlotCtrl::~nwxPlotCtrl()
 {
-  if(m_pTimer != NULL)
-  {
-    delete m_pTimer;
-  }
   if(m_pToolTip != NULL)
   {
     delete m_pToolTip;
@@ -93,21 +88,21 @@ void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
     rClip.x += nOffset;
     rClip.height -= nOffset;
     rClip.width -= nOffset2;
-    pdc->GetClippingBox(&nX,&nY,&nW,&nH);
-    pdc->SetClippingRegion(rClip);
   }
 
   // clipping region
-  pdc->SetClippingRegion(rClip);
-  m_Labels.Draw(pdc,true);
-  if(nOffset > 0)
+  pdc->GetClippingBox(&nX, &nY, &nW, &nH);
+  bool bClipped = !!(nX | nY | nW | nH);
+  if (bClipped)
   {
     pdc->DestroyClippingRegion();
-    if(nW > 0 && nH > 0)
-    {
+  }
+  pdc->SetClippingRegion(rClip);
+  m_Labels.Draw(pdc,true);
+  pdc->DestroyClippingRegion();
+  if(bClipped)
+  {
       pdc->SetClippingRegion(nX,nY,nW,nH);
-      // this isn't necessarily the original clipping region
-    }
   }
 
 //  wxWindowDC wdc(this);
@@ -115,11 +110,20 @@ void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
 //  m_Xshade.Draw(pdc,true);
 
 }
+
 void nwxPlotCtrl::DrawPlotCtrl(wxDC *dc)
 {
-//  ClearSelectedRanges(-1, true);
   wxPlotCtrl::DrawPlotCtrl(dc);
-  m_XLabels.Draw(dc,true);
+  if (GetBatchCount() && RenderingToWindow())
+  {
+    // there is a problem with wxPlotCtrl::m_areaRect
+    // so the XLabels will be drawn upon EndBatch()
+    RefreshOnEndBatch();
+  }
+  else
+  {
+    m_XLabels.Draw(dc, true);
+  }
 }
 
 bool nwxPlotCtrl::_OnMouseDown(wxMouseEvent &e)
@@ -257,7 +261,7 @@ void nwxPlotCtrl::_LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel)
   nwxLog::LogMessage(s);
 }
 #endif
-void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi)
+void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi, bool bForcePrintFont)
 {
   TnwxBatch<nwxPlotCtrl> XXXX(this);
   int nX ;
@@ -266,7 +270,7 @@ void nwxPlotCtrl::DrawEntirePlot(wxDC *dc, const wxRect &rect, double dpi)
   n = m_Labels.GetMinY();
   m_XLabels.SetDPIoffset(dpi);
   m_Labels.SetMinYDPI(dpi);
-  DrawWholePlot(dc,rect,dpi,true);
+  DrawWholePlot(dc,rect,dpi,true, bForcePrintFont);
   m_XLabels.SetOffset(nX);
   m_Labels.SetMinY(n);
 }
@@ -280,10 +284,13 @@ void nwxPlotCtrl::ProcessMousePosition(const wxPoint &pt)
     StartTimer();
   }
 }
+
+const wxColour nwxPlotCtrl::g_ColorGrid(232, 232, 232);
+
 void nwxPlotCtrl::_Init()
 {
   SetSelectionType(wxPLOTCTRL_SELECT_NONE);
-  SetGridColour(wxColour(232,232,232));
+  SetGridColour(g_ColorGrid);
   //    SetAreaMouseMarker(wxPLOTCTRL_MARKER_NONE);
 
   m_bmActiveBackup = m_activeBitmap;
@@ -292,9 +299,11 @@ void nwxPlotCtrl::_Init()
 
 }
 
-void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
+void nwxPlotCtrl::OnTimer(wxTimerEvent &)
 {
-  if(m_bClear || m_nDisableToolTip)
+  if (m_bStopTimer)
+  {}  // do nothing
+  else if(m_bClear || m_nDisableToolTip)
   {
     _ClearToolTip();
     m_bClear = false;
@@ -311,10 +320,6 @@ void nwxPlotCtrl::nwxOnTimer(wxTimerEvent &)
       //StopTimer();
       m_nTimeHere = 0;
     }
-  }
-  if(m_bStopTimer)
-  {
-    m_pTimer->Stop();
   }
 }
 #if __TOOLTIP_TO_FRAME__
@@ -628,6 +633,10 @@ void nwxPlotCtrl::OnViewChanged(wxPlotCtrlEvent &e)
   e.Skip();
 }
 
+bool nwxPlotCtrl::RenderScrollbars()
+{
+  return RenderingToWindow() && AreScrollbarsShown();
+}
 void nwxPlotCtrl::OnClickXLabel(const nwxPointLabel &, const wxPoint &) {;}
 void nwxPlotCtrl::OnClickLabel(const nwxPointLabel &, const wxPoint &) {;}
 
@@ -658,7 +667,6 @@ void nwxPlotCtrl::SendContextMenuEvent(wxMouseEvent &e)
 
 BEGIN_EVENT_TABLE(nwxPlotCtrl,wxPlotCtrl)
 
-EVT_TIMER(wxID_ANY,nwxPlotCtrl::nwxOnTimer)
 EVT_PLOTCTRL_VIEW_CHANGED(wxID_ANY, nwxPlotCtrl::OnViewChanged)
 EVT_MOUSE_EVENTS     ( nwxPlotCtrl::nwxOnMouse )
 END_EVENT_TABLE()

@@ -52,6 +52,7 @@ public:
 	int AssignString ();
 	void OutputAllData ();
 	int AssembleInputs ();
+	void RemoveUTF8Header (RGString& inputString);
 
 	RGString GetInputDirectory () const { return mInputDirectory; }
 	RGString GetOutputSubDirectory () const { return mOutputSubDirectory; }

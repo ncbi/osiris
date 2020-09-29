@@ -10,8 +10,7 @@
         <DisplayName>75-500</DisplayName>
         <Characteristics>75 100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
         <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
-        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
-        
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>       
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
       <LaneStandard>
@@ -34,6 +33,22 @@
         <Name>ABI-ROX350</Name>
         <DisplayName>75-350</DisplayName>
         <Characteristics>75 100 139 150 160 200 250 300 340 350</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-ROX100-500</Name>
+        <DisplayName>100-500</DisplayName>
+        <Characteristics>100 139 150 160 200 250 300 340 350 400 450 490 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-ROX100-400</Name>
+        <DisplayName>100-400</DisplayName>
+        <Characteristics>100 139 150 160 200 250 300 340 350 400</Characteristics>
         <RelativeHeights>MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
         <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
@@ -174,6 +189,30 @@
     <ILS>
       <ILSName>ABI-LIZ-600</ILSName>
       <DyeName>LIZ</DyeName>
+	  <LaneStandard>
+        <Name>ABI-LIZ-600-60-TO-600</Name>
+        <DisplayName>60-600</DisplayName>
+        <Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600</Characteristics>
+        <RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M H M M H MH M MH M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>		  
+      <LaneStandard>
+        <Name>ABI-LIZ-600-60-TO-500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 80 100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500</Characteristics>
+        <RelativeHeights>M M M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>ABI-LIZ-600-100-TO-600</Name>
+        <DisplayName>100-600</DisplayName>
+        <Characteristics>100 114 120 140 160 180 200 214 220 240 250 260 280 300 314 320 340 360 380 400 414 420 440 460 480 500 514 520 540 560 580 600</Characteristics>
+        <RelativeHeights>M MH M M M MH MH MH MH H M MH H MH M M MH M M M M M M M H M M H MH M MH M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
       <LaneStandard>
         <Name>ABI-LIZ-600-60-TO-460</Name>
         <DisplayName>60-460</DisplayName>
@@ -746,6 +785,102 @@
 			<CorrelationAutoAcceptanceThreshold>0.989</CorrelationAutoAcceptanceThreshold>
 		</LaneStandard>
 	</ILS>
+	<ILS>
+      <ILSName>QD550</ILSName>
+      <DyeName>AF-633</DyeName>
+      <LaneStandard>
+        <Name>QD-70-550</Name>
+        <DisplayName>70-550</DisplayName>
+        <Characteristics>70 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-80-550</Name>
+        <DisplayName>80-550</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-100-550</Name>
+        <DisplayName>100-550</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-100-525</Name>
+        <DisplayName>100-525</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500 525</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-100-500</Name>
+        <DisplayName>100-500</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-80-500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>QD-70-500</Name>
+        <DisplayName>70-500</DisplayName>
+        <Characteristics>70 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+   	<ILS>
+      <ILSName>Asuragen ROX 1000</ILSName>
+      <DyeName>ROX</DyeName>
+      <LaneStandard>
+        <Name>Asuragen-ROX1000</Name>
+        <DisplayName>79-1007</DisplayName>
+        <Characteristics>79 90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902 1007</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Asuragen-ROX90-1007</Name>
+        <DisplayName>90-1007</DisplayName>
+        <Characteristics>90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902 1007</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Asuragen-ROX90-902</Name>
+        <DisplayName>90-902</DisplayName>
+        <Characteristics>90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Asuragen-ROX79-902</Name>
+        <DisplayName>75-350</DisplayName>
+        <Characteristics>79 90 105 131 151 182 201 254 306 337 362 425 486 509 560 598 674 739 799 902</Characteristics>
+        <RelativeHeights>MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH MH</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>    
   </LaneStandards>
   <Kits>
     <Set>
@@ -915,6 +1050,10 @@
 	<Set>
 		<KitName>LaneStandardOnly_5</KitName>
 		<FileName>LaneStandardOnly_5_LadderInfo.xml</FileName>
+	</Set>
+	<Set>
+		<KitName>Microreader Y Prime</KitName>
+		<FileName>MicroreaderYPrime_LadderInfo.xml</FileName>
 	</Set>
   </Kits>
 </KitData>

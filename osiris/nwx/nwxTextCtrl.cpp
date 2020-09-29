@@ -27,11 +27,18 @@
 *  Author:   Douglas Hoffman
 *
 */
+#include <wx/valnum.h>
 #include "nwx/nwxTextCtrl.h"
+#include "nwx/nwxString.h"
 
 IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrl,wxTextCtrl)
+IMPLEMENT_ABSTRACT_CLASS(nwxTextCtrlInteger, wxTextCtrl)
 BEGIN_EVENT_TABLE(nwxTextCtrl,wxTextCtrl)
 EVT_SET_FOCUS(nwxTextCtrl::OnSetFocus)
+END_EVENT_TABLE()
+
+BEGIN_EVENT_TABLE(nwxTextCtrlInteger, wxTextCtrl)
+EVT_SET_FOCUS(nwxTextCtrlInteger::OnSetFocus)
 END_EVENT_TABLE()
 
 
@@ -42,5 +49,81 @@ void nwxTextCtrl::OnSetFocus(wxFocusEvent &e)
   GetSelection(&nFrom,&nTo);
   // force beginning of text to be visible
   SetInsertionPoint(0);
+  e.Skip();
+}
+
+class nwxIntegerValidator : public wxIntegerValidator<int>
+{
+public:
+  nwxIntegerValidator(int nMin, int nMax):
+    wxIntegerValidator<int>(NULL, 0)
+  {
+    SetRange(nMin, nMax);
+  }
+  virtual ~nwxIntegerValidator() {}
+};
+
+int nwxTextCtrlInteger::g_nWidth10 = -1;
+wxWindow *nwxTextCtrlInteger::g_pParent = NULL;
+
+wxSize nwxTextCtrlInteger::_ComputeSize(int nDigits, wxWindow *parent)
+{
+  if (g_nWidth10 < 0 || parent != g_pParent)
+  {
+    g_pParent = parent;
+    wxSize sz = g_pParent->GetTextExtent(wxT("9999999999"));
+    g_nWidth10 = sz.GetWidth();
+  }
+  int nW = (nDigits > 0) ? (((nDigits + 2) * g_nWidth10) + 9) / 10 : -1;
+  return wxSize(nW, -1);
+}
+
+nwxTextCtrlInteger::nwxTextCtrlInteger(
+  wxWindow *parent,
+  wxWindowID id,
+  int nMin,
+  int nMax,
+  int nValue,
+  int nDigits,
+  long style) :
+  wxTextCtrl(parent, id,
+    wxEmptyString, wxDefaultPosition, _ComputeSize(nDigits, parent),
+    style, nwxIntegerValidator(nMin, nMax)),
+  m_nMin(nMin),
+  m_nMax(nMax)
+{
+  SetIntValue(nValue);
+  SetDigits(nDigits);
+}
+void nwxTextCtrlInteger::SetIntValue(int nValue)
+{
+  wxString s;
+  if (nValue >= m_nMin && nValue <= m_nMax)
+  {
+    s = nwxString::FormatNumber(nValue);
+  }
+  SetValue(s);
+}
+void nwxTextCtrlInteger::SetDigits(int n)
+{
+  if (n > 0)
+  {
+    SetSize(_ComputeSize(n, GetParent()));
+  }
+}
+
+int nwxTextCtrlInteger::GetIntValue(int nEmptyValue)
+{
+  int nRtn = nEmptyValue;
+  wxString s = GetValue();
+  if (!s.IsEmpty())
+  {
+    nRtn = atoi(s.utf8_str());
+  }
+  return nRtn;
+}
+void nwxTextCtrlInteger::OnSetFocus(wxFocusEvent &e)
+{
+  SelectAll();
   e.Skip();
 }

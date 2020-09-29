@@ -37,6 +37,7 @@
 #include "rgtokenizer.h"
 #include "Expression.h"
 #include "SmartMessagingObject.h"
+#include "STRLCAnalysis.h"
 #include <iostream>
 #include <math.h>
 
@@ -475,6 +476,7 @@ SmartMessage* STRBaseSmartMessage :: GetNewMessageV4 (const RGString& inputStrin
 
 		newMsg = new STRSmartMessage ();
 		cout << "Could not identify message type " << messageTypeString << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("type " + messageTypeString + "in message named " + name);
 	}
 
 	newMsg->SetName (name);
@@ -902,6 +904,9 @@ int STRBaseSmartMessage :: Initialize () {
 		if (mWatchInfo.size () > 0)
 			mDebugOn = true;
 	}
+
+	if (status < 0)
+		STRLCAnalysis::mFailureMessage->AddMessage (GetName ());
 
 	return status;
 }

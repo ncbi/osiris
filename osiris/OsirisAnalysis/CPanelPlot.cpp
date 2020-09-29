@@ -29,11 +29,14 @@
 *
 */
 #include "mainApp.h"
+#include <wx/filename.h>
 #include <wx/tglbtn.h>
+#include <wx/bitmap.h>
 #include "nwx/nwxKeyState.h"
 #include "CPanelPlot.h"
 #include "CFramePlot.h"
 #include "CFrameAnalysis.h"
+#include "CPrintParameters.h"
 #include "COARfile.h"
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
@@ -77,7 +80,10 @@ DEFINE_EVENT_TYPE(CEventCannotShowBPS)
 
 CPlotCtrl::CPlotCtrl(
   wxWindow *parent, CPanelPlot *pPlot, wxWindowID id) 
-    : nwxPlotCtrl(parent,id) , m_pPlot(pPlot) {}
+    : nwxPlotCtrl(parent,id) , m_pPlot(pPlot) 
+{
+  SetPlotTitleFont(GetAxisLabelFont());
+}
 
 void CPlotCtrl::OnClickXLabel(const nwxPointLabel &x, const wxPoint &)
 {
@@ -135,15 +141,51 @@ bool CPlotCtrl::SetViewRect(
 
 const int CPanelPlot::ALLELE_SORT = 1000;
 const int CPanelPlot::ARTIFACT_SORT = 1;
+const int CPanelPlot::MENU_NUMBER_ANALYSIS_PRINT = 1;
+
+// constructor for analysis printout
+CPanelPlot::CPanelPlot(
+  CFrameAnalysis *pFrame,
+  CPlotData *pData,
+  COARfile *pFile
+) :
+  PANEL_PLOT_TYPE(pFrame, wxID_ANY,
+    wxDefaultPosition, wxDefaultSize, 0),
+  m_pData(pData),
+  m_pOARfile(pFile),
+  m_pColors(mainApp::GetKitColors()),
+  m_pPlotCtrl(NULL),
+  m_pButtonPanel(NULL),
+  m_pMenu(NULL),
+  m_pMenuPopup(NULL),
+  m_pShiftSizer(NULL),
+  m_pFramePlot(NULL),
+  m_pFrameAnalysis(pFrame),
+  m_pMenuItem(NULL),
+  m_nPlotNr(0),
+  m_nBatchCount(0),
+  m_nILScurveOffset(0),
+  m_nNoiseCurves(0),
+  m_bIgnoreTimer(false),
+  m_bDoTimer(false),
+  m_bXBPS(false),
+  m_bPrintAnalysis(true),
+  m_bPrinting(true)
+{
+  _BuildPanel(MENU_NUMBER_ANALYSIS_PRINT, true, NULL);
+  SetRenderingToWindow(false);
+
+}
 
 CPanelPlot::CPanelPlot(
   wxWindow *parent,
   CFrameAnalysis *pFrame, 
   CPlotData *pData, 
   COARfile *pFile, 
-  CKitColors *pColors, 
-  bool bExternalTimer) : 
-    wxSashWindow(parent,wxID_ANY,
+  CKitColors *pColors 
+  //,bool bExternalTimer // EXT TIMER
+  ) : 
+      PANEL_PLOT_TYPE(parent,wxID_ANY,
       wxDefaultPosition, wxDefaultSize, 0),
     m_pData(pData),
     m_pOARfile(pFile),
@@ -155,15 +197,18 @@ CPanelPlot::CPanelPlot(
     m_pShiftSizer(NULL),
     m_pFramePlot(NULL),
     m_pFrameAnalysis(pFrame),
-    m_pTimer(NULL),
+    //m_pTimer(NULL),  // EXT TIMER
     m_pMenuItem(NULL),
     m_nPlotNr(0),
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer),
+    //m_bExternalTimer(bExternalTimer),// EXT TIMER
+    m_bIgnoreTimer(false),
     m_bDoTimer(false),
-    m_bXBPS(false)
+    m_bXBPS(false),
+    m_bPrintAnalysis(false),
+    m_bPrinting(false)
 {
   //  constructor for panel in analysis MDI frame
   _BuildPanel(0,true,NULL);
@@ -179,8 +224,9 @@ CPanelPlot::CPanelPlot(
   int nMenuNumber,
   bool bFirst,
   int nPlotNumber,
-  bool bExternalTimer) :
-    wxSashWindow(pFrame->GetPanel(),wxID_ANY,
+  bool bPrinting
+  ) :
+      PANEL_PLOT_TYPE(pFrame->GetPanel(),wxID_ANY,
       wxDefaultPosition,wxDefaultSize,wxSW_3DSASH),
     m_pData(pData),
     m_pOARfile(pFile),
@@ -192,15 +238,18 @@ CPanelPlot::CPanelPlot(
     m_pShiftSizer(NULL),
     m_pFramePlot(pFrame),
     m_pFrameAnalysis(NULL),
-    m_pTimer(NULL),
+    //m_pTimer(NULL),  // EXT TIMER
     m_pMenuItem(NULL),
     m_nPlotNr(nPlotNumber),
     m_nBatchCount(0),
     m_nILScurveOffset(0),
     m_nNoiseCurves(0),
-    m_bExternalTimer(bExternalTimer),
+    //m_bExternalTimer(bExternalTimer),// EXT TIMER
+    m_bIgnoreTimer(false),
     m_bDoTimer(false),
-    m_bXBPS(false)
+    m_bXBPS(false),
+    m_bPrintAnalysis(false),
+    m_bPrinting(bPrinting)
 {
   //  constructor for panel in graphic MDI frame
   _BuildPanel(nMenuNumber,bFirst,pMenuHistory);
@@ -214,12 +263,12 @@ void CPanelPlot::_BuildPanel(
   // now build it and they will come
   m_pPanel = new wxPanel(this,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
 
-  if(m_pFramePlot != NULL)
+  if(m_pFramePlot != NULL && !IsPrinting())
   {
     m_pButtonPanel = new CPanelPlotToolbar(m_pPanel,m_pData,m_pColors,pMenuHistory,nMenuNumber, bFirst);
     m_pButtonPanel->CopySettings(*m_pMenu);
     m_pShiftSizer = new nwxShiftSizer(
-      m_pButtonPanel,this,ID_BORDER,250,true);
+      m_pButtonPanel, this, ID_BORDER); // , 250); // , true); // EXT TIMERs
   }
 
   m_pPlotCtrl = new CPlotCtrl(m_pPanel,this);
@@ -246,8 +295,19 @@ void CPanelPlot::_BuildPanel(
   m_pPlotCtrl->SetMinExpValue(99999);
   m_pPanel->SetSizer(m_pSizer);
   m_pPanel->Layout();
+#ifdef __WXMAC__
+  SendPlotSizeEvent();
+#endif
 }
 
+void CPanelPlot::SendPlotSizeEvent()
+{
+  if(m_pFramePlot != NULL && HasToolbar())
+  {
+    wxSizeEvent e(m_pPlotCtrl->GetSize());
+    m_pPlotCtrl->GetEventHandler()->AddPendingEvent(e);
+  }
+}
 void CPanelPlot::_CleanupLadderPeakSet()
 {
   vectorptr<CLadderPeakSet>::cleanup(&m_vpLadderPeakSet);
@@ -259,11 +319,14 @@ CPanelPlot::~CPanelPlot()
   vectorptr<wxPlotData>::cleanup(&m_vILS);
   vectorptr<wxPlotData>::cleanup(&m_vILS_XBPS);
   this->_CleanupLadderPeakSet();
+  /*
+    // EXT TIMER
   if(m_pTimer != NULL)
   {
     delete m_pTimer;
     m_pTimer = NULL;
   }
+  */
   CleanupMinRfuLines();
 
   if(m_pMenuItem.get() == NULL)
@@ -302,6 +365,14 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
   if(itr != m_mapPlotData.end())
   {
     pRtn = itr->second;
+    if (IsPrinting())
+    {
+      // when printing, colors may not be up to date
+      wxGenericPen pen(_GetColour(nType, nChannel));
+      pRtn->SetPen(wxPLOTPEN_NORMAL, pen);
+      pRtn->SetPen(wxPLOTPEN_ACTIVE, pen);
+      pRtn->SetPen(wxPLOTPEN_SELECTED, pen);
+    }
   }
   else if( _IsNoNoiseChannel(nChannel) && bNoise ) {} // done
   else
@@ -323,6 +394,8 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
     case BASELINE_DATA:
       pdy = m_pData->GetBaselinePoints(nChannel);
       break;
+    case COUNT_DATA:
+      break;
     }
     if(pdy != NULL)
     {
@@ -334,20 +407,8 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
       }
 
       // BEGIN set up pen
-      const CSingleKitColors *pKitColors = m_pColors->GetKitColors(m_pData->GetKitName());
-      const CChannelColors *pCC = NULL;
-      if(pKitColors == NULL)
-      {}
-      else if(nChannel == m_pData->GetILSChannel())
-      {
-        pCC = pKitColors->GetColorChannelFromLS(m_pData->GetParameters().GetLsName());
-      }
-      else
-      {
-        pCC = pKitColors->GetColorChannel(nChannel);
-      }
-      const wxColour *pColor = (pCC != NULL) ? pCC->GetColorPtr(nType) : wxBLACK;
-      wxGenericPen pen(*pColor);
+      // OS-1435 if printing
+      wxGenericPen pen(_GetColour(nType, nChannel));
       // END set up pen
 
       // create plot data, not including noise
@@ -391,13 +452,13 @@ wxPlotData *CPanelPlot::_FindData(DATA_TYPE nType, unsigned int nChannel, bool b
 bool CPanelPlot::XBPSValue()
 {
   bool bRtn = m_bXBPS;
-  if(IsPreview())
-  {
-    bRtn = m_pMenu->XBPSValue();
-  }
-  else if(m_pFramePlot != NULL)
+  if(IsPlotFrame())
   {
     bRtn = m_pFramePlot->XBPSValue();
+  }
+  else
+  {
+    bRtn = m_pMenu->XBPSValue();
   }
   if(bRtn)
   {
@@ -608,7 +669,7 @@ void CPanelPlot::OnRebuildCurves(wxCommandEvent &e)
 void CPanelPlot::BuildILSlines()
 {
   unsigned int nChannelILS = m_pData->GetChannelCount();
-  const vector<CSamplePeak *> *pvILS =
+  const std::vector<CSamplePeak *> *pvILS =
     ( (!m_vILS.size()) &&  nChannelILS )
     ? m_pData->GetSamplePeaks(nChannelILS)
     : NULL;
@@ -618,10 +679,8 @@ void CPanelPlot::BuildILSlines()
     double dx[2] = {0.0,0.0};
     double *pdx;
     double *pdy;
-    wxGenericPen pen(
-      m_pColors->GetColor(
-        m_pData->GetKitName(),LADDER_DATA,nChannelILS));
-    for(vector<CSamplePeak *>::const_iterator itr = pvILS->begin();
+    wxGenericPen pen(_GetColour(LADDER_DATA, nChannelILS));
+    for(std::vector<CSamplePeak *>::const_iterator itr = pvILS->begin();
       itr != pvILS->end();
       ++itr)
     {
@@ -663,26 +722,41 @@ void CPanelPlot::SetOARfile(COARfile *pFile)
 }
 
 wxString CPanelPlot::_AlleleLabel(
-  const IOARpeak *pPeak, vector<unsigned int> &anLabelTypes)
+  const IOARpeak *pPeak, std::vector<unsigned int> &anLabelTypes, bool bILS)
 {
   wxString sLabel;
   wxString sRtn;
   unsigned int nType;
-  vector<unsigned int>::iterator itr;
+  bool bAlleleDone = false;
+  std::vector<unsigned int>::iterator itr;
   for(itr = anLabelTypes.begin(); itr != anLabelTypes.end(); ++itr)
   {
     nType = *itr;
     switch(nType)
     {
     case LABEL_ALLELE:
-      sLabel = COARpeak::FormatAlleleName(
-        *pPeak,
-        COARlocus::IsAmel(pPeak->GetLocusName()),
-        true);
+      if (!bAlleleDone)
+      {
+        sLabel = COARpeak::FormatAlleleName(
+          *pPeak,
+          COARlocus::IsAmel(pPeak->GetLocusName()),
+          true);
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     case LABEL_BPS:
-      sLabel = nwxString::FormatNumber(
-        nwxRound::Round(pPeak->GetBPS()) );
+      if (!bAlleleDone)
+      {
+        sLabel = nwxString::FormatNumber(
+          nwxRound::Round(pPeak->GetBPS()));
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     case LABEL_RFU:
       sLabel = nwxString::FormatNumber(
@@ -696,8 +770,15 @@ wxString CPanelPlot::_AlleleLabel(
         pPeak->GetPeakArea());
       break;
     case LABEL_ILS_BPS:
-      sLabel = nwxString::FormatNumber(
-        pPeak->GetMeanBPS());
+      if (!bAlleleDone)
+      {
+        sLabel = nwxString::FormatNumber(
+          pPeak->GetMeanBPS());
+        if (bILS)
+        {
+          bAlleleDone = true;
+        }
+      }
       break;
     default:
       {
@@ -714,6 +795,7 @@ wxString CPanelPlot::_AlleleLabel(
         sRtn.Append(wchar_t('\n'));
       }
       sRtn.Append(sLabel);
+      sLabel.Empty();
     }
   }
   return sRtn;;
@@ -823,11 +905,11 @@ wxString CPanelPlot::_AlleleToolTip(
 }
 
 void CPanelPlot::_BuildPeakLabels(
-  const vector<CSamplePeak *> *pp,
+  const std::vector<CSamplePeak *> *pp,
   const wxColour &colour,
   const wxString &sChannelName,
   unsigned int nChannel,
-  vector<unsigned int> &anLabelTypes)
+  std::vector<unsigned int> &anLabelTypes)
 {
   wxString sLabel;
   wxString sToolTip;
@@ -836,10 +918,11 @@ void CPanelPlot::_BuildPeakLabels(
     ? 0
     : pp->size();
   size_t j;
+  bool bILS = (nChannel == m_pData->GetILSChannel());
   for(j = 0; j < n; j++)
   {
     const CSamplePeak *pPeak = pp->at(j);
-    sLabel = _AlleleLabel(pPeak,anLabelTypes);
+    sLabel = _AlleleLabel(pPeak,anLabelTypes, bILS);
     sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
     bool bBPS = XBPSValue();
     double dX = bBPS ? pPeak->GetMeanBPS() : pPeak->GetTime();
@@ -851,7 +934,7 @@ void CPanelPlot::_BuildPeakLabels(
             sToolTip,
             wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
             ALLELE_SORT,
-            nwxPointLabel::STYLE_BOX);
+            nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT);
     m_pPlotCtrl->AddLabel(label);
   }
 }
@@ -859,7 +942,7 @@ void CPanelPlot::_BuildPeakLabels(
 int CPanelPlot::_GetLadderPeakCount()
 {
   int nRtn = 0;
-  vector<CLadderPeakSet *>::iterator itr;
+  std::vector<CLadderPeakSet *>::iterator itr;
   for(itr = m_vpLadderPeakSet.begin();
     itr != m_vpLadderPeakSet.end();
     ++itr)
@@ -870,14 +953,14 @@ int CPanelPlot::_GetLadderPeakCount()
 }
 
 void CPanelPlot::_BuildLadderPeakLabels(
-  vector<unsigned int> &anLabelTypes)
+  std::vector<unsigned int> &anLabelTypes)
 {
   CParmOsirisGlobal parm;
   int nMax = parm->GetMaxLadderLabels();
   if( (nMax < 1) ||
       (_GetLadderPeakCount() <= nMax) )
   {
-    vector<CLadderPeakSet *>::iterator itr;
+    std::vector<CLadderPeakSet *>::iterator itr;
     for(itr = m_vpLadderPeakSet.begin();
       itr != m_vpLadderPeakSet.end();
       ++itr)
@@ -899,15 +982,11 @@ void CPanelPlot::_AppendLadderPeaks(
     unsigned int nChannel,
     const wxString &sChannelName)
 {
-  const wxColour &colour(m_pColors->GetColor(
-    m_pData->GetKitName(),
-    //LADDER_DATA,
-    ANALYZED_DATA,
-    nChannel));
+  const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
   CLadderPeakSet *pps =
     new CLadderPeakSet(colour,sChannelName,nChannel);
   m_vpLadderPeakSet.push_back(pps);
-  const vector<CSamplePeak *> *pp =
+  const std::vector<CSamplePeak *> *pp =
       m_pData->GetLadderPeaks(nChannel);
   if( (pp != NULL) && (pp->size() > 0) )
   {
@@ -920,7 +999,7 @@ void CPanelPlot::_AppendLadderPeaks(
       xMax = m_pData->ILSBpsToTime(xMax);
     }
     double dTime;
-    vector<CSamplePeak *>::const_iterator itr;
+    std::vector<CSamplePeak *>::const_iterator itr;
     pps->Reserve(pp->size());
     for(itr = pp->begin(); itr != pp->end(); ++itr)
     {
@@ -935,7 +1014,7 @@ void CPanelPlot::_AppendLadderPeaks(
 
 void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
 {
-  vector<unsigned int> anLabelTypes;
+  std::vector<unsigned int> anLabelTypes;
   m_pMenu->GetLabelTypes(&anLabelTypes);
   bool bLabels = (!bArtifactOnly) && !anLabelTypes.empty();
   bool bLadder = bLabels && m_pMenu->LadderLabels();
@@ -957,8 +1036,8 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
     size_t j;
     unsigned int nChannelStart = 1;
     unsigned int nChannelEnd = m_pData->GetChannelCount();
-    const vector<CSamplePeak *> *pp;
-    const vector<CArtifact *> *pa;
+    const std::vector<CSamplePeak *> *pp;
+    const std::vector<CArtifact *> *pa;
     const CChannelColors *pChannelColor;
     CArtifactLabels *pArtLabels = mainApp::GetArtifactLabels();
     if(_nChannel)
@@ -971,8 +1050,7 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
     {
       if(m_pMenu->ChannelValue(nChannel))
       {
-        const wxColour &colourData(m_pColors->GetColor(
-          m_pData->GetKitName(),ANALYZED_DATA,nChannel));
+        const wxColour &colourData(_GetColour(ANALYZED_DATA, nChannel));
 
         pp = bLabels
           ? m_pData->GetSamplePeaks(nChannel)
@@ -1013,7 +1091,8 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
                   colourData,
                   sToolTip,
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
-                  ARTIFACT_SORT + pArt->GetCriticalLevel());
+                  ARTIFACT_SORT + pArt->GetCriticalLevel(),
+                  nwxPointLabel::STYLE_BLACK_TEXT);
             m_pPlotCtrl->AddLabel(label);
           }
         }
@@ -1029,12 +1108,13 @@ void CPanelPlot::_BuildPLTlabels(bool bArtifactOnly, unsigned int _nChannel)
 
 void CPanelPlot::_BuildOARlabels()
 {
-  vector<unsigned int> anLabelTypes;
+  std::vector<unsigned int> anLabelTypes;
   bool bLabels = !!m_pMenu->GetLabelTypes(&anLabelTypes);
   bool bLadderLabels = bLabels && m_pMenu->LadderLabels()
     && m_pMenu->LadderValue();
   int nArtifact = m_pMenu->ArtifactValue();
   bool bArtifact = (nArtifact > CArtifactDisplayList::nArtifactLabelNone);
+  // OS-1435
   const CSingleKitColors *pKitColors(m_pColors->GetKitColors(m_pData->GetKitName()));
   bool bPlot =
     (bLabels || bArtifact) &&
@@ -1045,7 +1125,7 @@ void CPanelPlot::_BuildOARlabels()
   if(pSample == NULL) {;} // do nothing
   else if(pSample->IsLadderType())
   {
-    _BuildPLTlabels();
+    _BuildPLTlabels(false, 0);
   }
   else
   {
@@ -1065,6 +1145,7 @@ void CPanelPlot::_BuildOARlabels()
       nChannel <= nChannelCount;
       nChannel++)
     {
+      bool bILS = m_pData->GetILSChannel() == nChannel;
       if( !m_pMenu->ChannelValue(nChannel) ) {;}
       else if ( (pChannel = m_pOARfile->GetChannelByNr(nChannel)) == NULL )
       {
@@ -1083,8 +1164,7 @@ void CPanelPlot::_BuildOARlabels()
           (pChannelColor == NULL)
           ? wxString::Format("%d",nChannel)
           : pChannelColor->GetDyeName();
-        const wxColour &colour(m_pColors->GetColor(
-          m_pData->GetKitName(),ANALYZED_DATA,nChannel));
+        const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
         n = (pPeaks.get() == NULL) ? 0 : pPeaks->size();
         for(j = 0; j < n; j++)
         {
@@ -1092,7 +1172,7 @@ void CPanelPlot::_BuildOARlabels()
           m_vPeakAny.push_back(pPeak); // hold in array, delete later
           if(bLabels && pPeak->IsAllele())
           {
-            sLabel = _AlleleLabel(pPeak,anLabelTypes);
+            sLabel = _AlleleLabel(pPeak,anLabelTypes, bILS);
             sToolTip = _AlleleToolTip(pPeak,nChannel,sChannelName);
             wxStockCursor cur =
               (pSample != NULL) && pSample->IsPeakEditable(pPeak) 
@@ -1108,7 +1188,7 @@ void CPanelPlot::_BuildOARlabels()
                     sToolTip,
                     wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                     ALLELE_SORT,
-                    nwxPointLabel::STYLE_BOX,
+                    nwxPointLabel::STYLE_BOX | nwxPointLabel::STYLE_BLACK_TEXT,
                     cur,
                     pPeak);
             m_pPlotCtrl->AddLabel(label);
@@ -1139,7 +1219,7 @@ void CPanelPlot::_BuildOARlabels()
                   sToolTip,
                   wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM,
                   ARTIFACT_SORT + pPeak->GetCriticalLevel(),
-                  0,
+                  nwxPointLabel::STYLE_BLACK_TEXT,
                   cur,
                   pPeak);
             m_pPlotCtrl->AddLabel(label);
@@ -1160,7 +1240,7 @@ void CPanelPlot::_BuildOARlabels()
     if(bArtifact && !bOARHasArtifacts)
     {
       // older version of OAR file
-      _BuildPLTlabels(true);
+      _BuildPLTlabels(true,0);
     }
   }
 }
@@ -1172,15 +1252,33 @@ void CPanelPlot::UpdateLadderLabels()
     )
   {
     LabelTypeChanged();
-    //RebuildLabels(true);
-    //Refresh();
   }
+}
+const wxColour &CPanelPlot::_GetColour(DATA_TYPE n, unsigned int nChannel)
+{
+  int ndx = (nChannel << 8) | (n << 1) | (IsPrinting() ? 1 : 0);
+  mapColor::iterator itr = m_mapColors.find(ndx);
+  if (itr == m_mapColors.end())
+  {
+    const wxColour &c = m_pColors->GetColor(m_pData->GetKitName(), n, nChannel);
+    wxColour cColor(c);
+    if (IsPrinting())
+    {
+      CParmOsiris *pParm = CParmOsiris::GetGlobal();
+      const wxString &sColour = m_pColors->GetColorName(c);
+      int nPct = sColour.IsEmpty() ? 100 : pParm->GetPrintColorByName(sColour);
+      _SETUP_PRINT_COLOR(c, nPct, &cColor);
+    }
+    m_mapColors.insert(mapColor::value_type(ndx, cColor));
+    itr = m_mapColors.find(ndx);
+  }
+  return itr->second;
 }
 void CPanelPlot::RebuildLabels(bool bRedraw)
 {
   m_pPlotCtrl->RemoveAllLabels();
   _CleanupPeakAny();
-  vector<unsigned int> an;
+  std::vector<unsigned int> an;
   bool bLabels = !!m_pMenu->GetLabelTypes(&an);
   int nArtifact = m_pMenu->ArtifactValue();
   bool bArtifact = (nArtifact > CArtifactDisplayList::nArtifactLabelNone);
@@ -1192,7 +1290,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
     }
     else
     {
-      _BuildPLTlabels();
+      _BuildPLTlabels(false, 0);
     }
     if(bLabels)
     {
@@ -1201,8 +1299,8 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
       double dx;
       unsigned int nChannel;
       const CPlotLocus *pLocus;
-      const vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
-      vector<CPlotLocus *>::const_iterator itr;
+      const std::vector<CPlotLocus *> *pvLocus = m_pData->GetLoci();
+      std::vector<CPlotLocus *>::const_iterator itr;
 
       for(itr = pvLocus->begin();
         itr != pvLocus->end();
@@ -1212,8 +1310,8 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
         nChannel = pLocus->GetChannel();
         if( m_pMenu->ChannelValue(nChannel) )
         {
-          const wxColour &colour(m_pColors->GetColor(
-            m_pData->GetKitName(),ANALYZED_DATA,nChannel));
+          // OS-1435
+          const wxColour &colour(_GetColour(ANALYZED_DATA,nChannel));
           dTime = double((pLocus->GetStart() + pLocus->GetEnd() + 1) >> 1);
           sToolTip = "Click here to zoom to ";
           sToolTip.Append(pLocus->GetName());
@@ -1292,6 +1390,9 @@ const wxDateTime *CPanelPlot::GetSelectedTime()
   }
   return pRtn;
 }
+
+/*
+// EXT TIMER
 void CPanelPlot::SetExternalTimer(bool b)
 {
   m_bExternalTimer = b;
@@ -1301,19 +1402,26 @@ void CPanelPlot::SetExternalTimer(bool b)
     m_pTimer = NULL;
   }
 }
+*/
 
-void CPanelPlot::_OnTimer(wxTimerEvent &e)
+void CPanelPlot::_OnTimer(wxTimerEvent &)
 {
   if(m_bDoTimer)
   {
     m_bDoTimer = false;
     RebuildCurves();
   }
+  /*
+  // EXT TIMER
   if( (m_pShiftSizer != NULL) && m_pShiftSizer->UseExternalTimer() )
   {
     m_pShiftSizer->OnTimer(e);
   }
-  m_viewRect.Check();
+  */
+  if (!InBatch())
+  {
+    m_viewRect.Check();
+  }
 
   // workaround a bug with the 'zoom' cursor
   // if you hold the shift key down and press "Reset Axes" the 
@@ -1335,11 +1443,14 @@ void CPanelPlot::_OnTimer(wxTimerEvent &e)
 
 void CPanelPlot::OnTimer(wxTimerEvent &e)
 {
-  if(m_bExternalTimer)
+  //if(m_bExternalTimer && !m_bIgnoreTimer) // EXT TIMER
+  if(!m_bIgnoreTimer)
   {
     _OnTimer(e);
   }
 }
+/*
+// EXT TIMER
 void CPanelPlot::OnTimerEvent(wxTimerEvent &e)
 {
   if(m_bExternalTimer && (m_pTimer != NULL))
@@ -1347,22 +1458,39 @@ void CPanelPlot::OnTimerEvent(wxTimerEvent &e)
     delete m_pTimer;
     m_pTimer = NULL;
   }
-  _OnTimer(e);
+  if (!m_bIgnoreTimer)
+  {
+    _OnTimer(e);
+  }
 }
+*/
 void CPanelPlot::OnPointSelected(wxPlotCtrlEvent &)
 {
-  if(m_bExternalTimer)
-  {
-    m_bDoTimer = true;
-  }
-  else
+  /*
+  // EXT TIMER
+  if(!m_bExternalTimer)
   {
     if(m_pTimer == NULL)
     {
       m_pTimer = new wxTimer(this,IDtimer);
     }
-    m_pTimer->Start(50,true);
-
+    if(!m_pTimer->IsRunning())
+    {
+      m_pTimer->Start(50,true);
+    }
+  }
+  */
+  m_bDoTimer = true;
+}
+void CPanelPlot::OnViewChanging(wxPlotCtrlEvent &e)
+{
+  if (e.GetHeight() < 5.0 || e.GetWidth() < 5.0)
+  {
+    e.Veto();
+  }
+  else
+  {
+    e.Skip();
   }
 }
 
@@ -1413,7 +1541,7 @@ void CPanelPlot::LabelTypeChanged()
   if(m_pPlotCtrl != NULL)
   {
     TnwxBatch<CPanelPlot> batch(this);
-    RebuildLabels();
+    RebuildLabels(false);
     Refresh();
   }
 }
@@ -1511,7 +1639,7 @@ void CPanelPlot::BuildMinRfuLines()
 {
   if(!m_mapMinRfuAll.size())
   {
-    set<double> setD;
+    std::set<double> setD;
     double d;
     double Xt[2] = {0.0, m_pData->GetMaxTime()};
     double Xbps[2] = {0.0, m_pData->GetMaxXBPS()};
@@ -1528,7 +1656,7 @@ void CPanelPlot::BuildMinRfuLines()
         setD.insert(d);
       }
     }
-    for(set<double>::iterator itr = setD.begin();
+    for(std::set<double>::iterator itr = setD.begin();
       itr != setD.end();
       ++itr)
     {
@@ -1551,7 +1679,7 @@ wxColour CPanelPlot::GetMinRfuColour()
 {
   return COLOUR_RFU;
 }
-void CPanelPlot::BuildRfuSet(set<double> *psetD)
+void CPanelPlot::BuildRfuSet(std::set<double> *psetD)
 {
   double d;
   psetD->clear();
@@ -1571,7 +1699,7 @@ void CPanelPlot::BuildRfuSet(set<double> *psetD)
 }
 void CPanelPlot::ShowMinRfuLines()
 {
-  set<double> setD;
+  std::set<double> setD;
   mapMinRfu::iterator itrm;
   wxPlotData *pData;
 
@@ -1581,7 +1709,7 @@ void CPanelPlot::ShowMinRfuLines()
   wxColour clr = GetMinRfuColour();
   wxGenericPen pen(clr);
   mapMinRfu *pMinRFU = _GetMinRFUlines();
-  for(set<double>::iterator itr = setD.begin();
+  for(std::set<double>::iterator itr = setD.begin();
     itr != setD.end();
     ++itr)
   {
@@ -1608,17 +1736,39 @@ void CPanelPlot::ExpandRect(wxRect2DDouble *p,double dBy)
   p->m_x -= d;
   p->m_width += (d + d);
 }
-void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p)
+void CPanelPlot::AdjustLabelHeightExtension(double dCurrentExtension, const wxRect &rect, int nLabelHeight)
+{
+  // when creating a bitmap, the height adjustment for the label height may need
+  // to be adjusted, after copying settings from a window plot
+  m_pPlotCtrl->DoSize(rect, false); 
+  double dNeededExtension = GetLabelHeightExtension(nLabelHeight);
+  if (dNeededExtension > dCurrentExtension)
+  {
+    wxRect2DDouble r = GetViewRect();
+    double d = (dNeededExtension / dCurrentExtension);
+    r.m_height *= d;
+    SetViewRect(r, false, 0);
+  }
+}
+double CPanelPlot::GetLabelHeightExtension(int nLabelHeight)
 {
   double dExtend = 1.0;
   wxRect rect = m_pPlotCtrl->GetPlotAreaRect();
-  vector<unsigned int> an;
-  size_t nLabelRow = this->GetLabelTypes(&an);
-  int LABEL_HEIGHT = this->GetLabelHeightPixels();
+  std::vector<unsigned int> an;
+  size_t nLabelRow = GetLabelTypes(&an);
+  int LABEL_HEIGHT = (nLabelHeight > 0) ? nLabelHeight : this->GetLabelHeightPixels();
   int nLabelPixels = nLabelRow * LABEL_HEIGHT;
-  if(rect.height > nLabelPixels)
+  if (rect.height > nLabelPixels)
   {
     dExtend = double(rect.height) / double(rect.height - nLabelPixels);
+  }
+  return dExtend;
+}
+void CPanelPlot::ExtendLabelHeight(wxRect2DDouble *p, int nLabelHeight)
+{
+  double dExtend = GetLabelHeightExtension(nLabelHeight);
+  if(dExtend > 1.0)
+  {
     p->m_height *= dExtend;
   }
 }
@@ -1630,7 +1780,7 @@ void CPanelPlot::_ConvertRectToBPS(wxRect2DDouble *pRect)
   pRect->SetLeft(dLeft);
   pRect->SetRight(dRight);
 }
-wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
+wxRect2DDouble CPanelPlot::GetZoomOutRect(int nPrimerPeaks, int nLabelHeight, double dMinRFU)
 {
   wxRect2DDouble rtn(0.0,0.0,1.0,1.0);
   int nStart = 0;
@@ -1643,17 +1793,31 @@ wxRect2DDouble CPanelPlot::GetZoomOutRect(bool bAll)
   {
     nStart += (int)m_vILS.size() ;
   }
-  if(!bAll)
+  if(nPrimerPeaks != ZOOM_PRIMER_PEAK_XY)
   {
-    rtn.m_x = (double) m_pData->GetStartAfterPrimer(XBPSValue());
+    if (nPrimerPeaks == ZOOM_PRIMER_PEAK_NONE)
+    {
+      rtn.m_x = (double)m_pData->GetStartAfterPrimer(XBPSValue());
+    }
     nStart += m_nNoiseCurves;
   }
   for(int i = nStart; i < nCount; i++)
   {
     rtn.Union(m_pPlotCtrl->GetCurve(i)->GetBoundingRect());
   }
+  if (dMinRFU > 0.0)
+  {
+    if (dMinRFU > rtn.GetBottom())
+    {
+      rtn.SetBottom(dMinRFU);
+    }
+    if (dMinRFU < rtn.GetTop())
+    {
+      rtn.SetTop(dMinRFU);
+    }
+  }
   ExpandRect(&rtn);
-  ExtendLabelHeight(&rtn);
+  ExtendLabelHeight(&rtn, nLabelHeight);
   return rtn;
 }
 void CPanelPlot::ZoomToLocus(const wxString &sLocus, unsigned int nDelay)
@@ -1746,9 +1910,9 @@ void CPanelPlot::ShowILSlines()
 
 void CPanelPlot::ShowAllChannels(bool bShow)
 {
-  set<int> setCh;
+  std::set<int> setCh;
   m_pData->GetChannelNumbers(&setCh);
-  for(set<int>::iterator itr = setCh.begin();
+  for(std::set<int>::iterator itr = setCh.begin();
     itr != setCh.end();
     ++itr)
   {
@@ -1759,7 +1923,7 @@ void CPanelPlot::SetupLabelMenus()
 {
   bool b = CanShowPeakArea();
   m_pMenu->EnablePeakAreaLabel(b);
-  if(m_pButtonPanel != NULL)
+  if(HasToolbar())
   {
     m_pButtonPanel->EnablePeakAreaLabel(b);
   }
@@ -1776,8 +1940,8 @@ void CPanelPlot::SetPlotSettings()
   bool bRFU = parm->GetPlotShowRFU();
   bool bLadderLabels = parm->GetPlotShowLadderLabels();
   int nArt = (int)parm->GetPlotShowArtifact();
-  const vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
-  vector<unsigned int>::const_iterator itr;
+  const std::vector<unsigned int> &anLabelsChecked = parm->GetPlotDisplayPeak();
+  std::vector<unsigned int>::const_iterator itr;
   if(!(bRaw || bLadder || bAnalyzed))
   {
     bAnalyzed = true; // must show at least one
@@ -1794,6 +1958,43 @@ void CPanelPlot::SetPlotSettings()
   m_pMenu->SetArtifactValue(nArt);
   _SyncControllers(m_pMenu);
 }
+
+void CPanelPlot::SetPrintSettings()
+{
+
+  // OS-1391 print settings
+
+  CParmOsirisGlobal parm;
+  bool bPeak = CanShowPeakArea();
+  bool bAnalyzed = parm->GetPrintCurveAnalyzed();
+  bool bRaw = parm->GetPrintCurveRaw();
+  bool bLadder = parm->GetPrintCurveLadder();
+  bool bBaseline = parm->GetPrintCurveBaseline();
+  bool bILS = parm->GetPrintCurveILSvertical();
+  bool bRFU = parm->GetPrintCurveMinRFU();
+  bool bLadderLabels = parm->GetPrintCurveLadderLabels();
+  int nArt = (int)parm->GetPrintArtifact();
+  const std::vector<unsigned int> &anLabelsChecked = parm->GetPrintLabelsPeak();
+  m_bXBPS = _CanSetBPS() && parm->GetPrintXaxisILSBPS();
+  if (!(bRaw || bLadder || bAnalyzed))
+  {
+    bAnalyzed = true; // must show at least one
+  }
+  m_pMenu->SetXBPS(m_bXBPS);
+  m_pMenu->EnablePeakAreaLabel(bPeak);
+  m_pMenu->ShowAnalyzed(bAnalyzed);
+  m_pMenu->ShowRaw(bRaw);
+  m_pMenu->ShowLadder(bLadder);
+  m_pMenu->ShowBaseline(bBaseline);
+  m_pMenu->ShowILS(bILS);
+  m_pMenu->ShowMinRfu(bRFU);
+  m_pMenu->ShowLadderLabels(bLadderLabels);
+  m_pMenu->SetLabelTypes(anLabelsChecked);
+  m_pMenu->SetArtifactValue(nArt);
+  _SyncControllers(m_pMenu);
+}
+
+
 void CPanelPlot::SetPreviewSettings()
 {
   CParmOsirisGlobal parm;
@@ -1838,7 +2039,7 @@ void CPanelPlot::UpdateSettingsPlot()
   bool bRFU = m_pMenu->MinRfuValue();
   bool bLadderLabels = m_pMenu->LadderLabels();
   int nArt = m_pMenu->ArtifactValue();
-  vector<unsigned int> anLabels;
+  std::vector<unsigned int> anLabels;
   CParmOsirisGlobal parm;
   m_pMenu->GetLabelTypes(&anLabels);
   parm->SetPlotDataAnalyzed(bAnalyzed);
@@ -1879,6 +2080,39 @@ void CPanelPlot::UpdateSettingsPreview()
   }
   parm->SetPreviewShowArtifact((unsigned int)nArt);
 }
+wxColour &CPanelPlot::_SETUP_PRINT_COLOR(const wxColour &color, int nPct, wxColour *pColor)
+{
+  if (nPct > 0 && nPct < 100)
+  {
+    wxUint32 cR = ((color.Red() * nPct) / 100) & 255;
+    wxUint32 cG = ((color.Green() * nPct) / 100) & 255;
+    wxUint32 cB = ((color.Blue() * nPct) / 100) & 255;
+    pColor->SetRGB(cR | (cG << 8) | (cB << 16));
+  }
+  else if (nPct == 0)
+  {
+    pColor->SetRGB(0);
+  }
+  else
+  {
+    *pColor = color;
+  }
+  return *pColor;
+}
+void CPanelPlot::_SetupGridColor()
+{
+  const wxColour &gridColor = nwxPlotCtrl::GridColor();
+  if (!IsPrinting())
+  {
+    m_pPlotCtrl->SetGridColour(gridColor);
+  }
+  else
+  {
+    int n = CParmOsiris::GetGlobal()->GetPrintColorGray();
+    wxColour c;
+    m_pPlotCtrl->SetGridColour(_SETUP_PRINT_COLOR(gridColor, n, &c));
+  }
+}
 void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
 {
   unsigned int n;
@@ -1893,6 +2127,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   m_nNoiseCurves = 0;
   wxRect2DDouble rect = GetViewRect();
   m_pPlotCtrl->SetXAxisLabel(_GetXAxisLabel());
+  _SetupGridColor();
   for(n = nChannelCount; n > 0; n--)
   {
     if(m_pMenu->ChannelValue(n))
@@ -1968,16 +2203,12 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
     }
     bNoise = false;
   }
-  RebuildLabels();
   if(!bIgnoreViewRect)
   {
-    SetViewRect(rect,false,0);
+    SetViewRect(rect, false, 1);
   }
-//  if(m_pMenu->SyncValue() && (m_pFramePlot != NULL))
-//  {
-//    m_pFramePlot->SyncTo(this);
-//  }
-  Refresh();
+  RebuildLabels(false);
+  RE_RENDER;
 }
 
 
@@ -2006,8 +2237,9 @@ void CPanelPlot::_BuildMenu(int nMenuNr)
 {
   if(m_pMenu == NULL)
   {
-    m_nMenuOffset = ID_GET_PLOT_BASE(nMenuNr);
-    if(!IsPreview())
+    m_nMenuOffset = ID_GET_PLOT_BASE((nMenuNr < 0) ? 0 : nMenuNr);
+    bool bSkipOther = false;
+    if(IsPlotFrame())
     {
       // this is a grphics frame, build full menu
       // with offset
@@ -2015,13 +2247,25 @@ void CPanelPlot::_BuildMenu(int nMenuNr)
       SetPlotSettings();
       m_pMenu->SetSync();
     }
+    else if (IsPrintAnalysis())
+    {
+      // this is for a printout
+      // create CMenuPlot with offset parameter
+      // to allow multiple labels
+      m_pMenu = new CMenuPlot(0, m_pData, m_pColors);
+      SetPrintSettings();
+      bSkipOther = true;
+    }
     else
     {
       // this is an analysis frame with a graphic preview
       m_pMenu = new CMenuPlot(m_pData,m_pColors);
       SetPreviewSettings();
     }
-    _GetFrame()->RegisterMenu(m_pMenu);
+    if (!bSkipOther)
+    {
+      _GetFrame()->RegisterMenu(m_pMenu);
+    }
     bool bPeak = CanShowPeakArea();
     m_pMenu->EnablePeakAreaLabel(bPeak);
   }
@@ -2039,15 +2283,15 @@ void CPanelPlot::ShowToolbar(bool bShow)
     }
   }
 }
-void CPanelPlot::CopySettings(CPanelPlot &w)
+void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay)
 {
   TnwxBatch<CPanelPlot> x(this);
   TnwxBatch<CPanelPlot> y(&w);
   _SyncControllers(w.m_pMenu);
   wxRect2DDouble rect = w.GetViewRect();
-  SetViewRect(rect,false,0);
   SyncToolbar(&w);
-  RebuildCurves();
+  RebuildCurves(true);
+  SetViewRect(rect, false, nDelay);
 }
 bool CPanelPlot::MenuEvent(wxCommandEvent &e)
 {
@@ -2324,13 +2568,13 @@ void CPanelPlot::OnContextMenu(wxContextMenuEvent &e)
   {
     if(m_pMenuPopup == NULL)
     {
-      if(IsPreview())
+      if(IsPlotFrame())
       {
-        m_pMenuPopup = new CMenuPlot(m_pData,m_pColors);
+        m_pMenuPopup = new CMenuPlot(m_nMenuOffset,m_pData,m_pColors);
       }
       else
       {
-        m_pMenuPopup = new CMenuPlot(m_nMenuOffset,m_pData,m_pColors);
+        m_pMenuPopup = new CMenuPlot(m_pData, m_pColors);
       }
       _GetFrame()->RegisterMenu(m_pMenuPopup);
       m_pMenuPopup->CopySettings(*m_pMenu);
@@ -2394,7 +2638,466 @@ void CPanelPlot::_SetFileHasBeenPrompted(CPlotData *p)
   g_setNoBpsPrompt.insert(s);
 }
 
-BEGIN_EVENT_TABLE(CPanelPlot,wxSashWindow)
+
+void CPanelPlot::DrawPlotToDC(
+  wxDC *pDC, const wxRect &rect, 
+  double dDPI, bool bShowXAxis, bool bForcePrintFont)
+{
+  // initialize rectangle to white -- probably not necessary
+
+  if (rect.GetHeight() >= 20)
+  {
+    nwxPlotCtrl *pPlotCtrl = GetPlotCtrl();
+    bool bFlipXAxis = (!pPlotCtrl->GetXAxisLabel().IsEmpty()) &&
+      (pPlotCtrl->GetShowXAxisLabel() != bShowXAxis);
+
+    if (bFlipXAxis)
+    {
+      pPlotCtrl->SetShowXAxisLabel(bShowXAxis);
+    }
+    bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
+    pPlotCtrl->SetRenderingToWindow(false);
+    pDC->DestroyClippingRegion();
+    pDC->SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+    pDC->SetPen(*wxWHITE_PEN);
+    pDC->SetBrush(*wxWHITE_BRUSH);
+    pDC->DrawRectangle(rect);
+    pPlotCtrl->DrawEntirePlot(pDC, rect, dDPI, bForcePrintFont);
+    pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
+    if (bFlipXAxis)
+    {
+      pPlotCtrl->SetShowXAxisLabel(!bShowXAxis);
+    }
+  }
+}
+
+
+int CPanelPlot::DrawPlotTitleToDC(
+  wxDC *pDC, const wxString &sTitle,
+  const wxString &sTitleDetails,
+  int nWidth, int nHeight, double dDPI,
+  bool bForcePrintFont)
+{
+  // draw plot title to the top of a bitmap and return the height in pixels
+  // wxDC - dc for the entire graphic
+  // sTitle - plot title string
+  // nWidth - width of the entire graphic (all plots, etc)
+  // nHeight - height of the entire graphic
+  // dDPI - pixels per inch
+  wxSize szDetails(0, 0);
+  wxFont fn = GetPlotCtrl()->GetAxisFont();
+  wxFont fnDetails(fn);
+  int nTitleHeight = 0;
+  int nPtSize = 0;
+  int nBorder = RINT(dDPI * (1.0 / 36.0));
+  int nMaxX = (nWidth * 9) / 10;
+  int nMaxY = nHeight >> 2;
+  if (nBorder < 2) { nBorder = 2; }
+#ifdef __WXDEBUG__
+  wxRect rectTitle(wxDefaultPosition, wxDefaultSize);
+  wxRect rectDetails = rectTitle;
+#endif
+
+  if (!sTitleDetails.IsEmpty())
+  {
+    double dFontScale = wxPlotCtrl::GetFontScale(dDPI, bForcePrintFont);
+    wxSize sz;
+    int nAxisPoint = nwxRound::Round(fn.GetPointSize() * dFontScale);
+    fnDetails.SetPointSize(nAxisPoint);
+    pDC->SetFont(fnDetails);
+    pDC->SetTextForeground(*wxBLACK);
+    pDC->SetTextBackground(*wxWHITE);
+    szDetails = pDC->GetMultiLineTextExtent(sTitleDetails);
+    if (szDetails.GetHeight() > nMaxY)
+    {
+      szDetails.SetHeight(nMaxY);
+    }
+    int nLines = (int)nwxString::CountSubstring(sTitleDetails, wxT("\n")) + 1;
+    nPtSize = nAxisPoint * nLines;
+  }
+  if (!sTitle.IsEmpty())
+  {
+    wxSize szTitle;
+    // was - double dSize = double(fn.GetPointSize() * nDPI) * (1.0/36.0);
+    // scale font by multplying by DPi and dividing by 72, then double
+    // 4/1/2020 - change font scale to 1.25
+    double dResize = 1.0;
+    bool bResize = false;
+    int nMinPtSize = nwxRound::Round(fn.GetPointSize() * dDPI  * (1.25 / 72.0));
+    if (nMinPtSize > nPtSize)
+    {
+      nPtSize = nMinPtSize;
+    }
+    fn.SetPointSize(nPtSize);
+    //fn.SetWeight(wxFONTWEIGHT_BOLD);  // comment out, kinda ugly
+
+    pDC->SetFont(fn);
+    pDC->SetTextForeground(*wxBLACK);
+    pDC->SetTextBackground(*wxWHITE);
+    szTitle = pDC->GetTextExtent(sTitle);
+    int nTotalWidth = szTitle.GetWidth() + szDetails.GetWidth();
+    if (nTotalWidth > nMaxX)
+    {
+      int nHalf = nMaxX >> 1;
+      if (szDetails.GetWidth() > nHalf)
+      {
+        szDetails.SetWidth(nHalf);
+        nMaxX = nHalf;
+      }
+      else
+      {
+        nMaxX -= szDetails.GetWidth();
+      }
+    }
+    if (szTitle.GetWidth() > nMaxX)
+    {
+      dResize = (double)nMaxX / (double)szTitle.GetWidth();
+      bResize = true;
+    }
+    if (szTitle.GetHeight() > nMaxY)
+    {
+      double d = (double)nMaxY / (double)szTitle.GetHeight();
+      if (d < dResize)
+      {
+        dResize = d;
+      }
+      bResize = true;
+    }
+    if (bResize)
+    {
+      int nPt = (int)floor(nPtSize * dResize);
+      if (nPt < 4) { nPt = 4; }
+      fn.SetPointSize(nPt);
+      pDC->SetFont(fn);
+      szTitle = pDC->GetTextExtent(sTitle);
+    }
+    nTitleHeight = szTitle.GetHeight();
+    int nXoffset = 
+      szDetails.GetWidth() 
+      ? 0
+      : (nWidth - szTitle.GetWidth() + 1) >> 1;
+    pDC->DestroyClippingRegion();
+    pDC->SetClippingRegion(wxPoint(0, nBorder), wxSize(nWidth, nMaxY));
+    if (szDetails.GetWidth())
+    {
+      wxPoint pos(nWidth - szDetails.GetWidth() - 1, nBorder);
+      pDC->SetFont(fnDetails);
+      pDC->DrawText(sTitleDetails, pos);
+#ifdef __WXDEBUG__
+      rectDetails.SetPosition(pos);
+      rectDetails.SetSize(szDetails);
+#endif
+    }
+    wxPoint posTitle(nXoffset, nBorder);
+    pDC->SetFont(fn);
+    pDC->DrawText(sTitle, posTitle);
+    pDC->DestroyClippingRegion();
+#ifdef __WXDEBUG__
+    rectTitle.SetPosition(posTitle);
+    rectTitle.SetSize(szTitle);
+#endif
+  }
+  else if (szDetails.GetWidth())
+  {
+    pDC->SetFont(fnDetails);
+    pDC->DrawText(sTitleDetails, nWidth - szDetails.GetWidth(), nBorder);
+  }
+#ifdef __WXDEBUG__
+  pDC->SetBrush(*wxTRANSPARENT_BRUSH);
+  pDC->SetPen(*wxBLACK_PEN);
+  pDC->DrawRectangle(rectTitle);
+  pDC->DrawRectangle(rectDetails);
+#endif
+
+  return nBorder + wxMax(szDetails.GetHeight(), nTitleHeight);
+}
+int CPanelPlot::_GetPlotsPerPage()
+{
+  CParmOsiris *pParm = CParmOsiris::GetGlobal();
+  const COARsample *pSample = GetSample();
+  int nPlotsPerPage;
+  if (pSample->IsLadderType())
+  {
+    nPlotsPerPage = pParm->GetPrintChannelsLadders();
+  }
+  else if (pSample->IsNegControl())
+  {
+    nPlotsPerPage = pParm->GetPrintChannelsNegCtrl();
+  }
+  else
+  {
+    nPlotsPerPage = pParm->GetPrintChannelsSamples();
+  }
+  int nChannels = (int)pSample->GetFile()->GetChannelCount() + !pParm->GetPrintChannelsOmitILS();
+  if (nChannels < nPlotsPerPage)
+  {
+    nPlotsPerPage = nChannels;
+  }
+  return nPlotsPerPage;
+}
+void CPanelPlot::_SetXUserRange(wxRect2DDouble *pRect, bool bXBPS)
+{
+  CParmOsirisGlobal pParm;
+  int n0, n1;
+  if (bXBPS)
+  {
+    n0 = pParm->GetPrintXscaleMinBPS();
+    n1 = pParm->GetPrintXscaleMaxBPS();
+  }
+  else
+  {
+    n0 = pParm->GetPrintXscaleMin();
+    n1 = pParm->GetPrintXscaleMax();
+  }
+  CheckRange(&n0, &n1);
+  pRect->SetLeft(double(n0));
+  pRect->SetRight(double(n1));
+}
+void CPanelPlot::_SetYUserRange(wxRect2DDouble *pRect)
+{
+  CParmOsirisGlobal pParm;
+  int n0 = pParm->GetPrintYscaleMin();
+  int n1 = pParm->GetPrintYscaleMax();
+  CheckRange(&n0, &n1);
+  pRect->SetTop(double(n0));
+  pRect->SetBottom(double(n1));
+}
+int CPanelPlot::_BitmapPrimerZoom(int nXScale, bool bNegCtrl)
+{
+  int nPrimerZoom = ZOOM_PRIMER_PEAK_NONE;
+  switch (nXScale)
+  {
+  case PRINT_X_SCALE_CTRL_PRIMER_PEAK:
+    nPrimerZoom = bNegCtrl ? ZOOM_PRIMER_PEAK_X : ZOOM_PRIMER_PEAK_NONE;
+    break;
+  case PRINT_X_SCALE_ALL_PRIMER_PEAK:
+    nPrimerZoom = ZOOM_PRIMER_PEAK_X;
+    break;
+  default:
+    break;
+  }
+  return nPrimerZoom;
+}
+
+bool CPanelPlot::_BitmapZoomSample(int nXlabelHeight, wxRect2DDouble *pViewRect)
+{
+  // if all plots in a sample will have the same view, 
+  // set it here, copy the view rect to pViewRect
+  // and return true
+
+  wxRect2DDouble &rectZoom(*pViewRect);
+  CParmOsirisGlobal pParm;
+  bool bRtn = false;
+  const COARsample *pSample = GetSample();
+  int nYScale = pParm->GetPrintYscale();
+  int nXScale = pParm->GetPrintXscale();
+  bool bNegCtrl = pSample->IsNegControl();
+  int nNegCtrlYScale = bNegCtrl
+    ? pParm->GetPrintYcaleNegCtrl()
+    : -1;
+
+  // if Y range is the same for each plot, set the view rectangle and return true
+  // otherwise return false
+  if (nYScale == PRINT_Y_SCALE_USER && nXScale == PRINT_X_SCALE_USER)
+  {
+    // this will probably never happen
+    bool bXBPS = pParm->GetPrintXaxisILSBPS();
+    bool bXProblem =  bXBPS &&  GetPlotData()->CannotSetBPS();
+    bRtn = true;
+    if (!bXProblem)
+    {
+      _SetXUserRange(&rectZoom, bXBPS);
+    }
+    else
+    {
+      rectZoom = GetZoomOutRect(ZOOM_PRIMER_PEAK_X, nXlabelHeight);
+    }
+    _SetYUserRange(&rectZoom);
+    SetViewRect(rectZoom, false, 0);
+  }
+  else if ( (nYScale == PRINT_Y_SCALE_SAMPLE) ||
+       (nNegCtrlYScale == PRINT_Y_SCALE_NEG_ILS)  ||
+       (nYScale == PRINT_Y_SCALE_USER) )
+  {
+    bRtn = true;
+    bool bXBPS = pParm->GetPrintXaxisILSBPS();
+    bool bXProblem = bXBPS && 
+      GetPlotData()->CannotSetBPS() &&
+      (nXScale == PRINT_X_SCALE_USER);
+    int nPrimerZoom = 
+      bXProblem 
+      ? ZOOM_PRIMER_PEAK_X 
+      : _BitmapPrimerZoom(nXScale, bNegCtrl);
+    ShowAllChannels(true);
+    RebuildCurves(true);
+    if (pSample->IsLadderType())
+    {
+      nXlabelHeight <<= 2; // guessing, need 4x space
+    }
+    rectZoom = GetZoomOutRect(nPrimerZoom, nXlabelHeight);
+    if (nXScale == PRINT_X_SCALE_USER && !bXProblem)
+    {
+      _SetXUserRange(&rectZoom, bXBPS);
+    }
+    else if (nYScale == PRINT_Y_SCALE_USER)
+    {
+      _SetYUserRange(&rectZoom);
+    }
+    SetViewRect(rectZoom, false, 0);
+  }
+  return bRtn;
+}
+void CPanelPlot::_BitmapZoomPlot(int nXlabelHeight, unsigned int nChannel)
+{
+  // compute and set view rect for this plot
+
+  CParmOsirisGlobal pParm;
+  int nXScale = pParm->GetPrintXscale();
+  bool bNegCtrl = GetSample()->IsNegControl();
+  bool bXBPS = pParm->GetPrintXaxisILSBPS();
+  bool bXProblem = bXBPS && GetPlotData()->CannotSetBPS() &&
+    (nXScale == PRINT_X_SCALE_USER);
+  int nPrimerZoom = bXProblem
+    ? ZOOM_PRIMER_PEAK_X
+    : _BitmapPrimerZoom(nXScale, bNegCtrl);
+  int nNegCtrlYScale = bNegCtrl
+    ? pParm->GetPrintYcaleNegCtrl()
+    : -1;
+  double dMinRFU = (nNegCtrlYScale == PRINT_Y_SCALE_NEG_INCLUDE_RFU)
+    ? m_pData->GetMinRfu(nChannel)
+    : -1.0;
+  wxRect2DDouble rectZoom = GetZoomOutRect(nPrimerZoom, nXlabelHeight, dMinRFU);
+  if (nXScale == PRINT_X_SCALE_USER && !bXProblem)
+  {
+    _SetXUserRange(&rectZoom, pParm->GetPrintXaxisILSBPS());
+  }
+  SetViewRect(rectZoom, false, 0);
+}
+
+
+wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
+  int nWidth, int nHeight, int nDPI,
+  int nStartChannel,
+  int nPageNr,
+  bool bForcePrintFont)
+{
+  // create a printout initiated from the Analysis window
+  //  this "panel" has access to the OAR file
+  //  and the sample
+
+  CParmOsirisGlobal pParm;
+  wxString sTitle;
+  wxString sTitleInfo;
+  SetPrinting(bForcePrintFont);
+  if (bForcePrintFont)
+  {
+    TitleStrings(&sTitleInfo, nPageNr);
+  }
+  SampleTitle(&sTitle);
+  double dDPI = (double)nDPI;
+
+  wxBitmap *pBitmap = new wxBitmap(nWidth, nHeight, 32);
+  wxMemoryDC dc(*pBitmap);
+  int nTitleOffset = 0;
+
+  // initialize bitmap to white -- probably not necessary
+
+  dc.SetBackground(*wxWHITE_BRUSH);
+  dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+  dc.Clear();
+
+  // get size of X-Axis Label at the bottom
+
+  nwxPlotCtrl *pPlotCtrl = GetPlotCtrl();
+  bool bRenderingToWindow = pPlotCtrl->RenderingToWindow();
+  pPlotCtrl->SetRenderingToWindow(false);
+  int nXLabelHeight = GetXAxisLabelHeight(&dc, wxRect(wxSize(nWidth, nHeight)), dDPI, bForcePrintFont);
+  
+  // set up title
+  nTitleOffset = DrawPlotTitleToDC(&dc, sTitle, sTitleInfo, nWidth, nHeight, dDPI, bForcePrintFont);
+  // get channels
+  std::set<int> setChannels;
+  m_pData->GetChannelNumbers(&setChannels);
+
+  int nPlotsPerPage = _GetPlotsPerPage();
+  // nPlotsOnThisPage - set to number of remaining plots
+  // if > nPlotsPerPage set to nPlotsPerPage
+  int nPlotsOnThisPage = (int)setChannels.size() - pParm->GetPrintChannelsOmitILS() - nStartChannel + 1;
+  if (nPlotsOnThisPage > nPlotsPerPage)
+  {
+    nPlotsOnThisPage = nPlotsPerPage;
+  }
+  int nPlotAreaHeight = nHeight - nTitleOffset - nXLabelHeight;
+  int nPlotHeight = (nHeight - nTitleOffset - nXLabelHeight) / nPlotsPerPage;
+
+  if (nPlotHeight >= 20)
+  {
+    
+    wxRect rect(0, 0, nWidth, nPlotHeight);
+    int nRounding = nPlotAreaHeight - (nPlotHeight * nPlotsPerPage);
+    int nY = nTitleOffset + nRounding;
+          // due to height rounding, the x-axis may be too low on screen images
+          // by up to n-1 pixels where n is the number of channels
+          // on a high res bitmap it is not significant
+
+    // first show all channels to compute zoom
+    std::unique_ptr<wxBitmap> pBitmapPlot
+      (new wxBitmap(nWidth, nPlotHeight, 32));
+    wxMemoryDC dcPlot(*pBitmapPlot);
+
+    // zooming depends on settings - later
+
+    wxRect2DDouble wxRectZoom;
+    bool bZoomDone = _BitmapZoomSample(nXLabelHeight, &wxRectZoom);
+    TnwxBatch<CPlotCtrl> batch(this->m_pPlotCtrl);
+    m_pPlotCtrl->DoSize(rect, false);
+    int nPlotsRendered = 0;
+    int nSkip = nStartChannel - 1;
+    std::set<int>::iterator itr;
+    for (nPlotsRendered = 0,  itr = setChannels.begin();
+      (itr != setChannels.end()) && (nPlotsRendered < nPlotsOnThisPage);
+      ++itr)
+    {
+      if (nSkip > 0)
+      {
+        nSkip--;
+      }
+      else
+      {
+        ShowOneChannel(*itr);
+        RebuildCurves(true);
+        if (bZoomDone)
+        {
+          SetViewRect(wxRectZoom);
+        }
+        else
+        {
+          _BitmapZoomPlot(nXLabelHeight, *itr);
+        }
+
+        dcPlot.SetBackground(*wxWHITE_BRUSH);
+        dcPlot.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+        dcPlot.DestroyClippingRegion();
+        dcPlot.Clear();
+
+        DrawPlotToDC(&dcPlot, rect, dDPI, false, bForcePrintFont);
+        dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
+        nY += nPlotHeight;
+        nPlotsRendered++;
+      }
+    }
+    int nHeightCut = (nPlotsPerPage - nPlotsOnThisPage) * nPlotHeight;
+    DrawXAxisLabelToDC(
+          &dc, wxRect(wxSize(nWidth, nHeight - nHeightCut)),
+        dDPI, bForcePrintFont); // if no label, then the margin is returned
+  }
+  pPlotCtrl->SetRenderingToWindow(bRenderingToWindow);
+  return pBitmap;
+}
+
+
+
+BEGIN_EVENT_TABLE(CPanelPlot, PANEL_PLOT_TYPE)
 EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
 EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
 
@@ -2407,11 +3110,12 @@ EVT_BUTTON(IDgraphMultiple, CPanelPlot::OnBtnMultiple)
 EVT_BUTTON(IDgraphRemove, CPanelPlot::OnBtnRemove)
 EVT_BUTTON(IDbuttonDetails, CPanelPlot::OnBtnDetails)
 EVT_PLOTCTRL_VIEW_CHANGED(wxID_ANY, CPanelPlot::OnViewChanged)
+EVT_PLOTCTRL_VIEW_CHANGING(wxID_ANY, CPanelPlot::OnViewChanging)
 
 EVT_PLOTCTRL_POINT_DOUBLECLICKED(wxID_ANY,CPanelPlot::OnPointSelected)
 EVT_PLOTCTRL_POINT_CLICKED(wxID_ANY,CPanelPlot::OnPointSelected)
 
-EVT_TIMER(IDtimer,CPanelPlot::OnTimerEvent)
+//EVT_TIMER(IDtimer,CPanelPlot::OnTimerEvent)// EXT TIMER
 EVT_CONTEXT_MENU(CPanelPlot::OnContextMenu)
 EVT_COMMAND_ENTER(wxID_ANY,CPanelPlot::OnCommandEnter)
 
@@ -2484,4 +3188,67 @@ CPanelPlot *CPanelPlotToolbarSaveState::RestoreState(bool bRemove)
     m_pWin = NULL;
   }
   return pRtn;
+}
+
+
+// CPrintInfo
+
+const wxString &CPanelPlot::SampleTitle(wxString *ps)
+{
+  CParmOsirisGlobal pParm;
+  COARsample *pSample = GetSample();
+  *ps = (pParm->GetPrintHeading() == PRINT_TITLE_SAMPLE_NAME)
+    ? pSample->GetSampleName() : pSample->GetName();
+  return *ps;
+}
+const wxString &CPanelPlot::TitleStrings(wxString *ps, int nPageNr)
+{
+  CParmOsiris *pParm = CParmOsiris::GetGlobal();
+  const COARfile *pFile = GetSample()->GetFile();
+  std::vector<wxString> vs;
+  wxString s;
+  // Lines:
+  //     Version
+  //     File name
+  //     Sample
+  //     Print date
+  //     Analysis date
+  //     notes
+  //     page number
+  vs.reserve(7);
+  vs.push_back(pFile->GetFullVersion());    // Version
+  s = wxT("File: ");
+  s.Append(wxFileName(pFile->GetFileName()).GetFullName());  // oar/oer file name
+  vs.push_back(s);
+  if (pParm->GetPrintHeading() == PRINT_TITLE_SAMPLE_NAME)
+  {
+    s = wxT("Sample file: ");
+    s.Append(GetSample()->GetName());
+  }
+  else
+  {
+    s = wxT("Sample name: ");
+    s.Append(GetSample()->GetSampleName());
+  }
+  vs.push_back(s);
+  wxString sDateFormat(wxT("%Y-%m-%d"));
+  s = wxT("Print date: ");
+  s.Append(wxDateTime::Now().Format(sDateFormat));
+  vs.push_back(s);
+  s = wxT("Analysis date: ");
+  s.Append(pFile->GetCreationTime().Format(sDateFormat));
+  vs.push_back(s);
+  const wxString &sTmp = pParm->GetPrintHeadingNotes();
+  if (!sTmp.IsEmpty())
+  {
+    vs.push_back(sTmp);
+  }
+  if (nPageNr > 0)
+  {
+    s = wxT("Page: ");
+    s.Append(nwxString::FormatNumber(nPageNr));
+    vs.push_back(s);
+  }
+  nwxString::Join(vs, ps, '\n');
+  return *ps;
 }

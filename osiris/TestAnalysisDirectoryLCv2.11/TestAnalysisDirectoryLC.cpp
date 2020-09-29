@@ -147,7 +147,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (inputStatus != 0) {
 
-		cout << "File input failed.  Terminating..." << endl;
+		//cout << "File input failed.  Terminating..." << endl;
+		
 		return -1;
 	}
 
@@ -155,7 +156,10 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (inputStatus != 0) {
 
-		cout << "File input incomplete.  Terminating..." << endl;
+		//cout << "File input incomplete.  Terminating..." << endl;
+		STRLCAnalysis::mFailureMessage->IncompleteSetOfInputs ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (540);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -242,7 +246,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (useRawData) {
 
 		CoreBioComponent::SetUseRawData ();
-		CommandInputs << "RawDataString = R;\n\n\n";
+		CommandInputs << "RawDataString = R;\n";
+		CommandInputs << ";\n\n";   // This line is essential as the last line in the command input has to be ';'.
 		cout << CommandInputs.GetData ();
 		cout << "Use raw data...\n";
 	}
@@ -250,7 +255,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	else {
 
 		CoreBioComponent::DontUseRawData ();
-		CommandInputs << "RawDataString = A;\n\n\n";
+		CommandInputs << "RawDataString = A;\n";
+		CommandInputs << ";\n\n";   // This line is essential as the last line in the command input has to be ';'.
 		cout << CommandInputs.GetData ();
 		cout << "Don't use raw data...\n";
 	}
@@ -266,6 +272,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (minLaneStandardRFU < minPeak)
 		minPeak = minLaneStandardRFU;
+
+	STRLCAnalysis::mFailureMessage->DeleteAllMessages ();
 
 	// This all assumes that reading the lab settings file below does not change the minRFU values...which was true as of 07/29/2009!!
 
@@ -283,12 +291,20 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!stdSettingsFile.isValid ()) {
 
 		cout << "Could not open standard settings file " << stdSettingsFileName << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("Full path name = " + stdSettingsFileName + ".");
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Standard Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (550);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -17;
 	}
 
 	if (!labSettingsFile.isValid ()) {
 
 		cout << "Could not open laboratory settings file " << labSettingsFileName << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("Full path name = " + labSettingsFileName + ".");
+		STRLCAnalysis::mFailureMessage->CouldNotOpenFile ("Lab Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (560);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -17;
 	}
 
@@ -302,6 +318,10 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!pServer->isValid ()) {
 
 		cout << "Could not interpret standard input settings file " << (char*)stdSettingsFileName.GetData () << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage ("Could not interpret standard input settings file " + stdSettingsFileName + ".  Exiting...");
+		STRLCAnalysis::mFailureMessage->FileInvalid ("Standard Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (570);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -100;
 	}
 
@@ -313,6 +333,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (!pServer->AddGenotypeCollection (labXML, true)) {
 
 		cout << "Could not interpret laboratory input settings file " << (char*)labSettingsFileName.GetData () << ".  Exiting..." << endl;
+		STRLCAnalysis::mFailureMessage->FileInvalid ("Lab Settings");
+		STRLCAnalysis::mFailureMessage->SetPingValue (580);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -100;
 	}
 
@@ -358,6 +381,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	catch (...) {
+		STRLCAnalysis::mFailureMessage->SetPingValue (650);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		status = -1170;
 	}
 

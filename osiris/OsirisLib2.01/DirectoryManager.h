@@ -38,6 +38,7 @@
 #include "rgstring.h"
 #include "rgdefs.h"
 #include "rgdlist.h"
+#include "STRLCAnalysis.h"
 
 class ParameterServer;
 
@@ -51,6 +52,7 @@ public:
 
 	Boolean IsValid () const { return Valid; }
 	void RewindDirectory () { Directory->RewindDirectory (); }
+	void SetAnalysisDirectory (STRLCAnalysis* dir) { mAnalysisDirectory = dir; }
 
 	static void SetCycleOn () { Cycle = TRUE; }
 	static void SetCycleOff () { Cycle = FALSE; }
@@ -78,6 +80,8 @@ protected:
 	Boolean mReadAllPosControls;
 	Boolean mReadAllNegControls;
 	Boolean mReadAllSamples;
+
+	STRLCAnalysis* mAnalysisDirectory;
 
 	Boolean TestForLadder (const RGString& fileName);
 	Boolean TestForSample (const RGString& fileName);
@@ -111,7 +115,6 @@ protected:
 	RGDList mPositiveControlList;
 	RGDList mNegativeControlList;
 	RGDList mSampleList;
-
 };
 
 #endif  /*  _DIRECTORYMANAGER_H_  */
