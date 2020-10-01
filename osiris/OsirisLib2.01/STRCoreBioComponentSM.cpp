@@ -2127,6 +2127,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	it.Reset ();
 
+	//  10/1/2020:  Much of the below text is now out of date.  Osiris now discovers the pattern of pull-up between each pair of channels and, using least median of squares,
+	//  determines the outliers (partial pull-ups) and the signals that follow the pattern (pure pull-ups).
 	//
 	//	Have looked for craters and other multi-signals above, having been careful to check for positive/negative peaks and multiple peaks within approximately 
 	//	0.9 ILS-bps.  After all new multi-signals were found, added them to the various lists (or while finding them), but didn't remove any side
@@ -2209,7 +2211,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			continue;
 
 		//  *****!!!! The next test involves the minRFU among minSampleRFU, minLadderRFU and minILSRFU.  The minimum height is the least of these.  
-		//  Essentially, Osiris will not consider that a primary pull-up could be below this min height.  I think this may be an error as well!????
+		//  Essentially, Osiris will not consider that a primary pull-up could be below this min height.  I think this may be an error as well!????  Leaving it for now (10/01/2020)
 
 		if (primaryHeight < mDataChannels [nextSignal->GetChannel ()]->GetMinimumHeight ())
 			continue;
@@ -2223,6 +2225,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		//}
 
 		// nextSignal could be primary
+		// pull-up tolerance from exact match of means between primary and pull-up depends on the type of primary peak and the width of the primary peak.  Scoop up
+		// any peaks on other channels that fall within the pull-up tolerance of the primary peak's mean.  Laser off scale between possible primary and possible pull-up mush
+		// match.  Ignore peaks on the same channel as the primary.  Peaks in pull-up channels must be of lesser height than primary peak.
 
 		Pos.ResetTo (it);
 		Neg.ResetTo (it);
@@ -2238,6 +2243,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		weakPullupPeaks.Clear ();
 		laserStatus = primeSignal->GetMessageValue (laserOffScale);
 
+		// Starting at the primary mean, search in the positive direction
+
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
 			if (nextSignal2->GetMean () > rightLimit) {
@@ -2248,7 +2255,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				if (nextSignal2->GetChannel () == primaryChannel)
 					continue;
 
-				if (TestForWeakPullup (primaryMean, nextSignal2))
+				//This next test is for a peak in the pull-up channel that interferes, above noise level, with primary without being close enough to be called pull-up
+				//The existence of such peaks make the primary "occluded" in that pull-up channel
+
+				if (TestForWeakPullup (primaryMean, nextSignal2))  
 					weakPullupPeaks.Append (nextSignal2);
 
 				continue;
@@ -2272,6 +2282,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				continue;
 			}
 		}
+
+		// Starting at the primary mean, search in the negative direction
 
 		while (nextSignal2 = (DataSignal*)(--Neg)) {
 
@@ -2446,7 +2458,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		// The following test needs to be moved until after channel-duplicates have been removed from list
 
-		if (primaryWidth < mWidthToleranceForSpike) {  // primary is too narrow,
+		if (primaryWidth < mWidthToleranceForSpike) {  // primary is too narrow (width < 2.1) so it is a spike
 
 			probableIt.Reset ();
 			primeSignal->SetMessageValue (spike, true);
@@ -2462,7 +2474,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 					if (testSignal->GetWidth () < mWidthToleranceForSpike) {
 
-						testSignal->SetMessageValue (spike, true);
+						testSignal->SetMessageValue (spike, true);  // 10/01/2020:  this test makes calling a pull-up to a spike into a spike only if its width is < 2.1...maybe it should be a spike unconditionally?
 						testSignal->SetCouldBePullup (true);
 					}
 				}
