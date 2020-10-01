@@ -821,7 +821,7 @@ bool CFramePlot::SetScrollbarMenuLabel(bool bShow)
     wxMenuItem *pItem = pMenu->FindItem(IDmenuShowHidePlotScrollbars);
     if(pItem != NULL)
     {
-      const char *psLabel = bShow ? "Show Plot Scrollbars" : "Hide Plot Scrollbars";
+      const char *psLabel = bShow ? SHOW_PLOT_SCROLLBARS : HIDE_PLOT_SCROLLBARS;
       pItem->SetItemLabel(psLabel);
       bRtn = true;
     }

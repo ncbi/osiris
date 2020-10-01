@@ -49,7 +49,7 @@ CPanelPlotPreview::CPanelPlotPreview(
   wxWindow *parent, 
   COARfile *pFile,
   CKitColors *pColors,
-  //bool bExternalTimer,// EXT TIMER
+  CMenuHistory *pMenuHistory,
   size_t nMaxCount)
 : wxPanel(parent),
   m_nMaxCount(1),
@@ -58,6 +58,7 @@ CPanelPlotPreview::CPanelPlotPreview(
   m_pFrameAnalysis(pFrame),
   m_pOARfile(pFile),
   m_pColors(pColors),
+  m_pMenuHistory(pMenuHistory),
  // m_bExternalTimer(bExternalTimer),// EXT TIMER
   m_bLogged(true)
 {
@@ -342,13 +343,50 @@ CPanelPlot *CPanelPlotPreview::_Create(const wxString &sFileName)
         pData.release(),
         m_pOARfile,
         m_pColors
-        //,m_bExternalTimer// EXT TIMER
       );
+      CParmOsiris *pParm = CParmOsiris::GetGlobal();
+      pRtn->ShowToolbar(!pParm->GetHidePreviewToolbar());
+      pRtn->ShowScrollbars(!pParm->GetHidePreviewScrollbar());
+      pRtn->SetHistoryMenu(m_pMenuHistory);
       m_listPlots.push_front(pRtn);
       _Cleanup(m_nMaxCount);
     }
   }
   return pRtn;
+}
+
+bool CPanelPlotPreview::IsToolbarShown()
+{
+  CPanelPlot *pPlot = _FindCurrent();
+  return (pPlot == NULL) ? false : pPlot->IsToolbarShown();
+}
+bool CPanelPlotPreview::AreScrollbarsShown()
+{
+  CPanelPlot *pPlot = _FindCurrent();
+  return (pPlot == NULL) ? false : pPlot->AreScrollbarsShown();
+}
+void CPanelPlotPreview::ShowToolbar(bool bShow)
+{
+  list<CPanelPlot *>::iterator itr;
+  for (itr = m_listPlots.begin(); itr != m_listPlots.end(); ++itr)
+  {
+    (*itr)->ShowToolbar(bShow);
+  }
+  CParmOsiris::GetGlobal()->SetHidePreviewToolbar(!bShow);
+}
+void CPanelPlotPreview::ShowScrollbars(bool bShow)
+{
+  list<CPanelPlot *>::iterator itr;
+  for (itr = m_listPlots.begin(); itr != m_listPlots.end(); ++itr)
+  {
+    (*itr)->ShowScrollbars(bShow);
+  }
+  CPanelPlot *pPlot(_FindCurrent());
+  if (pPlot != NULL)
+  {
+    pPlot->RebuildCurves();
+  }
+  CParmOsiris::GetGlobal()->SetHidePreviewScrollbar(!bShow);
 }
 
 CPanelPlot *CPanelPlotPreview::_Setup(const wxString &sFileName,bool bReload)

@@ -184,7 +184,6 @@ CPanelPlot::CPanelPlot(
   CPlotData *pData,
   COARfile *pFile,
   CKitColors *pColors
-  //,bool bExternalTimer // EXT TIMER
   ) :
       PANEL_PLOT_TYPE(parent,wxID_ANY,
       wxDefaultPosition, wxDefaultSize, 0),
@@ -211,7 +210,7 @@ CPanelPlot::CPanelPlot(
     m_bPrintAnalysis(false),
     m_bPrinting(false)
 {
-  //  constructor for panel in analysis MDI frame
+  //  constructor for panel in analysis MDI frame (Preview Plot)
   _BuildPanel(0,true,NULL);
 }
 
@@ -264,14 +263,21 @@ void CPanelPlot::_BuildPanel(
   // now build it and they will come
   m_pPanel = new wxPanel(this,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
 
-  if(m_pFramePlot != NULL && !IsPrinting())
+  if (!IsPrinting())
   {
-    m_pButtonPanel = new CPanelPlotToolbar(m_pPanel,m_pData,m_pColors,pMenuHistory,nMenuNumber, bFirst);
+    if (m_pFramePlot != NULL)
+    {
+      m_pButtonPanel = new CPanelPlotToolbar(m_pPanel, m_pData, m_pColors, pMenuHistory, nMenuNumber, bFirst);
+    }
+    else
+    {
+      // plot preview
+      m_pButtonPanel = new CPanelPlotToolbar(m_pPanel, m_pData, m_pColors, pMenuHistory);
+    }
     m_pButtonPanel->CopySettings(*m_pMenu);
     m_pShiftSizer = new nwxShiftSizer(
       m_pButtonPanel, this, ID_BORDER); // , 250); // , true); // EXT TIMERs
   }
-
   m_pPlotCtrl = new CPlotCtrl(m_pPanel,this);
   m_viewRect.SetPlotCtrl(m_pPlotCtrl);
 
@@ -2447,7 +2453,32 @@ void CPanelPlot::ShowToolbar(bool bShow)
       _SendSizeAction();
     }
   }
+  if (IsPreview())
+  {
+    m_pMenu->SetToolbarLabel(bShow);
+    if (m_pMenuPopup != NULL)
+    {
+      m_pMenuPopup->SetToolbarLabel(bShow);
+    }
+  }
 }
+
+void CPanelPlot::ShowScrollbars(bool bShow)
+{
+  if (bShow != AreScrollbarsShown())
+  {
+    m_pPlotCtrl->ShowScrollbars(bShow);
+  }
+  if (IsPreview())
+  {
+    m_pMenu->SetScrollbarLabel(bShow);
+    if (m_pMenuPopup != NULL)
+    {
+      m_pMenuPopup->SetScrollbarLabel(bShow);
+    }
+  }
+}
+
 void CPanelPlot::CopySettings(CPanelPlot &w, int nDelay)
 {
   TnwxBatch<CPanelPlot> x(this);

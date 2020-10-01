@@ -248,6 +248,14 @@ public:
   {
     return m_bShowPreview;
   }
+  bool GetHidePreviewToolbar() const
+  {
+    return m_bHidePreviewToolbar;
+  }
+  bool GetHidePreviewScrollbar() const
+  {
+    return m_bHidePreviewScrollbar;
+  }
   bool GetHideGraphicToolbar() const
   {
     return m_bHideGraphicToolbar;
@@ -855,6 +863,14 @@ public:
   {
     __SET_VALUE(m_bShowPreview,b);
   }
+  void SetHidePreviewToolbar(bool b)
+  {
+    __SET_VALUE(m_bHidePreviewToolbar,b);
+  }
+  void SetHidePreviewScrollbar(bool b)
+  {
+    __SET_VALUE(m_bHidePreviewScrollbar,b);
+  }
   void SetHideGraphicToolbar(bool b)
   {
     __SET_VALUE(m_bHideGraphicToolbar,b);
@@ -1401,6 +1417,8 @@ protected:
   bool m_bPNGviewLocation;
   int m_nShowAlerts;
   bool m_bShowPreview;
+  bool m_bHidePreviewToolbar;
+  bool m_bHidePreviewScrollbar;
   bool m_bHideGraphicToolbar;
   bool m_bHideGraphicScrollbar;
   bool m_bHideTextToolbar;

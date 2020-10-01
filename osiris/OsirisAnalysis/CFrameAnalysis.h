@@ -117,7 +117,7 @@ public:
   virtual wxMenu *GetTableMenu();
   virtual wxMenu *GetGraphMenu();
   virtual int GetType();
-  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false);
+  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false, int nID = IDmenuShowHideToolbar);
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual void OnTimer(wxTimerEvent &);
   virtual wxString GetFileName();
@@ -152,10 +152,12 @@ public:
     {
       m_pPanelToolbar->Show(bShow);
       Layout();
-      SetToolbarMenuLabel(!bShow);
+      SetToolbarMenuLabel(!bShow, false, IDmenuShowHideTableToolbar);
     }
   }
   void ToggleToolbar();
+  void ToggleToolbarPreview();
+  void ToggleScrollbarsPreview();
   bool CanSaveAs() const
   {
     return _XmlFile();

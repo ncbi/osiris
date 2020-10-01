@@ -92,7 +92,12 @@ public:
     CKitColors *pColors, 
     CMenuHistory *pMenu,
     int nMenuNumber,
-    bool bDraw = true);
+    bool bDraw = true);  // constructor for plot window
+  CPanelPlotToolbar(
+    wxWindow *parent,
+    CPlotData *pData,
+    CKitColors *pColors,
+    CMenuHistory *pMenu); // constructor for analysis window preview
   virtual ~CPanelPlotToolbar();
   void SyncTo(CPanelPlotToolbar *p);
 
@@ -251,6 +256,14 @@ public:
   }
 
 private:
+  void _Build(
+    CPlotData *pData,
+    CKitColors *pColors,
+    CMenuHistory *pMenu,
+    int nMenuNumber = 0,
+    bool bFirst = false,
+    bool bPreview = false);
+
   void _EnableBaseline(bool b)
   {
     m_pButtonBaseline->Enable(b);

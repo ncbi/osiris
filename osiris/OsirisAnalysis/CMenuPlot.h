@@ -73,17 +73,6 @@ public:
       // lite menu used for plot preview in CFrameAnalysis
   virtual ~CMenuPlot();
   CMenuPlot *Clone();
-#if 0
-  bool UsingDefault()
-  {
-    if(m_bUsedDefault)
-    {
-      LABEL_PLOT_TYPE n = LabelType();
-      m_bUsedDefault = (n == m_nLastType);
-    }
-    return m_bUsedDefault;
-  }
-#endif
   bool HasID(int nID)
   {
     bool bRtn = (nID >= m_nOffset) &&
@@ -133,9 +122,6 @@ public:
   virtual void ShowDisabledAlleles(bool b = true);
 
   // labels, artifacts
-#if 0
-  virtual LABEL_PLOT_TYPE LabelType();
-#endif
   virtual size_t GetLabelTypes(vector<unsigned int> *pan);
   virtual void SetLabelTypes(const vector<unsigned int> &an);
   virtual void SetLabelType(LABEL_PLOT_TYPE n, LABEL_PLOT_TYPE nDefault = LABEL_NONE);
@@ -164,6 +150,8 @@ public:
   }
   void ClearLabelTypes();
   bool SetStateFromEvent(wxCommandEvent &e);
+  void SetToolbarLabel(bool bShowing);
+  void SetScrollbarLabel(bool bShowing);
 private:
   void _Build(CPlotData *pData, CKitColors *pColors);
   int _ID(int n)
@@ -180,13 +168,7 @@ private:
   CMenuArtifact *m_pMenuArtifact;
   CMenuLabels *m_pMenuLabels;
   bool m_bXBPS;
-#if 0
-  LABEL_PLOT_TYPE m_nLastType;
-#endif
   bool m_bPreview;
-#if 0
-  bool m_bUsedDefault;
-#endif
 
   DECLARE_ABSTRACT_CLASS(CMenuPlot)
 };
