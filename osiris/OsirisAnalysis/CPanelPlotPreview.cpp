@@ -58,11 +58,11 @@ CPanelPlotPreview::CPanelPlotPreview(
   m_pFrameAnalysis(pFrame),
   m_pOARfile(pFile),
   m_pColors(pColors),
-  m_pMenuHistory(pMenuHistory),
- // m_bExternalTimer(bExternalTimer),// EXT TIMER
-  m_bLogged(true)
+  m_pMenuHistory(pMenuHistory)
+#ifdef _DEBUG
+  ,m_bLogged(true)
+#endif
 {
-  SetBackgroundColour(*wxWHITE);
   SetMaxCount(nMaxCount);
   m_pSizer = new wxBoxSizer(wxVERTICAL);
   SetSizer(m_pSizer);

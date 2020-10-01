@@ -121,7 +121,9 @@ private:
   CKitColors *m_pColors;
   CMenuHistory *m_pMenuHistory;
   //bool m_bExternalTimer;// EXT TIMER
+#ifdef _DEBUG
   bool m_bLogged; // set to true if there is a problem with a timer event
+#endif
 };
 
 #endif
