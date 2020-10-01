@@ -100,6 +100,8 @@ my $VARLIST =
 
   ["m_nShowAlerts","int","-1",undef,"m_ioInt_1"],
   ["m_bShowPreview", "bool true"],
+  ["m_bHidePreviewToolbar", "bool"],
+  ["m_bHidePreviewScrollbar", "bool"],
   ["m_bHideGraphicToolbar", "bool"],
   ["m_bHideGraphicScrollbar", "bool"],
   ["m_bHideTextToolbar", "bool"],
@@ -325,13 +327,21 @@ sub comment
 sub GenerateCopyOrCompare
 {
   my $EOL = shift; ## empty for compare, semi-colon for copy
+  my $bCompare = shift;
   my $sRtn = "";
+  my $nCount = 0;
+  my $nMax = 20;
   for my $a (@$VARLIST)
   {
     my $s = $a->[0];
     if($#$a > 0)
     {
+      if ( $bCompare && !($nCount % $nMax))
+      {
+        $sRtn .= "\n  if(!bRtn) {}\n";
+      }
       $sRtn .= "  CP(${s})${EOL}\n";
+      ++$nCount;
     }
     else
     {
@@ -531,8 +541,8 @@ sub GenFiles
   my $sSets = &GenerateSet;
   my $sDefaults = &GenerateDefaults;
   my $sRegister = &GenerateRegister;
-  my $sCopy = &GenerateCopyOrCompare(";");
-  my $sCompare = &GenerateCopyOrCompare("");
+  my $sCopy = &GenerateCopyOrCompare(";", undef);
+  my $sCompare = &GenerateCopyOrCompare("", true);
   my $sStringHeader = &GenerateStringsHeader;
   my $sStringCPP = &GenerateStringsCPP;
   my $sCOPY = <<EOF1;
@@ -1020,17 +1030,14 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 {
 #define CP(elem) else if(!(elem == x.elem)) { bRtn = false; }
   bool bRtn = true;
-  if(0) {}
   // begin generated compare
 
 ${sCompare}
 
   // end generated compare
-
-
   CP(m_gridAttr)
-//  CP(m_bModified)
-//  CP(m_bAutoSave)
+
+
 
 #undef CP
   return bRtn;

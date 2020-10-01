@@ -489,9 +489,9 @@ int CFrameAnalysis::GetType()
 {
   return FRAME_ANALYSIS;
 }
-bool CFrameAnalysis::SetToolbarMenuLabel(bool bShow, bool bPlural)
+bool CFrameAnalysis::SetToolbarMenuLabel(bool bShow, bool bPlural, int nID)
 {
-  bool bRtn = CMDIFrame::SetToolbarMenuLabel(bShow,bPlural);
+  bool bRtn = CMDIFrame::SetToolbarMenuLabel(bShow,bPlural, nID);
   m_pMenu->UpdateChildren();
   return bRtn;
 }
@@ -644,8 +644,14 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
     case IDmenuSortControlsAtTop:
       OnSortGrid(e);
       break;
-    case IDmenuShowHideToolbar:
+    case IDmenuShowHideTableToolbar:
       ToggleToolbar();
+      break;
+    case IDmenuShowHidePlotScrollbars:
+      ToggleScrollbarsPreview();
+      break;
+    case IDmenuShowHideToolbar:
+      ToggleToolbarPreview();
       break;
     case IDmenuParameters:
       OnShowDetails(e);
@@ -694,8 +700,20 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
   }
   return bRtn;
 }
-
-
+void CFrameAnalysis::ToggleScrollbarsPreview()
+{
+  if (_IsPreviewShowing())
+  {
+    GetGraphPanel()->ToggleScrollbars();
+  }
+}
+void CFrameAnalysis::ToggleToolbarPreview()
+{
+  if (_IsPreviewShowing())
+  {
+    GetGraphPanel()->ToggleToolbar();
+  }
+}
 void CFrameAnalysis::ToggleToolbar()
 {
   bool bWasShown = IsToolbarShown();
@@ -1851,7 +1869,7 @@ void CFrameAnalysis::_ShowPreview()
         m_pSplitterTop,
         m_pOARfile,
         mainApp::GetKitColors(),
-        //true,  // EXT TIMER
+        m_pMenu->GetMenuHistoryPopup(),
         6);
     }
 

@@ -111,6 +111,8 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPNGviewLocation);
   CP(m_nShowAlerts);
   CP(m_bShowPreview);
+  CP(m_bHidePreviewToolbar);
+  CP(m_bHidePreviewScrollbar);
   CP(m_bHideGraphicToolbar);
   CP(m_bHideGraphicScrollbar);
   CP(m_bHideTextToolbar);
@@ -232,9 +234,10 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 {
 #define CP(elem) else if(!(elem == x.elem)) { bRtn = false; }
   bool bRtn = true;
-  if(0) {}
   // begin generated compare
 
+
+  if(!bRtn) {}
   CP(m_sLastExportXSLsearch)
   CP(m_sLastExportDirectory)
   CP(m_sInputDirectory)
@@ -261,6 +264,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 
   CP(m_sCMFsourceLab)
   CP(m_sCMFdestLab)
+
+  if(!bRtn) {}
   CP(m_sCMFdefaultSample)
   CP(m_sCMFbatchFormat)
   CP(m_sCMFuserID)
@@ -276,12 +281,16 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPNGviewLocation)
   CP(m_nShowAlerts)
   CP(m_bShowPreview)
+  CP(m_bHidePreviewToolbar)
+  CP(m_bHidePreviewScrollbar)
   CP(m_bHideGraphicToolbar)
   CP(m_bHideGraphicScrollbar)
   CP(m_bHideTextToolbar)
   CP(m_bHideSampleToolbar)
   CP(m_bStartupMRU)
   CP(m_bCheckBeforeExit)
+
+  if(!bRtn) {}
   CP(m_bWarnOnHistory)
   CP(m_dZoomLocusMargin)
 
@@ -311,6 +320,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPlotDataAnalyzed)
   CP(m_bPlotDataRaw)
   CP(m_bPlotDataLadder)
+
+  if(!bRtn) {}
   CP(m_bPlotDataBaseline)
   CP(m_bPlotDataXBPS)
   CP(m_bPlotShowILS)
@@ -334,6 +345,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPrintCurveDisabledAlleles)
   CP(m_bPrintCurveBaseline)
   CP(m_bPrintCurveILSvertical)
+
+  if(!bRtn) {}
   CP(m_bPrintCurveMinRFU)
   CP(m_bPrintXaxisILSBPS)
   CP(m_nPrintXscale)
@@ -354,6 +367,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintChannelsNegCtrl)
   CP(m_bPrintChannelsOmitILS)
   CP(m_bPrintSamplesLadders)
+
+  if(!bRtn) {}
   CP(m_bPrintSamplesPosCtrl)
   CP(m_bPrintSamplesNegCtrl)
   CP(m_bPrintSamplesDisabled)
@@ -380,15 +395,15 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   //  XSLT saved parameter info
 
   CP(m_sLastXSLInputFileDir)
+
+  if(!bRtn) {}
   CP(m_bPrivacySeen)
 
 
   // end generated compare
-
-
   CP(m_gridAttr)
-//  CP(m_bModified)
-//  CP(m_bAutoSave)
+
+
 
 #undef CP
   return bRtn;
@@ -450,6 +465,8 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PNGviewLocation", &m_bPNGviewLocation);
   Register("ShowAlerts",&m_ioInt_1,(void *) &m_nShowAlerts);
   RegisterBoolTrue("ShowPreview", &m_bShowPreview);
+  RegisterBool("HidePreviewToolbar", &m_bHidePreviewToolbar);
+  RegisterBool("HidePreviewScrollbar", &m_bHidePreviewScrollbar);
   RegisterBool("HideGraphicToolbar", &m_bHideGraphicToolbar);
   RegisterBool("HideGraphicScrollbar", &m_bHideGraphicScrollbar);
   RegisterBool("HideTextToolbar", &m_bHideTextToolbar);
@@ -628,6 +645,8 @@ void CParmOsiris::SetDefaults()
   m_bPNGviewLocation = false;
   m_nShowAlerts = -1;
   m_bShowPreview = true;
+  m_bHidePreviewToolbar = false;
+  m_bHidePreviewScrollbar = false;
   m_bHideGraphicToolbar = false;
   m_bHideGraphicScrollbar = false;
   m_bHideTextToolbar = false;

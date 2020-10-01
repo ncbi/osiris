@@ -82,7 +82,19 @@ void CComboArtifact::SetDefault()
 
 
 //**********************************************  CPanelPlotToolbar
-
+CPanelPlotToolbar::CPanelPlotToolbar(
+  wxWindow *parent,
+  CPlotData *pData,
+  CKitColors *pColors,
+  CMenuHistory *pMenu)
+  : wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL),
+    m_pButtonSync(NULL),
+    m_pButtonDelete(NULL),
+    m_pButtonAppend(NULL)
+{
+  // constructor for analysis window preview toolbar
+  _Build(pData, pColors, pMenu, 0, false, true);
+}
 
 CPanelPlotToolbar::CPanelPlotToolbar(
   wxWindow *parent,
@@ -91,8 +103,19 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   CMenuHistory *pMenu,
   int nMenuNumber,
   bool bFirst)
-    : wxScrolledWindow(parent,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxHSCROLL)
+  : wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL)
 {
+  _Build(pData, pColors, pMenu, nMenuNumber, bFirst);
+}
+void CPanelPlotToolbar::_Build(
+  CPlotData *pData,
+  CKitColors *pColors,
+  CMenuHistory *pMenu,
+  int nMenuNumber,
+  bool bFirst,
+  bool bPreview)
+{
+  // constructor for plot window toolbar
   wxSize MARGIN(2,0);
   wxButton *pBtn;
   wxStaticText *pStatText;
@@ -171,17 +194,20 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->Add(m_pButtonBaseline,0,nSizerFlags,ID_BORDER);
 
 
+  if (!bPreview)
+  {
+    // buttons to view table and sample
+    wxButton *pButtonSample = new CButtonSample(m_pPanel);
+    wxButton *pButtonTable =
+      new wxButton(m_pPanel, IDgraphTable, "Table",
+        wxDefaultPosition, wxDefaultSize,
+        wxBU_EXACTFIT);
+    pButtonTable->SetToolTip("View a table containing the analysis data.");
+    pSizer->Add(pButtonSample, 0, nSizerFlags, ID_BORDER);
+    pSizer->Add(pButtonTable, 0, nSizerFlags, ID_BORDER);
+  }
 
-  // view table
-  wxButton *pButtonSample = new CButtonSample(m_pPanel);
-  wxButton *pButtonTable =
-    new wxButton(m_pPanel,IDgraphTable,"Table",
-      wxDefaultPosition, wxDefaultSize,
-      wxBU_EXACTFIT);
-  pButtonTable->SetToolTip("View a table containing the analysis data.");
-  pSizer->Add(pButtonSample,0,nSizerFlags,ID_BORDER);
-  pSizer->Add(pButtonTable,0,nSizerFlags,ID_BORDER);
-
+  // BEGIN channel buttons
 
   pSizer->AddSpacer(SPACER);
   wxString sLabel;
@@ -194,15 +220,15 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 
   pSizer->Add(pStatText, 0, nSizerFlags, ID_BORDER);
   m_vShiftWindows.push_back(pStatText);
-  for(i = 1; i <= nChannelCount; i++)
+  for (i = 1; i <= nChannelCount; i++)
   {
-    if(pKitColors != NULL)
+    if (pKitColors != NULL)
     {
       pCC = (i == nChannelILS)
         ? pKitColors->GetColorChannelFromLS(pData->GetParameters().GetLsName())
         : pKitColors->GetColorChannel(i);
     }
-    if(pCC != NULL)
+    if (pCC != NULL)
     {
       pColor = pCC->GetColorAnalyzedPtr();
       sLabel = pCC->GetDyeName();
@@ -213,49 +239,54 @@ CPanelPlotToolbar::CPanelPlotToolbar(
       sLabel = wxString::Format(wxT("%u"), i);
     }
 #if __USING_NATIVE_TOGGLE
-    pPanelChannelButton = new wxPanel(m_pPanel,wxID_ANY);
+    pPanelChannelButton = new wxPanel(m_pPanel, wxID_ANY);
     pSizerChannelButton = new wxBoxSizer(wxHORIZONTAL);
     pPanelChannelButton->SetBackgroundColour(*pColor);
-    nwxToggleButton *pTgl = new nwxToggleButton(pPanelChannelButton,nID,sLabel,
+    nwxToggleButton *pTgl = new nwxToggleButton(pPanelChannelButton, nID, sLabel,
       wxDefaultPosition, wxDefaultSize,
       wxBU_EXACTFIT
-      );
-    pSizerChannelButton->Add(pTgl,0,wxALL,2);
+    );
+    pSizerChannelButton->Add(pTgl, 0, wxALL, 2);
     pPanelChannelButton->SetSizer(pSizerChannelButton);
-    pSizer->Add(pPanelChannelButton,0,nSizerFlags,0);
+    pSizer->Add(pPanelChannelButton, 0, nSizerFlags, 0);
 #else
-    wxCustomButton *pTgl = new wxCustomButton(m_pPanel,nID,sLabel,
+    wxCustomButton *pTgl = new wxCustomButton(m_pPanel, nID, sLabel,
       wxDefaultPosition, wxDefaultSize, wxCUSTBUT_TOGGLE);
     pTgl->SetForegroundColour(*wxWHITE);
-    pTgl->SetMargins(DYEMARGIN,true);
-    pSizer->Add(pTgl,0,nSizerFlags,ID_BORDER);
+    pTgl->SetMargins(DYEMARGIN, true);
+    pSizer->Add(pTgl, 0, nSizerFlags, ID_BORDER);
 #endif
     m_pButtonChannel[i] = pTgl;
     pTgl->SetValue(bFirst);
     pTgl->SetToolTip(wxString::Format(
-      "View or hide data for channel %d\n" 
-         "Hold down the shift key to view only channel %d ",i,i));
+      "View or hide data for channel %d\n"
+      "Hold down the shift key to view only channel %d ", i, i));
 
     pTgl->SetBackgroundColour(*pColor);
-  }
-  for(i = nChannelCount + 1; i <= CHANNEL_MAX; i++)
+    }
+  for (i = nChannelCount + 1; i <= CHANNEL_MAX; i++)
   {
     m_pButtonChannel[i] = NULL;
   }
   m_pButtonChannel[0] = NULL;
   pSizer->AddSpacer(SPACER);
+  // END channel buttons
 
-  // sync button
-  m_pButtonSync = new nwxToggleButton(m_pPanel,IDgraphSyncAxes,"Sync",
-    wxDefaultPosition, wxDefaultSize,
-    wxBU_EXACTFIT
-    );
-  m_pButtonSync->SetToolTip(
-    "Syncrhonize axes on all plots when zooming.\n"
-      "Hold down the shift key to set all plots.");
-  m_pButtonSync->SetValue(bFirst);
-  pSizer->Add(m_pButtonSync,0,nSizerFlags,ID_BORDER);
-  m_vShiftWindows.push_back(m_pButtonSync);
+  if (!bPreview)
+  {
+
+    // sync button
+    m_pButtonSync = new nwxToggleButton(m_pPanel,IDgraphSyncAxes,"Sync",
+      wxDefaultPosition, wxDefaultSize,
+      wxBU_EXACTFIT
+      );
+    m_pButtonSync->SetToolTip(
+      "Syncrhonize axes on all plots when zooming.\n"
+        "Hold down the shift key to set all plots.");
+    m_pButtonSync->SetValue(bFirst);
+    pSizer->Add(m_pButtonSync,0,nSizerFlags,ID_BORDER);
+    m_vShiftWindows.push_back(m_pButtonSync);
+  }
 
   // ILS button
 
@@ -313,7 +344,9 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   // labels pulldown
   //
   //
-  m_pMenuLabels = new CMenuLabels(CMenuLabels::MENU_TYPE_PLOT,nMenuNumber);
+  m_pMenuLabels = new CMenuLabels(
+    bPreview ? CMenuLabels::MENU_TYPE_PREVIEW : CMenuLabels::MENU_TYPE_PLOT,
+    nMenuNumber);
   m_pButtonLabels = new nwxButtonMenu(m_pMenuLabels,m_pPanel,wxID_ANY,wxS("Peak Labels"));
   m_pButtonLabels->SetToolTip("Select information to display in peak labels");
   pSizer->Add(m_pButtonLabels,0,nSizerFlags,ID_BORDER);
@@ -326,6 +359,7 @@ CPanelPlotToolbar::CPanelPlotToolbar(
 
   m_pComboArtifact = new CComboArtifact(m_pPanel,IDgraphArtifactCombo);
   BOX_COMBO(m_pComboArtifact,pSizer,nSizerFlags); // #defined in CComboLabels.h
+
   m_pPanelHistory = new CPanelHistoryMenu(
     GetParent()->GetParent(),
     m_pPanel,IDhistoryButton,"H");
@@ -336,7 +370,14 @@ CPanelPlotToolbar::CPanelPlotToolbar(
     m_pPanelHistory->SetMenu(pMenu);
   }
 
-  pSizer->AddSpacer(SPACER + ID_BORDER);
+  if (bPreview)
+  {
+    pSizer->AddStretchSpacer(1);
+  }
+  else
+  {
+    pSizer->AddSpacer(SPACER + ID_BORDER);
+  }
 
   // zoom out button
   pBtn = new wxButton(m_pPanel, IDgraphZoomOut,"Reset Axes",
@@ -349,28 +390,30 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   pSizer->Add(pBtn,0,nSizerFlags,ID_BORDER);
   m_vShiftWindows.push_back(pBtn);
 
-  // multiple button
-  pBtn = new wxButton(m_pPanel, IDgraphMultiple,"Multiple",
-    wxDefaultPosition, wxDefaultSize,
-    wxBU_EXACTFIT
+  if (!bPreview)
+  {
+    // multiple button
+    pBtn = new wxButton(m_pPanel, IDgraphMultiple, "Multiple",
+      wxDefaultPosition, wxDefaultSize,
+      wxBU_EXACTFIT
     );
-  pBtn->SetToolTip(
-    "Create a separate plot for each channel\n"
-    "or hold down the shift key to remove\n"
-    "all plots except this"
+    pBtn->SetToolTip(
+      "Create a separate plot for each channel\n"
+      "or hold down the shift key to remove\n"
+      "all plots except this"
     );
-  pSizer->Add(pBtn,0,nSizerFlags,ID_BORDER);
+    pSizer->Add(pBtn, 0, nSizerFlags, ID_BORDER);
 
-  // append button
-  m_pButtonAppend = new wxButton(m_pPanel, IDgraphAppend,"Append",
-    wxDefaultPosition, wxDefaultSize,
-    wxBU_EXACTFIT
+    // append button
+    m_pButtonAppend = new wxButton(m_pPanel, IDgraphAppend, "Append",
+      wxDefaultPosition, wxDefaultSize,
+      wxBU_EXACTFIT
     );
-  m_pButtonAppend->SetToolTip("Add a new plot for a this sample");
-  pSizer->Add(m_pButtonAppend,0,nSizerFlags,ID_BORDER);
-
-  // big spacer
-  pSizer->AddStretchSpacer(1);
+    m_pButtonAppend->SetToolTip("Add a new plot for a this sample");
+    pSizer->Add(m_pButtonAppend, 0, nSizerFlags, ID_BORDER);
+    // big spacer
+    pSizer->AddStretchSpacer(1);
+  }
 
   //  param button
 
@@ -383,18 +426,20 @@ CPanelPlotToolbar::CPanelPlotToolbar(
   m_vShiftWindows.push_back(pBtn);
   //  delete button
 
-  m_pButtonDelete = new wxButton(m_pPanel,IDgraphRemove,"X",
-    wxDefaultPosition, wxDefaultSize,
-    wxBU_EXACTFIT
+  if (!bPreview)
+  {
+    m_pButtonDelete = new wxButton(m_pPanel, IDgraphRemove, "X",
+      wxDefaultPosition, wxDefaultSize,
+      wxBU_EXACTFIT
     );
-  m_pButtonDelete->SetToolTip(
-    "Remove this plot or hold down the\n"
-    "shift key to remove all plots\n"
-    "except this");
-  m_pButtonDelete->SetFont(fnt);
-  m_pButtonDelete->Enable(!bFirst);
-  pSizer->Add(m_pButtonDelete,0,nSizerFlags ^ wxRIGHT,ID_BORDER);
-
+    m_pButtonDelete->SetToolTip(
+      "Remove this plot or hold down the\n"
+      "shift key to remove all plots\n"
+      "except this");
+    m_pButtonDelete->SetFont(fnt);
+    m_pButtonDelete->Enable(!bFirst);
+    pSizer->Add(m_pButtonDelete, 0, nSizerFlags ^ wxRIGHT, ID_BORDER);
+  }
   m_pPanel->SetSizer(pSizer);
   pSizer = new wxBoxSizer(wxHORIZONTAL);
   pSizer->Add(m_pPanel,1,wxEXPAND,0);
@@ -505,7 +550,7 @@ bool CPanelPlotToolbar::XBPSValue()
 }
 bool CPanelPlotToolbar::SyncValue()
 {
-  return m_pButtonSync->GetValue();
+  return (m_pButtonSync == NULL) ? false : m_pButtonSync->GetValue();
 }
 bool CPanelPlotToolbar::MinRfuValue()
 {
@@ -529,7 +574,10 @@ bool CPanelPlotToolbar::ILSValue()
 }
 void CPanelPlotToolbar::SetSync(bool b)
 {
-  m_pButtonSync->SetValue(b);
+  if (m_pButtonSync != NULL)
+  {
+    m_pButtonSync->SetValue(b);
+  }
 }
 void CPanelPlotToolbar::ShowILS(bool b)
 {
@@ -599,19 +647,25 @@ bool CPanelPlotToolbar::IsLabelMenuEnabled()
 
 void CPanelPlotToolbar::EnableAppend(bool b)
 {
-  m_pButtonAppend->Enable(b);
+  if (m_pButtonAppend != NULL)
+  {
+    m_pButtonAppend->Enable(b);
+  }
 }
 bool CPanelPlotToolbar::IsAppendEnabled()
 {
-  return m_pButtonAppend->IsEnabled();
+  return (m_pButtonAppend == NULL) ? false : m_pButtonAppend->IsEnabled();
 }
 void CPanelPlotToolbar::EnableDelete(bool b)
 {
-  m_pButtonDelete->Enable(b);
+  if (m_pButtonDelete != NULL)
+  {
+    m_pButtonDelete->Enable(b);
+  }
 }
 bool CPanelPlotToolbar::IsDeleteEnabled()
 {
-  return m_pButtonDelete->IsEnabled();
+  return (m_pButtonDelete == NULL) ? false : m_pButtonDelete->IsEnabled();
 }
 
 void CPanelPlotToolbar::EnablePeakAreaLabel(bool b)

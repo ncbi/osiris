@@ -306,7 +306,7 @@ CMenuAnalysis::CMenuAnalysis(COARfile *pFile) :
     IDExportCMF,
     CMenuFileAnalysis::EXPORT_CMF,
     CMenuFileAnalysis::EXPORT_CMF_HELP);
-  m_pMenuItemToolbar = Append(IDmenuShowHideToolbar,CMDIFrame::HIDE_TOOLBAR);
+  m_pMenuItemToolbar = Append(IDmenuShowHideTableToolbar,CMDIFrame::HIDE_TOOLBAR);
 }
 
 CMenuAnalysis *CMenuAnalysis::Clone()

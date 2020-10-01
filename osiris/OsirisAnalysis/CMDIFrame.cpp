@@ -96,15 +96,21 @@ wxString CMDIFrame::GetFileName()
   wxString s;
   return s;
 }
-bool CMDIFrame::SetToolbarMenuLabel(bool bShow, bool bPlural)
+bool CMDIFrame::SetToolbarMenuLabel(bool bShow, bool bPlural, int nID)
 {
+  // set the toolbar label to show or hide for:
+  // analysis table and plot window
+  // this should not be used for the plot preview in the
+  // analysis window which is handled in CPanelPlot.cpp/h
   wxMenu *pMenu = GetMenu();
   bool bRtn = false;
   if(pMenu != NULL)
   {
-    wxMenuItem *pItem = pMenu->FindItem(IDmenuShowHideToolbar);
+    wxMenuItem *pItem = pMenu->FindItem(nID);
     if(pItem != NULL)
     {
+      // if not plural and nID is IDmenuShowHideTableToolbar
+      // this is for a plot preview toolbar
       const wxString *psLabel(NULL);
       switch((bPlural ? 1 : 0) + (bShow ? 2 : 0))
       {
@@ -449,6 +455,12 @@ const wxString CMDIFrame::HIDE_TOOLBARS("Hide Toolbars\tCtrl+T");
 const wxString CMDIFrame::SHOW_TOOLBARS("Show Toolbars\tCtrl+T");
 const wxString CMDIFrame::HIDE_TOOLBAR("Hide Toolbar\tCtrl+T");
 const wxString CMDIFrame::SHOW_TOOLBAR("Show Toolbar\tCtrl+T");
+const wxString CMDIFrame::HIDE_TOOLBAR_PREVIEW("Hide Toolbar");
+const wxString CMDIFrame::SHOW_TOOLBAR_PREVIEW("Show Toolbar");
+const wxString CMDIFrame::SHOW_PLOT_SCROLLBARS("Show Plot Scrollbars");
+const wxString CMDIFrame::HIDE_PLOT_SCROLLBARS("Hide Plot Scrollbars");
+
+
 
 BEGIN_EVENT_TABLE(CMDIFrame,CMDIFrameSuper)
 EVT_MENU(wxID_CLOSE,  CMDIFrame::OnDoClose)

@@ -447,16 +447,13 @@ public:
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
   void EditPeak(COARpeakAny *pPeak);
   wxRect2DDouble GetZoomLocus(const wxString &sLocus);
-
-  void ShowToolbar(bool bShow);
   CPlotData *GetPlotData()
   {
     return m_pData;
   }
-  void ShowScrollbars(bool bShow)
-  {
-    m_pPlotCtrl->ShowScrollbars(bShow);
-  }
+
+  void ShowToolbar(bool bShow);
+  void ShowScrollbars(bool bShow);
   bool AreScrollbarsShown()
   {
     return m_pPlotCtrl->AreScrollbarsShown();

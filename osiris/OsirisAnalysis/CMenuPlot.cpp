@@ -35,6 +35,7 @@
 #include "CPlotData.h"
 #include "Platform.h"
 #include "CGridLocusColumns.h"
+#include "CMDIFrame.h" // label for show/hide toolbar
 #include "nwx/nwxString.h"
 #include "nwx/nwxMenuItem.h"
 
@@ -102,14 +103,8 @@ CMenuPlot::CMenuPlot(
     m_pMenuChannels(NULL),
     m_pMenuArtifact(NULL),
     m_pMenuLabels(NULL),
-#if 0
-    m_nLastType(LABEL_NONE),
-#endif
     m_bXBPS(false),
     m_bPreview(true)
-#if 0
-    ,m_bUsedDefault(false)
-#endif
 {
   m_nOffset = ID_GET_PLOT_BASE(0);
   _Build(pData,pColors);
@@ -126,14 +121,8 @@ CMenuPlot::CMenuPlot(
   m_pMenuChannels(NULL),
   m_pMenuArtifact(NULL),
   m_pMenuLabels(NULL),
-#if 0
-  m_nLastType(LABEL_NONE),
-#endif
   m_bXBPS(false),
   m_bPreview(false)
-#if 0
-    ,m_bUsedDefault(false)
-#endif
 {
   _Build(pData,pColors);
 }
@@ -288,11 +277,44 @@ void CMenuPlot::_Build(CPlotData *pData, CKitColors *pColors)
   }
   else
   {
+    Append(IDmenuShowHideToolbar,
+      CMDIFrame::SHOW_TOOLBAR_PREVIEW);
+    Append(IDmenuShowHidePlotScrollbars,
+      CMDIFrame::SHOW_PLOT_SCROLLBARS);
     Append(IDMaxLadderLabels,
       LABEL_MAX_PEAK_LABELS,
       STATUS_MAX_PEAK_LABELS);
   }
 }
+void CMenuPlot::SetToolbarLabel(bool bShowing)
+{
+  if (m_bPreview)
+  {
+    wxMenuItem *pItem = FindItem(IDmenuShowHideToolbar);
+    if (pItem != NULL)
+    {
+      pItem->SetItemLabel(
+        bShowing 
+        ? CMDIFrame::HIDE_TOOLBAR_PREVIEW
+        : CMDIFrame::SHOW_TOOLBAR_PREVIEW);
+    }
+  }
+}
+void CMenuPlot::SetScrollbarLabel(bool bShowing)
+{
+  if (m_bPreview)
+  {
+    wxMenuItem *pItem = FindItem(IDmenuShowHidePlotScrollbars);
+    if (pItem != NULL)
+    {
+      pItem->SetItemLabel(
+        bShowing
+        ? CMDIFrame::HIDE_PLOT_SCROLLBARS
+        : CMDIFrame::SHOW_PLOT_SCROLLBARS);
+    }
+  }
+}
+
 const wxChar * const CMenuPlot::LABEL_MAX_PEAK_LABELS =
   wxS("Max. ladder peak labels...");
 const wxChar * const CMenuPlot::STATUS_MAX_PEAK_LABELS =
@@ -465,14 +487,6 @@ int CMenuPlot::ArtifactValue()
 {
   return m_pMenuArtifact->GetIntValue();
 }
-#if 0
-LABEL_PLOT_TYPE CMenuPlot::LabelType()
-{
-  LABEL_PLOT_TYPE n = 
-    (LABEL_PLOT_TYPE)m_pMenuLabels->GetCheckedOffset();
-  return n;
-}
-#endif
 size_t CMenuPlot::GetLabelTypes(vector<unsigned int> *pan)
 {
   size_t n = m_pMenuLabels->GetSelectionTypes(pan);
@@ -490,10 +504,6 @@ void CMenuPlot::SetLabelType(LABEL_PLOT_TYPE n,LABEL_PLOT_TYPE nDefault)
 {
   LABEL_PLOT_TYPE nType = CheckLabelType(n,nDefault);
   m_pMenuLabels->SelectByType(nType,true);
-#if 0
-  m_bUsedDefault = (nType != n);
-  m_nLastType = nType;
-#endif
 }
 void CMenuPlot::SetArtifactValue(int nLevel)
 {
