@@ -3164,6 +3164,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	list<InterchannelLinkage*>::iterator tempIt;
 
+	// Remove multisignals (craters and sigmoids) with no cross channel effect
+
 	for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
 
 		iChannel = *tempIt;
