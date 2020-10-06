@@ -51,6 +51,7 @@
 
 #include "nwx/nwxPlotDrawerLabel.h"
 #include "nwx/nwxPlotDrawerShade.h"
+#include "nwx/nwxRound.h"
 #include "nwx/nwxTimerReceiver.h"
 #include "nwx/stdb.h"
 #include <set>
@@ -124,9 +125,11 @@ public:
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
     m_PositionMouse(-1,-1),
     m_nDisableToolTip(0),
+    m_nTimerSinceSize(0),
     m_bNotRenderingToWindow(false),
     m_bClear(false),
-    m_bStopTimer(false),
+    m_bStopTooltipTimer(false),
+    m_bUpdatePosition(false),
     m_nTimeHere(0),
     m_pToolTip(NULL),
     m_pToolText(NULL),
@@ -148,9 +151,11 @@ public:
         wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL),
       m_PositionMouse(0,0),
       m_nDisableToolTip(0),
+      m_nTimerSinceSize(0),
       m_bNotRenderingToWindow(false),
       m_bClear(false),
-      m_bStopTimer(false),
+      m_bStopTooltipTimer(false),
+      m_bUpdatePosition(false),
       m_nTimeHere(0),
       m_pToolTip(NULL),
       m_pToolText(NULL),
@@ -224,15 +229,15 @@ public:
   }
   bool IsTimerRunning()
   {
-    return !m_bStopTimer;
+    return !m_bStopTooltipTimer;
   }
   void StartTimer()
   {
-    m_bStopTimer = false;
+    m_bStopTooltipTimer = false;
   }
   void StopTimer()
   {
-    m_bStopTimer = true;
+    m_bStopTooltipTimer = true;
   }
   void ShowScrollbars(bool b);
 
@@ -255,6 +260,65 @@ public:
   static const wxColor &GridColor()
   {
     return g_ColorGrid;
+  }
+  void _SetupShortLabel(const wxString &sLabel, const wxString &sShort, wxString *psSetup)
+  {
+    wxString s;
+    if (sShort.IsEmpty() && !sLabel.IsEmpty())
+    {
+      s = sLabel;
+      wxChar x[2] = { wxT(' '), wxT('(') };
+      size_t l;
+      for (int i = 0; i < 2; ++i)
+      {
+        l = s.Find(x[i]);
+        if (l != wxNOT_FOUND)
+        {
+          s = s.Mid(0, l);
+        }
+      }
+    }
+    else
+    {
+      s = sShort;
+    }
+    if (s != (*psSetup))
+    {
+      *psSetup = s;
+      m_sCoordLabel.Clear();
+    }
+  }
+  void SetXLabels(const wxString &sLabel, const wxString &sShort = wxEmptyString)
+  {
+    SetXAxisLabel(sLabel);
+    _SetupShortLabel(sLabel, sShort, &m_sXCoordLabel);
+  }
+  void SetYLabels(const wxString &sLabel, const wxString &sShort = wxEmptyString)
+  {
+    SetYAxisLabel(sLabel);
+    _SetupShortLabel(sLabel, sShort, &m_sYCoordLabel);
+  }
+  const wxString &GetXShortLabel()
+  {
+    return m_sXCoordLabel;
+  }
+  const wxString &GetYShortLabel()
+  {
+    return m_sYCoordLabel;
+  }
+  const wxString &GetCoordLabel()
+  {
+    if (m_sCoordLabel.IsEmpty() &&
+      (!m_sXCoordLabel.IsEmpty()) &&
+      (!m_sYCoordLabel.IsEmpty()))
+    {
+      m_sCoordLabel = wxT('(');
+      m_sCoordLabel.Append(GetXShortLabel());
+      m_sCoordLabel.Append(wxT(", "));
+      m_sCoordLabel.Append(GetYShortLabel());
+      m_sCoordLabel.Append(wxT(")="));
+    }
+    return m_sCoordLabel;
   }
   virtual void OnClickXLabel(const nwxPointLabel &x, const wxPoint &pt);
   virtual void OnClickLabel(const nwxPointLabel &x, const wxPoint &pt);
@@ -294,6 +358,7 @@ public:
   virtual void DrawAreaWindow( wxDC *dc, const wxRect& rect );
   virtual void DrawPlotCtrl( wxDC *dc );
   virtual void ProcessAreaEVT_MOUSE_EVENTS( wxMouseEvent &event );
+  virtual void OnSizeCallback(wxSizeEvent &);
   void DrawEntirePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bForcePrintFont = false);
   //void DrawXLabels(wxDC *pDC);
   //wxString GetToolTipText(const wxPoint &pos);
@@ -326,6 +391,9 @@ private:
 private:
   static const wxColor g_ColorGrid;
   static const unsigned int TIMER_COUNT;
+  bool _InAreaRect(const wxPoint &pt);
+  void _UpdateMousePosition();
+  void _ClearMousePosition();
   void _SetupCursor(const nwxPointLabel *pLabel);
   void _ClearToolTip();
   bool _OnMouseDown(wxMouseEvent &e); // called from nwxOnMouse
@@ -355,15 +423,20 @@ private:
 #ifdef __WXDEBUG__
   void _LogMouseUp(const wxPoint &pt,const nwxPointLabel *pLabel);
 #endif
+  wxString m_sXCoordLabel;
+  wxString m_sYCoordLabel;
+  wxString m_sCoordLabel;
   nwxPlotDrawerLabel m_Labels;
   nwxPlotDrawerXLabel m_XLabels;
   nwxPlotDrawerXShade m_Xshade;
   wxFont m_fontLabel;
   wxPoint m_PositionMouse;
   int m_nDisableToolTip;
+  int m_nTimerSinceSize;
   bool m_bNotRenderingToWindow;
   bool m_bClear;
-  bool m_bStopTimer;
+  bool m_bStopTooltipTimer;
+  bool m_bUpdatePosition;
   unsigned int m_nTimeHere;
   wxPanel *m_pToolTip;
   wxStaticText *m_pToolText;

@@ -2333,10 +2333,12 @@ void wxPlotCtrl::SetAreaMouseCursor(wxStockCursor cursorid)
         m_area->SetCursor(wxCursor(cursorid));
 }
 
-void wxPlotCtrl::OnSize( wxSizeEvent& )
+void wxPlotCtrl::OnSize( wxSizeEvent &e )
 {
     _DoSize();
+    OnSizeCallback(e);
 }
+void wxPlotCtrl::OnSizeCallback(wxSizeEvent &) { ; } // virtual function
 
 bool wxPlotCtrl::RenderScrollbars()
 {

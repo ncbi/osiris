@@ -157,11 +157,6 @@ void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
   {
       pdc->SetClippingRegion(nX,nY,nW,nH);
   }
-
-//  wxWindowDC wdc(this);
-//  m_XLabels.Draw(&wdc,true);
-//  m_Xshade.Draw(pdc,true);
-
 }
 
 void nwxPlotCtrl::DrawPlotCtrl(wxDC *dc)
@@ -262,6 +257,7 @@ void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
   else if(e.Leaving())
   {
     ClearToolTip();
+    _ClearMousePosition();
     m_pLastXLabel = NULL;
     m_pLastLabel = NULL;
   }
@@ -332,6 +328,7 @@ void nwxPlotCtrl::ProcessMousePosition(const wxPoint &pt)
 {
   if(pt != m_PositionMouse)
   {
+    m_bUpdatePosition = true;
     m_PositionMouse = pt;
     m_nTimeHere = 0;
     StartTimer();
@@ -351,10 +348,67 @@ void nwxPlotCtrl::_Init()
   m_bmClear = wxBitmap(clear15);
 
 }
+void nwxPlotCtrl::OnSizeCallback(wxSizeEvent &)
+{
+  m_nTimerSinceSize = 0;
+}
 
+void nwxPlotCtrl::_ClearMousePosition()
+{
+  wxClientDC dc(this);
+  int nTop = m_xLabelRect.GetTop();
+  int nHeight = GetSize().GetHeight() - nTop;
+  wxRect r(0, nTop, m_xLabelRect.GetLeft() - 2, nHeight);
+  dc.SetPen(*wxWHITE_PEN);
+  dc.SetBrush(*wxWHITE_BRUSH);
+  dc.DrawRectangle(r);
+}
+
+bool nwxPlotCtrl::_InAreaRect(const wxPoint &pt)
+{
+  return !(
+    (pt.x < 0) ||
+    (pt.y < 0) ||
+    (pt.x > m_areaRect.GetWidth()) ||
+    (pt.y > m_areaRect.GetHeight())
+        );
+}
+
+
+void nwxPlotCtrl::_UpdateMousePosition()
+{
+  int nWidth = GetSize().GetWidth();
+  if ((nWidth < 200) || (nWidth < (m_xLabelRect.GetWidth() * 5)))
+  {
+    ; // window too narrow, don't draw
+  }
+  else if (!_InAreaRect(m_PositionMouse))
+  {
+    _ClearMousePosition();
+  }
+  else
+  {
+    wxClientDC dc(this);
+    int nX = nwxRound::Round(GetPlotCoordFromClientX(m_PositionMouse.x));
+    int nY = nwxRound::Round(GetPlotCoordFromClientY(m_PositionMouse.y));
+    wxString s = this->GetCoordLabel();
+    s.Append(wxString::Format(wxT("(%d, %d)      "), nX,nY));
+    dc.SetFont(GetAxisLabelFont());
+    dc.SetTextForeground(GetAxisLabelColour());
+    dc.DestroyClippingRegion();
+    dc.SetBackgroundMode(wxBRUSHSTYLE_SOLID);
+    dc.DrawText(s, wxPoint(m_border, m_xLabelRect.GetTop()));
+  }
+}
 void nwxPlotCtrl::OnTimer(wxTimerEvent &)
 {
-  if (m_bStopTimer)
+  ++m_nTimerSinceSize;
+  if (m_bUpdatePosition && (m_nTimerSinceSize >= 4))
+  {
+    _UpdateMousePosition();
+    m_bUpdatePosition = false;
+  }
+  if (m_bStopTooltipTimer)
   {}  // do nothing
   else if(m_bClear || m_nDisableToolTip)
   {

@@ -295,8 +295,8 @@ void CPanelPlot::_BuildPanel(
   m_pSizer->Add(m_pPlotCtrl,1,wxEXPAND);
 
   m_pPlotCtrl->SetDrawSymbols(false);
-  m_pPlotCtrl->SetXAxisLabel(_GetXAxisLabel());
-  m_pPlotCtrl->SetYAxisLabel("RFU");
+  m_pPlotCtrl->SetXLabels(_GetXAxisLabel());
+  m_pPlotCtrl->SetYLabels("RFU");
   m_pPlotCtrl->SetShowXAxisLabel(true);
   m_pPlotCtrl->SetShowYAxisLabel(true);
   m_pPlotCtrl->SetMinExpValue(99999);
@@ -2211,7 +2211,7 @@ void CPanelPlot::RebuildCurves(bool bIgnoreViewRect)
   int j;
   m_nNoiseCurves = 0;
   wxRect2DDouble rect = GetViewRect();
-  m_pPlotCtrl->SetXAxisLabel(_GetXAxisLabel());
+  m_pPlotCtrl->SetXLabels(_GetXAxisLabel());
   _SetupGridColor();
   for(n = nChannelCount; n > 0; n--)
   {
