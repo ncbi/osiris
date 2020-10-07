@@ -976,7 +976,6 @@ void CFrameAnalysis::_SetupLocusPanel(COARsample *pSample, int nChannel, const w
     if(pSample->HasPeaks(nChannel, sLocusName, false))
     {
       m_pPanelInfo->Show(false);
-      wxClientDC dc(this);
       m_pGridLocus = new CGridLocusPeaks(
         pSample,nChannel,sLocusName,m_pPanelInfo,
         IDgridLocus,true,GetSelectedTime());
