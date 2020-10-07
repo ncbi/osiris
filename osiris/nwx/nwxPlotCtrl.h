@@ -132,6 +132,7 @@ public:
     m_bUpdatePosition(false),
     m_nTimeHere(0),
     m_pToolTip(NULL),
+    m_pMousePositionText(NULL),
     m_pToolText(NULL),
     m_pLastXLabel(NULL),
     m_pLastLabel(NULL),
@@ -158,6 +159,7 @@ public:
       m_bUpdatePosition(false),
       m_nTimeHere(0),
       m_pToolTip(NULL),
+      m_pMousePositionText(NULL),
       m_pToolText(NULL),
       m_pLastXLabel(NULL),
       m_pLastLabel(NULL),
@@ -341,7 +343,6 @@ public:
     m_nDisableToolTip--;
     if(!m_nDisableToolTip) { StartTimer(); }
   }
-
   void OnViewChanged(wxPlotCtrlEvent &e);
   void nwxOnMouse(wxMouseEvent &event);
   void DrawBins(wxDC *dc);
@@ -393,6 +394,7 @@ private:
   static const unsigned int TIMER_COUNT;
   bool _InAreaRect(const wxPoint &pt);
   void _UpdateMousePosition();
+  wxStaticText *_GetMousePositionText();
   void _ClearMousePosition();
   void _SetupCursor(const nwxPointLabel *pLabel);
   void _ClearToolTip();
@@ -439,6 +441,7 @@ private:
   bool m_bUpdatePosition;
   unsigned int m_nTimeHere;
   wxPanel *m_pToolTip;
+  wxStaticText *m_pMousePositionText;
   wxStaticText *m_pToolText;
   const nwxPointLabel *m_pLastXLabel;
   const nwxPointLabel *m_pLastLabel;

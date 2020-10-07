@@ -353,8 +353,27 @@ void nwxPlotCtrl::OnSizeCallback(wxSizeEvent &)
   m_nTimerSinceSize = 0;
 }
 
+wxStaticText *nwxPlotCtrl::_GetMousePositionText()
+{
+  if (m_pMousePositionText == NULL)
+  {
+    m_pMousePositionText = new wxStaticText(
+      this, wxID_ANY, wxEmptyString,
+      wxPoint(m_border, m_xLabelRect.GetTop()));
+    m_pMousePositionText->SetFont(GetAxisLabelFont());
+    m_pMousePositionText->SetForegroundColour(GetAxisLabelColour());
+    m_pMousePositionText->SetBackgroundColour(GetBackgroundColour());
+  }
+  return m_pMousePositionText;
+}
+
 void nwxPlotCtrl::_ClearMousePosition()
 {
+  if (m_pMousePositionText != NULL)
+  {
+    m_pMousePositionText->Show(false);
+  }
+  /*
   wxClientDC dc(this);
   int nTop = m_xLabelRect.GetTop();
   int nHeight = GetSize().GetHeight() - nTop;
@@ -362,6 +381,7 @@ void nwxPlotCtrl::_ClearMousePosition()
   dc.SetPen(*wxWHITE_PEN);
   dc.SetBrush(*wxWHITE_BRUSH);
   dc.DrawRectangle(r);
+  */
 }
 
 bool nwxPlotCtrl::_InAreaRect(const wxPoint &pt)
@@ -377,27 +397,36 @@ bool nwxPlotCtrl::_InAreaRect(const wxPoint &pt)
 
 void nwxPlotCtrl::_UpdateMousePosition()
 {
-  int nWidth = GetSize().GetWidth();
-  if ((nWidth < 200) || (nWidth < (m_xLabelRect.GetWidth() * 5)))
-  {
-    ; // window too narrow, don't draw
-  }
-  else if (!_InAreaRect(m_PositionMouse))
+  if (!_InAreaRect(m_PositionMouse))
   {
     _ClearMousePosition();
   }
   else
   {
-    wxClientDC dc(this);
+    wxString s = GetCoordLabel();
     int nX = nwxRound::Round(GetPlotCoordFromClientX(m_PositionMouse.x));
     int nY = nwxRound::Round(GetPlotCoordFromClientY(m_PositionMouse.y));
-    wxString s = this->GetCoordLabel();
-    s.Append(wxString::Format(wxT("(%d, %d)      "), nX,nY));
+    s.Append(wxString::Format(wxT("(%d, %d)"), nX, nY));
+    wxStaticText *pText = _GetMousePositionText();
+    wxSize sz = pText->GetTextExtent(s);
+    if ( (sz.GetWidth() + pText->GetPosition().x) >= m_xLabelRect.GetLeft() )
+    {
+      _ClearMousePosition();
+    }
+    else
+    {
+      pText->SetLabel(s);
+      pText->Show(true);
+      pText->Refresh();
+    }
+    /*
+    wxClientDC dc(this);
     dc.SetFont(GetAxisLabelFont());
     dc.SetTextForeground(GetAxisLabelColour());
     dc.DestroyClippingRegion();
     dc.SetBackgroundMode(wxBRUSHSTYLE_SOLID);
     dc.DrawText(s, wxPoint(m_border, m_xLabelRect.GetTop()));
+    */
   }
 }
 void nwxPlotCtrl::OnTimer(wxTimerEvent &)
