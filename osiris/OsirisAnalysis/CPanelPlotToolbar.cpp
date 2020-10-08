@@ -386,7 +386,7 @@ void CPanelPlotToolbar::_Build(
     );
   pBtn->SetToolTip(
     "Reset axes to view all alleleic data\n"
-      "Hold down the shift key to include primer peaks");
+      "Hold down the shift key to include entire plot");
   pSizer->Add(pBtn,0,nSizerFlags,ID_BORDER);
   m_vShiftWindows.push_back(pBtn);
 

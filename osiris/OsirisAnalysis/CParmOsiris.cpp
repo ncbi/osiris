@@ -178,6 +178,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_nPrintXscaleMax);
   CP(m_nPrintXscaleMinBPS);
   CP(m_nPrintXscaleMaxBPS);
+  CP(m_bPrintXscaleRightEnd);
   CP(m_nPrintYscale);
   CP(m_nPrintYscaleMin);
   CP(m_nPrintYscaleMax);
@@ -354,6 +355,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintXscaleMax)
   CP(m_nPrintXscaleMinBPS)
   CP(m_nPrintXscaleMaxBPS)
+  CP(m_bPrintXscaleRightEnd)
   CP(m_nPrintYscale)
   CP(m_nPrintYscaleMin)
   CP(m_nPrintYscaleMax)
@@ -366,9 +368,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintChannelsLadders)
   CP(m_nPrintChannelsNegCtrl)
   CP(m_bPrintChannelsOmitILS)
-  CP(m_bPrintSamplesLadders)
 
   if(!bRtn) {}
+  CP(m_bPrintSamplesLadders)
   CP(m_bPrintSamplesPosCtrl)
   CP(m_bPrintSamplesNegCtrl)
   CP(m_bPrintSamplesDisabled)
@@ -394,9 +396,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 
   //  XSLT saved parameter info
 
-  CP(m_sLastXSLInputFileDir)
 
   if(!bRtn) {}
+  CP(m_sLastXSLInputFileDir)
   CP(m_bPrivacySeen)
 
 
@@ -532,6 +534,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterInt("PrintXscaleMax", &m_nPrintXscaleMax);
   RegisterInt("PrintXscaleMinBPS", &m_nPrintXscaleMinBPS);
   RegisterInt("PrintXscaleMaxBPS", &m_nPrintXscaleMaxBPS);
+  RegisterBool("PrintXscaleRightEnd", &m_bPrintXscaleRightEnd);
   RegisterInt("PrintYscale", &m_nPrintYscale);
   RegisterInt("PrintYscaleMin", &m_nPrintYscaleMin);
   RegisterInt("PrintYscaleMax", &m_nPrintYscaleMax);
@@ -713,6 +716,7 @@ void CParmOsiris::SetDefaults()
   m_nPrintXscaleMax = 20000;
   m_nPrintXscaleMinBPS = 0;
   m_nPrintXscaleMaxBPS = 600;
+  m_bPrintXscaleRightEnd = false;
   m_nPrintYscale = 0;
   m_nPrintYscaleMin = -200;
   m_nPrintYscaleMax = 6000;

@@ -73,7 +73,7 @@
 #define S_SECTION_PAGE_HEADING "Page heading"
 #define S_SECTION_CHANNELS_PER_PAGE "Channels per page"
 #define S_SECTION_X_UNITS "X-axis units"
-#define S_SECTION_SCALE_X_AXIS "Scale X-axis - Primer Peaks"
+#define S_SECTION_SCALE_X_AXIS "Scale X-axis"
 #define S_SECTION_SCALE_Y_AXIS "Scale Y-axis"
 
 #define S_ANALYZED "Analyzed"
@@ -100,8 +100,8 @@
 #define S_CRITICAL "Critical"
 #define S_FILE_NAME "File name"
 #define S_SAMPLE_NAME "Sample name"
-#define S_EXCLUDE_PRIMER_PEAKS "Exclude"
-#define S_INCLUDE_PRIMER_PEAKS "Include"
+#define S_EXCLUDE_PRIMER_PEAKS "Exclude primer peaks"
+#define S_INCLUDE_PRIMER_PEAKS "Include primer peaks"
 #define S_NEG_CTRL_PRIMER_PEAKS "Include neg. control only"
 #define S_SPECIFY "Specify..."
 #define S_SCALE_CHANNEL "Scale each channel"
@@ -113,6 +113,7 @@
 #define S_PAGE_NOTES "Notes"
 #define S_SAMPLES "Samples"
 #define S_OMIT_ILS "Omit ILS channel"
+#define S_INCLUDE_RIGHT_END "Include right end of data"
 #define S_TO " to "
 #define S_RANGE_SECONDS "seconds"
 #define S_RANGE_BPS "bps"
@@ -327,7 +328,7 @@ void CDialogPrintSettings::_Build()
   m_pTextXscaleMax = _CreateNumericTextCtrl(this, -999, 99999, __OUT_OF_RANGE);
   m_pTextXscaleMin->Enable(false);
   m_pTextXscaleMax->Enable(false);
-
+  m_pCheckXRightEnd = new wxCheckBox(this, wxID_ANY, wxT(S_INCLUDE_RIGHT_END));
   // scale Y-Axis
 
   m_pRadioYscaleChannel = _CreateRadioButton(wxT(S_SCALE_CHANNEL), PRINT_Y_SCALE_CHANNEL, true, IDprintYscaleSpecify);
@@ -461,6 +462,7 @@ void CDialogPrintSettings::_Build()
   pSizerItems->Add(m_pRadioXscaleIncludePrimerNegCtrl, ITEM_ARGS);
   pSizerItems->Add(m_pRadioXscaleSpecify, ITEM_ARGS);
   pSizerItems->Add(pSizerTemp, ITEM_ARGS);
+  pSizerItems->Add(m_pCheckXRightEnd, ITEM_ARGS);
 
   // Scale Y-Axis
   pSizerTemp = new wxBoxSizer(wxHORIZONTAL);
@@ -541,6 +543,7 @@ void CDialogPrintSettings::_EnableXScaleUser(bool bEnable)
     m_pLabelXscaleUnits->Enable(bEnable);
     m_pLabelXscaleUnitsTo->Enable(bEnable);
     _SetXScaleUserValues();
+    m_pCheckXRightEnd->Enable(!bEnable); // opposite of user defined x
   }
 }
 void CDialogPrintSettings::_SetupLadderLabels()
@@ -641,6 +644,7 @@ bool CDialogPrintSettings::TransferDataToWindow()
   m_nXscaleMax = m_pParms->GetPrintXscaleMax();
   m_nXscaleMinBPS = m_pParms->GetPrintXscaleMinBPS();
   m_nXscaleMaxBPS = m_pParms->GetPrintXscaleMaxBPS();
+  m_pCheckXRightEnd->SetValue(m_pParms->GetPrintXscaleRightEnd());
   _EnableXScaleUser(nTemp == PRINT_X_SCALE_USER);
 
   // Y Axis Scale
@@ -709,6 +713,7 @@ bool CDialogPrintSettings::TransferDataFromWindow()
   m_pParms->SetPrintXscale(nValue);
   if (nValue != PRINT_X_SCALE_USER)
   {
+    m_pParms->SetPrintXscaleRightEnd(m_pCheckXRightEnd->GetValue());
   }
   else if (bXBPS)
   {
