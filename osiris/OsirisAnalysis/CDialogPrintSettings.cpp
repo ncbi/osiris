@@ -102,7 +102,7 @@
 #define S_SAMPLE_NAME "Sample name"
 #define S_EXCLUDE_PRIMER_PEAKS "Exclude primer peaks"
 #define S_INCLUDE_PRIMER_PEAKS "Include primer peaks"
-#define S_NEG_CTRL_PRIMER_PEAKS "Include neg. control only"
+#define S_NEG_CTRL_PRIMER_PEAKS "Neg. control primers only"
 #define S_SPECIFY "Specify..."
 #define S_SCALE_CHANNEL "Scale each channel"
 #define S_SCALE_SAMPLE "Scale to entire sample"
