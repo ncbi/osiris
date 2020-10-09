@@ -1012,7 +1012,7 @@
       <xsl:variable name="dye" select="@dye"/>
       <xsl:variable name="LocusName" select="string(@name)"/>
       <xsl:value-of select="concat($SampleFile,$fileExt,$TAB,$RunName,$TAB,$LocusName,$TAB,$dye)"/>
-      <xsl:for-each select="$sample/Locus[string(./LocusName) = $LocusName]/Allele">
+      <xsl:for-each select="$sample/Locus[string(./LocusName) = $LocusName]/Allele[os:isAlleleEnabled(.)]">
         <xsl:variable name="AlleleName">
           <xsl:choose>
             <xsl:when test="OffLadder = 'true'">
