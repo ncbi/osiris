@@ -644,10 +644,19 @@ wxPen CGridAnalysis::GetColGridLinePen(int nCol)
 }
 wxPen CGridAnalysis::GetRowGridLinePen(int nRow)
 {
-  nRow++;
-  if(nRow == GetNumberRows())
+  // get pen for line below row
+  int nRow1 = nRow + 1;
+  if(nRow1 == GetNumberRows())
   {
     return *wxBLACK_PEN;
+  }
+  int nCursorRow = GetGridCursorRow();
+  if ((nCursorRow == nRow) ||    // below cursor row
+    (nCursorRow == nRow1))    // above cursor row
+  {
+    wxPen pen(*wxBLACK_PEN);
+    pen.SetWidth(2);
+    return pen;
   }
   return GetDefaultGridLinePen();
 }
