@@ -438,11 +438,13 @@ public:
   }
   void SyncState(CPanelPlot *p, int nID);
   void RebuildCurves(bool bIgnoreViewRect = false); 
-  wxRect2DDouble GetZoomOutRect(int nPrimerPeaks, int nLabelHeight = 0, double dMinRFU = -1.0);
+  wxRect2DDouble GetZoomOutRect(
+    int nPrimerPeaks, int nLabelHeight = 0,
+    double dMinRFU = -1.0, bool bIncludeRightEnd = false);
   wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0)
   {
     return GetZoomOutRect(
-      (bAll ? ZOOM_PRIMER_PEAK_XY : ZOOM_PRIMER_PEAK_NONE), nLabelHeight);
+      (bAll ? ZOOM_PRIMER_PEAK_XY : ZOOM_PRIMER_PEAK_NONE), nLabelHeight, -1.0, bAll);
   }
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
   void EditPeak(COARpeakAny *pPeak);

@@ -216,6 +216,7 @@ private:
   wxRadioButton *m_pRadioXscaleIncludePrimer;
   wxRadioButton *m_pRadioXscaleIncludePrimerNegCtrl;
   wxRadioButton *m_pRadioXscaleSpecify;
+  wxCheckBox *m_pCheckXRightEnd;
   nwxTextCtrlInteger *m_pTextXscaleMin;
   nwxTextCtrlInteger *m_pTextXscaleMax;
   wxStaticText *m_pLabelXscaleUnits;

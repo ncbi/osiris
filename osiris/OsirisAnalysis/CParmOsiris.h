@@ -480,6 +480,10 @@ public:
   {
     return m_nPrintXscaleMaxBPS;
   }
+  bool GetPrintXscaleRightEnd() const
+  {
+    return m_bPrintXscaleRightEnd;
+  }
   int GetPrintYscale() const
   {
     return m_nPrintYscale;
@@ -1095,6 +1099,10 @@ public:
   {
     __SET_VALUE(m_nPrintXscaleMaxBPS,n);
   }
+  void SetPrintXscaleRightEnd(bool b)
+  {
+    __SET_VALUE(m_bPrintXscaleRightEnd,b);
+  }
   void SetPrintYscale(int n)
   {
     __SET_VALUE(m_nPrintYscale,n);
@@ -1484,6 +1492,7 @@ protected:
   int m_nPrintXscaleMax;
   int m_nPrintXscaleMinBPS;
   int m_nPrintXscaleMaxBPS;
+  bool m_bPrintXscaleRightEnd;
   int m_nPrintYscale;
   int m_nPrintYscaleMin;
   int m_nPrintYscaleMax;

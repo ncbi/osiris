@@ -178,6 +178,7 @@ my $VARLIST =
   ["m_nPrintXscaleMax", "int", "20000"],
   ["m_nPrintXscaleMinBPS", "int", "0"],
   ["m_nPrintXscaleMaxBPS", "int", "600"],
+  ["m_bPrintXscaleRightEnd", "bool"],
 
   ["m_nPrintYscale", "int", "0"],
   # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
