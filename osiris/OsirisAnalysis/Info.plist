@@ -27,9 +27,9 @@
   <key>CFBundleShortVersionString</key>
   <string>2.15</string>
   <key>CFBundleGetInfoString</key>
-  <string>OSIRIS version 2.15 Beta 6</string>
+  <string>OSIRIS version 2.15 Beta 7</string>
   <key>CFBundleLongVersionString</key>
-  <string>OSIRIS version 2.15 Beta 6</string>
+  <string>OSIRIS version 2.15 Beta 7</string>
   <key>CFBundleDocumentTypes</key>
   <array>
     <dict>

@@ -952,6 +952,7 @@ public:
     }
   }
 protected:
+  virtual void OnSizeCallback(wxSizeEvent&);
   void OnSize( wxSizeEvent& event );
 
     wxArrayPlotCurve  m_curves;         // all the curves
