@@ -456,6 +456,7 @@ private:
   int m_nEntireRowSelected;
   int m_nNoTimer;
   int m_nFileNameLabelTimer;
+  int m_nPreviewDelay;
   bool m_bFileError;
 
 
