@@ -1385,7 +1385,14 @@ void CFrameAnalysis::OnHistoryUpdate(wxCommandEvent &e)
         m_pMenu->SelectTime(pPanel->GetSelectedTime());
       }
     }
-    RepaintData();
+    RepaintGridXML();
+    ShowStatusText(true);
+    _UpdateHistoryButtons();
+    if ( (m_pPanelPlotPreview != NULL) &&
+      m_pPanelPlotPreview->IsShown())
+    {
+      m_pPanelPlotPreview->RebuildLabels();
+    }
   }
 }
 
@@ -2659,6 +2666,14 @@ void CFrameAnalysis::_OnRestoreScroll(wxCommandEvent &)
 {
     m_pGrid->RestoreScrollPosition();
 }
+void CFrameAnalysis::_UpdateHistoryButtons()
+{
+  m_pButtonHistory->EnablePrevNextButtons();
+  if (m_pPanelPlotPreview != NULL)
+  {
+    m_pPanelPlotPreview->UpdateHistoryButtons();
+  }
+}
 void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
 {
   // update all data in table and alert window
@@ -2677,7 +2692,7 @@ void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
       CheckSelectionXML(true);
     }
     SetupTitle();
-    m_pButtonHistory->EnablePrevNextButtons();
+    _UpdateHistoryButtons();
   }
 }
 

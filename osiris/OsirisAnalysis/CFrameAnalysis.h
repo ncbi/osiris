@@ -250,6 +250,7 @@ private:
   {
     if(m_pMenuBar != NULL) {m_pMenuBar->SetPlotMenu(p);}
   }
+  void _UpdateHistoryButtons();
   bool _CheckPromptNewer();
   void _EnablePreview();
   void _DisablePreview();

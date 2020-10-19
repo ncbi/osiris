@@ -94,6 +94,7 @@ public:
   bool AreScrollbarsShown();
   void ShowToolbar(bool bShow);
   void ShowScrollbars(bool bShow);
+  void UpdateHistoryButtons();
   void ToggleToolbar()
   {
     ShowToolbar(!IsToolbarShown());
@@ -102,6 +103,7 @@ public:
   {
     ShowScrollbars(!AreScrollbarsShown());
   }
+  void RebuildLabels();
 
 private:
   void _Cleanup(size_t n = 0);
