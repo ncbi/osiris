@@ -250,6 +250,7 @@ private:
   {
     if(m_pMenuBar != NULL) {m_pMenuBar->SetPlotMenu(p);}
   }
+  void _UpdateHistoryButtons();
   bool _CheckPromptNewer();
   void _EnablePreview();
   void _DisablePreview();
@@ -455,6 +456,7 @@ private:
   int m_nEntireRowSelected;
   int m_nNoTimer;
   int m_nFileNameLabelTimer;
+  int m_nPreviewDelay;
   bool m_bFileError;
 
 

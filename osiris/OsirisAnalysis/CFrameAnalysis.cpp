@@ -153,6 +153,7 @@ CFrameAnalysis::CFrameAnalysis(
   m_pCMF(NULL),
   m_nNoTimer(0),
   m_nFileNameLabelTimer(0),
+  m_nPreviewDelay(0),
   m_bFileError(false)
 {
   if(LoadFile(sFileName))
@@ -186,6 +187,7 @@ CFrameAnalysis::CFrameAnalysis(
   m_pCMF(NULL),
   m_nNoTimer(0),
   m_nFileNameLabelTimer(0),
+  m_nPreviewDelay(0),
   m_bFileError(false)
 {
   if(pFile->GetSampleCount() < 1)
@@ -430,14 +432,9 @@ void CFrameAnalysis::_Build()
 
 
   DisplayFile();
-  if(bShowPreview)
-  {
-    // information is obtained from the grid in order to draw the preview
-    // send an event to draw the preview so that the grid will be ready 
-    // before the event is handled
-    wxCommandEvent e(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,IDmenuTogglePreview);
-    GetEventHandler()->AddPendingEvent(e);
-  }
+  COsirisIcon x;
+  SetIcon(x);
+  RE_RENDER;
   if(bControlAtTop)
   {
     // workaround for problem setting it before the window is displayed
@@ -451,9 +448,14 @@ void CFrameAnalysis::_Build()
     e.SetInt(LOCUS_HEIGHT);
     GetEventHandler()->AddPendingEvent(e);
   }
-  COsirisIcon x;
-  SetIcon(x);
-  RE_RENDER;
+  if (bShowPreview)
+  {
+    // information is obtained from the grid in order to draw the preview
+    // send an event to draw the preview so that the grid will be ready 
+    // before the event is handled
+    wxCommandEvent e(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, IDmenuTogglePreview);
+    GetEventHandler()->AddPendingEvent(e);
+  }
   FUNC_EXIT("CFrameAnalysis::_Build()")
 }
 #undef LOCUS_WIDTH
@@ -844,6 +846,15 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
         m_pLabelFile->SetInsertionPoint(m_pLabelFile->GetValue().Len());
       }
     }
+    if ( m_nPreviewDelay &&
+        (m_pPanelPlotPreview->GetSize().GetHeight() > 0) )
+    {
+      m_nPreviewDelay--;
+      if (!m_nPreviewDelay)
+      {
+        _UpdatePreview();
+      }
+    }
   }
 }
 void CFrameAnalysis::CheckSelectionXML(bool bForceUpdate)
@@ -869,7 +880,10 @@ void CFrameAnalysis::CheckSelectionXML(bool bForceUpdate)
     ShowStatusText();
     bEdit = (pSample != NULL) && pSample->IsEnabled(); // && !_IsControlColumn(nCol);
     _UpdateMenu();
-    _UpdatePreview();
+    if (!m_nPreviewDelay)
+    {
+      _UpdatePreview();
+    }
     UpdateStatusBar();
     m_pButtonEdit->Enable(bEdit);
     bSelection = false; // force SelectBlock() below
@@ -1385,7 +1399,14 @@ void CFrameAnalysis::OnHistoryUpdate(wxCommandEvent &e)
         m_pMenu->SelectTime(pPanel->GetSelectedTime());
       }
     }
-    RepaintData();
+    RepaintGridXML();
+    ShowStatusText(true);
+    _UpdateHistoryButtons();
+    if ( (m_pPanelPlotPreview != NULL) &&
+      m_pPanelPlotPreview->IsShown())
+    {
+      m_pPanelPlotPreview->RebuildLabels();
+    }
   }
 }
 
@@ -1870,14 +1891,15 @@ void CFrameAnalysis::_ShowPreview()
         mainApp::GetKitColors(),
         m_pMenu->GetMenuHistoryPopup(),
         6);
+      m_nPreviewDelay = 2;
     }
 
     m_pSplitterTop->SplitHorizontally(
         m_pPanelGrid,m_pPanelPlotPreview);
     m_pSplitterTop->SetMinimumPaneSize(1);
     // bUpdate is false when this is called from _Build()
-    _UpdatePreview();
     _LayoutAll();
+    _UpdatePreview();
   }
 }
 void CFrameAnalysis::OnTogglePreview(wxCommandEvent &)
@@ -1931,9 +1953,10 @@ void CFrameAnalysis::_UpdatePreviewLabelType(int n)
     }
   }
 }
+
 void CFrameAnalysis::_UpdatePreview()
 {
-  if(m_pSplitterTop->IsSplit())
+  if (m_pSplitterTop->IsSplit())
   {
     int nRow = m_pGrid->GetGridCursorRow();
     wxString sFileName = _GetGraphicFileName(nRow,false);
@@ -2659,6 +2682,14 @@ void CFrameAnalysis::_OnRestoreScroll(wxCommandEvent &)
 {
     m_pGrid->RestoreScrollPosition();
 }
+void CFrameAnalysis::_UpdateHistoryButtons()
+{
+  m_pButtonHistory->EnablePrevNextButtons();
+  if (m_pPanelPlotPreview != NULL)
+  {
+    m_pPanelPlotPreview->UpdateHistoryButtons();
+  }
+}
 void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
 {
   // update all data in table and alert window
@@ -2677,7 +2708,7 @@ void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
       CheckSelectionXML(true);
     }
     SetupTitle();
-    m_pButtonHistory->EnablePrevNextButtons();
+    _UpdateHistoryButtons();
   }
 }
 

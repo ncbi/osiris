@@ -388,6 +388,28 @@ void CPanelPlotPreview::ShowScrollbars(bool bShow)
   }
   CParmOsiris::GetGlobal()->SetHidePreviewScrollbar(!bShow);
 }
+void CPanelPlotPreview::RebuildLabels()
+{
+  CPanelPlot *pPlot = _FindCurrent();
+  if (pPlot != NULL)
+  {
+    pPlot->RebuildLabels(true);
+  }
+}
+void CPanelPlotPreview::UpdateHistoryButtons()
+{
+  list<CPanelPlot *>::iterator itr;
+  for (itr = m_listPlots.begin();
+    itr != m_listPlots.end();
+    ++itr)
+  {
+    CPanelPlotToolbar *pToolbar = (*itr)->GetToolbar();
+    if (pToolbar != NULL)
+    {
+      pToolbar->UpdateHistoryButtons();
+    }
+  }
+}
 
 CPanelPlot *CPanelPlotPreview::_Setup(const wxString &sFileName,bool bReload)
 {

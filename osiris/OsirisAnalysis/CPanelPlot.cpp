@@ -1393,7 +1393,7 @@ void CPanelPlot::RebuildLabels(bool bRedraw)
   if(bRedraw)
   {
     Refresh();
-    //m_pPlotCtrl->Redraw(wxPLOTCTRL_REDRAW_PLOT);
+    m_pPlotCtrl->Redraw(wxPLOTCTRL_REDRAW_PLOT);
   }
 }
 

@@ -355,14 +355,18 @@ void nwxPlotCtrl::OnSizeCallback(wxSizeEvent &)
 
 wxStaticText *nwxPlotCtrl::_GetMousePositionText()
 {
+  wxPoint pos(m_border, m_xLabelRect.GetTop());
   if (m_pMousePositionText == NULL)
   {
     m_pMousePositionText = new wxStaticText(
-      this, wxID_ANY, wxEmptyString,
-      wxPoint(m_border, m_xLabelRect.GetTop()));
+      this, wxID_ANY, wxEmptyString, pos);
     m_pMousePositionText->SetFont(GetAxisLabelFont());
     m_pMousePositionText->SetForegroundColour(GetAxisLabelColour());
     m_pMousePositionText->SetBackgroundColour(GetBackgroundColour());
+  }
+  else
+  {
+    m_pMousePositionText->SetPosition(pos);
   }
   return m_pMousePositionText;
 }
