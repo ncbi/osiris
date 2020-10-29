@@ -111,7 +111,12 @@ public:
   }
   void SetXBPSValue(bool b)
   {
-    m_bXBPS = b && m_pData->CanSetBPS();
+    bool bTmp = b && m_pData->CanSetBPS();
+    if (bTmp != m_bXBPS)
+    {
+      m_bXBPS = bTmp;
+      _CleanupBins();
+    }
   }
 
   virtual bool Show(bool show = true);
@@ -280,6 +285,7 @@ private:
   void _SetupTitle();
   void _RebuildMenu();
   void _ScrollPlot();
+  void _CleanupBins();
 
   void _CheckRebuildMenu()
   {

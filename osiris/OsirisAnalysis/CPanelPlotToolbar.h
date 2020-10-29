@@ -298,6 +298,7 @@ private:
   typedef std::map<wxObject *, int> BTN_TO_MENU_ID;
   BTN_TO_MENU_ID m_mapButtonToMenuID;
   int m_nChannelCount;
+  bool m_bXBPS;
 };
 
 #endif

@@ -140,6 +140,77 @@ bool CPlotCtrl::SetViewRect(
   return bRtn;
 }
 
+
+
+
+void CPanelPlotToolbarSaveState::Setup(CPanelPlot *pWin, bool bRestoreCurrent)
+{
+  if (bRestoreCurrent)
+  {
+    RestoreState(true);
+  }
+  if (pWin != NULL)
+  {
+    m_pToolbar = pWin->GetToolbar();
+  }
+  else
+  {
+    m_pToolbar = NULL;
+  }
+  if (m_pToolbar != NULL)
+  {
+    int nY;
+    m_pWin = pWin;
+    m_pToolbar->GetPosition(&m_nX, &nY);
+    m_bCanShiftLeft = m_pToolbar->CanShiftLeft();
+    m_bCanShiftRight = m_pToolbar->CanShiftRight();
+  }
+  else
+  {
+    m_pWin = NULL;
+  }
+}
+
+CPanelPlotToolbarSaveState::~CPanelPlotToolbarSaveState()
+{
+  RestoreState();
+}
+CPanelPlot *CPanelPlotToolbarSaveState::RestoreState(bool bRemove)
+{
+  CPanelPlot *pRtn = m_pWin;
+  if (m_pToolbar == NULL)
+  {
+  } // done
+  else if (!m_bCanShiftLeft)
+  {
+    m_pToolbar->ShiftLeft(true);
+  }
+  else if (!m_bCanShiftRight)
+  {
+    m_pToolbar->ShiftRight(true);
+  }
+  else
+  {
+    wxSize szV = m_pToolbar->GetVirtualSize();
+    wxSize szC = m_pToolbar->GetClientSize();
+    int nMinX = szC.GetWidth() - szV.GetWidth();
+    if (m_nX < nMinX)
+    {
+      m_nX = nMinX;
+    }
+    m_pToolbar->Move(m_nX, 0);
+  }
+  if (bRemove)
+  {
+    m_pToolbar = NULL;
+    m_pWin = NULL;
+  }
+  return pRtn;
+}
+
+
+
+
 const int CPanelPlot::ALLELE_SORT = 1000;
 const int CPanelPlot::ARTIFACT_SORT = 1;
 const int CPanelPlot::MENU_NUMBER_ANALYSIS_PRINT = 1;
@@ -319,7 +390,7 @@ void CPanelPlot::_CleanupLadderPeakSet()
 {
   vectorptr<CLadderPeakSet>::cleanup(&m_vpLadderPeakSet);
 }
-void CPanelPlot::_CleanupBins()
+void CPanelPlot::CleanupBins()
 {
   vectorptr<nwxPlotBinSet>::cleanup(&m_vpBinsByChannel);
 }
@@ -330,7 +401,7 @@ CPanelPlot::~CPanelPlot()
   mapptr<int,wxPlotData>::cleanup(&m_mapPlotData);
   vectorptr<wxPlotData>::cleanup(&m_vILS);
   vectorptr<wxPlotData>::cleanup(&m_vILS_XBPS);
-  _CleanupBins();
+  CleanupBins();
   _CleanupLadderPeakSet();
   /*
     // EXT TIMER
@@ -2583,13 +2654,14 @@ bool CPanelPlot::MenuEvent(wxCommandEvent &e)
         m_pMenu->SetStateFromEvent(e);
       }
       break;
+    case IDmenuPlotXBPS:
+      CleanupBins(); // bin coordinates have changed, so rebuild if needed
     case IDmenuPlotDataAnalyzed:
     case IDmenuPlotDataRaw:
     case IDmenuPlotDataLadder:
     case IDmenuPlotDataBaseline:
     case IDmenuPlotILS:
     case IDmenuPlotRFU:
-    case IDmenuPlotXBPS:
     case IDmenuPlotLadderLabels:
       bSendToAll = bShift;
       bRebuild = true;
@@ -3343,103 +3415,6 @@ wxBitmap *CPanelPlot::CreateMultiChannelBitmap(
 }
 
 
-
-BEGIN_EVENT_TABLE(CPanelPlot, PANEL_PLOT_TYPE)
-EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
-EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
-
-EVT_TOGGLEBUTTON(IDgraphRebuild, CPanelPlot::OnRebuildCurves)
-EVT_TOGGLEBUTTON(IDgraphLadderBins, CPanelPlot::OnRebuildWithOAR)
-EVT_TOGGLEBUTTON(IDgraphDisabledAlleles, CPanelPlot::OnRebuildWithOAR)
-
-EVT_TOGGLEBUTTON(IDgraphSyncAxes, CPanelPlot::OnSync)
-EVT_BUTTON(IDgraphZoomOut, CPanelPlot::OnZoomOut)
-EVT_BUTTON(IDgraphAppend, CPanelPlot::OnBtnAppend)
-EVT_BUTTON(IDgraphMultiple, CPanelPlot::OnBtnMultiple)
-EVT_BUTTON(IDgraphRemove, CPanelPlot::OnBtnRemove)
-EVT_BUTTON(IDbuttonDetails, CPanelPlot::OnBtnDetails)
-EVT_PLOTCTRL_VIEW_CHANGED(wxID_ANY, CPanelPlot::OnViewChanged)
-EVT_PLOTCTRL_VIEW_CHANGING(wxID_ANY, CPanelPlot::OnViewChanging)
-
-EVT_PLOTCTRL_POINT_DOUBLECLICKED(wxID_ANY,CPanelPlot::OnPointSelected)
-EVT_PLOTCTRL_POINT_CLICKED(wxID_ANY,CPanelPlot::OnPointSelected)
-
-//EVT_TIMER(IDtimer,CPanelPlot::OnTimerEvent)// EXT TIMER
-EVT_CONTEXT_MENU(CPanelPlot::OnContextMenu)
-EVT_COMMAND_ENTER(wxID_ANY,CPanelPlot::OnCommandEnter)
-
-EVT_COMMAND(wxID_ANY,CEventCannotShowBPS,CPanelPlot::OnNoBPSPrompt)
-EVT_SIZE(CPanelPlot::OnSize)
-END_EVENT_TABLE()
-
-
-
-
-void CPanelPlotToolbarSaveState::Setup(CPanelPlot *pWin, bool bRestoreCurrent)
-{
-  if(bRestoreCurrent)
-  {
-    RestoreState(true);
-  }
-  if(pWin != NULL)
-  {
-    m_pToolbar = pWin->GetToolbar();
-  }
-  else
-  {
-    m_pToolbar = NULL;
-  }
-  if(m_pToolbar != NULL)
-  {
-    int nY;
-    m_pWin = pWin;
-    m_pToolbar->GetPosition(&m_nX,&nY);
-    m_bCanShiftLeft = m_pToolbar->CanShiftLeft();
-    m_bCanShiftRight = m_pToolbar->CanShiftRight();
-  }
-  else
-  {
-    m_pWin = NULL;
-  }
-}
-
-CPanelPlotToolbarSaveState::~CPanelPlotToolbarSaveState()
-{
-  RestoreState();
-}
-CPanelPlot *CPanelPlotToolbarSaveState::RestoreState(bool bRemove)
-{
-  CPanelPlot *pRtn = m_pWin;
-  if(m_pToolbar == NULL)
-  {} // done
-  else if(!m_bCanShiftLeft)
-  {
-    m_pToolbar->ShiftLeft(true);
-  }
-  else if(!m_bCanShiftRight)
-  {
-    m_pToolbar->ShiftRight(true);
-  }
-  else
-  {
-    wxSize szV = m_pToolbar->GetVirtualSize();
-    wxSize szC = m_pToolbar->GetClientSize();
-    int nMinX = szC.GetWidth() - szV.GetWidth();
-    if(m_nX < nMinX)
-    {
-      m_nX = nMinX;
-    }
-    m_pToolbar->Move(m_nX,0);
-  }
-  if(bRemove)
-  {
-    m_pToolbar = NULL;
-    m_pWin = NULL;
-  }
-  return pRtn;
-}
-
-
 // CPrintInfo
 
 const wxString &CPanelPlot::SampleTitle(wxString *ps)
@@ -3501,3 +3476,33 @@ const wxString &CPanelPlot::TitleStrings(wxString *ps, int nPageNr)
   nwxString::Join(vs, ps, '\n');
   return *ps;
 }
+
+
+
+BEGIN_EVENT_TABLE(CPanelPlot, PANEL_PLOT_TYPE)
+EVT_COMBOBOX(IDgraphLabelsCombo, CPanelPlot::OnLabelTypeChanged)
+EVT_COMBOBOX(IDgraphArtifactCombo, CPanelPlot::OnLabelTypeChanged)
+
+EVT_TOGGLEBUTTON(IDgraphRebuild, CPanelPlot::OnRebuildCurves)
+EVT_TOGGLEBUTTON(IDgraphLadderBins, CPanelPlot::OnRebuildWithOAR)
+EVT_TOGGLEBUTTON(IDgraphDisabledAlleles, CPanelPlot::OnRebuildWithOAR)
+
+EVT_TOGGLEBUTTON(IDgraphSyncAxes, CPanelPlot::OnSync)
+EVT_BUTTON(IDgraphZoomOut, CPanelPlot::OnZoomOut)
+EVT_BUTTON(IDgraphAppend, CPanelPlot::OnBtnAppend)
+EVT_BUTTON(IDgraphMultiple, CPanelPlot::OnBtnMultiple)
+EVT_BUTTON(IDgraphRemove, CPanelPlot::OnBtnRemove)
+EVT_BUTTON(IDbuttonDetails, CPanelPlot::OnBtnDetails)
+EVT_PLOTCTRL_VIEW_CHANGED(wxID_ANY, CPanelPlot::OnViewChanged)
+EVT_PLOTCTRL_VIEW_CHANGING(wxID_ANY, CPanelPlot::OnViewChanging)
+
+EVT_PLOTCTRL_POINT_DOUBLECLICKED(wxID_ANY, CPanelPlot::OnPointSelected)
+EVT_PLOTCTRL_POINT_CLICKED(wxID_ANY, CPanelPlot::OnPointSelected)
+
+//EVT_TIMER(IDtimer,CPanelPlot::OnTimerEvent)// EXT TIMER
+EVT_CONTEXT_MENU(CPanelPlot::OnContextMenu)
+EVT_COMMAND_ENTER(wxID_ANY, CPanelPlot::OnCommandEnter)
+
+EVT_COMMAND(wxID_ANY, CEventCannotShowBPS, CPanelPlot::OnNoBPSPrompt)
+EVT_SIZE(CPanelPlot::OnSize)
+END_EVENT_TABLE()

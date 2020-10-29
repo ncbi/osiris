@@ -1288,6 +1288,22 @@ void CFramePlot::UpdateLadderLabels()
     (*itr)->UpdateLadderLabels();
   }
 }
+void CFramePlot::_CleanupBins()
+{
+  set<CPanelPlot *>::iterator itr;
+  for (itr = m_setPlots.begin();
+    itr != m_setPlots.end();
+    ++itr)
+  {
+    (*itr)->CleanupBins();
+  }
+  for (itr = m_setPlotsHidden.begin();
+    itr != m_setPlotsHidden.end();
+    ++itr)
+  {
+    (*itr)->CleanupBins();
+  }
+}
 
 void CFramePlot::SyncToolbars(CPanelPlot *p)
 {

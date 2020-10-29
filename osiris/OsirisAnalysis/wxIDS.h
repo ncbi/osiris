@@ -253,6 +253,11 @@ enum
   IDvolume,
   IDfolder,
 
+  // CSizerSearchBox in CPanelLabSampleThresholds.cpp
+  IDsearchBox,
+  IDsearchBoxPrev,
+  IDsearchBoxNext,
+
 
   // Export PNG file
 
@@ -468,5 +473,12 @@ enum DATA_TYPE
 #define SIZE_EDIT_LOCUS 800,600
 #define SIZE_EDIT_ALERTS 640,480
 #define SIZE_LOCUS_HISTORY 920,690
+
+
+// unicode
+
+// https://en.wikipedia.org/wiki/Geometric_Shapes
+#define ID_CHAR_TRIANGLE_LEFT 9664
+#define ID_CHAR_TRIANGLE_RIGHT 9654
 
 #endif

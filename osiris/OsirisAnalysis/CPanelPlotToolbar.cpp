@@ -143,6 +143,7 @@ void CPanelPlotToolbar::_Build(
   {
     nChannelCount = CHANNEL_MAX;
   }
+  m_bXBPS = false;
   m_nChannelCount = nChannelCount;
   m_pPanel = new wxPanel(this);
   pStatText = new wxStaticText(m_pPanel,wxID_ANY,"Data:");
@@ -546,7 +547,7 @@ int CPanelPlotToolbar::ChannelCount()
 //  Sync, ILS, RFU
 bool CPanelPlotToolbar::XBPSValue()
 {
-  return false;
+  return m_bXBPS; // no button for this but needed for sync
 }
 bool CPanelPlotToolbar::SyncValue()
 {
@@ -599,8 +600,9 @@ void CPanelPlotToolbar::ShowLadderLabels(bool b)
 {
   m_pButtonLadderLabels->SetValue(b);
 }
-void CPanelPlotToolbar::SetXBPS(bool)
+void CPanelPlotToolbar::SetXBPS(bool b)
 {
+  m_bXBPS = b; // no button for this but needed for sync
 }
 
 // labels, artifacts
