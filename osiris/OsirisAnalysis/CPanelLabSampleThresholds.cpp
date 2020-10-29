@@ -47,7 +47,6 @@ public:
   size_t FindMatches(const wxArrayString &aStr, wxArrayInt *pnMatches);
   int FindNextMatch(int nCurrent, const wxArrayInt &nMatches, bool bForward = true, bool bWrap = true);
 private:
-  wxWindow *m_pParent;
   wxStaticText *m_pLabelSearch;
   wxStaticText *m_pLabelCount;
   wxTextCtrl *m_pTextSearch;
@@ -63,7 +62,6 @@ const wxString CSizerSearchBox::FORMAT(wxT("%d match%s"));
 
 CSizerSearchBox::CSizerSearchBox(wxWindow *parent, wxWindowID id) :
   wxBoxSizer(wxHORIZONTAL),
-  m_pParent(parent),
   m_nIDSearch(id),
   m_nIDPrev(id),
   m_nIDNext(id)
@@ -556,7 +554,7 @@ void CPanelLabSampleThresholds::_OnSearchText(wxCommandEvent &)
 }
 void CPanelLabSampleThresholds::_OnSearchButton(wxCommandEvent &e)
 {
-  int nRow = m_pSizerSearch->FindNextMatch(m_pGridSample->GetCursorRow(), m_anSearchMatches,
+  int nRow = m_pSizerSearch->FindNextMatch(m_pGridSample->GetGridCursorRow(), m_anSearchMatches,
     e.GetId() == IDsearchBoxNext);
   m_pGridSample->GoToRow(nRow);
 }
