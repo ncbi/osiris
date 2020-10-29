@@ -34,7 +34,7 @@
 * ===========================================================================
 *
 *
-*  FileName: CPrintPreview.h
+*  FileName: CPrintPreview.cpp
 *  Author:   Douglas Hoffman
 *
 *  CPrintPreview implements wxPrintPreview
@@ -54,6 +54,7 @@
 #include "CDialogPrintSettings.h"
 #include "CDialogPrintColor.h"
 #include "nwx/nwxString.h"
+#include "wxIDS.h"
 
 // CPrintPreviewFrame
 #define FRAME_STYLE (wxDEFAULT_FRAME_STYLE | wxMINIMIZE_BOX) ^ wxMINIMIZE_BOX
@@ -305,19 +306,11 @@ wxButton *CPreviewControlBar::_CreateButton(
 
 void CPreviewControlBar::CreateButtons()
 {
-// https://en.wikipedia.org/wiki/Geometric_Shapes
-#define TRIANGLE_LEFT 9664
-#define TRIANGLE_RIGHT 9654
-
-  // UTF-8 printer character.  Since wchar_t can be UTF-16 or 32 bits,
-  // use UTF-8 for compatibility
-  // source: https://www.fileformat.info/info/unicode/char/1f5b6/index.htm
-  //const unsigned char PRINTER_UTF_8[] = { 0xF0, 0x9F, 0x96, 0xB6, 0 };
-  // commented out because it is ugly
-  const wxChar asButtonFirst[] = { TRIANGLE_LEFT, TRIANGLE_LEFT, 0 };
-  const wxChar asButtonPrev[] = { 160, TRIANGLE_LEFT, 160, 0 };
-  const wxChar asButtonLast[] = { TRIANGLE_RIGHT, TRIANGLE_RIGHT, 0 };
-  const wxChar asButtonNext[] = { 160, TRIANGLE_RIGHT, 160, 0 };
+  // 
+  const wxChar asButtonFirst[] = { ID_CHAR_TRIANGLE_LEFT, ID_CHAR_TRIANGLE_LEFT, 0 };
+  const wxChar asButtonPrev[] = { 160, ID_CHAR_TRIANGLE_LEFT, 160, 0 };
+  const wxChar asButtonLast[] = { ID_CHAR_TRIANGLE_RIGHT, ID_CHAR_TRIANGLE_RIGHT, 0 };
+  const wxChar asButtonNext[] = { 160, ID_CHAR_TRIANGLE_RIGHT, 160, 0 };
   wxPreviewControlBar::CreateButtons();
   wxButton *pButton;
   wxStaticText *pText;

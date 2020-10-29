@@ -323,7 +323,7 @@ public:
   void InvalidateColors()
   {
     m_mapColors.clear();
-    _CleanupBins();
+    CleanupBins();
   }
   void SendPlotSizeEvent();
   bool IsPreview()
@@ -671,6 +671,7 @@ public:
   }
   const wxString &SampleTitle(wxString *ps);
   const wxString &TitleStrings(wxString *ps, int nPage);
+  void CleanupBins();
 private:
   const wxColour &_GetColour(DATA_TYPE n, unsigned int nChannel);
   static void _SetYUserRange(wxRect2DDouble *pRect);  // Y
@@ -820,7 +821,6 @@ private:
     unsigned int nChannel, 
     bool bNoise, 
     bool bXBPS);
-  void _CleanupBins();
   void _CleanupLadderPeakSet();
   void _CleanupPeakAny();
   int _GetLadderPeakCount();
