@@ -235,6 +235,26 @@ void mainApp::Ping3(const wxString &sName1, const wxString &sValue1,
   }
   // destructor will send the event
 }
+void mainApp::PingList(const wxChar ** apList)
+{
+  const wxChar **ps;
+  bool bName = true;
+  nwxPingerSet pset(GetPinger());
+  wxString sName, sValue;
+  for (ps = apList; *ps != NULL; ps++)
+  {
+    if (bName)
+    {
+      sName = *ps;
+    }
+    else
+    {
+      sValue = *ps;
+      pset.Set(sName, sValue);
+    }
+    bName = !bName;
+  }
+}
 void mainApp::PingExit()
 {
   mainApp::Ping(PING_EVENT, "user-exit");

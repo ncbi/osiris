@@ -201,9 +201,39 @@ int CPrintPreview::GetMaxPage() const
 
 bool CPrintPreview::Print(bool interactive)
 {
+  CPrintOut *pPrintOut = wxDynamicCast(GetPrintoutForPrinting(), CPrintOut);
+  wxDateTime dt(wxDateTime::Now());
+  int nPageCount = GetMaxPage();
+  int nPagesPrinted = -1;
+  if (pPrintOut != NULL)
+  {
+    pPrintOut->ResetPageCount();
+  }
   bool bRtn = wxPrintPreview::Print(interactive);
-  const wxChar *psStatus = bRtn ? wxT("OK") : wxT("NOT_OK");
-  mainApp::Ping2(PING_EVENT, m_sPrintType, wxT("Status"), psStatus);
+  if (pPrintOut != NULL)
+  {
+    nPagesPrinted = pPrintOut->GetPageCount();
+  }
+  wxDateTime dt2(wxDateTime::Now());
+  wxTimeSpan duration = dt2.Subtract(dt);
+  wxString sDuration = duration.Format();
+  wxString sPageCount = nwxString::FormatNumber(nPageCount);
+  wxString sPagesPrinted = nwxString::FormatNumber(nPagesPrinted);
+  const wxChar *plist[] =
+  {
+    wxT(PING_EVENT),
+    (const wxChar *)m_sPrintType,
+    wxT("Status"),
+    bRtn ? wxT("OK") : wxT("NOT_OK"),
+    wxT("duration"),
+    sDuration,
+    wxT("PageCount"),
+    sPageCount,
+    wxT("PagesPrinted"),
+    sPagesPrinted,
+    NULL
+  };
+  mainApp::PingList(plist);
   return bRtn;
 }
 void CPrintPreview::SetZoom(int n)

@@ -57,6 +57,10 @@ public:
   {}
 
   virtual ~CPrintOutPlot();
+  virtual const wxChar *GetPrintoutType()
+  {
+    return wxT("Plot");
+  }
   virtual wxWindow *GetParent();
   virtual bool OnPrintPage(int page);
   virtual int GetMaxPage();

@@ -266,6 +266,7 @@ bool CPrintOutAnalysis::_OnPrintPage(int page)
   _setupPageBitmap(pdc);
   if( (!sPlotFile.IsEmpty()) && plotData.LoadFile(sPlotFile) )
   {
+    _IncrementPageCount();
     CPanelPlot *panel = new CPanelPlot(
       m_pFrameAnalysis,
       &plotData, m_pFile);

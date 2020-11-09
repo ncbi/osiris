@@ -53,6 +53,7 @@ use strict 'vars';
 #
 #  [3] register (XML tag) name, optional, can be generated from [0]
 #  [4] IO type for register, optional, can be generated from [1]
+#  [5] if 'true' send a ping when the value is changed
 #
 #  if only one item, then it is a comment
 #
@@ -128,8 +129,8 @@ my $VARLIST =
   ["m_bPreviewDataBaseline", "bool"],
   ["m_bPreviewShowILS", "bool"],
   ["m_bPreviewShowRFU", "bool"],
-  ["m_bPreviewShowDisabledAlleles", "bool"],
-  ["m_bPreviewShowLadderBins", "bool"],
+  ["m_bPreviewShowDisabledAlleles", "bool", undef, undef, undef, 1],
+  ["m_bPreviewShowLadderBins", "bool", undef, undef, undef, 1],
   ["m_bPreviewShowLadderLabels", "bool"],
   ["m_bPreviewXBPS", "bool"],
   ["m_nPreviewShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioIntViewPlotArtifact"],
@@ -144,8 +145,8 @@ my $VARLIST =
   ["m_bPlotShowILS", "bool"],
   ["m_bPlotShowRFU", "bool"],
   ["m_bPlotShowLadderLabels", "bool"],
-  ["m_bPlotShowDisabledAlleles", "bool"],
-  ["m_bPlotShowLadderBins", "bool"],
+  ["m_bPlotShowDisabledAlleles", "bool", undef, undef, undef, 1],
+  ["m_bPlotShowLadderBins", "bool", undef, undef, undef, 1],
   ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
   ["m_nPlotShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
@@ -474,16 +475,17 @@ sub GenerateSet
     }
     else
     {
-      my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable) = @$a;
+      my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable, $bPing) = @$a;
       my $arg = &GetVarType($sVarType);
       my $fnc = "Set" . &chopPrefix($sVarName);
+      my $sPing = $bPing ? ", \"${fnc}\"" : "";
       my $argName = $argNames->{$sVarType};
       $argName || die("Cannot find arg name for ${sVarType}");
 
       $sRtn .= <<EOF;
   void ${fnc}(${arg}${argName})
   {
-    __SET_VALUE(${sVarName},${argName});
+    __SET_VALUE(${sVarName}, ${argName}${sPing});
   }
 EOF
     }
@@ -546,7 +548,26 @@ sub GenFiles
   my $sCompare = &GenerateCopyOrCompare("", true);
   my $sStringHeader = &GenerateStringsHeader;
   my $sStringCPP = &GenerateStringsCPP;
-  my $sCOPY = <<EOF1;
+  my $sCOPY_PING = <<EOF1;
+
+  {
+    if(!(s1 == s2))
+    {
+      s1 = s2;
+      m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
+    }
+  }
+EOF1
+  my $sCOPY = <<EOF2;
 
   {
     if(!(s1 == s2))
@@ -555,7 +576,7 @@ sub GenFiles
       m_bModified = true;
     }
   }
-EOF1
+EOF2
   my $fileH = <<EOF;
 /*
 * ===========================================================================
@@ -592,8 +613,9 @@ EOF1
 
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxGlobalObject.h"
+#include "nwx/nwxString.h"
 #include "ConfigDir.h"
-
+#include "mainApp.h"
 
 #include "CParmGridAttributes.h"
 
@@ -704,13 +726,21 @@ ${sGets}
 
 private:
 
+  // Parameter to string
+  
+  static const wxString &__GET_STRING(const wxString &s1) { return s1; }
+  static wxString __GET_STRING(double s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(int s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(unsigned int s1) { return nwxString::FormatNumber(s1); }
+  static const char *__GET_STRING(bool s1) { return s1 ? "true" : "false"; }
+
   // SET VALUES
 
-  void __SET_VALUE(wxString &s1, const wxString &s2)${sCOPY}
-  void __SET_VALUE(double &s1, double s2)${sCOPY}
-  void __SET_VALUE(bool &s1, bool s2)${sCOPY}
-  void __SET_VALUE(int &s1, int s2)${sCOPY}
-  void __SET_VALUE(unsigned int &s1, unsigned int s2)${sCOPY}
+  void __SET_VALUE(wxString &s1, const wxString &s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(double &s1, double s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(bool &s1, bool s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(int &s1, int s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(unsigned int &s1, unsigned int s2, const char *psPing = NULL)${sCOPY_PING}
   void __SET_VALUE(vector<int> &s1, const vector<int> &s2)${sCOPY}
   void __SET_VALUE(vector<unsigned int> &s1, const vector<unsigned int> &s2)${sCOPY}
 

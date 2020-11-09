@@ -304,6 +304,14 @@ void CPrintOut::_DoPrintPreview(
 
 CPrintOut::~CPrintOut()
 {
+  if (IsPreview())
+  {
+    wxString sPageCount(nwxString::FormatNumber(GetPageCount()));
+    mainApp::Ping3(
+      PING_EVENT, "ClosePrintPreview",
+      "PagesRendered", sPageCount,
+      "PrintType", GetPrintoutType());
+  }
 }
 
 

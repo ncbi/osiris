@@ -487,13 +487,28 @@ CFramePlot::CFramePlot(
     m_bXBPS(false)
 {
   CBatchPlot BATCH(this);
-  mainApp::Ping3(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE,
-    PING_WINDOW_NUMBER, GetFrameNumber(),
-    "NoOAR", (pFile == NULL) ? "true" : "false"
-    );
+  CParmOsirisGlobal parm;
+  const wxString sPingType(PING_WINDOW_OPEN PING_WINDOW_TYPE);
+  const wxString &sFrameNumber(GetFrameNumber());
+  const wxChar * const psT = wxT("true");
+  const wxChar * const psF = wxT("false");
+  const wxChar * plist[] =
+  {
+    wxT(PING_EVENT),
+    (const wxChar *)sPingType,
+    wxT(PING_WINDOW_NUMBER),
+    (const wxChar *)sFrameNumber,
+    wxT("ShowDisabledAllele"),
+    parm->GetPlotShowDisabledAlleles() ? psT : psF,
+    wxT("ShowBins"),
+    parm->GetPlotShowLadderBins() ? psT : psF,
+    wxT("NoOAR"),
+    (pFile == NULL) ? psT : psF,
+    NULL
+  };
+  mainApp::PingList(plist);
   m_pPanel = new wxScrolledWindow(this,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxVSCROLL);
   {
-    CParmOsirisGlobal parm;
     m_bShowToolbar = !parm->GetHideGraphicToolbar();
     m_bShowScrollbars = !parm->GetHideGraphicScrollbar();
     m_bFixed = !parm->GetPlotResizable();

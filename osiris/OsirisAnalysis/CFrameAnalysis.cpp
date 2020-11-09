@@ -204,13 +204,31 @@ CFrameAnalysis::CFrameAnalysis(
 void CFrameAnalysis::_Build()
 {
   FUNC_ENTER("CFrameAnalysis::_Build()")
+  CParmOsirisGlobal parm;
   wxColour clrTextNoEdit;
   nwxButtonMenu *pButtonSort(NULL);
+  const wxString sPingType(PING_WINDOW_OPEN PING_WINDOW_TYPE);
+  const wxString &sFrameNumber(GetFrameNumber());
+  const wxChar * const psT = wxT("true");
+  const wxChar * const psF = wxT("false");
   int nDisplayPeak = 0;
   int nDisplayName;
   bool bShowPreview = false;
 
-  mainApp::Ping2(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
+  const wxChar *plist[] =
+  {
+    wxT(PING_EVENT),
+    (const wxChar *)sPingType,
+    wxT(PING_WINDOW_NUMBER),
+    (const wxChar *)sFrameNumber,
+    // if preview is shown, add preview parameters
+    parm->GetShowPreview() ? wxT("ShowDisabledAllele") : NULL,
+    parm->GetPreviewShowDisabledAlleles() ? psT : psF,
+    wxT("ShowBins"),
+    parm->GetPreviewShowLadderBins() ? psT : psF,
+    NULL
+  };
+  mainApp::PingList(plist);
   m_pParent->InsertWindow(this,m_pOARfile);
   m_pButtonEdit = NULL;
   m_pComboCellType = NULL;
@@ -407,7 +425,6 @@ void CFrameAnalysis::_Build()
   pSizer->Add(m_pSplitter,1,wxEXPAND);
   SetSizer(pSizer);
 
-  CParmOsirisGlobal parm;
   bool b = parm->GetHideTextToolbar();
   bool bControlAtTop = parm->GetTableControlsAtTop();
   ShowToolbar(!b);
