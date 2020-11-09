@@ -59,6 +59,10 @@ public:
   {
     return (page == 1);
   }
+  virtual const wxChar *GetPrintoutType()
+  {
+    return wxT("TestPattern");
+  }
   virtual int GetMaxPage() { return 1; }
   virtual wxWindow *GetParent()
   {
