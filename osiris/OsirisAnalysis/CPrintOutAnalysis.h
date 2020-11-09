@@ -62,10 +62,6 @@ public:
   virtual wxWindow *GetParent();
   virtual int GetMaxPage();
   virtual bool OnPrintPage(int page);
-  virtual const wxChar *GetPrintoutType()
-  {
-    return wxT("Analysis");
-  }
 
   static void DoPrintPreview(CFrameAnalysis *pFrame);
 

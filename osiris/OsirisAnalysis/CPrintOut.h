@@ -62,11 +62,11 @@ public:
 	m_nLoggedPrinterResolution(0),
 #endif
     m_nPageCount(0),
-    m_bPreview(bPreview)
+    m_bPreview(bPreview),
+    m_psPrintoutType(wxT(""))
   {}
 
   virtual ~CPrintOut();
-  virtual const wxChar *GetPrintoutType() = 0;
   void ResetPageCount()
   {
     m_nPageCount = 0;
@@ -187,9 +187,19 @@ protected:
 #ifdef TMP_DEBUG
   int m_nLoggedPrinterResolution;
 #endif
+  void _SetPrintoutType(const wxChar *p)
+  {
+    m_psPrintoutType = p;
+  }
+  const wxChar *_GetPrintoutType()
+  {
+    return m_psPrintoutType;
+  }
   _resOutput m_resOutput;
   int m_nPageCount;
   bool m_bPreview;
+private:
+  const wxChar * m_psPrintoutType;
   DECLARE_ABSTRACT_CLASS(CPrintOut)
 };
 

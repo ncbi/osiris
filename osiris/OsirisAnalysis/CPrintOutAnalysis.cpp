@@ -59,6 +59,7 @@ CPrintOutAnalysis::CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview) :
   CPrintOut(bPreview),
   m_pFrameAnalysis(pFrame)
 {
+  _SetPrintoutType(wxT("Analysis"));
   m_pFile = m_pFrameAnalysis->GetOARfile();
   g_setAll.insert(this);
 }

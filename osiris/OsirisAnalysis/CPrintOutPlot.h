@@ -54,13 +54,11 @@ public:
   CPrintOutPlot(CFramePlot *pFrame, bool bPreview = false) :
     CPrintOut(bPreview),
     m_pFramePlot(pFrame)
-  {}
+  {
+    _SetPrintoutType(wxT("Plot"));
+  }
 
   virtual ~CPrintOutPlot();
-  virtual const wxChar *GetPrintoutType()
-  {
-    return wxT("Plot");
-  }
   virtual wxWindow *GetParent();
   virtual bool OnPrintPage(int page);
   virtual int GetMaxPage();

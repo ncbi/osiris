@@ -310,7 +310,7 @@ CPrintOut::~CPrintOut()
     mainApp::Ping3(
       PING_EVENT, "ClosePrintPreview",
       "PagesRendered", sPageCount,
-      "PrintType", GetPrintoutType());
+      "PrintType", _GetPrintoutType());
   }
 }
 

@@ -59,10 +59,6 @@ public:
   {
     return (page == 1);
   }
-  virtual const wxChar *GetPrintoutType()
-  {
-    return wxT("TestPattern");
-  }
   virtual int GetMaxPage() { return 1; }
   virtual wxWindow *GetParent()
   {
@@ -97,7 +93,9 @@ private:
     m_pParent(parent),
     m_pBitmap(NULL),
     m_bPortrait(true)
-  {}
+  {
+    _SetPrintoutType(wxT("TestPattern"));
+  }
   virtual ~CPrintOutTestPattern()
   {
     _CleanupBitmap();
