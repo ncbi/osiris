@@ -161,6 +161,7 @@ public:
     }
     return s;
   }
+  static void NormalizeSpace(wxString *ps);
   static void Trim(wxString *ps)
   {
     ps->Trim(true);
