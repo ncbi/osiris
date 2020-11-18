@@ -1721,7 +1721,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	bool minRatioLessThan1 = false;
 	bool maxRatioLargerThan0 = false;
-	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;  // Let's see how this is used.  Is it a good idea??
 	double minPullupHeight = 0.0;
 	double rawHeight;
 	double detectionThreshold = mDataChannels [pullupChannel]->GetDetectionThreshold ();
