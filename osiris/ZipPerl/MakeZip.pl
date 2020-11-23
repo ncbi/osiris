@@ -219,6 +219,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.2.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.1.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.14.pdf ${dest}");
 }
 sub GetVCDir
 {

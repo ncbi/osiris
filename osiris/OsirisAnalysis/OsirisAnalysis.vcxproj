@@ -97,7 +97,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;$(EXTLIB)\libiconv-win-build-1.15\include;$(EXTLIB)\libxml2-2.9.8\include;$(EXTLIB)\libxslt-1.1.33;$(WXHOME)\lib\vc_lib\mswud;$(WXHOME)\include;..\wxthings\include;..\wxplotctrl\include;..\Version;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;__WXDEBUG__;_DEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;__WXDEBUG__;_DEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
@@ -189,7 +189,7 @@
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;$(EXTLIB)\libiconv-win-build-1.15\include;$(EXTLIB)\libxml2-2.9.8\include;$(EXTLIB)\libxslt-1.1.33;$(WXHOME)\lib\vc_lib\mswu;$(WXHOME)\include;..\wxthings\include;..\wxplotctrl\include;..\Version;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
