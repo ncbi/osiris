@@ -36,13 +36,14 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
-#include <wx/tglbtn.h>
 #include <wx/listctrl.h>
+#include <wx/splitter.h>
 #include <wx/process.h>
 #include "CMDIFrame.h"
 #include "CDirList.h"
 #include "CParmOsiris.h"
 #include "CVolumes.h"
+#include "nwx/PersistentSize.h"
 class CProcessAnalysis;
 class mainFrame;
 class CListProcess;
@@ -56,11 +57,13 @@ public:
   CFrameRunAnalysis(mainFrame *parent, const wxSize &sz, const CVolume &vol, const CParmOsiris &parmNew);
   CFrameRunAnalysis(CFrameRunAnalysis *pPrev, const CVolume &vol, const CParmOsiris &parmNew);
   virtual ~CFrameRunAnalysis();
+  virtual void OnActivateCB(wxActivateEvent &e);
   virtual int GetType();
   virtual wxString GetFileName();
   virtual void OnTimer(wxTimerEvent &);
   virtual void ReceiveXml2Error(const wxString &s);
   void Run();
+  void OnSplitterChange(wxSplitterEvent &);
   void OnButtonCancel(wxCommandEvent &);
   void OnButtonCancelAll(wxCommandEvent &);
   void OnButtonView(wxCommandEvent &);
@@ -72,19 +75,8 @@ public:
   void OnSelectionChanged(wxListEvent &);
   void OnActivate(wxListEvent &);
   bool IsOK() { return m_bOK; }
-  void OnDetails(wxCommandEvent &);
+  //void OnDetails(wxCommandEvent &);
   // void OnProcessEnd(wxProcessEvent&);
-  void ShowDetails()
-  {
-    if(!m_pButtonDetails->GetValue())
-    {
-      wxCommandEvent e;
-      m_pButtonDetails->SetValue(true);
-      OnDetails(e);
-    }
-    SetFocus();
-    Raise();
-  }
   bool IsDone();
   bool CheckIsDone();
   CDirList *GetDirList()
@@ -121,14 +113,19 @@ private:
   wxGauge *m_pGauge;
   wxStaticText *m_pLabelElapsed;
   wxTextCtrl *m_pTextOutput;
-  wxToggleButton *m_pButtonDetails;
+  wxTextCtrl *m_pTextErrors;
+  wxSplitterWindow *m_pSplitter;
   CProcessAnalysis *m_pAnalysis;
-  wxBoxSizer *m_pSizer;
+//  wxBoxSizer *m_pSizer;
   CListProcess *m_pListDir;
 //  CDialogAnalysis *m_pDlgAnalysis;
   time_t m_tStart;
   bool m_bOK;
+  bool m_bActivated;
+  bool m_bFile;
   size_t m_nNext;
-  DECLARE_EVENT_TABLE();
+  DECLARE_PERSISTENT_SIZE
+  DECLARE_EVENT_TABLE()
+  DECLARE_ABSTRACT_CLASS(CFrameRunAnalysis)
 };
 #endif

@@ -40,9 +40,9 @@
 #include <memory>
 #include "mainApp.h"
 #include <wx/filename.h>
-#include <wx/tglbtn.h>
 #include <wx/utils.h>
 #include <wx/mstream.h>
+#include <wx/notebook.h>
 #include "nwx/nwxTabOrder.h"
 #include "nwx/nwxColorUtil.h"
 #include "nwx/nwxXmlMRU.h"
@@ -63,14 +63,15 @@
 #define PING_WINDOW_TYPE "FrameRunAnalysis"
 
 CFrameRunAnalysis::CFrameRunAnalysis(
-    mainFrame *parent, 
-    const wxSize &sz,
-    const CVolume &vol,
-    const CParmOsiris &parmNew) :
+  mainFrame *parent,
+  const wxSize &sz,
+  const CVolume &vol,
+  const CParmOsiris &parmNew) :
   CMDIFrame(
-    parent,wxID_ANY,wxEmptyString,
-      wxDefaultPosition,wxDefaultSize,
-      wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL ),
+    parent, wxID_ANY, wxEmptyString,
+    wxDefaultPosition,
+    GET_PERSISTENT_SIZE_DEFAULT(CFrameRunAnalysis, sz),
+    wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL ),
   m_volume(vol),
   m_parmOsiris(parmNew),
   m_pButtonSelectAll(NULL),
@@ -82,13 +83,15 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_pGauge(NULL),
   m_pLabelElapsed(NULL),
   m_pTextOutput(NULL),
-  m_pButtonDetails(NULL),
+  m_pTextErrors(NULL),
   m_pAnalysis(NULL),
-  m_pSizer(NULL),
+//  m_pSizer(NULL),
   m_pListDir(NULL),
 //  m_pDlgAnalysis(NULL),
   m_tStart(0),
   m_bOK(false),
+  m_bActivated(false),
+  m_bFile(false),
   m_nNext(0)
 {
   // called from mainFrame::ReAnalyzeSamples
@@ -102,7 +105,8 @@ CFrameRunAnalysis::CFrameRunAnalysis(
     const CParmOsiris &parmNew) :
   CMDIFrame(
     pPrev->m_pParent,wxID_ANY,wxEmptyString,
-      wxDefaultPosition,wxDefaultSize,
+      wxDefaultPosition,
+      GET_PERSISTENT_SIZE_DEFAULT(CFrameRunAnalysis, wxDefaultSize),
       wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL ),
   m_volume(vol),
   m_parmOsiris(parmNew),
@@ -115,13 +119,15 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_pGauge(NULL),
   m_pLabelElapsed(NULL),
   m_pTextOutput(NULL),
-  m_pButtonDetails(NULL),
+  m_pTextErrors(NULL),
   m_pAnalysis(NULL),
-  m_pSizer(NULL),
+//m_pSizer(NULL),
   m_pListDir(NULL),
 //  m_pDlgAnalysis(NULL),
   m_tStart(0),
   m_bOK(false),
+  m_bActivated(false),
+  m_bFile(false),
   m_nNext(0)
 {
   // called from mainFrame::ReAnalyze
@@ -168,7 +174,9 @@ CFrameRunAnalysis::CFrameRunAnalysis(
     const wxString &sFileName) :
   CMDIFrame(
     parent,wxID_ANY,wxEmptyString,
-      wxDefaultPosition,wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL ),
+      wxDefaultPosition,
+      GET_PERSISTENT_SIZE_DEFAULT(CFrameRunAnalysis, sz),
+      wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL ),
   m_parmOsiris(*CParmOsiris::GetGlobal()),
   m_pButtonSelectAll(NULL),
   m_pButtonClearAll(NULL),
@@ -179,13 +187,15 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_pGauge(NULL),
   m_pLabelElapsed(NULL),
   m_pTextOutput(NULL),
-  m_pButtonDetails(NULL),
+  m_pTextErrors(NULL),
   m_pAnalysis(NULL),
-  m_pSizer(NULL),
+//  m_pSizer(NULL),
   m_pListDir(NULL),
 //  m_pDlgAnalysis(NULL),
   m_tStart(0),
   m_bOK(false),
+  m_bActivated(false),
+  m_bFile(true),
   m_nNext(0)
 {
   // called from mainFrame::OpenBatchFile
@@ -226,7 +236,9 @@ CFrameRunAnalysis::CFrameRunAnalysis(
     const CVolume &vol) :
   CMDIFrame(
     parent,wxID_ANY,wxEmptyString,
-      wxDefaultPosition,wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL ),
+      wxDefaultPosition,
+      GET_PERSISTENT_SIZE_DEFAULT(CFrameRunAnalysis, sz),
+      wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL ),
   m_volume(vol),
   m_parmOsiris(*CParmOsiris::GetGlobal()),
   m_pButtonSelectAll(NULL),
@@ -238,13 +250,15 @@ CFrameRunAnalysis::CFrameRunAnalysis(
   m_pGauge(NULL),
   m_pLabelElapsed(NULL),
   m_pTextOutput(NULL),
-  m_pButtonDetails(NULL),
+  m_pTextErrors(NULL),
   m_pAnalysis(NULL),
-  m_pSizer(NULL),
+//  m_pSizer(NULL),
   m_pListDir(NULL),
 //  m_pDlgAnalysis(NULL),
   m_tStart(0),
   m_bOK(false),
+  m_bActivated(false),
+  m_bFile(false),
   m_nNext(0)
 {
   // called from mainFrame::OnAnalyze
@@ -264,18 +278,26 @@ int CFrameRunAnalysis::GetType()
   return FRAME_RUN;
 }
 
-void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz, const char *psType)
+void CFrameRunAnalysis::_BuildWindow(
+  const wxString &sTitle, const wxSize &sz, const char *psType)
 {
   mainApp::Ping3(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE,
     PING_WINDOW_NUMBER, GetFrameNumber(),
     "WindowType", psType);
   wxString sLabelElapsed("n/a");
   wxPanel *pPanel(new wxPanel(this));
+  m_pSplitter = new wxSplitterWindow(pPanel, IDsplitterWindow,
+    wxDefaultPosition, wxDefaultSize, ID_SPLITTER_STYLE);
+  m_pSplitter->SetMinimumPaneSize(40);
+  wxPanel *pPanelTop = new wxPanel(m_pSplitter);
+  wxPanel *pPanelBottom = new wxPanel(m_pSplitter);
+
   {
     COsirisIcon x;
     SetIcon(x);
   }
   SetTitle(sTitle);
+
   m_pButtonSelectAll = new wxButton(
     pPanel,IDbuttonSelectAll, "Select All");
   m_pButtonClearAll = new wxButton(
@@ -299,41 +321,53 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz, c
 
   wxBoxSizer *pSizerLabel;
   pSizerLabel = new wxBoxSizer(wxHORIZONTAL);
-  m_pGauge = new wxGauge(pPanel, wxID_ANY, 400,
+  m_pListDir = new CListProcess(&m_DirList, pPanelTop, IDlistProcesses, wxDefaultSize);
+  m_pGauge = new wxGauge(pPanelTop, wxID_ANY, 400,
     wxDefaultPosition, wxDefaultSize,
     wxGA_HORIZONTAL | wxGA_SMOOTH);
   m_pLabelElapsed = new wxStaticText(
-    pPanel,wxID_ANY,sLabelElapsed,
+    pPanelTop,wxID_ANY,sLabelElapsed,
     wxDefaultPosition, wxDefaultSize,
     wxALIGN_LEFT);
   wxStaticText *pElapsed = new wxStaticText(
-    pPanel,wxID_ANY,"Elapsed time: ",
+    pPanelTop,wxID_ANY,"Elapsed time: ",
     wxDefaultPosition, wxDefaultSize,
     wxALIGN_RIGHT);
   pSizerLabel->Add(pElapsed,0,wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT);
   pSizerLabel->Add(m_pLabelElapsed,0,wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT);
-    // more/less
-  m_pButtonDetails = new wxToggleButton(
-    pPanel,IDbuttonDetails,"Details",
-    wxDefaultPosition, wxDefaultSize);
-  m_pButtonDetails->SetValue(false);
-  m_pTextOutput = new wxTextCtrl(pPanel,wxID_ANY,"",
+  wxBoxSizer *pSizerTop = new wxBoxSizer(wxVERTICAL);
+  pSizerTop->Add(m_pListDir, 1, wxALL | wxEXPAND, ID_BORDER);
+  pSizerTop->Add(pSizerLabel, 0, wxALIGN_CENTER | (wxALL ^ wxTOP), ID_BORDER);
+  pSizerTop->Add(m_pGauge, 0,
+    wxEXPAND | (wxALL ^ wxTOP), ID_BORDER);
+  pPanelTop->SetSizer(pSizerTop);
+   
+  wxNotebook *pNotebook = new wxNotebook(pPanelBottom, wxID_ANY,
+    wxDefaultPosition, wxDefaultSize,
+    wxNB_TOP);
+
+  m_pTextOutput = new wxTextCtrl(pNotebook,wxID_ANY,"",
     wxDefaultPosition, wxSize(-1,100),
     wxTE_MULTILINE | wxTE_READONLY | wxTE_LEFT | wxTE_DONTWRAP);
-  nwxColorUtil::BackgroundParent(m_pTextOutput,true);
-  m_pTextOutput->Show(false);
-  m_pListDir = new CListProcess(&m_DirList,pPanel,IDlistProcesses,wxDefaultSize);
-  m_pSizer = new wxBoxSizer(wxVERTICAL);
-  m_pSizer->Add(m_pListDir,1, wxALL | wxEXPAND, ID_BORDER);
-  m_pSizer->Add(pSizerLabel,0,wxALIGN_CENTER | (wxALL ^ wxTOP), ID_BORDER);
-  m_pSizer->Add(m_pGauge, 0,
-    wxEXPAND | (wxALL ^ wxTOP), ID_BORDER);
-  m_pSizer->Add(pButtonSizer,0,wxALIGN_CENTER | (wxALL ^ wxTOP), ID_BORDER);
-  m_pSizer->Add(m_pButtonDetails, 0, wxALIGN_RIGHT | (wxALL ^ wxTOP), ID_BORDER);
+  m_pTextErrors = new wxTextCtrl(pNotebook, wxID_ANY, "",
+    wxDefaultPosition, wxSize(-1, 100),
+    wxTE_MULTILINE | wxTE_READONLY | wxTE_LEFT | wxTE_DONTWRAP);
+
+  pNotebook->InsertPage(0, m_pTextOutput, wxT("Details"));
+  pNotebook->InsertPage(0, m_pTextErrors, wxT("Errors"), true);
+  wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
+  pSizer->Add(pNotebook, 1, wxEXPAND | wxALL, ID_BORDER);
+  pPanelBottom->SetSizer(pSizer);
+
+  m_pSplitter->SplitHorizontally(pPanelTop, pPanelBottom,
+    CParmOsiris::GetGlobal()->GetAnalysisSplitPos());
+  // nwxColorUtil::BackgroundParent(m_pTextOutput,true);
+  pSizer = new wxBoxSizer(wxVERTICAL);
+  pSizer->Add(m_pSplitter, 3, wxEXPAND , 0);
+  pSizer->Add(pButtonSizer, 0, wxEXPAND | (wxALL ^ wxTOP), ID_BORDER);
   m_pListDir->TransferDataToWindow();
   {
     nwxTabOrder tabOrder;
-    tabOrder.push_back(m_pListDir);
     tabOrder.push_back(m_pButtonSelectAll);
     tabOrder.push_back(m_pButtonClearAll);
     tabOrder.push_back(m_pButtonCancel);
@@ -341,16 +375,15 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz, c
     tabOrder.push_back(m_pButtonReAnalyze);
     tabOrder.push_back(m_pButtonView);
   }
+
   m_pListDir->SetFocus();
   SetBackgroundColour(m_pButtonClearAll->GetBackgroundColour());
   //wxSize szMin = GetMinSize();
   SetMinSize(sz);
-  pPanel->SetSizerAndFit(m_pSizer);
+  pPanel->SetSizer(pSizer);
   wxBoxSizer *pSizerFrame = new wxBoxSizer(wxHORIZONTAL);
   pSizerFrame->Add(pPanel,1,wxEXPAND);
-  SetSizerAndFit(pSizerFrame);
-  //SetMinSize(szMin);
-  //pSizerFrame->Layout();
+  SetSizer(pSizerFrame);
   bool bChange = false;
   wxSize szSz = GetSize();
   if(szSz.GetWidth() < sz.GetWidth())
@@ -366,10 +399,10 @@ void CFrameRunAnalysis::_BuildWindow(const wxString &sTitle, const wxSize &sz, c
   if(bChange)
   {
     SetSize(szSz);
-//    pSizerFrame->Layout();
   }
   SetMenuBar(new CMenuBar(true,true));
   UpdateButtonState();
+  UpdateOutputText();
   RE_RENDER;
 }
 
@@ -379,56 +412,107 @@ CFrameRunAnalysis::~CFrameRunAnalysis()
   Cleanup();
 }
 
+void CFrameRunAnalysis::OnActivateCB(wxActivateEvent &)
+{
+  if(!m_bActivated)
+  {
+    int n = CParmOsiris::GetGlobal()->GetAnalysisSplitPos();
+    m_pSplitter->SetSashPosition(n);
+    wxCommandEvent e(wxEVT_COMMAND_ENTER, IDsplitterWindow);
+    e.SetEventObject(m_pSplitter);
+    e.SetInt(n);
+    GetEventHandler()->AddPendingEvent(e);
+    m_bActivated = true;
+  }
+}
 void CFrameRunAnalysis::UpdateOutputText()
 {
-  if( m_pButtonDetails->GetValue())
+  wxString sValue;
+  wxString sValueError;
+  const wxString SPACER("\n--------------------\n\n");
+  long nCurrent = -1;
+  long nCount = (long)m_DirList.GetCount();
+  long nInsertionPoint = m_pTextOutput->GetInsertionPoint();
+  long nSize = (long) m_pTextOutput->GetValue().Len();
+  long nStart = 0;
+  long nEnd = nCount;
+  int nItemCount = m_pListDir->GetSelectedItemCount();
+  bool bDoAll = (nCount == 1) || (nCount && !nItemCount);
+
+  if(m_pAnalysis != NULL)
   {
-    wxString sValue;
-    const wxString SPACER("\n--------------------\n\n");
-    long nCurrent = -1;
-    long nCount = (long)m_DirList.GetCount();
-    long nInsertionPoint = m_pTextOutput->GetInsertionPoint();
-    long nSize = (long) m_pTextOutput->GetValue().Len();
-    long nStart = 0;
-    long nEnd = nCount;
-    int nItemCount = m_pListDir->GetSelectedItemCount();
-    bool bDoAll = (nCount == 1);
-
-    if(m_pAnalysis != NULL)
+    nCurrent = m_pAnalysis->GetDirEntry()->GetIndex();
+    if(!nItemCount)
     {
-      nCurrent = m_pAnalysis->GetDirEntry()->GetIndex();
-      if(!nItemCount)
-      {
-        nStart = nCurrent;
-        nEnd = nCurrent + 1;
-        bDoAll = true;
-      }
+      nStart = nCurrent;
+      nEnd = nCurrent + 1;
+      bDoAll = true;
     }
-    size_t nAlloc = bDoAll ? 1 : nItemCount;
-    nAlloc <<= 13;
-    sValue.Alloc(nAlloc);
+  }
+  wxString sTemp;
+  bool bOldAnalysis = m_bFile;
+  size_t nAlloc = bDoAll ? 1 : nItemCount;
+  sValue.Alloc(nAlloc << 13);
+  sValueError.Alloc(nAlloc << 5);
 
-    for(long i = nStart; i < nEnd; i++)
+  for(long i = nStart; i < nEnd; i++)
+  {
+    if(bDoAll || m_pListDir->IsSelected(i))
     {
-      if(bDoAll || m_pListDir->IsSelected(i))
+      CDirEntry *pEntry = m_DirList.At(i);
+      bOldAnalysis = pEntry->OlderThanErrorLog();
+      if(sValue.Len())
       {
-        if(sValue.Len())
+        sValue.Append(SPACER);
+      }
+      if (sValueError.Len())
+      {
+        sValueError.Append(SPACER);
+      }
+
+      sValue.Append(pEntry->GetRunOutput());
+      if (!bOldAnalysis)
+      {
+        if ((nItemCount > 1) || (bDoAll && nCount > 1))
         {
-          sValue.Append(SPACER);
+          sValueError.Append(pEntry->GetInputDir());
+          sValueError.Append("\n\n");
         }
-        sValue.Append(m_DirList.At(i)->GetRunOutput());
+        if (pEntry->ErrorCount())
+        {
+          nwxString::Join(pEntry->GetErrors(), &sTemp, '\n');
+        }
+        else
+        {
+          sTemp.Empty();
+        }
+        if (sTemp.IsEmpty())
+        {
+          sTemp = wxT("No errors found.\n");
+        }
+        else
+        {
+          sTemp.Append("\n");
+        }
+        sValueError.Append(sTemp);
       }
     }
-    m_pTextOutput->SetValue(sValue);
-//    size_t nLen = sValue.Len();
-    if( (!nSize) || ((long)sValue.Len() <= nInsertionPoint) )
-    {
-      m_pTextOutput->SetInsertionPointEnd();
-    }
-    else
-    {
-      m_pTextOutput->SetInsertionPoint(nInsertionPoint);
-    }
+  }
+  if (bOldAnalysis)
+  {
+    sValueError = wxT(
+      "This feature is not available for files created in a version of OSIRIS prior to 2.15.\n");
+  }
+  m_pTextOutput->SetValue(sValue);
+  m_pTextErrors->SetValue(sValueError);
+  m_pTextErrors->SetInsertionPointEnd();
+  if( (!nSize) || ((long)sValue.Len() <= nInsertionPoint) )
+  {
+    m_pTextOutput->SetInsertionPointEnd();
+  }
+  else
+  {
+    m_pTextOutput->SetInsertionPoint(nInsertionPoint);
   }
 }
 
@@ -537,7 +621,6 @@ void CFrameRunAnalysis::OnTimer(wxTimerEvent &)
   if(m_pAnalysis != NULL)
   {
     bool bMod =
-      m_pButtonDetails->GetValue() &&
       m_pListDir->IsSelected(m_pAnalysis->GetDirEntry()->GetIndex())
       ;
     bool bData = bMod && m_pAnalysis->IsOutputModified();
@@ -675,6 +758,8 @@ void CFrameRunAnalysis::OnClose(wxCloseEvent &e)
   }
 }
 
+
+#if 0
 void CFrameRunAnalysis::OnDetails(wxCommandEvent &)
 {
   bool bShow = m_pButtonDetails->GetValue();
@@ -733,7 +818,13 @@ void CFrameRunAnalysis::OnDetails(wxCommandEvent &)
   }
   m_pSizer->Layout();
 }
+#endif
 
+void CFrameRunAnalysis::OnSplitterChange(wxSplitterEvent &)
+{
+  int n = m_pSplitter->GetSashPosition();
+  CParmOsiris::GetGlobal()->SetAnalysisSplitPos(n);
+}
 void CFrameRunAnalysis::OnButtonReAnalyze(wxCommandEvent &)
 {
   CParmOsiris parms(m_parmOsiris);
@@ -865,11 +956,9 @@ void CFrameRunAnalysis::OnActivate(wxListEvent &e)
 }
 void CFrameRunAnalysis::OnSelectionChanged(wxListEvent &)
 {
-  if(m_pButtonDetails->GetValue())
-  {
-    m_pTextOutput->SetValue(wxEmptyString);
-    UpdateOutputText();
-  }
+  m_pTextOutput->SetValue(wxEmptyString);
+  m_pTextErrors->SetValue(wxEmptyString);
+  UpdateOutputText();
   UpdateButtonState();
 }
 
@@ -1006,6 +1095,7 @@ void CFrameRunAnalysis::_Run()
     }
     SetTitle(sTitle);
   }
+  UpdateOutputText();
   m_pGauge->SetValue(0);
 }
 
@@ -1096,21 +1186,27 @@ void CFrameRunAnalysis::OnEndProcess(wxProcessEvent &e)
   }
   e.Skip(true);
 }
+IMPLEMENT_PERSISTENT_SIZE(CFrameRunAnalysis)
+IMPLEMENT_ABSTRACT_CLASS(CFrameRunAnalysis, CMDIFrame)
 
 BEGIN_EVENT_TABLE(CFrameRunAnalysis,CMDIFrame)
 EVT_CLOSE(CFrameRunAnalysis::OnClose)
-
+EVT_PERSISTENT_SIZE(CFrameRunAnalysis)
 EVT_BUTTON(IDbuttonSelectAll,CFrameRunAnalysis::OnButtonSelectAll)
 EVT_BUTTON(IDbuttonClear,CFrameRunAnalysis::OnButtonClear)
 EVT_BUTTON(IDbuttonCancel,CFrameRunAnalysis::OnButtonCancel)
 EVT_BUTTON(IDbuttonCancelAll,CFrameRunAnalysis::OnButtonCancelAll)
 EVT_BUTTON(IDbuttonView,CFrameRunAnalysis::OnButtonView)
 EVT_BUTTON(IDbuttonReAnalyze,CFrameRunAnalysis::OnButtonReAnalyze)
+EVT_COMMAND_ENTER(IDsplitterWindow, CFrameRunAnalysis::OnCheckSplitter)
+  // actually CMDIFrame::OnCheckSplitter
+EVT_SPLITTER_SASH_POS_CHANGED(IDsplitterWindow, CFrameRunAnalysis::OnSplitterChange)
 
 EVT_LIST_ITEM_SELECTED(IDlistProcesses, CFrameRunAnalysis::OnSelectionChanged)
 EVT_LIST_ITEM_DESELECTED(IDlistProcesses, CFrameRunAnalysis::OnSelectionChanged)
 EVT_LIST_ITEM_ACTIVATED(IDlistProcesses, CFrameRunAnalysis::OnActivate)
 
-EVT_TOGGLEBUTTON(IDbuttonDetails, CFrameRunAnalysis::OnDetails)
+//EVT_TOGGLEBUTTON(IDbuttonDetails, CFrameRunAnalysis::OnDetails)
 EVT_END_PROCESS(IDprocess,CFrameRunAnalysis::OnEndProcess)
 END_EVENT_TABLE()
+

@@ -87,6 +87,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_nMinLadderInterlocusRFU);
   CP(m_nSampleDetectionThreshold);
   CP(m_sAnalysisOverride);
+  CP(m_nAnalysisSplitPos);
   CP(m_anChannelRFU);
   CP(m_anChannelDetection);
   CP(m_bTimeStampSubDir);
@@ -256,6 +257,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nMinLadderInterlocusRFU)
   CP(m_nSampleDetectionThreshold)
   CP(m_sAnalysisOverride)
+  CP(m_nAnalysisSplitPos)
   CP(m_anChannelRFU)
   CP(m_anChannelDetection)
   CP(m_bTimeStampSubDir)
@@ -264,9 +266,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   //  CMF settings
 
   CP(m_sCMFsourceLab)
-  CP(m_sCMFdestLab)
 
   if(!bRtn) {}
+  CP(m_sCMFdestLab)
   CP(m_sCMFdefaultSample)
   CP(m_sCMFbatchFormat)
   CP(m_sCMFuserID)
@@ -289,9 +291,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bHideTextToolbar)
   CP(m_bHideSampleToolbar)
   CP(m_bStartupMRU)
-  CP(m_bCheckBeforeExit)
 
   if(!bRtn) {}
+  CP(m_bCheckBeforeExit)
   CP(m_bWarnOnHistory)
   CP(m_dZoomLocusMargin)
 
@@ -320,9 +322,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 
   CP(m_bPlotDataAnalyzed)
   CP(m_bPlotDataRaw)
-  CP(m_bPlotDataLadder)
 
   if(!bRtn) {}
+  CP(m_bPlotDataLadder)
   CP(m_bPlotDataBaseline)
   CP(m_bPlotDataXBPS)
   CP(m_bPlotShowILS)
@@ -345,9 +347,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPrintCurveLadderBins)
   CP(m_bPrintCurveDisabledAlleles)
   CP(m_bPrintCurveBaseline)
-  CP(m_bPrintCurveILSvertical)
 
   if(!bRtn) {}
+  CP(m_bPrintCurveILSvertical)
   CP(m_bPrintCurveMinRFU)
   CP(m_bPrintXaxisILSBPS)
   CP(m_nPrintXscale)
@@ -367,9 +369,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintChannelsSamples)
   CP(m_nPrintChannelsLadders)
   CP(m_nPrintChannelsNegCtrl)
-  CP(m_bPrintChannelsOmitILS)
 
   if(!bRtn) {}
+  CP(m_bPrintChannelsOmitILS)
   CP(m_bPrintSamplesLadders)
   CP(m_bPrintSamplesPosCtrl)
   CP(m_bPrintSamplesNegCtrl)
@@ -392,12 +394,12 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintPlotPaperWidth)
   CP(m_nPrintPlotPaperHeight)
   CP(m_bPrintPlotLandscape)
+
+  if(!bRtn) {}
   CP(m_nPrintPreviewZoom)
 
   //  XSLT saved parameter info
 
-
-  if(!bRtn) {}
   CP(m_sLastXSLInputFileDir)
   CP(m_bPrivacySeen)
 
@@ -443,6 +445,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterInt("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
   RegisterInt("minRFUsampleDetection", &m_nSampleDetectionThreshold);
   RegisterWxString("AnalysisOverride", &m_sAnalysisOverride);
+  RegisterInt("AnalysisSplitPos", &m_nAnalysisSplitPos);
   RegisterIntVector("ChannelRFU", &m_anChannelRFU);
   RegisterIntVector("ChannelDetection", &m_anChannelDetection);
   RegisterBool("TimeStampSubDir", &m_bTimeStampSubDir);
@@ -622,6 +625,7 @@ void CParmOsiris::SetDefaults()
   m_nMinLadderInterlocusRFU = -1;
   m_nSampleDetectionThreshold = -1;
   m_sAnalysisOverride.Empty();
+  m_nAnalysisSplitPos = 0;
   m_anChannelRFU.clear();
   m_anChannelRFU.push_back(-1);
   m_anChannelDetection.clear();

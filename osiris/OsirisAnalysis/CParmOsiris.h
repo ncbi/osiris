@@ -171,6 +171,10 @@ public:
   {
     return m_sAnalysisOverride;
   }
+  int GetAnalysisSplitPos() const
+  {
+    return m_nAnalysisSplitPos;
+  }
   const vector<int> &GetChannelRFU() const
   {
     return m_anChannelRFU;
@@ -843,6 +847,10 @@ public:
   {
     __SET_VALUE(m_sAnalysisOverride, s);
   }
+  void SetAnalysisSplitPos(int n)
+  {
+    __SET_VALUE(m_nAnalysisSplitPos, n);
+  }
   void SetChannelRFU(const vector<int> &an)
   {
     __SET_VALUE(m_anChannelRFU, an);
@@ -1455,6 +1463,7 @@ protected:
   int m_nMinLadderInterlocusRFU;
   int m_nSampleDetectionThreshold;
   wxString m_sAnalysisOverride;
+  int m_nAnalysisSplitPos;
   vector<int> m_anChannelRFU;
   vector<int> m_anChannelDetection;
   bool m_bTimeStampSubDir;

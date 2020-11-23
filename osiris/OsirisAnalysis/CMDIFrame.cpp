@@ -249,6 +249,43 @@ void CMDIFrame::UpdateStatusBar()
 #endif
 }
 
+void CMDIFrame::OnCheckSplitter(wxCommandEvent &e)
+{
+  // this is a workaround for a bug where the splitter does not
+  // appear where specified when the window is created while the
+  // MDI clients are maximized
+  wxSplitterWindow *pWin = (wxSplitterWindow *)e.GetEventObject();
+  wxSize sz = pWin->GetSize();
+  if (pWin->IsSplit() && sz.x > 1 && sz.y > 1)
+  {
+    const int THRESHOLD = 10;
+    int nSelect = e.GetInt();
+    int nCurrent = pWin->GetSashPosition();
+    int nMax = (pWin->GetSplitMode() == wxSPLIT_VERTICAL) ? sz.GetWidth() : sz.GetHeight();
+    if ((nCurrent < 0) != (nSelect < 0))
+    {
+      if (nCurrent < 0)
+      {
+        nCurrent += nMax;
+      }
+      else
+      {
+        nCurrent -= nMax;
+      }
+    }
+    if (nSelect < nMax && nSelect > -nMax)
+    {
+      // selection is within range
+      int nDiff = nCurrent - nSelect;
+
+      if (nDiff > THRESHOLD || nDiff < -THRESHOLD)
+      {
+        pWin->SetSashPosition(nSelect, true);
+      }
+    }
+  }
+}
+
 void CMDIFrame::OnActivate(wxActivateEvent &e)
 {
   if(!e.GetActive())

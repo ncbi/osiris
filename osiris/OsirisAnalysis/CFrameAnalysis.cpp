@@ -1431,42 +1431,6 @@ void CFrameAnalysis::OnChangeAlertView(wxCommandEvent &)
 {
   ShowStatusText(false);
 }
-void CFrameAnalysis::OnCheckSplitter(wxCommandEvent &e)
-{
-    // this is a workaround for a bug where the splitter does not
-    // appear where specified when the window is created while the
-    // MDI clients are maximized
-  wxSplitterWindow *pWin = (wxSplitterWindow *)e.GetEventObject();
-  if(pWin->IsSplit())
-  {
-    wxSize sz = pWin->GetSize();
-    const int THRESHOLD = 10;
-    int nSelect = e.GetInt();
-    int nCurrent = pWin->GetSashPosition();
-    int nMax = (pWin->GetSplitMode() == wxSPLIT_VERTICAL) ? sz.GetWidth() : sz.GetHeight();
-    if( (nCurrent < 0) != (nSelect < 0) )
-    {
-      if(nCurrent < 0)
-      {
-        nCurrent += nMax;
-      }
-      else
-      {
-        nCurrent -= nMax;
-      }
-    }
-    if(nSelect < nMax && nSelect > -nMax)
-    {
-      // selection is within range
-      int nDiff = nCurrent - nSelect;
-    
-      if(nDiff > THRESHOLD || nDiff < -THRESHOLD)
-      {
-          pWin->SetSashPosition(nSelect,true);
-      }
-    }
-  }
-}
 void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
 {
   if(_XmlFile() && m_pOARfile->CanEditArtifacts() &&
@@ -3691,10 +3655,9 @@ EVT_SIZE(CFrameAnalysis::_OnResize)
 EVT_CONTEXT_MENU(CFrameAnalysis::OnContextMenu)
 EVT_COMMAND(IDhistoryButton,CEventHistory,CFrameAnalysis::OnHistoryUpdate)
 EVT_COMMAND(wxID_ANY,wxEVT_ALERT_VIEW_CHANGED,CFrameAnalysis::OnChangeAlertView)
-EVT_COMMAND_ENTER(IDsplitterWindow,CFrameAnalysis::OnCheckSplitter)
-
+EVT_COMMAND_ENTER(IDsplitterWindow, CFrameAnalysis::OnCheckSplitter)
+  // actually CMDIFrame::OnCheckSplitter
 EVT_BUTTON(IDExportCMF,CFrameAnalysis::OnExportCMF)
-//EVT_BUTTON(IDmenuEditCell,  CFrameAnalysis::OnEdit)
 EVT_TOGGLEBUTTON(IDmenuTogglePreview,  CFrameAnalysis::OnTogglePreview)
 EVT_BUTTON(IDmenuSampleTile,CFrameAnalysis::OnShowSampleAndGraphic)
 EVT_BUTTON(IDmenuDisplaySample,CFrameAnalysis::OnShowSample)

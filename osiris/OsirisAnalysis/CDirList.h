@@ -110,7 +110,6 @@ public:
     m_nNdx = -1; //ndx;
     RegisterAll(true);
   }
-
   bool InputDirExists() const
   {
     return m_bInputExists;
@@ -151,6 +150,47 @@ public:
   {
     m_bOutputModified = true;
     m_sRunOutput.Append(s);
+  }
+  void AddError(const wxString &s)
+  {
+    if ((m_vsErrors->size() == 1) && m_vsErrors->at(0).IsEmpty())
+    {
+      m_vsErrors->clear();
+    }
+    m_vsErrors->push_back(s);
+  }
+  void AddBlankErrorIfNeeded()
+  {
+    if (m_vsErrors->empty())
+    {
+      m_vsErrors->push_back(wxEmptyString);
+    }
+  }
+  bool OlderThanErrorLog()
+  {
+    // return true if this is from a file
+    // created with an older version of OSIRIS
+    // that didn't save errors
+    return !m_vsErrors->size();
+  }
+  size_t ErrorCount()
+  {
+    size_t nRtn = m_vsErrors->size();
+    if ((nRtn == 1) && !m_vsErrors->at(0).Len())
+    {
+      // single empty error to mark that version
+      // that created this object supported errors
+      nRtn = 0;
+    }
+    return nRtn;
+  }
+  const vector<wxString> &GetErrors() const
+  {
+    return m_vsErrors.GetVector();
+  }
+  void AddPing(int n)
+  {
+    m_vnPings.push_back(n);
   }
 
   const wxString &GetInputDir() const
@@ -289,6 +329,8 @@ private:
           // but not registered in RegisterAll():
 //  wxString m_sOAR;
   wxString m_sRunOutput;
+  nwxXmlPersistVectorWxString m_vsErrors;
+  vector<int> m_vnPings;
   wxDateTime m_dtStart;
   wxDateTime m_dtStop;
   const wxString *m_psStatus;
@@ -342,6 +384,7 @@ public:
   }
   CDirList &operator = (const CDirList &);
   CDirEntry *AddEntry(const wxString &sInputDir, const wxString &sOutputDir);
+  void AddBlankErrorsIfNeeded();
   virtual wxDirTraverseResult OnDir(const wxString& dirname);
   virtual wxDirTraverseResult OnFile(const wxString& filename);
   virtual wxDirTraverseResult OnOpenError(const wxString& openerrorname);

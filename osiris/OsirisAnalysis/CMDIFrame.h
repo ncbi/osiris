@@ -185,6 +185,7 @@ public:
   virtual void OnActivateCB(wxActivateEvent &e);
 
   void RaiseWindow();
+  void OnCheckSplitter(wxCommandEvent &e);
   void OnActivate(wxActivateEvent &e);
   void OnFocusSet(wxFocusEvent &e);
   void OnFocusKill(wxFocusEvent &e);

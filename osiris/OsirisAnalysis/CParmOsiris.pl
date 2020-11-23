@@ -74,6 +74,7 @@ my $VARLIST =
   ["m_nMinLadderInterlocusRFU", "int", "-1", "minRFUladderInterlocus"],
   ["m_nSampleDetectionThreshold", "int", "-1", "minRFUsampleDetection"],
   ["m_sAnalysisOverride","wxString"],
+  ["m_nAnalysisSplitPos", "int"],
   
   ##  this is awful - putting channel RFU and Detection in arrays
   

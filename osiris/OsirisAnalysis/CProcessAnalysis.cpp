@@ -49,6 +49,8 @@ CProcessAnalysis::CProcessAnalysis(
     m_pDirEntry(pDirEntry),
     m_bInError(false)
 {
+  pDirEntry->AddBlankErrorIfNeeded();
+
 #define END_LINE sStdin.Append(";\n")
 
 #define APPEND_LINE(name,value) \
@@ -70,7 +72,8 @@ CProcessAnalysis::CProcessAnalysis(
   const CParmOsiris *pParm = pDirEntry->GetParmOsiris();
   const ConfigDir *pDir = mainApp::GetConfig();
   CPersistKitList *pKitList = mainApp::GetKitList();
-  
+
+
   sStdin.Alloc(4096);
   APPEND_LINE("InputDirectory",pParm->GetInputDirectory());      //  1
   APPEND_LINE("LadderDirectory",pDir->GetExeConfigPath());       //  2
@@ -210,7 +213,7 @@ void CProcessAnalysis::_CheckRunningError()
   if (n >= 0)
   {
     wxString s = m_sRunningError.Mid(0, n);
-    m_asErrors.Add(s);
+    m_pDirEntry->AddError(s);
     mainApp::Ping2(PING_EVENT, "AnalysisError", "msg", s);
     s += m_sRunningError.Mid(n + STR_ARR_LEN(ERROR_TAG_END));
     m_pDirEntry->AppendRunOutput(s);
@@ -249,6 +252,7 @@ void CProcessAnalysis::ProcessLine(
   {
     strcpy(BUFFER, p + STR_ARR_LEN(PING));
     *strstr(BUFFER, PING_END) = 0;
+    m_pDirEntry->AddPing(atoi(BUFFER));
     mainApp::Ping2(PING_EVENT, "AnalysisAlert", "Alert", BUFFER);
   }
   else if (STARTS_WITH(ERROR_TAG))

@@ -525,7 +525,6 @@ public:
   void OnTogglePreview(wxCommandEvent &);
   void OnHistoryUpdate(wxCommandEvent &);
   void OnChangeAlertView(wxCommandEvent &);
-  void OnCheckSplitter(wxCommandEvent &);
   void OnHistoryView(wxCommandEvent &);
   void OnSortGrid(wxCommandEvent &);
   void OnExportCMF(wxCommandEvent &);
