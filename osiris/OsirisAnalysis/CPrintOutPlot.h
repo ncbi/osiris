@@ -54,7 +54,9 @@ public:
   CPrintOutPlot(CFramePlot *pFrame, bool bPreview = false) :
     CPrintOut(bPreview),
     m_pFramePlot(pFrame)
-  {}
+  {
+    _SetPrintoutType(wxT("Plot"));
+  }
 
   virtual ~CPrintOutPlot();
   virtual wxWindow *GetParent();

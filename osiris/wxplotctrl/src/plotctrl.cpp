@@ -452,9 +452,9 @@ BEGIN_EVENT_TABLE(wxPlotCtrl, wxWindow )
     EVT_TIMER            ( wxID_ANY, wxPlotCtrl::OnTimer )
     EVT_TEXT_ENTER       ( wxID_ANY, wxPlotCtrl::OnTextEnter)
 #ifdef __WXMSW__
-  EVT_MOUSE_CAPTURE_LOST(wxPlotCtrl::OnMouseCaptureLost)
+    EVT_MOUSE_CAPTURE_LOST( wxPlotCtrl::OnMouseCaptureLost )
 #endif
-  END_EVENT_TABLE()
+    END_EVENT_TABLE()
 
 void wxPlotCtrl::Init()
 {
@@ -2333,10 +2333,12 @@ void wxPlotCtrl::SetAreaMouseCursor(wxStockCursor cursorid)
         m_area->SetCursor(wxCursor(cursorid));
 }
 
-void wxPlotCtrl::OnSize( wxSizeEvent& )
+void wxPlotCtrl::OnSize( wxSizeEvent &e )
 {
     _DoSize();
+    OnSizeCallback(e);
 }
+void wxPlotCtrl::OnSizeCallback(wxSizeEvent &) { ; } // virtual function
 
 bool wxPlotCtrl::RenderScrollbars()
 {
@@ -2383,6 +2385,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
     m_clientRect = wxRect(0, 0, size.x-sb_width, size.y-sb_width);
 
     // title and label positions, add padding here
+    m_titleRect.y = m_border; // 
     wxRect titleRect  = m_show_title  
       ? wxRect(m_titleRect).Inflate(m_border)
       : wxRect(0,0,boundingRect.GetWidth(),m_border);
@@ -2441,7 +2444,7 @@ void wxPlotCtrl::DoSize(const wxRect &boundingRect, bool set_window_sizes)
 
     m_titleRect.x = m_areaRect.x + ( m_areaRect.width - m_titleRect.GetWidth() ) / 2;
     //m_titleRect.x = m_clientRect.width/2-m_titleRect.GetWidth()/2; center on whole plot
-    m_titleRect.y = m_border;
+    // m_titleRect.y = m_border;  removed and set above because it was inconsistent
 
     m_xLabelRect.x = m_areaRect.x + m_areaRect.width/2 - m_xLabelRect.width/2;
     m_xLabelRect.y = m_xAxisRect.GetBottom() + m_border;
@@ -2959,8 +2962,7 @@ void wxPlotCtrl::RestoreSettings(wxPlotCtrlBackup *pBackup)
 void wxPlotCtrl::DrawInit(
   const wxRect &boundingRect,
   double dpi,
-  bool bForcePrintFont,
-  const wxPlotCtrlBackup &plotBackup)
+  bool bForcePrintFont)
 {
 
   int nHold_CursorSize = m_cursorMarker.GetSize().x;
@@ -3019,7 +3021,7 @@ void wxPlotCtrl::DrawInit(
   //  mvoed from wxPlotCtrl::DrawWholePlot
   m_zoom = wxPoint2DDouble(
     ptHold_zoom.m_x * double(m_areaClientRect.width) / rectHold_client.width,
-    plotBackup.old_zoom.m_y * double(m_areaClientRect.height) / rectHold_client.height);
+    ptHold_zoom.m_y * double(m_areaClientRect.height) / rectHold_client.height);
 
 #ifdef __WXDEBUG__
   puts(
@@ -3031,7 +3033,7 @@ int wxPlotCtrl::GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundin
 {
   // get the height of string s if rendered to the dc using the AxisLabelFont
   wxPlotCtrlBackup plotBackup(this);
-  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  DrawInit(boundingRect, dpi, bForcePrintFont);
   wxCoord xExtent = 0, yExtent, descExtent, leadExtent;
   dc->SetFont(GetAxisFont());
   dc->GetTextExtent(s, &xExtent, &yExtent, &descExtent, &leadExtent);
@@ -3040,7 +3042,7 @@ int wxPlotCtrl::GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundin
 wxSize wxPlotCtrl::GetXAxisLabelSize(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont)
 {
   wxPlotCtrlBackup plotBackup(this);
-  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  DrawInit(boundingRect, dpi, bForcePrintFont);
   int nHeight = m_border;
   wxCoord xExtent = 0;
   if (GetShowXAxisLabel() && !m_xLabelRect.IsEmpty())
@@ -3057,7 +3059,7 @@ int wxPlotCtrl::DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi,
   wxCHECK_MSG(dc, 0, wxT("invalid dc"));
   wxCHECK_MSG(dpi > 0, 0, wxT("Invalid dpi for plot drawing"));
   wxPlotCtrlBackup plotBackup(this);
-  DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+  DrawInit(boundingRect, dpi, bForcePrintFont);
   int nHeight = m_border;
   if (GetShowXAxisLabel() && !m_xLabelRect.IsEmpty())
   {
@@ -3103,7 +3105,7 @@ void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi
     wxCHECK_RET(dc, wxT("invalid dc"));
     wxCHECK_RET(dpi > 0, wxT("Invalid dpi for plot drawing"));
     wxPlotCtrlBackup plotBackup(this);
-    DrawInit(boundingRect, dpi, bForcePrintFont, plotBackup);
+    DrawInit(boundingRect, dpi, bForcePrintFont);
 
     //
     //  DJH - 2/24/2009  added parameter to determine whether AutoCalcTicks()

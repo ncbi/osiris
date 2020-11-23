@@ -114,7 +114,7 @@ class nwxPlotDrawerXLabel : public nwxPlotDrawerLabel
 {
 public:
   nwxPlotDrawerXLabel(wxPlotCtrl *pOwner) :
-      nwxPlotDrawerLabel(pOwner),m_nOffset(1) {}
+      nwxPlotDrawerLabel(pOwner),m_nOffset(1), m_bDrawBoxes(true) {}
   void SetOffset(int nPixel)
   {
     m_nOffset = nPixel;
@@ -127,10 +127,19 @@ public:
   {
     m_nOffset = nwxPlotDrawerLabel::DPIpixelOffset(dDPI);
   }
+  bool GetDrawBoxes()
+  {
+    return m_bDrawBoxes;
+  }
+  void SetDrawBoxes(bool b)
+  {
+    m_bDrawBoxes = b;
+  }
   virtual ~nwxPlotDrawerXLabel() {}
   virtual void Draw(wxDC *dc, bool refresh);
 private:
   int m_nOffset;
+  bool m_bDrawBoxes;
 };
 
 #endif

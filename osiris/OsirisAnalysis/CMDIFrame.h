@@ -83,13 +83,17 @@ public:
   static const wxString SHOW_TOOLBARS;
   static const wxString HIDE_TOOLBAR;
   static const wxString SHOW_TOOLBAR;
+  static const wxString HIDE_TOOLBAR_PREVIEW;
+  static const wxString SHOW_TOOLBAR_PREVIEW;
+  static const wxString SHOW_PLOT_SCROLLBARS;
+  static const wxString HIDE_PLOT_SCROLLBARS;
   virtual int GetType() = 0;
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual wxMenu *GetMenu();
   virtual wxMenu *GetTableMenu();
   virtual wxMenu *GetGraphMenu();
   virtual bool Destroy();
-  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false);
+  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false, int nID = IDmenuShowHideToolbar);
   virtual wxString GetFileName();
   virtual void UpdateHistory();
   virtual void UpdateLadderLabels();

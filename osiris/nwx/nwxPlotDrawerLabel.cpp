@@ -44,6 +44,7 @@
 #include "nwx/nwxPlotDrawerLabel.h"
 #include "nwx/nwxPlotShade.h"
 #include "wx/plotctrl/plotctrl.h"
+#include "nwx/nwxColorUtil.h"
 
 const int nwxPointLabel::ALIGN_DEFAULT = (wxALIGN_CENTRE_HORIZONTAL | wxALIGN_BOTTOM);
 //  bitwise flags
@@ -191,6 +192,7 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     int nAlign;
     wxColour cBG = pdc->GetTextBackground();
     wxColour cFG = pdc->GetTextForeground();
+    wxColour cText(*wxBLACK);
 
     wxBrush brushSave = pdc->GetBrush();
     wxPen penSave = pdc->GetPen();
@@ -349,7 +351,6 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
     {
       const nwxPointLabel *pLabel = m_vpLabel.at(i);
       const wxRect &rrect(m_vRect.at(i));
-      pdc->SetTextForeground(pLabel->GetTextColour());
       pen.SetColour(pLabel->GetColour());
       pdc->SetPen(pen);
       nX = rrect.GetX();
@@ -361,11 +362,21 @@ void nwxPlotDrawerLabel::Draw(wxDC *pdc, bool)
         pdc->SetBrush(*wxTRANSPARENT_BRUSH);
         pdc->DrawRectangle(rrect);
       }
+      cText = pLabel->GetTextColour();
+      if (nStyle & nwxPointLabel::STYLE_DISABLED)
+      {
+        nwxColorUtil::Brighten(&cText);
+      }
+      pdc->SetTextForeground(cText);
       pdc->DrawText(pLabel->GetLabel(),nX + PAD_X,nY + PAD_Y);
       if(nStyle & nwxPointLabel::STYLE_DISABLED)
       {
-        wxPoint pt1(nX,nY);
-        wxPoint pt2(nX + rrect.GetWidth(),nY + rrect.GetHeight());
+        wxPoint pt1(rrect.GetLeft(), rrect.GetBottom());
+        wxPoint pt2(rrect.GetRight(), rrect.GetTop());
+        wxPen pen2x(pen);
+        int nWidth = pen2x.GetWidth();
+        pen2x.SetWidth(nWidth << 1);
+        pdc->SetPen(pen2x);
         pdc->DrawLine(pt1,pt2);
       }
     }
@@ -411,11 +422,15 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
 {
   SET_LABEL::iterator itr;
   wxRect rect;
-  wxPoint ptArea = m_owner->GetAreaRect().GetPosition();
+  wxRect rectBox;
+  wxRect rectArea = m_owner->GetAreaRect();
+  wxPoint ptArea = rectArea.GetPosition();
   int nx;
+  int nx1, nx2, nx1b, nx2b;
   int ny;
   int hl;
   int nAlign;
+  int nBorder;
   wxColour cBG = pdc->GetTextBackground();
   wxColour cFG = pdc->GetTextForeground();
   wxBrush brushSave = pdc->GetBrush();
@@ -427,12 +442,14 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   wxCoord nClipY = 0;
   wxCoord nClipW = 0;
   wxCoord nClipH = 0;
+  bool bDrawBoxes = GetDrawBoxes();
   // if there are multiple clipping regions, this could be a problem
   pdc->GetClippingBox(&nClipX,&nClipY,&nClipW,&nClipH);
   if(nClipW)
   {
 	  pdc->DestroyClippingRegion();
   }
+  pdc->SetClippingRegion(rectArea.GetLeft(), 0, rectArea.GetWidth(), rectArea.GetTop());
 
   //  clear rectangle
   {
@@ -448,7 +465,8 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     pdc->DrawRectangle(clearRect);
   }
   pdc->SetFont(fontUse);
-  pdc->SetTextBackground(wxColour(255,255,255,wxALPHA_OPAQUE));
+  pdc->SetTextBackground(*wxWHITE);
+  pdc->SetBackgroundMode(bDrawBoxes ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT);
 
   size_t nSize(m_setLabels.size());
   m_vRect.clear();
@@ -456,13 +474,21 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
   m_vpLabel.reserve(nSize);
   m_vRect.reserve(nSize);
 
+  wxBrush brushRect(*wxWHITE_BRUSH);
+  wxPen penRect(*wxWHITE_PEN);
+  penRect.SetStyle(wxPENSTYLE_SOLID);
+  penRect.SetWidth(1);
+  brushRect.SetStyle(wxBRUSHSTYLE_SOLID);
+
   for(itr = m_setLabels.begin();
     itr != m_setLabels.end();
     ++itr)
   {
     const nwxPointLabel &label(*itr);
     nAlign = label.GetAlign();
-    nx = m_owner->GetClientCoordFromPlotX(label.GetX());
+    nx1 = m_owner->GetClientCoordFromPlotX(label.GetX());
+    nx2 = m_owner->GetClientCoordFromPlotX(label.GetX2());
+    nx = (nx1 + nx2) >> 1;
     ny = ptArea.y;
 
     pdc->GetMultiLineTextExtent(
@@ -476,6 +502,12 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     {
       nx -= rect.width;
     }
+#if 0
+    if (nx < nx1)
+    {
+      nx = nx1;
+    }
+#endif
     if(nAlign & wxALIGN_CENTER_VERTICAL)
     {
       ny -= (rect.height >> 1);
@@ -484,22 +516,51 @@ void nwxPlotDrawerXLabel::Draw(wxDC *pdc, bool)
     {
       ny -= (rect.height + m_nOffset);
     }
-    if(nx > -rect.width)
+    if((nx1 < rectArea.GetWidth()) && (nx2 > 0))
     {
+      // we have some overlap
       if(nx < 0) { nx = 0; }
       if(ny < 0) { ny = 0; }
       nx += ptArea.x;
+      nx1 += ptArea.x;
+      nx2 += ptArea.x;
       rect.SetX(nx);
       rect.SetY(ny);
+      if (rect.GetRight() > rectArea.GetRight())
+      {
+        // text goes past the right side of the graph
+        nx -= (rect.GetRight() - rectArea.GetRight());
+        rect.SetX(nx);
+      }
+      if (bDrawBoxes)
+      {
+        const wxColour &colourBG(label.GetBackgroundColour());
+        nBorder = (rect.height > 8) ? ((rect.height + 4) >> 3) : 1;
+        nx1b = nx1 - nBorder;
+        nx2b = nx2 + nBorder;
+        if (nx2b > nx1b)
+        {
+          rectBox.SetLeft(nx1b);
+          rectBox.SetTop(rect.GetTop() - nBorder);
+          rectBox.SetRight(nx2b);
+          rectBox.SetBottom(rect.GetBottom() + nBorder);
+
+          penRect.SetColour(label.GetColour());
+          pdc->SetPen(penRect);
+          brushRect.SetColour(colourBG);
+          pdc->SetBrush(brushRect);
+          pdc->DrawRectangle(rectBox);
+        }
+      }
       pdc->SetTextForeground(label.GetTextColour());
-      pdc->DrawRectangle(rect);
-      pdc->DrawText(label.GetLabel(),nx,ny);
+      pdc->DrawText(label.GetLabel(), nx, ny);
       rect.x -= ptArea.x;  // set to plot area coordinates
       rect.y -= ptArea.y;
       m_vpLabel.push_back(&label);
       m_vRect.push_back(rect);
     }
   }
+  pdc->DestroyClippingRegion();
   if(nClipW)
   {
 	  // this will be a problem if there was more than one clipping region

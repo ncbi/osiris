@@ -40,6 +40,13 @@
 #else
 #define PLF "\n"
 #endif
+const wxString CDialogPlotMessageFind::MSG_FALLBACK(
+  "This plot was not initiated from an analysis window and therefore" PLF
+  "this feature is unavailable.  Do you wish to search for an" PLF
+  "associated OSIRIS Analysis File now?"
+);
+
+
 const wxString CDialogPlotMessageFind::MSG_HISTORY(
 "This plot was not initiated from an analysis window and therefore" PLF
 "historic data are not yet available.  Do you wish to search for an" PLF
@@ -52,6 +59,18 @@ const wxString CDialogPlotMessageFind::MSG_EDIT(
 "The analysis file has not yet been identified because this plot" PLF
 "was not initiated from an analysis window.  Would you like to" PLF
 "search for an associated OSIRIS Analysis File now?"
+);
+
+const wxString CDialogPlotMessageFind::MSG_BINS(
+  "This plot was not initiated from an analysis window and ladder" PLF
+  "allele bin data are not available.  Do you wish to search for an" PLF
+  "associated OSIRIS Analysis File now?"
+);
+
+const wxString CDialogPlotMessageFind::MSG_DISABLED_ALLELES(
+  "This plot was not initiated from an analysis window and allele" PLF
+  "status is not available.  Do you wish to search for an" PLF
+  "associated OSIRIS Analysis File now?"
 );
 
 const wxString CDialogPlotMessageFind::MSG_TABLE(

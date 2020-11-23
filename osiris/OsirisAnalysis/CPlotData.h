@@ -531,9 +531,24 @@ class CPlotChannel : public nwxXmlPersist
 {
 public:
   friend class CPlotData;
-  CPlotChannel()  : m_IOpeak(true)
+  CPlotChannel()  : 
+    m_dMinRfu(0.0),
+    m_dWidthMaxPeakTime(0.0),
+    m_dMaxPeakTime(0.0),
+    m_nr(0),
+    m_nBaselineStart(0),
+    m_nBaselineStartObsolete(0),
+    m_nPointCount(0),
+    m_pdRaw(NULL),
+    m_pdAnalyzed(NULL),
+    m_pdLadder(NULL),
+    m_pdBaseline(NULL),
+    m_pdPeakTime(NULL),
+    m_pdPeakBPS(NULL),
+    m_IOpeak(true)
   {
     const size_t POINT_COUNT(16384);
+
     m_pdRaw = NULL;
     m_pdAnalyzed = NULL;
     m_pdLadder = NULL;
@@ -560,6 +575,18 @@ public:
   virtual void Init()
   {
     Init((void *)this);
+  }
+  double GetMaxPeakTime(double *pdWidth = NULL)
+  {
+    if (m_dMaxPeakTime < 0.01)
+    {
+      _SetupMaxPeakTime();
+    }
+    if (pdWidth != NULL)
+    {
+      *pdWidth = m_dWidthMaxPeakTime;
+    }
+    return m_dMaxPeakTime;
   }
   size_t GetPointCount();
   size_t GetBaselinePointCount() const
@@ -652,6 +679,20 @@ public:
 protected:
   virtual void RegisterAll(bool bInConstructor = false);
 private:
+  void _CheckPeak(IOARpeak *p, double *pdMaxWidth)
+  {
+    double dTime = p->GetTime();
+    if (dTime > m_dMaxPeakTime)
+    {
+      m_dMaxPeakTime = dTime;
+      m_dWidthMaxPeakTime = p->GetWidth();
+      if (m_dWidthMaxPeakTime > *pdMaxWidth)
+      {
+        *pdMaxWidth = m_dWidthMaxPeakTime;
+      }
+    }
+  }
+  void _SetupMaxPeakTime();
   void _Cleanup()
   {
     ClearDoubles();
@@ -724,6 +765,8 @@ private:
   vector<CSamplePeak *> m_vLadderPeak;
   vector<CArtifact *> m_vArtifact;
   double m_dMinRfu;
+  double m_dWidthMaxPeakTime;
+  double m_dMaxPeakTime;
   int m_nr;
   unsigned int m_nBaselineStart; // keeping it because it is in the .plt file
   unsigned int m_nBaselineStartObsolete; // keeping it because it is in the .plt file
@@ -848,6 +891,7 @@ public:
     m_pdX = NULL;
     m_nStart = 0;
     m_nBegin = 0;
+    m_dEndPeakTime = 0.0;
     m_nInterval = 0;
     m_nEnd = 0;
     m_nILS = 0;
@@ -1007,10 +1051,26 @@ public:
   {
     return m_nBegin;
   }
+  unsigned int GetEndPeakTime()
+  {
+    // get the time of rightmost peak or locus
+    if (m_dEndPeakTime < 0.1)
+    {
+      _ComputeEnd();
+    }
+    return m_dEndPeakTime;
+  }
+  double GetEnd(bool bBPS = false)
+  {
+    double dEnd = (double)GetEndPeakTime();
+    double dRtn =
+      bBPS ? TimeToILSBps(dEnd) : dEnd;
+    return dRtn;
+  }
   double GetStartAfterPrimer(bool bBPS = false)
   {
     double dRtn =
-      bBPS ? this->TimeToILSBps((double) m_nBegin)
+      bBPS ? TimeToILSBps((double) m_nBegin)
       : (double)m_nBegin;
     return dRtn;
   }
@@ -1073,6 +1133,8 @@ public:
 protected:
   virtual void RegisterAll(bool b = false);
 private:
+  void _ComputeEnd(); // retieve time of rightmost peak + 3 x width 
+                      // if width not available use 1% of total time
   void _setupILSBps()
   {
     if(!( m_bCannotSetBPS || (m_pdILS_BPs != NULL) ))
@@ -1095,6 +1157,7 @@ private:
   vector<CPlotLocus *> m_vLocus;
   map<unsigned int,CPlotChannel *> m_mapChannels;
       // do not use, except through FindChannel()
+  double m_dEndPeakTime;
   double *m_pdILS_BPs; // OS-917, plot by BPs
   unsigned int m_nStart;
   unsigned int m_nBegin;

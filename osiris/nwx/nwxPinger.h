@@ -95,9 +95,11 @@ public:
   {
     if (sName.Len())
     {
+      wxString sv(sValue);
+      nwxString::NormalizeSpace(&sv);
       m_mapPairs.insert(
         std::multimap<wxString, wxString>::value_type(
-          sName, sValue));
+          sName, sv));
     }
   }
   void Set(const wxString &sName, int nValue)

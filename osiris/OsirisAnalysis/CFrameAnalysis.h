@@ -117,7 +117,7 @@ public:
   virtual wxMenu *GetTableMenu();
   virtual wxMenu *GetGraphMenu();
   virtual int GetType();
-  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false);
+  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false, int nID = IDmenuShowHideToolbar);
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual void OnTimer(wxTimerEvent &);
   virtual wxString GetFileName();
@@ -152,10 +152,12 @@ public:
     {
       m_pPanelToolbar->Show(bShow);
       Layout();
-      SetToolbarMenuLabel(!bShow);
+      SetToolbarMenuLabel(!bShow, false, IDmenuShowHideTableToolbar);
     }
   }
   void ToggleToolbar();
+  void ToggleToolbarPreview();
+  void ToggleScrollbarsPreview();
   bool CanSaveAs() const
   {
     return _XmlFile();
@@ -248,6 +250,7 @@ private:
   {
     if(m_pMenuBar != NULL) {m_pMenuBar->SetPlotMenu(p);}
   }
+  void _UpdateHistoryButtons();
   bool _CheckPromptNewer();
   void _EnablePreview();
   void _DisablePreview();
@@ -330,11 +333,7 @@ private:
   {
     return _IsChannelColumn(m_nLastColSelect);
   }
-  void SetFileNameLabel(const wxString &sFileName)
-  {
-    m_pLabelFile->SetValue(sFileName);
-    m_pLabelFile->SetInsertionPointEnd();
-  }
+  void SetFileNameLabel(const wxString &sFileName);
   static int _ColToType(int nCol)
   {
     int nType = -1;
@@ -365,6 +364,7 @@ private:
     }
     return nCol;
   }
+  void _OnResize(wxSizeEvent &e);
   void _UpdateMenu();
   void _UpdateHistoryMenu(int nRow, int nCol,bool bEnabled = true);
   void _UpdateHistoryMenu(bool bEnabled)
@@ -455,6 +455,8 @@ private:
   int m_nLastRowSelect;
   int m_nEntireRowSelected;
   int m_nNoTimer;
+  int m_nFileNameLabelTimer;
+  int m_nPreviewDelay;
   bool m_bFileError;
 
 

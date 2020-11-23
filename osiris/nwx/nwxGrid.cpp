@@ -314,6 +314,17 @@ bool nwxGrid::CheckAutoExpandRows(wxGrid *pGrid, int nRowsFromBottom, int nAddCo
   }
   return bFound;
 }
+size_t nwxGrid::GetColumnValues(wxGrid *p, int nCol, wxArrayString *pn)
+{
+  int nRow = p->GetNumberRows();
+  pn->Empty();
+  pn->Alloc(nRow);
+  for (int i = 0; i < nRow; ++i)
+  {
+    pn->Add(p->GetCellValue(i, nCol));
+  }
+  return pn->GetCount();
+}
 void nwxGrid::UpdateLabelSizes(wxGrid *p)
 {
   int nRow = p->GetNumberRows();
@@ -326,17 +337,17 @@ void nwxGrid::UpdateLabelSizes(wxGrid *p)
     int n;
     int nWidth = 0;
     p->SetColLabelSize(p->GetRowSize(0) + 2);
-    for(int i = 0; i < nRow; i++)
+    for (int i = 0; i < nRow; i++)
     {
       sLabel = p->GetRowLabelValue(i);
-      if(!sLabel.IsEmpty())
+      if (!sLabel.IsEmpty())
       {
         sz = dc.GetTextExtent(sLabel);
         n = sz.GetWidth();
-        if(n > nWidth) { nWidth = n; }
+        if (n > nWidth) { nWidth = n; }
       }
     }
-    p->SetRowLabelSize(nWidth + 6);
+    p->SetRowLabelSize(nWidth ? nWidth + 6 : 2);
   }
 }
 
@@ -372,6 +383,42 @@ void nwxGrid::SetRowReadOnly(wxGrid *p, int nRow, bool bReadOnly)
   }
 }
 
+void nwxGrid::SetColReadOnly(wxGrid *p, int nCol, bool bReadOnly)
+{
+  int nRows = p->GetNumberRows();
+  for (int nRow = 0; nRow < nRows; nRow++)
+  {
+    p->SetReadOnly(nRow, nCol, bReadOnly);
+  }
+}
+
+void nwxGrid::ClearAllRowLabels(wxGrid *p)
+{
+  int nRows = p->GetNumberRows();
+  for (int nRow = 0; nRow < nRows; nRow++)
+  {
+    p->SetRowLabelValue(nRow, wxEmptyString);
+  }
+}
+
+void nwxGrid::SetColFont(wxGrid *p, int nCol, const wxFont &fn)
+{
+  int nRows = p->GetNumberRows();
+  for (int nRow = 0; nRow < nRows; nRow++)
+  {
+    p->SetCellFont(nRow, nCol, fn);
+  }
+}
+void nwxGrid::SetColAlignment(
+  wxGrid *p, int nCol, int nHoriz, int nVert)
+{
+  int nRows = p->GetNumberRows();
+  for (int nRow = 0; nRow < nRows; nRow++)
+  {
+    p->SetCellAlignment(nRow, nCol, nHoriz, nVert);
+  }
+}
+
 void nwxGrid::SetRowBackgroundColour(wxGrid *p, int nRow, const wxColour &clr)
 {
   int nCols = p->GetNumberCols();
@@ -381,6 +428,16 @@ void nwxGrid::SetRowBackgroundColour(wxGrid *p, int nRow, const wxColour &clr)
   }
 
 }
+
+void nwxGrid::SetColBackgroundColour(wxGrid *p, int nCol, const wxColour &clr)
+{
+  int nRows = p->GetNumberRows();
+  for (int nRow = 0; nRow < nRows; nRow++)
+  {
+    p->SetCellBackgroundColour(nRow, nCol, clr);
+  }
+}
+
 void nwxGrid::ClearRowValues(wxGrid *p, int nRow)
 {
   int nCols = p->GetNumberCols();

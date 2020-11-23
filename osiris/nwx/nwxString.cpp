@@ -453,6 +453,18 @@ void nwxString::FixEOLU(wxString *ps, bool bClearEmpty)
     }
   }
 }
+void nwxString::NormalizeSpace(wxString *ps)
+{
+  const char KILLLIST[] = "\t\r\n";
+  char c[2] = { 0, 0 };
+  for (const char *p = KILLLIST; *p; ++p)
+  {
+    c[0] = *p;
+    ps->Replace(c, " ");
+  }
+  Trim(ps);
+  while (ps->Replace("  ", " "));
+}
 
 #ifdef _DEBUG
 

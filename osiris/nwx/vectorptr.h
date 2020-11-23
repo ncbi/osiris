@@ -59,7 +59,10 @@ public:
     {
       itr = p->rbegin();
       px = *itr;
-      delete (px);
+      if (px != NULL)
+      {
+        delete (px);
+      }
       p->pop_back();
     }
   }

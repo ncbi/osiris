@@ -943,8 +943,7 @@ public:
   void DrawInit(
     const wxRect &boundingRect,
     double dpi,
-    bool bForcePrintFont,
-    const wxPlotCtrlBackup &plotBackup);
+    bool bForcePrintFont);
   void RefreshOnEndBatch()
   {
     if (GetBatchCount() && IsShown())
@@ -953,6 +952,7 @@ public:
     }
   }
 protected:
+  virtual void OnSizeCallback(wxSizeEvent&);
   void OnSize( wxSizeEvent& event );
 
     wxArrayPlotCurve  m_curves;         // all the curves

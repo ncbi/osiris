@@ -133,6 +133,8 @@ void CPlotController::CopySettings(CPlotController &w)
   ShowILS(w.ILSValue());
   ShowMinRfu(w.MinRfuValue());
   ShowLadderLabels(w.LadderLabels());
+  ShowLadderBins(w.LadderBins());
+  ShowDisabledAlleles(w.DisabledAlleles());
   SetXBPS(w.XBPSValue());
 
   // append, delete
@@ -158,6 +160,8 @@ void CPlotController::ResetDefaults()
   ShowILS(false);
   ShowMinRfu(false);
   ShowLadderLabels(false);
+  ShowLadderBins(false);
+  ShowDisabledAlleles(false);
   SetXBPS(false);
 
   SetArtifactValue(CArtifactDisplayList::nArtifactLabelCritical);

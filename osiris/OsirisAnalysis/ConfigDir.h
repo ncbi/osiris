@@ -66,6 +66,20 @@ public:
     }
     return m_sConfigPath;
   }
+  const wxString GetDebugConfigPath(bool bIfExists = true)
+  {
+    wxString s(GetConfigPath());
+    s.Append(wxT("Debug"));
+    if (bIfExists && !wxFileName::DirExists(s))
+    {
+      s.Clear();
+    }
+    else
+    {
+      nwxFileUtil::EndWithSeparator(&s);
+    }
+    return s;
+  }
   const wxString &GetSitePath() const;
   bool IsSitePathWritable() const
   {

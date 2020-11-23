@@ -93,7 +93,9 @@ private:
     m_pParent(parent),
     m_pBitmap(NULL),
     m_bPortrait(true)
-  {}
+  {
+    _SetPrintoutType(wxT("TestPattern"));
+  }
   virtual ~CPrintOutTestPattern()
   {
     _CleanupBitmap();

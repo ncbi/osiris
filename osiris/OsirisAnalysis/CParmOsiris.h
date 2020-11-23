@@ -33,8 +33,9 @@
 
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxGlobalObject.h"
+#include "nwx/nwxString.h"
 #include "ConfigDir.h"
-
+#include "mainApp.h"
 
 #include "CParmGridAttributes.h"
 
@@ -248,6 +249,14 @@ public:
   {
     return m_bShowPreview;
   }
+  bool GetHidePreviewToolbar() const
+  {
+    return m_bHidePreviewToolbar;
+  }
+  bool GetHidePreviewScrollbar() const
+  {
+    return m_bHidePreviewScrollbar;
+  }
   bool GetHideGraphicToolbar() const
   {
     return m_bHideGraphicToolbar;
@@ -326,6 +335,14 @@ public:
   {
     return m_bPreviewShowRFU;
   }
+  bool GetPreviewShowDisabledAlleles() const
+  {
+    return m_bPreviewShowDisabledAlleles;
+  }
+  bool GetPreviewShowLadderBins() const
+  {
+    return m_bPreviewShowLadderBins;
+  }
   bool GetPreviewShowLadderLabels() const
   {
     return m_bPreviewShowLadderLabels;
@@ -373,6 +390,14 @@ public:
   {
     return m_bPlotShowLadderLabels;
   }
+  bool GetPlotShowDisabledAlleles() const
+  {
+    return m_bPlotShowDisabledAlleles;
+  }
+  bool GetPlotShowLadderBins() const
+  {
+    return m_bPlotShowLadderBins;
+  }
   bool GetPlotResizable() const
   {
     return m_bPlotResizable;
@@ -412,6 +437,14 @@ public:
   {
     return m_bPrintCurveLadderLabels;
   }
+  bool GetPrintCurveLadderBins() const
+  {
+    return m_bPrintCurveLadderBins;
+  }
+  bool GetPrintCurveDisabledAlleles() const
+  {
+    return m_bPrintCurveDisabledAlleles;
+  }
   bool GetPrintCurveBaseline() const
   {
     return m_bPrintCurveBaseline;
@@ -447,6 +480,10 @@ public:
   int GetPrintXscaleMaxBPS() const
   {
     return m_nPrintXscaleMaxBPS;
+  }
+  bool GetPrintXscaleRightEnd() const
+  {
+    return m_bPrintXscaleRightEnd;
   }
   int GetPrintYscale() const
   {
@@ -624,50 +661,103 @@ public:
 
 private:
 
+  // Parameter to string
+  
+  static const wxString &__GET_STRING(const wxString &s1) { return s1; }
+  static wxString __GET_STRING(double s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(int s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(unsigned int s1) { return nwxString::FormatNumber(s1); }
+  static const char *__GET_STRING(bool s1) { return s1 ? "true" : "false"; }
+
   // SET VALUES
 
-  void __SET_VALUE(wxString &s1, const wxString &s2)
+  void __SET_VALUE(wxString &s1, const wxString &s2, const char *psPing = NULL)
   {
     if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
     }
   }
 
-  void __SET_VALUE(double &s1, double s2)
+  void __SET_VALUE(double &s1, double s2, const char *psPing = NULL)
   {
     if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
     }
   }
 
-  void __SET_VALUE(bool &s1, bool s2)
+  void __SET_VALUE(bool &s1, bool s2, const char *psPing = NULL)
   {
     if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
     }
   }
 
-  void __SET_VALUE(int &s1, int s2)
+  void __SET_VALUE(int &s1, int s2, const char *psPing = NULL)
   {
     if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
     }
   }
 
-  void __SET_VALUE(unsigned int &s1, unsigned int s2)
+  void __SET_VALUE(unsigned int &s1, unsigned int s2, const char *psPing = NULL)
   {
     if(!(s1 == s2))
     {
       s1 = s2;
       m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
     }
   }
 
@@ -696,482 +786,518 @@ public:
 
   void SetLastExportXSLsearch(const wxString &s)
   {
-    __SET_VALUE(m_sLastExportXSLsearch,s);
+    __SET_VALUE(m_sLastExportXSLsearch, s);
   }
   void SetLastExportDirectory(const wxString &s)
   {
-    __SET_VALUE(m_sLastExportDirectory,s);
+    __SET_VALUE(m_sLastExportDirectory, s);
   }
   void SetInputDirectory(const wxString &s)
   {
-    __SET_VALUE(m_sInputDirectory,s);
+    __SET_VALUE(m_sInputDirectory, s);
   }
   void SetOutputDirectory(const wxString &s)
   {
-    __SET_VALUE(m_sOutputDirectory,s);
+    __SET_VALUE(m_sOutputDirectory, s);
   }
 
   //   m_sKitName is obsolete, use volume name
 
   void SetKitName(const wxString &s)
   {
-    __SET_VALUE(m_sKitName,s);
+    __SET_VALUE(m_sKitName, s);
   }
   void SetVolumeName(const wxString &s)
   {
-    __SET_VALUE(m_sVolumeName,s);
+    __SET_VALUE(m_sVolumeName, s);
   }
   void SetLsName(const wxString &s)
   {
-    __SET_VALUE(m_sLsName,s);
+    __SET_VALUE(m_sLsName, s);
   }
   void SetMinRFU_Sample(int n)
   {
-    __SET_VALUE(m_nMinRFU_Sample,n);
+    __SET_VALUE(m_nMinRFU_Sample, n);
   }
   void SetMinRFU_Interlocus(int n)
   {
-    __SET_VALUE(m_nMinRFU_Interlocus,n);
+    __SET_VALUE(m_nMinRFU_Interlocus, n);
   }
   void SetMinRFU_ILS(int n)
   {
-    __SET_VALUE(m_nMinRFU_ILS,n);
+    __SET_VALUE(m_nMinRFU_ILS, n);
   }
   void SetMinRFU_Ladder(int n)
   {
-    __SET_VALUE(m_nMinRFU_Ladder,n);
+    __SET_VALUE(m_nMinRFU_Ladder, n);
   }
   void SetMinLadderInterlocusRFU(int n)
   {
-    __SET_VALUE(m_nMinLadderInterlocusRFU,n);
+    __SET_VALUE(m_nMinLadderInterlocusRFU, n);
   }
   void SetSampleDetectionThreshold(int n)
   {
-    __SET_VALUE(m_nSampleDetectionThreshold,n);
+    __SET_VALUE(m_nSampleDetectionThreshold, n);
   }
   void SetAnalysisOverride(const wxString &s)
   {
-    __SET_VALUE(m_sAnalysisOverride,s);
+    __SET_VALUE(m_sAnalysisOverride, s);
   }
   void SetChannelRFU(const vector<int> &an)
   {
-    __SET_VALUE(m_anChannelRFU,an);
+    __SET_VALUE(m_anChannelRFU, an);
   }
   void SetChannelDetection(const vector<int> &an)
   {
-    __SET_VALUE(m_anChannelDetection,an);
+    __SET_VALUE(m_anChannelDetection, an);
   }
   void SetTimeStampSubDir(bool b)
   {
-    __SET_VALUE(m_bTimeStampSubDir,b);
+    __SET_VALUE(m_bTimeStampSubDir, b);
   }
   void SetDataAnalyzed(bool b)
   {
-    __SET_VALUE(m_bDataAnalyzed,b);
+    __SET_VALUE(m_bDataAnalyzed, b);
   }
 
   //  CMF settings
 
   void SetCMFsourceLab(const wxString &s)
   {
-    __SET_VALUE(m_sCMFsourceLab,s);
+    __SET_VALUE(m_sCMFsourceLab, s);
   }
   void SetCMFdestLab(const wxString &s)
   {
-    __SET_VALUE(m_sCMFdestLab,s);
+    __SET_VALUE(m_sCMFdestLab, s);
   }
   void SetCMFdefaultSample(const wxString &s)
   {
-    __SET_VALUE(m_sCMFdefaultSample,s);
+    __SET_VALUE(m_sCMFdefaultSample, s);
   }
   void SetCMFbatchFormat(const wxString &s)
   {
-    __SET_VALUE(m_sCMFbatchFormat,s);
+    __SET_VALUE(m_sCMFbatchFormat, s);
   }
   void SetCMFuserID(const wxString &s)
   {
-    __SET_VALUE(m_sCMFuserID,s);
+    __SET_VALUE(m_sCMFuserID, s);
   }
   void SetCMFviewLocation(bool b)
   {
-    __SET_VALUE(m_bCMFviewLocation,b);
+    __SET_VALUE(m_bCMFviewLocation, b);
   }
   void SetShowFileLocationDir(bool b)
   {
-    __SET_VALUE(m_bShowFileLocationDir,b);
+    __SET_VALUE(m_bShowFileLocationDir, b);
   }
 
   //  PNG Export Settings
 
   void SetPNGwidth(double d)
   {
-    __SET_VALUE(m_dPNGwidth,d);
+    __SET_VALUE(m_dPNGwidth, d);
   }
   void SetPNGheight(double d)
   {
-    __SET_VALUE(m_dPNGheight,d);
+    __SET_VALUE(m_dPNGheight, d);
   }
   void SetPNGunits(int n)
   {
-    __SET_VALUE(m_nPNGunits,n);
+    __SET_VALUE(m_nPNGunits, n);
   }
   void SetPNGusage(int n)
   {
-    __SET_VALUE(m_nPNGusage,n);
+    __SET_VALUE(m_nPNGusage, n);
   }
   void SetPNGviewLocation(bool b)
   {
-    __SET_VALUE(m_bPNGviewLocation,b);
+    __SET_VALUE(m_bPNGviewLocation, b);
   }
   void SetShowAlerts(int n)
   {
-    __SET_VALUE(m_nShowAlerts,n);
+    __SET_VALUE(m_nShowAlerts, n);
   }
   void SetShowPreview(bool b)
   {
-    __SET_VALUE(m_bShowPreview,b);
+    __SET_VALUE(m_bShowPreview, b);
+  }
+  void SetHidePreviewToolbar(bool b)
+  {
+    __SET_VALUE(m_bHidePreviewToolbar, b);
+  }
+  void SetHidePreviewScrollbar(bool b)
+  {
+    __SET_VALUE(m_bHidePreviewScrollbar, b);
   }
   void SetHideGraphicToolbar(bool b)
   {
-    __SET_VALUE(m_bHideGraphicToolbar,b);
+    __SET_VALUE(m_bHideGraphicToolbar, b);
   }
   void SetHideGraphicScrollbar(bool b)
   {
-    __SET_VALUE(m_bHideGraphicScrollbar,b);
+    __SET_VALUE(m_bHideGraphicScrollbar, b);
   }
   void SetHideTextToolbar(bool b)
   {
-    __SET_VALUE(m_bHideTextToolbar,b);
+    __SET_VALUE(m_bHideTextToolbar, b);
   }
   void SetHideSampleToolbar(bool b)
   {
-    __SET_VALUE(m_bHideSampleToolbar,b);
+    __SET_VALUE(m_bHideSampleToolbar, b);
   }
   void SetStartupMRU(bool b)
   {
-    __SET_VALUE(m_bStartupMRU,b);
+    __SET_VALUE(m_bStartupMRU, b);
   }
   void SetCheckBeforeExit(bool b)
   {
-    __SET_VALUE(m_bCheckBeforeExit,b);
+    __SET_VALUE(m_bCheckBeforeExit, b);
   }
   void SetWarnOnHistory(bool b)
   {
-    __SET_VALUE(m_bWarnOnHistory,b);
+    __SET_VALUE(m_bWarnOnHistory, b);
   }
   void SetZoomLocusMargin(double d)
   {
-    __SET_VALUE(m_dZoomLocusMargin,d);
+    __SET_VALUE(m_dZoomLocusMargin, d);
   }
 
   //  grid
 
   void SetTableDisplayPeak(int n)
   {
-    __SET_VALUE(m_nTableDisplayPeak,n);
+    __SET_VALUE(m_nTableDisplayPeak, n);
   }
   void SetTableSortBy(int n)
   {
-    __SET_VALUE(m_nTableSortBy,n);
+    __SET_VALUE(m_nTableSortBy, n);
   }
   void SetTableControlsAtTop(bool b)
   {
-    __SET_VALUE(m_bTableControlsAtTop,b);
+    __SET_VALUE(m_bTableControlsAtTop, b);
   }
   void SetTableShowSampleDisplayNames(int n)
   {
-    __SET_VALUE(m_nTableShowSampleDisplayNames,n);
+    __SET_VALUE(m_nTableShowSampleDisplayNames, n);
   }
 
   //  preview settings
 
   void SetPreviewDataAnalyzed(bool b)
   {
-    __SET_VALUE(m_bPreviewDataAnalyzed,b);
+    __SET_VALUE(m_bPreviewDataAnalyzed, b);
   }
   void SetPreviewDataRaw(bool b)
   {
-    __SET_VALUE(m_bPreviewDataRaw,b);
+    __SET_VALUE(m_bPreviewDataRaw, b);
   }
   void SetPreviewDataLadder(bool b)
   {
-    __SET_VALUE(m_bPreviewDataLadder,b);
+    __SET_VALUE(m_bPreviewDataLadder, b);
   }
   void SetPreviewDataBaseline(bool b)
   {
-    __SET_VALUE(m_bPreviewDataBaseline,b);
+    __SET_VALUE(m_bPreviewDataBaseline, b);
   }
   void SetPreviewShowILS(bool b)
   {
-    __SET_VALUE(m_bPreviewShowILS,b);
+    __SET_VALUE(m_bPreviewShowILS, b);
   }
   void SetPreviewShowRFU(bool b)
   {
-    __SET_VALUE(m_bPreviewShowRFU,b);
+    __SET_VALUE(m_bPreviewShowRFU, b);
+  }
+  void SetPreviewShowDisabledAlleles(bool b)
+  {
+    __SET_VALUE(m_bPreviewShowDisabledAlleles, b, "SetPreviewShowDisabledAlleles");
+  }
+  void SetPreviewShowLadderBins(bool b)
+  {
+    __SET_VALUE(m_bPreviewShowLadderBins, b, "SetPreviewShowLadderBins");
   }
   void SetPreviewShowLadderLabels(bool b)
   {
-    __SET_VALUE(m_bPreviewShowLadderLabels,b);
+    __SET_VALUE(m_bPreviewShowLadderLabels, b);
   }
   void SetPreviewXBPS(bool b)
   {
-    __SET_VALUE(m_bPreviewXBPS,b);
+    __SET_VALUE(m_bPreviewXBPS, b);
   }
   void SetPreviewShowArtifact(int n)
   {
-    __SET_VALUE(m_nPreviewShowArtifact,n);
+    __SET_VALUE(m_nPreviewShowArtifact, n);
   }
 
   //  plot settings
 
   void SetPlotDataAnalyzed(bool b)
   {
-    __SET_VALUE(m_bPlotDataAnalyzed,b);
+    __SET_VALUE(m_bPlotDataAnalyzed, b);
   }
   void SetPlotDataRaw(bool b)
   {
-    __SET_VALUE(m_bPlotDataRaw,b);
+    __SET_VALUE(m_bPlotDataRaw, b);
   }
   void SetPlotDataLadder(bool b)
   {
-    __SET_VALUE(m_bPlotDataLadder,b);
+    __SET_VALUE(m_bPlotDataLadder, b);
   }
   void SetPlotDataBaseline(bool b)
   {
-    __SET_VALUE(m_bPlotDataBaseline,b);
+    __SET_VALUE(m_bPlotDataBaseline, b);
   }
   void SetPlotDataXBPS(bool b)
   {
-    __SET_VALUE(m_bPlotDataXBPS,b);
+    __SET_VALUE(m_bPlotDataXBPS, b);
   }
   void SetPlotShowILS(bool b)
   {
-    __SET_VALUE(m_bPlotShowILS,b);
+    __SET_VALUE(m_bPlotShowILS, b);
   }
   void SetPlotShowRFU(bool b)
   {
-    __SET_VALUE(m_bPlotShowRFU,b);
+    __SET_VALUE(m_bPlotShowRFU, b);
   }
   void SetPlotShowLadderLabels(bool b)
   {
-    __SET_VALUE(m_bPlotShowLadderLabels,b);
+    __SET_VALUE(m_bPlotShowLadderLabels, b);
+  }
+  void SetPlotShowDisabledAlleles(bool b)
+  {
+    __SET_VALUE(m_bPlotShowDisabledAlleles, b, "SetPlotShowDisabledAlleles");
+  }
+  void SetPlotShowLadderBins(bool b)
+  {
+    __SET_VALUE(m_bPlotShowLadderBins, b, "SetPlotShowLadderBins");
   }
   void SetPlotResizable(bool b)
   {
-    __SET_VALUE(m_bPlotResizable,b);
+    __SET_VALUE(m_bPlotResizable, b);
   }
   void SetPlotMinHeight(int n)
   {
-    __SET_VALUE(m_nPlotMinHeight,n);
+    __SET_VALUE(m_nPlotMinHeight, n);
   }
   void SetPlotShowArtifact(int n)
   {
-    __SET_VALUE(m_nPlotShowArtifact,n);
+    __SET_VALUE(m_nPlotShowArtifact, n);
   }
   void SetPlotDisplayPeak(const vector<unsigned int> &an)
   {
-    __SET_VALUE(m_anPlotDisplayPeak,an);
+    __SET_VALUE(m_anPlotDisplayPeak, an);
   }
   void SetPlotMaxLadderLabels(int n)
   {
-    __SET_VALUE(m_nPlotMaxLadderLabels,n);
+    __SET_VALUE(m_nPlotMaxLadderLabels, n);
   }
 
   //  plot print settings for analysis printout
 
   void SetPrintCurveAnalyzed(bool b)
   {
-    __SET_VALUE(m_bPrintCurveAnalyzed,b);
+    __SET_VALUE(m_bPrintCurveAnalyzed, b);
   }
   void SetPrintCurveRaw(bool b)
   {
-    __SET_VALUE(m_bPrintCurveRaw,b);
+    __SET_VALUE(m_bPrintCurveRaw, b);
   }
   void SetPrintCurveLadder(bool b)
   {
-    __SET_VALUE(m_bPrintCurveLadder,b);
+    __SET_VALUE(m_bPrintCurveLadder, b);
   }
   void SetPrintCurveLadderLabels(bool b)
   {
-    __SET_VALUE(m_bPrintCurveLadderLabels,b);
+    __SET_VALUE(m_bPrintCurveLadderLabels, b);
+  }
+  void SetPrintCurveLadderBins(bool b)
+  {
+    __SET_VALUE(m_bPrintCurveLadderBins, b);
+  }
+  void SetPrintCurveDisabledAlleles(bool b)
+  {
+    __SET_VALUE(m_bPrintCurveDisabledAlleles, b);
   }
   void SetPrintCurveBaseline(bool b)
   {
-    __SET_VALUE(m_bPrintCurveBaseline,b);
+    __SET_VALUE(m_bPrintCurveBaseline, b);
   }
   void SetPrintCurveILSvertical(bool b)
   {
-    __SET_VALUE(m_bPrintCurveILSvertical,b);
+    __SET_VALUE(m_bPrintCurveILSvertical, b);
   }
   void SetPrintCurveMinRFU(bool b)
   {
-    __SET_VALUE(m_bPrintCurveMinRFU,b);
+    __SET_VALUE(m_bPrintCurveMinRFU, b);
   }
   void SetPrintXaxisILSBPS(bool b)
   {
-    __SET_VALUE(m_bPrintXaxisILSBPS,b);
+    __SET_VALUE(m_bPrintXaxisILSBPS, b);
   }
   void SetPrintXscale(int n)
   {
-    __SET_VALUE(m_nPrintXscale,n);
+    __SET_VALUE(m_nPrintXscale, n);
   }
   void SetPrintXscaleMin(int n)
   {
-    __SET_VALUE(m_nPrintXscaleMin,n);
+    __SET_VALUE(m_nPrintXscaleMin, n);
   }
   void SetPrintXscaleMax(int n)
   {
-    __SET_VALUE(m_nPrintXscaleMax,n);
+    __SET_VALUE(m_nPrintXscaleMax, n);
   }
   void SetPrintXscaleMinBPS(int n)
   {
-    __SET_VALUE(m_nPrintXscaleMinBPS,n);
+    __SET_VALUE(m_nPrintXscaleMinBPS, n);
   }
   void SetPrintXscaleMaxBPS(int n)
   {
-    __SET_VALUE(m_nPrintXscaleMaxBPS,n);
+    __SET_VALUE(m_nPrintXscaleMaxBPS, n);
+  }
+  void SetPrintXscaleRightEnd(bool b)
+  {
+    __SET_VALUE(m_bPrintXscaleRightEnd, b);
   }
   void SetPrintYscale(int n)
   {
-    __SET_VALUE(m_nPrintYscale,n);
+    __SET_VALUE(m_nPrintYscale, n);
   }
   void SetPrintYscaleMin(int n)
   {
-    __SET_VALUE(m_nPrintYscaleMin,n);
+    __SET_VALUE(m_nPrintYscaleMin, n);
   }
   void SetPrintYscaleMax(int n)
   {
-    __SET_VALUE(m_nPrintYscaleMax,n);
+    __SET_VALUE(m_nPrintYscaleMax, n);
   }
   void SetPrintYcaleNegCtrl(int n)
   {
-    __SET_VALUE(m_nPrintYcaleNegCtrl,n);
+    __SET_VALUE(m_nPrintYcaleNegCtrl, n);
   }
   void SetPrintLabelsPeak(const vector<unsigned int> &an)
   {
-    __SET_VALUE(m_anPrintLabelsPeak,an);
+    __SET_VALUE(m_anPrintLabelsPeak, an);
   }
   void SetPrintArtifact(int n)
   {
-    __SET_VALUE(m_nPrintArtifact,n);
+    __SET_VALUE(m_nPrintArtifact, n);
   }
   void SetPrintHeading(int n)
   {
-    __SET_VALUE(m_bPrintHeading,n);
+    __SET_VALUE(m_bPrintHeading, n);
   }
   void SetPrintHeadingNotes(const wxString &s)
   {
-    __SET_VALUE(m_sPrintHeadingNotes,s);
+    __SET_VALUE(m_sPrintHeadingNotes, s);
   }
   void SetPrintChannelsSamples(int n)
   {
-    __SET_VALUE(m_nPrintChannelsSamples,n);
+    __SET_VALUE(m_nPrintChannelsSamples, n);
   }
   void SetPrintChannelsLadders(int n)
   {
-    __SET_VALUE(m_nPrintChannelsLadders,n);
+    __SET_VALUE(m_nPrintChannelsLadders, n);
   }
   void SetPrintChannelsNegCtrl(int n)
   {
-    __SET_VALUE(m_nPrintChannelsNegCtrl,n);
+    __SET_VALUE(m_nPrintChannelsNegCtrl, n);
   }
   void SetPrintChannelsOmitILS(bool b)
   {
-    __SET_VALUE(m_bPrintChannelsOmitILS,b);
+    __SET_VALUE(m_bPrintChannelsOmitILS, b);
   }
   void SetPrintSamplesLadders(bool b)
   {
-    __SET_VALUE(m_bPrintSamplesLadders,b);
+    __SET_VALUE(m_bPrintSamplesLadders, b);
   }
   void SetPrintSamplesPosCtrl(bool b)
   {
-    __SET_VALUE(m_bPrintSamplesPosCtrl,b);
+    __SET_VALUE(m_bPrintSamplesPosCtrl, b);
   }
   void SetPrintSamplesNegCtrl(bool b)
   {
-    __SET_VALUE(m_bPrintSamplesNegCtrl,b);
+    __SET_VALUE(m_bPrintSamplesNegCtrl, b);
   }
   void SetPrintSamplesDisabled(bool b)
   {
-    __SET_VALUE(m_bPrintSamplesDisabled,b);
+    __SET_VALUE(m_bPrintSamplesDisabled, b);
   }
   void SetPrintColorRed(int n)
   {
-    __SET_VALUE(m_nPrintColorRed,n);
+    __SET_VALUE(m_nPrintColorRed, n);
   }
   void SetPrintColorGreen(int n)
   {
-    __SET_VALUE(m_nPrintColorGreen,n);
+    __SET_VALUE(m_nPrintColorGreen, n);
   }
   void SetPrintColorBlue(int n)
   {
-    __SET_VALUE(m_nPrintColorBlue,n);
+    __SET_VALUE(m_nPrintColorBlue, n);
   }
   void SetPrintColorYellow(int n)
   {
-    __SET_VALUE(m_nPrintColorYellow,n);
+    __SET_VALUE(m_nPrintColorYellow, n);
   }
   void SetPrintColorOrange(int n)
   {
-    __SET_VALUE(m_nPrintColorOrange,n);
+    __SET_VALUE(m_nPrintColorOrange, n);
   }
   void SetPrintColorPurple(int n)
   {
-    __SET_VALUE(m_nPrintColorPurple,n);
+    __SET_VALUE(m_nPrintColorPurple, n);
   }
   void SetPrintColorGray(int n)
   {
-    __SET_VALUE(m_nPrintColorGray,n);
+    __SET_VALUE(m_nPrintColorGray, n);
   }
 
   //  plot printout -- margins are in millimeters
 
   void SetPrintPlotMarginTop(unsigned int n)
   {
-    __SET_VALUE(m_nPrintPlotMarginTop,n);
+    __SET_VALUE(m_nPrintPlotMarginTop, n);
   }
   void SetPrintPlotMarginBottom(unsigned int n)
   {
-    __SET_VALUE(m_nPrintPlotMarginBottom,n);
+    __SET_VALUE(m_nPrintPlotMarginBottom, n);
   }
   void SetPrintPlotMarginLeft(unsigned int n)
   {
-    __SET_VALUE(m_nPrintPlotMarginLeft,n);
+    __SET_VALUE(m_nPrintPlotMarginLeft, n);
   }
   void SetPrintPlotMarginRight(unsigned int n)
   {
-    __SET_VALUE(m_nPrintPlotMarginRight,n);
+    __SET_VALUE(m_nPrintPlotMarginRight, n);
   }
   void SetPrintPlotPaperType(int n)
   {
-    __SET_VALUE(m_nPrintPlotPaperType,n);
+    __SET_VALUE(m_nPrintPlotPaperType, n);
   }
   void SetPrintPlotPaperWidth(int n)
   {
-    __SET_VALUE(m_nPrintPlotPaperWidth,n);
+    __SET_VALUE(m_nPrintPlotPaperWidth, n);
   }
   void SetPrintPlotPaperHeight(int n)
   {
-    __SET_VALUE(m_nPrintPlotPaperHeight,n);
+    __SET_VALUE(m_nPrintPlotPaperHeight, n);
   }
   void SetPrintPlotLandscape(bool b)
   {
-    __SET_VALUE(m_bPrintPlotLandscape,b);
+    __SET_VALUE(m_bPrintPlotLandscape, b);
   }
   void SetPrintPreviewZoom(int n)
   {
-    __SET_VALUE(m_nPrintPreviewZoom,n);
+    __SET_VALUE(m_nPrintPreviewZoom, n);
   }
 
   //  XSLT saved parameter info
 
   void SetLastXSLInputFileDir(const wxString &s)
   {
-    __SET_VALUE(m_sLastXSLInputFileDir,s);
+    __SET_VALUE(m_sLastXSLInputFileDir, s);
   }
   void SetPrivacySeen(bool b)
   {
-    __SET_VALUE(m_bPrivacySeen,b);
+    __SET_VALUE(m_bPrivacySeen, b);
   }
 
 
@@ -1353,6 +1479,8 @@ protected:
   bool m_bPNGviewLocation;
   int m_nShowAlerts;
   bool m_bShowPreview;
+  bool m_bHidePreviewToolbar;
+  bool m_bHidePreviewScrollbar;
   bool m_bHideGraphicToolbar;
   bool m_bHideGraphicScrollbar;
   bool m_bHideTextToolbar;
@@ -1377,6 +1505,8 @@ protected:
   bool m_bPreviewDataBaseline;
   bool m_bPreviewShowILS;
   bool m_bPreviewShowRFU;
+  bool m_bPreviewShowDisabledAlleles;
+  bool m_bPreviewShowLadderBins;
   bool m_bPreviewShowLadderLabels;
   bool m_bPreviewXBPS;
   int m_nPreviewShowArtifact;
@@ -1391,6 +1521,8 @@ protected:
   bool m_bPlotShowILS;
   bool m_bPlotShowRFU;
   bool m_bPlotShowLadderLabels;
+  bool m_bPlotShowDisabledAlleles;
+  bool m_bPlotShowLadderBins;
   bool m_bPlotResizable;
   int m_nPlotMinHeight;
   int m_nPlotShowArtifact;
@@ -1403,6 +1535,8 @@ protected:
   bool m_bPrintCurveRaw;
   bool m_bPrintCurveLadder;
   bool m_bPrintCurveLadderLabels;
+  bool m_bPrintCurveLadderBins;
+  bool m_bPrintCurveDisabledAlleles;
   bool m_bPrintCurveBaseline;
   bool m_bPrintCurveILSvertical;
   bool m_bPrintCurveMinRFU;
@@ -1412,6 +1546,7 @@ protected:
   int m_nPrintXscaleMax;
   int m_nPrintXscaleMinBPS;
   int m_nPrintXscaleMaxBPS;
+  bool m_bPrintXscaleRightEnd;
   int m_nPrintYscale;
   int m_nPrintYscaleMin;
   int m_nPrintYscaleMax;

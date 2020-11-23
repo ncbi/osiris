@@ -226,22 +226,6 @@ bool CDialogExportPlot::TransferDataToWindow()
   }
   return true;
 }
-/*
-void CDialogExportPlot::SetupTextCtrlWidth(wxTextCtrl *p, int nMin)
-{
-  wxClientDC dc(p);
-  dc.SetFont(p->GetFont());
-  wxSize sz = dc.GetTextExtent(p->GetValue());
-  wxSize szCurrent = p->GetSize();
-  sz.SetWidth(sz.GetWidth() + 8);
-  if(sz.GetWidth() < nMin)
-  {
-    sz.SetWidth(nMin);
-  }
-  sz.SetHeight(szCurrent.GetHeight());
-  p->SetSize(sz);
-}
-*/
 void CDialogExportPlot::_TransferWidthHeightToWindow(double dWidth, double dHeight)
 {
   wxString sWidth;
