@@ -312,12 +312,12 @@ void CFrameRunAnalysis::_BuildWindow(
     pPanel,IDbuttonView, "View Selection");
   wxGridSizer *pButtonSizer = new wxGridSizer(1,6,0,ID_BORDER);
 
-  pButtonSizer->Add(m_pButtonSelectAll,1,wxEXPAND);
-  pButtonSizer->Add(m_pButtonClearAll,1,wxEXPAND);
-  pButtonSizer->Add(m_pButtonCancel,1,wxEXPAND);
-  pButtonSizer->Add(m_pButtonCancelAll,1,wxEXPAND);
-  pButtonSizer->Add(m_pButtonReAnalyze,1,wxEXPAND);
-  pButtonSizer->Add(m_pButtonView,1,wxEXPAND);
+  pButtonSizer->Add(m_pButtonSelectAll,0,wxEXPAND);
+  pButtonSizer->Add(m_pButtonClearAll,0,wxEXPAND);
+  pButtonSizer->Add(m_pButtonCancel,0,wxEXPAND);
+  pButtonSizer->Add(m_pButtonCancelAll,0,wxEXPAND);
+  pButtonSizer->Add(m_pButtonReAnalyze,0,wxEXPAND);
+  pButtonSizer->Add(m_pButtonView,0,wxEXPAND);
 
   wxBoxSizer *pSizerLabel;
   pSizerLabel = new wxBoxSizer(wxHORIZONTAL);
@@ -364,7 +364,7 @@ void CFrameRunAnalysis::_BuildWindow(
   // nwxColorUtil::BackgroundParent(m_pTextOutput,true);
   pSizer = new wxBoxSizer(wxVERTICAL);
   pSizer->Add(m_pSplitter, 3, wxEXPAND , 0);
-  pSizer->Add(pButtonSizer, 0, wxEXPAND | (wxALL ^ wxTOP), ID_BORDER);
+  pSizer->Add(pButtonSizer, 0, wxALIGN_CENTER_HORIZONTAL | (wxALL ^ wxTOP), ID_BORDER);
   m_pListDir->TransferDataToWindow();
   {
     nwxTabOrder tabOrder;
