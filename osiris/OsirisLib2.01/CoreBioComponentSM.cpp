@@ -1712,7 +1712,8 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	double minRatio = 1.0;
 	double maxRatio = 0.0;
 	double numerator;
-	double minRFUForSecondaryChannel = 0.5 * (mDataChannels [pullupChannel]->GetDetectionThreshold () + mDataChannels [pullupChannel]->GetMinimumHeight ());
+	//double minRFUForSecondaryChannel = 0.5 * (mDataChannels [pullupChannel]->GetDetectionThreshold () + mDataChannels [pullupChannel]->GetMinimumHeight ());  // Changed 11/25/2020
+	double minRFUForSecondaryChannel = mDataChannels [pullupChannel]->GetDetectionThreshold ();
 	double noiseLevelForSecondaryChannel = mDataChannels [pullupChannel]->GetNoiseRange ();
 	double percentNoiseLevel = 100.0;
 	RGDList ignore;
@@ -1721,11 +1722,11 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	bool minRatioLessThan1 = false;
 	bool maxRatioLargerThan0 = false;
-	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;  // Let's see how this is used.  Is it a good idea??
+	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;  // This is user-specified threshold if user says to use it.  Otherwise, this is 3.0
 	double minPullupHeight = 0.0;
 	double rawHeight;
 	double detectionThreshold = mDataChannels [pullupChannel]->GetDetectionThreshold ();
-	double primaryMinRFU = mDataChannels [primaryChannel]->GetMinimumHeight ();
+	double primaryMinRFU = mDataChannels [primaryChannel]->GetMinimumHeight ();  // This is minRFU for primary channel
 	bool atLeastOnePositivePullupAboveDetection = false;
 
 	RGDListIterator channelIterator (*primaryChannelPeaks);
@@ -1746,6 +1747,8 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	int nSigmoids = 0;
 	size_t pos = 0;
 	int nPos = 0;
+	bool mixedPositiveAndNegativePullup = false;
+	bool atLeastOneNegativeAboveDetection = false;
 	//double factor;
 	linearPart = quadraticPart = 0.0;
 //	int nPossibleNegative;
@@ -1853,6 +1856,9 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			hasNegativePullup = true;
 			negativePairs.push_back (nextPair);
 			nNegatives++;
+			
+			if (secondarySignal->Peak () > detectionThreshold)
+				atLeastOneNegativeAboveDetection = true;
 		}
 
 		else {
@@ -1956,10 +1962,13 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	smPrimaryInterchannelLink primaryLink;
 
-	if (!atLeastOnePositivePullupAboveDetection)
-		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);
+	if (atLeastOnePositivePullupAboveDetection && atLeastOneNegativeAboveDetection)
+		mixedPositiveAndNegativePullup = true;
 
-	if (!atLeastOnePositivePullupAboveDetection && (nSigmoids == 0)) {
+//	if (!atLeastOnePositivePullupAboveDetection)
+//		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);  //***** Why do this when we won't report in this case?  If the sigmoid(s) are high enough, we won't come here and, if not, we don't need to analyze.   Fixed:  11/25/2020
+
+	if (!atLeastOnePositivePullupAboveDetection) {
 
 		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
 		SetLinearPullupMatrix(primaryChannel, pullupChannel, 0.0);

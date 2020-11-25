@@ -47,6 +47,7 @@
 #include "DirectoryManager.h"
 #include "rgtarray.h"
 #include <set>
+#include <string>
 #include <iostream>
 
 using namespace std;
@@ -2892,7 +2893,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				bool atLeastOneSidePeakIsPullup = (testSignal->GetMessageValue (pullup) || testSignal2->GetMessageValue (pullup));
 				bool sidePeaksAreDualSignals = (testSignal->GetMessageValue (dualPeak) && testSignal2->GetMessageValue (dualPeak));
 				bool sidePeakIsPrimary = ((testSignal->GetInterchannelLink () != NULL) || (testSignal2->GetInterchannelLink () != NULL));
-				bool notTooImbalanced = (heightRight > heightImbalanceThreshold * heightLeft) && (heightLeft > heightImbalanceThreshold * heightRight);
+				bool notTooImbalanced = (heightRight < heightImbalanceThreshold * heightLeft) || (heightLeft < heightImbalanceThreshold * heightRight);  // 11/25/2020:  changed from &&, which is always false, to || and changed > to <
 
 				if (testForPeaksTooCloseTogether && (sidePeaksTooClose || sidePeaksAreDualSignals) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary && notTooImbalanced) {
 
