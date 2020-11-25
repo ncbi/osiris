@@ -2472,11 +2472,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				if (testSignal != NULL) {
 
-					if (testSignal->GetWidth () < mWidthToleranceForSpike) {
+					//if (testSignal->GetWidth () < mWidthToleranceForSpike) {  //***** Fixed 11/24/2020
 
 						testSignal->SetMessageValue (spike, true);  // 10/01/2020:  this test makes calling a pull-up to a spike into a spike only if its width is < 2.1...maybe it should be a spike unconditionally?
 						testSignal->SetCouldBePullup (true);
-					}
+					//}
 				}
 			}
 
@@ -2557,6 +2557,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList removedPeakList;
 	set<InterchannelLinkage*> channelRemoval;
 	list<DataSignal*> postSigmoidList;
+	bool sidePeakIsPrimary;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2573,16 +2574,19 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				sidePeaksArePullup = true;
 				sidePeaksHaveSamePrimaryChannel = false;
+				sidePeakIsPrimary = true;
 			}
 
 			else {
 
 				sidePeaksArePullup = (testSignal->GetMessageValue (pullup) && testSignal2->GetMessageValue (pullup));
 				sidePeaksHaveSamePrimaryChannel = testSignal->HasPullupFromSameChannelAsSM (testSignal2, mNumberOfChannels);
+				sidePeakIsPrimary = testSignal->HasCrossChannelSignalLink () || testSignal2->HasCrossChannelSignalLink ();
 			}
 
-			if ((nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel)) {
+			if (nextSignal->GetMessageValue (pullup) && !sidePeakIsPrimary && !(sidePeaksArePullup && sidePeaksHaveSamePrimaryChannel)) {  // Fixed And's and Or's 11/24/2020
 
+				//  Actually, sigmoids should never be primary pull-up peaks!  ***Maybe we should take that out of the test!  Done:  11/24/2020
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
 			//	OverallList.InsertWithNoReferenceDuplication (nextSignal);
@@ -2778,7 +2782,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			nextSignalIsPullup = nextSignal->GetMessageValue (pullup);
 			nextSignalIsOffScale = nextSignal->GetMessageValue (laserOffScale);
 
-			if ((nextSignal->HasCrossChannelSignalLink () || nextSignalIsPullup) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && (nextSignalIsPullup || nextSignalIsOffScale)) {
+			if ((nextSignal->HasCrossChannelSignalLink () || nextSignalIsPullup) && (!(sidePeaksArePullup && sidePeaksHaveSamePrimaryChannel) || nextSignalIsOffScale)) {  // And's and Or's realigned 11/24/2020
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
