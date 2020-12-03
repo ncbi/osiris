@@ -379,7 +379,6 @@
     <ClCompile Include="CPageNoParameters.cpp" />
     <ClCompile Include="CPageParameters.cpp" />
     <ClCompile Include="CPanelAlerts.cpp" />
-    <ClCompile Include="CPanelApplyCancel.cpp" />
     <ClCompile Include="CPanelHistory.cpp" />
     <ClCompile Include="CPanelHistoryMenu.cpp" />
     <ClCompile Include="CPanelLabGeneral.cpp" />
@@ -538,7 +537,6 @@
     <ClInclude Include="CPageNoParameters.h" />
     <ClInclude Include="CPageParameters.h" />
     <ClInclude Include="CPanelAlerts.h" />
-    <ClInclude Include="CPanelApplyCancel.h" />
     <ClInclude Include="CPanelHistory.h" />
     <ClInclude Include="CPanelHistoryMenu.h" />
     <ClInclude Include="CPanelLabGeneral.h" />

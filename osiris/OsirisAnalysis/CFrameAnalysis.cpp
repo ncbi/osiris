@@ -48,7 +48,6 @@
 #include "CDialogDeleteDisabled.h"
 #include "CDialogEnableMultiple.h"
 #include "CDialogExportFile.h"
-#include "CDialogWarnHistory.h"
 #include "CDialogCMF.h"
 #include "CDialogToggleEnabled.h"
 //#include "CDialogAcceptAllele.h"
@@ -512,15 +511,6 @@ bool CFrameAnalysis::SetToolbarMenuLabel(bool bShow, bool bPlural, int nID)
 {
   bool bRtn = CMDIFrame::SetToolbarMenuLabel(bShow,bPlural, nID);
   m_pMenu->UpdateChildren();
-  return bRtn;
-}
-
-bool CFrameAnalysis::CheckIfHistoryOK()
-{
-  bool bRtn = 
-    m_pButtonHistory->IsCurrent()
-    ? true
-    : CDialogWarnHistory::Continue(this);
   return bRtn;
 }
 

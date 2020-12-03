@@ -1784,7 +1784,15 @@ void CFramePlot::EditPeak(COARpeakAny *pPeak)
   if(m_pOARfile != NULL && pPeak != NULL)
   {
     CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
-    if(pFrame != NULL)
+    if (pFrame == NULL)
+    { // done
+    }
+    else if ( (!HistoryIsCurrent())
+              ? CheckIfHistoryOK()
+              : pFrame->CheckIfHistoryOK() )
+      // checked the plot and analysis windows to see if
+      // history is set to current
+      // if not, user was prompted
     {
       pFrame->EditPeak(pPeak,GetSample(),this);
     }

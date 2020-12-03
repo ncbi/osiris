@@ -30,8 +30,6 @@
 #include "COARfile.h"
 #include "COARdirectoryAlerts.h"
 
-COARbaseLocus::~COARbaseLocus() {;}
-
 void COARbaseLocus::RegisterAll(bool)
 {
   RegisterWxString("BaseLocusName",&m_sLocusName);

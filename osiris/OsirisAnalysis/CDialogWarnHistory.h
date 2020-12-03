@@ -37,9 +37,9 @@ class wxCheckBox;
 class CDialogWarnHistory : private wxDialog
 {
 public:
-  static bool Continue(wxWindow *p);
+  static bool Continue(wxWindow *p, bool bAsk = true);
 private:
-  CDialogWarnHistory(wxWindow *parent, wxWindowID id = wxID_ANY);
+  CDialogWarnHistory(wxWindow *parent, wxWindowID id = wxID_ANY, bool bAsk = true);
   virtual ~CDialogWarnHistory();
   bool DontShowAgain();
   wxCheckBox *m_pCheckBox;

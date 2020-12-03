@@ -103,6 +103,10 @@ public:
   {
     return (m_pOARfile != NULL);
   }
+  bool IsThisOARfile(COARfile *pFile)
+  {
+    return (m_pOARfile == pFile);
+  }
   void UpdateOARfile(const wxString &sSampleFileName);
   void EditPeak(COARpeakAny *);
   bool XBPSValue()
@@ -218,7 +222,7 @@ public:
     int nPlotsPerPage = CHANNEL_MAX, // this and following parameters are used for printing
     int nPageNr = 1,
     bool bForcePrintFont = false);
-  const wxDateTime *GetSelectedTime()
+  virtual const wxDateTime *GetSelectedTime()
   {
     const wxDateTime *pRtn = 
       (m_pMenuHistory == NULL)

@@ -40,6 +40,7 @@
 #include "CFrameAnalysis.h"
 #include "CFrameSample.h"
 #include "CFramePlot.h"
+#include "CDialogWarnHistory.h"
 
 DEFINE_EVENT_TYPE(CEventKillWindow)
 
@@ -84,7 +85,20 @@ void CMDIFrame::UpdateHistory() {;}
 void CMDIFrame::UpdateLadderLabels() {;}
 void CMDIFrame::UpdateFileMenu() {;}
 
+bool CMDIFrame::CheckIfHistoryOK()
+{
+  bool bRtn =
+    HistoryIsCurrent()
+    ? true
+    : CDialogWarnHistory::Continue(this);
+  return bRtn;
+}
 
+
+const wxDateTime *CMDIFrame::GetSelectedTime()
+{
+  return NULL;
+}
 bool CMDIFrame::FileError()
 {
   // virtual function

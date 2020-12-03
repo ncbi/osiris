@@ -112,7 +112,6 @@ osiris_SOURCES =  \
 ../CPageNoParameters.cpp \
 ../CPageParameters.cpp \
 ../CPanelAlerts.cpp \
-../CPanelApplyCancel.cpp \
 ../CPanelHistory.cpp \
 ../CPanelHistoryMenu.cpp \
 ../CPanelLabGeneral.cpp \

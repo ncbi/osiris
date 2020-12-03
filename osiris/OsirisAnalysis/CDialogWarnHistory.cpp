@@ -36,13 +36,13 @@
 #include "CParmOsiris.h"
 #include "wxIDS.h"
 
-bool CDialogWarnHistory::Continue(wxWindow *parent)
+bool CDialogWarnHistory::Continue(wxWindow *parent, bool bAsk)
 {
   CParmOsirisGlobal parm;
   bool bRtn = true;
   if(parm.Get()->WarnOnHistory())
   {
-    CDialogWarnHistory dlg(parent);
+    CDialogWarnHistory dlg(parent, wxID_ANY, bAsk);
     int n = dlg.ShowModal();
     if(n == wxID_CANCEL || n == wxID_NO)
     {
@@ -59,20 +59,25 @@ bool CDialogWarnHistory::Continue(wxWindow *parent)
 CDialogWarnHistory::~CDialogWarnHistory() {}
 
 CDialogWarnHistory::CDialogWarnHistory(
-  wxWindow *parent, wxWindowID id) :
+  wxWindow *parent, wxWindowID id, bool bAsk) :
     wxDialog(parent,id,wxString("Warning"))
 {
   wxStaticText *pWarning = new wxStaticText(
     this,wxID_ANY,"Warning!");
-  wxStaticText *pHistory = new wxStaticText(this,wxID_ANY,
+  wxString s(
     "The history setting is not set to \"current.\"\n"
     "Any changes will be reflected when saving the file\n"
     "but will not appear on the screen until the history\n"
-    "setting is changed to \"current.\"\n\n"
-    "Do you wish to continue?"
-    , wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+    "setting is changed to \"current.\""
+  );
+  if (bAsk)
+  {
+    s.Append("\n\nDo you wish to continue?");
+  }
+  wxStaticText *pHistory = new wxStaticText(this,wxID_ANY,
+    s, wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
   mainApp::SetBoldFont(pWarning);
-  wxSizer *pButtons = CreateButtonSizer(wxYES | wxNO); 
+  wxSizer *pButtons = CreateButtonSizer(bAsk ? (wxYES | wxNO) : wxOK); 
   m_pCheckBox = new wxCheckBox(this,wxID_ANY," Don't show this window again");
   m_pButtonNO = NULL;
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
@@ -124,4 +129,5 @@ EVT_CHECKBOX(wxID_ANY,CDialogWarnHistory::OnCheck)
 EVT_CLOSE(CDialogWarnHistory::OnCancel)
 EVT_BUTTON(wxID_YES,CDialogWarnHistory::OnButton)
 EVT_BUTTON(wxID_NO,CDialogWarnHistory::OnButton)
+EVT_BUTTON(wxID_OK, CDialogWarnHistory::OnButton)
 END_EVENT_TABLE()

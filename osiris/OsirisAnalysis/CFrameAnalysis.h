@@ -134,7 +134,7 @@ public:
   {
     return m_pOARfile == NULL ? false : m_pOARfile->IsLadderFree();
   }
-  const wxDateTime *GetSelectedTime()
+  virtual const wxDateTime *GetSelectedTime()
   {    
     const wxDateTime *pRtn = 
       (m_pButtonHistory == NULL)
@@ -207,7 +207,6 @@ public:
   void DoAcceptSample(int nReviewType,COARsample *pSample);
   void DoReviewLocus(COARsample *pSample, COARlocus *pLocus);
   void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus);
-  bool CheckIfHistoryOK();
   void CheckSaveStatus();
   void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
   void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID = -1);

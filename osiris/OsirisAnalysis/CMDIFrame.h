@@ -105,7 +105,13 @@ public:
     const wxString &sFileName2 = wxEmptyString);
   virtual void UpdateStatusBar();
   virtual bool FileError();
+  virtual const wxDateTime *GetSelectedTime();
+  bool HistoryIsCurrent()
+  {
+    return (GetSelectedTime() == NULL);
+  }
 
+  bool CheckIfHistoryOK();
   bool PopupMenu_(wxMenu* menu, const wxPoint& pos = wxDefaultPosition);
   bool PopupMenu_(wxMenu* menu, int x, int y);
 #ifdef __WINDOW_LIST__ 
