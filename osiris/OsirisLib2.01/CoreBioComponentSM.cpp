@@ -2132,6 +2132,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				continue;
 			}
 
+			// If no negative pullup pairs and rawHeight < 0, should we add it to the list?  12/2/2020
 			nextPair = new PullupPair (nextSignal, rawHeight);
 			rawDataPullupPrimaries.Append (nextSignal);
 			pairList.push_back (nextPair);
