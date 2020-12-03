@@ -2667,9 +2667,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	// check for all pullup peaks being outliers, vs all non-outliers from 0-peaks
 	// what to do if answer = false?
-	double sigmaPrimary;
-	double sigmaSecondary;
-	bool secondaryNarrow;
 	bool secondaryNarrow2;
 	bool halfWidth;
 	DataSignal* pullupPeak;
@@ -2804,12 +2801,12 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 					continue;
 
 				primarySignal = nextPair->mPrimary;
-				sigmaPrimary = primarySignal->GetStandardDeviation ();
-				sigmaSecondary = pullupPeak->GetStandardDeviation ();
+				//sigmaPrimary = primarySignal->GetStandardDeviation ();  // standard deviations are not reliable measures of width.
+				//sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
-				secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !pullupPeak->IgnoreWidthTest ();
+				//secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !pullupPeak->IgnoreWidthTest ();
 				secondaryNarrow2 = (pullupPeak->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !pullupPeak->IgnoreWidthTest ();
-				halfWidth = (secondaryNarrow || secondaryNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());
+				halfWidth = (secondaryNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());  // removed secondaryNarrow 12/2/2020
 
 				//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 				//belowMinRFU = (correctedHeight < analysisThreshold);
@@ -2931,16 +2928,16 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				continue;
 
 			primarySignal = nextPair->mPrimary;
-			sigmaPrimary = primarySignal->GetStandardDeviation ();
-			sigmaSecondary = pullupPeak->GetStandardDeviation ();
+			//sigmaPrimary = primarySignal->GetStandardDeviation ();
+			//sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
-			secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary) && !pullupPeak->IgnoreWidthTest ();
+			//secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary) && !pullupPeak->IgnoreWidthTest ();
 			secondaryNarrow2 = (pullupPeak->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !pullupPeak->IgnoreWidthTest ();
 
 			//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 			//belowMinRFU = (correctedHeight < analysisThreshold);
 
-			if (secondaryNarrow || secondaryNarrow2) {
+			if (secondaryNarrow2) {  // Removed secondaryNarrow 12/2/2020
 
 				// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
 
@@ -3548,7 +3545,6 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 	double ratio;
 	bool isOutlier;
 	bool belowMinRFU;
-	bool isNarrow;
 	bool isNarrow2;
 	bool halfWidth;
 	double minRFUForSecondaryChannel = mDataChannels [secondaryChannel]->GetMinimumHeight ();
@@ -3559,9 +3555,6 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 	double LMV = mLeastMedianValue [primaryChannel][secondaryChannel];
 	double outlierThreshold = mOutlierThreshold [primaryChannel][secondaryChannel];
 	bool pattern = ((linearPart != 0.0) || (quadraticPart != 0.0));
-
-	double sigmaPrimary;
-	double sigmaSecondary;
 
 	for (it=mInterchannelLinkageList.begin (); it!=mInterchannelLinkageList.end (); it++) {
 
@@ -3593,12 +3586,12 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 		belowMinRFU = (h < minRFUForSecondaryChannel);
 
-		sigmaPrimary = primarySignal->GetStandardDeviation ();
-		sigmaSecondary = secondarySignal->GetStandardDeviation ();
+		//sigmaPrimary = primarySignal->GetStandardDeviation ();  // standard deviation is not a reliable measure of width
+		//sigmaSecondary = secondarySignal->GetStandardDeviation ();
 
-		isNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !secondarySignal->IgnoreWidthTest ();
+		//isNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !secondarySignal->IgnoreWidthTest ();
 		isNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
-		halfWidth = pattern && (isNarrow || isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());
+		halfWidth = pattern && (isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());  // Removed isNarrow 12/2/2020
 
 		if (secondarySignal->GetMessageValue (purePullup) || (pattern && !isOutlier) || halfWidth) {   // include pattern?!
 
