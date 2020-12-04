@@ -3512,16 +3512,16 @@ DataSignal** CoreBioComponent :: CollectAndSortPullupPeaksSM (DataSignal* primar
 		}
 	}
 
-	it.Reset ();
+	//it.Reset ();
 
-	while (nextSignal = (DataSignal*)it ()) {   //  **** Added this loop 11/24/2020
+	//while (nextSignal = (DataSignal*)it ()) {   //  **** Added this loop 11/24/2020...and removed it 12/3/2020
 
-		currentChannel = nextSignal->GetChannel ();
-		currentSignal = pullupArray [currentChannel];
+	//	currentChannel = nextSignal->GetChannel ();
+	//	currentSignal = pullupArray [currentChannel];
 
-		if (currentSignal != nextSignal)
-			it.RemoveCurrentItem ();
-	}
+	//	if (currentSignal != nextSignal)
+	//		it.RemoveCurrentItem ();
+	//}
 
 	return pullupArray;
 }
