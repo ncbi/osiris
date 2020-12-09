@@ -899,3 +899,278 @@ double LeastSquaresQuadraticModel :: CalculateLeastSquareWithOneTermZero (double
 
 
 
+
+QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mSlopeIsDefined (NULL), mAlphaValues (NULL) {
+
+	if (n < LeastMedianOfSquares::GetMinimumNumberOfSamples ()) {
+
+		mIsOK = false;
+		return;
+	}
+
+	int i;
+	int j;
+	mSlopeIsDefined = new bool* [n];
+	mAlphaValues = new double* [n];
+	double temp;
+	double tempY;
+	bool xiLessThan1;
+	bool xjLessThan1;
+	bool diffLessThan1;
+
+	for (i=0; i<n; i++) {
+
+		mXvalues [i] = x [i];
+		mYvalues [i] = y [i];
+
+		mSlopeIsDefined [i] = new bool [n];
+		mAlphaValues [i] = new double [n];
+
+		for (j=0; j<n; j++)
+			mSlopeIsDefined [i] [j] = true;
+	}
+
+	for (i=0; i<n; i++) {
+
+		for (j=0; j<n; j++) {
+
+			if (i == j)
+				mSlopeIsDefined [i] [j] = false;
+
+			else {
+
+				temp = mXvalues [i];
+				tempY = mXvalues [j];
+				xiLessThan1 = (temp < 1.0);
+				xjLessThan1 = (tempY < 1.0);
+				diffLessThan1 = (fabs (temp - tempY) < 1.0);
+
+				if (xiLessThan1 || xjLessThan1 || diffLessThan1)
+					mSlopeIsDefined [i] [j] = false;
+			}
+		}
+	}
+}
+
+
+QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares ( xValues, yValues), mSlopeIsDefined (NULL), mAlphaValues (NULL) {
+
+	int minSamples = LeastMedianOfSquares::GetMinimumNumberOfSamples ();
+
+	if (mSize < minSamples) {
+
+		mIsOK = false;
+		return;
+	}
+
+	int i;
+	int j;
+	int n = mSize;
+	mSlopeIsDefined = new bool* [n];
+	mAlphaValues = new double* [n];
+	double temp;
+	double tempY;
+	bool xiLessThan1;
+	bool xjLessThan1;
+	bool diffLessThan1;
+
+	for (i=0; i<n; i++) {
+
+		mSlopeIsDefined [i] = new bool [n];
+		mAlphaValues [i] = new double [n];
+
+		for (j=0; j<mSize; j++)
+			mSlopeIsDefined [i] [j] = true;
+	}
+
+	for (i=0; i<n; i++) {
+
+		for (j=0; j<n; j++) {
+
+			if (i == j)
+				mSlopeIsDefined [i] [j] = false;
+
+			else {
+
+				temp = mXvalues [i];
+				tempY = mXvalues [j];
+				xiLessThan1 = (temp < 1.0);
+				xjLessThan1 = (tempY < 1.0);
+				diffLessThan1 = (fabs (temp - tempY) < 1.0);
+
+				if (xiLessThan1 || xjLessThan1 || diffLessThan1)
+					mSlopeIsDefined [i] [j] = false;
+			}
+		}
+	}
+}
+
+
+
+QuadraticLMSExact :: ~QuadraticLMSExact () {
+
+	if (mIsOK) {
+
+		int i;
+
+		for (i=0; i<mSize; i++) {
+
+			delete[] mSlopeIsDefined [i];
+			delete[] mAlphaValues [i];
+
+		}
+
+		delete[] mSlopeIsDefined;
+		delete[] mAlphaValues;
+	}
+}
+
+
+
+double QuadraticLMSExact::CalculateLeastMedianSquare (double& linearTerm, double& quadTerm) {
+
+	// Calculate best median for each of fixed quadratic terms (slopes) and then select best median from among them.
+	// If no primary pull-up acceptable, there is no pull-up.
+
+	bool first = true;
+	int i;
+	int j;
+	double bestLMS;
+	double bestAlpha;
+	double alpha;
+	double currentLMS;
+	int iBest;
+	int jBest;
+
+
+	for (i=0; i<mSize; i++) {
+
+		for (j=0;j<mSize; j++) {
+
+			if (mSlopeIsDefined) {
+
+				currentLMS = CalculateLeastMedianSquareForGivenSlope (i, j, alpha);
+
+				if (first) {
+
+					first = false;
+					bestLMS = currentLMS;
+					bestAlpha = alpha;
+					iBest = i;
+					jBest = j;
+				}
+
+				else {
+
+					if (currentLMS < bestLMS) {
+
+						bestLMS = currentLMS;
+						bestAlpha = alpha;
+						iBest = i;
+						jBest = j;
+					}
+				}
+			}
+		}
+	}
+
+	if (first) {
+
+		linearTerm = 0.0;
+		quadTerm = 0.0;
+		return 0.0;
+	}
+
+	linearTerm = bestAlpha;
+	quadTerm = (mRatioArray [iBest] - mRatioArray [jBest]) / (mXvalues [iBest] - mXvalues [jBest]);
+	mLeastMedianValue = bestAlpha;
+	mMedianResidual = bestLMS;
+	double s;
+
+	// Below is the Rousseeuw and van Zomeren (Unmasking Multivariate Outliers and Leverage Points. Journal of the American Statistical Association 85,1990. 633-639.) threshold for outliers
+
+	if (mSize > 2)
+		s = 1.4826 * (1.0 + (5.0 / ((double)mSize - 2.0))) * mMedianResidual;
+
+	else
+		s = 14.826 * mMedianResidual;
+
+	mOutlierThreshold = 2.5 * s;
+
+	for (i=0; i<mSize; i++) {
+
+		double temp = bestAlpha + quadTerm * mXvalues [i];
+
+		if (fabs (mRatioArray [i] - temp) > mOutlierThreshold)
+			mOutlierArray [i] = true;
+	}
+
+	return bestLMS;
+}
+
+
+double QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlope (int i, int j, double& calculatedLinearTerm) {
+
+	// Returns minimum residual and inserts corresponding slope in calculatedSlope
+
+	double slope = (mRatioArray [i] - mRatioArray [j]) / (mXvalues [i] - mXvalues [j]);
+	double zTarget;
+	int k;
+	list<double> orderedZ;
+
+	for (k=0; k<mSize; k++) {
+
+		zTarget = mRatioArray [k] - slope * mXvalues [k];
+		orderedZ.push_back (zTarget);
+	}
+
+	orderedZ.sort ();
+	int midSize = ((mSize - 1) / 2);
+	double* tempArray = new double [mSize];
+
+	for (k=0; k<mSize; k++) {
+
+		tempArray [k] = orderedZ.front ();
+		orderedZ.pop_front ();
+	}
+
+	double* low = tempArray;
+	double* high = tempArray + midSize;
+	double* upperBound = tempArray + mSize;
+	double Min = *high - *low;
+	double delta;
+	k = 0;
+	int lowIndex = 0;
+	double average = 0.5 * (*high + *low);
+
+
+	while (true) {
+
+		if (high == upperBound)
+			break;
+
+		delta = *high - *low;
+
+		if (delta < Min) {
+
+			Min = delta;
+			lowIndex = k;
+			average = 0.5 * (*high + *low);
+		}
+
+		k++;
+		low++;
+		high++;
+	}
+
+	delete[] tempArray;
+	calculatedLinearTerm = average;
+	double medianResidual = 0.5 * Min;
+	return medianResidual;
+}
+
+
+
+
+
+

@@ -188,6 +188,32 @@ protected:
 };
 
 
+
+class QuadraticLMSExact : public LeastMedianOfSquares {
+
+public:
+	QuadraticLMSExact (int n, double* x, double* y);
+	QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues);
+	~QuadraticLMSExact ();
+
+	double GetLinearTerm () const { return mLinearTerm; }
+	double GetQuadraticTerm () const { return mQuadraticTerm; }
+	double GetLeastSumOfSquares () const { return mLeastSquare; }
+
+	double CalculateLeastMedianSquare (double& linearTerm, double& quadTerm);
+
+protected:
+	bool** mSlopeIsDefined;
+	double** mAlphaValues;
+	double mLinearTerm;
+	double mQuadraticTerm;
+	double mLeastSquare;
+
+	double CalculateLeastMedianSquareForGivenSlope (int i, int j, double& calculatedLinearTerm);
+};
+
+
+
 class LeastSquaresQuadraticModel {
 
 public:
@@ -217,6 +243,7 @@ protected:
 	
 	double CalculateLeastSquareWithOneTermZero (double& linearTerm, double& quadTerm);
 };
+
 
 
 #endif /*  _LEASTMEDIANOFSQUARES_H_  */
