@@ -208,7 +208,7 @@ public:
 	int GetLocusAndChannelHighestMessageLevel ();
 	Boolean PrepareLociForOutput ();
 
-	bool ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold);
+	bool ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold, bool isMixedPositiveNegativePullup);
 	bool ComputeRefinedOutlierList (list<PullupPair*>& pairList, double& linearPart);
 	bool ComputePullupParametersForNegativePeaks (int nNegatives, list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, bool constrainLSQ);
 

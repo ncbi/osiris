@@ -131,6 +131,9 @@ public:
 	double GetMedianSquaredForLMS () const { return mMedianResidual; }
 	double GetOutlierThreshold () { return mOutlierThreshold; }
 
+	virtual double GetLinearTerm () const { return 0.0; }
+	virtual double GetQuadraticTerm () const { return 0.0; }
+
 	static void SetMinimumNumberOfSamples (int n) { MinimumNumberOfSamples = n; }
 	static int GetMinimumNumberOfSamples () { return MinimumNumberOfSamples; }
 
@@ -196,11 +199,11 @@ public:
 	QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues);
 	~QuadraticLMSExact ();
 
-	double GetLinearTerm () const { return mLinearTerm; }
-	double GetQuadraticTerm () const { return mQuadraticTerm; }
+	virtual double GetLinearTerm () const { return mLinearTerm; }
+	virtual double GetQuadraticTerm () const { return mQuadraticTerm; }
 	double GetLeastSumOfSquares () const { return mLeastSquare; }
 
-	double CalculateLeastMedianSquare (double& linearTerm, double& quadTerm);
+	virtual double CalculateLMS ();
 
 protected:
 	bool** mSlopeIsDefined;

@@ -900,13 +900,13 @@ double LeastSquaresQuadraticModel :: CalculateLeastSquareWithOneTermZero (double
 
 
 
-QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mSlopeIsDefined (NULL), mAlphaValues (NULL) {
+QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0) {
 
-	if (n < LeastMedianOfSquares::GetMinimumNumberOfSamples ()) {
+	//if (n < LeastMedianOfSquares::GetMinimumNumberOfSamples ()) {
 
-		mIsOK = false;
-		return;
-	}
+	//	mIsOK = false;
+	//	return;
+	//}
 
 	int i;
 	int j;
@@ -953,15 +953,15 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 }
 
 
-QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares ( xValues, yValues), mSlopeIsDefined (NULL), mAlphaValues (NULL) {
+QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares ( xValues, yValues), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0) {
 
-	int minSamples = LeastMedianOfSquares::GetMinimumNumberOfSamples ();
+	//int minSamples = LeastMedianOfSquares::GetMinimumNumberOfSamples ();
 
-	if (mSize < minSamples) {
+	//if (mSize < minSamples) {
 
-		mIsOK = false;
-		return;
-	}
+	//	mIsOK = false;
+	//	return;
+	//}
 
 	int i;
 	int j;
@@ -1027,7 +1027,7 @@ QuadraticLMSExact :: ~QuadraticLMSExact () {
 
 
 
-double QuadraticLMSExact::CalculateLeastMedianSquare (double& linearTerm, double& quadTerm) {
+double QuadraticLMSExact::CalculateLMS () {
 
 	// Calculate best median for each of fixed quadratic terms (slopes) and then select best median from among them.
 	// If no primary pull-up acceptable, there is no pull-up.
@@ -1047,7 +1047,7 @@ double QuadraticLMSExact::CalculateLeastMedianSquare (double& linearTerm, double
 
 		for (j=0;j<mSize; j++) {
 
-			if (mSlopeIsDefined) {
+			if (mSlopeIsDefined [i][j]) {
 
 				currentLMS = CalculateLeastMedianSquareForGivenSlope (i, j, alpha);
 
@@ -1076,13 +1076,13 @@ double QuadraticLMSExact::CalculateLeastMedianSquare (double& linearTerm, double
 
 	if (first) {
 
-		linearTerm = 0.0;
-		quadTerm = 0.0;
+		mLinearTerm = 0.0;
+		mQuadraticTerm = 0.0;
 		return 0.0;
 	}
 
-	linearTerm = bestAlpha;
-	quadTerm = (mRatioArray [iBest] - mRatioArray [jBest]) / (mXvalues [iBest] - mXvalues [jBest]);
+	mLinearTerm = bestAlpha;
+	mQuadraticTerm = (mRatioArray [iBest] - mRatioArray [jBest]) / (mXvalues [iBest] - mXvalues [jBest]);
 	mLeastMedianValue = bestAlpha;
 	mMedianResidual = bestLMS;
 	double s;
@@ -1099,7 +1099,7 @@ double QuadraticLMSExact::CalculateLeastMedianSquare (double& linearTerm, double
 
 	for (i=0; i<mSize; i++) {
 
-		double temp = bestAlpha + quadTerm * mXvalues [i];
+		double temp = bestAlpha + mQuadraticTerm * mXvalues [i];
 
 		if (fabs (mRatioArray [i] - temp) > mOutlierThreshold)
 			mOutlierArray [i] = true;
