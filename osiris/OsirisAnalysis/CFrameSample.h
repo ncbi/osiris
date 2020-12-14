@@ -107,7 +107,6 @@ private:
   void _TileWithGraph();
   void _History();
   void _ApplyAll();
-  void _Apply();
   void _Accept();
   void _Approve();
   void _ToggleDisabled();

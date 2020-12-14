@@ -365,7 +365,6 @@ enum
 
     // sample window
   IDmenuSampleTile,
-  IDSampleApplyAll,
   IDSampleApply,
   IDSampleAccept,
   IDSampleApprove,
