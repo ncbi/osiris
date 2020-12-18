@@ -1213,6 +1213,22 @@
 			<Scope>6</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smModelRangeInNumberOfOutlierThresholds</Name>
+			<MessageType>count</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<CountingDataInfo>
+				<Threshold>20</Threshold>
+				<Comparison>Greater</Comparison>
+			</CountingDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Distance from least median to ignore as outside model scope</Text>
+			<ReportLevel>2</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSamplesTerminatedPrematurely</Name>
 			<Subject>10</Subject>
 			<SampleType>3</SampleType>
@@ -7695,6 +7711,7 @@
 						<Name>smILSBPForEndOfPrimerPeaks</Name>
 						<Name>smTailHeightFittingThresholdFactor</Name>
 						<Name>smTailSlopeFittingThresholdFactor</Name>
+						<Name>smModelRangeInNumberOfOutlierThresholds</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
