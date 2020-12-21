@@ -73,6 +73,14 @@ class CMDIFrame : public CMDIFrameSuper, public nwxTimerReceiver
 public:
   enum
   {
+    // parameter for history warning window
+    HISTORY_WARN_THIS = 1,
+    HISTORY_WARN_PLOT = 2,
+    HISTORY_WARN_ANALYSIS = 4,
+    HISTORY_WARN_PLOT_ANALYSIS = HISTORY_WARN_ANALYSIS + HISTORY_WARN_PLOT
+  };
+  enum
+  {
     FRAME_NONE,
     FRAME_ANALYSIS,
     FRAME_PLOT,
@@ -106,11 +114,11 @@ public:
   virtual void UpdateStatusBar();
   virtual bool FileError();
   virtual const wxDateTime *GetSelectedTime();
+  int GetHistoryCheck(bool bOtherIsCurrent = false);
   bool HistoryIsCurrent()
   {
     return (GetSelectedTime() == NULL);
   }
-
   bool CheckIfHistoryOK();
   bool PopupMenu_(wxMenu* menu, const wxPoint& pos = wxDefaultPosition);
   bool PopupMenu_(wxMenu* menu, int x, int y);
@@ -185,11 +193,20 @@ private:
   wxMenu *m_pLastMenuShown;
   int m_nMenuCount;
   bool m_bLastMenuPopup;
+  bool m_bHistoryWarningShown;
 public:
   virtual void OnFocusSetCB(wxFocusEvent &);  // callbacks for inherited classes
   virtual void OnFocusKillCB(wxFocusEvent &);
   virtual void OnActivateCB(wxActivateEvent &e);
 
+  bool HistoryWarningShown()
+  {
+    return m_bHistoryWarningShown;
+  }
+  void SetHistoryWarningShown(bool b = true)
+  {
+    m_bHistoryWarningShown = b;
+  }
   void RaiseWindow();
   void OnCheckSplitter(wxCommandEvent &e);
   void OnActivate(wxActivateEvent &e);

@@ -36,13 +36,13 @@
 #include "CParmOsiris.h"
 #include "wxIDS.h"
 
-bool CDialogWarnHistory::Continue(wxWindow *parent, bool bAsk)
+bool CDialogWarnHistory::Continue(wxWindow *parent, bool bAsk, int nWhichWindow)
 {
   CParmOsirisGlobal parm;
   bool bRtn = true;
   if(parm.Get()->WarnOnHistory())
   {
-    CDialogWarnHistory dlg(parent, wxID_ANY, bAsk);
+    CDialogWarnHistory dlg(parent, wxID_ANY, bAsk, nWhichWindow);
     int n = dlg.ShowModal();
     if(n == wxID_CANCEL || n == wxID_NO)
     {
@@ -59,14 +59,32 @@ bool CDialogWarnHistory::Continue(wxWindow *parent, bool bAsk)
 CDialogWarnHistory::~CDialogWarnHistory() {}
 
 CDialogWarnHistory::CDialogWarnHistory(
-  wxWindow *parent, wxWindowID id, bool bAsk) :
+  wxWindow *parent, wxWindowID id, bool bAsk, int nWhichWindow) :
     wxDialog(parent,id,wxString("Warning"))
 {
   wxStaticText *pWarning = new wxStaticText(
     this,wxID_ANY,"Warning!");
-  wxString s(
-    "The history setting is not set to \"current.\"\n"
-    "Any changes will be reflected when saving the file\n"
+  const char * psWindow = NULL;
+  switch (nWhichWindow)
+  {
+  case CMDIFrame::HISTORY_WARN_ANALYSIS:
+    psWindow = "in the analysis window";
+    break;
+  case CMDIFrame::HISTORY_WARN_PLOT:
+    psWindow = "in the plot window";
+    break;
+  case CMDIFrame::HISTORY_WARN_PLOT_ANALYSIS:
+    psWindow = "in the analysis and plot windows";
+    break;
+  case CMDIFrame::HISTORY_WARN_THIS:
+  default:
+    psWindow = "in this window";
+    break;
+  }
+  wxString s("The history setting is not set to \"current\"\n");
+  s.Append(psWindow);
+  s.Append(
+    ".\nAny changes will be reflected when saving the file\n"
     "but will not appear on the screen until the history\n"
     "setting is changed to \"current.\""
   );

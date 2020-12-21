@@ -57,6 +57,14 @@ public:
     int nSelectAlerts = -1,
     const wxString &sSelectLocus = wxEmptyString);
   virtual ~CFrameSample();
+  CFrameAnalysis *GetAnalysisFrame()
+  {
+    return m_pCreator;
+  }
+  COARsample *GetSample()
+  {
+    return m_pSample;
+  }
   void SelectLocus(const wxString &sLocus);
   void Select(int n);
   wxString GetDisplayedSampleName();
@@ -111,7 +119,6 @@ private:
   void _Approve();
   void _ToggleDisabled();
   void _ShowTable();
-
   wxString m_sUserID;
   wxSize m_sz;
   CHistoryTime m_Hist;

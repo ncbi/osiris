@@ -62,6 +62,7 @@ CMDIFrame::CMDIFrame(
       , size, style),
       m_pParent(parent)
 {
+  m_bHistoryWarningShown = false;
   m_sFrameNumber = nwxString::FormatNumber(mainApp::NewWindowNumber());
   m_nFocusRecursive = 0;
   m_bNoPromptReload = false;
@@ -85,12 +86,87 @@ void CMDIFrame::UpdateHistory() {;}
 void CMDIFrame::UpdateLadderLabels() {;}
 void CMDIFrame::UpdateFileMenu() {;}
 
+int CMDIFrame::GetHistoryCheck(bool bOtherIsCurrent)
+{
+  int nRtn = 0;
+  if (HistoryIsCurrent()) {} // done
+  else if (bOtherIsCurrent)
+  {
+    nRtn = HISTORY_WARN_THIS;
+  }
+  else
+  {
+    switch (GetType())
+    {
+    case FRAME_ANALYSIS:
+      nRtn = HISTORY_WARN_ANALYSIS;
+      break;
+    case FRAME_PLOT:
+      nRtn = HISTORY_WARN_PLOT;
+      break;
+    default:
+      nRtn = HISTORY_WARN_THIS;
+      break;
+    }
+  }
+  return nRtn;
+}
 bool CMDIFrame::CheckIfHistoryOK()
 {
-  bool bRtn =
-    HistoryIsCurrent()
-    ? true
-    : CDialogWarnHistory::Continue(this);
+  bool bRtn = true;
+  if (CParmOsiris::GetGlobal()->WarnOnHistory())
+  {
+    CFrameSample *pFrameSample = NULL;
+    CFrameAnalysis *pFrameAnalysis = NULL;
+    CFramePlot *pFramePlot = NULL;
+    int nCheck = 0;
+    bool bOtherIsCurrent = true; // if true and this window is not current, set nCheck to HISTORY_WARN_THIS
+    bool bAsk = true; // except for sample window when clicking "Apply"
+    switch (GetType())
+    {
+    case FRAME_ANALYSIS:
+      pFrameAnalysis = (CFrameAnalysis *)this;
+      pFramePlot = pFrameAnalysis->FindPlotFrameBySelectedSample();
+      bOtherIsCurrent = (pFramePlot == NULL) || pFramePlot->HistoryIsCurrent();
+      break;
+    case FRAME_PLOT:
+      pFramePlot = (CFramePlot *)this;
+      pFrameAnalysis = pFramePlot->FindAnalysisFrame();
+      bOtherIsCurrent = (pFrameAnalysis == NULL) || pFrameAnalysis->HistoryIsCurrent();
+      break;
+    case FRAME_SAMPLE:
+      bOtherIsCurrent = false; // never use HISTORY_WARN_THIS
+      pFrameSample = (CFrameSample *)this;
+      pFrameAnalysis = pFrameSample->GetAnalysisFrame();
+      pFramePlot = pFrameAnalysis->FindPlotFrameBySample(pFrameSample->GetSample());
+      bAsk = false;  // do not ask whether or not to continue
+      break;
+    default:
+      break;
+    }
+    if ((pFrameAnalysis == NULL) || (pFrameAnalysis->HistoryWarningShown()))
+    {
+      // the popup has been shown for this file, we are done
+    }
+    else if (bOtherIsCurrent)
+    {
+      nCheck = GetHistoryCheck(true);
+    }
+    else
+    {
+      nCheck = pFrameAnalysis->GetHistoryCheck() +
+        ((pFramePlot == NULL) ? 0 : pFramePlot->GetHistoryCheck());
+    }
+    // kill this
+    if (nCheck)
+    {
+      bRtn = CDialogWarnHistory::Continue(this, bAsk, nCheck);
+      if (bRtn)
+      {
+        pFrameAnalysis->SetHistoryWarningShown(true);
+      }
+    }
+  }
   return bRtn;
 }
 

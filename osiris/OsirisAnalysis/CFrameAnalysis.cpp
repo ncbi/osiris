@@ -533,7 +533,7 @@ void CFrameAnalysis::EditPeak(
   {
     mainApp::ShowAlert("This sample has been disabled.",parent);
   }
-  else
+  else if(parent->CheckIfHistoryOK())
   {
     CDialogEditPeak xx(parent,pSample,pPeak,this->m_pOARfile->GetReviewerAllowUserOverride());
     if(xx.IsOK())
@@ -1188,6 +1188,13 @@ _CRTIMP extern long _crtBreakAlloc;
 extern long _lRequestCurr;
 #endif
 #endif
+
+CFramePlot *CFrameAnalysis::FindPlotFrameBySample(COARsample *pSample)
+{
+  CFramePlot *pRtn = (pSample != NULL) ? m_pParent->FindPlotWindowBySample(pSample) : NULL;
+  return pRtn;
+}
+
 
 void CFrameAnalysis::ShowSampleFrame(
   COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID )

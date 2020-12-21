@@ -392,16 +392,7 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
 
 void CFrameSample::InitiateRepaintData()
 {
-  bool bCheckHistory = !m_pCreator->HistoryIsCurrent();
-  if (!bCheckHistory)
-  {
-    CFramePlot *pPlot = m_pParent->FindPlotWindowBySample(m_pSample);
-    bCheckHistory = (pPlot != NULL) && !pPlot->HistoryIsCurrent();
-  }
-  if (bCheckHistory)
-  {
-    CDialogWarnHistory::Continue(this, false);
-  }
+  CheckIfHistoryOK();
   m_pCreator->RepaintAllData(m_pSample);
 }
 void CFrameSample::RepaintData()

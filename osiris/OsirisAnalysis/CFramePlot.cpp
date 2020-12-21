@@ -69,6 +69,7 @@
 #include "CNotebookEditSample.h"
 #include "CPrintOutPlot.h"
 #include "CGridAnalysisDisplay.h"
+#include "CDialogWarnHistory.h"
 #include "nwx/vectorptr.h"
 
 #if FP_SCROLL_EVENT
@@ -1777,26 +1778,36 @@ void CFramePlot::OnContextMenu(wxContextMenuEvent &)
 
 void CFramePlot::EditPeak(COARpeakAny *pPeak)
 {
-  if(m_pOARfile == NULL)
+  if (pPeak != NULL)
   {
-    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT, true);
-  }
-  if(m_pOARfile != NULL && pPeak != NULL)
-  {
-    CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
-    if (pFrame == NULL)
-    { // done
-    }
-    else if ( (!HistoryIsCurrent())
-              ? CheckIfHistoryOK()
-              : pFrame->CheckIfHistoryOK() )
-      // checked the plot and analysis windows to see if
-      // history is set to current
-      // if not, user was prompted
+    CFrameAnalysis *pFrame = NULL;
+    if (m_pOARfile == NULL)
     {
-      pFrame->EditPeak(pPeak,GetSample(),this);
+      _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT, true);
+    }
+    if (m_pOARfile != NULL)
+    {
+      pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
+      if (pFrame == NULL)
+      {
+        wxCommandEvent e;
+        e.SetId(0);
+        OnTableButton(e);
+        pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
+        RaiseWindow();
+      }
+    }
+    if (pFrame != NULL)
+    {
+      pFrame->EditPeak(pPeak, GetSample(), this);
     }
   }
+}
+CFrameAnalysis *CFramePlot::FindAnalysisFrame()
+{
+  CFrameAnalysis *pRtn = (m_pOARfile == NULL)
+    ? NULL : m_pParent->FindAnalysisFrame(m_pOARfile);
+  return pRtn;
 }
 
 COARsample *CFramePlot::GetSample()

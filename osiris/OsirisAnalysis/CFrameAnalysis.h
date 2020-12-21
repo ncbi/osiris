@@ -75,6 +75,7 @@ class CPanelAlerts;
 class CXSLExportFileType;
 class COARpeakAny;
 class CFrameSample;
+class CFramePlot;
 /*
 typedef enum
 {
@@ -124,6 +125,12 @@ public:
   void SetLabelType(int n);
   LABEL_PLOT_TYPE GetPlotLabelType();
   wxWindow *GetInfoPanel();
+  CFramePlot *FindPlotFrameBySample(COARsample *pSample);
+  CFramePlot *FindPlotFrameBySelectedSample()
+  {
+    COARsample *pSample = _FindSampleByRow(m_pGrid->GetGridCursorRow());
+    return FindPlotFrameBySample(pSample);
+  }
 
   size_t GetSamplesByRow(std::vector<const COARsample *> *pSamples, int FLAGS = CFrameAnalysis::INCLUDE_DEFAULT);
   CPanelPlotPreview *GetGraphPanel()

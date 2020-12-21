@@ -107,6 +107,7 @@ public:
   {
     return (m_pOARfile == pFile);
   }
+  CFrameAnalysis *FindAnalysisFrame();
   void UpdateOARfile(const wxString &sSampleFileName);
   void EditPeak(COARpeakAny *);
   bool XBPSValue()
