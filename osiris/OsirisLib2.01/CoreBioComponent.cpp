@@ -1048,7 +1048,7 @@ void CoreBioComponent :: ReportSampleData (RGTextOutput& ExcelText) {
 }
 
 
-bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold) {
+bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold, bool isMixedPositiveNegativePullup) {
 
 	// Create lists of pairs (or arrays) and perform 1D LMS to get outliers; then perform ordinary LS on non-outliers to get coefficients
 	// Return false if insufficiently many data values.  Otherwise, return true;
@@ -1142,7 +1142,12 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 	//	return ans;
 	//}
 
-	LeastMedianOfSquares1D* lms = new LeastMedianOfSquares1D (n, xValues, yValues);
+	LeastMedianOfSquares* lms;
+
+	if (isMixedPositiveNegativePullup)
+		lms = new QuadraticLMSExact (n, xValues, yValues);
+	else
+		lms = new LeastMedianOfSquares1D (n, xValues, yValues);
 
 	if (!lms->DataIsOK ()) {
 
@@ -1216,16 +1221,27 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		}
 	}
 
-	LeastSquaresQuadraticModel* lsq = new LeastSquaresQuadraticModel (xList, yList);
-	double leastSquares;
+	LeastSquaresQuadraticModel* lsq = NULL;
 
-	if (!lsq->DataIsOK ()) {
+	if (isMixedPositiveNegativePullup) {
 
-		linearPart = lmsValue;
+		linearPart = lms->GetLinearTerm ();
+		quadraticPart = lms->GetQuadraticTerm ();
 	}
 
-	else
-		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart, constrainLSQ);
+	else {
+
+		lsq = new LeastSquaresQuadraticModel (xList, yList);
+		double leastSquares;
+
+		if (!lsq->DataIsOK ()) {
+
+			linearPart = lmsValue;
+		}
+
+		else
+			leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart, constrainLSQ);
+	}
 
 	// clean up
 

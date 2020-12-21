@@ -131,6 +131,9 @@ public:
 	double GetMedianSquaredForLMS () const { return mMedianResidual; }
 	double GetOutlierThreshold () { return mOutlierThreshold; }
 
+	virtual double GetLinearTerm () const { return 0.0; }
+	virtual double GetQuadraticTerm () const { return 0.0; }
+
 	static void SetMinimumNumberOfSamples (int n) { MinimumNumberOfSamples = n; }
 	static int GetMinimumNumberOfSamples () { return MinimumNumberOfSamples; }
 
@@ -188,6 +191,32 @@ protected:
 };
 
 
+
+class QuadraticLMSExact : public LeastMedianOfSquares {
+
+public:
+	QuadraticLMSExact (int n, double* x, double* y);
+	QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues);
+	~QuadraticLMSExact ();
+
+	virtual double GetLinearTerm () const { return mLinearTerm; }
+	virtual double GetQuadraticTerm () const { return mQuadraticTerm; }
+	double GetLeastSumOfSquares () const { return mLeastSquare; }
+
+	virtual double CalculateLMS ();
+
+protected:
+	bool** mSlopeIsDefined;
+	double** mAlphaValues;
+	double mLinearTerm;
+	double mQuadraticTerm;
+	double mLeastSquare;
+
+	double CalculateLeastMedianSquareForGivenSlope (int i, int j, double& calculatedLinearTerm);
+};
+
+
+
 class LeastSquaresQuadraticModel {
 
 public:
@@ -217,6 +246,7 @@ protected:
 	
 	double CalculateLeastSquareWithOneTermZero (double& linearTerm, double& quadTerm);
 };
+
 
 
 #endif /*  _LEASTMEDIANOFSQUARES_H_  */
