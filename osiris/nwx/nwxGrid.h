@@ -326,6 +326,8 @@ public:
   static void SetMessageGrid(wxGrid *p, const wxString &sMessage);
   static void UpdateLabelSizes(wxGrid *p);
 
+  static bool SetMacFont(wxGrid *p); // OS-1534 - set font that can show bold and italic
+
 //  constructor, destructor, and memeber functions
 //  it is recommended that only the static functions be used
 

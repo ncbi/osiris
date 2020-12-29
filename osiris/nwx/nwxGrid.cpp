@@ -251,6 +251,22 @@ void nwxGrid::SetRowCount(wxGrid *p, int n)
     p->AppendRows(n - nRows);
   }
 }
+
+bool nwxGrid::SetMacFont(wxGrid *p)
+{
+#ifdef __WXMAC__
+  wxFont fn = p->GetDefaultCellFont();
+  bool bRtn = fn.SetFaceName(wxT("Helvetica"));
+  if(bRtn)
+  {
+    p->SetDefaultCellFont(fn);
+  }
+  return bRtn;
+#else
+  return true;
+#endif
+}
+
 void nwxGrid::SetColCount(wxGrid *p, int n)
 {
   int nCols = p->GetNumberCols();

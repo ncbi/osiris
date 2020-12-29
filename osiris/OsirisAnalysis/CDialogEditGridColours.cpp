@@ -79,7 +79,7 @@ static const ROW_INFO aROWS_ATTR[] =
 {
   {
     ROW_NEEDS_ATTENTION,
-    wxS(" Attributes when approval or review is needed"),
+    wxS(" Attributes when approval or review is needed    "),
     GRID_ALERT_CELL
   },
   {
@@ -149,6 +149,7 @@ CGridColorGrid::CGridColorGrid(
     wxGrid(parent, id, wxDefaultPosition, wxDefaultSize, 
       wxBORDER_SIMPLE | wxWANTS_CHARS)
 {
+  nwxGrid::SetMacFont(this);
   wxFont fnStatus = CGridAnalysis::GetFontStatus();
   int nRow;
   size_t i;
@@ -240,6 +241,7 @@ CGridAttrGrid::CGridAttrGrid(wxWindow *parent, wxWindowID id) :
   wxGrid(parent,id,wxDefaultPosition,wxDefaultSize, 
       wxBORDER_SIMPLE | wxWANTS_CHARS)
 {
+  nwxGrid::SetMacFont(this);
   CreateGrid((int) ROW_ATTR_COUNT,1);
   SetRowLabelSize(1);
   SetColLabelSize(1);
