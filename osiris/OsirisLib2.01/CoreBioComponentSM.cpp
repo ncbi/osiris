@@ -2121,20 +2121,13 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 		else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight)) {  // Modify min primary and min ratio based on these...
 
-			if (currentPeak <= abs (rawHeight)) {
+			if (rawHeight > 0.0) {
 
-				if (rawHeight > 0.0)
-					mPullupFromAnotherChannel.InsertWithNoReferenceDuplication (nextSignal);
+				if (currentPeak <= abs (rawHeight)) {
 
-				else
-					ignore.InsertWithNoReferenceDuplication (nextSignal);
-
-				continue;
-			}
-
-			// If no negative pullup pairs and rawHeight < 0, should we add it to the list?  12/2/2020...Now it's 12/9/2020 and I don't think so.
-
-			if ((rawHeight < 0.0) && mixedPositiveAndNegativePullup) {
+						mPullupFromAnotherChannel.InsertWithNoReferenceDuplication (nextSignal);
+						continue;
+				}
 
 				nextPair = new PullupPair (nextSignal, rawHeight);
 				rawDataPullupPrimaries.Append (nextSignal);
@@ -2146,22 +2139,37 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				if (currentPeak > maxHeight)
 					maxHeight = currentPeak;
 
-				numerator = fabs (rawHeight);
+				nPos++;
+			}
 
-				if (rawHeight < 0.0) {
+			else if ((rawHeight < 0.0) && (currentPeak <= abs (rawHeight)))
+				ignore.InsertWithNoReferenceDuplication (nextSignal);
 
-					nNegatives++;
-					negativePairs.push_back (nextPair);
-					hasNegativePullup = true;
-				}
+			// If no negative pullup pairs and rawHeight < 0, should we add it to the list?  12/2/2020...Now it's 12/9/2020 and I don't think so.
 
-				else {
+			else if ((rawHeight < 0.0) && mixedPositiveAndNegativePullup) {
 
-					nPos++;
-				}
+				nextPair = new PullupPair (nextSignal, rawHeight);
+				rawDataPullupPrimaries.Append (nextSignal);
+				pairList.push_back (nextPair);
+
+				if (currentPeak < minHeight)
+					minHeight = currentPeak;
+
+				if (currentPeak > maxHeight)
+					maxHeight = currentPeak;
+
+				nNegatives++;
+				negativePairs.push_back (nextPair);
 			}
 		}
 	}
+
+	smUseNonlinearLMSAlgorithmForAllChannels useNonLinearLMSMessage;
+	bool useNonlinearLMS = GetMessageValue (useNonLinearLMSMessage);
+
+	if (useNonlinearLMS && (pairList.size () >= 5))
+		mixedPositiveAndNegativePullup = true;
 
 	RGDListIterator itRaw (rawDataPullupPrimaries);
 
@@ -2834,9 +2842,10 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 					testedPullups.Append (pullupPeak);
 					//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
 					double primaryHeight = primarySignal->Peak ();
-					ratio = (linearPart + quadraticPart * primaryHeight);
+					double pullupHeight = pullupPeak->Peak ();
+					ratio = pullupHeight / primaryHeight;  //(linearPart + quadraticPart * primaryHeight);
 					pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
-					double pullupLevel = ratio * primaryHeight;
+					double pullupLevel = pullupHeight;  //ratio * primaryHeight;
 					pullupPeak->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
 					pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 
@@ -2862,6 +2871,20 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 						// remove link; this is not a primary peak
 						RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
 					}
+				}
+
+				else {  // peak is outlier and half width criterion does not apply
+
+					pullupPeak->SetMessageValue (pullup, true);
+					nextPair->mIsOutlier = true;
+					testedPullups.Append (pullupPeak);
+					//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
+					double primaryHeight = primarySignal->Peak ();
+					ratio = (linearPart + quadraticPart * primaryHeight);
+					pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
+					double pullupLevel = ratio * primaryHeight;
+					pullupPeak->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
+					pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 				}
 			}
 
@@ -2957,8 +2980,9 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				pullupPeak->SetMessageValue (pullup, false);
 				pullupPeak->SetIsPurePullupFromChannel (primaryChannel, true, mNumberOfChannels);
 				double primaryHeight = primarySignal->Peak ();
-				ratio = (linearPart + quadraticPart * primaryHeight);
-				double pullupLevel = ratio * primaryHeight;
+				double pullupHeight = pullupPeak->Peak ();
+				ratio = pullupHeight / primaryHeight;  //(linearPart + quadraticPart * primaryHeight);
+				double pullupLevel = pullupHeight;  //ratio * primaryHeight;
 
 				//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
 				pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
