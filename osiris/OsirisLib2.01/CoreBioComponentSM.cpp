@@ -2704,7 +2704,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, quadraticPart);
 		double analysisThreshold = mDataChannels [pullupChannel]->GetMinimumHeight ();
 		double pullupThreshold = CoreBioComponent::minPrimaryPullupThreshold;
-		CalculatePullupCorrection (primaryChannel, pullupChannel, pairList, testLaserOffScale);
+//		CalculatePullupCorrection (primaryChannel, pullupChannel, pairList, testLaserOffScale);
 //		bool belowMinRFU;
 		mLeastMedianValue [primaryChannel][pullupChannel] = leastMedianValue;
 		mOutlierThreshold [primaryChannel][pullupChannel] = outlierThreshold;
@@ -3612,22 +3612,38 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		//	continue;
 
 		p = primarySignal->Peak ();
-		ratio = secondarySignal->Peak () / p;
-		isOutlier = pattern && (fabs (ratio - LMV) > outlierThreshold);
+		double directRatio = secondarySignal->Peak () / p;
+		double calculatedRatio = (linearPart + p * quadraticPart);
+		isOutlier = pattern && (fabs (calculatedRatio - directRatio) > outlierThreshold);
 		ratio = (linearPart + p * quadraticPart);
 		double h = secondarySignal->Peak () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 
-		if (secondarySignal->GetPullupFromChannel (primaryChannel) == 0.0)
-			h = h - p * ratio;
+		isNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
+		halfWidth = pattern && (isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());  // Removed isNarrow 12/2/2020
 
-		belowMinRFU = (h < minRFUForSecondaryChannel);
+		if (secondarySignal->GetMessageValue (purePullup) || (pattern && !isOutlier) || halfWidth)   // include pattern?!
+			ratio = directRatio;
+
+		else
+			ratio = calculatedRatio;
+
+		bool originalBelowMinRFU = (h < minRFUForSecondaryChannel);
+
+		if (secondarySignal->GetPullupFromChannel (primaryChannel) == 0.0)  //????
+			h = h - p * ratio;   // ????
+
+		belowMinRFU = (secondarySignal->Peak () < minRFUForSecondaryChannel);
+
+		if (originalBelowMinRFU && (ratio < 0.0) && !belowMinRFU) {
+
+			ratio = 0.005;
+			belowMinRFU = true;
+		}
 
 		//sigmaPrimary = primarySignal->GetStandardDeviation ();  // standard deviation is not a reliable measure of width
 		//sigmaSecondary = secondarySignal->GetStandardDeviation ();
 
 		//isNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !secondarySignal->IgnoreWidthTest ();
-		isNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
-		halfWidth = pattern && (isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());  // Removed isNarrow 12/2/2020
 
 		if (secondarySignal->GetMessageValue (purePullup) || (pattern && !isOutlier) || halfWidth) {   // include pattern?!
 
@@ -3690,8 +3706,8 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 		else {
 
-			p = primarySignal->Peak ();
-			ratio = (linearPart + p * quadraticPart);
+			//p = primarySignal->Peak ();
+			//ratio = (linearPart + p * quadraticPart);
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			secondarySignal->SetPullupFromChannel (primaryChannel, ratio * p, mNumberOfChannels);  // Fix this and next line to reflect contributions from primary peaks on other channels
 			secondarySignal->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
