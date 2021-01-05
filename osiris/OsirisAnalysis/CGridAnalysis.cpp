@@ -263,10 +263,6 @@ void CGridAnalysis::_SetupCellFlag(
       {
         nFlag |= GRID_ACCEPTED;
       }
-      else if(nReviewCount >= nReviewNeeded)
-      {
-        nFlag |= GRID_REVIEWED;
-      }
       else
       {
         *pbNeedsAttention = true;
