@@ -1249,6 +1249,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 	mLinearInScalePullupMatrix = new double* [mNumberOfChannels + 1];
 	mQuadraticInScalePullupMatrix = new double* [mNumberOfChannels + 1];
 	mMinimumInScalePrimaryPeak = new double* [mNumberOfChannels + 1];
+	mPattern = new bool* [mNumberOfChannels + 1];
 	mLeastMedianValue = new double* [mNumberOfChannels + 1];
 	mOutlierThreshold = new double* [mNumberOfChannels + 1];
 
@@ -1260,6 +1261,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 		mLinearInScalePullupMatrix [i] = new double [mNumberOfChannels + 1];
 		mQuadraticInScalePullupMatrix [i] = new double [mNumberOfChannels + 1];
 		mMinimumInScalePrimaryPeak [i] = new double [mNumberOfChannels + 1];
+		mPattern [i] = new bool [mNumberOfChannels + 1];
 		mLeastMedianValue [i] = new double [mNumberOfChannels + 1];
 		mOutlierThreshold [i] = new double [mNumberOfChannels + 1];
 
@@ -1271,6 +1273,7 @@ int CoreBioComponent :: InitializeSM (SampleData& fileData, PopulationCollection
 			mLinearInScalePullupMatrix [i][j] = 0.0;
 			mQuadraticInScalePullupMatrix [i][j] = 0.0;
 			mMinimumInScalePrimaryPeak [i] [j] = 0.0;
+			mPattern [i] [j] = false;
 			mLeastMedianValue [i][j] = 0.0;
 			mOutlierThreshold [i][j] = 0.0;
 		}
@@ -1728,16 +1731,23 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	double detectionThreshold = mDataChannels [pullupChannel]->GetDetectionThreshold ();
 	double primaryMinRFU = mDataChannels [primaryChannel]->GetMinimumHeight ();  // This is minRFU for primary channel
 	bool atLeastOnePositivePullupAboveDetection = false;
+	int minimumNumberOfSamples;
 
 	RGDListIterator channelIterator (*primaryChannelPeaks);
 
 	noiseLevelForSecondaryChannel = 0.01 * percentNoiseLevel * noiseLevelForSecondaryChannel;
 
-	if (testLaserOffScale)
-		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);
+	if (testLaserOffScale) {
 
-	else
+		minimumNumberOfSamples = 3;
+		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);
+	}
+
+	else {
+
+		minimumNumberOfSamples = 4;
 		LeastMedianOfSquares::SetMinimumNumberOfSamples (4);
+	}
 
 	// Modify code below to account for pullup corrections to secondary peaks that are also primary, and maybe to primary peaks?
 
@@ -1956,6 +1966,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
 		SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
 		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
+		mPattern [primaryChannel] [pullupChannel] = false;
 		ignore.Clear ();
 		return true;
 	}
@@ -1970,6 +1981,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	if (!atLeastOnePositivePullupAboveDetection) {
 
+		mPattern [primaryChannel] [pullupChannel] = false;
 		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
 		SetLinearPullupMatrix(primaryChannel, pullupChannel, 0.0);
 		SetQuadraticPullupMatrix(primaryChannel, pullupChannel, 0.0);
@@ -1982,12 +1994,23 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			primarySignal = nextPair->mPrimary;
 			secondarySignal = nextPair->mPullup;
 
+			if (secondarySignal != NULL) {
+
+				primarySignal->RemoveProbablePullup (secondarySignal);
+				secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+				if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+					secondarySignal->SetMessageValue (pullup, false);
+				}
+			}
+
 			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
 
 			if (iChannelPrimary == NULL) {
 
 				primarySignal->SetMessageValue (primaryLink, false);
-				continue; // error
+				continue; // error?
 			}
 
 			primarySignal->RemoveProbablePullup (secondarySignal);
@@ -2353,6 +2376,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
 				SetLinearPullupMatrix (primaryChannel, pullupChannel, 0.0);
 				SetQuadraticPullupMatrix (primaryChannel, pullupChannel, 0.0);
+				mPattern [primaryChannel] [pullupChannel] = true;
 				RGString data;
 				//occludedDataPrimaries.Clear ();  // Maybe don't do this...
 
@@ -2513,8 +2537,11 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				// Insufficient data for pattern
 				// Remove peaks from primary list that are below user specified height and proceed to LMS
 				// Make a function for this based on passing pairList and the three peak lists, plus height to test for, plus primary channel and pullup channel.
+			
+				mPattern [primaryChannel] [pullupChannel] = false;
 
 				FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, primaryThreshold, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
+				mPattern [primaryChannel] [pullupChannel] = false;
 			}
 
 			else if (estimatedMinPrimary == 0) {
@@ -2677,11 +2704,94 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	}
 
 	ignore.Clear ();
+
+	// Add test for required number of peaks here.  If too few, create uncertain pull-ups, except if half width criterion applies.  If enough call ComputePullupParameers below.
+	//  Don't forget to set mPattern appropriately.
+
+	if ((int)pairList.size () < minimumNumberOfSamples) {
+
+		// Set uncertain pullups, clean up and get out
+		mPattern [primaryChannel] [pullupChannel] = false;
+		SetPullupTestedMatrix(primaryChannel, pullupChannel, true);
+		SetLinearPullupMatrix(primaryChannel, pullupChannel, 0.0);
+		SetQuadraticPullupMatrix(primaryChannel, pullupChannel, 0.0);
+		ignore.Clear ();
+
+		while (!pairList.empty()) {
+
+			nextPair = pairList.front();
+
+			primarySignal = nextPair->mPrimary;
+			secondarySignal = nextPair->mPullup;
+
+			if (secondarySignal != NULL) {
+
+				bool secondaryNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
+
+				//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
+				//belowMinRFU = (correctedHeight < analysisThreshold);
+
+				if (secondaryNarrow2) {  // Removed secondaryNarrow 12/2/2020
+
+					// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
+
+					secondarySignal->SetMessageValue (purePullup, true);
+					secondarySignal->SetMessageValue (pullup, false);
+					secondarySignal->SetIsPurePullupFromChannel (primaryChannel, true, mNumberOfChannels);
+					double primaryHeight = primarySignal->Peak ();
+					double pullupHeight = secondarySignal->Peak ();
+					double ratio = pullupHeight / primaryHeight;  //(linearPart + quadraticPart * primaryHeight);
+					double pullupLevel = pullupHeight;  //ratio * primaryHeight;
+
+					//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
+					secondarySignal->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
+					secondarySignal->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
+					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+
+					if (secondarySignal->HasCrossChannelSignalLink ()) {
+
+						// remove link; this is not a primary peak
+						RemovePrimaryLinksAndSecondaryLinksFrom (secondarySignal);
+					}
+				}
+
+				else {
+
+					secondarySignal->SetIsPossiblePullup (true);
+					secondarySignal->AddUncertainPullupChannel (primaryChannel);
+					secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+				}
+			}
+
+			delete nextPair;
+			pairList.pop_front();
+		}
+
+		return true;
+	}
+
 //	RemovePrimaryLinksForChannelsSM (primaryChannel, pullupChannel, testLaserOffScale, ignore);
 //	pullupFromAnotherChannel.Clear ();
 
-	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold, mixedPositiveAndNegativePullup);
 	list<PullupPair*>::iterator pairIt;
+
+	for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
+
+		nextPair = *pairIt;
+		primarySignal = nextPair->mPrimary;
+
+		if (primarySignal != NULL) {
+
+			double time = primarySignal->GetMean ();
+			cout << "Primary Time = " << time << "\n";
+		}
+
+		else
+			cout << "Null primary\n";
+	}
+
+	bool answer = ComputePullupParameters (pairList, linearPart, quadraticPart, leastMedianValue, outlierThreshold, mixedPositiveAndNegativePullup);
+	
 	list<InterchannelLinkage*>::iterator linkIt;
 	size_t position = 0;
 
@@ -2699,6 +2809,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 		// insert further processing based on answer and clear pairList;
 
+		mPattern [primaryChannel] [pullupChannel] = true;
 		SetPullupTestedMatrix (primaryChannel, pullupChannel, true);
 		SetLinearPullupMatrix (primaryChannel, pullupChannel, linearPart);
 		SetQuadraticPullupMatrix (primaryChannel, pullupChannel, quadraticPart);
@@ -2798,6 +2909,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 					secondarySignal->SetMessageValue (pullup, false);
 					secondarySignal->SetMessageValue (purePullup, false);
+					secondarySignal->SetMessageValue (partialPullupBelowMin, false);
 				}
 			}
 
@@ -2908,6 +3020,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 		data = "";
 		data << pullupChannel;
+		mPattern [primaryChannel] [pullupChannel] = false;
 
 		while (nextSignal = (DataSignal*)occludedDataPrimaries.GetFirst ()) {
 
@@ -3590,7 +3703,10 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 	quadraticPart = mQuadraticPullupMatrix [primaryChannel][secondaryChannel];
 	double LMV = mLeastMedianValue [primaryChannel][secondaryChannel];
 	double outlierThreshold = mOutlierThreshold [primaryChannel][secondaryChannel];
-	bool pattern = ((linearPart != 0.0) || (quadraticPart != 0.0));
+	bool pattern = mPattern [primaryChannel][secondaryChannel];
+	bool patternButNoPullup = pattern && (linearPart == 0.0) && (quadraticPart == 0.0);
+	smPrimaryInterchannelLink primaryPullup;
+	InterchannelLinkage* secondaryLink;
 
 	for (it=mInterchannelLinkageList.begin (); it!=mInterchannelLinkageList.end (); it++) {
 
@@ -3610,6 +3726,44 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 		//if ((secondarySignal->GetPullupFromChannel (primaryChannel) != 0.0) || (secondarySignal->HasPrimarySignalFromChannel (primaryChannel) != NULL))  // skip this test???
 		//	continue;
+
+		if (!pattern) {
+
+			secondarySignal->SetIsPossiblePullup (true);
+			secondarySignal->AddUncertainPullupChannel (primaryChannel);
+			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+			primarySignal->SetMessageValue (primaryPullup, true);
+			//secondarySignal->SetPullupRatio (primaryChannel, 100.0 * secondarySignal->Peak () / primarySignal->Peak (), mNumberOfChannels);
+			//secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
+			continue;
+		}
+
+		else if (patternButNoPullup) {
+
+			// Add code to remove pullup artifacts if there is no other pullup from other channels
+
+			secondarySignal->SetPullupFromChannel (primaryChannel, 0.0, mNumberOfChannels);
+			secondarySignal->SetPullupRatio (primaryChannel, 0.0, mNumberOfChannels);
+			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, NULL, mNumberOfChannels);
+
+			nextLink->RemoveDataSignalFromSecondaryList (secondarySignal);
+
+			if (nextLink->IsEmpty ()) {
+
+				primarySignal->SetMessageValue (primaryPullup, false);
+				primarySignal->SetInterchannelLink (NULL);
+				removeList.push_back (nextLink);
+			}
+
+			if (!secondarySignal->HasAnyPrimarySignals (mNumberOfChannels)) {
+
+				secondarySignal->SetMessageValue (pullup, false);
+				secondarySignal->SetMessageValue (purePullup, false);
+				secondarySignal->SetMessageValue (partialPullupBelowMinRFU, false);
+			}
+
+			continue;
+		}
 
 		p = primarySignal->Peak ();
 		double directRatio = secondarySignal->Peak () / p;
@@ -3695,15 +3849,6 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 			secondarySignal->SetMessageValue (partialPullupBelowMinRFU, true);
 		}
 
-		else if ((linearPart == 0.0) && (quadraticPart == 0.0)) {
-
-			secondarySignal->SetIsPossiblePullup (true);
-			secondarySignal->AddUncertainPullupChannel (primaryChannel);
-			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
-			//secondarySignal->SetPullupRatio (primaryChannel, 100.0 * secondarySignal->Peak () / primarySignal->Peak (), mNumberOfChannels);
-			//secondarySignal->SetPullupFromChannel (primaryChannel, secondarySignal->Peak (), mNumberOfChannels);
-		}
-
 		else {
 
 			//p = primarySignal->Peak ();
@@ -3723,11 +3868,11 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 				// remove link; this is not a primary peak
 				
 				secondarySignal->SetMessageValue (primaryLink, false);
-				nextLink = secondarySignal->GetInterchannelLink ();
+				secondaryLink = secondarySignal->GetInterchannelLink ();
 
-				if (nextLink != NULL) {
+				if (secondaryLink != NULL) {
 
-					removeList.push_back (nextLink);
+					removeList.push_back (secondaryLink);
 				}
 			}
 		}

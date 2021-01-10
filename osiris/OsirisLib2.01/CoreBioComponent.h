@@ -603,6 +603,7 @@ protected:
 	double** mLinearInScalePullupMatrix;
 	double** mQuadraticInScalePullupMatrix;
 	double** mMinimumInScalePrimaryPeak;
+	bool** mPattern;
 
 	CSplineTransform* mTimeMap;
 
