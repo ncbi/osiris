@@ -1704,6 +1704,12 @@ int smUncertainPullUp::sMessageIndex = 0;
 int smUncertainPullUp::sMessageScope = 0;
 
 
+RGString smUseNonlinearLMSAlgorithmForAllChannels::sName = "smUseNonlinearLMSAlgorithmForAllChannels";
+int smUseNonlinearLMSAlgorithmForAllChannels::sSubject = smUseNonlinearLMSAlgorithmForAllChannels::LoadType ();
+int smUseNonlinearLMSAlgorithmForAllChannels::sMessageIndex = 0;
+int smUseNonlinearLMSAlgorithmForAllChannels::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1987,6 +1993,7 @@ PERSISTENT_DEFINITION (smPeakHeightAboveHomozygoteTrustThreshold, 2684, "smPeakH
 PERSISTENT_DEFINITION (smPeakIgnored, 2685, "smPeakIgnored")
 PERSISTENT_DEFINITION (smLaddersFromWrongMarkerSet, 2686, "smLaddersFromWrongMarkerSet")
 PERSISTENT_DEFINITION (smUncertainPullUp, 2687, "smUncertainPullUp")
+PERSISTENT_DEFINITION (smUseNonlinearLMSAlgorithmForAllChannels, 2688, "smUseNonlinearLMSAlgorithmForAllChannels")
 
 
 
@@ -18963,6 +18970,66 @@ int smUncertainPullUp :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smUncertainPullUp* noticeType = new smUncertainPullUp;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smUseNonlinearLMSAlgorithmForAllChannels :: smUseNonlinearLMSAlgorithmForAllChannels () : SmartNotice () {
+
+}
+
+
+smUseNonlinearLMSAlgorithmForAllChannels :: smUseNonlinearLMSAlgorithmForAllChannels (const smUseNonlinearLMSAlgorithmForAllChannels& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smUseNonlinearLMSAlgorithmForAllChannels :: ~smUseNonlinearLMSAlgorithmForAllChannels () {
+
+}
+
+
+int smUseNonlinearLMSAlgorithmForAllChannels :: GetSubject () const {
+
+	return smUseNonlinearLMSAlgorithmForAllChannels::sSubject;
+}
+
+
+void smUseNonlinearLMSAlgorithmForAllChannels :: SetIndexAndScope (int index, int scope) const {
+
+	smUseNonlinearLMSAlgorithmForAllChannels::sMessageIndex = index;
+	smUseNonlinearLMSAlgorithmForAllChannels::sMessageScope = scope;
+}
+
+
+int smUseNonlinearLMSAlgorithmForAllChannels :: GetMessageIndex () const {
+
+	return smUseNonlinearLMSAlgorithmForAllChannels :: sMessageIndex;
+}
+
+
+int smUseNonlinearLMSAlgorithmForAllChannels :: GetScope () const {
+
+	return smUseNonlinearLMSAlgorithmForAllChannels :: sMessageScope;
+}
+
+
+RGString smUseNonlinearLMSAlgorithmForAllChannels :: GetName () const {
+
+	return smUseNonlinearLMSAlgorithmForAllChannels :: sName;
+}
+
+
+
+int smUseNonlinearLMSAlgorithmForAllChannels :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smUseNonlinearLMSAlgorithmForAllChannels* noticeType = new smUseNonlinearLMSAlgorithmForAllChannels;
 	warehouse->AddType (noticeType);
 	return 1;
 }

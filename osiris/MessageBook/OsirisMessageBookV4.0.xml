@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Robert Goor (National Library of Medicine) -->
 <MessageBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OsirisMessageBook4.0.xsd">
-	<VersionNumber>7.65</VersionNumber>
-	<BuildTime>09/17/2020 6:30 PM</BuildTime>
+	<VersionNumber>7.66</VersionNumber>
+	<BuildTime>12/28/2020 7:25 PM</BuildTime>
 	<NumberOfTestUnits>5</NumberOfTestUnits>
 	<DebugMode>0</DebugMode>
 	<MessageDeclarations>
@@ -1211,22 +1211,6 @@
 			<ClosingText>)</ClosingText>
 			<ReportLevel>2</ReportLevel>
 			<Scope>6</Scope>
-		</SmartMessage>
-		<SmartMessage>
-			<Name>smModelRangeInNumberOfOutlierThresholds</Name>
-			<MessageType>count</MessageType>
-			<Subject>10</Subject>
-			<SampleType>3</SampleType>
-			<CountingDataInfo>
-				<Threshold>20</Threshold>
-				<Comparison>Greater</Comparison>
-			</CountingDataInfo>
-			<ReportCriterion>
-				<Expression>0</Expression>
-			</ReportCriterion>
-			<Text>Distance from least median to ignore as outside model scope</Text>
-			<ReportLevel>2</ReportLevel>
-			<Scope>4</Scope>
 		</SmartMessage>
 		<SmartMessage>
 			<Name>smSamplesTerminatedPrematurely</Name>
@@ -5358,6 +5342,22 @@
 			<Scope>2</Scope>
 		</SmartMessage>
 		<SmartMessage>
+			<Name>smUseNonlinearLMSAlgorithmForAllChannels</Name>
+			<MessageType>preset</MessageType>
+			<Subject>10</Subject>
+			<SampleType>3</SampleType>
+			<PresetDataInfo>
+				<Threshold>1</Threshold>
+				<ThresholdDescriptor>        Use Nonlinear Algorithm for All Pull-up Channels (Default:  checked)</ThresholdDescriptor>
+			</PresetDataInfo>
+			<ReportCriterion>
+				<Expression>0</Expression>
+			</ReportCriterion>
+			<Text>Use Nonlinear Algorithm for All Pull-up Channels</Text>
+			<ReportLevel>20</ReportLevel>
+			<Scope>4</Scope>
+		</SmartMessage>
+		<SmartMessage>
 			<Name>smSpacerExcessiveNoiseBegin</Name>
 			<MessageType>count</MessageType>
 			<Subject>1</Subject>
@@ -7711,7 +7711,7 @@
 						<Name>smILSBPForEndOfPrimerPeaks</Name>
 						<Name>smTailHeightFittingThresholdFactor</Name>
 						<Name>smTailSlopeFittingThresholdFactor</Name>
-						<Name>smModelRangeInNumberOfOutlierThresholds</Name>
+						<Name>smUseNonlinearLMSAlgorithmForAllChannels</Name>
 					</MeasuredMessages>
 				</ScopeDynamics>
 				<ScopeDynamics>
