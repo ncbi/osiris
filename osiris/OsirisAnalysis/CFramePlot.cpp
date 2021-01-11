@@ -69,6 +69,7 @@
 #include "CNotebookEditSample.h"
 #include "CPrintOutPlot.h"
 #include "CGridAnalysisDisplay.h"
+#include "CDialogWarnHistory.h"
 #include "nwx/vectorptr.h"
 
 #if FP_SCROLL_EVENT
@@ -487,13 +488,28 @@ CFramePlot::CFramePlot(
     m_bXBPS(false)
 {
   CBatchPlot BATCH(this);
-  mainApp::Ping3(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE,
-    PING_WINDOW_NUMBER, GetFrameNumber(),
-    "NoOAR", (pFile == NULL) ? "true" : "false"
-    );
+  CParmOsirisGlobal parm;
+  const wxString sPingType(PING_WINDOW_OPEN PING_WINDOW_TYPE);
+  const wxString &sFrameNumber(GetFrameNumber());
+  const wxChar * const psT = wxT("true");
+  const wxChar * const psF = wxT("false");
+  const wxChar * plist[] =
+  {
+    wxT(PING_EVENT),
+    (const wxChar *)sPingType,
+    wxT(PING_WINDOW_NUMBER),
+    (const wxChar *)sFrameNumber,
+    wxT("ShowDisabledAllele"),
+    parm->GetPlotShowDisabledAlleles() ? psT : psF,
+    wxT("ShowBins"),
+    parm->GetPlotShowLadderBins() ? psT : psF,
+    wxT("NoOAR"),
+    (pFile == NULL) ? psT : psF,
+    NULL
+  };
+  mainApp::PingList(plist);
   m_pPanel = new wxScrolledWindow(this,wxID_ANY,wxDefaultPosition, wxDefaultSize,wxVSCROLL);
   {
-    CParmOsirisGlobal parm;
     m_bShowToolbar = !parm->GetHideGraphicToolbar();
     m_bShowScrollbars = !parm->GetHideGraphicScrollbar();
     m_bFixed = !parm->GetPlotResizable();
@@ -821,7 +837,7 @@ bool CFramePlot::SetScrollbarMenuLabel(bool bShow)
     wxMenuItem *pItem = pMenu->FindItem(IDmenuShowHidePlotScrollbars);
     if(pItem != NULL)
     {
-      const char *psLabel = bShow ? "Show Plot Scrollbars" : "Hide Plot Scrollbars";
+      const char *psLabel = bShow ? SHOW_PLOT_SCROLLBARS : HIDE_PLOT_SCROLLBARS;
       pItem->SetItemLabel(psLabel);
       bRtn = true;
     }
@@ -896,7 +912,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     }
     else
     {
-      _FindOARfile();
+      _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_HISTORY, true);
     }
 
   }
@@ -949,7 +965,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     CParmOsirisGlobal parm;
     parm->SetHideGraphicScrollbar(bWasShown);
     //RebuildAll();
-    _RebuildCurves();
+    RebuildCurves();
   }
   else if(nID == IDmenuShowXBPS)
   {
@@ -959,7 +975,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
     CParmOsirisGlobal parm;
     parm->SetPlotDataXBPS(bXBPS);
     SetXBPSValue(bXBPS);
-    _RebuildCurves();
+    RebuildCurves();
   }
   else if(nID == IDExportGraphic)
   {
@@ -1002,7 +1018,7 @@ bool CFramePlot::MenuEvent(wxCommandEvent &e)
   return bRtn;
 }
 
-void CFramePlot::_FindOARfile(int nType)
+void CFramePlot::_FindOARfile(int nType, bool bOpenTable)
 {
   CDialogPlotMessageFind dlg(this,nType);
   int n = dlg.ShowModal();
@@ -1015,6 +1031,7 @@ void CFramePlot::_FindOARfile(int nType)
     bool bNotFound = sFile.IsEmpty();
     bool bDone = false;
     bool bNew = false;
+    bool bShowTable = false;
     COARfile *pFile(NULL);
     if(bNotFound)
     {
@@ -1077,6 +1094,10 @@ void CFramePlot::_FindOARfile(int nType)
               delete pFile;
               pFile = NULL;
             }
+            else
+            {
+              bShowTable = bOpenTable;
+            }
           }
           else
           {
@@ -1092,9 +1113,27 @@ void CFramePlot::_FindOARfile(int nType)
     if(pFile != NULL)
     {
       SetOARfile(pFile);
+      if (bShowTable)
+      {
+        wxCommandEvent e;
+        e.SetId(-1);
+        OnTableButton(e);
+        Raise();
+      }
+      RebuildCurves();
     }
   }
 }
+
+bool CFramePlot::FindOARforType(int nType)
+{
+  if (m_pOARfile == NULL)
+  {
+    _FindOARfile(nType, true);
+  }
+  return (m_pOARfile != NULL);
+}
+
 bool CFramePlot::_CheckAnalysisFile(COARfile *pFile)
 {
   wxString sError;
@@ -1263,6 +1302,22 @@ void CFramePlot::UpdateLadderLabels()
     ++itr)
   {
     (*itr)->UpdateLadderLabels();
+  }
+}
+void CFramePlot::_CleanupBins()
+{
+  set<CPanelPlot *>::iterator itr;
+  for (itr = m_setPlots.begin();
+    itr != m_setPlots.end();
+    ++itr)
+  {
+    (*itr)->CleanupBins();
+  }
+  for (itr = m_setPlotsHidden.begin();
+    itr != m_setPlotsHidden.end();
+    ++itr)
+  {
+    (*itr)->CleanupBins();
   }
 }
 
@@ -1723,25 +1778,36 @@ void CFramePlot::OnContextMenu(wxContextMenuEvent &)
 
 void CFramePlot::EditPeak(COARpeakAny *pPeak)
 {
-  if(m_pOARfile == NULL)
+  if (pPeak != NULL)
   {
-    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT);
-    if(m_pOARfile != NULL)
+    CFrameAnalysis *pFrame = NULL;
+    if (m_pOARfile == NULL)
     {
-      wxCommandEvent e;
-      e.SetId(-1);
-      OnTableButton(e);
-      RaiseWindow();
+      _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_EDIT, true);
+    }
+    if (m_pOARfile != NULL)
+    {
+      pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
+      if (pFrame == NULL)
+      {
+        wxCommandEvent e;
+        e.SetId(0);
+        OnTableButton(e);
+        pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
+        RaiseWindow();
+      }
+    }
+    if (pFrame != NULL)
+    {
+      pFrame->EditPeak(pPeak, GetSample(), this);
     }
   }
-  if(m_pOARfile != NULL && pPeak != NULL)
-  {
-    CFrameAnalysis *pFrame = m_pParent->FindAnalysisFrame(m_pOARfile);
-    if(pFrame != NULL)
-    {
-      pFrame->EditPeak(pPeak,GetSample(),this);
-    }
-  }
+}
+CFrameAnalysis *CFramePlot::FindAnalysisFrame()
+{
+  CFrameAnalysis *pRtn = (m_pOARfile == NULL)
+    ? NULL : m_pParent->FindAnalysisFrame(m_pOARfile);
+  return pRtn;
 }
 
 COARsample *CFramePlot::GetSample()
@@ -1763,7 +1829,7 @@ void CFramePlot::OnHistoryButton(wxCommandEvent &e)
   {
     CPanelPlot *p = *m_setPlots.begin();
     CPanelPlotToolbarSaveState xxx(p);
-    _FindOARfile();
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_HISTORY, true);
     xxx.RestoreState(true);
     SyncToolbars(p);
   }
@@ -1775,9 +1841,10 @@ void CFramePlot::OnTableButton(wxCommandEvent &e)
   if(m_pOARfile == NULL)
   {
     _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_TABLE);
-    if(m_pOARfile == NULL)
-    {}
-    else if(e.GetId() > 0)
+    if (m_pOARfile == NULL)
+    {
+    }
+    else if (e.GetId() > 0)
     {
       // if this is a menu event,change to button
       // because processing is faster
@@ -2258,6 +2325,9 @@ wxBitmap *CFramePlot::CreateBitmap(
         pPanelPlot->CopySettings(*pPlot, 0, bForcePrintFont);
         pPanelPlot->AdjustLabelHeightExtension(dLabelExtension, rectPlot, nLabelHeight);
         pPanelPlot->DrawPlotToDC(&dcPlot, rectPlot, dDPI, false, bForcePrintFont);
+#ifdef TMP_DEBUG
+        mainApp::DumpBitmap(pBitmapPlot.get(), wxString::Format(wxT("plot_schnl_%d"), n));
+#endif
         dc.Blit(0, nY, nWidth, nPlotHeight, &dcPlot, 0, 0);
         nY += nPlotHeight;
       }
@@ -2315,7 +2385,7 @@ void CFramePlot::OnPrintPreview(wxCommandEvent &)
 {
   if (m_pOARfile == NULL)
   {
-    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_PRINT);
+    _FindOARfile(CDialogPlotMessageFind::MSG_TYPE_PRINT, true);
   }
   if (m_pOARfile != NULL)
   {

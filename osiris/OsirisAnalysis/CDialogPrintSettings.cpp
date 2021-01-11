@@ -73,13 +73,14 @@
 #define S_SECTION_PAGE_HEADING "Page heading"
 #define S_SECTION_CHANNELS_PER_PAGE "Channels per page"
 #define S_SECTION_X_UNITS "X-axis units"
-#define S_SECTION_SCALE_X_AXIS "Scale X-axis - Primer Peaks"
+#define S_SECTION_SCALE_X_AXIS "Scale X-axis"
 #define S_SECTION_SCALE_Y_AXIS "Scale Y-axis"
 
 #define S_ANALYZED "Analyzed"
 #define S_RAW "Raw"
 #define S_LADDERS "Ladders"
 #define S_LADDER_LABELS "Ladder labels"
+#define S_LADDER_BINS "Ladder bins"
 #define S_BASELINE "Baseline"
 #define S_ILS_LINES "ILS vertical lines"
 #define S_MIN_RFU_THRESHOLD "Minimum RFU threshold"
@@ -93,14 +94,15 @@
 #define S_TIME "Time"
 #define S_ILS_REF_BPS "ILS reference base pairs"
 #define S_PEAK_AREA "Peak area"
+#define S_INCLUDE_DISABLED "Include disabled Alleles"
 #define S_ALL "All"
 #define S_NONE "None"
 #define S_CRITICAL "Critical"
 #define S_FILE_NAME "File name"
 #define S_SAMPLE_NAME "Sample name"
-#define S_EXCLUDE_PRIMER_PEAKS "Exclude"
-#define S_INCLUDE_PRIMER_PEAKS "Include"
-#define S_NEG_CTRL_PRIMER_PEAKS "Include neg. control only"
+#define S_EXCLUDE_PRIMER_PEAKS "Exclude primer peaks"
+#define S_INCLUDE_PRIMER_PEAKS "Include primer peaks"
+#define S_NEG_CTRL_PRIMER_PEAKS "Neg. control primers only"
 #define S_SPECIFY "Specify..."
 #define S_SCALE_CHANNEL "Scale each channel"
 #define S_SCALE_SAMPLE "Scale to entire sample"
@@ -111,6 +113,7 @@
 #define S_PAGE_NOTES "Notes"
 #define S_SAMPLES "Samples"
 #define S_OMIT_ILS "Omit ILS channel"
+#define S_INCLUDE_RIGHT_END "Include right end of data"
 #define S_TO " to "
 #define S_RANGE_SECONDS "seconds"
 #define S_RANGE_BPS "bps"
@@ -254,6 +257,7 @@ void CDialogPrintSettings::_Build()
   m_pCheckCurveRaw = new wxCheckBox(this, wxID_ANY, wxT(S_RAW));
   m_pCheckCurveLadder = new wxCheckBox(this, IDprintCurveLadders, wxT(S_LADDERS));
   m_pCheckCurveLadderLabels = new wxCheckBox(this, wxID_ANY, wxT(S_LADDER_LABELS));
+  m_pCheckCurveLadderBins = new wxCheckBox(this, wxID_ANY, wxT(S_LADDER_BINS));
   m_pCheckCurveBaseline = new wxCheckBox(this, wxID_ANY, wxT(S_BASELINE));
   m_pCheckCurveILSvertical = new wxCheckBox(this, wxID_ANY, wxT(S_ILS_LINES));
   m_pCheckCurveMinRFU = new wxCheckBox(this, wxID_ANY, wxT(S_MIN_RFU_THRESHOLD));
@@ -276,6 +280,10 @@ void CDialogPrintSettings::_Build()
   m_pCheckLabelTime = new wxCheckBox(this, wxID_ANY, wxT(S_TIME));
   m_pCheckLabelILSBPS = new wxCheckBox(this, wxID_ANY, wxT(S_ILS_REF_BPS));
   m_pCheckLabelPeakArea = new wxCheckBox(this, wxID_ANY, wxT(S_PEAK_AREA));
+  m_pCheckLabelIncludeDisabled = new wxCheckBox(this, wxID_ANY, wxT(S_INCLUDE_DISABLED));
+  wxFont f(m_pCheckLabelIncludeDisabled->GetFont());
+  f.MakeItalic();
+  m_pCheckLabelIncludeDisabled->SetFont(f);
 
   // Artifact Labels
 
@@ -320,7 +328,7 @@ void CDialogPrintSettings::_Build()
   m_pTextXscaleMax = _CreateNumericTextCtrl(this, -999, 99999, __OUT_OF_RANGE);
   m_pTextXscaleMin->Enable(false);
   m_pTextXscaleMax->Enable(false);
-
+  m_pCheckXRightEnd = new wxCheckBox(this, wxID_ANY, wxT(S_INCLUDE_RIGHT_END));
   // scale Y-Axis
 
   m_pRadioYscaleChannel = _CreateRadioButton(wxT(S_SCALE_CHANNEL), PRINT_Y_SCALE_CHANNEL, true, IDprintYscaleSpecify);
@@ -358,6 +366,7 @@ void CDialogPrintSettings::_Build()
   pSizerTemp->AddSpacer(ID_BORDER << 1);
   pSizerTemp->Add(m_pCheckCurveLadderLabels, 0, 0, 0);
   pSizerItems->Add(pSizerTemp, ITEM_ARGS);
+  pSizerItems->Add(m_pCheckCurveLadderBins, ITEM_ARGS);
   pSizerItems->Add(m_pCheckCurveBaseline, ITEM_ARGS);
   pSizerItems->Add(m_pCheckCurveILSvertical, ITEM_ARGS);
   pSizerItems->Add(m_pCheckCurveMinRFU, ITEM_ARGS);
@@ -388,6 +397,7 @@ void CDialogPrintSettings::_Build()
   pSizerItems->Add(m_pCheckLabelTime, ITEM_ARGS);
   pSizerItems->Add(m_pCheckLabelILSBPS, ITEM_ARGS);
   pSizerItems->Add(m_pCheckLabelPeakArea, ITEM_ARGS);
+  pSizerItems->Add(m_pCheckLabelIncludeDisabled, ITEM_ARGS);
 
 
   // Artifact Labels
@@ -452,6 +462,7 @@ void CDialogPrintSettings::_Build()
   pSizerItems->Add(m_pRadioXscaleIncludePrimerNegCtrl, ITEM_ARGS);
   pSizerItems->Add(m_pRadioXscaleSpecify, ITEM_ARGS);
   pSizerItems->Add(pSizerTemp, ITEM_ARGS);
+  pSizerItems->Add(m_pCheckXRightEnd, ITEM_ARGS);
 
   // Scale Y-Axis
   pSizerTemp = new wxBoxSizer(wxHORIZONTAL);
@@ -532,6 +543,7 @@ void CDialogPrintSettings::_EnableXScaleUser(bool bEnable)
     m_pLabelXscaleUnits->Enable(bEnable);
     m_pLabelXscaleUnitsTo->Enable(bEnable);
     _SetXScaleUserValues();
+    m_pCheckXRightEnd->Enable(!bEnable); // opposite of user defined x
   }
 }
 void CDialogPrintSettings::_SetupLadderLabels()
@@ -546,10 +558,10 @@ void CDialogPrintSettings::_SetupXScaleUserUnits()
   if (m_pLabelXscaleUnits->GetLabel() != ps)
   {
     m_pLabelXscaleUnits->SetLabel(ps);
-    if (m_pRadioXscaleSpecify->GetValue())
-    {
-      _SetXScaleUserValues();
-    }
+  }
+  if (m_pRadioXscaleSpecify->GetValue())
+  {
+    _SetXScaleUserValues();
   }
 }
 void CDialogPrintSettings::_EnableYScaleUser(bool bEnable)
@@ -589,6 +601,7 @@ bool CDialogPrintSettings::TransferDataToWindow()
   m_pCheckCurveAnalyzed->SetValue(m_pParms->GetPrintCurveAnalyzed());
   m_pCheckCurveLadder->SetValue(m_pParms->GetPrintCurveLadder());;
   m_pCheckCurveLadderLabels->SetValue(m_pParms->GetPrintCurveLadderLabels());
+  m_pCheckCurveLadderBins->SetValue(m_pParms->GetPrintCurveRaw());
   m_pCheckCurveBaseline->SetValue(m_pParms->GetPrintCurveBaseline());
   m_pCheckCurveRaw->SetValue(m_pParms->GetPrintCurveRaw());
   m_pCheckCurveILSvertical->SetValue(m_pParms->GetPrintCurveILSvertical());
@@ -604,6 +617,7 @@ bool CDialogPrintSettings::TransferDataToWindow()
   // peak labels
 
   _SetLabelSelection(m_pParms->GetPrintLabelsPeak());
+  m_pCheckLabelIncludeDisabled->SetValue(m_pParms->GetPrintCurveDisabledAlleles());
 
   // artifact labels
   _SetRadioValue(m_nGroupArtifact, m_pParms->GetPrintArtifact());
@@ -630,6 +644,7 @@ bool CDialogPrintSettings::TransferDataToWindow()
   m_nXscaleMax = m_pParms->GetPrintXscaleMax();
   m_nXscaleMinBPS = m_pParms->GetPrintXscaleMinBPS();
   m_nXscaleMaxBPS = m_pParms->GetPrintXscaleMaxBPS();
+  m_pCheckXRightEnd->SetValue(m_pParms->GetPrintXscaleRightEnd());
   _EnableXScaleUser(nTemp == PRINT_X_SCALE_USER);
 
   // Y Axis Scale
@@ -659,6 +674,7 @@ bool CDialogPrintSettings::TransferDataFromWindow()
   m_pParms->SetPrintCurveRaw(m_pCheckCurveRaw->GetValue());
   m_pParms->SetPrintCurveLadder(m_pCheckCurveLadder->GetValue());
   m_pParms->SetPrintCurveLadderLabels(m_pCheckCurveLadderLabels->GetValue());
+  m_pParms->SetPrintCurveLadderBins(m_pCheckCurveLadderBins->GetValue());
   m_pParms->SetPrintCurveBaseline(m_pCheckCurveBaseline->GetValue());
   m_pParms->SetPrintCurveILSvertical(m_pCheckCurveILSvertical->GetValue());
   m_pParms->SetPrintCurveMinRFU(m_pCheckCurveMinRFU->GetValue());
@@ -673,6 +689,7 @@ bool CDialogPrintSettings::TransferDataFromWindow()
   std::vector<unsigned int> an;
   _GetLabelSelection(&an);
   m_pParms->SetPrintLabelsPeak(an);
+  m_pParms->SetPrintCurveDisabledAlleles(m_pCheckLabelIncludeDisabled->GetValue());
 
   // artifact labels
   m_pParms->SetPrintArtifact(_GetRadioValue(m_nGroupArtifact));
@@ -696,6 +713,7 @@ bool CDialogPrintSettings::TransferDataFromWindow()
   m_pParms->SetPrintXscale(nValue);
   if (nValue != PRINT_X_SCALE_USER)
   {
+    m_pParms->SetPrintXscaleRightEnd(m_pCheckXRightEnd->GetValue());
   }
   else if (bXBPS)
   {

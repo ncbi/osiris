@@ -61,13 +61,24 @@ public:
 #ifdef TMP_DEBUG	  
 	m_nLoggedPrinterResolution(0),
 #endif
-    m_bPreview(bPreview)
+    m_nPageCount(0),
+    m_bPreview(bPreview),
+    m_psPrintoutType(wxT(""))
   {}
 
   virtual ~CPrintOut();
+  void ResetPageCount()
+  {
+    m_nPageCount = 0;
+  }
+  int GetPageCount()
+  {
+    return m_nPageCount;
+  }
   virtual wxWindow *GetParent() = 0;
 #ifdef TMP_DEBUG
   void DebugBitmap(wxBitmap *, int nPage);
+  static void DumpBitmap(wxBitmap *, const wxString &sFileName);
 #endif
   virtual int GetMinPage();
   virtual int GetMaxPage();
@@ -103,6 +114,10 @@ public:
   static void DoPageMargins(wxFrame *parent);
 #endif
 protected:
+  void _IncrementPageCount()
+  {
+    m_nPageCount++;
+  }
   static void _DoPrint(CPrintOut *pPrintout, const wxString &sPingType);
   static void _DoPrintPreview(
     CPrintOut *pPreview, CPrintOut *pPrint,
@@ -171,10 +186,20 @@ protected:
   };
 #ifdef TMP_DEBUG
   int m_nLoggedPrinterResolution;
-  wxString m_sBitmapPath;
 #endif
+  void _SetPrintoutType(const wxChar *p)
+  {
+    m_psPrintoutType = p;
+  }
+  const wxChar *_GetPrintoutType()
+  {
+    return m_psPrintoutType;
+  }
   _resOutput m_resOutput;
+  int m_nPageCount;
   bool m_bPreview;
+private:
+  const wxChar * m_psPrintoutType;
   DECLARE_ABSTRACT_CLASS(CPrintOut)
 };
 

@@ -59,6 +59,7 @@ CPrintOutAnalysis::CPrintOutAnalysis(CFrameAnalysis *pFrame, bool bPreview) :
   CPrintOut(bPreview),
   m_pFrameAnalysis(pFrame)
 {
+  _SetPrintoutType(wxT("Analysis"));
   m_pFile = m_pFrameAnalysis->GetOARfile();
   g_setAll.insert(this);
 }
@@ -266,6 +267,7 @@ bool CPrintOutAnalysis::_OnPrintPage(int page)
   _setupPageBitmap(pdc);
   if( (!sPlotFile.IsEmpty()) && plotData.LoadFile(sPlotFile) )
   {
+    _IncrementPageCount();
     CPanelPlot *panel = new CPanelPlot(
       m_pFrameAnalysis,
       &plotData, m_pFile);

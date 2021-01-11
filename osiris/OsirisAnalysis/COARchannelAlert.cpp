@@ -52,16 +52,7 @@ void COARartifactAllele::RegisterAll(bool)
 }
 
 
-COARchannelAlert::~COARchannelAlert() 
-{
-  m_ioArtifact.Cleanup();
-  return;
-}
 
-COARartifact::~COARartifact() 
-{
-  _Cleanup();
-}
 void COARartifact::_Cleanup()
 {
   m_ioAllele.Cleanup();

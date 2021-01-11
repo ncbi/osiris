@@ -854,6 +854,7 @@ void ChannelData :: AccumulatePeakHeightsForChannelAndAddToTotalsSM (double* tot
 	double P;
 	double PC;
 	double correctedHeight;
+	double minRFU = GetMinimumHeight ();
 
 	while (nextSignal = (DataSignal*) it ()) {
 

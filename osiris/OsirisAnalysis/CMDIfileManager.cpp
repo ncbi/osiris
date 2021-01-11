@@ -249,8 +249,25 @@ void CMDIfileManager::DiscardChanges(COARfile *pFile)
     }
   }
 }
-
-
+CFramePlot *CMDIfileManager::FindPlotWindowBySample(COARsample *pSample)
+{
+  CFramePlot *pRtn(NULL);
+  CMDI_FW::iterator itr = m_mapFileWindows.find(pSample->GetFile());
+  if (_IteratorOK(itr))
+  {
+    for (set<CMDIFrame *>::iterator itrF = itr->second.begin();
+      (pRtn == NULL) && (itrF != itr->second.end());
+      ++itrF)
+    {
+      if ( ( (*itrF)->GetType() == CMDIFrame::FRAME_PLOT )  &&
+           ( ((CFramePlot *)(*itrF))->GetSample() == pSample ) )
+      {
+        pRtn = (CFramePlot *)(*itrF);
+      }
+    }
+  }
+  return pRtn;
+}
 CMDIFrame *CMDIfileManager::FindWindowByName(
   const wxString &sPath, bool bRaise)
 {

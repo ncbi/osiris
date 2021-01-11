@@ -792,6 +792,7 @@ public:
     s.Append(s2);
     return s;
   }
+  void GetOriginalAlleleIDs(std::set<int> *psetIDs) const;
   void SetIsModified(bool b = true);
   void UpdateVersion();
 private:

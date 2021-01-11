@@ -70,6 +70,7 @@ public:
   }
   COARlocus &operator = (const COARlocus &x)
   {
+    _Cleanup();
     COARcopy(m_sLocusName);
     COARcopy(m_vnLocusAlerts);
     COARcopyVP(COARallele,m_pvAllele);
@@ -83,10 +84,14 @@ public:
   }
   virtual ~COARlocus() 
   {
-    vectorptr<COARallele>::cleanup(&m_pvAllele);
-    vectorptr<COARallele>::cleanup(&m_pvAlleleEdited);
+    _Cleanup();
   }
- 
+  XML_INIT(COARlocus)
+  virtual void Init()
+  {
+    _Cleanup();
+    nwxXmlPersist::Init();
+  }
   void AppendAlerts(vector<int> *pvn, const wxDateTime *pTime = NULL) const;
   const COARmessages *GetMessages() const;
   size_t AlertCount(const COARmessages *pmsgs, const wxDateTime *pTime = NULL, bool bStopAtOne = false) const;
@@ -131,6 +136,7 @@ public:
     return bRtn;
   }
   void GetAllelesByTime(vector<const COARallele *> *pva, const wxDateTime *pTime) const;
+  void GetOriginalAlleleIDs(std::set<int> *psetIDs) const; 
   int GetChannelNr() const;
   const wxString &GetName() const
   {
@@ -283,6 +289,11 @@ public:
     return b;
   }
 private:
+  void _Cleanup()
+  {
+    vectorptr<COARallele>::cleanup(&m_pvAllele);
+    vectorptr<COARallele>::cleanup(&m_pvAlleleEdited);
+  }
 
   wxString _GetCellAlleles(const wxDateTime *pTime = NULL) const;
   wxString _GetCellBPS(const wxDateTime *pTime = NULL) const;

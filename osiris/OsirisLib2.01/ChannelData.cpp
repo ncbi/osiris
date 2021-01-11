@@ -1227,7 +1227,7 @@ bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double half
 	
 	if (!maxAboveZero && minBelowZero) {
 
-		// This is a negative min
+		// This is a negative min, but (12/2/2020), do we need to save this? 
 
 		value = min;
 		return true;
@@ -1241,44 +1241,45 @@ bool ChannelData :: TestMaxAbsoluteRawDataInInterval (double center, double half
 
 		sigmoidPosition = (minTime * max - maxTime * min) / (max - min);
 		sigmoidDistanceFromCenter = fabs (center - sigmoidPosition);
+		value = max;  // sigmoids take on the height of the positive peak (12/2/2020)
 
-		if (maxDistanceFromCenter < minDistanceFromCenter) {
+		//if (maxDistanceFromCenter < minDistanceFromCenter) {
 
-			if (maxDistanceFromCenter <= sigmoidDistanceFromCenter) {
+		//	if (maxDistanceFromCenter <= sigmoidDistanceFromCenter) {
 
-				value = max;
-				return true;
-			}
+		//		value = max;
+		//		return true;
+		//	}
 
-			else {
+		//	else {
 
-				value = 1.0;  // The raw data implies a sigmoidal peak
-				return true;
-			}
-		}
+		//		value = 1.0;  // The raw data implies a sigmoidal peak
+		//		return true;
+		//	}
+		//}
 
-		else if (minDistanceFromCenter == maxDistanceFromCenter){
+		//else if (minDistanceFromCenter == maxDistanceFromCenter){
 
-			// This is sigmoidal raw data because the min and max must straddle the center, which implies the sigmoid is closest
+		//	// This is sigmoidal raw data because the min and max must straddle the center, which implies the sigmoid is closest
 
-			value = 1.0;
-			return true;
-		}
+		//	value = 1.0;
+		//	return true;
+		//}
 
-		else { //  minDistanceFromCenter < maxDiistanceFromCenter
+		//else { //  minDistanceFromCenter < maxDiistanceFromCenter
 
-			if (minDistanceFromCenter <= sigmoidDistanceFromCenter) {
+		//	if (minDistanceFromCenter <= sigmoidDistanceFromCenter) {
 
-				value = min;
-				return true;
-			}
+		//		value = min;
+		//		return true;
+		//	}
 
-			else {
+		//	else {
 
-				value = 1.0;  // The raw data implies a sigmoidal peak
-				return true;
-			}
-		}
+		//		value = 1.0;  // The raw data implies a sigmoidal peak
+		//		return true;
+		//	}
+		//}
 	}
 
 	else if (maxAboveThreshold) {

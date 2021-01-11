@@ -304,6 +304,14 @@ void CPrintOut::_DoPrintPreview(
 
 CPrintOut::~CPrintOut()
 {
+  if (IsPreview())
+  {
+    wxString sPageCount(nwxString::FormatNumber(GetPageCount()));
+    mainApp::Ping3(
+      PING_EVENT, "ClosePrintPreview",
+      "PagesRendered", sPageCount,
+      "PrintType", _GetPrintoutType());
+  }
 }
 
 
@@ -446,27 +454,10 @@ void CPrintOut::_setupPageBitmap(wxDC *pdc)
 #ifdef TMP_DEBUG
 void CPrintOut::DebugBitmap(wxBitmap *pBitmap, int nPage)
 {
-  if (m_sBitmapPath.IsEmpty())
-  {
-    m_sBitmapPath = mainApp::GetConfig()->GetConfigPath();
-    m_sBitmapPath.Append(wxT("Debug"));
-    nwxStaticBitmap::AddPngHandler();
-  }
-  if (wxFileName::IsDirWritable(m_sBitmapPath))
-  {
-    wxString sFile = m_sBitmapPath;
-    nwxFileUtil::EndWithSeparator(&sFile);
-
-    sFile.Append(wxString::Format(wxT("%s_%lx_%d.png"),
+  wxString sFile = wxString::Format(wxT("%s_%lx_%d.png"),
       IsPreview() ? "S" : "P",  // screen (preview) or printout
-      (long) this, nPage));
-    if (!pBitmap->ConvertToImage().SaveFile(sFile, wxBITMAP_TYPE_PNG))
-    {
-      wxString s(wxT("Cannot save file: "));
-      s.Append(sFile);
-      mainApp::LogMessage(s);
-    }
-  }
+      (long) this, nPage);
+  mainApp::DumpBitmap(pBitmap, sFile);
 }
 #endif
 

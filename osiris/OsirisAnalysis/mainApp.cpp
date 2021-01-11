@@ -67,6 +67,7 @@
 #include "nwx/nwxUtil.h"
 #include "nwx/nwxPinger.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/nwxStaticBitmap.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
@@ -233,6 +234,26 @@ void mainApp::Ping3(const wxString &sName1, const wxString &sValue1,
     pset.Set(sName3, sValue3);
   }
   // destructor will send the event
+}
+void mainApp::PingList(const wxChar ** apList)
+{
+  const wxChar **ps;
+  bool bName = true;
+  nwxPingerSet pset(GetPinger());
+  wxString sName, sValue;
+  for (ps = apList; *ps != NULL; ps++)
+  {
+    if (bName)
+    {
+      sName = *ps;
+    }
+    else
+    {
+      sValue = *ps;
+      pset.Set(sName, sValue);
+    }
+    bName = !bName;
+  }
 }
 void mainApp::PingExit()
 {
@@ -590,6 +611,22 @@ void mainApp::_OpenMessageStream()
   }
 }
 
+void mainApp::DumpBitmap(wxBitmap *pBitmap, const wxString &sFileName)
+{
+  wxString sPath = mainApp::GetConfig()->GetDebugConfigPath(true);
+  if (!sPath.IsEmpty())
+  {
+    sPath.Append(sFileName);
+    sPath = nwxFileUtil::FindNewFileName(sPath);
+    nwxStaticBitmap::AddPngHandler();
+    if (!pBitmap->ConvertToImage().SaveFile(sPath, wxBITMAP_TYPE_PNG))
+    {
+      wxString s(wxT("Cannot save file: "));
+      s.Append(sPath);
+      mainApp::LogMessage(s);
+    }
+  }
+}
 void mainApp::ShowError(const wxString &sMsg, wxWindow *parent)
 {
   if(!MessagesSuppressed())

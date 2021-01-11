@@ -31,15 +31,20 @@
 #define __C_DIALOG_WARN_HISTORY_H__
 
 #include <wx/dialog.h>
+#include "CMDIFrame.h"
 
 class wxButton;
 class wxCheckBox;
 class CDialogWarnHistory : private wxDialog
 {
 public:
-  static bool Continue(wxWindow *p);
+  static bool Continue(wxWindow *p, bool bAsk = true, int nWhichWindow = CMDIFrame::HISTORY_WARN_THIS);
 private:
-  CDialogWarnHistory(wxWindow *parent, wxWindowID id = wxID_ANY);
+  CDialogWarnHistory(
+    wxWindow *parent, 
+    wxWindowID id = wxID_ANY,
+    bool bAsk = true,
+    int nWhichWindow = CMDIFrame::HISTORY_WARN_THIS);
   virtual ~CDialogWarnHistory();
   bool DontShowAgain();
   wxCheckBox *m_pCheckBox;

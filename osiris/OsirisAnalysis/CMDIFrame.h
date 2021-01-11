@@ -73,6 +73,14 @@ class CMDIFrame : public CMDIFrameSuper, public nwxTimerReceiver
 public:
   enum
   {
+    // parameter for history warning window
+    HISTORY_WARN_THIS = 1,
+    HISTORY_WARN_PLOT = 2,
+    HISTORY_WARN_ANALYSIS = 4,
+    HISTORY_WARN_PLOT_ANALYSIS = HISTORY_WARN_ANALYSIS + HISTORY_WARN_PLOT
+  };
+  enum
+  {
     FRAME_NONE,
     FRAME_ANALYSIS,
     FRAME_PLOT,
@@ -83,13 +91,17 @@ public:
   static const wxString SHOW_TOOLBARS;
   static const wxString HIDE_TOOLBAR;
   static const wxString SHOW_TOOLBAR;
+  static const wxString HIDE_TOOLBAR_PREVIEW;
+  static const wxString SHOW_TOOLBAR_PREVIEW;
+  static const wxString SHOW_PLOT_SCROLLBARS;
+  static const wxString HIDE_PLOT_SCROLLBARS;
   virtual int GetType() = 0;
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual wxMenu *GetMenu();
   virtual wxMenu *GetTableMenu();
   virtual wxMenu *GetGraphMenu();
   virtual bool Destroy();
-  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false);
+  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false, int nID = IDmenuShowHideToolbar);
   virtual wxString GetFileName();
   virtual void UpdateHistory();
   virtual void UpdateLadderLabels();
@@ -101,7 +113,13 @@ public:
     const wxString &sFileName2 = wxEmptyString);
   virtual void UpdateStatusBar();
   virtual bool FileError();
-
+  virtual const wxDateTime *GetSelectedTime();
+  int GetHistoryCheck(bool bOtherIsCurrent = false);
+  bool HistoryIsCurrent()
+  {
+    return (GetSelectedTime() == NULL);
+  }
+  bool CheckIfHistoryOK();
   bool PopupMenu_(wxMenu* menu, const wxPoint& pos = wxDefaultPosition);
   bool PopupMenu_(wxMenu* menu, int x, int y);
 #ifdef __WINDOW_LIST__ 
@@ -175,12 +193,22 @@ private:
   wxMenu *m_pLastMenuShown;
   int m_nMenuCount;
   bool m_bLastMenuPopup;
+  bool m_bHistoryWarningShown;
 public:
   virtual void OnFocusSetCB(wxFocusEvent &);  // callbacks for inherited classes
   virtual void OnFocusKillCB(wxFocusEvent &);
   virtual void OnActivateCB(wxActivateEvent &e);
 
+  bool HistoryWarningShown()
+  {
+    return m_bHistoryWarningShown;
+  }
+  void SetHistoryWarningShown(bool b = true)
+  {
+    m_bHistoryWarningShown = b;
+  }
   void RaiseWindow();
+  void OnCheckSplitter(wxCommandEvent &e);
   void OnActivate(wxActivateEvent &e);
   void OnFocusSet(wxFocusEvent &e);
   void OnFocusKill(wxFocusEvent &e);

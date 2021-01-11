@@ -87,6 +87,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_nMinLadderInterlocusRFU);
   CP(m_nSampleDetectionThreshold);
   CP(m_sAnalysisOverride);
+  CP(m_nAnalysisSplitPos);
   CP(m_anChannelRFU);
   CP(m_anChannelDetection);
   CP(m_bTimeStampSubDir);
@@ -111,6 +112,8 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPNGviewLocation);
   CP(m_nShowAlerts);
   CP(m_bShowPreview);
+  CP(m_bHidePreviewToolbar);
+  CP(m_bHidePreviewScrollbar);
   CP(m_bHideGraphicToolbar);
   CP(m_bHideGraphicScrollbar);
   CP(m_bHideTextToolbar);
@@ -135,6 +138,8 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPreviewDataBaseline);
   CP(m_bPreviewShowILS);
   CP(m_bPreviewShowRFU);
+  CP(m_bPreviewShowDisabledAlleles);
+  CP(m_bPreviewShowLadderBins);
   CP(m_bPreviewShowLadderLabels);
   CP(m_bPreviewXBPS);
   CP(m_nPreviewShowArtifact);
@@ -149,6 +154,8 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPlotShowILS);
   CP(m_bPlotShowRFU);
   CP(m_bPlotShowLadderLabels);
+  CP(m_bPlotShowDisabledAlleles);
+  CP(m_bPlotShowLadderBins);
   CP(m_bPlotResizable);
   CP(m_nPlotMinHeight);
   CP(m_nPlotShowArtifact);
@@ -161,6 +168,8 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_bPrintCurveRaw);
   CP(m_bPrintCurveLadder);
   CP(m_bPrintCurveLadderLabels);
+  CP(m_bPrintCurveLadderBins);
+  CP(m_bPrintCurveDisabledAlleles);
   CP(m_bPrintCurveBaseline);
   CP(m_bPrintCurveILSvertical);
   CP(m_bPrintCurveMinRFU);
@@ -170,6 +179,7 @@ CParmOsiris &CParmOsiris::operator =(const CParmOsiris &x)
   CP(m_nPrintXscaleMax);
   CP(m_nPrintXscaleMinBPS);
   CP(m_nPrintXscaleMaxBPS);
+  CP(m_bPrintXscaleRightEnd);
   CP(m_nPrintYscale);
   CP(m_nPrintYscaleMin);
   CP(m_nPrintYscaleMax);
@@ -226,9 +236,10 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 {
 #define CP(elem) else if(!(elem == x.elem)) { bRtn = false; }
   bool bRtn = true;
-  if(0) {}
   // begin generated compare
 
+
+  if(!bRtn) {}
   CP(m_sLastExportXSLsearch)
   CP(m_sLastExportDirectory)
   CP(m_sInputDirectory)
@@ -246,6 +257,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nMinLadderInterlocusRFU)
   CP(m_nSampleDetectionThreshold)
   CP(m_sAnalysisOverride)
+  CP(m_nAnalysisSplitPos)
   CP(m_anChannelRFU)
   CP(m_anChannelDetection)
   CP(m_bTimeStampSubDir)
@@ -254,6 +266,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   //  CMF settings
 
   CP(m_sCMFsourceLab)
+
+  if(!bRtn) {}
   CP(m_sCMFdestLab)
   CP(m_sCMFdefaultSample)
   CP(m_sCMFbatchFormat)
@@ -270,11 +284,15 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPNGviewLocation)
   CP(m_nShowAlerts)
   CP(m_bShowPreview)
+  CP(m_bHidePreviewToolbar)
+  CP(m_bHidePreviewScrollbar)
   CP(m_bHideGraphicToolbar)
   CP(m_bHideGraphicScrollbar)
   CP(m_bHideTextToolbar)
   CP(m_bHideSampleToolbar)
   CP(m_bStartupMRU)
+
+  if(!bRtn) {}
   CP(m_bCheckBeforeExit)
   CP(m_bWarnOnHistory)
   CP(m_dZoomLocusMargin)
@@ -294,6 +312,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPreviewDataBaseline)
   CP(m_bPreviewShowILS)
   CP(m_bPreviewShowRFU)
+  CP(m_bPreviewShowDisabledAlleles)
+  CP(m_bPreviewShowLadderBins)
   CP(m_bPreviewShowLadderLabels)
   CP(m_bPreviewXBPS)
   CP(m_nPreviewShowArtifact)
@@ -302,12 +322,16 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 
   CP(m_bPlotDataAnalyzed)
   CP(m_bPlotDataRaw)
+
+  if(!bRtn) {}
   CP(m_bPlotDataLadder)
   CP(m_bPlotDataBaseline)
   CP(m_bPlotDataXBPS)
   CP(m_bPlotShowILS)
   CP(m_bPlotShowRFU)
   CP(m_bPlotShowLadderLabels)
+  CP(m_bPlotShowDisabledAlleles)
+  CP(m_bPlotShowLadderBins)
   CP(m_bPlotResizable)
   CP(m_nPlotMinHeight)
   CP(m_nPlotShowArtifact)
@@ -320,7 +344,11 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_bPrintCurveRaw)
   CP(m_bPrintCurveLadder)
   CP(m_bPrintCurveLadderLabels)
+  CP(m_bPrintCurveLadderBins)
+  CP(m_bPrintCurveDisabledAlleles)
   CP(m_bPrintCurveBaseline)
+
+  if(!bRtn) {}
   CP(m_bPrintCurveILSvertical)
   CP(m_bPrintCurveMinRFU)
   CP(m_bPrintXaxisILSBPS)
@@ -329,6 +357,7 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintXscaleMax)
   CP(m_nPrintXscaleMinBPS)
   CP(m_nPrintXscaleMaxBPS)
+  CP(m_bPrintXscaleRightEnd)
   CP(m_nPrintYscale)
   CP(m_nPrintYscaleMin)
   CP(m_nPrintYscaleMax)
@@ -340,6 +369,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintChannelsSamples)
   CP(m_nPrintChannelsLadders)
   CP(m_nPrintChannelsNegCtrl)
+
+  if(!bRtn) {}
   CP(m_bPrintChannelsOmitILS)
   CP(m_bPrintSamplesLadders)
   CP(m_bPrintSamplesPosCtrl)
@@ -363,6 +394,8 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
   CP(m_nPrintPlotPaperWidth)
   CP(m_nPrintPlotPaperHeight)
   CP(m_bPrintPlotLandscape)
+
+  if(!bRtn) {}
   CP(m_nPrintPreviewZoom)
 
   //  XSLT saved parameter info
@@ -372,11 +405,9 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 
 
   // end generated compare
-
-
   CP(m_gridAttr)
-//  CP(m_bModified)
-//  CP(m_bAutoSave)
+
+
 
 #undef CP
   return bRtn;
@@ -414,6 +445,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterInt("minRFUladderInterlocus", &m_nMinLadderInterlocusRFU);
   RegisterInt("minRFUsampleDetection", &m_nSampleDetectionThreshold);
   RegisterWxString("AnalysisOverride", &m_sAnalysisOverride);
+  RegisterInt("AnalysisSplitPos", &m_nAnalysisSplitPos);
   RegisterIntVector("ChannelRFU", &m_anChannelRFU);
   RegisterIntVector("ChannelDetection", &m_anChannelDetection);
   RegisterBool("TimeStampSubDir", &m_bTimeStampSubDir);
@@ -438,6 +470,8 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PNGviewLocation", &m_bPNGviewLocation);
   Register("ShowAlerts",&m_ioInt_1,(void *) &m_nShowAlerts);
   RegisterBoolTrue("ShowPreview", &m_bShowPreview);
+  RegisterBool("HidePreviewToolbar", &m_bHidePreviewToolbar);
+  RegisterBool("HidePreviewScrollbar", &m_bHidePreviewScrollbar);
   RegisterBool("HideGraphicToolbar", &m_bHideGraphicToolbar);
   RegisterBool("HideGraphicScrollbar", &m_bHideGraphicScrollbar);
   RegisterBool("HideTextToolbar", &m_bHideTextToolbar);
@@ -462,6 +496,8 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PreviewDataBaseline", &m_bPreviewDataBaseline);
   RegisterBool("PreviewShowILS", &m_bPreviewShowILS);
   RegisterBool("PreviewShowRFU", &m_bPreviewShowRFU);
+  RegisterBool("PreviewShowDisabledAlleles", &m_bPreviewShowDisabledAlleles);
+  RegisterBool("PreviewShowLadderBins", &m_bPreviewShowLadderBins);
   RegisterBool("PreviewShowLadderLabels", &m_bPreviewShowLadderLabels);
   RegisterBool("PreviewXBPS", &m_bPreviewXBPS);
   Register("PreviewArtifact",&m_ioIntViewPlotArtifact,(void *) &m_nPreviewShowArtifact);
@@ -476,6 +512,8 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PlotShowILS", &m_bPlotShowILS);
   RegisterBool("PlotShowRFU", &m_bPlotShowRFU);
   RegisterBool("PlotShowLadderLabels", &m_bPlotShowLadderLabels);
+  RegisterBool("PlotShowDisabledAlleles", &m_bPlotShowDisabledAlleles);
+  RegisterBool("PlotShowLadderBins", &m_bPlotShowLadderBins);
   RegisterBoolTrue("PlotResizable", &m_bPlotResizable);
   Register("PlotMinHeight",&m_ioInt_1,(void *) &m_nPlotMinHeight);
   Register("PlotShowArtifact",&m_ioIntViewPlotArtifact,(void *) &m_nPlotShowArtifact);
@@ -488,6 +526,8 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterBool("PrintCurveRaw", &m_bPrintCurveRaw);
   RegisterBool("PrintCurveLadder", &m_bPrintCurveLadder);
   RegisterBool("PrintCurveLadderLabels", &m_bPrintCurveLadderLabels);
+  RegisterBool("PrintCurveLadderBins", &m_bPrintCurveLadderBins);
+  RegisterBool("PrintCurveDisabledAlleles", &m_bPrintCurveDisabledAlleles);
   RegisterBool("PrintCurveBaseline", &m_bPrintCurveBaseline);
   RegisterBool("PrintCurveILSvertical", &m_bPrintCurveILSvertical);
   RegisterBool("PrintCurveMinRFU", &m_bPrintCurveMinRFU);
@@ -497,6 +537,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
   RegisterInt("PrintXscaleMax", &m_nPrintXscaleMax);
   RegisterInt("PrintXscaleMinBPS", &m_nPrintXscaleMinBPS);
   RegisterInt("PrintXscaleMaxBPS", &m_nPrintXscaleMaxBPS);
+  RegisterBool("PrintXscaleRightEnd", &m_bPrintXscaleRightEnd);
   RegisterInt("PrintYscale", &m_nPrintYscale);
   RegisterInt("PrintYscaleMin", &m_nPrintYscaleMin);
   RegisterInt("PrintYscaleMax", &m_nPrintYscaleMax);
@@ -584,6 +625,7 @@ void CParmOsiris::SetDefaults()
   m_nMinLadderInterlocusRFU = -1;
   m_nSampleDetectionThreshold = -1;
   m_sAnalysisOverride.Empty();
+  m_nAnalysisSplitPos = 0;
   m_anChannelRFU.clear();
   m_anChannelRFU.push_back(-1);
   m_anChannelDetection.clear();
@@ -610,6 +652,8 @@ void CParmOsiris::SetDefaults()
   m_bPNGviewLocation = false;
   m_nShowAlerts = -1;
   m_bShowPreview = true;
+  m_bHidePreviewToolbar = false;
+  m_bHidePreviewScrollbar = false;
   m_bHideGraphicToolbar = false;
   m_bHideGraphicScrollbar = false;
   m_bHideTextToolbar = false;
@@ -634,6 +678,8 @@ void CParmOsiris::SetDefaults()
   m_bPreviewDataBaseline = false;
   m_bPreviewShowILS = false;
   m_bPreviewShowRFU = false;
+  m_bPreviewShowDisabledAlleles = false;
+  m_bPreviewShowLadderBins = false;
   m_bPreviewShowLadderLabels = false;
   m_bPreviewXBPS = false;
   m_nPreviewShowArtifact = m_ioIntViewPlotArtifact.GetDefault();
@@ -648,6 +694,8 @@ void CParmOsiris::SetDefaults()
   m_bPlotShowILS = false;
   m_bPlotShowRFU = false;
   m_bPlotShowLadderLabels = false;
+  m_bPlotShowDisabledAlleles = false;
+  m_bPlotShowLadderBins = false;
   m_bPlotResizable = true;
   m_nPlotMinHeight = -1;
   m_nPlotShowArtifact = m_ioIntViewPlotArtifact.GetDefault();
@@ -661,6 +709,8 @@ void CParmOsiris::SetDefaults()
   m_bPrintCurveRaw = false;
   m_bPrintCurveLadder = false;
   m_bPrintCurveLadderLabels = false;
+  m_bPrintCurveLadderBins = false;
+  m_bPrintCurveDisabledAlleles = false;
   m_bPrintCurveBaseline = false;
   m_bPrintCurveILSvertical = false;
   m_bPrintCurveMinRFU = false;
@@ -670,6 +720,7 @@ void CParmOsiris::SetDefaults()
   m_nPrintXscaleMax = 20000;
   m_nPrintXscaleMinBPS = 0;
   m_nPrintXscaleMaxBPS = 600;
+  m_bPrintXscaleRightEnd = false;
   m_nPrintYscale = 0;
   m_nPrintYscaleMin = -200;
   m_nPrintYscaleMax = 6000;

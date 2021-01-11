@@ -206,7 +206,36 @@ size_t CPlotChannel::GetPointCount()
   }
   return m_nPointCount;
 }
-
+void CPlotChannel::_SetupMaxPeakTime()
+{
+  double dMaxWidth = 0.0;
+  vector<CSamplePeak *>::reverse_iterator itrp;
+  vector<CArtifact *>::reverse_iterator itra;
+  vector<CSamplePeak *> *pvPeak[2] = { &m_vLadderPeak, &m_vSamplePeak, };
+  for (size_t i = 0; i < 2; ++i)
+  {
+    vector<CSamplePeak *> *pv = pvPeak[i];
+    for (itrp = pv->rbegin();
+      itrp != pv->rend();
+      ++itrp)
+    {
+      // with reverse iterator, the first loop iteration
+      // is enough if stored in ascending order
+      // which is probably is, but not definite
+      _CheckPeak(*itrp, &dMaxWidth);
+    }
+  }
+  for (itra = m_vArtifact.rbegin();
+    itra != m_vArtifact.rend();
+    ++itra)
+  {
+    _CheckPeak(*itra, &dMaxWidth);
+  }
+  if (m_dWidthMaxPeakTime < 0.1)
+  {
+    m_dWidthMaxPeakTime = dMaxWidth;
+  }
+}
 void CPlotChannel::BuildList(vector<int> &vn, double **p, size_t nPointCount)
 {
   size_t i = nPointCount * sizeof(double);
@@ -256,7 +285,24 @@ void CPlotData::_Cleanup()
   m_pdILS_BPs = NULL;
   m_bCannotSetBPS = false;
 }
+void CPlotData::_ComputeEnd()
+{
+  vector<CPlotChannel *>::reverse_iterator itr;
+  double dTime;
+  double dWidth;
+  CPlotChannel *pChannel;
+  for (itr = m_vChannels.rbegin(); itr != m_vChannels.rend(); ++itr)
+  {
+    pChannel = *itr;
+    dTime = pChannel->GetMaxPeakTime(&dWidth);
+    dTime += (dWidth * 4);
+    if (dTime > m_dEndPeakTime)
+    {
+      m_dEndPeakTime = dTime;
+    }
+  }
 
+}
 void CPlotData::__setupILSBps()
 {
   // should be called ONLY by _setupILSBps()

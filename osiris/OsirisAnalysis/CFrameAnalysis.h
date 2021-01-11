@@ -75,6 +75,7 @@ class CPanelAlerts;
 class CXSLExportFileType;
 class COARpeakAny;
 class CFrameSample;
+class CFramePlot;
 /*
 typedef enum
 {
@@ -117,13 +118,19 @@ public:
   virtual wxMenu *GetTableMenu();
   virtual wxMenu *GetGraphMenu();
   virtual int GetType();
-  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false);
+  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false, int nID = IDmenuShowHideToolbar);
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual void OnTimer(wxTimerEvent &);
   virtual wxString GetFileName();
   void SetLabelType(int n);
   LABEL_PLOT_TYPE GetPlotLabelType();
   wxWindow *GetInfoPanel();
+  CFramePlot *FindPlotFrameBySample(COARsample *pSample);
+  CFramePlot *FindPlotFrameBySelectedSample()
+  {
+    COARsample *pSample = _FindSampleByRow(m_pGrid->GetGridCursorRow());
+    return FindPlotFrameBySample(pSample);
+  }
 
   size_t GetSamplesByRow(std::vector<const COARsample *> *pSamples, int FLAGS = CFrameAnalysis::INCLUDE_DEFAULT);
   CPanelPlotPreview *GetGraphPanel()
@@ -134,7 +141,7 @@ public:
   {
     return m_pOARfile == NULL ? false : m_pOARfile->IsLadderFree();
   }
-  const wxDateTime *GetSelectedTime()
+  virtual const wxDateTime *GetSelectedTime()
   {    
     const wxDateTime *pRtn = 
       (m_pButtonHistory == NULL)
@@ -152,10 +159,12 @@ public:
     {
       m_pPanelToolbar->Show(bShow);
       Layout();
-      SetToolbarMenuLabel(!bShow);
+      SetToolbarMenuLabel(!bShow, false, IDmenuShowHideTableToolbar);
     }
   }
   void ToggleToolbar();
+  void ToggleToolbarPreview();
+  void ToggleScrollbarsPreview();
   bool CanSaveAs() const
   {
     return _XmlFile();
@@ -205,7 +214,6 @@ public:
   void DoAcceptSample(int nReviewType,COARsample *pSample);
   void DoReviewLocus(COARsample *pSample, COARlocus *pLocus);
   void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus);
-  bool CheckIfHistoryOK();
   void CheckSaveStatus();
   void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
   void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID = -1);
@@ -248,6 +256,7 @@ private:
   {
     if(m_pMenuBar != NULL) {m_pMenuBar->SetPlotMenu(p);}
   }
+  void _UpdateHistoryButtons();
   bool _CheckPromptNewer();
   void _EnablePreview();
   void _DisablePreview();
@@ -330,11 +339,7 @@ private:
   {
     return _IsChannelColumn(m_nLastColSelect);
   }
-  void SetFileNameLabel(const wxString &sFileName)
-  {
-    m_pLabelFile->SetValue(sFileName);
-    m_pLabelFile->SetInsertionPointEnd();
-  }
+  void SetFileNameLabel(const wxString &sFileName);
   static int _ColToType(int nCol)
   {
     int nType = -1;
@@ -365,6 +370,7 @@ private:
     }
     return nCol;
   }
+  void _OnResize(wxSizeEvent &e);
   void _UpdateMenu();
   void _UpdateHistoryMenu(int nRow, int nCol,bool bEnabled = true);
   void _UpdateHistoryMenu(bool bEnabled)
@@ -455,6 +461,8 @@ private:
   int m_nLastRowSelect;
   int m_nEntireRowSelected;
   int m_nNoTimer;
+  int m_nFileNameLabelTimer;
+  int m_nPreviewDelay;
   bool m_bFileError;
 
 
@@ -523,7 +531,6 @@ public:
   void OnTogglePreview(wxCommandEvent &);
   void OnHistoryUpdate(wxCommandEvent &);
   void OnChangeAlertView(wxCommandEvent &);
-  void OnCheckSplitter(wxCommandEvent &);
   void OnHistoryView(wxCommandEvent &);
   void OnSortGrid(wxCommandEvent &);
   void OnExportCMF(wxCommandEvent &);

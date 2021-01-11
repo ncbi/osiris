@@ -149,9 +149,17 @@ public:
     RegisterAll(true);
     (*this) = x;
   }
-  virtual ~COARartifact();
+  virtual ~COARartifact()
+  {
+    _Cleanup();
+  }
   COARartifact &operator = (const COARartifact &x);
-
+  XML_INIT(COARartifact)
+  virtual void Init()
+  {
+    _Cleanup();
+    nwxXmlPersist::Init();
+  }
   void ClearAmbiguousAllele() const
   {
     if(m_vpAllele.size() == 1)
@@ -487,7 +495,10 @@ public:
     RegisterAll(true);
     (*this) = x;
   }
-  virtual ~COARchannelAlert();
+  virtual ~COARchannelAlert()
+  {
+    _Cleanup();
+  }
   virtual void RegisterAll(bool = false);
 
   COARartifact *GetArtifactByID(int nID);
@@ -540,6 +551,10 @@ size_t GetArtifactCount() const
 
 private:
   // bug workaround, some <OldArtifact> elements contain <AllowPeakEdit>false</AllowPeakEdit>
+  void _Cleanup()
+  {
+    m_ioArtifact.Cleanup();
+  }
   void _CleanupOldArtifact()
   {
     vector<COARartifact *>::iterator itr;

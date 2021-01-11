@@ -161,6 +161,7 @@ private:
   wxCheckBox *m_pCheckCurveRaw;
   wxCheckBox *m_pCheckCurveLadder;
   wxCheckBox *m_pCheckCurveLadderLabels;
+  wxCheckBox *m_pCheckCurveLadderBins;
   wxCheckBox *m_pCheckCurveBaseline;
   wxCheckBox *m_pCheckCurveILSvertical;
   wxCheckBox *m_pCheckCurveMinRFU;
@@ -181,6 +182,7 @@ private:
   wxCheckBox *m_pCheckLabelTime;
   wxCheckBox *m_pCheckLabelILSBPS;
   wxCheckBox *m_pCheckLabelPeakArea;
+  wxCheckBox *m_pCheckLabelIncludeDisabled;
 
   // artifact labels
 
@@ -214,6 +216,7 @@ private:
   wxRadioButton *m_pRadioXscaleIncludePrimer;
   wxRadioButton *m_pRadioXscaleIncludePrimerNegCtrl;
   wxRadioButton *m_pRadioXscaleSpecify;
+  wxCheckBox *m_pCheckXRightEnd;
   nwxTextCtrlInteger *m_pTextXscaleMin;
   nwxTextCtrlInteger *m_pTextXscaleMax;
   wxStaticText *m_pLabelXscaleUnits;

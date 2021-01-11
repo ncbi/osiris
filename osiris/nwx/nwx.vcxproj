@@ -87,7 +87,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;__WXDEBUG__;_DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;TMP_DEBUG;__WXDEBUG__;_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -116,7 +116,7 @@
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;$(EXTLIB)\libxml2-2.9.8\include;$(EXTLIB)\libxslt-1.1.33\;$(EXTLIB)\libiconv-win-build-1.15\include;$(WXHOME)\include;$(WXHOME)\lib\vc_lib\mswu;..\wxplotctrl\include;..\wxthings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;NDEBUG;wxDEBUG_LEVEL=0</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;NDEBUG;wxDEBUG_LEVEL=0</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

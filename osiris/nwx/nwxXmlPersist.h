@@ -1605,4 +1605,10 @@ private:
 };
 
 
+#define XML_INIT(T) \
+virtual void Init(void *p) \
+{  if ((p != NULL) && (p != this))  { ((T *)p)->Init(); } \
+  else  { Init();  } \
+}
+
 #endif

@@ -53,6 +53,7 @@ use strict 'vars';
 #
 #  [3] register (XML tag) name, optional, can be generated from [0]
 #  [4] IO type for register, optional, can be generated from [1]
+#  [5] if 'true' send a ping when the value is changed
 #
 #  if only one item, then it is a comment
 #
@@ -73,6 +74,7 @@ my $VARLIST =
   ["m_nMinLadderInterlocusRFU", "int", "-1", "minRFUladderInterlocus"],
   ["m_nSampleDetectionThreshold", "int", "-1", "minRFUsampleDetection"],
   ["m_sAnalysisOverride","wxString"],
+  ["m_nAnalysisSplitPos", "int"],
   
   ##  this is awful - putting channel RFU and Detection in arrays
   
@@ -100,6 +102,8 @@ my $VARLIST =
 
   ["m_nShowAlerts","int","-1",undef,"m_ioInt_1"],
   ["m_bShowPreview", "bool true"],
+  ["m_bHidePreviewToolbar", "bool"],
+  ["m_bHidePreviewScrollbar", "bool"],
   ["m_bHideGraphicToolbar", "bool"],
   ["m_bHideGraphicScrollbar", "bool"],
   ["m_bHideTextToolbar", "bool"],
@@ -126,6 +130,8 @@ my $VARLIST =
   ["m_bPreviewDataBaseline", "bool"],
   ["m_bPreviewShowILS", "bool"],
   ["m_bPreviewShowRFU", "bool"],
+  ["m_bPreviewShowDisabledAlleles", "bool", undef, undef, undef, 1],
+  ["m_bPreviewShowLadderBins", "bool", undef, undef, undef, 1],
   ["m_bPreviewShowLadderLabels", "bool"],
   ["m_bPreviewXBPS", "bool"],
   ["m_nPreviewShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioIntViewPlotArtifact"],
@@ -140,6 +146,8 @@ my $VARLIST =
   ["m_bPlotShowILS", "bool"],
   ["m_bPlotShowRFU", "bool"],
   ["m_bPlotShowLadderLabels", "bool"],
+  ["m_bPlotShowDisabledAlleles", "bool", undef, undef, undef, 1],
+  ["m_bPlotShowLadderBins", "bool", undef, undef, undef, 1],
   ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
   ["m_nPlotShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
@@ -154,6 +162,8 @@ my $VARLIST =
   ["m_bPrintCurveRaw", "bool"],
   ["m_bPrintCurveLadder", "bool"],
   ["m_bPrintCurveLadderLabels", "bool"],
+  ["m_bPrintCurveLadderBins", "bool"],
+  ["m_bPrintCurveDisabledAlleles", "bool"],
   ["m_bPrintCurveBaseline", "bool"],
   
   ["m_bPrintCurveILSvertical", "bool"],
@@ -170,6 +180,7 @@ my $VARLIST =
   ["m_nPrintXscaleMax", "int", "20000"],
   ["m_nPrintXscaleMinBPS", "int", "0"],
   ["m_nPrintXscaleMaxBPS", "int", "600"],
+  ["m_bPrintXscaleRightEnd", "bool"],
 
   ["m_nPrintYscale", "int", "0"],
   # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
@@ -319,13 +330,21 @@ sub comment
 sub GenerateCopyOrCompare
 {
   my $EOL = shift; ## empty for compare, semi-colon for copy
+  my $bCompare = shift;
   my $sRtn = "";
+  my $nCount = 0;
+  my $nMax = 20;
   for my $a (@$VARLIST)
   {
     my $s = $a->[0];
     if($#$a > 0)
     {
+      if ( $bCompare && !($nCount % $nMax))
+      {
+        $sRtn .= "\n  if(!bRtn) {}\n";
+      }
       $sRtn .= "  CP(${s})${EOL}\n";
+      ++$nCount;
     }
     else
     {
@@ -457,16 +476,17 @@ sub GenerateSet
     }
     else
     {
-      my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable) = @$a;
+      my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable, $bPing) = @$a;
       my $arg = &GetVarType($sVarType);
       my $fnc = "Set" . &chopPrefix($sVarName);
+      my $sPing = $bPing ? ", \"${fnc}\"" : "";
       my $argName = $argNames->{$sVarType};
       $argName || die("Cannot find arg name for ${sVarType}");
 
       $sRtn .= <<EOF;
   void ${fnc}(${arg}${argName})
   {
-    __SET_VALUE(${sVarName},${argName});
+    __SET_VALUE(${sVarName}, ${argName}${sPing});
   }
 EOF
     }
@@ -525,11 +545,30 @@ sub GenFiles
   my $sSets = &GenerateSet;
   my $sDefaults = &GenerateDefaults;
   my $sRegister = &GenerateRegister;
-  my $sCopy = &GenerateCopyOrCompare(";");
-  my $sCompare = &GenerateCopyOrCompare("");
+  my $sCopy = &GenerateCopyOrCompare(";", undef);
+  my $sCompare = &GenerateCopyOrCompare("", true);
   my $sStringHeader = &GenerateStringsHeader;
   my $sStringCPP = &GenerateStringsCPP;
-  my $sCOPY = <<EOF1;
+  my $sCOPY_PING = <<EOF1;
+
+  {
+    if(!(s1 == s2))
+    {
+      s1 = s2;
+      m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
+    }
+  }
+EOF1
+  my $sCOPY = <<EOF2;
 
   {
     if(!(s1 == s2))
@@ -538,7 +577,7 @@ sub GenFiles
       m_bModified = true;
     }
   }
-EOF1
+EOF2
   my $fileH = <<EOF;
 /*
 * ===========================================================================
@@ -575,8 +614,9 @@ EOF1
 
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxGlobalObject.h"
+#include "nwx/nwxString.h"
 #include "ConfigDir.h"
-
+#include "mainApp.h"
 
 #include "CParmGridAttributes.h"
 
@@ -687,13 +727,21 @@ ${sGets}
 
 private:
 
+  // Parameter to string
+  
+  static const wxString &__GET_STRING(const wxString &s1) { return s1; }
+  static wxString __GET_STRING(double s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(int s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(unsigned int s1) { return nwxString::FormatNumber(s1); }
+  static const char *__GET_STRING(bool s1) { return s1 ? "true" : "false"; }
+
   // SET VALUES
 
-  void __SET_VALUE(wxString &s1, const wxString &s2)${sCOPY}
-  void __SET_VALUE(double &s1, double s2)${sCOPY}
-  void __SET_VALUE(bool &s1, bool s2)${sCOPY}
-  void __SET_VALUE(int &s1, int s2)${sCOPY}
-  void __SET_VALUE(unsigned int &s1, unsigned int s2)${sCOPY}
+  void __SET_VALUE(wxString &s1, const wxString &s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(double &s1, double s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(bool &s1, bool s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(int &s1, int s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(unsigned int &s1, unsigned int s2, const char *psPing = NULL)${sCOPY_PING}
   void __SET_VALUE(vector<int> &s1, const vector<int> &s2)${sCOPY}
   void __SET_VALUE(vector<unsigned int> &s1, const vector<unsigned int> &s2)${sCOPY}
 
@@ -1014,17 +1062,14 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 {
 #define CP(elem) else if(!(elem == x.elem)) { bRtn = false; }
   bool bRtn = true;
-  if(0) {}
   // begin generated compare
 
 ${sCompare}
 
   // end generated compare
-
-
   CP(m_gridAttr)
-//  CP(m_bModified)
-//  CP(m_bAutoSave)
+
+
 
 #undef CP
   return bRtn;

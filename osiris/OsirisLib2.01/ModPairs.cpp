@@ -191,7 +191,7 @@ void SampleModList::BeingUsedForSample (const RGString& name) {
 	if (mWasUsed) {
 
 		cout << "<*****>Duplicate mod pairs use:  Mod pairs used for " << mUsedBySampleName << " now being used by " << name << "</*****>\n";
-		cout << "<Ping>651</Ping" << endl;
+		cout << "<Ping>651</Ping>" << endl;
 	}
 
 	mUsedBySampleName = name;

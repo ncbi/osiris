@@ -323,6 +323,7 @@ public:
   void InvalidateColors()
   {
     m_mapColors.clear();
+    CleanupBins();
   }
   void SendPlotSizeEvent();
   bool IsPreview()
@@ -437,25 +438,24 @@ public:
   }
   void SyncState(CPanelPlot *p, int nID);
   void RebuildCurves(bool bIgnoreViewRect = false); 
-  wxRect2DDouble GetZoomOutRect(int nPrimerPeaks, int nLabelHeight = 0, double dMinRFU = -1.0);
+  wxRect2DDouble GetZoomOutRect(
+    int nPrimerPeaks, int nLabelHeight = 0,
+    double dMinRFU = -1.0, bool bIncludeRightEnd = false);
   wxRect2DDouble GetZoomOutRect(bool bAll = false, int nLabelHeight = 0)
   {
     return GetZoomOutRect(
-      (bAll ? ZOOM_PRIMER_PEAK_XY : ZOOM_PRIMER_PEAK_NONE), nLabelHeight);
+      (bAll ? ZOOM_PRIMER_PEAK_XY : ZOOM_PRIMER_PEAK_NONE), nLabelHeight, -1.0, bAll);
   }
   void ZoomToLocus(const wxString &sLocus, unsigned int nDelay = 0);
   void EditPeak(COARpeakAny *pPeak);
   wxRect2DDouble GetZoomLocus(const wxString &sLocus);
-
-  void ShowToolbar(bool bShow);
   CPlotData *GetPlotData()
   {
     return m_pData;
   }
-  void ShowScrollbars(bool bShow)
-  {
-    m_pPlotCtrl->ShowScrollbars(bShow);
-  }
+
+  void ShowToolbar(bool bShow);
+  void ShowScrollbars(bool bShow);
   bool AreScrollbarsShown()
   {
     return m_pPlotCtrl->AreScrollbarsShown();
@@ -595,6 +595,7 @@ public:
   //void SetExternalTimer(bool b = true);
   void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
+  void RebuildBins();
   void RebuildLabels(bool bRedraw = false);
   void UpdateLadderLabels();
   void SetPrintSettings();
@@ -670,6 +671,7 @@ public:
   }
   const wxString &SampleTitle(wxString *ps);
   const wxString &TitleStrings(wxString *ps, int nPage);
+  void CleanupBins();
 private:
   const wxColour &_GetColour(DATA_TYPE n, unsigned int nChannel);
   static void _SetYUserRange(wxRect2DDouble *pRect);  // Y
@@ -822,6 +824,7 @@ private:
   void _CleanupLadderPeakSet();
   void _CleanupPeakAny();
   int _GetLadderPeakCount();
+  nwxPlotBinSet *_GetBinsByChannel(unsigned int n);
   //void _CleanupMenu(); // remove m_pMenuItem from its menu and delete
   void _BuildMenu(int nPlotNr);
 
@@ -834,6 +837,7 @@ private:
 
   mapSamplePlots m_mapPlotData;
   std::vector<COARpeakAny *> m_vPeakAny;
+  std::vector<nwxPlotBinSet *> m_vpBinsByChannel;
   vectorILSlines m_vILS;
   vectorILSlines m_vILS_XBPS;
   CPlotData *m_pData;
@@ -895,6 +899,7 @@ private:
   {
     _SetFileHasBeenPrompted(m_pData);
   }
+  void _RebuildCurves(wxCommandEvent &w, bool bShift);
 
 public:
 //  commented out 7/14/08 kill in 60 days
@@ -906,6 +911,7 @@ public:
 //  void HideCurve(DATA_TYPE nType, unsigned int nChannel);
 
   void OnRebuildCurves(wxCommandEvent &);
+  void OnRebuildWithOAR(wxCommandEvent &);
 
   void OnZoomOut(wxCommandEvent &);
 //  void OnBtnLabel(wxCommandEvent &);

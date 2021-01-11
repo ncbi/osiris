@@ -46,6 +46,7 @@
 #include "CMenuSample.h"
 #include "CDialogCellHistory.h"
 #include "CDialogApprove.h"
+#include "CDialogWarnHistory.h"
 #include "CPageEditSample.h"
 #include "CSiteSettings.h"
 #include <wx/sizer.h>
@@ -265,16 +266,6 @@ void CFrameSample::_ApplyAll()
     InitiateRepaintData();
   }
 }
-void CFrameSample::_Apply()
-{
-  int n = m_pNoteBook->GetSelection();
-  if( (n >= 0) && 
-      CheckApplyNoNotes(n) &&
-      m_pNoteBook->GetCurrentPanel()->DoApply() )
-  {
-      InitiateRepaintData();
-  }
-}
 void CFrameSample::_Accept()
 {
   CPageEditSample *pPage = m_pNoteBook->GetCurrentPanel();
@@ -381,11 +372,8 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
   case IDmenuHistory:
     _History();
     break;
-  case IDSampleApplyAll:
-    _ApplyAll();
-    break;
   case IDSampleApply:
-    _Apply();
+    _ApplyAll();
     break;
   case IDSampleAccept:
     _Accept();
@@ -404,6 +392,7 @@ bool CFrameSample::MenuEvent(wxCommandEvent &e)
 
 void CFrameSample::InitiateRepaintData()
 {
+  CheckIfHistoryOK();
   m_pCreator->RepaintAllData(m_pSample);
 }
 void CFrameSample::RepaintData()
@@ -635,8 +624,7 @@ void CFrameSample::SetupMenuItems()
     _EnableItem(IDmenuHistory,pPage->HasHistory());
     _EnableItem(IDSampleAccept, bEnabledOrDir && pPage->NeedsAcceptance());
     _EnableItem(IDSampleApprove, bEnabledOrDir && pPage->NeedsReview());
-    _EnableItem(IDSampleApply,bEnabledOrDir && pPage->NeedsApply());
-    _EnableItem(IDSampleApplyAll, bSampleEnabled && m_pNoteBook->IsModified());
+    _EnableItem(IDSampleApply, bSampleEnabled && m_pNoteBook->IsModified());
     _EnableItem(IDmenuDisableSample, 
       m_pSample->CanDisableSample() && !bDirPanel);
     _SetSampleEnabled(bSampleEnabled);

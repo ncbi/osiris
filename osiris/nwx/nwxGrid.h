@@ -297,7 +297,15 @@ public:
   static void ClearRowValues(wxGrid *p, int nRow);
   static void SetRowBackgroundColour(
     wxGrid *p, int nRow, const wxColour &clr);
+  static void ClearAllRowLabels(wxGrid *p);
+  static size_t GetColumnValues(wxGrid *p, int nCol, wxArrayString *ps);
 
+  static void SetColReadOnly(wxGrid *p, int nCol, bool bReadOnly = true);
+  static void SetColFont(wxGrid *p, int nCol, const wxFont &fn);
+  static void SetColBackgroundColour(
+    wxGrid *p, int nCol, const wxColour &clr);
+  static void SetColAlignment(
+    wxGrid *p, int nCol, int nHoriz, int nVert);
   static wxSize ComputeSize(wxGrid *p);
   static wxString GetTabDelimited(wxGrid *p,bool bLabels = true);
   static bool CopyToClipboard(wxGrid *p,bool bLabels = true);
@@ -317,6 +325,8 @@ public:
   static bool CheckAutoExpandRows(wxGrid *pGrid, int nRowsFromBottom = 2, int nAddCount = 4);
   static void SetMessageGrid(wxGrid *p, const wxString &sMessage);
   static void UpdateLabelSizes(wxGrid *p);
+
+  static bool SetMacFont(wxGrid *p); // OS-1534 - set font that can show bold and italic
 
 //  constructor, destructor, and memeber functions
 //  it is recommended that only the static functions be used

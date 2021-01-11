@@ -49,6 +49,7 @@ class COARfile;
 class CFrameAnalysis;
 class wxMenu;
 class CMenuPlot;
+class CMenuHistory;
 
 class CPanelPlotPreview : public wxPanel
 {
@@ -58,7 +59,7 @@ public:
     wxWindow *parent, 
     COARfile *pFile,
     CKitColors *pColors,
-    //bool bExternalTimer = false,// EXT TIMER
+    CMenuHistory *pMenuHistory = NULL,
     size_t nMaxCount = 6
     );
   virtual ~CPanelPlotPreview();
@@ -87,9 +88,22 @@ public:
   //void OnTimer(wxTimerEvent &e); // EXT TIMER
   CMenuPlot *GetMenuPlot();
   wxMenu *GetMenu();
-  int GetPeakLabelType();
   void SetPeakLabelType(int n);
   void UpdateLadderLabels();
+  bool IsToolbarShown();
+  bool AreScrollbarsShown();
+  void ShowToolbar(bool bShow);
+  void ShowScrollbars(bool bShow);
+  void UpdateHistoryButtons();
+  void ToggleToolbar()
+  {
+    ShowToolbar(!IsToolbarShown());
+  }
+  void ToggleScrollbars()
+  {
+    ShowScrollbars(!AreScrollbarsShown());
+  }
+  void RebuildLabels();
 
 private:
   void _Cleanup(size_t n = 0);
@@ -97,7 +111,6 @@ private:
   CPanelPlot *_FindCurrent();
   CPanelPlot *_Setup(const wxString &sFileName, bool bReload);
   CPanelPlot *_Create(const wxString &sFileName);
-  void _SetCurrent(wxPanel *pPanel);
   void _HideCurrent();
   wxStaticText *_SetupMessage();
 
@@ -108,8 +121,11 @@ private:
   CFrameAnalysis *m_pFrameAnalysis;
   COARfile *m_pOARfile;
   CKitColors *m_pColors;
+  CMenuHistory *m_pMenuHistory;
   //bool m_bExternalTimer;// EXT TIMER
+#ifdef _DEBUG
   bool m_bLogged; // set to true if there is a problem with a timer event
+#endif
 };
 
 #endif

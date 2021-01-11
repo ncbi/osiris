@@ -70,6 +70,59 @@ void nwxPlotCtrl::ShowScrollbars(bool b)
     }
   }
 }
+void nwxPlotCtrl::DrawBins(wxDC *dc)
+{
+  if ((m_pSetBins != NULL) && m_pSetBins->size())
+  {
+    nwxPlotBinSet::const_iterator itr;
+    wxRect clientRect(GetPlotAreaRect());
+    wxRect rect(0, clientRect.GetTop(), 1, clientRect.GetHeight());
+    wxColour colour(*wxWHITE);
+    int nx1, nx2;
+    double dx1, dx2;
+    wxBrush brush(*wxWHITE_BRUSH);
+#define USE_GRID_COLOR
+#ifdef USE_GRID_COLOR
+    brush.SetColour(GetGridColour());
+    dc->SetBrush(brush);
+#endif
+    dc->SetPen(*wxTRANSPARENT_PEN);
+    for (itr = m_pSetBins->begin(); itr != m_pSetBins->end(); ++itr)
+    {
+      dx1 = (*itr).GetMin();
+      dx2 = (*itr).GetMax();
+      if (dx1 < m_viewRect.GetRight() && dx2 > m_viewRect.GetLeft())
+      {
+        nx1 = GetClientCoordFromPlotX(dx1);
+        nx2 = GetClientCoordFromPlotX(dx2);
+        nx1 = wxMax(nx1, clientRect.GetLeft());
+        nx2 = wxMin(nx2, clientRect.GetRight());
+        if (nx1 < nx2)
+        {
+#ifndef USE_GRID_COLOR
+          const wxColour &c((*itr).GetColour());
+          if (c != colour)
+          {
+            colour = c;
+            brush.SetColour(c);
+            dc->SetBrush(brush);
+          }
+#endif
+          rect.SetLeft(nx1);
+          rect.SetWidth(nx2 - nx1);
+          dc->DrawRectangle(rect);
+        }
+      }        
+    }
+  }
+}
+
+void nwxPlotCtrl::DrawTickMarks(wxDC *dc, const wxRect& rect)
+{
+  DrawBins(dc);
+  // OS-1432 - vertical bars
+  wxPlotCtrl::DrawTickMarks(dc, rect);
+}
 
 void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
 {
@@ -104,11 +157,6 @@ void nwxPlotCtrl::DrawAreaWindow(wxDC *pdc,const wxRect &rect)
   {
       pdc->SetClippingRegion(nX,nY,nW,nH);
   }
-
-//  wxWindowDC wdc(this);
-//  m_XLabels.Draw(&wdc,true);
-//  m_Xshade.Draw(pdc,true);
-
 }
 
 void nwxPlotCtrl::DrawPlotCtrl(wxDC *dc)
@@ -209,6 +257,7 @@ void nwxPlotCtrl::nwxOnMouse(wxMouseEvent &e)
   else if(e.Leaving())
   {
     ClearToolTip();
+    _ClearMousePosition();
     m_pLastXLabel = NULL;
     m_pLastLabel = NULL;
   }
@@ -279,6 +328,7 @@ void nwxPlotCtrl::ProcessMousePosition(const wxPoint &pt)
 {
   if(pt != m_PositionMouse)
   {
+    m_bUpdatePosition = true;
     m_PositionMouse = pt;
     m_nTimeHere = 0;
     StartTimer();
@@ -298,10 +348,100 @@ void nwxPlotCtrl::_Init()
   m_bmClear = wxBitmap(clear15);
 
 }
+void nwxPlotCtrl::OnSizeCallback(wxSizeEvent &)
+{
+  m_nTimerSinceSize = 0;
+}
 
+wxStaticText *nwxPlotCtrl::_GetMousePositionText()
+{
+  wxPoint pos(m_border, m_xLabelRect.GetTop());
+  if (m_pMousePositionText == NULL)
+  {
+    m_pMousePositionText = new wxStaticText(
+      this, wxID_ANY, wxEmptyString, pos);
+    m_pMousePositionText->SetFont(GetAxisLabelFont());
+    m_pMousePositionText->SetForegroundColour(GetAxisLabelColour());
+    m_pMousePositionText->SetBackgroundColour(GetBackgroundColour());
+  }
+  else
+  {
+    m_pMousePositionText->SetPosition(pos);
+  }
+  return m_pMousePositionText;
+}
+
+void nwxPlotCtrl::_ClearMousePosition()
+{
+  if (m_pMousePositionText != NULL)
+  {
+    m_pMousePositionText->Show(false);
+  }
+  /*
+  wxClientDC dc(this);
+  int nTop = m_xLabelRect.GetTop();
+  int nHeight = GetSize().GetHeight() - nTop;
+  wxRect r(0, nTop, m_xLabelRect.GetLeft() - 2, nHeight);
+  dc.SetPen(*wxWHITE_PEN);
+  dc.SetBrush(*wxWHITE_BRUSH);
+  dc.DrawRectangle(r);
+  */
+}
+
+bool nwxPlotCtrl::_InAreaRect(const wxPoint &pt)
+{
+  return !(
+    (pt.x < 0) ||
+    (pt.y < 0) ||
+    (pt.x > m_areaRect.GetWidth()) ||
+    (pt.y > m_areaRect.GetHeight())
+        );
+}
+
+
+void nwxPlotCtrl::_UpdateMousePosition()
+{
+  if (!_InAreaRect(m_PositionMouse))
+  {
+    _ClearMousePosition();
+  }
+  else
+  {
+    wxString s = GetCoordLabel();
+    int nX = nwxRound::Round(GetPlotCoordFromClientX(m_PositionMouse.x));
+    int nY = nwxRound::Round(GetPlotCoordFromClientY(m_PositionMouse.y));
+    s.Append(wxString::Format(wxT("(%d, %d)"), nX, nY));
+    wxStaticText *pText = _GetMousePositionText();
+    wxSize sz = pText->GetTextExtent(s);
+    if ( (sz.GetWidth() + pText->GetPosition().x) >= m_xLabelRect.GetLeft() )
+    {
+      _ClearMousePosition();
+    }
+    else
+    {
+      pText->SetLabel(s);
+      pText->Show(true);
+      pText->Refresh();
+    }
+    /*
+    wxClientDC dc(this);
+    dc.SetFont(GetAxisLabelFont());
+    dc.SetTextForeground(GetAxisLabelColour());
+    dc.DestroyClippingRegion();
+    dc.SetBackgroundMode(wxBRUSHSTYLE_SOLID);
+    dc.DrawText(s, wxPoint(m_border, m_xLabelRect.GetTop()));
+    */
+  }
+}
 void nwxPlotCtrl::OnTimer(wxTimerEvent &)
 {
-  if (m_bStopTimer)
+  ++m_nTimerSinceSize;
+  if (m_bUpdatePosition && (m_nTimerSinceSize >= 4))
+  {
+    _UpdateMousePosition();
+    m_bUpdatePosition = false;
+  }
+  if (m_bStopTooltipTimer)
   {}  // do nothing
   else if(m_bClear || m_nDisableToolTip)
   {
