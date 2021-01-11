@@ -1,6 +1,6 @@
-InputDirectory = F:/MenagerieForTestingPullup/AMP-110629-03A_1_C3PO;
+InputDirectory = C:/Users/goorrob/TestPullupReports;
 LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.13/Config;
-ReportDirectory = F:/Menageries/MenagerieForTestingPullup/AMP-110629-03A_1_C3PO;
+ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
 MarkerSetName = PowerPlex 16;
 LaneStandardName = Promega-ILS-500;
 CriticalOutputLevel = 15;

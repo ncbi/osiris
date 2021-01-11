@@ -294,6 +294,7 @@ PERSISTENT_PREDECLARATION (smPeakHeightAboveHomozygoteTrustThreshold)
 PERSISTENT_PREDECLARATION (smPeakIgnored)
 PERSISTENT_PREDECLARATION (smLaddersFromWrongMarkerSet)
 PERSISTENT_PREDECLARATION (smUncertainPullUp)
+PERSISTENT_PREDECLARATION (smUseNonlinearLMSAlgorithmForAllChannels)
 
 
 
@@ -8201,6 +8202,34 @@ public:
 	smUncertainPullUp ();
 	smUncertainPullUp (const smUncertainPullUp& note);
 	virtual ~smUncertainPullUp ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUseNonlinearLMSAlgorithmForAllChannels : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUseNonlinearLMSAlgorithmForAllChannels)
+
+public:
+	smUseNonlinearLMSAlgorithmForAllChannels ();
+	smUseNonlinearLMSAlgorithmForAllChannels (const smUseNonlinearLMSAlgorithmForAllChannels& note);
+	virtual ~smUseNonlinearLMSAlgorithmForAllChannels ();
 
 	virtual int GetSubject () const;
 
