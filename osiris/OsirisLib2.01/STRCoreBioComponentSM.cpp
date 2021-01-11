@@ -47,6 +47,7 @@
 #include "DirectoryManager.h"
 #include "rgtarray.h"
 #include <set>
+#include <string>
 #include <iostream>
 
 using namespace std;
@@ -1724,7 +1725,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		mDataChannels [i]->ResetNegativeCurveIterator ();
 	}
 
-	// Now copy from mDataChannels PreliminaryCurveList to TempList (while finding maxSignalPeak??)
+	// Now copy from mDataChannels CompleteCurveList and from Negative Curve List peaks that are within analysis region to channel specific TempList (while finding max non-LO signal peak: maxNonLaserOffScalePeak)
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -1811,7 +1812,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 	}
 
-	//cout << "Done merging positive and negative curves into TempList's" << endl;
+	//  Done merging positive and negative curves into TempList's
 
 	RGDListIterator* tempIterator;
 	RGDList newTempList;
@@ -1824,7 +1825,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	int nextSignalIndex;
 
 	//
-	//	Create new channel specific lists of multi-peaks and merge into TempLists****
+	//	Create new channel specific lists of multi-peaks (Craters and sigmoids) and merge into TempLists****
 	//
 
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -2042,7 +2043,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	}
 
 	//
-	//	Each TempList contains all CompleteList peaks and all NegativeCurvePeaks and all potential multipeaks.  Later, look for interchannel links and then remove crater/simplesigmoid code below
+	//	Each TempList contains all CompleteList peaks and all NegativeCurvePeaks and all potential multipeaks.  Later, look for interchannel links and then remove crater/simplesigmoid code below.
+	//  Now, merge all channel lists into a single list, OverAllList, ordered by peak time (or mean).  Peaks that are potential pull-up/primary pull-up will appear consecutively in OverAllList.
 	//
 
 	for (i=1; i<=mNumberOfChannels; i++) {
@@ -2095,6 +2097,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		}
 	}
 
+	// OverAllList contains all peaks, including positive and negative, and merged in order of increasing mean value.
+
 	RGDListIterator it (OverallList);
 	RGDListIterator Pos (OverallList);
 	RGDListIterator Neg (OverallList);
@@ -2124,6 +2128,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	it.Reset ();
 
+	//  10/1/2020:  Much of the below text is now out of date.  Osiris now discovers the pattern of pull-up between each pair of channels and, using least median of squares,
+	//  determines the outliers (partial pull-ups) and the signals that follow the pattern (pure pull-ups).
 	//
 	//	Have looked for craters and other multi-signals above, having been careful to check for positive/negative peaks and multiple peaks within approximately 
 	//	0.9 ILS-bps.  After all new multi-signals were found, added them to the various lists (or while finding them), but didn't remove any side
@@ -2170,7 +2176,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList signalsToRemove;
 	RGDListIterator probableIt (probablePullupPeaks);
 	RGDListIterator sameChannelIterator (peaksInSameChannel);
-	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
+	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;  // This parameter should only be used to restrict primary pull-ups if specified by user.  See smSelectUserSpecifiedMinRFUForPrimaryPeakPreset
 	cout << "Primary Threshold = " << primaryThreshold << " RFU" << endl;
 	double nSigmasForPullup = 1.0;
 	int primaryChannel;
@@ -2184,6 +2190,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	double rightLimitPlus;
 	double leftLimitPlus;
 	bool laserStatus;
+	smSelectUserSpecifiedMinRFUForPrimaryPeakPreset useSpecifiedMinRFUForPrimary;
+	bool userSpecifiedMinRFUForPrimary = GetMessageValue (useSpecifiedMinRFUForPrimary);
 
 	while (nextSignal = (DataSignal*) it ()) {
 
@@ -2197,8 +2205,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		primaryHeight = nextSignal->Peak ();
 		primaryChannel = nextSignal->GetChannel ();
 
-		if ((primaryHeight < primaryThreshold) || (nextSignal->IsNegativePeak ()))
+		//  *****!!!! 09/28/2020 This tests that the primary height is above the user-specified minimum primary threshold, but only if directed by user specification.
+		//  The default value of userSpecifiedMinRFUForPrimary is false.  In either case, if the signal is negative, skip it.
+
+		if ((userSpecifiedMinRFUForPrimary && (primaryHeight < primaryThreshold)) || (nextSignal->IsNegativePeak ()))
 			continue;
+
+		//  *****!!!! The next test involves the minRFU among minSampleRFU, minLadderRFU and minILSRFU.  The minimum height is the least of these.  
+		//  Essentially, Osiris will not consider that a primary pull-up could be below this min height.  I think this may be an error as well!????  Leaving it for now (10/01/2020)
 
 		if (primaryHeight < mDataChannels [nextSignal->GetChannel ()]->GetMinimumHeight ())
 			continue;
@@ -2212,6 +2226,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		//}
 
 		// nextSignal could be primary
+		// pull-up tolerance from exact match of means between primary and pull-up depends on the type of primary peak and the width of the primary peak.  Scoop up
+		// any peaks on other channels that fall within the pull-up tolerance of the primary peak's mean.  Laser off scale between possible primary and possible pull-up mush
+		// match.  Ignore peaks on the same channel as the primary.  Peaks in pull-up channels must be of lesser height than primary peak.
 
 		Pos.ResetTo (it);
 		Neg.ResetTo (it);
@@ -2227,6 +2244,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 		weakPullupPeaks.Clear ();
 		laserStatus = primeSignal->GetMessageValue (laserOffScale);
 
+		// Starting at the primary mean, search in the positive direction
+
 		while (nextSignal2 = (DataSignal*)(++Pos)) {
 
 			if (nextSignal2->GetMean () > rightLimit) {
@@ -2237,7 +2256,10 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				if (nextSignal2->GetChannel () == primaryChannel)
 					continue;
 
-				if (TestForWeakPullup (primaryMean, nextSignal2))
+				//This next test is for a peak in the pull-up channel that interferes, above noise level, with primary without being close enough to be called pull-up
+				//The existence of such peaks make the primary "occluded" in that pull-up channel
+
+				if (TestForWeakPullup (primaryMean, nextSignal2))  
 					weakPullupPeaks.Append (nextSignal2);
 
 				continue;
@@ -2261,6 +2283,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				continue;
 			}
 		}
+
+		// Starting at the primary mean, search in the negative direction
 
 		while (nextSignal2 = (DataSignal*)(--Neg)) {
 
@@ -2435,7 +2459,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		// The following test needs to be moved until after channel-duplicates have been removed from list
 
-		if (primaryWidth < mWidthToleranceForSpike) {  // primary is too narrow,
+		if (primaryWidth < mWidthToleranceForSpike) {  // primary is too narrow (width < 2.1) so it is a spike
 
 			probableIt.Reset ();
 			primeSignal->SetMessageValue (spike, true);
@@ -2449,11 +2473,11 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				if (testSignal != NULL) {
 
-					if (testSignal->GetWidth () < mWidthToleranceForSpike) {
+					//if (testSignal->GetWidth () < mWidthToleranceForSpike) {  //***** Fixed 11/24/2020
 
-						testSignal->SetMessageValue (spike, true);
+						testSignal->SetMessageValue (spike, true);  // 10/01/2020:  this test makes calling a pull-up to a spike into a spike only if its width is < 2.1...maybe it should be a spike unconditionally?
 						testSignal->SetCouldBePullup (true);
-					}
+					//}
 				}
 			}
 
@@ -2534,6 +2558,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 	RGDList removedPeakList;
 	set<InterchannelLinkage*> channelRemoval;
 	list<DataSignal*> postSigmoidList;
+	bool sidePeakIsPrimary;
 
 	for (i=1; i<= mNumberOfChannels; i++) {
 
@@ -2550,16 +2575,19 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 				sidePeaksArePullup = true;
 				sidePeaksHaveSamePrimaryChannel = false;
+				sidePeakIsPrimary = true;
 			}
 
 			else {
 
 				sidePeaksArePullup = (testSignal->GetMessageValue (pullup) && testSignal2->GetMessageValue (pullup));
 				sidePeaksHaveSamePrimaryChannel = testSignal->HasPullupFromSameChannelAsSM (testSignal2, mNumberOfChannels);
+				sidePeakIsPrimary = testSignal->HasCrossChannelSignalLink () || testSignal2->HasCrossChannelSignalLink ();
 			}
 
-			if ((nextSignal->HasCrossChannelSignalLink () || nextSignal->GetMessageValue (pullup)) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel)) {
+			if (nextSignal->GetMessageValue (pullup) && !sidePeakIsPrimary && !(sidePeaksArePullup && sidePeaksHaveSamePrimaryChannel)) {  // Fixed And's and Or's 11/24/2020
 
+				//  Actually, sigmoids should never be primary pull-up peaks!  ***Maybe we should take that out of the test!  Done:  11/24/2020
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
 			//	OverallList.InsertWithNoReferenceDuplication (nextSignal);
@@ -2755,7 +2783,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 			nextSignalIsPullup = nextSignal->GetMessageValue (pullup);
 			nextSignalIsOffScale = nextSignal->GetMessageValue (laserOffScale);
 
-			if ((nextSignal->HasCrossChannelSignalLink () || nextSignalIsPullup) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && (nextSignalIsPullup || nextSignalIsOffScale)) {
+			if ((nextSignal->HasCrossChannelSignalLink () || nextSignalIsPullup) && (!(sidePeaksArePullup && sidePeaksHaveSamePrimaryChannel) || nextSignalIsOffScale)) {  // And's and Or's realigned 11/24/2020
 
 				nextChannel->InsertIntoCompleteCurveList (nextSignal);
 				nextChannel->InsertIntoPreliminaryCurveList (nextSignal);
@@ -2865,7 +2893,7 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				bool atLeastOneSidePeakIsPullup = (testSignal->GetMessageValue (pullup) || testSignal2->GetMessageValue (pullup));
 				bool sidePeaksAreDualSignals = (testSignal->GetMessageValue (dualPeak) && testSignal2->GetMessageValue (dualPeak));
 				bool sidePeakIsPrimary = ((testSignal->GetInterchannelLink () != NULL) || (testSignal2->GetInterchannelLink () != NULL));
-				bool notTooImbalanced = (heightRight > heightImbalanceThreshold * heightLeft) && (heightLeft > heightImbalanceThreshold * heightRight);
+				bool notTooImbalanced = (heightRight < heightImbalanceThreshold * heightLeft) || (heightLeft < heightImbalanceThreshold * heightRight);  // 11/25/2020:  changed from &&, which is always false, to || and changed > to <
 
 				if (testForPeaksTooCloseTogether && (sidePeaksTooClose || sidePeaksAreDualSignals) && (!sidePeaksArePullup || sidePeaksHaveSamePrimaryChannel) && atLeastOneSidePeakIsPullup && !sidePeakIsPrimary && notTooImbalanced) {
 
@@ -3141,6 +3169,8 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	list<InterchannelLinkage*>::iterator tempIt;
 
+	// Remove multisignals (craters and sigmoids) with no cross channel effect
+
 	for (tempIt=mInterchannelLinkageList.begin (); tempIt!=mInterchannelLinkageList.end (); tempIt++) {
 
 		iChannel = *tempIt;
@@ -3264,7 +3294,14 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 						linkButNotToJ = false;
 				}
 
-				if ((CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, first)) && (nextSignal->Peak () >= primaryThreshold) && (noCrossChannelLink || (!noCrossChannelLink && linkButNotToJ))) {
+				bool considerPossiblePrimaryBasedOnHeight = !userSpecifiedMinRFUForPrimary || (userSpecifiedMinRFUForPrimary && (nextSignal->Peak () >= primaryThreshold));
+
+				//  Allow a peak to be considered as a valid non-primary if it within the analysis region and has no cross channel link with this channel...and if it is tall enough if
+				// the user has specified a minimum RFU for primary peaks AND this peak is tall enough, OR (the default action), the user has not specified that a minimun height for primaries be
+				// used.  The latter is the default.  And in the latter case, OSIRIS computes the minimum primary RFU based on a number for factors, including the pull-up percentages for the tallest peaks
+				// in the primary channel and the static noise level in the pull-up channel.
+
+				if ((CoreBioComponent::SignalIsWithinAnalysisRegion (nextSignal, first)) && considerPossiblePrimaryBasedOnHeight && (noCrossChannelLink || (!noCrossChannelLink && linkButNotToJ))) {
 
 					notPrimaryLists [i][j]->Append (nextSignal);
 				}

@@ -40,6 +40,7 @@
 #include "CFrameAnalysis.h"
 #include "CFrameSample.h"
 #include "CFramePlot.h"
+#include "CDialogWarnHistory.h"
 
 DEFINE_EVENT_TYPE(CEventKillWindow)
 
@@ -61,6 +62,7 @@ CMDIFrame::CMDIFrame(
       , size, style),
       m_pParent(parent)
 {
+  m_bHistoryWarningShown = false;
   m_sFrameNumber = nwxString::FormatNumber(mainApp::NewWindowNumber());
   m_nFocusRecursive = 0;
   m_bNoPromptReload = false;
@@ -84,7 +86,95 @@ void CMDIFrame::UpdateHistory() {;}
 void CMDIFrame::UpdateLadderLabels() {;}
 void CMDIFrame::UpdateFileMenu() {;}
 
+int CMDIFrame::GetHistoryCheck(bool bOtherIsCurrent)
+{
+  int nRtn = 0;
+  if (HistoryIsCurrent()) {} // done
+  else if (bOtherIsCurrent)
+  {
+    nRtn = HISTORY_WARN_THIS;
+  }
+  else
+  {
+    switch (GetType())
+    {
+    case FRAME_ANALYSIS:
+      nRtn = HISTORY_WARN_ANALYSIS;
+      break;
+    case FRAME_PLOT:
+      nRtn = HISTORY_WARN_PLOT;
+      break;
+    default:
+      nRtn = HISTORY_WARN_THIS;
+      break;
+    }
+  }
+  return nRtn;
+}
+bool CMDIFrame::CheckIfHistoryOK()
+{
+  bool bRtn = true;
+  if (CParmOsiris::GetGlobal()->WarnOnHistory())
+  {
+    CFrameSample *pFrameSample = NULL;
+    CFrameAnalysis *pFrameAnalysis = NULL;
+    CFramePlot *pFramePlot = NULL;
+    int nCheck = 0;
+    bool bOtherIsCurrent = true; // if true and this window is not current, set nCheck to HISTORY_WARN_THIS
+    bool bAsk = true; // except for sample window when clicking "Apply"
+    switch (GetType())
+    {
+    case FRAME_ANALYSIS:
+      pFrameAnalysis = (CFrameAnalysis *)this;
+      pFramePlot = pFrameAnalysis->FindPlotFrameBySelectedSample();
+      bOtherIsCurrent = (pFramePlot == NULL) || pFramePlot->HistoryIsCurrent();
+      break;
+    case FRAME_PLOT:
+      pFramePlot = (CFramePlot *)this;
+      pFrameAnalysis = pFramePlot->FindAnalysisFrame();
+      bOtherIsCurrent = (pFrameAnalysis == NULL) || pFrameAnalysis->HistoryIsCurrent();
+      break;
+    case FRAME_SAMPLE:
+      bOtherIsCurrent = false; // never use HISTORY_WARN_THIS
+      pFrameSample = (CFrameSample *)this;
+      pFrameAnalysis = pFrameSample->GetAnalysisFrame();
+      pFramePlot = pFrameAnalysis->FindPlotFrameBySample(pFrameSample->GetSample());
+      bAsk = false;  // do not ask whether or not to continue
+      break;
+    default:
+      break;
+    }
+    if ((pFrameAnalysis == NULL) || (pFrameAnalysis->HistoryWarningShown()))
+    {
+      // the popup has been shown for this file, we are done
+    }
+    else if (bOtherIsCurrent)
+    {
+      nCheck = GetHistoryCheck(true);
+    }
+    else
+    {
+      nCheck = pFrameAnalysis->GetHistoryCheck() +
+        ((pFramePlot == NULL) ? 0 : pFramePlot->GetHistoryCheck());
+    }
+    // kill this
+    if (nCheck)
+    {
+      bRtn = CDialogWarnHistory::Continue(this, bAsk, nCheck);
+      if (bRtn)
+      {
+        pFrameAnalysis->SetHistoryWarningShown(true);
+      }
+    }
+  }
+  return bRtn;
+}
 
+
+const wxDateTime *CMDIFrame::GetSelectedTime()
+{
+  return NULL;
+}
 bool CMDIFrame::FileError()
 {
   // virtual function
@@ -96,15 +186,21 @@ wxString CMDIFrame::GetFileName()
   wxString s;
   return s;
 }
-bool CMDIFrame::SetToolbarMenuLabel(bool bShow, bool bPlural)
+bool CMDIFrame::SetToolbarMenuLabel(bool bShow, bool bPlural, int nID)
 {
+  // set the toolbar label to show or hide for:
+  // analysis table and plot window
+  // this should not be used for the plot preview in the
+  // analysis window which is handled in CPanelPlot.cpp/h
   wxMenu *pMenu = GetMenu();
   bool bRtn = false;
   if(pMenu != NULL)
   {
-    wxMenuItem *pItem = pMenu->FindItem(IDmenuShowHideToolbar);
+    wxMenuItem *pItem = pMenu->FindItem(nID);
     if(pItem != NULL)
     {
+      // if not plural and nID is IDmenuShowHideTableToolbar
+      // this is for a plot preview toolbar
       const wxString *psLabel(NULL);
       switch((bPlural ? 1 : 0) + (bShow ? 2 : 0))
       {
@@ -241,6 +337,43 @@ void CMDIFrame::UpdateStatusBar()
 #if HAS_STATUS_BAR
   m_pParent->SetStatusText("");
 #endif
+}
+
+void CMDIFrame::OnCheckSplitter(wxCommandEvent &e)
+{
+  // this is a workaround for a bug where the splitter does not
+  // appear where specified when the window is created while the
+  // MDI clients are maximized
+  wxSplitterWindow *pWin = (wxSplitterWindow *)e.GetEventObject();
+  wxSize sz = pWin->GetSize();
+  if (pWin->IsSplit() && sz.x > 1 && sz.y > 1)
+  {
+    const int THRESHOLD = 10;
+    int nSelect = e.GetInt();
+    int nCurrent = pWin->GetSashPosition();
+    int nMax = (pWin->GetSplitMode() == wxSPLIT_VERTICAL) ? sz.GetWidth() : sz.GetHeight();
+    if ((nCurrent < 0) != (nSelect < 0))
+    {
+      if (nCurrent < 0)
+      {
+        nCurrent += nMax;
+      }
+      else
+      {
+        nCurrent -= nMax;
+      }
+    }
+    if (nSelect < nMax && nSelect > -nMax)
+    {
+      // selection is within range
+      int nDiff = nCurrent - nSelect;
+
+      if (nDiff > THRESHOLD || nDiff < -THRESHOLD)
+      {
+        pWin->SetSashPosition(nSelect, true);
+      }
+    }
+  }
 }
 
 void CMDIFrame::OnActivate(wxActivateEvent &e)
@@ -449,6 +582,12 @@ const wxString CMDIFrame::HIDE_TOOLBARS("Hide Toolbars\tCtrl+T");
 const wxString CMDIFrame::SHOW_TOOLBARS("Show Toolbars\tCtrl+T");
 const wxString CMDIFrame::HIDE_TOOLBAR("Hide Toolbar\tCtrl+T");
 const wxString CMDIFrame::SHOW_TOOLBAR("Show Toolbar\tCtrl+T");
+const wxString CMDIFrame::HIDE_TOOLBAR_PREVIEW("Hide Toolbar");
+const wxString CMDIFrame::SHOW_TOOLBAR_PREVIEW("Show Toolbar");
+const wxString CMDIFrame::SHOW_PLOT_SCROLLBARS("Show Plot Scrollbars");
+const wxString CMDIFrame::HIDE_PLOT_SCROLLBARS("Hide Plot Scrollbars");
+
+
 
 BEGIN_EVENT_TABLE(CMDIFrame,CMDIFrameSuper)
 EVT_MENU(wxID_CLOSE,  CMDIFrame::OnDoClose)

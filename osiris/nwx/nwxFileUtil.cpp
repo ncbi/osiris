@@ -247,6 +247,30 @@ wxString nwxFileUtil::TextToFileName(const wxString &sName, size_t MAXLEN)
   }
   return sDirName;
 }
+wxString nwxFileUtil::FindNewFileName(const wxString &sFullPath)
+{
+  // for the given file name specified by sFullPath
+  // if the file exists, find a similar file name
+  // for a non existant file
+  //
+  //  chop extension, append with _ followed by an integer, append extension
+  //  eg. if /foo/bar/xyz.png exists, try /foo/bar/xyz_1.png and increment
+  //    the integer until it does not name an existing file
+  wxFileName fn(sFullPath);
+  if (!fn.Exists())
+  {
+    // quick exit
+    return sFullPath;
+  }
+  wxString sNameBase = fn.GetName();
+  int n = 0;
+  while(fn.Exists())
+  {
+    fn.SetName(sNameBase + wxString::Format(wxT("_%d"), n));
+    ++n;
+  }
+  return fn.GetFullPath();
+}
 wxString nwxFileUtil::FindNewDirName(const wxString &sPath)
 {
   // given a desired directory name

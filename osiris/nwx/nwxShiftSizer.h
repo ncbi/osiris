@@ -33,6 +33,7 @@
 #include <wx/sizer.h>
 #include <wx/timer.h>
 #include <wx/event.h>
+#include "nwx/nwxTimerReceiver.h"
 
 class wxScrolledWindow;
 class wxStaticBitmap;
@@ -47,31 +48,35 @@ public:
   virtual bool CanShiftRight() = 0;
 };
 
-class nwxShiftSizer : public wxBoxSizer
+class nwxShiftSizer : public wxBoxSizer, nwxTimerReceiver
 {
 public:
   nwxShiftSizer(
     wxScrolledWindow *pPeerWindow,
     InwxShiftReceiver *pReceiver,
-    int nBorder = 0,
-    int nWaitInterval = 333,
-    bool bUseExternalTimer = false);
+    int nBorder = 0
+    ,int nWaitInterval = 250
+    //,bool bUseExternalTimer = false // EXT TIMER
+    );
 
   virtual ~nwxShiftSizer();
   void SetInterval(int n);
   void BeginShift(wxStaticBitmap *p);
   void EndShift();
-  void OnTimer(wxTimerEvent &e);
+  virtual void OnTimer(wxTimerEvent &e);
   void UpdateSize();
   bool Show(bool bShow = true);
   void Hide()
   {
     Show(false);
   }
+  /*
+   // EXT TIMER
   bool UseExternalTimer()
   {
     return m_bUseExternalTimer;
   }
+  */
 private:
   void _SetupLayout(bool bShow = true);
   bool _ShowButtons(bool bShow);
@@ -80,7 +85,7 @@ private:
   InwxShiftReceiver *m_pReceiver;
   wxStaticBitmap *m_pButtonLeft;
   wxStaticBitmap *m_pButtonRight;
-  wxTimer *m_pTimer;
+  //wxTimer *m_pTimer; // EXT TIMER
   wxScrolledWindow *m_pPeerWindow;
 
   wxStaticBitmap *m_pCurrent;
@@ -90,7 +95,8 @@ private:
 
   int m_nWaitInterval;
   int m_nBorder;
-  bool m_bUseExternalTimer;
+  //bool m_bUseExternalTimer;  // EXT TIMER
+  bool m_bIgnoreTimer;
 
 };
 

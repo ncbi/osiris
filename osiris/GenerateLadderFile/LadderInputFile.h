@@ -97,6 +97,8 @@ public:
 
 	int GetFsaChannelForKitChannel (int i) { return mChannelMap [i]; }
 
+	RGString GetAcceptedOLAlleles () const { return mAcceptedOLAlleles; }
+
 	void ResetInputLines ();
 	RGString* GetNextInputLine ();
 	bool LocusNeedsRelativeHeightInfo (const RGString& locus);
@@ -171,6 +173,8 @@ protected:
 	RGString mDefaultVolumePath;
 	RGString mVersion;
 	bool mGenerateILSFamilies;
+
+	RGString mAcceptedOLAlleles;
 
 	void RemoveLeadingAndTrailingBlanks (RGString& string);
 	void SetEmbeddedSlashesToForward (RGString& string);

@@ -390,6 +390,9 @@ public:
     m_sInputType.Empty();
     m_bSetupInputPath = false;
     m_nLadderFree = LADDER_FREE_NOT_SET;
+    m_vpTable.Init();
+    m_pvOldNotes.Init();
+    m_messages.Init();
     _ClearLocusInfo();
     _ClearMessageBook();
   }
@@ -398,17 +401,7 @@ public:
     LocalInit();
     nwxXmlPersist::Init();
   }
-  virtual void Init(void *p)
-  {
-    if((p != NULL) && (p != this))
-    {
-      ((COARfile *)p)->Init();
-    }
-    else
-    {
-      Init();
-    }
-  }
+  XML_INIT(COARfile)
   CXMLmessageBook *GetMessageBook();
 
   const COARmessage *GetMessageByNumber(int n, const wxDateTime *pTime) const

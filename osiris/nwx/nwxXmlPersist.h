@@ -946,10 +946,12 @@ public:
   nwxXmlContainer() : m_pPersistText(NULL)
   {
     m_nInitRecursion = 0;
+    m_bNoInit = false;
   }
   nwxXmlContainer(const nwxXmlContainer &x)  : m_pPersistText(NULL)
   {
     m_nInitRecursion = 0;
+    m_bNoInit = false;
     (*this) = x; // operator doesn't copy anything
   }
   virtual ~nwxXmlContainer()
@@ -1039,8 +1041,17 @@ public:
 #endif
     return nCount;
   }
+  void SetNoInit(bool b = true)
+  {
+    m_bNoInit = b;
+  }
+  bool GetNoInit()
+  {
+    return m_bNoInit;
+  }
 private:
   int m_nInitRecursion;
+  bool m_bNoInit;
   mapPERSIST m_map;
   mapPERSISTstr m_mapAttr;
   vector<PERSIST *> m_list;
@@ -1114,6 +1125,14 @@ public:
   virtual nwxXmlNodeList *CreateNodeList(const wxString &sNodeName);
   virtual bool LoadFromNode(wxXmlNode *, void *pObj);
   virtual bool LoadFromNode(wxXmlNode *);
+  void SetNoInit(bool b = true)
+  {
+    m_xml.SetNoInit(b);
+  }
+  bool GetNoInit()
+  {
+    return m_xml.GetNoInit();
+  }
   void SetReadOnly(bool bReadOnly)
   {
     m_bReadOnly = bReadOnly;
@@ -1585,5 +1604,11 @@ private:
   bool m_bReadOnly;
 };
 
+
+#define XML_INIT(T) \
+virtual void Init(void *p) \
+{  if ((p != NULL) && (p != this))  { ((T *)p)->Init(); } \
+  else  { Init();  } \
+}
 
 #endif

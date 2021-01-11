@@ -32,12 +32,22 @@
 
 #ifdef WIN32
 #define OSIRIS_OS "Windows"
+
 #else
+
 #ifdef Darwin
 #define OSIRIS_OS "Macintosh"
+
+#else
+
+#ifdef Linux
+#define OSIRIS_OS "Linux"
+
 #endif
 #endif
-#define OSIRIS_VERS_BASE "2.13.1"
+#endif
+
+#define OSIRIS_VERS_BASE "2.15"
 #define OSIRIS_VERS OSIRIS_VERS_BASE
 #define OSIRIS_VERS_SEARCH_OS " for "
 #define OSIRIS_VERSION OSIRIS_VERS OSIRIS_VERS_SEARCH_OS OSIRIS_OS

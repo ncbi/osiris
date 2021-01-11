@@ -53,6 +53,7 @@ use strict 'vars';
 #
 #  [3] register (XML tag) name, optional, can be generated from [0]
 #  [4] IO type for register, optional, can be generated from [1]
+#  [5] if 'true' send a ping when the value is changed
 #
 #  if only one item, then it is a comment
 #
@@ -73,6 +74,7 @@ my $VARLIST =
   ["m_nMinLadderInterlocusRFU", "int", "-1", "minRFUladderInterlocus"],
   ["m_nSampleDetectionThreshold", "int", "-1", "minRFUsampleDetection"],
   ["m_sAnalysisOverride","wxString"],
+  ["m_nAnalysisSplitPos", "int"],
   
   ##  this is awful - putting channel RFU and Detection in arrays
   
@@ -100,6 +102,8 @@ my $VARLIST =
 
   ["m_nShowAlerts","int","-1",undef,"m_ioInt_1"],
   ["m_bShowPreview", "bool true"],
+  ["m_bHidePreviewToolbar", "bool"],
+  ["m_bHidePreviewScrollbar", "bool"],
   ["m_bHideGraphicToolbar", "bool"],
   ["m_bHideGraphicScrollbar", "bool"],
   ["m_bHideTextToolbar", "bool"],
@@ -126,9 +130,11 @@ my $VARLIST =
   ["m_bPreviewDataBaseline", "bool"],
   ["m_bPreviewShowILS", "bool"],
   ["m_bPreviewShowRFU", "bool"],
+  ["m_bPreviewShowDisabledAlleles", "bool", undef, undef, undef, 1],
+  ["m_bPreviewShowLadderBins", "bool", undef, undef, undef, 1],
   ["m_bPreviewShowLadderLabels", "bool"],
   ["m_bPreviewXBPS", "bool"],
-  ["m_nPreviewShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioUintViewPlotArtifact"],
+  ["m_nPreviewShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()","PreviewArtifact","m_ioIntViewPlotArtifact"],
 
   ["plot settings"],
 
@@ -140,11 +146,92 @@ my $VARLIST =
   ["m_bPlotShowILS", "bool"],
   ["m_bPlotShowRFU", "bool"],
   ["m_bPlotShowLadderLabels", "bool"],
+  ["m_bPlotShowDisabledAlleles", "bool", undef, undef, undef, 1],
+  ["m_bPlotShowLadderBins", "bool", undef, undef, undef, 1],
   ["m_bPlotResizable", "bool true"],
   ["m_nPlotMinHeight", "int","-1",undef,"m_ioInt_1"],
-  ["m_nPlotShowArtifact", "unsigned int","m_ioUintViewPlotArtifact.GetDefault()",undef,"m_ioUintViewPlotArtifact"],
+  ["m_nPlotShowArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
   ["m_anPlotDisplayPeak", "vector<unsigned int>","1"],
   ["m_nPlotMaxLadderLabels", "int","-1","MaxLadderLabels","m_ioInt_1"],
+
+  ["plot print settings for analysis printout"],
+  
+  # peaks
+
+  ["m_bPrintCurveAnalyzed", "bool true"],
+  ["m_bPrintCurveRaw", "bool"],
+  ["m_bPrintCurveLadder", "bool"],
+  ["m_bPrintCurveLadderLabels", "bool"],
+  ["m_bPrintCurveLadderBins", "bool"],
+  ["m_bPrintCurveDisabledAlleles", "bool"],
+  ["m_bPrintCurveBaseline", "bool"],
+  
+  ["m_bPrintCurveILSvertical", "bool"],
+  ["m_bPrintCurveMinRFU", "bool"],
+
+  # X-Axis
+  ["m_bPrintXaxisILSBPS", "bool"],
+  # true - ILS BPS, false - time
+
+  
+  ["m_nPrintXscale", "int", "0"],
+  # 0 - scale w/o primer peak, 1 - scale to 0, 2 - scale to 0 neg control, 3 - specify
+  ["m_nPrintXscaleMin", "int", "0"],
+  ["m_nPrintXscaleMax", "int", "20000"],
+  ["m_nPrintXscaleMinBPS", "int", "0"],
+  ["m_nPrintXscaleMaxBPS", "int", "600"],
+  ["m_bPrintXscaleRightEnd", "bool"],
+
+  ["m_nPrintYscale", "int", "0"],
+  # 0 - individual channel, 1 - zoom all to tallest channel, 2 - user specified
+  ["m_nPrintYscaleMin", "int", "-200"],
+  ["m_nPrintYscaleMax", "int", "6000"],
+  ["m_nPrintYcaleNegCtrl", "int","0"],
+  # 0 - scale to peaks, 1 - include min RFU, 2 - scale to ILS
+
+  # allele labels
+  ["m_anPrintLabelsPeak", "vector<unsigned int>","1"],
+  
+  # Artifact labels
+  ["m_nPrintArtifact", "int","m_ioIntViewPlotArtifact.GetDefault()",undef,"m_ioIntViewPlotArtifact"],
+
+  # Page Heading
+  ["m_bPrintHeading", "int", "0"],
+  # 0 - File name; 1 - Sample Name
+  ["m_sPrintHeadingNotes", "wxString"],
+  
+  # Channels per page
+  ["m_nPrintChannelsSamples", "int", "8"],
+  ["m_nPrintChannelsLadders", "int", "8"],
+  ["m_nPrintChannelsNegCtrl", "int", "8"],
+  ["m_bPrintChannelsOmitILS", "bool"],
+  
+  # Samples
+  ["m_bPrintSamplesLadders", "bool true"],
+  ["m_bPrintSamplesPosCtrl", "bool true"],
+  ["m_bPrintSamplesNegCtrl", "bool true"],
+  ["m_bPrintSamplesDisabled", "bool"],
+
+  # colors
+  ["m_nPrintColorRed","int","100"],
+  ["m_nPrintColorGreen","int","100"],
+  ["m_nPrintColorBlue","int","100"],
+  ["m_nPrintColorYellow","int","100"],
+  ["m_nPrintColorOrange","int","100"],
+  ["m_nPrintColorPurple","int","100"],
+  ["m_nPrintColorGray","int","100"],
+
+  ["plot printout -- margins are in millimeters"],
+
+  ["m_nPrintPlotMarginTop", "unsigned int", "12"],
+  ["m_nPrintPlotMarginBottom", "unsigned int", "12"],
+  ["m_nPrintPlotMarginLeft", "unsigned int", "12"],
+  ["m_nPrintPlotMarginRight", "unsigned int", "12"],
+  ["m_nPrintPlotPaperType", "int", "-1"],
+  ["m_nPrintPlotPaperWidth", "int", "-1"],
+  ["m_nPrintPlotPaperHeight", "int", "-1"],
+  ["m_bPrintPlotLandscape", "bool"],
+  ["m_nPrintPreviewZoom", "int", "-1"],
 
   ["XSLT saved parameter info"],
 
@@ -243,13 +330,21 @@ sub comment
 sub GenerateCopyOrCompare
 {
   my $EOL = shift; ## empty for compare, semi-colon for copy
+  my $bCompare = shift;
   my $sRtn = "";
+  my $nCount = 0;
+  my $nMax = 20;
   for my $a (@$VARLIST)
   {
     my $s = $a->[0];
     if($#$a > 0)
     {
+      if ( $bCompare && !($nCount % $nMax))
+      {
+        $sRtn .= "\n  if(!bRtn) {}\n";
+      }
       $sRtn .= "  CP(${s})${EOL}\n";
+      ++$nCount;
     }
     else
     {
@@ -275,6 +370,7 @@ sub GenerateRegister
   "bool true" => "RegisterBoolTrue",
   "bool" => "RegisterBool",
   "int" => "RegisterInt",
+  "unsigned int" => "RegisterUint",
   "double" => "RegisterDouble",
   "wxString" => "RegisterWxString",
   "vector<int>" => "RegisterIntVector",
@@ -380,16 +476,17 @@ sub GenerateSet
     }
     else
     {
-      my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable) = @$a;
+      my ($sVarName,$sVarType,$sDefaultValue, $sTagName,$sIOvariable, $bPing) = @$a;
       my $arg = &GetVarType($sVarType);
       my $fnc = "Set" . &chopPrefix($sVarName);
+      my $sPing = $bPing ? ", \"${fnc}\"" : "";
       my $argName = $argNames->{$sVarType};
       $argName || die("Cannot find arg name for ${sVarType}");
 
       $sRtn .= <<EOF;
   void ${fnc}(${arg}${argName})
   {
-    __SET_VALUE(${sVarName},${argName});
+    __SET_VALUE(${sVarName}, ${argName}${sPing});
   }
 EOF
     }
@@ -448,11 +545,30 @@ sub GenFiles
   my $sSets = &GenerateSet;
   my $sDefaults = &GenerateDefaults;
   my $sRegister = &GenerateRegister;
-  my $sCopy = &GenerateCopyOrCompare(";");
-  my $sCompare = &GenerateCopyOrCompare("");
+  my $sCopy = &GenerateCopyOrCompare(";", undef);
+  my $sCompare = &GenerateCopyOrCompare("", true);
   my $sStringHeader = &GenerateStringsHeader;
   my $sStringCPP = &GenerateStringsCPP;
-  my $sCOPY = <<EOF1;
+  my $sCOPY_PING = <<EOF1;
+
+  {
+    if(!(s1 == s2))
+    {
+      s1 = s2;
+      m_bModified = true;
+      if((psPing != NULL) && *psPing)
+      {
+        mainApp::Ping2(
+          PING_EVENT,
+          "SetParameter",
+          psPing,
+          __GET_STRING(s2)
+          );
+      }
+    }
+  }
+EOF1
+  my $sCOPY = <<EOF2;
 
   {
     if(!(s1 == s2))
@@ -461,7 +577,7 @@ sub GenFiles
       m_bModified = true;
     }
   }
-EOF1
+EOF2
   my $fileH = <<EOF;
 /*
 * ===========================================================================
@@ -498,8 +614,9 @@ EOF1
 
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxGlobalObject.h"
+#include "nwx/nwxString.h"
 #include "ConfigDir.h"
-
+#include "mainApp.h"
 
 #include "CParmGridAttributes.h"
 
@@ -604,18 +721,27 @@ ${sGets}
     }
     return sRtn;
   }
+  int GetPrintColorByName(const wxString &sName) const;
   static const wxString NO_INIT;
   // end static/global stuff
 
 private:
 
+  // Parameter to string
+  
+  static const wxString &__GET_STRING(const wxString &s1) { return s1; }
+  static wxString __GET_STRING(double s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(int s1) { return nwxString::FormatNumber(s1); }
+  static wxString __GET_STRING(unsigned int s1) { return nwxString::FormatNumber(s1); }
+  static const char *__GET_STRING(bool s1) { return s1 ? "true" : "false"; }
+
   // SET VALUES
 
-  void __SET_VALUE(wxString &s1, const wxString &s2)${sCOPY}
-  void __SET_VALUE(double &s1, double s2)${sCOPY}
-  void __SET_VALUE(bool &s1, bool s2)${sCOPY}
-  void __SET_VALUE(int &s1, int s2)${sCOPY}
-  void __SET_VALUE(unsigned int &s1, unsigned int s2)${sCOPY}
+  void __SET_VALUE(wxString &s1, const wxString &s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(double &s1, double s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(bool &s1, bool s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(int &s1, int s2, const char *psPing = NULL)${sCOPY_PING}
+  void __SET_VALUE(unsigned int &s1, unsigned int s2, const char *psPing = NULL)${sCOPY_PING}
   void __SET_VALUE(vector<int> &s1, const vector<int> &s2)${sCOPY}
   void __SET_VALUE(vector<unsigned int> &s1, const vector<unsigned int> &s2)${sCOPY}
 
@@ -770,7 +896,7 @@ ${sVars}
   bool m_bAutoSave;
   nwxXmlIOwxString m_ioBatchFormat;
   nwxXmlIOwxString m_ioDefaultSample;
-  nwxXmlIOuint m_ioUintViewPlotArtifact;
+  nwxXmlIOint m_ioIntViewPlotArtifact;
   nwxXmlIOuint m_ioUint1;
   nwxXmlIOint m_ioInt_1; // default to -1
 public:
@@ -882,6 +1008,7 @@ EOF
 #include "CParmOsiris.h"
 #include "CLabSettings.h"
 #include "CVolumes.h"
+#include "wxIDS.h"
 #include "nwx/nwxFileUtil.h"
 #include <wx/filename.h>
 #include <wx/utils.h>
@@ -892,6 +1019,8 @@ const wxString CParmOsiris::NO_INIT(wxS(":"));
 
 void CParmOsiris::_Init()
 {
+  SetNoInit(true);
+  SetDefaults();
   if(m_sFileName.IsEmpty())
   {
     m_sFileName = mainApp::GetConfig()->GetConfigPath();
@@ -900,7 +1029,9 @@ void CParmOsiris::_Init()
   m_bModified = false;
   m_bAutoSave = false;
   RegisterAll(true);
-  if(!(  wxFileName::FileExists(m_sFileName) && Load()  ))
+  if(!wxFileName::FileExists(m_sFileName))
+  {}
+  else if(!Load())
   {
     SetDefaults();
   }
@@ -931,17 +1062,14 @@ bool CParmOsiris::IsEqual(const CParmOsiris &x) const
 {
 #define CP(elem) else if(!(elem == x.elem)) { bRtn = false; }
   bool bRtn = true;
-  if(0) {}
   // begin generated compare
 
 ${sCompare}
 
   // end generated compare
-
-
   CP(m_gridAttr)
-//  CP(m_bModified)
-//  CP(m_bAutoSave)
+
+
 
 #undef CP
   return bRtn;
@@ -955,7 +1083,7 @@ void CParmOsiris::RegisterAll(bool bInConstructor)
     m_ioDefaultSample.SetDefault(
       CLabNameStrings::DEFAULT_SPECIMEN_CATEGORY);
     m_ioBatchFormat.SetDefault(DEFAULT_BATCH_FORMAT);
-    m_ioUintViewPlotArtifact.SetDefault(15);
+    m_ioIntViewPlotArtifact.SetDefault(ARTIFACT_CRITICAL);
     m_ioUint1.SetDefault(1);
     m_ioInt_1.SetDefault(-1);
   }
@@ -1014,6 +1142,26 @@ bool CParmOsiris::Save()
     m_bModified = false;
   }
   return bRtn;
+}
+
+int CParmOsiris::GetPrintColorByName(const wxString &sName) const
+{
+  // return the printing color intensity (1-100) for printing
+  // color specified by sName
+  wxString s(sName);
+  s.MakeUpper();
+  int nRtn = 100; // if color not found, default is 100%
+  
+ #define _CHECK(name, fnc)  if(s == wxT(name)) nRtn = fnc()  
+  _CHECK("RED", GetPrintColorRed);
+  else _CHECK("GREEN", GetPrintColorGreen);
+  else _CHECK("BLUE", GetPrintColorBlue);
+  else _CHECK("YELLOW", GetPrintColorYellow);
+  else _CHECK("ORANGE", GetPrintColorOrange);
+  else _CHECK("PURPLE", GetPrintColorPurple);
+#undef _CHECK
+
+  return nRtn;
 }
 
 ${sStringCPP}

@@ -87,7 +87,13 @@ public:
   }
   virtual ~COARmsgExportProtocol()
   {
-    vectorptr<COARmsgTextLoc>::cleanup(&m_vpExportProtocolType);
+    _Cleanup();
+  }
+  XML_INIT(COARmsgExportProtocol)
+  virtual void Init()
+  {
+    _Cleanup();
+    nwxXmlPersist::Init();
   }
   const wxString &GetGroup() const
   {
@@ -95,6 +101,7 @@ public:
   }
   COARmsgExportProtocol &operator = (const COARmsgExportProtocol &x)
   {
+    _Cleanup();
     COARcopy(m_sProtocolName);
     COARcopy(m_sLevel);
     COARcopy(m_sGroup);
@@ -127,6 +134,10 @@ public:
     return !((*this) == x);
   }
 private:
+  void _Cleanup()
+  {
+    vectorptr<COARmsgTextLoc>::cleanup(&m_vpExportProtocolType);
+  }
   TnwxXmlIOPersistVector<COARmsgTextLoc> m_ioType;
   vector<COARmsgTextLoc *> m_vpExportProtocolType;
   wxString m_sProtocolName;
@@ -162,8 +173,25 @@ public:
   }
   virtual ~COARmsgExport()
   {
-    vectorptr<COARmsgExportProtocol>::cleanup(&m_vpExportProtocol);
+    _Cleanup();
   }
+  virtual void Init()
+  {
+    _Cleanup();
+    nwxXmlPersist::Init();
+  }
+  virtual void Init(void *p)
+  {
+    if ((p != NULL) && (p != this))
+    {
+      ((COARmsgExport *)p)->Init();
+    }
+    else
+    {
+      Init();
+    }
+  }
+
   COARmsgExport operator = (const COARmsgExport &x)
   {
     m_sMsgName = x.m_sMsgName;
@@ -205,6 +233,10 @@ private:
   wxString m_sMsgName;
   TnwxXmlIOPersistVector<COARmsgExportProtocol> m_ioProtocol;
   vector<COARmsgExportProtocol *> m_vpExportProtocol;
+  void _Cleanup()
+  {
+    vectorptr<COARmsgExportProtocol>::cleanup(&m_vpExportProtocol);
+  }
 protected:
   virtual void RegisterAll(bool = false)
   {

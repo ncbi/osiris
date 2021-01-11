@@ -205,7 +205,10 @@ public:
     void OnChar( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );
     void OnKeyUp( wxKeyEvent &event );
-
+#ifdef __WXMSW__
+    // OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+#endif
     wxRect   m_mouseRect; // mouse drag rectangle, or 0,0,0,0 when not dragging
     wxPoint  m_mousePt;   // last mouse position
     wxBitmap m_bitmap;
@@ -245,6 +248,10 @@ public:
     void OnPaint( wxPaintEvent &event );
     void OnMouse( wxMouseEvent &event );
     void OnChar( wxKeyEvent &event );
+#ifdef __WXMSW__
+    // OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+#endif
 
     wxPoint m_mousePt;  // last mouse position
     wxPlotCtrlAxis_Type m_style;
@@ -257,6 +264,8 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
+
+
 //-----------------------------------------------------------------------------
 // wxPlotCtrl - window to display wxPlotCurves, public interface
 //
@@ -265,6 +274,8 @@ private:
 //    the default size of the plot is correct, see wxPlotCurve::GetBoundingRect
 //
 //-----------------------------------------------------------------------------
+
+class wxPlotCtrlBackup;
 
 class WXDLLIMPEXP_PLOTCTRL wxPlotCtrl : public wxWindow
 {
@@ -635,13 +646,24 @@ public:
     void     SetKeyFont( const wxFont &font );
     void     SetKeyColour( const wxColour & colour );
 
+    static bool IsPrintingDPI(double dDPI)
+    {
+      return (dDPI >= 150);
+    }
+    static double GetFontScale(double dDPI, bool bForcePrinting)
+    {
+      bool b = bForcePrinting || IsPrintingDPI(dDPI);
+      double dScale = dDPI / (b ? 144.0 : 72.0);
+      return dScale;
+    }
+
     // ------------------------------------------------------------------------
     // Title, axis labels, and key values and visibility
     // ------------------------------------------------------------------------
 
     // Get/Set showing x and/or y axes
-    void SetShowXAxis(bool show) { m_show_xAxis = show; DoSize(); }
-    void SetShowYAxis(bool show) { m_show_yAxis = show; DoSize(); }
+    void SetShowXAxis(bool show) { m_show_xAxis = show; _DoSize(); }
+    void SetShowYAxis(bool show) { m_show_yAxis = show; _DoSize(); }
     bool GetShowXAxis() { return m_show_xAxis; }
     bool GetShowYAxis() { return m_show_yAxis; }
 
@@ -652,14 +674,64 @@ public:
     void SetYAxisLabel(const wxString &label);
     bool GetShowXAxisLabel() const { return m_show_xlabel; }
     bool GetShowYAxisLabel() const { return m_show_ylabel; }
-    void SetShowXAxisLabel( bool show ) { m_show_xlabel = show; DoSize(); }
-    void SetShowYAxisLabel( bool show ) { m_show_ylabel = show; DoSize(); }
+    void SetShowXAxisLabel( bool show ) { m_show_xlabel = show; _DoSize(); }
+    void SetShowYAxisLabel( bool show ) { m_show_ylabel = show; _DoSize(); }
 
     // Get/Set and show/hide the title
     const wxString& GetPlotTitle() const { return m_title; }
     void SetPlotTitle(const wxString &title);
     bool GetShowPlotTitle() const { return m_show_title; }
-    void SetShowPlotTitle( bool show ) { m_show_title = show; DoSize(); }
+    void SetShowPlotTitle( bool show ) { m_show_title = show; _DoSize(); }
+
+    // Get/Set YAxis Width in # of digits
+    void ResetYAxisTextWidth()
+    {
+      // when changing the default width, this
+      // needs to be called in order to 
+      m_y_axis_text_width = 0;
+    }
+    static int GetYAxisDefaultDigits()
+    {
+      return g_nYAxisDefaultDigits;
+    }
+    static bool SetYAxisDefaultDigits(int n)
+    {
+      bool bOK = !((n > MAX_Y_DEFAULT_DIGITS) || (n < MIN_Y_DEFAULT_DIGITS));
+      if (bOK)
+      {
+        g_nYAxisDefaultDigits = n;
+      }
+      return bOK;
+    }
+    int GetYAxisDigits() const
+    {
+      return m_nYAxisDigits > 0 ? m_nYAxisDigits : GetYAxisDefaultDigits();
+    }
+    void SetYAxisDigits(int n)
+    {
+      if (n > MAX_Y_DEFAULT_DIGITS)
+      {
+        n = MAX_Y_DEFAULT_DIGITS;
+      }
+      else if (n > 0 && n < MIN_Y_DEFAULT_DIGITS)
+      {
+        n = MIN_Y_DEFAULT_DIGITS;
+      }
+      else if (n < 0)
+      {
+        n = 0;
+      }
+      int nPrev = GetYAxisDefaultDigits();
+      m_nYAxisDigits = n;
+      if (nPrev != n)
+      {
+        ResetYAxisTextWidth();
+      }
+    }
+    const wxRect &GetAreaRect() const
+    {
+      return m_areaRect;
+    }
 
     // Show a key with the function/data names, pos is %width and %height (0-100)
     const wxString& GetKeyString() const { return m_keyString; }
@@ -709,7 +781,10 @@ public:
     void OnIdle( wxIdleEvent &event );
     void OnMouse( wxMouseEvent &event );
     void OnTextEnter( wxCommandEvent &event );
-
+#ifdef __WXMSW__
+    // OS-1473 - assertion for not handling wxMouseCaptureLostEvent event on Windows
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+#endif
     // ------------------------------------------------------------------------
     // Drawing functions
     // ------------------------------------------------------------------------
@@ -758,11 +833,15 @@ public:
     virtual void DrawXAxis( wxDC *dc, bool refresh );
     virtual void DrawYAxis( wxDC *dc, bool refresh );
 
+    virtual bool RenderScrollbars();
     // Draw the plot axes and plotctrl on this wxDC for printing, sort of WYSIWYG
     //   the plot is drawn to fit inside the boundingRect (i.e. the margins)
     //
     //  DJH 2/29/2009 - added bAutoCalcTicks = false
-    void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false );
+    int DrawXAxisLabel(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont, bool bBottom = false);
+    wxSize GetXAxisLabelSize(wxDC *dc, const wxRect &boundingRect, double dpi, bool bForcePrintFont);
+    void DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi = 72, bool bAutoCalcTicks = false, bool bForcePrintFont = false );
+    int GetTextHeight(const wxString &s, wxDC *dc, const wxRect &boundingRect, double dpi, bool bForecePrintFont);
 
     // ------------------------------------------------------------------------
     // Axis tick calculations
@@ -859,8 +938,22 @@ public:
     void SetCaptureWindow( wxWindow *win );
     wxWindow *GetCaptureWindow() const { return m_winCapture; }
 
+    void BackupSettings(wxPlotCtrlBackup *pBackup);
+    void RestoreSettings(wxPlotCtrlBackup *pBackup);
+  void DrawInit(
+    const wxRect &boundingRect,
+    double dpi,
+    bool bForcePrintFont);
+  void RefreshOnEndBatch()
+  {
+    if (GetBatchCount() && IsShown())
+    {
+      m_do_size_on_end_batch = true;
+    }
+  }
 protected:
-    void OnSize( wxSizeEvent& event );
+  virtual void OnSizeCallback(wxSizeEvent&);
+  void OnSize( wxSizeEvent& event );
 
     wxArrayPlotCurve  m_curves;         // all the curves
     wxPlotCurve*      m_activeCurve;    // currently active curve
@@ -901,6 +994,7 @@ protected:
     bool m_fit_on_new_curve;
     bool m_show_xAxis;
     bool m_show_yAxis;
+    bool m_do_size_on_end_batch;
 
     // rects of the positions of each window - remember for DrawPlotCtrl
     wxRect m_xAxisRect, m_yAxisRect, m_areaRect, m_clientRect;
@@ -970,12 +1064,84 @@ protected:
     void SetPlotWinMouseCursor(wxStockCursor cursorid);
     // DJH 9/3/15 changed parameter from int to wxStockCursor
     int m_mouse_cursorid;
+    static const wxChar * const YAxisExtentString;
+    static int g_nYAxisDefaultDigits;
+    static const int MAX_Y_DEFAULT_DIGITS;
+    static const int MIN_Y_DEFAULT_DIGITS;
+    int m_nYAxisDigits;
+    const wxChar *_GetYAxisExtentStr() const;
+
+    int _GetYAxisTextWidth();
+    static wxString _FormatTickLabel(const wxString &sFormat, double d);
 
 private:
     void Init();
+    void _DoSize()
+    {
+      if (GetBatchCount())
+      {
+        m_do_size_on_end_batch = true;
+      }
+      else
+      {
+        DoSize();
+      }
+    }
     DECLARE_ABSTRACT_CLASS(wxPlotCtrl)
     DECLARE_EVENT_TABLE()
 };
+
+//-----------------------------------------------------------------------------
+// wxPlotCtrlBackup
+//
+// notes:
+//    back up plot paraeters when creating a bitmap
+//
+//-----------------------------------------------------------------------------
+
+
+class wxPlotCtrlBackup
+{
+public:
+  wxPlotCtrlBackup(wxPlotCtrl *pPlot) :
+    m_pPlot(pPlot)
+  {
+    pPlot->BackupSettings(this);
+  }
+  virtual ~wxPlotCtrlBackup()
+  {
+    Restore();
+  }
+  void Restore()
+  {
+    // might want to restore before destroying
+    if (m_pPlot != NULL)
+    {
+      m_pPlot->RestoreSettings(this);
+      m_pPlot = NULL;
+    }
+  }
+  wxFont oldAxisFont;
+  wxFont oldAxisLabelFont;
+  wxFont oldPlotTitleFont;
+  wxFont oldKeyFont;
+
+  wxColour oldGridColour;
+  wxPoint2DDouble old_zoom;
+  wxRect2DDouble  old_view;
+  wxRect old_areaClientRect;
+
+  double oldCurveDrawerScale;
+  double oldDataCurveDrawerScale;
+  double oldMarkerDrawerScale;
+
+  int old_area_border_width;
+  int old_border;
+  int old_cursor_size;
+
+  wxPlotCtrl *m_pPlot;
+};
+
 
 //-----------------------------------------------------------------------------
 // wxPlotCtrlEvent
@@ -988,15 +1154,22 @@ public:
                     wxWindowID id = wxID_ANY,
                     wxPlotCtrl *window = NULL);
 
-    wxPlotCtrlEvent(const wxPlotCtrlEvent &event) : wxNotifyEvent(event),
-        m_curve(event.m_curve), m_curve_index(event.m_curve_index),
-        m_curve_dataindex(event.m_curve_dataindex),
-        m_mouse_func(event.m_mouse_func), m_x(event.m_x), m_y(event.m_y) {}
-
+    wxPlotCtrlEvent(const wxPlotCtrlEvent &event) : wxNotifyEvent(event)
+    {
+      CopyFrom(event, true);
+    }
+    wxPlotCtrlEvent &operator=(const wxPlotCtrlEvent &e)
+    {
+      CopyFrom(e, false);
+      return *this;
+    }
     // position of the mouse cursor, double click, single point selection or 1st selected point
     double GetX() const { return m_x; }
     double GetY() const { return m_y; }
+    double GetWidth() const { return m_width; }
+    double GetHeight() const { return m_height; }
     void SetPosition( double x, double y ) { m_x = x; m_y = y; }
+    void SetSize(double w, double h) { m_width = w; m_height = h; }
 
     int GetCurveDataIndex() const { return m_curve_dataindex; }
     void SetCurveDataIndex(int data_index) { m_curve_dataindex = data_index; }
@@ -1019,12 +1192,28 @@ public:
 
 protected:
     virtual wxEvent *Clone() const { return new wxPlotCtrlEvent(*this); }
-
+    virtual void CopyFrom(const wxPlotCtrlEvent &event, bool bCopyWindow = false)
+    {
+#define __TMP_COPY(x) x = event.x
+      __TMP_COPY(m_curve);
+      __TMP_COPY(m_curve_index);
+      __TMP_COPY(m_curve_dataindex);
+      __TMP_COPY(m_mouse_func);
+      __TMP_COPY(m_x);
+      __TMP_COPY(m_y);
+      __TMP_COPY(m_width);
+      __TMP_COPY(m_height);
+#undef __TMP_COPY
+      if (bCopyWindow)
+      {
+        SetEventObject(event.GetEventObject());
+      }
+    }
     wxPlotCurve *m_curve;
     int m_curve_index;
     int m_curve_dataindex;
     int m_mouse_func;
-    double m_x, m_y;
+    double m_x, m_y, m_width, m_height;
 
 private:
     DECLARE_ABSTRACT_CLASS(wxPlotCtrlEvent);

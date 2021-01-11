@@ -52,7 +52,6 @@ CMenuSample::CMenuSample() : wxMenu()
   Append(IDSampleAccept,"Accept &Alerts\tAlt+A");
   Append(IDSampleApprove,"&Review Alerts\tAlt+R");
   Append(IDSampleApply,"A&pply\tAlt+P");
-  Append(IDSampleApplyAll,"A&pply All\tAlt+Shift+P");
 };
 
 void CMenuSample::SetSampleEnabled(bool bEnabled)
@@ -114,10 +113,6 @@ CToolbarSample::CToolbarSample(CMDIFrame *m_pFrame, wxWindow *parent) :
   wxButton *pButtonAccept = _CreateButton(IDSampleAccept,wxT("Accept"));
   wxButton *pButtonReview = _CreateButton(IDSampleApprove,wxT("Review"));
   wxButton *pButtonApply = _CreateButton(IDSampleApply,wxT("Apply"));
-  pButtonApply->SetToolTip(wxString(wxT(
-    "Hold down the shift key to apply\nall changes for this sample"
-    )));
-
   wxBoxSizer *pSizer = new wxWrapSizer(wxHORIZONTAL);
   pSizer->Add(pButtonGraph,0,FLAG,ID_BORDER);
   pSizer->Add(pButtonTable,0,FLAG,ID_BORDER);
@@ -132,10 +127,6 @@ CToolbarSample::CToolbarSample(CMDIFrame *m_pFrame, wxWindow *parent) :
 }
 void CToolbarSample::OnButton(wxCommandEvent &e)
 {
-  if( (e.GetId() == IDSampleApply) && nwxKeyState::Shift())
-  {
-    e.SetId(IDSampleApplyAll);
-  }
   m_pParent->MenuEvent(e);
 }
 const wxChar * const CToolbarSample::DISABLE(wxT("Disable"));

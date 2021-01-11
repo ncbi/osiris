@@ -274,10 +274,10 @@ void COARsample::_AddAllelesToMap(
   for(i = 0; i < n; i++)
   {
     pAllele = va.at(i);
-/////    if(!pAllele->IsDisabled()) 
-// removed if() because disabled alleles are needed 
+// Not checking if disabled because disabled alleles are needed 
 // in history and editing grids and are harmless in the plot
 // because they are ignored in plot -- 5/4/09, discard later
+// update: 9/1/2020 user may choose to display disabled alleles
 
     {
       nID = pAllele->GetID();
@@ -897,6 +897,14 @@ const COARlocus *COARsample::_FindLocus(const wxString &sName) const
   if(itr != m_spLocus.end()) { pRtn = *itr; }
   return pRtn;
 }
+const wxString &COARsample::GetPlotFileName() const
+{
+  if (m_sPlotFileName.IsEmpty() || !wxFileName::IsFileReadable(m_sPlotFileName))
+  {
+    m_sPlotFileName = m_pFile->FindPlotFile(this);
+  }
+  return m_sPlotFileName;
+}
 
 void COARsample::PostProcessFile(COARfile *pFile)
 {
@@ -1115,6 +1123,14 @@ int COARsample::GetChannelNrFromLocus(const COARlocus *pLocus) const
 {
   int nRtn = GetChannelNrFromLocus(pLocus->GetName());
   return nRtn;
+}
+void COARsample::GetOriginalAlleleIDs(std::set<int> *psetIDs) const
+{
+  vector<COARlocus *>::const_iterator itr;
+  for (itr = m_vpLocus.begin(); itr != m_vpLocus.end(); ++itr)
+  {
+    (*itr)->GetOriginalAlleleIDs(psetIDs);
+  }
 }
 
 void COARsample::SetIsModified(bool b)

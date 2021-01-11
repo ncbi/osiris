@@ -82,6 +82,12 @@ public:
       ps1->Append(s2);
     }
   }
+  static size_t CountSubstring(const wxString &sString, const wxString &sSearch)
+  {
+    // copy because Replace cannot be called on const
+    size_t n = wxString(sString).Replace(sSearch, sSearch, true);
+    return n;
+  }
   static size_t SplitLines(const char *ps, vector<wxString> *pvs, bool bClearEmpty = false, bool bTrim = false)
   {
     wxString s(ps);
@@ -155,6 +161,7 @@ public:
     }
     return s;
   }
+  static void NormalizeSpace(wxString *ps);
   static void Trim(wxString *ps)
   {
     ps->Trim(true);

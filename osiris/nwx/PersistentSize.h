@@ -45,7 +45,6 @@
 public: \
   void OnPersistResize(wxSizeEvent &e);
 
-
 #define DECLARE_PERSISTENT_SIZE_OPTIONAL \
 private: \
   bool m_bPERSIST_SIZE; \
@@ -142,10 +141,16 @@ void className::OnPersistMove(wxMoveEvent &e) \
   IMPLEMENT_PERSISTENT_SIZE_OPTIONAL(className) \
   IMPLEMENT_PERSISTENT_POSITION_OPTIONAL(className)
 
+// call 'PersistentSize' event functions from user defined event functions
+#define CALL_PERSIST_RESIZE(e) OnPersistResize(e)
+#define CALL_PERSIST_MOVE(e) OnPersistMove(e)
+
+
 
 #define GET_PERSISTENT_SIZE(className) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ) )
 #define GET_PERSISTENT_SIZE_DEFAULT(className, szDefault) nwxXmlWindowSizes::GetWindowSizeGlobal( wxString( #className ), szDefault)
 #define GET_PERSISTENT_POSITION(className) nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ) )
+#define GET_PERSISTENT_POSITION_DEFAULT(className, ptDefault) nwxXmlWindowSizes::GetWindowPosGlobal( wxString( #className ), true, ptDefault )
 
 #define GET_PERSISTENT_POSITION_SIZE(className) \
   GET_PERSISTENT_POSITION(className), \

@@ -263,3 +263,17 @@ bool CKitColors::_Load()
   }
   return bRtn;
 }
+
+const wxColour &CKitColors::GetColorByName(const wxString &sName, DATA_TYPE n) const
+{
+  const CKitColorDye *pDye = 
+    (m_pKitColors2 == NULL) ? NULL : m_pKitColors2->GetColorByName(sName.Upper());
+  const wxColor &Rtn = 
+    (pDye != NULL) ? pDye->GetColor(n) : g_BLACK;
+  return Rtn;
+}
+
+const wxString &CKitColors::GetColorName(const wxColour &c) const
+{
+  return m_pKitColors2->GetColorName(c);
+}

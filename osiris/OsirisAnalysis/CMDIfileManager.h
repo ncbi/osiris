@@ -43,6 +43,8 @@
 #include "CMDIFrame.h"
 class COARfile;
 class CFrameAnalysis;
+class COARsample;
+class CFramePlot;
 
 typedef map<CMDIFrame *, COARfile *> CMDI_WF; // window to file
 typedef map<COARfile *, set<CMDIFrame *> > CMDI_FW; // file to windows
@@ -64,6 +66,7 @@ public:
     {;}
   virtual ~CMDIfileManager();
   CMDIFrame *FindWindowByName(const wxString &sPath, bool bRaise);
+  CFramePlot *FindPlotWindowBySample(COARsample *pSample);
   int RunningFrameCount();
   bool CloseAll();
   int EditedFiles();

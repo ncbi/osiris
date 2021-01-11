@@ -37,9 +37,9 @@
 
 
 
-const int CArtifactDisplayList::nArtifactLabelAll = 20;
-const int CArtifactDisplayList::nArtifactLabelNone = -1;
-const int CArtifactDisplayList::nArtifactLabelCritical = MIN_CRITICAL_ARTIFACT;
+const int CArtifactDisplayList::nArtifactLabelAll = ARTIFACT_ALL;
+const int CArtifactDisplayList::nArtifactLabelNone = ARTIFACT_NONE;
+const int CArtifactDisplayList::nArtifactLabelCritical = ARTIFACT_CRITICAL;
 
 const int CArtifactDisplayList::DEFAULT_NDX = 2;
     // array index of 'critical' in the arrays
@@ -133,6 +133,8 @@ void CPlotController::CopySettings(CPlotController &w)
   ShowILS(w.ILSValue());
   ShowMinRfu(w.MinRfuValue());
   ShowLadderLabels(w.LadderLabels());
+  ShowLadderBins(w.LadderBins());
+  ShowDisabledAlleles(w.DisabledAlleles());
   SetXBPS(w.XBPSValue());
 
   // append, delete
@@ -158,6 +160,8 @@ void CPlotController::ResetDefaults()
   ShowILS(false);
   ShowMinRfu(false);
   ShowLadderLabels(false);
+  ShowLadderBins(false);
+  ShowDisabledAlleles(false);
   SetXBPS(false);
 
   SetArtifactValue(CArtifactDisplayList::nArtifactLabelCritical);

@@ -49,6 +49,8 @@
 #include "STRSmartNotices.h"
 #include "DirectoryManager.h"
 #include "LeastMedianOfSquares.h"
+#include "STRLCAnalysis.h"
+#include "ModPairs.h"
 
 
 Boolean CoreBioComponent::SearchByName = TRUE;
@@ -69,6 +71,11 @@ RGString* CoreBioComponent::DyeNames = NULL;
 RGTextOutput* CoreBioComponent::HeightFile = NULL;
 RGTextOutput* CoreBioComponent::NonLaserOffScalePUCoefficients = NULL;
 RGTextOutput* CoreBioComponent::pullUpMatrixFile = NULL;
+int CoreBioComponent::CurrentAnalysisStage = 1;
+bool CoreBioComponent::CrashMode = false;
+int CoreBioComponent::CrashCount = 0;
+list<int> CoreBioComponent::NoDataChannels;
+int CoreBioComponent::CrashCode = 0;
 
 
 
@@ -160,7 +167,7 @@ bool PullupPair :: IsRawDataPullup () const {
 
 CoreBioComponent :: CoreBioComponent () : SmartMessagingObject (), mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), 
 mLSData (NULL), mLaneStandard (NULL), mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL), 
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mPattern (NULL), mTimeMap (NULL), mSampleMods (NULL) {
 
 	InitializeSmartMessages ();
 }
@@ -169,9 +176,10 @@ mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimu
 CoreBioComponent :: CoreBioComponent (const RGString& name) : SmartMessagingObject (), mName (name), 
 mDataChannels (NULL), mNumberOfChannels (-1), mMarkerSet (NULL), mLSData (NULL), mLaneStandard (NULL), 
 mAssociatedGrid (NULL), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mPattern (NULL), mTimeMap (NULL), mSampleMods (NULL) {
 
 	InitializeSmartMessages ();
+	ErrorString << "File named:  name...\n";
 }
 
 
@@ -179,7 +187,7 @@ CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component) : Smart
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
 mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mPattern (NULL), mTimeMap (NULL), mQC (component.mQC), mSampleMods (NULL) {
 
 	InitializeSmartMessages (component);
 }
@@ -189,7 +197,7 @@ CoreBioComponent :: CoreBioComponent (const CoreBioComponent& component, Coordin
 mName (component.mName), mSampleName (component.mSampleName), mTime (component.mTime), mDate (component.mDate), mDataChannels (NULL), mNumberOfChannels (component.mNumberOfChannels), 
 mMarkerSet (NULL), mLaneStandardChannel (component.mLaneStandardChannel), mTest (NULL), mLSData (NULL), mLaneStandard (NULL), 
 mAssociatedGrid (component.mAssociatedGrid), mPullupTestedMatrix (NULL), mLinearPullupMatrix (NULL), mQuadraticPullupMatrix (NULL), mLeastMedianValue (NULL), mOutlierThreshold (NULL),
-mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mTimeMap (NULL), mQC (component.mQC) {
+mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimumInScalePrimaryPeak (NULL), mPattern (NULL), mTimeMap (NULL), mQC (component.mQC), mSampleMods (NULL) {
 
 	mDataChannels = new ChannelData* [mNumberOfChannels + 1];
 	mPullupTestedMatrix = new bool* [mNumberOfChannels + 1];
@@ -198,6 +206,7 @@ mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimu
 	mLinearInScalePullupMatrix = new double* [mNumberOfChannels + 1];
 	mQuadraticInScalePullupMatrix = new double* [mNumberOfChannels + 1];
 	mMinimumInScalePrimaryPeak = new double* [mNumberOfChannels + 1];
+	mPattern = new bool* [mNumberOfChannels + 1];
 	mLeastMedianValue = new double* [mNumberOfChannels + 1];
 	mOutlierThreshold = new double* [mNumberOfChannels + 1];
 	int j;
@@ -210,6 +219,7 @@ mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimu
 		mLinearInScalePullupMatrix [i] = new double [mNumberOfChannels + 1];
 		mQuadraticInScalePullupMatrix [i] = new double [mNumberOfChannels + 1];
 		mMinimumInScalePrimaryPeak [i] = new double [mNumberOfChannels + 1];
+		mPattern [i] = new bool [mNumberOfChannels + 1];
 		mLeastMedianValue [i] = new double [mNumberOfChannels + 1];
 		mOutlierThreshold [i] = new double [mNumberOfChannels + 1];
 
@@ -221,6 +231,7 @@ mLinearInScalePullupMatrix (NULL), mQuadraticInScalePullupMatrix (NULL), mMinimu
 			mLinearInScalePullupMatrix [i][j] = 0.0;
 			mQuadraticInScalePullupMatrix [i][j] = 0.0;
 			mMinimumInScalePrimaryPeak [i] [j] = 0.0;
+			mPattern [i] [j] = false;
 			mLeastMedianValue [i][j] = 0.0;
 			mOutlierThreshold [i][j] = 0.0;
 		}
@@ -298,6 +309,14 @@ CoreBioComponent :: ~CoreBioComponent () {
 			delete[] mMinimumInScalePrimaryPeak [i];
 
 		delete[] mMinimumInScalePrimaryPeak;
+	}
+
+	if (mPattern != NULL) {
+
+		for (i=1; i<=mNumberOfChannels; i++)
+			delete[] mPattern [i];
+
+		delete[] mPattern;
 	}
 
 	if (mLeastMedianValue != NULL) {
@@ -990,6 +1009,9 @@ Boolean CoreBioComponent :: ReportAllNoticeObjects (RGTextOutput& text, const RG
 
 Boolean CoreBioComponent :: PrepareLociForOutput () {
 
+	if (CrashMode)
+		return FALSE;
+
 	RGString locusName;
 	Locus* nextLocus;
 	Locus* myLocus;
@@ -1037,7 +1059,7 @@ void CoreBioComponent :: ReportSampleData (RGTextOutput& ExcelText) {
 }
 
 
-bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold) {
+bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, double& linearPart, double& quadraticPart, double& lmValue, double& outlierThreshold, bool isMixedPositiveNegativePullup) {
 
 	// Create lists of pairs (or arrays) and perform 1D LMS to get outliers; then perform ordinary LS on non-outliers to get coefficients
 	// Return false if insufficiently many data values.  Otherwise, return true;
@@ -1100,14 +1122,10 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 				maxFit = fit;
 		}
 
-		else if (DataSignal::IsNegativeOrSigmoid (pullUp)) {
+		//else if (pullUp->IsNegativePeak ()) {
 
-			if (nNegatives > 0)
-				yValues [i] = newPair->mPullupHeight = - pullUp->TroughHeight ();
-
-			else
-				yValues [i] = newPair->mPullupHeight = pullUp->TroughHeight ();
-		}
+		//		yValues [i] = newPair->mPullupHeight = - pullUp->TroughHeight ();
+		//}
 
 		else
 			yValues [i] = newPair->mPullupHeight = pullUp->TroughHeight ();
@@ -1115,7 +1133,8 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		i++;
 	}
 
-	totalForNegativeAnalysis = nNegatives + nSigmoids;
+	totalForNegativeAnalysis = nNegatives;
+	//totalForNegativeAnalysis = nNegatives + nSigmoids;
 
 	// if nNegatives at least 0, use a different algorithm that does not mix + and - pullup
 
@@ -1134,7 +1153,12 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 	//	return ans;
 	//}
 
-	LeastMedianOfSquares1D* lms = new LeastMedianOfSquares1D (n, xValues, yValues);
+	LeastMedianOfSquares* lms;
+
+	if (isMixedPositiveNegativePullup)
+		lms = new QuadraticLMSExact (n, xValues, yValues);
+	else
+		lms = new LeastMedianOfSquares1D (n, xValues, yValues);
 
 	if (!lms->DataIsOK ()) {
 
@@ -1208,16 +1232,27 @@ bool CoreBioComponent :: ComputePullupParameters (list<PullupPair*>& pairList, d
 		}
 	}
 
-	LeastSquaresQuadraticModel* lsq = new LeastSquaresQuadraticModel (xList, yList);
-	double leastSquares;
+	LeastSquaresQuadraticModel* lsq = NULL;
 
-	if (!lsq->DataIsOK ()) {
+	if (isMixedPositiveNegativePullup) {
 
-		linearPart = lmsValue;
+		linearPart = lms->GetLinearTerm ();
+		quadraticPart = lms->GetQuadraticTerm ();
 	}
 
-	else
-		leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart, constrainLSQ);
+	else {
+
+		lsq = new LeastSquaresQuadraticModel (xList, yList);
+		double leastSquares;
+
+		if (!lsq->DataIsOK ()) {
+
+			linearPart = lmsValue;
+		}
+
+		else
+			leastSquares = lsq->CalculateLeastSquare (linearPart, quadraticPart, constrainLSQ);
+	}
 
 	// clean up
 
@@ -1522,7 +1557,7 @@ bool CoreBioComponent :: ComputePullupParametersForNegativePeaks (int nNegatives
 			i++;
 		}
 
-		else if (DataSignal::IsNegativeOrSigmoid (pair->mPullup)) {
+		else if ((pair->mPullup)->IsNegativePeak ()) {
 
 			newPair = pairArray [i] = new PullupPair (*pair);	
 			xValues [i] = newPair->mPrimaryHeight = (newPair->mPrimary)->Peak ();
@@ -1649,7 +1684,7 @@ void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 	RGString locusName;
 	Locus* nextLocus;
 	Locus* myLocus;
-	mMarkerSet->ResetLocusList ();
+	
 	bool reportedChannel = false;
 	int severity;
 
@@ -1657,6 +1692,15 @@ void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 
 	text.SetOutputLevel (1);
 	text << GetSampleName () << "\t";
+
+	if (STRLCAnalysis::GetDirectoryCrashMode ()) {
+
+		text << "\n";
+		text.ResetOutputLevel ();
+		return;
+	}
+
+	mMarkerSet->ResetLocusList ();
 
 	if ((mLSData->GetHighestMessageLevel () > 0) && 
 		(mLSData->GetHighestMessageLevel () <= Notice::GetMessageTrigger()))
@@ -1705,12 +1749,27 @@ void CoreBioComponent :: ReportSampleTableRow (RGTextOutput& text) {
 }
 
 
+void CoreBioComponent::ReportSampleTableRowCrashMode (RGTextOutput& text) {
+
+	RGString locusName;
+	bool reportedChannel = false;
+
+	//  First output sample name, then ILS
+
+	text.SetOutputLevel (1);
+	text << GetSampleName () << "\t";
+	text << "\n";
+	text.ResetOutputLevel ();
+
+}
+
+
 void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 
 	RGString locusName;
 	Locus* nextLocus;
 	Locus* myLocus;
-	mMarkerSet->ResetLocusList ();
+	
 	int link;
 	RGString LinkString;
 	int trigger = Notice::GetMessageTrigger ();
@@ -1733,6 +1792,7 @@ void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 		text << GetSampleName () << "\t";
 
 	highest = mLSData->GetHighestMessageLevel ();
+	mMarkerSet->ResetLocusList ();
 
 	if ((highest > 0) && (highest <= trigger)) {
 
@@ -1794,6 +1854,32 @@ void CoreBioComponent :: ReportSampleTableRowWithLinks (RGTextOutput& text) {
 	}
 
 	text << "\t" << mPositiveControlName;
+	text << "\n";
+	text.ResetOutputLevel ();
+}
+
+
+void CoreBioComponent::ReportSampleTableRowWithLinksCrashMode (RGTextOutput& text) {
+
+	int link;
+	RGString LinkString;
+	int trigger = Notice::GetMessageTrigger ();
+	bool reportedChannel = false;
+
+	//  First output sample name, then ILS
+
+	text.SetOutputLevel (1);
+
+	if ((mHighestSeverityLevel > 0) && (mHighestSeverityLevel <= trigger)) {
+
+		link = Notice::GetNextLinkNumber ();
+		SetTableLink (link);
+		text << mTableLink << GetSampleName () << "\t";
+	}
+
+	else
+		text << GetSampleName () << "\t";
+
 	text << "\n";
 	text.ResetOutputLevel ();
 }
@@ -1925,6 +2011,15 @@ void CoreBioComponent :: ReportGridTableRowWithLinks (RGTextOutput& text) {
 	text << "\t" << mPositiveControlName;
 	text << "\n";
 	text.ResetOutputLevel ();
+}
+
+
+void CoreBioComponent::InitializeAllSampleModifications () {
+
+	int i;
+
+	for (i=1; i<=mNumberOfChannels; i++)
+		mDataChannels [i]->InitializeModsData (mSampleMods);
 }
 
 
@@ -3246,6 +3341,17 @@ bool CoreBioComponent :: TestForOffScale (double time) {
 	}
 
 	return (lowOffScale || highOffScale || low1OffScale || high1OffScale);
+}
+
+
+int CoreBioComponent::GetNextNoDataChannel () {
+
+	if (NoDataChannels.empty ())
+		return -1;
+
+	int top = NoDataChannels.front ();
+	NoDataChannels.pop_front ();
+	return top;
 }
 
 

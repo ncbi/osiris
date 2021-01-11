@@ -22,7 +22,7 @@
     <ProjectName>nwx</ProjectName>
     <ProjectGuid>{3625DB75-EA9E-4E83-A60B-533194328EB4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -80,7 +80,6 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;$(EXTLIB)\libxml2-2.9.8\include;$(EXTLIB)\libxslt-1.1.33\;$(EXTLIB)\libiconv-win-build-1.15\include;$(WXHOME)\include;$(WXHOME)\lib\vc_lib\mswud;..\wxplotctrl\include;..\wxthings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;__WXDEBUG__;_DEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -88,6 +87,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;TMP_DEBUG;__WXDEBUG__;_DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -116,7 +116,7 @@
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;$(EXTLIB)\libxml2-2.9.8\include;$(EXTLIB)\libxslt-1.1.33\;$(EXTLIB)\libiconv-win-build-1.15\include;$(WXHOME)\include;$(WXHOME)\lib\vc_lib\mswu;..\wxplotctrl\include;..\wxthings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;NDEBUG;wxDEBUG_LEVEL=0</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

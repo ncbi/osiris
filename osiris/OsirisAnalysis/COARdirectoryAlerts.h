@@ -48,7 +48,7 @@ public:
     RegisterAll(true);
     (*this) = x;
   }
-  virtual ~COARbaseLocus();
+  virtual ~COARbaseLocus() { ; }
   COARbaseLocus &operator = (const COARbaseLocus &x)
   {
     m_sLocusName = x.m_sLocusName;
@@ -102,6 +102,12 @@ public:
     return *this;
   }
   virtual ~COARdirectoryAlerts();
+  virtual void Init()
+  {
+    _ClearLocusMap();
+    nwxXmlPersist::Init();
+  }
+  XML_INIT(COARdirectoryAlerts)
   const COARbaseLocus *GetBaseLocusAlertsByLocus(
     const wxString &sLocusName) const
   {

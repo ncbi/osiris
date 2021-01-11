@@ -118,9 +118,15 @@ public:
   }
   virtual ~COARheading()
   {
-    vectorptr<COARchannel>::cleanup(&m_vpChannel);
+    _Cleanup();
   }
   virtual void RegisterAll(bool = false);
+  virtual void Init()
+  {
+    _Cleanup();
+    nwxXmlPersist::Init();
+  }
+  XML_INIT(COARheading)
   void AddDeletedSamples(size_t n)
   {
     m_nDeletedSamples += n;
@@ -244,6 +250,10 @@ public:
     return bRtn;
   }
 private:
+  void _Cleanup()
+  {
+    vectorptr<COARchannel>::cleanup(&m_vpChannel);
+  }
   wxString m_sFileName;
   wxString m_sNewFileName;
   wxDateTime m_tCreationTime;

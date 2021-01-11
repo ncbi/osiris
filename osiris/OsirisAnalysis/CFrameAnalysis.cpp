@@ -48,7 +48,6 @@
 #include "CDialogDeleteDisabled.h"
 #include "CDialogEnableMultiple.h"
 #include "CDialogExportFile.h"
-#include "CDialogWarnHistory.h"
 #include "CDialogCMF.h"
 #include "CDialogToggleEnabled.h"
 //#include "CDialogAcceptAllele.h"
@@ -92,6 +91,7 @@
 #include "CGridLocusPeaks.h"
 #include "CPanelStatus.h"
 #include "CFrameSample.h"
+#include "CPrintOutAnalysis.h"
 #include "nwx/stdb.h"
 #include <memory>
 #include <vector>
@@ -115,6 +115,14 @@ const int CFrameAnalysis::STATUS_COLUMN = 0;
 const int CFrameAnalysis::ILS_COLUMN = 1;
 const int CFrameAnalysis::CHANNEL_ALERT_COLUMN = 2;
 const int CFrameAnalysis::FIRST_LOCUS_COLUMN = 3;
+
+const int CFrameAnalysis::INCLUDE_ALL = 0x7fffffff;  // 31 bits
+const int CFrameAnalysis::INCLUDE_DISABLED = 1;
+const int CFrameAnalysis::INCLUDE_LADDER = 2;
+const int CFrameAnalysis::INCLUDE_POS_CTRL = 4;
+const int CFrameAnalysis::INCLUDE_NEG_CTRL = 8;
+const int CFrameAnalysis::INCLUDE_UNUSED_BITS = CFrameAnalysis::INCLUDE_ALL ^ ((CFrameAnalysis::INCLUDE_NEG_CTRL << 1) - 1); // max bit from above
+const int CFrameAnalysis::INCLUDE_DEFAULT = CFrameAnalysis::INCLUDE_ALL - CFrameAnalysis::INCLUDE_DISABLED;
 
 
 CFrameAnalysis::~CFrameAnalysis()
@@ -143,6 +151,8 @@ CFrameAnalysis::CFrameAnalysis(
   m_pDlgAnalysis(NULL),
   m_pCMF(NULL),
   m_nNoTimer(0),
+  m_nFileNameLabelTimer(0),
+  m_nPreviewDelay(0),
   m_bFileError(false)
 {
   if(LoadFile(sFileName))
@@ -175,6 +185,8 @@ CFrameAnalysis::CFrameAnalysis(
   m_pDlgAnalysis(NULL),
   m_pCMF(NULL),
   m_nNoTimer(0),
+  m_nFileNameLabelTimer(0),
+  m_nPreviewDelay(0),
   m_bFileError(false)
 {
   if(pFile->GetSampleCount() < 1)
@@ -191,13 +203,31 @@ CFrameAnalysis::CFrameAnalysis(
 void CFrameAnalysis::_Build()
 {
   FUNC_ENTER("CFrameAnalysis::_Build()")
+  CParmOsirisGlobal parm;
   wxColour clrTextNoEdit;
   nwxButtonMenu *pButtonSort(NULL);
+  const wxString sPingType(PING_WINDOW_OPEN PING_WINDOW_TYPE);
+  const wxString &sFrameNumber(GetFrameNumber());
+  const wxChar * const psT = wxT("true");
+  const wxChar * const psF = wxT("false");
   int nDisplayPeak = 0;
   int nDisplayName;
   bool bShowPreview = false;
 
-  mainApp::Ping2(PING_EVENT, PING_WINDOW_OPEN PING_WINDOW_TYPE, PING_WINDOW_NUMBER, GetFrameNumber());
+  const wxChar *plist[] =
+  {
+    wxT(PING_EVENT),
+    (const wxChar *)sPingType,
+    wxT(PING_WINDOW_NUMBER),
+    (const wxChar *)sFrameNumber,
+    // if preview is shown, add preview parameters
+    parm->GetShowPreview() ? wxT("ShowDisabledAllele") : NULL,
+    parm->GetPreviewShowDisabledAlleles() ? psT : psF,
+    wxT("ShowBins"),
+    parm->GetPreviewShowLadderBins() ? psT : psF,
+    NULL
+  };
+  mainApp::PingList(plist);
   m_pParent->InsertWindow(this,m_pOARfile);
   m_pButtonEdit = NULL;
   m_pComboCellType = NULL;
@@ -394,7 +424,6 @@ void CFrameAnalysis::_Build()
   pSizer->Add(m_pSplitter,1,wxEXPAND);
   SetSizer(pSizer);
 
-  CParmOsirisGlobal parm;
   bool b = parm->GetHideTextToolbar();
   bool bControlAtTop = parm->GetTableControlsAtTop();
   ShowToolbar(!b);
@@ -419,14 +448,9 @@ void CFrameAnalysis::_Build()
 
 
   DisplayFile();
-  if(bShowPreview)
-  {
-    // information is obtained from the grid in order to draw the preview
-    // send an event to draw the preview so that the grid will be ready 
-    // before the event is handled
-    wxCommandEvent e(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,IDmenuTogglePreview);
-    GetEventHandler()->AddPendingEvent(e);
-  }
+  COsirisIcon x;
+  SetIcon(x);
+  RE_RENDER;
   if(bControlAtTop)
   {
     // workaround for problem setting it before the window is displayed
@@ -440,9 +464,14 @@ void CFrameAnalysis::_Build()
     e.SetInt(LOCUS_HEIGHT);
     GetEventHandler()->AddPendingEvent(e);
   }
-  COsirisIcon x;
-  SetIcon(x);
-  RE_RENDER;
+  if (bShowPreview)
+  {
+    // information is obtained from the grid in order to draw the preview
+    // send an event to draw the preview so that the grid will be ready 
+    // before the event is handled
+    wxCommandEvent e(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, IDmenuTogglePreview);
+    GetEventHandler()->AddPendingEvent(e);
+  }
   FUNC_EXIT("CFrameAnalysis::_Build()")
 }
 #undef LOCUS_WIDTH
@@ -478,19 +507,10 @@ int CFrameAnalysis::GetType()
 {
   return FRAME_ANALYSIS;
 }
-bool CFrameAnalysis::SetToolbarMenuLabel(bool bShow, bool bPlural)
+bool CFrameAnalysis::SetToolbarMenuLabel(bool bShow, bool bPlural, int nID)
 {
-  bool bRtn = CMDIFrame::SetToolbarMenuLabel(bShow,bPlural);
+  bool bRtn = CMDIFrame::SetToolbarMenuLabel(bShow,bPlural, nID);
   m_pMenu->UpdateChildren();
-  return bRtn;
-}
-
-bool CFrameAnalysis::CheckIfHistoryOK()
-{
-  bool bRtn = 
-    m_pButtonHistory->IsCurrent()
-    ? true
-    : CDialogWarnHistory::Continue(this);
   return bRtn;
 }
 
@@ -513,7 +533,7 @@ void CFrameAnalysis::EditPeak(
   {
     mainApp::ShowAlert("This sample has been disabled.",parent);
   }
-  else
+  else if(parent->CheckIfHistoryOK())
   {
     CDialogEditPeak xx(parent,pSample,pPeak,this->m_pOARfile->GetReviewerAllowUserOverride());
     if(xx.IsOK())
@@ -633,8 +653,14 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
     case IDmenuSortControlsAtTop:
       OnSortGrid(e);
       break;
-    case IDmenuShowHideToolbar:
+    case IDmenuShowHideTableToolbar:
       ToggleToolbar();
+      break;
+    case IDmenuShowHidePlotScrollbars:
+      ToggleScrollbarsPreview();
+      break;
+    case IDmenuShowHideToolbar:
+      ToggleToolbarPreview();
       break;
     case IDmenuParameters:
       OnShowDetails(e);
@@ -683,8 +709,20 @@ bool CFrameAnalysis::MenuEvent(wxCommandEvent &e)
   }
   return bRtn;
 }
-
-
+void CFrameAnalysis::ToggleScrollbarsPreview()
+{
+  if (_IsPreviewShowing())
+  {
+    GetGraphPanel()->ToggleScrollbars();
+  }
+}
+void CFrameAnalysis::ToggleToolbarPreview()
+{
+  if (_IsPreviewShowing())
+  {
+    GetGraphPanel()->ToggleToolbar();
+  }
+}
 void CFrameAnalysis::ToggleToolbar()
 {
   bool bWasShown = IsToolbarShown();
@@ -790,19 +828,39 @@ void CFrameAnalysis::OnTimer(wxTimerEvent &e)
   if(!m_nNoTimer)
   {
     CheckSelection();
-#if 0
-    if(m_pDlgAnalysis != NULL)
-    {
-      m_pDlgAnalysis->OnTimer(e);
-    }
-#endif
+    /*
+    // EXT TIMER
     if(m_pPanelPlotPreview != NULL)
     {
       m_pPanelPlotPreview->OnTimer(e);
     }
+    */
     if(m_pMenuBar != NULL)
     {
       m_pMenuBar->OnTimer(e);
+    }
+    if (m_nFileNameLabelTimer)
+    {
+      // m_nFileNameLabelTimer is set in SetFileNameLabel
+      // and when resizing the window
+      // to delay setting insertion point to the end
+      // to show the end of the file path
+      //  On the Macintosh, the beginning of the string
+      //  is shown anyway
+      m_nFileNameLabelTimer--;
+      if (!m_nFileNameLabelTimer)
+      {
+        m_pLabelFile->SetInsertionPoint(m_pLabelFile->GetValue().Len());
+      }
+    }
+    if ( m_nPreviewDelay &&
+        (m_pPanelPlotPreview->GetSize().GetHeight() > 0) )
+    {
+      m_nPreviewDelay--;
+      if (!m_nPreviewDelay)
+      {
+        _UpdatePreview();
+      }
     }
   }
 }
@@ -829,7 +887,10 @@ void CFrameAnalysis::CheckSelectionXML(bool bForceUpdate)
     ShowStatusText();
     bEdit = (pSample != NULL) && pSample->IsEnabled(); // && !_IsControlColumn(nCol);
     _UpdateMenu();
-    _UpdatePreview();
+    if (!m_nPreviewDelay)
+    {
+      _UpdatePreview();
+    }
     UpdateStatusBar();
     m_pButtonEdit->Enable(bEdit);
     bSelection = false; // force SelectBlock() below
@@ -936,7 +997,6 @@ void CFrameAnalysis::_SetupLocusPanel(COARsample *pSample, int nChannel, const w
     if(pSample->HasPeaks(nChannel, sLocusName, false))
     {
       m_pPanelInfo->Show(false);
-      wxClientDC dc(this);
       m_pGridLocus = new CGridLocusPeaks(
         pSample,nChannel,sLocusName,m_pPanelInfo,
         IDgridLocus,true,GetSelectedTime());
@@ -958,6 +1018,27 @@ void CFrameAnalysis::_LayoutAll()
   if(m_pSplitterLocusNotices != NULL)
   {
     m_pPanelInfo->Layout();
+  }
+}
+void CFrameAnalysis::SetFileNameLabel(const wxString &sFileName)
+{
+  wxString sCurrent = m_pLabelFile->GetValue();
+  if(sCurrent != sFileName)
+  {
+    m_pLabelFile->SetValue(sFileName);
+    if(sFileName.Len())
+    {
+      // delay right justification to make sure
+      // text box is not resized afterward, 
+      // needed when creating the window and resizing
+      // works in Windows, not Mac
+      m_nFileNameLabelTimer = 2;
+      //
+      // the right justification doesn't work on the Mac
+      // so retrieve file name and use as tooltip
+      wxFileName fn(sFileName);
+      m_pLabelFile->SetToolTip(fn.GetFullName());
+    }
   }
 }
 
@@ -1067,11 +1148,11 @@ bool CFrameAnalysis::TransferDataToWindow()
   m_pButtonParms->Enable(false);
   _DestroyStatusPanel();
   _DestroyLocusPanel();
-  if(!bError)
+  _LayoutAll();
+  if (!bError)
   {
     CheckSelection(true);
   }
-  _LayoutAll();
   return !bError;
 }
 
@@ -1107,6 +1188,13 @@ _CRTIMP extern long _crtBreakAlloc;
 extern long _lRequestCurr;
 #endif
 #endif
+
+CFramePlot *CFrameAnalysis::FindPlotFrameBySample(COARsample *pSample)
+{
+  CFramePlot *pRtn = (pSample != NULL) ? m_pParent->FindPlotWindowBySample(pSample) : NULL;
+  return pRtn;
+}
+
 
 void CFrameAnalysis::ShowSampleFrame(
   COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID )
@@ -1325,49 +1413,20 @@ void CFrameAnalysis::OnHistoryUpdate(wxCommandEvent &e)
         m_pMenu->SelectTime(pPanel->GetSelectedTime());
       }
     }
-    RepaintData();
+    RepaintGridXML();
+    ShowStatusText(true);
+    _UpdateHistoryButtons();
+    if ( (m_pPanelPlotPreview != NULL) &&
+      m_pPanelPlotPreview->IsShown())
+    {
+      m_pPanelPlotPreview->RebuildLabels();
+    }
   }
 }
 
 void CFrameAnalysis::OnChangeAlertView(wxCommandEvent &)
 {
   ShowStatusText(false);
-}
-void CFrameAnalysis::OnCheckSplitter(wxCommandEvent &e)
-{
-    // this is a workaround for a bug where the splitter does not
-    // appear where specified when the window is created while the
-    // MDI clients are maximized
-  wxSplitterWindow *pWin = (wxSplitterWindow *)e.GetEventObject();
-  if(pWin->IsSplit())
-  {
-    wxSize sz = pWin->GetSize();
-    const int THRESHOLD = 10;
-    int nSelect = e.GetInt();
-    int nCurrent = pWin->GetSashPosition();
-    int nMax = (pWin->GetSplitMode() == wxSPLIT_VERTICAL) ? sz.GetWidth() : sz.GetHeight();
-    if( (nCurrent < 0) != (nSelect < 0) )
-    {
-      if(nCurrent < 0)
-      {
-        nCurrent += nMax;
-      }
-      else
-      {
-        nCurrent -= nMax;
-      }
-    }
-    if(nSelect < nMax && nSelect > -nMax)
-    {
-      // selection is within range
-      int nDiff = nCurrent - nSelect;
-    
-      if(nDiff > THRESHOLD || nDiff < -THRESHOLD)
-      {
-          pWin->SetSashPosition(nSelect,true);
-      }
-    }
-  }
 }
 void CFrameAnalysis::DoReviewLocus(COARsample *pSample, COARlocus *pLocus)
 {
@@ -1615,7 +1674,8 @@ void CFrameAnalysis::_OnDeleteDisabled()
         {
           pFrame->Close(false);
         }
-        sPath = m_pOARfile->FindPlotFile(*itr);
+
+        sPath = (*itr)->GetPlotFileName();
         pFrame = sPath.IsEmpty() ? NULL : m_pParent->FindWindowByName(sPath);
         if(pFrame != NULL)
         {
@@ -1807,16 +1867,17 @@ void CFrameAnalysis::_ShowPreview()
         m_pSplitterTop,
         m_pOARfile,
         mainApp::GetKitColors(),
-        true,
+        m_pMenu->GetMenuHistoryPopup(),
         6);
+      m_nPreviewDelay = 2;
     }
 
     m_pSplitterTop->SplitHorizontally(
         m_pPanelGrid,m_pPanelPlotPreview);
     m_pSplitterTop->SetMinimumPaneSize(1);
     // bUpdate is false when this is called from _Build()
-    _UpdatePreview();
     _LayoutAll();
+    _UpdatePreview();
   }
 }
 void CFrameAnalysis::OnTogglePreview(wxCommandEvent &)
@@ -1870,9 +1931,10 @@ void CFrameAnalysis::_UpdatePreviewLabelType(int n)
     }
   }
 }
+
 void CFrameAnalysis::_UpdatePreview()
 {
-  if(m_pSplitterTop->IsSplit())
+  if (m_pSplitterTop->IsSplit())
   {
     int nRow = m_pGrid->GetGridCursorRow();
     wxString sFileName = _GetGraphicFileName(nRow,false);
@@ -2041,7 +2103,7 @@ wxString CFrameAnalysis::_GetGraphicFileName(int nRow,bool bMessage)
     }
     if(nRow >= 0)
     {
-      sFile = m_pOARfile->FindPlotFile(m_SampleSort.GetSample((size_t)nRow));
+      sFile = m_SampleSort.GetSample((size_t)nRow)->GetPlotFileName();
       if(sFile.IsEmpty())
       {
         if(bMessage)
@@ -2598,6 +2660,14 @@ void CFrameAnalysis::_OnRestoreScroll(wxCommandEvent &)
 {
     m_pGrid->RestoreScrollPosition();
 }
+void CFrameAnalysis::_UpdateHistoryButtons()
+{
+  m_pButtonHistory->EnablePrevNextButtons();
+  if (m_pPanelPlotPreview != NULL)
+  {
+    m_pPanelPlotPreview->UpdateHistoryButtons();
+  }
+}
 void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
 {
   // update all data in table and alert window
@@ -2616,7 +2686,7 @@ void CFrameAnalysis::_OnRepaint(wxCommandEvent &)
       CheckSelectionXML(true);
     }
     SetupTitle();
-    m_pButtonHistory->EnablePrevNextButtons();
+    _UpdateHistoryButtons();
   }
 }
 
@@ -3510,19 +3580,81 @@ void CFrameAnalysis::OnExportCMF(wxCommandEvent &)
   }
 }
 
+
+size_t CFrameAnalysis::GetSamplesByRow(std::vector<const COARsample *> *pSamples, int FLAGS)
+{
+  bool bNoDisabled = !(FLAGS & INCLUDE_DISABLED);
+  bool bNoLadder = !(FLAGS & INCLUDE_LADDER);
+  bool bNoPositiveCtrl = !(FLAGS & INCLUDE_POS_CTRL);
+  bool bNoNegativeCtrl = !(FLAGS & INCLUDE_NEG_CTRL);
+  const vector<COARsample *> *pAllSamples = m_SampleSort.GetSamples();
+  const COARsample *pSample;
+  const wxDateTime *pTime = GetSelectedTime();
+  pSamples->clear();
+  pSamples->reserve(pAllSamples->size());
+  vector<COARsample *>::const_iterator itr;
+  for (itr = pAllSamples->begin(); itr != pAllSamples->end(); ++itr)
+  {
+    pSample = *itr;
+    if (bNoDisabled && pSample->IsDisabled(pTime));
+    else if (bNoLadder && pSample->IsLadderType());
+    else if (bNoPositiveCtrl && pSample->IsPosControl());
+    else if (bNoNegativeCtrl && pSample->IsNegControl());
+    else
+    {
+      pSamples->push_back(pSample);
+    }
+  }
+  return pSamples->size();
+}
+
+void CFrameAnalysis::OnPrintPreview(wxCommandEvent &)
+{
+  CPrintOutAnalysis::DoPrintPreview(this);
+/*
+  int nLabelName = m_pComboName->GetSelection();
+  (nTypeName == IDmenuDisplayNameSample)
+    ? pSample->GetSampleName()
+    : pSample->GetName();
+
+*/
+
+  //CPrintOutAnalysis::DoPrintPreview(this);
+}
+void CFrameAnalysis::_OnResize(wxSizeEvent &e)
+{
+  CALL_PERSIST_RESIZE(e);
+  m_nFileNameLabelTimer = 2;
+  m_pLabelFile->SetInsertionPoint(0);
+}
+
+#ifdef __WXMAC__
+void CFrameAnalysis::OnPageMargins(wxCommandEvent &)
+{
+  CPrintOut::DoPageMargins(this);
+}
+#endif
+void CFrameAnalysis::OnPageSetup(wxCommandEvent &)
+{
+  CPrintOut::DoPageSetup(this);
+}
+
+
+
+
+
 IMPLEMENT_PERSISTENT_SIZE(CFrameAnalysis)
 IMPLEMENT_ABSTRACT_CLASS(CFrameAnalysis,CMDIFrame)
 
 BEGIN_EVENT_TABLE(CFrameAnalysis,CMDIFrame)
-EVT_PERSISTENT_SIZE(CFrameAnalysis)
+EVT_SIZE(CFrameAnalysis::_OnResize)
 
 EVT_CONTEXT_MENU(CFrameAnalysis::OnContextMenu)
 EVT_COMMAND(IDhistoryButton,CEventHistory,CFrameAnalysis::OnHistoryUpdate)
 EVT_COMMAND(wxID_ANY,wxEVT_ALERT_VIEW_CHANGED,CFrameAnalysis::OnChangeAlertView)
-EVT_COMMAND_ENTER(IDsplitterWindow,CFrameAnalysis::OnCheckSplitter)
-
+EVT_COMMAND_ENTER(IDsplitterWindow, CFrameAnalysis::OnCheckSplitter)
+  // actually CMDIFrame::OnCheckSplitter
 EVT_BUTTON(IDExportCMF,CFrameAnalysis::OnExportCMF)
-//EVT_BUTTON(IDmenuEditCell,  CFrameAnalysis::OnEdit)
 EVT_TOGGLEBUTTON(IDmenuTogglePreview,  CFrameAnalysis::OnTogglePreview)
 EVT_BUTTON(IDmenuSampleTile,CFrameAnalysis::OnShowSampleAndGraphic)
 EVT_BUTTON(IDmenuDisplaySample,CFrameAnalysis::OnShowSample)
@@ -3548,11 +3680,20 @@ EVT_KILL_FOCUS(CFrameAnalysis::OnFocusKill)
 
 EVT_COMMAND(wxID_ANY, CEventRepaint,CFrameAnalysis::_OnRepaint)
 EVT_COMMAND(wxID_ANY, CEventRestoreScroll,CFrameAnalysis::_OnRestoreScroll)
+EVT_COMMAND(wxID_ANY, CEventRestoreScroll,CFrameAnalysis::_OnRestoreScroll)
 
 EVT_MENU(wxID_SAVEAS, CFrameAnalysis::OnSave)
 EVT_MENU(wxID_SAVE, CFrameAnalysis::OnSave)
 
 
 EVT_CLOSE(CFrameAnalysis::OnClose)
+
+EVT_MENU(wxID_PRINT, CFrameAnalysis::OnPrintPreview)
+#ifdef __WXMAC__
+EVT_MENU(IDpageMargins, CFrameAnalysis::OnPageMargins)
+#endif
+EVT_MENU(IDpageSetup, CFrameAnalysis::OnPageSetup)
+
+
 END_EVENT_TABLE()
 

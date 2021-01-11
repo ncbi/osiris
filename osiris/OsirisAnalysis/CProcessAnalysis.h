@@ -32,6 +32,7 @@
 #define __C_PROCESS_ANALYSIS_H__
 
 #include <stdlib.h>
+#include <wx/arrstr.h>
 #include "nwx/nwxProcess.h"
 
 class CDirEntry;
@@ -58,10 +59,12 @@ public:
     return m_pDirEntry;
   }
   wxString GetOutput();
-
 private:
+  void _CheckRunningError();
+  wxString m_sRunningError;
   double m_dProgress;
   CDirEntry *m_pDirEntry;
+  bool m_bInError;
 };
 
 

@@ -1,0 +1,297 @@
+===============================================================
+< fparser.cpp > [original]
+76c76
+< #ifdef NO_ASINH
+---
+> 
+110d109
+< #endif
+143,144c142,143
+<     std::string Function = (const char*)(function.utf8_str());
+<     std::string Vars = (const char*)(vars.utf8_str());
+---
+>     std::string Function = (const char*)wxConvUTF8.cWX2MB(function.c_str());
+>     std::string Vars = (const char*)wxConvUTF8.cWX2MB(vars.c_str());
+173c172
+<     std::string Name = (const char*)(name.utf8_str());
+---
+>     std::string Name = (const char*)wxConvUTF8.cWX2MB(name.c_str());
+179c178
+<     std::string Name = (const char*)(name.utf8_str());
+---
+>     std::string Name = (const char*)wxConvUTF8.cWX2MB(name.c_str());
+184c183
+<     std::string Name = (const char*)(name.utf8_str());
+---
+>     std::string Name = (const char*)wxConvUTF8.cWX2MB(name.c_str());
+===============================================================
+< lm_lsqr.cpp > [original]
+275c275
+<     printf( "%s\n", GetResultMessage().utf8_str() );
+---
+>     printf( "%s\n", GetResultMessage().c_str() );
+===============================================================
+< plotctrl.cpp > [original]
+9,11d8
+< //      5/19/2010 - Doug Hoffman (DJH) - modified calls in
+< //         wxPlotCtrl::OnChar(e) to send an event 
+< //             when changing the axes from a keystroke
+304c301
+<     if (m_owner->GetCrossHairCursor() && m_owner->GetPlotAreaRect().Contains(m_mousePt))
+---
+>     if (m_owner->GetCrossHairCursor() && m_owner->GetPlotAreaRect().Inside(m_mousePt))
+582,583c579,580
+<         wxFAIL_MSG(wxS("Can't determine the font size for the axis! I'll guess.\n")
+<                        wxS("The display might be corrupted, however you may continue."));
+---
+>         wxFAIL_MSG(wxT("Can't determine the font size for the axis! I'll guess.\n"
+>                        "The display might be corrupted, however you may continue."));
+693,694c690
+< void wxPlotCtrl::SetPlotWinMouseCursor(wxStockCursor cursorid)
+<     // DJH 9/3/15 changed parameter from int to wxStockCursor
+---
+> void wxPlotCtrl::SetPlotWinMouseCursor(int cursorid)
+712,714c708,710
+<     if ((m_show_title  && m_titleRect.Contains(mousePt)) ||
+<         (m_show_xlabel && m_xLabelRect.Contains(mousePt)) ||
+<         (m_show_ylabel && m_yLabelRect.Contains(mousePt)))
+---
+>     if ((m_show_title  && m_titleRect.Inside(mousePt)) ||
+>         (m_show_xlabel && m_xLabelRect.Inside(mousePt)) ||
+>         (m_show_ylabel && m_yLabelRect.Inside(mousePt)))
+723c719
+<         if (m_show_title && m_titleRect.Contains(mousePt))
+---
+>         if (m_show_title && m_titleRect.Inside(mousePt))
+725c721
+<         else if (m_show_xlabel && m_xLabelRect.Contains(mousePt))
+---
+>         else if (m_show_xlabel && m_xLabelRect.Inside(mousePt))
+727c723
+<         else if (m_show_ylabel && m_yLabelRect.Contains(mousePt))
+---
+>         else if (m_show_ylabel && m_yLabelRect.Inside(mousePt))
+2269,2270c2265
+< void wxPlotCtrl::SetAreaMouseCursor(wxStockCursor cursorid)
+<     // DJH 9/3/15 changed parameter from int to wxStockCursor
+---
+> void wxPlotCtrl::SetAreaMouseCursor(int cursorid)
+2290,2294d2284
+< bool wxPlotCtrl::RenderScrollbars()
+< {
+<   return true;
+< }
+< 
+2317c2307
+<     int sb_width = RenderScrollbars() ? m_yAxisScrollbar->GetSize().GetWidth() : 0;
+---
+>     int sb_width = m_yAxisScrollbar->GetSize().GetWidth();
+2356,2357d2345
+<         if (sb_width)
+<         {
+2360c2348
+<         }
+---
+> 
+2581,2586c2569
+<     wxRasterOperationMode logical_fn = dc->GetLogicalFunction();
+< #ifdef __WXMAC__
+<     dc->SetLogicalFunction( wxXOR );
+<     dc->SetBrush( *wxTRANSPARENT_BRUSH );
+<     dc->SetPen(*wxThePenList->FindOrCreatePen(*wxWHITE, 1, wxPENSTYLE_SHORT_DASH));
+< #else
+---
+>     int logical_fn = dc->GetLogicalFunction();
+2590c2573
+< #endif
+---
+> 
+2634c2617
+<     wxRasterOperationMode logical_fn = dc->GetLogicalFunction();
+---
+>     int logical_fn = dc->GetLogicalFunction();
+2766,2767c2749
+<     // DJH 2/19/09 change width to m_area_border_width
+<     dc->SetPen( wxPen(GetGridColour(), m_area_border_width, wxSOLID) ); 
+---
+>     dc->SetPen( wxPen(GetGridColour(), 1, wxSOLID) );
+2838c2820
+< void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi, bool bAutoCalcTicks )
+---
+> void wxPlotCtrl::DrawWholePlot( wxDC *dc, const wxRect &boundingRect, double dpi )
+2854,2871d2835
+<     // DJH 2/19/09 -- more old values
+< 
+<     double oldCurveDrawerScale = 0.0;
+<     double oldDataCurveDrawerScale = 0.0;
+<     double oldMarkerDrawerScale = 0.0;
+< 
+<     if(dpi >= 200.0)
+<     {
+<       oldCurveDrawerScale = m_curveDrawer->GetPenScale();
+<       oldDataCurveDrawerScale = m_dataCurveDrawer->GetPenScale();
+<       oldMarkerDrawerScale = m_markerDrawer->GetPenScale();
+<       m_curveDrawer->SetPenScale(fontScale);
+<       m_dataCurveDrawer->SetPenScale(fontScale);
+<       m_markerDrawer->SetPenScale(fontScale);
+<     }
+< 
+<     // END DJH 2/19/09 -- more old values
+< 
+2911,2916d2874
+<     //
+<     //  DJH - 2/24/2009  added parameter to determine whether AutoCalcTicks()
+<     //    should be called because the exported plots looked bad
+<     //
+<     if(bAutoCalcTicks) { AutoCalcTicks(); }
+< 
+2921,2925c2879
+< //    wxPrintf(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale);
+< //    DJH 09/03/2015 - wxPrintf is deprecated
+<     puts(
+<       wxString::Format(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale).ToUTF8()
+<       );
+---
+>     wxPrintf(wxT("DPI %g, font %g pen%g\n"), dpi, fontScale, penScale);
+2952,2956d2905
+< 
+< #if 0
+<     //  DJH 2/19/2009 - removed red rectangles, 
+<     //  what was the original author thinking
+< 
+2960c2909
+< #endif
+---
+> 
+2968d2916
+< 
+2976,2986d2923
+<     // DJH 2/19/09 restore more old values
+< 
+<     if(dpi >= 100.0)
+<     {
+<       m_curveDrawer->SetPenScale(oldCurveDrawerScale);
+<       m_dataCurveDrawer->SetPenScale(oldDataCurveDrawerScale);
+<       m_markerDrawer->SetPenScale(oldMarkerDrawerScale);
+<     }
+< 
+<     // END DJH 2/19/09 restore more old values
+< 
+3103c3040
+<     label.Printf( m_xAxisTickFormat.wc_str(), start);
+---
+>     label.Printf( m_xAxisTickFormat.c_str(), start);
+3120c3057
+<     label.Printf( m_yAxisTickFormat.wc_str(), start);
+---
+>     label.Printf( m_yAxisTickFormat.c_str(), start);
+3149c3086
+<             m_xAxisTickLabels.Add(wxString::Format(m_xAxisTickFormat, current));
+---
+>             m_xAxisTickLabels.Add(wxString::Format(m_xAxisTickFormat.c_str(), current));
+3171c3108
+<             m_yAxisTickLabels.Add(wxString::Format(m_yAxisTickFormat, current));
+---
+>             m_yAxisTickLabels.Add(wxString::Format(m_yAxisTickFormat.c_str(), current));
+3293a3231
+> 
+3395c3333
+<             if (!m_areaClientRect.Contains(event.GetPosition()))
+---
+>             if (!m_areaClientRect.Inside(event.GetPosition()))
+3541,3544d3478
+< 
+<   // 5/19/2010 - DJH - modified calls to send an event 
+<   //             when changing the axes from a keystroke
+< 
+3583,3588c3517,3522
+<         case WXK_LEFT  : SetOrigin(m_viewRect.GetLeft() - m_viewRect.m_width/10.0, m_viewRect.GetTop(),true); return;
+<         case WXK_RIGHT : SetOrigin(m_viewRect.GetLeft() + m_viewRect.m_width/10.0, m_viewRect.GetTop(),true); return;
+<         case WXK_UP    : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() + m_viewRect.m_height/10.0,true); return;
+<         case WXK_DOWN  : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() - m_viewRect.m_height/10.0,true); return;
+<         case WXK_PAGEUP    : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() + m_viewRect.m_height/2.0,true); return;
+<         case WXK_PAGEDOWN  : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() - m_viewRect.m_height/2.0,true); return;
+---
+>         case WXK_LEFT  : SetOrigin(m_viewRect.GetLeft() - m_viewRect.m_width/10.0, m_viewRect.GetTop()); return;
+>         case WXK_RIGHT : SetOrigin(m_viewRect.GetLeft() + m_viewRect.m_width/10.0, m_viewRect.GetTop()); return;
+>         case WXK_UP    : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() + m_viewRect.m_height/10.0); return;
+>         case WXK_DOWN  : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() - m_viewRect.m_height/10.0); return;
+>         case WXK_PRIOR : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() + m_viewRect.m_height/2.0); return;
+>         case WXK_NEXT  : SetOrigin(m_viewRect.GetLeft(), m_viewRect.GetTop() - m_viewRect.m_height/2.0); return;
+3642,3650c3576,3584
+<         case wxT('a'): SetZoom( wxPoint2DDouble(m_zoom.m_x/1.5, m_zoom.m_y    ), true, true ); return;
+<         case wxT('d'): SetZoom( wxPoint2DDouble(m_zoom.m_x*1.5, m_zoom.m_y    ), true, true ); return;
+<         case wxT('w'): SetZoom( wxPoint2DDouble(m_zoom.m_x,     m_zoom.m_y*1.5), true, true ); return;
+<         case wxT('x'): SetZoom( wxPoint2DDouble(m_zoom.m_x,     m_zoom.m_y/1.5), true, true ); return;
+< 
+<         case wxT('q'): SetZoom( wxPoint2DDouble(m_zoom.m_x/1.5, m_zoom.m_y*1.5), true, true ); return;
+<         case wxT('e'): SetZoom( wxPoint2DDouble(m_zoom.m_x*1.5, m_zoom.m_y*1.5), true, true ); return;
+<         case wxT('z'): SetZoom( wxPoint2DDouble(m_zoom.m_x/1.5, m_zoom.m_y/1.5), true, true ); return;
+<         case wxT('c'): SetZoom( wxPoint2DDouble(m_zoom.m_x*1.5, m_zoom.m_y/1.5), true, true ); return;
+---
+>         case wxT('a'): SetZoom( wxPoint2DDouble(m_zoom.m_x/1.5, m_zoom.m_y    ), true ); return;
+>         case wxT('d'): SetZoom( wxPoint2DDouble(m_zoom.m_x*1.5, m_zoom.m_y    ), true ); return;
+>         case wxT('w'): SetZoom( wxPoint2DDouble(m_zoom.m_x,     m_zoom.m_y*1.5), true ); return;
+>         case wxT('x'): SetZoom( wxPoint2DDouble(m_zoom.m_x,     m_zoom.m_y/1.5), true ); return;
+> 
+>         case wxT('q'): SetZoom( wxPoint2DDouble(m_zoom.m_x/1.5, m_zoom.m_y*1.5), true ); return;
+>         case wxT('e'): SetZoom( wxPoint2DDouble(m_zoom.m_x*1.5, m_zoom.m_y*1.5), true ); return;
+>         case wxT('z'): SetZoom( wxPoint2DDouble(m_zoom.m_x/1.5, m_zoom.m_y/1.5), true ); return;
+>         case wxT('c'): SetZoom( wxPoint2DDouble(m_zoom.m_x*1.5, m_zoom.m_y/1.5), true ); return;
+===============================================================
+< plotcurv.cpp > [original]
+===============================================================
+< plotdata.cpp > [original]
+777,780c777,780
+<                         wxString::Format(wxS("Data file: '%s'\n%d columns found.\n")
+<                                          wxS("Enter x and y cols separated by a space starting from 1.\n")
+<                                          wxS("If x = y then x values are 0,1,2... and y is given col."), filename.utf8_str(), n),
+<                                              wxS("Enter two columns of data file to use"));
+---
+>                         wxString::Format(wxT("Data file: '%s'\n%d columns found.\n"
+>                                              "Enter x and y cols separated by a space starting from 1.\n"
+>                                              "If x = y then x values are 0,1,2... and y is given col."), filename.c_str(), n),
+>                                              wxT("Enter two columns of data file to use"));
+809c809
+<                                     wxString::Format(wxT("Invalid data columns '%d %d', limited to 1 to %d"), (int)xcol+1, (int)ycol+1, n),
+---
+>                                     wxString::Format(wxT("Invalid data columns '%d %d', limited to 1 to %d"), xcol+1, ycol+1, n),
+839,845c839,845
+<                     wxString::Format(wxS("Loading cols (%d,%d) aborted after %d points\n\n")
+<                                      wxS("First 100 characters of offending line number: %d\n")
+<                                      wxS("\"%s\"\n\n")
+<                                      wxS("# for comments, blank lines Ok, comma, tab, space for separators\n")
+<                                      wxS("7   4\n33  2.5e-2\n...\n"),
+<                                          x_col, y_col, points, line_number, wxstr.Left(100).utf8_str()),
+<                                          wxS("Error loading ")+filename, wxOK|wxICON_ERROR);
+---
+>                     wxString::Format(wxT("Loading cols (%d,%d) aborted after %d points\n\n"
+>                                          "First 100 characters of offending line number: %d\n"
+>                                          "\"%s\"\n\n"
+>                                          "# for comments, blank lines Ok, comma, tab, space for separators\n"
+>                                          "7   4\n33  2.5e-2\n...\n"),
+>                                          x_col, y_col, points, line_number, wxstr.Left(100).c_str()),
+>                                          wxT("Error loading ")+filename, wxOK|wxICON_ERROR);
+951c951
+<         if (wxFinite(x)) s = wxString::Format(f, x);
+---
+>         if (wxFinite(x)) s = wxString::Format(f.c_str(), x);
+956c956
+<         if (wxFinite(y)) s += wxString::Format(f, y);
+---
+>         if (wxFinite(y)) s += wxString::Format(f.c_str(), y);
+===============================================================
+< plotdraw.cpp > [original]
+===============================================================
+< plotfunc.cpp > [original]
+===============================================================
+< plotmark.cpp > [original]
+===============================================================
+< plotprnt.cpp > [original]
+16c16
+< // #include "wx/wxprec.h"
+---
+> #include "wx/wxprec.h"
+===============================================================
+< fourier.c > [original]
+===============================================================

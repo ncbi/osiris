@@ -61,7 +61,6 @@ wxString CDirEntry::FormatStopTime() const
 {
   return nwxString::FormatDateTime(m_dtStop,wxEmptyString);
 }
-
 void CDirEntry::UpdateStatus()
 {
   switch(m_nStatus)
@@ -158,6 +157,7 @@ void CDirEntry::RegisterAll(bool)
   wxASSERT_MSG(sizeof(int) == sizeof(CDirEntryStatus),
     "Code Error in CDirEntry::RegisterAll()"
       "sizeof enum differs from sizeof int");
+  m_vsErrors.SetSkipIfEmpty(false);
   RegisterWxString("InputDir",&m_sInputDir);
   RegisterWxString("OutputDir",&m_sOutputDir);
   RegisterWxString("OutputFile",&m_sOutputFile);
@@ -165,6 +165,8 @@ void CDirEntry::RegisterAll(bool)
   RegisterWxDateTimeXML("StopTime",&m_dtStop);
   Register("parms",&m_parmOsiris,(void *)&m_parmOsiris);
   RegisterWxString("RunOutput",&m_sRunOutput);
+  Register("Errors", &m_vsErrors);
+  RegisterIntVector("Pings", &m_vnPings);
   RegisterInt("Status",(int *)&m_nStatus);
   RegisterLong("index",&m_nNdx);
 }
@@ -675,9 +677,18 @@ bool CDirList::CreateFileName(bool bForce)
 //    with ".obr" (osiris batch report)
 //
 //
+void CDirList::AddBlankErrorsIfNeeded()
+{
+  std::vector<CDirEntry*>::iterator itr;
+  for (itr = m_vpDir->begin(); itr != m_vpDir->end(); ++itr)
+  {
+    (*itr)->AddBlankErrorIfNeeded();
+  }
+}
 bool CDirList::SaveFile()
 {
   bool bRtn = CreateFileName();
+  AddBlankErrorsIfNeeded();
   if(bRtn)
   {
     bRtn = SaveFile(m_sFileName);
@@ -697,6 +708,7 @@ bool CDirList::SaveFile()
 
 bool CDirList::SaveFile(const wxString &sFileName)
 {
+  AddBlankErrorsIfNeeded();
   UpdateOutputDir();
   m_sDirSave.Empty();
   bool bRtn = nwxXmlPersist::SaveFile(sFileName);

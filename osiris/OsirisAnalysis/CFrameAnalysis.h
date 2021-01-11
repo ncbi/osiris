@@ -75,6 +75,7 @@ class CPanelAlerts;
 class CXSLExportFileType;
 class COARpeakAny;
 class CFrameSample;
+class CFramePlot;
 /*
 typedef enum
 {
@@ -96,6 +97,16 @@ public:
   static const int ILS_COLUMN;
   static const int CHANNEL_ALERT_COLUMN;
   static const int STATUS_COLUMN;
+
+  // flags for retrieving all samples
+  static const int INCLUDE_ALL;
+  static const int INCLUDE_DISABLED;
+  static const int INCLUDE_LADDER;
+  static const int INCLUDE_POS_CTRL;
+  static const int INCLUDE_NEG_CTRL;
+  static const int INCLUDE_UNUSED_BITS;
+  static const int INCLUDE_DEFAULT;
+
   CFrameAnalysis(mainFrame *parent, 
     wxSize sz, const wxString &sFileName);
   CFrameAnalysis(mainFrame *parent, 
@@ -107,13 +118,21 @@ public:
   virtual wxMenu *GetTableMenu();
   virtual wxMenu *GetGraphMenu();
   virtual int GetType();
-  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false);
+  virtual bool SetToolbarMenuLabel(bool bShow, bool bPlural = false, int nID = IDmenuShowHideToolbar);
   virtual bool MenuEvent(wxCommandEvent &e);
   virtual void OnTimer(wxTimerEvent &);
   virtual wxString GetFileName();
   void SetLabelType(int n);
   LABEL_PLOT_TYPE GetPlotLabelType();
   wxWindow *GetInfoPanel();
+  CFramePlot *FindPlotFrameBySample(COARsample *pSample);
+  CFramePlot *FindPlotFrameBySelectedSample()
+  {
+    COARsample *pSample = _FindSampleByRow(m_pGrid->GetGridCursorRow());
+    return FindPlotFrameBySample(pSample);
+  }
+
+  size_t GetSamplesByRow(std::vector<const COARsample *> *pSamples, int FLAGS = CFrameAnalysis::INCLUDE_DEFAULT);
   CPanelPlotPreview *GetGraphPanel()
   {
     return m_pPanelPlotPreview;
@@ -122,7 +141,7 @@ public:
   {
     return m_pOARfile == NULL ? false : m_pOARfile->IsLadderFree();
   }
-  const wxDateTime *GetSelectedTime()
+  virtual const wxDateTime *GetSelectedTime()
   {    
     const wxDateTime *pRtn = 
       (m_pButtonHistory == NULL)
@@ -140,10 +159,12 @@ public:
     {
       m_pPanelToolbar->Show(bShow);
       Layout();
-      SetToolbarMenuLabel(!bShow);
+      SetToolbarMenuLabel(!bShow, false, IDmenuShowHideTableToolbar);
     }
   }
   void ToggleToolbar();
+  void ToggleToolbarPreview();
+  void ToggleScrollbarsPreview();
   bool CanSaveAs() const
   {
     return _XmlFile();
@@ -193,15 +214,35 @@ public:
   void DoAcceptSample(int nReviewType,COARsample *pSample);
   void DoReviewLocus(COARsample *pSample, COARlocus *pLocus);
   void DoAcceptLocus(COARsample *pSample, COARlocus *pLocus);
-#if 0
-  void DoEditLocus(COARsample *pSample, 
-    COARlocus *pLocus, 
-    wxWindow *pParent = NULL);
-#endif
-  bool CheckIfHistoryOK();
   void CheckSaveStatus();
   void EditPeak(COARpeakAny *, COARsample *, CMDIFrame * = NULL);
   void ShowSampleFrame(COARsample *pSample, const wxString &sLocus, int nAlertType, int nEventID = -1);
+  int GetSampleNameLabelType()
+  {
+    // return IDmenuDisplayNameSample to displaying sample name
+    //        IDmenuDisplayNameFile to display file name
+    return m_pComboName->GetSelection();
+  }
+  void RemoveSample(COARsample *pSample, CFrameSample *pf)
+  {
+    MapSampleFrame::iterator itr = m_mapSamples.find(pSample);
+    if (itr != m_mapSamples.end() &&
+      itr->first == pSample &&
+      itr->second == pf)
+    {
+      m_mapSamples.erase(itr);
+    }
+#ifdef __WXDEBUG__
+    else
+    {
+      wxASSERT_MSG(0, wxT("Problem in CFrameAnalysis::RemoveSample"));
+    }
+#endif
+  }
+  COARfile *GetOARfile()
+  {
+    return m_pOARfile;
+  }
 private:
   CXSLExportFileType *GetFileTypeByID(int nID);
 
@@ -215,6 +256,7 @@ private:
   {
     if(m_pMenuBar != NULL) {m_pMenuBar->SetPlotMenu(p);}
   }
+  void _UpdateHistoryButtons();
   bool _CheckPromptNewer();
   void _EnablePreview();
   void _DisablePreview();
@@ -238,10 +280,6 @@ private:
   void _OnEnableSample();
   void _OnReAnalyze();
   void _OnDeleteDisabled();
-#if 0
-  void _OnEditLocus(COARsample *pSample, int nCol);
-  void _OnEditAlerts(COARsample *pSample, int nCol);
-#endif
   int _GetPreviewColumn();
   void _UpdatePreview();
   void _SetupLocusPanel(COARsample *pSample, int nChannel, const wxString &sLocusName);
@@ -301,11 +339,7 @@ private:
   {
     return _IsChannelColumn(m_nLastColSelect);
   }
-  void SetFileNameLabel(const wxString &sFileName)
-  {
-    m_pLabelFile->SetValue(sFileName);
-    m_pLabelFile->SetInsertionPointEnd();
-  }
+  void SetFileNameLabel(const wxString &sFileName);
   static int _ColToType(int nCol)
   {
     int nType = -1;
@@ -336,16 +370,7 @@ private:
     }
     return nCol;
   }
-#if 0
-  void _CleanupMenus()
-  {
-    if(m_pMenu != NULL)
-    {
-      delete m_pMenu;
-      m_pMenu = NULL;
-    }
-  }
-#endif
+  void _OnResize(wxSizeEvent &e);
   void _UpdateMenu();
   void _UpdateHistoryMenu(int nRow, int nCol,bool bEnabled = true);
   void _UpdateHistoryMenu(bool bEnabled)
@@ -384,6 +409,10 @@ private:
     COARsample *pSample = m_SampleSort.GetSample((size_t) nRow);
     return pSample;
   }
+  size_t _SampleCount()
+  {
+    return m_SampleSort.GetSamples()->size();
+  }
   void _AddSample(const COARsample *ps,CFrameSample *pf)
   {
     m_mapSamples.insert(
@@ -391,24 +420,7 @@ private:
   }
   bool _DestroySamples();
   bool _CheckSamples();
-public:
-  void RemoveSample(COARsample *pSample,CFrameSample *pf)
-  {
-    MapSampleFrame::iterator itr = m_mapSamples.find(pSample);
-    if(itr != m_mapSamples.end() &&
-       itr->first == pSample && 
-       itr->second == pf)
-    {
-      m_mapSamples.erase(itr);
-    }
-#ifdef __WXDEBUG__
-    else
-    {
-      wxASSERT_MSG(0,wxT("Problem in CFrameAnalysis::RemoveSample"));
-    }
-#endif
-  }
-private:
+
 
   COARfile *m_pOARfile;
   CMenuAnalysis *m_pMenu;
@@ -449,6 +461,8 @@ private:
   int m_nLastRowSelect;
   int m_nEntireRowSelected;
   int m_nNoTimer;
+  int m_nFileNameLabelTimer;
+  int m_nPreviewDelay;
   bool m_bFileError;
 
 
@@ -482,12 +496,6 @@ private:
     {
       return m_pOARfile->GetParameters();
     }
-#if 0
-    else if(_TextFile())
-    {
-      return m_pFile->GetParameters();
-    }
-#endif
     else
     {
       const CParmOsiris *p(NULL);
@@ -523,12 +531,17 @@ public:
   void OnTogglePreview(wxCommandEvent &);
   void OnHistoryUpdate(wxCommandEvent &);
   void OnChangeAlertView(wxCommandEvent &);
-  void OnCheckSplitter(wxCommandEvent &);
   void OnHistoryView(wxCommandEvent &);
   void OnSortGrid(wxCommandEvent &);
   void OnExportCMF(wxCommandEvent &);
   void OnArchiveCreate(wxCommandEvent &);
   void OnUserExport(wxCommandEvent &);
+  void OnPrintPreview(wxCommandEvent &e);
+#ifdef __WXMAC__
+  void OnPageMargins(wxCommandEvent &e);
+#endif
+  void OnPageSetup(wxCommandEvent &e);
+
   DECLARE_PERSISTENT_SIZE  
   DECLARE_EVENT_TABLE()
   DECLARE_ABSTRACT_CLASS(CFrameAnalysis)

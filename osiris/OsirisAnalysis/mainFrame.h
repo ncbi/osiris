@@ -209,6 +209,10 @@ public:
     CMDIFrame *pRtn = m_MDImgr.FindWindowByName(sPath,bRaise);
     return pRtn;
   }
+  CFramePlot *FindPlotWindowBySample(COARsample *pSample)
+  {
+    return m_MDImgr.FindPlotWindowBySample(pSample);
+  }
   void UpdateHistory(COARfile *pFile)
   {
     m_MDImgr.UpdateHistory(pFile);
@@ -282,7 +286,10 @@ public:
     mainApp::LogMessage(wxS("MoveToTop"));
 #endif
     CheckUpdateWindowMenu();
-    m_MDImgr.MoveToTop(m_pLastActive);
+    if(m_pLastActive != NULL)
+    {
+      m_MDImgr.MoveToTop(m_pLastActive);
+    }
 #endif
 #ifdef __WXDEBUG__
     _LogActiveFrame();

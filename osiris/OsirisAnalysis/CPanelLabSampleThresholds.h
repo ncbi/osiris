@@ -35,6 +35,7 @@
 #include "CGridEdit.h"
 #include "CGridRFULimits.h"
 
+class CSizerSearchBox; // in .cpp file
 
 //********************************************************************
 //
@@ -48,11 +49,14 @@ public:
       const CXMLmessageBook *pBook);
   virtual bool TransferDataFromWindow();
   virtual bool TransferDataToWindow();
+  const wxArrayString &GetRowLabels();
   void SetAllReadOnly(bool bReadOnly)
   {
     SetTableReadOnly(bReadOnly);
   }
+  void GoToRow(int nRow);
   void SetMessageBookRows(int n);
+  void HighlightRows(const wxArrayInt &anRows);
 private:
   enum
   {
@@ -66,6 +70,13 @@ private:
     ROW_MIN_BPS_ARTIFACTS,
     ROW_MESSAGE_BOOK_OFFSET
   };
+  enum
+  {
+    COL_ROW_LABEL = 0,
+    COL_VALUE,
+    COL_UNITS,
+    COL_COUNT
+  };
   nwxGridCellValidator *GetPctValidator()
   {
     if(m_pValidatePct == NULL)
@@ -74,8 +85,20 @@ private:
     }
     return m_pValidatePct;
   }
+  void _SetupLabelColumns();
+  void _SetRowLabelValue(int nRow, const wxString &s)
+  {
+    _ClearRowLabelList();
+    SetCellValue(nRow, COL_ROW_LABEL, s);
+  }
+  void _ClearRowLabelList()
+  {
+    m_asRowLabels.Empty();
+  }
+  wxArrayString m_asRowLabels;
   nwxGridCellUIntRangeValidator *m_pValidatePct;
   wxColour m_clrBackground;
+  wxColour m_clrForeground;
   CLabThresholds *m_pData;
   const CXMLmessageBook *m_pMessageBook;
   vector<const CXMLmessageBookSM *> m_vpMsgBookSM;
@@ -107,8 +130,13 @@ public:
     Refresh();
   }
 private:
+  void _OnSearchText(wxCommandEvent &e);
+  void _OnSearchButton(wxCommandEvent &e);
+  wxArrayInt m_anSearchMatches;
   CGridSampleLimits *m_pGridSample;
   CLabThresholds *m_pData;
+  CSizerSearchBox *m_pSizerSearch;
+  DECLARE_EVENT_TABLE()
 };
 
 

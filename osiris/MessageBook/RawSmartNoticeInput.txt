@@ -270,6 +270,18 @@ smFsaChannelForOsirisChannel4	1157	2673
 smFsaChannelForOsirisChannel5	1158	2674
 smChannelRemappingForLadderFreeOverrideDefault	1159	2675
 smMakeMixturesDefaultSampleTypePreset	1160	2676
+smSampleAnalysisTruncatedPrematurely	1161	2677
+smSamplesTerminatedPrematurely	1162	2678
+smSamplesHadNoDataForChannels	1163	2679
+smSampleMissingDataForChannels	1164	2680
+smSamplesAreNotValidInputFiles	1165	2681
+smSampleIsNotValidInputFile	1166	2682
+smHeightToConsiderTrueHomozygote	1167	2683
+smPeakHeightAboveHomozygoteTrustThreshold	1168	2684
+smPeakIgnored	1169	2685
+smLaddersFromWrongMarkerSet	1170	2686
+smUncertainPullUp	1171	2687
+smUseNonlinearLMSAlgorithmForAllChannels	1172	2688
 
 
 

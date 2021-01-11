@@ -64,7 +64,7 @@ class wxFile;
 class wxDateTime;
 class wxWindow;
 class mainFrame;
-
+class wxBitmap;
 
 #ifdef TMP_DEBUG
 
@@ -112,6 +112,7 @@ public:
       m_pTimer->Start(250,false);
     }
   }
+  static void Raise(); // for mdi app raise the mdi window, otherwise do nothing
   void OnTimer(wxTimerEvent &);
 
 #define DECLARE_CMD_HANDLER(x) void x(wxCommandEvent &e);
@@ -181,6 +182,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
       p->Stop();
     }
   }
+  static void DumpBitmap(wxBitmap *pBitmap, const wxString &sFileName);
 
   static void ShowError(const wxString &sMsg,wxWindow *parent);
   static void ShowAlert(const wxString &sMsg,wxWindow *parent);
@@ -212,6 +214,7 @@ DECLARE_CMD_HANDLER(OnWindowMenu)
   static void Ping3(const wxString &sName, const wxString &sValue,
     const wxString &sName2, const wxString &sValue2,
     const wxString &sName3, const wxString &sValue3);
+  static void PingList(const wxChar ** apList);
   static void PingExit();
   static nwxXmlMRU *GetMRU();
   static nwxXmlCmfList *GetCMFlist();
@@ -301,6 +304,16 @@ public:
   {
     mainApp::SuppressMessages(m_bSave);
   }
+};
+
+class CWindowPointer
+{
+public:
+  CWindowPointer(wxWindow *p) : m_p(p) {}
+  ~CWindowPointer() { if(m_p != NULL) m_p->Destroy(); }
+  void Release() { m_p = NULL; }
+private:
+  wxWindow *m_p;
 };
 
 // pinger types

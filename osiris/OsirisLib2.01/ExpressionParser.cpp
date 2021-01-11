@@ -89,6 +89,8 @@
 #include "rgstring.h"
 #include "Expression.h"
 #include "rgdlist.h"
+#include "STRLCAnalysis.h"
+
 
 //using namespace std;
 
@@ -1743,8 +1745,11 @@ Expression* Expression :: Compile (const RGString& expressionString) {
 	if ( Exprparse ())
 		errcnt++;
 	
-	if (errcnt > 0)
+	if (errcnt > 0) {
+
 		cout << "Found errors in:  " << expressionString.GetData () << endl;
+		STRLCAnalysis::mFailureMessage->AddMessage (expressionString);
+	}
 		
 	if (name_stack.Entries () > 0)
 		cout << "Left with " << name_stack.Entries () << " names still in stack...compilation incomplete." << endl;

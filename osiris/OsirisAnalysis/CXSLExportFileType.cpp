@@ -928,14 +928,6 @@ bool CExportFiles::_FileExists()
     _SetupFileName();
   }
   bool b = wxFileName::FileExists(g_sFileName);
-#ifdef TMP_DEBUG
-  if(!b)
-  {
-    wxString s = "Cannot find export file: ";
-    s.Append(g_sFileName);
-    nwxLog::LogMessage(s);
-  }
-#endif
   return b;
 }
 bool CExportFiles::SaveExportFile()

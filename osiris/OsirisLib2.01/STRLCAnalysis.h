@@ -40,6 +40,7 @@
 #include "Notice.h"
 #include "rgpersist.h"
 #include "SmartMessagingObject.h"
+#include "FailureMessages.h"
 
 #include <string>
 #include <math.h>
@@ -66,6 +67,8 @@ public:
 	STRLCAnalysis (const RGString& ladderInformationDirectory, const RGString& markerSetName, const RGString& parentDirectoryForReports, const RGString& messageBookPath, bool isSmartMsgAnalysis);  // Smart message constructor2
 	STRLCAnalysis (const RGString& ladderInformationDirectory, const RGString& markerSetName, const RGString& parentDirectoryForReports, const RGString& messageBookPath, bool isSmartMsgAnalysis, bool isFileInput);  // Smart message constructor3
 	virtual ~STRLCAnalysis ();
+
+	static MainMessages* mFailureMessage;
 
 	// Non-message functions***************************************************************************************************************************
 	// ************************************************************************************************************************************************
@@ -136,6 +139,16 @@ public:
 	static RGString GetOutputSubDirectory () { return OutputSubDirectory; }
 	static void SetCollectILSHistory (bool s) { CollectILSHistory = s; }
 
+	static void ResetDirectoryCrashMode (bool m) {
+		DirectoryCrashMode = m;
+	}
+	static bool GetDirectoryCrashMode () {
+		return DirectoryCrashMode;
+	}
+
+	static void AddInvalidFile (const RGString& name);
+	static bool FileNameIsInInvalidList (const RGString& name);
+
 protected:
 	PopulationCollection* mCollection;
 	RGString mParentDirectoryForReports;
@@ -173,6 +186,8 @@ protected:
 	static RGString OutputSubDirectory;
 	static RGString MsgBookBuildTime;
 	static bool CollectILSHistory;
+	static bool DirectoryCrashMode;
+	static RGDList InvalidFilesByName;
 };
 
 

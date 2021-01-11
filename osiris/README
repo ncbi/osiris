@@ -3,8 +3,11 @@
 # instructions for building OSIRIS
 #  -- problems, contact us at forensics@ncbi.nlm.nih.gov
 #
+# these instruction may not work on older versions of OSIRIS
+# because they were built with older versions of compilers, libraries, etc.
 #
-# wxWidgets 3.0.4 is required
+#
+# wxWidgets 3.0.5 is required
 # For more information, see http://www.wxwidgets.org
 #
 # This shell script is for building the macintosh version
@@ -14,40 +17,35 @@
 #
 #  MS-Windows build
 #
-# To build on MS-Windows, with VC++ 2010 (ver 10)
-# wxWidgets, libxml2, libxslt, and libiconv are also required.
-#  wxWidgets can be downloaded at http://www.wxwidgets.org/ and
-#  modified versions of libxml2, libxslt, and libiconv are included.
+# To build on MS-Windows, with VC++ 2017
+#  wxWidgets 3.0.5, libxml2 2.9.8, libxslt 1.1.33, and libiconv 1.15 are also required.
+#  wxWidgets can be downloaded at http://www.wxwidgets.org/ 
 #
 #  Source code obtained for libxml2 and libxslt from http://xmlsoft.org/
 #  Source code for libiconv obtained at http://www.gnu.org/software/libiconv/
-#  Header files for all three libraries for
-#  MC VC++ obtained at http://www.zlatkovic.com/libxml.en.html
-#  and used to replace the corresponding header files in the distribution.
 #
-# Modification (already done) to these libraries:
+#  libxml2, libxslt, and libiconv should be built in the same parent directory and the
+#  environment variable EXTLIB should be set to the parent directory such that the libraries
+#  can be found in the following directories
 #
-#  In libxslt-1.1.26/libexslt, modified libexslt.h and changed
-#  #include <win32config.h>
-#  to
-#  #include <libxslt/win32config.h>
+#  $(EXTLIB)\libiconv-win-build-1.15\build-VS2017\Release
+#  $(EXTLIB)\libxml2-2.9.8\win32\bin.msvc
+#  $(EXTLIB)\libxslt-1.1.33\win32\bin.msvc
 #
-#  Removed all occurrences of
-#  #include <win32config.h>
-#  from all other *.c, *.h files and made sure that
-#  #include "libexslt/libexslt.h" is present
+#  and the C header files can be found in
 #
-#  Created VC++ projects and build the code generation option of
-#  "Multithreaded" (/MD)
+#  $(EXTLIB)\libiconv-win-build-1.15\include
+#  $(EXTLIB)\libxml2-2.9.8\include
+#  $(EXTLIB)\libxslt-1.1.33
 #
-#
+#  The VC++ project files use EXTLIB to find these libraries
 #
 # wxWidgets:
 #
-#  OSIRIS uses wxWidgets v 3.0.4
+#  OSIRIS uses wxWidgets v 3.0.5
 #  Download wxWidgets at http://wxwidgets.org/downloads/ and select either 
 #  the ZIP or 7z download.
-#  Create a new folder, (for example wxWidgets-3.0.4) and unpack the 
+#  Create a new folder, (for example wxWidgets-3.0.5) and unpack the 
 #  contents of the zip file there.
 #  Set the environment variable WXHOME to the full path of this folder.  
 #  This is done in Control Panel, search for "environment"
@@ -65,13 +63,12 @@
 # Build OSIRIS:
 #
 #  OSIRIS is built with Microsoft Visual C++ from Microsoft Visual Studio 
-#  2010 Professional.  Use of a newer version of Visual C++ may result in 
-#  compiler errors.
+#  2017 with the msi installer added.  To install the msi installer, see
+#  https://marketplace.visualstudio.com/items?itemName=visualstudioclient.MicrosoftVisualStudio2017InstallerProjects
 #  It is important that the Visual C++ environment is started AFTER setting 
-#  WXHOME in the environment.
-#  Download the source code for version 2.6 (or 2.4 or later) from 
-#  https://github.com/ncbi/osiris Version 2.3 requires an older version of 
-#  wxWidgets.  Select the version from the "Branch" pulldown on the left 
+#  WXHOME and EXTLIB in the environment.
+#  Download the source code at https://github.com/ncbi/osiris 
+#  Select the version from the "Branch" pulldown on the left.
 #  side of the web page and select "Download ZIP" from the right side.  
 #  Unpack the zip file and go to the "osiris" folder.
 #  Open the solution file, osirisAll.sln with Visual C++ 2010 (or later)
@@ -88,12 +85,8 @@
 #  which will set up the directory structure in .\ZipPerl\Osiris
 #  and then create a zip file.
 #
-#  This perl script requires cygwin, perl, and 7zip which are available
-#  for free at
+#  This perl script requires MinGW (bash), perl, and 7zip
 #
-# http://www.cygwin.com/
-# http://www.activestate.com/
-# http://www.7-zip.org/
 #
 # After the above are installed, the commands, 7z and cp must be
 # available from PATH environment variable
@@ -109,7 +102,7 @@
 ###########################################################################
 #
 #
-#  macintosh 10.9 - 10.10 build - UNIX command line
+#  macintosh - UNIX command line
 #
 #
 # Make sure you have the developer tools for Macintosh installed.
@@ -120,30 +113,28 @@
 # If gcc is not installed, you will receive a message indicating that, 
 # otherwise it will display version information.
 #
-# Build wxWidgets 3.0.4 - Go to http://www.wxwidgets.org/downloads/
-# and download the source code from the link showing: 
-#    "Source for Linux, OS X,etc."
+# Build wxWidgets 3.0.5 - Go to http://www.wxwidgets.org/downloads/
 # Unpack the download to a new directory, for example
 # from the directory containing the download, run the following:
-#   tar xvf wxWidgets-3.0.4.tar.bz2
+#   tar xvf wxWidgets-3.0.5.tar.bz2
 # This will unpack the source code into a directory named 
-#   wxWidgets-3.0.4
+#   wxWidgets-3.0.5
 # change to that directory and create a new directory, build-cocoa
 #
-#  cd wxWidgets-3.0.4
+#  cd wxWidgets-3.0.5
 #  mkdir build-cocoa
 #
 # there is a shell script file in this osiris distribution, in 
 # the folder buildwx-osx, named config.sh
-# copy that file to wxWidgets-3.0.4/build-cocoa
+# copy that file to wxWidgets-3.0.5/build-cocoa
 #
 # if the osiris directory and wxWidgets have the same parent directory, the
 # following commands should work from the wxWidgets directory
 #
-#  cp ../../osiris/build-osx/config.sh ./build-cocoa/config.sh
+#  cp ../../osiris/buildwx-osx/config.sh ./build-cocoa/config.sh
 # 
-# change directory to wxWidgets-3.0.4/build-cocoa and run the script
-#   cd wxWidgets-3.0.4/build-cocoa
+# change directory to wxWidgets-3.0.5/build-cocoa and run the script
+#   cd wxWidgets-3.0.5/build-cocoa
 #   sh config.sh
 #
 # when finished, the output will be in a file, build_log.txt
@@ -160,7 +151,7 @@
 #   bin, include, lib, and share
 #
 # If wxWidgets will be used from a location other than ~/local/wxRelease
-# set the environment variable $WXHOME to that location before building
+# set the environment variable WXHOME to that location before building
 # OSIRIS.
 #
 #
@@ -187,7 +178,7 @@
 #
 # If there are no errors, you are done. Using the
 # Macintosh user interface, open your "Home" folder
-# in Finder, then Applications, and run Osiris.app
+# in Finder, then Applications - Osiris-Installer, and run Osiris-*.app
 #
 #
 cd `dirname $0`

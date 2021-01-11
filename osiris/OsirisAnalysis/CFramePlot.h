@@ -99,6 +99,15 @@ public:
   virtual wxString GetFileName();
   virtual void OnTimer(wxTimerEvent &e);
   void SetOARfile(COARfile *pFile);
+  bool HasOARfile()
+  {
+    return (m_pOARfile != NULL);
+  }
+  bool IsThisOARfile(COARfile *pFile)
+  {
+    return (m_pOARfile == pFile);
+  }
+  CFrameAnalysis *FindAnalysisFrame();
   void UpdateOARfile(const wxString &sSampleFileName);
   void EditPeak(COARpeakAny *);
   bool XBPSValue()
@@ -107,13 +116,28 @@ public:
   }
   void SetXBPSValue(bool b)
   {
-    m_bXBPS = b && m_pData->CanSetBPS();
+    bool bTmp = b && m_pData->CanSetBPS();
+    if (bTmp != m_bXBPS)
+    {
+      m_bXBPS = bTmp;
+      _CleanupBins();
+    }
   }
 
   virtual bool Show(bool show = true);
 //  void ShowScrollbars(bool bShow);
 //  void ShowToolbars(bool bShow);
-
+  void InvalidatePrintColors()
+  {
+    if (m_pPlotForBitmap == NULL)
+    {
+    }
+    else if (m_pPlotForBitmap->IsPrinting())
+    {
+      m_pPlotForBitmap->InvalidateColors();
+    }
+  }
+  bool FindOARforType(int nType);
   void ReInitialize(const wxString &sLocus, bool bSingle);
   void AddPlot(CPanelPlot *pPreceed, bool bUpdate = true);
   void RemovePlot(CPanelPlot *pRemove, bool bRefresh = true);
@@ -134,7 +158,8 @@ public:
   }
 #endif
   void SyncState(CPanelPlot *p, int nID);
-  void SetUseExternalTimer(bool b = true);
+  //void SetUseExternalTimer(bool b = true);
+  COARsample *GetSample();
   bool SetScrollbarMenuLabel(bool bShow);
   bool SetWindowScrollbarMenuLabel();
   void RebuildAll();
@@ -194,8 +219,11 @@ public:
   }
   wxBitmap *CreateBitmap(
     int nWidth, int nHeight, int nDPI, 
-    const wxString &sTitle = wxEmptyString);
-  const wxDateTime *GetSelectedTime()
+    const wxString &sTitle, // used only for export PNG, should be empty for printing
+    int nPlotsPerPage = CHANNEL_MAX, // this and following parameters are used for printing
+    int nPageNr = 1,
+    bool bForcePrintFont = false);
+  virtual const wxDateTime *GetSelectedTime()
   {
     const wxDateTime *pRtn = 
       (m_pMenuHistory == NULL)
@@ -208,6 +236,16 @@ public:
   virtual void CheckFileModification();
   void SyncToolbars(CPanelPlot *p);
   void SetFocusPlot(int n);
+  void RebuildCurves()
+  {
+    CBatchPlot X(this);
+    for (set<CPanelPlot *>::iterator itr = m_setPlots.begin();
+      itr != m_setPlots.end();
+      ++itr)
+    {
+      (*itr)->RebuildCurves();
+    }
+  }
 #if FP_SCROLL_EVENT
   void SendScrollPlotEvent(int nPlot = 0, int nDelay = 2)
   {
@@ -245,12 +283,14 @@ private:
     _SetFixed(!m_bFixed);
   }
   void _FindOARfile(
-    int nType = CDialogPlotMessageFind::MSG_TYPE_HISTORY);
+    int nType, 
+    bool bOpenTable = false);
   void _RebuildLabels(bool bForce = true);
   void _SetupHistoryMenu();
   void _SetupTitle();
   void _RebuildMenu();
   void _ScrollPlot();
+  void _CleanupBins();
 
   void _CheckRebuildMenu()
   {
@@ -323,7 +363,16 @@ private:
   CDialogExportPlot *_GetExportDialog();
   bool _CheckAnalysisFile(COARfile *pFile);
   void _CleanupExportDialog();
-  void ShowToolbars(bool bShow = true);
+  void _SetupBitmapPlot();
+  CPanelPlot *_GetBitmapPlot(bool bPrinting)
+  {
+    if (m_pPlotForBitmap == NULL)
+    {
+      _SetupBitmapPlot();
+    }
+    m_pPlotForBitmap->SetPrinting(bPrinting);
+    return m_pPlotForBitmap;
+  }
   void UpdatePlotNumbers();
   CPanelPlot *GetPanelPlot(bool bDraw = true, unsigned int nr = 0);
   wxScrolledWindow *m_pPanel;
@@ -334,6 +383,7 @@ private:
   vector<CPanelPlot *> m_vpPlotsByMenuNumber;
   CPlotData *m_pData;
   COARfile *m_pOARfile;
+  COARsample *m_pSample;
   CKitColors *m_pColors;
   CFramePlotMenu *m_pMenu;
   CMenuHistory *m_pMenuHistory;
@@ -342,6 +392,7 @@ private:
   CHistoryTime m_TimeLastRebuild;
   CFramePlotState m_nState;
   CPanelPlot *m_pPlotSyncTo;
+  CPanelPlot *m_pPlotForBitmap;
 #if DELAY_PLOT_AREA_SYNC
   CPanelPlot *m_pPlotSyncThisTo;
 #endif
@@ -365,6 +416,12 @@ private:
 public:
   void OnHistoryUpdate(wxCommandEvent &e);
   void OnExport(wxCommandEvent &e);
+  wxString GetPrintTitle();
+  void OnPrintPreview(wxCommandEvent &e);
+#ifdef __WXMAC__
+  void OnPageMargins(wxCommandEvent &e);
+#endif
+  void OnPageSetup(wxCommandEvent &e);
   void OnClose(wxCloseEvent &e);
   void OnContextMenu(wxContextMenuEvent &e);
   void OnHistoryButton(wxCommandEvent &e);

@@ -58,6 +58,7 @@
 #include "TestCharacteristic.h"
 #include "STRSmartMessage.h"
 #include "DirectoryManager.h"
+#include "STRLCAnalysis.h"
 
 
 static ParameterServerKill g_kill;
@@ -904,6 +905,9 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 	if (mSet == NULL) {
 
 //		cout << "Parameter server could not find population marker set named:  " << mMarkerSetName.GetData () << endl;
+		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (*mMarkerSetName);
+		STRLCAnalysis::mFailureMessage->SetPingValue (30);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 		return -1;
 	}
 
@@ -924,8 +928,11 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 		if (locus != NULL)
 			SetLadderLocusSpecificThresholds (locus, nextLink);
 
-		else
+		else {
+
+			STRLCAnalysis::mFailureMessage->AddMessage ("Could not find ladder locus named:  " + nextLink->locusName);
 			status = -1;
+		}
 	}
 
 	for (c2Iterator = mSampleLocusSpecificThresholds->begin (); c2Iterator != mSampleLocusSpecificThresholds->end (); c2Iterator++) {
@@ -936,8 +943,11 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 		if (locus != NULL)
 			SetSampleLocusSpecificThresholds (locus, nextLink);
 
-		else
+		else {
+
+			STRLCAnalysis::mFailureMessage->AddMessage ("Could not find sample locus named:  " + nextLink->locusName);
 			status = -1;
+		}
 	}
 
 	list<locusSpecificNonStandardStutterStruct*>::iterator it;
@@ -951,10 +961,19 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 		if (locus != NULL)
 			locus->SetLocusSpecificNonStandardStutterArray (*nextNSLink);
 
-		else
+		else {
+
+			STRLCAnalysis::mFailureMessage->AddMessage ("Could not find non-standard stutter locus named:  " + nextLink->locusName);
 			status = -1;
+		}
 	}
 
+	if (status < 0) {
+
+		STRLCAnalysis::mFailureMessage->CouldNotFindLocusToSetThreshold ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (30);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+	}
 
 	return status;
 }

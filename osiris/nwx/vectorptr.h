@@ -59,7 +59,10 @@ public:
     {
       itr = p->rbegin();
       px = *itr;
-      delete (px);
+      if (px != NULL)
+      {
+        delete (px);
+      }
       p->pop_back();
     }
   }
@@ -139,6 +142,19 @@ public:
     return bRtn;
   }
 };
+template<class T> class vectorptr_cleanup
+{
+public:
+  vectorptr_cleanup<T>(std::vector<T*> *p) : m_p(p) {}
+  virtual ~vectorptr_cleanup<T>()
+  {
+    vectorptr<T>::cleanup(m_p);
+  }
+private:
+  std::vector<T*> *m_p;
+};
+
+
 
 template<class T, class S = std::less<T *> > class vectorptrSort
 {

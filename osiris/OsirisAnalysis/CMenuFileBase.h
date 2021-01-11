@@ -31,6 +31,7 @@
 #ifndef __C_MENU_FILE_BASE_H__
 #define __C_MENU_FILE_BASE_H__
 #include <wx/menu.h>
+#include "wxIDS.h"
 
 class CMenuFileBase : public wxMenu
 {
@@ -40,6 +41,19 @@ public:
   size_t GetInsertPoint()
   {
     return m_nInsertPoint;
+  }
+  int InsertPrintItems(int nPos)
+  {
+    int nRtn = 4; // number of insertions
+    InsertSeparator(nPos);
+    Insert(nPos, wxID_PRINT);
+#ifdef __WXMAC__
+    Insert(nPos, IDpageMargins, wxT("Page Margins..."));
+    nRtn++;
+#endif
+    Insert(nPos, IDpageSetup, wxT("Page Set&up..."));
+    InsertSeparator(nPos);
+    return nRtn;
   }
   static const wxString ARCHIVE_CREATE;
   static const wxString ARCHIVE_EXTRACT;

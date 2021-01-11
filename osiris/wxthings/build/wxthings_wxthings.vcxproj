@@ -22,7 +22,7 @@
     <ProjectName>wxthings_wxthings</ProjectName>
     <ProjectGuid>{57F62151-A66D-44D6-A226-3837DA04E7D1}</ProjectGuid>
     <RootNamespace>wxthings_wxthings</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

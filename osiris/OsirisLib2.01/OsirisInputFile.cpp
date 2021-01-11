@@ -34,12 +34,13 @@
 
 #include "OsirisInputFile.h"
 #include "rgtokenizer.h"
+#include "STRLCAnalysis.h"
 #include <iostream>
 
 using namespace std;
 
 
-OsirisInputFile :: OsirisInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mCriticalOutputLevel (15), mMinSampleRFU (0.0),
+OsirisInputFile :: OsirisInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mFinalStdSettingsName (), mCriticalOutputLevel (15), mMinSampleRFU (0.0),
 mMinLadderRFU (0.0), mMinLaneStandardRFU (0.0), mMinInterlocusRFU (0.0), mMinLadderInterlocusRFU (0.0), mSampleDetectionThreshold (-1.0), 
 mUseRawData (true), mUserNamedSettingsFiles (true), mIsLadderFreeAnalysis (false) {
 
@@ -95,7 +96,10 @@ int OsirisInputFile :: ReadAllInputs (const RGString& inputFileName) {
 
 		if (!mInputFile->isValid ()) {
 
-			cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
+			//cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
+			STRLCAnalysis::mFailureMessage->InputFileUnreadable (inputFileName);
+			STRLCAnalysis::mFailureMessage->SetPingValue (10);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			delete mInputFile;
 			mInputFile = NULL;
 			return -1;
@@ -140,6 +144,9 @@ int OsirisInputFile :: ReadAllInputs () {
 		else {
 
 			cout << "Parsing input file terminated prematurely..." << endl;
+			STRLCAnalysis::mFailureMessage->InputStringFormatError ();
+			STRLCAnalysis::mFailureMessage->SetPingValue (20);
+			STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
 			returnStatus = -1;
 			break;
 		}
@@ -164,12 +171,14 @@ int OsirisInputFile :: ReadLine () {
 	bool leftOfEquals = true;
 	RGString* nextLine;
 	RGString thisLine;
+	RGString msg;
 
 	if (mDebug && (mInputFile != NULL)) {
 
 		// input is coming from file...
 
 		temp.ReadTextLine (*mInputFile);
+		RemoveUTF8Header (temp);
 		mCumulativeStringWithNewLines += temp + "\n";
 		mCumulativeStringWithoutNewLines += temp;
 		nextLine = new RGString (temp);
@@ -195,13 +204,15 @@ int OsirisInputFile :: ReadLine () {
 
 		if (!temp.FindNextSubstring (0, "=", equalsPosition)) {
 
-			cout << "Found no equal sign in line:  " << temp.GetData () << endl;
+			msg = "Found no equal sign in line:  " + temp;
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			return -1;
 		}
 
 		if ((equalsPosition == 0) || (equalsPosition == temp.Length () - 2)) {
 
-			cout << "Found equal sign too close to end in line:  " << temp.GetData () << endl;
+			msg = "Found equal sign too close to end in line:  " + temp;
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			return -1;
 		}
 
@@ -221,7 +232,8 @@ int OsirisInputFile :: ReadLine () {
 
 		if (mStringRight.Length () == 0) {
 
-			cout << "Found no semi-colon in line:  " << temp.GetData () << endl;
+			msg = "Found no semi-colon in line:  " + temp;
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			return -1;
 		}
 
@@ -272,9 +284,12 @@ int OsirisInputFile :: ReadLine () {
 			mStringRight.Append (T);
 	}
 
+	RemoveUTF8Header (thisLine);
 	nextLine = new RGString (thisLine);
 	mInputLines.Append (nextLine);
-
+	RemoveUTF8Header (mStringLeft);
+	RemoveUTF8Header (mCumulativeStringWithNewLines);
+	RemoveUTF8Header (mCumulativeStringWithoutNewLines);
 	RemoveLeadingAndTrailingBlanks (mStringLeft);
 	RemoveLeadingAndTrailingBlanks (mStringRight);
 
@@ -286,7 +301,8 @@ int OsirisInputFile :: ReadLine () {
 
 	if (leftOfEquals) {
 
-		cout << "Found no equal sign in line:  " << thisLine.GetData () << endl;
+		msg = "Found no equal sign in line:  " + thisLine;
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		return -1;
 	}
 
@@ -524,8 +540,14 @@ int OsirisInputFile :: AssignString () {
 	if (status == 0)
 		mOutputString += mStringLeft + " = " + mStringRight + "\n";
 
-	else
-		cout << "Problem with assign string:  " << mStringLeft.GetData () << " = " << mStringRight.GetData () << endl;
+	else {
+
+		RGString msg = "Problem with assign string:  " + mStringLeft + " = " + mStringRight;
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
+		STRLCAnalysis::mFailureMessage->InputStringFormatError ();
+		STRLCAnalysis::mFailureMessage->SetPingValue (20);
+		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
+	}
 
 	return status;
 }
@@ -545,70 +567,82 @@ int OsirisInputFile :: AssembleInputs () {
 	int status = 0;
 	RGString labSettings1;
 	RGString labSettings2;
+	RGString msg;
 	
 	if (mInputDirectory.Length () == 0) {
 
-		cout << "Input directory is unspecified." << endl;
+		msg = "Input directory is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mLadderDirectory.Length () == 0) {
 
-		cout << "Ladder information directory is unspecified." << endl;
+		msg = "Ladder information directory is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mReportDirectory.Length () == 0) {
 
-		cout << "Report directory is unspecified." << endl;
+		msg = "Report directory is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMarkerSetName.Length () == 0) {
 
-		cout << "Marker set name is unspecified." << endl;
+		msg = "Marker set name is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mLaneStandardName.Length () == 0) {
 
-		cout << "Lane standard name is unspecified." << endl;
+		msg =  "Lane standard name is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mFinalMessageBookName.Length () == 0) {
 
-		cout << "Message Book file is unspecified." << endl;
+		msg = "Message Book file is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mFinalLabSettingsName.Length () == 0) {
 
-		cout << "Lab Settings file is unspecified." << endl;
+		msg = "Lab Settings file is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mFinalStdSettingsName.Length () == 0) {
 
-		cout << "Standard Settings file is unspecified." << endl;
+		msg = "Standard Settings file is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMinSampleRFU == 0.0) {
 
-		cout << "Min sample RFU is unspecified." << endl;
+		msg = "Min sample RFU is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMinLadderRFU == 0.0) {
 
-		cout << "Min ladder RFU is unspecified." << endl;
+		msg = "Min ladder RFU is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
 	if (mMinLaneStandardRFU == 0.0) {
 
-		cout << "Min lane standard RFU is unspecified." << endl;
+		msg = "Min lane standard RFU is unspecified.";
+		STRLCAnalysis::mFailureMessage->AddMessage (msg);
 		status = -1;
 	}
 
@@ -634,13 +668,15 @@ int OsirisInputFile :: AssembleInputs () {
 
 		if (mFullPathToMessageBook.Length () == 0) {
 
-			cout << "Message book path unspecified." << endl;
+			msg = "Message book path unspecified.";
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			status = -1;
 		}
 
 		if (mFullPathToLabAndStdSettings.Length () == 0) {
 
-			cout << "Lab settings path and standard settings path unspecified." << endl;
+			msg = "Lab settings path and standard settings path unspecified.";
+			STRLCAnalysis::mFailureMessage->AddMessage (msg);
 			status = -1;
 		}
 
@@ -659,7 +695,8 @@ int OsirisInputFile :: AssembleInputs () {
 
 				if (fp == NULL) {
 
-					cout << "Cannot locate appropriate lab settings file, either " << labSettings1.GetData () << " or " << labSettings2.GetData () << endl;
+					msg << "Cannot locate appropriate lab settings file: neither " << labSettings1.GetData () << " nor " << labSettings2.GetData ();
+					STRLCAnalysis::mFailureMessage->AddMessage (msg);
 					status = -1;
 				}
 
@@ -678,7 +715,53 @@ int OsirisInputFile :: AssembleInputs () {
 		}
 	}
 
-	return 0;
+	return status;
+}
+
+
+void OsirisInputFile::RemoveUTF8Header (RGString& inputString) {
+
+	int L = inputString.Length ();
+	
+	if (inputString.Length () < 3)
+		return;
+
+
+
+	RGString temp;
+
+	if ((int)inputString.GetCharacter (0) != 0xffffffef)
+		return;
+
+	if ((int)inputString.GetCharacter (1) != 0xffffffbb)
+		return;
+
+	if ((int)inputString.GetCharacter (2) != 0xffffffbf)
+		return;
+
+	//if (inputString.GetCharacter (3) != '5')
+	//	return;
+
+	//if (inputString.GetCharacter (4) != '2')
+	//	return;
+
+	//if (inputString.GetCharacter (5) != '7')
+	//	return;
+
+	//if (inputString.GetCharacter (6) != '9')
+	//	return;
+
+	//if (inputString.GetCharacter (7) != ';')
+	//	return;
+
+	if (L == 3) {
+
+		inputString = "";
+		return;
+	}
+
+	temp = inputString.ExtractAndRemoveSubstring (3, L);
+	inputString = temp;
 }
 
 

@@ -22,7 +22,7 @@
     <ProjectName>OsirisAnalysis</ProjectName>
     <ProjectGuid>{BB4E3CC3-10F8-4DB9-9CC6-CCDD45AB55D3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -111,7 +111,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>wxplotctrld.lib;wxthingsd.lib;wxXsl.lib;nwxZip.lib;nwx.lib;wxXml2.lib;OsirisMath.lib;libxml2_a.lib;libiconv-static.lib;libxslt_a.lib;libexslt_a.lib;wxmsw30ud_adv.lib;wxmsw30ud_html.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>DebugWindows 💩\OsirisAnalysis.exe</OutputFile>
+      <OutputFile>$(OutDir)OsirisAnalysis.exe</OutputFile>
       <AdditionalLibraryDirectories>..\wxthings\$(Configuration);..\wxplotctrl\$(Configuration);..\nwxZip\$(Configuration);..\nwx\$(Configuration);..\wxXsl\$(Configuration);..\OsirisMath\$(Configuration);..\wxXml2\$(Configuration);$(WXHOME)\lib\vc_lib;$(EXTLIB)\libiconv-win-build-1.15\build-VS2017\$(Configuration);$(EXTLIB)\libxml2-2.9.8\win32\bin.msvc;$(EXTLIB)\libxslt-1.1.33\win32\bin.msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -189,7 +189,7 @@
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;$(EXTLIB)\libiconv-win-build-1.15\include;$(EXTLIB)\libxml2-2.9.8\include;$(EXTLIB)\libxslt-1.1.33;$(WXHOME)\lib\vc_lib\mswu;$(WXHOME)\include;..\wxthings\include;..\wxplotctrl\include;..\Version;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TMP_DEBUG;WIN32;_WIN32;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;_LIB;_CRT_SECURE_NO_DEPRECATE=1;_CRT_NON_CONFORMING_SWPRINTFS=1;wxDEBUG_LEVEL=0;_SCL_SECURE_NO_WARNINGS=1;__WXMSW__;_UNICODE;WXBUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -300,6 +300,8 @@
     <ClCompile Include="CDialogMRU.cpp" />
     <ClCompile Include="CDialogParameters.cpp" />
     <ClCompile Include="CDialogPlotMessage.cpp" />
+    <ClCompile Include="CDialogPrintColor.cpp" />
+    <ClCompile Include="CDialogPrintSettings.cpp" />
     <ClCompile Include="CDialogPromptNewerFile.cpp" />
     <ClCompile Include="CDialogReallyQuit.cpp" />
     <ClCompile Include="CDialogShowLabSettings.cpp" />
@@ -377,7 +379,6 @@
     <ClCompile Include="CPageNoParameters.cpp" />
     <ClCompile Include="CPageParameters.cpp" />
     <ClCompile Include="CPanelAlerts.cpp" />
-    <ClCompile Include="CPanelApplyCancel.cpp" />
     <ClCompile Include="CPanelHistory.cpp" />
     <ClCompile Include="CPanelHistoryMenu.cpp" />
     <ClCompile Include="CPanelLabGeneral.cpp" />
@@ -400,6 +401,11 @@
     <ClCompile Include="CParmOsiris.cpp" />
     <ClCompile Include="CPlotController.cpp" />
     <ClCompile Include="CPlotData.cpp" />
+    <ClCompile Include="CPrintOut.cpp" />
+    <ClCompile Include="CPrintOutAnalysis.cpp" />
+    <ClCompile Include="CPrintOutPlot.cpp" />
+    <ClCompile Include="CPrintOutTestPattern.cpp" />
+    <ClCompile Include="CPrintPreview.cpp" />
     <ClCompile Include="CProcessAnalysis.cpp" />
     <ClCompile Include="CReAnalyze.cpp" />
     <ClCompile Include="CSitePath.cpp" />
@@ -446,6 +452,8 @@
     <ClInclude Include="CDialogMRU.h" />
     <ClInclude Include="CDialogParameters.h" />
     <ClInclude Include="CDialogPlotMessage.h" />
+    <ClInclude Include="CDialogPrintColor.h" />
+    <ClInclude Include="CDialogPrintSettings.h" />
     <ClInclude Include="CDialogPromptNewerFile.h" />
     <ClInclude Include="CDialogReallyQuit.h" />
     <ClInclude Include="CDialogShowLabSettings.h" />
@@ -529,7 +537,6 @@
     <ClInclude Include="CPageNoParameters.h" />
     <ClInclude Include="CPageParameters.h" />
     <ClInclude Include="CPanelAlerts.h" />
-    <ClInclude Include="CPanelApplyCancel.h" />
     <ClInclude Include="CPanelHistory.h" />
     <ClInclude Include="CPanelHistoryMenu.h" />
     <ClInclude Include="CPanelLabGeneral.h" />
@@ -551,9 +558,13 @@
     <ClInclude Include="CPanelUserID.h" />
     <ClInclude Include="CParmGridAttributes.h" />
     <ClInclude Include="CParmOsiris.h" />
-    <ClInclude Include="CPinger.h" />
     <ClInclude Include="CPlotController.h" />
     <ClInclude Include="CPlotData.h" />
+    <ClInclude Include="CPrintOut.h" />
+    <ClInclude Include="CPrintOutAnalysis.h" />
+    <ClInclude Include="CPrintOutPlot.h" />
+    <ClInclude Include="CPrintOutTestPattern.h" />
+    <ClInclude Include="CPrintPreview.h" />
     <ClInclude Include="CProcessAnalysis.h" />
     <ClInclude Include="CReAnalyze.h" />
     <ClInclude Include="CSitePath.h" />
@@ -564,6 +575,7 @@
     <ClInclude Include="CXMLmessageBook.h" />
     <ClInclude Include="CXSLExportFileType.h" />
     <ClInclude Include="extractCXSLExportFile.h" />
+    <ClInclude Include="CPrintParameters.h" />
     <ClInclude Include="IArtifactGroup.h" />
     <ClInclude Include="ISetDateTime.h" />
     <ClInclude Include="LABEL_TYPES.h" />

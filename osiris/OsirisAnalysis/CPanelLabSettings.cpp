@@ -55,7 +55,7 @@ const wxString CPanelLabSettings::g_sSampleNameStrPrompt
   ("Sample name search criteria");
 const wxSize CPanelLabSettings::g_SIZE_NUMBER(wxSize(60,-1));
 const wxSize CPanelLabSettings::g_SIZE_MULTILINE_TEXT(wxSize(300,200));
-const wxSize CPanelLabSettings::g_SIZE_FRAME(wxSize(850,760));
+wxSize CPanelLabSettings::g_SIZE_FRAME(wxSize(0,760));
 
 //********************************************************************
 //
@@ -524,6 +524,17 @@ bool CPanelTrialleleGrid::TransferDataFromWindow()
 //
 //    CPanelLabSettings
 //
+const wxSize &CPanelLabSettings::GetDefaultFrameSize()
+{
+  if (g_SIZE_FRAME.GetWidth() < 1)
+  {
+    wxRect r = wxGetClientDisplayRect();
+    g_SIZE_FRAME.SetWidth((r.GetWidth() << 2) / 5);
+  }
+  return g_SIZE_FRAME;
+}
+
+
 CPanelLabSettings::~CPanelLabSettings() {;}
 
 CPanelLabSettings::CPanelLabSettings(

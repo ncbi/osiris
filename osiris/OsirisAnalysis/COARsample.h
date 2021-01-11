@@ -289,6 +289,7 @@ public:
   {
     return m_pFile;
   }
+  const wxString &GetPlotFileName() const;
   void PostProcessFile(COARfile *pFile = NULL); // whatever needs to be done after file is loaded
   size_t CountAlerts(const COARmessages *, const wxDateTime *pTime = NULL) const;
   bool HasAnyAlerts(const COARmessages *, const wxDateTime *pTime = NULL) const;
@@ -541,6 +542,12 @@ public:
     }
     return m_sSampleName;
   }
+  const wxString GetSampleLabel(int nLabelType) const
+  {
+    return (nLabelType == IDmenuDisplayNameSample)
+      ? GetSampleName()
+      : GetName();
+  }
   const wxString &GetSampleComment() const
   {
     return m_sSampleComment;
@@ -551,7 +558,7 @@ public:
   }
   bool IsLadderType() const
   {
-    int n = m_sType.CmpNoCase("Ladder");
+    int n = m_sType.CmpNoCase("ladder");
     return !n;
   }
   bool CanDisableSample() const
@@ -560,7 +567,17 @@ public:
   }
   bool IsSampleType() const
   {
-    int n = m_sType.CmpNoCase("Sample");
+    int n = m_sType.CmpNoCase("sample");
+    return !n;
+  }
+  bool IsPosControl() const
+  {
+    int n = m_sType.CmpNoCase("+control");
+    return !n;
+  }
+  bool IsNegControl() const
+  {
+    int n = m_sType.CmpNoCase("-control");
     return !n;
   }
   const COARalerts *GetSampleAlerts() const
@@ -775,6 +792,7 @@ public:
     s.Append(s2);
     return s;
   }
+  void GetOriginalAlleleIDs(std::set<int> *psetIDs) const;
   void SetIsModified(bool b = true);
   void UpdateVersion();
 private:
@@ -893,6 +911,7 @@ private:
     // currently not used
     // the preceeding will probably be discarded
   wxString m_sPositiveControl;
+  mutable wxString m_sPlotFileName;
 
   COARnotes m_NotesSample;
   COARnotes m_NotesChannel;

@@ -14,7 +14,7 @@
     <ProjectName>OsirisLib-v2.01</ProjectName>
     <ProjectGuid>{3071892C-0773-4CA4-A4A8-E88ADE8B8D9F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -102,6 +102,7 @@
     <ClCompile Include="ExportFile.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="ExpressionParser.cpp" />
+    <ClCompile Include="FailureMessages.cpp" />
     <ClCompile Include="fsa2XML.cpp" />
     <ClCompile Include="fsaDirEntry.cpp" />
     <ClCompile Include="fsaFile.cpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="IndividualGenotype.cpp" />
     <ClCompile Include="LadderData.cpp" />
     <ClCompile Include="LeastMedianOfSquares.cpp" />
+    <ClCompile Include="ModPairs.cpp" />
     <ClCompile Include="Notice.cpp" />
     <ClCompile Include="OsirisInputFile.cpp" />
     <ClCompile Include="OsirisMsg.cpp" />
@@ -160,6 +162,7 @@
     <ClInclude Include="..\BaseClassLib\Exception.h" />
     <ClInclude Include="ExportFile.h" />
     <ClInclude Include="Expression.h" />
+    <ClInclude Include="FailureMessages.h" />
     <ClInclude Include="fsa2XML.h" />
     <ClInclude Include="fsaDataDefs.h" />
     <ClInclude Include="fsaDirEntry.h" />
@@ -175,6 +178,7 @@
     <ClInclude Include="LadderData.h" />
     <ClInclude Include="..\BaseClassLib\Malloc.h" />
     <ClInclude Include="LeastMedianOfSquares.h" />
+    <ClInclude Include="ModPairs.h" />
     <ClInclude Include="Notice.h" />
     <ClInclude Include="Notices.h" />
     <ClInclude Include="OsirisInputFile.h" />

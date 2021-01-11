@@ -193,5 +193,6 @@ void CListProcess::UpdateStatus(int nItem)
     SetColumnWidth(ITEM_STOP,wxLIST_AUTOSIZE );
   }
   SetColumnWidth(ITEM_STATUS,wxLIST_AUTOSIZE);
+  mainApp::ReRender(GetParent());
 //  Refresh();
 }

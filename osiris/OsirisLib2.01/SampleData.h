@@ -53,6 +53,7 @@ public:
 	virtual Boolean IsValid () const;
 
 	virtual const char* GetComment ();
+	virtual const char* GetSampleName () const;
 
 	virtual const char* GetInstrumentModelNumber ();
 	virtual const char* GetInstrumentName ();

@@ -170,7 +170,24 @@ size_t COARlocus::EnabledAlleleCount() const
   }
   return nRtn;
 }
+void COARlocus::GetOriginalAlleleIDs(std::set<int> *psetIDs) const
+{
+  const vector<COARallele *> *pvec[2] = { &m_pvAllele, &m_pvAlleleEdited };
+  for (size_t ndx = 0; ndx < 2; ++ndx)
+  {
+    const vector<COARallele *> *pva = pvec[ndx];
 
+    for (vector<COARallele *>::const_iterator itr = pva->begin();
+      itr != pva->end();
+      ++itr)
+    {
+      if (!(*itr)->GetUpdateTime().GetTicks())
+      {
+        psetIDs->insert((*itr)->GetID());
+      }
+    }
+  }
+}
 void COARlocus::GetAllelesByTime(vector<const COARallele *> *_pva, const wxDateTime *pTime) const
 {
   set<COARallele *,COARalleleLessByTime> setA;

@@ -67,12 +67,14 @@
 #include "nwx/nwxUtil.h"
 #include "nwx/nwxPinger.h"
 #include "nwx/nwxTimerReceiver.h"
+#include "nwx/nwxStaticBitmap.h"
 #include "Platform.h"
 #include "ConfigDir.h"
 #include "CKitList.h"
 #include "CKitColors.h"
 #include "CArtifactLabels.h"
 #include "Version/OsirisVersion.h"
+#include "CPrintOutPlot.h"
 
 #ifdef __WXMSW__
 #include <process.h>
@@ -168,6 +170,7 @@ void mainApp::_Cleanup()
       delete m_pTimer;
       m_pTimer = NULL;
     }
+    CPrintOutPlot::StaticCleanup();
     _cleanupPinger();
   }
 }
@@ -231,6 +234,26 @@ void mainApp::Ping3(const wxString &sName1, const wxString &sValue1,
     pset.Set(sName3, sValue3);
   }
   // destructor will send the event
+}
+void mainApp::PingList(const wxChar ** apList)
+{
+  const wxChar **ps;
+  bool bName = true;
+  nwxPingerSet pset(GetPinger());
+  wxString sName, sValue;
+  for (ps = apList; *ps != NULL; ps++)
+  {
+    if (bName)
+    {
+      sName = *ps;
+    }
+    else
+    {
+      sValue = *ps;
+      pset.Set(sName, sValue);
+    }
+    bName = !bName;
+  }
 }
 void mainApp::PingExit()
 {
@@ -418,6 +441,7 @@ void mainApp::_InitializeApp()
   m_pFrame->Startup(bHasArgs);
   const wxChar *psFormat(wxS("argv[%d] = %ls"));
   LogMessageV(psFormat,0,argv[0].wc_str());
+  LogMessageV(wxT("cwd: %ls"), wxGetCwd().wc_str());
   for(int i = 1; i < argc; ++i)
   {
     LogMessageV(psFormat,i,argv[i].wc_str());
@@ -501,6 +525,13 @@ void mainApp::_setupPinger()
   }
 }
 
+void mainApp::Raise()
+{
+#if mainFrameIsWindow
+  Get()->m_pFrame->Raise();
+#endif
+}
+
 wxString mainApp::_pingerFile()
 {
   wxString sPath = mainApp::GetConfig()->GetSitePath();
@@ -580,6 +611,22 @@ void mainApp::_OpenMessageStream()
   }
 }
 
+void mainApp::DumpBitmap(wxBitmap *pBitmap, const wxString &sFileName)
+{
+  wxString sPath = mainApp::GetConfig()->GetDebugConfigPath(true);
+  if (!sPath.IsEmpty())
+  {
+    sPath.Append(sFileName);
+    sPath = nwxFileUtil::FindNewFileName(sPath);
+    nwxStaticBitmap::AddPngHandler();
+    if (!pBitmap->ConvertToImage().SaveFile(sPath, wxBITMAP_TYPE_PNG))
+    {
+      wxString s(wxT("Cannot save file: "));
+      s.Append(sPath);
+      mainApp::LogMessage(s);
+    }
+  }
+}
 void mainApp::ShowError(const wxString &sMsg, wxWindow *parent)
 {
   if(!MessagesSuppressed())
@@ -770,7 +817,6 @@ void mainApp::ReRender(wxWindow *p)
     p->Layout();
   }
   p->Refresh();
-  p->Update();
 }
 
 #if 0
@@ -821,7 +867,7 @@ void mainApp::OnTimer(wxTimerEvent &e)
   {
     CIncrementer incr(m_nTimerCount);
 #ifdef _DEBUG
-    UnitTest::Run();
+//    UnitTest::Run();
 #endif
     nwxTimerReceiver::DispatchTimer(e);
     if(m_pFrame != NULL)

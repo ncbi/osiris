@@ -48,6 +48,7 @@ void COARmessage::RegisterAll(bool)
 
 typedef multimap<int,COARmessage *>::const_iterator MITR;
 
+#if 0
 void COARmessages::KeepOnly(const set<int> *psn)
 {
   vector<COARmessage *> vpMsgKill;
@@ -93,7 +94,13 @@ void COARmessages::KeepOnly(const set<int> *psn)
     _InitMaps();
   }
 }
-
+void COARmessages::KeepOnly(const vector<int> *pvn)
+{
+  set<int> sn;
+  _VectorToSet(pvn, &sn);
+  KeepOnly(&sn);
+}
+#endif
 void COARmessages::_CopyOnly(
   vector<COARmessage *> *pvpTo,
   const vector<COARmessage *> *pvpFrom, 
@@ -139,12 +146,6 @@ void COARmessages::_VectorToSet(const vector<int> *pvnFrom, set<int> *psnTo)
   }
 }
 
-void COARmessages::KeepOnly(const vector<int> *pvn)
-{
-  set<int> sn;
-  _VectorToSet(pvn,&sn);
-  KeepOnly(&sn);
-}
 void COARmessages::CopyOnly(
   const COARmessages &x, 
   const vector<int> *pvn,

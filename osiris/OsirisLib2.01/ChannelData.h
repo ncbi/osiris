@@ -56,6 +56,7 @@ class RGString;
 class IndividualGenotype;
 class SmartMessageReporter;
 class NormalizationInterval;
+class SampleModList;
 
 
 class RaisedBaseLineData {
@@ -423,6 +424,7 @@ public:
 	virtual void ChannelIsPositiveControlSM (bool isPosControl);
 	virtual void ChannelIsNegativeControlSM (bool isNegControl);
 	virtual void MakeNonCoreLadderArtifactsNoncritical () {}
+	virtual bool ChannelIsILS () const { return false; }
 
 	virtual void MakePreliminaryCallsSM (bool isNegCntl, bool isPosCntl, GenotypesForAMarkerSet* pGenotypes);
 	virtual int SetDataSM (SampleData& fileData, TestCharacteristic* testConrolPeak, TestCharacteristic* testSamplePeak);
@@ -497,6 +499,9 @@ public:
 	virtual int TestSignalsForRaisedBaseline (double left, double report);
 	virtual int TestForRaisedBaselineAndExcessiveNoiseSM (double left, double report);
 
+	virtual void InitializeModsData (SampleModList* sml);
+	virtual bool TestPeakAgainstModsData (const DataSignal* ds) const;
+
 	virtual void InitializeMessageData ();
 
 	virtual int AnalyzeDynamicBaselineSM (int startTime, double reportMinTime);
@@ -565,6 +570,7 @@ protected:
 	RGDList SmartPeaks;
 	RGDList BleedThroughCandidateList;
 	RGDList SupplementalArtifacts;
+	RGDList mIgnorePeaks;
 	RGDListIterator PreliminaryIterator;
 	RGDListIterator CompleteIterator;
 	RGDList mNegativeCurveList;
@@ -609,6 +615,7 @@ protected:
 	double mMaxYLinkedLocusRatio;
 
 	double mMaxLaserInScalePeak;
+	bool* mModsData;
 
 	static double MinDistanceBetweenPeaks;
 	static bool* InitialMatrix;

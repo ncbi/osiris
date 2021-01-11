@@ -1117,11 +1117,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are no expected peaks for the ILS.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 
 		cout << ErrorString << endl;
-		cout << "There are " << PreliminaryCurveList.Entries () << " curves needed out of " << Size << endl;
+		cout << "There are insufficiently many peaks within expected parameters.  Number expected = " << Size << endl;
 		return -50;
 	}
 
@@ -1133,10 +1133,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, "0");
+//		AppendDataForSmartMessage (tooFewPeaks, "0");
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are no peaks available in the ILS" << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Number expected = " << Size << endl;
 		return -50;
 	}
 
@@ -1148,10 +1148,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+	//	AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << PreliminaryCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Number expected = " << Size << endl;
 		return -50;
 	}
 
@@ -1530,11 +1530,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 				ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 
 			SetMessageValue (tooFewPeaks, true);
-			AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+//			AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
 			AppendDataForSmartMessage (tooFewPeaks, Size);
 
-			cout << "After recursive search, there are " << FinalCurveList.Entries () << " curves needed out of " << Size << endl;
-			cout << "Original number = " << origNumberOfPeaks << " and after classifying by height, " << TotalCandidates << endl;
+			cout << "After recursive search, there are too few peaks within expected parameters.  Number of peaks expected = " << Size << endl;
 
 			status = -1;
 			correlation = 0.0;
@@ -1585,8 +1584,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are no peaks within expected parameters.\n";
 
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, "0");
+//		AppendDataForSmartMessage (tooFewPeaks, "0");
 		AppendDataForSmartMessage (tooFewPeaks, Size);
+
+		cout << "There are too few peaks within expected parameters for ILS.  Number of expected peaks = " << Size << "\n";
 
 		while (nextSignal = (DataSignal*) CompleteIterator ())
 			nextSignal->ReportNotices (ExcelText, "\t\t", "\t");
@@ -1672,6 +1673,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelySM (RGTex
 			SmartPeaks.Prepend (nextSignal);
 			break;
 		}
+	}
+
+	while (nextSignal = (DataSignal*)mIgnorePeaks.GetFirst ()) {
+
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
 	QuadraticFit fit (Means, NumberOfAcceptedCurves);
@@ -1884,11 +1890,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are no expected peaks for the ILS.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 
 		cout << ErrorString << endl;
-		cout << "There are " << PreliminaryCurveList.Entries () << " curves needed out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters for ILS.  Expected number of peaks = " << Size << endl;
 		return -50;
 	}
 
@@ -1900,10 +1906,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, PreliminaryCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << PreliminaryCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Expected number of peaks = " << Size << endl;
 
 		if (PreliminaryCurveList.Entries () == 0)
 			return -50;
@@ -2071,10 +2077,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << FinalCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Expected number of peaks = " << Size << endl;
 
 		if (FinalCurveList.Entries () == 0)
 			return -50;
@@ -2199,10 +2205,10 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 		ErrorString << "INTERNAL LANE STANDARD DOES NOT MEET EXPECTATIONS...There are too few peaks within expected parameters.\n";
 		status = -1;
 		SetMessageValue (tooFewPeaks, true);
-		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
+//		AppendDataForSmartMessage (tooFewPeaks, FinalCurveList.Entries ());
 		AppendDataForSmartMessage (tooFewPeaks, Size);
 		cout << ErrorString << endl;
-		cout << "There are too few peaks available in the ILS:  " << FinalCurveList.Entries () << " peaks out of " << Size << endl;
+		cout << "There are too few peaks within expected parameters in the ILS.  Expected number of peaks = " << Size << endl;
 
 		if (FinalCurveList.Entries () == 0)
 			return -50;
@@ -2447,6 +2453,11 @@ int STRLaneStandardChannelData :: AnalyzeLaneStandardChannelRecursivelyUsingDens
 			SmartPeaks.Append (nextSignal);
 			break;
 		}
+	}
+
+	while (nextSignal = (DataSignal*)mIgnorePeaks.GetFirst ()) {
+
+		SmartPeaks.InsertWithNoReferenceDuplication (nextSignal);
 	}
 
 	QuadraticFit fit (Means, NumberOfAcceptedCurves);
@@ -2914,6 +2925,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 	double minRFU2 = 0.9 * minRFU;
 	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
 	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+	smPeakIgnored peakIgnored;
 
 	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
@@ -3115,7 +3127,7 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 
 		while (nextSignal = (DataSignal*) shoulderSignals.GetFirst ()) {
 
-			PreliminaryCurveList.Insert (nextSignal);
+			PreliminaryCurveList.Prepend (nextSignal);
 			CompleteCurveList.Insert (nextSignal);
 		}
 	}
@@ -3206,6 +3218,33 @@ int STRLaneStandardChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, R
 		
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	//  Currently set to test ILS channels and ladder channels only.
+
+	bool modsTest = ((mModsData != NULL) && (ChannelIsILS () || IsControlChannel ()));   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool sampleModified;
+
+	if (modsTest) {
+
+	//	cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+		it.Reset ();
+		sampleModified = false;
+
+		while (nextSignal = (DataSignal*)it ()) {
+
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+				it.RemoveCurrentItem ();
+				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
+				sampleModified = true;
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+			}
+		}
+
+		if (sampleModified)
+			cout << "<Ping>652</Ping>\n";
 	}
 
 	delete signature;
@@ -3473,6 +3512,7 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 	double minRFU2 = 0.9 * minRFU;
 	smConcaveDownAcceptanceThreshold concaveDownAcceptanceThreshold;
 	smNoiseFactorForShoulderAcceptanceThreshold noiseFactorForShoulderAcceptanceThreshold;
+	smPeakIgnored peakIgnored;
 
 	double noiseThreshold = 0.01 * (double)GetThreshold (noiseFactorForShoulderAcceptanceThreshold) * mData->GetNoiseRange ();
 
@@ -3767,6 +3807,33 @@ int STRLadderChannelData :: FitAllCharacteristicsSM (RGTextOutput& text, RGTextO
 
 		CompleteCurveList.InsertWithNoReferenceDuplication (nextSignal);
 		PreliminaryCurveList.InsertWithNoReferenceDuplication (nextSignal);
+	}
+
+	//  Currently set to test ILS channels and ladder channels only.
+
+	bool modsTest = ((mModsData != NULL) && (ChannelIsILS () || IsControlChannel ()));   // (ChannelIsILS () || !IsNormalizationPass || IsControlChannel ());  This would include samples
+	bool sampleModified;
+
+	if (modsTest) {
+
+		it.Reset ();
+	//	cout << "Performing mods tests on all peaks in channel " << mChannel << "...\n";
+		sampleModified = false;
+
+		while (nextSignal = (DataSignal*) it ()) {
+
+			if (TestPeakAgainstModsData (nextSignal)) {
+				//set artifact
+				nextSignal->SetMessageValue (peakIgnored, true);
+				it.RemoveCurrentItem ();
+				mIgnorePeaks.InsertWithNoReferenceDuplication (nextSignal);
+				cout << "Peak ignored at mean = " << nextSignal->GetMean () << "\n";
+				sampleModified = true;
+			}
+		}
+
+		if (sampleModified)
+			cout << "<Ping>652</Ping>\n";
 	}
 
 	delete signature;

@@ -283,6 +283,18 @@ PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel4)
 PERSISTENT_PREDECLARATION (smFsaChannelForOsirisChannel5)
 PERSISTENT_PREDECLARATION (smChannelRemappingForLadderFreeOverrideDefault)
 PERSISTENT_PREDECLARATION (smMakeMixturesDefaultSampleTypePreset)
+PERSISTENT_PREDECLARATION (smSampleAnalysisTruncatedPrematurely)
+PERSISTENT_PREDECLARATION (smSamplesTerminatedPrematurely)
+PERSISTENT_PREDECLARATION (smSamplesHadNoDataForChannels)
+PERSISTENT_PREDECLARATION (smSampleMissingDataForChannels)
+PERSISTENT_PREDECLARATION (smSamplesAreNotValidInputFiles)
+PERSISTENT_PREDECLARATION (smSampleIsNotValidInputFile)
+PERSISTENT_PREDECLARATION (smHeightToConsiderTrueHomozygote)
+PERSISTENT_PREDECLARATION (smPeakHeightAboveHomozygoteTrustThreshold)
+PERSISTENT_PREDECLARATION (smPeakIgnored)
+PERSISTENT_PREDECLARATION (smLaddersFromWrongMarkerSet)
+PERSISTENT_PREDECLARATION (smUncertainPullUp)
+PERSISTENT_PREDECLARATION (smUseNonlinearLMSAlgorithmForAllChannels)
 
 
 
@@ -7882,6 +7894,342 @@ public:
 	smMakeMixturesDefaultSampleTypePreset ();
 	smMakeMixturesDefaultSampleTypePreset (const smMakeMixturesDefaultSampleTypePreset& note);
 	virtual ~smMakeMixturesDefaultSampleTypePreset ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSampleAnalysisTruncatedPrematurely : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSampleAnalysisTruncatedPrematurely)
+
+public:
+	smSampleAnalysisTruncatedPrematurely ();
+	smSampleAnalysisTruncatedPrematurely (const smSampleAnalysisTruncatedPrematurely& note);
+	virtual ~smSampleAnalysisTruncatedPrematurely ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSamplesTerminatedPrematurely : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSamplesTerminatedPrematurely)
+
+public:
+	smSamplesTerminatedPrematurely ();
+	smSamplesTerminatedPrematurely (const smSamplesTerminatedPrematurely& note);
+	virtual ~smSamplesTerminatedPrematurely ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSamplesHadNoDataForChannels : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSamplesHadNoDataForChannels)
+
+public:
+	smSamplesHadNoDataForChannels ();
+	smSamplesHadNoDataForChannels (const smSamplesHadNoDataForChannels& note);
+	virtual ~smSamplesHadNoDataForChannels ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSampleMissingDataForChannels : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSampleMissingDataForChannels)
+
+public:
+	smSampleMissingDataForChannels ();
+	smSampleMissingDataForChannels (const smSampleMissingDataForChannels& note);
+	virtual ~smSampleMissingDataForChannels ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSamplesAreNotValidInputFiles : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSamplesAreNotValidInputFiles)
+
+public:
+	smSamplesAreNotValidInputFiles ();
+	smSamplesAreNotValidInputFiles (const smSamplesAreNotValidInputFiles& note);
+	virtual ~smSamplesAreNotValidInputFiles ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smSampleIsNotValidInputFile : public SmartNotice {
+
+PERSISTENT_DECLARATION (smSampleIsNotValidInputFile)
+
+public:
+	smSampleIsNotValidInputFile ();
+	smSampleIsNotValidInputFile (const smSampleIsNotValidInputFile& note);
+	virtual ~smSampleIsNotValidInputFile ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smHeightToConsiderTrueHomozygote : public SmartNotice {
+
+PERSISTENT_DECLARATION (smHeightToConsiderTrueHomozygote)
+
+public:
+	smHeightToConsiderTrueHomozygote ();
+	smHeightToConsiderTrueHomozygote (const smHeightToConsiderTrueHomozygote& note);
+	virtual ~smHeightToConsiderTrueHomozygote ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPeakHeightAboveHomozygoteTrustThreshold : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPeakHeightAboveHomozygoteTrustThreshold)
+
+public:
+	smPeakHeightAboveHomozygoteTrustThreshold ();
+	smPeakHeightAboveHomozygoteTrustThreshold (const smPeakHeightAboveHomozygoteTrustThreshold& note);
+	virtual ~smPeakHeightAboveHomozygoteTrustThreshold ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smPeakIgnored : public SmartNotice {
+
+PERSISTENT_DECLARATION (smPeakIgnored)
+
+public:
+	smPeakIgnored ();
+	smPeakIgnored (const smPeakIgnored& note);
+	virtual ~smPeakIgnored ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smLaddersFromWrongMarkerSet : public SmartNotice {
+
+PERSISTENT_DECLARATION (smLaddersFromWrongMarkerSet)
+
+public:
+	smLaddersFromWrongMarkerSet ();
+	smLaddersFromWrongMarkerSet (const smLaddersFromWrongMarkerSet& note);
+	virtual ~smLaddersFromWrongMarkerSet ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUncertainPullUp : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUncertainPullUp)
+
+public:
+	smUncertainPullUp ();
+	smUncertainPullUp (const smUncertainPullUp& note);
+	virtual ~smUncertainPullUp ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smUseNonlinearLMSAlgorithmForAllChannels : public SmartNotice {
+
+PERSISTENT_DECLARATION (smUseNonlinearLMSAlgorithmForAllChannels)
+
+public:
+	smUseNonlinearLMSAlgorithmForAllChannels ();
+	smUseNonlinearLMSAlgorithmForAllChannels (const smUseNonlinearLMSAlgorithmForAllChannels& note);
+	virtual ~smUseNonlinearLMSAlgorithmForAllChannels ();
 
 	virtual int GetSubject () const;
 

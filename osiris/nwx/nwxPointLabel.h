@@ -40,9 +40,12 @@ public:
   static const int ALIGN_DEFAULT;
   static const int STYLE_BOX;
   static const int STYLE_DISABLED;
+  static const int STYLE_BLACK_TEXT;
   nwxPointLabel()
-    : m_color(0,0,0), 
-      m_dx(0.0), 
+    : m_color(*wxBLACK), 
+      m_colorBG(*wxWHITE),
+      m_dx(0.0),
+      m_dx2(0.0),
       m_dy(0.0),  
       m_nAlign(ALIGN_DEFAULT),
       m_nSortGroup(0),
@@ -63,7 +66,9 @@ public:
         m_sLabel(sLabel),
         m_sToolTip(sToolTip),
         m_color(c),
+        m_colorBG(*wxWHITE),
         m_dx(dx),
+        m_dx2(dx),
         m_dy(dy),
         m_nAlign(nAlign),
         m_nSortGroup(nSortGroup),
@@ -71,6 +76,35 @@ public:
         m_nCursor(cur),
         m_pData(pData)
           {;}
+  // XLabel - has X-range and background color
+  nwxPointLabel(
+    const wxString &sLabel,
+    double dx1,
+    double dx2,
+    double dy,
+    const wxColour &c,
+    const wxColour &cBG,
+    const wxString sToolTip = wxEmptyString,
+    int nAlign = ALIGN_DEFAULT,
+    int nSortGroup = 0,
+    int nLabelStyle = 0,
+    wxStockCursor cur = wxCURSOR_NONE,
+    void *pData = NULL) :
+    m_sLabel(sLabel),
+    m_sToolTip(sToolTip),
+    m_color(c),
+    m_colorBG(cBG),
+    m_dx(dx1),
+    m_dx2(dx2),
+    m_dy(dy),
+    m_nAlign(nAlign),
+    m_nSortGroup(nSortGroup),
+    m_nLabelStyle(nLabelStyle),
+    m_nCursor(cur),
+    m_pData(pData)
+  {
+    ;
+  }
 
   nwxPointLabel(const nwxPointLabel &x)
   {
@@ -81,7 +115,9 @@ public:
     m_sLabel = x.m_sLabel;
     m_sToolTip = x.m_sToolTip;
     m_color = x.m_color;
+    m_colorBG = x.m_colorBG;
     m_dx = x.m_dx;
+    m_dx2 = x.m_dx2;
     m_dy = x.m_dy;
     m_nAlign = x.m_nAlign;
     m_nSortGroup = x.m_nSortGroup;
@@ -116,9 +152,27 @@ public:
   {
     return m_color;
   }
+  const wxColour &GetBackgroundColour() const
+  {
+    return m_colorBG;
+  }
+  const wxColour &GetTextColour() const
+  {
+    return HasStyle(nwxPointLabel::STYLE_BLACK_TEXT)
+      ? *wxBLACK
+      : m_color;
+  }
   double GetX() const
   {
     return m_dx;
+  }
+  double GetX2() const
+  {
+    return m_dx2;
+  }
+  double GetXmid() const
+  {
+    return (m_dx + m_dx2) * 0.5;
   }
   double GetY() const
   {
@@ -144,6 +198,10 @@ public:
   {
     return m_nLabelStyle;
   }
+  bool HasStyle(int n) const
+  {
+    return !!(m_nLabelStyle & n);
+  }
 
   // Set functions
 
@@ -161,7 +219,13 @@ public:
   }
   void SetX(double d)
   {
+    m_dx2 = d;
     m_dx = d;
+  }
+  void SetXRange(double d1, double d2)
+  {
+    m_dx = d1;
+    m_dx2 = d2;
   }
   void SetY(double d)
   {
@@ -178,6 +242,14 @@ public:
   void SetData(void *p)
   {
     m_pData = p;
+  }
+  void AddStyle(int b)
+  {
+    m_nLabelStyle |= b;
+  }
+  void RemoveStyle(int b)
+  {
+    m_nLabelStyle &= ~b;
   }
   void SetStyle(int b)
   {
@@ -200,7 +272,9 @@ private:
   wxString m_sLabel;
   wxString m_sToolTip;
   wxColour m_color;
+  wxColour m_colorBG;
   double m_dx;
+  double m_dx2;
   double m_dy;
   int m_nAlign;
   int m_nSortGroup; // for sorting labels in the same location

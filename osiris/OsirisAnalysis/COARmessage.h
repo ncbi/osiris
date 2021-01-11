@@ -186,6 +186,14 @@ public:
   {
     _InitMaps();
     vectorptr<COARmessage>::cleanup(&m_vpMessage);
+#ifdef __WXDEBUG__
+    for (vector<COARmessage *>::iterator itr = m_vpMessageEdited.begin();
+      itr != m_vpMessageEdited.end();
+      ++itr)
+    {
+      mainApp::LogMessageV(wxT("%lx --- COARmessage"), (long)(*itr));
+    }
+#endif
     vectorptr<COARmessage>::cleanup(&m_vpMessageEdited);
   }
 
@@ -198,22 +206,16 @@ public:
     const COARmessages &x, 
     const set<int> *psn,
     bool bAppend = false);
+#if 0
   void KeepOnly(const vector<int> *pvn);
   void KeepOnly(const set<int> *psn);
+#endif
   virtual void Init()
   {
-    _InitMaps();
+    Cleanup();
     nwxXmlPersist::Init();
   }
-  virtual void Init(void *p)
-  {
-    _InitMaps();
-    if(p != NULL && p != (void *)this)
-    {
-      ((COARmessages *)p)->_InitMaps();
-    }
-    nwxXmlPersist::Init(p);
-  }
+  XML_INIT(COARmessages)
   static bool IsModified(const COARmessages *pm1, const COARmessages *pm2);
   bool IsModified(const COARmessages &msgs) const
   {
@@ -386,6 +388,9 @@ public:
     else if((*pmsg) != msg)
     {
       COARmessage *pNew = new COARmessage(*pmsg);
+#ifdef __WXDEBUG__
+      mainApp::LogMessageV(wxT("%lx +++ COARmessage"), (long)pNew);
+#endif
       m_vpMessageEdited.push_back(pNew);
       _InitMapEdited();
       (*pmsg) = msg;
