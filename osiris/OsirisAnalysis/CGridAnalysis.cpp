@@ -69,6 +69,7 @@ CGridAnalysis::CGridAnalysis(wxWindow *pParent) :
   m_nXScroll(0),
   m_nYScroll(0)
 {
+  nwxGrid::SetMacFont(this);
   CreateGrid(1,1);
   SetRowLabelValue(0,wxEmptyString);
   SetColLabelValue(0,wxEmptyString);
@@ -261,10 +262,6 @@ void CGridAnalysis::_SetupCellFlag(
       else if(nAcceptCount >= nAcceptNeeded)
       {
         nFlag |= GRID_ACCEPTED;
-      }
-      else if(nReviewCount >= nReviewNeeded)
-      {
-        nFlag |= GRID_REVIEWED;
       }
       else
       {
