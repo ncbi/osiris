@@ -145,6 +145,7 @@ int LadderInputFile :: ReadAllInputs () {
 
 			// we're done and all was successful!
 
+			cout << "Input file read and data assigned successfully." << endl;
 			returnStatus = 0;
 			break;
 		}

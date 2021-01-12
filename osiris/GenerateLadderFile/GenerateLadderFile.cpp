@@ -80,7 +80,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (select < 0) {
 
-		cout << "Input error.  Ending..." << endl;
+		cout << "Could not read ladder input file named 'LadderInputFile.txt'.  Ending..." << endl;
 		return -5;
 	}
 
@@ -92,7 +92,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		if (inStatus != 0) {
 
-			cout << "File input failed.  Terminating..." << endl;
+			cout << "Could not read input file named 'LadderInputFileAppend.txt'.  Terminating..." << endl;
 			return -1;
 		}
 
@@ -176,6 +176,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	int nDyes = inputFile.GetNumberOfDyes ();
 	int i;
+
+	cout << "Accepted OL Alleles specified:  " << acceptedOLAlleles << endl;
 
 	for (i=1; i<=nDyes; i++)
 		cout << "Dye for Channel " << i << " = " << (char*)(inputFile.GetDyeName (i)).GetData () << endl;
@@ -290,14 +292,19 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	Bins binData (binsFileFullPath);
 
-	if (!binData.IsValid ())
+	cout << "Now preparing to read bins file and merging loci there with loci in panels file..." << endl;
+
+	if (!binData.IsValid ()) {
+
+		cout << "bins file named " << binsFileFullPath << " is unreadable" << endl;
 		return -100;
+	}
 
 	Ladder* binsLadder = binData.AssembleAllLoci (doNotExtend);
 
 	if (binsLadder == NULL) {
 
-		cout << "Bin file failed" << endl;
+		cout << "Bin file:  locus assembly failed" << endl;
 		return -25;
 	}
 
@@ -336,7 +343,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	if (!labSettingsGenericFile.isValid ()) {
 
-		cout << "Could not read generic lab settings for default volume...exiting" << endl;
+		cout << "Could not read generic lab settings named 'Generic_LabSettings.xml' for default volume...exiting" << endl;
 		return -1;
 	}
 
@@ -387,7 +394,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		if (!hidLabSettingsGenericFile.isValid ()) {
 
-			cout << "Could not read generic hid lab settings for default volume...exiting" << endl;
+			cout << "Could not read generic hid lab settings file named 'GenericHid_LabSettings.xml' for default volume...exiting" << endl;
 			return -1;
 		}
 
@@ -419,5 +426,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		hidLabSettingsOutputFile << hidLabSettingsFileString;
 	}
 
+	cout << "Ladder created successfully.  Check and test ladder info file created to validate that all inputs were specified correctly." << endl;
 	return 0;
 }

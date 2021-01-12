@@ -229,7 +229,7 @@ Ladder* Bins :: AssembleAllLoci (RGDList& doNotExtend) {
 
 	if (nLoci <= 0) {
 
-		cout << "Could not complete ladder setup" << endl;
+		cout << "Could not find any loci...could not complete ladder setup" << endl;
 		delete newLadder;
 		return NULL;
 	}

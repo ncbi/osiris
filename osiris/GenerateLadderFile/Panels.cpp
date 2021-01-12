@@ -31,7 +31,7 @@ mLineTokenizer (NULL), mAlleleTokenizer (NULL) {
 
 	if (!mPanelInputFile->isValid ()) {
 
-		cout << "Panel input file named:  " << panelFileName.GetData () << " is not valid." << endl;
+		cout << "Panel input file named:  " << panelFileName.GetData () << " is not readable." << endl;
 		delete mPanelInputFile;
 		mPanelInputFile = NULL;
 		mValid = false;
