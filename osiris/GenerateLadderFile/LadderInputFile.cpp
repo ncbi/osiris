@@ -107,7 +107,7 @@ int LadderInputFile :: ReadAllInputsAppend (const RGString& inputFileName) {
 
 		if (!mInputFile->isValid ()) {
 
-			cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
+			cout << "Basic input file named:  " << inputFileName.GetData () << " could not be read." << endl;
 			delete mInputFile;
 			mInputFile = NULL;
 			return -1;
@@ -866,7 +866,7 @@ int LadderInputFile :: AssignStringAppend () {
 		mOutputString += mStringLeft + " = " + mStringRight + "\n";
 
 	else
-		cout << "Problem with assign string:  " << mStringLeft.GetData () << " = " << mStringRight.GetData () << endl;
+		cout << "Assign string did not match expected format:  " << mStringLeft.GetData () << " = " << mStringRight.GetData () << endl;
 
 	return status;
 }

@@ -121,7 +121,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		if (!oldLadderFile->isValid ()) {
 
-			cout << "Could not open ladder file for editing.  Exiting..." << endl;
+			cout << "Could not open ladder file named '"<< ladderPath << " for editing.  Exiting..." << endl;
 			return -52;
 		}
 

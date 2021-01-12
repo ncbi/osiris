@@ -695,7 +695,7 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 
 		if (nextLocus == NULL) {
 
-			cout << "Could not find locus named " << nameString.GetData () << ".  Exiting..." << endl;
+			cout << "Could not find locus named " << nameString.GetData () << " in ladder.  Exiting..." << endl;
 			return -155;
 		}
 
