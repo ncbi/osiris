@@ -191,9 +191,19 @@ public:
     {}
     else if ((*pc1) == L'[')
     {
+      // osiris kit - bottom
       n = 1;
     }
     else if ((*pc2) == L'[')
+    {
+      n = -1;
+    }
+    else if ((*pc1) == L'<')
+    {
+      // user defined kit - before osiris kits after user volumes
+      n = 1;
+    }
+    else if ((*pc2) == L'<')
     {
       n = -1;
     }
