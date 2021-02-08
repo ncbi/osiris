@@ -81,6 +81,7 @@ bool SpecialName::CompareLC (const RGString& testName) {
 
 	RGString name = testName;
 	name.ToLower ();
+	//cout << "Comparing special name to input name:  " << testName << endl;
 
 	if (name == mLowerCaseName)
 		return true;
@@ -89,6 +90,8 @@ bool SpecialName::CompareLC (const RGString& testName) {
 	RGString* nextSynonym;
 
 	while (nextSynonym = (RGString*)it ()) {
+
+		//cout << "Next synonym = " << (char*)nextSynonym->GetData () << endl;
 
 		if (*nextSynonym == name)
 			return true;
@@ -105,7 +108,7 @@ AMELName::AMELName () : SpecialName ("AMEL") {
 }
 
 
-TH01Name::TH01Name () : SpecialName ("Th01") {
+TH01Name::TH01Name () : SpecialName ("TH01") {
 
 	RGString* nextString = new RGString ("tho1");
 	mSynonyms.Append (nextString);
@@ -152,5 +155,20 @@ DYS385AB::DYS385AB () : SpecialName ("DYS385 a/b") {
 	mSynonyms.Append (string2);
 	RGString* string3 = new RGString ("dys385a/b");
 	mSynonyms.Append (string3);
+}
+
+
+YGATAH4::YGATAH4 () : SpecialName ("Y-GATA-H4") {
+
+	RGString* string1 = new RGString ("y gata h4");
+	mSynonyms.Append (string1);
+	RGString* string2 = new RGString ("ygatah4");
+	mSynonyms.Append (string2);
+	RGString* string3 = new RGString ("ygata");
+	mSynonyms.Append (string3);
+	RGString* string4 = new RGString ("y gata");
+	mSynonyms.Append (string4);
+	RGString* string5 = new RGString ("y-gata");
+	mSynonyms.Append (string5);
 }
 

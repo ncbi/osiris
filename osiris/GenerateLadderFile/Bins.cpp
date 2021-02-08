@@ -117,6 +117,18 @@ Locus* Bins :: AssembleLocusFromLineStrings () {
 	int nLines = mLocusLineStrings.Length ();
 	SplitLocusLine (mLocusLineStrings [0]);  // This should give us the name field
 	RGString name = mLocusLineFieldString [1];
+	RGString tempName;
+
+	tempName = LadderInputFile::FindLocusNameInList (name);
+
+	if (tempName.Length () == 0) {
+
+		cout << "Locus name " << name << " in bins file not found in acceptable list.  Terminating" << endl;
+		mIsValid = false;
+		return NULL;
+	}
+
+	name = tempName;
 	cout << "Locus name = " << name.GetData () << endl;
 
 	//cout << "Bins locus line 1:  ";

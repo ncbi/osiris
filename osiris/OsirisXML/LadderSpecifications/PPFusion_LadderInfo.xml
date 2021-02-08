@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <KitData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MarkerSet.xsd">
   <Version>2.7</Version>
-  <Kits>
+  	<Kits>
     <Set>
       <Name>PowerPlex Fusion</Name>
       <NChannels>5</NChannels>
@@ -48,7 +48,7 @@
           <DyeName>CC5</DyeName>
         </Channel>
       </FsaChannelMap>
-			<Locus>
+      <Locus>
         <Name>AMEL</Name>
         <Channel>1</Channel>
         <NoExtension>true</NoExtension>
@@ -85,7 +85,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D3S1358</Name>
         <Channel>1</Channel>
         <MinBP>94</MinBP>
@@ -170,7 +170,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D1S1656</Name>
         <Channel>1</Channel>
         <MinBP>154</MinBP>
@@ -285,7 +285,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D2S441</Name>
         <Channel>1</Channel>
         <MinBP>209</MinBP>
@@ -365,7 +365,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D10S1248</Name>
         <Channel>1</Channel>
         <MinBP>250</MinBP>
@@ -450,7 +450,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D13S317</Name>
         <Channel>1</Channel>
         <MinBP>297</MinBP>
@@ -540,7 +540,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>Penta E</Name>
         <Channel>1</Channel>
         <MinBP>361</MinBP>
@@ -666,7 +666,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D16S539</Name>
         <Channel>2</Channel>
         <MinBP>78</MinBP>
@@ -756,7 +756,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D18S51</Name>
         <Channel>2</Channel>
         <MinBP>130</MinBP>
@@ -896,7 +896,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D2S1338</Name>
         <Channel>2</Channel>
         <MinBP>220</MinBP>
@@ -1006,7 +1006,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>CSF1PO</Name>
         <Channel>2</Channel>
         <MinBP>314</MinBP>
@@ -1091,7 +1091,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>Penta D</Name>
         <Channel>2</Channel>
         <MinBP>375</MinBP>
@@ -1100,7 +1100,7 @@
           <Region>
             <ILSName>PROMEGA-ILS-CC5-500-IDX</ILSName>
             <MinGrid>371.41</MinGrid>
-            <MaxGrid>454.</MaxGrid>
+            <MaxGrid>454</MaxGrid>
           </Region>
           <Region>
             <ILSName>PROMEGA-ILS-WEN-500</ILSName>
@@ -1192,7 +1192,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>TH01</Name>
         <Channel>3</Channel>
         <MinBP>71</MinBP>
@@ -1272,7 +1272,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>vWA</Name>
         <Channel>3</Channel>
         <MinBP>128</MinBP>
@@ -1372,7 +1372,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D21S11</Name>
         <Channel>3</Channel>
         <MinBP>202</MinBP>
@@ -1522,7 +1522,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D7S820</Name>
         <Channel>3</Channel>
         <MinBP>269</MinBP>
@@ -1607,7 +1607,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D5S818</Name>
         <Channel>3</Channel>
         <MinBP>318</MinBP>
@@ -1697,7 +1697,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>TPOX</Name>
         <Channel>3</Channel>
         <MinBP>393</MinBP>
@@ -1787,7 +1787,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>DYS391</Name>
         <Channel>3</Channel>
         <MinBP>445</MinBP>
@@ -1874,7 +1874,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D8S1179</Name>
         <Channel>4</Channel>
         <MinBP>73</MinBP>
@@ -1964,7 +1964,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D12S391</Name>
         <Channel>4</Channel>
         <MinBP>132</MinBP>
@@ -2069,7 +2069,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D19S433</Name>
         <Channel>4</Channel>
         <MinBP>193</MinBP>
@@ -2194,7 +2194,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>FGA</Name>
         <Channel>4</Channel>
         <MinBP>261</MinBP>
@@ -2394,7 +2394,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D22S1045</Name>
         <Channel>4</Channel>
         <MinBP>424</MinBP>

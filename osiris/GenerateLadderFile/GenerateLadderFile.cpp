@@ -77,6 +77,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	int select;
 	LadderInputFile inputFile (debugMode);
 	select = inputFile.ReadFirstLine ();
+	bool success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile ("StandardPositiveControl/StandardPositiveControlList.txt");
 
 	if (select < 0) {
 
@@ -253,8 +254,17 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		newLocus = panelData.ReadNextLine (inputFile);
 
-		if (newLocus == NULL)
+		if (newLocus == NULL) {
+
+			if (!panelData.isValid ()) {
+
+				// This is an error
+				cout << "Locus name unidentified" << endl;
+				return -100;
+			}
+
 			break;
+		}
 
 		newLocus->SetRelativeHeightInfo (inputFile.LocusNeedsRelativeHeightInfo (newLocus->GetName ()));
 		status = panelsLadder->AddLocus (newLocus);
@@ -335,11 +345,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	RGString volumeDirectoryName = inputFile.GetVolumeDirectoryName ();
 	RGString fsaPrefix = fsaVolumeDirectory + "/" + volumeDirectoryName;
 
-	CopyVolumeFile ("Generic_access.txt", fsaPrefix + "_access.txt");
-	CopyVolumeFile ("Generic_StdSettings.xml", fsaPrefix + "_StdSettings.xml");
-	CopyVolumeFile ("Generic_MessageBookV4.0.xml", fsaPrefix + "_MessageBookV4.0.xml");
+	CopyVolumeFile ("LadderGeneration/Generic_access.txt", fsaPrefix + "_access.txt");
+	CopyVolumeFile ("LadderGeneration/Generic_StdSettings.xml", fsaPrefix + "_StdSettings.xml");
+	CopyVolumeFile ("LadderGeneration/Generic_MessageBookV4.0.xml", fsaPrefix + "_MessageBookV4.0.xml");
 
-	RGFile labSettingsGenericFile ("Generic_LabSettings.xml", "rt");
+	RGFile labSettingsGenericFile ("LadderGeneration/Generic_LabSettings.xml", "rt");
 
 	if (!labSettingsGenericFile.isValid ()) {
 
@@ -386,11 +396,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		RGDirectory::MakeDirectory (hidVolumeDirectory);
 		hidPrefix = fsaVolumeDirectory + "_HID/" + volumeDirectoryName + "_HID";
 
-		CopyVolumeFile ("Generic_access.txt", hidPrefix + "_access.txt");
-		CopyVolumeFile ("Generic_StdSettings.xml", hidPrefix + "_StdSettings.xml");
-		CopyVolumeFile ("Generic_MessageBookV4.0.xml", hidPrefix + "_MessageBookV4.0.xml");
+		CopyVolumeFile ("LadderGeneration/Generic_access.txt", hidPrefix + "_access.txt");
+		CopyVolumeFile ("LadderGeneration/Generic_StdSettings.xml", hidPrefix + "_StdSettings.xml");
+		CopyVolumeFile ("LadderGeneration/Generic_MessageBookV4.0.xml", hidPrefix + "_MessageBookV4.0.xml");
 
-		RGFile hidLabSettingsGenericFile ("GenericHid_LabSettings.xml", "rt");
+		RGFile hidLabSettingsGenericFile ("LadderGeneration/GenericHid_LabSettings.xml", "rt");
 
 		if (!hidLabSettingsGenericFile.isValid ()) {
 

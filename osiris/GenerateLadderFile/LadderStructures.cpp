@@ -390,10 +390,19 @@ Locus* Ladder :: FindLocusByName (const RGString& locusName) {
 
 	Locus* nextLocus;
 	list <Locus*>::const_iterator locusIterator;
+	//bool print = false;
+
+	//if (locusName == "AMEL") {
+	//	print = true;
+	//	cout << "Looking for locus with name " << locusName << endl;
+	//}
 
 	for (locusIterator = mLocusList.begin(); locusIterator != mLocusList.end(); locusIterator++) {
 
 		nextLocus = *locusIterator;
+
+		//if (print)
+		//	cout << "   Testing locus name = " << nextLocus->GetName () << endl;
 
 		if (nextLocus->GetName () == locusName)
 			return nextLocus;

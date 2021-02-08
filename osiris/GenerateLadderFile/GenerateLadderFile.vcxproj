@@ -98,6 +98,7 @@
     <ClCompile Include="LadderInputFile.cpp" />
     <ClCompile Include="LadderStructures.cpp" />
     <ClCompile Include="LocusName.cpp" />
+    <ClCompile Include="NameManager.cpp" />
     <ClCompile Include="Panels.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +106,7 @@
     <ClInclude Include="LadderInputFile.h" />
     <ClInclude Include="LadderStructures.h" />
     <ClInclude Include="LocusName.h" />
+    <ClInclude Include="NameManager.h" />
     <ClInclude Include="Panels.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
