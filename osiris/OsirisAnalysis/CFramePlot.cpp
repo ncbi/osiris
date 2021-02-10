@@ -1272,7 +1272,7 @@ void CFramePlot::CheckFileModification()
         {
           if(!sPLTfile.IsEmpty())
           {
-            auto_ptr<CPlotData> pPlotDataHole(m_pData);
+            unique_ptr<CPlotData> pPlotDataHole(m_pData);
             m_pData = new CPlotData();
             bReloadPlot = m_pData->LoadFile(sPLTfile);
             if(bReloadPlot)

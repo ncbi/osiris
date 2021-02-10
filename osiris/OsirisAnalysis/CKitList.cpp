@@ -37,6 +37,83 @@
 #include "ConfigDir.h"
 #include <memory>
 
+
+const wxString CKitLadderFiles::g_sEndName(wxT("_ladderinfo.xml"));
+
+void CKitLadderFiles::_Load(const wxString &sPath, bool bSiteFolder)
+{
+  bool bError = false;
+  const int nFlags = wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW;
+  if (wxDir::Exists(sPath))
+  {
+    wxDir dir(sPath);
+    if (dir.IsOpened())
+    {
+      if (bSiteFolder)
+      {
+        wxFileName fn(sPath);
+        m_dtDirSite = fn.GetModificationTime();
+      }
+      dir.Traverse(*this, wxEmptyString, nFlags);
+    }
+    else
+    {
+      m_dtDirSite.Set(time_t(0));
+      bError = true;
+    }
+  }
+  else
+  {
+    bError = !bSiteFolder;
+  }
+  if (bError)
+  {
+    OnOpenError(sPath);
+  }
+}
+
+bool CKitLadderFiles::Reload()
+{
+  m_asList.Clear();
+  m_asErrorList.Clear();
+  ConfigDir *pDir = mainApp::GetConfig();
+  _Load(pDir->GetILSLadderFilePath(), false);
+  _Load(pDir->GetSiteILSLadderFilePath(), true);
+  return IsOK();
+}
+wxDirTraverseResult CKitLadderFiles::OnDir(const wxString&)
+{
+  return wxDIR_CONTINUE;
+}
+wxDirTraverseResult CKitLadderFiles::OnFile(const wxString& filename)
+{
+  size_t nLenFile = filename.Len();
+  size_t nLenEnd = g_sEndName.Len();
+  if ( (nLenFile <= nLenEnd) ||
+    g_sEndName.CmpNoCase(filename.Mid(nLenFile - nLenEnd)) )
+  {
+    ; // ignore this file, doesn't end with _ladderinfo.xml
+  }
+  else if(wxFileName::IsFileReadable(filename))
+  {
+    // OK
+    m_asList.Add(filename);
+  }
+  else
+  {
+    // file not readable
+    m_asErrorList.Add(filename);
+  }
+  return wxDIR_CONTINUE;
+}
+wxDirTraverseResult CKitLadderFiles::OnOpenError(const wxString& openerrorname)
+{
+  m_asErrorList.Add(openerrorname);
+  return wxDIR_CONTINUE;
+}
+
+
+
 bool CLocusNameChannel::operator <(const CLocusNameChannel &x) const
 {
   bool bRtn = false;
@@ -105,6 +182,7 @@ void CPersistKitList::Clear()
     setptr<const CLocusNameChannel,CLocusNameChannelLess>::cleanup(p);
     delete p;
   }
+
   m_mapKitLocus.clear();
 
   mapptr<wxString,CKitChannelMap>::cleanup(&m_mapKitChannels);
@@ -117,6 +195,7 @@ void CPersistKitList::Clear()
   m_pLastKitChannelMap = NULL;
   m_setLadderFree.clear();  // v2.12
   m_setAll_ILS.clear();
+  m_dtSiteILSLadderDir.Set(time_t(0));
 }
 
 
@@ -136,55 +215,35 @@ CILSLadderInfo *CPersistKitList::GetILSLadderInfo()
 {
   if(m_pILS == NULL)
   {
-    m_pILS = new CILSLadderInfo(true);
+    m_pILS = new CILSLadderInfo();
     if(!m_pILS->IsOK())
     {
       _SetLoadError();
     }
+  }
+  else
+  {
+    m_pILS->CheckFileModification(true);
   }
   return m_pILS;
 }
 bool CPersistKitList::Load()
 {
   wxString sFile;
+  CKitLadderFiles asFiles;
+  size_t nFileCount = asFiles->GetCount();
   CIncrementer x(m_nInLoad);
-  const CILSLadderInfo *pLdr = GetILSLadderInfo();
-  const std::vector<CILSkit *> *pvKits = pLdr->GetKits();
-  std::vector<CILSkit *>::const_iterator itr;
-  CILSkit *pKit;
   int nCount = 0;
   m_bV1 = false;
   Clear();
 
+  m_dtSiteILSLadderDir = asFiles.GetSiteModTime();
+
   // load all kit xml files
 
-  for(itr = pvKits->begin();
-      itr != pvKits->end();
-      ++itr)
+  for(size_t n = 0; n < nFileCount; ++n)
   {
-    pKit = *itr;
-    m_sLastKit = pKit->GetKitName();
-    m_pLastKitLocus = NULL;
-    m_pLastKitLS = NULL;
-    m_pLastKitChannelMap = NULL;
-    LSitr itrLS = m_mLS.find(m_sLastKit);
-    m_pLastKitLS = 
-      (itrLS == m_mLS.end())
-      ? NULL
-      : itrLS->second;
-    itrLS = m_mILS.find(m_sLastKit);
-    m_pLastKit_ILS = 
-      (itrLS == m_mILS.end())
-      ? NULL
-      : itrLS->second;
-
-    KLNCitr itrLocus = m_mapKitLocus.find(m_sLastKit);
-    m_pLastKitLocus =
-      (itrLocus == m_mapKitLocus.end())
-      ? NULL
-      : itrLocus->second;
-
-    sFile = pKit->GetFilePath();
+    sFile = asFiles->Item(n);
     if(LoadFile(sFile))
     {
       Add(m_sLastKit);
@@ -196,12 +255,47 @@ bool CPersistKitList::Load()
     }
   }
   nwxString::Trim(&m_sErrorMsg);
-  _HACK_27(pLdr);
+  _HACK_27();
   SortILS();
   return (nCount > 0);
 }
-void CPersistKitList::_HACK_27(const CILSLadderInfo *pILS)
+bool CPersistKitList::NeedReload()
 {
+  bool bRtn = true;
+  wxString sPath = mainApp::GetConfig()->GetSiteILSLadderFilePath();
+  wxDateTime dtPath(time_t(0));
+  if (wxDir::Exists(sPath))
+  {
+    wxFileName fn(sPath);
+    dtPath = (fn.IsDir() && fn.IsFileReadable())
+      ? fn.GetModificationTime() : wxDateTime(time_t(0));
+  }
+  if (!dtPath.IsValid())
+  {
+    // no path, reload if m_dtSiteILSLadderDir has a valid value > 0
+    //  i.e. if previously loaded and now doesn't exist, return true
+    //  should never happen
+    bRtn = m_dtSiteILSLadderDir.IsValid()
+      && (m_dtSiteILSLadderDir.GetTicks() != 0);
+  }
+  else if(m_dtSiteILSLadderDir.IsValid())
+  {
+    // both times are valid, if changed return true
+    bRtn = dtPath != m_dtSiteILSLadderDir;
+  }
+  else
+  {
+    // not previously loaded, return true if path is OK
+    bRtn = (dtPath.GetTicks() > 0);
+  }
+  return bRtn;
+}
+
+void CPersistKitList::_HACK_27()
+{
+  // _HACK_27 load ILS families from CILSLadderInfo version 2.7
+
+  const CILSLadderInfo *pILS = GetILSLadderInfo();
   std::map<wxString, wxArrayString *>::iterator itr,itrLS;
   wxArrayString *pa,*paLS;
   const wxString sFamily;
@@ -276,14 +370,32 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
   wxString sNodeName(pNode->GetName());
   if(!sNodeName.Cmp("Name"))
   {
-    if(m_bV1)
+    wxString s;
+    m_XmlString.LoadFromNode(pNode,(void *)&s);
+    m_pLastKitLocus = NULL;
+    m_pLastKitLS = NULL;
+    m_pLastKitChannelMap = NULL;
+    if(s.Len())
     {
-      wxString s;
-      m_XmlString.LoadFromNode(pNode,(void *)&s);
-      if(s.Len())
+      m_sLastKit = s;
+      if (!m_bV1)
       {
-        m_as.Add(s);
-        m_sLastKit = s;
+        LSitr itrLS = m_mLS.find(m_sLastKit);
+        m_pLastKitLS =
+          (itrLS == m_mLS.end())
+          ? NULL
+          : itrLS->second;
+        itrLS = m_mILS.find(m_sLastKit);
+        m_pLastKit_ILS =
+          (itrLS == m_mILS.end())
+          ? NULL
+          : itrLS->second;
+
+        KLNCitr itrLocus = m_mapKitLocus.find(m_sLastKit);
+        m_pLastKitLocus =
+          (itrLocus == m_mapKitLocus.end())
+          ? NULL
+          : itrLocus->second;
       }
     }
   }
@@ -358,7 +470,7 @@ bool CPersistKitList::LoadFromNode(wxXmlNode *pNode)
         std::map< wxString, CLocusNameList * >::value_type(
           m_sLastKit,m_pLastKitLocus));
     }
-    auto_ptr<CLocusNameChannel> pLC(new CLocusNameChannel);
+    unique_ptr<CLocusNameChannel> pLC(new CLocusNameChannel);
     if(pLC->LoadFromNode(pNode))
     {
       m_pLastKitLocus->insert(pLC.release());

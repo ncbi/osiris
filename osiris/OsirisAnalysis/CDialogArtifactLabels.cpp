@@ -212,13 +212,13 @@ bool CDialogArtifactLabels::_CanSaveFile()
     wxString s = mainApp::GetConfig()->GetArtifactLabelsUserFileName();
     wxFileName fn(s);
     if(!fn.Exists()) {} // OK can create
-    else if(fn.IsDir())
-    {
-      bRtn = false; // it's a directory, cannot create file
-    }
     else if(!fn.IsFileWritable())
     {
       bRtn = false; // exists and not writable
+    }
+    else if (wxDir::Exists(s))
+    {
+      bRtn = false; // it's a directory, cannot create file
     }
   }
   return bRtn;

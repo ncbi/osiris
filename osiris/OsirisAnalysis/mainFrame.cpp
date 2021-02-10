@@ -477,7 +477,7 @@ CFramePlot *mainFrame::OpenGraphicFile(
   const wxString &sLocus,
   COARfile *pFile)
 {
-  auto_ptr<CPlotData> pData(new CPlotData());
+  unique_ptr<CPlotData> pData(new CPlotData());
   pData->LoadFile(sFileName);
   CFramePlot *pPlot(NULL);
   if(pData->GetChannelCount())
@@ -971,7 +971,7 @@ void mainFrame::OnHelp(wxCommandEvent &)
   if(fn.IsFileReadable())
   {
     wxMimeTypesManager mime;
-    auto_ptr<wxFileType> apft(
+    unique_ptr<wxFileType> apft(
       mime.GetFileTypeFromExtension("pdf"));
     wxFileType *pft = apft.get();
     wxString sCmd;

@@ -252,9 +252,9 @@ void nwxGrid::SetRowCount(wxGrid *p, int n)
   }
 }
 
+#ifdef __WXMAC__
 bool nwxGrid::SetMacFont(wxGrid *p)
 {
-#ifdef __WXMAC__
   wxFont fn = p->GetDefaultCellFont();
   bool bRtn = fn.SetFaceName(wxT("Helvetica"));
   if(bRtn)
@@ -262,10 +262,11 @@ bool nwxGrid::SetMacFont(wxGrid *p)
     p->SetDefaultCellFont(fn);
   }
   return bRtn;
-#else
   return true;
-#endif
 }
+#else
+bool nwxGrid::SetMacFont(wxGrid *) { return true; }
+#endif
 
 void nwxGrid::SetColCount(wxGrid *p, int n)
 {
@@ -513,7 +514,7 @@ wxString nwxGrid::GetTabDelimited(wxGrid *pGrid, bool bLabels)
 bool nwxGrid::CopyToClipboard(wxGrid *pGrid,bool bLabels)
 {
   wxString s(GetTabDelimited(pGrid,bLabels));
-  auto_ptr<wxTextDataObject> pObj(new wxTextDataObject(s));
+  unique_ptr<wxTextDataObject> pObj(new wxTextDataObject(s));
   wxClipboard clp;
   bool bRtn = clp.Open();
   if(bRtn)

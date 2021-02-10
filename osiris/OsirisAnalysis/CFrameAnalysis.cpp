@@ -769,7 +769,7 @@ bool CFrameAnalysis::LoadFile(const wxString &sFileName)
   }
   else
   {
-    auto_ptr<COARfile> pOAR(new COARfile());
+    unique_ptr<COARfile> pOAR(new COARfile());
     size_t nSampleCount;
     bOK = pOAR->LoadFile(sFileName);
     if(!bOK)

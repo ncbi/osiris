@@ -332,7 +332,6 @@
     <ClCompile Include="CGridRFURunBase.cpp" />
     <ClCompile Include="CHistoryTime.cpp" />
     <ClCompile Include="CILSLadderInfo.cpp" />
-    <ClCompile Include="CILSselection.cpp" />
     <ClCompile Include="CImageAbout.cpp" />
     <ClCompile Include="CKitColors.cpp" />
     <ClCompile Include="CKitColors2.cpp" />
@@ -485,7 +484,6 @@
     <ClInclude Include="CGridRFURunBase.h" />
     <ClInclude Include="CHistoryTime.h" />
     <ClInclude Include="CILSLadderInfo.h" />
-    <ClInclude Include="CILSselection.h" />
     <ClInclude Include="CImageAbout.h" />
     <ClInclude Include="CKitColors.h" />
     <ClInclude Include="CKitColors2.h" />

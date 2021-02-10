@@ -29,6 +29,7 @@
 */
 
 #include "mainApp.h"
+#include <wx/datetime.h>
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
 #include "ConfigDir.h"
@@ -72,38 +73,19 @@ private:
 };
 class CILSfamily : public nwxXmlPersist
 {
-/*
-private:
-  class SUBFamily : public nwxXmlPersist
-  {
-  public:
-    SUBFamily(TnwxXmlPersistVector<CILSname> *p) :
-          m_pvNames(p)
-    {}
-    virtual ~SUBFamily()
-    {}
-    virtual void Init()
-    {}
-  protected:
-    virtual void RegisterAll(bool = false)
-    {
-      Register(wxT("LaneStandard"),m_pvNames->GetIO(),m_pvNames->Get());
-    }
-  private:
-    TnwxXmlPersistVector<CILSname> *m_pvNames;
-  };
-*/
 public:
   CILSfamily(const CILSfamily &x) : 
       nwxXmlPersist(true), 
-      m_io(false)
+      m_io(false),
+      m_bSite(false)
   {
     RegisterAll(true);
     (*this) = x;
   }
   CILSfamily() : 
       nwxXmlPersist(true),
-      m_io(false)
+      m_io(false),
+      m_bSite(false)
   {
     RegisterAll(true);
   }
@@ -156,6 +138,14 @@ public:
   {
     return nwxXmlPersist::LoadFromNode(p);
   }
+  void SetSite(bool b = true)
+  {
+    m_bSite = b;
+  }
+  bool IsSite()
+  {
+    return m_bSite;
+  }
 #endif
 protected:
   virtual void RegisterAll(bool = false)
@@ -169,6 +159,7 @@ private:
   wxString m_sILSname;
   wxString m_sDyeName;
   TnwxXmlIOPersistVector<CILSname> m_io;
+  bool m_bSite;
   std::vector<CILSname *> m_vNames; // must be after m_io
   //SUBFamily m_SUBFamily;
 };
@@ -225,61 +216,25 @@ protected:
   wxString m_sKitName;
   wxString m_sFileName;
 };
-/*
-  // doesn't seem to be used
-class CILSkitLess
-{
-public:
-  CILSkitLess() {}
-  virtual ~CILSkitLess() {}
-  bool operator ()(const CILSkit &a, const CILSkit &b) const
-  {
-    int n = a.GetKitName().CmpNoCase(b.GetKitName());
-    return (n < 0);
-  }
-  bool operator ()(const CILSkit *pa, const CILSkit *pb) const
-  {
-    return (*this)(*pa,*pb);
-  }
-};
-*/
-
 
 class CILSLadderInfo : public nwxXmlPersist
 {
 public:
-  CILSLadderInfo(bool bLoad = false);
+  CILSLadderInfo();
   virtual ~CILSLadderInfo()
   {
     _Cleanup();
   }
+  bool CheckReload();
   bool Load();
-
-  const std::vector<CILSkit *> *GetKits() const
-  {
-    return m_vKits.Get();
-  }
-  bool IsKitName(const wxString &sKitName) const
-  {
-    const std::vector<CILSkit *> *pvKit(m_vKits.Get());
-    std::vector<CILSkit *>::const_iterator itr;
-    bool bRtn = false;
-    for(itr = pvKit->begin(); (itr != pvKit->end()) && (!bRtn); ++itr)
-    {
-      if(!(*itr)->GetKitName().Cmp(sKitName))
-      {
-        bRtn = true;
-      }
-    }
-    return bRtn;
-  }
   bool IsOK() const
   {
     return m_bIsOK;
   }
   const CILSfamily *GetFamily(const wxString &sILSName) const
   {
-    const CILSfamily *pRtn = m_mapCILSfamily.Find(sILSName);
+    ConstIterator itr = m_mapCILSfamily.find(sILSName);
+    const CILSfamily *pRtn = (itr == m_mapCILSfamily.end()) ? NULL : itr->second;
     return pRtn;
   }
   const wxString &GetDyeName(const wxString &sILSName) const
@@ -290,10 +245,9 @@ public:
   }
   const CILSfamily *GetFamilyFromLS(const wxString &sLSname) const
   {
-    const std::map<wxString,CILSfamily *> *pMap = m_mapCILSfamily.Get();
     std::map<wxString,CILSfamily *>::const_iterator itr;
     const CILSfamily *pRtn = NULL;
-    for(itr = pMap->begin(); (pRtn == NULL) && (itr != pMap->end()); ++itr)
+    for(itr = m_mapCILSfamily.begin(); (pRtn == NULL) && (itr != m_mapCILSfamily.end()); ++itr)
     {
       if(itr->second->HasLS(sLSname))
       {
@@ -310,7 +264,6 @@ public:
     return sRtn;
   }
   const wxString &FindDisplayName(const wxString &sLSname) const;
-  const wxString &FindLSname(const wxString &sDisplayName) const;
   void BuildAll_ILSarray(wxArrayString *ps) const;
 
 #ifdef __WXDEBUG__
@@ -328,17 +281,20 @@ protected:
   virtual void RegisterAll(bool = false)
   {
     RegisterWxString(wxT("Version"),&m_sVersion);
-    Register(wxT("LaneStandards"),&m_mapCILSfamily);
-    Register(wxT("Kits"),&m_vKits);
+    Register(wxT("LaneStandards"),&m_mapCILSfamilyTmp);
   }
 
 private:
+  bool _NeedReload();
   void _Cleanup();
   void _BuildNameToDisplay() const;
+  void _MoveData(bool bSite);
   wxString m_sVersion;
-  TnwxXmlPersistVector<CILSkit> m_vKits;
-  TnwxXmlPersistMap<wxString,CILSfamily> m_mapCILSfamily;
+  wxDateTime m_dtSiteFile;
+  std::map<wxString,CILSfamily *> m_mapCILSfamily;
+  typedef std::map<wxString, CILSfamily *>::iterator Iterator;
+  typedef std::map<wxString, CILSfamily *>::const_iterator ConstIterator;
+  TnwxXmlPersistMap<wxString, CILSfamily> m_mapCILSfamilyTmp;
   mutable std::map<const wxString ,const wxString &> m_mapNameToDisplay;
-  mutable std::map<const wxString ,const wxString &> m_mapDisplayToName;
   bool m_bIsOK;
 };

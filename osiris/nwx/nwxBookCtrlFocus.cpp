@@ -187,31 +187,31 @@ int nwxBookCtrlFocus::_GetTypeIndex(
 
 bool nwxBookCtrlFocus::_CheckBookCtrl(wxWindow *pWin, wxWindow *pChild, int ndx)
 {
-  bool bRtn = false;
-  auto_ptr<ICheckBookCtrl> ptr(NULL);
-  ICheckBookCtrl *pBook;
+  bool bRtn = true;
+  unique_ptr<ICheckBookCtrl> ptr;
   switch (ndx)
   {
   case nNOTEBOOK:
-    ptr = auto_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxNotebook>);
+    ptr = unique_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxNotebook>);
     break;
   case nLISTBOOK:
-    ptr = auto_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxListbook>);
+    ptr = unique_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxListbook>);
     break;
   case nCHOICEBOOK:
-    ptr = auto_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxChoicebook>);
+    ptr = unique_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxChoicebook>);
     break;
   case nTREEBOOK:
-    ptr = auto_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxTreebook>);
+    ptr = unique_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxTreebook>);
     break;
   case nTOOLBOOK:
-    ptr = auto_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxToolbook>);
+    ptr = unique_ptr<ICheckBookCtrl>(new CheckBookCtrl<wxToolbook>);
     break;
+  default:
+    bRtn = false;
   }
-  pBook = ptr.get();
-  if(pBook != NULL)
+  if(bRtn)
   {
-    bRtn = pBook->SelectPage(pWin,pChild);
+    bRtn = ptr->SelectPage(pWin,pChild);
   }
   return bRtn;
 }

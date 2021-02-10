@@ -288,6 +288,23 @@ wxString nwxFileUtil::FindNewDirName(const wxString &sPath)
   }
   return sRtn;
 }
+/*
+wxDateTime nwxFileUtil::GetModTime(const wxString &sFullPath)
+{
+
+  wxDateTime dt(time_t(0));
+  wxFileName fn(sFullPath);
+  if (fn.IsFileReadable(sFullPath))
+  {
+    dt = fn.GetModificationTime();
+  }
+#ifdef __WXMSW__
+#endif
+#ifdef __WXMAC__
+#endif
+}
+*/
+
 
 #ifndef __WXMSW__
 

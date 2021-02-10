@@ -60,7 +60,7 @@ public:
   }
   const wxString &GetConfigPath(const char *psSubdir)
   {
-    if(psSubdir != NULL)
+    if (psSubdir != NULL)
     {
       SetConfigSubdir(psSubdir);
     }
@@ -92,7 +92,7 @@ public:
   }
   const wxString &GetFilePath(const char *psFileSubdir)
   {
-    if(psFileSubdir != NULL)
+    if (psFileSubdir != NULL)
     {
       SetFileSubdir(psFileSubdir);
     }
@@ -122,7 +122,7 @@ public:
     nwxFileUtil::EndWithSeparator(&sRtn);
     return sRtn;
   }
-  wxString GetILSLadderFileName(const wxString &s) const 
+  wxString GetILSLadderFileName(const wxString &s) const
   {
     // Osiris v 2.x
     wxString sRtn = GetILSLadderFilePath();
@@ -143,7 +143,7 @@ public:
   wxString GetArtifactLabelsFileName() const
   {
     wxString sRtn;
-    if(!_BuildFileName(GetILSLadderFilePath(),wxT("ArtifactLabels.xml"),&sRtn))
+    if (!_BuildFileName(GetILSLadderFilePath(), wxT("ArtifactLabels.xml"), &sRtn))
     {
       sRtn.Clear();
     }
@@ -155,12 +155,44 @@ public:
     sRtn.Append(wxS("CmfList.xml"));
     return sRtn;
   }
+  wxString GetUserVolumePath() const
+  {
+    wxString sRtn;
+    _BuildFilePath(GetSitePath(), wxT("Volumes"), &sRtn);
+    return sRtn;
+  }
+
+  wxString GetSiteConfigPath() const
+  {
+    wxString sRtn;
+    _BuildFilePath(GetSitePath(), wxT("Config"), &sRtn);
+    return sRtn;
+  }
   wxString GetArtifactLabelsUserFileName() const
   {
     wxString sRtn;
-    _BuildFileName(GetSitePath(),wxT("UserArtifactLabels.xml"),&sRtn);
+    _BuildFileName(GetSitePath(), wxT("UserArtifactLabels.xml"), &sRtn);
     return sRtn;
   }
+  wxString GetSiteKitPath() const
+  {
+    wxString sRtn;
+    _BuildFilePath(GetSiteConfigPath(), wxT("Volumes"), &sRtn);
+    return sRtn;
+  }
+  wxString GetSiteILSLadderFilePath() const
+  {
+    wxString sRtn;
+    _BuildFilePath(GetSiteConfigPath(), wxT("LadderSpecifications"), &sRtn);
+    return sRtn;
+  }
+  wxString GetSiteILSFileName() const
+  {
+    wxString sRtn;
+    _BuildFileName(GetSiteILSLadderFilePath(), wxT("ILSAndLadderInfo.xml"), &sRtn);
+    return sRtn;
+  }
+
 #ifdef __WXDEBUG__
   void Log();
 #endif
@@ -168,26 +200,26 @@ public:
 private:
 
   wxString m_sExePath;
-    // full path of argv[0] w/o program name
+  // full path of argv[0] w/o program name
   wxString m_sExeConfigPath;
-    // m_sExePath + "Config"
+  // m_sExePath + "Config"
   wxString m_sExeVolumePath;
-    // m_sExeConfigPath + "Volumes"
+  // m_sExeConfigPath + "Volumes"
   wxString m_sConfigPath;
-    // full path for config files m_sTopConfigPath + m_sSubdir
+  // full path for config files m_sTopConfigPath + m_sSubdir
   wxString m_sFilePath;
-    // full path for data files m_sTopFilePath + m_sFileSubdir
-  wxString m_sTopConfigPath; 
-    // top level directory for config files (${HOME}/Application Data/.osiris)
+  // full path for data files m_sTopFilePath + m_sFileSubdir
+  wxString m_sTopConfigPath;
+  // top level directory for config files (${HOME}/Application Data/.osiris)
   wxString m_sTopFilePath;
-    // top level directory for data files (${HOME}/My Documents/Osiris)
+  // top level directory for data files (${HOME}/My Documents/Osiris)
   wxString m_sSubdir;
-    // Subdir for config files (.osiris)
+  // Subdir for config files (.osiris)
   wxString m_sFileSubdir;
-    // Subdir for data files (Osiris)
-    // Subdir for user config files, operating procedures (volumes), etc.
+  // Subdir for data files (Osiris)
+  // Subdir for user config files, operating procedures (volumes), etc.
   bool m_bError;
-    // true is an error occurred when creating a directory
+  // true is an error occurred when creating a directory
 
   static bool _BuildFileName(const wxString &sPath, const wxChar *psFileName, wxString *psRtn)
   {
@@ -199,23 +231,12 @@ private:
     bool bRtn = wxFileName::IsFileReadable(sRtn);
     return bRtn;
   }
-#if 0
-  bool _FindFileName(const wxChar *psFileName, wxString *psRtn) const
+  static bool _BuildFilePath(const wxString &sPath, const wxChar *psFileName, wxString *psRtn)
   {
-    // load the file name only if it exists
-    wxString sRtn;
-    bool bRtn = _BuildFileName(GetSitePath(),psFileName,&sRtn);
-    if(!bRtn)
-    {
-      bRtn = _BuildFileName(GetILSLadderFilePath(),psFileName,&sRtn);
-    }
-    if(bRtn)
-    {
-      *psRtn = sRtn;
-    }
+    bool bRtn = _BuildFileName(sPath, psFileName, psRtn);
+    nwxFileUtil::EndWithSeparator(psRtn);
     return bRtn;
   }
-#endif
 };
 
 #endif
