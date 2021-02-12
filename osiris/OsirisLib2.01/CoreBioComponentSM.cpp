@@ -2144,7 +2144,16 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 		else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight)) {  // Modify min primary and min ratio based on these...
 
-			if (rawHeight > 0.0) {
+			if ((rawHeight < 0.0) && mixedPositiveAndNegativePullup) {   //  This is modified from positive to negative on 02/11/2121.  Including positive raw data pull-up essentially invalidates the whole curve-fitting and noise rejection
+				                     //  character of the Osiris data analysis.  this is the difference between this version and a previous 2.15 beta.  I'm sure it was regarded as a bug, but, it was not a bug.
+				                     //  It was intended.  If a "hign noise" region was not fit as a peak, it's because it isn't one and the pull-up algorithm should not be applied to it.  (If it were truly pull-up,
+				                     //  it would almost certainly be better formed.  So, then why allow raw data negative peaks?  Negative peaks are subject to stricter fit conditions than positive ones, so a raw-data
+				                     //  negative peak may actually represent a poor fit negative peak that was rejected.  The reason for this is that noise and positive peaks can interfere more with negative peaks than is 
+				                     //  likely for positive ones.
+
+				//  The other problem with including positive raw data "peaks" is that they tend to bias the pull-up ratio higher, because purported raw data pull-up peaks tend to arise in situations in which the primary peak
+				//  is shorter compared to the noise peak.  This makes spurious pure pull-up calls more likely.  It was just such a case that gave rise to the investigation that uncovered this discrepancy between the previous 
+				//  Version-2.15 and this one.
 
 				if (currentPeak <= abs (rawHeight)) {
 
@@ -2162,29 +2171,31 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				if (currentPeak > maxHeight)
 					maxHeight = currentPeak;
 
-				nPos++;
+				nNegatives++;
+				negativePairs.push_back (nextPair);
+				mixedPositiveAndNegativePullup = true;
 			}
 
-			else if ((rawHeight < 0.0) && (currentPeak <= abs (rawHeight)))
-				ignore.InsertWithNoReferenceDuplication (nextSignal);
+			//else if ((rawHeight < 0.0) && (currentPeak <= abs (rawHeight)))   //  Removed 02/11/2121:  see above
+			//	ignore.InsertWithNoReferenceDuplication (nextSignal);
 
 			// If no negative pullup pairs and rawHeight < 0, should we add it to the list?  12/2/2020...Now it's 12/9/2020 and I don't think so.
 
-			else if ((rawHeight < 0.0) && mixedPositiveAndNegativePullup) {
+			//else if ((rawHeight < 0.0) && mixedPositiveAndNegativePullup) {
 
-				nextPair = new PullupPair (nextSignal, rawHeight);
-				rawDataPullupPrimaries.Append (nextSignal);
-				pairList.push_back (nextPair);
+			//	nextPair = new PullupPair (nextSignal, rawHeight);
+			//	rawDataPullupPrimaries.Append (nextSignal);
+			//	pairList.push_back (nextPair);
 
-				if (currentPeak < minHeight)
-					minHeight = currentPeak;
+			//	if (currentPeak < minHeight)
+			//		minHeight = currentPeak;
 
-				if (currentPeak > maxHeight)
-					maxHeight = currentPeak;
+			//	if (currentPeak > maxHeight)
+			//		maxHeight = currentPeak;
 
-				nNegatives++;
-				negativePairs.push_back (nextPair);
-			}
+			//	nNegatives++;
+			//	negativePairs.push_back (nextPair);
+			//}
 		}
 	}
 
