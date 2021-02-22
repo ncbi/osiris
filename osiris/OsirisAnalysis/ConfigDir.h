@@ -34,6 +34,9 @@
 #include <wx/string.h>
 #include <wx/filename.h>
 #include "nwx/nwxFileUtil.h"
+#include "nwx/stdb.h"
+#include <set>
+#include "nwx/stde.h"
 
 class ConfigDir
 {
@@ -186,12 +189,7 @@ public:
     _BuildFilePath(GetSiteConfigPath(), wxT("LadderSpecifications"), &sRtn);
     return sRtn;
   }
-  wxString GetSiteILSFileName() const
-  {
-    wxString sRtn;
-    _BuildFileName(GetSiteILSLadderFilePath(), wxT("ILSAndLadderInfo.xml"), &sRtn);
-    return sRtn;
-  }
+  size_t GetSiteILSFileNames(std::set<wxString> *) const;
 
 #ifdef __WXDEBUG__
   void Log();

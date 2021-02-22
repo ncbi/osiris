@@ -388,9 +388,21 @@ public:
     }
     nwxXmlPersist::Init();
   }
-  void Add(const wxString &s)
+  void Add(const wxString &sKitName, const wxString &sLadderInfoFileName)
   {
-    m_as.Add(s);
+    m_as.Add(sKitName); 
+    m_mapKitToLadderInfo.insert(
+      std::pair<wxString, wxString>(sKitName, sLadderInfoFileName));
+  }
+  const wxString GetLadderInfoFileName(const wxString &sKitName) const
+  {
+    std::map<wxString, wxString>::const_iterator itr = m_mapKitToLadderInfo.find(sKitName);
+    wxString s;
+    if (itr != m_mapKitToLadderInfo.end())
+    {
+      s = itr->second;
+    }
+    return s;
   }
   size_t GetCount()
   {
@@ -438,6 +450,7 @@ private:
   void _CHECK_BOOL(wxXmlNode *pNode, std::set<wxString> *pSet);
   wxArrayString m_as;
   wxString m_sLastKit;
+  std::map<wxString, wxString> m_mapKitToLadderInfo;
   std::map<wxString, wxArrayString *> m_mLS;
   std::map<wxString, wxArrayString *> m_mILS; // 2.7 ils family
   std::map<wxString, int> m_msChannelCount;

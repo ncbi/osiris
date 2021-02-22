@@ -327,12 +327,12 @@ private:
     _LoadDir(m_sDirBase);
     m_nVolumeType = CVolume::USER_KIT;
     _LoadDir(m_sDirUserKits);
-    _SetupKitVolumes();
     m_nVolumeType = CVolume::USER_OP;
     if(m_sDirVolume.Len())
     {
       _LoadDir(m_sDirVolume);
     }
+    _SetupKitVolumes();
   }
 };
 

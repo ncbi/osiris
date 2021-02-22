@@ -90,6 +90,7 @@ wxDirTraverseResult CKitLadderFiles::OnFile(const wxString& filename)
   size_t nLenFile = filename.Len();
   size_t nLenEnd = g_sEndName.Len();
   if ( (nLenFile <= nLenEnd) ||
+    nwxFileUtil::IsMacAttrFile(filename) ||
     g_sEndName.CmpNoCase(filename.Mid(nLenFile - nLenEnd)) )
   {
     ; // ignore this file, doesn't end with _ladderinfo.xml
@@ -187,6 +188,7 @@ void CPersistKitList::Clear()
 
   mapptr<wxString,CKitChannelMap>::cleanup(&m_mapKitChannels);
   m_as.Clear();
+  m_mapKitToLadderInfo.clear();
   m_sLastKit.Empty();
   m_sErrorMsg.Empty();
   m_pLastKitLocus = NULL;
@@ -246,7 +248,7 @@ bool CPersistKitList::Load()
     sFile = asFiles->Item(n);
     if(LoadFile(sFile))
     {
-      Add(m_sLastKit);
+      Add(m_sLastKit,sFile);
       nCount++;
     }
     else

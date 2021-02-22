@@ -76,16 +76,14 @@ class CILSfamily : public nwxXmlPersist
 public:
   CILSfamily(const CILSfamily &x) : 
       nwxXmlPersist(true), 
-      m_io(false),
-      m_bSite(false)
+      m_io(false)
   {
     RegisterAll(true);
     (*this) = x;
   }
   CILSfamily() : 
       nwxXmlPersist(true),
-      m_io(false),
-      m_bSite(false)
+      m_io(false)
   {
     RegisterAll(true);
   }
@@ -138,15 +136,15 @@ public:
   {
     return nwxXmlPersist::LoadFromNode(p);
   }
-  void SetSite(bool b = true)
-  {
-    m_bSite = b;
-  }
-  bool IsSite()
-  {
-    return m_bSite;
-  }
 #endif
+  void SetFileName(const wxString &sFileName)
+  {
+    m_sFileName = sFileName;
+  }
+  const wxString &GetFileName() const
+  {
+    return m_sFileName;
+  }
 protected:
   virtual void RegisterAll(bool = false)
   {
@@ -158,8 +156,8 @@ protected:
 private:
   wxString m_sILSname;
   wxString m_sDyeName;
+  wxString m_sFileName;
   TnwxXmlIOPersistVector<CILSname> m_io;
-  bool m_bSite;
   std::vector<CILSname *> m_vNames; // must be after m_io
   //SUBFamily m_SUBFamily;
 };
@@ -226,7 +224,6 @@ public:
     _Cleanup();
   }
   bool CheckReload();
-  bool Load();
   bool IsOK() const
   {
     return m_bIsOK;
@@ -285,12 +282,28 @@ protected:
   }
 
 private:
+  bool _Load(); // private because anything outside of the constructor should call CheckReload()
+  bool _LoadFile(const wxString &sFileName)
+  {
+    bool bRtn = LoadFile(sFileName);
+    if (bRtn)
+    {
+      _MoveData(sFileName);
+    }
+    else
+    {
+      m_mapCILSfamilyTmp.Clear();
+    }
+    return bRtn;
+  }
+  bool _SetupSiteFileNames();
   bool _NeedReload();
   void _Cleanup();
   void _BuildNameToDisplay() const;
-  void _MoveData(bool bSite);
+  void _MoveData(const wxString &sFileName);
   wxString m_sVersion;
   wxDateTime m_dtSiteFile;
+  std::map<wxString, wxDateTime> m_mapSiteFiles;
   std::map<wxString,CILSfamily *> m_mapCILSfamily;
   typedef std::map<wxString, CILSfamily *>::iterator Iterator;
   typedef std::map<wxString, CILSfamily *>::const_iterator ConstIterator;

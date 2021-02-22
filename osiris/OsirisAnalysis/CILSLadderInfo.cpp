@@ -40,50 +40,71 @@ CILSLadderInfo::CILSLadderInfo() :
 {
   m_dtFileModTime.Set(time_t(0));
   RegisterAll(true);
-  Load();
+  _SetupSiteFileNames();
+  _Load();
+}
+
+bool CILSLadderInfo::_SetupSiteFileNames()
+{
+  // get all site ILS and Ladder name files
+  // if the list has changed or a modification time
+  // has changed, then return true to indicate that it
+  // needs to be reloaded
+  std::set<wxString> setFiles;
+  std::set<wxString>::iterator itrs;
+  std::map<wxString, wxDateTime>::iterator itrm;
+  wxDateTime t;
+  size_t nCount = mainApp::GetConfig()->GetSiteILSFileNames(&setFiles);
+  bool bReload = (nCount != m_mapSiteFiles.size());
+  if (!bReload)
+  {
+    for (itrs = setFiles.begin(); (!bReload) && itrs != setFiles.end(); ++itrs)
+    {
+      itrm = m_mapSiteFiles.find(*itrs);
+      bReload = (itrm == m_mapSiteFiles.end()) ||
+        (itrm->second != nwxFileUtil::GetModTime(*itrs));
+    }
+  }
+  if (bReload)
+  {
+    m_mapSiteFiles.clear();
+    for (itrs = setFiles.begin(); itrs != setFiles.end(); ++itrs)
+    {
+      m_mapSiteFiles.insert(
+        std::map<wxString, wxDateTime>::value_type(*itrs, nwxFileUtil::GetModTime(*itrs)));
+    }
+  }
+  return bReload;
 }
 
 bool CILSLadderInfo::_NeedReload()
 {
-  bool bReload = !IsOK();
-  if (!bReload)
-  {
-    // check site data
-    wxString sFile = mainApp::GetConfig()->GetSiteILSFileName();
-    wxFileName fn(sFile);
-    bReload = fn.IsFileReadable()
-      ? (fn.GetModificationTime() != m_dtFileModTime)
-      : (m_dtFileModTime.GetTicks() > 0);
-  }
+  bool bReload = IsOK() ? _SetupSiteFileNames() : false;
   return bReload;
 }
 bool CILSLadderInfo::CheckReload()
 {
-  bool bRtn = _NeedReload() ? Load() : IsOK();
+  bool bRtn = _NeedReload() ? _Load() : IsOK();
   return bRtn;
 }
-bool CILSLadderInfo::Load()
+bool CILSLadderInfo::_Load()
 {
   wxString sFile = mainApp::GetConfig()->GetILSLadderFileName();
   _Cleanup();
-  m_bIsOK = LoadFile(sFile);
-  _MoveData(false);
+  m_bIsOK = _LoadFile(sFile);
 
   if (m_bIsOK)
   {
-    sFile = mainApp::GetConfig()->GetSiteILSFileName();
-    wxFileName fn(sFile);
-    if (fn.IsFileReadable())
+    std::map<wxString, wxDateTime>::iterator itr;
+    for (itr = m_mapSiteFiles.begin(); itr != m_mapSiteFiles.end(); ++itr)
     {
-      m_dtSiteFile = fn.GetModificationTime();
-      m_bIsOK = LoadFile(sFile);
-      _MoveData(true);
+      _LoadFile(itr->first);
     }
   }
   return m_bIsOK;
 }
 
-void CILSLadderInfo::_MoveData(bool bSite)
+void CILSLadderInfo::_MoveData(const wxString &sFileName)
 {
   TnwxXmlPersistMap<wxString, CILSfamily>::iterator itr;
   for (itr = m_mapCILSfamilyTmp->begin();
@@ -96,8 +117,8 @@ void CILSLadderInfo::_MoveData(bool bSite)
     }
     else
     {
-      itr->second->SetSite(bSite);
-      m_mapCILSfamily.insert(std::map<wxString, CILSfamily *>::value_type(itr->first, itr->second));
+      itr->second->SetFileName(sFileName);
+      m_mapCILSfamily.insert(*itr);
     }
   }
   m_mapCILSfamilyTmp->clear();
