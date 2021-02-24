@@ -201,6 +201,10 @@ public:
 	void SetConvolutionNoiseThreshold (double threshold);
 	double GetConvolutionNoiseThreshold () const;
 
+	RGString GetLadderFileName () const {
+		return mLadderFileName;
+	}
+
 	void SetChannelSpecificThresholds (list<channelThreshold*>* analysis, list<channelThreshold*>* detection) { mAnalysisThresholds = analysis; mDetectionThresholds = detection; }
 
 	void Report (RGTextOutput& text, const RGString& indent);
@@ -300,6 +304,7 @@ protected:
 	list<channelThreshold*>* mDetectionThresholds;
 
 	int mNumberOfChannels;
+	RGString mLadderFileName;
 
 	bool ReadFileNameStrings (const RGString& xmlString);
 };

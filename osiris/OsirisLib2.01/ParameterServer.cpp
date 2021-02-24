@@ -388,6 +388,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 	RGXMLTagSearch ladderRFUSearch ("LadderRFUTests", XMLString);
 	RGXMLTagSearch laneStdRFUSearch ("LaneStandardRFUTests", XMLString);
 	RGXMLTagSearch sampleRFUSearch ("SampleRFUTests", XMLString);
+	RGXMLTagSearch ladderFileNameSearch ("LadderFileName", XMLString);
 	size_t startOffset = 0;
 	size_t endOffset = 0;
 	double limit;
@@ -513,6 +514,17 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		Locus::SetMinBoundForHomozygote (nonRFULimits.minBoundForHomozygote);
 		CoreBioComponent::SetMinBioIDForArtifacts (nonRFULimits.minBPSForArtifacts);
 		cout << "Min BP as read from Lab Settings = " << nonRFULimits.minBPSForArtifacts << "\n";
+
+		if (ladderFileNameSearch.FindNextTag (startOffset, endOffset, XMLString)) {
+
+			if (XMLString.Length () > 4) {
+
+				mLadderFileName = XMLString;
+				startOffset = endOffset;
+				cout << "Found Ladder file name in lab settings..." << endl;
+				return true;
+			}
+		}
 
 		//
 		//  Reformat XMLString a little and save into mLabSettingsString
