@@ -288,6 +288,34 @@ wxString nwxFileUtil::FindNewDirName(const wxString &sPath)
   }
   return sRtn;
 }
+wxDateTime nwxFileUtil::GetModTime(const wxString &sFullPath)
+{
+
+  wxDateTime dt(time_t(0));
+  wxFileName fn(sFullPath);
+  if (fn.IsFileReadable(sFullPath))
+  {
+    dt = fn.GetModificationTime();
+  }
+  return dt;
+}
+wxULongLong nwxFileUtil::GetSize(const wxString &sFullPath)
+{
+  wxULongLong nRtn = 0;
+  wxFileName fn(sFullPath);
+  if (fn.IsFileReadable(sFullPath))
+  {
+    nRtn = fn.GetSize();
+  }
+  return nRtn;
+}
+
+bool nwxFileUtil::IsMacAttrFile(const wxString &s)
+{
+  wxFileName fn(s);
+  wxString sName = fn.GetName();
+  return sName.StartsWith(g_sMacFileAttr);
+}
 
 #ifndef __WXMSW__
 
@@ -748,6 +776,7 @@ size_t nwxFileUtil::GetAllFilesNoCase(
 
 std::vector<wxString> nwxFileUtil::g_asSysPath;
 std::vector<wxString> nwxFileUtil::g_asPath;
+wxString nwxFileUtil::g_sMacFileAttr(wxT("._"));
 bool nwxFileUtil::g_PATH_SET = false;
 
 #ifdef __WXMSW__

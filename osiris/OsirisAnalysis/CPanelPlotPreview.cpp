@@ -334,7 +334,7 @@ CPanelPlot *CPanelPlotPreview::_Create(const wxString &sFileName)
   if(wxFileName::IsFileReadable(sFileName))
   {
     wxBusyCursor xxx;
-    auto_ptr<CPlotData> pData(new CPlotData());
+    unique_ptr<CPlotData> pData(new CPlotData());
     if(pData->LoadFile(sFileName))
     {
       pRtn = new CPanelPlot(

@@ -134,6 +134,7 @@ osiris_SOURCES =  \
 ../CParmOsiris.cpp \
 ../CPlotController.cpp \
 ../CPlotData.cpp \
+../CPositiveControls.cpp \
 ../CPrintOut.cpp \
 ../CPrintOutAnalysis.cpp \
 ../CPrintOutPlot.cpp \

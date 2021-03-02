@@ -31,7 +31,7 @@
 
 void fsa2XML::WriteXML(fsaFile *pFsa, RGFile *pFile)
 {
-  auto_ptr<xmlwriter> XML(new xmlwriter (pFile));
+  unique_ptr<xmlwriter> XML(new xmlwriter (pFile));
 	fsaDirEntry *pEntry;
 
 	XML->CreateTag("AB_Root");

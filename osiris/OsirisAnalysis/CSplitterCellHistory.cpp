@@ -386,7 +386,7 @@ void CSplitterCellHistory::_SetupSetDateTime(
     {
       bKeep = false;
       dt = *itr;
-      auto_ptr< vectorptr<COARpeakAny> > pPeaks(
+      unique_ptr< vectorptr<COARpeakAny> > pPeaks(
         Sample.GetPeaksByLocusName(
             sLocusName, nChannel, &dt));
       for(vectorptr<COARpeakAny>::iterator itra

@@ -235,7 +235,7 @@ bool CPageName::_ExtractParameters(const wxString &s)
     XSLin.Load(s);
     if(XSLin.IsOk())
     {
-      auto_ptr<wxXml2Document> apDoc(sheet.TransformToDOM(&XSLin));
+      unique_ptr<wxXml2Document> apDoc(sheet.TransformToDOM(&XSLin));
       if(apDoc.get() != NULL)
       {
         CXSLExportFileType xp;
