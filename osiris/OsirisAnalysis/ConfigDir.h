@@ -183,10 +183,25 @@ public:
     _BuildFilePath(GetSiteConfigPath(), wxT("Volumes"), &sRtn);
     return sRtn;
   }
+  
   wxString GetSiteILSLadderFilePath() const
   {
     wxString sRtn;
     _BuildFilePath(GetSiteConfigPath(), wxT("LadderSpecifications"), &sRtn);
+    return sRtn;
+  }
+  wxString GetSitePositiveControlsFileName() const
+  {
+    wxString sRtn;
+    _BuildFileName(
+      GetSiteILSLadderFilePath(), wxT("StandardPositiveControls.xml"), &sRtn);
+    return sRtn;
+  }
+  wxString GetPositiveControlsFileName() const
+  {
+    wxString sRtn;
+    _BuildFileName(
+      GetILSLadderFilePath(), wxT("StandardPositiveControls.xml"), &sRtn);
     return sRtn;
   }
   size_t GetSiteILSFileNames(std::set<wxString> *) const;

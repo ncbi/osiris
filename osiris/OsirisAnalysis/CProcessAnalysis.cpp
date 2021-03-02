@@ -39,6 +39,7 @@
 #include "CVolumes.h"
 #include "CKitList.h"
 #include "CILSLadderInfo.h"
+#include "CPositiveControls.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxWCharBuffer.h"
 
@@ -72,6 +73,8 @@ CProcessAnalysis::CProcessAnalysis(
   wxString s;
   wxString sILSfile;
   wxString sLadderFile;
+  wxString sPosCtrlFile = CPositiveControlsAll::GetFileName(
+    pVolume->GetLabSettings()->GetLabStrings()->m_sStdCtrlName);
   const CParmOsiris *pParm = pDirEntry->GetParmOsiris();
   const ConfigDir *pDir = mainApp::GetConfig();
   CPersistKitList *pKitList = mainApp::GetKitList();
@@ -94,11 +97,15 @@ CProcessAnalysis::CProcessAnalysis(
 
   if (!( sLadderFile.IsEmpty() || sLadderFile.StartsWith(pDir->GetExeConfigPath()) ))
   {
-    APPEND_LINE("LadderInfoFile", sLadderFile);
+    APPEND_LINE("LadderFullPathName", sLadderFile);
   }
   if ((!sILSfile.IsEmpty()) && (sILSfile != pDir->GetILSLadderFileName()))
   {
-    APPEND_LINE("ILSInfoFile", sILSfile);
+    APPEND_LINE("ILSFullPathName", sILSfile);
+  }
+  if (sPosCtrlFile.Len() && (sPosCtrlFile != pDir->GetPositiveControlsFileName()))
+  {
+    APPEND_LINE("PositiveControlFullPathName", sPosCtrlFile);
   }
   if (pKitList->IsLadderFree(pParm->GetKitName()))
   {

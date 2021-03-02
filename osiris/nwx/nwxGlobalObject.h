@@ -29,7 +29,8 @@
 */
 #ifndef __NWX_GLOBAL_OBJECT_H__
 #define __NWX_GLOBAL_OBJECT_H__
-
+// stdio.h - defines NULL
+#include <stdio.h>
 template <class T> class nwxGlobalObject
 {
 public:
