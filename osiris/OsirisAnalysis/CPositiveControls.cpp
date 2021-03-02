@@ -202,7 +202,10 @@ public:
   {
     return &m_setAllele;
   }
-  virtual ~_CPositiveControlLocus() {}
+  virtual ~_CPositiveControlLocus()
+  {
+    m_io.Cleanup();
+  }
 #if 0
   // debug when no longer read only
   void SetName(const wxString &sName)
@@ -325,7 +328,10 @@ public:
   {
     RegisterAll(true);
   }
-  virtual ~_CPositiveControls() {}
+  virtual ~_CPositiveControls()
+  {
+    m_io.Cleanup();
+  }
   virtual const wxString &RootNode(void) const
   {
     return g_ROOT;
