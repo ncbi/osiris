@@ -97,7 +97,7 @@ CProcessAnalysis::CProcessAnalysis(
 
   if (!( sLadderFile.IsEmpty() || sLadderFile.StartsWith(pDir->GetExeConfigPath()) ))
   {
-    APPEND_LINE("LadderFullPathName", sLadderFile);
+    APPEND_LINE("LadderFullPathName", pDir->GetSiteConfigPath());
   }
   if ((!sILSfile.IsEmpty()) && (sILSfile != pDir->GetILSLadderFileName()))
   {
