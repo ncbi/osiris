@@ -1991,6 +1991,7 @@ finishOutput:
 	delete SampleDirectory;
 	delete pullupMatrixFile;
 	pullupMatrixFile = NULL;
+//	delete pServer;
 
 	for (i=1; i<=5; i++) {
 
@@ -3413,6 +3414,7 @@ int STRLCAnalysis :: AnalyzeIncrementallySMLF (const RGString& prototypeInputDir
 	
 	RGString in1;
 	RGString in2;
+//	delete pServer;
 
 	in1.ReadTextFile (tempInputSummary);
 	in2.ReadTextFile (tempInputSummaryLinks);

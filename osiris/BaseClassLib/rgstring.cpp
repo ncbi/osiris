@@ -98,7 +98,7 @@ RGString :: RGString (size_t size) : RGPersistent (), StringLength (0) {
 
 RGString :: ~RGString() {
 
-  delete Data;
+	delete Data;
 #ifdef _WINDOWS
   if (WData != NULL)
   {
@@ -115,6 +115,7 @@ void RGString::_AllocWData(size_t nLen) const
     if (WData != NULL)
     {
       delete[] WData;
+	  WData = NULL;
     }
     WData = new wchar_t[nLen];
     LenWData = nLen;

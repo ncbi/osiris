@@ -260,13 +260,23 @@ public:
 
 		if(OneAndOnlySelf != NULL) {
 
+			cout << "Kill begin" << endl;
 			ReferenceCount = 1; // problem with reference count
 			delete OneAndOnlySelf;
 			OneAndOnlySelf = NULL;
+			cout << "Kill complete" << endl;
 		}
   }
 
   static void UnescapeXML (RGString& target);
+  static void SetSpecificILSFilePath (const RGString& fullPath) { mSpecificILSFilePath = fullPath; }
+  static RGString GetSpecificILSFilePath () { return mSpecificILSFilePath; }
+  static void SetUserDirectoryForLadder (const RGString& fullPath) { mUserDirectoryForLadder = fullPath; }
+  static RGString GetUserDirectoryForLadder () { return mUserDirectoryForLadder; }
+  static void SetUserDirectoryForPositiveControl (const RGString& fullPath) { mUserDirectoryForPositiveControl = fullPath; }
+  static RGString GetUserDirectoryForPositiveControl () { return mUserDirectoryForPositiveControl; }
+  static RGString GetLabSettingsLadderFileName () { return LadderFileName; }
+  static void SetLabSettingsLadderFileName (const RGString& name) { LadderFileName = name; }
 
 protected:
 	static int ReferenceCount;
@@ -305,6 +315,11 @@ protected:
 
 	int mNumberOfChannels;
 	RGString mLadderFileName;
+	
+	static RGString mSpecificILSFilePath;
+	static RGString mUserDirectoryForLadder;
+	static RGString mUserDirectoryForPositiveControl;
+	static RGString LadderFileName;
 
 	bool ReadFileNameStrings (const RGString& xmlString);
 };
@@ -316,7 +331,7 @@ public:
   ParameterServerKill() {;}
   ~ParameterServerKill()
   {
-    ParameterServer::Kill();
+    //ParameterServer::Kill();
   }
 };
 

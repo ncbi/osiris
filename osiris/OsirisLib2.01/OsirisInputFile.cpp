@@ -534,6 +534,30 @@ int OsirisInputFile :: AssignString () {
 		}
 	}
 
+	else if (mStringLeft == "ILSFullPathName") {
+
+		SetEmbeddedSlashesToForward (mStringRight);
+		mILSFullPathName = mStringRight;
+		ParameterServer::SetSpecificILSFilePath (mStringRight);
+		return 0;
+	}
+
+	else if (mStringLeft == "LadderFullPathName") {
+
+		SetEmbeddedSlashesToForward (mStringRight);
+		mLadderFullPathName = mStringRight;
+		ParameterServer::SetUserDirectoryForLadder (mStringRight);
+		return 0;
+	}
+
+	else if (mStringLeft == "PositiveControlFullPathName") {
+
+		SetEmbeddedSlashesToForward (mStringRight);
+		mPositiveControlFullPathName = mStringRight;
+		ParameterServer::SetUserDirectoryForPositiveControl (mStringRight);
+		return 0;
+	}
+
 	else if (mStringLeft == "#")
 		status = 0;
 

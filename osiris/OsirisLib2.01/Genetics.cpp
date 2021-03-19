@@ -9492,6 +9492,11 @@ PopulationCollection :: PopulationCollection (const RGString& inputDirectoryName
 	RGString fullDirectoryName = inputDirectoryName + "/LadderSpecifications/";
 	RGString ilsFileName = fullDirectoryName + "ILSAndLadderInfo.xml";
 	RGString gridFileName;
+
+	RGString alternateILSFileName;
+
+	cout << "Starting population collection..." << endl;
+
 	RGFile ilsInputFile (ilsFileName, "rt");
 
 	if (!ilsInputFile.isValid ()) {
@@ -9515,16 +9520,28 @@ PopulationCollection :: PopulationCollection (const RGString& inputDirectoryName
 	//  Next, we need to find the ladder file name.  this is either in the lab settings, in which case the ParameterServer will have found it, or in the ILSAndLadderInfo.xml file
 	//  First, we test the ParameterServer.
 
-	ParameterServer* pServer = new ParameterServer;
-	RGString kitFileName = pServer->GetLadderFileName ();
+	RGString kitFileName = ParameterServer::GetLabSettingsLadderFileName ();
+	alternateILSFileName  = ParameterServer::GetSpecificILSFilePath ();
+	RGString alternateLadderPath = ParameterServer::GetUserDirectoryForLadder ();
+
+	cout << "Alternate path for ladder:  " << alternateLadderPath << endl;
+	cout << "Specific ILS File Path:  " << alternateILSFileName << endl;
+	cout << "Kit file name:  " << kitFileName << endl;
+
 	RGString fullPathGridFileName;
-	delete pServer;
 
 	if (kitFileName.Length () > 4) {
 
 		// We found it!  Open for reading:
 
-		fullPathGridFileName = fullDirectoryName + kitFileName;
+		if (alternateLadderPath.Length () > 0)
+			fullPathGridFileName = alternateLadderPath + "/LadderSpecifications/" + kitFileName;
+
+		else
+			fullPathGridFileName = fullDirectoryName + kitFileName;
+
+		cout << "Full path ladder name:  " << fullPathGridFileName << endl;
+
 		RGFile gridFile (fullPathGridFileName, "rt");
 
 		if (!gridFile.isValid ()) {
@@ -9580,7 +9597,12 @@ PopulationCollection :: PopulationCollection (const RGString& inputDirectoryName
 					return;
 				}
 
-				fullPathGridFileName = fullDirectoryName + kitFileName;
+				if (alternateLadderPath.Length () > 0)
+					fullPathGridFileName = alternateLadderPath + kitFileName;
+
+				else
+					fullPathGridFileName = fullDirectoryName + kitFileName;
+
 				RGFile gridFile (fullPathGridFileName, "rt");
 
 				if (!gridFile.isValid ()) {
@@ -9602,6 +9624,22 @@ PopulationCollection :: PopulationCollection (const RGString& inputDirectoryName
 		Valid = FALSE;
 		ErrorString = "Could not find matching kit name, file = " + ilsFileName + " and kit name = " + markerSetName;
 	}
+
+	if (alternateILSFileName.Length () > 4) {
+
+		RGFile userILSFile (alternateILSFileName, "rt");
+
+		if (!userILSFile.isValid ()) {
+
+			Valid = FALSE;
+			ErrorString = "Could not open ILS file:  " + alternateILSFileName;
+			return;
+		}
+
+		mILSData = "";
+		mILSData.ReadTextFile (userILSFile);
+	}
+		
 }
 
 

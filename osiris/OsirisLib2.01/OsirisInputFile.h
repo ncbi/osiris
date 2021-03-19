@@ -90,6 +90,10 @@ public:
 	bool UserNamedSettingsFiles () const { return mUserNamedSettingsFiles; }
 	bool IsLadderFreeAnalysis () const { return mIsLadderFreeAnalysis; }
 
+	RGString GetILSFullPathName () const { return mILSFullPathName; }
+	RGString GetLadderFullPathName () const { return mLadderFullPathName; }
+	RGString GetPositiveControlFullPathName () const { return mPositiveControlFullPathName; }
+
 	void ResetInputLines ();
 	RGString* GetNextInputLine ();
 
@@ -143,6 +147,10 @@ protected:
 	bool mUseRawData;
 	bool mUserNamedSettingsFiles;
 	bool mIsLadderFreeAnalysis;
+
+	RGString mILSFullPathName;
+	RGString mLadderFullPathName;
+	RGString mPositiveControlFullPathName;
 
 	list<channelThreshold*>* mAnalysisThresholds;
 	list<channelThreshold*>* mDetectionThresholds;

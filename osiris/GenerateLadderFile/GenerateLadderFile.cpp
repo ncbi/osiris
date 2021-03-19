@@ -77,7 +77,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	int select;
 	LadderInputFile inputFile (debugMode);
 	select = inputFile.ReadFirstLine ();
-	bool success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile ("StandardPositiveControl/StandardPositiveControlList.txt");
+//	bool success;
 
 	if (select < 0) {
 
@@ -110,14 +110,23 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		// create full path names to open files.  First, echo data:
 		RGString ILSName = Locus::GetILSFamilyName ();
 		cout << "Ladder Directory = " << inputFile.GetLadderDirectory ().GetData () << endl;
-		cout << "Bins file name = " << inputFile.GetBinsFileName ().GetData () << endl;
-		cout << "Output Config Path = " << inputFile.GetOutputConfigDirectoryPath ().GetData () << endl;
+		cout << "Bins file name = " << inputFile.GetBinsFileName ().GetData () << endl;  // This is now the full path name of the bins file
+		cout << "Output Config Path = " << inputFile.GetOutputConfigDirectoryPath ().GetData () << endl;  // This is the user site directory
 		cout << "Ladder file name = " << inputFile.GetLadderFileName ().GetData () << endl;
 		cout << "ILS name = " << ILSName.GetData () << endl;
 
+		RGString userSiteDirectory = inputFile.GetOutputConfigDirectoryPath ();
+	//	RGString configurationToolsDirectory = userSiteDirectory + "/ConfigurationTools";
+	//	RGString ladderGenerationConfigDirectory = configurationToolsDirectory + "/LadderGeneration";
+	//	RGString positiveControlsConfigDirectory = configurationToolsDirectory + "/StandardPositiveControl";
+		RGString ladderDirectory = userSiteDirectory + "/Config/LadderSpecifications";
+		RGString ladderPath = ladderDirectory + "/" + inputFile.GetLadderFileName ();
+
+	//	success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile (userSiteDirectory + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.txt");
+
 		RGString oldLadderString;
 		RGString newLadderString;
-		RGString ladderPath = inputFile.GetOutputConfigDirectoryPath () + "/" + inputFile.GetLadderFileName ();
+		//RGString ladderPath = inputFile.GetOutputConfigDirectoryPath () + "/" + inputFile.GetLadderFileName ();
 		RGFile* oldLadderFile = new RGFile (ladderPath, "rt");
 
 		if (!oldLadderFile->isValid ()) {
@@ -129,7 +138,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		oldLadderString.ReadTextFile (*oldLadderFile);
 		delete oldLadderFile;
 
-		RGString binsFullPath = inputFile.GetLadderDirectory () + "/" + inputFile.GetBinsFileName ();
+		RGString binsFullPath = inputFile.GetBinsFileName ();  // this should be full path to bins file
 
 		Bins* binsAppend = new Bins (binsFullPath);
 
@@ -186,7 +195,64 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	for (i=1; i<=nDyes; i++)
 		cout << "Color for Channel " << i << " = " << (inputFile.GetColorName (i)).GetData () << endl;
 
-	cout << "Ladder Directory = " << inputFile.GetLadderDirectory ().GetData () << endl;
+	RGString userSiteDirectory = inputFile.GetOutputConfigDirectoryPath ();
+	RGString configurationToolsDirectory = userSiteDirectory + "/ConfigurationTools";
+	RGString ladderGenerationConfigDirectory = configurationToolsDirectory + "/LadderGeneration";
+	RGString positiveControlsConfigDirectory = configurationToolsDirectory + "/StandardPositiveControl";
+
+//	success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile (configurationToolsDirectory + "/StandardPositiveControl/StandardPositiveControlList.txt");
+
+	RGString configDirectoryName = userSiteDirectory + "/Config";
+	RGString ladderDirectoryName = configDirectoryName + "/LadderSpecificatons";
+	RGString volumeDirectoryName = configDirectoryName + "/Volumes";
+
+	int config = RGDirectory::FileOrDirectoryExists (configDirectoryName);
+
+	if (!config) {
+
+		config = RGDirectory::MakeDirectory (configDirectoryName);
+
+		if (!config) {
+
+			cout << "Could not make directory with path:  " << configDirectoryName << endl;
+			cout << "Exiting" << endl;
+			return -10;
+		}
+
+	}
+
+	config = RGDirectory::FileOrDirectoryExists (configDirectoryName);
+
+	if (!config) {
+
+		config = RGDirectory::MakeDirectory (ladderDirectoryName);
+
+		if (!config) {
+
+			cout << "Could not make directory with path:  " << ladderDirectoryName << endl;
+			cout << "Exiting" << endl;
+			return -20;
+		}
+	}
+
+	config = RGDirectory::FileOrDirectoryExists (volumeDirectoryName);
+
+	if (!config) {
+
+		config = RGDirectory::MakeDirectory (volumeDirectoryName);
+
+		if (!config) {
+
+			cout << "Could not make directory with path:  " << volumeDirectoryName << endl;
+			cout << "Exiting" << endl;
+			return -20;
+		}
+	}
+
+//	RGString ladderDirectory = userSiteDirectory + "/Config/LadderSpecifications";
+	RGString ladderPath = ladderDirectoryName + "/" + inputFile.GetLadderFileName ();
+
+	cout << "Ladder Directory = " << ladderDirectoryName.GetData () << endl;
 	cout << "Output Config Path = " << inputFile.GetOutputConfigDirectoryPath ().GetData () << endl;
 	cout << "Kit Name = " << inputFile.GetKitName ().GetData () << endl;
 
@@ -327,7 +393,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	//  Open output file and write ladder
-	RGString ladderOutputFileName = inputFile.GetOutputConfigDirectoryPath () + "/" + inputFile.GetLadderFileName ();
+	RGString ladderOutputFileName = inputFile.GetOutputConfigDirectoryPath () + "/Config/LadderSpecifications/" + inputFile.GetLadderFileName ();
+	cout << "Writing ladder named " << ladderOutputFileName << endl;
 	RGTextOutput ladderOutput (ladderOutputFileName, FALSE);
 
 	if (!ladderOutput.FileIsValid ()) {
@@ -338,18 +405,27 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	panelsLadder->OutputTo (ladderOutput, inputFile);
 
-	RGString volumePathName = inputFile.GetDefaultVolumePath ();
+	RGString volumePathName = volumeDirectoryName;
 	RGString fsaVolumeDirectory = volumePathName + "/" + inputFile.GetVolumeDirectoryName ();
+
+	cout << "Creating directory with fsa volume name:  " << fsaVolumeDirectory << endl;
+
 	RGDirectory::MakeDirectory (fsaVolumeDirectory);
 	RGString hidVolumeDirectory = fsaVolumeDirectory + "_HID";
-	RGString volumeDirectoryName = inputFile.GetVolumeDirectoryName ();
-	RGString fsaPrefix = fsaVolumeDirectory + "/" + volumeDirectoryName;
+	RGString defaultVolumeDirectoryName = inputFile.GetVolumeDirectoryName ();
+	RGString fsaPrefix = fsaVolumeDirectory + "/" + defaultVolumeDirectoryName;
 
-	CopyVolumeFile ("LadderGeneration/Generic_access.txt", fsaPrefix + "_access.txt");
-	CopyVolumeFile ("LadderGeneration/Generic_StdSettings.xml", fsaPrefix + "_StdSettings.xml");
-	CopyVolumeFile ("LadderGeneration/Generic_MessageBookV4.0.xml", fsaPrefix + "_MessageBookV4.0.xml");
+	RGString accessTextName = ladderGenerationConfigDirectory + "/Generic_access.txt";
+	RGString stdSettingsTextName = ladderGenerationConfigDirectory + "/Generic_StdSettings.xml";
+	RGString MessageBookTextName = ladderGenerationConfigDirectory + "/Generic_MessageBookV4.0.xml";
+	RGString labSettingsTextName = ladderGenerationConfigDirectory + "/Generic_LabSettings.xml";
+	RGString hidLabSettingsTextName = ladderGenerationConfigDirectory + "/GenericHid_LabSettings.xml";
 
-	RGFile labSettingsGenericFile ("LadderGeneration/Generic_LabSettings.xml", "rt");
+	CopyVolumeFile (accessTextName, fsaPrefix + "_access.txt");
+	CopyVolumeFile (stdSettingsTextName, fsaPrefix + "_StdSettings.xml");
+	CopyVolumeFile (MessageBookTextName, fsaPrefix + "_MessageBookV4.0.xml");
+
+	RGFile labSettingsGenericFile (labSettingsTextName, "rt");
 
 	if (!labSettingsGenericFile.isValid ()) {
 
@@ -394,13 +470,15 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (inputFile.GetHid ()) {
 
 		RGDirectory::MakeDirectory (hidVolumeDirectory);
-		hidPrefix = fsaVolumeDirectory + "_HID/" + volumeDirectoryName + "_HID";
+		hidPrefix = fsaVolumeDirectory + "_HID/" + defaultVolumeDirectoryName + "_HID";
 
-		CopyVolumeFile ("LadderGeneration/Generic_access.txt", hidPrefix + "_access.txt");
-		CopyVolumeFile ("LadderGeneration/Generic_StdSettings.xml", hidPrefix + "_StdSettings.xml");
-		CopyVolumeFile ("LadderGeneration/Generic_MessageBookV4.0.xml", hidPrefix + "_MessageBookV4.0.xml");
+		CopyVolumeFile (accessTextName, hidPrefix + "_access.txt");
+		CopyVolumeFile (stdSettingsTextName, hidPrefix + "_StdSettings.xml");
+		CopyVolumeFile (MessageBookTextName, hidPrefix + "_MessageBookV4.0.xml");
 
-		RGFile hidLabSettingsGenericFile ("LadderGeneration/GenericHid_LabSettings.xml", "rt");
+		RGFile labSettingsGenericFile (labSettingsTextName, "rt");
+
+		RGFile hidLabSettingsGenericFile (hidLabSettingsTextName, "rt");
 
 		if (!hidLabSettingsGenericFile.isValid ()) {
 

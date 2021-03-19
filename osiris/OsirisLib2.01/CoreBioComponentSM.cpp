@@ -2783,7 +2783,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		if (primarySignal != NULL) {
 
 			double time = primarySignal->GetMean ();
-			cout << "Primary Time = " << time << "\n";
+//			cout << "Primary Time = " << time << "\n";
 		}
 
 		else

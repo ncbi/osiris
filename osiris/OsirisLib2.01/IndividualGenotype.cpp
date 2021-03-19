@@ -35,6 +35,7 @@
 #include "IndividualGenotype.h"
 #include "DataSignal.h"
 #include "rgtokenizer.h"
+#include "ParameterServer.h"
 
 RGString GenotypesForAMarkerSet::PathToStandardControlFile;
 
@@ -896,7 +897,14 @@ bool GenotypesForAMarkerSet :: AddCollectionToTables (const RGString& xmlString,
 	RGString XMLString (xmlString);
 	RGString positiveControlString;
 	RGString pControlsString;
-	RGString fullPathControlFileName = GenotypesForAMarkerSet::PathToStandardControlFile + "/LadderSpecifications/StandardPositiveControls.xml";
+	RGString alternativePathToPositiveControls = ParameterServer::GetUserDirectoryForPositiveControl ();
+	RGString fullPathControlFileName; // = GenotypesForAMarkerSet::PathToStandardControlFile + "/LadderSpecifications/StandardPositiveControls.xml";
+
+	if (alternativePathToPositiveControls.Length () > 0)
+		fullPathControlFileName = alternativePathToPositiveControls;
+
+	else
+		fullPathControlFileName = GenotypesForAMarkerSet::PathToStandardControlFile + "/LadderSpecifications/StandardPositiveControls.xml";
 
 	RGFile* allPositiveControls = new RGFile (fullPathControlFileName, "rt");
 

@@ -65,6 +65,10 @@ static ParameterServerKill g_kill;
 
 int ParameterServer :: ReferenceCount = 0;
 ParameterServer* ParameterServer :: OneAndOnlySelf = NULL;
+RGString ParameterServer::mSpecificILSFilePath = "";
+RGString ParameterServer::mUserDirectoryForLadder = "";
+RGString ParameterServer::mUserDirectoryForPositiveControl = "";
+RGString ParameterServer::LadderFileName = "";
 
 
 void RFULimitsStruct :: Reset () {
@@ -384,6 +388,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 	RGString XMLString (xmlString);
 	RGString rfuString;
 	RGString dataTypeString;
+	RGString ladderNameString;
 	RGXMLTagSearch FileTypeSearch ("DataFileType", XMLString);
 	RGXMLTagSearch ladderRFUSearch ("LadderRFUTests", XMLString);
 	RGXMLTagSearch laneStdRFUSearch ("LaneStandardRFUTests", XMLString);
@@ -392,6 +397,9 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 	size_t startOffset = 0;
 	size_t endOffset = 0;
 	double limit;
+	ParameterServer* pServer = new ParameterServer;
+
+	cout << "Adding lab settings..." << endl;
 	
 	if (isLabSettings) {
 
@@ -515,14 +523,15 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		CoreBioComponent::SetMinBioIDForArtifacts (nonRFULimits.minBPSForArtifacts);
 		cout << "Min BP as read from Lab Settings = " << nonRFULimits.minBPSForArtifacts << "\n";
 
-		if (ladderFileNameSearch.FindNextTag (startOffset, endOffset, XMLString)) {
+		if (ladderFileNameSearch.FindNextTag (startOffset, endOffset, ladderNameString)) {
 
-			if (XMLString.Length () > 4) {
+			if (ladderNameString.Length () > 4) {
 
-				mLadderFileName = XMLString;
+				mLadderFileName = ladderNameString;
+				ParameterServer::SetLabSettingsLadderFileName (ladderNameString);
 				startOffset = endOffset;
-				cout << "Found Ladder file name in lab settings..." << endl;
-				return true;
+				cout << "Found Ladder file name in lab settings..." << mLadderFileName << endl;
+				//return true;
 			}
 		}
 

@@ -53,10 +53,12 @@ LocusNames LadderInputFile::StandardNames;
 
 
 LadderInputFile :: LadderInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mNumberOfDyes (0), mYLinkedDefault (false),
-mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap (NULL), mVersion ("2.0"), 
+mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap (NULL), mVersion ("2.7"), 
 mGenerateILSFamilies (false) {
 
 	mInputLinesIterator = new RGDListIterator (mInputLines);
+	mGenerateILSFamilies = true;
+	Locus::SetGenerateILSFamilies (true);
 }
 
 
@@ -483,6 +485,7 @@ int LadderInputFile :: AssignString () {
 
 		SetEmbeddedSlashesToForward (mStringRight);
 		mOutputConfigDirectoryPath = mStringRight;
+		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.txt");
 		status = 0;
 	}
 
@@ -889,7 +892,7 @@ int LadderInputFile :: AssignStringAppend () {
 
 	else if (mStringLeft == "BinsFileName") {
 
-		SetEmbeddedSlashesToForward (mStringRight);
+		SetEmbeddedSlashesToForward (mStringRight);  // This is the full path to the bins file
 		mBinsFileName = mStringRight;
 		status = 0;
 	}
@@ -898,6 +901,7 @@ int LadderInputFile :: AssignStringAppend () {
 
 		SetEmbeddedSlashesToForward (mStringRight);
 		mOutputConfigDirectoryPath = mStringRight;
+		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.txt");
 		status = 0;
 	}
 
@@ -1063,11 +1067,11 @@ int LadderInputFile :: AssembleInputsAppend () {
 		status = -1;
 	}
 
-	if (mOutputConfigDirectoryPath.Length () == 0) {
+	//if (mOutputConfigDirectoryPath.Length () == 0) {
 
-		cout << "Output Config Directory Path is unspecified." << endl;
-		status = -1;
-	}
+	//	cout << "Output Config Directory Path is unspecified." << endl;
+	//	status = -1;
+	//}
 
 	if (mBinsFileName.Length () == 0) {
 
