@@ -291,8 +291,8 @@ protected:
 	SynonymList* NegativeControlIDs;
 	SynonymList* mSingleSourceSampleIDs;
 	SynonymList* mMixtureIDs;
-	RGString* mStandardPositiveControlName;
-	RGString* mMarkerSetName;
+	RGString *mStandardPositiveControlName;
+	RGString *mMarkerSetName;
 
 	int mMaxPullups;
 	int mMaxStutter;
@@ -303,8 +303,8 @@ protected:
 
 	Boolean Changed;
 
-	RGString* mStandardSettingsString;
-	RGString* mLabSettingsString;
+	RGString *mStandardSettingsString;
+	RGString *mLabSettingsString;
 
 	RGDList* mSmartMessageThresholds;
 	list<locusSpecificLimitsStruct*>* mSampleLocusSpecificThresholds;
@@ -331,7 +331,7 @@ public:
   ParameterServerKill() {;}
   ~ParameterServerKill()
   {
-    //ParameterServer::Kill();
+   // ParameterServer::Kill();
   }
 };
 

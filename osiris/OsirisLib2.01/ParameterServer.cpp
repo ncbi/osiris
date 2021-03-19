@@ -397,7 +397,7 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 	size_t startOffset = 0;
 	size_t endOffset = 0;
 	double limit;
-	ParameterServer* pServer = new ParameterServer;
+//	ParameterServer* pServer = new ParameterServer;
 
 	cout << "Adding lab settings..." << endl;
 	
@@ -925,7 +925,7 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 
 	if (mSet == NULL) {
 
-//		cout << "Parameter server could not find population marker set named:  " << mMarkerSetName.GetData () << endl;
+//		cout << "Parameter server could not find population marker set named:  " << mMarkerSetName->GetData () << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (*mMarkerSetName);
 		STRLCAnalysis::mFailureMessage->SetPingValue (30);
 		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();
