@@ -79,13 +79,18 @@ CProcessAnalysis::CProcessAnalysis(
   const ConfigDir *pDir = mainApp::GetConfig();
   CPersistKitList *pKitList = mainApp::GetKitList();
   CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
+  const wxString &sExeConfigPath = pDir->GetExeConfigPath();
   const CILSfamily *pILSfamily = pILS->GetFamilyFromLS(pParm->GetLsName());
   if (pILSfamily != NULL) { sILSfile = pILSfamily->GetFileName(); }
   sLadderFile = pKitList->GetLadderInfoFileName(pParm->GetKitName());
+  if (sLadderFile.IsEmpty())
+  {
+    sLadderFile = pVolume->GetLabSettings()->GetMarkerCollection()->GetLadderFileName();
+  }
   
   sStdin.Alloc(4096);
   APPEND_LINE("InputDirectory",pParm->GetInputDirectory());      //  1
-  APPEND_LINE("LadderDirectory",pDir->GetExeConfigPath());       //  2
+  APPEND_LINE("LadderDirectory", sExeConfigPath);       //  2
   APPEND_LINE("ReportDirectory",pParm->GetOutputDirectory());    //  3
   APPEND_LINE("MarkerSetName",pParm->GetKitName());              //  4
   APPEND_LINE("LaneStandardName",pParm->GetLsName());            //  5
@@ -95,7 +100,7 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_INT("MinLadderRFU",pParm->GetMinRFU_Ladder());          //  9
   APPEND_INT("MinInterlocusRFU",pParm->GetMinRFU_Interlocus());  // 10
 
-  if (!( sLadderFile.IsEmpty() || sLadderFile.StartsWith(pDir->GetExeConfigPath()) ))
+  if (!( sLadderFile.IsEmpty() || nwxFileUtil::FileInDirectory(sLadderFile, sExeConfigPath) ))
   {
     APPEND_LINE("LadderFullPathName", pDir->GetSiteConfigPath());
   }
