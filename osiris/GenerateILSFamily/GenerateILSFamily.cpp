@@ -94,10 +94,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	RGString XML = inputFile.CreateXMLString ();
-	RGString configDirectoryName = "../Config";
-	RGString volumeDirectoryName = "../Config/Volumes";
-	RGString ladderSpecsDirectoryName = "../Config/LadderSpecifications";
-	RGString ilsFamilyFileName = ladderSpecsDirectoryName + "/" + inputFile.GetFamilyName () + "_ILSAndLadderInfo.xml";
+	RGString userFiles = inputFile.GetUserFiles ();
+	RGString configDirectoryName = userFiles + "/Config";
+	RGString volumeDirectoryName = userFiles + "/Config/Volumes";
+	RGString ladderSpecsDirectoryName = userFiles + "/Config/LadderSpecifications";
+	RGString ilsFamilyFileName = ladderSpecsDirectoryName + "/" + inputFile.GetOutputFileName () + "_ILSInfo.xml";
 
 	int config = RGDirectory::FileOrDirectoryExists (configDirectoryName);
 

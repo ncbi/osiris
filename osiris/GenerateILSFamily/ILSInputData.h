@@ -66,6 +66,14 @@ public:
 		return mFamilyName;
 	}
 
+	RGString GetOutputFileName () const {
+		return mOutputFileName;
+	}
+
+	RGString GetUserFiles () const {
+		return mUserFiles;
+	}
+
 protected:
 	bool mDebug;
 	RGFile* mInputFile;
@@ -74,7 +82,9 @@ protected:
 	int mNumberOfRelativeHeights;
 
 	RGString mFamilyName;
+	RGString mOutputFileName;
 	RGString mBaseLaneStdName;
+	RGString mUserFiles;
 	int* mPeakSizeList;
 	RGStringArray mRelativeHeightList;
 

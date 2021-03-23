@@ -296,6 +296,8 @@ int ILSInputData::AssignString () {
 	RGString tempName;
 
 	RGString FamilyNameTag = "ILSFamilyName"; // required
+	RGString OutputFileNameTag = "ILSFileName";  // required
+	RGString UserFilesTag = "UserFiles";  // required
 	RGString BaseLaneStdTag = "BaseLaneStandardName"; // required
 	RGString PeakSizeListTag = "PeakList";  // required
 	RGString RelativeHeightListTag = "RelativeHeightList";  // optional
@@ -323,6 +325,19 @@ int ILSInputData::AssignString () {
 	else if (mStringLeft == BaseLaneStdTag) {
 
 		mBaseLaneStdName = mStringRight;
+		status = 0;
+	}
+
+	else if (mStringLeft == UserFilesTag) {
+
+		mUserFiles = mStringRight;
+		SetEmbeddedSlashesToForward (mUserFiles);
+		status = 0;
+	}
+
+	else if (mStringLeft == OutputFileNameTag) {
+
+		mOutputFileName = mStringRight;
 		status = 0;
 	}
 
@@ -467,6 +482,12 @@ int ILSInputData::AssembleInputs () {
 		status = -1;
 	}
 
+	if (mUserFiles.Length () == 0) {
+
+		cout << "The Osiris-Files directory has not been specified." << endl;
+		status = -1;
+	}
+
 	if ((mNumberOfRelativeHeights > 0) && (mNumberOfPeaks != mNumberOfRelativeHeights)) {
 
 		cout << "The number of relative heights is not equal to the number of peaks.  Number of peaks = " << mNumberOfPeaks << ".  Number of relative heights = " << mNumberOfRelativeHeights << "." << endl;
@@ -491,6 +512,12 @@ int ILSInputData::AssembleInputs () {
 		status = -1;
 	}
 
+	if (mOutputFileName.Length  () == 0) {
+
+		cout << "The output file name has not been specified." << endl;
+		status = -1;
+	}
+
 	if (mNumberOfInitialPeaksToIgnore < 0)
 		mNumberOfInitialPeaksToIgnore = 0;
 
@@ -500,7 +527,9 @@ int ILSInputData::AssembleInputs () {
 	RGString relativeHeight;
 	int i;
 
-	for (i=0; i<mNumberOfPeaks; i++) {
+	if (mNumberOfRelativeHeights > 0) {
+
+		for (i=0; i<mNumberOfPeaks; i++) {
 
 			relativeHeight = mRelativeHeightList [i];
 
@@ -509,6 +538,7 @@ int ILSInputData::AssembleInputs () {
 				cout << "Relative height " << i << " is:  " << relativeHeight << ".  Must be one of 'L, ML, M, MH, H'\n";
 				status = -1;
 			}
+		}
 	}
 
 	return status;
