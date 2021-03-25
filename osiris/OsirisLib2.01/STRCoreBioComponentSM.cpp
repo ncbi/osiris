@@ -2204,11 +2204,12 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 		primaryHeight = nextSignal->Peak ();
 		primaryChannel = nextSignal->GetChannel ();
+		bool isOffScale = nextSignal->GetMessageValue (laserOffScale);
 
 		//  *****!!!! 09/28/2020 This tests that the primary height is above the user-specified minimum primary threshold, but only if directed by user specification.
 		//  The default value of userSpecifiedMinRFUForPrimary is false.  In either case, if the signal is negative, skip it.
 
-		if ((userSpecifiedMinRFUForPrimary && (primaryHeight < primaryThreshold)) || (nextSignal->IsNegativePeak ()))
+		if ((userSpecifiedMinRFUForPrimary && (primaryHeight < primaryThreshold)) || (nextSignal->IsNegativePeak ()) || nextSignal->IsSigmoidalPeak () || (nextSignal->IsCraterPeak () && !isOffScale))
 			continue;
 
 		//  *****!!!! The next test involves the minRFU among minSampleRFU, minLadderRFU and minILSRFU.  The minimum height is the least of these.  
