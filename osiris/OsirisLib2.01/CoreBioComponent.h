@@ -435,6 +435,8 @@ public:
 	virtual int UseChannelPatternsToAssessCrossChannelWithNegativePeaksSM (RGDList*** notPrimaryLists);
 	virtual bool CollectDataAndComputeCrossChannelEffectForChannelsSM (int primaryChannel, int pullupChannel, RGDList* primaryChannelPeaks, double& linearPart, double& quadraticPart, bool testLaserOffScale, bool testNegativePUOnly);
 	virtual int EstimateMinimumPrimaryPullupHeightSM (int primaryChannel, int pullupChannel, double& estimatedMinHeight, list<PullupPair*>& pairList, double pullupChannelNoise);
+	virtual int EstimateMinimumPrimaryPullupHeightQuadraticFitSM (int primaryChannel, int pullupChannel, double& estimatedMinHeight, list<PullupPair*>& pairList, double pullupChannelNoise);
+	virtual int FindMinPositiveHeightHeight (double alpha, double beta, double noise, double& minPositiveHeight);
 	virtual int FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (int primaryChannel, int pullupChannel, double primaryThreshold, list<PullupPair*>& pairList, RGDList& noPullupPrimaries, RGDList& rawDataPullupPrimaries, RGDList& occludedPrimaries);
 	virtual bool NegatePullupForChannelsSM (int primaryChannel, int pullupChannel, list<PullupPair*>& pairList, bool testLaserOffScale);
 	virtual DataSignal** CollectAndSortPullupPeaksSM (DataSignal* primarySignal, RGDList& pullupSignals);
