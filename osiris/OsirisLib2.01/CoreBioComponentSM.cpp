@@ -2578,7 +2578,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 				FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
 				mMinimumInScalePrimaryPeak [primaryChannel] [pullupChannel] = estimatedMinHeight;
-				cout << "Minimum primary height for channel " << primaryChannel << " pulling up into pullup Channel " << pullupChannel << " = " << estimatedMinHeight << "\n";
+				//cout << "Minimum primary height for channel " << primaryChannel << " pulling up into pullup Channel " << pullupChannel << " = " << estimatedMinHeight << "\n";
 			}
 	}
 
@@ -3357,7 +3357,6 @@ int CoreBioComponent::EstimateMinimumPrimaryPullupHeightQuadraticFitSM (int prim
 	//
 
 	PullupPair* nextPair;
-	DataSignal* pullupPeak;
 	DataSignal* primaryPeak;
 	double primaryHeight;
 	double topFiveHeights [5];
@@ -4147,7 +4146,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 				secondarySignal->SetIsPurePullupFromChannel (primaryChannel, true, mNumberOfChannels);
 		}
 
-		else if (secondarySignal->GetMessageValue (partialPullupBelowMinRFU) || belowMinRFU) {
+		else if (secondarySignal->GetMessageValue (partialPullupBelowMinRFU) || belowMinRFU || originalBelowMinRFU) {
 
 			secondarySignal->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
 			secondarySignal->SetPullupFromChannel (primaryChannel, h, mNumberOfChannels);  // Fix this and next line to reflect contributions from primary peaks on other channels
