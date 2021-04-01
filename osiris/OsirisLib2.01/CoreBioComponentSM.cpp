@@ -1761,7 +1761,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	bool atLeastOneNegativeAboveDetection = false;
 	//double factor;
 	linearPart = quadraticPart = 0.0;
-//	int nPossibleNegative;
+	//	int nPossibleNegative;
 	list<PullupPair*> negativePairs;
 
 	for (it=mInterchannelLinkageList.begin(); it!=mInterchannelLinkageList.end(); it++) {
@@ -1866,7 +1866,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			hasNegativePullup = true;
 			negativePairs.push_back (nextPair);
 			nNegatives++;
-			
+
 			if (secondarySignal->Peak () > detectionThreshold)
 				atLeastOneNegativeAboveDetection = true;
 		}
@@ -1972,9 +1972,19 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	}
 
 	smPrimaryInterchannelLink primaryLink;
+	bool trulyMixedPositiveAndNegativePullup;
 
-	if (atLeastOnePositivePullupAboveDetection && atLeastOneNegativeAboveDetection)
+	if (atLeastOnePositivePullupAboveDetection && atLeastOneNegativeAboveDetection) {
+
 		mixedPositiveAndNegativePullup = true;
+		cout << "Primary channel " << primaryChannel << " into pullup chanel " << pullupChannel << " is mixed pullup:  with " << nNegatives << " negatives and " << pairList.size () - nNegatives << " positives\n";
+	}
+
+	else
+		cout << "Primary channel " << primaryChannel << " into pullup chanel " << pullupChannel << " is non-mixed pullup" << " with " << pairList.size () << " total pairs\n";
+
+
+	trulyMixedPositiveAndNegativePullup = mixedPositiveAndNegativePullup;
 
 //	if (!atLeastOnePositivePullupAboveDetection)
 //		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);  //***** Why do this when we won't report in this case?  If the sigmoid(s) are high enough, we won't come here and, if not, we don't need to analyze.   Fixed:  11/25/2020
@@ -2357,11 +2367,14 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	double outlierThreshold;
 	double leastMedianValue;
 	double estimatedMinHeight = minHeight;
-	double pullupChannelNoise = mDataChannels [pullupChannel]->GetNoiseRange ();
+	double pullupChannelNoise = 0.5 * mDataChannels [pullupChannel]->GetNoiseRange ();
 	int estimatedMinPrimary;
 	mMinimumInScalePrimaryPeak [primaryChannel] [pullupChannel] = estimatedMinHeight;
 	InterchannelLinkage* iChannelPrimary;
 	ignore.Clear ();   //  Does this belong here???????
+
+	//TEST!!!
+	//trulyMixedPositiveAndNegativePullup = false;
 
 	if (GetMessageValue (selectUserSpecifiedMinPrimary)) {
 
@@ -2370,13 +2383,15 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		mMinimumInScalePrimaryPeak [primaryChannel] [pullupChannel] = estimatedMinHeight;
 	}
 
-	else if (!testLaserOffScale) {
+	else if (!testLaserOffScale && !trulyMixedPositiveAndNegativePullup) {
 
-		if (!mixedPositiveAndNegativePullup) {
+		size_t position = 0;
 
-			size_t position = 0;
-
+		if (!mixedPositiveAndNegativePullup)	
 			estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
+
+		else
+			estimatedMinPrimary = EstimateMinimumPrimaryPullupHeightQuadraticFitSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
 
 			// Do we need to do anything with the result:  estimatedMinPrimary?  Yes. I think so...
 
@@ -2563,11 +2578,11 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 				FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
 				mMinimumInScalePrimaryPeak [primaryChannel] [pullupChannel] = estimatedMinHeight;
+				cout << "Minimum primary height for channel " << primaryChannel << " pulling up into pullup Channel " << pullupChannel << " = " << estimatedMinHeight << "\n";
 			}
-		}
 	}
 
-	else { // this is laser off scale test; get laser in scale max peak height
+	else if (testLaserOffScale){ // this is laser off scale test; get laser in scale max peak height
 
 		maxLaserInScalePeak = mDataChannels [primaryChannel]->GetMaxInScalePeak ();
 		list<PullupPair*> tempPairList;
@@ -2794,7 +2809,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		if (primarySignal != NULL) {
 
 			double time = primarySignal->GetMean ();
-			cout << "Primary Time = " << time << "\n";
+		//	cout << "Primary Time = " << time << "\n";
 		}
 
 		else
@@ -3332,6 +3347,288 @@ int CoreBioComponent :: EstimateMinimumPrimaryPullupHeightSM (int primaryChannel
 	}
 
 	return 0;
+}
+
+
+int CoreBioComponent::EstimateMinimumPrimaryPullupHeightQuadraticFitSM (int primaryChannel, int pullupChannel, double& estimatedMinHeight, list<PullupPair*>& pairList, double pullupChannelNoise) {
+
+	//
+	//  Phase 1 for samples only.  Part of pull-up algorithm.  Returns -1 if insufficient information; returns 5 if the pattern is 0 pull-up and returns 0 if sufficient info to restrict primary pull-up height.
+	//
+
+	PullupPair* nextPair;
+	DataSignal* pullupPeak;
+	DataSignal* primaryPeak;
+	double primaryHeight;
+	double topFiveHeights [5];
+	double topFiveRatios [5];
+	int i;
+	double linearCoefficient = 0.0;
+	double quadraticCoefficient = 0.0;
+	double maxPrimary = 0.0;
+
+	if (pairList.size() <= 4) {
+
+		return EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
+	}
+
+	PullupPair** topFivePairs = new PullupPair* [5];
+	std::list<PullupPair*>::iterator pairIt;
+
+	double minPullupHeight = 0.0;
+	double pullupHeight;
+	list<double> primaries;
+	list<double> pullups;
+	double minPrimaryHeightWithNegativePU = 0.0;
+
+	for (i = 0; i < 5; i++) {
+
+		topFivePairs [i] = NULL;
+		topFiveHeights [i] = 0.0;
+		topFiveRatios [i] = 0.0;
+	}
+
+	for (pairIt = pairList.begin(); pairIt != pairList.end(); pairIt++) {
+
+		nextPair = *pairIt;
+		primaryPeak = nextPair->mPrimary;
+
+		if (primaryPeak == NULL)
+			continue;
+
+		if ((nextPair->mPullup == NULL) || (nextPair->mPullupHeight == 0.0))  // test
+			continue;
+
+		primaryHeight = primaryPeak->Peak ();
+		pullupHeight = nextPair->mPullupHeight;
+
+		if (pullupHeight < 0.0) {
+
+			if (minPrimaryHeightWithNegativePU == 0.0)
+				minPrimaryHeightWithNegativePU = primaryHeight;
+
+			else if (primaryHeight < minPrimaryHeightWithNegativePU)
+				minPrimaryHeightWithNegativePU = primaryHeight;
+		}
+
+		if (primaryHeight > maxPrimary)
+			maxPrimary = primaryHeight;
+
+		if (minPullupHeight == 0.0)
+			minPullupHeight = pullupHeight;
+
+		else if (pullupHeight < minPullupHeight)
+			minPullupHeight = pullupHeight;
+
+		primaries.push_back (primaryHeight);
+		pullups.push_back (pullupHeight);
+
+		//if (primaryHeight >= topFiveHeights [0]) {
+
+		//	for (i=4; i>=1; i--) {
+
+		//		topFiveHeights [i] = topFiveHeights [i - 1];
+		//		topFivePairs [i] = topFivePairs [i - 1];
+		//	}
+
+		//	topFiveHeights [0] = primaryHeight;
+		//	topFivePairs [0] = nextPair;
+		//}
+
+		//else if (primaryHeight >= topFiveHeights [1]) {
+
+		//	for (i=4; i>=2; i--) {
+
+		//		topFiveHeights [i] = topFiveHeights [i - 1];
+		//		topFivePairs [i] = topFivePairs [i - 1];
+		//	}
+
+		//	topFiveHeights [1] = primaryHeight;
+		//	topFivePairs [1] = nextPair;
+		//}
+
+		//else if (primaryHeight >= topFiveHeights [2]) {
+
+		//	for (i=4; i>=3; i--) {
+
+		//		topFiveHeights [i] = topFiveHeights [i - 1];
+		//		topFivePairs [i] = topFivePairs [i - 1];
+		//	}
+
+		//	topFiveHeights [2] = primaryHeight;
+		//	topFivePairs [2] = nextPair;
+		//}
+
+		//else if (primaryHeight >= topFiveHeights [3]) {
+
+		//	topFiveHeights [4] = topFiveHeights [3];
+		//	topFivePairs [4] = topFivePairs [3];
+
+		//	topFiveHeights [3] = primaryHeight;
+		//	topFivePairs [3] = nextPair;
+		//}
+
+		//else if (primaryHeight >= topFiveHeights [4]) {
+
+		//	topFiveHeights [4] = primaryHeight;
+		//	topFivePairs [4] = nextPair;
+		//}
+	}
+
+	int nPeaks = primaries.size ();
+//	double topFivePullups [5];
+
+	//for (i = 0; i < 5; i++) {
+
+	//	if (topFivePairs [i] != NULL) {
+
+	//		nPeaks++;
+	//		topFivePullups [i] = topFivePairs [i]->mPullupHeight;
+	//	}
+
+	//	else
+	//		break;
+	//}
+
+	if (nPeaks <= 4) {
+
+		delete[] topFivePairs;
+		primaries.clear ();
+		pullups.clear ();
+		return EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
+	}
+
+	// Now calculate median quadratic coefficients for these 5 peaks
+
+	//QuadraticLMSExact* qLMS = new QuadraticLMSExact (5, topFiveHeights, topFivePullups);
+	QuadraticLMSExact* qLMS = new QuadraticLMSExact (primaries, pullups);
+	qLMS->CalculateLMS ();
+	linearCoefficient = qLMS->GetLinearTerm ();
+	quadraticCoefficient = qLMS->GetQuadraticTerm ();
+	delete qLMS;
+	delete[] topFivePairs;
+	primaries.clear ();
+	pullups.clear ();
+
+	if (FindMinPositiveHeightHeight (linearCoefficient, quadraticCoefficient, pullupChannelNoise, estimatedMinHeight) < 0) {
+
+		// There is no pullup.  This happens when 3+ of the top 5 peaks have no pullup, so set estimated minimum height to 0.0, delete topFivePairs and return 0
+		//estimatedMinHeight = 0.0;
+		//return 5;
+		// Try the linear estimate
+		return EstimateMinimumPrimaryPullupHeightSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, pullupChannelNoise);
+	}
+
+	// There shouldn't be any negative pull-up, but, just in case....
+
+	if ((minPrimaryHeightWithNegativePU > 0.0) && (minPrimaryHeightWithNegativePU < estimatedMinHeight))
+		estimatedMinHeight = minPrimaryHeightWithNegativePU;
+
+	//if ((primaryChannel == 2) && (pullupChannel == 4)) {
+
+	//	cout << "Minimum primary calculation:  linear = " << linearCoefficient << ", quadratic = " << quadraticCoefficient << " and estimated Min Height = " << estimatedMinHeight << "\n";
+	//}
+
+	//else {
+
+	//	return 0;
+	//}
+	//  FindMinPositiveHeight should return estimatedMinHeight which gets passed on...
+
+	return 0;
+}
+
+
+int CoreBioComponent::FindMinPositiveHeightHeight (double alpha, double beta, double noise, double& minPositiveHeight) {
+
+	// returns -1 if no primary height can cause measurable positive pull-up
+	// returns 0 if there is a minimum positive height that causes measureable pull-up, although positive pull-up may arise from larger primaries
+	minPositiveHeight = 0.0;
+
+	if ((alpha <= 0.0) && (beta <= 0))
+		return -1;
+
+	if (beta == 0.0) {
+
+		// alpha > 0
+		minPositiveHeight = noise / alpha;
+		return 0;
+	}
+
+	else if (alpha == 0) {
+
+		// beta > 0
+		minPositiveHeight = sqrt (noise / beta);
+		return 0;
+	}
+
+	else if (alpha < 0) {
+
+		// beta > 0
+		// test negative noise for intersection.  If none, return positive noise intersection
+
+		double dNegNoise = alpha * alpha - 4.0 * beta * noise;
+
+		if (dNegNoise <= 0.0) {
+
+			// No pull-down reaches -noise level.  Look for lowest height to hit + noise level.  That value is the larger quadratic solution
+
+			double dPosNoise = alpha * alpha + 4.0 * beta * noise;
+			minPositiveHeight = 0.5 * (-alpha + sqrt (dPosNoise)) / beta;
+			return 0;
+		}
+
+		else {
+
+			// Pull-down reaches -noise level.  Look for lowest height to hit -noise level
+
+			double q = - 0.5 * (alpha - sqrt (dNegNoise));
+			double r1 = q / beta;
+			double r2 = noise / q;
+
+			if (r1 < r2)
+				minPositiveHeight = r1;
+
+			else
+				minPositiveHeight = r2;
+
+			return 0;
+		}
+	}
+
+	else {
+
+		// alpha > 0
+		// test positive noise for intersection
+
+		double dPosNoise = alpha * alpha + 4.0 * beta * noise;
+
+		if (dPosNoise <= 0.0) {
+
+			// We never hit positive noise.  There is 0 pull-up
+			return -1;
+		}
+
+		double q = - 0.5 * (alpha - sqrt (dPosNoise));
+		double r1 = q / beta;
+		double r2 = noise / q;
+
+		if (r1 <= 0)
+			minPositiveHeight = r2;
+
+		else if (r2 <= 0)
+			minPositiveHeight = r1;
+
+		else if (r1 < r2)
+			minPositiveHeight = r1;
+
+		else
+			minPositiveHeight = r2;
+
+		return 0;
+	}
+
+	return -1;  // It should never get to here
 }
 
 

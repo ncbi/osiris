@@ -2283,6 +2283,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				probablePullupPeaks.Append (nextSignal2);
 				continue;
 			}
+
+			if (TestForWeakPullup (primaryMean, nextSignal2))
+				weakPullupPeaks.Prepend (nextSignal2);
 		}
 
 		// Starting at the primary mean, search in the negative direction
@@ -2320,6 +2323,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 				probablePullupPeaks.Append (nextSignal2);
 				continue;
 			}
+
+			if (TestForWeakPullup (primaryMean, nextSignal2))
+				weakPullupPeaks.Prepend (nextSignal2);
 		}
 
 		if (weakPullupPeaks.Entries () > 0) {
