@@ -45,6 +45,22 @@
 using namespace std;
 
 
+struct PairInfo {
+
+public:
+	PairInfo (double ratio, double targetValue, double primary) : mRatio (ratio), mTargetValue (targetValue), mPrimary (primary), mIsRequired (false) {}
+
+	bool operator< (const PairInfo& pair) const {
+		return (mTargetValue < pair.mTargetValue);
+	}
+
+	double mRatio;
+	double mTargetValue;
+	double mPrimary;
+	bool mIsRequired;
+};
+
+
 struct IntersectionPoint {
 
 	IntersectionPoint (double x, double y) : mX (x), mY (y) {}
@@ -204,6 +220,7 @@ public:
 	double GetLeastSumOfSquares () const { return mLeastSquare; }
 
 	virtual double CalculateLMS ();
+	double CalculateLMSForMixedRatios ();
 
 protected:
 	bool** mSlopeIsDefined;
@@ -211,8 +228,11 @@ protected:
 	double mLinearTerm;
 	double mQuadraticTerm;
 	double mLeastSquare;
+	int mMidSize;
+	int mNumberOfNegatives;
 
 	double CalculateLeastMedianSquareForGivenSlope (int i, int j, double& calculatedLinearTerm);
+	double CalculateLeastMedianSquareForGivenSlopeWithMixedRatios (int i, int j, double& calculatedLinearTerm, int& numberOfNegativesIncluded);
 };
 
 
