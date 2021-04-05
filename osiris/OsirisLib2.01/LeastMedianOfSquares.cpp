@@ -900,7 +900,7 @@ double LeastSquaresQuadraticModel :: CalculateLeastSquareWithOneTermZero (double
 
 
 
-QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0), mNumberOfNegatives (0) {
+QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0) {
 
 	//if (n < LeastMedianOfSquares::GetMinimumNumberOfSamples ()) {
 
@@ -922,9 +922,6 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 
 		mXvalues [i] = x [i];
 		mYvalues [i] = y [i];
-
-		if (y [i] < 0.0)
-			mNumberOfNegatives++;
 
 		mSlopeIsDefined [i] = new bool [n];
 		mAlphaValues [i] = new double [n];
@@ -956,7 +953,7 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 }
 
 
-QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares (xValues, yValues), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0), mNumberOfNegatives (0) {
+QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares ( xValues, yValues), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0) {
 
 	//int minSamples = LeastMedianOfSquares::GetMinimumNumberOfSamples ();
 
@@ -976,12 +973,8 @@ QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<do
 	bool xiLessThan1;
 	bool xjLessThan1;
 	bool diffLessThan1;
-	list<double>::iterator it;
 
 	for (i=0; i<n; i++) {
-
-		if (mYvalues [i] < 0.0)
-			mNumberOfNegatives++;
 
 		mSlopeIsDefined [i] = new bool [n];
 		mAlphaValues [i] = new double [n];
@@ -1048,9 +1041,6 @@ double QuadraticLMSExact::CalculateLMS () {
 	double currentLMS;
 	int iBest;
 	int jBest;
-
-	if (mNumberOfNegatives > 0)
-		return CalculateLeastSquareWithMixedData ();
 
 
 	for (i=0; i<mSize; i++) {
@@ -1119,97 +1109,6 @@ double QuadraticLMSExact::CalculateLMS () {
 }
 
 
-double QuadraticLMSExact::CalculateLeastSquareWithMixedData () {
-
-	// Calculate best median for each of fixed quadratic terms (slopes) and then select best median from among them.
-	// If no primary pull-up acceptable, there is no pull-up.
-
-	bool first = true;
-	int i;
-	int j;
-	double bestLMS;
-	double bestAlpha;
-	double alpha;
-	double currentLMS;
-	int iBest;
-	int jBest;
-	int nNegatives;
-
-	for (i=0; i<mSize; i++) {
-
-		for (j=0;j<mSize; j++) {
-
-			if (mSlopeIsDefined [i] [j]) {
-
-				currentLMS = CalculateLeastMedianSquareForGivenSlopeForMixedData (i, j, alpha, nNegatives);
-
-				if (nNegatives != mNumberOfNegatives)
-					continue;
-
-				if (first) {
-
-					first = false;
-					bestLMS = currentLMS;
-					bestAlpha = alpha;
-					iBest = i;
-					jBest = j;
-				}
-
-				else {
-
-					if (currentLMS < bestLMS) {
-
-						bestLMS = currentLMS;
-						bestAlpha = alpha;
-						iBest = i;
-						jBest = j;
-					}
-				}
-			}
-		}
-	}
-
-	if (first) {
-
-		mLinearTerm = 0.0;
-		mQuadraticTerm = 0.0;
-		return 0.0;
-	}
-
-	mLinearTerm = bestAlpha;
-	mQuadraticTerm = (mRatioArray [iBest] - mRatioArray [jBest]) / (mXvalues [iBest] - mXvalues [jBest]);
-	mLeastMedianValue = bestAlpha;
-	mMedianResidual = bestLMS;
-	double s;
-
-	// Below is the Rousseeuw and van Zomeren (Unmasking Multivariate Outliers and Leverage Points. Journal of the American Statistical Association 85,1990. 633-639.) threshold for outliers
-
-	if (mSize > 2)
-		s = 1.4826 * (1.0 + (5.0 / ((double)mSize - 2.0))) * mMedianResidual;
-
-	else
-		s = 14.826 * mMedianResidual;
-
-	mOutlierThreshold = 2.5 * s;
-
-	for (i=0; i<mSize; i++) {
-
-		double temp = bestAlpha + mQuadraticTerm * mXvalues [i];
-
-		if (fabs (mRatioArray [i] - temp) > mOutlierThreshold)
-			mOutlierArray [i] = true;
-	}
-
-	return bestLMS;
-}
-
-
-
-//double QuadraticLMSExact::CalculateLeastSquareWithPositiveData () {
-//
-//}
-
-
 double QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlope (int i, int j, double& calculatedLinearTerm) {
 
 	// Returns minimum residual and inserts corresponding slope in calculatedSlope
@@ -1262,85 +1161,6 @@ double QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlope (int i, int j,
 		k++;
 		low++;
 		high++;
-	}
-
-	delete[] tempArray;
-	calculatedLinearTerm = average;
-	double medianResidual = 0.5 * Min;
-	return medianResidual;
-}
-
-
-double QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlopeForMixedData (int i, int j, double& calculatedLinearTerm, int& nNegativesIncluded) {
-
-	list<Triad*> completePullupList;
-
-	double slope = (mRatioArray [i] - mRatioArray [j]) / (mXvalues [i] - mXvalues [j]);
-	double zTarget;
-	int k;
-	Triad* nextTriad;
-
-	for (i=0; i<mSize; i++) {
-
-		Triad* nextTriad = new Triad (mYvalues [i] / mXvalues [i], 0.0, mXvalues [i]);
-		completePullupList.push_back (nextTriad);
-	}
-
-	for (k=0; k<mSize; k++) {
-
-		zTarget = mRatioArray [k] - slope * mXvalues [k];
-		nextTriad = new Triad (mYvalues [i] / mXvalues [i], zTarget, mXvalues [i]);
-		completePullupList.push_back (nextTriad);
-	}
-
-	completePullupList.sort ();
-	int midSize = ((mSize - 1) / 2);
-	Triad** tempArray = new Triad* [mSize];
-
-	for (k=0; k<mSize; k++) {
-
-
-		tempArray [k] = completePullupList.front ();
-		completePullupList.pop_front ();
-	}
-
-	k = 0;
-	int lowIndex = 0;
-	double delta;
-	double Min = tempArray [midSize]->mTargetValue - tempArray [0]->mTargetValue;
-	double average = 0.5 * (tempArray [midSize]->mTargetValue + tempArray [0]->mTargetValue);
-	int highIndex = midSize;
-	double high;
-	double low;
-
-	for (k=0; k<=midSize; k++) {
-
-		i = k + midSize;
-
-		if (i >= mSize)
-			break;
-
-		high = tempArray [i]->mTargetValue;
-		low = tempArray [k]->mTargetValue;
-		delta = high - low;
-
-		if (delta < Min) {
-
-			Min = delta;
-			lowIndex = k;
-			average = 0.5 * (high + low);
-			highIndex = i;
-		}
-	}
-
-	nNegativesIncluded = 0;
-
-	for (k=lowIndex; k<=highIndex; k++) {
-
-		if (tempArray [k]->mRatio < 0)
-			nNegativesIncluded++;
-
-		delete tempArray [k];
 	}
 
 	delete[] tempArray;

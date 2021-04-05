@@ -54,20 +54,6 @@ struct IntersectionPoint {
 	double mY;
 };
 
-struct Triad {
-
-public:
-	Triad (double ratio, double targetValue, double primary) : mRatio (ratio), mTargetValue (targetValue), mPrimary (primary) {}
-
-	bool operator< (const Triad& triad) const {
-		return (mTargetValue < triad.mTargetValue);
-	}
-
-	double mRatio;
-	double mTargetValue;
-	double mPrimary;
-};
-
 
 struct DualPoint {
 
@@ -219,20 +205,14 @@ public:
 
 	virtual double CalculateLMS ();
 
-	double CalculateLeastSquareWithMixedData ();
-	//double CalculateLeastSquareWithPositiveData ();
-
-
 protected:
 	bool** mSlopeIsDefined;
 	double** mAlphaValues;
 	double mLinearTerm;
 	double mQuadraticTerm;
 	double mLeastSquare;
-	int mNumberOfNegatives;
 
 	double CalculateLeastMedianSquareForGivenSlope (int i, int j, double& calculatedLinearTerm);
-	double CalculateLeastMedianSquareForGivenSlopeForMixedData (int i, int j, double& calculatedLinearTerm, int& nNegativesIncluded);
 };
 
 
