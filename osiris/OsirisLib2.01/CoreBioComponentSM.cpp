@@ -1729,7 +1729,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	bool maxRatioLargerThan0 = false;
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;  // This is user-specified threshold if user says to use it.  Otherwise, this is 3.0
 	double minPullupHeight = 0.0;
-	double rawHeight;
 	double detectionThreshold = mDataChannels [pullupChannel]->GetDetectionThreshold ();
 	double primaryMinRFU = mDataChannels [primaryChannel]->GetMinimumHeight ();  // This is minRFU for primary channel
 	bool atLeastOnePositivePullupAboveDetection = false;
@@ -1993,6 +1992,8 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	trulyMixedPositiveAndNegativePullup = mixedPositiveAndNegativePullup;
 
+	InterchannelLinkage* iChannelPrimary;
+
 //	if (!atLeastOnePositivePullupAboveDetection)
 //		LeastMedianOfSquares::SetMinimumNumberOfSamples (3);  //***** Why do this when we won't report in this case?  If the sigmoid(s) are high enough, we won't come here and, if not, we don't need to analyze.   Fixed:  11/25/2020
 
@@ -2022,7 +2023,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				}
 			}
 
-			InterchannelLinkage* iChannelPrimary = primarySignal->GetInterchannelLink ();
+			iChannelPrimary = primarySignal->GetInterchannelLink ();
 
 			if (iChannelPrimary == NULL) {
 
@@ -2111,32 +2112,32 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	// Add in rejected pairs from above for which primary pullup has height larger than minHeight and ratio less than maxRatio
 	list<PullupPair*> tempPairList;
 
-	//while (!belowParPairs.empty ()) {
+	while (!belowParPairs.empty ()) {
 
-	//	nextPair = belowParPairs.front ();
-	//	belowParPairs.pop_front ();
+		nextPair = belowParPairs.front ();
+		belowParPairs.pop_front ();
 
-	//	primarySignal = nextPair->mPrimary;
-	//	double h = primarySignal->Peak ();
-	//	double puHeight = (nextPair->mPullup)->Peak ();
+		primarySignal = nextPair->mPrimary;
+		double h = primarySignal->Peak ();
+		double puHeight = (nextPair->mPullup)->Peak ();
 
-	//	if ((h >= minHeight) && ((puHeight) < maxRatio * h)) {
+		if ((h >= minHeight) && ((puHeight) < maxRatio * h)) {
 
-	//		pairList.push_back (nextPair);
-	//		n++;
-	//		nPos++;
-	//	}
+			pairList.push_back (nextPair);
+			n++;
+			nPos++;
+		}
 
-	//	else
-	//		tempPairList.push_back (nextPair);
-	//}
+		else
+			tempPairList.push_back (nextPair);
+	}
 
-	//while (!tempPairList.empty ()) {
+	while (!tempPairList.empty ()) {
 
-	//	nextPair = tempPairList.front ();
-	//	tempPairList.pop_front ();
-	//	belowParPairs.push_back (nextPair);
-	//}
+		nextPair = tempPairList.front ();
+		tempPairList.pop_front ();
+		belowParPairs.push_back (nextPair);
+	}
 
 	// Add in raw data only pullup here
 
@@ -2184,47 +2185,42 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 		if (nextSignal->HasWeakPullupInChannel (pullupChannel)) {
 
-			//weakPullupPeaks.push_back (nextSignal);
-			//nextSignal->SetMessageValue (weakPrimaryPullup, true);  // call message here and add data even if no pullup found to expose the pattern, whatever it is
-			//RGString data;
-			//data << pullupChannel;
-			//nextSignal->AppendDataForSmartMessage (weakPrimaryPullup, data);
 			occludedDataPrimaries.Append (nextSignal);
 		}
 
-		else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight)) {  // Don't modify min primary and min ratio based on these...
+		//else if (TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight)) {  // Don't modify min primary and min ratio based on these...
 
-			if ((rawHeight < 0.0) && mixedPositiveAndNegativePullup) {   //  This is modified from positive to negative on 02/11/2121.  Including positive raw data pull-up essentially invalidates the whole curve-fitting and noise rejection
-				                     //  character of the Osiris data analysis.  this is the difference between this version and a previous 2.15 beta.  I'm sure it was regarded as a bug, but, it was not a bug.
-				                     //  It was intended.  If a "hign noise" region was not fit as a peak, it's because it isn't one and the pull-up algorithm should not be applied to it.  (If it were truly pull-up,
-				                     //  it would almost certainly be better formed.  So, then why allow raw data negative peaks?  Negative peaks are subject to stricter fit conditions than positive ones, so a raw-data
-				                     //  negative peak may actually represent a poor fit negative peak that was rejected.  The reason for this is that noise and positive peaks can interfere more with negative peaks than is 
-				                     //  likely for positive ones.
+		//	if ((rawHeight < 0.0) && mixedPositiveAndNegativePullup) {   //  This is modified from positive to negative on 02/11/2121.  Including positive raw data pull-up essentially invalidates the whole curve-fitting and noise rejection
+		//		                     //  character of the Osiris data analysis.  this is the difference between this version and a previous 2.15 beta.  I'm sure it was regarded as a bug, but, it was not a bug.
+		//		                     //  It was intended.  If a "hign noise" region was not fit as a peak, it's because it isn't one and the pull-up algorithm should not be applied to it.  (If it were truly pull-up,
+		//		                     //  it would almost certainly be better formed.  So, then why allow raw data negative peaks?  Negative peaks are subject to stricter fit conditions than positive ones, so a raw-data
+		//		                     //  negative peak may actually represent a poor fit negative peak that was rejected.  The reason for this is that noise and positive peaks can interfere more with negative peaks than is 
+		//		                     //  likely for positive ones.
 
-				//  The other problem with including positive raw data "peaks" is that they tend to bias the pull-up ratio higher, because purported raw data pull-up peaks tend to arise in situations in which the primary peak
-				//  is shorter compared to the noise peak.  This makes spurious pure pull-up calls more likely.  It was just such a case that gave rise to the investigation that uncovered this discrepancy between the previous 
-				//  Version-2.15 and this one.
+		//		//  The other problem with including positive raw data "peaks" is that they tend to bias the pull-up ratio higher, because purported raw data pull-up peaks tend to arise in situations in which the primary peak
+		//		//  is shorter compared to the noise peak.  This makes spurious pure pull-up calls more likely.  It was just such a case that gave rise to the investigation that uncovered this discrepancy between the previous 
+		//		//  Version-2.15 and this one.
 
-				if (currentPeak <= abs (rawHeight)) {
+		//		if (currentPeak <= abs (rawHeight)) {
 
-						mPullupFromAnotherChannel.InsertWithNoReferenceDuplication (nextSignal);
-						continue;
-				}
+		//				mPullupFromAnotherChannel.InsertWithNoReferenceDuplication (nextSignal);
+		//				continue;
+		//		}
 
-				nextPair = new PullupPair (nextSignal, rawHeight);
-				rawDataPullupPrimaries.Append (nextSignal);
-				pairList.push_back (nextPair);
+		//		nextPair = new PullupPair (nextSignal, rawHeight);
+		//		rawDataPullupPrimaries.Append (nextSignal);
+		//		pairList.push_back (nextPair);
 
-				//if (currentPeak < minHeight)
-				//	minHeight = currentPeak;
+		//		//if (currentPeak < minHeight)
+		//		//	minHeight = currentPeak;
 
-				//if (currentPeak > maxHeight)
-				//	maxHeight = currentPeak;
+		//		//if (currentPeak > maxHeight)
+		//		//	maxHeight = currentPeak;
 
-				nNegatives++;
-				negativePairs.push_back (nextPair);
-				mixedPositiveAndNegativePullup = true;
-			}
+		//		nNegatives++;
+		//		negativePairs.push_back (nextPair);
+		//		mixedPositiveAndNegativePullup = true;
+		//	}
 
 			//else if ((rawHeight < 0.0) && (currentPeak <= abs (rawHeight)))   //  Removed 02/11/2121:  see above
 			//	ignore.InsertWithNoReferenceDuplication (nextSignal);
@@ -2246,7 +2242,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			//	nNegatives++;
 			//	negativePairs.push_back (nextPair);
 			//}
-		}
+//		}
 	}
 
 	smUseNonlinearLMSAlgorithmForAllChannels useNonLinearLMSMessage;
@@ -2256,53 +2252,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 		mixedPositiveAndNegativePullup = true;
 
 	RGDListIterator itRaw (rawDataPullupPrimaries);
-
-	// The following is obsolete and not useful because it encourages high ratios with little valid reason.
-	//if (!mixedPositiveAndNegativePullup) {
-
-	//	while (nextSignal = (DataSignal*)itRaw ()) {
-
-	//		currentPeak = nextSignal->Peak ();
-
-	//		if (currentPeak < minHeight)
-	//			continue;
-
-	//		TestMaxAbsoluteRawDataInInterval (pullupChannel, nextSignal->GetMean (), 0.7 * nextSignal->GetWidth (), 0.75, rawHeight);  // Find a way to avoid calling this twice.
-
-	//		if (currentPeak >= 0.9 * maxHeight) {
-
-	//			additionalPairsRequired += 2;
-	//			nextPair = new PullupPair (nextSignal, rawHeight);
-	//			pairList.push_back (nextPair);
-	//			nextPair = new PullupPair (nextSignal, rawHeight);
-	//			pairList.push_back (nextPair);
-	//			RGString data;
-	//			data << pullupChannel << "(3)";
-	//			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
-	//			nextSignal->SetTempDataForPrimaryRawDataPullup (data);
-	//		}
-
-	//		else if (currentPeak >= minHeight) {
-
-	//			additionalPairsRequired += 1;
-	//			nextPair = new PullupPair (nextSignal, rawHeight);
-	//			pairList.push_back (nextPair);
-	//			//				cout << "Sample File " << (char*)mFileName.GetData () << " has 1 extra primary from channel " << primaryChannel << " into " << pullupChannel << " at time = " << nextSignal->GetMean () << "\n";
-	//			RGString data;
-	//			data << pullupChannel << "(2)";
-	//			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
-	//			nextSignal->SetTempDataForPrimaryRawDataPullup (data);
-	//		}
-
-	//		else {
-
-	//			RGString data;
-	//			data << pullupChannel << "(1)";
-	//			//nextSignal->AppendDataForSmartMessage (rawDataPrimary, data);
-	//			nextSignal->SetTempDataForPrimaryRawDataPullup (data);
-	//		}
-	//	}
-	//}
 
 	negativePairs.clear ();  // we're not using this anyway...
 
@@ -2415,7 +2364,6 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	double pullupChannelNoise = 0.5 * mDataChannels [pullupChannel]->GetNoiseRange ();
 //	int estimatedMinPrimary;
 	mMinimumInScalePrimaryPeak [primaryChannel] [pullupChannel] = estimatedMinHeight;
-	InterchannelLinkage* iChannelPrimary;
 	ignore.Clear ();   //  Does this belong here???????
 
 	//TEST!!!
@@ -2626,8 +2574,9 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 	//			FinalizeArtifactCallsGivenCalculatedPrimaryThresholdSM (primaryChannel, pullupChannel, estimatedMinHeight, pairList, noPullupPrimaries, rawDataPullupPrimaries, occludedDataPrimaries);
 	//			mMinimumInScalePrimaryPeak [primaryChannel] [pullupChannel] = estimatedMinHeight;
 	//			//cout << "Minimum primary height for channel " << primaryChannel << " pulling up into pullup Channel " << pullupChannel << " = " << estimatedMinHeight << "\n";
-	//		}
-	//}
+	//	}
+
+//	}
 
 	//else 
 

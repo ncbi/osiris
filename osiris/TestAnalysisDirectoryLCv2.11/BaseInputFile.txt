@@ -1,13 +1,12 @@
-InputDirectory = C:/Users/goorrob/TimV2.15PUIssue;
-LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.15/Config;
+InputDirectory = F:/TimeExtraPullupTests;
+LadderDirectory = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.15.1-Beta-2/Config;
 ReportDirectory = C:/Users/goorrob/SmartOsirisReports;
-OutputSubdirectory = 20210210_230527;
 MarkerSetName = QiagenInvestigator24plex;
 LaneStandardName = BTO_60_550;
 CriticalOutputLevel = 15;
 StandardSettings = C:/ProgramData/Osiris-Files/Volumes/V-20201014-101714/V-20201014-101714_StdSettings.xml;
 LabSettings = C:/ProgramData/Osiris-Files/Volumes/V-20201014-101714/V-20201014-101714_LabSettings.xml;
-MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.15/Config/LadderSpecifications/MessageBook.xml;
+MessageBook = C:/Apps/User_Installs/NCBI/Osiris/Osiris-2.15.1-Beta-2/Config/LadderSpecifications/MessageBook.xml;
 MinSampleRFU = 75.;
 MinLaneStandardRFU = 250.;
 MinLadderRFU = 500.;

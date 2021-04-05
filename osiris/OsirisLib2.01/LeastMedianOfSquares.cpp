@@ -39,6 +39,7 @@
 #include <math.h>
 #include <iostream>
 
+
 using namespace std;
 
 int LeastMedianOfSquares::MinimumNumberOfSamples = 4;
@@ -144,7 +145,7 @@ LeastMedianOfSquares :: LeastMedianOfSquares (const list<double>& xValues, const
 		mOutlierArray [i] = false;
 
 		if (temp == 0.0)
-			temp = 0.0001;
+			temp = 1.0;
 
 		mRatioArray [i] = mYvalues [i] / temp;
 		i++;
@@ -918,11 +919,7 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 	bool xjLessThan1;
 	bool diffLessThan1;
 
-	if (2 * (n / 2) == n)  // n is even
-		mMidSize = (n - 1) / 2;
-
-	else
-		mMidSize = n / 2;
+	mMidSize = mSize / 2;
 
 	for (i=0; i<n; i++) {
 
@@ -938,6 +935,9 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 		for (j=0; j<n; j++)
 			mSlopeIsDefined [i] [j] = true;
 	}
+
+	if (mNumberOfNegatives > mMidSize)
+		mMidSize = mNumberOfNegatives;
 
 	for (i=0; i<n; i++) {
 
@@ -983,11 +983,7 @@ QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<do
 	bool xjLessThan1;
 	bool diffLessThan1;
 
-	if (2 * (n / 2) == n)  // n is even
-		mMidSize = (n - 1) / 2;
-
-	else
-		mMidSize = n / 2;
+	mMidSize = mSize / 2;
 
 	for (i=0; i<n; i++) {
 
@@ -1000,6 +996,9 @@ QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<do
 		for (j=0; j<mSize; j++)
 			mSlopeIsDefined [i] [j] = true;
 	}
+
+	if (mNumberOfNegatives > mMidSize)
+		mMidSize = mNumberOfNegatives;
 
 	for (i=0; i<n; i++) {
 
@@ -1282,8 +1281,8 @@ double  QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlopeWithMixedRatio
 	double slope = (mRatioArray [i] - mRatioArray [j]) / (mXvalues [i] - mXvalues [j]);
 	double zTarget;
 	int k;
-	list<PairInfo*> orderedPairInfo;
-	PairInfo** tempPairArray = new PairInfo* [mSize];
+	list<PairInfo> orderedPairInfo;
+	int size2 = 2 * mSize;
 	PairInfo* nextPair;
 
 	for (k=0; k<mSize; k++) {
@@ -1294,34 +1293,46 @@ double  QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlopeWithMixedRatio
 		if (mYvalues [k] < 0.0)
 			nextPair->mIsRequired = true;
 
-		orderedPairInfo.push_back (nextPair);
+		else
+			nextPair->mIsRequired = false;
+
+		orderedPairInfo.push_back (*nextPair);
+		delete nextPair;
 	}
 
 	orderedPairInfo.sort ();
 	
-	PairInfo** tempArray = new PairInfo* [mSize];
+	PairInfo** tempArray = new PairInfo* [size2];
 
 	for (k=0; k<mSize; k++) {
 
-		tempArray [k] = orderedPairInfo.front ();
+		tempArray [k] = new PairInfo (orderedPairInfo.front ());
 		orderedPairInfo.pop_front ();
+		//tempArray [k]->Print ();
 	}
 
+	//cout << "\n\n";
+
+	for (k=mSize; k<size2; k++)
+		tempArray [k] = NULL;
+
+	int kTop = mMidSize - 1;
 	double low = tempArray [0]->mTargetValue;
-	double high = tempArray [mMidSize]->mTargetValue;
-	double upperBound = mSize - mMidSize + 1;
+	double high = tempArray [kTop]->mTargetValue;
 	int size1 = mSize -1;
 	double Min = high - low;
-	double delta;
-	k = 0;
-	int kTop = mMidSize;
+	double delta = Min;
+	
 	int lowIndex = 0;
 	int highIndex = kTop;
 	double average = 0.5 * (high + low);
 
-	for (k=0; k<=upperBound; k++) {
+	for (k=0; k<mSize; k++) {
 
-		if (kTop > size1)
+		if (tempArray [kTop] == NULL)
+			break;
+
+		if (kTop >= mSize)
 			break;
 
 		high = tempArray [kTop]->mTargetValue;
