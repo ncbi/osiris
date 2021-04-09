@@ -1844,6 +1844,12 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			continue;
 		}
 
+		if (secondarySignal->IsPullupFromChannelsOtherThan (primaryChannel, mNumberOfChannels)) {
+
+			mPullupFromAnotherChannel.InsertWithNoReferenceDuplication (primarySignal);
+			continue;
+		}
+
 		secondarySignal->ResetIgnoreWidthTest ();
 
 		//if (secondarySignal->TestForIntersectionWithPrimary (primarySignal)) {
@@ -1859,20 +1865,25 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 		if (secondarySignal->IsNegativePeak ()) {
 
-			//if (secondarySignal->GetCurveFit () < 0.999) {
+			double puHeight = abs (secondarySignal->Peak ());
 
-			//	delete nextPair;
-			//	continue;
-			//}
+			if (puHeight >= minPUHeightThreshold) {
 
-			hasNegativePullup = true;
-			negativePairs.push_back (nextPair);
-			pairList.push_back (nextPair);
-			nNegatives++;
-			keptPair = true;
+				hasNegativePullup = true;
+				negativePairs.push_back (nextPair);
+				pairList.push_back (nextPair);
+				nNegatives++;
+				keptPair = true;
 
-			if (secondarySignal->Peak () > detectionThreshold)
-				atLeastOneNegativeAboveDetection = true;
+				if (secondarySignal->Peak () > detectionThreshold)
+					atLeastOneNegativeAboveDetection = true;
+			}
+
+			else {
+
+				belowParPairs.push_back (nextPair);
+				keptPair = false;
+			}
 		}
 
 		else {
@@ -1880,8 +1891,8 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			nPos++;
 			double puHeight = secondarySignal->Peak ();
 
-			if (puHeight >= detectionThreshold)
-				atLeastOnePositivePullupAboveDetection = true;
+//			if (puHeight >= detectionThreshold)
+//			atLeastOnePositivePullupAboveDetection = true;
 
 			if (secondarySignal->IsSigmoidalPeak ())
 				nSigmoids++;
@@ -1889,6 +1900,7 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 			if (puHeight >= minPUHeightThreshold) {
 
 				pairList.push_back (nextPair);
+				atLeastOnePositivePullupAboveDetection = true;
 				keptPair = true;
 				currentPeak = primarySignal->Peak ();
 
@@ -2111,6 +2123,8 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	// Add in rejected pairs from above for which primary pullup has height larger than minHeight and ratio less than maxRatio
 	list<PullupPair*> tempPairList;
+
+	// **** review this section ***** 04/08/2021
 
 	while (!belowParPairs.empty ()) {
 
@@ -2800,6 +2814,8 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 
 	list<PullupPair*>::iterator pairIt;
 
+	// ***** do we need this???
+
 	for (pairIt=pairList.begin(); pairIt!=pairList.end(); pairIt++) {
 
 		nextPair = *pairIt;
@@ -2962,51 +2978,87 @@ bool CoreBioComponent::CollectDataAndComputeCrossChannelEffectForChannelsSM (int
 				//sigmaSecondary = pullupPeak->GetStandardDeviation ();
 
 				//secondaryNarrow = (sigmaSecondary < 0.5* sigmaPrimary)  && !pullupPeak->IgnoreWidthTest ();
-				secondaryNarrow2 = (pullupPeak->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !pullupPeak->IgnoreWidthTest ();
+
+				double wPullup = pullupPeak->GetWidth ();
+				double wPrimary = primarySignal->GetWidth ();
+				secondaryNarrow2 = (wPullup < 0.5 * wPrimary) && !pullupPeak->IgnoreWidthTest ();
 				halfWidth = (secondaryNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());  // removed secondaryNarrow 12/2/2020
+
+				bool secondaryNarrow95 = (wPullup < 0.95 * wPrimary);
+				bool secondaryWide105 = (wPullup > 1.05 * wPrimary);
+				bool quadTermPlus = (quadraticPart > 0.0);
+				bool quadTermNeg = (quadraticPart < 0.0);
+				bool quadTermZero = (quadraticPart == 0.0);
+				bool secondaryWidthOutside10 = ((wPullup < 0.9 * wPrimary) || (wPullup > 1.1 * wPrimary));
 
 				//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 				//belowMinRFU = (correctedHeight < analysisThreshold);
 
+				bool partialWide = (quadTermPlus && secondaryWide105);  // This indicates a partial pull-up because positive quadratic pull-up makes widths narrower, not wider
+				bool partialNarrow = (quadTermNeg && secondaryNarrow95);  //  This indicates a partial pull-up because negative quadratic pull-up makes widths wider, not narrower
+				bool widthMismatch = (quadTermZero && secondaryWidthOutside10);  //  This indicates a partial pull-up because purely linear pull-up leaves widths unchanged
+
 				if ((!nextPair->mIsOutlier) || halfWidth) {
 
-					// This is a pure pullup.  Assign appropriate message and if also a primary, change that status
+					// This may be a pure pullup.  Assign appropriate message and if also a primary, change that status.  Perform tests based on width to make a final determination
 
-					pullupPeak->SetMessageValue (purePullup, true);
-					pullupPeak->SetIsPurePullupFromChannel (primaryChannel, true, mNumberOfChannels);
-					pullupPeak->SetMessageValue (pullup, false);
-					nextPair->mIsOutlier = false;
-					testedPullups.Append (pullupPeak);
-					//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
-					double primaryHeight = primarySignal->Peak ();
-					double pullupHeight = pullupPeak->Peak ();
-					ratio = pullupHeight / primaryHeight;  //(linearPart + quadraticPart * primaryHeight);
-					pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
-					double pullupLevel = pullupHeight;  //ratio * primaryHeight;
-					pullupPeak->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
-					pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+					if (partialWide || partialNarrow || widthMismatch) {
 
-					if (halfWidth && nextPair->mIsOutlier) {
+						// This is probably a partial, not a pure, even though it fits the height pattern
 
-						cout << "Half width criterion (original peaks) triggered for outlier in sample name " << (char*)mName.GetData () << " for channel " << pullupChannel << " at time " << pullupPeak->GetMean () << " for primary ";
-
-						if (testLaserOffScale)
-							cout << "laser off-scale ";
-
-						else
-							cout << "laser not off-scale ";
-
-						if (primarySignal->IsCraterPeak ())
-							cout << "and crater\n";
-
-						else
-							cout << "and not crater\n";
+						pullupPeak->SetMessageValue (pullup, true);
+						pullupPeak->SetMessageValue (purePullup, false);
+						pullupPeak->SetIsPurePullupFromChannel (primaryChannel, false, mNumberOfChannels);
+						nextPair->mIsOutlier = true;
+						testedPullups.Append (pullupPeak);
+						//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
+						double primaryHeight = primarySignal->Peak ();
+						ratio = (linearPart + quadraticPart * primaryHeight);
+						pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
+						double pullupLevel = ratio * primaryHeight;
+						pullupPeak->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
+						pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+						nextPair->mIsOutlier = true;
 					}
 
-					if (pullupPeak->HasCrossChannelSignalLink ()) {
+					else {
 
-						// remove link; this is not a primary peak
-						RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
+						pullupPeak->SetMessageValue (purePullup, true);
+						pullupPeak->SetIsPurePullupFromChannel (primaryChannel, true, mNumberOfChannels);
+						pullupPeak->SetMessageValue (pullup, false);
+						nextPair->mIsOutlier = false;
+						testedPullups.Append (pullupPeak);
+						//ratio = 100.0 * (pullupPeak->Peak () / primarySignal->Peak ());
+						double primaryHeight = primarySignal->Peak ();
+						double pullupHeight = pullupPeak->Peak ();
+						ratio = pullupHeight / primaryHeight;  //(linearPart + quadraticPart * primaryHeight);
+						pullupPeak->SetPullupRatio (primaryChannel, 100.0 * ratio, mNumberOfChannels);
+						double pullupLevel = pullupHeight;  //ratio * primaryHeight;
+						pullupPeak->SetPullupFromChannel (primaryChannel, pullupLevel, mNumberOfChannels);
+						pullupPeak->SetPrimarySignalFromChannel (primaryChannel, primarySignal, mNumberOfChannels);
+
+						if (halfWidth && nextPair->mIsOutlier) {
+
+							cout << "Half width criterion (original peaks) triggered for outlier in sample name " << (char*)mName.GetData () << " for channel " << pullupChannel << " at time " << pullupPeak->GetMean () << " for primary ";
+
+							if (testLaserOffScale)
+								cout << "laser off-scale ";
+
+							else
+								cout << "laser not off-scale ";
+
+							if (primarySignal->IsCraterPeak ())
+								cout << "and crater\n";
+
+							else
+								cout << "and not crater\n";
+						}
+
+						if (pullupPeak->HasCrossChannelSignalLink ()) {
+
+							// remove link; this is not a primary peak
+							RemovePrimaryLinksAndSecondaryLinksFrom (pullupPeak);
+						}
 					}
 				}
 
@@ -4000,7 +4052,6 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 	double ratio;
 	bool isOutlier;
 	bool belowMinRFU;
-	bool isNarrow2;
 	bool halfWidth;
 	double minRFUForSecondaryChannel = mDataChannels [secondaryChannel]->GetMinimumHeight ();
 	double primaryThreshold = CoreBioComponent::minPrimaryPullupThreshold;
@@ -4071,6 +4122,25 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 			continue;
 		}
 
+		double wPullup = secondarySignal->GetWidth ();
+		double wPrimary = primarySignal->GetWidth ();
+		double secondaryNarrow2 = (wPullup < 0.5 * wPrimary) && !secondarySignal->IgnoreWidthTest ();
+		halfWidth = (secondaryNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());  // removed secondaryNarrow 12/2/2020
+
+		bool secondaryNarrow95 = (wPullup < 0.95 * wPrimary);
+		bool secondaryWide105 = (wPullup > 1.05 * wPrimary);
+		bool quadTermPlus = (quadraticPart > 0.0);
+		bool quadTermNeg = (quadraticPart < 0.0);
+		bool quadTermZero = (quadraticPart == 0.0);
+		bool secondaryWidthOutside10 = ((wPullup < 0.9 * wPrimary) || (wPullup > 1.1 * wPrimary));
+
+		//correctedHeight = nextPair->mPullupHeight - pullupPeak->GetTotalPullupFromOtherChannels (mNumberOfChannels);
+		//belowMinRFU = (correctedHeight < analysisThreshold);
+
+		bool partialWide = (quadTermPlus && secondaryWide105);  // This indicates a partial pull-up because positive quadratic pull-up makes widths narrower, not wider
+		bool partialNarrow = (quadTermNeg && secondaryNarrow95);  //  This indicates a partial pull-up because negative quadratic pull-up makes widths wider, not narrower
+		bool widthMismatch = (quadTermZero && secondaryWidthOutside10);  //  This indicates a partial pull-up because purely linear pull-up leaves widths unchanged
+
 		p = primarySignal->Peak ();
 		double directRatio = secondarySignal->Peak () / p;
 		double calculatedRatio = (linearPart + p * quadraticPart);
@@ -4078,8 +4148,11 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		ratio = (linearPart + p * quadraticPart);
 		double h = secondarySignal->Peak () - secondarySignal->GetTotalPullupFromOtherChannels (mNumberOfChannels);
 
-		isNarrow2 = (secondarySignal->GetWidth () < 0.5 * primarySignal->GetWidth ()) && !secondarySignal->IgnoreWidthTest ();
-		halfWidth = pattern && (isNarrow2) && (testLaserOffScale || primarySignal->IsCraterPeak ());  // Removed isNarrow 12/2/2020
+		if (isOutlier || partialWide || partialNarrow ||widthMismatch) {
+
+			isOutlier = true;
+			secondarySignal->SetMessageValue (pullup, true);
+		}
 
 		if (secondarySignal->GetMessageValue (purePullup) || (pattern && !isOutlier) || halfWidth)   // include pattern?!
 			ratio = directRatio;
