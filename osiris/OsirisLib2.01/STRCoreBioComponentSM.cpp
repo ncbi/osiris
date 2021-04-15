@@ -2108,6 +2108,9 @@ int STRCoreBioComponent :: AnalyzeCrossChannelUsingPrimaryWidthAndNegativePeaksS
 
 	while (nextSignal = (DataSignal*) it ()) {
 
+		if (nextSignal->Peak () <  mDataChannels [nextSignal->GetChannel ()]->GetMinimumHeight ())
+			nextSignal->SetMessageValue (belowMinRFU, true);
+
 		if (!(nextSignal->Peak () > 0.0)) {
 
 			peaksWithNonPositiveHeights.Append (nextSignal);

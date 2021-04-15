@@ -4152,6 +4152,7 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 
 			isOutlier = true;
 			secondarySignal->SetMessageValue (pullup, true);
+			secondarySignal->SetMessageValue (purePullup, false);
 		}
 
 		if (secondarySignal->GetMessageValue (purePullup) || (pattern && !isOutlier) || halfWidth)   // include pattern?!
@@ -4160,11 +4161,10 @@ bool CoreBioComponent :: AcknowledgePullupPeaksWhenThereIsNoPatternSM (int prima
 		else
 			ratio = calculatedRatio;
 
-		bool originalBelowMinRFU = (h < minRFUForSecondaryChannel);
-
 		if (secondarySignal->GetPullupFromChannel (primaryChannel) == 0.0)  //????
-			h = h - p * ratio;   // ????
+			h = h - p * ratio;   // This is to add in the corrent pullup if not done already.
 
+		bool originalBelowMinRFU = (h < minRFUForSecondaryChannel);
 		belowMinRFU = (secondarySignal->Peak () < minRFUForSecondaryChannel);
 
 		if (originalBelowMinRFU && (ratio < 0.0) && !belowMinRFU) {
