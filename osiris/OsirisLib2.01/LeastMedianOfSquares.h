@@ -41,8 +41,33 @@
 
 
 #include <list>
+#include <iostream>
+#include <stdio.h>
 
 using namespace std;
+
+
+struct PairInfo {
+
+public:
+	PairInfo (double ratio, double targetValue, double primary) : mRatio (ratio), mTargetValue (targetValue), mPrimary (primary), mIsRequired (false) {}
+	PairInfo (const PairInfo& pair) : mRatio (pair.mRatio), mTargetValue (pair.mTargetValue), mPrimary (pair.mPrimary), mIsRequired (pair.mIsRequired) {}
+
+	bool operator<(const PairInfo& pair) const {
+		return (this->mTargetValue < pair.mTargetValue);
+	}
+
+	void Print () {
+		cout << "Pair Info:  target value = " << mTargetValue << "; ratio = " << mRatio << "; primary = " << mPrimary << "; is required = ";
+		if (mIsRequired) cout << "true\n";
+		else cout << "false\n";
+	}
+
+	double mRatio;
+	double mTargetValue;
+	double mPrimary;
+	bool mIsRequired;
+};
 
 
 struct IntersectionPoint {
@@ -204,6 +229,7 @@ public:
 	double GetLeastSumOfSquares () const { return mLeastSquare; }
 
 	virtual double CalculateLMS ();
+	double CalculateLMSForMixedRatios ();
 
 protected:
 	bool** mSlopeIsDefined;
@@ -211,8 +237,11 @@ protected:
 	double mLinearTerm;
 	double mQuadraticTerm;
 	double mLeastSquare;
+	int mMidSize;
+	int mNumberOfNegatives;
 
 	double CalculateLeastMedianSquareForGivenSlope (int i, int j, double& calculatedLinearTerm);
+	double CalculateLeastMedianSquareForGivenSlopeWithMixedRatios (int i, int j, double& calculatedLinearTerm, int& numberOfNegativesIncluded);
 };
 
 
