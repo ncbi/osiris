@@ -465,7 +465,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2BFEF9CA3E6C4EFE8D089E8DED6AE10D"
+        "MsmKey" = "8:_2B27B2FB16D14D9F83074D7EB3A8BD0A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -4236,10 +4236,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2BFEF9CA3E6C4EFE8D089E8DED6AE10D"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2B27B2FB16D14D9F83074D7EB3A8BD0A"
             {
-            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.15.pdf"
-            "TargetName" = "8:OSIRIS_Release_Notes_v2.15.pdf"
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.15.1.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.15.1.pdf"
             "Tag" = "8:"
             "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
