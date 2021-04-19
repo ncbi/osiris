@@ -39,6 +39,7 @@
 #include <math.h>
 #include <iostream>
 
+
 using namespace std;
 
 int LeastMedianOfSquares::MinimumNumberOfSamples = 4;
@@ -144,7 +145,7 @@ LeastMedianOfSquares :: LeastMedianOfSquares (const list<double>& xValues, const
 		mOutlierArray [i] = false;
 
 		if (temp == 0.0)
-			temp = 0.0001;
+			temp = 1.0;
 
 		mRatioArray [i] = mYvalues [i] / temp;
 		i++;
@@ -900,7 +901,7 @@ double LeastSquaresQuadraticModel :: CalculateLeastSquareWithOneTermZero (double
 
 
 
-QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0) {
+QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedianOfSquares (n, x, y), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0), mNumberOfNegatives (0) {
 
 	//if (n < LeastMedianOfSquares::GetMinimumNumberOfSamples ()) {
 
@@ -918,10 +919,15 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 	bool xjLessThan1;
 	bool diffLessThan1;
 
+	mMidSize = mSize / 2;
+
 	for (i=0; i<n; i++) {
 
 		mXvalues [i] = x [i];
 		mYvalues [i] = y [i];
+
+		if (mYvalues [i] < 0.0)
+			mNumberOfNegatives++;
 
 		mSlopeIsDefined [i] = new bool [n];
 		mAlphaValues [i] = new double [n];
@@ -929,6 +935,9 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 		for (j=0; j<n; j++)
 			mSlopeIsDefined [i] [j] = true;
 	}
+
+	if (mNumberOfNegatives > mMidSize)
+		mMidSize = mNumberOfNegatives;
 
 	for (i=0; i<n; i++) {
 
@@ -953,7 +962,7 @@ QuadraticLMSExact::QuadraticLMSExact (int n, double* x, double* y) : LeastMedian
 }
 
 
-QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares ( xValues, yValues), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0) {
+QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<double>& yValues) : LeastMedianOfSquares ( xValues, yValues), mSlopeIsDefined (NULL), mAlphaValues (NULL), mLinearTerm (0.0), mQuadraticTerm (0.0), mLeastSquare (0.0), mNumberOfNegatives (0) {
 
 	//int minSamples = LeastMedianOfSquares::GetMinimumNumberOfSamples ();
 
@@ -974,14 +983,22 @@ QuadraticLMSExact::QuadraticLMSExact (const list<double>& xValues, const list<do
 	bool xjLessThan1;
 	bool diffLessThan1;
 
+	mMidSize = mSize / 2;
+
 	for (i=0; i<n; i++) {
 
 		mSlopeIsDefined [i] = new bool [n];
 		mAlphaValues [i] = new double [n];
 
+		if (mYvalues [i] < 0.0)
+			mNumberOfNegatives++;
+
 		for (j=0; j<mSize; j++)
 			mSlopeIsDefined [i] [j] = true;
 	}
+
+	if (mNumberOfNegatives > mMidSize)
+		mMidSize = mNumberOfNegatives;
 
 	for (i=0; i<n; i++) {
 
@@ -1042,6 +1059,8 @@ double QuadraticLMSExact::CalculateLMS () {
 	int iBest;
 	int jBest;
 
+	if (mNumberOfNegatives > 0)
+		return CalculateLMSForMixedRatios ();
 
 	for (i=0; i<mSize; i++) {
 
@@ -1050,6 +1069,91 @@ double QuadraticLMSExact::CalculateLMS () {
 			if (mSlopeIsDefined [i][j]) {
 
 				currentLMS = CalculateLeastMedianSquareForGivenSlope (i, j, alpha);
+
+				if (first) {
+
+					first = false;
+					bestLMS = currentLMS;
+					bestAlpha = alpha;
+					iBest = i;
+					jBest = j;
+				}
+
+				else {
+
+					if (currentLMS < bestLMS) {
+
+						bestLMS = currentLMS;
+						bestAlpha = alpha;
+						iBest = i;
+						jBest = j;
+					}
+				}
+			}
+		}
+	}
+
+	if (first) {
+
+		mLinearTerm = 0.0;
+		mQuadraticTerm = 0.0;
+		return 0.0;
+	}
+
+	mLinearTerm = bestAlpha;
+	mQuadraticTerm = (mRatioArray [iBest] - mRatioArray [jBest]) / (mXvalues [iBest] - mXvalues [jBest]);
+	mLeastMedianValue = bestAlpha;
+	mMedianResidual = bestLMS;
+	double s;
+
+	// Below is the Rousseeuw and van Zomeren (Unmasking Multivariate Outliers and Leverage Points. Journal of the American Statistical Association 85,1990. 633-639.) threshold for outliers
+
+	if (mSize > 2)
+		s = 1.4826 * (1.0 + (5.0 / ((double)mSize - 2.0))) * mMedianResidual;
+
+	else
+		s = 14.826 * mMedianResidual;
+
+	mOutlierThreshold = 2.5 * s;
+
+	for (i=0; i<mSize; i++) {
+
+		double temp = bestAlpha + mQuadraticTerm * mXvalues [i];
+
+		if (fabs (mRatioArray [i] - temp) > mOutlierThreshold)
+			mOutlierArray [i] = true;
+	}
+
+	return bestLMS;
+}
+
+
+double QuadraticLMSExact::CalculateLMSForMixedRatios () {
+
+	// Calculate best median for each of fixed quadratic terms (slopes) and then select best median from among them.
+// If no primary pull-up acceptable, there is no pull-up.
+
+	bool first = true;
+	int i;
+	int j;
+	double bestLMS;
+	double bestAlpha;
+	double alpha;
+	double currentLMS;
+	int iBest;
+	int jBest;
+	int numberOfNegativesIncluded;
+
+	for (i=0; i<mSize; i++) {
+
+		for (j=0;j<mSize; j++) {
+
+			if (mSlopeIsDefined [i] [j]) {
+
+				currentLMS = CalculateLeastMedianSquareForGivenSlopeWithMixedRatios (i, j, alpha, numberOfNegativesIncluded);
+
+				if (numberOfNegativesIncluded != mNumberOfNegatives)
+					continue;
 
 				if (first) {
 
@@ -1170,7 +1274,100 @@ double QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlope (int i, int j,
 }
 
 
+double  QuadraticLMSExact::CalculateLeastMedianSquareForGivenSlopeWithMixedRatios (int i, int j, double& calculatedLinearTerm, int& numberOfNegativesIncluded) {
 
+	// Returns minimum residual and inserts corresponding slope in calculatedSlope, but result must include all negative ratios
+
+	double slope = (mRatioArray [i] - mRatioArray [j]) / (mXvalues [i] - mXvalues [j]);
+	double zTarget;
+	int k;
+	list<PairInfo> orderedPairInfo;
+	int size2 = 2 * mSize;
+	PairInfo* nextPair;
+
+	for (k=0; k<mSize; k++) {
+
+		zTarget = mRatioArray [k] - slope * mXvalues [k];
+		nextPair = new PairInfo (mRatioArray [k], zTarget, mXvalues [k]);
+		
+		if (mYvalues [k] < 0.0)
+			nextPair->mIsRequired = true;
+
+		else
+			nextPair->mIsRequired = false;
+
+		orderedPairInfo.push_back (*nextPair);
+		delete nextPair;
+	}
+
+	orderedPairInfo.sort ();
+	
+	PairInfo** tempArray = new PairInfo* [size2];
+
+	for (k=0; k<mSize; k++) {
+
+		tempArray [k] = new PairInfo (orderedPairInfo.front ());
+		orderedPairInfo.pop_front ();
+		//tempArray [k]->Print ();
+	}
+
+	//cout << "\n\n";
+
+	for (k=mSize; k<size2; k++)
+		tempArray [k] = NULL;
+
+	int kTop = mMidSize - 1;
+	double low = tempArray [0]->mTargetValue;
+	double high = tempArray [kTop]->mTargetValue;
+	int size1 = mSize -1;
+	double Min = high - low;
+	double delta = Min;
+	
+	int lowIndex = 0;
+	int highIndex = kTop;
+	double average = 0.5 * (high + low);
+
+	for (k=0; k<mSize; k++) {
+
+		if (tempArray [kTop] == NULL)
+			break;
+
+		if (kTop >= mSize)
+			break;
+
+		high = tempArray [kTop]->mTargetValue;
+		low = tempArray [k]->mTargetValue;
+		delta = high - low;
+
+		if (delta < Min) {
+
+			Min = delta;
+			lowIndex = k;
+			highIndex = kTop;
+			average = 0.5 * (high + low);
+		}
+
+		kTop++;
+	}
+
+	numberOfNegativesIncluded = 0;
+
+	for (k=0; k<mSize; k++) {
+
+		if ((k >= lowIndex) && (k<= highIndex)) {
+
+			if (tempArray [k]->mIsRequired)
+				numberOfNegativesIncluded++;
+		}
+
+		delete tempArray [k];
+	}
+
+	delete[] tempArray;
+	calculatedLinearTerm = average;
+	double medianResidual = 0.5 * Min;
+	return medianResidual;
+}
 
 
 
