@@ -260,11 +260,11 @@ public:
 
 		if(OneAndOnlySelf != NULL) {
 
-			cout << "Kill begin" << endl;
-			ReferenceCount = 1; // problem with reference count
-			delete OneAndOnlySelf;
-			OneAndOnlySelf = NULL;
-			cout << "Kill complete" << endl;
+			//cout << "Kill begin" << endl;
+			//ReferenceCount = 1; // problem with reference count
+			//delete OneAndOnlySelf;
+			//OneAndOnlySelf = NULL;
+			//cout << "Kill complete" << endl;
 		}
   }
 
