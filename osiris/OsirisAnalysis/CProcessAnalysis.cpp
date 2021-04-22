@@ -38,6 +38,8 @@
 #include "CParmOsiris.h"
 #include "CVolumes.h"
 #include "CKitList.h"
+#include "CILSLadderInfo.h"
+#include "CPositiveControls.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxWCharBuffer.h"
 
@@ -69,14 +71,26 @@ CProcessAnalysis::CProcessAnalysis(
 
   wxString sStdin;
   wxString s;
+  wxString sILSfile;
+  wxString sLadderFile;
+  wxString sPosCtrlFile = CPositiveControlsAll::GetFileName(
+    pVolume->GetLabSettings()->GetLabStrings()->m_sStdCtrlName);
   const CParmOsiris *pParm = pDirEntry->GetParmOsiris();
   const ConfigDir *pDir = mainApp::GetConfig();
   CPersistKitList *pKitList = mainApp::GetKitList();
-
-
+  CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
+  const wxString &sExeConfigPath = pDir->GetExeConfigPath();
+  const CILSfamily *pILSfamily = pILS->GetFamilyFromLS(pParm->GetLsName());
+  if (pILSfamily != NULL) { sILSfile = pILSfamily->GetFileName(); }
+  sLadderFile = pKitList->GetLadderInfoFileName(pParm->GetKitName());
+  if (sLadderFile.IsEmpty())
+  {
+    sLadderFile = pVolume->GetLabSettings()->GetMarkerCollection()->GetLadderFileName();
+  }
+  
   sStdin.Alloc(4096);
   APPEND_LINE("InputDirectory",pParm->GetInputDirectory());      //  1
-  APPEND_LINE("LadderDirectory",pDir->GetExeConfigPath());       //  2
+  APPEND_LINE("LadderDirectory", sExeConfigPath);       //  2
   APPEND_LINE("ReportDirectory",pParm->GetOutputDirectory());    //  3
   APPEND_LINE("MarkerSetName",pParm->GetKitName());              //  4
   APPEND_LINE("LaneStandardName",pParm->GetLsName());            //  5
@@ -85,6 +99,19 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_INT("MinLaneStandardRFU",pParm->GetMinRFU_ILS());       //  8
   APPEND_INT("MinLadderRFU",pParm->GetMinRFU_Ladder());          //  9
   APPEND_INT("MinInterlocusRFU",pParm->GetMinRFU_Interlocus());  // 10
+
+  if (!( sLadderFile.IsEmpty() || nwxFileUtil::FileInDirectory(sLadderFile, sExeConfigPath) ))
+  {
+    APPEND_LINE("LadderFullPathName", pDir->GetSiteConfigPath());
+  }
+  if ((!sILSfile.IsEmpty()) && (sILSfile != pDir->GetILSLadderFileName()))
+  {
+    APPEND_LINE("ILSFullPathName", sILSfile);
+  }
+  if (sPosCtrlFile.Len() && (sPosCtrlFile != pDir->GetPositiveControlsFileName()))
+  {
+    APPEND_LINE("PositiveControlFullPathName", sPosCtrlFile);
+  }
   if (pKitList->IsLadderFree(pParm->GetKitName()))
   {
     // IF this is no longer needed in the future, 

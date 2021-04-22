@@ -42,7 +42,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/radiobut.h>
-//#include <wx/timer.h>
 
 #include "wxIDS.h"
 #include "nwx/nwxTabOrder.h"
@@ -50,10 +49,9 @@
 #include "CKitList.h"
 #include "CLabSettings.h"
 #include "CVolumes.h"
-//#include "nwx/nwxTimerReceiver.h"
 #include "CGridRFURun.h"
 
-class CDialogAnalysis : public wxDialog //, public nwxTimerReceiver
+class CDialogAnalysis : public wxDialog
 {
 public:
   CDialogAnalysis(
@@ -190,7 +188,6 @@ public:
   void OnBrowseOutput(wxCommandEvent &);
   void OnBrowseVolume(wxCommandEvent &);
   void OnVolumeChange(wxCommandEvent &);
-  //virtual void OnTimer(wxTimerEvent &);
   void DoVolumeChange();
   virtual bool Show(bool show = true);
   bool SelectVolumeByName(const wxString &s);

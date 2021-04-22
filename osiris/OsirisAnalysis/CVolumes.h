@@ -57,7 +57,13 @@ class CVolume
    // wrapper around a volume and manages CLabSettings
 
 public:
-  CVolume(const wxString &sPath, bool bSetReadOnly = false);
+  enum
+  {
+    OSIRIS_KIT,
+    USER_OP,
+    USER_KIT
+  };
+  CVolume(const wxString &sPath, int nVolumeType = USER_OP);
   CVolume();
   CVolume(const CVolume &x);
   CVolume &operator = (const CVolume &x);
@@ -71,7 +77,7 @@ public:
   {
     return m_sPath;
   }
-  wxString GetKitName();
+  wxString GetKitName() const;
   const wxString &GetVolumeName();
   CLabSettings *GetLabSettings()
   {
@@ -98,6 +104,10 @@ public:
   bool Load(const wxString &sPath, bool bSetReadOnly = false);
   bool Save();
   bool Save(const wxString &sPath);
+  int GetVolumeType() const
+  {
+    return m_nVolumeType;
+  }
   bool IsOK() const
   {
   // return false if an error occurred or no lab settings loaded
@@ -160,6 +170,7 @@ private:
   wxString m_sPath;
   wxString m_sLastError;
   int m_nCountDown;
+  int m_nVolumeType;
   bool m_bReadOnly;
   bool m_bOK;
   bool m_bIgnoreReadLock;
@@ -191,9 +202,19 @@ public:
     {}
     else if ((*pc1) == L'[')
     {
+      // osiris kit - bottom
       n = 1;
     }
     else if ((*pc2) == L'[')
+    {
+      n = -1;
+    }
+    else if ((*pc1) == L'<')
+    {
+      // user defined kit - before osiris kits after user volumes
+      n = 1;
+    }
+    else if ((*pc2) == L'<')
     {
       n = -1;
     }
@@ -233,6 +254,7 @@ public:
   void RefreshLocks();
   void RefreshLocksOnTimer(int nms);
   CVolume *Find(const wxString &sName);
+  const CVolume *Find(const wxString &sName) const;
   size_t FindAll(vector<CVolume *> *pvVol, const wxString &sName);
   CVolume *Create(const wxString &sCopyFrom, const wxString &sName);
   bool Remove(CVolume *pVolume);
@@ -269,24 +291,27 @@ public:
 
 private:
   static const wxChar *g_psNames[]; // file names w/in volume
+  static const wxChar *g_psNamesTrim[]; // file names w/in volume for site marker set
 
   MapVolume m_mapVol;
   map<wxString,CVolume *> m_mapKitVolume;
   mutable wxArrayString m_asKits;
   mutable wxArrayString m_asVolumeNames;
 
-  wxString m_sDirVolume; // path of site volumes
+  wxString m_sDirVolume; // path of site volumes or OPs
+  wxString m_sDirUserKits;
   wxDateTime m_dtLastMod; // modification time of m_sDirVolume when loaded
   wxString m_sDirBase; // path of volumes included with Osiris
   wxString m_sLastError;
   int m_nCountDown;
-  bool m_bBase; // true is loading base, false otherwise
+  int m_nVolumeType; // true is loading base, false otherwise
 
   void _SetModified();
   bool _RemoveFiles(const wxString &sDir);
   bool _HasFiles(const wxString &dirname)
   {
-    return CVolume::HasAllFiles(dirname, g_psNames);
+    return CVolume::HasAllFiles(
+      dirname, g_psNamesTrim);
   }
   void _Cleanup();
   void _LoadDir(const wxString &dirname);
@@ -299,14 +324,16 @@ private:
   void _Load()
   {
     _Cleanup();
-    m_bBase = true;
+    m_nVolumeType = CVolume::OSIRIS_KIT;
     _LoadDir(m_sDirBase);
-    _SetupKitVolumes();
-    m_bBase = false;
+    m_nVolumeType = CVolume::USER_KIT;
+    _LoadDir(m_sDirUserKits);
+    m_nVolumeType = CVolume::USER_OP;
     if(m_sDirVolume.Len())
     {
       _LoadDir(m_sDirVolume);
     }
+    _SetupKitVolumes();
   }
 };
 

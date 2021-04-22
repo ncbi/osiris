@@ -243,13 +243,12 @@ bool CKitColors::_Load()
 {
   bool bRtn = true;
   CPersistKitList *pKitList = mainApp::GetKitList();
-  CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
-  const vector<CILSkit *> *pKits = pILS->GetKits();
-  vector<CILSkit *>::const_iterator itrKits;
+  const wxArrayString &asKits = pKitList->GetKitList();
+  size_t nKitCount = asKits.GetCount();
   m_pKitColors2 = new CKitColors2;
-  for (itrKits = pKits->begin(); itrKits != pKits->end(); ++itrKits)
+  for (size_t ndx = 0; ndx < nKitCount; ++ndx)
   {
-    const wxString &sKitName = (*itrKits)->GetKitName();
+    const wxString &sKitName = asKits.Item(ndx);
     CSingleKitColors *pColors = new CSingleKitColors(sKitName,pKitList,m_pKitColors2);
     if(pColors->IsOK())
     {

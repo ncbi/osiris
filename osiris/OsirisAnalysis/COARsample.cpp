@@ -418,7 +418,7 @@ vectorptr<COARpeakAny> *COARsample::_SortMap(MAP_ID_PEAK *pmapPeak)
 
   // now copy set to vector
 
-  auto_ptr< vectorptr<COARpeakAny> > pRtn(new vectorptr<COARpeakAny>);
+  unique_ptr< vectorptr<COARpeakAny> > pRtn(new vectorptr<COARpeakAny>);
   pRtn->reserve(setPeak.size());
 
   for(itrSet = setPeak.begin();
@@ -469,7 +469,7 @@ void COARsample::_BuildMapIDchannel() const
     for(i =  0; i < nCount; ++i)
     {
       pChannel = m_pFile->GetChannel(i);
-      auto_ptr< vectorptr<COARpeakAny> > pPeaks(
+      unique_ptr< vectorptr<COARpeakAny> > pPeaks(
         GetPeaksByChannel(pChannel,NULL,true));
       for(itr = pPeaks->begin(); itr != pPeaks->end(); ++itr)
       {
@@ -512,7 +512,7 @@ COARartifact *COARsample::GetArtifactByID(int nID) const
 size_t COARsample::GetAlleleCountByID(int nID) const
 {
   size_t nRtn = 0;
-  auto_ptr<COARartifact> p(GetArtifactByID(nID));
+  unique_ptr<COARartifact> p(GetArtifactByID(nID));
   if(p.get() == NULL)
   {
     nRtn = GetAllelesByID(nID,false);
@@ -537,7 +537,7 @@ size_t COARsample::GetAllelesByID(int nID, bool bInjectArtifact, vector<COARpeak
       const COARchannel *pcha = m_pFile->GetChannelByNr(itr->second);
       if(pcha != NULL)
       {
-        auto_ptr<COARartifact> apArt(
+        unique_ptr<COARartifact> apArt(
           bInjectArtifact ? GetArtifactByID(nID) : NULL);
         COARartifact *pArt = apArt.get();
 

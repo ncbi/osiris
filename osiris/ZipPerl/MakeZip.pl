@@ -192,7 +192,6 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisXML/util.xsl ${destXSL}");
 
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
-  &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/CmfList.xml ${dest}/Config");
   &SYSTEM("${CP} ${src}/OsirisXML/ArtifactLabels.xml ${dest}/Config/LadderSpecifications");
@@ -202,25 +201,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.4.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.5.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.7.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.8_2.9.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.9.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.2.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.3.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.2.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.2.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.14.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.15.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes*.pdf ${dest}");
 }
 sub GetVCDir
 {

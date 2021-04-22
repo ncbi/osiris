@@ -68,10 +68,10 @@ bool nwxZipInput::OpenZip(const wxString &sZipFilePath)
   bool bRtn = false;
   if(wxFileName::IsFileReadable(sZipFilePath))
   {
-    std::auto_ptr<wxFFileInputStream> pffTemp(new wxFFileInputStream(sZipFilePath));
+    std::unique_ptr<wxFFileInputStream> pffTemp(new wxFFileInputStream(sZipFilePath));
     if(pffTemp->IsOk())
     {
-      std::auto_ptr<wxZipInputStream> pffTempZ(new wxZipInputStream(*(pffTemp.get())));
+      std::unique_ptr<wxZipInputStream> pffTempZ(new wxZipInputStream(*(pffTemp.get())));
       if(pffTempZ->IsOk())
       {
         _Cleanup();
