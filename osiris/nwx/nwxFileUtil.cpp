@@ -177,6 +177,23 @@ bool nwxFileUtil::ExistingParentWritable(const wxString &sPath)
 
 }
 
+bool nwxFileUtil::FileInDirectory(const wxString &sFilePath, const wxString &sDir)
+{
+  // OS-1568 check if a file is in the specified directory
+  bool rtn = false;
+  size_t nLenDir = sDir.Len();
+  if (nLenDir && (nLenDir <= sFilePath.Len()))
+  {
+#ifdef __WXMSW__
+    // case insensitive for windows
+    rtn = !sFilePath.Left(nLenDir).CmpNoCase(sDir);
+#else
+    rtn = sFilePath.StartsWith(sDir);
+#endif
+  }
+  return rtn;
+}
+
 wxString nwxFileUtil::BaseName(const wxString &_sDir)
 {
   wxString sDir(_sDir);

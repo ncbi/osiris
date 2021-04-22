@@ -89,7 +89,7 @@ CVolume &CVolume::operator = (const CVolume &x)
 
 CVolume::~CVolume() {}
 
-wxString CVolume::GetKitName()
+wxString CVolume::GetKitName() const
 {
   wxString sRtn = m_lab.GetKitName();
   return sRtn;
@@ -163,7 +163,6 @@ bool CVolume::Load(const wxString &sPath, bool bSetReadOnly)
   m_bOK = true; // must be true for GetLabSettingsFileName() and GetMessageBookFileName()
   m_bOK = m_lab.LoadFile(GetLabSettingsFileName())
       && m_book.LoadFile(GetMessageBookFileName());
-//  m_lockRead.SetFileName(GetAccessFileName());
   return m_bOK;
 }
 bool CVolume::Save()
@@ -649,6 +648,13 @@ const wxChar *CVolumes::g_psNames[] =
   NULL
 };
 
+const wxChar *CVolumes::g_psNamesTrim[] =
+{
+  LAB_SETTINGS_FILE,
+  STD_SETTINGS_FILE,
+  NULL
+};
+
 
 bool CVolumes::_RemoveFiles(const wxString &sDirName)
 {
@@ -880,7 +886,16 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
       wxString sTo;
       wxString sFrom;
       bRtn = true;
-      for(const wxChar **pp = g_psNames; bRtn && ((*pp) != NULL); ++pp)
+
+      // OS-1568 determine if kit was not provided by osiris
+
+      const wxString sLadderFile = mainApp::GetKitList()->GetLadderInfoFileName(pCopyFrom->GetKitName());
+      const wxChar **psNames =
+        pDir->InOsirisConfigPath(sLadderFile)
+        ? g_psNames
+        : g_psNamesTrim;  // site marker set, do not copy access nor message book
+
+      for(const wxChar **pp = psNames; bRtn && ((*pp) != NULL); ++pp)
       {
         sTo = sToPrefix;
         sTo.Append(*pp);

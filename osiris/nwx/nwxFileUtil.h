@@ -91,6 +91,7 @@ public:
   static wxString BaseName(const wxString &sDir);
   static wxString GetExistingParent(const wxString &s);
   static bool ExistingParentWritable(const wxString &s);
+  static bool FileInDirectory(const wxString &sFilePath, const wxString &sDir);
   static void NoEndWithSeparator(wxString *psDir);
   static void NoStartWithSeparator(wxString *psDir);
   static void EndWithSeparator(wxString *psDir);
@@ -138,7 +139,7 @@ public:
   {
     return (GetSize(sFullPath) != 0ULL);
   }
-
+  
 private:
   static wxString g_sMacFileAttr;
   static std::vector<wxString> g_asSysPath;

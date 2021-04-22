@@ -171,6 +171,17 @@ public:
     _BuildFilePath(GetSitePath(), wxT("Config"), &sRtn);
     return sRtn;
   }
+  bool InOsirisConfigPath(const wxString &sPath) const
+  {
+    // OS-1568 check if a file is in the OSIRIS config path
+    return nwxFileUtil::FileInDirectory(sPath, GetExeConfigPath());
+  }
+  bool InSiteConfigPath(const wxString &sPath) const
+  {
+    // OS-1568 check if a file is in the Site config path
+    return nwxFileUtil::FileInDirectory(sPath, GetSiteConfigPath());
+  }
+
   wxString GetArtifactLabelsUserFileName() const
   {
     wxString sRtn;

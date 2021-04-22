@@ -77,7 +77,7 @@ public:
   {
     return m_sPath;
   }
-  wxString GetKitName();
+  wxString GetKitName() const;
   const wxString &GetVolumeName();
   CLabSettings *GetLabSettings()
   {
@@ -291,6 +291,7 @@ public:
 
 private:
   static const wxChar *g_psNames[]; // file names w/in volume
+  static const wxChar *g_psNamesTrim[]; // file names w/in volume for site marker set
 
   MapVolume m_mapVol;
   map<wxString,CVolume *> m_mapKitVolume;
@@ -310,7 +311,7 @@ private:
   bool _HasFiles(const wxString &dirname)
   {
     return CVolume::HasAllFiles(
-      dirname, g_psNames);
+      dirname, g_psNamesTrim);
   }
   void _Cleanup();
   void _LoadDir(const wxString &dirname);
