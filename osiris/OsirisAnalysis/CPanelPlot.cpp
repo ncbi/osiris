@@ -2467,7 +2467,6 @@ wxMenuItem *CPanelPlot::GetMenuItem(wxMenu *p)
       "",               // help
       wxITEM_NORMAL,        // wxItemKind
       m_pMenu);             // wxMenu *subMenu
-    unique_ptr<nwxMenuItem> x(pMenuItem);
     m_pMenuItem.reset(pMenuItem);
   }
   else
