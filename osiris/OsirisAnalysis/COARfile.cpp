@@ -348,7 +348,7 @@ CXMLmessageBook *COARfile::GetMessageBook()
     wxString sFileName = FindMessageBookFile();
     if(!sFileName.IsEmpty())
     {
-      auto_ptr<CXMLmessageBook> pB(new CXMLmessageBook());
+      unique_ptr<CXMLmessageBook> pB(new CXMLmessageBook());
       if(pB->LoadFile(sFileName) && pB->IsOK())
       {
         m_pMsgBook = pB.release();
@@ -1356,7 +1356,7 @@ bool COARfile::CreatedByNewerVersion() const
 nwxXmlCMF *COARfile::CreateCMF(COARsample2CMFSpecimen *pMap)
 {
   wxString sUser = wxGetUserId();
-  auto_ptr<nwxXmlCMF> pCMF(new nwxXmlCMF);
+  unique_ptr<nwxXmlCMF> pCMF(new nwxXmlCMF);
   vector<wxString> vsLoci;
   size_t i;
   size_t j;

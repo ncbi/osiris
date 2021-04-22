@@ -450,10 +450,10 @@ void nwxXmlCMF::_SetupMaps()
   if(!g_mapKit.size())
   {
     nwxXmlCmfList *pList = g_pCMFlist;
-    std::auto_ptr<nwxXmlCmfList> apl(NULL);
+    std::unique_ptr<nwxXmlCmfList> apl;
     if(pList == NULL)
     {
-      apl = std::auto_ptr<nwxXmlCmfList>(new nwxXmlCmfList);
+      apl.reset(new nwxXmlCmfList);
       pList = apl.get();
     }
     _SetupMap(pList->GetKits(),&g_mapKit);

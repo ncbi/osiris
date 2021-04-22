@@ -399,6 +399,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_25AB109F96924F73AD6429C281EFF3C5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2631E6BE54254C82BE8DE6C96C00D7F0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -736,12 +742,6 @@
         "Entry"
         {
         "MsmKey" = "8:_43520222611F42D7B4566D01D3B6D53B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_45888D46BBC0416886AAB50A33511663"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2694,7 +2694,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-2.15.1-Beta-3.msi"
+        "OutputFilename" = "8:Release\\Osiris-2.16-Beta-3.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -4016,6 +4016,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_25AB109F96924F73AD6429C281EFF3C5"
+            {
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.3.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.3.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2631E6BE54254C82BE8DE6C96C00D7F0"
             {
             "SourcePath" = "8:..\\OsirisXML\\util.xsl"
@@ -5140,26 +5160,6 @@
             {
             "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\IdentifilerPlus_LadderInfo.xml"
             "TargetName" = "8:IdentifilerPlus_LadderInfo.xml"
-            "Tag" = "8:"
-            "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_45888D46BBC0416886AAB50A33511663"
-            {
-            "SourcePath" = "8:..\\OsirisXML\\LadderSpecifications\\kitcolors.xml"
-            "TargetName" = "8:kitcolors.xml"
             "Tag" = "8:"
             "Folder" = "8:_BB97FBC37E8E44689A4CED73706F3215"
             "Condition" = "8:"
@@ -12673,15 +12673,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{79438078-FB1B-48C8-BDCB-EEA894239C30}"
-        "PackageCode" = "8:{3100AFD2-C6DA-4230-81CA-7D5551F7B526}"
+        "ProductCode" = "8:{3E5EB5C5-87C3-483B-A2D6-016DD051E85C}"
+        "PackageCode" = "8:{E736379F-49B2-4AAB-8A66-C66FA064B3D7}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.15.1003"
+        "ProductVersion" = "8:2.16.0003"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

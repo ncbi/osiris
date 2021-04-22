@@ -74,7 +74,9 @@ inline bool IS_FILE_TYPE(const wxString &s, const char *psType)
 inline bool IS_ANALYSIS_FILE(const wxString &s)
 {
   wxString sLower = s;
-  bool b = sLower.EndsWith(EXT_REPORT) || sLower.EndsWith(EXT_REPORT_EDITED);
+  sLower.MakeLower();
+  bool b = (!nwxFileUtil::IsMacAttrFile(s)) &&
+    (sLower.EndsWith(EXT_REPORT) || sLower.EndsWith(EXT_REPORT_EDITED));
   return b;
 }
 

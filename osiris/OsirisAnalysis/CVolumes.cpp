@@ -45,19 +45,21 @@
 #define MESSAGE_BOOK_FILE wxS("MessageBookV4.0.xml")
 #define STD_SETTINGS_FILE wxS("StdSettings.xml")
 #define LAB_SETTINGS_FILE wxS("LabSettings.xml")
+#define LADDER_DATA_FILE  wxS("LadderData.xml")
 
 #define LOCK_READ_MS  5000
 #define LOCK_MS 10000
 
 //******************************************************  CVolume
 
-CVolume::CVolume(const wxString &sPath, bool bSetReadOnly)
+CVolume::CVolume(const wxString &sPath, int nVolumeType)
 {
   m_bIgnoreReadLock = false;
   m_bNewVolume = false;
   m_bOK = true;
   m_nCountDown = 0;
-  Load(sPath,bSetReadOnly);
+  m_nVolumeType = nVolumeType;
+  Load(sPath,nVolumeType != USER_OP);
 }
 CVolume::CVolume(const CVolume &x)
 {
@@ -70,13 +72,16 @@ CVolume::CVolume()
   m_bIgnoreReadLock = false;
   m_bNewVolume = false;
   m_nCountDown = 0;
+  m_nVolumeType = USER_OP;
 }
 CVolume &CVolume::operator = (const CVolume &x)
 {
   m_bIgnoreReadLock = false;
   m_bNewVolume = false;
   m_nCountDown = 0;
+  m_bOK = x.IsOK();
   m_bReadOnly = x.IsReadOnly();
+  m_nVolumeType = x.GetVolumeType();
   Load(x.GetPath(),x.IsReadOnly());
   return *this;
 }
@@ -371,7 +376,7 @@ CVolumes::~CVolumes()
 CVolumes::CVolumes() :
   m_dtLastMod((time_t)0), 
   m_nCountDown(0),
-  m_bBase(false)
+  m_nVolumeType(0)
 {
   _SetupPath();
   CheckReload(true);
@@ -451,6 +456,18 @@ CVolume *CVolumes::Find(const wxString &sName)
   return pRtn;
 }
 
+const CVolume *CVolumes::Find(const wxString &sName) const
+{
+  pair<MapVolume::const_iterator, MapVolume::const_iterator> pitr =
+    m_mapVol.equal_range(sName);
+  const CVolume *pRtn =
+    (pitr.first == pitr.second)
+    ? NULL
+    : pitr.first->second;
+  return pRtn;
+}
+
+
 size_t CVolumes::FindAll(
   vector<CVolume *> *pvVol, const wxString &sName)
 {
@@ -508,7 +525,7 @@ CVolume *CVolumes::Create(
   }
   else if(_BuildNewPath(pCopyFrom,&sPath))
   {
-    auto_ptr<CVolume> apRtn(new CVolume(sPath));
+    unique_ptr<CVolume> apRtn(new CVolume(sPath));
 
     if(!(apRtn->IsOK() && apRtn->InitNewVolume(sName)))
     {
@@ -632,6 +649,7 @@ const wxChar *CVolumes::g_psNames[] =
   NULL
 };
 
+
 bool CVolumes::_RemoveFiles(const wxString &sDirName)
 {
   bool bRtn = true;
@@ -749,7 +767,7 @@ wxDirTraverseResult CVolumes::OnDir(const wxString &dirname)
 {
   if(_HasFiles(dirname))
   {
-    auto_ptr<CVolume> apVol(new CVolume(dirname,m_bBase));
+    unique_ptr<CVolume> apVol(new CVolume(dirname, m_nVolumeType));
     if(apVol->IsOK())
     {
       wxString s = apVol->GetVolumeName();
@@ -899,9 +917,9 @@ void CVolumes::_SetupPath()
 {
   ConfigDir *pDir = mainApp::GetConfig();
   m_sDirBase = pDir->GetExeVolumePath();
-  m_sDirVolume = pDir->GetSitePath();
-  nwxFileUtil::EndWithSeparator(&m_sDirVolume);
-  m_sDirVolume.Append("Volumes");
+  m_sDirVolume = pDir->GetUserVolumePath(); // User's OPs
+  m_sDirUserKits = pDir->GetSiteKitPath();  // User's Custom Kits
+
 }
 
 #ifdef __WXDEBUG__

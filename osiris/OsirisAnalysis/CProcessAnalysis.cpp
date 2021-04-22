@@ -38,6 +38,8 @@
 #include "CParmOsiris.h"
 #include "CVolumes.h"
 #include "CKitList.h"
+#include "CILSLadderInfo.h"
+#include "CPositiveControls.h"
 #include "nwx/nwxFileUtil.h"
 #include "nwx/nwxWCharBuffer.h"
 
@@ -69,11 +71,18 @@ CProcessAnalysis::CProcessAnalysis(
 
   wxString sStdin;
   wxString s;
+  wxString sILSfile;
+  wxString sLadderFile;
+  wxString sPosCtrlFile = CPositiveControlsAll::GetFileName(
+    pVolume->GetLabSettings()->GetLabStrings()->m_sStdCtrlName);
   const CParmOsiris *pParm = pDirEntry->GetParmOsiris();
   const ConfigDir *pDir = mainApp::GetConfig();
   CPersistKitList *pKitList = mainApp::GetKitList();
-
-
+  CILSLadderInfo *pILS = pKitList->GetILSLadderInfo();
+  const CILSfamily *pILSfamily = pILS->GetFamilyFromLS(pParm->GetLsName());
+  if (pILSfamily != NULL) { sILSfile = pILSfamily->GetFileName(); }
+  sLadderFile = pKitList->GetLadderInfoFileName(pParm->GetKitName());
+  
   sStdin.Alloc(4096);
   APPEND_LINE("InputDirectory",pParm->GetInputDirectory());      //  1
   APPEND_LINE("LadderDirectory",pDir->GetExeConfigPath());       //  2
@@ -85,6 +94,19 @@ CProcessAnalysis::CProcessAnalysis(
   APPEND_INT("MinLaneStandardRFU",pParm->GetMinRFU_ILS());       //  8
   APPEND_INT("MinLadderRFU",pParm->GetMinRFU_Ladder());          //  9
   APPEND_INT("MinInterlocusRFU",pParm->GetMinRFU_Interlocus());  // 10
+
+  if (!( sLadderFile.IsEmpty() || sLadderFile.StartsWith(pDir->GetExeConfigPath()) ))
+  {
+    APPEND_LINE("LadderFullPathName", pDir->GetSiteConfigPath());
+  }
+  if ((!sILSfile.IsEmpty()) && (sILSfile != pDir->GetILSLadderFileName()))
+  {
+    APPEND_LINE("ILSFullPathName", sILSfile);
+  }
+  if (sPosCtrlFile.Len() && (sPosCtrlFile != pDir->GetPositiveControlsFileName()))
+  {
+    APPEND_LINE("PositiveControlFullPathName", sPosCtrlFile);
+  }
   if (pKitList->IsLadderFree(pParm->GetKitName()))
   {
     // IF this is no longer needed in the future, 
