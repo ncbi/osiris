@@ -136,6 +136,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		}
 
 		oldLadderString.ReadTextFile (*oldLadderFile);
+		oldLadderFile->Close ();
 		delete oldLadderFile;
 
 		RGString binsFullPath = inputFile.GetBinsFileName ();  // this should be full path to bins file

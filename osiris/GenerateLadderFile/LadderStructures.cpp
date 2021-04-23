@@ -652,11 +652,27 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 
 	RGString ilsName = Locus::GetILSFamilyName ();
 	endPos = 0;
-	oldLadderString.FindNextSubstring (0, "      <Locus>", endPos);
+	oldLadderString.FindNextSubstring (0, "<Locus>", endPos);
 	RGString insertBase;
 	insertBase << blank10 << "<ILSName>" << ilsName.GetData () << "</ILSName>\n";
 	insertBase << blank8 << "</LSBases>";
 	RGString leadString = oldLadderString.ExtractSubstring (0, endPos - 1);
+	char lastCharacter;
+
+	while (true) {
+
+		lastCharacter = leadString.GetLastCharacter ();
+
+		if (lastCharacter == ' ')
+			leadString.RemoveLastCharacter ();
+
+		else if (lastCharacter == '\t')
+			leadString.RemoveLastCharacter ();
+
+		else
+			break;
+	}
+
 	//cout << "Lead string = \n" << leadString.GetData () << endl;
 	endPos = 0;
 	RGString blank8PlusLSBases = blank8 + "</LSBases>";
@@ -735,7 +751,7 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 	newLadderString << blank2 << "</Kits>\n";
 	newLadderString << "</KitData>\n";
 
-	RGString ladderPath = inFile.GetOutputConfigDirectoryPath () + "/" + inFile.GetLadderFileName ();
+	RGString ladderPath = inFile.GetOutputConfigDirectoryPath () + "/Config/LadderSpecifications/" + inFile.GetLadderFileName ();
 	RGTextOutput ladderOutput (ladderPath, FALSE);
 
 	if (!ladderOutput.FileIsValid ()) {

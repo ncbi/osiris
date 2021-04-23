@@ -883,12 +883,12 @@ int LadderInputFile :: AssignStringAppend () {
 		status = 0;
 	}
 
-	else if (mStringLeft == "LadderDirectory") {
+	//else if (mStringLeft == "LadderDirectory") {
 
-		SetEmbeddedSlashesToForward (mStringRight);
-		mLadderDirectory = mStringRight;
-		status = 0;
-	}
+	//	SetEmbeddedSlashesToForward (mStringRight);
+	//	mLadderDirectory = mStringRight;
+	//	status = 0;
+	//}
 
 	else if (mStringLeft == "BinsFileName") {
 
@@ -1061,11 +1061,11 @@ int LadderInputFile :: AssembleInputsAppend () {
 		status = -1;
 	}
 
-	if (mLadderDirectory.Length () == 0) {
+	//if (mLadderDirectory.Length () == 0) {
 
-		cout << "Ladder information directory is unspecified." << endl;
-		status = -1;
-	}
+	//	cout << "Ladder information directory is unspecified." << endl;
+	//	status = -1;
+	//}
 
 	//if (mOutputConfigDirectoryPath.Length () == 0) {
 
@@ -1082,6 +1082,12 @@ int LadderInputFile :: AssembleInputsAppend () {
 	if (mILSFamilyName.Length () == 0) {
 
 		cout << "No ILS family name specified" << endl;
+		status = -1;
+	}
+
+	if (mOutputConfigDirectoryPath.Length () == 0) {
+
+		cout << "Full path user directory unspecified" << endl;
 		status = -1;
 	}
 
