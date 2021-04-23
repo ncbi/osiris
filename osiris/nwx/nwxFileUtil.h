@@ -82,6 +82,7 @@ public:
   }
 
 #endif
+  static bool IsMacAttrFile(const wxString &s);
   static wxString ForwardSlash(const wxString &s);
   static wxString GetRealPath(const wxString &sPath);
   static wxString PathFind(const wxString &sExeFile, bool bCheckSys = true, bool bCheckPath = true);
@@ -90,6 +91,7 @@ public:
   static wxString BaseName(const wxString &sDir);
   static wxString GetExistingParent(const wxString &s);
   static bool ExistingParentWritable(const wxString &s);
+  static bool FileInDirectory(const wxString &sFilePath, const wxString &sDir);
   static void NoEndWithSeparator(wxString *psDir);
   static void NoStartWithSeparator(wxString *psDir);
   static void EndWithSeparator(wxString *psDir);
@@ -131,7 +133,15 @@ public:
   static wxString TextToFileName(const wxString &sName, size_t MAXLEN = wxNOT_FOUND);
   static wxString FindNewDirName(const wxString &sFullPath);
   static wxString FindNewFileName(const wxString &sFullPath);
+  static wxDateTime GetModTime(const wxString &sFullPath);
+  static wxULongLong GetSize(const wxString &sFullPath);
+  static bool NotEmpty(const wxString &sFullPath)
+  {
+    return (GetSize(sFullPath) != 0ULL);
+  }
+  
 private:
+  static wxString g_sMacFileAttr;
   static std::vector<wxString> g_asSysPath;
   static std::vector<wxString> g_asPath;
   static bool g_PATH_SET;

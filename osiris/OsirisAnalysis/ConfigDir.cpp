@@ -33,6 +33,7 @@
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
 #include "CSitePath.h"
+#include "nwx/nwxFileUtil.h"
 #ifdef __WXDEBUG__
 #include "mainApp.h"
 void ConfigDir::Log()
@@ -124,5 +125,30 @@ void ConfigDir::SetFileSubdir(const char *psSubdir)
 const wxString &ConfigDir::GetSitePath() const
 {
   return CSitePath::GetGlobal()->GetSitePath();
+}
+
+size_t ConfigDir::GetSiteILSFileNames(std::set<wxString> *pSetFiles) const
+{
+  wxString sRtn;
+  wxString sPath = GetSiteILSLadderFilePath();
+  wxString sFullName;
+  wxDir  dir(sPath);
+  pSetFiles->clear();
+  if (dir.IsOpened())
+  {
+    wxString sFileName;
+    bool b;
+    const int DIR_FLAGS = wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW;
+    for (b = dir.GetFirst(&sFileName, wxT("*_ILSInfo.xml"), DIR_FLAGS);
+      b; b = dir.GetNext(&sFileName))
+    {
+      sFullName = sPath + sFileName;
+      if (wxFileName::IsFileReadable(sFullName) && !nwxFileUtil::IsMacAttrFile(sFullName))
+      {
+        pSetFiles->insert(sFullName);
+      }
+    }
+  }
+  return pSetFiles->size();
 }
 

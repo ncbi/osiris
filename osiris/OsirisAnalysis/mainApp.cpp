@@ -316,6 +316,10 @@ CPersistKitList *mainApp::GetKitList()
     m_pKitList = new CPersistKitList();
     m_pKitList->Load();
   }
+  else
+  {
+    m_pKitList->CheckReload();
+  }
   return m_pKitList;
 }
 CILSLadderInfo *mainApp::GetILSLadderInfo()

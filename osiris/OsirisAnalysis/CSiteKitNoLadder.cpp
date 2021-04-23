@@ -168,7 +168,7 @@ wxDirTraverseResult CSiteKitNoLadderCollection::OnDir(const wxString &dirname)
   if (bLoad)
   {
     // not already loaded
-    auto_ptr<CSiteKitNoLadder> m_ptr(new CSiteKitNoLadder);
+    unique_ptr<CSiteKitNoLadder> m_ptr(new CSiteKitNoLadder);
     if (!m_ptr->LoadFile(sFileName))
     {
       wxString s(wxS("Cannot load file ladder free kit file: "));

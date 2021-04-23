@@ -93,7 +93,7 @@ public:
   virtual nwxXmlNodeList *CreateNodeList(
               const wxString &sNodeName, void *pObj)
   {
-    auto_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
+    unique_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
     if(!Skip(pObj))
     {
       std::vector<T *> &vObj(CAST(pObj));
@@ -102,7 +102,7 @@ public:
       for(size_t i = 0; i < nSize; ++i)
       {
         T *px(vObj.at(i));
-        auto_ptr<nwxXmlNodeList> apList(px->CreateNodeList(sNodeName,px));
+        unique_ptr<nwxXmlNodeList> apList(px->CreateNodeList(sNodeName,px));
         size_t nListSize = apList->size();
         for(size_t j = 0; j < nListSize; j++)
         {
@@ -454,7 +454,7 @@ public:
   virtual nwxXmlNodeList *CreateNodeList(
               const wxString &sNodeName, void *pObj)
   {
-    auto_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
+    unique_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
     if(!Skip(pObj))
     {
       std::set<T *,S> &vObj(CAST(pObj));
@@ -465,7 +465,7 @@ public:
         ++itr)
       {
         T *px(*itr);
-        auto_ptr<nwxXmlNodeList> apList(px->CreateNodeList(sNodeName,px));
+        unique_ptr<nwxXmlNodeList> apList(px->CreateNodeList(sNodeName,px));
         size_t nListSize = apList->size();
         for(size_t j = 0; j < nListSize; j++)
         {
@@ -824,7 +824,7 @@ public:
   virtual nwxXmlNodeList *CreateNodeList(
               const wxString &sNodeName, void *pObj)
   {
-    auto_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
+    unique_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
     if(!Skip(pObj))
     {
       std::map<K, T *,S> &vObj(CAST(pObj));
@@ -835,7 +835,7 @@ public:
         ++itr)
       {
         T *px(itr->second);
-        auto_ptr<nwxXmlNodeList> apList(px->CreateNodeList(sNodeName,px));
+        unique_ptr<nwxXmlNodeList> apList(px->CreateNodeList(sNodeName,px));
         size_t nListSize = apList->size();
         for(size_t j = 0; j < nListSize; j++)
         {
@@ -1344,7 +1344,7 @@ public:
   virtual nwxXmlNodeList *CreateNodeList(
               const wxString &sNodeName, void *pvObj)
   {
-    auto_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
+    unique_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
     if(!Skip(pvObj))
     {
       std::vector<T> &vObj(CAST(pvObj));
@@ -1353,7 +1353,7 @@ public:
       for(size_t i = 0; i < nSize; ++i)
       {
         const T &x(vObj.at(i));
-        auto_ptr<nwxXmlNodeList> apList(m_io.CreateNodeList(sNodeName,(void *)&x));
+        unique_ptr<nwxXmlNodeList> apList(m_io.CreateNodeList(sNodeName,(void *)&x));
         size_t nListSize = apList->size();
         for(size_t j = 0; j < nListSize; j++)
         {
@@ -1420,7 +1420,7 @@ public:
   virtual nwxXmlNodeList *CreateNodeList(
               const wxString &sNodeName, void *pvObj)
   {
-    auto_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
+    unique_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
     if(!Skip(pvObj))
     {
       std::set<T> &vObj(CAST(pvObj));
@@ -1429,7 +1429,7 @@ public:
         ++itr)
       {
         const T &x(*itr);
-        auto_ptr<nwxXmlNodeList> apList(m_io.CreateNodeList(sNodeName,(void *)&x));
+        unique_ptr<nwxXmlNodeList> apList(m_io.CreateNodeList(sNodeName,(void *)&x));
         size_t nListSize = apList->size();
         for(size_t j = 0; j < nListSize; j++)
         {

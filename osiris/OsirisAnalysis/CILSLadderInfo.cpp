@@ -29,63 +29,124 @@
 */
 #include "CILSLadderInfo.h"
 #include <wx/arrstr.h>
+#include <wx/filename.h>
+#include "nwx/nwxString.h"
 
-CILSLadderInfo::CILSLadderInfo(bool bLoad) : 
+CILSLadderInfo::CILSLadderInfo() : 
   nwxXmlPersist(true),
-  m_vKits(wxT("Set")), 
-  m_mapCILSfamily(wxT("ILS"),false),
+  m_mapCILSfamilyTmp(wxT("ILS"),false),
   m_bIsOK(false)
+  
 {
+  m_dtFileModTime.Set(time_t(0));
   RegisterAll(true);
-  if(bLoad)
-  {
-    Load();
-  }
+  _SetupSiteFileNames();
+  _Load();
 }
 
-
-bool CILSLadderInfo::Load()
+bool CILSLadderInfo::_SetupSiteFileNames()
 {
-  ConfigDir *pDir = mainApp::GetConfig();
-  wxString sFile = pDir->GetILSLadderFileName();
-  _Cleanup();
-  m_bIsOK = LoadFile(sFile);
-  if(!m_bIsOK)
+  // get all site ILS and Ladder name files
+  // if the list has changed or a modification time
+  // has changed, then return true to indicate that it
+  // needs to be reloaded
+  std::set<wxString> setFiles;
+  std::set<wxString>::iterator itrs;
+  std::map<wxString, wxDateTime>::iterator itrm;
+  wxDateTime t;
+  size_t nCount = mainApp::GetConfig()->GetSiteILSFileNames(&setFiles);
+  bool bReload = (nCount != m_mapSiteFiles.size());
+  if (!bReload)
   {
-    m_vKits.Clear();
+    for (itrs = setFiles.begin(); (!bReload) && itrs != setFiles.end(); ++itrs)
+    {
+      itrm = m_mapSiteFiles.find(*itrs);
+      bReload = (itrm == m_mapSiteFiles.end()) ||
+        (itrm->second != nwxFileUtil::GetModTime(*itrs));
+    }
+  }
+  if (bReload)
+  {
+    m_mapSiteFiles.clear();
+    for (itrs = setFiles.begin(); itrs != setFiles.end(); ++itrs)
+    {
+      m_mapSiteFiles.insert(
+        std::map<wxString, wxDateTime>::value_type(*itrs, nwxFileUtil::GetModTime(*itrs)));
+    }
+  }
+  return bReload;
+}
+
+bool CILSLadderInfo::_NeedReload()
+{
+  bool bReload = IsOK() ? _SetupSiteFileNames() : false;
+  return bReload;
+}
+bool CILSLadderInfo::CheckReload()
+{
+  bool bRtn = _NeedReload() ? _Load() : IsOK();
+  return bRtn;
+}
+bool CILSLadderInfo::_Load()
+{
+  wxString sFile = mainApp::GetConfig()->GetILSLadderFileName();
+  _Cleanup();
+  m_bIsOK = _LoadFile(sFile);
+
+  if (m_bIsOK)
+  {
+    std::map<wxString, wxDateTime>::iterator itr;
+    for (itr = m_mapSiteFiles.begin(); itr != m_mapSiteFiles.end(); ++itr)
+    {
+      _LoadFile(itr->first);
+    }
   }
   return m_bIsOK;
+}
+
+void CILSLadderInfo::_MoveData(const wxString &sFileName)
+{
+  TnwxXmlPersistMap<wxString, CILSfamily>::iterator itr;
+  for (itr = m_mapCILSfamilyTmp->begin();
+    itr != m_mapCILSfamilyTmp->end();
+    ++itr)
+  {
+    if (m_mapCILSfamily.find(itr->first) != m_mapCILSfamily.end())
+    {
+      delete itr->second;
+    }
+    else
+    {
+      itr->second->SetFileName(sFileName);
+      m_mapCILSfamily.insert(*itr);
+    }
+  }
+  m_mapCILSfamilyTmp->clear();
 }
 
 void CILSLadderInfo::_Cleanup()
 {
   m_mapNameToDisplay.clear();
-  m_mapDisplayToName.clear();
-  m_vKits.Clear();
-  m_mapCILSfamily.Clear();
+  mapptr<wxString, CILSfamily>::cleanup(&m_mapCILSfamily);
+  m_mapCILSfamilyTmp.Clear();
+  m_sVersion.Clear();
+  m_dtSiteFile.Set(time_t(0));
   m_bIsOK = false;
 }
 
 void CILSLadderInfo::_BuildNameToDisplay() const
 {
-  //if(IsOK() && !m_mapNameToDisplay.size())
+  std::map<wxString,CILSfamily *>::const_iterator itrf;
+  for(itrf = m_mapCILSfamily.begin(); itrf != m_mapCILSfamily.end(); ++itrf)
   {
-    const std::map<wxString,CILSfamily *> *pmap = m_mapCILSfamily.Get();
-    std::map<wxString,CILSfamily *>::const_iterator itrf;
-    for(itrf = pmap->begin(); itrf != pmap->end(); ++itrf)
+    const CILSfamily *pFam = itrf->second;
+    const std::vector<CILSname *> &vName = pFam->GetNames();
+    std::vector<CILSname *>::const_iterator itr;
+    for(itr = vName.begin(); itr != vName.end(); ++itr)
     {
-      const CILSfamily *pFam = itrf->second;
-      const std::vector<CILSname *> &vName = pFam->GetNames();
-      std::vector<CILSname *>::const_iterator itr;
-      for(itr = vName.begin(); itr != vName.end(); ++itr)
-      {
-        m_mapNameToDisplay.insert(
-          std::map<const wxString ,const wxString &>::value_type
-            ( (*itr)->GetName(),(*itr)->GetDisplayName() ) );
-        m_mapDisplayToName.insert(
-          std::map<const wxString ,const wxString &>::value_type
-            ( (*itr)->GetDisplayName(),(*itr)->GetName() ) );
-      }
+      m_mapNameToDisplay.insert(
+        std::map<const wxString ,const wxString &>::value_type
+          ( (*itr)->GetName(),(*itr)->GetDisplayName() ) );
     }
   }
 }
@@ -101,20 +162,6 @@ const wxString &CILSLadderInfo::FindDisplayName
   std::map<const wxString ,const wxString &>::const_iterator itr =
     m_mapNameToDisplay.find(sLSname);
   const wxString &sRtn = (itr == m_mapNameToDisplay.end())
-    ? mainApp::EMPTY_STRING : itr->second;
-  return sRtn;
-}
-
-const wxString &CILSLadderInfo::FindLSname
-  (const wxString &sDisplayName) const
-{
-  if(IsOK() && !m_mapDisplayToName.size())
-  {
-    _BuildNameToDisplay();
-  }
-  std::map<const wxString ,const wxString &>::const_iterator itr =
-    m_mapDisplayToName.find(sDisplayName);
-  const wxString &sRtn = (itr == m_mapDisplayToName.end())
     ? mainApp::EMPTY_STRING : itr->second;
   return sRtn;
 }

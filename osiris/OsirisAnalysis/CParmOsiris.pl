@@ -616,6 +616,7 @@ EOF2
 #include "nwx/nwxGlobalObject.h"
 #include "nwx/nwxString.h"
 #include "ConfigDir.h"
+#include "CVolumes.h"
 #include "mainApp.h"
 
 #include "CParmGridAttributes.h"
@@ -710,14 +711,26 @@ ${sGets}
   {
     return GetCheckBeforeExit(); // backward compatibility
   }
-  wxString GetVolumeOrKit() const
+  wxString GetVolumeOrKit(const CVolumes *pVolumes) const
   {
-    wxString sRtn(m_sVolumeName);
-    if(sRtn.IsEmpty() && !m_sKitName.IsEmpty())
+    wxString sRtn;
+    const CVolume *pVolume = m_sVolumeName.IsEmpty()
+        ? NULL : pVolumes->Find(m_sVolumeName);
+    if(pVolume != NULL)
     {
-      sRtn = "[";
-      sRtn.Append(m_sKitName);
-      sRtn.Append("]");
+        sRtn = m_sVolumeName;
+    }
+    else
+    {
+      pVolume = m_sKitName.IsEmpty() ? NULL : pVolumes->Find(m_sKitName);
+      if(pVolume != NULL)
+      {
+        const char *psBrackets = 
+            (pVolume->GetVolumeType() == CVolume::USER_KIT) ? "<>" : "[]";
+        sRtn = psBrackets[0];
+        sRtn.Append(m_sKitName);
+        sRtn.Append(psBrackets[1]);
+      }
     }
     return sRtn;
   }
