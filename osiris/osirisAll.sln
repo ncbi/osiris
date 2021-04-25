@@ -61,6 +61,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenerateLadderFile", "Gener
 		{74299048-4F7F-4235-92E9-78F978B70F4C} = {74299048-4F7F-4235-92E9-78F978B70F4C}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenerateILSFamily", "GenerateILSFamily\GenerateILSFamily.vcxproj", "{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -158,6 +160,12 @@ Global
 		{8ADE8CDC-50A1-4E9A-BF63-F9AD206BA260}.Release|Win32.ActiveCfg = Release|Win32
 		{8ADE8CDC-50A1-4E9A-BF63-F9AD206BA260}.Release|Win32.Build.0 = Release|Win32
 		{8ADE8CDC-50A1-4E9A-BF63-F9AD206BA260}.Release|x64.ActiveCfg = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug|Win32.Build.0 = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug|x64.ActiveCfg = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release|Win32.ActiveCfg = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release|Win32.Build.0 = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

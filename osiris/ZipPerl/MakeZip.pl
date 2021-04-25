@@ -246,6 +246,8 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
+  &SYSTEM("${CP} ${src}/GenerateLadderFile/Release/GenerateLadderFile.exe ${dest}");
+  &SYSTEM("${CP} ${src}/GenerateILSFamily/Release/GenerateILSFamily.exe ${dest}");
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
