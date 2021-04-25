@@ -327,6 +327,8 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
   &SYSTEM("${CP} ${src}/fsa2xml/bin/fsa2xml ${DEST}");
+  &SYSTEM("${CP} ${src}/GenerateILSFamily/bin/GenerateILSFamily ${DEST}");
+  &SYSTEM("${CP} ${src}/GenerateLadderFile/bin/GenerateLadderFile ${DEST}");
 
   &SYSTEM("${CP} -R \"${src}/dmg/System Applications Folder.app\" \"${TOP}\"");
   &SYSTEM("${CP} -R \"${src}/dmg/User Applications Folder.app\" \"${TOP}\"");
@@ -345,6 +347,9 @@ sub CopyMac
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   &SYSTEM("strip ${DEST}/fsa2xml");
+  &SYSTEM("strip ${DEST}/GenerateILSFamily");
+  &SYSTEM("strip ${DEST}/GenerateLadderFile");
+  
   &COPYFILES($src,$DEST,$TOP);
   my $XDISP = $ENV{DISPLAY};
   my $bSign = ($XDISP =~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/);

@@ -94,6 +94,9 @@
       <AdditionalDependencies>Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration />
     </Link>
+    <PostBuildEvent>
+      <Command>sign.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bins.cpp" />
