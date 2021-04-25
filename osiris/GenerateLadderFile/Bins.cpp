@@ -133,7 +133,7 @@ Locus* Bins :: AssembleLocusFromLineStrings () {
 
 	//cout << "Bins locus line 1:  ";
 	int i;
-	int len = mLocusLineFieldString.Length ();
+//	int len = mLocusLineFieldString.Length ();
 
 	//for (i=0; i<len; i++) {
 

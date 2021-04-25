@@ -88,7 +88,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	if (select == 1) {
 
 		cout << "You have chosen to augment an existing ladder." << endl;
-		LadderInputFile* inFileAppend = new LadderInputFile (debugMode);
+//		LadderInputFile* inFileAppend = new LadderInputFile (debugMode);
 		int inStatus = inputFile.ReadAllInputsAppend ("LadderInputFileAppend.txt");
 
 		if (inStatus != 0) {

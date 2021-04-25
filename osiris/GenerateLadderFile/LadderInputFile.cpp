@@ -53,7 +53,7 @@ LocusNames LadderInputFile::StandardNames;
 
 
 LadderInputFile :: LadderInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mNumberOfDyes (0), mYLinkedDefault (false),
-mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap (NULL), mVersion ("2.7"), 
+mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mVersion ("2.7"), 
 mGenerateILSFamilies (false) {
 
 	mInputLinesIterator = new RGDListIterator (mInputLines);
@@ -1109,8 +1109,8 @@ int LadderInputFile :: GetChannelForColorName (const RGString& color) const {
 	temp.ToUpper ();
 
 	for (i=1; i<=mNumberOfDyes; i++) {
-
-		if (temp.IsEqualTo (&(mColorNames [i])))
+    RGString s(mColorNames[i]);
+		if (temp.IsEqualTo (&s))
 			return i;
 	}
 
@@ -1125,8 +1125,8 @@ int LadderInputFile :: GetChannelForDyeName (const RGString& dye) const {
 	temp.ToUpper ();
 
 	for (i=1; i<=mNumberOfDyes; i++) {
-
-		if (temp.IsEqualTo (&(mDyeNames [i])))
+    RGString s(mColorNames[i]);
+		if (temp.IsEqualTo (&s))
 			return i;
 	}
 
