@@ -1155,6 +1155,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6DE16152DF0440BDBF277BBBCEF148DD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6E21B04C88B843DAB463E15C55DC6A61"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1258,6 +1264,12 @@
         "Entry"
         {
         "MsmKey" = "8:_764E915BDB5F44728CF7CA84382FDF5C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_767A5F71C17C4800864A49535DAB4E4D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -6536,6 +6548,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6DE16152DF0440BDBF277BBBCEF148DD"
+            {
+            "SourcePath" = "8:..\\GenerateILSFamily\\Release\\GenerateILSFamily.exe"
+            "TargetName" = "8:GenerateILSFamily.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E21B04C88B843DAB463E15C55DC6A61"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\CORDIS_PLUS\\CORDIS_PLUS_StdSettings.xml"
@@ -6882,6 +6914,26 @@
             "TargetName" = "8:LANESTANDARDONLY2_LabSettings.xml"
             "Tag" = "8:"
             "Folder" = "8:_D2C92344622A4CBFAC10819A609FF77B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_767A5F71C17C4800864A49535DAB4E4D"
+            {
+            "SourcePath" = "8:..\\GenerateLadderFile\\Release\\GenerateLadderFile.exe"
+            "TargetName" = "8:GenerateLadderFile.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
