@@ -1,5 +1,6 @@
 bin_PROGRAMS = GenerateILSFamily
 AUTOMAKE_OPTIONS = subdir-objects
-fsa2xml_SOURCES = ../GenerateILSFamily.cpp
+GenerateILSFamily_SOURCES = ../GenerateILSFamily.cpp ../ILSInputData.cpp
+GenerateILSFamily_DEPENDENCIES =  ../../BaseClassLib/lib/librgtools.a
 AM_CPPFLAGS = -I../../BaseClassLib
 LDADD = -L../../BaseClassLib/lib -lrgtools 
