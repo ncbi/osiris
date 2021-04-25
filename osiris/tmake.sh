@@ -33,7 +33,7 @@ for x in wxthings/lib wxplotctrl/lib BaseClassLib/lib \
 done
 wait
 if test ! -r "$ERRFILE"; then
-  for x in OpenFolder/bin fsa2xml/bin TestAnalysisDirectoryLCv2.11/bin OsirisAnalysis/bin; do
+  for x in OpenFolder/bin fsa2xml/bin TestAnalysisDirectoryLCv2.11/bin OsirisAnalysis/bin GenerateLadderFile/bin GenerateILSFamily/bin; do
     MAKE $x > make${f}.txt 2>&1 &
     f=`expr $f + 1`
   done
