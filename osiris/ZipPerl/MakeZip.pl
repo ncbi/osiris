@@ -247,6 +247,7 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
   &SYSTEM("${CP} ${src}/GenerateLadderFile/Release/GenerateLadderFile.exe ${dest}");
+  &SYSTEM("${CP} ${src}/BuildStandardControlFile/Release/BuildStandardControlFile.exe ${dest}");
   &SYSTEM("${CP} ${src}/GenerateILSFamily/Release/GenerateILSFamily.exe ${dest}");
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
@@ -329,6 +330,7 @@ sub CopyMac
   &SYSTEM("${CP} ${src}/fsa2xml/bin/fsa2xml ${DEST}");
   &SYSTEM("${CP} ${src}/GenerateILSFamily/bin/GenerateILSFamily ${DEST}");
   &SYSTEM("${CP} ${src}/GenerateLadderFile/bin/GenerateLadderFile ${DEST}");
+  &SYSTEM("${CP} ${src}/BuildStandardControlFile/bin/BuildStandardControlFile ${DEST}");
 
   &SYSTEM("${CP} -R \"${src}/dmg/System Applications Folder.app\" \"${TOP}\"");
   &SYSTEM("${CP} -R \"${src}/dmg/User Applications Folder.app\" \"${TOP}\"");
@@ -349,7 +351,8 @@ sub CopyMac
   &SYSTEM("strip ${DEST}/fsa2xml");
   &SYSTEM("strip ${DEST}/GenerateILSFamily");
   &SYSTEM("strip ${DEST}/GenerateLadderFile");
-  
+  &SYSTEM("strip ${DEST}/BuildStandardControlFile");
+
   &COPYFILES($src,$DEST,$TOP);
   my $XDISP = $ENV{DISPLAY};
   my $bSign = ($XDISP =~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/);

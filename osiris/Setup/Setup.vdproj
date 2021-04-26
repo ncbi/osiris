@@ -1557,6 +1557,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9462839D85864AB09B6E5657A78E315D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_94B23C0D5AAB4319B3D0AB243F851628"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2706,7 +2712,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Osiris-2.16-Beta-7.msi"
+        "OutputFilename" = "8:Release\\Osiris-2.16-Beta-8.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -7888,6 +7894,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9462839D85864AB09B6E5657A78E315D"
+            {
+            "SourcePath" = "8:..\\BuildStandardControlFile\\Release\\BuildStandardControlFile.exe"
+            "TargetName" = "8:BuildStandardControlFile.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_4D27D07B50C145CAA0410E0B3E99E508"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94B23C0D5AAB4319B3D0AB243F851628"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\IDNO250\\IDNO250_LabSettings.xml"
@@ -12725,15 +12751,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
-        "ProductCode" = "8:{E6E9DA44-8C7A-48D5-B068-5F4BD287A1B2}"
-        "PackageCode" = "8:{414447F1-A422-4A7A-9268-F4C48BD374C2}"
+        "ProductCode" = "8:{79394B14-3264-4FAF-9BB0-7EEE5347BBBA}"
+        "PackageCode" = "8:{9C88E0A2-D70A-41BF-B7FF-1EC8F1D86441}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.16.0007"
+        "ProductVersion" = "8:2.16.0008"
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"

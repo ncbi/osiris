@@ -53,7 +53,7 @@ LocusNames LadderInputFile::StandardNames;
 
 
 LadderInputFile :: LadderInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mNumberOfDyes (0), mYLinkedDefault (false),
-mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mVersion ("2.7"), 
+mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap(0), mVersion ("2.7"),
 mGenerateILSFamilies (false) {
 
 	mInputLinesIterator = new RGDListIterator (mInputLines);
