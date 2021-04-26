@@ -10,7 +10,9 @@
 #include "RGTextOutput.h"
 #include "rgdirectory.h"
 #include <iostream>
+#ifdef _WINDOWS
 #include <tchar.h>
+#endif
 
 using namespace std;
 
