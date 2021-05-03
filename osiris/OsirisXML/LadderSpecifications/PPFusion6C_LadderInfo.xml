@@ -8,6 +8,8 @@
       <LS>
         <LSName>Promega-ILS-WEN-500</LSName>
         <LSName>Promega-ILS-WEN-80-500</LSName>
+        <LSName>Promega-ILS-WEN-compact-500</LSName>
+        <LSName>Promega-ILS-WEN-compact-80-500</LSName>
         <ChannelNo>6</ChannelNo>
       </LS>
       <FileNameSuffix>PPFusion6C</FileNameSuffix>
