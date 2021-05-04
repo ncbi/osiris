@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 rel. 2 (http://www.altova.com) by rmgoor (NCBI/NLM/NIH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1">
+	<xs:element name="Dyes">
+		<xs:annotation>
+			<xs:documentation>Collection of dyes and colors</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Dye"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Dye">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Color"/>
+				<xs:element ref="Names"/>
+				<xs:element ref="analyzed">
+					<xs:annotation>
+						<xs:documentation>RGB(...,...,...)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="raw">
+					<xs:annotation>
+						<xs:documentation>RGB(...,...,...)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ladder">
+					<xs:annotation>
+						<xs:documentation>RGB(...,...,...)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Color"/>
+	<xs:element name="Names">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Name"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Name"/>
+	<xs:element name="analyzed"/>
+	<xs:element name="raw"/>
+	<xs:element name="ladder"/>
+</xs:schema>
