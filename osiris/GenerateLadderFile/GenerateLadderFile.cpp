@@ -204,7 +204,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 //	success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile (configurationToolsDirectory + "/StandardPositiveControl/StandardPositiveControlList.txt");
 
 	RGString configDirectoryName = userSiteDirectory + "/Config";
-	RGString ladderDirectoryName = configDirectoryName + "/LadderSpecificatons";
+	RGString ladderDirectoryName = configDirectoryName + "/LadderSpecifications";
 	RGString volumeDirectoryName = configDirectoryName + "/Volumes";
 
 	int config = RGDirectory::FileOrDirectoryExists (configDirectoryName);
