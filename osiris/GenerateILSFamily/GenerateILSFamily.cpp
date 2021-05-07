@@ -108,19 +108,25 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		if (!config) {
 
-			cout << "Could not make directory with relative path:  ../Config" << endl;
+			cout << "Could not make directory with path:  " << configDirectoryName << endl;
 			cout << "Exiting" << endl;
 			return -10;
 		}
+
+		else
+			cout << "Created directory with path:  " << configDirectoryName << endl;
 
 		config = RGDirectory::MakeDirectory (ladderSpecsDirectoryName);
 
 		if (!config) {
 
-			cout << "Could not make directory with relative path:  ../Config/LadderSpecifications" << endl;
+			cout << "Could not make directory with path:  " << ladderSpecsDirectoryName << endl;
 			cout << "Exiting" << endl;
 			return -20;
 		}
+
+		else
+			cout << "Created directory with path:  " << ladderSpecsDirectoryName << endl;
 	}
 
 	else if (!RGDirectory::FileOrDirectoryExists (ladderSpecsDirectoryName)) {
@@ -129,10 +135,13 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 		if (!config) {
 
-			cout << "Could not make directory with relative path:  ../Config/LadderSpecifications" << endl;
+			cout << "Could not make directory with path:  " << ladderSpecsDirectoryName << endl;
 			cout << "Exiting" << endl;
 			return -20;
 		}
+
+		else
+			cout << "Created directory with path:  " << ladderSpecsDirectoryName << endl;
 	}
 
 	RGTextOutput outputFile (ilsFamilyFileName);

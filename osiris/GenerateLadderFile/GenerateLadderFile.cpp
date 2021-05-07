@@ -220,9 +220,12 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			return -10;
 		}
 
+		else
+			cout << "Created directory with path:  " << configDirectoryName << endl;
+
 	}
 
-	config = RGDirectory::FileOrDirectoryExists (configDirectoryName);
+	config = RGDirectory::FileOrDirectoryExists (ladderDirectoryName);
 
 	if (!config) {
 
@@ -234,6 +237,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			cout << "Exiting" << endl;
 			return -20;
 		}
+
+		else
+			cout << "Created directory with path:  " << ladderDirectoryName << endl;
 	}
 
 	config = RGDirectory::FileOrDirectoryExists (volumeDirectoryName);
@@ -248,6 +254,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			cout << "Exiting" << endl;
 			return -20;
 		}
+
+		else
+			cout << "Created directory with path:  " << volumeDirectoryName << endl;
 	}
 
 //	RGString ladderDirectory = userSiteDirectory + "/Config/LadderSpecifications";

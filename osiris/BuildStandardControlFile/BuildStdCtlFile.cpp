@@ -60,9 +60,12 @@ int main(int argc, char** argv) {
 			return -10;
 		}
 
+		else
+			cout << "Created directory with path:  " << configDirectoryName << endl;
+
 	}
 
-	config = RGDirectory::FileOrDirectoryExists (configDirectoryName);
+	config = RGDirectory::FileOrDirectoryExists (ladderDirectoryName);
 
 	if (!config) {
 
@@ -74,6 +77,8 @@ int main(int argc, char** argv) {
 			cout << "Exiting" << endl;
 			return -20;
 		}
+		else
+			cout << "Created directory with path:  " << ladderDirectoryName << endl;
 	}
 
 	config = RGDirectory::FileOrDirectoryExists (volumeDirectoryName);
@@ -88,9 +93,10 @@ int main(int argc, char** argv) {
 			cout << "Exiting" << endl;
 			return -20;
 		}
+
+		else
+			cout << "Created directory with path:  " << volumeDirectoryName << endl;
 	}
-
-
 
 	RGString InputFileName = positiveControlsConfigDirectory + "/StandardPositiveControlList.txt";
 	RGString OutputFileName = ladderDirectoryName + "/StandardPositiveControls.xml";
