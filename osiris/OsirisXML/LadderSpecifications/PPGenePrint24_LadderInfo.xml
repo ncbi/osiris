@@ -9,7 +9,9 @@
         <LSBases>
           <ILSName>PROMEGA-ILS-WEN-500</ILSName>
           <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
+          <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
         </LSBases>
+
         <ChannelNo>5</ChannelNo>
       </ILS>
       <FileNameSuffix>PPGenePrint24</FileNameSuffix>
@@ -47,7 +49,7 @@
           <DyeName>WEN</DyeName>
         </Channel>
       </FsaChannelMap>
-			<Locus>
+      <Locus>
         <Name>AMEL</Name>
         <Channel>1</Channel>
         <NoExtension>true</NoExtension>
@@ -64,6 +66,11 @@
             <MinGrid>80.31</MinGrid>
             <MaxGrid>90.46</MaxGrid>
           </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>74.92</MinGrid>
+            <MaxGrid>91.22</MaxGrid>
+          </Region>
         </SearchRegions>
         <CoreRepeatNumber>6</CoreRepeatNumber>
         <LadderAlleles>
@@ -79,7 +86,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D3S1358</Name>
         <Channel>1</Channel>
         <MinBP>91</MinBP>
@@ -94,6 +101,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>94.82</MinGrid>
             <MaxGrid>148.51</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>92.68</MinGrid>
+            <MaxGrid>146.77</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -159,7 +171,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D1S1656</Name>
         <Channel>1</Channel>
         <MinBP>153</MinBP>
@@ -174,6 +186,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>157.12</MinGrid>
             <MaxGrid>210.62</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>155.51</MinGrid>
+            <MaxGrid>209.18</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -269,7 +286,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D2S441</Name>
         <Channel>1</Channel>
         <MinBP>209</MinBP>
@@ -284,6 +301,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>208.77</MinGrid>
             <MaxGrid>251.83</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>207.21</MinGrid>
+            <MaxGrid>250.41</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -344,7 +366,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D10S1248</Name>
         <Channel>1</Channel>
         <MinBP>250</MinBP>
@@ -359,6 +381,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>249.59</MinGrid>
             <MaxGrid>298.86</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>248.18</MinGrid>
+            <MaxGrid>297.62</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -424,7 +451,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D13S317</Name>
         <Channel>1</Channel>
         <MinBP>297</MinBP>
@@ -439,6 +466,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>297.35</MinGrid>
             <MaxGrid>351.67</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>295.95</MinGrid>
+            <MaxGrid>350.46</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -509,7 +541,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>Penta E</Name>
         <Channel>1</Channel>
         <MinBP>361</MinBP>
@@ -524,6 +556,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>364.97</MinGrid>
             <MaxGrid>464.06</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>363.63</MinGrid>
+            <MaxGrid>463.44</MaxGrid>
           </Region>
         </SearchRegions>
         <CoreRepeatNumber>5</CoreRepeatNumber>
@@ -630,7 +667,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D16S539</Name>
         <Channel>2</Channel>
         <MinBP>73</MinBP>
@@ -645,6 +682,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>72.22</MinGrid>
             <MaxGrid>131.35</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>69.83</MinGrid>
+            <MaxGrid>129.75</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -715,7 +757,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D18S51</Name>
         <Channel>2</Channel>
         <MinBP>129</MinBP>
@@ -730,6 +772,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>129.65</MinGrid>
             <MaxGrid>219.21</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>127.88</MinGrid>
+            <MaxGrid>217.74</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -850,7 +897,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D2S1338</Name>
         <Channel>2</Channel>
         <MinBP>220</MinBP>
@@ -865,6 +912,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>220.23</MinGrid>
             <MaxGrid>299.48</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>218.68</MinGrid>
+            <MaxGrid>298.17</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -955,7 +1007,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>CSF1PO</Name>
         <Channel>2</Channel>
         <MinBP>314</MinBP>
@@ -970,6 +1022,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>314.05</MinGrid>
             <MaxGrid>364.41</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>312.84</MinGrid>
+            <MaxGrid>363.34</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1035,7 +1092,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>Penta D</Name>
         <Channel>2</Channel>
         <MinBP>377</MinBP>
@@ -1050,6 +1107,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>376.99</MinGrid>
             <MaxGrid>460.65</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>375.94</MinGrid>
+            <MaxGrid>460.03</MaxGrid>
           </Region>
         </SearchRegions>
         <CoreRepeatNumber>5</CoreRepeatNumber>
@@ -1131,7 +1193,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>TH01</Name>
         <Channel>3</Channel>
         <MinBP>65</MinBP>
@@ -1146,6 +1208,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>64.44</MinGrid>
             <MaxGrid>118.41</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>61.6</MinGrid>
+            <MaxGrid>116.55</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1217,7 +1284,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-	  <Locus>
+      <Locus>
         <Name>vWA</Name>
         <Channel>3</Channel>
         <MinBP>126</MinBP>
@@ -1232,6 +1299,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>124.93</MinGrid>
             <MaxGrid>188.32</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>123.5</MinGrid>
+            <MaxGrid>187.19</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1312,7 +1384,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D21S11</Name>
         <Channel>3</Channel>
         <MinBP>202</MinBP>
@@ -1327,6 +1399,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>202.62</MinGrid>
             <MaxGrid>265.05</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>201.49</MinGrid>
+            <MaxGrid>264.11</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1457,7 +1534,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D7S820</Name>
         <Channel>3</Channel>
         <MinBP>270</MinBP>
@@ -1472,6 +1549,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>269.56</MinGrid>
             <MaxGrid>320.14</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>268.37</MinGrid>
+            <MaxGrid>319.11</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1537,7 +1619,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D5S818</Name>
         <Channel>3</Channel>
         <MinBP>319</MinBP>
@@ -1552,6 +1634,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>321.73</MinGrid>
             <MaxGrid>375.98</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>320.79</MinGrid>
+            <MaxGrid>375.19</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1622,7 +1709,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>TPOX</Name>
         <Channel>3</Channel>
         <MinBP>394</MinBP>
@@ -1637,6 +1724,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>393.08</MinGrid>
             <MaxGrid>447.44</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>392.02</MinGrid>
+            <MaxGrid>446.71</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1707,7 +1799,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>DYS391</Name>
         <Channel>3</Channel>
         <MinBP>447</MinBP>
@@ -1722,6 +1814,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>445.84</MinGrid>
             <MaxGrid>496.12</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>445.35</MinGrid>
+            <MaxGrid>495.71</MaxGrid>
           </Region>
         </SearchRegions>
         <YLinked>true</YLinked>
@@ -1789,7 +1886,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D8S1179</Name>
         <Channel>4</Channel>
         <MinBP>68</MinBP>
@@ -1804,6 +1901,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>71.21</MinGrid>
             <MaxGrid>130.65</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>68.74</MinGrid>
+            <MaxGrid>128.96</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1874,7 +1976,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D12S391</Name>
         <Channel>4</Channel>
         <MinBP>126</MinBP>
@@ -1889,6 +1991,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>134.58</MinGrid>
             <MaxGrid>194.31</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>133.08</MinGrid>
+            <MaxGrid>193.04</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -1974,7 +2081,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D19S433</Name>
         <Channel>4</Channel>
         <MinBP>193</MinBP>
@@ -1989,6 +2096,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>192.14</MinGrid>
             <MaxGrid>249.51</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>190.85</MinGrid>
+            <MaxGrid>248.42</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -2094,7 +2206,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>FGA</Name>
         <Channel>4</Channel>
         <MinBP>261</MinBP>
@@ -2109,6 +2221,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>265.27</MinGrid>
             <MaxGrid>411.39</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>264.34</MinGrid>
+            <MaxGrid>411.07</MaxGrid>
           </Region>
         </SearchRegions>
         <LadderAlleles>
@@ -2289,7 +2406,7 @@
           </Allele>
         </LadderAlleles>
       </Locus>
-			<Locus>
+      <Locus>
         <Name>D22S1045</Name>
         <Channel>4</Channel>
         <MinBP>426</MinBP>
@@ -2304,6 +2421,11 @@
             <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
             <MinGrid>429.33</MinGrid>
             <MaxGrid>473.23</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>428.53</MinGrid>
+            <MaxGrid>472.67</MaxGrid>
           </Region>
         </SearchRegions>
         <CoreRepeatNumber>3</CoreRepeatNumber>
