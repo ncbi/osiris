@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <KitData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MarkerSet.xsd">
-  <Version>2.0</Version>
-  <Kits>
+  <Version>2.7</Version>
+  	<Kits>
     <Set>
       <Name>PowerPlex Fusion 6C</Name>
       <NChannels>6</NChannels>
-      <LS>
-        <LSName>Promega-ILS-WEN-500</LSName>
-        <LSName>Promega-ILS-WEN-80-500</LSName>
-        <LSName>Promega-ILS-WEN-compact-500</LSName>
-        <LSName>Promega-ILS-WEN-compact-80-500</LSName>
+      <ILS>
+        <LSBases>
+          <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+          <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+          <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+        </LSBases>
         <ChannelNo>6</ChannelNo>
-      </LS>
+      </ILS>
       <FileNameSuffix>PPFusion6C</FileNameSuffix>
       <GenotypeSuffix>PPFusion6C</GenotypeSuffix>
       <DirectorySearchString>PPFusion6C</DirectorySearchString>
@@ -57,953 +58,962 @@
         <Name>AMEL</Name>
         <Channel>1</Channel>
         <NoExtension>true</NoExtension>
-        <MinBP>89</MinBP>
-        <MaxBP>95</MaxBP>
-        <MinGridLSBasePair>76.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>92.0</MaxGridLSBasePair>
+        <MinBP>82</MinBP>
+        <MaxBP>88</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>76.0</MinGrid>
+            <MaxGrid>92.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>76.5</MinGrid>
+            <MaxGrid>92.68</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>85.1</MinGrid>
+            <MaxGrid>97.0</MaxGrid>
+          </Region>
+        </SearchRegions>
+        <CoreRepeatNumber>6</CoreRepeatNumber>
         <LadderAlleles>
           <Allele>
             <Name>1</Name>
-            <CurveNo>1</CurveNo>
-            <BP>89</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>82</BP>
           </Allele>
           <Allele>
             <Name>2</Name>
-            <CurveNo>2</CurveNo>
-            <BP>95</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>88</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D3S1358</Name>
         <Channel>1</Channel>
-        <MinBP>99</MinBP>
-        <MaxBP>151</MaxBP>
-        <MinGridLSBasePair>95.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>148.0</MaxGridLSBasePair>
+        <MinBP>94</MinBP>
+        <MaxBP>146</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>95.0</MinGrid>
+            <MaxGrid>148.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>94.82</MinGrid>
+            <MaxGrid>147.83</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>101.4</MinGrid>
+            <MaxGrid>153.9</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>9</Name>
-            <CurveNo>1</CurveNo>
-            <BP>103</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>98</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>2</CurveNo>
-            <BP>107</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>102</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>3</CurveNo>
-            <BP>111</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>106</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>4</CurveNo>
-            <BP>115</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>110</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>5</CurveNo>
-            <BP>119</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>114</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>6</CurveNo>
-            <BP>123</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>118</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>7</CurveNo>
-            <BP>127</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>122</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>8</CurveNo>
-            <BP>131</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>126</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>9</CurveNo>
-            <BP>135</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>130</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>10</CurveNo>
-            <BP>139</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>134</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>11</CurveNo>
-            <BP>143</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>138</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>12</CurveNo>
-            <BP>147</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>142</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D1S1656</Name>
         <Channel>1</Channel>
-        <MinBP>156</MinBP>
-        <MaxBP>209</MaxBP>
-        <MinGridLSBasePair>155.5</MinGridLSBasePair>
-        <MaxGridLSBasePair>209.3</MaxGridLSBasePair>
+        <MinBP>154</MinBP>
+        <MaxBP>206</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>155.5</MinGrid>
+            <MaxGrid>209.3</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>155.44</MinGrid>
+            <MaxGrid>209.37</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>161.3</MinGrid>
+            <MaxGrid>214.4</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>9</Name>
-            <CurveNo>1</CurveNo>
-            <BP>161</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>158</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>2</CurveNo>
-            <BP>165</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>162</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>3</CurveNo>
-            <BP>169</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>166</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>4</CurveNo>
-            <BP>173</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>170</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>5</CurveNo>
-            <BP>177</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>174</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>6</CurveNo>
-            <BP>181</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>178</BP>
           </Allele>
           <Allele>
             <Name>14.3</Name>
-            <CurveNo>7</CurveNo>
-            <BP>184</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>181</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>8</CurveNo>
-            <BP>185</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>182</BP>
           </Allele>
           <Allele>
             <Name>15.3</Name>
-            <CurveNo>9</CurveNo>
-            <BP>188</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>185</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>10</CurveNo>
-            <BP>189</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>186</BP>
           </Allele>
           <Allele>
             <Name>16.3</Name>
-            <CurveNo>11</CurveNo>
-            <BP>192</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>189</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>12</CurveNo>
-            <BP>193</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>190</BP>
           </Allele>
           <Allele>
             <Name>17.3</Name>
-            <CurveNo>13</CurveNo>
-            <BP>196</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>193</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>14</CurveNo>
-            <BP>197</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>194</BP>
           </Allele>
           <Allele>
             <Name>18.3</Name>
-            <CurveNo>15</CurveNo>
-            <BP>200</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>197</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>16</CurveNo>
-            <BP>201</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>198</BP>
           </Allele>
           <Allele>
             <Name>19.3</Name>
-            <CurveNo>17</CurveNo>
-            <BP>204</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>201</BP>
           </Allele>
           <Allele>
             <Name>20.3</Name>
-            <CurveNo>18</CurveNo>
-            <BP>208</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>95</CurveNo>
+            <BP>205</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D2S441</Name>
         <Channel>1</Channel>
-        <MinBP>214</MinBP>
-        <MaxBP>250</MaxBP>
-        <MinGridLSBasePair>210.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>253.0</MaxGridLSBasePair>
+        <MinBP>213</MinBP>
+        <MaxBP>249</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>210.0</MinGrid>
+            <MaxGrid>253.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>209.83</MinGrid>
+            <MaxGrid>252.82</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>214.5</MinGrid>
+            <MaxGrid>257.4</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>8</Name>
-            <CurveNo>3</CurveNo>
-            <BP>214</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>213</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>4</CurveNo>
-            <BP>218</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>217</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>5</CurveNo>
-            <BP>222</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>221</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>6</CurveNo>
-            <BP>226</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>225</BP>
           </Allele>
           <Allele>
             <Name>11.3</Name>
-            <CurveNo>7</CurveNo>
-            <BP>229</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>228</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>8</CurveNo>
-            <BP>230</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>229</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>9</CurveNo>
-            <BP>234</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>233</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>10</CurveNo>
-            <BP>238</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>237</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>11</CurveNo>
-            <BP>242</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>241</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>12</CurveNo>
-            <BP>246</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>245</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>13</CurveNo>
-            <BP>250</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>249</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D10S1248</Name>
         <Channel>1</Channel>
-        <MinBP>256</MinBP>
-        <MaxBP>300</MaxBP>
-        <MinGridLSBasePair>253.5</MinGridLSBasePair>
-        <MaxGridLSBasePair>303.0</MaxGridLSBasePair>
+        <MinBP>257</MinBP>
+        <MaxBP>301</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>253.5</MinGrid>
+            <MaxGrid>303.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>253.56</MinGrid>
+            <MaxGrid>303.38</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>257.0</MinGrid>
+            <MaxGrid>305.9</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>8</Name>
-            <CurveNo>2</CurveNo>
-            <BP>256</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>257</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>3</CurveNo>
-            <BP>260</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>261</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>4</CurveNo>
-            <BP>264</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>265</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>5</CurveNo>
-            <BP>268</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>269</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>6</CurveNo>
-            <BP>272</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>273</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>7</CurveNo>
-            <BP>276</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>277</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>8</CurveNo>
-            <BP>280</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>281</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>9</CurveNo>
-            <BP>284</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>285</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>10</CurveNo>
-            <BP>288</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>289</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>11</CurveNo>
-            <BP>292</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>293</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>12</CurveNo>
-            <BP>296</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>297</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>13</CurveNo>
-            <BP>300</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>301</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D13S317</Name>
         <Channel>1</Channel>
-        <MinBP>302</MinBP>
-        <MaxBP>350</MaxBP>
-        <MinGridLSBasePair>303.1</MinGridLSBasePair>
-        <MaxGridLSBasePair>358.0</MaxGridLSBasePair>
+        <MinBP>306</MinBP>
+        <MaxBP>354</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>303.1</MinGrid>
+            <MaxGrid>358.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>303.11</MinGrid>
+            <MaxGrid>357.89</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>306.7</MinGrid>
+            <MaxGrid>360.8</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>5</Name>
-            <CurveNo>8</CurveNo>
-            <BP>302</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>306</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>9</CurveNo>
-            <BP>306</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>310</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>10</CurveNo>
-            <BP>310</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>314</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>11</CurveNo>
-            <BP>314</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>318</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>12</CurveNo>
-            <BP>318</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>322</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>13</CurveNo>
-            <BP>322</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>326</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>14</CurveNo>
-            <BP>326</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>330</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>15</CurveNo>
-            <BP>330</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>334</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>16</CurveNo>
-            <BP>334</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>338</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>17</CurveNo>
-            <BP>338</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>342</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>18</CurveNo>
-            <BP>342</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>346</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>19</CurveNo>
-            <BP>346</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>350</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>20</CurveNo>
-            <BP>350</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>354</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>Penta E</Name>
         <Channel>1</Channel>
-        <MinBP>366</MinBP>
-        <MaxBP>471</MaxBP>
-        <MinGridLSBasePair>365.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>474.3</MaxGridLSBasePair>
+        <MinBP>364</MinBP>
+        <MaxBP>474</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>365.0</MinGrid>
+            <MaxGrid>470.3</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>364.98</MinGrid>
+            <MaxGrid>470.36</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>367.7</MinGrid>
+            <MaxGrid>472.9</MaxGrid>
+          </Region>
+        </SearchRegions>
         <CoreRepeatNumber>5</CoreRepeatNumber>
         <LadderAlleles>
           <Allele>
             <Name>5</Name>
-            <CurveNo>36</CurveNo>
-            <BP>371</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>369</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>37</CurveNo>
-            <BP>376</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>374</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>38</CurveNo>
-            <BP>381</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>379</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>39</CurveNo>
-            <BP>386</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>384</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>40</CurveNo>
-            <BP>391</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>389</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>41</CurveNo>
-            <BP>396</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>394</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>42</CurveNo>
-            <BP>401</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>399</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>43</CurveNo>
-            <BP>406</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>404</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>44</CurveNo>
-            <BP>411</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>409</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>45</CurveNo>
-            <BP>416</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>414</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>46</CurveNo>
-            <BP>421</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>419</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>47</CurveNo>
-            <BP>426</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>424</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>48</CurveNo>
-            <BP>431</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>429</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>49</CurveNo>
-            <BP>436</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>434</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>50</CurveNo>
-            <BP>441</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>439</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>51</CurveNo>
-            <BP>446</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>444</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>52</CurveNo>
-            <BP>451</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>449</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>53</CurveNo>
-            <BP>456</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>95</CurveNo>
+            <BP>454</BP>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>54</CurveNo>
-            <BP>461</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>100</CurveNo>
+            <BP>459</BP>
           </Allele>
           <Allele>
             <Name>24</Name>
-            <CurveNo>55</CurveNo>
-            <BP>466</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>105</CurveNo>
+            <BP>464</BP>
           </Allele>
           <Allele>
             <Name>25</Name>
-            <CurveNo>56</CurveNo>
-            <BP>471</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>110</CurveNo>
+            <BP>469</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D16S539</Name>
         <Channel>2</Channel>
-        <MinBP>84</MinBP>
-        <MaxBP>132</MaxBP>
-        <MinGridLSBasePair>71.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>129.8</MaxGridLSBasePair>
+        <MinBP>76</MinBP>
+        <MaxBP>124</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>71.0</MinGrid>
+            <MaxGrid>129.8</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>73.4</MinGrid>
+            <MaxGrid>131.38</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>79.6</MinGrid>
+            <MaxGrid>137.9</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>4</Name>
-            <CurveNo>6</CurveNo>
-            <BP>84</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>76</BP>
           </Allele>
           <Allele>
             <Name>5</Name>
-            <CurveNo>7</CurveNo>
-            <BP>88</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>80</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>8</CurveNo>
-            <BP>92</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>84</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>9</CurveNo>
-            <BP>96</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>88</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>10</CurveNo>
-            <BP>100</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>92</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>11</CurveNo>
-            <BP>104</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>96</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>12</CurveNo>
-            <BP>108</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>100</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>13</CurveNo>
-            <BP>112</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>104</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>14</CurveNo>
-            <BP>116</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>108</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>15</CurveNo>
-            <BP>120</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>112</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>16</CurveNo>
-            <BP>124</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>116</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>17</CurveNo>
-            <BP>128</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>120</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>18</CurveNo>
-            <BP>132</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>124</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D18S51</Name>
         <Channel>2</Channel>
-        <MinBP>134</MinBP>
-        <MaxBP>214</MaxBP>
-        <MinGridLSBasePair>128.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>217.7</MaxGridLSBasePair>
+        <MinBP>132</MinBP>
+        <MaxBP>212</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>128.0</MinGrid>
+            <MaxGrid>217.7</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>129.4</MinGrid>
+            <MaxGrid>217.77</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>136.0</MinGrid>
+            <MaxGrid>224.47</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>7</Name>
-            <CurveNo>35</CurveNo>
-            <BP>134</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>132</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>36</CurveNo>
-            <BP>138</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>136</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>37</CurveNo>
-            <BP>142</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>140</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>38</CurveNo>
-            <BP>146</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>144</BP>
           </Allele>
           <Allele>
             <Name>10.2</Name>
-            <CurveNo>39</CurveNo>
-            <BP>148</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>146</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>40</CurveNo>
-            <BP>150</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>148</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>41</CurveNo>
-            <BP>154</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>152</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>42</CurveNo>
-            <BP>158</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>156</BP>
           </Allele>
           <Allele>
             <Name>13.2</Name>
-            <CurveNo>43</CurveNo>
-            <BP>160</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>158</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>44</CurveNo>
-            <BP>162</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>160</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>46</CurveNo>
-            <BP>166</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>164</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>47</CurveNo>
-            <BP>170</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>168</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>48</CurveNo>
-            <BP>174</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>172</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>49</CurveNo>
-            <BP>178</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>176</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>50</CurveNo>
-            <BP>182</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>180</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>51</CurveNo>
-            <BP>186</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>184</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>52</CurveNo>
-            <BP>190</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>188</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>53</CurveNo>
-            <BP>194</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>95</CurveNo>
+            <BP>192</BP>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>54</CurveNo>
-            <BP>198</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>100</CurveNo>
+            <BP>196</BP>
           </Allele>
           <Allele>
             <Name>24</Name>
-            <CurveNo>55</CurveNo>
-            <BP>202</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>105</CurveNo>
+            <BP>200</BP>
           </Allele>
           <Allele>
             <Name>25</Name>
-            <CurveNo>56</CurveNo>
-            <BP>206</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>110</CurveNo>
+            <BP>204</BP>
           </Allele>
           <Allele>
             <Name>26</Name>
-            <CurveNo>57</CurveNo>
-            <BP>210</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>115</CurveNo>
+            <BP>208</BP>
           </Allele>
           <Allele>
             <Name>27</Name>
-            <CurveNo>58</CurveNo>
-            <BP>214</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>120</CurveNo>
+            <BP>212</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D2S1338</Name>
         <Channel>2</Channel>
-        <MinBP>224</MinBP>
-        <MaxBP>300</MaxBP>
-        <MinGridLSBasePair>219.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>299.0</MaxGridLSBasePair>
+        <MinBP>223</MinBP>
+        <MaxBP>299</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>219.0</MinGrid>
+            <MaxGrid>299.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>219.97</MinGrid>
+            <MaxGrid>298.87</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>224.4</MinGrid>
+            <MaxGrid>303.0</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>10</Name>
-            <CurveNo>-3</CurveNo>
-            <BP>224</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>223</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>-2</CurveNo>
-            <BP>232</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>231</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>0</CurveNo>
-            <BP>240</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>239</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>1</CurveNo>
-            <BP>244</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>243</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>2</CurveNo>
-            <BP>248</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>247</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>3</CurveNo>
-            <BP>252</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>251</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>4</CurveNo>
-            <BP>256</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>255</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>5</CurveNo>
-            <BP>260</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>259</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>6</CurveNo>
-            <BP>264</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>263</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>7</CurveNo>
-            <BP>268</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>267</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>8</CurveNo>
-            <BP>272</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>271</BP>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>9</CurveNo>
-            <BP>276</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>275</BP>
           </Allele>
           <Allele>
             <Name>24</Name>
-            <CurveNo>10</CurveNo>
-            <BP>280</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>279</BP>
           </Allele>
           <Allele>
             <Name>25</Name>
-            <CurveNo>11</CurveNo>
-            <BP>284</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>283</BP>
           </Allele>
           <Allele>
             <Name>26</Name>
-            <CurveNo>12</CurveNo>
-            <BP>288</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>287</BP>
           </Allele>
           <Allele>
             <Name>27</Name>
-            <CurveNo>13</CurveNo>
-            <BP>292</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>291</BP>
           </Allele>
           <Allele>
             <Name>28</Name>
-            <CurveNo>14</CurveNo>
-            <BP>296</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>295</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
@@ -1012,1724 +1022,1687 @@
         <Channel>2</Channel>
         <MinBP>318</MinBP>
         <MaxBP>362</MaxBP>
-        <MinGridLSBasePair>314.7</MinGridLSBasePair>
-        <MaxGridLSBasePair>365.4</MaxGridLSBasePair>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>314.7</MinGrid>
+            <MaxGrid>365.4</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>314.74</MinGrid>
+            <MaxGrid>365.39</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>317.8</MinGrid>
+            <MaxGrid>368.0</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>5</Name>
-            <CurveNo>17</CurveNo>
+            <CurveNo>10</CurveNo>
             <BP>318</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>18</CurveNo>
+            <CurveNo>15</CurveNo>
             <BP>322</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>19</CurveNo>
+            <CurveNo>20</CurveNo>
             <BP>326</BP>
-            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>20</CurveNo>
+            <CurveNo>25</CurveNo>
             <BP>330</BP>
-            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>21</CurveNo>
+            <CurveNo>30</CurveNo>
             <BP>334</BP>
-            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>22</CurveNo>
+            <CurveNo>35</CurveNo>
             <BP>338</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>23</CurveNo>
+            <CurveNo>40</CurveNo>
             <BP>342</BP>
-            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>24</CurveNo>
+            <CurveNo>45</CurveNo>
             <BP>346</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>25</CurveNo>
+            <CurveNo>50</CurveNo>
             <BP>350</BP>
-            <RelativeHeight>M</RelativeHeight>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>26</CurveNo>
+            <CurveNo>55</CurveNo>
             <BP>354</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>27</CurveNo>
+            <CurveNo>60</CurveNo>
             <BP>358</BP>
-            <RelativeHeight>H</RelativeHeight>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>28</CurveNo>
+            <CurveNo>65</CurveNo>
             <BP>362</BP>
-            <RelativeHeight>H</RelativeHeight>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>Penta D</Name>
         <Channel>2</Channel>
-        <MinBP>377</MinBP>
-        <MaxBP>455</MaxBP>
-        <MinGridLSBasePair>375.1</MinGridLSBasePair>
-        <MaxGridLSBasePair>457.4</MaxGridLSBasePair>
+        <MinBP>379</MinBP>
+        <MaxBP>457</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>375.1</MinGrid>
+            <MaxGrid>457.4</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>375.13</MinGrid>
+            <MaxGrid>457.43</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>380.6</MinGrid>
+            <MaxGrid>463.8</MaxGrid>
+          </Region>
+        </SearchRegions>
         <CoreRepeatNumber>5</CoreRepeatNumber>
         <LadderAlleles>
           <Allele>
             <Name>2.2</Name>
-            <CurveNo>36</CurveNo>
-            <BP>377</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>379</BP>
           </Allele>
           <Allele>
             <Name>3.2</Name>
-            <CurveNo>37</CurveNo>
-            <BP>382</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>384</BP>
           </Allele>
           <Allele>
             <Name>5</Name>
-            <CurveNo>38</CurveNo>
-            <BP>390</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>392</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>39</CurveNo>
-            <BP>395</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>397</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>40</CurveNo>
-            <BP>400</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>402</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>41</CurveNo>
-            <BP>405</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>407</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>42</CurveNo>
-            <BP>410</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>412</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>43</CurveNo>
-            <BP>415</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>417</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>44</CurveNo>
-            <BP>420</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>422</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>45</CurveNo>
-            <BP>425</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>427</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>46</CurveNo>
-            <BP>430</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>432</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>47</CurveNo>
-            <BP>435</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>437</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>48</CurveNo>
-            <BP>440</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>442</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>49</CurveNo>
-            <BP>445</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>447</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>50</CurveNo>
-            <BP>450</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>452</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>TH01</Name>
         <Channel>3</Channel>
-        <MinBP>72</MinBP>
-        <MaxBP>115</MaxBP>
-        <MinGridLSBasePair>61.1</MinGridLSBasePair>
-        <MaxGridLSBasePair>119.0</MaxGridLSBasePair>
+        <MinBP>67</MinBP>
+        <MaxBP>110</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>61.1</MinGrid>
+            <MaxGrid>119.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>64.11</MinGrid>
+            <MaxGrid>116.41</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>70.6</MinGrid>
+            <MaxGrid>122.7</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>3</Name>
-            <CurveNo>1</CurveNo>
-            <BP>72</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>67</BP>
           </Allele>
           <Allele>
             <Name>4</Name>
-            <CurveNo>2</CurveNo>
-            <BP>76</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>71</BP>
           </Allele>
           <Allele>
             <Name>5</Name>
-            <CurveNo>3</CurveNo>
-            <BP>80</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>75</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>4</CurveNo>
-            <BP>84</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>79</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>5</CurveNo>
-            <BP>88</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>83</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>6</CurveNo>
-            <BP>92</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>87</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>7</CurveNo>
-            <BP>96</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>91</BP>
           </Allele>
           <Allele>
             <Name>9.3</Name>
-            <CurveNo>8</CurveNo>
-            <BP>99</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>94</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>9</CurveNo>
-            <BP>100</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>95</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>10</CurveNo>
-            <BP>104</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>99</BP>
           </Allele>
           <Allele>
             <Name>13.3</Name>
-            <CurveNo>11</CurveNo>
-            <BP>115</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>110</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>vWA</Name>
         <Channel>3</Channel>
-        <MinBP>127</MinBP>
-        <MaxBP>187</MaxBP>
-        <MinGridLSBasePair>122.5</MinGridLSBasePair>
-        <MaxGridLSBasePair>186.3</MaxGridLSBasePair>
+        <MinBP>125</MinBP>
+        <MaxBP>185</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>122.5</MinGrid>
+            <MaxGrid>186.3</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>122.47</MinGrid>
+            <MaxGrid>186.31</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>127.3</MinGrid>
+            <MaxGrid>190.1</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>10</Name>
-            <CurveNo>8</CurveNo>
-            <BP>127</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>125</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>9</CurveNo>
-            <BP>131</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>129</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>10</CurveNo>
-            <BP>135</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>133</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>11</CurveNo>
-            <BP>139</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>137</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>12</CurveNo>
-            <BP>143</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>141</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>13</CurveNo>
-            <BP>147</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>145</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>14</CurveNo>
-            <BP>151</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>149</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>15</CurveNo>
-            <BP>155</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>153</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>16</CurveNo>
-            <BP>159</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>157</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>17</CurveNo>
-            <BP>163</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>161</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>18</CurveNo>
-            <BP>167</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>165</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>19</CurveNo>
-            <BP>171</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>169</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>20</CurveNo>
-            <BP>175</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>173</BP>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>21</CurveNo>
-            <BP>179</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>177</BP>
           </Allele>
           <Allele>
             <Name>24</Name>
-            <CurveNo>22</CurveNo>
-            <BP>183</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>181</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D21S11</Name>
         <Channel>3</Channel>
-        <MinBP>201</MinBP>
-        <MaxBP>263</MaxBP>
-        <MinGridLSBasePair>200.8</MinGridLSBasePair>
-        <MaxGridLSBasePair>264.0</MaxGridLSBasePair>
+        <MinBP>202</MinBP>
+        <MaxBP>264</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>200.8</MinGrid>
+            <MaxGrid>264.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>200.85</MinGrid>
+            <MaxGrid>263.96</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>204.2</MinGrid>
+            <MaxGrid>266.4</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>24</Name>
-            <CurveNo>13</CurveNo>
-            <BP>203</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>204</BP>
           </Allele>
           <Allele>
             <Name>24.2</Name>
-            <CurveNo>14</CurveNo>
-            <BP>205</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>206</BP>
           </Allele>
           <Allele>
             <Name>25</Name>
-            <CurveNo>15</CurveNo>
-            <BP>207</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>208</BP>
           </Allele>
           <Allele>
             <Name>25.2</Name>
-            <CurveNo>16</CurveNo>
-            <BP>209</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>210</BP>
           </Allele>
           <Allele>
             <Name>26</Name>
-            <CurveNo>17</CurveNo>
-            <BP>211</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>212</BP>
           </Allele>
           <Allele>
             <Name>27</Name>
-            <CurveNo>18</CurveNo>
-            <BP>215</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>216</BP>
           </Allele>
           <Allele>
             <Name>28</Name>
-            <CurveNo>19</CurveNo>
-            <BP>219</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>220</BP>
           </Allele>
           <Allele>
             <Name>28.2</Name>
-            <CurveNo>20</CurveNo>
-            <BP>221</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>222</BP>
           </Allele>
           <Allele>
             <Name>29</Name>
-            <CurveNo>21</CurveNo>
-            <BP>223</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>224</BP>
           </Allele>
           <Allele>
             <Name>29.2</Name>
-            <CurveNo>22</CurveNo>
-            <BP>225</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>226</BP>
           </Allele>
           <Allele>
             <Name>30</Name>
-            <CurveNo>23</CurveNo>
-            <BP>227</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>228</BP>
           </Allele>
           <Allele>
             <Name>30.2</Name>
-            <CurveNo>24</CurveNo>
-            <BP>229</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>230</BP>
           </Allele>
           <Allele>
             <Name>31</Name>
-            <CurveNo>25</CurveNo>
-            <BP>231</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>232</BP>
           </Allele>
           <Allele>
             <Name>31.2</Name>
-            <CurveNo>26</CurveNo>
-            <BP>233</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>234</BP>
           </Allele>
           <Allele>
             <Name>32</Name>
-            <CurveNo>27</CurveNo>
-            <BP>235</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>236</BP>
           </Allele>
           <Allele>
             <Name>32.2</Name>
-            <CurveNo>28</CurveNo>
-            <BP>237</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>238</BP>
           </Allele>
           <Allele>
             <Name>33</Name>
-            <CurveNo>29</CurveNo>
-            <BP>239</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>240</BP>
           </Allele>
           <Allele>
             <Name>33.2</Name>
-            <CurveNo>30</CurveNo>
-            <BP>241</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>95</CurveNo>
+            <BP>242</BP>
           </Allele>
           <Allele>
             <Name>34</Name>
-            <CurveNo>31</CurveNo>
-            <BP>243</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>100</CurveNo>
+            <BP>244</BP>
           </Allele>
           <Allele>
             <Name>34.2</Name>
-            <CurveNo>32</CurveNo>
-            <BP>245</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>105</CurveNo>
+            <BP>246</BP>
           </Allele>
           <Allele>
             <Name>35</Name>
-            <CurveNo>33</CurveNo>
-            <BP>247</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>110</CurveNo>
+            <BP>248</BP>
           </Allele>
           <Allele>
             <Name>35.2</Name>
-            <CurveNo>34</CurveNo>
-            <BP>249</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>115</CurveNo>
+            <BP>250</BP>
           </Allele>
           <Allele>
             <Name>36</Name>
-            <CurveNo>35</CurveNo>
-            <BP>251</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>120</CurveNo>
+            <BP>252</BP>
           </Allele>
           <Allele>
             <Name>37</Name>
-            <CurveNo>36</CurveNo>
-            <BP>255</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>125</CurveNo>
+            <BP>256</BP>
           </Allele>
           <Allele>
             <Name>38</Name>
-            <CurveNo>37</CurveNo>
-            <BP>259</BP>
-            <RelativeHeight>ML</RelativeHeight>
+            <CurveNo>130</CurveNo>
+            <BP>260</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D7S820</Name>
         <Channel>3</Channel>
-        <MinBP>269</MinBP>
-        <MaxBP>313</MaxBP>
-        <MinGridLSBasePair>266.7</MinGridLSBasePair>
-        <MaxGridLSBasePair>317.1</MaxGridLSBasePair>
+        <MinBP>270</MinBP>
+        <MaxBP>314</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>266.7</MinGrid>
+            <MaxGrid>317.1</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>266.7</MinGrid>
+            <MaxGrid>317.1</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>271.0</MinGrid>
+            <MaxGrid>321.2</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>5</Name>
-            <CurveNo>18</CurveNo>
-            <BP>269</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>270</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>19</CurveNo>
-            <BP>273</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>274</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
             <CurveNo>20</CurveNo>
-            <BP>277</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <BP>278</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>21</CurveNo>
-            <BP>281</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>282</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>22</CurveNo>
-            <BP>285</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>286</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>23</CurveNo>
-            <BP>289</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>290</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>24</CurveNo>
-            <BP>293</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>294</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>25</CurveNo>
-            <BP>297</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>298</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>26</CurveNo>
-            <BP>301</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>302</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>27</CurveNo>
-            <BP>305</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>306</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>28</CurveNo>
-            <BP>309</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>310</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>29</CurveNo>
-            <BP>313</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>314</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D5S818</Name>
         <Channel>3</Channel>
-        <MinBP>317</MinBP>
-        <MaxBP>373</MaxBP>
-        <MinGridLSBasePair>320.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>374.4</MaxGridLSBasePair>
+        <MinBP>319</MinBP>
+        <MaxBP>375</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>320.0</MinGrid>
+            <MaxGrid>374.4</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>319.9</MinGrid>
+            <MaxGrid>374.4</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>322.8</MinGrid>
+            <MaxGrid>376.8</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>6</Name>
-            <CurveNo>0</CurveNo>
-            <BP>321</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>323</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>1</CurveNo>
-            <BP>325</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>327</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>2</CurveNo>
-            <BP>329</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>331</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>3</CurveNo>
-            <BP>333</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>335</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>4</CurveNo>
-            <BP>337</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>339</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>5</CurveNo>
-            <BP>341</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>343</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>6</CurveNo>
-            <BP>345</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>347</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>7</CurveNo>
-            <BP>349</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>351</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>8</CurveNo>
-            <BP>353</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>355</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>9</CurveNo>
-            <BP>357</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>359</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>10</CurveNo>
-            <BP>361</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>363</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>11</CurveNo>
-            <BP>365</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>367</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>12</CurveNo>
-            <BP>369</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>371</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>TPOX</Name>
         <Channel>3</Channel>
-        <MinBP>393</MinBP>
-        <MaxBP>441</MaxBP>
-        <MinGridLSBasePair>391.9</MinGridLSBasePair>
-        <MaxGridLSBasePair>446.3</MaxGridLSBasePair>
+        <MinBP>395</MinBP>
+        <MaxBP>443</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>391.9</MinGrid>
+            <MaxGrid>446.3</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>391.85</MinGrid>
+            <MaxGrid>446.3</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>393.8</MinGrid>
+            <MaxGrid>447.9</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>4</Name>
-            <CurveNo>8</CurveNo>
-            <BP>393</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>395</BP>
           </Allele>
           <Allele>
             <Name>5</Name>
-            <CurveNo>9</CurveNo>
-            <BP>397</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>399</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>10</CurveNo>
-            <BP>401</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>403</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>11</CurveNo>
-            <BP>405</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>407</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>12</CurveNo>
-            <BP>409</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>411</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>13</CurveNo>
-            <BP>413</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>415</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>14</CurveNo>
-            <BP>417</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>419</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>15</CurveNo>
-            <BP>421</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>423</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>16</CurveNo>
-            <BP>425</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>427</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>17</CurveNo>
-            <BP>429</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>431</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>18</CurveNo>
-            <BP>433</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>435</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>19</CurveNo>
-            <BP>437</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>439</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>20</CurveNo>
-            <BP>441</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>443</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D8S1179</Name>
         <Channel>4</Channel>
-        <MinBP>72</MinBP>
-        <MaxBP>128</MaxBP>
-        <MinGridLSBasePair>69.3</MinGridLSBasePair>
-        <MaxGridLSBasePair>127.3</MaxGridLSBasePair>
+        <MinBP>68</MinBP>
+        <MaxBP>124</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>69.3</MinGrid>
+            <MaxGrid>127.3</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>69.33</MinGrid>
+            <MaxGrid>127.34</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>75.8</MinGrid>
+            <MaxGrid>133.6</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>7</Name>
-            <CurveNo>2</CurveNo>
-            <BP>76</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>72</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>3</CurveNo>
-            <BP>80</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>76</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>4</CurveNo>
-            <BP>84</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>80</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>5</CurveNo>
-            <BP>88</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>84</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>6</CurveNo>
-            <BP>92</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>88</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>7</CurveNo>
-            <BP>96</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>92</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>8</CurveNo>
-            <BP>100</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>96</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>9</CurveNo>
-            <BP>104</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>100</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>10</CurveNo>
-            <BP>108</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>104</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>11</CurveNo>
-            <BP>112</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>108</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>12</CurveNo>
-            <BP>116</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>112</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>13</CurveNo>
-            <BP>120</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>116</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>14</CurveNo>
-            <BP>124</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>120</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D12S391</Name>
         <Channel>4</Channel>
-        <MinBP>129</MinBP>
-        <MaxBP>185</MaxBP>
-        <MinGridLSBasePair>132.1</MinGridLSBasePair>
-        <MaxGridLSBasePair>191.4</MaxGridLSBasePair>
+        <MinBP>131</MinBP>
+        <MaxBP>187</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>132.1</MinGrid>
+            <MaxGrid>191.4</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>132.13</MinGrid>
+            <MaxGrid>191.41</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>136.3</MinGrid>
+            <MaxGrid>194.7</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>14</Name>
-            <CurveNo>9</CurveNo>
-            <BP>133</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>135</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>10</CurveNo>
-            <BP>137</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>139</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>11</CurveNo>
-            <BP>141</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>143</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>12</CurveNo>
-            <BP>145</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>147</BP>
           </Allele>
           <Allele>
             <Name>17.3</Name>
-            <CurveNo>13</CurveNo>
-            <BP>148</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>150</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>14</CurveNo>
-            <BP>149</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>151</BP>
           </Allele>
           <Allele>
             <Name>18.3</Name>
-            <CurveNo>15</CurveNo>
-            <BP>152</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>154</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>16</CurveNo>
-            <BP>153</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>155</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>17</CurveNo>
-            <BP>157</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>159</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>18</CurveNo>
-            <BP>161</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>163</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>19</CurveNo>
-            <BP>165</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>167</BP>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>20</CurveNo>
-            <BP>169</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>171</BP>
           </Allele>
           <Allele>
             <Name>24</Name>
-            <CurveNo>21</CurveNo>
-            <BP>173</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>175</BP>
           </Allele>
           <Allele>
             <Name>25</Name>
-            <CurveNo>22</CurveNo>
-            <BP>177</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>179</BP>
           </Allele>
           <Allele>
             <Name>26</Name>
-            <CurveNo>23</CurveNo>
-            <BP>181</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>183</BP>
           </Allele>
           <Allele>
             <Name>27</Name>
-            <CurveNo>24</CurveNo>
-            <BP>185</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>187</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D19S433</Name>
         <Channel>4</Channel>
-        <MinBP>193</MinBP>
-        <MaxBP>249</MaxBP>
-        <MinGridLSBasePair>191.4</MinGridLSBasePair>
-        <MaxGridLSBasePair>249.7</MaxGridLSBasePair>
+        <MinBP>194</MinBP>
+        <MaxBP>250</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>191.4</MinGrid>
+            <MaxGrid>249.7</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>191.47</MinGrid>
+            <MaxGrid>249.72</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>195.5</MinGrid>
+            <MaxGrid>252.4</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>5.2</Name>
-            <CurveNo>1</CurveNo>
-            <BP>193</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>194</BP>
           </Allele>
           <Allele>
             <Name>6.2</Name>
-            <CurveNo>2</CurveNo>
-            <BP>197</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>198</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>3</CurveNo>
-            <BP>203</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>204</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>4</CurveNo>
-            <BP>207</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>208</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>5</CurveNo>
-            <BP>211</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>212</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>6</CurveNo>
-            <BP>215</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>216</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>7</CurveNo>
-            <BP>219</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>220</BP>
           </Allele>
           <Allele>
             <Name>12.2</Name>
-            <CurveNo>8</CurveNo>
-            <BP>221</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>222</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>9</CurveNo>
-            <BP>223</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>224</BP>
           </Allele>
           <Allele>
             <Name>13.2</Name>
-            <CurveNo>10</CurveNo>
-            <BP>225</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>226</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>11</CurveNo>
-            <BP>227</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>228</BP>
           </Allele>
           <Allele>
             <Name>14.2</Name>
-            <CurveNo>12</CurveNo>
-            <BP>229</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>230</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>13</CurveNo>
-            <BP>231</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>232</BP>
           </Allele>
           <Allele>
             <Name>15.2</Name>
-            <CurveNo>14</CurveNo>
-            <BP>233</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>234</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>15</CurveNo>
-            <BP>235</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>236</BP>
           </Allele>
           <Allele>
             <Name>16.2</Name>
-            <CurveNo>16</CurveNo>
-            <BP>237</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>238</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>17</CurveNo>
-            <BP>239</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>240</BP>
           </Allele>
           <Allele>
             <Name>17.2</Name>
-            <CurveNo>18</CurveNo>
-            <BP>241</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>95</CurveNo>
+            <BP>242</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>19</CurveNo>
-            <BP>243</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>100</CurveNo>
+            <BP>244</BP>
           </Allele>
           <Allele>
             <Name>18.2</Name>
-            <CurveNo>20</CurveNo>
-            <BP>245</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>105</CurveNo>
+            <BP>246</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>SE33</Name>
         <Channel>4</Channel>
-        <MinBP>203</MinBP>
-        <MaxBP>353</MaxBP>
-        <MinGridLSBasePair>272.0</MinGridLSBasePair>
-        <MaxGridLSBasePair>425.0</MaxGridLSBasePair>
+        <MinBP>275</MinBP>
+        <MaxBP>415</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>271.0</MinGrid>
+            <MaxGrid>417.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>271.93</MinGrid>
+            <MaxGrid>417.61</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>276.0</MinGrid>
+            <MaxGrid>425.4</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>4.2</Name>
-            <CurveNo>14</CurveNo>
-            <BP>203</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>275</BP>
           </Allele>
           <Allele>
             <Name>6.3</Name>
             <CurveNo>15</CurveNo>
-            <BP>212</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <BP>284</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>16</CurveNo>
-            <BP>217</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>289</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>17</CurveNo>
-            <BP>221</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>293</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>18</CurveNo>
-            <BP>225</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>297</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>19</CurveNo>
-            <BP>229</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>301</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>20</CurveNo>
-            <BP>233</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>305</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>21</CurveNo>
-            <BP>237</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>309</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>22</CurveNo>
-            <BP>241</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>313</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>23</CurveNo>
-            <BP>245</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>317</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>24</CurveNo>
-            <BP>249</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>321</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>25</CurveNo>
-            <BP>253</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>325</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>26</CurveNo>
-            <BP>257</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>329</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>27</CurveNo>
-            <BP>261</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>333</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>28</CurveNo>
-            <BP>265</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>337</BP>
           </Allele>
           <Allele>
             <Name>20.2</Name>
-            <CurveNo>29</CurveNo>
-            <BP>267</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>339</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>30</CurveNo>
-            <BP>269</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>341</BP>
           </Allele>
           <Allele>
             <Name>21.2</Name>
-            <CurveNo>32</CurveNo>
-            <BP>271</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>95</CurveNo>
+            <BP>343</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>33</CurveNo>
-            <BP>273</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>100</CurveNo>
+            <BP>345</BP>
           </Allele>
           <Allele>
             <Name>22.2</Name>
-            <CurveNo>34</CurveNo>
-            <BP>275</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>105</CurveNo>
+            <BP>347</BP>
           </Allele>
           <Allele>
             <Name>23.2</Name>
-            <CurveNo>35</CurveNo>
-            <BP>279</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>110</CurveNo>
+            <BP>351</BP>
           </Allele>
           <Allele>
             <Name>24.2</Name>
-            <CurveNo>36</CurveNo>
-            <BP>283</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>115</CurveNo>
+            <BP>355</BP>
           </Allele>
           <Allele>
             <Name>25.2</Name>
-            <CurveNo>37</CurveNo>
-            <BP>287</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>120</CurveNo>
+            <BP>359</BP>
           </Allele>
           <Allele>
             <Name>26.2</Name>
-            <CurveNo>38</CurveNo>
-            <BP>291</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>125</CurveNo>
+            <BP>363</BP>
           </Allele>
           <Allele>
             <Name>27.2</Name>
-            <CurveNo>39</CurveNo>
-            <BP>295</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>130</CurveNo>
+            <BP>367</BP>
           </Allele>
           <Allele>
             <Name>28.2</Name>
-            <CurveNo>40</CurveNo>
-            <BP>299</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>135</CurveNo>
+            <BP>371</BP>
           </Allele>
           <Allele>
             <Name>29.2</Name>
-            <CurveNo>41</CurveNo>
-            <BP>303</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>140</CurveNo>
+            <BP>375</BP>
           </Allele>
           <Allele>
             <Name>30.2</Name>
-            <CurveNo>42</CurveNo>
-            <BP>307</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>145</CurveNo>
+            <BP>379</BP>
           </Allele>
           <Allele>
             <Name>31.2</Name>
-            <CurveNo>43</CurveNo>
-            <BP>311</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>150</CurveNo>
+            <BP>383</BP>
           </Allele>
           <Allele>
             <Name>32.2</Name>
-            <CurveNo>44</CurveNo>
-            <BP>315</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>155</CurveNo>
+            <BP>387</BP>
           </Allele>
           <Allele>
             <Name>33.2</Name>
-            <CurveNo>45</CurveNo>
-            <BP>319</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>160</CurveNo>
+            <BP>391</BP>
           </Allele>
           <Allele>
             <Name>34.2</Name>
-            <CurveNo>46</CurveNo>
-            <BP>323</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>165</CurveNo>
+            <BP>395</BP>
           </Allele>
           <Allele>
             <Name>35</Name>
-            <CurveNo>47</CurveNo>
-            <BP>325</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>170</CurveNo>
+            <BP>397</BP>
           </Allele>
           <Allele>
             <Name>36</Name>
-            <CurveNo>48</CurveNo>
-            <BP>329</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>175</CurveNo>
+            <BP>401</BP>
           </Allele>
           <Allele>
             <Name>37</Name>
-            <CurveNo>49</CurveNo>
-            <BP>333</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>180</CurveNo>
+            <BP>405</BP>
           </Allele>
           <Allele>
             <Name>39</Name>
-            <CurveNo>50</CurveNo>
-            <BP>341</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>185</CurveNo>
+            <BP>413</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>D22S1045</Name>
         <Channel>4</Channel>
-        <MinBP>422</MinBP>
-        <MaxBP>464</MaxBP>
-        <MinGridLSBasePair>433.1</MinGridLSBasePair>
-        <MaxGridLSBasePair>476.8</MaxGridLSBasePair>
+        <MinBP>432</MinBP>
+        <MaxBP>474</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>433.1</MinGrid>
+            <MaxGrid>476.8</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>433.19</MinGrid>
+            <MaxGrid>476.79</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>436.0</MinGrid>
+            <MaxGrid>479.4</MaxGrid>
+          </Region>
+        </SearchRegions>
         <CoreRepeatNumber>3</CoreRepeatNumber>
         <LadderAlleles>
           <Allele>
             <Name>7</Name>
-            <CurveNo>2</CurveNo>
-            <BP>425</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>435</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>3</CurveNo>
-            <BP>428</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>438</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>4</CurveNo>
-            <BP>431</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>441</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>5</CurveNo>
-            <BP>434</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>444</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>6</CurveNo>
-            <BP>437</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>447</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>8</CurveNo>
-            <BP>440</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>450</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>9</CurveNo>
-            <BP>443</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>453</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>10</CurveNo>
-            <BP>446</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>456</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>11</CurveNo>
-            <BP>449</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>459</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>12</CurveNo>
-            <BP>452</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>462</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>13</CurveNo>
-            <BP>455</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>465</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>14</CurveNo>
-            <BP>458</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>468</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>15</CurveNo>
-            <BP>461</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>471</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>16</CurveNo>
-            <BP>464</BP>
-            <RelativeHeight>M</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>474</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>DYS391</Name>
         <Channel>5</Channel>
-        <MinBP>85</MinBP>
-        <MaxBP>129</MaxBP>
-        <MinGridLSBasePair>78.5</MinGridLSBasePair>
-        <MaxGridLSBasePair>131.8</MaxGridLSBasePair>
+        <MinBP>82</MinBP>
+        <MaxBP>126</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>78.5</MinGrid>
+            <MaxGrid>131.8</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>78.51</MinGrid>
+            <MaxGrid>131.77</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>85.5</MinGrid>
+            <MaxGrid>138.4</MaxGrid>
+          </Region>
+        </SearchRegions>
         <YLinked>true</YLinked>
         <MaxExpectedAlleles>1</MaxExpectedAlleles>
         <LadderAlleles>
           <Allele>
             <Name>5</Name>
-            <CurveNo>-1</CurveNo>
-            <BP>85</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>82</BP>
           </Allele>
           <Allele>
             <Name>6</Name>
-            <CurveNo>0</CurveNo>
-            <BP>89</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>86</BP>
           </Allele>
           <Allele>
             <Name>7</Name>
-            <CurveNo>1</CurveNo>
-            <BP>93</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>90</BP>
           </Allele>
           <Allele>
             <Name>8</Name>
-            <CurveNo>2</CurveNo>
-            <BP>97</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>94</BP>
           </Allele>
           <Allele>
             <Name>9</Name>
-            <CurveNo>3</CurveNo>
-            <BP>101</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>98</BP>
           </Allele>
           <Allele>
             <Name>10</Name>
-            <CurveNo>4</CurveNo>
-            <BP>105</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>102</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>5</CurveNo>
-            <BP>109</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>106</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>6</CurveNo>
-            <BP>113</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>110</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>7</CurveNo>
-            <BP>117</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>114</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>8</CurveNo>
-            <BP>121</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>118</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>9</CurveNo>
-            <BP>125</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>122</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>10</CurveNo>
-            <BP>129</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>126</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>FGA</Name>
         <Channel>5</Channel>
-        <MinBP>158</MinBP>
-        <MaxBP>314</MaxBP>
-        <MinGridLSBasePair>140.1</MinGridLSBasePair>
-        <MaxGridLSBasePair>295.8</MaxGridLSBasePair>
+        <MinBP>137</MinBP>
+        <MaxBP>293</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>140.1</MinGrid>
+            <MaxGrid>295.8</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>140.18</MinGrid>
+            <MaxGrid>295.86</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>147.0</MinGrid>
+            <MaxGrid>302.7</MaxGrid>
+          </Region>
+        </SearchRegions>
         <LadderAlleles>
           <Allele>
             <Name>14</Name>
-            <CurveNo>16</CurveNo>
-            <BP>164</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>143</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>17</CurveNo>
-            <BP>168</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>147</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>18</CurveNo>
-            <BP>172</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>151</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>19</CurveNo>
-            <BP>176</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>155</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>20</CurveNo>
-            <BP>180</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>159</BP>
           </Allele>
           <Allele>
             <Name>18.2</Name>
-            <CurveNo>21</CurveNo>
-            <BP>182</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>161</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>22</CurveNo>
-            <BP>184</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>163</BP>
           </Allele>
           <Allele>
             <Name>19.2</Name>
-            <CurveNo>23</CurveNo>
-            <BP>186</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>165</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>24</CurveNo>
-            <BP>188</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>167</BP>
           </Allele>
           <Allele>
             <Name>20.2</Name>
-            <CurveNo>25</CurveNo>
-            <BP>190</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>169</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>26</CurveNo>
-            <BP>192</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>171</BP>
           </Allele>
           <Allele>
             <Name>21.2</Name>
-            <CurveNo>27</CurveNo>
-            <BP>194</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>173</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>28</CurveNo>
-            <BP>196</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>175</BP>
           </Allele>
           <Allele>
             <Name>22.2</Name>
-            <CurveNo>29</CurveNo>
-            <BP>198</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>177</BP>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>30</CurveNo>
-            <BP>200</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>179</BP>
           </Allele>
           <Allele>
             <Name>23.2</Name>
-            <CurveNo>31</CurveNo>
-            <BP>202</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>181</BP>
           </Allele>
           <Allele>
             <Name>24</Name>
-            <CurveNo>32</CurveNo>
-            <BP>204</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>90</CurveNo>
+            <BP>183</BP>
           </Allele>
           <Allele>
             <Name>24.2</Name>
-            <CurveNo>33</CurveNo>
-            <BP>206</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>95</CurveNo>
+            <BP>185</BP>
           </Allele>
           <Allele>
             <Name>25</Name>
-            <CurveNo>34</CurveNo>
-            <BP>208</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>100</CurveNo>
+            <BP>187</BP>
           </Allele>
           <Allele>
             <Name>25.2</Name>
-            <CurveNo>35</CurveNo>
-            <BP>210</BP>
-            <RelativeHeight>H</RelativeHeight>
+            <CurveNo>105</CurveNo>
+            <BP>189</BP>
           </Allele>
           <Allele>
             <Name>26</Name>
-            <CurveNo>36</CurveNo>
-            <BP>212</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>110</CurveNo>
+            <BP>191</BP>
           </Allele>
           <Allele>
             <Name>27</Name>
-            <CurveNo>37</CurveNo>
-            <BP>216</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>115</CurveNo>
+            <BP>195</BP>
           </Allele>
           <Allele>
             <Name>28</Name>
-            <CurveNo>38</CurveNo>
-            <BP>220</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>120</CurveNo>
+            <BP>199</BP>
           </Allele>
           <Allele>
             <Name>29</Name>
-            <CurveNo>39</CurveNo>
-            <BP>224</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>125</CurveNo>
+            <BP>203</BP>
           </Allele>
           <Allele>
             <Name>30</Name>
-            <CurveNo>40</CurveNo>
-            <BP>228</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>130</CurveNo>
+            <BP>207</BP>
           </Allele>
           <Allele>
             <Name>31.2</Name>
-            <CurveNo>41</CurveNo>
-            <BP>234</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>135</CurveNo>
+            <BP>213</BP>
           </Allele>
           <Allele>
             <Name>32.2</Name>
-            <CurveNo>42</CurveNo>
-            <BP>238</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>140</CurveNo>
+            <BP>217</BP>
           </Allele>
           <Allele>
             <Name>33.2</Name>
-            <CurveNo>43</CurveNo>
-            <BP>242</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>145</CurveNo>
+            <BP>221</BP>
           </Allele>
           <Allele>
             <Name>42.2</Name>
-            <CurveNo>44</CurveNo>
-            <BP>278</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>150</CurveNo>
+            <BP>257</BP>
           </Allele>
           <Allele>
             <Name>43.2</Name>
-            <CurveNo>45</CurveNo>
-            <BP>282</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>155</CurveNo>
+            <BP>261</BP>
           </Allele>
           <Allele>
             <Name>44.2</Name>
-            <CurveNo>46</CurveNo>
-            <BP>286</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>160</CurveNo>
+            <BP>265</BP>
           </Allele>
           <Allele>
             <Name>45.2</Name>
-            <CurveNo>47</CurveNo>
-            <BP>290</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>165</CurveNo>
+            <BP>269</BP>
           </Allele>
           <Allele>
             <Name>46.2</Name>
-            <CurveNo>48</CurveNo>
-            <BP>294</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>170</CurveNo>
+            <BP>273</BP>
           </Allele>
           <Allele>
             <Name>48.2</Name>
-            <CurveNo>49</CurveNo>
-            <BP>302</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>175</CurveNo>
+            <BP>281</BP>
           </Allele>
           <Allele>
             <Name>50.2</Name>
-            <CurveNo>50</CurveNo>
-            <BP>310</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>180</CurveNo>
+            <BP>289</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
@@ -2738,196 +2711,197 @@
         <Channel>5</Channel>
         <MinBP>306</MinBP>
         <MaxBP>362</MaxBP>
-        <MinGridLSBasePair>307.2</MinGridLSBasePair>
-        <MaxGridLSBasePair>360.6</MaxGridLSBasePair>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>307.2</MinGrid>
+            <MaxGrid>360.6</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>307.24</MinGrid>
+            <MaxGrid>360.64</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>310.2</MinGrid>
+            <MaxGrid>362.1</MaxGrid>
+          </Region>
+        </SearchRegions>
         <YLinked>true</YLinked>
         <MaxExpectedAlleles>1</MaxExpectedAlleles>
         <LadderAlleles>
           <Allele>
             <Name>11</Name>
-            <CurveNo>-1</CurveNo>
+            <CurveNo>10</CurveNo>
             <BP>310</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>0</CurveNo>
+            <CurveNo>15</CurveNo>
             <BP>314</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>1</CurveNo>
+            <CurveNo>20</CurveNo>
             <BP>318</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>2</CurveNo>
+            <CurveNo>25</CurveNo>
             <BP>322</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>3</CurveNo>
+            <CurveNo>30</CurveNo>
             <BP>326</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>4</CurveNo>
+            <CurveNo>35</CurveNo>
             <BP>330</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>5</CurveNo>
+            <CurveNo>40</CurveNo>
             <BP>334</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>6</CurveNo>
+            <CurveNo>45</CurveNo>
             <BP>338</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>7</CurveNo>
+            <CurveNo>50</CurveNo>
             <BP>342</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>8</CurveNo>
+            <CurveNo>55</CurveNo>
             <BP>346</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>9</CurveNo>
+            <CurveNo>60</CurveNo>
             <BP>350</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>10</CurveNo>
+            <CurveNo>65</CurveNo>
             <BP>354</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>11</CurveNo>
+            <CurveNo>70</CurveNo>
             <BP>358</BP>
-            <RelativeHeight>MH</RelativeHeight>
           </Allele>
         </LadderAlleles>
       </Locus>
       <Locus>
         <Name>DYS570</Name>
         <Channel>5</Channel>
-        <MinBP>386</MinBP>
-        <MaxBP>454</MaxBP>
-        <MinGridLSBasePair>390.1</MinGridLSBasePair>
-        <MaxGridLSBasePair>455.0</MaxGridLSBasePair>
+        <MinBP>389</MinBP>
+        <MaxBP>457</MaxBP>
+        <SearchRegions>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-500</ILSName>
+            <MinGrid>390.1</MinGrid>
+            <MaxGrid>455.0</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+            <MinGrid>390.16</MinGrid>
+            <MaxGrid>454.96</MaxGrid>
+          </Region>
+          <Region>
+            <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+            <MinGrid>392.8</MinGrid>
+            <MaxGrid>455.9</MaxGrid>
+          </Region>
+        </SearchRegions>
         <YLinked>true</YLinked>
         <MaxExpectedAlleles>1</MaxExpectedAlleles>
         <LadderAlleles>
           <Allele>
             <Name>10</Name>
-            <CurveNo>-3</CurveNo>
-            <BP>390</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>10</CurveNo>
+            <BP>393</BP>
           </Allele>
           <Allele>
             <Name>11</Name>
-            <CurveNo>-2</CurveNo>
-            <BP>394</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>15</CurveNo>
+            <BP>397</BP>
           </Allele>
           <Allele>
             <Name>12</Name>
-            <CurveNo>-1</CurveNo>
-            <BP>398</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>20</CurveNo>
+            <BP>401</BP>
           </Allele>
           <Allele>
             <Name>13</Name>
-            <CurveNo>0</CurveNo>
-            <BP>402</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>25</CurveNo>
+            <BP>405</BP>
           </Allele>
           <Allele>
             <Name>14</Name>
-            <CurveNo>1</CurveNo>
-            <BP>406</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>30</CurveNo>
+            <BP>409</BP>
           </Allele>
           <Allele>
             <Name>15</Name>
-            <CurveNo>2</CurveNo>
-            <BP>410</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>35</CurveNo>
+            <BP>413</BP>
           </Allele>
           <Allele>
             <Name>16</Name>
-            <CurveNo>3</CurveNo>
-            <BP>414</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>40</CurveNo>
+            <BP>417</BP>
           </Allele>
           <Allele>
             <Name>17</Name>
-            <CurveNo>4</CurveNo>
-            <BP>418</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>45</CurveNo>
+            <BP>421</BP>
           </Allele>
           <Allele>
             <Name>18</Name>
-            <CurveNo>5</CurveNo>
-            <BP>422</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>50</CurveNo>
+            <BP>425</BP>
           </Allele>
           <Allele>
             <Name>19</Name>
-            <CurveNo>6</CurveNo>
-            <BP>426</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>55</CurveNo>
+            <BP>429</BP>
           </Allele>
           <Allele>
             <Name>20</Name>
-            <CurveNo>7</CurveNo>
-            <BP>430</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>60</CurveNo>
+            <BP>433</BP>
           </Allele>
           <Allele>
             <Name>21</Name>
-            <CurveNo>8</CurveNo>
-            <BP>434</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>65</CurveNo>
+            <BP>437</BP>
           </Allele>
           <Allele>
             <Name>22</Name>
-            <CurveNo>9</CurveNo>
-            <BP>438</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>70</CurveNo>
+            <BP>441</BP>
           </Allele>
           <Allele>
             <Name>23</Name>
-            <CurveNo>10</CurveNo>
-            <BP>442</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>75</CurveNo>
+            <BP>445</BP>
           </Allele>
           <Allele>
             <Name>24</Name>
-            <CurveNo>11</CurveNo>
-            <BP>446</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>80</CurveNo>
+            <BP>449</BP>
           </Allele>
           <Allele>
             <Name>25</Name>
-            <CurveNo>12</CurveNo>
-            <BP>450</BP>
-            <RelativeHeight>MH</RelativeHeight>
+            <CurveNo>85</CurveNo>
+            <BP>453</BP>
           </Allele>
         </LadderAlleles>
       </Locus>
