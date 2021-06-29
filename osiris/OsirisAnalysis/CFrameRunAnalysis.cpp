@@ -481,18 +481,29 @@ void CFrameRunAnalysis::UpdateOutputText()
         if (pEntry->ErrorCount())
         {
           nwxString::Join(pEntry->GetErrors(), &sTemp, '\n');
-        }
-        else
-        {
-          sTemp.Empty();
-        }
-        if (sTemp.IsEmpty())
-        {
-          sTemp = wxT("No errors found.\n");
-        }
-        else
-        {
           sTemp.Append("\n");
+        }
+        else
+        {
+          switch (pEntry->GetStatus())
+          {
+          case DIRENTRY_PENDING:
+          case DIRENTRY_RUNNING:
+            sTemp.Empty();
+            break;
+          case DIRENTRY_ERROR:
+            sTemp = wxT("Process failed.  Select \"Details\" tab above for more information.");
+            break;
+          case DIRENTRY_EXPORT_ERROR:
+            sTemp = wxT("No analysis errors found.  Automated export failed.");
+            break;
+          case DIRENTRY_CANCELED:
+            sTemp = wxT("Analysis canceled by user.");
+            break;
+          case DIRENTRY_DONE:
+          default:
+            sTemp = wxT("No errors found.\n");
+          }
         }
         sValueError.Append(sTemp);
       }

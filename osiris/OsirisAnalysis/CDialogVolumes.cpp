@@ -231,6 +231,7 @@ CDialogVolumes::CDialogVolumes(
     & ~wxCLOSE_BOX 
 #endif
     ),
+  m_volumes(*(CVolumes::GetGlobal())),
   m_pVolumeCurrent(NULL),
   m_pChoice(NULL),
   m_pPanelLab(NULL),

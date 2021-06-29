@@ -1260,6 +1260,30 @@ public:
     }
     return bRtn;
   }
+  virtual bool SaveToStream(wxOutputStream &stream, bool bCloseAfterSave = true)
+  {
+    bool bRtn = false;
+    if (!m_bReadOnly)
+    {
+      nwxXmlNodeList *apNode(
+        CreateNodeList(RootNode(), (void *)this));
+      unique_ptr<nwxXmlNodeList> x(apNode);
+      if (apNode->size() == 1)
+      {
+        unique_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
+        apDoc->CloseAfterSave(bCloseAfterSave);
+        apDoc->SetRoot(apNode->at(0));
+        bRtn = apDoc->Save(stream,1);
+      }
+      else
+      {
+        // FOR DEBUGGING
+        bRtn = false;
+        vectorptr<wxXmlNode>::cleanup(apNode);
+      }
+    }
+    return bRtn;
+  }
   virtual bool SaveFile(const wxString &sFileName)
   {
     bool bRtn = false;

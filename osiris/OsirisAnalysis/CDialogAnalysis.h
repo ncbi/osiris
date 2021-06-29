@@ -247,7 +247,7 @@ private:
   }
 
   wxString m_sErrorStr;
-  CVolumes m_volumes;
+  CVolumes &m_volumes;
   CPersistKitList *m_pKitList;
   CVolume *m_pVolume;
   CParmOsiris *m_pParm;

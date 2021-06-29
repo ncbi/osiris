@@ -46,6 +46,7 @@
 #include "nwx/nsstd.h"
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxLock.h"
+#include "nwx/nwxGlobalObject.h"
 #include "CLabSettings.h"
 #include "CXMLmessageBook.h"
 
@@ -63,6 +64,8 @@ public:
     USER_OP,
     USER_KIT
   };
+  static const wxChar * const KIT_DISPLAY_BRACKETS_SITE;
+  static const wxChar * const KIT_DISPLAY_BRACKETS_OSIRIS;
   CVolume(const wxString &sPath, int nVolumeType = USER_OP);
   CVolume();
   CVolume(const CVolume &x);
@@ -72,7 +75,25 @@ public:
   {
     return new CVolume(*this);
   }
-
+  static wxString KitToVolumeName(const wxString &sKit, int nType)
+  {
+    wxString sRtn;
+    if (nType == USER_OP)
+    {
+      sRtn = sKit;
+    }
+    else
+    {
+      const wxChar *BRACKETS = 
+        (nType == USER_KIT) 
+        ? KIT_DISPLAY_BRACKETS_SITE
+        : KIT_DISPLAY_BRACKETS_OSIRIS;
+      sRtn = BRACKETS[0];
+      sRtn.Append(sKit);
+      sRtn.Append(BRACKETS[1]);
+    }
+    return sRtn;
+  }
   const wxString &GetPath() const
   {
     return m_sPath;
@@ -247,8 +268,10 @@ typedef set<wxString,CLessVolumeName>
 
 class CVolumes : public wxDirTraverser
 {
-public:
+private:
+  // private - use GetGlobal()
   CVolumes();
+public:
   virtual ~CVolumes();
   bool CheckReload(bool bForceReload = false);
   void RefreshLocks();
@@ -256,6 +279,7 @@ public:
   CVolume *Find(const wxString &sName);
   const CVolume *Find(const wxString &sName) const;
   size_t FindAll(vector<CVolume *> *pvVol, const wxString &sName);
+  size_t GetSiteKitVolumeNames(wxArrayString *pas) const;
   CVolume *Create(const wxString &sCopyFrom, const wxString &sName);
   bool Remove(CVolume *pVolume);
   bool Remove(const wxString &sName)
@@ -271,6 +295,11 @@ public:
   bool Load()
   {
     return CheckReload(true);
+  }
+  void CheckFileModification()
+  {
+    // function used in nwxDECLARE_GLOBAL_OBJECT_XML macro
+    CheckReload();
   }
   virtual wxDirTraverseResult OnDir(const wxString& dirname);
   virtual wxDirTraverseResult OnFile(const wxString& filename);
@@ -294,8 +323,6 @@ private:
   static const wxChar *g_psNamesTrim[]; // file names w/in volume for site marker set
 
   MapVolume m_mapVol;
-  map<wxString,CVolume *> m_mapKitVolume;
-  mutable wxArrayString m_asKits;
   mutable wxArrayString m_asVolumeNames;
 
   wxString m_sDirVolume; // path of site volumes or OPs
@@ -315,7 +342,6 @@ private:
   }
   void _Cleanup();
   void _LoadDir(const wxString &dirname);
-  void _SetupKitVolumes();
   void _SetupPath();
   MapVolume::iterator _FindVolume(CVolume *pVolume);
   bool _BuildNewPath(const CVolume *pCopyFrom, wxString *psPath);
@@ -333,8 +359,8 @@ private:
     {
       _LoadDir(m_sDirVolume);
     }
-    _SetupKitVolumes();
   }
+  nwxDECLARE_GLOBAL_OBJECT_XML(CVolumes)
 };
 
 

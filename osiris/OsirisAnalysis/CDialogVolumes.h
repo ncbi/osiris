@@ -92,7 +92,7 @@ private:
   void OnGridEditEnd(wxGridEvent &);
   bool _IsGridEditorShown();
 
-  CVolumes m_volumes;
+  CVolumes &m_volumes;
   CLabSettings m_labCopy;
   wxString m_sSelection;
   CVolume *m_pVolumeCurrent;

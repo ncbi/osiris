@@ -88,6 +88,11 @@ static int _fXmlOutputCloseCallback(void *context)
   return nRtn;
 }
 
+static int _fXmlOutputNoCloseCallback(void *)
+{
+  return 0;
+}
+
 } // extern "C"
 
 ////// END libxml2 callback functions
@@ -113,13 +118,13 @@ private:
 #endif
 
 wxXml2Document::wxXml2Document() : 
-  m_pXmlDoc(NULL), m_pNodeRoot(NULL)
+  m_pXmlDoc(NULL), m_pNodeRoot(NULL), m_bCloseAfterSave(true)
 {}
 
 wxXml2Document::wxXml2Document(
   const wxString &filename,
   const wxString &encoding,
-  int flags) : m_pXmlDoc(NULL), m_pNodeRoot(NULL)
+  int flags) : m_pXmlDoc(NULL), m_pNodeRoot(NULL), m_bCloseAfterSave(true)
 {
   Load(filename,encoding,flags);
 }
@@ -127,7 +132,7 @@ wxXml2Document::wxXml2Document(
 wxXml2Document::wxXml2Document(
   wxInputStream &stream,
   const wxString &encoding,
-  int flags) : m_pXmlDoc(NULL), m_pNodeRoot(NULL)
+  int flags) : m_pXmlDoc(NULL), m_pNodeRoot(NULL), m_bCloseAfterSave(true)
 {
   Load(stream,encoding,flags);
 }
@@ -255,7 +260,7 @@ bool wxXml2Document::Save(
       xmlOutputBufferPtr pXmlBuf = 
         xmlOutputBufferCreateIO(
         _fXmlOutputWriteCallback,
-        _fXmlOutputCloseCallback,
+        m_bCloseAfterSave ? _fXmlOutputCloseCallback : _fXmlOutputNoCloseCallback,
         (void *) &stream,
         NULL);
       nRtn = xmlSaveFormatFileTo(

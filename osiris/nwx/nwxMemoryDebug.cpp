@@ -23,34 +23,50 @@
 *
 * ===========================================================================
 *
-*  FileName: nwxUtil.h
+*  FileName: nwxMemoryDebug.h
 *  Author:   Douglas Hoffman
 *
-*  misc general purpose utilities for wxWidgets
 */
-#ifndef __NWX_UTIL_H__
-#define __NWX_UTIL_H__
 
-#include <wx/toplevel.h>
-class nwxUtil
+#ifdef _WINDOWS
+#ifdef _DEBUG
+#ifdef _UNICODE
+#ifndef UNICODE
+#define UNICODE
+#endif
+#endif
+#include <windows.h>
+#include <debugapi.h>
+#include <string.h>
+#include "nwx/nwxMemoryDebug.h"
+
+long *nwxMemoryDebug::p_current_request_number = NULL;
+void nwxMemoryDebug::DumpAlloc(const char *pFile, int nLine, const wchar_t *psNote)
 {
-private:
-  nwxUtil() {} // prevent instantiation
-public:
-  static void CleanupArrayString(wxArrayString *ps)
+  if (p_current_request_number != NULL)
   {
-    ps->Sort();
-    size_t n;
-    for (n = 1; n < ps->GetCount(); ++n)
+    const char DELIMW = L'\\';
+    const char DELIM = L'/';
+    const char *ps;
+    if (psNote == NULL)
     {
-      if (ps->Item(n) == ps->Item(n - 1))
-      {
-        ps->RemoveAt(n);
-        n--;
-      }
+      psNote = L"";
+      
     }
+    if (*pFile)
+    {
+      for (ps = pFile + strlen(pFile) - 1; (ps > pFile) && ((*ps) != DELIM); --ps);
+      if ((*ps) == DELIMW || (*ps) == DELIM) ++ps;
+    }
+    else
+    {
+      ps = "file";
+    }
+    wchar_t s[2048];
+    wsprintf(s,L"** MEMORY %hs:%d {%ld} %s\n", ps, nLine, *p_current_request_number, psNote);
+    OutputDebugStringW(s);
   }
-  static wxWindow *GetTopLevelParent(wxWindow *p);
-};
+}
 
+#endif
 #endif

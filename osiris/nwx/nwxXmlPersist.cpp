@@ -177,7 +177,8 @@ nwxXmlNodeList *nwxXmlPersist::CreateNodeList(
   //  defined in InwxXmlIO
   //
   nwxXmlPersist *pObj = (nwxXmlPersist *)_pObj;
-  return pObj->CreateNodeList(sNodeName);
+  nwxXmlNodeList *pRtn = pObj->CreateNodeList(sNodeName);
+  return pRtn;
 }
 
 nwxXmlNodeList *nwxXmlPersist::CreateNodeList(const wxString &sNodeName)
