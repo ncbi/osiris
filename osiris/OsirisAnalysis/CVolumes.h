@@ -64,8 +64,8 @@ public:
     USER_OP,
     USER_KIT
   };
-  static const wxChar * const KIT_DISPLAY_BRACKETS_SITE;
-  static const wxChar * const KIT_DISPLAY_BRACKETS_OSIRIS;
+//  static const wxChar * const KIT_DISPLAY_BRACKETS_SITE;
+//  static const wxChar * const KIT_DISPLAY_BRACKETS_OSIRIS;
   CVolume(const wxString &sPath, int nVolumeType = USER_OP);
   CVolume();
   CVolume(const CVolume &x);
@@ -75,6 +75,7 @@ public:
   {
     return new CVolume(*this);
   }
+#if 0
   static wxString KitToVolumeName(const wxString &sKit, int nType)
   {
     wxString sRtn;
@@ -94,6 +95,7 @@ public:
     }
     return sRtn;
   }
+#endif
   const wxString &GetPath() const
   {
     return m_sPath;

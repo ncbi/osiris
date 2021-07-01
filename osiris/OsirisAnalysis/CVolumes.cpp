@@ -52,8 +52,8 @@
 
 //******************************************************  CVolume
 
-const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_SITE = wxT("<>");
-const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_OSIRIS = wxT("[]");
+//const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_SITE = wxT("<>");
+//const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_OSIRIS = wxT("[]");
 
 CVolume::CVolume(const wxString &sPath, int nVolumeType)
 {
