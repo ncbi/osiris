@@ -282,6 +282,8 @@ smPeakIgnored	1169	2685
 smLaddersFromWrongMarkerSet	1170	2686
 smUncertainPullUp	1171	2687
 smUseNonlinearLMSAlgorithmForAllChannels	1172	2688
+smAlleleOL	1173	2689
+
 
 
 
