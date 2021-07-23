@@ -1498,7 +1498,7 @@ RGFile& RGString :: ReadToEndOfFile (RGFile& f) {
 
 RGFile& RGString :: ReadTextToDelimiter (RGFile& f, char delimiter) {
 	
-	// Read to EOF or delimiter
+	// Read to EOF or delimiter.  Updated 07/23/2021:  the use is for end of line, so delimiter replaced by option of '\n' (for PC) or '\r' (for Mac)
 
 	char c;
 
@@ -1508,8 +1508,17 @@ RGFile& RGString :: ReadTextToDelimiter (RGFile& f, char delimiter) {
 
 		f.Read (c);
 
-		if ((f.Eof ()) || (c == delimiter))
+		if (f.Eof ())
 			break;
+
+		if ((c == '\n') || (c == '\r')) {
+
+			if (StringLength == 0)
+				continue;
+
+			else
+				break;
+		}
 
 		Data->AppendCharacter (c, StringLength);
 		StringLength++;
