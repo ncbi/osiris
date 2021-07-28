@@ -295,6 +295,7 @@ PERSISTENT_PREDECLARATION (smPeakIgnored)
 PERSISTENT_PREDECLARATION (smLaddersFromWrongMarkerSet)
 PERSISTENT_PREDECLARATION (smUncertainPullUp)
 PERSISTENT_PREDECLARATION (smUseNonlinearLMSAlgorithmForAllChannels)
+PERSISTENT_PREDECLARATION (smAlleleOL)
 
 
 
@@ -8230,6 +8231,34 @@ public:
 	smUseNonlinearLMSAlgorithmForAllChannels ();
 	smUseNonlinearLMSAlgorithmForAllChannels (const smUseNonlinearLMSAlgorithmForAllChannels& note);
 	virtual ~smUseNonlinearLMSAlgorithmForAllChannels ();
+
+	virtual int GetSubject () const;
+
+	virtual void SetIndexAndScope (int index, int scope) const;
+	virtual int GetMessageIndex () const;
+	virtual int GetScope () const;
+	virtual RGString GetName () const;
+
+	static int LoadType ();
+
+protected:
+	static RGString sName;
+	static int sSubject;
+	static int sMessageIndex;
+	static int sMessageScope;
+};
+
+
+
+
+class smAlleleOL : public SmartNotice {
+
+PERSISTENT_DECLARATION (smAlleleOL)
+
+public:
+	smAlleleOL ();
+	smAlleleOL (const smAlleleOL& note);
+	virtual ~smAlleleOL ();
 
 	virtual int GetSubject () const;
 

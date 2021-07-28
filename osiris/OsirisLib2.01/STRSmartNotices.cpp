@@ -1710,6 +1710,12 @@ int smUseNonlinearLMSAlgorithmForAllChannels::sMessageIndex = 0;
 int smUseNonlinearLMSAlgorithmForAllChannels::sMessageScope = 0;
 
 
+RGString smAlleleOL::sName = "smAlleleOL";
+int smAlleleOL::sSubject = smAlleleOL::LoadType ();
+int smAlleleOL::sMessageIndex = 0;
+int smAlleleOL::sMessageScope = 0;
+
+
 PERSISTENT_DEFINITION (smILSFailed, 2051, "smILSFailed")
 PERSISTENT_DEFINITION (smLocusIsAMEL, 2052, "smLocusIsAMEL")
 PERSISTENT_DEFINITION (smSampleIsLadder, 2053, "smSampleIsLadder")
@@ -1994,6 +2000,7 @@ PERSISTENT_DEFINITION (smPeakIgnored, 2685, "smPeakIgnored")
 PERSISTENT_DEFINITION (smLaddersFromWrongMarkerSet, 2686, "smLaddersFromWrongMarkerSet")
 PERSISTENT_DEFINITION (smUncertainPullUp, 2687, "smUncertainPullUp")
 PERSISTENT_DEFINITION (smUseNonlinearLMSAlgorithmForAllChannels, 2688, "smUseNonlinearLMSAlgorithmForAllChannels")
+PERSISTENT_DEFINITION (smAlleleOL, 2689, "smAlleleOL")
 
 
 
@@ -19030,6 +19037,66 @@ int smUseNonlinearLMSAlgorithmForAllChannels :: LoadType () {
 
 	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
 	smUseNonlinearLMSAlgorithmForAllChannels* noticeType = new smUseNonlinearLMSAlgorithmForAllChannels;
+	warehouse->AddType (noticeType);
+	return 1;
+}
+
+
+
+
+
+smAlleleOL :: smAlleleOL () : SmartNotice () {
+
+}
+
+
+smAlleleOL :: smAlleleOL (const smAlleleOL& note) : SmartNotice ((const SmartNotice&) note) {
+
+}
+
+
+
+smAlleleOL :: ~smAlleleOL () {
+
+}
+
+
+int smAlleleOL :: GetSubject () const {
+
+	return smAlleleOL::sSubject;
+}
+
+
+void smAlleleOL :: SetIndexAndScope (int index, int scope) const {
+
+	smAlleleOL::sMessageIndex = index;
+	smAlleleOL::sMessageScope = scope;
+}
+
+
+int smAlleleOL :: GetMessageIndex () const {
+
+	return smAlleleOL :: sMessageIndex;
+}
+
+
+int smAlleleOL :: GetScope () const {
+
+	return smAlleleOL :: sMessageScope;
+}
+
+
+RGString smAlleleOL :: GetName () const {
+
+	return smAlleleOL :: sName;
+}
+
+
+
+int smAlleleOL :: LoadType () {
+
+	SmartNoticeWarehouse* warehouse = new SmartNoticeWarehouse;
+	smAlleleOL* noticeType = new smAlleleOL;
 	warehouse->AddType (noticeType);
 	return 1;
 }

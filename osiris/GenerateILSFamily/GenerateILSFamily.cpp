@@ -70,6 +70,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	debugMode = false;
 
 #endif
+
 	//cout << "Hello world!" << endl;
 	cout << "Starting program..." << endl;
 

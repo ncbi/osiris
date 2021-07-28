@@ -573,6 +573,8 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 	text.SetOutputLevel (1);
 	bool isHomozygote = false;
 	double totalCorrection;
+	smAlleleOL alleleOL;
+	bool alleleIsOL = false;
 
 	if ((LocusSignalList.Entries () == 1) && (!mLink->isYLinked ()))
 		isHomozygote = true;
@@ -598,8 +600,9 @@ void Locus :: ReportXMLSmartSampleTableRowWithLinks (RGTextOutput& text, RGTextO
 		text << "\t\t\t\t\t<Width>" << nextSignal->GetWidth () << "</Width>\n";
 		text << "\t\t\t\t\t<Time>" << nextSignal->GetMean () << "</Time>\n";
 		text << "\t\t\t\t\t<Fit>" << nextSignal->GetCurveFit () << "</Fit>\n";
+		alleleIsOL = nextSignal->GetMessageValue (alleleOL);
 
-		if (nextSignal->IsOffGrid ())
+		if (nextSignal->IsOffGrid () || alleleIsOL)
 			text << "\t\t\t\t\t<OffLadder>true</OffLadder>\n";
 
 		else if (nextSignal->IsAcceptedOffGrid ())
