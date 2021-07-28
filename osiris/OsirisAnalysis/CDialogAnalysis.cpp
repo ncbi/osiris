@@ -121,7 +121,7 @@ CDialogAnalysis::CDialogAnalysis(
     m_pCheckSubDir = new wxCheckBox(this,wxID_ANY,"Create time stamped subdirectory");
 
     // Operating Procedure Name
-    const wxArrayString &as(m_volumes.GetVolumeNames());
+    const wxArrayString &as(m_volumes.GetDisplayVolumeNames());
     m_pComboVolumeName = new wxComboBox(this,IDvolumeName,as[0],
       wxDefaultPosition, wxDefaultSize,
       as, wxCB_READONLY);
@@ -279,7 +279,9 @@ bool CDialogAnalysis::SelectVolumeByName(const wxString &s)
   int nSelect = m_pComboVolumeName->GetSelection();
   int nSelect2 = -1;
   bool bRtn = false;
-  if(m_pComboVolumeName->SetStringSelection(s))
+  CVolume *pV = m_volumes.Find(s);
+  wxString sDisplayName = (pV == NULL) ? s : pV->GetDisplayVolumeName();
+  if(m_pComboVolumeName->SetStringSelection(sDisplayName))
   {
     DoVolumeChange();
     bRtn = !m_bProblem;

@@ -786,6 +786,28 @@ bool CParmOsiris::Save()
   return bRtn;
 }
 
+wxString CParmOsiris::GetVolumeOrKit(const CVolumes *pVolumes) const
+{
+  wxString sRtn;
+  const CVolume *pVolume = m_sVolumeName.IsEmpty()
+      ? NULL : pVolumes->Find(m_sVolumeName);
+  if(pVolume != NULL)
+  {
+      sRtn = m_sVolumeName;
+  }
+  else
+  {
+    pVolume = m_sKitName.IsEmpty() ? NULL : pVolumes->Find(m_sKitName);
+    if(pVolume != NULL)
+    {
+      sRtn = '[';
+      sRtn.Append(m_sKitName);
+      sRtn.Append(']');
+    }
+  }
+  return sRtn;
+}
+
 int CParmOsiris::GetPrintColorByName(const wxString &sName) const
 {
   // return the printing color intensity (1-100) for printing

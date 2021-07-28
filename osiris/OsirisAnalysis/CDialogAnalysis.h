@@ -88,10 +88,10 @@ public:
     bool bRtn = SelectVolumeByName(sName);
     return bRtn;
   }
-  wxString &GetVolumeName()
-  {
-    return m_sVolumeName;
-  }
+//  wxString &GetVolumeName()
+//  {
+//    return m_sVolumeName;
+//  }
 //  BEGIN CGridRFURun Get/Set
   int GetMinRFU()
   {

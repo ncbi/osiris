@@ -35,10 +35,11 @@
 #include "nwx/nwxGlobalObject.h"
 #include "nwx/nwxString.h"
 #include "ConfigDir.h"
-#include "CVolumes.h"
 #include "mainApp.h"
 
 #include "CParmGridAttributes.h"
+
+class CVolumes;
 
 class CParmOsiris : public nwxXmlPersist
 {
@@ -649,29 +650,7 @@ public:
   {
     return GetCheckBeforeExit(); // backward compatibility
   }
-  wxString GetVolumeOrKit(const CVolumes *pVolumes) const
-  {
-    wxString sRtn;
-    const CVolume *pVolume = m_sVolumeName.IsEmpty()
-        ? NULL : pVolumes->Find(m_sVolumeName);
-    if(pVolume != NULL)
-    {
-        sRtn = m_sVolumeName;
-    }
-    else
-    {
-      pVolume = m_sKitName.IsEmpty() ? NULL : pVolumes->Find(m_sKitName);
-      if(pVolume != NULL)
-      {
-        const char *psBrackets = 
-            (pVolume->GetVolumeType() == CVolume::USER_KIT) ? "<>" : "[]";
-        sRtn = psBrackets[0];
-        sRtn.Append(m_sKitName);
-        sRtn.Append(psBrackets[1]);
-      }
-    }
-    return sRtn;
-  }
+  wxString GetVolumeOrKit(const CVolumes *pVolumes) const;
   int GetPrintColorByName(const wxString &sName) const;
   static const wxString NO_INIT;
   // end static/global stuff

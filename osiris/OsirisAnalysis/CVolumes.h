@@ -64,6 +64,7 @@ public:
     USER_OP,
     USER_KIT
   };
+  static const wxString USER_KIT_SUFFIX;
 //  static const wxChar * const KIT_DISPLAY_BRACKETS_SITE;
 //  static const wxChar * const KIT_DISPLAY_BRACKETS_OSIRIS;
   CVolume(const wxString &sPath, int nVolumeType = USER_OP);
@@ -102,6 +103,7 @@ public:
   }
   wxString GetKitName() const;
   const wxString &GetVolumeName();
+  const wxString GetDisplayVolumeName();
   CLabSettings *GetLabSettings()
   {
     return &m_lab;
@@ -216,40 +218,34 @@ class CLessVolumeName
   //  case insensitive sorting
 public:
   CLessVolumeName() {;}
-  bool operator()(const wxString &x1, const wxString &x2) const
+  static int _get_volume_type(const wxString &s)
   {
     int n = 0;
-    const wxStringCharType *pc1 = x1.wx_str();
-    const wxStringCharType *pc2 = x2.wx_str();
-    if(*pc1 == *pc2)
-    {}
-    else if ((*pc1) == L'[')
+    if (s.StartsWith(wxT("[")))
     {
-      // osiris kit - bottom
-      n = 1;
+      n = (s.EndsWith(CVolume::USER_KIT_SUFFIX)) ? 1 : 2;
     }
-    else if ((*pc2) == L'[')
+    return n;
+  }
+  bool operator()(const wxString &x1, const wxString &x2) const
+  {
+    int n1 = _get_volume_type(x1);
+    int n2 = _get_volume_type(x2);
+    bool bLess = false;
+    if (n1 == n2)
     {
-      n = -1;
-    }
-    else if ((*pc1) == L'<')
-    {
-      // user defined kit - before osiris kits after user volumes
-      n = 1;
-    }
-    else if ((*pc2) == L'<')
-    {
-      n = -1;
-    }
-    if(!n)
-    {
-      n = x1.CmpNoCase(x2);
-      if(!n)
+      int n = x1.CmpNoCase(x2);
+      if (!n)
       {
         n = x1.Cmp(x2);
       }
+      bLess = (n < 0);
     }
-    return (n < 0);
+    else
+    {
+      bLess = n1 < n2;
+    }
+    return bLess;
   }
   bool operator()(const wxString *px1, const wxString *px2) const
   {
@@ -293,6 +289,7 @@ public:
   bool Rename(CVolume *pVolume, const wxString &sNewName);
 
   size_t GetNames(SetVolumeNames *pSet) const;
+  size_t GetDisplayNames(SetVolumeNames *pSet) const;
 
   bool Load()
   {
@@ -316,6 +313,7 @@ public:
   }
   const wxArrayString &GetKits() const;
   const wxArrayString &GetVolumeNames() const;
+  const wxArrayString &GetDisplayVolumeNames() const;
 #ifdef __WXDEBUG__
   static void UnitTest();
 #endif
@@ -325,7 +323,7 @@ private:
   static const wxChar *g_psNamesTrim[]; // file names w/in volume for site marker set
 
   MapVolume m_mapVol;
-  mutable wxArrayString m_asVolumeNames;
+  mutable wxArrayString m_asVolumeNames, m_asDisplayVolumeNames;
 
   wxString m_sDirVolume; // path of site volumes or OPs
   wxString m_sDirUserKits;
@@ -336,6 +334,10 @@ private:
   int m_nVolumeType; // true is loading base, false otherwise
 
   void _SetModified();
+  pair<MapVolume::iterator, MapVolume::iterator>
+    _equal_range(const wxString &s);
+  pair<MapVolume::const_iterator, MapVolume::const_iterator>
+    _const_equal_range(const wxString &s) const;
   bool _RemoveFiles(const wxString &sDir);
   bool _HasFiles(const wxString &dirname)
   {

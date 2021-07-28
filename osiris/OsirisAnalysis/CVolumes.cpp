@@ -55,6 +55,8 @@
 //const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_SITE = wxT("<>");
 //const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_OSIRIS = wxT("[]");
 
+const wxString CVolume::USER_KIT_SUFFIX(wxT("+"));
+
 CVolume::CVolume(const wxString &sPath, int nVolumeType)
 {
   m_bIgnoreReadLock = false;
@@ -103,6 +105,15 @@ const wxString &CVolume::GetVolumeName()
 {
   CLabSettingsInfo *p = m_lab.GetLabSettingsInfo();
   return p->GetVolumeName();
+}
+const wxString CVolume::GetDisplayVolumeName()
+{
+  wxString s = GetVolumeName();
+  if (m_nVolumeType == USER_KIT)
+  {
+    s += USER_KIT_SUFFIX;
+  }
+  return s;
 }
 
 wxString CVolume::_GetFilePath(const wxChar *pFileName) const
@@ -448,10 +459,39 @@ void CVolumes::RefreshLocksOnTimer(int nms)
   }
 }
 
-CVolume *CVolumes::Find(const wxString &sName)
+pair<MapVolume::const_iterator, MapVolume::const_iterator> 
+  CVolumes::_const_equal_range(const wxString &sName) const
+{
+  pair<MapVolume::const_iterator, MapVolume::const_iterator> pitr =
+    m_mapVol.equal_range(sName);
+  wxString sNewName;
+  if ((pitr.first == pitr.second) &&
+    sName.EndsWith(CVolume::USER_KIT_SUFFIX, &sNewName))
+  {
+    pitr = m_mapVol.equal_range(sNewName);
+  }
+  return pitr;
+}
+
+pair<MapVolume::iterator, MapVolume::iterator>
+  CVolumes::_equal_range(const wxString &sName)
 {
   pair<MapVolume::iterator, MapVolume::iterator> pitr =
     m_mapVol.equal_range(sName);
+  wxString sNewName;
+  if ((pitr.first == pitr.second) &&
+    sName.EndsWith(CVolume::USER_KIT_SUFFIX, &sNewName))
+  {
+    pitr = m_mapVol.equal_range(sNewName);
+  }
+  return pitr;
+}
+
+
+CVolume *CVolumes::Find(const wxString &sName)
+{
+  pair<MapVolume::iterator, MapVolume::iterator> pitr =
+    _equal_range(sName);
   CVolume *pRtn =
     (pitr.first == pitr.second)
     ? NULL
@@ -462,7 +502,7 @@ CVolume *CVolumes::Find(const wxString &sName)
 const CVolume *CVolumes::Find(const wxString &sName) const
 {
   pair<MapVolume::const_iterator, MapVolume::const_iterator> pitr =
-    m_mapVol.equal_range(sName);
+    _const_equal_range(sName);
   const CVolume *pRtn =
     (pitr.first == pitr.second)
     ? NULL
@@ -475,7 +515,7 @@ size_t CVolumes::FindAll(
   vector<CVolume *> *pvVol, const wxString &sName)
 {
   pair<MapVolume::iterator, MapVolume::iterator> pitr =
-    m_mapVol.equal_range(sName);
+    _equal_range(sName);
   MapVolume::iterator itr;
   size_t nRtn;
   pvVol->clear();
@@ -642,6 +682,17 @@ size_t CVolumes::GetNames(SetVolumeNames *pSet) const
   }
   return pSet->size();
 }
+size_t CVolumes::GetDisplayNames(SetVolumeNames *pSet) const
+{
+  pSet->clear();
+  for (MapVolume::const_iterator itr = m_mapVol.begin();
+    itr != m_mapVol.end();
+    ++itr)
+  {
+    pSet->insert(itr->second->GetDisplayVolumeName());
+  }
+  return pSet->size();
+}
 
 const wxChar *CVolumes::g_psNames[] =
 {
@@ -702,6 +753,7 @@ void CVolumes::_Cleanup()
 void CVolumes::_SetModified()
 {
   m_asVolumeNames.Empty();
+  m_asDisplayVolumeNames.Empty();
 }
 void CVolumes::_LoadDir(const wxString &sDirName)
 {
@@ -730,6 +782,25 @@ const wxArrayString &CVolumes::GetVolumeNames() const
   }
   return m_asVolumeNames;
 }
+const wxArrayString &CVolumes::GetDisplayVolumeNames() const
+{
+  if (m_asDisplayVolumeNames.IsEmpty())
+  {
+    SetVolumeNames setNames;
+    size_t n = GetDisplayNames(&setNames);
+    m_asDisplayVolumeNames.Alloc(n);
+    for (SetVolumeNames::iterator itr = setNames.begin();
+      itr != setNames.end();
+      ++itr)
+    {
+      m_asDisplayVolumeNames.Add(*itr);
+    }
+  }
+  return m_asDisplayVolumeNames;
+}
+
+
+
 const wxArrayString &CVolumes::GetKits() const
 {
   return mainApp::GetKitList()->GetKitList();
@@ -799,7 +870,7 @@ void CVolumes::RefreshLocks()
 MapVolume::iterator CVolumes::_FindVolume(CVolume *pVolume)
 {
   pair<MapVolume::iterator,MapVolume::iterator> pitr = 
-    m_mapVol.equal_range(pVolume->GetVolumeName());
+    _equal_range(pVolume->GetVolumeName());
   MapVolume::iterator itr;
   if(pitr.first == m_mapVol.end())
   {
