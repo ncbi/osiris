@@ -76,6 +76,7 @@ CMenuBar::CMenuBar(bool bCreateFileMenu, bool bClose) :
     pMenuTools->Append(IDsiteSettings,"Access site settings...");
   }
   pMenuTools->Append(IDsiteShow,"Show site settings folder...");
+  pMenuTools->Append(IDsiteCommandLine, "Command line tools...");
   pMenuTools->Append(IDlog,"Message Log");
   pMenuHelp->Append(IDhelp,"&Documentation\tF1");
   pMenuHelp->Append(IDprivacy, "&Privacy Notice...");
