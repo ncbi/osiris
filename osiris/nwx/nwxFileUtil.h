@@ -88,6 +88,7 @@ public:
   static wxString PathFind(const wxString &sExeFile, bool bCheckSys = true, bool bCheckPath = true);
   static bool ShowFileFolder(const wxString &sFileName, bool bSelectDir = false);
   static int OpenFileFromOS(const wxString &sFileName);
+  static int OpenCommandFromOS(const wxArrayString &sArgs);
   static wxString BaseName(const wxString &sDir);
   static wxString GetExistingParent(const wxString &s);
   static bool ExistingParentWritable(const wxString &s);

@@ -151,5 +151,6 @@ osiris_SOURCES =  \
 ../CXSLExportFileType.cpp \
 ../ConfigDir.cpp \
 ../UnitTest.cpp \
+../UserConfig.cpp \
 ../mainApp.cpp \
 ../mainFrame.cpp
