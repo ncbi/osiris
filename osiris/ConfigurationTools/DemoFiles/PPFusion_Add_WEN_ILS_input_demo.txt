@@ -1,0 +1,6 @@
+LadderOperation = Amend;
+OutputConfigPath = {OSIRISFILES};
+LadderFileName = PPFusion_Tutorial_LadderInfo.xml;
+BinsFileName = {OSIRISFILES}\ConfigurationTools\Tutorial_PPFusion\PowerPlex_Fusion_Bins_WEN_tutorial.txt;
+ILSFamilyName = PROMEGA-ILS-WEN-500;
+;
