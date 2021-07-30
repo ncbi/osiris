@@ -99,9 +99,9 @@ sub COPYFILES
   &MKDIR("${dest}/Config/xsd");
   &MKDIR("${dest}/Config/LadderSpecifications");
   &MKDIR("${dest}/Config/UserTools");
-  for my $sdir (qw/DemoFiles LadderGeneration StandardPositiveControl Tutorial_PPFusion)
+  for my $sdir (qw/DemoFiles LadderGeneration StandardPositiveControl Tutorial_PPFusion/)
   {
-      my $dest1 = "${dest}/Config/UserTools/${sdir}"
+      my $dest1 = "${dest}/Config/UserTools/${sdir}";
       &MKDIR($dest1);
       &SYSTEM("${CP} ${src}/ConfigurationTools/${sdir}/*.* ${dest1}");
   }
