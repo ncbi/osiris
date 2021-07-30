@@ -154,7 +154,7 @@ bool UserConfig::OpenTerminal()
       wxString sUserScript = mainApp::GetConfig()->GetConfigPath();
       nwxFileUtil::EndWithSeparator(&sUserScript);
       sUserScript.Append(SCRIPTFILE);
-      bRtn = CopyFile(sScript, sUserScript, false) && _fixFile(sUserScript) &&
+      bRtn = wxCopyFile(sScript, sUserScript, false) && _fixFile(sUserScript) &&
         wxFileName::IsFileReadable(sUserScript) && 
         nwxFileUtil::OpenFileFromOS(sUserScript);
     }
@@ -287,7 +287,7 @@ wxDirTraverseResult UserConfig::OnFile(const wxString& filename)
   {
     m_bStatus = false;
   }
-  else if (!( wxFileExists(sNewFile) || CopyFile(filename, sNewFile, true) ))
+  else if (!( wxFileExists(sNewFile) || wxCopyFile(filename, sNewFile, true) ))
   {
     m_bStatus = false;
   }
