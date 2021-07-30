@@ -881,7 +881,7 @@ void mainFrame::OnShowCommandLine(wxCommandEvent &)
   }
   if (!sError.IsEmpty())
   {
-    mainApp::ShowError(sError, GetParent());
+    mainApp::ShowError(sError);
     mainApp::LogMessage(sError);
   }
 }
