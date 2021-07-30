@@ -120,8 +120,6 @@ wxString UserConfig::_findTerminalApp()
   };
   const char **pApp;
   const char **pDir;
-  bool bExist;
-  bool bReadable;
   for (pApp = pListApp; ((*pApp) != NULL) && sRtn.IsEmpty(); ++pApp)
   {
     for (pDir = pListDir; ((*pDir) != NULL) && sRtn.IsEmpty(); ++pDir)
@@ -129,8 +127,12 @@ wxString UserConfig::_findTerminalApp()
       sApp = (*pDir);
       sApp.Append(*pApp);
       sApp.Append(wxT(".app"));
+      wxFileName fApp(sApp);
+      fApp.Normalize(wxPATH_NORM_ABSOLUTE | wxPATH_NORM_TILDE |
+        wxPATH_NORM_ENV_VARS | wxPATH_NORM_SHORTCUT);
+      sApp = fApp.GetFullPath();
       sCheck = sApp;
-      sCheck += "/Contents"
+      sCheck += "/Contents";
       if (wxFileName::IsDirReadable(sCheck))
       {
         sRtn = sApp;
