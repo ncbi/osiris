@@ -103,6 +103,8 @@ wxString UserConfig::_findTerminalApp()
 {
   wxString sRtn;
   wxString sApp;
+  wxString sMessage(wxT("Cannot find terminal app on macintosh\n"));
+  wxString sCheck;
   const char *pListDir[] =
   {
       "/Applications/",
@@ -118,6 +120,8 @@ wxString UserConfig::_findTerminalApp()
   };
   const char **pApp;
   const char **pDir;
+  bool bExist;
+  bool bReadable;
   for (pApp = pListApp; ((*pApp) != NULL) && sRtn.IsEmpty(); ++pApp)
   {
     for (pDir = pListDir; ((*pDir) != NULL) && sRtn.IsEmpty(); ++pDir)
@@ -125,15 +129,22 @@ wxString UserConfig::_findTerminalApp()
       sApp = (*pDir);
       sApp.Append(*pApp);
       sApp.Append(wxT(".app"));
-      if (wxDirExists(sApp) && wxFileName::IsFileReadable(sApp))
+      sCheck = sApp;
+      sCheck += "/Contents"
+      if (wxFileName::IsDirReadable(sCheck))
       {
         sRtn = sApp;
+      }
+      else
+      {
+        sMessage += "\n  ";
+        sMessage += sApp;
       }
     }
   }
   if(sRtn.IsEmpty())
   {
-    mainApp::LogMessage(wxT("Cannot find terminal app on macintosh"));
+    mainApp::LogMessage(sMessage);
   }
   return sRtn;
 }
@@ -154,7 +165,7 @@ bool UserConfig::OpenTerminal()
       wxString sUserScript = mainApp::GetConfig()->GetConfigPath();
       nwxFileUtil::EndWithSeparator(&sUserScript);
       sUserScript.Append(SCRIPTFILE);
-      bRtn = wxCopyFile(sScript, sUserScript, false) && _fixFile(sUserScript) &&
+      bRtn = wxCopyFile(sScript, sUserScript, true) && _fixFile(sUserScript) &&
         wxFileName::IsFileReadable(sUserScript) && 
         nwxFileUtil::OpenFileFromOS(sUserScript);
     }
@@ -287,7 +298,7 @@ wxDirTraverseResult UserConfig::OnFile(const wxString& filename)
   {
     m_bStatus = false;
   }
-  else if (!( wxFileExists(sNewFile) || wxCopyFile(filename, sNewFile, true) ))
+  else if (!( wxFileExists(sNewFile) || wxCopyFile(filename, sNewFile, false) ))
   {
     m_bStatus = false;
   }
