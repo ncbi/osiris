@@ -173,7 +173,7 @@ bool UserConfig::OpenTerminal()
     }
 #endif
 #ifdef __WXMAC__
-    sScript.Append("oscmdline.bat");
+    sScript.Append("oscmdline.sh");
     wxString sAppPath = _findTerminalApp();
     bRtn = (!sAppPath.IsEmpty()) && wxFileName::IsFileReadable(sScript);
     if (bRtn)
