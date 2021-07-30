@@ -122,7 +122,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		RGString ladderDirectory = userSiteDirectory + "/Config/LadderSpecifications";
 		RGString ladderPath = ladderDirectory + "/" + inputFile.GetLadderFileName ();
 
-	//	success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile (userSiteDirectory + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.txt");
+	//	success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile (userSiteDirectory + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.tab");
 
 		RGString oldLadderString;
 		RGString newLadderString;
@@ -201,7 +201,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	RGString ladderGenerationConfigDirectory = configurationToolsDirectory + "/LadderGeneration";
 	RGString positiveControlsConfigDirectory = configurationToolsDirectory + "/StandardPositiveControl";
 
-//	success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile (configurationToolsDirectory + "/StandardPositiveControl/StandardPositiveControlList.txt");
+//	success = LadderInputFile::AddLocusNamesAndControlNamesFromControlFile (configurationToolsDirectory + "/StandardPositiveControl/StandardPositiveControlList.tab");
 
 	RGString configDirectoryName = userSiteDirectory + "/Config";
 	RGString ladderDirectoryName = configDirectoryName + "/LadderSpecifications";

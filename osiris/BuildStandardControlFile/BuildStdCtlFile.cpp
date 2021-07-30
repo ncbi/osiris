@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
 			cout << "Created directory with path:  " << volumeDirectoryName << endl;
 	}
 
-	RGString InputFileName = positiveControlsConfigDirectory + "/StandardPositiveControlList.txt";
+	RGString InputFileName = positiveControlsConfigDirectory + "/StandardPositiveControlList.tab";
 	RGString OutputFileName = ladderDirectoryName + "/StandardPositiveControls.xml";
 
 	RGFile inputList (InputFileName, "rt");
