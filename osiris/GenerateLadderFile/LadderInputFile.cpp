@@ -485,7 +485,7 @@ int LadderInputFile :: AssignString () {
 
 		SetEmbeddedSlashesToForward (mStringRight);
 		mOutputConfigDirectoryPath = mStringRight;
-		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.txt");
+		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.tab");
 		status = 0;
 	}
 
@@ -901,7 +901,7 @@ int LadderInputFile :: AssignStringAppend () {
 
 		SetEmbeddedSlashesToForward (mStringRight);
 		mOutputConfigDirectoryPath = mStringRight;
-		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.txt");
+		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.tab");
 		status = 0;
 	}
 
