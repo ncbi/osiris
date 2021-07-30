@@ -873,7 +873,7 @@ void mainFrame::OnShowCommandLine(wxCommandEvent &)
     sError.Append(wxT("An error occurred while trying to\n"));
     sError.Append(wxT("open a command prompt window."));
 #ifdef __WXMAC__
-    if (!wxDirExists(wxT("/Applications/iTerm.app"))
+    if (!wxDirExists(wxT("/Applications/iTerm.app")))
     {
       sError.Append(wxT("\nThis feature requires the iTerm\nApplication."));
     }
