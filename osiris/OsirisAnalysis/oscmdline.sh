@@ -1,5 +1,9 @@
 #!/bin/bash
 clear
-cd "$OSIRISFILES"
+export OSIRISFILES="{OSIRISFILES}"
+export OSIRISTOOLS="{OSIRISFILES}/Config/ConfigurationTools"
+export PATH="{OSIRISEXEDIR}:${PATH}"
+export BASH_SILENCE_DEPRECATION_WARNING=1
+cd "${OSIRISTOOLS}"
 export PS1='\w\n\$ '
-exec /bin/bash
+exec /bin/bash --norc

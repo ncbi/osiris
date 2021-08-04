@@ -42,15 +42,13 @@ private:
   bool _copyConfig();
   static bool _fixDemoFile(const wxString &sFileName);
   static bool _fixFile(const wxString &sFileName);
+  static bool _runScript(const wxString &sFileName);
 #ifdef __WXMAC__
   static wxString _findTerminalApp();
 #endif
   wxString m_sSrcDir;
   wxString m_sDestDir;
   bool m_bStatus;
-#ifndef __WXMSW__
-  static bool g_bEnvSetup;
-#endif
   static const wxString DIR_NAME;
   static const wxString SRC_DIR_NAME;
   static const wxString DEMO_FILES;

@@ -49,9 +49,6 @@ const wxString UserConfig::SEARCH_STRING(wxT("{OSIRISFILES}"));
 const wxString UserConfig::EXE_STRING(wxT("{OSIRISEXEDIR}"));
 const wxString UserConfig::BACKSLASH(wxT("\\"));
 const wxString UserConfig::FWDSLASH(wxT("/"));
-#ifndef __WXMSW__
-bool UserConfig::g_bEnvSetup(false);
-#endif
 
 bool UserConfig::UserConfigExists(bool bBuild, wxString *pPath)
 {
@@ -78,24 +75,6 @@ bool UserConfig::UserConfigExists(bool bBuild, wxString *pPath)
       *pPath = sToolsPath;
     }
   }
-#ifndef __WXMSW__
-  if (bRtn && !g_bEnvSetup)
-  {
-    ConfigDir *pConfig = mainApp::GetConfig();
-    wxString sPath(wxGetenv(wxT("PATH")));
-    wxString sNewPath(pConfig->GetExePath());
-    if (!sPath.IsEmpty())
-    {
-      sNewPath.Append(":");
-      sNewPath.Append(sPath);
-    }
-    wxSetEnv(wxT("PATH"), sNewPath);
-    wxSetEnv(wxT("OSIRISFILES"), sSitePath);
-    wxSetEnv(wxT("OSIRISFILES"), sToolsPath);
-    wxSetEnv(wxT("BASH_SILENCE_DEPRECATION_WARNING"), wxT("1"));
-    g_bEnvSetup = true;
-  }
-#endif
   return bRtn;
 }
 #ifdef __WXMAC__
@@ -161,6 +140,10 @@ bool UserConfig::OpenTerminal()
     nwxFileUtil::EndWithSeparator(&sScript);
 #ifdef __WXMSW__
 #define SCRIPTFILE wxT("oscmdline.bat")
+#endif
+#ifdef __WXMAC__
+#define SCRIPTFILE wxT("oscmdline.sh")
+#endif
     sScript.Append(SCRIPTFILE);
     if (wxFileName::IsFileReadable(sScript))
     {
@@ -169,24 +152,29 @@ bool UserConfig::OpenTerminal()
       sUserScript.Append(SCRIPTFILE);
       bRtn = wxCopyFile(sScript, sUserScript, true) && _fixFile(sUserScript) &&
         wxFileName::IsFileReadable(sUserScript) && 
-        nwxFileUtil::OpenFileFromOS(sUserScript);
+        _runScript(sUserScript);
     }
-#endif
-#ifdef __WXMAC__
-    sScript.Append("oscmdline.sh");
-    wxString sAppPath = _findTerminalApp();
-    bRtn = (!sAppPath.IsEmpty()) && wxFileName::IsFileReadable(sScript);
-    if (bRtn)
-    {
-      wxArrayString as;
-      as.Add("-a");
-      as.Add(sAppPath);
-      as.Add(sScript);
-      bRtn = !nwxFileUtil::OpenCommandFromOS(as);
-    }
-#endif
   }
   return bRtn;
+}
+bool UserConfig::_runScript(const wxString &sFileName)
+{
+#ifdef __WXMSW__
+  return nwxFileUtil::OpenFileFromOS(sFileName);
+#endif
+#ifdef __WXMAC__
+  wxString sAppPath = _findTerminalApp();
+  bool bRtn = !sAppPath.IsEmpty();
+  if (bRtn)
+  {
+    wxArrayString as;
+    as.Add("-a");
+    as.Add(sAppPath);
+    as.Add(sFileName);
+    bRtn = !nwxFileUtil::OpenCommandFromOS(as);
+  }
+  return bRtn;
+#endif
 }
 
 bool UserConfig::_copyConfig()
