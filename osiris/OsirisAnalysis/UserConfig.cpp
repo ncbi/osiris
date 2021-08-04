@@ -240,7 +240,11 @@ bool UserConfig::_fixFile(const wxString &sFileName)
       bChange = true;
     }
 #ifndef __WXMSW__
-    if (sContents.Contains(BACKSLASH))
+    if (sFileName.EndsWith(wxT(".sh")))
+    {
+      // do not replace backslash in a shell script
+    }
+    else if (sContents.Contains(BACKSLASH))
     {
       bChange = true;
       sContents.Replace(BACKSLASH, FWDSLASH, true);
