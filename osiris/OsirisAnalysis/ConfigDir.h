@@ -197,7 +197,7 @@ public:
   wxString GetSiteToolsPath() const
   {
     wxString sRtn;
-    _BuildFilePath(GetSiteConfigPath(), wxT("ConfigurationTools"), &sRtn);
+    _BuildFilePath(GetSitePath(), wxT("ConfigurationTools"), &sRtn);
     return sRtn;
   }
   wxString GetExeToolsPath() const

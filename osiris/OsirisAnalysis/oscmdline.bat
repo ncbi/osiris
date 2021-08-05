@@ -2,5 +2,5 @@
 cls
 set PATH={OSIRISEXEDIR};%PATH%
 set OSIRISFILES={OSIRISFILES}
-set OSIRISTOOLS=%OSIRISFILES%\Config\ConfigurationTools
+set OSIRISTOOLS=%OSIRISFILES%\ConfigurationTools
 cmd /K cd /d "%OSIRISTOOLS%"

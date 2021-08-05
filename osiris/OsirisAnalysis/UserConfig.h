@@ -49,13 +49,13 @@ private:
   wxString m_sSrcDir;
   wxString m_sDestDir;
   bool m_bStatus;
-  static const wxString DIR_NAME;
-  static const wxString SRC_DIR_NAME;
   static const wxString DEMO_FILES;
   static const wxString SEARCH_STRING;
   static const wxString EXE_STRING;
+#ifndef __WXMSW__
   static const wxString BACKSLASH;
   static const wxString FWDSLASH;
+#endif
 public:
   virtual ~UserConfig() {}
   virtual wxDirTraverseResult OnDir(const wxString& dirname);

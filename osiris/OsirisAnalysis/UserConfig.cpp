@@ -42,13 +42,13 @@
 #include "nwx/stde.h"
 #include <wx/utils.h> 
 
-const wxString UserConfig::DIR_NAME(wxT("ConfigurationTools"));
-const wxString UserConfig::SRC_DIR_NAME(wxT("UserTools"));
 const wxString UserConfig::DEMO_FILES(wxT("demofiles"));
 const wxString UserConfig::SEARCH_STRING(wxT("{OSIRISFILES}"));
 const wxString UserConfig::EXE_STRING(wxT("{OSIRISEXEDIR}"));
+#ifndef __WXMSW__
 const wxString UserConfig::BACKSLASH(wxT("\\"));
 const wxString UserConfig::FWDSLASH(wxT("/"));
+#endif
 
 bool UserConfig::UserConfigExists(bool bBuild, wxString *pPath)
 {
