@@ -1,2 +1,2 @@
 @echo off
-start %SystemRoot%\system32\MsiExec.exe /x{4AF31533-F6F1-4678-B622-CA8FB966C53E}
+start %SystemRoot%\system32\MsiExec.exe /x{B6AB3FFE-6141-4B27-BC1C-9A7B5F69EF2B}

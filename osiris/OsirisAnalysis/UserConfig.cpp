@@ -186,6 +186,10 @@ bool UserConfig::_copyConfig()
   nwxFileUtil::NoEndWithSeparator(&m_sDestDir);
   wxDir dir(m_sSrcDir);
   dir.Traverse(*this);
+  m_bStatus = m_bStatus &&
+      nwxFileUtil::MkDir(pConfig->GetSiteConfigPath(), true) &&
+      nwxFileUtil::MkDir(pConfig->GetSiteILSLadderFilePath(), true) &&
+      nwxFileUtil::MkDir(pConfig->GetSiteKitPath(), true);
   if ((!m_bStatus) && wxDirExists(m_sDestDir))
   {
     // if the config tools directory was created and not successfully copied
