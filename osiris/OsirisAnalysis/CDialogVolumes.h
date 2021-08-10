@@ -48,6 +48,7 @@ public:
   virtual ~CDialogVolumes();
   virtual bool TransferDataFromWindow();
   virtual void OnTimer(wxTimerEvent &e);
+  virtual void EndModal(int retCode);
   const wxString &GetSelection()
   {
     return m_sSelection;

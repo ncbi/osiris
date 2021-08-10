@@ -698,6 +698,14 @@ bool CDialogVolumes::_UpdateVolumeNames()
   _SetVolume();
   return bRtn;
 }
+void CDialogVolumes::EndModal(int retCode)
+{
+  if ( (m_pVolumeCurrent != NULL) && m_pVolumeCurrent->IsLocked() )
+  {
+    m_pVolumeCurrent->ReleaseLock();
+  }
+  wxDialog::EndModal(retCode);
+}
 void CDialogVolumes::OnTimer(wxTimerEvent &e) // called from mainFrame
 {
   m_volumes.RefreshLocksOnTimer(e.GetInterval());
