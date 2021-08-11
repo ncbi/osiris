@@ -233,9 +233,14 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	CommandInputs << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";\n";
 	CommandInputs << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";\n";
 
-	CommandInputs << "LadderFullPathName " << ladderConfigFile << ";\n";
-	CommandInputs << "ILSFullPathName " << ILSFullPathName << ";\n";
-	CommandInputs << "PositiveControlFullPathName " << PositiveControlFullPathName << ";\n";
+	if (ladderConfigFile.Length () > 0)
+		CommandInputs << "LadderFullPathName " << ladderConfigFile << ";\n";
+
+	if (ILSFullPathName.Length () > 0)
+		CommandInputs << "ILSFullPathName " << ILSFullPathName << ";\n";
+
+	if (PositiveControlFullPathName.Length () > 0)
+		CommandInputs << "PositiveControlFullPathName " << PositiveControlFullPathName << ";\n";
 
 	size_t posn = 0;
 
