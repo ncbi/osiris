@@ -251,13 +251,20 @@ int OsirisInputFile :: ReadLine () {
 
 	mStringLeft = "";
 	mStringRight = "";
+	char CR = 0x0D;
+	char LF = 0x0A;
 
 	while (true) {
 
 		cin >> noskipws >> T;
 
-		if (T == '\n')
-			continue;
+		if ((T == '\n') || (T == CR) || (T == LF)) {
+			
+			if (thisLine.Length () == 0)
+				continue;
+
+			break;
+		}
 
 		mCumulativeStringWithNewLines.Append (T);
 		mCumulativeStringWithoutNewLines.Append (T);
@@ -832,12 +839,14 @@ void OsirisInputFile :: OutputDetectionThresholdOverrides (RGString& output) {
 void OsirisInputFile :: RemoveLeadingAndTrailingBlanks (RGString& string) {
 
 	char T;
+	char CR = 0x0D;
+	char LF = 0x0A;
 
 	while (string.Length () > 0) {
 
 		T = string.GetLastCharacter ();
 
-		if ((T == ' ') || (T == '\t') || (T == '\n'))
+		if ((T == ' ') || (T == '\t') || (T == '\n') || (T == CR) || (T == LF))
 			string.RemoveLastCharacter ();
 
 		else
@@ -850,7 +859,7 @@ void OsirisInputFile :: RemoveLeadingAndTrailingBlanks (RGString& string) {
 
 		T = string.GetLastCharacter ();
 
-		if ((T == ' ') || (T == '\t') || (T == '\n'))
+		if ((T == ' ') || (T == '\t') || (T == '\n') || (T == CR) || (T == LF))
 			string.RemoveLastCharacter ();
 
 		else
