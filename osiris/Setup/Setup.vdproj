@@ -1419,12 +1419,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_822E444F04EA480EB61D8DD19E90CD78"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_824AABC85E3845BD984EAC5B59E66CB1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -7542,26 +7536,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_822E444F04EA480EB61D8DD19E90CD78"
-            {
-            "SourcePath" = "8:..\\docs\\V2.3-Change-Log.pdf"
-            "TargetName" = "8:V2.3-Change-Log.pdf"
-            "Tag" = "8:"
-            "Folder" = "8:_205830DC9A394AEFB167B658DBA25874"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_824AABC85E3845BD984EAC5B59E66CB1"
             {
             "SourcePath" = "8:..\\OsirisXML\\NamedxmlConfigurations\\QIAGEN_ARGUS_x12_QS\\QIAGEN_ARGUS_x12_QS_MessageBookV4.0.xml"
@@ -13286,7 +13260,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
         "ProductCode" = "8:{A0F85193-6CBF-4E3E-86D0-0AA39CB340EB}"
-        "PackageCode" = "8:{14BFA69B-1558-41FB-9D7D-3B45A9D26DD6}"
+        "PackageCode" = "8:{BC93F6B0-2C29-4590-8376-056ADEF30C3C}"
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
