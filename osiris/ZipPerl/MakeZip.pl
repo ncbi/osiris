@@ -99,6 +99,7 @@ sub COPYFILES
   &MKDIR("${dest}/Config/xsd");
   &MKDIR("${dest}/Config/LadderSpecifications");
   &MKDIR("${dest}/Config/UserTools");
+  &MKDIR("${dest}/ReleaseNotes");
   for my $sdir (qw/DemoFiles LadderGeneration StandardPositiveControl Tutorial_PPFusion/)
   {
       my $dest1 = "${dest}/Config/UserTools/${sdir}";
@@ -210,7 +211,7 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
   &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes*.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes*.pdf ${dest}/ReleaseNotes");
 }
 sub GetVCDir
 {
