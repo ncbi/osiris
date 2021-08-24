@@ -47,11 +47,7 @@
 #endif
 #endif
 
-<<<<<<< HEAD
-#define OSIRIS_VERS_BASE "2.16 Beta 19"
-=======
-#define OSIRIS_VERS_BASE "2.15.1"
->>>>>>> 7f5c601b3bf942cb5366c19ecc4cd1a4b1727f3d
+#define OSIRIS_VERS_BASE "2.16"
 #define OSIRIS_VERS OSIRIS_VERS_BASE
 #define OSIRIS_VERS_SEARCH_OS " for "
 #define OSIRIS_VERSION OSIRIS_VERS OSIRIS_VERS_SEARCH_OS OSIRIS_OS
