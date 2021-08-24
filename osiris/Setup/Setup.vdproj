@@ -501,6 +501,7 @@
         }
         "Entry"
         {
+<<<<<<< HEAD
         "MsmKey" = "8:_2B21E13006314B1AB0F70202DA7B17D9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -508,6 +509,9 @@
         "Entry"
         {
         "MsmKey" = "8:_2BFEF9CA3E6C4EFE8D089E8DED6AE10D"
+=======
+        "MsmKey" = "8:_2B27B2FB16D14D9F83074D7EB3A8BD0A"
+>>>>>>> 7f5c601b3bf942cb5366c19ecc4cd1a4b1727f3d
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2820,7 +2824,11 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
+<<<<<<< HEAD
         "OutputFilename" = "8:Release\\Osiris-2.16-Beta-19.msi"
+=======
+        "OutputFilename" = "8:Release\\Osiris-2.15.1.msi"
+>>>>>>> 7f5c601b3bf942cb5366c19ecc4cd1a4b1727f3d
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -4482,6 +4490,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+<<<<<<< HEAD
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2B21E13006314B1AB0F70202DA7B17D9"
             {
             "SourcePath" = "8:..\\ConfigurationTools\\Tutorial_PPFusion\\PowerPlex_Fusion_Bins_POP7_WEN_tutorial.txt"
@@ -4503,9 +4512,12 @@
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2BFEF9CA3E6C4EFE8D089E8DED6AE10D"
+=======
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2B27B2FB16D14D9F83074D7EB3A8BD0A"
+>>>>>>> 7f5c601b3bf942cb5366c19ecc4cd1a4b1727f3d
             {
-            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.15.pdf"
-            "TargetName" = "8:OSIRIS_Release_Notes_v2.15.pdf"
+            "SourcePath" = "8:..\\docs\\OSIRIS_Release_Notes_v2.15.1.pdf"
+            "TargetName" = "8:OSIRIS_Release_Notes_v2.15.1.pdf"
             "Tag" = "8:"
             "Folder" = "8:_205830DC9A394AEFB167B658DBA25874"
             "Condition" = "8:"
@@ -13285,15 +13297,24 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Osiris"
+<<<<<<< HEAD
         "ProductCode" = "8:{A0F85193-6CBF-4E3E-86D0-0AA39CB340EB}"
         "PackageCode" = "8:{BC93F6B0-2C29-4590-8376-056ADEF30C3C}"
+=======
+        "ProductCode" = "8:{17B7CF7C-28A7-46BB-A8E4-9D3230EBD8B4}"
+        "PackageCode" = "8:{5ED29B0F-9F02-49B0-A5BF-9B7EDBF29F02}"
+>>>>>>> 7f5c601b3bf942cb5366c19ecc4cd1a4b1727f3d
         "UpgradeCode" = "8:{5E310A5B-1839-40AE-B98C-666C401BF12D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
+<<<<<<< HEAD
         "ProductVersion" = "8:2.16.0019"
+=======
+        "ProductVersion" = "8:2.15.1004"
+>>>>>>> 7f5c601b3bf942cb5366c19ecc4cd1a4b1727f3d
         "Manufacturer" = "8:NCBI"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://www.ncbi.nlm.nih.gov/projects/SNP/osiris/"
