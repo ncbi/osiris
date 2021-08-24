@@ -91,14 +91,24 @@ sub COPYFILES
     $destTest = $dest;
   }
   my $destXSL = "${dest}/ExportFiles";
+  my $sdir;
   &MKDIR("${dest}");
   &MKDIR($destXSL);
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");
   &MKDIR("${dest}/Config/LadderSpecifications");
+  &MKDIR("${dest}/Config/UserTools");
+  &MKDIR("${dest}/ReleaseNotes");
+  for my $sdir (qw/DemoFiles LadderGeneration StandardPositiveControl Tutorial_PPFusion/)
+  {
+      my $dest1 = "${dest}/Config/UserTools/${sdir}";
+      &MKDIR($dest1);
+      &SYSTEM("${CP} ${src}/ConfigurationTools/${sdir}/*.* ${dest1}");
+  }
+  
   &SYSTEM("${CP} -R ${src}/docs/TestAnalysis ${destTest}");
-  for my $sdir (qw/
+  for $sdir (qw/
       CANNABIS
       Cofiler
       CORDIS_PLUS
@@ -192,7 +202,6 @@ sub COPYFILES
   &SYSTEM("${CP} ${src}/OsirisXML/util.xsl ${destXSL}");
 
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/*LadderInfo.xml ${dest}/Config/LadderSpecifications");
-  &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/LadderSpecifications/kitcolors2.0.xml ${dest}/Config/LadderSpecifications");
   &SYSTEM("${CP} ${src}/OsirisXML/CmfList.xml ${dest}/Config");
   &SYSTEM("${CP} ${src}/OsirisXML/ArtifactLabels.xml ${dest}/Config/LadderSpecifications");
@@ -201,26 +210,7 @@ sub COPYFILES
 
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.4.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.5.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.6.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.7.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.8_2.9.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.9.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.2.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.10.3.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.11.2.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.12.2.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.13.1.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.14.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes_v2.15.1.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes*.pdf ${dest}/ReleaseNotes");
 }
 sub GetVCDir
 {
@@ -265,10 +255,14 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/Release/TestAnalysisDirectoryLC.exe ${dest}");
   &SYSTEM("${CP} ${src}/fsa2xml/Release/fsa2xml.exe ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/Release/OsirisAnalysis.exe ${dest}");
+  &SYSTEM("${CP} ${src}/GenerateLadderFile/Release/GenerateLadderFile.exe ${dest}");
+  &SYSTEM("${CP} ${src}/BuildStandardControlFile/Release/BuildStandardControlFile.exe ${dest}");
+  &SYSTEM("${CP} ${src}/GenerateILSFamily/Release/GenerateILSFamily.exe ${dest}");
   &SYSTEM("${CP} ${src}/MessageBook/cpmsg.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
   &SYSTEM("${CP} ${src}/nwx/pinger.vbs ${dest}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/oscmdline.bat ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
   my $zipFile = "${dest}-Windows.exe";
@@ -340,10 +334,14 @@ sub CopyMac
 
   &SYSTEM("${CP} ${src}/nwx/pinger.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.sh ${DEST}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/oscmdline.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");
   &SYSTEM("${CP} ${src}/fsa2xml/bin/fsa2xml ${DEST}");
+  &SYSTEM("${CP} ${src}/GenerateILSFamily/bin/GenerateILSFamily ${DEST}");
+  &SYSTEM("${CP} ${src}/GenerateLadderFile/bin/GenerateLadderFile ${DEST}");
+  &SYSTEM("${CP} ${src}/BuildStandardControlFile/bin/BuildStandardControlFile ${DEST}");
 
   &SYSTEM("${CP} -R \"${src}/dmg/System Applications Folder.app\" \"${TOP}\"");
   &SYSTEM("${CP} -R \"${src}/dmg/User Applications Folder.app\" \"${TOP}\"");
@@ -362,6 +360,10 @@ sub CopyMac
   &SYSTEM("strip ${DEST}/osiris");
   &SYSTEM("strip ${DEST}/TestAnalysisDirectoryLC");
   &SYSTEM("strip ${DEST}/fsa2xml");
+  &SYSTEM("strip ${DEST}/GenerateILSFamily");
+  &SYSTEM("strip ${DEST}/GenerateLadderFile");
+  &SYSTEM("strip ${DEST}/BuildStandardControlFile");
+
   &COPYFILES($src,$DEST,$TOP);
   my $XDISP = $ENV{DISPLAY};
   my $bSign = ($XDISP =~ m/(^.*os.macosforce.xquartz)?:0(\.0+)?$/);

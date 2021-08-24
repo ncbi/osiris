@@ -51,6 +51,7 @@
 #include "SmartNotice.h"
 #include "STRSmartNotices.h"
 #include "CoreBioComponent.h"
+#include "ParameterServer.h"
 
 #include <iostream>
 #include <vector>
@@ -9491,6 +9492,11 @@ PopulationCollection :: PopulationCollection (const RGString& inputDirectoryName
 	RGString fullDirectoryName = inputDirectoryName + "/LadderSpecifications/";
 	RGString ilsFileName = fullDirectoryName + "ILSAndLadderInfo.xml";
 	RGString gridFileName;
+
+	RGString alternateILSFileName;
+
+	cout << "Starting population collection..." << endl;
+
 	RGFile ilsInputFile (ilsFileName, "rt");
 
 	if (!ilsInputFile.isValid ()) {
@@ -9511,59 +9517,105 @@ PopulationCollection :: PopulationCollection (const RGString& inputDirectoryName
 	RGXMLTagSearch kitsSearch ("Kits", mILSData);
 	bool foundKit = false;
 
-	if (!kitsSearch.FindNextTag (startIndex, endIndex, setsString)) {
+	//  Next, we need to find the ladder file name.  this is either in the lab settings, in which case the ParameterServer will have found it, or in the ILSAndLadderInfo.xml file
+	//  First, we test the ParameterServer.
 
-		Valid = FALSE;
-		ErrorString = "Could not find collection of kit names and files in ILS and Ladder Info, file:  " + ilsFileName;
-		return;
-	}
+	RGString kitFileName = ParameterServer::GetLabSettingsLadderFileName ();
+	alternateILSFileName  = ParameterServer::GetSpecificILSFilePath ();
+	RGString alternateLadderPath = ParameterServer::GetUserDirectoryForLadder ();
 
-	startIndex = 0;
-	RGXMLTagSearch setSearch ("Set", setsString);
-	RGXMLTagSearch kitNameSearch ("KitName", singleSetString);
-	RGXMLTagSearch gridFileNameSearch ("FileName", singleSetString);
+	cout << "Alternate path for ladder:  " << alternateLadderPath << endl;
+	cout << "Specific ILS File Path:  " << alternateILSFileName << endl;
+	cout << "Kit file name:  " << kitFileName << endl;
 
-	RGString kitName;
-	RGString kitFileName;
 	RGString fullPathGridFileName;
 
-	while (setSearch.FindNextTag (startIndex, endIndex, singleSetString)) {
+	if (kitFileName.Length () > 4) {
 
-		startIndex = endIndex;
-		kitNameSearch.ResetSearch ();
-		gridFileNameSearch.ResetSearch ();
-		setStartIndex = 0;
+		// We found it!  Open for reading:
 
-		if (!kitNameSearch.FindNextTag (setStartIndex, setEndIndex, kitName)) {
+		if (alternateLadderPath.Length () > 0)
+			fullPathGridFileName = alternateLadderPath + "/LadderSpecifications/" + kitFileName;
+
+		else
+			fullPathGridFileName = fullDirectoryName + kitFileName;
+
+		cout << "Full path ladder name:  " << fullPathGridFileName << endl;
+
+		RGFile gridFile (fullPathGridFileName, "rt");
+
+		if (!gridFile.isValid ()) {
 
 			Valid = FALSE;
-			ErrorString = "Marker set does not have a kit name, file:  " + ilsFileName;
+			ErrorString = "Could not open Ladder Data file:  " + fullPathGridFileName;
+			return;
 		}
 
-		else if (kitName == markerSetName) {
+		mGridData.ReadTextFile (gridFile);
+		Valid = TRUE;
+		cout << "Setting ladder file name from data in lab settings..." << endl;
+		foundKit = true;
+	}
 
-			setStartIndex = setEndIndex;
+	else {
 
-			if (!gridFileNameSearch.FindNextTag (setStartIndex, setEndIndex, kitFileName)) {
+		if (!kitsSearch.FindNextTag (startIndex, endIndex, setsString)) {
+
+			Valid = FALSE;
+			ErrorString = "Could not find collection of kit names and files in ILS and Ladder Info, file:  " + ilsFileName;
+			return;
+		}
+
+		startIndex = 0;
+		RGXMLTagSearch setSearch ("Set", setsString);
+		RGXMLTagSearch kitNameSearch ("KitName", singleSetString);
+		RGXMLTagSearch gridFileNameSearch ("FileName", singleSetString);
+
+		RGString kitName;
+
+		while (setSearch.FindNextTag (startIndex, endIndex, singleSetString)) {
+
+			startIndex = endIndex;
+			kitNameSearch.ResetSearch ();
+			gridFileNameSearch.ResetSearch ();
+			setStartIndex = 0;
+
+			if (!kitNameSearch.FindNextTag (setStartIndex, setEndIndex, kitName)) {
 
 				Valid = FALSE;
-				ErrorString = "Marker set with matching name does not have a kit filename, file:  " + ilsFileName;
-				return;
+				ErrorString = "Marker set does not have a kit name, file:  " + ilsFileName;
 			}
 
-			fullPathGridFileName = fullDirectoryName + kitFileName;
-			RGFile gridFile (fullPathGridFileName, "rt");
+			else if (kitName == markerSetName) {
 
-			if (!gridFile.isValid ()) {
+				setStartIndex = setEndIndex;
 
-				Valid = FALSE;
-				ErrorString = "Could not open Ladder Data file:  " + fullPathGridFileName;
-				return;
+				if (!gridFileNameSearch.FindNextTag (setStartIndex, setEndIndex, kitFileName)) {
+
+					Valid = FALSE;
+					ErrorString = "Marker set with matching name does not have a kit filename, file:  " + ilsFileName;
+					return;
+				}
+
+				if (alternateLadderPath.Length () > 0)
+					fullPathGridFileName = alternateLadderPath + kitFileName;
+
+				else
+					fullPathGridFileName = fullDirectoryName + kitFileName;
+
+				RGFile gridFile (fullPathGridFileName, "rt");
+
+				if (!gridFile.isValid ()) {
+
+					Valid = FALSE;
+					ErrorString = "Could not open Ladder Data file:  " + fullPathGridFileName;
+					return;
+				}
+
+				mGridData.ReadTextFile (gridFile);
+				Valid = TRUE;
+				foundKit = true;
 			}
-
-			mGridData.ReadTextFile (gridFile);
-			Valid = TRUE;
-			foundKit = true;
 		}
 	}
 
@@ -9572,6 +9624,22 @@ PopulationCollection :: PopulationCollection (const RGString& inputDirectoryName
 		Valid = FALSE;
 		ErrorString = "Could not find matching kit name, file = " + ilsFileName + " and kit name = " + markerSetName;
 	}
+
+	if (alternateILSFileName.Length () > 4) {
+
+		RGFile userILSFile (alternateILSFileName, "rt");
+
+		if (!userILSFile.isValid ()) {
+
+			Valid = FALSE;
+			ErrorString = "Could not open ILS file:  " + alternateILSFileName;
+			return;
+		}
+
+		mILSData = "";
+		mILSData.ReadTextFile (userILSFile);
+	}
+		
 }
 
 

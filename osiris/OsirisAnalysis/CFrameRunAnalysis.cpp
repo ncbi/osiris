@@ -481,18 +481,29 @@ void CFrameRunAnalysis::UpdateOutputText()
         if (pEntry->ErrorCount())
         {
           nwxString::Join(pEntry->GetErrors(), &sTemp, '\n');
-        }
-        else
-        {
-          sTemp.Empty();
-        }
-        if (sTemp.IsEmpty())
-        {
-          sTemp = wxT("No errors found.\n");
-        }
-        else
-        {
           sTemp.Append("\n");
+        }
+        else
+        {
+          switch (pEntry->GetStatus())
+          {
+          case DIRENTRY_PENDING:
+          case DIRENTRY_RUNNING:
+            sTemp.Empty();
+            break;
+          case DIRENTRY_ERROR:
+            sTemp = wxT("Process failed.  Select \"Details\" tab above for more information.");
+            break;
+          case DIRENTRY_EXPORT_ERROR:
+            sTemp = wxT("No analysis errors found.  Automated export failed.");
+            break;
+          case DIRENTRY_CANCELED:
+            sTemp = wxT("Analysis canceled by user.");
+            break;
+          case DIRENTRY_DONE:
+          default:
+            sTemp = wxT("No errors found.\n");
+          }
         }
         sValueError.Append(sTemp);
       }
@@ -547,7 +558,7 @@ bool CFrameRunAnalysis::_FileNeedsAttention(CDirEntry *pEntry)
     }
     else
     {
-      auto_ptr<wxXml2Document> pDoc(sheet.TransformToDOM(&doc));
+      unique_ptr<wxXml2Document> pDoc(sheet.TransformToDOM(&doc));
       wxXml2Node *pRoot = 
         (pDoc.get() == NULL) ? NULL : pDoc->GetRoot();
       wxXml2Node *pChild =
@@ -689,14 +700,13 @@ void CFrameRunAnalysis::OnTimer(wxTimerEvent &)
       m_pListDir->UpdateStatus((int) ndx);
       Cleanup(); // deletes m_pAnalysis and sets it to NULL
 
-      auto_ptr<nwxMRUBatch> pBatch(NULL);
+      unique_ptr<nwxMRUBatch> pBatch;
       if(m_DirList.GetCount() == 1)
       {
         m_pGauge->SetValue(0);
         if(bOpenOne)
         {
-          auto_ptr<nwxMRUBatch> _pBatch(new nwxMRUBatch(mainApp::GetMRU()));
-          pBatch = _pBatch;  // destructor will be called after _Run()
+          pBatch.reset(new nwxMRUBatch(mainApp::GetMRU()));  // destructor will be called after _Run()
           // bOpenOne is true only if the user did not cancel
           m_pParent->OpenFile(pEntry->GetOutputFile());
         }

@@ -65,6 +65,10 @@ static ParameterServerKill g_kill;
 
 int ParameterServer :: ReferenceCount = 0;
 ParameterServer* ParameterServer :: OneAndOnlySelf = NULL;
+RGString ParameterServer::mSpecificILSFilePath = "";
+RGString ParameterServer::mUserDirectoryForLadder = "";
+RGString ParameterServer::mUserDirectoryForPositiveControl = "";
+RGString ParameterServer::LadderFileName = "";
 
 
 void RFULimitsStruct :: Reset () {
@@ -384,13 +388,18 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 	RGString XMLString (xmlString);
 	RGString rfuString;
 	RGString dataTypeString;
+	RGString ladderNameString;
 	RGXMLTagSearch FileTypeSearch ("DataFileType", XMLString);
 	RGXMLTagSearch ladderRFUSearch ("LadderRFUTests", XMLString);
 	RGXMLTagSearch laneStdRFUSearch ("LaneStandardRFUTests", XMLString);
 	RGXMLTagSearch sampleRFUSearch ("SampleRFUTests", XMLString);
+	RGXMLTagSearch ladderFileNameSearch ("LadderFileName", XMLString);
 	size_t startOffset = 0;
 	size_t endOffset = 0;
 	double limit;
+//	ParameterServer* pServer = new ParameterServer;
+
+	cout << "Adding lab settings..." << endl;
 	
 	if (isLabSettings) {
 
@@ -513,6 +522,18 @@ bool ParameterServer :: AddGenotypeCollection (const RGString& xmlString, bool i
 		Locus::SetMinBoundForHomozygote (nonRFULimits.minBoundForHomozygote);
 		CoreBioComponent::SetMinBioIDForArtifacts (nonRFULimits.minBPSForArtifacts);
 		cout << "Min BP as read from Lab Settings = " << nonRFULimits.minBPSForArtifacts << "\n";
+
+		if (ladderFileNameSearch.FindNextTag (startOffset, endOffset, ladderNameString)) {
+
+			if (ladderNameString.Length () > 4) {
+
+				mLadderFileName = ladderNameString;
+				ParameterServer::SetLabSettingsLadderFileName (ladderNameString);
+				startOffset = endOffset;
+				cout << "Found Ladder file name in lab settings..." << mLadderFileName << endl;
+				//return true;
+			}
+		}
 
 		//
 		//  Reformat XMLString a little and save into mLabSettingsString
@@ -904,7 +925,7 @@ int ParameterServer :: SetAllLocusSpecificThresholds (PopulationCollection* coll
 
 	if (mSet == NULL) {
 
-//		cout << "Parameter server could not find population marker set named:  " << mMarkerSetName.GetData () << endl;
+//		cout << "Parameter server could not find population marker set named:  " << mMarkerSetName->GetData () << endl;
 		STRLCAnalysis::mFailureMessage->CouldNotFindNamedMarkerSet (*mMarkerSetName);
 		STRLCAnalysis::mFailureMessage->SetPingValue (30);
 		STRLCAnalysis::mFailureMessage->WriteAndResetCurrentPingValue ();

@@ -316,6 +316,10 @@ CPersistKitList *mainApp::GetKitList()
     m_pKitList = new CPersistKitList();
     m_pKitList->Load();
   }
+  else
+  {
+    m_pKitList->CheckReload();
+  }
   return m_pKitList;
 }
 CILSLadderInfo *mainApp::GetILSLadderInfo()
@@ -925,6 +929,7 @@ DEFINE_CMD_HANDLER(OnEditGridColours)
 DEFINE_CMD_HANDLER(OnShowLog)
 DEFINE_CMD_HANDLER(OnAccessSiteSettings)
 DEFINE_CMD_HANDLER(OnShowSiteSettings)
+DEFINE_CMD_HANDLER(OnShowCommandLine)
 DEFINE_CMD_HANDLER(OnAnalyze)
 DEFINE_CMD_HANDLER(OnOpenPlot)
 DEFINE_CMD_HANDLER(OnOpenBatch)
@@ -959,6 +964,7 @@ EVT_MENU(IDlog,       mainApp::OnShowLog)
 
 EVT_MENU(IDsiteSettings, mainApp::OnAccessSiteSettings)
 EVT_MENU(IDsiteShow, mainApp::OnShowSiteSettings)
+EVT_MENU(IDsiteCommandLine, mainApp::OnShowCommandLine)
 
 EVT_MENU(IDanalyze,   mainApp::OnAnalyze)
 EVT_MENU(IDArchiveExtract, mainApp::OnOpenArchive)

@@ -44,11 +44,11 @@ bool nwxZipOutput::OpenZip(const wxString &sFileName)
   if(fname.Normalize())
   {
     wxString sFullPath = fname.GetFullPath();
-    std::auto_ptr<wxTempFileOutputStream> pStream(
+    std::unique_ptr<wxTempFileOutputStream> pStream(
       new wxTempFileOutputStream(sFullPath));
     if(pStream.get()->IsOk())
     {
-      std::auto_ptr<wxZipOutputStream> pZip(
+      std::unique_ptr<wxZipOutputStream> pZip(
         new wxZipOutputStream( *(pStream.get()) ));
       bRtn = pZip.get()->IsOk();
       if(bRtn)
@@ -144,7 +144,7 @@ bool nwxZipOutput::WriteFile(const wxString &sInputFilePath, const wxString &sFi
   wxOutputStream *pOUT;
   if( fname.IsFileReadable() )
   {
-    std::auto_ptr<wxFFileInputStream> pIN(new wxFFileInputStream(fname.GetFullPath()));
+    std::unique_ptr<wxFFileInputStream> pIN(new wxFFileInputStream(fname.GetFullPath()));
     if( pIN.get()->IsOk() &&
         ( (pOUT = OpenFile(sZipFileName,true,fname.GetModificationTime())) != NULL )
       )

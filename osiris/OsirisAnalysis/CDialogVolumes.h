@@ -48,6 +48,7 @@ public:
   virtual ~CDialogVolumes();
   virtual bool TransferDataFromWindow();
   virtual void OnTimer(wxTimerEvent &e);
+  virtual void EndModal(int retCode);
   const wxString &GetSelection()
   {
     return m_sSelection;
@@ -92,7 +93,7 @@ private:
   void OnGridEditEnd(wxGridEvent &);
   bool _IsGridEditorShown();
 
-  CVolumes m_volumes;
+  CVolumes &m_volumes;
   CLabSettings m_labCopy;
   wxString m_sSelection;
   CVolume *m_pVolumeCurrent;

@@ -177,6 +177,23 @@ bool nwxFileUtil::ExistingParentWritable(const wxString &sPath)
 
 }
 
+bool nwxFileUtil::FileInDirectory(const wxString &sFilePath, const wxString &sDir)
+{
+  // OS-1568 check if a file is in the specified directory
+  bool rtn = false;
+  size_t nLenDir = sDir.Len();
+  if (nLenDir && (nLenDir <= sFilePath.Len()))
+  {
+#ifdef __WXMSW__
+    // case insensitive for windows
+    rtn = !sFilePath.Left(nLenDir).CmpNoCase(sDir);
+#else
+    rtn = sFilePath.StartsWith(sDir);
+#endif
+  }
+  return rtn;
+}
+
 wxString nwxFileUtil::BaseName(const wxString &_sDir)
 {
   wxString sDir(_sDir);
@@ -287,6 +304,34 @@ wxString nwxFileUtil::FindNewDirName(const wxString &sPath)
     sRtn.Append(nwxString::FormatNumber(n));
   }
   return sRtn;
+}
+wxDateTime nwxFileUtil::GetModTime(const wxString &sFullPath)
+{
+
+  wxDateTime dt(time_t(0));
+  wxFileName fn(sFullPath);
+  if (fn.IsFileReadable(sFullPath))
+  {
+    dt = fn.GetModificationTime();
+  }
+  return dt;
+}
+wxULongLong nwxFileUtil::GetSize(const wxString &sFullPath)
+{
+  wxULongLong nRtn = 0;
+  wxFileName fn(sFullPath);
+  if (fn.IsFileReadable(sFullPath))
+  {
+    nRtn = fn.GetSize();
+  }
+  return nRtn;
+}
+
+bool nwxFileUtil::IsMacAttrFile(const wxString &s)
+{
+  wxFileName fn(s);
+  wxString sName = fn.GetName();
+  return sName.StartsWith(g_sMacFileAttr);
 }
 
 #ifndef __WXMSW__
@@ -470,31 +515,54 @@ wxString nwxFileUtil::_getFileOpenExe()
 }
 int nwxFileUtil::OpenFileFromOS(const wxString &sFileName)
 {
-  // STOP HERE
+  wxArrayString as;
+  int nRtn = -2;
+  as.Add(sFileName);
+
+  if (wxFileName::IsFileReadable(sFileName) ||
+    wxFileName::IsDirReadable(sFileName)
+    )
+  {
+    nRtn = OpenCommandFromOS(as);
+  }
+  return nRtn;  
+}
+int nwxFileUtil::OpenCommandFromOS(const wxArrayString &sArgs)
+{
   int nRtn = 0;
+#define MAX_ARG 40
+  size_t nArgs = sArgs.GetCount();
   wxString sEXE = _getFileOpenExe();
-  bool b = sEXE.IsEmpty() ? false :
-    ( wxFileName::IsFileReadable(sFileName) 
-      || wxFileName::IsDirReadable(sFileName)
-    );
-  if(!b)
+  if(sEXE.IsEmpty())
+  {
+    nRtn = -2;
+  }
+  else if (nArgs > MAX_ARG)
   {
     nRtn = -2;
   }
   else
   {
-    const wchar_t *ARGV[3];
+    const wchar_t *ARGV[MAX_ARG + 2];
+    size_t i;
     ARGV[0] = sEXE.wx_str();
-    ARGV[1] = sFileName.wx_str();
-    ARGV[2] = NULL;
+    for (i = 0; i < nArgs; ++i)
+    {
+      ARGV[i + 1] = sArgs.Item(i).wx_str();
+    }
+    ARGV[nArgs+1] = NULL;
     nRtn = (int) wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
     if(nRtn)
     {
       wxString sMsg = "Exec: '";
       sMsg.Append(sEXE);
-      sMsg.Append(" ");
-      sMsg.Append(sFileName);
-      sMsg.Append("' -- returned: " );
+      for (i = 0; i < nArgs; ++i)
+      {
+        sMsg.Append(" '");
+        sMsg.Append(sArgs.Item(i));
+        sMsg.Append("'");
+      }
+      sMsg.Append(" -- returned: " );
       sMsg.Append(nwxString::FormatNumber((int) nRtn));
       nwxLog::LogMessage(sMsg);
     }
@@ -748,6 +816,7 @@ size_t nwxFileUtil::GetAllFilesNoCase(
 
 std::vector<wxString> nwxFileUtil::g_asSysPath;
 std::vector<wxString> nwxFileUtil::g_asPath;
+wxString nwxFileUtil::g_sMacFileAttr(wxT("._"));
 bool nwxFileUtil::g_PATH_SET = false;
 
 #ifdef __WXMSW__

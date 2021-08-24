@@ -177,15 +177,16 @@ nwxXmlNodeList *nwxXmlPersist::CreateNodeList(
   //  defined in InwxXmlIO
   //
   nwxXmlPersist *pObj = (nwxXmlPersist *)_pObj;
-  return pObj->CreateNodeList(sNodeName);
+  nwxXmlNodeList *pRtn = pObj->CreateNodeList(sNodeName);
+  return pRtn;
 }
 
 nwxXmlNodeList *nwxXmlPersist::CreateNodeList(const wxString &sNodeName)
 {
-  auto_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
+  unique_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
   if(!Skip((void *)this))
   {
-    auto_ptr<nwxXmlNodeList> apItems(m_xml.CreateNodeList());
+    unique_ptr<nwxXmlNodeList> apItems(m_xml.CreateNodeList());
     wxXmlNode *pParent = new wxXmlNode(wxXML_ELEMENT_NODE,sNodeName);
     m_xml.SetAttributes(pParent);
     apRtn->push_back(pParent);
@@ -414,7 +415,7 @@ bool nwxXmlContainer::RegisterAttribute(
 
 nwxXmlNodeList *nwxXmlContainer::CreateNodeList()
 {
-  auto_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
+  unique_ptr<nwxXmlNodeList> apRtn(new nwxXmlNodeList);
   size_t nReserve(m_list.size() << 1);
   size_t nCount = 0;
   if(m_pPersistText != NULL)
@@ -440,7 +441,7 @@ nwxXmlNodeList *nwxXmlContainer::CreateNodeList()
       itr != m_list.end();
       ++itr)
     {
-      auto_ptr<nwxXmlNodeList> apList(
+      unique_ptr<nwxXmlNodeList> apList(
       (*itr)->pPersist->CreateNodeList((*itr)->sName,(*itr)->pObj));
       for(nwxXmlNodeList::iterator itrn = apList->begin();
         itrn != apList->end();

@@ -62,6 +62,7 @@ mReadAllPosControls (FALSE), mReadAllNegControls (FALSE), mReadAllSamples (FALSE
 DirectoryManager :: ~DirectoryManager () {
 
 	delete Directory;
+//	delete mPServer;
 }
 
 

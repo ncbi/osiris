@@ -48,6 +48,7 @@
 #include <vector>
 #include <set>
 #include <wx/arrstr.h>
+#include <wx/dir.h>
 #include "nwx/stde.h"
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxXmlPersistCollections.h"
@@ -57,6 +58,49 @@ class CILSLadderInfo;
 //  new for 2.7 CKitChannelMap, CKitChannel
 //  CKitChannelMap stores <FsaChannelMap>
 //  CKitChannel stores <FsaChannelMap><Channel>
+
+class CKitLadderFiles : public wxDirTraverser
+{
+public:
+  CKitLadderFiles()
+  {
+    m_dtDirSite.Set(time_t(0));
+    Reload();
+  }
+  virtual ~CKitLadderFiles()
+  {}
+  bool Reload();
+  virtual wxDirTraverseResult OnDir(const wxString& dirname);
+  virtual wxDirTraverseResult OnFile(const wxString& filename);
+  virtual wxDirTraverseResult OnOpenError(const wxString& openerrorname);
+  const wxArrayString *operator ->() const
+  {
+    return &m_asList;
+  }
+  bool IsOK()
+  {
+    return m_asErrorList.IsEmpty();
+  }
+  const wxArrayString &Files() const
+  {
+    return m_asList;
+  }
+  const wxArrayString &Errors() const
+  {
+    return m_asErrorList;
+  }
+  const wxDateTime GetSiteModTime() const
+  {
+    return m_dtDirSite;
+  }
+
+private:
+  void _Load(const wxString &sFilePath, bool bSiteFolder);
+  wxDateTime m_dtDirSite;
+  wxArrayString m_asList;
+  wxArrayString m_asErrorList;
+  static const wxString g_sEndName;
+};
 
 class CKitChannel : public nwxXmlPersist
 {
@@ -215,6 +259,7 @@ public:
     m_pLastKitChannelMap = NULL;
     m_nInLoad = 0;
     m_bV1 = false;
+    m_dtSiteILSLadderDir.Set(time_t(0));
 
     Register("Kits",this);
     Register("Set",this);
@@ -255,7 +300,7 @@ public:
     }
     return pRtn;
   }
-  const wxArrayString &GetArray() const
+  const wxArrayString &GetKitList() const
   {
     return m_as;
   }
@@ -343,9 +388,26 @@ public:
     }
     nwxXmlPersist::Init();
   }
-  void Add(const wxString &s)
+  void Add(const wxString &sKitName, const wxString &sLadderInfoFileName)
   {
-    m_as.Add(s);
+    m_as.Add(sKitName); 
+    m_mapKitToLadderInfo.insert(
+      std::pair<wxString, wxString>(sKitName, sLadderInfoFileName));
+  }
+  const wxString GetLadderInfoFileName(const wxString &sKitName) const
+  {
+    std::map<wxString, wxString>::const_iterator itr = m_mapKitToLadderInfo.find(sKitName);
+    wxString s;
+    if (itr != m_mapKitToLadderInfo.end())
+    {
+      s = itr->second;
+    }
+    return s;
+  }
+  bool KitExists(const wxString &sKitName)
+  {
+    bool b = m_mapKitToLadderInfo.find(sKitName) != m_mapKitToLadderInfo.end();
+    return b;
   }
   size_t GetCount()
   {
@@ -367,6 +429,12 @@ public:
     }
     return bRtn;
   }
+  bool NeedReload();
+  bool CheckReload()
+  {
+    bool bRtn = NeedReload() ? Load() : true;
+    return bRtn;
+  }
 #ifdef __WXDEBUG__
   static void UnitTest();
 #endif
@@ -382,10 +450,12 @@ private:
   {
     m_sErrorMsg = "Cannot load ladder information.";
   }
-  void _HACK_27(const CILSLadderInfo *pILS);
+
+  void _HACK_27();
   void _CHECK_BOOL(wxXmlNode *pNode, std::set<wxString> *pSet);
   wxArrayString m_as;
   wxString m_sLastKit;
+  std::map<wxString, wxString> m_mapKitToLadderInfo;
   std::map<wxString, wxArrayString *> m_mLS;
   std::map<wxString, wxArrayString *> m_mILS; // 2.7 ils family
   std::map<wxString, int> m_msChannelCount;
@@ -396,6 +466,7 @@ private:
   std::map< wxString, CKitChannelMap *> m_mapKitChannels;
   std::set<wxString> m_setLadderFree;
   std::set<wxString> m_setAll_ILS;
+  wxDateTime m_dtSiteILSLadderDir;
   mutable wxArrayString m_asAll_ILS;
 
   CILSLadderInfo *m_pILS;

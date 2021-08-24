@@ -201,6 +201,10 @@ public:
 	void SetConvolutionNoiseThreshold (double threshold);
 	double GetConvolutionNoiseThreshold () const;
 
+	RGString GetLadderFileName () const {
+		return mLadderFileName;
+	}
+
 	void SetChannelSpecificThresholds (list<channelThreshold*>* analysis, list<channelThreshold*>* detection) { mAnalysisThresholds = analysis; mDetectionThresholds = detection; }
 
 	void Report (RGTextOutput& text, const RGString& indent);
@@ -256,13 +260,23 @@ public:
 
 		if(OneAndOnlySelf != NULL) {
 
-			ReferenceCount = 1; // problem with reference count
-			delete OneAndOnlySelf;
-			OneAndOnlySelf = NULL;
+			//cout << "Kill begin" << endl;
+			//ReferenceCount = 1; // problem with reference count
+			//delete OneAndOnlySelf;
+			//OneAndOnlySelf = NULL;
+			//cout << "Kill complete" << endl;
 		}
   }
 
   static void UnescapeXML (RGString& target);
+  static void SetSpecificILSFilePath (const RGString& fullPath) { mSpecificILSFilePath = fullPath; }
+  static RGString GetSpecificILSFilePath () { return mSpecificILSFilePath; }
+  static void SetUserDirectoryForLadder (const RGString& fullPath) { mUserDirectoryForLadder = fullPath; }
+  static RGString GetUserDirectoryForLadder () { return mUserDirectoryForLadder; }
+  static void SetUserDirectoryForPositiveControl (const RGString& fullPath) { mUserDirectoryForPositiveControl = fullPath; }
+  static RGString GetUserDirectoryForPositiveControl () { return mUserDirectoryForPositiveControl; }
+  static RGString GetLabSettingsLadderFileName () { return LadderFileName; }
+  static void SetLabSettingsLadderFileName (const RGString& name) { LadderFileName = name; }
 
 protected:
 	static int ReferenceCount;
@@ -277,8 +291,8 @@ protected:
 	SynonymList* NegativeControlIDs;
 	SynonymList* mSingleSourceSampleIDs;
 	SynonymList* mMixtureIDs;
-	RGString* mStandardPositiveControlName;
-	RGString* mMarkerSetName;
+	RGString *mStandardPositiveControlName;
+	RGString *mMarkerSetName;
 
 	int mMaxPullups;
 	int mMaxStutter;
@@ -289,8 +303,8 @@ protected:
 
 	Boolean Changed;
 
-	RGString* mStandardSettingsString;
-	RGString* mLabSettingsString;
+	RGString *mStandardSettingsString;
+	RGString *mLabSettingsString;
 
 	RGDList* mSmartMessageThresholds;
 	list<locusSpecificLimitsStruct*>* mSampleLocusSpecificThresholds;
@@ -300,6 +314,12 @@ protected:
 	list<channelThreshold*>* mDetectionThresholds;
 
 	int mNumberOfChannels;
+	RGString mLadderFileName;
+	
+	static RGString mSpecificILSFilePath;
+	static RGString mUserDirectoryForLadder;
+	static RGString mUserDirectoryForPositiveControl;
+	static RGString LadderFileName;
 
 	bool ReadFileNameStrings (const RGString& xmlString);
 };
@@ -311,7 +331,7 @@ public:
   ParameterServerKill() {;}
   ~ParameterServerKill()
   {
-    ParameterServer::Kill();
+   // ParameterServer::Kill();
   }
 };
 

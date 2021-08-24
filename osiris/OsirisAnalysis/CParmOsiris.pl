@@ -620,6 +620,8 @@ EOF2
 
 #include "CParmGridAttributes.h"
 
+class CVolumes;
+
 class CParmOsiris : public nwxXmlPersist
 {
 public:
@@ -710,17 +712,7 @@ ${sGets}
   {
     return GetCheckBeforeExit(); // backward compatibility
   }
-  wxString GetVolumeOrKit() const
-  {
-    wxString sRtn(m_sVolumeName);
-    if(sRtn.IsEmpty() && !m_sKitName.IsEmpty())
-    {
-      sRtn = "[";
-      sRtn.Append(m_sKitName);
-      sRtn.Append("]");
-    }
-    return sRtn;
-  }
+  wxString GetVolumeOrKit(const CVolumes *pVolumes) const;
   int GetPrintColorByName(const wxString &sName) const;
   static const wxString NO_INIT;
   // end static/global stuff
@@ -1142,6 +1134,28 @@ bool CParmOsiris::Save()
     m_bModified = false;
   }
   return bRtn;
+}
+
+wxString CParmOsiris::GetVolumeOrKit(const CVolumes *pVolumes) const
+{
+  wxString sRtn;
+  const CVolume *pVolume = m_sVolumeName.IsEmpty()
+      ? NULL : pVolumes->Find(m_sVolumeName);
+  if(pVolume != NULL)
+  {
+      sRtn = m_sVolumeName;
+  }
+  else
+  {
+    pVolume = m_sKitName.IsEmpty() ? NULL : pVolumes->Find(m_sKitName);
+    if(pVolume != NULL)
+    {
+      sRtn = '[';
+      sRtn.Append(m_sKitName);
+      sRtn.Append(']');
+    }
+  }
+  return sRtn;
 }
 
 int CParmOsiris::GetPrintColorByName(const wxString &sName) const

@@ -45,19 +45,26 @@
 #define MESSAGE_BOOK_FILE wxS("MessageBookV4.0.xml")
 #define STD_SETTINGS_FILE wxS("StdSettings.xml")
 #define LAB_SETTINGS_FILE wxS("LabSettings.xml")
+#define LADDER_DATA_FILE  wxS("LadderData.xml")
 
 #define LOCK_READ_MS  5000
 #define LOCK_MS 10000
 
 //******************************************************  CVolume
 
-CVolume::CVolume(const wxString &sPath, bool bSetReadOnly)
+//const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_SITE = wxT("<>");
+//const wxChar * const CVolume::KIT_DISPLAY_BRACKETS_OSIRIS = wxT("[]");
+
+const wxString CVolume::USER_KIT_SUFFIX(wxT("+"));
+
+CVolume::CVolume(const wxString &sPath, int nVolumeType)
 {
   m_bIgnoreReadLock = false;
   m_bNewVolume = false;
   m_bOK = true;
   m_nCountDown = 0;
-  Load(sPath,bSetReadOnly);
+  m_nVolumeType = nVolumeType;
+  Load(sPath,nVolumeType != USER_OP);
 }
 CVolume::CVolume(const CVolume &x)
 {
@@ -70,13 +77,16 @@ CVolume::CVolume()
   m_bIgnoreReadLock = false;
   m_bNewVolume = false;
   m_nCountDown = 0;
+  m_nVolumeType = USER_OP;
 }
 CVolume &CVolume::operator = (const CVolume &x)
 {
   m_bIgnoreReadLock = false;
   m_bNewVolume = false;
   m_nCountDown = 0;
+  m_bOK = x.IsOK();
   m_bReadOnly = x.IsReadOnly();
+  m_nVolumeType = x.GetVolumeType();
   Load(x.GetPath(),x.IsReadOnly());
   return *this;
 }
@@ -84,7 +94,7 @@ CVolume &CVolume::operator = (const CVolume &x)
 
 CVolume::~CVolume() {}
 
-wxString CVolume::GetKitName()
+wxString CVolume::GetKitName() const
 {
   wxString sRtn = m_lab.GetKitName();
   return sRtn;
@@ -95,6 +105,15 @@ const wxString &CVolume::GetVolumeName()
 {
   CLabSettingsInfo *p = m_lab.GetLabSettingsInfo();
   return p->GetVolumeName();
+}
+const wxString CVolume::GetDisplayVolumeName()
+{
+  wxString s = GetVolumeName();
+  if (m_nVolumeType == USER_KIT)
+  {
+    s += USER_KIT_SUFFIX;
+  }
+  return s;
 }
 
 wxString CVolume::_GetFilePath(const wxChar *pFileName) const
@@ -157,8 +176,8 @@ bool CVolume::Load(const wxString &sPath, bool bSetReadOnly)
   m_bReadOnly = bSetReadOnly;
   m_bOK = true; // must be true for GetLabSettingsFileName() and GetMessageBookFileName()
   m_bOK = m_lab.LoadFile(GetLabSettingsFileName())
-      && m_book.LoadFile(GetMessageBookFileName());
-//  m_lockRead.SetFileName(GetAccessFileName());
+    && m_book.LoadFile(GetMessageBookFileName())
+    && mainApp::GetKitList()->KitExists(GetKitName());
   return m_bOK;
 }
 bool CVolume::Save()
@@ -371,7 +390,7 @@ CVolumes::~CVolumes()
 CVolumes::CVolumes() :
   m_dtLastMod((time_t)0), 
   m_nCountDown(0),
-  m_bBase(false)
+  m_nVolumeType(0)
 {
   _SetupPath();
   CheckReload(true);
@@ -440,10 +459,39 @@ void CVolumes::RefreshLocksOnTimer(int nms)
   }
 }
 
-CVolume *CVolumes::Find(const wxString &sName)
+pair<MapVolume::const_iterator, MapVolume::const_iterator> 
+  CVolumes::_const_equal_range(const wxString &sName) const
+{
+  pair<MapVolume::const_iterator, MapVolume::const_iterator> pitr =
+    m_mapVol.equal_range(sName);
+  wxString sNewName;
+  if ((pitr.first == pitr.second) &&
+    sName.EndsWith(CVolume::USER_KIT_SUFFIX, &sNewName))
+  {
+    pitr = m_mapVol.equal_range(sNewName);
+  }
+  return pitr;
+}
+
+pair<MapVolume::iterator, MapVolume::iterator>
+  CVolumes::_equal_range(const wxString &sName)
 {
   pair<MapVolume::iterator, MapVolume::iterator> pitr =
     m_mapVol.equal_range(sName);
+  wxString sNewName;
+  if ((pitr.first == pitr.second) &&
+    sName.EndsWith(CVolume::USER_KIT_SUFFIX, &sNewName))
+  {
+    pitr = m_mapVol.equal_range(sNewName);
+  }
+  return pitr;
+}
+
+
+CVolume *CVolumes::Find(const wxString &sName)
+{
+  pair<MapVolume::iterator, MapVolume::iterator> pitr =
+    _equal_range(sName);
   CVolume *pRtn =
     (pitr.first == pitr.second)
     ? NULL
@@ -451,11 +499,23 @@ CVolume *CVolumes::Find(const wxString &sName)
   return pRtn;
 }
 
+const CVolume *CVolumes::Find(const wxString &sName) const
+{
+  pair<MapVolume::const_iterator, MapVolume::const_iterator> pitr =
+    _const_equal_range(sName);
+  const CVolume *pRtn =
+    (pitr.first == pitr.second)
+    ? NULL
+    : pitr.first->second;
+  return pRtn;
+}
+
+
 size_t CVolumes::FindAll(
   vector<CVolume *> *pvVol, const wxString &sName)
 {
   pair<MapVolume::iterator, MapVolume::iterator> pitr =
-    m_mapVol.equal_range(sName);
+    _equal_range(sName);
   MapVolume::iterator itr;
   size_t nRtn;
   pvVol->clear();
@@ -508,7 +568,7 @@ CVolume *CVolumes::Create(
   }
   else if(_BuildNewPath(pCopyFrom,&sPath))
   {
-    auto_ptr<CVolume> apRtn(new CVolume(sPath));
+    unique_ptr<CVolume> apRtn(new CVolume(sPath));
 
     if(!(apRtn->IsOK() && apRtn->InitNewVolume(sName)))
     {
@@ -622,6 +682,17 @@ size_t CVolumes::GetNames(SetVolumeNames *pSet) const
   }
   return pSet->size();
 }
+size_t CVolumes::GetDisplayNames(SetVolumeNames *pSet) const
+{
+  pSet->clear();
+  for (MapVolume::const_iterator itr = m_mapVol.begin();
+    itr != m_mapVol.end();
+    ++itr)
+  {
+    pSet->insert(itr->second->GetDisplayVolumeName());
+  }
+  return pSet->size();
+}
 
 const wxChar *CVolumes::g_psNames[] =
 {
@@ -631,6 +702,14 @@ const wxChar *CVolumes::g_psNames[] =
   STD_SETTINGS_FILE,
   NULL
 };
+
+const wxChar *CVolumes::g_psNamesTrim[] =
+{
+  LAB_SETTINGS_FILE,
+  STD_SETTINGS_FILE,
+  NULL
+};
+
 
 bool CVolumes::_RemoveFiles(const wxString &sDirName)
 {
@@ -674,6 +753,7 @@ void CVolumes::_Cleanup()
 void CVolumes::_SetModified()
 {
   m_asVolumeNames.Empty();
+  m_asDisplayVolumeNames.Empty();
 }
 void CVolumes::_LoadDir(const wxString &sDirName)
 {
@@ -684,20 +764,6 @@ void CVolumes::_LoadDir(const wxString &sDirName)
     {
       dir.Traverse(*this);
     }
-  }
-}
-void CVolumes::_SetupKitVolumes()
-{
-  m_asKits.Clear();
-  m_mapKitVolume.clear();
-  for(MapVolume::iterator itr = m_mapVol.begin();
-    itr != m_mapVol.end();
-    ++itr)
-  {
-    CVolume *pVol = itr->second;
-    const wxString &sKit = pVol->GetKitName();
-    m_mapKitVolume.insert(
-      map<wxString,CVolume *>::value_type(sKit,pVol));
   }
 }
 const wxArrayString &CVolumes::GetVolumeNames() const
@@ -716,40 +782,54 @@ const wxArrayString &CVolumes::GetVolumeNames() const
   }
   return m_asVolumeNames;
 }
-const wxArrayString &CVolumes::GetKits() const
+const wxArrayString &CVolumes::GetDisplayVolumeNames() const
 {
-  if(m_asKits.IsEmpty())
+  if (m_asDisplayVolumeNames.IsEmpty())
   {
-    CPersistKitList *pKits = mainApp::GetKitList();
-    map<wxString,CVolume *>::const_iterator itr;
-    for(itr = m_mapKitVolume.begin();
-      itr != m_mapKitVolume.end();
+    SetVolumeNames setNames;
+    size_t n = GetDisplayNames(&setNames);
+    m_asDisplayVolumeNames.Alloc(n);
+    for (SetVolumeNames::iterator itr = setNames.begin();
+      itr != setNames.end();
       ++itr)
     {
-      const wxString &sKit(itr->first);
-      if(pKits->GetLsArray(sKit) != NULL)
-      {
-        m_asKits.Add(sKit);
-      }
-
-      else
-      {
-        wxString sError("Cannot find kit: ");
-        sError.Append(sKit);
-        sError.Append(" in ILSandLadderInfo.xml");
-        wxASSERT_MSG(0,sError);
-        mainApp::LogMessage(sError);
-      }
+      m_asDisplayVolumeNames.Add(*itr);
     }
   }
-  return m_asKits;
+  return m_asDisplayVolumeNames;
+}
+
+
+
+const wxArrayString &CVolumes::GetKits() const
+{
+  return mainApp::GetKitList()->GetKitList();
+}
+
+size_t CVolumes::GetSiteKitVolumeNames(wxArrayString *pas) const
+{
+  ConfigDir *pDir = mainApp::GetConfig();
+  MapVolume::const_iterator itr;
+  wxString sPrevName;
+  pas->Empty();
+  for (itr = m_mapVol.begin(); itr != m_mapVol.end(); ++itr)
+  {
+    const CVolume *pVol = itr->second;
+    if ( (pDir->InSiteConfigPath(pVol->GetLabSettingsFileName())) &&
+        (itr->first != sPrevName) )
+    {
+      pas->Add(itr->first);
+      sPrevName = itr->first;
+    }
+  }
+  return pas->GetCount();
 }
 
 wxDirTraverseResult CVolumes::OnDir(const wxString &dirname)
 {
   if(_HasFiles(dirname))
   {
-    auto_ptr<CVolume> apVol(new CVolume(dirname,m_bBase));
+    unique_ptr<CVolume> apVol(new CVolume(dirname, m_nVolumeType));
     if(apVol->IsOK())
     {
       wxString s = apVol->GetVolumeName();
@@ -790,7 +870,7 @@ void CVolumes::RefreshLocks()
 MapVolume::iterator CVolumes::_FindVolume(CVolume *pVolume)
 {
   pair<MapVolume::iterator,MapVolume::iterator> pitr = 
-    m_mapVol.equal_range(pVolume->GetVolumeName());
+    _equal_range(pVolume->GetVolumeName());
   MapVolume::iterator itr;
   if(pitr.first == m_mapVol.end())
   {
@@ -862,7 +942,16 @@ bool CVolumes::_BuildNewPath(const CVolume *pCopyFrom, wxString *psPath)
       wxString sTo;
       wxString sFrom;
       bRtn = true;
-      for(const wxChar **pp = g_psNames; bRtn && ((*pp) != NULL); ++pp)
+
+      // OS-1568 determine if kit was not provided by osiris
+
+      const wxString sLadderFile = mainApp::GetKitList()->GetLadderInfoFileName(pCopyFrom->GetKitName());
+      const wxChar **psNames =
+        pDir->InOsirisConfigPath(sLadderFile)
+        ? g_psNames
+        : g_psNamesTrim;  // site marker set, do not copy access nor message book
+
+      for(const wxChar **pp = psNames; bRtn && ((*pp) != NULL); ++pp)
       {
         sTo = sToPrefix;
         sTo.Append(*pp);
@@ -899,10 +988,12 @@ void CVolumes::_SetupPath()
 {
   ConfigDir *pDir = mainApp::GetConfig();
   m_sDirBase = pDir->GetExeVolumePath();
-  m_sDirVolume = pDir->GetSitePath();
-  nwxFileUtil::EndWithSeparator(&m_sDirVolume);
-  m_sDirVolume.Append("Volumes");
+  m_sDirVolume = pDir->GetUserVolumePath(); // User's OPs
+  m_sDirUserKits = pDir->GetSiteKitPath();  // User's Custom Kits
+
 }
+
+nwxIMPLEMENT_GLOBAL_OBJECT(CVolumes)
 
 #ifdef __WXDEBUG__
 void CVolumes::UnitTest()
@@ -954,4 +1045,6 @@ void CVolumes::UnitTest()
   }
   wxASSERT_MSG(sText.IsEmpty(),sText);
 }
+
+
 #endif

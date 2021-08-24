@@ -98,7 +98,7 @@ RGString :: RGString (size_t size) : RGPersistent (), StringLength (0) {
 
 RGString :: ~RGString() {
 
-  delete Data;
+	delete Data;
 #ifdef _WINDOWS
   if (WData != NULL)
   {
@@ -115,6 +115,7 @@ void RGString::_AllocWData(size_t nLen) const
     if (WData != NULL)
     {
       delete[] WData;
+	  WData = NULL;
     }
     WData = new wchar_t[nLen];
     LenWData = nLen;
@@ -1460,9 +1461,35 @@ RGFile& RGString :: ReadTextFile (RGFile& f) {
 
 RGFile& RGString :: ReadTextLine (RGFile& f) {
 	
-	// Read to EOF or newline
+	// Read to EOF or newline (ignores blank lines)
 
-	return ReadTextToDelimiter (f, '\n');
+	char c;
+	char CR = 0x0D;
+	char LF = 0x0A;
+
+	ResetData ();
+
+	while (TRUE) {
+
+		f.Read (c);
+
+		if (f.Eof ())
+			break;
+
+		if ((c == CR) || (c == LF)) {
+
+			if (StringLength == 0)
+				continue;
+
+			else
+				break;
+		}
+
+		Data->AppendCharacter (c, StringLength);
+		StringLength++;
+	}
+
+	return f;
 }
 
 
@@ -1497,7 +1524,7 @@ RGFile& RGString :: ReadToEndOfFile (RGFile& f) {
 
 RGFile& RGString :: ReadTextToDelimiter (RGFile& f, char delimiter) {
 	
-	// Read to EOF or delimiter
+	// Read to EOF or delimiter.  Updated 07/23/2021:  the use is for end of line, so delimiter replaced by option of CR (carriage return) or LF (line feed)
 
 	char c;
 
@@ -1507,7 +1534,10 @@ RGFile& RGString :: ReadTextToDelimiter (RGFile& f, char delimiter) {
 
 		f.Read (c);
 
-		if ((f.Eof ()) || (c == delimiter))
+		if (f.Eof ())
+			break;
+
+		if (c == delimiter)
 			break;
 
 		Data->AppendCharacter (c, StringLength);

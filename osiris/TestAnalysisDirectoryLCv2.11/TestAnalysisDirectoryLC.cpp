@@ -192,6 +192,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		STRLCAnalysis::SetOverrideString (inputFile.GetOverrideString ());
 
 	RGString CommandInputs;
+	RGString ladderConfigFile = inputFile.GetLadderFullPathName ();
+	RGString ILSFullPathName = inputFile.GetILSFullPathName ();
+	RGString PositiveControlFullPathName = inputFile.GetPositiveControlFullPathName ();
 
 	CommandInputs << "InputDirectory = " << PrototypeInputDirectory.GetData () << ";\n";
 	CommandInputs << "LadderDirectory = " << LadderInformationDirectory.GetData () << ";\n";
@@ -229,6 +232,15 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	CommandInputs << "MinInterlocusRFU = " << minInterlocusRFU << ";\n";
 	CommandInputs << "MinLadderInterlocusRFU = " << minLadderInterlocusRFU << ";\n";
 	CommandInputs << "SampleDetectionThreshold = " << sampleDetectionThreshold << ";\n";
+
+	if (ladderConfigFile.Length () > 0)
+		CommandInputs << "LadderFullPathName " << ladderConfigFile << ";\n";
+
+	if (ILSFullPathName.Length () > 0)
+		CommandInputs << "ILSFullPathName " << ILSFullPathName << ";\n";
+
+	if (PositiveControlFullPathName.Length () > 0)
+		CommandInputs << "PositiveControlFullPathName " << PositiveControlFullPathName << ";\n";
 
 	size_t posn = 0;
 
@@ -393,6 +405,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	}
 
 	cout << endl << "Analysis Complete" << endl;
+//	delete pServer;
 	return 0;
 
 }

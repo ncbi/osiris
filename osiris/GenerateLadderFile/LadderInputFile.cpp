@@ -48,14 +48,17 @@ int LadderInputFile::AlleleListColumn = 8;
 RGString LadderInputFile::AlleleListDelineation = ",";
 RGString LadderInputFile::ColumnDelineation = "\t";
 RGString LadderInputFile::BinsDelineation = "\t";
+LocusNames LadderInputFile::StandardNames;
 
 
 
 LadderInputFile :: LadderInputFile (bool debug) : mDebug (debug), mInputFile (NULL), mNumberOfDyes (0), mYLinkedDefault (false),
-mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap (NULL), mVersion ("2.0"), 
+mMaxExpectedAllelesPerLocusDefault (2), mMinExpectedAllelesPerLocusDefault (1), mChannelForILS (0), mChannelMap(0), mVersion ("2.7"),
 mGenerateILSFamilies (false) {
 
 	mInputLinesIterator = new RGDListIterator (mInputLines);
+	mGenerateILSFamilies = true;
+	Locus::SetGenerateILSFamilies (true);
 }
 
 
@@ -107,7 +110,7 @@ int LadderInputFile :: ReadAllInputsAppend (const RGString& inputFileName) {
 
 		if (!mInputFile->isValid ()) {
 
-			cout << "Basic input file named:  " << inputFileName.GetData () << " is not valid." << endl;
+			cout << "Basic input file named:  " << inputFileName.GetData () << " could not be read." << endl;
 			delete mInputFile;
 			mInputFile = NULL;
 			return -1;
@@ -145,6 +148,7 @@ int LadderInputFile :: ReadAllInputs () {
 
 			// we're done and all was successful!
 
+			cout << "Input file read and data assigned successfully." << endl;
 			returnStatus = 0;
 			break;
 		}
@@ -301,13 +305,20 @@ int LadderInputFile :: ReadLine () {
 
 	mStringLeft = "";
 	mStringRight = "";
+	char CR = 0x0D;
+	char LF = 0x0A;
 
 	while (true) {
 
 		cin >> noskipws >> T;
 
-		if (T == '\n')
-			continue;
+		if ((T == '\n') || (T == CR) || (T == LF)) {
+			
+			if (thisLine.Length () == 0)
+				continue;
+
+			break;
+		}
 
 		mCumulativeStringWithNewLines.Append (T);
 		mCumulativeStringWithoutNewLines.Append (T);
@@ -405,6 +416,7 @@ int LadderInputFile :: AssignString () {
 	RGString locusOLString;
 	int i;
 	double dVersion;
+	RGString tempName;
 
 	if (mStringLeft == "LadderFileName") {
 
@@ -443,9 +455,17 @@ int LadderInputFile :: AssignString () {
 
 	else if (mStringLeft == "RelativeHeightOverride") {
 
-		newString = new RGString (mStringRight);
-		mRelativeHeightOverrides.Append (newString);
-		status = 0;
+		tempName = LadderInputFile::FindLocusNameInList (mStringRight);  // tempName is the accepted name of the  locus
+		
+		if (tempName.Length () != 0) {
+
+			newString = new RGString (tempName);
+			mRelativeHeightOverrides.Append (newString);
+			status = 0;
+		}
+
+		else
+			cout << "Locus named " << mStringRight << " not recognized" << endl;
 	}
 
 	else if (mStringLeft == "PanelsFileName") {
@@ -472,6 +492,7 @@ int LadderInputFile :: AssignString () {
 
 		SetEmbeddedSlashesToForward (mStringRight);
 		mOutputConfigDirectoryPath = mStringRight;
+		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.tab");
 		status = 0;
 	}
 
@@ -557,10 +578,18 @@ int LadderInputFile :: AssignString () {
 	}
 
 	else if (mStringLeft == "YLinkedOverride") {
+		
+		tempName = LadderInputFile::FindLocusNameInList (mStringRight);
 
-		newString = new RGString (mStringRight);
-		mYLinkedDefaultOverrides.Append (newString);
-		status = 0;
+		if (tempName.Length () != 0) {
+
+			newString = new RGString (tempName);
+			mYLinkedDefaultOverrides.Append (newString);
+			status = 0;
+		}
+
+		else
+			cout << "Locus named " << mStringRight << " not recognized" << endl;
 	}
 
 	else if (mStringLeft.FindSubstring ("KitDataChannelOverride", position)) {
@@ -588,12 +617,20 @@ int LadderInputFile :: AssignString () {
 		else {
 
 			//  locusOLString is the locus for the OL allele and mStringRight is the OL allele name
-			mAcceptedOLAlleles << "        <Locus>\n";
-			mAcceptedOLAlleles << "          <Name>" << locusOLString << "</Name>\n";
-			mAcceptedOLAlleles << "          <Allele>" << mStringRight << "</Allele>\n";
-			mAcceptedOLAlleles << "        </Locus>\n";
-			cout << "Found accepted OL Allele Specification:  " << locusOLString << " = " << mStringRight << "\n";
-			status = 0;
+			tempName = LadderInputFile::FindLocusNameInList (locusOLString);  // tempName is the accepted locus name
+
+			if (tempName.Length () != 0) {
+
+				mAcceptedOLAlleles << "        <Locus>\n";
+				mAcceptedOLAlleles << "          <Name>" << tempName << "</Name>\n";
+				mAcceptedOLAlleles << "          <Allele>" << mStringRight << "</Allele>\n";
+				mAcceptedOLAlleles << "        </Locus>\n";
+				cout << "Found accepted OL Allele Specification:  " << tempName << " = " << mStringRight << "\n";
+				status = 0;
+			}
+
+			else
+				cout << "Locus named " << locusOLString << " not recognized" << endl;
 		}
 
 	}
@@ -611,16 +648,17 @@ int LadderInputFile :: AssignString () {
 
 	else if (mStringLeft == "StdControl") {
 
-		if ((mStringRight == "DNA007") || (mStringRight == "9947A") || (mStringRight == "9948") ||
-			(mStringRight == "K562") || (mStringRight == "2800M") || (mStringRight == "MK1") || (mStringRight == "M308")) {
+		tempName = LadderInputFile::FindPositiveControlNameInList (mStringRight);
 
-				mStandardPositiveControlName = mStringRight;
-				status = 0;
+		if (tempName.Length () == 0) {
+
+			cout << mStringRight.GetData () << " does not match any of the accepted standard positive control names" << endl;
 		}
 
 		else {
-
-			cout << mStringRight.GetData () << " does not match any of the accepted standard positive control names" << endl;
+				
+			mStandardPositiveControlName = tempName;
+			status = 0;
 		}
 	}
 
@@ -639,9 +677,17 @@ int LadderInputFile :: AssignString () {
 
 	else if (mStringLeft == "QualityLocus") {
 
-		newString = new RGString (mStringRight);
-		mQualityLoci.Append (newString);
-		status = 0;
+		tempName = LadderInputFile::FindLocusNameInList (mStringRight);  // tempName is the accepted locus name
+
+		if (tempName.Length () != 0) {
+
+			newString = new RGString (tempName);
+			mQualityLoci.Append (newString);
+			status = 0;
+		}
+
+		else
+			cout << "Locus named " << mStringRight << " not recognized" << endl;
 	}
 
 	else if (mStringLeft == "MaxExpectedAlleles") {
@@ -653,10 +699,18 @@ int LadderInputFile :: AssignString () {
 			tempUL = value.ConvertToUnsignedLong ();
 
 			if (tempUL > 0) {
-			
-				nextIndexedLabel = new RGIndexedLabel (tempUL, locus, "MaxExpectedAlleles");
-				mMaxExpectedAllelesOverrides.Append (nextIndexedLabel);
-				status = 0;
+
+				tempName = LadderInputFile::FindLocusNameInList (locus);  // tempName is the accepted locus name
+
+				if (tempName.Length () != 0) {
+
+					nextIndexedLabel = new RGIndexedLabel (tempUL, tempName, "MaxExpectedAlleles");
+					mMaxExpectedAllelesOverrides.Append (nextIndexedLabel);
+					status = 0;
+				}
+
+				else
+					cout << "Locus named " << locus << " not recognized" << endl;
 			}
 		}
 	}
@@ -671,19 +725,35 @@ int LadderInputFile :: AssignString () {
 
 			if (tempUL > 0) {
 			
-				nextIndexedLabel = new RGIndexedLabel (tempUL, locus, "MinExpectedAlleles");
-				mMinExpectedAllelesOverrides.Append (nextIndexedLabel);
-				status = 0;
+				tempName = LadderInputFile::FindLocusNameInList (locus);  // tempName is the accepted locus name
+
+				if (tempName.Length () != 0) {
+
+					nextIndexedLabel = new RGIndexedLabel (tempUL, tempName, "MinExpectedAlleles");
+					mMinExpectedAllelesOverrides.Append (nextIndexedLabel);
+					status = 0;
+				}
+
+				else
+					cout << "Locus named " << locus << " not recognized" << endl;
 			}
 		}
 	}
 
 	else if (mStringLeft == "DoNotExtend") {
+	
+		tempName = LadderInputFile::FindLocusNameInList (mStringRight);  // tempName is the accepted locus name
 
-		newString = new RGString (mStringRight);
-		mDoNotExtends.Append (newString);
-		cout << "Do not extend " << mStringRight.GetData () << endl;
-		status = 0;
+		if (tempName.Length () != 0) {
+
+			newString = new RGString (tempName);
+			mDoNotExtends.Append (newString);
+			cout << "Do not extend " << tempName.GetData () << endl;
+			status = 0;
+		}
+
+		else
+			cout << "Locus named " << mStringRight << " not recognized" << endl;
 	}
 
 	else if (mStringLeft == "NumberOfPanelsLinesSkipped") {
@@ -820,16 +890,16 @@ int LadderInputFile :: AssignStringAppend () {
 		status = 0;
 	}
 
-	else if (mStringLeft == "LadderDirectory") {
+	//else if (mStringLeft == "LadderDirectory") {
 
-		SetEmbeddedSlashesToForward (mStringRight);
-		mLadderDirectory = mStringRight;
-		status = 0;
-	}
+	//	SetEmbeddedSlashesToForward (mStringRight);
+	//	mLadderDirectory = mStringRight;
+	//	status = 0;
+	//}
 
 	else if (mStringLeft == "BinsFileName") {
 
-		SetEmbeddedSlashesToForward (mStringRight);
+		SetEmbeddedSlashesToForward (mStringRight);  // This is the full path to the bins file
 		mBinsFileName = mStringRight;
 		status = 0;
 	}
@@ -838,6 +908,7 @@ int LadderInputFile :: AssignStringAppend () {
 
 		SetEmbeddedSlashesToForward (mStringRight);
 		mOutputConfigDirectoryPath = mStringRight;
+		AddLocusNamesAndControlNamesFromControlFile (mOutputConfigDirectoryPath + "/ConfigurationTools/StandardPositiveControl/StandardPositiveControlList.tab");
 		status = 0;
 	}
 
@@ -865,7 +936,7 @@ int LadderInputFile :: AssignStringAppend () {
 		mOutputString += mStringLeft + " = " + mStringRight + "\n";
 
 	else
-		cout << "Problem with assign string:  " << mStringLeft.GetData () << " = " << mStringRight.GetData () << endl;
+		cout << "Assign string did not match expected format:  " << mStringLeft.GetData () << " = " << mStringRight.GetData () << endl;
 
 	return status;
 }
@@ -997,17 +1068,17 @@ int LadderInputFile :: AssembleInputsAppend () {
 		status = -1;
 	}
 
-	if (mLadderDirectory.Length () == 0) {
+	//if (mLadderDirectory.Length () == 0) {
 
-		cout << "Ladder information directory is unspecified." << endl;
-		status = -1;
-	}
+	//	cout << "Ladder information directory is unspecified." << endl;
+	//	status = -1;
+	//}
 
-	if (mOutputConfigDirectoryPath.Length () == 0) {
+	//if (mOutputConfigDirectoryPath.Length () == 0) {
 
-		cout << "Output Config Directory Path is unspecified." << endl;
-		status = -1;
-	}
+	//	cout << "Output Config Directory Path is unspecified." << endl;
+	//	status = -1;
+	//}
 
 	if (mBinsFileName.Length () == 0) {
 
@@ -1018,6 +1089,12 @@ int LadderInputFile :: AssembleInputsAppend () {
 	if (mILSFamilyName.Length () == 0) {
 
 		cout << "No ILS family name specified" << endl;
+		status = -1;
+	}
+
+	if (mOutputConfigDirectoryPath.Length () == 0) {
+
+		cout << "Full path user directory unspecified" << endl;
 		status = -1;
 	}
 
@@ -1039,8 +1116,8 @@ int LadderInputFile :: GetChannelForColorName (const RGString& color) const {
 	temp.ToUpper ();
 
 	for (i=1; i<=mNumberOfDyes; i++) {
-
-		if (temp.IsEqualTo (&(mColorNames [i])))
+    RGString s(mColorNames[i]);
+		if (temp.IsEqualTo (&s))
 			return i;
 	}
 
@@ -1055,8 +1132,8 @@ int LadderInputFile :: GetChannelForDyeName (const RGString& dye) const {
 	temp.ToUpper ();
 
 	for (i=1; i<=mNumberOfDyes; i++) {
-
-		if (temp.IsEqualTo (&(mDyeNames [i])))
+    RGString s(mColorNames[i]);
+		if (temp.IsEqualTo (&s))
 			return i;
 	}
 
@@ -1118,12 +1195,14 @@ bool LadderInputFile :: LocusNeedsRelativeHeightInfo (const RGString& locus) {
 void LadderInputFile :: RemoveLeadingAndTrailingBlanks (RGString& string) {
 
 	char T;
+	char CR = 0x0D;
+	char LF = 0x0A;
 
 	while (string.Length () > 0) {
 
 		T = string.GetLastCharacter ();
 
-		if ((T == ' ') || (T == '\t') || (T == '\n'))
+		if ((T == ' ') || (T == '\t') || (T == '\n') || (T == CR) || (T == LF))
 			string.RemoveLastCharacter ();
 
 		else
@@ -1136,7 +1215,7 @@ void LadderInputFile :: RemoveLeadingAndTrailingBlanks (RGString& string) {
 
 		T = string.GetLastCharacter ();
 
-		if ((T == ' ') || (T == '\t') || (T == '\n'))
+		if ((T == ' ') || (T == '\t') || (T == '\n') || (T == CR) || (T == LF))
 			string.RemoveLastCharacter ();
 
 		else

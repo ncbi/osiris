@@ -45,6 +45,7 @@ CDialogAnalysis::CDialogAnalysis(
     bool bEnableInputDir,
     bool bUseLabSettings) :
   wxDialog(parent,wxID_ANY,wxString("Analyze Data")),
+    m_volumes(*CVolumes::GetGlobal()),
     m_pVolume(NULL),
     m_pParm(pParm),
     m_pDirInput(NULL),
@@ -120,15 +121,10 @@ CDialogAnalysis::CDialogAnalysis(
     m_pCheckSubDir = new wxCheckBox(this,wxID_ANY,"Create time stamped subdirectory");
 
     // Operating Procedure Name
-#ifdef __WXOSX_COCOA__
-#define CB_STYLE  wxCB_READONLY
-#else
-#define CB_STYLE  wxCB_SORT | wxCB_READONLY
-#endif
-    const wxArrayString &as(m_volumes.GetVolumeNames());
+    const wxArrayString &as(m_volumes.GetDisplayVolumeNames());
     m_pComboVolumeName = new wxComboBox(this,IDvolumeName,as[0],
       wxDefaultPosition, wxDefaultSize,
-      as, CB_STYLE);
+      as, wxCB_READONLY);
     wxButton *pBrowseVolume = 
       new wxButton(this,IDvolume,"Browse...");
     wxBoxSizer *pSizerVolume = new wxBoxSizer(wxHORIZONTAL);
@@ -136,6 +132,11 @@ CDialogAnalysis::CDialogAnalysis(
     pSizerVolume->Add(pBrowseVolume,0,wxALIGN_CENTER_VERTICAL);
 
     // lane standard
+#ifdef __WXOSX_COCOA__
+#define CB_STYLE  wxCB_READONLY
+#else
+#define CB_STYLE  wxCB_SORT | wxCB_READONLY
+#endif
 
     m_pComboLsName = new wxComboBox(this,wxID_ANY,wxEmptyString,
       wxDefaultPosition, wxDefaultSize,
@@ -235,18 +236,7 @@ CDialogAnalysis::~CDialogAnalysis()
     delete m_pDirOutput;
   }
 }
-#define LOCK_READ_MS 5000 // every 5 seconds
 
-#if 0
-//  OS-679 - removed because access time is unreliable
-void CDialogAnalysis::OnTimer(wxTimerEvent &e)
-{
-  if(m_pVolume != NULL)
-  {
-    m_pVolume->SetInUseOnTimer(e.GetInterval());
-  }
-}
-#endif
 void CDialogAnalysis::OnBrowseInput(wxCommandEvent &)
 {
   wxDirDialog *pDir = GetInputDialog();
@@ -268,9 +258,9 @@ void CDialogAnalysis::OnBrowseVolume(wxCommandEvent &)
   wxString sSelect = m_pComboVolumeName->GetStringSelection();
   if(!sSelect.IsEmpty())
   {
-    auto_ptr<wxBusyCursor> cursor(new wxBusyCursor);
+    unique_ptr<wxBusyCursor> cursor(new wxBusyCursor);
     CDialogVolumes dlg(this,sSelect,true);
-    cursor = auto_ptr<wxBusyCursor>(NULL);
+    delete cursor.release();
     int n = dlg.ShowModal();
     if(n == wxID_OK)
     {
@@ -289,7 +279,9 @@ bool CDialogAnalysis::SelectVolumeByName(const wxString &s)
   int nSelect = m_pComboVolumeName->GetSelection();
   int nSelect2 = -1;
   bool bRtn = false;
-  if(m_pComboVolumeName->SetStringSelection(s))
+  CVolume *pV = m_volumes.Find(s);
+  wxString sDisplayName = (pV == NULL) ? s : pV->GetDisplayVolumeName();
+  if(m_pComboVolumeName->SetStringSelection(sDisplayName))
   {
     DoVolumeChange();
     bRtn = !m_bProblem;
@@ -474,7 +466,7 @@ bool CDialogAnalysis::TransferDataToWindow()
     m_pCheckSubDir->SetValue(m_pParm->GetTimeStampSubDir());
     if(m_sVolumeName.IsEmpty())
     {
-      m_sVolumeName = m_pParm->GetVolumeOrKit();
+      m_sVolumeName = m_pParm->GetVolumeOrKit(&m_volumes);
     }
     SelectVolumeByName(m_sVolumeName);
     if(m_bParmsFromConstructor)

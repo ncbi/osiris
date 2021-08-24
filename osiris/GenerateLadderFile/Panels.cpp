@@ -31,7 +31,7 @@ mLineTokenizer (NULL), mAlleleTokenizer (NULL) {
 
 	if (!mPanelInputFile->isValid ()) {
 
-		cout << "Panel input file named:  " << panelFileName.GetData () << " is not valid." << endl;
+		cout << "Panel input file named:  " << panelFileName.GetData () << " is not readable." << endl;
 		delete mPanelInputFile;
 		mPanelInputFile = NULL;
 		mValid = false;
@@ -153,6 +153,17 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 	}
 
 	RGString locusName = lineArrayTokens [0];
+	RGString tempLocusName;
+
+	tempLocusName = LadderInputFile::FindLocusNameInList (locusName);
+
+	if (tempLocusName.Length () == 0) {
+
+		cout << "Locus named " << locusName << " is not in the accepted locus list.  Terminating..." << endl;
+		mValid = false;
+		return NULL;
+	}
+
 	//cout << "Panels locus name = " << locusName.GetData () << endl;
 	RGString color = lineArrayTokens [ColorColumn];
 	//color.ToUpper ();
@@ -181,8 +192,8 @@ Locus* Panels :: ReadNextLine (LadderInputFile& inputFile) {
 	//	return newLocus;
 	//}
 
-	newLocus = new Locus (locusName, channel, coreRepeat);
-	cout << "Locus = " << locusName.GetData () << " with Core Repeat = " << coreRepeat << " on Channel = " << channel << endl;
+	newLocus = new Locus (tempLocusName, channel, coreRepeat);
+	cout << "Locus = " << tempLocusName.GetData () << " with Core Repeat = " << coreRepeat << " on Channel = " << channel << endl;
 	//cout << "New panels locus with name, channel, core repeat = " << locusName.GetData () << ", " << channel << ", " << coreRepeat << endl;
 	//cout << "Allele string:  " << mAlleleString.GetData () << endl;
 	mAlleleTokenizer->ResetTokenizer ();

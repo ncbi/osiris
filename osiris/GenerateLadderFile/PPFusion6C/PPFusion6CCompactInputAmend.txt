@@ -1,0 +1,7 @@
+LadderOperation = Amend;
+LadderFileName = PPFusion6C_LadderInfo.xml;
+BinsFileName = C:\ProgramData\Osiris-Files\ConfigurationTools\PPFusion6C\PowerPlex_Fusion_6C_Bins_IDX_v1.2.txt;
+ILSFamilyName = PROMEGA-ILS-WEN-compact-500;
+OutputConfigPath = C:\ProgramData\Osiris-Files;
+;
+

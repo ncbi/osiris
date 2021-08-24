@@ -39,6 +39,8 @@
 
 #include "CParmGridAttributes.h"
 
+class CVolumes;
+
 class CParmOsiris : public nwxXmlPersist
 {
 public:
@@ -648,17 +650,7 @@ public:
   {
     return GetCheckBeforeExit(); // backward compatibility
   }
-  wxString GetVolumeOrKit() const
-  {
-    wxString sRtn(m_sVolumeName);
-    if(sRtn.IsEmpty() && !m_sKitName.IsEmpty())
-    {
-      sRtn = "[";
-      sRtn.Append(m_sKitName);
-      sRtn.Append("]");
-    }
-    return sRtn;
-  }
+  wxString GetVolumeOrKit(const CVolumes *pVolumes) const;
   int GetPrintColorByName(const wxString &sName) const;
   static const wxString NO_INIT;
   // end static/global stuff

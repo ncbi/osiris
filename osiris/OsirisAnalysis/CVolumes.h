@@ -46,6 +46,7 @@
 #include "nwx/nsstd.h"
 #include "nwx/nwxXmlPersist.h"
 #include "nwx/nwxLock.h"
+#include "nwx/nwxGlobalObject.h"
 #include "CLabSettings.h"
 #include "CXMLmessageBook.h"
 
@@ -57,7 +58,16 @@ class CVolume
    // wrapper around a volume and manages CLabSettings
 
 public:
-  CVolume(const wxString &sPath, bool bSetReadOnly = false);
+  enum
+  {
+    OSIRIS_KIT,
+    USER_OP,
+    USER_KIT
+  };
+  static const wxString USER_KIT_SUFFIX;
+//  static const wxChar * const KIT_DISPLAY_BRACKETS_SITE;
+//  static const wxChar * const KIT_DISPLAY_BRACKETS_OSIRIS;
+  CVolume(const wxString &sPath, int nVolumeType = USER_OP);
   CVolume();
   CVolume(const CVolume &x);
   CVolume &operator = (const CVolume &x);
@@ -66,13 +76,34 @@ public:
   {
     return new CVolume(*this);
   }
-
+#if 0
+  static wxString KitToVolumeName(const wxString &sKit, int nType)
+  {
+    wxString sRtn;
+    if (nType == USER_OP)
+    {
+      sRtn = sKit;
+    }
+    else
+    {
+      const wxChar *BRACKETS = 
+        (nType == USER_KIT) 
+        ? KIT_DISPLAY_BRACKETS_SITE
+        : KIT_DISPLAY_BRACKETS_OSIRIS;
+      sRtn = BRACKETS[0];
+      sRtn.Append(sKit);
+      sRtn.Append(BRACKETS[1]);
+    }
+    return sRtn;
+  }
+#endif
   const wxString &GetPath() const
   {
     return m_sPath;
   }
-  wxString GetKitName();
+  wxString GetKitName() const;
   const wxString &GetVolumeName();
+  const wxString GetDisplayVolumeName();
   CLabSettings *GetLabSettings()
   {
     return &m_lab;
@@ -98,6 +129,10 @@ public:
   bool Load(const wxString &sPath, bool bSetReadOnly = false);
   bool Save();
   bool Save(const wxString &sPath);
+  int GetVolumeType() const
+  {
+    return m_nVolumeType;
+  }
   bool IsOK() const
   {
   // return false if an error occurred or no lab settings loaded
@@ -160,6 +195,7 @@ private:
   wxString m_sPath;
   wxString m_sLastError;
   int m_nCountDown;
+  int m_nVolumeType;
   bool m_bReadOnly;
   bool m_bOK;
   bool m_bIgnoreReadLock;
@@ -182,30 +218,34 @@ class CLessVolumeName
   //  case insensitive sorting
 public:
   CLessVolumeName() {;}
-  bool operator()(const wxString &x1, const wxString &x2) const
+  static int _get_volume_type(const wxString &s)
   {
     int n = 0;
-    const wxStringCharType *pc1 = x1.wx_str();
-    const wxStringCharType *pc2 = x2.wx_str();
-    if(*pc1 == *pc2)
-    {}
-    else if ((*pc1) == L'[')
+    if (s.StartsWith(wxT("[")))
     {
-      n = 1;
+      n = (s.EndsWith(CVolume::USER_KIT_SUFFIX)) ? 1 : 2;
     }
-    else if ((*pc2) == L'[')
+    return n;
+  }
+  bool operator()(const wxString &x1, const wxString &x2) const
+  {
+    int n1 = _get_volume_type(x1);
+    int n2 = _get_volume_type(x2);
+    bool bLess = false;
+    if (n1 == n2)
     {
-      n = -1;
-    }
-    if(!n)
-    {
-      n = x1.CmpNoCase(x2);
-      if(!n)
+      int n = x1.CmpNoCase(x2);
+      if (!n)
       {
         n = x1.Cmp(x2);
       }
+      bLess = (n < 0);
     }
-    return (n < 0);
+    else
+    {
+      bLess = n1 < n2;
+    }
+    return bLess;
   }
   bool operator()(const wxString *px1, const wxString *px2) const
   {
@@ -226,14 +266,18 @@ typedef set<wxString,CLessVolumeName>
 
 class CVolumes : public wxDirTraverser
 {
-public:
+private:
+  // private - use GetGlobal()
   CVolumes();
+public:
   virtual ~CVolumes();
   bool CheckReload(bool bForceReload = false);
   void RefreshLocks();
   void RefreshLocksOnTimer(int nms);
   CVolume *Find(const wxString &sName);
+  const CVolume *Find(const wxString &sName) const;
   size_t FindAll(vector<CVolume *> *pvVol, const wxString &sName);
+  size_t GetSiteKitVolumeNames(wxArrayString *pas) const;
   CVolume *Create(const wxString &sCopyFrom, const wxString &sName);
   bool Remove(CVolume *pVolume);
   bool Remove(const wxString &sName)
@@ -245,10 +289,16 @@ public:
   bool Rename(CVolume *pVolume, const wxString &sNewName);
 
   size_t GetNames(SetVolumeNames *pSet) const;
+  size_t GetDisplayNames(SetVolumeNames *pSet) const;
 
   bool Load()
   {
     return CheckReload(true);
+  }
+  void CheckFileModification()
+  {
+    // function used in nwxDECLARE_GLOBAL_OBJECT_XML macro
+    CheckReload();
   }
   virtual wxDirTraverseResult OnDir(const wxString& dirname);
   virtual wxDirTraverseResult OnFile(const wxString& filename);
@@ -263,34 +313,39 @@ public:
   }
   const wxArrayString &GetKits() const;
   const wxArrayString &GetVolumeNames() const;
+  const wxArrayString &GetDisplayVolumeNames() const;
 #ifdef __WXDEBUG__
   static void UnitTest();
 #endif
 
 private:
   static const wxChar *g_psNames[]; // file names w/in volume
+  static const wxChar *g_psNamesTrim[]; // file names w/in volume for site marker set
 
   MapVolume m_mapVol;
-  map<wxString,CVolume *> m_mapKitVolume;
-  mutable wxArrayString m_asKits;
-  mutable wxArrayString m_asVolumeNames;
+  mutable wxArrayString m_asVolumeNames, m_asDisplayVolumeNames;
 
-  wxString m_sDirVolume; // path of site volumes
+  wxString m_sDirVolume; // path of site volumes or OPs
+  wxString m_sDirUserKits;
   wxDateTime m_dtLastMod; // modification time of m_sDirVolume when loaded
   wxString m_sDirBase; // path of volumes included with Osiris
   wxString m_sLastError;
   int m_nCountDown;
-  bool m_bBase; // true is loading base, false otherwise
+  int m_nVolumeType; // true is loading base, false otherwise
 
   void _SetModified();
+  pair<MapVolume::iterator, MapVolume::iterator>
+    _equal_range(const wxString &s);
+  pair<MapVolume::const_iterator, MapVolume::const_iterator>
+    _const_equal_range(const wxString &s) const;
   bool _RemoveFiles(const wxString &sDir);
   bool _HasFiles(const wxString &dirname)
   {
-    return CVolume::HasAllFiles(dirname, g_psNames);
+    return CVolume::HasAllFiles(
+      dirname, g_psNamesTrim);
   }
   void _Cleanup();
   void _LoadDir(const wxString &dirname);
-  void _SetupKitVolumes();
   void _SetupPath();
   MapVolume::iterator _FindVolume(CVolume *pVolume);
   bool _BuildNewPath(const CVolume *pCopyFrom, wxString *psPath);
@@ -299,15 +354,17 @@ private:
   void _Load()
   {
     _Cleanup();
-    m_bBase = true;
+    m_nVolumeType = CVolume::OSIRIS_KIT;
     _LoadDir(m_sDirBase);
-    _SetupKitVolumes();
-    m_bBase = false;
+    m_nVolumeType = CVolume::USER_KIT;
+    _LoadDir(m_sDirUserKits);
+    m_nVolumeType = CVolume::USER_OP;
     if(m_sDirVolume.Len())
     {
       _LoadDir(m_sDirVolume);
     }
   }
+  nwxDECLARE_GLOBAL_OBJECT_XML(CVolumes)
 };
 
 

@@ -8,33 +8,113 @@
 #include "rgtptrdlist.h"
 #include "LocusData.h"
 #include "RGTextOutput.h"
+#include "rgdirectory.h"
 #include <iostream>
+#ifdef _WINDOWS
 #include <tchar.h>
+#endif
 
 using namespace std;
 
-int _tmain(int argc, _TCHAR* argv[]) {
+int main(int argc, char** argv) {
 
-	RGString FullPath ("..");
-	RGString InputFileDirectory ("StandardPositiveControlList.txt");
-	RGString OutputFileDirectory ("StandardPositiveControls.xml");
+	cout << "Number of arguments = " << argc << endl;
+	
+	if (argc != 2) {
 
-	RGString fullPathName = InputFileDirectory;
-	RGString fullOutputPathName = OutputFileDirectory;
-	RGFile inputList (fullPathName, "rt");
-	RGTextOutput outputList (fullOutputPathName, FALSE);
+		cout << "Number of arguments:  " << argc - 1 << endl;
+		cout << "The full path to the user directory, Osiris-Files, must be specified, either without spaces or enclosed in single or double quotes...ending" << endl;
+		return -1;
+	}
+
+	cout << "String length of argument = " << strlen (argv [1]) << endl;
+
+
+	cout << "Osiris-Files directory = " << (char*) argv[1] << endl;
+
+
+	RGString userSiteDirectory = (char*) argv [1];
+	userSiteDirectory.FindAndReplaceAllSubstrings ("\\", "/");
+
+	if (userSiteDirectory.GetLastCharacter () == '/')
+		userSiteDirectory.RemoveLastCharacter ();
+
+	RGString configurationToolsDirectory = userSiteDirectory + "/ConfigurationTools";
+	//RGString ladderGenerationConfigDirectory = configurationToolsDirectory + "/LadderGeneration";
+	RGString positiveControlsConfigDirectory = configurationToolsDirectory + "/StandardPositiveControl";
+
+	RGString configDirectoryName = userSiteDirectory + "/Config";
+	RGString ladderDirectoryName = configDirectoryName + "/LadderSpecifications";
+	RGString volumeDirectoryName = configDirectoryName + "/Volumes";
+
+	int config = RGDirectory::FileOrDirectoryExists (configDirectoryName);
+
+	if (!config) {
+
+		config = RGDirectory::MakeDirectory (configDirectoryName);
+
+		if (!config) {
+
+			cout << "Could not make directory with path:  " << configDirectoryName << endl;
+			cout << "Exiting" << endl;
+			return -10;
+		}
+
+		else
+			cout << "Created directory with path:  " << configDirectoryName << endl;
+
+	}
+
+	config = RGDirectory::FileOrDirectoryExists (ladderDirectoryName);
+
+	if (!config) {
+
+		config = RGDirectory::MakeDirectory (ladderDirectoryName);
+
+		if (!config) {
+
+			cout << "Could not make directory with path:  " << ladderDirectoryName << endl;
+			cout << "Exiting" << endl;
+			return -20;
+		}
+		else
+			cout << "Created directory with path:  " << ladderDirectoryName << endl;
+	}
+
+	config = RGDirectory::FileOrDirectoryExists (volumeDirectoryName);
+
+	if (!config) {
+
+		config = RGDirectory::MakeDirectory (volumeDirectoryName);
+
+		if (!config) {
+
+			cout << "Could not make directory with path:  " << volumeDirectoryName << endl;
+			cout << "Exiting" << endl;
+			return -20;
+		}
+
+		else
+			cout << "Created directory with path:  " << volumeDirectoryName << endl;
+	}
+
+	RGString InputFileName = positiveControlsConfigDirectory + "/StandardPositiveControlList.tab";
+	RGString OutputFileName = ladderDirectoryName + "/StandardPositiveControls.xml";
+
+	RGFile inputList (InputFileName, "rt");
+	RGTextOutput outputList (OutputFileName, FALSE);
 	char oneLine [1000];
 
 	if (!inputList.isValid ()) {
 
-		cout << "Could not access input standard control list named " << (char*)fullPathName.GetData () << endl;
+		cout << "Could not access input standard control list named " << (char*)InputFileName.GetData () << endl;
 		cout << "Exiting..." << endl;
 		return 50;
 	}
 
 	if (!outputList.FileIsValid ()) {
 
-		cout << "Could not open output standard control list named " << (char*) fullOutputPathName.GetData () << endl;
+		cout << "Could not open output standard control list named " << (char*)OutputFileName.GetData () << endl;
 		cout << "Exiting..." << endl;
 		return 55;
 	}

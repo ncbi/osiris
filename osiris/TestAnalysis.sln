@@ -6,6 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tools", "BaseClassLib\Tools\Tools.vcxproj", "{74299048-4F7F-4235-92E9-78F978B70F4C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OsirisLib-v2.01", "OsirisLib2.01\OsirisLib.vcxproj", "{3071892C-0773-4CA4-A4A8-E88ADE8B8D9F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{74299048-4F7F-4235-92E9-78F978B70F4C} = {74299048-4F7F-4235-92E9-78F978B70F4C}
+		{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F} = {A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestAnalysisDirectoryLC", "TestAnalysisDirectoryLCv2.11\TestAnalysisDirectoryLC.vcxproj", "{FFDB5DC5-5261-4C62-9AA3-0FEE6546F102}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -20,10 +24,26 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildStandardControlFile", 
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OsirisMath", "OsirisMath\OsirisMath.vcxproj", "{A2B722EE-E0A6-46CF-8DE5-78FFD1500E9F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{74299048-4F7F-4235-92E9-78F978B70F4C} = {74299048-4F7F-4235-92E9-78F978B70F4C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenerateLadderFile", "GenerateLadderFile\GenerateLadderFile.vcxproj", "{8ADE8CDC-50A1-4E9A-BF63-F9AD206BA260}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3071892C-0773-4CA4-A4A8-E88ADE8B8D9F} = {3071892C-0773-4CA4-A4A8-E88ADE8B8D9F}
+		{74299048-4F7F-4235-92E9-78F978B70F4C} = {74299048-4F7F-4235-92E9-78F978B70F4C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenerateSmartNotices", "GenerateSmartNotices\GenerateSmartNotices.vcxproj", "{B0608B1D-B7FF-4A70-88A2-09F98A57C235}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3071892C-0773-4CA4-A4A8-E88ADE8B8D9F} = {3071892C-0773-4CA4-A4A8-E88ADE8B8D9F}
+		{74299048-4F7F-4235-92E9-78F978B70F4C} = {74299048-4F7F-4235-92E9-78F978B70F4C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenerateILSFamily", "GenerateILSFamily\GenerateILSFamily.vcxproj", "{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}"
+	ProjectSection(ProjectDependencies) = postProject
+		{74299048-4F7F-4235-92E9-78F978B70F4C} = {74299048-4F7F-4235-92E9-78F978B70F4C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +149,20 @@ Global
 		{B0608B1D-B7FF-4A70-88A2-09F98A57C235}.Release64|Win32.Build.0 = Release|Win32
 		{B0608B1D-B7FF-4A70-88A2-09F98A57C235}.Release64|x64.ActiveCfg = Release|Win32
 		{B0608B1D-B7FF-4A70-88A2-09F98A57C235}.Release64|x64.Build.0 = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug|Win32.Build.0 = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug|x64.ActiveCfg = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug64|Win32.ActiveCfg = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug64|Win32.Build.0 = Debug|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug64|x64.ActiveCfg = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Debug64|x64.Build.0 = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release|Win32.ActiveCfg = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release|Win32.Build.0 = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release|x64.ActiveCfg = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release64|Win32.ActiveCfg = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release64|Win32.Build.0 = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release64|x64.ActiveCfg = Release|Win32
+		{EEE8EEFD-4CF3-45EC-8660-6A2C9F725FED}.Release64|x64.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -856,7 +856,7 @@ private:
   CFramePlot *m_pFramePlot;
   CFrameAnalysis *m_pFrameAnalysis;
   //wxTimer *m_pTimer;  // EXT TIMER
-  auto_ptr<nwxMenuItem> m_pMenuItem;
+  unique_ptr<nwxMenuItem> m_pMenuItem;
 
   unsigned int m_nPlotNr;
   unsigned int m_nBatchCount;

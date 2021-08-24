@@ -849,6 +849,7 @@ int STRLCAnalysis :: Analyze (const RGString& prototypeInputDirectory, const RGS
 	delete SampleData;
 	delete GridData;
 	delete testPeak;
+//	delete pServer;
 	
 	OutputFile.Flush ();
 	OutputFile.Close ();
@@ -1740,6 +1741,7 @@ finishOutput:
 	
 	OutputFile.Flush ();
 	OutputFile.Close ();
+//	delete pServer;
 
 	if (!foundALadder)
 		return -20;

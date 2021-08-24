@@ -556,6 +556,190 @@
       </LaneStandard>
     </ILS>
     <ILS>
+      <ILSName>PROMEGA-ILS-WEN-compact-500</ILSName>
+      <DyeName>WEN</DyeName>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-80-500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-100-225</Name>
+        <DisplayName>100-225</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225</Characteristics>
+        <RelativeHeights>H M M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>	  
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-300</Name>
+        <DisplayName>60-300</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-80-300</Name>
+        <DisplayName>80-300</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-325</Name>
+        <DisplayName>60-325</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-80-325</Name>
+        <DisplayName>80-325</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-350</Name>
+        <DisplayName>60-350</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-80-350</Name>
+        <DisplayName>80-350</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard> 
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-475</Name>
+        <DisplayName>60-475</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+        <RelativeHeights>M M M H H H M M H M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-compact-80-475</Name>
+        <DisplayName>80-475</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
+      <ILSName>PROMEGA-ILS-WEN-seqstudio-500</ILSName>
+      <DyeName>WEN-6C</DyeName>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-500</Name>
+        <DisplayName>60-500</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-80-500</Name>
+        <DisplayName>80-500</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-100-225</Name>
+        <DisplayName>100-225</DisplayName>
+        <Characteristics>100 120 140 160 180 200 225</Characteristics>
+        <RelativeHeights>H M M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>	  
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-300</Name>
+        <DisplayName>60-300</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-80-300</Name>
+        <DisplayName>80-300</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-325</Name>
+        <DisplayName>60-325</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+      <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-80-325</Name>
+        <DisplayName>80-325</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-350</Name>
+        <DisplayName>60-350</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M M M H M M M M H M M M H M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-80-350</Name>
+        <DisplayName>80-350</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard> 
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-475</Name>
+        <DisplayName>60-475</DisplayName>
+        <Characteristics>60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+        <RelativeHeights>M M M H H H M M H M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+	  <LaneStandard>
+        <Name>Promega-ILS-WEN-seqstudio-80-475</Name>
+        <DisplayName>80-475</DisplayName>
+        <Characteristics>80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475</Characteristics>
+        <RelativeHeights>M H H H M M H M M M H M M M H M M M</RelativeHeights>
+        <CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+        <CorrelationAutoAcceptanceThreshold>0.997</CorrelationAutoAcceptanceThreshold>
+      </LaneStandard>
+    </ILS>
+    <ILS>
       <ILSName>PROMEGA-ILS-WEN-Pop7-V2-500</ILSName>
       <DyeName>WEN</DyeName>
       <LaneStandard>
@@ -880,7 +1064,91 @@
         <CorrelationAcceptanceThreshold>0.991</CorrelationAcceptanceThreshold>
         <CorrelationAutoAcceptanceThreshold>0.991</CorrelationAutoAcceptanceThreshold>
       </LaneStandard>
-    </ILS>    
+    </ILS>
+    <ILS>
+			<ILSName>SD-450</ILSName>
+			<DyeName>Sy650</DyeName>
+			<LaneStandard>
+				<Name>SD450-60-450</Name>
+				<Characteristics>60 70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD450-70-450</Name>
+				<Characteristics>70 80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD450-80-450</Name>
+				<Characteristics>80 90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD450-90-450</Name>
+				<Characteristics>90 100 120 140 160 180 200 220 230 240 260 280 300 320 340 360 380 400 420 440 450</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+		</ILS>
+	<ILS>
+			<ILSName>SD-600</ILSName>
+			<DyeName>Sy650</DyeName>
+			<LaneStandard>
+				<Name>SD600-60-600</Name>
+				<Characteristics>60 70 80 90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD600-70-600</Name>
+				<Characteristics>70 80 90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD600-80-600</Name>
+				<Characteristics>80 90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD600-90-600</Name>
+				<Characteristics>90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+		</ILS>
+		<ILS>
+			<ILSName>SD-1200</ILSName>
+			<DyeName>Sy650</DyeName>
+			<LaneStandard>
+				<Name>SD1200-60-1200</Name>
+				<Characteristics>60 70 80 90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1140 1160 1180 1200</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD1200-70-1200</Name>
+				<Characteristics>70 80 90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1140 1160 1180 1200</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD1200-80-1200</Name>
+				<Characteristics>80 90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1140 1160 1180 1200</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+			<LaneStandard>
+				<Name>SD1200-90-1200</Name>
+				<Characteristics>90 100 114 120 140 160 180 200 214 220 230 240 250 260 280 300 314 320 340 360 380 400 414 420 440 450 460 480 500 514 520 540 560 580 600 614 620 640 660 680 700 714 720 740 760 780 800 820 840 850 860 880 900 920 940 960 980 1000 1020 1040 1060 1080 1100 1120 1140 1160 1180 1200</Characteristics>
+				<CorrelationAcceptanceThreshold>0.993</CorrelationAcceptanceThreshold>
+				<CorrelationAutoAcceptanceThreshold>0.9975</CorrelationAutoAcceptanceThreshold>
+			</LaneStandard>
+		</ILS>
   </LaneStandards>
   <Kits>
     <Set>

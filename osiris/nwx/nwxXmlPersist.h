@@ -1155,7 +1155,7 @@ public:
   }
   virtual bool LoadStream(wxInputStream &stream)
   {
-    auto_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
+    unique_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
     bool bRtn = apDoc->Load(stream);
     if(bRtn)
     {
@@ -1168,7 +1168,7 @@ public:
   {
     //  discard this and following lines on 6/5/2018
     // nwxLockFile Lock;
-    auto_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
+    unique_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
     if(m_pLock == NULL)
     {
       m_pLock = new nwxLockFile();
@@ -1260,12 +1260,36 @@ public:
     }
     return bRtn;
   }
+  virtual bool SaveToStream(wxOutputStream &stream, bool bCloseAfterSave = true)
+  {
+    bool bRtn = false;
+    if (!m_bReadOnly)
+    {
+      nwxXmlNodeList *apNode(
+        CreateNodeList(RootNode(), (void *)this));
+      unique_ptr<nwxXmlNodeList> x(apNode);
+      if (apNode->size() == 1)
+      {
+        unique_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
+        apDoc->CloseAfterSave(bCloseAfterSave);
+        apDoc->SetRoot(apNode->at(0));
+        bRtn = apDoc->Save(stream,1);
+      }
+      else
+      {
+        // FOR DEBUGGING
+        bRtn = false;
+        vectorptr<wxXmlNode>::cleanup(apNode);
+      }
+    }
+    return bRtn;
+  }
   virtual bool SaveFile(const wxString &sFileName)
   {
     bool bRtn = false;
     if(!m_bReadOnly)
     {
-      auto_ptr<nwxXmlNodeList> apNode(
+      unique_ptr<nwxXmlNodeList> apNode(
         CreateNodeList(RootNode(),(void *)this) );
       if(apNode->size() == 1)
       {
@@ -1278,7 +1302,7 @@ public:
         {
           bKeepLock = m_pLock->HasLock(sFileName);
         }
-        auto_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
+        unique_ptr<wxXmlDocument> apDoc(new wxXmlDocument);
         apDoc->SetRoot(apNode->at(0));
         bRtn = 
           (bKeepLock || m_pLock->LockWait(sFileName,3)) &&

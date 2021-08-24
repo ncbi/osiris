@@ -332,7 +332,6 @@
     <ClCompile Include="CGridRFURunBase.cpp" />
     <ClCompile Include="CHistoryTime.cpp" />
     <ClCompile Include="CILSLadderInfo.cpp" />
-    <ClCompile Include="CILSselection.cpp" />
     <ClCompile Include="CImageAbout.cpp" />
     <ClCompile Include="CKitColors.cpp" />
     <ClCompile Include="CKitColors2.cpp" />
@@ -401,6 +400,7 @@
     <ClCompile Include="CParmOsiris.cpp" />
     <ClCompile Include="CPlotController.cpp" />
     <ClCompile Include="CPlotData.cpp" />
+    <ClCompile Include="CPositiveControls.cpp" />
     <ClCompile Include="CPrintOut.cpp" />
     <ClCompile Include="CPrintOutAnalysis.cpp" />
     <ClCompile Include="CPrintOutPlot.cpp" />
@@ -418,6 +418,7 @@
     <ClCompile Include="mainApp.cpp" />
     <ClCompile Include="mainFrame.cpp" />
     <ClCompile Include="UnitTest.cpp" />
+    <ClCompile Include="UserConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OsirisAnalysis.rc" />
@@ -485,7 +486,6 @@
     <ClInclude Include="CGridRFURunBase.h" />
     <ClInclude Include="CHistoryTime.h" />
     <ClInclude Include="CILSLadderInfo.h" />
-    <ClInclude Include="CILSselection.h" />
     <ClInclude Include="CImageAbout.h" />
     <ClInclude Include="CKitColors.h" />
     <ClInclude Include="CKitColors2.h" />
@@ -560,6 +560,7 @@
     <ClInclude Include="CParmOsiris.h" />
     <ClInclude Include="CPlotController.h" />
     <ClInclude Include="CPlotData.h" />
+    <ClInclude Include="CPositiveControls.h" />
     <ClInclude Include="CPrintOut.h" />
     <ClInclude Include="CPrintOutAnalysis.h" />
     <ClInclude Include="CPrintOutPlot.h" />
@@ -576,6 +577,7 @@
     <ClInclude Include="CXSLExportFileType.h" />
     <ClInclude Include="extractCXSLExportFile.h" />
     <ClInclude Include="CPrintParameters.h" />
+    <ClInclude Include="UserConfig.h" />
     <ClInclude Include="IArtifactGroup.h" />
     <ClInclude Include="ISetDateTime.h" />
     <ClInclude Include="LABEL_TYPES.h" />

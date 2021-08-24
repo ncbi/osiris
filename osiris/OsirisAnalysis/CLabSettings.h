@@ -2272,7 +2272,10 @@ public:
     g_nDestroy++;
 #endif
   }
-
+  const wxString &GetStandardControlName() const
+  {
+    return m_sStdCtrlName;
+  }
   CLabNameStrings &operator = (const CLabNameStrings &x)
   {
     LABCP(m_bUseSampleName);
@@ -2658,6 +2661,10 @@ public:
   const wxString &GetVolumeName() const
   {
     return m_info.GetVolumeName();
+  }
+  const wxString GetStandardPositiveControlName()
+  {
+    return m_str.GetStandardControlName();
   }
   wxString GetKitName() const
   {

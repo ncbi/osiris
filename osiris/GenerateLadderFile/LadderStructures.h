@@ -189,6 +189,8 @@ protected:
 	list<Locus*> mLocusList;
 	RGDList mILSList;
 	int mChannelForILS;
+
+	void RemoveTrailingWhiteSpace (RGString& targetString);
 };
 
 

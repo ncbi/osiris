@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="yes"?>
-<Dyes>
+<Dyes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="kitcolors2.0.xsd">
   <Dye>
 	  <Color>BLUE</Color>
 	  <Names>
@@ -72,6 +72,7 @@
 		  <Name>BTO</Name>
 		  <Name>DY632</Name>
 		  <Name>AF-633</Name>
+		  <Name>Sy650</Name>
 		  <Name>Orange</Name>
 		  <Name>ORANGE</Name>
 	  </Names>

@@ -8,8 +8,9 @@
 #include "rgstring.h"
 #include "rgtptrdlist.h"
 #include <iostream>
+#ifdef _WINDOWS
 #include <tchar.h>
-
+#endif
 using namespace std;
 
 class LocusData {

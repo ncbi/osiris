@@ -43,10 +43,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\BaseClassLib;$(IncludePath)</IncludePath>
+    <OutDir>$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>..\BaseClassLib;$(IncludePath)</IncludePath>
+    <OutDir>$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -81,6 +83,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,18 +94,25 @@
       <AdditionalDependencies>Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration />
     </Link>
+    <PostBuildEvent>
+      <Command>sign.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bins.cpp" />
     <ClCompile Include="GenerateLadderFile.cpp" />
     <ClCompile Include="LadderInputFile.cpp" />
     <ClCompile Include="LadderStructures.cpp" />
+    <ClCompile Include="LocusName.cpp" />
+    <ClCompile Include="NameManager.cpp" />
     <ClCompile Include="Panels.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bins.h" />
     <ClInclude Include="LadderInputFile.h" />
     <ClInclude Include="LadderStructures.h" />
+    <ClInclude Include="LocusName.h" />
+    <ClInclude Include="NameManager.h" />
     <ClInclude Include="Panels.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

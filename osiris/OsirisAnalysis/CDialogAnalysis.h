@@ -42,7 +42,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/radiobut.h>
-//#include <wx/timer.h>
 
 #include "wxIDS.h"
 #include "nwx/nwxTabOrder.h"
@@ -50,10 +49,9 @@
 #include "CKitList.h"
 #include "CLabSettings.h"
 #include "CVolumes.h"
-//#include "nwx/nwxTimerReceiver.h"
 #include "CGridRFURun.h"
 
-class CDialogAnalysis : public wxDialog //, public nwxTimerReceiver
+class CDialogAnalysis : public wxDialog
 {
 public:
   CDialogAnalysis(
@@ -90,10 +88,10 @@ public:
     bool bRtn = SelectVolumeByName(sName);
     return bRtn;
   }
-  wxString &GetVolumeName()
-  {
-    return m_sVolumeName;
-  }
+//  wxString &GetVolumeName()
+//  {
+//    return m_sVolumeName;
+//  }
 //  BEGIN CGridRFURun Get/Set
   int GetMinRFU()
   {
@@ -190,7 +188,6 @@ public:
   void OnBrowseOutput(wxCommandEvent &);
   void OnBrowseVolume(wxCommandEvent &);
   void OnVolumeChange(wxCommandEvent &);
-  //virtual void OnTimer(wxTimerEvent &);
   void DoVolumeChange();
   virtual bool Show(bool show = true);
   bool SelectVolumeByName(const wxString &s);
@@ -250,7 +247,7 @@ private:
   }
 
   wxString m_sErrorStr;
-  CVolumes m_volumes;
+  CVolumes &m_volumes;
   CPersistKitList *m_pKitList;
   CVolume *m_pVolume;
   CParmOsiris *m_pParm;

@@ -108,9 +108,15 @@ RGStringData :: ~RGStringData () {
 
 	ReferenceCount--;
 
-	if (ReferenceCount <= 0) {
+	if (ReferenceCount < -1) {
+
+		Data = NULL;
+	}
+
+	else if (ReferenceCount <= 0) {
 
 		delete [] Data;
+		Data = NULL;
 	}
 }
 

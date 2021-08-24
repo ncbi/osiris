@@ -40,12 +40,17 @@
 #include "rgfile.h"
 #include "rgdlist.h"
 #include "rgintarray.h"
+#include "NameManager.h"
 
 class LadderInputFile {
 
 public:
 	LadderInputFile (bool debug);
 	~LadderInputFile ();
+
+	bool IsValid () const {
+		return mIsValid;
+	}
 
 	int ReadAllInputs (const RGString& inputFileName);
 	int ReadAllInputsAppend (const RGString& inputFileName);
@@ -119,9 +124,20 @@ public:
 	static RGString GetColumnDelineation () { return ColumnDelineation; }
 	static RGString GetBinsDelineation () { return BinsDelineation; }
 
+	static bool AddLocusNamesAndControlNamesFromControlFile (const RGString& fileName) {
+		return StandardNames.AddLocusNamesAndControlNamesFromControlFile (fileName);
+	}
+	static RGString FindLocusNameInList (const RGString& name) {
+		return StandardNames.FindLocusNameInList (name);
+	}  // returns empty string if not found
+	static RGString FindPositiveControlNameInList (const RGString& name) {
+		return StandardNames.FindPositiveControlNameInList (name);
+	}
+
 protected:
 	bool mDebug;
 	RGFile* mInputFile;
+	bool mIsValid;
 
 	RGString mLadderFileName;
 	RGString mKitName;
@@ -187,6 +203,7 @@ protected:
 	static RGString AlleleListDelineation;
 	static RGString ColumnDelineation;
 	static RGString BinsDelineation;
+	static LocusNames StandardNames;
 };
 
 

@@ -211,7 +211,7 @@ void COARsampleSort::_Sort()
 {
 
   size_t nRowCount = m_pFile->GetSampleCount();
-  auto_ptr<ISampleSorter> pSort(NULL);
+  unique_ptr<ISampleSorter> pSort;
 
   m_bLastControlOnTop = CGridAnalysisDisplay::GetControlsOnTop();
   m_nLastSort = CGridAnalysisDisplay::GetSortType();
@@ -220,19 +220,19 @@ void COARsampleSort::_Sort()
 
   if(m_nLastSort == SAMPLE_NAME)
   {
-    pSort = auto_ptr<ISampleSorter>(new SampleSort<SampleNameSet>);
+    pSort.reset(new SampleSort<SampleNameSet>);
   }
   else if(m_nLastSort == SEVERITY)
   {
-    pSort = auto_ptr<ISampleSorter>(new SampleSortSeverity(m_pFile,&m_histTime));
+    pSort.reset(new SampleSortSeverity(m_pFile,&m_histTime));
   }
   else if(m_nLastSort == RUN_TIME)
   {
-    pSort = auto_ptr<ISampleSorter>(new SampleSort<SampleRunStartSet>);
+    pSort.reset(new SampleSort<SampleRunStartSet>);
   }
   else
   {
-    pSort = auto_ptr<ISampleSorter>(new SampleSort<SampleFileNameSet>);
+    pSort.reset(new SampleSort<SampleFileNameSet>);
   }
   size_t i;
   COARsample *pSample;

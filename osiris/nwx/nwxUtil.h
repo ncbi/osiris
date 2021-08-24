@@ -37,6 +37,19 @@ class nwxUtil
 private:
   nwxUtil() {} // prevent instantiation
 public:
+  static void CleanupArrayString(wxArrayString *ps)
+  {
+    ps->Sort();
+    size_t n;
+    for (n = 1; n < ps->GetCount(); ++n)
+    {
+      if (ps->Item(n) == ps->Item(n - 1))
+      {
+        ps->RemoveAt(n);
+        n--;
+      }
+    }
+  }
   static wxWindow *GetTopLevelParent(wxWindow *p);
 };
 

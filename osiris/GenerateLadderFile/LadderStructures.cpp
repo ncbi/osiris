@@ -390,10 +390,19 @@ Locus* Ladder :: FindLocusByName (const RGString& locusName) {
 
 	Locus* nextLocus;
 	list <Locus*>::const_iterator locusIterator;
+	//bool print = false;
+
+	//if (locusName == "AMEL") {
+	//	print = true;
+	//	cout << "Looking for locus with name " << locusName << endl;
+	//}
 
 	for (locusIterator = mLocusList.begin(); locusIterator != mLocusList.end(); locusIterator++) {
 
 		nextLocus = *locusIterator;
+
+		//if (print)
+		//	cout << "   Testing locus name = " << nextLocus->GetName () << endl;
 
 		if (nextLocus->GetName () == locusName)
 			return nextLocus;
@@ -643,14 +652,31 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 
 	RGString ilsName = Locus::GetILSFamilyName ();
 	endPos = 0;
-	oldLadderString.FindNextSubstring (0, "      <Locus>", endPos);
+	oldLadderString.FindNextSubstring (0, "<Locus>", endPos);
 	RGString insertBase;
-	insertBase << blank10 << "<ILSName>" << ilsName.GetData () << "</ILSName>\n";
-	insertBase << blank8 << "</LSBases>";
+	insertBase << blank2 << "<ILSName>" << ilsName.GetData () << "</ILSName>\n";
+	insertBase << blank8 << "</LSBases>\n";
 	RGString leadString = oldLadderString.ExtractSubstring (0, endPos - 1);
+	RemoveTrailingWhiteSpace (leadString);
+	//char lastCharacter;
+
+	//while (true) {
+
+	//	lastCharacter = leadString.GetLastCharacter ();
+
+	//	if (lastCharacter == ' ')
+	//		leadString.RemoveLastCharacter ();
+
+	//	else if (lastCharacter == '\t')
+	//		leadString.RemoveLastCharacter ();
+
+	//	else
+	//		break;
+	//}
+
 	//cout << "Lead string = \n" << leadString.GetData () << endl;
 	endPos = 0;
-	RGString blank8PlusLSBases = blank8 + "</LSBases>";
+	RGString blank8PlusLSBases = "</LSBases>";
 	leadString.FindAndReplaceNextSubstring (blank8PlusLSBases, insertBase, endPos);
 	//cout << "Lead string = \n" << leadString.GetData () << endl;
 	newLadderString << leadString;
@@ -681,7 +707,7 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 	double maxSearch;
 	RGString repeatString;
 	int repeatNumber;
-	RGString blank8PlusSearchRegions = blank8 + "</SearchRegions>";
+	RGString blankPlusSearchRegions = "</SearchRegions>";
 
 	while (locusStrings.Entries () > 0) {
 
@@ -695,7 +721,7 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 
 		if (nextLocus == NULL) {
 
-			cout << "Could not find locus named " << nameString.GetData () << ".  Exiting..." << endl;
+			cout << "Could not find locus named " << nameString.GetData () << " in ladder.  Exiting..." << endl;
 			return -155;
 		}
 
@@ -709,14 +735,14 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 		minSearch = nextLocus->GetMinSearchILSBP () - repeatNumber + 1;
 		maxSearch = nextLocus->GetMaxSearchILSBP () + repeatNumber -1;
 
-		locusInsert << blank10 << "<Region>\n";
+		locusInsert << blank2 << "<Region>\n";
 		locusInsert << blank12 << "<ILSName>" << ilsName.GetData () << "</ILSName>\n";
 		locusInsert << blank12 << "<MinGrid>" << 0.01 * floor (100.0 * minSearch + 0.5) << "</MinGrid>\n";
 		locusInsert << blank12 << "<MaxGrid>" << 0.01 * floor (100.0 * maxSearch + 0.5) << "</MaxGrid>\n";
 		locusInsert << blank10 << "</Region>\n";
 		locusInsert << blank8 << "</SearchRegions>";
 		endPos = 0;
-		currentLocusString.FindAndReplaceNextSubstring (blank8PlusSearchRegions, locusInsert, endPos);
+		currentLocusString.FindAndReplaceNextSubstring (blankPlusSearchRegions, locusInsert, endPos);
 
 		newLadderString << blank6 << "<Locus>" << currentLocusString << "</Locus>\n";
 		delete newLocusString;
@@ -726,7 +752,7 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 	newLadderString << blank2 << "</Kits>\n";
 	newLadderString << "</KitData>\n";
 
-	RGString ladderPath = inFile.GetOutputConfigDirectoryPath () + "/" + inFile.GetLadderFileName ();
+	RGString ladderPath = inFile.GetOutputConfigDirectoryPath () + "/Config/LadderSpecifications/" + inFile.GetLadderFileName ();
 	RGTextOutput ladderOutput (ladderPath, FALSE);
 
 	if (!ladderOutput.FileIsValid ()) {
@@ -745,6 +771,26 @@ int Ladder :: AmendLadderData (LadderInputFile& inFile, RGString& oldLadderStrin
 int Ladder :: GetNumberOfLoci () const {
 
 	return mLocusList.size ();
+}
+
+
+void Ladder::RemoveTrailingWhiteSpace (RGString& targetString) {
+
+	char lastCharacter;
+
+	while (targetString.Length () > 0) {
+
+		lastCharacter = targetString.GetLastCharacter ();
+
+		if (lastCharacter == ' ')
+			targetString.RemoveLastCharacter ();
+
+		else if (lastCharacter == '\t')
+			targetString.RemoveLastCharacter ();
+
+		else
+			break;
+	}
 }
 
 

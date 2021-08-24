@@ -233,7 +233,6 @@ CPanelPlot::CPanelPlot(
   m_pShiftSizer(NULL),
   m_pFramePlot(NULL),
   m_pFrameAnalysis(pFrame),
-  m_pMenuItem(NULL),
   m_nPlotNr(0),
   m_nBatchCount(0),
   m_nILScurveOffset(0),
@@ -269,7 +268,6 @@ CPanelPlot::CPanelPlot(
     m_pFramePlot(NULL),
     m_pFrameAnalysis(pFrame),
     //m_pTimer(NULL),  // EXT TIMER
-    m_pMenuItem(NULL),
     m_nPlotNr(0),
     m_nBatchCount(0),
     m_nILScurveOffset(0),
@@ -310,7 +308,6 @@ CPanelPlot::CPanelPlot(
     m_pFramePlot(pFrame),
     m_pFrameAnalysis(NULL),
     //m_pTimer(NULL),  // EXT TIMER
-    m_pMenuItem(NULL),
     m_nPlotNr(nPlotNumber),
     m_nBatchCount(0),
     m_nILScurveOffset(0),
@@ -2470,8 +2467,7 @@ wxMenuItem *CPanelPlot::GetMenuItem(wxMenu *p)
       "",               // help
       wxITEM_NORMAL,        // wxItemKind
       m_pMenu);             // wxMenu *subMenu
-    auto_ptr<nwxMenuItem> x(pMenuItem);
-    m_pMenuItem = x;
+    m_pMenuItem.reset(pMenuItem);
   }
   else
   {
