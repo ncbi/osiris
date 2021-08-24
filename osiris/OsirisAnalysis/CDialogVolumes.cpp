@@ -132,7 +132,7 @@ private:
   wxChoice *m_pChoiceKit;
 
   void OnOK(wxCommandEvent &);
-  DECLARE_EVENT_TABLE();
+  DECLARE_EVENT_TABLE()
 };
 
 CDialogVolumeAddNew::~CDialogVolumeAddNew() {}
@@ -147,7 +147,7 @@ CDialogVolumeAddNew::CDialogVolumeAddNew(
   m_pVolumes(pVolumes)
 {
   
-  const wxArrayString &as(pVolumes->GetVolumeNames());
+  const wxArrayString &as(pVolumes->GetDisplayVolumeNames());
   wxBoxSizer *pSizer1 = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -231,6 +231,7 @@ CDialogVolumes::CDialogVolumes(
     & ~wxCLOSE_BOX 
 #endif
     ),
+  m_volumes(*(CVolumes::GetGlobal())),
   m_pVolumeCurrent(NULL),
   m_pChoice(NULL),
   m_pPanelLab(NULL),
@@ -238,7 +239,7 @@ CDialogVolumes::CDialogVolumes(
   m_bGridEditorShown(false),
   m_bReadOnly(bReadOnly)
 {
-  const wxArrayString &as = m_volumes.GetVolumeNames();
+  const wxArrayString &as = m_volumes.GetDisplayVolumeNames();
   size_t nSize = as.GetCount();
 #ifndef __NO_MDI__
   SetMaxSize(mainFrame::Size80());
@@ -676,7 +677,7 @@ void CDialogVolumes::OnRename(wxCommandEvent &e)
 
 bool CDialogVolumes::_UpdateVolumeNames()
 {
-  const wxArrayString &as = m_volumes.GetVolumeNames();
+  const wxArrayString &as = m_volumes.GetDisplayVolumeNames();
   bool bSet0 = m_sSelection.IsEmpty();
   m_pChoice->Clear();
   m_pChoice->Append(as);
@@ -696,6 +697,14 @@ bool CDialogVolumes::_UpdateVolumeNames()
   }
   _SetVolume();
   return bRtn;
+}
+void CDialogVolumes::EndModal(int retCode)
+{
+  if ( (m_pVolumeCurrent != NULL) && m_pVolumeCurrent->IsLocked() )
+  {
+    m_pVolumeCurrent->ReleaseLock();
+  }
+  wxDialog::EndModal(retCode);
 }
 void CDialogVolumes::OnTimer(wxTimerEvent &e) // called from mainFrame
 {

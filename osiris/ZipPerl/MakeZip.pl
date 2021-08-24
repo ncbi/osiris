@@ -91,14 +91,24 @@ sub COPYFILES
     $destTest = $dest;
   }
   my $destXSL = "${dest}/ExportFiles";
+  my $sdir;
   &MKDIR("${dest}");
   &MKDIR($destXSL);
   &MKDIR("${dest}/Config");
   &MKDIR("${dest}/Config/Volumes");
   &MKDIR("${dest}/Config/xsd");
   &MKDIR("${dest}/Config/LadderSpecifications");
+  &MKDIR("${dest}/Config/UserTools");
+  &MKDIR("${dest}/ReleaseNotes");
+  for my $sdir (qw/DemoFiles LadderGeneration StandardPositiveControl Tutorial_PPFusion/)
+  {
+      my $dest1 = "${dest}/Config/UserTools/${sdir}";
+      &MKDIR($dest1);
+      &SYSTEM("${CP} ${src}/ConfigurationTools/${sdir}/*.* ${dest1}");
+  }
+  
   &SYSTEM("${CP} -R ${src}/docs/TestAnalysis ${destTest}");
-  for my $sdir (qw/
+  for $sdir (qw/
       CANNABIS
       Cofiler
       CORDIS_PLUS
@@ -200,8 +210,7 @@ sub COPYFILES
 
   &SYSTEM("${CP} ${src}/docs/readme.rtf ${dest}");
   &SYSTEM("${CP} ${src}/docs/OsirisHelp.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/V2.3-Change-Log.pdf ${dest}");
-  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes*.pdf ${dest}");
+  &SYSTEM("${CP} ${src}/docs/OSIRIS_Release_Notes*.pdf ${dest}/ReleaseNotes");
 }
 sub GetVCDir
 {
@@ -253,6 +262,7 @@ sub CopyWin
   &SYSTEM("${CP} ${src}/OsirisXML/names.bat ${dest}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.vbs ${dest}");
   &SYSTEM("${CP} ${src}/nwx/pinger.vbs ${dest}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/oscmdline.bat ${dest}");
 #  &SYSTEM("${CP} ${src}/Setup1/uninstall.bat ${dest}");
 
   my $zipFile = "${dest}-Windows.exe";
@@ -324,6 +334,7 @@ sub CopyMac
 
   &SYSTEM("${CP} ${src}/nwx/pinger.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/CSitePath.sh ${DEST}");
+  &SYSTEM("${CP} ${src}/OsirisAnalysis/oscmdline.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/cpmsgmac.sh ${DEST}");
   &SYSTEM("${CP} ${src}/OsirisAnalysis/bin/osiris ${DEST}");
   &SYSTEM("${CP} ${src}/TestAnalysisDirectoryLCv2.11/bin/TestAnalysisDirectoryLC ${DEST}");

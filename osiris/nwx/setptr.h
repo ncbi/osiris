@@ -104,4 +104,76 @@ public:
   }
 };
 
+// copy/paste/edit of the above
+
+template<class T, class S = std::less<T *> > class multisetptr :
+  public std::multiset<T *, S>
+{
+public:
+  multisetptr<T, S>() { ; }
+  multisetptr<T, S>(const std::multiset<T *, S> &x)
+  {
+    copy(this, x);
+  }
+  virtual ~multisetptr<T, S>()
+  {
+    cleanup(this);
+  }
+  static bool IsEqual(
+    const std::multiset<T *, S> &x1,
+    const std::multiset<T *, S> &x2)
+  {
+    bool bRtn = false;
+    if (x1.size() == x2.size())
+    {
+      typename std::multiset<T *, S>::const_iterator itr1;
+      typename std::multiset<T *, S>::const_iterator itr2;
+      itr1 = x1.begin();
+      itr2 = x2.begin();
+      T *p1;
+      T *p2;
+      bRtn = true;
+      while (bRtn && (itr1 != x1.end()))
+      {
+        p1 = *itr1;
+        p2 = *itr2;
+        if (!((*p1) == (*p2)))
+        {
+          bRtn = false;
+        }
+        ++itr1;
+        ++itr2;
+      }
+    }
+    return bRtn;
+  }
+
+public:
+  static void cleanup(std::multiset<T *, S> *p)
+  {
+    typename std::multiset<T *, S>::iterator itr;
+    T *px;
+    for (itr = p->begin();
+      itr != p->end();
+      itr = p->begin())
+    {
+      px = *itr;
+      delete (px);
+      p->erase(itr);
+    }
+  }
+  static void copy(std::multiset<T *, S> *pTo, const std::multiset<T *, S> &xFrom)
+  {
+    cleanup(pTo);
+    typename std::multiset<T *, S>::const_iterator itr;
+    for (itr = xFrom.begin(); itr != xFrom.end(); ++itr)
+    {
+      T *px = *itr;
+      T *pnew = new T(*px);
+      pTo->insert(pnew);
+    }
+  }
+};
+
+
 #endif

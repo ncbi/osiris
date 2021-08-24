@@ -515,31 +515,54 @@ wxString nwxFileUtil::_getFileOpenExe()
 }
 int nwxFileUtil::OpenFileFromOS(const wxString &sFileName)
 {
-  // STOP HERE
+  wxArrayString as;
+  int nRtn = -2;
+  as.Add(sFileName);
+
+  if (wxFileName::IsFileReadable(sFileName) ||
+    wxFileName::IsDirReadable(sFileName)
+    )
+  {
+    nRtn = OpenCommandFromOS(as);
+  }
+  return nRtn;  
+}
+int nwxFileUtil::OpenCommandFromOS(const wxArrayString &sArgs)
+{
   int nRtn = 0;
+#define MAX_ARG 40
+  size_t nArgs = sArgs.GetCount();
   wxString sEXE = _getFileOpenExe();
-  bool b = sEXE.IsEmpty() ? false :
-    ( wxFileName::IsFileReadable(sFileName) 
-      || wxFileName::IsDirReadable(sFileName)
-    );
-  if(!b)
+  if(sEXE.IsEmpty())
+  {
+    nRtn = -2;
+  }
+  else if (nArgs > MAX_ARG)
   {
     nRtn = -2;
   }
   else
   {
-    const wchar_t *ARGV[3];
+    const wchar_t *ARGV[MAX_ARG + 2];
+    size_t i;
     ARGV[0] = sEXE.wx_str();
-    ARGV[1] = sFileName.wx_str();
-    ARGV[2] = NULL;
+    for (i = 0; i < nArgs; ++i)
+    {
+      ARGV[i + 1] = sArgs.Item(i).wx_str();
+    }
+    ARGV[nArgs+1] = NULL;
     nRtn = (int) wxExecute((wchar_t **)ARGV,wxEXEC_SYNC);
     if(nRtn)
     {
       wxString sMsg = "Exec: '";
       sMsg.Append(sEXE);
-      sMsg.Append(" ");
-      sMsg.Append(sFileName);
-      sMsg.Append("' -- returned: " );
+      for (i = 0; i < nArgs; ++i)
+      {
+        sMsg.Append(" '");
+        sMsg.Append(sArgs.Item(i));
+        sMsg.Append("'");
+      }
+      sMsg.Append(" -- returned: " );
       sMsg.Append(nwxString::FormatNumber((int) nRtn));
       nwxLog::LogMessage(sMsg);
     }

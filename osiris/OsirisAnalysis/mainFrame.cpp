@@ -49,6 +49,7 @@
 
 #include "OsirisFileTypes.h"
 #include "OsirisVersion.h"
+#include "UserConfig.h"
 
 #include "nwx/stdb.h"
 #include <memory>
@@ -855,6 +856,34 @@ bool mainFrame::SetupSiteSettings()
     }
   }
   return bExists;
+}
+void mainFrame::OnShowCommandLine(wxCommandEvent &)
+{
+  wxString sError;
+  if (!SetupSiteSettings())
+  {  } // done
+  else if (!UserConfig::UserConfigExists(true))
+  {
+    sError.Append(wxT("An error occurred while trying to create\n"));
+    sError.Append(wxT("the configuration tools directory.\n"));
+    sError.Append(wxT("You probably don't have access privileges.\n"));
+  }
+  else if (!UserConfig::OpenTerminal())
+  {
+    sError.Append(wxT("An error occurred while trying to\n"));
+    sError.Append(wxT("open a command prompt window."));
+#ifdef __WXMAC__
+    if (!wxDirExists(wxT("/Applications/iTerm.app")))
+    {
+      sError.Append(wxT("\nThis feature requires the iTerm\nApplication."));
+    }
+#endif
+  }
+  if (!sError.IsEmpty())
+  {
+    mainApp::ShowError(sError, DialogParent());
+    mainApp::LogMessage(sError);
+  }
 }
 void mainFrame::OnShowSiteSettings(wxCommandEvent &)
 {

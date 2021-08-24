@@ -145,6 +145,7 @@ public:
   void OnLabSettings(wxCommandEvent &);
   void OnAccessSiteSettings(wxCommandEvent &);
   void OnShowSiteSettings(wxCommandEvent &);
+  void OnShowCommandLine(wxCommandEvent &);
   bool SetupSiteSettings();
   void OnArtifactLabels(wxCommandEvent &);
   void OnPinger(wxCommandEvent &);

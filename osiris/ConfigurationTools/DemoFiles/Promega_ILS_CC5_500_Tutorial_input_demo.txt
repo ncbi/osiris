@@ -1,0 +1,12 @@
+ILSFileName = Promega_ILS_CC5_500_Tutorial;
+UserFiles = {OSIRISFILES};
+ILSFamilyName = Promega-ILS-CC5-500-Tutorial;
+PeakList = 60 65 80 100 120 140 160 180 200 225 250 275 300 325 350 375 400 425 450 475 500;
+DyeName = CC5;
+NumInitialPeaksIgnored = 2;
+NumFinalPeaksIgnored = 0;
+BaseLaneStandardName = Promega-ILS-CC5-500-Tutorial_;
+RelativeHeightList = MH MH MH H MH MH MH MH H MH MH MH H MH MH MH H MH MH MH H;
+CorrelationAcceptance1 = 0.990;
+CorrelationAcceptance2 = 0.995;
+;

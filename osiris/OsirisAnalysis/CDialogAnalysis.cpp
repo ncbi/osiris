@@ -45,6 +45,7 @@ CDialogAnalysis::CDialogAnalysis(
     bool bEnableInputDir,
     bool bUseLabSettings) :
   wxDialog(parent,wxID_ANY,wxString("Analyze Data")),
+    m_volumes(*CVolumes::GetGlobal()),
     m_pVolume(NULL),
     m_pParm(pParm),
     m_pDirInput(NULL),
@@ -120,15 +121,10 @@ CDialogAnalysis::CDialogAnalysis(
     m_pCheckSubDir = new wxCheckBox(this,wxID_ANY,"Create time stamped subdirectory");
 
     // Operating Procedure Name
-#ifdef __WXOSX_COCOA__
-#define CB_STYLE  wxCB_READONLY
-#else
-#define CB_STYLE  wxCB_SORT | wxCB_READONLY
-#endif
-    const wxArrayString &as(m_volumes.GetVolumeNames());
+    const wxArrayString &as(m_volumes.GetDisplayVolumeNames());
     m_pComboVolumeName = new wxComboBox(this,IDvolumeName,as[0],
       wxDefaultPosition, wxDefaultSize,
-      as, CB_STYLE);
+      as, wxCB_READONLY);
     wxButton *pBrowseVolume = 
       new wxButton(this,IDvolume,"Browse...");
     wxBoxSizer *pSizerVolume = new wxBoxSizer(wxHORIZONTAL);
@@ -136,6 +132,11 @@ CDialogAnalysis::CDialogAnalysis(
     pSizerVolume->Add(pBrowseVolume,0,wxALIGN_CENTER_VERTICAL);
 
     // lane standard
+#ifdef __WXOSX_COCOA__
+#define CB_STYLE  wxCB_READONLY
+#else
+#define CB_STYLE  wxCB_SORT | wxCB_READONLY
+#endif
 
     m_pComboLsName = new wxComboBox(this,wxID_ANY,wxEmptyString,
       wxDefaultPosition, wxDefaultSize,
@@ -278,7 +279,9 @@ bool CDialogAnalysis::SelectVolumeByName(const wxString &s)
   int nSelect = m_pComboVolumeName->GetSelection();
   int nSelect2 = -1;
   bool bRtn = false;
-  if(m_pComboVolumeName->SetStringSelection(s))
+  CVolume *pV = m_volumes.Find(s);
+  wxString sDisplayName = (pV == NULL) ? s : pV->GetDisplayVolumeName();
+  if(m_pComboVolumeName->SetStringSelection(sDisplayName))
   {
     DoVolumeChange();
     bRtn = !m_bProblem;

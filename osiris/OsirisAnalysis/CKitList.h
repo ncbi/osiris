@@ -404,6 +404,11 @@ public:
     }
     return s;
   }
+  bool KitExists(const wxString &sKitName)
+  {
+    bool b = m_mapKitToLadderInfo.find(sKitName) != m_mapKitToLadderInfo.end();
+    return b;
+  }
   size_t GetCount()
   {
     return m_as.GetCount();

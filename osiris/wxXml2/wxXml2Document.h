@@ -86,6 +86,16 @@ public:
 
   bool Save(const wxString& filename, int indentstep = 1) const;
   bool Save(wxOutputStream& stream, int indentstep = 1) const;
+  bool CloseAfterSave(bool b)
+  {
+    bool rtn = m_bCloseAfterSave;
+    m_bCloseAfterSave = b;
+    return rtn;
+  }
+  bool CloseAfterSave() const
+  {
+    return m_bCloseAfterSave;
+  }
 
   // void SetEncoding(const wxString& enc);
 
@@ -120,8 +130,30 @@ private:
   static void _BuildTree(xmlNodePtr pXmlNode, wxXml2Node *pNode);
   xmlDocPtr m_pXmlDoc;
   mutable wxXml2Node *m_pNodeRoot;
+  bool m_bCloseAfterSave;
   DECLARE_ABSTRACT_CLASS(wxXml2Document)
 };
+/*
+-- not needed
+
+class wxXml2CloseAfterSave
+{
+public:
+  wxXml2CloseAfterSave(wxXml2Document *pDoc, bool bClose):
+    m_pDoc(pDoc)
+
+  {
+    m_bState = m_pDoc->CloseAfterSave(bClose);
+  }
+  virtual ~wxXml2CloseAfterSave()
+  {
+    m_pDoc->CloseAfterSave(m_bState);
+  }
+private:
+  wxXml2Document *m_pDoc;
+  bool m_bState;
+};
+*/
 
 #endif
 

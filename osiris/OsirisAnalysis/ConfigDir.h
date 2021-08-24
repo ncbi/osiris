@@ -194,7 +194,18 @@ public:
     _BuildFilePath(GetSiteConfigPath(), wxT("Volumes"), &sRtn);
     return sRtn;
   }
-  
+  wxString GetSiteToolsPath() const
+  {
+    wxString sRtn;
+    _BuildFilePath(GetSitePath(), wxT("ConfigurationTools"), &sRtn);
+    return sRtn;
+  }
+  wxString GetExeToolsPath() const
+  {
+    wxString sRtn;
+    _BuildFilePath(GetExeConfigPath(), wxT("UserTools"), &sRtn);
+    return sRtn;
+  }
   wxString GetSiteILSLadderFilePath() const
   {
     wxString sRtn;

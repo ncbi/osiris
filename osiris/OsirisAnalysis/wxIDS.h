@@ -167,6 +167,7 @@ enum
   IDexport,
   IDsiteSettings,
   IDsiteShow,
+  IDsiteCommandLine,
   IDeditColours,
   IDlog,
   IDgrid,

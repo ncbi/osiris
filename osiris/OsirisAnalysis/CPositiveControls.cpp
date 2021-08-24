@@ -416,17 +416,13 @@ const wxString CPositiveControlsAll::GetFileName(const wxString &sControlName)
 {
   wxString sRtn;
   CPositiveControlsAll *p = CPositiveControlsAll::GetGlobal();
-  const _CPositiveControls *pp[] = {p->m_pPosOsiris, p->m_pPosSite};
+  p->_CheckSiteFile();
+  const _CPositiveControls *pp[] = { p->m_pPosSite, p->m_pPosOsiris};
   const size_t nSize = sizeof(pp) / sizeof(pp[0]);
   const _CPositiveControls *pos;
   for (size_t ndx = 0; ndx < nSize; ++ndx)
   {
     pos = pp[ndx];
-    if (pos == NULL)
-    {
-      p->_CheckSiteFile();
-      pos = pp[ndx];
-    }
     if( (pos != NULL) && ((pos)->Find(sControlName) != NULL) )
     {
       sRtn = pos->GetLastFileName();
